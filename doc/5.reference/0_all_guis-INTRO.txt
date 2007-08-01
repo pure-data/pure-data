@@ -1,0 +1,131 @@
+HOW TO MOVE A GUI-OBJECT:
+
+Of course by mouse, and:
+select a gui-object , then navigate the object by using the
+4 direction-keys: UP , DOWN , LEFT or RIGHT.
+If you press the SHIFT-Key too , the object will move 10 times faster.
+
+
+PROPERTIES-DIALOG-WINDOW:
+
+"dimensions(pix): size:" = square-size of the gui-objects in pixels.
+"dimensions(pix)(pix): width: height:" = width & height of the rectangular
+            gui-object in pixels.
+"selectable dimensions(pix): size:" = square-size of the selectable top-left
+            corner of my_canvas in pixels.
+"flash-time(ms)(ms): hold:" = flash-hold-time in msec = duration of activity,
+            if a bang-object was activated by any message-event
+            or by a mouse-click.
+"flash-time(ms)(ms): intrrpt:" = flash-interrupt-time in msec = duration
+            of inactivity , if an already activated bang is activated 
+            once more.
+"output-range: left: right:" = hslider-bounds for input- as well as
+            output-values.
+"output-range: bottom: top:" = vslider-bounds for input- as well as
+            output-values.
+"non-zero-value: value:" = toggle has 2 value-states: zero and this value.
+"visible_rectangle(pix)(pix): width: height:" = width & height of a visible,
+            deactivated rectangle in pixels.
+"init" or "no init" = if "init"-mode is selected , the object gets a loadbang-
+                behavior and puts out its in-patch-saved value.
+            if "no init"-mode is selected, nothing will happen.
+"new&old" or "new-only" = the hdial- and vdial-object changes its state in 2 ways:
+            "new&old"-mode: output sends previous state off, current state on;
+            "new-only"-mode: output sends only current state on.
+"lin" or "log" = sliders and numberboxes can have linear or logarithmical scaling.
+"number:" = number of buttons of hdials and vdials.
+"log-height:" = is the graphical height of the numberbox in logarithmical mode.
+"steady on click" or "jump on click" = the 2 slider-objects
+                react to mouse-click in 2 ways:
+            "steady on click"-mode: slider-knob stays in position,
+                mouse and knob will move parallel;
+            "jump on click"-mode: slider-knob jumps immediately to new
+                mouse-position, positions of mouse and knob will be identical.
+"send-symbol:" = an output-message can be received by a receive-object
+            with the same send-symbol-name.
+"receive-symbol:" = a send-object with the same symbol-name can send
+            an input-message to the gui-object.
+"label: name:" = visible name of a gui-object; it will be moved together with
+            the gui-object.
+"label: x_off: y_off:" = coordinates of the label in relation to top-left
+            corner of gui-object.
+"label: font: fontsize:" = font-properties of label.
+"colors:" = a click on radiobuttons "backgd:", "front:" or
+            "label:" routes the button "compose color" and/or the preset-colors
+            to background- front- and label-color. 
+            the 2 fields with "testlabel" and "o=||=o" will show you the 3 colors.
+            "compose color" opens a tcl/tk color-dialog.
+"Cancel" quits the properties-dialog without sending down the last changings in dialogbox.
+"Apply"  sends down the changings.
+"OK"     sends down the changings and quits the dialogbox.
+
+
+THE DOLLAR-THING:
+
+If you want to send to, or to receive from gui-objects,
+you have to write into the property-entry your send- or receive-name.
+If you want an unique-name, write $0 or $0-blabla, if you want to
+communicate with this gui-object in an abstraction, write $1
+or $1-blabla or $2 or $2-blabla in your property-entry.
+(send- , receive- or label- name)
+A new feature is: you can take the same send- and receive-name.
+If there is a send-name, the object will loose its output-rectangle,
+if there is a receive-name, the object will loose its input-rectangle;
+but the connective behavior is the same.
+
+GUI-MESSAGES:
+
+all gui-objects (bng, hsl, vsl, nbx, tgl, hdl, vdl, cnv and vu)
+            understand input-messages which change their properties.
+            except cnv has no input, so you have to send messages
+                to its receive-label (edit properties).
+"size 15 128" = change width & height of sliders and vu in pixels.
+"size 15" = change square-size of rdb, bng and tgl in pixels.
+"vis_size 800 600" = change width & height of visual rectangle
+            of my_canvas in pixels.
+"range 0.1 10.0" = change slider-boundaries for
+            input- as well as output-values.
+"nonzero 127.0" = change the nonzero-value of toggle.
+"flashtime 50 600" = change flash-interrupt- and
+            flash-hold-time of bng-object.
+"pos 150 170" = change the x-y-position of the top-left
+            corner of a gui-object in pixels;
+            "pos 0 0" is the top-left corner of your window;
+             the positive directions of x- and y-axes are right and down.
+"delta 15 17" = move the gui-object in relation to its
+            current position (in pixels).
+"color 0 22 22" = change background-, front- and
+            label-color of object with one of 30 presets.
+"color 0 22" = change background- and label-color
+             of vu and my_canvas with one of 30 presets.
+"color -16777216 (-1) -1" = change background-, (front-)
+            and label-color of object with RGB-values.
+            the RGB-value will be calculated:
+                -65536*RED-value (0 .. 255)
+                - 256*GREEN-value (0 .. 255)
+                        - BLUE-value (0 .. 255) - 1.
+"number 10" = change number of dial-buttons.
+"log_height 128" = graphical dimension for logarithmical behavior
+            of numberbox.
+"steady 1" change slider-knob-behaviour on mouse-click.
+"single_change" change dial-behaviour
+            to output only the new state.
+"double_change" change dial-behaviour
+            to first release the previous button,
+            then output the state of the new button.
+"send fromgui" = change send-name of gui-objects,
+            except vu and cnv.
+"receive togui" = change receive-name of object.
+"label its_me" = change label-text of object.
+"label_pos 20 8" = change offset-coordinates of label-text.
+"label_font 0 10" = change font and fontsize of label-text.
+"init 1" = change initial loadbang-mode of gui-objects
+            except vu and cnv.
+"set 64" = change only the inner state and display
+            of gui-objects, except bng and cnv;
+            no output will result.
+"lin" = change scale-mode of slider to linear.
+"log" = change scale-mode of slider to logarithmical.
+"get_pos" = if my_canvas has a receive-name and a send-name
+            and you send the message "get_pos" to it,
+            you receive the current x- and y-coordinates.

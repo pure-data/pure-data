@@ -1,0 +1,43 @@
+#N struct help-drawnumber-template float x float y float cat float
+dog;
+#N canvas 51 46 538 189 12;
+#X text 15 103 see also:;
+#X obj 18 7 drawnumber;
+#X obj 187 132 plot;
+#X obj 83 131 drawpolygon;
+#X text 114 7 -- draw numeric fields from data structures;
+#N canvas 14 10 297 129 help-drawnumber-data 1;
+#X scalar help-drawnumber-template 50 100 23 43 \;;
+#X scalar help-drawnumber-template 150 50 3.14 -1.618 \;;
+#X restore 273 71 pd help-drawnumber-data;
+#N canvas 528 70 575 505 help-drawnumber-template 1;
+#X text 23 438 This object defines the fields for this template. Their
+values are initialized in the "works" subwindow. You can see them by
+right-clicking on the object in the "data" window and selecting "properties."
+;
+#X text 42 211 - RGB color (0=black \, 999=white \, 900=red \, 90=green
+\, 9=blue \, 555=grey \, etc.);
+#X text 19 316 When not in "edit" mode \, you can click and drag vertically
+on the numbers to change their values. (In edit mode you can move \,
+cut \, copy \, and paste the objects.);
+#X text 21 365 Keyboard entry isn't supported yet.;
+#X obj 25 56 drawnumber cat 0 0 0 cat=;
+#X obj 260 57 drawnumber dog 0 -15 900 dog=;
+#X text 42 243 - an optional label ("cat=" for instance);
+#X text 27 85 drawnumber takes arguments specifying:;
+#X text 42 191 - an (x \, y) pair giving relative coordinates \;;
+#X text 42 171 - the number to draw;
+#X text 44 24 "0" in inlet makes invisible;
+#X obj 25 27 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+;
+#X text 46 112 - optional "-n" flag to make invisible initially;
+#X text 44 133 - alternatively \, an optional "-v [variable]" flag
+to assign a variable to make this visible/invisible.;
+#X text 20 273 Any of these (except the two flags) can be numbers or
+field names \, like "dog" and "cat" here.;
+#X obj 13 397 struct help-drawnumber-template float x float y float
+cat float dog;
+#X connect 11 0 4 0;
+#X restore 273 44 pd help-drawnumber-template;
+#X obj 22 130 struct;
+#X text 275 159 updated for Pd version 0.39;

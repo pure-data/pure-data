@@ -1,0 +1,85 @@
+#N canvas 280 49 607 705 12;
+#X text 336 665 updated for Pd version 0.39;
+#X text 109 12 MORE ON MEASURING SPECTRA: HETERODYNING;
+#X obj 46 289 phasor~ 100;
+#X obj 99 343 phasor~;
+#X floatatom 99 320 5 0 999 0 - #0-freq -;
+#X obj 99 395 cos~;
+#X obj 148 395 cos~;
+#X obj 148 370 +~ 0.25;
+#X obj 47 547 snapshot~;
+#N canvas 536 459 382 265 startup 0;
+#X obj 22 24 loadbang;
+#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 22 67 f \$0;
+#X text 35 195 This subpatch loads initial;
+#X text 31 219 values in number boxes.;
+#X obj 223 132 metro 250;
+#X obj 223 107 r \$0-metro;
+#X obj 223 156 s \$0-tick;
+#X msg 22 91 \; \$1-freq 100 \; \$1-lop 2 \; \$1-metro 1 \; pd dsp
+1;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 8 0;
+#X connect 5 0 7 0;
+#X connect 6 0 5 0;
+#X restore 382 573 pd startup;
+#X obj 47 446 *~;
+#X obj 91 446 *~;
+#X obj 48 471 lop~;
+#X obj 92 471 lop~;
+#X floatatom 153 435 3 0 100 0 - #0-lop -;
+#X text 186 435 <-- responsiveness;
+#X obj 136 547 snapshot~;
+#X floatatom 47 575 5 0 0 0 - - -;
+#X floatatom 136 575 5 0 0 0 - - -;
+#X obj 161 496 r \$0-tick;
+#X obj 161 517 t b b;
+#X obj 47 643 expr sqrt($f1*$f1+$f2*$f2);
+#X floatatom 47 669 5 0 0 0 - - -;
+#X text 56 248 signal to;
+#X text 58 268 analyze;
+#X text 51 44 Another method for picking out the strengths of partials
+in a sound is heterodyning. We guess the frequency of a partial (as
+in the previous patch) but this time we multiply by a complex exponential
+to frequency-shift the partial down to zero (DC).;
+#X text 47 126 Then a low-pass filter (applied separately on the real
+and imaginary parts) removes all but the DC component thus obtained.
+The result is two audio signals (which we take snapshots of) holding
+the real and imaginary parts of the complex amplitude of the partial
+we want. Compared to the previous method \, this had the advantage
+of reporting the phase of the partial as well as its frequency.;
+#X text 240 358 modulate;
+#X text 237 394 to DC;
+#X text 154 321 <-- test frequency;
+#X text 236 376 test frequency;
+#X text 132 471 low-pass filter;
+#X text 55 596 real;
+#X text 59 611 part;
+#X text 207 589 part;
+#X text 198 574 imaginary;
+#X text 105 670 magnitude;
+#X connect 2 0 10 0;
+#X connect 2 0 11 0;
+#X connect 3 0 5 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 5 0 10 1;
+#X connect 6 0 11 1;
+#X connect 7 0 6 0;
+#X connect 8 0 17 0;
+#X connect 10 0 12 0;
+#X connect 11 0 13 0;
+#X connect 12 0 8 0;
+#X connect 13 0 16 0;
+#X connect 14 0 13 1;
+#X connect 14 0 12 1;
+#X connect 16 0 18 0;
+#X connect 17 0 21 0;
+#X connect 18 0 21 1;
+#X connect 19 0 20 0;
+#X connect 20 0 8 0;
+#X connect 20 1 16 0;
+#X connect 21 0 22 0;

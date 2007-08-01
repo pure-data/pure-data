@@ -1,0 +1,18 @@
+#N canvas 0 0 529 299 12;
+#X obj 112 128 bang~;
+#X obj 112 159 print;
+#X msg 210 223 \; pd dsp 1;
+#X msg 297 216 \; pd dsp 0;
+#X msg 210 144 bang;
+#X obj 19 20 bang~;
+#X obj 306 193 loadbang;
+#X obj 297 169 delay 100;
+#X text 211 122 click to test;
+#X text 71 21 - output bang after each DSP cycle;
+#X text 5 59 Bang~ outputs a bang after each DSP cycle (at the same logical time as the DSP cycle.) This is primarily useful for sampling the outputs of analysis algorithms.;
+#X text 251 266 updated for Pd version 0.33;
+#X connect 0 0 1 0;
+#X connect 4 0 2 0;
+#X connect 4 0 7 0;
+#X connect 6 0 3 0;
+#X connect 7 0 3 0;

@@ -1,0 +1,59 @@
+#N canvas 30 68 949 754 12;
+#X obj 67 77 osc~ 440;
+#X obj 67 329 dac~;
+#X obj 67 242 *~;
+#X obj 86 180 line~;
+#X text 116 330 <-- out;
+#X text 124 9 LINES GRAPHED;
+#X text 24 33 Here again is a line~ controlling the amplitude of an
+osc~ \, but with the outputs graphed:;
+#X obj 149 89 r graphit;
+#X obj 151 179 r graphit;
+#X obj 151 246 r graphit;
+#X obj 86 149 r to-line;
+#X graph graph1 0 -1.02 44100 1.02 631 480 831 350;
+#X array product 44100 float 0;
+#X pop;
+#X graph graph1 0 -1.02 44100 1.02 631 150 831 20;
+#X array osc-output 44100 float 0;
+#X pop;
+#X graph graph1 0 -1.02 44100 1.02 631 315 831 185;
+#X array line-output 44100 float 0;
+#X pop;
+#X obj 149 119 tabwrite~ osc-output;
+#X obj 67 299 *~ 0.1;
+#X msg 38 401 \; pd dsp 1 \; to-line 0 \, 1 500 \; graphit bang;
+#X msg 210 401 \; pd dsp 1 \; to-line 1 \, 0 500 \; graphit bang;
+#X obj 151 209 tabwrite~ line-output;
+#X obj 151 276 tabwrite~ product;
+#X text 70 379 ramp up;
+#X text 235 378 ramp down;
+#X text 406 376 to 1/2;
+#X msg 375 400 \; pd dsp 1 \; to-line 0.5 1000 \; graphit bang;
+#X text 634 491 ------ 1 second ------;
+#X text 38 485 Click the message boxes above to try it. Note that in
+the first two boxes \, the line~ objects get two messages. The first
+one \, with no time value \, causes the line~ to jump immediately to
+the value. The third box takes line~'s previous value as a point of
+departure. What you see will depend on which box you last clicked and
+how long you waited between the two.;
+#X text 662 727 updated for Pd version 0.33;
+#X text 41 600 On most machines \, you will hear an interruption in
+the sound one second after you click on the first or third box. This
+is because the graphical updates are likely to eat more CPU time than
+your audio buffer has pre-buffered for. You can avoid this if you keep
+your graphs in sub-windows and open them only when you need them. In
+some future version of Pd this behavior will be improved. Until then
+\, you'll have to avoid having arrays getting re-drawn during music
+performances.;
+#X connect 0 0 2 0;
+#X connect 0 0 14 0;
+#X connect 2 0 15 0;
+#X connect 2 0 19 0;
+#X connect 3 0 2 1;
+#X connect 3 0 18 0;
+#X connect 7 0 14 0;
+#X connect 8 0 18 0;
+#X connect 9 0 19 0;
+#X connect 10 0 3 0;
+#X connect 15 0 1 0;

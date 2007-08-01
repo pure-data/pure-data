@@ -1,0 +1,79 @@
+#N canvas 211 109 664 557 12;
+#X floatatom 104 172 0 0 0 0 - - -;
+#X obj 54 85 osc~ 100;
+#X msg 69 117 clear;
+#X obj 92 520 lop~;
+#X text 9 520 see also:;
+#X text 402 521 updated for Pd version-0.38;
+#X obj 100 459 rzero~;
+#X obj 35 483 cpole~;
+#X obj 35 459 rpole~;
+#X obj 164 459 rzero_rev~;
+#X obj 100 483 czero~;
+#X obj 164 483 czero_rev~;
+#X text 262 459 real;
+#X text 261 484 complex;
+#X text 33 438 1-pole;
+#X text 98 439 1-zero;
+#X text 162 438 1-zero \, reversed;
+#X text 57 420 summary of raw filters:;
+#X msg 71 143 set 1;
+#X text 125 143 <-- set internal state;
+#X text 134 86 <-- signal to filter;
+#X text 137 172 <-- filter coefficient (may be a signal);
+#X text 132 195 <-- creation argument initializes filter coefficient
+;
+#X text 124 116 <-- clear internal state to zero;
+#N canvas 393 91 326 287 test 0;
+#X obj 76 78 osc~;
+#X floatatom 76 55 5 0 0 0 - - -;
+#X obj 77 219 env~ 16384;
+#X floatatom 77 243 5 0 0 0 - - -;
+#X obj 104 107 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 76 105 *~;
+#X msg 97 137 set 1;
+#X floatatom 172 157 4 -100 100 0 - - -;
+#X obj 172 182 / 100;
+#X obj 214 256 dac~;
+#X obj 228 177 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 214 220 *~;
+#X obj 230 197 / 10;
+#X text 80 18 Stuff to test it:;
+#X obj 76 168 rzero~;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 4 0 5 1;
+#X connect 5 0 14 0;
+#X connect 6 0 14 0;
+#X connect 7 0 8 0;
+#X connect 8 0 14 1;
+#X connect 10 0 12 0;
+#X connect 11 0 9 0;
+#X connect 11 0 9 1;
+#X connect 12 0 11 1;
+#X connect 14 0 2 0;
+#X connect 14 0 11 0;
+#X restore 457 416 pd test;
+#X text 136 520 etc.: user-friendly filters;
+#X obj 52 7 rzero~;
+#X text 114 7 real one-zero (non-recursive) filter \, raw;
+#X text 8 35 Rzero~ filters an audio signal (left inlet) via a one-zero
+real filter \, whose coefficient is controlled by a creation argument
+or by an audio signal (right inlet).;
+#X obj 53 195 rzero~ 1;
+#X text 8 271 where y[n] is the output \, x[n] the input \, and a[n]
+the filter coefficient. The filter is always stable.;
+#X text 9 307 The transfer function is H(Z) = 1 - aZ^-1.;
+#X text 68 250 y[n] = x[n] - a[n] * x[n-1];
+#X text 7 330 (Pd also provides a suite of user-friendly filters. This
+and other raw filters are provided for situations which the user-friendly
+ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
+for an introduction to the necessary theory.);
+#X text 14 230 The action of rzero~ is:;
+#X connect 0 0 29 1;
+#X connect 1 0 29 0;
+#X connect 2 0 29 0;
+#X connect 18 0 29 0;

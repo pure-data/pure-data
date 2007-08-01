@@ -1,0 +1,16 @@
+#N canvas 195 155 575 293 12;
+#X obj 8 11 adc~;
+#X obj 72 11 dac~;
+#X obj 63 121 adc~ 5;
+#X text 143 121 (input from channel 5 only);
+#X obj 61 145 dac~ 1 2 5 23;
+#X text 184 145 (output to channels 1 \, 2 \, 5 \, and 23);
+#X text 16 173 The actual number of channels Pd inputs and outputs
+are set on Pd's command line. You can open patches that want to use
+more channels \, and channel numbers out of rance will be dropped (dac~)
+or appear as zero (adc~).;
+#X text 308 254 updated for Pd version 0.33;
+#X text 122 9 - audio I/O;
+#X text 8 46 Adc~ and dac~ provide real-time audio input and output
+for Pd \, respectively \, whether analog or digital. By default they
+are stereo but you can specify channel numbers as in:;

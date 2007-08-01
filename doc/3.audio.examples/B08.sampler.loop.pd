@@ -1,0 +1,64 @@
+#N canvas 143 17 992 621 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array tabread4-out 44100 float 0;
+#X coords 0 1.02 44100 -1.02 200 130 1;
+#X restore 632 200 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array table17 44103 float 0;
+#X coords 0 1.02 44103 -1.02 200 130 1;
+#X restore 631 14 graph;
+#X obj 568 496 loadbang;
+#X obj 65 277 tabwrite~ tabread4-out;
+#X obj 34 308 hip~ 5;
+#X floatatom 34 54 0 0 0 0 - - -;
+#X text 241 215 read from the table;
+#X text 49 11 LOOPING SAMPLER;
+#X text 83 54 <-- frequency (Hz.);
+#X floatatom 65 107 0 0 0 0 - - -;
+#X obj 65 133 * 441;
+#X obj 34 160 *~ 0;
+#X obj 34 187 +~ 1;
+#X text 110 248 <-- click to display output;
+#X obj 34 80 phasor~ 0;
+#X msg 65 245 bang;
+#X text 110 108 <-- chunk size (100ths of a second);
+#X obj 561 395 adc~ 1;
+#X msg 575 422 bang;
+#X text 615 423 <-- click here to record your own sample;
+#X text 678 501 v-- re-read the original sample;
+#X text 14 540 In this patch you will frequently hear discontinuities
+at the looping point. If you're working in a studio \, you can sometimes
+find "good" loop points for samples. Another approach \, better for
+live situations \, is shown in the next patch.;
+#X text 80 159 <-- readjust phase for range 0 - (chunk size);
+#X text 79 187 <-- add one to avoid beginning of table;
+#X obj 568 549 soundfiler;
+#X text 629 153 ---- 44103 samples ----;
+#X text 643 336 ---- 1 second ------;
+#X obj 34 335 output~;
+#X text 742 591 updated for Pd version 0.37;
+#X obj 34 216 tabread4~ table17;
+#X obj 562 455 tabwrite~ table17;
+#X msg 568 524 read ../sound/voice.wav table17;
+#X text 16 409 This is a looping sampler in which you specify the number
+of loops per second (the frequency) and the size of the chunk to loop.
+If the frequency is less than about 20 \, you will hear repetition
+and the chunk size will sound like transposition. For frequencies above
+50 or so \, you hear a tone whose timbre is controlled by the chunk
+size (best kept below 10 or so.) Remember you can use the "shift" key
+on number boxes to make fine adjustments.;
+#X connect 2 0 31 0;
+#X connect 4 0 27 0;
+#X connect 4 0 27 1;
+#X connect 5 0 14 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 1;
+#X connect 11 0 12 0;
+#X connect 12 0 29 0;
+#X connect 14 0 11 0;
+#X connect 15 0 3 0;
+#X connect 17 0 30 0;
+#X connect 18 0 30 0;
+#X connect 29 0 4 0;
+#X connect 29 0 3 0;
+#X connect 31 0 24 0;

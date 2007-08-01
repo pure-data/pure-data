@@ -1,0 +1,141 @@
+#N canvas 1 -8 631 456 12;
+#N canvas 0 0 600 400 (subpatch) 0;
+#X restore 23 13 pd;
+#X text 57 14 - subpatch;
+#X obj 180 13 inlet;
+#X text 238 12 - control inlet;
+#X obj 410 12 inlet~;
+#X text 480 12 - audio inlet;
+#X obj 180 41 outlet;
+#X text 238 43 - control outlet;
+#X obj 410 40 outlet~;
+#X text 480 40 - audio outlet;
+#X text 15 77 Type "pd" into an object box to make a subpatch. When
+in run mode you can click on the object to open the subpatch. You can
+name the subpatch with an argument:;
+#N canvas 156 300 518 221 my-subpatch 0;
+#X text 49 96 this is a subpatch for the "pd" help window.;
+#X restore 111 134 pd my-subpatch;
+#X text 19 161 and you can put inlets and outlets by making "inlet"
+objects \, etc \, in the subpatch (open the patch below to see them.)
+;
+#X obj 361 329 print~;
+#X obj 359 249 sig~ 12;
+#X floatatom 50 253 0 0 0 0 - - -;
+#X floatatom 50 305 0 0 0 0 - - -;
+#X text 388 306 (check that audio is on);
+#X text 20 232 messages in and out;
+#X text 329 226 audio in and out;
+#X text 20 426 see also:;
+#X obj 104 426 block~;
+#X obj 371 307 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 358 427 updated for Pd version 0.40.;
+#N canvas 60 123 618 466 up/downsampling 0;
+#X obj 29 395 print~;
+#X obj 47 369 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 152 397 print~;
+#X obj 170 371 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 276 395 print~;
+#X obj 294 369 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array \$0-tab 64 float 3;
+#A 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1 64 -1 200 140 1;
+#X restore 285 180 graph;
+#X obj 354 360 s \$0-tab;
+#X msg 353 333 const 0 \, 0 0 1;
+#X obj 176 243 print~;
+#X obj 176 218 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 24 191 tabreceive~ \$0-tab;
+#N canvas 81 269 585 267 test-subpatch-upsampled 0;
+#X obj 40 17 block~ 128 1 2;
+#X obj 209 149 inlet~ hold;
+#X obj 367 153 inlet~ lin;
+#X obj 23 146 inlet~;
+#X obj 23 202 print~;
+#X obj 41 176 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 209 209 print~;
+#X obj 227 183 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 366 213 print~;
+#X obj 383 187 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 42 49 Upsampling methods:;
+#X text 206 114 sample/hold;
+#X text 337 111 linear interpolation;
+#X text 16 114 interleaved zeros;
+#X connect 1 0 6 0;
+#X connect 2 0 8 0;
+#X connect 3 0 4 0;
+#X connect 5 0 4 0;
+#X connect 7 0 6 0;
+#X connect 9 0 8 0;
+#X restore 24 295 pd test-subpatch-upsampled;
+#N canvas 46 43 585 267 test-subpatch-downsampled 0;
+#X obj 23 146 outlet~;
+#X obj 209 149 outlet~ hold;
+#X obj 367 153 outlet~ lin;
+#X text 206 173 sample/hold;
+#X text 364 177 linear interpolation;
+#X text 197 19 upsampling methods:;
+#X obj 40 17 block~ 32 1 0.5;
+#X text 18 169 interleaved zeros;
+#X obj 21 83 tabreceive~ \$0-tab;
+#X connect 8 0 0 0;
+#X connect 8 0 1 0;
+#X connect 8 0 2 0;
+#X restore 28 339 pd test-subpatch-downsampled;
+#X text 50 11 When a subpatch is reblocked to a higher or lower sample
+rate \, the inlet~ and outlet~ objects offer a choice of three upsampling
+methods. (The inlet~ upsamples when entering a subpatch with a higher
+sample rate \; the outlet~ upsamples when leaving a subpatch of _lower_
+sample rate \, as demonstrated below.) There is no corresponding choice
+of downsampling method - downsampling is done simply by dropping the
+extra samples.;
+#X connect 1 0 0 0;
+#X connect 3 0 2 0;
+#X connect 5 0 4 0;
+#X connect 8 0 7 0;
+#X connect 10 0 9 0;
+#X connect 11 0 12 0;
+#X connect 11 0 12 1;
+#X connect 11 0 12 2;
+#X connect 11 0 9 0;
+#X connect 13 0 0 0;
+#X connect 13 1 2 0;
+#X connect 13 2 4 0;
+#X restore 20 370 pd up/downsampling;
+#N canvas 105 182 600 392 subpatch-with-inlets-and-outlets 0;
+#X obj 64 83 inlet;
+#X text 16 53 control inlet for receiving messages;
+#X floatatom 64 111 0 0 0 0 - - -;
+#X floatatom 67 212 0 0 0 0 - - -;
+#X obj 67 244 outlet;
+#X text 31 182 control outlet for sending message;
+#X obj 399 78 inlet~;
+#X obj 399 129 print~;
+#X msg 414 103 bang;
+#X obj 398 271 outlet~;
+#X obj 398 245 sig~ 34;
+#X text 392 32 same for;
+#X text 393 51 signals.;
+#X connect 0 0 2 0;
+#X connect 3 0 4 0;
+#X connect 6 0 7 0;
+#X connect 8 0 7 0;
+#X connect 10 0 9 0;
+#X restore 50 279 pd subpatch-with-inlets-and-outlets;
+#X text 193 368 <- here are some ugly details on;
+#X text 219 386 up/downsampling for inlet~ and outlet~;
+#X connect 14 0 25 1;
+#X connect 15 0 25 0;
+#X connect 22 0 13 0;
+#X connect 25 0 16 0;
+#X connect 25 1 13 0;

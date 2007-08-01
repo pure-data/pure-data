@@ -1,0 +1,107 @@
+#N canvas 55 137 777 467 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array pitchmod14 131 float 1;
+#A 0 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385
+0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.863077
+0.863077 0.863077 0.863077 0.863077 0.863077 0.863077 0.863077 0.863077
+0.863077 0.863077 0.863077 0.863077 0.863077 0.863077 0.863077 0.863077
+0.863077 0.863077 0.863077 0.863077 0.863077 0.831692 0.847385 0.847385
+0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385
+0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385
+0.847385 0.863077 0.847385 0.847385 0.847385 0.847385 0.847385 0.847385
+-0.800308 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.768923 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.768923 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.784615
+-0.784615 -0.784615 -0.784615 -0.784615 -0.784615 -0.800308 -0.800308
+-0.800308 -0.800308 -0.800308 -0.800308 -0.800308;
+#X coords 0 1.02 130 -1.02 258 130 1;
+#X restore 462 30 graph;
+#X floatatom 191 277 0 0 100 0 - - -;
+#N canvas 159 26 532 285 output 0;
+#X obj 338 160 t b;
+#X obj 338 110 f;
+#X obj 338 60 inlet;
+#X text 344 29 mute;
+#X obj 338 185 f;
+#X msg 426 180 0;
+#X msg 338 85 bang;
+#X obj 338 135 moses 1;
+#X obj 397 110 moses 1;
+#X obj 83 148 dbtorms;
+#X obj 397 85 r master-lvl;
+#X obj 83 42 r master-lvl;
+#X obj 338 210 s master-lvl;
+#X obj 20 155 inlet~;
+#X obj 199 41 inlet;
+#X text 199 18 level;
+#X obj 199 105 s master-lvl;
+#X msg 96 65 set \$1;
+#X obj 96 90 outlet;
+#X msg 214 65 \; pd dsp 1;
+#X obj 83 198 line~;
+#X obj 20 207 *~;
+#X obj 20 232 dac~;
+#X obj 83 173 pack 0 50;
+#X text 20 132 audio;
+#X text 96 114 show level;
+#X obj 426 155 t b;
+#X obj 20 181 hip~ 1;
+#X connect 0 0 4 0;
+#X connect 1 0 7 0;
+#X connect 2 0 6 0;
+#X connect 4 0 12 0;
+#X connect 5 0 12 0;
+#X connect 6 0 1 0;
+#X connect 7 0 0 0;
+#X connect 7 1 26 0;
+#X connect 8 1 4 1;
+#X connect 9 0 23 0;
+#X connect 10 0 1 1;
+#X connect 10 0 8 0;
+#X connect 11 0 9 0;
+#X connect 11 0 17 0;
+#X connect 13 0 27 0;
+#X connect 14 0 16 0;
+#X connect 14 0 19 0;
+#X connect 17 0 18 0;
+#X connect 20 0 21 1;
+#X connect 21 0 22 0;
+#X connect 21 0 22 1;
+#X connect 23 0 20 0;
+#X connect 26 0 5 0;
+#X connect 27 0 21 0;
+#X restore 153 305 pd output;
+#X msg 229 278 MUTE;
+#X floatatom 153 95 4 0 0 0 - - -;
+#X text 153 69 frequency;
+#X floatatom 195 206 4 0 0 0 - - -;
+#X text 155 50 modulation;
+#X obj 152 157 *~;
+#X text 255 150 modulation;
+#X text 253 169 depth;
+#X floatatom 201 157 4 0 0 0 - - -;
+#X obj 152 205 +~;
+#X text 250 212 frequency;
+#X obj 152 237 osc~;
+#X obj 153 122 tabosc4~ pitchmod14;
+#X text 254 194 carrier;
+#X text 33 8 FREQUENCY MODULATION BY WAVETABLE;
+#X text 47 356 This tabosc4~ controls the pitch of a sinusoidal oscillator
+(osc~). Try changing the waveform as well as the three familiar parameters.
+;
+#X text 520 438 updated for Pd version 0.37;
+#X connect 1 0 2 1;
+#X connect 2 0 1 0;
+#X connect 3 0 2 2;
+#X connect 4 0 15 0;
+#X connect 6 0 12 1;
+#X connect 8 0 12 0;
+#X connect 11 0 8 1;
+#X connect 12 0 14 0;
+#X connect 14 0 2 0;
+#X connect 15 0 8 0;

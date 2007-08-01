@@ -1,0 +1,36 @@
+#N canvas 0 0 644 422 12;
+#X obj 257 200 sig~;
+#X text 14 193 test signal;
+#X text 100 341 amp in (db);
+#X text 92 144 test frequency;
+#X text 224 340 amp out (db);
+#X text 246 144 center frequency;
+#X text 374 184 q;
+#X floatatom 122 168 5 0 0 0 - - -;
+#X floatatom 257 171 5 0 0 0 - - -;
+#X obj 122 193 osc~;
+#X floatatom 353 203 5 0 0 0 - - -;
+#X obj 122 291 env~ 8192;
+#X obj 220 290 env~ 8192;
+#X floatatom 121 318 5 0 0 0 - - -;
+#X floatatom 220 319 5 0 0 0 - - -;
+#X obj 80 13 vcf~;
+#X text 135 13 -- voltage-controlled bandpass filter;
+#X text 26 395 see also:;
+#X obj 115 394 bp~;
+#X text 302 394 updated for Pd version 0.35;
+#X text 12 45 vcf~ is like bp~ except that it takes an audio signal
+to set center frequency \, which may thus change continuously in time.
+The "Q" or filter sharpness is still only set by messages. More expensive
+than bp~ in CPU time but more powerful too.;
+#X obj 220 264 vcf~ 1;
+#X text 286 264 optional argument to initialize q;
+#X connect 0 0 21 1;
+#X connect 7 0 9 0;
+#X connect 8 0 0 0;
+#X connect 9 0 11 0;
+#X connect 9 0 21 0;
+#X connect 10 0 21 2;
+#X connect 11 0 13 0;
+#X connect 12 0 14 0;
+#X connect 21 0 12 0;

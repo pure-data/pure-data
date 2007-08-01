@@ -1,0 +1,55 @@
+#N canvas 8 0 659 487 12;
+#X floatatom 147 177 0 0 0;
+#X obj 147 151 + 1;
+#X msg 147 47 bang;
+#X obj 147 99 metro 500;
+#X msg 56 105 stop;
+#X obj 147 125 float;
+#X obj 147 73 trigger bang bang;
+#X msg 261 105 0;
+#X obj 56 79 select 10;
+#X text 305 102 first set value to zero;
+#X text 304 73 initialization is in two steps;
+#X text 305 121 (before starting the metronome);
+#X text 9 128 conditionally;
+#X text 9 145 stop the;
+#X text 10 159 metronome;
+#X text 184 46 <--- click here to start;
+#X floatatom 85 289 0 0 0;
+#X obj 85 315 >= 0;
+#X obj 85 341 select 0 1;
+#X obj 85 393 float;
+#X floatatom 139 420 0 0 0;
+#X msg 119 367 bang;
+#X obj 139 394 + 1;
+#X msg 85 367 -1;
+#X text 131 313 <-- are we nonnegative? (1 if true \, 0 if false);
+#X text 180 340 <-- selectively bang the first or second outlet;
+#X text 167 363 <-- as a result either clear or increment the counter
+;
+#X text 32 11 Here's a counter that counts from 1 to 10:;
+#X text 392 452 updated for Pd version 0.34;
+#X text 33 200 We're using one new object \, "select \, " which outputs
+a bang when it gets a matching value (10). This is useful for doing
+conditional computations \, such as this one which counts while its
+input is 0 or positive but clears when negative:;
+#X connect 1 0 0 0;
+#X connect 1 0 5 1;
+#X connect 1 0 8 0;
+#X connect 2 0 6 0;
+#X connect 3 0 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 1 0;
+#X connect 6 0 3 0;
+#X connect 6 1 7 0;
+#X connect 7 0 5 1;
+#X connect 8 0 4 0;
+#X connect 16 0 17 0;
+#X connect 17 0 18 0;
+#X connect 18 0 23 0;
+#X connect 18 1 21 0;
+#X connect 19 0 22 0;
+#X connect 21 0 19 0;
+#X connect 22 0 19 1;
+#X connect 22 0 20 0;
+#X connect 23 0 19 0;

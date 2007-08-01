@@ -1,0 +1,55 @@
+#N canvas 369 106 647 598 12;
+#X obj 56 79 osc~ 440;
+#X obj 56 309 dac~;
+#X msg 446 79 \; pd dsp 1;
+#X msg 538 79 \; pd dsp 0;
+#X text 467 112 ON;
+#X text 555 112 OFF;
+#X obj 56 269 *~;
+#X obj 72 243 line~;
+#X text 129 243 <--- ramp generator;
+#X text 132 78 <-- sine wave;
+#X msg 72 103 0.1 2000;
+#X msg 72 177 0 2000;
+#X msg 72 125 0.1 50;
+#X msg 72 199 0 50;
+#X msg 72 147 0.1;
+#X msg 72 221 0;
+#X text 274 124 ON;
+#X text 154 105 <-- slow;
+#X text 144 126 <-- fast;
+#X text 111 146 <-- instantly;
+#X text 271 197 OFF;
+#X text 136 178 <-- slow;
+#X text 129 199 <-- fast;
+#X text 109 219 <-- instantly;
+#X text 112 161 ----------------------;
+#X text 97 308 <-- out;
+#X text 103 7 CONTROLLING AMPLITUDE USING LINE~;
+#X text 38 342 Line~'s left inlet is a target value \; it reaches that
+target in the time specified (in milliseconds) to its right inlet.
+;
+#X text 34 495 The line~ object (and its control brother \, line) treat
+their right inlet specially. The inlets don't retain values the way
+other inlets do but revert to zero whenever a target is received.;
+#X text 14 27 In this patch \, the multiplier is configured to multiply
+two signals. The amplitude is now a signal computed by the line~ object.
+;
+#X text 37 395 (In this example \, message boxes with two numbers each
+are connected to line~'s left inlet. Except in some special cases \,
+Pd objects with more than one inlet will automatically distribute lists
+of numbers across their inlets. In this case \, "0 50" becomes \, "50
+at right and 0 at left.");
+#X text 386 557 updated for Pd version 0.36;
+#X text 93 268 <-- multiply the sine wave by the ramp. There's no longer
+a "0" argument-- this tells Pd to expect a signal here.;
+#X connect 0 0 6 0;
+#X connect 6 0 1 0;
+#X connect 6 0 1 1;
+#X connect 7 0 6 1;
+#X connect 10 0 7 0;
+#X connect 11 0 7 0;
+#X connect 12 0 7 0;
+#X connect 13 0 7 0;
+#X connect 14 0 7 0;
+#X connect 15 0 7 0;

@@ -1,0 +1,30 @@
+#N canvas 300 159 635 486 12;
+#X text 261 20 CONTROLLING OUTPUT AMPLITUDE;
+#X obj 32 27 osc~ 440;
+#X obj 54 55 osc~ 550;
+#X obj 54 116 osc~ 660;
+#X obj 32 88 +~;
+#X obj 32 142 +~;
+#X text 108 177 <-- this is a subwindow--right click on it;
+#X text 149 197 and select "open" to see inside.;
+#X text 30 401 The output control automatically starts DSP whenever
+you touch the level control. Hitting "mute" toggles between the current
+level and zero.;
+#X obj 32 173 output~;
+#X text 383 463 updated for Pd version 0.36;
+#X text 143 115 <-- Here we make an A major triad as a test signal.
+;
+#X text 31 250 In this and subsequent patches \, we'll use a subwindow
+\, "output" \, to control overall amplitude. The amplitudes are in
+decibels \, with 100 being full blast. In this example \, you can't
+actually push the output amplitude past 90 or so without clipping.
+You'll know you're clipping if \, instead of an A major chord \, you
+hear a single \, distorted tone two octaves down. The clipping happens
+at Pd's last stage of audio output. Audio signals internal to Pd have
+essentially no level limit.;
+#X connect 1 0 4 0;
+#X connect 2 0 4 1;
+#X connect 3 0 5 1;
+#X connect 4 0 5 0;
+#X connect 5 0 9 0;
+#X connect 5 0 9 1;

@@ -1,0 +1,67 @@
+#N canvas 59 252 1102 576 12;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array array1 77971 float 0;
+#X coords 0 1 77971 -1 300 100 1;
+#X restore 71 353 graph;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array array2 77971 float 0;
+#X coords 0 1 77971 -1 300 100 1;
+#X restore 71 459 graph;
+#X obj 11 313 soundfiler;
+#X msg 17 241 write -aiff /tmp/foo1 array2;
+#X msg 8 152 read ../sound/bell.aiff array2;
+#X msg 17 199 read -raw 128 2 2 b ../sound/bell.aiff array1 array2
+;
+#X text 26 10 SOUNDFILER - read and write soundfiles to arrays;
+#X text 548 3 When reading you can leave soundfiler to figure out which
+of the three known soundfile formats the file belongs to or override
+all header information using the "-raw" flag.;
+#X text 665 52 Flags for reading:;
+#X text 574 68 -skip <sample frames to skip in file>;
+#X floatatom 11 337 0 0 0 0 - - -;
+#X msg 15 175 read -resize ../sound/bell.aiff array2;
+#X msg 17 288 write -nextstep -bytes 4 /tmp/foo3 array1 array2;
+#X msg 16 265 write -wave -nframes 10000 /tmp/foo2 array2;
+#X text 287 150 read a file;
+#X text 362 173 ...optionally resize;
+#X text 225 217 ...or even overriding everything;
+#X text 283 240 write a file;
+#X text 352 309 write stereo;
+#X text 9 31 The soundfiler object reads and writes floating point
+arrays to binary soundfiles which may contain 2 or 3 byte fixed point
+or 4 byte floating point samples in wave \, aiff \, or next formats
+(no floating point aiff \, though.). The number of channels of the
+soundfile need not match the number of arrays given (extras are dropped
+and unsupplied channels are zeroed out.);
+#X text 575 123 -raw <headersize> <channels> <bytespersample> <endianness>
+;
+#X text 594 141 This causes all header information to be ignored. Endianness
+is "l" ("little") for Intel machines or "b" ("big") for Macintoshes
+and SGIs. You can give "n" (natural) to take the byte order your machine
+prefers.;
+#X text 575 86 -resize;
+#X text 575 104 -maxsize <maximum number of samples we can resize to>
+;
+#X text 560 206 Flags for writing:;
+#X text 578 227 -wave \, -nextstep \, -aiff;
+#X text 579 246 -big \, -little (nextstep only!);
+#X text 578 268 -skip <number of sample frames to skip in array>;
+#X text 579 290 -nframes <maximum number to write>;
+#X text 580 334 -normalize;
+#X text 579 312 -bytes <2 \, 3 \, or 4>;
+#X text 557 378 The number of channels is limited to 64;
+#X text 612 413 see also:;
+#X obj 606 436 tabwrite~;
+#X obj 607 460 tabread4~;
+#X obj 713 415 tabplay~;
+#X obj 711 464 writesf~;
+#X obj 712 441 readsf~;
+#X text 579 354 -rate <sample rate>;
+#X text 751 539 updated for Pd version 0.37;
+#X connect 2 0 10 0;
+#X connect 3 0 2 0;
+#X connect 4 0 2 0;
+#X connect 5 0 2 0;
+#X connect 11 0 2 0;
+#X connect 12 0 2 0;
+#X connect 13 0 2 0;

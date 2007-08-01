@@ -1,0 +1,39 @@
+#N canvas 47 52 722 449 12;
+#X text 460 422 updated for Pd version 0.26;
+#X text 35 28 Use the "random" object to make pseudo-random integers.
+To get continuously variable random numbers \, make a random number
+in a large range and divide:;
+#X obj 103 121 random 5;
+#X msg 103 95 bang;
+#X floatatom 103 147 0 0 0;
+#X text 137 147 outputs from 0 to 4;
+#X msg 337 87 bang;
+#X floatatom 336 165 0 0 0;
+#X obj 337 113 random 1000;
+#X obj 336 141 / 1000;
+#X text 402 166 from 0 to 0.999;
+#X obj 71 324 random 5;
+#X msg 162 255 bang;
+#X floatatom 71 350 0 0 0;
+#X obj 71 244 loadbang;
+#X obj 71 274 timer;
+#X text 204 255 <-- click to seed;
+#X msg 71 299 seed \$1;
+#X msg 163 299 bang;
+#X text 204 300 <-- click to get random numbers;
+#X text 24 382 If you give two randoms the same seed they give the
+same sequence. If you never seed them \, you'll get different sequences
+out of each one.;
+#X text 34 197 If you don't want the same behavior every time you run
+the patch \, use the time from load to first click as a seed:;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 6 0 8 0;
+#X connect 8 0 9 0;
+#X connect 9 0 7 0;
+#X connect 11 0 13 0;
+#X connect 12 0 15 1;
+#X connect 14 0 15 0;
+#X connect 15 0 17 0;
+#X connect 17 0 11 0;
+#X connect 18 0 11 0;

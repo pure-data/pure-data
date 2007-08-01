@@ -1,0 +1,11 @@
+#N canvas 0 0 335 239 10;
+#X obj 90 124 dspobj~;
+#X obj 90 96 sig~ 0;
+#X msg 106 149 bang;
+#X obj 90 177 print~;
+#X floatatom 89 71;
+#X msg 202 37 \; pd dsp 1;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 4 0 1 0;

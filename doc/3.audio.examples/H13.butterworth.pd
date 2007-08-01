@@ -1,0 +1,74 @@
+#N canvas 49 22 840 502 12;
+#N canvas 0 0 450 300 graph2 0;
+#X array \$0-tab1 100 float 1;
+#A 0 0.999974 0.998121 0.998981 1.00106 1.00019 1.00133 1.00017 0.997406
+0.995891 0.986251 0.976591 0.959539 0.93749 0.903172 0.859824 0.805118
+0.744756 0.682757 0.617726 0.555802 0.496807 0.443599 0.395099 0.351557
+0.313317 0.279982 0.250867 0.225225 0.202565 0.182842 0.165875 0.150662
+0.13708 0.125107 0.11452 0.105018 0.0965065 0.0887956 0.0819179 0.0757449
+0.0701302 0.0650313 0.0604129 0.056344 0.0525467 0.0490616 0.04589
+0.0429836 0.0403206 0.0378735 0.0355742 0.0334788 0.0315483 0.0297412
+0.0280809 0.0265134 0.0251207 0.0237881 0.0225431 0.0213794 0.0203074
+0.0192861 0.0183551 0.0174563 0.0166231 0.0158432 0.0151 0.0144158
+0.0137608 0.0131513 0.0125729 0.0120266 0.0115073 0.0110253 0.0105541
+0.0101301 0.00971218 0.0093198 0.00894806 0.00859575 0.00825236 0.00794149
+0.00763651 0.00734779 0.00707258 0.0068092 0.00656191 0.0063171 0.00609739
+0.00587868 0.0056713 0.00547262 0.00528366 0.00509866 0.00493017 0.00476291
+0.00460384 0.00445121 0.00430475 0.00416536;
+#X coords 0 5 99 0 200 300 1;
+#X restore 615 71 graph;
+#X obj 32 250 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X floatatom 40 294 3 0 0 0 - - -;
+#X text 670 377 frequency;
+#N canvas 876 177 375 255 startup 0;
+#X obj 22 24 loadbang;
+#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 22 67 f \$0;
+#X text 35 195 This subpatch loads initial;
+#X text 31 219 values in number boxes.;
+#X msg 22 91 \; \$1-lf 80 \; \$1-hf 150 \;;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X restore 324 431 pd startup;
+#X text 553 359 gain=0;
+#X obj 32 446 filter-graph2 \$0-tab1;
+#X text 593 60 5;
+#X text 610 370 0;
+#X text 598 301 1;
+#X text 575 435 updated for Pd version 0.39;
+#X text 186 -4 BUTTERWORTH FILTER;
+#X obj 216 398 butterworth3~;
+#X floatatom 244 340 3 0 100 0 - #0-lf -;
+#X floatatom 291 339 3 85 150 0 - #0-hf -;
+#X obj 244 366 mtof;
+#X obj 291 366 mtof;
+#X text 790 373 5000;
+#X obj 32 271 filter-graph1 100 5000;
+#X text 232 318 poles;
+#X text 288 318 zeros;
+#X text 24 20 The butterworth filter can be configured for low-pass
+\, high-pass \, and shelving \, depending on the placement of the poles
+and zeros. For low-pass \, the poles are placed to set the cutoff frequency
+and the zeros are at -1 (the Nyquist). Leaving the poles fixed and
+moving the zeros then gives shelving filters. In this example \, the
+actual filtering is relegated to an abstraction (butterworth3~) which
+takes frequencies corresponding to the pole and zero placement.;
+#X text 24 147 The butterworth3~ abstraction computes filter coeffients
+using control messages \, and so it is not suitable for continuously
+time-varying Butterworth filters. For that \, it is often appropriate
+to use time-saving approximations \, but precisely which approximations
+to use will depend on the way the filter is to be used.;
+#X connect 1 0 18 0;
+#X connect 12 0 6 3;
+#X connect 13 0 15 0;
+#X connect 14 0 16 0;
+#X connect 15 0 12 1;
+#X connect 16 0 12 2;
+#X connect 18 0 2 0;
+#X connect 18 0 6 0;
+#X connect 18 1 6 1;
+#X connect 18 1 12 0;
+#X connect 18 2 6 2;

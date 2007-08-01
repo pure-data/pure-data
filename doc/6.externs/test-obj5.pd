@@ -1,0 +1,4 @@
+#N canvas 128 288 310 157 12;
+#X obj 15 74 obj5 1 2 3 cis boom bah;
+#X msg 15 30 rats 4 5 6 tara tara boum boum;
+#X connect 1 0 0 0;

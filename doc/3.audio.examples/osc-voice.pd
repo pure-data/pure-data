@@ -1,0 +1,89 @@
+#N canvas 153 209 946 576 12;
+#X obj 163 390 line~;
+#X obj 401 438 line~;
+#X obj 163 511 *~;
+#X obj 383 229 r \$1;
+#X obj 363 316 dbtorms;
+#X obj 383 281 unpack;
+#X obj 383 255 t l b;
+#X obj 401 412 pack;
+#X obj 447 283 30;
+#X obj 163 286 unpack;
+#X obj 163 260 r \$2;
+#X obj 163 470 osc~;
+#X obj 163 312 mtof;
+#X obj 363 342 sqrt;
+#X obj 363 368 sqrt;
+#X obj 163 338 sqrt;
+#X obj 163 364 sqrt;
+#X obj 163 418 *~;
+#X obj 163 444 *~;
+#X obj 401 464 *~;
+#X obj 400 492 *~;
+#X obj 96 486 inlet~;
+#X obj 96 538 outlet~;
+#X obj 96 512 +~;
+#X floatatom 293 342 0 0 0;
+#X msg 294 316 set \$1;
+#X obj 294 368 s \$1;
+#X floatatom 96 336 0 0 0;
+#X msg 96 310 set \$1;
+#X obj 96 362 s \$2;
+#X text 370 201 amplitude;
+#X text 157 233 pitch;
+#X text 27 36 The amplitude and pitch are controlled by quartic envelopes
+as in the previous example. Here we introduce two new features. First
+\, there are number boxes to show the most recent targets for amplitude
+and frequency \, which you can also use to change the values. Also
+\, if amplitude gets a message without an explicit time value \, we
+supply a default of "30".;
+#X text 27 149 Other small differences from the previous patch: pitch
+and amplitude are now in MIDI and dB \, and there's a summing bus arrangement
+(the inlet~ \, +~ \, and outlet~).;
+#X text 15 295 see or;
+#X text 16 315 change;
+#X text 16 336 pitch-->;
+#X text 233 325 and;
+#X text 233 342 amp-->;
+#X text 488 283 "30" is short for "float 30." This is;
+#X text 495 302 more CPU efficient than a message.;
+#X text 451 403 The "pack" always gets a 30 \, but if you send a pair
+of numbers to amplitude \, the second one overrides the 30;
+#X text 439 254 first bang the "30" \, then pass the list on;
+#X text 62 7 This abstraction is used in patch 68.qlist.pd.;
+#X connect 0 0 17 0;
+#X connect 0 0 17 1;
+#X connect 1 0 19 0;
+#X connect 1 0 19 1;
+#X connect 2 0 23 1;
+#X connect 3 0 6 0;
+#X connect 4 0 13 0;
+#X connect 5 0 4 0;
+#X connect 5 0 25 0;
+#X connect 5 1 7 1;
+#X connect 6 0 5 0;
+#X connect 6 1 8 0;
+#X connect 7 0 1 0;
+#X connect 8 0 7 1;
+#X connect 9 0 12 0;
+#X connect 9 0 28 0;
+#X connect 9 1 0 1;
+#X connect 10 0 9 0;
+#X connect 11 0 2 0;
+#X connect 12 0 15 0;
+#X connect 13 0 14 0;
+#X connect 14 0 7 0;
+#X connect 15 0 16 0;
+#X connect 16 0 0 0;
+#X connect 17 0 18 0;
+#X connect 17 0 18 1;
+#X connect 18 0 11 0;
+#X connect 19 0 20 0;
+#X connect 19 0 20 1;
+#X connect 20 0 2 1;
+#X connect 21 0 23 0;
+#X connect 23 0 22 0;
+#X connect 24 0 26 0;
+#X connect 25 0 24 0;
+#X connect 27 0 29 0;
+#X connect 28 0 27 0;

@@ -1,0 +1,26 @@
+#N canvas 103 177 645 448 12;
+#X declare;
+#X obj 48 10 declare;
+#X text 120 11 - set environment for loading patch;
+#X text 376 406 updated for Pd version 0.4;
+#X text 44 40 A declare object adds one or more directories to the
+search path \, and/or pre-loads one or more libraries ("extensions")
+to Pd in preparation for opening the patch from a file. Usage is "declare
+[-flag value] [-flag value] ..." where the flag can be:;
+#X text 31 182 -lib;
+#X text 31 198 -stdlib;
+#X text 31 146 -path;
+#X text 31 162 -stdpath;
+#X text 129 146 add to search path \, relative to the patch;
+#X text 129 163 add to search path \, relative to the Pd;
+#X text 129 182 load a library \, relative to the patch;
+#X text 129 199 load a library \, relative to Pd;
+#X text 40 231 (for any of these you may use a full pathname such as
+"/tmp/dir" or \, in Windows \, "C:/garbage" instead of a relative path).
+;
+#X text 39 293 For instance \, if you put abstractions and/or other
+supporting files in a subdirectory "more" \, you can put an object
+\, "declare -path more" to make sure Pd sees them when the patch is
+loaded. Or \, if you have zexy installed in the directory extra/zexy
+(in the Pd installation") you can get it using "declare -stdpath extra/zexy".
+;

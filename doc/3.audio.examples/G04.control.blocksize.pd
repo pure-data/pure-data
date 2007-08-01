@@ -1,0 +1,79 @@
+#N canvas 100 17 637 513 12;
+#N canvas 195 311 647 354 delay-writer 0;
+#X obj 86 220 inlet~;
+#X obj 86 326 outlet~;
+#X obj 392 197 block~ 1;
+#X obj 164 267 *~ 0.99;
+#X obj 87 272 +~;
+#X obj 165 221 inlet;
+#X text 80 7 Because of the feedback \, the delwrite~ has to be computed
+after the delread~. So we set the blocksize to 1 to minimize the resulting
+delay.;
+#X text 390 219 this object sets the;
+#X text 389 236 block size for audio;
+#X text 388 255 computations in this;
+#X obj 165 244 delread~ G04-del;
+#X obj 98 302 delwrite~ G04-del 1000;
+#X text 79 183 incoming;
+#X text 81 198 pulses;
+#X text 165 182 delay;
+#X text 166 197 time;
+#X text 388 273 window. Must be a;
+#X text 388 292 power of two.;
+#X text 77 60 The smaller the blocksize the more expensive the computations
+are \, so don't reduce it lower than you have to. Also \, it's a good
+idea to isolate the portion of the patch that requires the smaller
+block size \, and only run that portion that way. Here \, the pulses
+that excite the delay line are computed outside this window \, and
+the output level control as well.;
+#X connect 0 0 4 0;
+#X connect 3 0 4 1;
+#X connect 4 0 1 0;
+#X connect 4 0 11 0;
+#X connect 5 0 10 0;
+#X connect 10 0 3 0;
+#X restore 153 420 pd delay-writer;
+#X obj 283 384 expr 1000/$f1;
+#X obj 283 358 mtof;
+#X msg 153 355 1;
+#X msg 192 355 0;
+#X obj 153 254 metro 500;
+#X obj 283 304 random 60;
+#X obj 153 228 loadbang;
+#X obj 283 330 + 30;
+#X text 86 9 CONTROLLING DELAY WITH BLOCK~;
+#X text 299 420 <-- here is the delay loop;
+#X text 63 43 In situations where a delay read feeds back to a delay
+write \, the minimum possible delay you can achieve is one block \,
+which by default is 64 samples \, or 1.45 msec at 44100 Hz. You can
+shorten the minimum delay by changing the block size. Do this in a
+subpatch (open it to see how).;
+#X obj 153 449 output~;
+#X obj 153 387 vline~;
+#X text 371 487 updated for Pd version 0.37-1;
+#X text 61 124 Here we use this principle to make a harpisichord-like
+sound by sending pulses into a recirculating delay line (which imitates
+the travel of the wave up and down the harpsichord string.) This is
+related to Karplus-Strong synthesis \, but the idea is probably much
+older than their paper.;
+#X text 33 328 this makes;
+#X text 32 346 a rectangular;
+#X text 31 384 long.;
+#X text 409 366 length of delay line is;
+#X text 410 384 1000/(frequency);
+#X obj 192 329 del 1;
+#X text 32 364 pulse 1 msec;
+#X connect 0 0 12 0;
+#X connect 0 0 12 1;
+#X connect 1 0 0 1;
+#X connect 2 0 1 0;
+#X connect 3 0 13 0;
+#X connect 4 0 13 0;
+#X connect 5 0 3 0;
+#X connect 5 0 6 0;
+#X connect 5 0 21 0;
+#X connect 6 0 8 0;
+#X connect 7 0 5 0;
+#X connect 8 0 2 0;
+#X connect 13 0 0 0;
+#X connect 21 0 4 0;

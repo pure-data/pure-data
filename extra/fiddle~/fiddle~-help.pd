@@ -1,0 +1,142 @@
+#N canvas 93 26 980 745 10;
+#X obj 262 522 phasor~;
+#X obj 531 616 unpack;
+#X floatatom 531 666 0 0 0 0 - - -;
+#X msg 437 449 print;
+#X obj 262 500 sig~;
+#X floatatom 262 478 0 0 0 0 - - -;
+#X obj 262 456 mtof;
+#X floatatom 262 434 0 0 0 0 - - -;
+#X floatatom 545 643 0 0 0 0 - - -;
+#X obj 531 576 route 1 2 3 4;
+#X obj 614 616 unpack;
+#X floatatom 614 666 0 0 0 0 - - -;
+#X floatatom 628 643 0 0 0 0 - - -;
+#X obj 698 616 unpack;
+#X floatatom 698 666 0 0 0 0 - - -;
+#X floatatom 712 643 0 0 0 0 - - -;
+#X obj 389 616 unpack;
+#X floatatom 389 666 0 0 0 0 - - -;
+#X floatatom 403 643 0 0 0 0 - - -;
+#X obj 334 545 *~;
+#X obj 322 394 loadbang;
+#X obj 353 522 sig~;
+#X floatatom 353 500 0 0 0 0 - - -;
+#X msg 322 478 1;
+#X msg 353 478 0;
+#X floatatom 466 666 0 0 0 0 - - -;
+#X obj 281 666 print attack;
+#X obj 190 666 print pitch;
+#X msg 555 45 \; pd dsp 1;
+#X text 460 39 click here;
+#X text 460 61 to start DSP;
+#X text 226 4 FIDDLE - pitch estimator and sinusoidal peak finder;
+#X text 8 70 The Fiddle object estimates the pitch and amplitude of
+an incoming sound \, both continuously and as a stream of discrete
+"note" events. Fiddle optionally outputs a list of detected sinusoidal
+peaks used to make the pitch determination. Fiddle is described theoretically
+in the 1998 ICMC proceedings \, reprinted on http://man104nfs.ucsd.edu/~mpuckett.
+;
+#X text 8 170 Fiddle's creation arguments specify an analysis window
+size \, the maximum polyphony (i.e. \, the number of simultaneous "pitches"
+to try to find) \, the number of peaks in the spectrum to consider
+\, and the number of peaks \, if any \, to output "raw." The outlets
+give discrete pitch (a number) \, detected attacks in the amplitude
+envelope (a bang) \, one or more voices of continuous pitch and amplitude
+\, overall amplitude \, and optionally a sequence of messages with
+the peaks.;
+#X text 8 296 The analysis hop size is half the window size so in the
+example shown here \, one analysis is done every 512 samples (11.6
+msec at 44K1) \, and the analysis uses the most recent 1024 samples
+(23.2 msec at 44K1). The minimum frequency that Fiddle will report
+is 2-1/2 cycles per analysis windows \, or about 108 Hz. (just below
+MIDI 45.);
+#X text 669 535 number of pitch outlets (1-3 \, default 1);
+#X text 669 557 number of peaks to find (1-100 \, default 20);
+#X text 669 579 number of peaks to output (default 0.);
+#X msg 441 107 amp-range 40 50;
+#X msg 439 227 reattack 100 10;
+#X msg 438 282 npartial 7;
+#X msg 438 170 vibrato 50 0.5;
+#X text 560 91 a low and high amplitude threshold: if signal amplitude
+is below the low threshold \, no pitches or peaks are output. The high
+threshold is a minimum at which "cooked" outputs may appear.;
+#X text 560 152 A period in milliseconds (50) over which the raw pitch
+may not deviate more than an interval in half-tones (0.5) from the
+average pitch to report it as a note to the "cooked" pitch outlet.
+;
+#X text 560 213 A period in milliseconds (100) over which a re-attack
+is reported if the amplitude rises more than (1) dB. The re-attack
+will result in a "bang" in the attack outlet and may give rise to repeated
+notes in the cooked pitch output.;
+#X text 142 432 test input pitch;
+#X text 330 444 test input;
+#X text 330 457 amplitude;
+#X obj 410 545 fiddle~ 1024 1 20 3;
+#X text 538 690 individual sinusoidal components;
+#X text 466 688 amplitude;
+#X text 476 703 (dB);
+#X text 389 688 raw pitch;
+#X text 376 712 and amplitude;
+#X text 364 729 (up to 3 outputs);
+#X text 287 686 bang on;
+#X text 287 708 attack;
+#X text 185 686 cooked pitch;
+#X text 202 703 output;
+#X text 545 545 ------ arguments:;
+#X msg 262 412 57;
+#X msg 440 331 auto 1;
+#X msg 440 353 auto 0;
+#X msg 439 418 bang;
+#X text 561 416 poll current values --- useful if not in auto mode
+\,;
+#X text 560 274 Higher partials are weighed less strongly than lower
+ones in determining the pitch. This specifies the number of the partial
+(7) which will be weighted half as strongly as the fundamental.;
+#X text 560 335 start and stop "auto" mode (on by default.) If off
+\, output only appears on "bang" (poll mode).;
+#X text 561 448 print out all settings;
+#X text 669 513 window size (128-2048 \, default 1024);
+#X msg 440 375 npoints 2048;
+#X text 562 384 number of points in analysis window (power of 2 \,
+128-2048);
+#X msg 439 396 npoints 1024;
+#X connect 0 0 19 0;
+#X connect 1 0 2 0;
+#X connect 1 1 8 0;
+#X connect 3 0 48 0;
+#X connect 4 0 0 0;
+#X connect 5 0 4 0;
+#X connect 6 0 5 0;
+#X connect 7 0 6 0;
+#X connect 9 0 1 0;
+#X connect 9 1 10 0;
+#X connect 9 2 13 0;
+#X connect 10 0 11 0;
+#X connect 10 1 12 0;
+#X connect 13 0 14 0;
+#X connect 13 1 15 0;
+#X connect 16 0 17 0;
+#X connect 16 1 18 0;
+#X connect 19 0 48 0;
+#X connect 20 0 60 0;
+#X connect 20 0 23 0;
+#X connect 21 0 19 1;
+#X connect 22 0 21 0;
+#X connect 23 0 22 0;
+#X connect 24 0 22 0;
+#X connect 38 0 48 0;
+#X connect 39 0 48 0;
+#X connect 40 0 48 0;
+#X connect 41 0 48 0;
+#X connect 48 0 27 0;
+#X connect 48 1 26 0;
+#X connect 48 2 16 0;
+#X connect 48 3 25 0;
+#X connect 48 4 9 0;
+#X connect 60 0 7 0;
+#X connect 61 0 48 0;
+#X connect 62 0 48 0;
+#X connect 63 0 48 0;
+#X connect 69 0 48 0;
+#X connect 71 0 48 0;

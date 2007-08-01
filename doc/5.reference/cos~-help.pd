@@ -1,0 +1,34 @@
+#N canvas 190 40 698 331 12;
+#X obj 112 12 cos~;
+#X obj 23 200 cos~;
+#X obj 23 249 snapshot~;
+#X obj 23 152 sig~;
+#X floatatom 23 275 7 0 0 0 - - -;
+#X obj 23 125 * 0.01;
+#X floatatom 23 98 0 0 0 0 - - -;
+#X obj 90 215 metro 500;
+#X obj 90 189 r metro;
+#X msg 469 157 \; metro 0;
+#X msg 450 103 \; pd dsp 1 \; metro 1;
+#X text 159 13 - COSINE WAVESHAPER;
+#X text 86 125 Divide by 100;
+#X text 71 153 convert to audio;
+#X text 78 100 <-- Scroll to set input value;
+#X text 97 275 <-- output of the cos~ object;
+#X text 83 305 see also:;
+#X obj 171 307 osc~;
+#X obj 215 307 tabread4~;
+#X text 537 118 <-Click to start;
+#X text 538 163 <-Click to stop;
+#X text 13 41 The cos~ object outputs the cosine of two pi times its
+signal input. So -1 \, 0 \, 1 and 2 give 1 out \, 0.5 gives -1 \, and
+so on.;
+#X text 411 298 updated for Pd version 0.41;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 0 4 0;
+#X connect 3 0 1 0;
+#X connect 5 0 3 0;
+#X connect 6 0 5 0;
+#X connect 7 0 2 0;
+#X connect 8 0 7 0;

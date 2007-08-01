@@ -1,0 +1,15 @@
+#N canvas 349 65 615 247 12;
+#X msg 102 52 walk the dog;
+#X msg 29 51 bang;
+#X msg 70 51 234;
+#X obj 29 96 print x1;
+#X obj 21 10 print;
+#X text 29 130 Print prints out the messages it receives on the "terminal
+window" that Pd is run from.;
+#X text 73 10 -- print messages to terminal window;
+#X text 309 221 updated for Pd version 0.40.;
+#X text 27 167 Long symbol arguments are truncated to 78 characters
+and marked with "*" (but message selectors are printed in full.);
+#X connect 0 0 3 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 0;

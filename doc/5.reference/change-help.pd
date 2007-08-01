@@ -1,0 +1,23 @@
+#N canvas 376 130 540 355 12;
+#X msg 67 124 bang;
+#X floatatom 67 266 0 0 0;
+#X floatatom 79 154 0 0 0;
+#X floatatom 104 182 0 0 0;
+#X text 284 309 updated for Pd version 0.27;
+#X text 173 239 creation argument initializes first value;
+#X obj 66 15 change;
+#X text 114 16 - ELIMINATE REDUNDANCY IN A NUMBER STEAM;
+#X text 12 42 The change object outputs its input only when it changes.
+You can "set" the current value \, or bang to force output.;
+#X obj 67 240 change 6.5;
+#X msg 105 211 set \$1;
+#X text 136 183 set the value;
+#X text 112 123 output current value;
+#X text 110 154 if different from current value \, output and set;
+#X obj 67 293 print;
+#X connect 0 0 9 0;
+#X connect 1 0 14 0;
+#X connect 2 0 9 0;
+#X connect 3 0 10 0;
+#X connect 9 0 1 0;
+#X connect 10 0 9 0;

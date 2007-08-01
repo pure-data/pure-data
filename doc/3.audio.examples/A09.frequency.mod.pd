@@ -1,0 +1,54 @@
+#N canvas 92 96 760 640 12;
+#X obj 259 168 *~;
+#X floatatom 259 83 0 0 0 0 - - -;
+#X floatatom 169 118 0 0 0 0 - - -;
+#X obj 169 188 +~;
+#N canvas 0 0 450 300 graph1 0;
+#X array fm-output 441 float 0;
+#X coords 0 1.02 440 -1.02 200 130 1;
+#X restore 527 40 graph;
+#X msg 244 228 bang;
+#X text 286 228 <-- click to graph;
+#X obj 244 252 tabwrite~ fm-output;
+#X floatatom 281 138 0 0 0 0 - - -;
+#X text 166 75 carrier;
+#X text 165 93 frequency;
+#X text 244 59 frequency;
+#X text 245 42 modulation;
+#X text 33 8 FREQUENCY MODULATION ("FM") USING TWO OSCILLATORS;
+#X obj 168 232 osc~;
+#X text 52 214 "carrier";
+#X text 34 232 oscillator -->;
+#X text 47 149 add modulator;
+#X text 46 167 to carrier;
+#X text 44 186 frequency -->;
+#X text 320 150 index;
+#X text 322 131 modulation;
+#X obj 259 108 osc~;
+#X text 531 172 --- 0.01 seconds ----;
+#X text 53 443 To get the FM sound \, set all three of carrier frequency
+\, modulation frequency \, and modulation index in the hundreds. Note
+that you get a timbral change as you sweep modulation index \, because
+this changes the amplitudes of the components of the output sound but
+not their frequencies.;
+#X obj 167 270 output~;
+#X text 489 613 updated for Pd version 0.37;
+#X text 54 332 This patch shows the classical FM synthesis technique
+developed by John Chowning. It's nothing but an oscillator with vibrato
+controlled by another "modulation" oscillator. First \, to understand
+the patch \, set carrier frequency to 400 or so \, modulation frequency
+between 5 and 10 \, and try modulation index values between 0 and 400
+\, say. You'll hear a sine wave with vibrato.;
+#X text 55 526 The component frequencies are equal to the carrier frequency
+\, plus or minus multiples of the modulator frequency. A more complete
+discussion of FM occurs in part 5 of this series.;
+#X connect 0 0 3 1;
+#X connect 1 0 22 0;
+#X connect 2 0 3 0;
+#X connect 3 0 14 0;
+#X connect 5 0 7 0;
+#X connect 8 0 0 1;
+#X connect 14 0 7 0;
+#X connect 14 0 25 0;
+#X connect 14 0 25 1;
+#X connect 22 0 0 0;

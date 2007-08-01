@@ -1,0 +1,40 @@
+#N canvas 22 7 857 377 12;
+#X text 85 158 frequency;
+#X floatatom 16 173 0 0 0;
+#X obj 16 120 * 44100;
+#X floatatom 16 94 0 0 0;
+#X text 88 92 frequency;
+#X text 91 111 in bins;
+#X text 85 175 in Hz.;
+#X obj 17 238 rfft~;
+#X obj 16 148 / 64;
+#X obj 653 14 loadbang;
+#X msg 653 40 \; pd dsp 1;
+#X text 599 339 updated for Pd version 0.33;
+#X msg 103 260 bang;
+#X text 154 261 <-- print analysis;
+#X obj 36 16 framp~;
+#X text 119 15 - estimate frequency and amplitude of FFT components
+;
+#X obj 16 270 framp~;
+#X obj 103 322 print~ frequency;
+#X obj 118 297 print~ amplitude;
+#X obj 16 204 osc~;
+#X text 324 98 Framp~ takes as input a rectangular-windowed FFT and
+outputs \, for each FFT channel \, the estimated amplitude and frequency
+of any component feedinf that channel. A sinusoidal component should
+appear in four components (or three in the special case of a sinusoid
+exactly tuned to a bin.) Frequency output is in bins \, i.e. \, units
+of SR/N.;
+#X connect 1 0 19 0;
+#X connect 2 0 8 0;
+#X connect 3 0 2 0;
+#X connect 7 0 16 0;
+#X connect 7 1 16 1;
+#X connect 8 0 1 0;
+#X connect 9 0 10 0;
+#X connect 12 0 17 0;
+#X connect 12 0 18 0;
+#X connect 16 0 17 0;
+#X connect 16 1 18 0;
+#X connect 19 0 7 0;

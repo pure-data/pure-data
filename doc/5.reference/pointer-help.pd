@@ -1,0 +1,79 @@
+#N struct template2 float x float y;
+#N struct template1 float x float y float z;
+#N canvas 223 0 715 654 12;
+#X text 20 572 see also:;
+#X obj 21 10 pointer;
+#X text 95 10 -- remember the location of a scalar in a list;
+#N canvas 164 72 425 146 help-pointer-template1 0;
+#X obj 18 81 filledpolygon z 0 1 0 0 20 0 20 30 0 30;
+#X obj 60 21 struct template1 float x float y float z;
+#X restore 327 386 pd help-pointer-template1;
+#N canvas 26 456 510 145 help-pointer-template2 0;
+#X obj 52 78 filledcurve 909 0 0 0 0 30 30 60 0 30 -30 0 0;
+#X obj 60 21 struct template2 float x float y;
+#X restore 327 409 pd help-pointer-template2;
+#X obj 23 592 get;
+#X obj 56 592 set;
+#X obj 91 592 append;
+#X obj 152 592 getsize;
+#X obj 220 593 setsize;
+#X obj 290 593 element;
+#X obj 23 617 sublist;
+#N canvas 0 0 312 185 help-pointer-data 1;
+#X scalar template2 20 97 \;;
+#X scalar template1 80 17 90 \;;
+#X scalar template1 120 117 9 \;;
+#X restore 327 364 pd help-pointer-data;
+#X obj 54 360 pointer;
+#X msg 54 231 traverse pd-help-pointer-data;
+#X msg 67 255 bang;
+#X text 109 256 outputs current value;
+#X msg 69 281 next;
+#X obj 54 385 print out1;
+#X obj 167 371 print out2;
+#X text 119 274 moves forward one item and outputs pointer \; if we
+reach the end \, a "bang" goes to out2.;
+#X text 16 426 Optional arguments to pointer allow you to select according
+to the class of the scalar being output:;
+#X msg 74 487 next;
+#X msg 60 464 traverse pd-help-pointer-data;
+#X obj 60 515 pointer help-pointer-template1 help-pointer-template2
+;
+#X obj 60 541 print template1;
+#X obj 198 541 print template2;
+#X obj 338 541 print other;
+#X obj 441 541 print bangout;
+#X text 333 232 sets to the "head" of the list;
+#X text 29 34 "Pointer" is a storage object like "float" \, except
+that the thing stored is the location of a scalar somewhere. You can
+send a pointer a value (perhaps from another "pointer" object). The
+right inlet takes pointers and simply stores them. A bang in the left
+outputs the pointer \, and a pointer in the left both sets and outputs
+the value.;
+#X text 29 132 The value of a pointer can either indicate a real scalar
+\, or else the "head" (before the first element) of the list. This
+allows you to point to an empty list \, and also \, to "append" a scalar
+to the beginning of the list.;
+#X text 29 191 Pointers are "safe": if you delete a scalar pointers
+to it are marked invalid.;
+#X text 166 391 bang at end;
+#X text 167 407 of list;
+#X text 53 405 output;
+#X text 445 617 updated for Pd version 0.35;
+#X obj 92 616 struct;
+#X msg 71 307 vnext 1;
+#X text 149 308 "vnext" gets the next object (if arg is 0) or the next
+selected object (if arg is 1 -- but the window must be visible for
+the "selection" to make sense).;
+#X connect 13 0 18 0;
+#X connect 13 1 19 0;
+#X connect 14 0 13 0;
+#X connect 15 0 13 0;
+#X connect 17 0 13 0;
+#X connect 22 0 24 0;
+#X connect 23 0 24 0;
+#X connect 24 0 25 0;
+#X connect 24 1 26 0;
+#X connect 24 2 27 0;
+#X connect 24 3 28 0;
+#X connect 38 0 13 0;

@@ -1,0 +1,42 @@
+#N canvas 40 23 609 630 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array adsr-output 44100 float 0;
+#X coords 0 1.02 44100 -1.02 200 130 1;
+#X restore 121 332 graph;
+#X text 121 464 ------ 1 second ------;
+#X obj 18 92 r trigger;
+#X obj 34 168 tabwrite~ adsr-output;
+#X obj 56 143 r graphit;
+#X msg 261 89 bang;
+#X text 305 90 <-- attack and delayed release;
+#X obj 272 113 del 500;
+#X text 376 196 <-- attack only;
+#X msg 261 177 \; pd dsp 1 \; trigger 1 \; graphit bang;
+#X text 377 273 <-- release only;
+#X msg 260 247 \; pd dsp 1 \; trigger 0 \; graphit bang;
+#X msg 272 138 \; trigger 0;
+#X text 324 452 -1;
+#X text 326 327 1;
+#X text 12 27 This patch introduces a simple "adsr" abstraction we'll
+use frequently. You can click on the "adsr" object to see what's inside.
+;
+#X text 16 516 The active ingredient of the ADSR envelope generator
+is a single line~ which gets passed messages to make the attack and
+release behavior. You can retrigger the ADSR envelope generator all
+you wish without having to wait for attacks or releases to finish;
+#X text 104 5 ENVELOPE GENERATOR ABSTRACTION;
+#X obj 18 118 adsr 1 100 200 50 300;
+#X text 356 601 updated for Pd version 0.37;
+#X obj 36 195 osc~ 440;
+#X obj 17 220 *~;
+#X obj 16 249 output~;
+#X connect 2 0 18 0;
+#X connect 4 0 3 0;
+#X connect 5 0 9 0;
+#X connect 5 0 7 0;
+#X connect 7 0 12 0;
+#X connect 18 0 3 0;
+#X connect 18 0 21 0;
+#X connect 20 0 21 1;
+#X connect 21 0 22 0;
+#X connect 21 0 22 1;

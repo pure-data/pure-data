@@ -1,0 +1,9 @@
+This is the second of three tutorial series on Pd.  This one shows the
+time-domain audio processing features.  (The first one showed how to use Pd to
+do "control" computations, and the third is about frequency-domain techniques.)
+
+These patches are accompanied by an ONLINE BOOK:
+
+    http://www.crca.ucsd.edu/~msp/techniques.htm
+
+which develops the underlying theory.

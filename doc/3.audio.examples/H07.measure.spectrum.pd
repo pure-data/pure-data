@@ -1,0 +1,88 @@
+#N canvas 407 54 626 729 12;
+#X floatatom 145 654 5 0 0 0 - - -;
+#X obj 44 565 bp~;
+#X obj 44 536 bp~;
+#X obj 55 467 mtof;
+#X floatatom 55 490 7 0 0 0 - - -;
+#X floatatom 98 520 3 0 999 0 - #0-q -;
+#X floatatom 55 447 7 0 150 0 - #0-pitch -;
+#X obj 145 586 env~ 4096;
+#X obj 45 370 *~ 0;
+#X obj 44 395 +~ 1;
+#X obj 145 608 + 0.5;
+#X obj 145 631 int;
+#X text 12 41 In this example we use two cascaded bandpass filters
+to troll for partials in Jonathan Harvey's famous bell sample.;
+#X text 16 233 You can hear partials around 48 \, 51.3 \, 55 (faint!)
+\, 57 (fainter!) \, 60 \, two beating partials around 65 \, 67 \, 69
+\, 70.9 \, 71.75 \, 72.6 \, 74 \, 74.65 \, 75.6 \, 77 \, 81.2 \, 84.6
+\, 86.5 \, and probably many more. There's also one down at 36 \, but
+it's easier to see it on the meter than hear it.;
+#X text 124 447 <-- center pitch;
+#X text 120 463 (shift-drag to fine tune);
+#X text 131 491 <-- center frequency;
+#X text 138 520 <-- Q (filter selectivity);
+#X obj 44 614 output~;
+#X text 341 680 updated for Pd version 0.39;
+#X text 14 82 Note that filters can give unexpected level changes.
+The bp~ object is designed to have roughly unit gain at the pass band
+\, so the higher you set "Q" the more amplitude is lost. You can correct
+for this by pushing the output amplitude \, but be sure to remember
+to reset the output amplitude before you reduce Q again. I set the
+Q to 100 and the output amplitude to 110 or 120 (with the room gain
+way down.) Then holding the shift key \, slowly drag the center pitch
+upward listening for modes.;
+#N canvas 316 21 483 471 startup 0;
+#X obj 53 335 r readfile;
+#X obj 53 388 soundfiler;
+#X obj 59 23 loadbang;
+#X obj 59 49 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 59 70 f \$0;
+#X obj 60 271 /;
+#X msg 60 248 44100;
+#X obj 60 223 t b f;
+#X obj 60 199 r \$0-totsamps;
+#X obj 60 294 s \$0-loopf;
+#X msg 59 102 \; readfile symbol \$1-array \; \$1-totsamps 143718 \;
+\$1-pitch 69 \; \$1-q 0;
+#X msg 53 361 read -resize ../sound/bell.aiff \$1;
+#X connect 0 0 11 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 10 0;
+#X connect 5 0 9 0;
+#X connect 6 0 5 0;
+#X connect 7 0 6 0;
+#X connect 7 1 5 1;
+#X connect 8 0 7 0;
+#X connect 11 0 1 0;
+#X restore 456 625 pd startup;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-array 155948 float 0;
+#X coords 0 1 155947 -1 200 150 1;
+#X restore 396 322 graph;
+#X obj 45 322 r \$0-loopf;
+#X obj 45 346 phasor~;
+#X obj 44 419 tabread4~ \$0-array;
+#X obj 89 370 r \$0-totsamps;
+#X text 109 12 MEASURING SPECTRA USING BANDPASS FILTERS;
+#X connect 1 0 7 0;
+#X connect 1 0 18 0;
+#X connect 1 0 18 1;
+#X connect 2 0 1 0;
+#X connect 3 0 4 0;
+#X connect 4 0 2 1;
+#X connect 4 0 1 1;
+#X connect 5 0 2 2;
+#X connect 5 0 1 2;
+#X connect 6 0 3 0;
+#X connect 7 0 10 0;
+#X connect 8 0 9 0;
+#X connect 9 0 25 0;
+#X connect 10 0 11 0;
+#X connect 11 0 0 0;
+#X connect 23 0 24 0;
+#X connect 24 0 8 0;
+#X connect 25 0 2 0;
+#X connect 26 0 8 1;

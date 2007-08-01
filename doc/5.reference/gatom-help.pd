@@ -1,0 +1,32 @@
+#N canvas 138 65 675 508 12;
+#X floatatom 107 9 0 0 0;
+#X text 155 10 atoms (number boxes);
+#X floatatom 38 85 0 0 0;
+#X floatatom 38 125 0 0 0;
+#X msg 51 260 set 45;
+#X floatatom 51 288 0 0 0;
+#X floatatom 51 317 0 0 0;
+#X text 84 40 Number boxes allow you to display numbers or to enter
+numbers using the mouse and keyboard. When a number arrives at the
+number box's inlet \, it is displayed and sent to the outlet. You can
+click on a number box and drag upward or downward to change the value
+continuously.;
+#X text 88 130 You can shift-click and drag to change the number by
+hundredths instead of units. Alt clicking toggles the value between
+0 and the last nonzero value.;
+#X text 83 184 You can also type in values by clicking and typing a
+number followed by "enter.";
+#X text 30 220 the "set" message sets the number box's value but does
+not send it to the outlet.;
+#X text 423 482 updated for Pd version 0.34;
+#X text 39 339 You can set the width of the box by right-clicking and
+choosing "properties." By default the width is 5 characters. If you
+select a width of 0 \, the number box will grow as needed to hold the
+number--BUT BEWARE \, THIS IS EXPENSIVE IN CPU TIME. In a production
+patch \, you'll want to set a specific width.;
+#X floatatom 547 439 1 0 0;
+#X text 41 438 A width of one gives a clickable toggle switch ala Max:
+;
+#X connect 2 0 3 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;

@@ -1,0 +1,47 @@
+#N canvas 233 179 667 449 12;
+#X obj 16 182 osc-voice amp1 pit1;
+#X obj 16 206 osc-voice amp2 pit2;
+#X obj 16 230 osc-voice amp3 pit3;
+#X obj 16 254 osc-voice amp4 pit4;
+#X obj 16 278 osc-voice amp5 pit5;
+#X obj 16 302 osc-voice amp6 pit6;
+#X obj 16 326 osc-voice amp7 pit7;
+#X obj 16 350 osc-voice amp8 pit8;
+#X obj 464 343 qlist;
+#X msg 394 185 stop;
+#X msg 524 300 read qlist.txt;
+#X obj 524 255 loadbang;
+#X text 258 164 start;
+#X text 395 161 stop;
+#X text 534 279 reread file;
+#X msg 467 199 rewind;
+#X msg 535 199 next;
+#X msg 251 212 tempo 100 \, bang;
+#X msg 250 188 tempo 1 \, bang;
+#X text 82 11 USING QLIST TO SEQUENCE AN OSCILLATOR BANK;
+#X text 479 178 single step;
+#X obj 532 392 r #;
+#X text 28 49 Here is an eight voice additive synthesis patch controlled
+by a qlist. Open a text editor on the file \, "qlist.txt" \, to see
+how the oscillators' amplitudes and frequencies are specified. The
+abstraction \, "osc-voice" \, shows an effective way to make patches
+react to qlists but also to mousing.;
+#X text 234 391 this is where qlist comments go:;
+#X obj 16 380 output~;
+#X text 394 423 updatged for Pd version 0.39;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 24 0;
+#X connect 7 0 24 1;
+#X connect 9 0 8 0;
+#X connect 10 0 8 0;
+#X connect 11 0 10 0;
+#X connect 15 0 8 0;
+#X connect 16 0 8 0;
+#X connect 17 0 8 0;
+#X connect 18 0 8 0;

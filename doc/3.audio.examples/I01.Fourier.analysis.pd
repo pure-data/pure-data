@@ -1,0 +1,90 @@
+#N canvas 25 8 688 708 12;
+#X floatatom 38 264 7 0 0 0 - - -;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-real 64 float 2;
+#X coords 0 64 64 -64 256 200 1;
+#X restore 423 184 graph;
+#X floatatom 38 168 5 0 32 0 - - -;
+#X obj 78 240 samplerate~;
+#X obj 38 215 t f b;
+#X obj 38 240 *;
+#X obj 80 568 metro 250;
+#X obj 38 637 tabwrite~ \$0-real;
+#X obj 67 614 tabwrite~ \$0-imaginary;
+#X obj 38 384 osc~;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-imaginary 64 float 2;
+#X coords 0 64 64 -64 256 200 1;
+#X restore 423 417 graph;
+#X obj 69 360 f;
+#X floatatom 91 316 3 0 100 0 - - -;
+#X obj 91 337 / 100;
+#X obj 38 191 / 64;
+#X text 504 163 real part;
+#X text 489 398 imaginary part;
+#X obj 80 545 loadbang;
+#X text 94 166 <- frequency;
+#X text 133 182 (as multiple;
+#X text 135 198 of SR/64 \, the;
+#X text 133 215 fundamental);
+#X text 170 345 of a cycle;
+#X text 431 638 updated for PD version 0.39;
+#X obj 89 590 s \$0-snap;
+#X obj 69 286 r \$0-snap;
+#X text 127 315 <- phase in;
+#X text 161 331 hundredths;
+#X text 113 264 <- frequency \, Hz.;
+#X text 87 415 given the real and imaginary part;
+#X text 88 431 of a complex-valued signal. Here;
+#X text 87 447 the imaginary part is zero (the;
+#X text 86 400 fft~ computes the Fourier transform \,;
+#X text 186 541 real and imaginary;
+#X text 186 557 outputs are graphed;
+#X text 185 574 separately.;
+#X text 86 464 input is real-valued). The output;
+#X text 85 482 is a (real \, imaginary) pair for each;
+#X text 86 500 frequency from 0 to 63 (in units of;
+#X text 87 520 SR/64).;
+#X text 145 -36 The "fft~" object has separate inlets for the real
+and imaginary parts of a complex-valued signal and outputs its Fourier
+transform \, again using separate outlets for the real and imaginary
+part. The transform is done on one block of samples (here the block
+size is 64 \, Pd's default.) The outputs give the complex amplitudes
+of the harmonics of the input signal \, from DC up. The harmonics are
+tuned to the fundamental frequency of the analysis \, 1/64th of the
+sample rate. If the frequency (in harmonics) is an integer \, the result
+is two harmonics symmetric about the Nyquist frequency. Fractional
+frequencies spill across harmonics. Changing the initial phase rotates
+energy from real to imaginary and back.;
+#X text 26 -24 ANALYSIS;
+#X text 27 -42 FOURIER;
+#X msg 38 79 0;
+#X msg 38 100 10;
+#X msg 38 121 10.5;
+#X text 159 283 bang-on-snapshot;
+#X text 157 297 from below;
+#X text 100 363 sync phase with snapshots;
+#X obj 37 423 fft~;
+#X msg 274 614 \; pd dsp 1;
+#X connect 0 0 9 0;
+#X connect 2 0 14 0;
+#X connect 3 0 5 1;
+#X connect 4 0 5 0;
+#X connect 4 1 3 0;
+#X connect 5 0 0 0;
+#X connect 6 0 7 0;
+#X connect 6 0 8 0;
+#X connect 6 0 24 0;
+#X connect 9 0 49 0;
+#X connect 11 0 9 1;
+#X connect 12 0 13 0;
+#X connect 13 0 11 1;
+#X connect 14 0 4 0;
+#X connect 17 0 6 0;
+#X connect 17 0 50 0;
+#X connect 25 0 11 0;
+#X connect 43 0 2 0;
+#X connect 44 0 2 0;
+#X connect 45 0 2 0;
+#X connect 49 0 7 0;
+#X connect 49 1 8 0;

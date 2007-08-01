@@ -1,0 +1,27 @@
+#N canvas 24 192 606 297 12;
+#X floatatom 38 223 0 0 0;
+#X floatatom 191 221 0 0 0;
+#X text 356 264 updated for Pd version 0.34;
+#X text 32 14 You can use dollarsigns in abstractions to get local
+sends and receives as shown here.;
+#X obj 29 85 dollarsign one;
+#X obj 167 86 dollarsign two;
+#X obj 38 196 r one-a;
+#X obj 191 194 r two-a;
+#X floatatom 110 225 0 0 0;
+#X floatatom 264 220 0 0 0;
+#X obj 110 197 r one-b;
+#X obj 264 191 r two-b;
+#X text 26 112 Open both copies to see what's happening...;
+#X floatatom 29 59 0 0 0;
+#X floatatom 124 58 0 0 0;
+#X floatatom 167 60 0 0 0;
+#X floatatom 264 58 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 1 0;
+#X connect 10 0 8 0;
+#X connect 11 0 9 0;
+#X connect 13 0 4 0;
+#X connect 14 0 4 1;
+#X connect 15 0 5 0;
+#X connect 16 0 5 1;

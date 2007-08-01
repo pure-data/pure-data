@@ -1,0 +1,24 @@
+#N canvas 118 224 600 492 12;
+#X obj 66 95 inlet~;
+#X obj 130 96 inlet~;
+#X obj 68 216 outlet~;
+#X obj 141 215 outlet~;
+#X obj 67 143 +~;
+#X obj 140 141 -~;
+#X obj 141 165 delwrite~ \$1 \$2;
+#X obj 140 191 delread~ \$1 \$2;
+#X text 48 14 This appears as an abstraction in patch G08.reverb.pd
+;
+#X text 27 267 This network makes two copies of the (stereo) input
+\, one in phase \, the other out of phase and delayed. The total frequency
+response is flat. The total signal power out is exactly twice that
+of the input \, no matter what freqiencies the input contains. This
+is used to increase echo density \, by stacking several of these units
+with different delay times. Each stage doubles the echo density.;
+#X connect 0 0 4 0;
+#X connect 0 0 5 0;
+#X connect 1 0 4 1;
+#X connect 1 0 5 1;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X connect 7 0 3 0;

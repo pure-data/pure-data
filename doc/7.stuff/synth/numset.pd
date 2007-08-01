@@ -1,0 +1,27 @@
+#N canvas 672 25 448 396 10;
+#X obj 11 240 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 0 0 10
+-262144 -1 -1 0 256;
+#X obj 11 262 outlet;
+#X obj 78 267 s \$1-out;
+#X obj 189 49 r \$1-in;
+#X obj 191 130 r \$2-in;
+#X obj 191 177 route \$1 -record-;
+#X obj 191 205 f;
+#X obj 245 289 pack s 0;
+#X obj 248 203 b;
+#X obj 245 340 s \$2-out;
+#X msg 245 315 add list \$1 \$2;
+#X obj 248 228 symbol \$1-in;
+#X connect 0 0 1 0;
+#X connect 0 0 2 0;
+#X connect 0 0 7 1;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 5 1 8 0;
+#X connect 6 0 0 0;
+#X connect 7 0 10 0;
+#X connect 8 0 11 0;
+#X connect 10 0 9 0;
+#X connect 11 0 7 0;
+#X coords 0 0 1 1 80 24 1;

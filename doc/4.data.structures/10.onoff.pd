@@ -1,0 +1,51 @@
+#N struct template10 float x float y float a float b float c float
+w;
+#N canvas 322 90 571 381 12;
+#X text 315 344 updated for Pd version 0.39;
+#N canvas 36 348 577 459 template10 1;
+#X obj 63 327 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 63 349 t b b;
+#X obj 242 408 pointer;
+#X msg 92 377 traverse pd-data10 \, bang;
+#X obj 33 203 drawpolygon 0 1 20 20 20 -20 -20 -20 -20 20 20 20;
+#X obj 33 111 drawcurve -v b 900 2 a(0:100)(0:100) 0 a(0:100)(0:71)
+a(0:100)(0:71) 0 a(0:100)(0:100) a(0:100)(0:-71) a(0:100)(0:71) a(0:100)(0:-100)
+0 a(0:100)(0:-71) a(0:100)(0:-71) 0 a(0:100)(0:-100) a(0:100)(0:71)
+a(0:100)(0:-71) a(0:100)(0:100) 0;
+#X obj 33 274 drawnumber b -10 -30 0;
+#X text 71 86 "circle" of radius a \, visible when b != 0;
+#X obj 63 433 append template10 x y a b;
+#X msg 61 409 50 50 10 1;
+#X obj 24 19 struct template10 float x float y float a float b;
+#X text 23 50 Template demonstrating turning a drawing instruction
+on and off.;
+#X obj 33 231 loadbang;
+#X obj 33 254 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X text 63 252 <- show/hide this drawing instruction;
+#X connect 0 0 1 0;
+#X connect 1 0 9 0;
+#X connect 1 1 3 0;
+#X connect 2 0 8 4;
+#X connect 3 0 2 0;
+#X connect 9 0 8 0;
+#X connect 12 0 13 0;
+#X connect 13 0 6 0;
+#X restore 22 236 pd template10;
+#N canvas 210 14 324 294 data10 1;
+#X scalar template10 92 193 15 1 40 0 \;;
+#X scalar template10 180 161 15 0 40 0 \;;
+#X coords 0 294 1 293 0 0 0;
+#X restore 23 269 pd data10;
+#X text 25 13 Drawing instructions can be dynamically turned on and
+off \, either globally for all data of a given template \, or locally
+according to a data field. In this example the "drawcurve" instruction's
+arguments contain the leading flag "-v b" meaning that its visibility
+is turned on and off by the field b.;
+#X text 25 111 To turn a drawing instruction on and off globally \,
+send a number to its inlet. By default drawing instructions are initially
+visible \, unless given the "-n" flag.;
+#X text 21 169 Arrays have the additional possibility of turning on
+and off drawing instructions for their individual points as scalars.
+Use "-vs z" to make the variable z control this.;

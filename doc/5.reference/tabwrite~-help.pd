@@ -1,0 +1,40 @@
+#N canvas 159 22 645 442 12;
+#X obj 12 12 tabwrite~;
+#X msg 47 210 bang;
+#X obj 28 318 tabwrite~ array99;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array array99 1000 float 0;
+#X coords 0 1 999 -1 200 100 1;
+#X restore 414 207 graph;
+#X text 190 318 creation argument initializes array name;
+#X msg 45 288 set array99;
+#X msg 555 13 \; pd dsp 1;
+#X msg 555 51 \; pd dsp 0;
+#X text 23 353 see also the "array" tutorial in section 2 of the Pd
+documentation \, and these objects:;
+#X obj 107 389 tabread;
+#X obj 174 389 tabwrite;
+#X obj 250 389 tabsend~;
+#X obj 327 389 tabreceive~;
+#X obj 22 389 tabread4~;
+#X msg 48 260 stop;
+#X text 153 261 stop recording;
+#X msg 47 236 start 500;
+#X text 147 236 start in middle of table;
+#X text 370 420 updated for Pd version 0.40.;
+#X text 104 12 - write a signal in an array;
+#X obj 27 187 phasor~ 200;
+#X text 148 209 start recording;
+#X text 149 286 set destination array;
+#X text 16 44 Tabwrite~ records an audio signal sequentially into an
+array. Sending it "bang" writes from beginning to end of the array.
+To avoid writing all the way to the end \, you can send a "stop message
+at an appropriate later time. The "start" message allows skipping a
+number of samples at the nbeginning. (Starting and stopping occur on
+block boundaries \, typically multiples of 64 samples \, in the input
+signal.);
+#X connect 1 0 2 0;
+#X connect 5 0 2 0;
+#X connect 14 0 2 0;
+#X connect 16 0 2 0;
+#X connect 20 0 2 0;

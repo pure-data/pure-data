@@ -1,0 +1,80 @@
+#N canvas 0 0 815 537 12;
+#X obj 183 213 print x1;
+#X obj 261 213 print x2;
+#X obj 339 213 print x3;
+#X obj 422 213 print x4;
+#X obj 183 185 route 23 54 1;
+#X msg 183 155 234 345 456;
+#X msg 308 155 23 34 45;
+#X msg 414 155 54 43;
+#X msg 485 155 1 foo bar;
+#X msg 254 247 impeach ringo starr;
+#X obj 191 275 route big apple;
+#X msg 435 248 apple pie;
+#X msg 191 247 1 2 3;
+#X msg 523 248 big apple pie;
+#X msg 578 155 walk the dog;
+#X text 45 33 Route checks the first element of a message against each
+of its arguments \, which may be numbers or symbols (but not a mixture
+of the two.);
+#X text 44 85 If a match is found \, the rest of the message appears
+on the corresponding outlet. If no match \, the message is repeated
+to the last "rejection" outlet. The number of outlets is the number
+of arguments plus one.;
+#X text 19 185 numeric arguments:;
+#X text 17 275 symbolic arguments:;
+#X obj 157 489 print z1;
+#X obj 233 489 print z2;
+#X msg 124 424 bang;
+#X msg 170 424 list;
+#X msg 213 424 5;
+#X msg 251 424 float 5;
+#X msg 320 424 list 5;
+#X msg 385 424 symbol pie;
+#X msg 560 424 pie;
+#X msg 483 424 list pie;
+#X msg 70 424 1 2 3;
+#X obj 157 461 route list float symbol bang;
+#X obj 310 489 print z3;
+#X obj 387 489 print z4;
+#X obj 461 489 print z5;
+#X obj 191 305 print y1;
+#X obj 269 305 print y2;
+#X obj 347 305 print y3;
+#X text 76 344 To avoid confusion between \, say \, the number 5 and
+the list contining only the number 5 \, both messages match "float"
+\, and ditto for symbols. An empty list matches "bang". In Pd these
+are all considered special cases of lists.;
+#X text 545 506 updated for Pd version 0.35;
+#X text 97 9 - route messages according to their first element;
+#X obj 43 8 route;
+#X connect 4 0 0 0;
+#X connect 4 1 1 0;
+#X connect 4 2 2 0;
+#X connect 4 3 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 4 0;
+#X connect 7 0 4 0;
+#X connect 8 0 4 0;
+#X connect 9 0 10 0;
+#X connect 10 0 34 0;
+#X connect 10 1 35 0;
+#X connect 10 2 36 0;
+#X connect 11 0 10 0;
+#X connect 12 0 10 0;
+#X connect 13 0 10 0;
+#X connect 14 0 4 0;
+#X connect 21 0 30 0;
+#X connect 22 0 30 0;
+#X connect 23 0 30 0;
+#X connect 24 0 30 0;
+#X connect 25 0 30 0;
+#X connect 26 0 30 0;
+#X connect 27 0 30 0;
+#X connect 28 0 30 0;
+#X connect 29 0 30 0;
+#X connect 30 0 19 0;
+#X connect 30 1 20 0;
+#X connect 30 2 31 0;
+#X connect 30 3 32 0;
+#X connect 30 4 33 0;

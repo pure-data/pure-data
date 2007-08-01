@@ -1,0 +1,81 @@
+#N canvas 35 42 813 458 12;
+#X obj 158 118 mtof~;
+#X obj 158 174 snapshot~;
+#X obj 698 132 metro 100;
+#X floatatom 158 205 0 0 0;
+#X obj 49 174 snapshot~;
+#X floatatom 49 55 0 0 0;
+#X floatatom 49 205 0 0 0;
+#X obj 49 118 ftom~;
+#X obj 264 174 snapshot~;
+#X floatatom 264 205 0 0 0;
+#X obj 264 118 dbtorms~;
+#X obj 697 58 loadbang;
+#X msg 709 88 \; pd dsp 1;
+#X obj 49 86 sig~;
+#X floatatom 158 55 0 0 0;
+#X obj 158 86 sig~;
+#X floatatom 264 54 0 0 0;
+#X obj 264 86 sig~;
+#X obj 492 172 snapshot~;
+#X floatatom 492 203 0 0 0;
+#X obj 383 172 snapshot~;
+#X floatatom 383 53 0 0 0;
+#X floatatom 383 203 0 0 0;
+#X obj 607 172 snapshot~;
+#X floatatom 607 203 0 0 0;
+#X obj 383 84 sig~;
+#X floatatom 492 53 0 0 0;
+#X obj 492 84 sig~;
+#X floatatom 607 53 0 0 0;
+#X obj 607 84 sig~;
+#X obj 383 115 rmstodb~;
+#X obj 492 115 dbtopow~;
+#X obj 607 115 powtodb~;
+#X obj 17 10 mtof~;
+#X text 70 11 (etc) - conversions for audio signals;
+#X text 60 400 see also:;
+#X obj 145 400 mtof;
+#X text 192 400 (etc.);
+#X text 547 416 updated for Pd version 0.33;
+#X text 43 241 These objects convert MIDI pitch to frequency and back
+\, and dB to and from RMS and power. THey take audio signals as input
+and output (and work sample by sample.) Since they call library math
+functions \, they may be much more expensive than other workaday tilde
+objects such as *~ and osc~ \, depending on your hardware and math
+library.;
+#X text 41 343 Boundary conditions are handled "reasonably". 100 db
+is assigned an RMS of 1 \, and dbtorms~ and dbtopow~ output true zero
+for 0 dB and less.;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 2 0 1 0;
+#X connect 2 0 8 0;
+#X connect 2 0 4 0;
+#X connect 2 0 20 0;
+#X connect 2 0 18 0;
+#X connect 2 0 23 0;
+#X connect 4 0 6 0;
+#X connect 5 0 13 0;
+#X connect 7 0 4 0;
+#X connect 8 0 9 0;
+#X connect 10 0 8 0;
+#X connect 11 0 2 0;
+#X connect 11 0 12 0;
+#X connect 13 0 7 0;
+#X connect 14 0 15 0;
+#X connect 15 0 0 0;
+#X connect 16 0 17 0;
+#X connect 17 0 10 0;
+#X connect 18 0 19 0;
+#X connect 20 0 22 0;
+#X connect 21 0 25 0;
+#X connect 23 0 24 0;
+#X connect 25 0 30 0;
+#X connect 26 0 27 0;
+#X connect 27 0 31 0;
+#X connect 28 0 29 0;
+#X connect 29 0 32 0;
+#X connect 30 0 20 0;
+#X connect 31 0 18 0;
+#X connect 32 0 23 0;

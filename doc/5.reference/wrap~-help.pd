@@ -1,0 +1,26 @@
+#N canvas 182 132 703 319 12;
+#X obj 58 220 metro 500;
+#X obj 58 195 r metro;
+#X msg 575 106 \; metro 0;
+#X msg 574 48 \; pd dsp 1 \; metro 1;
+#X floatatom 42 121 0 0 0;
+#X floatatom 42 277 0 0 0;
+#X text 443 271 updated for Pd version 0.33;
+#X obj 574 21 loadbang;
+#X obj 42 244 snapshot~;
+#X obj 42 147 sig~;
+#X obj 36 16 wrap~;
+#X text 93 16 - remainder modulo 1;
+#X text 18 45 wrap~ gives the difference between the input and the
+largest integer not exceeding it (for positive numbers this is the
+fractional part).;
+#X obj 42 171 wrap~;
+#X text 127 123 <-- shift-drag here to get non-integers to try;
+#X connect 0 0 8 0;
+#X connect 1 0 0 0;
+#X connect 1 0 0 0;
+#X connect 4 0 9 0;
+#X connect 7 0 3 0;
+#X connect 8 0 5 0;
+#X connect 9 0 13 0;
+#X connect 13 0 8 0;

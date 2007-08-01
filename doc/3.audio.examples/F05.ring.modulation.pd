@@ -1,0 +1,160 @@
+#N canvas 83 89 793 595 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array F05-signal 882 float 0;
+#X coords 0 1 882 -1 200 130 1;
+#X restore 554 218 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array F05-spectrum 256 float 0;
+#X coords 0 0.51 255 -0.008 256 130 1;
+#X restore 499 22 graph;
+#X text 552 349 ---- 0.02 seconds ----;
+#X text 507 563 updated for Pd version 0.37;
+#X text 495 155 0;
+#X text 534 174 -- partial number --;
+#X text 761 142 0;
+#X text 758 19 0.5;
+#X floatatom 51 61 0 0 100 0 - - -;
+#N canvas 329 22 680 421 pulse-train 0;
+#X obj 184 348 line~;
+#X obj 39 317 cos~;
+#X obj 184 324 pack 0 50;
+#X obj 39 245 -~ 0.5;
+#X obj 39 269 *~;
+#X obj 184 252 / 10;
+#X obj 184 276 moses 0;
+#X msg 184 300 0;
+#X obj 39 293 clip~ -0.5 0.5;
+#X obj 184 372 +~ 1;
+#X obj 39 341 +~ 1;
+#X obj 184 228 inlet;
+#X obj 39 389 outlet~;
+#X obj 39 365 *~ 0.5;
+#X text 53 5 This is a modified version of the pulse train generator
+from two examples back.;
+#X text 107 140 We have to add 1/2 and wrap so that the center of the
+pulse comes at phase zero (previously it was 1/2 cycle out of phase).
+This wasn't a problem before but now we have to be in phase with the
+oscillator we're multpplying with.;
+#X text 276 262 otherwise it's the same as before.;
+#X obj 40 85 phasor~;
+#X obj 40 58 r freq;
+#X connect 0 0 9 0;
+#X connect 1 0 10 0;
+#X connect 2 0 0 0;
+#X connect 3 0 4 0;
+#X connect 4 0 8 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 6 1 2 0;
+#X connect 7 0 2 0;
+#X connect 8 0 1 0;
+#X connect 9 0 4 1;
+#X connect 10 0 13 0;
+#X connect 11 0 5 0;
+#X connect 13 0 12 0;
+#X connect 17 0 3 0;
+#X connect 18 0 17 0;
+#X restore 51 86 pd pulse-train;
+#X text 83 61 <-- bandwidth;
+#X obj 51 219 *~;
+#X text 113 123 <-- modulation frequency as;
+#X text 152 137 multiple of fundamental;
+#X obj 51 277 output~;
+#X obj 50 246 hip~;
+#N canvas 122 211 563 534 fft 0;
+#X obj 19 61 inlet~;
+#X obj 208 212 inlet;
+#X obj 29 92 rfft~;
+#X obj 29 125 *~;
+#X obj 60 125 *~;
+#X obj 29 155 sqrt~;
+#X obj 332 109 block~ 4096 1;
+#X obj 29 181 biquad~ 0 0 0 0 1;
+#X text 93 93 Fourier series;
+#X text 98 146 magnitude;
+#X text 96 131 calculate;
+#X text 21 3 This subpatch computes the spectrum of the incoming signal
+with a (rectangular windowed) FFT. FFTs aren't properly introduced
+until much later.;
+#X text 83 61 signal to analyze;
+#X text 193 164 delay two samples;
+#X text 191 182 for better graphing;
+#X obj 264 434 samplerate~;
+#X obj 245 262 metro 500;
+#X obj 245 233 inlet;
+#X text 298 231 toggle to graph repeatedly;
+#X text 262 212 bang to graph once;
+#X obj 29 205 /~ 4096;
+#X obj 264 409 bang~;
+#X obj 264 483 s freq;
+#X obj 264 457 / 256;
+#X obj 19 295 tabwrite~ F05-signal;
+#X obj 245 294 tabwrite~ F05-spectrum;
+#X msg 224 321 \; pd dsp 1;
+#X connect 0 0 2 0;
+#X connect 0 0 24 0;
+#X connect 1 0 24 0;
+#X connect 1 0 25 0;
+#X connect 1 0 26 0;
+#X connect 2 0 3 0;
+#X connect 2 0 3 1;
+#X connect 2 1 4 0;
+#X connect 2 1 4 1;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 7 0 20 0;
+#X connect 15 0 23 0;
+#X connect 16 0 24 0;
+#X connect 16 0 25 0;
+#X connect 17 0 16 0;
+#X connect 17 0 26 0;
+#X connect 20 0 25 0;
+#X connect 21 0 15 0;
+#X connect 23 0 22 0;
+#X restore 98 245 pd fft;
+#X obj 158 224 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 158 245 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X text 179 244 <-- repeatedly;
+#X text 180 224 <-- graph once;
+#X text 527 155 2;
+#X text 559 155 4;
+#X text 591 155 6;
+#X text 623 155 8;
+#X text 656 155 10;
+#X text 688 155 12;
+#X text 719 155 14;
+#X text 759 213 1;
+#X text 759 337 -1;
+#X text 122 185 modulating oscillator;
+#X text 153 6 RING MODULATED PULSE TRAINS;
+#X text 23 357 Now we take a pulse train and ring modulate it \, which
+effectively aliases the spectrum so that it is centered at any desired
+partial number. The "bandwidth" control still affects the shape of
+the peak \, independently of where it is centered. This generates a
+formant centered at the given partial.;
+#X floatatom 73 123 0 0 100 0 - - -;
+#X obj 73 182 osc~;
+#X obj 73 157 *;
+#X obj 107 157 r freq;
+#X text 23 457 This patch is limited to making formants centered on
+harmonics. The center frequency thus can't be moved smoothly up and
+down at will (try shift-clicking on modulation frequency to make fractions).
+Next we'll look at two techniques for sliding a formant frequency without
+losing harmonicity.;
+#X text 184 85 <-- pulse train;
+#X text 220 101 generator from before;
+#X connect 8 0 9 0;
+#X connect 9 0 11 0;
+#X connect 11 0 15 0;
+#X connect 11 0 16 0;
+#X connect 15 0 14 0;
+#X connect 15 0 14 1;
+#X connect 17 0 16 1;
+#X connect 18 0 16 2;
+#X connect 33 0 35 0;
+#X connect 34 0 11 1;
+#X connect 35 0 34 0;
+#X connect 36 0 35 1;

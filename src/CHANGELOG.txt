@@ -1,0 +1,249 @@
+This file describes implementation and API changes; stuff more visible to the
+user appears in the "release notes" instead.  See the bottom of this file
+for original notes on source stype and organization.
+
+0.40.0
+
+0.39.0
+
+canvas_dspstate and signalinlet_new() exported to m_pd.h
+
+new function verbose() added to m_pd.h 
+
+0.38.0
+
+finally figured out how to do "-enable-", etc., flags in the configure
+script correctly.
+
+The scheduler now has a hook (set_so you can add polling routines) :
+    sys_idlehook().
+
+I'm now uploading directly to CVS repository ("main" and "stable_0_38"
+branches.)  There are still problems keeping CVS's and my versions of
+portaudio the same (CVS bashes the "ident" lines).
+
+t_int to int in binbuf_addv prototype
+
+64-bit fix to externs makefiles
+
+Pd now uses portaudio out-of-the-box; customized files are moved to
+"src" directory.
+
+All "tags" are printf'd as %lx to make 64-bit safe.  
+
+GUI queueing mechanism added: sys_queuegui() etc. 
+
+massive rewrite of array code to unify arrays and scalars.
+
+fixed empty lists automatically to call "bang" method if one is supplied.
+
+rewrote the "namelist" stuff to facilitate preference saving (s_stuff.h,
+s_path.c, s_file.c, s_main.c)
+
+0.37.2
+
+expr() "exp" temporary variables renamed to avoid compilation problems
+
+0.37.1
+
+makefile.in: MANINSTDIR = $(DESTDIR)/$(MANDIR) changed to
+    $(DESTDIR)/$(INSTALL_PREFIX)/$(MANDIR) (thx. Mathieu Bouchard)
+
+applied 2 jack patches from Luke Yelavich
+
+add -fno-strict-aliasing to config script (linux&mac) to improve underflow,
+etc., protection
+
+add underflow protection to vcf~ object; rewrote underflow protection to be
+faster in throw~/catch~ and send~/receive~
+
+fixed bug in -inchannels/-outchannels arg parsing
+
+fixed u_main.tk to make "apple" key work to accelerate menus on MACOS
+
+fooled with MIDI to try to get sysex and other system messages to work.
+Needs lots of testing now...
+
+finally fixed OSS to open audio with NODELAY... also cleared dup-on-exec flag.
+
+bug fix in scalar_properties
+
+major editions to the IEM GUIs to fix bugs in how "$" variables are handled.
+The code still isn't pretty but hopefully at least works now.
+
+tried to get alsa noninterleaved access to work (needed for RME).  Failed
+to get my RME card to load under ALSA and gave up for now.
+
+fixed scalar drawing to fail gracefully when the template canvas disappears
+
+bug fix in vd~ for very small delays (d_delay.c)
+
+set up sys_oldtclversion flag to correct for changed text selection
+(u_main.tk, s_main.c, g_rtext.c)
+
+tried again to add "readn" support to s_audio_alsa.c: coded, but failing so far.
+
+fixed broken octave divider example
+
+removed "-Werror" from default makefile; fixed  configure script to respect
+"CFLAGS" environment variable instead.  Suggest developers should use
+"setenv CFLAGS -Werror".
+
+added "-alsaadd" flag so people can specify alsa devnames to add to list.
+fixed some problems with Pd crashing when ALSA failed to open.
+
+took out the 2-pixel padding for MSW in g_canvas.g (HORIZBORDER/VERTBORDER)
+
+went back to s_midi_mmio (portaudio version got assertion errors and anyway
+I could never get sysex working in it as I had wanted.)
+
+Took bug fixes from s_midi_pm.c, s_audio_jack.c, s_inter.c from "devel" branch;
+also added "static" flag to configure.in (but the devel configure.in as a whole
+doesn't seem to work for OSX, for me at least.)
+ 
+Might have fixed a bug where labels disappear in buttons, etc, when saved
+and reloaded.
+
+brought s_audio_alsa.c up to alsa 1.0.0 compatibility
+
+fixed "-alsaadd" (never worked before)
+
+fooled with macintosh audio.  Fixed some (not all) of the audio I/O APIs
+to deal with open failures better (reducing sys_{in,out}channels accordingly)
+
+In the Alsa API, the synchronization test was too stringent and was loosened
+to 3*DACBLKSIZE/2.
+
+'make install' fixed to deal with 'extra' correctly.
+
+one more improvement in jack support (guenter)
+
+make an "nrt" flag so mac can disable pthread_setschedparam call if yu want.
+
+------------------- original source notes -------------
+
+0.  structure definition roadmap.  First, the containment tree of things
+that can be sent messages ("pure data").  (note that t_object and t_text,
+and t_graph and t_canvas, should be unified...)
+
+------------ BFFORE 0.35: ---------
+m_pd.h	    t_pd    	    	    anything with a class
+    	    	t_gobj	    	    "graphic object"
+    	    	    t_text  	    text object
+g_canvas.h  
+    	    	    t_glist 	    list of graphic objects
+g_canvas.c  	    	t_canvas    Pd "document"
+
+------------ AFTER 0.35: ---------
+m_pd.h	    t_pd    	    	    anything with a class
+    	    	t_gobj	    	    "graphic object"
+    	    	    t_text  	    patchable object, AKA t_object
+g_canvas.h     	    	t_glist     list of graphic objects, AKA t_canvas
+
+... and other structures:
+g_canvas.h  t_selection -- linked list of gobjs
+    	    t_editor -- editor state, allocated for visible glists
+m_imp.h     t_methodentry -- method handler
+    	    t_widgetbehavior -- class-dependent editing behavior for gobjs
+    	    t_parentwidgetbehavior -- objects' behavior on parent window
+    	    t_class -- method definitions, instance size, flags, etc.
+
+
+1.  C coding style.  The source should pass most "warnings" of C compilers
+(-Wall on linux, for instance; see the makefile.)  Some informalities
+are intentional, for instance the loose use of function prototypes (see
+below) and uncast conversions from longer to shorter numerical formats.
+The code doesn't respect "const" yet.
+
+1.1.  Prefixes in structure elements.  The names of structure elements always
+have a K&R-style prefix, as in ((t_atom)x)->a_type, where the "a_" prefix
+indicates "atom."  This is intended to enhance readability (although the
+convention arose from a limitation of early C compilers.)  Common prefixes are
+"w_" (word), "a_" (atom), "s_" (symbol), "ob_" (object), "te_" (text object),
+"g_" (graphical object), and "gl_" (glist, a list of graphical objects).  Also,
+global symbols sometimes get prefixes, as in "s_float" (the symbol whose string
+is "float).  Typedefs are prefixed by "t_".  Most _private_ structures, i.e.,
+structures whose definitions appear in a ".c" file, are prefixed by "x_".
+
+1.2.   Function arguments.  Many functions take as their first
+argument a pointer named "x", which is a pointer to a structure suggested
+by the function prefix; e.g., canvas_dirty(x, n) where "x" points to a canvas
+(t_canvas *x).
+
+1.3.  Function Prototypes.  Functions which are used in at least two different
+files (besides where they originate) are prototyped in the appropriate include
+file. Functions which are provided in one file and used in one other are
+prototyped right where they are used.  This is just to keep the size of the
+".h" files down for readability's sake.
+
+1.4.  Whacko private terminology.  Some terms are lifted from other historically
+relevant programs, notably "ugen" (which is just a tilde object; see d_ugen.c.)
+
+1.5.  Spacing.  Tabs are 8 spaces; indentation is 4 spaces.  Indenting
+curly brackets are by themselves on their own lines, as in:
+
+    if (x)
+    {
+	x = 0;
+    }
+
+Lines should fit within 80 spaces.
+
+2.  Max patch-level compatibility.  "Import" and "Export" functions are
+provided which aspire to strict compatibility with 0.26 patches (ISPW version),
+but which don't get anywhere close to that yet.  Where possible, features
+appearing on the Mac will comeday also be provided; for instance, the connect
+message on the Mac offers segmented patch cords; these will devolve into
+straight lines in Pd.  Many, many UI objects in Opcode Max will not appear in
+Pd, at least at first.
+
+3.  Compatibility with Max 0.26 "externs", i.e., source-level compatibility. Pd
+objects follow the style of 0.26 objects as closely as possible, making
+exceptions in cases where the 0.26 model is clearly deficient.  These are:
+
+3.1.  Anything involving the MacIntosh "Handle" data type is changed to use
+char * or void * instead.
+
+3.2.  Pd passes true single-precision floating-point arguments to methods;
+Max uses double.
+Typedefs are provided:
+    t_floatarg, t_intarg for arguments passed by the message system
+    t_float, t_int for the "word" union (in atoms, for example.)
+
+3.3.  Badly-named entities got name changes:
+
+    w_long --> w_int (in the "union word" structure)
+
+3.4.  Many library functions are renamed and have different arguments;
+I hope to provide an include file to alias them when compiling Max externs.
+
+4.  Function name prefixes.
+Many function names have prefixes which indicate what "package" they belong
+to.  The exceptions are:
+    typedmess, vmess, getfn, gensym (m_class.c)
+    getbytes, freebytes, resizebytes (m_memory.c)
+    post, error, bug (s_print.c)
+which are all frequently called and which don't fit into simple categories.
+Important packages are:
+(pd-gui:)   pdgui -- everything
+(pd:)	    pd -- functions common to all "pd" objects
+    	    obj -- fuctions common to all "patchable" objects ala Max
+    	    sys -- "system" level functions
+    	    binbuf -- functions manipulating binbufs
+    	    class -- functions manipulating classes
+    	    (other) -- functions common to the named Pd class
+
+5. Source file prefixes. 
+PD:
+s    system interface
+m    message system
+g    graphics stuff
+d    DSP objects
+x    control objects
+z    other
+
+PD-GUI:
+t    TK front end
+
+
+

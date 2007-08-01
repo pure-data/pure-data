@@ -1,0 +1,8 @@
+#N canvas 217 14 532 261 12;
+#X obj 66 15 namecanvas;
+#X text 169 15 - ATTACH THIS CANVAS TO A NAME;
+#X obj 204 107 namecanvas bonzo;
+#X msg 205 64 \; bonzo msg 50 50 hi there;
+#X text 44 153 This is obsolete. Instead \, you can just say:;
+#X msg 79 180 \; pd-namecanvas-help.pd msg 50 70 this is better;
+#X text 252 224 updated for Pd version 0.40.;

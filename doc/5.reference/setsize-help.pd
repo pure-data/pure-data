@@ -1,0 +1,54 @@
+#N struct help-setsize-template float x float y array array1 help-setsize-array1-template
+;
+#N struct help-setsize-array1-template float y;
+#N canvas 331 45 682 463 12;
+#X text 31 359 see also:;
+#N canvas 393 10 495 265 help-setsize-template 0;
+#X obj 27 174 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
+#X obj 27 76 plot array1 500 1 10 15 10;
+#X obj 24 16 struct help-setsize-template float x float y array array1
+help-setsize-array1-template;
+#X restore 364 261 pd help-setsize-template;
+#N canvas 0 0 299 169 help-setsize-data 1;
+#X scalar help-setsize-template 31 23 \; 0 \; 10 \; 0 \; 10 \; 20 \;
+10 \; 20 \; 70 \; 10 \; \;;
+#X restore 363 240 pd help-setsize-data;
+#N canvas 196 292 369 138 help-setsize-array1-template 0;
+#X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
+#X obj 32 27 struct help-setsize-array1-template float y;
+#X restore 363 284 pd help-setsize-array1-template;
+#X obj 107 379 pointer;
+#X obj 242 379 setsize;
+#X obj 272 186 pointer;
+#X msg 272 162 traverse pd-help-setsize-data \, next;
+#X floatatom 25 189 5 0 0 0 - - -;
+#X text 359 210 arguments: template \, field name;
+#X obj 25 213 setsize help-setsize-template array1;
+#X text 115 183 inlet for pointer;
+#X obj 36 11 setsize;
+#X obj 174 379 element;
+#X text 31 156 number sets;
+#X text 30 170 size;
+#X text 99 12 -- resize an array;
+#X text 25 34 "setsize" takes a pointer to a scalar at left and a number
+at right. Its creation arguments specify the template of the pointer
+and the name of an array field. Sending a number then sets the number
+of elements of the array.;
+#X text 24 93 The smallest possible size is one. If the array is resized
+downward the extra data are lost. If resized upward \, the new elements
+are initialized to default values.;
+#X msg 566 335 bang;
+#X text 297 333 click to reload from file -->;
+#X text 274 143 click here first;
+#N canvas 460 63 439 176 readit 1;
+#X msg 66 65 \; pd-help-setsize-data read setsize.txt;
+#X obj 107 18 inlet;
+#X msg 62 123 \; pd-help-setsize-data write setsize.txt;
+#X connect 1 0 0 0;
+#X restore 566 361 pd readit;
+#X text 416 395 updated for Pd version 0.40;
+#X obj 28 379 struct;
+#X connect 6 0 10 1;
+#X connect 7 0 6 0;
+#X connect 8 0 10 0;
+#X connect 19 0 22 0;

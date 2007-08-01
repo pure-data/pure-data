@@ -1,0 +1,19 @@
+#N canvas 210 82 579 437 12;
+#X obj 66 15 table;
+#X text 123 16 - Array of numbers;
+#X obj 34 199 table help-tab1 25;
+#X text 10 43 "Table" builds a subpatch with a graphical array inside.
+The creation arguments specify the name and an optional size in points.
+;
+#X msg 70 265 \; help-tab1 read table.txt;
+#X msg 70 309 \; help-tab1 write /tmp/table.txt;
+#X text 70 243 You can also send messages to the array by name:;
+#X text 216 200 <- optional creation args: name \, size;
+#X text 17 355 Unfortunately there's no way to set vertical range \,
+etc.;
+#X text 9 101 Note that the data (and other properties) of the array
+aren't saved with the patch. You can resize \, save to and/or read
+from an external file as you would with "array" objects. See "arrays"
+in the 2.control examples under the "pure documentation" help menu
+item.;
+#X text 325 391 updated for Pd version 0.35;

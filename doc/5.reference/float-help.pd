@@ -1,0 +1,18 @@
+#N canvas 23 20 429 272 12;
+#X msg 30 107 bang;
+#X obj 30 183 float 6.5;
+#X floatatom 30 209;
+#X floatatom 42 129;
+#X floatatom 88 153;
+#X obj 55 12 float;
+#X text 97 11 - STORE A (FLOATING POINT) NUMBER;
+#X text 12 36 The float object stores a number \, initialized by its creation argument \, which may be reset using its inlet and output by sending it the "bang" message. Sending a number sets a new value and outputs it.;
+#X text 77 103 outputs the value;
+#X text 74 130 sets and outputs the value;
+#X text 123 155 sets the value;
+#X text 108 184 creation argument initializes the value;
+#X text 223 242 updated for Pd version 0.3;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 1;

@@ -1,0 +1,80 @@
+#N canvas 159 89 808 531 12;
+#X obj 21 438 output~;
+#X obj 21 411 +~;
+#X obj 33 192 delwrite~ G07-del 30;
+#X obj 99 391 line~;
+#X obj 63 391 *~;
+#X obj 93 335 line~;
+#X obj 57 335 *~;
+#X obj 80 281 line~;
+#X obj 44 281 *~;
+#X obj 58 221 line~;
+#X obj 22 221 *~;
+#X text 51 8 THE "SHAKER";
+#X obj 279 86 + 1;
+#X obj 279 109 mod 4;
+#X obj 244 83 f;
+#X obj 284 160 random 1000;
+#X obj 244 135 t f b;
+#X obj 244 37 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X floatatom 347 34 5 10 1000 0 - - -;
+#X obj 244 242 route 0 1 2 3;
+#X obj 44 255 delread~ G07-del 30;
+#X obj 23 165 phasor~ 80;
+#X obj 57 309 delread~ G07-del 17;
+#X obj 63 365 delread~ G07-del 11;
+#X obj 347 59 * 4;
+#X obj 284 187 expr 2 * $f1/1000 - 0.7;
+#X floatatom 23 142 5 30 1000 0 - - -;
+#X obj 244 58 metro 50;
+#X obj 244 218 pack 0 0 200;
+#X text 23 118 frequency;
+#X text 225 17 on/off;
+#X text 344 13 time constant (msec);
+#X text 536 511 updated for Pd version 0.37-1;
+#X text 266 306 This is a time-varying comb filter \, combining four
+delayed copies of the input signal. The amplitude of each delayed copy
+varies randomly between -0.7 and +1.3. Each time the metronome goes
+off \, one of the four delay's gains is changed in sequence. The change
+occurs over the next four ticks of the metronome (so \, if the metronome
+ticks every 50 msec \, each message to a line~ has a second argument
+of 200.);
+#X text 268 424 Any collection of four gains for the four delayed copies
+of the signal (including the original) defines some sort of irregular
+comb filter. The peaks and valleys of the comb filter shift constantly
+as the gains change to new \, random values.;
+#X connect 1 0 0 0;
+#X connect 1 0 0 1;
+#X connect 3 0 4 1;
+#X connect 4 0 1 1;
+#X connect 5 0 6 1;
+#X connect 6 0 1 1;
+#X connect 7 0 8 1;
+#X connect 8 0 1 1;
+#X connect 9 0 10 1;
+#X connect 10 0 1 0;
+#X connect 12 0 13 0;
+#X connect 13 0 14 1;
+#X connect 14 0 12 0;
+#X connect 14 0 16 0;
+#X connect 15 0 25 0;
+#X connect 16 0 28 0;
+#X connect 16 1 15 0;
+#X connect 17 0 27 0;
+#X connect 18 0 24 0;
+#X connect 18 0 27 1;
+#X connect 19 0 9 0;
+#X connect 19 1 7 0;
+#X connect 19 2 5 0;
+#X connect 19 3 3 0;
+#X connect 20 0 8 0;
+#X connect 21 0 2 0;
+#X connect 21 0 10 0;
+#X connect 22 0 6 0;
+#X connect 23 0 4 0;
+#X connect 24 0 28 2;
+#X connect 25 0 28 1;
+#X connect 26 0 21 0;
+#X connect 27 0 14 0;
+#X connect 28 0 19 0;

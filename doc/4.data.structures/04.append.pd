@@ -1,0 +1,36 @@
+#N canvas 308 71 688 415 12;
+#X obj 421 332 pointer;
+#X obj 108 277 t b b b;
+#X msg 120 241 bang;
+#X text 161 240 click here to re-initialize;
+#X msg 11 313 50 250 30 9 \, 200 200 -20 900 \, 100 200 -50 30;
+#X text 56 27 The objects below put three items in the data window.
+First the window is cleared. Then a "pointer" object is instructed
+to point to the beginning of the data window ("traverse pd-data") \,
+and to output its value ("bang") to the "append" object. This object
+is then given numeric values to create three items.;
+#X obj 11 336 append template4 x y z q;
+#X msg 421 269 \; pd-data4 clear;
+#N canvas 0 0 315 341 data4 1;
+#X restore 430 219 pd data4;
+#N canvas 15 278 519 148 template4 0;
+#X obj 17 44 filledpolygon 244 q 5 0 0 20 z 40 0;
+#X text 13 79 The template for the two scalars \, as in the last patch
+;
+#X obj 17 19 struct template4 float x float y float z float q;
+#X restore 428 243 pd template4;
+#X msg 421 309 traverse pd-data4 \, bang;
+#X text 57 165 The outlet of "append" is a pointer to the newly created
+scalar. You can pass that on to other append objects if you want to
+build heterogenous lists.;
+#X text 363 375 Updated for Pd version 0.32;
+#X text 57 121 The "append" object is given the argument "template4"
+to specify what kind of data structure to append. The other arguments
+are the names of variables we'll set.;
+#X connect 0 0 6 4;
+#X connect 1 0 4 0;
+#X connect 1 1 10 0;
+#X connect 1 2 7 0;
+#X connect 2 0 1 0;
+#X connect 4 0 6 0;
+#X connect 10 0 0 0;

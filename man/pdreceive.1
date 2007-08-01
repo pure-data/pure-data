@@ -1,0 +1,26 @@
+.TH pdreceive 1 "1996 Mar 20" GNU
+.SH NAME
+pdreceive \- receive messages from pd on this or a remote machine
+.SH SYNOPSIS
+.B pdreceive
+\fIport-number\fR [udp|tcp]
+.SH DESCRIPTION
+Pdreceive opens a socket (with the specified port number) and
+waits for messages to arrive from one or more instances of pd(1).  Each
+message received is printed to the standard output with a trailing semicolon. 
+The protocol used is easy to implement and is called FUDI.
+.PP
+The \fIport number\fR should agree with the port number of a "netsend" object
+within pd.  The protocol is "tcp" by default; this does a handshake
+to
+guarantee that all messages arrive complete and in their correct order; if you
+are sending messages locally or point-to-point you can often get away with
+the faster udp protocol instead.
+.PP
+You can also use this to get messages from a Max "pdnetsend" object or even
+just a
+"pdsend" in another shell.  If you're writing another program you're welcome
+to just grab the sources for pdsend/pdreceive and adapt them to your own ends;
+they're part of the Pd distribution.
+.SH SEE ALSO
+pd(1), pdsend(1)

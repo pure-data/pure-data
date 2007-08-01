@@ -1,0 +1,56 @@
+# This is a qlist for patch number 68, which demonstrates an oscillator
+bank.
+;
+# comments start with a "#" which must be followed by a space.  The comment
+is terminated by a semicolon like this: ;
+
+# first an arpeggio.  You can group them in lines as you please.  The 100s at
+the beginnings of lines are delay times. ;
+
+pit1 89; amp1 80;
+100 pit2 72; amp2 80;
+100 pit3 57; amp3 90;
+100 pit4 84; amp4 78;
+100 pit5 74; amp5 74;
+100 pit6 73; amp6 74;
+100 pit7 100; amp7 78;
+100 pit8 37; amp8 95;
+
+# after a 600-msec rest, gliss four of the oscillators to new frequencies. ;
+600 pit1 70 1000;
+300 pit8 40 1000;
+300 pit4 89 1000;
+300 pit7 95 1000;
+
+# a second later, turn them off with decay time 1500 ;
+1000
+amp1 0 1500;
+amp2 0 1500;
+amp3 0 1500;
+amp4 0 1500;
+amp5 0 1500;
+amp6 0 1500;
+amp7 0 1500;
+amp8 0 1500;
+
+# and re-attack them.. ;
+1000
+amp1 85 5;
+amp2 85 5;
+amp3 85 5;
+amp4 90 5;
+amp5 85 5;
+amp6 85 5;
+amp7 90 5;
+amp8 85 5;
+
+# this time, try varying decay times. ;
+10
+amp1 0 2000;
+amp2 0 2000;
+amp3 0 2000;
+amp4 0 500;
+amp5 0 1000;
+amp6 0 1000;
+amp7 0 500;
+amp8 0 4000;

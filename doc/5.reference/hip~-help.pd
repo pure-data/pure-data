@@ -1,0 +1,33 @@
+#N canvas 21 5 694 319 12;
+#X obj 70 233 env~;
+#X floatatom 70 256 0 0 0 0 - - -;
+#X floatatom 119 178 0 0 0 0 - - -;
+#X obj 70 206 hip~ 5;
+#X obj 12 233 env~;
+#X floatatom 12 255 0 0 0 0 - - -;
+#X text 115 235 env~ gives the amplitude of the signal envelop in dB.
+;
+#X floatatom 12 107 0 0 0 0 - - -;
+#X msg 567 51 \; pd dsp 1;
+#X msg 565 10 \; pd dsp 0;
+#X text 13 68 The left inlet is the incoming audio signal. The right
+inlet is the cutoff frequency in Hz.;
+#X obj 12 130 osc~ 100;
+#X text 57 105 <-- scroll to change input frequency;
+#X msg 70 154 clear;
+#X text 122 153 <-- reinitialize internal state;
+#X text 151 179 <-- set cutoff frequency;
+#X obj 83 6 hip~;
+#X text 128 5 - one-pole high pass filter;
+#X text 435 287 updated for Pd version 0.37;
+#X text 12 31 hip~ is a one-pole high pass filter with a specified
+rolloff frequency.;
+#X text 135 208 Creation argument initializes rolloff frequency.;
+#X connect 0 0 1 0;
+#X connect 2 0 3 1;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 7 0 11 0;
+#X connect 11 0 4 0;
+#X connect 11 0 3 0;
+#X connect 13 0 3 0;

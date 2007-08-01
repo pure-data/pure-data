@@ -1,0 +1,4 @@
+#N canvas 74 127 544 214 12;
+#X text 281 174 updated for Pd version 0.26;
+#X text 107 13 comments;
+#X text 38 73 This is Pd's help window for comments \, which don't do anything.;

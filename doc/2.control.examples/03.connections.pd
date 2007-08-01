@@ -1,0 +1,58 @@
+#N canvas 185 28 660 552 12;
+#X floatatom 76 400 0 0 0 0 - - -;
+#X floatatom 189 401 0 0 0 0 - - -;
+#X floatatom 76 307 0 0 0 0 - - -;
+#X floatatom 553 161 0 0 0 0 - - -;
+#X floatatom 599 162 0 0 0 0 - - -;
+#X obj 553 135 +;
+#X floatatom 553 105 0 0 0 0 - - -;
+#X obj 599 136 +;
+#X floatatom 26 109 0 0 0 0 - - -;
+#X floatatom 26 17 0 0 0 0 - - -;
+#X floatatom 48 41 0 0 0 0 - - -;
+#X obj 26 85 +;
+#X text 3 64 hot;
+#X text 53 66 cold;
+#X text 232 105 Here's the downside: drag this--->;
+#X text 551 180 good;
+#X text 600 181 bad;
+#X obj 76 376 *;
+#X obj 189 377 -;
+#X text 15 400 square;
+#X text 229 402 first difference;
+#X obj 76 330 trigger float float;
+#X text 412 526 updated for Pd version 0.33;
+#X text 19 433 Trigger takes any number of "bang" and "float" arguments
+(among others) and copies its input to its outlets \, in the requested
+forms \, in right-to-left order. Hook it to two inputs without crossing
+the wires and you get the expected result. Cross the wires and you
+get a memory effect.;
+#X text 9 136 In Pd you must sometimes think about what order an object
+is going to get its messages in. If an outlet is connected to more
+than one inlet it's undefined which inlet will get the cookie first.
+I've rigged this example so that the left-hand side box gets its inputs
+in the good \, right-to-left order \, so that the hot inlet gets hit
+when all the data are good. The "bad adder" happens to receive its
+inputs in the wrong order and is perpetually doing its addition before
+all the data are in. There's an object that exists solely to allow
+you to control message order explicitly:;
+#X text 114 16 In Pd \, most objects carry out their functions when
+they get messages in their leftmost inlets \, and their other inlets
+are for storing values that can modify the next action. Here \, the
+"+" object does its thing only when the left-hand input changes.;
+#X connect 2 0 21 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 6 0 7 1;
+#X connect 6 0 5 1;
+#X connect 6 0 5 0;
+#X connect 7 0 4 0;
+#X connect 9 0 11 0;
+#X connect 10 0 11 1;
+#X connect 11 0 8 0;
+#X connect 17 0 0 0;
+#X connect 18 0 1 0;
+#X connect 21 0 17 0;
+#X connect 21 0 18 1;
+#X connect 21 1 17 1;
+#X connect 21 1 18 0;

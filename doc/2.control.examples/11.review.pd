@@ -1,0 +1,42 @@
+#N canvas 255 248 675 539 12;
+#X text 406 511 updated for Pd version 0.34;
+#X obj 39 232 receive;
+#X obj 39 203 send;
+#X obj 39 289 pack;
+#X obj 111 233 r;
+#X obj 82 203 s;
+#X obj 40 348 timer;
+#X obj 40 60 float;
+#X obj 39 175 select;
+#X obj 40 89 +;
+#X obj 40 117 >=;
+#X obj 39 146 print;
+#X obj 39 260 trigger;
+#X obj 95 61 f;
+#X obj 100 176 sel;
+#X obj 111 259 t;
+#X obj 39 318 unpack;
+#X obj 40 435 pipe;
+#X obj 40 377 delay;
+#X obj 40 406 metro;
+#X text 20 8 So far we've seen the following objects \, some of which
+have abbreviations. Right click on any one to get reference documentation:
+;
+#X text 150 205 wireless message send;
+#X text 151 229 wireless message receive;
+#X text 145 175 test for two equal numbers;
+#X text 151 258 control message order and format;
+#X text 148 293 combine atoms (e.g. \, numbers) into a list;
+#X text 146 319 take a list apart into atoms;
+#X text 146 146 printout;
+#X text 147 90 arithmetic;
+#X text 75 89 (etc.);
+#X text 74 117 (etc.);
+#X text 145 117 comparison;
+#X text 145 60 store a number;
+#X text 145 348 measure elapsed time;
+#X text 145 379 pass a message after delay;
+#X text 145 437 multiple delay;
+#X text 143 409 repeated message;
+#X text 38 473 There are many others... you can see a complete list
+in INTRO.txt in the reference patches (../5.reference).;

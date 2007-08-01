@@ -1,0 +1,44 @@
+#N canvas 330 8 599 454 12;
+#X text 15 344 see also:;
+#N canvas 164 72 429 150 help-append-template1 0;
+#X obj 18 81 filledpolygon z z 0 0 0 20 0 20 30 0 30;
+#X obj 60 21 struct help-append-template1 float x float y float z;
+#X restore 357 373 pd help-append-template1;
+#X obj 16 368 get;
+#X obj 48 368 set;
+#X obj 148 368 getsize;
+#X obj 215 368 setsize;
+#X obj 218 393 element;
+#X obj 15 394 sublist;
+#X obj 83 393 scalar;
+#N canvas 0 0 280 167 help-append-data 1;
+#X restore 357 351 pd help-append-data;
+#X obj 212 255 pointer;
+#X obj 21 10 append;
+#X text 75 9 -- add item to a list;
+#X msg 212 231 traverse pd-help-append-data \, bang;
+#X obj 34 295 append help-append-template1 x y z;
+#X floatatom 34 246 5 0 0 0 - - -;
+#X obj 34 266 t f f;
+#X msg 356 311 \; pd-help-append-data clear;
+#X text 27 28 "append" maintains a pointer to a scalar \, or else an
+empty pointer to the head of a list. You may set the pointer using
+the leftmost inlet. The creation arguments specify the template of
+a new scalar to append \, and the names of the fields (there should
+be at least one) you will wish to initialize. To append an object \,
+send a number to the leftmost inlet. "Append"'s pointer is updated
+to point to the new scalar \, and the new pointer is also output.;
+#X text 28 149 To insert to the beginning of a list \, you can append
+to the "head" of the list. You may append objects of different templates
+using different "append" objects.;
+#X obj 81 368 pointer;
+#X text 341 408 updated for Pd version 0.40;
+#X text 34 226 click this first->;
+#X text 230 210 go to (and output) "head" of the list;
+#X obj 141 393 struct;
+#X connect 10 0 14 3;
+#X connect 13 0 10 0;
+#X connect 15 0 16 0;
+#X connect 16 0 14 0;
+#X connect 16 1 14 1;
+#X connect 16 1 14 2;

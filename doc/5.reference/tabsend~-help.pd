@@ -1,0 +1,6 @@
+#N canvas 151 91 596 222 12;
+#X obj 31 27 tabsend~;
+#X text 113 26 writes one block of a signal continuously to an array;
+#X text 41 60 creation argument: name of array;
+#X text 29 96 By default a block is 64 samples \; this can be reset using the block~ object.;
+#X text 318 186 updated for Pd version 0.33;

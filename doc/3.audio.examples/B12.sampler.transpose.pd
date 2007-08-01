@@ -1,0 +1,109 @@
+#N canvas 107 88 930 596 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array table21 44103 float 0;
+#X coords 0 1.02 44100 -1.02 200 130 1;
+#X restore 645 291 graph;
+#X obj 467 506 loadbang;
+#X obj 19 508 hip~ 5;
+#X floatatom 10 254 0 0 0 0 - - -;
+#X obj 10 279 * 441;
+#X obj 10 401 +~ 1;
+#X text 47 253 <-- chunk size (100ths of a second);
+#X obj 471 402 adc~ 1;
+#X obj 471 427 hip~ 5;
+#X msg 486 449 bang;
+#X obj 44 482 *~;
+#X obj 106 404 line~;
+#X obj 106 354 * 441;
+#X floatatom 106 329 0 0 0 0 - - -;
+#X obj 106 379 pack 0 100;
+#X text 152 331 <-- read point in 100ths of a second;
+#X obj 44 433 +~;
+#X obj 106 429 samphold~;
+#X obj 10 329 samphold~;
+#X obj 10 304 sig~;
+#X obj 10 376 *~;
+#X text 18 5 CALCULATING LOOP FREQUENCY AS FUNCTION OF TRANSPOSITION
+;
+#X obj 124 485 r~ phase;
+#X obj 10 204 s~ phase;
+#X obj 68 304 r~ phase;
+#X obj 26 351 r~ phase;
+#X obj 164 405 r~ phase;
+#X obj 151 299 s chunk-size;
+#X floatatom 10 50 0 0 0 0 - - -;
+#X text 48 51 <-- transposition (10ths of a halftone);
+#X obj 151 274 * 0.01;
+#X text 264 287 chunk size;
+#X text 264 309 in seconds;
+#X obj 21 105 r chunk-size;
+#X obj 21 130 t b f;
+#X obj 10 154 /;
+#X text 80 131 divide speed change by chunk;
+#X text 78 152 size to get loop frequency;
+#X text 382 75 The transposition is frequency in Hz. divided by chunk
+size in seconds. This patch calculates the loop frequency as a function
+of desired transposition;
+#X text 384 126 Notice now that we get Doppler effects when the chunk
+size changes. You can suppress that if you don't want it \, by converting
+the chunk size to an audio signal \, sampling and holding it. But then
+there would be more work to deal with very low frequencies never triggering
+the sample and hold...;
+#X obj 467 560 soundfiler;
+#X obj 10 27 loadbang;
+#X obj 124 509 -~ 0.5;
+#X obj 124 533 *~ 0.5;
+#X obj 124 556 cos~;
+#X obj 19 533 output~;
+#X obj 44 458 tabread4~ table21;
+#X text 527 449 <-- record;
+#X text 560 513 v-- re-read original table;
+#X text 682 572 updated for Pd version 0.37;
+#X text 647 425 --- 44103 samples ---;
+#X obj 10 75 expr pow(2 \, $f1/120);
+#X text 199 75 speed change;
+#X text 387 208 You might also want to have a way to retrigger the
+loop to sync it with some other process. By the time we had all this
+built the patch would be fairly involved. For now \, we'll move on
+to the next topic...;
+#X obj 10 178 phasor~;
+#X obj 471 476 tabwrite~ table21;
+#X msg 467 533 read ../sound/voice.wav table21;
+#X connect 1 0 56 0;
+#X connect 2 0 45 0;
+#X connect 2 0 45 1;
+#X connect 3 0 4 0;
+#X connect 3 0 30 0;
+#X connect 4 0 19 0;
+#X connect 5 0 16 0;
+#X connect 7 0 8 0;
+#X connect 8 0 55 0;
+#X connect 9 0 55 0;
+#X connect 10 0 2 0;
+#X connect 11 0 17 0;
+#X connect 12 0 14 0;
+#X connect 13 0 12 0;
+#X connect 14 0 11 0;
+#X connect 16 0 46 0;
+#X connect 17 0 16 1;
+#X connect 18 0 20 0;
+#X connect 19 0 18 0;
+#X connect 20 0 5 0;
+#X connect 22 0 42 0;
+#X connect 24 0 18 1;
+#X connect 25 0 20 1;
+#X connect 26 0 17 1;
+#X connect 28 0 51 0;
+#X connect 30 0 27 0;
+#X connect 33 0 34 0;
+#X connect 34 0 35 0;
+#X connect 34 1 35 1;
+#X connect 35 0 54 0;
+#X connect 41 0 28 0;
+#X connect 42 0 43 0;
+#X connect 43 0 44 0;
+#X connect 44 0 10 1;
+#X connect 46 0 10 0;
+#X connect 51 0 35 0;
+#X connect 54 0 23 0;
+#X connect 56 0 40 0;

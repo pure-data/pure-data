@@ -1,0 +1,19 @@
+This series of patches serves as a tutorial for Pd's "control" structure, as
+opposed to its audio functions (covered in the next series.)  These tutorials
+are inspired by Chris Dobrian's Max tutorial patches.
+
+It's probably best to look at the first section here before going on to the
+audio portion, but afterward there's no reason not to browse back and forth
+between the two, and even the third series on "fft" based techniques.
+
+The relationship between "control" and "audio" is described in Pd's HTML
+documentation, which is more like a reference manual than an introduction.
+Also, you probably will need to look there to get Pd up and running stably so
+that you can enjoy the patches here.
+
+The patches are roughly divided as shown:
+
+1. objects and connections
+2. subpatches, tables, and organization
+3. specific techniques.
+

@@ -1,0 +1,57 @@
+#N canvas 211 116 826 530 12;
+#X obj 28 412 osc~;
+#X obj 94 197 r poll-table;
+#X obj 129 337 + 50;
+#X obj 129 363 dbtorms;
+#X msg 78 339 0;
+#X obj 78 392 pack 0 30;
+#X obj 78 422 line~;
+#X obj 28 471 throw~ sum-bus;
+#X obj 28 442 *~;
+#X obj 28 87 r pitch;
+#X obj 28 114 mtof;
+#X obj 78 230 f;
+#X obj 28 142 * \$1;
+#X obj 37 168 ftom;
+#X obj 79 256 -;
+#X obj 121 255 r whammybar;
+#X text 28 9 This abstraction is used by the spectrum drawing example
+\, number 16...;
+#X text 61 46 \$1 is the partial number.;
+#X text 79 114 pitch to frequency;
+#X text 78 141 then get the frequency of this specific partial;
+#X text 81 167 ... and then convert back to pitch.;
+#X text 115 230 ... at which time we get the pitch back...;
+#X text 233 249 ... and transpose \, effectively shifting the spectral
+envelope left and right.;
+#X text 203 341 The vertical scale is dB from 1 to 50 \, but we want
+true zero when the table value is 0 or less.;
+#X text 172 398 Amplitude control via pack \, line~ \, and *~.;
+#X text 171 444 Finally \, add to a summing bus via throw~. All the
+throw~s in the instantiations of this abstraction will add into the
+one "catch~ sum-bus" at the output.;
+#X text 216 195 the calling patch bangs "poll-table" every 30 msec.
+;
+#X obj 78 284 tabread4 spectrum-tab;
+#X text 285 288 Finally get the strength from the table. Note that
+we use the control object \, tabread4 \, not tabread4~.;
+#X obj 78 311 moses 1;
+#X connect 0 0 8 0;
+#X connect 1 0 11 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 8 1;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 10 0 12 0;
+#X connect 11 0 14 0;
+#X connect 12 0 13 0;
+#X connect 12 0 0 0;
+#X connect 13 0 11 1;
+#X connect 14 0 27 0;
+#X connect 15 0 14 1;
+#X connect 27 0 29 0;
+#X connect 29 0 4 0;
+#X connect 29 1 2 0;

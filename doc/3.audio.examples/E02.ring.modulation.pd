@@ -1,0 +1,197 @@
+#N canvas 269 43 755 746 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array E02-signal 882 float 0;
+#X coords 0 5 882 -5 200 130 1;
+#X restore 501 66 graph;
+#X obj 15 370 hip~ 5;
+#N canvas 0 0 450 300 graph1 0;
+#X array E02-spectrum 128 float 0;
+#X coords 0 4300 127 -40 257 130 1;
+#X restore 455 251 graph;
+#N canvas 45 83 558 569 fft 0;
+#X obj 19 61 inlet~;
+#X obj 95 214 inlet;
+#X obj 29 92 rfft~;
+#X obj 29 125 *~;
+#X obj 60 125 *~;
+#X obj 29 155 sqrt~;
+#X obj 332 109 block~ 4096 1;
+#X obj 29 181 biquad~ 0 0 0 0 1;
+#X text 93 93 Fourier series;
+#X text 98 146 magnitude;
+#X text 96 131 calculate;
+#X text 21 3 This subpatch computes the spectrum of the incoming signal
+with a (rectangular windowed) FFT. FFTs aren't properly introduced
+until much later.;
+#X text 83 61 signal to analyze;
+#X text 192 166 delay two samples;
+#X text 191 182 for better graphing;
+#X obj 16 425 samplerate~;
+#X obj 16 402 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X floatatom 16 472 5 0 0 0 - - -;
+#X obj 16 448 / 256;
+#X obj 16 378 loadbang;
+#X floatatom 16 541 5 0 0 0 - - -;
+#X obj 24 494 s fundamental;
+#X obj 16 517 ftom;
+#X text 14 319 At load time \, calculate a good choice of fundamental
+frequency for showing spectra: the 16th bin in a 4096-point spectrum
+\, so SR*16/4096 or SR/256.;
+#X text 145 216 "bang" into this inlet to graph it;
+#X floatatom 191 480 5 0 0 0 - - -;
+#X obj 191 456 / 4096;
+#X text 187 425 One bin is SR/4096:;
+#X text 72 540 <-just out of curiosity \, here's the fundamental pitch
+;
+#X obj 191 502 s freq-step;
+#X obj 95 248 tabwrite~ E02-spectrum;
+#X obj 20 281 tabwrite~ E02-signal;
+#X connect 0 0 2 0;
+#X connect 0 0 31 0;
+#X connect 1 0 30 0;
+#X connect 1 0 31 0;
+#X connect 2 0 3 0;
+#X connect 2 0 3 1;
+#X connect 2 1 4 0;
+#X connect 2 1 4 1;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 7 0 30 0;
+#X connect 15 0 18 0;
+#X connect 15 0 26 0;
+#X connect 16 0 15 0;
+#X connect 17 0 21 0;
+#X connect 17 0 22 0;
+#X connect 18 0 17 0;
+#X connect 19 0 16 0;
+#X connect 22 0 20 0;
+#X connect 25 0 29 0;
+#X connect 26 0 25 0;
+#X restore 23 343 pd fft;
+#X text 501 198 ---- 0.02 seconds ----;
+#X obj 84 344 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 15 398 output~;
+#X text 501 720 updated for Pd version 0.37;
+#X text 486 384 1;
+#X text 520 384 2;
+#X text 552 384 3;
+#X text 584 384 4;
+#X text 617 384 5;
+#X text 647 384 6;
+#X text 678 384 7;
+#X text 454 384 0;
+#X text 490 403 -- partial number --;
+#X text 703 120 0;
+#X obj 18 32 r fundamental;
+#X obj 18 94 osc~;
+#X obj 39 119 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X obj 17 144 *~;
+#X obj 61 94 osc~;
+#X obj 82 119 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X obj 60 144 *~;
+#X obj 104 94 osc~;
+#X obj 125 119 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X obj 103 144 *~;
+#X obj 104 71 * 2;
+#X obj 147 94 osc~;
+#X obj 168 119 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 146 144 *~;
+#X obj 190 94 osc~;
+#X obj 211 119 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 189 144 *~;
+#X obj 233 94 osc~;
+#X obj 254 119 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 232 144 *~;
+#X obj 18 71 * 0;
+#X obj 61 71 * 1;
+#X obj 147 71 * 3;
+#X obj 190 71 * 4;
+#X obj 233 71 * 5;
+#X text 282 118 <-- On/Off;
+#X text 565 46 WAVEFORM;
+#X text 548 229 SPECTRUM;
+#X text 715 367 0;
+#X text 713 246 1;
+#X text 714 305 0.5;
+#X text 703 60 5;
+#X text 704 180 -5;
+#X obj 16 239 *~;
+#X text 300 102 partials;
+#X obj 154 270 osc~;
+#X floatatom 154 210 3 0 200 0 - - -;
+#X obj 154 239 *;
+#X obj 187 239 r freq-step;
+#X text 226 177 modulation;
+#X text 222 192 frequency in;
+#X text 185 209 <-- "steps" of f/16;
+#X text 97 -1 RING MODULATION: multiplying a complex tone by a sinusoid
+;
+#X obj 84 299 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+;
+#X text 107 343 <-- graph once;
+#X obj 84 321 metro 500;
+#X text 107 298 <-- graph repeatedly;
+#X text 35 463 Now we ring modulate the signal by multiplying it by
+another sinusoid. The modulation frequency is controlled in steps of
+f/16 where "f" is the fundamental frequency \, giving roughly 11 Hz.
+per step. Note that if the modulation frequency is set to zero we can't
+predict the overall amplitude because it depends on what phase the
+modulation oscillator happened to have at that moment.;
+#X text 32 579 If you choose a multiple of the fundamental as a modulation
+frequency (16 \, 32 \, 48 \, 64 \, ... "steps") the result is again
+periodic at the original frequency. If you select a half-integer times
+the fundamental (8 \, 24 \, 40 \, ... steps) the pitch drops by an
+octave and you get only odd partials. For most other settings you'll
+get an inharmonic complex of tones. These are sometimes heard as separate
+pitches and other times they seem to fuse into a single timbre with
+indeterminate pitch.;
+#X connect 1 0 6 0;
+#X connect 1 0 6 1;
+#X connect 5 0 3 1;
+#X connect 18 0 38 0;
+#X connect 18 0 39 0;
+#X connect 18 0 28 0;
+#X connect 18 0 40 0;
+#X connect 18 0 41 0;
+#X connect 18 0 42 0;
+#X connect 19 0 21 0;
+#X connect 20 0 21 1;
+#X connect 21 0 51 0;
+#X connect 22 0 24 0;
+#X connect 23 0 24 1;
+#X connect 24 0 51 0;
+#X connect 25 0 27 0;
+#X connect 26 0 27 1;
+#X connect 27 0 51 0;
+#X connect 28 0 25 0;
+#X connect 29 0 31 0;
+#X connect 30 0 31 1;
+#X connect 31 0 51 0;
+#X connect 32 0 34 0;
+#X connect 33 0 34 1;
+#X connect 34 0 51 0;
+#X connect 35 0 37 0;
+#X connect 36 0 37 1;
+#X connect 37 0 51 0;
+#X connect 38 0 19 0;
+#X connect 39 0 22 0;
+#X connect 40 0 29 0;
+#X connect 41 0 32 0;
+#X connect 42 0 35 0;
+#X connect 51 0 3 0;
+#X connect 51 0 1 0;
+#X connect 53 0 51 1;
+#X connect 54 0 55 0;
+#X connect 55 0 53 0;
+#X connect 56 0 55 1;
+#X connect 61 0 63 0;
+#X connect 63 0 5 0;

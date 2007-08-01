@@ -1,0 +1,57 @@
+#N canvas 44 0 604 533 12;
+#X obj 43 278 mtof;
+#X floatatom 43 255 5 0 150 0 - #0-pit -;
+#X obj 32 446 output~;
+#X obj 32 225 noise~;
+#X text 95 254 <-- cutoff (pitch units);
+#X text 106 301 <-- cutoff (Hertz);
+#X floatatom 43 303 5 0 0 0 - - -;
+#X text 330 494 updated for Pd version 0.39;
+#X obj 121 414 metro 250;
+#X obj 121 394 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X text 139 391 graphing on/off;
+#N canvas 0 0 450 300 graph2 0;
+#X array H03-graph 882 float 2;
+#X coords 0 1 882 -1 200 140 1;
+#X restore 375 290 graph;
+#X text 399 432 --- 0.02 sec ---;
+#X text 98 224 white noise \, test signal;
+#X obj 32 361 bp~;
+#X text 73 363 band-pass filter;
+#X obj 121 439 tabwrite~ H03-graph;
+#X floatatom 54 331 5 0 1000 0 - #0-q -;
+#X text 106 329 <-- q;
+#N canvas 0 0 450 300 loadbang 0;
+#X obj 85 16 loadbang;
+#X obj 85 40 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 85 59 f \$0;
+#X text 18 179 boxes.;
+#X text 16 161 This subpatch loads initial values in number;
+#X msg 85 83 \; \$1-pit 72 \; \$1-q 1;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X restore 139 482 pd loadbang;
+#X text 154 8 RESONANT (BAND-PASS) FILTER;
+#X text 26 129 The two controls specify \, first \, the center frequency
+\, and second \, the sharpness of the filter \, commonly called "q".
+If you increase q to 10 or 20 \, you will see a drop in total signal
+power \, and moreover \, you'll see and hear the resonant frequency
+more clearly in the result.;
+#X text 28 30 A simple resonant band-pass filter is provided in the
+bp~ object. Resonant filters can be tuned to a specific "center frequency"
+and then will pass that frequency while attenuating other frequencies
+(the further from the center frequency \, the more attenuation). This
+patch uses a white noise source to demonstrate bp~.;
+#X connect 0 0 6 0;
+#X connect 1 0 0 0;
+#X connect 3 0 14 0;
+#X connect 6 0 14 1;
+#X connect 8 0 16 0;
+#X connect 9 0 8 0;
+#X connect 14 0 2 0;
+#X connect 14 0 2 1;
+#X connect 14 0 16 0;
+#X connect 17 0 14 2;

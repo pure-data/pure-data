@@ -1,0 +1,48 @@
+#N canvas 215 77 561 455 12;
+#X text 14 7 CONVERTING CONTROL TO SIGNALS;
+#X obj 29 350 output~;
+#X obj 107 352 output~;
+#N canvas 0 0 450 300 metro 0;
+#X obj 88 39 loadbang;
+#X msg 87 65 1;
+#X obj 87 131 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+;
+#X obj 87 153 sel 0 1;
+#X obj 87 190 outlet;
+#X obj 151 192 outlet;
+#X obj 87 96 metro 2;
+#X connect 0 0 1 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 3 1 5 0;
+#X connect 6 0 2 0;
+#X restore 30 242 pd metro;
+#X msg 30 268 1 2;
+#X msg 97 270 0 2;
+#X obj 30 305 line~;
+#X obj 108 306 vline~;
+#X text 13 107 Here we try out line~ and vline~ as triangle wave generators.
+The subpatch is still sending alternating bangs as in the last patch
+\, but now at an audible frequency \, every 2 msec.;
+#X text 17 172 The effect of line~ rounding breakpoints to the nearest
+block (on the order of a millisecond) is that each 4-millisecond-long
+cycle has a different shape. Using vline~ resolves the problem.;
+#X text 385 437 Updated for Pd 0.37;
+#X text 16 411 Sometimes you will want to use vline~ in place of sig~
+for the same reason.;
+#X text 15 27 For controlling amplitudes \, line~ \, with its block-aligned
+breakpoints \, is accurate enough for most purposes. But certain usages
+\, such as this patch \, demand more accuracy. The vline~ object \,
+somewhat more expensive than line~ \, can handle breakpoints to sub-sample
+accuracy.;
+#X connect 3 0 4 0;
+#X connect 3 1 5 0;
+#X connect 4 0 6 0;
+#X connect 4 0 7 0;
+#X connect 5 0 6 0;
+#X connect 5 0 7 0;
+#X connect 6 0 1 0;
+#X connect 6 0 1 1;
+#X connect 7 0 2 0;
+#X connect 7 0 2 1;

@@ -1,0 +1,10 @@
+#N canvas 440 252 579 286 12;
+#X text 87 6 INTRODUCTION TO THE PD AUDIO EXAMPLE PATCHES;
+#X text 328 257 updated for Pd version 0.37;
+#X text 34 45 This is the second of three tutorial series on Pd. This
+one shows the time-domain audio processing features. (The first one
+showed how to use Pd to do "control" computations \, and the third
+is about frequency-domain techniques.);
+#X text 33 125 These patches are accompanied by an ONLINE BOOK:;
+#X text 100 158 http://www.crca.ucsd.edu/~msp/techniques.htm;
+#X text 37 189 which develops the underlying theory.;

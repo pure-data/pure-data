@@ -1,0 +1,253 @@
+#N canvas 390 121 616 352 12;
+#N canvas 0 0 499 321 test-input 0;
+#X obj 75 253 outlet~;
+#X obj 74 201 -~;
+#X obj 74 177 *~ 3;
+#X obj 111 183 *~ 2;
+#X floatatom 74 81 0 0 0 0 - - -;
+#X obj 74 153 clip~ 0 0.667;
+#X text 124 80 <-- pitch;
+#X obj 74 105 mtof;
+#X msg 195 142 1;
+#X obj 74 225 *~;
+#X obj 74 129 phasor~ 0;
+#X obj 195 190 tabread4~ dbtorms;
+#X obj 195 166 adsr 100 100 2000 0 2000;
+#X obj 73 54 inlet;
+#N canvas 0 0 600 392 conversion-tables 0;
+#N canvas 0 0 450 300 graph1 0;
+#X array dbtorms 123 float 1;
+#A 0 0 0 1.25893e-05 1.41254e-05 1.58489e-05 1.77828e-05 1.99526e-05
+2.23872e-05 2.51189e-05 2.81838e-05 3.16228e-05 3.54813e-05 3.98107e-05
+4.46684e-05 5.01187e-05 5.62341e-05 6.30957e-05 7.07946e-05 7.94328e-05
+8.91251e-05 1e-04 0.000112202 0.000125893 0.000141254 0.000158489 0.000177828
+0.000199526 0.000223872 0.000251189 0.000281838 0.000316228 0.000354813
+0.000398107 0.000446684 0.000501187 0.000562341 0.000630957 0.000707946
+0.000794328 0.000891251 0.001 0.00112202 0.00125893 0.00141254 0.00158489
+0.00177828 0.00199526 0.00223872 0.00251189 0.00281838 0.00316228 0.00354813
+0.00398107 0.00446684 0.00501187 0.00562341 0.00630957 0.00707946 0.00794328
+0.00891251 0.01 0.0112202 0.0125893 0.0141254 0.0158489 0.0177828 0.0199526
+0.0223872 0.0251189 0.0281838 0.0316228 0.0354813 0.0398107 0.0446684
+0.0501187 0.0562341 0.0630957 0.0707946 0.0794328 0.0891251 0.1 0.112202
+0.125893 0.141254 0.158489 0.177828 0.199526 0.223872 0.251189 0.281838
+0.316228 0.354813 0.398107 0.446684 0.501187 0.562341 0.630957 0.707946
+0.794328 0.891251 1 1.12202 1.25893 1.41254 1.58489 1.77828 1.99526
+2.23872 2.51189 2.81838 3.16228 3.54813 3.98107 4.46684 5.01187 5.62341
+6.30957 7.07946 7.94328 8.91251 10 11.2202 12.5893;
+#X coords 0 10 123 0 200 100 1;
+#X restore 70 45 graph;
+#X text 272 138 0;
+#X text 274 38 10;
+#X text 89 148 ------ 123 samples ------;
+#N canvas 0 0 450 300 graph2 0;
+#X array mtof 130 float 1;
+#A 0 8.1758 8.66196 9.17702 9.72272 10.3009 10.9134 11.5623 12.2499
+12.9783 13.75 14.5676 15.4339 16.3516 17.3239 18.354 19.4454 20.6017
+21.8268 23.1247 24.4997 25.9565 27.5 29.1352 30.8677 32.7032 34.6478
+36.7081 38.8909 41.2034 43.6535 46.2493 48.9994 51.9131 55 58.2705
+61.7354 65.4064 69.2957 73.4162 77.7817 82.4069 87.3071 92.4986 97.9989
+103.826 110 116.541 123.471 130.813 138.591 146.832 155.563 164.814
+174.614 184.997 195.998 207.652 220 233.082 246.942 261.626 277.183
+293.665 311.127 329.628 349.228 369.994 391.995 415.305 440 466.164
+493.883 523.251 554.365 587.33 622.254 659.255 698.456 739.989 783.991
+830.609 880 932.328 987.767 1046.5 1108.73 1174.66 1244.51 1318.51
+1396.91 1479.98 1567.98 1661.22 1760 1864.66 1975.53 2093 2217.46 2349.32
+2489.02 2637.02 2793.83 2959.96 3135.96 3322.44 3520 3729.31 3951.07
+4186.01 4434.92 4698.64 4978.03 5274.04 5587.65 5919.91 6271.93 6644.88
+7040 7458.62 7902.13 8372.02 8869.84 9397.27 9956.06 10548.1 11175.3
+11839.8 12543.9 13289.8 14080;
+#X coords 0 12000 130 0 200 100 1;
+#X restore 77 222 graph;
+#X text 87 330 ------ 130 samples ------;
+#X text 286 315 0;
+#X text 288 215 12000;
+#N canvas 244 212 672 338 regenerate-tables 0;
+#X msg 415 84 bang;
+#X obj 415 113 t b b;
+#X obj 474 177 f;
+#X obj 512 177 + 1;
+#X msg 483 147 0;
+#X obj 415 142 until;
+#X obj 474 211 t f f;
+#X obj 414 238 mtof;
+#X obj 405 202 sel 129;
+#X obj 413 264 tabwrite mtof;
+#X obj 35 227 moses 2;
+#X msg 19 76 bang;
+#X obj 19 105 t b b;
+#X obj 90 166 f;
+#X obj 128 166 + 1;
+#X msg 112 138 0;
+#X obj 19 134 until;
+#X obj 11 194 sel 122;
+#X msg 35 258 0;
+#X obj 79 259 dbtorms;
+#X obj 90 194 t f f;
+#X obj 35 291 tabwrite dbtorms;
+#X text 18 49 bang to recalculate dbtorms table;
+#X text 356 50 bang to recalculate the mtof table;
+#X connect 0 0 1 0;
+#X connect 1 0 5 0;
+#X connect 1 1 4 0;
+#X connect 2 0 3 0;
+#X connect 2 0 6 0;
+#X connect 2 0 8 0;
+#X connect 3 0 2 1;
+#X connect 4 0 2 1;
+#X connect 5 0 2 0;
+#X connect 6 0 7 0;
+#X connect 6 1 9 1;
+#X connect 7 0 9 0;
+#X connect 8 0 5 1;
+#X connect 10 0 18 0;
+#X connect 10 1 19 0;
+#X connect 11 0 12 0;
+#X connect 12 0 16 0;
+#X connect 12 1 15 0;
+#X connect 13 0 14 0;
+#X connect 13 0 17 0;
+#X connect 13 0 20 0;
+#X connect 14 0 13 1;
+#X connect 15 0 13 1;
+#X connect 16 0 13 0;
+#X connect 17 0 16 1;
+#X connect 18 0 21 0;
+#X connect 19 0 21 0;
+#X connect 20 0 10 0;
+#X connect 20 1 21 1;
+#X restore 375 76 pd regenerate-tables;
+#X restore 260 101 pd conversion-tables;
+#X connect 1 0 9 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 1;
+#X connect 4 0 7 0;
+#X connect 4 0 8 0;
+#X connect 5 0 2 0;
+#X connect 7 0 10 0;
+#X connect 8 0 12 0;
+#X connect 9 0 0 0;
+#X connect 10 0 3 0;
+#X connect 10 0 5 0;
+#X connect 11 0 9 1;
+#X connect 12 0 11 0;
+#X connect 13 0 4 0;
+#X restore 39 114 pd test-input;
+#X text 135 6 REVERBERATOR;
+#X floatatom 39 87 0 10 130 0 - - -;
+#X text 76 87 <-- pitch;
+#N canvas 96 169 958 610 reverb 0;
+#X obj 13 19 inlet~;
+#X obj 13 43 reverb-echo echo-del1 5.43216;
+#X obj 277 215 +~;
+#X obj 319 215 +~;
+#X obj 67 276 outlet~;
+#X obj 137 276 outlet~;
+#X obj 238 334 +~;
+#X obj 347 335 +~;
+#X obj 280 334 -~;
+#X obj 387 334 -~;
+#X obj 237 390 +~;
+#X obj 281 391 +~;
+#X obj 325 392 -~;
+#X obj 364 392 -~;
+#X obj 324 474 *~ 0;
+#X obj 282 473 *~ 0;
+#X obj 237 472 *~ 0;
+#X obj 365 475 *~ 0;
+#X obj 632 365 inlet;
+#X obj 632 437 / 200;
+#X obj 632 389 min 100;
+#X obj 632 412 max 0;
+#X obj 238 583 delwrite~ loop-del1 60;
+#X obj 283 561 delwrite~ loop-del2 71.9345;
+#X obj 364 515 delwrite~ loop-del4 95.945;
+#X obj 298 154 delread~ loop-del1 60;
+#X obj 340 179 delread~ loop-del2 71.9345;
+#X obj 408 233 delread~ loop-del4 95.945;
+#X obj 386 208 delread~ loop-del3 86.7545;
+#X obj 325 538 delwrite~ loop-del3 86.7545;
+#X obj 13 67 reverb-echo echo-del2 8.45346;
+#X obj 13 91 reverb-echo echo-del3 13.4367;
+#X obj 13 115 reverb-echo echo-del4 21.5463;
+#X obj 13 139 reverb-echo echo-del5 34.3876;
+#X obj 13 163 reverb-echo echo-del6 55.5437;
+#X text 286 42 "early echo" generators \, which also increase echo
+density. Open one to see what they do.;
+#X text 300 115 Get the outputs of the recirculating delays. Add the
+inputs to two of them.;
+#X text 420 313 Do a power-conserving mix of them in pairs. First combine
+(1 \, 2) and (3 \, 4)...;
+#X text 402 385 ...then (1 \, 3) and (2 \, 4);
+#X text 446 469 The two mixing stages have a combined gain of 2 \,
+so the recirculation gain is limited to 0.5.;
+#X text 586 542 Put the signals back into the;
+#X text 584 557 recirculating delays.;
+#X text 29 296 Tap outputs from here.;
+#X text 708 381 0 to 100 to control reverb;
+#X text 719 396 time.;
+#X text 691 364 feedback gain on a scale of;
+#X connect 0 0 1 0;
+#X connect 1 0 30 0;
+#X connect 1 1 30 1;
+#X connect 2 0 4 0;
+#X connect 2 0 6 0;
+#X connect 2 0 8 0;
+#X connect 3 0 5 0;
+#X connect 3 0 6 1;
+#X connect 3 0 8 1;
+#X connect 6 0 10 0;
+#X connect 6 0 12 0;
+#X connect 7 0 12 1;
+#X connect 7 0 10 1;
+#X connect 8 0 11 0;
+#X connect 8 0 13 0;
+#X connect 9 0 11 1;
+#X connect 9 0 13 1;
+#X connect 10 0 16 0;
+#X connect 11 0 15 0;
+#X connect 12 0 14 0;
+#X connect 13 0 17 0;
+#X connect 14 0 29 0;
+#X connect 15 0 23 0;
+#X connect 16 0 22 0;
+#X connect 17 0 24 0;
+#X connect 18 0 20 0;
+#X connect 19 0 17 1;
+#X connect 19 0 16 1;
+#X connect 19 0 15 1;
+#X connect 19 0 14 1;
+#X connect 20 0 21 0;
+#X connect 21 0 19 0;
+#X connect 25 0 2 1;
+#X connect 26 0 3 1;
+#X connect 27 0 7 1;
+#X connect 27 0 9 1;
+#X connect 28 0 7 0;
+#X connect 28 0 9 0;
+#X connect 30 0 31 0;
+#X connect 30 1 31 1;
+#X connect 31 0 32 0;
+#X connect 31 1 32 1;
+#X connect 32 0 33 0;
+#X connect 32 1 33 1;
+#X connect 33 0 34 0;
+#X connect 33 1 34 1;
+#X connect 34 0 2 0;
+#X connect 34 1 3 0;
+#X restore 58 179 pd reverb;
+#X floatatom 134 155 0 0 100 0 - - -;
+#X text 169 155 <-- feedback (100 maximum);
+#X obj 38 206 output~;
+#X text 342 317 updated for Pd version 0.37-1;
+#X text 149 180 <-- open to see how it works;
+#X text 34 269 Many improvements are possible. Much better reverberators
+can be found in the "extras" library.;
+#X text 29 30 Here is a simple recirculating reverberator. "Feedback"
+should be between 0 and 100 - if 100 \, the reverberation lasts forever.
+;
+#X connect 0 0 4 0;
+#X connect 0 0 7 0;
+#X connect 2 0 0 0;
+#X connect 4 0 7 0;
+#X connect 4 1 7 1;
+#X connect 5 0 4 1;

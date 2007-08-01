@@ -1,0 +1,26 @@
+#N canvas 343 45 557 321 12;
+#X text 88 11 -- declare the fields in a data structure.;
+#N canvas 345 476 638 171 help-template1 0;
+#X obj 60 21 struct struct-1 float x float y symbol dog array weasel
+struct-2;
+#X text 40 76 In this example \, the "struct-1" structure is defined
+in which "x" and "y" are "floats" \, i.e. \, numbers \, but "dog" is
+a symbol and "weasel" is an array of objects of structure "struct-2".
+;
+#X restore 324 156 pd help-template1;
+#N canvas 10 274 588 157 help-template2 0;
+#X text 28 95 Here is one which specifies only the floating point "y"
+\; it's used for the elements of the array shown in the other template.
+;
+#X obj 60 21 struct struct-2 float y;
+#X restore 324 183 pd help-template2;
+#X obj 36 215 drawpolygon;
+#X text 36 195 see also:;
+#X obj 141 215 drawnumber;
+#X obj 236 216 plot;
+#X text 281 290 updated for Pd version 0.35;
+#X obj 21 10 struct;
+#X text 16 49 There should be one "struct" object in each Pd window
+you are using as a data structure template. The arguments specify the
+types and names of the fields \; and for array fields \, a third argument
+specifies the template that the array elements should belong to.;

@@ -1,0 +1,61 @@
+#N canvas 343 48 578 498 12;
+#N canvas 158 4 728 420 16x 0;
+#X obj 21 151 *~ 0.064;
+#X obj 21 174 rpole~ 0.93538;
+#X obj 21 197 *~ 0.00431;
+#X obj 21 220 cpole~ 0.96559 0.05592;
+#X obj 21 246 cpole~ 0.96559 -0.05592;
+#X obj 21 269 *~ 0.125;
+#X obj 21 292 rzero~ -1;
+#X obj 21 315 rzero~ -1;
+#X obj 21 338 rzero~ -1;
+#X obj 21 66 phasor~;
+#X obj 204 29 block~ 1024 1 16;
+#X obj 21 31 inlet;
+#X obj 21 372 outlet~;
+#X text 170 151 These objects make a 3-pole \, 3-zero Butterwirth low-pass
+filter with cutoff at 15kHz (assuming 44100 sample rate.) The filter
+was designed using the "buttercoef3" abstraction introduced in patch
+H13.butterworth.pd in this series.;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 3 1 4 1;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 8 0 12 0;
+#X connect 9 0 0 0;
+#X connect 11 0 9 0;
+#X restore 23 148 pd 16x;
+#X floatatom 23 111 7 0 0 0 - - -;
+#X obj 109 149 phasor~;
+#X obj 22 194 output~;
+#X obj 108 194 output~;
+#X obj 23 83 mtof;
+#X floatatom 23 59 3 -24 135 0 - - -;
+#X text 131 18 UPSAMPLING TO CONTROL FOLDOVER;
+#X text 56 57 <-- pitch;
+#X text 126 250 not;
+#X text 22 265 sampled;
+#X text 26 249 16x up-;
+#X text 20 293 The "pd 16x" subpatch at left contains a phasor~ object
+\, but is locally upsampled by a factor of sixteen. Without upsampling
+\, partials as low as 24 Khz. fold back over into the audible range.
+With upsampling \, the first audibly folding over partial is at almost
+700 Hz \, 29 times higher. The relevant partials will be 29 times \,
+or almost 30 dB \, quieter when upsampled.;
+#X text 21 403 A third-order Butterworth filter is used inside the
+"pd 16x" subpatch - without that \, the internal signal would fold
+over as it gets downsampled at the outlet~ object.;
+#X text 324 464 Updated for Pd version 0.39;
+#X connect 0 0 3 0;
+#X connect 0 0 3 1;
+#X connect 1 0 0 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 0 4 1;
+#X connect 5 0 1 0;
+#X connect 6 0 5 0;

@@ -1,0 +1,79 @@
+#N canvas 100 17 683 605 12;
+#X floatatom 424 290 0 0 100 0 - - -;
+#X obj 59 404 +~;
+#X text 86 9 ORDER OF EXECUTION OF DELWRITE~ AND DELREAD~/VD~;
+#X text 42 29 If you're writing to and reading from a delay line \,
+you have to get the write sorted before the read or else you'll never
+get less than a block's delay. This patch compares a "wrong" flanger
+with a "right" one:;
+#X text 471 284 <-- delay in samples;
+#X obj 94 490 *~;
+#X obj 94 466 -~;
+#N canvas 0 0 600 400 delay-writer 0;
+#X obj 96 107 inlet~;
+#X obj 96 180 outlet~;
+#X obj 116 144 delwrite~ G05-d2 1000;
+#X connect 0 0 1 0;
+#X connect 0 0 2 0;
+#X restore 283 403 pd delay-writer;
+#N canvas 0 0 280 330 delay-reader 0;
+#X obj 96 107 inlet~;
+#X obj 89 267 outlet~;
+#X obj 112 163 inlet~;
+#X obj 89 237 +~;
+#X obj 112 198 vd~ G05-d2;
+#X connect 0 0 3 0;
+#X connect 2 0 4 0;
+#X connect 3 0 1 0;
+#X connect 4 0 3 1;
+#X restore 282 431 pd delay-reader;
+#X obj 59 490 +~;
+#X obj 424 313 / 44.1;
+#X obj 59 534 output~;
+#X obj 135 490 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X text 159 490 <-- off to hear left-hand side \; on to hear right
+hand side.;
+#X text 393 575 updated for Pd version 0.37-1;
+#X obj 424 337 pack 0 30;
+#N canvas 0 0 450 300 pulse 0;
+#X obj 64 197 outlet~;
+#X obj 63 93 phasor~ 50;
+#X obj 63 119 *~ 100;
+#X obj 63 144 clip~ 0.75 1.25;
+#X obj 64 170 cos~;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 0 0;
+#X restore 60 302 pd pulse;
+#X obj 81 354 delwrite~ G05-d1 1000;
+#X obj 82 381 vd~ G05-d1;
+#X obj 424 362 line~;
+#X text 44 96 To get them to go off in the correct order \, put the
+delread~ and vd~ objects in subpatches. The audio connections between
+the subpatches force the "reader" to be sorted after the "writer".
+DSP sorting in Pd follows the hierarchy of subpatches.;
+#X text 43 175 To hear the difference scroll the delay time between
+0 and 100 samples. The patch at left doesn't let you get below 64 samples
+\, but the patch at right can go all the way down to one sample.;
+#X text 45 241 You can use the same strategy to avoid picking up unwanted
+64-sample delays in send~/receive~ and throw~/catch~ pairs.;
+#X connect 0 0 10 0;
+#X connect 1 0 6 1;
+#X connect 1 0 9 0;
+#X connect 5 0 9 1;
+#X connect 6 0 5 0;
+#X connect 7 0 8 0;
+#X connect 8 0 6 0;
+#X connect 9 0 11 0;
+#X connect 9 0 11 1;
+#X connect 10 0 15 0;
+#X connect 12 0 5 1;
+#X connect 15 0 19 0;
+#X connect 16 0 1 0;
+#X connect 16 0 7 0;
+#X connect 16 0 17 0;
+#X connect 18 0 1 1;
+#X connect 19 0 8 1;
+#X connect 19 0 18 0;

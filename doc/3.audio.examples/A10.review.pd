@@ -1,0 +1,37 @@
+#N canvas 36 68 652 461 12;
+#X text 157 10 PART 1 REVIEW;
+#X obj 67 113 tabwrite~;
+#X obj 67 87 line~;
+#X obj 71 220 +;
+#X obj 67 61 +~;
+#X obj 67 139 osc~;
+#X obj 72 319 r;
+#X obj 72 295 s;
+#X obj 71 269 inlet;
+#X obj 114 245 mtof;
+#X obj 71 244 ftom;
+#X obj 122 269 outlet;
+#X obj 67 164 dac~;
+#X text 27 34 So far we've seen these audio ("tilde") objects:;
+#X text 124 86 -- ramp generator;
+#X text 158 113 -- sampler (which we've only used for graphing so far)
+;
+#X text 113 165 -- audio output ("digital/analog converter" -- a misnomer)
+;
+#X text 34 193 ... and these "control" objects:;
+#X text 162 243 -- frequency to pitch conversion;
+#X text 184 270 -- input and output to a subpatch;
+#X text 108 296 ("send") -- wireless message sending;
+#X text 109 321 ("receive") ... and receiving;
+#X text 107 60 (etc.) -- arithmetic on audio signals;
+#X text 109 218 (etc.) -- arithmetic;
+#X text 385 426 updated for Pd version 0.40.;
+#X text 112 139 -- sinusoidal oscillator;
+#X obj 74 418 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+;
+#X text 97 416 -- toggle switch;
+#X floatatom 74 395 0 0 0 0 - - -;
+#X text 109 394 -- number box;
+#X msg 74 372;
+#X text 111 372 -- message box;
+#X text 43 346 ... and these other (non-object) boxes:;

@@ -1,0 +1,28 @@
+#N canvas 47 52 758 482 12;
+#X text 465 442 updated for Pd version 0.26;
+#X text 35 28 You can use "qlist" or "textfile" objects for sequencing.
+Qlist is simpler to use than the (more versatile) textfile.;
+#X obj 345 144 r receive1;
+#X obj 441 146 r receive2;
+#X msg 205 88 clear \, add receive1 1 \, add 1000 receive1 0 \, add
+receive2 2 \, add 1000 receive2 0 \, add receive1 3 \, bang;
+#X obj 205 129 qlist;
+#X floatatom 345 170 0 0 0 0 - - -;
+#X floatatom 441 171 0 0 0 0 - - -;
+#X text 48 202 The "add" messages add lines to the qlist \, so that
+it contains:;
+#X text 155 238 receive1 1;
+#X text 154 259 1000 receive1 0;
+#X text 155 279 receive2 2;
+#X text 153 299 1000 receive2 0;
+#X text 155 317 receive1 3;
+#X text 16 391 If you have more than 5 lines or so wou will probably
+want to store them as a separate file and have qlist read it. You can
+also write files \, set tempo \, and single step... see the help patch
+for details.;
+#X text 22 341 and the "bang" instructs qlist to play the sequence
+by sending messages to "receive" objects. Messages starting with numbers
+request that amount of delay.;
+#X connect 2 0 6 0;
+#X connect 3 0 7 0;
+#X connect 4 0 5 0;

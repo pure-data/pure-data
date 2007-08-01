@@ -1,0 +1,50 @@
+#N canvas 19 22 722 608 12;
+#X floatatom 164 43 0 0 0 0 - - -;
+#N canvas 0 0 450 300 graph1 0;
+#X array table10 259 float 1;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0.612 0.612 0.612 0.612 0.612 0.627692 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 -0.470769 -0.470769 -0.470769 -0.470769 -0.470769
+-0.470769 -0.470769 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0.627692 0.627692 0.627692 0.643385 0.643385 0.643385
+0.659077 0 -0.502154 -0.502154 -0.502154 -0.486462 -0.486462 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0.580615 0.596308 0.596308 0.596308 0.596308
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1.02 258 -1.02 258 130 1;
+#X restore 445 47 graph;
+#X text 30 123 oscillator -->;
+#X text 456 587 updated for Pd version 0.34;
+#X text 33 8 WAVETABLE OSCILLATORS;
+#X text 36 106 wavetable;
+#X obj 164 70 mtof;
+#X floatatom 164 97 0 0 0 0 - - -;
+#X obj 164 123 tabosc4~ table10;
+#X text 94 42 pitch->;
+#X text 35 309 Note that I selected "save contents" in the properties
+dialog for table10 (right click on the table to see.) If this isn't
+set \, the waveform won't be remembered as part of the patch but will
+be reinitialized to zero when the patch is reopened.;
+#X msg 35 549 \; table10 cosinesum 256 0.2 -0.2 0.2 -0.2 0.2 -0.2 0.2
+;
+#X msg 578 240 \; table10 const 0;
+#X text 597 217 CLEAR TABLE;
+#X text 35 395 For efficiency's sake tabosc4~ requires that the table
+have a power of two plus three points (64+3=67 \, 128+3=131 \, 256+3=259
+\, etc.) If you want wraparound to work smoothly \, you should make
+the last three points copies of the first three. This is done because
+tabread4~ does 4-point interpolation.;
+#X text 38 494 If you want a specific sinusoidal composition \, you
+can send table10 a message \, as below (see 11.arrays in the control
+examples):;
+#X text 36 240 Here \, in place of the "osc~" cosine wave oscillator
+\, we introduce the tabosc4~ oscillator which produces an arbitrary
+waveform. You can draw in the waveform with the mouse.;
+#X obj 164 151 output~;
+#X connect 0 0 6 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 8 0 17 0;
+#X connect 8 0 17 1;

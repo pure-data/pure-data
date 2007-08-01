@@ -1,0 +1,84 @@
+#N canvas 262 74 690 585 12;
+#X obj 137 133 wrap~;
+#X obj 137 155 -~ 0.5;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-sum 882 float 0;
+#X coords 0 1.02 881 -1.02 200 130 1;
+#X restore 421 155 graph;
+#X text 420 293 ---- 0.02 seconds ----;
+#X text 427 550 updated for Pd version 0.39;
+#X obj 53 335 output~;
+#X obj 147 369 tabwrite~ \$0-sum;
+#X obj 137 111 -~;
+#X obj 159 70 / 100;
+#X floatatom 159 49 4 -100 100 0 - - -;
+#X obj 158 220 / 100;
+#X floatatom 158 199 4 -100 100 0 - - -;
+#X obj 136 242 *~;
+#X obj 209 134 wrap~;
+#X obj 209 156 -~ 0.5;
+#X obj 209 112 -~;
+#X obj 231 71 / 100;
+#X floatatom 231 50 4 -100 100 0 - - -;
+#X obj 230 221 / 100;
+#X floatatom 230 200 4 -100 100 0 - - -;
+#X obj 208 243 *~;
+#X obj 280 135 wrap~;
+#X obj 280 157 -~ 0.5;
+#X obj 280 113 -~;
+#X obj 302 72 / 100;
+#X floatatom 302 51 4 -100 100 0 - - -;
+#X obj 301 222 / 100;
+#X floatatom 301 201 4 -100 100 0 - - -;
+#X obj 279 244 *~;
+#X text 138 30 -- PHASES (percent) --;
+#X text 164 180 AMPLITUDES (percent);
+#X obj 111 268 +~;
+#X obj 112 294 +~;
+#X text 31 3 Making trapezoidal waves from sawtooth waves;
+#X obj 158 321 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+1;
+#X obj 25 77 phasor~ 88.2;
+#X obj 158 343 metro 193;
+#X text 4 476 If the amplitudes sum to zero (with negative ones to
+balance positive ones) \, the slope of each linear segment becomes
+zero. Otherrwise \, the segments have just enough slope to make up
+for the three jumps ane get to the same starting value after each cycle..
+;
+#X text 4 408 Here we combine three sawtooth waves with controllable
+relative phases and amplitudes (in percent \, between -100 and 100.)
+Each sawtooth wave gives rise to one jump (upward or downward) per
+cycle.;
+#X connect 0 0 1 0;
+#X connect 1 0 12 0;
+#X connect 7 0 0 0;
+#X connect 8 0 7 1;
+#X connect 9 0 8 0;
+#X connect 10 0 12 1;
+#X connect 11 0 10 0;
+#X connect 12 0 31 0;
+#X connect 13 0 14 0;
+#X connect 14 0 20 0;
+#X connect 15 0 13 0;
+#X connect 16 0 15 1;
+#X connect 17 0 16 0;
+#X connect 18 0 20 1;
+#X connect 19 0 18 0;
+#X connect 20 0 31 1;
+#X connect 21 0 22 0;
+#X connect 22 0 28 0;
+#X connect 23 0 21 0;
+#X connect 24 0 23 1;
+#X connect 25 0 24 0;
+#X connect 26 0 28 1;
+#X connect 27 0 26 0;
+#X connect 28 0 32 1;
+#X connect 31 0 32 0;
+#X connect 32 0 6 0;
+#X connect 32 0 5 0;
+#X connect 32 0 5 1;
+#X connect 34 0 36 0;
+#X connect 35 0 7 0;
+#X connect 35 0 15 0;
+#X connect 35 0 23 0;
+#X connect 36 0 6 0;

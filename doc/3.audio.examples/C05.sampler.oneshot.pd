@@ -1,0 +1,84 @@
+#N canvas 34 0 985 746 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array tab28 176403 float 0;
+#X coords 0 1.02 176403 -1.02 200 130 1;
+#X restore 740 126 graph;
+#X obj 577 486 loadbang;
+#X obj 31 340 hip~ 5;
+#X obj 587 345 adc~ 1;
+#X obj 587 375 hip~ 5;
+#X msg 558 306 bang;
+#X text 681 492 v-- re-read the original sample;
+#X text 20 6 ONE-SHOT SAMPLER USING LINE~ AS PHASE;
+#X obj 31 306 *~;
+#X obj 71 279 r cutoff;
+#X obj 31 194 r phase;
+#X msg 24 37 bang;
+#X obj 124 92 delay 5;
+#X text 77 37 <-- play the sample;
+#X msg 24 128 \; cutoff 0 5;
+#X text 34 85 cut the;
+#X text 34 104 sound off;
+#X text 204 77 Wait for the;
+#X text 202 97 cutoff to finish;
+#X text 349 121 set the upper line~ to start;
+#X text 349 140 at the first sample and go;
+#X text 348 161 forever (until the next trigger);
+#X text 18 486 To start a note \, first we have to mute the output
+in case ther's already something playing---otherwise we'll get a click.
+The "cutoff" line~ then takes 5 msec to get to zero. After that amount
+of delay \, we reset the phase to sample number 1 and set it in motion.
+We want the line~ output to increase by 1 each sample of output \,
+so we ask for it to do 4.41e+08 samples in 1e+07 milliseconds.;
+#X text 18 602 The cutoff mechanism is still safe if we happen to ask
+for two notes in under 5 msec. The second request would reset the delay
+\, so that there's no way the delay can possibly fire without the cutoff
+line~ at zero.;
+#X text 596 305 <-- record;
+#X obj 622 405 line~;
+#X obj 587 410 *~;
+#X text 738 267 ------ 4 seconds ------;
+#X obj 655 342 del 3990;
+#X msg 655 370 0 10;
+#X text 706 371 <--stop recording;
+#X text 19 672 We avoid clicking at the end of the table by getting
+the table's own contents to go smoothly to zero. To do this we added
+a level control to the recording patch that cuts off just before the
+recording reaches the end of the table.;
+#X text 576 599 this is.;
+#X text 578 575 My apologies to Jonathan Harvey whose bell;
+#X obj 577 545 soundfiler;
+#X text 19 443 Here's how to make a sampler with a line~ object \,
+instead of a phasor~ \, to generate the read location signal.;
+#X obj 71 306 vline~;
+#X obj 30 369 output~;
+#X obj 31 224 vline~;
+#X obj 558 439 tabwrite~ tab28;
+#X msg 577 516 read ../sound/bell.aiff tab28;
+#X obj 31 254 tabread4~ tab28;
+#X msg 124 127 \; phase 1 \, 4.41e+08 1e+07 \; cutoff 1;
+#X msg 497 386 0 \, 1 5;
+#X text 719 717 updated for Pd version 0.37;
+#X connect 1 0 40 0;
+#X connect 2 0 37 0;
+#X connect 2 0 37 1;
+#X connect 3 0 4 0;
+#X connect 4 0 26 0;
+#X connect 5 0 28 0;
+#X connect 5 0 43 0;
+#X connect 5 0 39 0;
+#X connect 8 0 2 0;
+#X connect 9 0 36 0;
+#X connect 10 0 38 0;
+#X connect 11 0 14 0;
+#X connect 11 0 12 0;
+#X connect 12 0 42 0;
+#X connect 25 0 26 1;
+#X connect 26 0 39 0;
+#X connect 28 0 29 0;
+#X connect 29 0 25 0;
+#X connect 36 0 8 1;
+#X connect 38 0 41 0;
+#X connect 40 0 34 0;
+#X connect 41 0 8 0;
+#X connect 43 0 25 0;

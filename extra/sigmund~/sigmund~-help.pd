@@ -1,0 +1,172 @@
+#N canvas 209 199 580 617 12;
+#X text 42 4 sigmund~ - sinusoidal analysis and pitch tracking;
+#N canvas 432 117 573 597 using-with-tables 0;
+#X obj 29 368 print peak;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array insignal 1024 float 2;
+#X coords 0 1 1023 -1 200 140 1;
+#X restore 83 426 graph;
+#X obj 314 513 phasor~;
+#X obj 294 429 loadbang;
+#X obj 314 461 440;
+#X floatatom 313 488 5 0 0 0 - - -;
+#X obj 305 544 tabwrite~ insignal;
+#X obj 290 516 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 114 11 Using sigmund~ on arrays;
+#X text 42 33 If invoked with the "-t" flag (as a creation argument)
+\, sigmund~ analyzes waveforms stored in arrays. Instead of an incoming
+signal \, feed it "list" messages with the following arguments:;
+#X text 37 118 table name (a symbol);
+#X text 38 137 number of points;
+#X obj 29 342 sigmund~ -t -npeak 10 -maxfreq 5000 peaks;
+#X msg 29 316 list insignal 1024 0 44100 0;
+#X text 37 158 index of first point;
+#X text 39 179 sample rate;
+#X text 38 200 debug flag (print debugging info if nonzero);
+#X text 23 232 In this mode \, only the "env" \, "pitch" \, and "peaks"
+outputs are meaningful.;
+#X text 31 294 click here to test:;
+#X connect 2 0 6 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 5 0 2 0;
+#X connect 5 0 7 0;
+#X connect 7 0 6 0;
+#X connect 12 0 0 0;
+#X connect 13 0 12 0;
+#X restore 330 553 pd using-with-tables;
+#X obj 40 512 phasor~;
+#X obj 40 425 loadbang;
+#X floatatom 40 471 5 0 120 0 - - -;
+#X floatatom 39 561 5 0 0 0 - - -;
+#X floatatom 245 563 5 0 0 0 - - -;
+#X obj 40 490 mtof;
+#X obj 40 448 69;
+#X text 38 579 pitch;
+#X text 222 582 envelope;
+#X text 13 28 Sigmund~ analyzes an incoming sound into sinusoidal components
+\, which may be reported individually or combined to form a pitch estimate.
+Possible outputs are specified as creation arguments:;
+#X text 55 129 env - output pitches at the beginning of notes;
+#X text 56 95 pitch - output pitch continuously;
+#N canvas 518 74 588 728 setting-parameters 0;
+#X msg 182 66 print;
+#X floatatom 192 92 5 0 0 0 - - -;
+#X msg 192 113 minpower \$1;
+#X obj 182 139 sigmund~ -minpower 40;
+#X text 39 14 You can set parameters either by creation arguments \,
+or else using messages. The "print" message gives you the current values
+of all the parameters:;
+#X text 28 169 npts: number of points used in an analysis. Must be
+a power of two \, at least 128 The minimum frequency that can be tracked
+is about 2(sample_rate)/npts.;
+#X text 26 219 hop: number of points between analyses. Must be a power
+of two \, at least the DSP vector size (usually 64). This regulates
+the number of analyses done per unit of time.;
+#X text 28 271 npeak: maximum number of sinusoidal peaks to look for.
+The computation time is quadratic in the number of peaks actually found
+(this number only sets an upper limit). Use it to balance CPU time
+with quality of results.;
+#X text 30 336 maxfreq: maximum frequency of sinusoidal peaks to look
+for. This can be useful in situations where background noise creates
+high-frequency \, spurious peaks..;
+#X text 37 388 vibrato: maximum deviation from "pitch" to accept as
+normal vibrato (affects "notes" output only). If the value is too small.
+vibratos will appear as trills. If too large \, very small melodic
+intervals may not be reported as new notes.;
+#X text 33 457 stabletime: time period to wait before reporting a note
+(affects "notes" output only). The "pitch" must be present and must
+not vary more than "vibrato" for this entire period to report a note.
+If too large \, the "notes" will be unnecessarily delayed. If too small
+\, spurious notes get output.;
+#X text 31 551 minpower: minimum measured RMS level to report a pitch
+(affects "pitch" and "notes" output only). Signals quieter than this
+will be assumed to be crosstalk and ignored.;
+#X text 32 602 growth: minimum measured RMS growth to report a new
+note (affects "notes" output only). The RMS level must rise by this
+many dB (within a time period given by "stabletime") to report a repetition
+of a note at or near the previously output pitch.;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X restore 330 531 pd setting-parameters;
+#N canvas 190 230 640 535 sinusoid-tracking 0;
+#X obj 124 267 sigmund~ -npeak 10 peaks;
+#X obj 124 214 phasor~;
+#X obj 124 144 loadbang;
+#X floatatom 124 190 5 0 120 0 - - -;
+#X obj 124 295 route 0 1 2 3 4 5 6 7 8 9;
+#X obj 82 339 unpack 0 0 0 0;
+#X floatatom 82 461 5 0 0 0 - - -;
+#X floatatom 122 431 5 0 0 0 - - -;
+#X floatatom 162 406 5 0 0 0 - - -;
+#X obj 124 167 440;
+#X floatatom 203 380 5 0 0 0 - - -;
+#X obj 322 349 unpack 0 0 0 0;
+#X floatatom 322 471 5 0 0 0 - - -;
+#X floatatom 362 441 5 0 0 0 - - -;
+#X floatatom 402 416 5 0 0 0 - - -;
+#X floatatom 443 390 5 0 0 0 - - -;
+#X text 385 475 frequency (Hz.);
+#X text 419 442 peak amplitude (linear);
+#X text 464 416 cosine component;
+#X text 499 390 sine component;
+#X text 42 26 You can ask for sinusoidal peaks in decreasing order
+of amplitude or arranged into maximally continuous tracks for resynthesis.
+(Or you can ask for both.) In any case \, out come lists of five numbers
+\, one for each sinusoid at each analysis period. The first is the
+number of the sinusoid (so you can use "route" to claw them apart).
+The other four are as shown:;
+#X text 79 505 loudest partial;
+#X text 332 508 quietest partial;
+#X connect 0 0 4 0;
+#X connect 1 0 0 0;
+#X connect 2 0 9 0;
+#X connect 3 0 1 0;
+#X connect 4 0 5 0;
+#X connect 4 9 11 0;
+#X connect 5 0 6 0;
+#X connect 5 1 7 0;
+#X connect 5 2 8 0;
+#X connect 5 3 10 0;
+#X connect 9 0 3 0;
+#X connect 11 0 12 0;
+#X connect 11 1 13 0;
+#X connect 11 2 14 0;
+#X connect 11 3 15 0;
+#X restore 330 508 pd sinusoid-tracking;
+#X text 52 165 tracks - output sinusoidal peaks organized into tracks
+;
+#X text 56 111 notes - output pitch at the beginning of notes;
+#X text 339 485 more details:;
+#X text 10 184 Parameters you may set (in creation arguments or messages):
+;
+#X text 60 207 npts - number of points in each analysis window (1024)
+;
+#X text 60 225 hop - number of points between each analysis (512);
+#X text 60 242 npeak - number of sinusoidal peaks (20);
+#X text 61 279 vibrato - depth of vibrato to expect in 1/2-tones (1)
+;
+#X text 60 298 stabletime - time (msec) to wait to report notes (50)
+;
+#X obj 39 535 sigmund~ -hop 4096 pitch env;
+#X text 62 316 minpower - minimum power (dB) to report a pitch (50)
+;
+#X text 62 335 growth - growth (dB) to report a new note (7);
+#X text 54 147 peaks - output all sinusoidal peaks in order of amplitude
+;
+#X text 380 596 updated for Pd v0.40;
+#X text 11 356 The npts and hop parameters are in samples \, and are
+powers of two. The example below specifies a huge hop of 4096 (to slow
+the output down) and to output "pitch" and "env". (Those are the default
+outputs.);
+#X text 61 260 maxfreq - maximum sinusoid frequency in Hz. (1000000)
+;
+#X connect 2 0 25 0;
+#X connect 3 0 8 0;
+#X connect 4 0 7 0;
+#X connect 7 0 2 0;
+#X connect 8 0 4 0;
+#X connect 25 0 5 0;
+#X connect 25 1 6 0;

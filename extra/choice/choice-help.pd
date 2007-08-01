@@ -1,0 +1,58 @@
+#N canvas 16 5 609 600 12;
+#X obj 8 195 choice;
+#X msg 41 86 print;
+#X msg 29 63 clear;
+#X msg 8 34 add 1 0 0 \, add 0 1 0 \, add 0 0 1 \, add 1 1 1 \, add
+1 1 0;
+#X obj 77 171 pack 0 0 0;
+#X floatatom 182 125 0 0 0 0 - - -;
+#X floatatom 148 125 0 0 0 0 - - -;
+#X floatatom 115 125 0 0 0 0 - - -;
+#X obj 77 147 f;
+#X msg 77 125 bang;
+#X floatatom 8 216 0 0 0 0 - - -;
+#X obj 71 196 choice 1;
+#X floatatom 71 217 0 0 0 0 - - -;
+#X obj 76 4 choice;
+#X text 135 3 - search for a best match to an incoming list;
+#X text 19 243 The choice object holds a list of vectors \, each having
+up to ten elements. When sent a list of numbers \, it outputs the index
+of the known vector that matches most closely. The quality of the match
+is the dot product of the two vectors after normalizing them \, i.e.
+\, the vector whose direction is closest to that of the input wins.
+;
+#X text 19 340 If given a nonzero creation argument \, choice tries
+to avoid repetitious outputs by weighting less recently output vectors
+preferentially.;
+#X text 20 389 You can use this to choose interactively between a number
+of behaviors depending on their attributes. For example \, you might
+have stored a number of melodies \, of which some are syncopated \,
+some chromatic \, some are more than 100 years old \, some are bugle
+calls \, and some are Christmas carols. You could then ask to find
+a syncopated bugle call (1 \, 0 \, 0 \, 1 \, 0) and you'll get the
+thing most closely matching the request.;
+#X text 19 514 You can use numbers other than 0 and 1 to indicate relative
+strengths of the attributes \, or even use negative numbers to indicate
+opposites \, either in the incoming lists or in the stored ones.;
+#X text 320 572 updated for Pd version-0.30;
+#X text 79 62 delete all stored vectors;
+#X text 498 34 add vectors;
+#X text 94 84 debugging printout;
+#X text 69 104 tweak the numbers and hit "bang" to input a list;
+#X text 151 197 creation argument to avoid repeated outout;
+#X text 108 219 output is the index of best match \, counting from
+zero;
+#X connect 0 0 10 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 2 0 11 0;
+#X connect 3 0 0 0;
+#X connect 3 0 11 0;
+#X connect 4 0 0 0;
+#X connect 4 0 11 0;
+#X connect 5 0 4 2;
+#X connect 6 0 4 1;
+#X connect 7 0 8 1;
+#X connect 8 0 4 0;
+#X connect 9 0 8 0;
+#X connect 11 0 12 0;

@@ -1,0 +1,81 @@
+#N canvas 130 66 646 584 12;
+#X obj 21 345 osc~;
+#X obj 21 370 *~;
+#X obj 81 350 line~;
+#X obj 21 320 line~;
+#X obj 163 455 osc~;
+#X obj 212 483 *~;
+#X obj 234 366 line~;
+#X obj 163 366 line~;
+#X obj 163 313 sqrt;
+#X obj 163 339 sqrt;
+#X obj 234 313 sqrt;
+#X obj 234 339 sqrt;
+#X obj 163 398 *~;
+#X obj 163 428 *~;
+#X obj 234 398 *~;
+#X obj 234 427 *~;
+#X obj 163 288 unpack;
+#X obj 234 288 unpack;
+#X obj 21 295 r freq;
+#X obj 81 326 r amp;
+#X obj 163 263 r freq;
+#X obj 234 263 r amp;
+#X msg 340 277 \; amp 0 5000 \;;
+#X msg 340 232 \; amp 1 5000 \;;
+#X msg 492 278 \; amp 0 1000 \;;
+#X msg 494 232 \; amp 1 1000 \;;
+#X msg 337 357 \; freq 1760 5000 \;;
+#X msg 338 404 \; freq 55 5000 \;;
+#X msg 493 357 \; freq 1760 1000 \;;
+#X msg 496 405 \; freq 55 1000 \;;
+#X text 90 15 QUARTIC AND LINEAR ENVELOPES COMPARED;
+#X obj 341 464 loadbang;
+#X msg 341 492 \; amp 1 \; freq 1760;
+#X text 22 265 LINEAR;
+#X text 168 236 QUARTIC;
+#X obj 21 397 output~;
+#X obj 212 509 output~;
+#X text 14 123 In the quartic example \, for both the amplitude and
+the frequency \, we have to take the fourth root of the target value
+(which we get by taking square root twice.) Then we raise the line~
+output to the fourth power by squaring twice (the *~ objects \, whose
+left and right inlets are the same.) The cost is mostly that of the
+four additional *~ objects.;
+#X text 350 553 updated for Pd version 0.37;
+#X text 19 39 This patch has two sine wave oscillators \, one with
+linear envelopes \, the other with quartic ones which sound more uniform.
+The message boxes sweep the amplitude and frequency up and down. You
+can compare the two to see that quartic-shaped changes sound more uniform
+than linear ones.;
+#X connect 0 0 1 0;
+#X connect 1 0 35 0;
+#X connect 1 0 35 1;
+#X connect 2 0 1 1;
+#X connect 3 0 0 0;
+#X connect 4 0 5 0;
+#X connect 5 0 36 0;
+#X connect 5 0 36 1;
+#X connect 6 0 14 0;
+#X connect 6 0 14 1;
+#X connect 7 0 12 0;
+#X connect 7 0 12 1;
+#X connect 8 0 9 0;
+#X connect 9 0 7 0;
+#X connect 10 0 11 0;
+#X connect 11 0 6 0;
+#X connect 12 0 13 0;
+#X connect 12 0 13 1;
+#X connect 13 0 4 0;
+#X connect 14 0 15 0;
+#X connect 14 0 15 1;
+#X connect 15 0 5 1;
+#X connect 16 0 8 0;
+#X connect 16 1 7 1;
+#X connect 17 0 10 0;
+#X connect 17 1 6 1;
+#X connect 18 0 3 0;
+#X connect 19 0 2 0;
+#X connect 20 0 16 0;
+#X connect 21 0 17 0;
+#X connect 31 0 32 0;

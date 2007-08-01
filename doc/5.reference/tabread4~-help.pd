@@ -1,0 +1,43 @@
+#N canvas 59 33 814 475 10;
+#X obj 11 228 tabread4~ array99;
+#X text 21 207 signal input x(n);
+#X msg 727 51 \; pd dsp 0;
+#X graph graph1 0 -1 9 1 514 373 764 173;
+#X array array99 10 float 0;
+#X pop;
+#X text 127 21 4-point-interpolating table lookup;
+#X obj 11 316 snapshot~;
+#X obj 30 290 metro 200;
+#X obj 11 124 sig~;
+#X floatatom 11 98 0 0 0;
+#X obj 30 264 r readout;
+#X floatatom 11 342 0 0 0;
+#X msg 452 50 \; readout 1 \; array99 resize 10 \; array99 0 -0.5 -0.5
+-0.5 0.5 0.5 0.5 \; pd dsp 1 \;;
+#X text 49 94 incoming signal is index. Indices should range from 1
+to (size-2) so that the 4-point interpolation is meaningful. You can
+shift-drag the number box to see the effect of interpolation.;
+#X msg 34 158 set array99;
+#X text 116 158 "set" message permits you to switch between arrays
+;
+#X text 139 228 creation argument initializes array name;
+#X text 5 392 see also the "array" tutorial in section 2 of the Pd
+documentation \, and these objects:;
+#X obj 47 21 tabread4~;
+#X text 509 27 click here to test;
+#X obj 12 442 tabwrite~;
+#X obj 157 442 tabread;
+#X obj 216 442 tabwrite;
+#X obj 281 442 tabsend~;
+#X obj 346 442 tabreceive~;
+#X text 7 58 Tabread4~ is used to build samplers and other table lookup
+algorithms. The interpolation scheme is 4-point polynomial.;
+#X text 616 460 updated for Pd version 0.29;
+#X obj 83 442 tabplay~;
+#X connect 0 0 5 0;
+#X connect 5 0 10 0;
+#X connect 6 0 5 0;
+#X connect 7 0 0 0;
+#X connect 8 0 7 0;
+#X connect 9 0 6 0;
+#X connect 13 0 0 0;

@@ -1,0 +1,37 @@
+#N canvas 58 142 685 355 12;
+#X msg 28 149 2.5;
+#X msg 126 151 bang;
+#X msg 68 150 23 64;
+#X obj 28 242 print x1;
+#X obj 112 242 print x2;
+#X obj 196 240 print x3;
+#X obj 43 26 trigger;
+#X obj 286 241 print x4;
+#X text 114 27 - sequence messages in right-to-left order;
+#X text 417 331 updated for Pd version 0.33;
+#X text 81 290 the above can be abbreviated as:;
+#X msg 172 152 symbol dog;
+#X text 39 59 The trigger object outputs its input from right to left
+\, converting to the types indicated by its creation arguments. There
+is also a "pointer" argument type (see the pointer object.);
+#X obj 381 293 t f b l s a;
+#X msg 466 167 dog my cats;
+#X obj 466 199 trigger bang anything;
+#X obj 374 242 print x5;
+#X obj 466 240 print y1;
+#X obj 552 242 print y2;
+#X obj 28 202 trigger float bang symbol list anything;
+#X text 464 122 "anythings" can only;
+#X text 461 142 be converted to bang:;
+#X connect 0 0 19 0;
+#X connect 1 0 19 0;
+#X connect 2 0 19 0;
+#X connect 11 0 19 0;
+#X connect 14 0 15 0;
+#X connect 15 0 17 0;
+#X connect 15 1 18 0;
+#X connect 19 0 3 0;
+#X connect 19 1 4 0;
+#X connect 19 2 5 0;
+#X connect 19 3 7 0;
+#X connect 19 4 16 0;

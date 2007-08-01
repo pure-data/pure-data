@@ -1,0 +1,35 @@
+#N canvas 136 31 738 479 12;
+#X floatatom 88 199 0 0 0;
+#X obj 88 172 receive crackers;
+#X floatatom 248 204 0 0 0;
+#X obj 248 177 receive pickles;
+#X obj 88 145 send crackers;
+#X obj 250 139 send pickles;
+#X obj 389 138 send pickles;
+#X floatatom 392 203 0 0 0;
+#X obj 392 176 receive pickles;
+#X msg 51 306 \; pickles 99 \; crackers 56;
+#X floatatom 88 118 0 0 0;
+#X floatatom 250 112 0 0 0;
+#X floatatom 389 111 0 0 0;
+#X obj 371 404 r crackers;
+#X obj 371 377 s crackers;
+#X text 39 392 send and receive can be abbreviated:;
+#X text 48 245 You can use the semicolon feature of message boxes to
+address receives \, too. This is useful if you want to do a whole list
+of things:;
+#X text 166 305 The transaction takes place in zero time---i.e. \,
+if you tried to use "timer" to measure the time delay between the two
+\, you would get zero.;
+#X text 459 447 updated for Pd version 0.34;
+#X text 51 6 The send and receive objects allow you to make non-local
+connections. These work globally--you can use them to make two different
+patches intercommunicate if you wish. Any message a "send" gets appears
+at the output of every receive of the same name. There can be any number
+of sends and receives sharing the same name:;
+#X connect 1 0 0 0;
+#X connect 3 0 2 0;
+#X connect 8 0 7 0;
+#X connect 10 0 4 0;
+#X connect 11 0 5 0;
+#X connect 12 0 6 0;

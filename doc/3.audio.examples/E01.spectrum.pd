@@ -1,0 +1,179 @@
+#N canvas 190 29 773 821 12;
+#N canvas 0 0 450 300 graph1 0;
+#X array E01-signal 882 float 0;
+#X coords 0 5 882 -5 200 130 1;
+#X restore 531 41 graph;
+#X obj 40 304 hip~ 5;
+#N canvas 0 0 450 300 graph1 0;
+#X array E01-spectrum 128 float 0;
+#X coords 0 4300 127 -40 257 130 1;
+#X restore 485 226 graph;
+#X text 134 243 <-- click to graph;
+#N canvas 45 83 558 569 fft 0;
+#X obj 19 62 inlet~;
+#X obj 85 214 inlet;
+#X obj 19 92 rfft~;
+#X obj 19 125 *~;
+#X obj 50 125 *~;
+#X obj 19 155 sqrt~;
+#X obj 85 248 tabwrite~ E01-spectrum;
+#X obj 332 109 block~ 4096 1;
+#X obj 19 181 biquad~ 0 0 0 0 1;
+#X text 83 93 Fourier series;
+#X text 88 146 magnitude;
+#X text 86 131 calculate;
+#X text 21 3 This subpatch computes the spectrum of the incoming signal
+with a (rectangular windowed) FFT. FFTs aren't properly introduced
+until much later.;
+#X text 83 62 signal to analyze;
+#X text 182 166 delay two samples;
+#X text 181 182 for better graphing;
+#X obj 90 425 samplerate~;
+#X obj 90 402 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X floatatom 90 472 5 0 0 0 - - -;
+#X obj 90 448 / 256;
+#X obj 90 378 loadbang;
+#X floatatom 90 541 5 0 0 0 - - -;
+#X obj 98 494 s fundamental;
+#X obj 90 517 ftom;
+#X text 146 540 <-just out of curiosity \, here's the pitch;
+#X text 14 319 At load time \, calculate a good choice of fundamental
+frequency for showing spectra: the 16th bin in a 4096-point spectrum
+\, so SR*16/4096 or SR/256.;
+#X text 135 216 "bang" into this inlet to graph it;
+#X connect 0 0 2 0;
+#X connect 1 0 6 0;
+#X connect 2 0 3 0;
+#X connect 2 0 3 1;
+#X connect 2 1 4 0;
+#X connect 2 1 4 1;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 8 0;
+#X connect 8 0 6 0;
+#X connect 16 0 19 0;
+#X connect 17 0 16 0;
+#X connect 18 0 22 0;
+#X connect 18 0 23 0;
+#X connect 19 0 18 0;
+#X connect 20 0 17 0;
+#X connect 23 0 21 0;
+#X restore 51 279 pd fft;
+#X text 531 173 ---- 0.02 seconds ----;
+#X obj 111 244 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 40 332 output~;
+#X obj 111 279 tabwrite~ E01-signal;
+#X text 523 800 updated for Pd version 0.37;
+#X text 516 359 1;
+#X text 550 359 2;
+#X text 582 359 3;
+#X text 614 359 4;
+#X text 647 359 5;
+#X text 677 359 6;
+#X text 708 359 7;
+#X text 484 359 0;
+#X text 520 378 -- partial number --;
+#X text 733 97 0;
+#X obj 42 42 r fundamental;
+#X obj 42 111 osc~;
+#X obj 63 136 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+;
+#X obj 41 161 *~;
+#X obj 85 111 osc~;
+#X obj 106 136 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 84 161 *~;
+#X obj 128 111 osc~;
+#X obj 149 136 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 127 161 *~;
+#X obj 128 88 * 2;
+#X obj 171 111 osc~;
+#X obj 192 136 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 170 161 *~;
+#X obj 214 111 osc~;
+#X obj 235 136 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 213 161 *~;
+#X obj 257 111 osc~;
+#X obj 278 136 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 256 161 *~;
+#X obj 42 88 * 0;
+#X obj 85 88 * 1;
+#X obj 171 88 * 3;
+#X obj 214 88 * 4;
+#X obj 257 88 * 5;
+#X text 303 136 <-- On/Off;
+#X text 337 152 for each;
+#X text 339 168 partial;
+#X text 595 11 WAVEFORM;
+#X text 578 204 SPECTRUM;
+#X text 25 415 The next series of patches demonstrates various kinds
+of modulation: AM \, waveshaping \, and FM. We will need a tool for
+graphing spectra which is introduced here. In this patch the signal
+to be analyzed is a simple sum of up to six partials of a fundamental
+frequency (which is 172 Hz \, close to F below middle C \, if your
+sample rate happens to be 44100 Hz. The fundamental is chosen to agree
+with the analysis patch ("pd FFT") and is computed within it).;
+#X text 25 546 The partials are numbered 0 through 5 \, where 0 means
+DC \, or zero frequency \, 1 is the fundamental \, and so on. The toggle
+switches allow you to turn them on and off separately. You have to
+press the "click to graph" button to update the two graphs.;
+#X text 745 344 0;
+#X text 743 223 1;
+#X text 744 282 0.5;
+#X text 26 631 The upper graph is just the (time domain) waveform \,
+about four periods long. The lower graph is the magnitude spectrum.
+Its peaks are the magnitudes of the partials. Note that a DC signal
+of amplitude one is considered a partial of magnitude 1 \, but the
+other partials \, which have peak amplitudes of 1 (and RMS 0.707) \,
+have peak magnitudes of only 0.5 in the spectrum.;
+#X obj 41 222 *~ 1;
+#X text 733 37 5;
+#X text 734 157 -5;
+#X text 81 221 sum;
+#X text 96 5 GRAPHING SPECTRA OF AUDIO SIGNALS;
+#X text 24 742 Here we're introducing a new feature: multiple signals
+connected to a signal inlet (as in the "*~ 1") are added. This is the
+most convenient way to sum the six partials.;
+#X connect 1 0 7 0;
+#X connect 1 0 7 1;
+#X connect 6 0 4 1;
+#X connect 6 0 8 0;
+#X connect 20 0 40 0;
+#X connect 20 0 41 0;
+#X connect 20 0 30 0;
+#X connect 20 0 42 0;
+#X connect 20 0 43 0;
+#X connect 20 0 44 0;
+#X connect 21 0 23 0;
+#X connect 22 0 23 1;
+#X connect 23 0 56 0;
+#X connect 24 0 26 0;
+#X connect 25 0 26 1;
+#X connect 26 0 56 0;
+#X connect 27 0 29 0;
+#X connect 28 0 29 1;
+#X connect 29 0 56 0;
+#X connect 30 0 27 0;
+#X connect 31 0 33 0;
+#X connect 32 0 33 1;
+#X connect 33 0 56 0;
+#X connect 34 0 36 0;
+#X connect 35 0 36 1;
+#X connect 36 0 56 0;
+#X connect 37 0 39 0;
+#X connect 38 0 39 1;
+#X connect 39 0 56 0;
+#X connect 40 0 21 0;
+#X connect 41 0 24 0;
+#X connect 42 0 31 0;
+#X connect 43 0 34 0;
+#X connect 44 0 37 0;
+#X connect 56 0 4 0;
+#X connect 56 0 1 0;
+#X connect 56 0 8 0;

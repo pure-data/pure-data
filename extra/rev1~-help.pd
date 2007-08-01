@@ -1,0 +1,119 @@
+#N canvas 55 21 1008 526 12;
+#X obj 148 439 dac~;
+#X obj 58 72 line~;
+#X msg 58 49 0 \, 10000 5;
+#X obj 58 118 cos~;
+#X msg 146 70 1;
+#X obj 146 47 loadbang;
+#X obj 58 95 clip~ 0 0.25;
+#X floatatom 173 264 0 0 0;
+#X obj 251 134 line~;
+#X obj 251 157 cos~;
+#X msg 324 54 -0.25 \, 0.25 100;
+#X obj 251 8 loadbang;
+#X msg 251 31 -0.25;
+#X obj 251 203 *~;
+#X obj 58 140 hip~ 5;
+#X floatatom 162 328 0 0 0;
+#X obj 162 373 pack 0 100;
+#X obj 162 396 line~;
+#X obj 148 416 *~;
+#X obj 162 350 dbtorms;
+#X msg 324 77 -0.25 \, 0.25 400;
+#X floatatom 324 145 0 0 0;
+#X obj 324 191 osc~ 440;
+#X obj 324 168 mtof;
+#X msg 324 31 -0.25 \, 0.25 20;
+#X obj 251 180 *~ 0.1;
+#X msg 324 100 -0.25 \, 0.25 1000;
+#X msg 324 122 -0.25 \, 0.25 2000;
+#X obj 324 226 *~;
+#X obj 342 252 *~;
+#X obj 58 439 dac~;
+#X floatatom 68 323 0 0 0;
+#X obj 68 368 pack 0 100;
+#X obj 68 391 line~;
+#X obj 58 416 *~;
+#X obj 68 346 dbtorms;
+#X msg 324 8 0;
+#X obj 308 257 *~;
+#X obj 58 26 metro 2000;
+#X floatatom 58 4 0 0 0;
+#X msg 220 265 bang;
+#X obj 284 322 env~ 32768;
+#X floatatom 284 344 0 0 0;
+#X text 166 244 1 sec;
+#X text 143 226 dB after;
+#X text 220 245 clear;
+#X text 1 51 impulse;
+#X text 362 7 tone;
+#X text 484 31 beeps;
+#X text 428 167 This is an experimental reverberator design composed
+of a series of allpass filters with exponentially growing delay times.
+Each allpass filter has a gain of 0.7. The reverb time is adjusted
+by adjusting the input gains of the allpass filters. The last unit
+is modified so that its first two "echos" mimic those of an allpass
+but its loop gain depends on reverb time.;
+#X text 430 299 Reverb time is controlled by specifying the dB gain
+(100 normal) after one second \, so that 100 corresponds to infinite
+reverb time \, 70 to two seconds \, 40 to one second \, and 0 to 0
+;
+#X text 671 499 modified for Pd version 0.30.;
+#X msg 560 34 \; pd dsp 1;
+#X text 427 475 The rev1~ module eats about 18% of my 300mHz P2 machine.
+;
+#X obj 148 289 rev1~;
+#X text 428 381 The "clear" button impolitely clears out all the delay
+lines \, You may immediately resume pumping the reverberator \, but
+the input signal should be cleanly enveloped. The output \, too \,
+must be enveloped and may not be opened until 5 msec after the "clear"
+message is sent.;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 14 0;
+#X connect 4 0 1 0;
+#X connect 5 0 4 0;
+#X connect 6 0 3 0;
+#X connect 7 0 54 1;
+#X connect 8 0 9 0;
+#X connect 9 0 25 0;
+#X connect 10 0 8 0;
+#X connect 11 0 12 0;
+#X connect 12 0 8 0;
+#X connect 13 0 14 0;
+#X connect 14 0 34 0;
+#X connect 14 0 54 0;
+#X connect 15 0 19 0;
+#X connect 16 0 17 0;
+#X connect 17 0 18 1;
+#X connect 18 0 0 0;
+#X connect 19 0 16 0;
+#X connect 20 0 8 0;
+#X connect 21 0 23 0;
+#X connect 22 0 13 1;
+#X connect 22 0 28 0;
+#X connect 22 0 28 1;
+#X connect 22 0 29 0;
+#X connect 23 0 22 0;
+#X connect 24 0 8 0;
+#X connect 25 0 13 0;
+#X connect 26 0 8 0;
+#X connect 27 0 8 0;
+#X connect 28 0 29 1;
+#X connect 28 0 13 1;
+#X connect 28 0 37 0;
+#X connect 28 0 37 1;
+#X connect 29 0 13 1;
+#X connect 31 0 35 0;
+#X connect 32 0 33 0;
+#X connect 33 0 34 1;
+#X connect 34 0 30 0;
+#X connect 35 0 32 0;
+#X connect 36 0 8 0;
+#X connect 37 0 13 1;
+#X connect 38 0 2 0;
+#X connect 39 0 38 0;
+#X connect 40 0 54 2;
+#X connect 41 0 42 0;
+#X connect 54 0 18 0;
+#X connect 54 0 41 0;

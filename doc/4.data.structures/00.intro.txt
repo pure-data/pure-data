@@ -1,0 +1,113 @@
+Pd release 0.23 and onward include objects for managing lists of data.  The
+objects allow you to describe data structures and how they are viewed
+("template objects") and to traverse lists ("traversal objects.")
+
+The rest of this file gives a highly condensed summary of what's there; the 
+patches, starting with "1.scalars.pd", act as a tutorial.
+
+1. TEMPLATE OBJECTS.
+
+templates describe data structures.  You can add an item to a data structure
+using "field" or ask for a shape to be drawn using a "display command."
+
+1.1. "template" -- data structure.
+
+usage, "template <field1> <field2> ..."
+
+where the fields are either "float <name>", "symbol <name>", "list <name>"
+(don't try that yet); or "array <name> <template-for-elements>.
+
+1.2.  DISPLAY COMMANDS.
+
+
+These are objects which ask Pd to draw a shape corresponding to some fields
+of the datum.
+
+1.2.1.  POLYGONS and CURVES.
+
+polygons:   	 polygon <outline-color> <line-width> <x, y> ...
+filled polygons: fpolygon <fill-color> <outline-color> <line-width> <x, y> ...
+curves:   	 curve <outline-color> <line-width> <x, y> ...
+filled curves:   fcurve <fill-color> <outline-color> <line-width> <x, y> ...
+
+Each argument can either be a number or a symbol.  If a symbol, it's the
+name of a field (which must be a "float) which specifies the vaiue.
+So for instance in the "1.scalar.pd" example, in the template "template1",
+the object "fpolygon 244 q 5 0 0 20 z 40 0" draws a filled polygon whose
+interior color is 244 (red 2, green 4, blue 4) but whose outline color
+depends on the value of the field "q".  Its coordinates describe a triangle
+whose altitude is given by "z."
+
+1.2.2  PLOT.
+
+The "plot" objects plots an array field as shown in 5_array.pd.
+
+2.  TRAVERSAL.
+
+In this release of Pd, you can only traverse lists all of whose elements 
+belong to the same template; this restriction will be relaxed in a future
+release.  You "traverse" a list either to build it, to get its elements,
+or to change their values.
+
+2.1.  POINTER.
+
+The "pointer" object can be used to refer to an element of a list.  Its
+methods are:
+
+2.1.1.  traverse <symbol>.
+
+Point to the "head" of a list.  The symbol should match the name of a Pd
+window holding the list.  The pointer is output, but you can't set or get the
+fields of the "head" pointer; you can only get the "next" element or "append"
+to the list.
+
+2.1.2.  next.  Goes to the next element of the list.  Either the pointer
+is output on the left side, or else a "bang" at right tells you that no
+more objects are forthcoming.
+
+2.1.3.  bang.
+outputs the current pointer.
+
+2.2.  APPEND.  Adds an element of the specified template to the list.  You
+specify what fields you want to supply and the last inlet takes a pointer to
+the element you want to "append" after.
+
+2.3.  GET.
+
+    get <template> <field...>
+    
+send it a pointer to an object belonging to the <template> and it outputs
+the (floating-point) fields.
+
+2.4.  SET.
+
+    set <template> <field...>
+    
+send it a pointer (at the rightmost inlet) and values for the specified
+fields, and their values are changed accordingly.
+
+2.5.  GETSIZE.
+
+    getsize <template> <array-field>
+    
+outputs the size of the named field, which must be an array, when it receives
+a pointer to the owner as input.
+
+2.6.  SETSIZE.
+
+    setsize <template> <array-field>
+    
+Send it a pointer to the owner (right inlet) and then the desired size
+(left inlet) and the array is resized.  If a template contains an array,
+each scalar belonging to the template can have its own size for the array.
+
+2.7. ELEMENT.
+
+    element <template> <array-field>
+
+Pass it an index and a pointer and it outputs a pointer to an element of the
+array.
+
+
+
+    

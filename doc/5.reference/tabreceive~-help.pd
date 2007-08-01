@@ -1,0 +1,6 @@
+#N canvas 109 83 646 239 12;
+#X obj 21 18 tabreceive~;
+#X text 17 53 creation argument: name of array;
+#X text 16 83 By default a block is 64 samples \; this can be reset using the block~ object.;
+#X text 380 201 updated for Pd version 0.33;
+#X text 129 18 - read a block of a signal from an array continuously;

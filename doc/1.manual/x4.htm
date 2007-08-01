@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<HTML>
+  <HEAD>
+	 <TITLE>Pd Documentation 4</TITLE>
+    <meta http-equiv="Content-Type" content="text/html">
+	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
+  </HEAD>
+
+
+<BODY>
+
+<H2>Pd Documentation chapter 4: writing Pd objects in C</H2>
+
+<P>
+<A href="index.htm#s4"> back to table of contents </A>
+<BR><BR>
+</P> 
+
+<P>You can write your own objects that you and others can use in their Pd
+applications.  You can write them in C or (if you're smart and brave) in C++ or
+FORTRAN. 
+
+<P> HOW EXTERNS ARE LOADED 
+
+<P> Whenever you type the name of an object
+(into an "object" text box) that Pd doesn't yet know about, Pd looks for a
+relocatable object file, named, for instance, "profile.pd_irix5".  Pd looks
+first in the directory containing the patch, then in directories in its
+"path."  Pd will then add whatever object is defined there to its "class list,"
+which is the set of all Pd classes you can use.  If all this works, Pd then
+attempts again to create the object you asked for, this time perhaps
+successfully.  There is no difference between an object defined this way and an
+object built into Pd.
+
+<P> Once you load a new object into Pd, it's there for the duration of your Pd
+session.  If you load another Pd document which supplies a different version of
+some Pd object, the object won't be updated.  IF you're working on a new object
+and decide to change it, you have to exit and re-enter Pd to get the change to
+take.
+
+<P> In the "externs" subdirectory of the documentation you
+can find simple examples of "externs" with their source code and test patches;
+there are many other on the web (see <a href="x1.htm#s2">section 1.2 </A>).
+
+<P> Iohannes Zmoelnig has written an excellent guide to writing externs at
+<A href="http://iem.kug.ac.at/pd/externals-HOWTO/">
+         http://iem.kug.ac.at/pd/externals-HOWTO/</A> .
+
+<P> A paper by Theo Stojanov on the subject is at:
+<A href="http://www.music.mcgill.ca/~theo/html/audio/pd_externs.pdf">
+http://www.music.mcgill.ca/~theo/html/audio/pd_externs.pdf </A> .
+
+<P> NT HINT: In NT, Pd is compiled using Visual C 6.0.  If you have VC 5.x
+your externs won't compile against Pd; you'll get an error about "disk full
+or bad DLL."  Simply recompile Pd under 5.x and the problem goes away.  Externs
+compiled under 5.x and 6.x are binary compatible; it's just the compilation
+that's sensitive.
+
+</BODY>
+</HTML>

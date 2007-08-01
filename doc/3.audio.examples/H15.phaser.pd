@@ -1,0 +1,109 @@
+#N canvas 25 22 703 596 12;
+#X text 448 562 updated for Pd version 0.39;
+#X text 167 -1 PHASER;
+#N canvas 876 177 375 255 startup 0;
+#X obj 22 24 loadbang;
+#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 22 67 f \$0;
+#X text 35 195 This subpatch loads initial;
+#X text 31 219 values in number boxes.;
+#X msg 22 91 \; \$1-pole 80;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X restore 323 561 pd startup;
+#N canvas 0 0 660 424 chord 0;
+#X obj 87 97 -~ 0.5;
+#X obj 87 146 clip~ -0.5 0.5;
+#X obj 87 169 cos~;
+#X obj 91 252 hip~ 5;
+#X obj 91 315 outlet~;
+#X obj 87 122 *~ 3;
+#X obj 87 74 phasor~ 220;
+#X obj 221 97 -~ 0.5;
+#X obj 221 146 clip~ -0.5 0.5;
+#X obj 221 169 cos~;
+#X obj 221 122 *~ 3;
+#X obj 356 100 -~ 0.5;
+#X obj 356 149 clip~ -0.5 0.5;
+#X obj 356 172 cos~;
+#X obj 356 125 *~ 3;
+#X obj 491 100 -~ 0.5;
+#X obj 491 149 clip~ -0.5 0.5;
+#X obj 491 172 cos~;
+#X obj 491 125 *~ 3;
+#X obj 221 74 phasor~ 251;
+#X obj 356 77 phasor~ 281;
+#X obj 491 77 phasor~ 311;
+#X text 147 32 test sound for phaser;
+#X obj 91 285 *~ 0.2;
+#X connect 0 0 5 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 23 0;
+#X connect 5 0 1 0;
+#X connect 6 0 0 0;
+#X connect 7 0 10 0;
+#X connect 8 0 9 0;
+#X connect 9 0 3 0;
+#X connect 10 0 8 0;
+#X connect 11 0 14 0;
+#X connect 12 0 13 0;
+#X connect 13 0 3 0;
+#X connect 14 0 12 0;
+#X connect 15 0 18 0;
+#X connect 16 0 17 0;
+#X connect 17 0 3 0;
+#X connect 18 0 16 0;
+#X connect 19 0 7 0;
+#X connect 20 0 11 0;
+#X connect 21 0 15 0;
+#X connect 23 0 4 0;
+#X restore 73 271 pd chord;
+#X obj 72 533 output~;
+#X obj 95 325 rpole~;
+#X obj 95 300 rzero_rev~;
+#X obj 95 374 rpole~;
+#X obj 95 349 rzero_rev~;
+#X obj 95 422 rpole~;
+#X obj 95 397 rzero_rev~;
+#X obj 95 471 rpole~;
+#X obj 95 446 rzero_rev~;
+#X obj 72 501 +~;
+#X text 23 17 The phaser ranks \, along with fuzz and wah-wah \, as
+one of the great guitar pedals. A phaser simply adds an all-passed
+copy of the signal to the original \, making phase reinforcement and
+cancellation at frequencies that depend on the all-pass coefficients.
+In this example the coefficients range from 0.88 to 0.98 \, controlled
+by a phasor~ object (no relation). The phasor~ is converted to a symmetrical
+triangle wave (abs($v1-0.5)) and then ranged appropriately.;
+#X obj 250 417 phasor~ 0.3;
+#X text 22 158 Many variations of this have been invented. A deeper
+effect can be obtained by using 12 all-pass filters and adding the
+outputs of the 4th \, 8th. and 12th one to the original. Various stereo
+configurations are possible. Some people use 6 instead of the 4 stages
+used here. Controls can be added to change the frequency of sweeping
+and the range of the all-pass coeefficients.;
+#X obj 250 449 expr~ 1 - 0.03 - 0.6*abs($v1-0.5)*abs($v1-0.5);
+#X connect 3 0 6 0;
+#X connect 3 0 13 0;
+#X connect 5 0 8 0;
+#X connect 6 0 5 0;
+#X connect 7 0 10 0;
+#X connect 8 0 7 0;
+#X connect 9 0 12 0;
+#X connect 10 0 9 0;
+#X connect 11 0 13 1;
+#X connect 12 0 11 0;
+#X connect 13 0 4 0;
+#X connect 13 0 4 1;
+#X connect 15 0 17 0;
+#X connect 17 0 6 1;
+#X connect 17 0 5 1;
+#X connect 17 0 8 1;
+#X connect 17 0 7 1;
+#X connect 17 0 10 1;
+#X connect 17 0 9 1;
+#X connect 17 0 12 1;
+#X connect 17 0 11 1;

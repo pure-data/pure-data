@@ -1,0 +1,216 @@
+#N canvas 33 1 608 881 12;
+#X floatatom 201 163 0 0 0 0 - - -;
+#X obj 53 387 -~;
+#X obj 201 237 /~;
+#X obj 208 214 clip~ 1 999999;
+#X obj 76 195 phasor~;
+#X obj 88 257 *~;
+#X obj 88 281 clip~ -0.5 0.5;
+#X floatatom 76 147 0 0 0 0 - - -;
+#X floatatom 201 115 0 0 0 0 - - -;
+#X obj 201 139 mtof;
+#X text 208 45 band limit (MIDI units);
+#X obj 201 67 loadbang;
+#X obj 88 305 *~ 1000;
+#X obj 88 329 +~ 501;
+#X obj 76 219 -~ 0.5;
+#X text 219 397 graph output;
+#X obj 76 101 samplerate~;
+#X obj 76 125 / 512;
+#N canvas 49 311 450 300 fft 0;
+#X obj 31 41 inlet~;
+#X obj 35 85 rfft~;
+#X obj 34 118 *~;
+#X obj 78 118 *~;
+#X obj 34 161 sqrt~;
+#X obj 37 201 expr~ 50 + 20 * log($v1)/log(10);
+#X obj 38 235 max~ 0;
+#X obj 254 28 block~ 512;
+#X obj 33 263 tabsend~ \$0-fft;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 0 2 1;
+#X connect 1 1 3 0;
+#X connect 1 1 3 1;
+#X connect 2 0 4 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 6 0 8 0;
+#X restore 126 423 pd fft;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-fft 256 float 3;
+#A 0 8.35364 88.2226 82.204 78.6857 76.1917 74.2598 72.6836 71.3537
+70.204 69.1927 68.2904 67.4768 66.7365 66.0581 65.4323 64.8524 64.3122
+63.8074 63.3336 62.8881 62.4675 62.0699 61.693 61.3352 60.9946 60.6703
+60.3606 60.0649 59.7817 59.5107 59.2506 59.0011 58.7612 58.5307 58.3086
+58.0948 57.8885 57.6896 57.4975 57.3119 57.1324 56.9588 56.7906 56.6279
+56.4699 56.3169 56.1681 56.0239 55.8835 55.7472 55.6144 55.4853 55.3594
+55.2368 55.1171 55.0005 54.8864 54.7751 54.6661 54.5596 54.4552 54.3531
+54.2528 54.1546 54.0581 53.9635 53.8703 53.7788 53.6886 53.5999 53.5124
+53.4262 53.341 53.257 53.1738 53.0917 53.0103 52.9299 52.85 52.771
+52.6924 52.6146 52.537 52.4601 52.3835 52.3073 52.2313 52.1556 52.0801
+52.0048 51.9295 51.8545 51.7793 51.7042 51.629 51.5538 51.4784 51.4029
+51.3271 51.2513 51.175 51.0985 51.0216 50.9444 50.8667 50.7887 50.7102
+50.6312 50.5516 50.4716 50.3909 50.3097 50.2277 50.1452 50.0619 49.978
+49.8932 49.8078 49.7214 49.6344 49.5464 49.4576 49.3678 49.2771 49.1854
+49.0929 48.9992 48.9046 48.8089 48.7121 48.6142 48.5152 48.415 48.3137
+48.2111 48.1073 48.0022 47.8959 47.7882 47.6792 47.5688 47.4571 47.3439
+47.2293 47.1131 46.9956 46.8764 46.7558 46.6334 46.5096 46.384 46.2568
+46.1278 45.9972 45.8646 45.7304 45.5942 45.4563 45.3163 45.1746 45.0306
+44.8849 44.7369 44.5869 44.4347 44.2804 44.1238 43.965 43.8038 43.6404
+43.4744 43.3062 43.1352 42.9619 42.7858 42.6072 42.4257 42.2417 42.0546
+41.8649 41.6719 41.4762 41.2771 41.0752 40.8697 40.6613 40.4491 40.2338
+40.0147 39.7922 39.5657 39.3357 39.1016 38.8637 38.6214 38.3752 38.1243
+37.8694 37.6096 37.3454 37.076 36.8021 36.5227 36.2385 35.9484 35.6533
+35.3519 35.0451 34.7318 34.4127 34.0866 33.7542 33.4145 33.0681 32.7138
+32.3524 31.9824 31.6049 31.2182 30.8233 30.4185 30.0049 29.5806 29.1467
+28.7012 28.2454 27.7769 27.297 26.8034 26.2972 25.7759 25.2407 24.6887
+24.1212 23.5348 22.9309 22.3055 21.6598 20.9892 20.2947 19.5705 18.8168
+18.0266 17.1987 16.3231 15.3963 14.404 13.3362 12.1694 10.8809 9.42496
+7.74107 5.71798 3.15337 0 0;
+#X coords 0 100 256 0 200 140 1;
+#X restore 375 275 graph;
+#X floatatom 375 425 5 0 0 0 - - -;
+#X floatatom 375 471 5 0 0 0 - - -;
+#X obj 52 443 output~;
+#X obj 88 353 tabread4~ \$0-transition;
+#X obj 201 186 * 0.4;
+#X msg 201 91 136.766;
+#X obj 375 447 tabread \$0-fft;
+#X obj 195 400 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 195 422 tabwrite~ \$0-out;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-out 882 float 0;
+#X coords 0 1 882 -1 200 140 1;
+#X restore 378 108 graph;
+#X text 75 15 BAND-LIMITED SAWTOOTH GENERATOR USING A TRANSITION TABLE
+;
+#X obj 76 60 loadbang;
+#X obj 76 83 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 39 657 Now any time we wish to make a discontinuity in the
+output signal \, we make it look exactly like the bandlimited square
+wave looks. We do this by reading through the table we recorded \,
+carefully adding a "digital" \, non-band-limited \, sawtooth to "array1"
+so that the discontinuities in the two cancel out and what you have
+left is the transition in the table.;
+#N canvas 151 52 754 678 transition-table 0;
+#X obj 428 534 cos~;
+#X obj 262 534 cos~;
+#X obj 214 529 cos~;
+#X msg 158 598 bang;
+#X text 242 138 back the phase up one sample;
+#X msg 295 444 -0.0005;
+#X obj 262 508 *~ 3;
+#X obj 427 510 *~ 5;
+#X obj 262 559 *~ 0.33333;
+#X obj 427 560 *~ -0.2;
+#X obj 214 557 *~ -1;
+#X msg 159 425 bang;
+#X obj 213 468 phasor~ 22.05;
+#X obj 214 590 *~ 0.57692;
+#X obj 204 259 cos~;
+#X obj 156 254 cos~;
+#X msg 100 323 bang;
+#X msg 13 195 \; pd dsp 1;
+#X msg 237 169 -0.0005;
+#X obj 204 233 *~ 3;
+#X obj 204 284 *~ 0.33333;
+#X obj 156 282 *~ -1;
+#X msg 100 150 bang;
+#X obj 155 193 phasor~ 22.05;
+#X obj 156 315 *~ 0.75;
+#X obj 214 617 tabwrite~ \$0-transition;
+#X obj 156 342 tabwrite~ \$0-transition;
+#X obj 100 128 loadbang;
+#X text 292 216 twice the table length;
+#X text 280 193 period is 2000 samples \,;
+#X text 80 369 This one is used - first and third harmonics only.;
+#X text 28 644 This alternate one puts in harmonics 1 \, 3 \, and 5
+;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-transition 1002 float 0;
+#X coords 0 1 1002 -1 200 140 1;
+#X restore 539 32 graph;
+#X text 537 179 ----- 1002 samples ----;
+#X text 24 27 This network puts a half cycle of a band-limited square
+wave into the table "array1.";
+#X text 22 64 Logically the half-cycle is in samples 1 through 1000
+\; samples 0 and 1001 are provided so that the 4-point interpolation
+will work everywhere.;
+#X connect 0 0 9 0;
+#X connect 1 0 8 0;
+#X connect 2 0 10 0;
+#X connect 3 0 25 0;
+#X connect 5 0 12 1;
+#X connect 6 0 1 0;
+#X connect 7 0 0 0;
+#X connect 8 0 13 0;
+#X connect 9 0 13 0;
+#X connect 10 0 13 0;
+#X connect 11 0 5 0;
+#X connect 11 0 3 0;
+#X connect 12 0 2 0;
+#X connect 12 0 6 0;
+#X connect 12 0 7 0;
+#X connect 13 0 25 0;
+#X connect 14 0 20 0;
+#X connect 15 0 21 0;
+#X connect 16 0 26 0;
+#X connect 18 0 23 1;
+#X connect 19 0 14 0;
+#X connect 20 0 24 0;
+#X connect 21 0 24 0;
+#X connect 22 0 18 0;
+#X connect 22 0 17 0;
+#X connect 22 0 16 0;
+#X connect 23 0 15 0;
+#X connect 23 0 19 0;
+#X connect 24 0 26 0;
+#X connect 27 0 22 0;
+#X restore 182 465 pd transition-table;
+#X text 351 853 updated for Pd version 0.39;
+#X text 37 515 A more sophisticated way to control foldover in sawtooth
+waves is to replace the once-a-cycle jump with a bandlimited transition.
+To get a band-limited transition we synthesize a band-limited square
+wave and harvest the transition from the middle of the top half to
+the middle of the bottom half. Here we use a square wave at SR/10 \,
+so that only partials 1 and 3 fit below the Nyquist. The transition
+should take 1/2 period \, or 5 samples. The table is calculated and
+stored in the "transition-table" subpatch.;
+#X text 40 767 The "band limit" controls how fast the transition table
+is read. If it is set to the Nyquist frequency the table is read at
+0.4 times the Nyquist \, or five samples a cycle. Lowering the band
+limit cuts off the partials of the generated sawtooth wave at frequencies
+below the Nyquist.;
+#X connect 0 0 24 0;
+#X connect 1 0 18 0;
+#X connect 1 0 22 0;
+#X connect 1 0 22 1;
+#X connect 1 0 28 0;
+#X connect 2 0 5 1;
+#X connect 3 0 2 1;
+#X connect 4 0 14 0;
+#X connect 5 0 6 0;
+#X connect 6 0 12 0;
+#X connect 7 0 4 0;
+#X connect 7 0 3 0;
+#X connect 8 0 9 0;
+#X connect 9 0 0 0;
+#X connect 11 0 25 0;
+#X connect 12 0 13 0;
+#X connect 13 0 23 0;
+#X connect 14 0 5 0;
+#X connect 14 0 1 1;
+#X connect 16 0 17 0;
+#X connect 17 0 7 0;
+#X connect 20 0 26 0;
+#X connect 23 0 1 0;
+#X connect 24 0 2 0;
+#X connect 25 0 8 0;
+#X connect 26 0 21 0;
+#X connect 27 0 28 0;
+#X connect 31 0 32 0;
+#X connect 32 0 16 0;

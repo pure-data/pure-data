@@ -1,0 +1,64 @@
+#N canvas 22 7 886 436 12;
+#X text 85 158 frequency;
+#X floatatom 16 173 0 0 0 0 - - -;
+#X obj 16 120 * 44100;
+#X floatatom 16 94 0 0 0 0 - - -;
+#X text 88 92 frequency;
+#X text 91 111 in bins;
+#X text 85 175 in Hz.;
+#X obj 16 229 osc~;
+#X obj 36 16 fft~;
+#X obj 86 17 ifft~;
+#X text 146 15 - forward and inverse complex FFT;
+#X obj 36 42 rfft~;
+#X obj 86 43 rifft~;
+#X text 146 41 - forward and inverse real FFT;
+#X obj 16 254 rfft~;
+#X obj 16 148 / 64;
+#X obj 574 21 loadbang;
+#X msg 574 47 \; pd dsp 1;
+#X text 636 403 updated for Pd version 0.33;
+#X obj 16 322 rifft~;
+#X obj 102 310 print~ real;
+#X obj 115 285 print~ imaginary;
+#X obj 16 352 /~ 64;
+#X obj 16 407 print~ resynthesized;
+#X msg 30 380 bang;
+#X msg 101 248 bang;
+#X msg 100 199 0.25;
+#X msg 152 199 0;
+#X text 195 200 <-- bash phase;
+#X text 152 249 <-- print analysis;
+#X text 79 380 <-- print resynthesis;
+#X text 76 352 <-- renormalize;
+#X text 347 294 There is no normalization \, so that an FFT followed
+by an IFFT has a gain of N.;
+#X text 346 343 See the FFT examples to see how to use these in practice.
+;
+#X text 347 205 The real FFT outputs N/2+1 real parts and N/2-1 imaginary
+parts. The other outputs are zero. At DC and at the Nyquist there is
+no imaginary part \, but the second through Nth output is as a real
+and imaginary pair \, which can be thought of as the cosine and sin
+component strengths.;
+#X text 346 112 The FFT objects do Fourier analyses and resyntheses
+of incoming real or complex signals. Complex signals are handled as
+pairs of signals (real and imaginary part.) The analysis size is one
+block (you can use the block~ or switch~ objects to control block size).
+;
+#X connect 1 0 7 0;
+#X connect 2 0 15 0;
+#X connect 3 0 2 0;
+#X connect 7 0 14 0;
+#X connect 14 0 20 0;
+#X connect 14 0 19 0;
+#X connect 14 1 21 0;
+#X connect 14 1 19 1;
+#X connect 15 0 1 0;
+#X connect 16 0 17 0;
+#X connect 19 0 22 0;
+#X connect 22 0 23 0;
+#X connect 24 0 23 0;
+#X connect 25 0 20 0;
+#X connect 25 0 21 0;
+#X connect 26 0 7 1;
+#X connect 27 0 7 1;

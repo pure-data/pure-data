@@ -1,0 +1,45 @@
+#N canvas 0 0 685 496 12;
+#X floatatom 107 424 0 0 0;
+#X msg 53 344 bang;
+#X obj 107 399 + 1;
+#X obj 376 262 + 1;
+#X floatatom 152 197 0 0 0;
+#X floatatom 108 245 0 0 0;
+#X msg 108 196 bang;
+#X floatatom 169 107 0 0 0;
+#X msg 112 58 bang;
+#X obj 169 82 + 1;
+#X text 31 21 Here's a simple counter. Click repeatedly on the "bang
+message to see it:;
+#X text 422 263 to its cold inlet.;
+#X text 25 284 The incremented value is stored for the next "bang"
+to spit out.;
+#X text 28 322 Here's a timed counter. Hit the "bang" to start it...
+;
+#X obj 53 373 metro 500;
+#X msg 99 344 stop;
+#X obj 112 83 float;
+#X text 28 132 The "float" box is a storage element holding one floating-point
+number. The cold inlet (i.e. \, the one on the right) stores numbers.
+Sending the message "bang" to the hot inlet gets the number back out:
+;
+#X obj 108 221 float;
+#X obj 53 399 float;
+#X text 25 263 Float's outlet above is connected via;
+#X text 384 462 updated for Pd version 0.34;
+#X text 142 373 <-- new object: metronome. The "500" means every 500
+milliseconds--i.e. \, twice a second.;
+#X connect 1 0 14 0;
+#X connect 2 0 0 0;
+#X connect 2 0 19 1;
+#X connect 4 0 18 1;
+#X connect 6 0 18 0;
+#X connect 8 0 16 0;
+#X connect 9 0 7 0;
+#X connect 9 0 16 1;
+#X connect 14 0 19 0;
+#X connect 15 0 14 0;
+#X connect 15 0 14 0;
+#X connect 16 0 9 0;
+#X connect 18 0 5 0;
+#X connect 19 0 2 0;

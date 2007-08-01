@@ -1,0 +1,32 @@
+#N canvas 182 132 778 399 12;
+#X obj 71 201 metro 500;
+#X obj 71 176 r metro;
+#X msg 575 106 \; metro 0;
+#X msg 574 48 \; pd dsp 1 \; metro 1;
+#X floatatom 55 102 0 0 0;
+#X floatatom 55 258 0 0 0;
+#X text 470 371 updated for Pd version 0.33;
+#X obj 574 21 loadbang;
+#X obj 36 16 sqrt~;
+#X text 88 18 - signal square root;
+#X obj 55 152 sqrt~;
+#X obj 55 225 snapshot~;
+#X floatatom 54 341 9 0 0;
+#X obj 54 285 t f f;
+#X obj 54 312 *;
+#X obj 55 128 sig~;
+#X text 18 45 sqrt~ takes the approximate square root of the incoming
+signal \, using a fast \, approximate algorithm which is probably accurate
+to about 120 dB (20 bits).;
+#X connect 0 0 11 0;
+#X connect 1 0 0 0;
+#X connect 1 0 0 0;
+#X connect 4 0 15 0;
+#X connect 5 0 13 0;
+#X connect 7 0 3 0;
+#X connect 10 0 11 0;
+#X connect 11 0 5 0;
+#X connect 13 0 14 0;
+#X connect 13 1 14 1;
+#X connect 14 0 12 0;
+#X connect 15 0 10 0;

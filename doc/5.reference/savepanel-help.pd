@@ -1,0 +1,12 @@
+#N canvas 9 118 567 234 12;
+#X msg 102 92 bang;
+#X obj 102 145 print;
+#X text 295 199 updated for Pd version 0.24;
+#X text 28 192 see also:;
+#X text 16 35 When Savepanel gets a "bang" a "Save As" file browser appears on the screen \, If you choose a filename \, it appears on the outlet.;
+#X obj 102 120 savepanel;
+#X obj 115 191 openpanel;
+#X obj 19 7 savepanel;
+#X text 104 6 - query you for the name of a file to create;
+#X connect 0 0 5 0;
+#X connect 5 0 1 0;

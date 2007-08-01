@@ -1,0 +1,139 @@
+#N canvas 127 136 697 536 12;
+#X obj 94 188 *~;
+#X obj 136 188 line~;
+#X obj 18 179 cos~;
+#X obj 18 154 +~;
+#X obj 136 165 pack 0 50;
+#X floatatom 136 117 0 0 0 0 - - -;
+#X obj 136 141 / 100;
+#X obj 18 129 phasor~;
+#X obj 18 284 output~;
+#X obj 17 253 hip~;
+#X text 442 513 updated for Pd version 0.37;
+#N canvas 122 211 558 609 fft 1;
+#X obj 19 61 inlet~;
+#X obj 208 212 inlet;
+#X obj 29 92 rfft~;
+#X obj 29 125 *~;
+#X obj 60 125 *~;
+#X obj 29 155 sqrt~;
+#X obj 332 109 block~ 4096 1;
+#X obj 29 181 biquad~ 0 0 0 0 1;
+#X text 93 93 Fourier series;
+#X text 98 146 magnitude;
+#X text 96 131 calculate;
+#X text 21 3 This subpatch computes the spectrum of the incoming signal
+with a (rectangular windowed) FFT. FFTs aren't properly introduced
+until much later.;
+#X text 83 61 signal to analyze;
+#X text 193 164 delay two samples;
+#X text 191 182 for better graphing;
+#X obj 19 459 samplerate~;
+#X obj 19 436 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X floatatom 19 506 5 0 0 0 - - -;
+#X obj 19 482 / 256;
+#X obj 19 412 loadbang;
+#X obj 75 528 s fundamental;
+#X text 17 359 At load time \, calculate a good choice of fundamental
+frequency for showing spectra: the 16th bin in a 4096-point spectrum
+\, so SR*16/4096 or SR/256.;
+#X obj 231 259 metro 500;
+#X obj 231 236 inlet;
+#X text 284 234 toggle to graph repeatedly;
+#X text 262 212 bang to graph once;
+#X obj 19 295 tabwrite~ E09-signal;
+#X obj 231 298 tabwrite~ E09-spectrum;
+#X obj 19 528 t b f;
+#X msg 19 551 \; cm 6;
+#X text 25 585 set carrier multiplier after fundamental;
+#X obj 29 205 /~ 4096;
+#X msg 209 322 \; pd dsp 1;
+#X connect 0 0 2 0;
+#X connect 0 0 26 0;
+#X connect 1 0 26 0;
+#X connect 1 0 27 0;
+#X connect 1 0 32 0;
+#X connect 2 0 3 0;
+#X connect 2 0 3 1;
+#X connect 2 1 4 0;
+#X connect 2 1 4 1;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 7 0;
+#X connect 7 0 31 0;
+#X connect 15 0 18 0;
+#X connect 16 0 15 0;
+#X connect 17 0 28 0;
+#X connect 18 0 17 0;
+#X connect 19 0 16 0;
+#X connect 22 0 26 0;
+#X connect 22 0 27 0;
+#X connect 23 0 22 0;
+#X connect 23 0 32 0;
+#X connect 28 0 29 0;
+#X connect 28 1 20 0;
+#X connect 31 0 27 0;
+#X restore 62 243 pd fft;
+#X obj 122 222 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 122 243 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X text 143 242 <-- repeatedly;
+#X text 144 222 <-- graph once;
+#N canvas 0 0 450 300 graph1 0;
+#X array E09-signal 882 float 0;
+#X coords 0 1.02 882 -1.02 200 80 1;
+#X restore 433 28 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array E09-spectrum 259 float 0;
+#X coords 0 0.51 258 -0.008 259 130 1;
+#X restore 403 175 graph;
+#X text 442 114 ---- 0.02 seconds ----;
+#X text 433 306 2;
+#X text 464 306 4;
+#X text 403 306 0;
+#X text 441 321 -- partial number --;
+#X text 497 8 WAVEFORM;
+#X text 497 157 SPECTRUM;
+#X text 663 291 0;
+#X text 664 173 0.5;
+#X obj 93 117 osc~;
+#X obj 93 86 r fundamental;
+#X text 171 117 index (x100);
+#X text 496 306 6;
+#X text 529 306 8;
+#X text 557 306 10;
+#X text 589 306 12;
+#X text 621 306 14;
+#X text 43 3 SPECTRUM OF TWO-OPERATOR PHASE MODULATION;
+#X floatatom 18 58 3 0 15 0 - - -;
+#X obj 18 105 *;
+#X obj 18 33 r cm;
+#X text 52 57 carrier harmonic #;
+#X text 71 367 This patch measures the spectrum of two-operator phase
+modulation. The carrier frequency is initially six times the modulation
+frequency \, but you can change it with the "carrier harmonic #" control.
+Changing the index changes the relative strengths of the harmonics.
+Past a certain index (which depends on the carrier frequency) the lower
+sidebands begin to reflect about the left edge of the spectrum \, causing
+complicated interference effects.;
+#X connect 0 0 3 1;
+#X connect 1 0 0 1;
+#X connect 2 0 9 0;
+#X connect 2 0 11 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 7 0 3 0;
+#X connect 9 0 8 0;
+#X connect 9 0 8 1;
+#X connect 12 0 11 1;
+#X connect 13 0 11 2;
+#X connect 27 0 0 0;
+#X connect 28 0 27 0;
+#X connect 28 0 37 1;
+#X connect 36 0 37 0;
+#X connect 37 0 7 0;
+#X connect 38 0 36 0;

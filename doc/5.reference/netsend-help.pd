@@ -1,0 +1,55 @@
+#N canvas 84 44 866 530 12;
+#X obj 15 425 netsend;
+#X msg 15 263 connect localhost 3000;
+#X msg 24 403 send foo \$1;
+#X floatatom 24 376 0 0 0;
+#X msg 15 344 disconnect;
+#X msg 285 397 send foo \$1;
+#X floatatom 285 370 0 0 0;
+#X msg 268 344 disconnect;
+#X obj 268 422 netsend 1;
+#X msg 268 263 connect localhost 3001;
+#X floatatom 15 452 0 0 0;
+#X floatatom 268 449 0 0 0;
+#X text 359 422 creation argument: 0 or none for TCP \, nonzero for
+UDP;
+#X text 66 242 TCP;
+#X text 343 239 UDP;
+#X text 197 9 Netsend -- send Pd messages over a network;
+#X text 475 261 Connect to "localhost" port 3000/3001;
+#X text 373 345 Close the connection;
+#X text 325 372 Send messages to "foo" on remote machine;
+#X text 10 473 Outlet is nonzero if connection is open \, zero otherwise.
+;
+#X text 87 38 The Netsend object connects to another machine over the
+network for sending TCP ("stream") or UDP ("datagram") messages. An
+outlet reports whether the connection is open or not. A connection
+request should specify the name or IP address of the other host and
+the port number. There should be a "Netreceive" on the remote host
+with a matching port number.;
+#X obj 409 497 netreceive;
+#X text 318 497 see also:;
+#X text 607 498 updated for Pd version 0.33;
+#X text 87 150 Opt@web.fm has made compatible objects for Max so that
+Pd and Max can intercommunicate: see ftp://fals.ch/pub/pdnets/.;
+#X text 87 186 The Linux version of Pd comes with "pdsend" and "pdreceive"
+standalone programs. These haven't been tested in Windows yet (but
+the source is included in the Pd distribution.);
+#X msg 15 290 connect molloy 3000;
+#X msg 268 290 connect molloy 3001;
+#X msg 15 317 connect bug 3000;
+#X msg 268 317 connect bug 3000;
+#X connect 0 0 10 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 2 0;
+#X connect 4 0 0 0;
+#X connect 5 0 8 0;
+#X connect 6 0 5 0;
+#X connect 7 0 8 0;
+#X connect 8 0 11 0;
+#X connect 9 0 8 0;
+#X connect 26 0 0 0;
+#X connect 27 0 8 0;
+#X connect 28 0 0 0;
+#X connect 29 0 8 0;

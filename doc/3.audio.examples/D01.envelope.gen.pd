@@ -1,0 +1,50 @@
+#N canvas 173 105 567 576 12;
+#X text 246 260 attack;
+#X text 317 261 release;
+#X obj 248 397 line~;
+#X msg 318 355 0 500;
+#X text 126 7 ENVELOPE GENERATORS;
+#X obj 65 369 phasor~ 50;
+#X obj 65 417 *~;
+#X obj 65 465 wrap~;
+#X msg 247 355 1 2500;
+#X obj 65 393 -~ 0.5;
+#X msg 182 331 10 200;
+#X obj 247 331 del 200;
+#X text 26 22 This patch uses an envelope generator to control a sound.
+When you hit "attack" two things happen. First \, the line~ object
+rises to 10 in 200 milliseconds. Then after a "delay" of the same 200
+msec \, the second message sends the line~ back down to 1 over another
+2500 msec. The "release" just ramps us down to zero at the end.;
+#X obj 65 513 output~;
+#X text 311 550 updated for Pd version 0.37;
+#X obj 65 441 +~ 0.5;
+#X obj 65 489 hip~ 5;
+#X obj 247 280 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 318 281 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X msg 257 308 stop;
+#X text 28 121 You can hit the "attack" and/or "release" while something
+is still going on from a previous attack or release \, and the envelope
+generator does the ``right thing". In particular \, the release button
+sends a "stop" to the "del" object \, in case it is still scheduled
+to go off from a previous attack.;
+#X text 27 218 The synthesis method is a form of waveshaping \, which
+is the subject of a later chapter.;
+#X connect 2 0 6 1;
+#X connect 3 0 2 0;
+#X connect 5 0 9 0;
+#X connect 6 0 15 0;
+#X connect 7 0 16 0;
+#X connect 8 0 2 0;
+#X connect 9 0 6 0;
+#X connect 10 0 2 0;
+#X connect 11 0 8 0;
+#X connect 15 0 7 0;
+#X connect 16 0 13 0;
+#X connect 17 0 11 0;
+#X connect 17 0 10 0;
+#X connect 18 0 3 0;
+#X connect 18 0 19 0;
+#X connect 19 0 11 0;

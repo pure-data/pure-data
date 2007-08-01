@@ -1,0 +1,203 @@
+#N canvas 104 78 1119 674 12;
+#N canvas 0 0 600 392 samples 0;
+#N canvas 0 0 450 300 graph1 0;
+#X array sample1 176403 float 0;
+#X coords 0 1.02 176403 -1.02 200 130 1;
+#X restore 262 41 graph;
+#X text 282 385 ------ 4 seconds ------;
+#N canvas 0 0 450 300 graph1 0;
+#X array sample2 176403 float 0;
+#X coords 0 1.02 176403 -1.02 200 130 1;
+#X restore 262 226 graph;
+#X restore 785 563 pd samples;
+#N canvas 52 219 971 512 recorder 0;
+#X obj 174 304 adc~ 1;
+#X obj 174 332 hip~ 5;
+#X obj 243 362 line~;
+#X obj 174 361 *~;
+#X msg 243 334 1;
+#X obj 302 299 del 3990;
+#X msg 279 334 0 10;
+#X obj 174 412 tabwrite~ sample1;
+#X msg 26 247 set \$1 \, bang;
+#X msg 348 270 stop;
+#X msg 302 270 bang;
+#X obj 220 180 route record stop reload browse;
+#X obj 411 288 loadbang;
+#X obj 514 243 openpanel;
+#X msg 514 215 bang;
+#X text 556 214 <-- browse for samples;
+#X text 482 339 v-- re-read original samples;
+#X obj 411 425 soundfiler;
+#X msg 411 367 read ../sound/bell.aiff sample1 \, read ../sound/voice2.wav
+sample2;
+#X msg 514 270 read \$1 sample1;
+#X obj 514 297 soundfiler;
+#X msg 220 41 record 1;
+#X msg 220 97 stop;
+#X msg 220 69 record 2;
+#X msg 220 124 reload;
+#X msg 220 152 browse;
+#X text 218 19 record \, etc.;
+#X obj 26 218 makefilename sample%d;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 1;
+#X connect 3 0 7 0;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X connect 6 0 2 0;
+#X connect 8 0 7 0;
+#X connect 9 0 5 0;
+#X connect 10 0 5 0;
+#X connect 11 0 10 0;
+#X connect 11 0 4 0;
+#X connect 11 0 27 0;
+#X connect 11 1 6 0;
+#X connect 11 1 9 0;
+#X connect 11 2 18 0;
+#X connect 11 3 14 0;
+#X connect 12 0 18 0;
+#X connect 13 0 19 0;
+#X connect 14 0 13 0;
+#X connect 18 0 17 0;
+#X connect 19 0 20 0;
+#X connect 21 0 11 0;
+#X connect 22 0 11 0;
+#X connect 23 0 11 0;
+#X connect 24 0 11 0;
+#X connect 25 0 11 0;
+#X connect 27 0 8 0;
+#X restore 785 586 pd recorder;
+#X text 782 458 sample number;
+#X obj 619 96 unpack 0 0 0 0 0 0 0;
+#X obj 563 124 poly 8 1;
+#X obj 654 270 route 1 2 3 4 5 6 7 8;
+#X obj 558 487 output~;
+#X obj 563 149 swap;
+#X obj 563 196 route 0;
+#X obj 563 173 pack;
+#X obj 605 221 unpack;
+#X obj 557 289 sampvoice2;
+#X obj 563 221 pack;
+#X text 933 411 amplitude;
+#X text 932 435 pitch;
+#X text 851 344 ARGUMENTS FOR:;
+#X text 784 386 pitch;
+#X text 784 410 amplitude;
+#X text 784 434 duration;
+#X text 13 4 POLY SAMPLER \, VERSION 2 FOR SEPARATE NOTE-ON/OFF MESSAGES
+;
+#X obj 619 71 r onoff;
+#X text 932 368 ON/OFF TRANSITIONS:;
+#X text 785 367 ENTIRE NOTES:;
+#X text 932 390 tag;
+#X text 782 485 sample onset;
+#X text 782 511 rise time;
+#X text 783 535 decay time;
+#X text 929 460 (same other 4);
+#X obj 836 159 f;
+#X obj 872 159 + 1;
+#X obj 836 185 mod 1e+06;
+#X obj 654 245 pack 0 0 0 0 0 0 0;
+#X obj 918 74 r note;
+#X obj 918 100 unpack 0 0 0 0 0 0 0;
+#X text 860 641 updated for Pd version 0.37;
+#X obj 895 127 t b f;
+#X obj 936 237 pack 0 0 0 0 0 0 0;
+#X obj 889 285 s onoff;
+#X obj 870 230 pipe;
+#X obj 870 253 pack;
+#X msg 103 528 \; onoff 1 90 60 1 0 0 100;
+#X msg 323 528 \; onoff 1 0;
+#X msg 104 570 \; onoff 2 90 48 1 0 0 100;
+#X msg 324 570 \; onoff 2 0;
+#X msg 104 627 \; note 51 90 1000 1 0 0 100;
+#X obj 557 312 sampvoice2;
+#X obj 557 336 sampvoice2;
+#X obj 557 360 sampvoice2;
+#X obj 557 383 sampvoice2;
+#X obj 557 407 sampvoice2;
+#X obj 557 430 sampvoice2;
+#X obj 557 454 sampvoice2;
+#X text 14 35 Here is a variation on the polyphonic sampler \, which
+can take separate messages to start and stop notes (so that you can
+attach it to a MIDI keyboard \, for example.) "Note" messages act as
+before \, but in an intermediate step they are split onto note-on and
+note-off messages \, sent to "onoff". You can alternatively send messages
+straight to onoff if you don't know the duration in advance.;
+#X text 12 150 Messages to "onoff" require a tag \, which is a number
+shared between the note-on and note-off message so that we can track
+down the voice to turn it off. If you're using MIDI input \, you can
+just re-use the pitch as a tag.;
+#X text 102 508 separate messages for not on and off:;
+#X text 101 608 single messages to do both as before:;
+#X text 10 221 Messages to "onoff" whose amplitude is zero are note-off
+messages (the other parameters of note-off messages are ignored). The
+"sampvoice2" abstraction is a modification of "sampvoice" which looks
+at the amplitude field to decide whether to begin or end a note.;
+#X text 10 301 To convert "note" messages to pairs of "onoff" messages
+\, first a counter generates a tag. The the "pipe" object delays a
+copy of the tag \, which the following "pack" object converts into
+a note-off message (a pair of numbers \, the tag and a zero.);
+#X text 9 382 Under "r onoff" \, the poly object allocates a voice
+number \, putting it out paired with velocity. After swapping the two
+and packing them into a single message \, the amplitude is checked
+against zero by the "route 0" object \; if zero \, the "pack" confects
+a 2-argument message (voice number and zero). Otherwise \, the "unpack"
+retrieves the nonzero amplitude for a note-on message \, to which we
+add all the other parameters and route to the appropriate voice.;
+#X connect 3 0 4 0;
+#X connect 3 1 31 1;
+#X connect 3 1 4 1;
+#X connect 3 2 31 2;
+#X connect 3 3 31 3;
+#X connect 3 4 31 4;
+#X connect 3 5 31 5;
+#X connect 3 6 31 6;
+#X connect 4 0 7 0;
+#X connect 4 2 7 1;
+#X connect 5 0 11 1;
+#X connect 5 1 45 1;
+#X connect 5 2 46 1;
+#X connect 5 3 47 1;
+#X connect 5 4 48 1;
+#X connect 5 5 49 1;
+#X connect 5 6 50 1;
+#X connect 5 7 51 1;
+#X connect 7 0 9 0;
+#X connect 7 1 9 1;
+#X connect 8 0 12 0;
+#X connect 8 1 10 0;
+#X connect 9 0 8 0;
+#X connect 10 1 31 0;
+#X connect 11 0 45 0;
+#X connect 12 0 5 0;
+#X connect 20 0 3 0;
+#X connect 28 0 29 0;
+#X connect 29 0 30 0;
+#X connect 30 0 28 1;
+#X connect 30 0 38 0;
+#X connect 30 0 36 0;
+#X connect 31 0 5 0;
+#X connect 32 0 33 0;
+#X connect 33 0 35 0;
+#X connect 33 1 36 1;
+#X connect 33 2 38 1;
+#X connect 33 3 36 3;
+#X connect 33 4 36 4;
+#X connect 33 5 36 5;
+#X connect 33 6 36 6;
+#X connect 35 0 28 0;
+#X connect 35 1 36 2;
+#X connect 36 0 37 0;
+#X connect 38 0 39 0;
+#X connect 39 0 37 0;
+#X connect 45 0 46 0;
+#X connect 46 0 47 0;
+#X connect 47 0 48 0;
+#X connect 48 0 49 0;
+#X connect 49 0 50 0;
+#X connect 50 0 51 0;
+#X connect 51 0 6 0;
+#X connect 51 0 6 1;

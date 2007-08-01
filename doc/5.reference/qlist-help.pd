@@ -1,0 +1,79 @@
+#N canvas 7 31 1178 587 12;
+#X obj 546 328 qlist;
+#X msg 592 110 rewind;
+#X msg 591 135 next;
+#X floatatom 546 382 0 0 0 0 - - -;
+#X msg 593 54 bang;
+#X obj 441 515 r this;
+#X obj 544 515 r that;
+#X obj 441 544 print this;
+#X obj 544 544 print that;
+#X obj 560 356 print done;
+#X msg 593 80 tempo 1;
+#X text 18 51 The qlist object reads text files containing time-tagged
+Pd messages. You can have them sequenced automatically (by sending
+a "bang" message \, possibly changing speed via "tempo" messages) or
+manually via the "rewind" and "next" messages.;
+#X text 15 136 To run the qlist automatically \, send it a "read" message
+(the filename is relative to the directory the patch is in) and later
+a "bang." Messages in the file are separated by semicolons. Optional
+leading numbers are delay times in milliseconds. If the tempo is diffrerent
+from 1 the messages are sent faster or slower accordingly. Messages
+should start with a symbol giving the destination object. In the file
+"qlist.q" used here \, the messages go to objects "this" and "that"
+which are receives below.;
+#X text 17 281 To run it manually \, send "rewind" followed by "next".
+All messages not preceeded by numbers are sent. As soon as a message
+starting with one or more numbers is encountered \, the numbers are
+output as a list. There are many ways you could design a sequencer
+around this.;
+#X text 668 48 sequence automatically;
+#X text 670 79 set relative tempo;
+#X text 668 105 go to beginning (and stop);
+#X text 668 132 single-step forward;
+#X text 713 273 read a file;
+#X text 777 300 write one;
+#X text 552 404 This outlet gets a list of leading numbers for the
+next message \, for you to use in designing your own sequencer.;
+#X msg 586 274 read qlist.txt;
+#X msg 586 300 write /tmp/qlist.txt;
+#X text 21 493 see also:;
+#X obj 97 493 textfile;
+#X text 22 362 You can also record textual messages and save them to
+a file. Send "clear" to empty the qlist and "add" to add messages (terminated
+with semicolons.) The message \, "add2" adds a list of atoms without
+finishing with a semicolon in case you want to make variable-length
+messages.;
+#X msg 589 190 clear;
+#X msg 589 216 add 500 this is another message;
+#X msg 590 242 add2 that;
+#X text 666 187 empty the qlist;
+#X text 882 217 add a message to a qlist;
+#X text 683 240 add a message to a qlist but don't terminate it;
+#X text 653 341 This outlet gets a bang when you hit the end of the
+sequence. In the file "qlist.txt" the end is delayed 1000 milliseconds
+after the last message.;
+#X text 379 470 These receives are invoked in the file "qlist.txt"
+in this directory.;
+#X obj 71 13 qlist;
+#X text 132 15 - text-based sequencer;
+#X text 668 158 single-step forward SUPRESSING MESSAGE-SENDING;
+#X msg 591 161 next 1;
+#X text 921 558 updated for Pd version 0.35;
+#X msg 593 29 print;
+#X text 667 28 print contents to Pd window;
+#X connect 0 0 3 0;
+#X connect 0 1 9 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 7 0;
+#X connect 6 0 8 0;
+#X connect 10 0 0 0;
+#X connect 21 0 0 0;
+#X connect 22 0 0 0;
+#X connect 26 0 0 0;
+#X connect 27 0 0 0;
+#X connect 28 0 0 0;
+#X connect 37 0 0 0;
+#X connect 39 0 0 0;

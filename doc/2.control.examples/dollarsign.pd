@@ -1,0 +1,35 @@
+#N canvas 62 73 586 361 12;
+#X obj 207 44 inlet;
+#X obj 207 71 s \$1-a;
+#X obj 302 72 s \$1-b;
+#X text 331 337 updated for Pd version 0.34;
+#X text 63 7 This is an abstraction used in example 12 \, "locality".
+;
+#X obj 302 47 inlet;
+#X obj 62 249 s \$1-c;
+#X obj 62 279 r \$1-c;
+#X floatatom 62 218 5 0 0;
+#X floatatom 62 307 5 0 0;
+#X obj 164 250 s here's-what-happens-if-you-dont;
+#X obj 163 280 r here's-what-happens-if-you-dont;
+#X floatatom 163 308 5 0 0;
+#X floatatom 164 220 5 0 0;
+#X floatatom 487 224 5 0 0;
+#X floatatom 488 307 5 0 0;
+#X obj 487 251 s \$0-d;
+#X obj 488 281 r \$0-d;
+#X text 47 94 The sends above get named "one-a" \, etc. The window
+title bar tells you the creation arguments for this particular instance.
+You can use this to make internal local connections as shown below.
+The "$1-c" boxes act locally whereas the middle boxes get crosstalk
+between the windows. The boxes at right also get unique names but in
+this case you don't have to secify "$0" \, it's just something unique.
+;
+#X connect 0 0 1 0;
+#X connect 5 0 2 0;
+#X connect 7 0 9 0;
+#X connect 8 0 6 0;
+#X connect 11 0 12 0;
+#X connect 13 0 10 0;
+#X connect 14 0 16 0;
+#X connect 17 0 15 0;

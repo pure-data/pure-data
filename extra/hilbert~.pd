@@ -1,0 +1,27 @@
+#N canvas 269 0 593 306 12;
+#X obj 105 92 biquad~ 0.83774 -0.06338 0.06338 -0.83774 1;
+#X obj 105 66 biquad~ 1.94632 -0.94657 0.94657 -1.94632 1;
+#X obj 86 149 biquad~ -0.02569 0.260502 -0.260502 0.02569 1;
+#X obj 86 175 biquad~ 1.8685 -0.870686 0.870686 -1.8685 1;
+#X obj 86 39 inlet~;
+#X obj 105 121 outlet~;
+#X obj 86 202 outlet~;
+#X text 34 232 This is a pair of 4th-order all-pass filters whose outputs
+somehow manage to be about 90 degrees out of phase from each other.
+Both have different phases from the original. Adapted from a 4X patch
+by Emmanuel Favreau \, circa 1982;
+#X obj 502 39 inlet;
+#X text 461 13 bang to clear;
+#X text 80 16 signal in;
+#X msg 502 112 clear;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 4 0 1 0;
+#X connect 4 0 2 0;
+#X connect 8 0 11 0;
+#X connect 11 0 1 0;
+#X connect 11 0 0 0;
+#X connect 11 0 2 0;
+#X connect 11 0 3 0;

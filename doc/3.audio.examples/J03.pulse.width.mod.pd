@@ -1,0 +1,48 @@
+#N canvas 46 315 784 514 12;
+#X floatatom 95 64 0 0 0 0 - - -;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-difference 882 float 0;
+#X coords 0 1.02 882 -1.02 200 130 1;
+#X restore 565 325 graph;
+#X text 81 39 frequency;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-phasor1 882 float 0;
+#X coords 0 1.02 882 -1.02 200 130 1;
+#X restore 565 24 graph;
+#X text 57 9 CLASSICAL PULSE WIDTH MODULATION;
+#X obj 111 156 phasor~ 0;
+#X obj 111 132 + 0.2;
+#X obj 95 206 -~;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-phasor2 882 float 0;
+#X coords 0 1.02 882 -1.02 200 130 1;
+#X restore 565 176 graph;
+#X text 24 314 This patch demonstrates pulse width modulation \, which
+is accomplished simply by subtracting two sawtooth waves at a varying
+phase difference. Here their frequencies are set to differ by 1/5 Hz.
+so that the relative phase wanders continuously.;
+#X text 570 457 ---- 0.02 seconds ----;
+#X text 524 487 updated for Pd version 0.39;
+#X obj 96 247 output~;
+#X obj 200 124 tabwrite~ \$0-phasor1;
+#X obj 200 182 tabwrite~ \$0-phasor2;
+#X obj 200 236 tabwrite~ \$0-difference;
+#X obj 95 97 phasor~;
+#X obj 200 82 metro 193;
+#X obj 200 62 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X text 219 60 <-- start/stop graphing;
+#X connect 0 0 6 0;
+#X connect 0 0 16 0;
+#X connect 5 0 7 1;
+#X connect 5 0 14 0;
+#X connect 6 0 5 0;
+#X connect 7 0 12 0;
+#X connect 7 0 12 1;
+#X connect 7 0 15 0;
+#X connect 16 0 7 0;
+#X connect 16 0 13 0;
+#X connect 17 0 13 0;
+#X connect 17 0 14 0;
+#X connect 17 0 15 0;
+#X connect 18 0 17 0;

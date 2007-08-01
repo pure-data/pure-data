@@ -1,0 +1,76 @@
+#N canvas 18 14 650 653 12;
+#X floatatom 32 60 0 0 0 0 - - -;
+#X obj 32 86 mtof;
+#X obj 32 323 output~;
+#X msg 32 34 60;
+#X text 67 63 <-- choose a pitch;
+#X text 68 34 <-- reset to middle C;
+#X obj 32 154 osc~;
+#X obj 73 130 * 2;
+#X obj 73 154 osc~;
+#X obj 137 154 osc~;
+#X obj 137 130 * 3;
+#X obj 201 155 osc~;
+#X obj 201 131 * 4;
+#X obj 137 179 *~ 0.2;
+#X obj 33 289 +~;
+#X obj 74 259 *~;
+#X obj 109 260 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 74 210 +~;
+#X obj 74 234 +~;
+#X text 133 7 Adding sinusoids to make a complex tone;
+#N canvas 0 0 450 300 graph1 0;
+#X array tab.01.07 882 float 0;
+#X coords 0 1.02 881 -1.02 200 130 1;
+#X restore 426 222 graph;
+#X msg 116 295 bang;
+#X text 165 294 <-- click to graph;
+#X text 260 129 frequencies of harmonics;
+#X text 260 155 four oscillators;
+#X text 264 181 adjust amplitudes;
+#X text 109 233 add the three overtones together;
+#X obj 116 324 tabwrite~ tab.01.07;
+#X text 381 632 updated for Pd version 0.40.;
+#X text 429 360 ---- 0.02 seconds ----;
+#X obj 73 179 *~ 0.1;
+#X obj 201 179 *~ 0.5;
+#X text 129 259 <-- overtones ON/OFF;
+#X text 29 580 To hear the output \, choose a pitch (at top) \, optionally
+click the "overtones" control \, and mouse up the output volume. Click
+the "bang" message to graph it.;
+#X text 31 392 A simple way to build non-sinusoidal \, periodic musical
+tones is to sum a series of harmonically tuned sinusoids. Here the
+four oscillators have frequencies in a 1:2:3:4 ratio (the three "*"
+objects compute the second \, third \, and fourth one). The amplitudes
+are adjusted by the "*~ 0.1" \, etc. \, objects. Note that \, since
+the frequency (from the "mtof") is a message \, a "*" box suffices
+to operate on it \, but the oscillator's output \, being an audio signal
+\, needs "*~" instead. The control marked "overtones ON/OFF" is a toggle
+switch. Click to turn it on and off. Of the overtones are "off" you
+hear only a sinusoid from the forst oscillator. If on \, you hear all
+four.;
+#X connect 0 0 1 0;
+#X connect 1 0 6 0;
+#X connect 1 0 7 0;
+#X connect 1 0 10 0;
+#X connect 1 0 12 0;
+#X connect 3 0 0 0;
+#X connect 6 0 14 0;
+#X connect 7 0 8 0;
+#X connect 8 0 30 0;
+#X connect 9 0 13 0;
+#X connect 10 0 9 0;
+#X connect 11 0 31 0;
+#X connect 12 0 11 0;
+#X connect 13 0 17 1;
+#X connect 14 0 2 0;
+#X connect 14 0 2 1;
+#X connect 14 0 27 0;
+#X connect 15 0 14 1;
+#X connect 16 0 15 1;
+#X connect 17 0 18 0;
+#X connect 18 0 15 0;
+#X connect 21 0 27 0;
+#X connect 30 0 17 0;
+#X connect 31 0 18 1;

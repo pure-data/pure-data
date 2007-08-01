@@ -1,0 +1,16 @@
+#N canvas 9 21 600 496 12;
+#X msg 204 32 hello world;
+#X obj 204 105 print;
+#X floatatom 321 32 0 0 0;
+#X text 215 48 message;
+#X text 319 49 atom;
+#X text 201 123 object;
+#X text 53 150 There are four types of text objects in Pd: message \, atom \, object \, and comment.;
+#X text 54 187 Messages respond to mouse clicks by sending their contents to one or more destinations. The usual destination is the "outlet" at the lower left corner of the box.;
+#X text 55 239 Click the message box and watch the terminal window Pd was started in. You should see the "hello world" message appear.;
+#X text 55 278 Atoms respond to "Dragging" up and down with the mouse \, by changing their contents and sending the result out their outlets. You can also type at an atom after clicking on it \; hit "enter" to output the number or click anywhere else to cancel.;
+#X text 52 359 Objects \, like "print" above \, may have all sorts of functions depending on what's typed into them. The "print" object simply prints out every message it receives.;
+#X text 53 415 To get help on an object \, right-click it. You should see a "help window" for the object.;
+#X text 354 470 updated for release 0.33;
+#X connect 0 0 1 0;
+#X connect 2 0 1 0;

@@ -1,0 +1,51 @@
+#N struct help-element-template float x float y array array1 help-element-array1-template
+;
+#N struct help-element-array1-template float y;
+#N canvas 392 102 672 446 12;
+#X text 24 373 see also:;
+#N canvas 393 10 503 273 help-element-template 0;
+#X obj 27 76 plot array1 500 1 10 15 20;
+#X obj 27 174 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
+#X obj 24 15 struct help-element-template float x float y array array1
+help-element-array1-template;
+#X restore 414 349 pd help-element-template;
+#N canvas 0 0 292 163 help-element-data 1;
+#X scalar help-element-template 35 24 \; 0 \; 10 \; 0 \; 10 \; 20 \;
+10 \; 20 \; 70 \; 10 \; \;;
+#X restore 450 328 pd help-element-data;
+#N canvas 196 292 373 142 help-element-array1-template 0;
+#X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
+#X obj 32 27 struct help-element-array1-template float y;
+#X restore 354 371 pd help-element-array1-template;
+#X obj 22 11 element;
+#X text 91 10 -- get pointer to an element of an array;
+#X obj 98 393 pointer;
+#X obj 166 393 getsize;
+#X obj 234 393 setsize;
+#X text 24 44 "element" takes a pointer at right and a number at left.
+It looks up a field from the pointer \, which should be an array \,
+and outputs the element of the array specified by the number. There
+are no pointers to arrays themselves \, just to individual elements.
+The template and field mane are specified as creation arguments.;
+#X obj 150 228 pointer;
+#X msg 150 204 traverse pd-help-element-data \, next;
+#X floatatom 38 230 5 0 0 0 - - -;
+#X obj 38 256 element help-element-template array1;
+#X obj 38 303 get help-element-array1-template y;
+#X floatatom 38 330 5 0 0 0 - - -;
+#X text 370 256 arguments: template \, field name;
+#X text 247 230 pointer inlet;
+#X text 36 209 index;
+#X text 43 277 outlet is pointer to single element;
+#X text 89 328 here we just get the value of y.;
+#X text 24 143 Indices range from 0 to the number of elements minus
+one \; indices out of range are quietly replaced by the nearest endpoint.
+;
+#X text 152 184 click here first;
+#X text 407 416 updated for Pd version 0.40;
+#X obj 21 393 struct;
+#X connect 10 0 13 1;
+#X connect 11 0 10 0;
+#X connect 12 0 13 0;
+#X connect 13 0 14 0;
+#X connect 14 0 15 0;

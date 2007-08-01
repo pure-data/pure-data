@@ -1,0 +1,96 @@
+#N canvas 307 35 742 511 12;
+#X floatatom 66 450 0 0 0 0 - - -;
+#N canvas 159 26 495 270 output 0;
+#X obj 414 196 t b;
+#X obj 414 134 f;
+#X obj 414 73 inlet;
+#X text 421 36 mute;
+#X obj 414 227 f;
+#X msg 521 218 0;
+#X msg 414 104 bang;
+#X obj 414 166 moses 1;
+#X obj 521 187 t b f;
+#X obj 486 143 moses 1;
+#X obj 102 181 dbtorms;
+#X obj 486 113 r master-lvl;
+#X obj 102 52 r master-lvl;
+#X obj 414 257 s master-lvl;
+#X obj 26 222 inlet~;
+#X obj 244 50 inlet;
+#X text 244 22 level;
+#X obj 244 122 s master-lvl;
+#X msg 118 80 set \$1;
+#X obj 118 109 outlet;
+#X msg 262 78 \; pd dsp 1;
+#X obj 102 238 line~;
+#X obj 26 259 *~;
+#X obj 26 295 dac~;
+#X obj 102 210 pack 0 50;
+#X text 24 195 audio;
+#X text 114 135 show level;
+#X connect 0 0 4 0;
+#X connect 1 0 7 0;
+#X connect 2 0 6 0;
+#X connect 4 0 13 0;
+#X connect 5 0 13 0;
+#X connect 6 0 1 0;
+#X connect 7 0 0 0;
+#X connect 7 1 8 0;
+#X connect 8 0 5 0;
+#X connect 9 1 4 1;
+#X connect 10 0 24 0;
+#X connect 11 0 1 1;
+#X connect 11 0 9 0;
+#X connect 12 0 10 0;
+#X connect 12 0 18 0;
+#X connect 14 0 22 0;
+#X connect 15 0 17 0;
+#X connect 15 0 20 0;
+#X connect 18 0 19 0;
+#X connect 21 0 22 1;
+#X connect 22 0 23 0;
+#X connect 22 0 23 1;
+#X connect 24 0 21 0;
+#X restore 32 476 pd output;
+#X msg 102 450 MUTE;
+#X text 148 449 <--- volume in dB;
+#X floatatom 32 296 4 0 0 0 - - -;
+#X obj 32 326 sig~ 100;
+#X obj 547 52 table table1;
+#X obj 547 80 table table2;
+#X msg 372 287 \; table1 sinesum 512 0.5 0.5 0.5 0.5 \; table2 cosinesum
+512 0 1;
+#X text 433 474 Updated for Pd version 0.33;
+#X obj 20 11 tabosc4~;
+#X text 110 12 4-point interpolating oscillator;
+#X msg 52 372 set table1;
+#X obj 32 413 tabosc4~ table1;
+#X msg 156 372 set table2;
+#X text 372 343 click above \, start DSP \, and turn output;
+#X text 372 361 volume up to hear this;
+#X text 14 178 For good results use 512 points for up to about 15 partials
+\, or 32*npartials (rounded up to a power of 2) for more than 15;
+#X floatatom 275 391 4 0 0 0 - - -;
+#X text 12 233 Don't send new "sinesum" messages to tables while you're
+running -- instead \, use "set" messages to switch between tables.
+;
+#X text 80 298 signal input for frequency (Hz.);
+#X text 46 349 message to switch tables;
+#X text 325 391 inlet to reset phase;
+#X text 166 414 creation argument initializes table;
+#X text 14 40 tabosc4~ is a traditional computer music style wavetable
+lookup oscillator using 4-point polynomial interpolation. The table
+should have a power of two points plus three "guard points" \, one
+at the beginning and two at the end \, which should be wraparound copies
+of the last point and the first two points \, respectively. The "sinesum"
+and "cosinesum" methods for arrays do this automatically for you if
+you just want to specify partial strengths.;
+#X connect 0 0 1 1;
+#X connect 1 0 0 0;
+#X connect 2 0 1 2;
+#X connect 4 0 5 0;
+#X connect 5 0 13 0;
+#X connect 12 0 13 0;
+#X connect 13 0 1 0;
+#X connect 14 0 13 0;
+#X connect 18 0 13 1;

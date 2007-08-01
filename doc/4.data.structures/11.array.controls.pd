@@ -1,0 +1,49 @@
+#N struct template11 float x float y array a template11a;
+#N struct template11a float x float amp float w1 float w2;
+#N canvas 14 266 568 347 12;
+#X text 300 287 updated for Pd version 0.39;
+#N canvas 587 7 540 455 template11 1;
+#X obj 41 303 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 41 325 t b b;
+#X obj 222 384 pointer;
+#X msg 72 353 traverse pd-data11 \, bang;
+#X obj 43 409 append template11 x y;
+#X msg 41 385 50 50;
+#X obj 23 19 struct template11 float x float y array a template11a
+;
+#X obj 31 254 filledpolygon 0 0 0 0 0 3 0 3 30 0 30 0 0;
+#X obj 31 134 plot -w w1 a 0 2 5 0;
+#X obj 33 190 plot -w w2 a 0 2 5 15;
+#X obj 40 83 plot -y amp(0:100)(0:100) a 500 2 5 30;
+#X text 41 61 Graph (x \, amp) pairs (using "amp" as the "y" field"):
+;
+#X text 33 108 Graph "w1" as width ("y" is zero);
+#X text 30 168 also "w2" \, at (5 \, 15) to disambiguate the one at
+(5 \, 0);
+#X text 28 231 Mark the scalar itself;
+#X connect 0 0 1 0;
+#X connect 1 0 5 0;
+#X connect 1 1 3 0;
+#X connect 2 0 4 2;
+#X connect 3 0 2 0;
+#X connect 5 0 4 0;
+#X restore 40 233 pd template11;
+#N canvas 25 458 313 196 data11 1;
+#X scalar template11 41 87 \; 2 0 0 0 \; 18 51 7 0 \; 98 41 0 5 \;
+109 0 0 0 \; \;;
+#X coords 0 196 1 195 0 0 0;
+#X restore 51 299 pd data11;
+#N canvas 336 497 561 109 template11a 0;
+#X obj 23 19 struct template11a float x float amp float w1 float w2
+;
+#X restore 47 271 pd template11a;
+#X text 25 13 You can control which variable is used as "x" \, "y"
+\, and "width" when plotting an array. In this example a single array
+"a" is plotted three times \, to show the values of the "amp" \, "w1"
+and "w2" fields. This is convenient when you want to have several variables
+in each point of the array and need several traces of the same array
+to visualize it all.;
+#X text 24 127 In this example the array points have no "y" field at
+all \, so if no variable is supplied to use instead of "y" \, the array
+is flat along its "x" axis.;

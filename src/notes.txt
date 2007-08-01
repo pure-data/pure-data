@@ -1,0 +1,170 @@
+---------------- dolist --------------------
+  binbuf_read_via_canvas in x_qlist.c
+
+PC device counting problem (first device invoked by -audiodev 0)
+
+test:
+compile on various versions of linux
+windows:
+  modal dialogs confuse watchdog
+  check the right-click-on-empty-canvas
+  MIDI I/O (inc. sysex)
+  "-audiodev" with no args in registry can't start up?
+mac:
+  clicking on windows seems sometimes not to open them
+what does OSX do when jack is compiled into Pd but not installed??
+turn on paMacCore_ChangeDeviceParameters for mac (pa_mac_core.h)
+Gnome: why don't windows pop up when clicked on?
+
+problems:
+fix declare to update current patch when changed
+objects on GOP don't erase if you edit the GOP while they're showing
+MSTACKSIZE limitation in m_binbuf.c
+add -stack option to make 'regular' stack larger
+TK menu on Windows says "wish"
+activating windows in Gnome?
+help browser broke on Panurge
+offer both new and old help browser style
+look again at array vis/invis conundrum, g_template.c
+TK commands to nonexistent windows? (occasionally still happens)
+still can't detect when a window is moved or resized
+open_via_path call in d_soundfile.c isn't threadsafe
+crashed Pd putting vec and template in wrong order in array element of struct
+floor, ciel functions in expr misdeclared
+graph names don't appear until graph moved? (invis/vis on new array/rename)
+don't filter locked click() through getrect
+when retyping abstractions, offer to save dirty one
+should linux stop grabbing focus on vis?  Is there a way to detect whether
+    the mouse is in a window when it opens?
+arrays that don't fit in bounds don't update (same as red rectangle problem?)
+look in d_resample.pd to understand inlet~ upsampling...
+patcher inlets don't deal with scalars (zbug.pd)
+check if there's a problem loading libs on startup if superuser
+read xx.txt in "bad" gives warnings
+Krzysztof's qlist_next reentrancy bug
+don't draw in/outlets on gui objects in graph-on-parent
+get rid of messages causing renaming; try to prevent patches closing themselves.
+scofo reports error on reading score1.txt
+loading e-mailed patches without removing headers crashes pd
+check if _vsnprintf with zero argument in windows works any better...
+detect adc~ and dac~ reblocking
+
+more demonstration patches:
+vibrato using variable delay
+real-time spectrum grapher
+document ||, |, etc, better
+
+features:
+clickles connection (hit 'c' key or something)
+messages to suppress menus&accelerators, and invisibilize Pd window
+machine-independent fonts
+callback scheduling on Mac
+sigmund~: sort by pitch; one-shot
+add -x flag to drawnumbers....
+grab new ALSA midi code from devel
+externs able to usurp built-ins (+mem alignment for SSE)
+replace gatom_escapit with a quoting mechanism (handle '[', spaces, etc.)
+unicode in filenames???  How does this work?  (bug report about windows)
+sprout inlet for "route", "sel" if one arg
+more list functions (see x_list.c)
+poly inlet to turn stealing on/off, plus mode to handle note-with-duration
+integrate video into tilde objects
+graph "hide name" flag controllable from dialog
+"installation mode" - turn off Pd window, accelerators, menu bars, scrollbars
+fix copyright notices
+pixel font sizes
+pd to find running ones (pd -new to defeat)
+tables:
+    if there's just one array, don't do stringent hit check.
+    array click protection (Krzysztof's suggestion)
+    make graph labels persistent and add to dialog
+    object to get/set table size; random; quantile
+    flag to hide array names 
+think of a way to embed abstractions in a patch
+make watchdog work for MACOSX
+pasting should look at current mouse location
+delete-in-rectangle message to Pds
+put serial object in main dist (see rat@telecoma, Apr. 25; winfried May 22)
+open/save panel to take messages to init directory, and to set extent list
+flags to defeat pre-loading specified classes
+expr to parse exponential notation
+pipe to handle symbols&pointers (just takes floats now???)
+fix "system" (google CLOEXEC alsa)
+editing:
+    "enter" into object box to create new one (also, change border? forking?)
+    tab to jump to a connected object (first one?) (shift-tab to back up?)
+    arrow keys to shift connections left and right
+    menu item to connect selected objects
+    highlight connections (and I/Os) on mouse motion
+    select line and hit "insert" to interpolate an object
+    option-drag an outlet to make a new, connected object
+    (also, a way to make multiple connections?)
+
+data:
+make a 2-pass proecss for finding hot spot closes to any given click
+replace list element with binbuf??
+hooks for table mousing, other changes (scalars?)
+data to save as succession of "list" messages that textfile can store, etc.
+implement list field (GOP or subwindow, perhaps GOP could suppress bounds rect?)
+data copy/paste doesn't check templates aren't changed
+arrays of non-existent templates crash
+vget, vset traversal objects, pointer == and select equivalents
+cursor to show (x, y) location
+improve typing at drawnumbers
+sublists should display on parent if desired? (new drawing instruction)
+test and debug list elements of templates
+sublists seem not to handle canvas allocation right (get.pd->pointer.pd bug)
+append doesn't do symbols yet.
+
+more features:
+
+clean out IRIX stuff
+"-march=pentium4 -O2 -mfpmath=sse -msse -msse2 -mmmx" ?
+try to improve for AMD - try "-march=athlon-xp -msse2"
+search for -mcpu=cpu-type in man gcc.
+-Wno-unused to -Wno-unused-paramter and clean up unused automatic variables
+security module system in 2.6 - see the kernel module replacing jackstart
+signal inlets to sense signals; fix +~ etc, vcf~, biquad~, other filters
+try to reduce startup time
+investigate gcc 3.3 warnings; try to reinstate -fstrict-aliasing
+message dialog not to disappear
+why does changing the name of an explode in jupiter patch take so long?
+close-subwindows menu item
+show results of opening audio and MIDI on dialogs
+windows escape from control-C
+new: abs~, nexttick~, extend threshold~ and snapshot~ (vthreshold~ etc)
+incorporate pddp doc
+try again to fix the font scene
+look at prctl(2) for FP exception handling
+??? have a way to disambiguate externs from different libs???
+netsend separate thread
+netreceive (and netsend?) message to set port number
+graph_vis() to decorate graphs when they're toplevel (parent_glist == 0)
+in glist_delete, consider why this can't be just "vis 0" -- why do we need it?
+closebang
+check that -blocksize really reflects in audiobuf calc for Hammerfall
+makefile to have make install depend on make local.
+put in something for tilde order forcing
+extensible "toolbar" so people can add external GUI objects
+variable send and receive -- check how max/MSP does it?
+number boxes to darken for typing and/or received messages
+new message box look
+figure out what to do when "pd sym" conflicts with window title as in Pluton?
+bonk~ file path handling
+dialog to give values of $1, ... for the canvas
+bang at end of line~, tabwrite~, etc.
+recording to part of a table
+should sys_bail kill all "threads" on the way out?
+check a_valid usage
+allow backslashes (or else really disallow them)
+icon & desktop integration
+vreadsf~
+benchmarking
+flash menu when accelerator hits?
+fix edit mode menu item
+fancier text editing
+tools (reassigns meaning of primary click)
+get gui to notice early EOF
+rewrite t_getbytes properly (m_newmemory.c in pd/attic)
+obj_new should do a longjmp on out-of-memory
+

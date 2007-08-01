@@ -1,0 +1,49 @@
+#N canvas 87 80 611 646 12;
+#X floatatom 37 179 0 0 0 0 - - -;
+#X obj 37 281 print;
+#X obj 37 254 makefilename dog%d.aif;
+#X msg 34 326 symbol meat;
+#X msg 47 350 symbol hair;
+#X obj 34 405 print;
+#X obj 34 378 makefilename dog%s.aif;
+#X text 26 47 The Makefilename object generates symbols according to
+a format string \, for use as a series of filenames \, table names
+\, or whatnot. You can plug in a variable number or symbol by putting
+"%d" or "%s" in the string. If you put "%s" in the string be sure to
+send it a symbol and vice versa... there's no checking.;
+#X obj 49 17 makefilename;
+#X text 170 18 - format a "name" with a variable field;
+#X msg 52 205 set cat%d.wav;
+#X msg 52 229 set %d-zebra;
+#X text 359 625 updated for Pd version 0.37;
+#X text 71 179 <- numbers replace "%d" in string;
+#X text 177 207 <- "set" message replaces format;
+#X text 243 256 <- creation argument is format;
+#X text 138 152 SUBSTITUTING A NUMBER;
+#X text 126 301 SUBSTITUTING A SYMBOL;
+#X obj 49 619 print;
+#X obj 48 517 makefilename dog%%d.%s;
+#X msg 48 541 set \$1;
+#X obj 48 595 makefilename not-set-yet;
+#X floatatom 57 566 0 0 0 0 - - -;
+#X msg 48 465 symbol aif;
+#X msg 61 489 symbol wav;
+#X text 44 441 GANG THEM TO DO DOUBLE (OR N-TUPLE) SUBSTITUTION;
+#X text 258 519 "%s" is replaced by the symbol;
+#X text 259 502 here \, "%%" becomes "%" and;
+#X text 114 544 ... so this becomes "set dog%d.aif" \, for example.
+;
+#X text 108 566 ... and then the number fills in "%d".;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
+#X connect 3 0 6 0;
+#X connect 4 0 6 0;
+#X connect 6 0 5 0;
+#X connect 10 0 2 0;
+#X connect 11 0 2 0;
+#X connect 19 0 20 0;
+#X connect 20 0 21 0;
+#X connect 21 0 18 0;
+#X connect 22 0 21 0;
+#X connect 23 0 19 0;
+#X connect 24 0 19 0;

@@ -1,0 +1,10 @@
+#N canvas 252 0 559 226 12;
+#X text 311 181 updated for Pd version 0.32;
+#X obj 21 10 sublist;
+#X text 86 10 -- get a list from a field of a scalar;
+#X text 31 37 Don't try this yet -- it's untested.;
+#X text 36 89 "sublist" will take as creation arguments a template
+name and a field name \; its one input takes a pointer. If you send
+a pointer (which should agree with the template name) \, "sublist"
+will output the field (which should be of type "list".) The output
+is in fact a pointer to the head of the sublist.;

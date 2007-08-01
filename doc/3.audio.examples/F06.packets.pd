@@ -1,0 +1,117 @@
+#N canvas 207 159 864 663 12;
+#X obj 327 413 line~;
+#X obj 55 456 cos~;
+#N canvas 0 0 450 300 graph1 0;
+#X array pulse-output 882 float 0;
+#X coords 0 1 882 -1 200 130 1;
+#X restore 627 339 graph;
+#X obj 327 390 pack 0 50;
+#X floatatom 327 344 0 0 0 0 - - -;
+#X obj 55 355 -~ 0.5;
+#X obj 55 410 *~;
+#X obj 327 367 / 10;
+#X obj 55 433 clip~ -0.5 0.5;
+#X text 327 322 bandwidth;
+#X obj 327 436 +~ 1;
+#X obj 55 479 +~ 1;
+#X obj 206 491 cos~;
+#X obj 56 547 *~;
+#X floatatom 228 346 4 0 0 0 - - -;
+#X obj 228 366 / 10;
+#X text 627 472 --- 0.02 seconds ---;
+#X obj 206 465 *~;
+#N canvas 129 316 777 218 graph 1;
+#X obj 70 76 inlet~;
+#X obj 662 76 inlet;
+#X obj 67 143 tabwrite~ pulse-output;
+#X obj 298 81 inlet~;
+#X obj 472 74 inlet~;
+#X obj 295 148 tabwrite~ window;
+#X obj 477 149 tabwrite~ carrier;
+#X msg 654 140 \; pd dsp 1;
+#X connect 0 0 2 0;
+#X connect 1 0 2 0;
+#X connect 1 0 5 0;
+#X connect 1 0 6 0;
+#X connect 1 0 7 0;
+#X connect 3 0 5 0;
+#X connect 4 0 6 0;
+#X restore 100 572 pd graph;
+#X obj 228 412 line~;
+#X obj 228 389 pack 0 50;
+#N canvas 0 0 450 300 graph3 0;
+#X array carrier 882 float 0;
+#X coords 0 1 881 -1 200 140 1;
+#X restore 627 188 graph;
+#N canvas 0 0 450 300 graph4 0;
+#X array window 882 float 0;
+#X coords 0 1 881 -1 200 140 1;
+#X restore 628 35 graph;
+#X text 204 573 <-- graph;
+#X floatatom 55 310 4 0 0 0 - - -;
+#X obj 55 331 phasor~ 100;
+#X text 31 2 WINDOWED PACKETS;
+#X text 51 266 fundamental;
+#X text 206 260 center;
+#X text 204 279 freq. (in;
+#X text 203 298 tenths of;
+#X text 202 318 fundamental);
+#X text 119 493 window;
+#X text 241 469 magnified phase;
+#X text 283 509 desired center frequency;
+#X text 255 492 <--this cosine goes at the;
+#X text 284 528 but its phase is reset each;
+#X text 282 547 fundamental period.;
+#X text 28 32 The simpler of two techniques for making slidable center
+frequencies is to synthesize enveloped sinusoidal wave packets. The
+packets should repeat at the fundamental frequency \, but the frequency
+of the packet itself controls the center frequency of the formant.
+The length of the packet varies inversely with bandwidth.;
+#X obj 55 604 output~;
+#X obj 55 580 hip~;
+#X obj 182 573 bng 18 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 601 635 updated for Pd version 0.37;
+#X obj 55 502 *~ 0.5;
+#X text 831 161 -1;
+#X text 833 31 1;
+#X text 831 314 -1;
+#X text 835 184 1;
+#X text 832 458 -1;
+#X text 835 333 1;
+#X text 26 132 In the patch below \, the "clip~" followed by "cos~"
+and "+~ 1" is the enveloping ("windowing") function \, which appears
+in the top graph. The carrier \, on the other hand \, is a broken sinusoid
+made by amplifying the phasor~ (the "*~" controlled by "center freq.")
+and taking the cos~ of the result. The "breaks" in the sinusoid only
+occur when the enveloping signal is zero.;
+#X text 105 464 raised;
+#X text 113 479 cosine;
+#X text 51 285 frequency;
+#X connect 0 0 10 0;
+#X connect 1 0 11 0;
+#X connect 3 0 0 0;
+#X connect 4 0 7 0;
+#X connect 5 0 6 0;
+#X connect 5 0 17 0;
+#X connect 6 0 8 0;
+#X connect 7 0 3 0;
+#X connect 8 0 1 0;
+#X connect 10 0 6 1;
+#X connect 11 0 43 0;
+#X connect 12 0 13 1;
+#X connect 12 0 18 2;
+#X connect 13 0 18 0;
+#X connect 13 0 40 0;
+#X connect 14 0 15 0;
+#X connect 15 0 20 0;
+#X connect 17 0 12 0;
+#X connect 19 0 17 1;
+#X connect 20 0 19 0;
+#X connect 24 0 25 0;
+#X connect 25 0 5 0;
+#X connect 40 0 39 0;
+#X connect 40 0 39 1;
+#X connect 41 0 18 3;
+#X connect 43 0 13 0;
+#X connect 43 0 18 1;

@@ -1,0 +1,257 @@
+#N canvas 224 60 657 571 12;
+#X obj 23 269 output~;
+#X obj 45 74 / 100;
+#X floatatom 45 54 5 0 100 0 - - -;
+#X obj 23 144 *~;
+#X text 403 539 updated for Pd version 0.37;
+#X obj 22 29 osc~ 220;
+#X obj 45 97 pack 0 50;
+#X obj 45 121 line~;
+#X text 97 54 <-- index in;
+#X text 117 68 hundredths;
+#X obj 23 169 *~ 128;
+#X obj 23 217 tabread4~ E05-tab;
+#N canvas 0 0 450 300 graph1 0;
+#X array E05-tab 259 float 1;
+#A 0 -1.20148 -1 -0.810724 -0.63326 -0.467216 -0.31221 -0.167866 -0.0338144
+0.0903053 0.204849 0.310166 0.406597 0.494477 0.574137 0.645895 0.71007
+0.766969 0.816895 0.860145 0.897008 0.927771 0.952708 0.972093 0.98619
+0.995261 0.999557 0.999329 0.994816 0.986257 0.97388 0.957912 0.938572
+0.916074 0.890625 0.86243 0.831684 0.798582 0.76331 0.726049 0.686977
+0.646266 0.60408 0.560583 0.515931 0.470276 0.423765 0.37654 0.328738
+0.280493 0.231934 0.183183 0.13436 0.0855808 0.0369554 -0.01141 -0.0594134
+-0.106956 -0.153946 -0.200292 -0.245909 -0.290715 -0.334633 -0.377589
+-0.419512 -0.460337 -0.5 -0.538443 -0.57561 -0.611449 -0.645912 -0.678953
+-0.710532 -0.740609 -0.76915 -0.796122 -0.821497 -0.845248 -0.867354
+-0.887794 -0.906551 -0.923612 -0.938965 -0.952601 -0.964516 -0.974704
+-0.983167 -0.989906 -0.994925 -0.99823 -0.999832 -0.999741 -0.997972
+-0.994539 -0.98946 -0.982757 -0.97445 -0.964564 -0.953125 -0.94016
+-0.925699 -0.909772 -0.892414 -0.873658 -0.85354 -0.832098 -0.809372
+-0.785401 -0.760228 -0.733895 -0.706446 -0.677928 -0.648387 -0.61787
+-0.586426 -0.554105 -0.520957 -0.487033 -0.452386 -0.417069 -0.381135
+-0.344638 -0.307632 -0.270174 -0.232319 -0.194122 -0.15564 -0.11693
+-0.0780487 -0.039053 0 0.039053 0.0780487 0.11693 0.15564 0.194122
+0.232319 0.270174 0.307632 0.344638 0.381135 0.417069 0.452386 0.487033
+0.520957 0.554105 0.586426 0.61787 0.648387 0.677928 0.706446 0.733895
+0.760228 0.785401 0.809372 0.832098 0.85354 0.873658 0.892414 0.909772
+0.925699 0.94016 0.953125 0.964564 0.97445 0.982757 0.98946 0.994539
+0.997972 0.999741 0.999832 0.99823 0.994925 0.989906 0.983167 0.974704
+0.964516 0.952601 0.938965 0.923612 0.906551 0.887794 0.867354 0.845248
+0.821497 0.796122 0.76915 0.740609 0.710532 0.678953 0.645912 0.611449
+0.57561 0.538443 0.5 0.460337 0.419512 0.377589 0.334633 0.290715 0.245909
+0.200292 0.153946 0.106956 0.0594134 0.01141 -0.0369554 -0.0855808
+-0.13436 -0.183183 -0.231934 -0.280493 -0.328738 -0.37654 -0.423765
+-0.470276 -0.515931 -0.560583 -0.60408 -0.646266 -0.686977 -0.726049
+-0.76331 -0.798582 -0.831684 -0.86243 -0.890625 -0.916074 -0.938572
+-0.957912 -0.97388 -0.986257 -0.994816 -0.999329 -0.999557 -0.995261
+-0.98619 -0.972093 -0.952708 -0.927771 -0.897008 -0.860145 -0.816895
+-0.766969 -0.71007 -0.645895 -0.574137 -0.494477 -0.406597 -0.310166
+-0.204849 -0.0903053 0.0338144 0.167866 0.31221 0.467216 0.63326 0.810724
+1 1.20148;
+#X coords 0 1 258 -1 200 140 1;
+#X restore 262 46 graph;
+#X text 497 28 subpatch to;
+#N canvas 113 0 849 700 make-table 0;
+#X obj 141 304 t b b;
+#X obj 213 329 f;
+#X obj 251 329 + 1;
+#X msg 235 306 0;
+#X obj 141 327 until;
+#X obj 213 359 t f f;
+#X obj 114 436 tabwrite E05-tab;
+#X obj 140 355 sel 258;
+#X text 203 172 normalize from -1 to 1;
+#X obj 141 285 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 88 386 expr ($f1-129)/128;
+#X obj 141 262 inlet;
+#X obj 171 534 t b b;
+#X obj 243 559 f;
+#X obj 281 559 + 1;
+#X msg 265 536 0;
+#X obj 171 557 until;
+#X obj 243 589 t f f;
+#X obj 144 666 tabwrite E05-tab;
+#X obj 170 585 sel 258;
+#X obj 171 515 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 118 616 expr ($f1-129)/128;
+#X obj 171 492 inlet;
+#X obj 444 228 t b b;
+#X obj 516 253 f;
+#X obj 554 253 + 1;
+#X msg 538 230 0;
+#X obj 444 251 until;
+#X obj 516 283 t f f;
+#X obj 417 360 tabwrite E05-tab;
+#X obj 443 279 sel 258;
+#X obj 391 334 expr 16*$f1*$f1*$f1*$f1*$f1-20*$f1*$f1*$f1+5*$f1;
+#X obj 444 209 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 391 310 expr ($f1-129)/128;
+#X obj 444 186 inlet;
+#X obj 504 476 t b b;
+#X obj 576 501 f;
+#X obj 614 501 + 1;
+#X msg 598 478 0;
+#X obj 504 499 until;
+#X obj 576 531 t f f;
+#X obj 477 624 tabwrite E05-tab;
+#X obj 503 527 sel 258;
+#X obj 504 457 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 448 558 expr ($f1-129)/128;
+#X obj 504 434 inlet;
+#X obj 88 410 expr 4*$f1*$f1*$f1-3*$f1;
+#X obj 118 640 expr 8*$f1*$f1*$f1*$f1-8*$f1*$f1+1;
+#X obj 448 582 expr 32*$f1*$f1*$f1*$f1*$f1*$f1 -48*$f1*$f1*$f1*$f1+18*$f1*$f1-1
+;
+#X text 641 622 6th C.P. and basta.;
+#X obj 83 92 t b b;
+#X obj 155 117 f;
+#X obj 193 117 + 1;
+#X msg 177 94 0;
+#X obj 83 115 until;
+#X obj 155 147 t f f;
+#X obj 56 224 tabwrite E05-tab;
+#X obj 82 143 sel 258;
+#X obj 83 73 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 30 174 expr ($f1-129)/128;
+#X obj 83 50 inlet;
+#X obj 30 198 expr 2*$f1*$f1-1;
+#X text 203 198 2nd C.P.;
+#X text 309 410 3rd C.P.;
+#X text 331 660 4th C.P.;
+#X text 613 357 5th C.P.;
+#X text 259 51 This patch computes Chebychev polynomials and stores
+them in a wavetable for use later.;
+#X connect 0 0 4 0;
+#X connect 0 1 3 0;
+#X connect 1 0 2 0;
+#X connect 1 0 5 0;
+#X connect 1 0 7 0;
+#X connect 2 0 1 1;
+#X connect 3 0 1 1;
+#X connect 4 0 1 0;
+#X connect 5 0 10 0;
+#X connect 5 1 6 1;
+#X connect 7 0 4 1;
+#X connect 9 0 0 0;
+#X connect 10 0 46 0;
+#X connect 11 0 9 0;
+#X connect 12 0 16 0;
+#X connect 12 1 15 0;
+#X connect 13 0 14 0;
+#X connect 13 0 17 0;
+#X connect 13 0 19 0;
+#X connect 14 0 13 1;
+#X connect 15 0 13 1;
+#X connect 16 0 13 0;
+#X connect 17 0 21 0;
+#X connect 17 1 18 1;
+#X connect 19 0 16 1;
+#X connect 20 0 12 0;
+#X connect 21 0 47 0;
+#X connect 22 0 20 0;
+#X connect 23 0 27 0;
+#X connect 23 1 26 0;
+#X connect 24 0 25 0;
+#X connect 24 0 28 0;
+#X connect 24 0 30 0;
+#X connect 25 0 24 1;
+#X connect 26 0 24 1;
+#X connect 27 0 24 0;
+#X connect 28 0 33 0;
+#X connect 28 1 29 1;
+#X connect 30 0 27 1;
+#X connect 31 0 29 0;
+#X connect 32 0 23 0;
+#X connect 33 0 31 0;
+#X connect 34 0 32 0;
+#X connect 35 0 39 0;
+#X connect 35 1 38 0;
+#X connect 36 0 37 0;
+#X connect 36 0 40 0;
+#X connect 36 0 42 0;
+#X connect 37 0 36 1;
+#X connect 38 0 36 1;
+#X connect 39 0 36 0;
+#X connect 40 0 44 0;
+#X connect 40 1 41 1;
+#X connect 42 0 39 1;
+#X connect 43 0 35 0;
+#X connect 44 0 48 0;
+#X connect 45 0 43 0;
+#X connect 46 0 6 0;
+#X connect 47 0 18 0;
+#X connect 48 0 41 0;
+#X connect 50 0 54 0;
+#X connect 50 1 53 0;
+#X connect 51 0 52 0;
+#X connect 51 0 55 0;
+#X connect 51 0 57 0;
+#X connect 52 0 51 1;
+#X connect 53 0 51 1;
+#X connect 54 0 51 0;
+#X connect 55 0 59 0;
+#X connect 55 1 56 1;
+#X connect 57 0 54 1;
+#X connect 58 0 50 0;
+#X connect 59 0 61 0;
+#X connect 60 0 58 0;
+#X connect 61 0 56 0;
+#X restore 489 146 pd make-table;
+#X obj 489 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 517 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 545 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 573 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 600 126 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 497 45 calculate;
+#X text 495 64 Chebychev;
+#X text 496 83 polynomials;
+#X text 490 107 2;
+#X text 517 107 3;
+#X text 546 107 4;
+#X text 572 108 5;
+#X text 601 107 6;
+#X text 134 2 waveshaping with Chebychev polynomials;
+#X obj 23 193 +~ 129;
+#X obj 23 242 hip~ 5;
+#X text 107 256 This patch demonstrates using Chebychev polynomials
+(of the first kind) to generate pure harmonics using waveshaping. The
+pure harmonic only comes out when the index is one (top of the scale).
+Smaller indices will give various mixes of harmonics. The table initially
+holds the fifth Chebychev polynomial \, so you can get the fifth harmonic.
+;
+#X text 106 355 There is an audible "rolling" sound as the index changes
+for the higher degree polynomials \, because the amplitudes of the
+lower partials can rise and fall several times apiece as the index
+rises from zero to one.;
+#X text 105 422 Indices greater than one will try to read values outside
+the table (which would be clipped appropriately). Anyway \, the polynomials
+increase rapidly in value outside the interval from -1 to 1 that we
+are using here.;
+#X text 106 491 When you get tired of Chebychef polynomials you can
+draw your own functions by hand and/or try other formulas.;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 10 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 3 1;
+#X connect 10 0 29 0;
+#X connect 11 0 30 0;
+#X connect 15 0 14 0;
+#X connect 16 0 14 1;
+#X connect 17 0 14 2;
+#X connect 18 0 14 3;
+#X connect 19 0 14 4;
+#X connect 29 0 11 0;
+#X connect 30 0 0 0;
+#X connect 30 0 0 1;

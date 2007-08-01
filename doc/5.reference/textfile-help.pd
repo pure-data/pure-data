@@ -1,0 +1,59 @@
+#N canvas 12 43 1181 529 12;
+#X msg 582 27 rewind;
+#X obj 577 416 print done;
+#X text 745 185 read a file;
+#X text 801 214 write one;
+#X text 97 472 see also:;
+#X obj 521 365 textfile;
+#X msg 584 188 read textfile.txt;
+#X obj 176 473 qlist;
+#X obj 145 20 textfile;
+#X text 236 20 read and write text files;
+#X text 34 92 The textfile object reads and writes text files to and
+from memory. You can read a file and output sequential lines as lists
+\, or collect lines and write them out. You can use this object to
+generate "models" for Gem \, for instance.;
+#X text 665 28 go to beginning;
+#X msg 582 54 bang;
+#X text 665 53 output one line as a list;
+#X msg 584 216 write /tmp/textfile.txt;
+#X msg 584 243 write /tmp/textfile2.txt cr;
+#X text 593 264 write a file \, terminating lines only with carriage
+return (omitting semicolons.) You can read files this way too \, in
+which case carriage returns are mapped to semicolons.;
+#X obj 521 438 print list;
+#X msg 583 312 read textfile.txt cr;
+#X msg 582 82 clear;
+#X text 737 83 empty the object;
+#X text 737 111 add a message;
+#X text 521 464 this outlet gets the lines in sequence.;
+#X text 35 246 You can also use this object simply for storing heterogeneous
+sequences of lists.;
+#X text 608 385 This outlet gets a bang when you hit the end of the
+sequence.;
+#X msg 582 162 set 2 4 6 8;
+#X text 740 163 clear and then add one message;
+#X msg 582 109 add cis boom bah;
+#X msg 582 136 add2 bang;
+#X text 734 136 add an unterminated message;
+#X text 31 160 To record textual messages and save them to a file \,
+first send "clear" to empty the qlist and "add" to add messages (terminated
+with semicolons.) The message \, "add2" adds a list of atoms without
+finishing with a semicolon in case you want to make variable-length
+messages.;
+#X msg 582 339 print;
+#X text 636 342 debugging printout;
+#X text 901 500 updated for Pd version 0.33;
+#X connect 0 0 5 0;
+#X connect 5 0 17 0;
+#X connect 5 1 1 0;
+#X connect 6 0 5 0;
+#X connect 12 0 5 0;
+#X connect 14 0 5 0;
+#X connect 15 0 5 0;
+#X connect 18 0 5 0;
+#X connect 19 0 5 0;
+#X connect 25 0 5 0;
+#X connect 27 0 5 0;
+#X connect 28 0 5 0;
+#X connect 31 0 5 0;

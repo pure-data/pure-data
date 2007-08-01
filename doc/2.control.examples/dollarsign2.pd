@@ -1,0 +1,54 @@
+#N canvas 22 54 588 671 12;
+#X text 324 642 updated for Pd version 0.34;
+#X text 34 6 This is an abstraction used in example 13 \, "dollarsigns".
+;
+#X obj 88 107 send \$1;
+#X obj 199 106 + \$2;
+#X floatatom 303 88 0 0 0;
+#X obj 303 139 print;
+#X msg 303 113 blah \$1;
+#X text 36 163 This may sound inconsistant \, but it's not--object
+and message boxes are both actually messages \, but in the case of
+the Object box the message is passed at creation time \, and for the
+Message box \, at message time.;
+#X msg 188 272 bang;
+#X obj 188 300 symbol \$1;
+#X msg 98 272 bang;
+#X obj 98 300 float \$2;
+#X floatatom 98 327 5 0 0;
+#X symbolatom 188 329 10 0 0;
+#X text 36 233 So how do you put creation arguments in messages? Use
+"float" and "symbol" as shown:;
+#X msg 97 383 bang;
+#X obj 97 407 float \$2;
+#X msg 97 434 five \$1;
+#X text 41 357 Then if you wish \, connect to a message box as in:
+;
+#X obj 97 459 print;
+#X msg 143 512 bang;
+#X obj 143 564 symbol \$1;
+#X obj 237 560 f \$2;
+#X obj 143 540 t b b;
+#X obj 142 587 pack symbol float;
+#X msg 142 613 six \$1 \$2;
+#X obj 142 640 print;
+#X text 31 485 For messages combining more than one creation argument
+try:;
+#X text 37 50 In Object boxes \, dollar signs refer to the abstraction's
+creation arguments. In Messages \, they change dynamically:;
+#X connect 4 0 6 0;
+#X connect 6 0 5 0;
+#X connect 8 0 9 0;
+#X connect 9 0 13 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 17 0 19 0;
+#X connect 20 0 23 0;
+#X connect 21 0 24 0;
+#X connect 22 0 24 1;
+#X connect 23 0 21 0;
+#X connect 23 1 22 0;
+#X connect 24 0 25 0;
+#X connect 25 0 26 0;

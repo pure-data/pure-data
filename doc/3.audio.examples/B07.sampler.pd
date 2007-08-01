@@ -1,0 +1,52 @@
+#N canvas 11 3 915 618 12;
+#X obj 37 217 hip~ 5;
+#X text 96 219 high pass filter to cut DC;
+#N canvas 0 0 450 300 graph1 0;
+#X array sample-table 44104 float 0;
+#X coords 0 1.02 44103 -1.02 200 130 1;
+#X restore 585 20 graph;
+#X obj 37 185 tabread4~ sample-table;
+#X obj 37 150 line~;
+#X obj 37 101 * 441;
+#X floatatom 37 47 0 0 100 0 - - -;
+#X obj 37 125 pack 0 100;
+#X text 102 13 SCRATCH MACHINE;
+#X text 72 48 <-- read point in 100ths of a second;
+#X text 94 101 convert to SAMPLES (441 samples in 0.01 sec);
+#X obj 405 235 loadbang;
+#X text 246 174 read from the table;
+#X text 237 192 (the input is the index in samples);
+#X text 16 482 For more on reading and writing soundfiles to tables
+\, setting their lengths \, etc \, see "arrays" in the "control examples"
+series.;
+#X text 14 355 This patch introduces the "tabread4~" object \, which
+reads audio samples out of a floating-point array \, often called a
+"sample table." The input is the index of the sample to read \, counting
+from zero. The output is calculated using 4-point cubic interpolation
+\, which is adequate for most purposes. Because of the interpolation
+scheme \, tabread4~'s input cannot be less than one or greater than
+the table length minus two.;
+#X text 17 539 Fanatics take note: if you want really high-fidelity
+sampling \, use a high-quality resampling program to up-sample your
+soundfile to 88200 to drastically reduce interpolation error.;
+#X text 591 173 (one second plus three extra;
+#X text 593 192 for 4-point interpolation);
+#X text 385 304 message to read a soundfile into the table (automatically
+sent when you load this patch by the "loadbang" object.);
+#X text 84 150 convert smoothly to audio signal;
+#X text 84 62 (range is 0-100.) YOU ONLY HEAR OUTPUT;
+#X text 85 78 WHEN THIS IS 0-100 AND ACTIVELY CHANGING.;
+#X text 596 589 updated for Pd version 0.33;
+#X text 584 151 --- 44103 samples ---;
+#X msg 405 259 read ../sound/voice.wav sample-table;
+#X obj 405 284 soundfiler;
+#X obj 36 249 output~;
+#X connect 0 0 27 0;
+#X connect 0 0 27 1;
+#X connect 3 0 0 0;
+#X connect 4 0 3 0;
+#X connect 5 0 7 0;
+#X connect 6 0 5 0;
+#X connect 7 0 4 0;
+#X connect 11 0 25 0;
+#X connect 25 0 26 0;

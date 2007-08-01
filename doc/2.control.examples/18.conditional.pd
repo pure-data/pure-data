@@ -1,0 +1,59 @@
+#N canvas 538 239 665 516 12;
+#X text 395 489 updated for Pd version 0.26;
+#X obj 87 148 select 1 2;
+#X floatatom 87 120 0 0 0;
+#X obj 87 214 print select-1;
+#X obj 119 194 print select-2;
+#X obj 152 171 print select-3;
+#X floatatom 313 122 0 0 0;
+#X obj 313 155 pack;
+#X obj 313 182 route 1 2;
+#X obj 353 131 t b f;
+#X floatatom 353 107 0 0 0;
+#X obj 371 210 unpack;
+#X floatatom 313 210 0 0 0;
+#X floatatom 342 210 0 0 0;
+#X floatatom 371 233 0 0 0;
+#X floatatom 409 234 0 0 0;
+#X text 30 20 Pd provides at least four objects for doing conditioonal
+computations. The "select" object tests its input against its argumt(s)
+\, and outputs "bang" when they match. The "route" object works similarly
+but also copies data. In other wors \, "route" takes a list \, tests
+its first element \, and conditionally passes on the rest of the list.
+;
+#X text 56 262 You also get "spigot" which turns a flow of messages
+on and off (like the Gate object in Max \, but with the inputs reversed):
+;
+#X floatatom 125 316 0 0 0;
+#X obj 125 341 spigot;
+#X floatatom 162 316 0 0 0;
+#X floatatom 125 365 0 0 0;
+#X text 192 317 <-- nonzero to open;
+#X text 157 365 if open \, messages coming in at left are sent to output.
+;
+#X text 55 396 And finally \, "moses" sends numbers to the left if
+they're less than the argument \, right otherwise:;
+#X floatatom 125 427 0 0 0;
+#X floatatom 125 476 0 0 0;
+#X obj 125 452 moses 5;
+#X floatatom 169 476 0 0 0;
+#X connect 1 0 3 0;
+#X connect 1 1 4 0;
+#X connect 1 2 5 0;
+#X connect 2 0 1 0;
+#X connect 6 0 7 0;
+#X connect 7 0 8 0;
+#X connect 8 0 12 0;
+#X connect 8 1 13 0;
+#X connect 8 2 11 0;
+#X connect 9 0 7 0;
+#X connect 9 1 7 1;
+#X connect 10 0 9 0;
+#X connect 11 0 14 0;
+#X connect 11 1 15 0;
+#X connect 18 0 19 0;
+#X connect 19 0 21 0;
+#X connect 20 0 19 1;
+#X connect 25 0 27 0;
+#X connect 27 0 26 0;
+#X connect 27 1 28 0;

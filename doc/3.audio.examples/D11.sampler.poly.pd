@@ -1,0 +1,175 @@
+#N canvas 91 72 1119 674 12;
+#N canvas 0 0 600 392 samples 0;
+#N canvas 0 0 450 300 graph1 0;
+#X array sample1 176403 float 0;
+#X coords 0 1.02 176403 -1.02 200 130 1;
+#X restore 262 41 graph;
+#X text 282 385 ------ 4 seconds ------;
+#N canvas 0 0 450 300 graph1 0;
+#X array sample2 176403 float 0;
+#X coords 0 1.02 176403 -1.02 200 130 1;
+#X restore 262 226 graph;
+#X restore 931 97 pd samples;
+#N canvas 52 219 967 340 recorder 0;
+#X obj 220 21 inlet;
+#X obj 174 174 adc~ 1;
+#X obj 174 202 hip~ 5;
+#X obj 243 232 line~;
+#X obj 174 231 *~;
+#X msg 243 204 1;
+#X obj 302 169 del 3990;
+#X msg 279 204 0 10;
+#X obj 174 282 tabwrite~ sample1;
+#X msg 26 117 set \$1 \, bang;
+#X msg 348 140 stop;
+#X msg 302 140 bang;
+#X obj 220 50 route record stop reload browse;
+#X obj 411 158 loadbang;
+#X obj 514 113 openpanel;
+#X msg 514 85 bang;
+#X text 556 84 <-- browse for samples;
+#X text 482 209 v-- re-read original samples;
+#X obj 411 295 soundfiler;
+#X msg 411 237 read ../sound/bell.aiff sample1 \, read ../sound/voice2.wav
+sample2;
+#X msg 514 140 read \$1 sample1;
+#X obj 514 167 soundfiler;
+#X obj 26 88 makefilename sample%d;
+#X connect 0 0 12 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 3 0 4 1;
+#X connect 4 0 8 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 7 0 3 0;
+#X connect 9 0 8 0;
+#X connect 10 0 6 0;
+#X connect 11 0 6 0;
+#X connect 12 0 11 0;
+#X connect 12 0 5 0;
+#X connect 12 0 22 0;
+#X connect 12 1 7 0;
+#X connect 12 1 10 0;
+#X connect 12 2 19 0;
+#X connect 12 3 15 0;
+#X connect 13 0 19 0;
+#X connect 14 0 20 0;
+#X connect 15 0 14 0;
+#X connect 19 0 18 0;
+#X connect 20 0 21 0;
+#X connect 22 0 9 0;
+#X restore 931 284 pd recorder;
+#X msg 931 146 record 1;
+#X msg 931 202 stop;
+#X msg 931 174 record 2;
+#X text 19 49 ARGUMENTS FOR NOTES:;
+#X text 19 71 pitch in halftones;
+#X text 19 95 amplitude (dB);
+#X text 19 143 sample number;
+#X text 19 119 duration (msec);
+#X text 19 167 start location (msec);
+#X text 19 191 rise time (msec);
+#X text 19 215 decay time (msec);
+#X msg 931 229 reload;
+#X msg 931 257 browse;
+#X text 47 10 POLYPHONIC SAMPLER;
+#X obj 547 329 sampvoice;
+#X obj 631 17 r note;
+#X obj 631 44 unpack 0 0 0 0 0 0 0;
+#X obj 604 76 t b f;
+#X obj 544 109 f;
+#X obj 580 109 + 1;
+#X obj 552 146 mod 1e+06;
+#X obj 544 175 makenote 64;
+#X obj 544 203 poly 8 1;
+#X obj 544 230 stripnote;
+#X obj 617 272 pack 0 0 0 0 0 0 0 0;
+#X obj 617 300 route 1 2 3 4 5 6 7 8;
+#X text 929 124 record \, etc.;
+#X text 335 203 allocate sampler voice;
+#X text 361 228 drop note off again;
+#X obj 704 516 qlist;
+#X obj 870 520 r comment;
+#X text 732 445 sailors to untie him...;
+#X text 735 395 Lashed to the mast of his boat \, Ulysses;
+#X text 735 420 hears beautiful singing. He begs his;
+#X text 7 263 Here we take the previous patch and make it polyphonic
+\, with 8 voices. The single voice which we had before has been made
+into an abstraction \, "sampvoice.pd" \, which we instantiate in 8
+copies. Earlier we used sends and receives to pass messages to "cutoff"
+\, etc \, but here if we did that the copies of sampvoice would be
+sending messages to each other \, so we combine the control and the
+audio computation in the sampvoice abstraction without using send and
+receive. Click on one to see how.;
+#X text 8 413 The "poly" object essentially repeats pitch and velocity
+pairs to its output \, but also sending a voice number from its left
+outlet. To use it \, we unpack the 7 parameters \, calculate the voice
+number \, repack the message as 8 parameters with voice number first
+\, and use "route" to send it to one of the 8 voices.;
+#X text 8 515 There's some bother because poly expects to track note
+on and note off messages separately as they would come from a MIDI
+keyboard. So we assign each note a unique fake "pitch" \, use makenote
+to generate the note-off messages \, and run poly on the resulting
+stream. We then discard both pitch and velocity (using the velocity
+only to strip note-offs) and rebuild the original message adding the
+voice number we just scored.;
+#X text 854 639 updated for Pd version 0.33;
+#X msg 704 486 read qlist-sampler.txt \, rewind \, tempo 1 \, bang
+;
+#X obj 548 551 output~;
+#X text 249 108 increment mod 1e+06 to make tag;
+#X text 276 127 (acts like a MIDI pitch to;
+#X text 277 146 identify the note to "poly");
+#X text 258 175 supply delayed note-off message;
+#X obj 547 522 sampvoice;
+#X obj 547 494 sampvoice;
+#X obj 547 467 sampvoice;
+#X obj 547 439 sampvoice;
+#X obj 547 412 sampvoice;
+#X obj 547 384 sampvoice;
+#X obj 547 356 sampvoice;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 13 0 1 0;
+#X connect 14 0 1 0;
+#X connect 16 0 52 0;
+#X connect 17 0 18 0;
+#X connect 18 0 19 0;
+#X connect 18 1 26 2;
+#X connect 18 2 23 2;
+#X connect 18 2 26 3;
+#X connect 18 3 26 4;
+#X connect 18 4 26 5;
+#X connect 18 5 26 6;
+#X connect 18 6 26 7;
+#X connect 19 0 20 0;
+#X connect 19 1 26 1;
+#X connect 20 0 21 0;
+#X connect 20 0 23 0;
+#X connect 21 0 22 0;
+#X connect 22 0 20 1;
+#X connect 23 0 24 0;
+#X connect 23 1 24 1;
+#X connect 24 0 25 0;
+#X connect 24 2 25 1;
+#X connect 25 0 26 0;
+#X connect 26 0 27 0;
+#X connect 27 0 16 1;
+#X connect 27 1 52 1;
+#X connect 27 2 51 1;
+#X connect 27 3 50 1;
+#X connect 27 4 49 1;
+#X connect 27 5 48 1;
+#X connect 27 6 47 1;
+#X connect 27 7 46 1;
+#X connect 40 0 31 0;
+#X connect 46 0 41 0;
+#X connect 46 0 41 1;
+#X connect 47 0 46 0;
+#X connect 48 0 47 0;
+#X connect 49 0 48 0;
+#X connect 50 0 49 0;
+#X connect 51 0 50 0;
+#X connect 52 0 51 0;

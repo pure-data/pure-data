@@ -1,0 +1,67 @@
+#N canvas 70 162 648 546 12;
+#X msg 67 10 message boxes;
+#X text 34 33 Message boxes hold one or more message. Anytime the message
+box receives any message at all \, the messages in the box are all
+sent to their destinations.;
+#X obj 120 295 print;
+#X msg 120 235 60 64;
+#X msg 120 265 pitch \$1 \, velocity \$2;
+#X msg 49 378 123 \; my-receiver-name 858 \; another-receiver -45;
+#X text 34 81 Clicking on a message also sends it \, so you can use
+messsage boxes for push buttins. For instance \, click here while watching
+the printout window:;
+#X msg 122 139 walk the dog;
+#X obj 122 168 print;
+#X text 239 139 <--- message;
+#X text 223 165 <--- object (different border);
+#X text 14 197 You can separate multiple messages by commas. Also \,
+you can use "$1" \, "$2" \, etc. to make variable messages:;
+#X text 14 323 Finally \, if you separate messages by a semicolon instead
+of a comma \, the following message(s) are re-routed to named objects
+such as "receives":;
+#X obj 49 433 print;
+#X obj 253 378 receive my-receiver-name;
+#X floatatom 253 402 0 0 0 0 - - -;
+#X floatatom 252 449 0 0 0 0 - - -;
+#X obj 252 425 receive another-receiver;
+#X text 396 519 updated for Pd version 0.39;
+#X text 19 471 You can send messages to message boxes to change their
+content - open the subpatch below for details:;
+#N canvas 0 0 718 466 changing-messages 0;
+#X msg 55 380 dog bird monkey \; bird;
+#X msg 58 69 set dog;
+#X msg 75 143 add monkey;
+#X msg 77 188 add2 bird;
+#X msg 72 117 set;
+#X text 92 29 Messages to change contents of messages boxes:;
+#X msg 66 92 set 1 2 3 skidoo;
+#X text 236 120 "set" with no arguments clears it;
+#X text 240 75 "set" to set contents (numbers and/or symbols);
+#X text 180 146 "add" to add numbers and/or symbols \, plus a terminating
+semicolon;
+#X text 168 190 "add2" to add contents without the terminating semicolon
+;
+#X msg 83 222 addcomma;
+#X msg 82 248 addsemi;
+#X msg 78 305 adddollsym 4-foo;
+#X msg 84 275 adddollar 3;
+#X text 174 225 add a comma;
+#X text 173 244 add a semicolon;
+#X text 199 275 add a dollar-sign argument;
+#X text 235 305 add a dollar-sign-plus-symbol argument;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 6 0 0 0;
+#X connect 11 0 0 0;
+#X connect 12 0 0 0;
+#X connect 13 0 0 0;
+#X connect 14 0 0 0;
+#X restore 153 512 pd changing-messages;
+#X connect 3 0 4 0;
+#X connect 4 0 2 0;
+#X connect 5 0 13 0;
+#X connect 7 0 8 0;
+#X connect 14 0 15 0;
+#X connect 17 0 16 0;

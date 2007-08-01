@@ -1,0 +1,5 @@
+
+#undef HAVE_ALLOCA
+
+#undef HAVE_ALLOCA_H
+

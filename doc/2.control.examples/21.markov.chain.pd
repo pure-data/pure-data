@@ -1,0 +1,105 @@
+#N canvas 296 90 662 442 12;
+#X obj 84 251 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 81 336 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 162 335 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 199 337 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X msg 81 358 1;
+#X msg 162 360 2;
+#X msg 199 361 3;
+#X obj 81 386 s state;
+#X obj 66 173 bng 20 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 105 164 r state;
+#X obj 83 225 sel 1 2 3;
+#X obj 255 253 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 252 338 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 334 340 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 373 343 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X msg 252 361 1;
+#X msg 329 366 2;
+#X msg 373 367 3;
+#X obj 252 394 s state;
+#X obj 419 254 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 419 339 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 499 338 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X obj 538 341 bng 15 250 50 0 empty empty empty 20 8 0 8 -262144 -1
+-1;
+#X msg 419 362 1;
+#X msg 499 363 2;
+#X msg 538 364 3;
+#X obj 418 395 s state;
+#X msg 236 186 \; state 1;
+#X obj 83 199 f 1;
+#X obj 84 279 random 100;
+#X obj 83 308 moses 30;
+#X obj 162 309 moses 60;
+#X obj 255 280 random 100;
+#X obj 255 310 moses 10;
+#X obj 334 311 moses 60;
+#X obj 419 281 random 100;
+#X obj 419 310 moses 70;
+#X obj 499 310 moses 80;
+#X floatatom 134 188 3 0 0;
+#X text 236 166 reset;
+#X text 49 152 STEP;
+#X text 34 20 Here is how to construct a simple \, three-valued Markov
+chain using "random." Each time you click on "step" the previous output
+("state") determines which of three random networks to invoke \, each
+having a different probability distribution for the next value of "state."
+For instance if the state was 3 \, the next state will be 1 70% of
+the time \, state 2 10% \, and state 3 20%.;
+#X text 408 422 updated for Pd version 0.35;
+#X connect 0 0 29 0;
+#X connect 1 0 4 0;
+#X connect 2 0 5 0;
+#X connect 3 0 6 0;
+#X connect 4 0 7 0;
+#X connect 5 0 7 0;
+#X connect 6 0 7 0;
+#X connect 8 0 28 0;
+#X connect 9 0 28 1;
+#X connect 9 0 38 0;
+#X connect 10 0 0 0;
+#X connect 10 1 11 0;
+#X connect 10 2 19 0;
+#X connect 11 0 32 0;
+#X connect 12 0 15 0;
+#X connect 13 0 16 0;
+#X connect 14 0 17 0;
+#X connect 15 0 18 0;
+#X connect 16 0 18 0;
+#X connect 17 0 18 0;
+#X connect 19 0 35 0;
+#X connect 20 0 23 0;
+#X connect 21 0 24 0;
+#X connect 22 0 25 0;
+#X connect 23 0 26 0;
+#X connect 24 0 26 0;
+#X connect 25 0 26 0;
+#X connect 28 0 10 0;
+#X connect 29 0 30 0;
+#X connect 30 0 1 0;
+#X connect 30 1 31 0;
+#X connect 31 0 2 0;
+#X connect 31 1 3 0;
+#X connect 32 0 33 0;
+#X connect 33 0 12 0;
+#X connect 33 1 34 0;
+#X connect 34 0 13 0;
+#X connect 34 1 14 0;
+#X connect 35 0 36 0;
+#X connect 36 0 20 0;
+#X connect 36 1 37 0;
+#X connect 37 0 21 0;
+#X connect 37 1 22 0;

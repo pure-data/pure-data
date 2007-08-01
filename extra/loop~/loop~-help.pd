@@ -1,0 +1,74 @@
+#N canvas 33 0 647 662 12;
+#X floatatom 41 204 0 0 0 0 - - -;
+#X obj 254 382 print~;
+#X msg 254 347 bang;
+#X obj 41 338 loop~;
+#X floatatom 66 279 0 0 0 0 - - -;
+#X msg 55 252 bang;
+#X obj 183 382 print~;
+#X msg 183 347 bang;
+#N canvas 0 0 450 300 graph1 0;
+#X array array2 150000 float 0;
+#X coords 0 1 150000 -1 200 150 1;
+#X restore 393 464 graph;
+#X msg 393 622 \; array2 resize 150000;
+#X obj 25 613 soundfiler;
+#X obj 16 453 tabread4~ array2;
+#X obj 16 407 *~;
+#X obj 16 522 dac~;
+#X obj 16 499 hip~ 5;
+#X obj 62 411 samphold~;
+#X obj 16 430 +~;
+#X floatatom 96 303 0 0 0 0 - - -;
+#X obj 96 326 *~ 1000;
+#X msg 43 568 read ../doc/sound/bell.aiff array2;
+#X msg 43 591 read ../doc/sound/vocal.aiff array2;
+#X msg 47 229 set 0.5;
+#X text 95 196 left signal input is transposition (1 is normal \, 2
+is up an octave \, etc);
+#X text 82 4 loop~ - phase generator for looping samplers;
+#X text 116 228 set phase (0 to 1);
+#X text 104 253 reset phase to 0;
+#X text 104 278 right signal input is window size in samples;
+#X text 134 302 here's how to handle onsets;
+#X obj 16 476 *~;
+#X floatatom 167 432 0 0 0 0 - - -;
+#X obj 167 501 line~;
+#X obj 167 455 dbtorms;
+#X obj 167 478 pack 0 50;
+#X text 201 431 output level 0-100;
+#X text 187 326 print outputs;
+#X text 33 32 loop~ takes input signals to set a window size and transposition
+\, and outputs a phase and a sampled window size. The window size only
+changes at phase zero crossings and the phase output is adjusted so
+that changing window size doesn't change the transposition.;
+#X text 33 112 You can send "bang" or "set" message to force the phase
+to zero--you should mute the output before doing so. This may be desirable
+if you've set a large window size but then want to decrease it without
+waiting for the next phase crossing.;
+#X connect 0 0 3 0;
+#X connect 2 0 1 0;
+#X connect 3 0 6 0;
+#X connect 3 0 12 0;
+#X connect 3 0 15 1;
+#X connect 3 1 1 0;
+#X connect 3 1 12 1;
+#X connect 4 0 3 1;
+#X connect 5 0 3 0;
+#X connect 7 0 6 0;
+#X connect 11 0 28 0;
+#X connect 12 0 16 0;
+#X connect 14 0 13 0;
+#X connect 14 0 13 1;
+#X connect 15 0 16 1;
+#X connect 16 0 11 0;
+#X connect 17 0 18 0;
+#X connect 18 0 15 0;
+#X connect 19 0 10 0;
+#X connect 20 0 10 0;
+#X connect 21 0 3 0;
+#X connect 28 0 14 0;
+#X connect 29 0 31 0;
+#X connect 30 0 28 1;
+#X connect 31 0 32 0;
+#X connect 32 0 30 0;

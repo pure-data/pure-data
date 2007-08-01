@@ -1,0 +1,100 @@
+#N canvas 158 69 674 673 12;
+#X obj 32 80 r trigger;
+#X text 85 8 USING ADSR'S OUTPUT AS dB;
+#X obj 32 131 tabread4~ dbtorms;
+#N canvas 0 0 450 300 graph1 0;
+#X array dbtorms 123 float 1;
+#A 0 0 0 1.25893e-05 1.41254e-05 1.58489e-05 1.77828e-05 1.99526e-05
+2.23872e-05 2.51189e-05 2.81838e-05 3.16228e-05 3.54813e-05 3.98107e-05
+4.46684e-05 5.01187e-05 5.62341e-05 6.30957e-05 7.07946e-05 7.94328e-05
+8.91251e-05 1e-04 0.000112202 0.000125893 0.000141254 0.000158489 0.000177828
+0.000199526 0.000223872 0.000251189 0.000281838 0.000316228 0.000354813
+0.000398107 0.000446684 0.000501187 0.000562341 0.000630957 0.000707946
+0.000794328 0.000891251 0.001 0.00112202 0.00125893 0.00141254 0.00158489
+0.00177828 0.00199526 0.00223872 0.00251189 0.00281838 0.00316228 0.00354813
+0.00398107 0.00446684 0.00501187 0.00562341 0.00630957 0.00707946 0.00794328
+0.00891251 0.01 0.0112202 0.0125893 0.0141254 0.0158489 0.0177828 0.0199526
+0.0223872 0.0251189 0.0281838 0.0316228 0.0354813 0.0398107 0.0446684
+0.0501187 0.0562341 0.0630957 0.0707946 0.0794328 0.0891251 0.1 0.112202
+0.125893 0.141254 0.158489 0.177828 0.199526 0.223872 0.251189 0.281838
+0.316228 0.354813 0.398107 0.446684 0.501187 0.562341 0.630957 0.707946
+0.794328 0.891251 1 1.12202 1.25893 1.41254 1.58489 1.77828 1.99526
+2.23872 2.51189 2.81838 3.16228 3.54813 3.98107 4.46684 5.01187 5.62341
+6.30957 7.07946 7.94328 8.91251 10 11.2202 12.5893;
+#X coords 0 10 123 0 200 100 1;
+#X restore 387 83 graph;
+#N canvas 461 495 663 358 make-table 0;
+#X obj 97 195 moses 2;
+#X msg 81 44 bang;
+#X obj 81 73 t b b;
+#X obj 152 134 f;
+#X obj 190 134 + 1;
+#X msg 174 106 0;
+#X obj 81 102 until;
+#X obj 73 162 sel 122;
+#X msg 97 226 0;
+#X obj 141 227 dbtorms;
+#X obj 152 162 t f f;
+#X obj 97 259 tabwrite dbtorms;
+#X floatatom 435 103 0 0 0 0 - - -;
+#X floatatom 435 186 0 0 0 0 - - -;
+#X obj 435 157 tabread4 dbtorms;
+#X floatatom 331 183 0 0 0 0 - - -;
+#X obj 331 154 dbtorms;
+#X text 35 12 bang to recalculate the table;
+#X text 268 62 check accuracy of reading table against;
+#X text 268 81 the "real" dbtorms object.;
+#X connect 0 0 8 0;
+#X connect 0 1 9 0;
+#X connect 1 0 2 0;
+#X connect 2 0 6 0;
+#X connect 2 1 5 0;
+#X connect 3 0 4 0;
+#X connect 3 0 7 0;
+#X connect 3 0 10 0;
+#X connect 4 0 3 1;
+#X connect 5 0 3 1;
+#X connect 6 0 3 0;
+#X connect 7 0 6 1;
+#X connect 8 0 11 0;
+#X connect 9 0 11 0;
+#X connect 10 0 0 0;
+#X connect 10 1 11 1;
+#X connect 12 0 14 0;
+#X connect 12 0 16 0;
+#X connect 14 0 13 0;
+#X connect 16 0 15 0;
+#X restore 266 351 pd make-table;
+#X text 257 327 here's the patch I used to make the table:;
+#X obj 53 157 osc~ 440;
+#X text 589 176 0;
+#X text 590 77 10;
+#X text 406 186 ------ 123 samples ------;
+#X text 117 306 <-- attack;
+#X text 116 362 <-- release;
+#X msg 31 347 \; pd dsp 1 \; trigger 0;
+#X obj 32 182 *~;
+#X msg 30 292 \; pd dsp 1 \; trigger 1;
+#X obj 32 106 adsr 100 100 200 70 300;
+#X text 28 409 The table is indexed from 1 to 120 so that 1 gives a
+true zero out and 120 gives 10 (a 20 dB boost.) The extra 20 dB are
+for headroom.;
+#X text 25 459 (There's also a "real" dbtorms~ object... but it's almost
+certainly much more compute-intensive than tabread4~ \, since it has
+to call a library "exp" function.);
+#X text 26 518 Notice how the attack sounds different when you retrigger
+than when you start from zero. This is because if you go from the steady
+state you only rise 30 dB instead of 100 \, so it sounds slower...
+a slur effect. If you don't want this \, you might try increasing the
+amplitude of retriggered notes in comparison to isolated ones.;
+#X text 34 28 For more natural sounding amplitude control \, you can
+use the ADSR's output as log amplitude. In practice this is best done
+using a lookup table:;
+#X obj 31 211 output~;
+#X text 406 631 updated for Pd version 0.37;
+#X connect 0 0 15 0;
+#X connect 2 0 13 0;
+#X connect 6 0 13 1;
+#X connect 13 0 20 0;
+#X connect 13 0 20 1;
+#X connect 15 0 2 0;

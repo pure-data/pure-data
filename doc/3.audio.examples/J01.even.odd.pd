@@ -1,0 +1,66 @@
+#N canvas 213 27 782 599 12;
+#X obj 80 156 wrap~;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-phasor 882 float 0;
+#X coords 0 1.02 882 -1.02 200 130 1;
+#X restore 567 35 graph;
+#X obj 24 57 -~ 0.5;
+#X obj 80 184 -~ 0.5;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-sum 882 float 0;
+#X coords 0 1.02 882 -1.02 200 130 1;
+#X restore 567 189 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array \$0-difference 882 float 0;
+#X coords 0 1.02 882 -1.02 200 130 1;
+#X restore 566 343 graph;
+#X text 570 475 ---- 0.02 seconds ----;
+#X text 528 567 updated for Pd version 0.39;
+#X obj 22 335 output~;
+#X obj 138 78 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 29 270 output~;
+#X text 41 -1 Splitting a sawtooth wave into even and odd harmonics
+;
+#X obj 24 29 phasor~ 100;
+#X text 87 58 remove DC bias;
+#X text 132 29 original sawtooth;
+#X text 144 173 180-degree-out-of-phase;
+#X text 147 188 sawtooth;
+#X text 145 212 form the sum and difference;
+#X obj 23 224 +~;
+#X obj 59 223 -~;
+#X text 4 408 This patch splits a sawtooth wave into its even and odd
+harmonics. The wrap~ object is used to make the phased copy. Adding
+and subtracting this to and from the original gives the results shown
+and heard. (Listen to the two outputs separately \, then together.)
+;
+#X text 102 291 output level;
+#X text 93 367 for sum;
+#X text 95 350 output level;
+#X text 100 308 for difference;
+#X text 157 77 <-- click to graph;
+#X msg 148 97 \; pd DSP 1;
+#X obj 138 247 tabwrite~ \$0-difference;
+#X obj 138 270 tabwrite~ \$0-sum;
+#X obj 138 138 tabwrite~ \$0-phasor;
+#X text 4 491 This is a classic technique for gaining separate control
+over the even and odd harmonics in a synthetic sound. It can also be
+used conceptually to understand the harmonic content of a square wave
+in terms of that of a sawtooth \, or vice versa.;
+#X connect 0 0 3 0;
+#X connect 2 0 0 0;
+#X connect 2 0 18 0;
+#X connect 2 0 19 0;
+#X connect 2 0 29 0;
+#X connect 3 0 18 1;
+#X connect 3 0 19 1;
+#X connect 9 0 26 0;
+#X connect 9 0 27 0;
+#X connect 9 0 28 0;
+#X connect 9 0 29 0;
+#X connect 12 0 2 0;
+#X connect 18 0 8 0;
+#X connect 18 0 28 0;
+#X connect 19 0 10 1;
+#X connect 19 0 27 0;

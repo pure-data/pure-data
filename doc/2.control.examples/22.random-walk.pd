@@ -1,0 +1,64 @@
+#N canvas 0 0 604 511 12;
+#X floatatom 113 218 5 0 0 0 - - -;
+#X obj 123 113 f;
+#X obj 104 198 random 4;
+#X obj 26 197 random 2;
+#X floatatom 35 219 5 0 0 0 - - -;
+#X obj 123 138 t b b f;
+#X obj 26 253 sel 0 1;
+#X obj 159 328 +;
+#X obj 123 87 metro 100;
+#X obj 123 65 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X obj 104 252 + 1;
+#X floatatom 242 153 5 0 0 0 - - -;
+#X obj 82 309 *;
+#X msg 26 282 -1;
+#X obj 242 83 moses 0;
+#X obj 316 83 moses 100;
+#X obj 242 107 * -1;
+#X obj 407 86 * -1;
+#X obj 407 111 + 200;
+#X msg 60 282 1;
+#X text 39 9 Random walk generator;
+#X text 143 64 on/off;
+#X text 298 152 output;
+#X text 22 375 A random walk is a special case of a Markov chain \,
+in which the states are integers and the transitions add or subtract
+a small amount from the previous state to get a new one. Here the "f"
+holds the state. When it gets a bang \, the previous state is added
+to a random number (from 1 to 4) multiplied by a random sign (-1 or
+1). The new value is then coerced into the range from 0 to 100;
+#X text 35 235 sign;
+#X text 113 234 magnitude;
+#X text 203 313 add prev value;
+#X text 200 330 to random increment;
+#X text 256 30 coercion to range 0-100 \; if out of range \, reflect
+;
+#X text 255 60 us back in.;
+#X text 323 492 updated for Pd version 0.37-1;
+#X connect 1 0 5 0;
+#X connect 2 0 0 0;
+#X connect 2 0 10 0;
+#X connect 3 0 4 0;
+#X connect 3 0 6 0;
+#X connect 5 0 3 0;
+#X connect 5 1 2 0;
+#X connect 5 2 7 1;
+#X connect 6 0 13 0;
+#X connect 6 1 19 0;
+#X connect 7 0 14 0;
+#X connect 8 0 1 0;
+#X connect 9 0 8 0;
+#X connect 10 0 12 1;
+#X connect 11 0 1 1;
+#X connect 12 0 7 0;
+#X connect 13 0 12 0;
+#X connect 14 0 16 0;
+#X connect 14 1 15 0;
+#X connect 15 0 11 0;
+#X connect 15 1 17 0;
+#X connect 16 0 11 0;
+#X connect 17 0 18 0;
+#X connect 18 0 11 0;
+#X connect 19 0 12 0;

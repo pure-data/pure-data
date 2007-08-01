@@ -1,0 +1,5 @@
+note 36;
+1000 note 34;
+1000 note 33;
+1000 note 31;
+1000 qlist bang;

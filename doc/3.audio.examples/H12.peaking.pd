@@ -1,0 +1,112 @@
+#N canvas 41 39 854 640 12;
+#N canvas 0 0 450 300 graph2 0;
+#X array \$0-tab1 100 float 1;
+#A 0 0.960563 0.960996 0.962862 0.970269 0.977017 0.985214 1.00122
+1.02249 1.05453 1.10332 1.18193 1.31034 1.5315 1.91468 2.37977 2.37001
+1.92679 1.57244 1.36114 1.23298 1.15262 1.09943 1.06243 1.03636 1.0162
+1.00108 0.990295 0.981066 0.973613 0.967183 0.962328 0.958092 0.95445
+0.951329 0.948619 0.946121 0.943931 0.941728 0.940557 0.93934 0.938046
+0.936816 0.935569 0.934901 0.933719 0.933252 0.932534 0.931875 0.93121
+0.930347 0.929637 0.929717 0.929279 0.928865 0.928444 0.927868 0.92761
+0.926893 0.927202 0.926932 0.926666 0.926305 0.925926 0.926007 0.925702
+0.925624 0.92545 0.925285 0.924954 0.924532 0.924071 0.924718 0.924596
+0.924454 0.924247 0.923846 0.924172 0.923627 0.924005 0.92393 0.923866
+0.923769 0.923157 0.923666 0.923974 0.923561 0.923498 0.923437 0.922882
+0.922781 0.92203 0.923331 0.923265 0.922948 0.922413 0.922799 0.925651
+0.921397 0.931729 0.976084;
+#X coords 0 5 99 0 200 300 1;
+#X restore 616 193 graph;
+#X obj 41 404 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X floatatom 49 448 3 0 0 0 - - -;
+#X text 671 499 frequency;
+#N canvas 876 177 375 255 startup 0;
+#X obj 22 24 loadbang;
+#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 22 67 f \$0;
+#X text 35 195 This subpatch loads initial;
+#X text 31 219 values in number boxes.;
+#X msg 22 91 \; \$1-pole 60 \; \$1-zero 20;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X restore 328 602 pd startup;
+#X floatatom 276 368 3 0 99 0 - #0-pole -;
+#X text 554 481 gain=0;
+#X obj 41 600 filter-graph2 \$0-tab1;
+#X obj 41 425 filter-graph1 100 22050;
+#X text 791 495 22050;
+#X obj 276 391 / 100;
+#X floatatom 330 367 4 0 100 0 - #0-zero -;
+#X obj 330 390 / 100;
+#X text 594 182 5;
+#X text 611 492 0;
+#X text 599 423 1;
+#X text 596 596 updated for Pd version 0.39;
+#X text 183 10 PEAKING FILTER;
+#X floatatom 406 366 3 0 180 0 - #0-pole -;
+#X text 415 328 angle;
+#X text 399 344 (degrees);
+#X obj 460 435 sin;
+#X obj 405 436 cos;
+#X obj 405 387 * 3.14159;
+#X obj 405 411 / 180;
+#X obj 241 515 *;
+#X obj 405 460 t b f;
+#X obj 460 460 t b f;
+#X obj 209 543 cpole~;
+#X obj 226 574 czero~;
+#X text 266 332 pole and zero;
+#X text 284 347 radii (%);
+#X obj 277 516 *;
+#X obj 314 542 *;
+#X obj 349 542 *;
+#X text 21 34 To get a peaking filter \, start with a shelving filter
+but rotate the pole and zero to the point on the unit circle you want
+to amplify or attenuate. The rpole~ and rzero~ filters are replaced
+with their complex-valued siblings \, cpole~ and czero~. These filters
+take a (real \, imaginary) pair to filter and another (real-imaginary)
+pair to specify the pole or zero. As for rpole~ and rzero~ \, the coefficients
+may change at audio rate.;
+#X text 22 162 The outputs of cpole~ and czero~ are also in the form
+of a (real-imaginary) pair. Both outlets of cpole~ are connected to
+czero~ in this example \, but then since we want a real-valued filter
+\, we only take the real part of the (complex) output of czero~.;
+#X text 23 246 Here the pole and zero radii (p and q) control the center-frequency
+gain by the formula (1-q)/(1-p). The closer to 1 the radii \, the narrower
+the band affected. The non-peak gain \, (1+q)/(1+p) \, is close to
+1 as long as p and q are at least 50% or so.;
+#X connect 1 0 8 0;
+#X connect 5 0 10 0;
+#X connect 8 0 2 0;
+#X connect 8 0 7 0;
+#X connect 8 1 7 1;
+#X connect 8 1 28 0;
+#X connect 8 2 7 2;
+#X connect 10 0 25 0;
+#X connect 10 0 32 0;
+#X connect 11 0 12 0;
+#X connect 12 0 33 0;
+#X connect 12 0 34 0;
+#X connect 18 0 23 0;
+#X connect 21 0 27 0;
+#X connect 22 0 26 0;
+#X connect 23 0 24 0;
+#X connect 24 0 22 0;
+#X connect 24 0 21 0;
+#X connect 25 0 28 2;
+#X connect 26 0 25 0;
+#X connect 26 0 33 0;
+#X connect 26 1 25 1;
+#X connect 26 1 33 1;
+#X connect 27 0 32 0;
+#X connect 27 0 34 0;
+#X connect 27 1 34 1;
+#X connect 27 1 32 1;
+#X connect 28 0 29 0;
+#X connect 28 1 29 1;
+#X connect 29 0 7 3;
+#X connect 32 0 28 3;
+#X connect 33 0 29 2;
+#X connect 34 0 29 3;

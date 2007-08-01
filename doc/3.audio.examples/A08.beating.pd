@@ -1,0 +1,41 @@
+#N canvas 53 63 581 571 12;
+#X obj 31 212 output~;
+#X obj 32 178 +~;
+#X text 320 537 updated for Pd version 0.40.;
+#X obj 32 110 +~;
+#X obj 187 105 +~;
+#X obj 187 52 osc~ 440;
+#X obj 32 57 osc~ 330;
+#X obj 53 81 osc~ 330.2;
+#X obj 208 75 osc~ 440.33;
+#X obj 342 102 +~;
+#X obj 343 52 osc~ 587;
+#X obj 364 75 osc~ 587.25;
+#X obj 33 147 +~;
+#X text 133 7 Beating between closely tuned sinusoids;
+#X text 33 280 In each of the three pairs of oscillators above \, the
+two frequencies are within 1/3 Hz or closer (for example \, the leftmost
+ones are close to 330 Hz but separated by 1/5 Hz.) The result is a
+gradual change in amplitude as the phases of the two slip against each
+other. This is called beating. More complex beating pattenrs may be
+made by using three or more oscillators. Also their amplitudes need
+not be equal (as they are here).;
+#X text 31 407 They are all summed using "+~" boxes. They could have
+been summed in any order ("+~" is commutative for practical purposes)
+but here they are added in pairs to emphasize the relationships between
+them.;
+#X text 30 474 In contrast to the previous example \, the oscillators
+are not tuned to the overtone series (ratios 1:2:3:4...) and so the
+frequencies 330 \, 440 \, and 587 are heard separately.;
+#X connect 1 0 0 0;
+#X connect 1 0 0 1;
+#X connect 3 0 12 0;
+#X connect 4 0 12 1;
+#X connect 5 0 4 0;
+#X connect 6 0 3 0;
+#X connect 7 0 3 1;
+#X connect 8 0 4 1;
+#X connect 9 0 1 1;
+#X connect 10 0 9 0;
+#X connect 11 0 9 1;
+#X connect 12 0 1 0;

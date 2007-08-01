@@ -1,0 +1,56 @@
+#N canvas 91 95 675 539 12;
+#X obj 211 341 print;
+#X msg 52 89 3 \, 4 \, 5;
+#X msg 44 62 3 4 5;
+#X msg 57 313 3 \$1 5;
+#X floatatom 57 286 4 0 0;
+#X msg 211 315 \$2 \$1 5;
+#X msg 211 290 45 67;
+#X msg 289 290 45 67;
+#X floatatom 28 425 4 0 0;
+#X floatatom 76 425 4 0 0;
+#X floatatom 332 179 4 0 0;
+#X floatatom 186 182 4 0 0;
+#X obj 186 155 receive number9;
+#X obj 332 155 receive 9bis;
+#X obj 44 178 print;
+#X text 27 5 In addition to using semicolons to separate messages \,
+you can use commas \, which continue a stream of messages to the same
+destination. Thus:;
+#X msg 65 116 3 \; number9 5 \; 9bis 45;
+#X text 126 89 <-- three separate messages;
+#X text 109 58 <-- one message: the list \, "3 4 5".;
+#X text 167 114 <-- three separate messages \, with three destinations.
+;
+#X text 406 511 updated for Pd version 0.34;
+#X msg 289 315 \; number9 \$1 \; 9bis \$2;
+#X text 9 209 You can use "$1" \, etc. \, as variables in messages.
+Send the message box a list whose elements supply the values. A number
+is just a list with one element.;
+#X obj 57 339 print;
+#X text 51 265 one variable:;
+#X text 216 263 two variables:;
+#X text 1 367 But to really exploit the possibilities using multiple
+variables \, you will need the "pack" object to get two or more values
+into the same message:;
+#X obj 28 507 print;
+#X obj 28 455 pack 0 0 0;
+#X floatatom 124 425 4 0 0;
+#X msg 28 481 cis \$1 \, boom \$2 \, bah \$3;
+#X text 124 455 <-- creation arguments to "pack" set the number of
+inlets.;
+#X connect 1 0 14 0;
+#X connect 2 0 14 0;
+#X connect 3 0 23 0;
+#X connect 4 0 3 0;
+#X connect 5 0 0 0;
+#X connect 6 0 5 0;
+#X connect 7 0 21 0;
+#X connect 8 0 28 0;
+#X connect 9 0 28 1;
+#X connect 12 0 11 0;
+#X connect 13 0 10 0;
+#X connect 16 0 14 0;
+#X connect 28 0 30 0;
+#X connect 29 0 28 2;
+#X connect 30 0 27 0;

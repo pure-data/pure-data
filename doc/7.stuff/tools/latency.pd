@@ -1,0 +1,99 @@
+#N canvas 37 0 825 630 12;
+#X obj 132 166 metro 500;
+#X msg 91 217 0.5;
+#X obj 130 192 del 3;
+#X msg 130 217 0;
+#X obj 34 323 dac~;
+#X obj 286 216 adc~;
+#X obj 291 310 timer;
+#X obj 93 333 env~ 65536;
+#X floatatom 93 360 4 0 0 0 - - -;
+#X floatatom 339 170 4 0 0 0 - - -;
+#X obj 339 193 + 100;
+#X obj 339 218 dbtorms;
+#X obj 181 333 env~ 65536;
+#X floatatom 181 362 4 0 0 0 - - -;
+#X floatatom 291 347 4 0 0 0 - - -;
+#X obj 312 245 *~ 1;
+#X obj 348 278 threshold~ 0.1 5 0.05 5;
+#X obj 634 160 bonk~;
+#X obj 634 188 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 508 188 osc~ 440;
+#X obj 530 214 *~ 0;
+#X obj 582 189 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+1;
+#X obj 571 211 * 0.1;
+#X obj 79 25 vdl 15 1 0 3 empty empty empty 0 -6 0 8 -262144 -1 -1
+0;
+#X msg 17 138 \; pd dsp 1;
+#X obj 634 132 *~;
+#X obj 16 113 sel 0;
+#X text 100 20 off;
+#X obj 132 142 == 1;
+#X obj 80 78 t f;
+#X text 102 36 measure latency;
+#X text 100 53 test continuity;
+#X obj 582 97 == 2;
+#X text 90 379 level out;
+#X text 182 380 level in;
+#X obj 530 244 dac~;
+#X text 292 368 latency in;
+#X text 293 384 msec;
+#X text 656 188 this flashes when;
+#X text 656 207 a discontinuity is;
+#X text 657 226 detected;
+#X obj 642 105 adc~;
+#X text 328 131 you can;
+#X text 324 147 adjust gain here;
+#X text 538 66 --- continuity check ---;
+#X text 169 105 --- latency measurement ---;
+#X text 67 420 To use this patch \, connect your audio output back
+to the audio input (channel 1 should suffice.) The latency measurement
+assumes the feedback gain is at least about -14 dB - you can increase
+the input sensitivity if need be.;
+#X text 70 491 If you select "measure latency" a series of pulses are
+timed using the "threshold~" object - note that it has an uncertainty
+of 1.45 msec (at 44K1) \, so you might see the number jitter even if
+the latency is constant.;
+#X text 70 564 Select "test continuity' to see if there are interruptions
+in the sound \, either at the input or output stage. If there are \,
+the button will flash.;
+#X obj 94 243 vline~;
+#X obj 133 279 threshold~ 0.1 5 0.05 5;
+#X connect 0 0 1 0;
+#X connect 0 0 2 0;
+#X connect 1 0 49 0;
+#X connect 2 0 3 0;
+#X connect 3 0 49 0;
+#X connect 5 0 15 0;
+#X connect 6 0 14 0;
+#X connect 7 0 8 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 15 1;
+#X connect 12 0 13 0;
+#X connect 15 0 12 0;
+#X connect 15 0 16 0;
+#X connect 16 0 6 1;
+#X connect 17 0 18 0;
+#X connect 19 0 20 0;
+#X connect 20 0 35 0;
+#X connect 20 0 35 1;
+#X connect 21 0 22 0;
+#X connect 22 0 20 1;
+#X connect 23 0 29 0;
+#X connect 25 0 17 0;
+#X connect 26 1 24 0;
+#X connect 28 0 0 0;
+#X connect 29 0 26 0;
+#X connect 29 0 28 0;
+#X connect 29 0 32 0;
+#X connect 32 0 21 0;
+#X connect 32 0 25 1;
+#X connect 41 0 25 0;
+#X connect 49 0 7 0;
+#X connect 49 0 4 0;
+#X connect 49 0 4 1;
+#X connect 49 0 50 0;
+#X connect 50 0 6 0;

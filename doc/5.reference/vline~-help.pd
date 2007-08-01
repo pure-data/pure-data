@@ -1,0 +1,46 @@
+#N canvas 273 80 815 504 12;
+#X obj 55 458 snapshot~;
+#X floatatom 55 481 5 0 0 0 - - -;
+#X obj 65 431 metro 100;
+#X obj 65 406 r start;
+#X msg 550 21 \; pd dsp 1 \; start bang;
+#X msg 55 241 1 1000;
+#X msg 83 357 stop;
+#X msg 72 288 0;
+#X text 644 36 Click to start;
+#X text 639 94 Click to stop;
+#X text 207 457 see also:;
+#X obj 293 459 line;
+#X msg 550 75 \; pd dsp 0 \; start 0;
+#X text 561 465 updated for version 0.33;
+#X obj 339 459 line~;
+#X obj 21 7 vline~;
+#X text 85 7 - high-precision audio ramp generator;
+#X obj 55 383 vline~;
+#X text 15 44 The vline~ object \, like line~ \, generates linear ramps
+whose levels and timing are determined by messages you send it. The
+messages consist of a target value \, a time interval (zero if not
+supplied) \, and an initial delay (also zero if not supplied.) Ramps
+may start and stop between audio samples \, in which case the output
+is interpolated accordingly.;
+#X text 15 155 Any number of future ramps may be scheduled and vline~
+will remember them and execute them in order. They must be specified
+in increasing order of initial delay however \, since a segment cancels
+all planned segments at any future time.;
+#X text 120 238 ramp up;
+#X msg 64 263 0 1000;
+#X text 127 266 ramp down;
+#X text 84 308 ramp up \, jump down \, ramp up again;
+#X msg 78 329 1 1000 \, 0 0 1000 \, 1 1000 1000;
+#X text 110 287 jump down;
+#X text 126 356 "stop" message freezes vline~ at its current value
+;
+#X connect 0 0 1 0;
+#X connect 2 0 0 0;
+#X connect 3 0 2 0;
+#X connect 5 0 17 0;
+#X connect 6 0 17 0;
+#X connect 7 0 17 0;
+#X connect 17 0 0 0;
+#X connect 21 0 17 0;
+#X connect 24 0 17 0;

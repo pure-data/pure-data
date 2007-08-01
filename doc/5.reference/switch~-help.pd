@@ -1,0 +1,45 @@
+#N canvas 218 166 619 368 12;
+#X msg 382 133 \; metro 0;
+#X text 462 92 <-Click to start;
+#X text 455 137 <-Click to stop;
+#X text 47 13 switch and block - turn DSP on and off for subpatches
+and control block size;
+#N canvas 15 32 598 301 switched 1;
+#X obj 265 148 switch~;
+#X floatatom 265 121 1 0 0;
+#X floatatom 75 168 4 0 0;
+#X obj 75 104 noise~;
+#X obj 75 136 env~ 512;
+#X text 25 26 DSP in this subwindow is turned on and off by the switch~
+object. Any subwindows of this window can also be switched off here.
+If a patch and a superpatch both have switches \, both must be "on"
+for DSP to run in the patch.;
+#X text 32 203 switch~ takes optional arguments the same as block~.
+If you supply arguments to switch \, the patch will be switched AND
+reblocked.;
+#X text 31 258 Only one switch~ or block~ may appear in any window.
+;
+#X connect 1 0 0 0;
+#X connect 3 0 4 0;
+#X connect 4 0 2 0;
+#X restore 139 124 pd switched;
+#N canvas 13 421 564 200 blocked 1;
+#X obj 184 35 block~ 1024 4;
+#X text 14 76 This object specified that DSP in this subwindow is to
+be computed at a block size of 1024 \, and an overlap of 4 \, i.e.
+\, every 256 samples. You may not (yet) specify a block size smaller
+than your superpatch. This is useful for writing FFT based patches
+(see the "fft examples" tutorial series.);
+#X restore 141 158 pd blocked;
+#X msg 382 87 \; pd dsp 1;
+#X obj 382 61 loadbang;
+#X text 38 82 see the subpatches for explanation:;
+#X text 362 334 updated for Pd version 0.34;
+#X text 34 195 BUG! -- dac~ and adc~ work only with a blocksize of
+64 If you want to reblock audio computation \, do so in a sub-patch
+and keep the adc~ and dac~ objects in a super-patch. Also \, you can't
+send~ or receive~ between windows with different block sizes or overlapping.
+Only the inlet~ and outlet~ objects know how to reblock signals. In
+this example \, you could put a dac~ in this \, outer window \, or
+in the switched subwindow \, but not the blocked one.;
+#X connect 7 0 6 0;

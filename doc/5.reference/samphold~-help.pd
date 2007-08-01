@@ -1,0 +1,46 @@
+#N canvas 430 114 568 497 12;
+#X obj 24 451 snapshot~;
+#X floatatom 24 476 5 0 0 0 - - -;
+#X obj 33 425 metro 100;
+#X obj 19 7 samphold~;
+#X text 96 6 - sample and hold unit;
+#X obj 24 376 samphold~;
+#X text 14 32 The samphold~ object samples its left input whenever
+its right input decreases in value (as a phasor~ does each period \,
+for example.) Both inputs are audio signals.;
+#X obj 59 340 sig~;
+#X obj 116 376 sig~;
+#X floatatom 59 315 3 0 0 0 - - -;
+#X floatatom 116 355 3 0 0 0 - - -;
+#X msg 24 212 set 34;
+#X msg 37 281 reset;
+#X text 89 210 set output to a number;
+#X text 97 315 sample signal;
+#X text 159 353 control signal;
+#X msg 32 244 reset 10;
+#X text 111 242 reset previous value;
+#X text 100 292 to force the next sample;
+#X obj 33 403 loadbang;
+#X text 320 472 updated for version 0.39;
+#X text 111 256 for control inlet;
+#X text 99 278 reset to default 1e+20;
+#X text 14 82 The "set" message sets the output value (which continues
+to be updated as normal afterward.) The "reset" message causes samphold~
+to act as if the specified value were the most recent value of the
+control input. Use this \, for example \, if you reset the incoming
+phasor but don't want the jump reflected in the output. Plain "reset"
+is equivalent to "reset infinity" which forces the next input to be
+sampled.;
+#X msg 122 422 \; pd dsp 1;
+#X connect 0 0 1 0;
+#X connect 2 0 0 0;
+#X connect 5 0 0 0;
+#X connect 7 0 5 0;
+#X connect 8 0 5 1;
+#X connect 9 0 7 0;
+#X connect 10 0 8 0;
+#X connect 11 0 5 0;
+#X connect 12 0 5 0;
+#X connect 16 0 5 0;
+#X connect 19 0 2 0;
+#X connect 19 0 24 0;

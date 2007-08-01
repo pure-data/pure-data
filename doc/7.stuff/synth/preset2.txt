@@ -1,0 +1,13 @@
+list 2nd-in 1200
+list q-in 0.87
+list fr-in 200
+list fs-in 37
+list fd-in 509
+list fa-in 2
+list fb-in 39
+list fil-in 51
+list as-in 63
+list ad-in 1631
+list ar-in 207
+list aa-in 6
+list amp-in 90

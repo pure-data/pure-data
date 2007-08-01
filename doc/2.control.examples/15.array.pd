@@ -1,0 +1,70 @@
+#N canvas 268 28 1030 744 12;
+#X text 204 19 ARRAYS;
+#N canvas 0 0 450 300 graph1 0;
+#X array array99 100 float 0;
+#X coords 0 1 99 -1 400 300 1;
+#X restore 614 49 graph;
+#X msg 179 325 \; array99 resize \$1;
+#X floatatom 179 292 0 0 0;
+#X floatatom 21 260 0 0 0;
+#X obj 21 294 / 100;
+#X msg 21 324 \; array99 const \$1;
+#X text 22 233 You can send messages to an array object:;
+#X msg 341 325 \; array99 print;
+#X text 64 262 <-- set to a constant value;
+#X text 221 291 resize;
+#X text 342 286 print size;
+#X text 22 487 read a text file;
+#X text 23 558 write a text file;
+#X text 271 559 write a WAV format soundfile;
+#X obj 104 714 tabread;
+#X obj 255 714 tabwrite;
+#X text 20 665 Objects are provided for reading and writing the contents
+of arrays via control messages:;
+#X obj 602 654 tabread4~;
+#X obj 602 679 tabwrite~;
+#X obj 695 654 tabreceive~;
+#X text 593 601 ...and audio signals:;
+#X obj 695 630 tabsend~;
+#X msg 381 400 \; array99 normalize;
+#X msg 382 442 \; array99 normalize 0.5;
+#X text 375 378 normalize to 1 or otherwise;
+#X obj 266 537 soundfiler;
+#X obj 812 631 tabosc4~;
+#X msg 19 402 \; array99 sinesum 64 0.2 0.2 0.2 0.2;
+#X msg 19 444 \; array99 cosinesum 64 0.2 0.2 0.2 0.2;
+#X text 23 378 Fourier synthesis (resizes table);
+#X text 257 484 read a soundfile;
+#X text 735 698 last updated for release 0.34;
+#X obj 175 715 tabread4;
+#X obj 602 628 tabread~;
+#X msg 267 511 read ../sound/voice2.wav array99;
+#X text 19 47 Arrays in Pd provide a unified way to deal with lists
+of numbers \, treating them as either audio samples or for "control"
+uses. To make one \, select "array" on the "new" menu. Dialogs appear
+to help you choose the name \, number of elements \, and various flags.
+;
+#X text 17 134 You can also change the array size using the "resize"
+message shown below. Arrays live in graphs and graphs may hold more
+than one array--however \, graphs containing more than one array won't
+know how to readjust themselves automatically when the arrays are resized.
+;
+#X msg 15 507 \; array99 read 15.file.txt;
+#X obj 26 581 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 26 600 savepanel;
+#X msg 26 623 \; array99 write \$1;
+#X obj 270 577 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 270 596 savepanel;
+#X obj 270 642 soundfiler;
+#X msg 270 619 write \$1 array99;
+#X connect 3 0 2 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 35 0 26 0;
+#X connect 39 0 40 0;
+#X connect 40 0 41 0;
+#X connect 42 0 43 0;
+#X connect 43 0 45 0;
+#X connect 45 0 44 0;

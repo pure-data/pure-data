@@ -1,0 +1,46 @@
+#N struct help-drawpolygon-template float x float y float cat float
+dog float weasel;
+#N canvas 16 28 537 188 12;
+#X text 13 130 see also:;
+#X obj 95 149 drawnumber;
+#X obj 191 149 plot;
+#X obj 21 10 drawpolygon;
+#X obj 21 33 drawcurve;
+#X obj 126 11 filledpolygon;
+#X obj 127 33 filledcurve;
+#X text 225 10 -- draw shapes for data structures;
+#N canvas 177 100 580 549 help-drawpolygon-template 1;
+#X obj 19 24 drawpolygon 0 2 0 0 0 weasel;
+#X obj 18 300 filledpolygon 900 dog 3 10 0 20 cat 30 0;
+#X text 30 322 filledpolyconn and filledcurve take the same arguments
+\, except that a new first argument is added to specify interior color.
+Here the interior color is red (900) \, the outline color is controlled
+by the "dog" field \, and the three points describe a triangle of altitude
+"cat". The fields x and y automatically govern the placement of the
+object as a whole.;
+#X text 37 164 - RGB color (0=black \, 999=white \, 900=red \, 90=green
+\, 9=blue \, 555=grey \, etc.);
+#X text 36 201 - line width;
+#X text 36 222 - two or more (x \, y) pairs giving coordinates.;
+#X text 25 485 This object defines the fields for this template. You
+can see teh fields' values by right-clicking on the object in the "data"
+window and selecting "properties.";
+#X obj 13 441 struct help-drawpolygon-template float x float y float
+cat float dog float weasel;
+#X text 26 44 drawpolygon and drawcurve take these arguments:;
+#X text 40 67 - optional "-n" flag to make invisible initially;
+#X text 38 88 - alternatively \, an optional "-v [variable]" flag to
+assign a variable to make this visible/invisible.;
+#X text 27 243 Any of these (except the flags) can be numbers or field
+names \, like "weasel" here. The example above draws a vertical black
+line of height "weasel".;
+#X text 38 127 - optional "-x" flag to inhibit selecting the object
+when the shape is clicked on in "edit" mode;
+#X restore 240 92 pd help-drawpolygon-template;
+#N canvas 11 270 384 178 help-drawpolygon-data 1;
+#X scalar help-drawpolygon-template 50 40 30 9 80 \;;
+#X scalar help-drawpolygon-template 150 40 -20 90 50 \;;
+#X coords 0 178 1 177 0 0 0;
+#X restore 240 118 pd help-drawpolygon-data;
+#X obj 34 149 struct;
+#X text 272 166 updated for Pd version 0.40.;

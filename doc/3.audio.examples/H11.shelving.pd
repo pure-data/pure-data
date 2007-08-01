@@ -1,0 +1,74 @@
+#N canvas 25 22 868 421 12;
+#N canvas 0 0 450 300 graph2 0;
+#X array \$0-tab1 100 float 1;
+#A 0 1.39998 1.39868 1.3942 1.39349 1.38496 1.3772 1.36745 1.35633
+1.34208 1.32931 1.31817 1.30372 1.28879 1.27458 1.25944 1.24351 1.22874
+1.21386 1.19924 1.18487 1.17063 1.15653 1.14284 1.13144 1.11914 1.10722
+1.09603 1.08515 1.07479 1.06474 1.05519 1.04606 1.03715 1.02899 1.02092
+1.0128 1.00624 0.999291 0.992705 0.986255 0.980081 0.974014 0.969307
+0.964106 0.959111 0.954207 0.949901 0.945593 0.941227 0.937556 0.933778
+0.930231 0.926681 0.923353 0.920059 0.917466 0.914627 0.911849 0.9092
+0.906745 0.904264 0.901469 0.900065 0.898006 0.896023 0.893895 0.892373
+0.890666 0.889038 0.887483 0.885924 0.884597 0.883215 0.881537 0.880075
+0.879619 0.878522 0.877414 0.876234 0.87571 0.874819 0.873886 0.873124
+0.87241 0.871807 0.870763 0.870512 0.869952 0.869465 0.868958 0.868403
+0.86826 0.867939 0.866731 0.867094 0.867762 0.867796 0.864339 0.872811
+0.920535;
+#X coords 0 5 99 0 200 300 1;
+#X restore 621 28 graph;
+#X obj 29 245 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X floatatom 37 289 3 0 0 0 - - -;
+#X text 676 334 frequency;
+#N canvas 876 177 375 255 startup 0;
+#X obj 22 24 loadbang;
+#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 22 67 f \$0;
+#X text 35 195 This subpatch loads initial;
+#X text 31 219 values in number boxes.;
+#X msg 22 91 \; \$1-pole 60 \; \$1-zero 20;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X restore 289 390 pd startup;
+#X floatatom 281 265 3 -99 99 0 - #0-pole -;
+#X text 559 316 gain=0;
+#X text 108 34 SHELVING FILTER;
+#X obj 29 378 filter-graph2 \$0-tab1;
+#X obj 29 266 filter-graph1 100 22050;
+#X text 796 330 22050;
+#X obj 232 314 rpole~;
+#X obj 281 288 / 100;
+#X floatatom 335 264 4 -100 100 0 - #0-zero -;
+#X obj 335 287 / 100;
+#X obj 231 346 rzero~;
+#X text 608 21 5;
+#X text 616 327 0;
+#X text 604 258 1;
+#X text 16 58 This patch demonstrates using the raw filters \, rpole~
+and rzero~ (raw \, real-valued one-pole and one-zero filters) \, to
+make a shelving filter.;
+#X text 14 109 If the pole is at p and the zero is at q \, the gain
+at DC is (1-q)/(1-p) and the gain at Nyquist is (1+q)/(1+p). If the
+pole location is close to plus or minus one \, this can give large
+gains unless q is in the same vicinity. (try \, for example \, p=90%
+\, q=70%).;
+#X text 11 191 The crossover region varies from DC to Nyquist as p
+and q decrease from 100% to -100%.;
+#X text 278 241 pole;
+#X text 334 241 zero;
+#X text 383 263 (in hundredths);
+#X text 610 387 updated for Pd version 0.39;
+#X connect 1 0 9 0;
+#X connect 5 0 12 0;
+#X connect 9 0 2 0;
+#X connect 9 0 8 0;
+#X connect 9 1 8 1;
+#X connect 9 1 11 0;
+#X connect 9 2 8 2;
+#X connect 11 0 15 0;
+#X connect 12 0 11 1;
+#X connect 13 0 14 0;
+#X connect 14 0 15 1;
+#X connect 15 0 8 3;

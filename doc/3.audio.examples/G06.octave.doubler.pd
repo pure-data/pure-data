@@ -1,0 +1,114 @@
+#N canvas 110 17 775 614 12;
+#X obj 463 303 loadbang;
+#X obj 553 222 adc~ 1;
+#X obj 463 358 soundfiler;
+#X obj 31 394 output~;
+#X obj 554 269 tabwrite~ E03-table;
+#X msg 463 330 read ../sound/voice.wav E03-table;
+#X obj 58 83 fiddle~ 2048;
+#X obj 126 106 unpack;
+#X obj 126 130 moses 1;
+#X obj 199 108 mtof;
+#N canvas 0 0 446 202 /SUBPATCH/ 0;
+#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X obj 100 20 inlet~;
+#X obj 99 87 *~;
+#X obj 98 159 outlet~;
+#X text 381 181 corner;
+#X connect 0 0 2 1;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X coords 0 0 100 100 40 18 1;
+#X restore 77 329 pd;
+#N canvas 0 0 446 202 /SUBPATCH/ 0;
+#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+;
+#X obj 100 20 inlet~;
+#X obj 99 87 *~;
+#X obj 98 159 outlet~;
+#X text 381 181 corner;
+#X connect 0 0 2 1;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X coords 0 0 100 100 40 18 1;
+#X restore 31 329 pd;
+#N canvas 414 195 613 302 looper 0;
+#N canvas 0 0 450 300 graph1 0;
+#X array E03-table 44103 float 0;
+#X coords 0 1.02 44103 -1.02 200 130 1;
+#X restore 349 22 graph;
+#X text 347 161 ---- 44103 samples ----;
+#X obj 35 77 +~ 1;
+#X obj 35 25 phasor~ 1;
+#X obj 35 50 *~ 44100;
+#X obj 35 106 tabread4~ E03-table;
+#X obj 35 132 outlet~;
+#X text 46 238 one-second sample reader loop. You can replace this
+with an adc~ if you want to go live.;
+#X connect 2 0 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X restore 31 30 pd looper;
+#X text 547 309 re-read original sample;
+#X obj 565 246 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 584 244 <-- record a sample;
+#X text 152 314 on/off for original;
+#X text 123 330 <--and processed sounds;
+#X text 240 3 OCTAVE DOUBLING VIA VARIABLE COMB FILTER;
+#X obj 31 367 +~;
+#X obj 252 157 samplerate~;
+#X obj 199 156 t f b;
+#X obj 59 58 delwrite~ G06-del 100;
+#X obj 79 234 delread~ G06-del;
+#X obj 101 282 vd~ G06-del;
+#X obj 78 306 +~;
+#X obj 230 210 +;
+#X obj 199 131 expr 500/$f1;
+#X obj 230 262 line~;
+#X obj 230 239 pack 0 20;
+#X text 243 108 fundamental frequency;
+#X text 311 131 1/2 period \, in msec;
+#X text 286 201 estimate fiddle~ delay;
+#X text 491 592 updated for Pd version 0.37-1;
+#X text 159 401 We already saw how to use ring modulation to alias
+a pitched sound down one octave. Here we do the reverse: filter out
+all odd harmonics using a variable-delay comb filter tuned one octave
+above the incoming sound. We use two taps into the delay line. The
+fixed one (delread~) adjusts for the delayed output of fiddle~. The
+variable one (vd~) adds to this an additional delay equal to 1/2 the
+measured period of the incoming sound. THese two are added. Odd harmonics
+are 180 degrees out of phase at the two taps and cancel. Even harmonics
+get through - so the sound goes up an octave \, without denaturing
+the timbre as a speed-up would.;
+#X obj 252 183 expr 2048000/$f1;
+#X text 288 216 as one window (in msec);
+#X connect 0 0 5 0;
+#X connect 1 0 4 0;
+#X connect 5 0 2 0;
+#X connect 6 2 7 0;
+#X connect 7 0 8 0;
+#X connect 8 1 9 0;
+#X connect 9 0 27 0;
+#X connect 10 0 19 1;
+#X connect 11 0 19 0;
+#X connect 12 0 6 0;
+#X connect 12 0 11 0;
+#X connect 12 0 22 0;
+#X connect 14 0 4 0;
+#X connect 19 0 3 0;
+#X connect 19 0 3 1;
+#X connect 20 0 35 0;
+#X connect 21 0 26 0;
+#X connect 21 1 20 0;
+#X connect 23 0 25 0;
+#X connect 24 0 25 1;
+#X connect 25 0 10 0;
+#X connect 26 0 29 0;
+#X connect 27 0 21 0;
+#X connect 28 0 24 0;
+#X connect 29 0 28 0;
+#X connect 35 0 26 1;
+#X connect 35 0 23 0;

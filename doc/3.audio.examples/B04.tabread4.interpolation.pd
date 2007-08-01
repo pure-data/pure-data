@@ -1,0 +1,44 @@
+#N canvas 137 102 781 520 12;
+#X graph graph1 0 -1.02 10 1.02 468 159 648 29;
+#X array waveform13 11 float 1;
+#A 0 1 1 1 1 1 1 1 -1 -1 -1 -1;
+#X pop;
+#X text 533 502 updated for Pd version 0.34;
+#X obj 156 157 +~ 1;
+#X text 21 81 phase;
+#X text 20 96 generation -->;
+#X text 25 117 range;
+#X text 24 132 adjustment -->;
+#X graph graph3 0 -1.02 440 1.02 469 362 769 222;
+#X array wave-out13 441 float 0;
+#X pop;
+#X msg 177 216 bang;
+#X text 223 217 <--click to graph;
+#N canvas 11 418 523 216 other-stuff 0;
+#X obj 41 49 loadbang;
+#X msg 39 81 \; waveform13 0 1 1 1 1 1 1 1 -1 -1 -1 -1 \; waveform13
+xlabel -1.2 0 1 2 3 4 5 6 7 8 9 10 \; pd dsp 1;
+#X connect 0 0 1 0;
+#X restore 626 426 pd other-stuff;
+#X obj 156 247 tabwrite~ wave-out13;
+#X obj 156 184 tabread4~ waveform13;
+#X obj 156 131 *~ 8;
+#X obj 156 95 phasor~ 220;
+#X text 36 22 4-POINT INTERPOLATION IN DETAIL;
+#X obj 216 316 sig~ 220;
+#X obj 216 346 tabosc4~ waveform13;
+#X text 35 293 (this would be;
+#X text 36 313 equivalent to the;
+#X text 110 333 above) -->;
+#X text 18 409 This patch demonstrates 4-point interpolation in tabread4~.
+The 11-point table \, waveform13 \, contains a transition from from
+1 to -1 \, which is "smoothed" as seen in wave-out13. There's no such
+transition at the wraparoind point--the interpolation always happens
+between 4 consccutive samples of the table \, disregarding wraparound.
+;
+#X connect 2 0 12 0;
+#X connect 8 0 11 0;
+#X connect 12 0 11 0;
+#X connect 13 0 2 0;
+#X connect 14 0 13 0;
+#X connect 16 0 17 0;

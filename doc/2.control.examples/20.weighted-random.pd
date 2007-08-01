@@ -1,0 +1,44 @@
+#N canvas 161 46 660 441 12;
+#X msg 103 95 bang;
+#X text 389 414 updated for Pd version 0.35;
+#X text 44 19 You can generate weighted random numbers from uniformly
+distributed ones. If you just want two possible outcomes with a varying
+probability for each one \, you can do as shown:;
+#X obj 103 121 random 100;
+#X obj 102 174 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 169 174 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X floatatom 205 148 3 0 100;
+#X text 250 148 <-- change probablilty;
+#X obj 103 149 moses 80;
+#X text 152 93 <-- click to test;
+#X text 61 219 This outputs a number at left 80% of the time \, otherwise
+at right \, unless you override the "80" using the number box. You
+may extend this to more than two possible outcomes \, for instance
+like this:;
+#X msg 106 305 bang;
+#X obj 106 331 random 100;
+#X obj 105 384 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 195 387 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 155 303 <-- click to test;
+#X obj 106 359 moses 10;
+#X obj 196 360 moses 30;
+#X obj 263 387 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 103 409 10%;
+#X text 193 410 20%;
+#X text 265 409 70%;
+#X connect 0 0 3 0;
+#X connect 3 0 8 0;
+#X connect 6 0 8 1;
+#X connect 8 0 4 0;
+#X connect 8 1 5 0;
+#X connect 11 0 12 0;
+#X connect 12 0 16 0;
+#X connect 16 0 13 0;
+#X connect 16 1 17 0;
+#X connect 17 0 14 0;
+#X connect 17 1 18 0;

@@ -1,0 +1,8 @@
+#N canvas 62 333 310 157 12;
+#X msg 109 51 rats;
+#X msg 157 52 7;
+#X msg 68 52 4;
+#X obj 68 90 obj2;
+#X connect 0 0 3 0;
+#X connect 1 0 3 1;
+#X connect 2 0 3 0;

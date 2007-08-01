@@ -1,0 +1,140 @@
+#N canvas 51 52 793 665 12;
+#X obj 477 135 loadbang;
+#X obj 31 289 hip~ 5;
+#X obj 477 53 adc~ 1;
+#X obj 477 190 soundfiler;
+#X obj 32 322 output~;
+#X text 544 646 updated for Pd version 0.37;
+#X obj 478 100 tabwrite~ E03-table;
+#X msg 477 162 read ../sound/voice.wav E03-table;
+#X obj 117 64 fiddle~ 2048;
+#X obj 118 95 unpack;
+#X obj 111 199 osc~;
+#X obj 118 119 moses 1;
+#X obj 77 199 *~;
+#X obj 145 147 mtof;
+#X obj 145 170 *;
+#X msg 194 125 0.5;
+#X floatatom 194 154 3 0 0 0 - - -;
+#X msg 232 125 15;
+#N canvas 0 0 446 202 (subpatch) 0;
+#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X obj 100 20 inlet~;
+#X obj 99 87 *~;
+#X obj 98 159 outlet~;
+#X text 381 181 corner;
+#X connect 0 0 2 1;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X coords 0 0 100 100 40 18 1;
+#X restore 78 248 pd;
+#N canvas 0 0 446 202 (subpatch) 0;
+#X obj 261 30 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+;
+#X obj 100 20 inlet~;
+#X obj 99 87 *~;
+#X obj 98 159 outlet~;
+#X text 381 181 corner;
+#X connect 0 0 2 1;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X coords 0 0 100 100 40 18 1;
+#X restore 32 248 pd;
+#X obj 78 222 *~ 2;
+#X obj 194 100 loadbang;
+#N canvas 414 195 613 302 looper 0;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array E03-table 44103 float 0;
+#X coords 0 1.02 44103 -1.02 200 130 1;
+#X restore 349 22 graph;
+#X text 347 161 ---- 44103 samples ----;
+#X obj 35 77 +~ 1;
+#X obj 35 25 phasor~ 1;
+#X obj 35 50 *~ 44100;
+#X obj 35 106 tabread4~ E03-table;
+#X obj 35 132 outlet~;
+#X text 46 238 one-second sample reader loop. You can replace this
+with an adc~ if you want to go live.;
+#X connect 2 0 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X restore 118 18 pd looper;
+#X text 561 141 re-read original sample;
+#X obj 489 77 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#N canvas 300 203 758 306 delay 0;
+#X obj 15 222 outlet~;
+#X obj 14 21 inlet~;
+#X obj 15 102 loadbang;
+#X obj 14 49 delwrite~ E03-del 40;
+#X obj 15 195 delread~ E03-del;
+#X obj 15 152 expr 1000*1024/$f1;
+#X obj 15 128 samplerate~;
+#X text 208 47 write to delay line which has enough memory to hold
+40 msec;
+#X text 125 128 get sample rate at load time;
+#X text 185 152 divide 1024 by sample rate to give time in seconds
+\; multiply by 1000 to convert to milliseconds.;
+#X text 168 197 read from the delay line at the calculater delay;
+#X text 317 268 1024-sample delay;
+#X connect 1 0 3 0;
+#X connect 2 0 6 0;
+#X connect 4 0 0 0;
+#X connect 5 0 4 0;
+#X connect 6 0 5 0;
+#X restore 31 71 pd delay;
+#X text 242 4 OCTAVE DIVIDING VIA RING MODULATION;
+#X text 508 75 <-- record a sample;
+#X text 265 125 <-- choose an effect;
+#X text 157 231 on/off for original;
+#X text 128 247 <--and processed sounds;
+#X text 196 274 This patch demonstrates using ring modulation to alias
+a sound down one octave. The ring modulation itself ("osc~" and multiplier)
+is easy. (We step it up by a factor of 2 to balance the original better.)
+;
+#X text 198 340 Harder is getting the fundamental frequency of the
+original sound. We do this with the complicated "fiddle~" object \,
+which puts out a stream of analysis data for an incoming signal. The
+"2048" argument specifies the analysis window size. The analysis is
+most closely aligned with what the sound was doing at the middle of
+the window \, i.e. \, 1024 samples ago. The "pd delay" window delays
+the signal itself 1024 samples so it will be as tightly synchronized
+with the analysis data as possible. (If you're doing this on a real-time
+input \, you might drop the delay and settle for less perfect synchronization.)
+;
+#X text 198 512 About fiddle~ \, suffice it to say that the third outlet
+contains (pitch \, amplitude) pairs. We unpack the pitch and strip
+out any zeros (when fiddle~ fails to find a pitch it outputs zero but
+we'd rather stick with the most recent good one). This is converted
+from MIDI to Hertz \, and multiplied by 1/2 to control the modulation
+oscillator. (You can also try large-ish integers which leave the pitch
+intact but introduce funny formants.);
+#X msg 406 237 read ../../saucisse.wav E03-table;
+#X obj 25 16 adc~ 1;
+#X connect 0 0 7 0;
+#X connect 1 0 4 0;
+#X connect 1 0 4 1;
+#X connect 2 0 6 0;
+#X connect 7 0 3 0;
+#X connect 8 2 9 0;
+#X connect 9 0 11 0;
+#X connect 10 0 12 1;
+#X connect 11 1 13 0;
+#X connect 12 0 20 0;
+#X connect 13 0 14 0;
+#X connect 14 0 10 0;
+#X connect 15 0 16 0;
+#X connect 16 0 14 1;
+#X connect 17 0 16 0;
+#X connect 18 0 1 0;
+#X connect 19 0 1 0;
+#X connect 20 0 18 0;
+#X connect 21 0 15 0;
+#X connect 22 0 25 0;
+#X connect 22 0 8 0;
+#X connect 24 0 6 0;
+#X connect 25 0 19 0;
+#X connect 25 0 12 0;
+#X connect 34 0 3 0;

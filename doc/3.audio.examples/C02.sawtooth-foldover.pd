@@ -1,0 +1,39 @@
+#N canvas 180 71 562 473 12;
+#X obj 155 348 output~;
+#X text 310 443 updated for Pd version 0.37;
+#X text 56 2 FOLDOVER IN SAWTOOTH WAVES;
+#X obj 154 320 clip~ 0 1;
+#X obj 155 153 mtof;
+#X floatatom 155 131 3 0 0 0 - - -;
+#X obj 155 269 *~ 20;
+#X obj 155 295 -~ 19;
+#X obj 155 177 phasor~;
+#N canvas 0 0 560 183 /SUBPATCH/ 0;
+#X obj 25 74 loadbang;
+#X msg 25 99 61;
+#X obj 25 124 outlet;
+#X text 7 6 This sets the pitch initially to 61 when the patch is first
+opened.;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X restore 155 105 pd;
+#X text 190 130 <--pitch;
+#X obj 164 206 output~;
+#X text 237 205 <--sawtooth amplitude;
+#X text 233 373 <--pulse train amplitude;
+#X text 28 406 We'll explain more about making pulses later on... this
+example is mostly intended as ear training.;
+#X text 19 23 In more ordinary kinds of waveforms \, foldover comes
+across as a "cheap synth" sound. You can hear the foldover clearly
+in the pulse train here \, and less clearly (but still audibly) in
+the straight sawtooth \, especially at high pitches.;
+#X connect 3 0 0 0;
+#X connect 3 0 0 1;
+#X connect 4 0 8 0;
+#X connect 5 0 4 0;
+#X connect 6 0 7 0;
+#X connect 7 0 3 0;
+#X connect 8 0 6 0;
+#X connect 8 0 11 0;
+#X connect 8 0 11 1;
+#X connect 9 0 5 0;

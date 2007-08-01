@@ -1,0 +1,15 @@
+#N canvas 302 232 550 286 12;
+#X msg 74 144 bang;
+#X msg 30 115 bang;
+#X floatatom 30 206 0 0 0;
+#X text 71 113 Click here to reset;
+#X text 27 232 Output is in milliseconds;
+#X obj 30 175 cputime;
+#X text 124 144 Click here to get elapsed CPU time;
+#X text 6 51 The cputime object measures elapsed CPU time \, as measured by your operating system. This appears to work on NT \, IRIX \, and Linux \, but not on W98.;
+#X obj 66 15 cputime;
+#X text 123 16 - measure CPU usage;
+#X text 297 261 updated for Pd version 0.33;
+#X connect 0 0 5 1;
+#X connect 1 0 5 0;
+#X connect 5 0 2 0;
