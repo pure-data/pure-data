@@ -194,7 +194,7 @@ static int jack_connect_ports(char* client)
 }
 
 
-void jack_error_callback(const char *desc) {
+void pd_jack_error_callback(const char *desc) {
   return;
 }
 
@@ -244,7 +244,7 @@ jack_open_audio(int inchans, int outchans, int rate)
           
           jack_set_process_callback (jack_client, process, 0);
           
-          jack_set_error_function (jack_error_callback);
+          jack_set_error_function (pd_jack_error_callback);
           
 #ifdef JACK_XRUN
           jack_set_xrun_callback (jack_client, jack_xrun, NULL);
