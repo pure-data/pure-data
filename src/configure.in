@@ -344,26 +344,29 @@ if test `uname -s` == MINGW32_NT-5.0;
 then
     EXT=dll
     MORECFLAGS="-DUSEAPI_PORTAUDIO -DPA19 -DMSW -DPA_NO_DS -DPD_INTERNAL \
-        -I../portaudio/pa_common -I../portaudio/pablio \
+        -I../portaudio/include -I../portaudio/src/common \
+	-I../portaudio/src/os/win/ \
         -mwindows -mms-bitfields "$MORECFLAGS
     PDLIB=$PDLIB" -lwsock32 -lwinmm -lole32 -lstdc++"
 
     SYSSRC="s_audio_pa.c s_audio_pablio.c s_audio_paring.c \
         s_audio_mmio.c s_midi_mmio.c \
-        ../portaudio/pa_common/pa_allocation.c  \
-        ../portaudio/pa_common/pa_converters.c  \
-        ../portaudio/pa_common/pa_cpuload.c     \
-        ../portaudio/pa_common/pa_dither.c      \
-        ../portaudio/pa_common/pa_front.c       \
-        ../portaudio/pa_common/pa_process.c     \
-        ../portaudio/pa_common/pa_skeleton.c    \
-        ../portaudio/pa_common/pa_stream.c      \
-        ../portaudio/pa_common/pa_trace.c       \
-        ../portaudio/pa_win/pa_win_util.c       \
-        ../portaudio/pa_win/pa_win_hostapis.c   \
-        ../portaudio/pa_win_wmme/pa_win_wmme.c"
-	 ASIOSRC="../portaudio/pa_asio/iasiothiscallresolver.cpp \
-	 ../portaudio/pa_asio/pa_asio.cpp ../asio/asio.cpp \
+	../portaudio/src/common/pa_allocation.c  \
+	../portaudio/src/common/pa_converters.c  \
+	../portaudio/src/common/pa_cpuload.c     \
+	../portaudio/src/common/pa_dither.c      \
+	../portaudio/src/common/pa_front.c       \
+	../portaudio/src/common/pa_process.c     \
+	../portaudio/src/common/pa_skeleton.c    \
+	../portaudio/src/common/pa_stream.c      \
+	../portaudio/src/common/pa_trace.c       \
+	../portaudio/src/common/pa_debugprint.c       \
+        ../portaudio/src/os/win/pa_win_util.c       \
+        ../portaudio/src/os/win/pa_win_hostapis.c   \
+        ../portaudio/src/os/win/pa_x86_plain_converters.c   \
+        ../portaudio/src/hostapi/wmme/pa_win_wmme.c"
+	 ASIOSRC="../portaudio/src/hostapi/asio/iasiothiscallresolver.cpp \
+	 ../portaudio/src/hostapi/pa_asio/asio.cpp ../asio/asio.cpp \
 	 ../asio/asiodrivers.cpp ../asio/asiolist.cpp"
     STRIPFLAG="--strip-unneeded"
     GUINAME="pdtcl.dll"
