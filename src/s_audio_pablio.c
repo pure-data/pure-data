@@ -58,17 +58,11 @@ static void NPa_Sleep(int n)    /* MSP wrapper to check we never stall... */
 /******** Prototypes ****************************************************/
 /************************************************************************/
 
-#ifdef PA19
 static int blockingIOCallback( const void *inputBuffer, void *outputBuffer, /*MSP */
                                unsigned long framesPerBuffer,
                                const PaStreamCallbackTimeInfo *outTime, 
                                PaStreamCallbackFlags myflags, 
                                void *userData );
-#else
-static int blockingIOCallback( void *inputBuffer, void *outputBuffer,
-                               unsigned long framesPerBuffer,
-                               PaTimestamp outTime, void *userData );
-#endif
 static PaError PABLIO_InitFIFO( sys_ringbuf *rbuf, long numFrames, long bytesPerFrame );
 static PaError PABLIO_TermFIFO( sys_ringbuf *rbuf );
 
@@ -79,17 +73,11 @@ static PaError PABLIO_TermFIFO( sys_ringbuf *rbuf );
 /* Called from PortAudio.
  * Read and write data only if there is room in FIFOs.
  */
-#ifdef PA19
 static int blockingIOCallback( const void *inputBuffer, void *outputBuffer, /* MSP */
                                unsigned long framesPerBuffer,
                                const PaStreamCallbackTimeInfo *outTime, 
                                PaStreamCallbackFlags myflags, 
                                void *userData )
-#else
-static int blockingIOCallback( void *inputBuffer, void *outputBuffer,
-                               unsigned long framesPerBuffer,
-                               PaTimestamp outTime, void *userData )
-#endif
 {
     PABLIO_Stream *data = (PABLIO_Stream*)userData;
     (void) outTime;
@@ -223,11 +211,7 @@ PaError OpenAudioStream( PABLIO_Stream **rwblPtr, double sampleRate,
     PaError err;
     PABLIO_Stream *aStream;
     long   numFrames;
-#ifdef PA19
     PaStreamParameters instreamparams, outstreamparams;  /* MSP */
-#else
-    long   minNumBuffers;
-#endif
 
     /* fprintf(stderr,
         "open %lf fmt %d flags %d ch: %d fperbuf: %d nbuf: %d devs: %d %d\n",
@@ -236,20 +220,12 @@ PaError OpenAudioStream( PABLIO_Stream **rwblPtr, double sampleRate,
 
     if (indeviceno < 0)  /* MSP... */
     {
-#ifdef PA19
         indeviceno = Pa_GetDefaultInputDevice();
-#else
-        indeviceno = Pa_GetDefaultInputDeviceID();
-#endif
         fprintf(stderr, "using default input device number: %d\n", indeviceno);
     }
     if (outdeviceno < 0)
     {
-#ifdef PA19
         outdeviceno = Pa_GetDefaultOutputDevice();
-#else
-        outdeviceno = Pa_GetDefaultOutputDeviceID();
-#endif
         fprintf(stderr, "using default output device number: %d\n", outdeviceno);
     }
     /* fprintf(stderr, "nchan %d, flags %d, bufs %d, framesperbuf %d\n",
@@ -277,7 +253,6 @@ PaError OpenAudioStream( PABLIO_Stream **rwblPtr, double sampleRate,
     err = Pa_Initialize();
     if( err != paNoError ) goto error;
 
-#ifdef PA19
     numFrames = nbuffers * framesperbuf; /* ...MSP */
 
     instreamparams.device = indeviceno;   /* MSP... */
@@ -291,17 +266,6 @@ PaError OpenAudioStream( PABLIO_Stream **rwblPtr, double sampleRate,
     outstreamparams.sampleFormat = format;
     outstreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
     outstreamparams.hostApiSpecificStreamInfo = 0;  /* ... MSP */
-
-#else
-/* Warning: numFrames must be larger than amount of data processed per
-  interrupt inside PA to prevent glitches. */  /* MSP */
-    minNumBuffers = Pa_GetMinNumBuffers(framesperbuf, sampleRate);
-    if (minNumBuffers > nbuffers)
-        fprintf(stderr,
-        "warning: number of buffers %d less than recommended minimum %d\n",
-            (int)nbuffers, (int)minNumBuffers);
-#endif
-
 
     numFrames = nbuffers * framesperbuf;
     /* fprintf(stderr, "numFrames %d\n", numFrames); */
@@ -327,7 +291,6 @@ PaError OpenAudioStream( PABLIO_Stream **rwblPtr, double sampleRate,
 
     /* Open a PortAudio stream that we will use to communicate with the underlying
      * audio drivers. */
-#ifdef PA19
     err = Pa_OpenStream(
               &aStream->stream,
               (doRead ? &instreamparams : 0),  /* MSP */
@@ -337,24 +300,6 @@ PaError OpenAudioStream( PABLIO_Stream **rwblPtr, double sampleRate,
               paNoFlag,      /* MSP -- portaudio will clip for us */
               blockingIOCallback,
               aStream );
-#else
-    err = Pa_OpenStream(
-              &aStream->stream,
-              (doRead ? indeviceno : paNoDevice),  /* MSP */
-              (doRead ? aStream->insamplesPerFrame : 0 ),
-              format,
-              NULL,
-              (doWrite ? outdeviceno : paNoDevice),  /* MSP */
-              (doWrite ? aStream->outsamplesPerFrame : 0 ),
-              format,
-              NULL,
-              sampleRate,
-              framesperbuf,  /* MSP */
-              nbuffers,      /* MSP */
-              paNoFlag,      /* MSP -- portaudio will clip for us */
-              blockingIOCallback,
-              aStream );
-#endif
     if( err != paNoError ) goto error;
 
     err = Pa_StartStream( aStream->stream );

@@ -1,0 +1,132 @@
+# MAKEFILE FOR PORTMIDI AND PORTTIME
+
+VFLAGS = -g
+
+
+# For debugging, define PM_CHECK_ERRORS
+# For new(er) multiprocessor-safe fifo implementation, define NEWBUFFER
+PMFLAGS = -DPM_CHECK_ERRORS -DNEWBUFFER
+# Otherwise do not define PM_CHECK_ERRORS
+# PMFLAGS = -DNEWBUFFER
+# Dynamic Lib is built without PM_CHECK_ERRORS
+PMDLFLAGS = -DNEWBUFFER
+# Path for installation of dynamic libraries
+PF = /usr/local
+# Architecture for static libs
+ARCH = -arch ppc -arch i386
+
+pmlib = pm_mac/libportmidi.a
+
+ptlib = porttime/libporttime.a
+
+CC = gcc $(VFLAGS) $(PMFLAGS) $(ARCH) -g -Ipm_common -Iporttime
+
+MACLIB = -framework CoreMIDI -framework CoreFoundation -framework CoreAudio
+
+PMSRC =  pm_mac/pmmac.c pm_common/pmutil.c pm_common/portmidi.c \
+   pm_mac/pmmacosxcm.c
+
+PTSRC = porttime/porttime.c porttime/ptmacosx_mach.c
+
+pmobjects = pm_common/pmutil.o pm_mac/pmmac.o  \
+	pm_common/portmidi.o pm_mac/pmmacosxcm.o
+
+ptobjects = porttime/porttime.o porttime/ptmacosx_mach.o 
+
+current: all
+
+all: $(pmlib) $(ptlib) pm_test/test pm_test/sysex pm_test/midithread \
+	pm_test/latency pm_test/midithru pm_test/qtest pm_test/mm
+	echo $$'\n\
+**** For instructions: make -f pm_mac\Makefile.osx help ****\n'
+
+help:
+	echo $$'\n\n\
+This is help for portmidi/pm_mac/Makefile.osx\n\n\
+Flags for static library and apps are $(PMFLAGS)\n\
+Flags for dynamic library are $(PMDLFLAGS)\n\
+Installation path for dylib is $(PF)\n\
+You might want to change these.\n\n\
+To build a static library and test applications,\n        \
+make -f pm_mac/Makefile.osx\n\
+To build and install dynamic library, note you must use\n\
+"cleanest" to remove .o and dylib, especially if this\n\
+library uses different compiler flags:\n        \
+make -f pm_mac/Makefile.osx cleanest\n        \
+make -f pm_mac/Makefile.osx dylib\n\
+To install dynamic library to /usr/local,\n        \
+sudo make -f pm_mac/Makefile.osx install\n\
+To install universal dynamic library with xcode,\n        \
+make -f pm_mac/Makefile.osx install-with-xcode\''
+
+$(pmlib): pm_mac/Makefile.osx $(pmobjects)
+	ar -crs $(pmlib) $(pmobjects)
+
+$(ptlib): pm_mac/Makefile.osx $(ptobjects)
+	ar -crs $(ptlib) $(ptobjects)
+
+pm_mac/pmmacosxcm.o: pm_mac/Makefile.osx pm_mac/pmmacosxcm.c pm_mac/pmmacosxcm.h
+	$(CC) -c pm_mac/pmmacosxcm.c -o pm_mac/pmmacosxcm.o
+
+pm_test/test: pm_mac/Makefile.osx pm_test/test.o $(pmlib) $(ptlib)
+	$(CC) pm_test/test.o -o pm_test/test $(pmlib) $(ptlib) $(MACLIB)
+
+pm_test/sysex: pm_mac/Makefile.osx pm_test/sysex.o $(pmlib) $(ptlib)
+	$(CC) pm_test/sysex.o -o pm_test/sysex $(pmlib) $(ptlib) $(MACLIB)
+
+pm_test/midithread: pm_mac/Makefile.osx pm_test/midithread.o $(pmlib) $(ptlib)
+	$(CC) pm_test/midithread.o -o pm_test/midithread \
+        $(pmlib) $(ptlib) $(MACLIB)
+
+pm_test/latency: pm_mac/Makefile.osx $(ptlib) pm_test/latency.o 
+	$(CC) pm_test/latency.o -o pm_test/latency $(pmlib) $(ptlib) \
+        $(MACLIB) -lpthread -lm
+
+pm_test/midithru: pm_mac/Makefile.osx $(ptlib) pm_test/midithru.o 
+	$(CC) pm_test/midithru.o -o pm_test/midithru $(pmlib) $(ptlib) \
+        $(MACLIB) -lpthread -lm
+
+pm_test/mm: pm_mac/Makefile.osx pm_test/mm.o $(pmlib) $(ptlib)
+	$(CC) pm_test/mm.o -o pm_test/mm $(pmlib) $(ptlib) $(MACLIB)
+
+porttime/ptlinux.o: pm_mac/Makefile.osx porttime/ptlinux.c
+	$(CC) -c porttime/ptlinux.c -o porttime/ptlinux.o
+
+pm_test/qtest: pm_mac/Makefile.osx pm_test/qtest.o $(pmlib) $(ptlib)
+	$(CC) pm_test/qtest.o -o pm_test/qtest $(pmlib) $(ptlib) $(MACLIB)
+
+clean:
+	rm -f *.o *~ core* */*.o */*~ */core* pm_test/*/pm_dll.dll 
+	rm -f *.opt *.ncb *.plg pm_win/Debug/pm_dll.lib pm_win/Release/pm_dll.lib
+	rm -f pm_test/*.opt pm_test/*.ncb
+
+cleaner: clean
+	rm -rf pm_mac/build
+	rm -f *.dylib
+
+cleanest: cleaner
+	rm -f $(pmlib) $(ptlib) porttime/libporttime.dylib pm_mac/libportmidi.dylib
+	rm -f pm_test/test pm_test/sysex pm_test/midithread
+	rm -f pm_test/latency pm_test/midithru pm_test/qtest pm_test/mm
+
+backup: cleanest
+	cd ..; zip -r portmidi.zip portmidi
+
+dylib: pm_mac/libportmidi.dylib
+
+pm_mac/libportmidi.dylib: $(PMSRC) $(PTSRC)
+	cc -single_module -g $(PMDLFLAGS) -Iporttime -Ipm_common \
+	   -dynamiclib $(PMSRC) $(PTSRC) -o pm_mac/libportmidi.dylib \
+	  -flat_namespace -undefined suppress \
+	  -framework CoreMIDI -framework CoreFoundation -framework CoreAudio
+
+install: porttime/porttime.h pm_common/portmidi.h \
+	   pm_mac/libportmidi.dylib
+	install porttime/porttime.h  $(PF)/include/
+	install pm_common/portmidi.h $(PF)/include
+	install pm_mac/libportmidi.dylib $(PF)/lib/
+
+# note - this uses xcode to build and install portmidi universal binaries
+install-with-xcode:
+	sudo xcodebuild -project pm_mac/pm_mac.xcodeproj \
+		-configuration Deployment install DSTROOT=/

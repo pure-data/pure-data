@@ -27,10 +27,6 @@ static float *pa_soundin, *pa_soundout;
 #define MAX_PA_CHANS 32
 #define MAX_SAMPLES_PER_FRAME MAX_PA_CHANS * DEFDACBLKSIZE
 
-#ifndef PA19
-#define Pa_GetDeviceCount Pa_CountDevices
-#endif
-
 int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     t_sample *soundout, int framesperbuf, int nbuffers,
     int indeviceno, int outdeviceno)
@@ -235,17 +231,10 @@ void pa_listdevs(void)     /* lifted from pa_devs.c in portaudio */
         fprintf(stderr, " %s;", pdi->name );
         fprintf(stderr, "%d inputs, ", pdi->maxInputChannels  );
         fprintf(stderr, "%d outputs", pdi->maxOutputChannels  );
-#ifdef PA19
         if ( i == Pa_GetDefaultInputDevice() )
             fprintf(stderr, " (Default Input)");
         if ( i == Pa_GetDefaultOutputDevice() )
             fprintf(stderr, " (Default Output)");
-#else
-        if ( i == Pa_GetDefaultInputDeviceID() )
-            fprintf(stderr, " (Default Input)");
-        if ( i == Pa_GetDefaultOutputDeviceID() )
-            fprintf(stderr, " (Default Output)");
-#endif
         fprintf(stderr, "\n");
     }
 
