@@ -262,7 +262,8 @@ then
         -framework Carbon -framework CoreMIDI"
     EXT=pd_darwin
     CPPFLAGS="-DDL_OPEN -DMACOSX -DUNISTD -I/usr/X11R6/include \
-	-I../portaudio/pa_common -I../portaudio/pablio \
+	-I../portaudio/include -I../portaudio/src/common \
+	-I../portaudio/src/os/mac_osx/ \
 	-I../portmidi/pm_common -I../portmidi/pm_mac \
 	-I../portmidi/porttime \
 	-DUSEAPI_PORTAUDIO -DPA19 -DPA_USE_COREAUDIO"
@@ -279,18 +280,21 @@ then
     SYSSRC="s_midi_pm.c s_audio_pa.c \
     	s_audio_pablio.c     \
 	s_audio_paring.c     \
-	../portaudio/pa_common/pa_allocation.c  \
-	../portaudio/pa_common/pa_converters.c  \
-	../portaudio/pa_common/pa_cpuload.c     \
-	../portaudio/pa_common/pa_dither.c      \
-	../portaudio/pa_common/pa_front.c       \
-	../portaudio/pa_common/pa_process.c     \
-	../portaudio/pa_common/pa_skeleton.c    \
-	../portaudio/pa_common/pa_stream.c      \
-	../portaudio/pa_common/pa_trace.c       \
-	../portaudio/pa_unix/pa_unix_util.c     \
-	../portaudio/pa_mac_core/pa_mac_core.c  \
-	../portaudio/pa_mac/pa_mac_hostapis.c   \
+	../portaudio/src/common/pa_allocation.c  \
+	../portaudio/src/common/pa_converters.c  \
+	../portaudio/src/common/pa_cpuload.c     \
+	../portaudio/src/common/pa_dither.c      \
+	../portaudio/src/common/pa_front.c       \
+	../portaudio/src/common/pa_process.c     \
+	../portaudio/src/common/pa_skeleton.c    \
+	../portaudio/src/common/pa_stream.c      \
+	../portaudio/src/common/pa_trace.c       \
+	../portaudio/src/common/pa_debugprint.c       \
+	../portaudio/src/os/unix/pa_unix_util.c     \
+	../portaudio/src/os/mac_osx/pa_mac_hostapis.c   \
+	../portaudio/src/hostapi/coreaudio/pa_mac_core.c  \
+	../portaudio/src/hostapi/coreaudio/pa_mac_core_blocking.c  \
+	../portaudio/src/hostapi/coreaudio/pa_mac_core_utilities.c  \
         ../portmidi/pm_mac/pmmac.c \
         ../portmidi/pm_mac/pmmacosxcm.c \
         ../portmidi/pm_common/pmutil.c \
