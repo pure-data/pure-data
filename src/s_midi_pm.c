@@ -21,7 +21,6 @@
 #include "portaudio.h"
 #include "portmidi.h"
 #include "porttime.h"
-#include "pminternal.h"
 
 static PmStream *mac_midiindevlist[MAXMIDIINDEV];
 static PmStream *mac_midioutdevlist[MAXMIDIOUTDEV];

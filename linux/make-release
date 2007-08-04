@@ -1,16 +1,17 @@
 #!/bin/sh
 
-#usage: ./make-release 0.34-0 or 0.35-0test11 or 0.37-1test6
+#usage: ./make-release <version>
 if test x$1 == x
 then
-   echo usage: ./make-release 0.34-0 or 0.35-0test11 or 0.37-1test6
+   echo usage: ./make-release 0.34-0 or 0.35-0test11 or ...
    exit 1
 fi
 
-set -x
+# set -x
 cd ..
 ROOTDIR=`pwd`
-find . \( -name ".[a-zA-Z]*" -o -name "core*" -o -name "*.cache" \) \
+find . \( -name ".[azA-Z]*" \! -name ".git" \
+    -o -name "core" -o -name "core.*" -o -name "*.cache" \) \
     -ok rm -r {} \;
 
 cd src
@@ -22,17 +23,15 @@ cd ..
 TMPPD=/tmp/pd-$1
 rm -rf /tmp/pd $TMPPD
 mkdir $TMPPD
-cp -a README.txt LICENSE.txt INSTALL.txt src doc extra man \
+cp -pR README.txt LICENSE.txt INSTALL.txt src doc extra man \
     portaudio portmidi $TMPPD
 mkdir $TMPPD/obj $TMPPD/bin
 cd $TMPPD/src
 autoconf
 make distclean
 rm -rf autom4te.cache
-rm *.pd
+rm -f *.pd
 cd /tmp
 tar cf - pd-$1 | gzip > $ROOTDIR/archive/dist/pd-$1.src.tar.gz
-mv pd-$1 pd
-tar cf - pd | gzip > /usr/src/redhat/SOURCES/pd.tar.gz
-# rm -rf /tmp/pd $TMPPD
+rm -rf $TMPPD
 ls -l $ROOTDIR/archive/dist/pd-$1.src.tar.gz
