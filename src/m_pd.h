@@ -11,7 +11,7 @@ extern "C" {
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 41
 #define PD_BUGFIX_VERSION 0
-#define PD_TEST_VERSION "test04"
+#define PD_TEST_VERSION "test05"
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -623,7 +623,7 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 #define PD_USE_TE_XPIX
 
 
-#ifdef __i386__
+#if defined(__i386__) || defined(__x86_64__)
 /* a test for NANs and denormals.  Should only be necessary on i386. */
 #define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
     (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
