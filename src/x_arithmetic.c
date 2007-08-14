@@ -581,9 +581,6 @@ typedef struct _atan2
 static void *atan2_new(void)
 {
     t_atan2 *x = (t_atan2 *)pd_new(atan2_class);
-    static int warned;
-    if (!warned)
-        post("warning: atan2 inlets switched from Pd 0.37 to 0.38"), warned=1;
     floatinlet_new(&x->x_ob, &x->x_f);
     x->x_f = 0;
     outlet_new(&x->x_ob, &s_float);

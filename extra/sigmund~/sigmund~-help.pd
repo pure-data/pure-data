@@ -1,4 +1,4 @@
-#N canvas 209 199 580 617 12;
+#N canvas 193 41 580 617 12;
 #X text 42 4 sigmund~ - sinusoidal analysis and pitch tracking;
 #N canvas 432 117 573 597 using-with-tables 0;
 #X obj 29 368 print peak;
@@ -91,7 +91,7 @@ of a note at or near the previously output pitch.;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X restore 330 531 pd setting-parameters;
-#N canvas 190 230 640 535 sinusoid-tracking 0;
+#N canvas 149 65 641 815 sinusoid-tracking 1;
 #X obj 124 267 sigmund~ -npeak 10 peaks;
 #X obj 124 214 phasor~;
 #X obj 124 144 loadbang;
@@ -112,14 +112,28 @@ of a note at or near the previously output pitch.;
 #X text 419 442 peak amplitude (linear);
 #X text 464 416 cosine component;
 #X text 499 390 sine component;
-#X text 42 26 You can ask for sinusoidal peaks in decreasing order
-of amplitude or arranged into maximally continuous tracks for resynthesis.
-(Or you can ask for both.) In any case \, out come lists of five numbers
-\, one for each sinusoid at each analysis period. The first is the
-number of the sinusoid (so you can use "route" to claw them apart).
-The other four are as shown:;
 #X text 79 505 loudest partial;
 #X text 332 508 quietest partial;
+#X text 36 4 You can ask for sinusoidal peaks in decreasing order of
+amplitude or arranged into maximally continuous tracks for resynthesis.
+(Or you can ask for both.) If you ask for peaks \, out come lists of
+five numbers \, one for each sinusoid at each analysis period. The
+first is the index number of the sinusoid (so you can use "route" to
+claw them apart). The other four are as shown:;
+#X obj 204 611 osc~ 440;
+#X obj 204 635 *~;
+#X obj 205 689 unpack 0 0 0 0;
+#X floatatom 205 782 5 0 0 0 - - -;
+#X floatatom 245 760 5 0 0 0 - - -;
+#X floatatom 285 737 5 0 0 0 - - -;
+#X floatatom 326 713 5 0 0 0 - - -;
+#X obj 246 638 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X text 43 535 If you ask for "tracks" \, the output is four numbers:
+index \, frequency \, and amplitude as before \, and finally a flag
+which is one for a new track \, zero for a continuation \, minus one
+for an empty track.;
+#X obj 205 662 sigmund~ -npts 16384 -hop 8192 -npeak 1 tracks;
 #X connect 0 0 4 0;
 #X connect 1 0 0 0;
 #X connect 2 0 9 0;
@@ -135,6 +149,14 @@ The other four are as shown:;
 #X connect 11 1 13 0;
 #X connect 11 2 14 0;
 #X connect 11 3 15 0;
+#X connect 23 0 24 0;
+#X connect 24 0 32 0;
+#X connect 25 0 26 0;
+#X connect 25 1 27 0;
+#X connect 25 2 28 0;
+#X connect 25 3 29 0;
+#X connect 30 0 24 1;
+#X connect 32 0 25 0;
 #X restore 330 508 pd sinusoid-tracking;
 #X text 52 165 tracks - output sinusoidal peaks organized into tracks
 ;
