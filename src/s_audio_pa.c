@@ -28,13 +28,15 @@ static float *pa_soundin, *pa_soundout;
 #define MAX_SAMPLES_PER_FRAME MAX_PA_CHANS * DEFDACBLKSIZE
 
 int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
-    t_sample *soundout, int framesperbuf, int nbuffers,
+    t_sample *soundout, int framesperbuf, int nbuffers, int callback,
     int indeviceno, int outdeviceno)
 {
     PaError err;
     static int initialized;
     int j, devno, pa_indev = 0, pa_outdev = 0;
 
+    if (callback)
+        fprintf(stderr, "callback enabled\n");
     if (!initialized)
     {
         /* Initialize PortAudio  */

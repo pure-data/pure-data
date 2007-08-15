@@ -2,6 +2,10 @@ This file describes implementation and API changes; stuff more visible to the
 user appears in the "release notes" instead.  See the bottom of this file
 for original notes on source stype and organization.
 
+0.41.0
+
+add support for callback-based audio I/O; changes in 
+
 0.40.0
 
 0.39.0

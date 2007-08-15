@@ -288,7 +288,7 @@ void sys_loadpreferences( void)
     int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int i, rate = 0, advance = 0, api, nolib, maxi;
+    int i, rate = 0, advance = 0, callback = 0, api, nolib, maxi;
     char prefbuf[MAXPDSTRING], keybuf[80];
 
     sys_initloadpreferences();
@@ -337,8 +337,11 @@ void sys_loadpreferences( void)
         sscanf(prefbuf, "%d", &rate);
     if (sys_getpreference("audiobuf", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &advance);
+    if (sys_getpreference("callback", prefbuf, MAXPDSTRING))
+        sscanf(prefbuf, "%d", &callback);
     sys_open_audio(naudioindev, audioindev, naudioindev, chindev,
-        naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate, advance, 0);
+        naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate, advance,
+        callback, 0);
         
         /* load MIDI preferences */
         /* JMZ/MB: brackets for initializing */
@@ -423,7 +426,7 @@ void glob_savepreferences(t_pd *dummy)
 {
     int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
     int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
-    int i, rate, advance;
+    int i, rate, advance, callback;
     char buf1[MAXPDSTRING], buf2[MAXPDSTRING];
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
@@ -436,7 +439,7 @@ void glob_savepreferences(t_pd *dummy)
     sys_putpreference("audioapi", buf1);
 
     sys_get_audio_params(&naudioindev, audioindev, chindev,
-        &naudiooutdev, audiooutdev, choutdev, &rate, &advance);
+        &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback);
 
     sys_putpreference("noaudioin", (naudioindev <= 0 ? "True" : "False"));
     for (i = 0; i < naudioindev; i++)
@@ -458,6 +461,9 @@ void glob_savepreferences(t_pd *dummy)
 
     sprintf(buf1, "%d", rate);
     sys_putpreference("rate", buf1);
+
+    sprintf(buf1, "%d", callback);
+    sys_putpreference("callback", buf1);
 
         /* MIDI settings */
     sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);

@@ -74,7 +74,7 @@ extern int sys_sleepgrain;
 void sys_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
-    int srate, int advance, int enable);
+    int srate, int advance, int callback, int enable);
 void sys_reopen_audio( void);
 void sys_close_audio(void);
 
@@ -206,7 +206,7 @@ void sys_setvirtualalarm( void);
 #endif
 
 int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
-    t_sample *soundout, int framesperbuf, int nbuffers,
+    t_sample *soundout, int framesperbuf, int nbuffers, int callback,
     int indeviceno, int outdeviceno);
 void pa_close_audio(void);
 int pa_send_dacs(void);
@@ -269,11 +269,11 @@ void linux_alsa_devname(char *devname);
 void sys_get_audio_params(
     int *pnaudioindev, int *paudioindev, int *chindev,
     int *pnaudiooutdev, int *paudiooutdev, int *choutdev,
-    int *prate, int *padvance);
+    int *prate, int *padvance, int *callback);
 void sys_save_audio_params(
     int naudioindev, int *audioindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int *choutdev,
-    int rate, int advance);
+    int rate, int advance, int callback);
 
 /* s_file.c */
 
