@@ -67,7 +67,7 @@ static int audio_rate;
 static int audio_advance;
 static int audio_callback;
 
-void sched_set_callback(int flag);
+void sched_audio_callbackfn(void);
 
 static int audio_isopen(void)
 {
@@ -170,14 +170,14 @@ void sys_setchsr(int chin, int chout, int sr)
 
 /* ----------------------- public routines ----------------------- */
 
-    /* open audio devices (after cleaning up the specified device and channel
-    vectors).  The audio devices are "zero based" (i.e. "0" means the first
-    one.)  We also save the cleaned-up device specification so that we
-    can later re-open audio and/or show the settings on a dialog window. */
+    /* set audio device settings (after cleaning up the specified device and
+    channel vectors).  The audio devices are "zero based" (i.e. "0" means the
+    first one.)  We can later re-open audio and/or show the settings on a\
+    dialog window. */
 
-void sys_open_audio(int naudioindev, int *audioindev, int nchindev,
+void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
-    int *choutdev, int rate, int advance, int callback, int enable)
+    int *choutdev, int rate, int advance, int callback)
 {
     int i, *ip;
     int defaultchannels = SYS_DEFAULTCH;
@@ -189,7 +189,6 @@ void sys_open_audio(int naudioindev, int *audioindev, int nchindev,
     int indevs = 0, outdevs = 0, canmulti = 0, cancallback = 0;
     audio_getdevs(indevlist, &indevs, outdevlist, &outdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE);
-
     if (sys_externalschedlib)
     {
         return;
@@ -324,62 +323,11 @@ void sys_open_audio(int naudioindev, int *audioindev, int nchindev,
         outchans += choutdev[i];
         nrealoutdev++;
     }
-        /* if no input or output devices seem to have been specified,
-        this really means just disable audio, which we now do. */
-    if (!inchans && !outchans)
-        enable = 0;
     sys_schedadvance = advance * 1000;
     sys_setchsr(inchans, outchans, rate);
     sys_log_error(ERR_NOTHING);
-    if (enable)
-    {
-#ifdef USEAPI_PORTAUDIO
-        if (sys_audioapi == API_PORTAUDIO)
-        {
-            int blksize = (sys_blocksize ? sys_blocksize : 64);
-            pa_open_audio(inchans, outchans, rate, sys_soundin, sys_soundout,
-                blksize, sys_advance_samples/blksize, callback,
-                    (naudiooutdev > 0 ? audioindev[0] : 0),
-                        (naudiooutdev > 0 ? audiooutdev[0] : 0));
-        }
-else
-#endif
-#ifdef USEAPI_JACK
-        if (sys_audioapi == API_JACK) 
-            jack_open_audio((nrealindev > 0 ? realinchans[0] : 0),
-                (nrealoutdev > 0 ? realoutchans[0] : 0), rate);
-
-        else
-#endif    
-#ifdef USEAPI_OSS
-        if (sys_audioapi == API_OSS)
-            oss_open_audio(nrealindev, realindev, nrealindev, realinchans,
-                nrealoutdev, realoutdev, nrealoutdev, realoutchans, rate);
-        else
-#endif
-#ifdef USEAPI_ALSA
-            /* for alsa, only one device is supported; it may
-            be open for both input and output. */
-        if (sys_audioapi == API_ALSA)
-            alsa_open_audio(nrealindev, audioindev, nrealindev, realinchans,
-                nrealoutdev, audiooutdev, nrealoutdev, realoutchans, rate);
-        else 
-#endif
-#ifdef USEAPI_MMIO
-        if (sys_audioapi == API_MMIO)
-            mmio_open_audio(nrealindev, audioindev, nrealindev, realinchans,
-                nrealoutdev, audiooutdev, nrealoutdev, realoutchans, rate);
-        else
-#endif
-            post("unknown audio API specified");
-    }
-    sys_save_audio_params(naudioindev, audioindev, chindev,
-        naudiooutdev, audiooutdev, choutdev, sys_dacsr, advance, callback);
-    if (sys_inchannels == 0 && sys_outchannels == 0)
-        enable = 0;
-    audio_state = enable;
-    sys_vgui("set pd_whichapi %d\n",  (audio_isopen() ? sys_audioapi : 0));
-    sched_set_using_dacs(enable);
+    sys_save_audio_params(nrealindev, realindev, realinchans,
+        nrealoutdev, realoutdev, realoutchans, sys_dacsr, advance, callback);
 }
 
 void sys_close_audio(void)
@@ -417,6 +365,7 @@ void sys_close_audio(void)
 #endif
         post("sys_close_audio: unknown API %d", sys_audioapi);
     sys_inchannels = sys_outchannels = 0;
+    sched_set_using_audio(SCHED_AUDIO_NONE);
 }
 
     /* open audio using whatever parameters were last used */
@@ -424,12 +373,67 @@ void sys_reopen_audio( void)
 {
     int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
     int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
-    int rate, advance, callback;
+    int rate, advance, callback, outcome = 0;
     sys_get_audio_params(&naudioindev, audioindev, chindev,
         &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback);
-    sys_open_audio(naudioindev, audioindev, naudioindev, chindev,
-        naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate, advance, 
-        callback, 1);
+    if (!naudioindev && !naudiooutdev)
+    {
+        sched_set_using_audio(SCHED_AUDIO_NONE);
+        return;
+    }
+#ifdef USEAPI_PORTAUDIO
+    if (sys_audioapi == API_PORTAUDIO)
+    {
+        int blksize = (sys_blocksize ? sys_blocksize : 64);
+        outcome = pa_open_audio((naudioindev > 0 ? chindev[0] : 0),
+        (naudiooutdev > 0 ? choutdev[0] : 0), rate, sys_soundin,
+            sys_soundout, blksize, sys_advance_samples/blksize, 
+             (naudioindev > 0 ? audioindev[0] : 0),
+              (naudiooutdev > 0 ? audiooutdev[0] : 0),
+               (callback ? sched_audio_callbackfn : 0));
+    }
+    else
+#endif
+#ifdef USEAPI_JACK
+    if (sys_audioapi == API_JACK) 
+        outcome = jack_open_audio((naudioindev > 0 ? chindev[0] : 0),
+            (naudioindev > 0 ? choutdev[0] : 0), rate);
+
+    else
+#endif    
+#ifdef USEAPI_OSS
+    if (sys_audioapi == API_OSS)
+        outcome = oss_open_audio(naudioindev, audioindev, naudioindev,
+            chindev, naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate);
+    else
+#endif
+#ifdef USEAPI_ALSA
+        /* for alsa, only one device is supported; it may
+        be open for both input and output. */
+    if (sys_audioapi == API_ALSA)
+        outcome = alsa_open_audio(naudioindev, audioindev, naudioindev,
+            chindev, naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate);
+    else 
+#endif
+#ifdef USEAPI_MMIO
+    if (sys_audioapi == API_MMIO)
+        outcome = mmio_open_audio(naudioindev, audioindev, naudioindev,
+            chindev, naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate);
+    else
+#endif
+        post("unknown audio API specified");
+    if (outcome)    /* failed */
+    {
+        audio_state = 0;
+        sched_set_using_audio(SCHED_AUDIO_NONE);
+    }
+    else
+    {
+        audio_state = 1;
+        sched_set_using_audio(
+            (callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
+    }
+    sys_vgui("set pd_whichapi %d\n",  (outcome == 0 ? sys_audioapi : 0));
 }
 
 int sys_send_dacs(void)
@@ -727,9 +731,10 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     }
 
     sys_close_audio();
-    sys_open_audio(nindev, newaudioindev, nindev, newaudioinchan,
+    sys_set_audio_settings(nindev, newaudioindev, nindev, newaudioinchan,
         noutdev, newaudiooutdev, noutdev, newaudiooutchan,
-        newrate, newadvance, newcallback, 1);
+        newrate, newadvance, newcallback);
+    sys_reopen_audio();
 }
 
 void sys_listdevs(void )
@@ -807,7 +812,6 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     {
         sys_close_audio();
         audio_state = 0;
-        sched_set_using_dacs(0);
     }
 }
 
@@ -822,10 +826,7 @@ void sys_set_audio_state(int onoff)
     else
     {
         if (audio_isopen())
-        {
             sys_close_audio();
-            sched_set_using_dacs(0);
-        }
     }
     audio_state = onoff;
 }

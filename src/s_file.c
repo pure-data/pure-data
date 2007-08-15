@@ -339,9 +339,9 @@ void sys_loadpreferences( void)
         sscanf(prefbuf, "%d", &advance);
     if (sys_getpreference("callback", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &callback);
-    sys_open_audio(naudioindev, audioindev, naudioindev, chindev,
+    sys_set_audio_settings(naudioindev, audioindev, naudioindev, chindev,
         naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate, advance,
-        callback, 0);
+        callback);
         
         /* load MIDI preferences */
         /* JMZ/MB: brackets for initializing */

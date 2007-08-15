@@ -31,7 +31,7 @@ int sys_argparse(int argc, char **argv);
 void sys_findprogdir(char *progname);
 int sys_startgui(const char *guipath);
 int sys_rcfile(void);
-int m_scheduler(void);
+int m_mainloop(void);
 void sys_addhelppath(char *p);
 #ifdef USEAPI_ALSA
 void alsa_adddev(char *name);
@@ -71,7 +71,7 @@ char sys_extraflagsstring[MAXPDSTRING];
 
 
     /* here the "-1" counts signify that the corresponding vector hasn't been
-    specified in command line arguments; sys_open_audio will detect this
+    specified in command line arguments; sys_set_audio_settings will detect it
     and fill things in. */
 static int sys_nsoundin = -1;
 static int sys_nsoundout = -1;
@@ -314,7 +314,7 @@ int sys_main(int argc, char **argv)
         sys_reopen_midi();
         sys_reopen_audio();
             /* run scheduler until it quits */
-        return (m_scheduler());
+        return (m_mainloop());
     }
 }
 
@@ -989,9 +989,9 @@ static void sys_afterargparse(void)
         rate = sys_main_srate;
     if (sys_main_callback)
         callback = sys_main_callback;
-    sys_open_audio(naudioindev, audioindev, nchindev, chindev,
+    sys_set_audio_settings(naudioindev, audioindev, nchindev, chindev,
         naudiooutdev, audiooutdev, nchoutdev, choutdev, rate, advance, 
-        callback, 0);
+        callback);
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
 }
 

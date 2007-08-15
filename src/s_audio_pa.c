@@ -23,19 +23,133 @@
 static PABLIO_Stream  *pa_stream;
 static int pa_inchans, pa_outchans;
 static float *pa_soundin, *pa_soundout;
+static t_audiocallback pa_callback;
 
 #define MAX_PA_CHANS 32
 #define MAX_SAMPLES_PER_FRAME MAX_PA_CHANS * DEFDACBLKSIZE
 
+static int pa_lowlevel_callback(const void *inputBuffer,
+    void *outputBuffer, unsigned long framesPerBuffer,
+    const PaStreamCallbackTimeInfo *outTime, PaStreamCallbackFlags myflags, 
+    void *userData)
+{
+    int i; 
+    unsigned int j;
+    float *fbuf, *fp2, *fp3, *soundiop;
+
+    if (inputBuffer != NULL)
+    {
+        fbuf = (float *)inputBuffer;
+        soundiop = pa_soundin;
+        for (i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
+            for (j = 0, fp3 = fp2; j < framesPerBuffer; j++, fp3 += pa_inchans)
+                *soundiop++ = *fp3;
+    }
+    else memset((void *)pa_soundin, 0,
+        framesPerBuffer * pa_inchans * sizeof(float));
+    (*pa_callback)();
+    if (outputBuffer != NULL)
+    {
+        fbuf = (float *)outputBuffer;
+        soundiop = pa_soundout;
+        for (i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
+            for (j = 0, fp3 = fp2; j < framesPerBuffer; j++, fp3 += pa_inchans)
+                *fp3 = *soundiop;
+    }
+
+    return 0;
+}
+
+PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
+    int framesperbuf, int nbuffers, int indeviceno, int outdeviceno)
+{
+    long   bytesPerSample;
+    PaError err;
+    PABLIO_Stream *pastream;
+    long   numFrames;
+    PaStreamParameters instreamparams, outstreamparams;
+
+    if (indeviceno < 0) 
+    {
+        indeviceno = Pa_GetDefaultInputDevice();
+        fprintf(stderr, "using default input device number: %d\n", indeviceno);
+    }
+    if (outdeviceno < 0)
+    {
+        outdeviceno = Pa_GetDefaultOutputDevice();
+        fprintf(stderr, "using default output device number: %d\n", outdeviceno);
+    }
+    /* fprintf(stderr, "nchan %d, flags %d, bufs %d, framesperbuf %d\n",
+            nchannels, flags, nbuffers, framesperbuf); */
+
+    /* Allocate PABLIO_Stream structure for caller. */
+    pastream = (PABLIO_Stream *)malloc( sizeof(PABLIO_Stream));
+    if (pastream == NULL)
+        return (1);
+    memset(pastream, 0, sizeof(PABLIO_Stream));
+
+    /* Determine size of a sample. */
+    bytesPerSample = Pa_GetSampleSize(paFloat32);
+    if (bytesPerSample < 0)
+    {
+        err = (PaError) bytesPerSample;
+        goto error;
+    }
+    pastream->insamplesPerFrame = inchannels;
+    pastream->inbytesPerFrame = bytesPerSample * pastream->insamplesPerFrame;
+    pastream->outsamplesPerFrame = outchannels;
+    pastream->outbytesPerFrame = bytesPerSample * pastream->outsamplesPerFrame;
+
+    numFrames = nbuffers * framesperbuf;
+
+    instreamparams.device = indeviceno;
+    instreamparams.channelCount = inchannels;
+    instreamparams.sampleFormat = paFloat32;
+    instreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
+    instreamparams.hostApiSpecificStreamInfo = 0;
+    
+    outstreamparams.device = outdeviceno;
+    outstreamparams.channelCount = outchannels;
+    outstreamparams.sampleFormat = paFloat32;
+    outstreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
+    outstreamparams.hostApiSpecificStreamInfo = 0;
+
+    err = Pa_OpenStream(
+              &pastream->stream,
+              (inchannels ? &instreamparams : 0),
+              (outchannels ? &outstreamparams : 0),
+              sampleRate,
+              framesperbuf,
+              paNoFlag,      /* portaudio will clip for us */
+              pa_lowlevel_callback,
+              pastream);
+    if (err != paNoError)
+        goto error;
+
+    err = Pa_StartStream(pastream->stream);
+    if (err != paNoError)
+    {
+        fprintf(stderr, "Pa_StartStream failed; closing audio stream...\n");
+        CloseAudioStream( pastream );
+        goto error;
+    }
+    pa_stream = pastream;
+    return paNoError;
+error:
+    pa_stream = NULL;
+    return err;
+}
+
 int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
-    t_sample *soundout, int framesperbuf, int nbuffers, int callback,
-    int indeviceno, int outdeviceno)
+    t_sample *soundout, int framesperbuf, int nbuffers,
+    int indeviceno, int outdeviceno, t_audiocallback callbackfn)
 {
     PaError err;
     static int initialized;
     int j, devno, pa_indev = 0, pa_outdev = 0;
-
-    if (callback)
+    
+    pa_callback = callbackfn;
+    if (callbackfn)
         fprintf(stderr, "callback enabled\n");
     if (!initialized)
     {
@@ -103,26 +217,34 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         post("output device %d, channels %d", pa_outdev, outchans);
         post("framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
     }
-    if (inchans || outchans)
-        err = OpenAudioStream( &pa_stream, rate, paFloat32,
-            inchans, outchans, framesperbuf, nbuffers,
-                pa_indev, pa_outdev);
-    else err = 0;
-    if ( err != paNoError ) 
-    {
-        fprintf( stderr, "Error number %d occured opening portaudio stream\n",
-            err); 
-        fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-        Pa_Terminate();
-        sys_inchannels = sys_outchannels = 0;
-        return (1);
-    }
-    else if (sys_verbose)
-        post("... opened OK.");
     pa_inchans = inchans;
     pa_outchans = outchans;
     pa_soundin = soundin;
     pa_soundout = soundout;
+    if (! inchans && !outchans)
+        return(0);
+    if (callbackfn)
+    {
+        pa_callback = callbackfn;
+        err = pa_open_callback(rate, inchans, outchans,
+            framesperbuf, nbuffers, pa_indev, pa_outdev);
+    }
+    else
+    {
+        err = OpenAudioStream( &pa_stream, rate, paFloat32,
+            inchans, outchans, framesperbuf, nbuffers,
+                pa_indev, pa_outdev);
+    }
+    if ( err != paNoError ) 
+    {
+        fprintf(stderr, "Error number %d opening portaudio stream\n",
+            err); 
+        fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+        Pa_Terminate();
+        return (1);
+    }
+    else if (sys_verbose)
+        post("... opened OK.");
     return (0);
 }
 

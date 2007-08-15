@@ -15,7 +15,8 @@
 #define THREAD_LOCKING  
 #include "pthread.h"
 
-
+#define SYS_QUIT_QUIT 1
+#define SYS_QUIT_RESTART 2
 static int sys_quit;
 double sys_time;
 static double sys_time_per_msec = TIMEUNITPERSEC / 1000.;
@@ -326,14 +327,14 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 void dsp_tick(void);
 
-static int sched_usedacs = 1;
+static int sched_useaudio = SCHED_AUDIO_POLL;
 static double sched_referencerealtime, sched_referencelogicaltime;
 double sys_time_per_dsp_tick;
 
-void sched_set_using_dacs(int flag)
+void sched_set_using_audio(int flag)
 {
-    sched_usedacs = flag;
-    if (!flag)
+    sched_useaudio = flag;
+    if (flag == SCHED_AUDIO_NONE)
     {
         sched_referencerealtime = sys_getrealtime();
         sched_referencelogicaltime = clock_getlogicaltime();
@@ -385,7 +386,7 @@ nonzero if you actually used the time; otherwise we're really really idle and
 will now sleep. */
 int (*sys_idlehook)(void);
 
-int m_scheduler( void)
+static void m_pollingscheduler( void)
 {
     int idlecount = 0;
     sys_time_per_dsp_tick = (TIMEUNITPERSEC) *
@@ -410,7 +411,7 @@ int m_scheduler( void)
 
         sys_addhist(0);
     waitfortick:
-        if (sched_usedacs)
+        if (sched_useaudio != SCHED_AUDIO_NONE)
         {
 #ifdef THREAD_LOCKING
             /* T.Grill - send_dacs may sleep -> 
@@ -441,7 +442,7 @@ int m_scheduler( void)
                     {
                         post("audio I/O stuck... closing audio\n");
                         sys_close_audio();
-                        sched_set_using_dacs(0);
+                        sched_set_using_audio(SCHED_AUDIO_NONE);
                         goto waitfortick;
                     }
                 }
@@ -475,7 +476,6 @@ int m_scheduler( void)
         {
             sched_pollformeters();
             sys_reportidle();
-
 #ifdef THREAD_LOCKING
             sys_unlock();   /* unlock while we idle */
 #endif
@@ -489,20 +489,52 @@ int m_scheduler( void)
 #ifdef THREAD_LOCKING
             sys_lock();
 #endif
-
             sys_addhist(5);
             sched_didnothing++;
-
         }
     }
 
 #ifdef THREAD_LOCKING
     sys_unlock();
 #endif
-
-    return (0);
 }
 
+void sched_audio_callbackfn(void)
+{
+    sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
+    sys_addhist(1);
+    sched_tick(sys_time + sys_time_per_dsp_tick);
+    sys_addhist(2);
+    sys_pollmidiqueue();
+    sys_addhist(3);
+    sys_pollgui();
+    sys_addhist(5);
+    sched_pollformeters();
+    sys_addhist(0);
+}
+
+static void m_callbackscheduler(void)
+{
+    sys_initmidiqueue();
+    while (1)
+    {
+        sleep(1);
+        if (sys_idlehook)
+            sys_idlehook();
+    }
+}
+
+int m_mainloop(void)
+{
+    while (sys_quit != SYS_QUIT_QUIT)
+    {
+        post("sched %d", sched_useaudio);
+        if (sched_useaudio == SCHED_AUDIO_CALLBACK)
+            m_callbackscheduler();
+        else m_pollingscheduler();
+    }
+    return (0);
+}
 
 /* ------------ thread locking ------------------- */
 
@@ -534,5 +566,5 @@ int sys_trylock(void) {}
 
 void sys_exit(void)
 {
-        sys_quit = 1;
+    sys_quit = SYS_QUIT_QUIT;
 }

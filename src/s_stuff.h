@@ -71,10 +71,10 @@ extern int sys_blocksize;       /* audio I/O block size in sample frames */
 extern float sys_dacsr;
 extern int sys_schedadvance;
 extern int sys_sleepgrain;
-void sys_open_audio(int naudioindev, int *audioindev,
+void sys_set_audio_settings(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
-    int srate, int advance, int callback, int enable);
+    int srate, int advance, int callback);
 void sys_reopen_audio( void);
 void sys_close_audio(void);
 
@@ -139,7 +139,11 @@ EXTERN void sys_log_error(int type);
 #define ERR_DACSLEPT 2
 #define ERR_RESYNC 3
 #define ERR_DATALATE 4
-void sched_set_using_dacs(int flag);
+
+#define SCHED_AUDIO_NONE 0
+#define SCHED_AUDIO_POLL 1 
+#define SCHED_AUDIO_CALLBACK 2
+void sched_set_using_audio(int flag);
 
 /* s_inter.c */
 
@@ -205,9 +209,11 @@ void sys_setvirtualalarm( void);
 #define DEFAULTADVANCE 50
 #endif
 
+typedef void (*t_audiocallback)(vid);
+
 int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
-    t_sample *soundout, int framesperbuf, int nbuffers, int callback,
-    int indeviceno, int outdeviceno);
+    t_sample *soundout, int framesperbuf, int nbuffers,
+    int indeviceno, int outdeviceno, t_audiocallback callback);
 void pa_close_audio(void);
 int pa_send_dacs(void);
 void sys_reportidle(void);
