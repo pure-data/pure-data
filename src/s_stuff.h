@@ -251,7 +251,7 @@ void jack_getdevs(char *indevlist, int *nindevs,
         int maxndev, int devdescsize);
 void jack_listdevs(void);
 
-void mmio_open_audio(int naudioindev, int *audioindev,
+int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,
     int nchoutdev, int *choutdev, int rate);
 void mmio_close_audio( void);

@@ -694,7 +694,7 @@ idle:
 
 /* ------------------- public routines -------------------------- */
 
-void mmio_open_audio(int naudioindev, int *audioindev,
+int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,
     int nchoutdev, int *choutdev, int rate)
 {
@@ -724,7 +724,7 @@ void mmio_open_audio(int naudioindev, int *audioindev,
         (nt_nwaveout > 1 ? WAVE_MAPPER : -1) : audiooutdev[0]);
     if (naudiooutdev > 1 || naudioindev > 1)
  post("separate audio device choice not supported; using sequential devices.");
-    mmio_do_open_audio();
+    return (mmio_do_open_audio());
 }
 
 

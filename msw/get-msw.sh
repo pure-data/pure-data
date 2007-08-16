@@ -1,8 +1,8 @@
 #!/bin/tcsh
 
-rm -rf image
-mkdir image
-cd image
+rm -rf /tmp/image
+mkdir /tmp/image
+cd /tmp/image
 unzip -q /tmp/pdout.zip
 find . \( -name "*.lib" -o -name "*.exe" -o -name "*.dll" -o -name "*.obj" \
     -o -name "*.exp"  \) \

@@ -38,19 +38,20 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     $(SYSSRC)
 
 PADIR = ..\portaudio
-INCPA = -I$(PADIR) -I$(PADIR)\pa_common -I$(PADIR)\pablio -I..\lib\asio
-SRCPA = $(PADIR)/pa_common/pa_stream.c \
-        $(PADIR)/pa_common/pa_trace.c \
-        $(PADIR)/pa_common/pa_skeleton.c \
-        $(PADIR)/pa_common/pa_process.c \
-        $(PADIR)/pa_common/pa_front.c \
-        $(PADIR)/pa_common/pa_dither.c \
-        $(PADIR)/pa_common/pa_cpuload.c \
-        $(PADIR)/pa_common/pa_converters.c \
-        $(PADIR)/pa_common/pa_allocation.c \
-        $(PADIR)/pa_win/pa_win_util.c \
-        $(PADIR)/pa_win/pa_win_hostapis.c \
-        $(PADIR)/pa_win_wmme/pa_win_wmme.c 
+INCPA = -I$(PADIR)\include -I$(PADIR)\src\common -I..\lib\asio
+PASRC = $(PADIR)\src
+SRCPA = $(PASRC)/common/pa_stream.c \
+        $(PASRC)/common/pa_trace.c \
+        $(PASRC)/common/pa_skeleton.c \
+        $(PASRC)/common/pa_process.c \
+        $(PASRC)/common/pa_front.c \
+        $(PASRC)/common/pa_dither.c \
+        $(PASRC)/common/pa_cpuload.c \
+        $(PASRC)/common/pa_converters.c \
+        $(PASRC)/common/pa_allocation.c \
+        $(PASRC)/os/win/pa_win_hostapis.c \
+        $(PASRC)/os/win/pa_win_util.c \
+        $(PASRC)/hostapi/wmme/pa_win_wmme.c 
 #        $(PADIR)/pa_win_wdmks/pa_win_wdmks.c
 
 SRCASIO = $(PADIR)/pa_asio/pa_asio.cpp 
@@ -63,12 +64,12 @@ $(LDIR)\odbc32.lib $(LDIR)\odbccp32.lib ..\lib\asio\asiolib.lib
 
 PAOBJ = pa_stream.obj pa_trace.obj pa_skeleton.obj pa_process.obj \
 	pa_front.obj pa_dither.obj pa_cpuload.obj pa_converters.obj \
-	pa_allocation.obj pa_win_util.obj pa_win_hostapis.obj pa_asio.obj \
+	pa_allocation.obj pa_win_hostapis.obj pa_win_util.obj pa_asio.obj \
 	pa_win_wmme.obj 
 #       pa_win_wdmks.obj
 
 PMDIR = ..\portmidi
-INCPM = -I$(PMDIR)\pm_common -I$(PMDIR)\pm_win -I$(PMDIR)\porttime
+INCPM = -I$(PMDIR)\pm_common -I$(PMDIR)\pm_win -I$(PMDIR)\porttime -DNEWBUFFER
 SRCPM = $(PADIR)/pm_common/portmidi.c \
         $(PMDIR)/pm_common/pmutil.c \
         $(PMDIR)/porttime/porttime.c \
@@ -127,37 +128,37 @@ s_entry_com.obj: s_entry.c
 	    ..\bin\pd.lib $(LIB) $(ASIOLIB)
 
 # explicit rules to compile portaudio sources:
-pa_stream.obj: $(PADIR)\pa_common\pa_stream.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_stream.c
-pa_trace.obj: $(PADIR)\pa_common\pa_trace.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_trace.c
-pa_skeleton.obj: $(PADIR)\pa_common\pa_skeleton.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_skeleton.c
-pa_process.obj: $(PADIR)\pa_common\pa_process.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_process.c
-pa_front.obj: $(PADIR)\pa_common\pa_front.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_front.c
-pa_dither.obj: $(PADIR)\pa_common\pa_dither.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_dither.c
-pa_cpuload.obj: $(PADIR)\pa_common\pa_cpuload.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_cpuload.c
-pa_converters.obj: $(PADIR)\pa_common\pa_converters.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_converters.c
-pa_allocation.obj: $(PADIR)\pa_common\pa_allocation.c
-	cl /c $(ALLCF) $(PADIR)\pa_common\pa_allocation.c
+pa_stream.obj: $(PASRC)\common\pa_stream.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_stream.c
+pa_trace.obj: $(PASRC)\common\pa_trace.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_trace.c
+pa_skeleton.obj: $(PASRC)\common\pa_skeleton.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_skeleton.c
+pa_process.obj: $(PASRC)\common\pa_process.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_process.c
+pa_front.obj: $(PASRC)\common\pa_front.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_front.c
+pa_dither.obj: $(PASRC)\common\pa_dither.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_dither.c
+pa_cpuload.obj: $(PASRC)\common\pa_cpuload.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_cpuload.c
+pa_converters.obj: $(PASRC)\common\pa_converters.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_converters.c
+pa_allocation.obj: $(PASRC)\common\pa_allocation.c
+	cl /c $(ALLCF) $(PASRC)\common\pa_allocation.c
 
-pa_win_util.obj: $(PADIR)\pa_win\pa_win_util.c
-	cl /c $(ALLCF) $(PADIR)\pa_win\pa_win_util.c
-pa_win_hostapis.obj: $(PADIR)\pa_win\pa_win_hostapis.c
-	cl /c $(ALLCF) $(PADIR)\pa_win\pa_win_hostapis.c
-pa_win_wmme.obj: $(PADIR)\pa_win_wmme\pa_win_wmme.c
-	cl /c $(ALLCF) $(PADIR)\pa_win_wmme\pa_win_wmme.c
+pa_win_hostapis.obj: $(PASRC)\os\win\pa_win_hostapis.c
+	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_hostapis.c
+pa_win_util.obj: $(PASRC)\os\win\pa_win_util.c
+	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_util.c
+pa_win_wmme.obj: $(PASRC)\hostapi\wmme\pa_win_wmme.c
+	cl /c $(ALLCF) $(PASRC)\hostapi\wmme\pa_win_wmme.c
 pa_win_wdmks.obj: $(PADIR)\pa_win_wdmks\pa_win_wdmks.c
 	cl /c $(ALLCF) \
 	-DWINVER=0x400 -DKSAUDIO_SPEAKER_DIRECTOUT \
 	$(PADIR)\pa_win_wdmks\pa_win_wdmks.c
-pa_asio.obj: $(PADIR)\pa_asio\pa_asio.cpp
-	cl /c $(ALLCF) $(PADIR)\pa_asio\pa_asio.cpp
+pa_asio.obj: $(PASRC)\hostapi\asio\pa_asio.cpp
+	cl /c $(ALLCF) $(PASRC)\hostapi\asio\pa_asio.cpp
 
 portmidi.obj: $(PMDIR)\pm_common\portmidi.c
 	cl /c $(ALLCF) $(PMDIR)\pm_common\portmidi.c

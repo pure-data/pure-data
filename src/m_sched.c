@@ -7,6 +7,9 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
+#ifdef MSW
+#include <windows.h>
+#endif
 
     /* LATER consider making this variable.  It's now the LCM of all sample
     rates we expect to see: 32000, 44100, 48000, 88200, 96000. */
@@ -529,7 +532,11 @@ static void m_callbackscheduler(void)
     sys_initmidiqueue();
     while (1)
     {
-        sleep(1);
+#ifdef MSW
+    Sleep(1000);
+#else
+	sleep(1);
+#endif
         if (sys_idlehook)
             sys_idlehook();
     }
