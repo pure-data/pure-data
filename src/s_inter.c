@@ -1080,6 +1080,10 @@ int sys_startgui(const char *guidir)
             nohomedir:
                     /* Perform the same search among system applications. */
                 strcpy(filename, 
+                    "/usr/bin/wish");
+                if (stat(filename, &statbuf) >= 0)
+                    goto foundit;
+                strcpy(filename, 
                     "/Applications/Utilities/Wish Shell.app/Contents/MacOS/Wish Shell");
                 if (stat(filename, &statbuf) >= 0)
                     goto foundit;

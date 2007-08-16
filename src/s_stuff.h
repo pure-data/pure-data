@@ -209,7 +209,7 @@ void sys_setvirtualalarm( void);
 #define DEFAULTADVANCE 50
 #endif
 
-typedef void (*t_audiocallback)(vid);
+typedef void (*t_audiocallback)(void);
 
 int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     t_sample *soundout, int framesperbuf, int nbuffers,

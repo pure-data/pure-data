@@ -376,6 +376,7 @@ void sys_reopen_audio( void)
     int rate, advance, callback, outcome = 0;
     sys_get_audio_params(&naudioindev, audioindev, chindev,
         &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback);
+	post("x 1");
     if (!naudioindev && !naudiooutdev)
     {
         sched_set_using_audio(SCHED_AUDIO_NONE);
@@ -385,6 +386,7 @@ void sys_reopen_audio( void)
     if (sys_audioapi == API_PORTAUDIO)
     {
         int blksize = (sys_blocksize ? sys_blocksize : 64);
+		post("x 2 %d", callback);
         outcome = pa_open_audio((naudioindev > 0 ? chindev[0] : 0),
         (naudiooutdev > 0 ? choutdev[0] : 0), rate, sys_soundin,
             sys_soundout, blksize, sys_advance_samples/blksize, 
@@ -422,6 +424,7 @@ void sys_reopen_audio( void)
     else
 #endif
         post("unknown audio API specified");
+	post("x 3 %d %d", callback, outcome);
     if (outcome)    /* failed */
     {
         audio_state = 0;
@@ -729,12 +732,14 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             noutdev++;
         }
     }
-
-    sys_close_audio();
+    
+	if (audio_callback == newcallback)
+		sys_close_audio();
     sys_set_audio_settings(nindev, newaudioindev, nindev, newaudioinchan,
         noutdev, newaudiooutdev, noutdev, newaudiooutchan,
-        newrate, newadvance, newcallback);
-    sys_reopen_audio();
+        newrate, newadvance, (newcallback >= 0 ? newcallback : 0));
+	if (audio_callback == newcallback)
+		sys_reopen_audio();
 }
 
 void sys_listdevs(void )

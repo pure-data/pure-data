@@ -36,8 +36,12 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     int i; 
     unsigned int j;
     float *fbuf, *fp2, *fp3, *soundiop;
-
-    if (inputBuffer != NULL)
+        if (framesPerBuffer != DEFDACBLKSIZE)
+        {
+                fprintf(stderr, "ignoring buffer size %d\n", framesPerBuffer);
+                return;
+    }
+        if (inputBuffer != NULL)
     {
         fbuf = (float *)inputBuffer;
         soundiop = pa_soundin;
@@ -52,9 +56,9 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     {
         fbuf = (float *)outputBuffer;
         soundiop = pa_soundout;
-        for (i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
-            for (j = 0, fp3 = fp2; j < framesPerBuffer; j++, fp3 += pa_inchans)
-                *fp3 = *soundiop;
+        for (i = 0, fp2 = fbuf; i < pa_outchans; i++, fp2++)
+            for (j = 0, fp3 = fp2; j < framesPerBuffer; j++, fp3 += pa_outchans)
+                *fp3 = *soundiop++;
     }
 
     return 0;
@@ -119,7 +123,7 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
               (inchannels ? &instreamparams : 0),
               (outchannels ? &outstreamparams : 0),
               sampleRate,
-              framesperbuf,
+              DEFDACBLKSIZE,
               paNoFlag,      /* portaudio will clip for us */
               pa_lowlevel_callback,
               pastream);

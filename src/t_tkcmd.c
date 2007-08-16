@@ -619,19 +619,11 @@ int Pdtcl_Init(Tcl_Interp *interp)
 {
     const char *argv = Tcl_GetVar(interp, "argv", 0);
     int portno, argno = 0;
-        /* argument passing seems to be different in MSW as opposed to
-        unix-likes.  Here we check if we got sent a "port number" as an
-        argument.  If so. we're to connect to a previously running pd (i.e.,
-        pd got started first).  If not, we start Pd from here. */
-#ifdef MSW
     if (argv && (portno = atoi(argv)) > 1)
-#else
-    char *firstspace;
-    if (argv && (firstspace = strchr(argv, ' ')) && (portno = atoi(firstspace)) > 1)
-#endif
         pdgui_setsock(portno);
 #ifdef DEBUGCONNECT
-    debugfd = fopen("/Users/msp/bratwurst", "w");
+        pd_portno = portno;
+    debugfd = fopen("/tmp/bratwurst", "w");
     fprintf(debugfd, "turning stderr back on\n");
     fflush(debugfd);
     dup2(fileno(debugfd), 2);

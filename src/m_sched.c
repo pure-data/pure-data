@@ -334,11 +334,17 @@ double sys_time_per_dsp_tick;
 void sched_set_using_audio(int flag)
 {
     sched_useaudio = flag;
+        post("new sched %d", sched_useaudio);
     if (flag == SCHED_AUDIO_NONE)
     {
         sched_referencerealtime = sys_getrealtime();
         sched_referencelogicaltime = clock_getlogicaltime();
     }
+	if (flag == SCHED_AUDIO_CALLBACK && sched_useaudio != SCHED_AUDIO_CALLBACK)
+		sys_quit = SYS_QUIT_RESTART;
+	if (flag != SCHED_AUDIO_CALLBACK && sched_useaudio == SCHED_AUDIO_CALLBACK)
+		post("sorry, can't turn off callbacks yet; restart Pd");  /* not right yet! */
+	
     sys_time_per_dsp_tick = (TIMEUNITPERSEC) *
         ((double)sys_schedblocksize) / sys_dacsr;
 }
@@ -434,6 +440,11 @@ static void m_pollingscheduler( void)
                 if (!(idlecount & 31))
                 {
                     static double idletime;
+					if (sched_useaudio != SCHED_AUDIO_POLL)
+					{
+						bug("m_pollingscheduler\n");
+						return;
+					}
                         /* on 32nd idle, start a clock watch;  every
                         32 ensuing idles, check it */
                     if (idlecount == 32)
@@ -532,6 +543,12 @@ int m_mainloop(void)
         if (sched_useaudio == SCHED_AUDIO_CALLBACK)
             m_callbackscheduler();
         else m_pollingscheduler();
+		if (sys_quit == SYS_QUIT_RESTART)
+		{
+			sys_quit = 0;
+            sys_close_audio();
+            sys_reopen_audio();
+		}
     }
     return (0);
 }
