@@ -337,7 +337,6 @@ double sys_time_per_dsp_tick;
 void sched_set_using_audio(int flag)
 {
     sched_useaudio = flag;
-        post("new sched %d", sched_useaudio);
     if (flag == SCHED_AUDIO_NONE)
     {
         sched_referencerealtime = sys_getrealtime();
