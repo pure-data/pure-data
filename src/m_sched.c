@@ -534,7 +534,7 @@ static void m_callbackscheduler(void)
 #ifdef MSW
     Sleep(1000);
 #else
-	sleep(1);
+        sleep(1);
 #endif
         if (sys_idlehook)
             sys_idlehook();

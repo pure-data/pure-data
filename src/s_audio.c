@@ -731,7 +731,7 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     }
     
     if (newcallback < 0)
-    	newcallback = 0;
+        newcallback = 0;
     if (audio_callback == newcallback)
         sys_close_audio();
     sys_set_audio_settings(nindev, newaudioindev, nindev, newaudioinchan,
