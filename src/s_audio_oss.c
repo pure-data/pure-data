@@ -245,8 +245,27 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize)
 
 static int oss_setchannels(int fd, int wantchannels, char *devname)
 {
-    int param = wantchannels;
-
+    int param;
+    if (sys_verbose)
+        post("setchan %d", wantchannels);
+    if (ioctl(fd, SNDCTL_DSP_CHANNELS, &param) == -1)
+    {
+        if (sys_verbose)
+            error("OSS: SOUND_DSP_READ_CHANNELS failed %s", devname);
+    }
+    else
+    {
+        if (sys_verbose)
+            post("channels originally %d for %s", param, devname);
+        if (param == wantchannels)
+        {
+            if (sys_verbose)
+                post("number of channels doesn't need setting\n");
+            return (wantchannels);
+        }
+    }
+    param = wantchannels;
+whynot:    
     while (param > 1)
     {
         int save = param;
@@ -399,10 +418,12 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         sys_setalarm(1000000);
 
             /* perhaps it's already open from the above? */
-        if (linux_dacs[n].d_fd >= 0)
+        if (linux_adcs[n].d_fd >= 0)
         {
             fd = linux_adcs[n].d_fd;
             alreadyopened = 1;
+            if (sys_verbose)
+                post("already opened it");
         }
         else
         {
