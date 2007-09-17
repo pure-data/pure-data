@@ -58,12 +58,7 @@ int sys_nmidiin = -1;
 int sys_midiindevlist[MAXMIDIINDEV] = {1};
 int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
-#ifdef __APPLE__
-char sys_font[] = "Monaco"; /* tb: font name */
-#else
-char sys_font[] = "Bitstream Vera Sans Mono"; /* tb: font name */
-#endif
-char sys_fontweight[] = "normal"; /* currently only used for iemguis */
+char sys_font[100] = "courier"; /* tb: font name */
 static int sys_main_srate;
 static int sys_main_advance;
 static int sys_main_callback;
@@ -112,12 +107,8 @@ typedef struct _fontinfo
     in the six fonts.  */
 
 static t_fontinfo sys_fontlist[] = {
-    {8, 6, 10, 8, 6, 10}, {10, 7, 13, 10, 7, 13}, {12, 9, 16, 12, 9, 16},
-    {16, 10, 20, 16, 10, 20}, {24, 15, 25, 24, 15, 25},
-    {36, 25, 45, 36, 25, 45}};
-/*  {8, 5, 11, 8, 5, 11}, {10, 6, 13, 10, 6, 13}, {12, 7, 16, 12, 7, 16},
-    {16, 10, 19, 16, 10, 19}, {24, 14, 29, 24, 14, 29}, {36, 23, 44, 36, 23, 44}};
-*/
+    {8, 6, 10, 0, 0, 0}, {10, 7, 13, 0, 0, 0}, {12, 9, 16, 0, 0, 0},
+    {16, 10, 20, 0, 0, 0}, {24, 15, 25, 0, 0, 0}, {36, 25, 45, 0, 0, 0}};
 #define NFONT (sizeof(sys_fontlist)/sizeof(*sys_fontlist))
 
 /* here are the actual font size structs on msp's systems:
@@ -168,7 +159,11 @@ int sys_fontheight(int fontsize)
 }
 
 int sys_defaultfont;
+#ifdef MSW
+#define DEFAULTFONT 12
+#else
 #define DEFAULTFONT 10
+#endif
 
 static void openit(const char *dirname, const char *filename)
 {
@@ -388,9 +383,8 @@ static char *(usagemessage[]) = {
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
 "-lib <file>      -- load object library(s)\n",
-"-font-size <n>     -- specify default font size in points\n",
-"-font-face <name>  -- specify default font (default: Bitstream Vera Sans Mono)\n",
-"-font-weight <name>-- specify default font weight (normal or bold)\n",
+"-font <n>        -- specify default font size in points\n",
+"-typeface <name> -- specify default font (default: courier)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-version         -- don't run Pd; just print out which version it is \n",
 "-d <n>           -- specify debug level\n",
@@ -750,25 +744,21 @@ int sys_argparse(int argc, char **argv)
             sys_externlist = namelist_append_files(sys_externlist, argv[1]);
             argc -= 2; argv += 2;
         }
-        else if ((!strcmp(*argv, "-font-size") || !strcmp(*argv, "-font")) && argc > 1)
+        else if (!strcmp(*argv, "-font") && argc > 1)
         {
             sys_defaultfont = sys_nearestfontsize(atoi(argv[1]));
             argc -= 2;
             argv += 2;
         }
-        else if ((!strcmp(*argv, "-font-face") || !strcmp(*argv, "-typeface")) && argc > 1)
+                /* tb: font name { */
+        else if (!strcmp(*argv, "-typeface") && argc > 1)
         {
             strncpy(sys_font,*(argv+1),sizeof(sys_font)-1);
             sys_font[sizeof(sys_font)-1] = 0;
             argc -= 2;
             argv += 2;
         }
-        else if (!strcmp(*argv, "-font-weight") && argc > 1)
-        {
-                       strcpy(sys_fontweight,*(argv+1));
-                       argc -= 2;
-                       argv += 2;
-               }
+                /* } tb */
         else if (!strcmp(*argv, "-verbose"))
         {
             sys_verbose++;

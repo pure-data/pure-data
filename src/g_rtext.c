@@ -15,10 +15,16 @@
 #include "g_canvas.h"
 #include "t_tk.h"
 
-#define LMARGIN 1
-#define RMARGIN 1
+#define LMARGIN 2
+#define RMARGIN 2
+/* for some reason, it draws text 1 pixel lower on Mac OS X (& linux too?) */
+#ifndef MSW
 #define TMARGIN 2
 #define BMARGIN 2
+#else
+#define TMARGIN 3
+#define BMARGIN 1
+#endif
 
 #define SEND_FIRST 1
 #define SEND_UPDATE 2

@@ -73,10 +73,10 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
         x->x_drawn = x->x_on;
     }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {%s %d bold} -fill #%6.6x -tags %lxLABEL\n",
+             -font {{%s} %d %s} -fill #%6.6x -tags %lxLABEL\n",
              canvas, xx11b+x->x_gui.x_ldx, yy11+x->x_gui.x_ldy,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
-             x->x_gui.x_font, x->x_gui.x_fontsize,
+             x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags %lxOUT%d\n",
@@ -141,8 +141,8 @@ void hradio_draw_config(t_hradio* x, t_glist* glist)
     t_canvas *canvas=glist_getcanvas(glist);
     int n=x->x_number, i;
 
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {%s %d bold} -fill #%6.6x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize,
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} %d %s} -fill #%6.6x -text {%s} \n",
+             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"");
     for(i=0; i<n; i++)
@@ -264,7 +264,7 @@ static void hradio_properties(t_gobj *z, t_glist *owner)
     iemgui_properties(&x->x_gui, srl);
     if (pd_class(&x->x_gui.x_obj.ob_pd) == hradio_old_class)
         hchange = x->x_change;
-    sprintf(buf, "pdtk_iemgui_dialog %%s hradio \
+    sprintf(buf, "pdtk_iemgui_dialog %%s |hradio| \
             ----------dimensions(pix):----------- %d %d size: 0 0 empty \
             empty 0.0 empty 0.0 empty %d \
             %d new-only new&old %d %d number: %d \
@@ -589,7 +589,7 @@ static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     if(x->x_gui.x_fsf.x_font_style == 1) strcpy(x->x_gui.x_font, "helvetica");
     else if(x->x_gui.x_fsf.x_font_style == 2) strcpy(x->x_gui.x_font, "times");
     else { x->x_gui.x_fsf.x_font_style = 0;
-        strcpy(x->x_gui.x_font, "courier"); }
+        strcpy(x->x_gui.x_font, sys_font); }
     if(num < 1)
         num = 1;
     if(num > IEM_RADIO_MAX)

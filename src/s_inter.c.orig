@@ -90,6 +90,7 @@ struct _socketreceiver
 
 extern char *pd_version;
 extern int sys_guisetportnumber;
+extern char sys_font[]; /* tb: typeface */
 
 static int sys_nfdpoll;
 static t_fdpoll *sys_fdpoll;
@@ -848,8 +849,7 @@ void glob_watchdog(t_pd *dummy)
 
 #define FIRSTPORTNUM 5400
 
-#define MAXFONTS 21
-static int defaultfontshit[MAXFONTS] = {
+static int defaultfontshit[] = {
     8, 5, 9, 10, 6, 10, 12, 7, 13, 14, 9, 17, 16, 10, 19, 24, 15, 28,
         24, 15, 28};
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
@@ -1257,8 +1257,8 @@ int sys_startgui(const char *guidir)
 #endif
          sys_get_audio_apis(buf);
          sys_get_midi_apis(buf2);
-         sys_vgui("pdtk_pd_startup {%s} %s %s {%s} %s\n", pd_version, buf, buf2, 
-				  sys_font, sys_fontweight); 
+         sys_vgui("pdtk_pd_startup {%s} %s %s {%s}\n", pd_version, buf, buf2,
+                                  sys_font); 
     }
     return (0);
 

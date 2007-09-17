@@ -170,12 +170,12 @@ install:  all
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
 		echo "installing $$dir"; \
 		install -d $(pddocdir)/$$dir ; \
-		install -p ../doc/$$dir/*.* $(pddocdir)/$$dir ; \
+		install -m644 -p ../doc/$$dir/*.* $(pddocdir)/$$dir ; \
 	done
 	for dir in $(shell ls -1 ../doc/7.stuff | grep -v CVS); do \
 		echo "installing 7.stuff/$$dir"; \
 		install -d $(pddocdir)/7.stuff/$$dir ; \
-		install -p ../doc/7.stuff/$$dir/*.* $(pddocdir)/7.stuff/$$dir ; \
+		install -m644 -p ../doc/7.stuff/$$dir/*.* $(pddocdir)/7.stuff/$$dir ; \
 	done
 	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
 	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \

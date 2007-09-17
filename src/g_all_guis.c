@@ -438,7 +438,7 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     else
     {
         f = 0;
-        strcpy(iemgui->x_font, "courier");
+        strcpy(iemgui->x_font, sys_font);
     }
     iemgui->x_fsf.x_font_style = f;
     f = (int)atom_getintarg(1, ac, av);
@@ -446,8 +446,9 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
         f = 4;
     iemgui->x_fontsize = f;
     if(glist_isvisible(iemgui->x_glist))
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {%s %d bold}\n",
-                 glist_getcanvas(iemgui->x_glist), x, iemgui->x_font, iemgui->x_fontsize);
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} %d %s}\n",
+                 glist_getcanvas(iemgui->x_glist), x, iemgui->x_font, 
+				 iemgui->x_fontsize, sys_fontweight);
 }
 
 void iemgui_size(void *x, t_iemgui *iemgui)
@@ -622,7 +623,7 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     else
     {
         f = 0;
-        strcpy(iemgui->x_font, "courier");
+        strcpy(iemgui->x_font, sys_font);
     }
     iemgui->x_fsf.x_font_style = f;
     if(fs < 4)

@@ -100,7 +100,8 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
             if (ap->a_type != A_SYMBOL) continue;
             else if (!(target = ap->a_w.w_symbol->s_thing))
             {
-                error("qlist: %s: no such object", ap->a_w.w_symbol->s_name);
+                pd_error(x, "qlist: %s: no such object",
+                    ap->a_w.w_symbol->s_name);
                 continue;
             }
             ap++;
@@ -180,10 +181,10 @@ static void qlist_read(t_qlist *x, t_symbol *filename, t_symbol *format)
     if (!strcmp(format->s_name, "cr"))
         cr = 1;
     else if (*format->s_name)
-        error("qlist_read: unknown flag: %s", format->s_name);
+        pd_error(x, "qlist_read: unknown flag: %s", format->s_name);
 
     if (binbuf_read_via_canvas(x->x_binbuf, filename->s_name, x->x_canvas, cr))
-            error("%s: read failed", filename->s_name);
+            pd_error(x, "%s: read failed", filename->s_name);
     x->x_onset = 0x7fffffff;
     x->x_reentered = 1;
 }
@@ -197,9 +198,9 @@ static void qlist_write(t_qlist *x, t_symbol *filename, t_symbol *format)
     if (!strcmp(format->s_name, "cr"))
         cr = 1;
     else if (*format->s_name)
-        error("qlist_read: unknown flag: %s", format->s_name);
+        pd_error(x, "qlist_read: unknown flag: %s", format->s_name);
     if (binbuf_write(x->x_binbuf, buf, "", cr))
-            error("%s: write failed", filename->s_name);
+            pd_error(x, "%s: write failed", filename->s_name);
 }
 
 static void qlist_print(t_qlist *x)

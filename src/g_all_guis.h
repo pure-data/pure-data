@@ -144,7 +144,7 @@ typedef struct _iemgui
     int                x_w;
     int                x_ldx;
     int                x_ldy;
-    char               x_font[16];
+    char               x_font[MAXPDSTRING]; /* font names can be long! */
     t_iem_fstyle_flags x_fsf;
     int                x_fontsize;
     t_iem_init_symargs x_isa;
