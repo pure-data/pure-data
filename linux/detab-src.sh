@@ -1,5 +1,5 @@
 #! /bin/sh
-for i  in `find . -name "*.[ch]"` ; do
+for i  in `find . -name "*.[ch]" -o -name "*.tk"`  ; do
 expand $i > /tmp/foo
 if ( ! cmp -s $i /tmp/foo ) ; then 
     echo detabbing: $i

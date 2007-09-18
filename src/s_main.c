@@ -58,10 +58,11 @@ int sys_nmidiin = -1;
 int sys_midiindevlist[MAXMIDIINDEV] = {1};
 int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
-#ifdef __APPLE__
-char sys_font[] = "Monaco"; /* tb: font name */
+char sys_font[100] = 
+#ifdef MSW
+    "courier";
 #else
-char sys_font[] = "Bitstream Vera Sans Mono"; /* tb: font name */
+    "Bitstream Vera Sans Mono";
 #endif
 char sys_fontweight[] = "normal"; /* currently only used for iemguis */
 static int sys_main_srate;
@@ -765,10 +766,11 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-font-weight") && argc > 1)
         {
-                       strcpy(sys_fontweight,*(argv+1));
-                       argc -= 2;
-                       argv += 2;
-               }
+            strncpy(sys_fontweight,*(argv+1),sizeof(sys_fontweight)-1);
+            sys_font[sizeof(sys_fontweight)-1] = 0;
+            argc -= 2;
+            argv += 2;
+        }
         else if (!strcmp(*argv, "-verbose"))
         {
             sys_verbose++;

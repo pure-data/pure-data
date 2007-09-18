@@ -1258,7 +1258,7 @@ int sys_startgui(const char *guidir)
          sys_get_audio_apis(buf);
          sys_get_midi_apis(buf2);
          sys_vgui("pdtk_pd_startup {%s} %s %s {%s} %s\n", pd_version, buf, buf2, 
-				  sys_font, sys_fontweight); 
+                  sys_font, sys_fontweight); 
     }
     return (0);
 

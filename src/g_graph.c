@@ -828,7 +828,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
                 (int)glist_xtopixels(x, atof(x->gl_xlabel[i]->s_name)),
                 (int)glist_ytopixels(x, x->gl_xlabely),
                 x->gl_xlabel[i]->s_name, sys_font, 
-					 glist_getfont(x), sys_fontweight, tag);
+                     glist_getfont(x), sys_fontweight, tag);
 
             /* draw y labels */
         for (i = 0; i < x->gl_nylabels; i++)

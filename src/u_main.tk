@@ -64,7 +64,7 @@ if {$pd_nt == 2} {
 # turn on James Tittle II's fast drawing
     set tk::mac::useCGDrawing 1
 # anti-alias all lines that need it
-    set tk::mac::CGAntialiasLimit 0
+    set tk::mac::CGAntialiasLimit 2
     global pd_guidir
     global pd_tearoff
     set pd_gui2 [string range $argv0 0 [expr [string last / $argv0 ] - 1]]
@@ -441,72 +441,72 @@ proc menu_doc_open {subdir basename} {
 
 ################## help browser and support functions #########################
 proc menu_doc_browser {dir} {
-	global .mbar
-	if {![file isdirectory $dir]} {
-		puts stderr "menu_doc_browser non-directory $dir\n"
-	}
-	if { [winfo exists .help_browser.frame] } {
-		raise .help_browser
-	} else {
-		toplevel .help_browser -menu .mbar
-		wm title .help_browser "Pd Documentation Browser"
-		frame .help_browser.frame
-		pack .help_browser.frame -side top -fill both
-		doc_make_listbox .help_browser.frame $dir 0
+        global .mbar
+        if {![file isdirectory $dir]} {
+                puts stderr "menu_doc_browser non-directory $dir\n"
+        }
+        if { [winfo exists .help_browser.frame] } {
+                raise .help_browser
+        } else {
+                toplevel .help_browser -menu .mbar
+                wm title .help_browser "Pd Documentation Browser"
+                frame .help_browser.frame
+                pack .help_browser.frame -side top -fill both
+                doc_make_listbox .help_browser.frame $dir 0
          }
     }
 
 proc doc_make_listbox {base dir count} {
-	# check for [file readable]?
-	#if { [info tclversion] >= 8.5 } {
-		# requires Tcl 8.5 but probably deals with special chars better
-#		destroy {expand}[lrange [winfo children $base] [expr {2 * $count}] end]
-	#} else {
-		if { [catch { eval destroy [lrange [winfo children $base] \
-										[expr { 2 * $count }] end] } \
-				  errorMessage] } {
-			puts stderr "doc_make_listbox: error listing $dir\n"
-		}
-	#}
-	# exportselection 0 looks good, but selection gets easily out-of-sync
-	set current_listbox [listbox "[set b "$base.listbox$count"]-list" -yscrollcommand \
-							 [list "$b-scroll" set] -height 20 -exportselection 0]
-	pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
-		-side left -expand 1 -fill y -anchor w
-	foreach item [concat [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] \
-					  [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- *]]]  {
-		$current_listbox insert end "[file tail $item][expr {[file isdirectory $item] ? {/} : {}}]"
-	}
-	bind $current_listbox <Button-1> [list doc_navigate $dir $count %W %x %y]
-	bind $current_listbox <Double-Button-1> [list doc_double_button $dir $count %W %x %y]
+        # check for [file readable]?
+        #if { [info tclversion] >= 8.5 } {
+                # requires Tcl 8.5 but probably deals with special chars better
+#               destroy {expand}[lrange [winfo children $base] [expr {2 * $count}] end]
+        #} else {
+                if { [catch { eval destroy [lrange [winfo children $base] \
+                                                                                [expr { 2 * $count }] end] } \
+                                  errorMessage] } {
+                        puts stderr "doc_make_listbox: error listing $dir\n"
+                }
+        #}
+        # exportselection 0 looks good, but selection gets easily out-of-sync
+        set current_listbox [listbox "[set b "$base.listbox$count"]-list" -yscrollcommand \
+                                                         [list "$b-scroll" set] -height 20 -exportselection 0]
+        pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+                -side left -expand 1 -fill y -anchor w
+        foreach item [concat [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] \
+                                          [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- *]]]  {
+                $current_listbox insert end "[file tail $item][expr {[file isdirectory $item] ? {/} : {}}]"
+        }
+        bind $current_listbox <Button-1> [list doc_navigate $dir $count %W %x %y]
+        bind $current_listbox <Double-Button-1> [list doc_double_button $dir $count %W %x %y]
 }
 
 proc doc_navigate {dir count width x y} {
-	if {[set newdir [$width get [$width index "@$x,$y"]]] eq {}} {
-		return
-	}
-	set dir_to_open [file join $dir $newdir]
-	if {[file isdirectory $dir_to_open]} {
-		doc_make_listbox [winfo parent $width] $dir_to_open [incr count]
-	}
+        if {[set newdir [$width get [$width index "@$x,$y"]]] eq {}} {
+                return
+        }
+        set dir_to_open [file join $dir $newdir]
+        if {[file isdirectory $dir_to_open]} {
+                doc_make_listbox [winfo parent $width] $dir_to_open [incr count]
+        }
 }
 
 proc doc_double_button {dir count width x y} {
-	global pd_guidir
-	if {[set newdir [$width get [$width index "@$x,$y"]]] eq {}} {
-		return
-	}
-	set dir_to_open [file join $dir $newdir]
-	if {[file isdirectory $dir_to_open]} {
-		 doc_navigate $dir $count $width $x $y
-	} else {
-		regsub -- $pd_guidir [file dirname $dir_to_open] "" subdir
-		set file [file tail $dir_to_open]
-		if { [catch {menu_doc_open $subdir $file} fid] } {
-			puts stderr "Could not open $pd_guidir/$subdir/$file\n"
-		}
-		return; 
-	}
+        global pd_guidir
+        if {[set newdir [$width get [$width index "@$x,$y"]]] eq {}} {
+                return
+        }
+        set dir_to_open [file join $dir $newdir]
+        if {[file isdirectory $dir_to_open]} {
+                 doc_navigate $dir $count $width $x $y
+        } else {
+                regsub -- $pd_guidir [file dirname $dir_to_open] "" subdir
+                set file [file tail $dir_to_open]
+                if { [catch {menu_doc_open $subdir $file} fid] } {
+                        puts stderr "Could not open $pd_guidir/$subdir/$file\n"
+                }
+                return; 
+        }
 }
 
 ############# routine to add media, help, and apple menu items ###############
@@ -3376,17 +3376,17 @@ proc pdtk_pd_startup {version apilist midiapilist fontname_from_pd fontweight_fr
        set width0 [font measure  $font x]
        set height0 [lindex [font metrics $font] 5]
        set fontlist [concat $fontlist $i [font measure  $font x] \
-	   [lindex [font metrics $font] 5]]
+           [lindex [font metrics $font] 5]]
     }
 
     set tclpatch [info patchlevel]
     if {$tclpatch == "8.3.0" || \
-	$tclpatch == "8.3.1" || \
-	$tclpatch == "8.3.2" || \
-	$tclpatch == "8.3.3" } {
-	set oldtclversion 1
+        $tclpatch == "8.3.1" || \
+        $tclpatch == "8.3.2" || \
+        $tclpatch == "8.3.3" } {
+        set oldtclversion 1
     } else {
-	set oldtclversion 0
+        set oldtclversion 0
     }
     pd [concat pd init [pdtk_enquote [pwd]] $oldtclversion $fontlist \;];
 
