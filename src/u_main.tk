@@ -14,14 +14,14 @@
 # set pd_nt (bad name) 0 for unix, 1 for microsoft, and 2 for Mac OSX.
 if { $tcl_platform(platform) == "windows" }  {
     set pd_nt 1
-	 set defaultFontFamily {Bitstream Vera Sans Mono}
+    set defaultFontFamily {Bitstream Vera Sans Mono}
     font create menuFont -family Tahoma -size 11
 } elseif { $tcl_platform(os) == "Darwin" } {  
     set pd_nt 2
-	 set defaultFontFamily Monaco
+    set defaultFontFamily Monaco
 } else { 
     set pd_nt 0
-	 set defaultFontFamily {Bitstream Vera Sans Mono}
+    set defaultFontFamily {Bitstream Vera Sans Mono}
 }        
 
 # start Pd-extended font hacks -----------------------------
@@ -1303,7 +1303,7 @@ proc pdtk_array_listview_new {id arrayName page} {
     global pd_nt
     global pd_array_listview_page
     global pd_array_listview_id
-	 global fontname fontweight
+     global fontname fontweight
     set pd_array_listview_page($arrayName) $page
     set pd_array_listview_id($arrayName) $id
     set windowName [format ".%sArrayWindow" $arrayName]
@@ -1421,7 +1421,7 @@ proc pdtk_array_listview_paste {arrayName} {
 proc pdtk_array_listview_edit {arrayName page font} {
     global pd_array_listview_entry
     global pd_nt
-	 global fontname fontweight
+     global fontname fontweight
     set lbName [format ".%sArrayWindow.lb" $arrayName]
     if {[winfo exists $lbName.entry]} {
       pdtk_array_listview_update_entry \
@@ -1909,7 +1909,7 @@ proc pdtk_gatom_dialog {id initwidth initlo inithi \
 
     set vid [string trimleft $id .]
 
-	 global pd_nt
+     global pd_nt
 
     set var_gatomwidth [concat gatomwidth_$vid]
     global $var_gatomwidth
@@ -1946,8 +1946,8 @@ proc pdtk_gatom_dialog {id initwidth initlo inithi \
     pack $id.params.entryname $id.params.entry -side left
 
     labelframe $id.limits -text "limits" -padx 15 -pady 4 -borderwidth 1 \
-		  -font highlight_font
-	 pack $id.limits -side top -fill x
+          -font highlight_font
+     pack $id.limits -side top -fill x
     frame $id.limits.lower
     pack $id.limits.lower -side left
     label $id.limits.lower.entryname -text "lower"
@@ -1959,14 +1959,14 @@ proc pdtk_gatom_dialog {id initwidth initlo inithi \
     label $id.limits.upper.entryname -text "upper"
     entry $id.limits.upper.entry -textvariable $var_gatomhi -width 8
     pack  $id.limits.upper.spacer $id.limits.upper.entryname \
-		  $id.limits.upper.entry -side left
+          $id.limits.upper.entry -side left
 
     frame $id.spacer1 -height 7
     pack $id.spacer1 -side top
 
     labelframe $id.label -text "label" -padx 5 -pady 4 -borderwidth 1 \
-		  -font highlight_font
-	 pack $id.label -side top -fill x
+          -font highlight_font
+     pack $id.label -side top -fill x
     frame $id.label.name
     pack $id.label.name -side top
     entry $id.label.name.entry -textvariable $var_gatomlabel -width 33
@@ -1994,8 +1994,8 @@ proc pdtk_gatom_dialog {id initwidth initlo inithi \
     pack $id.spacer2 -side top
 
     labelframe $id.s_r -text "messages" -padx 5 -pady 4 -borderwidth 1 \
-		  -font highlight_font
-	 pack $id.s_r -side top -fill x
+          -font highlight_font
+     pack $id.s_r -side top -fill x
     frame $id.s_r.paramsymto
     pack $id.s_r.paramsymto -side top -anchor e
     label $id.s_r.paramsymto.entryname -text "send symbol"
@@ -2293,22 +2293,22 @@ proc iemgui_toggle_font {id gn_f} {
 
     set var_iemgui_gn_f [concat iemgui_gn_f_$vid]
     global $var_iemgui_gn_f
-	 global fontname fontweight
+     global fontname fontweight
     
     set $var_iemgui_gn_f $gn_f
 
-	 switch -- $gn_f {
-		  0 { set current_font $fontname}
-		  1 { set current_font "Helvetica" }
-		  2 { set current_font "Times" }
-	 }
-	 set current_font_spec "{$current_font} 12 $fontweight"
+     switch -- $gn_f {
+          0 { set current_font $fontname}
+          1 { set current_font "Helvetica" }
+          2 { set current_font "Times" }
+     }
+     set current_font_spec "{$current_font} 12 $fontweight"
 
-	 $id.label.fontpopup_label configure -text $current_font \
-		  -font $current_font_spec
-	 $id.label.name_entry configure -font $current_font_spec
-	 $id.colors.sections.fr_bk configure -font $current_font_spec
-	 $id.colors.sections.lb_bk configure -font $current_font_spec
+     $id.label.fontpopup_label configure -text $current_font \
+          -font $current_font_spec
+     $id.label.name_entry configure -font $current_font_spec
+     $id.colors.sections.fr_bk configure -font $current_font_spec
+     $id.colors.sections.lb_bk configure -font $current_font_spec
 }
 
 proc iemgui_lb {id} {
@@ -2454,8 +2454,8 @@ proc pdtk_iemgui_dialog {id mainheader \
 
     set vid [string trimleft $id .]
 
-	 global pd_nt
-	 global fontname fontweight
+     global pd_nt
+     global fontname fontweight
 
     set var_iemgui_wdt [concat iemgui_wdt_$vid]
     global $var_iemgui_wdt
@@ -2608,12 +2608,12 @@ proc pdtk_iemgui_dialog {id mainheader \
     if {[eval concat $$var_iemgui_steady] >= 0} {
         pack $id.para.dummy3 $id.para.stdy_jmp -side left -expand 1}
 
-	 frame $id.spacer0 -height 4
-	 pack $id.spacer0 -side top
+     frame $id.spacer0 -height 4
+     pack $id.spacer0 -side top
     
-	 labelframe $id.s_r -borderwidth 1 -pady 4 -text "messages" \
+     labelframe $id.s_r -borderwidth 1 -pady 4 -text "messages" \
         -font highlight_font
-	 pack $id.s_r -side top -fill x -ipadx 5
+     pack $id.s_r -side top -fill x -ipadx 5
     frame $id.s_r.send
     pack $id.s_r.send -side top
     label $id.s_r.send.lab -text "   send-symbol:" -width 12  -justify right
@@ -2629,20 +2629,20 @@ proc pdtk_iemgui_dialog {id mainheader \
         pack $id.s_r.receive.lab $id.s_r.receive.ent -side left}
     
 # get the current font name from the int given from C-space (gn_f)
-	 set current_font $fontname
+     set current_font $fontname
     if {[eval concat $$var_iemgui_gn_f] == 1} \
-		  { set current_font "Helvetica" }
+          { set current_font "Helvetica" }
     if {[eval concat $$var_iemgui_gn_f] == 2} \
-		  { set current_font "Times" }
+          { set current_font "Times" }
 
-	 frame $id.spacer1 -height 7
-	 pack $id.spacer1 -side top
+     frame $id.spacer1 -height 7
+     pack $id.spacer1 -side top
     
-	 labelframe $id.label -borderwidth 1 -text "label" -pady 4 \
-		  -font highlight_font
-	 pack $id.label -side top -fill x
+     labelframe $id.label -borderwidth 1 -text "label" -pady 4 \
+          -font highlight_font
+     pack $id.label -side top -fill x
     entry $id.label.name_entry -textvariable $var_iemgui_gui_nam -width 30 \
-		  -font [list $current_font 12 $fontweight]
+          -font [list $current_font 12 $fontweight]
     pack $id.label.name_entry -side top -expand yes -fill both -padx 5
     
     frame $id.label.xy -padx 27 -pady 1
@@ -2655,31 +2655,31 @@ proc pdtk_iemgui_dialog {id mainheader \
     pack $id.label.xy.x_lab $id.label.xy.x_entry $id.label.xy.dummy1 \
          $id.label.xy.y_lab $id.label.xy.y_entry -side left -anchor e
     
-	 label $id.label.fontpopup_label -text $current_font \
-		  -relief groove -font [list $current_font 12 $fontweight] -padx 5
+     label $id.label.fontpopup_label -text $current_font \
+          -relief groove -font [list $current_font 12 $fontweight] -padx 5
     pack $id.label.fontpopup_label -side left -anchor w -expand yes -fill x
     label $id.label.fontsize_label -text "size" -width 4
     entry $id.label.fontsize_entry -textvariable $var_iemgui_gn_fs -width 5
-	 pack $id.label.fontsize_entry $id.label.fontsize_label \
-		  -side right -anchor e -padx 5 -pady 5
-	 menu $id.popup
-	 $id.popup add command \
-		  -label $fontname \
-		  -font [format {{%s} 12 %s} $fontname $fontweight] \
-		  -command "iemgui_toggle_font $id 0" 
-	 $id.popup add command \
-		  -label "Helvetica" \
-		  -font [format {Helvetica 12 %s} $fontweight] \
-		  -command "iemgui_toggle_font $id 1" 
-	 $id.popup add command \
-		  -label "Times" \
-		  -font [format {Times 12 %s} $fontweight] \
-		  -command "iemgui_toggle_font $id 2" 
-	 bind $id.label.fontpopup_label <Button> \
-		  [list tk_popup $id.popup %X %Y]
+     pack $id.label.fontsize_entry $id.label.fontsize_label \
+          -side right -anchor e -padx 5 -pady 5
+     menu $id.popup
+     $id.popup add command \
+          -label $fontname \
+          -font [format {{%s} 12 %s} $fontname $fontweight] \
+          -command "iemgui_toggle_font $id 0" 
+     $id.popup add command \
+          -label "Helvetica" \
+          -font [format {Helvetica 12 %s} $fontweight] \
+          -command "iemgui_toggle_font $id 1" 
+     $id.popup add command \
+          -label "Times" \
+          -font [format {Times 12 %s} $fontweight] \
+          -command "iemgui_toggle_font $id 2" 
+     bind $id.label.fontpopup_label <Button> \
+          [list tk_popup $id.popup %X %Y]
 
-	 frame $id.spacer2 -height 7
-	 pack $id.spacer2 -side top
+     frame $id.spacer2 -height 7
+     pack $id.spacer2 -side top
     
     labelframe $id.colors -borderwidth 1 -text "colors" -font highlight_font
     pack $id.colors -fill x -ipadx 5 -ipady 4
@@ -2687,108 +2687,108 @@ proc pdtk_iemgui_dialog {id mainheader \
     frame $id.colors.select
     pack $id.colors.select -side top
     radiobutton $id.colors.select.radio0 -value 0 -variable \
-		  $var_iemgui_l2_f1_b0 -text "background" -width 10 -justify left
+          $var_iemgui_l2_f1_b0 -text "background" -width 10 -justify left
     radiobutton $id.colors.select.radio1 -value 1 -variable \
-		  $var_iemgui_l2_f1_b0 -text "front" -width 5 -justify left
+          $var_iemgui_l2_f1_b0 -text "front" -width 5 -justify left
     radiobutton $id.colors.select.radio2 -value 2 -variable \
-		  $var_iemgui_l2_f1_b0 -text "label" -width 5 -justify left
+          $var_iemgui_l2_f1_b0 -text "label" -width 5 -justify left
     if { [eval concat $$var_iemgui_fcol] >= 0 } {
-		  pack $id.colors.select.radio0 $id.colors.select.radio1 \
-				$id.colors.select.radio2 -side left
-	 } else {
-		  pack $id.colors.select.radio0 $id.colors.select.radio2 -side left \
-	 }
+          pack $id.colors.select.radio0 $id.colors.select.radio1 \
+                $id.colors.select.radio2 -side left
+     } else {
+          pack $id.colors.select.radio0 $id.colors.select.radio2 -side left \
+     }
     
     frame $id.colors.sections
     pack $id.colors.sections -side top
     button $id.colors.sections.but -text "compose color" -width 12 \
              -command "iemgui_choose_col_bkfrlb $id"
     pack $id.colors.sections.but -side left -anchor w -padx 10 -pady 5 \
-		  -expand yes -fill x
+          -expand yes -fill x
     if { [eval concat $$var_iemgui_fcol] >= 0 } {
-		  label $id.colors.sections.fr_bk -text "o=||=o" -width 6 \
+          label $id.colors.sections.fr_bk -text "o=||=o" -width 6 \
        -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -foreground [format "#%6.6x" [eval concat $$var_iemgui_fcol]] \
        -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_fcol]] \
        -font [list $current_font 12 $fontweight] -padx 2 -pady 2 -relief ridge
     } else {
-		  label $id.colors.sections.fr_bk -text "o=||=o" -width 6 \
+          label $id.colors.sections.fr_bk -text "o=||=o" -width 6 \
        -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -foreground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -font [list $current_font 12 $fontweight] -padx 2 -pady 2 -relief ridge
-	 }
-	 label $id.colors.sections.lb_bk -text "testlabel" -width 9 \
+     }
+     label $id.colors.sections.lb_bk -text "testlabel" -width 9 \
        -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
        -foreground [format "#%6.6x" [eval concat $$var_iemgui_lcol]] \
-		 -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_lcol]] \
-		  -font [list $current_font 12 $fontweight] -padx 2 -pady 2 -relief ridge
+         -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_lcol]] \
+          -font [list $current_font 12 $fontweight] -padx 2 -pady 2 -relief ridge
     pack $id.colors.sections.lb_bk $id.colors.sections.fr_bk \
-		  -side right -anchor e -expand yes -fill both -pady 7
+          -side right -anchor e -expand yes -fill both -pady 7
 
 # color scheme by Mary Ann Benedetto http://piR2.org
     frame $id.colors.r1
     pack $id.colors.r1 -side top
     foreach i { 0 1 2 3 4 5 6 7 8 9} \
-		  hexcol { 0xFFFFFF 0xDFDFDF 0xBBBBBB 0xFFC7C6 0xFFE3C6 \
-							0xFEFFC6 0xC6FFC7 0xc6FEFF 0xC7C6FF 0xE3C6FF } \
-		  {
-				label $id.colors.r1.c$i -background [format "#%6.6x" $hexcol] \
-					 -activebackground [format "#%6.6x" $hexcol] -relief ridge \
-					 -padx 7 -pady 0
-				bind $id.colors.r1.c$i <Button> [format "iemgui_preset_col %s %d" $id $hexcol] 
-		  }
+          hexcol { 0xFFFFFF 0xDFDFDF 0xBBBBBB 0xFFC7C6 0xFFE3C6 \
+                            0xFEFFC6 0xC6FFC7 0xc6FEFF 0xC7C6FF 0xE3C6FF } \
+          {
+                label $id.colors.r1.c$i -background [format "#%6.6x" $hexcol] \
+                     -activebackground [format "#%6.6x" $hexcol] -relief ridge \
+                     -padx 7 -pady 0
+                bind $id.colors.r1.c$i <Button> [format "iemgui_preset_col %s %d" $id $hexcol] 
+          }
     pack $id.colors.r1.c0 $id.colors.r1.c1 $id.colors.r1.c2 $id.colors.r1.c3 \
-		  $id.colors.r1.c4 $id.colors.r1.c5 $id.colors.r1.c6 $id.colors.r1.c7 \
-		  $id.colors.r1.c8 $id.colors.r1.c9 -side left
+          $id.colors.r1.c4 $id.colors.r1.c5 $id.colors.r1.c6 $id.colors.r1.c7 \
+          $id.colors.r1.c8 $id.colors.r1.c9 -side left
     
     frame $id.colors.r2
     pack $id.colors.r2 -side top
     foreach i { 0 1 2 3 4 5 6 7 8 9 } \
-		  hexcol { 0x9F9F9F 0x7C7C7C 0x606060 0xFF0400 0xFF8300 \
-							0xFAFF00 0x00FF04 0x00FAFF 0x0400FF 0x9C00FF } \
-		  {
-				label $id.colors.r2.c$i -background [format "#%6.6x" $hexcol] \
-					 -activebackground [format "#%6.6x" $hexcol] -relief ridge \
-					 -padx 7 -pady 0
-				bind  $id.colors.r2.c$i <Button> \
-					 [format "iemgui_preset_col %s %d" $id $hexcol] 
-		  }
+          hexcol { 0x9F9F9F 0x7C7C7C 0x606060 0xFF0400 0xFF8300 \
+                            0xFAFF00 0x00FF04 0x00FAFF 0x0400FF 0x9C00FF } \
+          {
+                label $id.colors.r2.c$i -background [format "#%6.6x" $hexcol] \
+                     -activebackground [format "#%6.6x" $hexcol] -relief ridge \
+                     -padx 7 -pady 0
+                bind  $id.colors.r2.c$i <Button> \
+                     [format "iemgui_preset_col %s %d" $id $hexcol] 
+          }
     pack $id.colors.r2.c0 $id.colors.r2.c1 $id.colors.r2.c2 $id.colors.r2.c3 \
-		  $id.colors.r2.c4 $id.colors.r2.c5 $id.colors.r2.c6 $id.colors.r2.c7 \
-		  $id.colors.r2.c8 $id.colors.r2.c9 -side left
+          $id.colors.r2.c4 $id.colors.r2.c5 $id.colors.r2.c6 $id.colors.r2.c7 \
+          $id.colors.r2.c8 $id.colors.r2.c9 -side left
     
     frame $id.colors.r3
     pack $id.colors.r3 -side top
     foreach i { 0 1 2 3 4 5 6 7 8 9 } \
-		  hexcol { 0x404040 0x202020 0x000000 0x551312 0x553512 \
-							0x535512 0x0F4710 0x0E4345 0x131255 0x2F004D } \
-		  {
-				label $id.colors.r3.c$i -background [format "#%6.6x" $hexcol] \
-					 -activebackground [format "#%6.6x" $hexcol] -relief ridge \
-					 -padx 7 -pady 0
-				bind  $id.colors.r3.c$i <Button> \
-					 [format "iemgui_preset_col %s %d" $id $hexcol] 
-		  }
+          hexcol { 0x404040 0x202020 0x000000 0x551312 0x553512 \
+                            0x535512 0x0F4710 0x0E4345 0x131255 0x2F004D } \
+          {
+                label $id.colors.r3.c$i -background [format "#%6.6x" $hexcol] \
+                     -activebackground [format "#%6.6x" $hexcol] -relief ridge \
+                     -padx 7 -pady 0
+                bind  $id.colors.r3.c$i <Button> \
+                     [format "iemgui_preset_col %s %d" $id $hexcol] 
+          }
     pack $id.colors.r3.c0 $id.colors.r3.c1 $id.colors.r3.c2 $id.colors.r3.c3 \
-		  $id.colors.r3.c4 $id.colors.r3.c5 $id.colors.r3.c6 $id.colors.r3.c7 \
-		  $id.colors.r3.c8 $id.colors.r3.c9 -side left
+          $id.colors.r3.c4 $id.colors.r3.c5 $id.colors.r3.c6 $id.colors.r3.c7 \
+          $id.colors.r3.c8 $id.colors.r3.c9 -side left
     
     frame $id.cao -pady 10
     pack $id.cao -side top
     button $id.cao.cancel -text {Cancel} -width 6 \
         -command "iemgui_cancel $id"
     label $id.cao.dummy1 -text "" -width 3
-	 button $id.cao.apply -text {Apply} -width 6 -command "iemgui_apply $id"
+     button $id.cao.apply -text {Apply} -width 6 -command "iemgui_apply $id"
     label $id.cao.dummy2 -text "" -width 3
     button $id.cao.ok -text {OK} -width 6 \
         -command "iemgui_ok $id"
     
     pack $id.cao.cancel $id.cao.dummy1 -side left
-	 pack $id.cao.apply $id.cao.dummy2 -side left
+     pack $id.cao.apply $id.cao.dummy2 -side left
     pack $id.cao.ok -side left
 
     if {[info tclversion] < 8.4} {
@@ -3363,9 +3363,9 @@ proc pdtk_pd_startup {version apilist midiapilist fontname_from_pd fontweight_fr
     set pd_myversion $version
     set pd_apilist $apilist
     set pd_midiapilist $midiapilist
-	 global fontname fontweight
-	 set fontname $fontname_from_pd
-	 set fontweight $fontweight_from_pd
+     global fontname fontweight
+     set fontname $fontname_from_pd
+     set fontweight $fontweight_from_pd
     global pd_fontlist
     set pd_fontlist {}
 
@@ -3622,7 +3622,7 @@ proc audio_popup {name buttonname varname devlist} {
     if [winfo exists $name.popup] {destroy $name.popup}
     menu $name.popup -tearoff false
     if {$pd_nt == 1} {
-	$name.popup configure -font menuFont
+    $name.popup configure -font menuFont
     }
 #    puts stderr [concat $devlist ]
     for {set x 0} {$x<[llength $devlist]} {incr x} {
@@ -3908,7 +3908,7 @@ proc midi_popup {name buttonname varname devlist} {
     if [winfo exists $name.popup] {destroy $name.popup}
     menu $name.popup -tearoff false
     if {$pd_nt == 1} {
-	$name.popup configure -font menuFont
+    $name.popup configure -font menuFont
     }
 #    puts stderr [concat $devlist ]
     for {set x 0} {$x<[llength $devlist]} {incr x} {

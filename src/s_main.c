@@ -60,11 +60,11 @@ int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
 char sys_font[100] = 
 #ifdef MSW
-    "courier";
+    "Courier";
 #else
-    "Bitstream Vera Sans Mono";
+    "Courier";
 #endif
-char sys_fontweight[] = "normal"; /* currently only used for iemguis */
+char sys_fontweight[] = "bold  "; /* currently only used for iemguis */
 static int sys_main_srate;
 static int sys_main_advance;
 static int sys_main_callback;
@@ -767,7 +767,7 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-font-weight") && argc > 1)
         {
             strncpy(sys_fontweight,*(argv+1),sizeof(sys_fontweight)-1);
-            sys_font[sizeof(sys_fontweight)-1] = 0;
+            sys_fontweight[sizeof(sys_fontweight)-1] = 0;
             argc -= 2;
             argv += 2;
         }
