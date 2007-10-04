@@ -1256,7 +1256,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
             break;
         }
         itemswritten += thiswrite;
-        onset += thiswrite;
+        onset += thiswrite * (sizeof(t_word)/sizeof(float));
     }
     if (fd >= 0)
     {
