@@ -17,6 +17,7 @@ turn on paMacCore_ChangeDeviceParameters for mac (pa_mac_core.h)
 Gnome: why don't windows pop up when clicked on?
 
 problems:
+check real-time gaps in writesf~
 fix declare to update current patch when changed
 objects on GOP don't erase if you edit the GOP while they're showing
 MSTACKSIZE limitation in m_binbuf.c
