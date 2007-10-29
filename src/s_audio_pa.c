@@ -36,10 +36,10 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     int i; 
     unsigned int j;
     float *fbuf, *fp2, *fp3, *soundiop;
-        if (framesPerBuffer != DEFDACBLKSIZE)
-        {
-                fprintf(stderr, "ignoring buffer size %d\n", framesPerBuffer);
-                return;
+    if (framesPerBuffer != DEFDACBLKSIZE)
+    {
+        fprintf(stderr, "ignoring buffer size %d\n", framesPerBuffer);
+        return 0;
     }
         if (inputBuffer != NULL)
     {
@@ -51,6 +51,8 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     }
     else memset((void *)pa_soundin, 0,
         framesPerBuffer * pa_inchans * sizeof(float));
+    memset((void *)pa_soundout, 0,
+        framesPerBuffer * pa_outchans * sizeof(float));
     (*pa_callback)();
     if (outputBuffer != NULL)
     {
@@ -60,7 +62,6 @@ static int pa_lowlevel_callback(const void *inputBuffer,
             for (j = 0, fp3 = fp2; j < framesPerBuffer; j++, fp3 += pa_outchans)
                 *fp3 = *soundiop++;
     }
-
     return 0;
 }
 

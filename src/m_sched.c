@@ -28,6 +28,8 @@ int sys_schedblocksize = DEFDACBLKSIZE;
 int sys_usecsincelastsleep(void);
 int sys_sleepgrain;
 
+int sched_reopenmeplease = 0;   /* request from s_audio for deferred reopen */
+
 typedef void (*t_clockmethod)(void *client);
 
 struct _clock
@@ -342,10 +344,13 @@ void sched_set_using_audio(int flag)
         sched_referencerealtime = sys_getrealtime();
         sched_referencelogicaltime = clock_getlogicaltime();
     }
-        if (flag == SCHED_AUDIO_CALLBACK && sched_useaudio != SCHED_AUDIO_CALLBACK)
+        if (flag == SCHED_AUDIO_CALLBACK &&
+            sched_useaudio != SCHED_AUDIO_CALLBACK)
                 sys_quit = SYS_QUIT_RESTART;
-        if (flag != SCHED_AUDIO_CALLBACK && sched_useaudio == SCHED_AUDIO_CALLBACK)
-                post("sorry, can't turn off callbacks yet; restart Pd");  /* not right yet! */
+        if (flag != SCHED_AUDIO_CALLBACK &&
+            sched_useaudio == SCHED_AUDIO_CALLBACK)
+                post("sorry, can't turn off callbacks yet; restart Pd");
+                    /* not right yet! */
         
     sys_time_per_dsp_tick = (TIMEUNITPERSEC) *
         ((double)sys_schedblocksize) / sys_dacsr;

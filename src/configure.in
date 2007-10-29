@@ -251,7 +251,6 @@ dnl This should be fixed so Pd can use ALSA shared libraries where appropriate.
         LDFLAGS=$LDFLAGS" -lrt -ljack"
     fi
 
-    echo MORECFLAGS --------------- $MORECFLAGS
     OSNUMBER=0
 
 fi

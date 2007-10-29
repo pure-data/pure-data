@@ -39,7 +39,7 @@ int sys_outchannels;
 int sys_advance_samples;        /* scheduler advance in samples */
 int sys_blocksize = 0;          /* audio I/O block size in sample frames */
 int sys_audioapi = API_DEFAULT;
-
+int sys_audioapiopened = -1;    /* save last API opened for later closing */
 static int sys_meters;          /* true if we're metering */
 static float sys_inmax;         /* max input amplitude */
 static float sys_outmax;        /* max output amplitude */
@@ -68,6 +68,7 @@ static int audio_advance;
 static int audio_callback;
 
 void sched_audio_callbackfn(void);
+extern int sched_reopenmeplease;
 
 static int audio_isopen(void)
 {
@@ -339,32 +340,33 @@ void sys_close_audio(void)
     if (!audio_isopen())
         return;
 #ifdef USEAPI_PORTAUDIO
-    if (sys_audioapi == API_PORTAUDIO)
+    if (sys_audioapiopened == API_PORTAUDIO)
         pa_close_audio();
     else 
 #endif
 #ifdef USEAPI_JACK
-    if (sys_audioapi == API_JACK)
+    if (sys_audioapiopened == API_JACK)
         jack_close_audio();
     else
 #endif
 #ifdef USEAPI_OSS
-    if (sys_audioapi == API_OSS)
+    if (sys_audioapiopened == API_OSS)
         oss_close_audio();
     else
 #endif
 #ifdef USEAPI_ALSA
-    if (sys_audioapi == API_ALSA)
+    if (sys_audioapiopened == API_ALSA)
         alsa_close_audio();
     else
 #endif
 #ifdef USEAPI_MMIO
-    if (sys_audioapi == API_MMIO)
+    if (sys_audioapiopened == API_MMIO)
         mmio_close_audio();
     else
 #endif
         post("sys_close_audio: unknown API %d", sys_audioapi);
     sys_inchannels = sys_outchannels = 0;
+    sys_audioapiopened = -1;
     sched_set_using_audio(SCHED_AUDIO_NONE);
 }
 
@@ -426,12 +428,14 @@ void sys_reopen_audio( void)
     {
         audio_state = 0;
         sched_set_using_audio(SCHED_AUDIO_NONE);
+        sys_audioapiopened = -1;
     }
     else
     {
         audio_state = 1;
         sched_set_using_audio(
             (callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
+        sys_audioapiopened = sys_audioapi;
     }
     sys_vgui("set pd_whichapi %d\n",  (outcome == 0 ? sys_audioapi : 0));
 }
@@ -732,13 +736,14 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     
     if (newcallback < 0)
         newcallback = 0;
-    if (audio_callback == newcallback)
+    if (!audio_callback && !newcallback)
         sys_close_audio();
     sys_set_audio_settings(nindev, newaudioindev, nindev, newaudioinchan,
         noutdev, newaudiooutdev, noutdev, newaudiooutchan,
         newrate, newadvance, (newcallback >= 0 ? newcallback : 0));
-    if (audio_callback == newcallback)
+    if (!audio_callback && !newcallback)
         sys_reopen_audio();
+    else sched_reopenmeplease = 1;
 }
 
 void sys_listdevs(void )
