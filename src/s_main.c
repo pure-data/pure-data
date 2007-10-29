@@ -113,12 +113,8 @@ typedef struct _fontinfo
     in the six fonts.  */
 
 static t_fontinfo sys_fontlist[] = {
-    {8, 6, 10, 8, 6, 10}, {10, 7, 13, 10, 7, 13}, {12, 9, 16, 12, 9, 16},
-    {16, 10, 20, 16, 10, 20}, {24, 15, 25, 24, 15, 25},
-    {36, 25, 45, 36, 25, 45}};
-/*  {8, 5, 11, 8, 5, 11}, {10, 6, 13, 10, 6, 13}, {12, 7, 16, 12, 7, 16},
-    {16, 10, 19, 16, 10, 19}, {24, 14, 29, 24, 14, 29}, {36, 23, 44, 36, 23, 44}};
-*/
+    {8, 6, 10, 0, 0, 0}, {10, 7, 13, 0, 0, 0}, {12, 9, 16, 0, 0, 0},
+    {16, 10, 20, 0, 0, 0}, {24, 15, 25, 0, 0, 0}, {36, 25, 45, 0, 0, 0}};
 #define NFONT (sizeof(sys_fontlist)/sizeof(*sys_fontlist))
 
 /* here are the actual font size structs on msp's systems:
@@ -219,7 +215,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
         sys_fontlist[i].fi_width = atom_getintarg(3 * best + 3, argc, argv);
         sys_fontlist[i].fi_height = atom_getintarg(3 * best + 4, argc, argv);
     }
-#if 0
+#if 1
     for (i = 0; i < 6; i++)
         fprintf(stderr, "font (%d %d %d) -> (%d %d %d)\n",
             sys_fontlist[i].fi_fontsize,

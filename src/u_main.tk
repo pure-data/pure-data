@@ -3357,7 +3357,8 @@ proc pdtk_pd_ctrlkey {name key shift} {
 # seven "useful" font sizes.
 
 # tb: user defined typefaces
-proc pdtk_pd_startup {version apilist midiapilist fontname_from_pd fontweight_from_pd} {
+proc pdtk_pd_startup {version apilist midiapilist fontname_from_pd \
+        fontweight_from_pd} {
 #    puts stderr [concat $version $apilist $fontname]
     global pd_myversion pd_apilist pd_midiapilist pd_nt
     set pd_myversion $version
