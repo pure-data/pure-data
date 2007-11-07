@@ -38,7 +38,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     float *fbuf, *fp2, *fp3, *soundiop;
     if (framesPerBuffer != DEFDACBLKSIZE)
     {
-        fprintf(stderr, "ignoring buffer size %d\n", framesPerBuffer);
+        fprintf(stderr, "ignoring buffer size %d\n", (int)framesPerBuffer);
         return 0;
     }
         if (inputBuffer != NULL)

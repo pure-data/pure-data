@@ -15,23 +15,27 @@
 if { $tcl_platform(platform) == "windows" }  {
     set pd_nt 1
     set defaultFontFamily {Bitstream Vera Sans Mono}
+    set defaultFontWeight normal
     font create menuFont -family Tahoma -size 11
 } elseif { $tcl_platform(os) == "Darwin" } {  
     set pd_nt 2
     set defaultFontFamily Monaco
+    set defaultFontWeight normal
 } else { 
     set pd_nt 0
-    set defaultFontFamily {Bitstream Vera Sans Mono}
+    set defaultFontFamily Courier
+    set defaultFontWeight bold
 }        
 
 # start Pd-extended font hacks -----------------------------
 
 # Pd-0.39.2-extended hacks to make font/box sizes the same across platform
 # puts stderr "tk scaling is [tk scaling]"
-tk scaling 1
+# tk scaling 1
 
 # this font is for the Pd Window console text
-font create console_font -family $defaultFontFamily -size 12 -weight normal
+font create console_font -family $defaultFontFamily -size 12 \
+    -weight $defaultFontWeight
 # this font is for text in Pd windows
 font create text_font -family {Times} -size 14 -weight normal
 # for text in Properties Panels and other panes
