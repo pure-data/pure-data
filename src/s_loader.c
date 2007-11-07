@@ -124,7 +124,7 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
     symname[i] = 0;
     if (hexmunge)
     {
-        memmove(symname+6, symname, strlen(symname+1));
+        memmove(symname+6, symname, strlen(symname)+1);
         strncpy(symname, "setup_", 6);
     }
     else strcat(symname, "_setup");
