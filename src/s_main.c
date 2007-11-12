@@ -215,7 +215,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
         sys_fontlist[i].fi_width = atom_getintarg(3 * best + 3, argc, argv);
         sys_fontlist[i].fi_height = atom_getintarg(3 * best + 4, argc, argv);
     }
-#if 1
+#if 0
     for (i = 0; i < 6; i++)
         fprintf(stderr, "font (%d %d %d) -> (%d %d %d)\n",
             sys_fontlist[i].fi_fontsize,
