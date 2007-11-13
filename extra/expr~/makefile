@@ -14,16 +14,17 @@ pd_nt: expr.dll
 
 NTOBJ =  vexp.obj vexp_fun.obj vexp_if.obj
 
-PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo
-VC="C:\Program Files\Microsoft Visual Studio\Vc98"
+PDNTCFLAGS = /W3 /DNT /DPD /nologo
+VC = "C:\Program Files\Microsoft Visual Studio 9.0\VC"
+VSTK = "C:\Program Files\Microsoft SDKs\Windows\v6.0A"
 
 PDNTINCLUDE = /I. /I..\..\src /I$(VC)\include
 
 PDNTLDIR = $(VC)\lib
-PDNTLIB = $(PDNTLDIR)\libc.lib \
-	$(PDNTLDIR)\oldnames.lib \
-	$(PDNTLDIR)\kernel32.lib \
-	..\..\bin\pd.lib 
+PDNTLIB = /NODEFAULTLIB:libcmt /NODEFAULTLIB:oldnames /NODEFAULTLIB:kernel32 \
+	$(PDNTLDIR)\libcmt.lib $(PDNTLDIR)\oldnames.lib \
+        $(VSTK)\lib\kernel32.lib \
+	 ..\..\bin\pd.lib 
 
 .c.obj:
 	cl $(PDNTCFLAGS) $(PDNTINCLUDE) /c $*.c

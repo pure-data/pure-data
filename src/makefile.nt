@@ -2,17 +2,23 @@
 
 all: pd gui ..\bin\pd.tk ..\bin\pdsend.exe ..\bin\pdreceive.exe
 
-VC = "C:\Program Files\Microsoft Visual Studio\VC98"
+
+VCSDK = "C:\Program Files\Microsoft SDKs\Windows\v6.0A"
+VC9 = "C:\Program Files\Microsoft Visual Studio 9.0\VC"
 #VC="\Program Files\DevStudio\Vc"
-INCLUDE = -I.\ -I..\Tcl\include -I\DXSDK\include -I$(VC)\include
+INCLUDE = -I.\ -I..\Tcl\include -I\DXSDK\include -I$(VC9)\Include \
+ -I$(VCSDK)\Include
 
-LDIR = $(VC)\lib
+LDIR = $(VCSDK)\lib
+LD2 = $(VC9)\lib
 
-LIB = /NODEFAULTLIB:libc /NODEFAULTLIB:oldnames  /NODEFAULTLIB:kernel \
-    /NODEFAULTLIB:uuid \
-    $(LDIR)\libc.lib $(LDIR)\oldnames.lib $(LDIR)\kernel32.lib \
+LIB = /NODEFAULTLIB:libcmt /NODEFAULTLIB:oldnames /NODEFAULTLIB:libc \
+    /NODEFAULTLIB:uuid $(LDIR)\kernel32.lib \
     $(LDIR)\wsock32.lib $(LDIR)\winmm.lib $(LDIR)\advapi32.lib \
-    $(LDIR)\setupapi.lib ..\bin\pthreadVC.lib 
+    $(LDIR)\setupapi.lib ..\bin\pthreadVC.lib \
+    $(LD2)\libcmt.lib $(LD2)\oldnames.lib
+
+#  \
 
 GLIB =  $(LIB) ..\bin\tcl84.lib ..\bin\tk84.lib
 CFLAGS = /nologo /W3 /DMSW /DNT /DPD /DPD_INTERNAL /DWIN32 /DWINDOWS /Ox \
@@ -97,11 +103,11 @@ pd: ..\bin\pd.exe ..\bin\pd.com
 gui: ..\bin\pdtcl.dll
 
 ..\bin\pd.exe: s_entry.obj ..\bin\pd.lib
-	link $(LFLAGS) /out:..\bin\pd.exe /INCREMENTAL:NO s_entry.obj \
+	link $(LFLAGS) /OUT:..\bin\pd.exe /INCREMENTAL:NO s_entry.obj \
 	    ..\bin\pd.lib $(LIB) $(ASIOLIB)
 
 ..\bin\pd.dll ..\bin\pd.lib: $(OBJC) $(OBJASIO)
-	link $(LFLAGS) /dll /export:sys_main /out:..\bin\pd.dll $(OBJC) \
+	link /DLL /OUT:..\bin\pd.dll /EXPORT:sys_main $(LFLAGS) $(OBJC) \
 	    $(OBJASIO) $(LIB) $(ASIOLIB)
 
 ..\bin\pdtcl.dll: t_tkcmd.obj

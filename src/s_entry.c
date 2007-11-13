@@ -23,6 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     { 
         printf("caught an exception; stopping\n");
     }
+    return (0);
 }
 
 #else /* not _MSC_VER ... */

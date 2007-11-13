@@ -20,10 +20,20 @@ cp -a extra/ /tmp/pd/extra
 cd /tmp/pd
 find . -name "*.pd_linux" -exec rm {} \;
 
-foreach i (`find . -name "*.c" -o -name "*.h"  -o -name "*.cpp" -o -name "make*" -o -name "*.txt" -o -name "*.pd" -o -name "*.htm" -o -name "*.html"`)
+foreach i (`find . -name "*.c" -o -name "*.h"  -o -name "*.cpp" \
+    -o -name "make*" -o -name "*.txt" -o -name "*.pd" -o -name "*.htm" \
+    -o -name "*.html" | grep -v asio | grep -v portmidi | grep -v portaudio \
+    | grep -v include/X11`)
 	textconvert u w < $i > /tmp/xxx
 	mv /tmp/xxx $i
 end
+foreach i (`find lib/asio -name "*.c" -o -name "*.h"  -o -name "*.cpp" -o -name "make*" -o -name "*.txt" -o -name "*.pd" -o -name "*.htm" -o -name "*.html"`)
+        echo FOO----- $i
+	textconvert w u < $i > /tmp/xxx
+	textconvert u w < /tmp/xxx > $i
+end
+
+
 cd ..
 rm -f pd.zip
 zip -q -r pd.zip pd

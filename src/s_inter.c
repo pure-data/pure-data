@@ -1237,7 +1237,7 @@ int sys_startgui(const char *guidir)
         sys_guisock = accept(xsock, (struct sockaddr *) &server, 
             (socklen_t *)&len);
 #ifdef OOPS
-        close(xsock);
+        sys_closesocket(xsock);
 #endif
         if (sys_guisock < 0) sys_sockerror("accept");
         if (sys_verbose)
@@ -1292,7 +1292,7 @@ void glob_quit(void *dummy)
     sys_vgui("exit\n");
     if (!sys_nogui)
     {
-        close(sys_guisock);
+        sys_closesocket(sys_guisock);
         sys_rmpollfn(sys_guisock);
     }
     sys_bail(0); 
