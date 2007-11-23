@@ -3376,7 +3376,7 @@ proc pdtk_pd_startup {version apilist midiapilist fontname_from_pd \
 
     set fontlist ""
     foreach i {8 9 10 12 14 16 18 24 30 36} {
-       set font [format {{%s} %d %s} $fontname_from_pd $i $fontweight_from_pd]
+       set font [format {{%s} %d %s} $fontname_from_pd -$i $fontweight_from_pd]
        set pd_fontlist [linsert $pd_fontlist 100000 $font] 
        set width0 [font measure  $font x]
        set height0 [lindex [font metrics $font] 5]
