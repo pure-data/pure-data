@@ -195,14 +195,14 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
         xpos, ypos + x->x_gui.x_h,
         x->x_gui.x_fcol, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-        -font {{%s} %d %s} -fill #%6.6x -tags %lxLABEL\n",
+        -font {{%s} -%d %s} -fill #%6.6x -tags %lxLABEL\n",
         canvas, xpos+x->x_gui.x_ldx, ypos+x->x_gui.x_ldy,
         strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
         x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     my_numbox_ftoa(x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-        -font {{%s} %d %s} -fill #%6.6x -tags %lxNUMBER\n",
+        -font {{%s} -%d %s} -fill #%6.6x -tags %lxNUMBER\n",
         canvas, xpos+half+2, ypos+half+d,
         x->x_buf, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
         x->x_gui.x_fcol, x);
@@ -271,11 +271,11 @@ static void my_numbox_draw_config(t_my_numbox* x,t_glist* glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} %d %s} -fill #%6.6x -text {%s} \n",
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%6.6x -text {%s} \n",
              canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"");
-    sys_vgui(".x%lx.c itemconfigure %lxNUMBER -font {{%s} %d %s} -fill #%6.6x \n",
+    sys_vgui(".x%lx.c itemconfigure %lxNUMBER -font {{%s} -%d %s} -fill #%6.6x \n",
              canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_fcol);
     sys_vgui(".x%lx.c itemconfigure %lxBASE1 -fill #%6.6x\n", canvas,

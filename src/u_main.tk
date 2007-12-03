@@ -16,7 +16,7 @@ if { $tcl_platform(platform) == "windows" }  {
     set pd_nt 1
     set defaultFontFamily {Bitstream Vera Sans Mono}
     set defaultFontWeight normal
-    font create menuFont -family Tahoma -size 11
+    font create menuFont -family Tahoma -size -11
 } elseif { $tcl_platform(os) == "Darwin" } {  
     set pd_nt 2
     set defaultFontFamily Monaco
@@ -34,12 +34,12 @@ if { $tcl_platform(platform) == "windows" }  {
 # tk scaling 1
 
 # this font is for the Pd Window console text
-font create console_font -family $defaultFontFamily -size 12 \
+font create console_font -family $defaultFontFamily -size -12 \
     -weight $defaultFontWeight
 # this font is for text in Pd windows
-font create text_font -family {Times} -size 14 -weight normal
+font create text_font -family {Times} -size -14 -weight normal
 # for text in Properties Panels and other panes
-font create highlight_font -family $defaultFontFamily -size 14 -weight bold
+font create highlight_font -family $defaultFontFamily -size -14 -weight bold
 
 # end Pd-extended font hacks -----------------------------
 
