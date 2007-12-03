@@ -1,9 +1,9 @@
 #N struct peak-template float x float y float amp float ampreal float
-ampimag;
+ampimag float used;
 #N struct trace-template float x float y float voiceno array bazoo
 point-template;
 #N struct point-template float y float amp;
-#N canvas 16 7 913 595 12;
+#N canvas 50 62 913 595 12;
 #X declare -path lib;
 #X floatatom 777 72 0 0 0 0 - - -;
 #N canvas 516 98 663 557 (subpatch) 0;
@@ -36,106 +36,106 @@ point-template;
 float ampimag float used;
 #X restore 417 525 pd peak-template;
 #N canvas 0 0 600 386 peak-list 0;
-#X scalar peak-template 15.9467 330 -253.674 -0.0844134 0.146416 \;
-;
-#X scalar peak-template 8.09598 330 -245.031 -0.108977 0.0532605 \;
-;
+#X scalar peak-template 15.9467 330 -253.674 -0.0844134 0.146416 0
+\;;
+#X scalar peak-template 8.09598 330 -245.031 -0.108977 0.0532605 0
+\;;
 #X scalar peak-template 21.9063 330 -199.607 0.00667672 -0.0201446
+0 \;;
+#X scalar peak-template 31.1714 330 -199.12 -0.0160738 -0.0132465 0
 \;;
-#X scalar peak-template 31.1714 330 -199.12 -0.0160738 -0.0132465 \;
-;
 #X scalar peak-template 37.8022 330 -186.266 0.0101767 -0.00762841
-\;;
+0 \;;
 #X scalar peak-template 45.3485 330 -173.243 0.00456202 0.00622276
-\;;
+0 \;;
 #X scalar peak-template 220.731 330 -164.961 0.00271994 0.00491236
-\;;
+0 \;;
 #X scalar peak-template 55.8179 330 -162.658 -0.00364487 -0.00362429
-\;;
+0 \;;
 #X scalar peak-template 214.238 330 -156.636 0.00401102 0.000744068
-\;;
+0 \;;
 #X scalar peak-template 230.388 330 -142.193 -0.00175354 -0.00155481
-\;;
+0 \;;
 #X scalar peak-template 205.698 330 -136.685 -0.000451968 -0.00184241
-\;;
+0 \;;
 #X scalar peak-template 236.854 330 -132.195 -0.000800401 -0.00138174
-\;;
+0 \;;
 #X scalar peak-template 70.1927 330 -129.01 0.000948857 -0.00104714
-\;;
+0 \;;
 #X scalar peak-template 60.6268 330 -128.771 -0.000107766 -0.00139602
-\;;
+0 \;;
 #X scalar peak-template 199.238 330 -125.184 -5.5269e-05 -0.00121886
-\;;
+0 \;;
 #X scalar peak-template 102.284 330 -124.713 -0.000952367 -0.000727166
-\;;
+0 \;;
 #X scalar peak-template 244.654 330 -122.402 0.00059125 -0.000923529
-\;;
+0 \;;
 #X scalar peak-template 183.608 330 -113.564 -0.000686308 0.000373077
-\;;
+0 \;;
 #X scalar peak-template 190.466 330 -112.684 -0.000702548 0.000277037
-\;;
+0 \;;
 #X scalar peak-template 84.4082 330 -115.848 0.000835569 -0.000170076
-\;;
+0 \;;
 #X scalar peak-template 110.158 330 -115.091 -0.000114203 -0.000820379
-\;;
+0 \;;
 #X scalar peak-template 174.392 330 -107.624 0.000512748 0.000351938
-\;;
+0 \;;
 #X scalar peak-template 80.1102 330 -113.14 0.000618534 0.000456133
-\;;
+0 \;;
 #X scalar peak-template 141.065 330 -111.26 -0.000159838 0.000696955
-\;;
+0 \;;
 #X scalar peak-template 145.025 330 -112.295 4.48536e-05 -0.000742662
-\;;
+0 \;;
 #X scalar peak-template 163.713 330 -114.302 -0.000229612 -0.000770083
-\;;
+0 \;;
 #X scalar peak-template 256.421 330 -108.415 -0.000640719 2.18195e-05
-\;;
+0 \;;
 #X scalar peak-template 95.2051 330 -107.09 -0.000515788 0.000324372
-\;;
+0 \;;
 #X scalar peak-template 165.648 330 -114.439 -1.60569e-06 -0.000807809
-\;;
+0 \;;
 #X scalar peak-template 89.2754 330 -106.473 -0.000464049 -0.000372468
-\;;
+0 \;;
 #X scalar peak-template 132.642 330 -104.089 0.000416856 -0.000348003
-\;;
+0 \;;
 #X scalar peak-template 153.158 330 -103.434 0.000512355 0.000133827
-\;;
+0 \;;
 #X scalar peak-template 251.197 330 -100.22 0.000392843 -0.000254521
-\;;
+0 \;;
 #X scalar peak-template 347.16 330 -85.9684 3.49439e-05 -0.000268635
-\;;
+0 \;;
 #X scalar peak-template 330.571 330 -82.4952 4.08495e-05 0.000233548
-\;;
+0 \;;
 #X scalar peak-template 405.095 330 -88.7124 7.36761e-05 0.000291825
-\;;
+0 \;;
 #X scalar peak-template 262.479 330 -85.5605 -0.000191953 0.000185144
-\;;
+0 \;;
 #X scalar peak-template 339.087 330 -74.6482 -0.000174823 1.47393e-05
-\;;
+0 \;;
 #X scalar peak-template 120.042 330 -83.9036 0.000143925 0.000204734
+0 \;;
+#X scalar peak-template 358.272 330 -78.8 8.69116e-05 0.000186489 0
 \;;
-#X scalar peak-template 358.272 330 -78.8 8.69116e-05 0.000186489 \;
-;
 #X scalar peak-template 354.205 330 -73.5409 0.000146517 -8.24945e-05
-\;;
+0 \;;
 #X scalar peak-template 126.537 330 -77.5044 0.000190048 -4.69769e-05
-\;;
+0 \;;
 #X scalar peak-template 294.253 330 -71.6206 0.000148961 4.69971e-05
-\;;
+0 \;;
 #X scalar peak-template 321.286 330 -67.3834 0.00013192 -1.48824e-05
-\;;
+0 \;;
 #X scalar peak-template 275.468 330 -75.9748 -0.000131166 0.000129904
-\;;
+0 \;;
 #X scalar peak-template 311.823 330 -71.1847 -0.000103525 -0.000113481
-\;;
+0 \;;
 #X scalar peak-template 421.5 330 -79.8282 -1.07796e-05 -0.000213756
-\;;
+0 \;;
 #X scalar peak-template 303.301 330 -72.7543 -0.000115625 0.000115095
-\;;
+0 \;;
 #X scalar peak-template 117.451 330 -81.3611 0.000223316 4.0704e-05
-\;;
+0 \;;
 #X scalar peak-template 412.706 330 -75.2429 -0.000111227 0.000140877
-\;;
+0 \;;
 #X restore 289 433 pd peak-list;
 #N canvas 127 256 695 457 trace-list 0;
 #X scalar trace-template 0 0 30 \; -178.597 75.8502 \; \;;
@@ -2449,7 +2449,7 @@ as a plot (yet).;
 #X connect 0 0 1 0;
 #X restore 290 545 pd test;
 #X text 310 107 read a sample;
-#N canvas 190 43 500 453 test-signal 1;
+#N canvas 190 43 500 453 test-signal 0;
 #X obj 174 293 tabread4~ sample;
 #X obj 174 268 line~;
 #X obj 123 146 f;
