@@ -822,14 +822,16 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-schedlib"))
         {
             sys_externalschedlib = 1;
-            strcpy(sys_externalschedlibname, argv[1]);
+            strncpy(sys_externalschedlibname, argv[1],
+                sizeof(sys_externalschedlibname) - 1);
             argv += 2;
             argc -= 2;
         }
         else if (!strcmp(*argv, "-extraflags"))
         {
             sys_extraflags = 1;
-            strcpy(sys_extraflagsstring, argv[1]);
+            strncpy(sys_extraflagsstring, argv[1],
+                sizeof(sys_extraflagsstring) - 1);
             argv += 2;
             argc -= 2;
         }
