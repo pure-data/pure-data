@@ -387,9 +387,6 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
     x->b_n = newsize;
 }
 
-
-#define MSTACKSIZE 10000 /* FIXME -- make this grow as needed */
-
 void binbuf_print(t_binbuf *x)
 {
     int i, startedpost = 0, newline = 1;
@@ -531,13 +528,70 @@ done:
     return (gensym(buf2));
 }
 
+#define SMALLMSG 5
+#define HUGEMSG 1000
+#ifdef MSW
+#include <malloc.h>
+#else
+#include <alloca.h>
+#endif
+#if HAVE_ALLOCA
+#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < HUGEMSG ?  \
+        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
+#define ATOMS_FREEA(x, n) ( \
+    ((n) < HUGEMSG || (freebytes((x), (n) * sizeof(t_atom)), 0)))
+#else
+#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
+#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
+#endif
+
 void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
 {
-    static t_atom mstack[MSTACKSIZE], *msp = mstack, *ems = mstack+MSTACKSIZE;
-    t_atom *stackwas = msp;
+    t_atom smallstack[SMALLMSG], *mstack, *msp;
     t_atom *at = x->b_vec;
     int ac = x->b_n;
-    int nargs;
+    int nargs, maxnargs = 0;
+    if (ac <= SMALLMSG)
+        mstack = smallstack;
+    else
+    {
+#if 1
+            /* count number of args in biggest message.  The wierd
+            treatment of "pd_objectmaker" is because when the message
+            goes out to objectmaker, commas and semis are passed
+            on as regular args (see below).  We're tacitly assuming here
+            that the pd_objectmaker target can't come up via a named
+            destination in the message, only because the original "target"
+            points there. */
+        if (target == &pd_objectmaker)
+            maxnargs = ac;
+        else
+        {
+            int i, j = (target ? 0 : -1);
+            for (i = 0; i < ac; i++)
+            {
+                if (at[i].a_type == A_SEMI)
+                    j = -1;
+                else if (at[i].a_type == A_COMMA)
+                    j = 0;
+                else if (++j > maxnargs)
+                    maxnargs = j;
+            }
+        }
+        if (maxnargs <= SMALLMSG)
+            mstack = smallstack;
+        else ATOMS_ALLOCA(mstack, maxnargs);
+#else
+            /* just pessimistically allocate enough to hold everything
+            at once.  This turned out to run slower in a simple benchmark
+            I tried, perhaps because the extra memory allocation
+            hurt the cache hit rate. */
+        maxnargs = ac;
+        ATOMS_ALLOCA(mstack, maxnargs);
+#endif
+
+    }
+    msp = mstack;
     while (1)
     {
         t_pd *nexttarget;
@@ -597,11 +651,6 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
         {
             t_symbol *s9;
             if (!ac) goto gotmess;
-            if (msp >= ems)
-            {
-                error("message stack overflow");
-                goto broken;
-            }
             switch (at->a_type)
             {
             case A_SEMI:
@@ -667,27 +716,26 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
     gotmess:
         if (nargs)
         {
-            switch (stackwas->a_type)
+            switch (mstack->a_type)
             {
             case A_SYMBOL:
-                typedmess(target, stackwas->a_w.w_symbol, nargs-1, stackwas+1);
+                typedmess(target, mstack->a_w.w_symbol, nargs-1, mstack+1);
                 break;
             case A_FLOAT:
-                if (nargs == 1) pd_float(target, stackwas->a_w.w_float);
-                else pd_list(target, 0, nargs, stackwas);
+                if (nargs == 1) pd_float(target, mstack->a_w.w_float);
+                else pd_list(target, 0, nargs, mstack);
                 break;
             }
         }
-        msp = stackwas;
+        msp = mstack;
         if (!ac) break;
         target = nexttarget;
         at++;
         ac--;
     }
-
-    return;
-broken:
-    msp = stackwas;
+broken: 
+    if (maxnargs > SMALLMSG)
+         ATOMS_FREEA(mstack, maxnargs);
 }
 
 static int binbuf_doopen(char *s, int mode)

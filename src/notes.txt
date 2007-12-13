@@ -1,6 +1,7 @@
 ---------------- dolist --------------------
 fixed crash bug closing patches with open GOPs
 fixed PC device counting problem (first device invoked by -audiodev 0)
+fixed MSTACKSIZE limitation in m_binbuf.c
 
 test:
 compile on various versions of linux
@@ -19,7 +20,6 @@ problems:
 check real-time gaps in writesf~
 fix declare to update current patch when changed
 objects on GOP don't erase if you edit the GOP while they're showing
-MSTACKSIZE limitation in m_binbuf.c
 add -stack option to make 'regular' stack larger
 TK menu on Windows says "wish"
 help browser broke on Panurge
@@ -36,7 +36,6 @@ when retyping abstractions, offer to save dirty one
 should linux stop grabbing focus on vis?  Is there a way to detect whether
     the mouse is in a window when it opens?
 arrays that don't fit in bounds don't update (same as red rectangle problem?)
-look in d_resample.pd to understand inlet~ upsampling...
 patcher inlets don't deal with scalars (zbug.pd)
 check if there's a problem loading libs on startup if superuser
 read xx.txt in "bad" gives warnings
