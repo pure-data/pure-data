@@ -1,7 +1,6 @@
 ---------------- dolist --------------------
-  binbuf_read_via_canvas in x_qlist.c
-
-PC device counting problem (first device invoked by -audiodev 0)
+fixed crash bug closing patches with open GOPs
+fixed PC device counting problem (first device invoked by -audiodev 0)
 
 test:
 compile on various versions of linux
@@ -12,8 +11,8 @@ windows:
   "-audiodev" with no args in registry can't start up?
 mac:
   clicking on windows seems sometimes not to open them
-what does OSX do when jack is compiled into Pd but not installed??
-turn on paMacCore_ChangeDeviceParameters for mac (pa_mac_core.h)
+  what does OSX do when jack is compiled into Pd but not installed??
+  turn on paMacCore_ChangeDeviceParameters for mac (pa_mac_core.h)
 Gnome: why don't windows pop up when clicked on?
 
 problems:
@@ -23,7 +22,6 @@ objects on GOP don't erase if you edit the GOP while they're showing
 MSTACKSIZE limitation in m_binbuf.c
 add -stack option to make 'regular' stack larger
 TK menu on Windows says "wish"
-activating windows in Gnome?
 help browser broke on Panurge
 offer both new and old help browser style
 look again at array vis/invis conundrum, g_template.c
@@ -56,7 +54,9 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
-clickles connection (hit 'c' key or something)
+clicking to prefer selected object if nselect > 1
+flag to prevent unlocking patches
+clickless connection (hit 'c' key? see Bouchard paper)
 messages to suppress menus&accelerators, and invisibilize Pd window
 machine-independent fonts
 callback scheduling on Mac

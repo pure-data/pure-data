@@ -738,7 +738,7 @@ void canvas_create_editor(t_glist *x, int createit)
     }
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class &&
-            ((t_canvas *)y)->gl_isgraph)
+            ((t_canvas *)y)->gl_isgraph && !((t_canvas *)y)->gl_havewindow)
                 canvas_create_editor((t_canvas *)y, createit);
 }
 
@@ -808,7 +808,8 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         if (glist_isgraph(x) && x->gl_owner)
         {
             t_glist *gl2 = x->gl_owner;
-            canvas_create_editor(x, 1);
+            if (!x->gl_owner->gl_isdeleting)
+                canvas_create_editor(x, 1);
             if (glist_isvisible(gl2))
                 gobj_vis(&x->gl_gobj, gl2, 0);
             x->gl_havewindow = 0;
