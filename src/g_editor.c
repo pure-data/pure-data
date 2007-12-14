@@ -793,6 +793,17 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
             && (x1 > *x1p))
                 *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y; 
     }
+        /* if there are at least two selected objects, we'd prefer
+        to find a selected one (never mind which) to the one we got. */
+    if (x->gl_editor && x->gl_editor->e_selection &&
+        x->gl_editor->e_selection->sel_next && !glist_isselected(x, y))
+    {
+        t_selection *sel;
+        for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+            if (canvas_hitbox(x, sel->sel_what, xpos, ypos, &x1, &y1, &x2, &y2))
+                *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2,
+                    rval = sel->sel_what; 
+    }
     return (rval);
 }
 

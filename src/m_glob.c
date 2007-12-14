@@ -49,6 +49,12 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 #endif
 
+static void glob_version(t_pd *dummy, float f)
+{
+    if (f > 0)
+        error("file format newer than this version of Pd (trying anyway...)");
+}
+
 void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
@@ -113,6 +119,8 @@ void glob_init(void)
     class_addmethod(glob_pdobject, (t_method)glob_ping, gensym("ping"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_savepreferences,
         gensym("save-preferences"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_version,
+        gensym("version"), A_FLOAT, 0);
 #ifdef UNIX
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);

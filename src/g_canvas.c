@@ -1044,17 +1044,20 @@ void canvas_loadbang(t_canvas *x)
     canvas_loadbangsubpatches(x);
 }
 
-    /* When you ask a canvas its size the result is 2 pixels more than what
-    you gave it to open it; perhaps there's a 1-pixel border all around it
-    or something.  Anyway, we just add the 2 pixels back here; seems we
-    have to do this for linux but not MSW; not sure about MacOS. */
+    /* When you ask a canvas its size the result is more than what
+    you gave it to open it; how much bigger apparently depends on the OS. */
 
 #ifdef __unix__
 #define HORIZBORDER 2
 #define VERTBORDER 2
 #else
+#ifdef MACOSX
+#define HORIZBORDER 6
+#define VERTBORDER 6
+#else
 #define HORIZBORDER 4
 #define VERTBORDER 4
+#endif
 #endif
 
 static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
