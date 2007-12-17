@@ -522,11 +522,16 @@ void glob_start_path_dialog(t_pd *dummy)
     char buf[MAXPDSTRING];
     int i;
     t_namelist *nl;
-    
-    for (nl = sys_searchpath, i = 0; nl && i < 10; nl = nl->nl_next, i++)
-        sys_vgui("pd_set pd_path%d \"%s\"\n", i, nl->nl_string);
-    for (; i < 10; i++)
-        sys_vgui("pd_set pd_path%d \"\"\n", i);
+
+    sprintf(buf, "list");
+    for (nl = sys_searchpath, i = 0; nl; nl = nl->nl_next, i++) {
+      if(nl->nl_string){
+        strcat(buf, " \"");
+        strcat(buf, nl->nl_string);
+        strcat(buf, "\"");
+      }
+    }
+    sys_vgui("pd_set pd_path [%s]\n", buf);
 
     sprintf(buf, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
@@ -554,11 +559,16 @@ void glob_start_startup_dialog(t_pd *dummy)
     char buf[MAXPDSTRING];
     int i;
     t_namelist *nl;
-    
-    for (nl = sys_externlist, i = 0; nl && i < 10; nl = nl->nl_next, i++)
-        sys_vgui("pd_set pd_startup%d \"%s\"\n", i, nl->nl_string);
-    for (; i < 10; i++)
-        sys_vgui("pd_set pd_startup%d \"\"\n", i);
+
+    sprintf(buf, "list");
+    for (nl = sys_externlist, i = 0; nl; nl = nl->nl_next, i++) {
+      if(nl->nl_string){
+        strcat(buf, " \"");
+        strcat(buf, nl->nl_string);
+        strcat(buf, "\"");
+      }
+    }
+    sys_vgui("pd_set pd_startup [%s]\n", buf);
 
     sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
         sys_flags->s_name);

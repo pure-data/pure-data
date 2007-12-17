@@ -1174,6 +1174,8 @@ static void until_bang(t_until *x)
 
 static void until_float(t_until *x, t_float f)
 {
+    if (f < 0)
+        f = 0;
     x->x_run = 1;
     x->x_count = f;
     while (x->x_run && x->x_count)

@@ -415,9 +415,16 @@ proc menu_openhtml {filename} {
     global pd_nt         
 
     if {$pd_nt == 0} {
-        exec sh -c \
-            [format "firefox file:%s || mozilla file:%s " \
-                $filename $filename] &
+        foreach candidate \
+            { gnome-open xdg-open sensible-browser iceweasel firefox mozilla \
+              galeon konqueror netscape lynx } {
+                  set browser [lindex [auto_execok $candidate] 0]
+                  if {[string length $browser]} {
+                         puts stderr [format "%s %s" $browser $filename]
+                         exec -- sh -c [format "%s %s" $browser $filename] &
+                         break
+                     }
+                 }
     } elseif {$pd_nt == 2} {
         puts stderr [format "open %s" $filename]
             exec sh -c [format "open %s" $filename]
@@ -4209,15 +4216,16 @@ proc pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
 
 proc path_apply {id} {
     global pd_extrapath pd_verbose
-    global pd_path0 pd_path1 pd_path2 pd_path3 pd_path4 
-    global pd_path5 pd_path6 pd_path7 pd_path8 pd_path9 
+    global pd_path_count
+    set pd_path {}
 
-    pd [concat pd path-dialog $pd_extrapath $pd_verbose \
-    [pdtk_encodedialog $pd_path0] [pdtk_encodedialog $pd_path1] \
-    [pdtk_encodedialog $pd_path2] [pdtk_encodedialog $pd_path3] \
-    [pdtk_encodedialog $pd_path4] [pdtk_encodedialog $pd_path5] \
-    [pdtk_encodedialog $pd_path6] [pdtk_encodedialog $pd_path7] \
-    [pdtk_encodedialog $pd_path8] [pdtk_encodedialog $pd_path9] \;]
+    for {set x 0} {$x < $pd_path_count} {incr x} {
+        global pd_path$x
+        set this_path [set pd_path$x]
+        if {0==[string match "" $this_path]} {lappend pd_path [pdtk_encodedialog $this_path]}
+    }
+
+    pd [concat pd path-dialog $pd_extrapath $pd_verbose $pd_path \;]
 }
 
 proc path_cancel {id} {
@@ -4231,8 +4239,16 @@ proc path_ok {id} {
 
 proc pdtk_path_dialog {id extrapath verbose} {
     global pd_extrapath pd_verbose
-    global pd_path0 pd_path1 pd_path2 pd_path3 pd_path4 
-    global pd_path5 pd_path6 pd_path7 pd_path8 pd_path9 
+    global pd_path
+    global pd_path_count
+
+    set pd_path_count [expr [llength $pd_path] + 2]
+    if { $pd_path_count < 10 } { set pd_path_count 10 }
+
+    for {set x 0} {$x < $pd_path_count} {incr x} {
+        global pd_path$x
+        set pd_path$x [lindex $pd_path $x]
+    }
 
     set pd_extrapath $extrapath
     set pd_verbose $verbose
@@ -4262,8 +4278,8 @@ proc pdtk_path_dialog {id extrapath verbose} {
         -command "path_apply $id \; pd pd save-preferences \\;"
     pack $id.extraframe.extra $id.extraframe.verbose $id.extraframe.save \
         -side left -expand 1
-    
-    for {set x 0} {$x < 10} {incr x} {
+
+    for {set x 0} {$x < $pd_path_count} {incr x} {
         entry $id.f$x -textvariable pd_path$x -width 80
         bind $id.f$x <KeyPress-Return> [concat path_ok $id]
         pdtk_standardkeybindings $id.f$x
@@ -4282,16 +4298,16 @@ proc pd_set {var value} {
 
 proc startup_apply {id} {
     global pd_nort pd_flags
-    global pd_startup0 pd_startup1 pd_startup2 pd_startup3 pd_startup4 
-    global pd_startup5 pd_startup6 pd_startup7 pd_startup8 pd_startup9 
+    global pd_startup_count
 
-    pd [concat pd startup-dialog $pd_nort [pdtk_encodedialog $pd_flags] \
-    [pdtk_encodedialog $pd_startup0] [pdtk_encodedialog $pd_startup1] \
-    [pdtk_encodedialog $pd_startup2] [pdtk_encodedialog $pd_startup3] \
-    [pdtk_encodedialog $pd_startup4] [pdtk_encodedialog $pd_startup5] \
-    [pdtk_encodedialog $pd_startup6] [pdtk_encodedialog $pd_startup7] \
-    [pdtk_encodedialog $pd_startup8] [pdtk_encodedialog $pd_startup9] \;]
+    set pd_startup {}
+    for {set x 0} {$x < $pd_startup_count} {incr x} {
+        global pd_startup$x
+        set this_startup [set pd_startup$x]
+        if {0==[string match "" $this_startup]} {lappend pd_startup [pdtk_encodedialog $this_startup]}
+    }
 
+    pd [concat pd startup-dialog $pd_nort [pdtk_encodedialog $pd_flags] $pd_startup \;]
 }
 
 proc startup_cancel {id} {
@@ -4305,8 +4321,16 @@ proc startup_ok {id} {
 
 proc pdtk_startup_dialog {id nort flags} {
     global pd_nort pd_nt pd_flags
-    global pd_startup0 pd_startup1 pd_startup2 pd_startup3 pd_startup4 
-    global pd_startup5 pd_startup6 pd_startup7 pd_startup8 pd_startup9 
+    global pd_startup
+    global pd_startup_count
+
+    set pd_startup_count [expr [llength $pd_startup] + 2]
+    if { $pd_startup_count < 10 } { set pd_startup_count 10 }
+
+    for {set x 0} {$x < $pd_startup_count} {incr x} {
+        global pd_startup$x
+        set pd_startup$x [lindex $pd_startup $x]
+    }
 
     set pd_nort $nort
     set pd_flags $flags
@@ -4348,7 +4372,9 @@ proc pdtk_startup_dialog {id nort flags} {
         pack $id.nortframe.save -side left -expand 1
     }
 
-    for {set x 0} {$x < 10} {incr x} {
+
+
+    for {set x 0} {$x < $pd_startup_count} {incr x} {
         entry $id.f$x -textvariable pd_startup$x -width 80
         bind $id.f$x <KeyPress-Return> [concat startup_ok $id]
         pdtk_standardkeybindings $id.f$x
