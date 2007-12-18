@@ -42,8 +42,8 @@ typedef int32_t t_oss_int32;
 
 /* GLOBALS */
 static int linux_meters;        /* true if we're metering */
-static float linux_inmax;       /* max input amplitude */
-static float linux_outmax;      /* max output amplitude */
+static t_sample linux_inmax;       /* max input amplitude */
+static t_sample linux_outmax;      /* max output amplitude */
 static int linux_fragsize = 0;  /* for block mode; block size (sample frames) */
 
 /* our device handles */
@@ -64,7 +64,7 @@ static int linux_noutdevs = 0;
 static int linux_nindevs = 0;
 
     /* exported variables */
-float sys_dacsr;
+t_float sys_dacsr;
 t_sample *sys_soundout;
 t_sample *sys_soundin;
 
@@ -645,7 +645,7 @@ static void oss_doresync( void)
 
 int oss_send_dacs(void)
 {
-    float *fp1, *fp2;
+    t_sample *fp1, *fp2;
     long fill;
     int i, j, dev, rtnval = SENDDACS_YES;
     char buf[OSS_MAXSAMPLEWIDTH * DEFDACBLKSIZE * OSS_MAXCHPERDEV];
@@ -779,7 +779,7 @@ int oss_send_dacs(void)
         thischan += nchannels;
     }
     memset(sys_soundout, 0,
-        sys_outchannels * (sizeof(float) * DEFDACBLKSIZE));
+        sys_outchannels * (sizeof(t_sample) * DEFDACBLKSIZE));
 
         /* do input */
 

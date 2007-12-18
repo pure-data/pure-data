@@ -9,39 +9,39 @@
 #include <math.h>
 #define LOGTEN 2.302585092994
 
-float mtof(float f)
+t_float mtof(t_float f)
 {
     if (f <= -1500) return(0);
     else if (f > 1499) return(mtof(1499));
     else return (8.17579891564 * exp(.0577622650 * f));
 }
 
-float ftom(float f)
+t_float ftom(t_float f)
 {
     return (f > 0 ? 17.3123405046 * log(.12231220585 * f) : -1500);
 }
 
-float powtodb(float f)
+t_float powtodb(t_float f)
 {
     if (f <= 0) return (0);
     else
     {
-        float val = 100 + 10./LOGTEN * log(f);
+        t_float val = 100 + 10./LOGTEN * log(f);
         return (val < 0 ? 0 : val);
     }
 }
 
-float rmstodb(float f)
+t_float rmstodb(t_float f)
 {
     if (f <= 0) return (0);
     else
     {
-        float val = 100 + 20./LOGTEN * log(f);
+        t_float val = 100 + 20./LOGTEN * log(f);
         return (val < 0 ? 0 : val);
     }
 }
 
-float dbtopow(float f)
+t_float dbtopow(t_float f)
 {
     if (f <= 0)
         return(0);
@@ -53,7 +53,7 @@ float dbtopow(float f)
     }
 }
 
-float dbtorms(float f)
+t_float dbtorms(t_float f)
 {
     if (f <= 0)
         return(0);

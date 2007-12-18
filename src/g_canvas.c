@@ -448,8 +448,8 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     /* make a new glist and add it to this glist.  It will appear as
     a "graph", not a text object.  */
 t_glist *glist_addglist(t_glist *g, t_symbol *sym,
-    float x1, float y1, float x2, float y2,
-    float px1, float py1, float px2, float py2)
+    t_float x1, t_float y1, t_float x2, t_float y2,
+    t_float px1, t_float py1, t_float px2, t_float py2)
 {
     static int gcount = 0;
     int zz;
@@ -474,7 +474,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
         that is higher on the screen. */
     if (py2 < py1)
     {
-        float zz;
+        t_float zz;
         zz = y2;
         y2 = y1;
         y1 = zz;
@@ -520,14 +520,14 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
 void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *sym = atom_getsymbolarg(0, argc, argv);   
-    float x1 = atom_getfloatarg(1, argc, argv);  
-    float y1 = atom_getfloatarg(2, argc, argv);  
-    float x2 = atom_getfloatarg(3, argc, argv);  
-    float y2 = atom_getfloatarg(4, argc, argv);  
-    float px1 = atom_getfloatarg(5, argc, argv);  
-    float py1 = atom_getfloatarg(6, argc, argv);  
-    float px2 = atom_getfloatarg(7, argc, argv);  
-    float py2 = atom_getfloatarg(8, argc, argv);
+    t_float x1 = atom_getfloatarg(1, argc, argv);  
+    t_float y1 = atom_getfloatarg(2, argc, argv);  
+    t_float x2 = atom_getfloatarg(3, argc, argv);  
+    t_float y2 = atom_getfloatarg(4, argc, argv);  
+    t_float px1 = atom_getfloatarg(5, argc, argv);  
+    t_float py1 = atom_getfloatarg(6, argc, argv);  
+    t_float px2 = atom_getfloatarg(7, argc, argv);  
+    t_float py2 = atom_getfloatarg(8, argc, argv);
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
 }
 
@@ -557,7 +557,7 @@ static void canvas_setbounds(t_canvas *x, int x1, int y1, int x2, int y2)
             fix so that zero is bottom edge and redraw.  This is
             only appropriate if we're a regular "text" object on the
             parent. */
-        float diff = x->gl_y1 - x->gl_y2;
+        t_float diff = x->gl_y1 - x->gl_y2;
         t_gobj *y;
         x->gl_y1 = heightwas * diff;
         x->gl_y2 = x->gl_y1 - diff;

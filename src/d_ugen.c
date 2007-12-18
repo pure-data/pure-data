@@ -18,7 +18,7 @@
 #include <stdarg.h>
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class;
-t_sample *obj_findsignalscalar(t_object *x, int m);
+t_float *obj_findsignalscalar(t_object *x, int m);
 static int ugen_loud;
 static t_int *dsp_chain;
 static int dsp_chainsize;
@@ -38,7 +38,7 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
 
 t_int *zero_perform(t_int *w)   /* zero out a vector */
 {
-    t_float *out = (t_float *)(w[1]);
+    t_sample *out = (t_sample *)(w[1]);
     int n = (int)(w[2]);
     while (n--) *out++ = 0; 
     return (w+3);
@@ -46,7 +46,7 @@ t_int *zero_perform(t_int *w)   /* zero out a vector */
 
 t_int *zero_perf8(t_int *w)
 {
-    t_float *out = (t_float *)(w[1]);
+    t_sample *out = (t_sample *)(w[1]);
     int n = (int)(w[2]);
     
     for (; n; n -= 8, out += 8)
@@ -427,7 +427,7 @@ void signal_makereusable(t_signal *sig)
     signal whose buffer and size will be obtained later via
     signal_setborrowed(). */
 
-t_signal *signal_new(int n, float sr)
+t_signal *signal_new(int n, t_float sr)
 {
     int logn, n2, vecsize = 0;
     t_signal *ret, **whichlist;
@@ -539,7 +539,7 @@ struct _dspcontext
     int dc_ninlets;
     int dc_noutlets;
     t_signal **dc_iosigs;
-    float dc_srate;
+    t_float dc_srate;
     int dc_vecsize;         /* vector size, power of two */
     int dc_calcsize;        /* number of elements to calculate */
     char dc_toplevel;       /* true if "iosigs" is invalid. */
@@ -612,7 +612,7 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
     int ninlets, int noutlets)
 {
     t_dspcontext *dc = (t_dspcontext *)getbytes(sizeof(*dc));
-    float parent_srate, srate;
+    t_float parent_srate, srate;
     int parent_vecsize, vecsize;
 
     if (ugen_loud) post("ugen_start_graph...");
@@ -732,7 +732,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     {
         if (!uin->i_nconnect)
         {
-            t_sample *scalar;
+            t_float *scalar;
             s3 = signal_new(dc->dc_vecsize, dc->dc_srate);
             /* post("%s: unconnected signal inlet set to zero",
                 class_getname(u->u_obj->ob_pd)); */
@@ -867,10 +867,10 @@ void ugen_done_graph(t_dspcontext *dc)
     int i, n;
     t_block *blk;
     t_dspcontext *parent_context = dc->dc_parentcontext;
-    float parent_srate;
+    t_float parent_srate;
     int parent_vecsize;
     int period, frequency, phase, vecsize, calcsize;
-    float srate;
+    t_float srate;
     int chainblockbegin;    /* DSP chain onset before block prolog code */
     int chainblockend;      /* and after block epilog code */
     int chainafterall;      /* and after signal outlet epilog */
@@ -1153,7 +1153,7 @@ static t_class *samplerate_tilde_class;
 typedef struct _samplerate
 {
     t_object x_obj;
-    float x_sr;
+    t_float x_sr;
     t_canvas *x_canvas;
 } t_samplerate;
 
@@ -1161,13 +1161,13 @@ void *canvas_getblock(t_class *blockclass, t_canvas **canvasp);
 
 static void samplerate_tilde_bang(t_samplerate *x)
 {
-    float srate = sys_getsr();
+    t_float srate = sys_getsr();
     t_canvas *canvas = x->x_canvas;
     while (canvas)
     {
         t_block *b = (t_block *)canvas_getblock(block_class, &canvas);
         if (b) 
-            srate *= (float)(b->x_upsample) / (float)(b->x_downsample); 
+            srate *= (t_float)(b->x_upsample) / (t_float)(b->x_downsample); 
     }
     outlet_float(x->x_obj.ob_outlet, srate);
 }

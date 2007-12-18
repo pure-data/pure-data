@@ -17,8 +17,8 @@ typedef struct _sigsend
     t_object x_obj;
     t_symbol *x_sym;
     int x_n;
-    float *x_vec;
-    float x_f;
+    t_sample *x_vec;
+    t_float x_f;
 } t_sigsend;
 
 static void *sigsend_new(t_symbol *s)
@@ -27,16 +27,16 @@ static void *sigsend_new(t_symbol *s)
     pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
     x->x_n = DEFSENDVS;
-    x->x_vec = (float *)getbytes(DEFSENDVS * sizeof(float));
-    memset((char *)(x->x_vec), 0, DEFSENDVS * sizeof(float));
+    x->x_vec = (t_sample *)getbytes(DEFSENDVS * sizeof(t_sample));
+    memset((char *)(x->x_vec), 0, DEFSENDVS * sizeof(t_sample));
     x->x_f = 0;
     return (x);
 }
 
 static t_int *sigsend_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     while (n--)
     {
@@ -57,7 +57,7 @@ static void sigsend_dsp(t_sigsend *x, t_signal **sp)
 static void sigsend_free(t_sigsend *x)
 {
     pd_unbind(&x->x_obj.ob_pd, x->x_sym);
-    freebytes(x->x_vec, x->x_n * sizeof(float));
+    freebytes(x->x_vec, x->x_n * sizeof(t_sample));
 }
 
 static void sigsend_setup(void)
@@ -76,7 +76,7 @@ typedef struct _sigreceive
 {
     t_object x_obj;
     t_symbol *x_sym;
-    t_float *x_wherefrom;
+    t_sample *x_wherefrom;
     int x_n;
 } t_sigreceive;
 
@@ -93,9 +93,9 @@ static void *sigreceive_new(t_symbol *s)
 static t_int *sigreceive_perform(t_int *w)
 {
     t_sigreceive *x = (t_sigreceive *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    t_float *in = x->x_wherefrom;
+    t_sample *in = x->x_wherefrom;
     if (in)
     {
         while (n--)
@@ -113,9 +113,9 @@ static t_int *sigreceive_perform(t_int *w)
 static t_int *sigreceive_perf8(t_int *w)
 {
     t_sigreceive *x = (t_sigreceive *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    t_float *in = x->x_wherefrom;
+    t_sample *in = x->x_wherefrom;
     if (in)
     {
         for (; n; n -= 8, in += 8, out += 8)
@@ -194,7 +194,7 @@ typedef struct _sigcatch
     t_object x_obj;
     t_symbol *x_sym;
     int x_n;
-    float *x_vec;
+    t_sample *x_vec;
 } t_sigcatch;
 
 static void *sigcatch_new(t_symbol *s)
@@ -203,16 +203,16 @@ static void *sigcatch_new(t_symbol *s)
     pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
     x->x_n = DEFSENDVS;
-    x->x_vec = (float *)getbytes(DEFSENDVS * sizeof(float));
-    memset((char *)(x->x_vec), 0, DEFSENDVS * sizeof(float));
+    x->x_vec = (t_sample *)getbytes(DEFSENDVS * sizeof(t_sample));
+    memset((char *)(x->x_vec), 0, DEFSENDVS * sizeof(t_sample));
     outlet_new(&x->x_obj, &s_signal);
     return (x);
 }
 
 static t_int *sigcatch_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     while (n--) *out++ = *in, *in++ = 0; 
     return (w+4);
@@ -221,8 +221,8 @@ static t_int *sigcatch_perform(t_int *w)
 /* tb: vectorized catch function */
 static t_int *sigcatch_perf8(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     for (; n; n -= 8, in += 8, out += 8)
     {
@@ -250,7 +250,7 @@ static void sigcatch_dsp(t_sigcatch *x, t_signal **sp)
 static void sigcatch_free(t_sigcatch *x)
 {
     pd_unbind(&x->x_obj.ob_pd, x->x_sym);
-    freebytes(x->x_vec, x->x_n * sizeof(float));
+    freebytes(x->x_vec, x->x_n * sizeof(t_sample));
 }
 
 static void sigcatch_setup(void)
@@ -268,7 +268,7 @@ typedef struct _sigthrow
 {
     t_object x_obj;
     t_symbol *x_sym;
-    t_float *x_whereto;
+    t_sample *x_whereto;
     int x_n;
     t_float x_f;
 } t_sigthrow;
@@ -286,9 +286,9 @@ static void *sigthrow_new(t_symbol *s)
 static t_int *sigthrow_perform(t_int *w)
 {
     t_sigthrow *x = (t_sigthrow *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    t_float *out = x->x_whereto;
+    t_sample *out = x->x_whereto;
     if (out)
     {
         while (n--)

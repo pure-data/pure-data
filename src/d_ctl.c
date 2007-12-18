@@ -15,13 +15,13 @@ static t_class *sig_tilde_class;
 typedef struct _sig
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sig;
 
 static t_int *sig_tilde_perform(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     while (n--)
         *out++ = f; 
@@ -31,7 +31,7 @@ static t_int *sig_tilde_perform(t_int *w)
 static t_int *sig_tilde_perf8(t_int *w)
 {
     t_float f = *(t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     
     for (; n; n -= 8, out += 8)
@@ -48,7 +48,7 @@ static t_int *sig_tilde_perf8(t_int *w)
     return (w+4);
 }
 
-void dsp_add_scalarcopy(t_sample *in, t_sample *out, int n)
+void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
 {
     if (n&7)
         dsp_add(sig_tilde_perform, 3, in, out, n);
@@ -88,14 +88,14 @@ static t_class *line_tilde_class;
 typedef struct _line
 {
     t_object x_obj;
-    float x_target;
-    float x_value;
-    float x_biginc;
-    float x_inc;
-    float x_1overn;
-    float x_dspticktomsec;
-    float x_inletvalue;
-    float x_inletwas;
+    t_sample x_target; /* target value of ramp */
+    t_sample x_value; /* current value of ramp at block-borders */
+    t_sample x_biginc;
+    t_sample x_inc;
+    t_float x_1overn;
+    t_float x_dspticktomsec;
+    t_float x_inletvalue;
+    t_float x_inletwas;
     int x_ticksleft;
     int x_retarget;
 } t_line;
@@ -103,9 +103,9 @@ typedef struct _line
 static t_int *line_tilde_perform(t_int *w)
 {
     t_line *x = (t_line *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    float f = x->x_value;
+    t_sample f = x->x_value;
 
     if (PD_BIGORSMALL(f))
             x->x_value = f = 0;
@@ -114,20 +114,20 @@ static t_int *line_tilde_perform(t_int *w)
         int nticks = x->x_inletwas * x->x_dspticktomsec;
         if (!nticks) nticks = 1;
         x->x_ticksleft = nticks;
-        x->x_biginc = (x->x_target - x->x_value)/(float)nticks;
+        x->x_biginc = (x->x_target - x->x_value)/(t_float)nticks;
         x->x_inc = x->x_1overn * x->x_biginc;
         x->x_retarget = 0;
     }
     if (x->x_ticksleft)
     {
-        float f = x->x_value;
+        t_sample f = x->x_value;
         while (n--) *out++ = f, f += x->x_inc;
         x->x_value += x->x_biginc;
         x->x_ticksleft--;
     }
     else
     {
-        float g = x->x_value = x->x_target;
+        t_sample g = x->x_value = x->x_target;
         while (n--)
             *out++ = g;
     }
@@ -138,9 +138,9 @@ static t_int *line_tilde_perform(t_int *w)
 static t_int *line_tilde_perf8(t_int *w)
 {
     t_line *x = (t_line *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    float f = x->x_value;
+    t_sample f = x->x_value;
 
     if (PD_BIGORSMALL(f))
         x->x_value = f = 0;
@@ -149,20 +149,20 @@ static t_int *line_tilde_perf8(t_int *w)
         int nticks = x->x_inletwas * x->x_dspticktomsec;
         if (!nticks) nticks = 1;
         x->x_ticksleft = nticks;
-        x->x_biginc = (x->x_target - x->x_value)/(float)nticks;
+        x->x_biginc = (x->x_target - x->x_value)/(t_sample)nticks;
         x->x_inc = x->x_1overn * x->x_biginc;
         x->x_retarget = 0;
     }
     if (x->x_ticksleft)
     {
-        float f = x->x_value;
+        t_sample f = x->x_value;
         while (n--) *out++ = f, f += x->x_inc;
         x->x_value += x->x_biginc;
         x->x_ticksleft--;
     }
     else
     {
-        float f = x->x_value = x->x_target;
+        t_sample f = x->x_value = x->x_target;
         for (; n; n -= 8, out += 8)
         {
             out[0] = f; out[1] = f; out[2] = f; out[3] = f; 
@@ -232,7 +232,7 @@ typedef struct _vseg
 {
     double s_targettime;
     double s_starttime;
-    float s_target;
+    t_sample s_target;
     struct _vseg *s_next;
 } t_vseg;
 
@@ -245,9 +245,9 @@ typedef struct _vline
     double x_samppermsec;
     double x_msecpersamp;
     double x_targettime;
-    float x_target;
-    float x_inlet1;
-    float x_inlet2;
+    t_sample x_target;
+    t_float x_inlet1;
+    t_float x_inlet2;
     t_vseg *x_list;
 } t_vline;
 
@@ -320,8 +320,8 @@ static void vline_tilde_stop(t_vline *x)
 static void vline_tilde_float(t_vline *x, t_float f)
 {
     double timenow = clock_gettimesince(x->x_referencetime);
-    float inlet1 = (x->x_inlet1 < 0 ? 0 : x->x_inlet1);
-    float inlet2 = x->x_inlet2;
+    t_float inlet1 = (x->x_inlet1 < 0 ? 0 : x->x_inlet1);
+    t_float inlet2 = x->x_inlet2;
     double starttime = timenow + inlet2;
     t_vseg *s1, *s2, *deletefrom = 0, *snew;
     if (PD_BIGORSMALL(f))
@@ -416,7 +416,7 @@ typedef struct _snapshot
 {
     t_object x_obj;
     t_sample x_value;
-    float x_f;
+    t_float x_f;
 } t_snapshot;
 
 static void *snapshot_tilde_new(void)
@@ -430,8 +430,8 @@ static void *snapshot_tilde_new(void)
 
 static t_int *snapshot_tilde_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     *out = *in;
     return (w+3);
 }
@@ -473,8 +473,8 @@ typedef struct _vsnapshot
     int x_n;
     int x_gotone;
     t_sample *x_vec;
-    float x_f;
-    float x_sampspermsec;
+    t_float x_f;
+    t_float x_sampspermsec;
     double x_time;
 } t_vsnapshot;
 
@@ -491,9 +491,9 @@ static void *vsnapshot_tilde_new(void)
 
 static t_int *vsnapshot_tilde_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
+    t_sample *in = (t_sample *)(w[1]);
     t_vsnapshot *x = (t_vsnapshot *)(w[2]);
-    t_float *out = x->x_vec;
+    t_sample *out = x->x_vec;
     int n = x->x_n, i;
     for (i = 0; i < n; i++)
         out[i] = in[i];
@@ -519,7 +519,7 @@ static void vsnapshot_tilde_dsp(t_vsnapshot *x, t_signal **sp)
 
 static void vsnapshot_tilde_bang(t_vsnapshot *x)
 {
-    float val;
+    t_sample val;
     if (x->x_gotone)
     {
         int indx = clock_gettimesince(x->x_time) * x->x_sampspermsec;
@@ -560,14 +560,14 @@ typedef struct sigenv
     t_object x_obj;                 /* header */
     void *x_outlet;                 /* a "float" outlet */
     void *x_clock;                  /* a "clock" object */
-    float *x_buf;                   /* a Hanning window */
+    t_sample *x_buf;                   /* a Hanning window */
     int x_phase;                    /* number of points since last output */
     int x_period;                   /* requested period of output */
     int x_realperiod;               /* period rounded up to vecsize multiple */
     int x_npoints;                  /* analysis window size in samples */
-    float x_result;                 /* result to output */
-    float x_sumbuf[MAXOVERLAP];     /* summing buffer */
-    float x_f;
+    t_float x_result;                 /* result to output */
+    t_sample x_sumbuf[MAXOVERLAP];     /* summing buffer */
+    t_float x_f;
     int x_allocforvs;               /* extra buffer for DSP vector size */
 } t_sigenv;
 
@@ -579,14 +579,14 @@ static void *env_tilde_new(t_floatarg fnpoints, t_floatarg fperiod)
     int npoints = fnpoints;
     int period = fperiod;
     t_sigenv *x;
-    float *buf;
+    t_sample *buf;
     int i;
 
     if (npoints < 1) npoints = 1024;
     if (period < 1) period = npoints/2;
     if (period < npoints / MAXOVERLAP + 1)
         period = npoints / MAXOVERLAP + 1;
-    if (!(buf = getbytes(sizeof(float) * (npoints + INITVSTAKEN))))
+    if (!(buf = getbytes(sizeof(t_sample) * (npoints + INITVSTAKEN))))
     {
         error("env: couldn't allocate buffer");
         return (0);
@@ -610,17 +610,17 @@ static void *env_tilde_new(t_floatarg fnpoints, t_floatarg fperiod)
 static t_int *env_tilde_perform(t_int *w)
 {
     t_sigenv *x = (t_sigenv *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     int count;
-    float *sump; 
+    t_sample *sump; 
     in += n;
     for (count = x->x_phase, sump = x->x_sumbuf;
         count < x->x_npoints; count += x->x_realperiod, sump++)
     {
-        float *hp = x->x_buf + count;
-        float *fp = in;
-        float sum = *sump;
+        t_sample *hp = x->x_buf + count;
+        t_sample *fp = in;
+        t_sample sum = *sump;
         int i;
         
         for (i = 0; i < n; i++)
@@ -653,14 +653,14 @@ static void env_tilde_dsp(t_sigenv *x, t_signal **sp)
     if (sp[0]->s_n > x->x_allocforvs)
     {
         void *xx = resizebytes(x->x_buf,
-            (x->x_npoints + x->x_allocforvs) * sizeof(float),
-            (x->x_npoints + sp[0]->s_n) * sizeof(float));
+            (x->x_npoints + x->x_allocforvs) * sizeof(t_sample),
+            (x->x_npoints + sp[0]->s_n) * sizeof(t_sample));
         if (!xx)
         {
             post("env~: out of memory");
             return;
         }
-        x->x_buf = (t_float *)xx;
+        x->x_buf = (t_sample *)xx;
         x->x_allocforvs = sp[0]->s_n;
     }
     dsp_add(env_tilde_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
@@ -674,7 +674,7 @@ static void env_tilde_tick(t_sigenv *x) /* callback function for the clock */
 static void env_tilde_ff(t_sigenv *x)           /* cleanup on free */
 {
     clock_free(x->x_clock);
-    freebytes(x->x_buf, (x->x_npoints + x->x_allocforvs) * sizeof(float));
+    freebytes(x->x_buf, (x->x_npoints + x->x_allocforvs) * sizeof(*x->x_buf));
 }
 
 
@@ -696,14 +696,14 @@ typedef struct _threshold_tilde
     t_outlet *x_outlet1;        /* bang out for high thresh */
     t_outlet *x_outlet2;        /* bang out for low thresh */
     t_clock *x_clock;           /* wakeup for message output */
-    float x_f;                  /* scalar inlet */
+    t_float x_f;                  /* scalar inlet */
     int x_state;                /* 1 = high, 0 = low */
-    float x_hithresh;           /* value of high threshold */
-    float x_lothresh;           /* value of low threshold */
-    float x_deadwait;           /* msec remaining in dead period */
-    float x_msecpertick;        /* msec per DSP tick */
-    float x_hideadtime;         /* hi dead time in msec */
-    float x_lodeadtime;         /* lo dead time in msec */
+    t_float x_hithresh;           /* value of high threshold */
+    t_float x_lothresh;           /* value of low threshold */
+    t_float x_deadwait;           /* msec remaining in dead period */
+    t_float x_msecpertick;        /* msec per DSP tick */
+    t_float x_hideadtime;         /* hi dead time in msec */
+    t_float x_lodeadtime;         /* lo dead time in msec */
 } t_threshold_tilde;
 
 static void threshold_tilde_tick(t_threshold_tilde *x);
@@ -758,7 +758,7 @@ static void threshold_tilde_tick(t_threshold_tilde *x)
 
 static t_int *threshold_tilde_perform(t_int *w)
 {
-    float *in1 = (float *)(w[1]);
+    t_sample *in1 = (t_sample *)(w[1]);
     t_threshold_tilde *x = (t_threshold_tilde *)(w[2]);
     int n = (t_int)(w[3]);
     if (x->x_deadwait > 0)

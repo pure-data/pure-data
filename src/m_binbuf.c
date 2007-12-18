@@ -1007,7 +1007,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                                 atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(5, natom, nextmess) -
                                 atom_getfloatarg(3, natom, nextmess),
-                            (float)sys_defaultfont);
+                            (t_float)sys_defaultfont);
                 }
             }
             if (!strcmp(first, "#P"))
@@ -1090,7 +1090,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                 }
                 else if (!strcmp(second, "slider"))
                 {
-                    float inc = atom_getfloatarg(7, natom, nextmess);
+                    t_float inc = atom_getfloatarg(7, natom, nextmess);
                     if (inc <= 0)
                         inc = 1;
                     binbuf_addv(newb, "ssffsffffffsssfffffffff;",

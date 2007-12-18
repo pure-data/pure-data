@@ -135,9 +135,9 @@ static void *notein_new(t_floatarg f)
 
 static void notein_list(t_notein *x, t_symbol *s, int argc, t_atom *argv)
 {
-    float pitch = atom_getfloatarg(0, argc, argv);
-    float velo = atom_getfloatarg(1, argc, argv);
-    float channel = atom_getfloatarg(2, argc, argv);
+    t_float pitch = atom_getfloatarg(0, argc, argv);
+    t_float velo = atom_getfloatarg(1, argc, argv);
+    t_float channel = atom_getfloatarg(2, argc, argv);
     if (x->x_channel != 0)
     {
         if (channel != x->x_channel) return;
@@ -278,8 +278,8 @@ static void *pgmin_new(t_floatarg f)
 
 static void pgmin_list(t_pgmin *x, t_symbol *s, int argc, t_atom *argv)
 {
-    float value = atom_getfloatarg(0, argc, argv);
-    float channel = atom_getfloatarg(1, argc, argv);
+    t_float value = atom_getfloatarg(0, argc, argv);
+    t_float channel = atom_getfloatarg(1, argc, argv);
     if (x->x_channel != 0)
     {
         if (channel != x->x_channel) return;
@@ -546,8 +546,8 @@ static void *midiclkin_new(t_floatarg f)
 
 static void midiclkin_list(t_midiclkin *x, t_symbol *s, int argc, t_atom *argv)
 {
-    float value = atom_getfloatarg(0, argc, argv);
-    float count = atom_getfloatarg(1, argc, argv);
+    t_float value = atom_getfloatarg(0, argc, argv);
+    t_float count = atom_getfloatarg(1, argc, argv);
     outlet_float(x->x_outlet2, count);
     outlet_float(x->x_outlet1, value);
 }
@@ -570,9 +570,9 @@ static void midiclkin_setup(void)
 void inmidi_clk(double timing)
 {
 
-    static float prev = 0;
-    static float count = 0;
-    float cur,diff;
+    static t_float prev = 0;
+    static t_float count = 0;
+    t_float cur,diff;
 
     if (midiclkin_sym->s_thing)
     {
@@ -621,8 +621,8 @@ static void *midirealtimein_new( void)
 static void midirealtimein_list(t_midirealtimein *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    float portno = atom_getfloatarg(0, argc, argv);
-    float byte = atom_getfloatarg(1, argc, argv);
+    t_float portno = atom_getfloatarg(0, argc, argv);
+    t_float byte = atom_getfloatarg(1, argc, argv);
 
     outlet_float(x->x_outlet2, portno);
     outlet_float(x->x_outlet1, byte);
@@ -1068,7 +1068,7 @@ static t_class *poly_class;
 
 typedef struct voice
 {
-    float v_pitch;
+    t_float v_pitch;
     int v_used;
     unsigned long v_serial;
 } t_voice;
@@ -1078,14 +1078,14 @@ typedef struct poly
     t_object x_obj;
     int x_n;
     t_voice *x_vec;
-    float x_vel;
+    t_float x_vel;
     t_outlet *x_pitchout;
     t_outlet *x_velout;
     unsigned long x_serial;
     int x_steal;
 } t_poly;
 
-static void *poly_new(float fnvoice, float fsteal)
+static void *poly_new(t_float fnvoice, t_float fsteal)
 {
     int i, n = fnvoice;
     t_poly *x = (t_poly *)pd_new(poly_class);

@@ -8,8 +8,8 @@
 /* --------------------- up/down-sampling --------------------- */
 t_int *downsampling_perform_0(t_int *w)
 {
-  t_float *in  = (t_float *)(w[1]); /* original signal     */
-  t_float *out = (t_float *)(w[2]); /* downsampled signal  */
+  t_sample *in  = (t_sample *)(w[1]); /* original signal     */
+  t_sample *out = (t_sample *)(w[2]); /* downsampled signal  */
   int down     = (int)(w[3]);       /* downsampling factor */
   int parent   = (int)(w[4]);       /* original vectorsize */
 
@@ -25,13 +25,13 @@ t_int *downsampling_perform_0(t_int *w)
 
 t_int *upsampling_perform_0(t_int *w)
 {
-  t_float *in  = (t_float *)(w[1]); /* original signal     */
-  t_float *out = (t_float *)(w[2]); /* upsampled signal    */
+  t_sample *in  = (t_sample *)(w[1]); /* original signal     */
+  t_sample *out = (t_sample *)(w[2]); /* upsampled signal    */
   int up       = (int)(w[3]);       /* upsampling factor   */
   int parent   = (int)(w[4]);       /* original vectorsize */
 
   int n=parent*up;
-  t_float *dummy = out;
+  t_sample *dummy = out;
   
   while(n--)*out++=0;
 
@@ -47,15 +47,15 @@ t_int *upsampling_perform_0(t_int *w)
 
 t_int *upsampling_perform_hold(t_int *w)
 {
-  t_float *in  = (t_float *)(w[1]); /* original signal     */
-  t_float *out = (t_float *)(w[2]); /* upsampled signal    */
+  t_sample *in  = (t_sample *)(w[1]); /* original signal     */
+  t_sample *out = (t_sample *)(w[2]); /* upsampled signal    */
   int up       = (int)(w[3]);       /* upsampling factor   */
   int parent   = (int)(w[4]);       /* original vectorsize */
   int i=up;
 
   int n=parent;
-  t_float *dum_out = out;
-  t_float *dum_in  = in;
+  t_sample *dum_out = out;
+  t_sample *dum_in  = in;
   
   while (i--) {
     n = parent;
@@ -72,20 +72,20 @@ t_int *upsampling_perform_hold(t_int *w)
 t_int *upsampling_perform_linear(t_int *w)
 {
   t_resample *x= (t_resample *)(w[1]);
-  t_float *in  = (t_float *)(w[2]); /* original signal     */
-  t_float *out = (t_float *)(w[3]); /* upsampled signal    */
+  t_sample *in  = (t_sample *)(w[2]); /* original signal     */
+  t_sample *out = (t_sample *)(w[3]); /* upsampled signal    */
   int up       = (int)(w[4]);       /* upsampling factor   */
   int parent   = (int)(w[5]);       /* original vectorsize */
   int length   = parent*up;
   int n;
-  t_float *fp;
-  t_float a=*x->buffer, b=*in;
+  t_sample *fp;
+  t_sample a=*x->buffer, b=*in;
 
   
   for (n=0; n<length; n++) {
-    t_float findex = (t_float)(n+1)/up;
+    t_sample findex = (t_sample)(n+1)/up;
     int     index  = findex;
-    t_float frac=findex - index;
+    t_sample frac=findex - index;
     if (frac==0.)frac=1.;
     *out++ = frac * b + (1.-frac) * a;
     fp = in+index;
@@ -180,9 +180,9 @@ void resamplefrom_dsp(t_resample *x,
   }
 
   if (x->s_n != outsize) {
-    t_float *buf=x->s_vec;
+    t_sample *buf=x->s_vec;
     t_freebytes(buf, x->s_n * sizeof(*buf));
-    buf = (t_float *)t_getbytes(outsize * sizeof(*buf));
+    buf = (t_sample *)t_getbytes(outsize * sizeof(*buf));
     x->s_vec = buf;
     x->s_n   = outsize;
   }
@@ -203,9 +203,9 @@ void resampleto_dsp(t_resample *x,
   }
 
   if (x->s_n != insize) {
-    t_float *buf=x->s_vec;
+    t_sample *buf=x->s_vec;
     t_freebytes(buf, x->s_n * sizeof(*buf));
-    buf = (t_float *)t_getbytes(insize * sizeof(*buf));
+    buf = (t_sample *)t_getbytes(insize * sizeof(*buf));
     x->s_vec = buf;
     x->s_n   = insize;
   }

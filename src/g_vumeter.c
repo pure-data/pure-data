@@ -538,7 +538,7 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
     vu_check_height(x, h);
     if(scale != 0)
         scale = 1;
-    vu_scale(x, (float)scale);
+    vu_scale(x, (t_float)scale);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -593,7 +593,7 @@ static void vu_float(t_vu *x, t_floatarg rms)
         x->x_rms = iemgui_vu_db2i[i];
     }
     i = (int)(100.0*rms + 10000.5);
-    rms = 0.01*(float)(i - 10000);
+    rms = 0.01*(t_float)(i - 10000);
     x->x_fr = rms;
     outlet_float(x->x_out_rms, rms);
     x->x_updaterms = 1;
@@ -614,7 +614,7 @@ static void vu_ft1(t_vu *x, t_floatarg peak)
         x->x_peak = iemgui_vu_db2i[i];
     }
     i = (int)(100.0*peak + 10000.5);
-    peak = 0.01*(float)(i - 10000);
+    peak = 0.01*(t_float)(i - 10000);
     x->x_fp = peak;
     x->x_updatepeak = 1;
     sys_queuegui(x, x->x_gui.x_glist, vu_draw_update);

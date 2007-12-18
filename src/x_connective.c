@@ -506,7 +506,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     int nelement;
     if (x->x_type == A_FLOAT)
     {
-        float f;
+        t_float f;
         if (!argc) return;
         f = atom_getfloat(argv);
         for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
@@ -1057,7 +1057,7 @@ static t_class *spigot_class;
 typedef struct _spigot
 {
     t_object x_obj;
-    float x_state;
+    t_float x_state;
 } t_spigot;
 
 static void *spigot_new(t_floatarg f)
@@ -1118,7 +1118,7 @@ typedef struct _moses
 {
     t_object x_ob;
     t_outlet *x_out2;
-    float x_y;
+    t_float x_y;
 } t_moses;
 
 static void *moses_new(t_floatarg f)

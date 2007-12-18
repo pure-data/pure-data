@@ -257,7 +257,7 @@ static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int a = (int)atom_getintarg(0, argc, argv);
-    float nonzero = (float)atom_getfloatarg(2, argc, argv);
+    t_float nonzero = (t_float)atom_getfloatarg(2, argc, argv);
     int sr_flags;
 
     if(nonzero == 0.0)
@@ -314,7 +314,7 @@ static void toggle_fout(t_toggle *x, t_floatarg f)
 static void toggle_loadbang(t_toggle *x)
 {
     if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
-        toggle_fout(x, (float)x->x_on);
+        toggle_fout(x, (t_float)x->x_on);
 }
 
 static void toggle_size(t_toggle *x, t_symbol *s, int ac, t_atom *av)
@@ -366,7 +366,7 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     int a=IEM_GUI_DEFAULTSIZE, f=0;
     int ldx=17, ldy=7;
     int fs=10;
-    float on=0.0, nonzero=1.0;
+    t_float on=0.0, nonzero=1.0;
     char str[144];
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
@@ -391,11 +391,11 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
         bflcol[0] = (int)atom_getintarg(9, argc, argv);
         bflcol[1] = (int)atom_getintarg(10, argc, argv);
         bflcol[2] = (int)atom_getintarg(11, argc, argv);
-        on = (float)atom_getfloatarg(12, argc, argv);
+        on = (t_float)atom_getfloatarg(12, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 2, 0);
     if((argc == 14)&&IS_A_FLOAT(argv,13))
-        nonzero = (float)atom_getfloatarg(13, argc, argv);
+        nonzero = (t_float)atom_getfloatarg(13, argc, argv);
     x->x_gui.x_draw = (t_iemfunptr)toggle_draw;
 
     x->x_gui.x_fsf.x_snd_able = 1;

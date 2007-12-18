@@ -479,7 +479,7 @@ static void *noise_new(void)
 
 static t_int *noise_perform(t_int *w)
 {
-    t_float *out = (t_float *)(w[1]);
+    t_sample *out = (t_sample *)(w[1]);
     int *vp = (int *)(w[2]);
     int n = (int)(w[3]);
     int val = *vp;

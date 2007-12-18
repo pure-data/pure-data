@@ -16,7 +16,7 @@ static t_class *sigdelwrite_class;
 typedef struct delwritectl
 {
     int c_n;
-    float *c_vec;
+    t_sample *c_vec;
     int c_phase;
 } t_delwritectl;
 
@@ -28,7 +28,7 @@ typedef struct _sigdelwrite
     int x_sortno;   /* DSP sort number at which this was last put on chain */
     int x_rsortno;  /* DSP sort # for first delread or write in chain */
     int x_vecsize;  /* vector size for delread~ to use */
-    float x_f;
+    t_float x_f;
 } t_sigdelwrite;
 
 #define XTRASAMPS 4
@@ -59,13 +59,13 @@ static void *sigdelwrite_new(t_symbol *s, t_floatarg msec)
     if (!*s->s_name) s = gensym("delwrite~");
     pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
-    nsamps = msec * sys_getsr() * (float)(0.001f);
+    nsamps = msec * sys_getsr() * (t_float)(0.001f);
     if (nsamps < 1) nsamps = 1;
     nsamps += ((- nsamps) & (SAMPBLK - 1));
     nsamps += DEFDELVS;
     x->x_cspace.c_n = nsamps;
     x->x_cspace.c_vec =
-        (float *)getbytes((nsamps + XTRASAMPS) * sizeof(float));
+        (t_sample *)getbytes((nsamps + XTRASAMPS) * sizeof(t_sample));
     x->x_cspace.c_phase = XTRASAMPS;
     x->x_sortno = 0;
     x->x_vecsize = 0;
@@ -75,15 +75,16 @@ static void *sigdelwrite_new(t_symbol *s, t_floatarg msec)
 
 static t_int *sigdelwrite_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
+    t_sample *in = (t_sample *)(w[1]);
     t_delwritectl *c = (t_delwritectl *)(w[2]);
     int n = (int)(w[3]);
     int phase = c->c_phase, nsamps = c->c_n;
-    float *vp = c->c_vec, *bp = vp + phase, *ep = vp + (c->c_n + XTRASAMPS);
+    t_sample *vp = c->c_vec, *bp = vp + phase, *ep = vp + (c->c_n + XTRASAMPS);
     phase += n;
+
     while (n--)
     {
-        float f = *in++;
+        t_sample f = *in++;
         if (PD_BIGORSMALL(f))
             f = 0;
         *bp++ = f;
@@ -97,6 +98,8 @@ static t_int *sigdelwrite_perform(t_int *w)
             phase -= nsamps;
         }
     }
+    bp = vp + c->c_phase;
+
     c->c_phase = phase; 
     return (w+4);
 }
@@ -112,7 +115,7 @@ static void sigdelwrite_free(t_sigdelwrite *x)
 {
     pd_unbind(&x->x_obj.ob_pd, x->x_sym);
     freebytes(x->x_cspace.c_vec,
-        (x->x_cspace.c_n + XTRASAMPS) * sizeof(float));
+        (x->x_cspace.c_n + XTRASAMPS) * sizeof(t_sample));
 }
 
 static void sigdelwrite_setup(void)
@@ -172,15 +175,15 @@ static void sigdelread_float(t_sigdelread *x, t_float f)
 
 static t_int *sigdelread_perform(t_int *w)
 {
-    t_float *out = (t_float *)(w[1]);
+    t_sample *out = (t_sample *)(w[1]);
     t_delwritectl *c = (t_delwritectl *)(w[2]);
     int delsamps = *(int *)(w[3]);
     int n = (int)(w[4]);
     int phase = c->c_phase - delsamps, nsamps = c->c_n;
-    float *vp = c->c_vec, *bp, *ep = vp + (c->c_n + XTRASAMPS);
-
+    t_sample *vp = c->c_vec, *bp, *ep = vp + (c->c_n + XTRASAMPS);
     if (phase < 0) phase += nsamps;
     bp = vp + phase;
+
     while (n--)
     {
         *out++ = *bp++;
@@ -228,7 +231,7 @@ typedef struct _sigvd
     t_symbol *x_sym;
     t_float x_sr;       /* samples per msec */
     int x_zerodel;      /* 0 or vecsize depending on read/write order */
-    float x_f;
+    t_float x_f;
 } t_sigvd;
 
 static void *sigvd_new(t_symbol *s)
@@ -245,28 +248,28 @@ static void *sigvd_new(t_symbol *s)
 
 static t_int *sigvd_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     t_delwritectl *ctl = (t_delwritectl *)(w[3]);
     t_sigvd *x = (t_sigvd *)(w[4]);
     int n = (int)(w[5]);
 
     int nsamps = ctl->c_n;
-    float limit = nsamps - n - 1;
-    float fn = n-1;
-    float *vp = ctl->c_vec, *bp, *wp = vp + ctl->c_phase;
-    float zerodel = x->x_zerodel;
+    t_sample limit = nsamps - n - 1;
+    t_sample fn = n-1;
+    t_sample *vp = ctl->c_vec, *bp, *wp = vp + ctl->c_phase;
+    t_sample zerodel = x->x_zerodel;
     while (n--)
     {
-        float delsamps = x->x_sr * *in++ - zerodel, frac;
+        t_sample delsamps = x->x_sr * *in++ - zerodel, frac;
         int idelsamps;
-        float a, b, c, d, cminusb;
+        t_sample a, b, c, d, cminusb;
         if (delsamps < 1.00001f) delsamps = 1.00001f;
         if (delsamps > limit) delsamps = limit;
         delsamps += fn;
         fn = fn - 1.0f;
         idelsamps = delsamps;
-        frac = delsamps - (float)idelsamps;
+        frac = delsamps - (t_sample)idelsamps;
         bp = wp - idelsamps;
         if (bp < vp + 4) bp += nsamps;
         d = bp[-3];

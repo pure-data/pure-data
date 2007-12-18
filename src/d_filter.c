@@ -11,18 +11,18 @@
 
 typedef struct hipctl
 {
-    float c_x;
-    float c_coef;
+    t_sample c_x;
+    t_sample c_coef;
 } t_hipctl;
 
 typedef struct sighip
 {
     t_object x_obj;
-    float x_sr;
-    float x_hz;
+    t_float x_sr;
+    t_float x_hz;
     t_hipctl x_cspace;
     t_hipctl *x_ctl;
-    float x_f;
+    t_float x_f;
 } t_sighip;
 
 t_class *sighip_class;
@@ -54,18 +54,18 @@ static void sighip_ft1(t_sighip *x, t_floatarg f)
 
 static t_int *sighip_perform(t_int *w)
 {
-    float *in = (float *)(w[1]);
-    float *out = (float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     t_hipctl *c = (t_hipctl *)(w[3]);
     int n = (t_int)(w[4]);
     int i;
-    float last = c->c_x;
-    float coef = c->c_coef;
+    t_sample last = c->c_x;
+    t_sample coef = c->c_coef;
     if (coef < 1)
     {
         for (i = 0; i < n; i++)
         {
-            float new = *in++ + coef * last;
+            t_sample new = *in++ + coef * last;
             *out++ = new - last;
             last = new;
         }
@@ -112,18 +112,18 @@ void sighip_setup(void)
 
 typedef struct lopctl
 {
-    float c_x;
-    float c_coef;
+    t_sample c_x;
+    t_sample c_coef;
 } t_lopctl;
 
 typedef struct siglop
 {
     t_object x_obj;
-    float x_sr;
-    float x_hz;
+    t_float x_sr;
+    t_float x_hz;
     t_lopctl x_cspace;
     t_lopctl *x_ctl;
-    float x_f;
+    t_float x_f;
 } t_siglop;
 
 t_class *siglop_class;
@@ -161,14 +161,14 @@ static void siglop_clear(t_siglop *x, t_floatarg q)
 
 static t_int *siglop_perform(t_int *w)
 {
-    float *in = (float *)(w[1]);
-    float *out = (float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     t_lopctl *c = (t_lopctl *)(w[3]);
     int n = (t_int)(w[4]);
     int i;
-    float last = c->c_x;
-    float coef = c->c_coef;
-    float feedback = 1 - coef;
+    t_sample last = c->c_x;
+    t_sample coef = c->c_coef;
+    t_sample feedback = 1 - coef;
     for (i = 0; i < n; i++)
         last = *out++ = coef * *in++ + feedback * last;
     if (PD_BIGORSMALL(last))
@@ -202,22 +202,22 @@ void siglop_setup(void)
 
 typedef struct bpctl
 {
-    float c_x1;
-    float c_x2;
-    float c_coef1;
-    float c_coef2;
-    float c_gain;
+    t_sample c_x1;
+    t_sample c_x2;
+    t_sample c_coef1;
+    t_sample c_coef2;
+    t_sample c_gain;
 } t_bpctl;
 
 typedef struct sigbp
 {
     t_object x_obj;
-    float x_sr;
-    float x_freq;
-    float x_q;
+    t_float x_sr;
+    t_float x_freq;
+    t_float x_q;
     t_bpctl x_cspace;
     t_bpctl *x_ctl;
-    float x_f;
+    t_float x_f;
 } t_sigbp;
 
 t_class *sigbp_class;
@@ -239,11 +239,11 @@ static void *sigbp_new(t_floatarg f, t_floatarg q)
     return (x);
 }
 
-static float sigbp_qcos(float f)
+static t_float sigbp_qcos(t_float f)
 {
     if (f >= -(0.5f*3.14159f) && f <= 0.5f*3.14159f)
     {
-        float g = f*f;
+        t_float g = f*f;
         return (((g*g*g * (-1.0f/720.0f) + g*g*(1.0f/24.0f)) - g*0.5) + 1);
     }
     else return (0);
@@ -251,7 +251,7 @@ static float sigbp_qcos(float f)
 
 static void sigbp_docoef(t_sigbp *x, t_floatarg f, t_floatarg q)
 {
-    float r, oneminusr, omega;
+    t_float r, oneminusr, omega;
     if (f < 0.001) f = 10;
     if (q < 0) q = 0;
     x->x_freq = f;
@@ -285,19 +285,19 @@ static void sigbp_clear(t_sigbp *x, t_floatarg q)
 
 static t_int *sigbp_perform(t_int *w)
 {
-    float *in = (float *)(w[1]);
-    float *out = (float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     t_bpctl *c = (t_bpctl *)(w[3]);
     int n = (t_int)(w[4]);
     int i;
-    float last = c->c_x1;
-    float prev = c->c_x2;
-    float coef1 = c->c_coef1;
-    float coef2 = c->c_coef2;
-    float gain = c->c_gain;
+    t_sample last = c->c_x1;
+    t_sample prev = c->c_x2;
+    t_sample coef1 = c->c_coef1;
+    t_sample coef2 = c->c_coef2;
+    t_sample gain = c->c_gain;
     for (i = 0; i < n; i++)
     {
-        float output =  *in++ + coef1 * last + coef2 * prev;
+        t_sample output =  *in++ + coef1 * last + coef2 * prev;
         *out++ = gain * output;
         prev = last;
         last = output;
@@ -338,19 +338,19 @@ void sigbp_setup(void)
 
 typedef struct biquadctl
 {
-    float c_x1;
-    float c_x2;
-    float c_fb1;
-    float c_fb2;
-    float c_ff1;
-    float c_ff2;
-    float c_ff3;
+    t_sample c_x1;
+    t_sample c_x2;
+    t_sample c_fb1;
+    t_sample c_fb2;
+    t_sample c_ff1;
+    t_sample c_ff2;
+    t_sample c_ff3;
 } t_biquadctl;
 
 typedef struct sigbiquad
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
     t_biquadctl x_cspace;
     t_biquadctl *x_ctl;
 } t_sigbiquad;
@@ -372,21 +372,21 @@ static void *sigbiquad_new(t_symbol *s, int argc, t_atom *argv)
 
 static t_int *sigbiquad_perform(t_int *w)
 {
-    float *in = (float *)(w[1]);
-    float *out = (float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     t_biquadctl *c = (t_biquadctl *)(w[3]);
     int n = (t_int)(w[4]);
     int i;
-    float last = c->c_x1;
-    float prev = c->c_x2;
-    float fb1 = c->c_fb1;
-    float fb2 = c->c_fb2;
-    float ff1 = c->c_ff1;
-    float ff2 = c->c_ff2;
-    float ff3 = c->c_ff3;
+    t_sample last = c->c_x1;
+    t_sample prev = c->c_x2;
+    t_sample fb1 = c->c_fb1;
+    t_sample fb2 = c->c_fb2;
+    t_sample ff1 = c->c_ff1;
+    t_sample ff2 = c->c_ff2;
+    t_sample ff3 = c->c_ff3;
     for (i = 0; i < n; i++)
     {
-        float output =  *in++ + fb1 * last + fb2 * prev;
+        t_sample output =  *in++ + fb1 * last + fb2 * prev;
         if (PD_BIGORSMALL(output))
             output = 0; 
         *out++ = ff1 * output + ff2 * last + ff3 * prev;
@@ -400,12 +400,12 @@ static t_int *sigbiquad_perform(t_int *w)
 
 static void sigbiquad_list(t_sigbiquad *x, t_symbol *s, int argc, t_atom *argv)
 {
-    float fb1 = atom_getfloatarg(0, argc, argv);
-    float fb2 = atom_getfloatarg(1, argc, argv);
-    float ff1 = atom_getfloatarg(2, argc, argv);
-    float ff2 = atom_getfloatarg(3, argc, argv);
-    float ff3 = atom_getfloatarg(4, argc, argv);
-    float discriminant = fb1 * fb1 + 4 * fb2;
+    t_float fb1 = atom_getfloatarg(0, argc, argv);
+    t_float fb2 = atom_getfloatarg(1, argc, argv);
+    t_float ff1 = atom_getfloatarg(2, argc, argv);
+    t_float ff2 = atom_getfloatarg(3, argc, argv);
+    t_float ff3 = atom_getfloatarg(4, argc, argv);
+    t_float discriminant = fb1 * fb1 + 4 * fb2;
     t_biquadctl *c = x->x_ctl;
     if (discriminant < 0) /* imaginary roots -- resonant filter */
     {
@@ -465,9 +465,9 @@ void sigbiquad_setup(void)
 typedef struct sigsamphold
 {
     t_object x_obj;
-    float x_f;
-    float x_lastin;
-    float x_lastout;
+    t_float x_f;
+    t_sample x_lastin;
+    t_sample x_lastout;
 } t_sigsamphold;
 
 t_class *sigsamphold_class;
@@ -485,17 +485,17 @@ static void *sigsamphold_new(void)
 
 static t_int *sigsamphold_perform(t_int *w)
 {
-    float *in1 = (float *)(w[1]);
-    float *in2 = (float *)(w[2]);
-    float *out = (float *)(w[3]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     t_sigsamphold *x = (t_sigsamphold *)(w[4]);
     int n = (t_int)(w[5]);
     int i;
-    float lastin = x->x_lastin;
-    float lastout = x->x_lastout;
+    t_sample lastin = x->x_lastin;
+    t_sample lastout = x->x_lastout;
     for (i = 0; i < n; i++, *in1++)
     {
-        float next = *in2++;
+        t_sample next = *in2++;
         if (next < lastin) lastout = *in1;
         *out++ = lastout;
         lastin = next;
@@ -542,8 +542,8 @@ void sigsamphold_setup(void)
 typedef struct sigrpole
 {
     t_object x_obj;
-    float x_f;
-    float x_last;
+    t_float x_f;
+    t_sample x_last;
 } t_sigrpole;
 
 t_class *sigrpole_class;
@@ -561,17 +561,17 @@ static void *sigrpole_new(t_float f)
 
 static t_int *sigrpole_perform(t_int *w)
 {
-    float *in1 = (float *)(w[1]);
-    float *in2 = (float *)(w[2]);
-    float *out = (float *)(w[3]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     t_sigrpole *x = (t_sigrpole *)(w[4]);
     int n = (t_int)(w[5]);
     int i;
-    float last = x->x_last;
+    t_sample last = x->x_last;
     for (i = 0; i < n; i++)
     {
-        float next = *in1++;
-        float coef = *in2++;
+        t_sample next = *in1++;
+        t_sample coef = *in2++;
         *out++ = last = coef * last + next;
     }
     if (PD_BIGORSMALL(last))
@@ -615,8 +615,8 @@ void sigrpole_setup(void)
 typedef struct sigrzero
 {
     t_object x_obj;
-    float x_f;
-    float x_last;
+    t_float x_f;
+    t_sample x_last;
 } t_sigrzero;
 
 t_class *sigrzero_class;
@@ -634,17 +634,17 @@ static void *sigrzero_new(t_float f)
 
 static t_int *sigrzero_perform(t_int *w)
 {
-    float *in1 = (float *)(w[1]);
-    float *in2 = (float *)(w[2]);
-    float *out = (float *)(w[3]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     t_sigrzero *x = (t_sigrzero *)(w[4]);
     int n = (t_int)(w[5]);
     int i;
-    float last = x->x_last;
+    t_sample last = x->x_last;
     for (i = 0; i < n; i++)
     {
-        float next = *in1++;
-        float coef = *in2++;
+        t_sample next = *in1++;
+        t_sample coef = *in2++;
         *out++ = next - coef * last;
         last = next;
     }
@@ -687,8 +687,8 @@ void sigrzero_setup(void)
 typedef struct sigrzero_rev
 {
     t_object x_obj;
-    float x_f;
-    float x_last;
+    t_float x_f;
+    t_sample x_last;
 } t_sigrzero_rev;
 
 t_class *sigrzero_rev_class;
@@ -706,17 +706,17 @@ static void *sigrzero_rev_new(t_float f)
 
 static t_int *sigrzero_rev_perform(t_int *w)
 {
-    float *in1 = (float *)(w[1]);
-    float *in2 = (float *)(w[2]);
-    float *out = (float *)(w[3]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     t_sigrzero_rev *x = (t_sigrzero_rev *)(w[4]);
     int n = (t_int)(w[5]);
     int i;
-    float last = x->x_last;
+    t_sample last = x->x_last;
     for (i = 0; i < n; i++)
     {
-        float next = *in1++;
-        float coef = *in2++;
+        t_sample next = *in1++;
+        t_sample coef = *in2++;
         *out++ = last - coef * next;
         last = next;
     }
@@ -760,9 +760,9 @@ void sigrzero_rev_setup(void)
 typedef struct sigcpole
 {
     t_object x_obj;
-    float x_f;
-    float x_lastre;
-    float x_lastim;
+    t_float x_f;
+    t_sample x_lastre;
+    t_sample x_lastim;
 } t_sigcpole;
 
 t_class *sigcpole_class;
@@ -786,24 +786,24 @@ static void *sigcpole_new(t_float re, t_float im)
 
 static t_int *sigcpole_perform(t_int *w)
 {
-    float *inre1 = (float *)(w[1]);
-    float *inim1 = (float *)(w[2]);
-    float *inre2 = (float *)(w[3]);
-    float *inim2 = (float *)(w[4]);
-    float *outre = (float *)(w[5]);
-    float *outim = (float *)(w[6]);
+    t_sample *inre1 = (t_sample *)(w[1]);
+    t_sample *inim1 = (t_sample *)(w[2]);
+    t_sample *inre2 = (t_sample *)(w[3]);
+    t_sample *inim2 = (t_sample *)(w[4]);
+    t_sample *outre = (t_sample *)(w[5]);
+    t_sample *outim = (t_sample *)(w[6]);
     t_sigcpole *x = (t_sigcpole *)(w[7]);
     int n = (t_int)(w[8]);
     int i;
-    float lastre = x->x_lastre;
-    float lastim = x->x_lastim;
+    t_sample lastre = x->x_lastre;
+    t_sample lastim = x->x_lastim;
     for (i = 0; i < n; i++)
     {
-        float nextre = *inre1++;
-        float nextim = *inim1++;
-        float coefre = *inre2++;
-        float coefim = *inim2++;
-        float tempre = *outre++ = nextre + lastre * coefre - lastim * coefim;
+        t_sample nextre = *inre1++;
+        t_sample nextim = *inim1++;
+        t_sample coefre = *inre2++;
+        t_sample coefim = *inim2++;
+        t_sample tempre = *outre++ = nextre + lastre * coefre - lastim * coefim;
         lastim = *outim++ = nextim + lastre * coefim + lastim * coefre;
         lastre = tempre;
     }
@@ -853,9 +853,9 @@ void sigcpole_setup(void)
 typedef struct sigczero
 {
     t_object x_obj;
-    float x_f;
-    float x_lastre;
-    float x_lastim;
+    t_float x_f;
+    t_sample x_lastre;
+    t_sample x_lastim;
 } t_sigczero;
 
 t_class *sigczero_class;
@@ -879,23 +879,23 @@ static void *sigczero_new(t_float re, t_float im)
 
 static t_int *sigczero_perform(t_int *w)
 {
-    float *inre1 = (float *)(w[1]);
-    float *inim1 = (float *)(w[2]);
-    float *inre2 = (float *)(w[3]);
-    float *inim2 = (float *)(w[4]);
-    float *outre = (float *)(w[5]);
-    float *outim = (float *)(w[6]);
+    t_sample *inre1 = (t_sample *)(w[1]);
+    t_sample *inim1 = (t_sample *)(w[2]);
+    t_sample *inre2 = (t_sample *)(w[3]);
+    t_sample *inim2 = (t_sample *)(w[4]);
+    t_sample *outre = (t_sample *)(w[5]);
+    t_sample *outim = (t_sample *)(w[6]);
     t_sigczero *x = (t_sigczero *)(w[7]);
     int n = (t_int)(w[8]);
     int i;
-    float lastre = x->x_lastre;
-    float lastim = x->x_lastim;
+    t_sample lastre = x->x_lastre;
+    t_sample lastim = x->x_lastim;
     for (i = 0; i < n; i++)
     {
-        float nextre = *inre1++;
-        float nextim = *inim1++;
-        float coefre = *inre2++;
-        float coefim = *inim2++;
+        t_sample nextre = *inre1++;
+        t_sample nextim = *inim1++;
+        t_sample coefre = *inre2++;
+        t_sample coefim = *inim2++;
         *outre++ = nextre - lastre * coefre + lastim * coefim;
         *outim++ = nextim - lastre * coefim - lastim * coefre;
         lastre = nextre;
@@ -943,9 +943,9 @@ void sigczero_setup(void)
 typedef struct sigczero_rev
 {
     t_object x_obj;
-    float x_f;
-    float x_lastre;
-    float x_lastim;
+    t_float x_f;
+    t_sample x_lastre;
+    t_sample x_lastim;
 } t_sigczero_rev;
 
 t_class *sigczero_rev_class;
@@ -969,23 +969,23 @@ static void *sigczero_rev_new(t_float re, t_float im)
 
 static t_int *sigczero_rev_perform(t_int *w)
 {
-    float *inre1 = (float *)(w[1]);
-    float *inim1 = (float *)(w[2]);
-    float *inre2 = (float *)(w[3]);
-    float *inim2 = (float *)(w[4]);
-    float *outre = (float *)(w[5]);
-    float *outim = (float *)(w[6]);
+    t_sample *inre1 = (t_sample *)(w[1]);
+    t_sample *inim1 = (t_sample *)(w[2]);
+    t_sample *inre2 = (t_sample *)(w[3]);
+    t_sample *inim2 = (t_sample *)(w[4]);
+    t_sample *outre = (t_sample *)(w[5]);
+    t_sample *outim = (t_sample *)(w[6]);
     t_sigczero_rev *x = (t_sigczero_rev *)(w[7]);
     int n = (t_int)(w[8]);
     int i;
-    float lastre = x->x_lastre;
-    float lastim = x->x_lastim;
+    t_sample lastre = x->x_lastre;
+    t_sample lastim = x->x_lastim;
     for (i = 0; i < n; i++)
     {
-        float nextre = *inre1++;
-        float nextim = *inim1++;
-        float coefre = *inre2++;
-        float coefim = *inim2++;
+        t_sample nextre = *inre1++;
+        t_sample nextim = *inim1++;
+        t_sample coefre = *inre2++;
+        t_sample coefim = *inim2++;
             /* transfer function is (A bar) - Z^-1, for the same
             frequency response as 1 - AZ^-1 from czero_tilde. */
         *outre++ = lastre - nextre * coefre - nextim * coefim;

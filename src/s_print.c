@@ -83,7 +83,7 @@ void postatom(int argc, t_atom *argv)
     }
 }
 
-void postfloat(float f)
+void postfloat(t_float f)
 {
     char buf[80];
     t_atom a;
@@ -118,7 +118,7 @@ void verbose(int level, const char *fmt, ...)
     int i;
     if(level>sys_verbose)return;
     dopost("verbose(");
-    postfloat((float)level);
+    postfloat((t_float)level);
     dopost("):");
     
     va_start(ap, fmt);

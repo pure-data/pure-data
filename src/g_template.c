@@ -147,7 +147,7 @@ t_float template_getfloat(t_template *x, t_symbol *fieldname, t_word *wp,
 {
     int onset, type;
     t_symbol *arraytype;
-    float val = 0;
+    t_float val = 0;
     if (template_find_field(x, fieldname, &onset, &type, &arraytype))
     {
         if (type == DT_FLOAT)
@@ -721,14 +721,14 @@ struct _fielddesc
         t_symbol *fd_symbol;    /* the field is a constant symbol */
         t_symbol *fd_varsym;    /* the field is variable and this is the name */
     } fd_un;
-    float fd_v1;        /* min and max values */
-    float fd_v2;
-    float fd_screen1;   /* min and max screen values */
-    float fd_screen2;
-    float fd_quantum;   /* quantization in value */ 
+    t_float fd_v1;        /* min and max values */
+    t_float fd_v2;
+    t_float fd_screen1;   /* min and max screen values */
+    t_float fd_screen2;
+    t_float fd_quantum;   /* quantization in value */ 
 };
 
-static void fielddesc_setfloat_const(t_fielddesc *fd, float f)
+static void fielddesc_setfloat_const(t_fielddesc *fd, t_float f)
 {
     fd->fd_type = A_FLOAT;
     fd->fd_var = 0;
@@ -851,9 +851,9 @@ static t_float fielddesc_getfloat(t_fielddesc *f, t_template *template,
 }
 
     /* convert a variable's value to a screen coordinate via its fielddesc */
-t_float fielddesc_cvttocoord(t_fielddesc *f, float val)
+t_float fielddesc_cvttocoord(t_fielddesc *f, t_float val)
 {
-    float coord, pix, extreme, div;
+    t_float coord, pix, extreme, div;
     if (f->fd_v2 == f->fd_v1)
         return (val);
     div = (f->fd_screen2 - f->fd_screen1)/(f->fd_v2 - f->fd_v1);
@@ -877,7 +877,7 @@ t_float fielddesc_getcoord(t_fielddesc *f, t_template *template,
     {
         if (f->fd_var)
         {
-            float val = template_getfloat(template,
+            t_float val = template_getfloat(template,
                 f->fd_un.fd_varsym, wp, loud);
             return (fielddesc_cvttocoord(f, val));
         }
@@ -909,15 +909,15 @@ static t_symbol *fielddesc_getsymbol(t_fielddesc *f, t_template *template,
 }
 
     /* convert from a screen coordinate to a variable value */
-float fielddesc_cvtfromcoord(t_fielddesc *f, float coord)
+t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord)
 {
-    float val;
+    t_float val;
     if (f->fd_screen2 == f->fd_screen1)
         val = coord;
     else
     {
-        float div = (f->fd_v2 - f->fd_v1)/(f->fd_screen2 - f->fd_screen1);
-        float extreme;
+        t_float div = (f->fd_v2 - f->fd_v1)/(f->fd_screen2 - f->fd_screen1);
+        t_float extreme;
         val = f->fd_v1 + (coord - f->fd_screen1) * div;
         if (f->fd_quantum != 0)
             val = ((int)((val/f->fd_quantum) + 0.5)) *  f->fd_quantum;
@@ -932,11 +932,11 @@ float fielddesc_cvtfromcoord(t_fielddesc *f, float coord)
  }
 
 void fielddesc_setcoord(t_fielddesc *f, t_template *template,
-    t_word *wp, float coord, int loud)
+    t_word *wp, t_float coord, int loud)
 {
     if (f->fd_type == A_FLOAT && f->fd_var)
     {
-        float val = fielddesc_cvtfromcoord(f, coord);
+        t_float val = fielddesc_cvtfromcoord(f, coord);
         template_setfloat(template,
                 f->fd_un.fd_varsym, wp, val, loud);
     }
@@ -1040,7 +1040,7 @@ void curve_float(t_curve *x, t_floatarg f)
 /* -------------------- widget behavior for curve ------------ */
 
 static void curve_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_curve *x = (t_curve *)z;
@@ -1072,21 +1072,21 @@ static void curve_getrect(t_gobj *z, t_glist *glist,
 }
 
 static void curve_displace(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int dx, int dy)
 {
     /* refuse */
 }
 
 static void curve_select(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
     /* fill in later */
 }
 
 static void curve_activate(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
     /* fill in later */
@@ -1122,7 +1122,7 @@ static void numbertocolor(int n, char *s)
 }
 
 static void curve_vis(t_gobj *z, t_glist *glist, 
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int vis)
 {
     t_curve *x = (t_curve *)z;
@@ -1137,7 +1137,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
         if (n > 1)
         {
             int flags = x->x_flags, closed = (flags & CLOSED);
-            float width = fielddesc_getfloat(&x->x_width, template, data, 1);
+            t_float width = fielddesc_getfloat(&x->x_width, template, data, 1);
             char outline[20], fill[20];
             int pix[200];
             if (n > 100)
@@ -1185,12 +1185,12 @@ static void curve_vis(t_gobj *z, t_glist *glist,
 }
 
 static int curve_motion_field;
-static float curve_motion_xcumulative;
-static float curve_motion_xbase;
-static float curve_motion_xper;
-static float curve_motion_ycumulative;
-static float curve_motion_ybase;
-static float curve_motion_yper;
+static t_float curve_motion_xcumulative;
+static t_float curve_motion_xbase;
+static t_float curve_motion_xper;
+static t_float curve_motion_ycumulative;
+static t_float curve_motion_ybase;
+static t_float curve_motion_yper;
 static t_glist *curve_motion_glist;
 static t_scalar *curve_motion_scalar;
 static t_array *curve_motion_array;
@@ -1237,7 +1237,7 @@ static void curve_motion(void *z, t_floatarg dx, t_floatarg dy)
 
 static int curve_click(t_gobj *z, t_glist *glist, 
     t_word *data, t_template *template, t_scalar *sc, t_array *ap,
-    float basex, float basey,
+    t_float basex, t_float basey,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_curve *x = (t_curve *)z;
@@ -1438,8 +1438,8 @@ void plot_float(t_plot *x, t_floatarg f)
 static int plot_readownertemplate(t_plot *x,
     t_word *data, t_template *ownertemplate, 
     t_symbol **elemtemplatesymp, t_array **arrayp,
-    float *linewidthp, float *xlocp, float *xincp, float *ylocp, float *stylep,
-    float *visp, float *scalarvisp,
+    t_float *linewidthp, t_float *xlocp, t_float *xincp, t_float *ylocp, t_float *stylep,
+    t_float *visp, t_float *scalarvisp,
     t_fielddesc **xfield, t_fielddesc **yfield, t_fielddesc **wfield)
 {
     int arrayonset, type;
@@ -1538,7 +1538,7 @@ int array_getfields(t_symbol *elemtemplatesym,
 }
 
 static void plot_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_plot *x = (t_plot *)z;
@@ -1546,11 +1546,11 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    float linewidth, xloc, xinc, yloc, style, xsum, yval, vis, scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, xsum, yval, vis, scalarvis;
     t_array *array;
     int x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
     int i;
-    float xpix, ypix, wpix;
+    t_float xpix, ypix, wpix;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
     if (!plot_readownertemplate(x, data, template, 
         &elemtemplatesym, &array, &linewidth, &xloc, &xinc, &yloc, &style,
@@ -1565,7 +1565,7 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
         int incr = (array->a_n <= 2000 ? 1 : array->a_n / 1000);
         for (i = 0, xsum = 0; i < array->a_n; i += incr)
         {
-            float usexloc, useyloc;
+            t_float usexloc, useyloc;
             t_gobj *y;
                 /* get the coords of the point proper */
             array_getcoordinate(glist, (char *)(array->a_vec) + i * elemsize,
@@ -1585,11 +1585,11 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
                     /* check also the drawing instructions for the scalar */ 
                 if (xonset >= 0)
                     usexloc = basex + xloc + fielddesc_cvttocoord(xfielddesc, 
-                        *(float *)(((char *)(array->a_vec) + elemsize * i)
+                        *(t_float *)(((char *)(array->a_vec) + elemsize * i)
                             + xonset));
                 else usexloc = basex + xsum, xsum += xinc;
                 if (yonset >= 0)
-                    yval = *(float *)(((char *)(array->a_vec) + elemsize * i)
+                    yval = *(t_float *)(((char *)(array->a_vec) + elemsize * i)
                         + yonset);
                 else yval = 0;
                 useyloc = basey + yloc + fielddesc_cvttocoord(yfielddesc, yval);
@@ -1622,28 +1622,28 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
 }
 
 static void plot_displace(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int dx, int dy)
 {
         /* not yet */
 }
 
 static void plot_select(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
     /* not yet */
 }
 
 static void plot_activate(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
         /* not yet */
 }
 
 static void plot_vis(t_gobj *z, t_glist *glist, 
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int tovis)
 {
     t_plot *x = (t_plot *)z;
@@ -1651,7 +1651,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    float linewidth, xloc, xinc, yloc, style, usexloc, xsum, yval, vis,
+    t_float linewidth, xloc, xinc, yloc, style, usexloc, xsum, yval, vis,
         scalarvis;
     t_array *array;
     int nelem;
@@ -1681,17 +1681,17 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     {
         if (style == PLOTSTYLE_POINTS)
         {
-            float minyval = 1e20, maxyval = -1e20;
+            t_float minyval = 1e20, maxyval = -1e20;
             int ndrawn = 0;
             for (xsum = basex + xloc, i = 0; i < nelem; i++)
             {
-                float yval, xpix, ypix, nextxloc;
+                t_float yval, xpix, ypix, nextxloc;
                 int ixpix, inextx;
 
                 if (xonset >= 0)
                 {
                     usexloc = basex + xloc +
-                        *(float *)((elem + elemsize * i) + xonset);
+                        *(t_float *)((elem + elemsize * i) + xonset);
                     ixpix = glist_xtopixels(glist, 
                         fielddesc_cvttocoord(xfielddesc, usexloc));
                     inextx = ixpix + 2;
@@ -1707,7 +1707,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
 
                 if (yonset >= 0)
-                    yval = yloc + *(float *)((elem + elemsize * i) + yonset);
+                    yval = yloc + *(t_float *)((elem + elemsize * i) + yonset);
                 else yval = 0;
                 if (yval > maxyval)
                     maxyval = yval;
@@ -1734,7 +1734,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         {
             char outline[20];
             int lastpixel = -1, ndrawn = 0;
-            float yval = 0, wval = 0, xpix;
+            t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
                 /* draw the trace */
             numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
@@ -1749,13 +1749,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 for (i = 0, xsum = xloc; i < nelem; i++)
                 {
                     if (xonset >= 0)
-                        usexloc = xloc + *(float *)((elem + elemsize * i)
+                        usexloc = xloc + *(t_float *)((elem + elemsize * i)
                             + xonset);
                     else usexloc = xsum, xsum += xinc;
                     if (yonset >= 0)
-                        yval = *(float *)((elem + elemsize * i) + yonset);
+                        yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
-                    wval = *(float *)((elem + elemsize * i) + wonset);
+                    wval = *(t_float *)((elem + elemsize * i) + wonset);
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
@@ -1774,15 +1774,15 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 lastpixel = -1;
                 for (i = nelem-1; i >= 0; i--)
                 {
-                    float usexloc;
+                    t_float usexloc;
                     if (xonset >= 0)
-                        usexloc = xloc + *(float *)((elem + elemsize * i)
+                        usexloc = xloc + *(t_float *)((elem + elemsize * i)
                             + xonset);
                     else xsum -= xinc, usexloc = xsum;
                     if (yonset >= 0)
-                        yval = *(float *)((elem + elemsize * i) + yonset);
+                        yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
-                    wval = *(float *)((elem + elemsize * i) + wonset);
+                    wval = *(t_float *)((elem + elemsize * i) + wonset);
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
@@ -1826,13 +1826,13 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
                 for (xsum = xloc, i = 0; i < nelem; i++)
                 {
-                    float usexloc;
+                    t_float usexloc;
                     if (xonset >= 0)
-                        usexloc = xloc + *(float *)((elem + elemsize * i) +
+                        usexloc = xloc + *(t_float *)((elem + elemsize * i) +
                             xonset);
                     else usexloc = xsum, xsum += xinc;
                     if (yonset >= 0)
-                        yval = *(float *)((elem + elemsize * i) + yonset);
+                        yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
@@ -1868,14 +1868,14 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         {
             for (xsum = xloc, i = 0; i < nelem; i++)
             {
-                float usexloc, useyloc;
+                t_float usexloc, useyloc;
                 t_gobj *y;
                 if (xonset >= 0)
                     usexloc = basex + xloc +
-                        *(float *)((elem + elemsize * i) + xonset);
+                        *(t_float *)((elem + elemsize * i) + xonset);
                 else usexloc = basex + xsum, xsum += xinc;
                 if (yonset >= 0)
-                    yval = *(float *)((elem + elemsize * i) + yonset);
+                    yval = *(t_float *)((elem + elemsize * i) + yonset);
                 else yval = 0;
                 useyloc = basey + yloc +
                     fielddesc_cvttocoord(yfielddesc, yval);
@@ -1917,12 +1917,12 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
 static int plot_click(t_gobj *z, t_glist *glist, 
     t_word *data, t_template *template, t_scalar *sc, t_array *ap,
-    float basex, float basey,
+    t_float basex, t_float basey,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_plot *x = (t_plot *)z;
     t_symbol *elemtemplatesym;
-    float linewidth, xloc, xinc, yloc, style, vis, scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, vis, scalarvis;
     t_array *array;
     t_fielddesc *xfielddesc, *yfielddesc, *wfielddesc;
 
@@ -2058,7 +2058,7 @@ static void drawnumber_sprintf(t_drawnumber *x, char *buf, t_atom *ap)
 }
 
 static void drawnumber_getrect(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_drawnumber *x = (t_drawnumber *)z;
@@ -2090,14 +2090,14 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
 }
 
 static void drawnumber_displace(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int dx, int dy)
 {
     /* refuse */
 }
 
 static void drawnumber_select(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
     post("drawnumber_select %d", state);
@@ -2105,14 +2105,14 @@ static void drawnumber_select(t_gobj *z, t_glist *glist,
 }
 
 static void drawnumber_activate(t_gobj *z, t_glist *glist,
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
     post("drawnumber_activate %d", state);
 }
 
 static void drawnumber_vis(t_gobj *z, t_glist *glist, 
-    t_word *data, t_template *template, float basex, float basey,
+    t_word *data, t_template *template, t_float basex, t_float basey,
     int vis)
 {
     t_drawnumber *x = (t_drawnumber *)z;
@@ -2143,7 +2143,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
     else sys_vgui(".x%lx.c delete drawnumber%lx\n", glist_getcanvas(glist), data);
 }
 
-static float drawnumber_motion_ycumulative;
+static t_float drawnumber_motion_ycumulative;
 static t_glist *drawnumber_motion_glist;
 static t_scalar *drawnumber_motion_scalar;
 static t_array *drawnumber_motion_array;
@@ -2225,7 +2225,7 @@ static void drawnumber_key(void *z, t_floatarg fkey)
     else
     {
             /* key entry for a numeric field.  This is just a stopgap. */
-        float newf;
+        t_float newf;
         if (drawnumber_motion_firstkey)
             sbuf[0] = 0;
         else sprintf(sbuf, "%g", template_getfloat(drawnumber_motion_template,
@@ -2258,7 +2258,7 @@ static void drawnumber_key(void *z, t_floatarg fkey)
 
 static int drawnumber_click(t_gobj *z, t_glist *glist, 
     t_word *data, t_template *template, t_scalar *sc, t_array *ap,
-    float basex, float basey,
+    t_float basex, t_float basey,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_drawnumber *x = (t_drawnumber *)z;

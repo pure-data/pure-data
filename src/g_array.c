@@ -394,7 +394,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     int flags = fflags;
     int saveit = ((flags & 1) != 0);
     int style = ((flags & 6) >> 1);
-    float stylewas = template_getfloat(
+    t_float stylewas = template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1);
     if (deleteit != 0)
@@ -449,7 +449,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         else if (style != stylewas)
             garray_fittograph(x, size, style);
         template_setfloat(scalartemplate, gensym("style"),
-            x->x_scalar->sc_vec, (float)style, 0);
+            x->x_scalar->sc_vec, (t_float)style, 0);
 
         garray_setsaveit(x, (saveit != 0));
         garray_redraw(x);
@@ -460,7 +460,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 void garray_arrayviewlist_new(t_garray *x)
 {
     int i, xonset=0, yonset=0, type=0, elemsize=0;
-    float yval;
+    t_float yval;
     char cmdbuf[200];
     t_symbol *arraytype;
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -478,7 +478,7 @@ void garray_arrayviewlist_new(t_garray *x)
     gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
     for (i = 0; i < ARRAYPAGESIZE && i < a->a_n; i++)
     {
-        yval = *(float *)(a->a_vec +
+        yval = *(t_float *)(a->a_vec +
                elemsize * i + yonset);
         sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
                  x->x_realname->s_name,
@@ -493,7 +493,7 @@ void garray_arrayviewlist_fillpage(t_garray *x,
                                    t_float fTopItem)
 {
     int i, xonset=0, yonset=0, type=0, elemsize=0, topItem;
-    float yval;
+    t_float yval;
     char cmdbuf[200];
     t_symbol *arraytype;
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -524,7 +524,7 @@ void garray_arrayviewlist_fillpage(t_garray *x,
          (i < (page + 1) * ARRAYPAGESIZE && i < a->a_n);
          i++)
     {
-        yval = *(float *)(a->a_vec + \
+        yval = *(t_float *)(a->a_vec + \
                elemsize * i + yonset);
         sys_vgui(".%sArrayWindow.lb insert %d {%d) %g}\n",
                  x->x_realname->s_name,
@@ -575,23 +575,23 @@ void array_redraw(t_array *a, t_glist *glist)
     /* routine to get screen coordinates of a point in an array */
 void array_getcoordinate(t_glist *glist,
     char *elem, int xonset, int yonset, int wonset, int indx,
-    float basex, float basey, float xinc,
+    t_float basex, t_float basey, t_float xinc,
     t_fielddesc *xfielddesc, t_fielddesc *yfielddesc, t_fielddesc *wfielddesc,
-    float *xp, float *yp, float *wp)
+    t_float *xp, t_float *yp, t_float *wp)
 {
-    float xval, yval, ypix, wpix;
+    t_float xval, yval, ypix, wpix;
     if (xonset >= 0)
-        xval = *(float *)(elem + xonset);
+        xval = *(t_float *)(elem + xonset);
     else xval = indx * xinc;
     if (yonset >= 0)
-        yval = *(float *)(elem + yonset);
+        yval = *(t_float *)(elem + yonset);
     else yval = 0;
     ypix = glist_ytopixels(glist, basey +
         fielddesc_cvttocoord(yfielddesc, yval));
     if (wonset >= 0)
     {
             /* found "w" field which controls linewidth. */
-        float wval = *(float *)(elem + wonset);
+        t_float wval = *(t_float *)(elem + wonset);
         wpix = glist_ytopixels(glist, basey + 
             fielddesc_cvttocoord(yfielddesc, yval) +
                 fielddesc_cvttocoord(wfielddesc, wval)) - ypix;
@@ -605,8 +605,8 @@ void array_getcoordinate(t_glist *glist,
     *wp = wpix;
 }
 
-static float array_motion_xcumulative;
-static float array_motion_ycumulative;
+static t_float array_motion_xcumulative;
+static t_float array_motion_ycumulative;
 static t_fielddesc *array_motion_xfield;
 static t_fielddesc *array_motion_yfield;
 static t_glist *array_motion_glist;
@@ -617,9 +617,9 @@ static t_template *array_motion_template;
 static int array_motion_npoints;
 static int array_motion_elemsize;
 static int array_motion_altkey;
-static float array_motion_initx;
-static float array_motion_xperpix;
-static float array_motion_yperpix;
+static t_float array_motion_initx;
+static t_float array_motion_xperpix;
+static t_float array_motion_yperpix;
 static int array_motion_lastx;
 static int array_motion_fatten;
 
@@ -638,9 +638,9 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
         {
             t_word *thisword = (t_word *)(((char *)array_motion_wp) +
                 i * array_motion_elemsize);
-            float xwas = fielddesc_getcoord(array_motion_xfield, 
+            t_float xwas = fielddesc_getcoord(array_motion_xfield, 
                 array_motion_template, thisword, 1);
-            float ywas = (array_motion_yfield ?
+            t_float ywas = (array_motion_yfield ?
                 fielddesc_getcoord(array_motion_yfield, 
                     array_motion_template, thisword, 1) : 0);
             fielddesc_setcoord(array_motion_xfield,
@@ -651,7 +651,7 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                 {
                     if (i == 0)
                     {
-                        float newy = ywas + dy * array_motion_yperpix;
+                        t_float newy = ywas + dy * array_motion_yperpix;
                         if (newy < 0)
                             newy = 0;
                         fielddesc_setcoord(array_motion_yfield,
@@ -672,13 +672,13 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
             /* a y-only plot. */
         int thisx = array_motion_initx + array_motion_xcumulative + 0.5, x2;
         int increment, i, nchange;
-        float newy = array_motion_ycumulative,
+        t_float newy = array_motion_ycumulative,
             oldy = fielddesc_getcoord(array_motion_yfield,
                 array_motion_template,
                     (t_word *)(((char *)array_motion_wp) +
                         array_motion_elemsize * array_motion_lastx),
                             1);
-        float ydiff = newy - oldy;
+        t_float ydiff = newy - oldy;
         if (thisx < 0) thisx = 0;
         else if (thisx >= array_motion_npoints)
             thisx = array_motion_npoints - 1;
@@ -704,7 +704,7 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
 
 int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     t_array *ap, struct _glist *owner,
-    float xloc, float yloc, int xpix, int ypix,
+    t_float xloc, t_float yloc, int xpix, int ypix,
     int shift, int alt, int dbl, int doit);
 
     /* try clicking on an element of the array as a scalar (if clicking
@@ -712,14 +712,14 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
 static int array_doclick_element(t_array *array, t_glist *glist,
     t_scalar *sc, t_array *ap,
     t_symbol *elemtemplatesym,
-    float linewidth, float xloc, float xinc, float yloc,
+    t_float linewidth, t_float xloc, t_float xinc, t_float yloc,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i, incr, hit;
-    float xsum;
+    t_float xsum;
 
     if (elemtemplatesym == &s_float)
         return (0);
@@ -733,13 +733,13 @@ static int array_doclick_element(t_array *array, t_glist *glist,
     else incr = array->a_n / 300;
     for (i = 0, xsum = 0; i < array->a_n; i += incr)
     {
-        float usexloc, useyloc;
+        t_float usexloc, useyloc;
         if (xonset >= 0)
             usexloc = xloc + fielddesc_cvttocoord(xfield, 
-                *(float *)(((char *)(array->a_vec) + elemsize * i) + xonset));
+                *(t_float *)(((char *)(array->a_vec) + elemsize * i) + xonset));
         else usexloc = xloc + xsum, xsum += xinc;
         useyloc = yloc + (yonset >= 0 ? fielddesc_cvttocoord(yfield,
-            *(float *)(((char *)(array->a_vec) + elemsize * i) + yonset)) : 0);
+            *(t_float *)(((char *)(array->a_vec) + elemsize * i) + yonset)) : 0);
         
         if (hit = scalar_doclick(
             (t_word *)((char *)(array->a_vec) + i * elemsize),
@@ -755,7 +755,7 @@ static int array_doclick_element(t_array *array, t_glist *glist,
     they can be static (look in g_canvas.h for candidates). */
 int array_doclick(t_array *array, t_glist *glist, t_scalar *sc, t_array *ap,
     t_symbol *elemtemplatesym,
-    float linewidth, float xloc, float xinc, float yloc, float scalarvis,
+    t_float linewidth, t_float xloc, t_float xinc, t_float yloc, t_float scalarvis,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
@@ -767,12 +767,12 @@ int array_doclick(t_array *array, t_glist *glist, t_scalar *sc, t_array *ap,
         &elemtemplate, &elemsize, xfield, yfield, wfield,
         &xonset, &yonset, &wonset))
     {
-        float best = 100;
+        t_float best = 100;
             /* if it has more than 2000 points, just check 1000 of them. */
         int incr = (array->a_n <= 2000 ? 1 : array->a_n / 1000);
         for (i = 0; i < array->a_n; i += incr)
         {
-            float pxpix, pypix, pwpix, dx, dy;
+            t_float pxpix, pypix, pwpix, dx, dy;
             array_getcoordinate(glist, (char *)(array->a_vec) + i * elemsize,
                 xonset, yonset, wonset, i, xloc, yloc, xinc,
                 xfield, yfield, wfield, &pxpix, &pypix, &pwpix);
@@ -810,7 +810,7 @@ int array_doclick(t_array *array, t_glist *glist, t_scalar *sc, t_array *ap,
         best += 0.001;  /* add truncation error margin */
         for (i = 0; i < array->a_n; i += incr)
         {
-            float pxpix, pypix, pwpix, dx, dy, dy2, dy3;
+            t_float pxpix, pypix, pwpix, dx, dy, dy2, dy3;
             array_getcoordinate(glist, (char *)(array->a_vec) + i * elemsize,
                 xonset, yonset, wonset, i, xloc, yloc, xinc,
                 xfield, yfield, wfield, &pxpix, &pypix, &pwpix);
@@ -903,7 +903,7 @@ int array_doclick(t_array *array, t_glist *glist, t_scalar *sc, t_array *ap,
                         array_motion_ycumulative = 
                             fielddesc_getcoord(yfield, array_motion_template,
                                 (t_word *)(elem + i * elemsize), 1);
-                            /* *(float *)((elem + elemsize * i) + yonset); */
+                            /* *(t_float *)((elem + elemsize * i) + yonset); */
                     }
                     else
                     {
@@ -929,7 +929,7 @@ int array_doclick(t_array *array, t_glist *glist, t_scalar *sc, t_array *ap,
 static void array_getrect(t_array *array, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    float x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
+    t_float x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i;
@@ -944,7 +944,7 @@ static void array_getrect(t_array *array, t_glist *glist,
         else incr = array->a_n / 300;
         for (i = 0; i < array->a_n; i += incr)
         {
-            float pxpix, pypix, pwpix, dx, dy;
+            t_float pxpix, pypix, pwpix, dx, dy;
             array_getcoordinate(glist, (char *)(array->a_vec) +
                 i * elemsize,
                 xonset, yonset, wonset, i, 0, 0, 1,
@@ -1152,7 +1152,7 @@ int garray_getfloatwords(t_garray *x, int *size, t_word **vec)
 
 int garray_getfloatarray(t_garray *x, int *size, t_float **vec)
 {
-    if (sizeof(t_word) != sizeof(float))
+    if (sizeof(t_word) != sizeof(t_float))
     {
         static int warned;
         if (!warned)
@@ -1180,13 +1180,13 @@ static void garray_const(t_garray *x, t_floatarg g)
     if (!array)
         error("%s: needs floating-point 'y' field", x->x_realname);
     else for (i = 0; i < array->a_n; i++)
-        *((float *)((char *)array->a_vec
+        *((t_float *)((char *)array->a_vec
             + elemsize * i) + yonset) = g;
     garray_redraw(x);
 }
 
     /* sum of Fourier components; called from routines below */
-static void garray_dofo(t_garray *x, int npoints, float dcval,
+static void garray_dofo(t_garray *x, int npoints, t_float dcval,
     int nsin, t_float *vsin, int sineflag)
 {
     double phase, phaseincr, fj;
@@ -1213,7 +1213,7 @@ static void garray_dofo(t_garray *x, int npoints, float dcval,
         else
             for (j = 0, fj = 0; j < nsin; j++, fj += phase)
                 sum += vsin[j] * cos(fj);
-        *((float *)((array->a_vec + elemsize * i)) + yonset)
+        *((t_float *)((array->a_vec + elemsize * i)) + yonset)
             = sum;
     }
     garray_redraw(x);
@@ -1282,7 +1282,7 @@ static void garray_normalize(t_garray *x, t_float f)
 
     for (i = 0, maxv = 0; i < array->a_n; i++)
     {
-        double v = *((float *)(array->a_vec + elemsize * i)
+        double v = *((t_float *)(array->a_vec + elemsize * i)
             + yonset);
         if (v > maxv)
             maxv = v;
@@ -1293,7 +1293,7 @@ static void garray_normalize(t_garray *x, t_float f)
     {
         renormer = f / maxv;
         for (i = 0; i < array->a_n; i++)
-            *((float *)(array->a_vec + elemsize * i) + yonset)
+            *((t_float *)(array->a_vec + elemsize * i) + yonset)
                 *= renormer;
     }
     garray_redraw(x);
@@ -1331,7 +1331,7 @@ static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
             if (argc <= 0) return;
         }
         for (i = 0; i < argc; i++)
-            *((float *)(array->a_vec + elemsize * (i + firstindex)) + yonset)
+            *((t_float *)(array->a_vec + elemsize * (i + firstindex)) + yonset)
                 = atom_getfloat(argv + i);
     }
     garray_redraw(x);
@@ -1402,7 +1402,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
     }
     for (i = 0; i < nelem; i++)
     {
-        if (!fscanf(fd, "%f", ((float *)(array->a_vec +
+        if (!fscanf(fd, "%f", ((t_float *)(array->a_vec +
             elemsize * i) + yonset)))
         {
             post("%s: read %d elements into table of size %d",
@@ -1411,7 +1411,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
         }
     }
     while (i < nelem)
-        *((float *)(array->a_vec +
+        *((t_float *)(array->a_vec +
             elemsize * i) + yonset) = 0, i++;
     fclose(fd);
     garray_redraw(x);
@@ -1439,7 +1439,7 @@ static void garray_write(t_garray *x, t_symbol *filename)
     for (i = 0; i < array->a_n; i++)
     {
         if (fprintf(fd, "%g\n",
-            *(float *)(((array->a_vec + sizeof(t_word) * i)) + yonset)) < 1)
+            *(t_float *)(((array->a_vec + sizeof(t_word) * i)) + yonset)) < 1)
         {
             post("%s: write error", filename->s_name);
             break;

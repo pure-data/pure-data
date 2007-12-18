@@ -16,9 +16,9 @@ static t_class *clip_class;
 typedef struct _clip
 {
     t_object x_obj;
-    float x_f;
-    t_sample x_lo;
-    t_sample x_hi;
+    t_float x_f;
+    t_float x_lo;
+    t_float x_hi;
 } t_clip;
 
 static void *clip_new(t_floatarg lo, t_floatarg hi)
@@ -36,12 +36,12 @@ static void *clip_new(t_floatarg lo, t_floatarg hi)
 static t_int *clip_perform(t_int *w)
 {
     t_clip *x = (t_clip *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);
     while (n--)
     {
-        float f = *in++;
+        t_sample f = *in++;
         if (f < x->x_lo) f = x->x_lo;
         if (f > x->x_hi) f = x->x_hi;
         *out++ = f;
@@ -125,7 +125,7 @@ float qrsqrt(float f) {return (q8_rsqrt(f)); }
 typedef struct sigrsqrt
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sigrsqrt;
 
 static t_class *sigrsqrt_class;
@@ -140,16 +140,16 @@ static void *sigrsqrt_new(void)
 
 static t_int *sigrsqrt_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     while (n--)
     {   
-        float f = *in;
+        t_sample f = *in;
         long l = *(long *)(in++);
         if (f < 0) *out++ = 0;
         else
         {
-            float g = rsqrt_exptab[(l >> 23) & 0xff] *
+            t_sample g = rsqrt_exptab[(l >> 23) & 0xff] *
                 rsqrt_mantissatab[(l >> 13) & 0x3ff];
             *out++ = 1.5 * g - 0.5 * g * g * g * f;
         }
@@ -179,7 +179,7 @@ void sigrsqrt_setup(void)
 typedef struct sigsqrt
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sigsqrt;
 
 static t_class *sigsqrt_class;
@@ -194,16 +194,16 @@ static void *sigsqrt_new(void)
 
 t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     while (n--)
     {   
-        float f = *in;
+        t_sample f = *in;
         long l = *(long *)(in++);
         if (f < 0) *out++ = 0;
         else
         {
-            float g = rsqrt_exptab[(l >> 23) & 0xff] *
+            t_sample g = rsqrt_exptab[(l >> 23) & 0xff] *
                 rsqrt_mantissatab[(l >> 13) & 0x3ff];
             *out++ = f * (1.5 * g - 0.5 * g * g * g * f);
         }
@@ -230,7 +230,7 @@ void sigsqrt_setup(void)
 typedef struct wrap
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sigwrap;
 
 t_class *sigwrap_class;
@@ -245,11 +245,11 @@ static void *sigwrap_new(void)
 
 static t_int *sigwrap_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     while (n--)
     {   
-        float f = *in++;
+        t_sample f = *in++;
         int k = f;
         if (f > 0) *out++ = f-k;
         else *out++ = f - (k-1);
@@ -275,7 +275,7 @@ void sigwrap_setup(void)
 typedef struct mtof_tilde
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_mtof_tilde;
 
 t_class *mtof_tilde_class;
@@ -290,11 +290,11 @@ static void *mtof_tilde_new(void)
 
 static t_int *mtof_tilde_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     for (; n--; in++, out++)
     {
-        float f = *in;
+        t_sample f = *in;
         if (f <= -1500) *out = 0;
         else
         {
@@ -323,7 +323,7 @@ void mtof_tilde_setup(void)
 typedef struct ftom_tilde
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_ftom_tilde;
 
 t_class *ftom_tilde_class;
@@ -338,11 +338,11 @@ static void *ftom_tilde_new(void)
 
 static t_int *ftom_tilde_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     for (; n--; *in++, out++)
     {
-        float f = *in;
+        t_sample f = *in;
         *out = (f > 0 ? 17.3123405046 * log(.12231220585 * f) : -1500);
     }
     return (w + 4);
@@ -366,7 +366,7 @@ void ftom_tilde_setup(void)
 typedef struct dbtorms_tilde
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_dbtorms_tilde;
 
 t_class *dbtorms_tilde_class;
@@ -381,11 +381,11 @@ static void *dbtorms_tilde_new(void)
 
 static t_int *dbtorms_tilde_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     for (; n--; in++, out++)
     {
-        float f = *in;
+        t_sample f = *in;
         if (f <= 0) *out = 0;
         else
         {
@@ -415,7 +415,7 @@ void dbtorms_tilde_setup(void)
 typedef struct rmstodb_tilde
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_rmstodb_tilde;
 
 t_class *rmstodb_tilde_class;
@@ -430,15 +430,15 @@ static void *rmstodb_tilde_new(void)
 
 static t_int *rmstodb_tilde_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     for (; n--; in++, out++)
     {
-        float f = *in;
+        t_sample f = *in;
         if (f <= 0) *out = 0;
         else
         {
-            float g = 100 + 20./LOGTEN * log(f);
+            t_sample g = 100 + 20./LOGTEN * log(f);
             *out = (g < 0 ? 0 : g);
         }
     }
@@ -463,7 +463,7 @@ void rmstodb_tilde_setup(void)
 typedef struct dbtopow_tilde
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_dbtopow_tilde;
 
 t_class *dbtopow_tilde_class;
@@ -478,11 +478,11 @@ static void *dbtopow_tilde_new(void)
 
 static t_int *dbtopow_tilde_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     for (; n--; in++, out++)
     {
-        float f = *in;
+        t_sample f = *in;
         if (f <= 0) *out = 0;
         else
         {
@@ -512,7 +512,7 @@ void dbtopow_tilde_setup(void)
 typedef struct powtodb_tilde
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_powtodb_tilde;
 
 t_class *powtodb_tilde_class;
@@ -527,15 +527,15 @@ static void *powtodb_tilde_new(void)
 
 static t_int *powtodb_tilde_perform(t_int *w)
 {
-    float *in = *(t_float **)(w+1), *out = *(t_float **)(w+2);
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     for (; n--; in++, out++)
     {
-        float f = *in;
+        t_sample f = *in;
         if (f <= 0) *out = 0;
         else
         {
-            float g = 100 + 10./LOGTEN * log(f);
+            t_sample g = 100 + 10./LOGTEN * log(f);
             *out = (g < 0 ? 0 : g);
         }
     }

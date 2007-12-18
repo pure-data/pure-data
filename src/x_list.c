@@ -484,13 +484,13 @@ static void *list_length_new( void)
 static void list_length_list(t_list_length *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    outlet_float(x->x_obj.ob_outlet, (float)argc);
+    outlet_float(x->x_obj.ob_outlet, (t_float)argc);
 }
 
 static void list_length_anything(t_list_length *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    outlet_float(x->x_obj.ob_outlet, (float)argc+1);
+    outlet_float(x->x_obj.ob_outlet, (t_float)argc+1);
 }
 
 static void list_length_setup(void)

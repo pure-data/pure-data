@@ -70,7 +70,7 @@ static void random_bang(t_random *x)
     outlet_float(x->x_obj.ob_outlet, nval);
 }
 
-static void random_seed(t_random *x, float f, float glob)
+static void random_seed(t_random *x, t_float f, t_float glob)
 {
     x->x_state = f;
 }
@@ -228,7 +228,7 @@ static void cputime_bang(t_cputime *x)
 static void cputime_bang2(t_cputime *x)
 {
 #ifdef UNISTD
-    float elapsedcpu;
+    t_float elapsedcpu;
     struct tms newcputime;
     times(&newcputime);
     elapsedcpu = 1000 * (
@@ -237,7 +237,7 @@ static void cputime_bang2(t_cputime *x)
     outlet_float(x->x_obj.ob_outlet, elapsedcpu);
 #endif
 #ifdef MSW
-    float elapsedcpu;
+    t_float elapsedcpu;
     FILETIME ignorethis, ignorethat;
     LARGE_INTEGER usertime, kerneltime;
     BOOL retval;

@@ -208,8 +208,8 @@ typedef struct _hdial
 typedef struct _toggle
 {
     t_iemgui x_gui;
-    float    x_on;
-    float    x_nonzero;
+    t_float    x_on;
+    t_float    x_nonzero;
 } t_toggle;
 
 typedef struct _my_canvas
@@ -238,8 +238,8 @@ typedef struct _vu
     int      x_led_size;
     int      x_peak;
     int      x_rms;
-    float    x_fp;
-    float    x_fr;
+    t_float    x_fp;
+    t_float    x_fr;
     int      x_scale;
     void     *x_out_rms;
     void     *x_out_peak;

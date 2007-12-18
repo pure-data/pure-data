@@ -206,7 +206,7 @@ static void ptrobj_traverse(t_ptrobj *x, t_symbol *s)
     else pd_error(x, "pointer: list '%s' not found", s->s_name);
 }
 
-static void ptrobj_vnext(t_ptrobj *x, float f)
+static void ptrobj_vnext(t_ptrobj *x, t_float f)
 {
     t_gobj *gobj;
     t_gpointer *gp = &x->x_gp;
@@ -774,7 +774,7 @@ static void getsize_pointer(t_getsize *x, t_gpointer *gp)
     else w = gp->gp_un.gp_scalar->sc_vec;
     
     array = *(t_array **)(((char *)w) + onset);
-    outlet_float(x->x_obj.ob_outlet, (float)(array->a_n));
+    outlet_float(x->x_obj.ob_outlet, (t_float)(array->a_n));
 }
 
 static void getsize_setup(void)

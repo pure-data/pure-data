@@ -347,14 +347,14 @@ static void vradio_bang(t_vradio *x)
     {
         if((x->x_change)&&(x->x_on != x->x_on_old))
         {
-            SETFLOAT(x->x_at, (float)x->x_on_old);
+            SETFLOAT(x->x_at, (t_float)x->x_on_old);
             SETFLOAT(x->x_at+1, 0.0);
             outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, x->x_at);
             if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
                 pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, x->x_at);
         }
         x->x_on_old = x->x_on;
-        SETFLOAT(x->x_at, (float)x->x_on);
+        SETFLOAT(x->x_at, (t_float)x->x_on);
         SETFLOAT(x->x_at+1, 1.0);
         outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, x->x_at);
         if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
@@ -382,7 +382,7 @@ static void vradio_fout(t_vradio *x, t_floatarg f)
             /* compatibility with earlier  "vdial" behavior */
         if((x->x_change)&&(i != x->x_on_old))
         {
-            SETFLOAT(x->x_at, (float)x->x_on_old);
+            SETFLOAT(x->x_at, (t_float)x->x_on_old);
             SETFLOAT(x->x_at+1, 0.0);
             outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, x->x_at);
             if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
@@ -393,7 +393,7 @@ static void vradio_fout(t_vradio *x, t_floatarg f)
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         x->x_on_old = x->x_on;
-        SETFLOAT(x->x_at, (float)x->x_on);
+        SETFLOAT(x->x_at, (t_float)x->x_on);
         SETFLOAT(x->x_at+1, 1.0);
         outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, x->x_at);
         if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
@@ -426,7 +426,7 @@ static void vradio_float(t_vradio *x, t_floatarg f)
         {
             if(x->x_gui.x_fsf.x_put_in2out)
             {
-                SETFLOAT(x->x_at, (float)x->x_on_old);
+                SETFLOAT(x->x_at, (t_float)x->x_on_old);
                 SETFLOAT(x->x_at+1, 0.0);
                 outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, x->x_at);
                 if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
@@ -440,7 +440,7 @@ static void vradio_float(t_vradio *x, t_floatarg f)
         x->x_on_old = x->x_on;
         if(x->x_gui.x_fsf.x_put_in2out)
         {
-            SETFLOAT(x->x_at, (float)x->x_on);
+            SETFLOAT(x->x_at, (t_float)x->x_on);
             SETFLOAT(x->x_at+1, 1.0);
             outlet_list(x->x_gui.x_obj.ob_outlet, &s_list, 2, x->x_at);
             if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
@@ -466,7 +466,7 @@ static void vradio_click(t_vradio *x, t_floatarg xpos, t_floatarg ypos,
 {
     int yy =  (int)ypos - text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
 
-    vradio_fout(x, (float)(yy / x->x_gui.x_h));
+    vradio_fout(x, (t_float)(yy / x->x_gui.x_h));
 }
 
 static int vradio_newclick(t_gobj *z, struct _glist *glist,

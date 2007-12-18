@@ -49,7 +49,7 @@ void word_restore(t_word *wp, t_template *template,
         int type = datatypes->ds_type;
         if (type == DT_FLOAT)
         {
-            float f;
+            t_float f;
             if (argc)
             {
                 f =  atom_getfloat(argv);
@@ -145,7 +145,7 @@ void glist_scalar(t_glist *glist,
 }
 
 /* -------------------- widget behavior for scalar ------------ */
-void scalar_getbasexy(t_scalar *x, float *basex, float *basey)
+void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey)
 {
     t_template *template = template_findbyname(x->sc_template);
     *basex = template_getfloat(template, gensym("x"), x->sc_vec, 0);
@@ -160,7 +160,7 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
     t_canvas *templatecanvas = template_findcanvas(template);
     int x1 = 0x7fffffff, x2 = -0x7fffffff, y1 = 0x7fffffff, y2 = -0x7fffffff;
     t_gobj *y;
-    float basex, basey;
+    t_float basex, basey;
     scalar_getbasexy(x, &basex, &basey);
         /* if someone deleted the template canvas, we're just a point */
     if (!templatecanvas)
@@ -260,8 +260,8 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
-    SETFLOAT(&at[1], (float)dx);
-    SETFLOAT(&at[2], (float)dy);
+    SETFLOAT(&at[1], (t_float)dx);
+    SETFLOAT(&at[2], (t_float)dy);
     template_notify(template, gensym("displace"), 2, at);
     scalar_redraw(x, glist);
 }
@@ -283,7 +283,7 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
     t_template *template = template_findbyname(x->sc_template);
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    float basex, basey;
+    t_float basex, basey;
     scalar_getbasexy(x, &basex, &basey);
         /* if we don't know how to draw it, make a small rectangle */
     if (!templatecanvas)
@@ -327,14 +327,14 @@ void scalar_redraw(t_scalar *x, t_glist *glist)
 
 int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     t_array *ap, struct _glist *owner,
-    float xloc, float yloc, int xpix, int ypix,
+    t_float xloc, t_float yloc, int xpix, int ypix,
     int shift, int alt, int dbl, int doit)
 {
     int hit = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    float basex = template_getfloat(template, gensym("x"), data, 0);
-    float basey = template_getfloat(template, gensym("y"), data, 0);
+    t_float basex = template_getfloat(template, gensym("x"), data, 0);
+    t_float basey = template_getfloat(template, gensym("y"), data, 0);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);

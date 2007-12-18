@@ -313,7 +313,7 @@ typedef struct _pipe
     t_object x_obj;
     int x_n;
     int x_nptr;
-    float x_deltime;
+    t_float x_deltime;
     t_pipeout *x_vec;
     t_gpointer *x_gp;
     t_hang *x_hang;
@@ -327,7 +327,7 @@ static void *pipe_new(t_symbol *s, int argc, t_atom *argv)
     t_gpointer *gp;
     int nptr = 0;
     int i;
-    float deltime;
+    t_float deltime;
     if (argc)
     {
         if (argv[argc-1].a_type != A_FLOAT)

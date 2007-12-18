@@ -400,7 +400,7 @@ static void pd_floatforsignal(t_pd *x, t_float f)
 {
     int offset = (*x)->c_floatsignalin;
     if (offset > 0)
-        *(t_sample *)(((char *)x) + offset) = f;
+        *(t_float *)(((char *)x) + offset) = f;
     else
         pd_error(x, "%s: float unexpected for signal input",
             (*x)->c_name->s_name);

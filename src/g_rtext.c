@@ -156,7 +156,7 @@ extern int sys_oldtclversion;
 static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int *indexp)
 {
-    float dispx, dispy;
+    t_float dispx, dispy;
     char smallbuf[200], *tempbuf;
     int outchars = 0, nlines = 0, ncolumns = 0,
         pixwide, pixhigh, font, fontwidth, fontheight, findx, findy;

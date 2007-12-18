@@ -15,7 +15,7 @@ union inletunion
     t_gpointer *iu_pointerslot;
     t_float *iu_floatslot;
     t_symbol **iu_symslot;
-    t_sample iu_floatsignalvalue;
+    t_float iu_floatsignalvalue;
 };
 
 struct _inlet
@@ -660,7 +660,7 @@ int obj_issignaloutlet(t_object *x, int m)
     return (o2 && (o2->o_sym == &s_signal));
 }
 
-t_sample *obj_findsignalscalar(t_object *x, int m)
+t_float *obj_findsignalscalar(t_object *x, int m)
 {
     int n = 0;
     t_inlet *i;
@@ -668,7 +668,7 @@ t_sample *obj_findsignalscalar(t_object *x, int m)
     {
         if (!m--)
             return (x->ob_pd->c_floatsignalin > 0 ?
-                (t_sample *)(((char *)x) + x->ob_pd->c_floatsignalin) : 0);
+                (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) : 0);
         n++;
     }
     for (i = x->ob_inlet; i; i = i->i_next, m--)

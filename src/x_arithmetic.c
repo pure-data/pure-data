@@ -551,8 +551,8 @@ static void *tan_new(void)
 
 static void tan_float(t_object *x, t_float f)
 {
-    float c = cosf(f);
-    float t = (c == 0 ? 0 : sinf(f)/c);
+    t_float c = cosf(f);
+    t_float t = (c == 0 ? 0 : sinf(f)/c);
     outlet_float(x->ob_outlet, t);
 }
 
@@ -575,7 +575,7 @@ static t_class *atan2_class;    /* ----------- atan2 --------------- */
 typedef struct _atan2
 {
     t_object x_ob;
-    float x_f;
+    t_float x_f;
 } t_atan2;
 
 static void *atan2_new(void)
@@ -589,7 +589,7 @@ static void *atan2_new(void)
 
 static void atan2_float(t_atan2 *x, t_float f)
 {
-    float r = (f == 0 && x->x_f == 0 ? 0 : atan2f(f, x->x_f));
+    t_float r = (f == 0 && x->x_f == 0 ? 0 : atan2f(f, x->x_f));
     outlet_float(x->x_ob.ob_outlet, r);
 }
 
@@ -604,7 +604,7 @@ static void *sqrt_new(void)
 
 static void sqrt_float(t_object *x, t_float f)
 {
-    float r = (f > 0 ? sqrtf(f) : 0);
+    t_float r = (f > 0 ? sqrtf(f) : 0);
     outlet_float(x->ob_outlet, r);
 }
 
@@ -619,7 +619,7 @@ static void *log_new(void)
 
 static void log_float(t_object *x, t_float f)
 {
-    float r = (f > 0 ? logf(f) : -1000);
+    t_float r = (f > 0 ? logf(f) : -1000);
     outlet_float(x->ob_outlet, r);
 }
 
@@ -636,7 +636,7 @@ static void *exp_new(void)
 #define MAXLOG 87.3365
 static void exp_float(t_object *x, t_float f)
 {
-    float g;
+    t_float g;
 #ifdef MSW
     char buf[10];
 #endif
@@ -666,9 +666,9 @@ static t_class *clip_class;
 typedef struct _clip
 {
     t_object x_ob;
-    float x_f1;
-    float x_f2;
-    float x_f3;
+    t_float x_f1;
+    t_float x_f2;
+    t_float x_f3;
 } t_clip;
 
 static void *clip_new(t_floatarg f1, t_floatarg f2)

@@ -131,8 +131,8 @@ typedef struct _arrayvis
 
 typedef struct _tick    /* where to put ticks on x or y axes */
 {
-    float k_point;      /* one point to draw a big tick at */
-    float k_inc;        /* x or y increment per little tick */
+    t_float k_point;      /* one point to draw a big tick at */
+    t_float k_inc;        /* x or y increment per little tick */
     int k_lperb;        /* little ticks per big; 0 if no ticks to draw */
 } t_tick;
 
@@ -150,10 +150,10 @@ struct _glist
     struct _glist *gl_owner;    /* parent glist, supercanvas, or 0 if none */
     int gl_pixwidth;            /* width in pixels (on parent, if a graph) */
     int gl_pixheight;
-    float gl_x1;                /* bounding rectangle in our own coordinates */
-    float gl_y1;
-    float gl_x2;
-    float gl_y2;
+    t_float gl_x1;                /* bounding rectangle in our own coordinates */
+    t_float gl_y1;
+    t_float gl_x2;
+    t_float gl_y2;
     int gl_screenx1;            /* screen coordinates when toplevel */
     int gl_screeny1;
     int gl_screenx2;
@@ -163,11 +163,11 @@ struct _glist
     t_tick gl_xtick;            /* ticks marking X values */    
     int gl_nxlabels;            /* number of X coordinate labels */
     t_symbol **gl_xlabel;           /* ... an array to hold them */
-    float gl_xlabely;               /* ... and their Y coordinates */
+    t_float gl_xlabely;               /* ... and their Y coordinates */
     t_tick gl_ytick;            /* same as above for Y ticks and labels */
     int gl_nylabels;
     t_symbol **gl_ylabel;
-    float gl_ylabelx;
+    t_float gl_ylabelx;
     t_editor *gl_editor;        /* editor structure when visible */
     t_symbol *gl_name;          /* symbol bound here */
     int gl_font;                /* nominal font size in points, e.g., 10 */
@@ -286,28 +286,28 @@ doesn't work on array elements... LATER reconsider this */
 
         /* bounding rectangle: */
 typedef void (*t_parentgetrectfn)(t_gobj *x, struct _glist *glist,
-    t_word *data, t_template *tmpl, float basex, float basey,
+    t_word *data, t_template *tmpl, t_float basex, t_float basey,
     int *x1, int *y1, int *x2, int *y2);
         /* displace it */
 typedef void (*t_parentdisplacefn)(t_gobj *x, struct _glist *glist, 
-    t_word *data, t_template *tmpl, float basex, float basey,
+    t_word *data, t_template *tmpl, t_float basex, t_float basey,
     int dx, int dy);
         /* change color to show selection */
 typedef void (*t_parentselectfn)(t_gobj *x, struct _glist *glist,
-    t_word *data, t_template *tmpl, float basex, float basey,
+    t_word *data, t_template *tmpl, t_float basex, t_float basey,
     int state);
         /* change appearance to show activation/deactivation: */
 typedef void (*t_parentactivatefn)(t_gobj *x, struct _glist *glist,
-    t_word *data, t_template *tmpl, float basex, float basey,
+    t_word *data, t_template *tmpl, t_float basex, t_float basey,
     int state);
         /*  making visible or invisible */
 typedef void (*t_parentvisfn)(t_gobj *x, struct _glist *glist,
-    t_word *data, t_template *tmpl, float basex, float basey,
+    t_word *data, t_template *tmpl, t_float basex, t_float basey,
     int flag);
         /*  field a mouse click */
 typedef int (*t_parentclickfn)(t_gobj *x, struct _glist *glist,
     t_word *data, t_template *tmpl, t_scalar *sc, t_array *ap,
-    float basex, float basey,
+    t_float basex, t_float basey,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
 
 struct _parentwidgetbehavior
@@ -380,18 +380,18 @@ EXTERN void glist_sort(t_glist *canvas);
 EXTERN void glist_read(t_glist *x, t_symbol *filename, t_symbol *format);
 EXTERN void glist_mergefile(t_glist *x, t_symbol *filename, t_symbol *format);
 
-EXTERN float glist_pixelstox(t_glist *x, float xpix);
-EXTERN float glist_pixelstoy(t_glist *x, float ypix);
-EXTERN float glist_xtopixels(t_glist *x, float xval);
-EXTERN float glist_ytopixels(t_glist *x, float yval);
-EXTERN float glist_dpixtodx(t_glist *x, float dxpix);
-EXTERN float glist_dpixtody(t_glist *x, float dypix);
+EXTERN t_float glist_pixelstox(t_glist *x, t_float xpix);
+EXTERN t_float glist_pixelstoy(t_glist *x, t_float ypix);
+EXTERN t_float glist_xtopixels(t_glist *x, t_float xval);
+EXTERN t_float glist_ytopixels(t_glist *x, t_float yval);
+EXTERN t_float glist_dpixtodx(t_glist *x, t_float dxpix);
+EXTERN t_float glist_dpixtody(t_glist *x, t_float dypix);
 
 EXTERN void glist_getnextxy(t_glist *gl, int *xval, int *yval);
 EXTERN void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv);
 EXTERN t_glist *glist_addglist(t_glist *g, t_symbol *sym,
-    float x1, float y1, float x2, float y2,
-    float px1, float py1, float px2, float py2);
+    t_float x1, t_float y1, t_float x2, t_float y2,
+    t_float px1, t_float py1, t_float px2, t_float py2);
 EXTERN void glist_arraydialog(t_glist *parent, t_symbol *name,
     t_floatarg size, t_floatarg saveit, t_floatarg newgraph);
 EXTERN t_binbuf *glist_writetobinbuf(t_glist *x, int wholething);
@@ -502,7 +502,7 @@ EXTERN int canvas_getindex(t_canvas *x, t_gobj *y);
 EXTERN void canvas_connect(t_canvas *x,
     t_floatarg fwhoout, t_floatarg foutno,t_floatarg fwhoin, t_floatarg finno);
 EXTERN void canvas_disconnect(t_canvas *x,
-    float index1, float outno, float index2, float inno);
+    t_float index1, t_float outno, t_float index2, t_float inno);
 EXTERN int canvas_isconnected (t_canvas *x,
     t_text *ob1, int n1, t_text *ob2, int n2);
 EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy);
@@ -545,21 +545,21 @@ EXTERN void word_restore(t_word *wp, t_template *tmpl,
 EXTERN t_scalar *scalar_new(t_glist *owner,
     t_symbol *templatesym);
 EXTERN void word_free(t_word *wp, t_template *tmpl);
-EXTERN void scalar_getbasexy(t_scalar *x, float *basex, float *basey);
+EXTERN void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey);
 EXTERN void scalar_redraw(t_scalar *x, t_glist *glist);
 
 /* ------helper routines for "garrays" and "plots" -------------- */
 EXTERN int array_doclick(t_array *array, t_glist *glist, t_scalar *sc, t_array *ap,
     t_symbol *elemtemplatesym,
-    float linewidth, float xloc, float xinc, float yloc, float scalarvis,
+    t_float linewidth, t_float xloc, t_float xinc, t_float yloc, t_float scalarvis,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
 
 EXTERN void array_getcoordinate(t_glist *glist,
     char *elem, int xonset, int yonset, int wonset, int indx,
-    float basex, float basey, float xinc,
+    t_float basex, t_float basey, t_float xinc,
     t_fielddesc *xfielddesc, t_fielddesc *yfielddesc, t_fielddesc *wfielddesc,
-    float *xp, float *yp, float *wp);
+    t_float *xp, t_float *yp, t_float *wp);
 
 EXTERN int array_getfields(t_symbol *elemtemplatesym,
     t_canvas **elemtemplatecanvasp,
@@ -599,9 +599,9 @@ EXTERN void template_setsymbol(t_template *x, t_symbol *fieldname,
 EXTERN t_float fielddesc_getcoord(t_fielddesc *f, t_template *tmpl,
     t_word *wp, int loud);
 EXTERN void fielddesc_setcoord(t_fielddesc *f, t_template *tmpl,
-    t_word *wp, float pix, int loud);
-EXTERN t_float fielddesc_cvttocoord(t_fielddesc *f, float val);
-EXTERN float fielddesc_cvtfromcoord(t_fielddesc *f, float coord);
+    t_word *wp, t_float pix, int loud);
+EXTERN t_float fielddesc_cvttocoord(t_fielddesc *f, t_float val);
+EXTERN t_float fielddesc_cvtfromcoord(t_fielddesc *f, t_float coord);
 
 
 /* ----------------------- guiconnects, g_guiconnect.c --------- */

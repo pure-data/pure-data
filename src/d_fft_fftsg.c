@@ -71,16 +71,16 @@ static int ooura_init( int n)
     return (1);
 }
 
-EXTERN void mayer_fht(float *fz, int n)
+EXTERN void mayer_fht(t_sample *fz, int n)
 {
     post("FHT: not yet implemented");
 }
 
-EXTERN void mayer_dofft(float *fz1, float *fz2, int n, int sgn)
+EXTERN void mayer_dofft(t_sample *fz1, t_sample *fz2, int n, int sgn)
 {
     FFTFLT *buf, *fp3;
     int i;
-    float *fp1, *fp2;
+    t_sample *fp1, *fp2;
     buf = alloca(n * (2 * sizeof(FFTFLT)));
     if (!ooura_init(n))
         return;
@@ -99,21 +99,21 @@ EXTERN void mayer_dofft(float *fz1, float *fz2, int n, int sgn)
     }
 }
 
-EXTERN void mayer_fft(int n, float *fz1, float *fz2)
+EXTERN void mayer_fft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_dofft(fz1, fz2, n, -1);
 }
 
-EXTERN void mayer_ifft(int n, float *fz1, float *fz2)
+EXTERN void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_dofft(fz1, fz2, n, 1);
 }
 
-EXTERN void mayer_realfft(int n, float *fz)
+EXTERN void mayer_realfft(int n, t_sample *fz)
 {
     FFTFLT *buf, *fp3;
     int i, nover2 = n/2;
-    float *fp1, *fp2;
+    t_sample *fp1, *fp2;
     buf = alloca(n * sizeof(FFTFLT));
     if (!ooura_init(n))
         return;
@@ -127,11 +127,11 @@ EXTERN void mayer_realfft(int n, float *fz)
             *fp1 = fp3[0], *fp2 = fp3[1];
 }
 
-EXTERN void mayer_realifft(int n, float *fz)
+EXTERN void mayer_realifft(int n, t_sample *fz)
 {
     FFTFLT *buf, *fp3;
     int i, nover2 = n/2;
-    float *fp1, *fp2;
+    t_sample *fp1, *fp2;
     buf = alloca(n * sizeof(FFTFLT));
     if (!ooura_init(n))
         return;

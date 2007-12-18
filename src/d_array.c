@@ -20,7 +20,7 @@ typedef struct _tabwrite_tilde
     int x_nsampsintab;
     t_word *x_vec;
     t_symbol *x_arrayname;
-    float x_f;
+    t_float x_f;
 } t_tabwrite_tilde;
 
 static void tabwrite_tilde_tick(t_tabwrite_tilde *x);
@@ -45,7 +45,7 @@ static void tabwrite_tilde_redraw(t_tabwrite_tilde *x)
 static t_int *tabwrite_tilde_perform(t_int *w)
 {
     t_tabwrite_tilde *x = (t_tabwrite_tilde *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]), phase = x->x_phase, endphase = x->x_nsampsintab;
     if (!x->x_vec) goto bad;
     
@@ -57,7 +57,7 @@ static t_int *tabwrite_tilde_perform(t_int *w)
         phase += nxfer;
         while (nxfer--)
         {
-            float f = *in++;
+            t_sample f = *in++;
             if (PD_BIGORSMALL(f))
                 f = 0;
             (wp++)->w_float = f;
@@ -168,7 +168,7 @@ static void *tabplay_tilde_new(t_symbol *s)
 static t_int *tabplay_tilde_perform(t_int *w)
 {
     t_tabplay_tilde *x = (t_tabplay_tilde *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     t_word *wp;
     int n = (int)(w[3]), phase = x->x_phase,
         endphase = (x->x_nsampsintab < x->x_limit ?
@@ -276,7 +276,7 @@ typedef struct _tabread_tilde
     int x_npoints;
     t_word *x_vec;
     t_symbol *x_arrayname;
-    float x_f;
+    t_float x_f;
 } t_tabread_tilde;
 
 static void *tabread_tilde_new(t_symbol *s)
@@ -292,8 +292,8 @@ static void *tabread_tilde_new(t_symbol *s)
 static t_int *tabread_tilde_perform(t_int *w)
 {
     t_tabread_tilde *x = (t_tabread_tilde *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);    
     int maxindex;
     t_word *buf = x->x_vec;
@@ -372,7 +372,7 @@ typedef struct _tabread4_tilde
     int x_npoints;
     t_word *x_vec;
     t_symbol *x_arrayname;
-    float x_f;
+    t_float x_f;
 } t_tabread4_tilde;
 
 static void *tabread4_tilde_new(t_symbol *s)
@@ -388,8 +388,8 @@ static void *tabread4_tilde_new(t_symbol *s)
 static t_int *tabread4_tilde_perform(t_int *w)
 {
     t_tabread4_tilde *x = (t_tabread4_tilde *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);    
     int maxindex;
     t_word *buf = x->x_vec, *wp;
@@ -402,7 +402,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
 #if 0       /* test for spam -- I'm not ready to deal with this */
     for (i = 0,  xmax = 0, xmin = maxindex,  fp = in1; i < n; i++,  fp++)
     {
-        float f = *in1;
+        t_sample f = *in1;
         if (f < xmin) xmin = f;
         else if (f > xmax) xmax = f;
     }
@@ -410,16 +410,16 @@ static t_int *tabread4_tilde_perform(t_int *w)
     for (i = 0, splitlo = xmin+ x->c_maxextent, splithi = xmax - x->c_maxextent,
         fp = in1; i < n; i++,  fp++)
     {
-        float f = *in1;
+        t_sample f = *in1;
         if (f > splitlo && f < splithi) goto zero;
     }
 #endif
 
     for (i = 0; i < n; i++)
     {
-        float findex = *in++;
+        t_sample findex = *in++;
         int index = findex;
-        float frac,  a,  b,  c,  d, cminusb;
+        t_sample frac,  a,  b,  c,  d, cminusb;
         static int count;
         if (index < 1)
             index = 1, frac = 0;
@@ -547,13 +547,13 @@ static t_class *tabosc4_tilde_class;
 typedef struct _tabosc4_tilde
 {
     t_object x_obj;
-    float x_fnpoints;
-    float x_finvnpoints;
+    t_float x_fnpoints;
+    t_float x_finvnpoints;
     t_word *x_vec;
     t_symbol *x_arrayname;
-    float x_f;
+    t_float x_f;
     double x_phase;
-    float x_conv;
+    t_float x_conv;
 } t_tabosc4_tilde;
 
 static void *tabosc4_tilde_new(t_symbol *s)
@@ -572,14 +572,14 @@ static void *tabosc4_tilde_new(t_symbol *s)
 static t_int *tabosc4_tilde_perform(t_int *w)
 {
     t_tabosc4_tilde *x = (t_tabosc4_tilde *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);
     int normhipart;
     union tabfudge tf;
-    float fnpoints = x->x_fnpoints;
+    t_float fnpoints = x->x_fnpoints;
     int mask = fnpoints - 1;
-    float conv = fnpoints * x->x_conv;
+    t_float conv = fnpoints * x->x_conv;
     int maxindex;
     t_word *tab = x->x_vec, *addr;
     int i;
@@ -592,7 +592,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
 #if 1
     while (n--)
     {
-        float frac,  a,  b,  c,  d, cminusb;
+        t_sample frac,  a,  b,  c,  d, cminusb;
         tf.tf_d = dphase;
         dphase += *in++ * conv;
         addr = tab + (tf.tf_i[HIOFFSET] & mask);
@@ -694,7 +694,7 @@ typedef struct _tabsend
     int x_graphperiod;
     int x_graphcount;
     t_symbol *x_arrayname;
-    float x_f;
+    t_float x_f;
 } t_tabsend;
 
 static void tabsend_tick(t_tabsend *x);
@@ -711,7 +711,7 @@ static void *tabsend_new(t_symbol *s)
 static t_int *tabsend_perform(t_int *w)
 {
     t_tabsend *x = (t_tabsend *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[2]);
     int n = w[3];
     t_word *dest = x->x_vec;
     int i = x->x_graphcount;
@@ -719,7 +719,7 @@ static t_int *tabsend_perform(t_int *w)
 
     while (n--)
     {   
-        float f = *in++;
+        t_sample f = *in++;
         if (PD_BIGORSMALL(f))
             f = 0;
          (dest++)->w_float = f;
@@ -785,7 +785,7 @@ typedef struct _tabreceive
 static t_int *tabreceive_perform(t_int *w)
 {
     t_tabreceive *x = (t_tabreceive *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = w[3];
     t_word *from = x->x_vec;
     if (from)
@@ -964,7 +964,7 @@ typedef struct _tabwrite
 {
     t_object x_obj;
     t_symbol *x_arrayname;
-    float x_ft1;
+    t_float x_ft1;
 } t_tabwrite;
 
 static void tabwrite_float(t_tabwrite *x, t_float f)

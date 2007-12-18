@@ -292,10 +292,10 @@ typedef struct _voutlet
     t_canvas *x_canvas;
     t_outlet *x_parentoutlet;
     int x_bufsize;
-    t_float *x_buf;         /* signal buffer; zero if not a signal */
-    t_float *x_endbuf;
-    t_float *x_empty;       /* next to read out of buffer in epilog code */
-    t_float *x_write;       /* next to write in to buffer */
+    t_sample *x_buf;         /* signal buffer; zero if not a signal */
+    t_sample *x_endbuf;
+    t_sample *x_empty;       /* next to read out of buffer in epilog code */
+    t_sample *x_write;       /* next to write in to buffer */
     int x_hop;              /* hopsize */
         /* vice versa from the inlet, if we don't block, this holds the
         parent's outlet signal, valid between the prolog and the dsp setup
@@ -373,7 +373,7 @@ t_int *voutlet_perform(t_int *w)
     t_voutlet *x = (t_voutlet *)(w[1]);
     t_float *in = (t_float *)(w[2]);
     int n = (int)(w[3]);
-    t_float *out = x->x_write, *outwas = out;
+    t_sample *out = x->x_write, *outwas = out;
 #if 0
     if (tot < 5) post("-in %lx out %lx n %d", in, out, n);
     if (tot < 5) post("-buf %lx endbuf %lx", x->x_buf, x->x_endbuf);
@@ -393,10 +393,10 @@ t_int *voutlet_perform(t_int *w)
 static t_int *voutlet_doepilog(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *out = (t_sample *)(w[2]);
 
     int n = (int)(w[3]);
-    t_float *in = x->x_empty;
+    t_sample *in = x->x_empty;
     if (x->x_updown.downsample != x->x_updown.upsample)
         out = x->x_updown.s_vec;
 
@@ -413,8 +413,8 @@ static t_int *voutlet_doepilog_resampling(t_int *w)
 {
     t_voutlet *x = (t_voutlet *)(w[1]);
     int n = (int)(w[2]);
-    t_float *in  = x->x_empty;
-    t_float *out = x->x_updown.s_vec;
+    t_sample *in  = x->x_empty;
+    t_sample *out = x->x_updown.s_vec;
 
 #if 0
     if (tot < 5) post("outlet in %lx out %lx n %lx", in, out, n), tot++;
@@ -504,9 +504,9 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
         if (bufsize < myvecsize) bufsize = myvecsize;
         if (bufsize != (oldbufsize = x->x_bufsize))
         {
-            t_float *buf = x->x_buf;
+            t_sample *buf = x->x_buf;
             t_freebytes(buf, oldbufsize * sizeof(*buf));
-            buf = (t_float *)t_getbytes(bufsize * sizeof(*buf));
+            buf = (t_sample *)t_getbytes(bufsize * sizeof(*buf));
             memset((char *)buf, 0, bufsize * sizeof(*buf));
             x->x_bufsize = bufsize;
             x->x_endbuf = buf + bufsize;
@@ -556,7 +556,7 @@ static void *voutlet_newsig(t_symbol *s)
     x->x_parentoutlet = canvas_addoutlet(x->x_canvas,
         &x->x_obj.ob_pd, &s_signal);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-    x->x_endbuf = x->x_buf = (t_float *)getbytes(0);
+    x->x_endbuf = x->x_buf = (t_sample *)getbytes(0);
     x->x_bufsize = 0;
 
     resample_init(&x->x_updown);

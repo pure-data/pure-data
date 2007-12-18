@@ -481,7 +481,7 @@ typedef struct _signal
 {
     int s_n;            /* number of points in the array */
     t_sample *s_vec;    /* the array */
-    float s_sr;         /* sample rate */
+    t_float s_sr;         /* sample rate */
     int s_refcount;     /* number of times used */
     int s_isborrowed;   /* whether we're going to borrow our array */
     struct _signal *s_borrowedfrom;     /* signal to borrow it from */
@@ -498,24 +498,24 @@ EXTERN t_int *copy_perform(t_int *args);
 
 EXTERN void dsp_add_plus(t_sample *in1, t_sample *in2, t_sample *out, int n);
 EXTERN void dsp_add_copy(t_sample *in, t_sample *out, int n);
-EXTERN void dsp_add_scalarcopy(t_sample *in, t_sample *out, int n);
+EXTERN void dsp_add_scalarcopy(t_float *in, t_sample *out, int n);
 EXTERN void dsp_add_zero(t_sample *out, int n);
 
 EXTERN int sys_getblksize(void);
-EXTERN float sys_getsr(void);
+EXTERN t_float sys_getsr(void);
 EXTERN int sys_get_inchannels(void);
 EXTERN int sys_get_outchannels(void);
 
 EXTERN void dsp_add(t_perfroutine f, int n, ...);
 EXTERN void dsp_addv(t_perfroutine f, int n, t_int *vec);
-EXTERN void pd_fft(float *buf, int npoints, int inverse);
+EXTERN void pd_fft(t_float *buf, int npoints, int inverse);
 EXTERN int ilog2(int n);
 
-EXTERN void mayer_fht(float *fz, int n);
-EXTERN void mayer_fft(int n, float *real, float *imag);
-EXTERN void mayer_ifft(int n, float *real, float *imag);
-EXTERN void mayer_realfft(int n, float *real);
-EXTERN void mayer_realifft(int n, float *real);
+EXTERN void mayer_fht(t_sample *fz, int n);
+EXTERN void mayer_fft(int n, t_sample *real, t_sample *imag);
+EXTERN void mayer_ifft(int n, t_sample *real, t_sample *imag);
+EXTERN void mayer_realfft(int n, t_sample *real);
+EXTERN void mayer_realifft(int n, t_sample *real);
 
 EXTERN float *cos_table;
 #define LOGCOSTABSIZE 9
@@ -534,13 +534,13 @@ typedef struct _resample
   t_int downsample; /* downsampling factor */
   t_int upsample;   /* upsampling factor */
 
-  t_float *s_vec;   /* here we hold the resampled data */
+  t_sample *s_vec;   /* here we hold the resampled data */
   int      s_n;
 
-  t_float *coeffs;  /* coefficients for filtering... */
+  t_sample *coeffs;  /* coefficients for filtering... */
   int      coefsize;
 
-  t_float *buffer;  /* buffer for filtering */
+  t_sample *buffer;  /* buffer for filtering */
   int      bufsize;
 } t_resample;
 
@@ -552,18 +552,18 @@ EXTERN void resamplefrom_dsp(t_resample *x, t_sample *in, int insize, int outsiz
 EXTERN void resampleto_dsp(t_resample *x, t_sample *out, int insize, int outsize, int method);
 
 /* ----------------------- utility functions for signals -------------- */
-EXTERN float mtof(float);
-EXTERN float ftom(float);
-EXTERN float rmstodb(float);
-EXTERN float powtodb(float);
-EXTERN float dbtorms(float);
-EXTERN float dbtopow(float);
+EXTERN t_float mtof(t_float);
+EXTERN t_float ftom(t_float);
+EXTERN t_float rmstodb(t_float);
+EXTERN t_float powtodb(t_float);
+EXTERN t_float dbtorms(t_float);
+EXTERN t_float dbtopow(t_float);
 
-EXTERN float q8_sqrt(float);
-EXTERN float q8_rsqrt(float);
+EXTERN t_float q8_sqrt(t_float);
+EXTERN t_float q8_rsqrt(t_float);
 #ifndef N32     
-EXTERN float qsqrt(float);  /* old names kept for extern compatibility */
-EXTERN float qrsqrt(float);
+EXTERN t_float qsqrt(t_float);  /* old names kept for extern compatibility */
+EXTERN t_float qrsqrt(t_float);
 #endif
 /* --------------------- data --------------------------------- */
 
@@ -574,7 +574,7 @@ EXTERN_STRUCT _garray;
 EXTERN t_class *garray_class;
 EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec);
 EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
-EXTERN float garray_get(t_garray *x, t_symbol *s, t_int indx);
+EXTERN t_float garray_get(t_garray *x, t_symbol *s, t_int indx);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
@@ -623,7 +623,6 @@ EXTERN void c_addmess(t_method fn, t_symbol *sel, t_atomtype arg1, ...);
 defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #define PD_USE_TE_XPIX
-
 
 #if defined(__i386__) || defined(__x86_64__)
 /* a test for NANs and denormals.  Should only be necessary on i386. */

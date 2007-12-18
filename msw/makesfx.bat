@@ -1,1 +1,5 @@
-makesfx /zip=pd-0.37-1test6.zip /sfx=pd-x.msw.exe /title=Pd /website=crca.ucsd.edu/~msp /defaultpath=$programfiles$
+zip -r pd-0.41-0test09.msw.zip pd
+
+makesfx /zip=pd-0.41-0test09.msw.zip /sfx=pd-0.41-0test09.msw.exe /title=Pd /website=crca.ucsd.edu/~msp /defaultpath=$programfiles$
+
+pscp pd-0.41-0test09.msw.zip pd-0.41-0test09.msw.exe msp@crca.ucsd.edu:public_html/Software

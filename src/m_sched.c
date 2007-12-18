@@ -288,7 +288,7 @@ static void sched_pollformeters( void)
     }
     if (sched_meterson)
     {
-        float inmax, outmax;
+        t_sample inmax, outmax;
         sys_getmeters(&inmax, &outmax);
         indb = 0.5 + rmstodb(inmax);
         outdb = 0.5 + rmstodb(outmax);
@@ -313,7 +313,7 @@ static void sched_pollformeters( void)
         sched_diddsp + (int)(sys_dacsr /(double)sys_schedblocksize);
 }
 
-void glob_meters(void *dummy, float f)
+void glob_meters(void *dummy, t_float f)
 {
     if (f == 0)
         sys_getmeters(0, 0);

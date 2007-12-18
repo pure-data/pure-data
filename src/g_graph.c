@@ -181,11 +181,11 @@ t_canvas *glist_getcanvas(t_glist *x)
     return((t_canvas *)x);
 }
 
-static float gobj_getxforsort(t_gobj *g)
+static t_float gobj_getxforsort(t_gobj *g)
 {
     if (pd_class(&g->g_pd) == scalar_class)
     {
-        float x1, y1;
+        t_float x1, y1;
         scalar_getbasexy((t_scalar *)g, &x1, &y1);
         return(x1);
     }
@@ -195,7 +195,7 @@ static float gobj_getxforsort(t_gobj *g)
 static t_gobj *glist_merge(t_glist *x, t_gobj *g1, t_gobj *g2)
 {
     t_gobj *g = 0, *g9 = 0;
-    float f1 = 0, f2 = 0;
+    t_float f1 = 0, f2 = 0;
     if (g1)
         f1 = gobj_getxforsort(g1);
     if (g2)
@@ -257,11 +257,11 @@ static t_gobj *glist_dosort(t_glist *x,
 void glist_sort(t_glist *x)
 {
     int nitems = 0, foo = 0;
-    float lastx = -1e37;
+    t_float lastx = -1e37;
     t_gobj *g;
     for (g = x->gl_list; g; g = g->g_next)
     {
-        float x1 = gobj_getxforsort(g);
+        t_float x1 = gobj_getxforsort(g);
         if (x1 < lastx)
             foo = 1;
         lastx = x1;
@@ -505,7 +505,7 @@ static void graph_ylabel(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 /****** routines to convert pixels to X or Y value and vice versa ******/
 
     /* convert an x pixel value to an x coordinate value */
-float glist_pixelstox(t_glist *x, float xpix)
+t_float glist_pixelstox(t_glist *x, t_float xpix)
 {
         /* if we appear as a text box on parent, our range in our
         coordinates (x1, etc.) specifies the coordinate range
@@ -533,7 +533,7 @@ float glist_pixelstox(t_glist *x, float xpix)
     }
 }
 
-float glist_pixelstoy(t_glist *x, float ypix)
+t_float glist_pixelstoy(t_glist *x, t_float ypix)
 {
     if (!x->gl_isgraph)
         return (x->gl_y1 + (x->gl_y2 - x->gl_y1) * ypix);
@@ -552,7 +552,7 @@ float glist_pixelstoy(t_glist *x, float ypix)
 }
 
     /* convert an x coordinate value to an x pixel location in window */
-float glist_xtopixels(t_glist *x, float xval)
+t_float glist_xtopixels(t_glist *x, t_float xval)
 {
     if (!x->gl_isgraph)
         return ((xval - x->gl_x1) / (x->gl_x2 - x->gl_x1));
@@ -569,7 +569,7 @@ float glist_xtopixels(t_glist *x, float xval)
     }
 }
 
-float glist_ytopixels(t_glist *x, float yval)
+t_float glist_ytopixels(t_glist *x, t_float yval)
 {
     if (!x->gl_isgraph)
         return ((yval - x->gl_y1) / (x->gl_y2 - x->gl_y1));
@@ -589,12 +589,12 @@ float glist_ytopixels(t_glist *x, float yval)
     /* convert an X screen distance to an X coordinate increment.
       This is terribly inefficient;
       but probably not a big enough CPU hog to warrant optimizing. */
-float glist_dpixtodx(t_glist *x, float dxpix)
+t_float glist_dpixtodx(t_glist *x, t_float dxpix)
 { 
     return (dxpix * (glist_pixelstox(x, 1) - glist_pixelstox(x, 0)));
 }
 
-float glist_dpixtody(t_glist *x, float dypix)
+t_float glist_dpixtody(t_glist *x, t_float dypix)
 {
     return (dypix * (glist_pixelstoy(x, 1) - glist_pixelstoy(x, 0)));
 }
@@ -723,7 +723,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
     if (vis)
     {
         int i;
-        float f;
+        t_float f;
         t_gobj *g;
         t_symbol *arrayname;
         t_garray *ga;
@@ -750,7 +750,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             zero, this is disabled. */
         if (x->gl_xtick.k_lperb)
         {
-            float upix, lpix;
+            t_float upix, lpix;
             if (y2 < y1)
                 upix = y1, lpix = y2;
             else upix = y2, lpix = y1;
@@ -787,7 +787,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             /* draw ticks in vertical borders*/
         if (x->gl_ytick.k_lperb)
         {
-            float ubound, lbound;
+            t_float ubound, lbound;
             if (x->gl_y2 < x->gl_y1)
                 ubound = x->gl_y1, lbound = x->gl_y2;
             else ubound = x->gl_y2, lbound = x->gl_y1;
@@ -991,19 +991,19 @@ static void graph_delete(t_gobj *z, t_glist *glist)
         glist_delete(x, y);
 }
 
-static float graph_lastxpix, graph_lastypix;
+static t_float graph_lastxpix, graph_lastypix;
 
 static void graph_motion(void *z, t_floatarg dx, t_floatarg dy)
 {
     t_glist *x = (t_glist *)z;
-    float newxpix = graph_lastxpix + dx, newypix = graph_lastypix + dy;
+    t_float newxpix = graph_lastxpix + dx, newypix = graph_lastypix + dy;
     t_garray *a = (t_garray *)(x->gl_list);
     int oldx = 0.5 + glist_pixelstox(x, graph_lastxpix);
     int newx = 0.5 + glist_pixelstox(x, newxpix);
     t_word *vec;
     int nelem, i;
-    float oldy = glist_pixelstoy(x, graph_lastypix);
-    float newy = glist_pixelstoy(x, newypix);
+    t_float oldy = glist_pixelstoy(x, graph_lastypix);
+    t_float newy = glist_pixelstoy(x, newypix);
     graph_lastxpix = newxpix;
     graph_lastypix = newypix;
         /* verify that the array is OK */
@@ -1021,13 +1021,13 @@ static void graph_motion(void *z, t_floatarg dx, t_floatarg dy)
     {
         for (i = oldx + 1; i <= newx; i++)
             vec[i].w_float = newy + (oldy - newy) *
-                ((float)(newx - i))/(float)(newx - oldx);
+                ((t_float)(newx - i))/(t_float)(newx - oldx);
     }
     else if (oldx > newx + 1)
     {
         for (i = oldx - 1; i >= newx; i--)
             vec[i].w_float = newy + (oldy - newy) *
-                ((float)(newx - i))/(float)(newx - oldx);
+                ((t_float)(newx - i))/(t_float)(newx - oldx);
     }
     else vec[newx].w_float = newy;
     garray_redraw(a);

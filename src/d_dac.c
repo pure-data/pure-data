@@ -16,7 +16,7 @@ typedef struct _dac
     t_object x_obj;
     t_int x_n;
     t_int *x_vec;
-    float x_f;
+    t_float x_f;
 } t_dac;
 
 static void *dac_new(t_symbol *s, int argc, t_atom *argv)
@@ -103,8 +103,8 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
 
 t_int *copy_perform(t_int *w)
 {
-    t_float *in1 = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     while (n--) *out++ = *in1++; 
     return (w+4);
@@ -112,20 +112,20 @@ t_int *copy_perform(t_int *w)
 
 t_int *copy_perf8(t_int *w)
 {
-    t_float *in1 = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     
     for (; n; n -= 8, in1 += 8, out += 8)
     {
-        float f0 = in1[0];
-        float f1 = in1[1];
-        float f2 = in1[2];
-        float f3 = in1[3];
-        float f4 = in1[4];
-        float f5 = in1[5];
-        float f6 = in1[6];
-        float f7 = in1[7];
+        t_sample f0 = in1[0];
+        t_sample f1 = in1[1];
+        t_sample f2 = in1[2];
+        t_sample f3 = in1[3];
+        t_sample f4 = in1[4];
+        t_sample f5 = in1[5];
+        t_sample f6 = in1[6];
+        t_sample f7 = in1[7];
 
         out[0] = f0;
         out[1] = f1;

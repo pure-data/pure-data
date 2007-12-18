@@ -16,12 +16,12 @@ linked in.  The configure script can be used to select which one.
     /* swap two arrays */
 static t_int *sigfft_swap(t_int *w)
 {
-    float *in1 = (t_float *)(w[1]);
-    float *in2 = (t_float *)(w[2]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
     int n = w[3];
     for (;n--; in1++, in2++)
     {   
-        float f = *in1;
+        t_sample f = *in1;
         *in1 = *in2;
         *in2 = f;
     }
@@ -34,8 +34,8 @@ static t_int *sigfft_swap(t_int *w)
 
 static t_int *sigrfft_flip(t_int *w)
 {
-    float *in = (t_float *)(w[1]);
-    float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = w[3];
     while (n--)
         *(--out) = - *in++;
@@ -48,7 +48,7 @@ static t_class *sigfft_class, *sigifft_class;
 typedef struct fft
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sigfft;
 
 static void *sigfft_new(void)
@@ -73,8 +73,8 @@ static void *sigifft_new(void)
 
 static t_int *sigfft_perform(t_int *w)
 {
-    float *in1 = (t_float *)(w[1]);
-    float *in2 = (t_float *)(w[2]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
     int n = w[3];
     mayer_fft(n, in1, in2);
     return (w+4);
@@ -82,8 +82,8 @@ static t_int *sigfft_perform(t_int *w)
 
 static t_int *sigifft_perform(t_int *w)
 {
-    float *in1 = (t_float *)(w[1]);
-    float *in2 = (t_float *)(w[2]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
     int n = w[3];
     mayer_ifft(n, in1, in2);
     return (w+4);
@@ -92,10 +92,10 @@ static t_int *sigifft_perform(t_int *w)
 static void sigfft_dspx(t_sigfft *x, t_signal **sp, t_int *(*f)(t_int *w))
 {
     int n = sp[0]->s_n;
-    float *in1 = sp[0]->s_vec;
-    float *in2 = sp[1]->s_vec;
-    float *out1 = sp[2]->s_vec;
-    float *out2 = sp[3]->s_vec;
+    t_sample *in1 = sp[0]->s_vec;
+    t_sample *in2 = sp[1]->s_vec;
+    t_sample *out1 = sp[2]->s_vec;
+    t_sample *out2 = sp[3]->s_vec;
     if (out1 == in2 && out2 == in1)
         dsp_add(sigfft_swap, 3, out1, out2, n);
     else if (out1 == in2)
@@ -142,7 +142,7 @@ static t_class *sigrfft_class;
 typedef struct rfft
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sigrfft;
 
 static void *sigrfft_new(void)
@@ -156,7 +156,7 @@ static void *sigrfft_new(void)
 
 static t_int *sigrfft_perform(t_int *w)
 {
-    float *in = (t_float *)(w[1]);
+    t_sample *in = (t_sample *)(w[1]);
     int n = w[2];
     mayer_realfft(n, in);
     return (w+3);
@@ -165,9 +165,9 @@ static t_int *sigrfft_perform(t_int *w)
 static void sigrfft_dsp(t_sigrfft *x, t_signal **sp)
 {
     int n = sp[0]->s_n, n2 = (n>>1);
-    float *in1 = sp[0]->s_vec;
-    float *out1 = sp[1]->s_vec;
-    float *out2 = sp[2]->s_vec;
+    t_sample *in1 = sp[0]->s_vec;
+    t_sample *out1 = sp[1]->s_vec;
+    t_sample *out2 = sp[2]->s_vec;
     if (n < 4)
     {
         error("fft: minimum 4 points");
@@ -199,7 +199,7 @@ static t_class *sigrifft_class;
 typedef struct rifft
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sigrifft;
 
 static void *sigrifft_new(void)
@@ -213,7 +213,7 @@ static void *sigrifft_new(void)
 
 static t_int *sigrifft_perform(t_int *w)
 {
-    float *in = (t_float *)(w[1]);
+    t_sample *in = (t_sample *)(w[1]);
     int n = w[2];
     mayer_realifft(n, in);
     return (w+3);
@@ -222,9 +222,9 @@ static t_int *sigrifft_perform(t_int *w)
 static void sigrifft_dsp(t_sigrifft *x, t_signal **sp)
 {
     int n = sp[0]->s_n, n2 = (n>>1);
-    float *in1 = sp[0]->s_vec;
-    float *in2 = sp[1]->s_vec;
-    float *out1 = sp[2]->s_vec;
+    t_sample *in1 = sp[0]->s_vec;
+    t_sample *in2 = sp[1]->s_vec;
+    t_sample *out1 = sp[2]->s_vec;
     if (n < 4)
     {
         error("fft: minimum 4 points");
@@ -259,7 +259,7 @@ static t_class *sigframp_class;
 typedef struct framp
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;
 } t_sigframp;
 
 static void *sigframp_new(void)
@@ -274,15 +274,15 @@ static void *sigframp_new(void)
 
 static t_int *sigframp_perform(t_int *w)
 {
-    float *inreal = (t_float *)(w[1]);
-    float *inimag = (t_float *)(w[2]);
-    float *outfreq = (t_float *)(w[3]);
-    float *outamp = (t_float *)(w[4]);
-    float lastreal = 0, currentreal = inreal[0], nextreal = inreal[1];
-    float lastimag = 0, currentimag = inimag[0], nextimag = inimag[1];
+    t_sample *inreal = (t_sample *)(w[1]);
+    t_sample *inimag = (t_sample *)(w[2]);
+    t_sample *outfreq = (t_sample *)(w[3]);
+    t_sample *outamp = (t_sample *)(w[4]);
+    t_sample lastreal = 0, currentreal = inreal[0], nextreal = inreal[1];
+    t_sample lastimag = 0, currentimag = inimag[0], nextimag = inimag[1];
     int n = w[5];
     int m = n + 1;
-    float fbin = 1, oneovern2 = 1.f/((float)n * (float)n);
+    t_sample fbin = 1, oneovern2 = 1.f/((t_sample)n * (t_sample)n);
     
     inreal += 2;
     inimag += 2;
@@ -290,7 +290,7 @@ static t_int *sigframp_perform(t_int *w)
     n -= 2;
     while (n--)
     {
-        float re, im, pow, freq;
+        t_sample re, im, pow, freq;
         lastreal = currentreal;
         currentreal = nextreal;
         nextreal = *inreal++;
@@ -302,7 +302,7 @@ static t_int *sigframp_perform(t_int *w)
         pow = re * re + im * im;
         if (pow > 1e-19)
         {
-            float detune = ((lastreal - nextreal) * re +
+            t_sample detune = ((lastreal - nextreal) * re +
                     (lastimag - nextimag) * im) / (2.0f * pow);
             if (detune > 2 || detune < -2) freq = pow = 0;
             else freq = fbin + detune;

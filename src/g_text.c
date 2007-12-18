@@ -922,7 +922,7 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 {
     t_text *x = (t_text *)z;
     int width, height, iscomment = (x->te_type == T_TEXT);
-    float x1, y1, x2, y2;
+    t_float x1, y1, x2, y2;
 
         /* for number boxes, we know width and height a priori, and should
         report them here so that graphs can get swelled to fit. */

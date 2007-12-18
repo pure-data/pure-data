@@ -41,12 +41,12 @@ int sys_blocksize = 0;          /* audio I/O block size in sample frames */
 int sys_audioapi = API_DEFAULT;
 int sys_audioapiopened = -1;    /* save last API opened for later closing */
 static int sys_meters;          /* true if we're metering */
-static float sys_inmax;         /* max input amplitude */
-static float sys_outmax;        /* max output amplitude */
+static t_sample sys_inmax;         /* max input amplitude */
+static t_sample sys_outmax;        /* max output amplitude */
 
     /* exported variables */
 int sys_schedadvance;   /* scheduler advance in microseconds */
-float sys_dacsr;
+t_float sys_dacsr;
 
 t_sample *sys_soundout;
 t_sample *sys_soundin;
@@ -138,18 +138,18 @@ void sys_setchsr(int chin, int chout, int sr)
 {
     int nblk;
     int inbytes = (chin ? chin : 2) *
-                (DEFDACBLKSIZE*sizeof(float));
+                (DEFDACBLKSIZE*sizeof(t_sample));
     int outbytes = (chout ? chout : 2) *
-                (DEFDACBLKSIZE*sizeof(float));
+                (DEFDACBLKSIZE*sizeof(t_sample));
 
     if (sys_soundin)
         freebytes(sys_soundin, 
             (sys_inchannels? sys_inchannels : 2) *
-                (DEFDACBLKSIZE*sizeof(float)));
+                (DEFDACBLKSIZE*sizeof(t_sample)));
     if (sys_soundout)
         freebytes(sys_soundout, 
             (sys_outchannels? sys_outchannels : 2) *
-                (DEFDACBLKSIZE*sizeof(float)));
+                (DEFDACBLKSIZE*sizeof(t_sample)));
     sys_inchannels = chin;
     sys_outchannels = chout;
     sys_dacsr = sr;
@@ -157,10 +157,10 @@ void sys_setchsr(int chin, int chout, int sr)
     if (sys_advance_samples < 3 * DEFDACBLKSIZE)
         sys_advance_samples = 3 * DEFDACBLKSIZE;
 
-    sys_soundin = (t_float *)getbytes(inbytes);
+    sys_soundin = (t_sample *)getbytes(inbytes);
     memset(sys_soundin, 0, inbytes);
 
-    sys_soundout = (t_float *)getbytes(outbytes);
+    sys_soundout = (t_sample *)getbytes(outbytes);
     memset(sys_soundout, 0, outbytes);
 
     if (sys_verbose)
@@ -445,11 +445,11 @@ int sys_send_dacs(void)
     if (sys_meters)
     {
         int i, n;
-        float maxsamp;
+        t_sample maxsamp;
         for (i = 0, n = sys_inchannels * DEFDACBLKSIZE, maxsamp = sys_inmax;
             i < n; i++)
         {
-            float f = sys_soundin[i];
+            t_sample f = sys_soundin[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -457,7 +457,7 @@ int sys_send_dacs(void)
         for (i = 0, n = sys_outchannels * DEFDACBLKSIZE, maxsamp = sys_outmax;
             i < n; i++)
         {
-            float f = sys_soundout[i];
+            t_sample f = sys_soundout[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -493,7 +493,7 @@ int sys_send_dacs(void)
     return (0);
 }
 
-float sys_getsr(void)
+t_float sys_getsr(void)
 {
      return (sys_dacsr);
 }
@@ -508,7 +508,7 @@ int sys_get_inchannels(void)
      return (sys_inchannels);
 }
 
-void sys_getmeters(float *inmax, float *outmax)
+void sys_getmeters(t_sample *inmax, t_sample *outmax)
 {
     if (inmax)
     {

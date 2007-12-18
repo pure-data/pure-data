@@ -381,7 +381,7 @@ static void *canvas_undo_set_disconnect(t_canvas *x,
 }
 
 void canvas_disconnect(t_canvas *x,
-    float index1, float outno, float index2, float inno)
+    t_float index1, t_float outno, t_float index2, t_float inno)
 {
     t_linetraverser t;
     t_outconnect *oc;
@@ -904,7 +904,7 @@ static void canvas_donecanvasdialog(t_glist *x,
 {
 
 
-    float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin; 
+    t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin; 
     int graphme, redraw = 0;
 
     xperpix = atom_getfloatarg(0, argc, argv);
@@ -977,7 +977,7 @@ static void canvas_donecanvasdialog(t_glist *x,
 
     /* called from the gui when a popup menu comes back with "properties,"
         "open," or "help." */
-static void canvas_done_popup(t_canvas *x, float which, float xpos, float ypos)
+static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float ypos)
 {
     char pathbuf[MAXPDSTRING], namebuf[MAXPDSTRING];
     t_gobj *y;
@@ -1212,16 +1212,16 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     {
         t_linetraverser t;
         t_outconnect *oc;
-        float fx = xpos, fy = ypos;
+        t_float fx = xpos, fy = ypos;
         t_glist *glist2 = glist_getcanvas(x);
         linetraverser_start(&t, glist2);
         while (oc = linetraverser_next(&t))
         {
-            float lx1 = t.tr_lx1, ly1 = t.tr_ly1,
+            t_float lx1 = t.tr_lx1, ly1 = t.tr_ly1,
                 lx2 = t.tr_lx2, ly2 = t.tr_ly2;
-            float area = (lx2 - lx1) * (fy - ly1) -
+            t_float area = (lx2 - lx1) * (fy - ly1) -
                 (ly2 - ly1) * (fx - lx1);
-            float dsquare = (lx2-lx1) * (lx2-lx1) + (ly2-ly1) * (ly2-ly1);
+            t_float dsquare = (lx2-lx1) * (lx2-lx1) + (ly2-ly1) * (ly2-ly1);
             if (area * area >= 50 * dsquare) continue;
             if ((lx2-lx1) * (fx-lx1) + (ly2-ly1) * (fy-ly1) < 0) continue;
             if ((lx2-lx1) * (lx2-fx) + (ly2-ly1) * (ly2-fy) < 0) continue;
@@ -1504,9 +1504,9 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             keynum = 0, gotkeysym = gensym("Right");
 #endif
     if (keynumsym->s_thing && down)
-        pd_float(keynumsym->s_thing, (float)keynum);
+        pd_float(keynumsym->s_thing, (t_float)keynum);
     if (keyupsym->s_thing && !down)
-        pd_float(keyupsym->s_thing, (float)keynum);
+        pd_float(keyupsym->s_thing, (t_float)keynum);
     if (keynamesym->s_thing)
     {
         t_atom at[2];
@@ -1523,7 +1523,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         if (x->gl_editor->e_grab
             && x->gl_editor->e_keyfn && keynum)
                 (* x->gl_editor->e_keyfn)
-                    (x->gl_editor->e_grab, (float)keynum);
+                    (x->gl_editor->e_grab, (t_float)keynum);
             /* if a text editor is open send the key on, as long as
             it is either "real" (has a key number) or else is an arrow key. */
         else if (x->gl_editor->e_textedfor && (keynum
@@ -2393,7 +2393,7 @@ static void canvas_dofont(t_canvas *x, t_floatarg font, t_floatarg xresize,
 static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
     t_floatarg whichresize)
 {
-    float realresize, realresx = 1, realresy = 1;
+    t_float realresize, realresx = 1, realresy = 1;
     t_canvas *x2 = canvas_getrootfor(x);
     if (!resize) realresize = 1;
     else

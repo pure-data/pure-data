@@ -619,15 +619,15 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
             binbuf_addv(b, "ssfffffffff;", gensym("#X"), gensym("coords"),
                 x->gl_x1, x->gl_y1,
                 x->gl_x2, x->gl_y2,
-                (float)x->gl_pixwidth, (float)x->gl_pixheight,
-                (float)((x->gl_hidetext)?2.:1.),
-                (float)x->gl_xmargin, (float)x->gl_ymargin); 
+                (t_float)x->gl_pixwidth, (t_float)x->gl_pixheight,
+                (t_float)((x->gl_hidetext)?2.:1.),
+                (t_float)x->gl_xmargin, (t_float)x->gl_ymargin); 
                     /* otherwise write in 0.38-compatible form */
         else binbuf_addv(b, "ssfffffff;", gensym("#X"), gensym("coords"),
                 x->gl_x1, x->gl_y1,
                 x->gl_x2, x->gl_y2,
-                (float)x->gl_pixwidth, (float)x->gl_pixheight,
-                (float)x->gl_isgraph);
+                (t_float)x->gl_pixwidth, (t_float)x->gl_pixheight,
+                (t_float)x->gl_isgraph);
     }
 }
 

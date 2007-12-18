@@ -391,7 +391,7 @@ static void my_numbox_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, "ssiisiiffiisssiiiiiiifi", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
                 gensym("nbx"), x->x_gui.x_w, x->x_gui.x_h,
-                (float)x->x_min, (float)x->x_max,
+                (t_float)x->x_min, (t_float)x->x_max,
                 x->x_lin0_log1, iem_symargstoint(&x->x_gui.x_isa),
                 srl[0], srl[1], srl[2],
                 x->x_gui.x_ldx, x->x_gui.x_ldy,

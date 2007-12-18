@@ -18,9 +18,9 @@ typedef struct _qlist
     void *x_binbuf;
     int x_onset;                /* playback position */
     t_clock *x_clock;
-    float x_tempo;
+    t_float x_tempo;
     double x_whenclockset;
-    float x_clockdelay;
+    t_float x_clockdelay;
     t_symbol *x_dir;
     t_canvas *x_canvas;
     int x_reentered;
@@ -211,14 +211,14 @@ static void qlist_print(t_qlist *x)
 
 static void qlist_tempo(t_qlist *x, t_float f)
 {
-    float newtempo;
+    t_float newtempo;
     if (f < 1e-20) f = 1e-20;
     else if (f > 1e20) f = 1e20;
     newtempo = 1./f;
     if (x->x_whenclockset != 0)
     {
-        float elapsed = clock_gettimesince(x->x_whenclockset);
-        float left = x->x_clockdelay - elapsed;
+        t_float elapsed = clock_gettimesince(x->x_whenclockset);
+        t_float left = x->x_clockdelay - elapsed;
         if (left < 0) left = 0;
         left *= newtempo / x->x_tempo;
         clock_delay(x->x_clock, left);
