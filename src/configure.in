@@ -101,10 +101,6 @@ fi
 
 dnl look for tcl 8.x... do I really have to go through all this!?
 
-if test x$tk != "xno"; then
-GUISRC="t_main.c t_tkcmd.c"
-fi
-
 foundit=no
 if test $foundit = "no";
 then
@@ -170,6 +166,12 @@ AC_CHECK_LIB(tk85, main,,
                                     AC_CHECK_LIB(tk8.0, main,,
                             echo no tk library found; exit 1)))))))
 
+
+if test x$tk != "xno"; then
+GUISRC="t_main.c t_tkcmd.c"
+else
+GUISRC=
+fi
 
 if test `uname -s` = Linux;
 then
