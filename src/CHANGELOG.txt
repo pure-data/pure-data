@@ -4,7 +4,10 @@ for original notes on source stype and organization.
 
 0.41.0
 
-add support for callback-based audio I/O; changes in 
+add support for callback-based audio I/O
+headers & code changed to use t_float or t_sample instead of float (patches
+by zmoelnig).
+
 
 0.40.0
 

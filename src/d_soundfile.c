@@ -425,13 +425,81 @@ int open_soundfile_via_canvas(t_canvas *canvas, const char *filename, int header
         p_bigendian, p_nchannels, p_bytelimit, skipframes));
 }
 
-static void soundfile_xferin(int sfchannels, int nvecs, float **vecs,
+static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
     long itemsread, unsigned char *buf, int nitems, int bytespersamp,
     int bigendian, int spread)
 {
     int i, j;
     unsigned char *sp, *sp2;
-    float *fp;
+    t_sample *fp;
+    int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
+    int bytesperframe = bytespersamp * sfchannels;
+    for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
+    {
+        if (bytespersamp == 2)
+        {
+            if (bigendian)
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + spread * itemsread;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                        *fp = SCALE * ((sp2[0] << 24) | (sp2[1] << 16));
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + spread * itemsread;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                        *fp = SCALE * ((sp2[1] << 24) | (sp2[0] << 16));
+            }
+        }
+        else if (bytespersamp == 3)
+        {
+            if (bigendian)
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + spread * itemsread;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                        *fp = SCALE * ((sp2[0] << 24) | (sp2[1] << 16)
+                            | (sp2[2] << 8));
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + spread * itemsread;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                        *fp = SCALE * ((sp2[2] << 24) | (sp2[1] << 16)
+                            | (sp2[0] << 8));
+            }
+        }
+        else if (bytespersamp == 4)
+        {
+            if (bigendian)
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + spread * itemsread;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                        *(long *)fp = ((sp2[0] << 24) | (sp2[1] << 16)
+                            | (sp2[2] << 8) | sp2[3]);
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + spread * itemsread;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                        *(long *)fp = ((sp2[3] << 24) | (sp2[2] << 16)
+                            | (sp2[1] << 8) | sp2[0]);
+            }
+        }
+    }
+        /* zero out other outputs */
+    for (i = sfchannels; i < nvecs; i++)
+        for (j = nitems, fp = vecs[i]; j--; )
+            *fp++ = 0;
+
+}
+
+static void soundfile_xferin_float(int sfchannels, int nvecs, t_float **vecs,
+    long itemsread, unsigned char *buf, int nitems, int bytespersamp,
+    int bigendian, int spread)
+{
+    int i, j;
+    unsigned char *sp, *sp2;
+    t_float *fp;
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
     int bytesperframe = bytespersamp * sfchannels;
     for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
@@ -518,7 +586,7 @@ static void soundfile_xferin(int sfchannels, int nvecs, float **vecs,
 static int soundfiler_writeargparse(void *obj, int *p_argc, t_atom **p_argv,
     t_symbol **p_filesym,
     int *p_filetype, int *p_bytespersamp, int *p_swap, int *p_bigendian,
-    int *p_normalize, long *p_onset, long *p_nframes, float *p_rate)
+    int *p_normalize, long *p_onset, long *p_nframes, t_float *p_rate)
 {
     int argc = *p_argc;
     t_atom *argv = *p_argv;
@@ -526,7 +594,7 @@ static int soundfiler_writeargparse(void *obj, int *p_argc, t_atom **p_argv,
         endianness = -1, swap, filetype = -1, normalize = 0;
     long onset = 0, nframes = 0x7fffffff;
     t_symbol *filesym;
-    float rate = -1;
+    t_float rate = -1;
     
     while (argc > 0 && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
@@ -668,7 +736,7 @@ usage:
 
 static int create_soundfile(t_canvas *canvas, const char *filename,
     int filetype, int nframes, int bytespersamp,
-    int bigendian, int nchannels, int swap, float samplerate)
+    int bigendian, int nchannels, int swap, t_float samplerate)
 {
     char filenamebuf[MAXPDSTRING], buf2[MAXPDSTRING];
     char headerbuf[WRITEHDRSIZE];
@@ -827,20 +895,20 @@ baddonewrite:
     post("%s: %s", filename, strerror(errno));
 }
 
-static void soundfile_xferout(int nchannels, float **vecs,
+static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
     unsigned char *buf, int nitems, long onset, int bytespersamp,
-    int bigendian, float normalfactor, int spread)
+    int bigendian, t_sample normalfactor, int spread)
 {
     int i, j;
     unsigned char *sp, *sp2;
-    float *fp;
+    t_sample *fp;
     int bytesperframe = bytespersamp * nchannels;
     long xx;
     for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
     {
         if (bytespersamp == 2)
         {
-            float ff = normalfactor * 32768.;
+            t_sample ff = normalfactor * 32768.;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, fp = vecs[i] + onset;
@@ -874,7 +942,7 @@ static void soundfile_xferout(int nchannels, float **vecs,
         }
         else if (bytespersamp == 3)
         {
-            float ff = normalfactor * 8388608.;
+            t_sample ff = normalfactor * 8388608.;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
@@ -915,7 +983,7 @@ static void soundfile_xferout(int nchannels, float **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp += spread)
                 {
-                    float f2 = *fp * normalfactor;
+                    t_sample f2 = *fp * normalfactor;
                     xx = *(long *)&f2;
                     sp2[0] = (xx >> 24); sp2[1] = (xx >> 16);
                     sp2[2] = (xx >> 8); sp2[3] = xx;
@@ -926,7 +994,7 @@ static void soundfile_xferout(int nchannels, float **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp += spread)
                 {
-                    float f2 = *fp * normalfactor;
+                    t_sample f2 = *fp * normalfactor;
                     xx = *(long *)&f2;
                     sp2[3] = (xx >> 24); sp2[2] = (xx >> 16);
                     sp2[1] = (xx >> 8); sp2[0] = xx;
@@ -935,7 +1003,114 @@ static void soundfile_xferout(int nchannels, float **vecs,
         }
     }
 }
-
+static void soundfile_xferout_float(int nchannels, t_float **vecs,
+    unsigned char *buf, int nitems, long onset, int bytespersamp,
+    int bigendian, t_sample normalfactor, int spread)
+{
+    int i, j;
+    unsigned char *sp, *sp2;
+    t_float *fp;
+    int bytesperframe = bytespersamp * nchannels;
+    long xx;
+    for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
+    {
+        if (bytespersamp == 2)
+        {
+            t_sample ff = normalfactor * 32768.;
+            if (bigendian)
+            {
+                for (j = 0, sp2 = sp, fp = vecs[i] + onset;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                {
+                    int xx = 32768. + (*fp * ff);
+                    xx -= 32768;
+                    if (xx < -32767)
+                        xx = -32767;
+                    if (xx > 32767)
+                        xx = 32767;
+                    sp2[0] = (xx >> 8);
+                    sp2[1] = xx;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + onset;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                {
+                    int xx = 32768. + (*fp * ff);
+                    xx -= 32768;
+                    if (xx < -32767)
+                        xx = -32767;
+                    if (xx > 32767)
+                        xx = 32767;
+                    sp2[1] = (xx >> 8);
+                    sp2[0] = xx;
+                }
+            }
+        }
+        else if (bytespersamp == 3)
+        {
+            t_sample ff = normalfactor * 8388608.;
+            if (bigendian)
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + onset;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                {
+                    int xx = 8388608. + (*fp * ff);
+                    xx -= 8388608;
+                    if (xx < -8388607)
+                        xx = -8388607;
+                    if (xx > 8388607)
+                        xx = 8388607;
+                    sp2[0] = (xx >> 16);
+                    sp2[1] = (xx >> 8);
+                    sp2[2] = xx;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + onset;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                {
+                    int xx = 8388608. + (*fp * ff);
+                    xx -= 8388608;
+                    if (xx < -8388607)
+                        xx = -8388607;
+                    if (xx > 8388607)
+                        xx = 8388607;
+                    sp2[2] = (xx >> 16);
+                    sp2[1] = (xx >> 8);
+                    sp2[0] = xx;
+                }
+            }
+        }
+        else if (bytespersamp == 4)
+        {
+            if (bigendian)
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + onset;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                {
+                    t_sample f2 = *fp * normalfactor;
+                    xx = *(long *)&f2;
+                    sp2[0] = (xx >> 24); sp2[1] = (xx >> 16);
+                    sp2[2] = (xx >> 8); sp2[3] = xx;
+                }
+            }
+            else
+            {
+                for (j = 0, sp2 = sp, fp=vecs[i] + onset;
+                    j < nitems; j++, sp2 += bytesperframe, fp += spread)
+                {
+                    t_sample f2 = *fp * normalfactor;
+                    xx = *(long *)&f2;
+                    sp2[3] = (xx >> 24); sp2[2] = (xx >> 16);
+                    sp2[1] = (xx >> 8); sp2[0] = xx;
+                }
+            }
+        }
+    }
+}
 
 /* ------- soundfiler - reads and writes soundfiles to/from "garrays" ---- */
 #define DEFMAXSIZE 4000000      /* default maximum 16 MB per channel */
@@ -1121,9 +1296,9 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         thisread = (thisread > bufframes ? bufframes : thisread);
         nitems = fread(sampbuf, channels * bytespersamp, thisread, fp);
         if (nitems <= 0) break;
-        soundfile_xferin(channels, argc, (float **)vecs, itemsread,
+        soundfile_xferin_float(channels, argc, (t_float **)vecs, itemsread,
             (unsigned char *)sampbuf, nitems, bytespersamp, bigendian,
-                sizeof(t_word)/sizeof(float));
+                sizeof(t_word)/sizeof(t_sample));
         itemsread += nitems;
     }
         /* zero out remaining elements of vectors */
@@ -1157,7 +1332,7 @@ usage:
 done:
     if (fd >= 0)
         close (fd);
-    outlet_float(x->x_obj.ob_outlet, (float)itemsread); 
+    outlet_float(x->x_obj.ob_outlet, (t_float)itemsread); 
 }
 
     /* this is broken out from soundfiler_write below so garray_write can
@@ -1175,7 +1350,8 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     char sampbuf[SAMPBUFSIZE];
     int bufframes, nitems;
     int fd = -1;
-    float normfactor, biggest = 0, samplerate;
+    t_sample normfactor, biggest = 0;
+    t_float samplerate;
     t_symbol *filesym;
 
     if (soundfiler_writeargparse(obj, &argc, &argv, &filesym, &filetype,
@@ -1244,9 +1420,9 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     {
         int thiswrite = nframes - itemswritten, nitems, nbytes;
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
-        soundfile_xferout(argc, (t_float **)vecs, (unsigned char *)sampbuf,
+        soundfile_xferout_float(argc, (t_float **)vecs, (unsigned char *)sampbuf,
             thiswrite, onset, bytespersamp, bigendian, normfactor,
-                 sizeof(t_word)/sizeof(float));
+                 sizeof(t_word)/sizeof(t_sample));
         nbytes = write(fd, sampbuf, nchannels * bytespersamp * thiswrite);
         if (nbytes < nchannels * bytespersamp * thiswrite)
         {
@@ -1281,7 +1457,7 @@ static void soundfiler_write(t_soundfiler *x, t_symbol *s,
 {
     long bozo = soundfiler_dowrite(x, x->x_canvas,
         argc, argv);
-    outlet_float(x->x_obj.ob_outlet, (float)bozo); 
+    outlet_float(x->x_obj.ob_outlet, (t_float)bozo); 
 }
 
 static void soundfiler_setup(void)
@@ -1343,7 +1519,7 @@ typedef struct _readsf
     int x_vecsize;                          /* vector size for transfers */
     t_outlet *x_bangout;                    /* bang-on-done outlet */
     int x_state;                            /* opened, running, or idle */
-    float x_insamplerate;   /* sample rate of input signal if known */
+    t_float x_insamplerate;   /* sample rate of input signal if known */
         /* parameters to communicate with subthread */
     int x_requestcode;      /* pending request from parent to I/O thread */
     char *x_filename;       /* file to open (string is permanently allocated) */
@@ -1352,7 +1528,7 @@ typedef struct _readsf
     int x_bytespersample;   /* bytes per sample (2 or 3) */
     int x_bigendian;        /* true if file is big-endian */
     int x_sfchannels;       /* number of channels in soundfile */
-    float x_samplerate;     /* sample rate of soundfile */
+    t_float x_samplerate;     /* sample rate of soundfile */
     long x_onsetframes;     /* number of sample frames to skip */
     long x_bytelimit;       /* max number of data bytes to read */
     int x_fd;               /* filedesc */
@@ -1365,7 +1541,7 @@ typedef struct _readsf
     int x_filetype;         /* writesf~ only; type of file to create */
     int x_itemswritten;     /* writesf~ only; items writen */
     int x_swap;             /* writesf~ only; true if byte swapping */
-    float x_f;              /* writesf~ only; scalar for signal inlet */
+    t_float x_f;              /* writesf~ only; scalar for signal inlet */
     pthread_mutex_t x_mutex;
     pthread_cond_t x_requestcondition;
     pthread_cond_t x_answercondition;
@@ -1744,7 +1920,7 @@ static t_int *readsf_perform(t_int *w)
     int vecsize = x->x_vecsize, noutlets = x->x_noutlets, i, j,
         bytespersample = x->x_bytespersample,
         bigendian = x->x_bigendian;
-    float *fp;
+    t_sample *fp;
     if (x->x_state == STATE_STREAM)
     {
         int wantbytes, nchannels, sfchannels = x->x_sfchannels;
@@ -1788,7 +1964,7 @@ static t_int *readsf_perform(t_int *w)
                 (sfchannels * bytespersample);
             if (xfersize)
             {
-                soundfile_xferin(sfchannels, noutlets, x->x_outvec, 0,
+                soundfile_xferin_sample(sfchannels, noutlets, x->x_outvec, 0,
                     (unsigned char *)(x->x_buf + x->x_fifotail), xfersize,
                         bytespersample, bigendian, 1);
                 vecsize -= xfersize;
@@ -1803,7 +1979,7 @@ static t_int *readsf_perform(t_int *w)
             return (w+2); 
         }
 
-        soundfile_xferin(sfchannels, noutlets, x->x_outvec, 0,
+        soundfile_xferin_sample(sfchannels, noutlets, x->x_outvec, 0,
             (unsigned char *)(x->x_buf + x->x_fifotail), vecsize,
                 bytespersample, bigendian, 1);
         
@@ -1999,7 +2175,7 @@ static void *writesf_child_main(void *zz)
             int filetype = x->x_filetype;
             char *filename = x->x_filename;
             t_canvas *canvas = x->x_canvas;
-            float samplerate = x->x_samplerate;
+            t_float samplerate = x->x_samplerate;
 
                 /* alter the request code so that an ensuing "open" will get
                 noticed. */
@@ -2244,7 +2420,7 @@ static t_int *writesf_perform(t_int *w)
     int vecsize = x->x_vecsize, sfchannels = x->x_sfchannels, i, j,
         bytespersample = x->x_bytespersample,
         bigendian = x->x_bigendian;
-    float *fp;
+    t_sample *fp;
     if (x->x_state == STATE_STREAM)
     {
         int wantbytes;
@@ -2263,7 +2439,7 @@ static t_int *writesf_perform(t_int *w)
 #endif
         }
 
-        soundfile_xferout(sfchannels, x->x_outvec,
+        soundfile_xferout_sample(sfchannels, x->x_outvec,
             (unsigned char *)(x->x_buf + x->x_fifohead), vecsize, 0,
                 bytespersample, bigendian, 1., 1);
         
@@ -2316,7 +2492,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     t_symbol *filesym;
     int filetype, bytespersamp, swap, bigendian, normalize;
     long onset, nframes;
-    float samplerate;
+    t_float samplerate;
     if (x->x_state != STATE_IDLE)
     {
         writesf_stop(x);

@@ -18,8 +18,8 @@
 static jack_nframes_t jack_out_max;
 #define JACK_OUT_MAX  64
 static jack_nframes_t jack_filled = 0;
-static float jack_outbuf[NUM_JACK_PORTS*BUF_JACK];
-static float jack_inbuf[NUM_JACK_PORTS*BUF_JACK];
+static t_sample jack_outbuf[NUM_JACK_PORTS*BUF_JACK];
+static t_sample jack_inbuf[NUM_JACK_PORTS*BUF_JACK];
 static int jack_started = 0;
 
 
@@ -39,22 +39,42 @@ static int
 process (jack_nframes_t nframes, void *arg)
 {
         int j;
-        float *out; 
-        float *in;
-        
+        jack_default_audio_sample_t *out, *in;
         
         if (nframes > JACK_OUT_MAX) jack_out_max = nframes;
         else jack_out_max = JACK_OUT_MAX;
         if (jack_filled >= nframes) {
                 if (jack_filled != nframes) fprintf(stderr,"Partial read");
-
-                for (j = 0; j < sys_outchannels;  j++) {
+                /* hmm, how to find out whether 't_sample' and 'jack_default_audio_sample_t' are actually the same type??? */
+                if(sizeof(t_sample)==sizeof(jack_default_audio_sample_t)) 
+                {
+                  for (j = 0; j < sys_outchannels;  j++) {
                         out = jack_port_get_buffer (output_port[j], nframes);
-                        memcpy(out, jack_outbuf + (j * BUF_JACK), sizeof (float) * nframes);
-                }
-                for (j = 0; j < sys_inchannels; j++) {
+                        memcpy(out, jack_outbuf + (j * BUF_JACK), sizeof (jack_default_audio_sample_t) * nframes);
+                  }
+                  for (j = 0; j < sys_inchannels; j++) {
                         in = jack_port_get_buffer( input_port[j], nframes);
-                        memcpy(jack_inbuf + (j * BUF_JACK), in, sizeof (float) * nframes);
+                        memcpy(jack_inbuf + (j * BUF_JACK), in, sizeof (jack_default_audio_sample_t) * nframes);
+                  }
+                } 
+                else
+                {
+                  unsigned int frame=0;
+                  t_sample*data;
+                  for (j = 0; j < sys_outchannels;  j++) {
+                        out = jack_port_get_buffer (output_port[j], nframes);
+                        data=jack_outbuf + (j * BUF_JACK);
+                        for(frame=0; frame<nframes; frame++) {
+                          *out++=*data++;
+                        }
+                  }
+                  for (j = 0; j < sys_inchannels; j++) {
+                        in = jack_port_get_buffer( input_port[j], nframes);
+                        data=jack_inbuf+(j*BUF_JACK);
+                        for(frame=0; frame<nframes; frame++) {
+                          *data++=*in++;
+                        }
+                  }
                 }
                 jack_filled -= nframes;
         } else { /* PD could not keep up ! */
@@ -322,7 +342,7 @@ void jack_close_audio(void)
 int jack_send_dacs(void)
 
 {
-        float * fp;
+        t_sample * fp;
         int j;
         int rtnval =  SENDDACS_YES;
         int timenow;
@@ -343,12 +363,12 @@ int jack_send_dacs(void)
 
         fp = sys_soundout;
         for (j = 0; j < sys_outchannels; j++) {
-                memcpy(jack_outbuf + (j * BUF_JACK) + jack_filled,fp, DEFDACBLKSIZE*sizeof(float));
+                memcpy(jack_outbuf + (j * BUF_JACK) + jack_filled,fp, DEFDACBLKSIZE*sizeof(t_sample));
                 fp += DEFDACBLKSIZE;  
         }
         fp = sys_soundin;
         for (j = 0; j < sys_inchannels; j++) {
-                memcpy(fp, jack_inbuf + (j * BUF_JACK) + jack_filled, DEFDACBLKSIZE*sizeof(float));
+                memcpy(fp, jack_inbuf + (j * BUF_JACK) + jack_filled, DEFDACBLKSIZE*sizeof(t_sample));
                 fp += DEFDACBLKSIZE;
         }
 
@@ -357,7 +377,7 @@ int jack_send_dacs(void)
             rtnval = SENDDACS_SLEPT;
           }
 
-        memset(sys_soundout,0,DEFDACBLKSIZE*sizeof(float)*sys_outchannels);
+        memset(sys_soundout,0,DEFDACBLKSIZE*sizeof(t_sample)*sys_outchannels);
         jack_filled += DEFDACBLKSIZE;
         return rtnval;
 }

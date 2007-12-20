@@ -168,15 +168,14 @@ set ctrls_outlevel 0
 frame .controls.switches
 checkbutton .controls.switches.audiobutton -text {compute audio} \
     -variable ctrls_audio_on \
-    -anchor w \
     -command {pd [concat pd dsp $ctrls_audio_on \;]}
 
 checkbutton .controls.switches.meterbutton -text {peak meters} \
     -variable ctrls_meter_on \
-    -anchor w \
     -command {pd [concat pd meters $ctrls_meter_on \;]}
 
-pack .controls.switches.audiobutton .controls.switches.meterbutton -side top
+pack .controls.switches.audiobutton .controls.switches.meterbutton \
+     -side top -anchor w
 
 frame .controls.inout
 frame .controls.inout.in
@@ -1209,6 +1208,7 @@ if {$pd_nt == 1} {
         bind $name.c <Option-Button> {pdtk_canvas_click %W %x %y %b 4}
         bind $name.c <Option-Shift-Button> {pdtk_canvas_click %W %x %y %b 5}
         bind $name.c <Option-Control-Button> {pdtk_canvas_click %W %x %y %b 6}
+        bind $name.c <Mod1-Button> {pdtk_canvas_click %W %x %y %b 6}
         bind $name.c <Option-Control-Shift-Button> \
             {pdtk_canvas_click %W %x %y %b 7}
     } else {
@@ -2873,7 +2873,7 @@ proc array_apply {id} {
 }
 
 # jsarlo
-proc array_viewlist {id name page} {
+proc array_viewlist {id} {
     pd [concat $id arrayviewlistnew\;]
 }
 # end jsarlo
@@ -2963,7 +2963,7 @@ proc pdtk_array_dialog {id name n flags newone} {
     # jsarlo
     if {$newone == 0} {
       button $id.listview -text {View list}\
-        -command "array_viewlist $id $name 0"
+        -command "array_viewlist $id"
       pack $id.listview -side left
     }
     # end jsarlo

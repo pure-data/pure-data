@@ -145,8 +145,11 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         canvas_objtext(gl, atom_getintarg(0, argc, argv),
             atom_getintarg(1, argc, argv), 0, b);
     }
-    else
-    {
+    else if(!glist_isvisible(gl)){
+      /* JMZ: not a good idea to go into interactive mode in a closed canvas... */
+      post("unable to create stub object in closed canvas!");
+      return;
+    } else {
         t_binbuf *b = binbuf_new();
         int xpix, ypix;
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
@@ -417,6 +420,11 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     else
     {
         int xpix, ypix;
+        /* JMZ: not a good idea to go into interactive mode in a closed canvas... */
+        if(!glist_isvisible(gl)){
+          post("unable to create stub message in closed canvas!");
+          return;
+        }
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         glist_noselect(gl);
         glist_getnextxy(gl, &xpix, &ypix);

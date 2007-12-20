@@ -1204,34 +1204,86 @@ typedef struct _makefilename
 {
     t_object x_obj;
     t_symbol *x_format;
+    t_atomtype x_accept;
+    int x_intconvert;
 } t_makefilename;
+
+static void makefilename_scanformat(t_makefilename *x)
+{
+    int num=0, infmt=0;
+    char *str,*chr;
+    if (!x->x_format) return;
+    x->x_accept = A_NULL;
+    for (str=x->x_format->s_name; *str; str++) {
+        if (!infmt && *str=='%') {
+            infmt=1;
+            continue;
+        }
+        if (infmt) {
+            if (strchr("-.#0123456789",*str)!=0)
+                continue;
+            if (*str=='s') {
+                x->x_accept = A_SYMBOL;
+                x->x_intconvert = 0;
+                break;
+            }
+            if (strchr("fgGeE",*str)!=0) {
+                x->x_accept = A_FLOAT;
+                x->x_intconvert = 0;
+                break;
+            }
+            if (strchr("xXdiou",*str)!=0) {
+                x->x_accept = A_FLOAT;
+                x->x_intconvert = 1;
+                break;
+            }
+            infmt=0;
+        }
+    }
+}
 
 static void *makefilename_new(t_symbol *s)
 {
     t_makefilename *x = (t_makefilename *)pd_new(makefilename_class);
-    if (!s->s_name) s = gensym("file.%d");
+    if (!s || !s->s_name) s = gensym("file.%d");
     outlet_new(&x->x_obj, &s_symbol);
     x->x_format = s;
+    x->x_accept = A_NULL;
+    x->x_intconvert = 0;
+    makefilename_scanformat(x);
     return (x);
 }
 
 static void makefilename_float(t_makefilename *x, t_floatarg f)
 {
     char buf[MAXPDSTRING];
+    if (x->x_accept == A_FLOAT) {
+        if (x->x_intconvert)
     sprintf(buf, x->x_format->s_name, (int)f);
+        else
+            sprintf(buf, x->x_format->s_name, f);
+    }
+    else
+        sprintf(buf, x->x_format->s_name, "");
+    if (buf[0]!=0)
     outlet_symbol(x->x_obj.ob_outlet, gensym(buf));
 }
 
 static void makefilename_symbol(t_makefilename *x, t_symbol *s)
 {
     char buf[MAXPDSTRING];
+    if (x->x_accept == A_SYMBOL)
     sprintf(buf, x->x_format->s_name, s->s_name);
+    else
+        sprintf(buf, x->x_format->s_name, 0);
+    if (buf[0]!=0)
     outlet_symbol(x->x_obj.ob_outlet, gensym(buf));
 }
 
 static void makefilename_set(t_makefilename *x, t_symbol *s)
 {
     x->x_format = s;
+    makefilename_scanformat(x);
 }
 
 static void makefilename_setup(void)

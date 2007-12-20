@@ -91,7 +91,7 @@ of a note at or near the previously output pitch.;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X restore 330 531 pd setting-parameters;
-#N canvas 149 65 641 815 sinusoid-tracking 1;
+#N canvas 149 65 641 815 sinusoid-tracking 0;
 #X obj 124 267 sigmund~ -npeak 10 peaks;
 #X obj 124 214 phasor~;
 #X obj 124 144 loadbang;
@@ -127,7 +127,7 @@ claw them apart). The other four are as shown:;
 #X floatatom 245 760 5 0 0 0 - - -;
 #X floatatom 285 737 5 0 0 0 - - -;
 #X floatatom 326 713 5 0 0 0 - - -;
-#X obj 246 638 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 246 638 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 43 535 If you ask for "tracks" \, the output is four numbers:
 index \, frequency \, and amplitude as before \, and finally a flag
