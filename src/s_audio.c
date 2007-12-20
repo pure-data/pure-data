@@ -68,7 +68,7 @@ static int audio_advance;
 static int audio_callback;
 
 void sched_audio_callbackfn(void);
-extern int sched_reopenmeplease;
+void sched_reopenmeplease(void);
 
 static int audio_isopen(void)
 {
@@ -364,10 +364,11 @@ void sys_close_audio(void)
         mmio_close_audio();
     else
 #endif
-        post("sys_close_audio: unknown API %d", sys_audioapi);
+        post("sys_close_audio: unknown API %d", sys_audioapiopened);
     sys_inchannels = sys_outchannels = 0;
     sys_audioapiopened = -1;
     sched_set_using_audio(SCHED_AUDIO_NONE);
+    audio_state = 0;
 }
 
     /* open audio using whatever parameters were last used */
@@ -432,6 +433,7 @@ void sys_reopen_audio( void)
     }
     else
     {
+		/* fprintf(stderr, "started w/callback %d\n", callback); */
         audio_state = 1;
         sched_set_using_audio(
             (callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
@@ -743,7 +745,7 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
         newrate, newadvance, (newcallback >= 0 ? newcallback : 0));
     if (!audio_callback && !newcallback)
         sys_reopen_audio();
-    else sched_reopenmeplease = 1;
+    else sched_reopenmeplease();
 }
 
 void sys_listdevs(void )
@@ -820,7 +822,6 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     else if (audio_isopen())
     {
         sys_close_audio();
-        audio_state = 0;
     }
 }
 
@@ -837,7 +838,6 @@ void sys_set_audio_state(int onoff)
         if (audio_isopen())
             sys_close_audio();
     }
-    audio_state = onoff;
 }
 
 void sys_get_audio_apis(char *buf)
