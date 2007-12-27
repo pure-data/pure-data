@@ -28,7 +28,10 @@ int sys_schedblocksize = DEFDACBLKSIZE;
 int sys_usecsincelastsleep(void);
 int sys_sleepgrain;
 
-int sched_reopenmeplease = 0;   /* request from s_audio for deferred reopen */
+void sched_reopenmeplease(void)   /* request from s_audio for deferred reopen */
+{
+	sys_quit = SYS_QUIT_RESTART;
+}
 
 typedef void (*t_clockmethod)(void *client);
 
