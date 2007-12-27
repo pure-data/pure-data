@@ -48,7 +48,6 @@ outputs are meaningful.;
 #X text 13 28 Sigmund~ analyzes an incoming sound into sinusoidal components
 \, which may be reported individually or combined to form a pitch estimate.
 Possible outputs are specified as creation arguments:;
-#X text 55 129 env - output pitches at the beginning of notes;
 #X text 56 95 pitch - output pitch continuously;
 #N canvas 518 74 588 728 setting-parameters 0;
 #X msg 182 66 print;
@@ -178,17 +177,18 @@ for an empty track.;
 #X text 62 335 growth - growth (dB) to report a new note (7);
 #X text 54 147 peaks - output all sinusoidal peaks in order of amplitude
 ;
-#X text 380 596 updated for Pd v0.40;
 #X text 11 356 The npts and hop parameters are in samples \, and are
 powers of two. The example below specifies a huge hop of 4096 (to slow
 the output down) and to output "pitch" and "env". (Those are the default
 outputs.);
 #X text 61 260 maxfreq - maximum sinusoid frequency in Hz. (1000000)
 ;
-#X connect 2 0 25 0;
+#X text 55 128 env - output amplitude continuously;
+#X text 380 596 updated for Pd v0.41;
+#X connect 2 0 24 0;
 #X connect 3 0 8 0;
 #X connect 4 0 7 0;
 #X connect 7 0 2 0;
 #X connect 8 0 4 0;
-#X connect 25 0 5 0;
-#X connect 25 1 6 0;
+#X connect 24 0 5 0;
+#X connect 24 1 6 0;
