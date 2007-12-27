@@ -67,6 +67,8 @@ static int audio_rate;
 static int audio_advance;
 static int audio_callback;
 
+static int audio_callback_is_open;  /* reflects true actual state */
+static int audio_nextinchans, audio_nextoutchans;
 void sched_audio_callbackfn(void);
 void sched_reopenmeplease(void);
 
@@ -194,9 +196,6 @@ void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,
     {
         return;
     }
-        /* if we're already open close it */
-    if (sys_inchannels || sys_outchannels)
-        sys_close_audio();
 
     if (rate < 1)
         rate = DEFAULTSRATE;
@@ -325,10 +324,11 @@ void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,
         nrealoutdev++;
     }
     sys_schedadvance = advance * 1000;
-    sys_setchsr(inchans, outchans, rate);
     sys_log_error(ERR_NOTHING);
+    audio_nextinchans = inchans;
+    audio_nextoutchans = outchans;
     sys_save_audio_params(nrealindev, realindev, realinchans,
-        nrealoutdev, realoutdev, realoutchans, sys_dacsr, advance, callback);
+        nrealoutdev, realoutdev, realoutchans, rate, advance, callback);
 }
 
 void sys_close_audio(void)
@@ -369,6 +369,7 @@ void sys_close_audio(void)
     sys_audioapiopened = -1;
     sched_set_using_audio(SCHED_AUDIO_NONE);
     audio_state = 0;
+    audio_callback_is_open = 0;
 }
 
     /* open audio using whatever parameters were last used */
@@ -379,6 +380,7 @@ void sys_reopen_audio( void)
     int rate, advance, callback, outcome = 0;
     sys_get_audio_params(&naudioindev, audioindev, chindev,
         &naudiooutdev, audiooutdev, choutdev, &rate, &advance, &callback);
+    sys_setchsr(audio_nextinchans, audio_nextoutchans, rate);
     if (!naudioindev && !naudiooutdev)
     {
         sched_set_using_audio(SCHED_AUDIO_NONE);
@@ -430,14 +432,16 @@ void sys_reopen_audio( void)
         audio_state = 0;
         sched_set_using_audio(SCHED_AUDIO_NONE);
         sys_audioapiopened = -1;
+	audio_callback_is_open = 0;
     }
     else
     {
-		/* fprintf(stderr, "started w/callback %d\n", callback); */
+                /* fprintf(stderr, "started w/callback %d\n", callback); */
         audio_state = 1;
         sched_set_using_audio(
             (callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
         sys_audioapiopened = sys_audioapi;
+	audio_callback_is_open = callback;
     }
     sys_vgui("set pd_whichapi %d\n",  (outcome == 0 ? sys_audioapi : 0));
 }
@@ -690,6 +694,7 @@ void glob_audio_properties(t_pd *dummy, t_floatarg flongform)
     gfxstub_new(&glob_pdobject, (void *)glob_audio_properties, buf);
 }
 
+extern int pa_foo;
     /* new values from dialog window */
 void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
@@ -703,7 +708,6 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int newrate = atom_getintarg(16, argc, argv);
     int newadvance = atom_getintarg(17, argc, argv);
     int newcallback = atom_getintarg(18, argc, argv);
-    int statewas;
 
     for (i = 0; i < 4; i++)
     {
@@ -738,12 +742,12 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     
     if (newcallback < 0)
         newcallback = 0;
-    if (!audio_callback && !newcallback)
+    if (!audio_callback_is_open && !newcallback)
         sys_close_audio();
     sys_set_audio_settings(nindev, newaudioindev, nindev, newaudioinchan,
         noutdev, newaudiooutdev, noutdev, newaudiooutchan,
         newrate, newadvance, (newcallback >= 0 ? newcallback : 0));
-    if (!audio_callback && !newcallback)
+    if (!audio_callback_is_open && !newcallback)
         sys_reopen_audio();
     else sched_reopenmeplease();
 }

@@ -30,7 +30,7 @@ int sys_sleepgrain;
 
 void sched_reopenmeplease(void)   /* request from s_audio for deferred reopen */
 {
-	sys_quit = SYS_QUIT_RESTART;
+    sys_quit = SYS_QUIT_RESTART;
 }
 
 typedef void (*t_clockmethod)(void *client);
@@ -537,7 +537,7 @@ void sched_audio_callbackfn(void)
 static void m_callbackscheduler(void)
 {
     sys_initmidiqueue();
-    while (1)
+    while (!sys_quit)
     {
 #ifdef MSW
     Sleep(1000);
