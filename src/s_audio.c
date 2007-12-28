@@ -432,7 +432,7 @@ void sys_reopen_audio( void)
         audio_state = 0;
         sched_set_using_audio(SCHED_AUDIO_NONE);
         sys_audioapiopened = -1;
-	audio_callback_is_open = 0;
+        audio_callback_is_open = 0;
     }
     else
     {
@@ -441,7 +441,7 @@ void sys_reopen_audio( void)
         sched_set_using_audio(
             (callback ? SCHED_AUDIO_CALLBACK : SCHED_AUDIO_POLL));
         sys_audioapiopened = sys_audioapi;
-	audio_callback_is_open = callback;
+        audio_callback_is_open = callback;
     }
     sys_vgui("set pd_whichapi %d\n",  (outcome == 0 ? sys_audioapi : 0));
 }

@@ -67,7 +67,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
                 *fp3 = *soundiop++;
     }
     if (pa_foo)
-    	fprintf(stderr, "done pa_lowlevel_callback\n"); 
+        fprintf(stderr, "done pa_lowlevel_callback\n"); 
     return 0;
 }
 
