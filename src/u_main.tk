@@ -895,6 +895,17 @@ proc pdtk_canvas_new {name width height geometry editable} {
     global tcl_version
 
     toplevel $name -menu $name.m
+        # if we're a mac, refuse to make window so big you can't get to
+        # the resizing control
+    if {$pd_nt == 2} {
+        if {$width > [winfo screenwidth $name] - 80} {
+            set width [expr [winfo screenwidth $name] - 80]
+        }
+        if {$height > [winfo screenheight $name] - 80} {
+            set height [expr [winfo screenheight $name] - 80]
+        }
+    }
+    
 # slide offscreen windows into view
     if {$tcl_version >= 8.4} {
         set geometry [split $geometry +]
