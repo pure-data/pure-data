@@ -172,7 +172,7 @@ static void openit(const char *dirname, const char *filename)
     char dirbuf[MAXPDSTRING], *nameptr;
     int fd = open_via_path(dirname, filename, "", dirbuf, &nameptr,
         MAXPDSTRING, 0);
-    if (fd)
+    if (fd >= 0)
     {
         close (fd);
         glob_evalfile(0, gensym(nameptr), gensym(dirbuf));
