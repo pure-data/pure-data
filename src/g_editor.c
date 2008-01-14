@@ -1564,6 +1564,12 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         else if (!strcmp(gotkeysym->s_name, "Right"))
             canvas_displaceselection(x, shift ? 10 : 1, 0);
     }
+        /* if control key goes up or down, and if we're in edit mode, change
+        cursor to indicate how the click action changes */
+    if (x && keynum == 0 && x->gl_edit &&
+        !strncmp(gotkeysym->s_name, "Control", 7))
+            canvas_setcursor(x, down ?
+                CURSOR_RUNMODE_NOTHING :CURSOR_EDITMODE_NOTHING);
 }
 
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
