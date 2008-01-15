@@ -71,29 +71,21 @@ void sys_unbashfilename(const char *from, char *to)
 
 /*******************  Utility functions used below ******************/
 
-/*!
- * \brief copy until delimiter
- * 
- * \arg to destination buffer
- * \arg to_len destination buffer length
- * \arg from source buffer
- * \arg delim string delimiter to stop copying on
- *
- * \return position after delimiter in string.  If it was the last
- *         substring, return NULL.
- */
-static const char *strtokcpy(char *to, size_t to_len, const char *from, char delim)
+/* copy until delimiter and return position after delimiter in string */
+/* if it was the last substring, return NULL */
+
+static const char* strtokcpy(char *to, const char *from, int delim)
 {
-    unsigned int i = 0;
+    int size = 0;
 
-	for (; i < (to_len - 1) && from[i] && from[i] != delim; i++)
-		to[i] = from[i];
-	to[i] = '\0';
+    while (from[size] != (char)delim && from[size] != '\0')
+        size++;
 
-	if (i && from[i] != '\0')
-		return from + i + 1;
-
-	return NULL;
+    strncpy(to,from,size);
+    to[size] = '\0';
+    if (from[size] == '\0') return NULL;
+    if (size) return from+size+1;
+    else return NULL;
 }
 
 /* add a single item to a namelist.  If "allowdup" is true, duplicates
@@ -141,7 +133,7 @@ t_namelist *namelist_append_files(t_namelist *listwas, const char *s)
     npos = s;
     do
     {
-        npos = strtokcpy(temp, sizeof(temp), npos, SEPARATOR);
+        npos = strtokcpy(temp, npos, SEPARATOR);
         if (! *temp) continue;
         nl = namelist_append(nl, temp, 0);
     }

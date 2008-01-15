@@ -459,12 +459,12 @@ t_propertiesfn class_getpropertiesfn(t_class *c)
 
 static t_symbol *symhash[HASHSIZE];
 
-t_symbol *dogensym(char *s, t_symbol *oldsym)
+t_symbol *dogensym(const char *s, t_symbol *oldsym)
 {
     t_symbol **sym1, *sym2;
     unsigned int hash1 = 0,  hash2 = 0;
     int length = 0;
-    char *s2 = s;
+    const char *s2 = s;
     while (*s2)
     {
         hash1 += *s2;
@@ -491,7 +491,7 @@ t_symbol *dogensym(char *s, t_symbol *oldsym)
     return (sym2);
 }
 
-t_symbol *gensym(char *s)
+t_symbol *gensym(const char *s)
 {
     return(dogensym(s, 0));
 }

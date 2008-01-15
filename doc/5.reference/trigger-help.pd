@@ -14,7 +14,7 @@
 #X text 39 59 The trigger object outputs its input from right to left
 \, converting to the types indicated by its creation arguments. There
 is also a "pointer" argument type (see the pointer object.);
-#X obj 381 293 t f b l s a;
+#X obj 381 293 t f b s l a;
 #X msg 466 167 dog my cats;
 #X obj 466 199 trigger bang anything;
 #X obj 374 242 print x5;

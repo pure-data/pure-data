@@ -1232,7 +1232,7 @@ static void makefilename_scanformat(t_makefilename *x)
                 x->x_intconvert = 0;
                 break;
             }
-            if (strchr("xXdiou",*str)!=0) {
+            if (strchr("xXdiouc",*str)!=0) {
                 x->x_accept = A_FLOAT;
                 x->x_intconvert = 1;
                 break;

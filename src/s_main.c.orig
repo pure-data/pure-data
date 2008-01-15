@@ -295,7 +295,7 @@ int sys_main(int argc, char **argv)
         HINSTANCE ntdll;
         char filename[MAXPDSTRING];
 
-        snprintf(filename, sizeof(filename), "%s.dll", sys_externalschedlibname);
+        sprintf(filename, "%s.dll", sys_externalschedlibname);
         sys_bashfilename(filename, filename);
         ntdll = LoadLibrary(filename);
         if (!ntdll)

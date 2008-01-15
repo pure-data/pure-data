@@ -250,12 +250,14 @@ static void sys_huphandler(int n)
 void sys_setalarm(int microsec)
 {
     struct itimerval gonzo;
+    int sec = (int)(microsec/1000000);
+    microsec %= 1000000;
 #if 0
-    fprintf(stderr, "timer %d\n", microsec);
+    fprintf(stderr, "timer %d:%d\n", sec, microsec);
 #endif
     gonzo.it_interval.tv_sec = 0;
     gonzo.it_interval.tv_usec = 0;
-    gonzo.it_value.tv_sec = 0;
+    gonzo.it_value.tv_sec = sec;
     gonzo.it_value.tv_usec = microsec;
     if (microsec)
         sys_signal(SIGALRM, sys_alarmhandler);
