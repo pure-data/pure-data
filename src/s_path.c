@@ -86,14 +86,14 @@ static const char *strtokcpy(char *to, size_t to_len, const char *from, char del
 {
     unsigned int i = 0;
 
-	for (; i < (to_len - 1) && from[i] && from[i] != delim; i++)
-		to[i] = from[i];
-	to[i] = '\0';
+        for (; i < (to_len - 1) && from[i] && from[i] != delim; i++)
+                to[i] = from[i];
+        to[i] = '\0';
 
-	if (i && from[i] != '\0')
-		return from + i + 1;
+        if (i && from[i] != '\0')
+                return from + i + 1;
 
-	return NULL;
+        return NULL;
 }
 
 /* add a single item to a namelist.  If "allowdup" is true, duplicates
