@@ -28,6 +28,9 @@
 #include <windows.h>
 #include <tchar.h>
 #endif
+#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
+#define snprintf sprintf_s
+#endif
 
 int sys_defeatrt;
 t_symbol *sys_flags = &s_;
