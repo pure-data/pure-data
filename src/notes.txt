@@ -56,6 +56,8 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
+change config.h to #ifdef _MSC_VER (include MSW fake) else include a real one
+stick snprintf alias in the MSW fake.
 flag to prevent unlocking patches
 clickless connection (hit 'c' key? see Bouchard paper)
 messages to suppress menus&accelerators, and invisibilize Pd window
