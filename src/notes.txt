@@ -1,11 +1,4 @@
 ---------------- dolist --------------------
-fixed crash bug closing patches with open GOPs
-fixed PC device counting problem (first device invoked by -audiodev 0)
-fixed MSTACKSIZE limitation in m_binbuf.c
-fixed so that if more than one object is selected, clicking prefers to
-    "hit" a selected one (better dragging after "duplicate")
-
-
 test:
 compile on various versions of linux
 windows:

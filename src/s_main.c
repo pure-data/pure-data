@@ -77,7 +77,8 @@ int sys_externalschedlib;
 char sys_externalschedlibname[MAXPDSTRING];
 int sys_extraflags;
 char sys_extraflagsstring[MAXPDSTRING];
-
+int sys_run_scheduler(const char *externalschedlibname,
+    const char *sys_extraflagsstring);
 
     /* here the "-1" counts signify that the corresponding vector hasn't been
     specified in command line arguments; sys_set_audio_settings will detect it
@@ -291,28 +292,8 @@ int sys_main(int argc, char **argv)
     if (sys_startgui(sys_guidir->s_name))       /* start the gui */
         return(1);
     if (sys_externalschedlib)
-    {
-#ifdef MSW
-        typedef int (*t_externalschedlibmain)(char *);
-        t_externalschedlibmain externalmainfunc;
-        HINSTANCE ntdll;
-        char filename[MAXPDSTRING];
-
-        snprintf(filename, sizeof(filename), "%s.dll", sys_externalschedlibname);
-        sys_bashfilename(filename, filename);
-        ntdll = LoadLibrary(filename);
-        if (!ntdll)
-        {
-              post("%s: couldn't load external scheduler lib ", filename);
-              return (0);
-        }
-        externalmainfunc = (t_externalschedlibmain)GetProcAddress(ntdll,
-                                                                  "main");
-        return((*externalmainfunc)(sys_extraflagsstring));
-#else
-        return (0);
-#endif
-    }
+        return (sys_run_scheduler(sys_externalschedlibname,
+            sys_extraflagsstring));
     else
     {
             /* open audio and MIDI */
