@@ -17,12 +17,11 @@
 <BR><BR>
 </P>
 
-<P>Pd runs under Irix, Microsoft Windows, Linux, and MacOS 10.2 (Jaguar).  
-How to get Pd up and running depends on your operating system,
-but the overall strategy is the same.
-You must first get and install it, and
-then untangle whatever problems arise in handling audio and MIDI input
-and output, and finally get Pd to meet its real-time obligations reliably.
+<P>Pd runs under Microsoft Windows, Linux, and MacOS (10.2 or later).   How to
+get Pd up and running depends on your operating system, but the overall strategy
+is the same. You must first get and install it, and then untangle whatever
+problems arise in handling audio and MIDI input and output, and finally get Pd
+to meet its real-time obligations reliably.
 
 <P>  Installation instructions are platform-specfic; the following four
 sections
@@ -145,9 +144,8 @@ port, 17-32 the second one, and so on.  The midiin, sysexin, midiout objects
 give you a separate inlet to specify which of the open MIDI port numbers
 you want.
 
-<P> System exclusive MIDI message input and output is theoretically supported
-in version 0.37 but does not work correctly on windows, even in 0.38.
-
+<P> System exclusive MIDI message input and output are theoretically supported
+but does not work uniformly across all operating systems..
 
 <H3> <A name=s1.1> 3.2. Installing Pd in Microsoft Windows </A> </H3>
 
@@ -211,32 +209,17 @@ your situation.  (If not, you can read the Pd mailing list archives for
 recent problems; if you have found a new problem you're welcome to post it 
 to the list.)
 
-<P> If you're running RedHat or Mandrake you might want to use RPM to install
-Pd.  For other linux distributions, download the "tar.gz" version and compile
-Pd.
-
-<H4> Getting Pd as an RPM </H4>
-
-<P> Download Pd, perhaps from
-    <a href="http://www.crca.ucsd.edu/~msp/software.html">
-    http://www.crca.ucsd.edu/~msp/software.html</A> ,
-to a file such as "pd-0.33-0.i386.rpm".
-Open a "shell" window, cd to
-the directory containing the file, and type the command,
-<PRE>
-    rpm -i pd-0.33-0.i386.rpm
-</PRE>
-
-<P> (substituting the real file name.)  Then you should be able to type "pd"
-to a shell and watch the Pd main window appear.
+<P> Pd is available via the package systems for some linux distributions, 
+but not always in the most recent version possible.  It's relatively easy to
+compile your own copy of Pd and that is the approach described here.
 
 <H4> Getting Pd as a .tar.gz </H4>
 
 <P> Before you start, you might want to check that you have the resources Pd
 needs.  The main things you need are the C compiler, X windows (including
-the X development package for Pd to link against) and TK.  If you're running
-Redhat or Mandrake 7.x or up, I think these are all present by default.
-The RedHat X client developer "RPM" package is called XFree86-devel.
+the X development package for Pd to link against) and TK.  It's almost
+always enough to load "tcl-devel" and "tk-devel" packages using yum or
+apt-get.
 
 <P> 
 Download Pd, perhaps from
@@ -254,7 +237,6 @@ to "pd/src" and type
 
 <P>
 <BR> ./configure
-<BR> make depend
 <BR> make
 </P>
 
@@ -410,15 +392,8 @@ always compile Pd for yourself, whether to make your own improvements, or
 possibly so that you can get the newest version before it shows up compiled for
 Mac OS X.      
 
-<P> To be able to compile Pd, you must have installed Tcl/Tk
-specifically in   
-/Applications/Wish Shell.app   
-and  /Library/Frameworks/Tk.framework and /Library/Frameworks/Tcl.framework.
-
-<P> First download and install TK for OSX.  I get it from:
-<A href=http://tcltkaqua.sourceforge.net/>
-http://tcltkaqua.sourceforge.net/. </A>
-
+<P> To be able to compile Pd, you must have Tcl/Tk installed in the standard
+places.  I think this is true fro all reasoably recent releases of OSX.
 
 <P> Then, just as for linux, just unload pd-whatever.tar.gz into a directory
 such as ~/pd-0.36-0, cd to pd-0.36-0/src, type "./configure"
@@ -445,109 +420,6 @@ as needed.
 <P> To get MIDI working, you have to do the Mac OSX magic to get a USB
 MIDI interface installed.  I've seen this done with Midisport devices and
 I think you just download the OSX driver and follow directions.
-
-<H3> <A name=s1.4> 3.5. Installing Pd in IRIX (SGI machines) </A> </H3>
-
-<P> (NOTE: as of release 0.35 I haven't had an IRIX machine to compile   
-Pd on.  Soeren Bovbjerg has kindly compiled 0.35 and 0.36 for IRIX;   
-you can find these at   
-<A href="http://www.cvmt.dk/~sb/"> http://www.cvmt.dk/~sb/ </A>.)   
-
-<P> Download Pd, which will be a "tar.Z" file.  You can unpack this by
-typing "zcat [name].tar.Z | tar xf -" to a shell.  This creates a directory
-named "pd".
-
-<P>
-Starting with release 0.25, Pd should come in "n32" and "o32" versions.
-"o32" is the default and will run on IRIX 5.x and up.  "n32" runs faster,
-but only on 6.x and up.  Also, "externs" have to be updated for n32.  The
-"pd" executable (bin/pd in the distribution) is a symbolic link to either 
-"pd-o32" or "pd-n32."
-
-<P> NOTE: "externs" appear to be broken in the N32 version... I'm not sure
-how long this has been true.  If you want to use external objects, you have
-to use the O32 version.
-
-<P>
-If for example you put Pd in ~, the executable program
-will be ~/pd/bin/pd.  The program looks at its command line to
-figure out where it is, so it's best to invoke Pd by its full pathname.
-You should always invoke Pd from a Unix shell because many important
-messages appear on the standard error.
-
-<P>
-The simplest way to invoke Pd is to
-make an alias in your ".cshrc" file (assuming you use the "c" shell) such as:
-</P>
-<PRE>
-
-    alias pd ~/pd/bin/pd
-
-</PRE>
-<P>(assuming your Pd distribution landed in ~, for example).
-
-<P>
-Pd will open the "default" audio input and output devices, without regard
-for whether they are in sync or not.  This will be bad if they aren't; use
-the "-noadc" or "-nodac" flag to disable either the input or output.  Pd is
-supposed to handle up to 8 channels of audio in and/or out.  (But at least
-one user had to recompile Pd on his Onyx to get 8 channels working.)
-
-<P>
-As to MIDI, Pd simply attempts to open all available MIDI devices for input and
-output, which is probably very bad on anything more recent than my Indy.  If
-any MIDI ports fail to open either for input or output, all MIDI is disabled.
-
-<P> Pd has not been fixed to request real-time priority from Irix; it will
-compete with all other processes on your machine for CPU time.
-
-<H4> Audio and MIDI in IRIX </H4>
-
-<P>
-Pd takes command line arguments to set the number of input and output channels
-and the sample rate.  These don't affect the SGI's audio settings, which you
-have to set separately using the "audio panel."  Pd does detect the audio
-sample rate if you don't specify one on the command line.
-
-<P>
-On SGI machines, you have to work to get MIDI running.  Before you start Pd, verify
-that least one MIDI port is configured open. Pd opens the FIRST MIDI port
-that's open.  You might want to get rid of the "software" MIDI port if you're
-running 6.x.  On Indys, the usual practice is to open serial port number 2
-because some systems configure port 1 as "console" by default.  You can use the
-GUI if you want, or else just type
-<PRE>
-
-    startmidi -d /dev/ttyd2
-
-</PRE>
-
-<P>to get port 2 speaking MIDI, and
-
-<PRE>
-
-    stopmidi
-
-</PRE>
-
-<P>to stop it.  You can test whether MIDI is configured by typing,
-
-<PRE>
-
-    ps -dafe | grep midi
-
-</PRE>
-
-<P>and looking for "startmidi" processes.
-
-<P>
-It's a good idea to connect your serial port to your MIDI interface before
-typing the "startmidi" command, not afterward, at least in 5.x.  We use the
-Opcode Studio 3 interface but in principle any Mac-compatible one should work.
-
-<P>
-The O2 apparently has RS232 ports, not RS422.  I think SGI's web site says
-something about how to deal with this.
 
 <H3> <A name=s4> 3.6. Preferences and startup options </A> </H3>
 
@@ -639,13 +511,12 @@ audio configuration flags:
 -listdev         -- list audio and MIDI devices
 
 (linux specific audio:)
--frags &lt;n&gt;       -- specify number of audio fragments (defeats audiobuf)
--fragsize &lt;n&gt;    -- specify log of fragment size ('blocksize' is better...)
 -oss            -- use ALSA audio drivers
 -alsa           -- use ALSA audio drivers
 -pa             -- use portaudio (experimental version 19)
--alsadev &lt;n&gt;     ----- obsolete: use -audiodev
--32bit             ---- (probably obsolete) -- use 32 bit OSS extension
+-alsadev &lt;n&gt;    -- obsolete: use -audiodev
+-32bit          -- (probably obsolete) -- use 32 bit OSS extension
+-alsaadd &lt;dev&gt;  -- add a device to the ALSA device list
 
 (Windows specific audio:)
 -mmio           -- use MMIO drivers and API
@@ -658,6 +529,7 @@ MIDI configuration flags:
 -nomidiin        -- suppress MIDI input
 -nomidiout       -- suppress MIDI output
 -nomidi          -- suppress MIDI input and output
+-alsamidi        -- use ALSA midi API
 
 general flags:
 -path &lt;path&gt;     -- add to file search path
@@ -678,6 +550,7 @@ general flags:
 -send "msg..."   -- send a message at startup (after patches are loaded)
 -rt or -realtime -- use real-time priority (needs root privilege)
 -nrt             -- don't use real-time priority
+-nosleep         -- never relinquish CPU (only for multiprocessors!)
 
 </PRE> 
 
