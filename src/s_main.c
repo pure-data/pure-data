@@ -169,7 +169,11 @@ int sys_fontheight(int fontsize)
 }
 
 int sys_defaultfont;
+#ifdef MSW
+#define DEFAULTFONT 12
+#else
 #define DEFAULTFONT 10
+#endif
 
 static void openit(const char *dirname, const char *filename)
 {

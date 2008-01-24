@@ -20,6 +20,9 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include <stdio.h>
+#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
+#define snprintf sprintf_s
+#endif
 
 typedef void (*t_xxx)(void);
 
