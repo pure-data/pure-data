@@ -13,6 +13,7 @@ mac:
 Gnome: why don't windows pop up when clicked on?
 
 problems:
+find asdf$1 (e.g.) doesn't work
 check real-time gaps in writesf~
 fix declare to update current patch when changed
 objects on GOP don't erase if you edit the GOP while they're showing

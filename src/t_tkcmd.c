@@ -420,6 +420,7 @@ static void pd_startfromgui( void)
 #endif
 
 #ifdef UNISTD
+    sprintf(cmdbuf, "\"%s\" -guiport %d\n", pdbuf, portno);
     childpid = fork();
     if (childpid < 0)
     {
@@ -429,7 +430,6 @@ static void pd_startfromgui( void)
     }
     else if (!childpid)                 /* we're the child */
     {
-        sprintf(cmdbuf, "\"%s\" -guiport %d\n", pdbuf, portno);
 #ifdef DEBUGCONNECT     
         fprintf(debugfd, "%s", cmdbuf);
         fflush(debugfd);
