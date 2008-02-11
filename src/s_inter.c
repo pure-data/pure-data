@@ -1018,6 +1018,74 @@ int sys_startgui(const char *guidir)
 
 
 #ifdef UNISTD
+        if (!sys_guicmd)
+        {
+#ifdef __APPLE__
+            char *homedir = getenv("HOME"), filename[250];
+            struct stat statbuf;
+                /* first look for Wish bundled with and renamed "Pd" */
+            sprintf(filename, "%s/../../MacOS/Pd", guidir);
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            if (!homedir || strlen(homedir) > 150)
+                goto nohomedir;
+                /* Look for Wish in user's Applications.  Might or might
+                not be names "Wish Shell", and might or might not be
+                in "Utilities" subdir. */
+            sprintf(filename,
+                "%s/Applications/Utilities/Wish shell.app/Contents/MacOS/Wish Shell",
+                    homedir);
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            sprintf(filename,
+                "%s/Applications/Utilities/Wish.app/Contents/MacOS/Wish",
+                    homedir);
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            sprintf(filename,
+                "%s/Applications/Wish shell.app/Contents/MacOS/Wish Shell",
+                    homedir);
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            sprintf(filename,
+                "%s/Applications/Wish.app/Contents/MacOS/Wish",
+                    homedir);
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+        nohomedir:
+                /* Perform the same search among system applications. */
+            strcpy(filename, 
+                "/usr/bin/wish");
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            strcpy(filename, 
+                "/Applications/Utilities/Wish Shell.app/Contents/MacOS/Wish Shell");
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            strcpy(filename, 
+                "/Applications/Utilities/Wish.app/Contents/MacOS/Wish");
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            strcpy(filename, 
+                "/Applications/Wish Shell.app/Contents/MacOS/Wish Shell");
+            if (stat(filename, &statbuf) >= 0)
+                goto foundit;
+            strcpy(filename, 
+                "/Applications/Wish.app/Contents/MacOS/Wish");
+        foundit:
+            sprintf(cmdbuf, "\"%s\" %s/pd.tk %d\n", filename, guidir, portno);
+#else
+            sprintf(cmdbuf,
+                "TCL_LIBRARY=\"%s/tcl/library\" TK_LIBRARY=\"%s/tk/library\" \
+                 \"%s/pd-gui\" %d\n",
+                 sys_libdir->s_name, sys_libdir->s_name, guidir, portno);
+#endif
+            sys_guicmd = cmdbuf;
+        }
+
+        if (sys_verbose) 
+            fprintf(stderr, "%s", sys_guicmd);
+
         childpid = fork();
         if (childpid < 0)
         {
@@ -1045,75 +1113,10 @@ int sys_startgui(const char *guidir)
                 }
             }
 #endif
-            if (!sys_guicmd)
-            {
-#ifdef __APPLE__
-                char *homedir = getenv("HOME"), filename[250];
-                struct stat statbuf;
-                    /* first look for Wish bundled with and renamed "Pd" */
-                sprintf(filename, "%s/../../MacOS/Pd", guidir);
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                if (!homedir || strlen(homedir) > 150)
-                    goto nohomedir;
-                    /* Look for Wish in user's Applications.  Might or might
-                    not be names "Wish Shell", and might or might not be
-                    in "Utilities" subdir. */
-                sprintf(filename,
-                    "%s/Applications/Utilities/Wish shell.app/Contents/MacOS/Wish Shell",
-                        homedir);
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                sprintf(filename,
-                    "%s/Applications/Utilities/Wish.app/Contents/MacOS/Wish",
-                        homedir);
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                sprintf(filename,
-                    "%s/Applications/Wish shell.app/Contents/MacOS/Wish Shell",
-                        homedir);
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                sprintf(filename,
-                    "%s/Applications/Wish.app/Contents/MacOS/Wish",
-                        homedir);
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-            nohomedir:
-                    /* Perform the same search among system applications. */
-                strcpy(filename, 
-                    "/usr/bin/wish");
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                strcpy(filename, 
-                    "/Applications/Utilities/Wish Shell.app/Contents/MacOS/Wish Shell");
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                strcpy(filename, 
-                    "/Applications/Utilities/Wish.app/Contents/MacOS/Wish");
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                strcpy(filename, 
-                    "/Applications/Wish Shell.app/Contents/MacOS/Wish Shell");
-                if (stat(filename, &statbuf) >= 0)
-                    goto foundit;
-                strcpy(filename, 
-                    "/Applications/Wish.app/Contents/MacOS/Wish");
-            foundit:
-                sprintf(cmdbuf, "\"%s\" %s/pd.tk %d\n", filename, guidir, portno);
-#else
-                sprintf(cmdbuf,
-"TCL_LIBRARY=\"%s/tcl/library\" TK_LIBRARY=\"%s/tk/library\" \
- \"%s/pd-gui\" %d\n",
-                    sys_libdir->s_name, sys_libdir->s_name, guidir, portno);
-#endif
-                sys_guicmd = cmdbuf;
-            }
-            if (sys_verbose) fprintf(stderr, "%s", sys_guicmd);
             execl("/bin/sh", "sh", "-c", sys_guicmd, (char*)0);
             perror("pd: exec");
             _exit(1);
-        }
+       }
 #endif /* UNISTD */
 
 #ifdef MSW
