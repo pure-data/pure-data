@@ -168,6 +168,9 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
     int downsample, int upsample,  int reblock, int switched)
 {
     t_signal *insig, *outsig;
+        /* no buffer means we're not a signal inlet */
+    if (!x->x_buf)
+        return;
     x->x_updown.downsample = downsample;
     x->x_updown.upsample   = upsample;
 
@@ -435,6 +438,9 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
     int myvecsize, int calcsize, int phase, int period, int frequency,
     int downsample, int upsample, int reblock, int switched)
 {
+        /* no buffer means we're not a signal outlet */
+    if (!x->x_buf)
+        return;
     x->x_updown.downsample=downsample;
     x->x_updown.upsample=upsample;
     x->x_justcopyout = (switched && !reblock);
