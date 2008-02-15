@@ -531,7 +531,7 @@ void glob_start_path_dialog(t_pd *dummy)
     int i;
     t_namelist *nl;
 
-    sys_vgui("pd_set pd_path \"\"\n");
+    sys_gui("global pd_path; set pd_path {}\n");
     for (nl = sys_searchpath, i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend pd_path \"%s\"\n", nl->nl_string);
     sprintf(buf, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
@@ -561,7 +561,7 @@ void glob_start_startup_dialog(t_pd *dummy)
     int i;
     t_namelist *nl;
 
-    sys_vgui("pd_set pd_startup \"\"\n");
+    sys_gui("global pd_startup; set pd_startup {}\n");
     for (nl = sys_externlist, i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend pd_startup \"%s\"\n", nl->nl_string);
     sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
