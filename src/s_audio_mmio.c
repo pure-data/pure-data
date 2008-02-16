@@ -709,7 +709,7 @@ int mmio_open_audio(int naudioindev, int *audioindev,
         nbuf = MAXBUFFER;
     }
     else if (nbuf < 4) nbuf = 4;
-    fprintf(stderr, "%d audio buffers\n", nbuf);
+    /* fprintf(stderr, "%d audio buffers\n", nbuf); */
     nt_naudiobuffer = nbuf;
     if (nt_adcjitterbufsallowed > nbuf - 2)
         nt_adcjitterbufsallowed = nbuf - 2;

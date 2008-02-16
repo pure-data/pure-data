@@ -418,12 +418,12 @@ void socketreceiver_free(t_socketreceiver *x)
 static int socketreceiver_doread(t_socketreceiver *x)
 {
     char messbuf[INBUFSIZE], *bp = messbuf;
-    int indx;
+    int indx, first = 1;
     int inhead = x->sr_inhead;
     int intail = x->sr_intail;
     char *inbuf = x->sr_inbuf;
-    if (intail == inhead) return (0);
-    for (indx = intail; indx != inhead; indx = (indx+1)&(INBUFSIZE-1))
+    for (indx = intail; first || (indx != inhead);
+        first = 0, (indx = (indx+1)&(INBUFSIZE-1)))
     {
             /* if we hit a semi that isn't preceeded by a \, it's a message
             boundary.  LATER we should deal with the possibility that the
@@ -544,6 +544,8 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
                     if (x->sr_socketreceivefn)
                         (*x->sr_socketreceivefn)(x->sr_owner, inbinbuf);
                     else binbuf_eval(inbinbuf, 0, 0, 0);
+                    if (x->sr_inhead == x->sr_intail)
+                        break;
                 }
             }
         }

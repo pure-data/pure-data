@@ -3517,7 +3517,7 @@ proc pdtk_pd_texteditor {stuff} {
 proc pdtk_pastetext {} {
     global pdtk_pastebuffer
     set pdtk_pastebuffer ""
-    catch {global pdtk_pastebuffer; set pdtk_pastebuffer [selection get]}
+    catch {global pdtk_pastebuffer; set pdtk_pastebuffer [clipboard get]}
 #    puts stderr [concat paste $pdtk_pastebuffer]
     for {set i 0} {$i < [string length $pdtk_pastebuffer]} {incr i 1} {
         set cha [string index $pdtk_pastebuffer $i]

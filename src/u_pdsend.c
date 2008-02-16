@@ -112,7 +112,7 @@ connected: ;
         nsend = strlen(buf);
         for (bp = buf, nsent = 0; nsent < nsend;)
         {
-            int res = send(sockfd, buf, nsend-nsent, 0);
+            int res = send(sockfd, bp, nsend-nsent, 0);
             if (res < 0)
             {
                 sockerror("send");
