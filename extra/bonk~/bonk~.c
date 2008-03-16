@@ -11,7 +11,7 @@ IN CONNECTION WITH THIS SOFTWARE!
 #include <stdio.h>
 
 #ifdef NT
-#pragma warning (disable: 4305 4244)
+#pragma warning (disable: 4305 4244 4996)
 #endif
 
 #ifdef MSP
