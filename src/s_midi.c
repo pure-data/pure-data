@@ -669,12 +669,12 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 
     sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
     for (i = 0; i < nindevs; i++)
-        sys_vgui("lappend midi_indevlist \"%s\"\n",
+        sys_vgui("lappend midi_indevlist {%s}\n",
             indevlist + i * DEVDESCSIZE);
 
     sys_gui("global midi_outdevlist; set midi_outdevlist {none}\n");
     for (i = 0; i < noutdevs; i++)
-        sys_vgui("lappend midi_outdevlist \"%s\"\n",
+        sys_vgui("lappend midi_outdevlist {%s}\n",
             outdevlist + i * DEVDESCSIZE);
 
     sys_get_midi_params(&nindev, midiindev, &noutdev, midioutdev);
