@@ -1,6 +1,6 @@
-#N canvas 25 8 688 708 12;
+#N canvas 247 4 688 708 12;
 #X floatatom 38 264 7 0 0 0 - - -;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-real 64 float 2;
 #X coords 0 64 64 -64 256 200 1;
 #X restore 423 184 graph;
@@ -12,7 +12,7 @@
 #X obj 38 637 tabwrite~ \$0-real;
 #X obj 67 614 tabwrite~ \$0-imaginary;
 #X obj 38 384 osc~;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-imaginary 64 float 2;
 #X coords 0 64 64 -64 256 200 1;
 #X restore 423 417 graph;
@@ -20,8 +20,8 @@
 #X floatatom 91 316 3 0 100 0 - - -;
 #X obj 91 337 / 100;
 #X obj 38 191 / 64;
-#X text 504 163 real part;
-#X text 489 398 imaginary part;
+#X text 595 165 real part;
+#X text 550 398 imaginary part;
 #X obj 80 545 loadbang;
 #X text 94 166 <- frequency;
 #X text 133 182 (as multiple;
