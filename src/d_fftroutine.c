@@ -98,7 +98,7 @@
 #define        FALSE                   0
 #endif
 
-#define        SAMPLE float     /* data type used in calculation */
+#define        SAMPLE PD_FLOATTYPE     /* data type used in calculation */
 
 #define        SHORT_SIZE              sizeof(short)
 #define        INT_SIZE                sizeof(int)
@@ -154,8 +154,8 @@ typedef struct Tfft_net {
 
 
 void cfft(int trnsfrm_dir, int npnt, int window,
-    float *source_buf, int source_form, int source_scale,
-    float *result_buf, int result_form, int result_scale, int debug);
+    SAMPLE *source_buf, int source_form, int source_scale,
+    SAMPLE *result_buf, int result_form, int result_scale, int debug);
 
 
 /*****************************************************************************/
@@ -172,10 +172,10 @@ int power_of_two(int n);
 void create_hanning(SAMPLE *window, int n, SAMPLE scale);
 void create_rectangular(SAMPLE *window, int n, SAMPLE scale);
 void short_to_float(short *short_buf, float *float_buf, int n);
-void load_registers(FFT_NET *fft_net, float *buf, int buf_form,
+void load_registers(FFT_NET *fft_net, SAMPLE *buf, int buf_form,
     int buf_scale, int trnsfrm_dir);
 void compute_fft(FFT_NET  *fft_net);
-void store_registers(FFT_NET    *fft_net, float *buf, int buf_form,
+void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
     int buf_scale, int debug);
 void build_fft_network(FFT_NET *fft_net, int n, int window_type);
 
@@ -184,8 +184,8 @@ void build_fft_network(FFT_NET *fft_net, int n, int window_type);
 /*****************************************************************************/
 
 void cfft(int trnsfrm_dir, int npnt, int window,
-    float *source_buf, int source_form, int source_scale,
-    float *result_buf, int result_form, int result_scale, int debug)
+    SAMPLE *source_buf, int source_form, int source_scale,
+    SAMPLE *result_buf, int result_form, int result_scale, int debug)
 
 /* modifies: result_buf
    effects:  Computes npnt FFT specified by form, scale, and dir parameters.  
@@ -471,7 +471,7 @@ void build_fft_network(FFT_NET *fft_net, int n, int window_type)
 /* REGISTER LOAD AND STORE                                                   */
 /*****************************************************************************/
 
-void load_registers(FFT_NET *fft_net, float *buf, int buf_form,
+void load_registers(FFT_NET *fft_net, SAMPLE *buf, int buf_form,
     int buf_scale, int trnsfrm_dir)
 
 /* effects:  Multiplies the input buffer with the appropriate window and
@@ -605,7 +605,7 @@ void load_registers(FFT_NET *fft_net, float *buf, int buf_form,
 }
 
 
-void store_registers(FFT_NET    *fft_net, float *buf, int buf_form,
+void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
     int buf_scale, int debug)
 
 /* modifies: buf
@@ -989,10 +989,10 @@ void short_to_float(short *short_buf, float *float_buf, int n)
 
 /* here's the meat: */
 
-void pd_fft(float *buf, int npoints, int inverse)
+void pd_fft(t_float *buf, int npoints, int inverse)
 {
   double renorm;
-  float *fp, *fp2;
+  SAMPLE *fp, *fp2;
   int i;
   renorm = (inverse ? npoints : 1.);
   cfft((inverse ? INVERSE : FORWARD), npoints, RECTANGULAR, 

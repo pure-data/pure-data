@@ -55,11 +55,15 @@ extern "C" {
 #define MAXPDARG 5              /* max number of args we can typecheck today */
 
 /* signed and unsigned integer types the size of a pointer:  */
-/* GG: long is the size of a pointer */
-typedef long t_int;
-
-typedef float t_float;  /* a floating-point number at most the same size */
-typedef float t_floatarg;  /* floating-point type for function calls */
+#if !defined(PD_LONGINTTYPE)
+#define PD_LONGINTTYPE long
+#endif
+#if !defined(PD_FLOATTYPE)
+#define PD_FLOATTYPE float
+#endif
+typedef PD_LONGINTTYPE t_int;       /* pointer-size integer */
+typedef PD_FLOATTYPE t_float;       /* a float type at most the same size */
+typedef PD_FLOATTYPE t_floatarg;    /* float type for function calls */
 
 typedef struct _symbol
 {
@@ -443,7 +447,7 @@ EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
-EXTERN void postfloat(float f);
+EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, t_atom *argv);
 EXTERN void endpost(void);
 EXTERN void error(const char *fmt, ...);
@@ -474,7 +478,7 @@ EXTERN int sys_trylock(void);
 
 /* --------------- signals ----------------------------------- */
 
-typedef float t_sample;
+typedef PD_FLOATTYPE t_sample;
 #define MAXLOGSIG 32
 #define MAXSIGSIZE (1 << MAXLOGSIG)
 
