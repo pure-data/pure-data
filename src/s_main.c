@@ -282,7 +282,8 @@ int sys_main(int argc, char **argv)
     if (!noprefs)
         sys_loadpreferences();                  /* load default settings */
 #ifndef MSW
-    sys_rcfile();                               /* parse the startup file */
+    if (!noprefs)
+        sys_rcfile();                           /* parse the startup file */
 #endif
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line */
         return (1);

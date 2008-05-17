@@ -97,7 +97,7 @@ static void init_rsqrt(void)
 
     /* these are used in externs like "bonk" */
 
-float q8_rsqrt(float f)
+t_float q8_rsqrt(t_float f)
 {
     long l = *(long *)(&f);
     if (f < 0) return (0);
@@ -105,7 +105,7 @@ float q8_rsqrt(float f)
             rsqrt_mantissatab[(l >> 13) & 0x3ff]);
 }
 
-float q8_sqrt(float f)
+t_float q8_sqrt(t_float f)
 {
     long l = *(long *)(&f);
     if (f < 0) return (0);
@@ -116,8 +116,8 @@ float q8_sqrt(float f)
     /* the old names are OK unless we're in IRIX N32 */
 
 #ifndef N32
-float qsqrt(float f) {return (q8_sqrt(f)); }
-float qrsqrt(float f) {return (q8_rsqrt(f)); }
+t_float qsqrt(t_float f) {return (q8_sqrt(f)); }
+t_float qrsqrt(t_float f) {return (q8_rsqrt(f)); }
 #endif
 
 

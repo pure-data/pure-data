@@ -721,11 +721,11 @@ struct _fielddesc
         t_symbol *fd_symbol;    /* the field is a constant symbol */
         t_symbol *fd_varsym;    /* the field is variable and this is the name */
     } fd_un;
-    t_float fd_v1;        /* min and max values */
-    t_float fd_v2;
-    t_float fd_screen1;   /* min and max screen values */
-    t_float fd_screen2;
-    t_float fd_quantum;   /* quantization in value */ 
+    float fd_v1;        /* min and max values */
+    float fd_v2;
+    float fd_screen1;   /* min and max screen values */
+    float fd_screen2;
+    float fd_quantum;   /* quantization in value */ 
 };
 
 static void fielddesc_setfloat_const(t_fielddesc *fd, t_float f)
@@ -2225,7 +2225,7 @@ static void drawnumber_key(void *z, t_floatarg fkey)
     else
     {
             /* key entry for a numeric field.  This is just a stopgap. */
-        t_float newf;
+        float newf;
         if (drawnumber_motion_firstkey)
             sbuf[0] = 0;
         else sprintf(sbuf, "%g", template_getfloat(drawnumber_motion_template,
