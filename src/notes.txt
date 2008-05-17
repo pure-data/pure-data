@@ -50,6 +50,8 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
+pasting should look at current mouse location
+optionally suppress leading "." directories and files on "open"
 change config.h to #ifdef _MSC_VER (include MSW fake) else include a real one
 stick snprintf alias in the MSW fake.
 flag to prevent unlocking patches
@@ -80,7 +82,6 @@ tables:
     flag to hide array names 
 think of a way to embed abstractions in a patch
 make watchdog work for MACOSX
-pasting should look at current mouse location
 delete-in-rectangle message to Pds
 put serial object in main dist (see rat@telecoma, Apr. 25; winfried May 22)
 open/save panel to take messages to init directory, and to set extent list
