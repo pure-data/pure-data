@@ -7,8 +7,8 @@ functions.  "Glists" and "canvases" and "graphs" used to be different
 structures until being unified in version 0.35.
 
 A glist occupies its own window if the "gl_havewindow" flag is set.  Its
-appearance on its "parent" or "owner" (if it has one) is as a graph if
-"gl_isgraph" is set, and otherwise as a text box.
+appearance on its "parent", also called "owner", (if it has one) is as a graph
+if "gl_isgraph" is set, and otherwise as a text box.
 
 A glist is "root" if it has no owner, i.e., a document window.  In this
 case "gl_havewindow" is always set.
