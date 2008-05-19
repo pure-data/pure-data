@@ -325,3 +325,4 @@ EXTERN void inmidi_polyaftertouch(int portno,
                                   int pitch,
                                   int value);
 /* } jsarlo */
+extern t_widgetbehavior text_widgetbehavior;

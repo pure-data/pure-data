@@ -61,28 +61,43 @@ void gobj_delete(t_gobj *x, t_glist *glist)
         (*x->g_pd->c_wb->w_deletefn)(x, glist);
 }
 
+int gobj_shouldvis(t_gobj *x, struct _glist *glist)
+{
+    t_object *ob;
+    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
+        glist->gl_owner && (pd_class(&glist->gl_pd) != garray_class))
+    {
+        /* if we're graphing-on-parent and the object falls outside the
+        graph rectangle, don't draw it. */
+        int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
+        gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
+        if (x1 > x2)
+            m = x1, x1 = x2, x2 = m;
+        if (y1 > y2)
+            m = y1, y1 = y2, y2 = m;
+        gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
+        if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
+            gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
+                return (0);
+    }
+    if (ob = pd_checkobject(&x->g_pd))
+    {
+        /* return true if the text box should be drawn.  We don't show text
+        boxes inside graphs---except comments, if we're doing the new
+        (goprect) style. */
+        return (glist->gl_havewindow ||
+            (ob->te_pd != canvas_class &&
+                ob->te_pd->c_wb != &text_widgetbehavior) ||
+            (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
+            (glist->gl_goprect && (ob->te_type == T_TEXT)));
+    }
+    else return (1);
+}
+
 void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn)
-    {
-        if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
-            glist->gl_owner && (pd_class(&glist->gl_pd) != garray_class))
-        {
-            /* if we're graphing-on-parent and the object falls outside the
-            graph rectangle, don't draw it. */
-            int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
-            gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
-            if (x1 > x2)
-                m = x1, x1 = x2, x2 = m;
-            if (y1 > y2)
-                m = y1, y1 = y2, y2 = m;
-            gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
-            if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
-                gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
-                    return;
-        }
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn && gobj_shouldvis(x, glist))
         (*x->g_pd->c_wb->w_visfn)(x, glist, flag);
-    }
 }
 
 int gobj_click(t_gobj *x, struct _glist *glist,
@@ -765,9 +780,8 @@ int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
 {
     int x1, y1, x2, y2;
     t_text *ob;
-    if ((ob = pd_checkobject(&y->g_pd)) && 
-        !text_shouldvis(ob, x))
-            return (0);
+    if (!gobj_shouldvis(y, x))
+        return (0);
     gobj_getrect(y, x, &x1, &y1, &x2, &y2);
     if (xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2)
     {

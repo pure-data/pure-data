@@ -671,7 +671,6 @@ void glist_redraw(t_glist *x)
 
 /* --------------------------- widget behavior  ------------------- */
 
-extern t_widgetbehavior text_widgetbehavior;
 int garray_getname(t_garray *x, t_symbol **namep);
 
 
@@ -904,7 +903,7 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
             hadwindow = x->gl_havewindow;
             x->gl_havewindow = 0;
             for (g = x->gl_list; g; g = g->g_next)
-                if ((!(ob = pd_checkobject(&g->g_pd))) || text_shouldvis(ob, x))
+                if (gobj_shouldvis(g, x))
             {
                     /* don't do this for arrays, just let them hang outside the
                     box. */

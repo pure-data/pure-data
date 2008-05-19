@@ -989,7 +989,7 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
     t_text *x = (t_text *)z;
     t_rtext *y = glist_findrtext(glist, x);
     rtext_select(y, state);
-    if (glist_isvisible(glist) && text_shouldvis(x, glist))
+    if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
         sys_vgui(".x%lx.c itemconfigure %sR -fill %s\n", glist, 
             rtext_gettag(y), (state? "blue" : "black"));
 }
@@ -1007,22 +1007,12 @@ static void text_delete(t_gobj *z, t_glist *glist)
     canvas_deletelinesfor(glist, x);
 }
 
-    /* return true if the text box should be drawn.  We don't show text boxes
-    inside graphs---except comments, if we're doing the new (goprect) style. */
-int text_shouldvis(t_text *x, t_glist *glist)
-{
-    return (glist->gl_havewindow ||
-        (x->te_pd != canvas_class && x->te_pd->c_wb != &text_widgetbehavior) ||
-        (x->te_pd == canvas_class && (((t_glist *)x)->gl_isgraph)) ||
-        (glist->gl_goprect && (x->te_type == T_TEXT)));
-}
-
 static void text_vis(t_gobj *z, t_glist *glist, int vis)
 {
     t_text *x = (t_text *)z;
     if (vis)
     {
-        if (text_shouldvis(x, glist))
+        if (gobj_shouldvis(&x->te_g, glist))
         {
             t_rtext *y = glist_findrtext(glist, x);
             if (x->te_type == T_ATOM)
@@ -1035,7 +1025,7 @@ static void text_vis(t_gobj *z, t_glist *glist, int vis)
     else
     {
         t_rtext *y = glist_findrtext(glist, x);
-        if (text_shouldvis(x, glist))
+        if (gobj_shouldvis(&x->te_g, glist))
         {
             text_eraseborder(x, glist, rtext_gettag(y));
             rtext_erase(y);

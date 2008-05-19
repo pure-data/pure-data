@@ -149,7 +149,6 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     argument form, one for the multiple one; see select_setup() to find out
     how this is handled.  */
 
-extern t_widgetbehavior text_widgetbehavior;
 extern void text_save(t_gobj *z, t_binbuf *b);
 
 t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
