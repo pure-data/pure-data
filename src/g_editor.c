@@ -977,10 +977,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
     any missing paramters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
-    t_editor *editorwas = x->gl_editor;
     if (!flag && glist_isgraph(x))
     {
-        if (editorwas)
+        int hadeditor = (x->gl_editor != 0);
+        if (hadeditor)
             canvas_create_editor(x, 0);
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
@@ -990,6 +990,8 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
         }
+        if (hadeditor)
+            canvas_create_editor(x, 1);
     }
     else if (flag)
     {

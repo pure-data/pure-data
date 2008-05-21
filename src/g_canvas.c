@@ -697,7 +697,8 @@ void glist_menu_open(t_glist *x)
                 /* erase ourself in parent window */
             gobj_vis(&x->gl_gobj, gl2, 0);
                     /* get rid of our editor (and subeditors) */
-            canvas_create_editor(x, 0);
+            if (x->gl_editor)
+                canvas_create_editor(x, 0);
             x->gl_havewindow = 1;
                     /* redraw ourself in parent window (blanked out this time) */
             gobj_vis(&x->gl_gobj, gl2, 1);
