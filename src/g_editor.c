@@ -977,7 +977,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
     any missing paramters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
-    t_editor editorwas = x->gl_editor;
+    t_editor *editorwas = x->gl_editor;
     if (editorwas)
         editor_free(x->gl_editor, x);
     if (!flag && glist_isgraph(x))
