@@ -979,7 +979,7 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
     t_editor *editorwas = x->gl_editor;
     if (editorwas)
-        editor_free(x->gl_editor, x);
+       canvas_create_editor(x, 0);
     if (!flag && glist_isgraph(x))
     {
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
@@ -1023,8 +1023,8 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
         }
     }
-    if (editorwas)
-        editor_new(x);
+   if (editorwas && !x->gl_editor)
+       canvas_create_editor(x, 0);
 }
 
 void garray_properties(t_garray *x);
