@@ -1338,6 +1338,22 @@ void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
     }
 }
 
+static void canvas_completepath(char *from, char *to)
+{
+    if (sys_isabsolutepath(from))
+    {
+        to[0] = '\0';
+    }
+    else
+    {   // if not absolute path, append Pd lib dir
+        strncpy(to, sys_libdir->s_name, FILENAME_MAX-4);
+        to[FILENAME_MAX-3] = '\0';
+        strcat(to, "/");
+    }
+    strncat(to, from, FILENAME_MAX-strlen(to));
+    to[FILENAME_MAX-1] = '\0';
+}
+
 static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
@@ -1359,12 +1375,7 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
         {
-            strncpy(strbuf, sys_libdir->s_name, MAXPDSTRING-3);
-            strbuf[MAXPDSTRING-4] = 0;
-            strcat(strbuf, "/");
-            strncpy(strbuf, atom_getsymbolarg(i+1, argc, argv)->s_name,
-                MAXPDSTRING-strlen(strbuf));
-            strbuf[MAXPDSTRING-1] = 0;
+            canvas_completepath(atom_getsymbolarg(i+1, argc, argv)->s_name, strbuf);
             e->ce_path = namelist_append(e->ce_path, strbuf, 0);
             i++;
         }
@@ -1375,12 +1386,7 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
         {
-            strncpy(strbuf, sys_libdir->s_name, MAXPDSTRING-3);
-            strbuf[MAXPDSTRING-4] = 0;
-            strcat(strbuf, "/");
-            strncpy(strbuf, atom_getsymbolarg(i+1, argc, argv)->s_name,
-                MAXPDSTRING-strlen(strbuf));
-            strbuf[MAXPDSTRING-1] = 0;
+            canvas_completepath(atom_getsymbolarg(i+1, argc, argv)->s_name, strbuf);
             sys_load_lib(0, strbuf);
             i++;
         }
@@ -1427,9 +1433,16 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {
             char realname[MAXPDSTRING];
-            strncpy(realname, dir, MAXPDSTRING);
-            realname[MAXPDSTRING-3] = 0;
-            strcat(realname, "/");
+            if (sys_isabsolutepath(nl->nl_string))
+            {
+                realname[0] = '\0';
+            }
+            else
+            {   /* if not absolute path, append Pd lib dir */
+                strncpy(realname, dir, MAXPDSTRING);
+                realname[MAXPDSTRING-3] = 0;
+                strcat(realname, "/");
+            }
             strncat(realname, nl->nl_string, MAXPDSTRING-strlen(realname));
             realname[MAXPDSTRING-1] = 0;
             if ((fd = sys_trytoopenone(realname, name, ext,

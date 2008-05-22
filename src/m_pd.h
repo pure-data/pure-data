@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 41
-#define PD_BUGFIX_VERSION 4
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 42
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "test1"
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -461,6 +461,7 @@ EXTERN void sys_ouch(void);
 
 /* ------------  system interface routines ------------------- */
 EXTERN int sys_isreadablefile(const char *name);
+EXTERN int sys_isabsolutepath(const char *dir);
 EXTERN void sys_bashfilename(const char *from, char *to);
 EXTERN void sys_unbashfilename(const char *from, char *to);
 EXTERN int open_via_path(const char *name, const char *ext, const char *dir,
