@@ -623,7 +623,6 @@ static void log_float(t_object *x, t_float f)
     outlet_float(x->ob_outlet, r);
 }
 
-
 static t_class *exp_class;      /* ----------- exp --------------- */
 
 static void *exp_new(void)
@@ -657,6 +656,20 @@ static void *abs_new(void)
 static void abs_float(t_object *x, t_float f)
 {
     outlet_float(x->ob_outlet, fabsf(f));
+}
+
+static t_class *wrap_class;      /* ----------- wrap --------------- */
+
+static void *wrap_new(void)
+{
+    t_object *x = (t_object *)pd_new(wrap_class);
+    outlet_new(x, &s_float);
+    return (x);
+}
+
+static void wrap_float(t_object *x, t_float f)
+{
+    outlet_float(x->ob_outlet, f - floor(f));
 }
 
 /* ------------------------  misc ------------------------ */
@@ -897,6 +910,11 @@ void x_arithmetic_setup(void)
         sizeof(t_object), 0, 0);
     class_addfloat(abs_class, (t_method)abs_float);    
     class_sethelpsymbol(abs_class, math_sym);
+
+    wrap_class = class_new(gensym("wrap"), wrap_new, 0,
+        sizeof(t_object), 0, 0);
+    class_addfloat(wrap_class, (t_method)wrap_float);    
+    class_sethelpsymbol(wrap_class, math_sym);
 
 /* ------------------------  misc ------------------------ */
 

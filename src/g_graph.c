@@ -1107,8 +1107,6 @@ void g_graph_setup(void)
         A_SYMBOL, A_FLOAT, A_SYMBOL, A_DEFFLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_menuarray,
         gensym("menuarray"), A_NULL);
-    class_addmethod(canvas_class, (t_method)glist_arraydialog,
-        gensym("arraydialog"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)glist_sort,
         gensym("sort"), A_NULL);
 }

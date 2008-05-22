@@ -1,0 +1,30 @@
+#N canvas 191 0 534 413 10;
+#X obj 21 14 pow~;
+#X obj 67 109 sig~;
+#X obj 98 173 loadbang;
+#X obj 98 197 metro 100;
+#X obj 98 221 snapshot~;
+#X floatatom 67 73 5 0 0 0 - - -;
+#X obj 108 109 sig~;
+#X floatatom 108 73 5 0 0 0 - - -;
+#X obj 68 138 pow~ 2;
+#X floatatom 98 246 7 0 0 0 - - -;
+#X obj 413 268 pow~ 2;
+#X text 20 271 An optional creation argument initializes right inlet:
+;
+#X text 319 384 updated for Pd version 0.42.;
+#X text 23 303 WARNING: it's easy to generate "infinity" by accident
+\, and if you do \, the DSP chain may dramatically slow down if you're
+using an i386 or ia64 processor. Out-of-range floating point values
+are thousands of times slower to compute with than in-range ones.;
+#X text 68 12 - raise a signal to a numeric power (given by another
+signal). The left inlet must be a positive number. The right inlet
+my be positive \, zero \, or negative.;
+#X connect 1 0 8 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 9 0;
+#X connect 5 0 1 0;
+#X connect 6 0 8 1;
+#X connect 7 0 6 0;
+#X connect 8 0 4 0;

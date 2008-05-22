@@ -167,7 +167,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     {
         if (count == MAXPDARG)
         {
-            error("class %s: sorry: only %d creation args allowed",
+            error("class %s: sorry: only %d args typechecked; use A_GIMME",
                 s->s_name, MAXPDARG);
             break;
         }
@@ -299,6 +299,19 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     }
     else
     {
+        int i;
+        for (i = 0; i < c->c_nmethod; i++)
+            if (c->c_methods[i].me_name == sel)
+        {
+            char nbuf[80];
+            snprintf(nbuf, 80, "%s_aliased", sel->s_name);
+            c->c_methods[i].me_name = gensym(nbuf);
+            if (c == pd_objectmaker)
+                post("warning: class '%s' overwritten; old one renamed '%s'",
+                    sel->s_name, nbuf);
+            else post("warning: old method '%s' for class '%s' renamed '%s'",
+                sel->s_name, c->c_name->s_name, nbuf);
+        }
         c->c_methods = t_resizebytes(c->c_methods,
             c->c_nmethod * sizeof(*c->c_methods),
             (c->c_nmethod + 1) * sizeof(*c->c_methods));

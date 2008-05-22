@@ -43,6 +43,7 @@ scofo reports error on reading score1.txt
 loading e-mailed patches without removing headers crashes pd
 check if _vsnprintf with zero argument in windows works any better...
 detect adc~ and dac~ reblocking
+wierd bug: help doesn't work if pd is started in 5.reference directory
 
 more demonstration patches:
 vibrato using variable delay
