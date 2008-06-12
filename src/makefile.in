@@ -158,6 +158,8 @@ externs:
 	make -C ../extra/lrshift~ @EXTERNTARGET@
 	make -C ../extra/pique    @EXTERNTARGET@
 	make -C ../extra/sigmund~ @EXTERNTARGET@
+	make -C ../extra/pd~      @EXTERNTARGET@
+	make -C ../extra/stdout   @EXTERNTARGET@
 
 BINARYMODE=@binarymode@
 
