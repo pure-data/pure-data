@@ -81,7 +81,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
             if (outdevindex >= 0 && fd >= 0)
                 oss_midioutfd[outdevindex] = fd;
         }
-        if (devno == 1 && fd < 0)
+        if (devno == 0 && fd < 0)
         {
             sys_setalarm(1000000);
             fd = open("/dev/midi", O_RDONLY | O_MIDIFLAG);
@@ -116,7 +116,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
         int fd = oss_midioutfd[i];
         char namebuf[80];
         int devno = midioutvec[i];
-        if (devno == 1 && fd < 0)
+        if (devno == 0 && fd < 0)
         {
             sys_setalarm(1000000);
             fd = open("/dev/midi", O_WRONLY | O_MIDIFLAG);

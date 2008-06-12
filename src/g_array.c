@@ -1402,13 +1402,14 @@ static void garray_read(t_garray *x, t_symbol *filename)
     }
     for (i = 0; i < nelem; i++)
     {
-        if (!fscanf(fd, "%f", ((t_float *)(array->a_vec +
-            elemsize * i) + yonset)))
+        float f;
+        if (!fscanf(fd, "%f", &f))
         {
             post("%s: read %d elements into table of size %d",
                 filename->s_name, i, nelem);
             break;
         }
+        else *((t_float *)(array->a_vec + elemsize * i) + yonset) = f;
     }
     while (i < nelem)
         *((t_float *)(array->a_vec +

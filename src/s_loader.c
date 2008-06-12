@@ -247,7 +247,7 @@ int sys_run_scheduler(const char *externalschedlibname,
     typedef int (*t_externalschedlibmain)(const char *);
     t_externalschedlibmain externalmainfunc;
     char filename[MAXPDSTRING];
-    snprintf(filename, sizeof(filename), "%s.%s", externalschedlibname,
+    snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
         sys_dllextent);
     sys_bashfilename(filename, filename);
 #ifdef MSW

@@ -2,6 +2,11 @@ This file describes implementation and API changes; stuff more visible to the
 user appears in the "release notes" instead.  See the bottom of this file
 for original notes on source stype and organization.
 
+0.42.0 
+
+changed definition of t_float, t_sample, t_floatarg so that they can be
+set via #defines (PD_FLOATTYPE, etc).
+
 0.41.0
 
 add support for callback-based audio I/O

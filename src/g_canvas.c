@@ -47,7 +47,7 @@ static void canvas_start_dsp(void);
 static void canvas_stop_dsp(void);
 static void canvas_drawlines(t_canvas *x);
 static void canvas_setbounds(t_canvas *x, int x1, int y1, int x2, int y2);
-static void canvas_reflecttitle(t_canvas *x);
+void canvas_reflecttitle(t_canvas *x);
 static void canvas_addtolist(t_canvas *x);
 static void canvas_takeofflist(t_canvas *x);
 static void canvas_pop(t_canvas *x, t_floatarg fvis);
@@ -682,144 +682,6 @@ void canvas_redraw(t_canvas *x)
     }
 }
 
-/* ----  editors -- perhaps this and "vis" should go to g_editor.c ------- */
-
-static t_editor *editor_new(t_glist *owner)
-{
-    char buf[40];
-    t_editor *x = (t_editor *)getbytes(sizeof(*x));
-    x->e_connectbuf = binbuf_new();
-    x->e_deleted = binbuf_new();
-    x->e_glist = owner;
-    sprintf(buf, ".x%lx", (t_int)owner);
-    x->e_guiconnect = guiconnect_new(&owner->gl_pd, gensym(buf));
-    return (x);
-}
-
-static void editor_free(t_editor *x, t_glist *y)
-{
-    glist_noselect(y);
-    guiconnect_notarget(x->e_guiconnect, 1000);
-    binbuf_free(x->e_connectbuf);
-    binbuf_free(x->e_deleted);
-    freebytes((void *)x, sizeof(*x));
-}
-
-    /* recursively create or destroy all editors of a glist and its 
-    sub-glists, as long as they aren't toplevels. */
-void canvas_create_editor(t_glist *x, int createit)
-{
-    t_gobj *y;
-    t_object *ob;
-    if (createit)
-    {
-        if (x->gl_editor)
-            bug("canvas_create_editor");
-        else
-        {
-            x->gl_editor = editor_new(x);
-            for (y = x->gl_list; y; y = y->g_next)
-                if (ob = pd_checkobject(&y->g_pd))
-                    rtext_new(x, ob);
-        }
-    }
-    else
-    {
-        if (!x->gl_editor)
-            bug("canvas_create_editor");
-        else
-        {
-            for (y = x->gl_list; y; y = y->g_next)
-                if (ob = pd_checkobject(&y->g_pd))
-                    rtext_free(glist_findrtext(x, ob));
-            editor_free(x->gl_editor, x);
-            x->gl_editor = 0;
-        }
-    }
-    for (y = x->gl_list; y; y = y->g_next)
-        if (pd_class(&y->g_pd) == canvas_class &&
-            ((t_canvas *)y)->gl_isgraph && !((t_canvas *)y)->gl_havewindow)
-                canvas_create_editor((t_canvas *)y, createit);
-}
-
-    /* we call this when we want the window to become visible, mapped, and
-    in front of all windows; or with "f" zero, when we want to get rid of
-    the window. */
-void canvas_vis(t_canvas *x, t_floatarg f)
-{
-    char buf[30];
-    int flag = (f != 0);
-    if (flag)
-    {
-        /* post("havewindow %d, isgraph %d, isvisible %d  editor %d",
-            x->gl_havewindow, x->gl_isgraph, glist_isvisible(x),
-                (x->gl_editor != 0)); */
-            /* test if we're already visible and toplevel */
-        if (x->gl_editor)
-        {           /* just put us in front */
-#ifdef MSW
-            canvas_vis(x, 0);
-            canvas_vis(x, 1);
-#else
-            sys_vgui("raise .x%lx\n", x);
-            sys_vgui("focus .x%lx.c\n", x);
-            sys_vgui("wm deiconify .x%lx\n", x);  
-#endif
-        }
-        else
-        {
-            canvas_create_editor(x, 1);
-            sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
-                (int)(x->gl_screenx2 - x->gl_screenx1),
-                (int)(x->gl_screeny2 - x->gl_screeny1),
-                (int)(x->gl_screenx1), (int)(x->gl_screeny1),
-                x->gl_edit);
-            canvas_reflecttitle(x);
-            x->gl_havewindow = 1;
-            canvas_updatewindowlist();
-        }
-    }
-    else    /* make invisible */
-    {
-        int i;
-        t_canvas *x2;
-        if (!x->gl_havewindow)
-        {
-                /* bug workaround -- a graph in a visible patch gets "invised"
-                when the patch is closed, and must lose the editor here.  It's
-                probably not the natural place to do this.  Other cases like
-                subpatches fall here too but don'd need the editor freed, so
-                we check if it exists. */
-            if (x->gl_editor)
-                canvas_create_editor(x, 0);
-            return;
-        }
-        sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
-        glist_noselect(x);
-        if (glist_isvisible(x))
-            canvas_map(x, 0);
-        canvas_create_editor(x, 0);
-        sys_vgui("destroy .x%lx\n", x);
-        for (i = 1, x2 = x; x2; x2 = x2->gl_next, i++)
-            ;
-        sys_vgui(".mbar.find delete %d\n", i);
-            /* if we're a graph on our parent, and if the parent exists
-               and is visible, show ourselves on parent. */
-        if (glist_isgraph(x) && x->gl_owner)
-        {
-            t_glist *gl2 = x->gl_owner;
-            if (!x->gl_owner->gl_isdeleting)
-                canvas_create_editor(x, 1);
-            if (glist_isvisible(gl2))
-                gobj_vis(&x->gl_gobj, gl2, 0);
-            x->gl_havewindow = 0;
-            if (glist_isvisible(gl2))
-                gobj_vis(&x->gl_gobj, gl2, 1);
-        }
-        else x->gl_havewindow = 0;
-        canvas_updatewindowlist();
-    }
-}
 
     /* we call this on a non-toplevel glist to "open" it into its
     own window. */
@@ -835,7 +697,8 @@ void glist_menu_open(t_glist *x)
                 /* erase ourself in parent window */
             gobj_vis(&x->gl_gobj, gl2, 0);
                     /* get rid of our editor (and subeditors) */
-            canvas_create_editor(x, 0);
+            if (x->gl_editor)
+                canvas_create_editor(x, 0);
             x->gl_havewindow = 1;
                     /* redraw ourself in parent window (blanked out this time) */
             gobj_vis(&x->gl_gobj, gl2, 1);
@@ -1475,6 +1338,22 @@ void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
     }
 }
 
+static void canvas_completepath(char *from, char *to, int bufsize)
+{
+    if (sys_isabsolutepath(from))
+    {
+        to[0] = '\0';
+    }
+    else
+    {   // if not absolute path, append Pd lib dir
+        strncpy(to, sys_libdir->s_name, bufsize-4);
+        to[bufsize-3] = '\0';
+        strcat(to, "/");
+    }
+    strncat(to, from, bufsize-strlen(to));
+    to[bufsize-1] = '\0';
+}
+
 static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
@@ -1496,12 +1375,8 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
         {
-            strncpy(strbuf, sys_libdir->s_name, MAXPDSTRING-3);
-            strbuf[MAXPDSTRING-4] = 0;
-            strcat(strbuf, "/");
-            strncpy(strbuf, atom_getsymbolarg(i+1, argc, argv)->s_name,
-                MAXPDSTRING-strlen(strbuf));
-            strbuf[MAXPDSTRING-1] = 0;
+            canvas_completepath(atom_getsymbolarg(i+1, argc, argv)->s_name,
+                strbuf, MAXPDSTRING);
             e->ce_path = namelist_append(e->ce_path, strbuf, 0);
             i++;
         }
@@ -1512,12 +1387,8 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
         {
-            strncpy(strbuf, sys_libdir->s_name, MAXPDSTRING-3);
-            strbuf[MAXPDSTRING-4] = 0;
-            strcat(strbuf, "/");
-            strncpy(strbuf, atom_getsymbolarg(i+1, argc, argv)->s_name,
-                MAXPDSTRING-strlen(strbuf));
-            strbuf[MAXPDSTRING-1] = 0;
+            canvas_completepath(atom_getsymbolarg(i+1, argc, argv)->s_name,
+                strbuf, MAXPDSTRING);
             sys_load_lib(0, strbuf);
             i++;
         }
@@ -1564,9 +1435,16 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {
             char realname[MAXPDSTRING];
-            strncpy(realname, dir, MAXPDSTRING);
-            realname[MAXPDSTRING-3] = 0;
-            strcat(realname, "/");
+            if (sys_isabsolutepath(nl->nl_string))
+            {
+                realname[0] = '\0';
+            }
+            else
+            {   /* if not absolute path, append Pd lib dir */
+                strncpy(realname, dir, MAXPDSTRING);
+                realname[MAXPDSTRING-3] = 0;
+                strcat(realname, "/");
+            }
             strncat(realname, nl->nl_string, MAXPDSTRING-strlen(realname));
             realname[MAXPDSTRING-1] = 0;
             if ((fd = sys_trytoopenone(realname, name, ext,

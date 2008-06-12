@@ -1,0 +1,23 @@
+pd -schedlib `pwd`/pdsched
+
+
+problems:
+confusion about file extent (l_ia64 / pd_linux)
+Pd dies silently if scheduler doesn't load
+figure out about setting nchannels from command line
+maximum nchannels in and out
+
+
+paper?
+cost per watt
+flops per watt
+cost per flop
+cost of multiprocessing
+
+history - 6-processor ISPW / 1-processor PC / 4-processor PC
+will multiprocessing ever get cheap enough to be worth it?
+    (including programming/complexity cost)
+will multiprocessing be 2-to-4 or 16-up?
+
+Max/FTS, pd, pd~
+

@@ -282,7 +282,8 @@ int sys_main(int argc, char **argv)
     if (!noprefs)
         sys_loadpreferences();                  /* load default settings */
 #ifndef MSW
-    sys_rcfile();                               /* parse the startup file */
+    if (!noprefs)
+        sys_rcfile();                           /* parse the startup file */
 #endif
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line */
         return (1);
@@ -391,6 +392,8 @@ static char *(usagemessage[]) = {
 "-nrt             -- don't use real-time priority\n",
 #endif
 "-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)\n",
+"-schedlib <file> -- plug in external scheduler\n",
+"-extraflags <s>  -- string argument to send schedlib\n",
 };
 
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
@@ -809,7 +812,7 @@ int sys_argparse(int argc, char **argv)
             sys_listplease = 1;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-schedlib"))
+        else if (!strcmp(*argv, "-schedlib") && argc > 1)
         {
             sys_externalschedlib = 1;
             strncpy(sys_externalschedlibname, argv[1],
@@ -817,7 +820,7 @@ int sys_argparse(int argc, char **argv)
             argv += 2;
             argc -= 2;
         }
-        else if (!strcmp(*argv, "-extraflags"))
+        else if (!strcmp(*argv, "-extraflags") && argc > 1)
         {
             sys_extraflags = 1;
             strncpy(sys_extraflagsstring, argv[1],

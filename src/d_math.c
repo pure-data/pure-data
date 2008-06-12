@@ -97,7 +97,7 @@ static void init_rsqrt(void)
 
     /* these are used in externs like "bonk" */
 
-float q8_rsqrt(float f)
+t_float q8_rsqrt(t_float f)
 {
     long l = *(long *)(&f);
     if (f < 0) return (0);
@@ -105,7 +105,7 @@ float q8_rsqrt(float f)
             rsqrt_mantissatab[(l >> 13) & 0x3ff]);
 }
 
-float q8_sqrt(float f)
+t_float q8_sqrt(t_float f)
 {
     long l = *(long *)(&f);
     if (f < 0) return (0);
@@ -116,8 +116,8 @@ float q8_sqrt(float f)
     /* the old names are OK unless we're in IRIX N32 */
 
 #ifndef N32
-float qsqrt(float f) {return (q8_sqrt(f)); }
-float qrsqrt(float f) {return (q8_rsqrt(f)); }
+t_float qsqrt(t_float f) {return (q8_sqrt(f)); }
+t_float qrsqrt(t_float f) {return (q8_rsqrt(f)); }
 #endif
 
 
@@ -555,6 +555,189 @@ void powtodb_tilde_setup(void)
     class_addmethod(powtodb_tilde_class, (t_method)powtodb_tilde_dsp, gensym("dsp"), 0);
 }
 
+/* ----------------------------- pow ----------------------------- */
+static t_class *pow_tilde_class;
+
+typedef struct _pow_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+} t_pow_tilde;
+
+static void *pow_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_pow_tilde *x = (t_pow_tilde *)pd_new(pow_tilde_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
+}
+
+t_int *pow_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        float f = *in1++;
+        if (f > 0)
+            *out = pow(f, *in2);
+        else *out = 0;
+        out++;
+        in2++;
+    }
+    return (w+5);
+}
+
+static void pow_tilde_dsp(t_pow_tilde *x, t_signal **sp)
+{
+    dsp_add(pow_tilde_perform, 4,
+        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
+}
+
+static void pow_tilde_setup(void)
+{
+    pow_tilde_class = class_new(gensym("pow~"), (t_newmethod)pow_tilde_new, 0,
+        sizeof(t_pow_tilde), 0, A_DEFFLOAT, 0);
+    CLASS_MAINSIGNALIN(pow_tilde_class, t_pow_tilde, x_f);
+    class_addmethod(pow_tilde_class, (t_method)pow_tilde_dsp, gensym("dsp"), 0);
+}
+
+/* ----------------------------- exp ----------------------------- */
+static t_class *exp_tilde_class;
+
+typedef struct _exp_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+} t_exp_tilde;
+
+static void *exp_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_exp_tilde *x = (t_exp_tilde *)pd_new(exp_tilde_class);
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
+t_int *exp_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
+    int n = (int)(w[3]);
+    while (n--)
+        *out = exp(*in1);
+    return (w+4);
+}
+
+static void exp_tilde_dsp(t_exp_tilde *x, t_signal **sp)
+{
+    dsp_add(exp_tilde_perform, 3,
+        sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+}
+
+static void exp_tilde_setup(void)
+{
+    exp_tilde_class = class_new(gensym("exp~"), (t_newmethod)exp_tilde_new, 0,
+        sizeof(t_exp_tilde), 0, 0);
+    CLASS_MAINSIGNALIN(exp_tilde_class, t_exp_tilde, x_f);
+    class_addmethod(exp_tilde_class, (t_method)exp_tilde_dsp, gensym("dsp"), 0);
+}
+
+/* ----------------------------- log ----------------------------- */
+static t_class *log_tilde_class;
+
+typedef struct _log_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+} t_log_tilde;
+
+static void *log_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_log_tilde *x = (t_log_tilde *)pd_new(log_tilde_class);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    outlet_new(&x->x_obj, &s_signal);
+    x->x_f = 0;
+    return (x);
+}
+
+t_int *log_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
+    int n = (int)(w[4]);
+    while (n--)
+    {
+        float f = *in1++, g = *in2++;
+        if (f <= 0)
+            *out = -1000;   /* rather than blow up, output a number << 0 */
+        else if (g <= 0)
+            *out = log(f);
+        else *out = log(f)/log(g);
+        out++;
+    }
+    return (w+5);
+}
+
+static void log_tilde_dsp(t_log_tilde *x, t_signal **sp)
+{
+    dsp_add(log_tilde_perform, 4,
+        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[0]->s_n);
+}
+
+static void log_tilde_setup(void)
+{
+    log_tilde_class = class_new(gensym("log~"), (t_newmethod)log_tilde_new, 0,
+        sizeof(t_log_tilde), 0, A_DEFFLOAT, 0);
+    CLASS_MAINSIGNALIN(log_tilde_class, t_log_tilde, x_f);
+    class_addmethod(log_tilde_class, (t_method)log_tilde_dsp, gensym("dsp"), 0);
+}
+
+/* ----------------------------- abs ----------------------------- */
+static t_class *abs_tilde_class;
+
+typedef struct _abs_tilde
+{
+    t_object x_obj;
+    t_float x_f;
+} t_abs_tilde;
+
+static void *abs_tilde_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_abs_tilde *x = (t_abs_tilde *)pd_new(abs_tilde_class);
+    outlet_new(&x->x_obj, &s_signal);
+    return (x);
+}
+
+t_int *abs_tilde_perform(t_int *w)
+{
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
+    int n = (int)(w[3]);
+    while (n--)
+    {
+        float f = *in1++;
+        *out = (f >= 0 ? f : -f);
+    }
+    return (w+4);
+}
+
+static void abs_tilde_dsp(t_abs_tilde *x, t_signal **sp)
+{
+    dsp_add(abs_tilde_perform, 3,
+        sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+}
+
+static void abs_tilde_setup(void)
+{
+    abs_tilde_class = class_new(gensym("abs~"), (t_newmethod)abs_tilde_new, 0,
+        sizeof(t_abs_tilde), 0, 0);
+    CLASS_MAINSIGNALIN(abs_tilde_class, t_abs_tilde, x_f);
+    class_addmethod(abs_tilde_class, (t_method)abs_tilde_dsp, gensym("dsp"), 0);
+}
 
 /* ------------------------ global setup routine ------------------------- */
 
@@ -571,6 +754,10 @@ void d_math_setup(void)
     rmstodb_tilde_setup();
     dbtopow_tilde_setup();
     powtodb_tilde_setup();
+    pow_tilde_setup();
+    exp_tilde_setup();
+    log_tilde_setup();
+    abs_tilde_setup();
 
     class_sethelpsymbol(mtof_tilde_class, s);
     class_sethelpsymbol(ftom_tilde_class, s);

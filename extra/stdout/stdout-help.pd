@@ -1,0 +1,13 @@
+#N canvas 110 37 789 525 10;
+#X msg 84 147 walk the dog;
+#X msg 91 169 1;
+#X msg 90 215 flush;
+#X obj 84 240 stdout;
+#X text 472 410 updated for Pd version 0.42;
+#X obj 14 13 stdout;
+#X text 67 14 - write messages to standard output;
+#X msg 96 192 1 2;
+#X connect 0 0 3 0;
+#X connect 1 0 3 0;
+#X connect 2 0 3 0;
+#X connect 7 0 3 0;

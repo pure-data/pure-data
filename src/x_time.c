@@ -334,7 +334,7 @@ static void *pipe_new(t_symbol *s, int argc, t_atom *argv)
         {
             char stupid[80];
             atom_string(&argv[argc-1], stupid, 79);
-            post("pipe: %s: bad time delay value", stupid);
+            pd_error(x, "pipe: %s: bad time delay value", stupid);
             deltime = 0;
         }
         else deltime = argv[argc-1].a_w.w_float;
@@ -385,7 +385,7 @@ static void *pipe_new(t_symbol *s, int argc, t_atom *argv)
             }
             else
             {
-                if (c != 'f') error("pack: %s: bad type",
+                if (c != 'f') pd_error(x, "pipe: %s: bad type",
                     ap->a_w.w_symbol->s_name);
                 SETFLOAT(&vp->p_atom, 0);
                 vp->p_outlet = outlet_new(&x->x_obj, &s_float);
@@ -437,7 +437,7 @@ static void hang_tick(t_hang *h)
         case A_POINTER:
             if (gpointer_check(w->w_gpointer, 1))
                 outlet_pointer(p->p_outlet, w->w_gpointer);
-            else post("pipe: stale pointer");
+            else pd_error(x, "pipe: stale pointer");
             break;
         }
     }
@@ -454,7 +454,13 @@ static void pipe_list(t_pipe *x, t_symbol *s, int ac, t_atom *av)
     t_atom *ap;
     t_word *w;
     h->h_gp = (t_gpointer *)getbytes(x->x_nptr * sizeof(t_gpointer));
-    if (ac > n) ac = n;
+    if (ac > n)
+    {
+        if (av[n].a_type == A_FLOAT)
+            x->x_deltime = av[n].a_w.w_float;
+        else pd_error(x, "pipe: symbol or pointer in time inlet");
+        ac = n;
+    }
     for (i = 0, gp = x->x_gp, p = x->x_vec, ap = av; i < ac;
         i++, p++, ap++)
     {
@@ -465,7 +471,7 @@ static void pipe_list(t_pipe *x, t_symbol *s, int ac, t_atom *av)
         case A_POINTER:
             gpointer_unset(gp);
             if (ap->a_type != A_POINTER)
-                post("pipe: bad pointer");
+                pd_error(x, "pipe: bad pointer");
             else
             {
                 *gp = *(ap->a_w.w_gpointer);

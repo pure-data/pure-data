@@ -61,28 +61,43 @@ void gobj_delete(t_gobj *x, t_glist *glist)
         (*x->g_pd->c_wb->w_deletefn)(x, glist);
 }
 
+int gobj_shouldvis(t_gobj *x, struct _glist *glist)
+{
+    t_object *ob;
+    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
+        glist->gl_owner && (pd_class(&glist->gl_pd) != garray_class))
+    {
+        /* if we're graphing-on-parent and the object falls outside the
+        graph rectangle, don't draw it. */
+        int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
+        gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
+        if (x1 > x2)
+            m = x1, x1 = x2, x2 = m;
+        if (y1 > y2)
+            m = y1, y1 = y2, y2 = m;
+        gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
+        if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
+            gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
+                return (0);
+    }
+    if (ob = pd_checkobject(&x->g_pd))
+    {
+        /* return true if the text box should be drawn.  We don't show text
+        boxes inside graphs---except comments, if we're doing the new
+        (goprect) style. */
+        return (glist->gl_havewindow ||
+            (ob->te_pd != canvas_class &&
+                ob->te_pd->c_wb != &text_widgetbehavior) ||
+            (ob->te_pd == canvas_class && (((t_glist *)ob)->gl_isgraph)) ||
+            (glist->gl_goprect && (ob->te_type == T_TEXT)));
+    }
+    else return (1);
+}
+
 void gobj_vis(t_gobj *x, struct _glist *glist, int flag)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn)
-    {
-        if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
-            glist->gl_owner && (pd_class(&glist->gl_pd) != garray_class))
-        {
-            /* if we're graphing-on-parent and the object falls outside the
-            graph rectangle, don't draw it. */
-            int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
-            gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
-            if (x1 > x2)
-                m = x1, x1 = x2, x2 = m;
-            if (y1 > y2)
-                m = y1, y1 = y2, y2 = m;
-            gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
-            if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
-                gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
-                    return;
-        }
+    if (x->g_pd->c_wb && x->g_pd->c_wb->w_visfn && gobj_shouldvis(x, glist))
         (*x->g_pd->c_wb->w_visfn)(x, glist, flag);
-    }
 }
 
 int gobj_click(t_gobj *x, struct _glist *glist,
@@ -765,9 +780,8 @@ int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
 {
     int x1, y1, x2, y2;
     t_text *ob;
-    if ((ob = pd_checkobject(&y->g_pd)) && 
-        !text_shouldvis(ob, x))
-            return (0);
+    if (!gobj_shouldvis(y, x))
+        return (0);
     gobj_getrect(y, x, &x1, &y1, &x2, &y2);
     if (xpos >= x1 && xpos <= x2 && ypos >= y1 && ypos <= y2)
     {
@@ -817,12 +831,157 @@ static void canvas_rightclick(t_canvas *x, int xpos, int ypos, t_gobj *y)
         x, xpos, ypos, canprop, canopen);
 }
 
+/* ----  editors -- perhaps this and "vis" should go to g_editor.c ------- */
+
+static t_editor *editor_new(t_glist *owner)
+{
+    char buf[40];
+    t_editor *x = (t_editor *)getbytes(sizeof(*x));
+    x->e_connectbuf = binbuf_new();
+    x->e_deleted = binbuf_new();
+    x->e_glist = owner;
+    sprintf(buf, ".x%lx", (t_int)owner);
+    x->e_guiconnect = guiconnect_new(&owner->gl_pd, gensym(buf));
+    return (x);
+}
+
+static void editor_free(t_editor *x, t_glist *y)
+{
+    glist_noselect(y);
+    guiconnect_notarget(x->e_guiconnect, 1000);
+    binbuf_free(x->e_connectbuf);
+    binbuf_free(x->e_deleted);
+    freebytes((void *)x, sizeof(*x));
+}
+
+    /* recursively create or destroy all editors of a glist and its 
+    sub-glists, as long as they aren't toplevels. */
+void canvas_create_editor(t_glist *x, int createit)
+{
+    t_gobj *y;
+    t_object *ob;
+    if (createit)
+    {
+        if (x->gl_editor)
+            bug("canvas_create_editor");
+        else
+        {
+            x->gl_editor = editor_new(x);
+            for (y = x->gl_list; y; y = y->g_next)
+                if (ob = pd_checkobject(&y->g_pd))
+                    rtext_new(x, ob);
+        }
+    }
+    else
+    {
+        if (!x->gl_editor)
+            bug("canvas_create_editor");
+        else
+        {
+            for (y = x->gl_list; y; y = y->g_next)
+                if (ob = pd_checkobject(&y->g_pd))
+                    rtext_free(glist_findrtext(x, ob));
+            editor_free(x->gl_editor, x);
+            x->gl_editor = 0;
+        }
+    }
+    for (y = x->gl_list; y; y = y->g_next)
+        if (pd_class(&y->g_pd) == canvas_class &&
+            ((t_canvas *)y)->gl_isgraph && !((t_canvas *)y)->gl_havewindow)
+                canvas_create_editor((t_canvas *)y, createit);
+}
+
+void canvas_reflecttitle(t_canvas *x);
+void canvas_map(t_canvas *x, t_floatarg f);
+
+    /* we call this when we want the window to become visible, mapped, and
+    in front of all windows; or with "f" zero, when we want to get rid of
+    the window. */
+void canvas_vis(t_canvas *x, t_floatarg f)
+{
+    char buf[30];
+    int flag = (f != 0);
+    if (flag)
+    {
+        /* post("havewindow %d, isgraph %d, isvisible %d  editor %d",
+            x->gl_havewindow, x->gl_isgraph, glist_isvisible(x),
+                (x->gl_editor != 0)); */
+            /* test if we're already visible and toplevel */
+        if (x->gl_editor)
+        {           /* just put us in front */
+#ifdef MSW
+            canvas_vis(x, 0);
+            canvas_vis(x, 1);
+#else
+            sys_vgui("raise .x%lx\n", x);
+            sys_vgui("focus .x%lx.c\n", x);
+            sys_vgui("wm deiconify .x%lx\n", x);  
+#endif
+        }
+        else
+        {
+            canvas_create_editor(x, 1);
+            sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
+                (int)(x->gl_screenx2 - x->gl_screenx1),
+                (int)(x->gl_screeny2 - x->gl_screeny1),
+                (int)(x->gl_screenx1), (int)(x->gl_screeny1),
+                x->gl_edit);
+            canvas_reflecttitle(x);
+            x->gl_havewindow = 1;
+            canvas_updatewindowlist();
+        }
+    }
+    else    /* make invisible */
+    {
+        int i;
+        t_canvas *x2;
+        if (!x->gl_havewindow)
+        {
+                /* bug workaround -- a graph in a visible patch gets "invised"
+                when the patch is closed, and must lose the editor here.  It's
+                probably not the natural place to do this.  Other cases like
+                subpatches fall here too but don'd need the editor freed, so
+                we check if it exists. */
+            if (x->gl_editor)
+                canvas_create_editor(x, 0);
+            return;
+        }
+        sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+        glist_noselect(x);
+        if (glist_isvisible(x))
+            canvas_map(x, 0);
+        canvas_create_editor(x, 0);
+        sys_vgui("destroy .x%lx\n", x);
+        for (i = 1, x2 = x; x2; x2 = x2->gl_next, i++)
+            ;
+        sys_vgui(".mbar.find delete %d\n", i);
+            /* if we're a graph on our parent, and if the parent exists
+               and is visible, show ourselves on parent. */
+        if (glist_isgraph(x) && x->gl_owner)
+        {
+            t_glist *gl2 = x->gl_owner;
+            if (!x->gl_owner->gl_isdeleting)
+                canvas_create_editor(x, 1);
+            if (glist_isvisible(gl2))
+                gobj_vis(&x->gl_gobj, gl2, 0);
+            x->gl_havewindow = 0;
+            if (glist_isvisible(gl2))
+                gobj_vis(&x->gl_gobj, gl2, 1);
+        }
+        else x->gl_havewindow = 0;
+        canvas_updatewindowlist();
+    }
+}
+
     /* set a canvas up as a graph-on-parent.  Set reasonable defaults for
     any missing paramters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
     if (!flag && glist_isgraph(x))
     {
+        int hadeditor = (x->gl_editor != 0);
+        if (hadeditor)
+            canvas_create_editor(x, 0);
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = 0;
@@ -831,6 +990,8 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_fixlinesfor(x->gl_owner, &x->gl_obj);
         }
+        if (hadeditor)
+            canvas_create_editor(x, 1);
     }
     else if (flag)
     {

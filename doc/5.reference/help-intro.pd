@@ -81,15 +81,15 @@
 #X text 119 1178 - greater or lesser of 2 numbers;
 #X obj 19 1201 clip;
 #X text 119 1201 - force a number into a range;
-#X obj 16 1251 notein;
-#X obj 75 1251 ctlin;
-#X obj 126 1251 pgmin;
-#X obj 176 1251 bendin;
-#X obj 235 1251 touchin;
-#X obj 16 1274 polytouchin;
-#X obj 120 1274 midiin;
-#X obj 179 1274 sysexin;
-#X text 318 1263 - MIDI input;
+#X obj 16 1261 notein;
+#X obj 75 1261 ctlin;
+#X obj 126 1261 pgmin;
+#X obj 176 1261 bendin;
+#X obj 235 1261 touchin;
+#X obj 16 1284 polytouchin;
+#X obj 120 1284 midiin;
+#X obj 179 1284 sysexin;
+#X text 318 1273 - MIDI input;
 #X obj 19 1317 noteout;
 #X obj 87 1317 ctlout;
 #X obj 147 1317 pgmout;
@@ -99,8 +99,6 @@
 #X obj 210 1338 midiout;
 #X text 318 1327 - MIDI output;
 #X obj 20 1370 makenote;
-#X text 109 1368 - schedule a delayed "note off" message corresponding
-to a note-on;
 #X obj 19 1402 stripnote;
 #X text 112 1403 - strip "note off" messages;
 #X obj 17 1441 tabread;
@@ -143,18 +141,17 @@ to a note-on;
 #X obj 16 2052 q8_rsqrt~;
 #X text 116 2052 - cheap reciprocal square root (beware -- 8 bits!)
 ;
-#X obj 16 2082 q8_sqrt~;
-#X text 116 2082 - cheap square root (beware -- 8 bits!);
-#X obj 16 2112 wrap~;
-#X text 116 2112 - wraparound (fractional part;
-#X obj 16 2142 fft~;
-#X text 116 2142 - complex forward discrete Fourier transform;
-#X obj 16 2172 ifft~;
-#X text 116 2172 - complex inverse discrete Fourier transform;
-#X obj 16 2202 rfft~;
-#X text 116 2202 - real forward discrete Fourier transform;
-#X obj 16 2232 rifft~;
-#X text 116 2232 - real inverse discrete Fourier transform;
+#X obj 16 2074 q8_sqrt~;
+#X text 116 2074 - cheap square root (beware -- 8 bits!);
+#X obj 16 2104 wrap~;
+#X obj 16 2134 fft~;
+#X text 116 2134 - complex forward discrete Fourier transform;
+#X obj 16 2156 ifft~;
+#X text 116 2156 - complex inverse discrete Fourier transform;
+#X obj 16 2186 rfft~;
+#X text 116 2186 - real forward discrete Fourier transform;
+#X obj 16 2208 rifft~;
+#X text 116 2208 - real inverse discrete Fourier transform;
 #X obj 16 2262 framp~;
 #X text 116 2262 - output a ramp for each block;
 #X obj 16 2292 mtof~;
@@ -314,7 +311,7 @@ to a note-on;
 #X text 20 961 ------------------------- MATH -----------------;
 #X text 19 721 ------------------------- TIME --------------------------
 ;
-#X text 17 1232 ------------------------ MIDI -------------------------
+#X text 17 1242 ------------------------ MIDI -------------------------
 ;
 #X text 24 120 --------------- GLUE ----------------;
 #X text 18 3768 ------------------------ SUBWINDOWS ------------------------
@@ -358,3 +355,13 @@ aren't typed into object boxes but come straight off the "add" menu.)
 Right-click (or double-click on a Macintosh) on any object to get its
 "help window".;
 #X text 118 4368 - get a pointer into a list within a scalar;
+#X obj 19 1224 wrap;
+#X text 118 1224 - wrap a number to range [0 \, 1);
+#X text 116 2104 - wraparound (fractional part);
+#X obj 15 2236 pow~;
+#X obj 59 2236 log~;
+#X obj 103 2236 exp~;
+#X text 197 2238 - math;
+#X obj 149 2237 abs~;
+#X text 109 1368 - schedule delayed "note off" message corresponding
+to a note-on;

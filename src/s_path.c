@@ -69,6 +69,24 @@ void sys_unbashfilename(const char *from, char *to)
     *to = 0;
 }
 
+/* test if path is absolute or relative, based on leading /, env vars, ~, etc */
+int sys_isabsolutepath(const char *dir)
+{
+    if (dir[0] == '/' || dir[0] == '~'
+#ifdef MSW
+        || dir[0] == '%' || (dir[1] == ':' && dir[2] == '/')
+#endif
+        )
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;            
+    }
+}
+
+
 /*******************  Utility functions used below ******************/
 
 /*!
@@ -250,11 +268,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
 int sys_open_absolute(const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp)
 {
-    if (name[0] == '/' 
-#ifdef MSW
-        || (name[1] == ':' && name[2] == '/')
-#endif
-            )
+    if (sys_isabsolutepath(name))
     {
         char dirbuf[MAXPDSTRING];
         int dirlen = (strrchr(name, '/') - name);

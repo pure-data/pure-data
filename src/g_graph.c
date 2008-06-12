@@ -176,8 +176,9 @@ void glist_grab(t_glist *x, t_gobj *y, t_glistmotionfn motionfn,
 
 t_canvas *glist_getcanvas(t_glist *x)
 {
-    while (x->gl_owner && !x->gl_havewindow && x->gl_isgraph)
-        x = x->gl_owner;
+    while (x->gl_owner && !x->gl_havewindow && x->gl_isgraph &&
+        gobj_shouldvis(&x->gl_gobj, x->gl_owner))
+            x = x->gl_owner;
     return((t_canvas *)x);
 }
 
@@ -671,7 +672,6 @@ void glist_redraw(t_glist *x)
 
 /* --------------------------- widget behavior  ------------------- */
 
-extern t_widgetbehavior text_widgetbehavior;
 int garray_getname(t_garray *x, t_symbol **namep);
 
 
@@ -904,7 +904,7 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
             hadwindow = x->gl_havewindow;
             x->gl_havewindow = 0;
             for (g = x->gl_list; g; g = g->g_next)
-                if ((!(ob = pd_checkobject(&g->g_pd))) || text_shouldvis(ob, x))
+                if (gobj_shouldvis(g, x))
             {
                     /* don't do this for arrays, just let them hang outside the
                     box. */
@@ -1107,8 +1107,6 @@ void g_graph_setup(void)
         A_SYMBOL, A_FLOAT, A_SYMBOL, A_DEFFLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_menuarray,
         gensym("menuarray"), A_NULL);
-    class_addmethod(canvas_class, (t_method)glist_arraydialog,
-        gensym("arraydialog"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)glist_sort,
         gensym("sort"), A_NULL);
 }
