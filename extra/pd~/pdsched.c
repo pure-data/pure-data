@@ -33,6 +33,7 @@ int pd_extern_sched(char *flags)
     fprintf(stderr, "Pd plug-in scheduler called, chans %d %d, sr %d\n",
         chin, chout, (int)rate);
     sys_setchsr(chin, chout, rate);
+    sys_audioapi = API_NONE;
     while ((c = getchar()) != EOF)
     {
         if (c == ';')
@@ -63,6 +64,7 @@ int pd_extern_sched(char *flags)
                     *fp = 0;
                 }
                 printf(";\n");
+                fflush(stdout);
             }
             else if (n > 1 && ap[0].a_type == A_SYMBOL)
             {

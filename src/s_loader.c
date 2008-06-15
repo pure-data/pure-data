@@ -8,6 +8,8 @@
 #ifdef UNISTD
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #endif
 #ifdef MSW
 #include <io.h>
@@ -256,18 +258,28 @@ int sys_run_scheduler(const char *externalschedlibname,
         if (!ntdll)
         {
             post("%s: couldn't load external scheduler lib ", filename);
-            return (0);
+            return (1);
         }
         externalmainfunc =
             (t_externalschedlibmain)GetProcAddress(ntdll, "main");
     }
 #else
     {
-        void *dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
+        void *dlobj;
+        struct stat statbuf;
+            /* if first-choice file extent can't 'stat', go for second */
+        if (stat(filename, &statbuf) < 0)
+        {
+            snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
+                sys_dllextent2);
+            sys_bashfilename(filename, filename);
+        }       
+        dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
         if (!dlobj)
         {
             post("%s: %s", filename, dlerror());
-            return (0);
+            fprintf(stderr, "dlopen failed for %s: %s\n", filename, dlerror());
+            return (1);
         }
         externalmainfunc = (t_externalschedlibmain)dlsym(dlobj,
             "pd_extern_sched");

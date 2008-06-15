@@ -172,6 +172,7 @@ void sys_setalarm(int microsec);
 void sys_setvirtualalarm( void);
 #endif
 
+#define API_NONE 0
 #define API_ALSA 1
 #define API_OSS 2
 #define API_MMIO 3

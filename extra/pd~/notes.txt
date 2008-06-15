@@ -1,10 +1,8 @@
 pd -schedlib `pwd`/pdsched
 
-
-problems:
-confusion about file extent (l_ia64 / pd_linux)
-Pd dies silently if scheduler doesn't load
+dolist:
+pd~ to delay starting subproc until asked
 figure out about setting nchannels from command line
-maximum nchannels in and out
+fix maximum nchannels in and out
 
 

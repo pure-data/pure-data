@@ -1,4 +1,4 @@
-#N canvas 193 43 967 599 10;
+#N canvas 304 143 967 599 10;
 #X obj 370 524 spigot;
 #X msg 442 397 bang;
 #X obj 429 488 bonk~;
@@ -131,6 +131,8 @@ set" in memory.;
 the high one and then fall to the low one to make an attack. The unit
 is the sum of the proportional growth in the 11 filter bands. Proportional
 growth is essentially the logarithmic time derivative.;
+#X text 238 27 (NOTE: this documentation does not yet describe new
+features for Pd 0.42).;
 #X connect 0 0 40 0;
 #X connect 1 0 2 0;
 #X connect 2 0 8 0;

@@ -426,7 +426,9 @@ void sys_reopen_audio( void)
             chindev, naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate);
     else
 #endif
-        post("unknown audio API specified");
+    if (sys_audioapi == API_NONE)
+        ;
+    else post("unknown audio API specified");
     if (outcome)    /* failed */
     {
         audio_state = 0;
