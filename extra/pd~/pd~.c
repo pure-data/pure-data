@@ -184,15 +184,14 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         {
             ERROR "pd~: can't stat %s", schedbuf);
             goto fail1;
-        }	
+        }       
     }
     snprintf(cmdbuf, MAXPDSTRING, "%s -schedlib %s/pdsched %s\n",
         pdexecbuf, schedlibdir, pdargs);
 #ifdef PD
     fprintf(stderr, "%s", cmdbuf);
-#else
-    post("cmd: %s", cmdbuf);
 #endif
+    post("cmd: %s", cmdbuf);
     if (pipe(pipe1) < 0)   
     {
         ERROR "pd~: can't create pipe");
@@ -307,6 +306,7 @@ static t_int *pd_tilde_perform(t_int *w)
                 t_sample z;
                 if (numbuffill)
                 {
+                    numbuf[numbuffill] = 0;
                     if (sscanf(numbuf, "%f", &z) < 1)
                         continue;
                     if (i < x->x_noutsig)
@@ -517,12 +517,12 @@ static void pd_tilde_tick(t_pd_tilde *x)
     int messstart = 0, i, n = 0;
     t_atom vec[LOTS];
     void *b = binbuf_new();
-	long z1 = 0, z2 = 0;
+        long z1 = 0, z2 = 0;
     binbuf_text(b, &x->x_msgbuf, x->x_infill);
     /* binbuf_print(b); */
     while (!binbuf_getatom(b, &z1, &z2, vec+n))
     if (++n >= LOTS)
-	break;
+        break;
     for (i = 0; i < n; i++)
     {
         if (vec[i].a_type == A_SEMI)
@@ -538,10 +538,10 @@ static void pd_tilde_tick(t_pd_tilde *x)
                 else if (vec[messstart+1].a_type == A_SYM)
                     typedmess(whom, vec[messstart+1].a_w.w_sym,
                         i-messstart-2, vec+(messstart+2));
-		else if (vec[messstart+1].a_type == A_FLOAT && i == messstart+2)
-		    typedmess(whom, gensym("float"), 1, vec+(messstart+1));
-		else if (vec[messstart+1].a_type == A_LONG && i == messstart+2)
-		    typedmess(whom, gensym("int"), 1, vec+(messstart+1));
+                else if (vec[messstart+1].a_type == A_FLOAT && i == messstart+2)
+                    typedmess(whom, gensym("float"), 1, vec+(messstart+1));
+                else if (vec[messstart+1].a_type == A_LONG && i == messstart+2)
+                    typedmess(whom, gensym("int"), 1, vec+(messstart+1));
                 else typedmess(whom, gensym("list"),
                     i-messstart-1, vec+(messstart+1));
             }
@@ -566,17 +566,17 @@ static void pd_tilde_anything(t_pd_tilde *x, t_symbol *s,
     {
         if (sp < ep-1)
             sp[0] = ' ', sp[1] = 0, sp++;
-	if (sp < ep - 80)
-	{
-	    if (av->a_type == A_SYM && strlen(av->a_w.w_sym->s_name) < ep - sp-20)
-	        strcpy(sp, av->a_w.w_sym->s_name);
-	    else if (av->a_type == A_LONG)
-	        sprintf(sp, "%ld" ,av->a_w.w_long);
-	    else if (av->a_type == A_FLOAT)
-	        sprintf(sp, "%g" ,av->a_w.w_float);
-	}
+        if (sp < ep - 80)
+        {
+            if (av->a_type == A_SYM && strlen(av->a_w.w_sym->s_name) < ep - sp-20)
+                strcpy(sp, av->a_w.w_sym->s_name);
+            else if (av->a_type == A_LONG)
+                sprintf(sp, "%ld" ,av->a_w.w_long);
+            else if (av->a_type == A_FLOAT)
+                sprintf(sp, "%g" ,av->a_w.w_float);
+        }
         sp += strlen(sp);
-	av++;
+        av++;
     }
     fprintf(x->x_outfd, "%s;\n", msgbuf);
 }
@@ -589,12 +589,12 @@ int main()
 
     class_addmethod(c, (method)pd_tilde_dsp, "dsp", A_CANT, 0);
     class_addmethod(c, (method)pd_tilde_assist, "assist", A_CANT, 0);
-	class_addmethod(c, (method)pd_tilde_anything, "anything", A_GIMME, 0);
+        class_addmethod(c, (method)pd_tilde_anything, "anything", A_GIMME, 0);
     class_dspinit(c);
 
     class_register(CLASS_BOX, c);
     pd_tilde_class = c;
-	return (0);
+        return (0);
 }
 
 static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
@@ -608,70 +608,70 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
     if (x = (t_pd_tilde *)object_alloc(pd_tilde_class))
     {
         while (ac > 0 && av[0].a_type == A_SYM)
-	{
-	    char *flag = av[0].a_w.w_sym->s_name;
-	    if (!strcmp(flag, "-sr") && ac > 1)
-	    {
-		sr = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
-		    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
-		ac -= 2; av += 2;
-	    }
-	    else if (!strcmp(flag, "-ninsig") && ac > 1)
-	    {
-		ninsig = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
-		    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
-		ac -= 2; av += 2;
-	    }
-	    else if (!strcmp(flag, "-noutsig") && ac > 1)
-	    {
-		noutsig = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
-		    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
-		ac -= 2; av += 2;
-	    }
-	    else if (!strcmp(flag, "-fifo") && ac > 1)
-	    {
-		fifo = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
-		    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
-		ac -= 2; av += 2;
-	    }
-	    else if (!strcmp(flag, "-pddir") && ac > 1)
-	    {
-		pddir = (av[1].a_type == A_SYM ? av[1].a_w.w_sym : gensym("."));
-		ac -= 2; av += 2;
-	    }
-	    else if (!strcmp(flag, "-scheddir") && ac > 1)
-	    {
-		scheddir = (av[1].a_type == A_SYM ? av[1].a_w.w_sym : gensym("."));
-		ac -= 2; av += 2;
-	    }
-	    else break;
-	}
-	pdargstring[0] = 0;
-	while (ac--)
-	{
-	    char buf[80];
-	    if (av->a_type == A_SYM)
-		strcat(pdargstring, av->a_w.w_sym->s_name);
-	    else if (av->a_type == A_LONG)
-		sprintf(buf+strlen(buf), "%ld", av->a_w.w_long);
-	    else if (av->a_type == A_FLOAT)
-		sprintf(buf+strlen(buf), "%f", av->a_w.w_float);
-	    strcat(buf, " ");
-	    av++;
-	}
-	post("pd~: pddir %s scheddir %s args %s",
+        {
+            char *flag = av[0].a_w.w_sym->s_name;
+            if (!strcmp(flag, "-sr") && ac > 1)
+            {
+                sr = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
+                    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
+                ac -= 2; av += 2;
+            }
+            else if (!strcmp(flag, "-ninsig") && ac > 1)
+            {
+                ninsig = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
+                    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
+                ac -= 2; av += 2;
+            }
+            else if (!strcmp(flag, "-noutsig") && ac > 1)
+            {
+                noutsig = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
+                    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
+                ac -= 2; av += 2;
+            }
+            else if (!strcmp(flag, "-fifo") && ac > 1)
+            {
+                fifo = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
+                    (av[1].a_type == A_LONG ? av[1].a_w.w_long : 0));
+                ac -= 2; av += 2;
+            }
+            else if (!strcmp(flag, "-pddir") && ac > 1)
+            {
+                pddir = (av[1].a_type == A_SYM ? av[1].a_w.w_sym : gensym("."));
+                ac -= 2; av += 2;
+            }
+            else if (!strcmp(flag, "-scheddir") && ac > 1)
+            {
+                scheddir = (av[1].a_type == A_SYM ? av[1].a_w.w_sym : gensym("."));
+                ac -= 2; av += 2;
+            }
+            else break;
+        }
+        pdargstring[0] = 0;
+        while (ac--)
+        {
+            char buf[80];
+            if (av->a_type == A_SYM)
+                strcat(pdargstring, av->a_w.w_sym->s_name);
+            else if (av->a_type == A_LONG)
+                sprintf(buf+strlen(buf), "%ld", av->a_w.w_long);
+            else if (av->a_type == A_FLOAT)
+                sprintf(buf+strlen(buf), "%f", av->a_w.w_float);
+            strcat(buf, " ");
+            av++;
+        }
+        post("pd~: pddir %s scheddir %s args %s",
             pddir->s_name, scheddir->s_name, pdargstring);
         dsp_setup((t_pxobject *)x, ninsig);
-	for (j = 0; j < noutsig; j++)
-	    outlet_new((t_pxobject *)x, "signal");
+        for (j = 0; j < noutsig; j++)
+            outlet_new((t_pxobject *)x, "signal");
         x->x_clock = clock_new(x, (method)pd_tilde_tick);
-	x->x_insig = (t_sample **)getbytes(ninsig * sizeof(*x->x_insig));
-	x->x_outsig = (t_sample **)getbytes(noutsig * sizeof(*x->x_outsig));
-	x->x_ninsig = ninsig;
-	x->x_noutsig = noutsig;
+        x->x_insig = (t_sample **)getbytes(ninsig * sizeof(*x->x_insig));
+        x->x_outsig = (t_sample **)getbytes(noutsig * sizeof(*x->x_outsig));
+        x->x_ninsig = ninsig;
+        x->x_noutsig = noutsig;
 
-	pd_tilde_donew(x, pddir->s_name, scheddir->s_name, pdargstring,
-	    ninsig, noutsig, fifo, sr);
+        pd_tilde_donew(x, pddir->s_name, scheddir->s_name, pdargstring,
+            ninsig, noutsig, fifo, sr);
     }
     return (x);
 }

@@ -163,6 +163,7 @@ typedef struct _hist
 {
     float h_power;
     float h_before;
+    float h_outpower;
     int h_countup;
     float h_mask[MASKHIST];
 } t_hist;
@@ -201,7 +202,6 @@ typedef struct _bonk
         
 #endif /* MSP */
     /* parameters */
-    int x_nsig;
     int x_npoints;          /* number of points in input buffer */
     int x_period;           /* number of input samples between analyses */
     int x_nfilters;         /* number of filters requested */
@@ -236,6 +236,7 @@ typedef struct _bonk
     int x_spew;                 /* if true, always generate output! */
     int x_maskphase;            /* phase, 0 to MASKHIST-1, for mask history */
     float x_sr;                 /* current sample rate in Hz. */
+    int x_hit;                  /* next "tick" called because of a hit, not a poll */
 } t_bonk;
 
 #ifdef MSP
@@ -247,7 +248,7 @@ static void bonk_dsp(t_bonk *x, t_signal **sp);
 void bonk_assist(t_bonk *x, void *b, long m, long a, char *s);
 static void bonk_free(t_bonk *x);
 void bonk_setup(void);
-void main();
+int main();
 
 static void bonk_thresh(t_bonk *x, t_floatarg f1, t_floatarg f2);
 static void bonk_mask(t_bonk *x, t_floatarg f1, t_floatarg f2);
@@ -372,7 +373,6 @@ static void bonk_freefilterbank(t_filterbank *b)
 {
     t_filterbank *b2, *b3;
     int i;
-    post("free filterbank");
     if (bonk_filterbanklist == b)
         bonk_filterbanklist = b->b_next;
     else for (b2 = bonk_filterbanklist; b3 = b2->b_next; b2 = b3)
@@ -386,7 +386,6 @@ static void bonk_freefilterbank(t_filterbank *b)
             freebytes(b->b_vec[i].k_stuff,
                 b->b_vec[i].k_filterpoints * sizeof(float));
     freebytes(b, sizeof(*b));
-    post("done free");
 }
 
 static void bonk_donew(t_bonk *x, int npoints, int period, int nsig, 
@@ -437,29 +436,34 @@ static void bonk_donew(t_bonk *x, int npoints, int period, int nsig,
     x->x_debouncevel = 0;
     x->x_attackbins = DEFATTACKBINS;
     x->x_sr = samplerate;
+    x->x_filterbank = 0;
+    x->x_hit = 0;
     for (fb = bonk_filterbanklist; fb; fb = fb->b_next)
         if (fb->b_nfilters == x->x_nfilters &&
             fb->b_halftones == x->x_halftones &&
             fb->b_firstbin == firstbin &&
             fb->b_overlap == overlap &&
             fb->b_npoints == x->x_npoints)
-                        fb->b_refcount++, x->x_filterbank = fb;
+    {
+        fb->b_refcount++;
+        x->x_filterbank = fb;
+        break;
+    }
     if (!x->x_filterbank)
         x->x_filterbank = bonk_newfilterbank(npoints, nfilters, 
             halftones, overlap, firstbin),
                 x->x_filterbank->b_refcount++;
 }
 
-static void bonk_dotick(t_bonk *x, int hit)
+static void bonk_tick(t_bonk *x)
 {
     t_atom at[MAXNFILTERS], *ap, at2[3];
-    int i, j, k, n, maskphase = x->x_maskphase;
+    int i, j, k, n;
     t_hist *h;
     float *pp, vel = 0, temperature = 0;
     float *fp;
     t_template *tp;
-    int nfit, ninsig = x->x_ninsig, ntemplate = x->x_ntemplate, 
-    nfilters = x->x_nfilters;
+    int nfit, ninsig = x->x_ninsig, ntemplate = x->x_ntemplate, nfilters = x->x_nfilters;
     t_insig *gp;
 #ifdef _MSC_VER
     float powerout[MAXNFILTERS*MAXCHANNELS];
@@ -471,10 +475,8 @@ static void bonk_dotick(t_bonk *x, int hit)
     {
         for (j = 0, h = gp->g_hist; j < nfilters; j++, h++, pp++)
         {
-            float power =
-            (hit ? h->h_mask[maskphase] - h->h_before : h->h_power);
-            float intensity = *pp =
-            (power > 0 ? 100. * qrsqrt(qrsqrt(power)) : 0);
+            float power = h->h_outpower;
+            float intensity = *pp = (power > 0 ? 100. * qrsqrt(qrsqrt(power)) : 0);
             vel += intensity;
             temperature += intensity * (float)j;
         }
@@ -482,7 +484,7 @@ static void bonk_dotick(t_bonk *x, int hit)
     if (vel > 0) temperature /= vel;
     else temperature = 0;
     vel *= 0.5 / ninsig;        /* fudge factor */
-    if (hit)
+    if (x->x_hit)
     {
         /* if hit nonzero it's a clock callback.  if in "learn" mode update the
          template list; in any event match the hit to known templates. */
@@ -604,22 +606,14 @@ static void bonk_dotick(t_bonk *x, int hit)
     }
 }
 
-static void bonk_tick(t_bonk *x)
-{
-        /* f in "spew" mode, simulate a 'bang' message; otherwise
-        ask the tick routine to report a detected hit (in which case
-        the masking works differently) */
-    bonk_dotick(x, (x->x_spew ? 0 : 1));
-}
-
 static void bonk_doit(t_bonk *x)
 {
-    int i, j, n;
+    int i, j, ch, n;
     t_filterkernel *k;
     t_hist *h;
-    float growth = 0, *fp1, *fp2, *fp3, *fp4, hithresh, lothresh;
+    float growth = 0, *fp1, *fp3, *fp4, hithresh, lothresh;
     int ninsig = x->x_ninsig, nfilters = x->x_nfilters,
-    maskphase = x->x_maskphase, nextphase, oldmaskphase;
+        maskphase = x->x_maskphase, nextphase, oldmaskphase;
     t_insig *gp;
     nextphase = maskphase + 1;
     if (nextphase >= MASKHIST)
@@ -632,9 +626,8 @@ static void bonk_doit(t_bonk *x)
         hithresh = qrsqrt(qrsqrt(x->x_hithresh)),
         lothresh = qrsqrt(qrsqrt(x->x_lothresh));
     else hithresh = x->x_hithresh, lothresh = x->x_lothresh;
-    for (n = 0, gp = x->x_insig; n < ninsig; n++, gp++)
-    {    
-        
+    for (ch = 0, gp = x->x_insig; ch < ninsig; ch++, gp++)
+    {
         for (i = 0, k = x->x_filterbank->b_vec, h = gp->g_hist;
              i < nfilters; i++, k++, h++)
         {
@@ -696,7 +689,13 @@ static void bonk_doit(t_bonk *x)
         {
             /* if haven't yet, and if not in spew mode, report a hit */
             if (!x->x_spew && !x->x_attacked)
+            {
+                for (ch = 0, gp = x->x_insig; ch < ninsig; ch++, gp++)
+                    for (i = nfilters, h = gp->g_hist; i--; h++)
+                        h->h_outpower = h->h_mask[nextphase];
+                x->x_hit = 1;
                 clock_delay(x->x_clock, 0);
+            }
         }
         if (growth < x->x_lothresh)
             x->x_willattack = 0;
@@ -707,15 +706,20 @@ static void bonk_doit(t_bonk *x)
         if (x->x_debug) post("attack: growth = %f", growth);
         x->x_willattack = 1;
         x->x_attacked = 0;
-        for (n = 0, gp = x->x_insig; n < ninsig; n++, gp++)
+        for (ch = 0, gp = x->x_insig; ch < ninsig; ch++, gp++)
             for (i = nfilters, h = gp->g_hist; i--; h++)
                 h->h_mask[nextphase] = h->h_power, h->h_countup = 0;
     }
     
     /* if in "spew" mode just always output */
     if (x->x_spew)
+    {
+        for (ch = 0, gp = x->x_insig; ch < ninsig; ch++, gp++)
+            for (i = nfilters, h = gp->g_hist; i--; h++)
+                h->h_outpower = h->h_power;
+        x->x_hit = 0;
         clock_delay(x->x_clock, 0);
-    
+    }
     x->x_debouncevel *= x->x_debouncedecay;
 }
 
@@ -924,7 +928,6 @@ static void bonk_print(t_bonk *x, t_floatarg f)
     if (x->x_debug) post("debug mode");
 }
 
-
 static void bonk_forget(t_bonk *x)
 {
     int ntemplate = x->x_ntemplate, newn = ntemplate - x->x_ninsig;
@@ -938,7 +941,16 @@ static void bonk_forget(t_bonk *x)
 
 static void bonk_bang(t_bonk *x)
 {
-    bonk_dotick(x, 0);
+    int i, ch;
+    x->x_hit = 0;
+    t_insig *gp;
+    for (ch = 0, gp = x->x_insig; ch < x->x_ninsig; ch++, gp++)
+    {
+        t_hist *h;
+        for (i = 0, h = gp->g_hist; i < x->x_nfilters; i++, h++)
+            h->h_outpower = h->h_power;
+    }
+    bonk_tick(x);
 }
 
 static void bonk_read(t_bonk *x, t_symbol *s)
@@ -1082,7 +1094,7 @@ static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
         {
             pd_error(x,
 "usage is: bonk [-npts #] [-hop #] [-nsigs #] [-nfilters #] [-halftones #]"); 
-            post("
+            post(
 "... [-overlap #] [-firstbin #] [-spew #]");
             argc = 0;
         }
@@ -1144,12 +1156,12 @@ void bonk_tilde_setup(void)
 /* -------------------------- MSP glue ------------------------- */
 #ifdef MSP
 
-void main()
+int main()
 {       
         t_class *c;
         t_object *attr;
         long attrflags = 0;
-		t_symbol *sym_long = gensym("long"), *sym_float32 = gensym("float32");
+                t_symbol *sym_long = gensym("long"), *sym_float32 = gensym("float32");
         
         c = class_new("bonk~", (method)bonk_new, (method)bonk_free, sizeof(t_bonk), (method)0L, A_GIMME, 0);
         
@@ -1224,6 +1236,7 @@ void main()
         bonk_class = c;
         
         post("bonk~ v1.3");
+        return (0);
 }
 
 static void *bonk_new(t_symbol *s, long ac, t_atom *av)
@@ -1241,7 +1254,7 @@ static void *bonk_new(t_symbol *s, long ac, t_atom *av)
         x->x_halftones = DEFHALFTONES;
         x->x_firstbin = DEFFIRSTBIN;
         x->x_overlap = DEFOVERLAP;
-        x->x_nsig = 1;
+        x->x_ninsig = 1;
 
         x->x_hithresh = DEFHITHRESH;
         x->x_lothresh = DEFLOTHRESH;
@@ -1270,33 +1283,31 @@ static void *bonk_new(t_symbol *s, long ac, t_atom *av)
         if (ac) {
             switch (av[0].a_type) {
                 case A_LONG:
-                    x->x_nsig = av[0].a_w.w_long;
+                    x->x_ninsig = av[0].a_w.w_long;
                     break;
             }
         }
 
-        if (x->x_nsig < 1) x->x_nsig = 1;
-        if (x->x_nsig > MAXCHANNELS) x->x_nsig = MAXCHANNELS;
+        if (x->x_ninsig < 1) x->x_ninsig = 1;
+        if (x->x_ninsig > MAXCHANNELS) x->x_ninsig = MAXCHANNELS;
         
         attr_args_process(x, ac, av);   
 
-        x->x_insig = (t_insig *)getbytes(x->x_nsig * sizeof(*x->x_insig));
-        
-        x->x_ninsig = x->x_nsig;
+        x->x_insig = (t_insig *)getbytes(x->x_ninsig * sizeof(*x->x_insig));
 
-        dsp_setup((t_pxobject *)x, x->x_nsig);
+        dsp_setup((t_pxobject *)x, x->x_ninsig);
 
         object_obex_store(x, gensym("dumpout"), outlet_new(x, NULL));
 
         x->x_cookedout = listout((t_object *)x);
 
-        for (j = 0, g = x->x_insig + x->x_nsig-1; j < x->x_nsig; j++, g--) {
+        for (j = 0, g = x->x_insig + x->x_ninsig-1; j < x->x_ninsig; j++, g--) {
                 g->g_outlet = listout((t_object *)x);
         }
 
         x->x_clock = clock_new(x, (method)bonk_tick);
 
-        bonk_donew(x, x->x_npoints, x->x_period, x->x_nsig, x->x_nfilters,
+        bonk_donew(x, x->x_npoints, x->x_period, x->x_ninsig, x->x_nfilters,
             x->x_halftones, x->x_overlap, x->x_firstbin, sys_getsr());
     }
     return (x);
