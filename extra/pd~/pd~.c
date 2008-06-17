@@ -55,7 +55,7 @@ static char pd_tilde_dllextent[] = ".l_i386",
 #endif
 #endif
 #ifdef __APPLE__
-static char pd_tilde_dllextent[] = ".d_ppc",
+static char pd_tilde_dllextent[] = ".d_fat",
     pd_tilde_dllextent2[] = ".pd_darwin";
 #endif
 
@@ -171,8 +171,12 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     snprintf(pdexecbuf, MAXPDSTRING, "%s/bin/pd", pddir);
     if (stat(pdexecbuf, &statbuf) < 0)
     {
-        ERROR "pd~: can't stat %s", pdexecbuf);
-        goto fail1;
+        snprintf(pdexecbuf, MAXPDSTRING, "%s/pd", pddir);
+        if (stat(pdexecbuf, &statbuf) < 0)
+        {
+            ERROR "pd~: can't stat %s", pdexecbuf);
+            goto fail1;
+        }
     }
     snprintf(schedbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
         pd_tilde_dllextent);
@@ -423,9 +427,10 @@ static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)
     int ninsig = 2, noutsig = 2, j, fifo = 5;
     float sr = sys_getsr();
     t_sample **g;
-    t_symbol *pddir = gensym("."),
+    t_symbol *pddir = sys_guidir,
         *scheddir = gensym(class_gethelpdir(pd_tilde_class));
     char pdargstring[MAXPDSTRING];
+    fprintf(stderr, "pd %s, sched %s\n", pddir->s_name, scheddir->s_name);
     while (argc > 0)
     {
         t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
@@ -646,16 +651,25 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
             }
             else break;
         }
+        if (scheddir == gensym(".") && pddir != gensym("."))
+        {
+            char *pds = pddir->s_name;
+            int l = strlen(pds);
+            if (l >= 4 && (!strcmp(pds+l-3, "bin") || !strcmp(pds+l-4, "bin/")))
+                snprintf(pdargstring, MAXPDSTRING, "%s/../extra/pd~");
+            else snprintf(pdargstring, MAXPDSTRING, "%s/extra/pd~");
+            scheddir = gensym(pdargstring);
+        }
         pdargstring[0] = 0;
         while (ac--)
         {
             char buf[80];
             if (av->a_type == A_SYM)
-                strcat(pdargstring, av->a_w.w_sym->s_name);
+                strncat(pdargstring, MAXPDSTRING - strlen(pdargstring)-3, av->a_w.w_sym->s_name);
             else if (av->a_type == A_LONG)
-                sprintf(buf+strlen(buf), "%ld", av->a_w.w_long);
+                snprintf(buf+strlen(buf), MAXPDSTRING - strlen(pdargstring)-3, "%ld", av->a_w.w_long);
             else if (av->a_type == A_FLOAT)
-                sprintf(buf+strlen(buf), "%f", av->a_w.w_float);
+                snprintf(buf+strlen(buf), MAXPDSTRING - strlen(pdargstring)-3, "%f", av->a_w.w_float);
             strcat(buf, " ");
             av++;
         }

@@ -50,7 +50,7 @@ int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
 
 char *sys_guicmd;
 t_symbol *sys_libdir;
-static t_symbol *sys_guidir;
+t_symbol *sys_guidir;
 static t_namelist *sys_openlist;
 static t_namelist *sys_messagelist;
 static int sys_version;

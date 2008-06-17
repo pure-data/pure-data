@@ -1,0 +1,29 @@
+#N canvas 643 132 450 300 10;
+#X obj 65 58 r foo;
+#X obj 62 100 print foo;
+#X obj 244 59 adc~;
+#X obj 238 102 env~ 8192;
+#X floatatom 236 140 5 0 0 0 - - -;
+#X obj 145 130 osc~ 440;
+#X obj 287 204 stdout;
+#X msg 307 153 a b c;
+#X msg 307 42 \; pd dsp 1;
+#X floatatom 238 173 5 0 0 0 - - -;
+#X msg 149 34 a b c;
+#X obj 62 157 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 44 187 del 1000;
+#X obj 26 249 print bang;
+#X obj 59 219 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 155 234 dac~ 1 2 3 4;
+#X obj 168 189 sig~ 0.5;
+#X connect 0 0 1 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 9 0;
+#X connect 7 0 6 0;
+#X connect 10 0 1 0;
+#X connect 11 0 12 0;
+#X connect 12 0 13 0;
+#X connect 12 0 14 0;
