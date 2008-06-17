@@ -18,8 +18,6 @@ LIB = /NODEFAULTLIB:libcmt /NODEFAULTLIB:oldnames /NODEFAULTLIB:libc \
     $(LDIR)\setupapi.lib ..\bin\pthreadVC.lib \
     $(LD2)\libcmt.lib $(LD2)\oldnames.lib
 
-#  \
-
 GLIB =  $(LIB) ..\bin\tcl84.lib ..\bin\tk84.lib
 CFLAGS = /nologo /W3 /DMSW /DNT /DPD /DPD_INTERNAL /DWIN32 /DWINDOWS /Ox \
 	-DPA_LITTLE_ENDIAN -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -D__i386__ -DPA19
@@ -58,7 +56,6 @@ SRCPA = $(PASRC)/common/pa_stream.c \
         $(PASRC)/os/win/pa_win_hostapis.c \
         $(PASRC)/os/win/pa_win_util.c \
         $(PASRC)/hostapi/wmme/pa_win_wmme.c 
-#        $(PADIR)/pa_win_wdmks/pa_win_wdmks.c
 
 SRCASIO = $(PADIR)/pa_asio/pa_asio.cpp 
 

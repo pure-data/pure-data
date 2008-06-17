@@ -942,8 +942,8 @@ static void bonk_forget(t_bonk *x)
 static void bonk_bang(t_bonk *x)
 {
     int i, ch;
-    x->x_hit = 0;
     t_insig *gp;
+    x->x_hit = 0;
     for (ch = 0, gp = x->x_insig; ch < x->x_ninsig; ch++, gp++)
     {
         t_hist *h;
