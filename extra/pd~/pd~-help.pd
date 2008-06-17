@@ -1,4 +1,4 @@
-#N canvas 349 97 450 300 10;
+#N canvas 353 325 450 300 10;
 #X msg 52 86 foo bar baz;
 #X obj 209 52 osc~ 440;
 #X obj 74 211 env~ 8192;
@@ -7,8 +7,14 @@
 #X obj 281 232 print a;
 #X msg 315 81 \; pd dsp 1;
 #X obj 70 166 pd~ test.pd;
+#X msg 66 20 pd~ stop;
+#X msg 77 42 pd~ start;
+#X msg 86 61 pd~ restart;
 #X connect 0 0 7 0;
 #X connect 1 0 7 0;
 #X connect 2 0 3 0;
 #X connect 4 0 5 0;
 #X connect 7 0 2 0;
+#X connect 8 0 7 0;
+#X connect 9 0 7 0;
+#X connect 10 0 7 0;

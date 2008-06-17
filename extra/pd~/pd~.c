@@ -28,6 +28,8 @@
 #include "ext_obex.h"
 
 typedef double t_floatarg;
+#define w_symbol w_sym
+#define A_SYMBOL A_SYM
 #define getbytes t_getbytes
 #define freebytes t_freebytes
 #define ERROR error(
@@ -85,6 +87,11 @@ typedef struct _pd_tilde
     int x_childpid;
     int x_ninsig;
     int x_noutsig;
+    int x_fifo;
+    float x_sr;
+    t_symbol *x_pddir;
+    t_symbol *x_schedlibdir;
+    char *x_pdargs;
     t_sample **x_insig;
     t_sample **x_outsig;
 } t_pd_tilde;
@@ -192,10 +199,12 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     }
     snprintf(cmdbuf, MAXPDSTRING, "%s -schedlib %s/pdsched %s\n",
         pdexecbuf, schedlibdir, pdargs);
+#if 0
 #ifdef PD
     fprintf(stderr, "%s", cmdbuf);
 #endif
     post("cmd: %s", cmdbuf);
+#endif
     if (pipe(pipe1) < 0)   
     {
         ERROR "pd~: can't create pipe");
@@ -356,6 +365,32 @@ static void pd_tilde_dsp(t_pd_tilde *x, t_signal **sp)
     dsp_add(pd_tilde_perform, 2, x, n);
 }
 
+static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    t_symbol *sel = ((argc > 0 && argv->a_type == A_SYMBOL) ? argv->a_w.w_symbol : gensym("?"));
+    if (sel == gensym("start"))
+    {
+        if (!x->x_infd)
+            pd_tilde_donew(x, x->x_pddir->s_name, x->x_schedlibdir->s_name,
+                x->x_pdargs, x->x_ninsig, x->x_noutsig, x->x_fifo, x->x_sr);
+    }
+    else if (sel == gensym("stop"))
+    {
+        if (x->x_infd)
+            pd_tilde_close(x);
+    }
+    else if (sel == gensym("restart"))
+    {
+        if (x->x_infd)
+            pd_tilde_close(x);
+        if (!x->x_infd)
+            pd_tilde_donew(x, x->x_pddir->s_name, x->x_schedlibdir->s_name,
+                x->x_pdargs, x->x_ninsig, x->x_noutsig, x->x_fifo, x->x_sr);
+    }
+    else ERROR "pd~: unknown control message: %s", sel->s_name);
+}
+
 static void pd_tilde_free(t_pd_tilde *x)
 {
 #ifdef MSP
@@ -363,6 +398,7 @@ static void pd_tilde_free(t_pd_tilde *x)
 #endif
     pd_tilde_close(x);
     clock_free(x->x_clock);
+    free(x->x_pdargs);
 }
 
 /* -------------------------- Pd glue ------------------------- */
@@ -372,7 +408,10 @@ static void pd_tilde_tick(t_pd_tilde *x)
 {
     int messstart = 0, i, n;
     t_atom *vec;
-    t_binbuf *b = binbuf_new();
+    t_binbuf *b;
+    if (!x->x_msgbuf)
+        return;
+    b = binbuf_new();
     binbuf_text(b, x->x_msgbuf, x->x_infill);
     /* binbuf_print(b); */
     n = binbuf_getnatom(b);
@@ -489,17 +528,25 @@ static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_outsig = (t_sample **)getbytes(noutsig * sizeof(*x->x_outsig));
     x->x_ninsig = ninsig;
     x->x_noutsig = noutsig;
+    x->x_fifo = fifo;
+    x->x_sr = sr;
+    x->x_pddir = pddir;
+    x->x_schedlibdir = scheddir;
+    x->x_pdargs = malloc(strlen(pdargstring)+1);
+    x->x_infd = 0;
+    x->x_outfd = 0;
+    x->x_outfd = 0;
+    x->x_childpid = -1;
+    x->x_msgbuf = 0;
+    strcpy(x->x_pdargs, pdargstring);
     for (j = 1, g = x->x_insig; j < ninsig; j++, g++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     for (j = 0, g = x->x_outsig; j < noutsig; j++, g++)
         outlet_new(&x->x_obj, &s_signal);
     signal(SIGPIPE, SIG_IGN);
-    pd_tilde_donew(x, pddir->s_name, scheddir->s_name, pdargstring,
-        ninsig, noutsig, fifo, sr);
 
     return (x);
 }
-
 
 void pd_tilde_setup(void)
 {
@@ -507,6 +554,7 @@ void pd_tilde_setup(void)
         (t_method)pd_tilde_free, sizeof(t_pd_tilde), 0, A_GIMME, 0);
     class_addmethod(pd_tilde_class, nullfn, gensym("signal"), 0);
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"), A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
     post("pd~ version 0.1");
 }
@@ -521,8 +569,11 @@ static void pd_tilde_tick(t_pd_tilde *x)
 {
     int messstart = 0, i, n = 0;
     t_atom vec[LOTS];
-    void *b = binbuf_new();
-        long z1 = 0, z2 = 0;
+    long z1 = 0, z2 = 0;
+    void *b;
+    if (!x->x_msgbuf)
+        return;
+    b = binbuf_new();
     binbuf_text(b, &x->x_msgbuf, x->x_infill);
     /* binbuf_print(b); */
     while (!binbuf_getatom(b, &z1, &z2, vec+n))
@@ -594,7 +645,8 @@ int main()
 
     class_addmethod(c, (method)pd_tilde_dsp, "dsp", A_CANT, 0);
     class_addmethod(c, (method)pd_tilde_assist, "assist", A_CANT, 0);
-        class_addmethod(c, (method)pd_tilde_anything, "anything", A_GIMME, 0);
+    class_addmethod(c, (method)pd_tilde_pdtilde, "pd~", A_GIMME, 0);
+    class_addmethod(c, (method)pd_tilde_anything, "anything", A_GIMME, 0);
     class_dspinit(c);
 
     class_register(CLASS_BOX, c);
@@ -683,9 +735,17 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
         x->x_outsig = (t_sample **)getbytes(noutsig * sizeof(*x->x_outsig));
         x->x_ninsig = ninsig;
         x->x_noutsig = noutsig;
-
-        pd_tilde_donew(x, pddir->s_name, scheddir->s_name, pdargstring,
-            ninsig, noutsig, fifo, sr);
+        x->x_fifo = fifo;
+        x->x_sr = sr;
+        x->x_pddir = pddir;
+        x->x_schedlibdir = scheddir;
+        x->x_pdargs = malloc(strlen(pdargstring)+1);
+        x->x_infd = 0;
+        x->x_outfd = 0;
+        x->x_outfd = 0;
+        x->x_childpid = -1;
+        x->x_msgbuf = 0;
+        strcpy(x->x_pdargs, pdargstring);
     }
     return (x);
 }
