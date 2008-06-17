@@ -656,8 +656,8 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
             char *pds = pddir->s_name;
             int l = strlen(pds);
             if (l >= 4 && (!strcmp(pds+l-3, "bin") || !strcmp(pds+l-4, "bin/")))
-                snprintf(pdargstring, MAXPDSTRING, "%s/../extra/pd~");
-            else snprintf(pdargstring, MAXPDSTRING, "%s/extra/pd~");
+                snprintf(pdargstring, MAXPDSTRING, "%s/../extra/pd~", pds);
+            else snprintf(pdargstring, MAXPDSTRING, "%s/extra/pd~", pds);
             scheddir = gensym(pdargstring);
         }
         pdargstring[0] = 0;
@@ -665,7 +665,7 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
         {
             char buf[80];
             if (av->a_type == A_SYM)
-                strncat(pdargstring, MAXPDSTRING - strlen(pdargstring)-3, av->a_w.w_sym->s_name);
+                strncat(pdargstring, av->a_w.w_sym->s_name, MAXPDSTRING - strlen(pdargstring)-3);
             else if (av->a_type == A_LONG)
                 snprintf(buf+strlen(buf), MAXPDSTRING - strlen(pdargstring)-3, "%ld", av->a_w.w_long);
             else if (av->a_type == A_FLOAT)
