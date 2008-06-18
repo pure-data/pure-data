@@ -192,10 +192,6 @@ void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,
     int indevs = 0, outdevs = 0, canmulti = 0, cancallback = 0;
     audio_getdevs(indevlist, &indevs, outdevlist, &outdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE);
-    if (sys_externalschedlib)
-    {
-        return;
-    }
 
     if (rate < 1)
         rate = DEFAULTSRATE;
