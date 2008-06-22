@@ -719,10 +719,12 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
             if (av->a_type == A_SYM)
                 strncat(pdargstring, av->a_w.w_sym->s_name, MAXPDSTRING - strlen(pdargstring)-3);
             else if (av->a_type == A_LONG)
-                snprintf(buf+strlen(buf), MAXPDSTRING - strlen(pdargstring)-3, "%ld", av->a_w.w_long);
+                snprintf(pdargstring+strlen(pdargstring), MAXPDSTRING - strlen(pdargstring)-3, "%ld",
+                    av->a_w.w_long);
             else if (av->a_type == A_FLOAT)
-                snprintf(buf+strlen(buf), MAXPDSTRING - strlen(pdargstring)-3, "%f", av->a_w.w_float);
-            strcat(buf, " ");
+                snprintf(pdargstring+strlen(pdargstring), MAXPDSTRING - strlen(pdargstring)-3, "%f",
+                    av->a_w.w_float);
+            strcat(pdargstring, " ");
             av++;
         }
         post("pd~: pddir %s scheddir %s args %s",
