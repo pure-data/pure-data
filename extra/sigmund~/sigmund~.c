@@ -9,7 +9,17 @@
     implement block ("-b") mode
 */
 
-#include "m_pd.h"
+/* From here to the first "#ifdef PD" or "#ifdef Max" should be extractable
+and usable in other contexts.  The one external requirement is a real
+single-precision FFT, invoked as in the Mayer one: */
+
+void mayer_realfft(int npoints, float *buf);
+
+/* this routine is passed a buffer of npoints values, and returns the
+N/2+1 real parts of the DFT (frequency zero through Nyquist), followed
+by the N/2-1 imaginary points, in order of decreasing frequency.  Pd 0.41,
+for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -38,6 +48,8 @@ typedef struct peak
 
 /********************** service routines **************************/
 
+/* these three are dapted from elsewhere in Pd but included here for
+cmolpeteness */
 static int sigmund_ilog2(int n)
 {
     int ret = -1;
@@ -47,6 +59,22 @@ static int sigmund_ilog2(int n)
         ret++;
     }
     return (ret);
+}
+
+static float sigmund_ftom(float f)
+{
+    return (f > 0 ? 17.3123405046 * log(.12231220585 * f) : -1500);
+}
+
+#define LOGTEN 2.302585092994
+static float sigmund_powtodb(float f)
+{
+    if (f <= 0) return (0);
+    else
+    {
+        float val = 100 + 10./LOGTEN * log(f);
+        return (val < 0 ? 0 : val);
+    }
 }
 
 /* parameters for von Hann window (change these to get Hamming if desired) */
@@ -171,8 +199,8 @@ static void sigmund_tweak(int npts, float *ftreal, float *ftimag,
         ampoutimag = oneovern * ampcorrect *
             (windreal * sinpidetune + windimag * cospidetune);
         freqout = (cbin + 2*detune) * fperbin;
-        if (loud > 1)
-            post("amp %f, freq %f", ampout, freqout);
+        /* if (loud > 1)
+            post("amp %f, freq %f", ampout, freqout); */
         
         peakptrs[peaki]->p_freq = freqout;
         peakptrs[peaki]->p_amp = ampout;
@@ -206,15 +234,15 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
     float oneovern = 1.0/ (float)npts;
     float fperbin = 0.5 * srate * oneovern;
     int npts2 = 2*npts, i, bin;
-    int count, peakcount = 0;
+    int peakcount = 0;
     float *fp1, *fp2;
-    float *rawpow, *rawreal, *rawimag, *maskbuf, *powbuf;
+    float *rawreal, *rawimag, *maskbuf, *powbuf;
     float *bigbuf = alloca(sizeof (float ) * (2*NEGBINS + 6*npts));
     int maxbin = hifreq/fperbin;
     int tweak = (param3 == 0);
     if (maxbin > npts - NEGBINS)
         maxbin = npts - NEGBINS;
-    if (loud) post("tweak %d", tweak);
+    /* if (loud) post("tweak %d", tweak); */
     maskbuf = bigbuf + npts2;
     powbuf = maskbuf + npts;
     rawreal = powbuf + npts+NEGBINS;
@@ -231,19 +259,6 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
         rawreal[i] = bigbuf[i];
     for (i = 1; i < npts-1; i++)
         rawimag[i] = bigbuf[npts2-i];
-    if (loud && npts == 1024)
-    {
-        float bigbuf2[2048];
-        for (i = 0; i < 1024; i++)
-            bigbuf2[i] = insamps[i];
-        for (i = 1024; i < 2048; i++)
-            bigbuf2[i] = 0;
-        mayer_realfft(2048, bigbuf2);
-        for (i = 1; i < 10; i++)
-            post("(%10.2f, %10.2f) -> (%10.2f, %10.2f)",
-                bigbuf2[i], bigbuf2[2048-i], rawreal[i], rawimag[i]);
-    }
-
     rawreal[-1] = rawreal[1];
     rawreal[-2] = rawreal[2];
     rawreal[-3] = rawreal[3];
@@ -265,7 +280,7 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
     {
         float pow1, maxpower = 0, totalpower = 0, windreal, windimag, windpower,
             detune, pidetune, sinpidetune, cospidetune, ampcorrect, ampout,
-            ampoutreal, ampoutimag, freqout, freqcount1, freqcount2, powmask;
+            ampoutreal, ampoutimag, freqout, powmask;
         int bestindex = -1;
 
         for (bin = 2, fp1 = rawreal+2, fp2 = rawimag+2;
@@ -287,31 +302,27 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
         fp2 = rawimag+bestindex;
         *power = 0.5 * totalpower *oneovern * oneovern;
         powmask = maxpower * exp(-param1 * log(10.) / 10.);
-        if (loud > 2)
+        /* if (loud > 2)
             post("maxpower %f, powmask %f, param1 %f",
-                maxpower, powmask, param1);
+                maxpower, powmask, param1); */
         sigmund_remask(maxbin, bestindex, powmask, maxpower, maskbuf);
         
-        if (loud > 1)
-            post("best index %d, total power %f", bestindex, totalpower);
+        /* if (loud > 1)
+            post("best index %d, total power %f", bestindex, totalpower); */
 
         windreal = fp1[1] - fp1[-1];
         windimag = fp2[1] - fp2[-1];
         windpower = windreal * windreal + windimag * windimag;
         detune = ((fp1[1] * fp1[1] - fp1[-1]*fp1[-1]) 
             + (fp2[1] * fp2[1] - fp2[-1]*fp2[-1])) / (2 * windpower);
-        if (loud > 2) post("(-1) %f %f; (1) %f %f",
-            fp1[-1], fp2[-1], fp1[1], fp2[1]);
-        if (loud > 2) post("peak %f %f",
-            fp1[0], fp2[0]);
 
         if (detune > 0.5)
             detune = 0.5;
         else if (detune < -0.5)
             detune = -0.5;
-        if (loud > 1)
+        /* if (loud > 1)
             post("windpower %f, index %d, detune %f",
-                windpower, bestindex, detune);
+                windpower, bestindex, detune); */
         pidetune = PI * detune;
         sinpidetune = sin(pidetune);
         cospidetune = cos(pidetune);
@@ -337,8 +348,8 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
     }
     for (i = 0; i < peakcount; i++)
     {
-        peakv[i].p_pit = ftom(peakv[i].p_freq);
-        peakv[i].p_db = powtodb(peakv[i].p_amp);
+        peakv[i].p_pit = sigmund_ftom(peakv[i].p_freq);
+        peakv[i].p_db = sigmund_powtodb(peakv[i].p_amp);
     }
     *nfound = peakcount;
 }
@@ -356,11 +367,9 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
 {
     float fperbin = 0.5 * srate / npts;
     int npit = 48 * sigmund_ilog2(npts), i, j, k, nsalient;
-    float bestbin, bestweight, sumamp, sumweight, sumfreq, sumallamp, 
-        freq;
+    float bestbin, bestweight, sumamp, sumweight, sumfreq, freq;
     float *weights =  (float *)alloca(sizeof(float) * npit);
     t_peak *bigpeaks[PITCHNPEAK];
-    int nbigpeaks;
     if (npeak < 1)
     {
         freq = 0;
@@ -416,13 +425,6 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
         }
         sumweight += loudness;
     }
-#if 0
-    for (i = 0; i < npit; i++)
-    {
-        postfloat(weights[i]);
-        if (!((i+1)%12)) post("");
-    }
-#endif
     bestbin = -1;
     bestweight = -1e20;
     for (i = 0; i < npit; i++)
@@ -466,7 +468,7 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
 done:
     if (!(freq >= 0 || freq <= 0))
     {
-        post("freq nan cancelled");
+        /* post("freq nan cancelled"); */
         freq = 0;
     }
     *freqp = freq;
@@ -573,6 +575,7 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
     x->n_hist[x->n_histphase].h_power = power;
     x->n_age++;
     *note = 0;
+#if 0
     if (loud)
     {
         post("stable %d, age %d, vibmultiple %f, powerthresh %f, hifreq %f",
@@ -589,12 +592,13 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
             x->n_hist[(x->n_histphase+NHISTPOINT-3)%NHISTPOINT].h_power);
         for (i = 0, k = x->n_histphase; i < stableperiod; i++)
         {
-            post("pit %5.1f  pow %f", ftom(x->n_hist[k].h_freq),
+            post("pit %5.1f  pow %f", sigmund_ftom(x->n_hist[k].h_freq),
                 x->n_hist[k].h_power);
             if (--k < 0)
                 k = NHISTPOINT - 1;
         }
     }
+#endif
        /* look for shorter notes than "stableperiod" in length.
        The amplitude must rise and then fall while the pitch holds
        steady. */
@@ -713,7 +717,7 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
             && maxpow > powerthresh)
         {
                 /* report new note */
-            float sumf = 0, sumw = 0, thisf, thisw;
+            float sumf = 0, sumw = 0, thisw;
             for (i = 0, k = x->n_histphase; i < stableperiod; i++)
             {
                 thisw = x->n_hist[k].h_power;
@@ -730,7 +734,7 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
                 int k3 = x->n_histphase - i;
                 if (k3 < 0)
                     k3 += NHISTPOINT;
-                startpost("%5.1f ", ftom(x->n_hist[k3].h_freq));
+                startpost("%5.1f ", sigmund_ftom(x->n_hist[k3].h_freq));
             }
             post("");
 #endif
@@ -743,9 +747,26 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
     return;
 }
 
-/*************************** Glue for Pd ************************/
+/**************** object structure for Pd and Max. *********************/ 
 
-static t_class *sigmund_class;
+/* From here onward, the code is specific to eithr Pd, Max, or both.  If
+neither "PD 'nor "MSP" is defined, none of this is compiled, so that the
+whole file can be included in other, non-PD and non-Max projects.  */
+#ifdef PD
+#include "m_pd.h"
+#endif
+#ifdef MSP
+#include "ext.h"
+#include "z_dsp.h"
+#include "ext_support.h"
+#include "ext_proto.h"
+#include "ext_obex.h"
+typedef float t_floatarg;
+#define t_resizebytes(a, b, c) t_resizebytes((char *)(a), (b), (c))
+#endif
+
+#if (defined(PD) || defined (MSP))
+
 #define NHIST 100
 
 #define MODE_STREAM 1
@@ -773,17 +794,29 @@ static t_class *sigmund_class;
 
 typedef struct _varout
 {
+#ifdef PD
     t_outlet *v_outlet;
+#endif /* PD */
+#ifdef MSP
+    void *v_outlet;
+#endif /* MSP */
     int v_what;
 } t_varout;
 
 typedef struct _sigmund
 {
+#ifdef PD
     t_object x_obj;
-    t_varout *x_varoutv;
-    int x_nvarout;
     t_clock *x_clock;
     float x_f;          /* for main signal inlet */
+#endif /* PD */
+#ifdef MSP
+    t_pxobject x_obj;
+    void *obex;
+    void *x_clock;
+#endif /* MSP */
+    t_varout *x_varoutv;
+    int x_nvarout;
     float x_sr;         /* sample rate */
     int x_mode;         /* MODE_STREAM, etc. */
     int x_npts;         /* number of points in analysis window */
@@ -798,31 +831,19 @@ typedef struct _sigmund
     float x_stabletime; /* period of stability needed for note */ 
     float x_growth;     /* growth to set off a new note */ 
     float x_minpower;   /* minimum power, in DB, for a note */ 
-    float x_param1;
+    float x_param1;     /* three parameters for temporary use */
     float x_param2;
     float x_param3;
-    t_notefinder x_notefinder;
-    t_peak *x_trackv;
-    int x_ntrack;
-    unsigned int x_dopitch:1;
+    t_notefinder x_notefinder;  /* note parsing state */
+    t_peak *x_trackv;           /* peak tracking state */
+    int x_ntrack;               /* number of peaks tracked */
+    unsigned int x_dopitch:1;   /* which things to calculate */
     unsigned int x_donote:1;
     unsigned int x_dotracks:1;
 } t_sigmund;
 
-static void sigmund_clock(t_sigmund *x);
-static void sigmund_clear(t_sigmund *x);
-static void sigmund_npts(t_sigmund *x, t_floatarg f);
-static void sigmund_hop(t_sigmund *x, t_floatarg f);
-static void sigmund_npeak(t_sigmund *x, t_floatarg f);
-static void sigmund_maxfreq(t_sigmund *x, t_floatarg f);
-static void sigmund_vibrato(t_sigmund *x, t_floatarg f);
-static void sigmund_stabletime(t_sigmund *x, t_floatarg f);
-static void sigmund_growth(t_sigmund *x, t_floatarg f);
-static void sigmund_minpower(t_sigmund *x, t_floatarg f);
-
-static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
+static void sigmund_preinit(t_sigmund *x)
 {
-    t_sigmund *x = (t_sigmund *)pd_new(sigmund_class);
     x->x_npts = NPOINTS_DEF;
     x->x_param1 = 0;
     x->x_param2 = 0.6;
@@ -843,6 +864,238 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
     x->x_ntrack = 0;
     x->x_dopitch = x->x_donote = x->x_dotracks = 0;
     x->x_inbuf = 0;
+}
+
+static void sigmund_npts(t_sigmund *x, t_floatarg f)
+{
+    int nwas = x->x_npts, npts = f;
+        /* check parameter ranges */
+    if (npts < NPOINTS_MIN)
+        post("sigmund~: minimum points %d", NPOINTS_MIN),
+            npts = NPOINTS_MIN;
+    if (npts != (1 << sigmund_ilog2(npts)))
+        post("sigmund~: adjusting analysis size to %d points",
+            (npts = (1 << sigmund_ilog2(npts))));
+    if (npts != nwas)
+        x->x_countdown = x->x_infill  = 0;
+    if (x->x_mode == MODE_STREAM)
+    {
+        if (x->x_inbuf)
+            x->x_inbuf = (t_sample *)t_resizebytes(x->x_inbuf,
+                sizeof(*x->x_inbuf) * nwas, sizeof(*x->x_inbuf) * npts);
+        else x->x_inbuf = (t_sample *)getbytes(sizeof(*x->x_inbuf) * npts);
+    }
+    else x->x_inbuf = 0;
+    x->x_npts = npts;
+}
+
+static void sigmund_hop(t_sigmund *x, t_floatarg f)
+{
+    x->x_hop = f;
+        /* check parameter ranges */
+    if (x->x_hop != (1 << sigmund_ilog2(x->x_hop)))
+        post("sigmund~: adjusting analysis size to %d points",
+            (x->x_hop = (1 << sigmund_ilog2(x->x_hop))));
+}
+
+static void sigmund_npeak(t_sigmund *x, t_floatarg f)
+{
+    if (f < 1)
+        f = 1;
+    x->x_npeak = f;
+}
+
+static void sigmund_maxfreq(t_sigmund *x, t_floatarg f)
+{
+    x->x_maxfreq = f;
+}
+
+static void sigmund_vibrato(t_sigmund *x, t_floatarg f)
+{
+    if (f < 0)
+        f = 0;
+    x->x_vibrato = f;
+}
+
+static void sigmund_stabletime(t_sigmund *x, t_floatarg f)
+{
+    if (f < 0)
+        f = 0;
+    x->x_stabletime = f;
+}
+
+static void sigmund_growth(t_sigmund *x, t_floatarg f)
+{
+    if (f < 0)
+        f = 0;
+    x->x_growth = f;
+}
+
+static void sigmund_minpower(t_sigmund *x, t_floatarg f)
+{
+    if (f < 0)
+        f = 0;
+    x->x_minpower = f;
+}
+
+static void sigmund_doit(t_sigmund *x, int npts, float *arraypoints,
+    int loud, float srate)
+{
+    t_peak *peakv = (t_peak *)alloca(sizeof(t_peak) * x->x_npeak);
+    int nfound, i, cnt;
+    float freq = 0, power, note = 0;
+    sigmund_getrawpeaks(npts, arraypoints, x->x_npeak, peakv,
+        &nfound, &power, srate, loud, x->x_param1, x->x_param2, x->x_param3,
+        x->x_maxfreq);
+    if (x->x_dopitch)
+        sigmund_getpitch(nfound, peakv, &freq, npts, srate, loud);
+    if (x->x_donote)
+        notefinder_doit(&x->x_notefinder, freq, power, &note, x->x_vibrato, 
+            x->x_stabletime * 0.001f * x->x_sr / (float)x->x_hop,
+                exp(LOG10*0.1*(x->x_minpower - 100)), x->x_growth, loud);
+    if (x->x_dotracks)
+        sigmund_peaktrack(nfound, peakv, x->x_ntrack, x->x_trackv, loud);
+    
+    for (cnt = x->x_nvarout; cnt--;)
+    {
+        t_varout *v = &x->x_varoutv[cnt];
+        switch (v->v_what)
+        {
+        case OUT_PITCH:
+            outlet_float(v->v_outlet, sigmund_ftom(freq));
+            break;
+        case OUT_ENV:
+            outlet_float(v->v_outlet, sigmund_powtodb(power));
+            break;
+        case OUT_NOTE:
+            if (note > 0)
+                outlet_float(v->v_outlet, sigmund_ftom(note));
+            break;
+        case OUT_PEAKS:
+            for (i = 0; i < nfound; i++)
+            {
+                t_atom at[5];
+                SETFLOAT(at, (float)i);
+                SETFLOAT(at+1, peakv[i].p_freq);
+                SETFLOAT(at+2, 2*peakv[i].p_amp);
+                SETFLOAT(at+3, 2*peakv[i].p_ampreal);
+                SETFLOAT(at+4, 2*peakv[i].p_ampimag);
+                outlet_list(v->v_outlet, 0, 5, at);   
+            }
+            break;
+        case OUT_TRACKS:
+            for (i = 0; i < x->x_ntrack; i++)
+            {
+                t_atom at[4];
+                SETFLOAT(at, (float)i);
+                SETFLOAT(at+1, x->x_trackv[i].p_freq);
+                SETFLOAT(at+2, 2*x->x_trackv[i].p_amp);
+                SETFLOAT(at+3, x->x_trackv[i].p_tmp);
+                outlet_list(v->v_outlet, 0, 4, at);   
+            }
+            break;
+        }
+    }
+}
+
+static void sigmund_tick(t_sigmund *x)
+{
+    if (x->x_infill == x->x_npts)
+    {
+        sigmund_doit(x, x->x_npts, x->x_inbuf, x->x_loud, x->x_sr);
+        if (x->x_hop >= x->x_npts)
+        {
+            x->x_infill = 0;
+            x->x_countdown = x->x_hop - x->x_npts;
+        }
+        else
+        {
+            memmove(x->x_inbuf, x->x_inbuf + x->x_hop,
+                (x->x_infill = x->x_npts - x->x_hop) * sizeof(*x->x_inbuf));
+            x->x_countdown = 0;
+        }
+        x->x_loud = 0;
+    }
+}
+
+static t_int *sigmund_perform(t_int *w)
+{
+    t_sigmund *x = (t_sigmund *)(w[1]);
+    float *in = (float *)(w[2]);
+    int n = (int)(w[3]);
+
+    if (x->x_hop % n)
+        return (w+4);
+    if (x->x_countdown > 0)
+        x->x_countdown -= n;
+    else if (x->x_infill != x->x_npts)
+    {
+        int j;
+        float *fp = x->x_inbuf + x->x_infill;
+        for (j = 0; j < n; j++)
+            *fp++ = *in++;
+        x->x_infill += n;
+        if (x->x_infill == x->x_npts)
+            clock_delay(x->x_clock, 0);
+    }
+    return (w+4);
+}
+
+static void sigmund_dsp(t_sigmund *x, t_signal **sp)
+{
+    if (x->x_mode == MODE_STREAM)
+    {
+        if (x->x_hop % sp[0]->s_n)
+            post("sigmund: adjusting hop size to %d",
+                (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
+        x->x_sr = sp[0]->s_sr;
+        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+    }
+}
+
+static void sigmund_print(t_sigmund *x)
+{
+    post("sigmund~ settings:");
+    post("npts %d", (int)x->x_npts);
+    post("hop %d", (int)x->x_hop);
+    post("npeak %d", (int)x->x_npeak);
+    post("maxfreq %g", x->x_maxfreq);
+    post("vibrato %g", x->x_vibrato);
+    post("stabletime %g", x->x_stabletime);
+    post("growth %g", x->x_growth);
+    post("minpower %g", x->x_minpower);
+}
+
+static void sigmund_free(t_sigmund *x)
+{
+    if (x->x_inbuf)
+        freebytes(x->x_inbuf, x->x_npts * sizeof(*x->x_inbuf));
+    if (x->x_trackv)
+        freebytes(x->x_trackv, x->x_ntrack * sizeof(*x->x_trackv));
+    clock_free(x->x_clock);
+}
+
+#endif /* PD or MSP */
+/*************************** Glue for Pd ************************/
+#ifdef PD
+
+static t_class *sigmund_class;
+
+static void sigmund_tick(t_sigmund *x);
+static void sigmund_clear(t_sigmund *x);
+static void sigmund_npts(t_sigmund *x, t_floatarg f);
+static void sigmund_hop(t_sigmund *x, t_floatarg f);
+static void sigmund_npeak(t_sigmund *x, t_floatarg f);
+static void sigmund_maxfreq(t_sigmund *x, t_floatarg f);
+static void sigmund_vibrato(t_sigmund *x, t_floatarg f);
+static void sigmund_stabletime(t_sigmund *x, t_floatarg f);
+static void sigmund_growth(t_sigmund *x, t_floatarg f);
+static void sigmund_minpower(t_sigmund *x, t_floatarg f);
+
+static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_sigmund *x = (t_sigmund *)pd_new(sigmund_class);
+    sigmund_preinit(x);
 
     while (argc > 0)
     {
@@ -986,7 +1239,7 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
         x->x_ntrack = x->x_npeak;
         x->x_trackv = (t_peak *)getbytes(x->x_ntrack * sizeof(*x->x_trackv));
     }
-    x->x_clock = clock_new(&x->x_obj.ob_pd, (t_method)sigmund_clock);
+    x->x_clock = clock_new(&x->x_obj.ob_pd, (t_method)sigmund_tick);
     
     x->x_infill = 0;
     x->x_countdown = 0;
@@ -994,66 +1247,6 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
     notefinder_init(&x->x_notefinder);
     sigmund_clear(x);
     return (x);
-}
-
-static void sigmund_doit(t_sigmund *x, int npts, float *arraypoints,
-    int loud, float srate)
-{
-    t_peak *peakv = (t_peak *)alloca(sizeof(t_peak) * x->x_npeak);
-    int nfound, i, cnt;
-    float freq = 0, power, note = 0;
-    sigmund_getrawpeaks(npts, arraypoints, x->x_npeak, peakv,
-        &nfound, &power, srate, loud, x->x_param1, x->x_param2, x->x_param3,
-        x->x_maxfreq);
-    if (x->x_dopitch)
-        sigmund_getpitch(nfound, peakv, &freq, npts, srate, loud);
-    if (x->x_donote)
-        notefinder_doit(&x->x_notefinder, freq, power, &note, x->x_vibrato, 
-            x->x_stabletime * 0.001f * x->x_sr / (float)x->x_hop,
-                exp(LOG10*0.1*(x->x_minpower - 100)), x->x_growth, loud);
-    if (x->x_dotracks)
-        sigmund_peaktrack(nfound, peakv, x->x_ntrack, x->x_trackv, loud);
-    
-    for (cnt = x->x_nvarout; cnt--;)
-    {
-        t_varout *v = &x->x_varoutv[cnt];
-        switch (v->v_what)
-        {
-        case OUT_PITCH:
-            outlet_float(v->v_outlet, ftom(freq));
-            break;
-        case OUT_ENV:
-            outlet_float(v->v_outlet, powtodb(power));
-            break;
-        case OUT_NOTE:
-            if (note > 0)
-                outlet_float(v->v_outlet, ftom(note));
-            break;
-        case OUT_PEAKS:
-            for (i = 0; i < nfound; i++)
-            {
-                t_atom at[5];
-                SETFLOAT(at, (float)i);
-                SETFLOAT(at+1, peakv[i].p_freq);
-                SETFLOAT(at+2, 2*peakv[i].p_amp);
-                SETFLOAT(at+3, 2*peakv[i].p_ampreal);
-                SETFLOAT(at+4, 2*peakv[i].p_ampimag);
-                outlet_list(v->v_outlet, &s_list, 5, at);   
-            }
-            break;
-        case OUT_TRACKS:
-            for (i = 0; i < x->x_ntrack; i++)
-            {
-                t_atom at[4];
-                SETFLOAT(at, (float)i);
-                SETFLOAT(at+1, x->x_trackv[i].p_freq);
-                SETFLOAT(at+2, 2*x->x_trackv[i].p_amp);
-                SETFLOAT(at+3, x->x_trackv[i].p_tmp);
-                outlet_list(v->v_outlet, &s_list, 4, at);   
-            }
-            break;
-        }
-    }
 }
 
 static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
@@ -1124,158 +1317,9 @@ static void sigmund_param3(t_sigmund *x, t_floatarg f)
     x->x_param3 = f;
 }
 
-static void sigmund_npts(t_sigmund *x, t_floatarg f)
-{
-    int nwas = x->x_npts, npts = f;
-        /* check parameter ranges */
-    if (npts < NPOINTS_MIN)
-        post("sigmund~: minimum points %d", NPOINTS_MIN),
-            npts = NPOINTS_MIN;
-    if (npts != (1 << sigmund_ilog2(npts)))
-        post("sigmund~: adjusting analysis size to %d points",
-            (npts = (1 << sigmund_ilog2(npts))));
-    if (npts != nwas)
-        x->x_countdown = x->x_infill  = 0;
-    if (x->x_mode == MODE_STREAM)
-    {
-        if (x->x_inbuf)
-            x->x_inbuf = resizebytes(x->x_inbuf,
-                sizeof(*x->x_inbuf) * nwas, sizeof(*x->x_inbuf) * npts);
-        else x->x_inbuf = getbytes(sizeof(*x->x_inbuf) * npts);
-    }
-    else x->x_inbuf = 0;
-    x->x_npts = npts;
-}
-
-static void sigmund_hop(t_sigmund *x, t_floatarg f)
-{
-    x->x_hop = f;
-        /* check parameter ranges */
-    if (x->x_hop != (1 << sigmund_ilog2(x->x_hop)))
-        post("sigmund~: adjusting analysis size to %d points",
-            (x->x_hop = (1 << sigmund_ilog2(x->x_hop))));
-}
-
-static void sigmund_npeak(t_sigmund *x, t_floatarg f)
-{
-    if (f < 1)
-        f = 1;
-    x->x_npeak = f;
-}
-
-static void sigmund_maxfreq(t_sigmund *x, t_floatarg f)
-{
-    x->x_maxfreq = f;
-}
-
-static void sigmund_vibrato(t_sigmund *x, t_floatarg f)
-{
-    if (f < 0)
-        f = 0;
-    x->x_vibrato = f;
-}
-
-static void sigmund_stabletime(t_sigmund *x, t_floatarg f)
-{
-    if (f < 0)
-        f = 0;
-    x->x_stabletime = f;
-}
-
-static void sigmund_growth(t_sigmund *x, t_floatarg f)
-{
-    if (f < 0)
-        f = 0;
-    x->x_growth = f;
-}
-
-static void sigmund_minpower(t_sigmund *x, t_floatarg f)
-{
-    if (f < 0)
-        f = 0;
-    x->x_minpower = f;
-}
-
-static void sigmund_print(t_sigmund *x)
-{
-    post("sigmund~ settings:");
-    post("npts %d", (int)x->x_npts);
-    post("hop %d", (int)x->x_hop);
-    post("npeak %d", (int)x->x_npeak);
-    post("maxfreq %g", x->x_maxfreq);
-    post("vibrato %g", x->x_vibrato);
-    post("stabletime %g", x->x_stabletime);
-    post("growth %g", x->x_growth);
-    post("minpower %g", x->x_minpower);
-}
-
 static void sigmund_printnext(t_sigmund *x, t_float f)
 {
     x->x_loud = f;
-}
-
-static void sigmund_clock(t_sigmund *x)
-{
-    if (x->x_infill == x->x_npts)
-    {
-        sigmund_doit(x, x->x_npts, x->x_inbuf, x->x_loud, x->x_sr);
-        if (x->x_hop >= x->x_npts)
-        {
-            x->x_infill = 0;
-            x->x_countdown = x->x_hop - x->x_npts;
-        }
-        else
-        {
-            memmove(x->x_inbuf, x->x_inbuf + x->x_hop,
-                (x->x_infill = x->x_npts - x->x_hop) * sizeof(*x->x_inbuf));
-            x->x_countdown = 0;
-        }
-        x->x_loud = 0;
-    }
-}
-
-static t_int *sigmund_perform(t_int *w)
-{
-    t_sigmund *x = (t_sigmund *)(w[1]);
-    float *in = (float *)(w[2]);
-    int n = (int)(w[3]);
-
-    if (x->x_hop % n)
-        return (w+4);
-    if (x->x_countdown > 0)
-        x->x_countdown -= n;
-    else if (x->x_infill != x->x_npts)
-    {
-        int i, j;
-        float *fp = x->x_inbuf + x->x_infill;
-        for (j = 0; j < n; j++)
-            *fp++ = *in++;
-        x->x_infill += n;
-        if (x->x_infill == x->x_npts)
-            clock_delay(x->x_clock, 0);
-    }
-    return (w+4);
-}
-
-static void sigmund_dsp(t_sigmund *x, t_signal **sp)
-{
-    if (x->x_mode == MODE_STREAM)
-    {
-        if (x->x_hop % sp[0]->s_n)
-            post("sigmund: adjusting hop size to %d",
-                (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
-        x->x_sr = sp[0]->s_sr;
-        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
-    }
-}
-
-static void sigmund_free(t_sigmund *x)
-{
-    if (x->x_inbuf)
-        freebytes(x->x_inbuf, x->x_npts * sizeof(*x->x_inbuf));
-    if (x->x_trackv)
-        freebytes(x->x_trackv, x->x_ntrack * sizeof(*x->x_trackv));
-    clock_free(x->x_clock);
 }
 
 void sigmund_tilde_setup(void)
@@ -1311,6 +1355,214 @@ void sigmund_tilde_setup(void)
         gensym("print"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_printnext,
         gensym("printnext"), A_FLOAT, 0);
-    post("sigmund version 0.03");
+    post("sigmund~ version 0.04");
 }
+
+#endif /* PD */
+
+/************************ Max/MSP glue **********************************/
+
+/* -------------------------- MSP glue ------------------------- */
+#ifdef MSP
+static void *sigmund_class;
+
+static void *sigmund_new(t_symbol *s, long ac, t_atom *av)
+{
+    t_sigmund *x;
+    t_varout *g;
+    int i, j;
+    if (!(x = (t_sigmund *)object_alloc(sigmund_class)))
+        return (0);
+    sigmund_preinit(x);
+    attr_args_process(x, ac, av);   
+    dsp_setup((t_pxobject *)x, 1);
+    object_obex_store(x, gensym("dumpout"), outlet_new(x, NULL));
+    
+    for (i = 0; i < ac; i++)
+        if (av[i].a_type == A_SYM)
+    {
+        char *s = av[i].a_w.w_sym->s_name;
+        if (!strcmp(s, "pitch"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_PITCH;
+            x->x_nvarout = n2;
+            x->x_dopitch = 1;
+        }
+        else if (!strcmp(s, "env"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_ENV;
+            x->x_nvarout = n2;
+        }
+        else if (!strcmp(s, "note") || !strcmp(s, "notes"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_NOTE;
+            x->x_nvarout = n2;
+            x->x_dopitch = x->x_donote = 1;
+        }
+        else if (!strcmp(s, "peaks"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_PEAKS;
+            x->x_nvarout = n2;
+        }
+        else if (!strcmp(s, "tracks"))
+        {
+            int n2 = x->x_nvarout+1;
+            x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+                x->x_nvarout*sizeof(t_varout), n2*sizeof(t_varout));
+            x->x_varoutv[x->x_nvarout].v_what = OUT_TRACKS;
+            x->x_nvarout = n2;
+            x->x_dotracks = 1;
+        }
+        else if (s[0] != '@')
+            post("sigmund: ignoring unknown argument '%s'" ,s);
+    }
+    if (!x->x_nvarout)
+    {
+        x->x_varoutv = (t_varout *)t_resizebytes(x->x_varoutv,
+            0, 2*sizeof(t_varout));
+        x->x_varoutv[0].v_what = OUT_PITCH;
+        x->x_varoutv[1].v_what = OUT_ENV;
+        x->x_nvarout = 2;
+        x->x_dopitch = 1;
+    }
+    for (j = 0, g = x->x_varoutv + x->x_nvarout-1; j < x->x_nvarout; j++, g--)
+        g->v_outlet = ((g->v_what == OUT_PITCH  || g->v_what == OUT_ENV ||
+            g->v_what == OUT_NOTE) ?
+                floatout((t_object *)x) : listout((t_object *)x));
+    if (x->x_dotracks)
+    {
+        x->x_ntrack = x->x_npeak;
+        x->x_trackv = (t_peak *)getbytes(x->x_ntrack * sizeof(*x->x_trackv));
+    }
+    x->x_clock = clock_new(x, (method)sigmund_tick);
+    x->x_infill = 0;
+    x->x_countdown = 0;
+    sigmund_npts(x, x->x_npts);
+    notefinder_init(&x->x_notefinder);
+    return (x);
+}
+
+/* Attribute setters. */
+void sigmund_npts_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_npts(x, atom_getfloat(av));
+}
+
+void sigmund_hop_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_hop(x, atom_getfloat(av));
+}
+
+void sigmund_npeak_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_npeak(x, atom_getfloat(av));
+}
+
+void sigmund_maxfreq_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_maxfreq(x, atom_getfloat(av));
+}
+
+void sigmund_vibrato_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_vibrato(x, atom_getfloat(av));
+}
+
+void sigmund_stabletime_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_stabletime(x, atom_getfloat(av));
+}
+
+void sigmund_growth_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_growth(x, atom_getfloat(av));
+}
+
+void sigmund_minpower_set(t_sigmund *x, void *attr, long ac, t_atom *av)
+{
+    if (ac && av)
+        sigmund_minpower(x, atom_getfloat(av));
+}
+
+/* end attr setters */
+
+void sigmund_assist(t_sigmund *x, void *b, long m, long a, char *s)
+{
+}
+
+int main()
+{       
+    t_class *c;
+    long attrflags = 0;
+    t_symbol *sym_long = gensym("long"), *sym_float32 = gensym("float32");
+    
+    c = class_new("sigmund~", (method)sigmund_new,
+        (method)sigmund_free, sizeof(t_sigmund), (method)0L, A_GIMME, 0);
+    
+    class_obexoffset_set(c, calcoffset(t_sigmund, obex));
+    
+    class_addattr(c, attr_offset_new("npts", sym_long, attrflags,
+        (method)0L, (method)sigmund_npts_set,
+            calcoffset(t_sigmund, x_npts)));
+    class_addattr(c ,attr_offset_new("hop", sym_long, attrflags,
+        (method)0L, (method)sigmund_hop_set,
+            calcoffset(t_sigmund, x_hop)));
+    class_addattr(c ,attr_offset_new("maxfreq", sym_float32, attrflags,
+        (method)0L, (method)sigmund_maxfreq_set,
+            calcoffset(t_sigmund, x_maxfreq)));
+    class_addattr(c ,attr_offset_new("npeak", sym_long, attrflags,
+        (method)0L, (method)sigmund_npeak_set,
+            calcoffset(t_sigmund, x_npeak)));
+    class_addattr(c ,attr_offset_new("vibrato", sym_float32, attrflags,
+        (method)0L, (method)sigmund_vibrato_set,
+            calcoffset(t_sigmund, x_vibrato)));
+    class_addattr(c ,attr_offset_new("stabletime", sym_float32, attrflags,
+        (method)0L, (method)sigmund_stabletime_set,
+            calcoffset(t_sigmund, x_stabletime)));
+    class_addattr(c ,attr_offset_new("growth", sym_float32, attrflags,
+        (method)0L, (method)sigmund_growth_set,
+            calcoffset(t_sigmund, x_growth)));
+    class_addattr(c ,attr_offset_new("minpower", sym_float32, attrflags,
+        (method)0L, (method)sigmund_minpower_set,
+            calcoffset(t_sigmund, x_minpower)));
+
+    class_addmethod(c, (method)sigmund_dsp, "dsp", A_CANT, 0);
+    class_addmethod(c, (method)sigmund_print, "print", 0);
+    class_addmethod(c, (method)sigmund_print, "printnext", A_DEFFLOAT, 0);
+    class_addmethod(c, (method)sigmund_assist, "assist", A_CANT, 0);
+    
+    class_addmethod(c, (method)object_obex_dumpout, "dumpout", A_CANT, 0);
+    class_addmethod(c, (method)object_obex_quickref, "quickref", A_CANT, 0);
+    
+    class_dspinit(c);
+
+    class_register(CLASS_BOX, c);
+    sigmund_class = c;
+    
+    post("sigmund~ v0.04");
+    return (0);
+}
+
+
+#endif /* MSP */
+
 

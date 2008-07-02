@@ -2,9 +2,14 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in the Pd distribution.  */
 
-/* the "pdreceive" command.  This is a standalone program that receives messages
+/* the "pdreceive" command. This is a standalone program that receives messages
 from Pd via the netsend/netreceive ("FUDI") protocol, and copies them to
 standard output. */
+
+/* May 2008 : fixed a buffer overflow problem; pdreceive sometimes 
+    repeated infinitely its buffer during high speed transfer. 
+    Moonix::Antoine Rousseau
+*/
 
 #include <sys/types.h>
 #include <string.h>
@@ -26,10 +31,10 @@ standard output. */
 typedef struct _fdpoll
 {
     int fdp_fd;
-    char *fdp_inbuf;
-    int fdp_inhead;
-    int fdp_intail;
-    int fdp_udp;
+    char *fdp_outbuf;/*output message buffer*/ 
+    int fdp_outlen;     /*length of output message*/
+    int fdp_discard;/*buffer overflow: output message is incomplete, discard it*/
+    int fdp_gotsemi;/*last char from input was a semicolon*/
 } t_fdpoll;
 
 static int nfdpoll;
@@ -122,8 +127,8 @@ static void addport(int fd)
     fp->fdp_fd = fd;
     nfdpoll++;
     if (fd >= maxfd) maxfd = fd + 1;
-    fp->fdp_inhead = fp->fdp_intail = 0;
-    if (!(fp->fdp_inbuf = malloc(BUFSIZE)))
+    fp->fdp_outlen = fp->fdp_discard = fp->fdp_gotsemi = 0;
+    if (!(fp->fdp_outbuf = malloc(BUFSIZE)))
     {
         fprintf(stderr, "out of memory");
         exit(1);
@@ -141,7 +146,7 @@ static void rmport(t_fdpoll *x)
         if (fp == x)
         {
             x_closesocket(fp->fdp_fd);
-            free(fp->fdp_inbuf);
+            free(fp->fdp_outbuf);
             while (i--)
             {
                 fp[0] = fp[1];
@@ -191,75 +196,66 @@ static void udpread(void)
     }
 }
 
-static int tcpmakeoutput(t_fdpoll *x)
+static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
 {
-    char messbuf[BUFSIZE+1], *bp = messbuf;
-    int indx;
-    int inhead = x->fdp_inhead;
-    int intail = x->fdp_intail;
-    char *inbuf = x->fdp_inbuf;
-    if (intail == inhead)
-        return (0);
-    for (indx = intail; indx != inhead; indx = (indx+1)&(BUFSIZE-1))
+    int i;
+    int outlen = x->fdp_outlen;
+    char *outbuf = x->fdp_outbuf;
+    
+    for (i = 0 ; i < len ; i++)
     {
+        char c = inbuf[i];
+        
+        if((c != '\n') || (!x->fdp_gotsemi))
+            outbuf[outlen++] = c;
+        x->fdp_gotsemi = 0; 
+        if (outlen >= (BUFSIZE-1)) /*output buffer overflow; reserve 1 for '\n' */
+        {
+            fprintf(stderr, "pdreceive: message too long; discarding\n");
+            outlen = 0;
+            x->fdp_discard = 1;
+        }  
             /* search for a semicolon.   */
-        char c = *bp++ = inbuf[indx];
         if (c == ';')
         {
-            intail = (indx+1)&(BUFSIZE-1);
-            if (inbuf[intail] == '\n')
-                intail = (intail+1)&(BUFSIZE-1);
-            *bp++ = '\n';
-#ifdef MSW
+            outbuf[outlen++] = '\n';
+            if (!x->fdp_discard)
             {
-                int j;
-                for (j = 0; j < bp - messbuf; j++)
-                    putchar(messbuf[j]);
-            }
+#ifdef MSW
+                {
+                    int j;
+                    for (j = 0; j < bp - messbuf; j++)
+                        putchar(messbuf[j]);
+                }
 #else
-            write(1, messbuf, bp - messbuf);
+                write(1, outbuf, outlen);
 #endif
-            x->fdp_inhead = inhead;
-            x->fdp_intail = intail;
-            return (1);
-        }
-    }
+            } /* if (!x->fdp_discard) */
+
+            outlen = 0;
+            x->fdp_discard = 0;
+            x->fdp_gotsemi = 1;
+        } /* if (c == ';') */
+    } /* for */
+
+    x->fdp_outlen = outlen;
     return (0);
 }
 
 static void tcpread(t_fdpoll *x)
 {
-    int readto =
-        (x->fdp_inhead >= x->fdp_intail ? BUFSIZE : x->fdp_intail-1);
-    int ret;
+    int  ret;
+    char inbuf[BUFSIZE];
 
-        /* the input buffer might be full.  If so, drop the whole thing */
-    if (readto == x->fdp_inhead)
+    ret = recv(x->fdp_fd, inbuf, BUFSIZE, 0);
+    if (ret < 0)
     {
-        fprintf(stderr, "pd: dropped message from gui\n");
-        x->fdp_inhead = x->fdp_intail = 0;
-        readto = BUFSIZE;
+        sockerror("recv (tcp)");
+        rmport(x);
     }
-    else
-    {
-        ret = recv(x->fdp_fd, x->fdp_inbuf + x->fdp_inhead,
-            readto - x->fdp_inhead, 0);
-        if (ret < 0)
-        {
-            sockerror("recv (tcp)");
-            rmport(x);
-        }
-        else if (ret == 0)
-             rmport(x);
-        else
-        {
-            x->fdp_inhead += ret;
-            if (x->fdp_inhead >= BUFSIZE)
-                x->fdp_inhead = 0;
-            while (tcpmakeoutput(x))
-                ;
-        }
-    }
+    else if (ret == 0)
+        rmport(x);
+    else tcpmakeoutput(x, inbuf, ret);
 }
 
 static void dopoll(void)

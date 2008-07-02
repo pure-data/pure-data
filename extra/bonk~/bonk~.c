@@ -198,8 +198,6 @@ typedef struct _bonk
     void *obex;
     void *x_cookedout;
     void *x_clock;
-    short x_vol;
-        
 #endif /* MSP */
     /* parameters */
     int x_npoints;          /* number of points in input buffer */
@@ -251,7 +249,6 @@ void bonk_setup(void);
 int main();
 
 static void bonk_thresh(t_bonk *x, t_floatarg f1, t_floatarg f2);
-static void bonk_mask(t_bonk *x, t_floatarg f1, t_floatarg f2);
 static void bonk_print(t_bonk *x, t_floatarg f);
 static void bonk_bang(t_bonk *x);
 
@@ -1161,7 +1158,7 @@ int main()
         t_class *c;
         t_object *attr;
         long attrflags = 0;
-                t_symbol *sym_long = gensym("long"), *sym_float32 = gensym("float32");
+        t_symbol *sym_long = gensym("long"), *sym_float32 = gensym("float32");
         
         c = class_new("bonk~", (method)bonk_new, (method)bonk_free, sizeof(t_bonk), (method)0L, A_GIMME, 0);
         
