@@ -13,6 +13,9 @@
 and usable in other contexts.  The one external requirement is a real
 single-precision FFT, invoked as in the Mayer one: */
 
+#if (defined(NT) && defined(PD))	/* ignore this, it's just Microsoft nonsense */
+__declspec(dllimport) extern
+#endif
 void mayer_realfft(int npoints, float *buf);
 
 /* this routine is passed a buffer of npoints values, and returns the
@@ -23,7 +26,7 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef MSW
+#ifdef NT
 #include <malloc.h>
 #else
 #include <alloca.h>

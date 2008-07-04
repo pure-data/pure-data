@@ -224,8 +224,8 @@ static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
 #ifdef MSW
                 {
                     int j;
-                    for (j = 0; j < bp - messbuf; j++)
-                        putchar(messbuf[j]);
+                    for (j = 0; j < outlen; j++)
+                        putchar(outbuf[j]);
                 }
 #else
                 write(1, outbuf, outlen);
