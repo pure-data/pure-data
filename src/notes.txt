@@ -53,27 +53,24 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
-pasting should look at current mouse location
 optionally suppress leading "." directories and files on "open"
 change config.h to #ifdef _MSC_VER (include MSW fake) else include a real one
 stick snprintf alias in the MSW fake.
+"installation mode" - turn off Pd window, accelerators, menu bars, scrollbars
 flag to prevent unlocking patches
-clickless connection (hit 'c' key? see Bouchard paper)
 messages to suppress menus&accelerators, and invisibilize Pd window
 machine-independent fonts
-callback scheduling on Mac
 sigmund~: sort by pitch; one-shot
-add -x flag to drawnumbers....
+expr to parse exponential notation
+pipe to handle symbols&pointers (just takes floats now???)
 grab new ALSA midi code from devel
-externs able to usurp built-ins (+mem alignment for SSE)
+mem alignment for SSE
 replace gatom_escapit with a quoting mechanism (handle '[', spaces, etc.)
 unicode in filenames???  How does this work?  (bug report about windows)
 sprout inlet for "route", "sel" if one arg
 more list functions (see x_list.c)
 poly inlet to turn stealing on/off, plus mode to handle note-with-duration
 integrate video into tilde objects
-graph "hide name" flag controllable from dialog
-"installation mode" - turn off Pd window, accelerators, menu bars, scrollbars
 fix copyright notices
 pixel font sizes
 pd to find running ones (pd -new to defeat)
@@ -81,6 +78,7 @@ tables:
     if there's just one array, don't do stringent hit check.
     array click protection (Krzysztof's suggestion)
     make graph labels persistent and add to dialog
+    graph "hide name" flag controllable from dialog
     object to get/set table size; random; quantile
     flag to hide array names 
 think of a way to embed abstractions in a patch
@@ -89,10 +87,9 @@ delete-in-rectangle message to Pds
 put serial object in main dist (see rat@telecoma, Apr. 25; winfried May 22)
 open/save panel to take messages to init directory, and to set extent list
 flags to defeat pre-loading specified classes
-expr to parse exponential notation
-pipe to handle symbols&pointers (just takes floats now???)
-fix "system" (google CLOEXEC alsa)
 editing:
+    pasting should look at current mouse location
+    clickless connection (hit 'c' key? see Bouchard paper)
     "enter" into object box to create new one (also, change border? forking?)
     tab to jump to a connected object (first one?) (shift-tab to back up?)
     arrow keys to shift connections left and right
@@ -103,6 +100,8 @@ editing:
     (also, a way to make multiple connections?)
 
 data:
+add -x [-n?] flag to drawnumbers
+flag to disable edits for arrays
 make a 2-pass proecss for finding hot spot closes to any given click
 replace list element with binbuf??
 hooks for table mousing, other changes (scalars?)
@@ -117,6 +116,7 @@ sublists should display on parent if desired? (new drawing instruction)
 test and debug list elements of templates
 sublists seem not to handle canvas allocation right (get.pd->pointer.pd bug)
 append doesn't do symbols yet.
+non-clickable arrays (plus arrays that respond more easily than default)
 
 more features:
 

@@ -13,7 +13,7 @@
 and usable in other contexts.  The one external requirement is a real
 single-precision FFT, invoked as in the Mayer one: */
 
-#if (defined(NT) && defined(PD))	/* ignore this, it's just Microsoft nonsense */
+#if (defined(NT) && defined(PD))        /* ignore this, it's just Microsoft nonsense */
 __declspec(dllimport) extern
 #endif
 void mayer_realfft(int npoints, float *buf);
