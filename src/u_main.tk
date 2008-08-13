@@ -835,16 +835,12 @@ proc menu_fixwindowmenu {name} {
 set find_canvas nobody
 set find_string ""
 set find_count 1
+set find_wholeword 1
 
 proc find_apply {name} {
-    global find_string
-    global find_canvas
-    regsub -all \; $find_string " _semi_ " find_string2
-    regsub -all \, $find_string2 " _comma_ " find_string3
-#    puts stderr [concat $find_canvas find $find_string3 \
-#       \;]
-    pd [concat $find_canvas find $find_string3 \
-        \;]
+    global find_string find_canvas find_wholeword
+    pd [concat $find_canvas find [pdtk_encodedialog $find_string] \
+        $find_wholeword \;]
     after 50 destroy $name
 }
 
@@ -853,9 +849,7 @@ proc find_cancel {name} {
 }
 
 proc menu_findobject {canvas} {
-    global find_string
-    global find_canvas
-    global find_count
+    global find_string find_canvas find_count find_wholeword
     
     set name [format ".find%d" $find_count]
     set find_count [expr $find_count + 1]
@@ -869,6 +863,9 @@ proc menu_findobject {canvas} {
 
     entry $name.entry -textvariable find_string
     pack $name.entry -side top
+    checkbutton $name.wholeword -variable find_wholeword \
+        -text {whole word} -anchor e
+    pack $name.wholeword -side bottom
 
     frame $name.buttonframe
     pack $name.buttonframe -side bottom -fill x -pady 2m
@@ -4233,7 +4230,9 @@ proc path_apply {id} {
     for {set x 0} {$x < $pd_path_count} {incr x} {
         global pd_path$x
         set this_path [set pd_path$x]
-        if {0==[string match "" $this_path]} {lappend pd_path [pdtk_encodedialog $this_path]}
+        if {0==[string match "" $this_path]} {
+            lappend pd_path [pdtk_encodedialog $this_path]
+        }
     }
 
     pd [concat pd path-dialog $pd_extrapath $pd_verbose $pd_path \;]

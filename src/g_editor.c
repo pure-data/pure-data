@@ -1896,9 +1896,9 @@ static void canvas_menufont(t_canvas *x)
     gfxstub_new(&x2->gl_pd, &x2->gl_pd, buf);
 }
 
-static int canvas_find_index1, canvas_find_index2;
+static int canvas_find_index1, canvas_find_index2, canvas_find_wholeword;
 static t_binbuf *canvas_findbuf;
-int binbuf_match(t_binbuf *inbuf, t_binbuf *searchbuf);
+int binbuf_match(t_binbuf *inbuf, t_binbuf *searchbuf, int wholeword);
 
     /* find an atom or string of atoms */
 static int canvas_dofind(t_canvas *x, int *myindex1p)
@@ -1913,7 +1913,8 @@ static int canvas_dofind(t_canvas *x, int *myindex1p)
             t_object *ob = 0;
             if (ob = pd_checkobject(&y->g_pd))
             {
-                if (binbuf_match(ob->ob_binbuf, canvas_findbuf))
+                if (binbuf_match(ob->ob_binbuf, canvas_findbuf,
+                    canvas_find_wholeword))
                 {
                     if (myindex1 > canvas_find_index1 ||
                         myindex1 == canvas_find_index1 &&
@@ -1943,25 +1944,16 @@ static int canvas_dofind(t_canvas *x, int *myindex1p)
     return (0);
 }
 
-static void canvas_find(t_canvas *x, t_symbol *s, int ac, t_atom *av)
+static void canvas_find(t_canvas *x, t_symbol *s, t_floatarg wholeword)
 {
-    int myindex1 = 0, i;
-    for (i = 0; i < ac; i++)
-    {
-        if (av[i].a_type == A_SYMBOL)
-        {
-            if (!strcmp(av[i].a_w.w_symbol->s_name, "_semi_"))
-                SETSEMI(&av[i]);
-            else if (!strcmp(av[i].a_w.w_symbol->s_name, "_comma_"))
-                SETCOMMA(&av[i]);
-        }
-    }
+    int myindex1 = 0;
+    t_symbol *decodedsym = sys_decodedialog(s);
     if (!canvas_findbuf)
         canvas_findbuf = binbuf_new();
-    binbuf_clear(canvas_findbuf);
-    binbuf_add(canvas_findbuf, ac, av);
+    binbuf_text(canvas_findbuf, decodedsym->s_name, strlen(decodedsym->s_name));
     canvas_find_index1 = 0;
     canvas_find_index2 = -1;
+    canvas_find_wholeword = wholeword;
     canvas_whichfind = x;
     if (!canvas_dofind(x, &myindex1))
     {
@@ -2635,7 +2627,7 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_font,
         gensym("font"), A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find,
-        gensym("find"), A_GIMME, A_NULL);
+        gensym("find"), A_SYMBOL, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find_again,
         gensym("findagain"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find_parent,

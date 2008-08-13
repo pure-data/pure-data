@@ -9,7 +9,6 @@
 #X text 8 35 Rpole~ filters an audio signal (left inlet) via a one-pole
 real filter \, whose coefficient is controlled by a creation argument
 or by an audio signal (right inlet).;
-#X text 413 511 updated for Pd version-0.38;
 #X obj 95 441 rzero~;
 #X obj 35 463 cpole~;
 #X obj 35 441 rpole~;
@@ -28,7 +27,6 @@ or by an audio signal (right inlet).;
 #X text 150 173 <-- filter coefficient (may be a signal);
 #X text 150 195 <-- creation argument initializes filter coefficient
 ;
-#X text 73 252 y[n] = y[n-1] + a[n] * x[n];
 #X text 10 310 The transfer function is H(Z) = 1/(1 - aZ^-1).;
 #X text 121 117 <-- clear internal state to zero;
 #X text 11 272 where y[n] is the output \, x[n] the input \, and a[n]
@@ -73,7 +71,9 @@ the filter coefficient. The filter is unstable if/when |a[n]|>1.;
 and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
 for an introduction to the necessary theory.);
-#X connect 0 0 30 1;
-#X connect 1 0 30 0;
-#X connect 2 0 30 0;
-#X connect 21 0 30 0;
+#X text 73 252 y[n] = x[n] + a[n] * y[n-1];
+#X text 413 511 updated for Pd version 0.42;
+#X connect 0 0 28 1;
+#X connect 1 0 28 0;
+#X connect 2 0 28 0;
+#X connect 20 0 28 0;
