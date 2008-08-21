@@ -333,7 +333,7 @@ gotit: ;
 
 #ifdef STARTGUI
 
-/* #define DEBUGCONNECT */
+#define DEBUGCONNECT
 
 #ifdef DEBUGCONNECT
 static FILE *debugfd;
@@ -618,11 +618,19 @@ void pdgui_setname(char *s)
 int Pdtcl_Init(Tcl_Interp *interp)
 {
     const char *argv = Tcl_GetVar(interp, "argv", 0);
-    int portno, argno = 0;
-    if (argv && (portno = atoi(argv)) > 1)
+    int portno = 0, i;
+    if (argv)
+    {
+        for (i = 0; i < strlen(argv) - 1; i++)
+            if (argv[i] >= '0' && argv[i] <= '9')
+        {
+            portno = atoi(argv+i);
+            break;
+        }
+    }
+    if (portno)
         pdgui_setsock(portno);
 #ifdef DEBUGCONNECT
-        pd_portno = portno;
     debugfd = fopen("/tmp/bratwurst", "w");
     fprintf(debugfd, "turning stderr back on\n");
     fflush(debugfd);

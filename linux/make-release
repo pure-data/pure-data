@@ -32,6 +32,8 @@ make distclean
 rm -rf autom4te.cache
 rm -f *.pd
 cd /tmp
-tar cf - pd-$1 | gzip > $ROOTDIR/archive/dist/pd-$1.src.tar.gz
+tar czf pd-$1.src.tar.gz pd-$1
 rm -rf $TMPPD
+mv -i pd-$1.src.tar.gz $ROOTDIR/archive/dist/ && \
 ls -l $ROOTDIR/archive/dist/pd-$1.src.tar.gz
+
