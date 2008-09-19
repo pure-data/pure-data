@@ -748,21 +748,6 @@ static int set_swparams(snd_pcm_t *handle, snd_pcm_sw_params_t *swparams, int pl
   if(sys_verbose)
     post("sw_params: set avail_min= %d (was  %d)", (int) ps, (int) ops);
 #endif
-
-  /* ALIGN: align all transfers to 1 sample */
-
-  snd_pcm_sw_params_get_xfer_align(swparams, &ops);
-  err = snd_pcm_sw_params_set_xfer_align(handle, swparams, 1);
-  if (err < 0) {
-    check_error(err,"Unable to set transfer align for playback");
-    return err;
-  }
-  snd_pcm_sw_params_get_xfer_align(swparams, &ps);
-
-#ifdef ALSAMM_DEBUG
-  if(sys_verbose)
-    post("sw_params: set xfer_align = %d (was  %d)", (int) ps, (int) ops);
-#endif
   
   /* write the parameters to the playback device */
 
