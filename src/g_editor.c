@@ -739,8 +739,8 @@ int glist_amreloadingabstractions = 0;
     /* call canvas_doreload on everyone */
 void canvas_reload(t_symbol *name, t_symbol *dir, t_gobj *except)
 {
-    glist_amreloadingabstractions = 1;
     t_canvas *x;
+    glist_amreloadingabstractions = 1;
         /* find all root canvases */
     for (x = canvas_list; x; x = x->gl_next)
         glist_doreload(x, name, dir, except);

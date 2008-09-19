@@ -20,7 +20,8 @@ LIB = /NODEFAULTLIB:libcmt /NODEFAULTLIB:oldnames /NODEFAULTLIB:libc \
 
 GLIB =  $(LIB) ..\bin\tcl84.lib ..\bin\tk84.lib
 CFLAGS = /nologo /W3 /DMSW /DNT /DPD /DPD_INTERNAL /DWIN32 /DWINDOWS /Ox \
-	-DPA_LITTLE_ENDIAN -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -D__i386__ -DPA19
+	-DPA_LITTLE_ENDIAN -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -D__i386__ -DPA19 \
+        -D_CRT_SECURE_NO_WARNINGS
 LFLAGS = /nologo
 
 SYSSRC = s_audio_pa.c s_audio_pablio.c s_audio_paring.c \
