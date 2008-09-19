@@ -697,6 +697,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
 {
     t_gobj *g;
     int i, nobj = glist_getindex(gl, 0);  /* number of objects */
+    int hadwindow = gl->gl_havewindow;
     for (g = gl->gl_list, i = 0; g && i < nobj; i++)
     {
         if (g != except && pd_class(&g->g_pd) == canvas_class &&
@@ -709,8 +710,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
                 replacement will be at the end of the list, so we don't
                 do g = g->g_next in this case. */
             int j = glist_getindex(gl, g);
-            int hadwindow = gl->gl_havewindow;
-            if (!hadwindow)
+            if (!gl->gl_havewindow)
                 canvas_vis(glist_getcanvas(gl), 1);
             glist_noselect(gl);
             glist_select(gl, g);
@@ -720,8 +720,6 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
             canvas_undo(gl);
             glist_noselect(gl);
             g = glist_nth(gl, j);
-            if (!hadwindow)
-                canvas_vis(glist_getcanvas(gl), 0);
         }
         else
         {
@@ -730,15 +728,23 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
              g = g->g_next;
         }
     }
+    if (!hadwindow && gl->gl_havewindow)
+        canvas_vis(glist_getcanvas(gl), 0);
 }
+
+    /* this flag stops canvases from being marked "dirty" if we have to touch
+    them to reload an abstraction; also suppress window list update */
+int glist_amreloadingabstractions = 0;
 
     /* call canvas_doreload on everyone */
 void canvas_reload(t_symbol *name, t_symbol *dir, t_gobj *except)
 {
+    glist_amreloadingabstractions = 1;
     t_canvas *x;
         /* find all root canvases */
     for (x = canvas_list; x; x = x->gl_next)
         glist_doreload(x, name, dir, except);
+    glist_amreloadingabstractions = 0;
 }
 
 /* ------------------------ event handling ------------------------ */

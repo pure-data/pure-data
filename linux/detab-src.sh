@@ -1,8 +1,8 @@
 #! /bin/sh
 for i  in `find . -name "*.[ch]" -o -name "*.tk"`  ; do
-expand $i > /tmp/foo
-if ( ! cmp -s $i /tmp/foo ) ; then 
+expand $i > /tmp/expanded-src
+if ( ! cmp -s $i /tmp/expanded-src ) ; then 
     echo detabbing: $i
-    cp /tmp/foo $i
+    cp /tmp/expanded-src $i
 fi
 done

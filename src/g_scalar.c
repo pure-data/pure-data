@@ -325,6 +325,9 @@ void scalar_redraw(t_scalar *x, t_glist *glist)
         sys_queuegui(x, glist, scalar_doredraw);
 }
 
+extern void template_notifyforscalar(t_template *template, t_glist *owner,
+    t_scalar *sc, t_symbol *s, int argc, t_atom *argv);
+
 int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     t_array *ap, struct _glist *owner,
     t_float xloc, t_float yloc, int xpix, int ypix,
@@ -333,8 +336,14 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
+    t_atom at[2];
     t_float basex = template_getfloat(template, gensym("x"), data, 0);
     t_float basey = template_getfloat(template, gensym("y"), data, 0);
+    SETFLOAT(at, basex + xloc);
+    SETFLOAT(at+1, basey + yloc);
+    if (doit)
+        template_notifyforscalar(template, owner, 
+            sc, gensym("click"), 2, at);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);

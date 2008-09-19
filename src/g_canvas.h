@@ -404,7 +404,7 @@ EXTERN void glist_eraseiofor(t_glist *glist, t_object *ob, char *tag);
 EXTERN void canvas_create_editor(t_glist *x, int createit);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
-
+extern int glist_amreloadingabstractions; /* stop GUI changes while reloading */ 
 
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize);

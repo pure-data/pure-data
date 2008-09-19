@@ -63,6 +63,8 @@ static t_atom *canvas_newargv;
 static void glist_doupdatewindowlist(t_glist *gl, char *sbuf)
 {
     t_gobj *g;
+    if (glist_amreloadingabstractions)  /* not if we're in a reload */
+        return;
     if (!gl->gl_owner)
     {
         /* this is a canvas; if we have a window, put on "windows" list */
@@ -606,6 +608,8 @@ void canvas_reflecttitle(t_canvas *x)
 void canvas_dirty(t_canvas *x, t_int n)
 {
     t_canvas *x2 = canvas_getrootfor(x);
+    if (glist_amreloadingabstractions)
+        return;
     if ((unsigned)n != x2->gl_dirty)
     {
         x2->gl_dirty = n;

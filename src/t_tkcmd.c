@@ -621,7 +621,7 @@ int Pdtcl_Init(Tcl_Interp *interp)
     int portno = 0, i;
     if (argv)
     {
-        for (i = 0; i < strlen(argv) - 1; i++)
+        for (i = 0; i < (int)strlen(argv) - 1; i++)
             if (argv[i] >= '0' && argv[i] <= '9')
         {
             portno = atoi(argv+i);

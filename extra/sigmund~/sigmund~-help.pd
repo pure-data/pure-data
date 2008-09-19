@@ -1,4 +1,4 @@
-#N canvas 193 41 580 617 12;
+#N canvas 167 -7 580 617 12;
 #X text 42 4 sigmund~ - sinusoidal analysis and pitch tracking;
 #N canvas 432 117 573 597 using-with-tables 0;
 #X obj 29 368 print peak;
@@ -90,7 +90,7 @@ of a note at or near the previously output pitch.;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X restore 330 531 pd setting-parameters;
-#N canvas 149 65 641 815 sinusoid-tracking 0;
+#N canvas 67 29 641 815 sinusoid-tracking 0;
 #X obj 124 267 sigmund~ -npeak 10 peaks;
 #X obj 124 214 phasor~;
 #X obj 124 144 loadbang;

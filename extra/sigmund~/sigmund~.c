@@ -13,9 +13,6 @@
 and usable in other contexts.  The one external requirement is a real
 single-precision FFT, invoked as in the Mayer one: */
 
-#if (defined(NT) && defined(PD))        /* ignore this, it's just Microsoft nonsense */
-__declspec(dllimport) extern
-#endif
 void mayer_realfft(int npoints, float *buf);
 
 /* this routine is passed a buffer of npoints values, and returns the
@@ -26,7 +23,7 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef NT
+#ifdef MSW
 #include <malloc.h>
 #else
 #include <alloca.h>
@@ -572,13 +569,15 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
     int oldhistphase, i, k;
     if (stableperiod > NHISTPOINT - 1)
         stableperiod = NHISTPOINT - 1;
+    else if (stableperiod < 1)
+        stableperiod = 1;
     if (++x->n_histphase == NHISTPOINT)
         x->n_histphase = 0;
     x->n_hist[x->n_histphase].h_freq = freq;
     x->n_hist[x->n_histphase].h_power = power;
     x->n_age++;
     *note = 0;
-#if 0
+#if 1
     if (loud)
     {
         post("stable %d, age %d, vibmultiple %f, powerthresh %f, hifreq %f",
@@ -655,9 +654,9 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
         else if (x->n_hifreq > 0 && x->n_age > stableperiod)
         {
                 /* if we've been out of range at least 1/2 the
-                last "stableperiod" analyses, clear the note */
+                last "stableperiod+1" analyses, clear the note */
             int nbad = 0;
-            for (i = 0, k = x->n_histphase; i < stableperiod - 1; i++)
+            for (i = 0, k = x->n_histphase; i < stableperiod + 1; i++)
             {
                 if (--k < 0)
                     k = NHISTPOINT - 1;
@@ -665,7 +664,7 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
                     x->n_lofreq * vibmultiple <= x->n_hist[k].h_freq)
                         nbad++;
             }
-            if (2 * nbad >= stableperiod)
+            if (2 * nbad >= stableperiod + 1)
             {
                 x->n_hifreq = x->n_lofreq = 0;
                 x->n_age = 0;
@@ -703,9 +702,9 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
     if (freq >= 0 &&
         (x->n_hifreq <= 0 || freq > x->n_hifreq || freq < x->n_lofreq))
     {
-        float testfhi, testflo, maxpow = 0;
-        for (i = 0, k = x->n_histphase, testfhi = testflo = freq;
-            i < stableperiod-1; i++)
+        float testfhi = freq, testflo = freq,
+            maxpow = x->n_hist[x->n_histphase].h_freq;
+        for (i = 0, k = x->n_histphase; i < stableperiod-1; i++)
         {
             if (--k < 0)
                 k = NHISTPOINT - 1;
@@ -716,6 +715,9 @@ static void notefinder_doit(t_notefinder *x, float freq, float power,
             if (x->n_hist[k].h_power > maxpow)
                 maxpow = x->n_hist[k].h_power;
         }
+        if (loud)
+            post("freq %.2g testfhi %.2g  testflo %.2g maxpow %.2g",
+                freq, testfhi, testflo, maxpow);
         if (testflo > 0 && testfhi <= vibmultiple * testflo
             && maxpow > powerthresh)
         {
@@ -817,6 +819,7 @@ typedef struct _sigmund
     t_pxobject x_obj;
     void *obex;
     void *x_clock;
+    t_sample *x_inbuf2; /* extra input buffer to eat clock/DSP jitter */
 #endif /* MSP */
     t_varout *x_varoutv;
     int x_nvarout;
@@ -867,6 +870,9 @@ static void sigmund_preinit(t_sigmund *x)
     x->x_ntrack = 0;
     x->x_dopitch = x->x_donote = x->x_dotracks = 0;
     x->x_inbuf = 0;
+#ifdef MSP
+    x->x_inbuf2 = 0;
+#endif
 }
 
 static void sigmund_npts(t_sigmund *x, t_floatarg f)
@@ -884,9 +890,23 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
     if (x->x_mode == MODE_STREAM)
     {
         if (x->x_inbuf)
+        {
             x->x_inbuf = (t_sample *)t_resizebytes(x->x_inbuf,
                 sizeof(*x->x_inbuf) * nwas, sizeof(*x->x_inbuf) * npts);
-        else x->x_inbuf = (t_sample *)getbytes(sizeof(*x->x_inbuf) * npts);
+#ifdef MSP
+            x->x_inbuf2 = (t_sample *)t_resizebytes(x->x_inbuf2,
+                sizeof(*x->x_inbuf2) * nwas, sizeof(*x->x_inbuf2) * npts);
+#endif
+        }
+        else
+        {
+            x->x_inbuf = (t_sample *)getbytes(sizeof(*x->x_inbuf) * npts);
+            memset((char *)(x->x_inbuf), 0, sizeof(*x->x_inbuf) * npts);
+#ifdef MSP
+            x->x_inbuf2 = (t_sample *)getbytes(sizeof(*x->x_inbuf2) * npts);
+            memset((char *)(x->x_inbuf2), 0, sizeof(*x->x_inbuf2) * npts);
+#endif
+        }
     }
     else x->x_inbuf = 0;
     x->x_npts = npts;
@@ -954,7 +974,7 @@ static void sigmund_doit(t_sigmund *x, int npts, float *arraypoints,
         sigmund_getpitch(nfound, peakv, &freq, npts, srate, loud);
     if (x->x_donote)
         notefinder_doit(&x->x_notefinder, freq, power, &note, x->x_vibrato, 
-            x->x_stabletime * 0.001f * x->x_sr / (float)x->x_hop,
+            1 + x->x_stabletime * 0.001f * x->x_sr / (float)x->x_hop,
                 exp(LOG10*0.1*(x->x_minpower - 100)), x->x_growth, loud);
     if (x->x_dotracks)
         sigmund_peaktrack(nfound, peakv, x->x_ntrack, x->x_trackv, loud);
@@ -1001,49 +1021,7 @@ static void sigmund_doit(t_sigmund *x, int npts, float *arraypoints,
     }
 }
 
-static void sigmund_tick(t_sigmund *x)
-{
-    if (x->x_infill == x->x_npts)
-    {
-        sigmund_doit(x, x->x_npts, x->x_inbuf, x->x_loud, x->x_sr);
-        if (x->x_hop >= x->x_npts)
-        {
-            x->x_infill = 0;
-            x->x_countdown = x->x_hop - x->x_npts;
-        }
-        else
-        {
-            memmove(x->x_inbuf, x->x_inbuf + x->x_hop,
-                (x->x_infill = x->x_npts - x->x_hop) * sizeof(*x->x_inbuf));
-            x->x_countdown = 0;
-        }
-        x->x_loud = 0;
-    }
-}
-
-static t_int *sigmund_perform(t_int *w)
-{
-    t_sigmund *x = (t_sigmund *)(w[1]);
-    float *in = (float *)(w[2]);
-    int n = (int)(w[3]);
-
-    if (x->x_hop % n)
-        return (w+4);
-    if (x->x_countdown > 0)
-        x->x_countdown -= n;
-    else if (x->x_infill != x->x_npts)
-    {
-        int j;
-        float *fp = x->x_inbuf + x->x_infill;
-        for (j = 0; j < n; j++)
-            *fp++ = *in++;
-        x->x_infill += n;
-        if (x->x_infill == x->x_npts)
-            clock_delay(x->x_clock, 0);
-    }
-    return (w+4);
-}
-
+static t_int *sigmund_perform(t_int *w);
 static void sigmund_dsp(t_sigmund *x, t_signal **sp)
 {
     if (x->x_mode == MODE_STREAM)
@@ -1072,7 +1050,12 @@ static void sigmund_print(t_sigmund *x)
 static void sigmund_free(t_sigmund *x)
 {
     if (x->x_inbuf)
+    {
         freebytes(x->x_inbuf, x->x_npts * sizeof(*x->x_inbuf));
+#ifdef MSP
+        freebytes(x->x_inbuf2, x->x_npts * sizeof(*x->x_inbuf2));
+#endif
+    }
     if (x->x_trackv)
         freebytes(x->x_trackv, x->x_ntrack * sizeof(*x->x_trackv));
     clock_free(x->x_clock);
@@ -1094,6 +1077,50 @@ static void sigmund_vibrato(t_sigmund *x, t_floatarg f);
 static void sigmund_stabletime(t_sigmund *x, t_floatarg f);
 static void sigmund_growth(t_sigmund *x, t_floatarg f);
 static void sigmund_minpower(t_sigmund *x, t_floatarg f);
+
+static void sigmund_tick(t_sigmund *x)
+{
+    if (x->x_infill == x->x_npts)
+    {
+        sigmund_doit(x, x->x_npts, x->x_inbuf, x->x_loud, x->x_sr);
+        if (x->x_hop >= x->x_npts)
+        {
+            x->x_infill = 0;
+            x->x_countdown = x->x_hop - x->x_npts;
+        }
+        else
+        {
+            memmove(x->x_inbuf, x->x_inbuf + x->x_hop,
+                (x->x_infill = x->x_npts - x->x_hop) * sizeof(*x->x_inbuf));
+            x->x_countdown = 0;
+        }
+        if (x->x_loud)
+            x->x_loud--;
+    }
+}
+
+static t_int *sigmund_perform(t_int *w)
+{
+    t_sigmund *x = (t_sigmund *)(w[1]);
+    float *in = (float *)(w[2]);
+    int n = (int)(w[3]);
+
+    if (x->x_hop % n)
+        return (w+4);
+    if (x->x_countdown > 0)
+        x->x_countdown -= n;
+    else if (x->x_infill != x->x_npts)
+    {
+        int j;
+        float *fp = x->x_inbuf + x->x_infill;
+        for (j = 0; j < n; j++)
+            *fp++ = *in++;
+        x->x_infill += n;
+        if (x->x_infill == x->x_npts)
+            clock_delay(x->x_clock, 0);
+    }
+    return (w+4);
+}
 
 static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -1358,7 +1385,7 @@ void sigmund_tilde_setup(void)
         gensym("print"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_printnext,
         gensym("printnext"), A_FLOAT, 0);
-    post("sigmund~ version 0.04");
+    post("sigmund~ version 0.05");
 }
 
 #endif /* PD */
@@ -1368,6 +1395,50 @@ void sigmund_tilde_setup(void)
 /* -------------------------- MSP glue ------------------------- */
 #ifdef MSP
 static void *sigmund_class;
+
+/* Max/MSP has laxer sync between DSP and "tick"s - so in the perf routine we
+keep a circular buffer that is rectified into inbuf only when the tick comes. */
+
+static void sigmund_tick(t_sigmund *x)
+{
+    int i, j, npts = x->x_npts;
+    if (!x->x_inbuf)
+        return;
+    for (i = x->x_infill, j = 0; i < npts; i++, j++)
+        x->x_inbuf[j] = x->x_inbuf2[i];
+    for (i = 0; j < npts; i++, j++)
+        x->x_inbuf[j] = x->x_inbuf2[i];
+    sigmund_doit(x, x->x_npts, x->x_inbuf, x->x_loud, x->x_sr);
+    x->x_loud = 0;
+}
+
+static t_int *sigmund_perform(t_int *w)
+{
+    t_sigmund *x = (t_sigmund *)(w[1]);
+    float *in = (float *)(w[2]);
+    int n = (int)(w[3]), j;
+    int infill = x->x_infill;
+    float *fp = x->x_inbuf2 + infill;
+    if (infill < 0 || infill >= x->x_npts)
+        infill = 0;
+        /* for some reason this sometimes happens: */
+    if (!x->x_inbuf2)
+        return (w+4);
+    for (j = 0; j < n; j++)
+    {
+         *fp++ = *in++;
+         if (++infill == x->x_npts)
+            infill = 0, fp = x->x_inbuf2;
+    }
+    x->x_infill = infill;
+    if (x->x_countdown <= 0)
+    {
+        x->x_countdown = x->x_hop;
+        clock_delay(x->x_clock, 0);
+    }
+    x->x_countdown -= n;
+    return (w+4);
+}
 
 static void *sigmund_new(t_symbol *s, long ac, t_atom *av)
 {
@@ -1381,7 +1452,7 @@ static void *sigmund_new(t_symbol *s, long ac, t_atom *av)
     dsp_setup((t_pxobject *)x, 1);
     object_obex_store(x, gensym("dumpout"), outlet_new(x, NULL));
     
-    for (i = 0; i < ac; i++)
+    for (i = 0; i < ac; i++)    FIXME
         if (av[i].a_type == A_SYM)
     {
         char *s = av[i].a_w.w_sym->s_name;
@@ -1561,7 +1632,7 @@ int main()
     class_register(CLASS_BOX, c);
     sigmund_class = c;
     
-    post("sigmund~ v0.04");
+    post("sigmund~ v0.05");
     return (0);
 }
 

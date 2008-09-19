@@ -484,7 +484,7 @@ void template_notify(t_template *template, t_symbol *s, int argc, t_atom *argv)
 
     /* bash the first of (argv) with a pointer to a scalar, and send on
     to template as a notification message */
-static void template_notifyforscalar(t_template *template, t_glist *owner,
+void template_notifyforscalar(t_template *template, t_glist *owner,
     t_scalar *sc, t_symbol *s, int argc, t_atom *argv)
 {
     t_gpointer gp;
