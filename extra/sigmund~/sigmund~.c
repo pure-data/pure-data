@@ -1457,7 +1457,7 @@ static void *sigmund_new(t_symbol *s, long ac, t_atom *av)
     dsp_setup((t_pxobject *)x, 1);
     object_obex_store(x, gensym("dumpout"), outlet_new(x, NULL));
     
-    for (i = 0; i < ac; i++)    FIXME
+    for (i = 0; i < ac; i++)
         if (av[i].a_type == A_SYM)
     {
         char *s = av[i].a_w.w_sym->s_name;

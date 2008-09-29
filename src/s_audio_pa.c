@@ -11,6 +11,7 @@
 #include "s_stuff.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <portaudio.h>
 #include "s_audio_pablio.h"
 
@@ -28,6 +29,34 @@ static float *pa_soundin, *pa_soundout;
 static t_audiocallback pa_callback;
 
 int pa_foo;
+
+static void pa_init(void)
+{
+    static int initialized;
+    if (!initialized)
+    {
+        /* Initialize PortAudio  */
+        /* for some reason Pa_Initialize(0 closes file descriptor 1.
+        As a workaround, dup it to another number and dup2 it back
+        afterward. */
+        int newfd = dup(1);
+        int err = Pa_Initialize();
+        if (newfd >= 0)
+        {
+            dup2(newfd, 1);
+            close(newfd);
+        }
+        if ( err != paNoError ) 
+        {
+            fprintf( stderr,
+                "Error number %d occured initializing portaudio\n",
+                err); 
+            fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+            return;
+        }
+        initialized = 1;
+    }
+}
 
 static int pa_lowlevel_callback(const void *inputBuffer,
     void *outputBuffer, unsigned long framesPerBuffer,
@@ -155,25 +184,11 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int indeviceno, int outdeviceno, t_audiocallback callbackfn)
 {
     PaError err;
-    static int initialized;
     int j, devno, pa_indev = 0, pa_outdev = 0;
     
     pa_callback = callbackfn;
     /* fprintf(stderr, "open callback %d\n", (callbackfn != 0)); */
-    if (!initialized)
-    {
-        /* Initialize PortAudio  */
-        int err = Pa_Initialize();
-        if ( err != paNoError ) 
-        {
-            fprintf( stderr,
-                "Error number %d occured initializing portaudio\n",
-                err); 
-            fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-            return (1);
-        }
-        initialized = 1;
-    }
+    pa_init();
     /* post("in %d out %d rate %d device %d", inchans, outchans, rate, deviceno); */
     if (inchans > MAX_PA_CHANS)
     {
@@ -349,7 +364,7 @@ void pa_listdevs(void)     /* lifted from pa_devs.c in portaudio */
     int      numDevices;
     const    PaDeviceInfo *pdi;
     PaError  err;
-    Pa_Initialize();
+    pa_init();
     numDevices = Pa_GetDeviceCount();
     if( numDevices < 0 )
     {
@@ -390,7 +405,7 @@ void pa_getdevs(char *indevlist, int *nindevs,
     int i, nin = 0, nout = 0, ndev;
     *canmulti = 1;  /* one dev each for input and output */
 
-    Pa_Initialize();
+    pa_init();
     ndev = Pa_GetDeviceCount();
     for (i = 0; i < ndev; i++)
     {

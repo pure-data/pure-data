@@ -25,6 +25,7 @@
 #include <sched.h>
 #include <sys/mman.h>
 #include "s_audio_alsa.h"
+#include <endian.h>
 
 /* Defines */
 #define DEBUG(x) x
@@ -117,17 +118,33 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     if (err < 0)
         return (-1);
     check_error(err, "snd_pcm_hw_params_set_access");
+#if 0       /* enable this to print out which formats are available */
+    {
+        int i;
+        for (i = 0; i <= SND_PCM_FORMAT_LAST; i++)
+            fprintf(stderr, "%d -> %d\n",
+                i, snd_pcm_hw_params_test_format(dev->a_handle, hw_params, i));
+    }
+#endif
         /* Try to set 32 bit format first */
     err = snd_pcm_hw_params_set_format(dev->a_handle,
         hw_params, SND_PCM_FORMAT_S32);
     if (err < 0)
     {
         /* fprintf(stderr,
-            "PD-ALSA: 32 bit format not available - using 16\n"); */
+            "PD-ALSA: 32 bit format not available - trying 24\n"); */
         err = snd_pcm_hw_params_set_format(dev->a_handle, hw_params,
-                                           SND_PCM_FORMAT_S16);
-        check_error(err, "snd_pcm_hw_params_set_format");
-        dev->a_sampwidth = 2;
+            SND_PCM_FORMAT_S24_3LE);
+        if (err < 0)
+        {
+            /* fprintf(stderr,
+                "PD-ALSA: 32/24 bit format not available - using 16\n"); */
+            err = snd_pcm_hw_params_set_format(dev->a_handle, hw_params,
+                SND_PCM_FORMAT_S16);
+            check_error(err, "snd_pcm_hw_params_set_format");
+            dev->a_sampwidth = 2;
+        }
+        else dev->a_sampwidth = 3;
     }
     else dev->a_sampwidth = 4;
 
@@ -436,7 +453,32 @@ int alsa_send_dacs(void)
                 for (j = ch, k = DEFDACBLKSIZE; k--; j += thisdevchans)
                     ((t_alsa_sample32 *)alsa_snd_buf)[j] = 0;
         }
-        else
+        else if (alsa_outdev[iodev].a_sampwidth == 3)
+        {
+            for (i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
+                for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
+                     j += thisdevchans, fp2++)
+            {
+                int s = *fp2 * 8388352.;
+                if (s > 8388351)
+                    s = 8388351;
+                else if (s < -8388351)
+                    s = -8388351;
+#if BYTE_ORDER == LITTLE_ENDIAN                                             
+                ((char *)(alsa_snd_buf))[3*j] = (s & 255);
+                ((char *)(alsa_snd_buf))[3*j+1] = ((s>>8) & 255);
+                ((char *)(alsa_snd_buf))[3*j+2] = ((s>>16) & 255);
+#else
+                fprintf(stderr("big endian 24-bit not supported");
+#endif
+            }
+            for (; i < thisdevchans; i++, ch++)
+                for (j = ch, k = DEFDACBLKSIZE; k--; j += thisdevchans)
+                    ((char *)(alsa_snd_buf))[3*j] = 
+                    ((char *)(alsa_snd_buf))[3*j+1] = 
+                    ((char *)(alsa_snd_buf))[3*j+2] = 0;
+        }
+        else        /* 16 bit samples */
         {
             for (i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
@@ -524,6 +566,23 @@ int alsa_send_dacs(void)
                     *fp2 = (float) ((t_alsa_sample32 *)alsa_snd_buf)[j]
                         * (1./ INT32_MAX);
             }
+        }
+        else if (alsa_indev[iodev].a_sampwidth == 3)
+        {
+#if BYTE_ORDER == LITTLE_ENDIAN                                             
+            for (i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
+            {
+                for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
+                     j += thisdevchans, fp2++)
+                    *fp2 = ((float) (
+                        (((unsigned char *)alsa_snd_buf)[3*j] << 8)
+                        | (((unsigned char *)alsa_snd_buf)[3*j+1] << 16)
+                        | (((unsigned char *)alsa_snd_buf)[3*j+2] << 24)))
+                        * (1./ INT32_MAX);
+            }
+#else
+                fprintf(stderr("big endian 24-bit not supported");
+#endif
         }
         else
         {
