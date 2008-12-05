@@ -443,20 +443,20 @@ int alsa_send_dacs(void)
         if (alsa_outdev[iodev].a_sampwidth == 4)
         {
             for (i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
-                for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
+                for (j = i, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
             {
                 float s1 = *fp2 * INT32_MAX;
                 ((t_alsa_sample32 *)alsa_snd_buf)[j] = CLIP32(s1);
             } 
             for (; i < thisdevchans; i++, ch++)
-                for (j = ch, k = DEFDACBLKSIZE; k--; j += thisdevchans)
+                for (j = i, k = DEFDACBLKSIZE; k--; j += thisdevchans)
                     ((t_alsa_sample32 *)alsa_snd_buf)[j] = 0;
         }
         else if (alsa_outdev[iodev].a_sampwidth == 3)
         {
             for (i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
-                for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
+                for (j = i, k = DEFDACBLKSIZE, fp2 = fp1; k--;
                      j += thisdevchans, fp2++)
             {
                 int s = *fp2 * 8388352.;
@@ -473,7 +473,7 @@ int alsa_send_dacs(void)
 #endif
             }
             for (; i < thisdevchans; i++, ch++)
-                for (j = ch, k = DEFDACBLKSIZE; k--; j += thisdevchans)
+                for (j = i, k = DEFDACBLKSIZE; k--; j += thisdevchans)
                     ((char *)(alsa_snd_buf))[3*j] = 
                     ((char *)(alsa_snd_buf))[3*j+1] = 
                     ((char *)(alsa_snd_buf))[3*j+2] = 0;

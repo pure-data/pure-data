@@ -4449,7 +4449,7 @@ proc ddd_dialog {id dialogname} {
         set fieldname [lindex $ddd_fields $x 0]
         set $varname [lindex $ddd_fields $x 1]
         frame $id.frame$x
-        pack $id.frame$x -side top
+        pack $id.frame$x -side top -anchor e
         label $id.frame$x.label -text $fieldname
         entry $id.frame$x.entry -textvariable $varname -width 20
         bind $id.frame$x.entry <KeyPress-Return> [concat ddd_ok $id]

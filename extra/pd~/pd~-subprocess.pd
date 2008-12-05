@@ -1,0 +1,60 @@
+#N canvas 577 21 563 559 12;
+#X obj 202 395 r foo;
+#X obj 202 423 print foo;
+#X obj 87 174 adc~;
+#X obj 72 442 stdout;
+#X msg 72 364 a b c;
+#X msg 455 441 \; pd dsp 1;
+#X obj 87 201 env~ 8192;
+#X floatatom 87 250 5 0 0 0 - - -;
+#X obj 87 226 i;
+#X obj 263 253 dac~;
+#X obj 262 185 osc~ 440;
+#X obj 262 219 *~;
+#X obj 297 220 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 332 186 osc~ 440;
+#X obj 332 220 *~;
+#X obj 367 221 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 86 411 bang;
+#X obj 455 417 loadbang;
+#X obj 160 201 env~ 8192;
+#X floatatom 160 250 5 0 0 0 - - -;
+#X obj 160 226 i;
+#X msg 86 388 4;
+#X text 62 8 This is a test patch to demonstrate the Pd~ object. It's
+intended as the patch to run in the sub-process. The sub-process (which
+is a separate instance of Pd) can be called from a Max or Pd super-process.
+;
+#X text 63 73 Audio inlets and outlets on the Pd~ object (in the super-process)
+talk to adc~ and dac~ objects here - so \, for instance \, the first
+adc~ here is the first inlet of the pd~ object \, and the first chanel
+of dac~ goes to the second outlet of pd~ (because the first one is
+for messages \, as shown further below.);
+#X text 58 283 Any message sent to a stdout object in this sub-process
+(below) appears on the first \, message outlet of the pd~ object in
+the super-process. The super-process can send messages to any "receive"
+object in this sub-process.;
+#X text 137 478 We turn DSP on at load for convenience - control objects
+in this patch will still work without it (unlike in the super-process
+\, where DSP must be on for time to move forward in the sub-process.)
+;
+#X text 351 538 Updated for Pd version 0.42.;
+#X connect 0 0 1 0;
+#X connect 2 0 6 0;
+#X connect 2 1 18 0;
+#X connect 4 0 3 0;
+#X connect 6 0 8 0;
+#X connect 8 0 7 0;
+#X connect 10 0 11 0;
+#X connect 11 0 9 0;
+#X connect 12 0 11 1;
+#X connect 13 0 14 0;
+#X connect 14 0 9 1;
+#X connect 15 0 14 1;
+#X connect 16 0 3 0;
+#X connect 17 0 5 0;
+#X connect 18 0 20 0;
+#X connect 20 0 19 0;
+#X connect 21 0 3 0;

@@ -373,6 +373,7 @@ typedef struct _tabread4_tilde
     t_word *x_vec;
     t_symbol *x_arrayname;
     t_float x_f;
+    t_float x_onset;
 } t_tabread4_tilde;
 
 static void *tabread4_tilde_new(t_symbol *s)
@@ -381,7 +382,9 @@ static void *tabread4_tilde_new(t_symbol *s)
     x->x_arrayname = s;
     x->x_vec = 0;
     outlet_new(&x->x_obj, gensym("signal"));
+    floatinlet_new(&x->x_obj, &x->x_onset);
     x->x_f = 0;
+    x->x_onset = 0;
     return (x);
 }
 
@@ -393,6 +396,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
     int n = (int)(w[4]);    
     int maxindex;
     t_word *buf = x->x_vec, *wp;
+    double onset = x->x_onset;
     int i;
     
     maxindex = x->x_npoints - 3;
@@ -417,7 +421,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
 
     for (i = 0; i < n; i++)
     {
-        t_sample findex = *in++;
+        double findex = *in++ + onset;
         int index = findex;
         t_sample frac,  a,  b,  c,  d, cminusb;
         static int count;
@@ -431,8 +435,6 @@ static t_int *tabread4_tilde_perform(t_int *w)
         b = wp[0].w_float;
         c = wp[1].w_float;
         d = wp[2].w_float;
-        /* if (!i && !(count++ & 1023))
-            post("fp = %lx,  shit = %lx,  b = %f",  fp, buf->b_shit,  b); */
         cminusb = c-b;
         *out++ = b + frac * (
             cminusb - 0.1666667f * (1.-frac) * (

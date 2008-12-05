@@ -86,7 +86,7 @@ started" in the Help menu.;
 #X connect 4 0 3 0;
 #X restore 459 298 pd more;
 #X obj 399 135 tgl 20 0 tone-hipass set-tone-hipass input-hipass 25
-10 0 12 -262144 -1 -1 1 1;
+10 0 12 -262144 -1 -1 0 1;
 #X obj 185 117 tgl 20 0 tone-ch3 tone-ch3 3 5 -8 0 12 -262144 -1 -1
 1 1;
 #X obj 210 117 tgl 20 0 tone-ch4 tone-ch4 4 5 -8 0 12 -262144 -1 -1
@@ -112,7 +112,7 @@ started" in the Help menu.;
 #X obj 51 174 vradio 15 1 0 2 tone-type tone-type-set empty 0 -6 0
 8 -262144 -1 -1 1;
 #X obj 51 104 vradio 15 1 0 3 tone-radio tone-radio-set empty 0 -6
-0 8 -262144 -1 -1 2;
+0 8 -262144 -1 -1 0;
 #X obj 460 193 adc~;
 #X obj 459 240 print~;
 #X obj 468 217 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
@@ -123,7 +123,7 @@ started" in the Help menu.;
 1 1;
 #X obj 308 117 tgl 20 0 tone-ch8 tone-ch8 8 5 -8 0 12 -262144 -1 -1
 1 1;
-#N canvas 233 399 903 462 audio 0;
+#N canvas 233 399 321 422 audio 0;
 #X obj 25 303 s~ tone-mon;
 #X obj 25 277 line~;
 #X obj 25 249 pack 0 50;

@@ -1,10 +1,5 @@
-#N canvas 343 48 578 498 12;
-#N canvas 158 4 728 420 16x 0;
-#X obj 21 151 *~ 0.064;
-#X obj 21 174 rpole~ 0.93538;
-#X obj 21 197 *~ 0.00431;
-#X obj 21 220 cpole~ 0.96559 0.05592;
-#X obj 21 246 cpole~ 0.96559 -0.05592;
+#N canvas 378 114 542 534 12;
+#N canvas 371 260 740 538 16x 0;
 #X obj 21 269 *~ 0.125;
 #X obj 21 292 rzero~ -1;
 #X obj 21 315 rzero~ -1;
@@ -13,44 +8,84 @@
 #X obj 204 29 block~ 1024 1 16;
 #X obj 21 31 inlet;
 #X obj 21 372 outlet~;
-#X text 170 151 These objects make a 3-pole \, 3-zero Butterwirth low-pass
-filter with cutoff at 15kHz (assuming 44100 sample rate.) The filter
+#X obj 20 166 rpole~ 0.87467;
+#X obj 20 143 *~ 0.12532;
+#X obj 20 189 *~ 0.01668;
+#X obj 279 358 buttercoef3;
+#X floatatom 279 282 7 0 0 0 - - -;
+#X obj 279 332 / 16;
+#X floatatom 279 488 7 0 0 0 - - -;
+#X obj 279 307 / 22050;
+#X floatatom 293 468 7 0 0 0 - - -;
+#X floatatom 308 448 7 0 0 0 - - -;
+#X floatatom 323 428 7 0 0 0 - - -;
+#X floatatom 338 408 7 0 0 0 - - -;
+#X floatatom 353 388 7 0 0 0 - - -;
+#X text 335 489 normalizer for rpole~;
+#X text 352 468 normalizer for cpole~;
+#X text 366 449 coef for rpole~;
+#X text 382 430 coef for cpole~ real part;
+#X text 413 390 coef for cpole~ imag part;
+#X text 409 408 (same \, other cpole~);
+#X obj 20 212 cpole~ 0.9293 0.10812;
+#X obj 20 238 cpole~ 0.9293 -0.10812;
+#X msg 279 257 15000;
+#X text 329 256 desired cutoff frequency;
+#X text 339 308 divide by nyquist frequency of this subpatch \, which
+is 22050*16 because of the 16-times oversampling.;
+#X text 273 225 Here is how to calculate the filter coefficients:;
+#X text 143 123 These objects make a 3-pole \, 3-zero Butterworth low-pass
+filter with cutoff at 15kHz (assuming 16x44100 sample rate). The filter
 was designed using the "buttercoef3" abstraction introduced in patch
 H13.butterworth.pd in this series.;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X connect 3 0 4 0;
-#X connect 3 1 4 1;
-#X connect 4 0 5 0;
-#X connect 5 0 6 0;
-#X connect 6 0 7 0;
-#X connect 7 0 8 0;
-#X connect 8 0 12 0;
-#X connect 9 0 0 0;
-#X connect 11 0 9 0;
-#X restore 23 148 pd 16x;
-#X floatatom 23 111 7 0 0 0 - - -;
-#X obj 109 149 phasor~;
-#X obj 22 194 output~;
-#X obj 108 194 output~;
-#X obj 23 83 mtof;
-#X floatatom 23 59 3 -24 135 0 - - -;
-#X text 131 18 UPSAMPLING TO CONTROL FOLDOVER;
-#X text 56 57 <-- pitch;
-#X text 126 250 not;
-#X text 22 265 sampled;
-#X text 26 249 16x up-;
-#X text 20 293 The "pd 16x" subpatch at left contains a phasor~ object
+#X connect 3 0 7 0;
+#X connect 4 0 9 0;
+#X connect 6 0 4 0;
+#X connect 8 0 10 0;
+#X connect 9 0 8 0;
+#X connect 10 0 27 0;
+#X connect 11 0 14 0;
+#X connect 11 1 16 0;
+#X connect 11 2 17 0;
+#X connect 11 3 18 0;
+#X connect 11 4 19 0;
+#X connect 11 5 20 0;
+#X connect 12 0 15 0;
+#X connect 13 0 11 0;
+#X connect 15 0 13 0;
+#X connect 27 0 28 0;
+#X connect 27 1 28 1;
+#X connect 28 0 0 0;
+#X connect 29 0 12 0;
+#X restore 29 123 pd 16x;
+#X floatatom 29 86 7 0 0 0 - - -;
+#X obj 115 124 phasor~;
+#X obj 28 169 output~;
+#X obj 114 169 output~;
+#X obj 29 58 mtof;
+#X floatatom 29 34 3 -24 135 0 - - -;
+#X text 158 15 UPSAMPLING TO CONTROL FOLDOVER;
+#X text 62 32 <-- pitch;
+#X text 132 225 not;
+#X text 28 240 sampled;
+#X text 32 224 16x up-;
+#X text 26 268 The "pd 16x" subpatch at left contains a phasor~ object
 \, but is locally upsampled by a factor of sixteen. Without upsampling
 \, partials as low as 24 Khz. fold back over into the audible range.
 With upsampling \, the first audibly folding over partial is at almost
 700 Hz \, 29 times higher. The relevant partials will be 29 times \,
 or almost 30 dB \, quieter when upsampled.;
-#X text 21 403 A third-order Butterworth filter is used inside the
+#X text 27 378 A third-order Butterworth filter is used inside the
 "pd 16x" subpatch - without that \, the internal signal would fold
 over as it gets downsampled at the outlet~ object.;
-#X text 324 464 Updated for Pd version 0.39;
+#X text 312 507 Updated for Pd version 0.42;
+#X text 26 430 You can trade off cutoff frequency with foldover. Here
+\, the filter is set for a cutoff of 15 kHz. Lowering it to 7500 Hz
+would further reduce foldover by 18 dB at the expense of losing energy
+in the range 7500-15000 Hz.;
 #X connect 0 0 3 0;
 #X connect 0 0 3 1;
 #X connect 1 0 0 0;

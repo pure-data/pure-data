@@ -86,7 +86,7 @@ static t_int *phasor_perform(t_int *w)
     t_float *in = (t_float *)(w[2]);
     t_float *out = (t_float *)(w[3]);
     int n = (int)(w[4]);
-    double dphase = x->x_phase + UNITBIT32;
+    double dphase = x->x_phase + (double)UNITBIT32;
     union tabfudge tf;
     int normhipart;
     float conv = x->x_conv;

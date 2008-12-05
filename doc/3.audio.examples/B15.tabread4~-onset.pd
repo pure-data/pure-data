@@ -1,0 +1,66 @@
+#N canvas 88 58 563 680 12;
+#X text 355 655 updated for Pd version 0.42;
+#X text 28 36 Pd is usually compiled to work on 32-bit audio samples.
+These do not \, in general \, have enough precision for use as indices
+into an array of more than about 32K samples. This is because the mantissa
+of a 23-bit floating point number has only 24 bits \, out of which
+you would be using 16 bits or more to address a sample more than 32K
+into the array \, so there would remain 8 or fewer bits to supply the
+fraction. In the most extreme situation possible \, the sample could
+contain a Nyquist frequency sinusoid and the output would then have
+only about 8 bits of accuracy!;
+#X text 29 196 You can use the "onset" inlet to tabread4~ to get good
+accuracy reading longer arrays. The tabread4~ object adds the index
+and the "main" (signal) inlet in 64-bit precision. So if \, for example
+\, the onset inlet could specify an integer exactly up to about 8 million
+(190 seconds at 44100 Hz) \, and the signal inlet could act as a displacement.
+;
+#X text 116 13 USING ONSETS INTO TABREAD4~ TO IMPROVE ACCURACY;
+#X obj 41 587 output~;
+#X obj 395 507 samplerate~;
+#X obj 395 531 / 2;
+#X obj 384 445 loadbang;
+#X obj 384 582 tabwrite~ \$0-tab;
+#X obj 40 557 tabread4~ \$0-tab;
+#X obj 395 555 osc~;
+#X obj 172 557 tabread4~ \$0-tab;
+#X obj 173 589 output~;
+#X obj 384 486 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 408 468 \; pd dsp 1;
+#X obj 41 474 *~ 10000;
+#X obj 41 527 +~;
+#X floatatom 192 476 6 0 0 0 - - -;
+#X msg 247 446 1;
+#X obj 383 610 table \$0-tab 200000;
+#X obj 42 446 phasor~ 0.02;
+#X msg 192 446 150001;
+#X text 28 310 At left below an onset (1 or 150000 samples) is added
+to the index of a table lookup. If you select the onset of 150001 \,
+you should hear the truncation error. (The table contains a Nyquist
+signal and the "correct" output should be a 100 Hz. tone.) At right
+\, the onset is presented in the separate onset inlet. The worst-case
+truncation error drops by about 30 dB.;
+#X text 57 647 BAD;
+#X text 190 646 GOOD;
+#X text 193 425 ONSET INTO TABLE;
+#X text 384 426 This loads the table:;
+#X connect 5 0 6 0;
+#X connect 6 0 10 0;
+#X connect 7 0 13 0;
+#X connect 7 0 14 0;
+#X connect 9 0 4 0;
+#X connect 9 0 4 1;
+#X connect 10 0 8 0;
+#X connect 11 0 12 0;
+#X connect 11 0 12 1;
+#X connect 13 0 5 0;
+#X connect 13 0 8 0;
+#X connect 15 0 16 0;
+#X connect 15 0 11 0;
+#X connect 16 0 9 0;
+#X connect 17 0 11 1;
+#X connect 17 0 16 1;
+#X connect 18 0 17 0;
+#X connect 20 0 15 0;
+#X connect 21 0 17 0;

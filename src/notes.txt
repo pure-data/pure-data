@@ -15,6 +15,8 @@ mac:
 Gnome: why don't windows pop up when clicked on?
 
 problems:
+if .pdsettings asks for an alsa device out of range, dialog
+  comes up with empty list
 find asdf$1 (e.g.) doesn't work
 check real-time gaps in writesf~
 fix declare to update current patch when changed
