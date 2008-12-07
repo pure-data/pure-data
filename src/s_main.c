@@ -35,6 +35,7 @@ void sys_findprogdir(char *progname);
 int sys_startgui(const char *guipath);
 int sys_rcfile(void);
 int m_mainloop(void);
+int m_batchmain(void);
 void sys_addhelppath(char *p);
 #ifdef USEAPI_ALSA
 void alsa_adddev(char *name);
@@ -75,6 +76,7 @@ static int sys_listplease;
 
 int sys_externalschedlib;
 char sys_externalschedlibname[MAXPDSTRING];
+static int sys_batch;
 int sys_extraflags;
 char sys_extraflagsstring[MAXPDSTRING];
 int sys_run_scheduler(const char *externalschedlibname,
@@ -299,6 +301,8 @@ int sys_main(int argc, char **argv)
     if (sys_externalschedlib)
         return (sys_run_scheduler(sys_externalschedlibname,
             sys_extraflagsstring));
+    else if (sys_batch)
+        return (m_batchmain());
     else
     {
             /* open audio and MIDI */
@@ -394,6 +398,7 @@ static char *(usagemessage[]) = {
 "-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)\n",
 "-schedlib <file> -- plug in external scheduler\n",
 "-extraflags <s>  -- string argument to send schedlib\n",
+"-batch           -- run off-line as a batch process\n",
 };
 
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
@@ -827,6 +832,12 @@ int sys_argparse(int argc, char **argv)
                 sizeof(sys_extraflagsstring) - 1);
             argv += 2;
             argc -= 2;
+        }
+        else if (!strcmp(*argv, "-batch"))
+        {
+            sys_batch = 1;
+            sys_printtostderr = sys_nogui = 1;
+            argc--; argv++;
         }
 #ifdef UNISTD
         else if (!strcmp(*argv, "-rt") || !strcmp(*argv, "-realtime"))

@@ -450,11 +450,11 @@ static void m_pollingscheduler( void)
                 if (!(idlecount & 31))
                 {
                     static double idletime;
-                                        if (sched_useaudio != SCHED_AUDIO_POLL)
-                                        {
-                                                bug("m_pollingscheduler\n");
-                                                return;
-                                        }
+                    if (sched_useaudio != SCHED_AUDIO_POLL)
+                    {
+                            bug("m_pollingscheduler\n");
+                            return;
+                    }
                         /* on 32nd idle, start a clock watch;  every
                         32 ensuing idles, check it */
                     if (idlecount == 32)
@@ -563,6 +563,15 @@ int m_mainloop(void)
             sys_reopen_audio();
         }
     }
+    return (0);
+}
+
+int m_batchmain(void)
+{
+    sys_time_per_dsp_tick = (TIMEUNITPERSEC) *
+        ((double)sys_schedblocksize) / sys_dacsr;
+    while (sys_quit != SYS_QUIT_QUIT)
+        sched_tick(sys_time + sys_time_per_dsp_tick);
     return (0);
 }
 
