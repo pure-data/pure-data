@@ -71,6 +71,7 @@ typedef struct _pd_tilde
     t_object x_obj;
     t_clock *x_clock;
     t_outlet *x_outlet1;        /* for messages back from subproc */
+    t_canvas *x_canvas;
 #endif /* PD */
 #ifdef MSP
     t_pxobject x_obj;
@@ -165,7 +166,8 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
 }
 
 static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
-    char *pdargs, int ninsig, int noutsig, int fifo, float samplerate)
+    char *patchdir, char *pdargs, int ninsig, int noutsig, int fifo,
+    float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
     char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING];
@@ -195,8 +197,8 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         }       
     }
     snprintf(cmdbuf, MAXPDSTRING,
-"%s -schedlib %s/pdsched -inchannels %d -outchannels %d -r %g %s\n",
-        pdexecbuf, schedlibdir, ninsig, noutsig, samplerate, pdargs);
+"%s -schedlib %s/pdsched -path %s -inchannels %d -outchannels %d -r %g %s\n",
+        pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
 #if 0
 #ifdef PD
     fprintf(stderr, "%s", cmdbuf);
@@ -368,6 +370,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
 {
     t_symbol *sel = ((argc > 0 && argv->a_type == A_SYMBOL) ?
         argv->a_w.w_symbol : gensym("?"));
+    char *patchdir;
     if (sel == gensym("start"))
     {
         char pdargstring[MAXPDSTRING];
@@ -383,6 +386,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
             if (strlen(pdargstring) < MAXPDSTRING-1)
                 strcat(pdargstring, " ");
         }
+        patchdir = canvas_getdir(x->x_canvas)->s_name;
 #endif
 #ifdef MAX
         while (argc--)
@@ -401,9 +405,11 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
             strcat(pdargstring, " ");
             argv++;
         }
+        patchdir = ".";
 #endif
         pd_tilde_donew(x, x->x_pddir->s_name, x->x_schedlibdir->s_name,
-            pdargstring, x->x_ninsig, x->x_noutsig, x->x_fifo, x->x_sr);
+            patchdir, pdargstring, x->x_ninsig, x->x_noutsig, x->x_fifo,
+                x->x_sr);
     }
     else if (sel == gensym("stop"))
     {
@@ -540,6 +546,7 @@ static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_outfd = 0;
     x->x_childpid = -1;
     x->x_msgbuf = 0;
+    x->x_canvas = canvas_getcurrent();
     for (j = 1, g = x->x_insig; j < ninsig; j++, g++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     x->x_outlet1 = outlet_new(&x->x_obj, 0);

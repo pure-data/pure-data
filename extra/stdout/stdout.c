@@ -37,7 +37,7 @@ static void stdout_anything(t_stdout *x, t_symbol *s, int argc, t_atom *argv)
     printf("%s;\n", msgbuf);
 }
 
-static void stdout_flush(t_stdout *x)
+static void stdout_free(t_stdout *x)
 {
     fflush(stdout);
 }
@@ -45,7 +45,6 @@ static void stdout_flush(t_stdout *x)
 void stdout_setup(void)
 {
     stdout_class = class_new(gensym("stdout"), (t_newmethod)stdout_new,
-        (t_method)stdout_flush, sizeof(t_stdout), 0, 0);
-    class_addmethod(stdout_class, (t_method)stdout_flush, gensym("flush"), 0);
+        (t_method)stdout_free, sizeof(t_stdout), 0, 0);
     class_addanything(stdout_class, stdout_anything);
 }

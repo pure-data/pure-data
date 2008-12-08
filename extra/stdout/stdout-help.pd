@@ -1,13 +1,19 @@
-#N canvas 110 37 789 525 10;
-#X msg 84 147 walk the dog;
-#X msg 91 169 1;
-#X msg 90 215 flush;
-#X obj 84 240 stdout;
-#X text 472 410 updated for Pd version 0.42;
+#N canvas 121 60 488 321 12;
+#X msg 126 203 walk the dog;
+#X msg 117 156 1;
+#X obj 117 240 stdout;
+#X text 269 287 updated for Pd version 0.42;
 #X obj 14 13 stdout;
 #X text 67 14 - write messages to standard output;
-#X msg 96 192 1 2;
-#X connect 0 0 3 0;
-#X connect 1 0 3 0;
-#X connect 2 0 3 0;
-#X connect 7 0 3 0;
+#X msg 122 179 1 2;
+#X obj 119 291 pd~;
+#X text 44 291 see also:;
+#X text 34 39 Sends messages to Pd's standard output. This is useful
+in conjunction with the pd~ object \, which starts a pd sub-process.
+Messages sent to the sub-process standard output appear on the output
+of the pd~ object in the owning process. This might also be useful
+in other situations. Note that there's no corresponding "stdin" object
+- there seems to be no one canonical way such a thing should act.;
+#X connect 0 0 2 0;
+#X connect 1 0 2 0;
+#X connect 6 0 2 0;

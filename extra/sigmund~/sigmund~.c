@@ -363,7 +363,7 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
 #define PITCHUNCERTAINTY 0.3
 #define HALFTONEINC 0.059
 #define SUBHARMONICS 16
-#define DBPERHALFTONE 0.5
+#define DBPERHALFTONE 0.0
 
 static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
     float npts, float srate, int loud)
@@ -405,8 +405,6 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
     for (i = 0; i < nsalient; i++)
     {
         t_peak *thispeak = bigpeaks[i];
-        float pitchuncertainty =
-            4 * PITCHUNCERTAINTY * fperbin / (HALFTONEINC * thispeak->p_freq);
         float weightindex = (48./LOG2) *
             log(thispeak->p_freq/(2.*fperbin));
         float loudness = sqrt(thispeak->p_amp);
@@ -415,8 +413,8 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
         {
             float subindex = weightindex -
                 (48./LOG2) * log(j + 1.);
-            int loindex = subindex - pitchuncertainty;
-            int hiindex = subindex + pitchuncertainty + 1;
+            int loindex = subindex - 0.5;
+            int hiindex = loindex+2;
             if (hiindex < 0)
                 break;
             if (hiindex >= npit)
@@ -424,7 +422,7 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
             if (loindex < 0)
                 loindex = 0;
             for (k = loindex; k <= hiindex; k++)
-                weights[k] += loudness * 4. / (4. + j);
+                weights[k] += loudness * 6. / (6. + j);
         }
         sumweight += loudness;
     }
@@ -441,29 +439,35 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, float *freqp,
         freq = 0;
         goto done;
     }
-    for (i = bestbin+1; i < npit; i++)
+    if (bestbin > 0 && bestbin < npit-1)
     {
-        if (weights[i] < bestweight)
-            break;
-        bestbin += 0.5;
+        int ibest = bestbin;
+        bestbin += (weights[ibest+1] - weights[ibest-1]) /
+            (weights[ibest+1] +  weights[ibest] + weights[ibest-1]);
     }
     freq = 2*fperbin * exp((LOG2/48.)*bestbin);
-
     for (sumamp = sumweight = sumfreq = 0, i = 0; i < nsalient; i++)
     {
         t_peak *thispeak = bigpeaks[i];
-        float thisloudness = sqrt(thispeak->p_amp);
+        float thisloudness = thispeak->p_amp;
         float thisfreq = thispeak->p_freq;
         float harmonic = thisfreq/freq;
         float intpart = (int)(0.5 + harmonic);
-        float inharm = freq * (harmonic - intpart);
-        if (harmonic < 1)
-            continue;
-        if (inharm < 0.25*fperbin && inharm > -0.25*fperbin)
+        float inharm = harmonic - intpart;
+#if 0
+        if (loud)
+            post("freq %f intpart %f inharm %f", freq, intpart, inharm);
+#endif
+        if (intpart >= 1 && intpart <= 16 &&
+            inharm < 0.015 * intpart && inharm > - (0.015 * intpart))
         {
             float weight = thisloudness * intpart;
             sumweight += weight;
             sumfreq += weight*thisfreq/intpart;
+#if 0
+            if (loud)
+                post("weight %f freq %f", weight, thisfreq);
+#endif
         }
     }
     if (sumweight > 0)

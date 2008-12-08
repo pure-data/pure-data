@@ -1,7 +1,7 @@
 /*
  ###########################################################################
  # bonk~ - a Max/MSP external
- # by miller puckette and ted appel
+ # by miller puckette and ted apel
  # http://crca.ucsd.edu/~msp/
  # Max/MSP port by barry threw
  # http://www.barrythrew.com
@@ -911,7 +911,7 @@ static void bonk_print(t_bonk *x, t_floatarg f)
                      h->h_before, h->h_countup);
         }
         post("filter details (frequencies are in units of %.2f-Hz. bins):",
-             x->x_sr);
+             x->x_sr/x->x_npoints);
         for (j = 0; j < x->x_nfilters; j++)
             post("%2d  cf %.2f  bw %.2f  nhops %d hop %d skip %d npoints %d",
                  j, 
