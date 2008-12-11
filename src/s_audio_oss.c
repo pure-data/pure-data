@@ -70,7 +70,6 @@ t_sample *sys_soundin;
 
     /* OSS-specific private variables */
 static int oss_blockmode = 1;   /* flag to use "blockmode"  */
-static int oss_32bit = 0;       /* allow 23 bit transfers in OSS  */
 static char ossdsp[] = "/dev/dsp%d"; 
 
     /* don't assume we can turn all 31 bits when doing float-to-fix; 
@@ -109,12 +108,6 @@ void oss_init(void)
     countedthem = 1;
 }
 
-void oss_set32bit( void)
-{
-    oss_32bit = 1;
-}
-
-
 typedef struct _multidev {
      int fd;
      int channels;
@@ -128,15 +121,6 @@ int oss_reset(int fd) {
      return err;
 }
 
-    /* The AFMT_S32_BLOCKED format is not defined in standard linux kernels
-    but is proposed by Guenter Geiger to support extending OSS to handle
-    32 bit sample.  This is user in Geiger's OSS driver for RME Hammerfall.
-    I'm not clear why this isn't called AFMT_S32_[SLN]E... */
-
-#ifndef AFMT_S32_BLOCKED
-#define AFMT_S32_BLOCKED 0x0000400
-#endif
-
 void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize)
 {
     int orig, param, nblk, fd = dev->d_fd, wantformat;
@@ -145,22 +129,12 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize)
 
     audio_buf_info ainfo;
 
-        /* set resolution - first try 4 byte samples */
-    if (oss_32bit && (ioctl(fd,SNDCTL_DSP_GETFMTS,&param) >= 0) &&
-        (param & AFMT_S32_BLOCKED))
-    {
-        wantformat = AFMT_S32_BLOCKED;
-        dev->d_bytespersamp = 4;
-    }
-    else
-    {
-        wantformat = AFMT_S16_NE;
-        dev->d_bytespersamp = 2;
-    }
+        /* we only know how to do 2 byte samples */
+    wantformat = AFMT_S16_NE;
+    dev->d_bytespersamp = 2;
+
     param = wantformat;
 
-    if (sys_verbose)
-        post("bytes per sample = %d", dev->d_bytespersamp);
     if (ioctl(fd, SNDCTL_DSP_SETFMT, &param) == -1)
         fprintf(stderr,"OSS: Could not set DSP format\n");
     else if (wantformat != param)
@@ -740,18 +714,7 @@ int oss_send_dacs(void)
             linux_dacs[dev].d_dropcount--;
         else
         {
-            if (linux_dacs[dev].d_bytespersamp == 4)
-            {
-                for (i = DEFDACBLKSIZE * nchannels,  fp1 = sys_soundout +       
-                    DEFDACBLKSIZE*thischan,
-                    lp = (t_oss_int32 *)buf; i--; fp1++, lp++)
-                {
-                    float f = *fp1 * 2147483648.;
-                    *lp = (f >= 2147483647. ? 2147483647. : 
-                        (f < -2147483648. ? -2147483648. : f));
-                }
-            }
-            else
+            if (linux_dacs[dev].d_bytespersamp == 2)
             {
                 for (i = DEFDACBLKSIZE,  fp1 = sys_soundout +   
                     DEFDACBLKSIZE*thischan,
@@ -798,16 +761,7 @@ int oss_send_dacs(void)
         }
         timeref = timenow;
 
-        if (linux_adcs[dev].d_bytespersamp == 4)
-        {
-            for (i = DEFDACBLKSIZE*nchannels,
-                fp1 = sys_soundin + thischan*DEFDACBLKSIZE,
-                    lp = (t_oss_int32 *)buf; i--; fp1++, lp++)
-            {
-                *fp1 = ((float)(*lp))*(float)(1./2147483648.);
-            }
-        }
-        else
+        if (linux_adcs[dev].d_bytespersamp == 2)
         {
             for (i = DEFDACBLKSIZE,fp1 = sys_soundin + thischan*DEFDACBLKSIZE,
                 sp = (t_oss_int16 *)buf; i--; fp1++, sp += nchannels)

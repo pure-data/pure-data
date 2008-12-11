@@ -1,6 +1,6 @@
 This file describes implementation and API changes; stuff more visible to the
 user appears in the "release notes" instead.  See the bottom of this file
-for original notes on source stype and organization.
+for original notes on source style and organization.
 
 0.42.0 
 

@@ -175,7 +175,7 @@ void sys_setchsr(int chin, int chout, int sr)
 
     /* set audio device settings (after cleaning up the specified device and
     channel vectors).  The audio devices are "zero based" (i.e. "0" means the
-    first one.)  We can later re-open audio and/or show the settings on a\
+    first one.)  We can later re-open audio and/or show the settings on a
     dialog window. */
 
 void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,

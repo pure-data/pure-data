@@ -333,7 +333,6 @@ static char *(usagemessage[]) = {
 
 #ifdef USEAPI_OSS
 "-oss             -- use OSS audio API\n",
-"-32bit           ----- allow 32 bit OSS audio (for RME Hammerfall)\n",
 #endif
 
 #ifdef USEAPI_ALSA
@@ -617,12 +616,6 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-oss"))
         {
             sys_set_audio_api(API_OSS);
-            argc--; argv++;
-        }
-        else if (!strcmp(*argv, "-32bit"))
-        {
-            sys_set_audio_api(API_OSS);
-            oss_set32bit();
             argc--; argv++;
         }
 #endif

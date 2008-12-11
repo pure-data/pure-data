@@ -177,11 +177,15 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     snprintf(pdexecbuf, MAXPDSTRING, "%s/bin/pd", pddir);
     if (stat(pdexecbuf, &statbuf) < 0)
     {
-        snprintf(pdexecbuf, MAXPDSTRING, "%s/pd", pddir);
+        snprintf(pdexecbuf, MAXPDSTRING, "%s/../../../bin/pd", pddir);
         if (stat(pdexecbuf, &statbuf) < 0)
         {
-            ERROR "pd~: can't stat %s", pdexecbuf);
-            goto fail1;
+            snprintf(pdexecbuf, MAXPDSTRING, "%s/pd", pddir);
+            if (stat(pdexecbuf, &statbuf) < 0)
+            {
+                ERROR "pd~: can't stat %s", pdexecbuf);
+                goto fail1;
+            }
         }
     }
     snprintf(schedbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 

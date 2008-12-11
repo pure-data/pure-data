@@ -1,5 +1,5 @@
 ---------------- dolist --------------------
-done: 
+reproduce canvas complaint:  find "s scatsinger" &  move any box...
 
 test:
 compile on various versions of linux
@@ -29,7 +29,6 @@ look again at array vis/invis conundrum, g_template.c
 TK commands to nonexistent windows? (occasionally still happens)
 still can't detect when a window is moved or resized
 open_via_path call in d_soundfile.c isn't threadsafe
-crashed Pd putting vec and template in wrong order in array element of struct
 floor, ciel functions in expr misdeclared
 graph names don't appear until graph moved? (invis/vis on new array/rename)
 don't filter locked click() through getrect
