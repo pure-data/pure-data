@@ -11,7 +11,6 @@
 #include "s_stuff.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <portaudio.h>
 #include "s_audio_pablio.h"
 
@@ -30,11 +29,15 @@ static t_audiocallback pa_callback;
 
 int pa_foo;
 
+#ifndef MSW
+#include <unistd.h>
+#endif
 static void pa_init(void)
 {
     static int initialized;
     if (!initialized)
     {
+#ifndef MSW
         /* Initialize PortAudio  */
         /* for some reason Pa_Initialize(0 closes file descriptor 1.
         As a workaround, dup it to another number and dup2 it back
@@ -46,6 +49,9 @@ static void pa_init(void)
             dup2(newfd, 1);
             close(newfd);
         }
+#else
+        int err = Pa_Initialize();
+#endif
         if ( err != paNoError ) 
         {
             fprintf( stderr,
