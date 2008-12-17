@@ -11,7 +11,7 @@ extern "C" {
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 42
 #define PD_BUGFIX_VERSION 0
-#define PD_TEST_VERSION "test6"
+#define PD_TEST_VERSION "test7"
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -641,6 +641,9 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 #define PD_BADFLOAT(f) 0
 #define PD_BIGORSMALL(f) 0
 #endif
+
+    /* get version number at run time */
+EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

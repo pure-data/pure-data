@@ -203,8 +203,6 @@ gotone:
     return (1);
 }
 
-/* callback type definition */
-typedef int (*loader_t)(t_canvas *canvas, char *classname);
 
 /* linked list of loaders */
 typedef struct loader_queue {
