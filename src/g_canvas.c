@@ -602,7 +602,8 @@ void canvas_reflecttitle(t_canvas *x)
             canvas_getdir(x)->s_name);
 }
 
-void canvas_dirty(t_canvas *x, t_int n)
+    /* mark a glist dirty or clean */
+void canvas_dirty(t_canvas *x, t_floatarg n)
 {
     t_canvas *x2 = canvas_getrootfor(x);
     if (glist_amreloadingabstractions)
@@ -686,7 +687,7 @@ void glist_menu_open(t_glist *x)
     {
         t_glist *gl2 = x->gl_owner;
         if (!gl2) 
-            bug("canvas_vis");  /* shouldn't happen but don't get too upset. */
+            bug("glist_menu_open");  /* shouldn't happen but not dangerous */
         else
         {
                 /* erase ourself in parent window */
@@ -735,7 +736,8 @@ void canvas_free(t_canvas *x)
     glist_noselect(x);
     while (y = x->gl_list)
         glist_delete(x, y);
-    canvas_vis(x, 0);
+    if (x == glist_getcanvas(x))
+        canvas_vis(x, 0);
 
     if (strcmp(x->gl_name->s_name, "Pd"))
         pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
@@ -1549,6 +1551,8 @@ void g_canvas_setup(void)
         gensym("menu-open"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_map,
         gensym("map"), A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_dirty,
+        gensym("dirty"), A_FLOAT, A_NULL);
     class_setpropertiesfn(canvas_class, (t_propertiesfn)canvas_properties);
 
 /* ---------------------- list handling ------------------------ */

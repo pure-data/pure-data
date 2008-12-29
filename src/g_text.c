@@ -131,9 +131,36 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int selected,
     canvas_unsetcurrent((t_canvas *)gl);
 }
 
+    /* utility routine to figure out where to put a new text box from menu
+    and whether to connect to it automatically */
+static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
+    int *indexp, int *totalp)
+{
+    int xpix, ypix, indx = 0, nobj = 0, x1, x2, y1, y2;
+    int connectme = (x->gl_editor->e_selection &&
+        !x->gl_editor->e_selection->sel_next);
+    if (connectme)
+    {
+        t_gobj *g;
+        for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++)
+            if (g == x->gl_editor->e_selection->sel_what)
+        {
+            gobj_getrect(g, x, &x1, &y1, &x2, &y2);
+            indx = nobj;
+            *xpixp = x1;
+            *ypixp = y2 + 5;
+        }
+    }
+    else glist_getnextxy(x, xpixp, ypixp);
+    glist_noselect(x);
+    *connectp = connectme;
+    *indexp = indx;
+    *totalp = nobj;
+}
+
     /* object creation routine.  These are called without any arguments if
-    they're invoked from the
-    gui; when pasting or restoring from a file, we get at least x and y. */
+    they're invoked from the gui; when pasting or restoring from a file, we
+    get at least x and y. */
 
 void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 {
@@ -145,18 +172,20 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         canvas_objtext(gl, atom_getintarg(0, argc, argv),
             atom_getintarg(1, argc, argv), 0, b);
     }
-    else if(!glist_isvisible(gl)){
-      /* JMZ: not a good idea to go into interactive mode in a closed canvas... */
-      post("unable to create stub object in closed canvas!");
-      return;
-    } else {
+        /* JMZ: don't go into interactive mode in a closed canvas */
+    else if (!glist_isvisible(gl))
+        post("unable to create stub object in closed canvas!");
+    else
+    {
+            /* interactively create new obect */
         t_binbuf *b = binbuf_new();
-        int xpix, ypix;
+        int connectme, xpix, ypix, indx, nobj;
+        canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
-        glist_noselect(gl);
-        glist_getnextxy(gl, &xpix, &ypix);
         canvas_objtext(gl, xpix, ypix, 1, b);
-        canvas_startmotion(glist_getcanvas(gl));
+        if (connectme)
+            canvas_connect(gl, indx, 0, nobj, 0);
+        else canvas_startmotion(glist_getcanvas(gl));
     }
 }
 
@@ -417,24 +446,23 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         if (argc > 2) binbuf_restore(x->m_text.te_binbuf, argc-2, argv+2);
         glist_add(gl, &x->m_text.te_g);
     }
+    else if (!glist_isvisible(gl))
+        post("unable to create stub message in closed canvas!");
     else
     {
-        int xpix, ypix;
-        /* JMZ: not a good idea to go into interactive mode in a closed canvas... */
-        if(!glist_isvisible(gl)){
-          post("unable to create stub message in closed canvas!");
-          return;
-        }
+        int connectme, xpix, ypix, indx, nobj;
+        canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
+        
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
-        glist_noselect(gl);
-        glist_getnextxy(gl, &xpix, &ypix);
-        x->m_text.te_xpix = xpix-3;
-        x->m_text.te_ypix = ypix-3;
+        x->m_text.te_xpix = xpix;
+        x->m_text.te_ypix = ypix;
         glist_add(gl, &x->m_text.te_g);
         glist_noselect(gl);
         glist_select(gl, &x->m_text.te_g);
         gobj_activate(&x->m_text.te_g, gl, 1);
-        canvas_startmotion(glist_getcanvas(gl));
+        if (connectme)
+            canvas_connect(gl, indx, 0, nobj, 0);
+        else canvas_startmotion(glist_getcanvas(gl));
     }
 }
 
@@ -876,19 +904,20 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     }
     else
     {
-        int xpix, ypix;
+        int connectme, xpix, ypix, indx, nobj;
+        canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
         outlet_new(&x->a_text,
             x->a_atom.a_type == A_FLOAT ? &s_float: &s_symbol);
         inlet_new(&x->a_text, &x->a_text.te_pd, 0, 0);
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
-        glist_noselect(gl);
-        glist_getnextxy(gl, &xpix, &ypix);
         x->a_text.te_xpix = xpix;
         x->a_text.te_ypix = ypix;
         glist_add(gl, &x->a_text.te_g);
         glist_noselect(gl);
         glist_select(gl, &x->a_text.te_g);
-        canvas_startmotion(glist_getcanvas(gl));
+        if (connectme)
+            canvas_connect(gl, indx, 0, nobj, 0);
+        else canvas_startmotion(glist_getcanvas(gl));
     }
 }
 
@@ -1321,10 +1350,18 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
     else binbuf_text(x->te_binbuf, buf, bufsize);
 }
 
+    /* this gets called when amessage gets sent to an object whose creation
+    failed, presumably because of loading a patch with a missing extern or
+    abstraction */
+static void text_anything(t_text *x, t_symbol *s, int argc, t_atom *argv)
+{
+}
+
 void g_text_setup(void)
 {
     text_class = class_new(gensym("text"), 0, 0, sizeof(t_text),
         CLASS_NOINLET | CLASS_PATCHABLE, 0);
+    class_addanything(text_class, text_anything);
 
     message_class = class_new(gensym("message"), 0, (t_method)message_free,
         sizeof(t_message), CLASS_PATCHABLE, 0);

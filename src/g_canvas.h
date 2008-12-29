@@ -467,7 +467,7 @@ EXTERN void canvas_setcurrent(t_canvas *x);
 EXTERN void canvas_unsetcurrent(t_canvas *x);
 EXTERN t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s);
 EXTERN t_canvas *canvas_getrootfor(t_canvas *x);
-EXTERN void canvas_dirty(t_canvas *x, t_int n);
+EXTERN void canvas_dirty(t_canvas *x, t_floatarg n);
 EXTERN int canvas_getfont(t_canvas *x);
 typedef int (*t_canvasapply)(t_canvas *x, t_int x1, t_int x2, t_int x3);
 

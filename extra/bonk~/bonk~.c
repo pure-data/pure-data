@@ -95,6 +95,7 @@ static t_class *bonk_class;
 #define DEFHALFTONES 6
 #define DEFOVERLAP 1
 #define DEFFIRSTBIN 1
+#define DEFMINBANDWIDTH 1.5
 #define DEFHITHRESH 5
 #define DEFLOTHRESH 2.5
 #define DEFMASKTIME 4
@@ -122,6 +123,7 @@ typedef struct _filterbank
     float b_halftones;          /* filter bandwidth in halftones */
     float b_overlap;            /* overlap; default 1 for 1/2-power pts */
     float b_firstbin;           /* freq of first filter in bins, default 1 */
+    float b_minbandwidth;       /* minimum bandwidth, default 1.5 */
     t_filterkernel *b_vec;      /* filter kernels */
     int b_refcount;             /* number of bonk~ objects using this */
     struct _filterbank *b_next; /* next in linked list */
@@ -206,7 +208,7 @@ typedef struct _bonk
     float x_halftones;      /* nominal halftones between filters */
     float x_overlap;
     float x_firstbin;
-
+    float x_minbandwidth;
     float x_hithresh;       /* threshold for total growth to trigger */
     float x_lothresh;       /* threshold for total growth to re-arm */
     float x_minvel;         /* minimum velocity we output */
@@ -275,10 +277,11 @@ char *strcpy(char *s1, const char *s2);
 
 static void bonk_tick(t_bonk *x);
 
-#define HALFWIDTH 0.75 /* half peak bandwidth at half power point in bins */
+#define HALFWIDTH 0.75  /* half peak bandwidth at half power point in bins */
+#define SLIDE 0.25    /* relative slide between filter subwindows */
 
 static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
-    float halftones, float overlap, float firstbin)
+    float halftones, float overlap, float firstbin, float minbandwidth)
 {
     int i, j;
     float cf, bw, h, relspace;
@@ -288,6 +291,7 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
     b->b_halftones = halftones;
     b->b_overlap = overlap;
     b->b_firstbin = firstbin;
+    b->b_minbandwidth = minbandwidth;
     b->b_refcount = 0;
     b->b_next = bonk_filterbanklist;
     bonk_filterbanklist = b;
@@ -296,17 +300,21 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
     h = exp((log(2.)/12.)*halftones);  /* specced interval between filters */
     relspace = (h - 1)/(h + 1);        /* nominal spacing-per-f for fbank */
     
+    if (minbandwidth < 2*HALFWIDTH)
+        minbandwidth = 2*HALFWIDTH;
+    if (firstbin < minbandwidth/(2*HALFWIDTH))
+        firstbin = minbandwidth/(2*HALFWIDTH);
     cf = firstbin;
     bw = cf * relspace * overlap;
-    if (bw < HALFWIDTH)
-        bw = HALFWIDTH;
+    if (bw < (0.5*minbandwidth))
+        bw = (0.5*minbandwidth);
     for (i = 0; i < nfilters; i++)
     {
         float *fp, newcf, newbw;
         float normalizer = 0;
         int filterpoints, skippoints, hoppoints, nhops;
         
-        filterpoints = 0.5 + npoints * HALFWIDTH/bw;
+        filterpoints = npoints * HALFWIDTH/bw;
         if (cf > npoints/2)
         {
             post("bonk~: only using %d filters (ran past Nyquist)", i+1);
@@ -320,7 +328,7 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
         else if (filterpoints > npoints)
             filterpoints = npoints;
         
-        hoppoints = 0.5 + 0.5 * npoints * HALFWIDTH/bw;
+        hoppoints = SLIDE * npoints * HALFWIDTH/bw;
         
         nhops = 1. + (npoints-filterpoints)/(float)hoppoints;
         skippoints = 0.5 * (npoints-filterpoints - (nhops-1) * hoppoints);
@@ -343,7 +351,7 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
             fp[1] = window * sin(phase);
             normalizer += window;
         }
-        normalizer = 1/(normalizer * nhops);
+        normalizer = 1/(normalizer * sqrt(nhops));
         for (fp = b->b_vec[i].k_stuff, j = 0;
              j < filterpoints; j++, fp+= 2)
             fp[0] *= normalizer, fp[1] *= normalizer;
@@ -353,10 +361,10 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
 #endif
         newcf = (cf + bw/overlap)/(1 - relspace);
         newbw = newcf * overlap * relspace;
-        if (newbw < HALFWIDTH)
+        if (newbw < 0.5*minbandwidth)
         {
-            newbw = HALFWIDTH;
-            newcf = cf + 2 * HALFWIDTH / overlap;
+            newbw = 0.5*minbandwidth;
+            newcf = cf + minbandwidth / overlap;
         }
         cf = newcf;
         bw = newbw;
@@ -387,7 +395,7 @@ static void bonk_freefilterbank(t_filterbank *b)
 
 static void bonk_donew(t_bonk *x, int npoints, int period, int nsig, 
     int nfilters, float halftones, float overlap, float firstbin,
-    float samplerate)
+    float minbandwidth, float samplerate)
 {
     int i, j;
     t_hist *h;
@@ -440,7 +448,8 @@ static void bonk_donew(t_bonk *x, int npoints, int period, int nsig,
             fb->b_halftones == x->x_halftones &&
             fb->b_firstbin == firstbin &&
             fb->b_overlap == overlap &&
-            fb->b_npoints == x->x_npoints)
+            fb->b_npoints == x->x_npoints &&
+            fb->b_minbandwidth == minbandwidth)
     {
         fb->b_refcount++;
         x->x_filterbank = fb;
@@ -448,7 +457,7 @@ static void bonk_donew(t_bonk *x, int npoints, int period, int nsig,
     }
     if (!x->x_filterbank)
         x->x_filterbank = bonk_newfilterbank(npoints, nfilters, 
-            halftones, overlap, firstbin),
+            halftones, overlap, firstbin, minbandwidth),
                 x->x_filterbank->b_refcount++;
 }
 
@@ -1035,7 +1044,7 @@ static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
     int nsig = 1, period = DEFPERIOD, npts = DEFNPOINTS,
         nfilters = DEFNFILTERS, j;
     float halftones = DEFHALFTONES, overlap = DEFOVERLAP,
-        firstbin = DEFFIRSTBIN;
+        firstbin = DEFFIRSTBIN, minbandwidth = DEFMINBANDWIDTH;
     t_insig *g;
 
     if (argc > 0 && argv[0].a_type == A_FLOAT)
@@ -1082,6 +1091,11 @@ static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
             firstbin = atom_getfloatarg(1, argc, argv);
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(firstarg->s_name, "-minbandwidth") && argc > 1)
+        {
+            minbandwidth = atom_getfloatarg(1, argc, argv);
+            argc -= 2; argv += 2;
+        }
         else if (!strcmp(firstarg->s_name, "-spew") && argc > 1)
         {
             x->x_spew = (atom_getfloatarg(1, argc, argv) != 0);
@@ -1123,7 +1137,7 @@ static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_cookedout = outlet_new(&x->x_obj, gensym("list"));
     bonk_donew(x, npts, period, nsig, nfilters, halftones, overlap,
-        firstbin, sys_getsr());
+        firstbin, minbandwidth, sys_getsr());
     return (x);
 }
 
@@ -1180,6 +1194,9 @@ int main()
         class_addattr(c, attr);
         
         attr = attr_offset_new("firstbin", sym_float32, attrflags, (method)0L, (method)0L, calcoffset(t_bonk, x_firstbin));
+        class_addattr(c, attr);
+        
+        attr = attr_offset_new("minbandwidth", sym_float32, attrflags, (method)0L, (method)0L, calcoffset(t_bonk, x_minbandwidth));
         class_addattr(c, attr);
         
         attr = attr_offset_new("minvel", sym_float32, attrflags, (method)0L, (method)bonk_minvel_set, calcoffset(t_bonk, x_minvel));
@@ -1250,6 +1267,7 @@ static void *bonk_new(t_symbol *s, long ac, t_atom *av)
         x->x_nfilters = DEFNFILTERS;
         x->x_halftones = DEFHALFTONES;
         x->x_firstbin = DEFFIRSTBIN;
+        x->x_minbandwidth = DEFMINBANDWIDTH;
         x->x_overlap = DEFOVERLAP;
         x->x_ninsig = 1;
 
@@ -1305,7 +1323,8 @@ static void *bonk_new(t_symbol *s, long ac, t_atom *av)
         x->x_clock = clock_new(x, (method)bonk_tick);
 
         bonk_donew(x, x->x_npoints, x->x_period, x->x_ninsig, x->x_nfilters,
-            x->x_halftones, x->x_overlap, x->x_firstbin, sys_getsr());
+            x->x_halftones, x->x_overlap, x->x_firstbin, x->x_minbandwidth,
+                sys_getsr());
     }
     return (x);
 }

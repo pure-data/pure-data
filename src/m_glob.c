@@ -8,6 +8,8 @@
 t_class *glob_pdobject;
 static t_class *maxclass;
 
+int sys_perf;   /* true if we should query user on close and quit */
+
 /* These "glob" routines, which implement messages to Pd, are from all
 over.  Some others are prototyped in m_imp.h as well. */
 
@@ -53,6 +55,11 @@ static void glob_version(t_pd *dummy, float f)
 {
     if (f > 0)
         error("file format newer than this version of Pd (trying anyway...)");
+}
+
+static void glob_perf(t_pd *dummy, float f)
+{
+    sys_perf = (f != 0);
 }
 
 void max_default(t_pd *x, t_symbol *s, int argc, t_atom *argv)
@@ -121,6 +128,8 @@ void glob_init(void)
         gensym("save-preferences"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_version,
         gensym("version"), A_FLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_perf,
+        gensym("perf"), A_FLOAT, 0);
 #ifdef UNIX
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);

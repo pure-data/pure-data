@@ -1,5 +1,5 @@
 ---------------- dolist --------------------
-reproduce canvas complaint:  find "s scatsinger" &  move any box...
+close patch with dirty GOP abstraction can't vis the abstraction to query
 
 test:
 compile on various versions of linux
@@ -15,6 +15,7 @@ mac:
 Gnome: why don't windows pop up when clicked on?
 
 problems:
+saving as "x.pd" on mac writes to "x.pd.pd"
 if .pdsettings asks for an alsa device out of range, dialog
   comes up with empty list
 find asdf$1 (e.g.) doesn't work

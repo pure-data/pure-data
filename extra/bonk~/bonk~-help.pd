@@ -1,13 +1,13 @@
-#N canvas 304 143 967 599 10;
-#X obj 370 524 spigot;
+#N canvas 304 143 967 599 12;
+#X obj 358 544 spigot;
 #X msg 442 397 bang;
-#X obj 429 488 bonk~;
+#X obj 428 508 bonk~;
 #X msg 442 214 learn 1;
 #X msg 442 274 learn 0;
-#X msg 437 456 print;
+#X msg 446 451 print;
 #X obj 390 437 adc~;
-#X msg 614 538 \; pd dsp 1;
-#X obj 277 524 spigot;
+#X msg 613 558 \; pd dsp 1;
+#X obj 276 544 spigot;
 #N canvas 366 126 604 404 synth 0;
 #X obj 112 24 r bonk-cooked;
 #X obj 112 49 unpack;
@@ -59,14 +59,14 @@
 #X connect 21 0 1 0;
 #X connect 22 0 6 0;
 #X connect 23 0 9 0;
-#X restore 846 555 pd synth;
-#X floatatom 846 532 0 0 0 0 - - -;
-#X msg 846 502 0;
+#X restore 845 575 pd synth;
+#X floatatom 845 552 0 0 0 0 - - -;
+#X msg 845 522 0;
 #X msg 442 244 learn 10;
 #X msg 442 304 forget;
 #X msg 442 334 write templates.txt;
 #X msg 442 364 read templates.txt;
-#X msg 877 502 90;
+#X msg 876 522 90;
 #X msg 442 81 thresh 6 50;
 #X text 8 56 The Bonk object takes an audio signal input and looks
 for "attacks" defined as sharp changes in the spectral envelope of
@@ -75,13 +75,13 @@ Bonk check the attack against a collection of stored templates to try
 to guess which of two or more instruments was hit. Bonk is described
 theoretically in the 1998 ICMC proceedings \, reprinted on http://man104nfs.ucsd.edu/~mpuckett.
 ;
-#X text 602 504 click here;
-#X text 603 517 to start DSP;
+#X text 601 524 click here;
+#X text 602 537 to start DSP;
 #X text 8 377 In this patch \, after starting DSP \, you can print
 out the raw or cooked output using the two "spigots" or listen to a
 synthesizer output by raising its volume.;
-#X text 747 501 output volume;
-#X text 761 519 (0-100);
+#X text 746 521 output volume;
+#X text 760 539 (0-100);
 #X msg 442 150 mask 4 0.7;
 #X msg 442 184 debounce 0;
 #X text 8 309 Bonk's analysis is carried out on a 256-point window
@@ -89,7 +89,7 @@ synthesizer output by raising its volume.;
 The analysis period can be specified as Bonk's creation argument but
 must be a multiple of 64;
 #X text 532 185 Minimum time (msec) between attacks;
-#X text 532 140 Describes how energy in each frequency band masks later
+#X text 526 136 Describes how energy in each frequency band masks later
 energy in the band. Here the masking is total for 4 analysis periods
 and then drops by 0.7 each period.;
 #X text 530 214 Forget all templates and start learning new ones. The
@@ -101,22 +101,22 @@ to erase and record over a template.;
 #X text 595 334 Write templates to a file in text-editable format.
 ;
 #X text 596 364 Read templates from a file.;
-#X text 538 453 Print out all settings and templates.;
+#X text 514 450 Print out all settings and templates.;
 #X msg 442 120 minvel 10;
-#X text 538 392 Poll the current spectrum via "raw" outlet \, You can
+#X text 514 392 Poll the current spectrum via "raw" outlet \, You can
 set a very high threshold if you don't want attacks mixed in.;
 #X msg 437 426 debug 0;
-#X text 538 426 turn debugging on or off.;
-#X obj 326 525 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#X text 514 426 turn debugging on or off.;
+#X obj 325 545 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X obj 419 525 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#X obj 407 545 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X obj 370 554 print cooked;
-#X obj 277 554 print raw;
-#X text 253 490 enable printout:;
-#X text 533 121 Minimum "velocity" to output (quieter notes are ignored.)
+#X obj 358 574 print cooked;
+#X obj 276 574 print raw;
+#X text 158 545 enable printout:;
+#X text 530 121 Minimum "velocity" to output (quieter notes are ignored.)
 ;
-#X obj 462 513 s bonk-cooked;
+#X obj 461 533 s bonk-cooked;
 #X text 218 12 BONK~ - an attack detector for small percussion instruments
 ;
 #X text 8 174 Bonk's two outputs are the raw spectrum of the attack
@@ -127,12 +127,14 @@ an instrument number (counting up from zero) and a "velocity". This
 bands \, normalized so that 100 is an attack of amplitude of about
 1 The instrument number is significant only if Bonk has a "template
 set" in memory.;
-#X text 532 52 Set low and high thresholds. Signal growth must exceed
+#X text 531 47 Set low and high thresholds. Signal growth must exceed
 the high one and then fall to the low one to make an attack. The unit
 is the sum of the proportional growth in the 11 filter bands. Proportional
 growth is essentially the logarithmic time derivative.;
 #X text 238 27 (NOTE: this documentation does not yet describe new
 features for Pd 0.42).;
+#X msg 446 479 print 1;
+#X text 514 481 print out filterbank settings;
 #X connect 0 0 40 0;
 #X connect 1 0 2 0;
 #X connect 2 0 8 0;
@@ -157,3 +159,4 @@ features for Pd 0.42).;
 #X connect 36 0 2 0;
 #X connect 38 0 8 1;
 #X connect 39 0 0 1;
+#X connect 49 0 2 0;

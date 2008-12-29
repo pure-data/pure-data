@@ -163,32 +163,33 @@ externs:
 
 BINARYMODE=@binarymode@
 
-ABOUT_FILE=$(pddocdir)/1.manual/1.introduction.txt
+ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
 install:  all
-	install -d $(libpdbindir)
-	install $(BIN_DIR)/$(GUINAME) $(libpdbindir)/$(GUINAME)
-	install $(BIN_DIR)/pd-watchdog $(libpdbindir)/pd-watchdog
-	install -m644 $(BIN_DIR)/pd.tk $(libpdbindir)/pd.tk
+	install -d $(DESTDIR)$(libpdbindir)
+	install $(BIN_DIR)/$(GUINAME) $(DESTDIR)$(libpdbindir)/$(GUINAME)
+	install $(BIN_DIR)/pd-watchdog $(DESTDIR)$(libpdbindir)/pd-watchdog
+	install -m644 $(BIN_DIR)/pd.tk $(DESTDIR)$(libpdbindir)/pd.tk
 	install -d $(DESTDIR)$(bindir)
 	install $(BINARYMODE) $(PDEXEC) $(DESTDIR)$(bindir)/pd
 	install -m755 $(BIN_DIR)/pdsend $(DESTDIR)$(bindir)/pdsend
 	install -m755 $(BIN_DIR)/pdreceive $(DESTDIR)$(bindir)/pdreceive 
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
 		echo "installing $$dir"; \
-		install -d $(pddocdir)/$$dir ; \
-		install -m644 -p ../doc/$$dir/*.* $(pddocdir)/$$dir ; \
+		install -d $(DESTDIR)$(pddocdir)/$$dir ; \
+		install -m644 -p ../doc/$$dir/*.* $(DESTDIR)$(pddocdir)/$$dir ; \
 	done
 	for dir in $(shell ls -1 ../doc/7.stuff | grep -v CVS); do \
 		echo "installing 7.stuff/$$dir"; \
-		install -d $(pddocdir)/7.stuff/$$dir ; \
-		install -m644 -p ../doc/7.stuff/$$dir/*.* $(pddocdir)/7.stuff/$$dir ; \
+		install -d $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
+		install -m644 -p ../doc/7.stuff/$$dir/*.* \
+                    $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
 	done
 	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
 	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
 		> $(ABOUT_FILE)
 	rm $(ABOUT_FILE).tmp
-	cp -pr ../extra $(libpddir)/
-	rm -f $(libpddir)/extra/*/*.o
+	cp -pr ../extra $(DESTDIR)$(libpddir)/
+	rm -f $(DESTDIR)$(libpddir)/extra/*/*.o
 	install -d $(DESTDIR)$(includedir)
 	install -m644 m_pd.h $(DESTDIR)$(includedir)/m_pd.h
 	install -d $(DESTDIR)$(mandir)/man1
@@ -230,7 +231,7 @@ makefile.dependencies: makefile
 	$(CC) $(CPPFLAGS) -M $(SRC) > makefile.dependencies
 
 uninstall:
-	rm -f -r $(libpddir)
+	rm -f -r $(DESTDIR)$(libpddir)
 	rm -f $(DESTDIR)$(bindir)/pd
 	rm -f $(DESTDIR)$(bindir)/pdsend
 	rm -f $(DESTDIR)$(bindir)/pdreceive
