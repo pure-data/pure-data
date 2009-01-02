@@ -2373,27 +2373,36 @@ static void canvas_selectall(t_canvas *x)
 static void canvas_reselect(t_canvas *x)
 {
     t_gobj *g, *gwas;
-    int nobjwas;
-        /* only do this if exactly one item is selected. */
-    if ((gwas = x->gl_editor->e_selection->sel_what) &&
-        !x->gl_editor->e_selection->sel_next)
+    t_selection *sel;
+    t_object *ob;
+        /* if someone is text editing, and if only one object is 
+        selected,  deselect everyone and reselect.  */
+    if (x->gl_editor->e_textedfor)
     {
-        int nobjwas = glist_getindex(x, 0),
-            indx = canvas_getindex(x, x->gl_editor->e_selection->sel_what);
-        glist_noselect(x);
-        for (g = x->gl_list; g; g = g->g_next)
-            if (g == gwas)
+            /* only do this if exactly one item is selected. */
+        if ((gwas = x->gl_editor->e_selection->sel_what) &&
+            !x->gl_editor->e_selection->sel_next)
         {
-            glist_select(x, g);
-            return;
-        }
-            /* "gwas" must have disappeared; just search to the last
-            object and select it */
-        for (g = x->gl_list; g; g = g->g_next)
-            if (!g->g_next)
+            int nobjwas = glist_getindex(x, 0),
+                indx = canvas_getindex(x, x->gl_editor->e_selection->sel_what);
+            glist_noselect(x);
+            for (g = x->gl_list; g; g = g->g_next)
+                if (g == gwas)
+            {
                 glist_select(x, g);
+                return;
+            }
+                /* "gwas" must have disappeared; just search to the last
+                object and select it */
+            for (g = x->gl_list; g; g = g->g_next)
+                if (!g->g_next)
+                    glist_select(x, g);
+        }
     }
-
+    else if (x->gl_editor->e_selection &&
+        !x->gl_editor->e_selection->sel_next)
+            /* otherwise activate first item in selection */
+            gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
 }
 
 extern t_class *text_class;
