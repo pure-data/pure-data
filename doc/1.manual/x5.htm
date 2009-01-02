@@ -22,7 +22,50 @@
 
 <P> ------------------ 0.42 ---------------------------
 
-<P> print takes "-n" flag to supperss "print:" in output
+<P> The 'struct' object can now be used to catch a small but growing variety of
+events (mouse clicks on data, selection/deselection).
+
+<P> The 'tabread4~' object was fixed to allow message-time onset into the table. 
+This makes it possible (at last) to use tabread4~ effectively with large (> 1
+second) samples.  New help files 3.audio.examples/B15 and B16 show how to
+use it.  It's not pretty but it's at least possible.
+
+<P> Took patches from Iohannes Zmoelnig to make Pd work when compiled to use
+64-bit floating-point audio.  I didn't test this; doubtless there will still be
+some problems.  (This isn't the same thing as running in '64 bit mode' which
+already works fine and is the default when compiled on a 64-bit linux machine.)
+
+<P> New objects in extra, 'pd~', and 'stdout', allow running a separate Pd
+instance in a sub-process.  Theoretically this should make it possible to use
+multiprocessors efficiently in {d.  It's still somewhat experimental; it might
+not work well to pass large numbers of messages and/or signals back and forth.
+
+<P> A -batch flag allows Pd to be run efficiently from scripts.  You should
+probably also specify -nosound.  With these flags Pd runs as quickly as it
+can without waiting for real time.  It's up to the patch to arrange to exit
+at the appropriate time via a 'pd quit' message.
+
+<P> Large and sweeping improvements have been made to bonk~ and sigmund~.  The
+new bonk~ features are documented in its help window; sigmund~ works better but
+has the same old features.
+
+<P> Closing and quiting Pd now act more politely, querying the user only if
+there are edited windows.  There's also a query if the user types into a box
+holding an edited abstraction to prevent the changes from getting lost
+accidentally.  A new 'pd perf' message re-enables the old "really close this
+window" behavior, which is appropriate for performances where you don't want the
+wrong keyclick to stop Pd brusquely.
+
+<P> The process of reloading multiple copies of a modified abstraction was
+sped up.
+
+<P> The 'find' dialog permits searching for substrings.  This is useful for
+strings containing "$" arguments, where it's unclear what 'find' does or should
+do.
+
+<P> New pow~, log~, exp~, abs~, and 'wrap' objects.
+
+<P> The 'print' object takes "-n" flag to supperss "print:" in output
 
 <P> "clear" button in Pd output window
 
@@ -34,6 +77,7 @@ delay time when asked to.
 <P> Binbufs fixed to handle arbitrary length messages.  (This fixed a problem
 reloading data structures with huge arrays).
 
+<P> various fixes to 
 <P> ------------------ 0.41-3,4 ---------------------------
 
 <P> 2 fixes for PC: no bonk~, and the audio device selection

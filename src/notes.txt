@@ -1,5 +1,4 @@
 ---------------- dolist --------------------
-close patch with dirty GOP abstraction can't vis the abstraction to query
 
 test:
 compile on various versions of linux
@@ -15,9 +14,8 @@ mac:
 Gnome: why don't windows pop up when clicked on?
 
 problems:
-saving as "x.pd" on mac writes to "x.pd.pd"
-if .pdsettings asks for an alsa device out of range, dialog
-  comes up with empty list
+get rid of remaining -export-dynamic in makefiles
+saving as "x.pd" on mac writes to "x.pd.pd" (can't reproduce this.)
 find asdf$1 (e.g.) doesn't work
 check real-time gaps in writesf~
 fix declare to update current patch when changed
@@ -92,7 +90,6 @@ flags to defeat pre-loading specified classes
 editing:
     pasting should look at current mouse location
     clickless connection (hit 'c' key? see Bouchard paper)
-    "enter" into object box to create new one (also, change border? forking?)
     tab to jump to a connected object (first one?) (shift-tab to back up?)
     arrow keys to shift connections left and right
     menu item to connect selected objects
@@ -104,7 +101,7 @@ editing:
 data:
 add -x [-n?] flag to drawnumbers
 flag to disable edits for arrays
-make a 2-pass proecss for finding hot spot closes to any given click
+make a 2-pass proecss for finding hot spot closest to any given click
 replace list element with binbuf??
 hooks for table mousing, other changes (scalars?)
 data to save as succession of "list" messages that textfile can store, etc.

@@ -756,11 +756,13 @@ int glist_amreloadingabstractions = 0;
 void canvas_reload(t_symbol *name, t_symbol *dir, t_gobj *except)
 {
     t_canvas *x;
+    int dspwas = canvas_suspend_dsp();
     glist_amreloadingabstractions = 1;
         /* find all root canvases */
     for (x = canvas_list; x; x = x->gl_next)
         glist_doreload(x, name, dir, except);
     glist_amreloadingabstractions = 0;
+    canvas_resume_dsp(dspwas);
 }
 
 /* ------------------------ event handling ------------------------ */
@@ -1190,8 +1192,9 @@ static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float 
                     strcpy(namebuf, class_gethelpname(pd_class(&y->g_pd)));
                     dir = class_gethelpdir(pd_class(&y->g_pd));
                 }
-                if (strcmp(namebuf + strlen(namebuf) - 3, ".pd"))
-                    strcat(namebuf, ".pd");
+                if (strlen(namebuf) < 4 ||
+                    strcmp(namebuf + strlen(namebuf) - 3, ".pd"))
+                        strcat(namebuf, ".pd");
                 open_via_helppath(namebuf, dir);
                 return;
             }
@@ -1596,8 +1599,9 @@ void canvas_mouseup(t_canvas *x,
                 vmess(&gl2->gl_pd, gensym("menu-open"), "");
                 x->gl_editor->e_onmotion = MA_NONE;
                 sys_vgui(
-"pdtk_check {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
-                    canvas_getrootfor(gl2)->gl_name->s_name, gl2);
+"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
+                    canvas_getrootfor(gl2),
+                        canvas_getrootfor(gl2)->gl_name->s_name, gl2);
                 return;
             }
                 /* OK, activate it */
@@ -1725,34 +1729,16 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             || !strcmp(gotkeysym->s_name, "Left")
             || !strcmp(gotkeysym->s_name, "Right")))
         {
-                /* special case - carriage return to object "makes" it */
-            if (keynum == '\n' && (ob =
-                pd_checkobject(&x->gl_editor->e_selection->sel_what->g_pd)) &&
-                    ob->te_type == T_OBJECT)
+                /* send the key to the box's editor */
+            if (!x->gl_editor->e_textdirty)
             {
-                t_gobj *g;
-                int nobj, indx =
-                    canvas_getindex(x, x->gl_editor->e_selection->sel_what);
-                glist_noselect(x);
-                    /* "ob" may have disappeared; just search to the last
-                    object and select it */
-                for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++)
-                    if (nobj == indx)
-                        glist_select(x, g);
+                canvas_setundo(x, canvas_undo_cut,
+                    canvas_undo_set_cut(x, UCUT_TEXT), "typing");
             }
-            else
-            {
-                    /* otherwise send the key to the box's editor */
-                if (!x->gl_editor->e_textdirty)
-                {
-                    canvas_setundo(x, canvas_undo_cut,
-                        canvas_undo_set_cut(x, UCUT_TEXT), "typing");
-                }
-                rtext_key(x->gl_editor->e_textedfor,
-                    (int)keynum, gotkeysym);
-                if (x->gl_editor->e_textdirty)
-                    canvas_dirty(x, 1);
-            }
+            rtext_key(x->gl_editor->e_textedfor,
+                (int)keynum, gotkeysym);
+            if (x->gl_editor->e_textdirty)
+                canvas_dirty(x, 1);
         }
             /* check for backspace or clear */
         else if (keynum == 8 || keynum == 127)
@@ -1873,12 +1859,13 @@ void glob_verifyquit(void *dummy, t_floatarg f)
     {
         canvas_vis(g2, 1);
         sys_vgui(
-"pdtk_check {Discard changes to '%s'?} {.x%lx menuclose 3;\n} no\n",
-                canvas_getrootfor(g2)->gl_name->s_name, g2);
+"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx menuclose 3;\n} no\n",
+            canvas_getrootfor(g2), canvas_getrootfor(g2)->gl_name->s_name, g2);
         return;
     }
     if (f == 0 && sys_perf)
-        sys_vgui("pdtk_check {really quit?} {pd quit;\n} yes\n");
+        sys_vgui("pdtk_check .x%lx.c {really quit?} {pd quit;\n} yes\n",
+            canvas_getrootfor(g2));
     else glob_quit(0);
 }
 
@@ -1902,15 +1889,15 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         {
             vmess(&g->gl_pd, gensym("menu-open"), "");
             sys_vgui(
-"pdtk_check {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
-                canvas_getrootfor(g)->gl_name->s_name, g);
+"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
+                canvas_getrootfor(g), canvas_getrootfor(g)->gl_name->s_name, g);
             return;
         }
         else if (sys_perf)
         {
             sys_vgui(
-"pdtk_check {Close '%s'?} {.x%lx menuclose 1;\n} yes\n",
-                canvas_getrootfor(x)->gl_name->s_name, x);
+"pdtk_check .x%lx.c {Close '%s'?} {.x%lx menuclose 1;\n} yes\n",
+                canvas_getrootfor(x), canvas_getrootfor(x)->gl_name->s_name, x);
         }
         else pd_free(&x->gl_pd);
     }
@@ -1926,8 +1913,8 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         {
             vmess(&g->gl_pd, gensym("menu-open"), "");
             sys_vgui(
-"pdtk_check {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
-                canvas_getrootfor(x)->gl_name->s_name, g);
+"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
+                canvas_getrootfor(x), canvas_getrootfor(x)->gl_name->s_name, g);
             return;
         }
         else pd_free(&x->gl_pd);
@@ -2357,7 +2344,7 @@ static void canvas_paste(t_canvas *x)
 
 static void canvas_duplicate(t_canvas *x)
 {
-    if (x->gl_editor->e_onmotion == MA_NONE)
+    if (x->gl_editor->e_onmotion == MA_NONE && x->gl_editor->e_selection)
     {
         t_selection *y;
         canvas_copy(x);
@@ -2381,6 +2368,32 @@ static void canvas_selectall(t_canvas *x)
         if (!glist_isselected(x, y))
             glist_select(x, y);
     }
+}
+
+static void canvas_reselect(t_canvas *x)
+{
+    t_gobj *g, *gwas;
+    int nobjwas;
+        /* only do this if exactly one item is selected. */
+    if ((gwas = x->gl_editor->e_selection->sel_what) &&
+        !x->gl_editor->e_selection->sel_next)
+    {
+        int nobjwas = glist_getindex(x, 0),
+            indx = canvas_getindex(x, x->gl_editor->e_selection->sel_what);
+        glist_noselect(x);
+        for (g = x->gl_list; g; g = g->g_next)
+            if (g == gwas)
+        {
+            glist_select(x, g);
+            return;
+        }
+            /* "gwas" must have disappeared; just search to the last
+            object and select it */
+        for (g = x->gl_list; g; g = g->g_next)
+            if (!g->g_next)
+                glist_select(x, g);
+    }
+
 }
 
 extern t_class *text_class;
@@ -2663,6 +2676,8 @@ void g_editor_setup(void)
         gensym("duplicate"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_selectall,
         gensym("selectall"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_reselect,
+        gensym("reselect"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_undo,
         gensym("undo"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_redo,

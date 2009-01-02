@@ -233,6 +233,7 @@ static t_class *savepanel_class;
 typedef struct _savepanel
 {
     t_object x_obj;
+    t_canvas *x_canvas;
     t_symbol *x_s;
 } t_savepanel;
 
@@ -242,6 +243,7 @@ static void *savepanel_new( void)
     t_savepanel *x = (t_savepanel *)pd_new(savepanel_class);
     sprintf(buf, "d%lx", (t_int)x);
     x->x_s = gensym(buf);
+    x->x_canvas = canvas_getcurrent();
     pd_bind(&x->x_obj.ob_pd, x->x_s);
     outlet_new(&x->x_obj, &s_symbol);
     return (x);

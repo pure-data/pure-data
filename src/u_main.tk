@@ -282,9 +282,9 @@ proc pdtk_ping {} {
 }
 
 ##### routine to ask user if OK and, if so, send a message on to Pd ######
-proc pdtk_check {x message default} {
-    set answer [tk_messageBox \-message $x \-type yesno -default $default \
-        -icon question]
+proc pdtk_check {canvas x message default} {
+    set answer [tk_messageBox -message $x -type yesno -default $default \
+        -parent $canvas -icon question]
     if {! [string compare $answer yes]}  {pd $message}
 }
 
@@ -333,9 +333,9 @@ proc menu_new {} {
 
 ################## the "Open" menu command #########################
 
-proc menu_open {} {
+proc menu_open {parent} {
     global pd_opendir
-    set filename [tk_getOpenFile -defaultextension .pd \
+    set filename [tk_getOpenFile -defaultextension .pd -parent $parent\
         -filetypes { {{pd files} {.pd}} {{max files} {.pat}}} \
         -initialdir $pd_opendir]
     if {$filename != ""} {open_file $filename}
@@ -382,6 +382,9 @@ proc menu_pop_pd {} {raise .}
 
 ######### the "audio" menu command  ###############
 proc menu_audio {flag} {pd [concat pd dsp $flag \;]}
+
+######### the "reselect" menu command ################
+proc menu_reselect {name} {pd [concat $name reselect \;]}
 
 ######### the "documentation" menu command  ###############
 
@@ -592,7 +595,7 @@ proc menu_addstd {mbar} {
 
 .mbar.file add command -label New -command {menu_new} \
     -accelerator [accel_munge "Ctrl+n"]
-.mbar.file add command -label Open -command {menu_open} \
+.mbar.file add command -label Open -command {menu_open .} \
     -accelerator [accel_munge "Ctrl+o"]
 .mbar.file add  separator
 .mbar.file add command -label Message -command {menu_send} \
@@ -947,7 +950,7 @@ proc pdtk_canvas_new {name width height geometry editable} {
     $name.m.file add command -label New -command {menu_new} \
         -accelerator [accel_munge "Ctrl+n"]
 
-    $name.m.file add command -label Open -command {menu_open} \
+    $name.m.file add command -label Open -command [concat menu_open $name] \
         -accelerator [accel_munge "Ctrl+o"]
 
     $name.m.file add  separator
@@ -1013,6 +1016,10 @@ proc pdtk_canvas_new {name width height geometry editable} {
     $name.m.edit add command -label {Select all} \
         -command [concat menu_selectall $name] \
         -accelerator [accel_munge "Ctrl+a"]
+
+    $name.m.edit add command -label {Reselect} \
+        -command [concat menu_reselect $name] \
+        -accelerator "Ctrl+Enter"
 
     $name.m.edit add separator
 
@@ -1652,6 +1659,7 @@ proc pdtk_canvas_ctrlkey {name key shift} {
     if {$key == "5"} {menu_comment $topname 1}
     if {$key == "slash"} {menu_audio 1}
     if {$key == "period"} {menu_audio 0}
+    if {$key == "Return"} {menu_reselect $topname}
     if {$shift == 1} {
         if {$key == "q" || $key == "Q"} {menu_really_quit}
         if {$key == "w" || $key == "W"} {menu_really_close $topname}
@@ -1672,7 +1680,7 @@ proc pdtk_canvas_ctrlkey {name key shift} {
         if {$key == "s" || $key == "S"} {menu_save $topname}
         if {$key == "z" || $key == "Z"} {menu_undo $topname}
         if {$key == "n" || $key == "N"} {menu_new}
-        if {$key == "o" || $key == "O"} {menu_open}
+        if {$key == "o" || $key == "O"} {menu_open $topname}
         if {$key == "m" || $key == "M"} {menu_send}
         if {$key == "w" || $key == "W"} {menu_close $topname}
         if {$key == "p" || $key == "P"} {menu_print $topname}
@@ -1726,7 +1734,7 @@ set saveas_dir nowhere
 proc pdtk_canvas_saveas {name initfile initdir} {
     global pd_nt
     set filename [tk_getSaveFile -initialfile $initfile \
-       -initialdir $initdir  -defaultextension .pd \
+       -initialdir $initdir  -defaultextension .pd -parent $name.c \
         -filetypes { {{pd files} {.pd}} {{max files} {.pat}} }]
 
     if {$filename != ""} {
@@ -3363,7 +3371,7 @@ proc pdtk_pd_ctrlkey {name key shift} {
 #    puts stderr [concat key $key shift $shift]
 #    .dummy itemconfig goo -text [concat ---> control-key event $key];
     if {$key == "n" || $key == "N"} {menu_new}
-    if {$key == "o" || $key == "O"} {menu_open}
+    if {$key == "o" || $key == "O"} {menu_open .}
     if {$key == "m" || $key == "M"} {menu_send}
     if {$key == "q" || $key == "Q"} {
         if {$shift == 1} {menu_really_quit} else    {menu_quit}

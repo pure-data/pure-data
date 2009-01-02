@@ -876,7 +876,7 @@ static void bonk_print(t_bonk *x, t_floatarg f)
     int i;
     post("thresh %f %f", x->x_lothresh, x->x_hithresh);
     post("mask %d %f", x->x_masktime, x->x_maskdecay);
-    post("attack-bins %d", x->x_attackbins);
+    post("attack-frames %d", x->x_attackbins);
     post("debounce %f", x->x_debouncedecay);
     post("minvel %f", x->x_minvel);
     post("spew %d", x->x_spew);
@@ -1143,23 +1143,38 @@ static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
 
 void bonk_tilde_setup(void)
 {
-    bonk_class = class_new(gensym("bonk~"), (t_newmethod)bonk_new, (t_method)bonk_free, sizeof(t_bonk), 0, A_GIMME, 0);
+    bonk_class = class_new(gensym("bonk~"), (t_newmethod)bonk_new,
+        (t_method)bonk_free, sizeof(t_bonk), 0, A_GIMME, 0);
     class_addmethod(bonk_class, nullfn, gensym("signal"), 0);
     class_addmethod(bonk_class, (t_method)bonk_dsp, gensym("dsp"), 0);
     class_addbang(bonk_class, bonk_bang);
-    class_addmethod(bonk_class, (t_method)bonk_learn, gensym("learn"), A_FLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_learn,
+        gensym("learn"), A_FLOAT, 0);
     class_addmethod(bonk_class, (t_method)bonk_forget, gensym("forget"), 0);
-    class_addmethod(bonk_class, (t_method)bonk_thresh, gensym("thresh"), A_FLOAT, A_FLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_mask, gensym("mask"), A_FLOAT, A_FLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_debounce, gensym("debounce"), A_FLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_minvel, gensym("minvel"), A_FLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_print, gensym("print"), A_DEFFLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_debug, gensym("debug"), A_DEFFLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_spew, gensym("spew"), A_DEFFLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_useloudness, gensym("useloudness"), A_DEFFLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_attackbins, gensym("attack-bins"), A_DEFFLOAT, 0);
-    class_addmethod(bonk_class, (t_method)bonk_read, gensym("read"), A_SYMBOL, 0);
-    class_addmethod(bonk_class, (t_method)bonk_write, gensym("write"), A_SYMBOL, 0);
+    class_addmethod(bonk_class, (t_method)bonk_thresh,
+        gensym("thresh"), A_FLOAT, A_FLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_mask,
+        gensym("mask"), A_FLOAT, A_FLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_debounce,
+        gensym("debounce"), A_FLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_minvel,
+        gensym("minvel"), A_FLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_print,
+        gensym("print"), A_DEFFLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_debug,
+        gensym("debug"), A_DEFFLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_spew,
+        gensym("spew"), A_DEFFLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_useloudness,
+        gensym("useloudness"), A_DEFFLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_attackbins,
+        gensym("attack-bins"), A_DEFFLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_attackbins,
+        gensym("attack-frames"), A_DEFFLOAT, 0);
+    class_addmethod(bonk_class, (t_method)bonk_read,
+        gensym("read"), A_SYMBOL, 0);
+    class_addmethod(bonk_class, (t_method)bonk_write,
+        gensym("write"), A_SYMBOL, 0);
     post("bonk version 1.3");
 }
 #endif
@@ -1225,8 +1240,8 @@ int main()
         
         attr = attr_offset_new("useloudness", sym_long, attrflags, (method)0L, (method)bonk_useloudness_set, calcoffset(t_bonk, x_useloudness));
         class_addattr(c, attr);
-    
-        attr = attr_offset_new("attackbins", sym_long, attrflags, (method)0L, (method)bonk_attackbins_set, calcoffset(t_bonk, x_attackbins));
+
+        attr = attr_offset_new("attackframes", sym_long, attrflags, (method)0L, (method)bonk_attackbins_set, calcoffset(t_bonk, x_attackbins));
         class_addattr(c, attr);
         
         attr = attr_offset_new("learn", sym_long, attrflags, (method)0L, (method)bonk_learn_set, calcoffset(t_bonk, x_learn));
