@@ -1599,7 +1599,7 @@ void canvas_mouseup(t_canvas *x,
                 vmess(&gl2->gl_pd, gensym("menu-open"), "");
                 x->gl_editor->e_onmotion = MA_NONE;
                 sys_vgui(
-"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
+"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
                     canvas_getrootfor(gl2),
                         canvas_getrootfor(gl2)->gl_name->s_name, gl2);
                 return;
@@ -1859,12 +1859,12 @@ void glob_verifyquit(void *dummy, t_floatarg f)
     {
         canvas_vis(g2, 1);
         sys_vgui(
-"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx menuclose 3;\n} no\n",
+"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx menuclose 3;\n} no\n",
             canvas_getrootfor(g2), canvas_getrootfor(g2)->gl_name->s_name, g2);
         return;
     }
     if (f == 0 && sys_perf)
-        sys_vgui("pdtk_check .x%lx.c {really quit?} {pd quit;\n} yes\n",
+        sys_vgui("pdtk_check .x%lx {really quit?} {pd quit;\n} yes\n",
             canvas_getrootfor(g2));
     else glob_quit(0);
 }
@@ -1889,14 +1889,14 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         {
             vmess(&g->gl_pd, gensym("menu-open"), "");
             sys_vgui(
-"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
+"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
                 canvas_getrootfor(g), canvas_getrootfor(g)->gl_name->s_name, g);
             return;
         }
         else if (sys_perf)
         {
             sys_vgui(
-"pdtk_check .x%lx.c {Close '%s'?} {.x%lx menuclose 1;\n} yes\n",
+"pdtk_check .x%lx {Close '%s'?} {.x%lx menuclose 1;\n} yes\n",
                 canvas_getrootfor(x), canvas_getrootfor(x)->gl_name->s_name, x);
         }
         else pd_free(&x->gl_pd);
@@ -1913,7 +1913,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         {
             vmess(&g->gl_pd, gensym("menu-open"), "");
             sys_vgui(
-"pdtk_check .x%lx.c {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
+"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
                 canvas_getrootfor(x), canvas_getrootfor(x)->gl_name->s_name, g);
             return;
         }

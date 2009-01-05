@@ -31,7 +31,6 @@ open_via_path call in d_soundfile.c isn't threadsafe
 floor, ciel functions in expr misdeclared
 graph names don't appear until graph moved? (invis/vis on new array/rename)
 don't filter locked click() through getrect
-when retyping abstractions, offer to save dirty one
 should linux stop grabbing focus on vis?  Is there a way to detect whether
     the mouse is in a window when it opens?
 arrays that don't fit in bounds don't update (same as red rectangle problem?)
@@ -53,6 +52,7 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
+'route' object to sprout inlet if no args (like sel)
 optionally suppress leading "." directories and files on "open"
 change config.h to #ifdef _MSC_VER (include MSW fake) else include a real one
 stick snprintf alias in the MSW fake.
