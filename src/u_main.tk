@@ -283,8 +283,14 @@ proc pdtk_ping {} {
 
 ##### routine to ask user if OK and, if so, send a message on to Pd ######
 proc pdtk_check {canvas x message default} {
-    set answer [tk_messageBox -message $x -type yesno -default $default \
-        -parent $canvas -icon question]
+    global pd_nt
+    if {$pd_nt == 1} {
+        set answer [tk_messageBox -message $x -type yesno -default $default \
+            -icon question]
+    } else {
+        set answer [tk_messageBox -message $x -type yesno -default $default \
+            -parent $canvas -icon question]
+    }    
     if {! [string compare $answer yes]}  {pd $message}
 }
 

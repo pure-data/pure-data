@@ -136,23 +136,39 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int selected,
 static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     int *indexp, int *totalp)
 {
-    int xpix, ypix, indx = 0, nobj = 0, x1, x2, y1, y2;
+    int xpix, ypix, indx = 0, nobj = 0, n2, x1, x2, y1, y2;
     int connectme = (x->gl_editor->e_selection &&
         !x->gl_editor->e_selection->sel_next);
     if (connectme)
     {
-        t_gobj *g;
+        t_gobj *g, *selected = x->gl_editor->e_selection->sel_what;
         for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++)
-            if (g == x->gl_editor->e_selection->sel_what)
+            if (g == selected)
         {
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
             indx = nobj;
             *xpixp = x1;
             *ypixp = y2 + 5;
         }
+        glist_noselect(x);
+            /* search back for 'selected' and if it isn't on the list, 
+                plan just to connect from the last item on the list. */
+        for (g = x->gl_list, n2 = 0; g; g = g->g_next, n2++)
+        {
+            if (g == selected)
+            {
+                indx = n2;
+                break;
+            }
+            else if (!g->g_next)
+                indx = nobj-1;
+        }
     }
-    else glist_getnextxy(x, xpixp, ypixp);
-    glist_noselect(x);
+    else
+    {
+        glist_getnextxy(x, xpixp, ypixp);
+        glist_noselect(x);
+    }
     *connectp = connectme;
     *indexp = indx;
     *totalp = nobj;

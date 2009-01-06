@@ -1864,8 +1864,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
         return;
     }
     if (f == 0 && sys_perf)
-        sys_vgui("pdtk_check .x%lx {really quit?} {pd quit;\n} yes\n",
-            canvas_getrootfor(g2));
+        sys_vgui("pdtk_check . {really quit?} {pd quit;\n} yes\n");
     else glob_quit(0);
 }
 
@@ -2363,7 +2362,10 @@ static void canvas_selectall(t_canvas *x)
     t_gobj *y;
     if (!x->gl_edit)
         canvas_editmode(x, 1);
-    for (y = x->gl_list; y; y = y->g_next)
+            /* if everyone is already selected deselect everyone */
+    if (!glist_selectionindex(x, 0, 0))
+        glist_noselect(x);
+    else for (y = x->gl_list; y; y = y->g_next)
     {
         if (!glist_isselected(x, y))
             glist_select(x, y);

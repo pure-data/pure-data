@@ -333,7 +333,7 @@ gotit: ;
 
 #ifdef STARTGUI
 
-#define DEBUGCONNECT
+/* #define DEBUGCONNECT */
 
 #ifdef DEBUGCONNECT
 static FILE *debugfd;
@@ -621,12 +621,26 @@ int Pdtcl_Init(Tcl_Interp *interp)
     int portno = 0, i;
     if (argv)
     {
+            /* search for arg of form "-guiport %d"; if so we're the
+            child. For some reason, the second version is too stringent
+            a test on MSW so the first, incorrect one, is conditionally
+            used. */
+#ifdef MSW
         for (i = 0; i < (int)strlen(argv) - 1; i++)
             if (argv[i] >= '0' && argv[i] <= '9')
         {
             portno = atoi(argv+i);
             break;
         }
+#else
+        for (i = 0; i < (int)strlen(argv) - 3; i++)
+            if (argv[i] == ' ' &&
+                argv[i+1] >= '0' && argv[i+1] <= '9')
+        {
+            portno = atoi(argv+i+1);
+            break;
+        }
+#endif
     }
     if (portno)
         pdgui_setsock(portno);
