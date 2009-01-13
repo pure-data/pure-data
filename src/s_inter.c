@@ -1097,7 +1097,7 @@ int sys_startgui(const char *guidir)
         }
         else if (!childpid)                     /* we're the child */
         {
-            seteuid(getuid());          /* lose setuid priveliges */
+            setuid(getuid());          /* lose setuid priveliges */
 #ifndef __APPLE__
                 /* the wish process in Unix will make a wish shell and
                     read/write standard in and out unless we close the
@@ -1173,14 +1173,14 @@ int sys_startgui(const char *guidir)
 
         if (pipe(pipe9) < 0)
         {
-            seteuid(getuid());      /* lose setuid priveliges */
+            setuid(getuid());      /* lose setuid priveliges */
             sys_sockerror("pipe");
             return (1);
         }
         watchpid = fork();
         if (watchpid < 0)
         {
-            seteuid(getuid());      /* lose setuid priveliges */
+            setuid(getuid());      /* lose setuid priveliges */
             if (errno)
                 perror("sys_startgui");
             else fprintf(stderr, "sys_startgui failed\n");
@@ -1189,7 +1189,7 @@ int sys_startgui(const char *guidir)
         else if (!watchpid)             /* we're the child */
         {
             sys_set_priority(1);
-            seteuid(getuid());      /* lose setuid priveliges */
+            setuid(getuid());      /* lose setuid priveliges */
             if (pipe9[1] != 0)
             {
                 dup2(pipe9[0], 0);
@@ -1206,7 +1206,7 @@ int sys_startgui(const char *guidir)
         else                            /* we're the parent */
         {
             sys_set_priority(0);
-            seteuid(getuid());      /* lose setuid priveliges */
+            setuid(getuid());      /* lose setuid priveliges */
             close(pipe9[0]);
             sys_watchfd = pipe9[1];
                 /* We also have to start the ping loop in the GUI;
@@ -1214,7 +1214,7 @@ int sys_startgui(const char *guidir)
         }
     }
 
-    seteuid(getuid());          /* lose setuid priveliges */
+    setuid(getuid());          /* lose setuid priveliges */
 #endif /* __linux__ */
 
 #ifdef MSW
