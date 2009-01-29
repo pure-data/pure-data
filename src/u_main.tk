@@ -126,10 +126,9 @@ bind Text <Control-s> {}
 # the menus are instantiated here for the main window
 # for the patch windows, they are created by pdtk_canvas_new
 menu .mbar
-canvas .dummy -height 2p -width 6c
 
 frame .controls
-pack .controls .dummy -side top -fill x
+pack .controls -side top -fill x
 menu .mbar.file -tearoff $pd_tearoff
 .mbar add cascade -label "File" -menu .mbar.file
 menu .mbar.find -tearoff $pd_tearoff
@@ -194,7 +193,7 @@ pack .controls.inout.out.label .controls.inout.out.level \
 
 button .controls.dio -text "DIO\nerrors" \
     -command {pd [concat pd audiostatus \;]}
-button .controls.clear -text "clear\nprinout" \
+button .controls.clear -text "clear\nprintout" \
     -command {.printout.text delete 0.0 end}
 
 pack .controls.inout.in .controls.inout.out -side left -padx 6
