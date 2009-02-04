@@ -106,7 +106,7 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     bad: 
         argc -= 2; argv += 2;
     }
-    if (templatesym->s_name)
+    if (*templatesym->s_name)
     {
         x->t_sym = templatesym;
         pd_bind(&x->t_pdobj, x->t_sym);

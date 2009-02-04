@@ -131,6 +131,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int selected,
     canvas_unsetcurrent((t_canvas *)gl);
 }
 
+extern int sys_noautopatch;
     /* utility routine to figure out where to put a new text box from menu
     and whether to connect to it automatically */
 static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
@@ -138,7 +139,7 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
 {
     int xpix, ypix, indx = 0, nobj = 0, n2, x1, x2, y1, y2;
     int connectme = (x->gl_editor->e_selection &&
-        !x->gl_editor->e_selection->sel_next);
+        !x->gl_editor->e_selection->sel_next && !sys_noautopatch);
     if (connectme)
     {
         t_gobj *g, *selected = x->gl_editor->e_selection->sel_what;

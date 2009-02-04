@@ -466,21 +466,16 @@ static void pd_tilde_tick(t_pd_tilde *x)
 static void pd_tilde_anything(t_pd_tilde *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    char msgbuf[MAXPDSTRING], *sp, *ep = msgbuf+MAXPDSTRING;
+    char msgbuf[MAXPDSTRING];
     if (!x->x_outfd)
         return;
-    msgbuf[0] = 0;
-    strncpy(msgbuf, s->s_name, MAXPDSTRING);
-    msgbuf[MAXPDSTRING-1] = 0;
-    sp = msgbuf + strlen(msgbuf);
+    fprintf(x->x_outfd, "%s ", s->s_name);
     while (argc--)
     {
-        if (sp < ep-1)
-            sp[0] = ' ', sp[1] = 0, sp++;
-        atom_string(argv++, sp, ep-sp);
-        sp += strlen(sp);
+        atom_string(argv++, msgbuf, MAXPDSTRING);
+        fprintf(x->x_outfd, "%s ", msgbuf);
     }
-    fprintf(x->x_outfd, "%s;\n", msgbuf);
+    fprintf(x->x_outfd, ";\n");
 }
 
 static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)

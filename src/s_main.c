@@ -81,6 +81,7 @@ int sys_extraflags;
 char sys_extraflagsstring[MAXPDSTRING];
 int sys_run_scheduler(const char *externalschedlibname,
     const char *sys_extraflagsstring);
+int sys_noautopatch;    /* temporary hack to defeat new 0.42 editing */
 
     /* here the "-1" counts signify that the corresponding vector hasn't been
     specified in command line arguments; sys_set_audio_settings will detect it
@@ -398,6 +399,7 @@ static char *(usagemessage[]) = {
 "-schedlib <file> -- plug in external scheduler\n",
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
+"-noautopatch     -- defeat auto-patching new from selected objects\n",
 };
 
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
@@ -830,6 +832,11 @@ int sys_argparse(int argc, char **argv)
         {
             sys_batch = 1;
             sys_printtostderr = sys_nogui = 1;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-noautopatch"))
+        {
+            sys_noautopatch = 1;
             argc--; argv++;
         }
 #ifdef UNISTD

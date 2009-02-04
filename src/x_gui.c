@@ -158,8 +158,7 @@ static void gfxstub_free(t_gfxstub *x)
 
 static void gfxstub_setup(void)
 {
-    gfxstub_class = class_new(gensym("gfxstub"), (t_newmethod)gfxstub_new,
-        (t_method)gfxstub_free,
+    gfxstub_class = class_new(gensym("gfxstub"), 0, (t_method)gfxstub_free,
         sizeof(t_gfxstub), CLASS_PD, 0);
     class_addanything(gfxstub_class, gfxstub_anything);
     class_addmethod(gfxstub_class, (t_method)gfxstub_signoff,

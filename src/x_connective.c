@@ -1245,7 +1245,8 @@ static void makefilename_scanformat(t_makefilename *x)
 static void *makefilename_new(t_symbol *s)
 {
     t_makefilename *x = (t_makefilename *)pd_new(makefilename_class);
-    if (!s || !s->s_name) s = gensym("file.%d");
+    if (!s || !*s->s_name)
+        s = gensym("file.%d");
     outlet_new(&x->x_obj, &s_symbol);
     x->x_format = s;
     x->x_accept = A_NULL;

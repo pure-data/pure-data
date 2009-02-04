@@ -1,3 +1,5 @@
+bug: go to ~/rep/rand, start pd, use open panel to open ../mark/mark.pd - crash
+
 ---------------- dolist --------------------
 
 test:
@@ -14,6 +16,7 @@ mac:
 Gnome: why don't windows pop up when clicked on?
 
 problems:
+pd~ "start" followed by messages gives race condition because of "fromgui" biz
 get rid of remaining -export-dynamic in makefiles
 saving as "x.pd" on mac writes to "x.pd.pd" (can't reproduce this.)
 find asdf$1 (e.g.) doesn't work
