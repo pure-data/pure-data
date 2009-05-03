@@ -289,7 +289,9 @@ static t_int *pd_tilde_perform(t_int *w)
     if (!infd)
         goto zeroit;
     fprintf(x->x_outfd, ";\n");
-    for (i = 0; i < x->x_ninsig; i++)
+    if (!x->x_ninsig)
+        fprintf(x->x_outfd, "0\n");
+    else for (i = 0; i < x->x_ninsig; i++)
     {
         t_sample *fp = x->x_insig[i];
         for (j = 0; j < n; j++)
@@ -373,7 +375,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_symbol *sel = ((argc > 0 && argv->a_type == A_SYMBOL) ?
-        argv->a_w.w_symbol : gensym("?"));
+        argv->a_w.w_symbol : gensym("?")), *schedlibdir;
     char *patchdir;
     if (sel == gensym("start"))
     {
@@ -392,11 +394,14 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
         }
         patchdir = canvas_getdir(x->x_canvas)->s_name;
 #endif
-#ifdef MAX
+#ifdef MSP
         while (argc--)
         {
+                /* because Mac pathnames sometimes have an evil preceeding
+                colon character, we test for and silently eat them */
             if (argv->a_type == A_SYM)
-                strncat(pdargstring, argv->a_w.w_sym->s_name,
+                strncat(pdargstring, (*argv->a_w.w_sym->s_name == ':'?
+                    argv->a_w.w_sym->s_name+1 : argv->a_w.w_sym->s_name),
                     MAXPDSTRING - strlen(pdargstring)-3);
             else if (argv->a_type == A_LONG)
                 snprintf(pdargstring+strlen(pdargstring),
@@ -411,7 +416,17 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
         }
         patchdir = ".";
 #endif
-        pd_tilde_donew(x, x->x_pddir->s_name, x->x_schedlibdir->s_name,
+        schedlibdir = x->x_schedlibdir;
+        if (schedlibdir == gensym(".") && x->x_pddir != gensym("."))
+        {
+            char *pds = x->x_pddir->s_name, scheddirstring[MAXPDSTRING];
+            int l = strlen(pds);
+            if (l >= 4 && (!strcmp(pds+l-3, "bin") || !strcmp(pds+l-4, "bin/")))
+                snprintf(scheddirstring, MAXPDSTRING, "%s/../extra/pd~", pds);
+            else snprintf(scheddirstring, MAXPDSTRING, "%s/extra/pd~", pds);
+            schedlibdir = gensym(scheddirstring);
+        }
+        pd_tilde_donew(x, x->x_pddir->s_name, schedlibdir->s_name,
             patchdir, pdargstring, x->x_ninsig, x->x_noutsig, x->x_fifo,
                 x->x_sr);
     }
@@ -419,6 +434,19 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
     {
         if (x->x_infd)
             pd_tilde_close(x);
+    }
+    else if (sel == gensym("pddir"))
+    {
+        if ((argc > 1) && argv[1].a_type == A_SYM)
+        {
+            t_symbol *s = argv[1].a_w.w_sym;
+#ifdef MSP
+            if (s->s_name[0] == ':')
+                s = gensym(s->s_name+1);
+#endif
+            x->x_pddir = s;
+        }
+        else ERROR "pd~ pddir: needs symbol argument");
     }
     else ERROR "pd~: unknown control message: %s", sel->s_name);
 }
@@ -594,20 +622,15 @@ static void pd_tilde_tick(t_pd_tilde *x)
             if (i > messstart + 1)
             {
                 void *whom;
-                if (vec[messstart].a_type != A_SYM)
-                    ERROR "pd_tilde_tick got non-symbol?");
-                else if (!(whom = vec[messstart].a_w.w_sym->s_thing))
-                    ERROR "%s: no such object",
-                        vec[messstart].a_w.w_sym->s_name);
-                else if (vec[messstart+1].a_type == A_SYM)
-                    typedmess(whom, vec[messstart+1].a_w.w_sym,
-                        i-messstart-2, vec+(messstart+2));
-                else if (vec[messstart+1].a_type == A_FLOAT && i == messstart+2)
-                    typedmess(whom, gensym("float"), 1, vec+(messstart+1));
-                else if (vec[messstart+1].a_type == A_LONG && i == messstart+2)
-                    typedmess(whom, gensym("int"), 1, vec+(messstart+1));
-                else typedmess(whom, gensym("list"),
-                    i-messstart-1, vec+(messstart+1));
+                if (vec[messstart].a_type == A_SYM)
+                    outlet_anything(x->x_outlet1, vec[messstart].a_w.w_sym,
+                        i-messstart-1, vec+(messstart+1));
+                else if (vec[messstart].a_type == A_FLOAT && i == messstart+1)
+                    outlet_float(x->x_outlet1, vec[messstart].a_w.w_float);
+                else if (vec[messstart].a_type == A_LONG && i == messstart+1)
+                    outlet_int(x->x_outlet1, vec[messstart].a_w.w_long);
+                else outlet_list(x->x_outlet1, gensym("list"),
+                    i-messstart, vec+(messstart));
             }
             messstart = i+1;
         }
@@ -711,20 +734,10 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
             }
             else break;
         }
-        if (scheddir == gensym(".") && pddir != gensym("."))
-        {
-            char *pds = pddir->s_name, scheddirstring[MAXPDSTRING];
-            int l = strlen(pds);
-            if (l >= 4 && (!strcmp(pds+l-3, "bin") || !strcmp(pds+l-4, "bin/")))
-                snprintf(scheddirstring, MAXPDSTRING, "%s/../extra/pd~", pds);
-            else snprintf(scheddirstring, MAXPDSTRING, "%s/extra/pd~", pds);
-            scheddir = gensym(scheddirstring);
-        }
         if (ac)
             post("pd~: warning: ignoring extra arguments");
-        post("pd~: pddir %s scheddir %s",
-            pddir->s_name, scheddir->s_name);
         dsp_setup((t_pxobject *)x, ninsig);
+        x->x_outlet1 = outlet_new(&x->x_obj, 0);
         for (j = 0; j < noutsig; j++)
             outlet_new((t_pxobject *)x, "signal");
         x->x_clock = clock_new(x, (method)pd_tilde_tick);

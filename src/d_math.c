@@ -627,7 +627,7 @@ t_int *exp_tilde_perform(t_int *w)
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     while (n--)
-        *out = exp(*in1);
+        *out++ = exp(*in1++);
     return (w+4);
 }
 
@@ -720,7 +720,7 @@ t_int *abs_tilde_perform(t_int *w)
     while (n--)
     {
         float f = *in1++;
-        *out = (f >= 0 ? f : -f);
+        *out++ = (f >= 0 ? f : -f);
     }
     return (w+4);
 }
