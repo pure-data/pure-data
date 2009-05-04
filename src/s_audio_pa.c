@@ -13,9 +13,12 @@
 #include <stdlib.h>
 #include <portaudio.h>
 #include "s_audio_pablio.h"
+#ifdef MSW
+#include <malloc.h>
+#else
+#include <alloca.h>
+#endif
 
-#define MAX_PA_CHANS 32
-#define MAX_SAMPLES_PER_FRAME (MAX_PA_CHANS * DEFDACBLKSIZE)
     /* LATER try to figure out how to handle default devices in portaudio;
     the way s_audio.c handles them isn't going to work here. */
 
@@ -196,16 +199,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     /* fprintf(stderr, "open callback %d\n", (callbackfn != 0)); */
     pa_init();
     /* post("in %d out %d rate %d device %d", inchans, outchans, rate, deviceno); */
-    if (inchans > MAX_PA_CHANS)
-    {
-        post("input channels reduced to maximum %d", MAX_PA_CHANS);
-        inchans = MAX_PA_CHANS;
-    }
-    if (outchans > MAX_PA_CHANS)
-    {
-        post("output channels reduced to maximum %d", MAX_PA_CHANS);
-        outchans = MAX_PA_CHANS;
-    }
     
     if (inchans > 0)
     {
@@ -288,9 +281,14 @@ void pa_close_audio( void)
 
 int pa_send_dacs(void)
 {
-    float samples[MAX_SAMPLES_PER_FRAME], *fp1, *fp2;
+    unsigned int framesize = (sizeof(float) * DEFDACBLKSIZE) *
+        (pa_inchans > pa_outchans ? pa_inchans:pa_outchans);
+    float *samples, *fp1, *fp2;
     int i, j;
     double timebefore;
+    
+    
+    samples = alloca(framesize);
     
     timebefore = sys_getrealtime();
     if ((pa_inchans && GetAudioStreamReadable(pa_stream) < DEFDACBLKSIZE) ||
