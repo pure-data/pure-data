@@ -1,4 +1,4 @@
-#N canvas 250 93 494 364 12;
+#N canvas 130 55 494 364 12;
 #X floatatom 84 288 3 0 0 0 - - -;
 #X obj 34 237 notein;
 #X obj 34 263 stripnote;
@@ -55,7 +55,7 @@
 #X obj 177 126 tgl 20 0 tone-ch1 tone-ch1 1 5 -8 0 12 -262144 -1 -1
 1 1;
 #X obj 202 126 tgl 20 0 tone-ch2 tone-ch2 2 5 -8 0 12 -262144 -1 -1
-1 1;
+0 1;
 #X obj 219 258 tgl 20 0 empty empty empty 20 8 0 8 -262144 -1 -1 0
 1;
 #X obj 184 192 tgl 15 0 tone-monitor set-tone-monitor monitor-inputs
@@ -99,8 +99,8 @@
 #X connect 14 0 11 1;
 #X connect 15 0 11 1;
 #X restore 388 266 pd more;
-#X obj 343 193 tgl 15 0 tone-hipass set-tone-hipass input-hipass 23
-8 0 12 -262144 -1 -1 0 1;
+#X obj 343 193 tgl 15 0 tone-hipass tone-hipass-set input-hipass 23
+8 0 12 -262144 -1 -1 1 1;
 #X obj 243 126 tgl 20 0 tone-ch3 tone-ch3 3 5 -8 0 12 -262144 -1 -1
 1 1;
 #X obj 268 126 tgl 20 0 tone-ch4 tone-ch4 4 5 -8 0 12 -262144 -1 -1
@@ -109,9 +109,9 @@
 1 1;
 #X obj 334 126 tgl 20 0 tone-ch6 tone-ch6 6 5 -8 0 12 -262144 -1 -1
 1 1;
-#X obj 427 117 bng 15 250 50 0 tone-all empty ALL 20 8 0 12 -262144
+#X obj 428 117 bng 15 250 50 0 tone-all empty ALL 20 8 0 12 -262144
 -1 -1;
-#X obj 427 138 bng 15 250 50 0 tone-none empty NONE 20 8 0 12 -262144
+#X obj 428 138 bng 15 250 50 0 tone-none empty NONE 20 8 0 12 -262144
 -1 -1;
 #X floatatom 244 93 3 0 0 0 - tone-vu3 -;
 #X floatatom 272 93 3 0 0 0 - tone-vu4 -;
@@ -121,14 +121,14 @@
 #X text 101 88 noise;
 #X text 100 105 tone;
 #X obj 84 90 vradio 15 1 0 2 tone-type tone-type-set empty 0 -6 0 8
--262144 -1 -1 1;
+-262144 -1 -1 0;
 #X obj 22 91 vradio 15 1 0 3 tone-radio tone-radio-set empty 0 -6 0
 8 -262144 -1 -1 2;
 #X floatatom 376 93 3 0 0 0 - tone-vu7 -;
 #X floatatom 404 93 3 0 0 0 - tone-vu8 -;
-#X obj 374 126 tgl 20 0 tone-ch7 tone-ch7 7 5 -8 0 12 -262144 -1 -1
+#X obj 375 126 tgl 20 0 tone-ch7 tone-ch7 7 5 -8 0 12 -262144 -1 -1
 1 1;
-#X obj 399 126 tgl 20 0 tone-ch8 tone-ch8 8 5 -8 0 12 -262144 -1 -1
+#X obj 400 126 tgl 20 0 tone-ch8 tone-ch8 8 5 -8 0 12 -262144 -1 -1
 1 1;
 #N canvas 233 346 321 422 audio 0;
 #X obj 25 303 s~ tone-mon;
@@ -138,7 +138,7 @@
 #X obj 28 139 * 5;
 #X obj 28 164 s tone-hip;
 #X obj 28 114 r tone-hipass;
-#N canvas 476 63 548 519 glue+loadbang 0;
+#N canvas 424 104 548 519 glue+loadbang 0;
 #X obj 8 20 loadbang;
 #X obj 175 18 r tone-all;
 #X obj 285 16 r tone-none;

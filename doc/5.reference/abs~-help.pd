@@ -1,0 +1,20 @@
+#N canvas 286 197 499 284 10;
+#X obj 19 108 sig~;
+#X obj 71 133 loadbang;
+#X obj 71 157 metro 100;
+#X obj 71 181 snapshot~;
+#X floatatom 19 87 5 0 0 0 - - -;
+#X floatatom 71 206 7 0 0 0 - - -;
+#X text 316 257 updated for Pd version 0.42.;
+#X obj 20 132 abs~;
+#X obj 21 14 abs~;
+#X text 60 14 - absolute value;
+#X text 82 33 Passes nonnegative values unchanged \, but replaces negative
+ones with their (positive) inverses.;
+#X text 81 66 (turn DSP on to test):;
+#X connect 0 0 7 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 0;
+#X connect 4 0 0 0;
+#X connect 7 0 3 0;

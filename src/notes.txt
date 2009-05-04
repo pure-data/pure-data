@@ -1,8 +1,9 @@
 
 ---------------- dolist --------------------
 
-test:
+doc:
 exp~, abs~ fixes
+pd~ -ninsig 0 bug fixed
 
 compile on various versions of linux
 windows:
