@@ -437,14 +437,14 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
     }
     else if (sel == gensym("pddir"))
     {
-        if ((argc > 1) && argv[1].a_type == A_SYM)
+        if ((argc > 1) && argv[1].a_type == A_SYMBOL)
         {
-            t_symbol *s = argv[1].a_w.w_sym;
+            t_symbol *sym = argv[1].a_w.w_symbol;
 #ifdef MSP
-            if (s->s_name[0] == ':')
-                s = gensym(s->s_name+1);
+            if (sym->s_name[0] == ':')
+                sym = gensym(s->s_name+1);
 #endif
-            x->x_pddir = s;
+            x->x_pddir = sym;
         }
         else ERROR "pd~ pddir: needs symbol argument");
     }
