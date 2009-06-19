@@ -13,7 +13,7 @@
 
 
 #define MAX_CLIENTS 100
-#define NUM_JACK_PORTS 32
+#define NUM_JACK_PORTS 128  /* seems like higher values give bad xrun problems */
 #define BUF_JACK 4096
 static jack_nframes_t jack_out_max;
 #define JACK_OUT_MAX  64

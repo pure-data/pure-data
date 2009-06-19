@@ -2454,9 +2454,9 @@ bad:
             (sink? class_getname(pd_class(&sink->g_pd)) : "???"));
 }
 
-#define XTOLERANCE 4
-#define YTOLERANCE 3
-#define NHIST 15
+#define XTOLERANCE 18
+#define YTOLERANCE 17
+#define NHIST 35
 
     /* LATER might have to speed this up */
 static void canvas_tidy(t_canvas *x)
@@ -2514,10 +2514,10 @@ static void canvas_tidy(t_canvas *x)
             }
         }
     }
-    for (i = 1, besthist = 0, bestdist = 4, ip = histogram + 1;
-        i < (NHIST-1); i++, ip++)
+    for (i = 2, besthist = 0, bestdist = 4, ip = histogram + 1;
+        i < (NHIST-2); i++, ip++)
     {
-        int hit = ip[-1] + 2 * ip[0] + ip[1];
+        int hit = ip[-2] + 2* ip[-1] + 3 * ip[0] + 2* ip[1] + ip[2];
         if (hit > besthist)
         {
             besthist = hit;

@@ -88,7 +88,7 @@ LINUXINCLUDE =  -I../../src
 	$(CC) -g $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.pd_linux_o -c $*.c
 
 expr.pd_linux: $(LINUXOBJ)
-	$(CC) -export_dynamic  -shared -o expr.pd_linux $(LINUXOBJ) -lc -lm
+	$(CC)  -shared -o expr.pd_linux $(LINUXOBJ) -lc -lm
 	strip --strip-unneeded expr.pd_linux
 
 expr~.pd_linux: expr.pd_linux
