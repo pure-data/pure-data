@@ -235,7 +235,7 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
     float param1, float param2, float param3, float hifreq)
 {
     float oneovern = 1.0/ (float)npts;
-    float fperbin = 0.5 * srate * oneovern;
+    float fperbin = 0.5 * srate * oneovern, totalpower = 0;
     int npts2 = 2*npts, i, bin;
     int peakcount = 0;
     float *fp1, *fp2;
@@ -272,16 +272,18 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
     rawimag[-3] = -rawimag[3];
     rawimag[-4] = -rawimag[4];
 #if 1
-    for (i = 0, fp1 = rawreal, fp2 = rawimag; i < npts-1; i++, fp1++, fp2++)
+    for (i = 0, fp1 = rawreal, fp2 = rawimag; i < maxbin; i++, fp1++, fp2++)
     {
-        float x1 = fp1[1] - fp1[-1], x2 = fp2[1] - fp2[-1]; 
-        powbuf[i] = x1*x1+x2*x2;
+        float x1 = fp1[1] - fp1[-1], x2 = fp2[1] - fp2[-1], p = powbuf[i] = x1*x1+x2*x2; 
+        if (i >= 2)
+           totalpower += p;
     }
-    powbuf[npts-1] = 0;
+    powbuf[maxbin] = powbuf[maxbin+1] = 0;
+    *power = 0.5 * totalpower *oneovern * oneovern;
 #endif
     for (peakcount = 0; peakcount < npeak; peakcount++)
     {
-        float pow1, maxpower = 0, totalpower = 0, windreal, windimag, windpower,
+        float pow1, maxpower = 0, windreal, windimag, windpower,
             detune, pidetune, sinpidetune, cospidetune, ampcorrect, ampout,
             ampoutreal, ampoutimag, freqout, powmask;
         int bestindex = -1;
@@ -296,14 +298,12 @@ static void sigmund_getrawpeaks(int npts, float *insamps,
                 if (pow1 > thresh)
                     maxpower = pow1, bestindex = bin;
             }
-            totalpower += pow1;
         }
 
         if (totalpower <= 0 || maxpower < 1e-10*totalpower || bestindex < 0)
             break;
         fp1 = rawreal+bestindex;
         fp2 = rawimag+bestindex;
-        *power = 0.5 * totalpower *oneovern * oneovern;
         powmask = maxpower * exp(-param1 * log(10.) / 10.);
         /* if (loud > 2)
             post("maxpower %f, powmask %f, param1 %f",
@@ -1054,6 +1054,7 @@ static void sigmund_print(t_sigmund *x)
     post("stabletime %g", x->x_stabletime);
     post("growth %g", x->x_growth);
     post("minpower %g", x->x_minpower);
+    x->x_loud = 1;
 }
 
 static void sigmund_free(t_sigmund *x)
@@ -1394,7 +1395,7 @@ void sigmund_tilde_setup(void)
         gensym("print"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_printnext,
         gensym("printnext"), A_FLOAT, 0);
-    post("sigmund~ version 0.05");
+    post("sigmund~ version 0.06");
 }
 
 #endif /* PD */
@@ -1641,7 +1642,7 @@ int main()
     class_register(CLASS_BOX, c);
     sigmund_class = c;
     
-    post("sigmund~ v0.05");
+    post("sigmund~ v0.06");
     return (0);
 }
 

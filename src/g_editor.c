@@ -2514,10 +2514,10 @@ static void canvas_tidy(t_canvas *x)
             }
         }
     }
-    for (i = 2, besthist = 0, bestdist = 4, ip = histogram + 1;
+    for (i = 2, besthist = 0, bestdist = 4, ip = histogram + 2;
         i < (NHIST-2); i++, ip++)
     {
-        int hit = ip[-2] + 2* ip[-1] + 3 * ip[0] + 2* ip[1] + ip[2];
+        int hit = ip[-2] + 2 * ip[-1] + 3 * ip[0] + 2* ip[1] + ip[2];
         if (hit > besthist)
         {
             besthist = hit;

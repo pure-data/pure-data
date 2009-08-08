@@ -85,25 +85,25 @@ array pitch template-pitch array amp template-amp;
 #X floatatom 269 464 0 0 0 0 - - -;
 #X msg 55 484 start;
 #X msg 106 484 stop;
-#N canvas 137 388 559 411 data 0;
-#X scalar template-toplevel 3 86 900 \; 0 0 12 \; 10 0 12 \; \; 0 0
-0 \; 10 0 2.5 \; 11 0 0 \; \;;
-#X scalar template-toplevel 14 80 990 \; 0 0 12 \; 10 0 12 \; \; 0
+#N canvas 258 114 425 363 data 1;
+#X scalar template-toplevel 22 86 900 \; 0 0 12 \; 10 0 12 \; \; 0
+0 0 \; 10 0 2.5 \; 11 0 0 \; \;;
+#X scalar template-toplevel 33 80 990 \; 0 0 12 \; 10 0 12 \; \; 0
 0 2.5 \; 10 0 2.5 \; 11 0 0 \; \;;
-#X scalar template-toplevel 38 43.25 90 \; 0 65 12 \; 100 10 0 \; 100
+#X scalar template-toplevel 57 43.25 90 \; 0 65 12 \; 100 10 0 \; 100
 10 12 \; 230 50 0 \; 230 10 3 \; 240 60 0 \; 240 25 10 \; 250 60 0
 \; 250 37 10 \; 260 65 0.5 \; 285 65 0.5 \; \; 1 0 2 \; 103 0 1 \;
 195 0 2 \; 220 0 0.75 \; 225 0 1.25 \; 248 0 2.5 \; 251 0 2.25 \; 255
 0 0 \; 256 0 1.5 \; 260 0 0 \; 261 0 2 \; 265 0 0 \; 266 0 2.5 \; 270
 0 0 \; 271 0 3 \; 275 0 0 \; \;;
-#X scalar template-toplevel 64 80 900 \; 0 5 0.25 \; 60 5 0.25 \; \;
+#X scalar template-toplevel 83 80 900 \; 0 5 0.25 \; 60 5 0.25 \; \;
 0 0 0 \; 28 -0.25 3.5 \; 58 -0.25 0 \; \;;
-#X scalar template-toplevel 142 105 900 \; 0 0 12 \; 70 -20 12 \; \;
+#X scalar template-toplevel 161 105 900 \; 0 0 12 \; 70 -20 12 \; \;
 0 0 0 \; 10 0 2.5 \; 20 0 0 \; 30 0 0 \; 40 0 2.5 \; 50 0 0 \; 60 0
 2.5 \; 70 0 0 \; \;;
-#X scalar template-toplevel 319 63.5 909 \; 0 0 12 \; 50 0 12 \; \;
+#X scalar template-toplevel 338 63.5 909 \; 0 0 12 \; 50 0 12 \; \;
 0 0 4 \; 10 0 2.5 \; 50 0 0 \; \;;
-#X coords 0 102.75 1 102.5 0 0 0;
+#X coords 0 90.75 1 90.5 0 0 0;
 #X restore 55 364 pd data;
 #N canvas 82 467 332 145 stuff 0;
 #X msg 1 101 \; pd-data write xx.txt;
