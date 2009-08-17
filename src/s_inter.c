@@ -56,7 +56,11 @@ typedef int socklen_t;
 #define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
 
 #ifndef PDBINDIR
-#define PDBINDIR "tcl/"
+#define PDBINDIR "bin/"
+#endif
+
+#ifndef PDTCLDIR
+#define PDTCLDIR "tcl/"
 #endif
 
 #ifndef WISHAPP
@@ -1112,7 +1116,7 @@ int sys_startgui(const char *libdir)
         
         strcpy(scriptbuf, "\"");
         strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDBINDIR "pd.tcl\"");
+        strcat(scriptbuf, "/" PDTCLDIR "pd.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
         
                 sprintf(portbuf, "%d", portno);

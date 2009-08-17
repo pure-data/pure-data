@@ -105,7 +105,12 @@ proc .mbar.find {command number} {
 
 proc menu_doc_open {dirname basename} {
     global argv0
-    set pddir [string range $argv0 0 [expr [string last / $argv0 ] - 1]]
+    set slashed $argv0
+    if {[tk windowingsystem] eq "win32"} {
+    	set slashed [string map {"\\" "/"} $slashed]
+    }
+
+    set pddir [string range $slashed 0 [expr [string last / $slashed ] - 1]]
 
     if {[regexp ".*\.(txt|c)$" $basename]} {
         menu_opentext $pddir/../$dirname/$basename

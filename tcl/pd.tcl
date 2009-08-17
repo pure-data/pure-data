@@ -9,7 +9,7 @@
 
 package require Tcl 8.3
 package require Tk
-package require msgcat
+if {[tk windowingsystem] ne "win32"} {package require msgcat}
 
 # Pd's packages are stored in the same directory as the main script (pd.tcl)
 set auto_path [linsert $auto_path 0 [file dirname [info script]]]
@@ -136,7 +136,11 @@ proc init {} {
 }
 
 # official GNU gettext msgcat shortcut
-proc _ {s} {return [::msgcat::mc $s]}
+if {[tk windowingsystem] ne "win32"} {
+    proc _ {s} {return [::msgcat::mc $s]}
+} else {
+    proc _ {s} {return $s}
+}
 
 proc load_locale {} {
     ::msgcat::mcload [file join [file dirname [info script]] locale]
@@ -220,7 +224,7 @@ proc pdtk_pd_startup {version {args ""}} {
 }
 
 ##### routine to ask user if OK and, if so, send a message on to Pd ######
-proc pdtk_check {message reply_to_pd default} {
+proc pdtk_check {ignoredarg message reply_to_pd default} {
     # TODO this should use -parent and -title, but the hard part is figuring
     # out how to get the values for those without changing g_editor.c
     set answer [tk_messageBox -type yesno -icon question \
@@ -283,7 +287,7 @@ proc main {argc argv} {
     post_tclinfo
     pdtk_post "Starting pd.tcl with main($argc $argv)"
     check_for_running_instances
-    load_locale
+    if {[tk windowingsystem] ne "win32"} {load_locale}
     init
 
     # TODO check args for -stderr and set pdtk_post accordingly

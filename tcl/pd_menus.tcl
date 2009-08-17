@@ -43,7 +43,8 @@ proc ::pd_menus::create_menubar {mymenubar mytoplevel} {
     menu $mymenubar
     set menulist "file edit put find media window help"
     if { $::windowingsystem eq "aqua" } {create_apple_menu $mymenubar}
-    if { $::windowingsystem eq "win32" } {create_system_menu $mymenubar}
+#TODO figure out why this took my menubars out? -msp
+#    if { $::windowingsystem eq "win32" } {create_system_menu $mymenubar}
     foreach mymenu $menulist {  
         menu $mymenubar.$mymenu
         $mymenubar add cascade -label [_ [string totitle $mymenu]] \
