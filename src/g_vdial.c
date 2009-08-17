@@ -13,7 +13,7 @@ put out a "float" as in sliders, toggles, etc. */
 #include <ctype.h>
 #include "m_pd.h"
 #include "g_canvas.h"
-#include "t_tk.h"
+
 #include "g_all_guis.h"
 #include <math.h>
 

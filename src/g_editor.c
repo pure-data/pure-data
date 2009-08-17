@@ -1421,7 +1421,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     }
 }
 
-void canvas_mousedown(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
+void canvas_mouse(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg which, t_floatarg mod)
 {
     canvas_doclick(x, xpos, ypos, which, mod, 1);
@@ -2665,7 +2665,7 @@ static void glist_setlastxy(t_glist *gl, int xval, int yval)
 void g_editor_setup(void)
 {
 /* ------------------------ events ---------------------------------- */
-    class_addmethod(canvas_class, (t_method)canvas_mousedown, gensym("mouse"),
+    class_addmethod(canvas_class, (t_method)canvas_mouse, gensym("mouse"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_mouseup, gensym("mouseup"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);

@@ -13,7 +13,7 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
-#include "t_tk.h"
+
 
 #define LMARGIN 2
 #define RMARGIN 2

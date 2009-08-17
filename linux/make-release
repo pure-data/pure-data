@@ -16,6 +16,8 @@ find . \( -name ".[azA-Z]*" \! -name ".git" \
 
 cd src
 sh ../linux/detab-src.sh
+cd ../tcl
+sh ../linux/detab-src.sh
 cd ../extra
 sh ../linux/detab-src.sh
 cd ..
@@ -23,7 +25,7 @@ cd ..
 TMPPD=/tmp/pd-$1
 rm -rf /tmp/pd $TMPPD
 mkdir $TMPPD
-cp -pR README.txt LICENSE.txt INSTALL.txt src doc extra man \
+cp -pR README.txt LICENSE.txt INSTALL.txt src tcl doc extra man \
     portaudio portmidi $TMPPD
 mkdir $TMPPD/obj $TMPPD/bin
 cd $TMPPD/src

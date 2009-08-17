@@ -59,10 +59,6 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
 
 OBJ = $(SRC:.c=.o) 
 
-GSRC =  @GUISRC@
-
-GOBJ = $(GSRC:.c=.o)
-
 # get version from m_pd.h to use in doc/1.manual/1.introduction.txt
 PD_MAJOR_VERSION := $(shell grep PD_MAJOR_VERSION m_pd.h | \
 	sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
@@ -84,10 +80,10 @@ endif
 .PHONY: pd gui externs all
 
 all: pd $(BIN_DIR)/pd-watchdog gui $(BIN_DIR)/pdsend \
-    $(BIN_DIR)/pdreceive  $(BIN_DIR)/pd.tk externs
+    $(BIN_DIR)/pdreceive externs
 
 bin: pd $(BIN_DIR)/pd-watchdog gui $(BIN_DIR)/pdsend \
-    $(BIN_DIR)/pdreceive  $(BIN_DIR)/pd.tk
+    $(BIN_DIR)/pdreceive
 
 $(OBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c 
@@ -99,12 +95,6 @@ $(ASIOOBJ): %.o : %.cpp
 	$(CXX) $(CFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.cpp
 
 pd: $(PDEXEC)
-
-ifneq ($(GSRC),)
-gui: $(BIN_DIR)/$(GUINAME)
-else
-gui:
-endif
 
 pd-watchdog: $(BIN_DIR)/pd-watchdog
 
@@ -122,13 +112,6 @@ $(BIN_DIR)/pdreceive: u_pdreceive.c $(BIN_DIR)
 
 $(PDEXEC): $(OBJ) $(BIN_DIR)
 	cd ../obj;  $(CC) $(LDFLAGS) $(DBG_CFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
-
-$(BIN_DIR)/pd-gui: $(GOBJ) $(GSRC)
-	cd ../obj; $(CC) $(INCLUDE) -o $(BIN_DIR)/$(GUINAME) $(GOBJ) $(GLIB)
-
-$(BIN_DIR)/pd.tk: u_main.tk $(BIN_DIR)
-	cp u_main.tk $(BIN_DIR)/pd.tk
-	touch -r makefile.dependencies $(BIN_DIR)
 
 #this is for Max OSX only...
 $(BIN_DIR)/libPdTcl.dylib: $(GOBJ) $(GSRC)
@@ -203,7 +186,8 @@ install:  all
 
 local-clean:
 	-rm -f ../obj/* $(BIN_DIR)/pd $(BIN_DIR)/$(GUINAME) $(BIN_DIR)/pdsend \
-	    $(BIN_DIR)/pdreceive $(BIN_DIR)/pd-watchdog m_stamp.c
+	    $(BIN_DIR)/pdreceive $(BIN_DIR)/pd-watchdog m_stamp.c \
+            $(BIN_DIR)/*.tcl
 	-rm -f `find ../portaudio -name "*.o"` 
 	-rm -f *~
 	-(cd ../doc/6.externs; rm -f *.pd_linux)

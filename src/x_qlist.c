@@ -4,7 +4,7 @@
 
 #include "m_pd.h"
 #include <string.h>
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #ifdef MSW

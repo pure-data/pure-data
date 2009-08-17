@@ -14,7 +14,7 @@
 #define DEBUG(x)
 
 #include <stdlib.h>
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #include <sys/stat.h>
 #endif
@@ -228,7 +228,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     if ((fd=open(dirresult,O_RDONLY | MSWOPENFLAG(bin))) >= 0)
     {
             /* in unix, further check that it's not a directory */
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
         struct stat statbuf;
         int ok =  ((fstat(fd, &statbuf) >= 0) &&
             !S_ISDIR(statbuf.st_mode));

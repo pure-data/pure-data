@@ -7,7 +7,7 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include "m_imp.h"
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #include <sys/time.h>
 #ifdef HAVE_BSTRING_H

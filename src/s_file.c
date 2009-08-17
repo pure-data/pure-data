@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/types.h>

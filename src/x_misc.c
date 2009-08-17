@@ -9,7 +9,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/times.h>
@@ -194,7 +194,7 @@ static t_class *cputime_class;
 typedef struct _cputime
 {
     t_object x_obj;
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
     struct tms x_setcputime;
 #endif
 #ifdef MSW
@@ -206,7 +206,7 @@ typedef struct _cputime
 
 static void cputime_bang(t_cputime *x)
 {
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
     times(&x->x_setcputime);
 #endif
 #ifdef MSW
@@ -227,7 +227,7 @@ static void cputime_bang(t_cputime *x)
 
 static void cputime_bang2(t_cputime *x)
 {
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
     t_float elapsedcpu;
     struct tms newcputime;
     times(&newcputime);

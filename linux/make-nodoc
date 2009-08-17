@@ -15,6 +15,8 @@ find . \( -name ".[a-zA-Z]*" -o -name "core*" -o -name "*.cache" \) \
 
 cd src
 sh ../linux/detab-src.sh
+cd ../tcl
+sh ../linux/detab-src.sh
 cd ../extra
 sh ../linux/detab-src.sh
 cd ..
@@ -22,7 +24,7 @@ cd ..
 TMPPD=/tmp/pd-$1
 rm -rf /tmp/pd $TMPPD
 mkdir $TMPPD
-cp -a README.txt LICENSE.txt INSTALL.txt src extra man \
+cp -a README.txt LICENSE.txt INSTALL.txt src tcl extra man \
     portaudio portmidi $TMPPD
 mkdir $TMPPD/doc
 mkdir $TMPPD/doc/7.stuff

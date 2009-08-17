@@ -195,7 +195,7 @@ dnl This should be fixed so Pd can use ALSA shared libraries where appropriate.
       LDFLAGS="$LDFLAGS -static"
     fi 
     EXT=pd_linux
-    CPPFLAGS="-DDL_OPEN -DPA_USE_OSS -DUNIX -DUNISTD\
+    CPPFLAGS="-DHAVE_LIBDL -DPA_USE_OSS -DUNIX -DHAVE_UNISTD_H\
         -DUSEAPI_OSS \
         -fno-strict-aliasing"
     SYSSRC="s_midi_oss.c s_audio_oss.c"
@@ -273,7 +273,7 @@ then
         -framework AudioUnit -framework AudioToolbox \
         -framework Carbon -framework CoreMIDI"
     EXT=pd_darwin
-    CPPFLAGS="-DDL_OPEN -DMACOSX -DUNISTD -I/usr/X11R6/include \
+    CPPFLAGS="-DHAVE_LIBDL -DMACOSX -DHAVE_UNISTD_H -I/usr/X11R6/include \
         -I../portaudio/include -I../portaudio/src/common \
         -I../portaudio/src/os/mac_osx/ \
         -I../portmidi/pm_common -I../portmidi/pm_mac \

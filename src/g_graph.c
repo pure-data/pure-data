@@ -8,7 +8,7 @@ to this file... */
 
 #include <stdlib.h>
 #include "m_pd.h"
-#include "t_tk.h"
+
 #include "g_canvas.h"
 #include "s_stuff.h"    /* for sys_hostfontsize */
 #include <stdio.h>

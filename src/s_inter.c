@@ -47,6 +47,7 @@ typedef int socklen_t;
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <pthread.h>
+#include <glob.h>
 #else
 #include <stdlib.h>
 #endif
@@ -55,7 +56,7 @@ typedef int socklen_t;
 #define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
 
 #ifndef PDBINDIR
-#define PDBINDIR "bin/"
+#define PDBINDIR "tcl/"
 #endif
 
 #ifndef WISHAPP
@@ -206,7 +207,7 @@ void sys_microsleep(int microsec)
     sys_domicrosleep(microsec, 1);
 }
 
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 typedef void (*sighandler_t)(int);
 
 static void sys_signal(int signo, sighandler_t sigfun)
@@ -554,7 +555,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
 
 void sys_closesocket(int fd)
 {
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
     close(fd);
 #endif
 #ifdef MSW
@@ -858,7 +859,7 @@ static int defaultfontshit[MAXFONTS] = {
         24, 15, 28};
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
-int sys_startgui(const char *guidir)
+int sys_startgui(const char *libdir)
 {
     pid_t childpid;
     char cmdbuf[4*MAXPDSTRING];
@@ -872,7 +873,7 @@ int sys_startgui(const char *guidir)
     short version = MAKEWORD(2, 0);
     WSADATA nobby;
 #endif
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
     int stdinpipe[2];
 #endif
     /* create an empty FD poll list */
@@ -880,7 +881,7 @@ int sys_startgui(const char *guidir)
     sys_nfdpoll = 0;
     inbinbuf = binbuf_new();
 
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
     signal(SIGHUP, sys_huphandler);
     signal(SIGINT, sys_exithandler);
     signal(SIGQUIT, sys_exithandler);
@@ -910,7 +911,7 @@ int sys_startgui(const char *guidir)
         if (GetCurrentDirectory(MAXPDSTRING, cmdbuf) == 0)
             strcpy(cmdbuf, ".");
 #endif
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
         if (!getcwd(cmdbuf, MAXPDSTRING))
             strcpy(cmdbuf, ".");
         
@@ -1019,68 +1020,52 @@ int sys_startgui(const char *guidir)
         if (sys_verbose) fprintf(stderr, "port %d\n", portno);
 
 
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
         if (!sys_guicmd)
         {
 #ifdef __APPLE__
-            char *homedir = getenv("HOME"), filename[250];
+            int i;
             struct stat statbuf;
-                /* first look for Wish bundled with and renamed "Pd" */
-            sprintf(filename, "%s/../../MacOS/Pd", guidir);
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            if (!homedir || strlen(homedir) > 150)
-                goto nohomedir;
-                /* Look for Wish in user's Applications.  Might or might
-                not be names "Wish Shell", and might or might not be
-                in "Utilities" subdir. */
-            sprintf(filename,
-                "%s/Applications/Utilities/Wish shell.app/Contents/MacOS/Wish Shell",
-                    homedir);
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            sprintf(filename,
-                "%s/Applications/Utilities/Wish.app/Contents/MacOS/Wish",
-                    homedir);
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            sprintf(filename,
-                "%s/Applications/Wish shell.app/Contents/MacOS/Wish Shell",
-                    homedir);
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            sprintf(filename,
-                "%s/Applications/Wish.app/Contents/MacOS/Wish",
-                    homedir);
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-        nohomedir:
-                /* Perform the same search among system applications. */
-            strcpy(filename, 
-                "/usr/bin/wish");
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            strcpy(filename, 
-                "/Applications/Utilities/Wish Shell.app/Contents/MacOS/Wish Shell");
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            strcpy(filename, 
-                "/Applications/Utilities/Wish.app/Contents/MacOS/Wish");
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            strcpy(filename, 
-                "/Applications/Wish Shell.app/Contents/MacOS/Wish Shell");
-            if (stat(filename, &statbuf) >= 0)
-                goto foundit;
-            strcpy(filename, 
-                "/Applications/Wish.app/Contents/MacOS/Wish");
-        foundit:
-            sprintf(cmdbuf, "\"%s\" %s/pd.tk %d\n", filename, guidir, portno);
+            glob_t glob_buffer;
+            char *homedir = getenv("HOME");
+            char embed_glob[FILENAME_MAX];
+            char embed_filename[FILENAME_MAX], home_filename[FILENAME_MAX];
+            char *wish_paths[10] = {
+                "(did not find an embedded wish)",
+                "(did not find a home directory)",
+                "/Applications/Utilities/Wish.app/Contents/MacOS/Wish",
+                "/Applications/Utilities/Wish Shell.app/Contents/MacOS/Wish Shell",
+                "/Applications/Wish.app/Contents/MacOS/Wish",
+                "/Applications/Wish Shell.app/Contents/MacOS/Wish Shell",
+                "/usr/bin/wish"
+            };
+            /* this glob is needed so the Wish executable can have the same
+             * filename as the Pd.app, i.e. 'Pd-0.42-3.app' should have a Wish
+             * executable called 'Pd-0.42-3.app/Contents/MacOS/Pd-0.42-3' */
+            sprintf(embed_glob, "%s/../MacOS/Pd*", libdir);
+            glob_buffer.gl_matchc = 1; /* we only need one match */
+            glob(embed_glob, GLOB_LIMIT, NULL, &glob_buffer);
+            if (glob_buffer.gl_pathc > 0) {
+                strcpy(embed_filename, glob_buffer.gl_pathv[0]);
+                wish_paths[0] = embed_filename;
+            }
+            sprintf(home_filename,
+                    "%s/Applications/Wish.app/Contents/MacOS/Wish",homedir);
+            wish_paths[1] = home_filename;
+            for(i=0; i<10; i++)
+            {
+                if (sys_verbose)
+                    fprintf(stderr, "Trying Wish at \"%s\"\n", wish_paths[i]);
+                if (stat(wish_paths[i], &statbuf) >= 0)
+                    break;
+            }
+            sprintf(cmdbuf,"\"%s\" %s/tcl/pd.tcl %d\n", wish_paths[i],
+                libdir, portno);
 #else
             sprintf(cmdbuf,
-                "TCL_LIBRARY=\"%s/tcl/library\" TK_LIBRARY=\"%s/tk/library\" \
-                 \"%s/pd-gui\" %d\n",
-                 sys_libdir->s_name, sys_libdir->s_name, guidir, portno);
+  "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\" \
+  wish \"%s/tcl/pd.tcl\" %d\n",
+                 libdir, libdir, libdir, portno);
 #endif
             sys_guicmd = cmdbuf;
         }
@@ -1099,6 +1084,7 @@ int sys_startgui(const char *guidir)
         {
             setuid(getuid());          /* lose setuid priveliges */
 #ifndef __APPLE__
+// TODO this seems unneeded on any platform hans@eds.org
                 /* the wish process in Unix will make a wish shell and
                     read/write standard in and out unless we close the
                     file descriptors.  Somehow this doesn't make the MAC OSX
@@ -1122,18 +1108,16 @@ int sys_startgui(const char *guidir)
 #endif /* UNISTD */
 
 #ifdef MSW
-            /* in MSW land "guipath" is unused; we just do everything from
-            the libdir. */
-        /* fprintf(stderr, "%s\n", sys_libdir->s_name); */
+        /* fprintf(stderr, "%s\n", libdir); */
         
         strcpy(scriptbuf, "\"");
-        strcat(scriptbuf, sys_libdir->s_name);
-        strcat(scriptbuf, "/" PDBINDIR "pd.tk\"");
+        strcat(scriptbuf, libdir);
+        strcat(scriptbuf, "/" PDBINDIR "pd.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
         
                 sprintf(portbuf, "%d", portno);
 
-        strcpy(wishbuf, sys_libdir->s_name);
+        strcpy(wishbuf, libdir);
         strcat(wishbuf, "/" PDBINDIR WISHAPP);
         sys_bashfilename(wishbuf, wishbuf);
         
@@ -1197,7 +1181,7 @@ int sys_startgui(const char *guidir)
             }
             close(pipe9[1]);
 
-            sprintf(cmdbuf, "%s/pd-watchdog\n", guidir);
+            sprintf(cmdbuf, "%s/bin/pd-watchdog\n", libdir);
             if (sys_verbose) fprintf(stderr, "%s", cmdbuf);
             execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
             perror("pd: exec");

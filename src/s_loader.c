@@ -2,10 +2,10 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-#ifdef DL_OPEN
+#ifdef HAVE_LIBDL
 #include <dlfcn.h>
 #endif
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -169,7 +169,7 @@ gotone:
     strncat(filename, nameptr, MAXPDSTRING-strlen(filename));
     filename[MAXPDSTRING-1] = 0;
 
-#ifdef DL_OPEN
+#ifdef HAVE_LIBDL
     dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
     if (!dlobj)
     {
@@ -178,6 +178,7 @@ gotone:
         return (0);
     }
     makeout = (t_xxx)dlsym(dlobj,  symname);
+    fprintf(stderr, "symbol %s\n", symname);
 #endif
 #ifdef MSW
     sys_bashfilename(filename, filename);
@@ -262,6 +263,7 @@ int sys_run_scheduler(const char *externalschedlibname,
             (t_externalschedlibmain)GetProcAddress(ntdll, "main");
     }
 #else
+#ifdef HAVE_LIBDL
     {
         void *dlobj;
         struct stat statbuf;
@@ -282,6 +284,9 @@ int sys_run_scheduler(const char *externalschedlibname,
         externalmainfunc = (t_externalschedlibmain)dlsym(dlobj,
             "pd_extern_sched");
     }
+#else
+    return (0);
+#endif
 #endif
     return((*externalmainfunc)(sys_extraflagsstring));
 }

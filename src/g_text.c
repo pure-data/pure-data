@@ -10,7 +10,7 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
-#include "t_tk.h"
+
 #include "g_canvas.h"
 #include <stdio.h>
 #include <string.h>

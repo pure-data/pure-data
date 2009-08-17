@@ -45,7 +45,7 @@ struct _clock
 
 t_clock *clock_setlist;
 
-#ifdef UNISTD
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
