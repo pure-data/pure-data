@@ -9,6 +9,8 @@ namespace eval ::pd_connect:: {
     namespace export pdsend
 }
 
+# TODO figure out how to escape { } properly
+
 proc ::pd_connect::configure_socket {sock} {
     fconfigure $sock -blocking 0 -buffering line -encoding utf-8;
     fileevent $sock readable {::pd_connect::pd_readsocket ""}
@@ -65,7 +67,7 @@ proc ::pd_connect::pd_readsocket {cmd_from_pd} {
     } 
     append cmd_from_pd [read $pd_socket]
     while {![info complete $cmd_from_pd] || \
-        [string index $cmd_from_pd end] != "\n"} {
+        [string index $cmd_from_pd end] ne "\n"} {
         append cmd_from_pd [read $pd_socket]
         if {[eof $pd_socket]} {
         close $pd_socket

@@ -1063,12 +1063,12 @@ int sys_startgui(const char *libdir)
                 if (stat(wish_paths[i], &statbuf) >= 0)
                     break;
             }
-            sprintf(cmdbuf,"\"%s\" %s/tcl/pd.tcl %d\n", wish_paths[i],
+            sprintf(cmdbuf,"\"%s\" %s/tcl/pd-gui.tcl %d\n", wish_paths[i],
                 libdir, portno);
 #else
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\" \
-  wish \"%s/tcl/pd.tcl\" %d\n",
+  wish \"%s/tcl/pd-gui.tcl\" %d\n",
                  libdir, libdir, libdir, portno);
 #endif
             sys_guicmd = cmdbuf;
@@ -1116,7 +1116,7 @@ int sys_startgui(const char *libdir)
         
         strcpy(scriptbuf, "\"");
         strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDTCLDIR "pd.tcl\"");
+        strcat(scriptbuf, "/" PDTCLDIR "pd-gui.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
         
                 sprintf(portbuf, "%d", portno);

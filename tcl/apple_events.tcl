@@ -29,14 +29,14 @@ proc ::tk::mac::OnShow {} {
 
 # kAEShowPreferences
 proc ::tk::mac::ShowPreferences {} {
-    menu_preferences_panel
+     menu_preferences_dialog
 }
 
 # kAEQuitApplication
 #proc ::tk::mac::Quit {} {
-#   # TODO sort this out... how to quit pd-gui after sending the message
-#   puts stderr "Custom exit proc"
-#   pdsend "pd verifyquit"
+#    # TODO sort this out... how to quit pd-gui after sending the message
+#    puts stderr "Custom exit proc"
+#    pdsend "pd verifyquit"
 #}
 
 # these I gleaned by reading the source (tkMacOSXHLEvents.c)

@@ -5,9 +5,8 @@ package require pd_bindings
 
 namespace eval ::pdtk_canvas:: {
 }
-# keep track of the location of the popup
-set popup_xpix 0
-set popup_ypix 0
+
+# TODO figure out weird frameless window when you open a graph
 
 #------------------------------------------------------------------------------#
 # canvas new/saveas
@@ -15,8 +14,8 @@ set popup_ypix 0
 proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     # TODO check size of window
     toplevel $mytoplevel -width $width -height $height -class CanvasWindow
-    ::pd_menus::create_menubar $mytoplevel.menubar $mytoplevel
-    $mytoplevel configure -menu $mytoplevel.menubar
+    wm group $mytoplevel .
+    $mytoplevel configure -menu .menubar
 
     # TODO slide off screen windows into view
     wm geometry $mytoplevel $geometry
@@ -25,6 +24,9 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     } else { # leave room for the menubar
         wm minsize $mytoplevel 310 30
     }
+    
+    set ::editmode($mytoplevel) $editable
+
     set mycanvas $mytoplevel.c
     canvas $mycanvas -width $width -height $height -background white \
         -highlightthickness 0
@@ -32,15 +34,6 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     pack $mycanvas -side left -expand 1 -fill both
 
     ::pd_bindings::canvas_bindings $mytoplevel
-
-    # the popup menu for the canvas
-    menu $mytoplevel.popup -tearoff false
-    $mytoplevel.popup add command -label [_ "Properties"] \
-        -command "popup_action $mytoplevel 0"
-    $mytoplevel.popup add command -label [_ "Open"]       \
-        -command "popup_action $mytoplevel 1"
-    $mytoplevel.popup add command -label [_ "Help"]       \
-        -command "popup_action $mytoplevel 2"
 
     # give focus to the canvas so it gets the events rather than the window
     focus $mycanvas
@@ -80,8 +73,6 @@ proc pdtk_canvas_motion {mycanvas x y mods} {
 }
 
 proc pdtk_canvas_mouse {mycanvas x y b f} {
-    # TODO perhaps the Tcl/C function names should match "mouse" message
-    # rather than "mousedown" function
     set mytoplevel [winfo toplevel $mycanvas]
     pdsend "$mytoplevel mouse [$mycanvas canvasx $x] [$mycanvas canvasy $y] $b $f"
 }
@@ -106,6 +97,24 @@ proc pdtk_canvas_clickpaste {mycanvas x y b} {
 #------------------------------------------------------------------------------#
 # canvas popup menu
 
+# since there is one popup that is used for all canvas windows, the menu
+# -commands use {} quotes so that $::focused_window is interpreted when the
+# menu item is called, not when the command is mapped to the menu item.  This
+# is the same as the menubar in pd_menus.tcl but the opposite of the 'bind'
+# commands in pd_bindings.tcl
+proc ::pdtk_canvas::create_popup {} {
+    if { ! [winfo exists .popup]} {
+        # the popup menu for the canvas
+        menu .popup -tearoff false
+        .popup add command -label [_ "Properties"] \
+            -command {popup_action $::focused_window 0}
+        .popup add command -label [_ "Open"]       \
+            -command {popup_action $::focused_window 1}
+        .popup add command -label [_ "Help"]       \
+            -command {popup_action $::focused_window 2}
+    }
+}
+
 proc popup_action {mytoplevel action} {
     pdsend "$mytoplevel done-popup $action $::popup_xpix $::popup_ypix"
 }
@@ -114,18 +123,18 @@ proc pdtk_canvas_popup {mytoplevel xpix ypix hasproperties hasopen} {
     set ::popup_xpix $xpix
     set ::popup_ypix $ypix
     if {$hasproperties} {
-        $mytoplevel.popup entryconfigure 0 -state normal
+        .popup entryconfigure [_ "Properties"] -state normal
     } else {
-        $mytoplevel.popup entryconfigure 0 -state disabled
+        .popup entryconfigure [_ "Properties"] -state disabled
     }
     if {$hasopen} {
-        $mytoplevel.popup entryconfigure 1 -state normal
+        .popup entryconfigure [_ "Open"] -state normal
     } else {
-        $mytoplevel.popup entryconfigure 1 -state disabled
+        .popup entryconfigure [_ "Open"] -state disabled
     }
     set mycanvas "$mytoplevel.c"
-    tk_popup $mytoplevel.popup [expr $xpix + [winfo rootx $mycanvas]] \
-    [expr $ypix + [winfo rooty $mycanvas]] 0
+    tk_popup .popup [expr $xpix + [winfo rootx $mycanvas]] \
+        [expr $ypix + [winfo rooty $mycanvas]] 0
 }
 
 
@@ -134,19 +143,27 @@ proc pdtk_canvas_popup {mytoplevel xpix ypix hasproperties hasopen} {
 
 # check or uncheck the "edit" menu item
 proc pdtk_canvas_editval {mytoplevel value} {
-#    $mytoplevel.menubar.edit invoke [_ "Edit Mode"]
-#   $mytoplevel.menubar.edit entryconfigure "Edit Mode" -indicatoron $value
-    # TODO make this work
+    set ::editmode($mytoplevel) $value
+# TODO figure how to change Edit Mode/Interact Mode text and have menu
+# enabling and disabling working still in pd_menus.tcl
+#    if {$value == 0} {
+#        $::pd_menus::menubar.edit entryconfigure [_ "Interact Mode"] -label [_ "Edit Mode"]
+#    } else {
+#        $::pd_menus::menubar.edit entryconfigure [_ "Edit Mode"] -label [_ "Interact Mode"]
+#    }
+    #$mytoplevel.menubar.edit entryconfigure [_ "Edit Mode"] -indicatoron $value
+    # TODO make this work, probably with a proc in pd_menus, or maybe the menu
+    # item can track the editmode variable
+}
+
+proc pdtk_undomenu {args} {
+    # TODO make this work, probably with a proc in pd_menus    
+    puts "pdtk_undomenu $args"
 }
 
 proc pdtk_canvas_getscroll {mycanvas} {
     # TODO make this work
     # the C code still sends a .c canvas, so get the toplevel
     set mytoplevel [winfo toplevel $mycanvas]
-    # puts stderr "pdtk_canvas_getscroll $mycanvas"
-}
-
-proc pdtk_undomenu {args} {
-    # TODO make this work   
-    puts "pdtk_undomenu $args"
+    puts stderr "pdtk_canvas_getscroll $mycanvas"
 }

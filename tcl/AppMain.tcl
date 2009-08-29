@@ -7,8 +7,7 @@
 puts --------------------------AppMain.tcl-----------------------------------
 catch {console show}
 
-# FIXME apple_events must require a newer tcl than 8.4?
-# package require apple_events
+package require apple_events
 
 puts "AppMain.tcl"
 puts "argv0: $argv0"
@@ -21,7 +20,7 @@ if {[string first "-psn" [lindex $argv 0]] == 0} {
     set argc [expr $argc - 1]
 }
 
-# launch pd.tk here
-if [catch {source [file join [file dirname [info script]] ../tcl/pd.tcl]}] { 
+# launch pd-gui.tcl here
+if [catch {source [file join [file dirname [info script]] pd-gui.tcl]}] { 
     puts stderr $errorInfo
 }
