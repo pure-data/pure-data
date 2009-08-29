@@ -134,7 +134,7 @@ proc pdtk_canvas_popup {mytoplevel xpix ypix hasproperties hasopen} {
 
 # check or uncheck the "edit" menu item
 proc pdtk_canvas_editval {mytoplevel value} {
-    $mytoplevel.menubar.edit invoke [_ "Edit Mode"]
+#    $mytoplevel.menubar.edit invoke [_ "Edit Mode"]
 #   $mytoplevel.menubar.edit entryconfigure "Edit Mode" -indicatoron $value
     # TODO make this work
 }

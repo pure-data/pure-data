@@ -272,7 +272,7 @@ void sys_setalarm(int microsec)
 
 #endif
 
-#ifdef __linux
+#ifdef __linux__
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) || defined(_POSIX_MEMLOCK)
 #include <sched.h>
