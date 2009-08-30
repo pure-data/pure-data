@@ -247,7 +247,7 @@ dnl This should be fixed so Pd can use ALSA shared libraries where appropriate.
         binarymode="-m4755"
     fi
     STRIPFLAG=-s
-    GUINAME="pd-gui"
+    GUINAME=""
     if test x$USE_DEBUG_CFLAGS = "xyes";
     then
         MORECFLAGS=$MORECFLAGS" -g"
