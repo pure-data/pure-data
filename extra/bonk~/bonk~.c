@@ -53,7 +53,8 @@ decay and other times in msec
 #include <stdio.h>
 #include <string.h>
 
-#ifdef NT
+/* These pragmas are only used for MSVC, not MinGW or Cygwin <hans@at.or.at> */
+#ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
 #endif
  

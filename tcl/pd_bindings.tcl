@@ -204,7 +204,7 @@ proc ::pd_bindings::window_destroy {mycanvas} {
 
 # do tasks when changing focus (Window menu, scrollbars, etc.)
 proc ::pd_bindings::window_focusin {mytoplevel} {
-    pdtk_post "::pd_bindings::window_focusin $mytoplevel"
+    # pdtk_post "::pd_bindings::window_focusin $mytoplevel"
     set ::focused_window $mytoplevel
     ::dialog_find::set_canvas_to_search $mytoplevel
     ::pd_menucommands::set_menu_new_dir $mytoplevel

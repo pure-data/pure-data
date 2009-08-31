@@ -40,7 +40,7 @@ and heard. (Listen to the two outputs separately \, then together.)
 #X text 95 350 output level;
 #X text 100 308 for difference;
 #X text 157 77 <-- click to graph;
-#X msg 148 97 \; pd DSP 1;
+#X msg 148 97 \; pd dsp 1;
 #X obj 138 247 tabwrite~ \$0-difference;
 #X obj 138 270 tabwrite~ \$0-sum;
 #X obj 138 138 tabwrite~ \$0-phasor;

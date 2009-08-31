@@ -241,7 +241,7 @@ proc ::pd_menus::build_media_menu {mymenu mytoplevel} {
 
     set audioapi_list_length [llength $::audioapi_list]
     for {set x 0} {$x<$audioapi_list_length} {incr x} {
-        pdtk_post "audio [lindex [lindex $::audioapi_list $x] 0]"
+        # pdtk_post "audio [lindex [lindex $::audioapi_list $x] 0]"
         $mymenu add radiobutton -label [lindex [lindex $::audioapi_list $x] 0] \
             -command {menu_audio 0} -variable ::pd_whichapi \
             -value [lindex [lindex $::audioapi_list $x] 1]\
@@ -251,7 +251,7 @@ proc ::pd_menus::build_media_menu {mymenu mytoplevel} {
 
     set midiapi_list_length [llength $::midiapi_list]
     for {set x 0} {$x<$midiapi_list_length} {incr x} {
-        pdtk_post "midi [lindex [lindex $::midiapi_list $x] 0]"
+        # pdtk_post "midi [lindex [lindex $::midiapi_list $x] 0]"
         $mymenu add radiobutton -label [lindex [lindex $::midiapi_list $x] 0] \
             -command {menu_midi 0} -variable ::pd_whichmidiapi \
             -value [lindex [lindex $::midiapi_list $x] 1]\

@@ -1,3 +1,8 @@
+# On Mac OS X, this needs to be defined to enable dlopen and weak linking
+# support.  Its safe on other platforms since gcc only checks this env var on
+# Apple's gcc.  <hans@at.or.at>
+export MACOSX_DEPLOYMENT_TARGET = 10.3
+
 VPATH = ../obj:./
 OBJ_DIR = ../obj
 BIN_DIR = ../bin

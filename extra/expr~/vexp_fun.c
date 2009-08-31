@@ -123,7 +123,7 @@ static void ex_if(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *opt
 static void ex_ldexp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_imodf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_modf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
-#ifndef NT
+#ifndef _WIN32
 static void ex_cbrt(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_erf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_erfc(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
@@ -176,7 +176,7 @@ t_ex_func ex_funcs[] = {
         {"ldexp ",      ex_ldexp,       1},
         {"imodf ",      ex_imodf,       1},
         {"modf",        ex_modf,        1},
-#ifndef NT
+#ifndef _WIN32
         {"cbrt",        ex_cbrt,        1},
         {"erf",         ex_erf,         1},
         {"erfc",        ex_erfc,        1},
@@ -542,7 +542,7 @@ ex_toint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 FUNC_EVAL_UNARY(left, toint, (int), optr, 0);
         }
 
-#ifdef NT
+#ifdef _WIN32
 /* No rint in NT land ??? */
 double rint(double x);
 
@@ -874,7 +874,7 @@ ex_tanh(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 }
 
 
-#ifndef NT
+#ifndef _WIN32
 static void
 ex_asinh(t_expr *e, long argc, struct ex_ex *argv, struct ex_ex *optr)
 {
@@ -1239,7 +1239,7 @@ FUNC_DEF_UNARY(ex_modf, fracmodf, (double), 1);
  */
 FUNC_DEF(ex_ldexp, ldexp, (double), (int), 1);
 
-#ifndef NT
+#ifndef _WIN32
 /*
  * ex_cbrt - cube root
  */

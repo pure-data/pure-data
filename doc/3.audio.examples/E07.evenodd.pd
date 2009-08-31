@@ -38,11 +38,11 @@
 #X text 299 152 <--transpose;
 #N canvas 0 0 538 208 make-table 0;
 #X obj 38 71 loadbang;
-#X text 16 11 This patch loads a sequence of pitches into array1. The
+#X text 16 11 This patch loads a sequence of pitches into E07. The
 values are floating-point \, so we could use microtones (60.5 \, for
 example) if we wish.;
-#X msg 38 99 \; array1 0 55 56 57 55 57 61 55 61 63 57 63 \; array1
-yticks 36 12 1 \; array1 ylabel 12 36 48 60 72 84 96;
+#X msg 38 99 \; E07 0 55 56 57 55 57 61 55 61 63 57 63 \; E07
+yticks 36 12 1 \; E07 ylabel 12 36 48 60 72 84 96;
 #X connect 0 0 2 0;
 #X restore 527 195 pd make-table;
 #X obj 176 50 sel 0;

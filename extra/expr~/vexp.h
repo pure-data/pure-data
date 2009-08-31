@@ -236,9 +236,13 @@ extern void ex_store(t_expr *expr, long int argc, struct ex_ex *argv,           
 
 int value_getonly(t_symbol *s, t_float *f);
 
-#ifdef NT
-#pragma warning (disable: 4305 4244)
 
+/* These pragmas are only used for MSVC, not MinGW or Cygwin <hans@at.or.at> */
+#ifdef _MSC_VER
+#pragma warning (disable: 4305 4244)
+#endif
+
+#ifdef _WIN32
 #define abort ABORT
 void ABORT(void);
 #endif

@@ -57,11 +57,11 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
 # functions called from Edit menu
 
 proc menu_undo {mytoplevel} {
-    puts stderr "menu_undo $mytoplevel not implemented yet"
+    # puts stderr "menu_undo $mytoplevel not implemented yet"
 }
 
 proc menu_redo {mytoplevel} {
-    puts stderr "menu_redo $mytoplevel not implemented yet"
+    # puts stderr "menu_redo $mytoplevel not implemented yet"
 }
 
 # ------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ proc ::pd_menucommands::set_menu_new_dir {mytoplevel} {
     variable menu_open_dir
     # TODO add Aqua specifics once g_canvas.c has [wm attributes -titlepath]
     if {$mytoplevel eq ".pdwindow"} {
-        puts "set_menu_new_dir $mytoplevel"
+        # puts "set_menu_new_dir $mytoplevel"
         set menu_new_dir $menu_open_dir
     } else {
         regexp -- ".+ - (.+)" [wm title $mytoplevel] ignored menu_new_dir

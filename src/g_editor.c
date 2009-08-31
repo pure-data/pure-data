@@ -2251,6 +2251,8 @@ restore:
 
 static void canvas_cut(t_canvas *x)
 {
+    if (!x->gl_editor)  /* ignore if invisible */ 
+        return;
     if (x->gl_editor && x->gl_editor->e_selectedline)
         canvas_clearline(x);
     else if (x->gl_editor->e_textedfor)
@@ -2343,6 +2345,8 @@ static void canvas_paste(t_canvas *x)
 
 static void canvas_duplicate(t_canvas *x)
 {
+    if (!x->gl_editor)
+        return;
     if (x->gl_editor->e_onmotion == MA_NONE && x->gl_editor->e_selection)
     {
         t_selection *y;
@@ -2360,6 +2364,8 @@ static void canvas_duplicate(t_canvas *x)
 static void canvas_selectall(t_canvas *x)
 {
     t_gobj *y;
+    if (!x->gl_editor)
+        return;
     if (!x->gl_edit)
         canvas_editmode(x, 1);
             /* if everyone is already selected deselect everyone */

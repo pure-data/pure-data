@@ -2137,6 +2137,6 @@ ex_print(struct ex_ex *eptr)
         post("\n");
 }
 
-#ifdef NT
+#ifdef _WIN32
 void ABORT( void) {bug("expr");}
 #endif

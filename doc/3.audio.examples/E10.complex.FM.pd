@@ -43,7 +43,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X text 273 232 toggle to graph repeatedly;
 #X text 262 212 bang to graph once;
 #X obj 16 494 t b f;
-#X obj 19 295 tabwrite~ E10-signal;
+#X obj 19 295 tabwrite~ E10-spectrum;
 #X obj 208 295 tabwrite~ E10-spectrum;
 #X text 72 536 set carrier multiplier and modulation multipliers after
 fundamental;

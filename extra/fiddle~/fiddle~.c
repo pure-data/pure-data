@@ -28,11 +28,17 @@
  *
  */
 
-#ifdef NT
+
+/* These pragmas are only used for MSVC, not MinGW or Cygwin <hans@at.or.at> */
+#ifdef _MSC_VER
+#pragma warning (disable: 4305 4244)
+#endif
+
+/* this #ifdef does nothing, but its there... */
+#ifdef _WIN32
 #define flog log
 #define fexp exp
 #define fsqrt sqrt
-#pragma warning (disable: 4305 4244)
 #else
 #define flog log
 #define fexp exp

@@ -38,8 +38,8 @@ proc ::pdwindow::create_window {} {
 
     frame .pdwindow.header
     pack .pdwindow.header -side top -fill x -padx 30 -ipady 10
-    label .pdwindow.header.label -text "The Pd window wants you to make it look nice!"
-    pack .pdwindow.header.label -side left -fill y -anchor w
+    # label .pdwindow.header.label -text "The Pd window wants you to make it look nice!"
+    # pack .pdwindow.header.label -side left -fill y -anchor w
     checkbutton .pdwindow.header.dsp -text [_ "DSP"] -variable ::dsp \
         -command "pdsend \"pd dsp 0\""
     pack .pdwindow.header.dsp -side right -fill y -anchor e

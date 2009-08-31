@@ -74,7 +74,7 @@ proc pdtk_pd_dsp {value} {
 }
 
 proc pdtk_pd_dio {red} {
-    puts stderr [concat pdtk_pd_dio $red]
+    # puts stderr [concat pdtk_pd_dio $red]
 }
 
 

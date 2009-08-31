@@ -165,5 +165,5 @@ proc pdtk_canvas_getscroll {mycanvas} {
     # TODO make this work
     # the C code still sends a .c canvas, so get the toplevel
     set mytoplevel [winfo toplevel $mycanvas]
-    puts stderr "pdtk_canvas_getscroll $mycanvas"
+    # puts stderr "pdtk_canvas_getscroll $mycanvas"
 }

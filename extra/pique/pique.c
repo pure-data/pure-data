@@ -7,7 +7,8 @@ combustible materiel, or as part of any life support system or weapon. */
 #include "m_pd.h"
 #include <math.h>
 #include <stdio.h>
-#ifdef NT
+/* These pragmas are only used for MSVC, not MinGW or Cygwin <hans@at.or.at> */
+#ifdef _MSC_VER
 #pragma warning( disable : 4244 )
 #pragma warning( disable : 4305 )
 #endif

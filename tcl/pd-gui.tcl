@@ -313,12 +313,12 @@ proc fit_font_into_metrics {} {
 
 # this is only called when 'pd' starts 'pd-gui', not the other way around
 proc pdtk_pd_startup {versionstring audio_apis midi_apis sys_font sys_fontweight} {
-    pdtk_post "-------------- pdtk_pd_startup ----------------"
-    pdtk_post "version: $versionstring"
-    pdtk_post "audio_apis: $audio_apis"
-    pdtk_post "midi_apis: $midi_apis"
-    pdtk_post "sys_font: $sys_font"
-    pdtk_post "sys_fontweight: $sys_fontweight"
+#    pdtk_post "-------------- pdtk_pd_startup ----------------"
+#    pdtk_post "version: $versionstring"
+#    pdtk_post "audio_apis: $audio_apis"
+#    pdtk_post "midi_apis: $midi_apis"
+#    pdtk_post "sys_font: $sys_font"
+#    pdtk_post "sys_fontweight: $sys_fontweight"
     set oldtclversion 0
     pdsend "pd init [enquote_path [pwd]] $oldtclversion $::font_fixed_metrics"
     set_pd_version $versionstring
@@ -350,7 +350,7 @@ proc pdtk_fixwindowmenu {} {
     # the menu.  This would probably be better handled on the C side of
     # things, since then, the menu_windowlist could be built with the proper
     # parent/child relationships.
-    pdtk_post "Running pdtk_fixwindowmenu"
+    # pdtk_post "Running pdtk_fixwindowmenu"
 }
 
 # ------------------------------------------------------------------------------
@@ -393,7 +393,7 @@ proc others_lost {} {
 # various startup related procs
 
 proc check_for_running_instances {argc argv} {
-    pdtk_post "check_for_running_instances $argc $argv"
+    # pdtk_post "check_for_running_instances $argc $argv"
     switch -- $::windowingsystem {
         "aqua" {
             # handled by ::tk::mac::OpenDocument in apple_events.tcl
@@ -420,7 +420,7 @@ proc check_for_running_instances {argc argv} {
 
 # this command will open files received from a 2nd instance of Pd
 proc receive_args args {
-    pdtk_post "receive_files $args"
+    # pdtk_post "receive_files $args"
     raise .
     foreach filename $args {
         open_file $filename
@@ -431,7 +431,7 @@ proc load_startup {} {
     global errorInfo
 # TODO search all paths for startup.tcl
     set startupdir [file normalize "$::sys_libdir/startup"]
-    pdtk_post "load_startup $startupdir"
+    # pdtk_post "load_startup $startupdir"
     puts stderr "load_startup $startupdir"
     if { ! [file isdirectory $startupdir]} { return }
     foreach filename [glob -directory $startupdir -nocomplain -types {f} -- *.tcl] {
@@ -458,7 +458,7 @@ proc main {argc argv} {
     check_for_running_instances $argc $argv
     set_pd_paths
     init_for_platform
-    post_tclinfo
+    # post_tclinfo
 
     # set a timeout for how long 'pd-gui' should wait for 'pd' to start
     after 20000 set ::wait4pd "timeout"        
@@ -484,7 +484,7 @@ proc main {argc argv} {
     ::pdwindow::create_window
     ::pd_menus::configure_for_pdwindow
     load_startup
-    pdtk_post "------------------ done with main ----------------------"
+    # pdtk_post "------------------ done with main ----------------------"
 }
 
 main $::argc $::argv
