@@ -53,7 +53,8 @@ proc ::pd_menus::create_menubar {} {
     menu $menubar
     set menulist "file edit put find media window help"
     if { $::windowingsystem eq "aqua" } {create_apple_menu $menubar}
-    if { $::windowingsystem eq "win32" } {create_system_menu $menubar}
+    # FIXME why does the following (if uncommented) kill my menubar?
+    # if { $::windowingsystem eq "win32" } {create_system_menu $menubar}
     foreach mymenu $menulist {    
         menu $menubar.$mymenu
         $menubar add cascade -label [_ [string totitle $mymenu]] \

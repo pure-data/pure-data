@@ -14,7 +14,8 @@ puts -------------------------------pd-gui.tcl----------------------------------
 
 package require Tcl 8.3
 package require Tk
-package require msgcat
+package require Tk
+if {[tk windowingsystem] ne "win32"} {package require msgcat}
 # TODO figure out msgcat issue on Windows
 
 # Pd's packages are stored in the same directory as the main script (pd-gui.tcl)
@@ -216,10 +217,15 @@ proc init_for_platform {} {
 # locale handling
 
 # official GNU gettext msgcat shortcut
-proc _ {s} {return [::msgcat::mc $s]}
+if {[tk windowingsystem] ne "win32"} {
+    proc _ {s} {return [::msgcat::mc $s]}
+} else {
+    proc _ {s} {return $s}
+}
 
 proc load_locale {} {
-    ::msgcat::mcload [file join [file dirname [info script]] .. po]
+    if {[tk windowingsystem] ne "win32"} {
+        ::msgcat::mcload [file join [file dirname [info script]] .. po]
 
     # for Windows
     #set locale "en"  ;# Use whatever is right for your app
