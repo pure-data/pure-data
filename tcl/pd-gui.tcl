@@ -226,6 +226,7 @@ if {[tk windowingsystem] ne "win32"} {
 proc load_locale {} {
     if {[tk windowingsystem] ne "win32"} {
         ::msgcat::mcload [file join [file dirname [info script]] .. po]
+    }
 
     # for Windows
     #set locale "en"  ;# Use whatever is right for your app
