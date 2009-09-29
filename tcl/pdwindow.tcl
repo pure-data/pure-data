@@ -21,10 +21,10 @@ proc ::pdwindow::pdtk_post {message} {
             .pdwindow.text insert end "$printout_buffer\n"
             set printout_buffer ""
         }
-        .pdwindow.text insert end "$message\n"
+        .pdwindow.text insert end "$message"
         .pdwindow.text yview end
     }
-    puts stderr $message
+    # puts stderr $message
 }
 
 proc ::pdwindow::create_window {} {

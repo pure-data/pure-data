@@ -38,9 +38,8 @@ proc ::dialog_find::ok {mytoplevel} {
                 && $wholeword_button == $previous_wholeword_button} {
             pdsend "$search_window findagain"
         } else {
-            # TODO switch back to this for 0.43:
-            #pdsend "$search_window find $findstring $wholeword_button"
-            pdsend "$search_window find $findstring"
+            pdsend "$search_window find $findstring $wholeword_button"
+            # pdsend "$search_window find $findstring"
             set previous_findstring $findstring
             set previous_wholeword_button $wholeword_button
         }

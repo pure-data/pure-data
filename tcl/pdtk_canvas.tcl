@@ -158,7 +158,7 @@ proc pdtk_canvas_editval {mytoplevel value} {
 
 proc pdtk_undomenu {args} {
     # TODO make this work, probably with a proc in pd_menus    
-    puts "pdtk_undomenu $args"
+    # puts "pdtk_undomenu $args"
 }
 
 proc pdtk_canvas_getscroll {mycanvas} {
@@ -167,3 +167,10 @@ proc pdtk_canvas_getscroll {mycanvas} {
     set mytoplevel [winfo toplevel $mycanvas]
     # puts stderr "pdtk_canvas_getscroll $mycanvas"
 }
+
+# catch configure events to see if window is resized
+proc pdtk_canvas_configure {mycanvas x y w h} {
+    set mytoplevel [winfo toplevel $mycanvas]
+    pdsend "$mytoplevel relocate $w\x$h\+$x\+$y $w\x$h\+$x\+$y"
+}
+

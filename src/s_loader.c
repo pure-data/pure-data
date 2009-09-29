@@ -178,7 +178,7 @@ gotone:
         return (0);
     }
     makeout = (t_xxx)dlsym(dlobj,  symname);
-    fprintf(stderr, "symbol %s\n", symname);
+    /* fprintf(stderr, "symbol %s\n", symname); */
 #endif
 #ifdef MSW
     sys_bashfilename(filename, filename);

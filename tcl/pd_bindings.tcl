@@ -187,6 +187,7 @@ proc ::pd_bindings::canvas_bindings {mytoplevel} {
     # window protocol bindings
     wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"$mytoplevel menuclose 0\""
     bind $mycanvas <Destroy> "::pd_bindings::window_destroy %W"
+    bind $mycanvas <Configure> "pdtk_canvas_configure %W %x %y %w %h"
 }
 
 
@@ -201,7 +202,6 @@ proc ::pd_bindings::window_destroy {mycanvas} {
     set mytoplevel [winfo toplevel $mycanvas]
     unset ::editmode($mytoplevel)
 }
-
 # do tasks when changing focus (Window menu, scrollbars, etc.)
 proc ::pd_bindings::window_focusin {mytoplevel} {
     # pdtk_post "::pd_bindings::window_focusin $mytoplevel"
@@ -257,7 +257,7 @@ proc ::pd_bindings::sendkey {mycanvas state key iso shift} {
     if {$iso ne ""} {
         scan $iso %c key
     }
-    puts "::pd_bindings::sendkey {%W:$mycanvas $state %K$key %A$iso $shift}"
+    # puts "::pd_bindings::sendkey {%W:$mycanvas $state %K$key %A$iso $shift}"
     # $mycanvas might be a toplevel, but [winfo toplevel] does the right thing
     pdsend "[winfo toplevel $mycanvas] key $state $key $shift"
 }
