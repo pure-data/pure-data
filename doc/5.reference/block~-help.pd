@@ -1,4 +1,4 @@
-#N canvas 21 2 607 676 12;
+#N canvas 0 0 603 672 12;
 #X obj 48 10 block~;
 #X text 112 11 (and switch~) - block size and on/off control for DSP
 ;
@@ -74,7 +74,6 @@ may be switched with impunity \, but not catch~.;
 #X text 32 11 INTERACTIONS BETWEEN BLOCK~/SWITCH~ AND OTHER OBJECTS
 IN PD;
 #X restore 40 482 pd block-interations;
-#X text 227 483 INTERACTIONS WITH OTHER OBJECTS;
 #X text 44 269 Pd's default block size is 64 samples. The inlet~ and
 outlet~ objects reblock signals to adjust for differences between parent
 and subpatch \, but only power-of-two adjustments are possible. So
@@ -85,4 +84,27 @@ any other block size. This is intended for later use in video processing.
 #X text 45 395 Switch~ takes a "bang" message that causes one block
 of DSP to be computed. This might be useful for pre-computing waveforms
 or window functions \, or also for video processing.;
-#X text 337 604 updated for Pd version 0.4;
+#X text 198 484 <-- BUG!! block~/switch~ and dac~/adc~ are incompatible
+;
+#N canvas 0 0 581 315 block-interations 0;
+#X text 32 11 You can use the switch~ object to single-step dsp in
+a subpatch. This might be useful for block operations that don't want
+to be synced to the sample clock: loading a wondiw function in a table
+\, or copying one table to another:;
+#X obj 136 193 noise~;
+#X obj 136 225 tabwrite~ zzzz;
+#X obj 33 154 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array zzzz 256 float 2;
+#X coords 0 1 256 -1 256 140 1;
+#X restore 300 116 graph;
+#X obj 33 228 switch~ 256;
+#X text 25 111 turn DSP on and click to;
+#X text 26 127 randomize the table at right:;
+#X connect 1 0 2 0;
+#X connect 3 0 2 0;
+#X connect 3 0 5 0;
+#X restore 40 505 pd block-interations;
+#X text 198 506 <-- wierd 'bang' feature lets you single-step DSP;
+#X text 337 604 updated for Pd version 0.43;

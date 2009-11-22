@@ -1,6 +1,6 @@
 This is the README file for Pd, a free real-time computer music software
-package resembling Max.  You can get Pd for Linux, Windows, Mac OSX, or IRIX
-from http://www.crca.ucsd.edu/~msp/software.html or ftp://felix.ucsd.edu.  
+package resembling Max.  You can get Pd for Linux, Mac OSX, or MS Windows,
+from http://www.crca.ucsd.edu/~msp/software.html.  
 Installation instructions are in the HTML DOCUMENTATION at:
 
     http://www.crca.ucsd.edu/~msp/Pd_documentation/index.htm
@@ -9,14 +9,12 @@ If you download and unpack Pd, you will also find the html documentation
 locally in the file, .../pd-whatever/doc/1.manual/index.htm.  To unpack Pd:
 
 LINUX (or freeBSD).  Download Pd, which will be a ".tar.gz" file; to unpack it,
-type "zcat [name].tar.gz | tar xf -" to a shell.  This creates a directory with
-a name like "pd-0.35".  There are also RPMs available.
+type "zcat [name].tar.gz | tar xf -" to a shell.  This creates a directory with a
+name like "pd-0.35".  CD to "src". ./configiure, and make.  There are also 
+compiled packages available.
 
 Microsoft Windows.  Pd is distributed as a "zip" file.   Unzip this,
 creating a directory such as \pd.
-
-IRIX.  Download Pd, which will be a "tar.Z" file.  You can unpack this by
-typing "zcat [name].tar.Z | tar xf -" to a shell.  
 
 Macintosh.  The web browser will automatically unpack the distributions
 into a folder such as "pd-0.35" on your desktop.

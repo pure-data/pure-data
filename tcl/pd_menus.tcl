@@ -301,7 +301,7 @@ proc ::pd_menus::build_help_menu {mymenu mytoplevel} {
     $mymenu add command -label [_ "HTML Manual..."] \
         -command {menu_doc_open doc/1.manual index.htm}
     $mymenu add command -label [_ "Browser..."] \
-        -command {placeholder menu_helpbrowser \$help_top_directory} 
+        -command {menu_helpbrowser} 
 }
 
 # ------------------------------------------------------------------------------

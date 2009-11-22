@@ -14,7 +14,9 @@ puts -------------------------------pd-gui.tcl----------------------------------
 
 package require Tcl 8.3
 package require Tk
-package require msgcat
+package require Tk
+if {[tk windowingsystem] ne "win32"} {package require msgcat}
+# TODO figure out msgcat issue on Windows
 
 # Pd's packages are stored in the same directory as the main script (pd-gui.tcl)
 set auto_path [linsert $auto_path 0 [file dirname [info script]]]
@@ -149,8 +151,6 @@ array set editmode {}
 # init functions
 
 proc set_pd_version {versionstring} {
-    global pd_myversion
-    set pd_myversion $versionstring
     regexp -- {.*([0-9])\.([0-9]+)[\.\-]([0-9]+)([^0-9]?.*)} $versionstring \
         wholematch \
         ::PD_MAJOR_VERSION ::PD_MINOR_VERSION ::PD_BUGFIX_VERSION ::PD_TEST_VERSION
@@ -217,10 +217,16 @@ proc init_for_platform {} {
 # locale handling
 
 # official GNU gettext msgcat shortcut
-proc _ {s} {return [::msgcat::mc $s]}
+if {[tk windowingsystem] ne "win32"} {
+    proc _ {s} {return [::msgcat::mc $s]}
+} else {
+    proc _ {s} {return $s}
+}
 
 proc load_locale {} {
-    ::msgcat::mcload [file join [file dirname [info script]] .. po]
+    if {[tk windowingsystem] ne "win32"} {
+        ::msgcat::mcload [file join [file dirname [info script]] .. po]
+    }
 
     # for Windows
     #set locale "en"  ;# Use whatever is right for your app
@@ -252,7 +258,7 @@ proc get_font_for_size {size} {
 # always do a good job of choosing in respect to Pd's needs.  So this chooses
 # from a list of fonts that are known to work well with Pd.
 proc find_default_font {} {
-    set testfonts {Inconsolata "Courier 10 pitch" "Courier New" "Liberation Mono" FreeMono \
+    set testfonts {Inconsolata "Courier New" "Liberation Mono" FreeMono \
                        "DejaVu Sans Mono" "Bitstream Vera Sans Mono"}
     foreach family $testfonts {
         if {[lsearch -exact -nocase [font families] $family] > -1} {

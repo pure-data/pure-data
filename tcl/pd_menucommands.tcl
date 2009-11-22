@@ -163,6 +163,37 @@ proc ::pd_menucommands::menu_doc_open {subdir basename} {
     }
 }
 
+# ------------------------------------------------------------------------------
+# opening docs as menu items (like the Test Audio and MIDI patch and the manual)
+proc ::pd_menucommands::menu_helpbrowser {} {
+    set helpdir "$::sys_libdir/doc"
+    if {$::windowingsystem eq "aqua"} {
+        exec rm -rf /tmp/pd-documentation
+        exec cp -pr $helpdir /tmp/pd-documentation
+        set filename [tk_getOpenFile -defaultextension .pd \
+        -filetypes { {{documentation} {.pd .txt .htm}} } \
+        -initialdir /tmp/pd-documentation]
+    } else {
+        set filename [tk_getOpenFile -defaultextension .pd \
+        -filetypes { {{documentation} {.pd .txt .htm}} } \
+        -initialdir $helpdir]
+    }    
+    if {$filename != ""} {
+        if {[string first .txt $filename] >= 0} {
+            menu_opentext $filename
+        } elseif {[string first .htm $filename] >= 0} {
+                                menu_openhtml $filename
+        } else {
+            set help_directory [string range $filename 0 \
+                [expr [string last / $filename ] - 1]]
+            set basename [string range $filename \
+                [expr [string last / $filename ] + 1] end]
+            pdsend "pd open [enquote_path $basename] \
+                [enquote_path $help_directory] \;"
+        }
+    }
+}
+
 # open text docs in a Pd window
 proc ::pd_menucommands::menu_opentext {filename} {
     global pd_myversion

@@ -172,5 +172,6 @@ proc pdtk_canvas_getscroll {mycanvas} {
 proc pdtk_canvas_configure {mycanvas x y w h} {
     set mytoplevel [winfo toplevel $mycanvas]
     pdsend "$mytoplevel relocate $w\x$h\+$x\+$y $w\x$h\+$x\+$y"
+    # puts stderr "pdtk_canvas_configure $mycanvas"
 }
 

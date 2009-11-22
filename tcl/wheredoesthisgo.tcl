@@ -3,9 +3,6 @@ package provide wheredoesthisgo 0.1
 
 # a place to temporarily store things until they find a home or go away
 
-set help_top_directory ""
-
-
 proc post_tclinfo {} {
     pdtk_post "Tcl library: [file normalize [info library]]"
     pdtk_post "executable: [file normalize [info nameofexecutable]]"
