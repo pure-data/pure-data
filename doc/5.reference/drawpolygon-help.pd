@@ -12,7 +12,7 @@ dog float weasel;
 #N canvas 177 100 580 549 help-drawpolygon-template 1;
 #X obj 19 24 drawpolygon 0 2 0 0 0 weasel;
 #X obj 18 300 filledpolygon 900 dog 3 10 0 20 cat 30 0;
-#X text 30 322 filledpolyconn and filledcurve take the same arguments
+#X text 30 322 filledpolygon and filledcurve take the same arguments
 \, except that a new first argument is added to specify interior color.
 Here the interior color is red (900) \, the outline color is controlled
 by the "dog" field \, and the three points describe a triangle of altitude

@@ -15,7 +15,6 @@ ignored.;
 #X text 349 310 updated for Pd version 0.38;
 #X obj 92 244 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
 ;
-#X text 450 267;
 #X text 125 267 optional arg sets the initial state (0 by default)
 ;
 #X connect 3 0 8 0;

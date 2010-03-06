@@ -7,7 +7,7 @@
 #X msg 22 182 1 1000;
 #X text 18 36 The line object takes (target \, time) pairs and slews
 to the specified target over the time given \, updating its output
-at a "grain rate" given by the creation argument. If you dont' specify
+at a "grain rate" given by the creation argument. If you don't specify
 a time \, line jumps immediately to the target. Note that the inlet
 does not remember old values (unlike every other inlet in Pd) -- sending
 a float causes a jump in the output regardless of whatever time value
