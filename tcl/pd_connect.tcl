@@ -65,6 +65,14 @@ proc ::pd_connect::pd_readsocket {cmd_from_pd} {
         exit
     } 
     append cmd_from_pd [read $pd_socket]
+    while {![info complete $cmd_from_pd] || \
+        [string index $cmd_from_pd end] ne "\n"} {
+        append cmd_from_pd [read $pd_socket]
+        if {[eof $pd_socket]} {
+        close $pd_socket
+        exit
+        }
+    }
     if {[catch {uplevel #0 $cmd_from_pd} errorname]} {
         global errorInfo
         switch -regexp -- $errorname { 
