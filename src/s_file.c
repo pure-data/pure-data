@@ -24,7 +24,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
 #endif
@@ -36,7 +36,7 @@ int sys_defeatrt;
 t_symbol *sys_flags = &s_;
 void sys_doflags( void);
 
-#ifdef UNIX
+#if defined(__linux__) || defined(__CYGWIN__)
 
 static char *sys_prefbuf;
 static int sys_prefbufsize;
@@ -161,7 +161,7 @@ static void sys_donesavepreferences( void)
 
 #endif /* UNIX */
 
-#ifdef MSW
+#ifdef _WIN32
 
 static void sys_initloadpreferences( void)
 {
@@ -216,7 +216,7 @@ static void sys_donesavepreferences( void)
 {
 }
 
-#endif /* MSW */
+#endif /* _WIN32 */
 
 #ifdef __APPLE__
 
@@ -414,10 +414,10 @@ void sys_loadpreferences( void)
     if (sys_defeatrt)
         sys_hipriority = 0;
     else
-#ifdef UNIX
+#if defined(__linux__) || defined(__CYGWIN__)
         sys_hipriority = !geteuid();
 #else
-#ifdef MSW
+#ifdef _WIN32
         sys_hipriority = 0;
 #else
         sys_hipriority = 1;

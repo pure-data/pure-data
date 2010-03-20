@@ -252,7 +252,7 @@ proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
         1 { set current_font "Helvetica" }
         2 { set current_font "Times" }
     }
-    set current_font_spec "{$current_font} 12 $::font_weight"
+    set current_font_spec "{$current_font} 16 $::font_weight"
     
     $mytoplevel.label.fontpopup_label configure -text $current_font \
         -font $current_font_spec
@@ -496,12 +496,16 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     
     toplevel $mytoplevel -class DialogWindow
     wm title $mytoplevel [format [_ "%s Properties"] $mainheader]
-    if {$::windowingsystem eq "aqua"} {$mytoplevel configure -menu .menubar}
+    wm group $mytoplevel .
+    wm resizable $mytoplevel 0 0
+    wm transient $mytoplevel $::focused_window
+    $mytoplevel configure -menu $::dialog_menubar
+    $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "iemgui"
 
     frame $mytoplevel.dim
     pack $mytoplevel.dim -side top
-    label $mytoplevel.dim.head -text $dim_header
+    label $mytoplevel.dim.head -text [_ $dim_header]
     label $mytoplevel.dim.w_lab -text [_ $wdt_label] -width 6
     entry $mytoplevel.dim.w_ent -textvariable $var_iemgui_wdt -width 5
     label $mytoplevel.dim.dummy1 -text " " -width 10
@@ -514,7 +518,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     
     frame $mytoplevel.rng
     pack $mytoplevel.rng -side top
-    label $mytoplevel.rng.head -text $rng_header
+    label $mytoplevel.rng.head -text [_ $rng_header]
     label $mytoplevel.rng.min_lab -text [_ $min_rng_label] -width 6
     entry $mytoplevel.rng.min_ent -textvariable $var_iemgui_min_rng -width 9
     label $mytoplevel.rng.dummy1 -text " " -width 1
@@ -544,21 +548,19 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {[eval concat $$var_iemgui_loadbang] == 0} {
         button $mytoplevel.para.lb -text [_ "No init"] \
-            -width [::msgcat::mcmax "No init"] \
             -command "::dialog_iemgui::lb $mytoplevel" }
     if {[eval concat $$var_iemgui_loadbang] == 1} {
         button $mytoplevel.para.lb -text [_ "Save"] \
-            -width [::msgcat::mcmax "Save"] \
             -command "::dialog_iemgui::lb $mytoplevel" }
     label $mytoplevel.para.num_lab -text [_ $num_label] -width 9
     entry $mytoplevel.para.num_ent -textvariable $var_iemgui_num -width 4
 
     if {[eval concat $$var_iemgui_steady] == 0} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
-            -text [_ "Jump on click"] -width [::msgcat::mcmax "Jump on click"] }
+            -text [_ "Jump on click"] }
     if {[eval concat $$var_iemgui_steady] == 1} {
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
-            -text [_ "Steady on click"] -width [::msgcat::mcmax "Steady on click"] }
+            -text [_ "Steady on click"] }
     if {[eval concat $$var_iemgui_lin0_log1] >= 0} {
         pack $mytoplevel.para.lilo -side left -expand 1}
     if {[eval concat $$var_iemgui_loadbang] >= 0} {
@@ -574,18 +576,22 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     labelframe $mytoplevel.s_r -borderwidth 1 -pady 4 -text [_ "Messages"]
     pack $mytoplevel.s_r -side top -fill x -ipadx 5
     frame $mytoplevel.s_r.send
-    pack $mytoplevel.s_r.send -side top
-    label $mytoplevel.s_r.send.lab -text [_ "Send symbol:"] -width 12  -justify right
+    pack $mytoplevel.s_r.send -side top -padx 4 -fill x -expand 1
+    label $mytoplevel.s_r.send.lab -text [_ "Send symbol:"] -justify left
     entry $mytoplevel.s_r.send.ent -textvariable $var_iemgui_snd -width 22
     if { $snd ne "nosndno" } {
-        pack $mytoplevel.s_r.send.lab $mytoplevel.s_r.send.ent -side left}
+        pack $mytoplevel.s_r.send.lab $mytoplevel.s_r.send.ent -side left \
+            -fill x -expand 1
+    }
     
     frame $mytoplevel.s_r.receive
-    pack $mytoplevel.s_r.receive -side top
-    label $mytoplevel.s_r.receive.lab -text [_ "Receive symbol:"] -width 12 -justify right
+    pack $mytoplevel.s_r.receive -side top -padx 4 -fill x -expand 1
+    label $mytoplevel.s_r.receive.lab -text [_ "Receive symbol:"] -justify left
     entry $mytoplevel.s_r.receive.ent -textvariable $var_iemgui_rcv -width 22
     if { $rcv ne "norcvno" } {
-        pack $mytoplevel.s_r.receive.lab $mytoplevel.s_r.receive.ent -side left}
+        pack $mytoplevel.s_r.receive.lab $mytoplevel.s_r.receive.ent -side left \
+            -fill x -expand 1
+    }
     
     # get the current font name from the int given from C-space (gn_f)
     set current_font $::font_family
@@ -599,42 +605,40 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     
     labelframe $mytoplevel.label -borderwidth 1 -text [_ "Label"] -pady 4
     pack $mytoplevel.label -side top -fill x
-    entry $mytoplevel.label.name_entry -textvariable $var_iemgui_gui_nam -width 30 \
-        -font [list $current_font 12 $::font_weight]
+    entry $mytoplevel.label.name_entry -textvariable $var_iemgui_gui_nam \
+        -width 30 -font [list $current_font 12 $::font_weight]
     pack $mytoplevel.label.name_entry -side top -expand yes -fill both -padx 5
     
     frame $mytoplevel.label.xy -padx 27 -pady 1
     pack $mytoplevel.label.xy -side top
-    label $mytoplevel.label.xy.x_lab -text [_ "X offset"] \
-        -width [::msgcat::mcmax "X offset"]
+    label $mytoplevel.label.xy.x_lab -text [_ "X offset"]
     entry $mytoplevel.label.xy.x_entry -textvariable $var_iemgui_gn_dx -width 5
     label $mytoplevel.label.xy.dummy1 -text " " -width 2
-    label $mytoplevel.label.xy.y_lab -text [_ "Y offset"] \
-        -width [::msgcat::mcmax "Y offset"]
+    label $mytoplevel.label.xy.y_lab -text [_ "Y offset"]
     entry $mytoplevel.label.xy.y_entry -textvariable $var_iemgui_gn_dy -width 5
     pack $mytoplevel.label.xy.x_lab $mytoplevel.label.xy.x_entry $mytoplevel.label.xy.dummy1 \
         $mytoplevel.label.xy.y_lab $mytoplevel.label.xy.y_entry -side left -anchor e
     
-    label $mytoplevel.label.fontpopup_label -text $current_font \
-        -relief groove -font [list $current_font 12 $::font_weight] -padx 5
-    pack $mytoplevel.label.fontpopup_label -side left -anchor w -expand yes -fill x
-    label $mytoplevel.label.fontsize_label -text [_ "Size:"] \
-        -width [::msgcat::mcmax "Size:"]
+    button $mytoplevel.label.fontpopup_label -text $current_font \
+        -font [list $current_font 16 $::font_weight]
+    pack $mytoplevel.label.fontpopup_label -side left -anchor w \
+        -expand 1 -fill x -padx 5
+    label $mytoplevel.label.fontsize_label -text [_ "Size:"]
     entry $mytoplevel.label.fontsize_entry -textvariable $var_iemgui_gn_fs -width 5
     pack $mytoplevel.label.fontsize_entry $mytoplevel.label.fontsize_label \
         -side right -anchor e -padx 5 -pady 5
     menu $mytoplevel.popup
     $mytoplevel.popup add command \
         -label $::font_family \
-        -font [format {{%s} 12 %s} $::font_family $::font_weight] \
+        -font [format {{%s} 16 %s} $::font_family $::font_weight] \
         -command "::dialog_iemgui::toggle_font $mytoplevel 0" 
     $mytoplevel.popup add command \
         -label "Helvetica" \
-        -font [format {Helvetica 12 %s} $::font_weight] \
+        -font [format {Helvetica 16 %s} $::font_weight] \
         -command "::dialog_iemgui::toggle_font $mytoplevel 1" 
     $mytoplevel.popup add command \
         -label "Times" \
-        -font [format {Times 12 %s} $::font_weight] \
+        -font [format {Times 16 %s} $::font_weight] \
         -command "::dialog_iemgui::toggle_font $mytoplevel 2" 
     bind $mytoplevel.label.fontpopup_label <Button> \
         [list tk_popup $mytoplevel.popup %X %Y]
@@ -648,14 +652,11 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     frame $mytoplevel.colors.select
     pack $mytoplevel.colors.select -side top
     radiobutton $mytoplevel.colors.select.radio0 -value 0 -variable \
-        $var_iemgui_l2_f1_b0 -text [_ "Background"] -justify left \
-        -width [::msgcat::mcmax "Background"]
+        $var_iemgui_l2_f1_b0 -text [_ "Background"] -justify left
     radiobutton $mytoplevel.colors.select.radio1 -value 1 -variable \
-        $var_iemgui_l2_f1_b0 -text [_ "Front"] -justify left \
-        -width [::msgcat::mcmax "Front"]
+        $var_iemgui_l2_f1_b0 -text [_ "Front"] -justify left
     radiobutton $mytoplevel.colors.select.radio2 -value 2 -variable \
-        $var_iemgui_l2_f1_b0 -text [_ "Label"] -justify left \
-        -width [::msgcat::mcmax "Label"]
+        $var_iemgui_l2_f1_b0 -text [_ "Label"] -justify left
     if { [eval concat $$var_iemgui_fcol] >= 0 } {
         pack $mytoplevel.colors.select.radio0 $mytoplevel.colors.select.radio1 \
             $mytoplevel.colors.select.radio2 -side left
@@ -666,7 +667,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     frame $mytoplevel.colors.sections
     pack $mytoplevel.colors.sections -side top
     button $mytoplevel.colors.sections.but -text [_ "Compose color"] \
-        -width [::msgcat::mcmax "Compose color"] \
         -command "::dialog_iemgui::choose_col_bkfrlb $mytoplevel"
     pack $mytoplevel.colors.sections.but -side left -anchor w -padx 10 -pady 5 \
         -expand yes -fill x
@@ -686,7 +686,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             -font [list $current_font 12 $::font_weight] -padx 2 -pady 2 -relief ridge
     }
     label $mytoplevel.colors.sections.lb_bk -text [_ "Test label"] \
-        -width [::msgcat::mcmax "Test label"] \
         -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
         -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
         -foreground [format "#%6.6x" [eval concat $$var_iemgui_lcol]] \
@@ -744,26 +743,18 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.colors.r3.c8 $mytoplevel.colors.r3.c9 -side left
     
     frame $mytoplevel.cao -pady 10
-    pack $mytoplevel.cao -side top
-    button $mytoplevel.cao.cancel -text [_ "Cancel"] -width 6 \
+    pack $mytoplevel.cao -side top -expand 1 -fill x
+    button $mytoplevel.cao.cancel -text [_ "Cancel"] \
         -command "::dialog_iemgui::cancel $mytoplevel"
-    label $mytoplevel.cao.dummy1 -text "" -width 3
-    button $mytoplevel.cao.apply -text [_ "Apply"] -width 6 \
-        -command "::dialog_iemgui::apply $mytoplevel"
-    label $mytoplevel.cao.dummy2 -text "" -width 3
-    button $mytoplevel.cao.ok -text [_ "OK"] -width 6 \
-        -command "::dialog_iemgui::ok $mytoplevel"
-    pack $mytoplevel.cao.cancel $mytoplevel.cao.dummy1 -side left
-    pack $mytoplevel.cao.apply $mytoplevel.cao.dummy2 -side left
-    pack $mytoplevel.cao.ok -side left
-    
-    if {[info tclversion] < 8.4} {
-        bind $mytoplevel <Key-Tab> {tkTabToWindow [tk_focusNext %W]}
-        bind $mytoplevel <<PrevWindow>> {tkTabToWindow [tk_focusPrev %W]}
-    } else {
-        bind $mytoplevel <Key-Tab> {tk::TabToWindow [tk_focusNext %W]}
-        bind $mytoplevel <<PrevWindow>> {tk::TabToWindow [tk_focusPrev %W]}
+    pack $mytoplevel.cao.cancel -side left -padx 10 -expand 1 -fill x
+    if {$::windowingsystem ne "aqua"} {
+        button $mytoplevel.cao.apply -text [_ "Apply"] \
+            -command "::dialog_iemgui::apply $mytoplevel"
+        pack $mytoplevel.cao.apply -side left -padx 10 -expand 1 -fill x
     }
+    button $mytoplevel.cao.ok -text [_ "OK"] \
+        -command "::dialog_iemgui::ok $mytoplevel"
+    pack $mytoplevel.cao.ok -side left -padx 10 -expand 1 -fill x
     
     $mytoplevel.dim.w_ent select from 0
     $mytoplevel.dim.w_ent select adjust end

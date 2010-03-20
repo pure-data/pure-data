@@ -9,7 +9,7 @@ that didn't really belong anywhere. */
 #include "s_stuff.h"
 #include "m_imp.h"
 #include "g_canvas.h"   /* for GUI queueing stuff */
-#ifndef MSW
+#ifndef _WIN32
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -59,8 +59,8 @@ typedef int socklen_t;
 #define PDBINDIR "bin/"
 #endif
 
-#ifndef PDTCLDIR
-#define PDTCLDIR "tcl/"
+#ifndef PDGUIDIR
+#define PDGUIDIR "bin/"
 #endif
 
 #ifndef WISHAPP
@@ -93,7 +93,6 @@ struct _socketreceiver
     t_socketreceivefn sr_socketreceivefn;
 };
 
-extern char *pd_version;
 extern int sys_guisetportnumber;
 
 static int sys_nfdpoll;
@@ -107,7 +106,7 @@ extern int sys_addhist(int phase);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
 
-#ifdef MSW
+#ifdef _WIN32
 static LARGE_INTEGER nt_inittime;
 static double nt_freq = 0;
 
@@ -136,13 +135,13 @@ double nt_tixtotime(LARGE_INTEGER *dumbass)
     return (((double)(dumbass->QuadPart - nt_inittime.QuadPart)) / nt_freq);
 }
 #endif
-#endif /* MSW */
+#endif /* _WIN32 */
 
     /* get "real time" in seconds; take the
     first time we get called as a reference time of zero. */
 double sys_getrealtime(void)    
 {
-#ifndef MSW
+#ifndef _WIN32
     static struct timeval then;
     struct timeval now;
     gettimeofday(&now, 0);
@@ -174,7 +173,7 @@ static int sys_domicrosleep(int microsec, int pollem)
         FD_ZERO(&exceptset);
         for (fp = sys_fdpoll, i = sys_nfdpoll; i--; fp++)
             FD_SET(fp->fdp_fd, &readset);
-#ifdef MSW
+#ifdef _WIN32
         if (sys_maxfd == 0)
                 Sleep(microsec/1000);
         else
@@ -196,7 +195,7 @@ static int sys_domicrosleep(int microsec, int pollem)
     }
     else
     {
-#ifdef MSW
+#ifdef _WIN32
         if (sys_maxfd == 0)
               Sleep(microsec/1000);
         else
@@ -211,10 +210,8 @@ void sys_microsleep(int microsec)
     sys_domicrosleep(microsec, 1);
 }
 
-#ifdef HAVE_UNISTD_H
-typedef void (*sighandler_t)(int);
-
-static void sys_signal(int signo, sighandler_t sigfun)
+#if !defined(_WIN32) && !defined(__CYGWIN__)
+static void sys_signal(int signo, sig_t sigfun)
 {
     struct sigaction action;
     action.sa_flags = 0;
@@ -270,7 +267,7 @@ void sys_setalarm(int microsec)
     setitimer(ITIMER_REAL, &gonzo, 0);
 }
 
-#endif
+#endif /* NOT _WIN32 && NOT __CYGWIN__ */
 
 #ifdef __linux__
 
@@ -346,7 +343,7 @@ void sys_set_priority(int higher)
 
 void sys_sockerror(char *s)
 {
-#ifdef MSW
+#ifdef _WIN32
     int err = WSAGetLastError();
     if (err == 10054) return;
     else if (err == 10044)
@@ -562,7 +559,7 @@ void sys_closesocket(int fd)
 #ifdef HAVE_UNISTD_H
     close(fd);
 #endif
-#ifdef MSW
+#ifdef _WIN32
     closesocket(fd);
 #endif
 }
@@ -873,24 +870,25 @@ int sys_startgui(const char *libdir)
     int len = sizeof(server);
     int ntry = 0, portno = FIRSTPORTNUM;
     int xsock = -1;
-#ifdef MSW
+#ifdef _WIN32
     short version = MAKEWORD(2, 0);
     WSADATA nobby;
-#endif
-#ifdef HAVE_UNISTD_H
+#else
     int stdinpipe[2];
-#endif
+#endif /* _WIN32 */
     /* create an empty FD poll list */
     sys_fdpoll = (t_fdpoll *)t_getbytes(0);
     sys_nfdpoll = 0;
     inbinbuf = binbuf_new();
 
-#ifdef HAVE_UNISTD_H
+#if !defined(_WIN32) && !defined(__CYGWIN__)
     signal(SIGHUP, sys_huphandler);
     signal(SIGINT, sys_exithandler);
     signal(SIGQUIT, sys_exithandler);
     signal(SIGILL, sys_exithandler);
+# ifdef SIGIOT
     signal(SIGIOT, sys_exithandler);
+# endif
     signal(SIGFPE, SIG_IGN);
     /* signal(SIGILL, sys_exithandler);
     signal(SIGBUS, sys_exithandler);
@@ -900,10 +898,11 @@ int sys_startgui(const char *libdir)
 #if 0  /* GG says: don't use that */
     signal(SIGSTKFLT, sys_exithandler);
 #endif
-#endif
-#ifdef MSW
+#endif /* NOT _WIN32 && NOT __CYGWIN__ */
+
+#ifdef _WIN32
     if (WSAStartup(version, &nobby)) sys_sockerror("WSAstartup");
-#endif
+#endif /* _WIN32 */
 
     if (sys_nogui)
     {
@@ -911,11 +910,10 @@ int sys_startgui(const char *libdir)
             skip starting the GUI up. */
         t_atom zz[NDEFAULTFONT+2];
         int i;
-#ifdef MSW
+#ifdef _WIN32
         if (GetCurrentDirectory(MAXPDSTRING, cmdbuf) == 0)
             strcpy(cmdbuf, ".");
-#endif
-#ifdef HAVE_UNISTD_H
+#else
         if (!getcwd(cmdbuf, MAXPDSTRING))
             strcpy(cmdbuf, ".");
         
@@ -961,12 +959,9 @@ int sys_startgui(const char *libdir)
     }
     else    /* default behavior: start up the GUI ourselves. */
     {
-#ifdef MSW
+#ifdef _WIN32
         char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30], portbuf[80];
         int spawnret;
-
-#endif
-#ifdef MSW
         char intarg;
 #else
         int intarg;
@@ -988,7 +983,7 @@ int sys_startgui(const char *libdir)
         intarg = 1;
         if (setsockopt(xsock, IPPROTO_TCP, TCP_NODELAY,
             &intarg, sizeof(intarg)) < 0)
-#ifndef MSW
+#ifndef _WIN32
                 post("setsockopt (TCP_NODELAY) failed\n")
 #endif
                     ;
@@ -1003,7 +998,7 @@ int sys_startgui(const char *libdir)
         /* name the socket */
         while (bind(xsock, (struct sockaddr *)&server, sizeof(server)) < 0)
         {
-#ifdef MSW
+#ifdef _WIN32
             int err = WSAGetLastError();
 #else
             int err = errno;
@@ -1024,7 +1019,7 @@ int sys_startgui(const char *libdir)
         if (sys_verbose) fprintf(stderr, "port %d\n", portno);
 
 
-#ifdef HAVE_UNISTD_H
+#ifndef _WIN32
         if (!sys_guicmd)
         {
 #ifdef __APPLE__
@@ -1063,14 +1058,14 @@ int sys_startgui(const char *libdir)
                 if (stat(wish_paths[i], &statbuf) >= 0)
                     break;
             }
-            sprintf(cmdbuf,"\"%s\" %s/tcl/pd-gui.tcl %d\n", wish_paths[i],
+            sprintf(cmdbuf,"\"%s\" %s/" PDGUIDIR "/pd-gui.tcl %d\n", wish_paths[i],
                 libdir, portno);
-#else
+#else /* __APPLE__ */
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\" \
-  wish \"%s/tcl/pd-gui.tcl\" %d\n",
+  wish \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
                  libdir, libdir, libdir, portno);
-#endif
+#endif /* __APPLE__ */
             sys_guicmd = cmdbuf;
         }
 
@@ -1104,19 +1099,17 @@ int sys_startgui(const char *libdir)
                     close(stdinpipe[0]);
                 }
             }
-#endif
+#endif /* NOT __APPLE__ */
             execl("/bin/sh", "sh", "-c", sys_guicmd, (char*)0);
             perror("pd: exec");
             _exit(1);
        }
-#endif /* UNISTD */
-
-#ifdef MSW
+#else /* NOT _WIN32 */
         /* fprintf(stderr, "%s\n", libdir); */
         
         strcpy(scriptbuf, "\"");
         strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDTCLDIR "pd-gui.tcl\"");
+        strcat(scriptbuf, "/" PDBINDIR "pd-gui.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
         
                 sprintf(portbuf, "%d", portno);
@@ -1133,7 +1126,7 @@ int sys_startgui(const char *libdir)
             exit(1);
         }
 
-#endif /* MSW */
+#endif /* NOT _WIN32 */
     }
 
 #if defined(__linux__) || defined(IRIX)
@@ -1205,7 +1198,7 @@ int sys_startgui(const char *libdir)
     setuid(getuid());          /* lose setuid priveliges */
 #endif /* __linux__ */
 
-#ifdef MSW
+#ifdef _WIN32
     if (!SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS))
         fprintf(stderr, "pd: couldn't set high priority class\n");
 #endif
@@ -1252,8 +1245,10 @@ int sys_startgui(const char *libdir)
 #endif
          sys_get_audio_apis(buf);
          sys_get_midi_apis(buf2);
-         sys_vgui("pdtk_pd_startup {%s} %s %s {%s} %s\n", pd_version, buf, buf2, 
-                  sys_font, sys_fontweight); 
+         sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
+                  PD_MAJOR_VERSION, PD_MINOR_VERSION, 
+                  PD_BUGFIX_VERSION, PD_TEST_VERSION,
+                  buf, buf2, sys_font, sys_fontweight); 
     }
     return (0);
 

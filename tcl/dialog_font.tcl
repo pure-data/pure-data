@@ -7,17 +7,17 @@ namespace eval ::dialog_font:: {
     variable whichstretch 1
     variable canvaswindow
     variable sizes {8 10 12 16 24 36}
-    variable gfxstub
     
     namespace export pdtk_canvas_dofont
 }
 
 # TODO this should use the pd_font_$size fonts created in pd-gui.tcl
+# TODO change pdtk_canvas_dofont to pdtk_font_dialog here and g_editor.c
 
 # TODO this should really be changed on the C side so that it doesn't have to
 # work around gfxstub/x_gui.c.  The gfxstub stuff assumes that there are
 # multiple panels, for properties panels like this, its much easier to use if
-# there is a single properties panel that adjusts based on which CanvasWindow
+# there is a single properties panel that adjusts based on which PatchWindow
 # has focus
 
 proc ::dialog_font::apply {mytoplevel myfontsize} {
@@ -30,44 +30,41 @@ proc ::dialog_font::apply {mytoplevel myfontsize} {
     }
 }
 
-proc ::dialog_font::cancel {mygfxstub} {
-    if {$mygfxstub ne ".pdwindow"} {
-        pdsend "$mygfxstub cancel"
+proc ::dialog_font::cancel {gfxstub} {
+    if {$gfxstub ne ".pdwindow"} {
+        pdsend "$gfxstub cancel"
     }
     destroy .font
 }
 
-proc ::dialog_font::ok {mygfxstub} {
+proc ::dialog_font::ok {gfxstub} {
     variable fontsize
-    ::dialog_font::apply $mygfxstub $fontsize
-    ::dialog_font::cancel $mygfxstub
+    apply $gfxstub $fontsize
+    cancel $gfxstub
 }
 
 proc ::dialog_font::update_font_dialog {mytoplevel} {
-    set ::dialog_font::canvaswindow $mytoplevel
-    if {$mytoplevel eq ".pdwindow"} {
-        set windowname [_ "Pd window"]
-    } else {
-        set windowname [lookup_windowname $mytoplevel]
-    }
+    variable canvaswindow $mytoplevel
     if {[winfo exists .font]} {
-        wm title .font [format [_ "%s Font"] $windowname]
+        wm title .font [format [_ "%s Font"] [lookup_windowname $mytoplevel]]
     }
 }
 
 proc ::dialog_font::arrow_fontchange {change} {
     variable sizes
-    set position [expr [lsearch $sizes $::dialog_font::fontsize] + $change]
+    variable fontsize
+    variable canvaswindow
+    set position [expr [lsearch $sizes $fontsize] + $change]
     if {$position < 0} {set position 0}
     set max [llength $sizes]
     if {$position >= $max} {set position [expr $max-1]}
-    set ::dialog_font::fontsize [lindex $sizes $position]
-    ::dialog_font::apply $::dialog_font::canvaswindow $::dialog_font::fontsize
+    set fontsize [lindex $sizes $position]
+    ::dialog_font::apply $canvaswindow $fontsize
 }
 
 # this should be called pdtk_font_dialog like the rest of the panels, but it
 # is called from the C side, so we'll leave it be
-proc ::dialog_font::pdtk_canvas_dofont {mygfxstub initsize} {
+proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     variable fontsize $initsize
     variable whichstretch 1
     variable stretchval 100
@@ -77,28 +74,34 @@ proc ::dialog_font::pdtk_canvas_dofont {mygfxstub initsize} {
         # the gfxstub stuff expects multiple font windows, we only have one,
         # so kill the new gfxstub requests as the come in.  We'll save the
         # original gfxstub for when the font panel gets closed
-        pdsend "$mygfxstub cancel"
+        pdsend "$gfxstub cancel"
     } else {
-        create_dialog $mygfxstub
+        create_dialog $gfxstub
     }
 }
 
-proc ::dialog_font::create_dialog {mygfxstub} {
-    variable gfxstub $mygfxstub
+proc ::dialog_font::create_dialog {gfxstub} {
     toplevel .font -class DialogWindow
-    if {$::windowingsystem eq "aqua"} {.font configure -menu .menubar}
+    .font configure -menu $::dialog_menubar
+    .font configure -padx 10 -pady 5
+    wm group .font .
+    wm resizable .font 0 0
+    wm transient .font $::focused_window
     ::pd_bindings::dialog_bindings .font "font"
-    # replace standard bindings to work around the gfxstub stuff
-    bind .font <KeyPress-Escape> "::dialog_font::cancel $mygfxstub"
-    bind .font <KeyPress-Return> "::dialog_font::ok $mygfxstub"
-    bind .font <$::pd_bindings::modifier-Key-w> "::dialog_font::cancel $mygfxstub"
+    # replace standard bindings to work around the gfxstub stuff and use
+    # break to prevent the close window command from going to other bindings.
+    # .font won't exist anymore, so it'll cause errors down the line...
+    bind .font <KeyPress-Return> "::dialog_font::ok $gfxstub; break"
+    bind .font <KeyPress-Escape> "::dialog_font::cancel $gfxstub; break"
+    bind .font <$::modifier-Key-w> "::dialog_font::cancel $gfxstub; break"
+    wm protocol .font WM_DELETE_WINDOW "dialog_font::cancel $gfxstub"
     bind .font <Up> "::dialog_font::arrow_fontchange -1"
     bind .font <Down> "::dialog_font::arrow_fontchange 1"
     
     frame .font.buttonframe
     pack .font.buttonframe -side bottom -fill x -pady 2m
     button .font.buttonframe.ok -text [_ "OK"] \
-        -command "::dialog_font::ok $mygfxstub"
+        -command "::dialog_font::ok $gfxstub"
     pack .font.buttonframe.ok -side left -expand 1
     
     labelframe .font.fontsize -text [_ "Font Size"] -padx 5 -pady 4 -borderwidth 1 \

@@ -3,8 +3,6 @@ package provide pd_menucommands 0.1
 
 namespace eval ::pd_menucommands:: {
     variable untitled_number "1"
-    variable menu_new_dir [pwd]
-    variable menu_open_dir [pwd]
 
     namespace export menu_*
 }
@@ -14,27 +12,27 @@ namespace eval ::pd_menucommands:: {
 
 proc ::pd_menucommands::menu_new {} {
     variable untitled_number
-    variable menu_new_dir
-    if { ! [file isdirectory $menu_new_dir]} {set menu_new_dir $::env(HOME)}
-    set untitled_name [_ "Untitled"]
-    pdsend "pd filename $untitled_name-$untitled_number [enquote_path $menu_new_dir]"
+    if { ! [file isdirectory $::filenewdir]} {set ::filenewdir $::env(HOME)}
+    # to localize "Untitled" there will need to be changes in g_canvas.c and
+    # g_readwrite.c, where it tests for the string "Untitled"
+    set untitled_name "Untitled"
+    pdsend "pd filename $untitled_name-$untitled_number [enquote_path $::filenewdir]"
     pdsend "#N canvas"
     pdsend "#X pop 1"
     incr untitled_number
 }
 
 proc ::pd_menucommands::menu_open {} {
-    variable menu_open_dir
-    if { ! [file isdirectory $menu_open_dir]} {set menu_open_dir $::env(HOME)}
+    if { ! [file isdirectory $::fileopendir]} {set ::fileopendir $::env(HOME)}
     set files [tk_getOpenFile -defaultextension .pd \
                        -multiple true \
                        -filetypes $::filetypes \
-                       -initialdir $menu_open_dir]
+                       -initialdir $::fileopendir]
     if {$files ne ""} {
         foreach filename $files { 
             open_file $filename
         }
-        set menu_open_dir [file dirname $filename]
+        set ::fileopendir [file dirname $filename]
     }
 }
 
@@ -43,54 +41,75 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
                       -defaultextension .ps \
                       -filetypes { {{postscript} {.ps}} }]
     if {$filename ne ""} {
-        $mytoplevel.c postscript -file $filename 
+        set tkcanvas [tkcanvas_name $mytoplevel]
+        $tkcanvas postscript -file $filename 
     }
 }
-
-# dialog types:
-#   global (only one):   find, sendmessage, prefs, helpbrowser
-#   per-canvas:          font, canvas properties (created with a message from pd)
-#   per object:          gatom, iemgui, array, data structures (created with a message from pd)
-
 
 # ------------------------------------------------------------------------------
 # functions called from Edit menu
 
-proc menu_undo {mytoplevel} {
-    # puts stderr "menu_undo $mytoplevel not implemented yet"
+proc ::pd_menucommands::menu_undo {} {
+    if {$::focused_window eq $::undo_toplevel && $::undo_action ne "no"} {
+        pdsend "$::focused_window undo"
+    }
 }
 
-proc menu_redo {mytoplevel} {
-    # puts stderr "menu_redo $mytoplevel not implemented yet"
+proc ::pd_menucommands::menu_redo {} {
+    if {$::focused_window eq $::undo_toplevel && $::redo_action ne "no"} {
+        pdsend "$::focused_window redo"
+    }
+}
+
+proc ::pd_menucommands::menu_editmode {state} {
+    if {[winfo class $::focused_window] ne "PatchWindow"} {return}
+    set ::editmode_button $state
+# this shouldn't be necessary because 'pd' will reply with pdtk_canvas_editmode
+#    set ::editmode($::focused_window) $state
+    pdsend "$::focused_window editmode $state"
+}
+
+proc ::pd_menucommands::menu_toggle_editmode {} {
+    menu_editmode [expr {! $::editmode_button}]
+}
+
+# ------------------------------------------------------------------------------
+# generic procs for sending menu events
+
+# send a message to a pd canvas receiver
+proc ::pd_menucommands::menu_send {window message} {
+    set mytoplevel [winfo toplevel $window]
+    if {[winfo class $mytoplevel] eq "PatchWindow"} {
+        pdsend "$mytoplevel $message"
+    }
+}
+
+# send a message to a pd canvas receiver with a float arg
+proc ::pd_menucommands::menu_send_float {window message float} {
+    set mytoplevel [winfo toplevel $window]
+    if {[winfo class $mytoplevel] eq "PatchWindow"} {
+        pdsend "$mytoplevel $message $float"
+    }
 }
 
 # ------------------------------------------------------------------------------
 # open the dialog panels
 
 proc ::pd_menucommands::menu_message_dialog {} {
-    if {[winfo exists .send_message]} {
-        wm deiconify .send_message
-        raise .message
-    } else {
-        # TODO insert real message panel here
-        toplevel .send_message
-        wm group .send_message .
-        wm title .send_message [_ "Send Message..."]
-        wm resizable .send_message 0 0
-        ::pd_bindings::dialog_bindings .send_message "send_message"
-        frame .send_message.frame
-        label .send_message.label -text [_ "Message"] -width 30 -height 15
-        pack .send_message.label .send_message.frame -side top -expand yes -fill both
-    }
+    ::dialog_message::open_message_dialog $::focused_window
 }
 
-proc ::pd_menucommands::menu_font_dialog {mytoplevel} {
+proc ::pd_menucommands::menu_find_dialog {} {
+    ::dialog_find::open_find_dialog $::focused_window
+}
+
+proc ::pd_menucommands::menu_font_dialog {} {
     if {[winfo exists .font]} {
         raise .font
-    } elseif {$mytoplevel eq ".pdwindow"} {
+    } elseif {$::focused_window eq ".pdwindow"} {
         pdtk_canvas_dofont .pdwindow [lindex [.pdwindow.text cget -font] 1]
     } else {
-        pdsend "$mytoplevel menufont"
+        pdsend "$::focused_window menufont"
     }
 }
 
@@ -110,20 +129,27 @@ proc ::pd_menucommands::menu_startup_dialog {} {
     }
 }
 
+proc ::pd_menucommands::menu_helpbrowser {} {
+    ::helpbrowser::open_helpbrowser
+}
+
+proc ::pd_menucommands::menu_texteditor {} {
+    pdtk_post "the text editor is not implemented"
+}
+
 # ------------------------------------------------------------------------------
 # window management functions
 
-proc ::pd_menucommands::menu_minimize {mytoplevel} {
-    wm iconify $mytoplevel
+proc ::pd_menucommands::menu_minimize {window} {
+    wm iconify [winfo toplevel $window]
 }
 
-proc ::pd_menucommands::menu_maximize {mytoplevel} {
-    wm state $mytoplevel zoomed
+proc ::pd_menucommands::menu_maximize {window} {
+    wm state [winfo toplevel $window] zoomed
 }
 
-proc menu_raise_pdwindow {} {
-    set top_window [lindex [wm stackorder .pdwindow] end]
-    if {.pdwindow eq $top_window} {
+proc ::pd_menucommands::menu_raise_pdwindow {} {
+    if {$::focused_window eq ".pdwindow" && [winfo viewable .pdwindow]} {
         lower .pdwindow
     } else {
         wm deiconify .pdwindow
@@ -131,93 +157,86 @@ proc menu_raise_pdwindow {} {
     }
 }
 
+# used for cycling thru windows of an app
+proc ::pd_menucommands::menu_raisepreviouswindow {} {
+    lower [lindex [wm stackorder .] end] [lindex [wm stackorder .] 0]
+    focus [lindex [wm stackorder .] end]
+}
+
+# used for cycling thru windows of an app the other direction
+proc ::pd_menucommands::menu_raisenextwindow {} {
+    set mytoplevel [lindex [wm stackorder .] 0]
+    raise $mytoplevel
+    focus $mytoplevel
+}
+
+# ------------------------------------------------------------------------------
+# Pd window functions
+proc menu_clear_console {} {
+    .pdwindow.text delete 0.0 end
+}
+
 # ------------------------------------------------------------------------------
 # manage the saving of the directories for the new commands
 
 # this gets the dir from the path of a window's title
-proc ::pd_menucommands::set_menu_new_dir {mytoplevel} {
-    variable menu_new_dir
-    variable menu_open_dir
+proc ::pd_menucommands::set_filenewdir {mytoplevel} {
     # TODO add Aqua specifics once g_canvas.c has [wm attributes -titlepath]
     if {$mytoplevel eq ".pdwindow"} {
-        # puts "set_menu_new_dir $mytoplevel"
-        set menu_new_dir $menu_open_dir
+        set ::filenewdir $::fileopendir
     } else {
-        regexp -- ".+ - (.+)" [wm title $mytoplevel] ignored menu_new_dir
+        regexp -- ".+ - (.+)" [wm title $mytoplevel] ignored ::filenewdir
+    }
+}
+
+# parse the textfile for the About Pd page
+proc ::pd_menucommands::menu_aboutpd {} {
+    set versionstring "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION$::PD_TEST_VERSION"
+    set filename "$::sys_libdir/doc/1.manual/1.introduction.txt"
+    if {[winfo exists .aboutpd]} {
+        wm deiconify .aboutpd
+        raise .aboutpd
+    } else {
+        toplevel .aboutpd -class TextWindow
+        wm title .aboutpd [_ "About Pd"]
+        wm group .aboutpd .
+        .aboutpd configure -menu $::dialog_menubar
+        text .aboutpd.text -relief flat -borderwidth 0 \
+            -yscrollcommand ".aboutpd.scroll set" -background white
+        scrollbar .aboutpd.scroll -command ".aboutpd.text yview"
+        pack .aboutpd.scroll -side right -fill y
+        pack .aboutpd.text -side left -fill both -expand 1
+        bind .aboutpd <$::modifier-Key-w>   "wm withdraw .aboutpd"
+        
+        set textfile [open $filename]
+        while {![eof $textfile]} {
+            set bigstring [read $textfile 1000]
+            regsub -all PD_BASEDIR $bigstring $::sys_guidir bigstring2
+            regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
+            .aboutpd.text insert end $bigstring3
+        }
+        close $textfile
     }
 }
 
 # ------------------------------------------------------------------------------
 # opening docs as menu items (like the Test Audio and MIDI patch and the manual)
-proc ::pd_menucommands::menu_doc_open {subdir basename} {
-    set dirname "$::sys_libdir/$subdir"
-    
-    switch -- [string tolower [file extension $basename]] {
-        ".txt"    {::pd_menucommands::menu_opentext "$dirname/$basename"
-        } ".c"    {::pd_menucommands::menu_opentext "$dirname/$basename"
-        } ".htm"  {::pd_menucommands::menu_openhtml "$dirname/$basename"
-        } ".html" {::pd_menucommands::menu_openhtml "$dirname/$basename"
-        } default {
-            pdsend "pd open [enquote_path $basename] [enquote_path $dirname]"
-        }
-    }
-}
-
-# ------------------------------------------------------------------------------
-# opening docs as menu items (like the Test Audio and MIDI patch and the manual)
-proc ::pd_menucommands::menu_helpbrowser {} {
-    set helpdir "$::sys_libdir/doc"
-    if {$::windowingsystem eq "aqua"} {
-        exec rm -rf /tmp/pd-documentation
-        exec cp -pr $helpdir /tmp/pd-documentation
-        set filename [tk_getOpenFile -defaultextension .pd \
-        -filetypes { {{documentation} {.pd .txt .htm}} } \
-        -initialdir /tmp/pd-documentation]
+proc ::pd_menucommands::menu_doc_open {dir basename} {
+    if {[file pathtype $dir] eq "relative"} {
+        set dirname "$::sys_libdir/$dir"
     } else {
-        set filename [tk_getOpenFile -defaultextension .pd \
-        -filetypes { {{documentation} {.pd .txt .htm}} } \
-        -initialdir $helpdir]
-    }    
-    if {$filename != ""} {
-        if {[string first .txt $filename] >= 0} {
-            menu_opentext $filename
-        } elseif {[string first .htm $filename] >= 0} {
-                                menu_openhtml $filename
-        } else {
-            set help_directory [string range $filename 0 \
-                [expr [string last / $filename ] - 1]]
-            set basename [string range $filename \
-                [expr [string last / $filename ] + 1] end]
-            pdsend "pd open [enquote_path $basename] \
-                [enquote_path $help_directory] \;"
-        }
+        set dirname $dir
     }
-}
-
-# open text docs in a Pd window
-proc ::pd_menucommands::menu_opentext {filename} {
-    global pd_myversion
-    set mytoplevel [format ".help%d" [clock seconds]]
-    toplevel $mytoplevel -class TextWindow
-    text $mytoplevel.text -relief flat -borderwidth 0 \
-        -yscrollcommand "$mytoplevel.scroll set" -background white
-    scrollbar $mytoplevel.scroll -command "$mytoplevel.text yview"
-    pack $mytoplevel.scroll -side right -fill y
-    pack $mytoplevel.text -side left -fill both -expand 1
-    ::pd_bindings::window_bindings $mytoplevel
-    
-    set textfile [open $filename]
-    while {![eof $textfile]} {
-        set bigstring [read $textfile 1000]
-        regsub -all PD_BASEDIR $bigstring $::sys_guidir bigstring2
-        regsub -all PD_VERSION $bigstring2 $pd_myversion bigstring3
-        $mytoplevel.text insert end $bigstring3
+    set textextension "[string tolower [file extension $basename]]"
+    if {[lsearch -exact [lindex $::filetypes 0 1]  $textextension] > -1} {
+        pdsend "pd open [enquote_path $basename] [enquote_path $dirname]"
+    } else {
+        ::pd_menucommands::menu_openfile "$dirname/$basename"
     }
-    close $textfile
 }
 
 # open HTML docs from the menu using the OS-default HTML viewer
-proc ::pd_menucommands::menu_openhtml {filename} {
+proc ::pd_menucommands::menu_openfile {filename} {
     if {$::tcl_platform(os) eq "Darwin"} {
         exec sh -c [format "open '%s'" $filename]
     } elseif {$::tcl_platform(platform) eq "windows"} {

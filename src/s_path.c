@@ -338,6 +338,15 @@ int open_via_path(const char *dir, const char *name, const char *ext,
         size, bin, sys_searchpath));
 }
 
+   /* close a previsouly opened file
+   this is needed on platforms where you cannot open/close ressources 
+   across dll-boundaries */
+int sys_close(int fd)
+{
+    return close(fd);
+}
+
+
     /* Open a help file using the help search path.  We expect the ".pd"
     suffix here, even though we have to tear it back off for one of the
     search attempts. */
@@ -542,15 +551,22 @@ t_symbol *sys_decodedialog(t_symbol *s)
 
 
     /* start a search path dialog window */
-void glob_start_path_dialog(t_pd *dummy)
+void glob_set_path(t_pd *dummy)
 {
-    char buf[MAXPDSTRING];
     int i;
     t_namelist *nl;
 
-    sys_gui("global pd_path; set pd_path {}\n");
+    sys_gui("set ::pd_path {}\n");
     for (nl = sys_searchpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend pd_path {%s}\n", nl->nl_string);
+        sys_vgui("lappend ::pd_path {%s}\n", nl->nl_string);
+}
+
+    /* start a search path dialog window */
+void glob_start_path_dialog(t_pd *dummy)
+{
+     char buf[MAXPDSTRING];
+
+    glob_set_path(dummy);
     sprintf(buf, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
@@ -571,16 +587,24 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+    /* set the global list vars for startup libraries and flags */
+void glob_set_startup(t_pd *dummy)
+{
+    int i;
+    t_namelist *nl;
+
+    sys_vgui("set ::startup_flags {%s}\n", sys_flags->s_name);
+    sys_gui("set ::startup_libraries {}\n");
+    for (nl = sys_externlist, i = 0; nl; nl = nl->nl_next, i++)
+        sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
+}
+
     /* start a startup dialog window */
 void glob_start_startup_dialog(t_pd *dummy)
 {
     char buf[MAXPDSTRING];
-    int i;
-    t_namelist *nl;
 
-    sys_gui("global pd_startup; set pd_startup {}\n");
-    for (nl = sys_externlist, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend pd_startup {%s}\n", nl->nl_string);
+    glob_set_startup(dummy);
     sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
         sys_flags->s_name);
     gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);

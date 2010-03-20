@@ -104,7 +104,6 @@ proc ::dialog_canvas::pdtk_canvas_dialog {mytoplevel xscale yscale graphmeflags 
     } else {
         create_dialog $mytoplevel
     }
-    puts "canvas_dialog $mytoplevel"
     switch -- $graphmeflags {
         0 {
             $mytoplevel.parent.graphme deselect
@@ -119,7 +118,7 @@ proc ::dialog_canvas::pdtk_canvas_dialog {mytoplevel xscale yscale graphmeflags 
             $mytoplevel.parent.graphme select
             $mytoplevel.parent.hidetext select
         } default {
-            pdtk_post "Warning: unknown graphme flags received in pdtk_canvas_dialog"
+            pdtk_post [_ "WARNING: unknown graphme flags received in pdtk_canvas_dialog"]
         }
     }
 
@@ -140,7 +139,11 @@ proc ::dialog_canvas::pdtk_canvas_dialog {mytoplevel xscale yscale graphmeflags 
 proc ::dialog_canvas::create_dialog {mytoplevel} {
     toplevel $mytoplevel -class DialogWindow
     wm title $mytoplevel [_ "Canvas Properties"]
-    if {$::windowingsystem eq "aqua"} {$mytoplevel configure -menu .menubar}
+    wm group $mytoplevel .
+    wm resizable $mytoplevel 0 0
+    wm transient $mytoplevel $::focused_window
+    $mytoplevel configure -menu $::dialog_menubar
+    $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "canvas"
     
     labelframe $mytoplevel.scale -text [_ "Scale"] -borderwidth 1
@@ -201,13 +204,16 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         -side left
 
     frame $mytoplevel.buttons
-    pack $mytoplevel.buttons -side bottom -fill x -pady 2m
+    pack $mytoplevel.buttons -side bottom -fill x -expand 1 -pady 2m
     button $mytoplevel.buttons.cancel -text [_ "Cancel"] \
         -command "::dialog_canvas::cancel $mytoplevel"
-    button $mytoplevel.buttons.apply -text [_ "Apply"] \
-        -command "::dialog_canvas::apply $mytoplevel"
+    pack $mytoplevel.buttons.cancel -side left -expand 1 -fill x -padx 10
+    if {$::windowingsystem ne "aqua"} {
+        button $mytoplevel.buttons.apply -text [_ "Apply"] \
+            -command "::dialog_canvas::apply $mytoplevel"
+        pack $mytoplevel.buttons.apply -side left -expand 1 -fill x -padx 10
+    }
     button $mytoplevel.buttons.ok -text [_ "OK"] \
         -command "::dialog_canvas::ok $mytoplevel"
-    pack $mytoplevel.buttons.cancel $mytoplevel.buttons.apply \
-        $mytoplevel.buttons.ok -side left -expand 1
+    pack $mytoplevel.buttons.ok -side left -expand 1 -fill x -padx 10
  }

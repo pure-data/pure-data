@@ -73,16 +73,16 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
         x->x_drawn = x->x_on;
     }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {{%s} -%d %s} -fill #%6.6x -tags %lxLABEL\n",
+             -font {{%s} -%d %s} -fill #%6.6x -tags [list %lxLABEL label text]\n",
              canvas, xx11b+x->x_gui.x_ldx, yy11+x->x_gui.x_ldy,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
              x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags %lxOUT%d\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]\n",
              canvas, xx11b, yy12-1, xx11b + IOWIDTH, yy12, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags %lxIN%d\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxIN%d inlet]\n",
              canvas, xx11b, yy11, xx11b + IOWIDTH, yy11+1, x, 0);
 
 }

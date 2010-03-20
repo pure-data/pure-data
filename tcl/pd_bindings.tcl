@@ -4,83 +4,97 @@ package require pd_menucommands
 package require dialog_find
 
 namespace eval ::pd_bindings:: {
-    variable modifier
-
-    namespace export window_bindings
+    namespace export global_bindings
     namespace export dialog_bindings
-    namespace export canvas_bindings
+    namespace export patch_bindings
 }
 
-# the commands are bound using "" quotations so that the $mytoplevel is
+# TODO rename pd_bindings to window_bindings after merge is done
+
+# Some commands are bound using "" quotations so that the $mytoplevel is
 # interpreted immediately.  Since the command is being bound to $mytoplevel,
 # it makes sense to have value of $mytoplevel already in the command.  This is
-# the opposite of the menu commands in pd_menus.tcl
+# the opposite of most menu/bind commands here and in pd_menus.tcl, which use
+# {} to force execution of any variables (i.e. $::focused_window) until later
 
-# binding by class is not recursive, so its useful for certain things
+
+# binding by class is not recursive, so its useful for window events
 proc ::pd_bindings::class_bindings {} {
     # and the Pd window is in a class to itself
-    bind PdWindow <Configure>              "::pd_bindings::window_configure %W"
     bind PdWindow <FocusIn>                "::pd_bindings::window_focusin %W"
-    # bind to all the canvas windows
-    bind CanvasWindow <Map>                    "::pd_bindings::map %W"
-    bind CanvasWindow <Unmap>                  "::pd_bindings::unmap %W"
-    bind CanvasWindow <Configure>              "::pd_bindings::window_configure %W"
-    bind CanvasWindow <FocusIn>                "::pd_bindings::window_focusin %W"
-    # bindings for dialog windows, which behave differently than canvas windows
+    # bind to all the windows dedicated to patch canvases
+    bind PatchWindow <FocusIn>                "::pd_bindings::window_focusin %W"
+    bind PatchWindow <Map>                    "::pd_bindings::map %W"
+    bind PatchWindow <Unmap>                  "::pd_bindings::unmap %W"
+    bind PatchWindow <Configure> "::pd_bindings::patch_configure %W %w %h %x %y"
+    # dialog panel windows bindings, which behave differently than PatchWindows
     bind DialogWindow <Configure>              "::pd_bindings::dialog_configure %W"
     bind DialogWindow <FocusIn>                "::pd_bindings::dialog_focusin %W"
 }
 
-proc ::pd_bindings::window_bindings {mytoplevel} {
-    variable modifier
+proc ::pd_bindings::global_bindings {} {
+    # we use 'bind all' everywhere to get as much of Tk's automatic binding
+    # behaviors as possible, things like not sending an event for 'O' when
+    # 'Control-O' is pressed.
+    bind all <$::modifier-Key-a>      {menu_send %W selectall}
+    bind all <$::modifier-Key-b>      {menu_helpbrowser}
+    bind all <$::modifier-Key-c>      {menu_send %W copy}
+    bind all <$::modifier-Key-d>      {menu_send %W duplicate}
+    bind all <$::modifier-Key-e>      {menu_toggle_editmode}
+    bind all <$::modifier-Key-f>      {menu_find_dialog}
+    bind all <$::modifier-Key-g>      {menu_send %W findagain}
+    bind all <$::modifier-Key-n>      {menu_new}
+    bind all <$::modifier-Key-o>      {menu_open}
+    bind all <$::modifier-Key-p>      {menu_print $::focused_window}
+    bind all <$::modifier-Key-q>      {pdsend "pd verifyquit"}
+    bind all <$::modifier-Key-r>      {menu_raise_pdwindow}
+    bind all <$::modifier-Key-s>      {menu_send %W menusave}
+    bind all <$::modifier-Key-v>      {menu_send %W paste}
+    bind all <$::modifier-Key-w>      {menu_send_float %W menuclose 0}
+    bind all <$::modifier-Key-x>      {menu_send %W cut}
+    bind all <$::modifier-Key-z>      {menu_undo}
+    bind all <$::modifier-Key-1>      {menu_send_float %W obj 0}
+    bind all <$::modifier-Key-2>      {menu_send_float %W msg 0}
+    bind all <$::modifier-Key-3>      {menu_send_float %W floatatom 0}
+    bind all <$::modifier-Key-4>      {menu_send_float %W symbolatom 0}
+    bind all <$::modifier-Key-5>      {menu_send_float %W text 0}
+    bind all <$::modifier-Key-slash>  {pdsend "pd dsp 1"}
+    bind all <$::modifier-Key-period> {pdsend "pd dsp 0"}
 
-    # for key bindings
+    # annoying, but Tk's bind needs uppercase letter to get the Shift
+    bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
+    bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
+    bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-H> {menu_send %W hslider}
+    bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
+    bind all <$::modifier-Shift-Key-L> {menu_clear_console}
+    bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
+    bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
+    bind all <$::modifier-Shift-Key-S> {menu_send %W menusaveas}
+    bind all <$::modifier-Shift-Key-T> {menu_send %W toggle}
+    bind all <$::modifier-Shift-Key-U> {menu_send %W vumeter}
+    bind all <$::modifier-Shift-Key-V> {menu_send %W vslider}
+    bind all <$::modifier-Shift-Key-W> {menu_send_float %W menuclose 1}
+    bind all <$::modifier-Shift-Key-Z> {menu_redo}
+
+    # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
-        set modifier "Mod1"
+        # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
+        bind all <$::modifier-Key-m>       {menu_minimize %W}
+        bind all <$::modifier-Key-t>       {menu_font_dialog}
+        bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
+        bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
     } else {
-        set modifier "Control"
+        bind all <$::modifier-Key-m>       {menu_message_dialog}
+        #bind all <$::modifier-Key-t>       {menu_texteditor}
+        bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
+        bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
     }
 
-    # File menu
-    bind $mytoplevel <$modifier-Key-b>        "menu_helpbrowser"
-    bind $mytoplevel <$modifier-Key-f>        "::dialog_find::menu_find_dialog $mytoplevel"
-    bind $mytoplevel <$modifier-Key-n>        "menu_new"
-    bind $mytoplevel <$modifier-Key-o>        "menu_open"
-    bind $mytoplevel <$modifier-Key-p>        "menu_print $mytoplevel"
-    bind $mytoplevel <$modifier-Key-q>        "pdsend \"pd verifyquit\""
-    bind $mytoplevel <$modifier-Key-r>        "menu_raise_pdwindow"
-    bind $mytoplevel <$modifier-Shift-Key-L>  "menu_clear_console"
-    bind $mytoplevel <$modifier-Shift-Key-Q>  "pdsend \"pd quit\""
-    bind $mytoplevel <$modifier-Shift-Key-R>  "menu_toggle_console"
-
-    # DSP control
-    bind $mytoplevel <$modifier-Key-slash>    "pdsend \"pd dsp 1\""
-    bind $mytoplevel <$modifier-Key-period>   "pdsend \"pd dsp 0\""
-}
-
-proc ::pd_bindings::pdwindow_bindings {mytoplevel} {
-    variable modifier
-
-    window_bindings $mytoplevel
-
-    # TODO update this to work with the console, if it is used
-    bind $mytoplevel <$modifier-Key-a> ".pdwindow.text tag add sel 1.0 end"
-    bind $mytoplevel <$modifier-Key-x> "tk_textCut .pdwindow.text"
-    bind $mytoplevel <$modifier-Key-c> "tk_textCopy .pdwindow.text"
-    bind $mytoplevel <$modifier-Key-v> "tk_textPaste .pdwindow.text"
-    bind $mytoplevel <$modifier-Key-w> "wm iconify $mytoplevel"
-
-    if {$::windowingsystem eq "aqua"} {
-        bind $mytoplevel <$modifier-Key-m>   "menu_minimize $mytoplevel"
-        bind $mytoplevel <$modifier-Key-t>   "menu_font_dialog $mytoplevel"
-        bind $mytoplevel <$modifier-quoteleft> "menu_raisenextwindow"
-    } else {
-        bind $mytoplevel <$modifier-Key-m>    "menu_message_dialog"
-        bind $mytoplevel <$modifier-Key-t>    "menu_texteditor"
-    }
-
-    # Tcl event bindings
-    wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"pd verifyquit\""
+    bind all <KeyPress>         {::pd_bindings::sendkey %W 1 %K %A 0}
+    bind all <KeyRelease>       {::pd_bindings::sendkey %W 0 %K %A 0}
+    bind all <Shift-KeyPress>   {::pd_bindings::sendkey %W 1 %K %A 1}
+    bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1}
 }
 
 # this is for the dialogs: find, font, sendmessage, gatom properties, array
@@ -89,135 +103,111 @@ proc ::pd_bindings::pdwindow_bindings {mytoplevel} {
 proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     variable modifier
 
-    window_bindings $mytoplevel
-
     bind $mytoplevel <KeyPress-Escape> "dialog_${dialogname}::cancel $mytoplevel"
     bind $mytoplevel <KeyPress-Return> "dialog_${dialogname}::ok $mytoplevel"
-    bind $mytoplevel <$modifier-Key-w> "dialog_${dialogname}::cancel $mytoplevel"
+    bind $mytoplevel <$::modifier-Key-w> "dialog_${dialogname}::cancel $mytoplevel"
+    # these aren't supported in the dialog, so alert the user, then break so
+    # that no other key bindings are run
+    bind $mytoplevel <$::modifier-Key-s>       {bell; break}
+    bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
+    bind $mytoplevel <$::modifier-Key-p>       {bell; break}
 
-    $mytoplevel configure -padx 10 -pady 5
-    wm group $mytoplevel .
-    wm resizable $mytoplevel 0 0
     wm protocol $mytoplevel WM_DELETE_WINDOW "dialog_${dialogname}::cancel $mytoplevel"
-    catch { # not all platforms/Tcls versions have these options
-        wm attributes $mytoplevel -topmost 1
-        #wm attributes $mytoplevel -transparent 1
-        #$mytoplevel configure -highlightthickness 1
-    }
 }
 
-proc ::pd_bindings::canvas_bindings {mytoplevel} {
+proc ::pd_bindings::patch_bindings {mytoplevel} {
     variable modifier
-    set mycanvas $mytoplevel.c
+    set tkcanvas [tkcanvas_name $mytoplevel]
 
-    window_bindings $mytoplevel
-
-    # key bindings -------------------------------------------------------------
-    bind $mytoplevel <$modifier-Key-1>        "pdsend \"$mytoplevel obj\""
-    bind $mytoplevel <$modifier-Key-2>        "pdsend \"$mytoplevel msg\""
-    bind $mytoplevel <$modifier-Key-3>        "pdsend \"$mytoplevel floatatom\""
-    bind $mytoplevel <$modifier-Key-4>        "pdsend \"$mytoplevel symbolatom\""
-    bind $mytoplevel <$modifier-Key-5>        "pdsend \"$mytoplevel text\""
-    bind $mytoplevel <$modifier-Key-a>        "pdsend \"$mytoplevel selectall\""
-    bind $mytoplevel <$modifier-Key-c>        "pdsend \"$mytoplevel copy\""
-    bind $mytoplevel <$modifier-Key-d>        "pdsend \"$mytoplevel duplicate\""
-    bind $mytoplevel <$modifier-Key-e>        "pdsend \"$mytoplevel editmode 0\""
-    bind $mytoplevel <$modifier-Key-g>        "pdsend \"$mytoplevel findagain\""
-    bind $mytoplevel <$modifier-Key-s>        "pdsend \"$mytoplevel menusave\""
-    bind $mytoplevel <$modifier-Key-v>        "pdsend \"$mytoplevel paste\""
-    bind $mytoplevel <$modifier-Key-w>        "pdsend \"$mytoplevel menuclose 0\""
-    bind $mytoplevel <$modifier-Key-x>        "pdsend \"$mytoplevel cut\""
-    bind $mytoplevel <$modifier-Key-z>        "menu_undo $mytoplevel"
-
-    # annoying, but Tk's bind needs uppercase letter to get the Shift
-    bind $mytoplevel <$modifier-Shift-Key-B> "pdsend \"$mytoplevel bng 1\""
-    bind $mytoplevel <$modifier-Shift-Key-C> "pdsend \"$mytoplevel mycnv 1\""
-    bind $mytoplevel <$modifier-Shift-Key-D> "pdsend \"$mytoplevel vradio 1\""
-    bind $mytoplevel <$modifier-Shift-Key-H> "pdsend \"$mytoplevel hslider 1\""
-    bind $mytoplevel <$modifier-Shift-Key-I> "pdsend \"$mytoplevel hradio 1\""
-    bind $mytoplevel <$modifier-Shift-Key-N> "pdsend \"$mytoplevel numbox 1\""
-    bind $mytoplevel <$modifier-Shift-Key-S> "pdsend \"$mytoplevel menusaveas\""
-    bind $mytoplevel <$modifier-Shift-Key-T> "pdsend \"$mytoplevel toggle 1\""
-    bind $mytoplevel <$modifier-Shift-Key-U> "pdsend \"$mytoplevel vumeter 1\""
-    bind $mytoplevel <$modifier-Shift-Key-V> "pdsend \"$mytoplevel vslider 1\""
-    bind $mytoplevel <$modifier-Shift-Key-W> "pdsend \"$mytoplevel menuclose 1\""
-    bind $mytoplevel <$modifier-Shift-Key-Z> "menu_redo $mytoplevel"
-    
-    if {$::windowingsystem eq "aqua"} {
-        bind $mytoplevel <$modifier-Key-m>   "menu_minimize $mytoplevel"
-        bind $mytoplevel <$modifier-Key-t>   "menu_font_dialog $mytoplevel"
-        bind $mytoplevel <$modifier-quoteleft> "menu_raisenextwindow"
-    } else {
-        bind $mytoplevel <$modifier-Key-m>    "menu_message_dialog"
-        bind $mytoplevel <$modifier-Key-t>    "menu_texteditor"
-    }
-    bind $mytoplevel <KeyPress>         "::pd_bindings::sendkey %W 1 %K %A 0"
-    bind $mytoplevel <KeyRelease>       "::pd_bindings::sendkey %W 0 %K %A 0"
-    bind $mytoplevel <Shift-KeyPress>   "::pd_bindings::sendkey %W 1 %K %A 1"
-    bind $mytoplevel <Shift-KeyRelease> "::pd_bindings::sendkey %W 0 %K %A 1"
+    # TODO move mouse bindings to global and bind to 'all'
 
     # mouse bindings -----------------------------------------------------------
-    # these need to be bound to $mycanvas because %W will return $mytoplevel for
-    # events over the window frame and $mytoplevel.c for events over the canvas
-    bind $mycanvas <Motion>                   "pdtk_canvas_motion %W %x %y 0"
-    bind $mycanvas <$modifier-Motion>         "pdtk_canvas_motion %W %x %y 2"
-    bind $mycanvas <ButtonPress-1>            "pdtk_canvas_mouse %W %x %y %b 0"
-    bind $mycanvas <ButtonRelease-1>          "pdtk_canvas_mouseup %W %x %y %b"
-    bind $mycanvas <$modifier-ButtonPress-1>  "pdtk_canvas_mouse %W %x %y %b 2"
-    # TODO look into "virtual events' for a means for getting Shift-Button, etc.
+    # these need to be bound to $tkcanvas because %W will return $mytoplevel for
+    # events over the window frame and $tkcanvas for events over the canvas
+    bind $tkcanvas <Motion>                   "pdtk_canvas_motion %W %x %y 0"
+    bind $tkcanvas <$::modifier-Motion>         "pdtk_canvas_motion %W %x %y 2"
+    bind $tkcanvas <ButtonPress-1>            "pdtk_canvas_mouse %W %x %y %b 0"
+    bind $tkcanvas <ButtonRelease-1>          "pdtk_canvas_mouseup %W %x %y %b"
+    bind $tkcanvas <$::modifier-ButtonPress-1>  "pdtk_canvas_mouse %W %x %y %b 2"
+    bind $tkcanvas <Shift-ButtonPress-1>        "pdtk_canvas_mouse %W %x %y %b 1"
+
+    if {$::windowingsystem eq "x11"} {
+        # from http://wiki.tcl.tk/3893
+        bind all <Button-4> \
+            {event generate [focus -displayof %W] <MouseWheel> -delta  1}
+        bind all <Button-5> \
+            {event generate [focus -displayof %W] <MouseWheel> -delta -1}
+        bind all <Shift-Button-4> \
+            {event generate [focus -displayof %W] <Shift-MouseWheel> -delta  1}
+        bind all <Shift-Button-5> \
+            {event generate [focus -displayof %W] <Shift-MouseWheel> -delta -1}
+    }
+    bind $tkcanvas <MouseWheel>       {::pdtk_canvas::scroll %W y %D}
+    bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
+
+    # "right clicks" are defined differently on each platform
     switch -- $::windowingsystem { 
         "aqua" {
-            bind $mycanvas <ButtonPress-2>      "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-2>      "pdtk_canvas_rightclick %W %x %y %b"
             # on Mac OS X, make a rightclick with Ctrl-click for 1 button mice
-            bind $mycanvas <Control-Button-1> "pdtk_canvas_rightclick %W %x %y %b"
-            # TODO try replacing the above with this
-            #bind all <Control-Button-1> {event generate %W <Button-2> \
-            #                                      -x %x -y %y -rootx %X -rooty %Y \
-            #                                      -button 2 -time %t}
+            bind $tkcanvas <Control-Button-1> "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <Option-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"    
         } "x11" {
-            bind $mycanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
             # on X11, button 2 "pastes" from the X windows clipboard
-            bind $mycanvas <ButtonPress-2>   "pdtk_canvas_clickpaste %W %x %y %b"
+            bind $tkcanvas <ButtonPress-2>   "pdtk_canvas_clickpaste %W %x %y %b"
+            bind $tkcanvas <Alt-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"
         } "win32" {
-            bind $mycanvas <ButtonPress-3>   "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-3>   "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <Alt-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"
         }
     }
-    #TODO bind $mytoplevel <MouseWheel>
 
     # window protocol bindings
     wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"$mytoplevel menuclose 0\""
-    bind $mycanvas <Destroy> "::pd_bindings::window_destroy %W"
-    bind $mycanvas <Configure> "pdtk_canvas_configure %W %x %y %w %h"
+    bind $tkcanvas <Destroy> "::pd_bindings::window_destroy %W"
 }
 
 
 #------------------------------------------------------------------------------#
 # event handlers
 
-proc ::pd_bindings::window_configure {mytoplevel} {
+proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
+    # for some reason, when we create a window, we get an event with a
+    # widthXheight of 1x1 first, then we get the right values, so filter it out
+    if {$width == 1 && $height == 1} {return}
     pdtk_canvas_getscroll $mytoplevel
+    # send the size/location of the window and canvas to 'pd' in the form of:
+    #    left top right bottom
+    pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
 }
     
-proc ::pd_bindings::window_destroy {mycanvas} {
-    set mytoplevel [winfo toplevel $mycanvas]
+proc ::pd_bindings::window_destroy {window} {
+    set mytoplevel [winfo toplevel $window]
     unset ::editmode($mytoplevel)
+    unset ::editingtext($mytoplevel)
+    unset ::loaded($mytoplevel)
+    # unset my entries all of the window data tracking arrays
+    array unset ::windowname $mytoplevel
+    array unset ::parentwindows $mytoplevel
+    array unset ::childwindows $mytoplevel
 }
+
 # do tasks when changing focus (Window menu, scrollbars, etc.)
 proc ::pd_bindings::window_focusin {mytoplevel} {
-    # pdtk_post "::pd_bindings::window_focusin $mytoplevel"
+    # focused_window is used throughout for sending bindings, menu commands,
+    # etc. to the correct patch receiver symbol.
     set ::focused_window $mytoplevel
-    ::dialog_find::set_canvas_to_search $mytoplevel
-    ::pd_menucommands::set_menu_new_dir $mytoplevel
+    ::dialog_find::set_window_to_search $mytoplevel
+    ::pd_menucommands::set_filenewdir $mytoplevel
     ::dialog_font::update_font_dialog $mytoplevel
     if {$mytoplevel eq ".pdwindow"} {
         ::pd_menus::configure_for_pdwindow 
     } else {
         ::pd_menus::configure_for_canvas $mytoplevel
     }
-    # TODO handle enabling/disabling the Undo and Redo menu items in Edit
+    if {[winfo exists .font]} {wm transient .font $::focused_window}
     # TODO handle enabling/disabling the Cut/Copy/Paste menu items in Edit
-    # TODO enable menu items that the Pd window or dialogs might have disabled
-    # TODO update "Open Recent" menu
 }
 
 proc ::pd_bindings::dialog_configure {mytoplevel} {
@@ -243,7 +233,11 @@ proc ::pd_bindings::unmap {mytoplevel} {
 #------------------------------------------------------------------------------#
 # key usage
 
-proc ::pd_bindings::sendkey {mycanvas state key iso shift} {
+# canvas_key() expects to receive the patch's mytoplevel because key messages
+# are local to each patch.  Therefore, key messages are not send for the
+# dialog panels, the Pd window, help browser, etc. so we need to filter those
+# events out.
+proc ::pd_bindings::sendkey {window state key iso shift} {
     # TODO canvas_key on the C side should be refactored with this proc as well
     switch -- $key {
         "BackSpace" { set iso ""; set key 8    }
@@ -257,7 +251,10 @@ proc ::pd_bindings::sendkey {mycanvas state key iso shift} {
     if {$iso ne ""} {
         scan $iso %c key
     }
-    # puts "::pd_bindings::sendkey {%W:$mycanvas $state %K$key %A$iso $shift}"
-    # $mycanvas might be a toplevel, but [winfo toplevel] does the right thing
-    pdsend "[winfo toplevel $mycanvas] key $state $key $shift"
+    #$window might be a toplevel or canvas, [winfo toplevel] does the right thing
+    set mytoplevel [winfo toplevel $window]
+    if {[winfo class $mytoplevel] eq "PatchWindow"} {
+        pdsend "$mytoplevel key $state $key $shift"
+    }
+    # TODO send to 'pd key' for global key events in Pd?
 }

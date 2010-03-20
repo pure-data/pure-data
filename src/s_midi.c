@@ -14,7 +14,7 @@
 #include <bstring.h>
 #endif
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #include <winsock.h>
 #include <sys/types.h>
 #include <sys/timeb.h> 

@@ -13,6 +13,27 @@
 t_printhook sys_printhook;
 int sys_printtostderr;
 
+/* escape characters for tcl/tk */
+static char* strnescape(char *dest, const char *src, size_t len)
+{
+    int ptin = 0, ptout = 0;
+    for(; ptout < len; ptin++, ptout++)
+    {
+        int c = src[ptin];
+        if (c == '\\' || c == '{' || c == '}' || c == ';')
+            dest[ptout++] = '\\';
+        dest[ptout] = src[ptin];
+        if (c==0) break;
+    }
+
+    if(ptout<len) 
+        dest[ptout]=0;
+    else 
+        dest[len-1]=0;
+
+    return dest;
+}
+
 static void dopost(const char *s)
 {
     if (sys_printhook)
@@ -22,24 +43,69 @@ static void dopost(const char *s)
     else
     {
         char upbuf[MAXPDSTRING];
-        int ptin = 0, ptout = 0, len = strlen(s);
-        static int heldcr = 0;
-        if (heldcr)
-            upbuf[ptout++] = '\n', heldcr = 0;
-        for (; ptin < len && ptout < MAXPDSTRING-3;
-            ptin++, ptout++)
-        {
-            int c = s[ptin];
-            if (c == '\\' || c == '{' || c == '}' || c == ';')
-                upbuf[ptout++] = '\\';
-            upbuf[ptout] = s[ptin];
-        }
-        if (ptout && upbuf[ptout-1] == '\n')
-            upbuf[--ptout] = 0, heldcr = 1;
-        upbuf[ptout] = 0;
-        sys_vgui("pdtk_post {%s}\n", upbuf);
+        sys_vgui("::pdwindow::post {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
     }
 }
+
+static void doerror(const char *s)
+{
+    char upbuf[MAXPDSTRING];
+    upbuf[MAXPDSTRING-1]=0;
+
+    // what about sys_printhook_error ?
+    if (sys_printhook) 
+    {
+        snprintf(upbuf, MAXPDSTRING-1, "error: %s", s);
+        (*sys_printhook)(upbuf);
+    }
+    else if (sys_printtostderr)
+        fprintf(stderr, "error: %s", s);
+    else
+    {
+        sys_vgui("::pdwindow::error {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
+    }
+}
+static void doverbose(int level, const char *s)
+{
+    char upbuf[MAXPDSTRING];
+    upbuf[MAXPDSTRING-1]=0;
+
+    // what about sys_printhook_verbose ?
+    if (sys_printhook) 
+    {
+        snprintf(upbuf, MAXPDSTRING-1, "verbose(%d): %s", level, s);
+        (*sys_printhook)(upbuf);
+    }
+    else if (sys_printtostderr) 
+    {
+        fprintf(stderr, "verbose(%d): %s", level, s);
+    }
+    else
+    {
+        sys_vgui("::pdwindow::verbose %d {%s}\n", level, strnescape(upbuf, s, MAXPDSTRING));
+    }
+}
+
+static void dobug(const char *s)
+{
+    char upbuf[MAXPDSTRING];
+    upbuf[MAXPDSTRING-1]=0;
+
+    // what about sys_printhook_bug ?
+    if (sys_printhook) 
+    {
+        snprintf(upbuf, MAXPDSTRING-1, "consistency check failed: %s", s);
+        (*sys_printhook)(upbuf);
+    }
+    else if (sys_printtostderr)
+        fprintf(stderr, "consistency check failed: %s", s);
+    else
+    {
+        char upbuf[MAXPDSTRING];
+        sys_vgui("::pdwindow::bug {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
+    }
+}
+
 
 void post(const char *fmt, ...)
 {
@@ -50,8 +116,9 @@ void post(const char *fmt, ...)
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
-    strcat(buf, "\n");
+
     dopost(buf);
+    endpost();
 }
 
 void startpost(const char *fmt, ...)
@@ -63,12 +130,14 @@ void startpost(const char *fmt, ...)
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
+
     dopost(buf);
 }
 
 void poststring(const char *s)
 {
     dopost(" ");
+
     dopost(s);
 }
 
@@ -88,12 +157,17 @@ void postfloat(t_float f)
     char buf[80];
     t_atom a;
     SETFLOAT(&a, f);
+
     postatom(1, &a);
 }
 
 void endpost(void)
 {
-    dopost("\n");
+    if (sys_printhook)
+        (*sys_printhook)("\n");
+    else if (sys_printtostderr)
+        fprintf(stderr, "\n");
+    else sys_vgui("::pdwindow::endpost\n");
 }
 
 void error(const char *fmt, ...)
@@ -102,12 +176,13 @@ void error(const char *fmt, ...)
     va_list ap;
     t_int arg[8];
     int i;
-    dopost("error: ");
+
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
-    strcat(buf, "\n");
-    dopost(buf);
+
+    doerror(buf);
+    endpost();
 }
 
 void verbose(int level, const char *fmt, ...)
@@ -116,16 +191,15 @@ void verbose(int level, const char *fmt, ...)
     va_list ap;
     t_int arg[8];
     int i;
+
     if(level>sys_verbose)return;
-    dopost("verbose(");
-    postfloat((t_float)level);
-    dopost("):");
-    
+
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
-    strcat(buf, "\n");
-    dopost(buf);
+    doverbose(level, buf);
+
+    endpost();
 }
 
     /* here's the good way to log errors -- keep a pointer to the
@@ -143,12 +217,14 @@ void pd_error(void *object, const char *fmt, ...)
     t_int arg[8];
     int i;
     static int saidit;
-    dopost("error: ");
+
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
-    strcat(buf, "\n");
-    dopost(buf);
+
+    doerror(buf);
+    endpost();  
+
     error_object = object;
     if (!saidit)
     {
@@ -175,12 +251,12 @@ void bug(const char *fmt, ...)
     va_list ap;
     t_int arg[8];
     int i;
-    dopost("consistency check failed: ");
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
-    strcat(buf, "\n");
-    dopost(buf);
+
+    dobug(buf);
+    endpost();
 }
 
     /* this isn't worked out yet. */
@@ -203,4 +279,5 @@ void sys_ouch(void)
 {
     if (*errobject) error("%s: %s", errobject, errstring);
     else error("%s", errstring);
+    sys_gui("bell\n");
 }

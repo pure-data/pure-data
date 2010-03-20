@@ -469,7 +469,7 @@ int alsa_send_dacs(void)
                 ((char *)(alsa_snd_buf))[3*j+1] = ((s>>8) & 255);
                 ((char *)(alsa_snd_buf))[3*j+2] = ((s>>16) & 255);
 #else
-                fprintf(stderr("big endian 24-bit not supported");
+                fprintf(stderr, "big endian 24-bit not supported");
 #endif
             }
             for (; i < thisdevchans; i++, ch++)
@@ -581,7 +581,7 @@ int alsa_send_dacs(void)
                         * (1./ INT32_MAX);
             }
 #else
-                fprintf(stderr("big endian 24-bit not supported");
+                fprintf(stderr, "big endian 24-bit not supported");
 #endif
         }
         else

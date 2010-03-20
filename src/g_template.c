@@ -1715,8 +1715,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     minyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    sys_vgui(
-".x%lx.c create rectangle %d %d %d %d -fill black -width 0  -tags plot%lx\n",
+                    sys_vgui(".x%lx.c create rectangle %d %d %d %d \
+-fill black -width 0  -tags [list plot%lx array]\n",
                         glist_getcanvas(glist),
                         ixpix, (int)glist_ytopixels(glist, 
                             basey + fielddesc_cvttocoord(yfielddesc, minyval)),
@@ -1815,7 +1815,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     outline, outline);
                 if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
-                sys_vgui("-tags plot%lx\n", data);
+                sys_vgui("-tags [list plot%lx array]\n", data);
             }
             else if (linewidth > 0)
             {
@@ -1858,7 +1858,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 sys_vgui("-fill %s\\\n", outline);
                 if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
-                sys_vgui("-tags plot%lx\n", data);
+                sys_vgui("-tags [list plot%lx array]\n", data);
             }
         }
             /* We're done with the outline; now draw all the points.
@@ -2138,7 +2138,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
                  sys_hostfontsize(glist_getfont(glist)), sys_fontweight);
-        sys_vgui(" -tags drawnumber%lx\n", data);
+        sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
     else sys_vgui(".x%lx.c delete drawnumber%lx\n", glist_getcanvas(glist), data);
 }

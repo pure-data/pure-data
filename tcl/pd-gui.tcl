@@ -8,13 +8,19 @@
 # "." automatically gets a window, we don't want it.  Withdraw it before doing
 # anything else, so that we don't get the automatic window flashing for a
 # second while pd loads.
-wm withdraw . 
-
-puts -------------------------------pd-gui.tcl-----------------------------------
+if { [catch {wm withdraw .} fid] } { exit 2 }
 
 package require Tcl 8.3
 package require Tk
+#package require tile
+## replace Tk widgets with Ttk widgets on 8.5
+#namespace import -force ttk::*
+
 package require msgcat
+# TODO figure out msgcat issue on Windows
+# TODO create a constructor in each package to create things at startup, that
+#  way they can be easily be modified by startup scripts
+# TODO create alt-Enter/Cmd-I binding to bring up Properties panels
 
 # Pd's packages are stored in the same directory as the main script (pd-gui.tcl)
 set auto_path [linsert $auto_path 0 [file dirname [info script]]]
@@ -25,26 +31,51 @@ package require pdwindow
 package require dialog_array
 package require dialog_audio
 package require dialog_canvas
+package require dialog_data
 package require dialog_font
 package require dialog_gatom
 package require dialog_iemgui
+package require dialog_message
 package require dialog_midi
+package require dialog_path
+package require dialog_startup
+package require helpbrowser
+package require pd_menucommands
+package require opt_parser
 package require pdtk_canvas
 package require pdtk_text
 # TODO eliminate this kludge:
 package require wheredoesthisgo
 
+#------------------------------------------------------------------------------#
+# import functions into the global namespace
+
+# make global since they are used throughout    
+namespace import ::pd_menucommands::* 
+
 # import into the global namespace for backwards compatibility
 namespace import ::pd_connect::pdsend
 namespace import ::pdwindow::pdtk_post
+namespace import ::pdwindow::pdtk_pd_dio
+namespace import ::pdwindow::pdtk_pd_dsp
+namespace import ::pdwindow::pdtk_pd_meters
+namespace import ::pdtk_canvas::pdtk_canvas_popup
+namespace import ::pdtk_canvas::pdtk_canvas_editmode
+namespace import ::pdtk_canvas::pdtk_canvas_getscroll
+namespace import ::pdtk_canvas::pdtk_canvas_setparents
+namespace import ::pdtk_canvas::pdtk_canvas_reflecttitle
 namespace import ::dialog_array::pdtk_array_dialog
 namespace import ::dialog_audio::pdtk_audio_dialog
 namespace import ::dialog_canvas::pdtk_canvas_dialog
+namespace import ::dialog_data::pdtk_data_dialog
+namespace import ::dialog_find::pdtk_couldnotfind
 namespace import ::dialog_font::pdtk_canvas_dofont
 namespace import ::dialog_gatom::pdtk_gatom_dialog
 namespace import ::dialog_iemgui::pdtk_iemgui_dialog
 namespace import ::dialog_midi::pdtk_midi_dialog
 namespace import ::dialog_midi::pdtk_alsa_midi_dialog
+namespace import ::dialog_path::pdtk_path_dialog
+namespace import ::dialog_startup::pdtk_startup_dialog
 
 # hack - these should be better handled in the C code
 namespace import ::dialog_array::pdtk_array_listview_new
@@ -54,6 +85,11 @@ namespace import ::dialog_array::pdtk_array_listview_closeWindow
 
 #------------------------------------------------------------------------------#
 # global variables
+
+# this is a wide array of global variables that are used throughout the GUI.
+# they can be used in plugins to check the status of various things since they
+# should all have been properly initialized by the time startup plugins are
+# loaded.
 
 set PD_MAJOR_VERSION 0
 set PD_MINOR_VERSION 0
@@ -69,6 +105,14 @@ set windowingsystem ""
 
 # variable for vwait so that 'pd-gui' will timeout if 'pd' never shows up
 set wait4pd "init"
+
+# args about how much and where to log
+set verbose $::pdwindow::maxverbosity
+set stderr 0
+
+# connection between 'pd' and 'pd-gui'
+set host ""
+set port 0
 
 # canvas font, received from pd in pdtk_pd_startup, set in s_main.c
 set font_family "courier"
@@ -92,29 +136,74 @@ set font_fixed_metrics {
 set sys_libdir {}
 # root path where the pd-gui.tcl GUI script is located
 set sys_guidir {}
+# path to search for objects, help, fonts, etc.
+set pd_path {}
+# list of command line flags set at startup
+set startup_flags {}
+# list of libraries loaded on startup
+set startup_libraries {}
+# start dirs for new files and open panels
+set filenewdir [pwd]
+set fileopendir [pwd]
 
-set audioapi_list {}
-set midiapi_list {}
+
+# lists of audio/midi devices and APIs for prefs dialogs
+set audio_apilist {}
+set audio_indevlist {}
+set audio_outdevlist {}
+set midi_apilist {}
+set midi_indevlist {}
+set midi_outdevlist {}
 set pd_whichapi 0
 set pd_whichmidiapi 0
 
 # current state of the DSP
 set dsp 0
+# state of the peak meters in the Pd window
+set meters 0
 # the toplevel window that currently is on top and has focus
 set focused_window .
-# TODO figure out how to get all windows into the menu_windowlist
-# store list of parent windows for Window menu
-set menu_windowlist {}
 # store that last 10 files that were opened
 set recentfiles_list {}
 set total_recentfiles 10
-# keep track of the location of popup menu for CanvasWindows
-set popup_xpix 0
-set popup_ypix 0
+# keep track of the location of popup menu for PatchWindows, in canvas coords
+set popup_xcanvas 0
+set popup_ycanvas 0
+# modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
+set modifier ""
+# current state of the Edit Mode menu item
+set editmode_button 0
+
 
 ## per toplevel/patch data
-# store editmode for each open canvas, starting with a blank array
-array set editmode {}
+# window location modifiers
+set menubarsize 0           ;# Mac OS X and other platforms have a menubar on top
+set windowframex 0      ;# different platforms have different window frames
+set windowframey 0      ;# different platforms have different window frames
+# patch properties
+array set editmode {}   ;# store editmode for each open patch canvas
+array set editingtext {};# if an obj, msg, or comment is being edited, per patch
+array set loaded {}     ;# store whether a patch has completed loading
+array set xscrollable {};# keep track of whether the scrollbars are present
+array set yscrollable {}
+# patch window tree, these might contain patch IDs without a mapped toplevel 
+array set windowname {}    ;# window names based on mytoplevel IDs
+array set childwindows {}  ;# all child windows based on mytoplevel IDs
+array set parentwindows {} ;# topmost parent window ID based on mytoplevel IDs
+
+# variables for holding the menubar to allow for configuration by plugins
+set ::pdwindow_menubar ".menubar"
+set ::patch_menubar   ".menubar"
+set ::dialog_menubar   ""
+
+# minimum size of the canvas window of a patch
+set canvas_minwidth 50
+set canvas_minheight 20
+
+# undo states
+set ::undo_action "no"
+set ::redo_action "no"
+set ::undo_toplevel "."
 
 #------------------------------------------------------------------------------#
 # coding style
@@ -127,17 +216,23 @@ array set editmode {}
 # - if a menu_* proc opens a dialog panel, that proc is called menu_*_dialog
 # - use "eq/ne" for string comparison, NOT "==/!=" (http://wiki.tcl.tk/15323)
 #
+#
 ## Names for Common Variables
 #----------------------------
-#
 # variables named after the Tk widgets they represent
+#   $window     = any kind of Tk widget that can be a Tk 'window'
 #   $mytoplevel = a window id made by a 'toplevel' command
-#   $mygfxstub = a window id made by a 'toplevel' command via gfxstub/x_gui.c
-#   $menubar = the 'menu' attached to each 'toplevel'
-#   $mymenu = 'menu' attached to the menubar
-#   $menuitem = 'menu' item
-#   $mycanvas = 'canvas'
-#   $canvasitem = 'canvas' item
+#   $gfxstub  = a 'toplevel' window id for dialogs made in gfxstub/x_gui.c
+#   $menubar    = the 'menu' attached to each 'toplevel'
+#   $mymenu     = 'menu' attached to the menubar, like the File menu
+#   $tkcanvas   = a Tk 'canvas', which is the root of each patch
+#
+#
+## Dialog Panel Types
+#----------------------------
+#   global (only one):   find, sendmessage, prefs, helpbrowser
+#   per-canvas:          font, canvas properties (created with a message from pd)
+#   per object:          gatom, iemgui, array, data structures (created with a message from pd)
 #
 #
 ## Prefix Names for procs
@@ -147,20 +242,6 @@ array set editmode {}
 
 # ------------------------------------------------------------------------------
 # init functions
-
-proc set_pd_version {versionstring} {
-    global pd_myversion
-    set pd_myversion $versionstring
-    regexp -- {.*([0-9])\.([0-9]+)[\.\-]([0-9]+)([^0-9]?.*)} $versionstring \
-        wholematch \
-        ::PD_MAJOR_VERSION ::PD_MINOR_VERSION ::PD_BUGFIX_VERSION ::PD_TEST_VERSION
-}
-
-proc set_tcl_version {} {
-    regexp {([0-9])\.([0-9])\.([0-9]+)} [info patchlevel] \
-        wholematch \
-        ::TCL_MAJOR_VERSION ::TCL_MINOR_VERSION ::TCL_BUGFIX_VERSION
-}
 
 # root paths to find Pd's files where they are installed
 proc set_pd_paths {} {
@@ -175,6 +256,8 @@ proc init_for_platform {} {
 
     switch -- $::windowingsystem {
         "x11" {
+            set ::modifier "Control"
+            option add *PatchWindow*Canvas.background "white" startupFile
             # add control to show/hide hidden files in the open panel (load
             # the tk_getOpenFile dialog once, otherwise it will not work)
             catch {tk_getOpenFile -with-invalid-argument} 
@@ -188,8 +271,23 @@ proc init_for_platform {} {
                      [list [_ "Max Patch Files"]   {.pat} ] \
                      [list [_ "Max Text Files"]    {.mxt} ] \
                     ]
+            # some platforms have a menubar on the top, so place below them
+            set ::menubarsize 0
+            # Tk handles the window placement differently on each
+            # platform. With X11, the x,y placement refers to the window
+            # frame's upper left corner. http://wiki.tcl.tk/11502
+            set ::windowframex 3
+            set ::windowframey 53
+			# TODO add wm iconphoto/iconbitmap here if it makes sense
         }
         "aqua" {
+            set ::modifier "Mod1"
+            option add *DialogWindow*background "#E8E8E8" startupFile
+            option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
+            option add *DialogWindow*Button.highlightBackground "#E8E8E8" startupFile
+            option add *DialogWindow*Entry.background "white" startupFile
+            # Mac OS X needs a menubar all the time
+            set ::dialog_menubar ".menubar"
             # set file types that open/save recognize
             set ::filetypes \
                 [list \
@@ -197,10 +295,25 @@ proc init_for_platform {} {
                      [list [_ "Pd Files"]               {.pd}  ] \
                      [list [_ "Max Patch Files (.pat)"] {.pat} ] \
                      [list [_ "Max Text Files (.mxt)"]  {.mxt} ] \
-                    ]
+                ]
+            # some platforms have a menubar on the top, so place below them
+            set ::menubarsize 22
+            # Tk handles the window placement differently on each platform, on
+            # Mac OS X, the x,y placement refers to the content window's upper
+            # left corner (not of the window frame) http://wiki.tcl.tk/11502
+            set ::windowframex 0
+            set ::windowframey 0
         }
         "win32" {
+            set ::modifier "Control"
+            option add *PatchWindow*Canvas.background "white" startupFile
+            # fix menu font size on Windows with tk scaling = 1
             font create menufont -family Tahoma -size -11
+            option add *Menu.font menufont startupFile
+            option add *HelpBrowser*font menufont startupFile
+            option add *DialogWindow*font menufont startupFile
+            option add *PdWindow*font menufont startupFile
+            option add *ErrorDialog*font menufont startupFile
             # set file types that open/save recognize
             set ::filetypes \
                 [list \
@@ -209,6 +322,16 @@ proc init_for_platform {} {
                      [list [_ "Max Patch Files"]   {.pat} ] \
                      [list [_ "Max Text Files"]    {.mxt} ] \
                     ]
+            # some platforms have a menubar on the top, so place below them
+            set ::menubarsize 0
+            # Tk handles the window placement differently on each platform, on
+            # Mac OS X, the x,y placement refers to the content window's upper
+            # left corner. http://wiki.tcl.tk/11502 
+            # TODO this probably needs a script layer: http://wiki.tcl.tk/11291
+            set ::windowframex 0
+            set ::windowframey 0
+            # TODO use 'winico' package for full, hicolor icon support
+            wm iconbitmap . -default [file join $::sys_guidir pd.ico]
         }
     }
 }
@@ -220,17 +343,29 @@ proc init_for_platform {} {
 proc _ {s} {return [::msgcat::mc $s]}
 
 proc load_locale {} {
+    # on any UNIX-like environment, Tcl should automatically use LANG, LC_ALL,
+    # etc. otherwise we need to dig it up.  Mac OS X only uses LANG, etc. from
+    # the Terminal, and Windows doesn't have LANG, etc unless you manually set
+    # it up yourself.  Windows apps don't use the locale env vars usually.
+    if {$::tcl_platform(os) eq "Darwin" && ! [info exists ::env(LANG)]} {
+        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/5215
+        # http://thread.gmane.org/gmane.comp.lang.tcl.mac/6433
+        if {![catch "exec defaults read com.apple.dock loc" lang]} {
+            ::msgcat::mclocale $lang
+        } elseif {![catch "exec defaults read NSGlobalDomain AppleLocale" lang]} {
+            ::msgcat::mclocale $lang
+        }
+    } elseif {$::tcl_platform(platform) eq "windows"} {
+        # using LANG on Windows is useful for easy debugging
+        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {  
+            ::msgcat::mclocale $::env(LANG)
+        } elseif {![catch {package require registry}]} {
+            ::msgcat::mclocale [string tolower \
+                                    [string range \
+                                         [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
+        }
+    }
     ::msgcat::mcload [file join [file dirname [info script]] .. po]
-
-    # for Windows
-    #set locale "en"  ;# Use whatever is right for your app
-    #if {[catch {package require registry}]} {
-    #        tk_messageBox -icon error -message "Could not get locale from registry"
-    #} else {
-    #    set locale [string tolower \
-    #        [string range \
-    #        [registry get {HKEY_CURRENT_USER\Control Panel\International} sLanguage] 0 1] ]
-    #}
 
     ##--moo: force default system and stdio encoding to UTF-8
     encoding system utf-8
@@ -252,7 +387,7 @@ proc get_font_for_size {size} {
 # always do a good job of choosing in respect to Pd's needs.  So this chooses
 # from a list of fonts that are known to work well with Pd.
 proc find_default_font {} {
-    set testfonts {Inconsolata "Courier 10 pitch" "Courier New" "Liberation Mono" FreeMono \
+    set testfonts {"Inconsolata" "Courier New" "Liberation Mono" "FreeMono" \
                        "DejaVu Sans Mono" "Bitstream Vera Sans Mono"}
     foreach family $testfonts {
         if {[lsearch -exact -nocase [font families] $family] > -1} {
@@ -260,7 +395,7 @@ proc find_default_font {} {
             break
         }
     }
-    puts "DEFAULT FONT: $::font_family"
+    ::pdwindow::verbose 1 "DEFAULT FONT: $::font_family"
 }
 
 proc set_base_font {family weight} {
@@ -301,7 +436,7 @@ proc fit_font_into_metrics {} {
         }
         if {$giveup} {
             pdtk_post [format \
-               [_ "ERROR: %s failed to find font size (%s) that fits into %sx%s!"]\
+               [_ "WARNING: %s failed to find font size (%s) that fits into %sx%s!"]\
                [lindex [info level 0] 0] $size $width $height]
             continue
         }
@@ -312,46 +447,70 @@ proc fit_font_into_metrics {} {
 # ------------------------------------------------------------------------------
 # procs called directly by pd
 
-# this is only called when 'pd' starts 'pd-gui', not the other way around
-proc pdtk_pd_startup {versionstring audio_apis midi_apis sys_font sys_fontweight} {
-#    pdtk_post "-------------- pdtk_pd_startup ----------------"
-#    pdtk_post "version: $versionstring"
-#    pdtk_post "audio_apis: $audio_apis"
-#    pdtk_post "midi_apis: $midi_apis"
-#    pdtk_post "sys_font: $sys_font"
-#    pdtk_post "sys_fontweight: $sys_fontweight"
+proc pdtk_pd_startup {major minor bugfix test
+                      audio_apis midi_apis sys_font sys_fontweight} {
+    set ::PD_MAJOR_VERSION $major
+    set ::PD_MINOR_VERSION $minor
+    set ::PD_BUGFIX_VERSION $bugfix
+    set ::PD_TEST_VERSION $test
     set oldtclversion 0
     pdsend "pd init [enquote_path [pwd]] $oldtclversion $::font_fixed_metrics"
-    set_pd_version $versionstring
-    set ::audioapi_list $audio_apis
-    set ::midiapi_list $midi_apis
+    set ::audio_apilist $audio_apis
+    set ::midi_apilist $midi_apis
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
-    # TODO what else is needed from the original?
     set ::wait4pd "started"
 }
 
 ##### routine to ask user if OK and, if so, send a message on to Pd ######
-# TODO add 'mytoplevel' once merged to 0.43, with -parent 
-proc pdtk_check {message reply_to_pd default} {
-    # TODO this should use -parent and -title, but the hard part is figuring
-    # out how to get the values for those without changing g_editor.c
-    set answer [tk_messageBox -type yesno -icon question -default $default \
-                    -message [_ $message]]
+proc pdtk_check {mytoplevel message reply_to_pd default} {
+    wm deiconify $mytoplevel
+   raise $mytoplevel
+    if {$::windowingsystem eq "win32"} {
+        set answer [tk_messageBox -message [_ $message] -type yesno -default $default \
+                        -icon question -title [wm title $mytoplevel]]
+    } else {
+        set answer [tk_messageBox -message [_ $message] -type yesno \
+                        -default $default -parent $mytoplevel -icon question]
+    }
     if {$answer eq "yes"} {
         pdsend $reply_to_pd
     }
 }
 
-proc pdtk_fixwindowmenu {} {
-    # TODO canvas_updatewindowlist() sets up the menu_windowlist with all of
-    # the parent CanvasWindows, we should then use [wm stackorder .] to get
-    # the rest of the CanvasWindows to make sure that all CanvasWindows are in
-    # the menu.  This would probably be better handled on the C side of
-    # things, since then, the menu_windowlist could be built with the proper
-    # parent/child relationships.
-    # pdtk_post "Running pdtk_fixwindowmenu"
+# ------------------------------------------------------------------------------
+# parse command line args when Wish/pd-gui.tcl is started first
+ 
+proc parse_args {argc argv} {
+    opt_parser::init {
+        {-stderr    set {::stderr}}
+        {-verbose   set {::verbose}}
+        {-open      lappend {- ::filestoopen_list}}
+    }
+    set unflagged_files [opt_parser::get_options $argv]
+    # if we have a single arg that is not a file, its a port or host:port combo
+    if {$argc == 1 && ! [file exists $argv]} {
+        if { [string is int $argv] && $argv > 0} {
+            # 'pd-gui' got the port number from 'pd'
+            set ::host "localhost"
+            set ::port $argv 
+        } else {
+            set hostport [split $argv ":"]
+            set ::host [lindex $hostport 0]
+            set ::port [lindex $hostport 1]
+        }
+    } elseif {$unflagged_files ne ""} {
+        foreach filename $unflagged_files {
+            lappend ::filestoopen_list $filename
+        }
+    }
+}
+
+proc open_filestoopen {} {
+    foreach filename $::filestoopen_list {
+        open_file $filename
+    }
 }
 
 # ------------------------------------------------------------------------------
@@ -378,28 +537,37 @@ proc first_lost {} {
     selection own -command first_lost -selection PUREDATA .
  }
 
-# all other instances
-proc send_args {offset maxChars} {
-    return [string range $::argv $offset [expr {$offset+$maxChars}]]
-}
-
 proc others_lost {} {
     set ::singleton_state "exit"
     destroy .
     exit
 }
 
+# all other instances
+proc send_args {offset maxChars} {
+    set sendargs {}
+    foreach filename $::filestoopen_list {
+        lappend sendargs [file normalize $filename]
+    }
+    return [string range $sendargs $offset [expr {$offset+$maxChars}]]
+}
 
-# ------------------------------------------------------------------------------
-# various startup related procs
+# this command will open files received from a 2nd instance of Pd
+proc receive_args {filelist} {
+    raise .
+    foreach filename $filelist {
+        open_file $filename
+    }
+}
 
 proc check_for_running_instances {argc argv} {
-    # pdtk_post "check_for_running_instances $argc $argv"
     switch -- $::windowingsystem {
         "aqua" {
             # handled by ::tk::mac::OpenDocument in apple_events.tcl
         } "x11" {
             # http://wiki.tcl.tk/1558
+            # TODO replace PUREDATA name with path so this code is a singleton
+            # based on install location rather than this hard-coded name
             if {![singleton PUREDATA_MANAGER]} {
                 # other instances called by wish/pd-gui (exempt 'pd' by 5400 arg)
                 if {$argc == 1 && [string is int $argv] && $argv >= 5400} {return}
@@ -419,32 +587,31 @@ proc check_for_running_instances {argc argv} {
     }
 }
 
-# this command will open files received from a 2nd instance of Pd
-proc receive_args args {
-    # pdtk_post "receive_files $args"
-    raise .
-    foreach filename $args {
-        open_file $filename
+
+# ------------------------------------------------------------------------------
+# load plugins on startup
+
+proc load_plugin_script {filename} {
+    global errorInfo
+
+    ::pdwindow::verbose 1 "Loading plugin: $filename\n"
+    set tclfile [open $filename]
+    set tclcode [read $tclfile]
+    close $tclfile
+    if {[catch {uplevel #0 $tclcode} errorname]} {
+        pdtk_post "-----------\n"
+        pdtk_post "UNHANDLED ERROR: $errorInfo\n"
+        pdtk_post "FAILED TO LOAD $filename\n"
+        pdtk_post "-----------\n"
     }
 }
 
-proc load_startup {} {
-    global errorInfo
-# TODO search all paths for startup.tcl
-    set startupdir [file normalize "$::sys_libdir/startup"]
-    # pdtk_post "load_startup $startupdir"
-    puts stderr "load_startup $startupdir"
-    if { ! [file isdirectory $startupdir]} { return }
-    foreach filename [glob -directory $startupdir -nocomplain -types {f} -- *.tcl] {
-        puts "Loading $filename"
-        set tclfile [open $filename]
-        set tclcode [read $tclfile]
-        close $tclfile
-        if {[catch {uplevel #0 $tclcode} errorname]} {
-            puts stderr "------------------------------------------------------"
-            puts stderr "UNHANDLED ERROR: $errorInfo"
-            puts stderr "FAILED TO LOAD $filename"
-            puts stderr "------------------------------------------------------"
+proc load_startup_plugins {} {
+    foreach pathdir [concat $::pd_path [file join $::sys_libdir startup]] {
+        set dir [file normalize $pathdir]
+        if { ! [file isdirectory $dir]} {continue}
+        foreach filename [glob -directory $dir -nocomplain -types {f} -- *-plugin.tcl] {
+            load_plugin_script $filename
         }
     }
 }
@@ -456,22 +623,28 @@ proc main {argc argv} {
     set ::windowingsystem [tk windowingsystem]
     tk appname pd-gui
     load_locale
+    parse_args $argc $argv
     check_for_running_instances $argc $argv
     set_pd_paths
     init_for_platform
-    # post_tclinfo
 
     # set a timeout for how long 'pd-gui' should wait for 'pd' to start
-    after 20000 set ::wait4pd "timeout"        
-    # TODO check args for -stderr and set pdtk_post accordingly
-    if {$argc == 1 && [string is int $argv] && $argv >= 5400} {
+    after 30000 set ::wait4pd "timeout"
+
+    # ::host and ::port are parsed from argv by parse_args
+    if { $::port > 0 && $::host ne "" } {
         # 'pd' started first and launched us, so get the port to connect to
-        ::pd_connect::to_pd [lindex $argv 0]
+        ::pd_connect::to_pd $::port $::host
     } else {
         # the GUI is starting first, so create socket and exec 'pd'
-        set portnumber [::pd_connect::create_socket]
+        set ::port [::pd_connect::create_socket]
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
-        exec -- $pd_exec -guiport $portnumber &
+        exec -- $pd_exec -guiport $::port &
+        if {$::windowingsystem eq "aqua"} {
+            # on Aqua, if 'pd-gui' first, then initial dir is home
+            set ::filenewdir $::env(HOME)
+            set ::fileopendir $::env(HOME)
+        }
     }
     # wait for 'pd' to call pdtk_pd_startup, or exit on timeout
     vwait ::wait4pd
@@ -480,18 +653,18 @@ proc main {argc argv} {
         exit 2
     }
     ::pd_bindings::class_bindings
+    ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
     ::pdtk_canvas::create_popup
     ::pdwindow::create_window
     ::pd_menus::configure_for_pdwindow
-    load_startup
-    # pdtk_post "------------------ done with main ----------------------"
+    pdsend "pd set-startup" ;# get ::startup_libraries and ::startup_flags lists
+    pdsend "pd set-path"    ;# get the ::pd_path list
+    vwait ::pd_path ;# wait for 'pd' to respond
+    load_startup_plugins
+    open_filestoopen
+    ::pdwindow::verbose 1 "------------------ done with main ----------------------"
 }
 
 main $::argc $::argv
-
-
-
-
-
 

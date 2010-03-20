@@ -3,45 +3,81 @@ package provide wheredoesthisgo 0.1
 
 # a place to temporarily store things until they find a home or go away
 
-proc post_tclinfo {} {
-    pdtk_post "Tcl library: [file normalize [info library]]"
-    pdtk_post "executable: [file normalize [info nameofexecutable]]"
-    pdtk_post "tclversion: [info tclversion]"
-    pdtk_post "patchlevel: [info patchlevel]"
-    pdtk_post "sharedlibextension: [info sharedlibextension]"
-}
-
-
-proc placeholder {args} {
-    # PLACEHOLDER
-    ::pdwindow::pdtk_post "PLACEHOLDER $args"
-}
-
-
 proc open_file {filename} {
-    set directory [file dirname $filename]
+    set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
     if {[regexp -nocase -- "\.(pd|pat|mxt)$" $filename]} {
+        ::pdtk_canvas::started_loading_file [format "%s/%s" $basename $filename]
         pdsend "pd open [enquote_path $basename] [enquote_path $directory]"
         # remove duplicates first, then the duplicate added after to the top
         set index [lsearch -exact $::recentfiles_list $filename]
         set ::recentfiles_list [lreplace $::recentfiles_list $index $index]
-        set ::recentfiles_list \
-            "$filename [lrange $::recentfiles_list 0 $::total_recentfiles]"
+        lappend ::recentfiles_list $filename
+        set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
         ::pd_menus::update_recentfiles_menu
-    }
-}
-
-proc lookup_windowname {mytoplevel} {
-    foreach window $::menu_windowlist {
-        if {[lindex $window 1] eq $mytoplevel} {
-            return [lindex $window 0]
-        }
+    } {
+        pdtk_post [format [_ "Ignoring '%s': doesn't look like a Pd-file" ] $filename ]
     }
 }
     
 # ------------------------------------------------------------------------------
+# procs for panels (openpanel, savepanel)
+
+proc pdtk_openpanel {target localdir} {
+    if {! [file isdirectory $localdir]} {
+        set localdir $::fileopendir
+    }
+    set filename [tk_getOpenFile -initialdir $localdir]
+    if {$filename ne ""} {
+        set ::fileopendir [file dirname $filename]
+        pdsend "$target callback [enquote_path $filename]"
+    }
+}
+
+proc pdtk_savepanel {target localdir} {
+    if {! [file isdirectory $localdir]} {
+        set localdir $::filenewdir
+    }
+    set filename [tk_getSaveFile -initialdir $localdir]
+    if {$filename ne ""} {
+        pdsend "$target callback [enquote_path $filename]"
+    }
+}
+
+# ------------------------------------------------------------------------------
+# window info (name, path, parents, children, etc.)
+
+proc lookup_windowname {mytoplevel} {
+    if { [catch {set window $::windowname($mytoplevel) 
+        return [lindex $window 0]
+    } fid]} {
+        return ERROR
+    }
+}
+
+proc tkcanvas_name {mytoplevel} {
+    return "$mytoplevel.c"
+}
+
+# ------------------------------------------------------------------------------
 # quoting functions
+
+# enquote a string for find, path, and startup dialog panels, to be decoded by
+# sys_decodedialog()
+proc pdtk_encodedialog {x} {
+    concat +[string map {" " "+_" "$" "+d" ";" "+s" "," "+c" "+" "++"} $x]
+}
+
+# encode a list with pdtk_encodedialog
+proc pdtk_encode { listdata } {
+    set outlist {}
+    foreach this_path $listdata {
+        if {0==[string match "" $this_path]} {
+            lappend outlist [pdtk_encodedialog $this_path]
+        }
+    }
+    return $outlist
+}
 
 # TODO enquote a filename to send it to pd, " isn't handled properly tho...
 proc enquote_path {message} {
@@ -56,39 +92,14 @@ proc unspace_text {x} {
     concat $y
 }
 
-
 # ------------------------------------------------------------------------------
-# lost pdtk functions...
-
-# set the checkbox on the "Compute Audio" menuitem and checkbox
-proc pdtk_pd_dsp {value} {
-    # TODO canvas_startdsp/stopdsp should really send 1 or 0, not "ON" or "OFF"
-    if {$value eq "ON"} {
-        set ::dsp 1
-    } else {
-        set ::dsp 0
-    }
-}
-
-proc pdtk_pd_dio {red} {
-    # puts stderr [concat pdtk_pd_dio $red]
-}
-
+# watchdog functions
 
 proc pdtk_watchdog {} {
    pdsend "pd watchdog"
    after 2000 {pdtk_watchdog}
 }
 
-
 proc pdtk_ping {} {
     pdsend "pd ping"
-}
-
-# ------------------------------------------------------------------------------
-# kludges to avoid changing C code
-
-proc .mbar.find {command number} {
-    # this should be changed in g_canvas.c, around line 800
-    .menubar.find $command $number
 }

@@ -897,6 +897,7 @@ void canvas_destroy_editor(t_glist *x)
 {
     t_gobj *y;
     t_object *ob;
+    glist_noselect(x);
     if (x->gl_editor)
     {
         for (y = x->gl_list; y; y = y->g_next)
@@ -917,33 +918,40 @@ void canvas_vis(t_canvas *x, t_floatarg f)
 {
     char buf[30];
     int flag = (f != 0);
+    /* why is this here, what's the problem? This gets triggered by GOPs */
     if (x != glist_getcanvas(x))
         bug("canvas_vis");
     if (flag)
     {
-        /* post("havewindow %d, isgraph %d, isvisible %d  editor %d",
-            x->gl_havewindow, x->gl_isgraph, glist_isvisible(x),
-                (x->gl_editor != 0)); */
-            /* test if we're already visible and toplevel */
-        if (x->gl_editor)
+        /* If a subpatch/abstraction has GOP/gl_isgraph set, then it will have
+         * a gl_editor already, if its not, it will not have a gl_editor.
+         * canvas_create_editor(x) checks if a gl_editor is already created,
+         * so its ok to run it on a canvas that already has a gl_editor. */
+        if (x->gl_editor && x->gl_havewindow)
         {           /* just put us in front */
-#ifdef MSW
-            canvas_vis(x, 0);
-            canvas_vis(x, 1);
-#else
-            sys_vgui("raise .x%lx\n", x);
-            sys_vgui("focus .x%lx.c\n", x);
-            sys_vgui("wm deiconify .x%lx\n", x);  
-#endif
+            sys_vgui("pdtk_canvas_raise .x%lx\n", x);  
         }
         else
         {
+            char cbuf[MAXPDSTRING];
+            int cbuflen;
+            t_canvas *c = x;
             canvas_create_editor(x);
             sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
                 (int)(x->gl_screenx2 - x->gl_screenx1),
                 (int)(x->gl_screeny2 - x->gl_screeny1),
                 (int)(x->gl_screenx1), (int)(x->gl_screeny1),
                 x->gl_edit);
+            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx", c);
+            while (c->gl_owner) {
+                c = c->gl_owner;
+                cbuflen = strlen(cbuf);
+                snprintf(cbuf + cbuflen,
+                         MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
+                         " .x%lx", c);
+            }
+            strcat(cbuf, "\n");
+            sys_gui(cbuf);
             canvas_reflecttitle(x);
             x->gl_havewindow = 1;
             canvas_updatewindowlist();
@@ -964,7 +972,6 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 canvas_destroy_editor(x);
             return;
         }
-        sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
         glist_noselect(x);
         if (glist_isvisible(x))
             canvas_map(x, 0);
@@ -972,7 +979,6 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         sys_vgui("destroy .x%lx\n", x);
         for (i = 1, x2 = x; x2; x2 = x2->gl_next, i++)
             ;
-        sys_vgui(".mbar.find delete %d\n", i);
             /* if we're a graph on our parent, and if the parent exists
                and is visible, show ourselves on parent. */
         if (glist_isgraph(x) && x->gl_owner)
@@ -1513,7 +1519,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         ((x22-x21-IOWIDTH) * closest2)/(ninlet2-1) : 0)
                             + IOMIDDLE;
                 ly2 = y21;
-                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags l%lx\n",
+                sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                     glist_getcanvas(x),
                         lx1, ly1, lx2, ly2,
                             (obj_issignaloutlet(ob1, closest1) ? 2 : 1), oc);
@@ -1864,7 +1870,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
         return;
     }
     if (f == 0 && sys_perf)
-        sys_vgui("pdtk_check . {really quit?} {pd quit;\n} yes\n");
+        sys_vgui("pdtk_check .pdwindow {really quit?} {pd quit} yes\n");
     else glob_quit(0);
 }
 
@@ -1997,7 +2003,7 @@ static void canvas_find(t_canvas *x, t_symbol *s, t_floatarg wholeword)
     if (!canvas_dofind(x, &myindex1))
     {
         binbuf_print(canvas_findbuf);
-        post("... couldn't find");
+        sys_vgui("pdtk_couldnotfind .x%lx\n", x);
     }
 }
 
@@ -2009,7 +2015,7 @@ static void canvas_find_again(t_canvas *x)
     if (!canvas_dofind(canvas_whichfind, &myindex1))
     {
         binbuf_print(canvas_findbuf);
-        post("... couldn't find");
+        sys_vgui("pdtk_couldnotfind .x%lx\n", x);
     }
 }
 
@@ -2155,22 +2161,8 @@ static void canvas_copy(t_canvas *x)
         char *buf;
         int bufsize;
         rtext_getseltext(x->gl_editor->e_textedfor, &buf, &bufsize);
-
-#if defined(MSW) || defined(__APPLE__)
-            /* for Mac or Windows, copy the text to the clipboard here */
-        sys_vgui("clipboard clear\n", bufsize, buf);
+        sys_gui("clipboard clear\n");
         sys_vgui("clipboard append {%.*s}\n", bufsize, buf);
-#else
-            /* in X windows the selection already went to the
-            clipboard when it was made; here we "copy" it to our own buffer
-            as well, because, annoyingly, the clipboard will usually be 
-            destroyed by the time the user asks to "paste". */
-        if (canvas_textcopybuf)
-            t_freebytes(canvas_textcopybuf, canvas_textcopybufsize);
-        canvas_textcopybuf = (char *)getbytes(bufsize);
-        memcpy(canvas_textcopybuf, buf, bufsize);
-        canvas_textcopybufsize = bufsize;
-#endif
     }
 }
 
@@ -2321,19 +2313,8 @@ static void canvas_paste(t_canvas *x)
         return;
     if (x->gl_editor->e_textedfor)
     {
-            /* simulate keystrokes as if the copy buffer were typed in. */
-#if defined(MSW) || defined(__APPLE__)
-            /* for Mac or Windows,  ask the GUI to send the clipboard down */
+        /* simulate keystrokes as if the copy buffer were typed in. */
         sys_gui("pdtk_pastetext\n");
-#else
-            /* in X windows we kept the text in our own copy buffer */
-        int i;
-        for (i = 0; i < canvas_textcopybufsize; i++)
-        {
-            pd_vmess(&x->gl_gobj.g_pd, gensym("key"), "iii",
-                1, canvas_textcopybuf[i]&0xff, 0);
-        }
-#endif
     }
     else
     {
@@ -2446,7 +2427,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (!(oc = obj_connect(objsrc, outno, objsink, inno))) goto bad;
     if (glist_isvisible(x))
     {
-        sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags l%lx\n",
+        sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
             glist_getcanvas(x), 0, 0, 0, 0,
             (obj_issignaloutlet(objsrc, outno) ? 2 : 1),oc);
         canvas_fixlinesfor(x, objsrc);
@@ -2586,12 +2567,9 @@ void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av)
     canvas_key(canvas_editing, s, ac, av);
 }
 
-void canvas_editmode(t_canvas *x, t_floatarg fyesplease)
+void canvas_editmode(t_canvas *x, t_floatarg state)
 {
-    int yesplease = fyesplease;
-    if (yesplease && x->gl_edit)
-        return;
-    x->gl_edit = !x->gl_edit;
+    x->gl_edit = (unsigned int) state;
     if (x->gl_edit && glist_isvisible(x) && glist_istoplevel(x))
         canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
     else
@@ -2600,7 +2578,7 @@ void canvas_editmode(t_canvas *x, t_floatarg fyesplease)
         if (glist_isvisible(x) && glist_istoplevel(x))
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
     }
-    sys_vgui("pdtk_canvas_editval .x%lx %d\n",
+    sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
         glist_getcanvas(x), x->gl_edit);
 }
 

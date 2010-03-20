@@ -46,7 +46,7 @@ t_canvas *canvas_list;              /* list of all root canvases */
 static void canvas_start_dsp(void);
 static void canvas_stop_dsp(void);
 static void canvas_drawlines(t_canvas *x);
-static void canvas_setbounds(t_canvas *x, int x1, int y1, int x2, int y2);
+static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2);
 void canvas_reflecttitle(t_canvas *x);
 static void canvas_addtolist(t_canvas *x);
 static void canvas_takeofflist(t_canvas *x);
@@ -59,46 +59,11 @@ static t_symbol *canvas_newdirectory = &s_;
 static int canvas_newargc;
 static t_atom *canvas_newargv;
 
-static void glist_doupdatewindowlist(t_glist *gl, char *sbuf)
-{
-    t_gobj *g;
-    if (glist_amreloadingabstractions)  /* not if we're in a reload */
-        return;
-    if (!gl->gl_owner)
-    {
-        /* this is a canvas; if we have a window, put on "windows" list */
-        t_canvas *canvas = (t_canvas *)gl;
-        if (canvas->gl_havewindow)
-        {
-            if (strlen(sbuf) + strlen(gl->gl_name->s_name) + 100 <= 1024)
-            {
-                char tbuf[1024];
-                sprintf(tbuf, "{{%s} .x%lx} ", gl->gl_name->s_name,
-                    (t_int)canvas);
-                strcat(sbuf, tbuf);
-            }
-        }
-    }
-    for (g = gl->gl_list; g; g = g->g_next)
-    {
-        if (pd_class(&g->g_pd) == canvas_class)
-            glist_doupdatewindowlist((t_glist *)g, sbuf);
-    }
-    return;
-}
-
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist( void)
 {
-    t_canvas *x;
-    char sbuf[1024];
-    strcpy(sbuf, "set menu_windowlist {");
-        /* find all root canvases */
-    for (x = canvas_list; x; x = x->gl_next)
-        glist_doupdatewindowlist(x, sbuf);
-    /* next line updates the window menu state before -postcommand tries it */
-    strcat(sbuf, "}\npdtk_fixwindowmenu\n");
-    sys_gui(sbuf);
+    if (! glist_amreloadingabstractions)  /* not if we're in a reload */         
+        sys_gui("::pd_menus::update_window_menu\n");
 }
 
     /* add a glist the list of "root" canvases (toplevels without parents.) */
@@ -399,7 +364,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_y1 = 0;
     x->gl_x2 = 1;
     x->gl_y2 = 1;
-    canvas_setbounds(x, xloc, yloc, xloc + width, yloc + height);
+    canvas_dosetbounds(x, xloc, yloc, xloc + width, yloc + height);
     x->gl_owner = owner;
     x->gl_name = (*s->s_name ? s : 
         (canvas_newfilename ? canvas_newfilename : gensym("Pd")));
@@ -539,7 +504,14 @@ int glist_isgraph(t_glist *x)
 
     /* This is sent from the GUI to inform a toplevel that its window has been
     moved or resized. */
-static void canvas_setbounds(t_canvas *x, int x1, int y1, int x2, int y2)
+static void canvas_setbounds(t_canvas *x, t_float left, t_float top, 
+                             t_float right, t_float bottom)
+{
+    canvas_dosetbounds(x, (int)left, (int)top, (int)right, (int)bottom);
+}
+
+/* this is the internal version using ints */
+static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
 {
     int heightwas = y2 - y1;
     int heightchange = y2 - y1 - (x->gl_screeny2 - x->gl_screeny1);
@@ -597,9 +569,8 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
-    sys_vgui("wm title .x%lx {%s%c%s - %s}\n", 
-        x, x->gl_name->s_name, (x->gl_dirty? '*' : ' '), namebuf,
-            canvas_getdir(x)->s_name);
+    sys_vgui("pdtk_canvas_reflecttitle .x%lx {%s} {%s} {%s} %d\n",
+        x, canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf, x->gl_dirty);
 }
 
     /* mark a glist dirty or clean */
@@ -762,7 +733,7 @@ static void canvas_drawlines(t_canvas *x)
     {
         linetraverser_start(&t, x);
         while (oc = linetraverser_next(&t))
-            sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags l%lx\n",
+            sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                     glist_getcanvas(x),
                         t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2, 
                             (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1),
@@ -904,22 +875,8 @@ void canvas_loadbang(t_canvas *x)
     canvas_loadbangsubpatches(x);
 }
 
-    /* When you ask a canvas its size the result is more than what
-    you gave it to open it; how much bigger apparently depends on the OS. */
-
-#ifdef __unix__
-#define HORIZBORDER 2
-#define VERTBORDER 2
-#else
-#ifdef MACOSX
-#define HORIZBORDER 6
-#define VERTBORDER 6
-#else
-#define HORIZBORDER 4
-#define VERTBORDER 4
-#endif
-#endif
-
+/* no longer used by 'pd-gui', but kept here for backwards compatibility.  The
+ * new method calls canvas_setbounds() directly. */
 static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
     t_symbol *topgeom)
 {
@@ -931,8 +888,8 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
             /* for some reason this is initially called with cw=ch=1 so
             we just suppress that here. */
     if (cw > 5 && ch > 5)
-        canvas_setbounds(x, txpix, typix,
-            txpix + cw - HORIZBORDER, typix + ch - VERTBORDER);
+        canvas_dosetbounds(x, txpix, typix,
+            txpix + cw, typix + ch);
 }
 
 void canvas_popabstraction(t_canvas *x)
@@ -1543,6 +1500,8 @@ void g_canvas_setup(void)
         A_DEFFLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_loadbang,
         gensym("loadbang"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_setbounds,
+        gensym("setbounds"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_relocate,
         gensym("relocate"), A_SYMBOL, A_SYMBOL, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_vis,

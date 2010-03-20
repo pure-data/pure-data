@@ -128,7 +128,7 @@ static void addport(int fd)
     nfdpoll++;
     if (fd >= maxfd) maxfd = fd + 1;
     fp->fdp_outlen = fp->fdp_discard = fp->fdp_gotsemi = 0;
-    if (!(fp->fdp_outbuf = malloc(BUFSIZE)))
+    if (!(fp->fdp_outbuf = (char*) malloc(BUFSIZE)))
     {
         fprintf(stderr, "out of memory");
         exit(1);

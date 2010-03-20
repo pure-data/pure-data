@@ -498,50 +498,52 @@ static void tabread4_tilde_setup(void)
 /* this is all copied from d_osc.c... what include file could this go in? */
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
-    /* machine-dependent definitions.  These ifdefs really
-    should have been by CPU type and not by operating system! */
 #ifdef IRIX
-    /* big-endian.  Most significant byte is at low address in memory */
-#define HIOFFSET 0    /* word offset to find MSB */
-#define LOWOFFSET 1    /* word offset to find LSB */
-#define int32 long  /* a data type that has 32 bits */
-#endif /* IRIX */
-
-#ifdef MSW
-    /* little-endian; most significant byte is at highest address */
-#define HIOFFSET 1
-#define LOWOFFSET 0
-#define int32 long
+#include <sys/endian.h>
 #endif
 
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #include <machine/endian.h>
 #endif
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__CYGWIN__)
 #include <endian.h>
 #endif
 
-#if defined(__unix__) || defined(__APPLE__)
+#ifdef __MINGW32__
+#include <sys/param.h>
+#endif
+
+#ifdef _MSC_VER
+/* _MSVC lacks BYTE_ORDER and LITTLE_ENDIAN */
+#define LITTLE_ENDIAN 0x0001
+#define BYTE_ORDER LITTLE_ENDIAN
+#endif
+
 #if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)                         
 #error No byte order defined                                                    
-#endif                                                                          
+#endif
 
-#if BYTE_ORDER == LITTLE_ENDIAN                                             
-#define HIOFFSET 1                                                              
-#define LOWOFFSET 0                                                             
+#if BYTE_ORDER == LITTLE_ENDIAN
+# define HIOFFSET 1                                                              
+# define LOWOFFSET 0                                                             
 #else                                                                           
-#define HIOFFSET 0    /* word offset to find MSB */                             
-#define LOWOFFSET 1    /* word offset to find LSB */                            
-#endif /* __BYTE_ORDER */                                                       
-#include <sys/types.h>
-#define int32 int32_t
-#endif /* __unix__ or __APPLE__*/
+# define HIOFFSET 0    /* word offset to find MSB */                             
+# define LOWOFFSET 1    /* word offset to find LSB */                            
+#endif
+
+#ifdef _MSC_VER
+ typedef __int32 int32_t /* use MSVC's internal type */
+#elif defined(IRIX)
+ typedef long int32_t  /* a data type that has 32 bits */
+#else
+# include <stdint.h>  /* this is where int32_t is defined in C99 */
+#endif
 
 union tabfudge
 {
     double tf_d;
-    int32 tf_i[2];
+    int32_t tf_i[2];
 };
 
 static t_class *tabosc4_tilde_class;

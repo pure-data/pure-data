@@ -61,13 +61,13 @@ int sys_nmidiin = -1;
 int sys_midiindevlist[MAXMIDIINDEV] = {1};
 int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
-char sys_font[100] = 
 #ifdef __APPLE__
-    "Monaco";
+char sys_font[100] = "Monaco";
+char sys_fontweight[] = "normal";
 #else
-    "Courier";
+char sys_font[100] = "Courier";
+char sys_fontweight[] = "bold";
 #endif
-char sys_fontweight[] = "bold ";
 static int sys_main_srate;
 static int sys_main_advance;
 static int sys_main_callback;
@@ -258,15 +258,6 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 static void sys_afterargparse(void);
 
-static void pd_makeversion(void)
-{
-    char foo[100];
-    sprintf(foo,  "Pd version %d.%d-%d%s\n",PD_MAJOR_VERSION,
-        PD_MINOR_VERSION,PD_BUGFIX_VERSION,PD_TEST_VERSION);
-    pd_version = malloc(strlen(foo)+1);
-    strcpy(pd_version, foo);
-}
-
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, char **argv)
 {
@@ -290,8 +281,6 @@ int sys_main(int argc, char **argv)
     if (sys_argparse(argc-1, argv+1))           /* parse cmd line */
         return (1);
     sys_afterargparse();                    /* post-argparse settings */
-        /* build version string from defines in m_pd.h */
-    pd_makeversion();
     if (sys_verbose || sys_version) fprintf(stderr, "%scompiled %s %s\n",
         pd_version, pd_compiletime, pd_compiledate);
     if (sys_version)    /* if we were just asked our version, exit here. */
@@ -440,20 +429,19 @@ void sys_findprogdir(char *progname)
 {
     char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING], *sp;
     char *lastslash; 
-#ifdef HAVE_UNISTD_H
+#ifndef _WIN32
     struct stat statbuf;
-#endif
+#endif /* NOT _WIN32 */
 
     /* find out by what string Pd was invoked; put answer in "sbuf". */
-#ifdef MSW
+#ifdef _WIN32
     GetModuleFileName(NULL, sbuf2, sizeof(sbuf2));
     sbuf2[MAXPDSTRING-1] = 0;
     sys_unbashfilename(sbuf2, sbuf);
-#endif /* MSW */
-#ifdef HAVE_UNISTD_H
+#else
     strncpy(sbuf, progname, MAXPDSTRING);
     sbuf[MAXPDSTRING-1] = 0;
-#endif
+#endif /* _WIN32 */
     lastslash = strrchr(sbuf, '/');
     if (lastslash)
     {
@@ -483,12 +471,12 @@ void sys_findprogdir(char *progname)
         "gui" directory.  In "simple" unix installations, the layout is
             .../bin/pd
             .../bin/pd-watchdog (etc)
-            .../tcl/pd-gui.tcl
+            .../bin/pd-gui.tcl
             .../doc
         and in "complicated" unix installations, it's:
             .../bin/pd
             .../lib/pd/bin/pd-watchdog
-            .../lib/tcl/pd-gui.tcl
+            .../lib/pd/bin/pd-gui.tcl
             .../lib/pd/doc
         To decide which, we stat .../lib/pd; if that exists, we assume it's
         the complicated layout.  In MSW, it's the "simple" layout, but

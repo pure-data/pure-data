@@ -9,11 +9,13 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 #include <stdio.h>
-#ifdef HAVE_UNISTD_H
+#ifdef _WIN32
+#include <time.h>
+#else
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#endif
+#endif /* _WIN32 */
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>

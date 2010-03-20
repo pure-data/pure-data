@@ -67,13 +67,12 @@ static void clip_setup(void)
 #define DUMTAB1SIZE 256
 #define DUMTAB2SIZE 1024
 
-#ifdef MSW
-#define int32 long
-#endif
-
-#if defined(__unix__) || defined(__APPLE__)
-#include <sys/types.h>
-#define int32 int32_t
+#ifdef _MSC_VER
+ typedef __int32 int32_t /* use MSVC's internal type */
+#elif defined(IRIX)
+ typedef long int32_t  /* a data type that has 32 bits */
+#else
+# include <stdint.h>  /* this is where int32_t is defined in C99 */
 #endif
 
 static float rsqrt_exptab[DUMTAB1SIZE], rsqrt_mantissatab[DUMTAB2SIZE];
@@ -84,8 +83,8 @@ static void init_rsqrt(void)
     for (i = 0; i < DUMTAB1SIZE; i++)
     {
         float f;
-        int32 l = (i ? (i == DUMTAB1SIZE-1 ? DUMTAB1SIZE-2 : i) : 1)<< 23;
-        *(int32 *)(&f) = l;
+        int32_t l = (i ? (i == DUMTAB1SIZE-1 ? DUMTAB1SIZE-2 : i) : 1)<< 23;
+        *(int32_t *)(&f) = l;
         rsqrt_exptab[i] = 1./sqrt(f);   
     }
     for (i = 0; i < DUMTAB2SIZE; i++)

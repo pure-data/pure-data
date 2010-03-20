@@ -196,7 +196,7 @@ dnl This should be fixed so Pd can use ALSA shared libraries where appropriate.
     fi 
     EXT=pd_linux
     CPPFLAGS="-DHAVE_LIBDL -DPA_USE_OSS -DUNIX -DHAVE_UNISTD_H\
-        -DUSEAPI_OSS \
+        -DUSEAPI_OSS -DPDGUIDIR=\\\"tcl/\\\" \
         -fno-strict-aliasing"
     SYSSRC="s_midi_oss.c s_audio_oss.c"
     if test x$alsa = "xyes";

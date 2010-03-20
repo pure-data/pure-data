@@ -4,12 +4,13 @@ namespace eval ::dialog_audio:: {
     namespace export pdtk_audio_dialog
 }
 
-# TODO this panel really needs some reworking, it works but the code is
-# very unreadable
+# TODO this panel really needs some reworking, it works but the code is very
+# unreadable.  The panel could look a lot better too, like using menubuttons
+# instead of regular buttons with tk_popup for pulldown menus.
 
 ####################### audio dialog ##################3
 
-proc ::dialog_audio::apply {id} {
+proc ::dialog_audio::apply {mytoplevel} {
     global audio_indev1 audio_indev2 audio_indev3 audio_indev4 
     global audio_inchan1 audio_inchan2 audio_inchan3 audio_inchan4
     global audio_inenable1 audio_inenable2 audio_inenable3 audio_inenable4
@@ -40,13 +41,13 @@ proc ::dialog_audio::apply {id} {
         $audio_callback"
 }
 
-proc ::dialog_audio::cancel {id} {
-    pdsend "$id cancel"
+proc ::dialog_audio::cancel {mytoplevel} {
+    pdsend "$mytoplevel cancel"
 }
 
-proc ::dialog_audio::ok {id} {
-    ::dialog_audio::apply $id
-    ::dialog_audio::cancel $id
+proc ::dialog_audio::ok {mytoplevel} {
+    ::dialog_audio::apply $mytoplevel
+    ::dialog_audio::cancel $mytoplevel
 }
 
 # callback from popup menu
@@ -78,7 +79,8 @@ proc audio_popup {name buttonname varname devlist} {
 # opening several devices; if not, we get an extra button to turn longform
 # on and restart the dialog.
 
-proc ::dialog_audio::pdtk_audio_dialog {id indev1 indev2 indev3 indev4 \
+proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
+        indev1 indev2 indev3 indev4 \
         inchan1 inchan2 inchan3 inchan4 \
         outdev1 outdev2 outdev3 outdev4 \
         outchan1 outchan2 outchan3 outchan4 sr advance multi callback \
@@ -126,173 +128,192 @@ proc ::dialog_audio::pdtk_audio_dialog {id indev1 indev2 indev3 indev4 \
     set audio_advance $advance
     set audio_callback $callback
 
-    toplevel $id
-    wm title $id [_ "Audio Settings"]
-    if {$::windowingsystem eq "aqua"} {$id configure -menu .menubar}
-    ::pd_bindings::dialog_bindings $id "audio"
+    toplevel $mytoplevel -class DialogWindow
+    wm title $mytoplevel [_ "Audio Settings"]
+    wm group $mytoplevel .
+    wm resizable $mytoplevel 0 0
+    wm transient $mytoplevel
+    $mytoplevel configure -menu $::dialog_menubar
+    $mytoplevel configure -padx 10 -pady 5
+    ::pd_bindings::dialog_bindings $mytoplevel "audio"
+    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
+    catch {wm attributes $mytoplevel -topmost 1}
 
-    frame $id.buttonframe
-    pack $id.buttonframe -side bottom -fill x -pady 2m
-    button $id.buttonframe.cancel -text [_ "Cancel"]\
-        -command "::dialog_audio::cancel $id"
-    button $id.buttonframe.apply -text [_ "Apply"]\
-        -command "::dialog_audio::apply $id"
-    button $id.buttonframe.ok -text [_ "OK"]\
-        -command "::dialog_audio::ok $id"
-    button $id.buttonframe.save -text [_ "Save all settings"]\
-        -command "::dialog_audio::apply $id \; pdsend \"pd save-preferences\""
-    pack $id.buttonframe.cancel $id.buttonframe.apply $id.buttonframe.ok \
-        $id.buttonframe.save -side left -expand 1
+    frame $mytoplevel.buttonframe
+    pack $mytoplevel.buttonframe -side bottom -fill x -pady 2m
+    button $mytoplevel.buttonframe.cancel -text [_ "Cancel"]\
+        -command "::dialog_audio::cancel $mytoplevel"
+    pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15
+    if {$::windowingsystem ne "aqua"} {
+        button $mytoplevel.buttonframe.apply -text [_ "Apply"]\
+            -command "::dialog_audio::apply $mytoplevel"
+        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15
+    }
+    button $mytoplevel.buttonframe.ok -text [_ "OK"] \
+        -command "::dialog_audio::ok $mytoplevel"
+    pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15
+
+    button $mytoplevel.saveall -text [_ "Save All Settings"]\
+        -command "::dialog_audio::apply $mytoplevel; pdsend {pd save-preferences}"
+    pack $mytoplevel.saveall -side bottom -expand 1 -pady 5
     
         # sample rate and advance
-    frame $id.srf
-    pack $id.srf -side top
+    frame $mytoplevel.srf
+    pack $mytoplevel.srf -side top
     
-    label $id.srf.l1 -text [_ "Sample rate:"]
-    entry $id.srf.x1 -textvariable audio_sr -width 7
-    label $id.srf.l2 -text [_ "Delay (msec):"]
-    entry $id.srf.x2 -textvariable audio_advance -width 4
-    pack $id.srf.l1 $id.srf.x1 $id.srf.l2 $id.srf.x2 -side left
+    label $mytoplevel.srf.l1 -text [_ "Sample rate:"]
+    entry $mytoplevel.srf.x1 -textvariable audio_sr -width 7
+    label $mytoplevel.srf.l2 -text [_ "Delay (msec):"]
+    entry $mytoplevel.srf.x2 -textvariable audio_advance -width 4
+    pack $mytoplevel.srf.l1 $mytoplevel.srf.x1 $mytoplevel.srf.l2 \
+        $mytoplevel.srf.x2 -side left
     if {$audio_callback >= 0} {
-        checkbutton $id.srf.x3 -variable audio_callback \
+        checkbutton $mytoplevel.srf.x3 -variable audio_callback \
             -text [_ "Use callbacks"] -anchor e
-        pack $id.srf.x3 -side left
+        pack $mytoplevel.srf.x3 -side left
     }
         # input device 1
-    frame $id.in1f
-    pack $id.in1f -side top
+    frame $mytoplevel.in1f
+    pack $mytoplevel.in1f -side top
 
-    checkbutton $id.in1f.x0 -variable audio_inenable1 \
+    checkbutton $mytoplevel.in1f.x0 -variable audio_inenable1 \
         -text [_ "Input device 1:"] -anchor e
-    button $id.in1f.x1 -text [lindex $audio_indevlist $audio_indev1] \
-        -command [list audio_popup $id $id.in1f.x1 audio_indev1 $audio_indevlist]
-    label $id.in1f.l2 -text [_ "Channels:"]
-    entry $id.in1f.x2 -textvariable audio_inchan1 -width 3
-    pack $id.in1f.x0 $id.in1f.x1 $id.in1f.l2 $id.in1f.x2 -side left -fill x
+    button $mytoplevel.in1f.x1 -text [lindex $audio_indevlist $audio_indev1] \
+        -command [list audio_popup $mytoplevel $mytoplevel.in1f.x1 audio_indev1 $audio_indevlist]
+    label $mytoplevel.in1f.l2 -text [_ "Channels:"]
+    entry $mytoplevel.in1f.x2 -textvariable audio_inchan1 -width 3
+    pack $mytoplevel.in1f.x0 $mytoplevel.in1f.x1 $mytoplevel.in1f.l2 \
+        $mytoplevel.in1f.x2 -side left -fill x
 
         # input device 2
     if {$longform && $multi > 1 && [llength $audio_indevlist] > 1} {
-        frame $id.in2f
-        pack $id.in2f -side top
+        frame $mytoplevel.in2f
+        pack $mytoplevel.in2f -side top
 
-        checkbutton $id.in2f.x0 -variable audio_inenable2 \
+        checkbutton $mytoplevel.in2f.x0 -variable audio_inenable2 \
             -text [_ "Input device 2:"] -anchor e
-        button $id.in2f.x1 -text [lindex $audio_indevlist $audio_indev2] \
-            -command [list audio_popup $id $id.in2f.x1 audio_indev2 \
+        button $mytoplevel.in2f.x1 -text [lindex $audio_indevlist $audio_indev2] \
+            -command [list audio_popup $mytoplevel $mytoplevel.in2f.x1 audio_indev2 \
                 $audio_indevlist]
-        label $id.in2f.l2 -text [_ "Channels:"]
-        entry $id.in2f.x2 -textvariable audio_inchan2 -width 3
-        pack $id.in2f.x0 $id.in2f.x1 $id.in2f.l2 $id.in2f.x2 -side left -fill x
+        label $mytoplevel.in2f.l2 -text [_ "Channels:"]
+        entry $mytoplevel.in2f.x2 -textvariable audio_inchan2 -width 3
+        pack $mytoplevel.in2f.x0 $mytoplevel.in2f.x1 $mytoplevel.in2f.l2 \
+            $mytoplevel.in2f.x2 -side left -fill x
     }
 
         # input device 3
     if {$longform && $multi > 1 && [llength $audio_indevlist] > 2} {
-        frame $id.in3f
-        pack $id.in3f -side top
+        frame $mytoplevel.in3f
+        pack $mytoplevel.in3f -side top
 
-        checkbutton $id.in3f.x0 -variable audio_inenable3 \
+        checkbutton $mytoplevel.in3f.x0 -variable audio_inenable3 \
             -text [_ "Input device 3:"] -anchor e
-        button $id.in3f.x1 -text [lindex $audio_indevlist $audio_indev3] \
-            -command [list audio_popup $id $id.in3f.x1 audio_indev3 \
+        button $mytoplevel.in3f.x1 -text [lindex $audio_indevlist $audio_indev3] \
+            -command [list audio_popup $mytoplevel $mytoplevel.in3f.x1 audio_indev3 \
                 $audio_indevlist]
-        label $id.in3f.l2 -text [_ "Channels:"]
-        entry $id.in3f.x2 -textvariable audio_inchan3 -width 3
-        pack $id.in3f.x0 $id.in3f.x1 $id.in3f.l2 $id.in3f.x2 -side left
+        label $mytoplevel.in3f.l2 -text [_ "Channels:"]
+        entry $mytoplevel.in3f.x2 -textvariable audio_inchan3 -width 3
+        pack $mytoplevel.in3f.x0 $mytoplevel.in3f.x1 $mytoplevel.in3f.l2 $mytoplevel.in3f.x2 -side left
     }
 
         # input device 4
     if {$longform && $multi > 1 && [llength $audio_indevlist] > 3} {
-        frame $id.in4f
-        pack $id.in4f -side top
+        frame $mytoplevel.in4f
+        pack $mytoplevel.in4f -side top
 
-        checkbutton $id.in4f.x0 -variable audio_inenable4 \
+        checkbutton $mytoplevel.in4f.x0 -variable audio_inenable4 \
             -text [_ "Input device 4:"] -anchor e
-        button $id.in4f.x1 -text [lindex $audio_indevlist $audio_indev4] \
-            -command [list audio_popup $id $id.in4f.x1 audio_indev4 \
+        button $mytoplevel.in4f.x1 -text [lindex $audio_indevlist $audio_indev4] \
+            -command [list audio_popup $mytoplevel $mytoplevel.in4f.x1 audio_indev4 \
                 $audio_indevlist]
-        label $id.in4f.l2 -text [_ "Channels:"]
-        entry $id.in4f.x2 -textvariable audio_inchan4 -width 3
-        pack $id.in4f.x0 $id.in4f.x1 $id.in4f.l2 $id.in4f.x2 -side left
+        label $mytoplevel.in4f.l2 -text [_ "Channels:"]
+        entry $mytoplevel.in4f.x2 -textvariable audio_inchan4 -width 3
+        pack $mytoplevel.in4f.x0 $mytoplevel.in4f.x1 $mytoplevel.in4f.l2 \
+            $mytoplevel.in4f.x2 -side left
     }
 
         # output device 1
-    frame $id.out1f
-    pack $id.out1f -side top
+    frame $mytoplevel.out1f
+    pack $mytoplevel.out1f -side top
 
-    checkbutton $id.out1f.x0 -variable audio_outenable1 \
+    checkbutton $mytoplevel.out1f.x0 -variable audio_outenable1 \
         -text [_ "Output device 1:"] -anchor e
     if {$multi == 0} {
-        label $id.out1f.l1 \
+        label $mytoplevel.out1f.l1 \
             -text [_ "(same as input device) ..............      "]
     } else {
-        button $id.out1f.x1 -text [lindex $audio_outdevlist $audio_outdev1] \
-            -command  [list audio_popup $id $id.out1f.x1 audio_outdev1 \
+        button $mytoplevel.out1f.x1 -text [lindex $audio_outdevlist $audio_outdev1] \
+            -command  [list audio_popup $mytoplevel $mytoplevel.out1f.x1 audio_outdev1 \
                 $audio_outdevlist]
     }
-    label $id.out1f.l2 -text [_ "Channels:"]
-    entry $id.out1f.x2 -textvariable audio_outchan1 -width 3
+    label $mytoplevel.out1f.l2 -text [_ "Channels:"]
+    entry $mytoplevel.out1f.x2 -textvariable audio_outchan1 -width 3
     if {$multi == 0} {
-        pack $id.out1f.x0 $id.out1f.l1 $id.out1f.x2 -side left -fill x
+        pack $mytoplevel.out1f.x0 $mytoplevel.out1f.l1 $mytoplevel.out1f.x2 -side left -fill x
     } else {
-        pack $id.out1f.x0 $id.out1f.x1 $id.out1f.l2 $id.out1f.x2 -side left -fill x
+        pack $mytoplevel.out1f.x0 $mytoplevel.out1f.x1 $mytoplevel.out1f.l2\
+            $mytoplevel.out1f.x2 -side left -fill x
     }
 
         # output device 2
     if {$longform && $multi > 1 && [llength $audio_outdevlist] > 1} {
-        frame $id.out2f
-        pack $id.out2f -side top
+        frame $mytoplevel.out2f
+        pack $mytoplevel.out2f -side top
 
-        checkbutton $id.out2f.x0 -variable audio_outenable2 \
+        checkbutton $mytoplevel.out2f.x0 -variable audio_outenable2 \
             -text [_ "Output device 2:"] -anchor e
-        button $id.out2f.x1 -text [lindex $audio_outdevlist $audio_outdev2] \
+        button $mytoplevel.out2f.x1 -text [lindex $audio_outdevlist $audio_outdev2] \
             -command \
-            [list audio_popup $id $id.out2f.x1 audio_outdev2 $audio_outdevlist]
-        label $id.out2f.l2 -text [_ "Channels:"]
-        entry $id.out2f.x2 -textvariable audio_outchan2 -width 3
-        pack $id.out2f.x0 $id.out2f.x1 $id.out2f.l2 $id.out2f.x2 -side left
+            [list audio_popup $mytoplevel $mytoplevel.out2f.x1 audio_outdev2 $audio_outdevlist]
+        label $mytoplevel.out2f.l2 -text [_ "Channels:"]
+        entry $mytoplevel.out2f.x2 -textvariable audio_outchan2 -width 3
+        pack $mytoplevel.out2f.x0 $mytoplevel.out2f.x1 $mytoplevel.out2f.l2\
+            $mytoplevel.out2f.x2 -side left
     }
 
         # output device 3
     if {$longform && $multi > 1 && [llength $audio_outdevlist] > 2} {
-        frame $id.out3f
-        pack $id.out3f -side top
+        frame $mytoplevel.out3f
+        pack $mytoplevel.out3f -side top
 
-        checkbutton $id.out3f.x0 -variable audio_outenable3 \
+        checkbutton $mytoplevel.out3f.x0 -variable audio_outenable3 \
             -text [_ "Output device 3:"] -anchor e
-        button $id.out3f.x1 -text [lindex $audio_outdevlist $audio_outdev3] \
+        button $mytoplevel.out3f.x1 -text [lindex $audio_outdevlist $audio_outdev3] \
             -command \
-            [list audio_popup $id $id.out3f.x1 audio_outdev3 $audio_outdevlist]
-        label $id.out3f.l2 -text [_ "Channels:"]
-        entry $id.out3f.x2 -textvariable audio_outchan3 -width 3
-        pack $id.out3f.x0 $id.out3f.x1 $id.out3f.l2 $id.out3f.x2 -side left
+            [list audio_popup $mytoplevel $mytoplevel.out3f.x1 audio_outdev3 $audio_outdevlist]
+        label $mytoplevel.out3f.l2 -text [_ "Channels:"]
+        entry $mytoplevel.out3f.x2 -textvariable audio_outchan3 -width 3
+        pack $mytoplevel.out3f.x0 $mytoplevel.out3f.x1 $mytoplevel.out3f.l2 \
+            $mytoplevel.out3f.x2 -side left
     }
 
         # output device 4
     if {$longform && $multi > 1 && [llength $audio_outdevlist] > 3} {
-        frame $id.out4f
-        pack $id.out4f -side top
+        frame $mytoplevel.out4f
+        pack $mytoplevel.out4f -side top
 
-        checkbutton $id.out4f.x0 -variable audio_outenable4 \
+        checkbutton $mytoplevel.out4f.x0 -variable audio_outenable4 \
             -text [_ "Output device 4:"] -anchor e
-        button $id.out4f.x1 -text [lindex $audio_outdevlist $audio_outdev4] \
+        button $mytoplevel.out4f.x1 -text [lindex $audio_outdevlist $audio_outdev4] \
             -command \
-            [list audio_popup $id $id.out4f.x1 audio_outdev4 $audio_outdevlist]
-        label $id.out4f.l2 -text [_ "Channels:"]
-        entry $id.out4f.x2 -textvariable audio_outchan4 -width 3
-        pack $id.out4f.x0 $id.out4f.x1 $id.out4f.l2 $id.out4f.x2 -side left
+            [list audio_popup $mytoplevel $mytoplevel.out4f.x1 audio_outdev4 $audio_outdevlist]
+        label $mytoplevel.out4f.l2 -text [_ "Channels:"]
+        entry $mytoplevel.out4f.x2 -textvariable audio_outchan4 -width 3
+        pack $mytoplevel.out4f.x0 $mytoplevel.out4f.x1 $mytoplevel.out4f.l2 \
+            $mytoplevel.out4f.x2 -side left
     }
 
         # if not the "long form" but if "multi" is 2, make a button to
         # restart with longform set. 
     
     if {$longform == 0 && $multi > 1} {
-        frame $id.longbutton
-        pack $id.longbutton -side top
-        button $id.longbutton.b -text [_ "Use multiple devices"] \
+        frame $mytoplevel.longbutton
+        pack $mytoplevel.longbutton -side top
+        button $mytoplevel.longbutton.b -text [_ "Use multiple devices"] \
             -command  {pdsend "pd audio-properties 1"}
-        pack $id.longbutton.b
+        pack $mytoplevel.longbutton.b
     }
-    $id.srf.x1 select from 0
-    $id.srf.x1 select adjust end
-    focus $id.srf.x1
+    $mytoplevel.srf.x1 select from 0
+    $mytoplevel.srf.x1 select adjust end
+    focus $mytoplevel.srf.x1
 }

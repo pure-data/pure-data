@@ -53,7 +53,7 @@ static char sys_dllextent[] = ".d_fat", sys_dllextent2[] = ".pd_darwin";
 static char sys_dllextent[] = ".d_ppc", sys_dllextent2[] = ".pd_darwin";
 #endif
 #endif
-#ifdef MSW
+#if defined(_WIN32) || defined(__CYGWIN__)
 static char sys_dllextent[] = ".m_i386", sys_dllextent2[] = ".dll";
 #endif
 

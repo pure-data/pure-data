@@ -81,10 +81,16 @@ proc ::dialog_midi::pdtk_midi_dialog {id indev1 indev2 indev3 indev4 \
     set midi_alsain [llength $midi_indevlist]
     set midi_alsaout [llength $midi_outdevlist]
 
-    toplevel $id
+    toplevel $id -class DialogWindow
     wm title $id [_ "MIDI Settings"]
-    if {$::windowingsystem eq "aqua"} {$id configure -menu .menubar}
+    wm group $id .
+    wm resizable $id 0 0
+    wm transient $id
+    $id configure -menu $::dialog_menubar
+    $id configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $id "midi"
+    # not all Tcl/Tk versions or platforms support -topmost, so catch the error
+    catch {wm attributes $id -topmost 1}
 
     frame $id.buttonframe
     pack $id.buttonframe -side bottom -fill x -pady 2m

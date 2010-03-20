@@ -104,6 +104,19 @@ void rtext_getseltext(t_rtext *x, char **buf, int *bufsize)
     *bufsize = x->x_selend - x->x_selstart;
 }
 
+/* convert t_text te_type symbol for use as a Tk tag */
+static t_symbol *rtext_gettype(t_rtext *x)
+{
+    switch (x->x_text->te_type) 
+    {
+    case T_TEXT: return gensym("text");
+    case T_OBJECT: return gensym("obj");
+    case T_MESSAGE: return gensym("msg");
+    case T_ATOM: return gensym("atom");
+    }
+    return (&s_);
+}
+
 /* LATER deal with tcl-significant characters */
 
 static int firstone(char *s, int c, int n)
@@ -243,8 +256,8 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     pixhigh = nlines * fontheight + (TMARGIN + BMARGIN);
 
     if (action == SEND_FIRST)
-        sys_vgui("pdtk_text_new .x%lx.c %s %f %f {%.*s} %d %s\n",
-            canvas, x->x_tag,
+        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%.*s} %d %s\n",
+            canvas, x->x_tag, rtext_gettype(x)->s_name,
             dispx + LMARGIN, dispy + TMARGIN,
             outchars, tempbuf, sys_hostfontsize(font),
             (glist_isselected(x->x_glist,
@@ -398,7 +411,7 @@ void rtext_activate(t_rtext *x, int state)
     t_canvas *canvas = glist_getcanvas(glist);
     if (state)
     {
-        sys_vgui(".x%lx.c focus %s\n", canvas, x->x_tag);
+        sys_vgui("pdtk_text_editing .x%lx %s 1\n", canvas, x->x_tag);
         glist->gl_editor->e_textedfor = x;
         glist->gl_editor->e_textdirty = 0;
         x->x_dragfrom = x->x_selstart = 0;
@@ -407,8 +420,7 @@ void rtext_activate(t_rtext *x, int state)
     }
     else
     {
-        sys_vgui("selection clear .x%lx.c\n", canvas);
-        sys_vgui(".x%lx.c focus \"\"\n", canvas);
+        sys_vgui("pdtk_text_editing .x%lx {} 0\n", canvas);
         if (glist->gl_editor->e_textedfor == x)
             glist->gl_editor->e_textedfor = 0;
         x->x_active = 0;

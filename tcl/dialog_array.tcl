@@ -262,7 +262,11 @@ puts "::dialog_array::pdtk_array_dialog {$mytoplevel $name $size $flags $newone}
 proc ::dialog_array::create_dialog {mytoplevel newone} {
     toplevel $mytoplevel -class DialogWindow
     wm title $mytoplevel [_ "Array Properties"]
-    if {$::windowingsystem eq "aqua"} {$mytoplevel configure -menu .menubar}
+    wm group $mytoplevel .
+    wm resizable $mytoplevel 0 0
+    wm transient $mytoplevel $::focused_window
+    $mytoplevel configure -menu $::dialog_menubar
+    $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "array"
 
     frame $mytoplevel.name
@@ -315,14 +319,16 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     }
     # end jsarlo
     frame $mytoplevel.buttonframe
-    pack $mytoplevel.buttonframe -side bottom -fill x -pady 2m
+    pack $mytoplevel.buttonframe -side bottom -expand 1 -fill x -pady 2m
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_array::cancel $mytoplevel"
-    if {$newone == 0} {button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
-                           -command "::dialog_array::apply $mytoplevel"}
+    pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 10
+    if {$newone == 0 && $::windowingsystem ne "aqua"} {
+        button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
+            -command "::dialog_array::apply $mytoplevel"
+        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 10
+    }
     button $mytoplevel.buttonframe.ok -text [_ "OK"]\
         -command "::dialog_array::ok $mytoplevel"
-    pack $mytoplevel.buttonframe.cancel -side left -expand 1
-    if {$newone == 0} {pack $mytoplevel.buttonframe.apply -side left -expand 1}
-    pack $mytoplevel.buttonframe.ok -side left -expand 1
+    pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 10
 }

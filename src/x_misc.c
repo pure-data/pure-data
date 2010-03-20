@@ -9,22 +9,21 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef HAVE_UNISTD_H
+#ifdef _WIN32
+#include <wtypes.h>
+#include <time.h>
+#else
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/times.h>
 #include <sys/param.h>
 #include <unistd.h>
-#endif
-#ifdef MSW
-#include <wtypes.h>
-#include <time.h>
-#endif
+#endif /* _WIN32 */
 
 #if defined (__APPLE__) || defined (__FreeBSD__)
 #define CLOCKHZ CLK_TCK
 #endif
-#if defined (__linux__)
+#if defined (__linux__) || defined (__CYGWIN__)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
 
@@ -145,7 +144,7 @@ static void namecanvas_setup(void)
             sizeof(t_namecanvas), CLASS_NOINLET, A_DEFSYM, 0);
 }
 
-/* ---------------serial ports (MSW only -- hack) ------------------------- */
+/* ---------------serial ports (_WIN32 only -- hack) ------------------------- */
 #define MAXSERIAL 100
 
 static t_class *serial_class;
@@ -194,22 +193,18 @@ static t_class *cputime_class;
 typedef struct _cputime
 {
     t_object x_obj;
-#ifdef HAVE_UNISTD_H
-    struct tms x_setcputime;
-#endif
-#ifdef MSW
+#ifdef _WIN32
     LARGE_INTEGER x_kerneltime;
     LARGE_INTEGER x_usertime;
     int x_warned;
-#endif
+#else
+    struct tms x_setcputime;
+#endif /* _WIN32 */
 } t_cputime;
 
 static void cputime_bang(t_cputime *x)
 {
-#ifdef HAVE_UNISTD_H
-    times(&x->x_setcputime);
-#endif
-#ifdef MSW
+#ifdef _WIN32
     FILETIME ignorethis, ignorethat;
     BOOL retval;
     retval = GetProcessTimes(GetCurrentProcess(), &ignorethis, &ignorethat,
@@ -222,12 +217,14 @@ static void cputime_bang(t_cputime *x)
         x->x_kerneltime.QuadPart = 0;
         x->x_usertime.QuadPart = 0;
     }
-#endif
+#else
+    times(&x->x_setcputime);
+#endif /* _WIN32 */
 }
 
 static void cputime_bang2(t_cputime *x)
 {
-#ifdef HAVE_UNISTD_H
+#ifndef _WIN32
     t_float elapsedcpu;
     struct tms newcputime;
     times(&newcputime);
@@ -235,8 +232,7 @@ static void cputime_bang2(t_cputime *x)
         newcputime.tms_utime + newcputime.tms_stime -
             x->x_setcputime.tms_utime - x->x_setcputime.tms_stime) / CLOCKHZ;
     outlet_float(x->x_obj.ob_outlet, elapsedcpu);
-#endif
-#ifdef MSW
+#else
     t_float elapsedcpu;
     FILETIME ignorethis, ignorethat;
     LARGE_INTEGER usertime, kerneltime;
@@ -250,7 +246,7 @@ static void cputime_bang2(t_cputime *x)
                 (usertime.QuadPart - x->x_usertime.QuadPart));
     else elapsedcpu = 0;
     outlet_float(x->x_obj.ob_outlet, elapsedcpu);
-#endif
+#endif /* NOT _WIN32 */
 }
 
 static void *cputime_new(void)
@@ -259,7 +255,7 @@ static void *cputime_new(void)
     outlet_new(&x->x_obj, gensym("float"));
 
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("bang"), gensym("bang2"));
-#ifdef MSW
+#ifdef _WIN32
     x->x_warned = 0;
 #endif
     cputime_bang(x);
