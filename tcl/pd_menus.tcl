@@ -221,7 +221,7 @@ proc ::pd_menus::build_find_menu {mymenu} {
     $mymenu add command -label [_ "Find Again"] -accelerator "$accelerator+G" \
         -command {menu_send $::focused_window findagain}
     $mymenu add command -label [_ "Find Last Error"] \
-        -command {menu_send $::focused_window finderror} 
+        -command {pdsend {pd finderror}} 
 }
 
 proc ::pd_menus::build_media_menu {mymenu} {
