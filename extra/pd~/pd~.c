@@ -512,7 +512,7 @@ static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)
     int ninsig = 2, noutsig = 2, j, fifo = 5;
     float sr = sys_getsr();
     t_sample **g;
-    t_symbol *pddir = sys_guidir,
+    t_symbol *pddir = sys_libdir,
         *scheddir = gensym(class_gethelpdir(pd_tilde_class));
     /* fprintf(stderr, "pd %s, sched %s\n", pddir->s_name, scheddir->s_name); */
     while (argc > 0)
