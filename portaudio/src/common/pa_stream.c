@@ -1,10 +1,10 @@
 /*
- * $Id: pa_stream.c 1097 2006-08-26 08:27:53Z rossb $
+ * $Id: pa_stream.c 1339 2008-02-15 07:50:33Z rossb $
  * Portable Audio I/O Library
- * 
+ * stream interface
  *
  * Based on the Open Source API proposed by Ross Bencina
- * Copyright (c) 2002 Ross Bencina
+ * Copyright (c) 2008 Ross Bencina
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files
@@ -40,8 +40,8 @@
 /** @file
  @ingroup common_src
 
- @brief Interface used by pa_front to virtualize functions which operate on
- streams.
+ @brief Stream interfaces, representation structures and helper functions
+ used to interface between pa_front.c host API implementations.
 */
 
 

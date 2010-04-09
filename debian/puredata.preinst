@@ -1,0 +1,13 @@
+#! /bin/sh
+
+set -e
+
+#DEBHELPER#
+
+for d in 1.manual 2.control.examples 3.audio.examples 4.data.structures 6.externs 7.stuff sound
+do
+  if [ -d /usr/lib/pd/doc/$d ]
+  then
+     rm -r /usr/lib/pd/doc/$d
+  fi
+done

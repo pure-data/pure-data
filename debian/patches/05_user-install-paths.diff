@@ -1,0 +1,72 @@
+diff --git a/src/s_path.c b/src/s_path.c
+index d74aa0f..fc2eb6a 100644
+--- a/src/s_path.c
++++ b/src/s_path.c
+@@ -69,6 +69,31 @@ void sys_unbashfilename(const char *from, char *to)
+     *to = 0;
+ }
+ 
++/* expand env vars and ~ at the beginning of a path and make a copy to return */
++static void sys_expandpath(const char *from, char *to)
++{
++    if ((strlen(from) == 1 && from[0] == '~') || (strncmp(from,"~/", 2) == 0))
++    {
++#ifdef MSW
++        const char *home = getenv("USERPROFILE");
++#else
++        const char *home = getenv("HOME");
++#endif
++        if(home) 
++        {
++            strncpy(to, home, FILENAME_MAX - 1);
++            strncat(to, from + 1, FILENAME_MAX - strlen(from) - 2);
++        }
++    }
++    else
++        strncpy(to, from, FILENAME_MAX - 1);
++#ifdef MSW
++    char buf[FILENAME_MAX];
++    ExpandEnvironmentStrings(to, buf, FILENAME_MAX - 2);
++    strncpy(to, buf, FILENAME_MAX - 1);
++#endif    
++}
++
+ /* test if path is absolute or relative, based on leading /, env vars, ~, etc */
+ int sys_isabsolutepath(const char *dir)
+ {
+@@ -193,8 +218,16 @@ int sys_usestdpath = 1;
+ 
+ void sys_setextrapath(const char *p)
+ {
++    char pathbuf[FILENAME_MAX];
+     namelist_free(pd_extrapath);
+-    pd_extrapath = namelist_append(0, p, 0);
++    /* add standard place for users to install stuff first */
++
++    sys_expandpath("~/pd-externals", pathbuf);
++    pd_extrapath = namelist_append(0, pathbuf, 0);
++    pd_extrapath = namelist_append(pd_extrapath, "/usr/local/lib/pd-externals", 0);
++
++    /* add built-in "extra" path last so its checked last */
++    pd_extrapath = namelist_append(pd_extrapath, p, 0);
+ }
+ 
+ #ifdef MSW
+@@ -319,11 +352,12 @@ static int do_open_via_path(const char *dir, const char *name,
+             dirresult, nameresult, size, bin)) >= 0)
+                 return (fd);
+ 
+-        /* next look in "extra" */
+-    if (sys_usestdpath &&
+-        (fd = sys_trytoopenone(pd_extrapath->nl_string, name, ext,
+-            dirresult, nameresult, size, bin)) >= 0)
+-                return (fd);
++        /* next look in built-in paths like "extra" */
++    if (sys_usestdpath)
++        for (nl = pd_extrapath; nl; nl = nl->nl_next)
++            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
++                dirresult, nameresult, size, bin)) >= 0)
++                    return (fd);
+ 
+     *dirresult = 0;
+     *nameresult = dirresult;

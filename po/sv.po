@@ -1,0 +1,921 @@
+# Swedish translation of Pure Data.
+# This file is put in the public domain
+# Johannes Burström <johannes@ljud.org>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.43\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2009-08-27 10:01-0400\n"
+"PO-Revision-Date: 2009-08-22 11:20+0100\n"
+"Last-Translator: Johannes Burström <johannes@ljud.org>\n"
+"Language-Team: Johannes Burström <johannes@ljud.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: Sweden\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#, fuzzy
+msgid "Undo duplicate"
+msgstr "Duplicera"
+
+msgid "Undo paste"
+msgstr ""
+
+msgid "Undo motion"
+msgstr ""
+
+#, fuzzy
+msgid "Undo cut"
+msgstr "Ångra"
+
+msgid "Undo disconnect"
+msgstr ""
+
+msgid "Undo connect"
+msgstr ""
+
+msgid "Undo clear"
+msgstr ""
+
+msgid "Undo typing"
+msgstr ""
+
+msgid "Discard changes to '%s'?"
+msgstr "Förkasta ändringar i '%s'?"
+
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Vill du spara dina ändringar i '%s'?"
+
+#: ../src/dialog_array.tcl:115 ../src/dialog_array.tcl:117
+#: ../src/pd_menus.tcl:100 ../src/pd_menus.tcl:101 ../src/pd_menus.tcl:146
+#: ../src/pd_menus.tcl:147
+msgid "Copy"
+msgstr "Kopiera"
+
+#: ../src/dialog_array.tcl:118 ../src/dialog_array.tcl:120
+#: ../src/pd_menus.tcl:102 ../src/pd_menus.tcl:103 ../src/pd_menus.tcl:148
+#: ../src/pd_menus.tcl:149
+msgid "Paste"
+msgstr "Klistra in"
+
+#: ../src/dialog_array.tcl:264 ../src/dialog_array.tcl:266
+#, fuzzy
+msgid "Array Properties"
+msgstr "Egenskaper för Array"
+
+#: ../src/dialog_array.tcl:270 ../src/dialog_array.tcl:272
+msgid "Name:"
+msgstr "Namn:"
+
+#: ../src/dialog_array.tcl:276 ../src/dialog_array.tcl:278
+#: ../src/dialog_canvas.tcl:178 ../src/dialog_canvas.tcl:193
+#: ../src/dialog_iemgui.tcl:619 ../src/dialog_iemgui.tcl:621
+msgid "Size:"
+msgstr "Storlek:"
+
+#: ../src/dialog_array.tcl:280 ../src/dialog_array.tcl:282
+msgid "Save contents"
+msgstr "Spara innehåll"
+
+#: ../src/dialog_array.tcl:284 ../src/dialog_array.tcl:286
+msgid "Draw as:"
+msgstr "Rita som:"
+
+#: ../src/dialog_array.tcl:287 ../src/dialog_array.tcl:289
+msgid "Points"
+msgstr "Punkter"
+
+#: ../src/dialog_array.tcl:289 ../src/dialog_array.tcl:291
+msgid "Polygon"
+msgstr "Polygon"
+
+#: ../src/dialog_array.tcl:291 ../src/dialog_array.tcl:293
+msgid "Bezier curve"
+msgstr "Bezier-kurva"
+
+#: ../src/dialog_array.tcl:297 ../src/dialog_array.tcl:299
+#, fuzzy
+msgid "Put array into:"
+msgstr "Rita array i:"
+
+#: ../src/dialog_array.tcl:300 ../src/dialog_array.tcl:302
+#, fuzzy
+msgid "New graph"
+msgstr "Ny graf"
+
+#: ../src/dialog_array.tcl:302 ../src/dialog_array.tcl:304
+#, fuzzy
+msgid "Last graph"
+msgstr "Senaste graf"
+
+#: ../src/dialog_array.tcl:306 ../src/dialog_array.tcl:308
+#, fuzzy
+msgid "Delete array"
+msgstr "Radera array"
+
+#: ../src/dialog_array.tcl:312 ../src/dialog_array.tcl:314
+msgid "Open List View..."
+msgstr "Öppna listvy..."
+
+#: ../src/dialog_array.tcl:319 ../src/dialog_array.tcl:321
+#: ../src/dialog_audio.tcl:136 ../src/dialog_canvas.tcl:205
+#: ../src/dialog_font.tcl:51 ../src/dialog_gatom.tcl:153
+#: ../src/dialog_gatom.tcl:161 ../src/dialog_iemgui.tcl:742
+#: ../src/dialog_iemgui.tcl:748 ../src/dialog_midi.tcl:91
+#: ../src/dialog_midi.tcl:226
+msgid "Cancel"
+msgstr "Ångra"
+
+#: ../src/dialog_array.tcl:321 ../src/dialog_array.tcl:323
+#: ../src/dialog_audio.tcl:138 ../src/dialog_canvas.tcl:207
+#: ../src/dialog_gatom.tcl:156 ../src/dialog_gatom.tcl:164
+#: ../src/dialog_iemgui.tcl:745 ../src/dialog_iemgui.tcl:751
+#: ../src/dialog_midi.tcl:93 ../src/dialog_midi.tcl:228
+msgid "Apply"
+msgstr "Verkställ"
+
+#: ../src/dialog_array.tcl:323 ../src/dialog_array.tcl:325
+#: ../src/dialog_audio.tcl:140 ../src/dialog_canvas.tcl:209
+#: ../src/dialog_font.tcl:53 ../src/dialog_font.tcl:92
+#: ../src/dialog_font.tcl:100 ../src/dialog_font.tcl:101
+#: ../src/dialog_gatom.tcl:159 ../src/dialog_gatom.tcl:167
+#: ../src/dialog_iemgui.tcl:748 ../src/dialog_iemgui.tcl:754
+#: ../src/dialog_midi.tcl:95 ../src/dialog_midi.tcl:230
+msgid "OK"
+msgstr "Ok"
+
+#: ../src/dialog_audio.tcl:130
+msgid "Audio Settings"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:142
+msgid "Save All Settings"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:151
+msgid "Sample rate:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:153
+msgid "Delay (msec):"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:158
+msgid "Use callbacks"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:166 ../src/dialog_midi.tcl:105
+#: ../src/dialog_midi.tcl:241
+msgid "Input device 1:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:169 ../src/dialog_audio.tcl:183
+#: ../src/dialog_audio.tcl:198 ../src/dialog_audio.tcl:213
+#: ../src/dialog_audio.tcl:232 ../src/dialog_audio.tcl:250
+#: ../src/dialog_audio.tcl:265 ../src/dialog_audio.tcl:280
+#, fuzzy
+msgid "Channels:"
+msgstr "Ångra"
+
+#: ../src/dialog_audio.tcl:179 ../src/dialog_midi.tcl:115
+#: ../src/dialog_midi.tcl:251
+msgid "Input device 2:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:194 ../src/dialog_midi.tcl:127
+#: ../src/dialog_midi.tcl:263
+msgid "Input device 3:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:209 ../src/dialog_midi.tcl:139
+#: ../src/dialog_midi.tcl:275
+msgid "Input device 4:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:223 ../src/dialog_midi.tcl:150
+#: ../src/dialog_midi.tcl:286
+msgid "Output device 1:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:226
+msgid "(same as input device) ..............      "
+msgstr ""
+
+#: ../src/dialog_audio.tcl:246 ../src/dialog_midi.tcl:160
+#: ../src/dialog_midi.tcl:296
+msgid "Output device 2:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:261 ../src/dialog_midi.tcl:171
+#: ../src/dialog_midi.tcl:307
+msgid "Output device 3:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:276 ../src/dialog_midi.tcl:182
+#: ../src/dialog_midi.tcl:318
+msgid "Output device 4:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:291 ../src/dialog_midi.tcl:195
+msgid "Use multiple devices"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:142
+#, fuzzy
+msgid "Canvas Properties"
+msgstr "Egenskaper för canvas"
+
+#: ../src/dialog_canvas.tcl:146
+msgid "Scale"
+msgstr "Skala"
+
+#: ../src/dialog_canvas.tcl:150
+#, fuzzy
+msgid "X units per pixel:"
+msgstr "X enheter per pixel:"
+
+#: ../src/dialog_canvas.tcl:155
+#, fuzzy
+msgid "Y units per pixel:"
+msgstr "Y enheter per pixel:"
+
+#: ../src/dialog_canvas.tcl:159
+#, fuzzy
+msgid "Appearance on parent patch"
+msgstr "Utseende på föräldrapatchen"
+
+#: ../src/dialog_canvas.tcl:161
+#, fuzzy
+msgid "Graph-On-Parent"
+msgstr "Graph-On-Parent"
+
+#: ../src/dialog_canvas.tcl:165
+msgid "Hide object name and arguments"
+msgstr "Göm objektnamn och argument"
+
+#: ../src/dialog_canvas.tcl:170
+msgid "Range and size"
+msgstr "Omfång och storlek"
+
+#: ../src/dialog_canvas.tcl:174
+msgid "X range, from"
+msgstr "Omfång (x), från"
+
+#: ../src/dialog_canvas.tcl:176 ../src/dialog_canvas.tcl:191
+msgid "to"
+msgstr "till"
+
+#: ../src/dialog_canvas.tcl:180 ../src/dialog_canvas.tcl:195
+msgid "Margin:"
+msgstr "Marginal:"
+
+#: ../src/dialog_canvas.tcl:189
+msgid "Y range, from"
+msgstr "Omfång (y), från:"
+
+#: ../src/dialog_find.tcl:63 ../src/dialog_find.tcl:66
+#: ../src/dialog_find.tcl:79 ../src/dialog_find.tcl:80
+#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:85
+#: ../src/dialog_find.tcl:87 ../src/dialog_find.tcl:101
+#: ../src/dialog_find.tcl:105 ../src/dialog_find.tcl:107
+#: ../src/pd_menus.tcl:45
+msgid "Find"
+msgstr "Sök"
+
+#: ../src/dialog_find.tcl:70 ../src/dialog_find.tcl:73
+#: ../src/dialog_find.tcl:87 ../src/dialog_find.tcl:91
+#: ../src/dialog_find.tcl:93
+msgid "Search in"
+msgstr "Sök i"
+
+#: ../src/dialog_find.tcl:72 ../src/dialog_find.tcl:75
+#: ../src/dialog_find.tcl:89 ../src/dialog_find.tcl:93
+#: ../src/dialog_find.tcl:95
+msgid "for:"
+msgstr "efter:"
+
+#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:90
+#: ../src/dialog_find.tcl:104 ../src/dialog_find.tcl:108
+#: ../src/dialog_find.tcl:110 ../src/pd_menus.tcl:86 ../src/pd_menus.tcl:87
+#: ../src/pd_menus.tcl:132 ../src/pd_menus.tcl:133 ../src/pd_menus.tcl:259
+#: ../src/pd_menus.tcl:272 ../src/pd_menus.tcl:295 ../src/pd_menus.tcl:308
+#: ../src/pd_menus.tcl:332 ../src/pd_menus.tcl:345 ../src/pd_menus.tcl:354
+#: ../src/pd_menus.tcl:381 ../src/pd_menus.tcl:392 ../src/pd_menus.tcl:419
+#: ../src/pd_menus.tcl:431 ../src/pd_menus.tcl:458
+msgid "Close"
+msgstr "Stäng"
+
+#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:97
+#: ../src/dialog_find.tcl:101 ../src/dialog_find.tcl:103
+msgid "Match whole word only"
+msgstr "Endast hela ord"
+
+#: ../src/dialog_find.tcl:92 ../src/dialog_font.tcl:49
+#: ../src/dialog_font.tcl:50 ../src/pd-gui.tcl:280 ../src/pd-gui.tcl:283
+#: ../src/pd-gui.tcl:286 ../src/pd-gui.tcl:288 ../src/pd-gui.tcl:291
+#: ../src/pd_menus.tcl:212 ../src/pd_menus.tcl:258 ../src/pd_menus.tcl:285
+#: ../src/pdwindow.tcl:33
+msgid "Pd window"
+msgstr "Huvudfönster"
+
+#: ../src/dialog_font.tcl:45
+#, fuzzy
+msgid "Font Properties"
+msgstr "Egenskaper"
+
+#: ../src/dialog_font.tcl:46 ../src/dialog_font.tcl:54
+#: ../src/dialog_font.tcl:55
+#, fuzzy, tcl-format
+msgid "%s Font"
+msgstr "Typsnitt"
+
+#: ../src/dialog_font.tcl:61 ../src/dialog_font.tcl:96
+#: ../src/dialog_font.tcl:104 ../src/dialog_font.tcl:105
+#, fuzzy
+msgid "Font Size"
+msgstr "Typsnittsstorlek:"
+
+#: ../src/dialog_font.tcl:89 ../src/dialog_font.tcl:108
+#: ../src/dialog_font.tcl:116 ../src/dialog_font.tcl:117
+#, fuzzy
+msgid "Stretch"
+msgstr "Sträck:"
+
+#: ../src/dialog_font.tcl:96 ../src/dialog_font.tcl:115
+#: ../src/dialog_font.tcl:123 ../src/dialog_font.tcl:124
+msgid "X and Y"
+msgstr "X och Y"
+
+#: ../src/dialog_font.tcl:98 ../src/dialog_font.tcl:117
+#: ../src/dialog_font.tcl:125 ../src/dialog_font.tcl:126
+msgid "X only"
+msgstr "Bara X"
+
+#: ../src/dialog_font.tcl:100 ../src/dialog_font.tcl:119
+#: ../src/dialog_font.tcl:127 ../src/dialog_font.tcl:128
+msgid "Y only"
+msgstr "Bara Y"
+
+#: ../src/dialog_gatom.tcl:93
+msgid "Atom Box Properties"
+msgstr "Egenskaper för Atom"
+
+#: ../src/dialog_gatom.tcl:99
+msgid "Width:"
+msgstr "Bredd:"
+
+#: ../src/dialog_gatom.tcl:103
+#, fuzzy
+msgid "Limits"
+msgstr "Gränser"
+
+#: ../src/dialog_gatom.tcl:107
+msgid "Lower:"
+msgstr "Lägre:"
+
+#: ../src/dialog_gatom.tcl:112 ../src/dialog_gatom.tcl:113
+msgid "Upper:"
+msgstr "Övre"
+
+#: ../src/dialog_gatom.tcl:116 ../src/dialog_gatom.tcl:121
+#: ../src/dialog_iemgui.tcl:600 ../src/dialog_iemgui.tcl:652
+#: ../src/dialog_iemgui.tcl:657
+#, fuzzy
+msgid "Label"
+msgstr "Text"
+
+#: ../src/dialog_gatom.tcl:124 ../src/dialog_gatom.tcl:129
+msgid "Left   "
+msgstr "Vänster"
+
+#: ../src/dialog_gatom.tcl:126 ../src/dialog_gatom.tcl:131
+msgid "Right"
+msgstr "Höger"
+
+#: ../src/dialog_gatom.tcl:128 ../src/dialog_gatom.tcl:133
+msgid "Top"
+msgstr "Överkant"
+
+#: ../src/dialog_gatom.tcl:130 ../src/dialog_gatom.tcl:135
+msgid "Bottom"
+msgstr "Underkant"
+
+#: ../src/dialog_gatom.tcl:137 ../src/dialog_gatom.tcl:145
+#: ../src/dialog_iemgui.tcl:574
+msgid "Messages"
+msgstr "Meddelanden"
+
+#: ../src/dialog_gatom.tcl:141 ../src/dialog_gatom.tcl:149
+#: ../src/dialog_iemgui.tcl:578
+#, fuzzy
+msgid "Send symbol:"
+msgstr "Sändsymbol:"
+
+#: ../src/dialog_gatom.tcl:147 ../src/dialog_gatom.tcl:155
+#: ../src/dialog_iemgui.tcl:585
+msgid "Receive symbol:"
+msgstr "Mottagarsymbol:"
+
+#: ../src/dialog_iemgui.tcl:197
+msgid "Background color"
+msgstr "Bakgrundsfärg"
+
+#: ../src/dialog_iemgui.tcl:204
+msgid "Foreground color"
+msgstr "Förgrundsfärg"
+
+#: ../src/dialog_iemgui.tcl:211
+msgid "Label color"
+msgstr "Textfärg"
+
+#: ../src/dialog_iemgui.tcl:272
+msgid "Init"
+msgstr "Initiera"
+
+#: ../src/dialog_iemgui.tcl:275 ../src/dialog_iemgui.tcl:546
+msgid "No init"
+msgstr "Initiera inte"
+
+#: ../src/dialog_iemgui.tcl:287 ../src/dialog_iemgui.tcl:558
+msgid "Jump on click"
+msgstr "Ändra värde vid klick"
+
+#: ../src/dialog_iemgui.tcl:290 ../src/dialog_iemgui.tcl:561
+msgid "Steady on click"
+msgstr "Behåll värde vid klick"
+
+#: ../src/dialog_iemgui.tcl:498
+#, tcl-format
+msgid "%s Properties"
+msgstr "Egenskaper för %s"
+
+#: ../src/dialog_iemgui.tcl:550 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:84
+#: ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:130 ../src/pd_menus.tcl:260
+#: ../src/pd_menus.tcl:273 ../src/pd_menus.tcl:288 ../src/pd_menus.tcl:301
+#: ../src/pd_menus.tcl:325 ../src/pd_menus.tcl:338 ../src/pd_menus.tcl:355
+#: ../src/pd_menus.tcl:382 ../src/pd_menus.tcl:383 ../src/pd_menus.tcl:410
+#: ../src/pd_menus.tcl:422 ../src/pd_menus.tcl:449
+msgid "Save"
+msgstr "Spara"
+
+#: ../src/dialog_iemgui.tcl:608
+msgid "X offset"
+msgstr "x-position"
+
+#: ../src/dialog_iemgui.tcl:611 ../src/dialog_iemgui.tcl:612
+msgid "Y offset"
+msgstr "y-position"
+
+#: ../src/dialog_iemgui.tcl:642 ../src/dialog_iemgui.tcl:645
+msgid "Colors"
+msgstr "Färger"
+
+#: ../src/dialog_iemgui.tcl:648 ../src/dialog_iemgui.tcl:651
+msgid "Background"
+msgstr "Bakgrund"
+
+#: ../src/dialog_iemgui.tcl:650 ../src/dialog_iemgui.tcl:654
+msgid "Front"
+msgstr "Förgrund"
+
+#: ../src/dialog_iemgui.tcl:662 ../src/dialog_iemgui.tcl:668
+msgid "Compose color"
+msgstr "Skapa ny färg"
+
+#: ../src/dialog_iemgui.tcl:682 ../src/dialog_iemgui.tcl:688
+msgid "Test label"
+msgstr "Testtext"
+
+#: ../src/dialog_midi.tcl:85
+msgid "MIDI Settings"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:220
+msgid "ALSA MIDI Settings"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:331
+msgid "Use multiple ALSA devices"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:337
+msgid "In Ports:"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:340
+msgid "Out Ports:"
+msgstr ""
+
+#: ../src/g_editor.c:1663
+#, fuzzy
+msgid "Discard changes to this window??"
+msgstr "Ignorera ändringar i detta fönster?"
+
+#: ../src/g_editor.c:1668
+msgid "really quit?"
+msgstr "Vill du avsluta?"
+
+#: ../src/g_editor.c:1699
+msgid "Close this window??"
+msgstr "Stäng fönstret?"
+
+#: ../src/pd-gui.tcl:185 ../src/pd-gui.tcl:195 ../src/pd-gui.tcl:203
+#: ../src/pd-gui.tcl:206 ../src/pd-gui.tcl:215 ../src/pd-gui.tcl:226
+msgid "Associated Files"
+msgstr ""
+
+#: ../src/pd-gui.tcl:186 ../src/pd-gui.tcl:196 ../src/pd-gui.tcl:204
+#: ../src/pd-gui.tcl:207 ../src/pd-gui.tcl:216 ../src/pd-gui.tcl:227
+#, fuzzy
+msgid "Pd Files"
+msgstr "Fil"
+
+#: ../src/pd-gui.tcl:187 ../src/pd-gui.tcl:205 ../src/pd-gui.tcl:208
+#: ../src/pd-gui.tcl:228
+msgid "Max Patch Files"
+msgstr ""
+
+#: ../src/pd-gui.tcl:188 ../src/pd-gui.tcl:206 ../src/pd-gui.tcl:209
+#: ../src/pd-gui.tcl:229
+msgid "Max Text Files"
+msgstr ""
+
+#: ../src/pd-gui.tcl:197 ../src/pd-gui.tcl:217
+msgid "Max Patch Files (.pat)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:198 ../src/pd-gui.tcl:218
+msgid "Max Text Files (.mxt)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:270 ../src/pd-gui.tcl:290
+#, tcl-format
+msgid "WARNING: Font family '%s' not found, using default (%s)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:278 ../src/pd-gui.tcl:298
+#, tcl-format
+msgid "WARNING: Font weight '%s' not found, using default (%s)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:303 ../src/pd-gui.tcl:323
+#, tcl-format
+msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
+msgstr ""
+
+#: ../src/pd-gui.tcl:478 ../src/pd-gui.tcl:483 ../src/pd-gui.tcl:501
+msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
+msgstr ""
+
+#: ../src/pd_menucommands.tcl:19
+msgid "Untitled"
+msgstr ""
+
+#: ../src/pd_menucommands.tcl:78 ../src/pd_menucommands.tcl:79
+#: ../src/pd_menucommands.tcl:90
+msgid "Send Message..."
+msgstr "Sänd meddelande"
+
+#: ../src/pd_menucommands.tcl:82 ../src/pd_menucommands.tcl:83
+#: ../src/pd_menucommands.tcl:94 ../src/pd_menus.tcl:87 ../src/pd_menus.tcl:88
+#: ../src/pd_menus.tcl:133 ../src/pd_menus.tcl:134 ../src/pd_menus.tcl:147
+#: ../src/pd_menus.tcl:192 ../src/pd_menus.tcl:193 ../src/pd_menus.tcl:265
+#: ../src/pd_menus.tcl:278 ../src/pd_menus.tcl:292 ../src/pd_menus.tcl:305
+#: ../src/pd_menus.tcl:329 ../src/pd_menus.tcl:342 ../src/pd_menus.tcl:360
+#: ../src/pd_menus.tcl:387 ../src/pd_menus.tcl:414 ../src/pd_menus.tcl:426
+#: ../src/pd_menus.tcl:453 ../startup/object_db.tcl:123
+msgid "Message"
+msgstr "Meddelande"
+
+#: ../src/pd_menucommands.tcl:108 ../src/pd_menucommands.tcl:111
+#: ../src/pd_menus.tcl:112 ../src/pd_menus.tcl:113 ../src/pd_menus.tcl:117
+#: ../src/pd_menus.tcl:118 ../src/pd_menus.tcl:158 ../src/pd_menus.tcl:159
+#: ../src/pd_menus.tcl:163 ../src/pd_menus.tcl:164
+msgid "Font"
+msgstr "Typsnitt"
+
+#: ../src/pd_menucommands.tcl:123 ../src/pd_menucommands.tcl:126
+#: ../src/pd_menus.tcl:138 ../src/pd_menus.tcl:183 ../src/pd_menus.tcl:184
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: ../src/pd_menus.tcl:45
+msgid "Edit"
+msgstr "Redigera"
+
+#: ../src/pd_menus.tcl:45
+msgid "File"
+msgstr "Fil"
+
+#: ../src/pd_menus.tcl:45 ../src/pdtk_canvas.tcl:48 ../src/pdtk_canvas.tcl:110
+#: ../src/pdtk_canvas.tcl:113
+msgid "Help"
+msgstr "Hjälp"
+
+#: ../src/pd_menus.tcl:45
+msgid "Media"
+msgstr "Media"
+
+#: ../src/pd_menus.tcl:45
+msgid "Put"
+msgstr "Placera"
+
+#: ../src/pd_menus.tcl:45
+msgid "Window"
+msgstr "Fönster"
+
+#: ../src/pd_menus.tcl:81 ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:127
+#: ../src/pd_menus.tcl:128 ../src/pd_menus.tcl:255 ../src/pd_menus.tcl:267
+#: ../src/pd_menus.tcl:285 ../src/pd_menus.tcl:298 ../src/pd_menus.tcl:322
+#: ../src/pd_menus.tcl:335 ../src/pd_menus.tcl:349 ../src/pd_menus.tcl:376
+#: ../src/pd_menus.tcl:380 ../src/pd_menus.tcl:407 ../src/pd_menus.tcl:419
+#: ../src/pd_menus.tcl:446
+msgid "New"
+msgstr "Ny"
+
+#: ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:128
+#: ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:268
+#: ../src/pd_menus.tcl:286 ../src/pd_menus.tcl:299 ../src/pd_menus.tcl:323
+#: ../src/pd_menus.tcl:336 ../src/pd_menus.tcl:350 ../src/pd_menus.tcl:377
+#: ../src/pd_menus.tcl:381 ../src/pd_menus.tcl:408 ../src/pd_menus.tcl:420
+#: ../src/pd_menus.tcl:447 ../src/pdtk_canvas.tcl:46
+#: ../src/pdtk_canvas.tcl:108 ../src/pdtk_canvas.tcl:111
+#: ../src/pdtk_canvas.tcl:128 ../src/pdtk_canvas.tcl:130
+#: ../src/pdtk_canvas.tcl:131 ../src/pdtk_canvas.tcl:133
+msgid "Open"
+msgstr "Öppna"
+
+#: ../src/pd_menus.tcl:84 ../src/pd_menus.tcl:85 ../src/pd_menus.tcl:130
+#: ../src/pd_menus.tcl:131 ../src/pd_menus.tcl:261 ../src/pd_menus.tcl:274
+#: ../src/pd_menus.tcl:289 ../src/pd_menus.tcl:302 ../src/pd_menus.tcl:326
+#: ../src/pd_menus.tcl:339 ../src/pd_menus.tcl:356 ../src/pd_menus.tcl:383
+#: ../src/pd_menus.tcl:384 ../src/pd_menus.tcl:411 ../src/pd_menus.tcl:423
+#: ../src/pd_menus.tcl:450
+msgid "Save As..."
+msgstr "Spara som..."
+
+#: ../src/pd_menus.tcl:88 ../src/pd_menus.tcl:89 ../src/pd_menus.tcl:134
+#: ../src/pd_menus.tcl:135 ../src/pd_menus.tcl:267 ../src/pd_menus.tcl:280
+#: ../src/pd_menus.tcl:293 ../src/pd_menus.tcl:306 ../src/pd_menus.tcl:330
+#: ../src/pd_menus.tcl:343 ../src/pd_menus.tcl:362 ../src/pd_menus.tcl:388
+#: ../src/pd_menus.tcl:389 ../src/pd_menus.tcl:415 ../src/pd_menus.tcl:427
+#: ../src/pd_menus.tcl:454
+msgid "Print..."
+msgstr "Skriv ut..."
+
+#: ../src/pd_menus.tcl:93 ../src/pd_menus.tcl:94 ../src/pd_menus.tcl:139
+#: ../src/pd_menus.tcl:140
+msgid "Undo"
+msgstr "Ångra"
+
+#: ../src/pd_menus.tcl:95 ../src/pd_menus.tcl:96 ../src/pd_menus.tcl:141
+#: ../src/pd_menus.tcl:142
+msgid "Redo"
+msgstr "Gör om"
+
+#: ../src/pd_menus.tcl:98 ../src/pd_menus.tcl:99 ../src/pd_menus.tcl:144
+#: ../src/pd_menus.tcl:145
+msgid "Cut"
+msgstr "Klipp ut"
+
+#: ../src/pd_menus.tcl:104 ../src/pd_menus.tcl:105 ../src/pd_menus.tcl:150
+#: ../src/pd_menus.tcl:151
+msgid "Duplicate"
+msgstr "Duplicera"
+
+#: ../src/pd_menus.tcl:106 ../src/pd_menus.tcl:107 ../src/pd_menus.tcl:152
+#: ../src/pd_menus.tcl:153
+msgid "Select All"
+msgstr "Markera allt"
+
+#: ../src/pd_menus.tcl:110 ../src/pd_menus.tcl:111 ../src/pd_menus.tcl:115
+#: ../src/pd_menus.tcl:116 ../src/pd_menus.tcl:156 ../src/pd_menus.tcl:157
+#: ../src/pd_menus.tcl:161 ../src/pd_menus.tcl:162
+msgid "Text Editor"
+msgstr "Textredigerare"
+
+#: ../src/pd_menus.tcl:120 ../src/pd_menus.tcl:121 ../src/pd_menus.tcl:166
+#: ../src/pd_menus.tcl:167
+msgid "Tidy Up"
+msgstr "Städa upp"
+
+#: ../src/pd_menus.tcl:122 ../src/pd_menus.tcl:123 ../src/pd_menus.tcl:168
+#: ../src/pd_menus.tcl:169
+#, fuzzy
+msgid "Toggle Console"
+msgstr "Växla visning av konsoll"
+
+#: ../src/pd_menus.tcl:124 ../src/pd_menus.tcl:125 ../src/pd_menus.tcl:170
+#: ../src/pd_menus.tcl:171
+#, fuzzy
+msgid "Clear Console"
+msgstr "Rensa konsoll"
+
+#: ../src/pd_menus.tcl:128 ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:174
+#: ../src/pd_menus.tcl:175
+msgid "Edit Mode"
+msgstr "Redigeringsläge"
+
+#: ../src/pd_menus.tcl:145 ../src/pd_menus.tcl:190 ../src/pd_menus.tcl:191
+msgid "Object"
+msgstr "Objekt"
+
+#: ../src/pd_menus.tcl:149 ../src/pd_menus.tcl:194 ../src/pd_menus.tcl:195
+msgid "Number"
+msgstr "Number"
+
+#: ../src/pd_menus.tcl:151 ../src/pd_menus.tcl:196 ../src/pd_menus.tcl:197
+msgid "Symbol"
+msgstr "Symbol"
+
+#: ../src/pd_menus.tcl:153 ../src/pd_menus.tcl:198 ../src/pd_menus.tcl:199
+msgid "Comment"
+msgstr "Kommentar"
+
+#: ../src/pd_menus.tcl:156 ../src/pd_menus.tcl:201 ../src/pd_menus.tcl:202
+msgid "Bang"
+msgstr "Bang"
+
+#: ../src/pd_menus.tcl:158 ../src/pd_menus.tcl:203 ../src/pd_menus.tcl:204
+msgid "Toggle"
+msgstr "Toggle"
+
+#: ../src/pd_menus.tcl:160 ../src/pd_menus.tcl:205 ../src/pd_menus.tcl:206
+msgid "Number2"
+msgstr "Number2"
+
+#: ../src/pd_menus.tcl:162 ../src/pd_menus.tcl:207 ../src/pd_menus.tcl:208
+msgid "Vslider"
+msgstr "Vslider"
+
+#: ../src/pd_menus.tcl:164 ../src/pd_menus.tcl:209 ../src/pd_menus.tcl:210
+msgid "Hslider"
+msgstr "Hslider"
+
+#: ../src/pd_menus.tcl:166 ../src/pd_menus.tcl:211 ../src/pd_menus.tcl:212
+msgid "Vradio"
+msgstr "Vradio"
+
+#: ../src/pd_menus.tcl:168 ../src/pd_menus.tcl:213 ../src/pd_menus.tcl:214
+msgid "Hradio"
+msgstr "Hradio"
+
+#: ../src/pd_menus.tcl:170 ../src/pd_menus.tcl:215 ../src/pd_menus.tcl:216
+msgid "VU Meter"
+msgstr "VU-mätare"
+
+#: ../src/pd_menus.tcl:172 ../src/pd_menus.tcl:217 ../src/pd_menus.tcl:218
+msgid "Canvas"
+msgstr "Canvas"
+
+#: ../src/pd_menus.tcl:175 ../src/pd_menus.tcl:220 ../src/pd_menus.tcl:221
+msgid "Graph"
+msgstr "Graf"
+
+#: ../src/pd_menus.tcl:176 ../src/pd_menus.tcl:221 ../src/pd_menus.tcl:222
+msgid "Array"
+msgstr "Array"
+
+#: ../src/pd_menus.tcl:181 ../src/pd_menus.tcl:226 ../src/pd_menus.tcl:227
+msgid "Find..."
+msgstr "Sök..."
+
+#: ../src/pd_menus.tcl:183 ../src/pd_menus.tcl:228 ../src/pd_menus.tcl:229
+msgid "Find Again"
+msgstr "Sök igen"
+
+#: ../src/pd_menus.tcl:185 ../src/pd_menus.tcl:230 ../src/pd_menus.tcl:231
+msgid "Find Last Error"
+msgstr "Sök senaste fel"
+
+#: ../src/pd_menus.tcl:191 ../src/pd_menus.tcl:236 ../src/pd_menus.tcl:237
+msgid "DSP On"
+msgstr "DSP på"
+
+#: ../src/pd_menus.tcl:193 ../src/pd_menus.tcl:238 ../src/pd_menus.tcl:239
+msgid "DSP Off"
+msgstr "DSP av"
+
+#: ../src/pd_menus.tcl:196 ../src/pd_menus.tcl:242 ../src/pd_menus.tcl:269
+msgid "Test Audio and MIDI..."
+msgstr "Testa ljud och MIDI..."
+
+#: ../src/pd_menus.tcl:198 ../src/pd_menus.tcl:244 ../src/pd_menus.tcl:271
+#, fuzzy
+msgid "Load Meter"
+msgstr "Belastningsmätare"
+
+#: ../src/pd_menus.tcl:205 ../src/pd_menus.tcl:251 ../src/pd_menus.tcl:278
+msgid "Minimize"
+msgstr "Minimera"
+
+#: ../src/pd_menus.tcl:207 ../src/pd_menus.tcl:253 ../src/pd_menus.tcl:280
+msgid "Zoom"
+msgstr "Zooma"
+
+#: ../src/pd_menus.tcl:210 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:283
+msgid "Parent Window"
+msgstr "Föräldrafönster"
+
+#: ../src/pd_menus.tcl:216 ../src/pd_menus.tcl:262 ../src/pd_menus.tcl:289
+#, fuzzy
+msgid "Bring All to Front"
+msgstr "Lägg alla överst"
+
+#: ../src/pd_menus.tcl:224 ../src/pd_menus.tcl:241 ../src/pd_menus.tcl:253
+#: ../src/pd_menus.tcl:270 ../src/pd_menus.tcl:297 ../src/pd_menus.tcl:335
+#: ../src/pd_menus.tcl:362
+msgid "About Pd"
+msgstr "Om Pd"
+
+#: ../src/pd_menus.tcl:227 ../src/pd_menus.tcl:273 ../src/pd_menus.tcl:300
+msgid "HTML Manual..."
+msgstr "HTML-manual..."
+
+#: ../src/pd_menus.tcl:229 ../src/pd_menus.tcl:275 ../src/pd_menus.tcl:302
+msgid "Browser..."
+msgstr "Bläddra..."
+
+#: ../src/pd_menus.tcl:248 ../src/pd_menus.tcl:260 ../src/pd_menus.tcl:342
+#: ../src/pd_menus.tcl:369
+msgid "Preferences..."
+msgstr "Inställningar..."
+
+#: ../src/pd_menus.tcl:257 ../src/pd_menus.tcl:270 ../src/pd_menus.tcl:352
+#: ../src/pd_menus.tcl:379
+msgid "Open Recent"
+msgstr "Öppna senaste"
+
+#: ../src/pd_menus.tcl:263
+msgid "Audio Settings..."
+msgstr ""
+
+#: ../src/pd_menus.tcl:265
+msgid "MIDI Settings..."
+msgstr ""
+
+#: ../src/pd_menus.tcl:296 ../src/pd_menus.tcl:309 ../src/pd_menus.tcl:333
+#: ../src/pd_menus.tcl:346 ../src/pd_menus.tcl:393 ../src/pd_menus.tcl:420
+#: ../src/pd_menus.tcl:432 ../src/pd_menus.tcl:459
+msgid "Quit"
+msgstr "Avsluta"
+
+#: ../src/pd_menus.tcl:304 ../src/pd_menus.tcl:331
+#, fuzzy
+msgid "Clear Menu"
+msgstr "Rensa konsoll"
+
+#: ../src/pdtk_canvas.tcl:44 ../src/pdtk_canvas.tcl:106
+#: ../src/pdtk_canvas.tcl:109 ../src/pdtk_canvas.tcl:123
+#: ../src/pdtk_canvas.tcl:125 ../src/pdtk_canvas.tcl:126
+#: ../src/pdtk_canvas.tcl:128
+msgid "Properties"
+msgstr "Egenskaper"
+
+#: ../src/pdwindow.tcl:43
+#, fuzzy
+msgid "DSP"
+msgstr "DSP på"
+
+#: ../startup/object_db.tcl:113
+msgid "Signal"
+msgstr ""
+
+#: ../startup/object_db.tcl:114
+msgid "Generators"
+msgstr ""
+
+#: ../startup/object_db.tcl:115
+#, fuzzy
+msgid "Filters"
+msgstr "Fil"
+
+#: ../startup/object_db.tcl:116 ../startup/object_db.tcl:124
+msgid "Math"
+msgstr ""
+
+#: ../startup/object_db.tcl:117 ../startup/object_db.tcl:125
+msgid "I/O"
+msgstr ""
+
+#: ../startup/object_db.tcl:118 ../startup/object_db.tcl:126
+msgid "Sampling"
+msgstr ""
+
+#: ../startup/object_db.tcl:119 ../startup/object_db.tcl:128
+msgid "Routing"
+msgstr ""
+
+#: ../startup/object_db.tcl:120 ../startup/object_db.tcl:129
+msgid "Others"
+msgstr ""
+
+#: ../startup/object_db.tcl:127
+msgid "GUI"
+msgstr ""
+
+#~ msgid "Patch Font"
+#~ msgstr "Patchtypsnitt"

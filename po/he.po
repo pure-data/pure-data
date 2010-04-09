@@ -1,0 +1,939 @@
+# Hebrew translation of Pure Data.
+# This file is put in the public domain
+# you can be the first! <pd-list@iem.at>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Pure Data 0.43\n"
+"Report-Msgid-Bugs-To: pd-dev@iem.at\n"
+"POT-Creation-Date: 2009-08-27 10:01-0400\n"
+"PO-Revision-Date: 2001-10-03 15:48+02:00\n"
+"Last-Translator: xchat <pd-list@iem.at>\n"
+"Language-Team: Hebrew <pd-list@iem.at>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Undo duplicate"
+msgstr ""
+
+msgid "Undo paste"
+msgstr ""
+
+msgid "Undo motion"
+msgstr ""
+
+msgid "Undo cut"
+msgstr ""
+
+msgid "Undo disconnect"
+msgstr ""
+
+msgid "Undo connect"
+msgstr ""
+
+msgid "Undo clear"
+msgstr ""
+
+msgid "Undo typing"
+msgstr ""
+
+msgid "Discard changes to '%s'?"
+msgstr ""
+
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr ""
+
+#: ../src/dialog_array.tcl:115 ../src/dialog_array.tcl:117
+#: ../src/pd_menus.tcl:100 ../src/pd_menus.tcl:101 ../src/pd_menus.tcl:146
+#: ../src/pd_menus.tcl:147
+msgid "Copy"
+msgstr ""
+
+#: ../src/dialog_array.tcl:118 ../src/dialog_array.tcl:120
+#: ../src/pd_menus.tcl:102 ../src/pd_menus.tcl:103 ../src/pd_menus.tcl:148
+#: ../src/pd_menus.tcl:149
+#, fuzzy
+msgid "Paste"
+msgstr "פאנל"
+
+#: ../src/dialog_array.tcl:264 ../src/dialog_array.tcl:266
+msgid "Array Properties"
+msgstr ""
+
+#: ../src/dialog_array.tcl:270 ../src/dialog_array.tcl:272
+#, fuzzy
+msgid "Name:"
+msgstr "כתובת איי פי של שרת הפרוקסי:"
+
+#: ../src/dialog_array.tcl:276 ../src/dialog_array.tcl:278
+#: ../src/dialog_canvas.tcl:178 ../src/dialog_canvas.tcl:193
+#: ../src/dialog_iemgui.tcl:619 ../src/dialog_iemgui.tcl:621
+msgid "Size:"
+msgstr ""
+
+#: ../src/dialog_array.tcl:280 ../src/dialog_array.tcl:282
+#, fuzzy
+msgid "Save contents"
+msgstr "הזדהות אוטומטית"
+
+#: ../src/dialog_array.tcl:284 ../src/dialog_array.tcl:286
+msgid "Draw as:"
+msgstr ""
+
+#: ../src/dialog_array.tcl:287 ../src/dialog_array.tcl:289
+#, fuzzy
+msgid "Points"
+msgstr "פלאגין..."
+
+#: ../src/dialog_array.tcl:289 ../src/dialog_array.tcl:291
+#, fuzzy
+msgid "Polygon"
+msgstr "טען"
+
+#: ../src/dialog_array.tcl:291 ../src/dialog_array.tcl:293
+msgid "Bezier curve"
+msgstr ""
+
+#: ../src/dialog_array.tcl:297 ../src/dialog_array.tcl:299
+msgid "Put array into:"
+msgstr ""
+
+#: ../src/dialog_array.tcl:300 ../src/dialog_array.tcl:302
+msgid "New graph"
+msgstr ""
+
+#: ../src/dialog_array.tcl:302 ../src/dialog_array.tcl:304
+msgid "Last graph"
+msgstr ""
+
+#: ../src/dialog_array.tcl:306 ../src/dialog_array.tcl:308
+msgid "Delete array"
+msgstr ""
+
+#: ../src/dialog_array.tcl:312 ../src/dialog_array.tcl:314
+#, fuzzy
+msgid "Open List View..."
+msgstr "חלון רשימת ערוצים.."
+
+#: ../src/dialog_array.tcl:319 ../src/dialog_array.tcl:321
+#: ../src/dialog_audio.tcl:136 ../src/dialog_canvas.tcl:205
+#: ../src/dialog_font.tcl:51 ../src/dialog_gatom.tcl:153
+#: ../src/dialog_gatom.tcl:161 ../src/dialog_iemgui.tcl:742
+#: ../src/dialog_iemgui.tcl:748 ../src/dialog_midi.tcl:91
+#: ../src/dialog_midi.tcl:226
+msgid "Cancel"
+msgstr "ביטול"
+
+#: ../src/dialog_array.tcl:321 ../src/dialog_array.tcl:323
+#: ../src/dialog_audio.tcl:138 ../src/dialog_canvas.tcl:207
+#: ../src/dialog_gatom.tcl:156 ../src/dialog_gatom.tcl:164
+#: ../src/dialog_iemgui.tcl:745 ../src/dialog_iemgui.tcl:751
+#: ../src/dialog_midi.tcl:93 ../src/dialog_midi.tcl:228
+msgid "Apply"
+msgstr "החל"
+
+#: ../src/dialog_array.tcl:323 ../src/dialog_array.tcl:325
+#: ../src/dialog_audio.tcl:140 ../src/dialog_canvas.tcl:209
+#: ../src/dialog_font.tcl:53 ../src/dialog_font.tcl:92
+#: ../src/dialog_font.tcl:100 ../src/dialog_font.tcl:101
+#: ../src/dialog_gatom.tcl:159 ../src/dialog_gatom.tcl:167
+#: ../src/dialog_iemgui.tcl:748 ../src/dialog_iemgui.tcl:754
+#: ../src/dialog_midi.tcl:95 ../src/dialog_midi.tcl:230
+msgid "OK"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:130
+msgid "Audio Settings"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:142
+msgid "Save All Settings"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:151
+msgid "Sample rate:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:153
+msgid "Delay (msec):"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:158
+msgid "Use callbacks"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:166 ../src/dialog_midi.tcl:105
+#: ../src/dialog_midi.tcl:241
+msgid "Input device 1:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:169 ../src/dialog_audio.tcl:183
+#: ../src/dialog_audio.tcl:198 ../src/dialog_audio.tcl:213
+#: ../src/dialog_audio.tcl:232 ../src/dialog_audio.tcl:250
+#: ../src/dialog_audio.tcl:265 ../src/dialog_audio.tcl:280
+#, fuzzy
+msgid "Channels:"
+msgstr "ביטול"
+
+#: ../src/dialog_audio.tcl:179 ../src/dialog_midi.tcl:115
+#: ../src/dialog_midi.tcl:251
+msgid "Input device 2:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:194 ../src/dialog_midi.tcl:127
+#: ../src/dialog_midi.tcl:263
+msgid "Input device 3:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:209 ../src/dialog_midi.tcl:139
+#: ../src/dialog_midi.tcl:275
+msgid "Input device 4:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:223 ../src/dialog_midi.tcl:150
+#: ../src/dialog_midi.tcl:286
+msgid "Output device 1:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:226
+msgid "(same as input device) ..............      "
+msgstr ""
+
+#: ../src/dialog_audio.tcl:246 ../src/dialog_midi.tcl:160
+#: ../src/dialog_midi.tcl:296
+msgid "Output device 2:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:261 ../src/dialog_midi.tcl:171
+#: ../src/dialog_midi.tcl:307
+msgid "Output device 3:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:276 ../src/dialog_midi.tcl:182
+#: ../src/dialog_midi.tcl:318
+msgid "Output device 4:"
+msgstr ""
+
+#: ../src/dialog_audio.tcl:291 ../src/dialog_midi.tcl:195
+msgid "Use multiple devices"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:142
+msgid "Canvas Properties"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:146
+msgid "Scale"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:150
+msgid "X units per pixel:"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:155
+msgid "Y units per pixel:"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:159
+msgid "Appearance on parent patch"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:161
+msgid "Graph-On-Parent"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:165
+msgid "Hide object name and arguments"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:170
+msgid "Range and size"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:174
+msgid "X range, from"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:176 ../src/dialog_canvas.tcl:191
+msgid "to"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:180 ../src/dialog_canvas.tcl:195
+msgid "Margin:"
+msgstr ""
+
+#: ../src/dialog_canvas.tcl:189
+msgid "Y range, from"
+msgstr ""
+
+#: ../src/dialog_find.tcl:63 ../src/dialog_find.tcl:66
+#: ../src/dialog_find.tcl:79 ../src/dialog_find.tcl:80
+#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:85
+#: ../src/dialog_find.tcl:87 ../src/dialog_find.tcl:101
+#: ../src/dialog_find.tcl:105 ../src/dialog_find.tcl:107
+#: ../src/pd_menus.tcl:45
+msgid "Find"
+msgstr ""
+
+#: ../src/dialog_find.tcl:70 ../src/dialog_find.tcl:73
+#: ../src/dialog_find.tcl:87 ../src/dialog_find.tcl:91
+#: ../src/dialog_find.tcl:93
+#, fuzzy
+msgid "Search in"
+msgstr "חפש בבאפר.."
+
+#: ../src/dialog_find.tcl:72 ../src/dialog_find.tcl:75
+#: ../src/dialog_find.tcl:89 ../src/dialog_find.tcl:93
+#: ../src/dialog_find.tcl:95
+#, fuzzy
+msgid "for:"
+msgstr "גופן:"
+
+#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:90
+#: ../src/dialog_find.tcl:104 ../src/dialog_find.tcl:108
+#: ../src/dialog_find.tcl:110 ../src/pd_menus.tcl:86 ../src/pd_menus.tcl:87
+#: ../src/pd_menus.tcl:132 ../src/pd_menus.tcl:133 ../src/pd_menus.tcl:259
+#: ../src/pd_menus.tcl:272 ../src/pd_menus.tcl:295 ../src/pd_menus.tcl:308
+#: ../src/pd_menus.tcl:332 ../src/pd_menus.tcl:345 ../src/pd_menus.tcl:354
+#: ../src/pd_menus.tcl:381 ../src/pd_menus.tcl:392 ../src/pd_menus.tcl:419
+#: ../src/pd_menus.tcl:431 ../src/pd_menus.tcl:458
+msgid "Close"
+msgstr "סגור"
+
+#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:97
+#: ../src/dialog_find.tcl:101 ../src/dialog_find.tcl:103
+msgid "Match whole word only"
+msgstr ""
+
+#: ../src/dialog_find.tcl:92 ../src/dialog_font.tcl:49
+#: ../src/dialog_font.tcl:50 ../src/pd-gui.tcl:280 ../src/pd-gui.tcl:283
+#: ../src/pd-gui.tcl:286 ../src/pd-gui.tcl:288 ../src/pd-gui.tcl:291
+#: ../src/pd_menus.tcl:212 ../src/pd_menus.tcl:258 ../src/pd_menus.tcl:285
+#: ../src/pdwindow.tcl:33
+#, fuzzy
+msgid "Pd window"
+msgstr "_חלונות"
+
+#: ../src/dialog_font.tcl:45
+msgid "Font Properties"
+msgstr ""
+
+#: ../src/dialog_font.tcl:46 ../src/dialog_font.tcl:54
+#: ../src/dialog_font.tcl:55
+#, fuzzy, tcl-format
+msgid "%s Font"
+msgstr "גופן:"
+
+#: ../src/dialog_font.tcl:61 ../src/dialog_font.tcl:96
+#: ../src/dialog_font.tcl:104 ../src/dialog_font.tcl:105
+#, fuzzy
+msgid "Font Size"
+msgstr "גודל חלון"
+
+#: ../src/dialog_font.tcl:89 ../src/dialog_font.tcl:108
+#: ../src/dialog_font.tcl:116 ../src/dialog_font.tcl:117
+msgid "Stretch"
+msgstr ""
+
+#: ../src/dialog_font.tcl:96 ../src/dialog_font.tcl:115
+#: ../src/dialog_font.tcl:123 ../src/dialog_font.tcl:124
+msgid "X and Y"
+msgstr ""
+
+#: ../src/dialog_font.tcl:98 ../src/dialog_font.tcl:117
+#: ../src/dialog_font.tcl:125 ../src/dialog_font.tcl:126
+msgid "X only"
+msgstr ""
+
+#: ../src/dialog_font.tcl:100 ../src/dialog_font.tcl:119
+#: ../src/dialog_font.tcl:127 ../src/dialog_font.tcl:128
+msgid "Y only"
+msgstr ""
+
+#: ../src/dialog_gatom.tcl:93
+msgid "Atom Box Properties"
+msgstr ""
+
+#: ../src/dialog_gatom.tcl:99
+msgid "Width:"
+msgstr "רוחב:"
+
+#: ../src/dialog_gatom.tcl:103
+#, fuzzy
+msgid "Limits"
+msgstr "רשימת פייטון"
+
+#: ../src/dialog_gatom.tcl:107
+msgid "Lower:"
+msgstr ""
+
+#: ../src/dialog_gatom.tcl:112 ../src/dialog_gatom.tcl:113
+#, fuzzy
+msgid "Upper:"
+msgstr "תפריט משתמש"
+
+#: ../src/dialog_gatom.tcl:116 ../src/dialog_gatom.tcl:121
+#: ../src/dialog_iemgui.tcl:600 ../src/dialog_iemgui.tcl:652
+#: ../src/dialog_iemgui.tcl:657
+#, fuzzy
+msgid "Label"
+msgstr "פאנל"
+
+#: ../src/dialog_gatom.tcl:124 ../src/dialog_gatom.tcl:129
+#, fuzzy
+msgid "Left   "
+msgstr "שמאל"
+
+#: ../src/dialog_gatom.tcl:126 ../src/dialog_gatom.tcl:131
+msgid "Right"
+msgstr "ימין"
+
+#: ../src/dialog_gatom.tcl:128 ../src/dialog_gatom.tcl:133
+msgid "Top"
+msgstr "עליון"
+
+#: ../src/dialog_gatom.tcl:130 ../src/dialog_gatom.tcl:135
+msgid "Bottom"
+msgstr "תחתון"
+
+#: ../src/dialog_gatom.tcl:137 ../src/dialog_gatom.tcl:145
+#: ../src/dialog_iemgui.tcl:574
+#, fuzzy
+msgid "Messages"
+msgstr "הודעת יציאה:"
+
+#: ../src/dialog_gatom.tcl:141 ../src/dialog_gatom.tcl:149
+#: ../src/dialog_iemgui.tcl:578
+msgid "Send symbol:"
+msgstr ""
+
+#: ../src/dialog_gatom.tcl:147 ../src/dialog_gatom.tcl:155
+#: ../src/dialog_iemgui.tcl:585
+#, fuzzy
+msgid "Receive symbol:"
+msgstr "קבצים שהתקבלו"
+
+#: ../src/dialog_iemgui.tcl:197
+#, fuzzy
+msgid "Background color"
+msgstr "XPM ברקע:"
+
+#: ../src/dialog_iemgui.tcl:204
+msgid "Foreground color"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:211
+#, fuzzy
+msgid "Label color"
+msgstr "בחר גופן"
+
+#: ../src/dialog_iemgui.tcl:272
+#, fuzzy
+msgid "Init"
+msgstr "בלתי נראה"
+
+#: ../src/dialog_iemgui.tcl:275 ../src/dialog_iemgui.tcl:546
+msgid "No init"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:287 ../src/dialog_iemgui.tcl:558
+msgid "Jump on click"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:290 ../src/dialog_iemgui.tcl:561
+msgid "Steady on click"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:498
+#, tcl-format
+msgid "%s Properties"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:550 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:84
+#: ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:130 ../src/pd_menus.tcl:260
+#: ../src/pd_menus.tcl:273 ../src/pd_menus.tcl:288 ../src/pd_menus.tcl:301
+#: ../src/pd_menus.tcl:325 ../src/pd_menus.tcl:338 ../src/pd_menus.tcl:355
+#: ../src/pd_menus.tcl:382 ../src/pd_menus.tcl:383 ../src/pd_menus.tcl:410
+#: ../src/pd_menus.tcl:422 ../src/pd_menus.tcl:449
+msgid "Save"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:608
+msgid "X offset"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:611 ../src/dialog_iemgui.tcl:612
+msgid "Y offset"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:642 ../src/dialog_iemgui.tcl:645
+#, fuzzy
+msgid "Colors"
+msgstr "סגור"
+
+#: ../src/dialog_iemgui.tcl:648 ../src/dialog_iemgui.tcl:651
+#, fuzzy
+msgid "Background"
+msgstr "XPM ברקע:"
+
+#: ../src/dialog_iemgui.tcl:650 ../src/dialog_iemgui.tcl:654
+#, fuzzy
+msgid "Front"
+msgstr "גופן:"
+
+#: ../src/dialog_iemgui.tcl:662 ../src/dialog_iemgui.tcl:668
+msgid "Compose color"
+msgstr ""
+
+#: ../src/dialog_iemgui.tcl:682 ../src/dialog_iemgui.tcl:688
+msgid "Test label"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:85
+msgid "MIDI Settings"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:220
+msgid "ALSA MIDI Settings"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:331
+msgid "Use multiple ALSA devices"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:337
+msgid "In Ports:"
+msgstr ""
+
+#: ../src/dialog_midi.tcl:340
+msgid "Out Ports:"
+msgstr ""
+
+#: ../src/g_editor.c:1663
+msgid "Discard changes to this window??"
+msgstr ""
+
+#: ../src/g_editor.c:1668
+msgid "really quit?"
+msgstr ""
+
+#: ../src/g_editor.c:1699
+msgid "Close this window??"
+msgstr ""
+
+#: ../src/pd-gui.tcl:185 ../src/pd-gui.tcl:195 ../src/pd-gui.tcl:203
+#: ../src/pd-gui.tcl:206 ../src/pd-gui.tcl:215 ../src/pd-gui.tcl:226
+#, fuzzy
+msgid "Associated Files"
+msgstr "לאשר אוטומטית שליחות של דיסיסי"
+
+#: ../src/pd-gui.tcl:186 ../src/pd-gui.tcl:196 ../src/pd-gui.tcl:204
+#: ../src/pd-gui.tcl:207 ../src/pd-gui.tcl:216 ../src/pd-gui.tcl:227
+msgid "Pd Files"
+msgstr ""
+
+#: ../src/pd-gui.tcl:187 ../src/pd-gui.tcl:205 ../src/pd-gui.tcl:208
+#: ../src/pd-gui.tcl:228
+msgid "Max Patch Files"
+msgstr ""
+
+#: ../src/pd-gui.tcl:188 ../src/pd-gui.tcl:206 ../src/pd-gui.tcl:209
+#: ../src/pd-gui.tcl:229
+msgid "Max Text Files"
+msgstr ""
+
+#: ../src/pd-gui.tcl:197 ../src/pd-gui.tcl:217
+msgid "Max Patch Files (.pat)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:198 ../src/pd-gui.tcl:218
+msgid "Max Text Files (.mxt)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:270 ../src/pd-gui.tcl:290
+#, tcl-format
+msgid "WARNING: Font family '%s' not found, using default (%s)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:278 ../src/pd-gui.tcl:298
+#, tcl-format
+msgid "WARNING: Font weight '%s' not found, using default (%s)"
+msgstr ""
+
+#: ../src/pd-gui.tcl:303 ../src/pd-gui.tcl:323
+#, tcl-format
+msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
+msgstr ""
+
+#: ../src/pd-gui.tcl:478 ../src/pd-gui.tcl:483 ../src/pd-gui.tcl:501
+msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
+msgstr ""
+
+#: ../src/pd_menucommands.tcl:19
+#, fuzzy
+msgid "Untitled"
+msgstr "ללא סידור"
+
+#: ../src/pd_menucommands.tcl:78 ../src/pd_menucommands.tcl:79
+#: ../src/pd_menucommands.tcl:90
+#, fuzzy
+msgid "Send Message..."
+msgstr "הודעת יציאה:"
+
+#: ../src/pd_menucommands.tcl:82 ../src/pd_menucommands.tcl:83
+#: ../src/pd_menucommands.tcl:94 ../src/pd_menus.tcl:87 ../src/pd_menus.tcl:88
+#: ../src/pd_menus.tcl:133 ../src/pd_menus.tcl:134 ../src/pd_menus.tcl:147
+#: ../src/pd_menus.tcl:192 ../src/pd_menus.tcl:193 ../src/pd_menus.tcl:265
+#: ../src/pd_menus.tcl:278 ../src/pd_menus.tcl:292 ../src/pd_menus.tcl:305
+#: ../src/pd_menus.tcl:329 ../src/pd_menus.tcl:342 ../src/pd_menus.tcl:360
+#: ../src/pd_menus.tcl:387 ../src/pd_menus.tcl:414 ../src/pd_menus.tcl:426
+#: ../src/pd_menus.tcl:453 ../startup/object_db.tcl:123
+#, fuzzy
+msgid "Message"
+msgstr "הודעת יציאה:"
+
+#: ../src/pd_menucommands.tcl:108 ../src/pd_menucommands.tcl:111
+#: ../src/pd_menus.tcl:112 ../src/pd_menus.tcl:113 ../src/pd_menus.tcl:117
+#: ../src/pd_menus.tcl:118 ../src/pd_menus.tcl:158 ../src/pd_menus.tcl:159
+#: ../src/pd_menus.tcl:163 ../src/pd_menus.tcl:164
+#, fuzzy
+msgid "Font"
+msgstr "גופן:"
+
+#: ../src/pd_menucommands.tcl:123 ../src/pd_menucommands.tcl:126
+#: ../src/pd_menus.tcl:138 ../src/pd_menus.tcl:183 ../src/pd_menus.tcl:184
+#, fuzzy
+msgid "Preferences"
+msgstr "איקס-צ'אט: הגדרות"
+
+#: ../src/pd_menus.tcl:45
+msgid "Edit"
+msgstr ""
+
+#: ../src/pd_menus.tcl:45
+msgid "File"
+msgstr ""
+
+#: ../src/pd_menus.tcl:45 ../src/pdtk_canvas.tcl:48 ../src/pdtk_canvas.tcl:110
+#: ../src/pdtk_canvas.tcl:113
+msgid "Help"
+msgstr "עזרה"
+
+#: ../src/pd_menus.tcl:45
+msgid "Media"
+msgstr ""
+
+#: ../src/pd_menus.tcl:45
+msgid "Put"
+msgstr ""
+
+#: ../src/pd_menus.tcl:45
+#, fuzzy
+msgid "Window"
+msgstr "_חלונות"
+
+#: ../src/pd_menus.tcl:81 ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:127
+#: ../src/pd_menus.tcl:128 ../src/pd_menus.tcl:255 ../src/pd_menus.tcl:267
+#: ../src/pd_menus.tcl:285 ../src/pd_menus.tcl:298 ../src/pd_menus.tcl:322
+#: ../src/pd_menus.tcl:335 ../src/pd_menus.tcl:349 ../src/pd_menus.tcl:376
+#: ../src/pd_menus.tcl:380 ../src/pd_menus.tcl:407 ../src/pd_menus.tcl:419
+#: ../src/pd_menus.tcl:446
+msgid "New"
+msgstr ""
+
+#: ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:128
+#: ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:268
+#: ../src/pd_menus.tcl:286 ../src/pd_menus.tcl:299 ../src/pd_menus.tcl:323
+#: ../src/pd_menus.tcl:336 ../src/pd_menus.tcl:350 ../src/pd_menus.tcl:377
+#: ../src/pd_menus.tcl:381 ../src/pd_menus.tcl:408 ../src/pd_menus.tcl:420
+#: ../src/pd_menus.tcl:447 ../src/pdtk_canvas.tcl:46
+#: ../src/pdtk_canvas.tcl:108 ../src/pdtk_canvas.tcl:111
+#: ../src/pdtk_canvas.tcl:128 ../src/pdtk_canvas.tcl:130
+#: ../src/pdtk_canvas.tcl:131 ../src/pdtk_canvas.tcl:133
+msgid "Open"
+msgstr ""
+
+#: ../src/pd_menus.tcl:84 ../src/pd_menus.tcl:85 ../src/pd_menus.tcl:130
+#: ../src/pd_menus.tcl:131 ../src/pd_menus.tcl:261 ../src/pd_menus.tcl:274
+#: ../src/pd_menus.tcl:289 ../src/pd_menus.tcl:302 ../src/pd_menus.tcl:326
+#: ../src/pd_menus.tcl:339 ../src/pd_menus.tcl:356 ../src/pd_menus.tcl:383
+#: ../src/pd_menus.tcl:384 ../src/pd_menus.tcl:411 ../src/pd_menus.tcl:423
+#: ../src/pd_menus.tcl:450
+#, fuzzy
+msgid "Save As..."
+msgstr "עריכת אירועי טקסט.."
+
+#: ../src/pd_menus.tcl:88 ../src/pd_menus.tcl:89 ../src/pd_menus.tcl:134
+#: ../src/pd_menus.tcl:135 ../src/pd_menus.tcl:267 ../src/pd_menus.tcl:280
+#: ../src/pd_menus.tcl:293 ../src/pd_menus.tcl:306 ../src/pd_menus.tcl:330
+#: ../src/pd_menus.tcl:343 ../src/pd_menus.tcl:362 ../src/pd_menus.tcl:388
+#: ../src/pd_menus.tcl:389 ../src/pd_menus.tcl:415 ../src/pd_menus.tcl:427
+#: ../src/pd_menus.tcl:454
+msgid "Print..."
+msgstr ""
+
+#: ../src/pd_menus.tcl:93 ../src/pd_menus.tcl:94 ../src/pd_menus.tcl:139
+#: ../src/pd_menus.tcl:140
+msgid "Undo"
+msgstr ""
+
+#: ../src/pd_menus.tcl:95 ../src/pd_menus.tcl:96 ../src/pd_menus.tcl:141
+#: ../src/pd_menus.tcl:142
+#, fuzzy
+msgid "Redo"
+msgstr "אדום:"
+
+#: ../src/pd_menus.tcl:98 ../src/pd_menus.tcl:99 ../src/pd_menus.tcl:144
+#: ../src/pd_menus.tcl:145
+msgid "Cut"
+msgstr ""
+
+#: ../src/pd_menus.tcl:104 ../src/pd_menus.tcl:105 ../src/pd_menus.tcl:150
+#: ../src/pd_menus.tcl:151
+msgid "Duplicate"
+msgstr ""
+
+#: ../src/pd_menus.tcl:106 ../src/pd_menus.tcl:107 ../src/pd_menus.tcl:152
+#: ../src/pd_menus.tcl:153
+#, fuzzy
+msgid "Select All"
+msgstr "בחר גופן"
+
+#: ../src/pd_menus.tcl:110 ../src/pd_menus.tcl:111 ../src/pd_menus.tcl:115
+#: ../src/pd_menus.tcl:116 ../src/pd_menus.tcl:156 ../src/pd_menus.tcl:157
+#: ../src/pd_menus.tcl:161 ../src/pd_menus.tcl:162
+msgid "Text Editor"
+msgstr ""
+
+#: ../src/pd_menus.tcl:120 ../src/pd_menus.tcl:121 ../src/pd_menus.tcl:166
+#: ../src/pd_menus.tcl:167
+msgid "Tidy Up"
+msgstr ""
+
+#: ../src/pd_menus.tcl:122 ../src/pd_menus.tcl:123 ../src/pd_menus.tcl:168
+#: ../src/pd_menus.tcl:169
+msgid "Toggle Console"
+msgstr ""
+
+#: ../src/pd_menus.tcl:124 ../src/pd_menus.tcl:125 ../src/pd_menus.tcl:170
+#: ../src/pd_menus.tcl:171
+msgid "Clear Console"
+msgstr ""
+
+#: ../src/pd_menus.tcl:128 ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:174
+#: ../src/pd_menus.tcl:175
+#, fuzzy
+msgid "Edit Mode"
+msgstr "עריכת תפריט משתמש"
+
+#: ../src/pd_menus.tcl:145 ../src/pd_menus.tcl:190 ../src/pd_menus.tcl:191
+msgid "Object"
+msgstr ""
+
+#: ../src/pd_menus.tcl:149 ../src/pd_menus.tcl:194 ../src/pd_menus.tcl:195
+msgid "Number"
+msgstr ""
+
+#: ../src/pd_menus.tcl:151 ../src/pd_menus.tcl:196 ../src/pd_menus.tcl:197
+msgid "Symbol"
+msgstr ""
+
+#: ../src/pd_menus.tcl:153 ../src/pd_menus.tcl:198 ../src/pd_menus.tcl:199
+#, fuzzy
+msgid "Comment"
+msgstr "פקודה לניגון:"
+
+#: ../src/pd_menus.tcl:156 ../src/pd_menus.tcl:201 ../src/pd_menus.tcl:202
+#, fuzzy
+msgid "Bang"
+msgstr "כפתורים"
+
+#: ../src/pd_menus.tcl:158 ../src/pd_menus.tcl:203 ../src/pd_menus.tcl:204
+msgid "Toggle"
+msgstr ""
+
+#: ../src/pd_menus.tcl:160 ../src/pd_menus.tcl:205 ../src/pd_menus.tcl:206
+msgid "Number2"
+msgstr ""
+
+#: ../src/pd_menus.tcl:162 ../src/pd_menus.tcl:207 ../src/pd_menus.tcl:208
+msgid "Vslider"
+msgstr ""
+
+#: ../src/pd_menus.tcl:164 ../src/pd_menus.tcl:209 ../src/pd_menus.tcl:210
+#, fuzzy
+msgid "Hslider"
+msgstr "מוחבא"
+
+#: ../src/pd_menus.tcl:166 ../src/pd_menus.tcl:211 ../src/pd_menus.tcl:212
+#, fuzzy
+msgid "Vradio"
+msgstr "הסתר גירסה"
+
+#: ../src/pd_menus.tcl:168 ../src/pd_menus.tcl:213 ../src/pd_menus.tcl:214
+msgid "Hradio"
+msgstr ""
+
+#: ../src/pd_menus.tcl:170 ../src/pd_menus.tcl:215 ../src/pd_menus.tcl:216
+msgid "VU Meter"
+msgstr ""
+
+#: ../src/pd_menus.tcl:172 ../src/pd_menus.tcl:217 ../src/pd_menus.tcl:218
+#, fuzzy
+msgid "Canvas"
+msgstr "איקס-צ'אט"
+
+#: ../src/pd_menus.tcl:175 ../src/pd_menus.tcl:220 ../src/pd_menus.tcl:221
+msgid "Graph"
+msgstr ""
+
+#: ../src/pd_menus.tcl:176 ../src/pd_menus.tcl:221 ../src/pd_menus.tcl:222
+#, fuzzy
+msgid "Array"
+msgstr "אוואי"
+
+#: ../src/pd_menus.tcl:181 ../src/pd_menus.tcl:226 ../src/pd_menus.tcl:227
+#, fuzzy
+msgid "Find..."
+msgstr "חלון שליחות דיסיסי.."
+
+#: ../src/pd_menus.tcl:183 ../src/pd_menus.tcl:228 ../src/pd_menus.tcl:229
+msgid "Find Again"
+msgstr ""
+
+#: ../src/pd_menus.tcl:185 ../src/pd_menus.tcl:230 ../src/pd_menus.tcl:231
+msgid "Find Last Error"
+msgstr ""
+
+#: ../src/pd_menus.tcl:191 ../src/pd_menus.tcl:236 ../src/pd_menus.tcl:237
+msgid "DSP On"
+msgstr ""
+
+#: ../src/pd_menus.tcl:193 ../src/pd_menus.tcl:238 ../src/pd_menus.tcl:239
+msgid "DSP Off"
+msgstr ""
+
+#: ../src/pd_menus.tcl:196 ../src/pd_menus.tcl:242 ../src/pd_menus.tcl:269
+msgid "Test Audio and MIDI..."
+msgstr ""
+
+#: ../src/pd_menus.tcl:198 ../src/pd_menus.tcl:244 ../src/pd_menus.tcl:271
+#, fuzzy
+msgid "Load Meter"
+msgstr "טען"
+
+#: ../src/pd_menus.tcl:205 ../src/pd_menus.tcl:251 ../src/pd_menus.tcl:278
+msgid "Minimize"
+msgstr ""
+
+#: ../src/pd_menus.tcl:207 ../src/pd_menus.tcl:253 ../src/pd_menus.tcl:280
+#, fuzzy
+msgid "Zoom"
+msgstr "תחתון"
+
+#: ../src/pd_menus.tcl:210 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:283
+#, fuzzy
+msgid "Parent Window"
+msgstr "חלון ראשי"
+
+#: ../src/pd_menus.tcl:216 ../src/pd_menus.tcl:262 ../src/pd_menus.tcl:289
+msgid "Bring All to Front"
+msgstr ""
+
+#: ../src/pd_menus.tcl:224 ../src/pd_menus.tcl:241 ../src/pd_menus.tcl:253
+#: ../src/pd_menus.tcl:270 ../src/pd_menus.tcl:297 ../src/pd_menus.tcl:335
+#: ../src/pd_menus.tcl:362
+#, fuzzy
+msgid "About Pd"
+msgstr "אודות איקס-צ'אט"
+
+#: ../src/pd_menus.tcl:227 ../src/pd_menus.tcl:273 ../src/pd_menus.tcl:300
+msgid "HTML Manual..."
+msgstr ""
+
+#: ../src/pd_menus.tcl:229 ../src/pd_menus.tcl:275 ../src/pd_menus.tcl:302
+#, fuzzy
+msgid "Browser..."
+msgstr "דפדף..."
+
+#: ../src/pd_menus.tcl:248 ../src/pd_menus.tcl:260 ../src/pd_menus.tcl:342
+#: ../src/pd_menus.tcl:369
+#, fuzzy
+msgid "Preferences..."
+msgstr "איקס-צ'אט: הגדרות"
+
+#: ../src/pd_menus.tcl:257 ../src/pd_menus.tcl:270 ../src/pd_menus.tcl:352
+#: ../src/pd_menus.tcl:379
+msgid "Open Recent"
+msgstr ""
+
+#: ../src/pd_menus.tcl:263
+msgid "Audio Settings..."
+msgstr ""
+
+#: ../src/pd_menus.tcl:265
+msgid "MIDI Settings..."
+msgstr ""
+
+#: ../src/pd_menus.tcl:296 ../src/pd_menus.tcl:309 ../src/pd_menus.tcl:333
+#: ../src/pd_menus.tcl:346 ../src/pd_menus.tcl:393 ../src/pd_menus.tcl:420
+#: ../src/pd_menus.tcl:432 ../src/pd_menus.tcl:459
+msgid "Quit"
+msgstr "יציאה"
+
+#: ../src/pd_menus.tcl:304 ../src/pd_menus.tcl:331
+#, fuzzy
+msgid "Clear Menu"
+msgstr "תפריט משתמש"
+
+#: ../src/pdtk_canvas.tcl:44 ../src/pdtk_canvas.tcl:106
+#: ../src/pdtk_canvas.tcl:109 ../src/pdtk_canvas.tcl:123
+#: ../src/pdtk_canvas.tcl:125 ../src/pdtk_canvas.tcl:126
+#: ../src/pdtk_canvas.tcl:128
+msgid "Properties"
+msgstr ""
+
+#: ../src/pdwindow.tcl:43
+msgid "DSP"
+msgstr ""
+
+#: ../startup/object_db.tcl:113
+#, fuzzy
+msgid "Signal"
+msgstr "כללי"
+
+#: ../startup/object_db.tcl:114
+#, fuzzy
+msgid "Generators"
+msgstr "כללי"
+
+#: ../startup/object_db.tcl:115
+#, fuzzy
+msgid "Filters"
+msgstr "פאלט.."
+
+#: ../startup/object_db.tcl:116 ../startup/object_db.tcl:124
+msgid "Math"
+msgstr ""
+
+#: ../startup/object_db.tcl:117 ../startup/object_db.tcl:125
+msgid "I/O"
+msgstr ""
+
+#: ../startup/object_db.tcl:118 ../startup/object_db.tcl:126
+msgid "Sampling"
+msgstr ""
+
+#: ../startup/object_db.tcl:119 ../startup/object_db.tcl:128
+msgid "Routing"
+msgstr ""
+
+#: ../startup/object_db.tcl:120 ../startup/object_db.tcl:129
+#, fuzzy
+msgid "Others"
+msgstr "אופציות אחרות של פריסה"
+
+#: ../startup/object_db.tcl:127
+msgid "GUI"
+msgstr ""

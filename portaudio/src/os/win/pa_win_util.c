@@ -1,10 +1,10 @@
 /*
- * $Id: pa_win_util.c 1197 2007-05-04 13:07:10Z gordon_gidluck $
+ * $Id: pa_win_util.c 1410 2009-04-07 10:08:48Z rossb $
  * Portable Audio I/O Library
  * Win32 platform-specific support functions
  *
  * Based on the Open Source API proposed by Ross Bencina
- * Copyright (c) 1999-2000 Ross Bencina
+ * Copyright (c) 1999-2008 Ross Bencina
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files
@@ -40,7 +40,7 @@
 /** @file
  @ingroup win_src
 
- Win32 platform-specific support functions.
+ @brief Win32 implementation of platform-specific PaUtil support functions.
 
     @todo Implement workaround for QueryPerformanceCounter() skipping forward
     bug. (see msdn kb Q274323).
@@ -50,6 +50,10 @@
 #include <mmsystem.h> /* for timeGetTime() */
 
 #include "pa_util.h"
+
+#if (defined(WIN32) && (defined(_MSC_VER) && (_MSC_VER >= 1200))) /* MSC version 6 and above */
+#pragma comment( lib, "winmm.lib" )
+#endif
 
 
 /*

@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/-/./" \
+  http://crca.ucsd.edu/~msp/Software/pd-(.*).src.tar.gz

@@ -1,0 +1,13 @@
+--- a/src/s_stuff.h
++++ b/src/s_stuff.h
+@@ -200,6 +200,10 @@ void sys_setvirtualalarm( void);
+ #define API_DEFAULT API_SGI
+ #define API_DEFSTRING "SGI Digital Media"
+ #endif
++#ifdef __GNU__
++#define API_DEFAULT API_JACK
++#define API_DEFSTRING "Jack audio connection kit"
++#endif
+ #define DEFAULTAUDIODEV 0
+ 
+ #define MAXAUDIOINDEV 4

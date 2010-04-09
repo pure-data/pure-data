@@ -1,0 +1,25 @@
+id ICON "pd.ico"
+1 VERSIONINFO
+FILEVERSION     0,43,0,0
+PRODUCTVERSION  0,43,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName", "puredata.info"
+      VALUE "FileDescription", "Pure Data Application"
+      VALUE "FileVersion", "0.43"
+      VALUE "InternalName", "pd.exe"
+      VALUE "LegalCopyright", "Miller Puckette, et al."
+      VALUE "OriginalFilename", "pd.exe"
+      VALUE "ProductName", "Pure Data"
+      VALUE "ProductVersion", "0.43"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

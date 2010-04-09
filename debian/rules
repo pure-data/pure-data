@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+ARCHITECTURE := $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+archconfflags := --prefix=/usr
+
+ifeq ($(ARCHITECTURE), hurd-i386)
+  archconfflags := $(archconfflags) --enable-jack --disable-alsa --disable-oss
+else
+ifeq ($(ARCHITECTURE), kfreebsd-amd64)
+  archconfflags := $(archconfflags) --enable-jack --disable-alsa
+else
+ifeq ($(ARCHITECTURE), kfreebsd-i386)
+  archconfflags := $(archconfflags) --enable-jack --disable-alsa
+else
+  archconfflags := $(archconfflags) --enable-jack --enable-alsa
+endif
+endif
+endif
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+%:
+	dh --with quilt $@
+
+override_dh_compress:
+	dh_compress -X.pd -X.wav -X.aiff -X.txt
