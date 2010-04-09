@@ -53,7 +53,7 @@
 
 /**
  @file
- @ingroup hostaip_src
+ @ingroup hostapi_src
 
  This file contains the implementation
  required for blocking I/O. It is separated from pa_mac_core.c simply to ease
@@ -85,6 +85,22 @@ static size_t computeSampleSizeFromFormat( PaSampleFormat format )
    default: return 0;
    }
 }
+/*
+ * Same as computeSampleSizeFromFormat, except that if
+ * the size is not a power of two, it returns the next power of two up
+ */
+static size_t computeSampleSizeFromFormatPow2( PaSampleFormat format )
+{
+   switch( format ) {
+   case paFloat32: return 4;
+   case paInt32: return 4;
+   case paInt24: return 4;
+   case paInt16: return 2;
+   case paInt8: case paUInt8: return 1;
+   default: return 0;
+   }
+}
+
 
 
 /*
@@ -105,6 +121,7 @@ PaError initializeBlioRingBuffers(
 {
    void *data;
    int result;
+   OSStatus err;
 
    /* zeroify things */
    bzero( blio, sizeof( PaMacBlio ) );
@@ -114,10 +131,14 @@ PaError initializeBlioRingBuffers(
    blio->outputRingBuffer.buffer = NULL;
 
    /* initialize simple data */
+   blio->ringBufferFrames = ringBufferSize;
    blio->inputSampleFormat = inputSampleFormat;
-   blio->inputSampleSize = computeSampleSizeFromFormat(inputSampleFormat);
+   blio->inputSampleSizeActual = computeSampleSizeFromFormat(inputSampleFormat);
+   blio->inputSampleSizePow2 = computeSampleSizeFromFormatPow2(inputSampleFormat);
    blio->outputSampleFormat = outputSampleFormat;
-   blio->outputSampleSize = computeSampleSizeFromFormat(outputSampleFormat);
+   blio->outputSampleSizeActual = computeSampleSizeFromFormat(outputSampleFormat);
+   blio->outputSampleSizePow2 = computeSampleSizeFromFormatPow2(outputSampleFormat);
+
    blio->framesPerBuffer = framesPerBuffer;
    blio->inChan = inChan;
    blio->outChan = outChan;
@@ -142,30 +163,32 @@ PaError initializeBlioRingBuffers(
    result = UNIX_ERR( pthread_cond_init( &(blio->outputCond), NULL ) );
 #endif
    if( inChan ) {
-      data = calloc( ringBufferSize, blio->inputSampleSize );
+      data = calloc( ringBufferSize, blio->inputSampleSizePow2*inChan );
       if( !data )
       {
          result = paInsufficientMemory;
          goto error;
       }
 
-      assert( 0 == PaUtil_InitializeRingBuffer(
+      err = PaUtil_InitializeRingBuffer(
             &blio->inputRingBuffer,
-            ringBufferSize*blio->inputSampleSize,
-            data ) );
+            1, ringBufferSize*blio->inputSampleSizePow2*inChan,
+            data );
+      assert( !err );
    }
    if( outChan ) {
-      data = calloc( ringBufferSize, blio->outputSampleSize );
+      data = calloc( ringBufferSize, blio->outputSampleSizePow2*outChan );
       if( !data )
       {
          result = paInsufficientMemory;
          goto error;
       }
 
-      assert( 0 == PaUtil_InitializeRingBuffer(
+      err = PaUtil_InitializeRingBuffer(
             &blio->outputRingBuffer,
-            ringBufferSize*blio->outputSampleSize,
-            data ) );
+            1, ringBufferSize*blio->outputSampleSizePow2*outChan,
+            data );
+      assert( !err );
    }
 
    result = resetBlioRingBuffers( blio );
@@ -247,7 +270,8 @@ PaError resetBlioRingBuffers( PaMacBlio *blio )
       bzero( blio->outputRingBuffer.buffer,
              blio->outputRingBuffer.bufferSize );
       /* Advance buffer */
-      PaUtil_AdvanceRingBufferWriteIndex( &blio->outputRingBuffer, blio->outputRingBuffer.bufferSize );
+      PaUtil_AdvanceRingBufferWriteIndex( &blio->outputRingBuffer, blio->ringBufferFrames*blio->outputSampleSizeActual*blio->outChan );
+      //PaUtil_AdvanceRingBufferWriteIndex( &blio->outputRingBuffer, blio->outputRingBuffer.bufferSize );
 
       /* Update isOutputFull. */
 #ifdef PA_MAC__BLIO_MUTEX
@@ -323,6 +347,8 @@ int BlioCallback( const void *input, void *output, unsigned long frameCount,
    long avail;
    long toRead;
    long toWrite;
+   long read;
+   long written;
 
    /* set flags returned by OS: */
    OSAtomicOr32( statusFlags, &blio->statusFlags ) ;
@@ -332,14 +358,15 @@ int BlioCallback( const void *input, void *output, unsigned long frameCount,
       avail = PaUtil_GetRingBufferWriteAvailable( &blio->inputRingBuffer );
 
       /* check for underflow */
-      if( avail < frameCount * blio->inputSampleSize * blio->inChan )
+      if( avail < frameCount * blio->inputSampleSizeActual * blio->inChan )
          OSAtomicOr32( paInputOverflow, &blio->statusFlags );
 
-      toRead = MIN( avail, frameCount * blio->inputSampleSize * blio->inChan );
+      toRead = MIN( avail, frameCount * blio->inputSampleSizeActual * blio->inChan );
 
       /* copy the data */
       /*printf( "reading %d\n", toRead );*/
-      assert( toRead == PaUtil_WriteRingBuffer( &blio->inputRingBuffer, input, toRead ) );
+      read = PaUtil_WriteRingBuffer( &blio->inputRingBuffer, input, toRead );
+      assert( toRead == read );
 #ifdef PA_MAC__BLIO_MUTEX
       /* Priority inversion. See notes below. */
       blioSetIsInputEmpty( blio, false );
@@ -352,17 +379,18 @@ int BlioCallback( const void *input, void *output, unsigned long frameCount,
       avail = PaUtil_GetRingBufferReadAvailable( &blio->outputRingBuffer );
 
       /* check for underflow */
-      if( avail < frameCount * blio->outputSampleSize * blio->outChan )
+      if( avail < frameCount * blio->outputSampleSizeActual * blio->outChan )
          OSAtomicOr32( paOutputUnderflow, &blio->statusFlags );
 
-      toWrite = MIN( avail, frameCount * blio->outputSampleSize * blio->outChan );
+      toWrite = MIN( avail, frameCount * blio->outputSampleSizeActual * blio->outChan );
 
-      if( toWrite != frameCount * blio->outputSampleSize * blio->outChan )
+      if( toWrite != frameCount * blio->outputSampleSizeActual * blio->outChan )
          bzero( ((char *)output)+toWrite,
-                frameCount * blio->outputSampleSize * blio->outChan - toWrite );
+                frameCount * blio->outputSampleSizeActual * blio->outChan - toWrite );
       /* copy the data */
       /*printf( "writing %d\n", toWrite );*/
-      assert( toWrite == PaUtil_ReadRingBuffer( &blio->outputRingBuffer, output, toWrite ) );
+      written = PaUtil_ReadRingBuffer( &blio->outputRingBuffer, output, toWrite );
+      assert( toWrite == written );
 #ifdef PA_MAC__BLIO_MUTEX
       /* We have a priority inversion here. However, we will only have to
          wait if this was true and is now false, which means we've got
@@ -413,11 +441,11 @@ PaError ReadStream( PaStream* stream,
 #endif
           }
        } while( avail == 0 );
-       toRead = MIN( avail, frames * blio->inputSampleSize * blio->inChan );
-       toRead -= toRead % blio->inputSampleSize * blio->inChan ;
+       toRead = MIN( avail, frames * blio->inputSampleSizeActual * blio->inChan );
+       toRead -= toRead % blio->inputSampleSizeActual * blio->inChan ;
        PaUtil_ReadRingBuffer( &blio->inputRingBuffer, (void *)cbuf, toRead );
        cbuf += toRead;
-       frames -= toRead / ( blio->inputSampleSize * blio->inChan );
+       frames -= toRead / ( blio->inputSampleSizeActual * blio->inChan );
 
        if( toRead == avail ) {
 #ifdef PA_MAC_BLIO_MUTEX
@@ -443,7 +471,7 @@ PaError ReadStream( PaStream* stream,
 
     /* report underflow only once: */
     if( ret ) {
-       OSAtomicAnd32( ~paInputOverflow, &blio->statusFlags );
+       OSAtomicAnd32( (uint32_t)(~paInputOverflow), &blio->statusFlags );
        ret = paInputOverflowed;
     }
 
@@ -491,11 +519,11 @@ PaError WriteStream( PaStream* stream,
           }
        } while( avail == 0 );
 
-       toWrite = MIN( avail, frames * blio->outputSampleSize * blio->outChan );
-       toWrite -= toWrite % blio->outputSampleSize * blio->outChan ;
+       toWrite = MIN( avail, frames * blio->outputSampleSizeActual * blio->outChan );
+       toWrite -= toWrite % blio->outputSampleSizeActual * blio->outChan ;
        PaUtil_WriteRingBuffer( &blio->outputRingBuffer, (void *)cbuf, toWrite );
        cbuf += toWrite;
-       frames -= toWrite / ( blio->outputSampleSize * blio->outChan );
+       frames -= toWrite / ( blio->outputSampleSizeActual * blio->outChan );
 
 #ifdef PA_MAC_BLIO_MUTEX
        if( toWrite == avail ) {
@@ -520,7 +548,7 @@ PaError WriteStream( PaStream* stream,
 
     /* report underflow only once: */
     if( ret ) {
-      OSAtomicAnd32( ~paOutputUnderflow, &blio->statusFlags );
+      OSAtomicAnd32( (uint32_t)(~paOutputUnderflow), &blio->statusFlags );
       ret = paOutputUnderflowed;
     }
 
@@ -549,7 +577,7 @@ signed long GetStreamReadAvailable( PaStream* stream )
     VVDBUG(("GetStreamReadAvailable()\n"));
 
     return PaUtil_GetRingBufferReadAvailable( &blio->inputRingBuffer )
-                         / ( blio->outputSampleSize * blio->outChan );
+                         / ( blio->inputSampleSizeActual * blio->inChan );
 }
 
 
@@ -559,6 +587,6 @@ signed long GetStreamWriteAvailable( PaStream* stream )
     VVDBUG(("GetStreamWriteAvailable()\n"));
 
     return PaUtil_GetRingBufferWriteAvailable( &blio->outputRingBuffer )
-                         / ( blio->outputSampleSize * blio->outChan );
+                         / ( blio->outputSampleSizeActual * blio->outChan );
 }
 

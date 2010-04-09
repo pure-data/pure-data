@@ -61,9 +61,10 @@
 #ifndef PA_MAC_CORE_INTERNAL_H__
 #define PA_MAC_CORE_INTERNAL_H__
 
+#include <CoreAudio/CoreAudio.h>
+#include <CoreServices/CoreServices.h>
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
-
 
 #include "portaudio.h"
 #include "pa_util.h"
@@ -139,6 +140,7 @@ typedef struct PaMacCoreStream
     /* We need to preallocate an inputBuffer for reading data. */
     AudioBufferList inputAudioBufferList;
     AudioTimeStamp startTime;
+    /* FIXME: instead of volatile, these should be properly memory barriered */
     volatile PaStreamCallbackFlags xrunFlags;
     volatile bool isTimeSet;
     volatile enum {
@@ -146,7 +148,8 @@ typedef struct PaMacCoreStream
                                 and the user has called StopStream(). */
        CALLBACK_STOPPED = 1, /* callback has requested stop,
                                 but user has not yet called StopStream(). */
-       STOPPING         = 2, /* The stream is in the process of closing.
+       STOPPING         = 2, /* The stream is in the process of closing
+                                because the user has called StopStream.
                                 This state is just used internally;
                                 externally it is indistinguishable from
                                 ACTIVE.*/

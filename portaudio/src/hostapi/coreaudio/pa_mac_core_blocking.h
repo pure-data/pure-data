@@ -53,7 +53,7 @@
 
 /**
  @file
- @ingroup hostaip_src
+ @ingroup hostapi_src
 */
 
 #ifndef PA_MAC_CORE_BLOCKING_H_
@@ -79,10 +79,13 @@
 typedef struct {
     PaUtilRingBuffer inputRingBuffer;
     PaUtilRingBuffer outputRingBuffer;
+    size_t ringBufferFrames;
     PaSampleFormat inputSampleFormat;
-    size_t inputSampleSize;
+    size_t inputSampleSizeActual;
+    size_t inputSampleSizePow2;
     PaSampleFormat outputSampleFormat;
-    size_t outputSampleSize;
+    size_t outputSampleSizeActual;
+    size_t outputSampleSizePow2;
 
     size_t framesPerBuffer;
 
