@@ -340,6 +340,7 @@ proc menu_new {} {
 
 proc menu_open {parent} {
     global pd_opendir
+    if {$parent == ""} {set parent "."}
     set filename [tk_getOpenFile -defaultextension .pd -parent $parent\
         -filetypes { {{pd files} {.pd}} {{max files} {.pat}}} \
         -initialdir $pd_opendir]
