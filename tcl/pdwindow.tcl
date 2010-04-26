@@ -79,7 +79,6 @@ proc ::pdwindow::post {level message} {
 #    2 warning (bug)
 #    3 info (post)
 #    4... debug
-    puts "level $level     max $::verbose"
     if { $level <= $::verbose } {
         do_post "$message" verbosetext$level
     }
