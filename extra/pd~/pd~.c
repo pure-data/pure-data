@@ -60,6 +60,9 @@ static char pd_tilde_dllextent[] = ".l_i386",
 static char pd_tilde_dllextent[] = ".d_fat",
     pd_tilde_dllextent2[] = ".pd_darwin";
 #endif
+#if defined(_WIN32) || defined(__CYGWIN__)
+static char pd_tilde_dllextent[] = ".m_i386", pd_tilde_dllextent2[] = ".dll";
+#endif
 
 /* ------------------------ pd_tilde~ ----------------------------- */
 

@@ -71,9 +71,9 @@ proc ::pd_connect::pd_readsocket {cmd_from_pd} {
             "missing close-brace" {
                 pd_readsocket $cmd_from_pd
             } "^invalid command name" {
-                pdtk_post [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo]
+                ::pdwindow::fatal [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo]
             } default {
-                pdtk_post [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo]
+                ::pdwindow::fatal [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo]
             }
         }
     }

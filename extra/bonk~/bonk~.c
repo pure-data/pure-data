@@ -82,7 +82,9 @@ void *bonk_class;
 static t_class *bonk_class;
 #endif
 
-#ifndef _MSC_VER
+#ifdef _WIN32
+#include <malloc.h>
+#elif ! defined(_MSC_VER)
 #include <alloca.h>
 #endif
 

@@ -78,9 +78,9 @@ proc ::helpbrowser::root_doubleclick {window x y} {
         return
     }
     set dir [file dirname $reference_paths($filename)]
-    pdtk_post "menu_doc_open $dir $filename"
+    ::pdwindow::verbose 0 "menu_doc_open $dir $filename"
     if { [catch {menu_doc_open $dir $filename} fid] } {
-        pdtk_post "Could not open $dir/$filename\n"
+        ::pdwindow::warn "Could not open $dir/$filename\n"
     }
 }
 
@@ -115,7 +115,7 @@ proc ::helpbrowser::doc_make_listbox {base dir count} {
 	#        destroy {*}[lrange [winfo children $base] [expr {2 * $count}] end]
 	if { [catch { eval destroy [lrange [winfo children $base] \
 									[expr { 2 * $count }] end] } errorMessage] } {
-		pdtk_post "doc_make_listbox: error listing $dir\n"
+		::pdwindow::error "doc_make_listbox: error listing $dir\n"
 	}
     # exportselection 0 looks good, but selection gets easily out-of-sync
 	set current_listbox [listbox "[set b "$base.listbox$count"]-list" \
@@ -159,7 +159,7 @@ proc ::helpbrowser::dir_doubleclick {dir count window x y} {
         return
     }
     if { [catch {menu_doc_open $dir $filename} fid] } {
-        pdtk_post "Could not open $dir/$filename\n"
+        ::pdwindow::error "Could not open $dir/$filename\n"
     }
 }
 
@@ -196,9 +196,9 @@ proc ::helpbrowser::add_entry {reflist entry} {
     variable reference_paths
     set entryname [file tail $entry]
     if {[lsearch -exact [concat $$reflist] $entryname] > -1} {
-        pdtk_post "WARNING: duplicate $entryname library found!"
-        pdtk_post "  $reference_paths($entryname) is active,"
-        pdtk_post "  $entry is a duplicate."
+        ::pdwindow::error "WARNING: duplicate $entryname library found!"
+        ::pdwindow::error "  $reference_paths($entryname) is active,"
+        ::pdwindow::error "  $entry is a duplicate."
     } else { 
         if {[file isdirectory $entry]} {
             append entryname "/"

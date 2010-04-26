@@ -59,10 +59,6 @@ typedef int socklen_t;
 #define PDBINDIR "bin/"
 #endif
 
-#ifndef PDGUIDIR
-#define PDGUIDIR "bin/"
-#endif
-
 #ifndef WISHAPP
 #define WISHAPP "wish84.exe"
 #endif
@@ -1058,12 +1054,12 @@ int sys_startgui(const char *libdir)
                 if (stat(wish_paths[i], &statbuf) >= 0)
                     break;
             }
-            sprintf(cmdbuf,"\"%s\" %s/" PDGUIDIR "/pd-gui.tcl %d\n", wish_paths[i],
+            sprintf(cmdbuf,"\"%s\" %s/bin/pd-gui.tcl %d\n", wish_paths[i],
                 libdir, portno);
 #else /* __APPLE__ */
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\" \
-  wish \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
+  wish \"%s/bin/pd-gui.tcl\" %d\n",
                  libdir, libdir, libdir, portno);
 #endif /* __APPLE__ */
             sys_guicmd = cmdbuf;

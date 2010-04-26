@@ -188,7 +188,7 @@ void sys_setvirtualalarm( void);
 #define API_DEFAULT API_OSS
 #define API_DEFSTRING "OSS"
 #endif
-#ifdef MSW
+#if defined(_WIN32) || defined(__CYGWIN__)
 #define API_DEFAULT API_MMIO
 #define API_DEFSTRING "MMIO"
 #endif

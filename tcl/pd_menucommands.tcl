@@ -134,7 +134,7 @@ proc ::pd_menucommands::menu_helpbrowser {} {
 }
 
 proc ::pd_menucommands::menu_texteditor {} {
-    pdtk_post "the text editor is not implemented"
+    ::pdwindow::warn "the text editor is not implemented"
 }
 
 # ------------------------------------------------------------------------------
@@ -229,6 +229,9 @@ proc ::pd_menucommands::menu_doc_open {dir basename} {
     }
     set textextension "[string tolower [file extension $basename]]"
     if {[lsearch -exact [lindex $::filetypes 0 1]  $textextension] > -1} {
+        set fullpath [file normalize [file join $dirname $basename]]
+        set dirname [file dirname $fullpath]
+        set basename [file tail $fullpath]
         pdsend "pd open [enquote_path $basename] [enquote_path $dirname]"
     } else {
         ::pd_menucommands::menu_openfile "$dirname/$basename"
