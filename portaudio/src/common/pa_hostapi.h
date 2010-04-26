@@ -1,12 +1,12 @@
 #ifndef PA_HOSTAPI_H
 #define PA_HOSTAPI_H
 /*
- * $Id: pa_hostapi.h 1097 2006-08-26 08:27:53Z rossb $
+ * $Id: pa_hostapi.h 1339 2008-02-15 07:50:33Z rossb $
  * Portable Audio I/O Library
  * host api representation
  *
  * Based on the Open Source API proposed by Ross Bencina
- * Copyright (c) 1999-2002 Ross Bencina, Phil Burk
+ * Copyright (c) 1999-2008 Ross Bencina, Phil Burk
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files
@@ -42,8 +42,8 @@
 /** @file
  @ingroup common_src
 
- @brief Interface used by pa_front to virtualize functions which operate on
- host APIs.
+ @brief Interfaces and representation structures used by pa_front.c 
+ to manage and communicate with host API implementations.
 */
 
 
@@ -224,13 +224,19 @@ typedef struct PaUtilHostApiRepresentation {
 /** Prototype for the initialization function which must be implemented by every
  host API.
  
+ This function should only return an error other than paNoError if it encounters 
+ an unexpected and fatal error (memory allocation error for example). In general, 
+ there may be conditions under which it returns a NULL interface pointer and also 
+ returns paNoError. For example, if the ASIO implementation detects that ASIO is 
+ not installed, it should return a NULL interface, and paNoError.
+
  @see paHostApiInitializers
 */
 typedef PaError PaUtilHostApiInitializer( PaUtilHostApiRepresentation**, PaHostApiIndex );
 
 
 /** paHostApiInitializers is a NULL-terminated array of host API initialization
- functions. These functions are called by pa_front to initialize the host APIs
+ functions. These functions are called by pa_front.c to initialize the host APIs
  when the client calls Pa_Initialize().
 
  There is a platform specific file which defines paHostApiInitializers for that

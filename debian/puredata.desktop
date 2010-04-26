@@ -1,0 +1,18 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Pure Data
+GenericName=Pd
+Comment=Visual dataflow programming platform for multimedia
+Comment[ca]=Plataforma de programació visual per aplicacions multimèdia
+Comment[de]=Grafische Datenflussprogrammierung für Multimedia
+Comment[es]=Plataforma de programación visual para aplicaciones multimedia
+Comment[fr]=Plateforme de programmation visuelle pour applications multimédia
+Comment[it]=Piattaforma di programmazione visuale per applicazioni multimedia
+Comment[pt]=Plataforma de programação visuais para multimedia
+Exec=/usr/bin/puredata %F
+Terminal=false
+Type=Application
+Icon=puredata
+TryExec=puredata
+Categories=AudioVideo;Audio;Video
+StartupNotify=false

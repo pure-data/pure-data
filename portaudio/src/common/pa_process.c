@@ -1,5 +1,5 @@
 /*
- * $Id: pa_process.c 1097 2006-08-26 08:27:53Z rossb $
+ * $Id: pa_process.c 1408 2009-03-13 16:41:39Z rossb $
  * Portable Audio I/O Library
  * streamCallback <-> host buffer processing adapter
  *
@@ -55,8 +55,6 @@
  the operation.
 
     @todo Consider cache tilings for intereave<->deinterleave.
-
-    @todo implement timeInfo->currentTime int PaUtil_BeginBufferProcessing()
 
     @todo specify and implement some kind of logical policy for handling the
         underflow and overflow stream flags when the underflow/overflow overlaps
@@ -683,7 +681,9 @@ void PaUtil_BeginBufferProcessing( PaUtilBufferProcessor* bp,
         
     bp->timeInfo->inputBufferAdcTime -= bp->framesInTempInputBuffer * bp->samplePeriod;
     
-    bp->timeInfo->currentTime = 0; /** FIXME: @todo time info currentTime not implemented */
+    /* We just pass through timeInfo->currentTime provided by the caller. This is
+        not strictly conformant to the word of the spec, since the buffer processor 
+        might call the callback multiple times, and we never refresh currentTime. */
 
     /* the first streamCallback will be called to generate samples which will be
         outputted after the frames currently in the output buffer have been
@@ -997,7 +997,7 @@ static unsigned long AdaptingInputOnlyProcess( PaUtilBufferProcessor *bp,
                         bp->framesPerUserBuffer, bp->timeInfo,
                         bp->callbackStatusFlags, bp->userData );
 
-                bp->timeInfo->inputBufferAdcTime += frameCount * bp->samplePeriod;
+                bp->timeInfo->inputBufferAdcTime += bp->framesPerUserBuffer * bp->samplePeriod;
             }
             
             bp->framesInTempInputBuffer = 0;

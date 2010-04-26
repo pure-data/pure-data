@@ -1,7 +1,7 @@
 #ifndef PA_TRACE_H
 #define PA_TRACE_H
 /*
- * $Id: pa_trace.h 1097 2006-08-26 08:27:53Z rossb $
+ * $Id: pa_trace.h 1339 2008-02-15 07:50:33Z rossb $
  * Portable Audio I/O Library Trace Facility
  * Store trace information in real-time for later printing.
  *
@@ -42,14 +42,36 @@
 /** @file
  @ingroup common_src
 
- @brief Event trace mechanism for debugging.
+ @brief Real-time safe event trace logging facility for debugging.
 
- Allows data to be written to the buffer at interrupt time and dumped later.
+ Allows data to be logged to a fixed size trace buffer in a real-time
+ execution context (such as at interrupt time). Each log entry consists 
+ of a message comprising a string pointer and an int.  The trace buffer 
+ may be dumped to stdout later.
+
+ This facility is only active if PA_TRACE_REALTIME_EVENTS is set to 1,
+ otherwise the trace functions expand to no-ops.
+
+ @fn PaUtil_ResetTraceMessages
+ @brief Clear the trace buffer.
+
+ @fn PaUtil_AddTraceMessage
+ @brief Add a message to the trace buffer. A message consists of string and an int.
+ @param msg The string pointer must remain valid until PaUtil_DumpTraceMessages 
+    is called. As a result, usually only string literals should be passed as 
+    the msg parameter.
+
+ @fn PaUtil_DumpTraceMessages
+ @brief Print all messages in the trace buffer to stdout and clear the trace buffer.
 */
 
+#ifndef PA_TRACE_REALTIME_EVENTS
+#define PA_TRACE_REALTIME_EVENTS     (0)   /**< Set to 1 to enable logging using the trace functions defined below */
+#endif
 
-#define PA_TRACE_REALTIME_EVENTS     (0)   /* Keep log of various real-time events. */
-#define PA_MAX_TRACE_RECORDS      (2048)
+#ifndef PA_MAX_TRACE_RECORDS
+#define PA_MAX_TRACE_RECORDS      (2048)   /**< Maximum number of records stored in trace buffer */   
+#endif
 
 #ifdef __cplusplus
 extern "C"

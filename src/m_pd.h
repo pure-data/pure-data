@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 42
-#define PD_BUGFIX_VERSION 5
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 43
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "hcs0"
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -466,6 +466,7 @@ EXTERN void sys_bashfilename(const char *from, char *to);
 EXTERN void sys_unbashfilename(const char *from, char *to);
 EXTERN int open_via_path(const char *name, const char *ext, const char *dir,
     char *dirresult, char **nameresult, unsigned int size, int bin);
+EXTERN int sys_close(int fd);
 EXTERN int sched_geteventno(void);
 EXTERN double sys_getrealtime(void);
 EXTERN int (*sys_idlehook)(void);   /* hook to add idle time computation */

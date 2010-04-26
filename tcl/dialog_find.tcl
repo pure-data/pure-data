@@ -102,7 +102,7 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
 
 proc ::dialog_find::pdtk_couldnotfind {mytoplevel} {
     bell
-    pdtk_post [format [_ "Couldn't find '%s' in %s"] \
+    ::pdwindow::warn [format [_ "Couldn't find '%s' in %s"] \
                    [.find.entry get] [lookup_windowname $mytoplevel] ]
     if {$::windowingsystem eq "aqua"} {open_find_dialog $mytoplevel}
 }

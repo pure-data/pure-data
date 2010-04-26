@@ -1,12 +1,12 @@
 #ifndef PA_ALLOCATION_H
 #define PA_ALLOCATION_H
 /*
- * $Id: pa_allocation.h 1097 2006-08-26 08:27:53Z rossb $
+ * $Id: pa_allocation.h 1339 2008-02-15 07:50:33Z rossb $
  * Portable Audio I/O Library allocation context header
  * memory allocation context for tracking allocation groups
  *
  * Based on the Open Source API proposed by Ross Bencina
- * Copyright (c) 1999-2002 Ross Bencina, Phil Burk
+ * Copyright (c) 1999-2008 Ross Bencina, Phil Burk
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files
@@ -43,12 +43,12 @@
  @ingroup common_src
 
  @brief Allocation Group prototypes. An Allocation Group makes it easy to
- allocate multiple blocks of memory and free them all simultanously.
+ allocate multiple blocks of memory and free them all at once.
  
  An allocation group is useful for keeping track of multiple blocks
  of memory which are allocated at the same time (such as during initialization)
  and need to be deallocated at the same time. The allocation group maintains
- a list of allocated blocks, and can deallocate them all simultaneously which
+ a list of allocated blocks, and can free all allocations at once. This
  can be usefull for cleaning up after a partially initialized object fails.
 
  The allocation group implementation is built on top of the lower

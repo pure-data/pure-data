@@ -1,0 +1,40 @@
+pd for Debian
+----------------------
+
+Soundcards and Drivers
+=======================
+
+Pd uses your soundcard in a way to reduce the latency introduced by 
+audio buffering. This may in some circumstances introduce distortions.
+
+There are different methods to solve this problem.
+
+1) starting pd with certain flags:
+
+ -audiobuf <n>
+
+ sets the number of fragments used in the OSS driver, and additionally
+ triggers the "good old and stable" device interface.
+ 
+ -noadc
+
+ start pd in output only mode.
+
+
+2) Using ALSA with OSS emulation
+
+
+Configuration
+==============
+
+Instead of passing your command line flags to pd, you can write them
+into your ~/.pdrc file. Each commandline switch on its own line like
+
+ -path /usr/local/lib/pd-externals
+ -frags 4
+ -noadc
+ -lib Gem
+
+
+
+ -- Guenter Geiger <geiger@debian.org>, Tue,  3 Aug 1999 14:33:26 +0200

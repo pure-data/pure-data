@@ -1,0 +1,155 @@
+This package was debianized by Guenter Geiger <geiger@debian.org> on
+Tue,  3 Aug 1999 14:33:26 +0200.
+
+It was downloaded from <ftp://epy.co.at/pub/pd>
+
+Author: Miller Puckette  <mpuckett@man104nfs.UCSD.EDU>
+
+The following copyright and terms apply to all files associated with the
+software unless specified in the "Additional copyrights and licenses" section
+below.
+
+Copyright:
+
+  Copyright (c) 1997-1999 Miller Puckette and others.
+
+License:
+
+The authors hereby grant permission to use, copy, modify, distribute,
+and license this software and its documentation for any purpose, provided
+that existing copyright notices are retained in all copies and that this
+notice is included verbatim in any distributions. No written agreement,
+license, or royalty fee is required for any of the authorized uses.
+Modifications to this software may be copyrighted by their authors
+and need not follow the licensing terms described here, provided that
+the new terms are clearly indicated on the first page of each file where
+they apply.
+
+IN NO EVENT SHALL THE AUTHORS OR DISTRIBUTORS BE LIABLE TO ANY PARTY
+FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ARISING OUT OF THE USE OF THIS SOFTWARE, ITS DOCUMENTATION, OR ANY
+DERIVATIVES THEREOF, EVEN IF THE AUTHORS HAVE BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+THE AUTHORS AND DISTRIBUTORS SPECIFICALLY DISCLAIM ANY WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  THIS SOFTWARE
+IS PROVIDED ON AN "AS IS" BASIS, AND THE AUTHORS AND DISTRIBUTORS HAVE
+NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
+MODIFICATIONS.
+
+RESTRICTED RIGHTS: Use, duplication or disclosure by the government
+is subject to the restrictions as set forth in subparagraph (c) (1) (ii)
+of the Rights in Technical Data and Computer Software Clause as DFARS
+252.227-7013 and FAR 52.227-19.
+
+Additional copyrights and licenses:
+
+extra/expr~:
+
+  Authors: Maurizio De Cecco, Francois Dechelle, Enzo Maggi, Norbert Schnell.
+
+  Copyright (C) 1994, 1995, 1998, 1999 by IRCAM-Centre Georges Pompidou,
+    Paris, France.
+
+  expr~ is released under the GNU General Public License Version 2 or above:
+
+  You are free to distribute this software under the terms of the GNU General
+  Public License. On Debian systems, the complete text of the GNU General Public
+  License can be found in the file `/usr/share/common-licenses/GPL-2'.
+
+src/d_fft_fftsg.c
+
+  Copyright(C) 1996-2001 Takuya OOURA <ooura@mmm.t.u-tokyo.ac.jp>
+
+  Download: http://momonga.t.u-tokyo.ac.jp/~ooura/fft.html
+
+  You may use, copy, modify this code for any purpose and without fee. You may
+  distribute this ORIGINAL package.
+
+src/d_fft_mayer.c
+
+  Copyright 1988, 1993; Ron Mayer
+  
+  NOTE: This routine uses at least 2 patented algorithms, and may be
+        under the restrictions of a bunch of different organizations.
+        Although I wrote it completely myself, it is kind of a derivative
+        of a routine I once authored and released under the GPL, so it
+        may fall under the free software foundation's restrictions;
+        it was worked on as a Stanford Univ project, so they claim
+        some rights to it; it was further optimized at work here, so
+        I think this company claims parts of it.  The patents are
+        held by R. Bracewell (the FHT algorithm) and O. Buneman (the
+        trig generator), both at Stanford Univ.
+        If it were up to me, I'd say go do whatever you want with it;
+        but it would be polite to give credit to the following people
+        if you use this anywhere:
+            Euler     - probable inventor of the fourier transform.
+            Gauss     - probable inventor of the FFT.
+            Hartley   - probable inventor of the hartley transform.
+            Buneman   - for a really cool trig generator
+            Mayer(me) - for authoring this particular version and
+                        including all the optimizations in one package.
+        Thanks,
+        Ron Mayer; mayer@acuson.com
+
+src/s_audio_paring.c:
+
+  Author: Phil Burk, http://www.softsynth.com
+ 
+  This program uses the PortAudio Portable Audio Library.
+  For more information see: http://www.audiomulch.com/portaudio/
+  Copyright (c) 1999-2000 Ross Bencina and Phil Burk
+ 
+  Permission is hereby granted, free of charge, to any person obtaining
+  a copy of this software and associated documentation files
+  (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+ 
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
+ 
+  Any person wishing to distribute modifications to the Software is
+  requested to send the modifications to the original developer so that
+  they can be incorporated into the canonical version.
+ 
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+  ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+extra/choice/choice.c:
+
+  Copyright 1999 Miller Puckette.
+  Permission is granted to use this software for any purpose provided you
+  keep this copyright notice intact.
+
+  THE AUTHOR AND HIS EMPLOYERS MAKE NO WARRANTY, EXPRESS OR IMPLIED,
+  IN CONNECTION WITH THIS SOFTWARE.
+ 
+  This file is downloadable from http://www.crca.ucsd.edu/~msp .
+
+extra/sigmund~/sigmund~.c:
+  Copyright (c) 2005 Miller Puckette.  BSD licensed.  No warranties.
+
+Additional copyrights:
+
+The following files have the same license as most source files, but have
+specific copyright notices.
+
+src/s_midi_pm.c, src/s_midi_oss.c, src/s_midi_alsa.c, s_audio_alsa.h
+  Copyright (c) 1997-2003 Guenter Geiger, Miller Puckette, Larry Troxler,
+  Winfried Ritsch, Karl MacMillan, and others.
+
+  Copyright (c) 1997-1999 Guenter Geiger, Miller Puckette, Larry Troxler,
+  Winfried Ritsch, Karl MacMillan, and others.
+
+src/s_path.c
+  Copyright (c) 1999 Guenter Geiger and others.
+

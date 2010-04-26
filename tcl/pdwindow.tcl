@@ -8,7 +8,8 @@ namespace eval ::pdwindow:: {
     variable tclentry_history {"console show"}
     variable history_position 0
     variable linecolor 0 ;# is toggled to alternate text line colors
-    variable maxverbosity 4
+    variable maxverbosity 5
+    variable defaultverbosity 4
 
     variable lasttag "line0"
 
@@ -22,19 +23,21 @@ namespace eval ::pdwindow:: {
 # TODO make the Pd window save its size and location between running
 
 proc ::pdwindow::set_layout {} {
-    # apply color scheme
-    .pdwindow.text tag configure errortext -background red
-    .pdwindow.text tag configure bugtext -background orange
-    .pdwindow.text tag configure line1 -background #f5f5f5
+    #fatal
+    .pdwindow.text tag configure verbosetext0 -background red
+    #error
+    .pdwindow.text tag configure verbosetext1 -background red
+    #warning
+    .pdwindow.text tag configure verbosetext2 -background orange
+    #info
+    .pdwindow.text tag configure verbosetext3
 
-    # LATER make this settable from outside
-    set ::pdwindow::maxverbosity 4
-    for { set i 0 } { $i <= $::pdwindow::maxverbosity } { incr i } {
+    #verbose
+    for { set i 4 } { $i <= $::pdwindow::maxverbosity } { incr i } {
         set j [ expr 100 - int($i * 50 / $::pdwindow::maxverbosity ) ]
   
         .pdwindow.text tag configure verbosetext${i} -background grey${j}
     }
-
 }
 
 
@@ -58,7 +61,7 @@ proc ::pdwindow::buffer_message { message } {
     return false
 }
 
-proc ::pdwindow::do_post {message {tag line0}} {
+proc ::pdwindow::do_post {message {tag verbosetext3}} {
     if { ! [buffer_message $message ] } {
         variable lasttag
         .pdwindow.text insert end $message $tag
@@ -69,20 +72,14 @@ proc ::pdwindow::do_post {message {tag line0}} {
     if {$::stderr} {puts stderr $message}
 }
 
-proc ::pdwindow::post {message} {
-    variable linecolor
-    do_post "$message" line$linecolor
-}
-
-proc ::pdwindow::error {message} {
-    do_post "$message" errortext
-}
-
-proc ::pdwindow::bug {message} {
-    do_post "$message" bugtext
-}
-
-proc ::pdwindow::verbose {level message} {
+proc ::pdwindow::post {level message} {
+# log4X levels
+#    0 fatal (not yet used)
+#    1 error (error)
+#    2 warning (bug)
+#    3 info (post)
+#    4... debug
+    puts "level $level     max $::verbose"
     if { $level <= $::verbose } {
         do_post "$message" verbosetext$level
     }
@@ -94,13 +91,29 @@ proc ::pdwindow::endpost {} {
     set linecolor [expr ! $linecolor]
 }
 
-## for backwards compatibility
-proc ::pdwindow::pdtk_post {message} {
-    post $message
+# convenience functions
+proc ::pdwindow::fatal {message} {
+    post 0 "$message"
+}
+proc ::pdwindow::error {message} {
+    post 1 "$message"
+}
+proc ::pdwindow::warn {message} {
+    post 2 "$message"
+}
+proc ::pdwindow::info {message} {
+    post 3 "$message"
+}
+proc ::pdwindow::verbose {level message} {
+    incr level 4
+    post $level "$message"
 }
 
 
-
+## for backwards compatibility
+proc ::pdwindow::pdtk_post {message} {
+    post 3 $message
+}
 
 # set the checkbox on the "Compute Audio" menuitem and checkbox
 proc ::pdwindow::pdtk_pd_dsp {value} {
@@ -226,13 +239,13 @@ proc ::pdwindow::eval_tclentry {} {
         global errorInfo
         switch -regexp -- $errorname { 
             "missing close-brace" {
-                pdtk_post [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo]
+                post 0 [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo]
             } "missing close-bracket" {
-                pdtk_post [concat [_ "(Tcl) MISSING CLOSE-BRACKET '\]': "] $errorInfo]
+                post 0 [concat [_ "(Tcl) MISSING CLOSE-BRACKET '\]': "] $errorInfo]
             } "^invalid command name" {
-                pdtk_post [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo]
+                post 0 [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo]
             } default {
-                pdtk_post [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo]
+                post 0 [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo]
             }
         }
     }    
@@ -256,7 +269,7 @@ proc ::pdwindow::get_history {direction} {
 
 proc ::pdwindow::validate_tcl {} {
     variable tclentry
-    if {[info complete $tclentry]} {
+    if {[::info complete $tclentry]} {
         .pdwindow.tcl.entry configure -background "white"
     } else {
         .pdwindow.tcl.entry configure -background "#FFF0F0"
@@ -327,8 +340,9 @@ proc ::pdwindow::create_window {} {
 
     for { set i 0 } { $i <=  $::pdwindow::maxverbosity } { incr i} {lappend vlist $i }
     set logmenu [eval tk_optionMenu .pdwindow.tcl.logmenu ::verbose $vlist]
-    set ::verbose  0 
-    #$::pdwindow::maxverbosity
+
+    set ::verbose  $::pdwindow::defaultverbosity
+
 
     # TODO figure out how to make the menu traversable with the keyboard
     #.pdwindow.tcl.logmenu configure -takefocus 1
@@ -355,7 +369,7 @@ proc ::pdwindow::create_window {} {
     pdwindow_bindings
 
     # print whatever is in the queue
-    ::pdwindow::pdtk_post {}    
+    ::pdwindow::do_post {}    
 
     set ::loaded(.pdwindow) 1
 

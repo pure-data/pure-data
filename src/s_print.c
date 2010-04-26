@@ -43,7 +43,7 @@ static void dopost(const char *s)
     else
     {
         char upbuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::post {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
+        sys_vgui("::pdwindow::post 3 {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
     }
 }
 
@@ -62,7 +62,7 @@ static void doerror(const char *s)
         fprintf(stderr, "error: %s", s);
     else
     {
-        sys_vgui("::pdwindow::error {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
+        sys_vgui("::pdwindow::post 1 {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
     }
 }
 static void doverbose(int level, const char *s)
@@ -82,7 +82,7 @@ static void doverbose(int level, const char *s)
     }
     else
     {
-        sys_vgui("::pdwindow::verbose %d {%s}\n", level, strnescape(upbuf, s, MAXPDSTRING));
+        sys_vgui("::pdwindow::post %d {%s}\n", level+4, strnescape(upbuf, s, MAXPDSTRING));
     }
 }
 
@@ -102,7 +102,7 @@ static void dobug(const char *s)
     else
     {
         char upbuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::bug {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
+        sys_vgui("::pdwindow::post 3 {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
     }
 }
 
@@ -228,7 +228,7 @@ void pd_error(void *object, const char *fmt, ...)
     error_object = object;
     if (!saidit)
     {
-        post("... you might be able to track this down from the Find menu.");
+        verbose(0, "... you might be able to track this down from the Find menu.");
         saidit = 1;
     }
 }

@@ -1,0 +1,26 @@
+Source: puredata
+Section: sound
+Priority: optional
+Maintainer: Paul Brossier <piem@debian.org>
+Uploaders: Guenter Geiger (Debian/GNU) <geiger@debian.org>
+Build-Depends: debhelper (>= 7.0.50~),
+               quilt,
+               autoconf,
+               automake,
+               libtool,
+               libasound2-dev  [!hurd-i386 !kfreebsd-amd64 !kfreebsd-i386],
+               libjack-dev
+Standards-Version: 3.8.3
+Homepage: http://puredata.info
+
+Package: puredata
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: pd
+Recommends: gem
+Suggests: pd-csound, pd-pdp, pd-zexy, pd-aubio
+Description: realtime computer music and graphics system 
+ Pure Data (also known as Pd) is a real-time graphical programming environment
+ for audio and graphics processing. Pd's audio functions are built-in;
+ graphical computations require separate packages such as gem (Graphics
+ Environment for Multimedia) or pd-pdp (Pd Packet).

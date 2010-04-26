@@ -57,6 +57,10 @@
 */
 
 #include "pa_mac_core_utilities.h"
+#include "pa_mac_core_internal.h"
+#include <libkern/OSAtomic.h>
+#include <strings.h>
+#include <pthread.h>
 
 PaError PaMacCore_SetUnixError( int err, int line )
 {
@@ -199,10 +203,19 @@ PaError PaMacCore_SetError(OSStatus error, int line, int isError)
     else
         errorType = "Warning";
 
-    if ((int)error < -99999 || (int)error > 99999)
-        DBUG(("%s on line %d: err='%4s', msg='%s'\n", errorType, line, (const char *)&error, errorText));
-    else
-        DBUG(("%s on line %d: err=%d, 0x%x, msg='%s'\n", errorType, line, (int)error, (unsigned)error, errorText));
+    char str[20];
+    // see if it appears to be a 4-char-code
+    *(UInt32 *)(str + 1) = CFSwapInt32HostToBig(error);
+    if (isprint(str[1]) && isprint(str[2]) && isprint(str[3]) && isprint(str[4]))
+    {
+        str[0] = str[5] = '\'';
+        str[6] = '\0';
+    } else {
+        // no, format it as an integer
+        sprintf(str, "%d", (int)error);
+    }
+
+    DBUG(("%s on line %d: err='%s', msg=%s\n", errorType, line, str, errorText));
 
     PaUtil_SetLastHostErrorInfo( paCoreAudio, error, errorText );
 
@@ -520,9 +533,9 @@ PaError setBestSampleRateForDevice( const AudioDeviceID device,
    not usually catastrophic.
 */
 PaError setBestFramesPerBuffer( const AudioDeviceID device,
-                                       const bool isOutput,
-                                       unsigned long requestedFramesPerBuffer, 
-                                       unsigned long *actualFramesPerBuffer )
+                                const bool isOutput,
+                                UInt32 requestedFramesPerBuffer, 
+                                UInt32 *actualFramesPerBuffer )
 {
    UInt32 afpb;
    const bool isInput = !isOutput;
@@ -609,3 +622,117 @@ PaError setBestFramesPerBuffer( const AudioDeviceID device,
 
    return paNoError;
 }
+
+/**********************
+ *
+ * XRun stuff
+ *
+ **********************/
+
+struct PaMacXRunListNode_s {
+   PaMacCoreStream *stream;
+   struct PaMacXRunListNode_s *next;
+} ;
+
+typedef struct PaMacXRunListNode_s PaMacXRunListNode;
+
+/** Always empty, so that it can always be the one returned by
+    addToXRunListenerList. note that it's not a pointer. */
+static PaMacXRunListNode firstXRunListNode;
+static int xRunListSize;
+static pthread_mutex_t xrunMutex;
+
+OSStatus xrunCallback(
+    AudioDeviceID inDevice, 
+    UInt32 inChannel, 
+    Boolean isInput, 
+    AudioDevicePropertyID inPropertyID, 
+    void* inClientData)
+{
+   PaMacXRunListNode *node = (PaMacXRunListNode *) inClientData;
+
+   int ret = pthread_mutex_trylock( &xrunMutex ) ;
+
+   if( ret == 0 ) {
+
+      node = node->next ; //skip the first node
+
+      for( ; node; node=node->next ) {
+         PaMacCoreStream *stream = node->stream;
+
+         if( stream->state != ACTIVE )
+            continue; //if the stream isn't active, we don't care if the device is dropping
+
+         if( isInput ) {
+            if( stream->inputDevice == inDevice )
+               OSAtomicOr32( paInputOverflow, (uint32_t *)&(stream->xrunFlags) );
+         } else {
+            if( stream->outputDevice == inDevice )
+               OSAtomicOr32( paOutputUnderflow, (uint32_t *)&(stream->xrunFlags) );
+         }
+      }
+
+      pthread_mutex_unlock( &xrunMutex );
+   }
+
+   return 0;
+}
+
+int initializeXRunListenerList()
+{
+   xRunListSize = 0;
+   bzero( (void *) &firstXRunListNode, sizeof(firstXRunListNode) );
+   return pthread_mutex_init( &xrunMutex, NULL );
+}
+int destroyXRunListenerList()
+{
+   PaMacXRunListNode *node;
+   node = firstXRunListNode.next;
+   while( node ) {
+      PaMacXRunListNode *tmp = node;
+      node = node->next;
+      free( tmp );
+   }
+   xRunListSize = 0;
+   return pthread_mutex_destroy( &xrunMutex );
+}
+
+void *addToXRunListenerList( void *stream )
+{
+   pthread_mutex_lock( &xrunMutex );
+   PaMacXRunListNode *newNode;
+   // setup new node:
+   newNode = (PaMacXRunListNode *) malloc( sizeof( PaMacXRunListNode ) );
+   newNode->stream = (PaMacCoreStream *) stream;
+   newNode->next = firstXRunListNode.next;
+   // insert:
+   firstXRunListNode.next = newNode;
+   pthread_mutex_unlock( &xrunMutex );
+
+   return &firstXRunListNode;
+}
+
+int removeFromXRunListenerList( void *stream )
+{
+   pthread_mutex_lock( &xrunMutex );
+   PaMacXRunListNode *node, *prev;
+   prev = &firstXRunListNode;
+   node = firstXRunListNode.next;
+   while( node ) {
+      if( node->stream == stream ) {
+         //found it:
+         --xRunListSize;
+         prev->next = node->next;
+         free( node );
+         pthread_mutex_unlock( &xrunMutex );
+         return xRunListSize;
+      }
+      prev = prev->next;
+      node = node->next;
+   }
+
+   pthread_mutex_unlock( &xrunMutex );
+   // failure
+   return xRunListSize;
+}
+

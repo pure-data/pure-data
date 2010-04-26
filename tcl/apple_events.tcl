@@ -4,8 +4,6 @@ package provide apple_events 0.1
 package require pdwindow
 package require wheredoesthisgo
 
-# namespace import ::pdwindow::pdtk_post
-
 # from http://wiki.tcl.tk/12987
 
 set ::tk::mac::CGAntialiasLimit 0 ;# min line thickness to anti-alias (default: 3)

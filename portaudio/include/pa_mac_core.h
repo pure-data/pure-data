@@ -38,6 +38,11 @@
  * license above.
  */
 
+/** @file
+ *  @ingroup public_header
+ *  @brief CoreAudio-specific PortAudio API extension header file.
+ */
+
 #include <AudioUnit/AudioUnit.h>
 //#include <AudioToolbox/AudioToolbox.h>
 

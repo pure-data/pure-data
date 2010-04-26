@@ -240,7 +240,7 @@ proc ::pd_menus::build_media_menu {mymenu} {
     set audio_apilist_length [llength $::audio_apilist]
     if {$audio_apilist_length > 0} {$mymenu add separator}
     for {set x 0} {$x<$audio_apilist_length} {incr x} {
-        pdtk_post "audio [lindex [lindex $::audio_apilist $x] 0]"
+        ::pdwindow::verbose 0 "audio [lindex [lindex $::audio_apilist $x] 0]"
         $mymenu add radiobutton -label [lindex [lindex $::audio_apilist $x] 0] \
             -command {menu_audio 0} -variable ::pd_whichapi \
             -value [lindex [lindex $::audio_apilist $x] 1]\
@@ -250,7 +250,7 @@ proc ::pd_menus::build_media_menu {mymenu} {
     set midi_apilist_length [llength $::midi_apilist]
     if {$midi_apilist_length > 0} {$mymenu add separator}
     for {set x 0} {$x<$midi_apilist_length} {incr x} {
-        pdtk_post "midi [lindex [lindex $::midi_apilist $x] 0]"
+        ::pdwindow::verbose 0 "midi [lindex [lindex $::midi_apilist $x] 0]"
         $mymenu add radiobutton -label [lindex [lindex $::midi_apilist $x] 0] \
             -command {menu_midi 0} -variable ::pd_whichmidiapi \
             -value [lindex [lindex $::midi_apilist $x] 1]\
@@ -544,7 +544,7 @@ proc ::pd_menus::create_system_menu {mymenubar} {
     $mymenubar add cascade -label System -menu $mymenu
     menu $mymenu -tearoff 0
     # placeholders
-    $mymenu add command -label [_ "Edit Mode"] -command "pdtk_post systemmenu"
+    $mymenu add command -label [_ "Edit Mode"] -command "::pdwindow::verbose 0 systemmenu"
     # TODO add Close, Minimize, etc and whatever else is on the little menu
     # that is on the top left corner of the window frame
     # http://wiki.tcl.tk/1006

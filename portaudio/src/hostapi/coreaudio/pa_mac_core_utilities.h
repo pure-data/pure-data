@@ -199,7 +199,32 @@ PaError setBestSampleRateForDevice( const AudioDeviceID device,
    not usually catastrophic.
 */
 PaError setBestFramesPerBuffer( const AudioDeviceID device,
-                                       const bool isOutput,
-                                       unsigned long requestedFramesPerBuffer, 
-                                       unsigned long *actualFramesPerBuffer );
+                                const bool isOutput,
+                                UInt32 requestedFramesPerBuffer, 
+                                UInt32 *actualFramesPerBuffer );
+
+
+/*********************
+ *
+ *  xrun handling
+ *
+ *********************/
+
+OSStatus xrunCallback(
+    AudioDeviceID inDevice, 
+    UInt32 inChannel, 
+    Boolean isInput, 
+    AudioDevicePropertyID inPropertyID, 
+    void* inClientData ) ;
+
+/** returns zero on success or a unix style error code. */
+int initializeXRunListenerList();
+/** returns zero on success or a unix style error code. */
+int destroyXRunListenerList();
+
+/**Returns the list, so that it can be passed to CorAudio.*/
+void *addToXRunListenerList( void *stream );
+/**Returns the number of Listeners in the list remaining.*/
+int removeFromXRunListenerList( void *stream );
+
 #endif /* PA_MAC_CORE_UTILITIES_H__*/

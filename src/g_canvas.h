@@ -478,7 +478,7 @@ EXTERN void canvas_resortinlets(t_canvas *x);
 EXTERN void canvas_resortoutlets(t_canvas *x);
 EXTERN void canvas_free(t_canvas *x);
 EXTERN void canvas_updatewindowlist( void);
-EXTERN void canvas_editmode(t_canvas *x, t_floatarg yesplease);
+EXTERN void canvas_editmode(t_canvas *x, t_floatarg state);
 EXTERN int canvas_isabstraction(t_canvas *x);
 EXTERN int canvas_istable(t_canvas *x);
 EXTERN int canvas_showtext(t_canvas *x);

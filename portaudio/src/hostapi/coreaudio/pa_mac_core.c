@@ -65,6 +65,7 @@
 #include "pa_mac_core_internal.h"
 
 #include <string.h> /* strlen(), memcmp() etc. */
+#include <libkern/OSAtomic.h>
 
 #include "pa_mac_core.h"
 #include "pa_mac_core_utilities.h"
@@ -127,6 +128,8 @@ const char *PaMacCore_GetChannelName( int device, int channelIndex, bool input )
    OSStatus error;
    err = PaUtil_GetHostApiRepresentation( &hostApi, paCoreAudio );
    assert(err == paNoError);
+   if( err != paNoError )
+      return NULL;
    PaMacAUHAL *macCoreHostApi = (PaMacAUHAL*)hostApi;
    AudioDeviceID hostApiDevice = macCoreHostApi->devIds[device];
 
@@ -261,11 +264,12 @@ static PaError GetChannelInfo( PaMacAUHAL *auhalHostApi,
                                int isInput);
 
 static PaError OpenAndSetupOneAudioUnit(
+                                   const PaMacCoreStream *stream,
                                    const PaStreamParameters *inStreamParams,
                                    const PaStreamParameters *outStreamParams,
-                                   const unsigned long requestedFramesPerBuffer,
-                                   unsigned long *actualInputFramesPerBuffer,
-                                   unsigned long *actualOutputFramesPerBuffer,
+                                   const UInt32 requestedFramesPerBuffer,
+                                   UInt32 *actualInputFramesPerBuffer,
+                                   UInt32 *actualOutputFramesPerBuffer,
                                    const PaMacAUHAL *auhalHostApi,
                                    AudioUnit *audioUnit,
                                    AudioConverterRef *srConverter,
@@ -276,6 +280,37 @@ static PaError OpenAndSetupOneAudioUnit(
 /* for setting errors. */
 #define PA_AUHAL_SET_LAST_HOST_ERROR( errorCode, errorText ) \
     PaUtil_SetLastHostErrorInfo( paInDevelopment, errorCode, errorText )
+
+/*
+ * Callback called when starting or stopping a stream.
+ */
+static void startStopCallback(
+   void *               inRefCon,
+   AudioUnit            ci,
+   AudioUnitPropertyID  inID,
+   AudioUnitScope       inScope,
+   AudioUnitElement     inElement )
+{
+   PaMacCoreStream *stream = (PaMacCoreStream *) inRefCon;
+   UInt32 isRunning;
+   UInt32 size = sizeof( isRunning );
+   OSStatus err;
+   err = AudioUnitGetProperty( ci, kAudioOutputUnitProperty_IsRunning, inScope, inElement, &isRunning, &size );
+   assert( !err );
+   if( err )
+      isRunning = false; //it's very unclear what to do in case of error here. There's no real way to notify the user, and crashing seems unreasonable.
+   if( isRunning )
+      return; //We are only interested in when we are stopping
+   // -- if we are using 2 I/O units, we only need one notification!
+   if( stream->inputUnit && stream->outputUnit && stream->inputUnit != stream->outputUnit && ci == stream->inputUnit )
+      return;
+   PaStreamFinishedCallback *sfc = stream->streamRepresentation.streamFinishedCallback;
+   if( stream->state == STOPPING )
+      stream->state = STOPPED ;
+   if( sfc )
+      sfc( stream->streamRepresentation.userData );
+}
+
 
 /*currently, this is only used in initialization, but it might be modified
   to be used when the list of devices changes.*/
@@ -497,8 +532,14 @@ PaError PaMacCore_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIn
     int i;
     PaMacAUHAL *auhalHostApi;
     PaDeviceInfo *deviceInfoArray;
+    int unixErr;
 
     VVDBUG(("PaMacCore_Initialize(): hostApiIndex=%d\n", hostApiIndex));
+
+    unixErr = initializeXRunListenerList();
+    if( 0 != unixErr ) {
+       return UNIX_ERR(unixErr);
+    }
 
     auhalHostApi = (PaMacAUHAL*)PaUtil_AllocateMemory( sizeof(PaMacAUHAL) );
     if( !auhalHostApi )
@@ -618,9 +659,15 @@ error:
 
 static void Terminate( struct PaUtilHostApiRepresentation *hostApi )
 {
+    int unixErr;
+
     PaMacAUHAL *auhalHostApi = (PaMacAUHAL*)hostApi;
 
     VVDBUG(("Terminate()\n"));
+
+    unixErr = destroyXRunListenerList();
+    if( 0 != unixErr )
+       UNIX_ERR(unixErr);
 
     /*
         IMPLEMENT ME:
@@ -737,11 +784,12 @@ static PaError IsFormatSupported( struct PaUtilHostApiRepresentation *hostApi,
 }
 
 static PaError OpenAndSetupOneAudioUnit(
+                                   const PaMacCoreStream *stream,
                                    const PaStreamParameters *inStreamParams,
                                    const PaStreamParameters *outStreamParams,
-                                   const unsigned long requestedFramesPerBuffer,
-                                   unsigned long *actualInputFramesPerBuffer,
-                                   unsigned long *actualOutputFramesPerBuffer,
+                                   const UInt32 requestedFramesPerBuffer,
+                                   UInt32 *actualInputFramesPerBuffer,
+                                   UInt32 *actualOutputFramesPerBuffer,
                                    const PaMacAUHAL *auhalHostApi,
                                    AudioUnit *audioUnit,
                                    AudioConverterRef *srConverter,
@@ -753,7 +801,7 @@ static PaError OpenAndSetupOneAudioUnit(
     Component comp;
     /*An Apple TN suggests using CAStreamBasicDescription, but that is C++*/
     AudioStreamBasicDescription desiredFormat;
-    OSErr result = noErr;
+    OSStatus result = noErr;
     PaError paResult = paNoError;
     int line = 0;
     UInt32 callbackKey;
@@ -881,7 +929,7 @@ static PaError OpenAndSetupOneAudioUnit(
                     audioDevice,
                     sizeof(AudioDeviceID) ) );
     }
-    if( outStreamParams )
+    if( outStreamParams && outStreamParams != inStreamParams )
     {
        *audioDevice = auhalHostApi->devIds[outStreamParams->device] ;
        ERR_WRAP( AudioUnitSetProperty( *audioUnit,
@@ -891,6 +939,24 @@ static PaError OpenAndSetupOneAudioUnit(
                     audioDevice,
                     sizeof(AudioDeviceID) ) );
     }
+    /* -- add listener for dropouts -- */
+    result = AudioDeviceAddPropertyListener( *audioDevice,
+                                             0,
+                                             outStreamParams ? false : true,
+                                             kAudioDeviceProcessorOverload,
+                                             xrunCallback,
+                                             addToXRunListenerList( (void *)stream ) ) ;
+    if( result == kAudioHardwareIllegalOperationError ) {
+       // -- already registered, we're good
+    } else {
+       // -- not already registered, just check for errors
+       ERR_WRAP( result );
+    }
+    /* -- listen for stream start and stop -- */
+    ERR_WRAP( AudioUnitAddPropertyListener( *audioUnit,
+                                            kAudioOutputUnitProperty_IsRunning,
+                                            startStopCallback,
+                                            (void *)stream ) );
 
     /* -- set format -- */
     bzero( &desiredFormat, sizeof(desiredFormat) );
@@ -1010,7 +1076,7 @@ static PaError OpenAndSetupOneAudioUnit(
                             kAudioUnitScope_Input,
                             OUTPUT_ELEMENT,
                             actualOutputFramesPerBuffer,
-                            sizeof(unsigned long) ) );
+                            sizeof(*actualOutputFramesPerBuffer) ) );
        ERR_WRAP( AudioUnitGetProperty( *audioUnit,
                             kAudioUnitProperty_MaximumFramesPerSlice,
                             kAudioUnitScope_Global,
@@ -1025,7 +1091,7 @@ static PaError OpenAndSetupOneAudioUnit(
                             kAudioUnitScope_Output,
                             INPUT_ELEMENT,
                             actualInputFramesPerBuffer,
-                            sizeof(unsigned long) ) );
+                            sizeof(*actualInputFramesPerBuffer) ) );
 /* Don't know why this causes problems
        ERR_WRAP( AudioUnitGetProperty( *audioUnit,
                             kAudioUnitProperty_MaximumFramesPerSlice,
@@ -1305,7 +1371,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
           /*requested a realtively low latency. make sure this is in range of devices */
           /*try to get the device's min natural buffer size and use that (but no smaller than 64).*/
           AudioValueRange audioRange;
-          size_t size = sizeof( audioRange );
+          UInt32 size = sizeof( audioRange );
           if( inputParameters ) {
              WARNING( result = AudioDeviceGetProperty( auhalHostApi->devIds[inputParameters->device],
                                           0,
@@ -1315,6 +1381,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
              if( result )
                 requested = MAX( requested, audioRange.mMinimum );
           }
+          size = sizeof( audioRange );
           if( outputParameters ) {
              WARNING( result = AudioDeviceGetProperty( auhalHostApi->devIds[outputParameters->device],
                                           0,
@@ -1328,7 +1395,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
           /* requested a realtively high latency. make sure this is in range of devices */
           /*try to get the device's max natural buffer size and use that (but no larger than 1024).*/
           AudioValueRange audioRange;
-          size_t size = sizeof( audioRange );
+          UInt32 size = sizeof( audioRange );
           requested = MIN( requested, 1024 );
           if( inputParameters ) {
              WARNING( result = AudioDeviceGetProperty( auhalHostApi->devIds[inputParameters->device],
@@ -1339,6 +1406,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
              if( result )
                 requested = MIN( requested, audioRange.mMaximum );
           }
+          size = sizeof( audioRange );
           if( outputParameters ) {
              WARNING( result = AudioDeviceGetProperty( auhalHostApi->devIds[outputParameters->device],
                                           0,
@@ -1359,17 +1427,22 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     /* -- Now we actually open and setup streams. -- */
     if( inputParameters && outputParameters && outputParameters->device == inputParameters->device )
     { /* full duplex. One device. */
-       result = OpenAndSetupOneAudioUnit( inputParameters,
+       UInt32 inputFramesPerBuffer  = (UInt32) stream->inputFramesPerBuffer;
+       UInt32 outputFramesPerBuffer = (UInt32) stream->outputFramesPerBuffer;
+       result = OpenAndSetupOneAudioUnit( stream,
+                                          inputParameters,
                                           outputParameters,
                                           framesPerBuffer,
-                                          &(stream->inputFramesPerBuffer),
-                                          &(stream->outputFramesPerBuffer),
+                                          &inputFramesPerBuffer,
+                                          &outputFramesPerBuffer,
                                           auhalHostApi,
                                           &(stream->inputUnit),
                                           &(stream->inputSRConverter),
                                           &(stream->inputDevice),
                                           sampleRate,
                                           stream );
+       stream->inputFramesPerBuffer = inputFramesPerBuffer;
+       stream->outputFramesPerBuffer = outputFramesPerBuffer;
        stream->outputUnit = stream->inputUnit;
        stream->outputDevice = stream->inputDevice;
        if( result != paNoError )
@@ -1377,11 +1450,14 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     }
     else
     { /* full duplex, different devices OR simplex */
-       result = OpenAndSetupOneAudioUnit( NULL,
+       UInt32 outputFramesPerBuffer = (UInt32) stream->outputFramesPerBuffer;
+       UInt32 inputFramesPerBuffer  = (UInt32) stream->inputFramesPerBuffer;
+       result = OpenAndSetupOneAudioUnit( stream,
+                                          NULL,
                                           outputParameters,
                                           framesPerBuffer,
                                           NULL,
-                                          &(stream->outputFramesPerBuffer),
+                                          &outputFramesPerBuffer,
                                           auhalHostApi,
                                           &(stream->outputUnit),
                                           NULL,
@@ -1390,10 +1466,11 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
                                           stream );
        if( result != paNoError )
            goto error;
-       result = OpenAndSetupOneAudioUnit( inputParameters,
+       result = OpenAndSetupOneAudioUnit( stream,
+                                          inputParameters,
                                           NULL,
                                           framesPerBuffer,
-                                          &(stream->inputFramesPerBuffer),
+                                          &inputFramesPerBuffer,
                                           NULL,
                                           auhalHostApi,
                                           &(stream->inputUnit),
@@ -1403,6 +1480,8 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
                                           stream );
        if( result != paNoError )
            goto error;
+       stream->inputFramesPerBuffer = inputFramesPerBuffer;
+       stream->outputFramesPerBuffer = outputFramesPerBuffer;
     }
 
     if( stream->inputUnit ) {
@@ -1456,8 +1535,16 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
           }
 
           /* now we can initialize the ring buffer */
+          //FIXME: element size whould probably be szfl*inputchan
+          //       but that will require some work all over the
+          //       place to patch up. szfl may be sufficient and would
+          //       be way easier to handle, but it seems clear from the
+          //       discussion that buffer processor compatibility
+          //       requires szfl*inputchan.
+          //       See revision 1346 and discussion:
+          //       http://techweb.rfa.org/pipermail/portaudio/2008-February/008295.html
           PaUtil_InitializeRingBuffer( &stream->inputRingBuffer,
-                                   ringSize*szfl, data ) ;
+                                   1, ringSize*szfl, data ) ;
           /* advance the read point a little, so we are reading from the
              middle of the buffer */
           if( stream->outputUnit )
@@ -1727,14 +1814,14 @@ static OSStatus AudioIOProc( void *inRefCon,
        * we do not use the input SR converter or the input ring buffer.
        *
        */
-      OSErr err = 0;
+      OSStatus err = 0;
       unsigned long frames;
 
       /* -- start processing -- */
       PaUtil_BeginBufferProcessing( &(stream->bufferProcessor),
                                     &timeInfo,
                                     stream->xrunFlags );
-      stream->xrunFlags = 0;
+      stream->xrunFlags = 0; //FIXME: this flag also gets set outside by a callback, which calls the xrunCallback function. It should be in the same thread as the main audio callback, but the apple docs just use the word "usually" so it may be possible to loose an xrun notification, if that callback happens here.
 
       /* -- compute frames. do some checks -- */
       assert( ioData->mNumberBuffers == 1 );
@@ -1748,7 +1835,8 @@ static OSStatus AudioIOProc( void *inRefCon,
                     INPUT_ELEMENT,
                     inNumberFrames,
                     &stream->inputAudioBufferList );
-      /* FEEDBACK: I'm not sure what to do when this call fails */
+      /* FEEDBACK: I'm not sure what to do when this call fails. There's nothing in the PA API to
+       * do about failures in the callback system. */
       assert( !err );
 
       PaUtil_SetInputFrameCount( &(stream->bufferProcessor), frames );
@@ -1868,7 +1956,7 @@ static OSStatus AudioIOProc( void *inRefCon,
                PaUtil_AdvanceRingBufferReadIndex(&stream->inputRingBuffer, size1 );
             } else if( ( size1 + size2 ) / ( flsz * inChan ) < frames ) {
                /*we underflowed. take what data we can, zero the rest.*/
-               float data[frames*inChan];
+               unsigned char data[frames*inChan*flsz];
                if( size1 )
                   memcpy( data, data1, size1 );
                if( size2 )
@@ -1922,7 +2010,7 @@ static OSStatus AudioIOProc( void *inRefCon,
        * if this is an input-only stream, we need to process it more,
        * otherwise, we let the output case deal with it.
        */
-      OSErr err = 0;
+      OSStatus err = 0;
       int chan = stream->inputAudioBufferList.mBuffers[0].mNumberChannels ;
       /* FIXME: looping here may not actually be necessary, but it was something I tried in testing. */
       do {
@@ -2054,6 +2142,24 @@ static PaError CloseStream( PaStream* s )
     VDBUG( ( "Closing stream.\n" ) );
 
     if( stream ) {
+       if( stream->outputUnit ) {
+          int count = removeFromXRunListenerList( stream );
+          if( count == 0 )
+             AudioDeviceRemovePropertyListener( stream->outputDevice,
+                                                0,
+                                                false,
+                                                kAudioDeviceProcessorOverload,
+                                                xrunCallback );
+       }
+       if( stream->inputUnit && stream->outputUnit != stream->inputUnit ) {
+          int count = removeFromXRunListenerList( stream );
+          if( count == 0 )
+             AudioDeviceRemovePropertyListener( stream->inputDevice,
+                                                0,
+                                                true,
+                                                kAudioDeviceProcessorOverload,
+                                                xrunCallback );
+       }
        if( stream->outputUnit && stream->outputUnit != stream->inputUnit ) {
           AudioUnitUninitialize( stream->outputUnit );
           CloseComponent( stream->outputUnit );
@@ -2089,11 +2195,10 @@ static PaError CloseStream( PaStream* s )
     return result;
 }
 
-
 static PaError StartStream( PaStream *s )
 {
     PaMacCoreStream *stream = (PaMacCoreStream*)s;
-    OSErr result = noErr;
+    OSStatus result = noErr;
     VVDBUG(("StartStream()\n"));
     VDBUG( ( "Starting stream.\n" ) );
 
@@ -2138,7 +2243,7 @@ static ComponentResult BlockWhileAudioUnitIsRunning( AudioUnit audioUnit, AudioU
 static PaError StopStream( PaStream *s )
 {
     PaMacCoreStream *stream = (PaMacCoreStream*)s;
-    OSErr result = noErr;
+    OSStatus result = noErr;
     PaError paErr;
     VVDBUG(("StopStream()\n"));
 

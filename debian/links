@@ -1,0 +1,12 @@
+usr/lib/pd/doc/1.manual            usr/share/doc/puredata/1.manual
+usr/lib/pd/doc/2.control.examples  usr/share/doc/puredata/2.control.examples
+usr/lib/pd/doc/3.audio.examples    usr/share/doc/puredata/3.audio.examples
+usr/lib/pd/doc/4.data.structures   usr/share/doc/puredata/4.data.structures
+usr/lib/pd/doc/6.externs           usr/share/doc/puredata/6.externs
+usr/lib/pd/doc/7.stuff             usr/share/doc/puredata/7.stuff
+usr/lib/pd/doc/sound               usr/share/doc/puredata/sound
+usr/bin/puredata                   usr/bin/pd
+usr/share/man/man1/pd.1.gz         usr/share/man/man1/puredata.1.gz
+usr/lib/pd/bin/pd-gui.tcl          usr/bin/pd-gui
+usr/lib/pd/extra/expr~.pd_linux    usr/lib/pd/extra/expr.pd_linux
+usr/lib/pd/extra/expr~.pd_linux    usr/lib/pd/extra/fexpr~.pd_linux

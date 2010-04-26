@@ -402,7 +402,7 @@ proc set_base_font {family weight} {
     if {[lsearch -exact [font families] $family] > -1} {
         set ::font_family $family
     } else {
-        pdtk_post [format \
+        ::pdwindow::warn [format \
                        [_ "WARNING: Font family '%s' not found, using default (%s)"] \
                        $family $::font_family]
     }
@@ -410,7 +410,7 @@ proc set_base_font {family weight} {
         set ::font_weight $weight
         set using_defaults 0
     } else {
-        pdtk_post [format \
+        ::pdwindow::warn [format \
                        [_ "WARNING: Font weight '%s' not found, using default (%s)"] \
                        $weight $::font_weight]
     }
@@ -435,7 +435,7 @@ proc fit_font_into_metrics {} {
             }
         }
         if {$giveup} {
-            pdtk_post [format \
+            ::pdwindow::warn [format \
                [_ "WARNING: %s failed to find font size (%s) that fits into %sx%s!"]\
                [lindex [info level 0] 0] $size $width $height]
             continue
@@ -599,10 +599,10 @@ proc load_plugin_script {filename} {
     set tclcode [read $tclfile]
     close $tclfile
     if {[catch {uplevel #0 $tclcode} errorname]} {
-        pdtk_post "-----------\n"
-        pdtk_post "UNHANDLED ERROR: $errorInfo\n"
-        pdtk_post "FAILED TO LOAD $filename\n"
-        pdtk_post "-----------\n"
+        ::pdwindow::error "-----------\n"
+        ::pdwindow::error "UNHANDLED ERROR: $errorInfo\n"
+        ::pdwindow::error "FAILED TO LOAD $filename\n"
+        ::pdwindow::error "-----------\n"
     }
 }
 
