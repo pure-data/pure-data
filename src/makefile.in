@@ -118,7 +118,7 @@ $(BIN_DIR)/pdreceive: u_pdreceive.c $(BIN_DIR)
 $(PDEXEC): $(OBJ) $(BIN_DIR)
 	cd ../obj;  $(CC) $(LDFLAGS) $(DBG_CFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
 
-#this is for Max OSX only...
+#this is for Mac OSX only...
 $(BIN_DIR)/libPdTcl.dylib: $(GOBJ) $(GSRC)
 	cd ../obj && $(CC) $(CFLAGS) -dynamiclib -read_only_relocs warning  \
 		-o $(BIN_DIR)/libPdTcl.dylib $(GOBJ)  \
