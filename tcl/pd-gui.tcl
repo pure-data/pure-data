@@ -653,10 +653,13 @@ proc main {argc argv} {
     ::pdwindow::create_window
     ::pd_menus::configure_for_pdwindow
     # wait for 'pd' to call pdtk_pd_startup, or exit on timeout
-    vwait ::wait4pd
-    if {$::wait4pd eq "timeout"} {
-        puts stderr [_ "ERROR: 'pd' never showed up, 'pd-gui' quitting!"]
-        exit 2
+    if {$::wait4pd eq "init"} {
+        puts stderr "waitig for pd"
+        vwait ::wait4pd
+        if {$::wait4pd eq "timeout"} {
+            puts stderr [_ "ERROR: 'pd' never showed up, 'pd-gui' quitting!"]
+            exit 2
+        }
     }
     pdsend "pd set-startup" ;# get ::startup_libraries and ::startup_flags lists
     pdsend "pd set-path"    ;# get the ::pd_path list
