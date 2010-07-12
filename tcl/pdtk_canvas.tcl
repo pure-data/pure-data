@@ -208,12 +208,12 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
 
 proc ::pdtk_canvas::started_loading_file {patchname} {
     # set the mouse cursor to look busy and grab focus so it stays that way    
-    .pdwindow.tcl.entry configure -cursor watch
+    .pdwindow.text -cursor watch
     grab set -global .pdwindow.tcl.entry
 }
 
 proc ::pdtk_canvas::finished_loading_file {mytoplevel} {
-    .pdwindow.tcl.entry configure -cursor xterm
+    .pdwindow.text configure -cursor xterm
     grab release .pdwindow.tcl.entry
 
     # The grab seems to block the new PatchWindow from getting the FocusIn

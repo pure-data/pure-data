@@ -403,16 +403,16 @@ proc set_base_font {family weight} {
         set ::font_family $family
     } else {
         ::pdwindow::warn [format \
-                       [_ "WARNING: Font family '%s' not found, using default (%s)"] \
-                       $family $::font_family]
+            [_ "WARNING: Font family '%s' not found, using default (%s)\n"] \
+                $family $::font_family]
     }
     if {[lsearch -exact {bold normal} $weight] > -1} {
         set ::font_weight $weight
         set using_defaults 0
     } else {
         ::pdwindow::warn [format \
-                       [_ "WARNING: Font weight '%s' not found, using default (%s)"] \
-                       $weight $::font_weight]
+            [_ "WARNING: Font weight '%s' not found, using default (%s)\n"] \
+                $weight $::font_weight]
     }
 }
 
@@ -436,7 +436,7 @@ proc fit_font_into_metrics {} {
         }
         if {$giveup} {
             ::pdwindow::warn [format \
-               [_ "WARNING: %s failed to find font size (%s) that fits into %sx%s!"]\
+    [_ "WARNING: %s failed to find font size (%s) that fits into %sx%s!\n"]\
                [lindex [info level 0] 0] $size $width $height]
             continue
         }
@@ -648,10 +648,9 @@ proc main {argc argv} {
     }
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
-    ::pd_menus::create_menubar
     ::pdtk_canvas::create_popup
     ::pdwindow::create_window
-    ::pd_menus::configure_for_pdwindow
+    ::pd_menus::create_menubar
     # wait for 'pd' to call pdtk_pd_startup, or exit on timeout
     if {$::wait4pd eq "init"} {
         puts stderr "waitig for pd"
@@ -661,6 +660,7 @@ proc main {argc argv} {
             exit 2
         }
     }
+    ::pd_menus::configure_for_pdwindow
     pdsend "pd set-startup" ;# get ::startup_libraries and ::startup_flags lists
     pdsend "pd set-path"    ;# get the ::pd_path list
     vwait ::pd_path ;# wait for 'pd' to respond

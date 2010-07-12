@@ -240,7 +240,6 @@ proc ::pd_menus::build_media_menu {mymenu} {
     set audio_apilist_length [llength $::audio_apilist]
     if {$audio_apilist_length > 0} {$mymenu add separator}
     for {set x 0} {$x<$audio_apilist_length} {incr x} {
-        ::pdwindow::verbose 0 "audio [lindex [lindex $::audio_apilist $x] 0]"
         $mymenu add radiobutton -label [lindex [lindex $::audio_apilist $x] 0] \
             -command {menu_audio 0} -variable ::pd_whichapi \
             -value [lindex [lindex $::audio_apilist $x] 1]\
@@ -250,7 +249,6 @@ proc ::pd_menus::build_media_menu {mymenu} {
     set midi_apilist_length [llength $::midi_apilist]
     if {$midi_apilist_length > 0} {$mymenu add separator}
     for {set x 0} {$x<$midi_apilist_length} {incr x} {
-        ::pdwindow::verbose 0 "midi [lindex [lindex $::midi_apilist $x] 0]"
         $mymenu add radiobutton -label [lindex [lindex $::midi_apilist $x] 0] \
             -command {menu_midi 0} -variable ::pd_whichmidiapi \
             -value [lindex [lindex $::midi_apilist $x] 1]\
@@ -300,8 +298,12 @@ proc ::pd_menus::build_help_menu {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
         -command {menu_openfile {http://puredata.info}} 
-	$mymenu add command -label [_ "Report a bug"] -command \
-		{menu_openfile {http://sourceforge.net/tracker/?func=add&group_id=55736&atid=478070}} 
+    $mymenu add command -label [_ "Report a bug"] -command {menu_openfile \
+        {http://sourceforge.net/tracker/?func=add&group_id=55736&atid=478070}} 
+    $mymenu add  separator
+    $mymenu add command -label [_ "Tcl prompt"] -command \
+        {::pdwindow::create_tcl_entry} 
+
 }
 
 #------------------------------------------------------------------------------#

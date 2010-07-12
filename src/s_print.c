@@ -16,7 +16,8 @@ int sys_printtostderr;
 /* escape characters for tcl/tk */
 static char* strnescape(char *dest, const char *src, size_t len)
 {
-    int ptin = 0, ptout = 0;
+    int ptin = 0;
+    unsigned ptout = 0;
     for(; ptout < len; ptin++, ptout++)
     {
         int c = src[ptin];
@@ -26,7 +27,7 @@ static char* strnescape(char *dest, const char *src, size_t len)
         if (c==0) break;
     }
 
-    if(ptout<len) 
+    if(ptout < len) 
         dest[ptout]=0;
     else 
         dest[len-1]=0;
@@ -116,9 +117,9 @@ void post(const char *fmt, ...)
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
+    strcat(buf, "\n");
 
     dopost(buf);
-    endpost();
 }
 
 void startpost(const char *fmt, ...)
@@ -167,7 +168,7 @@ void endpost(void)
         (*sys_printhook)("\n");
     else if (sys_printtostderr)
         fprintf(stderr, "\n");
-    else sys_vgui("::pdwindow::endpost\n");
+    else post("");
 }
 
 void error(const char *fmt, ...)
