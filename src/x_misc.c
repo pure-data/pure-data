@@ -26,6 +26,11 @@
 #if defined (__linux__) || defined (__CYGWIN__)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
+#if defined (__FreeBSD_kernel__) || defined(__GNU__)
+#include <time.h>
+#define CLOCKHZ CLOCKS_PER_SEC
+#endif
+
 
 /* -------------------------- random ------------------------------ */
 /* this is strictly homebrew and untested. */

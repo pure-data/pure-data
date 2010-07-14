@@ -173,7 +173,7 @@ else
 GUISRC=
 fi
 
-if test `uname -s` = Linux;
+if test `uname -s` = Linux -o `uname -s` = "GNU/kFreeBSD" -o `uname -s` = "GNU";
 then
     dnl Ckecking for ALSA
     echo .................... alsa= $alsa

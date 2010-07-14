@@ -67,7 +67,7 @@ typedef int socklen_t;
 #define WISHAPP "wish84.exe"
 #endif
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 #define LOCALHOST "127.0.0.1"
 #else
 #define LOCALHOST "localhost"
@@ -271,7 +271,7 @@ void sys_setalarm(int microsec)
 
 #endif /* NOT _WIN32 && NOT __CYGWIN__ */
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) || defined(_POSIX_MEMLOCK)
 #include <sched.h>
@@ -843,7 +843,7 @@ int sys_pollgui(void)
 
 static int sys_watchfd;
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 void glob_watchdog(t_pd *dummy)
 {
     if (write(sys_watchfd, "\n", 1) < 1)
@@ -1131,7 +1131,7 @@ int sys_startgui(const char *libdir)
 #endif /* NOT _WIN32 */
     }
 
-#if defined(__linux__) || defined(IRIX)
+#if defined(__linux__) || defined(IRIX) || defined(__FreeBSD_kernel__)
         /* now that we've spun off the child process we can promote
         our process's priority, if we can and want to.  If not specfied
         (-1), we check root status.  This misses the case where we might
@@ -1241,7 +1241,7 @@ int sys_startgui(const char *libdir)
              sys_socketreceiver);
 
             /* here is where we start the pinging. */
-#if defined(__linux__) || defined(IRIX)
+#if defined(__linux__) || defined(IRIX) || defined(__FreeBSD_kernel__)
          if (sys_hipriority)
              sys_gui("pdtk_watchdog\n");
 #endif
@@ -1270,7 +1270,7 @@ void sys_bail(int n)
     if (!reentered)
     {
         reentered = 1;
-#ifndef __linux__  /* sys_close_audio() hangs if you're in a signal? */
+#if !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__GNU__) /* sys_close_audio() hangs if you're in a signal? */
         fprintf(stderr, "closing audio...\n");
         sys_close_audio();
         fprintf(stderr, "closing MIDI...\n");

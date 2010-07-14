@@ -47,7 +47,7 @@ char *class_gethelpdir(t_class *c);
 
 #endif
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
 #ifdef __x86_64__
 static char pd_tilde_dllextent[] = ".l_ia64",
     pd_tilde_dllextent2[] = ".pd_linux";

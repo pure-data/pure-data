@@ -5,7 +5,11 @@
 
 /* this file inputs and outputs audio using the OSS API available on linux. */
 
-#include <linux/soundcard.h>
+#if defined(__FreeBSD_kernel__)
+# include <sys/soundcard.h>
+#else
+# include <linux/soundcard.h>
+#endif
 
 #include "m_pd.h"
 #include "s_stuff.h"

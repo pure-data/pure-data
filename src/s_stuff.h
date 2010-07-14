@@ -184,7 +184,7 @@ void sys_setvirtualalarm( void);
 #define API_JACK 5
 #define API_SGI 6
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD_kernel__)
 #define API_DEFAULT API_OSS
 #define API_DEFSTRING "OSS"
 #endif

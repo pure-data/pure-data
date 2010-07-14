@@ -502,7 +502,7 @@ static void tabread4_tilde_setup(void)
 #include <sys/endian.h>
 #endif
 
-#if defined(__FreeBSD__) || defined(__APPLE__)
+#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__)
 #include <machine/endian.h>
 #endif
 
