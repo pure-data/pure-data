@@ -459,9 +459,9 @@ proc pdtk_pd_startup {major minor bugfix test
     fit_font_into_metrics
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
+    ::pd_menus::create_menubar
     ::pdtk_canvas::create_popup
     ::pdwindow::create_window
-    ::pd_menus::create_menubar
     ::pd_menus::configure_for_pdwindow
     load_startup_plugins
     open_filestoopen

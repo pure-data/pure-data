@@ -60,7 +60,7 @@ typedef int socklen_t;
 #endif
 
 #ifndef PDGUIDIR
-#define PDGUIDIR "bin/"
+#define PDGUIDIR "tcl/"
 #endif
 
 #ifndef WISHAPP
@@ -1111,7 +1111,7 @@ int sys_startgui(const char *libdir)
         
         strcpy(scriptbuf, "\"");
         strcat(scriptbuf, libdir);
-        strcat(scriptbuf, "/" PDBINDIR "pd-gui.tcl\"");
+        strcat(scriptbuf, "/" PDGUIDIR "pd-gui.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
         
                 sprintf(portbuf, "%d", portno);

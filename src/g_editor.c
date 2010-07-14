@@ -9,6 +9,9 @@
 #include "s_stuff.h"
 #include "g_canvas.h"
 #include <string.h>
+#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
+#define snprintf sprintf_s
+#endif
 
 void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
     int selectem);
@@ -942,13 +945,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 (int)(x->gl_screeny2 - x->gl_screeny1),
                 (int)(x->gl_screenx1), (int)(x->gl_screeny1),
                 x->gl_edit);
-            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx", c);
+            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
+                (unsigned long)c);
             while (c->gl_owner) {
                 c = c->gl_owner;
                 cbuflen = strlen(cbuf);
                 snprintf(cbuf + cbuflen,
                          MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                         " .x%lx", c);
+                         " .x%lx", (unsigned long)c);
             }
             strcat(cbuf, "\n");
             sys_gui(cbuf);

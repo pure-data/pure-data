@@ -9,6 +9,9 @@
 #include <string.h>
 #include <errno.h>
 #include "s_stuff.h"
+#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
+#define snprintf sprintf_s
+#endif
 
 t_printhook sys_printhook;
 int sys_printtostderr;

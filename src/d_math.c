@@ -68,9 +68,9 @@ static void clip_setup(void)
 #define DUMTAB2SIZE 1024
 
 #ifdef _MSC_VER
- typedef __int32 int32_t /* use MSVC's internal type */
+ typedef __int32 int32_t; /* use MSVC's internal type */
 #elif defined(IRIX)
- typedef long int32_t  /* a data type that has 32 bits */
+ typedef long int32_t;  /* a data type that has 32 bits */
 #else
 # include <stdint.h>  /* this is where int32_t is defined in C99 */
 #endif
