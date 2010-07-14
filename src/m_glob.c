@@ -26,10 +26,8 @@ void glob_audio_setapi(t_pd *dummy, t_floatarg f);
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform);
 void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_midi_setapi(t_pd *dummy, t_floatarg f);
-void glob_set_path(t_pd *dummy);
 void glob_start_path_dialog(t_pd *dummy, t_floatarg flongform);
 void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
-void glob_set_startup(t_pd *dummy);
 void glob_start_startup_dialog(t_pd *dummy, t_floatarg flongform);
 void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_ping(t_pd *dummy);
@@ -117,14 +115,10 @@ void glob_init(void)
         gensym("midi-properties"), A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_midi_dialog,
         gensym("midi-dialog"), A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_set_path,
-        gensym("set-path"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_start_path_dialog,
         gensym("start-path-dialog"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_path_dialog,
         gensym("path-dialog"), A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_set_startup,
-        gensym("set-startup"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_start_startup_dialog,
         gensym("start-startup-dialog"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_startup_dialog,

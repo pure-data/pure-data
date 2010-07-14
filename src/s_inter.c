@@ -103,6 +103,8 @@ static int sys_guisock;
 static t_binbuf *inbinbuf;
 static t_socketreceiver *sys_socketreceiver;
 extern int sys_addhist(int phase);
+void sys_set_path(void);
+void sys_set_startup(void);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
 
@@ -1245,6 +1247,9 @@ int sys_startgui(const char *libdir)
 #endif
          sys_get_audio_apis(buf);
          sys_get_midi_apis(buf2);
+         sys_set_path();     /* tell GUI about path and startup flags */
+         sys_set_startup();
+                            /* ... and about font, medio APIS, etc */
          sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
                   PD_MAJOR_VERSION, PD_MINOR_VERSION, 
                   PD_BUGFIX_VERSION, PD_TEST_VERSION,

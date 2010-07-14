@@ -103,9 +103,6 @@ set TCL_BUGFIX_VERSION 0
 # for testing which platform we are running on ("aqua", "win32", or "x11")
 set windowingsystem ""
 
-# variable for vwait so that 'pd-gui' will timeout if 'pd' never shows up
-set wait4pd "init"
-
 # args about how much and where to log
 set verbose $::pdwindow::maxverbosity
 set stderr 0
@@ -460,7 +457,14 @@ proc pdtk_pd_startup {major minor bugfix test
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
-    set ::wait4pd "started"
+    ::pd_bindings::class_bindings
+    ::pd_bindings::global_bindings
+    ::pdtk_canvas::create_popup
+    ::pdwindow::create_window
+    ::pd_menus::create_menubar
+    ::pd_menus::configure_for_pdwindow
+    load_startup_plugins
+    open_filestoopen
 }
 
 ##### routine to ask user if OK and, if so, send a message on to Pd ######
@@ -628,9 +632,6 @@ proc main {argc argv} {
     set_pd_paths
     init_for_platform
 
-    # set a timeout for how long 'pd-gui' should wait for 'pd' to start
-    after 30000 set ::wait4pd "timeout"
-
     # ::host and ::port are parsed from argv by parse_args
     if { $::port > 0 && $::host ne "" } {
         # 'pd' started first and launched us, so get the port to connect to
@@ -646,28 +647,7 @@ proc main {argc argv} {
             set ::fileopendir $::env(HOME)
         }
     }
-    ::pd_bindings::class_bindings
-    ::pd_bindings::global_bindings
-    ::pdtk_canvas::create_popup
-    ::pdwindow::create_window
-    ::pd_menus::create_menubar
-    # wait for 'pd' to call pdtk_pd_startup, or exit on timeout
-    if {$::wait4pd eq "init"} {
-        puts stderr "waitig for pd"
-        vwait ::wait4pd
-        if {$::wait4pd eq "timeout"} {
-            puts stderr [_ "ERROR: 'pd' never showed up, 'pd-gui' quitting!"]
-            exit 2
-        }
-    }
-    ::pd_menus::configure_for_pdwindow
-    pdsend "pd set-startup" ;# get ::startup_libraries and ::startup_flags lists
-    pdsend "pd set-path"    ;# get the ::pd_path list
-    vwait ::pd_path ;# wait for 'pd' to respond
-    load_startup_plugins
-    open_filestoopen
     ::pdwindow::verbose 1 "------------------ done with main ----------------------"
 }
 
 main $::argc $::argv
-
