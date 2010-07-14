@@ -185,20 +185,24 @@ void sys_setvirtualalarm( void);
 #define API_SGI 6
 
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
-#define API_DEFAULT API_OSS
-#define API_DEFSTRING "OSS"
+# define API_DEFAULT API_OSS
+# define API_DEFSTRING "OSS"
 #endif
 #if defined(_WIN32) || defined(__CYGWIN__)
-#define API_DEFAULT API_MMIO
-#define API_DEFSTRING "MMIO"
+# define API_DEFAULT API_MMIO
+# define API_DEFSTRING "MMIO"
 #endif
 #ifdef __APPLE__
-#define API_DEFAULT API_PORTAUDIO
-#define API_DEFSTRING "portaudio"
+# define API_DEFAULT API_PORTAUDIO
+# define API_DEFSTRING "portaudio"
 #endif
 #ifdef IRIX
-#define API_DEFAULT API_SGI
-#define API_DEFSTRING "SGI Digital Media"
+# define API_DEFAULT API_SGI
+# define API_DEFSTRING "SGI Digital Media"
+#endif
+#ifdef __GNU__
+# define API_DEFAULT API_JACK
+# define API_DEFSTRING "Jack audio connection kit"
 #endif
 #define DEFAULTAUDIODEV 0
 

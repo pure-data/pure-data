@@ -195,10 +195,19 @@ dnl This should be fixed so Pd can use ALSA shared libraries where appropriate.
       LDFLAGS="$LDFLAGS -static"
     fi 
     EXT=pd_linux
-    CPPFLAGS="-DHAVE_LIBDL -DPA_USE_OSS -DUNIX -DHAVE_UNISTD_H\
-        -DUSEAPI_OSS -DPDGUIDIR=\\\"tcl/\\\" \
+    CPPFLAGS="-DHAVE_LIBDL -DUNIX -DHAVE_UNISTD_H\
+        -DPDGUIDIR=\\\"tcl/\\\" \
         -fno-strict-aliasing"
-    SYSSRC="s_midi_oss.c s_audio_oss.c"
+dnl No OSS on hurd
+    if test `uname -s` = "GNU";
+    then
+        SYSSRC="s_midi_dummy.c"
+    else
+        SYSSRC="s_midi_oss.c s_audio_oss.c"
+        CPPFLAGS=$CPPFLAGS" -DPA_USE_OSS -DUSEAPI_OSS"
+    fi
+	
+	
     if test x$alsa = "xyes";
     then
         SYSSRC=$SYSSRC" s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c"
