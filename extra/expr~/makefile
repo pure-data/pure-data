@@ -89,7 +89,6 @@ LINUXINCLUDE =  -I../../src
 
 expr.pd_linux: $(LINUXOBJ)
 	$(CC)  -shared -o expr.pd_linux $(LINUXOBJ) -lc -lm
-	strip --strip-unneeded expr.pd_linux
 
 expr~.pd_linux: expr.pd_linux
 	-ln -s expr.pd_linux expr~.pd_linux
