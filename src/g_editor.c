@@ -239,7 +239,7 @@ void glist_deselect(t_glist *x, t_gobj *y)
 
             rtext_gettext(z, &buf, &bufsize);
             text_setto((t_text *)y, x, buf, bufsize);
-            canvas_fixlinesfor(glist_getcanvas(x), (t_text *)y);
+            canvas_fixlinesfor(x, (t_text *)y);
             x->gl_editor->e_textedfor = 0;
         }
         if (fixdsp)

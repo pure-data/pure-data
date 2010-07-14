@@ -336,7 +336,7 @@ static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
-    canvas_fixlinesfor(glist_getcanvas(x->x_gui.x_glist), (t_text*)x);
+    canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
 }
 
 static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy)

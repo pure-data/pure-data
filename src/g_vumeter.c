@@ -542,7 +542,7 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
-    canvas_fixlinesfor(glist_getcanvas(x->x_gui.x_glist), (t_text*)x);
+    canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
 }
 
 static void vu_size(t_vu *x, t_symbol *s, int ac, t_atom *av)
@@ -554,7 +554,7 @@ static void vu_size(t_vu *x, t_symbol *s, int ac, t_atom *av)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
-        canvas_fixlinesfor(glist_getcanvas(x->x_gui.x_glist), (t_text*)x);
+        canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
     }
 }
 
