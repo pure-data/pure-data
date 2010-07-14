@@ -368,6 +368,8 @@ void sys_close_audio(void)
     sched_set_using_audio(SCHED_AUDIO_NONE);
     audio_state = 0;
     audio_callback_is_open = 0;
+
+    sys_vgui("set pd_whichapi 0\n");
 }
 
     /* open audio using whatever parameters were last used */
