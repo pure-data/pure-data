@@ -24,6 +24,7 @@ typedef struct _sigdelwrite
 {
     t_object x_obj;
     t_symbol *x_sym;
+    t_float x_deltime;  /* delay in msec (added by Mathieu Bouchard) */
     t_delwritectl x_cspace;
     int x_sortno;   /* DSP sort number at which this was last put on chain */
     int x_rsortno;  /* DSP sort # for first delread or write in chain */
@@ -33,6 +34,21 @@ typedef struct _sigdelwrite
 
 #define XTRASAMPS 4
 #define SAMPBLK 4
+
+static void sigdelwrite_updatesr (t_sigdelwrite *x, t_float sr) /* added by Mathieu Bouchard */
+{
+    int nsamps = x->x_deltime * sr * (t_float)(0.001f);
+    if (nsamps < 1) nsamps = 1;
+    nsamps += ((- nsamps) & (SAMPBLK - 1));
+    nsamps += DEFDELVS;
+    if (x->x_cspace.c_n != nsamps) {
+      x->x_cspace.c_vec = (t_sample *)resizebytes(x->x_cspace.c_vec,
+        (x->x_cspace.c_n + XTRASAMPS) * sizeof(t_sample),
+        (         nsamps + XTRASAMPS) * sizeof(t_sample));
+      x->x_cspace.c_n = nsamps;
+      x->x_cspace.c_phase = XTRASAMPS;
+    }
+}
 
     /* routine to check that all delwrites/delreads/vds have same vecsize */
 static void sigdelwrite_checkvecsize(t_sigdelwrite *x, int vecsize)
@@ -54,19 +70,13 @@ static void sigdelwrite_checkvecsize(t_sigdelwrite *x, int vecsize)
 
 static void *sigdelwrite_new(t_symbol *s, t_floatarg msec)
 {
-    int nsamps;
     t_sigdelwrite *x = (t_sigdelwrite *)pd_new(sigdelwrite_class);
     if (!*s->s_name) s = gensym("delwrite~");
     pd_bind(&x->x_obj.ob_pd, s);
     x->x_sym = s;
-    nsamps = msec * sys_getsr() * (t_float)(0.001f);
-    if (nsamps < 1) nsamps = 1;
-    nsamps += ((- nsamps) & (SAMPBLK - 1));
-    nsamps += DEFDELVS;
-    x->x_cspace.c_n = nsamps;
-    x->x_cspace.c_vec =
-        (t_sample *)getbytes((nsamps + XTRASAMPS) * sizeof(t_sample));
-    x->x_cspace.c_phase = XTRASAMPS;
+    x->x_deltime = msec;
+    x->x_cspace.c_n = 0;
+    x->x_cspace.c_vec = getbytes(XTRASAMPS * sizeof(t_sample));
     x->x_sortno = 0;
     x->x_vecsize = 0;
     x->x_f = 0;
@@ -109,6 +119,7 @@ static void sigdelwrite_dsp(t_sigdelwrite *x, t_signal **sp)
     dsp_add(sigdelwrite_perform, 3, sp[0]->s_vec, &x->x_cspace, sp[0]->s_n);
     x->x_sortno = ugen_getsortno();
     sigdelwrite_checkvecsize(x, sp[0]->s_n);
+    sigdelwrite_updatesr(x, sp[0]->s_sr);
 }
 
 static void sigdelwrite_free(t_sigdelwrite *x)
@@ -200,6 +211,7 @@ static void sigdelread_dsp(t_sigdelread *x, t_signal **sp)
     x->x_n = sp[0]->s_n;
     if (delwriter)
     {
+        sigdelwrite_updatesr(delwriter, sp[0]->s_sr);
         sigdelwrite_checkvecsize(delwriter, sp[0]->s_n);
         x->x_zerodel = (delwriter->x_sortno == ugen_getsortno() ?
             0 : delwriter->x_vecsize);
