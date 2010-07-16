@@ -16,7 +16,7 @@ libportaudio_la_SOURCES = src/common/pa_allocation.c  \
         src/common/pa_stream.c      \
         src/common/pa_trace.c       \
         src/common/pa_debugprint.c  \
-        src/common/pa_ringbuffer.c
+        src/common/pa_ringbuffer.c 
 
 
 if ALSA
@@ -84,6 +84,7 @@ nobase_noinst_HEADERS = \
 	src/common/pa_hostapi.h \
 	src/common/pa_process.h \
 	src/common/pa_ringbuffer.h \
+	src/common/pa_memorybarrier.h \
 	src/common/pa_stream.h \
 	src/common/pa_trace.h \
 	src/common/pa_types.h \

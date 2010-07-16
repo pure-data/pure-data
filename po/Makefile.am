@@ -22,13 +22,20 @@ TEMPLATE = template.pot
 
 libpdpodir = $(pkglibdir)/po
 libpdpo_DATA = $(MSGFILES)
+dist_libpdpo_DATA =
 
 EXTRA_DIST = $(POFILES)
 
 # generate .msg files from the .po files
-all: $(MSGFILES)
+all-local: $(MSGFILES)
+
+
 
 # refresh .po files from the template
+clean-local:
+	-rm -f -- $(MSGFILES)
+	-rm -f -- $(POFILES:=~)
+
 po: $(POFILES)
 
 # refresh the template from the source code
