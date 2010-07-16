@@ -11,7 +11,7 @@ INCLUDES = @INCLUDES@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 
-bin_PROGRAMS = pd pdsend pdreceive pd-watchdog
+bin_PROGRAMS = pd pdsend pdreceive
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
@@ -104,6 +104,7 @@ pd_CFLAGS += -DUNIX
 
 libpdbindir = $(pkglibdir)/bin
 libpdbin_DATA = 
+libpdbin_PROGRAMS = pd-watchdog pd
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
 pd_LDFLAGS += -export-dynamic
@@ -115,6 +116,7 @@ if MACOSX
 LIBS += -framework Carbon
 pd_CFLAGS += -DMACOSX #kludge, should use auto macro __APPLE__
 bin_SCRIPTS = 
+bin_PROGRAMS += pd-watchdog
 endif
 
 if WINDOWS
@@ -129,6 +131,7 @@ if MINGW
 pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DMSW #kludge, MSW should be _WIN32
 pdsend_CFLAGS += -DMSW #kludge, should use _WIN32
 pdreceive_CFLAGS += -DMSW #kludge, should use _WIN32
+bin_PROGRAMS += pd-watchdog
 endif
 
 etags: TAGS
