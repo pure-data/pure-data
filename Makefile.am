@@ -20,7 +20,7 @@ endif
 EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 
 # subdirs that are built
-SUBDIRS = $(EXTRA_SUBDIRS) src extra man tcl
+SUBDIRS = $(EXTRA_SUBDIRS) src man tcl po extra
 
 # subdirs that are always included in the dist, etc.
 DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
@@ -43,11 +43,7 @@ bin:
 locales:
 	make -C po all
 
-clean-local:
-	make -C po clean
-
 install-data-local:
-	make libpddir=$(libpddir) -C po install
 	make libpddir=$(libpddir) -C extra install
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup/disabled
