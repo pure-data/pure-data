@@ -20,20 +20,15 @@ endif
 EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 
 # subdirs that are built
-SUBDIRS = $(EXTRA_SUBDIRS) src extra man
+SUBDIRS = $(EXTRA_SUBDIRS) src extra man tcl
 
 # subdirs that are always included in the dist, etc.
 DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
 
-# bin and tcl are symlinks for compatibility with the Pd-vanilla source tree.
 # Symlinks don't work on Windows/MinGW but they do on Cygwin.
 BUILT_SOURCES = 
 if MSGFMT
 BUILT_SOURCES += locales
-endif
-if !MINGW
-BUILT_SOURCES += bin tcl
-CLEANFILES = bin tcl
 endif
 
 if LINUX
@@ -45,9 +40,6 @@ endif
 bin:
 	$(LN_S) src bin
 
-tcl:
-	$(LN_S) src tcl
-
 locales:
 	make -C po all
 
@@ -56,7 +48,6 @@ clean-local:
 
 install-data-local:
 	make libpddir=$(libpddir) -C po install
-	make libpddir=$(libpddir) -C tcl install
 	make libpddir=$(libpddir) -C extra install
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup/disabled

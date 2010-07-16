@@ -224,6 +224,7 @@ AC_CONFIG_FILES([Makefile
                 man/Makefile
                 portaudio/Makefile
                 portmidi/Makefile
+                tcl/Makefile
                 src/Makefile])
 
 AC_OUTPUT
