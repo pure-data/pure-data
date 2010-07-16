@@ -1,3 +1,10 @@
+# this is the UNIX-style complicated layout dir, simple goes to $(prefix)/po
+prefix = /usr/local
+libpddir = $(prefix)/lib/pd
+
+EXTERNALS=bonk~ choice expr~ fiddle~ loop~ lrshift~ pd~ pique sigmund~ stdout
+.PHONY: $(EXTERNALS)
+
 current: pd_linux
 
 # ----------------------- NT -----------------------
@@ -63,5 +70,29 @@ DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
 
 # ----------------------------------------------------------
 
-clean:
-	rm -f *.o *.pd_* so_locations
+distclean clean: clean-externals
+	rm -f *.o *.pd_* *.l_* *.d_* *.m_* so_locations
+
+# ----------------------------------------------------------
+# ----------------------------------------------------------
+
+$(EXTERNALS): 
+	if test -d $@; then make -C $@; fi
+
+$(EXTERNALS:%=%-clean): 
+	if test -d $(@:-clean=); then make -C $(@:-clean=) clean; fi
+
+$(EXTERNALS:%=%-install): 
+	if test -d $(@:-install=); then make -C $(@:-install=) install; fi
+
+all: $(EXTERNALS)
+
+clean-externals: $(EXTERNALS:%=%-clean)
+
+install: $(EXTERNALS:%=%-install)
+	install -d $(DESTDIR)$(libpddir)/extra/$(NAME)
+	install -m644 -p *.*_* $(DESTDIR)$(libpddir)/extra/$(NAME)
+	install -m644 -p *.pd $(DESTDIR)$(libpddir)/extra/$(NAME)
+
+test:
+	@echo prefix: $(prefix)

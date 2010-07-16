@@ -8,15 +8,17 @@ ifeq ($(UNAME),Darwin)
 endif
 
 # these are the files to search for localization strings
-SOURCES = ../src/AppMain.tcl ../src/apple_events.tcl ../src/dialog_array.tcl \
-	../src/dialog_audio.tcl ../src/dialog_canvas.tcl ../src/dialog_data.tcl \
-	../src/dialog_find.tcl ../src/dialog_font.tcl ../src/dialog_gatom.tcl \
-	../src/dialog_iemgui.tcl ../src/dialog_message.tcl ../src/dialog_midi.tcl \
-	../src/dialog_path.tcl ../src/dialog_startup.tcl ../src/helpbrowser.tcl \
-	../src/opt_parser.tcl ../src/pd-gui.tcl ../src/pd_bindings.tcl \
-	../src/pd_connect.tcl ../src/pd_menucommands.tcl ../src/pd_menus.tcl \
-	../src/pdtk_canvas.tcl ../src/pdtk_text.tcl ../src/pdwindow.tcl \
-	../src/scrollbox.tcl ../src/scrollboxwindow.tcl ../src/wheredoesthisgo.tcl
+TCLSOURCES = AppMain.tcl apple_events.tcl dialog_array.tcl \
+	dialog_audio.tcl dialog_canvas.tcl dialog_data.tcl \
+	dialog_find.tcl dialog_font.tcl dialog_gatom.tcl \
+	dialog_iemgui.tcl dialog_message.tcl dialog_midi.tcl \
+	dialog_path.tcl dialog_startup.tcl helpbrowser.tcl \
+	opt_parser.tcl pd-gui.tcl pd_bindings.tcl \
+	pd_connect.tcl pd_menucommands.tcl pd_menus.tcl \
+	pdtk_canvas.tcl pdtk_text.tcl pdwindow.tcl \
+	scrollbox.tcl scrollboxwindow.tcl wheredoesthisgo.tcl
+
+SOURCES=$(addprefix ../tcl/, $(TCLSOURCES))
 
 # these are the supported languages, 
 ALL_LINGUAS = af az be bg de el en_ca eu fr gu he hi hu it pa pt_br pt_pt sq sv vi
@@ -69,7 +71,7 @@ distdir:
 	install -m644 -p $(TEMPLATE) $(distdir)
 	install -m644 -p $(POFILES) $(distdir)
 
-distclean: clean
+maintainer-clean distclean: clean
 
 clean:
 	-rm -f -- $(MSGFILES)

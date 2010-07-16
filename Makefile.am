@@ -23,7 +23,7 @@ EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 SUBDIRS = $(EXTRA_SUBDIRS) src extra man
 
 # subdirs that are always included in the dist, etc.
-DIST_SUBDIRS = asio extra man po portaudio portmidi src
+DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
 
 # bin and tcl are symlinks for compatibility with the Pd-vanilla source tree.
 # Symlinks don't work on Windows/MinGW but they do on Cygwin.
@@ -56,6 +56,7 @@ clean-local:
 
 install-data-local:
 	make libpddir=$(libpddir) -C po install
+	make libpddir=$(libpddir) -C tcl install
 	make libpddir=$(libpddir) -C extra install
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup/disabled

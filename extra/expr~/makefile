@@ -6,7 +6,7 @@ install: install_linux
 
 clean: clean_linux
 
-PDEXTERN=/usr/local/lib/pd/externs
+PDEXTERN=/usr/local/lib/pd/extra
 
 # ----------------------- NT -----------------------
 
@@ -109,12 +109,11 @@ install_linux:
 	install expr.pd_linux $(PDEXTERN)
 	rm -f $(PDEXTERN)/expr~.pd_linux
 	rm -f $(PDEXTERN)/fexpr~.pd_linux
-	cd $(PDEXTERN); \
-	-ln -s expr.pd_linux expr~.pd_linux
-	-ln -s expr.pd_linux fexpr~.pd_linux
+	cd $(PDEXTERN); ln -s expr.pd_linux expr~.pd_linux
+	cd $(PDEXTERN); ln -s expr.pd_linux fexpr~.pd_linux
 
 
-linux_clean:
+clean_linux:
 	rm -f *.pd_linux_o *.o
 
 # ----------------------- MAC OSX -----------------------
