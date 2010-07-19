@@ -1,0 +1,16 @@
+*.o
+TAGS
+autom4te.cache
+Makefile
+Makefile.in
+configure
+config.log
+config.status
+makefile.dependencies
+*.pd_linux
+*.pd_darwin
+*.d_fat
+*.d_fat_o
+bin
+src/makefile
+ASIOSDK2
