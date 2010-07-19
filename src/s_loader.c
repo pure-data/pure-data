@@ -44,7 +44,7 @@ static char sys_dllextent[] = ".l_ia64", sys_dllextent2[] = ".pd_linux";
 # else
 static char sys_dllextent[] = ".l_i386", sys_dllextent2[] = ".pd_linux";
 # endif
-#elif defined __APPLE__
+#elif defined(__APPLE__)
 # ifndef MACOSX3
 static char sys_dllextent[] = ".d_fat", sys_dllextent2[] = ".pd_darwin";
 # else
@@ -52,6 +52,8 @@ static char sys_dllextent[] = ".d_ppc", sys_dllextent2[] = ".pd_darwin";
 # endif
 #elif defined(_WIN32) || defined(__CYGWIN__)
 static char sys_dllextent[] = ".m_i386", sys_dllextent2[] = ".dll";
+#elif defined(ANDROID)
+static char sys_dllextent[] = ".l_arm", sys_dllextent2[] = ".pd_linux";
 #endif
 
     /* maintain list of loaded modules to avoid repeating loads */

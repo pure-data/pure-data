@@ -506,7 +506,7 @@ static void tabread4_tilde_setup(void)
 #include <machine/endian.h>
 #endif
 
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__)
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__) || defined(ANDROID)
 #include <endian.h>
 #endif
 

@@ -182,6 +182,8 @@ void sys_setalarm(int microsec);
 #define API_PORTAUDIO 4
 #define API_JACK 5
 #define API_SGI 6
+#define API_AUDIOUNIT 7
+#define API_ESD 8
 
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
 # define API_DEFAULT API_OSS
@@ -192,8 +194,13 @@ void sys_setalarm(int microsec);
 # define API_DEFSTRING "MMIO"
 #endif
 #ifdef __APPLE__
+# ifdef __arm__
+#  define API_DEFAULT API_AUDIOUNIT
+#  define API_DEFSTRING "AudioUnit"
+# else
 # define API_DEFAULT API_PORTAUDIO
 # define API_DEFSTRING "portaudio"
+# endif /* __arm__ */
 #endif
 #ifdef IRIX
 # define API_DEFAULT API_SGI
@@ -268,6 +275,26 @@ int mmio_send_dacs(void);
 void mmio_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, 
         int maxndev, int devdescsize);
+
+int audiounit_open_audio(int naudioindev, int *audioindev, int nchindev,
+    int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
+    int *choutdev, int rate);
+void audiounit_close_audio(void);
+int audiounit_send_dacs(void);
+void audiounit_listdevs(void);
+void audiounit_getdevs(char *indevlist, int *nindevs,
+    char *outdevlist, int *noutdevs, int *canmulti, 
+    	int maxndev, int devdescsize);
+
+int esd_open_audio(int naudioindev, int *audioindev, int nchindev,
+    int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
+    int *choutdev, int rate);
+void esd_close_audio(void);
+int esd_send_dacs(void);
+void esd_listdevs(void);
+void esd_getdevs(char *indevlist, int *nindevs,
+    char *outdevlist, int *noutdevs, int *canmulti, 
+    	int maxndev, int devdescsize);
 
 void sys_listmididevs(void);
 void sys_set_midi_api(int whichapi);
