@@ -130,7 +130,7 @@ void glob_init(void)
         gensym("version"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_perf,
         gensym("perf"), A_FLOAT, 0);
-#ifdef UNIX
+#if defined(__linux__) || defined(IRIX) || defined(__FreeBSD_kernel__)
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);
 #endif

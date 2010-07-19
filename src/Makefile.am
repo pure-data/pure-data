@@ -69,7 +69,7 @@ endif
 # handle a single MIDI API
 if OSS
 if !WINDOWS
-pd_CFLAGS += -DUSEAPI_OSS -DUNIX
+pd_CFLAGS += -DUSEAPI_OSS
 pd_SOURCES += s_audio_oss.c s_midi_oss.c
 endif
 endif
@@ -96,12 +96,6 @@ pd_SOURCES += s_midi_dummy.c
 endif
 
 if LINUX 
-# kludge, should use auto macros like __linux__. The UNIX macro seems
-# to mean "things that have been implemented with GNU/Linux in mind, but the
-# watchdog should work on Mac OS X and Cygwin, and OSS can work on FreeBSD,
-# Cygwin, etc.
-pd_CFLAGS += -DUNIX 
-
 libpdbindir = $(pkglibdir)/bin
 libpdbin_DATA = 
 libpdbin_PROGRAMS = pd-watchdog pd

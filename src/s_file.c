@@ -159,7 +159,7 @@ static void sys_donesavepreferences( void)
     }
 }
 
-#endif /* UNIX */
+#endif /* __linux__ || __CYGWIN__ || __FreeBSD_kernel__ || __GNU__ */
 
 #ifdef _WIN32
 

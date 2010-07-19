@@ -15,7 +15,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
-#ifdef NT
+#ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
 #endif
 
