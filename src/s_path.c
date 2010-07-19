@@ -20,6 +20,7 @@
 #endif
 #ifdef MSW
 #include <io.h>
+#include <windows.h>
 #endif
 
 #include <string.h>
@@ -86,6 +87,30 @@ int sys_isabsolutepath(const char *dir)
     }
 }
 
+/* expand env vars and ~ at the beginning of a path and make a copy to return */
+static void sys_expandpath(const char *from, char *to)
+{
+    if ((strlen(from) == 1 && from[0] == '~') || (strncmp(from,"~/", 2) == 0))
+    {
+#ifdef _WIN32
+        const char *home = getenv("USERPROFILE");
+#else
+        const char *home = getenv("HOME");
+#endif
+        if(home) 
+        {
+            strncpy(to, home, FILENAME_MAX - 1);
+            strncat(to, from + 1, FILENAME_MAX - strlen(from) - 2);
+        }
+    }
+    else
+        strncpy(to, from, FILENAME_MAX - 1);
+#ifdef _WIN32
+    char buf[FILENAME_MAX];
+    ExpandEnvironmentStrings(to, buf, FILENAME_MAX - 2);
+    strncpy(to, buf, FILENAME_MAX - 1);
+#endif    
+}
 
 /*******************  Utility functions used below ******************/
 
@@ -214,9 +239,11 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
     int fd;
+    char buf[MAXPDSTRING];
     if (strlen(dir) + strlen(name) + strlen(ext) + 4 > size)
         return (-1);
-    strcpy(dirresult, dir);
+    sys_expandpath(dir, buf);
+    strcpy(dirresult, buf);
     if (*dirresult && dirresult[strlen(dirresult)-1] != '/')
         strcat(dirresult, "/");
     strcat(dirresult, name);
