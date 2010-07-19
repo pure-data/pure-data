@@ -218,8 +218,29 @@ int sys_usestdpath = 1;
 
 void sys_setextrapath(const char *p)
 {
+    char pathbuf[FILENAME_MAX];
     namelist_free(pd_extrapath);
-    pd_extrapath = namelist_append(0, p, 0);
+    /* add standard place for users to install stuff first */
+#ifdef __gnu_linux__
+    sys_expandpath("~/pd-externals", pathbuf);
+    pd_extrapath = namelist_append(0, pathbuf, 0);
+    pd_extrapath = namelist_append(pd_extrapath, "/usr/local/lib/pd-externals", 0);
+#endif
+
+#ifdef __APPLE__
+    sys_expandpath("~/Library/Pd", pathbuf);
+    pd_extrapath = namelist_append(0, pathbuf, 0);
+    pd_extrapath = namelist_append(pd_extrapath, "/Library/Pd", 0);
+#endif
+
+#ifdef _WIN32
+    sys_expandpath("%ProgramFiles%/Common Files/Pd", pathbuf);
+    pd_extrapath = namelist_append(0, pathbuf, 0);
+    sys_expandpath("%UserProfile%/Application Data/Pd", pathbuf);
+    pd_extrapath = namelist_append(pd_extrapath, pathbuf, 0);
+#endif
+    /* add built-in "extra" path last so its checked last */
+    pd_extrapath = namelist_append(pd_extrapath, p, 0);
 }
 
 #ifdef MSW
@@ -346,11 +367,12 @@ static int do_open_via_path(const char *dir, const char *name,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
 
-        /* next look in "extra" */
-    if (sys_usestdpath &&
-        (fd = sys_trytoopenone(pd_extrapath->nl_string, name, ext,
-            dirresult, nameresult, size, bin)) >= 0)
-                return (fd);
+        /* next look in built-in paths like "extra" */
+    if (sys_usestdpath)
+        for (nl = pd_extrapath; nl; nl = nl->nl_next)
+            if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+                dirresult, nameresult, size, bin)) >= 0)
+                    return (fd);
 
     *dirresult = 0;
     *nameresult = dirresult;
