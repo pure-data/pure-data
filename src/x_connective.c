@@ -600,6 +600,12 @@ static void *route_new(t_symbol *s, int argc, t_atom *argv)
             e->e_w.w_float = atom_getfloatarg(n, argc, argv);
         else e->e_w.w_symbol = atom_getsymbolarg(n, argc, argv);
     }
+    if (argc == 1)
+    {
+        if (argv->a_type == A_FLOAT)
+            floatinlet_new(&x->x_obj, &x->x_vec->e_w.w_float);
+        else symbolinlet_new(&x->x_obj, &x->x_vec->e_w.w_symbol);
+    }
     x->x_rejectout = outlet_new(&x->x_obj, &s_list);
     return (x);
 }
