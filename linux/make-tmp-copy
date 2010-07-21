@@ -1,0 +1,12 @@
+cd ..
+TMPPD=/tmp/pd
+rm -rf $TMPPD
+mkdir $TMPPD
+cp -pR README.txt LICENSE.txt INSTALL.txt Makefile.am autogen.sh configure.ac \
+    src tcl doc extra man  portaudio portmidi $TMPPD
+mkdir $TMPPD/obj $TMPPD/bin
+cd $TMPPD/src
+autoconf
+make distclean
+rm -rf autom4te.cache
+rm -f *.pd

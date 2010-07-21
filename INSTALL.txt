@@ -8,10 +8,8 @@ Change to "src" subdirectory.
 
 type "./configure", possibly adding flags as follows:
 
-    To enable ALSA 0.9x (the latest one), add "--enable-alsa".
-    To enable the older ALSA 0.5x, add "--enable-old-alsa". 
-    To enable Ritsch's RME 9652 driver, add --enable-rme".
     To put Pd in /usr/bin instead of /usr/local/bin, add "--prefix=/bin".
+    To enable jack support: "--enable-jack"
 
 Type "make depend" and then "make"; or, if you prefer, as superuser
 type "make install".
