@@ -1672,8 +1672,18 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
     else if (av[1].a_type == A_FLOAT)
     {
         char buf[3];
-        sprintf(buf, "%c", (int)(av[1].a_w.w_float));
-        gotkeysym = gensym(buf);
+        switch((int)(av[1].a_w.w_float))
+        {
+        case 8:  gotkeysym = gensym("BackSpace"); break;
+        case 9:  gotkeysym = gensym("Tab"); break;
+        case 10: gotkeysym = gensym("Return"); break;
+        case 27: gotkeysym = gensym("Escape"); break;
+        case 32: gotkeysym = gensym("Space"); break;
+        case 127:gotkeysym = gensym("Delete"); break;
+        default:
+            sprintf(buf, "%c", (int)(av[1].a_w.w_float));
+            gotkeysym = gensym(buf);
+        }
     }
     else gotkeysym = gensym("?");
     fflag = (av[0].a_type == A_FLOAT ? av[0].a_w.w_float : 0);
