@@ -3,9 +3,17 @@ TAGS
 autom4te.cache
 Makefile
 Makefile.in
+aclocal.m4
 configure
+config.guess
 config.log
+config.sub
 config.status
+depcomp
+install-sh
+m4
+missing
+ltmain.sh
 makefile.dependencies
 *.pd_linux
 *.pd_darwin

@@ -84,11 +84,11 @@ int esd_send_dacs(void)
   if (esd_channels_in) {
     read(esd_socket_in,buf,DEFDACBLKSIZE*esd_channels_out*2);  
     for (i = DEFDACBLKSIZE,  fp1 = sys_soundin,
-        	 sp = (short *)buf; i--; fp1++, sp += esd_channels_in) {
+                 sp = (short *)buf; i--; fp1++, sp += esd_channels_in) {
       for (j=0, fp2 = fp1; j<esd_channels_in; j++, fp2 += DEFDACBLKSIZE)
         {
-	  int s = INVSCALE16(sp[j]);
-	  *fp2 = s;
+          int s = INVSCALE16(sp[j]);
+          *fp2 = s;
         }
     }
   }
@@ -97,13 +97,13 @@ int esd_send_dacs(void)
 
   if (esd_channels_out) {
     for (i = DEFDACBLKSIZE,  fp1 = sys_soundout,
-	 sp = (short *)buf; i--; fp1++, sp += esd_channels_out) {
+         sp = (short *)buf; i--; fp1++, sp += esd_channels_out) {
       for (j=0, fp2 = fp1; j<esd_channels_out; j++, fp2 += DEFDACBLKSIZE)
         {
-	  int s = SCALE16(*fp2);
-	  if (s > 32767) s = 32767;
-	  else if (s < -32767) s = -32767;
-	  sp[j] = s;
+          int s = SCALE16(*fp2);
+          if (s > 32767) s = 32767;
+          else if (s < -32767) s = -32767;
+          sp[j] = s;
         }
     }
   
@@ -123,7 +123,7 @@ void esd_listdevs( void)
 
 void esd_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, 
-    	int maxndev, int devdescsize)
+        int maxndev, int devdescsize)
 {
     int i, ndev;
     *canmulti = 1;  /* supports multiple devices */

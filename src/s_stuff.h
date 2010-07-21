@@ -284,7 +284,7 @@ int audiounit_send_dacs(void);
 void audiounit_listdevs(void);
 void audiounit_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, 
-    	int maxndev, int devdescsize);
+        int maxndev, int devdescsize);
 
 int esd_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
@@ -294,7 +294,7 @@ int esd_send_dacs(void);
 void esd_listdevs(void);
 void esd_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, 
-    	int maxndev, int devdescsize);
+        int maxndev, int devdescsize);
 
 void sys_listmididevs(void);
 void sys_set_midi_api(int whichapi);

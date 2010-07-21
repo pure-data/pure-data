@@ -23,10 +23,7 @@ sh ../linux/detab-src.sh
 cd ..
 
 TMPPD=/tmp/pd-$1
-rm -rf /tmp/pd $TMPPD
-mkdir $TMPPD
-cp -pR README.txt LICENSE.txt INSTALL.txt src tcl doc extra man \
-    portaudio portmidi $TMPPD
+./make-tmp-copy pd-$1
 mkdir $TMPPD/obj $TMPPD/bin
 cd $TMPPD/src
 autoconf
