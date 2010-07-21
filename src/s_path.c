@@ -88,7 +88,7 @@ int sys_isabsolutepath(const char *dir)
 }
 
 /* expand env vars and ~ at the beginning of a path and make a copy to return */
-static void sys_expandpath(const char *from, char *to)
+static void sys_expandpath(const char *from, char *to, int bufsize)
 {
     if ((strlen(from) == 1 && from[0] == '~') || (strncmp(from,"~/", 2) == 0))
     {
@@ -97,18 +97,27 @@ static void sys_expandpath(const char *from, char *to)
 #else
         const char *home = getenv("HOME");
 #endif
-        if(home) 
+        if (home) 
         {
-            strncpy(to, home, FILENAME_MAX - 1);
-            strncat(to, from + 1, FILENAME_MAX - strlen(from) - 2);
+            strncpy(to, home, bufsize);
+            to[bufsize-1] = 0;
+            strncpy(to + strlen(to), from + 1, bufsize - strlen(to));
+            to[bufsize-1] = 0;
         }
     }
     else
-        strncpy(to, from, FILENAME_MAX - 1);
+    {
+        strncpy(to, from, bufsize);
+        to[bufsize-1] = 0;
+    }
 #ifdef _WIN32
-    char buf[FILENAME_MAX];
-    ExpandEnvironmentStrings(to, buf, FILENAME_MAX - 2);
-    strncpy(to, buf, FILENAME_MAX - 1);
+    {
+        char buf[bufsize];
+        ExpandEnvironmentStrings(to, buf, bufsize-1);
+        buf[bufsize-1] = 0;
+        strncpy(to, buf, bufsize);
+        to[bufsize-1] = 0;
+    }
 #endif    
 }
 
@@ -218,23 +227,23 @@ int sys_usestdpath = 1;
 
 void sys_setextrapath(const char *p)
 {
-    char pathbuf[FILENAME_MAX];
+    char pathbuf[MAXPDSTRING];
     namelist_free(pd_extrapath);
     /* add standard place for users to install stuff first */
 #ifdef __gnu_linux__
-    sys_expandpath("~/pd-externals", pathbuf);
+    sys_expandpath("~/pd-externals", pathbuf, MAXPDSTRING);
     pd_extrapath = namelist_append(0, pathbuf, 0);
     pd_extrapath = namelist_append(pd_extrapath, "/usr/local/lib/pd-externals", 0);
 #endif
 
 #ifdef __APPLE__
-    sys_expandpath("~/Library/Pd", pathbuf);
+    sys_expandpath("~/Library/Pd", pathbuf, MAXPDSTRING);
     pd_extrapath = namelist_append(0, pathbuf, 0);
     pd_extrapath = namelist_append(pd_extrapath, "/Library/Pd", 0);
 #endif
 
 #ifdef _WIN32
-    sys_expandpath("%ProgramFiles%/Common Files/Pd", pathbuf);
+    sys_expandpath("%ProgramFiles%/Common Files/Pd", pathbuf, MAXPDSTRING);
     pd_extrapath = namelist_append(0, pathbuf, 0);
     sys_expandpath("%UserProfile%/Application Data/Pd", pathbuf);
     pd_extrapath = namelist_append(pd_extrapath, pathbuf, 0);
@@ -263,7 +272,7 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
     char buf[MAXPDSTRING];
     if (strlen(dir) + strlen(name) + strlen(ext) + 4 > size)
         return (-1);
-    sys_expandpath(dir, buf);
+    sys_expandpath(dir, buf, MAXPDSTRING);
     strcpy(dirresult, buf);
     if (*dirresult && dirresult[strlen(dirresult)-1] != '/')
         strcat(dirresult, "/");
