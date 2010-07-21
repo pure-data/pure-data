@@ -1136,12 +1136,12 @@ int garray_getfloatwords(t_garray *x, int *size, t_word **vec)
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!a)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname);
+        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
         return (0);
     }
     else if (elemsize != sizeof(t_word))
     {
-        error("%s: has more than one field", x->x_realname);
+        error("%s: has more than one field", x->x_realname->s_name);
         return (0);
     }
     *size = garray_npoints(x);
@@ -1178,7 +1178,7 @@ static void garray_const(t_garray *x, t_floatarg g)
     int yonset, i, elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
-        error("%s: needs floating-point 'y' field", x->x_realname);
+        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
     else for (i = 0; i < array->a_n; i++)
         *((t_float *)((char *)array->a_vec
             + elemsize * i) + yonset) = g;
@@ -1194,7 +1194,7 @@ static void garray_dofo(t_garray *x, int npoints, t_float dcval,
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname);
+        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     if (npoints == 0)
@@ -1273,7 +1273,7 @@ static void garray_normalize(t_garray *x, t_float f)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname);
+        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
 
@@ -1308,7 +1308,7 @@ static void garray_list(t_garray *x, t_symbol *s, int argc, t_atom *argv)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname);
+        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     if (argc < 2) return;
@@ -1389,7 +1389,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname);
+        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     nelem = array->a_n;
@@ -1426,7 +1426,7 @@ static void garray_write(t_garray *x, t_symbol *filename)
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
     {
-        error("%s: needs floating-point 'y' field", x->x_realname);
+        error("%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
     canvas_makefilename(glist_getcanvas(x->x_glist), filename->s_name,

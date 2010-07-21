@@ -46,6 +46,12 @@ extern "C" {
 #define EXTERN_STRUCT extern struct
 #endif
 
+/* Define some attributes, specific to the compiler */
+#if defined(__GNUC__)
+#define ATTRIBUTE_FORMAT_PRINTF(a, b) __attribute__ ((format (printf, a, b)))
+#else
+#define ATTRIBUTE_FORMAT_PRINTF(a, b)
+#endif
 
 #if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #include <stddef.h>     /* just for size_t -- how lame! */
@@ -450,10 +456,10 @@ EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void error(const char *fmt, ...);
-EXTERN void verbose(int level, const char *fmt, ...);
-EXTERN void bug(const char *fmt, ...);
-EXTERN void pd_error(void *object, const char *fmt, ...);
+EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
+EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
+EXTERN void pd_error(void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 EXTERN void sys_logerror(const char *object, const char *s);
 EXTERN void sys_unixerror(const char *object);
 EXTERN void sys_ouch(void);

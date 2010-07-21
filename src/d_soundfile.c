@@ -831,7 +831,7 @@ static void soundfile_finishwrite(void *obj, char *filename, int fd,
     if (itemswritten < nframes) 
     {
         if (nframes < 0x7fffffff)
-            pd_error(obj, "soundfiler_write: %d out of %d bytes written",
+            pd_error(obj, "soundfiler_write: %ld out of %ld bytes written",
                 itemswritten, nframes);
             /* try to fix size fields in header */
         if (filetype == FORMAT_WAVE)
@@ -1261,7 +1261,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         framesinfile = (eofis - poswas) / (channels * bytespersamp);
         if (framesinfile > maxsize)
         {
-            pd_error(x, "soundfiler_read: truncated to %d elements", maxsize);
+            pd_error(x, "soundfiler_read: truncated to %ld elements", maxsize);
             framesinfile = maxsize;
         }
         if (framesinfile > bytelimit / (channels * bytespersamp))

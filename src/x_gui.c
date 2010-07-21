@@ -55,7 +55,7 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
     if (strlen(cmd) + 50 > 4*MAXPDSTRING)
     {
         bug("audio dialog too long");
-        bug("%x", cmd);
+        bug("%s", cmd);
         return;
     }
     x = (t_gfxstub *)pd_new(gfxstub_class);

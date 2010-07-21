@@ -124,7 +124,7 @@ t_canvasenvironment *canvas_getenv(t_canvas *x)
     if (!x) bug("canvas_getenv");
     while (!x->gl_env)
         if (!(x = x->gl_owner))
-            bug("t_canvasenvironment", x);
+            bug("t_canvasenvironment");
     return (x->gl_env);
 }
 
