@@ -75,17 +75,9 @@ static void inlet_wrong(t_inlet *x, t_symbol *s)
         x->i_symfrom->s_name, s->s_name);
 }
 
-    /* LATER figure out how to make these efficient: */
-static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
-{
-    t_atom at;
-    if (x->i_symfrom == &s_list || x->i_symfrom == &s_float
-        || x->i_symfrom == &s_symbol || x->i_symfrom == &s_pointer)
-            typedmess(x->i_dest, x->i_symto, argc, argv);
-    else if (!x->i_symfrom) pd_list(x->i_dest, s, argc, argv);
-    else inlet_wrong(x, &s_list);
-}
+static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
 
+    /* LATER figure out how to make these efficient: */
 static void inlet_bang(t_inlet *x)
 {
     if (x->i_symfrom == &s_bang) 
@@ -139,6 +131,22 @@ static void inlet_symbol(t_inlet *x, t_symbol *s)
         inlet_list(x, &s_symbol, 1, &a);
     }
     else inlet_wrong(x, &s_symbol);
+}
+
+static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom at;
+    if (x->i_symfrom == &s_list || x->i_symfrom == &s_float
+        || x->i_symfrom == &s_symbol || x->i_symfrom == &s_pointer)
+            typedmess(x->i_dest, x->i_symto, argc, argv);
+    else if (!x->i_symfrom) pd_list(x->i_dest, s, argc, argv);
+    else if (!argc)
+      inlet_bang(x);
+    else if (argc==1 && argv->a_type == A_FLOAT)
+      inlet_float(x, atom_getfloat(argv));
+    else if (argc==1 && argv->a_type == A_SYMBOL)
+      inlet_symbol(x, atom_getsymbol(argv));
+    else inlet_wrong(x, &s_list);
 }
 
 static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
