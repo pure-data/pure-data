@@ -95,8 +95,8 @@ AC_CHECK_LIB(pthread, pthread_create,PDLIB="$PDLIB -lpthread",
 dnl Check for fftw package
 if test x$fftw = "xyes";
 then
-AC_CHECK_LIB(fftw, fftw_one,PDLIB="$PDLIB -lfftw",
-    echo "fftw package not found - using built-in FFT"; fftw=no)
+AC_CHECK_LIB(fftw3f, fftwf_version,PDLIB="$PDLIB -lfftw3f",
+    echo "fftw3 package not found - using built-in FFT"; fftw=no)
 fi
 
 dnl look for tcl 8.x... do I really have to go through all this!?
@@ -417,7 +417,7 @@ fi
 if test x$fftw = "xyes";
 then
     SYSSRC=$SYSSRC" d_fft_fftw.c d_fftroutine.c"
-    LDFLAGS=$LDFLAGS" -lfftw"
+    LDFLAGS=$LDFLAGS" -lfftw3"
 else
     SYSSRC=$SYSSRC" d_fft_mayer.c d_fftroutine.c"
 fi
