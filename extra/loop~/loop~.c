@@ -13,20 +13,24 @@ This file is downloadable from http://www.crca.ucsd.edu/~msp .
 
 #ifdef PD
 #include "m_pd.h"
+#else
+#define t_sample float
 #endif
+
+
 
 typedef struct _loopctl
 {
     double l_phase;
-    float l_invwindow;
-    float l_window;
+    t_sample l_invwindow;
+    t_sample l_window;
     int l_resync;
 } t_loopctl;
 
-static void loopctl_run(t_loopctl *x, float *transposein,
-        float *windowin, float *rawout, float *windowout, int n)
+static void loopctl_run(t_loopctl *x, t_sample *transposein,
+        t_sample *windowin, t_sample *rawout, t_sample *windowout, int n)
 {
-    float window, invwindow;
+    t_sample window, invwindow;
     double phase = x->l_phase;
     if (x->l_resync)
     {
@@ -55,7 +59,7 @@ static void loopctl_run(t_loopctl *x, float *transposein,
     {
         double phaseinc = invwindow * *transposein++;
         double newphase;
-        float nwind = *windowin++;
+        t_sample nwind = *windowin++;
         if (phaseinc >= 1 || phaseinc < 0)
             phaseinc = 0;
         newphase = phase + phaseinc;
@@ -77,7 +81,7 @@ static void loopctl_run(t_loopctl *x, float *transposein,
             newphase -= 1.;
         }
         phase = newphase;
-        *rawout++ = (float)phase;
+        *rawout++ = (t_sample)phase;
         *windowout++ = window;
     }
     x->l_invwindow = invwindow;
@@ -124,10 +128,10 @@ static void *loop_new(void)
 static t_int *loop_perform(t_int *w)
 {
     t_loopctl *ctl = (t_loopctl *)(w[1]);
-    t_float *in1 = (t_float *)(w[2]);
-    t_float *in2 = (t_float *)(w[3]);
-    t_float *out1 = (t_float *)(w[4]);
-    t_float *out2 = (t_float *)(w[5]);
+    t_sample *in1 = (t_sample *)(w[2]);
+    t_sample *in2 = (t_sample *)(w[3]);
+    t_sample *out1 = (t_sample *)(w[4]);
+    t_sample *out2 = (t_sample *)(w[5]);
     int n = (int)(w[6]);
     loopctl_run(ctl, in1, in2, out1, out2, n);
     return (w+7);

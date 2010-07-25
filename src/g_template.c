@@ -762,14 +762,20 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
     else
     {
         int cpy = s1 - s->s_name, got;
+        double v1, v2, screen1, screen2, quantum;
         if (cpy > MAXPDSTRING-5)
             cpy = MAXPDSTRING-5;
         strncpy(strbuf, s->s_name, cpy);
         strbuf[cpy] = 0;
         fd->fd_un.fd_varsym = gensym(strbuf);
-        got = sscanf(s1, "(%f:%f)(%f:%f)(%f)",
-            &fd->fd_v1, &fd->fd_v2, &fd->fd_screen1, &fd->fd_screen2,
-                &fd->fd_quantum);
+        got = sscanf(s1, "(%lf:%lf)(%lf:%lf)(%lf)",
+            &v1, &v2, &screen1, &screen2,
+                &quantum);
+        fd->fd_v1=v1;
+        fd->fd_v2=v2;
+        fd->fd_screen1=screen1;
+        fd->fd_screen2=screen2;
+        fd->fd_quantum=quantum;
         if (got < 2)
             goto fail;
         if (got == 3 || (got < 4 && strchr(s2, '(')))
@@ -2225,7 +2231,7 @@ static void drawnumber_key(void *z, t_floatarg fkey)
     else
     {
             /* key entry for a numeric field.  This is just a stopgap. */
-        float newf;
+        double newf;
         if (drawnumber_motion_firstkey)
             sbuf[0] = 0;
         else sprintf(sbuf, "%g", template_getfloat(drawnumber_motion_template,
@@ -2241,10 +2247,10 @@ static void drawnumber_key(void *z, t_floatarg fkey)
             sbuf[strlen(sbuf)+1] = 0;
             sbuf[strlen(sbuf)] = key;
         }
-        if (sscanf(sbuf, "%g", &newf) < 1)
+        if (sscanf(sbuf, "%lg", &newf) < 1)
             newf = 0;
         template_setfloat(drawnumber_motion_template,
-            f->fd_un.fd_varsym, drawnumber_motion_wp, newf, 1);
+            f->fd_un.fd_varsym, drawnumber_motion_wp, (t_float)newf, 1);
         if (drawnumber_motion_scalar)
             template_notifyforscalar(drawnumber_motion_template,
                 drawnumber_motion_glist, drawnumber_motion_scalar,

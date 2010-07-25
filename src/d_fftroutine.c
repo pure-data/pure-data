@@ -98,11 +98,10 @@
 #define        FALSE                   0
 #endif
 
-#define        SAMPLE PD_FLOATTYPE     /* data type used in calculation */
+#define        SAMPLE t_float         /* data type used in calculation */
 
 #define        SHORT_SIZE              sizeof(short)
 #define        INT_SIZE                sizeof(int)
-#define        FLOAT_SIZE              sizeof(float)
 #define        SAMPLE_SIZE             sizeof(SAMPLE)
 #define        PNTR_SIZE               sizeof(char *)
 
@@ -171,7 +170,7 @@ void net_dealloc(FFT_NET *fft_net);
 int power_of_two(int n);
 void create_hanning(SAMPLE *window, int n, SAMPLE scale);
 void create_rectangular(SAMPLE *window, int n, SAMPLE scale);
-void short_to_float(short *short_buf, float *float_buf, int n);
+void short_to_float(short *short_buf, SAMPLE *float_buf, int n);
 void load_registers(FFT_NET *fft_net, SAMPLE *buf, int buf_form,
     int buf_scale, int trnsfrm_dir);
 void compute_fft(FFT_NET  *fft_net);
@@ -629,20 +628,20 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
            switch (buf_form) {
            case REAL: {                        /* pure REAL */
              do {
-               *buf++ = (float)fft_net->regr[i];
+               *buf++ = (SAMPLE)fft_net->regr[i];
              } while (++i < n);  
            } break;
 
            case IMAG: {                        /* pure IMAGinary */
              do {
-               *buf++ = (float)fft_net->regi[i];
+               *buf++ = (SAMPLE)fft_net->regi[i];
              } while (++i < n);  
            } break;
 
            case RECT: {                        /* both REAL and IMAGinary */   
              do {
-               *buf++ = (float)fft_net->regr[i];
-               *buf++ = (float)fft_net->regi[i];
+               *buf++ = (SAMPLE)fft_net->regr[i];
+               *buf++ = (SAMPLE)fft_net->regi[i];
              } while (++i < n);  
            } break;
 
@@ -650,7 +649,7 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
              do {
                real  = fft_net->regr[i];
                imag  = fft_net->regi[i];
-               *buf++ = (float)sqrt(real*real+imag*imag);
+               *buf++ = (SAMPLE)sqrt(real*real+imag*imag);
              } while (++i < n);
            } break;
 
@@ -659,7 +658,7 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
                real  = fft_net->regr[i];
                imag  = fft_net->regi[i];
                if (real > .00001) 
-                 *buf++ = (float)atan2(imag, real);
+                 *buf++ = (SAMPLE)atan2(imag, real);
                else {                          /* deal with bad case */
                  if (imag > 0){      *buf++ = PI / 2.;
                      if(debug) fprintf(stderr,"real=0 and imag > 0\n");}
@@ -675,9 +674,9 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
              do {
                real    = fft_net->regr[i];
                imag    = fft_net->regi[i];
-               *buf++  = (float)sqrt(real*real+imag*imag);
+               *buf++  = (SAMPLE)sqrt(real*real+imag*imag);
                if (real)                       /* a hack to avoid div by zero */
-                 *buf++ = (float)atan2(imag, real);
+                 *buf++ = (SAMPLE)atan2(imag, real);
                else {                          /* deal with bad case */
                  if (imag > 0)      *buf++ = PI / 2.;
                  else if (imag < 0) *buf++ = -PI / 2.;
@@ -698,20 +697,20 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
            switch (buf_form) {
            case REAL: {                        /* real only */
              do {
-               *buf++ = (float)20.*log10(fft_net->regr[i]);
+               *buf++ = (SAMPLE)20.*log10(fft_net->regr[i]);
              } while (++i < n);
            } break;
 
            case IMAG: {                        /* imag only */
              do {
-               *buf++ = (float)20.*log10(fft_net->regi[i]);
+               *buf++ = (SAMPLE)20.*log10(fft_net->regi[i]);
              } while (++i < n);
            } break;
 
            case RECT: {                        /* real and imag */
              do {
-               *buf++ = (float)20.*log10(fft_net->regr[i]);
-               *buf++ = (float)20.*log10(fft_net->regi[i]);
+               *buf++ = (SAMPLE)20.*log10(fft_net->regr[i]);
+               *buf++ = (SAMPLE)20.*log10(fft_net->regi[i]);
              } while (++i < n);  
            } break;
 
@@ -719,7 +718,7 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
              do {
                real  = fft_net->regr[i];
                imag  = fft_net->regi[i];
-               *buf++ = (float)20.*log10(sqrt(real*real+imag*imag));  
+               *buf++ = (SAMPLE)20.*log10(sqrt(real*real+imag*imag));  
              } while (++i < n);
            } break;
 
@@ -728,7 +727,7 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
                real  = fft_net->regr[i];
                imag  = fft_net->regi[i];
                if (real) 
-                 *buf++ = (float)atan2(imag, real);
+                 *buf++ = (SAMPLE)atan2(imag, real);
                else {                          /* deal with bad case */
                  if (imag > 0)      *buf++ = PI / 2.;
                  else if (imag < 0) *buf++ = -PI / 2.;
@@ -741,9 +740,9 @@ void store_registers(FFT_NET    *fft_net, SAMPLE *buf, int buf_form,
              do {
                real  = fft_net->regr[i];
                imag  = fft_net->regi[i];
-               *buf++ = (float)20.*log10(sqrt(real*real+imag*imag));           
+               *buf++ = (SAMPLE)20.*log10(sqrt(real*real+imag*imag));           
                if (real) 
-                 *buf++ = (float)atan2(imag, real);
+                 *buf++ = (SAMPLE)atan2(imag, real);
                else {                          /* deal with bad case */
                  if (imag > 0)      *buf++ = PI / 2.;
                  else if (imag < 0) *buf++ = -PI / 2.;
@@ -975,14 +974,14 @@ void create_rectangular(SAMPLE *window, int n, SAMPLE scale)
 }
 
 
-void short_to_float(short *short_buf, float *float_buf, int n)
+void short_to_float(short *short_buf, SAMPLE *float_buf, int n)
 
 /* effects; Converts short_buf to floats and stores them in float_buf.
 */
 
 {
          while (n--) {
-                  *float_buf++ = (float)*short_buf++;
+                  *float_buf++ = (SAMPLE)*short_buf++;
          }
 }
 

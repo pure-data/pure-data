@@ -1110,7 +1110,7 @@ static void sigmund_tick(t_sigmund *x)
 static t_int *sigmund_perform(t_int *w)
 {
     t_sigmund *x = (t_sigmund *)(w[1]);
-    float *in = (float *)(w[2]);
+    t_sample *in = (float *)(w[2]);
     int n = (int)(w[3]);
 
     if (x->x_hop % n)

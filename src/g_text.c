@@ -675,7 +675,6 @@ static void gatom_key(void *z, t_floatarg f)
             gatom_retext(x, 1);
         return;
     }
-    else if (c == ' ') return;
     else if (c == '\b')
     {
         if (len > 0)

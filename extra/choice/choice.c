@@ -18,7 +18,7 @@ static t_class *choice_class;
 typedef struct _elem
 {
     float e_age;
-    float e_weight[DIMENSION];
+    t_float e_weight[DIMENSION];
 } t_elem;
 
 typedef struct _choice

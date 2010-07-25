@@ -51,7 +51,7 @@ static float hanning(float pidetune, float sinpidetune)
         (sinpidetune/(pidetune+pi) + sinpidetune/(pidetune-pi)));
 }
 
-static float peakerror(float *fpreal, float *fpimag, float pidetune,
+static float peakerror(t_word *fpreal, t_word *fpimag, float pidetune,
     float norm, float peakreal, float peakimag)
 {
     float sinpidetune = sin(pidetune);
@@ -61,8 +61,10 @@ static float peakerror(float *fpreal, float *fpimag, float pidetune,
         peakreal * cospidetune + peakimag * sinpidetune);
     float imagshould =  windowshould * (
         peakimag * cospidetune - peakreal * sinpidetune);
-    float realgot = norm * (fpreal[0] - 0.5 * (fpreal[1] + fpreal[-1]));
-    float imaggot = norm * (fpimag[0] - 0.5 * (fpimag[1] + fpimag[-1]));
+    float realgot = norm * (fpreal[0].w_float -
+        0.5 * (fpreal[1].w_float + fpreal[-1].w_float));
+    float imaggot = norm * (fpimag[0].w_float -
+        0.5 * (fpimag[1].w_float + fpimag[-1].w_float));
     float realdev = realshould - realgot, imagdev = imagshould - imaggot;
     
     /* post("real %f->%f; imag %f->%f", realshould, realgot,
@@ -70,7 +72,7 @@ static float peakerror(float *fpreal, float *fpimag, float pidetune,
     return (realdev * realdev + imagdev * imagdev);
 }
 
-static void pique_doit(int npts, t_float *fpreal, t_float *fpimag,
+static void pique_doit(int npts, t_word *fpreal, t_word *fpimag,
     int npeak, int *nfound, t_float *fpfreq, t_float *fpamp,
         t_float *fpampre, t_float *fpampim, float errthresh)
 {
@@ -78,13 +80,15 @@ static void pique_doit(int npts, t_float *fpreal, t_float *fpimag,
     float oneovern = 1.0/ (float)npts;
     float fperbin = srate * oneovern;
     float pow1, pow2 = 0, pow3 = 0, pow4 = 0, pow5 = 0;
-    float re1, re2 = 0, re3 = *fpreal;
+    float re1, re2 = 0, re3 = fpreal->w_float;
     float im1, im2 = 0, im3 = 0, powthresh, relativeerror;
     int count, peakcount = 0, n2 = (npts >> 1);
     float *fp1, *fp2;
-    for (count = n2, fp1 = fpreal, fp2 = fpimag, powthresh = 0;
-        count--; fp1++, fp2++)
-            powthresh += (*fp1) * (*fp1) + (*fp2) * (*fp2) ; 
+    t_word *wp1, *wp2;
+    for (count = n2, wp1 = fpreal, wp2 = fpimag, powthresh = 0;
+        count--; wp1++, wp2++)
+            powthresh += (wp1->w_float) * (wp1->w_float) +
+                (wp2->w_float) * (wp2->w_float) ; 
     powthresh *= 0.00001;
     for (count = 1; count < n2; count++)
     {
@@ -98,10 +102,10 @@ static void pique_doit(int npts, t_float *fpreal, t_float *fpimag,
         fpimag++;
         re1 = re2;
         re2 = re3;
-        re3 = *fpreal;
+        re3 = fpreal->w_float;
         im1 = im2;
         im2 = im3;
-        im3 = *fpimag;
+        im3 = fpimag->w_float;
         if (count < 2) continue;
         pow1 = pow2;
         pow2 = pow3;
@@ -118,12 +122,12 @@ static void pique_doit(int npts, t_float *fpreal, t_float *fpimag,
             || pow3 < powthresh)
                 continue;
             /* go back for the raw FFT values around the peak. */
-        rpeak = fpreal[-3];
-        rpeaknext = fpreal[-2];
-        rpeakprev = fpreal[-4];
-        ipeak = fpimag[-3];
-        ipeaknext = fpimag[-2];
-        ipeakprev = fpimag[-4];
+        rpeak = fpreal[-3].w_float;
+        rpeaknext = fpreal[-2].w_float;
+        rpeakprev = fpreal[-4].w_float;
+        ipeak = fpimag[-3].w_float;
+        ipeaknext = fpimag[-2].w_float;
+        ipeakprev = fpimag[-4].w_float;
             /* recalculate Hanning-windowed spectrum by convolution */
         windreal = rpeak - 0.5 * (rpeaknext + rpeakprev);
         windimag = ipeak - 0.5 * (ipeaknext + ipeakprev);
@@ -180,15 +184,15 @@ static void pique_list(t_pique *x, t_symbol *s, int argc, t_atom *argv)
     int npeak = atom_getintarg(3, argc, argv);
     int n;
     t_garray *a;
-    t_float *fpreal, *fpimag;
+    t_word *fpreal, *fpimag;
     if (npts < 8 || npeak < 1) error("pique: bad npoints or npeak");
     if (npeak > x->x_n) npeak = x->x_n;
     if (!(a = (t_garray *)pd_findbyclass(symreal, garray_class)) ||
-        !garray_getfloatarray(a, &n, &fpreal) ||
+        !garray_getfloatwords(a, &n, &fpreal) ||
             n < npts)
                 error("%s: missing or bad array", symreal->s_name);
     else if (!(a = (t_garray *)pd_findbyclass(symimag, garray_class)) ||
-        !garray_getfloatarray(a, &n, &fpimag) ||
+        !garray_getfloatwords(a, &n, &fpimag) ||
             n < npts)
                 error("%s: missing or bad array", symimag->s_name);
     else

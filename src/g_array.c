@@ -1221,7 +1221,7 @@ static void garray_dofo(t_garray *x, int npoints, t_float dcval,
 
 static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {    
-    t_float *svec = (t_float *)t_getbytes(sizeof(t_float) * argc);
+    t_float *svec;
     int npoints, i;
     if (argc < 2)
     {
@@ -1244,7 +1244,7 @@ static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
 static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_float *svec = (t_float *)t_getbytes(sizeof(t_float) * argc);
+    t_float *svec;
     int npoints, i;
     if (argc < 2)
     {
@@ -1402,8 +1402,8 @@ static void garray_read(t_garray *x, t_symbol *filename)
     }
     for (i = 0; i < nelem; i++)
     {
-        float f;
-        if (!fscanf(fd, "%f", &f))
+        double f;
+        if (!fscanf(fd, "%lf", &f))
         {
             post("%s: read %d elements into table of size %d",
                 filename->s_name, i, nelem);
