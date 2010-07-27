@@ -189,7 +189,7 @@ install:  all
 	@echo "Pd install succeeded."
 
 local-clean:
-	-rm -f ../obj/* $(BIN_DIR)/pd $(BIN_DIR)/$(GUINAME) $(BIN_DIR)/pdsend \
+	-rm -f ../obj/* $(BIN_DIR)/pd $(BIN_DIR)/pdsend \
 	    $(BIN_DIR)/pdreceive $(BIN_DIR)/pd-watchdog m_stamp.c \
             $(BIN_DIR)/*.tcl
 	-rm -f `find ../portaudio -name "*.o"` 

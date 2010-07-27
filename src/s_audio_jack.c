@@ -28,7 +28,7 @@ static int outport_count = 0;
 static jack_client_t *jack_client = NULL;
 char *jack_client_names[MAX_CLIENTS];
 static int jack_dio_error;
-
+static t_audiocallback jack_callback;
 
 pthread_mutex_t jack_mutex;
 pthread_cond_t jack_sem;
@@ -87,6 +87,48 @@ process (jack_nframes_t nframes, void *arg)
         }
         pthread_cond_broadcast(&jack_sem);
         return 0;
+}
+
+static int callbackprocess(jack_nframes_t nframes, void *arg)
+{
+    int chan, j, k;
+    unsigned int n;
+    jack_default_audio_sample_t *out[NUM_JACK_PORTS], *in[NUM_JACK_PORTS], *jp;
+
+    if (nframes % DEFDACBLKSIZE)
+    {
+        fprintf(stderr, "jack: nframes %d not a multiple of blocksize %d\n",
+            nframes, DEFDACBLKSIZE);
+        nframes -= (nframes % DEFDACBLKSIZE);
+    }
+    for (chan = 0; chan < sys_inchannels; chan++)
+        in[chan] = jack_port_get_buffer(input_port[chan], nframes);
+    for (chan = 0; chan < sys_outchannels; chan++)
+        out[chan] = jack_port_get_buffer(output_port[chan], nframes);
+    for (n = 0; n < nframes; n += DEFDACBLKSIZE)
+    {
+        t_sample *fp;
+        for (chan = 0; chan < sys_inchannels; chan++)
+        {
+            for (fp = sys_soundin + chan*DEFDACBLKSIZE,
+                jp = in[chan] + n, j=0; j < DEFDACBLKSIZE; j++)
+                    *fp++ = *jp++;
+        }
+        for (chan = 0; chan < sys_outchannels; chan++)
+        {
+            for (fp = sys_soundout + chan*DEFDACBLKSIZE,
+                j = 0; j < DEFDACBLKSIZE; j++)
+                    *fp++ = 0;
+        }
+        (*jack_callback)();
+        for (chan = 0; chan < sys_outchannels; chan++)
+        {
+            for (fp = sys_soundout + chan*DEFDACBLKSIZE, jp = out[chan] + n,
+                j=0; j < DEFDACBLKSIZE; j++)
+                    *jp++ = *fp++;
+        }
+    }       
+    return 0;
 }
 
 static int
@@ -223,13 +265,13 @@ static int jack_connect_ports(char* client)
 }
 
 
-void pd_jack_error_callback(const char *desc) {
+static void pd_jack_error_callback(const char *desc) {
   error("JACKerror: %s", desc);
   return;
 }
 
 int
-jack_open_audio(int inchans, int outchans, int rate)
+jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 {
         int j;
         char port_name[80] = "";
@@ -239,6 +281,11 @@ jack_open_audio(int inchans, int outchans, int rate)
         int new_jack = 0;
         int srate;
         jack_status_t status;
+
+        if(NULL==jack_client_new) {
+          fprintf(stderr,"JACK framework not available\n");
+          return 1;
+        }
 
         jack_dio_error = 0;
         
@@ -286,7 +333,9 @@ jack_open_audio(int inchans, int outchans, int rate)
           /* tell the JACK server to call `process()' whenever
              there is work to be done.
           */
-          jack_set_process_callback (jack_client, process, 0);
+          jack_callback = callback;
+          jack_set_process_callback (jack_client, 
+              (callback? callbackprocess : process), 0);
           
           jack_set_error_function (pd_jack_error_callback);
           

@@ -439,7 +439,7 @@ static void m_pollingscheduler( void)
             timeforward = sys_send_dacs();
 #ifdef THREAD_LOCKING
             /* T.Grill - done */
-            sys_unlock();
+            sys_lock();
 #endif
                 /* if dacs remain "idle" for 1 sec, they're hung up. */
             if (timeforward != 0)
@@ -539,11 +539,19 @@ static void m_callbackscheduler(void)
     sys_initmidiqueue();
     while (!sys_quit)
     {
+        double timewas = sys_time;
 #ifdef MSW
-    Sleep(1000);
+        Sleep(1000);
 #else
         sleep(1);
 #endif
+        if (sys_time == timewas)
+        {
+            sys_lock();
+            sys_pollgui();
+            sched_tick(sys_time + sys_time_per_dsp_tick);
+            sys_unlock();
+        }
         if (sys_idlehook)
             sys_idlehook();
     }

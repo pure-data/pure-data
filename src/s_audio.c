@@ -412,7 +412,8 @@ void sys_reopen_audio( void)
 #ifdef USEAPI_JACK
     if (sys_audioapi == API_JACK) 
         outcome = jack_open_audio((naudioindev > 0 ? chindev[0] : 0),
-            (naudioindev > 0 ? choutdev[0] : 0), rate);
+            (naudioindev > 0 ? choutdev[0] : 0), rate,
+                (callback ? sched_audio_callbackfn : 0));
 
     else
 #endif    
@@ -585,6 +586,7 @@ static void audio_getdevs(char *indevlist, int *nindevs,
     {
         jack_getdevs(indevlist, nindevs, outdevlist, noutdevs, canmulti,
             maxndev, devdescsize);
+        *cancallback = 1;
     }
     else
 #endif
