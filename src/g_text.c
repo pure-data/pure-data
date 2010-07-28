@@ -792,6 +792,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     x->a_symto = symto;
     x->a_expanded_to = canvas_realizedollar(x->a_glist, x->a_symto);
     gobj_vis(&x->a_text.te_g, x->a_glist, 1);
+    canvas_dirty(x->a_glist, 1);
 
     /* glist_retext(x->a_glist, &x->a_text); */
 }

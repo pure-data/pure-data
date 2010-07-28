@@ -385,6 +385,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
         gl = glist_addglist(parent, &s_, 0, 1,
             (size > 1 ? size-1 : size), -1, 0, 0, 0, 0);
     a = graph_array(gl, sharptodollar(name), &s_float, size, flags);
+    canvas_dirty(parent, 1);
 }
 
     /* this is called from the properties dialog window for an existing array */
@@ -453,6 +454,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 
         garray_setsaveit(x, (saveit != 0));
         garray_redraw(x);
+        canvas_dirty(x->x_glist, 1);
     }
 }
 

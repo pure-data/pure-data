@@ -630,6 +630,7 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
         fs = 4;
     iemgui->x_fontsize = fs;
     iemgui_verify_snd_ne_rcv(iemgui);
+    canvas_dirty(iemgui->x_glist, 1);
     return(oldsndrcvable);
 }
 

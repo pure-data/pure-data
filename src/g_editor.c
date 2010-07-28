@@ -1149,6 +1149,7 @@ static void canvas_donecanvasdialog(t_glist *x,
     }
         /* LATER avoid doing 2 redraws here (possibly one inside setgraph) */
     canvas_setgraph(x, graphme, 0);
+    canvas_dirty(x, 1);
     if (x->gl_havewindow)
         canvas_redraw(x);
     else if (glist_isvisible(x->gl_owner))
@@ -1527,6 +1528,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                     glist_getcanvas(x),
                         lx1, ly1, lx2, ly2,
                             (obj_issignaloutlet(ob1, closest1) ? 2 : 1), oc);
+                canvas_dirty(x, 1);
                 canvas_setundo(x, canvas_undo_connect,
                     canvas_undo_set_connect(x, 
                         canvas_getindex(x, &ob1->ob_g), closest1,
@@ -2188,6 +2190,7 @@ static void canvas_clearline(t_canvas *x)
              x->gl_editor->e_selectline_outno,
              x->gl_editor->e_selectline_index2,
              x->gl_editor->e_selectline_inno);
+        canvas_dirty(x, 1);
         canvas_setundo(x, canvas_undo_disconnect,
             canvas_undo_set_disconnect(x,
                 x->gl_editor->e_selectline_index1,
