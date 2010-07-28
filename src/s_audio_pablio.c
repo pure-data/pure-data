@@ -325,22 +325,10 @@ PaError CloseAudioStream( PABLIO_Stream *aStream )
     int bytesEmpty;
     int byteSize = aStream->outFIFO.bufferSize;
 
-    /* If we are writing data, make sure we play everything written. */
-    if( byteSize > 0 )
-    {
-        bytesEmpty = sys_ringbuf_GetWriteAvailable( &aStream->outFIFO );
-        while( bytesEmpty < byteSize )
-        {
-            NPa_Sleep( 10 ); /* MSP */
-            bytesEmpty = sys_ringbuf_GetWriteAvailable( &aStream->outFIFO );
-        }
-    }
-
     err = Pa_StopStream( aStream->stream );
     if( err != paNoError ) goto error;
     err = Pa_CloseStream( aStream->stream );
     if( err != paNoError ) goto error;
-    Pa_Terminate();
 
 error:
     PABLIO_TermFIFO( &aStream->inFIFO );

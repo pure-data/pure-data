@@ -26,6 +26,7 @@
 
     /* implementation */
 static PABLIO_Stream  *pa_stream;
+static PaStream *pa_callbackstream;
 static int pa_inchans, pa_outchans;
 static float *pa_soundin, *pa_soundout;
 static t_audiocallback pa_callback;
@@ -68,40 +69,48 @@ static void pa_init(void)
 }
 
 static int pa_lowlevel_callback(const void *inputBuffer,
-    void *outputBuffer, unsigned long framesPerBuffer,
+    void *outputBuffer, unsigned long nframes,
     const PaStreamCallbackTimeInfo *outTime, PaStreamCallbackFlags myflags, 
     void *userData)
 {
     int i; 
-    unsigned int j;
+    unsigned int n, j;
     float *fbuf, *fp2, *fp3, *soundiop;
+    fprintf(stderr, ".");
+    fflush(stderr);
     if (pa_foo)
        fprintf(stderr, "pa_lowlevel_callback\n");
-    if (framesPerBuffer != DEFDACBLKSIZE)
+    if (nframes % DEFDACBLKSIZE)
     {
-        fprintf(stderr, "ignoring buffer size %d\n", (int)framesPerBuffer);
-        return 0;
+        fprintf(stderr, "jack: nframes %ld not a multiple of blocksize %d\n",
+            nframes, (int)DEFDACBLKSIZE);
+        nframes -= (nframes % DEFDACBLKSIZE);
     }
+    for (n = 0; n < nframes; n += DEFDACBLKSIZE)
+    {
         if (inputBuffer != NULL)
-    {
-        fbuf = (float *)inputBuffer;
-        soundiop = pa_soundin;
-        for (i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
-            for (j = 0, fp3 = fp2; j < framesPerBuffer; j++, fp3 += pa_inchans)
-                *soundiop++ = *fp3;
-    }
-    else memset((void *)pa_soundin, 0,
-        framesPerBuffer * pa_inchans * sizeof(float));
-    memset((void *)pa_soundout, 0,
-        framesPerBuffer * pa_outchans * sizeof(float));
-    (*pa_callback)();
-    if (outputBuffer != NULL)
-    {
-        fbuf = (float *)outputBuffer;
-        soundiop = pa_soundout;
-        for (i = 0, fp2 = fbuf; i < pa_outchans; i++, fp2++)
-            for (j = 0, fp3 = fp2; j < framesPerBuffer; j++, fp3 += pa_outchans)
-                *fp3 = *soundiop++;
+        {
+            fbuf = ((float *)inputBuffer) + n*pa_inchans;
+            soundiop = pa_soundin;
+            for (i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
+                    for (j = 0, fp3 = fp2; j < DEFDACBLKSIZE;
+                        j++, fp3 += pa_inchans)
+                            *soundiop++ = *fp3;
+        }
+        else memset((void *)pa_soundin, 0,
+            DEFDACBLKSIZE * pa_inchans * sizeof(float));
+        memset((void *)pa_soundout, 0,
+            DEFDACBLKSIZE * pa_outchans * sizeof(float));
+        (*pa_callback)();
+        if (outputBuffer != NULL)
+        {
+            fbuf = ((float *)outputBuffer) + n*pa_outchans;
+            soundiop = pa_soundout;
+            for (i = 0, fp2 = fbuf; i < pa_outchans; i++, fp2++)
+                for (j = 0, fp3 = fp2; j < DEFDACBLKSIZE;
+                    j++, fp3 += pa_outchans)
+                        *fp3 = *soundiop++;
+        }
     }
     if (pa_foo)
         fprintf(stderr, "done pa_lowlevel_callback\n"); 
@@ -113,8 +122,6 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
 {
     long   bytesPerSample;
     PaError err;
-    PABLIO_Stream *pastream;
-    long   numFrames;
     PaStreamParameters instreamparams, outstreamparams;
 
     if (indeviceno < 0) 
@@ -130,27 +137,7 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     /* fprintf(stderr, "nchan %d, flags %d, bufs %d, framesperbuf %d\n",
             nchannels, flags, nbuffers, framesperbuf); */
 
-    /* Allocate PABLIO_Stream structure for caller. */
-    pastream = (PABLIO_Stream *)malloc( sizeof(PABLIO_Stream));
-    if (pastream == NULL)
-        return (1);
-    memset(pastream, 0, sizeof(PABLIO_Stream));
-
-    /* Determine size of a sample. */
-    bytesPerSample = Pa_GetSampleSize(paFloat32);
-    if (bytesPerSample < 0)
-    {
-        err = (PaError) bytesPerSample;
-        goto error;
-    }
-    pastream->insamplesPerFrame = inchannels;
-    pastream->inbytesPerFrame = bytesPerSample * pastream->insamplesPerFrame;
-    pastream->outsamplesPerFrame = outchannels;
-    pastream->outbytesPerFrame = bytesPerSample * pastream->outsamplesPerFrame;
-
-    numFrames = nbuffers * framesperbuf;
-
-    instreamparams.device = indeviceno;
+    instreamparams.device = indeviceno;   /* MSP... */
     instreamparams.channelCount = inchannels;
     instreamparams.sampleFormat = paFloat32;
     instreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
@@ -160,31 +147,30 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     outstreamparams.channelCount = outchannels;
     outstreamparams.sampleFormat = paFloat32;
     outstreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
-    outstreamparams.hostApiSpecificStreamInfo = 0;
+    outstreamparams.hostApiSpecificStreamInfo = 0;  /* ... MSP */
 
     err = Pa_OpenStream(
-              &pastream->stream,
+              &pa_callbackstream,
               (inchannels ? &instreamparams : 0),
               (outchannels ? &outstreamparams : 0),
               sampleRate,
-              DEFDACBLKSIZE,
+              framesperbuf,
               paNoFlag,      /* portaudio will clip for us */
               pa_lowlevel_callback,
-              pastream);
+              0);
     if (err != paNoError)
         goto error;
 
-    err = Pa_StartStream(pastream->stream);
+    err = Pa_StartStream(pa_callbackstream);
     if (err != paNoError)
     {
         fprintf(stderr, "Pa_StartStream failed; closing audio stream...\n");
-        CloseAudioStream( pastream );
+        CloseAudioStream(pa_callbackstream);
         goto error;
     }
-    pa_stream = pastream;
     return paNoError;
 error:
-    pa_stream = NULL;
+    pa_callbackstream = NULL;
     return err;
 }
 
@@ -200,6 +186,9 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_init();
     /* post("in %d out %d rate %d device %d", inchans, outchans, rate, deviceno); */
     
+    if (pa_stream || pa_callbackstream)
+        pa_close_audio();
+
     if (inchans > 0)
     {
         for (j = 0, devno = 0; j < Pa_GetDeviceCount(); j++)
@@ -274,9 +263,13 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
 void pa_close_audio( void)
 {
     /* fprintf(stderr, "close\n"); */
-    if (pa_inchans || pa_outchans)
+    if (pa_stream)
         CloseAudioStream( pa_stream );
-    pa_inchans = pa_outchans = 0;
+    pa_stream = 0;
+    if (pa_callbackstream)
+        CloseAudioStream(pa_callbackstream);
+    pa_callbackstream = 0;
+    
 }
 
 int pa_send_dacs(void)

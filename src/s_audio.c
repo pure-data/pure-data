@@ -400,6 +400,7 @@ void sys_reopen_audio( void)
     if (sys_audioapi == API_PORTAUDIO)
     {
         int blksize = (sys_blocksize ? sys_blocksize : 64);
+        fprintf(stderr, "blksize %d, advance %d\n", blksize, sys_advance_samples/blksize);
         outcome = pa_open_audio((naudioindev > 0 ? chindev[0] : 0),
         (naudiooutdev > 0 ? choutdev[0] : 0), rate, sys_soundin,
             sys_soundout, blksize, sys_advance_samples/blksize, 

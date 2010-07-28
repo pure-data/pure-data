@@ -5,6 +5,8 @@ control C control
 
 ---------------- dolist --------------------
 
+portaudio: put call to PA_Terminate back in where appropriate
+    (first test situation on windows)
 compile on various versions of linux
 windows:
   modal dialogs confuse watchdog

@@ -522,6 +522,7 @@ static void m_pollingscheduler( void)
 
 void sched_audio_callbackfn(void)
 {
+    sys_lock();
     sys_setmiditimediff(0, 1e-6 * sys_schedadvance);
     sys_addhist(1);
     sched_tick(sys_time + sys_time_per_dsp_tick);
@@ -532,6 +533,7 @@ void sched_audio_callbackfn(void)
     sys_addhist(5);
     sched_pollformeters();
     sys_addhist(0);
+    sys_unlock();
 }
 
 static void m_callbackscheduler(void)
