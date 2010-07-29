@@ -217,8 +217,10 @@ void sys_register_loader(loader_t loader)
 {
     loader_queue_t *q = &loaders;
     while (1)
-    {
-        if (q->next) 
+    {   
+        if (q->loader == loader)    /* already loaded - nothing to do */
+            return;
+        else if (q->next) 
             q = q->next;
         else
         {
