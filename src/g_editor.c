@@ -869,6 +869,7 @@ static t_editor *editor_new(t_glist *owner)
     x->e_glist = owner;
     sprintf(buf, ".x%lx", (t_int)owner);
     x->e_guiconnect = guiconnect_new(&owner->gl_pd, gensym(buf));
+    x->e_clock = 0;
     return (x);
 }
 
@@ -878,6 +879,8 @@ static void editor_free(t_editor *x, t_glist *y)
     guiconnect_notarget(x->e_guiconnect, 1000);
     binbuf_free(x->e_connectbuf);
     binbuf_free(x->e_deleted);
+    if (x->e_clock)
+        clock_free(x->e_clock);
     freebytes((void *)x, sizeof(*x));
 }
 
@@ -1792,6 +1795,15 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                 CURSOR_RUNMODE_NOTHING :CURSOR_EDITMODE_NOTHING);
 }
 
+static void delay_move(t_canvas *x)
+{
+    canvas_displaceselection(x, 
+       x->gl_editor->e_xnew - x->gl_editor->e_xwas,
+       x->gl_editor->e_ynew - x->gl_editor->e_ywas);
+    x->gl_editor->e_xwas = x->gl_editor->e_xnew;
+    x->gl_editor->e_ywas = x->gl_editor->e_ynew;
+}
+
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 { 
@@ -1805,10 +1817,12 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     glist_setlastxy(x, xpos, ypos);
     if (x->gl_editor->e_onmotion == MA_MOVE)
     {
-        canvas_displaceselection(x, 
-            xpos - x->gl_editor->e_xwas, ypos - x->gl_editor->e_ywas);
-        x->gl_editor->e_xwas = xpos;
-        x->gl_editor->e_ywas = ypos;    
+        if (!x->gl_editor->e_clock)
+            x->gl_editor->e_clock = clock_new(x, (t_method)delay_move);
+        clock_unset(x->gl_editor->e_clock);
+        clock_delay(x->gl_editor->e_clock, 5);
+        x->gl_editor->e_xnew = xpos;
+        x->gl_editor->e_ynew = ypos;
     }
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 0);
