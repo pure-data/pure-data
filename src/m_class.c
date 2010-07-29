@@ -522,6 +522,7 @@ static t_symbol *addfileextent(t_symbol *s)
     return (gensym(namebuf));
 }
 
+#define MAXOBJDEPTH 1000
 static int tryingalready;
 
 void canvas_popabstraction(t_canvas *x);
@@ -537,14 +538,17 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     t_pd *current;
     int fd;
     char dirbuf[MAXPDSTRING], *nameptr;
-    if (tryingalready) return;
+    if (tryingalready>MAXOBJDEPTH){
+      error("maximum object loading depth %d reached", MAXOBJDEPTH);
+      return;
+    }
     newest = 0;
     class_loadsym = s;
     if (sys_load_lib(canvas_getcurrent(), s->s_name))
     {
-        tryingalready = 1;
+        tryingalready++;
         typedmess(dummy, s, argc, argv);
-        tryingalready = 0;
+        tryingalready--;
         return;
     }
     class_loadsym = 0;
