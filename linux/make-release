@@ -1,5 +1,4 @@
 #!/bin/sh
-
 #usage: ./make-release <version>
 if test x$1 == x
 then
@@ -20,10 +19,10 @@ cd ../tcl
 sh ../linux/detab-src.sh
 cd ../extra
 sh ../linux/detab-src.sh
-cd ..
-
-TMPPD=/tmp/pd-$1
+cd ../linux
 ./make-tmp-copy pd-$1
+cd ..
+TMPPD=/tmp/pd-$1
 mkdir $TMPPD/obj $TMPPD/bin
 cd $TMPPD/src
 autoconf
