@@ -223,6 +223,8 @@ typedef struct _bonk
     double x_learndebounce; /* debounce time (in "learn" mode only) */
     int x_attackbins;       /* number of bins to wait for attack */
 
+    t_canvas *x_canvas;     /* ptr to current canvas --fbar */
+
     t_filterbank *x_filterbank;
     t_hist x_hist[MAXNFILTERS];
     t_template *x_template;
@@ -964,11 +966,18 @@ static void bonk_bang(t_bonk *x)
 
 static void bonk_read(t_bonk *x, t_symbol *s)
 {
-    FILE *fd = fopen(s->s_name, "r");
     float vec[MAXNFILTERS];
     int i, ntemplate = 0, remaining;
     float *fp, *fp2;
-    if (!fd)
+
+    /* fbar: canvas_open code taken from g_array.c */
+    FILE *fd;
+    char buf[MAXPDSTRING], *bufptr;
+    int filedesc;
+
+    if ((filedesc = canvas_open(x->x_canvas,
+            s->s_name, "", buf, &bufptr, MAXPDSTRING, 0)) < 0 
+                || !(fd = fdopen(filedesc, "r")))
     {
         post("%s: open failed", s->s_name);
         return;
@@ -1003,11 +1012,18 @@ nomore:
 
 static void bonk_write(t_bonk *x, t_symbol *s)
 {
-    FILE *fd = fopen(s->s_name, "w");
+    FILE *fd;
+    char buf[MAXPDSTRING]; /* fbar */
     int i, ntemplate = x->x_ntemplate;
     t_template *tp = x->x_template;
     float *fp;
-    if (!fd)
+    
+    /* fbar: canvas-code as in g_array.c */
+    canvas_makefilename(x->x_canvas, s->s_name,
+        buf, MAXPDSTRING);
+    sys_bashfilename(buf, buf);
+
+    if (!(fd = fopen(buf, "w")))
     {
         post("%s: couldn't create", s->s_name);
         return;
@@ -1044,6 +1060,7 @@ static void bonk_free(t_bonk *x)
 static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_bonk *x = (t_bonk *)pd_new(bonk_class);
+    x->x_canvas = canvas_getcurrent(); /* fbar: bind current canvas to x */
     int nsig = 1, period = DEFPERIOD, npts = DEFNPOINTS,
         nfilters = DEFNFILTERS, j;
     float halftones = DEFHALFTONES, overlap = DEFOVERLAP,
