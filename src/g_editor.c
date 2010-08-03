@@ -1894,9 +1894,8 @@ void glob_verifyquit(void *dummy, t_floatarg f)
         if (g2 = glist_finddirty(g))
     {
         canvas_vis(g2, 1);
-        sys_vgui(
-"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx menuclose 3;\n} no\n",
-            canvas_getrootfor(g2), canvas_getrootfor(g2)->gl_name->s_name, g2);
+            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 3;\n}\n",
+                     canvas_getrootfor(g2), g2);
         return;
     }
     if (f == 0 && sys_perf)
@@ -1923,16 +1922,14 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         if (g)
         {
             vmess(&g->gl_pd, gensym("menu-open"), "");
-            sys_vgui(
-"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
-                canvas_getrootfor(g), canvas_getrootfor(g)->gl_name->s_name, g);
+            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 2;\n}\n",
+                     canvas_getrootfor(g), g);
             return;
         }
         else if (sys_perf)
         {
-            sys_vgui(
-"pdtk_check .x%lx {Close '%s'?} {.x%lx menuclose 1;\n} yes\n",
-                canvas_getrootfor(x), canvas_getrootfor(x)->gl_name->s_name, x);
+            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 1;\n}\n",
+                     canvas_getrootfor(g), g);
         }
         else pd_free(&x->gl_pd);
     }
@@ -1947,9 +1944,8 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         if (g)
         {
             vmess(&g->gl_pd, gensym("menu-open"), "");
-            sys_vgui(
-"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx menuclose 2;\n} no\n",
-                canvas_getrootfor(x), canvas_getrootfor(x)->gl_name->s_name, g);
+            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 2;\n}\n",
+                     canvas_getrootfor(x), g);
             return;
         }
         else pd_free(&x->gl_pd);
