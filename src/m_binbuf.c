@@ -862,7 +862,8 @@ int binbuf_write(t_binbuf *x, char *filename, char *dir, int crflag)
     if (*dir)
         strcat(fbuf, dir), strcat(fbuf, "/");
     strcat(fbuf, filename);
-    if (!strcmp(filename + strlen(filename) - 4, ".pat"))
+    if (!strcmp(filename + strlen(filename) - 4, ".pat") ||
+        !strcmp(filename + strlen(filename) - 4, ".mxt"))
     {
         x = binbuf_convert(x, 0);
         deleteit = 1;
@@ -1350,7 +1351,8 @@ void pd_doloadbang(void);
 void binbuf_evalfile(t_symbol *name, t_symbol *dir)
 {
     t_binbuf *b = binbuf_new();
-    int import = !strcmp(name->s_name + strlen(name->s_name) - 4, ".pat");
+    int import = !strcmp(name->s_name + strlen(name->s_name) - 4, ".pat") ||
+        !strcmp(name->s_name + strlen(name->s_name) - 4, ".mxt");
         /* set filename so that new canvases can pick them up */
     int dspstate = canvas_suspend_dsp();
     glob_setfilename(0, name, dir);
