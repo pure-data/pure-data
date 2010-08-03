@@ -1,11 +1,11 @@
-#N canvas 31 15 669 403 12;
-#X floatatom 22 339 0 0 0 0 - - -;
-#X msg 31 205 0 1000;
-#X msg 46 227 39;
+#N canvas 372 214 597 464 12;
+#X floatatom 22 416 8 0 0 0 - - -;
+#X msg 32 219 0 1000;
+#X msg 47 241 39;
 #X obj 66 15 line;
 #X text 106 14 - ramp generator;
-#X msg 22 182 1 1000;
-#X text 18 36 The line object takes (target \, time) pairs and slews
+#X msg 23 196 1 1000;
+#X text 22 38 The line object takes (target \, time) pairs and slews
 to the specified target over the time given \, updating its output
 at a "grain rate" given by the creation argument. If you don't specify
 a time \, line jumps immediately to the target. Note that the inlet
@@ -14,22 +14,31 @@ a float causes a jump in the output regardless of whatever time value
 was specified in some previous message. If the line object receives
 a message specifying some new target before reaching the previous one
 \, it takes off from its current value.;
-#X text 93 194 send a pair to ramp to a new value;
-#X text 105 224 send a single number to jump;
-#X text 46 363 see also:;
-#X obj 132 361 line~;
-#X msg 57 252 stop;
-#X text 98 251 "stop" message to stop output;
-#X obj 22 313 line 0 100;
-#X text 383 369 updated for Pd version 0.37;
-#X text 125 310 creation arguments:;
-#X text 316 310 1 initial value;
-#X text 318 330 2 time grain in milliseconds;
-#X msg 51 282 set 5;
-#X text 99 282 "set" to change value (and stop) without output;
+#X text 94 208 send a pair to ramp to a new value;
+#X text 97 243 send a single number to jump;
+#X text 106 443 see also:;
+#X obj 176 440 line~;
+#X msg 58 266 stop;
+#X text 103 268 "stop" message to stop output;
+#X obj 22 390 line 0 100;
+#X text 122 396 creation arguments:;
+#X text 271 388 1 initial value;
+#X msg 52 296 set 5;
+#X text 105 296 "set" to change value (and stop) without output;
+#X text 394 441 updated for Pd version 0.43;
+#X obj 222 440 vline~;
+#X floatatom 91 352 0 0 0 0 - - -;
+#X floatatom 91 328 0 0 0 0 - - -;
+#X text 126 328 first inlet sets next ramp time (cleared when ramp
+starts!);
+#X text 125 354 second inlet sets grain (not cleared \, acts as normal
+inlet);
+#X text 270 404 2 time grain in milliseconds (20 by default);
 #X connect 1 0 13 0;
 #X connect 2 0 13 0;
 #X connect 5 0 13 0;
 #X connect 11 0 13 0;
 #X connect 13 0 0 0;
-#X connect 18 0 13 0;
+#X connect 16 0 13 0;
+#X connect 20 0 13 2;
+#X connect 21 0 13 1;

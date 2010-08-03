@@ -591,7 +591,8 @@ EXTERN t_float garray_get(t_garray *x, t_symbol *s, t_int indx);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);
+EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
+EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
 EXTERN t_class *scalar_class;

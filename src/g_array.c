@@ -404,7 +404,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     }
     else
     {
-        int size;
+        long size;
         int styleonset, styletype;
         t_symbol *stylearraytype;
         t_symbol *argname = sharptodollar(name);
@@ -446,7 +446,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         if (size < 1)
             size = 1;
         if (size != a->a_n)
-            garray_resize(x, size);
+            garray_resize_long(x, size);
         else if (style != stylewas)
             garray_fittograph(x, size, style);
         template_setfloat(scalartemplate, gensym("style"),
@@ -1188,7 +1188,7 @@ static void garray_const(t_garray *x, t_floatarg g)
 }
 
     /* sum of Fourier components; called from routines below */
-static void garray_dofo(t_garray *x, int npoints, t_float dcval,
+static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     int nsin, t_float *vsin, int sineflag)
 {
     double phase, phaseincr, fj;
@@ -1204,7 +1204,7 @@ static void garray_dofo(t_garray *x, int npoints, t_float dcval,
     if (npoints != (1 << ilog2(npoints)))
         post("%s: rounnding to %d points", array->a_templatesym->s_name,
             (npoints = (1<<ilog2(npoints))));
-    garray_resize(x, npoints + 3);
+    garray_resize_long(x, npoints + 3);
     phaseincr = 2. * 3.14159 / npoints;
     for (i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
     {
@@ -1224,7 +1224,8 @@ static void garray_dofo(t_garray *x, int npoints, t_float dcval,
 static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {    
     t_float *svec;
-    int npoints, i;
+    long npoints;
+    int i;
     if (argc < 2)
     {
         error("sinesum: %s: need number of points and partial strengths",
@@ -1247,7 +1248,8 @@ static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_float *svec;
-    int npoints, i;
+    long npoints;
+    int i;
     if (argc < 2)
     {
         error("sinesum: %s: need number of points and partial strengths",
@@ -1269,7 +1271,7 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
 static void garray_normalize(t_garray *x, t_float f)
 {
-    int type, npoints, i;
+    int type, i;
     double maxv, renormer;
     int yonset, elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -1460,17 +1462,24 @@ int garray_ambigendian(void)
     return (c==0);
 }
 
-void garray_resize(t_garray *x, t_floatarg f)
+void garray_resize_long(t_garray *x, long n)
 {
     t_array *array = garray_getarray(x);
     t_glist *gl = x->x_glist;
-    int n = (f < 1 ? 1 : f);
+    if (n < 1)
+        n = 1;
     garray_fittograph(x, n, template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1));
     array_resize_and_redraw(array, x->x_glist, n);
     if (x->x_usedindsp)
         canvas_update_dsp();
+}
+
+    /* float version to use as Pd method */
+void garray_resize(t_garray *x, t_floatarg f)
+{
+    garray_resize_long(x, f);
 }
 
 static void garray_print(t_garray *x)

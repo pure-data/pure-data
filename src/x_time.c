@@ -139,6 +139,7 @@ static void metro_setup(void)
 }
 
 /* -------------------------- line ------------------------------ */
+#define DEFAULTLINEGRAIN 20
 static t_class *line_class;
 
 typedef struct _line
@@ -168,6 +169,8 @@ static void line_tick(t_line *x)
         outlet_float(x->x_obj.ob_outlet,
             x->x_setval + x->x_1overtimediff * (timenow - x->x_prevtime)
                 * (x->x_targetval - x->x_setval));
+        if (x->x_grain <= 0)
+            x->x_grain = DEFAULTLINEGRAIN;
         clock_delay(x->x_clock,
             (x->x_grain > msectogo ? msectogo : x->x_grain));
     }
@@ -188,6 +191,8 @@ static void line_float(t_line *x, t_float f)
         line_tick(x);
         x->x_gotinlet = 0;
         x->x_1overtimediff = 1./ (x->x_targettime - timenow);
+        if (x->x_grain <= 0)
+            x->x_grain = DEFAULTLINEGRAIN;
         clock_delay(x->x_clock,
             (x->x_grain > x->x_in1val ? x->x_in1val : x->x_grain));
     
@@ -232,10 +237,10 @@ static void *line_new(t_floatarg f, t_floatarg grain)
     x->x_1overtimediff = 1;
     x->x_clock = clock_new(x, (t_method)line_tick);
     x->x_targettime = x->x_prevtime = clock_getsystime();
-    if (grain <= 0) grain = 20;
     x->x_grain = grain;
     outlet_new(&x->x_obj, gensym("float"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
+    floatinlet_new(&x->x_obj, &x->x_grain);
     return (x);
 }
 
