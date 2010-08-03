@@ -46,6 +46,9 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
 {
     char buf[4*MAXPDSTRING];
     char namebuf[80];
+    char sprintfbuf[MAXPDSTRING];
+    char *afterpercent;
+    t_int afterpercentlen;
     t_gfxstub *x;
     t_symbol *s;
         /* if any exists with matching key, burn it. */
@@ -68,7 +71,13 @@ void gfxstub_new(t_pd *owner, void *key, const char *cmd)
     x->x_key = key;
     x->x_next = gfxstub_list;
     gfxstub_list = x;
-    sprintf(buf, cmd, s->s_name);
+    /* only replace first %s so sprintf() doesn't crash */
+    afterpercent = strchr(cmd, '%') + 2;
+    afterpercentlen = afterpercent - cmd;
+    strncpy(sprintfbuf, cmd, afterpercentlen);
+    sprintfbuf[afterpercentlen] = '\0';
+    sprintf(buf, sprintfbuf, s->s_name);
+    strncat(buf, afterpercent, (4*MAXPDSTRING) - afterpercentlen);
     sys_gui(buf);
 }
 
