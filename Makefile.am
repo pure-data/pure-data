@@ -1,8 +1,12 @@
 AUTOMAKE_OPTIONS = foreign
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS =  -I m4/generated -I m4
 
 CFLAGS += @DEFS@
 EXTRA_SUBDIRS = 
+
+# pkg-config support
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = pd.pc
 
 if ASIO
 EXTRA_SUBDIRS += asio
@@ -25,18 +29,21 @@ SUBDIRS = $(EXTRA_SUBDIRS) src man tcl po extra
 # subdirs that are always included in the dist, etc.
 DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
 
-# Symlinks don't work on Windows/MinGW but they do on Cygwin.
 BUILT_SOURCES = 
 if MSGFMT
 BUILT_SOURCES += locales
 endif
 
+## FIXXXME
+## $(pkglibdir) is used throughout the other Makefile.amS
+##       simply ignoring the special case for other OSs...
 if LINUX
 libpddir = $(pkglibdir)
 else
 libpddir = $(prefix)
 endif
 
+# Symlinks don't work on Windows/MinGW but they do on Cygwin.
 bin:
 	$(LN_S) src bin
 
@@ -44,7 +51,6 @@ locales:
 	make -C po all
 
 install-data-local:
-	make libpddir=$(libpddir) -C extra install
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup/disabled
 

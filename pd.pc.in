@@ -1,0 +1,22 @@
+# Pure data pkg-config file
+# LATER: shouldn't "--libs" output all flags for building an external?
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+###############################
+# variables
+# the default file-extension for externals (e.g. "l_i386")
+extension=@EXTERNAL_EXTENSION@
+# where to install externals
+externaldir=${libdir}/pd/extra
+
+###############################
+# core configuration
+Name: pd
+Description: Pure data externals
+Version: @PACKAGE_VERSION@
+Cflags: -I${includedir}/pd -DPD @EXTERNAL_CFLAGS@
+Libs: @EXTERNAL_LDFLAGS@

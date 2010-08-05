@@ -37,7 +37,6 @@ pd_include_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h
 include_HEADERS = m_pd.h
 noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_pablio.h s_audio_paring.h s_utf8.h
 
-
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt makefile.mingw
 

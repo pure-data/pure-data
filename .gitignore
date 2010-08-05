@@ -5,18 +5,15 @@ TAGS
 autom4te.cache
 Makefile
 Makefile.in
+GNUmakefile
+GNUmakefile.in
 aclocal.m4
 configure
-config.guess
 config.log
-config.sub
 config.status
-depcomp
-install-sh
 libtool
-m4
-missing
-ltmain.sh
+m4/generated
+m4/config
 makefile.dependencies
 .deps
 .libs
@@ -35,3 +32,4 @@ src/pdreceive
 src/pdsend
 ASIOSDK2
 pd-0.*
+pd.pc
