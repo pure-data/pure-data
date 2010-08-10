@@ -193,6 +193,7 @@ void sys_setalarm(int microsec);
 #define API_SGI 6
 #define API_AUDIOUNIT 7
 #define API_ESD 8
+#define API_DUMMY 9
 
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
 # define API_DEFAULT API_OSS
@@ -219,6 +220,11 @@ void sys_setalarm(int microsec);
 # define API_DEFAULT API_JACK
 # define API_DEFSTRING "Jack audio connection kit"
 #endif
+#ifdef USEAPI_DUMMY
+#define API_DEFAULT API_DUMMY
+#define API_DEFSTRING "dummy audio"
+#endif
+
 #define DEFAULTAUDIODEV 0
 
 #define MAXAUDIOINDEV 4
