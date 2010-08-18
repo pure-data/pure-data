@@ -845,6 +845,16 @@ void sys_listdevs(void )
     sys_listmididevs();
 }
 
+void sys_get_audio_devs(char *indevlist, int *nindevs,
+    char *outdevlist, int *noutdevs, int *canmulti, int *cancallback, 
+                        int maxndev, int devdescsize)
+{
+  audio_getdevs(indevlist, nindevs,
+                outdevlist, noutdevs, 
+                canmulti, cancallback, 
+                maxndev, devdescsize);
+}
+
 void sys_setblocksize(int n)
 {
     if (n < 1)

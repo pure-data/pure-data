@@ -762,3 +762,17 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
       }
 
 }
+
+void sys_get_midi_devs(char *indevlist, int *nindevs,
+                       char *outdevlist, int *noutdevs, 
+                       int maxndevs, int devdescsize)
+{
+
+#ifdef USEAPI_ALSA
+  if (sys_midiapi == API_ALSA)
+    midi_alsa_getdevs(indevlist, nindevs, outdevlist, noutdevs, 
+                      maxndevs, devdescsize);
+  else
+#endif /* ALSA */
+  midi_getdevs(indevlist, nindevs, outdevlist, noutdevs, maxndevs, devdescsize);
+}
