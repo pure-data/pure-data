@@ -1,7 +1,7 @@
 NAME=pd~
 CSYM=pd_tilde
 
-include ../makefile
+include ../makefile.subdir
 
 pd_linux: pdsched.pd_linux
 

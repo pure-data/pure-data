@@ -1,4 +1,4 @@
 NAME=fiddle~
 CSYM=fiddle_tilde
 
-include ../makefile
+include ../makefile.subdir

@@ -1,0 +1,31 @@
+## Makefile.am -- Process this file with automake to produce Makefile.in
+
+NAME=pd~
+
+PATCHES =  pd~-help.pd pd~-subprocess.pd
+OTHERDATA = 
+
+pd__la_SOURCES = pd~.c
+pdsched_la_SOURCES = pdsched.c
+
+external_LTLIBRARIES = pd~.la pdsched.la
+dist_external_DATA = $(PATCHES) $(OTHERDATA)
+
+
+
+
+AUTOMAKE_OPTIONS = foreign
+AM_CPPFLAGS	 = -I$(top_srcdir)/src -DPD
+AM_CFLAGS = @ARCH_CFLAGS@
+AM_LIBS = $(LIBM)
+AM_LDFLAGS = -module -avoid-version -shared @ARCH_LDFLAGS@ -shrext .@EXTERNAL_EXTENSION@ -L$(top_srcdir)/src
+
+externaldir = $(pkglibdir)/extra/$(NAME)
+
+
+if MINGW
+AM_LIBS += -lpd
+endif
+
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck

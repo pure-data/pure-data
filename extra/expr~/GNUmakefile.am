@@ -1,0 +1,50 @@
+## Makefile.am -- Process this file with automake to produce Makefile.in
+NAME=expr~
+
+external_LTLIBRARIES = expr~.la
+expr__la_SOURCES =  vexp.c vexp_fun.c vexp_if.c
+PATCHES = ../expr-help.pd
+OTHERDATA = LICENSE.txt README.txt
+
+dist_external_DATA = $(PATCHES) $(OTHERDATA)
+noinst_HEADERS = fts_to_pd.h vexp.h
+
+AUTOMAKE_OPTIONS = foreign
+AM_CPPFLAGS	 = -I$(top_srcdir)/src -DPD
+AM_CFLAGS = @ARCH_CFLAGS@
+AM_LIBS = $(LIBM)
+AM_LDFLAGS = -module -avoid-version -shared @ARCH_LDFLAGS@ -shrext .@EXTERNAL_EXTENSION@ -L$(top_srcdir)/src
+
+externaldir = $(pkglibdir)/extra/$(NAME)
+
+# install-exec-hook seems to be called before $(DESTDIR)$(externaldir) is created...
+# so we install everything in the install-data-hook
+install-data-hook:
+	cd $(DESTDIR)$(externaldir) && ( \
+	  $(LN_S) expr~.@EXTERNAL_EXTENSION@ expr.@EXTERNAL_EXTENSION@; \
+	  $(LN_S) expr~.@EXTERNAL_EXTENSION@ fexpr~.@EXTERNAL_EXTENSION@; \
+	  cd ..; \
+	  $(LN_S) $(NAME)/expr.@EXTERNAL_EXTENSION@ expr.@EXTERNAL_EXTENSION@; \
+	  $(LN_S) $(NAME)/expr~.@EXTERNAL_EXTENSION@ expr~.@EXTERNAL_EXTENSION@; \
+	  $(LN_S) $(NAME)/fexpr~.@EXTERNAL_EXTENSION@ fexpr~.@EXTERNAL_EXTENSION@; \
+	  $(LN_S) $(NAME)/expr-help.pd expr-help.pd; \
+	  $(LN_S) $(NAME)/expr-help.pd expr~-help.pd; \
+	  $(LN_S) $(NAME)/expr-help.pd fexpr~-help.pd; \
+	)
+
+uninstall-hook:
+	cd $(DESTDIR)$(externaldir) && ( \
+	  rm -f expr.@EXTERNAL_EXTENSION@ fexpr~.@EXTERNAL_EXTENSION@; \
+	  cd ..; \
+	  rm -f expr~.@EXTERNAL_EXTENSION@ expr.@EXTERNAL_EXTENSION@ fexpr~.@EXTERNAL_EXTENSION@; \
+	  rm -f expr-help.pd expr~-help.pd fexpr~-help.pd; \
+	)
+
+
+
+if MINGW
+AM_LIBS += -lpd
+endif
+
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck

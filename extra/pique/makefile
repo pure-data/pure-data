@@ -1,4 +1,4 @@
 NAME=pique
 CSYM=pique
 
-include ../makefile
+include ../makefile.subdir

@@ -1,4 +1,4 @@
 NAME=choice
 CSYM=choice
 
-include ../makefile
+include ../makefile.subdir

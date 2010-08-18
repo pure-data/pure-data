@@ -1,4 +1,4 @@
 NAME=loop~
 CSYM=loop_tilde
 
-include ../makefile
+include ../makefile.subdir

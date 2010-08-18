@@ -1,4 +1,4 @@
 NAME=bonk~
 CSYM=bonk_tilde
 
-include ../makefile
+include ../makefile.subdir

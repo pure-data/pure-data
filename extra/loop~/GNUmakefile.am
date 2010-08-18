@@ -1,0 +1,28 @@
+## Makefile.am -- Process this file with automake to produce Makefile.in
+
+NAME=loop~
+
+external_LTLIBRARIES = loop~.la
+SOURCES =  loop~.c
+PATCHES =  loop~-help.pd test-loop~.pd
+OTHERDATA = 
+
+###############################
+# you shouldn't need to add anything below here
+dist_external_DATA = $(PATCHES) $(OTHERDATA)
+
+AUTOMAKE_OPTIONS = foreign
+AM_CPPFLAGS	 = -I$(top_srcdir)/src -DPD
+AM_CFLAGS = @ARCH_CFLAGS@
+AM_LIBS = $(LIBM)
+AM_LDFLAGS = -module -avoid-version -shared @ARCH_LDFLAGS@ -shrext .@EXTERNAL_EXTENSION@ -L$(top_srcdir)/src
+
+externaldir = $(pkglibdir)/extra/$(NAME)
+
+
+if MINGW
+AM_LIBS += -lpd
+endif
+
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck
