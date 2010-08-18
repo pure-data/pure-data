@@ -219,7 +219,7 @@ static void block_float(t_block *x, t_floatarg f)
 
 static void block_bang(t_block *x)
 {
-    if (x->x_switched && !x->x_switchon)
+    if (x->x_switched && !x->x_switchon && dsp_chain)
     {
         t_int *ip;
         x->x_return = 1;
