@@ -28,16 +28,6 @@ static snd_seq_t *midi_handle;
 static snd_midi_event_t *midiev;
 
 
-
-static unsigned short CombineBytes(unsigned char First, unsigned char Second)
-{
-    unsigned short _14bit;
-    _14bit = (unsigned short)Second;
-    _14bit <<= 7;
-    _14bit |= (unsigned short)First;
-    return(_14bit);
-}
-
 void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     int nmidiout, int *midioutvec)
 {
@@ -193,7 +183,7 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
         if (a >= 224)   // pitchbend
         {
             channel = a-224;
-            snd_seq_ev_set_pitchbend(&ev,channel,CombineBytes(b,c));
+            snd_seq_ev_set_pitchbend(&ev, channel, (((c<<7)|b)-8192)); /* b and c are already correct but alsa needs to recalculate them */
         }
         else if (a >= 208)      // touch
         {
