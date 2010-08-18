@@ -76,6 +76,10 @@ static void netsend_connect(t_netsend *x, t_symbol *hostname,
         &intarg, sizeof(intarg)) < 0)
             post("setsockopt (SO_RCVBUF) failed\n");
 #endif
+    intarg = 1;
+    if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, 
+                  (const void *)&intarg, sizeof(intarg)) < 0)
+        post("setting SO_BROADCAST");
         /* for stream (TCP) sockets, specify "nodelay" */
     if (x->x_protocol == SOCK_STREAM)
     {
@@ -282,6 +286,10 @@ static void *netreceive_new(t_symbol *compatflag,
         &intarg, sizeof(intarg)) < 0)
             post("setsockopt (SO_RCVBUF) failed\n");
 #endif
+    intarg = 1;
+    if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, 
+                  (const void *)&intarg, sizeof(intarg)) < 0)
+        post("setting SO_BROADCAST");
         /* Stream (TCP) sockets are set NODELAY */
     if (!udp)
     {
