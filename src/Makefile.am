@@ -24,6 +24,7 @@ pd_SOURCES = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c \
     m_conf.c m_glob.c m_sched.c \
     s_main.c s_inter.c s_file.c s_print.c \
     s_loader.c s_path.c s_entry.c s_audio.c s_midi.c \
+    s_utf8.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_array.c d_global.c \
     d_delay.c d_resample.c \
@@ -31,7 +32,7 @@ pd_SOURCES = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c \
     x_time.c x_acoustics.c x_net.c x_qlist.c x_gui.c x_list.c d_soundfile.c
 
 include_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h
-noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_pablio.h s_audio_paring.h
+noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_pablio.h s_audio_paring.h s_utf8.h
 
 
 # we want these in the dist tarball

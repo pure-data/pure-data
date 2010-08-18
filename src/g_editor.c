@@ -8,6 +8,7 @@
 #include "m_imp.h"
 #include "s_stuff.h"
 #include "g_canvas.h"
+#include "s_utf8.h" /*-- moo --*/
 #include <string.h>
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
 #define snprintf sprintf_s
@@ -1666,7 +1667,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         gotkeysym = av[1].a_w.w_symbol;
     else if (av[1].a_type == A_FLOAT)
     {
-        char buf[3];
+        char buf[UTF8_MAXBYTES1];
         switch((int)(av[1].a_w.w_float))
         {
         case 8:  gotkeysym = gensym("BackSpace"); break;
@@ -1676,7 +1677,8 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         case 32: gotkeysym = gensym("Space"); break;
         case 127:gotkeysym = gensym("Delete"); break;
         default:
-            sprintf(buf, "%c", (int)(av[1].a_w.w_float));
+        /*-- moo: assume keynum is a Unicode codepoint; encode as UTF-8 --*/
+            u8_wc_toutf8_nul(buf, (UCS4)(av[1].a_w.w_float));
             gotkeysym = gensym(buf);
         }
     }
