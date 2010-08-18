@@ -33,12 +33,11 @@ static t_class *hslider_class;
 static void hslider_draw_update(t_gobj *client, t_glist *glist)
 {
     t_hslider *x = (t_hslider *)client;
-    t_canvas *canvas=glist_getcanvas(glist);
-    int ypos=text_ypix(&x->x_gui.x_obj, glist);
-
     if (glist_isvisible(glist))
     {
         int r = text_xpix(&x->x_gui.x_obj, glist) + (x->x_val + 50)/100;
+        int ypos=text_ypix(&x->x_gui.x_obj, glist);
+        t_canvas *canvas=glist_getcanvas(glist);
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
                  canvas, x, r, ypos+1,
                  r, ypos + x->x_gui.x_h);
