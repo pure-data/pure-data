@@ -2,6 +2,7 @@ font courier not found?
 carriage returns after posting
 lose makesfx.bat, etc. from msw (and move out personal stuff?)
 control C control
+window titles wrong on Macintosh
 
 ---------------- dolist --------------------
 

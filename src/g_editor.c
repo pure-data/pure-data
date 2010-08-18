@@ -716,7 +716,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
 {
     t_gobj *g;
     int i, nobj = glist_getindex(gl, 0);  /* number of objects */
-    int hadwindow = gl->gl_havewindow;
+    int hadwindow = (gl->gl_editor != 0);
     for (g = gl->gl_list, i = 0; g && i < nobj; i++)
     {
         if (g != except && pd_class(&g->g_pd) == canvas_class &&
@@ -729,8 +729,10 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
                 replacement will be at the end of the list, so we don't
                 do g = g->g_next in this case. */
             int j = glist_getindex(gl, g);
-            if (!gl->gl_havewindow)
-                canvas_vis(glist_getcanvas(gl), 1);
+            if (!gl->gl_editor)
+                canvas_vis(gl, 1);
+            if (!gl->gl_editor)
+                bug("editor");
             glist_noselect(gl);
             glist_select(gl, g);
             canvas_setundo(gl, canvas_undo_cut,
@@ -747,7 +749,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
              g = g->g_next;
         }
     }
-    if (!hadwindow && gl->gl_havewindow)
+    if (!hadwindow && gl->gl_editor)
         canvas_vis(glist_getcanvas(gl), 0);
 }
 
@@ -924,9 +926,6 @@ void canvas_vis(t_canvas *x, t_floatarg f)
 {
     char buf[30];
     int flag = (f != 0);
-    /* why is this here, what's the problem? This gets triggered by GOPs */
-    if (x != glist_getcanvas(x))
-        bug("canvas_vis");
     if (flag)
     {
         /* If a subpatch/abstraction has GOP/gl_isgraph set, then it will have

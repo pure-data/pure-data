@@ -108,8 +108,6 @@ static t_int *sigdelwrite_perform(t_int *w)
             phase -= nsamps;
         }
     }
-    bp = vp + c->c_phase;
-
     c->c_phase = phase; 
     return (w+4);
 }
