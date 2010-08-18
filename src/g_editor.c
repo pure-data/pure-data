@@ -1031,16 +1031,7 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = 1;
         x->gl_hidetext = !(!(flag&2));
-        if (!nogoprect && !x->gl_goprect)
-        {
-            t_gobj *g;
-            for (g = x->gl_list; g; g = g->g_next)
-                if (pd_checkobject(&g->g_pd))
-            {
-                x->gl_goprect = 1;
-                break;
-            }
-        }
+        x->gl_goprect = !nogoprect;
         if (glist_isvisible(x) && x->gl_goprect)
             glist_redraw(x);
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
