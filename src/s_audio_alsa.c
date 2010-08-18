@@ -90,9 +90,17 @@ static int alsaio_canmmap(t_alsa_dev *dev)
     return ((err1 < 0) && (err2 >= 0));
 }
 
+static void check_setup_error(int err, int out, const char *why) {
+        char bf[256];
+        snprintf(bf, sizeof bf, "%s (%s)", why, out ? "output" : "input");
+        check_error(err, bf);
+}
+
 static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     int nfrags, int frag_size)
 {
+#define CHECK_ERROR(why_) check_setup_error(err, out, why_)
+
     int bufsizeforthis, err;
     snd_pcm_hw_params_t* hw_params;
     unsigned int tmp_uint;
@@ -110,14 +118,14 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
 
         /* get the default params */
     err = snd_pcm_hw_params_any(dev->a_handle, hw_params);
-    check_error(err, "snd_pcm_hw_params_any");
+    CHECK_ERROR("snd_pcm_hw_params_any");
 
         /* try to set interleaved access */
     err = snd_pcm_hw_params_set_access(dev->a_handle,
         hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
     if (err < 0)
         return (-1);
-    check_error(err, "snd_pcm_hw_params_set_access");
+    CHECK_ERROR("snd_pcm_hw_params_set_access");
 #if 0       /* enable this to print out which formats are available */
     {
         int i;
@@ -141,7 +149,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
                 "PD-ALSA: 32/24 bit format not available - using 16\n"); */
             err = snd_pcm_hw_params_set_format(dev->a_handle, hw_params,
                 SND_PCM_FORMAT_S16);
-            check_error(err, "snd_pcm_hw_params_set_format");
+            CHECK_ERROR("_pcm_hw_params_set_format");
             dev->a_sampwidth = 2;
         }
         else dev->a_sampwidth = 3;
@@ -154,13 +162,13 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         /* set the subformat */
     err = snd_pcm_hw_params_set_subformat(dev->a_handle,
         hw_params, SND_PCM_SUBFORMAT_STD);
-    check_error(err, "snd_pcm_hw_params_set_subformat");
+    CHECK_ERROR("snd_pcm_hw_params_set_subformat");
     
         /* set the number of channels */
     tmp_uint = *channels;
     err = snd_pcm_hw_params_set_channels_min(dev->a_handle,
         hw_params, &tmp_uint);
-    check_error(err, "snd_pcm_hw_params_set_channels");
+    CHECK_ERROR("snd_pcm_hw_params_set_channels");
     if (tmp_uint != (unsigned)*channels)
         post("ALSA: set %s channels to %d", (out?"output":"input"), tmp_uint);
     *channels = tmp_uint;
@@ -169,7 +177,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         /* set the sampling rate */
     err = snd_pcm_hw_params_set_rate_min(dev->a_handle, hw_params, 
         (unsigned int *)rate, 0);
-    check_error(err, "snd_pcm_hw_params_set_rate_min (input)");
+    CHECK_ERROR("snd_pcm_hw_params_set_rate_min");
 #if 0
     err = snd_pcm_hw_params_get_rate(hw_params, &subunitdir);
     post("input sample rate %d", err);
@@ -185,7 +193,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     err = snd_pcm_hw_params_set_period_size_near(dev->a_handle,
         hw_params, &tmp_snd_pcm_uframes, 0);
 #endif
-    check_error(err, "snd_pcm_hw_params_set_period_size_near (input)");
+    CHECK_ERROR("snd_pcm_hw_params_set_period_size_near");
 
         /* set the buffer size */
 #ifdef ALSAAPI9
@@ -196,10 +204,10 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     err = snd_pcm_hw_params_set_buffer_size_near(dev->a_handle,
         hw_params, &tmp_snd_pcm_uframes);
 #endif
-    check_error(err, "snd_pcm_hw_params_set_buffer_size_near (input)");
+    CHECK_ERROR("snd_pcm_hw_params_set_buffer_size_near");
 
     err = snd_pcm_hw_params(dev->a_handle, hw_params);
-    check_error(err, "snd_pcm_hw_params (input)");
+    CHECK_ERROR("snd_pcm_hw_params");
 
         /* set up the buffer */
     bufsizeforthis = DEFDACBLKSIZE * dev->a_sampwidth * *channels;
@@ -227,6 +235,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         alsa_snd_bufsize = bufsizeforthis;
     }
     return (1);
+#undef CHECK_ERROR
 }
 
 
