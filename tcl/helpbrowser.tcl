@@ -4,7 +4,9 @@ package provide helpbrowser 0.1
 namespace eval ::helpbrowser:: {
     variable libdirlist
     variable helplist
+    variable reference_count
     variable reference_paths
+    variable doctypes "*.{pd,pat,mxb,mxt,help,txt,htm,html,pdf}"
 
     namespace export open_helpbrowser
 }
@@ -23,18 +25,21 @@ proc ::helpbrowser::open_helpbrowser {} {
         wm group .help_browser .
         wm transient .help_browser
         wm title .help_browser [_ "Help Browser"]
-        .help_browser configure -menu $::dialog_menubar
         bind .help_browser <$::modifier-Key-w> "wm withdraw .help_browser"
+
+        if {$::windowingsystem eq "aqua"} {
+            .help_browser configure -menu $::dialog_menubar
+        }
 
         wm resizable .help_browser 0 0
         frame .help_browser.frame
         pack .help_browser.frame -side top -fill both
         build_references
-#        doc_make_listbox .help_browser.frame $::sys_libdir/doc 0
         make_rootlistbox .help_browser.frame
     }
 }
 
+# make the root listbox of the help browser using the pre-built lists
 proc ::helpbrowser::make_rootlistbox {base} {
     variable libdirlist
     variable helplist
@@ -45,7 +50,7 @@ proc ::helpbrowser::make_rootlistbox {base} {
                              -height 20 -width 23 -exportselection 0 -bd 0]
 	pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
-    foreach item [concat [lsort $libdirlist] [lsort $helplist]] {
+    foreach item [concat [lsort [concat $libdirlist $helplist]]] {
 		$current_listbox insert end $item
 	}
 	bind $current_listbox <Button-1> \
@@ -56,8 +61,6 @@ proc ::helpbrowser::make_rootlistbox {base} {
         [list ::helpbrowser::root_doubleclick %W %x %y]
 	bind $current_listbox <$::modifier-Key-o> \
         [list ::helpbrowser::root_doubleclick %W %x %y]
-    bind $current_listbox <Button-1> {+ focus %W;}
-    focus $current_listbox
 }
 
 # navigate into a library/directory from the root
@@ -72,19 +75,23 @@ proc ::helpbrowser::root_navigate {window x y} {
     }
 }
 
+# double-click action to open the folder
 proc ::helpbrowser::root_doubleclick {window x y} {
     variable reference_paths
-    if {[set filename [$window get [$window index "@$x,$y"]]] eq {}} {
+    if {[set listname [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
-    set dir [file dirname $reference_paths($filename)]
+    set dir [file dirname $reference_paths($listname)]
+    set filename [file tail $reference_paths($listname)]
     ::pdwindow::verbose 0 "menu_doc_open $dir $filename"
     if { [catch {menu_doc_open $dir $filename} fid] } {
         ::pdwindow::warn "Could not open $dir/$filename\n"
     }
 }
 
+# make the listbox to show the first level contents of a libdir
 proc ::helpbrowser::make_liblistbox {base dir} {
+    variable doctypes
     catch { eval destroy [lrange [winfo children $base] 2 end] } errorMessage
     # exportselection 0 looks good, but selection gets easily out-of-sync
 	set current_listbox [listbox "[set b $base.listbox0]" -yscrollcommand "$b-scroll set" \
@@ -94,10 +101,18 @@ proc ::helpbrowser::make_liblistbox {base dir} {
 	pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
 	foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
-		$current_listbox insert end "[file tail $item]/"
+        if {[glob -directory $item -nocomplain -types {f} -- $doctypes] ne "" ||
+            [glob -directory $item -nocomplain -types {d} -- *] ne ""} {
+            $current_listbox insert end "[file tail $item]/"
+        }
     }
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
                                          *-{help,meta}.pd]]  {
+        $current_listbox insert end [file tail $item]
+	}
+    $current_listbox insert end "___________________________"
+    foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
+                                         *.txt]]  {
         $current_listbox insert end [file tail $item]
 	}
 	bind $current_listbox <Button-1> \
@@ -106,10 +121,10 @@ proc ::helpbrowser::make_liblistbox {base dir} {
         [list ::helpbrowser::dir_doubleclick $dir 1 %W %x %y]
 	bind $current_listbox <Key-Return> \
         [list ::helpbrowser::dir_doubleclick $dir 1 %W %x %y]
-    focus $current_listbox
 }
 
 proc ::helpbrowser::doc_make_listbox {base dir count} {
+    variable doctypes
     # check for [file readable]?
 	# requires Tcl 8.5 but probably deals with special chars better:
 	#        destroy {*}[lrange [winfo children $base] [expr {2 * $count}] end]
@@ -129,7 +144,7 @@ proc ::helpbrowser::doc_make_listbox {base dir count} {
 		$current_listbox insert end "[file tail $item]/"
     }
 	foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
-                                         *.{pd,pat,mxb,mxt,txt,htm,html,pdf}]]  {
+                                         $doctypes]]  {
 		$current_listbox insert end [file tail $item]
 	}
 	bind $current_listbox <Button-1> \
@@ -140,7 +155,6 @@ proc ::helpbrowser::doc_make_listbox {base dir count} {
         "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
-    focus $current_listbox
 }
 
 # navigate into an actual directory
@@ -155,6 +169,15 @@ proc ::helpbrowser::dir_navigate {dir count window x y} {
 }
 
 proc ::helpbrowser::dir_doubleclick {dir count window x y} {
+    if {[set filename [$window get [$window index "@$x,$y"]]] eq {}} {
+        return
+    }
+    if { [catch {menu_doc_open $dir $filename} fid] } {
+        ::pdwindow::error "Could not open $dir/$filename\n"
+    }
+}
+
+proc ::helpbrowser::rightclickmenu {dir count window x y} {
     if {[set filename [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
@@ -194,26 +217,41 @@ proc ::helpbrowser::add_entry {reflist entry} {
     variable libdirlist
     variable helplist
     variable reference_paths
+    variable reference_count
     set entryname [file tail $entry]
-    if {[lsearch -exact [concat $$reflist] $entryname] > -1} {
-        ::pdwindow::error "WARNING: duplicate $entryname library found!"
-        ::pdwindow::error "  $reference_paths($entryname) is active,"
-        ::pdwindow::error "  $entry is a duplicate."
-    } else { 
+    # if we are checking libdirs, then check to see if there is already a
+    # libdir with that name that has been discovered in the path.  If so, dump
+    # a warning. The trailing slash on $entryname is added below when
+    # $entryname is a dir
+    if {$reflist eq "libdirlist" && [lsearch -exact $libdirlist $entryname/] > -1} {
+        ::pdwindow::error "WARNING: duplicate '$entryname' library found!\n"
+        ::pdwindow::error "  '$reference_paths($entryname/)' is active\n"
+        ::pdwindow::error "  '$entry' is duplicate\n"
+        incr reference_count($entryname)
+        append entryname "/ ($reference_count($entryname))"
+    } else {
+        set reference_count($entryname) 1
         if {[file isdirectory $entry]} {
             append entryname "/"
         }
-        lappend $reflist $entryname
-        set reference_paths($entryname) $entry
     }
+    lappend $reflist $entryname
+    set reference_paths($entryname) $entry
 }
 
 proc ::helpbrowser::build_references {} {
-    variable libdirlist {"0_Pd/"}
+    variable libdirlist {" Pure Data/" "-----------------------"}
     variable helplist {}
+    variable reference_count
     variable reference_paths
-    array set reference_paths [list "0_Pd/" $::sys_libdir/doc]
-    foreach pathdir [concat $::pd_path [file join $::sys_libdir extra]] {
+
+    array set reference_count {}
+    array set reference_paths [list \
+                                   " Pure Data/" $::sys_libdir/doc \
+                                   "-----------------------" "" \
+                                  ]
+    set my_pd_path [concat $::pd_path [list [file join $::sys_libdir extra]]]
+    foreach pathdir $my_pd_path {
         if { ! [file isdirectory $pathdir]} {continue}
         # Fix the directory name, this ensures the directory name is in the
         # native format for the platform and contains a final directory seperator
@@ -231,3 +269,5 @@ proc ::helpbrowser::build_references {} {
 
 
 
+
+ 	  	 
