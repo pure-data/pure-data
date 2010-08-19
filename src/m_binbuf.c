@@ -1202,6 +1202,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
             {
                 if (!strcmp(second, "canvas"))
                 {
+                    t_float x, y;
                     if (stackdepth >= MAXSTACK)
                     {
                         post("too many embedded patches");
@@ -1214,8 +1215,8 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                         fontsize = atom_getfloatarg(6, natom, nextmess);
                         gotfontsize = 1;
                     }
-                    t_float x = atom_getfloatarg(2, natom, nextmess);
-                    t_float y = atom_getfloatarg(3, natom, nextmess);
+                    x = atom_getfloatarg(2, natom, nextmess);
+                    y = atom_getfloatarg(3, natom, nextmess);
                     binbuf_addv(newb, "ssffff;", 
                         gensym("#N"), gensym("vpatcher"),
                             x, y,
@@ -1315,6 +1316,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                     else if ( (classname == gensym("trigger")) ||
                               (classname == gensym("t")) )
                     {
+                        t_symbol *arg;
                         SETSYMBOL(outmess, gensym("#P"));
                         SETSYMBOL(outmess + 1, gensym("newex"));
                         outmess[2] = nextmess[2];
@@ -1322,7 +1324,6 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                         SETFLOAT(outmess + 4, 50.*(natom-4));
                         SETFLOAT(outmess + 5, fontsize);
                         outmess[6] = nextmess[4];
-                        t_symbol *arg;
                         for (i = 5; i < natom; i++) {
                             arg = atom_getsymbolarg(i, natom, nextmess);
                             if (arg == gensym("a"))

@@ -12,7 +12,8 @@ pd_nt: $(NAME).dll
 
 .SUFFIXES: .dll
 
-PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo -D_CRT_SECURE_NO_WARNINGS
+PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo -D_CRT_SECURE_NO_WARNINGS \
+    -D_CRT_NONSTDC_NO_DEPRECATE
 # VC="C:\Program Files\Microsoft Visual Studio\Vc98"
 VC = "C:\Program Files\Microsoft Visual Studio 9.0\VC"
 VSTK = "C:\Program Files\Microsoft SDKs\Windows\v6.0A"

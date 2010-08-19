@@ -22,6 +22,9 @@
 #include <io.h>
 #include <windows.h>
 #endif
+#ifdef _WIN32
+#include <malloc.h>
+#endif
 
 #include <string.h>
 #include "m_pd.h"
@@ -112,7 +115,7 @@ static void sys_expandpath(const char *from, char *to, int bufsize)
     }
 #ifdef _WIN32
     {
-        char buf[bufsize];
+        char *buf = alloca(bufsize);
         ExpandEnvironmentStrings(to, buf, bufsize-1);
         buf[bufsize-1] = 0;
         strncpy(to, buf, bufsize);
@@ -245,7 +248,7 @@ void sys_setextrapath(const char *p)
 #ifdef _WIN32
     sys_expandpath("%ProgramFiles%/Common Files/Pd", pathbuf, MAXPDSTRING);
     pd_extrapath = namelist_append(0, pathbuf, 0);
-    sys_expandpath("%UserProfile%/Application Data/Pd", pathbuf);
+    sys_expandpath("%UserProfile%/Application Data/Pd", pathbuf, MAXPDSTRING);
     pd_extrapath = namelist_append(pd_extrapath, pathbuf, 0);
 #endif
     /* add built-in "extra" path last so its checked last */

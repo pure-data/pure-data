@@ -1060,13 +1060,13 @@ static void bonk_free(t_bonk *x)
 static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_bonk *x = (t_bonk *)pd_new(bonk_class);
-    x->x_canvas = canvas_getcurrent(); /* fbar: bind current canvas to x */
     int nsig = 1, period = DEFPERIOD, npts = DEFNPOINTS,
         nfilters = DEFNFILTERS, j;
     float halftones = DEFHALFTONES, overlap = DEFOVERLAP,
         firstbin = DEFFIRSTBIN, minbandwidth = DEFMINBANDWIDTH;
     t_insig *g;
 
+    x->x_canvas = canvas_getcurrent(); /* fbar: bind current canvas to x */
     if (argc > 0 && argv[0].a_type == A_FLOAT)
     {
             /* old style args for compatibility */

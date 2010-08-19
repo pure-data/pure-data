@@ -331,7 +331,9 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
     set ::windowname($mytoplevel) $name ;# TODO add path to this
     if {$::windowingsystem eq "aqua"} {
         if {[file exists "$path/$name"]} {
-            wm attributes $mytoplevel -modified $dirty -titlepath "$path/$name"
+            # for some reason -titlepath can still fail so just catch it 
+            catch {wm attributes $mytoplevel -modified $dirty \
+                -titlepath "$path/$name"}
         }
         wm title $mytoplevel "$name$arguments"
     } else {

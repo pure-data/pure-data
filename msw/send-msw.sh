@@ -6,7 +6,6 @@ find . -name ".[a-zA-Z]*" -o -name core -ok rm {} \;
 rm -rf /tmp/pd /tmp/pd.zip
 cd /tmp
 tar xzf $MSWDIR/pdprototype.tgz
-cp $MSWDIR/pd.lnk /tmp/pd/
 
 # hack to stick in new msgcat -- DELETE THIS when updating tcl/tk
 cd /tmp/pd/lib
