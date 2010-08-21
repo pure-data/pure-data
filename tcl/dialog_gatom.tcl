@@ -44,8 +44,8 @@ proc ::dialog_gatom::apply {mytoplevel} {
                  [$mytoplevel.limits.upper.entry get] \
                  [::dialog_gatom::escape [$mytoplevel.gatomlabel.name.entry get]] \
                  $gatomlabel_radio($mytoplevel) \
-                 [::dialog_gatom::escape [$mytoplevel.s_r.send.entry get]] \
-                 [::dialog_gatom::escape [$mytoplevel.s_r.receive.entry get]]"
+                 [::dialog_gatom::escape [$mytoplevel.s_r.receive.entry get]] \
+                 [::dialog_gatom::escape [$mytoplevel.s_r.send.entry get]]"
 }
 
 proc ::dialog_gatom::cancel {mytoplevel} {
@@ -60,7 +60,7 @@ proc ::dialog_gatom::ok {mytoplevel} {
 # set up the panel with the info from pd
 proc ::dialog_gatom::pdtk_gatom_dialog {mytoplevel initwidth initlower initupper \
                                      initgatomlabel_radio \
-                                     initgatomlabel initsend initreceive} {
+                                     initgatomlabel initreceive initsend} {
     global gatomlabel_radio
     set gatomlabel_radio($mytoplevel) $initgatomlabel_radio
 

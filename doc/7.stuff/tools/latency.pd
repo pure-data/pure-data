@@ -1,99 +1,247 @@
-#N canvas 37 0 825 630 12;
-#X obj 132 166 metro 500;
-#X msg 91 217 0.5;
-#X obj 130 192 del 3;
-#X msg 130 217 0;
-#X obj 34 323 dac~;
-#X obj 286 216 adc~;
-#X obj 291 310 timer;
-#X obj 93 333 env~ 65536;
-#X floatatom 93 360 4 0 0 0 - - -;
-#X floatatom 339 170 4 0 0 0 - - -;
-#X obj 339 193 + 100;
-#X obj 339 218 dbtorms;
-#X obj 181 333 env~ 65536;
-#X floatatom 181 362 4 0 0 0 - - -;
-#X floatatom 291 347 4 0 0 0 - - -;
-#X obj 312 245 *~ 1;
-#X obj 348 278 threshold~ 0.1 5 0.05 5;
-#X obj 634 160 bonk~;
-#X obj 634 188 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 508 188 osc~ 440;
-#X obj 530 214 *~ 0;
-#X obj 582 189 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#N canvas 392 172 718 504 12;
+#X floatatom 239 98 4 0 0 0 - - adc-gain;
+#X text 317 17 latency measurement;
+#N canvas 68 36 965 906 guts 0;
+#X obj 305 67 adc~ 1 2 3 4 5 6 7 8;
+#X obj 331 134 == 1;
+#X obj 306 158 *~ 0;
+#X obj 368 160 *~ 0;
+#X obj 431 161 *~ 0;
+#X obj 493 163 *~ 0;
+#X obj 554 166 *~ 0;
+#X obj 616 168 *~ 0;
+#X obj 679 169 *~ 0;
+#X obj 741 171 *~ 0;
+#X obj 393 136 == 2;
+#X obj 456 137 == 3;
+#X obj 518 139 == 4;
+#X obj 579 142 == 5;
+#X obj 641 144 == 6;
+#X obj 704 145 == 7;
+#X obj 766 147 == 8;
+#X obj 541 323 loadbang;
+#X obj 805 237 r inchannel;
+#X msg 805 261 set \$1;
+#X obj 805 285 s inchannel-set;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array pulse 120 float 3;
+#A 0 0 0 0 0 0 0 0 0 0 0 -0 -6.19458e-05 -0.000494103 -0.00165937 -0.00390618
+-0.00756153 -0.0129244 -0.0202596 -0.0297923 -0.0417031 -0.0561239
+-0.0731343 -0.0927595 -0.114969 -0.139674 -0.166732 -0.195943 -0.227055
+-0.259767 -0.293732 -0.328561 -0.363831 -0.39909 -0.433862 -0.467657
+-0.499977 -0.530324 -0.558209 -0.583156 -0.604713 -0.622461 -0.636015
+-0.645036 -0.649234 -0.648374 -0.642282 -0.630843 -0.614012 -0.591808
+-0.564318 -0.531698 -0.494168 -0.452014 -0.405579 -0.355267 -0.301528
+-0.244862 -0.185805 -0.124926 -0.0628189 -9.26574e-05 0.0626345 0.124745
+0.185628 0.244691 0.301365 0.355113 0.405437 0.451883 0.494051 0.531595
+0.56423 0.591735 0.613955 0.630802 0.642256 0.648364 0.649239 0.645055
+0.636048 0.622507 0.604771 0.583224 0.558287 0.53041 0.500069 0.467754
+0.433963 0.399193 0.363935 0.328665 0.293834 0.259866 0.22715 0.196032
+0.166815 0.139751 0.115038 0.0928211 0.0731882 0.0561701 0.0417419
+0.0298239 0.0202844 0.012943 0.00757468 0.00391473 0.00166424 0.000496283
+6.24961e-05 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1 119 -1 200 140 1;
+#X restore 39 448 graph;
+#X obj 337 538 t b b;
+#X obj 408 599 f;
+#X obj 446 599 + 1;
+#X obj 337 567 until;
+#X obj 408 627 t f f;
+#X obj 331 731 tabwrite pulse;
+#X obj 335 514 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 428 521 \; pulse const 0;
+#X msg 425 571 0;
+#X obj 329 627 sel 100;
+#X obj 442 731 + 10;
+#X obj 352 663 * 0.06283;
+#X obj 697 338 metro 1000;
+#X obj 697 292 r metro-on;
+#X obj 696 317 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X obj 571 211 * 0.1;
-#X obj 79 25 vdl 15 1 0 3 empty empty empty 0 -6 0 8 -262144 -1 -1
-0;
-#X msg 17 138 \; pd dsp 1;
-#X obj 634 132 *~;
-#X obj 16 113 sel 0;
-#X text 100 20 off;
-#X obj 132 142 == 1;
-#X obj 80 78 t f;
-#X text 102 36 measure latency;
-#X text 100 53 test continuity;
-#X obj 582 97 == 2;
-#X text 90 379 level out;
-#X text 182 380 level in;
-#X obj 530 244 dac~;
-#X text 292 368 latency in;
-#X text 293 384 msec;
-#X text 656 188 this flashes when;
-#X text 656 207 a discontinuity is;
-#X text 657 226 detected;
-#X obj 642 105 adc~;
-#X text 328 131 you can;
-#X text 324 147 adjust gain here;
-#X text 538 66 --- continuity check ---;
-#X text 169 105 --- latency measurement ---;
-#X text 67 420 To use this patch \, connect your audio output back
-to the audio input (channel 1 should suffice.) The latency measurement
-assumes the feedback gain is at least about -14 dB - you can increase
-the input sensitivity if need be.;
-#X text 70 491 If you select "measure latency" a series of pulses are
-timed using the "threshold~" object - note that it has an uncertainty
-of 1.45 msec (at 44K1) \, so you might see the number jitter even if
-the latency is constant.;
-#X text 70 564 Select "test continuity' to see if there are interruptions
-in the sound \, either at the input or output stage. If there are \,
-the button will flash.;
-#X obj 94 243 vline~;
-#X obj 133 279 threshold~ 0.1 5 0.05 5;
-#X connect 0 0 1 0;
+#X obj 710 400 vline~;
+#X obj 709 431 tabread4~ pulse;
+#X obj 700 63 r inchannel;
+#X obj 305 235 hip~ 20;
+#X obj 675 660 *~ 1e+10;
+#X obj 675 687 clip~ 0 1;
+#X obj 675 711 *~ 1e+10;
+#X obj 676 739 lop~ 3;
+#X obj 677 763 clip~ 0 1;
+#X msg 619 718 clear;
+#X msg 711 369 0 \, 12000 10;
+#X obj 852 451 osc~ 220;
+#X obj 852 478 *~ 0.03;
+#X obj 803 633 +~;
+#X obj 804 688 dac~ 1 2 3 4 5 6 7 8;
+#X obj 411 345 bp~ 220 0.7;
+#X obj 847 729 env~ 65536;
+#X floatatom 847 756 4 0 0 0 - - -;
+#X floatatom 857 421 5 0 0 0 - - -;
+#X obj 793 523 +~;
+#X obj 410 369 rzero~ -1;
+#X obj 411 394 rzero~ -1;
+#X obj 411 420 *~ 0.15;
+#X obj 301 365 rzero~ 1;
+#X obj 302 390 rzero~ 1;
+#X obj 330 698 expr -0.5 * (1-cos($f1)) * sin($f1);
+#X obj 302 341 bp~ 2000 0.7;
+#X obj 301 415 *~ 20;
+#X obj 711 456 *~ 0.1;
+#X obj 346 269 + 100;
+#X obj 346 294 dbtorms;
+#X obj 304 295 *~ 1;
+#X obj 174 330 env~ 65536;
+#X floatatom 174 357 4 0 0 0 - - -;
+#X obj 411 447 bonk~;
+#X obj 411 472 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 676 633 -~ 0.1;
+#X obj 678 792 -~ 1;
+#X obj 681 822 *~ -1;
+#X obj 719 854 phasor~;
+#X msg 751 813 0;
+#X obj 818 810 del 800;
+#X obj 819 835 snapshot~;
+#X floatatom 819 886 6 0 0 0 - - -;
+#X obj 820 863 * 1000;
+#X obj 101 377 s adc-db;
+#X obj 887 753 s dac-db;
+#X obj 882 881 s latency;
+#X obj 368 245 r adc-gain;
+#X msg 542 350 \; inchannel 1 \; metro-on 1 \; pd dsp 1;
+#X obj 454 474 s discontinuity;
 #X connect 0 0 2 0;
-#X connect 1 0 49 0;
-#X connect 2 0 3 0;
-#X connect 3 0 49 0;
-#X connect 5 0 15 0;
-#X connect 6 0 14 0;
-#X connect 7 0 8 0;
-#X connect 9 0 10 0;
-#X connect 10 0 11 0;
-#X connect 11 0 15 1;
-#X connect 12 0 13 0;
-#X connect 15 0 12 0;
-#X connect 15 0 16 0;
-#X connect 16 0 6 1;
-#X connect 17 0 18 0;
+#X connect 0 1 3 0;
+#X connect 0 2 4 0;
+#X connect 0 3 5 0;
+#X connect 0 4 6 0;
+#X connect 0 5 7 0;
+#X connect 0 6 8 0;
+#X connect 0 7 9 0;
+#X connect 1 0 2 1;
+#X connect 2 0 40 0;
+#X connect 3 0 40 0;
+#X connect 4 0 40 0;
+#X connect 5 0 40 0;
+#X connect 6 0 40 0;
+#X connect 7 0 40 0;
+#X connect 8 0 40 0;
+#X connect 9 0 40 0;
+#X connect 10 0 3 1;
+#X connect 11 0 4 1;
+#X connect 12 0 5 1;
+#X connect 13 0 6 1;
+#X connect 14 0 7 1;
+#X connect 15 0 8 1;
+#X connect 16 0 9 1;
+#X connect 17 0 86 0;
+#X connect 18 0 19 0;
 #X connect 19 0 20 0;
-#X connect 20 0 35 0;
-#X connect 20 0 35 1;
-#X connect 21 0 22 0;
-#X connect 22 0 20 1;
-#X connect 23 0 29 0;
-#X connect 25 0 17 0;
-#X connect 26 1 24 0;
-#X connect 28 0 0 0;
-#X connect 29 0 26 0;
-#X connect 29 0 28 0;
-#X connect 29 0 32 0;
-#X connect 32 0 21 0;
-#X connect 32 0 25 1;
-#X connect 41 0 25 0;
-#X connect 49 0 7 0;
-#X connect 49 0 4 0;
-#X connect 49 0 4 1;
-#X connect 49 0 50 0;
-#X connect 50 0 6 0;
+#X connect 22 0 25 0;
+#X connect 22 1 30 0;
+#X connect 22 1 29 0;
+#X connect 23 0 24 0;
+#X connect 23 0 26 0;
+#X connect 23 0 31 0;
+#X connect 24 0 23 1;
+#X connect 25 0 23 0;
+#X connect 26 0 33 0;
+#X connect 26 1 32 0;
+#X connect 28 0 22 0;
+#X connect 30 0 23 1;
+#X connect 31 0 25 1;
+#X connect 32 0 27 1;
+#X connect 33 0 62 0;
+#X connect 34 0 47 0;
+#X connect 34 0 46 0;
+#X connect 34 0 77 0;
+#X connect 34 0 78 0;
+#X connect 35 0 36 0;
+#X connect 36 0 34 0;
+#X connect 37 0 38 0;
+#X connect 38 0 65 0;
+#X connect 39 0 1 0;
+#X connect 39 0 10 0;
+#X connect 39 0 11 0;
+#X connect 39 0 12 0;
+#X connect 39 0 13 0;
+#X connect 39 0 14 0;
+#X connect 39 0 15 0;
+#X connect 39 0 16 0;
+#X connect 40 0 68 0;
+#X connect 41 0 42 0;
+#X connect 42 0 43 0;
+#X connect 43 0 44 0;
+#X connect 44 0 45 0;
+#X connect 45 0 74 0;
+#X connect 46 0 44 0;
+#X connect 47 0 37 0;
+#X connect 48 0 49 0;
+#X connect 49 0 56 1;
+#X connect 50 0 51 0;
+#X connect 50 0 51 1;
+#X connect 50 0 51 2;
+#X connect 50 0 51 3;
+#X connect 50 0 51 4;
+#X connect 50 0 51 5;
+#X connect 50 0 51 6;
+#X connect 50 0 51 7;
+#X connect 50 0 53 0;
+#X connect 52 0 57 0;
+#X connect 53 0 54 0;
+#X connect 53 0 83 0;
+#X connect 55 0 48 0;
+#X connect 56 0 50 0;
+#X connect 57 0 58 0;
+#X connect 58 0 59 0;
+#X connect 59 0 71 0;
+#X connect 60 0 61 0;
+#X connect 61 0 64 0;
+#X connect 62 0 27 0;
+#X connect 63 0 60 0;
+#X connect 64 0 73 0;
+#X connect 65 0 56 0;
+#X connect 66 0 67 0;
+#X connect 67 0 68 1;
+#X connect 68 0 69 0;
+#X connect 68 0 63 0;
+#X connect 68 0 52 0;
+#X connect 69 0 70 0;
+#X connect 69 0 82 0;
+#X connect 71 0 72 0;
+#X connect 71 0 87 0;
+#X connect 73 0 41 0;
+#X connect 74 0 75 0;
+#X connect 75 0 76 0;
+#X connect 76 0 79 0;
+#X connect 77 0 76 1;
+#X connect 78 0 79 0;
+#X connect 79 0 81 0;
+#X connect 81 0 80 0;
+#X connect 81 0 84 0;
+#X connect 85 0 66 0;
+#X restore 595 387 pd guts;
+#X floatatom 242 50 4 1 8 0 inchannel inchannel-set inchannel;
+#X floatatom 626 267 6 0 0 0 - latency -;
+#X text 108 96 adjust gain here:;
+#X text 457 267 latency in milliseconds;
+#X text 571 245 THE ANSWER IS:;
+#X floatatom 528 143 4 0 0 0 - adc-db -;
+#X floatatom 527 92 4 0 0 0 - dac-db -;
+#X text 562 145 RMS amplitude in;
+#X text 564 93 RMS amplitude out;
+#X text 106 142 so that RMS amplitude in is between 60 and 70;
+#X text 108 121 (typically between -20 and 20);
+#X text 497 466 updated for Pd version 0.43;
+#X obj 228 259 bng 25 250 50 0 empty discontinuity empty 17 7 0 10
+-262144 -1 -1;
+#X text 40 235 discontinuity: this flashes if there are audio errors
+;
+#X text 67 343 To use this patch \, connect your audio output back
+to the audio input (any input and output channel from 1 to 8 \, but
+the input channel should agree wih the "inchannel" control at top).
+Then adjust gain so that "RMS amplitude in" is about 65 (anywhere from
+60 to 70 will do.) The latency is measured once per second. If there
+are interruptions in the audio the button above should flash (whether
+or not the audio system reports the error).;
