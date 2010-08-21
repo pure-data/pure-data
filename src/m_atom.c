@@ -79,7 +79,7 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
         sprintf(tbuf, "%g", a->a_w.w_float);
         if (strlen(tbuf) < bufsize-1) strcpy(buf, tbuf);
         else if (a->a_w.w_float < 0) strcpy(buf, "-");
-        else  strcat(buf, "+");
+        else  strcpy(buf, "+");
         break;
     case A_SYMBOL:
     {

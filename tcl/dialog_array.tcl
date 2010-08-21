@@ -239,7 +239,6 @@ proc ::dialog_array::ok {mytoplevel} {
 }
 
 proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
-puts "::dialog_array::pdtk_array_dialog {$mytoplevel $name $size $flags $newone}"
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
