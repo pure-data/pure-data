@@ -16,4 +16,4 @@ echo TEMP $TMPPD
 rm -rf $TMPPD
 mkdir $TMPPD
 cp -pR README.txt LICENSE.txt INSTALL.txt Makefile.am autogen.sh configure.ac \
-    src tcl doc extra man  portaudio portmidi asio po $TMPPD
+    src tcl doc extra man  portaudio portmidi asio po m4 pd.pc.in $TMPPD

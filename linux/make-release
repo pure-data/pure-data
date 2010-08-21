@@ -10,7 +10,7 @@ fi
 cd ..
 ROOTDIR=`pwd`
 find . \( -name ".[azA-Z]*" \! -name ".git" \
-    -o -name "core" -o -name "core.*" -o -name "*.cache" \) \
+    -o -name "core" -o -name "*.cache" -o -name "*.orig" \) \
     -ok rm -r {} \;
 
 cd src

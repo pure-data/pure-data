@@ -1,18 +1,26 @@
-Detailed installations instructions are in the HTML documentation, which
-you can find in doc/1.manual.
+Quick compilation instructions for Linux or Mac OSX:
 
-Quick compilation instructions for Linux or Mac OSX (assuming for Mac OSX that
-you've got Tck/Tk installed):
+There are two parallel build systems: the "old" one by Miller and the "new"
+one by Hans.
 
-Change to "src" subdirectory.
-
-type "./configure", possibly adding flags as follows:
+Old build system: on Macintosh or linux, Change to "src" subdirectory.
+Type "./configure", possibly adding flags as follows:
 
     To put Pd in /usr/bin instead of /usr/local/bin, add "--prefix=/bin".
     To enable jack support: "--enable-jack"
 
-Type "make depend" and then "make"; or, if you prefer, as superuser
-type "make install".
+Then type "make"; and. if desired, as superuser type "make install".
 
 To run pd, either type the full pathname as in /home/me/pd/bin/pd, or else
 if you've chosen  "make install", just type "pd".
+
+New build system: in this directory, type "./autogen.sh", then "./configure";
+then "make".
+
+Special instructions for Microsoft Windows: to use the old build system,
+install the Microsoft C compiler, cd to src and type "make -f makefile.nt". 
+Then CD to the various subdirs of extra and type "make nt" in each.  For the
+new build system, install cygwin and follow instructions as in linux or
+Macintosh.
+
+
