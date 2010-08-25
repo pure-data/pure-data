@@ -40,6 +40,19 @@ proc ::pdwindow::set_layout {} {
 }
 
 
+# grab focus on part of the Pd window when Pd is busy
+proc ::pdwindow::busygrab {} {
+    # set the mouse cursor to look busy and grab focus so it stays that way    
+    .pdwindow.text configure -cursor watch
+    grab set .pdwindow.text
+}
+
+# release focus on part of the Pd window when Pd is finished
+proc ::pdwindow::busyrelease {} {
+    .pdwindow.text configure -cursor xterm
+    grab release .pdwindow.text
+}
+
 # ------------------------------------------------------------------------------
 # pdtk functions for 'pd' to send data to the Pd window
 
