@@ -130,8 +130,8 @@ proc ::dialog_canvas::pdtk_canvas_dialog {mytoplevel xscale yscale graphmeflags 
     $mytoplevel.range.y.to_entry insert 0 $yto
     $mytoplevel.range.x.size_entry insert 0 $xsize
     $mytoplevel.range.y.size_entry insert 0 $ysize
-    $mytoplevel.range.x.margin_entry insert 0 $xsize
-    $mytoplevel.range.y.margin_entry insert 0 $ysize
+    $mytoplevel.range.x.margin_entry insert 0 $xmargin
+    $mytoplevel.range.y.margin_entry insert 0 $ymargin
 
    ::dialog_canvas::checkcommand $mytoplevel
 }
