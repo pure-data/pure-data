@@ -64,6 +64,7 @@ namespace import ::pdtk_canvas::pdtk_canvas_editmode
 namespace import ::pdtk_canvas::pdtk_canvas_getscroll
 namespace import ::pdtk_canvas::pdtk_canvas_setparents
 namespace import ::pdtk_canvas::pdtk_canvas_reflecttitle
+namespace import ::pdtk_canvas::pdtk_canvas_menuclose
 namespace import ::dialog_array::pdtk_array_dialog
 namespace import ::dialog_audio::pdtk_audio_dialog
 namespace import ::dialog_canvas::pdtk_canvas_dialog
@@ -476,7 +477,7 @@ proc pdtk_pd_startup {major minor bugfix test
 ##### routine to ask user if OK and, if so, send a message on to Pd ######
 proc pdtk_check {mytoplevel message reply_to_pd default} {
     wm deiconify $mytoplevel
-   raise $mytoplevel
+    raise $mytoplevel
     if {$::windowingsystem eq "win32"} {
         set answer [tk_messageBox -message [_ $message] -type yesno -default $default \
                         -icon question -title [wm title $mytoplevel]]
@@ -488,25 +489,6 @@ proc pdtk_check {mytoplevel message reply_to_pd default} {
         pdsend $reply_to_pd
     }
 }
-
-##### ask user Save? Discard? Cancel?, and if so, send a message on to Pd ######
-proc pdtk_canvas_menuclose {window reply} {
-       global pd_nt
-       raise $window
-       set filename [wm title $window]
-       set message [format {Do you want to save the changes you made in "%s"?} $filename]
-       set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
-                                       -parent $window -icon question]
-       switch -- $answer {
-               yes { 
-                       pdsend [concat $window menusave \;]
-                       pdsend $reply
-               }
-               no {pdsend $reply}
-               cancel {}
-       }
-}
-
 
 # ------------------------------------------------------------------------------
 # parse command line args when Wish/pd-gui.tcl is started first

@@ -9,6 +9,7 @@ namespace eval ::pdtk_canvas:: {
     namespace export pdtk_canvas_getscroll
     namespace export pdtk_canvas_setparents
     namespace export pdtk_canvas_reflecttitle
+    namespace export pdtk_canvas_menuclose
 }
 
 # One thing that is tricky to understand is the difference between a Tk
@@ -119,6 +120,29 @@ proc pdtk_canvas_saveas {name initialfile initialdir} {
     set basename [file tail $filename]
     pdsend "$name savetofile [enquote_path $basename] [enquote_path $dirname]"
     set ::filenewdir $dirname
+}
+
+##### ask user Save? Discard? Cancel?, and if so, send a message on to Pd ######
+proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
+    raise $mytoplevel
+    set filename [wm title $mytoplevel]
+    set message [format {Do you want to save the changes you made in "%s"?} $filename]
+    set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
+                    -parent $mytoplevel -icon question]
+    switch -- $answer {
+        yes { 
+            pdsend "$mytoplevel menusave"
+            if {[regexp {Untitled-[0-9]+} $filename]} {
+                # wait until pdtk_canvas_saveas finishes and writes to
+                # this var, otherwise the close command will be sent
+                # immediately and the file won't get saved
+                vwait ::filenewdir
+            }
+            pdsend $reply_to_pd
+        }
+        no {pdsend $reply_to_pd}
+        cancel {}
+    }
 }
 
 #------------------------------------------------------------------------------#
