@@ -117,16 +117,16 @@ set font_weight "normal"
 # sizes of chars for each of the Pd fixed font sizes:
 #  fontsize  width(pixels)  height(pixels)
 set font_fixed_metrics {
-    8 5 10
-    9 6 11
+    8 5 11
+    9 6 12
     10 6 13
-    12 7 15
+    12 7 16
     14 8 17
-    16 10 20
+    16 10 19
     18 11 22
-    24 14 30
+    24 14 29
     30 18 37
-    36 22 45
+    36 22 44
 }
 
 # root path to lib of Pd's files, see s_main.c for more info
@@ -384,8 +384,8 @@ proc get_font_for_size {size} {
 # always do a good job of choosing in respect to Pd's needs.  So this chooses
 # from a list of fonts that are known to work well with Pd.
 proc find_default_font {} {
-    set testfonts {"Inconsolata" "Courier New" "Liberation Mono" "FreeMono" \
-                       "DejaVu Sans Mono" "Bitstream Vera Sans Mono"}
+    set testfonts {"DejaVu Sans Mono" "Bitstream Vera Sans Mono" \
+        "Inconsolata" "Courier 10 Pitch" "Andale Mono" "Droid Sans Mono"}
     foreach family $testfonts {
         if {[lsearch -exact -nocase [font families] $family] > -1} {
             set ::font_family $family
@@ -423,7 +423,8 @@ proc fit_font_into_metrics {} {
             -size [expr {-$height}]
         set height2 $height
         set giveup 0
-        while {[font measure $myfont M] > $width} {
+        while {[font measure $myfont M] > $width || \
+            [font metrics $myfont -linespace] > $height} {
             incr height2 -1
             font configure $myfont -size [expr {-$height2}]
             if {$height2 * 2 <= $height} {
