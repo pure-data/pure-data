@@ -444,7 +444,6 @@ proc fit_font_into_metrics {} {
             continue
         }
     }
-    puts stderr "foofoo $::font_measured_metrics"
 }
 
 
@@ -458,7 +457,6 @@ proc pdtk_pd_startup {major minor bugfix test
     set ::PD_BUGFIX_VERSION $bugfix
     set ::PD_TEST_VERSION $test
     set oldtclversion 0
-    puts stderr startup
     set ::audio_apilist $audio_apis
     set ::midi_apilist $midi_apis
     if {$::tcl_version >= 8.5} {find_default_font}
