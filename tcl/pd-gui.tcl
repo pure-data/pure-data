@@ -128,6 +128,7 @@ set font_fixed_metrics {
     30 18 37
     36 22 44
 }
+set font_measured_metrics {}
 
 # root path to lib of Pd's files, see s_main.c for more info
 set sys_libdir {}
@@ -429,9 +430,13 @@ proc fit_font_into_metrics {} {
             font configure $myfont -size [expr {-$height2}]
             if {$height2 * 2 <= $height} {
                 set giveup 1
+                set ::font_measured_metrics $::font_fixed_metrics
                 break
             }
         }
+        set ::font_measured_metrics \
+            "$::font_measured_metrics  $size\
+                [font measure $myfont M] [font metrics $myfont -linespace]"
         if {$giveup} {
             ::pdwindow::warn [format \
     [_ "WARNING: %s failed to find font size (%s) that fits into %sx%s!\n"]\
@@ -439,6 +444,7 @@ proc fit_font_into_metrics {} {
             continue
         }
     }
+    puts stderr "foofoo $::font_measured_metrics"
 }
 
 
@@ -452,12 +458,13 @@ proc pdtk_pd_startup {major minor bugfix test
     set ::PD_BUGFIX_VERSION $bugfix
     set ::PD_TEST_VERSION $test
     set oldtclversion 0
-    pdsend "pd init [enquote_path [pwd]] $oldtclversion $::font_fixed_metrics"
+    puts stderr startup
     set ::audio_apilist $audio_apis
     set ::midi_apilist $midi_apis
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
+    pdsend "pd init [enquote_path [pwd]] $oldtclversion $::font_measured_metrics"
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
