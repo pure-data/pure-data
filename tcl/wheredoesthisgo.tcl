@@ -54,9 +54,10 @@ proc pdtk_savepanel {target localdir} {
 # window info (name, path, parents, children, etc.)
 
 proc lookup_windowname {mytoplevel} {
-    if { [catch {set window $::windowname($mytoplevel) 
-        return [lindex $window 0]
-    } fid]} {
+    set window [array get ::windowname $mytoplevel]
+    if { $window ne ""} {
+        return [lindex $window 1]
+    } else {
         return ERROR
     }
 }
