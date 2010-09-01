@@ -362,7 +362,11 @@ proc ::dialog_iemgui::apply {mytoplevel} {
     set hhhsnd [unspace_text $hhhsnd]
     set hhhrcv [unspace_text $hhhrcv]
     set hhhgui_nam [unspace_text $hhhgui_nam]
-    
+
+# make sure the offset boxes have a value
+    if {[eval concat $$var_iemgui_gn_dx] eq ""} {set $var_iemgui_gn_dx 0}
+    if {[eval concat $$var_iemgui_gn_dy] eq ""} {set $var_iemgui_gn_dy 0}
+
     pdsend [concat $mytoplevel dialog \
             [eval concat $$var_iemgui_wdt] \
             [eval concat $$var_iemgui_hgt] \
