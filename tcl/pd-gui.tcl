@@ -135,8 +135,10 @@ set font_measured_metrics {}
 set sys_libdir {}
 # root path where the pd-gui.tcl GUI script is located
 set sys_guidir {}
-# path to search for objects, help, fonts, etc.
-set pd_path {}
+# user-specified search path for objects, help, fonts, etc.
+set sys_searchpath {}
+# hard-coded search patch for objects, help, plugins, etc.
+set sys_staticpath {}
 # list of command line flags set at startup
 set startup_flags {}
 # list of libraries loaded on startup
@@ -618,7 +620,7 @@ proc load_plugin_script {filename} {
 }
 
 proc load_startup_plugins {} {
-    foreach pathdir [concat $::pd_path [file join $::sys_libdir startup]] {
+    foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
         foreach filename [glob -directory $dir -nocomplain -types {f} -- *-plugin.tcl] {

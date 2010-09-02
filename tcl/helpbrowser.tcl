@@ -250,8 +250,7 @@ proc ::helpbrowser::build_references {} {
                                    " Pure Data/" $::sys_libdir/doc \
                                    "-----------------------" "" \
                                   ]
-    set my_pd_path [concat $::pd_path [list [file join $::sys_libdir extra]]]
-    foreach pathdir $my_pd_path {
+    foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
         if { ! [file isdirectory $pathdir]} {continue}
         # Fix the directory name, this ensures the directory name is in the
         # native format for the platform and contains a final directory seperator

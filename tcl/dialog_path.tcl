@@ -25,7 +25,7 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
 
 proc ::dialog_path::create_dialog {mytoplevel} {
 
-    scrollboxwindow::make $mytoplevel $::pd_path \
+    scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
         400 300
@@ -62,7 +62,7 @@ proc ::dialog_path::commit { new_path } {
     variable use_standard_extensions_button
     variable verbose_button
 
-    set ::pd_path $new_path
-    pdsend "pd path-dialog $use_standard_extensions_button $verbose_button $::pd_path"
+    set ::sys_searchpath $new_path
+    pdsend "pd path-dialog $use_standard_extensions_button $verbose_button $::sys_searchpath"
 }
 

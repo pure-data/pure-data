@@ -43,6 +43,7 @@
 
 t_namelist *sys_externlist;
 t_namelist *sys_searchpath;
+t_namelist *sys_staticpath;
 t_namelist *sys_helppath;
 
     /* change '/' characters to the system's native file separator */
@@ -224,35 +225,33 @@ char *namelist_get(t_namelist *namelist, int n)
     return (nl ? nl->nl_string : 0);
 }
 
-static t_namelist *pd_extrapath;
-
 int sys_usestdpath = 1;
 
 void sys_setextrapath(const char *p)
 {
     char pathbuf[MAXPDSTRING];
-    namelist_free(pd_extrapath);
+    namelist_free(sys_staticpath);
     /* add standard place for users to install stuff first */
 #ifdef __gnu_linux__
     sys_expandpath("~/pd-externals", pathbuf, MAXPDSTRING);
-    pd_extrapath = namelist_append(0, pathbuf, 0);
-    pd_extrapath = namelist_append(pd_extrapath, "/usr/local/lib/pd-externals", 0);
+    sys_staticpath = namelist_append(0, pathbuf, 0);
+    sys_staticpath = namelist_append(sys_staticpath, "/usr/local/lib/pd-externals", 0);
 #endif
 
 #ifdef __APPLE__
     sys_expandpath("~/Library/Pd", pathbuf, MAXPDSTRING);
-    pd_extrapath = namelist_append(0, pathbuf, 0);
-    pd_extrapath = namelist_append(pd_extrapath, "/Library/Pd", 0);
+    sys_staticpath = namelist_append(0, pathbuf, 0);
+    sys_staticpath = namelist_append(sys_staticpath, "/Library/Pd", 0);
 #endif
 
 #ifdef _WIN32
     sys_expandpath("%ProgramFiles%/Common Files/Pd", pathbuf, MAXPDSTRING);
-    pd_extrapath = namelist_append(0, pathbuf, 0);
+    sys_staticpath = namelist_append(0, pathbuf, 0);
     sys_expandpath("%UserProfile%/Application Data/Pd", pathbuf, MAXPDSTRING);
-    pd_extrapath = namelist_append(pd_extrapath, pathbuf, 0);
+    sys_staticpath = namelist_append(sys_staticpath, pathbuf, 0);
 #endif
     /* add built-in "extra" path last so its checked last */
-    pd_extrapath = namelist_append(pd_extrapath, p, 0);
+    sys_staticpath = namelist_append(sys_staticpath, p, 0);
 }
 
 #ifdef MSW
@@ -381,7 +380,7 @@ static int do_open_via_path(const char *dir, const char *name,
 
         /* next look in built-in paths like "extra" */
     if (sys_usestdpath)
-        for (nl = pd_extrapath; nl; nl = nl->nl_next)
+        for (nl = sys_staticpath; nl; nl = nl->nl_next)
             if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
                 dirresult, nameresult, size, bin)) >= 0)
                     return (fd);
@@ -610,16 +609,28 @@ t_symbol *sys_decodedialog(t_symbol *s)
     return (gensym(buf));
 }
 
-
-    /* start a search path dialog window */
-void sys_set_path( void)
+    /* send the user-specified search path to pd-gui */
+void sys_set_searchpath( void)
 {
     int i;
     t_namelist *nl;
 
-    sys_gui("set ::pd_path {}\n");
+    sys_gui("set ::tmp_path {}\n");
     for (nl = sys_searchpath, i = 0; nl; nl = nl->nl_next, i++)
-        sys_vgui("lappend ::pd_path {%s}\n", nl->nl_string);
+        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
+    sys_gui("set ::sys_searchpath $::tmp_path\n");
+}
+
+    /* send the hard-coded search path to pd-gui */
+void sys_set_extrapath( void)
+{
+    int i;
+    t_namelist *nl;
+
+    sys_gui("set ::tmp_path {}\n");
+    for (nl = sys_staticpath, i = 0; nl; nl = nl->nl_next, i++)
+        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
+    sys_gui("set ::sys_staticpath $::tmp_path\n");
 }
 
     /* start a search path dialog window */
@@ -627,7 +638,7 @@ void glob_start_path_dialog(t_pd *dummy)
 {
      char buf[MAXPDSTRING];
 
-    sys_set_path();
+    sys_set_searchpath();
     sprintf(buf, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
