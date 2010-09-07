@@ -2,6 +2,7 @@ package provide dialog_midi 0.1
 
 namespace eval ::dialog_midi:: {
     namespace export pdtk_midi_dialog
+    namespace export pdtk_alsa_midi_dialog
 }
 
 # TODO this panel really needs some reworking, it works but the code is
