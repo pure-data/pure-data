@@ -25,6 +25,9 @@ proc open_file {filename} {
 
 proc pdtk_openpanel {target localdir} {
     if {! [file isdirectory $localdir]} {
+        if { ! [file isdirectory $::fileopendir]} {
+            set ::fileopendir $::env(HOME)
+        }
         set localdir $::fileopendir
     }
     set filename [tk_getOpenFile -initialdir $localdir]
@@ -36,6 +39,9 @@ proc pdtk_openpanel {target localdir} {
 
 proc pdtk_savepanel {target localdir} {
     if {! [file isdirectory $localdir]} {
+        if { ! [file isdirectory $::filenewdir]} {
+            set ::filenewdir $::env(HOME)
+        }
         set localdir $::filenewdir
     }
     set filename [tk_getSaveFile -initialdir $localdir]
