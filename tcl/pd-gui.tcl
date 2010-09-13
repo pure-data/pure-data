@@ -96,6 +96,7 @@ set PD_MAJOR_VERSION 0
 set PD_MINOR_VERSION 0
 set PD_BUGFIX_VERSION 0
 set PD_TEST_VERSION ""
+set done_init 0
 
 set TCL_MAJOR_VERSION 0
 set TCL_MINOR_VERSION 0
@@ -474,6 +475,7 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pd_menus::configure_for_pdwindow
     load_startup_plugins
     open_filestoopen
+    set ::done_init 1
 }
 
 ##### routine to ask user if OK and, if so, send a message on to Pd ######

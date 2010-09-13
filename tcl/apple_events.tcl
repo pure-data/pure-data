@@ -11,8 +11,12 @@ set ::tk::mac::antialiasedtext  1 ;# enable anti-aliased text
 
 # kAEOpenDocuments
 proc ::tk::mac::OpenDocument {args} {
-    foreach filename $args { 
-        open_file $filename
+    foreach filename $args {
+        if {$::done_init} {
+            open_file $filename
+        } else {
+            lappend ::filestoopen_list $filename
+        }
     }
     set ::pd_menucommands::menu_open_dir [file dirname $filename]
 }
