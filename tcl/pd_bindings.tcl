@@ -222,10 +222,10 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
 # invisible.  Invisibility means the Window Manager has minimized us.  We
 # don't get a final "unmap" event when we destroy the window.
 proc ::pd_bindings::map {mytoplevel} {
-    # set focused_window here as well as from window_focusin because
-    # some window managers do not send a FocusIn event when a new
-    # window is created, only a Map event
-    set ::focused_window $mytoplevel
+    # Some window managers do not send a FocusIn event when a new
+    # window is created, only a Map event -- so give ourselves focus
+    # just in case.
+    focus $mytoplevel
     pdsend "$mytoplevel map 1"
 }
 
