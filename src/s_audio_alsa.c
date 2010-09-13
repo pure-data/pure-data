@@ -175,7 +175,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     dev->a_channels = *channels;
 
         /* set the sampling rate */
-    err = snd_pcm_hw_params_set_rate_min(dev->a_handle, hw_params, 
+    err = snd_pcm_hw_params_set_rate_near(dev->a_handle, hw_params, 
         (unsigned int *)rate, 0);
     CHECK_ERROR("snd_pcm_hw_params_set_rate_min");
 #if 0
