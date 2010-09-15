@@ -15,8 +15,8 @@ pd_nt: expr.dll
 NTOBJ =  vexp.obj vexp_fun.obj vexp_if.obj
 
 PDNTCFLAGS = /W3 /DNT /DPD /nologo
-VC = "C:\Program Files\Microsoft Visual Studio 9.0\VC"
-VSTK = "C:\Program Files\Microsoft SDKs\Windows\v6.0A"
+VC = "C:\Program Files\Microsoft Visual Studio 10.0\VC"
+VSTK = "C:\Program Files\Microsoft SDKs\Windows\v7.0A"
 
 PDNTINCLUDE = /I. /I..\..\src /I$(VC)\include
 
