@@ -198,6 +198,9 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
             {
                 if (devno == indeviceno)
                 {
+                    if (inchans > info->maxInputChannels)
+                      inchans = info->maxInputChannels;
+
                     pa_indev = j;
                     break;
                 }
@@ -215,6 +218,9 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
             {
                 if (devno == outdeviceno)
                 {
+                    if (outchans > info->maxOutputChannels)
+                      outchans = info->maxOutputChannels;
+
                     pa_outdev = j;
                     break;
                 }
@@ -246,6 +252,28 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         err = OpenAudioStream( &pa_stream, rate, paFloat32,
             inchans, outchans, framesperbuf, nbuffers,
                 pa_indev, pa_outdev);
+        if ( err == paInvalidSampleRate ) 
+        {
+          /* try again with the default samplerate... */
+          const PaDeviceInfo* info = 0;
+          int devno=pa_outdev;
+          if(devno<0)
+            devno=pa_indev;
+          if(devno<0)
+            devno=Pa_GetDefaultOutputDevice();
+
+          info=Pa_GetDeviceInfo( devno );
+          if(info)
+            rate=info->defaultSampleRate;
+
+          err = OpenAudioStream( &pa_stream, rate, paFloat32,
+                                 inchans, outchans, framesperbuf, nbuffers,
+                                 pa_indev, pa_outdev);
+
+          if ( paNoError == err ) 
+            sys_dacsr=rate;
+
+        }
     }
     if ( err != paNoError ) 
     {
