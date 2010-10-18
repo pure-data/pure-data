@@ -123,6 +123,7 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     long   bytesPerSample;
     PaError err;
     PaStreamParameters instreamparams, outstreamparams;
+    PaStreamParameters*p_instreamparams=0, *p_outstreamparams=0;
 
     if (indeviceno < 0) 
     {
@@ -149,10 +150,59 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     outstreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
     outstreamparams.hostApiSpecificStreamInfo = 0;  /* ... MSP */
 
+    if(inchannels>0)
+      p_instreamparams=&instreamparams;
+    if(outchannels>0)
+      p_outstreamparams=&outstreamparams;
+
+    err=Pa_IsFormatSupported(p_instreamparams,
+                             p_outstreamparams,
+                             sampleRate);
+
+    if (paFormatIsSupported != err)
+    {
+      /* check whether we have to change the numbers of channel and/or samplerate */
+      const PaDeviceInfo* info = 0;
+      double inRate=0, outRate=0;
+
+      if(inchannels>0)
+      {
+        if(NULL != (info = Pa_GetDeviceInfo( instreamparams.device )))
+        {
+          inRate=info->defaultSampleRate;
+
+          if(info->maxInputChannels<inchannels)
+            instreamparams.channelCount=info->maxInputChannels;
+        }
+      }
+
+      if(outchannels>0)
+      {
+        if(NULL != (info = Pa_GetDeviceInfo( outstreamparams.device )))
+        {
+          outRate=info->defaultSampleRate;
+
+          if(info->maxOutputChannels<outchannels)
+            outstreamparams.channelCount=info->maxOutputChannels;
+        }
+      }
+
+      if(err==paInvalidSampleRate) {
+        sampleRate=outRate;
+      }
+
+      err=Pa_IsFormatSupported(p_instreamparams,
+                               p_outstreamparams,
+                               sampleRate);
+
+      if(paFormatIsSupported != err)
+        goto error;
+    }
+
     err = Pa_OpenStream(
               &pa_callbackstream,
-              (inchannels ? &instreamparams : 0),
-              (outchannels ? &outstreamparams : 0),
+              p_instreamparams,
+              p_outstreamparams,
               sampleRate,
               framesperbuf,
               paNoFlag,      /* portaudio will clip for us */
@@ -168,6 +218,7 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
         CloseAudioStream(pa_callbackstream);
         goto error;
     }
+    sys_dacsr=sampleRate;
     return paNoError;
 error:
     pa_callbackstream = NULL;
