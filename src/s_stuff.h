@@ -80,7 +80,7 @@ void sys_set_audio_settings(int naudioindev, int *audioindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
     int srate, int advance, int callback);
 EXTERN void sys_reopen_audio( void);
-void sys_close_audio(void);
+EXTERN void sys_close_audio(void);
 
 
 int sys_send_dacs(void);
@@ -99,6 +99,7 @@ EXTERN void sys_get_audio_apis(char *buf);
 /* s_midi.c */
 #define MAXMIDIINDEV 16         /* max. number of input ports */
 #define MAXMIDIOUTDEV 16        /* max. number of output ports */
+extern int sys_midiapi;
 extern int sys_nmidiin;
 extern int sys_nmidiout;
 extern int sys_midiindevlist[];
@@ -315,7 +316,7 @@ void esd_getdevs(char *indevlist, int *nindevs,
 
 void sys_listmididevs(void);
 void sys_set_midi_api(int whichapi);
-void sys_set_audio_api(int whichapi);
+EXTERN void sys_set_audio_api(int whichapi);
 extern int sys_audioapi;
 void sys_set_audio_state(int onoff);
 
