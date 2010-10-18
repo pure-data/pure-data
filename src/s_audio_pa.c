@@ -343,8 +343,11 @@ void pa_close_audio( void)
     if (pa_stream)
         CloseAudioStream( pa_stream );
     pa_stream = 0;
-    if (pa_callbackstream)
-        CloseAudioStream(pa_callbackstream);
+    if (pa_callbackstream) {
+      //   CloseAudioStream(pa_callbackstream);
+      if(paNoError == Pa_StopStream( pa_callbackstream ))
+        Pa_CloseStream( pa_callbackstream );
+    }
     pa_callbackstream = 0;
     
 }
