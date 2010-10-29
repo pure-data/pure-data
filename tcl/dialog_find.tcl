@@ -94,7 +94,10 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
         if {$find_in_window eq ".find"} {
             set find_in_window [winfo toplevel [lindex [wm stackorder .] end-1]]
         }
-        wm transient .find $find_in_window
+            # this has funny side effects in tcl 8.4 ???
+        if {$::tcl_version >= 8.5} {
+            wm transient .find $find_in_window
+        }
         .find.frame.targetlabel configure -text \
             [lookup_windowname $find_in_window]
     }
