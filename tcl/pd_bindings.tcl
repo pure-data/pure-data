@@ -207,6 +207,10 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
         ::pd_menus::configure_for_canvas $mytoplevel
     }
     if {[winfo exists .font]} {wm transient .font $::focused_window}
+    # if we regain focus from another app, make sure to editmode cursor is right
+    if {$::editmode($mytoplevel)} {
+        $mytoplevel configure -cursor hand2
+    }
     # TODO handle enabling/disabling the Cut/Copy/Paste menu items in Edit
 }
 
