@@ -176,7 +176,7 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     # for some reason, when we create a window, we get an event with a
     # widthXheight of 1x1 first, then we get the right values, so filter it out
     if {$width == 1 && $height == 1} {return}
-    pdtk_canvas_getscroll $mytoplevel
+    pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
     # send the size/location of the window and canvas to 'pd' in the form of:
     #    left top right bottom
     pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
@@ -222,11 +222,8 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
 # invisible.  Invisibility means the Window Manager has minimized us.  We
 # don't get a final "unmap" event when we destroy the window.
 proc ::pd_bindings::map {mytoplevel} {
-    # Some window managers do not send a FocusIn event when a new
-    # window is created, only a Map event -- so give ourselves focus
-    # just in case.
-    focus $mytoplevel
     pdsend "$mytoplevel map 1"
+    ::pdtk_canvas::finished_loading_file $mytoplevel
 }
 
 proc ::pd_bindings::unmap {mytoplevel} {
