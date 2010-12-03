@@ -354,7 +354,9 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
         wm attributes $mytoplevel -modified $dirty
         if {[file exists "$path/$name"]} {
             # for some reason -titlepath can still fail so just catch it 
-            wm attributes $mytoplevel -titlepath "$path/$name"
+            if [catch {wm attributes $mytoplevel -titlepath "$path/$name"}] {
+                wm title $mytoplevel "$path/$name"
+            }
         }
         wm title $mytoplevel "$name$arguments"
     } else {
