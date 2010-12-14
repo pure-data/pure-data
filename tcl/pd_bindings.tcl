@@ -252,6 +252,9 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
     if {$iso ne ""} {
         scan $iso %c key
     }
+    # some pop-up panels also bind to keys like the enter, but then disappear,
+    # so ignore their events.  The inputbox in the Startup dialog does this.
+    if {! [winfo exists $window]} {return}
     #$window might be a toplevel or canvas, [winfo toplevel] does the right thing
     set mytoplevel [winfo toplevel $window]
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
