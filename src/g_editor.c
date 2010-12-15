@@ -1614,8 +1614,6 @@ void canvas_mouseup(t_canvas *x,
             gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
         }
     }
-    if (x->gl_editor->e_onmotion != MA_NONE)
-        sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
 
     x->gl_editor->e_onmotion = MA_NONE;
 }
@@ -1640,6 +1638,7 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
     }
     if (resortin) canvas_resortinlets(x);
     if (resortout) canvas_resortoutlets(x);
+    sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
     if (x->gl_editor->e_selection)
         canvas_dirty(x, 1);
 }
