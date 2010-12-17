@@ -140,6 +140,8 @@ set sys_guidir {}
 set sys_searchpath {}
 # hard-coded search patch for objects, help, plugins, etc.
 set sys_staticpath {}
+# the path to the folder where the current plugin is being loaded from
+set current_plugin_loadpath {}
 # list of command line flags set at startup
 set startup_flags {}
 # list of libraries loaded on startup
@@ -625,7 +627,9 @@ proc load_startup_plugins {} {
     foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
-        foreach filename [glob -directory $dir -nocomplain -types {f} -- *-plugin.tcl] {
+        foreach filename [glob -directory $dir -nocomplain -types {f} -- \
+                              *-plugin/*-plugin.tcl *-plugin.tcl] {
+            set ::current_plugin_loadpath [file dirname $filename]
             load_plugin_script $filename
         }
     }
