@@ -12,10 +12,11 @@ mkdir -p ${PWD}/m4/generated
 case `uname -s` in
     MINGW*)
 # autoreconf doesn't always work on MinGW
-        libtoolize --install --force \
-	        && aclocal \
-	        && automake --add-missing --force-missing \
-	        && autoconf
+	aclocal --force -I m4/generated -I m4 && \
+        libtoolize --install --force && \
+	autoconf --force && \
+	automake --add-missing --copy --force-missing && \
+	true
         ;;
     *)
         autoreconf --install --force --verbose
