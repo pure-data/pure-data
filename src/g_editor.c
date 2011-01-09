@@ -70,7 +70,7 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 {
     t_object *ob;
     if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
-        glist->gl_owner && (pd_class(&glist->gl_pd) != garray_class))
+        glist->gl_owner && (pd_class(&x->g_pd) != scalar_class))
     {
         /* if we're graphing-on-parent and the object falls outside the
         graph rectangle, don't draw it. */
@@ -83,7 +83,10 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
         gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
         if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
             gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
+        {
+            post("shouldvis 0: %s", class_getname(pd_class(&x->g_pd)));
                 return (0);
+        }
     }
     if (ob = pd_checkobject(&x->g_pd))
     {
