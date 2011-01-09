@@ -10,19 +10,6 @@ inputs to int and their outputs back to float. */
 #include <math.h>
 
 
-/* MSW and OSX don't appear to have single-precision ANSI math */
-#if defined(MSW) || defined(__APPLE__)
-#define sinf sin
-#define cosf cos
-#define atanf atan
-#define atan2f atan2
-#define sqrtf sqrt
-#define logf log
-#define expf exp
-#define fabsf fabs
-#define powf pow
-#endif
-
 typedef struct _binop
 {
     t_object x_obj;
