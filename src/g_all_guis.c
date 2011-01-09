@@ -425,8 +425,8 @@ void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av
     if(glist_isvisible(iemgui->x_glist))
         sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
                  glist_getcanvas(iemgui->x_glist), x,
-                 iemgui->x_obj.te_xpix+iemgui->x_ldx,
-                 iemgui->x_obj.te_ypix+iemgui->x_ldy);
+                 text_xpix((t_object *)x,iemgui->x_glist)+iemgui->x_ldx,
+                 text_ypix((t_object *)x,iemgui->x_glist)+iemgui->x_ldy);
 }
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
