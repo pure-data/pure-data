@@ -76,8 +76,6 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     int i; 
     unsigned int n, j;
     float *fbuf, *fp2, *fp3, *soundiop;
-    fprintf(stderr, ".");
-    fflush(stderr);
     if (pa_foo)
        fprintf(stderr, "pa_lowlevel_callback\n");
     if (nframes % DEFDACBLKSIZE)
