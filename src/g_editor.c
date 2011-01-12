@@ -83,10 +83,7 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
         gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
         if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
             gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
-        {
-            post("shouldvis 0: %s", class_getname(pd_class(&x->g_pd)));
                 return (0);
-        }
     }
     if (ob = pd_checkobject(&x->g_pd))
     {
