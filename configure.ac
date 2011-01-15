@@ -131,6 +131,7 @@ AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
 AM_CONDITIONAL(OSS, test x$oss = xyes)
 
 AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
+dnl AC_CHECK_HEADER(Jackmp/jack.h, [jack=yes], [jack=no])
 
 dnl portaudio/CoreAudio doesn't work with iPhone
 test x$IPHONEOS = xyes && coreaudio=no
@@ -162,7 +163,7 @@ AM_CONDITIONAL(ALSA, test x$alsa = xyes)
 dnl ASIO
 AC_ARG_ENABLE([asio],
 	[AS_HELP_STRING([--enable-asio],
-		[do not use ASIO audio driver])],
+		[use ASIO audio driver])],
     [asio=$enableval])
 AS_IF([test x$asio = xyes], [
     AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h],[asio=yes],[asio=no])])
@@ -175,11 +176,14 @@ AC_ARG_ENABLE([jack],
 	[AS_HELP_STRING([--enable-jack],
 		[use JACK audio server])],
 	[jack=$enableval])
-AS_IF([test x$jack = xyes], [
-    AC_CHECK_LIB(rt,shm_open,LIBS="$LIBS -lrt")
-    AC_CHECK_LIB(jack,jack_set_xrun_callback,LIBS="$LIBS -ljack";jack=xrun)
-    AC_CHECK_LIB(jack,jack_set_error_function,LIBS="$LIBS -ljack";jack=yes,
-		jack=no)])
+dnl on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
+dnl this is set in src/Makefile.am based on the JACK var
+AS_IF([test x$MACOSX != xyes], [
+    AS_IF([test x$jack = xyes], [
+        AC_CHECK_LIB(rt,shm_open,LIBS="$LIBS -lrt")
+        AC_CHECK_LIB(jack,jack_set_xrun_callback,LIBS="$LIBS -ljack";jack=xrun)
+        AC_CHECK_LIB(jack,jack_set_error_function,LIBS="$LIBS -ljack";jack=yes,
+	              jack=no)])])
 AM_CONDITIONAL(JACK, test x$jack = xyes)
 
 dnl portaudio
