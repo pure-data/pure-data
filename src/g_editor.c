@@ -775,17 +775,13 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_gobj *except)
 /* ------------------------ event handling ------------------------ */
 
 static char *cursorlist[] = {
-#ifdef MSW
-    "right_ptr",        /* CURSOR_RUNMODE_NOTHING */
-#else
-    "left_ptr",         /* CURSOR_RUNMODE_NOTHING */
-#endif
-    "arrow",            /* CURSOR_RUNMODE_CLICKME */
-    "sb_v_double_arrow", /* CURSOR_RUNMODE_THICKEN */
-    "plus",             /* CURSOR_RUNMODE_ADDPOINT */
-    "hand2",            /* CURSOR_EDITMODE_NOTHING */
-    "circle",           /* CURSOR_EDITMODE_CONNECT */
-    "X_cursor"          /* CURSOR_EDITMODE_DISCONNECT */
+    "$cursor_runmode_nothing",
+    "$cursor_runmode_clickme",
+    "$cursor_runmode_thicken",
+    "$cursor_runmode_addpoint",
+    "$cursor_editmode_nothing",
+    "$cursor_editmode_connect",
+    "$cursor_editmode_disconnect"
 };
 
 void canvas_setcursor(t_canvas *x, unsigned int cursornum)

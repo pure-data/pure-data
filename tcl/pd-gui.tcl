@@ -283,6 +283,14 @@ proc init_for_platform {} {
             set ::windowframex 3
             set ::windowframey 53
 			# TODO add wm iconphoto/iconbitmap here if it makes sense
+            # mouse cursors for all the different modes
+            set ::cursor_runmode_nothing "left_ptr"
+            set ::cursor_runmode_clickme "arrow"
+            set ::cursor_runmode_thicken "sb_v_double_arrow"
+            set ::cursor_runmode_addpoint "plus"
+            set ::cursor_editmode_nothing "hand2"
+            set ::cursor_editmode_connect "circle"
+            set ::cursor_editmode_disconnect "X_cursor"
         }
         "aqua" {
             set ::modifier "Mod1"
@@ -307,6 +315,14 @@ proc init_for_platform {} {
             # left corner (not of the window frame) http://wiki.tcl.tk/11502
             set ::windowframex 0
             set ::windowframey 0
+            # mouse cursors for all the different modes
+            set ::cursor_runmode_nothing "arrow"
+            set ::cursor_runmode_clickme "center_ptr"
+            set ::cursor_runmode_thicken "sb_v_double_arrow"
+            set ::cursor_runmode_addpoint "plus"
+            set ::cursor_editmode_nothing "hand2"
+            set ::cursor_editmode_connect "circle"
+            set ::cursor_editmode_disconnect "X_cursor"
         }
         "win32" {
             set ::modifier "Control"
@@ -336,6 +352,14 @@ proc init_for_platform {} {
             set ::windowframey 0
             # TODO use 'winico' package for full, hicolor icon support
             wm iconbitmap . -default [file join $::sys_guidir pd.ico]
+            # mouse cursors for all the different modes
+            set ::cursor_runmode_nothing "rigth_ptr"
+            set ::cursor_runmode_clickme "arrow"
+            set ::cursor_runmode_thicken "sb_v_double_arrow"
+            set ::cursor_runmode_addpoint "plus"
+            set ::cursor_editmode_nothing "hand2"
+            set ::cursor_editmode_connect "circle"
+            set ::cursor_editmode_disconnect "X_cursor"
         }
     }
 }
