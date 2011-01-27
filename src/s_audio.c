@@ -815,14 +815,23 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
         }
     }
     
-    if (newcallback < 0)
-        newcallback = 0;
-    if (!audio_callback_is_open && !newcallback)
-        sys_close_audio();
-    sys_set_audio_settings(nindev, newaudioindev, nindev, newaudioinchan,
+    sys_set_audio_settings_reopen(nindev, newaudioindev, nindev, newaudioinchan,
         noutdev, newaudiooutdev, noutdev, newaudiooutchan,
-        newrate, newadvance, (newcallback >= 0 ? newcallback : 0));
-    if (!audio_callback_is_open && !newcallback)
+        newrate, newadvance, newcallback);
+}
+
+void sys_set_audio_settings_reopen(int naudioindev, int *audioindev, int nchindev,
+    int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
+    int *choutdev, int rate, int advance, int callback)
+{
+    if (callback < 0)
+        callback = 0;
+    if (!audio_callback_is_open && !callback)
+        sys_close_audio();
+    sys_set_audio_settings(naudioindev, audioindev, nchindev, chindev,
+        naudiooutdev, audiooutdev, nchoutdev, choutdev,
+        rate, advance, (callback >= 0 ? callback : 0));
+    if (!audio_callback_is_open && !callback)
         sys_reopen_audio();
     else sched_reopenmeplease();
 }

@@ -75,7 +75,12 @@ extern int sys_blocksize;       /* audio I/O block size in sample frames */
 extern t_float sys_dacsr;
 extern int sys_schedadvance;
 extern int sys_sleepgrain;
-void sys_set_audio_settings(int naudioindev, int *audioindev,
+EXTERN void sys_set_audio_settings(int naudioindev, int *audioindev,
+    int nchindev, int *chindev,
+    int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
+    int srate, int advance, int callback);
+/* the same as above, but reopens the audio subsystem if needed */
+EXTERN void sys_set_audio_settings_reopen(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
     int srate, int advance, int callback);
@@ -105,9 +110,8 @@ extern int sys_nmidiout;
 extern int sys_midiindevlist[];
 extern int sys_midioutdevlist[];
 
-void sys_open_midi(int nmidiin, int *midiinvec,
+EXTERN void sys_open_midi(int nmidiin, int *midiinvec,
     int nmidiout, int *midioutvec, int enable);
-
 
 EXTERN void sys_get_midi_apis(char *buf);
 EXTERN void sys_get_midi_devs(char *indevlist, int *nindevs,
@@ -315,10 +319,10 @@ void esd_getdevs(char *indevlist, int *nindevs,
         int maxndev, int devdescsize);
 
 void sys_listmididevs(void);
-void sys_set_midi_api(int whichapi);
+EXTERN void sys_set_midi_api(int whichapi);
 EXTERN void sys_set_audio_api(int whichapi);
 extern int sys_audioapi;
-void sys_set_audio_state(int onoff);
+EXTERN void sys_set_audio_state(int onoff);
 
 /* API dependent audio flags and settings */
 void oss_set32bit( void);
