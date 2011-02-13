@@ -1061,8 +1061,7 @@ int sys_startgui(const char *libdir)
                 if (stat(wish_paths[i], &statbuf) >= 0)
                     break;
             }
-            sprintf(cmdbuf,"\"%s\" %s/" PDGUIDIR "/pd-gui.tcl %d\n", wish_paths[i],
-                libdir, portno);
+            sprintf(cmdbuf,"\"%s\" %d\n", wish_paths[i], portno);
 #else /* __APPLE__ */
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\" \
