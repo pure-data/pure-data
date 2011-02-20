@@ -1,4 +1,4 @@
-#N canvas 266 135 637 523 12;
+#N canvas 263 112 637 523 12;
 #X obj 19 128 +~;
 #X obj 18 209 output~;
 #X text 141 3 NONLINEAR DISTORTION AND DIFFERENCE TONES;
@@ -6,7 +6,6 @@
 #X floatatom 154 151 5 0 500 0 - - -;
 #X obj 18 181 clip~ -1 1;
 #X floatatom 42 81 5 0 0 0 - - -;
-#X obj 42 103 osc~ 200;
 #X obj 18 155 *~;
 #X obj 42 35 loadbang;
 #X msg 154 127 50;
@@ -30,16 +29,17 @@ no longer as if the two sinusoids had been processed separately. Instead
 At 300 and 225 Hz \, the subharmonic is at 75 \, two octaves below
 the upper tone and a twelveth below the lower one. Change the frequency
 of the second tone and you will hear a variety of effects.;
-#X connect 0 0 8 0;
-#X connect 3 0 8 1;
+#X obj 42 103 osc~;
+#X connect 0 0 7 0;
+#X connect 3 0 7 1;
 #X connect 4 0 3 0;
 #X connect 5 0 1 0;
 #X connect 5 0 1 1;
-#X connect 6 0 7 0;
-#X connect 7 0 0 1;
-#X connect 8 0 5 0;
-#X connect 9 0 17 0;
-#X connect 10 0 4 0;
-#X connect 11 0 10 0;
-#X connect 16 0 0 0;
-#X connect 17 0 6 0;
+#X connect 6 0 19 0;
+#X connect 7 0 5 0;
+#X connect 8 0 16 0;
+#X connect 9 0 4 0;
+#X connect 10 0 9 0;
+#X connect 15 0 0 0;
+#X connect 16 0 6 0;
+#X connect 19 0 0 1;

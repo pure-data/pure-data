@@ -48,20 +48,16 @@ This manual has five sections:
 <LI> <A href="x5.htm"> release notes and known bugs </A>
 </OL>
 
-<P> In order to consult the reference and example patches, you'll first have
-to get Pd started as explained in this manual.
-
 <P>
 For a list of all the objects you can use in Pd, see the text file,
 "0.INTRO.txt" in the directory, "../5.reference".  To get help on any
 Pd object you can right click on it; or you can browse the help patches
-by choosing "Pure Documentation..." in the Pd help menu and looking in
+by choosing "Browser..." in the Pd help menu and looking in
 5.reference.
 
 <P>
-The example patches are also available from the "Pure Documentation..." item
-in Pd's
-"help" menu.  The example patches appear in subdirectories named
+The example patches are also available from the "Browser..." item
+in Pd's "help" menu.  They appear in subdirectories named
 "2.control.examples", "3.audio.examples" and "4.fft.examples."  Some additional
 patches in "7.stuff" might also be helpful.
 
@@ -70,73 +66,53 @@ To get started writing your own C extensions, refer to chapter 4 of this manual.
 
 <H3> <A name=s2> 1.2. other resources </A> </H3>
 
-<P> There is a new Pd community web site,
+<P> There is a very extensive Pd community web site,
 <a href="http://www.pure-data.info/"> pure-data.info</a>, which aims to be the
 central resource for Pd, from documentation and
 downloads; to forums, member pages, and a patch exchange.
 
-<P> There is a growing number of Pd-related projects hosted at 
-<A HREF="http://pure-data.sf.net">SourceForge</A>.  This is open to all Pd
-developers, and all are encouraged to join; send an email to the pd-dev list
-(see below).
+<P> More documentation is avalable on the Pd FLOSS site:
+<A href=http://en.flossmanuals.net/PureData/>
+en.flossmanuals.net/PureData/</A> (English) and
+<A href=http://fr.flossmanuals.net/PureData/>
+fr.flossmanuals.net/PureData/</A> (French).
 
 <P>
-Most of the interesting resources related to Pd show up on the Pd mailing list,
+Most of the interesting news related to Pd shows up on the Pd mailing list,
 maintained by Iohannes Zmoelnig.  To subscribe or browse the archives
 visit:
-    <A href="http://iem.kug.ac.at/mailinglists/pd-list/">
-    http://iem.kug.ac.at/mailinglists/pd-list/</A>.
+    <A href="http://iem.at/mailinglists/pd-list/">
+    http://iem.at/mailinglists/pd-list/</A>.
 
-.  This is the
+This is the
 best source of recent information regarding installation problems and bugs.  It
 is perfectly reasonable to post "newbie" questions on this list; alternatively
 you can contact msp@ucsd.edu for help.
 
-<P> Many extensions to Pd are announced on the mailing list.  In particular,
-for people interested in graphics, there is a A 3D graphics rendering package,
-named GEM, based on OpenGL, written by Mark Danks, adapted to Linux by
-Guenter Geiger, and now maintained by Iohannes Zmoelnig.  GEM runs on
-Windows and Linux and probably will run with some coaxing on IRIX.  You can get
-it from: <A href="http://iem.kug.ac.at/GEM">http://iem.kug.ac.at/GEM</A> .
-
-<P> At least three video processing packages are available for Pd. The oldest
-is Framestein, by Juha Vehvilainen.  This runs on Windows only: <A
-href="http://framestein.org"> http://framestein.org </A>.
-The newer PDP
-library, by Tom Schouten, and its extension <A
-href="http://ydegoyon.free.fr/pidip.html"> PiDiP </A> by Yves Degoyon, run well
-in linux and have been ported to Windows and MacOS.  
-Mathieu Bouchard has written  <A href=http://artengine.ca/gridflow/>
-Gridflow </A>, which runs on linux and MacOSX.  The mathematical operators are
-more powerful than in PDP, and the design makes smarter use of cache behavior
-in modern CPUs.
-
-<P> the Pd extended package, maintained by Hans-Christof Steiner, can be
+<P> the Pd Extended package, maintained by Hans-Christophe Steiner, can be
 downloaded from the <A href=http://sourceforge.net/projects/pure-data/>  Pd's
 sourceforge site </A>.   All this and much more is described in detail on <A
 href="http://puredata.info/"> http://puredata.info/</A>.
 
+<P> Many extensions to Pd are announced on the mailing list.  In particular,
+for people interested in graphics, there is a 3D graphics rendering package,
+named GEM, based on OpenGL, written by Mark Danks, adapted to Linux by
+Guenter Geiger, and now maintained by Iohannes Zmoelnig.  You can get
+it from: <A href="http://iem.at/GEM">http://iem.kug.ac.at/GEM</A>, or by
+installing Pd Extended.
 
 <P>
-Here are some more Pd links (in the order I found them): <BR>
-
+Here are some more Pd links (updated 2/2011): <BR>
+<a href="http://obiwannabe.co.uk/tutorials/html/tutorials_main.html">
+Andy Farnell's Tutorial</A><BR>
+<a href="http://sites.google.com/site/porres/TutorialPd.zip">
+Alexandre Porres's Tutorial (Portuguese)</A><BR>
+<A HREF="http://www.crca.ucsd.edu/~msp/techniques.htm">
+Puckette's book, <I> Theory and Techniques of Electronic Music</A> </I> <br>
 <a href="http://www.crca.ucsd.edu/~msp"> Miller Puckette's home page</a><br>
-<a href="http://gige.epy.co.at/"> Guenter Geiger's home page</a><br>
-<a href="http://www.danks.org/mark"> Mark Dank's home page</a><br>
-<a href="http://iem.kug.ac.at/~zmoelnig/index.html">
+<a href="http://iem.at/~zmoelnig/index.html">
     Johannes M Zmoelnig</a><br>
-<a href="http://suita.chopin.edu.pl/~czaja/miXed/externs/xeq.html">
-Krzysztof Czaja's MIDI file support </a><br>
-<a href="http://www.davesabine.com/media/puredata.asp?action=pddp">
-David Sabine's Pd Documentation Project:
-new, highly detailed help windows</a><br>
 <a href="http://www-ccrma.stanford.edu/planetccrma/software/soundapps.html#pd">
-Fernando Pablo Lopez's augmented Pd RPMs from Planet CCRMA</a><br>
-<a href="http://suita.chopin.edu.pl/~czaja/miXed/externs/cyclone.html">
-Cyclone - Krzysztof Czaja's Max compatibility library</a><br>
-On-line book:
-<A HREF="http://www.crca.ucsd.edu/~msp/techniques.htm"
-<I> Theory and Techniques of Electronic Music </I> <br>
-
+Fernando Pablo Lopez's RPMs from Planet CCRMA</a><br>
 </BODY>
 </HTML>

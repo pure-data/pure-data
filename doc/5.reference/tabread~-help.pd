@@ -1,0 +1,45 @@
+#N canvas 320 156 845 474 12;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array array99 10 float 3;
+#A 0 -0.5 0.5 -0.4 0.4 -0.3 0.3 -0.2 0.2 -0.1 0.1;
+#X coords 0 1 10 -1 250 200 1;
+#X restore 562 167 graph;
+#X obj 16 362 snapshot~;
+#X obj 35 336 metro 200;
+#X obj 16 149 sig~;
+#X floatatom 16 123 6 0 10 0 - - -;
+#X obj 35 310 r readout;
+#X floatatom 16 388 0 0 0 0 - - -;
+#X msg 28 186 set array99;
+#X text 118 185 "set" message permits you to switch between arrays
+;
+#X text 144 274 creation argument initializes array name;
+#X text 11 403 see also the "array" tutorial in section 2 of the Pd
+documentation \, and these objects:;
+#X text 563 16 click here to test;
+#X obj 91 445 tabwrite~;
+#X obj 236 445 tabread;
+#X obj 359 446 tabwrite;
+#X obj 424 446 tabsend~;
+#X obj 489 446 tabreceive~;
+#X obj 162 445 tabplay~;
+#X msg 582 40 \; readout 1 \; pd dsp 1 \;;
+#X text 24 230 signal input;
+#X obj 47 21 tabread~;
+#X text 127 21 non-interpolating table lookup;
+#X text 7 58 Tabread~ looks up values out of the named array. Incoming
+values are truncated to the next lower integer \, and values out of
+bounds get the nearest (first or last) point.;
+#X text 64 117 incoming signal is index. Indices should range from
+0 to (size-1).;
+#X obj 16 274 tabread~ array99;
+#X obj 16 446 tabread4~;
+#X obj 294 445 tabread4;
+#X text 625 451 updated for Pd version 0.43;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 3 0 24 0;
+#X connect 4 0 3 0;
+#X connect 5 0 2 0;
+#X connect 7 0 24 0;
+#X connect 24 0 1 0;

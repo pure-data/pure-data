@@ -1,9 +1,9 @@
-#N canvas 187 149 784 591 12;
+#N canvas 184 126 784 591 12;
 #X obj 230 101 f;
 #X obj 264 77 + 1;
 #X obj 264 101 mod 11;
-#N canvas 0 0 450 300 graph1 0;
-#X array E07 11 float 0;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array E07 11 float 2;
 #X coords 0 96 11 36 100 160 1;
 #X restore 528 15 graph;
 #X floatatom 320 53 0 10 999 0 - - -;
@@ -28,7 +28,7 @@
 #X text 354 79 <--increment;
 #X text 355 56 <--msec;
 #X obj 26 193 *~ 0.01;
-#X obj 230 29 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
+#X obj 230 29 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
 ;
 #X obj 27 321 output~;
 #X text 527 562 updated for Pd version 0.37;
@@ -36,13 +36,13 @@
 #X obj 230 150 +;
 #X floatatom 265 150 0 -48 120 0 - - -;
 #X text 299 152 <--transpose;
-#N canvas 0 0 538 208 make-table 0;
+#N canvas 61 76 538 208 make-table 0;
 #X obj 38 71 loadbang;
 #X text 16 11 This patch loads a sequence of pitches into E07. The
 values are floating-point \, so we could use microtones (60.5 \, for
 example) if we wish.;
-#X msg 38 99 \; E07 0 55 56 57 55 57 61 55 61 63 57 63 \; E07
-yticks 36 12 1 \; E07 ylabel 12 36 48 60 72 84 96;
+#X msg 38 99 \; E07 0 54 55 57 63 61 67 71 57 70 61 63 \; E07 yticks
+36 12 1 \; E07 ylabel 12 36 48 60 72 84 96;
 #X connect 0 0 2 0;
 #X restore 527 195 pd make-table;
 #X obj 176 50 sel 0;

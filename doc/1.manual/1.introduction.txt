@@ -12,11 +12,12 @@ Reference documentation for Pd lives in:
 or:
     http://www.crca.ucsd.edu/~msp/Pd_documentation/index.htm
 
-Much more documentation and other resources live on:
+More extensive FLOSS documentation is available on:
+    http://en.flossmanuals.net/PureData/ (English)
+    http://fr.flossmanuals.net/PureData/ (Francais)
+
+Information of all sorts (guides, development, meetings, etc):
     http://puredata.org
 
 The Pd mailing list archive lives in:
-    http://iem.kug.ac.at/mailinglists/pd-list/
-
-
-Many more useful links are listed in the HTML documentation, section 1.2.
+    http://iem.at/mailinglists/pd-list/

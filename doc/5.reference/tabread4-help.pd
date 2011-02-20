@@ -1,7 +1,6 @@
-#N canvas 58 46 685 536 12;
+#N canvas 61 69 685 536 12;
 #X text 89 188 index;
 #X obj 36 9 tabread;
-#X obj 52 251 tabread array99;
 #X floatatom 52 189 0 0 0 0 - - -;
 #X floatatom 52 285 0 0 0 0 - - -;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -26,13 +25,15 @@ documentation \, and these objects:;
 #X obj 278 472 tabsend~;
 #X obj 343 472 tabreceive~;
 #X obj 80 472 tabplay~;
-#X obj 148 472 tabread4;
-#X text 59 45 The tabread object reads values from an array ("table")
-according to an index. The index is rounded down to the next lower
-integer. Values in the table correspond to indices starting at 0 Indices
-outside of the range are replaced by the nearest index in range (from
-0 to 9 in this example).;
-#X connect 2 0 4 0;
-#X connect 3 0 2 0;
-#X connect 9 0 2 0;
-#X connect 14 0 12 0;
+#X obj 52 251 tabread4 array99;
+#X obj 148 472 tabread;
+#X text 59 44 The tabread4 object reads values from an array ("table")
+according to an index \, applying four-point polynomial interpolation.
+Indices should range from 1 to (size-2) so that the 4-point interpolation
+is meaningful. You can shift-drag the number box to see the effect
+of interpolation.Indices outside of the range are replaced by the nearest
+index in range (from 1 to 8 in this example).;
+#X connect 2 0 20 0;
+#X connect 8 0 20 0;
+#X connect 13 0 11 0;
+#X connect 20 0 3 0;

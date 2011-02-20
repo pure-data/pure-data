@@ -1,10 +1,10 @@
-#N canvas 88 112 754 729 12;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 85 89 754 729 12;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-signal 882 float 0;
 #X coords 0 1.02 882 -1.02 200 130 1;
 #X restore 509 46 graph;
 #X obj 14 265 hip~ 5;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-spectrum 128 float 0;
 #X coords 0 4300 127 -40 257 130 1;
 #X restore 463 222 graph;
@@ -99,7 +99,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X text 722 276 0.5;
 #X obj 82 238 tgl 18 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
 ;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array E06-tab 1003 float 1;
 #A 0 1.01005 1 0.99005 0.980199 0.970446 0.960789 0.951229 0.941765
 0.932394 0.923116 0.913931 0.904837 0.895834 0.88692 0.878095 0.869358
@@ -278,7 +278,7 @@ frequency for showing spectra: the 16th bin in a 4096-point spectrum
 #X connect 7 0 10 0;
 #X connect 8 0 4 1;
 #X restore 302 258 pd make-table;
-#X text 251 95 waveshaping function;
+#X text 252 85 waveshaping function;
 #X text 438 210 0;
 #X text 437 114 1;
 #X obj 12 168 +~ 1;

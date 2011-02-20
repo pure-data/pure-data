@@ -17,18 +17,22 @@
 <BR><BR>
 </P>
 
+<P> The following are basic instructions on how to get Pd installed and running
+on your machine.  More details are maintined online on the
+<A href=http://www.pure-data.info/>pure-data.info</A> site.
+
 <P>Pd runs under Microsoft Windows, Linux, and MacOS (10.2 or later).   How to
 get Pd up and running depends on your operating system, but the overall strategy
 is the same. You must first get and install it, and then untangle whatever
 problems arise in handling audio and MIDI input and output, and finally get Pd
 to meet its real-time obligations reliably.
 
-<P>  Installation instructions are platform-specfic; the following four
+<P>  Installation instructions are platform-specfic; the following three
 sections
 will describe what to do for various operating systems you might have.
 In case of trouble also consult the Pd mailing list archive on
-    <A href="http://iem.kug.ac.at/mailinglists/pd-list/">
-    http://iem.kug.ac.at/mailinglists/pd-list/</A>
+    <A href="http://iem.at/mailinglists/pd-list/">
+    http://iem.at/mailinglists/pd-list/</A>
 , which often has late-breaking news about configuration problems and solutions.
 The rest of this section describes how to get audio and MIDI to work.
 
@@ -217,9 +221,10 @@ compile your own copy of Pd and that is the approach described here.
 
 <P> Before you start, you might want to check that you have the resources Pd
 needs.  The main things you need are the C compiler, X windows (including
-the X development package for Pd to link against) and TK.  It's almost
-always enough to load "tcl-devel" and "tk-devel" packages using yum or
-apt-get.
+the X development package for Pd to link against), TK, and the ALSA "devel"
+headers.  It should be 
+enough to load "tcl-devel", "tk-devel", and "alsa-devel" packages using
+yum or apt-get.
 
 <P> 
 Download Pd, perhaps from
@@ -244,7 +249,7 @@ to "pd/src" and type
 
 <PRE>
     To enable debugging (and losing code optimization) add "--enable-debug".
-    To use Portaudio version 19 (experimental), add "--enable-portaudio".
+    To use Portaudio, add "--enable-portaudio".
     To put Pd in /usr/bin instead of /usr/local/bin, add "--prefix=/bin".
 </PRE>
 
@@ -291,15 +296,13 @@ audio latency your audio system can handle.
 <H3> Audio hardware in Linux </H3>
 
 <P>
-Be forewarned: installing and testing audio and MIDI drivers in Linux can take
+Installing and testing audio and MIDI drivers in Linux can take
 days or weeks.  There apears to be no single place where you can get detailed
-information on Linux audio.  One good source of information lives at:
-<A href=http://www.djcj.org/LAU/guide/index.php>
-http://www.djcj.org/LAU/guide/index.php </A>.
+information on Linux audio.
 
 <P>
-There are two widely-used driver sets, called "OSS" and "ALSA".  OSS is 
-included in the standard Linux kernels since version 2.2.  However, for some
+There are two widely-used driver sets, called "OSS" and "ALSA".  ALSA is 
+included in the standard Linux kernel since 2.4 or so.  However, for some
 audio cards you can find newer versions than are included in the kernel
 releases.  You can get ALSA from
 
@@ -307,14 +310,11 @@ releases.  You can get ALSA from
     http://www.alsa-project.org/</A> .
 
 <P> ALSA is able to emulate OSS, so that you can usually run Pd using the
-default "OSS" settings even if it's actually ALSA that's running.
-ALSA is newer, hence less stable and harder to use, than OSS.
-Installing ALSA can be tricky and/or confusing.
+"OSS" driver settings even if it's actually ALSA that's running.
 
-<P> By default, Pd uses OSS.  If you are running ALSA, Pd will use ALSA's OSS
-emulation.  To make Pd use ALSA "natively", i.e., the way ALSA is designed
-to be used, include the "-alsa" flag in the command line or bang on the "media"
-menu items.
+<P> By default, Pd uses ALSA.  You can ask Pd to use ALSA's OSS emulation by
+adding the "-oss" flag to the command line or fooling with the "media" menu
+items.
 
 <P> You can add ALSA devices by name on the Pd command line:
 <PRE>
@@ -330,7 +330,7 @@ also the Pd mailing list archives.
 
 <H6> RME 9652 (Hammerfall) </H6>
 
-<P>  This is the best sound card out there; it costs around $500 and has 3 ADAT
+<P>  This is the best PCI sound card out there; it costs around $500 and has 3 ADAT
 I/O ports and one SPDIF.  There is a "baby hammerfall" also, which I think is
 the "9632."  DO NOT CONFUSE THE 9652/9632 WITH OTHER RME BOARDS WHICH  MIGHT
 NOT WORK WITH PD.
@@ -349,16 +349,14 @@ with between 4 and 10 channels in and out, for
 which there are ALSA drivers.  These are also very good, and they are a
 bit cheaper than Hammerfalls.  The driver name is "ice1712".
 
-<P> Alsa provides an "envy24control" program (in "utils".  You should run
-this and check that your ice1712's sync source is internal if you have no
-SPDIF input, or "SPDIF" if you do.  I think the default is now "internal"
-but don't take it for granted...
+<H6> USB sound devices</H6>
 
-<H6> warning about i810/i815 drivers...</H6>
+<P> Ed Kelly reports success with the Lexicon series of USB 1.0 devices  (e.g.,
+the Omega Studio; apparently 4 channels in and 4 out).  Also known to work well is the
+Edirol box (2 channels in and out).
 
-<P>As of RedHat 7.0, motherboards with native i810 audio systems didn't work in
-full duplex (they crashed linux).  Either run Pd -noadc or else (better)
-install ALSA.  This ought to be fixed by now...
+<P> As of Feb. 2011, USB 2.0 devices are starting to appear but the ALSA
+driver support is not yet there; watch the Pd mailing list.
 
 <H3> <A name="s1.3"> 3.4. Installing Pd in Macintosh OSX </A> </H3>
 

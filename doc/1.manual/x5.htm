@@ -20,6 +20,11 @@
 
 <H3> <A name="s2"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.43 ---------------------------
+
+<P> Completely new TCL front end, thanks to Hans-Christophe Steiner,
+Iohannes Zmoelnig, and others.
+
 <P> ------------------ 0.42-5 ---------------------------
 
 <P> broken abs~ and log~ fixed
@@ -1665,53 +1670,9 @@ The following max-like objects are included:
 
 <H3> <A name="s2"> 5.2. known bugs </A> </H3>
 
-<P> In the list below, starred items are still things needing attention.
-This list is no longer maintained; see the sourceforge bug tracker on
-https://sourceforge.net/tracker/?group_id=55736
-
-<P> *1. Timing of MIDI input/output is very shaky.  Audio I/O is primitive, but
-there's at least a way to detect errors now for linux and NT.
-
-<P> *2. There is no flow control for graphical updates yet; the
-real-time process can easily block trying to write too fast to the GUI.
-
-<P> 3. PD dies if your patch has an infinite loop [fixed in 0.30 release.]
-
-<P> *4. If you cut a box which is a "Pd" or abstraction whose subpatch has
-items selected, Pd dies.
-
-<P> *5. Tables and other drawable items can draw far outside the window; there's
-no sanity check,  Huge tables (>1000 points) are only partially drawn
-(the first 1000 points.)
-
-<P> 6. There's no way to order force a delread~ to make it read after
-a delwrite~ has written. [but see under 3.audio.examples how to do this now.]
-
-<P> 7. Pd doesn't know to suspend graphics updates when you minimize objects.
-Presumably minimization makes things better but it doesn't cut off graphics
-computation entirely as it should. [fixed for 0.34]
-
-<P> 8. If you load a nonexistent extern you get a spurious message,
-"consistency check failed: canvas_setargs".  [fixed for 0.27 release.]
-
-<P> 9. Typing backslashes into objects upsets Tk [0.29 should suppress all
-backslashes; a real fix might come later.]
-
-<P> 10. Never type a dollar sign into a comment; you may have trouble
-opening your patch afterward... [fixed somewhere around 0.32]
-
-<P> *11. You'd better Turn DSP off before you type into a box that currently
-holds a "pd" object with tilde objects in the subpatch.
-
-<P> *12.  In Linux, if you hit control C while Pd is opening MIDI, Pd hangs.
-
-<P> *13.  In linux, Pd doesn't report audio data-late errors yet.
-
-<P> *14.  Several objects, notably dac~, adc~, and env~, are incompatible with
-uses of block~ or switch~ objects that change block size from the default of
-64.  Using switch~ without reblocking causes no problem.  Don't try to
-read/write delay lines or use send~/receive~, or throw~/catch~, between
-windows with different block sizes.
+<P> These are now tracked on the
+<A href=https://sourceforge.net/projects/pure-data/>
+Pd Sourceforge project page</A>.
 
 <H3> <A name="s3"> 5.3. differences from Max/MSP </A> </H3>
 
@@ -1721,10 +1682,11 @@ Pd than in Max/MSP, the choices in Pd tend to hew to those in Max/MSP.
 Moreover, some effort has been undertaken (but more is needed) to make the
 two interoperable.
 
-<P> You can use Pd to import and export patches to Max/MSP; just save as
-text to a file with extension ".pat", and then open it in Pd.  You'll at
-least get something.  If you stick to common or commonizable features
-you can actually develop patches for both platforms.
+<P> You can use Pd to import and export patches to Max/MSP; just save as text to
+a file with extension ".pat", and then open in the other program.  You'll at
+least get something.  If you stick to common or commonizable features you can
+actually develop patches for both platforms.  Pd importing of Max patches works
+best if you use the Pd Extended package; there are many more compatible objects.
 
 <P> When specific objects exist on one platform and not on the other, it's
 often possible to make abstractions to imitate the missing objects, in a
