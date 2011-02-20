@@ -149,51 +149,48 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     outstreamparams.hostApiSpecificStreamInfo = 0;  /* ... MSP */
 
     if(inchannels>0)
-      p_instreamparams=&instreamparams;
+        p_instreamparams=&instreamparams;
     if(outchannels>0)
-      p_outstreamparams=&outstreamparams;
+        p_outstreamparams=&outstreamparams;
 
-    err=Pa_IsFormatSupported(p_instreamparams,
-                             p_outstreamparams,
-                             sampleRate);
+    err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams, sampleRate);
 
     if (paFormatIsSupported != err)
     {
-      /* check whether we have to change the numbers of channel and/or samplerate */
-      const PaDeviceInfo* info = 0;
-      double inRate=0, outRate=0;
+        /* check whether we have to change the numbers of channel and/or samplerate */
+        const PaDeviceInfo* info = 0;
+        double inRate=0, outRate=0;
 
-      if(inchannels>0)
-      {
-        if(NULL != (info = Pa_GetDeviceInfo( instreamparams.device )))
+        if (inchannels>0)
         {
-          inRate=info->defaultSampleRate;
+            if (NULL != (info = Pa_GetDeviceInfo( instreamparams.device )))
+            {
+              inRate=info->defaultSampleRate;
 
-          if(info->maxInputChannels<inchannels)
-            instreamparams.channelCount=info->maxInputChannels;
+              if(info->maxInputChannels<inchannels)
+                instreamparams.channelCount=info->maxInputChannels;
+            }
         }
-      }
 
-      if(outchannels>0)
-      {
-        if(NULL != (info = Pa_GetDeviceInfo( outstreamparams.device )))
+        if (outchannels>0)
         {
-          outRate=info->defaultSampleRate;
+            if (NULL != (info = Pa_GetDeviceInfo( outstreamparams.device )))
+            {
+              outRate=info->defaultSampleRate;
 
-          if(info->maxOutputChannels<outchannels)
-            outstreamparams.channelCount=info->maxOutputChannels;
+              if(info->maxOutputChannels<outchannels)
+                outstreamparams.channelCount=info->maxOutputChannels;
+            }
         }
-      }
 
-      if(err==paInvalidSampleRate) {
-        sampleRate=outRate;
-      }
+        if (err == paInvalidSampleRate)
+        {
+            sampleRate=outRate;
+        }
 
-      err=Pa_IsFormatSupported(p_instreamparams,
-                               p_outstreamparams,
-                               sampleRate);
-
-      if(paFormatIsSupported != err)
+        err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams,
+            sampleRate);
+        if (paFormatIsSupported != err)
         goto error;
     }
 
