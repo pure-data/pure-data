@@ -40,7 +40,7 @@ process (jack_nframes_t nframes, void *arg)
     int j;
     jack_default_audio_sample_t *out, *in;
 
-    pthread_mutex_lock(&x->x_mutex);
+    pthread_mutex_lock(&jack_mutex);
     if (nframes > JACK_OUT_MAX) jack_out_max = nframes;
     else jack_out_max = JACK_OUT_MAX;
     if (jack_filled >= nframes)
@@ -100,7 +100,7 @@ process (jack_nframes_t nframes, void *arg)
          jack_filled = 0;
     }
     pthread_cond_broadcast(&jack_sem);
-    pthread_mutex_unlock(&x->x_mutex);
+    pthread_mutex_unlock(&jack_mutex);
     return 0;
 }
 
@@ -464,13 +464,13 @@ int jack_send_dacs(void)
         sys_log_error(ERR_RESYNC);
         jack_dio_error = 0;
     }
-    pthread_mutex_lock(&x->x_mutex);
+    pthread_mutex_lock(&jack_mutex);
     if (jack_filled >= jack_out_max)
         pthread_cond_wait(&jack_sem,&jack_mutex);
 
     if (!jack_client)
     {
-        pthread_mutex_unlock(&x->x_mutex);
+        pthread_mutex_unlock(&jack_mutex);
         return SENDDACS_NO;
     }
     jack_started = 1;
@@ -490,7 +490,7 @@ int jack_send_dacs(void)
         fp += DEFDACBLKSIZE;
     }
     jack_filled += DEFDACBLKSIZE;
-    pthread_mutex_unlock(&x->x_mutex);
+    pthread_mutex_unlock(&jack_mutex);
 
     if ((timenow = sys_getrealtime()) - timeref > 0.002)
     {
