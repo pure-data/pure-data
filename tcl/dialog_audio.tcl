@@ -144,11 +144,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"]\
         -command "::dialog_audio::cancel $mytoplevel"
     pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15
-    if {$::windowingsystem ne "aqua"} {
-        button $mytoplevel.buttonframe.apply -text [_ "Apply"]\
-            -command "::dialog_audio::apply $mytoplevel"
-        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15
-    }
+    button $mytoplevel.buttonframe.apply -text [_ "Apply"]\
+        -command "::dialog_audio::apply $mytoplevel"
+    pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_audio::ok $mytoplevel"
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15
