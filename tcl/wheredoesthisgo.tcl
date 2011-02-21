@@ -16,7 +16,7 @@ proc open_file {filename} {
         set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
         ::pd_menus::update_recentfiles_menu
     } {
-        ::pdwindow::post 2 [format [_ "Ignoring '%s': doesn't look like a Pd-file" ] $filename ]
+        ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
     }
 }
     

@@ -19,7 +19,7 @@ proc ::pd_connect::configure_socket {sock} {
 # if pd opens first, it starts pd-gui, then pd-gui connects to the port pd sent
 proc ::pd_connect::to_pd {port {host localhost}} {
     variable pd_socket
-    ::pdwindow::verbose 5 "'pd-gui' connecting to 'pd' on localhost $port ..."
+    ::pdwindow::debug "'pd-gui' connecting to 'pd' on localhost $port ...\n"
     if {[catch {set pd_socket [socket $host $port]}]} {
         puts stderr "WARNING: connect to pd failed, retrying port $host:$port."
         after 1000 ::pd_connect::to_pd $port $host
@@ -40,7 +40,7 @@ proc ::pd_connect::create_socket {} {
 
 proc ::pd_connect::from_pd {channel clientaddr clientport} {
     variable pd_socket $channel
-    ::pdwindow::verbose 5 "Connection from 'pd' to 'pd-gui' on $clientaddr:$clientport"
+    ::pdwindow::debug "Connection from 'pd' to 'pd-gui' on $clientaddr:$clientport\n"
     ::pd_connect::configure_socket $pd_socket
 }
 
@@ -79,9 +79,9 @@ proc ::pd_connect::pd_readsocket {cmd_from_pd} {
             "missing close-brace" {
                 pd_readsocket $cmd_from_pd
             } "^invalid command name" {
-                ::pdwindow::fatal [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo]
+                ::pdwindow::fatal [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo "\n"]
             } default {
-                ::pdwindow::fatal [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo]
+                ::pdwindow::fatal [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo "\n"]
             }
         }
     }
