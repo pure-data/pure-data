@@ -23,8 +23,8 @@ namespace eval ::pdwindow:: {
 
 proc ::pdwindow::set_layout {} {
     variable maxloglevel
-    .pdwindow.text tag configure log0 -foreground "#d00" -background "#ffe0e8"
-    .pdwindow.text tag configure log1 -foreground "#d00"
+    .pdwindow.text.internal tag configure log0 -foreground "#d00" -background "#ffe0e8"
+    .pdwindow.text.internal tag configure log1 -foreground "#d00"
     # log2 messages are normal black on white
     .pdwindow.text.internal tag configure log3 -foreground "#484848"
 
@@ -33,7 +33,7 @@ proc ::pdwindow::set_layout {} {
     set end 25
     for {set i $start} {$i < $end} {incr i} {
         set B [expr int(($i - $start) * (40 / ($end - $start))) + 50]
-        .pdwindow.text tag configure log${i} -foreground grey${B}
+        .pdwindow.text.internal tag configure log${i} -foreground grey${B}
     }
 }
 
@@ -61,14 +61,14 @@ proc ::pdwindow::buffer_message {object_id level message} {
 
 proc ::pdwindow::insert_log_line {object_id level message} {
     if {$object_id eq ""} {
-        .pdwindow.text insert end $message log$level
+        .pdwindow.text.internal insert end $message log$level
     } else {
-        .pdwindow.text insert end $message [list log$level obj$object_id]
-        .pdwindow.text tag bind obj$object_id <$::modifier-ButtonRelease-1> \
+        .pdwindow.text.internal insert end $message [list log$level obj$object_id]
+        .pdwindow.text.internal tag bind obj$object_id <$::modifier-ButtonRelease-1> \
             "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text tag bind obj$object_id <Key-Return> \
+        .pdwindow.text.internal tag bind obj$object_id <Key-Return> \
             "::pdwindow::select_by_id $object_id; break"
-        .pdwindow.text tag bind obj$object_id <Key-KP_Enter> \
+        .pdwindow.text.internal tag bind obj$object_id <Key-KP_Enter> \
             "::pdwindow::select_by_id $object_id; break"
     }
 }
@@ -77,7 +77,7 @@ proc ::pdwindow::insert_log_line {object_id level message} {
 proc ::pdwindow::filter_buffer_to_text {args} {
     variable logbuffer
     variable maxloglevel
-    .pdwindow.text delete 0.0 end
+    .pdwindow.text.internal delete 0.0 end
     set i 0
     foreach {object_id level message} $logbuffer {
         if { $level <= $::loglevel || $maxloglevel == $::loglevel} {
@@ -87,7 +87,7 @@ proc ::pdwindow::filter_buffer_to_text {args} {
         if { [expr $i % 10000] == 0} {update idletasks}
         incr i
     }
-    .pdwindow.text yview end
+    .pdwindow.text.internal yview end
     ::pdwindow::verbose 10 "The Pd window filtered $i lines\n"
 }
 
@@ -107,14 +107,14 @@ proc ::pdwindow::logpost {object_id level message} {
     variable lastlevel $level
 
     buffer_message $object_id $level $message
-    if {[llength [info commands .pdwindow.text]] && 
+    if {[llength [info commands .pdwindow.text.internal]] && 
         ($level <= $::loglevel || $maxloglevel == $::loglevel)} {
         # cancel any pending move of the scrollbar, and schedule it
         # after writing a line. This way the scrollbar is only moved once
         # when the inserting has finished, greatly speeding things up
-        after cancel .pdwindow.text yview end
+        after cancel .pdwindow.text.internal yview end
         insert_log_line $object_id $level $message
-        after idle .pdwindow.text yview end
+        after idle .pdwindow.text.internal yview end
     }
     # -stderr only sets $::stderr if 'pd-gui' is started before 'pd'
     if {$::stderr} {puts stderr $message}
@@ -147,7 +147,7 @@ proc ::pdwindow::verbose {level message} {
 # clear the log and the buffer
 proc ::pdwindow::clear_console {} {
     variable logbuffer {}
-    .pdwindow.text delete 0.0 end
+    .pdwindow.text.internal delete 0.0 end
 }
 
 #--compute audio/DSP checkbutton-----------------------------------------------#
@@ -352,17 +352,27 @@ proc ::pdwindow::create_window {} {
         -highlightthickness 0 -borderwidth 1 -relief flat \
         -yscrollcommand ".pdwindow.scroll set" -width 60 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0
-    scrollbar .pdwindow.scroll -command ".pdwindow.text yview"
+    scrollbar .pdwindow.scroll -command ".pdwindow.text.internal yview"
     pack .pdwindow.scroll -side right -fill y
     pack .pdwindow.text -side right -fill both -expand 1
     raise .pdwindow
     focus .pdwindow.text
     # run bindings last so that .pdwindow.tcl.entry exists
     pdwindow_bindings
-    
     # set cursor to show when clicking in 'findinstance' mode
     bind .pdwindow <KeyPress> "+::pdwindow::set_findinstance_cursor %W %K %s"
     bind .pdwindow <KeyRelease> "+::pdwindow::set_findinstance_cursor %W %K %s"
+
+    # hack to make a good read-only text widget from http://wiki.tcl.tk/1152
+    rename ::.pdwindow.text ::.pdwindow.text.internal
+    proc ::.pdwindow.text {args} {
+        switch -exact -- [lindex $args 0] {
+            "insert" {}
+            "delete" {}
+            "default" { return [eval ::.pdwindow.text.internal $args] }
+        }
+    }
+    
     # print whatever is in the queue
     filter_buffer_to_text
 
@@ -376,4 +386,3 @@ proc ::pdwindow::create_window {} {
     tkwait visibility .pdwindow.text
 #    create_tcl_entry
 }
-
