@@ -23,7 +23,7 @@ CFLAGS = /nologo /W3 /DMSW /DNT /DPD /DPD_INTERNAL /DWIN32 /DWINDOWS /Ox \
         -D_CRT_SECURE_NO_WARNINGS
 LFLAGS = /nologo
 
-SYSSRC = s_audio_pa.c s_audio_pablio.c s_audio_paring.c \
+SYSSRC = s_audio_pa.c s_audio_paring.c \
     s_audio_mmio.c s_midi_pm.c
 
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \

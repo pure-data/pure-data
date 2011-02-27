@@ -46,11 +46,11 @@
 /***************************************************************************
  * Initialize FIFO.
  */
-long sys_ringbuf_Init( sys_ringbuf *rbuf, long numBytes, void *dataPtr )
+long sys_ringbuf_Init(sys_ringbuf *rbuf, long numBytes, void *dataPtr, long nfill)
 {
     rbuf->bufferSize = numBytes;
     rbuf->buffer = (char *)dataPtr;
-    sys_ringbuf_Flush( rbuf );
+    sys_ringbuf_Flush(rbuf, dataPtr,  nfill);
     return 0;
 }
 /***************************************************************************
@@ -74,9 +74,14 @@ long sys_ringbuf_GetWriteAvailable( sys_ringbuf *rbuf )
 
 /***************************************************************************
 ** Clear buffer. Should only be called when buffer is NOT being read. */
-void sys_ringbuf_Flush( sys_ringbuf *rbuf )
+void sys_ringbuf_Flush(sys_ringbuf *rbuf, void *dataPtr, long nfill)
 {
-    rbuf->writeIndex = rbuf->readIndex = 0;
+    char *s;
+    long n;
+    rbuf->readIndex = 0;
+    rbuf->writeIndex = nfill;
+    for (n = nfill, s = dataPtr; n--; s++)
+        *s = 0;
 }
 
 /***************************************************************************

@@ -45,7 +45,8 @@ process (jack_nframes_t nframes, void *arg)
     else jack_out_max = JACK_OUT_MAX;
     if (jack_filled >= nframes)
     {
-        if (jack_filled != nframes) fprintf(stderr,"Partial read");
+        if (jack_filled != nframes)
+            fprintf(stderr,"Partial read\n");
         /* hmm, how to find out whether 't_sample' and
             'jack_default_audio_sample_t' are actually the same type??? */
         if (sizeof(t_sample)==sizeof(jack_default_audio_sample_t)) 

@@ -224,7 +224,6 @@ dnl No OSS on hurd
         -I../portmidi/pm_common \
         -I../portmidi/pm_linux"
         SYSSRC="s_audio_pa.c \
-        s_audio_pablio.c     \
         s_audio_paring.c     \
         ../portaudio/src/common/pa_allocation.c  \
         ../portaudio/src/common/pa_converters.c  \
@@ -304,7 +303,6 @@ then
         EXTERNTARGET=d_ppc
     fi
     SYSSRC="s_midi_pm.c s_audio_pa.c \
-        s_audio_pablio.c     \
         s_audio_paring.c     \
         ../portaudio/src/common/pa_allocation.c  \
         ../portaudio/src/common/pa_converters.c  \
@@ -376,7 +374,7 @@ then
         -mwindows -mms-bitfields "$MORECFLAGS
     PDLIB=$PDLIB" -lwsock32 -lwinmm -lole32 -lstdc++"
 
-    SYSSRC="s_audio_pa.c s_audio_pablio.c s_audio_paring.c \
+    SYSSRC="s_audio_pa.c s_audio_paring.c \
         s_audio_mmio.c s_midi_mmio.c \
         ../portaudio/src/common/pa_allocation.c  \
         ../portaudio/src/common/pa_converters.c  \

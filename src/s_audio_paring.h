@@ -58,12 +58,11 @@ typedef struct
 sys_ringbuf;
 /*
  * Initialize Ring Buffer.
- * numBytes must be power of 2, returns -1 if not.
  */
-long sys_ringbuf_Init( sys_ringbuf *rbuf, long numBytes, void *dataPtr );
+long sys_ringbuf_Init(sys_ringbuf *rbuf, long numBytes, void *dataPtr, long nfill);
 
 /* Clear buffer. Should only be called when buffer is NOT being read. */
-void sys_ringbuf_Flush( sys_ringbuf *rbuf );
+void sys_ringbuf_Flush(sys_ringbuf *rbuf, void *dataPtr, long nfill);
 
 /* Return number of bytes available for writing. */
 long sys_ringbuf_GetWriteAvailable( sys_ringbuf *rbuf );
