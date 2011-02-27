@@ -65,7 +65,7 @@ static int audio_naudiooutdev = -1;
 static int audio_audiooutdev[MAXAUDIOOUTDEV];
 static int audio_audiochoutdev[MAXAUDIOOUTDEV];
 static int audio_rate;
-static int audio_advance;
+static int audio_advance = -1;
 static int audio_callback;
 
 static int audio_callback_is_open;  /* reflects true actual state */

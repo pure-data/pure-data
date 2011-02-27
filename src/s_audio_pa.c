@@ -22,7 +22,11 @@
 #include <string.h>
 #include <pthread.h>
 #include <portaudio.h>
+#ifdef MSW
+#include <malloc.h>
+#else
 #include <alloca.h>
+#endif
 #include "s_audio_paring.h"
 
     /* LATER try to figure out how to handle default devices in portaudio;
@@ -450,8 +454,12 @@ int pa_send_dacs(void)
 #ifdef THREADSIGNAL
                 pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
+#ifdef MSW
+                sys_microsleep(1000);
+#else
                 usleep(1000);
-#endif
+#endif /* MSW */
+#endif /* THREADSIGNAL */
 #ifdef THREADSIGNAL
         pthread_mutex_unlock(&pa_mutex);
 #endif
@@ -477,8 +485,12 @@ int pa_send_dacs(void)
 #ifdef THREADSIGNAL
                 pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
+#ifdef MSW
+                sys_microsleep(1000);
+#else
                 usleep(1000);
-#endif
+#endif /* MSW */
+#endif /* THREADSIGNAL */
 #ifdef THREADSIGNAL
         pthread_mutex_unlock(&pa_mutex);
 #endif

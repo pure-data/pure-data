@@ -35,7 +35,7 @@ pd_includedir = ${includedir}/pd
 pd_include_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_pablio.h s_audio_paring.h s_utf8.h
+noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt makefile.mingw
@@ -80,7 +80,7 @@ endif
 if PORTAUDIO
 pd_CFLAGS += -DUSEAPI_PORTAUDIO  -I../portaudio/include
 pd_LDADD += ../portaudio/libportaudio.la
-pd_SOURCES += s_audio_pa.c s_audio_pablio.c s_audio_paring.c
+pd_SOURCES += s_audio_pa.c s_audio_paring.c
 endif
 
 # ASIO needs to go after PORTAUDIO in order for it to link properly

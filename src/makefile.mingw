@@ -59,7 +59,7 @@ STRIP = strip --strip-unneeded -R .note -R .comment
 
 # the sources
 
-PASRC = s_audio_pa.c s_audio_pablio.c s_audio_paring.c \
+PASRC = s_audio_pa.c s_audio_paring.c \
 	s_audio_mmio.c s_midi_mmio.c \
 	$(PADIR)/src/common/pa_stream.c \
         $(PADIR)/src/common/pa_trace.c \
@@ -96,7 +96,7 @@ PMSRC = $(PMDIR)/pm_common/portmidi.c \
 PMOBJ =  $(PMSRC:.c=.o)
 
 HEADERS = g_all_guis.h m_imp.h g_canvas.h m_pd.h s_stuff.h \
-	$(wildcard ../portaudio/common/*.h) s_audio_paring.h s_audio_pablio.h
+	$(wildcard ../portaudio/common/*.h) s_audio_paring.h
 
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c \
