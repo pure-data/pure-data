@@ -291,7 +291,7 @@ void sys_loadpreferences( void)
     int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
-    int i, rate = 0, advance = 0, callback = 0, api, nolib, maxi;
+    int i, rate = 0, advance = -1, callback = 0, api, nolib, maxi;
     char prefbuf[MAXPDSTRING], keybuf[80];
 
     sys_initloadpreferences();

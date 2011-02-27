@@ -224,7 +224,6 @@ dnl No OSS on hurd
         -I../portmidi/pm_common \
         -I../portmidi/pm_linux"
         SYSSRC="s_audio_pa.c \
-        s_audio_pablio.c     \
         s_audio_paring.c     \
         ../portaudio/src/common/pa_allocation.c  \
         ../portaudio/src/common/pa_converters.c  \

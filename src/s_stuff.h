@@ -242,7 +242,7 @@ void sys_setalarm(int microsec);
 #ifdef MSW
 #define DEFAULTADVANCE 70
 #else
-#define DEFAULTADVANCE 50
+#define DEFAULTADVANCE 25
 #endif
 
 typedef void (*t_audiocallback)(void);
