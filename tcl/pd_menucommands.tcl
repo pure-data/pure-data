@@ -173,7 +173,7 @@ proc ::pd_menucommands::menu_raisenextwindow {} {
 # ------------------------------------------------------------------------------
 # Pd window functions
 proc menu_clear_console {} {
-    .pdwindow.text delete 0.0 end
+    ::pdwindow::clear_console
 }
 
 # ------------------------------------------------------------------------------

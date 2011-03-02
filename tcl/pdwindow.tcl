@@ -126,6 +126,12 @@ proc ::pdwindow::pdtk_post {message} {
     post 3 $message
 }
 
+# clear the log and the buffer
+proc ::pdwindow::clear_console {} {
+    variable logbuffer {}
+    .pdwindow.text.internal delete 0.0 end
+}
+
 # set the checkbox on the "Compute Audio" menuitem and checkbox
 proc ::pdwindow::pdtk_pd_dsp {value} {
     # TODO canvas_startdsp/stopdsp should really send 1 or 0, not "ON" or "OFF"
