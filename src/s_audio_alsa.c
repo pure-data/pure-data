@@ -242,12 +242,12 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     /* return 0 on success */
 int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
-    int *choutdev, int rate)
+    int *choutdev, int rate, int blocksize)
 {
     int err, inchans = 0, outchans = 0, subunitdir;
     char devname[512];
     snd_output_t* out;
-    int frag_size = (sys_blocksize ? sys_blocksize : ALSA_DEFFRAGSIZE);
+    int frag_size = (blocksize ? blocksize : ALSA_DEFFRAGSIZE);
     int nfrags, i, iodev, dev2;
     int wantinchans, wantoutchans, device;
 
@@ -301,7 +301,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     if (alsa_usemmap)
     {
         post("using mmap audio interface");
-        if (alsamm_open_audio(rate))
+        if (alsamm_open_audio(rate, blocksize))
             goto blewit;
         else return (0);
     }

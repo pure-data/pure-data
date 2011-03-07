@@ -35,6 +35,6 @@ extern t_alsa_dev alsa_outdev[ALSA_MAXDEV];
 extern int alsa_nindev;
 extern int alsa_noutdev;
 
-int alsamm_open_audio(int rate);
+int alsamm_open_audio(int rate, int blocksize);
 void alsamm_close_audio(void);
 int alsamm_send_dacs(void);

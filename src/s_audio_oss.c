@@ -49,7 +49,7 @@ static int linux_meters;        /* true if we're metering */
 static t_sample linux_inmax;       /* max input amplitude */
 static t_sample linux_outmax;      /* max output amplitude */
 static int linux_fragsize = 0;  /* for block mode; block size (sample frames) */
-
+extern int audio_blocksize;     /* stolen from s_audio.c */
 /* our device handles */
 
 typedef struct _oss_dev
@@ -125,7 +125,8 @@ int oss_reset(int fd) {
      return err;
 }
 
-void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize)
+void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
+    int suggestedblocksize)
 {
     int orig, param, nblk, fd = dev->d_fd, wantformat;
     int nchannels = dev->d_nchannels;
@@ -157,7 +158,7 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize)
     {
         int fragbytes, logfragsize, nfragment;
             /* setting fragment count and size.  */
-        linux_fragsize = sys_blocksize;
+        linux_fragsize = suggestedblocksize;
         if (!linux_fragsize)
         {
             linux_fragsize = OSS_DEFFRAGSIZE;
@@ -260,7 +261,8 @@ whynot:
 #define O_AUDIOFLAG O_NDELAY
 
 int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
-    int noutdev, int *outdev, int nchout, int *chout, int rate)
+    int noutdev, int *outdev, int nchout, int *chout, int rate,
+        int blocksize)
 {
     int capabilities = 0;
     int inchannels = 0, outchannels = 0;
@@ -362,7 +364,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         {
             linux_dacs[linux_noutdevs].d_nchannels = gotchans;
             linux_dacs[linux_noutdevs].d_fd = fd;
-            oss_configure(linux_dacs+linux_noutdevs, rate, 1, 0);
+            oss_configure(linux_dacs+linux_noutdevs, rate, 1, 0, blocksize);
 
             linux_noutdevs++;
             outchannels += gotchans;
@@ -437,7 +439,8 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
 
         linux_adcs[linux_nindevs].d_nchannels = gotchans;
         
-        oss_configure(linux_adcs+linux_nindevs, rate, 0, alreadyopened);
+        oss_configure(linux_adcs+linux_nindevs, rate, 0, alreadyopened,
+            blocksize);
 
         inchannels += gotchans;
         linux_nindevs++;

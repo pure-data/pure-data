@@ -17,7 +17,7 @@ proc ::dialog_audio::apply {mytoplevel} {
     global audio_outdev1 audio_outdev2 audio_outdev3 audio_outdev4 
     global audio_outchan1 audio_outchan2 audio_outchan3 audio_outchan4
     global audio_outenable1 audio_outenable2 audio_outenable3 audio_outenable4
-    global audio_sr audio_advance audio_callback
+    global audio_sr audio_advance audio_callback audio_blocksize
 
     pdsend "pd audio-dialog \
         $audio_indev1 \
@@ -38,7 +38,8 @@ proc ::dialog_audio::apply {mytoplevel} {
         [expr $audio_outchan4 * ( $audio_outenable4 ? 1 : -1 ) ]\
         $audio_sr \
         $audio_advance \
-        $audio_callback"
+        $audio_callback \
+        $audio_blocksize"
 }
 
 proc ::dialog_audio::cancel {mytoplevel} {
@@ -84,14 +85,14 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         inchan1 inchan2 inchan3 inchan4 \
         outdev1 outdev2 outdev3 outdev4 \
         outchan1 outchan2 outchan3 outchan4 sr advance multi callback \
-        longform} {
+        longform blocksize} {
     global audio_indev1 audio_indev2 audio_indev3 audio_indev4 
     global audio_inchan1 audio_inchan2 audio_inchan3 audio_inchan4
     global audio_inenable1 audio_inenable2 audio_inenable3 audio_inenable4
     global audio_outdev1 audio_outdev2 audio_outdev3 audio_outdev4
     global audio_outchan1 audio_outchan2 audio_outchan3 audio_outchan4
     global audio_outenable1 audio_outenable2 audio_outenable3 audio_outenable4
-    global audio_sr audio_advance audio_callback
+    global audio_sr audio_advance audio_callback audio_blocksize
     global audio_indevlist audio_outdevlist
     global pd_indev pd_outdev
     global audio_longform
@@ -127,6 +128,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set audio_sr $sr
     set audio_advance $advance
     set audio_callback $callback
+    set audio_blocksize $blocksize
 
     toplevel $mytoplevel -class DialogWindow
     wm title $mytoplevel [_ "Audio Settings"]
@@ -163,12 +165,16 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     entry $mytoplevel.srf.x1 -textvariable audio_sr -width 7
     label $mytoplevel.srf.l2 -text [_ "Delay (msec):"]
     entry $mytoplevel.srf.x2 -textvariable audio_advance -width 4
+
+    label $mytoplevel.srf.l3 -text [_ "Block size:"]
+    tk_optionMenu $mytoplevel.srf.x3 audio_blocksize 64 128 256 512 1024 2048
+
     pack $mytoplevel.srf.l1 $mytoplevel.srf.x1 $mytoplevel.srf.l2 \
-        $mytoplevel.srf.x2 -side left
+        $mytoplevel.srf.x2 $mytoplevel.srf.l3 $mytoplevel.srf.x3 -side left
     if {$audio_callback >= 0} {
-        checkbutton $mytoplevel.srf.x3 -variable audio_callback \
+        checkbutton $mytoplevel.srf.x4 -variable audio_callback \
             -text [_ "Use callbacks"] -anchor e
-        pack $mytoplevel.srf.x3 -side left
+        pack $mytoplevel.srf.x4 -side left
     }
         # input device 1
     frame $mytoplevel.in1f

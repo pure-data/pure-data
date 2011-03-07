@@ -182,7 +182,7 @@ static void check_error(int err, const char *why)
         error("%s: %s\n", why, snd_strerror(err));
 }
 
-int alsamm_open_audio(int rate)
+int alsamm_open_audio(int rate, int blocksize)
 {
   int err;
   char devname[80];
@@ -238,16 +238,16 @@ int alsamm_open_audio(int rate)
   
   /* set the asked buffer time (alsa buffertime in us)*/  
   alsamm_buffertime = alsamm_buffersize = 0;
-  if(sys_blocksize == 0)
+  if(blocksize == 0)
     alsamm_buffertime = sys_schedadvance;
   else
-    alsamm_buffersize = sys_blocksize;
+    alsamm_buffersize = blocksize;
    
   if(sys_verbose)
     post("syschedadvance=%d us(%d Samples)so buffertime max should be this=%d" 
          "or sys_blocksize=%d (samples) to use buffersize=%d",
          sys_schedadvance,sys_advance_samples,alsamm_buffertime,
-         sys_blocksize,alsamm_buffersize);
+         blocksize,alsamm_buffersize);
   
   alsamm_periods = 0; /* no one wants periods setting from command line ;-) */
 

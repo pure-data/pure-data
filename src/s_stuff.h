@@ -78,12 +78,12 @@ extern int sys_sleepgrain;
 EXTERN void sys_set_audio_settings(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
-    int srate, int advance, int callback);
+    int srate, int advance, int callback, int blocksize);
 /* the same as above, but reopens the audio subsystem if needed */
 EXTERN void sys_set_audio_settings_reopen(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
-    int srate, int advance, int callback);
+    int srate, int advance, int callback, int blocksize);
 EXTERN void sys_reopen_audio( void);
 EXTERN void sys_close_audio(void);
 
@@ -260,7 +260,7 @@ void pa_getdevs(char *indevlist, int *nindevs,
 
 int oss_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
-    int *choutdev, int rate);
+    int *choutdev, int rate, int blocksize);
 void oss_close_audio(void);
 int oss_send_dacs(void);
 void oss_reportidle(void);
@@ -270,7 +270,7 @@ void oss_getdevs(char *indevlist, int *nindevs,
 
 int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
-    int *choutdev, int rate);
+    int *choutdev, int rate, int blocksize);
 void alsa_close_audio(void);
 int alsa_send_dacs(void);
 void alsa_reportidle(void);
@@ -331,11 +331,11 @@ void linux_alsa_devname(char *devname);
 EXTERN void sys_get_audio_params(
     int *pnaudioindev, int *paudioindev, int *chindev,
     int *pnaudiooutdev, int *paudiooutdev, int *choutdev,
-    int *prate, int *padvance, int *callback);
+    int *prate, int *padvance, int *callback, int *blocksize);
 void sys_save_audio_params(
     int naudioindev, int *audioindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int *choutdev,
-    int rate, int advance, int callback);
+    int rate, int advance, int callback, int blocksize);
 
 /* s_file.c */
 

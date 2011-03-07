@@ -7,7 +7,6 @@
     ASIO in Windows. */
 
 /* dolist...  
-    measure latencies again - verify PA latency varies?
     put in a real FIFO (compare to Zmoelnig and keep FIFO if OK)
     switch to usleep in s_inter.c
     try blocking and nonblocking calls here
@@ -24,8 +23,10 @@
 #include <portaudio.h>
 #ifdef MSW
 #include <malloc.h>
+#include <windows.h>
 #else
 #include <alloca.h>
+#include <unistd.h>
 #endif
 #include "s_audio_paring.h"
 
@@ -39,10 +40,6 @@ static PaStream *pa_stream;
 static int pa_inchans, pa_outchans;
 static float *pa_soundin, *pa_soundout;
 static t_audiocallback pa_callback;
-
-#ifndef MSW
-#include <unistd.h>
-#endif
 
 static float *pa_outbuf;
 static sys_ringbuf pa_outring;
@@ -132,6 +129,13 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     return 0;
 }
 
+    /* callback for "non-callback" case where we communicate with the
+    main thread via FIFO.  Here we first read the sudio output FIFO (which
+    we sync on, not waiting for it but supplying zeros to the audio output if
+    there aren't enough samples in the FIFO when we are called), then write
+    to the audio input FIFO.  The main thread will wait for the input fifo.
+    We can either throw it a pthreads condition or just allow the main thread
+    to poll for us; so far polling seems to work better. */
 static int pa_fifo_callback(const void *inputBuffer,
     void *outputBuffer, unsigned long nframes,
     const PaStreamCallbackTimeInfo *outTime, PaStreamCallbackFlags myflags, 
@@ -154,11 +158,13 @@ static int pa_fifo_callback(const void *inputBuffer,
     if ((unsigned)fiforoom >= nframes*pa_outchans*sizeof(float))
     {
         if (outputBuffer)
-            sys_ringbuf_Read(&pa_outring, outputBuffer, nframes*pa_outchans*sizeof(float));
+            sys_ringbuf_Read(&pa_outring, outputBuffer,
+                nframes*pa_outchans*sizeof(float));
         else if (pa_outchans)
             fprintf(stderr, "no outputBuffer but output channels\n");
         if (inputBuffer)
-            sys_ringbuf_Write(&pa_inring, inputBuffer, nframes*pa_inchans*sizeof(float));
+            sys_ringbuf_Write(&pa_inring, inputBuffer,
+                nframes*pa_inchans*sizeof(float));
         else if (pa_inchans)
             fprintf(stderr, "no inputBuffer but input channels\n");
     }
@@ -405,8 +411,8 @@ void pa_close_audio( void)
 {
     if (pa_stream)
     {
-        if (paNoError == Pa_StopStream( pa_stream ))
-            Pa_CloseStream( pa_stream );
+        Pa_AbortStream(pa_stream);
+        Pa_CloseStream(pa_stream);
     }
     pa_stream = 0;
     if (pa_inbuf)
@@ -415,8 +421,6 @@ void pa_close_audio( void)
         free(pa_outbuf), pa_outbuf = 0;
     
 }
-
-int sys_domicrosleep(int microsec, int pollem);
 
 int pa_send_dacs(void)
 {
@@ -455,7 +459,7 @@ int pa_send_dacs(void)
                 pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
 #ifdef MSW
-                sys_microsleep(1000);
+                Sleep(1);
 #else
                 usleep(1000);
 #endif /* MSW */
@@ -486,7 +490,7 @@ int pa_send_dacs(void)
                 pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
 #ifdef MSW
-                sys_microsleep(1000);
+                Sleep(1);
 #else
                 usleep(1000);
 #endif /* MSW */
