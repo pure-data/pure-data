@@ -657,7 +657,7 @@ static void env_tilde_dsp(t_sigenv *x, t_signal **sp)
             (x->x_npoints + sp[0]->s_n) * sizeof(t_sample));
         if (!xx)
         {
-            post("env~: out of memory");
+            error("env~: out of memory");
             return;
         }
         x->x_buf = (t_sample *)xx;

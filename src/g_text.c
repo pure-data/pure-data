@@ -99,13 +99,13 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int selected,
         if (!newest)
         {
             binbuf_print(b);
-            post("... couldn't create");
+            error("... couldn't create");
             x = 0;
         }
         else if (!(x = pd_checkobject(newest)))
         {
             binbuf_print(b);
-            post("... didn't return a patchable object");
+            error("... didn't return a patchable object");
         }
     }
     else x = 0;

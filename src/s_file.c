@@ -203,12 +203,12 @@ static void sys_putpreference(const char *key, const char *value)
         NULL, &hkey, NULL);
     if (err != ERROR_SUCCESS)
     {
-        post("unable to create registry entry: %s\n", key);
+        error("unable to create registry entry: %s\n", key);
         return;
     }
     err = RegSetValueEx(hkey, key, 0, REG_EXPAND_SZ, value, strlen(value)+1);
     if (err != ERROR_SUCCESS)
-        post("unable to set registry entry: %s\n", key);
+        error("unable to set registry entry: %s\n", key);
     RegCloseKey(hkey);
 }
 

@@ -2071,7 +2071,7 @@ void canvas_finderror(void *error_object)
         if (glist_dofinderror(x, error_object))
             return;
     }
-    post("... sorry, I couldn't find the source of that error.");
+    error("... sorry, I couldn't find the source of that error.");
 }
 
 void canvas_stowconnections(t_canvas *x)
