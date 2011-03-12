@@ -3,7 +3,6 @@ package provide pdwindow 0.1
 
 namespace eval ::pdwindow:: {
     variable logbuffer {}
-    variable pdwindow_search_index
     variable tclentry {}
     variable tclentry_history {"console show"}
     variable history_position 0
@@ -166,7 +165,7 @@ proc ::pdwindow::pdtk_pd_dio {red} {
     if {$red == 1} {
         .pdwindow.header.dio configure -foreground red
     } else {
-        .pdwindow.header.dio configure -foreground lightgrey
+        .pdwindow.header.dio configure -foreground lightgray
     }
         
 }
@@ -320,7 +319,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.dsp -side right -fill y -anchor e -padx 5 -pady 0
 # DIO button
     label .pdwindow.header.dio -text [_ "audio I/O error"] -borderwidth 0 \
-        -background lightgrey -foreground lightgray \
+        -background lightgray -foreground lightgray \
         -takefocus 0 \
         -font {$::font_family 14}
     pack .pdwindow.header.dio -side right -fill y -padx 30 -pady 0
@@ -337,6 +336,7 @@ proc ::pdwindow::create_window {} {
     lappend logmenuitems "4 [_ all]"
     set logmenu \
         [eval tk_optionMenu .pdwindow.header.logmenu ::loglevel $loglevels]
+    .pdwindow.header.logmenu configure -background lightgray
     foreach i $loglevels {
         $logmenu entryconfigure $i -label [lindex $logmenuitems $i]
     }
