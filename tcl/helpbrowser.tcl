@@ -85,7 +85,7 @@ proc ::helpbrowser::root_doubleclick {window x y} {
     set filename [file tail $reference_paths($listname)]
     ::pdwindow::verbose 0 "menu_doc_open $dir $filename"
     if { [catch {menu_doc_open $dir $filename} fid] } {
-        ::pdwindow::warn "Could not open $dir/$filename\n"
+        ::pdwindow::error "Could not open $dir/$filename\n"
     }
 }
 

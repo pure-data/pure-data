@@ -134,7 +134,7 @@ proc ::pd_menucommands::menu_helpbrowser {} {
 }
 
 proc ::pd_menucommands::menu_texteditor {} {
-    ::pdwindow::warn "the text editor is not implemented"
+    ::pdwindow::error "the text editor is not implemented"
 }
 
 # ------------------------------------------------------------------------------
