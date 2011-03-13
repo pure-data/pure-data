@@ -466,8 +466,7 @@ void sys_reopen_audio( void)
 #endif
 #ifdef USEAPI_DUMMY
     if (sys_audioapi == API_DUMMY)
-        outcome = dummy_open_audio(naudioindev, audioindev, naudioindev,
-            chindev, naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate);
+        outcome = dummy_open_audio(naudioindev, naudiooutdev, rate);
     else
 #endif
     if (sys_audioapi == API_NONE)
