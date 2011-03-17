@@ -1134,12 +1134,17 @@ int sys_startgui(const char *libdir)
 #if defined(__linux__) || defined(IRIX) || defined(__FreeBSD_kernel__)
         /* now that we've spun off the child process we can promote
         our process's priority, if we can and want to.  If not specfied
-        (-1), we check root status.  This misses the case where we might
-        have permission from a "security module" (linux 2.6) -- I don't
-        know how to test for that.  The "-rt" flag must b eset in that
-        case. */
+        (-1), we assume real-time was wanted.  Afterward, just in case
+        someone made Pd setuid in order to get permission to do this,
+        unset setuid and lose root priveliges after doing this.  Starting
+        in Linux 2.6 this is accomplished by putting lines like:
+                @audio - rtprio 99
+                @audio - memlock unlimited
+        in the system limits file, perhaps /etc/limits.conf or
+        /etc/security/limits.conf */
+        fprintf(stderr, "was... %d\n", sys_hipriority);
     if (sys_hipriority == -1)
-        sys_hipriority = (!getuid() || !geteuid());
+        sys_hipriority = 1;
     
     if (sys_hipriority)
     {

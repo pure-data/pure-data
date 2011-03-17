@@ -418,7 +418,7 @@ void sys_loadpreferences( void)
         sys_hipriority = 0;
     else
 #if defined(__linux__) || defined(__CYGWIN__)
-        sys_hipriority = !geteuid();
+        sys_hipriority = 1;
 #else
 #if defined(_WIN32) || defined(ANDROID)
         sys_hipriority = 0;
