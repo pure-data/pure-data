@@ -9,9 +9,9 @@ if MACOSX
   PATH := /sw/lib/gettext-tools-0.17/bin:${PATH}
 endif
 
-TCLFILES = apple_events.tcl dialog_canvas.tcl dialog_gatom.tcl dialog_path.tcl pd_bindings.tcl pd_menus.tcl pdwindow.tcl scrollboxwindow.tcl AppMain.tcl dialog_data.tcl dialog_iemgui.tcl dialog_startup.tcl pd_connect.tcl pdtk_array.tcl pkgIndex.tcl wheredoesthisgo.tcl dialog_array.tcl dialog_find.tcl dialog_message.tcl helpbrowser.tcl pdtk_canvas.tcl pkg_mkIndex.tcl dialog_audio.tcl dialog_font.tcl dialog_midi.tcl opt_parser.tcl pd_menucommands.tcl pdtk_text.tcl scrollbox.tcl 
+TCLFILES = apple_events.tcl dialog_canvas.tcl dialog_gatom.tcl dialog_path.tcl pd_bindings.tcl pd_menus.tcl pdwindow.tcl scrollboxwindow.tcl AppMain.tcl dialog_data.tcl dialog_iemgui.tcl dialog_startup.tcl pd_connect.tcl pdtk_array.tcl pkgIndex.tcl wheredoesthisgo.tcl dialog_array.tcl dialog_find.tcl dialog_message.tcl helpbrowser.tcl pdtk_canvas.tcl pkg_mkIndex.tcl dialog_audio.tcl dialog_font.tcl dialog_midi.tcl opt_parser.tcl pd_menucommands.tcl pdtk_text.tcl scrollbox.tcl
 
-FILES=$(addprefix ../tcl/, $(TCLFILES))
+FILES = $(addprefix ../tcl/, $(TCLFILES)) iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl
 
 # these are the supported languages, 
 ALL_LINGUAS = af az be bg de el en_ca eu fr gu he hi hu it pa pt_br pt_pt sq sv vi
@@ -47,10 +47,9 @@ $(TEMPLATE): $(FILES)
 		--sort-by-file --output=$(TEMPLATE) \
 		--package-name="Pure Data" --package-version=0.43 \
 		--copyright-holder='This file is put in the public domain' \
+		--foreign-user \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
-# fink's and MinGW's xgettext are too old for these flags, needs 0.17
-#		--package-name="Pure Data" --package-version=0.43
 
 # I guess officially, the .po file should depend on the template.pot, but its
 # mostly annoying since it wasnts to update the template.pot and .po files any
