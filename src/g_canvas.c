@@ -199,7 +199,7 @@ void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir)
     x->gl_name = s;
     if (strcmp(x->gl_name->s_name, "Pd"))
         pd_bind(&x->gl_pd, canvas_makebindsym(x->gl_name));
-    if (glist_isvisible(x))
+    if (x->gl_havewindow)
         canvas_reflecttitle(x);
     if (dir && dir != &s_)
     {
@@ -582,7 +582,7 @@ void canvas_dirty(t_canvas *x, t_floatarg n)
     if ((unsigned)n != x2->gl_dirty)
     {
         x2->gl_dirty = n;
-        if (glist_isvisible(x2))
+        if (x2->gl_havewindow)
             canvas_reflecttitle(x2);
     }
 }
