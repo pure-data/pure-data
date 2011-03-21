@@ -75,7 +75,9 @@ int pd_extern_sched(char *flags)
                         *fp++ = 0;
                 sched_tick(sys_time+sys_time_per_dsp_tick);
                 sys_pollgui();
-		pollwatchdog();
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
+                pollwatchdog();
+#endif
                 printf(";\n");
                 for (i = chout*DEFDACBLKSIZE, fp = sys_soundout; i--; fp++)
                 {
