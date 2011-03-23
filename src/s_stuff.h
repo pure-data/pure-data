@@ -290,7 +290,7 @@ void jack_listdevs(void);
 
 int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,
-    int nchoutdev, int *choutdev, int rate);
+    int nchoutdev, int *choutdev, int rate, int blocksize);
 void mmio_close_audio( void);
 void mmio_reportidle(void);
 int mmio_send_dacs(void);
