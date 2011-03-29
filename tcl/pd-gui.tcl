@@ -46,10 +46,15 @@ package require pdtk_canvas
 package require pdtk_text
 # TODO eliminate this kludge:
 package require wheredoesthisgo
+package require pd_guiprefs
 
 #------------------------------------------------------------------------------#
 # import functions into the global namespace
 
+# gui preferences
+namespace import ::pd_guiprefs::init
+namespace import ::pd_guiprefs::update_recentfiles
+namespace import ::pd_guiprefs::write_recentfiles
 # make global since they are used throughout    
 namespace import ::pd_menucommands::* 
 
@@ -167,9 +172,9 @@ set dsp 0
 set meters 0
 # the toplevel window that currently is on top and has focus
 set focused_window .
-# store that last 10 files that were opened
+# store that last 5 files that were opened
 set recentfiles_list {}
-set total_recentfiles 10
+set total_recentfiles 5
 # keep track of the location of popup menu for PatchWindows, in canvas coords
 set popup_xcanvas 0
 set popup_ycanvas 0
@@ -492,6 +497,7 @@ proc pdtk_pd_startup {major minor bugfix test
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
+    ::pd_guiprefs::init
     pdsend "pd init [enquote_path [pwd]] $oldtclversion $::font_measured_metrics"
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings

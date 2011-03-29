@@ -123,7 +123,7 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
 # ------------------------------------------------------------------------------
 # menu building functions
 proc ::pd_menus::build_file_menu {mymenu} {
-    # run the platform-specific build_file_menu_* procs first, the config them
+    # run the platform-specific build_file_menu_* procs first, and config them
     [format build_file_menu_%s $::windowingsystem] $mymenu
     $mymenu entryconfigure [_ "New"]        -command {menu_new}
     $mymenu entryconfigure [_ "Open"]       -command {menu_open}
@@ -133,6 +133,10 @@ proc ::pd_menus::build_file_menu {mymenu} {
     $mymenu entryconfigure [_ "Close"]      -command {menu_send_float $::focused_window menuclose 0}
     $mymenu entryconfigure [_ "Message..."] -command {menu_message_dialog}
     $mymenu entryconfigure [_ "Print..."]   -command {menu_print $::focused_window}
+    # update recent files
+    if {[llength $::recentfiles_list] > 0} {
+        ::pd_menus::update_recentfiles_menu false
+    }
 }
 
 proc ::pd_menus::build_edit_menu {mymenu} {
@@ -326,52 +330,68 @@ proc ::pd_menus::update_undo_on_menu {mytoplevel} {
 }
 
 # ------------------------------------------------------------------------------
-# update the menu entries for opening recent files
-proc ::pd_menus::update_recentfiles_menu {} {
+# update the menu entries for opening recent files (write arg should always be true except the first time when pd is opened)
+proc ::pd_menus::update_recentfiles_menu {{write true}} {
     variable menubar
     switch -- $::windowingsystem {
-        "aqua" {::pd_menus::update_openrecent_menu_aqua .openrecent}
-        "win32" {update_recentfiles_on_menu $menubar.file}
-        "x11" {update_recentfiles_on_menu $menubar.file}
+        "aqua"  {::pd_menus::update_openrecent_menu_aqua .openrecent $write}
+        "win32" {::pd_menus::update_recentfiles_on_menu $menubar.file $write}
+        "x11"   {::pd_menus::update_recentfiles_on_menu $menubar.file $write}
     }
 }
 
 proc ::pd_menus::clear_recentfiles_menu {} {
     set ::recentfiles_list {}
     ::pd_menus::update_recentfiles_menu
+    # empty recentfiles in preferences (write empty array)
+    ::pd_guiprefs::write_recentfiles
 }
 
-proc ::pd_menus::update_openrecent_menu_aqua {mymenu} {
+proc ::pd_menus::update_openrecent_menu_aqua {mymenu {write}} {
     if {! [winfo exists $mymenu]} {menu $mymenu}
     $mymenu delete 0 end
+
+    # now the list is last first so we just add
+    foreach filename $::recentfiles_list {
+        $mymenu add command -label [file tail $filename] \
+            -command "open_file {$filename}"
+    }
+    # clear button
     $mymenu add  separator
     $mymenu add command -label [_ "Clear Menu"] \
         -command "::pd_menus::clear_recentfiles_menu"
-    # newest need to be on top, but the list in oldest first, so insert
-    foreach filename $::recentfiles_list {
-        $mymenu insert 0 command -label [file tail $filename] \
-            -command "open_file {$filename}"
-    }
+    # write to config file
+    if {$write == true} { ::pd_guiprefs::write_recentfiles }
 }
 
+# ------------------------------------------------------------------------------
 # this expects to be run on the File menu, and to insert above the last separator
-proc ::pd_menus::update_recentfiles_on_menu {mymenu} {
+proc ::pd_menus::update_recentfiles_on_menu {mymenu {write}} {
     set lastitem [$mymenu index end]
     set i 1
     while {[$mymenu type [expr $lastitem-$i]] ne "separator"} {incr i}
     set bottom_separator [expr $lastitem-$i]
     incr i
+
     while {[$mymenu type [expr $lastitem-$i]] ne "separator"} {incr i}
     set top_separator [expr $lastitem-$i]
     if {$top_separator < [expr $bottom_separator-1]} {
         $mymenu delete [expr $top_separator+1] [expr $bottom_separator-1]
     }
-    foreach filename $::recentfiles_list {
+    # insert the list from the end because we insert each element on the top
+    set i [llength $::recentfiles_list]
+    while {[incr i -1]} {
+        set filename [lindex $::recentfiles_list $i]
         $mymenu insert [expr $top_separator+1] command \
             -label [file tail $filename] -command "open_file {$filename}"
     }
-}
+    set filename [lindex $::recentfiles_list 0]
+    $mymenu insert [expr $top_separator+1] command \
+        -label [file tail $filename] -command "open_file {$filename}"
 
+    # write to config file
+    if {$write == true} { ::pd_guiprefs::write_recentfiles }
+}
 
 # ------------------------------------------------------------------------------
 # lots of crazy recursion to update the Window menu
@@ -481,7 +501,8 @@ proc ::pd_menus::build_file_menu_aqua {mymenu} {
     variable accelerator
     $mymenu add command -label [_ "New"]       -accelerator "$accelerator+N"
     $mymenu add command -label [_ "Open"]      -accelerator "$accelerator+O"
-    ::pd_menus::update_openrecent_menu_aqua .openrecent
+    # this is now done in main ::pd_menus::build_file_menu
+    #::pd_menus::update_openrecent_menu_aqua .openrecent
     $mymenu add cascade -label [_ "Open Recent"] -menu .openrecent
     $mymenu add  separator
     $mymenu add command -label [_ "Close"]     -accelerator "$accelerator+W"
@@ -583,4 +604,3 @@ proc ::pd_menus::build_window_menu_win32 {mymenu} {
 }
 
 # the "Help" does not have cross-platform differences
-
