@@ -1031,14 +1031,17 @@ int sys_startgui(const char *libdir)
             glob_t glob_buffer;
             char *homedir = getenv("HOME");
             char embed_glob[FILENAME_MAX];
-            char embed_filename[FILENAME_MAX], home_filename[FILENAME_MAX];
+            char home_filename[FILENAME_MAX];
             char *wish_paths[10] = {
-                "(did not find an embedded wish)",
                 "(did not find a home directory)",
                 "/Applications/Utilities/Wish.app/Contents/MacOS/Wish",
                 "/Applications/Utilities/Wish Shell.app/Contents/MacOS/Wish Shell",
                 "/Applications/Wish.app/Contents/MacOS/Wish",
                 "/Applications/Wish Shell.app/Contents/MacOS/Wish Shell",
+                "/Library/Frameworks/Tk.framework/Resources/Wish.app/Contents/MacOS/Wish",
+                "/Library/Frameworks/Tk.framework/Resources/Wish Shell.app/Contents/MacOS/Wish Shell",
+                "/System/Library/Frameworks/Tk.framework/Resources/Wish.app/Contents/MacOS/Wish",
+                "/System/Library/Frameworks/Tk.framework/Resources/Wish Shell.app/Contents/MacOS/Wish Shell",
                 "/usr/bin/wish"
             };
             /* this glob is needed so the Wish executable can have the same
@@ -1047,21 +1050,28 @@ int sys_startgui(const char *libdir)
             sprintf(embed_glob, "%s/../MacOS/Pd*", libdir);
             glob_buffer.gl_matchc = 1; /* we only need one match */
             glob(embed_glob, GLOB_LIMIT, NULL, &glob_buffer);
-            if (glob_buffer.gl_pathc > 0) {
-                strcpy(embed_filename, glob_buffer.gl_pathv[0]);
-                wish_paths[0] = embed_filename;
-            }
-            sprintf(home_filename,
-                    "%s/Applications/Wish.app/Contents/MacOS/Wish",homedir);
-            wish_paths[1] = home_filename;
-            for(i=0; i<10; i++)
+            /* If we are using a copy of Wish embedded in the Pd.app, then it
+             * will automatically load pd-gui.tcl if that embedded Wish can
+             * find ../Resources/Scripts/AppMain.tcl, then Wish doesn't want
+             * to receive the pd-gui.tcl as an argument.  Otherwise it needs
+             * to know how to find pd-gui.tcl */
+            if (glob_buffer.gl_pathc > 0)
+                sprintf(cmdbuf, "\"%s\" %d\n", glob_buffer.gl_pathv[0], portno);
+            else
             {
-                if (sys_verbose)
-                    fprintf(stderr, "Trying Wish at \"%s\"\n", wish_paths[i]);
-                if (stat(wish_paths[i], &statbuf) >= 0)
-                    break;
+                sprintf(home_filename,
+                        "%s/Applications/Wish.app/Contents/MacOS/Wish",homedir);
+                wish_paths[0] = home_filename;
+                for(i=0; i<10; i++)
+                {
+                    if (sys_verbose)
+                        fprintf(stderr, "Trying Wish at \"%s\"\n", wish_paths[i]);
+                    if (stat(wish_paths[i], &statbuf) >= 0)
+                        break;
+                }
+                sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n", 
+                        wish_paths[i], libdir, PDGUIDIR, portno);
             }
-            sprintf(cmdbuf,"\"%s\" %d\n", wish_paths[i], portno);
 #else /* __APPLE__ */
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\" \
