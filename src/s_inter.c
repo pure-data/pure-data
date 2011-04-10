@@ -1142,7 +1142,6 @@ int sys_startgui(const char *libdir)
                 @audio - memlock unlimited
         in the system limits file, perhaps /etc/limits.conf or
         /etc/security/limits.conf */
-        fprintf(stderr, "was... %d\n", sys_hipriority);
     if (sys_hipriority == -1)
         sys_hipriority = 1;
     

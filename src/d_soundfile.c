@@ -1327,7 +1327,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     goto done;
 usage:
     pd_error(x, "usage: read [flags] filename tablename...");
-    post("flags: -skip <n> -nframes <n> -resize -maxsize <n> ...");
+    post("flags: -skip <n> -resize -maxsize <n> ...");
     post("-raw <headerbytes> <channels> <bytespersamp> <endian (b, l, or n)>.");
 done:
     if (fd >= 0)
