@@ -1,0 +1,14 @@
+SoundBlaster Audigy2 Z5 connectors:
+
+(top)
+red dgital
+blue line in
+orange mic in
+green line out 1
+black line out 2
+orange line out 3
+(multi-pin?)
+(PCI conector)
+
+asio4all?
+

@@ -31,7 +31,7 @@ static t_int *print_perform(t_int *w)
         startpost("%s:", x->x_sym->s_name);
         for(i=0; i<n; i++) {
           if(i%8==0)endpost();
-          startpost("%-8.5g", in[i]);
+          startpost("%.4g  ", in[i]);
         }
         endpost();
         x->x_count--;

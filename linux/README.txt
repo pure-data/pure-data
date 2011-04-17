@@ -8,6 +8,9 @@ release checklist
     copy README.txt to web page
     mail release notice from ../attic/pd-release
     git tags (to see existing tags)
+    on CRCA, cd public_html/Software; htmldir.perl .
+
+
 
 rpm building (inactive)
     update rpmspec version number
