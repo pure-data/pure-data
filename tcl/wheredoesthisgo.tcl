@@ -6,14 +6,15 @@ package provide wheredoesthisgo 0.1
 proc open_file {filename} {
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
-    if {
-        [file exists $filename]
-        && [regexp -nocase -- "\.(pd|pat|mxt)$" $filename]
-    } then {
+    if {[regexp -nocase -- "\.(pd|pat|mxt)$" $filename]} {
         ::pdtk_canvas::started_loading_file [format "%s/%s" $basename $filename]
         pdsend "pd open [enquote_path $basename] [enquote_path $directory]"
-        # now this is done in pd_guiprefs
-        ::pd_guiprefs::update_recentfiles $filename
+        # remove duplicates first, then the duplicate added after to the top
+        set index [lsearch -exact $::recentfiles_list $filename]
+        set ::recentfiles_list [lreplace $::recentfiles_list $index $index]
+        lappend ::recentfiles_list $filename
+        set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
+        ::pd_menus::update_recentfiles_menu
     } {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
     }
