@@ -378,8 +378,7 @@ proc ::pd_menus::update_recentfiles_on_menu {mymenu {write}} {
     }
     # insert the list from the end because we insert each element on the top
     set i [llength $::recentfiles_list]
-    while {[incr i -1] > 0} {
-
+    while {[incr i -1]} {
         set filename [lindex $::recentfiles_list $i]
         $mymenu insert [expr $top_separator+1] command \
             -label [file tail $filename] -command "open_file {$filename}"
