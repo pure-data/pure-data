@@ -917,6 +917,13 @@ int binbuf_write(t_binbuf *x, char *filename, char *dir, int crflag)
         sys_unixerror(fbuf);
         goto fail;
     }
+
+    if (fflush(f) != 0) 
+    {
+        sys_unixerror(fbuf);
+        goto fail;
+    }
+
     if (deleteit)
         binbuf_free(x);
     fclose(f);
