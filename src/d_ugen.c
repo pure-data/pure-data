@@ -617,6 +617,12 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
 
     if (ugen_loud) post("ugen_start_graph...");
 
+    /* protect against invalid numsignals
+     * this might happen if we have an abstraction with inlet~/outlet~ opened as a toplevel patch
+     */
+    if(toplevel)
+        ninlets=noutlets=0;
+
     dc->dc_ugenlist = 0;
     dc->dc_toplevel = toplevel;
     dc->dc_iosigs = sp;
