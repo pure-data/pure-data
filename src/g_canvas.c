@@ -216,13 +216,13 @@ void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir)
     canvas_unbind(x);
     x->gl_name = s;
     canvas_bind(x);
-    if (x->gl_havewindow)
-        canvas_reflecttitle(x);
     if (dir && dir != &s_)
     {
         t_canvasenvironment *e = canvas_getenv(x);
         e->ce_dir = dir;
     }
+    if (x->gl_havewindow)
+        canvas_reflecttitle(x);
 }
 
 /* --------------- traversing the set of lines in a canvas ----------- */
