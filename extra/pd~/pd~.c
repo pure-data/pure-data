@@ -14,6 +14,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
@@ -252,6 +253,8 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         /* OK, we're parent */
     close(pipe1[0]);
     close(pipe2[1]);
+    fcntl(pipe1[1],  F_SETFD, FD_CLOEXEC);
+    fcntl(pipe2[0],  F_SETFD, FD_CLOEXEC);
     x->x_outfd = fdopen(pipe1[1], "w");
     x->x_infd = fdopen(pipe2[0], "r");
     x->x_childpid = pid;
