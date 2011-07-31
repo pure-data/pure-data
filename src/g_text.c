@@ -170,6 +170,8 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     else
     {
         glist_getnextxy(x, xpixp, ypixp);
+        *xpixp -= 3;
+        *ypixp -= 3;
         glist_noselect(x);
     }
     *connectp = connectme;
