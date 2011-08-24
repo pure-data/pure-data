@@ -274,8 +274,6 @@ proc ::pdtk_canvas::pdtk_canvas_editmode {mytoplevel state} {
     set ::editmode_button $state
     set ::editmode($mytoplevel) $state
     event generate $mytoplevel <<EditMode>>
-    # can't change the menu background color on Aqua
-    if {$::windowingsystem eq "aqua"} {return}
 }
 
 # message from Pd to update the currently available undo/redo action
