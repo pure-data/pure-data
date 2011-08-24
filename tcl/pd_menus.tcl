@@ -175,7 +175,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add  separator
     #TODO madness! how to set the state of the check box without invoking the menu!
     $mymenu add check -label [_ "Edit Mode"] -accelerator "$accelerator+E" \
-        -selectcolor grey85 -variable ::editmode_button \
+        -variable ::editmode_button \
         -command {menu_editmode $::editmode_button}
 }
 
