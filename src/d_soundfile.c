@@ -276,11 +276,11 @@ int open_soundfile_via_fd(int fd, int headersize,
             bytespersamp = 2;
                 /* copy the first chunk header to beginnning of buffer. */
             memcpy(buf, buf + headersize, sizeof(t_wavechunk));
-            post("chunk %c %c %c %c",
+            /* post("chunk %c %c %c %c",
                     ((t_wavechunk *)buf)->wc_id[0],
                     ((t_wavechunk *)buf)->wc_id[1],
                     ((t_wavechunk *)buf)->wc_id[2],
-                    ((t_wavechunk *)buf)->wc_id[3]);
+                    ((t_wavechunk *)buf)->wc_id[3]); */
                 /* read chunks in loop until we get to the data chunk */
             while (strncmp(((t_wavechunk *)buf)->wc_id, "data", 4))
             {
