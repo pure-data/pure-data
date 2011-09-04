@@ -106,7 +106,7 @@ typedef struct _wavechunk           /* ... and the last two items */
 #define WAV_INT 1
 #define WAV_FLOAT 3
 
-/* the AIFF header.  I'm assuming AIFC is compatible but don't really know
+/* the cd lib header.  I'm assuming AIFC is compatible but don't really know
     that. */
 
 typedef struct _datachunk
@@ -286,7 +286,8 @@ int open_soundfile_via_fd(int fd, int headersize,
             {
                 long chunksize = swap4(((t_wavechunk *)buf)->wc_size,
                     swap), seekto = headersize + chunksize + 8, seekout;
-                
+                if (seekto & 1)     /* pad up to even number of bytes */
+                    seekto++;                
                 if (!strncmp(((t_wavechunk *)buf)->wc_id, "fmt ", 4))
                 {
                     long commblockonset = headersize + 8;
@@ -338,6 +339,8 @@ int open_soundfile_via_fd(int fd, int headersize,
             {
                 long chunksize = swap4(((t_datachunk *)buf)->dc_size,
                     swap), seekto = headersize + chunksize + 8, seekout;
+                if (seekto & 1)     /* pad up to even number of bytes */
+                    seekto++;
                 /* post("chunk %c %c %c %c seek %d",
                     ((t_datachunk *)buf)->dc_id[0],
                     ((t_datachunk *)buf)->dc_id[1],
