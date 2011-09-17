@@ -375,6 +375,9 @@ EXTERN void sys_pollmidiqueue(void );
 EXTERN int sys_pollgui(void );
 EXTERN void sys_setchsr(int chin, int chout, int sr);
 
+EXTERN void inmidi_realtimein(int portno, int cmd);
+EXTERN void inmidi_byte(int portno, int byte);
+EXTERN void inmidi_sysex(int portno, int byte);
 EXTERN void inmidi_noteon(int portno, int channel, int pitch, int velo);
 EXTERN void inmidi_controlchange(int portno,
                                  int channel,
