@@ -1339,7 +1339,7 @@ void bonk_tilde_setup(void)
         gensym("read"), A_SYMBOL, 0);
     class_addmethod(bonk_class, (t_method)bonk_write,
         gensym("write"), A_SYMBOL, 0);
-    post("bonk version 1.4");
+    post("bonk version 1.5");
 }
 #endif
 
@@ -1428,7 +1428,7 @@ int main()
         class_register(CLASS_BOX, c);
         bonk_class = c;
         
-        post("bonk~ v1.4");
+        post("bonk~ v1.5");
         return (0);
 }
 
