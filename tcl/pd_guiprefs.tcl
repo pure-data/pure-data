@@ -32,7 +32,9 @@ proc ::pd_guiprefs::init {} {
     # assign gui preferences
     # osx special case for arrays
     set arr [expr { $::windowingsystem eq "aqua" }]
-    set ::recentfiles_list [get_config $::recentfiles_domain $::recentfiles_key $arr]
+    set ::recentfiles_list ""
+    catch {set ::recentfiles_list [get_config $::recentfiles_domain \
+        $::recentfiles_key $arr]}
 }
 
 proc init_aqua {} {
