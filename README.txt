@@ -10,7 +10,7 @@ locally in the file, .../pd-whatever/doc/1.manual/index.htm.  To unpack Pd:
 
 LINUX (or freeBSD).  Download Pd, which will be a ".tar.gz" file; to unpack it,
 type "zcat [name].tar.gz | tar xf -" to a shell.  This creates a directory with a
-name like "pd-0.35".  CD to "src". ./configiure, and make.  There are also 
+name like "pd-0.35".  CD to "src". ./configure, and make.  There are also 
 compiled packages available.
 
 Microsoft Windows.  Pd is distributed as a "zip" file.   Unzip this,
@@ -39,4 +39,4 @@ Lopez-Lezcano, Adam Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi,
 Winfried Ritsch, Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner,
 Shahrokh Yadegari, David Zicarelli, Iohannes Zmoelnig, and probably many others
 for contributions of code, documentation, ideas, and expertise.  This work has
-received generous support from the Intel Research Council.
+received support from Intel, Keith Mcmillen Instruments, and UCSD.

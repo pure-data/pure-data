@@ -20,6 +20,31 @@
 
 <H3> <A name="s2"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.43.1 ---------------------------
+
+<P> bug fix: in "perf mode" (having sent pd the "perf" message to prevent
+undesired patch closure) Pd crashed (oops!) when one asked for the patch to
+close after all.
+
+<P> Improvements to Mac version of bonk~ -- "learn" parameter handled correctly and
+compilation fixes.
+
+<P> Default font size is the same on all platforms.
+
+<P> Bug fixes reading and writing AIFF files, particulatly 24 bit ones
+
+<P> "edit mode" menu checkbox should work now.
+
+<P> X Pasting text into boxes now works in linux.
+
+<P> fixed bug that hung Pd when closing more than one pd~ subpatch out of order.
+
+<P> fixed segfault if DSP loop found and main patch had signal inlets/outlets
+
+<P> miscellaneous cleanups.
+
+<P> STILL BUGGY: when you change the contents of a graph-on-parent subpatch the
+old stuff often doesn't get erased correctly.
 <P> ------------------ 0.43 ---------------------------
 
 <P> Completely new TCL front end, thanks to Hans-Christophe Steiner,

@@ -49,8 +49,8 @@ To test audio and MIDI, start Pd and select "test Audio and MIDI" from the
 <P> First, try to get Pd to play a sine wave over your speakers.  The "TEST
 TONE" control at top left turns this on and off.  Normally, all the output
 channels are turned on so that when you turn the tone on (to a soft -40 dB or a
-louder -20 dB) you should get output on the first six of your output channels.
-(If you have fewer than six output channnels open, the extra
+louder -20 dB) you should get output on the first eight of your output channels.
+(If you have fewer than 8 output channnels open, the extra
 channels aren't played; and if you have more, this particular patch won't
 use them.)
 
@@ -112,10 +112,13 @@ start or stop Pd's audio computation.
 
 <P> If there is a choice of
 audio API to make, the Media menu will display them.  (On Linux, they are
-OSS, ALSA, and Portaudio; on Windows, you get MMIO and ASIO).  More information
+OSS, ALSA, and Portaudio; on Windows, you get MMIO and ASIO).  On Mac the only
+one is portaudio. More information
 about the APIs appears in the sections below.
 
-<P> Next is the "Audio settings..." menu item, which opens a dialog like this:
+<P> Selecting an API (even if it's the one already in use), or, alternatively,
+selecting "Audio Settings..." from Preferences, opens
+a dialog panel like this:
 
 <CENTER><P>
     <IMG src="fig11.2.png" ALT="audio settings dialog">
@@ -170,23 +173,8 @@ programs that make a "network link" (locally) to intercommunicate.
 <H4> Audio in Microsoft Windows </H4>
 
 <P>
-You can ask for a list of audio and MIDI devices by typing
-"pd -listdev"; you can then specify which audio and MIDI device to use.
-Type "pd -help" (or make any mistake) to get the syntax for specifying 
-which device to use.  You can modify the Pd shortcut (or batch file) to
-set these, or else use the "startup" dialog (file menu) to specify
-startup arguments.
-
-<P>
-Alternatively, (and especially when just starting out) you can experiment
-with different audio configurations using the "audio settings" 
-item in the Media menu.
-
-<P>
-You can list and
-choose MIDI devices in the same way as audio;  note that, by default, MIDI
-input is disabled in Windows (because it's possible to hang up some MIDI
-devices if Pd exits unexpectedly).
+Pd offers both the ASIO and MMIO APIs in Windows.  Which of these works better
+will depend on your audio hardware.
 
 <P>
 MIDI timing is very poor if you are using simultaneous audio input and output;
@@ -204,6 +192,14 @@ needed, specify "-sounddev" (etc.) flags to specify which device (see
 from the default (256 samples) and "-audiobuf" in milliseconds.  Pd will
 round this down to a power of two buffers, each of "-blocksize" in sample
 frames.
+
+<P> TIP:  Often your machine will allow you to use ASIO with built-in PC
+audio hardware.  Sometimes it is necessary to set a ridiculously high block size
+for this to work (on my machine I have to set it to 4096 -- about 1/10 of a
+second!)
+
+<P> Using MMIO I've been able to get very low latencies (6 msec) using M-audio
+PCI converters (Delta 44).
 
 <H3> <A name=s1.2> 3.3. Installing Pd in Linux </A> </H3>
 
@@ -225,6 +221,12 @@ the X development package for Pd to link against), TK, and the ALSA "devel"
 headers.  It should be 
 enough to load "tcl-devel", "tk-devel", and "alsa-devel" packages using
 yum or apt-get.
+
+<P> There are two parallel compilation setups now available.  The old one is
+described here; as of 0.43 I still use that but I plan to discontinue this for
+0.44 and start using only the new one (by Hans).  The following description
+applies to the old one.  Look in the INSTALL.txt file to see how to use the
+new one.
 
 <P> 
 Download Pd, perhaps from
@@ -340,7 +342,7 @@ Hammerfall boards in Pd is via ALSA and jack; but you can use ALSA alone:
 <PRE>
     pd -alsa -channels 26
 </PRE>
-works for me.  If you don't specify the number of channels correctly Pd crashes.
+works for me.
 
 <H6> MIDIMAN </H6>
 
@@ -352,18 +354,28 @@ bit cheaper than Hammerfalls.  The driver name is "ice1712".
 <H6> USB sound devices</H6>
 
 <P> Ed Kelly reports success with the Lexicon series of USB 1.0 devices  (e.g.,
-the Omega Studio; apparently 4 channels in and 4 out).  Also known to work well is the
-Edirol box (2 channels in and out).
+the Omega Studio; apparently 4 channels in and 4 out).  Also known to work well
+is the Edirol box (2 channels in and out).
 
-<P> As of Feb. 2011, USB 2.0 devices are starting to appear but the ALSA
-driver support is not yet there; watch the Pd mailing list.
+<P> As of Sept. 2011, the only multi-channel USB device I've been able to use
+with Pd is the Native Instruments Traktor Audio series.  (I have the Audio
+Traktor 10 which does indeed get 10 discrete channels in and out; the box is
+designed for turntables and the I/O is all RCA.  I haven't yet tested whether
+the inputs are RIAA equalized or flat.  To run this device you'll need to
+compile and install an ALSA snapshot from at least September 2011.  This won't
+start showing up in Linux distros for at least some months.
+
+<P> THe Alsa devel list is reporting progress on the M-audio Ultra series,
+which goes up to 6 in and out (analog) with 2 more as SP/DIF.  Things work
+OK for input or output separately but "full duplex" (in and out simultaneously)
+has sync problems.
 
 <H3> <A name="s1.3"> 3.4. Installing Pd in Macintosh OSX </A> </H3>
 
 <P>Pd version 0.35 and up support Macintosh OSX.  You need the OSX Jaguar
-distribution (10.2) or later.
+distribution (10.2) or later.  Recent versions of Pd require 10.4 or up.
 
-<P> To install Pd you can always just download  the sources and compile them
+<P> To install Pd you can always download  the sources and compile them
 yourself, or (easier)  just download the Mac binary from the download page:
 
 <A href="http://crca.ucsd.edu/~msp/software.html">
@@ -371,6 +383,10 @@ http://crca.ucsd.edu/~msp/software.html</A>.
 
 This is in the form of a compressed Tar archive; just click on it and the Max
 will extract the Pd application.  Open this and you should be running.
+
+<P> You might get various warnings about Pd trying to open an internet port.
+This is normal although some system administrators will prevent you from
+doing this (in which case you can't run Pd on that machine).
 
 <P> The package by Hans-Christoph Steiner, on
 
@@ -391,7 +407,7 @@ possibly so that you can get the newest version before it shows up compiled for
 Mac OS X.      
 
 <P> To be able to compile Pd, you must have Tcl/Tk installed in the standard
-places.  I think this is true fro all reasoably recent releases of OSX.
+places.  I think this is true for all reasoably recent releases of OSX.
 
 <P> Then, just as for linux, just unload pd-whatever.tar.gz into a directory
 such as ~/pd-0.36-0, cd to pd-0.36-0/src, type "./configure"

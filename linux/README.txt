@@ -3,7 +3,7 @@ release checklist
     test OSS and ALSA
     release notes
     ./make-release 0.35-0  or 0.35-test11, etc
-    rsync -n -avzl --delete /home/msp/pd/doc/1.manual/ \
+    rsync -avzl --delete /home/msp/pd/doc/1.manual/ \
 	crca.ucsd.edu:public_html/Pd_documentation
     copy README.txt to web page
     mail release notice from ../attic/pd-release
