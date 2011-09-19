@@ -41,8 +41,8 @@ static char* strnescape(char *dest, const char *src, size_t len)
 static char* strnpointerid(char *dest, const void *pointer, size_t len)
 {
     *dest=0;
-    if(pointer) 
-        snprintf(dest, len, ".x%lx", pointer);
+    if (pointer) 
+        snprintf(dest, len, ".x%lx", (unsigned long)pointer);
     return dest;
 }
 
@@ -280,13 +280,15 @@ void glob_finderror(t_pd *dummy)
 
 void glob_findinstance(t_pd *dummy, t_symbol*s)
 {
-  // revert s to (potential) pointer to object
-  void*obj=NULL;
-  if(sscanf(s->s_name, ".x%lx", &obj)) {
-    if(obj) {
-      canvas_finderror(obj);
+    // revert s to (potential) pointer to object
+    long obj = 0;
+    if (sscanf(s->s_name, ".x%lx", &obj))
+    {
+        if (obj)
+        {
+            canvas_finderror((void *)obj);
+        }
     }
-  }
 }
 
 void bug(const char *fmt, ...)

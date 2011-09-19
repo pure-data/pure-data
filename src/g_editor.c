@@ -1916,8 +1916,8 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         }
         else if (sys_perf)
         {
-            sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 1;\n}\n",
-                     canvas_getrootfor(g), g);
+            sys_vgui("pdtk_check .x%lx {Close this window?} {.x%lx menuclose 1;\n} yes\n",
+                     canvas_getrootfor(x), x);
         }
         else pd_free(&x->gl_pd);
     }

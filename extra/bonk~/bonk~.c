@@ -197,6 +197,7 @@ typedef struct _bonk
     t_object x_obj;
     t_outlet *x_cookedout;
     t_clock *x_clock;
+    t_canvas *x_canvas;     /* ptr to current canvas --fbar */
 #endif /* PD */
 #ifdef MSP
     t_pxobject x_obj;
@@ -222,8 +223,6 @@ typedef struct _bonk
     float x_debouncevel;
     double x_learndebounce; /* debounce time (in "learn" mode only) */
     int x_attackbins;       /* number of bins to wait for attack */
-
-    t_canvas *x_canvas;     /* ptr to current canvas --fbar */
 
     t_filterbank *x_filterbank;
     t_hist x_hist[MAXNFILTERS];
@@ -260,7 +259,12 @@ static void bonk_print(t_bonk *x, t_floatarg f);
 static void bonk_bang(t_bonk *x);
 
 static void bonk_write(t_bonk *x, t_symbol *s);
+static void bonk_dowrite(t_bonk *x, t_symbol *s);
+static void bonk_writefile(t_bonk *x, char *filename, short path);
+
 static void bonk_read(t_bonk *x, t_symbol *s);
+static void bonk_doread(t_bonk *x, t_symbol *s);
+static void bonk_openfile(t_bonk *x, char *filename, short path);
 
 void bonk_minvel_set(t_bonk *x, void *attr, long ac, t_atom *av);
 void bonk_lothresh_set(t_bonk *x, void *attr, long ac, t_atom *av);
@@ -964,6 +968,7 @@ static void bonk_bang(t_bonk *x)
     bonk_tick(x);
 }
 
+#ifdef PD
 static void bonk_read(t_bonk *x, t_symbol *s)
 {
     float vec[MAXNFILTERS];
@@ -1009,7 +1014,89 @@ nomore:
     x->x_ntemplate = ntemplate;
     fclose(fd);
 }
+#endif
 
+#ifdef MSP
+static void bonk_read(t_bonk *x, t_symbol *s)
+{
+    defer(x, (method)bonk_doread, s, 0, NULL);
+}
+
+static void bonk_doread(t_bonk *x, t_symbol *s)
+{
+    long filetype = 'TEXT', outtype;
+    char filename[512];
+    short path;
+    
+    if (s == gensym("")) {
+        if (open_dialog(filename, &path, &outtype, &filetype, 1))
+            return;
+    } else {
+        strcpy(filename, s->s_name);
+        if (locatefile_extended(filename, &path, &outtype, &filetype, 1)) {
+            object_error((t_object *) x, "%s: not found", s->s_name);
+            return;
+        }
+    }
+    // we have a file
+    bonk_openfile(x, filename, path);
+}
+
+static void bonk_openfile(t_bonk *x, char *filename, short path) {
+    float vec[MAXNFILTERS];
+    int i, ntemplate = 0, remaining;
+    float *fp, *fp2;
+    
+    t_filehandle fh;
+    char **texthandle;
+    char *tokptr;
+    
+    if (path_opensysfile(filename, path, &fh, READ_PERM)) {
+        object_error((t_object *) x, "error opening %s", filename);
+        return;
+    }
+    
+    texthandle = sysmem_newhandle(0);
+    sysfile_readtextfile(fh, texthandle, 0, TEXT_LB_NATIVE);
+    sysfile_close(fh);
+    
+    x->x_template = (t_template *)t_resizebytes(x->x_template, 
+                                                x->x_ntemplate * sizeof(t_template), 0);
+    
+    tokptr = strtok(*texthandle, " \n");
+    
+    while(tokptr != NULL)
+    {
+        for (i = x->x_nfilters, fp = vec; i--; fp++) {
+            if (sscanf(tokptr, "%f", fp) < 1) 
+                goto nomore;
+            tokptr = strtok(NULL, " \n");
+        }
+        x->x_template = (t_template *)t_resizebytes(x->x_template,
+                                                    ntemplate * sizeof(t_template),
+                                                    (ntemplate + 1) * sizeof(t_template));
+        for (i = x->x_nfilters, fp = vec,
+             fp2 = x->x_template[ntemplate].t_amp; i--;)
+            *fp2++ = *fp++;
+        ntemplate++;
+    }
+nomore:
+    if (remaining = (ntemplate % x->x_ninsig))
+    {
+        post("bonk_read: %d templates not a multiple of %d; dropping extras");
+        x->x_template = (t_template *)t_resizebytes(x->x_template,
+                                                    ntemplate * sizeof(t_template),
+                                                    (ntemplate - remaining) * sizeof(t_template));
+        ntemplate = ntemplate - remaining;
+    }
+    
+    sysmem_freehandle(texthandle);
+    post("bonk: read %d templates\n", ntemplate);
+    x->x_ntemplate = ntemplate;
+}
+#endif
+
+#ifdef PD
 static void bonk_write(t_bonk *x, t_symbol *s)
 {
     FILE *fd;
@@ -1037,6 +1124,63 @@ static void bonk_write(t_bonk *x, t_symbol *s)
     post("bonk: wrote %d templates\n", x->x_ntemplate);
     fclose(fd);
 }
+#endif
+
+#ifdef MSP
+static void bonk_write(t_bonk *x, t_symbol *s)
+{
+    defer(x, (method)bonk_dowrite, s, 0, NULL);
+}
+
+static void bonk_dowrite(t_bonk *x, t_symbol *s)
+{
+    long filetype = 'TEXT', outtype;
+    char filename[MAX_FILENAME_CHARS];
+    short path;
+    
+    if (s == gensym("")) {
+        sprintf(filename, "bonk_template.txt");
+        saveas_promptset("Save template as...");   
+        if (saveasdialog_extended(filename, &path, &outtype, &filetype, 0))
+            return;
+    } else {
+        strcpy(filename, s->s_name);
+        path = path_getdefault();
+    }
+    bonk_writefile(x, filename, path);
+}
+
+void bonk_writefile(t_bonk *x, char *filename, short path)
+{
+    int i, ntemplate = x->x_ntemplate;
+    t_template *tp = x->x_template;
+    float *fp;
+    long err;
+    long buflen;
+    
+    t_filehandle fh;
+    
+    char buf[20];
+    
+    err = path_createsysfile(filename, path, 'TEXT', &fh); 
+    
+    if (err)
+        return;
+    
+    for (; ntemplate--; tp++)
+    {
+        for (i = x->x_nfilters, fp = tp->t_amp; i--; fp++) {
+            snprintf(buf, 20, "%6.2f ", *fp);
+            buflen = strlen(buf);
+            sysfile_write(fh, &buflen, buf);
+        }
+        buflen = 1;
+        sysfile_write(fh, &buflen, "\n");
+    }
+        
+    sysfile_close(fh);
+}
+#endif
 
 static void bonk_free(t_bonk *x)
 {
@@ -1195,7 +1339,7 @@ void bonk_tilde_setup(void)
         gensym("read"), A_SYMBOL, 0);
     class_addmethod(bonk_class, (t_method)bonk_write,
         gensym("write"), A_SYMBOL, 0);
-    post("bonk version 1.3");
+    post("bonk version 1.5");
 }
 #endif
 
@@ -1284,7 +1428,7 @@ int main()
         class_register(CLASS_BOX, c);
         bonk_class = c;
         
-        post("bonk~ v1.3");
+        post("bonk~ v1.5");
         return (0);
 }
 
@@ -1465,7 +1609,7 @@ void bonk_learn_set(t_bonk *x, void *attr, long ac, t_atom *av)
                 x->x_ntemplate * sizeof(x->x_template[0]), 0);
             x->x_ntemplate = 0;
         }
-        x->x_learn = (n != 0);
+        x->x_learn = n;
         x->x_learncount = 0;
     }
 }

@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     while (1)
     {
         struct timeval timout;
-        fd_set readset;
+        fd_set readset, exceptset;
         if (happy)
         {
             timout.tv_sec = 5;
@@ -31,7 +31,11 @@ int main(int argc, char **argv)
         }
         FD_ZERO(&readset);
         FD_SET(0, &readset);
-        select(1, &readset, 0, 0, &timout);
+        FD_ZERO(&exceptset);
+        FD_SET(0, &exceptset);
+        select(1, &readset, 0, &exceptset, &timout);
+        if (FD_ISSET(0, &exceptset))
+            return (0);
         if (FD_ISSET(0, &readset))
         {
             char buf[100];

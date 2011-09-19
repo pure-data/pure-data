@@ -28,7 +28,7 @@ proc pdtk_text_set {tkcanvas tag text} {
 # paste into an existing text box by literally "typing" the contents of the
 # clipboard, i.e. send the contents one character at a time via 'pd key'
 proc pdtk_pastetext {args} {
-    if { [catch {set pdtk_pastebuffer [selection get]}] } {
+    if { [catch {set pdtk_pastebuffer [clipboard get]}] } {
         # no selection... do nothing
     } else {
         for {set i 0} {$i < [string length $pdtk_pastebuffer]} {incr i 1} {
