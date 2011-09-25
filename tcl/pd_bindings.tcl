@@ -60,6 +60,8 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-5>      {menu_send_float %W text 0}
     bind all <$::modifier-Key-slash>  {pdsend "pd dsp 1"}
     bind all <$::modifier-Key-period> {pdsend "pd dsp 0"}
+    bind all <$::modifier-greater>    {menu_raisenextwindow}
+    bind all <$::modifier-less>       {menu_raisepreviouswindow}
 
     # annoying, but Tk's bind needs uppercase letter to get the Shift
     bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
