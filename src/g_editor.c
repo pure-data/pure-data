@@ -1700,14 +1700,22 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         keynamesym = gensym("#keyname");
     }
 #ifdef __APPLE__
-        if (keynum == 30)
+        if (keynum == 30 || keynum == 63232)
             keynum = 0, gotkeysym = gensym("Up");
-        else if (keynum == 31)
+        else if (keynum == 31 || keynum == 63233)
             keynum = 0, gotkeysym = gensym("Down");
-        else if (keynum == 28)
+        else if (keynum == 28 || keynum == 63234)
             keynum = 0, gotkeysym = gensym("Left");
-        else if (keynum == 29)
+        else if (keynum == 29 || keynum == 63235)
             keynum = 0, gotkeysym = gensym("Right");
+        else if (keynum == 63273)
+            keynum = 0, gotkeysym = gensym("Home");
+        else if (keynum == 63275)
+            keynum = 0, gotkeysym = gensym("End");
+        else if (keynum == 63276)
+            keynum = 0, gotkeysym = gensym("Prior");
+        else if (keynum == 63277)
+            keynum = 0, gotkeysym = gensym("Next");
 #endif
     if (keynumsym->s_thing && down)
         pd_float(keynumsym->s_thing, (t_float)keynum);
