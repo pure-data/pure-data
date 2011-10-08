@@ -202,25 +202,46 @@ int u8_wc_toutf8_nul(char *dest, u_int32_t ch)
 /* charnum => byte offset */
 int u8_offset(char *str, int charnum)
 {
-    int offs=0;
+    char *string = str;
 
-    while (charnum > 0 && str[offs]) {
-        (void)(isutf(str[++offs]) || isutf(str[++offs]) ||
-               isutf(str[++offs]) || ++offs);
-        charnum--;
+    while (charnum > 0 && *string != '\0') {
+        if (*string++ & 0x80) {
+            if (!isutf(*string)) {
+                ++string;
+                if (!isutf(*string)) {
+                    ++string;
+                    if (!isutf(*string)) {
+                        ++string;
+                    }
+                }
+            }
+        }
+        --charnum;
     }
-    return offs;
+
+    return (int)(string - str);
 }
 
 /* byte offset => charnum */
 int u8_charnum(char *s, int offset)
 {
-    int charnum = 0, offs=0;
+    int charnum = 0;
+    char *string = s;
+    char *const end = string + offset;
 
-    while (offs < offset && s[offs]) {
-        (void)(isutf(s[++offs]) || isutf(s[++offs]) ||
-               isutf(s[++offs]) || ++offs);
-        charnum++;
+    while (string < end && *string != '\0') {
+        if (*string++ & 0x80) {
+            if (!isutf(*string)) {
+                ++string;
+                if (!isutf(*string)) {
+                    ++string;
+                    if (!isutf(*string)) {
+                        ++string;
+                    }
+                }
+            }
+        }
+        ++charnum;
     }
     return charnum;
 }
@@ -255,8 +276,17 @@ int u8_strlen(char *s)
 
 void u8_inc(char *s, int *i)
 {
-    (void)(isutf(s[++(*i)]) || isutf(s[++(*i)]) ||
-           isutf(s[++(*i)]) || ++(*i));
+    if (s[(*i)++] & 0x80) {
+        if (!isutf(s[*i])) {
+            ++(*i);
+            if (!isutf(s[*i])) {
+                ++(*i);
+                if (!isutf(s[*i])) {
+                    ++(*i);
+                }
+            }
+        }
+    }
 }
 
 void u8_dec(char *s, int *i)
