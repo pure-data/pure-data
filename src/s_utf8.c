@@ -27,11 +27,6 @@ int u8_wc_nbytes(u_int32_t ch)
   if (ch < 0x800) return 2;
   if (ch < 0x10000) return 3;
   if (ch < 0x200000) return 4;
-#if UTF8_SUPPORT_FULL_UCS4
-  /*-- moo: support full UCS-4 range? --*/
-  if (ch < 0x4000000) return 5;
-  if (ch < 0x7fffffffUL) return 6;
-#endif
   return 0; /*-- bad input --*/
 }
 
