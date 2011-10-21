@@ -18,6 +18,11 @@
 #include "m_pd.h"
 #include "s_stuff.h"
 
+//the maximum length of input messages
+#ifndef ALSA_MAX_EVENT_SIZE
+#define ALSA_MAX_EVENT_SIZE 512
+#endif
+
 static int alsa_nmidiin;
 static int alsa_midiinfd[MAXMIDIINDEV];
 static int alsa_nmidiout;
@@ -97,7 +102,7 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     snd_seq_client_info_free(alsainfo);
     post("Opened Alsa Client %d in:%d out:%d",client,nmidiin,nmidiout);
     sys_setalarm(0);
-    snd_midi_event_new(20,&midiev);
+    snd_midi_event_new(ALSA_MAX_EVENT_SIZE,&midiev);
     alsa_nmidiout = nmidiout;
     alsa_nmidiin = nmidiin;
 
@@ -180,7 +185,7 @@ void sys_alsa_putmidibyte(int portno, int byte)
     /* this version uses the asynchronous "read()" ... */
 void sys_alsa_poll_midi(void)
 {
-   unsigned char buf[20];
+   unsigned char buf[ALSA_MAX_EVENT_SIZE];
    int count, alsa_source;
    int i;
    snd_seq_event_t *midievent = NULL;
@@ -195,7 +200,7 @@ void sys_alsa_poll_midi(void)
         count = snd_seq_event_input(midi_handle,&midievent);
    if (midievent != NULL)
    {
-       count = snd_midi_event_decode(midiev,buf,20,midievent);
+       count = snd_midi_event_decode(midiev,buf,sizeof(buf),midievent);
        alsa_source = midievent->dest.port;
        for(i=0;i<count;i++)
            sys_midibytein(alsa_source, (buf[i] & 0xff));
