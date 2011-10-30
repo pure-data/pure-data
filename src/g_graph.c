@@ -987,10 +987,7 @@ static void graph_delete(t_gobj *z, t_glist *glist)
     t_glist *x = (t_glist *)z;
     t_gobj *y;
     if (glist_isvisible(x))
-    {
-        fprintf(stderr, "vis\n");
         text_widgetbehavior.w_deletefn(z, glist);
-    }
     while (y = x->gl_list)
         glist_delete(x, y);
 }
