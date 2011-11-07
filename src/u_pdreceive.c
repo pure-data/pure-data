@@ -16,7 +16,7 @@ standard output. */
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
-#ifdef MSW
+#ifdef _WIN32
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     int portno;
     struct sockaddr_in server;
     int nretry = 10;
-#ifdef MSW
+#ifdef _WIN32
     short version = MAKEWORD(2, 0);
     WSADATA nobby;
 #endif
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
         else goto usage;
     }
     else protocol = SOCK_STREAM;
-#ifdef MSW
+#ifdef _WIN32
     if (WSAStartup(version, &nobby)) sockerror("WSAstartup");
 #endif
     sockfd = socket(AF_INET, protocol, 0);
@@ -182,7 +182,7 @@ static void udpread(void)
     }
     else if (ret > 0)
     {
-#ifdef MSW
+#ifdef _WIN32
         int j;
         for (j = 0; j < ret; j++)
             putchar(buf[j]);
@@ -221,7 +221,7 @@ static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
             outbuf[outlen++] = '\n';
             if (!x->fdp_discard)
             {
-#ifdef MSW
+#ifdef _WIN32
                 {
                     int j;
                     for (j = 0; j < outlen; j++)
@@ -296,7 +296,7 @@ static void dopoll(void)
 
 static void sockerror(char *s)
 {
-#ifdef MSW
+#ifdef _WIN32
     int err = WSAGetLastError();
     if (err == 10054) return;
     else if (err == 10044)
@@ -312,7 +312,7 @@ static void sockerror(char *s)
 
 static void x_closesocket(int fd)
 {
-#ifdef MSW
+#ifdef _WIN32
     closesocket(fd);
 #else
     close(fd);

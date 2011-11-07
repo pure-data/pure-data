@@ -4,7 +4,7 @@
 
 #include "m_pd.h"
 /* #include <string.h> */
-#ifdef MSW
+#ifdef _WIN32
 #include <malloc.h>
 #else
 #include <alloca.h>

@@ -10,7 +10,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #include <io.h>
 #endif
 #include <fcntl.h>
@@ -530,7 +530,7 @@ done:
 
 #define SMALLMSG 5
 #define HUGEMSG 1000
-#ifdef MSW
+#ifdef _WIN32
 #include <malloc.h>
 #else
 #include <alloca.h>
@@ -741,7 +741,7 @@ broken:
 static int binbuf_doopen(char *s, int mode)
 {
     char namebuf[MAXPDSTRING];
-#ifdef MSW
+#ifdef _WIN32
     mode |= O_BINARY;
 #endif
     sys_bashfilename(s, namebuf);

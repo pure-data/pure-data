@@ -239,7 +239,7 @@ void sys_setalarm(int microsec);
 #define DEFMIDIDEV 0
 
 #define DEFAULTSRATE 44100
-#ifdef MSW
+#ifdef _WIN32
 #define DEFAULTADVANCE 70
 #else
 #define DEFAULTADVANCE 25

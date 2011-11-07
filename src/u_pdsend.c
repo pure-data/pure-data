@@ -10,7 +10,7 @@ from its standard input to Pd via the netsend/netreceive ("FUDI") protocol. */
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
-#ifdef MSW
+#ifdef _WIN32
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     struct hostent *hp;
     char *hostname;
     int nretry = 10;
-#ifdef MSW
+#ifdef _WIN32
     short version = MAKEWORD(2, 0);
     WSADATA nobby;
 #endif
@@ -51,7 +51,7 @@ int main(int argc, char **argv)
         else goto usage;
     }
     else protocol = SOCK_STREAM;
-#ifdef MSW
+#ifdef _WIN32
     if (WSAStartup(version, &nobby)) sockerror("WSAstartup");
 #endif
 
@@ -134,7 +134,7 @@ usage:
 
 void sockerror(char *s)
 {
-#ifdef MSW
+#ifdef _WIN32
     int err = WSAGetLastError();
     if (err == 10054) return;
     else if (err == 10044)
@@ -150,7 +150,7 @@ void sockerror(char *s)
 
 void x_closesocket(int fd)
 {
-#ifdef MSW
+#ifdef _WIN32
     closesocket(fd);
 #else
     close(fd);

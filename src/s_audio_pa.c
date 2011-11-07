@@ -21,7 +21,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <portaudio.h>
-#ifdef MSW
+#ifdef _WIN32
 #include <malloc.h>
 #include <windows.h>
 #else
@@ -59,7 +59,7 @@ static void pa_init(void)
     static int initialized;
     if (!initialized)
     {
-#ifndef MSW
+#ifndef _WIN32
         /* Initialize PortAudio  */
         /* for some reason Pa_Initialize(0 closes file descriptor 1.
         As a workaround, dup it to another number and dup2 it back
@@ -458,11 +458,11 @@ int pa_send_dacs(void)
 #ifdef THREADSIGNAL
                 pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
-#ifdef MSW
+#ifdef _WIN32
                 Sleep(1);
 #else
                 usleep(1000);
-#endif /* MSW */
+#endif /* _WIN32 */
 #endif /* THREADSIGNAL */
 #ifdef THREADSIGNAL
         pthread_mutex_unlock(&pa_mutex);
@@ -489,11 +489,11 @@ int pa_send_dacs(void)
 #ifdef THREADSIGNAL
                 pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
-#ifdef MSW
+#ifdef _WIN32
                 Sleep(1);
 #else
                 usleep(1000);
-#endif /* MSW */
+#endif /* _WIN32 */
 #endif /* THREADSIGNAL */
 #ifdef THREADSIGNAL
         pthread_mutex_unlock(&pa_mutex);

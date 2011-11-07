@@ -18,7 +18,7 @@ for another, more permissive-sounding copyright notice.  -MSP
 
 /* ---------- Pd interface to OOURA FFT; imitate Mayer API ---------- */
 #include "m_pd.h"
-#ifdef MSW
+#ifdef _WIN32
 #include <malloc.h>
 #else
 #include <alloca.h>

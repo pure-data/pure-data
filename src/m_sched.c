@@ -7,7 +7,7 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
-#ifdef MSW
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -542,7 +542,7 @@ static void m_callbackscheduler(void)
     while (!sys_quit)
     {
         double timewas = sys_time;
-#ifdef MSW
+#ifdef _WIN32
         Sleep(1000);
 #else
         sleep(1);

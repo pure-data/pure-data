@@ -623,7 +623,7 @@ static void *exp_new(void)
 static void exp_float(t_object *x, t_float f)
 {
     t_float g;
-#ifdef MSW
+#ifdef _WIN32
     char buf[10];
 #endif
     if (f > MAXLOG) f = MAXLOG;

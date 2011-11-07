@@ -7,7 +7,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #include <io.h>
 #endif
 

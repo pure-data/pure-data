@@ -16,7 +16,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #include <io.h>
 #include <windows.h>
 #include <winbase.h>
@@ -275,7 +275,7 @@ int sys_main(int argc, char **argv)
             noprefs = 1;
     if (!noprefs)
         sys_loadpreferences();                  /* load default settings */
-#ifndef MSW
+#ifndef _WIN32
     if (!noprefs)
         sys_rcfile();                           /* parse the startup file */
 #endif
@@ -335,7 +335,7 @@ static char *(usagemessage[]) = {
 #endif
 
 #ifdef USEAPI_PORTAUDIO
-#ifdef MSW
+#ifdef _WIN32
 "-asio            -- use ASIO audio driver (via Portaudio)\n",
 "-pa              -- synonym for -asio\n",
 #else
@@ -495,7 +495,7 @@ void sys_findprogdir(char *progname)
             .../bin/wish80.exe
             .../doc
         */
-#ifdef MSW
+#ifdef _WIN32
     sys_libdir = gensym(sbuf2);
 #else
     strncpy(sbuf, sbuf2, MAXPDSTRING-30);
@@ -514,7 +514,7 @@ void sys_findprogdir(char *progname)
 #endif
 }
 
-#ifdef MSW
+#ifdef _WIN32
 static int sys_mmio = 1;
 #else
 static int sys_mmio = 0;
@@ -637,7 +637,7 @@ int sys_argparse(int argc, char **argv)
 #endif
 #ifdef USEAPI_PORTAUDIO
         else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
-#ifdef MSW
+#ifdef _WIN32
             || !strcmp(*argv, "-asio")
 #endif
             )

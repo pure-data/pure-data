@@ -9,7 +9,7 @@
 
 #include <sys/types.h>
 #include <string.h>
-#ifdef MSW
+#ifdef _WIN32
 #include <winsock.h>
 #else
 #include <sys/socket.h>

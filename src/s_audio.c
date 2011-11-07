@@ -971,7 +971,7 @@ void sys_get_audio_apis(char *buf)
     sprintf(buf + strlen(buf), "{ALSA %d} ", API_ALSA); n++;
 #endif
 #ifdef USEAPI_PORTAUDIO
-#ifdef MSW
+#ifdef _WIN32
     sprintf(buf + strlen(buf),
         "{\"ASIO (via portaudio)\" %d} ", API_PORTAUDIO);
 #else

@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #include <io.h>
 #include <windows.h>
 #endif
@@ -52,7 +52,7 @@ void sys_bashfilename(const char *from, char *to)
     char c;
     while (c = *from++)
     {
-#ifdef MSW
+#ifdef _WIN32
         if (c == '/') c = '\\';
 #endif
         *to++ = c;
@@ -66,7 +66,7 @@ void sys_unbashfilename(const char *from, char *to)
     char c;
     while (c = *from++)
     {
-#ifdef MSW
+#ifdef _WIN32
         if (c == '\\') c = '/';
 #endif
         *to++ = c;
@@ -78,7 +78,7 @@ void sys_unbashfilename(const char *from, char *to)
 int sys_isabsolutepath(const char *dir)
 {
     if (dir[0] == '/' || dir[0] == '~'
-#ifdef MSW
+#ifdef _WIN32
         || dir[0] == '%' || (dir[1] == ':' && dir[2] == '/')
 #endif
         )
@@ -182,7 +182,7 @@ t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
 
 /* add a colon-separated list of names to a namelist */
 
-#ifdef MSW
+#ifdef _WIN32
 #define SEPARATOR ';'   /* in MSW the natural separator is semicolon instead */
 #else
 #define SEPARATOR ':'
@@ -254,7 +254,7 @@ void sys_setextrapath(const char *p)
     sys_staticpath = namelist_append(sys_staticpath, p, 0);
 }
 
-#ifdef MSW
+#ifdef _WIN32
 #define MSWOPENFLAG(bin) (bin ? _O_BINARY : _O_TEXT)
 #else
 #define MSWOPENFLAG(bin) 0
@@ -452,7 +452,7 @@ deprecated in favor of the "settings" mechanism */
 
 int sys_argparse(int argc, char **argv);
 
-#ifndef MSW
+#ifndef _WIN32
 
 #define STARTUPNAME ".pdrc"
 #define NUMARGS 1000
@@ -532,7 +532,7 @@ int sys_rcfile(void)
     
     return(retval);
 }
-#endif /* MSW */
+#endif /* _WIN32 */
 
 void sys_doflags( void)
 {

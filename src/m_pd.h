@@ -28,7 +28,7 @@ extern "C" {
 #endif /* _MSC_VER */
 
     /* the external storage class is "extern" in UNIX; in MSW it's ugly. */
-#ifdef MSW
+#ifdef _WIN32
 #ifdef PD_INTERNAL
 #define EXTERN __declspec(dllexport) extern
 #else
@@ -36,7 +36,7 @@ extern "C" {
 #endif /* PD_INTERNAL */
 #else
 #define EXTERN extern
-#endif /* MSW */
+#endif /* _WIN32 */
 
     /* and depending on the compiler, hidden data structures are
     declared differently: */

@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #include <io.h>
 #include <windows.h>
 #endif
@@ -92,7 +92,7 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
     void *dlobj;
     t_xxx makeout = NULL;
     int i, hexmunge = 0, fd;
-#ifdef MSW
+#ifdef _WIN32
     HINSTANCE ntdll;
 #endif
     if (classname = strrchr(objectname, '/'))
@@ -179,7 +179,7 @@ gotone:
     makeout = (t_xxx)dlsym(dlobj,  symname);
     /* fprintf(stderr, "symbol %s\n", symname); */
 #endif
-#ifdef MSW
+#ifdef _WIN32
     sys_bashfilename(filename, filename);
     ntdll = LoadLibrary(filename);
     if (!ntdll)
@@ -252,7 +252,7 @@ int sys_run_scheduler(const char *externalschedlibname,
     snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
         sys_dllextent);
     sys_bashfilename(filename, filename);
-#ifdef MSW
+#ifdef _WIN32
     {
         HINSTANCE ntdll = LoadLibrary(filename);
         if (!ntdll)

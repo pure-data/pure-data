@@ -11,12 +11,12 @@ readsf~ and writesf~ are defined which confine disk operations to a separate
 thread so that they can be used in real time.  The readsf~ and writesf~
 objects use Posix-like threads.  */
 
-#ifndef MSW
+#ifndef _WIN32
 #include <unistd.h>
 #include <fcntl.h>
 #endif
 #include <pthread.h>
-#ifdef MSW
+#ifdef _WIN32
 #include <io.h>
 #endif
 #include <stdio.h>
@@ -32,7 +32,7 @@ objects use Posix-like threads.  */
 # define lseek lseek64
 #define off_t __off64_t
 #endif
-#ifdef MSW
+#ifdef _WIN32
 #define off_t long
 #endif
 
@@ -154,7 +154,7 @@ typedef struct _aiff
 
 #define OBUFSIZE MAXPDSTRING  /* assume MAXPDSTRING is bigger than headers */
 
-#ifdef MSW
+#ifdef _WIN32
 #include <fcntl.h>
 #define BINCREATE _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY
 #else

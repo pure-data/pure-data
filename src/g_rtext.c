@@ -19,7 +19,7 @@
 #define LMARGIN 2
 #define RMARGIN 2
 /* for some reason, it draws text 1 pixel lower on Mac OS X (& linux too?) */
-#ifndef MSW
+#ifndef _WIN32
 #define TMARGIN 2
 #define BMARGIN 2
 #else
