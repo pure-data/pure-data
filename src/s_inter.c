@@ -64,7 +64,7 @@ typedef int socklen_t;
 #endif
 
 #ifndef WISHAPP
-#define WISHAPP "wish84.exe"
+#define WISHAPP "wish85.exe"
 #endif
 
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
