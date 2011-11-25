@@ -95,8 +95,9 @@ void glist_delete(t_glist *x, t_gobj *y)
             }
             else
             {
-                text_eraseborder(&gl->gl_obj, x,
-                    rtext_gettag(glist_findrtext(x, &gl->gl_obj)));
+                if (glist_isvisible(x))
+                    text_eraseborder(&gl->gl_obj, x,
+                        rtext_gettag(glist_findrtext(x, &gl->gl_obj)));
             }
         }
     }
@@ -105,11 +106,9 @@ void glist_delete(t_glist *x, t_gobj *y)
     if (drawcommand)
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
             glist_getcanvas(x)->gl_name)), 2);
+    gobj_delete(y, x);
     if (glist_isvisible(canvas))
-    {
-        gobj_delete(y, x);
         gobj_vis(y, x, 0);
-    }
     if (x->gl_editor && (ob = pd_checkobject(&y->g_pd)))
         rtext_new(x, ob);
     if (x->gl_list == y) x->gl_list = y->g_next;
