@@ -870,11 +870,13 @@ static t_editor *editor_new(t_glist *owner)
     sprintf(buf, ".x%lx", (t_int)owner);
     x->e_guiconnect = guiconnect_new(&owner->gl_pd, gensym(buf));
     x->e_clock = 0;
+    post("create %x", x);
     return (x);
 }
 
 static void editor_free(t_editor *x, t_glist *y)
 {
+    post("freed  %x", x);
     glist_noselect(y);
     guiconnect_notarget(x->e_guiconnect, 1000);
     binbuf_free(x->e_connectbuf);

@@ -272,19 +272,6 @@ void glist_sort(t_glist *x)
         x->gl_list = glist_dosort(x, x->gl_list, nitems);
 }
 
-void glist_cleanup(t_glist *x)
-{
-    freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
-    freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
-    gstub_cutoff(x->gl_stub);
-}
-
-void glist_free(t_glist *x)
-{
-    glist_cleanup(x);
-    freebytes(x, sizeof(*x));
-}
-
 /* --------------- inlets and outlets  ----------- */
 
 

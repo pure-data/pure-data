@@ -709,16 +709,20 @@ void canvas_free(t_canvas *x)
         glist_delete(x, y);
     if (x == glist_getcanvas(x))
         canvas_vis(x, 0);
-
+    if (x->gl_editor)
+        canvas_destroy_editor(x);   /* bug workaround; should already be gone*/
     if (strcmp(x->gl_name->s_name, "Pd"))
         pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+
     if (x->gl_env)
     {
         freebytes(x->gl_env->ce_argv, x->gl_env->ce_argc * sizeof(t_atom));
         freebytes(x->gl_env, sizeof(*x->gl_env));
     }
     canvas_resume_dsp(dspstate);
-    glist_cleanup(x);
+    freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
+    freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
+    gstub_cutoff(x->gl_stub);
     gfxstub_deleteforkey(x);        /* probably unnecessary */
     if (!x->gl_owner)
         canvas_takeofflist(x);
