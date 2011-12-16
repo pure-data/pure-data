@@ -362,8 +362,6 @@ EXTERN int gobj_shouldvis(t_gobj *x, struct _glist *glist);
 EXTERN t_glist *glist_new( void);
 EXTERN void glist_init(t_glist *x);
 EXTERN void glist_add(t_glist *x, t_gobj *g);
-EXTERN void glist_cleanup(t_glist *x);
-EXTERN void glist_free(t_glist *x);
 
 EXTERN void glist_clear(t_glist *x);
 EXTERN t_canvas *glist_getcanvas(t_glist *x);
