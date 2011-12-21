@@ -48,8 +48,8 @@ int pd_extern_sched(char *flags)
     chin = (naudioindev < 1 ? 0 : chindev[0]);
     chout = (naudiooutdev < 1 ? 0 : choutdev[0]);
 
-    fprintf(stderr, "Pd plug-in scheduler called, chans %d %d, sr %d\n",
-        chin, chout, (int)rate);
+    /* fprintf(stderr, "Pd plug-in scheduler called, chans %d %d, sr %d\n",
+        chin, chout, (int)rate); */
     sys_setchsr(chin, chout, rate);
     sys_audioapi = API_NONE;
     while ((c = getchar()) != EOF)

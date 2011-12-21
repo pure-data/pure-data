@@ -205,7 +205,7 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         }       
     }
     snprintf(cmdbuf, MAXPDSTRING,
-"%s -schedlib %s/pdsched -path %s -inchannels %d -outchannels %d -r %g %s\n",
+"'%s' -schedlib '%s'/pdsched -path '%s' -inchannels %d -outchannels %d -r %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
 #if 0
 #ifdef PD
