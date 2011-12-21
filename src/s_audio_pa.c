@@ -199,16 +199,6 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     PaStreamParameters instreamparams, outstreamparams;
     PaStreamParameters*p_instreamparams=0, *p_outstreamparams=0;
 
-    if (indeviceno < 0) 
-    {
-        indeviceno = Pa_GetDefaultInputDevice();
-        fprintf(stderr, "using default input device number: %d\n", indeviceno);
-    }
-    if (outdeviceno < 0)
-    {
-        outdeviceno = Pa_GetDefaultOutputDevice();
-        fprintf(stderr, "using default output device number: %d\n", outdeviceno);
-    }
     /* fprintf(stderr, "nchan %d, flags %d, bufs %d, framesperbuf %d\n",
             nchannels, flags, nbuffers, framesperbuf); */
 
@@ -224,9 +214,9 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     outstreamparams.suggestedLatency = 0;
     outstreamparams.hostApiSpecificStreamInfo = 0;
 
-    if(inchannels>0)
+    if(inchannels>0 && indeviceno >= 0)
         p_instreamparams=&instreamparams;
-    if(outchannels>0)
+    if(outchannels>0 && outdeviceno >= 0)
         p_outstreamparams=&outstreamparams;
 
     err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams, sampleRate);
@@ -301,7 +291,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int indeviceno, int outdeviceno, t_audiocallback callbackfn)
 {
     PaError err;
-    int j, devno, pa_indev = 0, pa_outdev = 0;
+    int j, devno, pa_indev = -1, pa_outdev = -1;
     
     pa_callback = callbackfn;
     /* fprintf(stderr, "open callback %d\n", (callbackfn != 0)); */
@@ -351,6 +341,11 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         }
     }   
 
+    if (inchans > 0 && pa_indev == -1)
+        inchans = 0;
+    if (outchans > 0 && pa_outdev == -1)
+        outchans = 0;
+    
     if (sys_verbose)
     {
         post("input device %d, channels %d", pa_indev, inchans);
