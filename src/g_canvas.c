@@ -464,7 +464,8 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_pixheight = py2 - py1;
     x->gl_font =  (canvas_getcurrent() ?
         canvas_getcurrent()->gl_font : sys_defaultfont);
-    x->gl_screenx1 = x->gl_screeny1 = 0;
+    x->gl_screenx1 = 0;
+    x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = 450;
     x->gl_screeny2 = 300;
     if (strcmp(x->gl_name->s_name, "Pd"))
