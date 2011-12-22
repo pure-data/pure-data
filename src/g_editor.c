@@ -991,7 +991,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             if (glist_isvisible(gl2))
                 gobj_vis(&x->gl_gobj, gl2, 0);
             x->gl_havewindow = 0;
-            if (glist_isvisible(gl2))
+            if (glist_isvisible(gl2) && !gl2->gl_isdeleting)
                 gobj_vis(&x->gl_gobj, gl2, 1);
         }
         else x->gl_havewindow = 0;
