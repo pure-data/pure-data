@@ -773,7 +773,7 @@ void canvas_deletelinesfor(t_canvas *x, t_text *text)
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
-            if (x->gl_editor)
+            if (glist_isvisible(x))
             {
                 sys_vgui(".x%lx.c delete l%lx\n",
                     glist_getcanvas(x), oc);
@@ -795,7 +795,7 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
         if ((t.tr_ob == text && t.tr_outlet == outp) ||
             (t.tr_ob2 == text && t.tr_inlet == inp))
         {
-            if (x->gl_editor)
+            if (glist_isvisible(x))
             {
                 sys_vgui(".x%lx.c delete l%lx\n",
                     glist_getcanvas(x), oc);
