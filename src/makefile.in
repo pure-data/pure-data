@@ -24,6 +24,7 @@ GFLAGS = -DINSTALL_PREFIX=\"$(prefix)\"
 libpddir = $(libdir)/pd
 pddocdir = $(libpddir)/doc
 libpdbindir = $(libpddir)/bin
+libpdtcldir = $(libpddir)/tcl
 
 CPPFLAGS = @CPPFLAGS@
 MORECFLAGS = @MORECFLAGS@
@@ -161,6 +162,8 @@ install:  all
 	install $(BINARYMODE) $(PDEXEC) $(DESTDIR)$(bindir)/pd
 	install -m755 $(BIN_DIR)/pdsend $(DESTDIR)$(bindir)/pdsend
 	install -m755 $(BIN_DIR)/pdreceive $(DESTDIR)$(bindir)/pdreceive 
+	install -d $(DESTDIR)$(libpdtcldir)
+	install ../tcl/* $(DESTDIR)$(libpdtcldir)
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
 		echo "installing $$dir"; \
 		install -d $(DESTDIR)$(pddocdir)/$$dir ; \
