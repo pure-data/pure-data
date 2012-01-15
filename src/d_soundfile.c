@@ -788,8 +788,12 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
         aiffhdr->a_bitspersamp = swap2(8 * bytespersamp, swap);
         memcpy(aiffhdr->a_samprate, dogdoo, sizeof(dogdoo));
         longtmp = swap4(datasize + 8, swap);
-        memcpy(aiffhdr->a_samprate + sizeof(dogdoo), &longtmp, 4);
-        memset(aiffhdr->a_samprate + sizeof(dogdoo) + 4, 0, 8);
+        memcpy(headerbuf +
+            ((aiffhdr->a_samprate + sizeof(dogdoo))-(unsigned char *)aiffhdr),
+                &longtmp, 4);
+        memset(headerbuf +
+            ((aiffhdr->a_samprate + sizeof(dogdoo))-(unsigned char *)aiffhdr)
+                + 4, 0, 8);
         headersize = AIFFPLUS;
     }
     else    /* WAVE format */
