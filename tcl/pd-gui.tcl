@@ -124,16 +124,16 @@ set font_weight "normal"
 # sizes of chars for each of the Pd fixed font sizes:
 #  fontsize  width(pixels)  height(pixels)
 set font_fixed_metrics {
-    8 5 11
+    8 6 11
     9 6 12
-    10 6 13
-    12 7 16
+    10 7 13
+    12 9 16
     14 8 17
-    16 10 19
+    16 10 20
     18 11 22
-    24 14 29
+    24 15 25
     30 18 37
-    36 22 44
+    36 25 45
 }
 set font_measured_metrics {}
 
