@@ -373,8 +373,8 @@ proc ::pdwindow::create_window {} {
         }
     }
     
-    # print whatever is in the queue
-    filter_buffer_to_text
+    # print whatever is in the queue after the event loop finishes
+    after idle [list after 0 ::pdwindow::filter_buffer_to_text]
 
     set ::loaded(.pdwindow) 1
 
