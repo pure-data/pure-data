@@ -53,7 +53,7 @@ proc ::pd_menus::configure_for_pdwindow {} {
     # these are meaningless for the Pd window, so disable them
     # File menu
     $menubar.file entryconfigure [_ "Save"] -state disabled
-    $menubar.file entryconfigure [_ "Save As..."] -state disabled
+    $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state disabled
     $menubar.file entryconfigure [_ "Close"] -state disabled
     # Edit menu

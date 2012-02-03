@@ -149,6 +149,20 @@ proc ::pdwindow::clear_console {} {
     .pdwindow.text.internal delete 0.0 end
 }
 
+# save the contents of the pdwindow::logbuffer to a file
+proc ::pdwindow::save_logbuffer_to_file {} {
+    variable logbuffer
+    set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt]
+    if {$filename eq ""} return; # they clicked cancel
+    set f [open $filename w]
+    puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION.$::PD_TEST_VERSION on $::windowingsystem"
+    puts $f "Tcl/Tk [info patchlevel]"
+    puts $f "------------------------------------------------------------------------------"
+    puts $f $logbuffer
+    close $f
+}
+
+
 #--compute audio/DSP checkbutton-----------------------------------------------#
 
 # set the checkbox on the "Compute Audio" menuitem and checkbox
@@ -186,7 +200,6 @@ proc ::pdwindow::pdwindow_bindings {} {
     # these don't do anything in the Pd window, so alert the user, then break
     # so no more bindings run
     bind .pdwindow <$::modifier-Key-s> "bell; break"
-    bind .pdwindow <$::modifier-Shift-Key-S> "bell; break"
     bind .pdwindow <$::modifier-Key-p> "bell; break"
 
     # ways of hiding/closing the Pd window
