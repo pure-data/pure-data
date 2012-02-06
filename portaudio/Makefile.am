@@ -25,6 +25,9 @@ libportaudio_la_SOURCES += src/hostapi/alsa/pa_linux_alsa.c
 endif
 
 if ASIO
+# Some old code in asio/ASIOSDK2/common/combase.h needs to be ignored,
+# we do this by setting the WINVER macro to min Windows XP aka 5.1.
+AM_CPPFLAGS += -DPA_USE_ASIO -DWINVER=0x0501
 libportaudio_la_CPPFLAGS = -DWINVER=0x0501 #kludge to work around Portaudio/ASIO bug
 libportaudio_la_SOURCES += src/hostapi/asio/pa_asio.cpp \
 	src/hostapi/asio/iasiothiscallresolver.cpp
@@ -50,6 +53,7 @@ endif
 # handle a single MIDI API
 if OSS
 if !WINDOWS
+AM_CPPFLAGS += -DPA_USE_OSS
 libportaudio_la_SOURCES += src/hostapi/oss/pa_unix_oss.c
 endif
 endif
