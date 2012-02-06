@@ -168,19 +168,23 @@ gotone:
     strncat(filename, nameptr, MAXPDSTRING-strlen(filename));
     filename[MAXPDSTRING-1] = 0;
 
-#ifdef HAVE_LIBDL
-    dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
-    if (!dlobj)
-    {
-        post("%s: %s", filename, dlerror());
-        class_set_extern_dir(&s_);
-        return (0);
-    }
-    makeout = (t_xxx)dlsym(dlobj,  symname);
-    /* fprintf(stderr, "symbol %s\n", symname); */
-#endif
 #ifdef _WIN32
     sys_bashfilename(filename, filename);
+    /* set the dirname as DllDirectory, meaning in the path for
+       loading other DLLs so that dependent libraries can be included
+       in the same folder as the external. SetDllDirectory() needs a
+       minimum supported version of Windows XP SP1 for
+       SetDllDirectory, so WINVER must be 0x0502 */
+    char dirname[MAXPDSTRING];
+    strncpy(dirname, filename, MAXPDSTRING);
+    char* s = strrchr(dirname, '\\');
+    char* basename = s;
+    if (s && *s)
+      *s = '\0';
+    if (!SetDllDirectory(dirname))
+       error("Could not set '%s' as DllDirectory(), '%s' might not load.",
+             dirname, basename);
+    /* now load the DLL for the external */
     ntdll = LoadLibrary(filename);
     if (!ntdll)
     {
@@ -189,6 +193,22 @@ gotone:
         return (0);
     }
     makeout = (t_xxx)GetProcAddress(ntdll, symname);  
+    if (!makeout)
+         makeout = (t_xxx)GetProcAddress(ntdll, "setup");
+    SetDllDirectory(NULL); /* reset DLL dir to nothing */
+#elif defined HAVE_LIBDL
+    dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
+    if (!dlobj)
+    {
+        post("%s: %s", filename, dlerror());
+        class_set_extern_dir(&s_);
+        return (0);
+    }
+    makeout = (t_xxx)dlsym(dlobj,  symname);
+    if(!makeout)
+        makeout = (t_xxx)dlsym(dlobj,  "setup");
+#else
+#warning "No dynamic loading mechanism specified, libdl or WIN32 required for loading externals!"
 #endif
 
     if (!makeout)
@@ -263,8 +283,7 @@ int sys_run_scheduler(const char *externalschedlibname,
         externalmainfunc =
             (t_externalschedlibmain)GetProcAddress(ntdll, "main");
     }
-#else
-#ifdef HAVE_LIBDL
+#elif defined HAVE_LIBDL
     {
         void *dlobj;
         struct stat statbuf;
@@ -287,7 +306,6 @@ int sys_run_scheduler(const char *externalschedlibname,
     }
 #else
     return (0);
-#endif
 #endif
     return((*externalmainfunc)(sys_extraflagsstring));
 }
