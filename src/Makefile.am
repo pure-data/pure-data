@@ -133,11 +133,11 @@ pd_SOURCES += s_audio_mmio.c s_midi_mmio.c
 bin_SCRIPTS = 
 endif
 
-# Cygwin is not _WIN32 and MSW vaguely means the same thing, so MINGW only
 if MINGW
-pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DMSW #kludge, MSW should be _WIN32
-pdsend_CFLAGS += -DMSW #kludge, should use _WIN32
-pdreceive_CFLAGS += -DMSW #kludge, should use _WIN32
+# To use SetDllDirectory() in s_loader.c, we need a minium of Windows
+# XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
+# next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
+pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DWINVER=0x0502
 bin_PROGRAMS += pd-watchdog
 endif
 
