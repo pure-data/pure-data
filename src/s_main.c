@@ -124,8 +124,8 @@ typedef struct _fontinfo
     in the six fonts.  */
 
 static t_fontinfo sys_fontlist[] = {
-    {8, 6, 10, 0, 0, 0}, {10, 7, 13, 0, 0, 0}, {12, 9, 16, 0, 0, 0},
-    {16, 10, 20, 0, 0, 0}, {24, 15, 25, 0, 0, 0}, {36, 25, 45, 0, 0, 0}};
+    {8, 6, 10, 1, 1, 1}, {10, 7, 13, 1, 1, 1}, {12, 9, 16, 1, 1, 1},
+    {16, 10, 21, 1, 1, 0}, {24, 15, 25, 1, 1, 1}, {36, 25, 45, 1, 1, 1}};
 #define NFONT (sizeof(sys_fontlist)/sizeof(*sys_fontlist))
 
 /* here are the actual font size structs on msp's systems:
