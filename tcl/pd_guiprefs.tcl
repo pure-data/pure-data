@@ -37,20 +37,20 @@ proc ::pd_guiprefs::init {} {
         $::recentfiles_key $arr]}
 }
 
-proc init_aqua {} {
+proc ::pd_guiprefs::init_aqua {} {
     # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
     set ::recentfiles_domain org.puredata
     set ::recentfiles_key "NSRecentDocuments"
     set ::total_recentfiles 10
 }
 
-proc init_win {} {
+proc ::pd_guiprefs::init_win {} {
     # windows uses registry
     set ::recentfiles_domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
     set ::recentfiles_key "RecentDocs"
 }
 
-proc init_x11 {} {
+proc ::pd_guiprefs::init_x11 {} {
     # linux uses ~/.config/pure-data dir
     set ::recentfiles_domain "~/.config/pure-data"
     set ::recentfiles_key "recentfiles.conf"
@@ -84,7 +84,7 @@ proc ::pd_guiprefs::update_recentfiles {afile} {
 # ------------------------------------------------------------------------------
 # get configs from a file or the registry
 #
-proc get_config {adomain {akey} {arr}} {
+proc ::pd_guiprefs::get_config {adomain {akey} {arr}} {
     switch -- $::windowingsystem {
         "aqua"  { set conf [get_config_aqua $adomain $akey $arr] }
         "win32" { set conf [get_config_win $adomain $akey $arr] }
@@ -97,7 +97,7 @@ proc get_config {adomain {akey} {arr}} {
 # write configs to a file or to the registry
 # $arr is true if the data needs to be written in an array
 #
-proc write_config {data {adomain} {akey} {arr false}} {
+proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
     switch -- $::windowingsystem {
         "aqua"  { write_config_aqua $data $adomain $akey $arr }
         "win32" { write_config_win $data $adomain $akey $arr }
@@ -112,12 +112,12 @@ proc write_config {data {adomain} {akey} {arr false}} {
 # ------------------------------------------------------------------------------
 # osx: read a plist file
 #
-proc get_config_aqua {adomain {akey} {arr false}} {
+proc ::pd_guiprefs::get_config_aqua {adomain {akey} {arr false}} {
     if {![catch {exec defaults read $adomain $akey} conf]} {
         if {$arr} {
             set conf [plist_array_to_tcl_list $conf]
         }
-    } {
+    } else {
         # initialize NSRecentDocuments with an empty array
         exec defaults write $adomain $akey -array
         set conf {}
@@ -128,11 +128,11 @@ proc get_config_aqua {adomain {akey} {arr false}} {
 # ------------------------------------------------------------------------------
 # win: read in the registry
 #
-proc get_config_win {adomain {akey} {arr false}} {
+proc ::pd_guiprefs::get_config_win {adomain {akey} {arr false}} {
     package require registry
     if {![catch {registry get $adomain $akey} conf]} {
         return [expr {$conf}]
-    } {
+    } else {
         return {}
     }
 }
@@ -140,13 +140,13 @@ proc get_config_win {adomain {akey} {arr false}} {
 # ------------------------------------------------------------------------------
 # linux: read a config file and return its lines splitted.
 #
-proc get_config_x11 {adomain {akey} {arr false}} {
+proc ::pd_guiprefs::get_config_x11 {adomain {akey} {arr false}} {
     set filename [file join $adomain $akey]
     set conf {}
     if {
         [file exists $filename] == 1
         && [file readable $filename]
-    } {
+    } else {
         set fl [open $filename r]
         while {[gets $fl line] >= 0} {
            lappend conf $line
@@ -160,17 +160,17 @@ proc get_config_x11 {adomain {akey} {arr false}} {
 # osx: write configs to plist file
 # if $arr is true, we write an array
 #
-proc write_config_aqua {data {adomain} {akey} {arr false}} {
+proc ::pd_guiprefs::write_config_aqua {data {adomain} {akey} {arr false}} {
     # FIXME empty and write again so we don't loose the order
     if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
-        puts stderr "ERROR: write_config_aqua $akey: $errorMsg"
+        ::pdwindow::error "write_config_aqua $akey: $errorMsg"
     }
     if {$arr} {
         foreach filepath $data {
             set escaped [escape_for_plist $filepath]
             exec defaults write $adomain $akey -array-add "$escaped"
         }
-    } {
+    } else {
         set escaped [escape_for_plist $data]
         exec defaults write $adomain $akey '$escaped'
     }
@@ -180,16 +180,16 @@ proc write_config_aqua {data {adomain} {akey} {arr false}} {
 # win: write configs to registry
 # if $arr is true, we write an array
 #
-proc write_config_win {data {adomain} {akey} {arr false}} {
+proc ::pd_guiprefs::write_config_win {data {adomain} {akey} {arr false}} {
     package require registry
     # FIXME: ugly
     if {$arr} {
         if {[catch {registry set $adomain $akey $data multi_sz} errorMsg]} {
-            puts stderr "ERROR: write_config_win $data $akey: $errorMsg"
+            ::pdwindow::error "write_config_win $data $akey: $errorMsg"
         }
-    } {
+    } else {
         if {[catch {registry set $adomain $akey $data sz} errorMsg]} {
-            puts stderr "ERROR: write_config_win $data $akey: $errorMsg"
+            ::pdwindow::error "write_config_win $data $akey: $errorMsg"
         }
     }
 }
@@ -197,13 +197,13 @@ proc write_config_win {data {adomain} {akey} {arr false}} {
 # ------------------------------------------------------------------------------
 # linux: write configs to USER_APP_CONFIG_DIR
 #
-proc write_config_x11 {data {adomain} {akey}} {
+proc ::pd_guiprefs::write_config_x11 {data {adomain} {akey}} {
     # right now I (yvan) assume that data are just \n separated, i.e. no keys
     set data [join $data "\n"]
     set filename [file join $adomain $akey]
     if {[catch {set fl [open $filename w]} errorMsg]} {
-        puts stderr "ERROR: write_config_x11 $data $akey: $errorMsg"
-    } {
+        ::pdwindow::error "write_config_x11 $data $akey: $errorMsg"
+    } else {
         puts -nonewline $fl $data
         close $fl
     }
@@ -216,17 +216,17 @@ proc write_config_x11 {data {adomain} {akey}} {
 # ------------------------------------------------------------------------------
 # linux only! : look for pd config directory and create it if needed
 #
-proc prepare_configdir {} {
+proc ::pd_guiprefs::prepare_configdir {} {
     if {[file isdirectory $::recentfiles_domain] != 1} {
         file mkdir $::recentfiles_domain
-        puts "$::recentfiles_domain was created.\n"
+        ::pdwindow::debug "$::recentfiles_domain was created.\n"
     }
 }
 
 # ------------------------------------------------------------------------------
 # osx: handles arrays in plist files (thanks hc)
 #
-proc plist_array_to_tcl_list {arr} {
+proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
     set result {}
     set filelist $arr
     regsub -all -- {("?),\s+("?)} $filelist {\1 \2} filelist
