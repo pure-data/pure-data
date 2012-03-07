@@ -1154,6 +1154,18 @@ int sys_startgui(const char *libdir)
         /etc/security/limits.conf */
     if (sys_hipriority == -1)
         sys_hipriority = 1;
+
+    sprintf(cmdbuf, "%s/bin/pd-watchdog", libdir);
+    if (sys_hipriority) 
+    {
+      struct stat statbuf;    
+      if (stat(cmdbuf, &statbuf) < 0) 
+      {
+        if (sys_verbose) fprintf(stderr, "disabling real-time priority due to missing pd-watchdog (%s)\n", cmdbuf);
+        sys_hipriority = 0;
+      }
+    }
+
     
     if (sys_hipriority)
     {
@@ -1194,8 +1206,7 @@ int sys_startgui(const char *libdir)
             }
             close(pipe9[1]);
 
-            sprintf(cmdbuf, "%s/bin/pd-watchdog\n", libdir);
-            if (sys_verbose) fprintf(stderr, "%s", cmdbuf);
+            if (sys_verbose) fprintf(stderr, "%s\n", cmdbuf);
             execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
             perror("pd: exec");
             _exit(1);
