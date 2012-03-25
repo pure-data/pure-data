@@ -11,7 +11,7 @@ extern "C" {
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 43
 #define PD_BUGFIX_VERSION 2
-#define PD_TEST_VERSION "test1"
+#define PD_TEST_VERSION ""
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */

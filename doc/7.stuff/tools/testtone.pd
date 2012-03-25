@@ -1,4 +1,4 @@
-#N canvas 163 337 492 362 12;
+#N canvas 161 335 492 362 12;
 #X floatatom 72 273 3 0 0 0 - - -;
 #X obj 27 221 notein;
 #X obj 27 247 stripnote;
@@ -121,7 +121,7 @@
 #X obj 84 90 vradio 15 1 0 2 tone-type tone-type-set empty 0 -6 0 8
 -262144 -1 -1 1;
 #X obj 22 91 vradio 15 1 0 3 tone-radio tone-radio-set empty 0 -6 0
-8 -262144 -1 -1 0;
+8 -262144 -1 -1 2;
 #X floatatom 376 93 3 0 0 0 - tone-vu7 -;
 #X floatatom 404 93 3 0 0 0 - tone-vu8 -;
 #X obj 375 126 tgl 20 0 tone-ch7 tone-ch7 7 5 -8 0 12 -262144 -1 -1
