@@ -537,7 +537,7 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     t_pd *current;
     int fd;
-    char dirbuf[MAXPDSTRING], *nameptr;
+    char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
     if (tryingalready>MAXOBJDEPTH){
       error("maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
@@ -553,10 +553,14 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     }
     class_loadsym = 0;
     current = s__X.s_thing;
+    /* for class/class.pd support, to match class/class.pd_linux  */
+    snprintf(classslashclass, MAXPDSTRING, "%s/%s", s->s_name, s->s_name);
     if ((fd = canvas_open(canvas_getcurrent(), s->s_name, ".pd",
         dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas_getcurrent(), s->s_name, ".pat",
-                dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
+                dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
+               (fd = canvas_open(canvas_getcurrent(), classslashclass, ".pd",
+                    dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
     {
         close (fd);
         if (!pd_setloadingabstraction(s))
