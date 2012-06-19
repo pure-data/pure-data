@@ -400,7 +400,10 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
             gensym("style"), x->x_scalar->sc_vec, 1);
     if (deleteit != 0)
     {
+        int wasused = x->x_usedindsp;
         glist_delete(x->x_glist, &x->x_gobj);
+        if (wasused)
+            canvas_update_dsp();
     }
     else
     {
