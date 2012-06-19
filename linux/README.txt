@@ -1,17 +1,18 @@
 release checklist
     version string in s_main.c
-    test OSS and ALSA
     release notes
     ./make-release 0.35-0  or 0.35-test11, etc
     rsync -avzl --delete /home/msp/pd/doc/1.manual/ \
 	crca.ucsd.edu:public_html/Pd_documentation
     copy README.txt to web page
-    mail release notice from ../attic/pd-release
     git tags (to see existing tags)
-    on CRCA, cd public_html/Software; htmldir.perl .
-
-
-
+    git commit and push
+    (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
+    rsync  -avzl --delete /home/msp/bis/lib/public_html/ crca:public_html/
+    edit /home/msp/bis/lib/public_html/software.htm
+    repeat rsync
+    mail release notice from /home/msp/pd/attic/pd-announce
+  
 rpm building (inactive)
     update rpmspec version number
     as root:
