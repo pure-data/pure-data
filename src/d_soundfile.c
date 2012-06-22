@@ -1261,7 +1261,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         eofis = lseek(fd, 0, SEEK_END);
         if (poswas < 0 || eofis < 0 || eofis < poswas)
         {
-            pd_error(x, "lseek failed: %d..%d", poswas, eofis);
+            pd_error(x, "soundfiler_read: lseek failed");
             goto done;
         }
         lseek(fd, poswas, SEEK_SET);
