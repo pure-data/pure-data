@@ -1,5 +1,5 @@
-#N canvas 42 28 657 564 12;
-#X floatatom 316 376 0 0 0 0 - - -;
+#N canvas 40 26 657 564 12;
+#X floatatom 316 376 0 0 1000 0 - - -;
 #X floatatom 81 384 0 0 100 0 - - -;
 #N canvas 98 0 648 669 fft-analysis 0;
 #X obj 35 589 *~;
@@ -141,7 +141,7 @@ with each of the accumulating ones.;
 #X connect 36 0 4 1;
 #X restore 80 441 pd fft-analysis;
 #N canvas 0 110 565 454 hann-window 0;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 1024 float 0;
 #X coords 0 1 1023 0 300 100 1;
 #X restore 82 311 graph;
@@ -192,9 +192,9 @@ and window-msec (analysis window size in seconds and msec).;
 #X restore 331 478 pd hann-window;
 #X text 197 355 noise;
 #N canvas 132 255 660 373 insample 0;
-#N canvas 0 0 450 300 graph1 0;
-#X array \$0-sample 155948 float 0;
-#X coords 0 1 155947 -1 400 150 1;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array \$0-sample 155944 float 0;
+#X coords 0 1 155943 -1 400 150 1;
 #X restore 236 25 graph;
 #X obj 19 23 r read-sample;
 #X obj 19 74 unpack s f;
@@ -296,13 +296,13 @@ amplitude of each in dB.;
 #X msg 462 338 \; make-mask 2000;
 #X msg 316 348 15;
 #N canvas 0 0 592 442 mask-table 0;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-mask 512 float 0;
 #X coords 0 500 511 0 400 300 1;
 #X restore 110 76 graph;
-#X text 25 14 This table ($0-mask) is the average power measured in
-each channel of the spectrum \, presumed to represent the noise floor.
-;
+#X text 25 14 This table (1002-mask) is the average power measured
+in each channel of the spectrum \, presumed to represent the noise
+floor.;
 #X restore 331 500 pd mask-table;
 #X text 80 322 amplitudes (dB);
 #X text 68 26 This patch attempts to scrub the noise floor from a sample

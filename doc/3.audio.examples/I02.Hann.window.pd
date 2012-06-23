@@ -1,4 +1,4 @@
-#N canvas 281 223 567 589 12;
+#N canvas 279 221 567 589 12;
 #N canvas 228 148 651 544 fft-analysis 0;
 #X obj 15 164 *~;
 #X obj 14 99 inlet~;
@@ -52,7 +52,7 @@ of "fft".;
 #X connect 10 0 9 0;
 #X connect 22 0 6 0;
 #X restore 26 289 pd fft-analysis;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-magnitude 256 float 0;
 #X coords 0 256 255 0 256 100 1;
 #X restore 287 208 graph;
@@ -61,13 +61,13 @@ of "fft".;
 #X floatatom 25 218 5 0 0 0 - - -;
 #X obj 25 240 * 10;
 #X text 305 559 updated for Pd version 0.39;
-#X text 349 183 magnitude;
+#X text 445 186 magnitude;
 #X text 284 311 0;
 #X text 522 311 255;
 #X text 273 297 0;
 #X text 255 253 128;
 #X text 254 203 256;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-hann 512 float 1;
 #A 0 0 3.76403e-05 0.000150591 0.000338793 0.000602275 0.000940949
 0.00135478 0.00184369 0.00240764 0.00304651 0.00376022 0.00454867 0.00541174
@@ -150,7 +150,7 @@ of "fft".;
 #X obj 50 440 / 512;
 #X obj 42 393 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X text 321 373 Hann window;
+#X text 383 378 Hann window;
 #X text 98 462 period 512;
 #X text 40 368 recalculate Hann;
 #X text 75 383 window table;

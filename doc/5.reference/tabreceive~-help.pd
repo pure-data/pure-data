@@ -1,6 +1,12 @@
-#N canvas 109 83 646 239 12;
+#N canvas 295 230 646 239 12;
 #X obj 21 18 tabreceive~;
-#X text 17 53 creation argument: name of array;
-#X text 16 83 By default a block is 64 samples \; this can be reset using the block~ object.;
-#X text 380 201 updated for Pd version 0.33;
-#X text 129 18 - read a block of a signal from an array continuously;
+#X text 129 18 - read a block of a signal from an array continuously
+;
+#X msg 64 125 set my-table;
+#X obj 64 160 tabreceive~ my-table;
+#X text 380 202 updated for Pd version 0.43;
+#X text 21 77 By default a block is 64 samples but this can be reset
+using the block~ object.;
+#X text 239 160 creation argument: initializes table name;
+#X text 180 125 'set' message to change table name;
+#X connect 2 0 3 0;

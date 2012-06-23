@@ -74,7 +74,7 @@ bad:
     return (w+4);
 }
 
-void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s)
+static void tabwrite_tilde_set(t_tabwrite_tilde *x, t_symbol *s)
 {
     t_garray *a;
 
@@ -199,7 +199,7 @@ zero:
     return (w+4);
 }
 
-void tabplay_tilde_set(t_tabplay_tilde *x, t_symbol *s)
+static void tabplay_tilde_set(t_tabplay_tilde *x, t_symbol *s)
 {
     t_garray *a;
 
@@ -319,7 +319,7 @@ static t_int *tabread_tilde_perform(t_int *w)
     return (w+5);
 }
 
-void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s)
+static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s)
 {
     t_garray *a;
     
@@ -451,7 +451,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
     return (w+5);
 }
 
-void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s)
+static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s)
 {
     t_garray *a;
     
@@ -629,7 +629,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     return (w+5);
 }
 
-void tabosc4_tilde_set(t_tabosc4_tilde *x, t_symbol *s)
+static void tabosc4_tilde_set(t_tabosc4_tilde *x, t_symbol *s)
 {
     t_garray *a;
     int npoints, pointsinarray;
@@ -701,6 +701,7 @@ typedef struct _tabsend
     int x_graphcount;
     t_symbol *x_arrayname;
     t_float x_f;
+    int x_npoints;
 } t_tabsend;
 
 static void tabsend_tick(t_tabsend *x);
@@ -722,7 +723,8 @@ static t_int *tabsend_perform(t_int *w)
     t_word *dest = x->x_vec;
     int i = x->x_graphcount;
     if (!x->x_vec) goto bad;
-
+    if (n > x->x_npoints)
+        n = x->x_npoints;
     while (n--)
     {   
         t_sample f = *in++;
@@ -743,29 +745,35 @@ bad:
     return (w+4);
 }
 
+static void tabsend_set(t_tabsend *x, t_symbol *s)
+{
+    t_garray *a;
+    
+    x->x_arrayname = s;
+    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
+    {
+        if (*s->s_name)
+            pd_error(x, "tabsend~: %s: no such array", x->x_arrayname->s_name);
+        x->x_vec = 0;
+    }
+    else if (!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
+    {
+        pd_error(x, "%s: bad template for tabsend~", x->x_arrayname->s_name);
+        x->x_vec = 0;
+    }
+    else garray_usedindsp(a);
+}
+
 static void tabsend_dsp(t_tabsend *x, t_signal **sp)
 {
     int i, vecsize;
-    t_garray *a;
-
-    if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
-    {
-        if (*x->x_arrayname->s_name)
-            pd_error(x, "tabsend~: %s: no such array", x->x_arrayname->s_name);
-    }
-    else if (!garray_getfloatwords(a, &vecsize, &x->x_vec))
-        pd_error(x, "%s: bad template for tabsend~", x->x_arrayname->s_name);
-    else
-    {
-        int n = sp[0]->s_n;
-        int ticksper = sp[0]->s_sr/n;
-        if (ticksper < 1) ticksper = 1;
-        x->x_graphperiod = ticksper;
-        if (x->x_graphcount > ticksper) x->x_graphcount = ticksper;
-        if (n < vecsize) vecsize = n;
-        garray_usedindsp(a);
-        dsp_add(tabsend_perform, 3, x, sp[0]->s_vec, vecsize);
-    }
+    int n = sp[0]->s_n;
+    int ticksper = sp[0]->s_sr/n;
+    tabsend_set(x, x->x_arrayname);
+    if (ticksper < 1) ticksper = 1;
+    x->x_graphperiod = ticksper;
+    if (x->x_graphcount > ticksper) x->x_graphcount = ticksper;
+    dsp_add(tabsend_perform, 3, x, sp[0]->s_vec, n);
 }
 
 static void tabsend_setup(void)
@@ -784,8 +792,8 @@ typedef struct _tabreceive
 {
     t_object x_obj;
     t_word *x_vec;
-    int x_vecsize;
     t_symbol *x_arrayname;
+    int x_npoints;
 } t_tabreceive;
 
 static t_int *tabreceive_perform(t_int *w)
@@ -796,34 +804,45 @@ static t_int *tabreceive_perform(t_int *w)
     t_word *from = x->x_vec;
     if (from)
     {
-        int vecsize = x->x_vecsize;
+        int vecsize = x->x_npoints;
+        if (vecsize > n)
+            vecsize = n;
         while (vecsize--)
             *out++ = (from++)->w_float;
-        vecsize = n - x->x_vecsize;
-        while (vecsize--)
-            *out++ = 0;
+        vecsize = n - x->x_npoints;
+        if (vecsize > 0)
+            while (vecsize--)
+                *out++ = 0;
     }
     else while (n--) *out++ = 0;
     return (w+4);
 }
 
-static void tabreceive_dsp(t_tabreceive *x, t_signal **sp)
+static void tabreceive_set(t_tabreceive *x, t_symbol *s)
 {
     t_garray *a;
+    
+    x->x_arrayname = s;
     if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
     {
-        if (*x->x_arrayname->s_name)
-            pd_error(x, "tabsend~: %s: no such array", x->x_arrayname->s_name);
+        if (*s->s_name)
+            pd_error(x, "tabreceive~: %s: no such array",
+                x->x_arrayname->s_name);
+        x->x_vec = 0;
     }
-    else if (!garray_getfloatwords(a, &x->x_vecsize, &x->x_vec))
-        pd_error(x, "%s: bad template for tabreceive~", x->x_arrayname->s_name);
-    else 
+    else if (!garray_getfloatwords(a, &x->x_npoints, &x->x_vec))
     {
-        if (x->x_vecsize > sp[0]->s_n)
-            x->x_vecsize = sp[0]->s_n;
-        garray_usedindsp(a);
-        dsp_add(tabreceive_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+        pd_error(x, "%s: bad template for tabreceive~",
+            x->x_arrayname->s_name);
+        x->x_vec = 0;
     }
+    else garray_usedindsp(a);
+}
+
+static void tabreceive_dsp(t_tabreceive *x, t_signal **sp)
+{
+    tabreceive_set(x, x->x_arrayname);
+    dsp_add(tabreceive_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
 }
 
 static void *tabreceive_new(t_symbol *s)
