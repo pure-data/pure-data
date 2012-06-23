@@ -241,44 +241,51 @@ void nd_sysex_inword(int midiindev, int status, int data1, int data2, int data3)
 
 void sys_poll_midi(void)
 {
-    int i, nmess;
+    int i, nmess, throttle = 100;
     PmEvent buffer;
     for (i = 0; i < mac_nmidiindev; i++)
     {
-        int nmess = Pm_Read(mac_midiindevlist[i], &buffer, 1);
-        if (nmess > 0)
+        while (1)
         {
-            int status = Pm_MessageStatus(buffer.message);
-            int data1  = Pm_MessageData1(buffer.message);
-            int data2  = Pm_MessageData2(buffer.message);
-            int data3 = ((buffer.message >> 24) & 0xFF);
-            int msgtype = (status >> 4) - 8;
-            switch (msgtype)
+            if (!throttle--)
+                goto overload;
+            nmess = Pm_Read(mac_midiindevlist[i], &buffer, 1);
+            if (nmess > 0)
             {
-            case 0: 
-            case 1: 
-            case 2:
-            case 3:
-            case 6:
-                sys_midibytein(i, status);
-                sys_midibytein(i, data1);
-                sys_midibytein(i, data2);
-                break; 
-            case 4:
-            case 5:
-                sys_midibytein(i, status);
-                sys_midibytein(i, data1);
-                break;
-            case 7:
-                nd_sysex_mode=1;
-                nd_sysex_inword(i, status, data1, data2, data3);
-                break; 
-            default:
-                if (nd_sysex_mode)
+                int status = Pm_MessageStatus(buffer.message);
+                int data1  = Pm_MessageData1(buffer.message);
+                int data2  = Pm_MessageData2(buffer.message);
+                int data3 = ((buffer.message >> 24) & 0xFF);
+                int msgtype = (status >> 4) - 8;
+                switch (msgtype)
+                {
+                case 0: 
+                case 1: 
+                case 2:
+                case 3:
+                case 6:
+                    sys_midibytein(i, status);
+                    sys_midibytein(i, data1);
+                    sys_midibytein(i, data2);
+                    break; 
+                case 4:
+                case 5:
+                    sys_midibytein(i, status);
+                    sys_midibytein(i, data1);
+                    break;
+                case 7:
+                    nd_sysex_mode=1;
                     nd_sysex_inword(i, status, data1, data2, data3);
+                    break; 
+                default:
+                    if (nd_sysex_mode)
+                        nd_sysex_inword(i, status, data1, data2, data3);
+                }
             }
+            else break;
         }
     }
+    overload: ;
 }
 
 void midi_getdevs(char *indevlist, int *nindevs,
