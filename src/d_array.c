@@ -782,6 +782,8 @@ static void tabsend_setup(void)
         0, sizeof(t_tabsend), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(tabsend_class, t_tabsend, x_f);
     class_addmethod(tabsend_class, (t_method)tabsend_dsp, gensym("dsp"), 0);
+    class_addmethod(tabsend_class, (t_method)tabsend_set,
+        gensym("set"), A_SYMBOL, 0);
 }
 
 /* ------------------------ tabreceive~ ------------------------- */
@@ -860,6 +862,8 @@ static void tabreceive_setup(void)
         sizeof(t_tabreceive), 0, A_DEFSYM, 0);
     class_addmethod(tabreceive_class, (t_method)tabreceive_dsp,
         gensym("dsp"), 0);
+    class_addmethod(tabreceive_class, (t_method)tabreceive_set,
+        gensym("set"), A_SYMBOL, 0);
 }
 
 /* ---------- tabread: control, non-interpolating ------------------------ */
