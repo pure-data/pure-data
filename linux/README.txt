@@ -1,18 +1,18 @@
 release checklist
     version string in s_main.c
     release notes
-    ./make-release 0.35-0  or 0.35-test11, etc
-    rsync -avzl --delete /home/msp/pd/doc/1.manual/ \
-	crca.ucsd.edu:public_html/Pd_documentation
-    copy README.txt to web page
-    git tags (to see existing tags)
+    git tag (to see existing tags)
     git commit and push
+    ./make-release 0.35-0  or 0.35-test11, etc
+    rsync -avzl --delete ~/pd/doc/1.manual/ \
+	~/bis/lib/public_html/Pd_documentation/
+    cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
     rsync  -avzl --delete /home/msp/bis/lib/public_html/ crca:public_html/
     edit /home/msp/bis/lib/public_html/software.htm
     repeat rsync
     mail release notice from /home/msp/pd/attic/pd-announce
-  
+
 rpm building (inactive)
     update rpmspec version number
     as root:
