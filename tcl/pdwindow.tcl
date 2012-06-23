@@ -203,7 +203,6 @@ proc ::pdwindow::pdwindow_bindings {} {
 
 #--Tcl entry procs-------------------------------------------------------------#
 
-# copied from ::pd_connect::pd_readsocket, so perhaps it could be merged
 proc ::pdwindow::eval_tclentry {} {
     variable tclentry
     variable tclentry_history

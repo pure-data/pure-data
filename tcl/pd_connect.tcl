@@ -3,6 +3,7 @@ package provide pd_connect 0.1
 
 namespace eval ::pd_connect:: {
     variable pd_socket
+    variable cmds_from_pd ""
 
     namespace export to_pd
     namespace export create_socket
@@ -13,7 +14,7 @@ namespace eval ::pd_connect:: {
 
 proc ::pd_connect::configure_socket {sock} {
     fconfigure $sock -blocking 0 -buffering none -encoding utf-8;
-    fileevent $sock readable {::pd_connect::pd_readsocket ""}
+    fileevent $sock readable {::pd_connect::pd_readsocket}
 }
 
 # if pd opens first, it starts pd-gui, then pd-gui connects to the port pd sent
@@ -57,32 +58,39 @@ proc ::pd_connect::pdsend {message} {
     }
 }
 
-proc ::pd_connect::pd_readsocket {cmd_from_pd} {
-    variable pd_socket
-    if {[eof $pd_socket]} {
-        # if we lose the socket connection, that means pd quit, so we quit
-        close $pd_socket
-        exit
-    } 
-    append cmd_from_pd [read $pd_socket]
-    while {![info complete $cmd_from_pd] || \
-        [string index $cmd_from_pd end] ne "\n"} {
-        append cmd_from_pd [read $pd_socket]
-        if {[eof $pd_socket]} {
-        close $pd_socket
-        exit
-        }
-    }
-    if {[catch {uplevel #0 $cmd_from_pd} errorname]} {
-        global errorInfo
-        switch -regexp -- $errorname { 
-            "missing close-brace" {
-                pd_readsocket $cmd_from_pd
-            } "^invalid command name" {
-                ::pdwindow::fatal [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo "\n"]
-            } default {
-                ::pdwindow::fatal [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo "\n"]
-            }
-        }
-    }
+proc ::pd_connect::pd_readsocket {} {
+     variable pd_socket
+     variable cmds_from_pd
+     if {[eof $pd_socket]} {
+         # if we lose the socket connection, that means pd quit, so we quit
+         close $pd_socket
+         exit
+     } 
+     append cmds_from_pd [read $pd_socket]
+     if {[string index $cmds_from_pd end] ne "\n" || \
+             ![info complete $cmds_from_pd]} {
+         # the block is incomplete, wait for the next block of data
+         return
+     } else {
+         set docmds $cmds_from_pd
+         set cmds_from_pd ""
+         if {![catch {uplevel #0 $docmds} errorname]} {
+             # we ran the command block without error, reset the buffer
+         } else {
+             # oops, error, alert the user:
+             global errorInfo
+             switch -regexp -- $errorname {
+                 "missing close-brace" {
+                     ::pdwindow::fatal \
+                         [concat [_ "(Tcl) MISSING CLOSE BRACE: "] $errorInfo "\n"]
+                 } "^invalid command name" {
+                     ::pdwindow::fatal \
+                         [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo "\n"]
+                 } default {
+                     ::pdwindow::fatal \
+                         [concat [_ "(Tcl) UNHANDLED ERROR: "] $errorInfo "\n"]
+                 }
+             }
+         }
+     }
 }
