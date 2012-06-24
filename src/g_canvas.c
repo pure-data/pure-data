@@ -1415,6 +1415,16 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
         dirresult, nameresult, size, bin));
 }
 
+static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+{
+    static int warned;
+    if (!warned)
+    {
+        post("** ignoring width or font settings from future Pd version **");
+        warned = 1;
+    }
+}
+
 /* ------------------------------- setup routine ------------------------ */
 
     /* why are some of these "glist" and others "canvas"? */
@@ -1544,6 +1554,9 @@ void g_canvas_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_declare,
         gensym("declare"), A_GIMME, 0);
 
+/*--------------- future message to set formatting  -------------- */
+    class_addmethod(canvas_class, (t_method)canvas_f,
+        gensym("f"), A_GIMME, 0);
 /* -------------- setups from other files for canvas_class ---------------- */
     g_graph_setup();
     g_editor_setup();
