@@ -1,4 +1,4 @@
-#N canvas 31 5 779 858 12;
+#N canvas 332 70 817 861 12;
 #X obj 399 526 metro 100;
 #X obj 212 472 phasor~;
 #X obj 399 556 snapshot~;
@@ -79,7 +79,7 @@ naiveley rescaled to the size of the tble. At right \, the phasor~
 gets only a 10000-point range about a moving "onset". Ten times per
 second \, we poll tha phasor~ phase \, sum its value into the onset
 \, and back up the phase of the phasor~ correspondingly.;
-#X text 24 138 The tricky bits are \, first \, that we need to poll
+#X text 22 143 The tricky bits are \, first \, that we need to poll
 the phasor~ phase one sample into the future (so we add the per-sample
 increment into the snapshot~ result). Second \, we can't just reset
 the phasor~ to a fixed point - instead \, we measure how much the onset
@@ -87,7 +87,7 @@ has actually increased (which has truncation error from summing in
 the phase snapshot) \, and subtract that increase from the phase \,
 giving a value that differs from zero by the truncation error but reflects
 the true phase we should reset to for continuity.;
-#X text 26 281 The metronome rate is arbitrary but should be fast enough
+#X text 24 287 The metronome rate is arbitrary but should be fast enough
 that the phasor~ never has time to wrap.;
 #X text 518 539 extrapolate snapshot of phase by one;
 #X text 517 552 sample to sync with next block;
