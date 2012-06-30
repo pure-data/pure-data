@@ -341,7 +341,7 @@ static t_int *ftom_tilde_perform(t_int *w)
 {
     t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
-    for (; n--; *in++, out++)
+    for (; n--; in++, out++)
     {
         t_sample f = *in;
         *out = (f > 0 ? 17.3123405046 * log(.12231220585 * f) : -1500);

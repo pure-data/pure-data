@@ -493,7 +493,7 @@ static t_int *sigsamphold_perform(t_int *w)
     int i;
     t_sample lastin = x->x_lastin;
     t_sample lastout = x->x_lastout;
-    for (i = 0; i < n; i++, *in1++)
+    for (i = 0; i < n; i++, in1++)
     {
         t_sample next = *in2++;
         if (next < lastin) lastout = *in1;

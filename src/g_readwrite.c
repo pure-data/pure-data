@@ -44,7 +44,7 @@ int glist_readscalar(t_glist *x, int natoms, t_atom *vec,
 static void canvas_readerror(int natoms, t_atom *vec, int message, 
     int nline, char *s)
 {
-    error(s);
+    error("%s", s);
     startpost("line was:");
     postatom(nline, vec + message);
     endpost();
