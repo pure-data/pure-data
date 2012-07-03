@@ -27,7 +27,7 @@ graphics; see the html documentation for pointers.
 
 COPYRIGHT.  Except as otherwise noted, all files in the Pd distribution are
 
-    Copyright (c) 1997-2001 Miller Puckette and others.
+    Copyright (c) 1997-2012 Miller Puckette and others.
 
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "LICENSE.txt," included in the Pd distribution.

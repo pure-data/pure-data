@@ -1,6 +1,8 @@
 release checklist
     version string in s_main.c
-    release notes
+    release notes ../doc/1.manual/x5.htm
+    copyright date in ../README.txt
+    pd version number in ../src/pd.rc
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.) and push
     ./make-release 0.35-0  or 0.35-test11, etc
