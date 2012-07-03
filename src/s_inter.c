@@ -19,6 +19,8 @@ that didn't really belong anywhere. */
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/resource.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #endif
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>
@@ -1159,7 +1161,6 @@ int sys_startgui(const char *libdir)
     if (sys_hipriority)
     {
       struct stat statbuf;
-      if (stat(cmdbuf, &statbuf) < 0)
       {
         if (sys_verbose) fprintf(stderr,
            "disabling real-time priority due to missing pd-watchdog (%s)\n",
