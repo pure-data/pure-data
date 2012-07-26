@@ -6,12 +6,15 @@ release checklist
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.) and push
     ./make-release 0.35-0  or 0.35-test11, etc
+    (build it on mac and PC)
     rsync -avzl --delete ~/pd/doc/1.manual/ \
-	~/bis/lib/public_html/Pd_documentation/
+          ~/bis/lib/public_html/Pd_documentation/
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
+    cp -a ~/pd/archive/dist/pd-0.43-3.* /home/msp/bis/lib/public_html/Software
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
     edit /home/msp/bis/lib/public_html/software.htm
     rsync  -avzl --delete /home/msp/bis/lib/public_html/ crca:public_html/
+    test website
     mail release notice from /home/msp/pd/attic/pd-announce
 
 rpm building (inactive)
