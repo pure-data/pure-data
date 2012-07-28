@@ -1160,13 +1160,14 @@ int sys_startgui(const char *libdir)
     sprintf(cmdbuf, "%s/bin/pd-watchdog", libdir);
     if (sys_hipriority)
     {
-      struct stat statbuf;
-      {
-        if (sys_verbose) fprintf(stderr,
-           "disabling real-time priority due to missing pd-watchdog (%s)\n",
-              cmdbuf);
-        sys_hipriority = 0;
-      }
+        struct stat statbuf;
+        if (stat(cmdbuf, &statbuf) < 0)
+        {
+            fprintf(stderr,
+              "disabling real-time priority due to missing pd-watchdog (%s)\n",
+                cmdbuf);
+            sys_hipriority = 0;
+        }
     }
 
     if (sys_hipriority)
