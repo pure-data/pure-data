@@ -57,6 +57,12 @@ t_alsa_dev alsa_outdev[ALSA_MAXDEV];
 int alsa_nindev;
 int alsa_noutdev;
 
+/* #define DEBUG_ALSA_XFER */
+#ifdef DEBUG_ALSA_XFER
+static int xferno = 0;
+static int callno = 0;
+#endif
+
 /* report an error condition if an error was flagged in the argument "err".
 "fn" is 0 for input, 1 for output, otherwise N/A.  "why" indicates where
 in the code the error was hit. */
@@ -137,14 +143,10 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         hw_params, SND_PCM_FORMAT_S32);
     if (err < 0)
     {
-        /* fprintf(stderr,
-            "PD-ALSA: 32 bit format not available - trying 24\n"); */
         err = snd_pcm_hw_params_set_format(dev->a_handle, hw_params,
             SND_PCM_FORMAT_S24_3LE);
         if (err < 0)
         {
-            /* fprintf(stderr,
-                "PD-ALSA: 32/24 bit format not available - using 16\n"); */
             err = snd_pcm_hw_params_set_format(dev->a_handle, hw_params,
                 SND_PCM_FORMAT_S16);
             check_error(err, out, "_pcm_hw_params_set_format");
@@ -389,10 +391,6 @@ void alsa_close_audio(void)
 
 int alsa_send_dacs(void)
 {
-#ifdef DEBUG_ALSA_XFER
-    static int xferno = 0;
-    static int callno = 0;
-#endif
     static double timenow;
     double timelast;
     t_sample *fp, *fp1, *fp2;
@@ -415,7 +413,7 @@ int alsa_send_dacs(void)
 
 #ifdef DEBUG_ALSA_XFER
     if (timenow - timelast > 0.050)
-        fprintf(stderr, "(%d)",
+        post("long wait between calls: %d",
             (int)(1000 * (timenow - timelast))), fflush(stderr);
     callno++;
 #endif
@@ -434,6 +432,9 @@ int alsa_send_dacs(void)
         if (snd_pcm_status_get_avail(alsa_status) < transfersize)
             return SENDDACS_NO;
     }
+#ifdef DEBUG_ALSA_XFER
+    post("xfer %d", transfersize);
+#endif
     /* do output */
     for (iodev = 0, fp1 = sys_soundout, ch = 0; iodev < alsa_noutdev; iodev++)
     {
@@ -503,15 +504,10 @@ int alsa_send_dacs(void)
         {
     #ifdef DEBUG_ALSA_XFER
             if (result >= 0 || errno == EAGAIN)
-                fprintf(stderr, "ALSA: write returned %d of %d\n",
+                post("ALSA: write returned %d of %d\n",
                         result, transfersize);
-            else fprintf(stderr, "ALSA: write: %s\n",
+            else post("ALSA: write: %s\n",
                          snd_strerror(errno));
-            fprintf(stderr,
-                    "inputcount %d, outputcount %d, outbufsize %d\n",
-                    inputcount, outputcount,
-                    (ALSA_EXTRABUFFER + sys_advance_samples)
-                    * alsa_outdev[iodev].a_sampwidth * outchannels);
     #endif
             sys_log_error(ERR_DACSLEPT);
             return (SENDDACS_NO);
@@ -523,7 +519,7 @@ int alsa_send_dacs(void)
         if (sys_getrealtime() - timenow > 0.002)
         {
     #ifdef DEBUG_ALSA_XFER
-            fprintf(stderr, "output %d took %d msec\n",
+            post("output %d took %d msec\n",
                     callno, (int)(1000 * (timenow - timelast))), fflush(stderr);
     #endif
             timenow = sys_getrealtime();
@@ -543,17 +539,10 @@ int alsa_send_dacs(void)
         {
 #ifdef DEBUG_ALSA_XFER
             if (result < 0)
-                fprintf(stderr,
-                        "snd_pcm_read %d %d: %s\n",
+                post("snd_pcm_read %d %d: %s\n",
                         callno, xferno, snd_strerror(errno));
-            else fprintf(stderr,
-                         "snd_pcm_read %d %d returned only %d\n",
+            else post("snd_pcm_read %d %d returned only %d\n",
                          callno, xferno, result);
-            fprintf(stderr,
-                    "inputcount %d, outputcount %d, inbufsize %d\n",
-                    inputcount, outputcount,
-                    (ALSA_EXTRABUFFER + sys_advance_samples)
-                    * alsa_indev[iodev].a_sampwidth * inchannels);
 #endif
             sys_log_error(ERR_ADCSLEPT);
             return (SENDDACS_NO);
@@ -602,7 +591,7 @@ int alsa_send_dacs(void)
     if (sys_getrealtime() - timenow > 0.002)
     {
 #ifdef DEBUG_ALSA_XFER
-        fprintf(stderr, "routine took %d msec\n",
+        post("alsa_send_dacs took %d msec\n",
             (int)(1000 * (sys_getrealtime() - timenow)));
 #endif
         sys_log_error(ERR_ADCSLEPT);
@@ -636,28 +625,6 @@ void alsa_printstate( void)
     post("sum %d (%d mod 64)\n", indelay + outdelay, (indelay+outdelay)%64);
 
     post("buf samples %d", alsa_buf_samps);
-}
-
-
-void alsa_resync( void)
-{
-    int i, result, iodev = 0;
-    if (sys_audioapi != API_ALSA)
-    {
-        error("restart-audio: implemented for ALSA only.");
-        return;
-    }
-    memset(alsa_snd_buf, 0,
-        alsa_indev[iodev].a_sampwidth *
-            DEFDACBLKSIZE * sys_outchannels);
-    for (i = 0; i < 1000000; i++)
-    {
-        result = snd_pcm_writei(alsa_outdev[iodev].a_handle, alsa_snd_buf,
-            DEFDACBLKSIZE);
-        if (result != (int)DEFDACBLKSIZE)
-            break;
-    }
-    post("%d written", i);
 }
 
 void alsa_putzeros(int iodev, int n)
@@ -696,7 +663,7 @@ void alsa_getzeros(int iodev, int n)
     /* call this only if both input and output are open */
 static void alsa_checkiosync( void)
 {
-    int i, result, giveup = 1000, alreadylogged = 0, iodev = 0;
+    int i, result, giveup = 1000, alreadylogged = 0, iodev = 0, err;
     snd_pcm_sframes_t minphase, maxphase, thisphase, outdelay;
 
     while (1)
@@ -711,12 +678,25 @@ static void alsa_checkiosync( void)
         maxphase = -0x7fffffff;
         for (iodev = 0; iodev < alsa_noutdev; iodev++)
         {
+            if ((result = snd_pcm_state(alsa_outdev[iodev].a_handle))
+                != SND_PCM_STATE_RUNNING && result != SND_PCM_STATE_XRUN)
+            {
+                if (sys_verbose)
+                    post("restarting output device from state %d",
+                        snd_pcm_state(alsa_outdev[iodev].a_handle));
+                if ((err = snd_pcm_start(alsa_outdev[iodev].a_handle)) < 0)
+                    check_error(err, 0, "restart failed");
+            }
             result = snd_pcm_delay(alsa_outdev[iodev].a_handle, &outdelay);
             if (result < 0)
             {
                 snd_pcm_prepare(alsa_outdev[iodev].a_handle);
                 result = snd_pcm_delay(alsa_outdev[iodev].a_handle, &outdelay);
             }
+#ifdef DEBUG_ALSA_XFER
+            post("outfifo %d %d %d",
+                callno, xferno, outdelay);
+#endif
             if (result < 0)
             {
                 post("output snd_pcm_delay failed: %s", snd_strerror(result));
@@ -737,12 +717,25 @@ static void alsa_checkiosync( void)
         }
         for (iodev = 0; iodev < alsa_nindev; iodev++)
         {
+            if ((result = snd_pcm_state(alsa_indev[iodev].a_handle))
+                != SND_PCM_STATE_RUNNING && result != SND_PCM_STATE_XRUN)
+            {
+                if (sys_verbose)
+                    post("restarting input device from state %d",
+                        snd_pcm_state(alsa_indev[iodev].a_handle));
+                if ((err = snd_pcm_start(alsa_indev[iodev].a_handle)) < 0)
+                    check_error(err, 1, "restart failed");
+            }
             result = snd_pcm_delay(alsa_indev[iodev].a_handle, &thisphase);
             if (result < 0)
             {
                 snd_pcm_prepare(alsa_indev[iodev].a_handle);
                 result = snd_pcm_delay(alsa_indev[iodev].a_handle, &thisphase);
             }
+#ifdef DEBUG_ALSA_XFER
+            post("infifo  %d %d %d",
+                callno, xferno, thisphase);
+#endif
             if (result < 0)
             {
                 post("output snd_pcm_delay failed: %s", snd_strerror(result));
@@ -765,8 +758,6 @@ static void alsa_checkiosync( void)
         if (maxphase <= minphase + (alsa_jittermax * (DEFDACBLKSIZE / 4)))
                 break;
 
-        if (!alreadylogged)
-            sys_log_error(ERR_RESYNC), alreadylogged = 1;
         for (iodev = 0; iodev < alsa_noutdev; iodev++)
         {
             result = snd_pcm_delay(alsa_outdev[iodev].a_handle, &outdelay);
@@ -776,8 +767,11 @@ static void alsa_checkiosync( void)
             if (thisphase > minphase + DEFDACBLKSIZE)
             {
                 alsa_putzeros(iodev, 1);
-#if DEBUGSYNC
-                fprintf(stderr, "putz %d %d\n", (int)thisphase, (int)minphase);
+                if (!alreadylogged)
+                    sys_log_error(ERR_RESYNC), alreadylogged = 1;
+#ifdef DEBUG_ALSA_XFER
+                post("putz %d %d %d %d",
+                    callno, xferno, (int)thisphase, (int)minphase);
 #endif
             }
         }
@@ -789,15 +783,21 @@ static void alsa_checkiosync( void)
             if (thisphase > minphase + DEFDACBLKSIZE)
             {
                 alsa_getzeros(iodev, 1);
-#if DEBUGSYNC
-                fprintf(stderr, "getz %d %d\n", (int)thisphase, (int)minphase);
+                if (!alreadylogged)
+                    sys_log_error(ERR_RESYNC), alreadylogged = 1;
+#ifdef DEBUG_ALSA_XFER
+                post("getz %d %d %d %d",
+                    callno, xferno, (int)thisphase, (int)minphase);
 #endif
             }
         }
+            /* it's possible we didn't do anything; if so don't repeat */
+        if (!alreadylogged)
+            break;
     }
-#if DEBUGSYNC
+#ifdef DEBUG_ALSA_XFER
     if (alreadylogged)
-        fprintf(stderr, "done\n");
+        post("done resync");
 #endif
 }
 

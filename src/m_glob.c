@@ -35,9 +35,6 @@ void glob_ping(t_pd *dummy);
 void glob_watchdog(t_pd *dummy);
 void glob_savepreferences(t_pd *dummy);
 
-void alsa_resync( void);
-
-
 #ifdef _WIN32
 void glob_audio(void *dummy, t_floatarg adc, t_floatarg dac);
 #endif
