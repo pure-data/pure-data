@@ -1,4 +1,4 @@
-#N canvas 166 252 718 504 12;
+#N canvas 78 319 718 504 12;
 #X floatatom 239 98 4 0 0 0 - - adc-gain;
 #X text 317 17 latency measurement;
 #N canvas 31 48 928 842 guts 0;
@@ -242,11 +242,11 @@
 #X floatatom 242 50 4 1 8 0 inchannel inchannel-set inchannel;
 #X floatatom 626 267 6 0 0 0 - latency -;
 #X text 108 96 adjust gain here:;
-#X text 457 267 latency in milliseconds;
+#X text 432 267 latency in milliseconds;
 #X text 571 245 THE ANSWER IS:;
 #X floatatom 528 143 4 0 0 0 - adc-db -;
 #X floatatom 527 92 4 0 0 0 - dac-db -;
-#X text 562 145 RMS amplitude in;
+#X text 567 142 RMS amplitude in;
 #X text 564 93 RMS amplitude out;
 #X text 106 142 so that RMS amplitude in is between 60 and 70;
 #X text 108 121 (typically between -20 and 20);

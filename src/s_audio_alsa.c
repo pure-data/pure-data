@@ -5,7 +5,7 @@
 
 /* this file inputs and outputs audio using the ALSA API available on linux. */
 
-/* support for ALSA pcmv2 api by Karl MacMillan<karlmac@peabody.jhu.edu> */ 
+/* support for ALSA pcmv2 api by Karl MacMillan<karlmac@peabody.jhu.edu> */
 /* support for ALSA MMAP noninterleaved by Winfried Ritsch, IEM */
 
 #include <alsa/asoundlib.h>
@@ -41,7 +41,7 @@ static void alsa_numbertoname(int iodev, char *devname, int nchar);
 static int alsa_jittermax;
 #define ALSA_DEFJITTERMAX 3
 
-    /* don't assume we can turn all 31 bits when doing float-to-fix; 
+    /* don't assume we can turn all 31 bits when doing float-to-fix;
     otherwise some audio drivers (e.g. Midiman/ALSA) wrap around. */
 #define FMAX 0x7ffff000
 #define CLIP32(x) (((x)>FMAX)?FMAX:((x) < -FMAX)?-FMAX:(x))
@@ -49,7 +49,7 @@ static int alsa_jittermax;
 static char *alsa_snd_buf;
 static int alsa_snd_bufsize;
 static int alsa_buf_samps;
-static snd_pcm_status_t *alsa_status; 
+static snd_pcm_status_t *alsa_status;
 static int alsa_usemmap;
 
 t_alsa_dev alsa_indev[ALSA_MAXDEV];
@@ -57,22 +57,30 @@ t_alsa_dev alsa_outdev[ALSA_MAXDEV];
 int alsa_nindev;
 int alsa_noutdev;
 
-static void check_error(int err, const char *why)
+/* report an error condition if an error was flagged in the argument "err".
+"fn" is 0 for input, 1 for output, otherwise N/A.  "why" indicates where
+in the code the error was hit. */
+static void check_error(int err, int fn, const char *why)
 {
     if (err < 0)
-        fprintf(stderr, "%s: %s\n", why, snd_strerror(err));
+        post("ALSA %serror (%s): %s",
+            (fn == 1? "output " : (fn == 0 ? "input ": "")),
+                why, snd_strerror(err));
 }
 
+/* figure out, when opening ALSA device, whether we should use the code in
+this file or defer to Winfried Ritch's code to do mmaped transfers (handled
+in s_audio_alsamm.c). */
 static int alsaio_canmmap(t_alsa_dev *dev)
 {
     snd_pcm_hw_params_t *hw_params;
     int err1, err2;
-    
+
     snd_pcm_hw_params_alloca(&hw_params);
 
     err1 = snd_pcm_hw_params_any(dev->a_handle, hw_params);
     if (err1 < 0) {
-      check_error(err1,"Broken configuration: no configurations available"); 
+      check_error(err1, -1, "snd_pcm_hw_params_any");
       return (0);
     }
     err1 = snd_pcm_hw_params_set_access(dev->a_handle,
@@ -90,42 +98,32 @@ static int alsaio_canmmap(t_alsa_dev *dev)
     return ((err1 < 0) && (err2 >= 0));
 }
 
-static void check_setup_error(int err, int out, const char *why) {
-        char bf[256];
-        snprintf(bf, sizeof bf, "%s (%s)", why, out ? "output" : "input");
-        check_error(err, bf);
-}
-
+/* set up an input or output device.  Return 0 on success, -1 on failure. */
 static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     int nfrags, int frag_size)
 {
-#define CHECK_ERROR(why_) check_setup_error(err, out, why_)
-
     int bufsizeforthis, err;
     snd_pcm_hw_params_t* hw_params;
     unsigned int tmp_uint;
     snd_pcm_uframes_t tmp_snd_pcm_uframes;
 
     if (sys_verbose)
-    {
-        if (out)
-            post("configuring sound output...");
-        else post("configuring sound input...");
-    }
+        post((out ? "configuring sound output..." :
+            "configuring sound input..."));
 
         /* set hardware parameters... */
     snd_pcm_hw_params_alloca(&hw_params);
 
         /* get the default params */
     err = snd_pcm_hw_params_any(dev->a_handle, hw_params);
-    CHECK_ERROR("snd_pcm_hw_params_any");
+    check_error(err, out, "snd_pcm_hw_params_any");
 
         /* try to set interleaved access */
     err = snd_pcm_hw_params_set_access(dev->a_handle,
         hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
     if (err < 0)
         return (-1);
-    CHECK_ERROR("snd_pcm_hw_params_set_access");
+    check_error(err, out, "snd_pcm_hw_params_set_access");
 #if 0       /* enable this to print out which formats are available */
     {
         int i;
@@ -149,7 +147,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
                 "PD-ALSA: 32/24 bit format not available - using 16\n"); */
             err = snd_pcm_hw_params_set_format(dev->a_handle, hw_params,
                 SND_PCM_FORMAT_S16);
-            CHECK_ERROR("_pcm_hw_params_set_format");
+            check_error(err, out, "_pcm_hw_params_set_format");
             dev->a_sampwidth = 2;
         }
         else dev->a_sampwidth = 3;
@@ -162,22 +160,22 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         /* set the subformat */
     err = snd_pcm_hw_params_set_subformat(dev->a_handle,
         hw_params, SND_PCM_SUBFORMAT_STD);
-    CHECK_ERROR("snd_pcm_hw_params_set_subformat");
-    
+    check_error(err, out, "snd_pcm_hw_params_set_subformat");
+
         /* set the number of channels */
     tmp_uint = *channels;
     err = snd_pcm_hw_params_set_channels_min(dev->a_handle,
         hw_params, &tmp_uint);
-    CHECK_ERROR("snd_pcm_hw_params_set_channels");
+    check_error(err, out, "snd_pcm_hw_params_set_channels");
     if (tmp_uint != (unsigned)*channels)
         post("ALSA: set %s channels to %d", (out?"output":"input"), tmp_uint);
     *channels = tmp_uint;
     dev->a_channels = *channels;
 
         /* set the sampling rate */
-    err = snd_pcm_hw_params_set_rate_near(dev->a_handle, hw_params, 
+    err = snd_pcm_hw_params_set_rate_near(dev->a_handle, hw_params,
         (unsigned int *)rate, 0);
-    CHECK_ERROR("snd_pcm_hw_params_set_rate_min");
+    check_error(err, out, "snd_pcm_hw_params_set_rate_min");
 #if 0
     err = snd_pcm_hw_params_get_rate(hw_params, &subunitdir);
     post("input sample rate %d", err);
@@ -185,29 +183,19 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
 
     /* post("frag size %d, nfrags %d", frag_size, nfrags); */
         /* set "period size" */
-#ifdef ALSAAPI9
-    err = snd_pcm_hw_params_set_period_size_near(dev->a_handle,
-        hw_params, (snd_pcm_uframes_t)frag_size, 0);
-#else
     tmp_snd_pcm_uframes = frag_size;
     err = snd_pcm_hw_params_set_period_size_near(dev->a_handle,
         hw_params, &tmp_snd_pcm_uframes, 0);
-#endif
-    CHECK_ERROR("snd_pcm_hw_params_set_period_size_near");
+    check_error(err, out, "snd_pcm_hw_params_set_period_size_near");
 
         /* set the buffer size */
-#ifdef ALSAAPI9
-    err = snd_pcm_hw_params_set_buffer_size_near(dev->a_handle,
-        hw_params, nfrags * frag_size);
-#else
     tmp_snd_pcm_uframes = nfrags * frag_size;
     err = snd_pcm_hw_params_set_buffer_size_near(dev->a_handle,
         hw_params, &tmp_snd_pcm_uframes);
-#endif
-    CHECK_ERROR("snd_pcm_hw_params_set_buffer_size_near");
+    check_error(err, out, "snd_pcm_hw_params_set_buffer_size_near");
 
     err = snd_pcm_hw_params(dev->a_handle, hw_params);
-    CHECK_ERROR("snd_pcm_hw_params");
+    check_error(err, out, "snd_pcm_hw_params");
 
         /* set up the buffer */
     bufsizeforthis = DEFDACBLKSIZE * dev->a_sampwidth * *channels;
@@ -218,7 +206,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
             if (!(alsa_snd_buf = realloc(alsa_snd_buf, bufsizeforthis)))
             {
                 post("out of memory");
-                return (0);
+                return (-1);
             }
             memset(alsa_snd_buf, 0, bufsizeforthis);
             alsa_snd_bufsize = bufsizeforthis;
@@ -229,13 +217,12 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         if (!(alsa_snd_buf = (void *)malloc(bufsizeforthis)))
         {
             post("out of memory");
-            return (0);
+            return (-1);
         }
         memset(alsa_snd_buf, 0, bufsizeforthis);
         alsa_snd_bufsize = bufsizeforthis;
     }
-    return (1);
-#undef CHECK_ERROR
+    return (0);
 }
 
 
@@ -265,7 +252,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
         alsa_numbertoname(audioindev[iodev], devname, 512);
         err = snd_pcm_open(&alsa_indev[alsa_nindev].a_handle, devname,
             SND_PCM_STREAM_CAPTURE, SND_PCM_NONBLOCK);
-        check_error(err, "snd_pcm_open (input)");
+        check_error(err, 0, "snd_pcm_open");
         if (err < 0)
             continue;
         alsa_indev[alsa_nindev].a_devno = audioindev[iodev];
@@ -279,7 +266,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
         alsa_numbertoname(audiooutdev[iodev], devname, 512);
         err = snd_pcm_open(&alsa_outdev[alsa_noutdev].a_handle, devname,
             SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
-        check_error(err, "snd_pcm_open (output)");
+        check_error(err, 1, "snd_pcm_open");
         if (err < 0)
             continue;
         alsa_outdev[alsa_noutdev].a_devno = audiooutdev[iodev];
@@ -344,10 +331,11 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     if (!alsa_status)
     {
         err = snd_pcm_status_malloc(&alsa_status);
-        check_error(err, "snd_pcm_status_malloc");
+        check_error(err, -1, "snd_pcm_status_malloc");
     }
 
-        /* fill the buffer with silence */
+        /* fill the buffer with silence and prime the output FIFOs.  This
+        should automatically start the output devices. */
     memset(alsa_snd_buf, 0, alsa_snd_bufsize);
 
     if (outchans)
@@ -360,11 +348,15 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
                     DEFDACBLKSIZE);
         }
     }
-    else if (inchans)
+    if (inchans)
     {
+            /* some of the ADC devices might already have been started by
+            starting the outputs above, but others might still need it. */
         for (iodev = 0; iodev < alsa_nindev; iodev++)
-            if ((err = snd_pcm_start(alsa_indev[iodev].a_handle)) < 0)
-                check_error(err, "input start failed\n");
+            if (snd_pcm_state(alsa_indev[iodev].a_handle)
+                != SND_PCM_STATE_RUNNING)
+                    if ((err = snd_pcm_start(alsa_indev[iodev].a_handle)) < 0)
+                        check_error(err, -1, "input start failed");
     }
     return (0);
 blewit:
@@ -385,12 +377,12 @@ void alsa_close_audio(void)
     for (iodev = 0; iodev < alsa_nindev; iodev++)
     {
         err = snd_pcm_close(alsa_indev[iodev].a_handle);
-        check_error(err, "snd_pcm_close (input)");
+        check_error(err, 0, "snd_pcm_close");
     }
     for (iodev = 0; iodev < alsa_noutdev; iodev++)
     {
         err = snd_pcm_close(alsa_outdev[iodev].a_handle);
-        check_error(err, "snd_pcm_close (output)");
+        check_error(err, 1, "snd_pcm_close");
     }
     alsa_nindev = alsa_noutdev = 0;
 }
@@ -404,7 +396,7 @@ int alsa_send_dacs(void)
     static double timenow;
     double timelast;
     t_sample *fp, *fp1, *fp2;
-    int i, j, k, err, iodev, result, ch; 
+    int i, j, k, err, iodev, result, ch;
     int chansintogo, chansouttogo;
     unsigned int transfersize;
 
@@ -457,7 +449,7 @@ int alsa_send_dacs(void)
             {
                 float s1 = *fp2 * INT32_MAX;
                 ((t_alsa_sample32 *)alsa_snd_buf)[j] = CLIP32(s1);
-            } 
+            }
             for (; i < thisdevchans; i++, ch++)
                 for (j = i, k = DEFDACBLKSIZE; k--; j += thisdevchans)
                     ((t_alsa_sample32 *)alsa_snd_buf)[j] = 0;
@@ -473,7 +465,7 @@ int alsa_send_dacs(void)
                     s = 8388351;
                 else if (s < -8388351)
                     s = -8388351;
-#if BYTE_ORDER == LITTLE_ENDIAN                                             
+#if BYTE_ORDER == LITTLE_ENDIAN
                 ((char *)(alsa_snd_buf))[3*j] = (s & 255);
                 ((char *)(alsa_snd_buf))[3*j+1] = ((s>>8) & 255);
                 ((char *)(alsa_snd_buf))[3*j+2] = ((s>>16) & 255);
@@ -483,8 +475,8 @@ int alsa_send_dacs(void)
             }
             for (; i < thisdevchans; i++, ch++)
                 for (j = i, k = DEFDACBLKSIZE; k--; j += thisdevchans)
-                    ((char *)(alsa_snd_buf))[3*j] = 
-                    ((char *)(alsa_snd_buf))[3*j+1] = 
+                    ((char *)(alsa_snd_buf))[3*j] =
+                    ((char *)(alsa_snd_buf))[3*j+1] =
                     ((char *)(alsa_snd_buf))[3*j+2] = 0;
         }
         else        /* 16 bit samples */
@@ -517,7 +509,7 @@ int alsa_send_dacs(void)
                          snd_strerror(errno));
             fprintf(stderr,
                     "inputcount %d, outputcount %d, outbufsize %d\n",
-                    inputcount, outputcount, 
+                    inputcount, outputcount,
                     (ALSA_EXTRABUFFER + sys_advance_samples)
                     * alsa_outdev[iodev].a_sampwidth * outchannels);
     #endif
@@ -552,14 +544,14 @@ int alsa_send_dacs(void)
 #ifdef DEBUG_ALSA_XFER
             if (result < 0)
                 fprintf(stderr,
-                        "snd_pcm_read %d %d: %s\n", 
+                        "snd_pcm_read %d %d: %s\n",
                         callno, xferno, snd_strerror(errno));
             else fprintf(stderr,
-                         "snd_pcm_read %d %d returned only %d\n", 
+                         "snd_pcm_read %d %d returned only %d\n",
                          callno, xferno, result);
             fprintf(stderr,
                     "inputcount %d, outputcount %d, inbufsize %d\n",
-                    inputcount, outputcount, 
+                    inputcount, outputcount,
                     (ALSA_EXTRABUFFER + sys_advance_samples)
                     * alsa_indev[iodev].a_sampwidth * inchannels);
 #endif
@@ -578,7 +570,7 @@ int alsa_send_dacs(void)
         }
         else if (alsa_indev[iodev].a_sampwidth == 3)
         {
-#if BYTE_ORDER == LITTLE_ENDIAN                                             
+#if BYTE_ORDER == LITTLE_ENDIAN
             for (i = 0; i < chans; i++, ch++, fp1 += DEFDACBLKSIZE)
             {
                 for (j = ch, k = DEFDACBLKSIZE, fp2 = fp1; k--;
@@ -842,7 +834,7 @@ static void alsa_numbertoname(int devno, char *devname, int nchar)
     /* For each hardware card found, we list two devices, the "hard" and
     "plug" one.  The card scan is derived from portaudio code. */
 void alsa_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize)
 {
     int ndev = 0, cardno = -1, i, j;
@@ -883,7 +875,9 @@ void alsa_getdevs(char *indevlist, int *nindevs,
     {
         if (j >= maxndev)
             break;
-        snprintf(indevlist + j * devdescsize, devdescsize, "%s", 
+        snprintf(indevlist + j * devdescsize, devdescsize, "%s",
+            alsa_names[i]);
+        snprintf(outdevlist + j * devdescsize, devdescsize, "%s",
             alsa_names[i]);
     }
     *nindevs = *noutdevs = j;
