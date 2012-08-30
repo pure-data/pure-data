@@ -328,6 +328,7 @@ void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,
     sys_log_error(ERR_NOTHING);
     audio_nextinchans = inchans;
     audio_nextoutchans = outchans;
+    sys_setchsr(audio_nextinchans, audio_nextoutchans, rate);
     sys_save_audio_params(nrealindev, realindev, realinchans,
         nrealoutdev, realoutdev, realoutchans, rate, advance, callback,
             blocksize);
