@@ -53,7 +53,7 @@ case $host in
 #        to make the final linking phase use g++
 #		asio=yes
 	portaudio=yes
-	CFLAGS="$CFLAGS -O6 -funroll-loops -fomit-frame-pointer"
+	CFLAGS="$CFLAGS -O6 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501"
 # ASIO is a C++ library, so if its included, then use g++ to build
 	CC=g++
 	EXTERNAL_CFLAGS="-mms-bitfields"
