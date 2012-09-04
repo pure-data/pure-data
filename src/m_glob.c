@@ -13,7 +13,7 @@ int sys_perf;   /* true if we should query user on close and quit */
 /* These "glob" routines, which implement messages to Pd, are from all
 over.  Some others are prototyped in m_imp.h as well. */
 
-void glob_setfilename(void *dummy, t_symbol *name, t_symbol *dir);
+void glob_menunew(void *dummy, t_symbol *name, t_symbol *dir);
 void glob_verifyquit(void *dummy, t_floatarg f);
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_meters(void *dummy, t_floatarg f);
@@ -85,7 +85,7 @@ void glob_init(void)
         CLASS_DEFAULT, A_NULL);
     class_addmethod(glob_pdobject, (t_method)glob_initfromgui, gensym("init"),
         A_GIMME, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_setfilename, gensym("filename"),
+    class_addmethod(glob_pdobject, (t_method)glob_menunew, gensym("menunew"),
         A_SYMBOL, A_SYMBOL, 0);
     class_addmethod(glob_pdobject, (t_method)glob_evalfile, gensym("open"),
         A_SYMBOL, A_SYMBOL, 0);

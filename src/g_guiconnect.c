@@ -4,6 +4,9 @@
 
 /*  a thing to forward messages from the GUI, dealing with race conditions
 in which the "target" gets deleted while the GUI is sending it something.
+
+See also the gfxstub object that doesn't oblige the owner to keep a pointer
+around (so is better suited to one-off dialogs)
 */
 
 #include "m_pd.h"

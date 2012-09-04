@@ -3,7 +3,10 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
+#include "g_canvas.h"    /* just for glist_getfont, bother */
+#include "s_stuff.h"    /* just for sys_hostfontsize, phooey */
 #include <string.h>
+#include <stdio.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -11,20 +14,151 @@
 #include <io.h>
 #endif
 
+typedef struct _textbuf
+{
+    t_object b_ob;
+    t_binbuf *b_binbuf;
+    t_canvas *b_canvas;
+    t_guiconnect *b_guiconnect;
+} t_textbuf;
+
+
+static void textbuf_init(t_textbuf *x)
+{
+    x->b_binbuf = binbuf_new();
+    x->b_canvas = canvas_getcurrent();
+}
+
+static void textbuf_open(t_textbuf *x)
+{
+    int i, ntxt;
+    char *txt, buf[40];
+    if (x->b_guiconnect)
+    {
+        sys_vgui("wm deiconify .x%lx\n", x);
+        sys_vgui("raise .x%lx\n", x);
+        sys_vgui("focus .x%lx.text\n", x);
+    }
+    else
+    {
+        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s: %s} %d\n",
+            x, 600, 340, "myname", "text", 
+                 sys_hostfontsize(glist_getfont(x->b_canvas)));
+        binbuf_gettext(x->b_binbuf, &txt, &ntxt);
+        for (i = 0; i < ntxt; )
+        {
+            char *j = strchr(txt+i, '\n');
+            if (!j) j = txt + ntxt;
+            sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n", x, j-txt-i, txt+i);
+            i = (j-txt)+1;
+        }
+        sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
+        t_freebytes(txt, ntxt);
+        sprintf(buf, ".x%lx", (unsigned long)x);
+        x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
+    }
+}
+
+static void textbuf_close(t_textbuf *x)
+{
+    sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
+    if (x->b_guiconnect)
+    {
+        guiconnect_notarget(x->b_guiconnect, 1000);
+        x->b_guiconnect = 0;
+    }    
+}
+
+static void textbuf_addline(t_textbuf *b, t_symbol *s, int ac, t_atom *av)
+{
+    t_binbuf *z = binbuf_new();
+    binbuf_restore(z, ac, av);
+    binbuf_add(b->b_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
+    binbuf_free(z);
+}
+
+/* textobj object - buffer for text, accessible by other accessor objects */
+
+typedef struct _textobj
+{
+    t_textbuf x_textbuf;
+    unsigned char x_embed;   /* whether to embed contents in patch on save */
+} t_textobj;
+
+#define x_ob x_textbuf.b_ob
+#define x_binbuf x_textbuf.b_binbuf
+#define x_canvas x_textbuf.b_canvas
+
+static t_class *textobj_class;
+
+static void *textobj_new(t_symbol *s, int ac, t_atom *av)
+{
+    t_textobj *x = (t_textobj *)pd_new(textobj_class);
+    t_symbol *asym = gensym("#A");
+    textbuf_init(&x->x_textbuf);
+           /* bashily unbind #A -- this would create garbage if #A were
+           multiply bound but we believe in this context it's at most
+           bound to whichever textobj or array was created most recently */
+    asym->s_thing = 0;
+        /* and now bind #A to us to receive following messages in the
+        saved file or copy buffer */
+    pd_bind(&x->x_ob.ob_pd, asym); 
+    return (x);
+}
+
+static void textobj_clear(t_textobj *x)
+{
+    binbuf_clear(x->x_binbuf);
+}
+
+void textobj_save(t_gobj *z, t_binbuf *bb)
+{
+    t_textobj *b = (t_textobj *)z;
+    binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
+        (float)b->x_ob.te_xpix, (float)b->x_ob.te_ypix);
+    binbuf_addbinbuf(bb, b->x_ob.ob_binbuf);
+    binbuf_addsemi(bb);
+
+    binbuf_addv(bb, "ss", gensym("#A"), gensym("addline"));
+    binbuf_addbinbuf(bb, b->x_binbuf);
+    binbuf_addsemi(bb);
+}
+
+static void textbuf_free(t_textbuf *x)
+{
+    t_pd *x2;
+    binbuf_free(x->b_binbuf);
+    if (x->b_guiconnect)
+    {
+        sys_vgui("destroy .x%lx\n", x);
+        guiconnect_notarget(x->b_guiconnect, 1000);
+    }
+        /* just in case we're still bound to #A from loading... */
+    while (x2 = pd_findbyclass(gensym("#A"), textobj_class))
+        pd_unbind(x2, gensym("#A"));
+}
+
+/*  the qlist and textfile objects, as of 0.44, are 'derived' from
+* the text object above.  Maybe later it will be desirable to add new
+* functionality to textfile; qlist is an ancient holdover (1987) and
+* is probably best left alone. 
+*/
+
 typedef struct _qlist
 {
-    t_object x_ob;
+    t_textbuf x_textbuf;
     t_outlet *x_bangout;
-    void *x_binbuf;
     int x_onset;                /* playback position */
     t_clock *x_clock;
     t_float x_tempo;
     double x_whenclockset;
     t_float x_clockdelay;
-    t_symbol *x_dir;
-    t_canvas *x_canvas;
-    int x_reentered;
+    int x_rewound;          /* we've been rewound since last start */
+    int x_innext;           /* we're currently inside the "next" routine */
 } t_qlist;
+#define x_ob x_textbuf.b_ob
+#define x_binbuf x_textbuf.b_binbuf
+#define x_canvas x_textbuf.b_canvas
 
 static void qlist_tick(t_qlist *x);
 
@@ -32,9 +166,8 @@ static t_class *qlist_class;
 
 static void *qlist_new( void)
 {
-    t_symbol *name, *filename = 0;
     t_qlist *x = (t_qlist *)pd_new(qlist_class);
-    x->x_binbuf = binbuf_new();
+    textbuf_init(&x->x_textbuf);
     x->x_clock = clock_new(x, (t_method)qlist_tick);
     outlet_new(&x->x_ob, &s_list);
     x->x_bangout = outlet_new(&x->x_ob, &s_bang);
@@ -42,8 +175,7 @@ static void *qlist_new( void)
     x->x_tempo = 1;
     x->x_whenclockset = 0;
     x->x_clockdelay = 0;
-    x->x_canvas = canvas_getcurrent();
-    x->x_reentered = 0;
+    x->x_rewound = x->x_innext = 0;
     return (x);
 }
 
@@ -52,16 +184,22 @@ static void qlist_rewind(t_qlist *x)
     x->x_onset = 0;
     if (x->x_clock) clock_unset(x->x_clock);
     x->x_whenclockset = 0;
-    x->x_reentered = 1;
+    x->x_rewound = 1;
 }
 
 static void qlist_donext(t_qlist *x, int drop, int automatic)
 {
     t_pd *target = 0;
+    if (x->x_innext)
+    {
+        pd_error(x, "qlist sent 'next' from within itself");
+        return;
+    }
+    x->x_innext = 1;
     while (1)
     {
         int argc = binbuf_getnatom(x->x_binbuf),
-            count, onset = x->x_onset, onset2, wasreentered;
+            count, onset = x->x_onset, onset2, wasrewound;
         t_atom *argv = binbuf_getvec(x->x_binbuf);
         t_atom *ap = argv + onset, *ap2;
         if (onset >= argc) goto end;
@@ -86,6 +224,7 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
                 x->x_whenclockset = clock_getsystime();
             }
             else outlet_list(x->x_ob.ob_outlet, 0, onset2-onset, ap);
+            x->x_innext = 0;
             return;
         }
         ap2 = ap + 1;
@@ -113,8 +252,8 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
                 continue;
             }
         }
-        wasreentered = x->x_reentered;
-        x->x_reentered = 0;
+        wasrewound = x->x_rewound;
+        x->x_rewound = 0;
         if (!drop)
         {   
             if (ap->a_type == A_FLOAT)
@@ -122,15 +261,19 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
             else if (ap->a_type == A_SYMBOL)
                 typedmess(target, ap->a_w.w_symbol, count-1, ap+1);
         }
-        if (x->x_reentered)
+        if (x->x_rewound)
+        {
+            x->x_innext = 0;
             return;
-        x->x_reentered = wasreentered;
+        }
+        x->x_rewound = wasrewound;
     }  /* while (1); never falls through */
 
 end:
     x->x_onset = 0x7fffffff;
-    outlet_bang(x->x_bangout);
     x->x_whenclockset = 0;
+    x->x_innext = 0;
+    outlet_bang(x->x_bangout);
 }
 
 static void qlist_next(t_qlist *x, t_floatarg drop)
@@ -141,7 +284,15 @@ static void qlist_next(t_qlist *x, t_floatarg drop)
 static void qlist_bang(t_qlist *x)
 {
     qlist_rewind(x);
-    qlist_donext(x, 0, 1);
+        /* if we're restarted reentrantly from a "next" message set ourselves
+        up to do this non-reentrantly after a delay of 0 */
+    if (x->x_innext)
+    {
+        x->x_whenclockset = clock_getsystime();
+        x->x_clockdelay = 0;
+        clock_delay(x->x_clock, 0);
+    }
+    else qlist_donext(x, 0, 1);
 }
 
 static void qlist_tick(t_qlist *x)
@@ -186,7 +337,7 @@ static void qlist_read(t_qlist *x, t_symbol *filename, t_symbol *format)
     if (binbuf_read_via_canvas(x->x_binbuf, filename->s_name, x->x_canvas, cr))
             pd_error(x, "%s: read failed", filename->s_name);
     x->x_onset = 0x7fffffff;
-    x->x_reentered = 1;
+    x->x_rewound = 1;
 }
 
 static void qlist_write(t_qlist *x, t_symbol *filename, t_symbol *format)
@@ -228,33 +379,35 @@ static void qlist_tempo(t_qlist *x, t_float f)
 
 static void qlist_free(t_qlist *x)
 {
-    binbuf_free(x->x_binbuf);
-    if (x->x_clock) clock_free(x->x_clock);
+    textbuf_free(&x->x_textbuf);
+    clock_free(x->x_clock);
 }
 
 /* -------------------- textfile ------------------------------- */
 
+/* has the same struct as qlist (so we can reuse some of its
+* methods) but "sequencing" here only relies on 'binbuf' and 'onset'
+* fields.
+*/
+
 static t_class *textfile_class;
-typedef t_qlist t_textfile;
 
 static void *textfile_new( void)
 {
-    t_symbol *name, *filename = 0;
-    t_textfile *x = (t_textfile *)pd_new(textfile_class);
-    x->x_binbuf = binbuf_new();
+    t_qlist *x = (t_qlist *)pd_new(textfile_class);
+    textbuf_init(&x->x_textbuf);
     outlet_new(&x->x_ob, &s_list);
     x->x_bangout = outlet_new(&x->x_ob, &s_bang);
     x->x_onset = 0x7fffffff;
-    x->x_reentered = 0;
+    x->x_rewound = 0;
     x->x_tempo = 1;
     x->x_whenclockset = 0;
     x->x_clockdelay = 0;
     x->x_clock = NULL;
-    x->x_canvas = canvas_getcurrent();
     return (x);
 }
 
-static void textfile_bang(t_textfile *x)
+static void textfile_bang(t_qlist *x)
 {
     int argc = binbuf_getnatom(x->x_binbuf),
         count, onset = x->x_onset, onset2;
@@ -288,15 +441,23 @@ static void textfile_rewind(t_qlist *x)
     x->x_onset = 0;
 }
 
-static void textfile_free(t_textfile *x)
-{
-    binbuf_free(x->x_binbuf);
-}
-
 /* ---------------- global setup function -------------------- */
 
 void x_qlist_setup(void )
 {
+    textobj_class = class_new(gensym("text"), (t_newmethod)textobj_new,
+        (t_method)textbuf_free, sizeof(t_textobj), 0, A_GIMME, 0);
+    class_addmethod(textobj_class, (t_method)textbuf_open, gensym("click"), 0);
+    class_addmethod(textobj_class, (t_method)textbuf_close, gensym("close"), 0);
+    class_addmethod(textobj_class, (t_method)textbuf_addline, 
+        gensym("addline"), A_GIMME, 0);
+    class_addmethod(textobj_class, (t_method)textobj_clear,
+        gensym("clear"), 0);
+    class_addmethod(textobj_class, (t_method)qlist_print, gensym("print"),
+        A_DEFSYM, 0);
+    class_setsavefn(textobj_class, textobj_save);
+    class_sethelpsymbol(textobj_class, gensym("text-object"));
+
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);
     class_addmethod(qlist_class, (t_method)qlist_rewind, gensym("rewind"), 0);
@@ -315,6 +476,10 @@ void x_qlist_setup(void )
         A_SYMBOL, A_DEFSYM, 0);
     class_addmethod(qlist_class, (t_method)qlist_write, gensym("write"),
         A_SYMBOL, A_DEFSYM, 0);
+    class_addmethod(qlist_class, (t_method)textbuf_open, gensym("click"), 0);
+    class_addmethod(qlist_class, (t_method)textbuf_close, gensym("close"), 0);
+    class_addmethod(qlist_class, (t_method)textbuf_addline, 
+        gensym("addline"), A_GIMME, 0);
     class_addmethod(qlist_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);
     class_addmethod(qlist_class, (t_method)qlist_tempo,
@@ -322,7 +487,7 @@ void x_qlist_setup(void )
     class_addbang(qlist_class, qlist_bang);
 
     textfile_class = class_new(gensym("textfile"), (t_newmethod)textfile_new,
-        (t_method)textfile_free, sizeof(t_textfile), 0, 0);
+        (t_method)textbuf_free, sizeof(t_qlist), 0, 0);
     class_addmethod(textfile_class, (t_method)textfile_rewind, gensym("rewind"),
         0);
     class_addmethod(textfile_class, (t_method)qlist_set, gensym("set"),
@@ -338,6 +503,10 @@ void x_qlist_setup(void )
         A_SYMBOL, A_DEFSYM, 0);
     class_addmethod(textfile_class, (t_method)qlist_write, gensym("write"), 
         A_SYMBOL, A_DEFSYM, 0);
+    class_addmethod(textfile_class, (t_method)textbuf_open, gensym("click"), 0);
+    class_addmethod(textfile_class, (t_method)textbuf_close, gensym("close"), 0);
+    class_addmethod(textfile_class, (t_method)textbuf_addline, 
+        gensym("addline"), A_GIMME, 0);
     class_addmethod(textfile_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);
     class_addbang(textfile_class, textfile_bang);

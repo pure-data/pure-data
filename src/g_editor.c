@@ -534,6 +534,7 @@ static void canvas_undo_cut(t_canvas *x, void *z, int action)
 {
     t_undo_cut *buf = z;
     int mode = buf->u_mode;
+    t_pd *boundx = s__X.s_thing;
     if (action == UNDO_UNDO)
     {
         if (mode == UCUT_CUT)
@@ -559,9 +560,9 @@ static void canvas_undo_cut(t_canvas *x, void *z, int action)
             }
             canvas_dopaste(x, buf->u_objectbuf);
         }
-        pd_bind(&x->gl_pd, gensym("#X"));
+        s__X.s_thing = &x->gl_pd;
         binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-        pd_unbind(&x->gl_pd, gensym("#X"));
+        s__X.s_thing = boundx;
     }
     else if (action == UNDO_REDO)
     {
@@ -575,9 +576,9 @@ static void canvas_undo_cut(t_canvas *x, void *z, int action)
             if (y1)
                 glist_delete(x, y1);
             canvas_dopaste(x, buf->u_redotextbuf);
-            pd_bind(&x->gl_pd, gensym("#X"));
+            s__X.s_thing = &x->gl_pd;
             binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-            pd_unbind(&x->gl_pd, gensym("#X"));
+            s__X.s_thing = boundx;
         }
     }
     else if (action == UNDO_FREE)
@@ -2142,9 +2143,10 @@ void canvas_stowconnections(t_canvas *x)
 
 void canvas_restoreconnections(t_canvas *x)
 {
-    pd_bind(&x->gl_pd, gensym("#X"));
+    t_pd *boundx = s__X.s_thing;
+    s__X.s_thing = &x->gl_pd;
     binbuf_eval(x->gl_editor->e_connectbuf, 0, 0, 0);
-    pd_unbind(&x->gl_pd, gensym("#X"));
+    s__X.s_thing = boundx;
 }
 
 static t_binbuf *canvas_docopy(t_canvas *x)
@@ -2309,17 +2311,22 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
 {
     t_gobj *newgobj, *last, *g2;
     int dspstate = canvas_suspend_dsp(), nbox, count;
+    t_symbol *asym = gensym("#A");
+        /* save and clear bindings to symbols #a, $N, $X; restore when done */
+    t_pd *boundx = s__X.s_thing, *bounda = asym->s_thing, 
+        *boundn = s__N.s_thing;
+    asym->s_thing = 0;
+    s__X.s_thing = &x->gl_pd;
+    s__N.s_thing = &pd_canvasmaker;
 
     canvas_editmode(x, 1.);
     glist_noselect(x);
     for (g2 = x->gl_list, nbox = 0; g2; g2 = g2->g_next) nbox++;
-    
+
     paste_onset = nbox;
     paste_canvas = x;
-    
-    pd_bind(&x->gl_pd, gensym("#X"));
+
     binbuf_eval(b, 0, 0, 0);
-    pd_unbind(&x->gl_pd, gensym("#X"));
     for (g2 = x->gl_list, count = 0; g2; g2 = g2->g_next, count++)
         if (count >= nbox)
             glist_select(x, g2);
@@ -2328,6 +2335,9 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     canvas_dirty(x, 1);
     sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
     glist_donewloadbangs(x);
+    asym->s_thing = bounda;
+    s__X.s_thing = boundx;
+    s__N.s_thing = boundn;
 }
 
 static void canvas_paste(t_canvas *x)

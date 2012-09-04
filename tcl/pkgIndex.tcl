@@ -31,6 +31,7 @@ package ifneeded pd_menucommands 0.1 [list source [file join $dir pd_menucommand
 package ifneeded pd_menus 0.1 [list source [file join $dir pd_menus.tcl]]
 package ifneeded pdtk_canvas 0.1 [list source [file join $dir pdtk_canvas.tcl]]
 package ifneeded pdtk_text 0.1 [list source [file join $dir pdtk_text.tcl]]
+package ifneeded pdtk_textwindow 0.1 [list source [file join $dir pdtk_textwindow.tcl]]
 package ifneeded scrollbox 0.1 [list source [file join $dir scrollbox.tcl]]
 package ifneeded scrollboxwindow 0.1 [list source [file join $dir scrollboxwindow.tcl]]
 package ifneeded wheredoesthisgo 0.1 [list source [file join $dir wheredoesthisgo.tcl]]

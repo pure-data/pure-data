@@ -138,13 +138,13 @@ struct _garray
 
 static t_pd *garray_arraytemplatecanvas;
 static char garray_arraytemplatefile[] = "\
-#N canvas 0 0 458 153 10;\n\
+canvas 0 0 458 153 10;\n\
 #X obj 43 31 struct _float_array array z float float style\n\
 float linewidth float color;\n\
 #X obj 43 70 plot z color linewidth 0 0 1 style;\n\
 ";
 static char garray_floattemplatefile[] = "\
-#N canvas 0 0 458 153 10;\n\
+canvas 0 0 458 153 10;\n\
 #X obj 39 26 struct float float y;\n\
 ";
 
@@ -160,12 +160,12 @@ void garray_init( void)
     
     glob_setfilename(0, gensym("_float"), gensym("."));
     binbuf_text(b, garray_floattemplatefile, strlen(garray_floattemplatefile));
-    binbuf_eval(b, 0, 0, 0);
+    binbuf_eval(b, &pd_canvasmaker, 0, 0);
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
     
     glob_setfilename(0, gensym("_float_array"), gensym("."));
     binbuf_text(b, garray_arraytemplatefile, strlen(garray_arraytemplatefile));
-    binbuf_eval(b, 0, 0, 0);
+    binbuf_eval(b, &pd_canvasmaker, 0, 0);
     garray_arraytemplatecanvas = s__X.s_thing;
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
 
@@ -280,7 +280,8 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     t_floatarg fsize, t_floatarg fflags)
 {
     int n = fsize, i, zz, nwords, zonset, ztype, saveit;
-    t_symbol *zarraytype;
+    t_symbol *zarraytype, *asym = gensym("#A");
+;
     t_garray *x;
     t_pd *x2;
     t_template *template, *ztemplate;
@@ -332,6 +333,15 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         style, 1);
     template_setfloat(template, gensym("linewidth"), x->x_scalar->sc_vec, 
         ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
+
+           /* bashily unbind #A -- this would create garbage if #A were
+           multiply bound but we believe in this context it's at most
+           bound to whichever textobj or array was created most recently */
+    asym->s_thing = 0;
+        /* and now bind #A to us to receive following messages in the
+        saved file or copy buffer */
+    pd_bind(&x->x_gobj.g_pd, asym); 
+
     if (x2 = pd_findbyclass(gensym("#A"), garray_class))
         pd_unbind(x2, gensym("#A"));
 
@@ -562,7 +572,7 @@ static void garray_free(t_garray *x)
     /* } jsarlo */
     gfxstub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
-        /* LATER find a way to get #A unbound earlier (at end of load?) */
+        /* just in case we're still bound to #A from loading... */
     while (x2 = pd_findbyclass(gensym("#A"), garray_class))
         pd_unbind(x2, gensym("#A"));
     pd_free(&x->x_scalar->sc_gobj.g_pd);

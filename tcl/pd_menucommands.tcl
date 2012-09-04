@@ -16,9 +16,7 @@ proc ::pd_menucommands::menu_new {} {
     # to localize "Untitled" there will need to be changes in g_canvas.c and
     # g_readwrite.c, where it tests for the string "Untitled"
     set untitled_name "Untitled"
-    pdsend "pd filename $untitled_name-$untitled_number [enquote_path $::filenewdir]"
-    pdsend "#N canvas"
-    pdsend "#X pop 1"
+    pdsend "pd menunew $untitled_name-$untitled_number [enquote_path $::filenewdir]"
     incr untitled_number
 }
 

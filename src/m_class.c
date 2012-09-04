@@ -535,7 +535,6 @@ int pd_setloadingabstraction(t_symbol *sym);
     doesn't know.  Pd tries to load it as an extern, then as an abstraction. */
 void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    t_pd *current;
     int fd;
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
     if (tryingalready>MAXOBJDEPTH){
@@ -552,7 +551,6 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     class_loadsym = 0;
-    current = s__X.s_thing;
     /* for class/class.pd support, to match class/class.pd_linux  */
     snprintf(classslashclass, MAXPDSTRING, "%s/%s", s->s_name, s->s_name);
     if ((fd = canvas_open(canvas_getcurrent(), s->s_name, ".pd",
@@ -565,10 +563,12 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
         close (fd);
         if (!pd_setloadingabstraction(s))
         {
+            t_pd *was = s__X.s_thing;
             canvas_setargs(argc, argv);
             binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
-            if (s__X.s_thing != current)
+            if (s__X.s_thing && was != s__X.s_thing)
                 canvas_popabstraction((t_canvas *)(s__X.s_thing));
+            else s__X.s_thing = was;
             canvas_setargs(0, 0);
         }
         else error("%s: can't load abstraction within itself\n", s->s_name);
@@ -604,7 +604,6 @@ void mess_init(void)
         CLASS_DEFAULT, A_NULL);
     pd_canvasmaker = class_new(gensym("classmaker"), 0, 0, sizeof(t_pd),
         CLASS_DEFAULT, A_NULL);
-    pd_bind(&pd_canvasmaker, &s__N);
     class_addanything(pd_objectmaker, (t_method)new_anything);
 }
 

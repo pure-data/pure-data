@@ -104,6 +104,13 @@ void glob_setfilename(void *dummy, t_symbol *filesym, t_symbol *dirsym)
     canvas_newdirectory = dirsym;
 }
 
+void glob_menunew(void *dummy, t_symbol *filesym, t_symbol *dirsym)
+{
+    glob_setfilename(dummy, filesym, dirsym);
+    canvas_new(0, 0, 0, 0);
+    canvas_pop((t_canvas *)s__X.s_thing, 1);
+}
+
 t_canvas *canvas_getcurrent(void)
 {
     return ((t_canvas *)pd_findbyclass(&s__X, canvas_class));

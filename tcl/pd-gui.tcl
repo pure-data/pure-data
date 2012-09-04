@@ -44,6 +44,7 @@ package require pd_menucommands
 package require opt_parser
 package require pdtk_canvas
 package require pdtk_text
+package require pdtk_textwindow
 # TODO eliminate this kludge:
 package require wheredoesthisgo
 package require pd_guiprefs
