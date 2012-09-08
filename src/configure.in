@@ -22,7 +22,6 @@ AC_SUBST(GUIFLAGS)
 AC_SUBST(OSNUMBER)
 AC_SUBST(EXTERNTARGET)
 AC_SUBST(ASIOSRC)
-AC_SUBST(GUISRC)
 
 dnl other defaults
 
@@ -99,79 +98,7 @@ AC_CHECK_LIB(fftw3f, fftwf_version,PDLIB="$PDLIB -lfftw3f",
     echo "fftw3 package not found - using built-in FFT"; fftw=no)
 fi
 
-dnl look for tcl 8.x... do I really have to go through all this!?
-
-foundit=no
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl.h,foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl8.7/tcl.h,
-        GUIFLAGS="$GUIFLAGS -I/usr/include/tcl8.7";foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl8.6/tcl.h,
-        GUIFLAGS="$GUIFLAGS -I/usr/include/tcl8.6";foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl8.5/tcl.h,
-        GUIFLAGS="$GUIFLAGS -I/usr/include/tcl8.5";foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl8.4/tcl.h,
-        GUIFLAGS="$GUIFLAGS -I/usr/include/tcl8.4";foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl8.4/tcl.h,
-        GUIFLAGS="$GUIFLAGS -I/usr/local/include/tcl8.4";foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl8.3/tcl.h,
-        GUIFLAGS="$GUIFLAGS -I/usr/include/tcl8.3";foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    AC_CHECK_HEADER(tcl8.2/tcl.h,
-        GUIFLAGS="$GUIFLAGS -I/usr/include/tcl8.2";foundit=yes,)
-fi
-if test $foundit = "no";
-then
-    echo no tcl header found
-         echo bolding trying without...
-#    exit -1
-fi
-
-AC_CHECK_LIB(tcl85, main,,
-        AC_CHECK_LIB(tcl8.5, main,,
-        AC_CHECK_LIB(tcl84, main,,
-            AC_CHECK_LIB(tcl8.4, main,,
-                AC_CHECK_LIB(tcl8.3, main,,
-                    AC_CHECK_LIB(tcl8.2, main,,
-                                    AC_CHECK_LIB(tcl8.0, main,,
-                            echo no tcl library found; exit 1)))))))
-
-AC_CHECK_LIB(tk85, main,,
-        AC_CHECK_LIB(tk8.5, main,,
-       AC_CHECK_LIB(tk84, main,,
-            AC_CHECK_LIB(tk8.4, main,,
-                AC_CHECK_LIB(tk8.3, main,,
-                    AC_CHECK_LIB(tk8.2, main,,
-                                    AC_CHECK_LIB(tk8.0, main,,
-                            echo no tk library found; exit 1)))))))
-
-
-if test x$tk != "xno"; then
-GUISRC="t_main.c t_tkcmd.c"
-else
-GUISRC=
-fi
+dnl took out all TCL and TK searching - should add run-time check.
 
 if test `uname -s` = Linux -o `uname -s` = "GNU/kFreeBSD" -o `uname -s` = "GNU";
 then
