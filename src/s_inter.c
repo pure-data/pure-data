@@ -1116,6 +1116,7 @@ int sys_startgui(const char *libdir)
 #endif /* NOT __APPLE__ */
             execl("/bin/sh", "sh", "-c", sys_guicmd, (char*)0);
             perror("pd: exec");
+            fprintf(stderr, "Perhaps tcl and tk aren't yet installed?\n");
             _exit(1);
        }
 #else /* NOT _WIN32 */
