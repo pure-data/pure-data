@@ -8,12 +8,18 @@ Installation instructions are in the HTML DOCUMENTATION at:
 If you download and unpack Pd, you will also find the html documentation
 locally in the file, .../pd-whatever/doc/1.manual/index.htm.  To unpack Pd:
 
-LINUX (or freeBSD).  Download Pd, which will be a ".tar.gz" file; to unpack it,
-type "zcat [name].tar.gz | tar xf -" to a shell.  This creates a directory with a
-name like "pd-0.35".  CD to "src". ./configure, and make.  There are also 
-compiled packages available.
+LINUX (or freeBSD).  In some linux installations you can download Pd via
+"apt-get install puredata" or "yum install puredata"; otherwise you will have to
+download the source and compile it as follows:
 
-Microsoft Windows.  Pd is distributed as a "zip" file.   Unzip this,
+First download Pd, which will be a ".tar.gz" file; to unpack it, type "tar xzf
+[name].tar.gz" to a shell.  (Alternatively, check the sources out from a
+repository).  This creates a directory with a name like "pd-0.35".  In a shell,
+cd to "src".  If there's a file named "configure", type "./configure" and then
+"make".  If there's no "configure", generate one first by typing "autoconf" then
+"./configure" and "make".
+
+Microsoft Windows.  Pd binaries are distributed as a "zip" file.   Unzip this,
 creating a directory such as \pd.
 
 Macintosh.  The web browser will automatically unpack the distributions
