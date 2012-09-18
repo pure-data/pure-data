@@ -538,19 +538,21 @@ static void sys_save_midi_params(
 void sys_open_midi(int nmidiindev, int *midiindev,
     int nmidioutdev, int *midioutdev, int enable)
 {
+    if (enable)
+    {
 #ifdef USEAPI_ALSA
-  midi_alsa_init();
+        midi_alsa_init();
 #endif
 #ifdef USEAPI_OSS
-    midi_oss_init();
+        midi_oss_init();
 #endif
-    if (enable)
 #ifdef USEAPI_ALSA
-      if (sys_midiapi == API_ALSA)
-        sys_alsa_do_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev);
-      else
+        if (sys_midiapi == API_ALSA)
+            sys_alsa_do_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev);
+        else
 #endif /* ALSA */
-        sys_do_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev);
+            sys_do_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev);
+    }
     sys_save_midi_params(nmidiindev, midiindev,
         nmidioutdev, midioutdev);
 

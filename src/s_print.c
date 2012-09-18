@@ -24,7 +24,7 @@ static char* strnescape(char *dest, const char *src, size_t len)
     for(; ptout < len; ptin++, ptout++)
     {
         int c = src[ptin];
-        if (c == '\\' || c == '{' || c == '}' || c == ';')
+        if (c == '\\' || c == '{' || c == '}')
             dest[ptout++] = '\\';
         dest[ptout] = src[ptin];
         if (c==0) break;
