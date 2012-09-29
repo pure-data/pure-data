@@ -41,28 +41,16 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
     int i;
     for (i = 0; i < nmidiout; i++)
         oss_midioutfd[i] = -1;
-            /* the calling code shoudn't give us device names out
-            of range but we'll just check here anyway. */
-    for (i = 0; i < nmidiin; i++)
-        if (midiinvec[i] < 0 || midiinvec[i] >= oss_nmidiindevs)
-    {
-        post("indev %d, max %d", midiinvec[i], oss_nmidiindevs);
-        post("midi input device out of range; giving up");
-        return;
-    }
-    for (i = 0; i < nmidiout; i++)
-        if (midioutvec[i] < 0 || midioutvec[i] >= oss_nmidioutdevs)
-    {
-        post("midi output device out of range; giving up");
-        return;
-    }
     for (i = 0, oss_nmidiin = 0; i < nmidiin; i++)
     {
         int fd = -1, j, outdevindex = -1;
         char namebuf[80];
         int devno = midiinvec[i];
+        if (devno < 0 || devno >= oss_nmidiindevs)
+            continue;
         for (j = 0; j < nmidiout; j++)
-            if (!strcmp(oss_outdevnames[midioutvec[j]],
+            if (midioutvec[j] >= 0 && midioutvec[j] <= oss_nmidioutdevs
+                && !strcmp(oss_outdevnames[midioutvec[j]],
                 oss_indevnames[devno]))
                     outdevindex = j;
 
@@ -97,6 +85,8 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
         int fd = oss_midioutfd[i];
         char namebuf[80];
         int devno = midioutvec[i];
+        if (devno < 0 || devno >= oss_nmidioutdevs)
+            continue;
         sprintf(namebuf, "/dev/midi%s", oss_outdevnames[devno]);
         if (fd < 0)
         {
