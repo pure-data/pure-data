@@ -124,7 +124,7 @@ dnl This should be fixed so Pd can use ALSA shared libraries where appropriate.
     EXT=pd_linux
     CPPFLAGS="-DHAVE_LIBDL -DUNIX -DHAVE_UNISTD_H\
         -DPDGUIDIR=\\\"tcl/\\\" \
-        -fno-strict-aliasing"
+        -fno-strict-aliasing -ffast-math"
 dnl No OSS on hurd
     if test `uname -s` = "GNU";
     then
@@ -222,7 +222,7 @@ then
     if test "x$fat" == "xyes";
     then
         MORECFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk \
-            -arch i386 -arch ppc -Wno-error"
+            -arch i386 -arch ppc -Wno-error -ffast-math"
         EXTERNTARGET=d_fat
         LDFLAGS=$LDFLAGS" -arch i386 -arch ppc"
     else
