@@ -342,10 +342,6 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         saved file or copy buffer */
     pd_bind(&x->x_gobj.g_pd, asym); 
 
-    if (x2 = pd_findbyclass(gensym("#A"), garray_class))
-        pd_unbind(x2, gensym("#A"));
-
-    pd_bind(&x->x_gobj.g_pd, gensym("#A"));
     garray_redraw(x);
     return (x);
 }
