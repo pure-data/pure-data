@@ -35,4 +35,3 @@ package ifneeded pdtk_textwindow 0.1 [list source [file join $dir pdtk_textwindo
 package ifneeded scrollbox 0.1 [list source [file join $dir scrollbox.tcl]]
 package ifneeded scrollboxwindow 0.1 [list source [file join $dir scrollboxwindow.tcl]]
 package ifneeded wheredoesthisgo 0.1 [list source [file join $dir wheredoesthisgo.tcl]]
-package ifneeded pdtk_array 0.1 [list source [file join $dir pdtk_array.tcl]]
