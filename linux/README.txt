@@ -4,7 +4,8 @@ release checklist
     copyright date in ../README.txt
     pd version number in ../src/pd.rc
     git tag (to see existing tags)
-    git tag 0.43-3test1 (e.g.) and push
+    git tag 0.43-3test1 (e.g.)
+    git push --tags
     ./make-release 0.35-0  or 0.35-test11, etc
     ... compile on windows/Mac 
     ... copy to ~/bis/lib/public_html/Software/
