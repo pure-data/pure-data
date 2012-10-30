@@ -2611,8 +2611,9 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         if (glist_isvisible(x) && glist_istoplevel(x))
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
     }
-    sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
-        glist_getcanvas(x), x->gl_edit);
+    if (glist_isvisible(x))
+      sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
+          glist_getcanvas(x), x->gl_edit);
 }
 
     /* called by canvas_font below */
