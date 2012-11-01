@@ -65,7 +65,6 @@ PASRC = s_audio_pa.c s_audio_paring.c \
 	s_audio_mmio.c s_midi_mmio.c \
 	$(PADIR)/src/common/pa_stream.c \
         $(PADIR)/src/common/pa_trace.c \
-        $(PADIR)/src/common/pa_skeleton.c \
         $(PADIR)/src/common/pa_process.c \
         $(PADIR)/src/common/pa_front.c \
         $(PADIR)/src/common/pa_dither.c \

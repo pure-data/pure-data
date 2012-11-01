@@ -1,7 +1,7 @@
 #ifndef PA_PROCESS_H
 #define PA_PROCESS_H
 /*
- * $Id: pa_process.h 1097 2006-08-26 08:27:53Z rossb $
+ * $Id: pa_process.h 1668 2011-05-02 17:07:11Z rossb $
  * Portable Audio I/O Library callback buffer processing adapters
  *
  * Based on the Open Source API proposed by Ross Bencina
@@ -256,6 +256,8 @@ typedef struct {
 
     PaUtilHostBufferSizeMode hostBufferSizeMode;
     int useNonAdaptingProcess;
+    int userOutputSampleFormatIsEqualToHost;
+    int userInputSampleFormatIsEqualToHost;
     unsigned long framesPerTempBuffer;
 
     unsigned int inputChannelCount;
@@ -287,12 +289,14 @@ typedef struct {
 
     PaStreamCallbackFlags callbackStatusFlags;
 
+    int hostInputIsInterleaved;
     unsigned long hostInputFrameCount[2];
     PaUtilChannelDescriptor *hostInputChannels[2]; /**< pointers to arrays of channel descriptors.
                                                         pointers are NULL for half-duplex output processing.
                                                         hostInputChannels[i].data is NULL when the caller
                                                         calls PaUtil_SetNoInput()
                                                         */
+    int hostOutputIsInterleaved;
     unsigned long hostOutputFrameCount[2];
     PaUtilChannelDescriptor *hostOutputChannels[2]; /**< pointers to arrays of channel descriptors.
                                                          pointers are NULL for half-duplex input processing.
@@ -402,25 +406,25 @@ void PaUtil_TerminateBufferProcessor( PaUtilBufferProcessor* bufferProcessor );
 void PaUtil_ResetBufferProcessor( PaUtilBufferProcessor* bufferProcessor );
 
 
-/** Retrieve the input latency of a buffer processor.
+/** Retrieve the input latency of a buffer processor, in frames.
 
  @param bufferProcessor The buffer processor examine.
 
  @return The input latency introduced by the buffer processor, in frames.
 
- @see PaUtil_GetBufferProcessorOutputLatency
+ @see PaUtil_GetBufferProcessorOutputLatencyFrames
 */
-unsigned long PaUtil_GetBufferProcessorInputLatency( PaUtilBufferProcessor* bufferProcessor );
+unsigned long PaUtil_GetBufferProcessorInputLatencyFrames( PaUtilBufferProcessor* bufferProcessor );
 
-/** Retrieve the output latency of a buffer processor.
+/** Retrieve the output latency of a buffer processor, in frames.
 
  @param bufferProcessor The buffer processor examine.
 
  @return The output latency introduced by the buffer processor, in frames.
 
- @see PaUtil_GetBufferProcessorInputLatency
+ @see PaUtil_GetBufferProcessorInputLatencyFrames
 */
-unsigned long PaUtil_GetBufferProcessorOutputLatency( PaUtilBufferProcessor* bufferProcessor );
+unsigned long PaUtil_GetBufferProcessorOutputLatencyFrames( PaUtilBufferProcessor* bufferProcessor );
 
 /*@}*/
 

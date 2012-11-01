@@ -46,7 +46,6 @@ INCPA = -I$(PADIR)\include -I$(PADIR)\src\common -I..\lib\asio
 PASRC = $(PADIR)\src
 SRCPA = $(PASRC)/common/pa_stream.c \
         $(PASRC)/common/pa_trace.c \
-        $(PASRC)/common/pa_skeleton.c \
         $(PASRC)/common/pa_process.c \
         $(PASRC)/common/pa_front.c \
         $(PASRC)/common/pa_dither.c \
@@ -67,7 +66,7 @@ $(LDIR)\ole32.lib $(LDIR)\oleaut32.lib $(LDIR)\uuid.lib \
 $(LDIR)\odbc32.lib $(LDIR)\odbccp32.lib ..\lib\asio\asiolib.lib
 
 
-PAOBJ = pa_stream.obj pa_trace.obj pa_skeleton.obj pa_process.obj \
+PAOBJ = pa_stream.obj pa_trace.obj pa_process.obj \
 	pa_front.obj pa_dither.obj pa_cpuload.obj pa_converters.obj \
 	pa_allocation.obj pa_ringbuffer.obj \
         pa_win_hostapis.obj pa_win_util.obj pa_win_waveformat.obj \
@@ -132,8 +131,6 @@ pa_stream.obj: $(PASRC)\common\pa_stream.c
 	cl /c $(ALLCF) $(PASRC)\common\pa_stream.c
 pa_trace.obj: $(PASRC)\common\pa_trace.c
 	cl /c $(ALLCF) $(PASRC)\common\pa_trace.c
-pa_skeleton.obj: $(PASRC)\common\pa_skeleton.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_skeleton.c
 pa_process.obj: $(PASRC)\common\pa_process.c
 	cl /c $(ALLCF) $(PASRC)\common\pa_process.c
 pa_front.obj: $(PASRC)\common\pa_front.c

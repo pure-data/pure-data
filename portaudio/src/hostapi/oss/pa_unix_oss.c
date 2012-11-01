@@ -1,5 +1,5 @@
 /*
- * $Id: pa_unix_oss.c 1385 2008-06-05 21:13:54Z aknudsen $
+ * $Id: pa_unix_oss.c 1668 2011-05-02 17:07:11Z rossb $
  * PortAudio Portable Real-Time Audio Library
  * Latest Version at: http://www.portaudio.com
  * OSS implementation by:
@@ -185,7 +185,7 @@ typedef struct PaOssStream
     double sampleRate;
 
     int callbackMode;
-    int callbackStop, callbackAbort;
+    volatile int callbackStop, callbackAbort;
 
     PaOssStreamComponent *capture, *playback;
     unsigned long pollTimeout;
@@ -1121,7 +1121,7 @@ static PaError PaOssStream_Configure( PaOssStream *stream, double sampleRate, un
         assert( component->hostChannelCount > 0 );
         assert( component->hostFrames > 0 );
 
-        *inputLatency = component->hostFrames * (component->numBufs - 1) / sampleRate;
+        *inputLatency = (component->hostFrames * (component->numBufs - 1)) / sampleRate;
     }
     if( stream->playback )
     {
@@ -1132,7 +1132,7 @@ static PaError PaOssStream_Configure( PaOssStream *stream, double sampleRate, un
         assert( component->hostChannelCount > 0 );
         assert( component->hostFrames > 0 );
 
-        *outputLatency = component->hostFrames * (component->numBufs - 1) / sampleRate;
+        *outputLatency = (component->hostFrames * (component->numBufs - 1)) / sampleRate;
     }
 
     if( duplex )
@@ -1241,13 +1241,13 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     {
         inputHostFormat = stream->capture->hostFormat;
         stream->streamRepresentation.streamInfo.inputLatency = inLatency +
-            PaUtil_GetBufferProcessorInputLatency( &stream->bufferProcessor ) / sampleRate;
+            PaUtil_GetBufferProcessorInputLatencyFrames( &stream->bufferProcessor ) / sampleRate;
     }
     if( outputParameters )
     {
         outputHostFormat = stream->playback->hostFormat;
         stream->streamRepresentation.streamInfo.outputLatency = outLatency +
-            PaUtil_GetBufferProcessorOutputLatency( &stream->bufferProcessor ) / sampleRate;
+            PaUtil_GetBufferProcessorOutputLatencyFrames( &stream->bufferProcessor ) / sampleRate;
     }
 
     /* Initialize buffer processor with fixed host buffer size.
@@ -1317,7 +1317,17 @@ static PaError PaOssStream_WaitForFrames( PaOssStream *stream, unsigned long *fr
 
     while( pollPlayback || pollCapture )
     {
+#ifdef PTHREAD_CANCELED
         pthread_testcancel();
+#else
+        /* avoid indefinite waiting on thread not supporting cancelation */
+        if( stream->callbackStop || stream->callbackAbort )
+        {
+            PA_DEBUG(( "Cancelling PaOssStream_WaitForFrames\n" ));
+            (*frames) = 0;
+            return paNoError;
+        }
+#endif
 
         /* select may modify the timeout parameter */
         selectTimeval.tv_usec = timeout;
@@ -1341,8 +1351,17 @@ static PaError PaOssStream_WaitForFrames( PaOssStream *stream, unsigned long *fr
             ENSURE_( -1, paUnanticipatedHostError );
         }
         */
+#ifdef PTHREAD_CANCELED
         pthread_testcancel();
-
+#else
+        /* avoid indefinite waiting on thread not supporting cancelation */
+        if( stream->callbackStop || stream->callbackAbort )
+        {
+            PA_DEBUG(( "Cancelling PaOssStream_WaitForFrames\n" ));
+            (*frames) = 0;
+            return paNoError;
+        }
+#endif
         if( pollCapture )
         {
             if( FD_ISSET( captureFd, &readFds ) )
@@ -1603,8 +1622,15 @@ static void *PaOSS_AudioThreadProc( void *userData )
 
     while( 1 )
     {
+#ifdef PTHREAD_CANCELED
         pthread_testcancel();
-
+#else
+        if( stream->callbackAbort ) /* avoid indefinite waiting on thread not supporting cancelation */
+        {
+            PA_DEBUG(( "Aborting callback thread\n" ));
+            break;
+        }
+#endif
         if( stream->callbackStop && callbackResult == paContinue )
         {
             PA_DEBUG(( "Setting callbackResult to paComplete\n" ));
@@ -1631,8 +1657,21 @@ static void *PaOSS_AudioThreadProc( void *userData )
         {
             unsigned long frames = framesAvail;
 
+#ifdef PTHREAD_CANCELED
             pthread_testcancel();
+#else
+            if( stream->callbackStop )
+            {
+                PA_DEBUG(( "Setting callbackResult to paComplete\n" ));
+                callbackResult = paComplete;
+            }
 
+            if( stream->callbackAbort ) /* avoid indefinite waiting on thread not supporting cancelation */
+            {
+                PA_DEBUG(( "Aborting callback thread\n" ));
+                break;
+            }
+#endif
             PaUtil_BeginCpuLoadMeasurement( &stream->cpuLoadMeasurer );
 
             /* Read data */

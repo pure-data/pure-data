@@ -1,5 +1,5 @@
 /*
- * $Id: pa_jack.c 1346 2008-02-20 10:09:20Z rossb $
+ * $Id: pa_jack.c 1668 2011-05-02 17:07:11Z rossb $
  * PortAudio Portable Real-Time Audio Library
  * Latest Version at: http://www.portaudio.com
  * JACK Implementation by Joshua Haberman
@@ -71,8 +71,6 @@
 #include "pa_ringbuffer.h"
 #include "pa_debugprint.h"
 
-static int aErr_;
-static PaError paErr_;     /* For use with ENSURE_PA */
 static pthread_t mainThread_;
 static char *jackErr_ = NULL;
 static const char* clientName_ = "PortAudio";
@@ -83,15 +81,17 @@ static const char* clientName_ = "PortAudio";
 /* Check PaError */
 #define ENSURE_PA(expr) \
     do { \
-        if( (paErr_ = (expr)) < paNoError ) \
+        PaError paErr; \
+        if( (paErr = (expr)) < paNoError ) \
         { \
-            if( (paErr_) == paUnanticipatedHostError && pthread_self() == mainThread_ ) \
+            if( (paErr) == paUnanticipatedHostError && pthread_self() == mainThread_ ) \
             { \
-                if (! jackErr_ ) jackErr_ = "unknown error";\
-                PaUtil_SetLastHostErrorInfo( paJACK, -1, jackErr_ ); \
+                const char *err = jackErr_; \
+                if (! err ) err = "unknown error"; \
+                PaUtil_SetLastHostErrorInfo( paJACK, -1, err ); \
             } \
             PaUtil_DebugPrint(( "Expression '" #expr "' failed in '" __FILE__ "', line: " STRINGIZE( __LINE__ ) "\n" )); \
-            result = paErr_; \
+            result = paErr; \
             goto error; \
         } \
     } while( 0 )
@@ -102,8 +102,9 @@ static const char* clientName_ = "PortAudio";
         { \
             if( (code) == paUnanticipatedHostError && pthread_self() == mainThread_ ) \
             { \
-                if (!jackErr_) jackErr_ = "unknown error";\
-                PaUtil_SetLastHostErrorInfo( paJACK, -1, jackErr_ ); \
+                const char *err = jackErr_; \
+                if (!err) err = "unknown error"; \
+                PaUtil_SetLastHostErrorInfo( paJACK, -1, err ); \
             } \
             PaUtil_DebugPrint(( "Expression '" #expr "' failed in '" __FILE__ "', line: " STRINGIZE( __LINE__ ) "\n" )); \
             result = (code); \
@@ -112,8 +113,10 @@ static const char* clientName_ = "PortAudio";
     } while( 0 )
 
 #define ASSERT_CALL(expr, success) \
-    aErr_ = (expr); \
-    assert( aErr_ == success );
+    do { \
+        int err = (expr); \
+        assert( err == success ); \
+    } while( 0 )
 
 /*
  * Functions that directly map to the PortAudio stream interface
@@ -826,6 +829,7 @@ static void Terminate( struct PaUtilHostApiRepresentation *hostApi )
     PaUtil_FreeMemory( jackHostApi );
 
     free( jackErr_ );
+    jackErr_ = NULL;
 }
 
 static PaError IsFormatSupported( struct PaUtilHostApiRepresentation *hostApi,
@@ -1000,7 +1004,7 @@ static PaError WaitCondition( PaJackHostApiRepresentation *hostApi )
     PaTime pt = PaUtil_GetTime();
     struct timespec ts;
 
-    ts.tv_sec = (time_t) floor( pt + 1 );
+    ts.tv_sec = (time_t) floor( pt + 10 * 60 /* 10 minutes */ );
     ts.tv_nsec = (long) ((pt - floor( pt )) * 1000000000);
     /* XXX: Best enclose in loop, in case of spurious wakeups? */
     err = pthread_cond_timedwait( &hostApi->cond, &hostApi->mtx, &ts );
@@ -1177,7 +1181,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
             minimum_buffer_frames = jackHostApi->jack_buffer_size * 3;
 
         /* setup blocking API data structures (FIXME: can fail) */
-	BlockingBegin( stream, minimum_buffer_frames );
+        BlockingBegin( stream, minimum_buffer_frames );
 
         /* install our own callback for the blocking API */
         streamCallback = BlockingCallback;
@@ -1276,10 +1280,10 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
                   &stream->bufferProcessor,
                   inputChannelCount,
                   inputSampleFormat,
-                  paFloat32,            /* hostInputSampleFormat */
+                  paFloat32 | paNonInterleaved, /* hostInputSampleFormat */
                   outputChannelCount,
                   outputSampleFormat,
-                  paFloat32,            /* hostOutputSampleFormat */
+                  paFloat32 | paNonInterleaved, /* hostOutputSampleFormat */
                   jackSr,
                   streamFlags,
                   framesPerBuffer,
@@ -1292,11 +1296,11 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
     if( stream->num_incoming_connections > 0 )
         stream->streamRepresentation.streamInfo.inputLatency = (jack_port_get_latency( stream->remote_output_ports[0] )
                 - jack_get_buffer_size( jackHostApi->jack_client )  /* One buffer is not counted as latency */
-            + PaUtil_GetBufferProcessorInputLatency( &stream->bufferProcessor )) / sampleRate;
+            + PaUtil_GetBufferProcessorInputLatencyFrames( &stream->bufferProcessor )) / sampleRate;
     if( stream->num_outgoing_connections > 0 )
         stream->streamRepresentation.streamInfo.outputLatency = (jack_port_get_latency( stream->remote_input_ports[0] )
                 - jack_get_buffer_size( jackHostApi->jack_client )  /* One buffer is not counted as latency */
-            + PaUtil_GetBufferProcessorOutputLatency( &stream->bufferProcessor )) / sampleRate;
+            + PaUtil_GetBufferProcessorOutputLatencyFrames( &stream->bufferProcessor )) / sampleRate;
 
     stream->streamRepresentation.streamInfo.sampleRate = jackSr;
     stream->t0 = jack_frame_time( jackHostApi->jack_client );   /* A: Time should run from Pa_OpenStream */

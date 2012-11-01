@@ -71,12 +71,12 @@
 #endif
 
 /*
- * This fnuction determines the size of a particular sample format.
+ * This function determines the size of a particular sample format.
  * if the format is not recognized, this returns zero.
  */
 static size_t computeSampleSizeFromFormat( PaSampleFormat format )
 {
-   switch( format ) {
+   switch( format & (~paNonInterleaved) ) {
    case paFloat32: return 4;
    case paInt32: return 4;
    case paInt24: return 3;
@@ -91,7 +91,7 @@ static size_t computeSampleSizeFromFormat( PaSampleFormat format )
  */
 static size_t computeSampleSizeFromFormatPow2( PaSampleFormat format )
 {
-   switch( format ) {
+   switch( format & (~paNonInterleaved) ) {
    case paFloat32: return 4;
    case paInt32: return 4;
    case paInt24: return 4;
@@ -359,8 +359,9 @@ int BlioCallback( const void *input, void *output, unsigned long frameCount,
 
       /* check for underflow */
       if( avail < frameCount * blio->inputSampleSizeActual * blio->inChan )
+      {
          OSAtomicOr32( paInputOverflow, &blio->statusFlags );
-
+      }
       toRead = MIN( avail, frameCount * blio->inputSampleSizeActual * blio->inChan );
 
       /* copy the data */
