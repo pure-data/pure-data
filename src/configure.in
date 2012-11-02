@@ -158,7 +158,6 @@ dnl No OSS on hurd
         ../portaudio/src/common/pa_dither.c      \
         ../portaudio/src/common/pa_front.c       \
         ../portaudio/src/common/pa_process.c     \
-        ../portaudio/src/common/pa_skeleton.c    \
         ../portaudio/src/common/pa_stream.c      \
         ../portaudio/src/common/pa_trace.c       \
         ../portaudio/src/common/pa_debugprint.c  \
@@ -237,7 +236,6 @@ then
         ../portaudio/src/common/pa_dither.c      \
         ../portaudio/src/common/pa_front.c       \
         ../portaudio/src/common/pa_process.c     \
-        ../portaudio/src/common/pa_skeleton.c    \
         ../portaudio/src/common/pa_stream.c      \
         ../portaudio/src/common/pa_trace.c       \
         ../portaudio/src/common/pa_debugprint.c       \
@@ -309,7 +307,6 @@ then
         ../portaudio/src/common/pa_dither.c      \
         ../portaudio/src/common/pa_front.c       \
         ../portaudio/src/common/pa_process.c     \
-        ../portaudio/src/common/pa_skeleton.c    \
         ../portaudio/src/common/pa_stream.c      \
         ../portaudio/src/common/pa_trace.c       \
         ../portaudio/src/common/pa_debugprint.c       \
