@@ -73,7 +73,7 @@ proc ::dialog_iemgui::sched_rng {mytoplevel} {
             $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
             $mytoplevel.rng.min_ent configure -textvariable $var_iemgui_min_rng }
         if {[eval concat $$var_iemgui_max_rng] < $define_min_flashhold} {
-            set $var_iemgui_max_rng $iemgui_define_min_flashhold
+            set $var_iemgui_max_rng $define_min_flashhold
             $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
         }
         if {[eval concat $$var_iemgui_min_rng] < $define_min_flashbreak} {
