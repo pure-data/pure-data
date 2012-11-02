@@ -298,9 +298,10 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
     int srate;
     jack_status_t status;
 
-    if (NULL==jack_client_new)
+    if (NULL==jack_client_open)
     {
         fprintf(stderr,"JACK framework not available\n");
+        error("JACK framework not available");
         return 1;
     }
 
