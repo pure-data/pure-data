@@ -227,7 +227,7 @@ static void line_tilde_setup(void)
 
 /* -------------------------- vline~ ------------------------------ */
 static t_class *vline_tilde_class;
-
+#include "s_stuff.h"    /* for DEFDACBLKSIZE; this should be in m_pd.h */
 typedef struct _vseg
 {
     double s_targettime;
@@ -242,6 +242,8 @@ typedef struct _vline
     double x_value;
     double x_inc;
     double x_referencetime;
+    double x_lastlogicaltime;
+    double x_nextblocktime;
     double x_samppermsec;
     double x_msecpersamp;
     double x_targettime;
@@ -260,8 +262,16 @@ static t_int *vline_tilde_perform(t_int *w)
     double inc = x->x_inc;
     double msecpersamp = x->x_msecpersamp;
     double samppermsec = x->x_samppermsec;
-    double timenow = clock_gettimesince(x->x_referencetime) - n * msecpersamp;
+    double timenow, logicaltimenow = clock_gettimesince(x->x_referencetime);
     t_vseg *s = x->x_list;
+    if (logicaltimenow != x->x_lastlogicaltime)
+    {
+        int sampstotime = (n > DEFDACBLKSIZE ? n : DEFDACBLKSIZE);
+        x->x_lastlogicaltime = logicaltimenow;
+        x->x_nextblocktime = logicaltimenow - sampstotime * msecpersamp;
+    }
+    timenow = x->x_nextblocktime;
+    x->x_nextblocktime = timenow + n * msecpersamp;
     for (i = 0; i < n; i++)
     {
         double timenext = timenow + msecpersamp;
@@ -391,7 +401,8 @@ static void *vline_tilde_new(void)
     floatinlet_new(&x->x_obj, &x->x_inlet2);
     x->x_inlet1 = x->x_inlet2 = 0;
     x->x_value = x->x_inc = 0;
-    x->x_referencetime = clock_getlogicaltime();
+    x->x_referencetime = x->x_lastlogicaltime = x->x_nextblocktime =
+        clock_getlogicaltime();
     x->x_list = 0;
     x->x_samppermsec = 0;
     x->x_targettime = 1e20;
