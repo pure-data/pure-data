@@ -1796,13 +1796,13 @@ static void *readsf_child_main(void *zz)
                 {
                     x->x_fifohead += sysrtn;
                     x->x_bytelimit -= sysrtn;
+                    if (x->x_fifohead == fifosize)
+                        x->x_fifohead = 0;
                     if (x->x_bytelimit <= 0)
                     {
                         x->x_eof = 1;
                         break;
                     }
-                    if (x->x_fifohead == fifosize)
-                        x->x_fifohead = 0;
                 }
 #ifdef DEBUG_SOUNDFILE
                 sprintf(boo, "after: head %d, tail %d\n", 
