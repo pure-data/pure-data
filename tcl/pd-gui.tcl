@@ -148,6 +148,8 @@ set sys_searchpath {}
 set sys_staticpath {}
 # the path to the folder where the current plugin is being loaded from
 set current_plugin_loadpath {}
+# a list of plugins that were loaded
+set loaded_plugins {}
 # list of command line flags set at startup
 set startup_flags {}
 # list of libraries loaded on startup
@@ -641,15 +643,23 @@ proc check_for_running_instances {argc argv} {
 proc load_plugin_script {filename} {
     global errorInfo
 
-    ::pdwindow::debug "Loading plugin: $filename\n"
+    set basename [file tail $filename]
+    if {[lsearch $::loaded_plugins $basename] > -1} {
+        ::pdwindow::post [_ "'$basename' already loaded, ignoring: '$filename'\n"]
+        return
+    }
+
+    ::pdwindow::debug [_ "Loading plugin: $filename\n"]
     set tclfile [open $filename]
     set tclcode [read $tclfile]
     close $tclfile
     if {[catch {uplevel #0 $tclcode} errorname]} {
         ::pdwindow::error "-----------\n"
-        ::pdwindow::error "UNHANDLED ERROR: $errorInfo\n"
-        ::pdwindow::error "FAILED TO LOAD $filename\n"
+        ::pdwindow::error [_ "UNHANDLED ERROR: $errorInfo\n"]
+        ::pdwindow::error [_ "FAILED TO LOAD $filename\n"]
         ::pdwindow::error "-----------\n"
+    } else {
+        lappend ::loaded_plugins $basename
     }
 }
 
