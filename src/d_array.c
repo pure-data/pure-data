@@ -504,11 +504,13 @@ static void tabread4_tilde_setup(void)
 #include <sys/endian.h>
 #endif
 
-#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__)
+#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__) \
+    || defined(__OpenBSD__)
 #include <machine/endian.h>
 #endif
 
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__) || defined(ANDROID)
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__GNU__) || \
+    defined(ANDROID)
 #include <endian.h>
 #endif
 

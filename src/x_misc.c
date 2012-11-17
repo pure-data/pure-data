@@ -26,7 +26,7 @@
 #if defined (__linux__) || defined (__CYGWIN__) || defined (ANDROID)
 #define CLOCKHZ sysconf(_SC_CLK_TCK)
 #endif
-#if defined (__FreeBSD_kernel__) || defined(__GNU__)
+#if defined (__FreeBSD_kernel__) || defined(__GNU__) || defined(__OpenBSD__)
 #include <time.h>
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
