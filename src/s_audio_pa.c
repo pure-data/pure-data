@@ -205,18 +205,18 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     instreamparams.device = indeviceno;
     instreamparams.channelCount = inchannels;
     instreamparams.sampleFormat = paFloat32;
-    instreamparams.suggestedLatency = 0;        /* was nbuffers*framesperbuf/sampleRate */
+    instreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
     instreamparams.hostApiSpecificStreamInfo = 0;
     
     outstreamparams.device = outdeviceno;
     outstreamparams.channelCount = outchannels;
     outstreamparams.sampleFormat = paFloat32;
-    outstreamparams.suggestedLatency = 0;
+    outstreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;;
     outstreamparams.hostApiSpecificStreamInfo = 0;
 
-    if(inchannels>0 && indeviceno >= 0)
+    if( inchannels>0 && indeviceno >= 0)
         p_instreamparams=&instreamparams;
-    if(outchannels>0 && outdeviceno >= 0)
+    if( outchannels>0 && outdeviceno >= 0)
         p_outstreamparams=&outstreamparams;
 
     err=Pa_IsFormatSupported(p_instreamparams, p_outstreamparams, sampleRate);
@@ -259,7 +259,6 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
         if (paFormatIsSupported != err)
         goto error;
     }
-
     err = Pa_OpenStream(
               &pa_stream,
               p_instreamparams,
@@ -351,6 +350,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         post("input device %d, channels %d", pa_indev, inchans);
         post("output device %d, channels %d", pa_outdev, outchans);
         post("framesperbuf %d, nbufs %d", framesperbuf, nbuffers);
+        post("rate %d", rate);
     }
     pa_inchans = sys_inchannels = inchans;
     pa_outchans = sys_outchannels = outchans;
@@ -394,7 +394,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         fprintf(stderr, "Error number %d opening portaudio stream\n",
             err); 
         fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-        Pa_Terminate();
+        /* Pa_Terminate(); */
         return (1);
     }
     else if (sys_verbose)
