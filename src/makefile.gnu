@@ -4,6 +4,7 @@ BIN_DIR = ../bin
 PDEXEC = $(BIN_DIR)/pd
 EXT= pd_linux
 ALSA=true
+OSS=true
 
 prefix = /usr/local
 exec_prefix = ${prefix}
