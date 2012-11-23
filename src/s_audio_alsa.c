@@ -661,8 +661,15 @@ int alsa_send_dacs(void)
 #endif
         sys_log_error(ERR_ADCSLEPT);
     }
-    alsa_checkiosync();   /*  check I/O are in sync and data not late */
-
+    {
+        static int checkcountdown = 0;
+        if (!checkcountdown--)
+        {
+            checkcountdown = 10;
+            if (alsa_nindev + alsa_noutdev > 1)
+                alsa_checkiosync();   /*  check I/O are in sync */     
+        }
+    }
     return SENDDACS_YES;
 }
 
