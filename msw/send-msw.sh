@@ -13,7 +13,7 @@ unzip $MSWDIR/msgcat.zip
 
 cd $PDDIR
 cp src/*.{c,h} src/notes.txt /tmp/pd/src
-cp src/makefile.nt /tmp/pd/src/makefile
+cp src/makefile.msvc /tmp/pd/src/makefile
 textconvert u w < $MSWDIR/build-nt.bat > /tmp/pd/src/build.bat
 
 #FIXME: take this out of prototype

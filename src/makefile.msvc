@@ -1,7 +1,6 @@
-# Makefile for PD on MSW
-
-all: pd ..\bin\pdsend.exe ..\bin\pdreceive.exe
-
+# Makefile for PD using Microsoft Visual C/C++ (MSVC) -- note defines
+# which will have to be adapted to whichever specific version of MSVC you
+# have lying around.
 
 VCSDK = "C:\Program Files\Microsoft SDKs\Windows\v6.0A"
 VC9 = "C:\Program Files\Microsoft Visual Studio 9.0\VC"
@@ -98,6 +97,8 @@ ALLCF = $(CFLAGS)  $(INCLUDE) $(INCASIO) $(INCPA) $(INCPM) /D_WINDOWS \
 
 .c.obj:
 	cl /c $(ALLCF) /Tc$*.c
+
+all: pd ..\bin\pdsend.exe ..\bin\pdreceive.exe
 
 pd: ..\bin\pd.exe ..\bin\pd.com
 
