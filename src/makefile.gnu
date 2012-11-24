@@ -50,7 +50,7 @@ SYSSRC += s_audio_oss.c
 endif
 ifdef PA
 CPPFLAGS += -DUSEAPI_PORTAUDIO
-SYSSRC += s_audio_pa.c s_audio_paring.c
+SYSSRC += s_audio_pa.c
 LIB += -lportaudio
 endif
 
