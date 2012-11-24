@@ -216,7 +216,7 @@ tags: $(SRC) $(GSRC); ctags *.[ch]
 
 depend: makefile.dependencies
 
-makefile.dependencies: makefile
+makefile.dependencies:
 	$(CC) $(CPPFLAGS) -M $(SRC) > makefile.dependencies
 
 uninstall:
