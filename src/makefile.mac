@@ -29,7 +29,7 @@ CPPFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" \
     -I../portaudio/include -I../portaudio/src/common  \
     -I../portaudio/src/os/mac_osx/ -I../portmidi/pm_common \
     -I../portmidi/pm_mac -I../portmidi/porttime \
-    -DUSEAPI_PORTAUDIO -DPA19 -DPA_USE_COREAUDIO -DNEWBUFFER
+    -DUSEAPI_PORTAUDIO -DPA_USE_COREAUDIO -DNEWBUFFER
 ARCH_CFLAGS = -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-parentheses \
     -Wno-switch
@@ -46,7 +46,7 @@ CFLAGS = $(ARCH_CFLAGS) $(WARN_CFLAGS) $(CPPFLAGS) $(MORECFLAGS)
 
 # the sources
 
-SYSSRC += s_midi_pm.c s_audio_pa.c \
+SYSSRC += s_midi_pm.c s_audio_pa.c s_audio_paring.c \
     ../portaudio/src/common/pa_allocation.c  \
     ../portaudio/src/common/pa_converters.c  \
     ../portaudio/src/common/pa_cpuload.c     \

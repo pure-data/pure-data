@@ -281,7 +281,6 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
 {
     int n = fsize, i, zz, nwords, zonset, ztype, saveit;
     t_symbol *zarraytype, *asym = gensym("#A");
-;
     t_garray *x;
     t_pd *x2;
     t_template *template, *ztemplate;

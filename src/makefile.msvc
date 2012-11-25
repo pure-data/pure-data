@@ -41,7 +41,8 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     $(SYSSRC)
 
 PADIR = ..\portaudio
-INCPA = -I$(PADIR)\include -I$(PADIR)\src\common -I..\lib\asio
+INCPA = -I$(PADIR)\include -I$(PADIR)\src\common -I$(PADIR)\src\os\win \
+    -I..\lib\asio
 PASRC = $(PADIR)\src
 SRCPA = $(PASRC)/common/pa_stream.c \
         $(PASRC)/common/pa_trace.c \
@@ -55,6 +56,7 @@ SRCPA = $(PASRC)/common/pa_stream.c \
         $(PASRC)/os/win/pa_win_hostapis.c \
         $(PASRC)/os/win/pa_win_util.c \
         $(PASRC)/os/win/pa_win_waveformat.c \
+        $(PASRC)/os/win/pa_win_coinitialize.c \
         $(PASRC)/hostapi/wmme/pa_win_wmme.c 
 
 SRCASIO = $(PADIR)/pa_asio/pa_asio.cpp 
@@ -69,7 +71,7 @@ PAOBJ = pa_stream.obj pa_trace.obj pa_process.obj \
 	pa_front.obj pa_dither.obj pa_cpuload.obj pa_converters.obj \
 	pa_allocation.obj pa_ringbuffer.obj \
         pa_win_hostapis.obj pa_win_util.obj pa_win_waveformat.obj \
-        pa_win_wmme.obj \
+        pa_win_coinitialize.obj pa_win_wmme.obj \
         pa_asio.obj 
 	
 #       pa_win_wdmks.obj
@@ -90,15 +92,15 @@ OBJC = $(SRC:.c=.obj) $(PAOBJ) $(PMOBJ)
 GSRC =  t_main.c t_tkcmd.c
 
 GOBJ = $(GSRC:.c=.obj)
-.PHONY: pd gui
 
-ALLCF = $(CFLAGS)  $(INCLUDE) $(INCASIO) $(INCPA) $(INCPM) /D_WINDOWS \
-    /DPA_NO_DS
+ALLCF = $(CFLAGS)  $(INCLUDE) $(INCASIO) $(INCPA) $(INCPM) /D_WINDOWS
 
 .c.obj:
 	cl /c $(ALLCF) /Tc$*.c
 
 all: pd ..\bin\pdsend.exe ..\bin\pdreceive.exe
+
+.PHONY: pd
 
 pd: ..\bin\pd.exe ..\bin\pd.com
 
@@ -153,6 +155,8 @@ pa_win_util.obj: $(PASRC)\os\win\pa_win_util.c
 	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_util.c
 pa_win_waveformat.obj: $(PASRC)\os\win\pa_win_waveformat.c
 	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_waveformat.c
+pa_win_coinitialize.obj: $(PASRC)\os\win\pa_win_coinitialize.c
+	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_coinitialize.c
 pa_win_wmme.obj: $(PASRC)\hostapi\wmme\pa_win_wmme.c
 	cl /c $(ALLCF) $(PASRC)\hostapi\wmme\pa_win_wmme.c
 pa_win_wdmks.obj: $(PADIR)\pa_win_wdmks\pa_win_wdmks.c
