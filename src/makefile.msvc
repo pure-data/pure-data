@@ -2,6 +2,8 @@
 # which will have to be adapted to whichever specific version of MSVC you
 # have lying around.
 
+CC = cl
+LINK = link
 VCSDK = "C:\Program Files\Microsoft SDKs\Windows\v6.0A"
 VC9 = "C:\Program Files\Microsoft Visual Studio 9.0\VC"
 #VC="\Program Files\DevStudio\Vc"
@@ -95,8 +97,9 @@ GOBJ = $(GSRC:.c=.obj)
 
 ALLCF = $(CFLAGS)  $(INCLUDE) $(INCASIO) $(INCPA) $(INCPM) /D_WINDOWS
 
+.SUFFIXES: .obj
 .c.obj:
-	cl /c $(ALLCF) /Tc$*.c
+	$(CC) /c $(ALLCF) /Tc$*.c
 
 all: pd ..\bin\pdsend.exe ..\bin\pdreceive.exe
 
@@ -105,79 +108,79 @@ all: pd ..\bin\pdsend.exe ..\bin\pdreceive.exe
 pd: ..\bin\pd.exe ..\bin\pd.com
 
 ..\bin\pd.exe: s_entry.obj ..\bin\pd.lib
-	link $(LFLAGS) /OUT:..\bin\pd.exe /INCREMENTAL:NO s_entry.obj \
+	$(LINK) $(LFLAGS) /OUT:..\bin\pd.exe /INCREMENTAL:NO s_entry.obj \
 	    ..\bin\pd.lib $(LIB) $(ASIOLIB)
 
 ..\bin\pd.dll ..\bin\pd.lib: $(OBJC) $(OBJASIO)
-	link /DLL /OUT:..\bin\pd.dll /EXPORT:sys_main $(LFLAGS) $(OBJC) \
+	$(LINK) /DLL /OUT:..\bin\pd.dll /EXPORT:sys_main $(LFLAGS) $(OBJC) \
 	    $(OBJASIO) $(LIB) $(ASIOLIB)
 
 ..\bin\pdsend.exe: u_pdsend.obj
-	link $(LFLAGS) /out:..\bin\pdsend.exe /INCREMENTAL:NO u_pdsend.obj \
+	$(LINK) $(LFLAGS) /out:..\bin\pdsend.exe /INCREMENTAL:NO u_pdsend.obj \
 	    $(LIB)
 
 ..\bin\pdreceive.exe: u_pdreceive.obj
-	link $(LFLAGS) /out:..\bin\pdreceive.exe /INCREMENTAL:NO \
+	$(LINK) $(LFLAGS) /out:..\bin\pdreceive.exe /INCREMENTAL:NO \
 	    u_pdreceive.obj $(LIB)
 
 s_entry_com.obj: s_entry.c
 	copy s_entry.c s_entry_com.c
-	cl /c -DCOMMANDVERSION s_entry_com.c 
+	$(CC) /c -DCOMMANDVERSION s_entry_com.c 
 	del s_entry_com.c
 
 ..\bin\pd.com: s_entry_com.obj ..\bin\pd.lib
-	link $(LFLAGS) /out:..\bin\pd.com /INCREMENTAL:NO s_entry_com.obj \
+	$(LINK) $(LFLAGS) /out:..\bin\pd.com /INCREMENTAL:NO s_entry_com.obj \
 	    ..\bin\pd.lib $(LIB) $(ASIOLIB)
 
 # explicit rules to compile portaudio sources:
 pa_stream.obj: $(PASRC)\common\pa_stream.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_stream.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_stream.c
 pa_trace.obj: $(PASRC)\common\pa_trace.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_trace.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_trace.c
 pa_process.obj: $(PASRC)\common\pa_process.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_process.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_process.c
 pa_front.obj: $(PASRC)\common\pa_front.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_front.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_front.c
 pa_dither.obj: $(PASRC)\common\pa_dither.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_dither.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_dither.c
 pa_cpuload.obj: $(PASRC)\common\pa_cpuload.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_cpuload.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_cpuload.c
 pa_converters.obj: $(PASRC)\common\pa_converters.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_converters.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_converters.c
 pa_allocation.obj: $(PASRC)\common\pa_allocation.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_allocation.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_allocation.c
 pa_ringbuffer.obj: $(PASRC)\common\pa_ringbuffer.c
-	cl /c $(ALLCF) $(PASRC)\common\pa_ringbuffer.c
+	$(CC) /c $(ALLCF) $(PASRC)\common\pa_ringbuffer.c
 
 pa_win_hostapis.obj: $(PASRC)\os\win\pa_win_hostapis.c
-	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_hostapis.c
+	$(CC) /c $(ALLCF) $(PASRC)\os\win\pa_win_hostapis.c
 pa_win_util.obj: $(PASRC)\os\win\pa_win_util.c
-	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_util.c
+	$(CC) /c $(ALLCF) $(PASRC)\os\win\pa_win_util.c
 pa_win_waveformat.obj: $(PASRC)\os\win\pa_win_waveformat.c
-	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_waveformat.c
+	$(CC) /c $(ALLCF) $(PASRC)\os\win\pa_win_waveformat.c
 pa_win_coinitialize.obj: $(PASRC)\os\win\pa_win_coinitialize.c
-	cl /c $(ALLCF) $(PASRC)\os\win\pa_win_coinitialize.c
+	$(CC) /c $(ALLCF) $(PASRC)\os\win\pa_win_coinitialize.c
 pa_win_wmme.obj: $(PASRC)\hostapi\wmme\pa_win_wmme.c
-	cl /c $(ALLCF) $(PASRC)\hostapi\wmme\pa_win_wmme.c
+	$(CC) /c $(ALLCF) $(PASRC)\hostapi\wmme\pa_win_wmme.c
 pa_win_wdmks.obj: $(PADIR)\pa_win_wdmks\pa_win_wdmks.c
-	cl /c $(ALLCF) \
+	$(CC) /c $(ALLCF) \
 	-DWINVER=0x400 -DKSAUDIO_SPEAKER_DIRECTOUT \
 	$(PADIR)\pa_win_wdmks\pa_win_wdmks.c
 pa_asio.obj: $(PASRC)\hostapi\asio\pa_asio.cpp
-	cl /c $(ALLCF) $(PASRC)\hostapi\asio\pa_asio.cpp
+	$(CC) /c $(ALLCF) $(PASRC)\hostapi\asio\pa_asio.cpp
 
 portmidi.obj: $(PMDIR)\pm_common\portmidi.c
-	cl /c $(ALLCF) $(PMDIR)\pm_common\portmidi.c
+	$(CC) /c $(ALLCF) $(PMDIR)\pm_common\portmidi.c
 pmutil.obj: $(PMDIR)\pm_common\pmutil.c
-	cl /c $(ALLCF) $(PMDIR)\pm_common\pmutil.c
+	$(CC) /c $(ALLCF) $(PMDIR)\pm_common\pmutil.c
 pmwin.obj: $(PMDIR)\pm_win\pmwin.c
-	cl /c $(ALLCF) $(PMDIR)\pm_win\pmwin.c
+	$(CC) /c $(ALLCF) $(PMDIR)\pm_win\pmwin.c
 pmwinmm.obj: $(PMDIR)\pm_win\pmwinmm.c
-	cl /c $(ALLCF) $(PMDIR)\pm_win\pmwinmm.c
+	$(CC) /c $(ALLCF) $(PMDIR)\pm_win\pmwinmm.c
 porttime.obj: $(PMDIR)\porttime\porttime.c
-	cl /c $(ALLCF) $(PMDIR)\porttime\porttime.c
+	$(CC) /c $(ALLCF) $(PMDIR)\porttime\porttime.c
 ptwinmm.obj: $(PMDIR)\porttime\ptwinmm.c
-	cl /c $(ALLCF) $(PMDIR)\porttime\ptwinmm.c
+	$(CC) /c $(ALLCF) $(PMDIR)\porttime\ptwinmm.c
 
 # the following should also clean up "bin" but it doesn't because "bin" holds
 # precious stuff from elsewhere.
