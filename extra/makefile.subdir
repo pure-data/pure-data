@@ -1,4 +1,4 @@
-# this is the UNIX-style complicated layout dir, simple goes to $(prefix)/po
+# this is the UNIX-style complicated layout dir, simple goes to $(prefix)/pd
 prefix = /usr/local
 libpddir = $(prefix)/lib/pd
 
@@ -6,7 +6,9 @@ libpddir = $(prefix)/lib/pd
 
 current: pd_linux
 
-# ----------------------- NT -----------------------
+# ----------------------- Microsoft Visual C -----------------------
+MSCC = cl
+MSLN = link
 
 pd_nt: $(NAME).dll
 
@@ -14,21 +16,20 @@ pd_nt: $(NAME).dll
 
 PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo -D_CRT_SECURE_NO_WARNINGS \
     -D_CRT_NONSTDC_NO_DEPRECATE
-# VC="C:\Program Files\Microsoft Visual Studio\Vc98"
-VC = "C:\Program Files\Microsoft Visual Studio 9.0\VC"
-VSTK = "C:\Program Files\Microsoft SDKs\Windows\v6.0A"
+VC = "C:\\Program Files\\Microsoft Visual Studio 9.0\\VC"
+VSTK = "C:\\Program Files\\Microsoft SDKs\\Windows\\v6.0A"
 
-PDNTINCLUDE = /I. /I..\..\src /I$(VC)\include
+PDNTINCLUDE = /I. /I..\\..\\src /I$(VC)\\include
 
-PDNTLDIR = $(VC)\lib
+PDNTLDIR = $(VC)\\lib
 PDNTLIB = /NODEFAULTLIB:libcmt /NODEFAULTLIB:oldnames /NODEFAULTLIB:kernel32 \
-	$(PDNTLDIR)\libcmt.lib $(PDNTLDIR)\oldnames.lib \
-        $(VSTK)\lib\kernel32.lib \
-	 ..\..\bin\pd.lib 
+	$(PDNTLDIR)\\libcmt.lib $(PDNTLDIR)\\oldnames.lib \
+        $(VSTK)\\lib\\kernel32.lib \
+	 ..\\..\\bin\\pd.lib 
 
 .c.dll:
-	cl $(PDNTCFLAGS) $(PDNTINCLUDE) /c $*.c
-	link /nologo /dll /export:$(CSYM)_setup $*.obj $(PDNTLIB)
+	$(MSCC) $(PDNTCFLAGS) $(PDNTINCLUDE) /c $*.c
+	$(MSLN) /nologo /dll /export:$(CSYM)_setup $*.obj $(PDNTLIB)
 
 # ----------------------- LINUX i386 -----------------------
 
