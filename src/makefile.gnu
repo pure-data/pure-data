@@ -20,7 +20,8 @@ pddocdir = $(libpddir)/doc
 libpdbindir = $(libpddir)/bin
 libpdtcldir = $(libpddir)/tcl
 
-CPPFLAGS = -DPD -DHAVE_LIBDL -DUNIX -DHAVE_UNISTD_H -DPDGUIDIR=\"tcl/\" \
+CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
+    -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch

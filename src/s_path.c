@@ -22,9 +22,14 @@
 #include <io.h>
 #include <windows.h>
 #endif
-#ifdef _WIN32
-#include <malloc.h>
-#endif
+
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
+#else
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
 
 #include <string.h>
 #include "m_pd.h"

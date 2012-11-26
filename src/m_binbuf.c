@@ -531,12 +531,21 @@ done:
 
 #define SMALLMSG 5
 #define HUGEMSG 1000
-#ifdef _WIN32
-#include <malloc.h>
-#else
-#include <alloca.h>
+
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+#define HAVE_ALLOCA 1
 #endif
-#if HAVE_ALLOCA
+
+#ifdef HAVE_ALLOCA
+
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
+#else
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
+
 #define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < HUGEMSG ?  \
         alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
 #define ATOMS_FREEA(x, n) ( \

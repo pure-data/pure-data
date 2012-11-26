@@ -18,11 +18,14 @@ for another, more permissive-sounding copyright notice.  -MSP
 
 /* ---------- Pd interface to OOURA FFT; imitate Mayer API ---------- */
 #include "m_pd.h"
-#ifdef _WIN32
-#include <malloc.h>
+
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
 #else
-#include <alloca.h>
-#endif
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
 
 #define FFTFLT double
 void cdft(int, int, double *, int *, double *);

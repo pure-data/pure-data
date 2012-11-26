@@ -298,12 +298,14 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
     int srate;
     jack_status_t status;
 
+#ifdef __APPLE__
     if (NULL==jack_client_open)
     {
         fprintf(stderr,"JACK framework not available\n");
         error("JACK framework not available");
         return 1;
     }
+#endif
 
     jack_dio_error = 0;
 

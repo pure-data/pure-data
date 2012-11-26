@@ -4,15 +4,21 @@
 
 #include "m_pd.h"
 /* #include <string.h> */
-#ifdef _WIN32
-#include <malloc.h>
+
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
 #else
-#include <alloca.h>
-#endif
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
 
 extern t_pd *newest;
 
-#define HAVE_ALLOCA 1   /* LATER this should be set by configure script! */
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+#define HAVE_ALLOCA 1
+#endif
+
 #define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
 
 /* the "list" object family.
@@ -53,24 +59,6 @@ typedef struct _alist
     int l_npointer;     /* number of pointers */
     t_listelem *l_vec;  /* pointer to items */
 } t_alist;
-
-#if 0 /* probably won't use this version... */
-#ifdef HAVE_ALLOCA
-#define LIST_ALLOCA(x, n) ( \
-    (x).l_n = (n), \
-    (x).l_vec = (t_listelem *)((n) < LIST_NGETBYTE ?  \
-        alloca((n) * sizeof(t_listelem)) : getbytes((n) * sizeof(t_listelem))))     \
-#define LIST_FREEA(x) ( \
-    ((x).l_n < LIST_NGETBYTE ||
-        (freebytes((x).l_vec, (x).l_n * sizeof(t_listelem)), 0)))
-
-#else
-#define LIST_ALLOCA(x, n) ( \
-    (x).l_n = (n), \
-    (x).l_vec = (t_listelem *)getbytes((n) * sizeof(t_listelem))) 
-#define LIST_FREEA(x) (freebytes((x).l_vec, (x).l_n * sizeof(t_listelem)))
-#endif
-#endif
 
 #if HAVE_ALLOCA
 #define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < LIST_NGETBYTE ?  \

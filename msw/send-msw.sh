@@ -49,3 +49,6 @@ rm -f pd.zip
 zip -q -r pd.zip pd
 ls -l /tmp/pd.zip
 
+cd ~/bis/var/wine/script
+./build-msw.sh
+
