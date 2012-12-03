@@ -305,6 +305,7 @@ static void hslider_properties(t_gobj *z, t_glist *owner)
 
 static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
 {
+    int old = x->x_val;
     double g;
 
     if(x->x_gui.x_isa.x_reverse)    /* bugfix */
@@ -327,7 +328,8 @@ static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
         g = (f - x->x_min) / x->x_k;
     x->x_val = (int)(100.0*g + 0.49999);
     x->x_pos = x->x_val;
-    (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
+    if(x->x_val != old)
+        (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
 static void hslider_bang(t_hslider *x)

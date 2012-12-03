@@ -582,7 +582,7 @@ static void vu_label_font(t_vu *x, t_symbol *s, int ac, t_atom *av)
 static void vu_float(t_vu *x, t_floatarg rms)
 {
     int i;
-
+    int old = x->x_rms;
     if(rms <= IEM_VU_MINDB)
         x->x_rms = 0;
     else if(rms >= IEM_VU_MAXDB)
@@ -597,13 +597,14 @@ static void vu_float(t_vu *x, t_floatarg rms)
     x->x_fr = rms;
     outlet_float(x->x_out_rms, rms);
     x->x_updaterms = 1;
-    sys_queuegui(x, x->x_gui.x_glist, vu_draw_update);
+    if(x->x_rms != old)
+        sys_queuegui(x, x->x_gui.x_glist, vu_draw_update);
 }
 
 static void vu_ft1(t_vu *x, t_floatarg peak)
 {
     int i;
-
+    int old = x->x_peak;
     if(peak <= IEM_VU_MINDB)
         x->x_peak = 0;
     else if(peak >= IEM_VU_MAXDB)
@@ -617,7 +618,8 @@ static void vu_ft1(t_vu *x, t_floatarg peak)
     peak = 0.01*(t_float)(i - 10000);
     x->x_fp = peak;
     x->x_updatepeak = 1;
-    sys_queuegui(x, x->x_gui.x_glist, vu_draw_update);
+    if(x->x_peak != old)
+        sys_queuegui(x, x->x_gui.x_glist, vu_draw_update);
     outlet_float(x->x_out_peak, peak);
 }
 

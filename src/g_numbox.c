@@ -572,9 +572,12 @@ static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
 
 static void my_numbox_set(t_my_numbox *x, t_floatarg f)
 {
-    x->x_val = f;
-    my_numbox_clip(x);
-    sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
+    if(x->x_val != f)
+    {
+        x->x_val = f;
+        my_numbox_clip(x);
+        sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
+    }
 }
 
 static void my_numbox_log_height(t_my_numbox *x, t_floatarg lh)
