@@ -399,7 +399,7 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 {
-    t_symbol *lab;
+    t_symbol *old;
     int pargc, tail_len, nth_arg;
     t_atom *pargv;
 
@@ -408,11 +408,11 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
                 s = gensym("empty");
         /* tb } */
 
-    lab = iemgui_raute2dollar(s);
-    iemgui->x_lab_unexpanded = lab;
-    iemgui->x_lab = lab = canvas_realizedollar(iemgui->x_glist, lab);
+    old = iemgui->x_lab;
+    iemgui->x_lab_unexpanded = iemgui_raute2dollar(s);
+    iemgui->x_lab = canvas_realizedollar(iemgui->x_glist, iemgui->x_lab_unexpanded);
 
-    if(glist_isvisible(iemgui->x_glist))
+    if(glist_isvisible(iemgui->x_glist) && iemgui->x_lab != old)
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -text {%s} \n",
                  glist_getcanvas(iemgui->x_glist), x,
                  strcmp(s->s_name, "empty")?iemgui->x_lab->s_name:"");
