@@ -1273,7 +1273,7 @@ FUNC_DEF_UNARY(ex_isinf, isinf, (double), 0);
 /*
  * ex_finite - is the value finite
  */
-FUNC_DEF_UNARY(ex_finite, finite, (double), 0);
+FUNC_DEF_UNARY(ex_finite, isfinite, (double), 0);
 
 /*
  * ex_isnan -- is the resut a nan (Not a number)
@@ -1288,7 +1288,7 @@ FUNC_DEF(ex_copysign, copysign, (double), (double), 1);
 /*
  * ex_drem - floating-point remainder function
  */
-FUNC_DEF(ex_drem, drem, (double), (double), 1);
+FUNC_DEF(ex_drem, remainder, (double), (double), 1);
 #endif
 
 #ifdef notdef

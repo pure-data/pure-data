@@ -108,19 +108,20 @@ pd: $(PDEXEC)
 
 pd-watchdog: $(BIN_DIR)/pd-watchdog
 
-$(BIN_DIR):
+$(BIN_DIR)/pd-watchdog: s_watchdog.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
-
-$(BIN_DIR)/pd-watchdog: s_watchdog.c $(BIN_DIR)
 	$(CC) $(CFLAGS) $(STRIPFLAG) -o $(BIN_DIR)/pd-watchdog s_watchdog.c
 
-$(BIN_DIR)/pdsend: u_pdsend.c $(BIN_DIR)
+$(BIN_DIR)/pdsend: u_pdsend.c
+	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS)  $(STRIPFLAG) -o $(BIN_DIR)/pdsend u_pdsend.c
 
-$(BIN_DIR)/pdreceive: u_pdreceive.c $(BIN_DIR)
+$(BIN_DIR)/pdreceive: u_pdreceive.c
+	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS)  $(STRIPFLAG) -o $(BIN_DIR)/pdreceive u_pdreceive.c
 
-$(PDEXEC): $(OBJ) $(BIN_DIR)
+$(PDEXEC): $(OBJ)
+	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 	cd ../obj;  $(CC) $(LDFLAGS) $(DBG_CFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
 
 externs: 
