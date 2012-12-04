@@ -6,7 +6,7 @@ pd_LDFLAGS =
 pdsend_CFLAGS = 
 pdreceive_CFLAGS = 
 pd_watchdog_CFLAGS = 
-LIBS = 
+LIBS = @LIBS@
 INCLUDES = @INCLUDES@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
@@ -43,6 +43,7 @@ EXTRA_DIST = CHANGELOG.txt notes.txt makefile.mingw
 # configurations per library
 if ALSA
 pd_CFLAGS += -DUSEAPI_ALSA
+pd_LDADD  += @ALSA_LIBS@
 pd_SOURCES += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 endif
 
@@ -62,9 +63,9 @@ if JACK
 pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
 pd_SOURCES += s_audio_jack.c
 if MACOSX
-LIBS += -weak_framework Jackmp
+pd_LDFLAGS += -weak_framework Jackmp
 else
-LIBS += -ljack
+pd_LDADD += @JACK_LIBS@
 endif
 endif
 
@@ -79,7 +80,7 @@ endif
 
 if PORTAUDIO
 pd_CFLAGS += -DUSEAPI_PORTAUDIO  -I../portaudio/include
-pd_LDADD += ../portaudio/libportaudio.la
+pd_LDADD += ../portaudio/lib/libportaudio.la
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
 endif
 
