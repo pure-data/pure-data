@@ -82,7 +82,7 @@ proc ::pd_connect::pd_readsocket {} {
              switch -regexp -- $errorname {
                  "missing close-brace" {
                      ::pdwindow::fatal \
-                         [concat [_ "(Tcl) MISSING CLOSE BRACE: "] $errorInfo "\n"]
+                         [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo "\n"]
                  } "^invalid command name" {
                      ::pdwindow::fatal \
                          [concat [_ "(Tcl) INVALID COMMAND NAME: "] $errorInfo "\n"]
