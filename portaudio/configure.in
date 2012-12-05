@@ -11,6 +11,8 @@ dnl Init autoconf and make sure configure is being called
 dnl from the right directory
 AC_INIT([include/portaudio.h])
 
+AC_PROG_MKDIR_P
+
 dnl Define build, build_cpu, build_vendor, build_os
 AC_CANONICAL_BUILD
 dnl Define host, host_cpu, host_vendor, host_os

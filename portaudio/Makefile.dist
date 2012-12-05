@@ -81,9 +81,6 @@ DISTFILES=\
 	install-sh \
 	ltmain.sh
 
-## this should really be set by autotools
-MKDIR_P=mkdir -p
-
 ## this is the actual target, stolen from an automake generated Makefile
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
