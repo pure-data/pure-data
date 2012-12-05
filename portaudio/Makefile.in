@@ -56,8 +56,7 @@ COMMON_OBJS = \
 	src/common/pa_front.o \
 	src/common/pa_process.o \
 	src/common/pa_stream.o \
-	src/common/pa_trace.o \
-	src/hostapi/skeleton/pa_hostapi_skeleton.o
+	src/common/pa_trace.o
 
 LOOPBACK_OBJS = \
 	qa/loopback/src/audio_analyzer.o \
@@ -155,7 +154,7 @@ SRC_DIRS = \
 SUBDIRS =
 @ENABLE_CXX_TRUE@SUBDIRS += bindings/cpp
 
-all: lib/$(PALIB) all-recursive tests examples selftests
+all: lib/$(PALIB) all-recursive
 
 tests: bin-stamp $(TESTS)
 
