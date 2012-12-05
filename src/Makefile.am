@@ -79,19 +79,19 @@ endif
 endif
 
 if PORTAUDIO
-pd_CFLAGS += -DUSEAPI_PORTAUDIO  -I../portaudio/include
-pd_LDADD += ../portaudio/lib/libportaudio.la
+pd_CFLAGS += -DUSEAPI_PORTAUDIO  -I$(top_srcdir)/portaudio/include
+pd_LDADD += $(top_builddir)/portaudio/lib/libportaudio.la
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
 endif
 
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
-pd_LDADD += ../asio/libasio.la
+pd_LDADD += $(top_builddir)/asio/libasio.la
 endif
 
 if PORTMIDI
-INCLUDES += -I../portmidi/pm_common -I../portmidi/porttime
-pd_LDADD += ../portmidi/libportmidi.la
+INCLUDES += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
+pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 pd_SOURCES += s_midi_pm.c
 endif
 
