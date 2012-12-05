@@ -254,3 +254,7 @@ install-recursive:
 
 uninstall-recursive:
 	if test -n "$(SUBDIRS)" ; then for dir in "$(SUBDIRS)"; do $(MAKE) -C $$dir uninstall; done ; fi
+
+
+## dist/distdir targets by IOhannes m zmölnig
+include $(srcdir)/Makefile.dist
