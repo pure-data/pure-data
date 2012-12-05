@@ -185,15 +185,13 @@ bin/paloopback: lib/$(PALIB) $(MAKEFILE) $(PAINC) $(LOOPBACK_OBJS)
 	@WITH_ASIO_FALSE@ $(LIBTOOL) --mode=link $(CC) -o $@ $(CFLAGS) $(LOOPBACK_OBJS) lib/$(PALIB) $(LIBS)
 	@WITH_ASIO_TRUE@ $(LIBTOOL) --mode=link --tag=CXX $(CXX) -o $@ $(CXXFLAGS)  $(LOOPBACK_OBJS) lib/$(PALIB) $(LIBS)
 
-install: lib/$(PALIB) portaudio-2.0.pc
+install: lib/$(PALIB)
 	$(INSTALL) -d $(DESTDIR)$(libdir)
 	$(LIBTOOL) --mode=install $(INSTALL) lib/$(PALIB) $(DESTDIR)$(libdir)
 	$(INSTALL) -d $(DESTDIR)$(includedir)
 	for include in $(INCLUDES); do \
 		$(INSTALL_DATA) -m 644 $(top_srcdir)/include/$$include $(DESTDIR)$(includedir)/$$include; \
 	done
-	$(INSTALL) -d $(DESTDIR)$(libdir)/pkgconfig
-	$(INSTALL) -m 644 portaudio-2.0.pc $(DESTDIR)$(libdir)/pkgconfig/portaudio-2.0.pc
 	@echo ""
 	@echo "------------------------------------------------------------"
 	@echo "PortAudio was successfully installed."
@@ -208,7 +206,9 @@ install: lib/$(PALIB) portaudio-2.0.pc
 
 uninstall:
 	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$(PALIB)
-	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(includedir)/portaudio.h
+	for include in $(INCLUDES); do \
+		$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(includedir)/$$include; \
+	done
 	$(MAKE) uninstall-recursive
 
 clean:
@@ -217,7 +217,7 @@ clean:
 	-$(RM) -r bin lib
 
 distclean: clean
-	$(RM) config.log config.status Makefile libtool portaudio-2.0.pc
+	$(RM) config.log config.status Makefile libtool
 
 %.o: %.c $(MAKEFILE) $(PAINC)
 	$(CC) -c $(CFLAGS) $< -o $@
