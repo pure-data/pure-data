@@ -40,11 +40,11 @@
 /* is c the start of a utf8 sequence? */
 #define isutf(c) (((c)&0xC0)!=0x80)
 
-/* convert UTF-8 data to wide character */
-int u8_toucs(uint32_t *dest, int sz, char *src, int srcsz);
+/* convert UTF-8 data to UCS-2 wide character */
+int u8_utf8toucs2(uint16_t *dest, int sz, char *src, int srcsz);
 
 /* the opposite conversion */
-int u8_toutf8(char *dest, int sz, uint32_t *src, int srcsz);
+int u8_ucs2toutf8(char *dest, int sz, uint16_t *src, int srcsz);
 
 /* moo: get byte length of character number, or 0 if not supported */
 int u8_wc_nbytes(uint32_t ch);

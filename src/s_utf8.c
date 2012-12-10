@@ -59,9 +59,9 @@ int u8_seqlen(char *s)
    for all the characters.
    if sz = srcsz+1 (i.e. 4*srcsz+4 bytes), there will always be enough space.
 */
-int u8_toucs(uint32_t *dest, int sz, char *src, int srcsz)
+int u8_utf8toucs2(uint16_t *dest, int sz, char *src, int srcsz)
 {
-    uint32_t ch;
+    uint16_t ch;
     char *src_end = src + srcsz;
     int nb;
     int i=0;
@@ -79,10 +79,6 @@ int u8_toucs(uint32_t *dest, int sz, char *src, int srcsz)
         ch = 0;
         switch (nb) {
             /* these fall through deliberately */
-#if UTF8_SUPPORT_FULL_UCS4
-        case 5: ch += (unsigned char)*src++; ch <<= 6;
-        case 4: ch += (unsigned char)*src++; ch <<= 6;
-#endif
         case 3: ch += (unsigned char)*src++; ch <<= 6;
         case 2: ch += (unsigned char)*src++; ch <<= 6;
         case 1: ch += (unsigned char)*src++; ch <<= 6;
@@ -108,9 +104,9 @@ int u8_toucs(uint32_t *dest, int sz, char *src, int srcsz)
    the NUL as well.
    the destination string will never be bigger than the source string.
 */
-int u8_toutf8(char *dest, int sz, uint32_t *src, int srcsz)
+int u8_ucs2toutf8(char *dest, int sz, uint16_t *src, int srcsz)
 {
-    uint32_t ch;
+    uint16_t ch;
     int i = 0;
     char *dest_end = dest + sz;
 
@@ -127,18 +123,10 @@ int u8_toutf8(char *dest, int sz, uint32_t *src, int srcsz)
             *dest++ = (ch>>6) | 0xC0;
             *dest++ = (ch & 0x3F) | 0x80;
         }
-        else if (ch < 0x10000) {
+        else {
             if (dest >= dest_end-2)
                 return i;
             *dest++ = (ch>>12) | 0xE0;
-            *dest++ = ((ch>>6) & 0x3F) | 0x80;
-            *dest++ = (ch & 0x3F) | 0x80;
-        }
-        else if (ch < 0x110000) {
-            if (dest >= dest_end-3)
-                return i;
-            *dest++ = (ch>>18) | 0xF0;
-            *dest++ = ((ch>>12) & 0x3F) | 0x80;
             *dest++ = ((ch>>6) & 0x3F) | 0x80;
             *dest++ = (ch & 0x3F) | 0x80;
         }
