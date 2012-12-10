@@ -58,6 +58,22 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
+/* Microsoft Visual Studio is not C99, it does not provide stdint.h */
+#ifdef _MSC_VER
+typedef signed __int8     int8_t;
+typedef signed __int16    int16_t;
+typedef signed __int32    int32_t;
+typedef signed __int64    int64_t;
+typedef unsigned __int8   uint8_t;
+typedef unsigned __int16  uint16_t;
+typedef unsigned __int32  uint32_t;
+typedef unsigned __int64  uint64_t;
+#elif defined(IRIX)
+typedef long int32_t;  /* a data type that has 32 bits */
+#else
+# include <stdint.h>
+#endif
+
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
 

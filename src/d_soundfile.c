@@ -38,9 +38,6 @@ objects use Posix-like threads.  */
 
 /***************** soundfile header structures ************************/
 
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-
 #define FORMAT_WAVE 0
 #define FORMAT_AIFF 1
 #define FORMAT_NEXT 2
@@ -50,11 +47,11 @@ typedef unsigned int uint32;
 typedef struct _nextstep
 {
     char ns_fileid[4];      /* magic number '.snd' if file is big-endian */
-    uint32 ns_onset;        /* byte offset of first sample */
-    uint32 ns_length;       /* length of sound in bytes */
-    uint32 ns_format;        /* format; see below */
-    uint32 ns_sr;           /* sample rate */
-    uint32 ns_nchans;       /* number of channels */
+    uint32_t ns_onset;      /* byte offset of first sample */
+    uint32_t ns_length;     /* length of sound in bytes */
+    uint32_t ns_format;     /* format; see below */
+    uint32_t ns_sr;         /* sample rate */
+    uint32_t ns_nchans;     /* number of channels */
     char ns_info[4];        /* comment */
 } t_nextstep;
 
@@ -73,34 +70,34 @@ typedef unsigned long dword;
 typedef struct _wave
 {
     char  w_fileid[4];              /* chunk id 'RIFF'            */
-    uint32 w_chunksize;             /* chunk size                 */
+    uint32_t w_chunksize;           /* chunk size                 */
     char  w_waveid[4];              /* wave chunk id 'WAVE'       */
     char  w_fmtid[4];               /* format chunk id 'fmt '     */
-    uint32 w_fmtchunksize;          /* format chunk size          */
-    uint16  w_fmttag;               /* format tag (WAV_INT etc)   */
-    uint16  w_nchannels;            /* number of channels         */
-    uint32 w_samplespersec;         /* sample rate in hz          */
-    uint32 w_navgbytespersec;       /* average bytes per second   */
-    uint16  w_nblockalign;          /* number of bytes per frame  */
-    uint16  w_nbitspersample;       /* number of bits in a sample */
+    uint32_t w_fmtchunksize;        /* format chunk size          */
+    uint16_t w_fmttag;              /* format tag (WAV_INT etc)   */
+    uint16_t w_nchannels;           /* number of channels         */
+    uint32_t w_samplespersec;       /* sample rate in hz          */
+    uint32_t w_navgbytespersec;     /* average bytes per second   */
+    uint16_t w_nblockalign;         /* number of bytes per frame  */
+    uint16_t w_nbitspersample;      /* number of bits in a sample */
     char  w_datachunkid[4];         /* data chunk id 'data'       */
-    uint32 w_datachunksize;         /* length of data chunk       */
+    uint32_t w_datachunksize;       /* length of data chunk       */
 } t_wave;
 
 typedef struct _fmt         /* format chunk */
 {
-    uint16 f_fmttag;                /* format tag, 1 for PCM      */
-    uint16 f_nchannels;             /* number of channels         */
-    uint32 f_samplespersec;         /* sample rate in hz          */
-    uint32 f_navgbytespersec;       /* average bytes per second   */
-    uint16 f_nblockalign;           /* number of bytes per frame  */
-    uint16 f_nbitspersample;        /* number of bits in a sample */
+    uint16_t f_fmttag;              /* format tag, 1 for PCM      */
+    uint16_t f_nchannels;           /* number of channels         */
+    uint32_t f_samplespersec;       /* sample rate in hz          */
+    uint32_t f_navgbytespersec;     /* average bytes per second   */
+    uint16_t f_nblockalign;         /* number of bytes per frame  */
+    uint16_t f_nbitspersample;      /* number of bits in a sample */
 } t_fmt;
 
 typedef struct _wavechunk           /* ... and the last two items */
 {
     char  wc_id[4];                 /* data chunk id, e.g., 'data' or 'fmt ' */
-    uint32 wc_size;                 /* length of data chunk       */
+    uint32_t wc_size;               /* length of data chunk       */
 } t_wavechunk;
 
 #define WAV_INT 1
@@ -112,17 +109,17 @@ typedef struct _wavechunk           /* ... and the last two items */
 typedef struct _datachunk
 {
     char  dc_id[4];                 /* data chunk id 'SSND'       */
-    uint32 dc_size;                 /* length of data chunk       */
-    uint32 dc_offset;               /* additional offset in bytes */
-    uint32 dc_block;                /* block size                 */
+    uint32_t dc_size;               /* length of data chunk       */
+    uint32_t dc_offset;             /* additional offset in bytes */
+    uint32_t dc_block;              /* block size                 */
 } t_datachunk;
 
 typedef struct _comm
 {
-    uint16 c_nchannels;             /* number of channels         */
-    uint16 c_nframeshi;             /* # of sample frames (hi)    */
-    uint16 c_nframeslo;             /* # of sample frames (lo)    */
-    uint16 c_bitspersamp;           /* bits per sample            */
+    uint16_t c_nchannels;           /* number of channels         */
+    uint16_t c_nframeshi;           /* # of sample frames (hi)    */
+    uint16_t c_nframeslo;           /* # of sample frames (lo)    */
+    uint16_t c_bitspersamp;         /* bits per sample            */
     unsigned char c_samprate[10];   /* sample rate, 80-bit float! */
 } t_comm;
 
@@ -130,14 +127,14 @@ typedef struct _comm
 typedef struct _aiff
 {
     char  a_fileid[4];              /* chunk id 'FORM'            */
-    uint32 a_chunksize;             /* chunk size                 */
+    uint32_t a_chunksize;           /* chunk size                 */
     char  a_aiffid[4];              /* aiff chunk id 'AIFF'       */
     char  a_fmtid[4];               /* format chunk id 'COMM'     */
-    uint32 a_fmtchunksize;          /* format chunk size, 18      */
-    uint16 a_nchannels;             /* number of channels         */
-    uint16 a_nframeshi;             /* # of sample frames (hi)    */
-    uint16 a_nframeslo;             /* # of sample frames (lo)    */
-    uint16 a_bitspersamp;           /* bits per sample            */
+    uint32_t a_fmtchunksize;        /* format chunk size, 18      */
+    uint16_t a_nchannels;           /* number of channels         */
+    uint16_t a_nframeshi;           /* # of sample frames (hi)    */
+    uint16_t a_nframeslo;           /* # of sample frames (lo)    */
+    uint16_t a_bitspersamp;         /* bits per sample            */
     unsigned char a_samprate[10];   /* sample rate, 80-bit float! */
 } t_aiff;
 
@@ -169,7 +166,7 @@ extern int garray_ambigendian(void);
 
 /* byte swappers */
 
-static uint32 swap4(uint32 n, int doit)
+static uint32_t swap4(uint32_t n, int doit)
 {
     if (doit)
         return (((n & 0xff) << 24) | ((n & 0xff00) << 8) |
@@ -177,7 +174,7 @@ static uint32 swap4(uint32 n, int doit)
     else return (n);
 }
 
-static uint16 swap2(uint32 n, int doit)
+static uint16_t swap2(uint32_t n, int doit)
 {
     if (doit)
         return (((n & 0xff) << 8) | ((n & 0xff00) >> 8));
@@ -246,7 +243,7 @@ int open_soundfile_via_fd(int fd, int headersize,
         swap = (bigendian != garray_ambigendian());
         if (format == FORMAT_NEXT)   /* nextstep header */
         {
-            uint32 param;
+            uint32_t param;
             if (bytesread < (int)sizeof(t_nextstep))
                 goto badheader;
             nchannels = swap4(((t_nextstep *)buf)->ns_nchans, swap);
@@ -886,7 +883,7 @@ static void soundfile_finishwrite(void *obj, char *filename, int fd,
         if (filetype == FORMAT_NEXT)
         {
             /* do it the lazy way: just set the size field to 'unknown size'*/
-            uint32 nextsize = 0xffffffff;
+            uint32_t nextsize = 0xffffffff;
             if (lseek(fd, 8, SEEK_SET) == 0)
             {
                 goto baddonewrite;
