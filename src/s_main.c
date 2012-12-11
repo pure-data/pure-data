@@ -799,6 +799,10 @@ int sys_argparse(int argc, char **argv)
         {
             sys_printtostderr = 1;
             argc--; argv++;
+#ifdef _WIN32
+            /* we need to tell Windows to output UTF-8 */
+            SetConsoleOutputCP(CP_UTF8);
+#endif
         }
         else if (!strcmp(*argv, "-guicmd") && argc > 1)
         {

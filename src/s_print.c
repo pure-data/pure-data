@@ -51,7 +51,11 @@ static void dopost(const char *s)
     if (sys_printhook)
         (*sys_printhook)(s);
     else if (sys_printtostderr)
+#ifdef _WIN32
+        fwprintf(stderr, L"%S", s);
+#else
         fprintf(stderr, "%s", s);
+#endif
     else
     {
         char upbuf[MAXPDSTRING];
