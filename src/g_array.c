@@ -1443,8 +1443,7 @@ static void garray_write(t_garray *x, t_symbol *filename)
     }
     canvas_makefilename(glist_getcanvas(x->x_glist), filename->s_name,
         buf, MAXPDSTRING);
-    sys_bashfilename(buf, buf);
-    if (!(fd = fopen(buf, "w")))
+    if (!(fd = sys_fopen(buf, "w")))
     {
         error("%s: can't create", buf);
         return;

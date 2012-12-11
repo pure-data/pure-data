@@ -748,23 +748,6 @@ broken:
          ATOMS_FREEA(mstack, maxnargs);
 }
 
-static int binbuf_doopen(char *s, int mode)
-{
-    char namebuf[MAXPDSTRING];
-#ifdef _WIN32
-    mode |= O_BINARY;
-#endif
-    sys_bashfilename(s, namebuf);
-    return (open(namebuf, mode));
-}
-
-static FILE *binbuf_dofopen(char *s, char *mode)
-{
-    char namebuf[MAXPDSTRING];
-    sys_bashfilename(s, namebuf);
-    return (fopen(namebuf, mode));
-}
-
 int binbuf_read(t_binbuf *b, char *filename, char *dirname, int crflag)
 {
     long length;
@@ -778,7 +761,7 @@ int binbuf_read(t_binbuf *b, char *filename, char *dirname, int crflag)
         strcat(namebuf, dirname), strcat(namebuf, "/");
     strcat(namebuf, filename);
     
-    if ((fd = binbuf_doopen(namebuf, 0)) < 0)
+    if ((fd = sys_open(namebuf, 0)) < 0)
     {
         fprintf(stderr, "open: ");
         perror(namebuf);
@@ -879,7 +862,7 @@ int binbuf_write(t_binbuf *x, char *filename, char *dir, int crflag)
         deleteit = 1;
     }
     
-    if (!(f = binbuf_dofopen(fbuf, "w")))
+    if (!(f = sys_fopen(fbuf, "w")))
     {
         fprintf(stderr, "open: ");
         sys_unixerror(fbuf);

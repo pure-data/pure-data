@@ -11,14 +11,14 @@ readsf~ and writesf~ are defined which confine disk operations to a separate
 thread so that they can be used in real time.  The readsf~ and writesf~
 objects use Posix-like threads.  */
 
-#ifndef _WIN32
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#include <fcntl.h>
 #endif
 #include <pthread.h>
 #ifdef _WIN32
 #include <io.h>
 #endif
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -32,8 +32,13 @@ objects use Posix-like threads.  */
 # define lseek lseek64
 #define off_t __off64_t
 #endif
-#ifdef _WIN32
+
+/* Microsoft Visual Studio does not define these... arg */
+#ifdef _MSC_VER
 #define off_t long
+#define O_CREAT   _O_CREAT
+#define O_TRUNC   _O_TRUNC
+#define O_WRONLY  _O_WRONLY
 #endif
 
 /***************** soundfile header structures ************************/
@@ -150,13 +155,6 @@ typedef struct _aiff
 #define READHDRSIZE (16 > WHDR2 + 2 ? 16 : WHDR2 + 2)
 
 #define OBUFSIZE MAXPDSTRING  /* assume MAXPDSTRING is bigger than headers */
-
-#ifdef _WIN32
-#include <fcntl.h>
-#define BINCREATE _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY
-#else
-#define BINCREATE O_WRONLY | O_CREAT | O_TRUNC
-#endif
 
 /* this routine returns 1 if the high order byte comes at the lower
 address on our architecture (big-endianness.).  It's 1 for Motorola,
@@ -817,8 +815,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     }
 
     canvas_makefilename(canvas, filenamebuf, buf2, MAXPDSTRING);
-    sys_bashfilename(buf2, buf2);
-    if ((fd = open(buf2, BINCREATE, 0666)) < 0)
+    if ((fd = sys_open(buf2, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
         return (-1);
 
     if (write(fd, headerbuf, headersize) < headersize)

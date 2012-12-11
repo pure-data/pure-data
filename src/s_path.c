@@ -16,8 +16,8 @@
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#include <sys/stat.h>
 #endif
+#include <sys/stat.h>
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
@@ -35,6 +35,7 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include <stdio.h>
 #include <fcntl.h>
 #include <ctype.h>
@@ -259,12 +260,6 @@ void sys_setextrapath(const char *p)
     sys_staticpath = namelist_append(sys_staticpath, p, 0);
 }
 
-#ifdef _WIN32
-#define MSWOPENFLAG(bin) (bin ? _O_BINARY : _O_TEXT)
-#else
-#define MSWOPENFLAG(bin) 0
-#endif
-
     /* try to open a file in the directory "dir", named "name""ext",
     for reading.  "Name" may have slashes.  The directory is copied to
     "dirresult" which must be at least "size" bytes.  "nameresult" is set
@@ -285,11 +280,10 @@ int sys_trytoopenone(const char *dir, const char *name, const char* ext,
         strcat(dirresult, "/");
     strcat(dirresult, name);
     strcat(dirresult, ext);
-    sys_bashfilename(dirresult, dirresult);
 
     DEBUG(post("looking for %s",dirresult));
         /* see if we can open the file for reading */
-    if ((fd=open(dirresult,O_RDONLY | MSWOPENFLAG(bin))) >= 0)
+    if ((fd=sys_open(dirresult, O_RDONLY)) >= 0)
     {
             /* in unix, further check that it's not a directory */
 #ifdef HAVE_UNISTD_H
@@ -403,13 +397,55 @@ int open_via_path(const char *dir, const char *name, const char *ext,
         size, bin, sys_searchpath));
 }
 
-   /* close a previsouly opened file
-   this is needed on platforms where you cannot open/close ressources 
+    /* open a file with a UTF-8 filename
+    This is needed because WIN32 does not support UTF-8 filenames, only UCS2.
+    On all other platforms, this is defined as "#define sys_open open" since
+    they all support UTF-8 filenames. Having this function prevents lots of
+    #ifdefs all over the place.
+    */
+#ifdef _WIN32
+int sys_open(const char *path, int oflag, ...)
+{
+    int i, fd;
+    char pathbuf[MAXPDSTRING];
+    wchar_t ucs2path[MAXPDSTRING];
+    sys_bashfilename(path, pathbuf);
+    u8_utf8toucs2(ucs2path, MAXPDSTRING, pathbuf, MAXPDSTRING-1);
+    /* use _O_BINARY so we don't have to think about WIN32's Unicode
+     * modes. For the create mode, we always use 0666 on UNIX, so we
+     * just hard-code the Windows equivalent here. */
+    if (oflag & O_CREAT)
+        fd = _wopen(ucs2path, oflag | _O_BINARY, _S_IREAD | _S_IWRITE);
+    else
+        fd = _wopen(ucs2path, oflag | _O_BINARY);
+    return fd;
+}
+
+FILE *sys_fopen(const char *filename, const char *mode)
+{
+    char namebuf[MAXPDSTRING];
+    wchar_t ucs2buf[MAXPDSTRING];
+    wchar_t ucs2mode[MAXPDSTRING];
+    sys_bashfilename(filename, namebuf);
+    u8_utf8toucs2(ucs2buf, MAXPDSTRING, namebuf, MAXPDSTRING-1);
+    /* mode only uses ASCII, so no need for a full conversion, just copy it */
+    mbstowcs(ucs2mode, mode, MAXPDSTRING);
+    return (_wfopen(ucs2buf, ucs2mode));
+}
+
+   /* close a previously opened file
+   this is needed on platforms where you cannot open/close resources
    across dll-boundaries */
 int sys_close(int fd)
 {
     return close(fd);
 }
+
+int sys_fclose(FILE *stream)
+{
+    return fclose(stream);
+}
+#endif /* _WIN32 */
 
 
     /* Open a help file using the help search path.  We expect the ".pd"
