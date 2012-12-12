@@ -268,6 +268,15 @@ int sys_main(int argc, char **argv)
 #ifdef PD_DEBUG
     fprintf(stderr, "Pd: COMPILED FOR DEBUGGING\n");
 #endif
+    /* use Win32 "binary" mode by default since we don't want the
+     * translation that Win32 does by default */
+#ifdef _WIN32
+# ifdef _MSC_VER /* MS Visual Studio */
+    _set_fmode( _O_BINARY );
+# else	/* MinGW */
+    int _fmode = _O_BINARY;
+# endif	/* _MSC_VER */
+#endif	/* WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)        /* prescan args for noprefs */
