@@ -17,7 +17,6 @@ package require Tk
 #namespace import -force ttk::*
 
 package require msgcat
-# TODO figure out msgcat issue on Windows
 # TODO create a constructor in each package to create things at startup, that
 #  way they can be easily be modified by startup scripts
 # TODO create alt-Enter/Cmd-I binding to bring up Properties panels
@@ -631,7 +630,21 @@ proc check_for_running_instances {argc argv} {
             }
         } "win32" {
             ## http://wiki.tcl.tk/1558
-            # TODO on Win: http://tcl.tk/man/tcl8.4/TclCmd/dde.htm
+            package require dde
+            set topicName "Pure Data"
+
+            # if a service with our topic is already running, delegate to it
+            set otherServices [dde services TclEval $topicName]
+            if { [llength $otherServices] > 0 } {
+                # when multiple files are double-clicked, Windows
+                # sends them one at a time, so we only ever need to
+                # handle the first file parsed from the args
+                dde execute TclEval $topicName \
+                    "open_file {[lindex $::filestoopen_list 0]}"
+                exit
+            }
+            # otherwise, start the server:
+            dde servername $topicName
         }
     }
 }
