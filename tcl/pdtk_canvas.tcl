@@ -78,6 +78,12 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     scrollbar $mytoplevel.yscroll -orient vertical -command "$tkcanvas yview"
     pack $tkcanvas -side left -expand 1 -fill both
 
+    # for some crazy reason, win32 mousewheel scrolling is in units of
+    # 120, and this forces Tk to interpret 120 to mean 1 scroll unit
+    if {$::windowingsystem eq "win32"} {
+        $tkcanvas configure -xscrollincrement 1 -yscrollincrement 1
+    }
+
     ::pd_bindings::patch_bindings $mytoplevel
 
     # give focus to the canvas so it gets the events rather than the window 	 
