@@ -1,33 +1,37 @@
-#N canvas 21 5 694 319 12;
-#X obj 70 233 env~;
-#X floatatom 70 256 0 0 0 0 - - -;
-#X floatatom 119 178 0 0 0 0 - - -;
-#X obj 70 206 hip~ 5;
-#X obj 12 233 env~;
-#X floatatom 12 255 0 0 0 0 - - -;
-#X text 115 235 env~ gives the amplitude of the signal envelop in dB.
+#N canvas 395 119 627 449 12;
+#X obj 76 238 env~;
+#X floatatom 76 261 0 0 0 0 - - -;
+#X floatatom 120 184 0 0 0 0 - - -;
+#X obj 76 211 hip~ 5;
+#X obj 18 238 env~;
+#X floatatom 18 260 0 0 0 0 - - -;
+#X text 121 240 env~ gives the amplitude of the signal envelop in dB.
 ;
-#X floatatom 12 107 0 0 0 0 - - -;
-#X msg 567 51 \; pd dsp 1;
-#X msg 565 10 \; pd dsp 0;
-#X text 13 68 The left inlet is the incoming audio signal. The right
-inlet is the cutoff frequency in Hz.;
-#X obj 12 130 osc~ 100;
-#X text 57 105 <-- scroll to change input frequency;
-#X msg 70 154 clear;
-#X text 122 153 <-- reinitialize internal state;
-#X text 151 179 <-- set cutoff frequency;
+#X floatatom 18 112 0 0 0 0 - - -;
+#X obj 18 135 osc~ 100;
+#X text 69 112 <-- scroll to change input frequency;
+#X msg 76 159 clear;
+#X text 128 158 <-- reinitialize internal state;
 #X obj 83 6 hip~;
 #X text 128 5 - one-pole high pass filter;
-#X text 435 287 updated for Pd version 0.37;
-#X text 12 31 hip~ is a one-pole high pass filter with a specified
-rolloff frequency.;
-#X text 135 208 Creation argument initializes rolloff frequency.;
+#X text 396 420 updated for Pd version 0.44;
+#X msg 120 395 \; pd compatibility 0.43;
+#X text 21 293 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
+high-frequency output gain was incorrectly greater than one (usually
+only slightly so \, but noticeably if the cutoff frequency was more
+than 1/4 the Nyquist frequency). To get the old version \, set "compatibility"
+to 0.43 in Pd's command line or by a message:;
+#X text 11 31 hip~ is a one-pole high pass filter with a specified
+cutoff frequency.;
+#X text 141 213 Creation argument initializes cutoff frequency.;
+#X text 172 183 <-- set cutoff frequency;
+#X text 13 68 Left (audio) inlet is the incoming audio signal.;
+#X text 12 87 Right (contol) inlet sets cutoff frequency.;
 #X connect 0 0 1 0;
 #X connect 2 0 3 1;
 #X connect 3 0 0 0;
 #X connect 4 0 5 0;
-#X connect 7 0 11 0;
-#X connect 11 0 4 0;
-#X connect 11 0 3 0;
-#X connect 13 0 3 0;
+#X connect 7 0 8 0;
+#X connect 8 0 4 0;
+#X connect 8 0 3 0;
+#X connect 10 0 3 0;

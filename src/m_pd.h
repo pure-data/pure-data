@@ -12,6 +12,7 @@ extern "C" {
 #define PD_MINOR_VERSION 44
 #define PD_BUGFIX_VERSION 0
 #define PD_TEST_VERSION "test0"
+extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */

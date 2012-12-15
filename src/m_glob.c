@@ -9,6 +9,7 @@ t_class *glob_pdobject;
 static t_class *maxclass;
 
 int sys_perf;   /* true if we should query user on close and quit */
+int pd_compatibilitylevel;  /* e.g., 43 for pd 0.43 compatibility */
 
 /* These "glob" routines, which implement messages to Pd, are from all
 over.  Some others are prototyped in m_imp.h as well. */
@@ -35,6 +36,13 @@ void glob_ping(t_pd *dummy);
 void glob_watchdog(t_pd *dummy);
 void glob_savepreferences(t_pd *dummy);
 
+static void glob_compatibility(t_pd *dummy, t_floatarg level)
+{
+    int dspwas = canvas_suspend_dsp();
+    pd_compatibilitylevel = 0.5 + 100. * level;
+    canvas_resume_dsp(dspwas);
+}
+
 #ifdef _WIN32
 void glob_audio(void *dummy, t_floatarg adc, t_floatarg dac);
 #endif
@@ -51,8 +59,16 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 static void glob_version(t_pd *dummy, float f)
 {
-    if (f > 0)
-        error("file format newer than this version of Pd (trying anyway...)");
+    if (f > (PD_MAJOR_VERSION + 0.01*PD_MINOR_VERSION + 0.001))
+    {
+        static int warned;
+        if (warned < 1)
+            post("warning: file format (%g) newer than this version (%g) of Pd",
+                f, PD_MAJOR_VERSION + 0.01*PD_MINOR_VERSION);
+        else if (warned < 2)
+            post("(... more file format messsages suppressed)");
+        warned++;
+    }
 }
 
 static void glob_perf(t_pd *dummy, float f)
@@ -130,6 +146,8 @@ void glob_init(void)
         gensym("version"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_perf,
         gensym("perf"), A_FLOAT, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_compatibility,
+        gensym("compatibility"), A_FLOAT, 0);
 #if defined(__linux__) || defined(IRIX) || defined(__FreeBSD_kernel__)
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);

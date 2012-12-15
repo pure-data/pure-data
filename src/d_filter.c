@@ -66,6 +66,36 @@ static t_int *sighip_perform(t_int *w)
         for (i = 0; i < n; i++)
         {
             t_sample new = *in++ + coef * last;
+            *out++ = coef * (new - last);
+            last = new;
+        }
+        if (PD_BIGORSMALL(last))
+            last = 0; 
+        c->c_x = last;
+    }
+    else
+    {
+        for (i = 0; i < n; i++)
+            *out++ = *in++;
+        c->c_x = 0;
+    }
+    return (w+5);
+}
+
+static t_int *sighip_perform_old(t_int *w)
+{
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
+    t_hipctl *c = (t_hipctl *)(w[3]);
+    int n = (t_int)(w[4]);
+    int i;
+    t_sample last = c->c_x;
+    t_sample coef = c->c_coef;
+    if (coef < 1)
+    {
+        for (i = 0; i < n; i++)
+        {
+            t_sample new = *in++ + coef * last;
             *out++ = new - last;
             last = new;
         }
@@ -86,10 +116,9 @@ static void sighip_dsp(t_sighip *x, t_signal **sp)
 {
     x->x_sr = sp[0]->s_sr;
     sighip_ft1(x,  x->x_hz);
-    dsp_add(sighip_perform, 4,
-        sp[0]->s_vec, sp[1]->s_vec, 
-            x->x_ctl, sp[0]->s_n);
-
+    dsp_add((! pd_compatibilitylevel || pd_compatibilitylevel > 43 ?
+        sighip_perform : sighip_perform_old),
+            4, sp[0]->s_vec, sp[1]->s_vec, x->x_ctl, sp[0]->s_n);
 }
 
 static void sighip_clear(t_sighip *x, t_floatarg q)

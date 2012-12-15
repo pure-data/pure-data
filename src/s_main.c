@@ -398,6 +398,7 @@ static char *(usagemessage[]) = {
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
 "-noautopatch     -- defeat auto-patching new from selected objects\n",
+"-compatibility <f> -- set back-compatibility to version <f>\n",
 };
 
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
@@ -840,6 +841,15 @@ int sys_argparse(int argc, char **argv)
         {
             sys_noautopatch = 1;
             argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-compatibility") && argc > 1)
+        {
+            float f;
+            if (sscanf(argv[1], "%f", &f) < 1)
+                goto usage;
+            pd_compatibilitylevel = 0.5 + 100. * f; /* e.g., 2.44 --> 244 */
+            argv += 2;
+            argc -= 2;
         }
 #ifdef HAVE_UNISTD_H
         else if (!strcmp(*argv, "-rt") || !strcmp(*argv, "-realtime"))
