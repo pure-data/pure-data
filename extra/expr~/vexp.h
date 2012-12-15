@@ -93,7 +93,7 @@ struct ex_ex;
 struct ex_ex {
         union {
                 long v_int;
-                float v_flt;
+                t_float v_flt;
                 t_float *v_vec;         /* this is an for allocated vector */
                 long op;
                 char *ptr;
@@ -192,10 +192,10 @@ typedef struct expr {
         struct ex_ex exp_res[MAX_VARS]; /* the evluation result */
         t_float *exp_p_var[MAX_VARS];
         t_float *exp_p_res[MAX_VARS];   /* the previous evaluation result */
-        t_float *exp_tmpres[MAX_VARS];          /* temporty result for fexpr~ */
+        t_float *exp_tmpres[MAX_VARS];  /* temporty result for fexpr~ */
         int exp_vsize;                  /* the size of the signal vector */
         int exp_nivec;                  /* # of vector inlets */
-        float exp_f;            /* control value to be transformed to signal */
+        t_float exp_f;          /* control value to be transformed to signal */
 } t_expr;
 
 typedef struct ex_funcs {

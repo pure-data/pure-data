@@ -114,19 +114,19 @@ typedef struct _filterkernel
     int k_hoppoints;
     int k_skippoints;
     int k_nhops;
-    float k_centerfreq;          /* center frequency, bins */
-    float k_bandwidth;           /* bandwidth, bins */
-    float *k_stuff;
+    t_float k_centerfreq;        /* center frequency, bins */
+    t_float k_bandwidth;         /* bandwidth, bins */
+    t_float *k_stuff;
 } t_filterkernel;
 
 typedef struct _filterbank
 {
     int b_nfilters;             /* number of filters in bank */
     int b_npoints;              /* input vector size */
-    float b_halftones;          /* filter bandwidth in halftones */
-    float b_overlap;            /* overlap; default 1 for 1/2-power pts */
-    float b_firstbin;           /* freq of first filter in bins, default 1 */
-    float b_minbandwidth;       /* minimum bandwidth, default 1.5 */
+    t_float b_halftones;        /* filter bandwidth in halftones */
+    t_float b_overlap;          /* overlap; default 1 for 1/2-power pts */
+    t_float b_firstbin;         /* freq of first filter in bins, default 1 */
+    t_float b_minbandwidth;     /* minimum bandwidth, default 1.5 */
     t_filterkernel *b_vec;      /* filter kernels */
     int b_refcount;             /* number of bonk~ objects using this */
     struct _filterbank *b_next; /* next in linked list */
@@ -166,16 +166,16 @@ static t_filterbank *bonk_filterbanklist;
 
 typedef struct _hist
 {
-    float h_power;
-    float h_before;
-    float h_outpower;
+    t_float h_power;
+    t_float h_before;
+    t_float h_outpower;
     int h_countup;
-    float h_mask[MASKHIST];
+    t_float h_mask[MASKHIST];
 } t_hist;
 
 typedef struct template
 {
-    float t_amp[MAXNFILTERS];
+    t_float t_amp[MAXNFILTERS];
 } t_template;
 
 typedef struct _insig
@@ -187,7 +187,7 @@ typedef struct _insig
 #ifdef MSP
     void *g_outlet;             /* outlet for raw data */
 #endif
-    float *g_inbuf;             /* buffered input samples */
+    t_float *g_inbuf;           /* buffered input samples */
     t_float *g_invec;           /* new input samples */
 } t_insig;
 
@@ -209,18 +209,18 @@ typedef struct _bonk
     int x_npoints;          /* number of points in input buffer */
     int x_period;           /* number of input samples between analyses */
     int x_nfilters;         /* number of filters requested */
-    float x_halftones;      /* nominal halftones between filters */
-    float x_overlap;
-    float x_firstbin;
-    float x_minbandwidth;
-    float x_hithresh;       /* threshold for total growth to trigger */
-    float x_lothresh;       /* threshold for total growth to re-arm */
-    float x_minvel;         /* minimum velocity we output */
-    float x_maskdecay;
+    t_float x_halftones;    /* nominal halftones between filters */
+    t_float x_overlap;
+    t_float x_firstbin;
+    t_float x_minbandwidth;
+    t_float x_hithresh;     /* threshold for total growth to trigger */
+    t_float x_lothresh;     /* threshold for total growth to re-arm */
+    t_float x_minvel;       /* minimum velocity we output */
+    t_float x_maskdecay;
     int x_masktime;
     int x_useloudness;      /* use loudness spectra instead of power */
-    float x_debouncedecay;
-    float x_debouncevel;
+    t_float x_debouncedecay;
+    t_float x_debouncevel;
     double x_learndebounce; /* debounce time (in "learn" mode only) */
     int x_attackbins;       /* number of bins to wait for attack */
 
@@ -239,7 +239,7 @@ typedef struct _bonk
     int x_learncount;           /* countup for "learn" mode */
     int x_spew;                 /* if true, always generate output! */
     int x_maskphase;            /* phase, 0 to MASKHIST-1, for mask history */
-    float x_sr;                 /* current sample rate in Hz. */
+    t_float x_sr;               /* current sample rate in Hz. */
     int x_hit;                  /* next "tick" called because of a hit, not a poll */
 } t_bonk;
 
@@ -278,7 +278,7 @@ void bonk_useloudness_set(t_bonk *x, void *attr, long ac, t_atom *av);
 void bonk_attackbins_set(t_bonk *x, void *attr, long ac, t_atom *av);
 void bonk_learn_set(t_bonk *x, void *attr, long ac, t_atom *av);
 
-float qrsqrt(float f);
+t_float qrsqrt(t_float f);
 double clock_getsystime();
 double clock_gettimesince(double prevsystime);
 char *strcpy(char *s1, const char *s2);
@@ -290,10 +290,10 @@ static void bonk_tick(t_bonk *x);
 #define SLIDE 0.25    /* relative slide between filter subwindows */
 
 static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
-    float halftones, float overlap, float firstbin, float minbandwidth)
+    t_float halftones, t_float overlap, t_float firstbin, t_float minbandwidth)
 {
     int i, j;
-    float cf, bw, h, relspace;
+    t_float cf, bw, h, relspace;
     t_filterbank *b = (t_filterbank *)getbytes(sizeof(*b));
     b->b_npoints = npoints;
     b->b_nfilters = nfilters;
@@ -319,8 +319,8 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
         bw = (0.5*minbandwidth);
     for (i = 0; i < nfilters; i++)
     {
-        float *fp, newcf, newbw;
-        float normalizer = 0;
+        t_float *fp, newcf, newbw;
+        t_float normalizer = 0;
         int filterpoints, skippoints, hoppoints, nhops;
         
         filterpoints = npoints * HALFWIDTH/bw;
@@ -339,11 +339,11 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
         
         hoppoints = SLIDE * npoints * HALFWIDTH/bw;
         
-        nhops = 1. + (npoints-filterpoints)/(float)hoppoints;
+        nhops = 1. + (npoints-filterpoints)/(t_float)hoppoints;
         skippoints = 0.5 * (npoints-filterpoints - (nhops-1) * hoppoints);
         
         b->b_vec[i].k_stuff =
-            (float *)getbytes(2 * sizeof(float) * filterpoints);
+            (t_float *)getbytes(2 * sizeof(t_float) * filterpoints);
         b->b_vec[i].k_filterpoints = filterpoints;
         b->b_vec[i].k_nhops = nhops;
         b->b_vec[i].k_hoppoints = hoppoints;
@@ -353,9 +353,9 @@ static t_filterbank *bonk_newfilterbank(int npoints, int nfilters,
         
         for (fp = b->b_vec[i].k_stuff, j = 0; j < filterpoints; j++, fp+= 2)
         {
-            float phase = j * cf * (2*3.14159/ npoints);
-            float wphase = j * (2*3.14159 / filterpoints);
-            float window = sin(0.5*wphase);
+            t_float phase = j * cf * (2*3.141592653589793 / npoints);
+            t_float wphase = j * (2*3.141592653589793 / filterpoints);
+            t_float window = sin(0.5*wphase);
             fp[0] = window * cos(phase);
             fp[1] = window * sin(phase);
             normalizer += window;
@@ -398,17 +398,17 @@ static void bonk_freefilterbank(t_filterbank *b)
     for (i = 0; i < b->b_nfilters; i++)
         if (b->b_vec[i].k_stuff)
             freebytes(b->b_vec[i].k_stuff,
-                b->b_vec[i].k_filterpoints * sizeof(float));
+                b->b_vec[i].k_filterpoints * sizeof(t_float));
     freebytes(b, sizeof(*b));
 }
 
 static void bonk_donew(t_bonk *x, int npoints, int period, int nsig, 
-    int nfilters, float halftones, float overlap, float firstbin,
-    float minbandwidth, float samplerate)
+    int nfilters, t_float halftones, t_float overlap, t_float firstbin,
+    t_float minbandwidth, t_float samplerate)
 {
     int i, j;
     t_hist *h;
-    float *fp;
+    t_float *fp;
     t_insig *g;
     t_filterbank *fb;
     for (j = 0, g = x->x_insig; j < nsig; j++, g++)
@@ -420,7 +420,7 @@ static void bonk_donew(t_bonk *x, int npoints, int period, int nsig,
                 h->h_mask[j] = 0;
         }
             /* we ought to check for failure to allocate memory here */
-        g->g_inbuf = (float *)getbytes(npoints * sizeof(float));
+        g->g_inbuf = (t_float *)getbytes(npoints * sizeof(t_float));
         for (i = npoints, fp = g->g_inbuf; i--; fp++) *fp = 0;
     }
     if (!period) period = npoints/2;
@@ -475,25 +475,25 @@ static void bonk_tick(t_bonk *x)
     t_atom at[MAXNFILTERS], *ap, at2[3];
     int i, j, k, n;
     t_hist *h;
-    float *pp, vel = 0, temperature = 0;
-    float *fp;
+    t_float *pp, vel = 0., temperature = 0.;
+    t_float *fp;
     t_template *tp;
     int nfit, ninsig = x->x_ninsig, ntemplate = x->x_ntemplate, nfilters = x->x_nfilters;
     t_insig *gp;
 #ifdef _MSC_VER
-    float powerout[MAXNFILTERS*MAXCHANNELS];
+    t_float powerout[MAXNFILTERS*MAXCHANNELS];
 #else
-    float *powerout = alloca(x->x_nfilters * x->x_ninsig * sizeof(*powerout));
+    t_float *powerout = alloca(x->x_nfilters * x->x_ninsig * sizeof(*powerout));
 #endif
     
     for (i = ninsig, pp = powerout, gp = x->x_insig; i--; gp++)
     {
         for (j = 0, h = gp->g_hist; j < nfilters; j++, h++, pp++)
         {
-            float power = h->h_outpower;
-            float intensity = *pp = (power > 0 ? 100. * qrsqrt(qrsqrt(power)) : 0);
+            t_float power = h->h_outpower;
+            t_float intensity = *pp = (power > 0. ? 100. * qrsqrt(qrsqrt(power)) : 0.);
             vel += intensity;
-            temperature += intensity * (float)j;
+            temperature += intensity * (t_float)j;
         }
     }
     if (vel > 0) temperature /= vel;
@@ -527,11 +527,11 @@ static void bonk_tick(t_bonk *x)
             {
                 int countup = x->x_learncount;
                 /* normalize to 100  */
-                float norm;
+                t_float norm;
                 for (i = nfilters * ninsig, norm = 0, pp = powerout; i--; pp++)
                     norm += *pp * *pp;
                 if (norm < 1.0e-15) norm = 1.0e-15;
-                norm = 100.f * qrsqrt(norm);
+                norm = 100. * qrsqrt(norm);
                 /* check if this is the first strike for a new template */
                 if (!countup)
                 {
@@ -554,7 +554,7 @@ static void bonk_tick(t_bonk *x)
                         for (j = nfilters, fp = x->x_template[oldn].t_amp; j--;
                              pp++, fp++)
                             *fp = (countup * *fp + *pp * norm)
-                            /(countup + 1.0f);
+                            /(countup + 1.0);
                     }
                 }
                 countup++;
@@ -566,13 +566,13 @@ static void bonk_tick(t_bonk *x)
         x->x_learndebounce = clock_getsystime();
         if (ntemplate)
         {
-            float bestfit = -1e30;
+            t_float bestfit = -1e30;
             int templatecount;
             nfit = -1;
             for (i = 0, templatecount = 0, tp = x->x_template; 
                  templatecount < ntemplate; i++)
             {
-                float dotprod = 0;
+                t_float dotprod = 0;
                 for (k = 0, pp = powerout;
                      k < ninsig && templatecount < ntemplate;
                      k++, tp++, templatecount++)
@@ -610,7 +610,7 @@ static void bonk_tick(t_bonk *x)
         pp = powerout + nfilters * (ninsig-1); n < ninsig;
             n++, gp--, pp -= nfilters)
     {
-        float *pp2;
+        t_float *pp2;
         for (i = 0, ap = at, pp2 = pp; i < nfilters;
             i++, ap++, pp2++)
         {
@@ -626,7 +626,7 @@ static void bonk_doit(t_bonk *x)
     int i, j, ch, n;
     t_filterkernel *k;
     t_hist *h;
-    float growth = 0, *fp1, *fp3, *fp4, hithresh, lothresh;
+    t_float growth = 0, *fp1, *fp3, *fp4, hithresh, lothresh;
     int ninsig = x->x_ninsig, nfilters = x->x_nfilters,
         maskphase = x->x_maskphase, nextphase, oldmaskphase;
     t_insig *gp;
@@ -646,8 +646,8 @@ static void bonk_doit(t_bonk *x)
         for (i = 0, k = x->x_filterbank->b_vec, h = gp->g_hist;
              i < nfilters; i++, k++, h++)
         {
-            float power = 0, maskpow = h->h_mask[maskphase];
-            float *inbuf= gp->g_inbuf + k->k_skippoints;
+            t_float power = 0, maskpow = h->h_mask[maskphase];
+            t_float *inbuf= gp->g_inbuf + k->k_skippoints;
             int countup = h->h_countup;
             int filterpoints = k->k_filterpoints;
             /* if the user asked for more filters that fit under the
@@ -665,10 +665,10 @@ static void bonk_doit(t_bonk *x)
             for (fp1 = inbuf, n = 0;
                  n < k->k_nhops; fp1 += k->k_hoppoints, n++)
             {
-                float rsum = 0, isum = 0;
+                t_float rsum = 0, isum = 0;
                 for (fp3 = fp1, fp4 = k->k_stuff, j = filterpoints; j--;)
                 {
-                    float g = *fp3++;
+                    t_float g = *fp3++;
                     rsum += g * *fp4++;
                     isum += g * *fp4++;
                 }
@@ -681,8 +681,8 @@ static void bonk_doit(t_bonk *x)
             {
                 if (x->x_useloudness)
                     growth += qrsqrt(qrsqrt(
-                        power/(h->h_mask[oldmaskphase] + 1.0e-15))) - 1.f;
-                else growth += power/(h->h_mask[oldmaskphase] + 1.0e-15) - 1.f;
+                        power/(h->h_mask[oldmaskphase] + 1.0e-15))) - 1.;
+                else growth += power/(h->h_mask[oldmaskphase] + 1.0e-15) - 1.;
             }
             if (!x->x_willattack && countup >= x->x_masktime)
                 maskpow *= x->x_maskdecay;
@@ -762,7 +762,7 @@ static t_int *bonk_perform(t_int *w)
                      n : (x->x_npoints - infill));
             for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
             {
-                float *fp = gp->g_inbuf + infill;
+                t_float *fp = gp->g_inbuf + infill;
                 t_float *in1 = gp->g_invec + onset;
                 for (j = 0; j < m; j++)
                     *fp++ = *in1++;
@@ -780,7 +780,7 @@ static t_int *bonk_perform(t_int *w)
                 if (x->x_period < x->x_npoints)
                 {
                     int overlap = x->x_npoints - x->x_period;
-                    float *fp1, *fp2;
+                    t_float *fp1, *fp2;
                     for (n = 0, gp = x->x_insig; n < ninsig; n++, gp++)
                         for (i = overlap, fp1 = gp->g_inbuf,
                              fp2 = fp1 + x->x_period; i--;)
@@ -971,9 +971,9 @@ static void bonk_bang(t_bonk *x)
 #ifdef PD
 static void bonk_read(t_bonk *x, t_symbol *s)
 {
-    float vec[MAXNFILTERS];
+    t_float vec[MAXNFILTERS];
     int i, ntemplate = 0, remaining;
-    float *fp, *fp2;
+    t_float *fp, *fp2;
 
     /* fbar: canvas_open code taken from g_array.c */
     FILE *fd;
@@ -1043,20 +1043,23 @@ static void bonk_doread(t_bonk *x, t_symbol *s)
 }
 
 static void bonk_openfile(t_bonk *x, char *filename, short path) {
-    float vec[MAXNFILTERS];
+    t_float vec[MAXNFILTERS];
     int i, ntemplate = 0, remaining;
-    float *fp, *fp2;
+    t_float *fp, *fp2;
     
     t_filehandle fh;
     char **texthandle;
     char *tokptr;
     
+    long size;
+
     if (path_opensysfile(filename, path, &fh, READ_PERM)) {
         object_error((t_object *) x, "error opening %s", filename);
         return;
     }
     
-    texthandle = sysmem_newhandle(0);
+    sysfile_geteof(fh, &size); 
+    texthandle = sysmem_newhandleclear(size + 1);
     sysfile_readtextfile(fh, texthandle, 0, TEXT_LB_NATIVE);
     sysfile_close(fh);
     
@@ -1103,7 +1106,7 @@ static void bonk_write(t_bonk *x, t_symbol *s)
     char buf[MAXPDSTRING]; /* fbar */
     int i, ntemplate = x->x_ntemplate;
     t_template *tp = x->x_template;
-    float *fp;
+    t_float *fp;
     
     /* fbar: canvas-code as in g_array.c */
     canvas_makefilename(x->x_canvas, s->s_name,
@@ -1154,7 +1157,7 @@ void bonk_writefile(t_bonk *x, char *filename, short path)
 {
     int i, ntemplate = x->x_ntemplate;
     t_template *tp = x->x_template;
-    float *fp;
+    t_float *fp;
     long err;
     long buflen;
     
@@ -1191,7 +1194,7 @@ static void bonk_free(t_bonk *x)
     dsp_free((t_pxobject *)x);
 #endif
     for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
-        freebytes(gp->g_inbuf, x->x_npoints * sizeof(float));
+        freebytes(gp->g_inbuf, x->x_npoints * sizeof(t_float));
     clock_free(x->x_clock);
     if (!--(x->x_filterbank->b_refcount))
         bonk_freefilterbank(x->x_filterbank);
@@ -1206,7 +1209,7 @@ static void *bonk_new(t_symbol *s, int argc, t_atom *argv)
     t_bonk *x = (t_bonk *)pd_new(bonk_class);
     int nsig = 1, period = DEFPERIOD, npts = DEFNPOINTS,
         nfilters = DEFNFILTERS, j;
-    float halftones = DEFHALFTONES, overlap = DEFOVERLAP,
+    t_float halftones = DEFHALFTONES, overlap = DEFOVERLAP,
         firstbin = DEFFIRSTBIN, minbandwidth = DEFMINBANDWIDTH;
     t_insig *g;
 
@@ -1512,7 +1515,7 @@ static void *bonk_new(t_symbol *s, long ac, t_atom *av)
 void bonk_minvel_set(t_bonk *x, void *attr, long ac, t_atom *av)
 {
     if (ac && av) {
-        float f = atom_getfloat(av);
+        t_float f = atom_getfloat(av);
         if (f < 0) f = 0; 
         x->x_minvel = f;
     }
@@ -1521,7 +1524,7 @@ void bonk_minvel_set(t_bonk *x, void *attr, long ac, t_atom *av)
 void bonk_lothresh_set(t_bonk *x, void *attr, long ac, t_atom *av)
 {
     if (ac && av) {
-        float f = atom_getfloat(av);
+        t_float f = atom_getfloat(av);
         if (f > x->x_hithresh)
             post("bonk: warning: low threshold greater than hi threshold");
         x->x_lothresh = (f <= 0 ? 0.0001 : f);
@@ -1531,7 +1534,7 @@ void bonk_lothresh_set(t_bonk *x, void *attr, long ac, t_atom *av)
 void bonk_hithresh_set(t_bonk *x, void *attr, long ac, t_atom *av)
 {
     if (ac && av) {
-        float f = atom_getfloat(av);
+        t_float f = atom_getfloat(av);
         if (f < x->x_lothresh)
             post("bonk: warning: low threshold greater than hi threshold");
         x->x_hithresh = (f <= 0 ? 0.0001 : f);
@@ -1549,7 +1552,7 @@ void bonk_masktime_set(t_bonk *x, void *attr, long ac, t_atom *av)
 void bonk_maskdecay_set(t_bonk *x, void *attr, long ac, t_atom *av)
 {
     if (ac && av) {
-        float f = atom_getfloat(av);
+        t_float f = atom_getfloat(av);
         f = (f < 0) ? 0 : f;
         f = (f > 1) ? 1 : f;
         x->x_maskdecay = f;
@@ -1559,7 +1562,7 @@ void bonk_maskdecay_set(t_bonk *x, void *attr, long ac, t_atom *av)
 void bonk_debouncedecay_set(t_bonk *x, void *attr, long ac, t_atom *av)
 {
     if (ac && av) {
-        float f = atom_getfloat(av);
+        t_float f = atom_getfloat(av);
         f = (f < 0) ? 0 : f;
         f = (f > 1) ? 1 : f;
         x->x_debouncedecay = f;
@@ -1631,7 +1634,7 @@ double clock_gettimesince(double prevsystime)
     return ((gettime() - prevsystime));
 }
 
-float qrsqrt(float f)
+t_float qrsqrt(t_float f)
 {
     return 1/sqrt(f);
 }

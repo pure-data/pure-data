@@ -91,7 +91,7 @@ typedef struct _pd_tilde
     int x_ninsig;
     int x_noutsig;
     int x_fifo;
-    float x_sr;
+    t_float x_sr;
     t_symbol *x_pddir;
     t_symbol *x_schedlibdir;
     t_sample **x_insig;
@@ -171,7 +171,7 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
 
 static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     char *patchdir, char *pdargs, int ninsig, int noutsig, int fifo,
-    float samplerate)
+    t_float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
     char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING];
@@ -516,7 +516,7 @@ static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_pd_tilde *x = (t_pd_tilde *)pd_new(pd_tilde_class);
     int ninsig = 2, noutsig = 2, j, fifo = 5;
-    float sr = sys_getsr();
+    t_float sr = sys_getsr();
     t_sample **g;
     t_symbol *pddir = sys_libdir,
         *scheddir = gensym(class_gethelpdir(pd_tilde_class));
@@ -695,7 +695,7 @@ int main()
 static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
 {
     int ninsig = 2, noutsig = 2, fifo = 5, j;
-    float sr = sys_getsr();
+    t_float sr = sys_getsr();
     t_symbol *pddir = gensym("."), *scheddir = gensym(".");
     t_pd_tilde *x;
 

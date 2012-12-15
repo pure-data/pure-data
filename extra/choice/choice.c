@@ -17,7 +17,7 @@ static t_class *choice_class;
 
 typedef struct _elem
 {
-    float e_age;
+    t_float e_age;
     t_float e_weight[DIMENSION];
 } t_elem;
 
@@ -63,7 +63,7 @@ static void choice_add(t_choice *x, t_symbol *s, int argc, t_atom *argv)
 {
     int oldn = x->x_n, newn = oldn + 1, i;
     t_elem *e;
-    float sum, normal;
+    t_float sum, normal;
     x->x_vec = (t_elem *)resizebytes(x->x_vec, oldn * sizeof(t_elem),
         newn * sizeof(t_elem));
     x->x_n = newn;
@@ -72,11 +72,11 @@ static void choice_add(t_choice *x, t_symbol *s, int argc, t_atom *argv)
     
     for (i = 0, sum = 0; i < DIMENSION; i++)
     {
-        float f = atom_getfloatarg(i, argc, argv);
+        t_float f = atom_getfloatarg(i, argc, argv);
         e->e_weight[i] = f;
         sum += f*f;
     }
-    normal = (float)(sum > 0 ? 1./sqrt(sum) : 1);
+    normal = (t_float)(sum > 0 ? 1./sqrt(sum) : 1);
     for (i = 0; i < DIMENSION; i++)
         e->e_weight[i] *= normal;
 }
@@ -84,7 +84,7 @@ static void choice_add(t_choice *x, t_symbol *s, int argc, t_atom *argv)
 static void choice_list(t_choice *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i, j;
-    float bestsum = 0;
+    t_float bestsum = 0;
     int bestindex = -1;
     t_float invec[DIMENSION];
     for (i = 0; i < DIMENSION; i++)
@@ -92,10 +92,10 @@ static void choice_list(t_choice *x, t_symbol *s, int argc, t_atom *argv)
     for (j = 0; j < x->x_n; j++)
     {
         t_elem *e = x->x_vec + j;
-        float sum;
+        t_float sum;
         for (i = 0, sum = 0; i < DIMENSION; i++)
             sum += e->e_weight[i] * invec[i];
-        if (x->x_nonrepeat) sum *= (float)(log(e->e_age));
+        if (x->x_nonrepeat) sum *= (t_float)(log(e->e_age));
         if (sum > bestsum)
         {
             bestsum = sum;
@@ -109,7 +109,7 @@ static void choice_list(t_choice *x, t_symbol *s, int argc, t_atom *argv)
             x->x_vec[j].e_age += 1.;
         x->x_vec[bestindex].e_age = 1;
     }
-    outlet_float(x->x_obj.ob_outlet, (float)bestindex);
+    outlet_float(x->x_obj.ob_outlet, (t_float)bestindex);
 }
 
 static void choice_free(t_choice *x)

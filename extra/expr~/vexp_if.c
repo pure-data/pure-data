@@ -426,7 +426,7 @@ expr_perform(t_int *w)
         if (x->exp_flags & EF_STOP) {
                 for (i = 0; i < x->exp_nexpr; i++)
                         memset(x->exp_res[i].ex_vec, 0,
-                                        x->exp_vsize * sizeof (float));
+                                        x->exp_vsize * sizeof (t_float));
                 return (w + 2);
         }
 
@@ -726,11 +726,11 @@ fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
          */
         if (!argc) {
                 for (i = 0; i < x->exp_nexpr; i++)
-                        memset(x->exp_p_res[i], 0, x->exp_vsize*sizeof(float));
+                        memset(x->exp_p_res[i], 0, x->exp_vsize*sizeof(t_float));
                 for (i = 0; i < MAX_VARS; i++)
                         if (x->exp_var[i].ex_type == ET_XI)
                                 memset(x->exp_p_var[i], 0,
-                                                x->exp_vsize*sizeof(float));
+                                                x->exp_vsize*sizeof(t_float));
                 return;
         }
         if (argc > 1) {
@@ -760,7 +760,7 @@ fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
                         post("fexpr~-clear: no signal at inlet %d", vecno + 1);
                         return;
                 }
-                memset(x->exp_p_var[vecno], 0, x->exp_vsize*sizeof(float));
+                memset(x->exp_p_var[vecno], 0, x->exp_vsize*sizeof(t_float));
                 return;
         case 'y':
                 if (!sx->s_name[1])
@@ -777,7 +777,7 @@ fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
                         post("fexpr~.clear: only %d outlets", x->exp_nexpr);
                         return;
                 }
-                memset(x->exp_p_res[vecno], 0, x->exp_vsize*sizeof(float));
+                memset(x->exp_p_res[vecno], 0, x->exp_vsize*sizeof(t_float));
                 return;
                 return;
         default:
@@ -997,7 +997,7 @@ ex_sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         t_garray *garray;
         int size;
         t_word *wvec;
-        float sum;
+        t_float sum;
         int indx;
 
         if (argv->ex_type != ET_SYM)

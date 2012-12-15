@@ -8,7 +8,7 @@ typedef struct _lrshift_tilde
 {
     t_object x_obj;
     int x_n;
-    float x_f;
+    t_float x_f;
 } t_lrshift_tilde;
 
 static t_int *leftshift_perform(t_int *w)

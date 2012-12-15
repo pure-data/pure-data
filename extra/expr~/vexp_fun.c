@@ -68,7 +68,7 @@
  *                the last argument is a pointer to a struct ex_ex for
  *                the result.  Up do this point, the content of the
  *                struct ex_ex that these functions receive are either
- *                ET_INT (long), ET_FLT (float), or ET_SYM (char **, it is
+ *                ET_INT (long), ET_FLT (t_float), or ET_SYM (char **, it is
  *                char ** and not char * since NewHandle of Mac returns
  *                a char ** for relocatability.)  The common practice in
  *                these functions is that they figure out the type of their
@@ -221,7 +221,7 @@ case ET_INT:                                                            \
         case ET_INT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
                         op = optr->ex_vec;                              \
-                        scalar = (float)func(leftfuncast left->ex_int,  \
+                        scalar = (t_float)func(leftfuncast left->ex_int,  \
                                         rightfuncast right->ex_int);    \
                         j = e->exp_vsize;                               \
                         while (j--)                                     \
@@ -229,7 +229,7 @@ case ET_INT:                                                            \
                 } else {                                                \
                         if (fltret) {                                   \
                                 optr->ex_type = ET_FLT;                 \
-                                optr->ex_flt = (float)func(leftfuncast  \
+                                optr->ex_flt = (t_float)func(leftfuncast  \
                                 left->ex_int, rightfuncast right->ex_int); \
                         } else {                                        \
                                 optr->ex_type = ET_INT;                 \
@@ -241,14 +241,14 @@ case ET_INT:                                                            \
         case ET_FLT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
                         op = optr->ex_vec;                              \
-                        scalar = (float)func(leftfuncast left->ex_int,  \
+                        scalar = (t_float)func(leftfuncast left->ex_int,  \
                                         rightfuncast right->ex_flt);    \
                         j = e->exp_vsize;                               \
                         while (j--)                                     \
                                 *op++ = scalar;                         \
                 } else {                                                \
                         optr->ex_type = ET_FLT;                         \
-                        optr->ex_flt = (float)func(leftfuncast left->ex_int,  \
+                        optr->ex_flt = (t_float)func(leftfuncast left->ex_int,  \
                                         rightfuncast right->ex_flt);    \
                 }                                                       \
                 break;                                                  \
@@ -268,7 +268,7 @@ case ET_INT:                                                            \
                 op = optr->ex_vec;                                      \
                 j = e->exp_vsize;                                       \
                 while (j--) {                                           \
-                        *op++ = (float)func(leftfuncast scalar,         \
+                        *op++ = (t_float)func(leftfuncast scalar,         \
                                                 rightfuncast *rp);      \
                         rp++;                                           \
                 }                                                       \
@@ -285,28 +285,28 @@ case ET_FLT:                                                            \
         case ET_INT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
                         op = optr->ex_vec;                              \
-                        scalar = (float)func(leftfuncast left->ex_flt,  \
+                        scalar = (t_float)func(leftfuncast left->ex_flt,  \
                                         rightfuncast right->ex_int);    \
                         j = e->exp_vsize;                               \
                         while (j--)                                     \
                                 *op++ = scalar;                         \
                 } else {                                                \
                         optr->ex_type = ET_FLT;                         \
-                        optr->ex_flt = (float)func(leftfuncast left->ex_flt,  \
+                        optr->ex_flt = (t_float)func(leftfuncast left->ex_flt,  \
                                         rightfuncast right->ex_int);    \
                 }                                                       \
                 break;                                                  \
         case ET_FLT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
                         op = optr->ex_vec;                              \
-                        scalar = (float)func(leftfuncast left->ex_flt,  \
+                        scalar = (t_float)func(leftfuncast left->ex_flt,  \
                                         rightfuncast right->ex_flt);    \
                         j = e->exp_vsize;                               \
                         while (j--)                                     \
                                 *op++ = scalar;                         \
                 } else {                                                \
                         optr->ex_type = ET_FLT;                         \
-                        optr->ex_flt = (float)func(leftfuncast left->ex_flt,  \
+                        optr->ex_flt = (t_float)func(leftfuncast left->ex_flt,  \
                                         rightfuncast right->ex_flt);    \
                 }                                                       \
                 break;                                                  \
@@ -326,7 +326,7 @@ case ET_FLT:                                                            \
                 op = optr->ex_vec;                                      \
                 j = e->exp_vsize;                                       \
                 while (j--) {                                           \
-                        *op++ = (float)func(leftfuncast scalar,         \
+                        *op++ = (t_float)func(leftfuncast scalar,         \
                                                 rightfuncast *rp);      \
                         rp++;                                           \
                 }                                                       \
@@ -356,7 +356,7 @@ case ET_VI:                                                             \
                 scalar = right->ex_int;                                 \
                 j = e->exp_vsize;                                       \
                 while (j--) {                                           \
-                        *op++ = (float)func(leftfuncast *lp,            \
+                        *op++ = (t_float)func(leftfuncast *lp,            \
                                                 rightfuncast scalar);   \
                         lp++;                                           \
                 }                                                       \
@@ -365,7 +365,7 @@ case ET_VI:                                                             \
                 scalar = right->ex_flt;                                 \
                 j = e->exp_vsize;                                       \
                 while (j--) {                                           \
-                        *op++ = (float)func(leftfuncast *lp,            \
+                        *op++ = (t_float)func(leftfuncast *lp,            \
                                                 rightfuncast scalar);   \
                         lp++;                                           \
                 }                                                       \
@@ -380,7 +380,7 @@ case ET_VI:                                                             \
                          * 8 times in each round to get a considerable  \
                          * improvement                                  \
                          */                                             \
-                        *op++ = (float)func(leftfuncast *lp,            \
+                        *op++ = (t_float)func(leftfuncast *lp,            \
                                                 rightfuncast *rp);      \
                         rp++; lp++;                                     \
                 }                                                       \
@@ -401,7 +401,7 @@ default:                                                                \
 
 /*
  * FUNC_EVAL_UNARY - evaluate a unary function,
- *              if fltret is set return float
+ *              if fltret is set return t_float
  *              otherwise return value based on regular typechecking,
  */
 #define FUNC_EVAL_UNARY(left, func, leftcast, optr, fltret)             \
@@ -409,12 +409,12 @@ switch(left->ex_type) {                                         \
 case ET_INT:                                                    \
         if (optr->ex_type == ET_VEC) {                          \
                 ex_mkvector(optr->ex_vec,                       \
-                (float)(func (leftcast left->ex_int)), e->exp_vsize);\
+                (t_float)(func (leftcast left->ex_int)), e->exp_vsize);\
                 break;                                          \
         }                                                       \
         if (fltret) {                                           \
                 optr->ex_type = ET_FLT;                         \
-                optr->ex_flt = (float) func(leftcast left->ex_int); \
+                optr->ex_flt = (t_float) func(leftcast left->ex_int); \
                 break;                                          \
         }                                                       \
         optr->ex_type = ET_INT;                                 \
@@ -423,11 +423,11 @@ case ET_INT:                                                    \
 case ET_FLT:                                                    \
         if (optr->ex_type == ET_VEC) {                          \
                 ex_mkvector(optr->ex_vec,                       \
-                (float)(func (leftcast left->ex_flt)), e->exp_vsize);\
+                (t_float)(func (leftcast left->ex_flt)), e->exp_vsize);\
                 break;                                          \
         }                                                       \
         optr->ex_type = ET_FLT;                                 \
-        optr->ex_flt = (float) func(leftcast left->ex_flt);     \
+        optr->ex_flt = (t_float) func(leftcast left->ex_flt);     \
         break;                                                  \
 case ET_VI:                                                     \
 case ET_VEC:                                                    \
@@ -440,7 +440,7 @@ case ET_VEC:                                                    \
         lp = left->ex_vec;                                      \
         j = e->exp_vsize;                                       \
         while (j--)                                             \
-                *op++ = (float)(func (leftcast *lp++));         \
+                *op++ = (t_float)(func (leftcast *lp++));         \
         break;                                                  \
 default:                                                        \
         post_error((fts_object_t *) e,                          \
@@ -458,9 +458,9 @@ static void                                                             \
 ex_func(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)\
 {                                                                       \
         struct ex_ex *left, *right;                                     \
-        float *op; /* output pointer */                                 \
-        float *lp, *rp;         /* left and right vector pointers */    \
-        float scalar;                                                   \
+        t_float *op; /* output pointer */                                 \
+        t_float *lp, *rp;         /* left and right vector pointers */    \
+        t_float scalar;                                                   \
         int j;                                                          \
                                                                         \
         left = argv++;                                                  \
@@ -474,9 +474,9 @@ static void                                                             \
 ex_func(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)\
 {                                                                       \
         struct ex_ex *left;                                             \
-        float *op; /* output pointer */                                 \
-        float *lp, *rp;         /* left and right vector pointers */    \
-        float scalar;                                                   \
+        t_float *op; /* output pointer */                                 \
+        t_float *lp, *rp;         /* left and right vector pointers */    \
+        t_float scalar;                                                   \
         int j;                                                          \
                                                                         \
         left = argv++;                                                  \
@@ -493,9 +493,9 @@ static void
 ex_min(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left, *right;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -513,9 +513,9 @@ static void
 ex_max(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left, *right;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -531,9 +531,9 @@ static void
 ex_toint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -561,9 +561,9 @@ static void
 ex_rint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -573,20 +573,20 @@ ex_rint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 }
 
 /*
- * ex_tofloat -- convert to float
+ * ex_tofloat -- convert to t_float
  */
 static void
 ex_tofloat(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
 
-#define tofloat(x)      ((float)(x))
+#define tofloat(x)      ((t_float)(x))
         FUNC_EVAL_UNARY(left, tofloat, (int), optr, 1);
 }
 
@@ -598,9 +598,9 @@ static void
 ex_pow(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left, *right;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -615,9 +615,9 @@ static void
 ex_sqrt(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -632,9 +632,9 @@ static void
 ex_exp(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -649,9 +649,9 @@ static void
 ex_log(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -666,9 +666,9 @@ static void
 ex_ln(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -680,9 +680,9 @@ static void
 ex_sin(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -694,9 +694,9 @@ static void
 ex_cos(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -709,9 +709,9 @@ static void
 ex_tan(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -723,9 +723,9 @@ static void
 ex_asin(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -737,9 +737,9 @@ static void
 ex_acos(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -752,9 +752,9 @@ static void
 ex_atan(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -769,9 +769,9 @@ static void
 ex_atan2(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left, *right;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -786,9 +786,9 @@ static void
 ex_fmod(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left, *right;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -804,9 +804,9 @@ static void
 ex_floor(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -821,9 +821,9 @@ static void
 ex_ceil(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -834,9 +834,9 @@ static void
 ex_sinh(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -848,9 +848,9 @@ static void
 ex_cosh(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -863,9 +863,9 @@ static void
 ex_tanh(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -879,9 +879,9 @@ static void
 ex_asinh(t_expr *e, long argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -893,9 +893,9 @@ static void
 ex_acosh(t_expr *e, long argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -907,9 +907,9 @@ static void
 ex_atanh(t_expr *e, long argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -939,9 +939,9 @@ static void
 ex_fact(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -961,9 +961,9 @@ static void
 ex_random(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left, *right;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -976,9 +976,9 @@ static void
 ex_abs(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float scalar;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float scalar;
         int j;
 
         left = argv++;
@@ -993,10 +993,10 @@ static void
 ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
         struct ex_ex *left, *right, *cond, *res;
-        float *op; /* output pointer */
-        float *lp, *rp;         /* left and right vector pointers */
-        float *cp;              /* condition pointer */
-        float leftvalue, rightvalue;
+        t_float *op; /* output pointer */
+        t_float *lp, *rp;         /* left and right vector pointers */
+        t_float *cp;              /* condition pointer */
+        t_float leftvalue, rightvalue;
         int j;
 
         cond = argv++;
@@ -1169,7 +1169,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         switch(res->ex_type) {
         case ET_INT:
                 if (optr->ex_type == ET_VEC) {
-                        ex_mkvector(optr->ex_vec, (float)res->ex_int,
+                        ex_mkvector(optr->ex_vec, (t_float)res->ex_int,
                                                                 e->exp_vsize);
                         return;
                 }
@@ -1177,7 +1177,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 return;
         case ET_FLT:
                 if (optr->ex_type == ET_VEC) {
-                        ex_mkvector(optr->ex_vec, (float)res->ex_flt,
+                        ex_mkvector(optr->ex_vec, (t_float)res->ex_flt,
                                                                 e->exp_vsize);
                         return;
                 }

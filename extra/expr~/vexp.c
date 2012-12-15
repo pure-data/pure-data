@@ -97,10 +97,10 @@ struct ex_ex *eval_store(struct expr *expr, struct ex_ex *eptr,
 struct ex_ex *eval_sigidx(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int i);
 static int cal_sigidx(struct ex_ex *optr,       /* The output value */
-           int i, float rem_i,      /* integer and fractinal part of index */
+           int i, t_float rem_i,      /* integer and fractinal part of index */
            int idx,                  /* index of current fexpr~ processing */
            int vsize,                                       /* vector size */
-           float *curvec, float *prevec);   /* current and previous table */
+           t_float *curvec, t_float *prevec);   /* current and previous table */
 t_ex_func *find_func(char *s);
 void ex_dzdetect(struct expr *expr);
 
@@ -691,7 +691,7 @@ case ET_INT:                                                            \
         case ET_INT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
                         op = optr->ex_vec;                              \
-                        scalar = (float)DZC(left.ex_int, OPR, right.ex_int); \
+                        scalar = (t_float)DZC(left.ex_int, OPR, right.ex_int); \
                         for (j = 0; j < expr->exp_vsize; j++)           \
                                 *op++ = scalar;                         \
                 } else {                                                \
@@ -702,12 +702,12 @@ case ET_INT:                                                            \
         case ET_FLT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
                         op = optr->ex_vec;                              \
-                        scalar = DZC(((float)left.ex_int), OPR, right.ex_flt);\
+                        scalar = DZC(((t_float)left.ex_int), OPR, right.ex_flt);\
                         for (j = 0; j < expr->exp_vsize; j++)           \
                                 *op++ = scalar;                         \
                 } else {                                                \
                         optr->ex_type = ET_FLT;                         \
-                        optr->ex_flt = DZC(((float)left.ex_int), OPR,   \
+                        optr->ex_flt = DZC(((t_float)left.ex_int), OPR,   \
                                                         right.ex_flt);  \
                 }                                                       \
                 break;                                                  \
@@ -743,7 +743,7 @@ case ET_FLT:                                                            \
         case ET_INT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
                         op = optr->ex_vec;                              \
-                        scalar = DZC((float) left.ex_flt, OPR, right.ex_int); \
+                        scalar = DZC((t_float) left.ex_flt, OPR, right.ex_int); \
                         for (j = 0; j < expr->exp_vsize; j++)           \
                                 *op++ = scalar;                         \
                 } else {                                                \
@@ -854,7 +854,7 @@ break;
         switch(left.ex_type) {                                          \
         case ET_INT:                                                    \
                 if (optr->ex_type == ET_VEC) {                          \
-                        ex_mkvector(optr->ex_vec,(float)(OPR left.ex_int),\
+                        ex_mkvector(optr->ex_vec,(t_float)(OPR left.ex_int),\
                                                         expr->exp_vsize);\
                         break;                                          \
                 }                                                       \
@@ -960,7 +960,7 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         switch (eptr->ex_type) {
         case ET_INT:
                 if (optr->ex_type == ET_VEC)
-                        ex_mkvector(optr->ex_vec, (float) eptr->ex_int,
+                        ex_mkvector(optr->ex_vec, (t_float) eptr->ex_int,
                                                                 expr->exp_vsize);
                 else
                         *optr = *eptr;
@@ -1407,7 +1407,7 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         struct ex_ex arg;
         struct ex_ex *reteptr;
         int i = 0, j = 0;
-        float fi = 0,           /* index in float */
+        t_float fi = 0,         /* index in float */
               rem_i = 0;        /* remains of the float */
         char *tbl;
 
@@ -1504,10 +1504,10 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
  */
 static int
 cal_sigidx(struct ex_ex *optr,  /* The output value */
-           int i, float rem_i,  /* integer and fractinal part of index */
+           int i, t_float rem_i,/* integer and fractinal part of index */
            int idx,             /* index of current fexpr~ processing */
            int vsize,           /* vector size */
-           float *curvec, float *prevec)        /* current and previous table */
+           t_float *curvec, t_float *prevec)        /* current and previous table */
 {
         int n;
 
@@ -1873,8 +1873,8 @@ atoif(char *s, long int *value, long int *type)
         char *p;
         long int_val = 0;
         int flt = 0;
-        float pos = 0;
-        float flt_val = 0;
+        t_float pos = 0;
+        t_float flt_val = 0;
         int base = 10;
 
         p = s;
@@ -1940,7 +1940,7 @@ atoif(char *s, long int *value, long int *type)
                 default:
                         if (flt) {
                                 *type = ET_FLT;
-                                *((float *) value) = flt_val;
+                                *((t_float *) value) = flt_val;
                         } else {
                                 *type = ET_INT;
                                 *value = int_val;

@@ -15,6 +15,7 @@ This file is downloadable from http://www.crca.ucsd.edu/~msp .
 #include "m_pd.h"
 #else
 #define t_sample float
+#define t_float float
 #endif
 
 
@@ -96,7 +97,7 @@ static void loopctl_init(t_loopctl *x)
     x->l_phase = 0;
 }
 
-static void loopctl_set(t_loopctl *x, float val)
+static void loopctl_set(t_loopctl *x, t_float val)
 {
     if (val < 0 || val > 1)
         val = 0;
