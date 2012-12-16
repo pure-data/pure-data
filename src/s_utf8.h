@@ -10,17 +10,33 @@
 # define UCS4 u_int32_t
 #endif
 
+/* UTF8_SUPPORT_FULL_UCS4
+ *  define this to support the full potential range of UCS-4 codepoints
+ *  (in anticipation of a future UTF-8 standard)
+ */
+/*#define UTF8_SUPPORT_FULL_UCS4 1*/
+#undef UTF8_SUPPORT_FULL_UCS4
+
 /* UTF8_MAXBYTES
  *   maximum number of bytes required to represent a single character in UTF-8
  *
  * UTF8_MAXBYTES1 = UTF8_MAXBYTES+1 
  *  maximum bytes per character including NUL terminator
  */
-#ifndef UTF8_MAXBYTES
-# define UTF8_MAXBYTES  4
-#endif
-#ifndef UTF8_MAXBYTES1
-# define UTF8_MAXBYTES1 5
+#ifdef UTF8_SUPPORT_FULL_UCS4
+# ifndef UTF8_MAXBYTES
+#  define UTF8_MAXBYTES  6
+# endif
+# ifndef UTF8_MAXBYTES1
+#  define UTF8_MAXBYTES1 7
+# endif
+#else
+# ifndef UTF8_MAXBYTES
+#  define UTF8_MAXBYTES  4
+# endif
+# ifndef UTF8_MAXBYTES1
+#  define UTF8_MAXBYTES1 5
+# endif
 #endif
 /*--/moo--*/
 
