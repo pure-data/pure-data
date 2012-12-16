@@ -27,10 +27,14 @@ struct _canvasenvironment
 #define GLIST_DEFCANVASWIDTH 450
 #define GLIST_DEFCANVASHEIGHT 300
 
+/* since the window decorations aren't included, open new windows a few
+pixels down so you can posibly move the window later.  Apple needs less
+because its menus are at top of screen; we're more generous for other
+desktops because the borders have both window title area and menus. */
 #ifdef __APPLE__
 #define GLIST_DEFCANVASYLOC 22
 #else
-#define GLIST_DEFCANVASYLOC 0
+#define GLIST_DEFCANVASYLOC 50
 #endif
 
 /* ---------------------- variables --------------------------- */

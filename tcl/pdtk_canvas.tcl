@@ -34,8 +34,8 @@ namespace eval ::pdtk_canvas:: {
 # canvas new/saveas
 
 proc pdtk_canvas_new {mytoplevel width height geometry editable} {
-    set screenwidth [winfo screenwidth .]
-    set screenheight [winfo screenheight .]
+    set screenwidth [lindex [wm maxsize .] 0]
+    set screenheight [lindex [wm maxsize .] 1]
 
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
