@@ -17,6 +17,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
+#ifdef WIN32
+#include <malloc.h>
+#else
+#include <alloca.h>
+#endif
 
 #include "s_utf8.h"
 
