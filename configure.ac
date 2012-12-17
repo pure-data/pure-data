@@ -247,7 +247,6 @@ AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 man/Makefile
-                portaudio/Makefile
                 portmidi/Makefile
                 tcl/Makefile
                 po/Makefile
