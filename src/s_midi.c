@@ -41,8 +41,9 @@ int midi_outhead, midi_outtail;
 t_midiqelem midi_inqueue[MIDIQSIZE];
 int midi_inhead, midi_intail;
 static double sys_midiinittime;
+#define API_DEFAULTMIDI 0
 
-int sys_midiapi = API_DEFAULT;
+int sys_midiapi = API_DEFAULTMIDI;
 
     /* this is our current estimate for at what "system" real time the
     current logical time's output should occur. */
@@ -500,7 +501,7 @@ void sys_get_midi_apis(char *buf)
 {
     int n = 0;
     strcpy(buf, "{ ");
-    sprintf(buf + strlen(buf), "{default-MIDI %d} ", API_DEFAULT); n++;
+    sprintf(buf + strlen(buf), "{OSS-MIDI %d} ", API_DEFAULTMIDI); n++;
 #ifdef USEAPI_ALSA
     sprintf(buf + strlen(buf), "{ALSA-MIDI %d} ", API_ALSA); n++;
 #endif

@@ -273,10 +273,10 @@ int sys_main(int argc, char **argv)
 #ifdef _WIN32
 # ifdef _MSC_VER /* MS Visual Studio */
     _set_fmode( _O_BINARY );
-# else	/* MinGW */
+# else  /* MinGW */
     int _fmode = _O_BINARY;
-# endif	/* _MSC_VER */
-#endif	/* WIN32 */
+# endif /* _MSC_VER */
+#endif  /* WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)        /* prescan args for noprefs */
