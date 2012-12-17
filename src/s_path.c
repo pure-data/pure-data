@@ -399,9 +399,7 @@ int open_via_path(const char *dir, const char *name, const char *ext,
 
     /* open a file with a UTF-8 filename
     This is needed because WIN32 does not support UTF-8 filenames, only UCS2.
-    On all other platforms, this is defined as "#define sys_open open" since
-    they all support UTF-8 filenames. Having this function prevents lots of
-    #ifdefs all over the place.
+    Having this function prevents lots of #ifdefs all over the place.
     */
 #ifdef _WIN32
 int sys_open(const char *path, int oflag, ...)
@@ -431,10 +429,50 @@ FILE *sys_fopen(const char *filename, const char *mode)
     mbstowcs(ucs2mode, mode, MAXPDSTRING);
     return (_wfopen(ucs2buf, ucs2mode));
 }
+#else
+#include <stdarg.h>
+int sys_open(const char *path, int oflag, ...)
+{
+    int i, fd;
+    char pathbuf[MAXPDSTRING];
+    sys_bashfilename(path, pathbuf);
+    if (oflag & O_CREAT)
+    {
+        mode_t mode;
+        va_list ap;
+        va_start(ap, oflag);
+        /* If mode_t is narrower than int, use the promoted type (int),
+           not mode_t.  Use sizeof to guess whether mode_t is narrower;
+           we don't know of any practical counterexamples.
+           -> http://www.mail-archive.com/bug-gnulib@gnu.org/msg14212.html
+           -> http://bugs.debian.org/647345
+        */
+        if(sizeof(mode_t) < sizeof(int))
+        {
+            int imode = va_arg (ap, int);
+            mode=(mode_t)imode;
+        }
+        else
+            mode = va_arg (ap, mode_t);
+        va_end(ap);
+        fd = open(pathbuf, oflag, mode);
+    }
+    else
+        fd = open(pathbuf, oflag);
+    return fd;
+}
+
+FILE *sys_fopen(const char *filename, const char *mode)
+{
+  char namebuf[MAXPDSTRING];
+  sys_bashfilename(filename, namebuf);
+  return fopen(namebuf, mode);
+}
+#endif /* _WIN32 */
 
    /* close a previously opened file
    this is needed on platforms where you cannot open/close resources
-   across dll-boundaries */
+   across dll-boundaries, but we provide it for other platforms as well */
 int sys_close(int fd)
 {
     return close(fd);
@@ -444,7 +482,6 @@ int sys_fclose(FILE *stream)
 {
     return fclose(stream);
 }
-#endif /* _WIN32 */
 
 
     /* Open a help file using the help search path.  We expect the ".pd"

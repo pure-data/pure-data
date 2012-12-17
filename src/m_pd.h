@@ -75,9 +75,7 @@ typedef long int32_t;  /* a data type that has 32 bits */
 #endif
 
 /* for FILE, needed by sys_fopen() and sys_fclose() only */
-#ifdef _WIN32
-# include <stdio.h>
-#endif
+#include <stdio.h>
 
 #define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
@@ -504,18 +502,10 @@ EXTERN int (*sys_idlehook)(void);   /* hook to add idle time computation */
  * these internal versions that handle UTF-8 filenames the same across
  * all platforms.  They are recommended for use in external
  * objectclasses as well so they work with Unicode filenames on Windows */
-#ifdef _WIN32
 EXTERN int sys_open(const char *path, int oflag, ...);
 EXTERN int sys_close(int fd);
 EXTERN FILE *sys_fopen(const char *filename, const char *mode);
 EXTERN int sys_fclose(FILE *stream);
-#else
-# define sys_open open
-# define sys_close close
-# define sys_fopen fopen
-# define sys_fclose fclose
-#endif
-
 
 /* ------------  threading ------------------- */ 
 EXTERN void sys_lock(void);
