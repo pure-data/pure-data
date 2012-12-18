@@ -216,6 +216,12 @@ set ::undo_action "no"
 set ::redo_action "no"
 set ::undo_toplevel "."
 
+
+namespace eval ::pdgui:: {
+    variable scriptname [ file normalize [ info script ] ]
+}
+
+
 #------------------------------------------------------------------------------#
 # coding style
 #
@@ -545,8 +551,13 @@ proc parse_args {argc argv} {
             set ::port $argv 
         } else {
             set hostport [split $argv ":"]
-            set ::host [lindex $hostport 0]
             set ::port [lindex $hostport 1]
+            if { [string is int $::port] && $::port > 0} {
+                set ::host [lindex $hostport 0]
+            } else {
+                set ::port 0
+            }
+
         }
     } elseif {$unflagged_files ne ""} {
         foreach filename $unflagged_files {
@@ -575,14 +586,15 @@ proc singleton {key} {
 }
 
 proc singleton_request {offset maxbytes} {
-    wm deiconify .pdwindow
-    raise .pdwindow
+## the next 2 lines raise the focus to the given window (and change desktop)
+#    wm deiconify .pdwindow
+#    raise .pdwindow
     return [tk appname]
 }
 
 proc first_lost {} {
-    receive_args [selection get -selection PUREDATA]
-    selection own -command first_lost -selection PUREDATA .
+    receive_args [selection get -selection ${::pdgui::scriptname} ]
+    selection own -command first_lost -selection ${::pdgui::scriptname} .
  }
 
 proc others_lost {} {
@@ -603,12 +615,14 @@ proc send_args {offset maxChars} {
 # this command will open files received from a 2nd instance of Pd
 proc receive_args {filelist} {
     raise .
+    wm deiconify .pdwindow
+    raise .pdwindow
     foreach filename $filelist {
         open_file $filename
     }
 }
 
-proc check_for_running_instances {argc argv} {
+proc check_for_running_instances { } {
     switch -- $::windowingsystem {
         "aqua" {
             # handled by ::tk::mac::OpenDocument in apple_events.tcl
@@ -616,17 +630,19 @@ proc check_for_running_instances {argc argv} {
             # http://wiki.tcl.tk/1558
             # TODO replace PUREDATA name with path so this code is a singleton
             # based on install location rather than this hard-coded name
-            if {![singleton PUREDATA_MANAGER]} {
-                # other instances called by wish/pd-gui (exempt 'pd' by 5400 arg)
-                if {$argc == 1 && [string is int $argv] && $argv >= 5400} {return}
-                selection handle -selection PUREDATA . "send_args"
-                selection own -command others_lost -selection PUREDATA .
+            if {![singleton ${::pdgui::scriptname}_MANAGER ]} {
+                # if pd-gui gets called from pd ('pd-gui 5400') or is told otherwise
+                # to connect to a running instance of Pd (by providing [<host>:]<port>)
+                # then we don't want to connect to a running instance
+                if { $::port > 0 && $::host ne "" } { return }
+                selection handle -selection ${::pdgui::scriptname} . "send_args"
+                selection own -command others_lost -selection ${::pdgui::scriptname} .
                 after 5000 set ::singleton_state "timeout"
                 vwait ::singleton_state
                 exit
             } else {
                 # first instance
-                selection own -command first_lost -selection PUREDATA .
+                selection own -command first_lost -selection ${::pdgui::scriptname} .
             }
         } "win32" {
             ## http://wiki.tcl.tk/1558
@@ -696,7 +712,7 @@ proc main {argc argv} {
     tk appname pd-gui
     load_locale
     parse_args $argc $argv
-    check_for_running_instances $argc $argv
+    check_for_running_instances
     set_pd_paths
     init_for_platform
 
