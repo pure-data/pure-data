@@ -439,21 +439,19 @@ int sys_open(const char *path, int oflag, ...)
     if (oflag & O_CREAT)
     {
         mode_t mode;
+        int imode;
         va_list ap;
         va_start(ap, oflag);
-        /* If mode_t is narrower than int, use the promoted type (int),
-           not mode_t.  Use sizeof to guess whether mode_t is narrower;
-           we don't know of any practical counterexamples.
+
+        /* Mac compiler complains if we just set mode = va_arg ... so, even
+        though we all know it's just an int, we explicitly va_arg to an int
+        and then convert.
            -> http://www.mail-archive.com/bug-gnulib@gnu.org/msg14212.html
            -> http://bugs.debian.org/647345
         */
-        if(sizeof(mode_t) < sizeof(int))
-        {
-            int imode = va_arg (ap, int);
-            mode=(mode_t)imode;
-        }
-        else
-            mode = va_arg (ap, mode_t);
+        
+        imode = va_arg (ap, int);
+        mode = (mode_t)imode;
         va_end(ap);
         fd = open(pathbuf, oflag, mode);
     }
@@ -475,7 +473,11 @@ FILE *sys_fopen(const char *filename, const char *mode)
    across dll-boundaries, but we provide it for other platforms as well */
 int sys_close(int fd)
 {
+#ifdef _WIN32
+    return _close(fd);  /* Bill Gates is a big fat hen */
+#else
     return close(fd);
+#endif
 }
 
 int sys_fclose(FILE *stream)
