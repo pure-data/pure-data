@@ -460,8 +460,9 @@ int pa_send_dacs(void)
     float *conversionbuf;
     int j, k;
     int rtnval =  SENDDACS_YES;
-    int timenow;
-    int timeref = sys_getrealtime();
+#ifndef FAKEBLOCKING
+    double timebefore;
+#endif /* FAKEBLOCKING */
     if (!sys_inchannels && !sys_outchannels || !pa_stream)
         return (SENDDACS_NO); 
     conversionbuf = (float *)alloca((sys_inchannels > sys_outchannels?
@@ -475,15 +476,18 @@ int pa_send_dacs(void)
 #endif
         while (sys_ringbuf_GetWriteAvailable(&pa_outring) <
             (long)(sys_outchannels * DEFDACBLKSIZE * sizeof(float)))
+        {
+            rtnval = SENDDACS_SLEPT;
 #ifdef THREADSIGNAL
-                pthread_cond_wait(&pa_sem, &pa_mutex);
+            pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
 #ifdef _WIN32
-                Sleep(1);
+            Sleep(1);
 #else
-                usleep(1000);
+            usleep(1000);
 #endif /* _WIN32 */
 #endif /* THREADSIGNAL */
+        }
 #ifdef THREADSIGNAL
         pthread_mutex_unlock(&pa_mutex);
 #endif
@@ -506,15 +510,18 @@ int pa_send_dacs(void)
 #endif
         while (sys_ringbuf_GetReadAvailable(&pa_inring) <
             (long)(sys_inchannels * DEFDACBLKSIZE * sizeof(float)))
+        {
+            rtnval = SENDDACS_SLEPT;
 #ifdef THREADSIGNAL
-                pthread_cond_wait(&pa_sem, &pa_mutex);
+            pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
 #ifdef _WIN32
-                Sleep(1);
+            Sleep(1);
 #else
-                usleep(1000);
+            usleep(1000);
 #endif /* _WIN32 */
 #endif /* THREADSIGNAL */
+        }
 #ifdef THREADSIGNAL
         pthread_mutex_unlock(&pa_mutex);
 #endif
@@ -531,7 +538,7 @@ int pa_send_dacs(void)
     }
 
 #else /* FAKEBLOCKING */
-
+    timebefore = sys_getrealtime();
         /* write output */
     if (sys_outchannels)
     {
@@ -559,15 +566,15 @@ int pa_send_dacs(void)
                     k++, fp++, fp3 += sys_inchannels)
                         *fp = *fp3;
     }
-#endif /* FAKEBLOCKING */
-    pa_started = 1;
-
-    if ((timenow = sys_getrealtime()) - timeref > 0.002)
+    if (sys_getrealtime() - timebefore > 0.002)
     {
         rtnval = SENDDACS_SLEPT;
     }
+#endif /* FAKEBLOCKING */
+    pa_started = 1;
+
     memset(sys_soundout, 0, DEFDACBLKSIZE*sizeof(t_sample)*sys_outchannels);
-    return rtnval;
+    return (rtnval);
 }
 
 void pa_listdevs(void)     /* lifted from pa_devs.c in portaudio */
