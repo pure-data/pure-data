@@ -771,10 +771,8 @@ static int sys_poll_togui(void) /* returns 1 if did anything */
 {
     if (sys_nogui)
         return (0);
-        /* see if there is stuff still in the buffer, if so we
-            must have fallen behind, so just try to clear that. */
-    if (sys_flushtogui())
-        return (1);
+        /* in case there is stuff still in the buffer, try to flush it. */
+    sys_flushtogui();
         /* if the flush wasn't complete, wait. */
     if (sys_guibufhead > sys_guibuftail)
         return (0);
