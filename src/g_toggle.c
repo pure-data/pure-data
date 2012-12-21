@@ -286,11 +286,11 @@ static int toggle_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, 
 
 static void toggle_set(t_toggle *x, t_floatarg f)
 {
-    int old = x->x_nonzero;
+    int old = (x->x_on != 0);
     x->x_on = f;
-    if(f != 0.0)
+    if (f != 0.0)
         x->x_nonzero = f;
-    if(x->x_nonzero != old)
+    if ((x->x_on != 0) != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
