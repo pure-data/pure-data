@@ -93,7 +93,7 @@ endif
 #  ------------------ targets ------------------------------------
 #
 
-.PHONY: pd externs all
+.PHONY: pd externs all depend
 
 all: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend \
     $(BIN_DIR)/pdreceive externs
@@ -203,7 +203,7 @@ tags: $(SRC) $(GSRC); ctags *.[ch]
 
 depend: makefile.dependencies
 
-makefile.dependencies:
+makefile.dependencies: $(SRC)
 	$(CC) $(CPPFLAGS) -M $(SRC) > makefile.dependencies
 
 uninstall:
