@@ -25,7 +25,6 @@ cd ..
 TMPPD=/tmp/pd-$1
 mkdir $TMPPD/obj $TMPPD/bin
 cd $TMPPD/src
-autoconf
 make -f makefile.gnu distclean
 rm -rf autom4te.cache
 rm -f *.pd
