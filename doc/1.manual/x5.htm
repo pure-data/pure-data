@@ -20,6 +20,26 @@
 
 <H3> <A name="s2"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.44 ---------------------------
+
+<P> many, many changes (hopefully improvements) in audio and MIDI I/O
+and in scheduling.
+
+<P> got rid of the "old" (cd src; ./configure etc) build system.  src now
+contains fallback makefiles for gnu/linux and mac as well as windows.  But
+the "official" way to build Pd is now to invoke automake.
+
+<P> better handling of reading and writing files with non-ASCII filenames in
+Micrsoft Windows.
+
+<P> fixed a bug in hip~ (incorrect gain; noticeably different when the cutoff
+frequency is set about 5K or higher.)  To get the old behavior you can set
+Pd to be 0.43 compatible; see the hip~ help window for details.
+
+<P> inlet~ and outlet~, if configured to do upsampling, now use sample/hold
+instead of zero padding by default; arguably this is a bug fix as the DC gain
+isn't one for zero padding.  Also undoable by setting compatibility to 0.43.
+
 <P> ------------------ 0.43.2-3 ---------------------------
 
 <P> bug fixes, notably allowing an increase in incoming MIDI bandwidth.

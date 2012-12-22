@@ -1,26 +1,9 @@
-Quick compilation instructions for Linux or Mac OSX:
+Quick compilation instructions for Linux or Mac OSX, or Windows if you have
+installed gygwin:  make sure "automake" is installed as well as the
+usual C compiler chain.  Then in this directory, type "./autogen.sh", then
+"./configure"; then "make".
 
-There are two parallel build systems: the "old" one by Miller and the "new"
-one by Hans.
-
-Old build system: on Macintosh or linux, Change to "src" subdirectory.
-Type "./configure", possibly adding flags as follows:
-
-    To put Pd in /usr/bin instead of /usr/local/bin, add "--prefix=/bin".
-    To enable jack support: "--enable-jack"
-
-Then type "make"; and. if desired, as superuser type "make install".
-
-To run pd, either type the full pathname as in /home/me/pd/bin/pd, or else
-if you've chosen  "make install", just type "pd".
-
-New build system: in this directory, type "./autogen.sh", then "./configure";
-then "make".
-
-Special instructions for Microsoft Windows: to use the old build system,
-install the Microsoft C compiler, cd to src and type "make -f makefile.nt". 
-Then CD to the various subdirs of extra and type "make nt" in each.  For the
-new build system, install cygwin and follow instructions as in linux or
-Macintosh.
-
-
+Alternatively, you can use the fallback makefiles in "src" for gnu/linux, Mac
+OSX, or Microsoft Visual C.  (Special instructions for Microsoft Visual C: cd
+to src and type "make -f makefile.nt".  Then CD to the various subdirs of extra
+and type "make nt" in each.)

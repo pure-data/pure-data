@@ -10,14 +10,7 @@ locally in the file, .../pd-whatever/doc/1.manual/index.htm.  To unpack Pd:
 
 LINUX (or freeBSD).  In some linux installations you can download Pd via
 "apt-get install puredata" or "yum install puredata"; otherwise you will have to
-download the source and compile it as follows:
-
-First download Pd, which will be a ".tar.gz" file; to unpack it, type "tar xzf
-[name].tar.gz" to a shell.  (Alternatively, check the sources out from a
-repository).  This creates a directory with a name like "pd-0.35".  In a shell,
-cd to "src".  If there's a file named "configure", type "./configure" and then
-"make".  If there's no "configure", generate one first by typing "autoconf" then
-"./configure" and "make".
+download the source and compile it as described in the file, INSTALL.txt
 
 Microsoft Windows.  Pd binaries are distributed as a "zip" file.   Unzip this,
 creating a directory such as \pd.
