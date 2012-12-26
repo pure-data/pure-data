@@ -592,6 +592,13 @@ void sys_reportidle(void)
 {
 }
 
+/* this could later be set by a preference but for now it seems OK to just
+keep jack audio open but close unused audio devices for any other API */
+int audio_shouldkeepopen( void)
+{
+    return (sys_audioapi == API_JACK);
+}
+
 static void audio_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, int *cancallback,
         int maxndev, int devdescsize)
