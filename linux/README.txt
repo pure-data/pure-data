@@ -9,7 +9,7 @@ release checklist
     git push --tags
     ... copy to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
-	~/bis/lib/public_html/Pd_documentation/
+        ~/bis/lib/public_html/Pd_documentation/
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
     edit /home/msp/bis/lib/public_html/software.htm
@@ -22,7 +22,7 @@ rpm building (inactive)
     rpmbuild -ba rpmspec
     rpmbuild -bb rpmspec-alsa
     check size of compressed files:
-    	/usr/src/redhat/SRPMS/pd-0.36-0.src.rpm
-    	/usr/src/redhat/RPMS/i386/pd-0.36-0.i386.rpm 
-    	/usr/src/redhat/RPMS/i386/pd-alsa-0.36-0.i386.rpm
+        /usr/src/redhat/SRPMS/pd-0.36-0.src.rpm
+        /usr/src/redhat/RPMS/i386/pd-0.36-0.i386.rpm 
+        /usr/src/redhat/RPMS/i386/pd-alsa-0.36-0.i386.rpm
     copy from /usr/src/redhat/RPMS/i386 and /usr/src/redhat/SRPMS

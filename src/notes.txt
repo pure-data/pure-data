@@ -4,6 +4,8 @@ lose makesfx.bat, etc. from msw (and move out personal stuff?)
 control C control
 window titles wrong on Macintosh
 
+
+
 ---------------- dolist --------------------
 
 portaudio: put call to PA_Terminate back in where appropriate
@@ -60,6 +62,7 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
+add way to query readsf~ for fill pointer (sf feature request 3598776)
 'route' object to sprout inlet if no args (like sel)
 optionally suppress leading "." directories and files on "open"
 change config.h to #ifdef _MSC_VER (include MSW fake) else include a real one

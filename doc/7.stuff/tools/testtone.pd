@@ -1,4 +1,4 @@
-#N canvas 161 335 492 362 12;
+#N canvas 160 334 492 362 12;
 #X floatatom 72 273 3 0 0 0 - - -;
 #X obj 27 221 notein;
 #X obj 27 247 stripnote;
@@ -8,7 +8,7 @@
 #X floatatom 150 272 3 0 0 0 - - -;
 #X floatatom 120 271 3 0 0 0 - - -;
 #X obj 120 246 ctlin;
-#N canvas 0 22 484 446 midi 0;
+#N canvas 0 50 484 446 midi 0;
 #X obj 96 65 inlet;
 #X obj 96 262 noteout;
 #X floatatom 96 92 0 0 0 0 - - -;
@@ -61,7 +61,7 @@
 #X obj 184 192 tgl 15 0 tone-monitor set-tone-monitor monitor-inputs
 23 8 0 12 -262144 -1 -1 0 1;
 #X text 40 120 OFF;
-#N canvas 0 22 524 326 more 0;
+#N canvas 0 50 524 326 more 0;
 #X floatatom 42 209 0 0 0 0 - - -;
 #X obj 42 183 f;
 #X obj 79 183 + 1;
