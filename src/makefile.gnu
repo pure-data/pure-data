@@ -95,11 +95,9 @@ endif
 
 .PHONY: pd externs all depend
 
-all: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend \
-    $(BIN_DIR)/pdreceive externs
+all: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive externs
 
-bin: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend \
-    $(BIN_DIR)/pdreceive
+bin: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive
 
 $(OBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $(OBJ_DIR)/$*.o $*.c 
@@ -108,20 +106,16 @@ pd: $(PDEXEC)
 
 pd-watchdog: $(BIN_DIR)/pd-watchdog
 
-$(BIN_DIR)/pd-watchdog: s_watchdog.c
-	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
+$(BIN_DIR)/pd-watchdog: $(BIN_DIR) s_watchdog.c
 	$(CC) $(CFLAGS) $(STRIPFLAG) -o $(BIN_DIR)/pd-watchdog s_watchdog.c
 
-$(BIN_DIR)/pdsend: u_pdsend.c
-	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
+$(BIN_DIR)/pdsend: $(BIN_DIR) u_pdsend.c
 	$(CC) $(CFLAGS)  $(STRIPFLAG) -o $(BIN_DIR)/pdsend u_pdsend.c
 
-$(BIN_DIR)/pdreceive: u_pdreceive.c
-	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
+$(BIN_DIR)/pdreceive: $(BIN_DIR) u_pdreceive.c
 	$(CC) $(CFLAGS)  $(STRIPFLAG) -o $(BIN_DIR)/pdreceive u_pdreceive.c
 
-$(PDEXEC): $(OBJ)
-	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
+$(PDEXEC): $(BIN_DIR) $(OBJ_DIR) $(OBJ)
 	cd ../obj;  $(CC) $(LDFLAGS) $(DBG_CFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
 
 externs: 
@@ -202,6 +196,12 @@ distclean: clean
 tags: $(SRC) $(GSRC); ctags *.[ch]
 
 depend: makefile.dependencies
+
+$(OBJ_DIR):
+	test -d $(OBJ_DIR) || mkdir -p $(OBJ_DIR)
+
+$(BIN_DIR):
+	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 
 makefile.dependencies: $(SRC)
 	$(CC) $(CPPFLAGS) -M $(SRC) > makefile.dependencies
