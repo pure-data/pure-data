@@ -622,6 +622,10 @@ proc receive_args {filelist} {
     }
 }
 
+proc dde_open_handler {cmd} {
+    open_file [file normalize $cmd]
+}
+
 proc check_for_running_instances { } {
     switch -- $::windowingsystem {
         "aqua" {
@@ -645,22 +649,13 @@ proc check_for_running_instances { } {
                 selection own -command first_lost -selection ${::pdgui::scriptname} .
             }
         } "win32" {
-            ## http://wiki.tcl.tk/1558
-            package require dde
-            set topicName "Pure Data"
-
-            # if a service with our topic is already running, delegate to it
-            set otherServices [dde services TclEval $topicName]
-            if { [llength $otherServices] > 0 } {
-                # when multiple files are double-clicked, Windows
-                # sends them one at a time, so we only ever need to
-                # handle the first file parsed from the args
-                dde execute TclEval $topicName \
-                    "open_file {[lindex $::filestoopen_list 0]}"
-                exit
+            ## http://wiki.tcl.tk/8940
+            package require dde ;# 1.4 or later needed for full unicode support
+            set topic "Pure_Data_DDE_Open"
+            # if no DDE service is running, start one and claim the name
+            if { [dde services TclEval $topic] == {} } {
+                dde servername -handler dde_open_handler $topic
             }
-            # otherwise, start the server:
-            dde servername $topicName
         }
     }
 }
