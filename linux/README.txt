@@ -2,6 +2,7 @@ release checklist
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
+    build
     ./make-release 0.35-0  or 0.35-test11, etc
     ... compile on windows/Mac 
     git tag (to see existing tags)
@@ -13,7 +14,8 @@ release checklist
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
     edit /home/msp/bis/lib/public_html/software.htm
-    rsync  -avzl --delete /home/msp/bis/lib/public_html/ crca:public_html/
+    rsync  -avzl --delete --exclude tmp \
+        /home/msp/bis/lib/public_html/ crca:public_html/
     mail release notice from /home/msp/pd/attic/pd-announce
 
 rpm building (inactive)
