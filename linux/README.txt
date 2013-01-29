@@ -2,13 +2,13 @@ release checklist
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
-    build on linux
+    compile on linux
     ./make-release 0.35-0  or 0.35-test11, etc
     ... compile on windows/Mac 
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
-    git push --tags
-    ... copy to ~/bis/lib/public_html/Software/
+    git push; git push --tags
+    copy from ~/pd/archive/dist to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
         ~/bis/lib/public_html/Pd_documentation/
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt

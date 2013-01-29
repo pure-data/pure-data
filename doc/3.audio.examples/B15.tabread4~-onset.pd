@@ -1,4 +1,4 @@
-#N canvas 88 58 563 680 12;
+#N canvas 87 57 580 690 12;
 #X text 355 655 updated for Pd version 0.42;
 #X text 28 36 Pd is usually compiled to work on 32-bit audio samples.
 These do not \, in general \, have enough precision for use as indices
