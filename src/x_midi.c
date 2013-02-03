@@ -91,7 +91,7 @@ void inmidi_byte(int portno, int byte)
     if (midiin_sym->s_thing)
     {
         SETFLOAT(at, byte);
-        SETFLOAT(at+1, portno + 1);
+        SETFLOAT(at+1, portno);
         pd_list(midiin_sym->s_thing, 0, 2, at);
     }
 }
@@ -102,7 +102,7 @@ void inmidi_sysex(int portno, int byte)
     if (sysexin_sym->s_thing)
     {
         SETFLOAT(at, byte);
-        SETFLOAT(at+1, portno + 1);
+        SETFLOAT(at+1, portno);
         pd_list(sysexin_sym->s_thing, 0, 2, at);
     }
 }
