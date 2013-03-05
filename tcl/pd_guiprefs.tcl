@@ -146,13 +146,12 @@ proc ::pd_guiprefs::get_config_x11 {adomain {akey} {arr false}} {
     if {
         [file exists $filename] == 1
         && [file readable $filename]
-    } {
-        set fl [open $filename r]
-        while {[gets $fl line] >= 0} {
-           lappend conf $line
-        }
-        close $fl
     }
+    set fl [open $filename r]
+    while {[gets $fl line] >= 0} {
+       lappend conf $line
+    }
+    close $fl
     return $conf
 }
 
