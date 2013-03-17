@@ -1,4 +1,4 @@
-#N canvas 395 119 627 449 12;
+#N canvas 394 118 644 497 12;
 #X obj 76 238 env~;
 #X floatatom 76 261 0 0 0 0 - - -;
 #X floatatom 120 184 0 0 0 0 - - -;
@@ -14,19 +14,21 @@
 #X text 128 158 <-- reinitialize internal state;
 #X obj 83 6 hip~;
 #X text 128 5 - one-pole high pass filter;
-#X text 396 420 updated for Pd version 0.44;
-#X msg 120 395 \; pd compatibility 0.43;
-#X text 21 293 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
-high-frequency output gain was incorrectly greater than one (usually
-only slightly so \, but noticeably if the cutoff frequency was more
-than 1/4 the Nyquist frequency). To get the old version \, set "compatibility"
-to 0.43 in Pd's command line or by a message:;
+#X text 409 464 updated for Pd version 0.44;
+#X msg 127 439 \; pd compatibility 0.43;
 #X text 11 31 hip~ is a one-pole high pass filter with a specified
 cutoff frequency.;
 #X text 141 213 Creation argument initializes cutoff frequency.;
 #X text 172 183 <-- set cutoff frequency;
 #X text 13 68 Left (audio) inlet is the incoming audio signal.;
 #X text 12 87 Right (contol) inlet sets cutoff frequency.;
+#X text 21 293 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
+high-frequency output gain was incorrectly greater than one (usually
+only slightly so \, but noticeably if the cutoff frequency was more
+than 1/4 the Nyquist frequency). This problem was fixed INCORECTLY
+in pd 0.44-0 thoguh 0.44-2 \, and is now hopefully fixed since Pd 0.44-3.
+To get the old (0.43 and earlier) behavior \, set "compatibility" to
+0.43 in Pd's command line or by a message:;
 #X connect 0 0 1 0;
 #X connect 2 0 3 1;
 #X connect 3 0 0 0;

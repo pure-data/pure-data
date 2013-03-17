@@ -63,10 +63,11 @@ static t_int *sighip_perform(t_int *w)
     t_sample coef = c->c_coef;
     if (coef < 1)
     {
+        t_sample normal = 0.5*(1+coef);
         for (i = 0; i < n; i++)
         {
             t_sample new = *in++ + coef * last;
-            *out++ = coef * (new - last);
+            *out++ = normal * (new - last);
             last = new;
         }
         if (PD_BIGORSMALL(last))
