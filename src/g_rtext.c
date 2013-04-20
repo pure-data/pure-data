@@ -159,7 +159,7 @@ static int lastone(char *s, int c, int n)
         SEND_FIRST - draw the box  for the first time
         SEND_UPDATE - redraw the updated box
         otherwise - don't draw, just calculate.
-    Called with *widthp and *heightpas coordinates of
+    Called with *widthp and *heightp as coordinates of
     a test point, the routine reports the index of the character found
     there in *indexp.  *widthp and *heightp are set to the width and height
     of the entire text in pixels.
@@ -180,11 +180,6 @@ static int lastone(char *s, int c, int n)
         a limit of 1950 characters, imposed by sys_vgui(). */
 #define UPBUFSIZE 4000
 #define BOXWIDTH 60
-
-/* Older (pre-8.3.4) TCL versions handle text selection differently; this
-flag is set from the GUI if this happens.  LATER take this out: early 2006? */
-
-extern int sys_oldtclversion;           
 
 static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     int *indexp)
@@ -278,7 +273,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     if (nlines < 1) nlines = 1;
     if (!widthspec_c)
     {
-        while (ncolumns < 3)
+        while (ncolumns < (x->x_text->te_type == T_OBJECT ? 3 : 1))
         {
             tempbuf[outchars_b++] = ' ';
             ncolumns++;
@@ -309,8 +304,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
                 sys_vgui(".x%lx.c select from %s %d\n", canvas, 
                     x->x_tag, u8_charnum(x->x_buf, selstart_b));
                 sys_vgui(".x%lx.c select to %s %d\n", canvas, 
-                    x->x_tag, u8_charnum(x->x_buf, selend_b)
-                              + (sys_oldtclversion ? 0 : -1));
+                    x->x_tag, u8_charnum(x->x_buf, selend_b) - 1);
                 sys_vgui(".x%lx.c focus \"\"\n", canvas);        
             }
             else
