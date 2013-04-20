@@ -106,14 +106,8 @@ t_float q8_sqrt(t_float f0)
             rsqrt_mantissatab[(l >> 13) & 0x3ff]);
 }
 
-    /* the old names are OK unless we're in IRIX N32 */
-
-#ifndef N32
 t_float qsqrt(t_float f) {return (q8_sqrt(f)); }
 t_float qrsqrt(t_float f) {return (q8_rsqrt(f)); }
-#endif
-
-
 
 typedef struct sigrsqrt
 {

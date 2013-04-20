@@ -112,7 +112,6 @@ set -any, get -any
 
 more features:
 
-clean out IRIX stuff
 "-march=pentium4 -O2 -mfpmath=sse -msse -msse2 -mmmx" ?
 try to improve for AMD - try "-march=athlon-xp -msse2"
 search for -mcpu=cpu-type in man gcc.

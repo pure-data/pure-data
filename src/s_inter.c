@@ -315,35 +315,6 @@ void sys_set_priority(int higher)
 
 #endif /* __linux__ */
 
-#ifdef IRIX             /* hack by <olaf.matthes@gmx.de> at 2003/09/21 */
-
-#if defined(_POSIX_PRIORITY_SCHEDULING) || defined(_POSIX_MEMLOCK)
-#include <sched.h>
-#endif
-
-void sys_set_priority(int higher)
-{
-#ifdef _POSIX_PRIORITY_SCHEDULING
-    struct sched_param par;
-        /* Bearing the table found in 'man realtime' in mind, I found it a */
-        /* good idea to use 192 as the priority setting for Pd. Any thoughts? */
-    if (higher)
-                par.sched_priority = 250;       /* priority for watchdog */
-    else
-                par.sched_priority = 192;       /* priority for pd (DSP) */
-
-    if (sched_setscheduler(0, SCHED_FIFO, &par) != -1)
-        fprintf(stderr, "priority %d scheduling enabled.\n", par.sched_priority);
-#endif
-
-#ifdef _POSIX_MEMLOCK
-    if (mlockall(MCL_FUTURE) != -1) 
-        fprintf(stderr, "memory locking enabled.\n");
-#endif
-}
-/* end of hack */
-#endif /* IRIX */
-
 /* ------------------ receiving incoming messages over sockets ------------- */
 
 void sys_sockerror(char *s)
@@ -1142,7 +1113,7 @@ int sys_startgui(const char *libdir)
 #endif /* NOT _WIN32 */
     }
 
-#if defined(__linux__) || defined(IRIX) || defined(__FreeBSD_kernel__)
+#if defined(__linux__) || defined(__FreeBSD_kernel__)
         /* now that we've spun off the child process we can promote
         our process's priority, if we can and want to.  If not specfied
         (-1), we assume real-time was wanted.  Afterward, just in case
@@ -1268,7 +1239,7 @@ int sys_startgui(const char *libdir)
              sys_socketreceiver);
 
             /* here is where we start the pinging. */
-#if defined(__linux__) || defined(IRIX) || defined(__FreeBSD_kernel__)
+#if defined(__linux__) || defined(__FreeBSD_kernel__)
          if (sys_hipriority)
              sys_gui("pdtk_watchdog\n");
 #endif

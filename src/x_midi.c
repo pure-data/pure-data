@@ -672,9 +672,6 @@ static void *midiout_new(t_floatarg portno)
     if (portno <= 0) portno = 1;
     x->x_portno = portno;
     floatinlet_new(&x->x_obj, &x->x_portno);
-#ifdef __irix__
-    post("midiout: unimplemented in IRIX");
-#endif
     return (x);
 }
 

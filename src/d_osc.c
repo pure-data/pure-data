@@ -11,10 +11,6 @@
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
 
-#ifdef IRIX
-#include <sys/endian.h>
-#endif
-
 #if defined(__FreeBSD__) || defined(__APPLE__) || defined(__FreeBSD_kernel__) \
     || defined(__OpenBSD__)
 #include <machine/endian.h>

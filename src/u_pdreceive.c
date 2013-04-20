@@ -81,13 +81,6 @@ int main(int argc, char **argv)
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
 
-#ifdef IRIX
-        /* this seems to work only in IRIX but is unnecessary in
-        Linux.  Not sure what MSW needs in place of this. */
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 0, 0) < 0)
-        fprintf(stderr, "setsockopt failed\n");
-#endif
-
         /* assign client port number */
     server.sin_port = htons((unsigned short)portno);
 
