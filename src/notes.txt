@@ -1,10 +1,6 @@
 font courier not found?
-carriage returns after posting
-lose makesfx.bat, etc. from msw (and move out personal stuff?)
 control C control
 window titles wrong on Macintosh
-
-
 
 ---------------- dolist --------------------
 
@@ -24,19 +20,15 @@ Gnome: why don't windows pop up when clicked on?
 
 problems:
 pd~ "start" followed by messages gives race condition because of "fromgui" biz
-get rid of remaining -export-dynamic in makefiles
-saving as "x.pd" on mac writes to "x.pd.pd" (can't reproduce this.)
 find asdf$1 (e.g.) doesn't work
 check real-time gaps in writesf~
 fix declare to update current patch when changed
 objects on GOP don't erase if you edit the GOP while they're showing
 add -stack option to make 'regular' stack larger
 TK menu on Windows says "wish"
-help browser broke on Panurge
 offer both new and old help browser style
 look again at array vis/invis conundrum, g_template.c
 TK commands to nonexistent windows? (occasionally still happens)
-still can't detect when a window is moved or resized
 open_via_path call in d_soundfile.c isn't threadsafe
 floor, ciel functions in expr misdeclared
 graph names don't appear until graph moved? (invis/vis on new array/rename)
@@ -45,7 +37,6 @@ should linux stop grabbing focus on vis?  Is there a way to detect whether
     the mouse is in a window when it opens?
 arrays that don't fit in bounds don't update (same as red rectangle problem?)
 patcher inlets don't deal with scalars (zbug.pd)
-check if there's a problem loading libs on startup if superuser
 read xx.txt in "bad" gives warnings
 Krzysztof's qlist_next reentrancy bug
 don't draw in/outlets on gui objects in graph-on-parent
@@ -65,8 +56,6 @@ features:
 add way to query readsf~ for fill pointer (sf feature request 3598776)
 'route' object to sprout inlet if no args (like sel)
 optionally suppress leading "." directories and files on "open"
-change config.h to #ifdef _MSC_VER (include MSW fake) else include a real one
-stick snprintf alias in the MSW fake.
 "installation mode" - turn off Pd window, accelerators, menu bars, scrollbars
 flag to prevent unlocking patches
 messages to suppress menus&accelerators, and invisibilize Pd window
@@ -74,17 +63,13 @@ machine-independent fonts
 sigmund~: sort by pitch; one-shot
 expr to parse exponential notation
 pipe to handle symbols&pointers (just takes floats now???)
-grab new ALSA midi code from devel
 mem alignment for SSE
 replace gatom_escapit with a quoting mechanism (handle '[', spaces, etc.)
 unicode in filenames???  How does this work?  (bug report about windows)
-sprout inlet for "route", "sel" if one arg
 more list functions (see x_list.c)
 poly inlet to turn stealing on/off, plus mode to handle note-with-duration
 integrate video into tilde objects
-fix copyright notices
 pixel font sizes
-pd to find running ones (pd -new to defeat)
 tables:
     if there's just one array, don't do stringent hit check.
     array click protection (Krzysztof's suggestion)
@@ -112,21 +97,18 @@ editing:
 data:
 add -x [-n?] flag to drawnumbers
 flag to disable edits for arrays
-make a 2-pass proecss for finding hot spot closest to any given click
+make a 2-pass process for finding hot spot closest to any given click
 replace list element with binbuf??
 hooks for table mousing, other changes (scalars?)
 data to save as succession of "list" messages that textfile can store, etc.
-implement list field (GOP or subwindow, perhaps GOP could suppress bounds rect?)
 data copy/paste doesn't check templates aren't changed
 arrays of non-existent templates crash
-vget, vset traversal objects, pointer == and select equivalents
-cursor to show (x, y) location
+pointer == and select equivalents
+cursor to show (x, y) location and/or what parameter is being set to what
 improve typing at drawnumbers
-sublists should display on parent if desired? (new drawing instruction)
-test and debug list elements of templates
-sublists seem not to handle canvas allocation right (get.pd->pointer.pd bug)
 append doesn't do symbols yet.
 non-clickable arrays (plus arrays that respond more easily than default)
+set -any, get -any
 
 more features:
 
@@ -147,21 +129,16 @@ windows escape from control-C
 new: abs~, nexttick~, extend threshold~ and snapshot~ (vthreshold~ etc)
 incorporate pddp doc
 try again to fix the font scene
-look at prctl(2) for FP exception handling
 ??? have a way to disambiguate externs from different libs???
 netsend separate thread
 netreceive (and netsend?) message to set port number
 graph_vis() to decorate graphs when they're toplevel (parent_glist == 0)
 in glist_delete, consider why this can't be just "vis 0" -- why do we need it?
 closebang
-check that -blocksize really reflects in audiobuf calc for Hammerfall
-makefile to have make install depend on make local.
 put in something for tilde order forcing
 extensible "toolbar" so people can add external GUI objects
-variable send and receive -- check how max/MSP does it?
 number boxes to darken for typing and/or received messages
 new message box look
-figure out what to do when "pd sym" conflicts with window title as in Pluton?
 bonk~ file path handling
 dialog to give values of $1, ... for the canvas
 bang at end of line~, tabwrite~, etc.
@@ -170,13 +147,9 @@ should sys_bail kill all "threads" on the way out?
 check a_valid usage
 allow backslashes (or else really disallow them)
 icon & desktop integration
-vreadsf~
 benchmarking
-flash menu when accelerator hits?
-fix edit mode menu item
 fancier text editing
 tools (reassigns meaning of primary click)
-get gui to notice early EOF
 rewrite t_getbytes properly (m_newmemory.c in pd/attic)
 obj_new should do a longjmp on out-of-memory
 
