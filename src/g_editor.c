@@ -782,7 +782,8 @@ static char *cursorlist[] = {
     "$cursor_runmode_addpoint",
     "$cursor_editmode_nothing",
     "$cursor_editmode_connect",
-    "$cursor_editmode_disconnect"
+    "$cursor_editmode_disconnect",
+    "$cursor_editmode_resize"
 };
 
 void canvas_setcursor(t_canvas *x, unsigned int cursornum)
@@ -1314,9 +1315,25 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         }
         else
         {
-                /* look for an outlet */
             int noutlet;
-            if (ob && (noutlet = obj_noutlets(ob)) && ypos >= y2-4)
+                /* resize?  only for "true" text boxes or canvases*/
+            if (ob &&
+                (ob->te_pd->c_wb == &text_widgetbehavior ||
+                    ob->ob_pd == canvas_class) &&
+                        xpos >= x2-4 && ypos < y2-4)
+            {
+                if (doit)
+                {
+                    x->gl_editor->e_onmotion = MA_RESIZE;
+                    x->gl_editor->e_xwas = x1;
+                    x->gl_editor->e_ywas = y1;
+                    x->gl_editor->e_xnew = xpos;
+                    x->gl_editor->e_ynew = ypos;
+                }                                   
+                else canvas_setcursor(x, CURSOR_EDITMODE_RESIZE);
+            }
+                /* look for an outlet */
+            else if (ob && (noutlet = obj_noutlets(ob)) && ypos >= y2-4)
             {
                 int width = x2 - x1;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
@@ -1341,6 +1358,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 }
                 else if (doit)
                     goto nooutletafterall;
+                else canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
             }
                 /* not in an outlet; select and move */
             else if (doit)
@@ -1368,7 +1386,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     x->gl_editor->e_onmotion = MA_MOVE;
                 }
             }
-            else canvas_setcursor(x, CURSOR_EDITMODE_NOTHING); 
+            else canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
         }
         return;
     }
@@ -1841,6 +1859,40 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
         if (rt)
             rtext_mouse(rt, xpos - x->gl_editor->e_xwas,
                 ypos - x->gl_editor->e_ywas, RTEXT_DRAG);
+    }
+    else if (x->gl_editor->e_onmotion == MA_RESIZE)
+    {
+        int x11=0, y11=0, x12=0, y12=0; 
+        t_gobj *y1;
+        if (y1 = canvas_findhitbox(x,
+            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
+                &x11, &y11, &x12, &y12))
+        {
+            int wantwidth = xpos - x11;
+            t_gotfn sizefn;
+            t_object *ob = pd_checkobject(&y1->g_pd);
+            if (ob && ob->te_pd->c_wb == &text_widgetbehavior ||
+                    (ob->ob_pd == canvas_class &&
+                        !((t_canvas *)ob)->gl_isgraph))
+            {
+                wantwidth = wantwidth / sys_fontwidth(glist_getfont(x));
+                if (wantwidth < 1)
+                    wantwidth = 1;
+                ob->te_width = wantwidth;
+                gobj_vis(y1, x, 0);
+                gobj_vis(y1, x, 1);
+            }
+            else if (ob && ob->ob_pd == canvas_class)
+            {
+                gobj_vis(y1, x, 0);
+                ((t_canvas *)ob)->gl_pixwidth += xpos - x->gl_editor->e_xnew;
+                ((t_canvas *)ob)->gl_pixheight += ypos - x->gl_editor->e_ynew;
+                x->gl_editor->e_xnew = xpos;
+                x->gl_editor->e_ynew = ypos;
+                gobj_vis(y1, x, 1);
+            }
+            else post("not resizable");
+        }
     }
     else canvas_doclick(x, xpos, ypos, 0, mod, 0);
     

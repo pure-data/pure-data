@@ -119,6 +119,7 @@ typedef struct _editor
 #define MA_REGION  3    /* selection region */
 #define MA_PASSOUT 4    /* send on to e_grab */
 #define MA_DRAGTEXT 5   /* drag in text editor to alter selection */
+#define MA_RESIZE  6    /* drag to resize */
 
 /* editor structure for "garrays".  We don't bother to delete and regenerate
 this structure when the "garray" becomes invisible or visible, although we
@@ -331,6 +332,7 @@ struct _parentwidgetbehavior
 #define CURSOR_EDITMODE_NOTHING 4
 #define CURSOR_EDITMODE_CONNECT 5
 #define CURSOR_EDITMODE_DISCONNECT 6
+#define CURSOR_EDITMODE_RESIZE 7
 EXTERN void canvas_setcursor(t_glist *x, unsigned int cursornum);
 
 extern t_canvas *canvas_editing;    /* last canvas to start text edting */ 

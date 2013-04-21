@@ -221,9 +221,13 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         int foundit_c;
         if (foundit_b < 0)
         {
+                /* too much text to fit in one line? */
             if (inchars_c > widthlimit_c)
             {
-                foundit_b = lastone(x->x_buf + inindex_b, ' ', maxindex_b);
+                    /* is there a space to break the line at?  OK if it's even
+                    one byte past the end since in this context we know there's
+                    more text */
+                foundit_b = lastone(x->x_buf + inindex_b, ' ', maxindex_b + 1);
                 if (foundit_b < 0)
                 {
                     foundit_b = maxindex_b;
@@ -283,13 +287,29 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     pixwide = ncolumns * fontwidth + (LMARGIN + RMARGIN);
     pixhigh = nlines * fontheight + (TMARGIN + BMARGIN);
 
+    if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
+    {
+            /* if our width is specified but the "natural" width is the
+            same as the specified width, set specified width to zero
+            so future text editing will automatically change width.
+            Except atoms whose content changes at runtime. */
+        int widthwas = x->x_text->te_width, newwidth = 0, newheight = 0,
+            newindex = 0;
+        x->x_text->te_width = 0;
+        rtext_senditup(x, 0, &newwidth, &newheight, &newindex);
+        if (newwidth/fontwidth != widthwas)
+            x->x_text->te_width = widthwas;
+        else x->x_text->te_width = 0;
+    }
     if (action == SEND_FIRST)
+    {
         sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%.*s} %d %s\n",
             canvas, x->x_tag, rtext_gettype(x)->s_name,
             dispx + LMARGIN, dispy + TMARGIN,
             outchars_b, tempbuf, sys_hostfontsize(font),
             (glist_isselected(x->x_glist,
                 &x->x_glist->gl_gobj)? "blue" : "black"));
+    }
     else if (action == SEND_UPDATE)
     {
         sys_vgui("pdtk_text_set .x%lx.c %s {%.*s}\n",

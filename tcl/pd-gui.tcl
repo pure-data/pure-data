@@ -304,6 +304,7 @@ proc init_for_platform {} {
             set ::cursor_editmode_nothing "hand2"
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
+            set ::cursor_editmode_resize "sb_h_double_arrow"
         }
         "aqua" {
             set ::modifier "Mod1"
@@ -336,6 +337,7 @@ proc init_for_platform {} {
             set ::cursor_editmode_nothing "hand2"
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
+            set ::cursor_editmode_resize "sb_h_double_arrow"
         }
         "win32" {
             set ::modifier "Control"
@@ -373,6 +375,7 @@ proc init_for_platform {} {
             set ::cursor_editmode_nothing "hand2"
             set ::cursor_editmode_connect "circle"
             set ::cursor_editmode_disconnect "X_cursor"
+            set ::cursor_editmode_resize "sb_h_double_arrow"
         }
     }
 }

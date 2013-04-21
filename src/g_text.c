@@ -1153,14 +1153,12 @@ void text_save(t_gobj *z, t_binbuf *b)
                 (int)x->te_xpix, (int)x->te_ypix);
         }
         binbuf_addbinbuf(b, x->te_binbuf);
-        binbuf_addv(b, ";");
     }
     else if (x->te_type == T_MESSAGE)
     {
         binbuf_addv(b, "ssii", gensym("#X"), gensym("msg"),
             (int)x->te_xpix, (int)x->te_ypix);
         binbuf_addbinbuf(b, x->te_binbuf);
-        binbuf_addv(b, ";");
     }
     else if (x->te_type == T_ATOM)
     {
@@ -1176,15 +1174,16 @@ void text_save(t_gobj *z, t_binbuf *b)
             (double)((t_gatom *)x)->a_draghi,
             (double)((t_gatom *)x)->a_wherelabel,
             label, symfrom, symto);
-        binbuf_addv(b, ";");
     }           
     else        
     {
         binbuf_addv(b, "ssii", gensym("#X"), gensym("text"),
             (int)x->te_xpix, (int)x->te_ypix);
         binbuf_addbinbuf(b, x->te_binbuf);
-        binbuf_addv(b, ";");
-    }           
+    }
+    if (x->te_width)
+        binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+    binbuf_addv(b, ";");
 }
 
     /* this one is for everyone but "gatoms"; it's imposed in m_class.c */
