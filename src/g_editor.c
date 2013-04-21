@@ -2287,6 +2287,7 @@ static void canvas_doclear(t_canvas *x)
         the glist to reselect. */
     if (x->gl_editor->e_textedfor)
     {
+        t_gobj *selwas = x->gl_editor->e_selection->sel_what;
         newest = 0;
         glist_noselect(x);
         if (newest)
@@ -2303,10 +2304,6 @@ static void canvas_doclear(t_canvas *x)
             if (glist_isselected(x, y))
             {
                 glist_delete(x, y);
-#if 0
-                if (y2) post("cut 5 %lx %lx", y2, y2->g_next);
-                else post("cut 6");
-#endif
                 goto next;
             }
         }
@@ -2329,14 +2326,21 @@ static void canvas_cut(t_canvas *x)
         char *buf;
         int bufsize;
         rtext_getseltext(x->gl_editor->e_textedfor, &buf, &bufsize);
-        if (!bufsize)
-            return;
+        if (!bufsize && x->gl_editor->e_selection &&
+            !x->gl_editor->e_selection->sel_next)
+        {
+            t_object *ob = (t_object *)x->gl_editor->e_selection->sel_what;
+            glist_noselect(x);
+            glist_select(x, &ob->te_g);
+            goto deleteobj;
+        }
         canvas_copy(x);
         rtext_key(x->gl_editor->e_textedfor, 127, &s_);
         canvas_dirty(x, 1);
     }
     else if (x->gl_editor && x->gl_editor->e_selection)
     {
+    deleteobj:
         canvas_setundo(x, canvas_undo_cut,
             canvas_undo_set_cut(x, UCUT_CUT), "cut");
         canvas_copy(x);
