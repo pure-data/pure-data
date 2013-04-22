@@ -212,7 +212,7 @@ void template_setsymbol(t_template *x, t_symbol *fieldname, t_word *wp,
 
     /* stringent check to see if a "saved" template, x2, matches the current
         one (x1).  It's OK if x1 has additional scalar elements but not (yet)
-        arrays or lists.  This is used for reading in "data files". */
+        arrays.  This is used for reading in "data files". */
 int template_match(t_template *x1, t_template *x2)
 {
     int i;
@@ -220,8 +220,7 @@ int template_match(t_template *x1, t_template *x2)
         return (0);
     for (i = x2->t_n; i < x1->t_n; i++)
     {
-        if (x1->t_vec[i].ds_type == DT_ARRAY || 
-            x1->t_vec[i].ds_type == DT_LIST)
+        if (x1->t_vec[i].ds_type == DT_ARRAY)
                 return (0);
     }
     if (x2->t_n > x1->t_n)
@@ -259,7 +258,7 @@ static void template_conformwords(t_template *tfrom, t_template *tto,
     }
 }
 
-    /* conform a scalar, recursively conforming sublists and arrays  */
+    /* conform a scalar, recursively conforming arrays  */
 static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
     int *conformaction, t_glist *glist, t_scalar *scfrom)
 {
@@ -313,16 +312,11 @@ static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
         x = scfrom;
         scalartemplate = template_findbyname(x->sc_template);
     }
-        /* convert all array elements and sublists */
+        /* convert all array elements */
     for (i = 0; i < scalartemplate->t_n; i++)
     {
         t_dataslot *ds = scalartemplate->t_vec + i;
-        if (ds->ds_type == DT_LIST)
-        {
-            t_glist *gl2 = x->sc_vec[i].w_list;
-            template_conformglist(tfrom, tto, gl2, conformaction);
-        }
-        else if (ds->ds_type == DT_ARRAY)
+        if (ds->ds_type == DT_ARRAY)
         {
             template_conformarray(tfrom, tto, conformaction, 
                 x->sc_vec[i].w_array);
@@ -366,12 +360,7 @@ static void template_conformarray(t_template *tfrom, t_template *tto,
         for (j = 0; j < scalartemplate->t_n; j++)
         {
             t_dataslot *ds = scalartemplate->t_vec + j;
-            if (ds->ds_type == DT_LIST)
-            {
-                t_glist *gl2 = wp[j].w_list;
-                template_conformglist(tfrom, tto, gl2, conformaction);
-            }
-            else if (ds->ds_type == DT_ARRAY)
+            if (ds->ds_type == DT_ARRAY)
             {
                 template_conformarray(tfrom, tto, conformaction, 
                     wp[j].w_array);
@@ -449,10 +438,6 @@ void template_conform(t_template *tfrom, t_template *tto)
     if (doit)
     {
         t_glist *gl;
-        post("conforming template '%s' to new structure",
-            tfrom->t_sym->s_name);
-        for (i = 0; i < nto; i++)
-            post("... %d", conformaction[i]);
         for (gl = canvas_list; gl; gl = gl->gl_next)
             template_conformglist(tfrom, tto, gl, conformaction);
     }

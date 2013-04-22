@@ -111,6 +111,45 @@ static void textobj_clear(t_textobj *x)
     binbuf_clear(x->x_binbuf);
 }
 
+    /* from g_traversal.c - maybe put in a header? */
+t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
+    const char *fname);
+
+static void textobj_frompointer(t_textobj *x, t_gpointer *gp, t_symbol *s)
+{
+    t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
+        gp, s, "text_frompointer");
+    if (b)
+    {
+        t_gstub *gs = gp->gp_stub;
+        binbuf_clear(x->x_textbuf.b_binbuf);
+        binbuf_add(x->x_textbuf.b_binbuf, binbuf_getnatom(b), binbuf_getvec(b));
+    } 
+}
+
+static void textobj_topointer(t_textobj *x, t_gpointer *gp, t_symbol *s)
+{
+    t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
+        gp, s, "text_frompointer");
+    if (b)
+    {
+        t_gstub *gs = gp->gp_stub;
+        binbuf_clear(b);
+        binbuf_add(b, binbuf_getnatom(x->x_textbuf.b_binbuf),
+            binbuf_getvec(x->x_textbuf.b_binbuf));
+        if (gs->gs_which == GP_GLIST)
+            scalar_redraw(gp->gp_un.gp_scalar, gs->gs_un.gs_glist);  
+        else
+        {
+            t_array *owner_array = gs->gs_un.gs_array;
+            while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
+                owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
+            scalar_redraw(owner_array->a_gp.gp_un.gp_scalar,
+                owner_array->a_gp.gp_stub->gs_un.gs_glist);  
+        }
+    } 
+}
+
 void textobj_save(t_gobj *z, t_binbuf *bb)
 {
     t_textobj *b = (t_textobj *)z;

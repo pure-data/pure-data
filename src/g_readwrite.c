@@ -97,12 +97,16 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec,
         }
         else if (template->t_vec[i].ds_type == DT_LIST)
         {
-            while (1)
-            {
-                if (!glist_readscalar(w->w_list, natoms, vec,
-                    p_nextmsg, 0))
-                        break;
-            }
+            t_binbuf *z = binbuf_new();
+            int first = *p_nextmsg, last;
+            for (last = first; last < natoms && vec[last].a_type != A_SEMI;
+                last++);
+            binbuf_restore(z, last-first, vec+first);
+            binbuf_add(w[i].w_list, binbuf_getnatom(z), binbuf_getvec(z));
+            binbuf_free(z);
+            last++;
+            if (last > natoms) last = natoms;
+            *p_nextmsg = last;
         }
     }
 }
@@ -412,7 +416,7 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
         }
         else if (template->t_vec[i].ds_type == DT_LIST)
         {
-            glist_writelist(w->w_list->gl_list, b);
+            binbuf_addbinbuf(b, w[i].w_list);
             binbuf_addsemi(b);
         }
     }
@@ -458,9 +462,6 @@ static void canvas_addtemplatesforscalar(t_symbol *templatesym,
                     (t_word *)(((char *)a->a_vec) + elemsize * j), 
                         p_ntemplates, p_templatevec);
         }
-        else if (ds->ds_type == DT_LIST)
-            canvas_addtemplatesforlist(w->w_list->gl_list,
-                p_ntemplates, p_templatevec);
     }
 }
 

@@ -136,7 +136,7 @@ typedef union word
     t_symbol *w_symbol;
     t_gpointer *w_gpointer;
     t_array *w_array;
-    struct _glist *w_list;
+    struct _binbuf *w_list;
     int w_index;
 } t_word;
 
