@@ -13,6 +13,7 @@
 #ifdef _WIN32
 #include <io.h>
 #endif
+extern t_pd *newest;    /* OK - this should go into a .h file now :) */
 
 typedef struct _textbuf
 {
@@ -77,28 +78,28 @@ static void textbuf_addline(t_textbuf *b, t_symbol *s, int ac, t_atom *av)
     binbuf_free(z);
 }
 
-/* textobj object - buffer for text, accessible by other accessor objects */
+/* text_define object - text buffer, accessible by other accessor objects */
 
-typedef struct _textobj
+typedef struct _text_define
 {
     t_textbuf x_textbuf;
     unsigned char x_embed;   /* whether to embed contents in patch on save */
-} t_textobj;
+} t_text_define;
 
 #define x_ob x_textbuf.b_ob
 #define x_binbuf x_textbuf.b_binbuf
 #define x_canvas x_textbuf.b_canvas
 
-static t_class *textobj_class;
+static t_class *text_define_class;
 
-static void *textobj_new(t_symbol *s, int ac, t_atom *av)
+static void *text_define_new(t_symbol *s, int ac, t_atom *av)
 {
-    t_textobj *x = (t_textobj *)pd_new(textobj_class);
+    t_text_define *x = (t_text_define *)pd_new(text_define_class);
     t_symbol *asym = gensym("#A");
     textbuf_init(&x->x_textbuf);
            /* bashily unbind #A -- this would create garbage if #A were
            multiply bound but we believe in this context it's at most
-           bound to whichever textobj or array was created most recently */
+           bound to whichever text_define or array was created most recently */
     asym->s_thing = 0;
         /* and now bind #A to us to receive following messages in the
         saved file or copy buffer */
@@ -106,7 +107,7 @@ static void *textobj_new(t_symbol *s, int ac, t_atom *av)
     return (x);
 }
 
-static void textobj_clear(t_textobj *x)
+static void text_define_clear(t_text_define *x)
 {
     binbuf_clear(x->x_binbuf);
 }
@@ -115,7 +116,7 @@ static void textobj_clear(t_textobj *x)
 t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
     const char *fname);
 
-static void textobj_frompointer(t_textobj *x, t_gpointer *gp, t_symbol *s)
+static void text_define_frompointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
 {
     t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
         gp, s, "text_frompointer");
@@ -127,7 +128,7 @@ static void textobj_frompointer(t_textobj *x, t_gpointer *gp, t_symbol *s)
     } 
 }
 
-static void textobj_topointer(t_textobj *x, t_gpointer *gp, t_symbol *s)
+static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
 {
     t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
         gp, s, "text_frompointer");
@@ -150,9 +151,9 @@ static void textobj_topointer(t_textobj *x, t_gpointer *gp, t_symbol *s)
     } 
 }
 
-void textobj_save(t_gobj *z, t_binbuf *bb)
+void text_define_save(t_gobj *z, t_binbuf *bb)
 {
-    t_textobj *b = (t_textobj *)z;
+    t_text_define *b = (t_text_define *)z;
     binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
         (float)b->x_ob.te_xpix, (float)b->x_ob.te_ypix);
     binbuf_addbinbuf(bb, b->x_ob.ob_binbuf);
@@ -173,8 +174,28 @@ static void textbuf_free(t_textbuf *x)
         guiconnect_notarget(x->b_guiconnect, 1000);
     }
         /* just in case we're still bound to #A from loading... */
-    while (x2 = pd_findbyclass(gensym("#A"), textobj_class))
+    while (x2 = pd_findbyclass(gensym("#A"), text_define_class))
         pd_unbind(x2, gensym("#A"));
+}
+
+static void *text_new(t_symbol *s, int argc, t_atom *argv)
+{
+    if (!argc || argv[0].a_type != A_SYMBOL)
+        newest = text_define_new(s, argc, argv);
+    else
+    {
+        t_symbol *s2 = argv[0].a_w.w_symbol;
+        if (s2 == gensym("d") || s2 == gensym("define"))
+            newest = text_define_new(s, argc-1, argv+1);
+        else if (s2 == gensym("getline"))
+            newest = text_getline_new(s, argc-1, argv+1);
+        else 
+        {
+            error("list %s: unknown function", s2->s_name);
+            newest = 0;
+        }
+    }
+    return (newest);
 }
 
 /*  the qlist and textfile objects, as of 0.44, are 'derived' from
@@ -484,18 +505,20 @@ static void textfile_rewind(t_qlist *x)
 
 void x_qlist_setup(void )
 {
-    textobj_class = class_new(gensym("text"), (t_newmethod)textobj_new,
-        (t_method)textbuf_free, sizeof(t_textobj), 0, A_GIMME, 0);
-    class_addmethod(textobj_class, (t_method)textbuf_open, gensym("click"), 0);
-    class_addmethod(textobj_class, (t_method)textbuf_close, gensym("close"), 0);
-    class_addmethod(textobj_class, (t_method)textbuf_addline, 
+    text_define_class = class_new(gensym("text"), (t_newmethod)text_define_new,
+        (t_method)textbuf_free, sizeof(t_text_define), 0, A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)textbuf_open,
+        gensym("click"), 0);
+    class_addmethod(text_define_class, (t_method)textbuf_close,
+        gensym("close"), 0);
+    class_addmethod(text_define_class, (t_method)textbuf_addline, 
         gensym("addline"), A_GIMME, 0);
-    class_addmethod(textobj_class, (t_method)textobj_clear,
+    class_addmethod(text_define_class, (t_method)text_define_clear,
         gensym("clear"), 0);
-    class_addmethod(textobj_class, (t_method)qlist_print, gensym("print"),
-        A_DEFSYM, 0);
-    class_setsavefn(textobj_class, textobj_save);
-    class_sethelpsymbol(textobj_class, gensym("text-object"));
+    class_addmethod(text_define_class, (t_method)qlist_print,
+        gensym("print"), A_DEFSYM, 0);
+    class_setsavefn(text_define_class, text_define_save);
+    class_sethelpsymbol(text_define_class, gensym("text-object"));
 
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);

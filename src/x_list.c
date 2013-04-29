@@ -504,11 +504,11 @@ static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             newest = list_append_new(s, argc-1, argv+1);
         else if (s2 == gensym("prepend"))
             newest = list_prepend_new(s, argc-1, argv+1);
-         else if (s2 == gensym("split"))
+        else if (s2 == gensym("split"))
             newest = list_split_new(atom_getfloatarg(1, argc, argv));
-         else if (s2 == gensym("trim"))
+        else if (s2 == gensym("trim"))
             newest = list_trim_new();
-         else if (s2 == gensym("length"))
+        else if (s2 == gensym("length"))
             newest = list_length_new();
         else 
         {
