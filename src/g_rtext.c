@@ -277,7 +277,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     if (nlines < 1) nlines = 1;
     if (!widthspec_c)
     {
-        while (ncolumns < (x->x_text->te_type == T_OBJECT ? 3 : 1))
+        while (ncolumns < (x->x_text->te_type == T_TEXT ? 1 : 3))
         {
             tempbuf[outchars_b++] = ' ';
             ncolumns++;
