@@ -14,6 +14,30 @@
 #include <io.h>
 #endif
 extern t_pd *newest;    /* OK - this should go into a .h file now :) */
+static t_class *text_define_class;
+
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
+#else
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
+
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+#define HAVE_ALLOCA 1
+#endif
+#define TEXT_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
+#if HAVE_ALLOCA
+#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < TEXT_NGETBYTE ?  \
+        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
+#define ATOMS_FREEA(x, n) ( \
+    ((n) < TEXT_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
+#else
+#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
+#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
+#endif
+
 
 typedef struct _textbuf
 {
@@ -78,24 +102,61 @@ static void textbuf_addline(t_textbuf *b, t_symbol *s, int ac, t_atom *av)
     binbuf_free(z);
 }
 
+static void textbuf_free(t_textbuf *x)
+{
+    t_pd *x2;
+    binbuf_free(x->b_binbuf);
+    if (x->b_guiconnect)
+    {
+        sys_vgui("destroy .x%lx\n", x);
+        guiconnect_notarget(x->b_guiconnect, 1000);
+    }
+        /* just in case we're still bound to #A from loading... */
+    while (x2 = pd_findbyclass(gensym("#A"), text_define_class))
+        pd_unbind(x2, gensym("#A"));
+}
+
 /* text_define object - text buffer, accessible by other accessor objects */
 
 typedef struct _text_define
 {
     t_textbuf x_textbuf;
-    unsigned char x_embed;   /* whether to embed contents in patch on save */
+    unsigned char x_keep;   /* whether to embed contents in patch on save */
+    t_symbol *x_bindsym;
 } t_text_define;
 
 #define x_ob x_textbuf.b_ob
 #define x_binbuf x_textbuf.b_binbuf
 #define x_canvas x_textbuf.b_canvas
 
-static t_class *text_define_class;
-
 static void *text_define_new(t_symbol *s, int ac, t_atom *av)
 {
     t_text_define *x = (t_text_define *)pd_new(text_define_class);
     t_symbol *asym = gensym("#A");
+    x->x_keep = 0;
+    x->x_bindsym = &s_;
+    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(av->a_w.w_symbol->s_name, "-k"))
+            x->x_keep = 1;
+        else
+        {
+            pd_error(x, "text define: unknown flag ...");
+            postatom(ac, av);
+        }
+        ac--; av++;
+    }
+    if (ac && av->a_type == A_SYMBOL)
+    {
+        pd_bind(&x->x_ob.ob_pd, av->a_w.w_symbol);
+        x->x_bindsym = av->a_w.w_symbol;
+        ac--; av++;
+    }
+    if (ac)
+    {
+        post("warning: text define ignoring extra argument: ");
+        postatom(ac, av);
+    }
     textbuf_init(&x->x_textbuf);
            /* bashily unbind #A -- this would create garbage if #A were
            multiply bound but we believe in this context it's at most
@@ -159,25 +220,162 @@ void text_define_save(t_gobj *z, t_binbuf *bb)
     binbuf_addbinbuf(bb, b->x_ob.ob_binbuf);
     binbuf_addsemi(bb);
 
-    binbuf_addv(bb, "ss", gensym("#A"), gensym("addline"));
-    binbuf_addbinbuf(bb, b->x_binbuf);
-    binbuf_addsemi(bb);
-}
-
-static void textbuf_free(t_textbuf *x)
-{
-    t_pd *x2;
-    binbuf_free(x->b_binbuf);
-    if (x->b_guiconnect)
+    if (b->x_keep)
     {
-        sys_vgui("destroy .x%lx\n", x);
-        guiconnect_notarget(x->b_guiconnect, 1000);
+        binbuf_addv(bb, "ss", gensym("#A"), gensym("addline"));
+        binbuf_addbinbuf(bb, b->x_binbuf);
+        binbuf_addsemi(bb);
     }
-        /* just in case we're still bound to #A from loading... */
-    while (x2 = pd_findbyclass(gensym("#A"), text_define_class))
-        pd_unbind(x2, gensym("#A"));
 }
 
+static void text_define_free(t_text_define *x)
+{
+    textbuf_free(&x->x_textbuf);
+    if (x->x_bindsym != &s_)
+        pd_unbind(&x->x_ob.ob_pd, x->x_bindsym);
+}
+
+/* ---------------- text_getline object - output nth line --------------*/
+t_class *text_getline_class;
+
+typedef struct _text_getline
+{
+    t_textbuf x_textbuf;
+    t_symbol *x_sym;
+    t_gpointer x_gp;
+    t_symbol *x_struct;
+    t_symbol *x_field;
+    t_outlet *x_out1;       /* list */
+    t_outlet *x_out2;       /* 1 if comma terminated, 0 if semi */
+} t_text_getline;
+
+static void *text_getline_new(t_symbol *s, int ac, t_atom *av)
+{
+    t_text_getline *x = (t_text_getline *)pd_new(text_getline_class);
+    x->x_out1 = outlet_new(&x->x_ob, &s_list);
+    x->x_out2 = outlet_new(&x->x_ob, &s_float);
+    x->x_sym = x->x_struct = x->x_field = 0;
+    gpointer_init(&x->x_gp);
+    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(av->a_w.w_symbol->s_name, "-s") &&
+            ac >= 3 && av[1].a_type == A_SYMBOL && av[2].a_type == A_SYMBOL)
+        {
+            x->x_struct = av[1].a_w.w_symbol;
+            x->x_field = av[2].a_w.w_symbol;
+            ac -= 2; av += 2;
+        }
+        else
+        {
+            pd_error(x, "text getline: unknown flag ...");
+            postatom(ac, av);
+        }
+        ac--; av++;
+    }
+    if (ac && av->a_type == A_SYMBOL)
+    {
+        if (x->x_struct)
+        {
+            pd_error(x, "text getline: extra names after -s..");
+            postatom(ac, av);
+        }
+        else x->x_sym = s;;
+        ac--; av++;
+    }
+    if (ac)
+    {
+        post("warning: text getline ignoring extra argument: ");
+        postatom(ac, av);
+    }
+    return (x);
+}
+
+    /* find the binbuf for this object.  This should be reusable for other
+    objects.  Returns 0 on failure. */
+static t_binbuf *text_getbuffor(t_text_getline *x)
+{
+    if (x->x_sym)       /* named text object */
+    {
+        t_textbuf *y = (t_textbuf *)pd_findbyclass(x->x_sym, text_define_class);
+        if (y)
+            return (y->b_binbuf);
+        else return (0);
+    }
+    else if (x->x_struct)   /* by pointer */
+    {
+        t_template *template = template_findbyname(x->x_struct);
+        t_gstub *gs = x->x_gp.gp_stub;
+        t_word *vec; 
+        int onset, type;
+        t_symbol *arraytype;
+        if (!template)
+        {
+            pd_error(x, "text: couldn't find struct %s", x->x_struct->s_name);
+            return (0);
+        }
+        if (!gpointer_check(&x->x_gp, 0))
+        {
+            pd_error(x, "text: stale or empty pointer");
+            return (0);
+        }
+        if (gs->gs_which == GP_ARRAY)
+            vec = x->x_gp.gp_un.gp_w;
+        else vec = x->x_gp.gp_un.gp_scalar->sc_vec;
+
+        if (!template_find_field(template,
+            x->x_field, &onset, &type, &arraytype))
+        {
+            pd_error(x, "text: no field named %s", x->x_field->s_name);
+            return (0);
+        }
+        if (type != DT_LIST)
+        {
+            pd_error(x, "text: field %s not of type list", x->x_field->s_name);
+            return (0);
+        }
+        return (*(t_binbuf **)(((char *)vec) + onset));
+    }
+    else return (0);    /* shouldn't happen */
+}
+
+static void text_getline_float(t_text_getline *x, t_floatarg f)
+{
+    t_binbuf *b = text_getbuffor(x);
+    int i, cnt = 0, n;
+    t_atom *vec;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    for (i = 0; i < n; i++)
+    {
+        if (cnt == f)
+        {
+            int j = i, outc = j = i, k;
+            t_atom *outv;
+            while (j < n && vec[j].a_type != A_SEMI &&
+                vec[j].a_type != A_COMMA)
+                    j++;
+            outlet_float(x->x_out2, (j < n && vec[j].a_type == A_COMMA));
+            ATOMS_ALLOCA(outv, outc);
+            for (k = 0; k < outc; k++)
+                outv[k] = vec[i+k];
+            outlet_list(x->x_out1, 0, outc, outv);
+            ATOMS_FREEA(outv, outc);
+            return;
+        }
+        else if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
+            cnt++;
+    }
+    outlet_list(x->x_out1, 0, 0, 0);    /* empty list if f out of range */
+}
+
+static void text_getline_free(t_text_getline *x)
+{
+    gpointer_unset(&x->x_gp);
+}
+
+/* overall creator for "text" objects - dispatch to "text define" etc */
 static void *text_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
@@ -505,8 +703,9 @@ static void textfile_rewind(t_qlist *x)
 
 void x_qlist_setup(void )
 {
-    text_define_class = class_new(gensym("text"), (t_newmethod)text_define_new,
-        (t_method)textbuf_free, sizeof(t_text_define), 0, A_GIMME, 0);
+    text_define_class = class_new(gensym("text define"),
+        (t_newmethod)text_define_new,
+        (t_method)text_define_free, sizeof(t_text_define), 0, A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)textbuf_open,
         gensym("click"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_close,
@@ -520,6 +719,11 @@ void x_qlist_setup(void )
     class_setsavefn(text_define_class, text_define_save);
     class_sethelpsymbol(text_define_class, gensym("text-object"));
 
+    text_getline_class = class_new(gensym("text getline"),
+        (t_newmethod)text_getline_new,
+        (t_method)text_getline_free, sizeof(t_text_getline), 0, A_GIMME, 0);
+    class_addfloat(text_getline_class, text_getline_float);
+    
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);
     class_addmethod(qlist_class, (t_method)qlist_rewind, gensym("rewind"), 0);
