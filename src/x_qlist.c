@@ -38,6 +38,7 @@ static t_class *text_define_class;
 #define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
 #endif
 
+/* --- common code for text define, textfile, and qlist for storing text -- */
 
 typedef struct _textbuf
 {
@@ -47,17 +48,34 @@ typedef struct _textbuf
     t_guiconnect *b_guiconnect;
 } t_textbuf;
 
-
 static void textbuf_init(t_textbuf *x)
 {
     x->b_binbuf = binbuf_new();
     x->b_canvas = canvas_getcurrent();
 }
 
-static void textbuf_open(t_textbuf *x)
+static void textbuf_senditup(t_textbuf *x)
 {
     int i, ntxt;
-    char *txt, buf[40];
+    char *txt;
+    if (!x->b_guiconnect)
+        return;
+    binbuf_gettext(x->b_binbuf, &txt, &ntxt);
+    sys_vgui("pdtk_textwindow_clear .x%lx\n", x);
+    for (i = 0; i < ntxt; )
+    {
+        char *j = strchr(txt+i, '\n');
+        if (!j) j = txt + ntxt;
+        sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
+            x, j-txt-i, txt+i);
+        i = (j-txt)+1;
+    }
+    sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
+    t_freebytes(txt, ntxt);
+}
+
+static void textbuf_open(t_textbuf *x)
+{
     if (x->b_guiconnect)
     {
         sys_vgui("wm deiconify .x%lx\n", x);
@@ -66,21 +84,13 @@ static void textbuf_open(t_textbuf *x)
     }
     else
     {
+        char buf[40];
         sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s: %s} %d\n",
             x, 600, 340, "myname", "text", 
                  sys_hostfontsize(glist_getfont(x->b_canvas)));
-        binbuf_gettext(x->b_binbuf, &txt, &ntxt);
-        for (i = 0; i < ntxt; )
-        {
-            char *j = strchr(txt+i, '\n');
-            if (!j) j = txt + ntxt;
-            sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n", x, j-txt-i, txt+i);
-            i = (j-txt)+1;
-        }
-        sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
-        t_freebytes(txt, ntxt);
         sprintf(buf, ".x%lx", (unsigned long)x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
+        textbuf_senditup(x);
     }
 }
 
@@ -100,6 +110,79 @@ static void textbuf_addline(t_textbuf *b, t_symbol *s, int ac, t_atom *av)
     binbuf_restore(z, ac, av);
     binbuf_add(b->b_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
     binbuf_free(z);
+    textbuf_senditup(b);
+}
+
+static void textbuf_read(t_textbuf *x, t_symbol *s, int ac, t_atom *av)
+{
+    int cr = 0;
+    t_symbol *filename;
+    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(av->a_w.w_symbol->s_name, "-c"))
+            cr = 1;
+        else
+        {
+            pd_error(x, "text read: unknown flag ...");
+            postatom(ac, av);
+        }
+        ac--; av++;
+    }
+    if (ac && av->a_type == A_SYMBOL)
+    {
+        filename = av->a_w.w_symbol;
+        ac--; av++;
+    }
+    else
+    {
+        pd_error(x, "text read: no file name given");
+        return;
+    }
+    if (ac)
+    {
+        post("warning: text define ignoring extra argument: ");
+        postatom(ac, av);
+    }
+    if (binbuf_read_via_canvas(x->b_binbuf, filename->s_name, x->b_canvas, cr))
+            pd_error(x, "%s: read failed", filename->s_name);
+    textbuf_senditup(x);
+}
+
+static void textbuf_write(t_textbuf *x, t_symbol *s, int ac, t_atom *av)
+{
+    int cr = 0;
+    t_symbol *filename;
+    char buf[MAXPDSTRING];
+    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(av->a_w.w_symbol->s_name, "-c"))
+            cr = 1;
+        else
+        {
+            pd_error(x, "text write: unknown flag ...");
+            postatom(ac, av);
+        }
+        ac--; av++;
+    }
+    if (ac && av->a_type == A_SYMBOL)
+    {
+        filename = av->a_w.w_symbol;
+        ac--; av++;
+    }
+    else
+    {
+        pd_error(x, "text write: no file name given");
+        return;
+    }
+    if (ac)
+    {
+        post("warning: text define ignoring extra argument: ");
+        postatom(ac, av);
+    }
+    canvas_makefilename(x->b_canvas, filename->s_name,
+        buf, MAXPDSTRING);
+    if (binbuf_write(x->b_binbuf, buf, "", cr))
+            pd_error(x, "%s: write failed", filename->s_name);
 }
 
 static void textbuf_free(t_textbuf *x)
@@ -114,6 +197,28 @@ static void textbuf_free(t_textbuf *x)
         /* just in case we're still bound to #A from loading... */
     while (x2 = pd_findbyclass(gensym("#A"), text_define_class))
         pd_unbind(x2, gensym("#A"));
+}
+
+    /* random helper function */
+static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
+{
+    int i, cnt = 0;
+    for (i = 0; i < n; i++)
+    {
+        if (cnt == line)
+        {
+            int j = i, outc, k;
+            while (j < n && vec[j].a_type != A_SEMI &&
+                vec[j].a_type != A_COMMA)
+                    j++;
+            *startp = i;
+            *endp = j;
+            return (1);
+        }
+        else if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
+            cnt++;
+    }
+    return (0);
 }
 
 /* text_define object - text buffer, accessible by other accessor objects */
@@ -171,13 +276,15 @@ static void *text_define_new(t_symbol *s, int ac, t_atom *av)
 static void text_define_clear(t_text_define *x)
 {
     binbuf_clear(x->x_binbuf);
+    textbuf_senditup(&x->x_textbuf);
 }
 
     /* from g_traversal.c - maybe put in a header? */
 t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
     const char *fname);
 
-static void text_define_frompointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
+static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
+    t_symbol *s)
 {
     t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
         gp, s, "text_frompointer");
@@ -235,25 +342,113 @@ static void text_define_free(t_text_define *x)
         pd_unbind(&x->x_ob.ob_pd, x->x_bindsym);
 }
 
+/* ---  text_client - common code for objects that refer to text buffers -- */
+
+typedef struct _text_client
+{
+    t_object tc_obj;
+    t_symbol *tc_sym;
+    t_gpointer tc_gp;
+    t_symbol *tc_struct;
+    t_symbol *tc_field;
+} t_text_client;
+
+    /* find the binbuf for this object.  This should be reusable for other
+    objects.  Prints an error  message and returns 0 on failure. */
+static t_binbuf *text_client_getbuf(t_text_client *x)
+{
+    if (x->tc_sym)       /* named text object */
+    {
+        t_textbuf *y = (t_textbuf *)pd_findbyclass(x->tc_sym,
+            text_define_class);
+        if (y)
+            return (y->b_binbuf);
+        else
+        {
+            pd_error(x, "text: couldn't find text buffer '%s'",
+                x->tc_sym->s_name);
+            return (0);
+        }
+    }
+    else if (x->tc_struct)   /* by pointer */
+    {
+        t_template *template = template_findbyname(x->tc_struct);
+        t_gstub *gs = x->tc_gp.gp_stub;
+        t_word *vec; 
+        int onset, type;
+        t_symbol *arraytype;
+        if (!template)
+        {
+            pd_error(x, "text: couldn't find struct %s", x->tc_struct->s_name);
+            return (0);
+        }
+        if (!gpointer_check(&x->tc_gp, 0))
+        {
+            pd_error(x, "text: stale or empty pointer");
+            return (0);
+        }
+        if (gs->gs_which == GP_ARRAY)
+            vec = x->tc_gp.gp_un.gp_w;
+        else vec = x->tc_gp.gp_un.gp_scalar->sc_vec;
+
+        if (!template_find_field(template,
+            x->tc_field, &onset, &type, &arraytype))
+        {
+            pd_error(x, "text: no field named %s", x->tc_field->s_name);
+            return (0);
+        }
+        if (type != DT_LIST)
+        {
+            pd_error(x, "text: field %s not of type list", x->tc_field->s_name);
+            return (0);
+        }
+        return (*(t_binbuf **)(((char *)vec) + onset));
+    }
+    else return (0);    /* shouldn't happen */
+}
+
+static  void text_client_senditup(t_text_client *x)
+{
+    if (x->tc_sym)       /* named text object */
+    {
+        t_textbuf *y = (t_textbuf *)pd_findbyclass(x->tc_sym,
+            text_define_class);
+        if (y)
+            textbuf_senditup(y);
+        else bug("text_client_senditup");
+    }
+    else if (x->tc_struct)   /* by pointer */
+    {
+        /* figure this out LATER */
+    }
+}
+
+static void text_client_free(t_text_client *x)
+{
+    gpointer_unset(&x->tc_gp);
+}
+
 /* ---------------- text_getline object - output nth line --------------*/
 t_class *text_getline_class;
 
 typedef struct _text_getline
 {
-    t_textbuf x_textbuf;
-    t_symbol *x_sym;
-    t_gpointer x_gp;
-    t_symbol *x_struct;
-    t_symbol *x_field;
+    t_text_client x_tc;
     t_outlet *x_out1;       /* list */
-    t_outlet *x_out2;       /* 1 if comma terminated, 0 if semi */
+    t_outlet *x_out2;       /* 1 if comma terminated, 0 if semi, 2 if none */
 } t_text_getline;
+
+#define x_obj x_tc.tc_obj
+#define x_sym x_tc.tc_sym
+#define x_gp x_tc.tc_gp
+#define x_struct x_tc.tc_struct
+#define x_field x_tc.tc_field
 
 static void *text_getline_new(t_symbol *s, int ac, t_atom *av)
 {
     t_text_getline *x = (t_text_getline *)pd_new(text_getline_class);
-    x->x_out1 = outlet_new(&x->x_ob, &s_list);
-    x->x_out2 = outlet_new(&x->x_ob, &s_float);
+    x->x_out1 = outlet_new(&x->x_obj, &s_list);
+    x->x_out2 = outlet_new(&x->x_obj, &s_float);
     x->x_sym = x->x_struct = x->x_field = 0;
     gpointer_init(&x->x_gp);
     while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
@@ -261,7 +456,7 @@ static void *text_getline_new(t_symbol *s, int ac, t_atom *av)
         if (!strcmp(av->a_w.w_symbol->s_name, "-s") &&
             ac >= 3 && av[1].a_type == A_SYMBOL && av[2].a_type == A_SYMBOL)
         {
-            x->x_struct = av[1].a_w.w_symbol;
+            x->x_struct = canvas_makebindsym(av[1].a_w.w_symbol);
             x->x_field = av[2].a_w.w_symbol;
             ac -= 2; av += 2;
         }
@@ -279,7 +474,7 @@ static void *text_getline_new(t_symbol *s, int ac, t_atom *av)
             pd_error(x, "text getline: extra names after -s..");
             postatom(ac, av);
         }
-        else x->x_sym = s;;
+        else x->x_sym = av->a_w.w_symbol;
         ac--; av++;
     }
     if (ac)
@@ -287,92 +482,132 @@ static void *text_getline_new(t_symbol *s, int ac, t_atom *av)
         post("warning: text getline ignoring extra argument: ");
         postatom(ac, av);
     }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_obj, &x->x_gp);
     return (x);
-}
-
-    /* find the binbuf for this object.  This should be reusable for other
-    objects.  Returns 0 on failure. */
-static t_binbuf *text_getbuffor(t_text_getline *x)
-{
-    if (x->x_sym)       /* named text object */
-    {
-        t_textbuf *y = (t_textbuf *)pd_findbyclass(x->x_sym, text_define_class);
-        if (y)
-            return (y->b_binbuf);
-        else return (0);
-    }
-    else if (x->x_struct)   /* by pointer */
-    {
-        t_template *template = template_findbyname(x->x_struct);
-        t_gstub *gs = x->x_gp.gp_stub;
-        t_word *vec; 
-        int onset, type;
-        t_symbol *arraytype;
-        if (!template)
-        {
-            pd_error(x, "text: couldn't find struct %s", x->x_struct->s_name);
-            return (0);
-        }
-        if (!gpointer_check(&x->x_gp, 0))
-        {
-            pd_error(x, "text: stale or empty pointer");
-            return (0);
-        }
-        if (gs->gs_which == GP_ARRAY)
-            vec = x->x_gp.gp_un.gp_w;
-        else vec = x->x_gp.gp_un.gp_scalar->sc_vec;
-
-        if (!template_find_field(template,
-            x->x_field, &onset, &type, &arraytype))
-        {
-            pd_error(x, "text: no field named %s", x->x_field->s_name);
-            return (0);
-        }
-        if (type != DT_LIST)
-        {
-            pd_error(x, "text: field %s not of type list", x->x_field->s_name);
-            return (0);
-        }
-        return (*(t_binbuf **)(((char *)vec) + onset));
-    }
-    else return (0);    /* shouldn't happen */
 }
 
 static void text_getline_float(t_text_getline *x, t_floatarg f)
 {
-    t_binbuf *b = text_getbuffor(x);
-    int i, cnt = 0, n;
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int start, end, n;
     t_atom *vec;
     if (!b)
        return;
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
-    for (i = 0; i < n; i++)
+    if (text_nthline(n, vec, f, &start, &end))
     {
-        if (cnt == f)
-        {
-            int j = i, outc = j = i, k;
-            t_atom *outv;
-            while (j < n && vec[j].a_type != A_SEMI &&
-                vec[j].a_type != A_COMMA)
-                    j++;
-            outlet_float(x->x_out2, (j < n && vec[j].a_type == A_COMMA));
-            ATOMS_ALLOCA(outv, outc);
-            for (k = 0; k < outc; k++)
-                outv[k] = vec[i+k];
-            outlet_list(x->x_out1, 0, outc, outv);
-            ATOMS_FREEA(outv, outc);
-            return;
-        }
-        else if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
-            cnt++;
+        int outc = end - start, k;
+        t_atom *outv;
+        outlet_float(x->x_out2, (end < n && vec[end].a_type == A_COMMA));
+        ATOMS_ALLOCA(outv, outc);
+        for (k = 0; k < outc; k++)
+            outv[k] = vec[start+k];
+        outlet_list(x->x_out1, 0, outc, outv);
+        ATOMS_FREEA(outv, outc);
     }
-    outlet_list(x->x_out1, 0, 0, 0);    /* empty list if f out of range */
+    else
+    {
+        outlet_float(x->x_out2, 2);         /* 2 for out of range */
+        outlet_list(x->x_out1, 0, 0, 0);    /* ... and empty list */
+    }
 }
 
-static void text_getline_free(t_text_getline *x)
+/* ---------------- text_setline object - output nth line --------------*/
+typedef struct _text_setline
 {
-    gpointer_unset(&x->x_gp);
+    t_text_client x_tc;
+    t_float x_f;            /* line number */
+} t_text_setline;
+
+t_class *text_setline_class;
+
+static void *text_setline_new(t_symbol *s, int ac, t_atom *av)
+{
+    t_text_setline *x = (t_text_setline *)pd_new(text_setline_class);
+    floatinlet_new(&x->x_obj, &x->x_f);
+    x->x_sym = x->x_struct = x->x_field = 0;
+    gpointer_init(&x->x_gp);
+    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(av->a_w.w_symbol->s_name, "-s") &&
+            ac >= 3 && av[1].a_type == A_SYMBOL && av[2].a_type == A_SYMBOL)
+        {
+            x->x_struct = canvas_makebindsym(av[1].a_w.w_symbol);
+            x->x_field = av[2].a_w.w_symbol;
+            ac -= 2; av += 2;
+        }
+        else
+        {
+            pd_error(x, "text setline: unknown flag ...");
+            postatom(ac, av);
+        }
+        ac--; av++;
+    }
+    if (ac && av->a_type == A_SYMBOL)
+    {
+        if (x->x_struct)
+        {
+            pd_error(x, "text setline: extra names after -s..");
+            postatom(ac, av);
+        }
+        else x->x_sym = av->a_w.w_symbol;
+        ac--; av++;
+    }
+    if (ac)
+    {
+        post("warning: text setline ignoring extra argument: ");
+        postatom(ac, av);
+    }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_obj, &x->x_gp);
+    return (x);
+}
+
+static void text_setline_list(t_text_setline *x,
+    t_symbol *s, int ac, t_atom *av)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int start, end, n, lineno = x->x_f, i;
+    t_atom *vec;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    if (lineno < 0)
+    {
+        pd_error(x, "text setline: line number (%d) < 0", lineno);
+        return;
+    }
+    if (text_nthline(n, vec, lineno, &start, &end))
+    {
+        if (end - start != ac)  /* grow or shrink */
+        {
+            (void)binbuf_resize(b, (n = n + (ac - (end-start))));
+            vec = binbuf_getvec(b);
+            memmove(&vec[start + ac], &vec[end],
+                sizeof(*vec) * (n - (start+ac)));
+        }
+    }
+    else    /* if line number too high just append to end */
+    {
+        int addsemi = (n && vec[n-1].a_type != A_SEMI &&
+            vec[n-1].a_type != A_COMMA), newsize = n + addsemi + ac + 1;
+        (void)binbuf_resize(b, newsize);
+        vec = binbuf_getvec(b);
+        if (addsemi)
+            SETSEMI(&vec[n]);
+        SETSEMI(&vec[newsize-1]);
+        start = n+addsemi;
+    }
+    for (i = 0; i < ac; i++)
+    {
+        if (av[i].a_type == A_POINTER)
+            SETSYMBOL(&vec[start+i], gensym("(pointer)"));
+        else vec[start+i] = av[i];
+    }
+    text_client_senditup(&x->x_tc);
 }
 
 /* overall creator for "text" objects - dispatch to "text define" etc */
@@ -382,14 +617,16 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
         newest = text_define_new(s, argc, argv);
     else
     {
-        t_symbol *s2 = argv[0].a_w.w_symbol;
-        if (s2 == gensym("d") || s2 == gensym("define"))
+        char *str = argv[0].a_w.w_symbol->s_name;
+        if (!strcmp(str, "d") || !strcmp(str, "define"))
             newest = text_define_new(s, argc-1, argv+1);
-        else if (s2 == gensym("getline"))
+        else if (!strcmp(str, "getline"))
             newest = text_getline_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "setline"))
+            newest = text_setline_new(s, argc-1, argv+1);
         else 
         {
-            error("list %s: unknown function", s2->s_name);
+            error("list %s: unknown function", str);
             newest = 0;
         }
     }
@@ -714,16 +951,25 @@ void x_qlist_setup(void )
         gensym("addline"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)text_define_clear,
         gensym("clear"), 0);
-    class_addmethod(text_define_class, (t_method)qlist_print,
-        gensym("print"), A_DEFSYM, 0);
+    class_addmethod(text_define_class, (t_method)textbuf_write,
+        gensym("write"), A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)textbuf_read,
+        gensym("read"), A_GIMME, 0);
     class_setsavefn(text_define_class, text_define_save);
     class_sethelpsymbol(text_define_class, gensym("text-object"));
 
+    class_addcreator((t_newmethod)text_new, gensym("text"), A_GIMME, 0);
+
     text_getline_class = class_new(gensym("text getline"),
-        (t_newmethod)text_getline_new,
-        (t_method)text_getline_free, sizeof(t_text_getline), 0, A_GIMME, 0);
+        (t_newmethod)text_getline_new, (t_method)text_client_free,
+            sizeof(t_text_getline), 0, A_GIMME, 0);
     class_addfloat(text_getline_class, text_getline_float);
     
+    text_setline_class = class_new(gensym("text setline"),
+        (t_newmethod)text_setline_new, (t_method)text_client_free,
+            sizeof(t_text_getline), 0, A_GIMME, 0);
+    class_addlist(text_setline_class, text_setline_list);
+
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);
     class_addmethod(qlist_class, (t_method)qlist_rewind, gensym("rewind"), 0);
@@ -770,7 +1016,8 @@ void x_qlist_setup(void )
     class_addmethod(textfile_class, (t_method)qlist_write, gensym("write"), 
         A_SYMBOL, A_DEFSYM, 0);
     class_addmethod(textfile_class, (t_method)textbuf_open, gensym("click"), 0);
-    class_addmethod(textfile_class, (t_method)textbuf_close, gensym("close"), 0);
+    class_addmethod(textfile_class, (t_method)textbuf_close, gensym("close"), 
+        0);
     class_addmethod(textfile_class, (t_method)textbuf_addline, 
         gensym("addline"), A_GIMME, 0);
     class_addmethod(textfile_class, (t_method)qlist_print, gensym("print"),

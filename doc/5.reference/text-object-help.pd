@@ -1,0 +1,140 @@
+#N struct text-help-struct float x float y list z;
+#N canvas 613 240 689 431 12;
+#X obj 140 380 list;
+#X obj 18 6 text;
+#X text 63 6 - managing lists of messages;
+#X text 34 379 see also:;
+#X obj 194 382 array;
+#X obj 90 203 text define;
+#X text 444 389 updated for Pd version 0.45.;
+#X text 47 171 The text object's first argument sets its function:
+;
+#X text 186 203 - create \, store \, and/or edit text;
+#X text 50 56 In Pd a "text" refers to a list of atoms that can include
+commas \, semicolons \, and dollar-sign constructs - anything that
+can go in a message box or a patch (as a saved file). You can use them
+to store a semicolon-separated list of lists \, or as material to "execute"
+as in a sequencer or message box.;
+#X text 485 162 (click for details:), f 11;
+#X obj 244 382 datum;
+#X text 193 359 coming soon:;
+#N canvas 412 164 739 473 define 0;
+#X msg 35 138 clear;
+#X obj 38 400 text define -k text-help-1;
+#A addline this is a message \; this is another 1 ... \;;
+#X msg 32 167 read text-object-help.txt;
+#X msg 35 198 write text-object-help.txt;
+#X text 32 20 "text define" maintains a text object and can name it
+so that other objects can find it (and later should have some alternative
+\, anonymous way to be found).;
+#X text 61 376 click to open and edit text:;
+#X text 296 364 creation arguments:;
+#X text 324 382 optional -k flag to keep contents;
+#X text 326 399 optional name;
+#X msg 166 318 read -c text-object-help.txt;
+#X text 77 263 (optionally you can read or write to/from a file interpreting
+carriage returns as separators \; this should allow reading some text
+file formats - like this:);
+#X text 274 165 read from a file;
+#X text 276 196 write to a file;
+#X text 277 139 clear;
+#X connect 0 0 1 0;
+#X connect 2 0 1 0;
+#X connect 3 0 1 0;
+#X restore 486 203 pd define;
+#X obj 90 227 text getline;
+#X text 194 227 - read and output a line;
+#N canvas 944 186 823 548 getline 0;
+#X obj 72 330 text define -k text-help-2;
+#A addline x y z w w \; 12 23 34 45 56 56 \; 1 2 3 \, 4 5 6 \;;
+#X text 32 20 "text getline" reads the nth line from the named text
+and outputs it.;
+#X floatatom 83 171 5 0 0 0 - - -, f 5;
+#X msg 83 140 0;
+#X msg 159 140 2;
+#X msg 119 140 1;
+#X obj 83 240 print;
+#X obj 176 240 print type;
+#X obj 83 195 text getline text-help-2, f 12;
+#X msg 196 143 3;
+#X msg 236 145 4;
+#X text 276 242 "type" is 0 if terminated by a semicolon \, 1 if by
+a comma \, or 2 if the line number was out of range.;
+#X connect 2 0 8 0;
+#X connect 3 0 2 0;
+#X connect 4 0 2 0;
+#X connect 5 0 2 0;
+#X connect 8 0 6 0;
+#X connect 8 1 7 0;
+#X connect 9 0 2 0;
+#X connect 10 0 2 0;
+#X restore 485 228 pd getline;
+#N canvas 533 87 516 514 text-and-data-structures 0;
+#X floatatom 68 196 5 0 0 0 - - -, f 5;
+#X msg 59 165 0;
+#X msg 132 167 2;
+#X msg 92 167 1;
+#X obj 65 387 print;
+#X obj 206 391 print type;
+#X obj 106 304 pointer;
+#X obj 65 347 text getline -s text-help-struct z, f 18;
+#N canvas 808 400 450 300 text-help-struct 0;
+#X scalar text-help-struct 20 20 \; a b c d \;;
+#X obj 13 83 filledpolygon 0 0 0 0 0 0 10 50 10 50 0 0 0;
+#X obj 75 179 pointer;
+#X msg 75 131 traverse pd-text-help-struct \, bang, f 21;
+#X obj 18 206 append text-help-struct x y;
+#X msg 19 131 20 20;
+#X obj 13 56 struct text-help-struct float x float y text z;
+#X connect 2 0 4 2;
+#X connect 3 0 2 0;
+#X connect 5 0 4 0;
+#X restore 208 110 pd text-help-struct;
+#X obj 68 218 t f b;
+#X text 58 35 a simple example showing how to access text in data structures
+via pointers.;
+#N canvas 850 260 450 300 text-help-data 0;
+#X scalar text-help-struct 20 20 \; a b c d \;;
+#X text 34 53 We have one datum... right-click to see contents.;
+#X restore 215 136 pd text-help-data;
+#X msg 105 247 traverse pd-text-help-data \, next, f 18;
+#X text 88 466 bug - saving multi-line texts inside structures;
+#X connect 0 0 9 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 6 0 7 1;
+#X connect 7 0 4 0;
+#X connect 7 1 5 0;
+#X connect 9 0 7 0;
+#X connect 9 1 12 0;
+#X connect 12 0 6 0;
+#X restore 81 324 pd text-and-data-structures;
+#X obj 88 251 text setline;
+#X text 193 251 - replace or add a line;
+#N canvas 852 160 644 440 setline 0;
+#X floatatom 398 211 5 0 0 0 - - -, f 5;
+#X msg 354 145 0;
+#X msg 427 147 2;
+#X msg 387 147 1;
+#X msg 174 187 list x y z w;
+#X msg 206 213 1 2 3;
+#X msg 166 155 12 23 34 45 56 56;
+#X text 46 9 "text setline" replaces the nth line with the incoming
+list. If the numbe n is greater than the number of lines in the text
+the new line is added.;
+#X obj 71 330 text define -k text-help-3;
+#A addline 12 23 34 45 56 56 \; x y z w \; 1 2 3 \; 12 23 34 45 56
+56 \; x y z w \; 1 2 3 \;;
+#X obj 211 252 text setline text-help-3;
+#X msg 470 147 1e+06;
+#X connect 0 0 9 1;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 9 0;
+#X connect 5 0 9 0;
+#X connect 6 0 9 0;
+#X connect 10 0 0 0;
+#X restore 483 250 pd setline;
+#X text 71 300 here's how to access texts inside data structures:;

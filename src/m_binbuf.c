@@ -417,6 +417,15 @@ t_atom *binbuf_getvec(t_binbuf *x)
     return (x->b_vec);
 }
 
+int binbuf_resize(t_binbuf *x, int newsize)
+{
+    t_atom *new = t_resizebytes(x->b_vec,
+        x->b_n * sizeof(*x->b_vec), newsize * sizeof(*x->b_vec));
+    if (new)
+        x->b_vec = new, x->b_n = newsize;
+    return (new != 0);
+}
+
 int canvas_getdollarzero( void);
 
 /* JMZ:

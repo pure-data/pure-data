@@ -1,18 +1,18 @@
-#N canvas 256 20 629 492 12;
+#N canvas 670 228 606 493 12;
 #X obj 29 11 list;
 #X text 76 12 - building and using variable-length messages;
-#N canvas 92 130 654 658 about-lists 0;
-#X obj 50 625 print message;
-#X msg 50 438 list x.wav 44100;
-#X msg 50 596 read \$1 \$2;
-#X msg 50 467 set x.wav 44100;
-#X msg 67 567 set \, add2 read \, adddollar 1 \, adddollar 2;
-#X msg 50 497 x.wav 44100;
-#X obj 67 541 loadbang;
-#X text 155 544 reset message as it was;
-#X text 207 438 good;
-#X text 196 469 bad;
-#X text 46 25 Messages in Pd are simewhat artificially divided into
+#N canvas 91 129 654 658 about-lists 0;
+#X obj 50 629 print message;
+#X msg 50 442 list x.wav 44100;
+#X msg 50 600 read \$1 \$2;
+#X msg 50 471 set x.wav 44100;
+#X msg 67 571 set \, add2 read \, adddollar 1 \, adddollar 2;
+#X msg 50 501 x.wav 44100;
+#X obj 67 545 loadbang;
+#X text 155 548 reset message as it was;
+#X text 207 442 good;
+#X text 196 473 bad;
+#X text 47 12 Messages in Pd are simewhat artificially divided into
 two classes. First are data-holding messages (bang \, float \, symbol
 \, list) which are the primary way of communicating between objects.
 Second is "everything else" (you could call them out-of-band messages
@@ -21,18 +21,18 @@ write files \, quit Pd \, etc. These are provided so that complex objects
 don't need to have 100 separate inlets for every possible functionality.
 It's not clear whether this was a good design choice \, but it's entrenched.
 ;
-#X text 162 497 ugly;
-#X text 48 183 The distinction becomes visible \, and ugly \, when
+#X text 162 501 ugly;
+#X text 48 180 The distinction becomes visible \, and ugly \, when
 the leading item in a data-holding message is a symbol. In this case
 \, to disambiguate it from the other sort \, the printed form of the
 message has a selector \, "list" or "symbol" prepended to it. Underneath
 \, there is always a selector in fromt of data messages \, but it is
 implied if the first data item is a number.;
-#X msg 411 461 list 44100 x.wav;
-#X msg 424 486 44100 x.wav;
-#X obj 411 512 print number-first;
-#X text 405 433 these two are equivalent:;
-#X text 50 294 In the example below \, the top message sets \$1 to
+#X msg 411 465 list 44100 x.wav;
+#X msg 424 490 44100 x.wav;
+#X obj 411 516 print number-first;
+#X text 405 437 these two are equivalent:;
+#X text 50 298 In the example below \, the top message sets \$1 to
 "x.wav" and \$2 to 44100 in the "read" message. The lower message box
 outputs the message "read x.wav 44100". The "set" message changes the
 content of the message box itself (click on the longer message box
@@ -47,8 +47,7 @@ inappropriate!) way.;
 #X connect 6 0 4 0;
 #X connect 13 0 15 0;
 #X connect 14 0 15 0;
-#X restore 43 324 pd about-lists;
-#X text 33 52 There are four list classes:;
+#X restore 51 328 pd about-lists;
 #X obj 22 82 list append;
 #X obj 22 107 list prepend;
 #X obj 22 157 list trim;
@@ -83,12 +82,12 @@ list \, float \, or bang.);
 #X connect 6 0 4 0;
 #X connect 7 0 4 0;
 #X connect 9 0 4 0;
-#X restore 506 160 pd trim;
-#X text 501 53 details:;
-#X text 499 36 click for;
+#X restore 484 157 pd trim;
+#X text 483 55 details:;
+#X text 481 38 click for;
 #N canvas 100 190 608 420 append 0;
 #X obj 17 324 list append 1 2;
-#X floatatom 17 154 5 0 0 0 - - -;
+#X floatatom 17 154 5 0 0 0 - - -, f 5;
 #X msg 17 129 1 2 3;
 #X msg 17 82 list cis boom bah;
 #X msg 17 179 bang;
@@ -121,13 +120,13 @@ list \, float \, or bang.);
 #X connect 8 0 0 1;
 #X connect 9 0 0 1;
 #X connect 10 0 0 1;
-#X restore 506 84 pd append;
+#X restore 484 81 pd append;
 #N canvas 391 326 667 561 split 0;
 #X msg 103 328 1 2 3;
 #X msg 79 231 list cis boom bah;
 #X msg 99 263 bang;
 #X obj 79 421 list split 2;
-#X floatatom 182 396 3 0 5 0 - - -;
+#X floatatom 182 396 3 0 5 0 - - -, f 3;
 #X obj 79 469 print split1;
 #X obj 198 470 print split2;
 #X msg 79 204 walk the dog;
@@ -166,9 +165,9 @@ the split point.;
 #X connect 9 0 3 0;
 #X connect 10 0 3 0;
 #X connect 11 0 3 0;
-#X restore 506 134 pd split;
-#N canvas 0 0 640 478 prepend 0;
-#X floatatom 17 154 5 0 0 0 - - -;
+#X restore 484 131 pd split;
+#N canvas 0 50 640 478 prepend 0;
+#X floatatom 17 154 5 0 0 0 - - -, f 5;
 #X msg 17 129 1 2 3;
 #X msg 17 82 list cis boom bah;
 #X msg 17 179 bang;
@@ -201,7 +200,7 @@ the split point.;
 #X connect 8 0 22 1;
 #X connect 9 0 22 1;
 #X connect 22 0 5 0;
-#X restore 506 109 pd prepend;
+#X restore 484 106 pd prepend;
 #X text 30 241 In general \, inlets that take lists (two each for append/prepend
 \, and one each for split and trim) will convert non-list messages
 (such as "set 5") to lists (such as "list set 5" automatically. Here's
@@ -276,7 +275,7 @@ the list.;
 #X connect 18 0 11 0;
 #X restore 222 410 pd example1;
 #X text 65 409 simple sequencer;
-#N canvas 126 39 568 569 example2 0;
+#N canvas 126 50 568 569 example2 0;
 #X obj 66 263 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X obj 292 266 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
@@ -329,7 +328,7 @@ by taking the "pitch" output before the delay object (previously the
 #X restore 222 436 pd example2;
 #X text 56 438 another sequencer;
 #X text 115 465 serializer;
-#N canvas 116 31 673 426 example3 0;
+#N canvas 116 50 673 426 example3 0;
 #X obj 19 287 list split 1;
 #X obj 19 378 print;
 #X obj 19 204 until;
@@ -371,7 +370,7 @@ append" above.;
 #X msg 126 257 x 1 y;
 #X msg 126 157 55;
 #X obj 101 285 list length;
-#X floatatom 101 311 5 0 0 0 - - -;
+#X floatatom 101 311 5 0 0 0 - - -, f 5;
 #X text 29 18 length - number of items in list;
 #X text 27 55 The "list length" object outputs the number of arguments
 in a list or other message.;
@@ -383,6 +382,7 @@ in a list or other message.;
 #X connect 5 0 7 0;
 #X connect 6 0 7 0;
 #X connect 7 0 8 0;
-#X restore 506 186 pd length;
-#X text 353 468 updated for Pd version 0.40.;
+#X restore 484 183 pd length;
 #X obj 22 182 list length;
+#X text 23 53 The list object's first argument sets its function:;
+#X text 353 468 updated for Pd version 0.40.;
