@@ -146,6 +146,11 @@ void binbuf_text(t_binbuf *x, char *text, size_t size)
                     textp[0] >= '0' && textp[0] <= '9'))
                         dollar = 1;
                 if (!slash) bufp++;
+                else if (lastslash)
+                {
+                    bufp++;
+                    slash = 0;
+                }
             }
             while (textp != etext && bufp != ebuf && 
                 (slash || (*textp != ' ' && *textp != '\n' && *textp != '\r'
@@ -285,7 +290,8 @@ done:
 }
 
 /* add a binbuf to another one for saving.  Semicolons and commas go to
-symbols ";", "'",; the symbol ";" goes to "\;", etc. */
+symbols ";", "'",; We assume here (probably incorrectly) that there's
+no symbol whose name is ";" - should we be escaping those?. */
 
 void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
 {
@@ -315,11 +321,6 @@ void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
             SETSYMBOL(ap, gensym(tbuf));
             break;
         case A_SYMBOL:
-                /* FIXME make this general */
-            if (!strcmp(ap->a_w.w_symbol->s_name, ";"))
-                SETSYMBOL(ap, gensym(";"));
-            else if (!strcmp(ap->a_w.w_symbol->s_name, ","))
-                SETSYMBOL(ap, gensym(","));
             break;
         default:
             bug("binbuf_addbinbuf");
@@ -379,6 +380,23 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
                     sscanf(argv->a_w.w_symbol->s_name + 1, "%d", &dollar);
                     SETDOLLAR(ap, dollar);
                 }
+            }
+            else if (strchr(argv->a_w.w_symbol->s_name, '\\'))
+            {
+                char buf[MAXPDSTRING], *sp1, *sp2;
+                int slashed = 0;
+                for (sp1 = buf, sp2 = argv->a_w.w_symbol->s_name;
+                    *sp2 && sp1 < buf + (MAXPDSTRING-1);
+                        sp2++)
+                {
+                    if (slashed)
+                        *sp1++ = *sp2;
+                    else if (*sp2 == '\\')
+                        slashed = 1;
+                    else *sp1++ = *sp2, slashed = 0;
+                }
+                *sp1 = 0;
+                SETSYMBOL(ap, gensym(buf));
             }
             else *ap = *argv;
             argv++;

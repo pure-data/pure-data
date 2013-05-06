@@ -102,6 +102,9 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec,
             for (last = first; last < natoms && vec[last].a_type != A_SEMI;
                 last++);
             binbuf_restore(z, last-first, vec+first);
+            post("asdf");
+            binbuf_print(z);
+            post("done");
             binbuf_add(w[i].w_list, binbuf_getnatom(z), binbuf_getvec(z));
             binbuf_free(z);
             last++;
@@ -416,7 +419,26 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
         }
         else if (template->t_vec[i].ds_type == DT_LIST)
         {
-            binbuf_addbinbuf(b, w[i].w_list);
+            int k, n = binbuf_getnatom(w[i].w_list);
+            t_atom *ap = binbuf_getvec(w[i].w_list), at;
+            for (k = 0; k < n; k++)
+            {
+                if (ap[k].a_type == A_FLOAT ||
+                    ap[k].a_type == A_SYMBOL &&
+                        !strchr(ap[k].a_w.w_symbol->s_name, ';') &&
+                        !strchr(ap[k].a_w.w_symbol->s_name, ',') &&
+                        !strchr(ap[k].a_w.w_symbol->s_name, '$'))
+                            binbuf_add(b, 1, &ap[k]);
+                else
+                {
+                    char buf[MAXPDSTRING+1];
+                    atom_string(&ap[k], buf, MAXPDSTRING);
+                    SETSYMBOL(&at, gensym(buf));
+                    atom_string(&at, buf, MAXPDSTRING);
+                    SETSYMBOL(&at, gensym(buf));
+                    binbuf_add(b, 1, &at);
+                }
+            }
             binbuf_addsemi(b);
         }
     }

@@ -134,7 +134,6 @@ void glist_scalar(t_glist *glist,
     binbuf_restore(b, argc, argv);
     natoms = binbuf_getnatom(b);
     vec = binbuf_getvec(b);
-    binbuf_print(b);
     glist_readscalar(glist, natoms, vec, &nextmsg, 0);
     binbuf_free(b);
 }
