@@ -38,6 +38,7 @@ void x_net_setup(void);
 void x_qlist_setup(void);
 void x_gui_setup(void);
 void x_list_setup(void);
+void x_array_setup(void);
 void d_arithmetic_setup(void);
 void d_array_setup(void);
 void d_ctl_setup(void);

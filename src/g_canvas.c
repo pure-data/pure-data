@@ -977,60 +977,12 @@ static void canvas_rename_method(t_canvas *x, t_symbol *s, int ac, t_atom *av)
     else canvas_rename(x, gensym("Pd"), 0);
 }
 
-/* ------------------ table ---------------------------*/
-
-static int tabcount = 0;
-
-static void *table_new(t_symbol *s, t_floatarg f)
-{
-    t_atom a[9];
-    t_glist *gl;
-    t_canvas *x, *z = canvas_getcurrent();
-    if (s == &s_)
-    {
-         char  tabname[255];
-         t_symbol *t = gensym("table"); 
-         sprintf(tabname, "%s%d", t->s_name, tabcount++);
-         s = gensym(tabname); 
-    }
-    if (f <= 1)
-        f = 100;
-    SETFLOAT(a, 0);
-    SETFLOAT(a+1, GLIST_DEFCANVASYLOC);
-    SETFLOAT(a+2, 600);
-    SETFLOAT(a+3, 400);
-    SETSYMBOL(a+4, s);
-    SETFLOAT(a+5, 0);
-    x = canvas_new(0, 0, 6, a);
-
-    x->gl_owner = z;
-
-        /* create a graph for the table */
-    gl = glist_addglist((t_glist*)x, &s_, 0, -1, (f > 1 ? f-1 : 1), 1,
-        50, 350, 550, 50);
-
-    graph_array(gl, s, &s_float, f, 0);
-
-    canvas_pop(x, 0); 
-
-    return (x);
-}
 
     /* return true if the "canvas" object is an abstraction (so we don't
-    save its contents, fogr example.)  */
+    save its contents, for example.)  */
 int canvas_isabstraction(t_canvas *x)
 {
     return (x->gl_env != 0);
-}
-
-    /* return true if the "canvas" object is a "table". */
-int canvas_istable(t_canvas *x)
-{
-    t_atom *argv = (x->gl_obj.te_binbuf? binbuf_getvec(x->gl_obj.te_binbuf):0);
-    int argc = (x->gl_obj.te_binbuf? binbuf_getnatom(x->gl_obj.te_binbuf) : 0);
-    int istable = (argc && argv[0].a_type == A_SYMBOL &&
-        argv[0].a_w.w_symbol == gensym("table"));
-    return (istable);
 }
 
     /* return true if the "canvas" object should be treated as a text
@@ -1580,11 +1532,6 @@ void g_canvas_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_dsp, gensym("dsp"), 0);
     class_addmethod(canvas_class, (t_method)canvas_rename_method,
         gensym("rename"), A_GIMME, 0);
-
-/*---------------------------- tables -- GG ------------------- */
-
-    class_addcreator((t_newmethod)table_new, gensym("table"),
-        A_DEFSYM, A_DEFFLOAT, 0);
 
 /*---------------------------- declare ------------------- */
     declare_class = class_new(gensym("declare"), (t_newmethod)declare_new,

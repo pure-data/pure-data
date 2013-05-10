@@ -13,10 +13,6 @@
 #define ARRAYPAGESIZE 1000  /* this should match the page size in u_main.tk */
 /* } jsarlo */
 
-/* see also the "plot" object in g_scalar.c which deals with graphing
-arrays which are fields in scalars.  Someday we should unify the
-two, but how? */
-
     /* aux routine to bash leading '#' to '$' for dialogs in u_main.tk
     which can't send symbols starting with '$' (because the Pd message
     interpreter would change them!) */
