@@ -10,8 +10,6 @@
 #include "s_stuff.h"    /* for sys_hostfontsize */
 #include "g_canvas.h"
 
-void array_redraw(t_array *a, t_glist *glist);
-
 /*
 This file contains text objects you would put in a canvas to define a
 template.  Templates describe objects of type "array" (g_array.c) and

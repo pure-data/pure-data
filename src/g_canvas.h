@@ -535,6 +535,7 @@ EXTERN t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *tmpl,
 EXTERN t_array *array_new(t_symbol *templatesym, t_gpointer *parent);
 EXTERN void array_resize(t_array *x, int n);
 EXTERN void array_free(t_array *x);
+EXTERN void array_redraw(t_array *a, t_glist *glist);
 
 /* --------------------- gpointers and stubs ---------------- */
 EXTERN t_gstub *gstub_new(t_glist *gl, t_array *a);

@@ -140,11 +140,11 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
 {
     if (x->tc_sym)       /* named text object */
     {
-        t_array *y = (t_array *)pd_findbyclass(x->tc_sym, array_class);
+        t_garray *y = (t_garray *)pd_findbyclass(x->tc_sym, garray_class);
         if (y)
         {
-            *glist = x->tc_canvas;
-            return (y);
+            *glist = garray_getglist(y);
+            return (garray_getarray(y));
         }
         else
         {
@@ -187,13 +187,13 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
             return (0);
         }
         if (gs->gs_which == GP_GLIST)
-            *glist = gs->gs_un.gs_glist);  
+            *glist = gs->gs_un.gs_glist;
         else
         {
             t_array *owner_array = gs->gs_un.gs_array;
             while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
                 owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
-            *glist = owner_array->a_gp.gp_stub->gs_un.gs_glist);  
+            *glist = owner_array->a_gp.gp_stub->gs_un.gs_glist;
         }
         return (*(t_array **)(((char *)vec) + onset));
     }
@@ -219,11 +219,11 @@ typedef struct _array_size
 {
     t_array_client x_tc;
     t_outlet *x_out;
-}
+} t_array_size;
 
 static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_array_client *x = (t_text_setline *)pd_new(array_size_class);
+    t_array_size *x = (t_array_size *)pd_new(array_size_class);
     x->x_sym = x->x_struct = x->x_field = 0;
     gpointer_init(&x->x_gp);
     while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
