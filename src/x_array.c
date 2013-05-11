@@ -94,28 +94,29 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *arrayname = &s_;
     float arraysize = 100;
-    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
         {
-            pd_error(x, "text define: unknown flag ...");
-            postatom(ac, av);
+            error("text define: unknown flag ...");
+            postatom(argc, argv);
         }
-        ac--; av++;
+        argc--; argv++;
     }
-    if (ac && av->a_type == A_SYMBOL)
+    if (argc && argv->a_type == A_SYMBOL)
     {
-        arrayname = av->a_w.w_symbol;
-        ac--; av++;
+        arrayname = argv->a_w.w_symbol;
+        argc--; argv++;
     }
-    if (ac && av->a_type == A_FLOAT)
+    if (argc && argv->a_type == A_FLOAT)
     {
-        arraysize = av->a_w.w_float;
-        ac--; av++;
+        arraysize = argv->a_w.w_float;
+        argc--; argv++;
     }
-    if (ac)
+    if (argc)
     {
         post("warning: text define ignoring extra argument: ");
-        postatom(ac, av);
+        postatom(argc, argv);
     }
     return (table_new(arrayname, arraysize));
 }
@@ -130,22 +131,26 @@ typedef struct _array_client
     t_gpointer tc_gp;
     t_symbol *tc_struct;
     t_symbol *tc_field;
+    t_canvas *tc_canvas;
 } t_array_client;
 
     /* find the array for this object.  Prints an error  message and returns
         0 on failure. */
-static t_binbuf *array_client_getbuf(t_array_client *x)
+static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
 {
     if (x->tc_sym)       /* named text object */
     {
-        t_textbuf *y = (t_textbuf *)pd_findbyclass(x->tc_sym,
-            text_define_class);
+        t_array *y = (t_array *)pd_findbyclass(x->tc_sym, array_class);
         if (y)
-            return (y->b_binbuf);
+        {
+            *glist = x->tc_canvas;
+            return (y);
+        }
         else
         {
             pd_error(x, "text: couldn't find text buffer '%s'",
                 x->tc_sym->s_name);
+            *glist = 0;
             return (0);
         }
     }
@@ -181,25 +186,25 @@ static t_binbuf *array_client_getbuf(t_array_client *x)
             pd_error(x, "text: field %s not of type list", x->tc_field->s_name);
             return (0);
         }
-        return (*(t_binbuf **)(((char *)vec) + onset));
+        if (gs->gs_which == GP_GLIST)
+            *glist = gs->gs_un.gs_glist);  
+        else
+        {
+            t_array *owner_array = gs->gs_un.gs_array;
+            while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
+                owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
+            *glist = owner_array->a_gp.gp_stub->gs_un.gs_glist);  
+        }
+        return (*(t_array **)(((char *)vec) + onset));
     }
     else return (0);    /* shouldn't happen */
 }
 
 static  void array_client_senditup(t_array_client *x)
 {
-    if (x->tc_sym)       /* named text object */
-    {
-        t_textbuf *y = (t_textbuf *)pd_findbyclass(x->tc_sym,
-            text_define_class);
-        if (y)
-            textbuf_senditup(y);
-        else bug("array_client_senditup");
-    }
-    else if (x->tc_struct)   /* by pointer */
-    {
-        /* figure this out LATER */
-    }
+    t_glist *glist;
+    t_array *a = array_client_getbuf(x, &glist);
+    array_redraw(a, glist);
 }
 
 static void array_client_free(t_array_client *x)
@@ -208,10 +213,17 @@ static void array_client_free(t_array_client *x)
 }
 
 /* ----------  array size : get or set size of an array ---------------- */
+t_class *array_size_class;
+
+typedef struct _array_size
+{
+    t_array_client x_tc;
+    t_outlet *x_out;
+}
 
 static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_array_client *x = (t_text_setline *)pd_new(text_setline_class);
+    t_array_client *x = (t_text_setline *)pd_new(array_size_class);
     x->x_sym = x->x_struct = x->x_field = 0;
     gpointer_init(&x->x_gp);
     while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
@@ -247,11 +259,20 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    x->x_out - outlet_new(
     return (x);
 }
 
-/* overall creator for "text" objects - dispatch to "text define" etc */
-static void *text_new(t_symbol *s, int argc, t_atom *argv)
+static void *array_size_bang(t_array_client *x)
+{
+    t_glist *glist;
+    t_array *a = array_client_getbuf(x, &glist);
+    outlet_float(x->x_out, a->a_n);
+}
+
+
+/* overall creator for "array" objects - dispatch to "array define" etc */
+static void *array_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
         newest = array_define_new(s, argc, argv);
@@ -282,4 +303,8 @@ void x_array_setup(void )
     class_addcreator((t_newmethod)table_new, gensym("table"),
         A_DEFSYM, A_DEFFLOAT, 0);
 
+    array_size_class = class_new(gensym("array size"),
+        (t_newmethod)array_size_new, (t_method)array_client_free,
+            sizeof(t_array_size), 0, A_GIMME, 0);
+    class_addbang(array_size_class, array_size_bang);
 }
