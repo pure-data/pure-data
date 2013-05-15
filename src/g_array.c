@@ -249,6 +249,12 @@ int garray_getname(t_garray *x, t_symbol **namep)
     return (x->x_hidename);
 }
 
+    /* get a garray's containing glist */
+t_glist *garray_getglist(t_garray *x)
+{
+    return (x->x_glist);
+}
+
         /* if there is one garray in a graph, reset the graph's coordinates
             to fit a new size and style for the garray */
 static void garray_fittograph(t_garray *x, int n, int style)

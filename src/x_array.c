@@ -220,59 +220,65 @@ typedef struct _array_size
     t_array_client x_tc;
     t_outlet *x_out;
 } t_array_size;
+#define x_sym x_tc.tc_sym
+#define x_struct x_tc.tc_struct
+#define x_field x_tc.tc_field
+#define x_gp x_tc.tc_gp
 
 static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_array_size *x = (t_array_size *)pd_new(array_size_class);
     x->x_sym = x->x_struct = x->x_field = 0;
     gpointer_init(&x->x_gp);
-    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        if (!strcmp(av->a_w.w_symbol->s_name, "-s") &&
-            ac >= 3 && av[1].a_type == A_SYMBOL && av[2].a_type == A_SYMBOL)
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
+            argc >= 3 && argv[1].a_type == A_SYMBOL &&
+                argv[2].a_type == A_SYMBOL)
         {
-            x->x_struct = canvas_makebindsym(av[1].a_w.w_symbol);
-            x->x_field = av[2].a_w.w_symbol;
-            ac -= 2; av += 2;
+            x->x_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
+            x->x_field = argv[2].a_w.w_symbol;
+            argc -= 2; argv += 2;
         }
         else
         {
             pd_error(x, "text setline: unknown flag ...");
-            postatom(ac, av);
+            postatom(argc, argv);
         }
-        ac--; av++;
+        argc--; argv++;
     }
-    if (ac && av->a_type == A_SYMBOL)
+    if (argc && argv->a_type == A_SYMBOL)
     {
         if (x->x_struct)
         {
             pd_error(x, "text setline: extra names after -s..");
-            postatom(ac, av);
+            postatom(argc, argv);
         }
-        else x->x_sym = av->a_w.w_symbol;
-        ac--; av++;
+        else x->x_sym = argv->a_w.w_symbol;
+        argc--; argv++;
     }
-    if (ac)
+    if (argc)
     {
         post("warning: text setline ignoring extra argument: ");
-        postatom(ac, av);
+        postatom(argc, argv);
     }
     if (x->x_struct)
-        pointerinlet_new(&x->x_obj, &x->x_gp);
-    x->x_out - outlet_new(
+        pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
+    x->x_out = outlet_new(&x->x_tc.tc_obj, &s_float);
     return (x);
 }
 
-static void *array_size_bang(t_array_client *x)
+static void array_size_bang(t_array_size *x)
 {
     t_glist *glist;
-    t_array *a = array_client_getbuf(x, &glist);
+    t_array *a = array_client_getbuf(&x->x_tc, &glist);
     outlet_float(x->x_out, a->a_n);
 }
 
 
 /* overall creator for "array" objects - dispatch to "array define" etc */
-static void *array_new(t_symbol *s, int argc, t_atom *argv)
+static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc || argv[0].a_type != A_SYMBOL)
         newest = array_define_new(s, argc, argv);
@@ -297,8 +303,9 @@ static void *array_new(t_symbol *s, int argc, t_atom *argv)
 
 void x_array_setup(void )
 {
+    post("x_array_setup");
 
-    class_addcreator((t_newmethod)array_new, gensym("array"), A_GIMME, 0);
+    class_addcreator((t_newmethod)arrayobj_new, gensym("array"), A_GIMME, 0);
 
     class_addcreator((t_newmethod)table_new, gensym("table"),
         A_DEFSYM, A_DEFFLOAT, 0);
