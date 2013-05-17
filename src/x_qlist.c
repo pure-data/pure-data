@@ -967,11 +967,13 @@ void x_qlist_setup(void )
         (t_newmethod)text_getline_new, (t_method)text_client_free,
             sizeof(t_text_getline), 0, A_GIMME, 0);
     class_addfloat(text_getline_class, text_getline_float);
+    class_sethelpsymbol(text_getline_class, gensym("text-object"));
     
     text_setline_class = class_new(gensym("text setline"),
         (t_newmethod)text_setline_new, (t_method)text_client_free,
             sizeof(t_text_getline), 0, A_GIMME, 0);
     class_addlist(text_setline_class, text_setline_list);
+    class_sethelpsymbol(text_setline_class, gensym("text-object"));
 
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);

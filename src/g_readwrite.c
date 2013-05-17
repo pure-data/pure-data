@@ -102,9 +102,6 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec,
             for (last = first; last < natoms && vec[last].a_type != A_SEMI;
                 last++);
             binbuf_restore(z, last-first, vec+first);
-            post("asdf");
-            binbuf_print(z);
-            post("done");
             binbuf_add(w[i].w_list, binbuf_getnatom(z), binbuf_getvec(z));
             binbuf_free(z);
             last++;
