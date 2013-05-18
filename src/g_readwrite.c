@@ -772,3 +772,11 @@ void g_readwrite_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_menusaveas,
         gensym("menusaveas"), 0);
 }
+
+void canvas_readwrite_for_class(t_class *c)
+{
+    class_addmethod(c, (t_method)canvas_menusave,
+        gensym("menusave"), 0);
+    class_addmethod(c, (t_method)canvas_menusaveas,
+        gensym("menusaveas"), 0);
+}

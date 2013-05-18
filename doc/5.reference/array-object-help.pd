@@ -1,0 +1,118 @@
+#N struct array-help-struct float x float y array z float;
+#N struct float float y;
+#N canvas 740 147 688 433 12;
+#X obj 140 389 list;
+#X text 34 388 see also:;
+#X text 444 398 updated for Pd version 0.45.;
+#X text 47 180 The text object's first argument sets its function:
+;
+#X text 485 171 (click for details:), f 11;
+#X obj 276 391 datum;
+#X text 250 369 coming soon:;
+#N canvas 791 159 739 473 define 0;
+#X text 331 363 creation arguments:;
+#X text 361 398 optional name;
+#X text 322 164 read from a file;
+#X text 324 195 write to a file;
+#X text 48 374 click to open and edit array:;
+#X text 32 20 "array define" maintains an array and can name it so
+that other objects can find it (and later should have some alternative
+\, anonymous way to be found).;
+#X text 359 381 optional -k flag to keep contents (TBW);
+#X text 360 415 optional size (100 by default);
+#X msg 35 138 const 0;
+#X text 325 138 set to a constant (0 \, for instance);
+#X msg 45 167 read array-object-help.txt;
+#X msg 45 194 write array-object-help.txt;
+#X obj 38 400 array define array-help-1;
+#X msg 45 224 resize 100;
+#X connect 8 0 12 0;
+#X connect 10 0 12 0;
+#X connect 11 0 12 0;
+#X connect 13 0 12 0;
+#X restore 486 212 pd define;
+#X obj 180 389 text;
+#X obj 90 236 array size;
+#N canvas 0 50 600 400 (subpatch) 0;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array table3 100 float 0;
+#X coords 0 1 99 -1 500 300 1;
+#X restore 50 50 graph;
+#X restore 18 6 array;
+#X text 193 210 - create \, store \, and/or edit one;
+#X text 193 237 - get or change size;
+#X text 194 261 - sum all or a range of elements;
+#N canvas 625 92 516 514 array-and-data-structures 0;
+#X obj 46 397 print;
+#X obj 83 318 pointer;
+#X text 53 36 The array objects can also reference arrays within structures
+via pointers.;
+#N canvas 804 396 504 278 array-help-struct 0;
+#X scalar array-help-struct 20 20 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
+\; -5 \; -2 \; 8 \; 12 \; 12 \; 12 \; 10 \; 8 \; 6 \; 1 \; \;;
+#X obj 88 204 pointer;
+#X msg 32 156 20 20;
+#X obj 31 231 append array-help-struct x y;
+#X msg 88 147 traverse pd-array-help-struct \, bang, f 21;
+#X obj 13 83 filledpolygon 0 0 0 0 0 0 10 20 10 20 0 0 0;
+#X obj 13 56 struct array-help-struct float x float y array z float
+;
+#X obj 17 114 plot z 500 2 25 5 5;
+#X connect 1 0 3 2;
+#X connect 2 0 3 0;
+#X connect 4 0 1 0;
+#X restore 60 112 pd array-help-struct;
+#N canvas 1207 234 450 300 array-help-data 0;
+#X scalar array-help-struct 84 93 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
+\; -5 \; -2 \; 5 \; -7 \; -41 \; -47 \; -45 \; -34 \; -17 \; 8 \; 5
+\; 2 \; -2 \; -11 \; -16 \; -26 \; -43 \; 16 \; 24 \; 26 \; 21 \; 20
+\; 19 \; 17 \; 16 \; 16 \; 16 \; 16 \; 12 \; \;;
+#X text 26 215 We have one datum... right-click to see contents.;
+#X restore 61 142 pd array-help-data;
+#X obj 46 357 array size -s array-help-struct z, f 19;
+#X msg 83 261 traverse pd-array-help-data \, next, f 19;
+#X obj 46 210 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 46 232 t b b;
+#X obj 312 321 pointer;
+#X obj 275 359 array size -s array-help-struct z, f 19;
+#X msg 312 264 traverse pd-array-help-data \, next, f 19;
+#X obj 275 235 t f b;
+#X floatatom 275 211 5 0 0 0 - - -, f 5;
+#X text 220 143 <- click to see the array;
+#X connect 1 0 5 1;
+#X connect 5 0 0 0;
+#X connect 6 0 1 0;
+#X connect 7 0 8 0;
+#X connect 8 0 5 0;
+#X connect 8 1 6 0;
+#X connect 9 0 10 1;
+#X connect 11 0 9 0;
+#X connect 12 0 10 0;
+#X connect 12 1 11 0;
+#X connect 13 0 12 0;
+#X restore 81 333 pd array-and-data-structures;
+#N canvas 1025 306 600 467 size 0;
+#X floatatom 83 171 5 1 100 0 - - -, f 5;
+#X obj 83 252 print;
+#X text 45 19 "array size" outputs the size (if sent a bang) or sets
+the size (if sent a number).;
+#X obj 83 223 array size array-help-2;
+#X obj 92 198 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 72 330 array define array-help-2;
+#X connect 0 0 3 0;
+#X connect 3 0 1 0;
+#X connect 4 0 3 0;
+#X restore 485 237 pd size;
+#X obj 90 212 array define;
+#X text 78 309 accessing arrays inside data structures:;
+#X text 96 260 (later);
+#X text 65 6 - accessing arrays;
+#X text 50 43 In Pd an array may be part of a "garray" (a graphical
+array of numbers) or appear as a slot in a data structure (in which
+case the elements may be arbitrary data \, not necessarily just numbers).
+The "array" object can define an array (so far just of numbers but
+maybe later arbitrary data structures) or access an array defined elsewhere
+to get or change its size \, set or read its elements \, and so on.
+;

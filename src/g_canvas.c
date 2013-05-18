@@ -1415,6 +1415,17 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+extern t_class *array_define_class;     /* LATER datum calss too */
+
+    /* check if a pd can be treated as a glist - true if we're of any of
+    the glist classes, which all have 'glist' as the first item in struct */
+t_glist *pd_checkglist(t_pd *x)
+{
+    if (*x == canvas_class || *x == array_define_class)
+        return ((t_canvas *)x);
+    else return (0);
+}
+
 /* ------------------------------- setup routine ------------------------ */
 
     /* why are some of these "glist" and others "canvas"? */
@@ -1546,4 +1557,25 @@ void g_canvas_setup(void)
     g_graph_setup();
     g_editor_setup();
     g_readwrite_setup();
+}
+
+    /* functions to add basic gui (e.g., clicking but not editing) to things
+    based on canvases that aren't editable, like "array define" object */
+void canvas_editor_for_class(t_class *c);
+void g_graph_setup_class(t_class *c);
+void canvas_readwrite_for_class(t_class *c);
+
+void canvas_add_for_class(t_class *c)
+{
+    class_addmethod(c, (t_method)canvas_restore,
+        gensym("restore"), A_GIMME, 0);
+    class_addmethod(c, (t_method)canvas_click,
+        gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+    class_addmethod(c, (t_method)canvas_dsp, gensym("dsp"), 0);
+    class_addmethod(c, (t_method)canvas_map,
+        gensym("map"), A_FLOAT, A_NULL);
+    class_addmethod(c, (t_method)canvas_setbounds,
+        gensym("setbounds"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    canvas_editor_for_class(c);
+    g_graph_setup_class(c);
 }

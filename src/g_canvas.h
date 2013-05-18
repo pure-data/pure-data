@@ -511,6 +511,8 @@ EXTERN int canvas_isconnected (t_canvas *x,
     t_text *ob1, int n1, t_text *ob2, int n2);
 EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy);
 
+EXTERN t_glist *pd_checkglist(t_pd *x);
+
 
 /* ---- functions on canvasses as objects  --------------------- */
 

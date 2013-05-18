@@ -82,6 +82,22 @@ void word_free(t_word *wp, t_template *template)
     }
 }
 
+static int template_cancreate(t_template *template)
+{
+    int i, type, nitems = template->t_n;
+    t_dataslot *datatypes = template->t_vec;
+    t_template *elemtemplate;
+    for (i = 0; i < nitems; i++, datatypes++)
+        if (datatypes->ds_type == DT_ARRAY &&
+            (!(elemtemplate = template_findbyname(datatypes->ds_arraytemplate))
+                || !template_cancreate(elemtemplate)))
+    {
+        error("%s: no such template", datatypes->ds_arraytemplate->s_name);
+        return (0);
+    }
+    return (1);
+}
+
     /* make a new scalar and add to the glist.  We create a "gp" here which
     will be used for array items to point back here.  This gp doesn't do
     reference counting or "validation" updates though; the parent won't go away
@@ -100,6 +116,8 @@ t_scalar *scalar_new(t_glist *owner, t_symbol *templatesym)
         error("scalar: couldn't find template %s", templatesym->s_name);
         return (0);
     }
+    if (!template_cancreate(template))
+        return (0);
     x = (t_scalar *)getbytes(sizeof(t_scalar) +
         (template->t_n - 1) * sizeof(*x->sc_vec));
     x->sc_gobj.g_pd = scalar_class;

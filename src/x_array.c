@@ -15,7 +15,6 @@
 #include <io.h>
 #endif
 extern t_pd *newest;    /* OK - this should go into a .h file now :) */
-static t_class *text_define_class;
 
 #ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
 # include <alloca.h>        /* linux, mac, mingw, cygwin */
@@ -90,10 +89,14 @@ int canvas_istable(t_canvas *x)
     return (istable);
 }
 
+t_class *array_define_class;
+
 static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *arrayname = &s_;
     float arraysize = 100;
+    t_glist *x;
+    post("foo 8");
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -118,7 +121,20 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         post("warning: text define ignoring extra argument: ");
         postatom(argc, argv);
     }
-    return (table_new(arrayname, arraysize));
+    x = (t_glist *)table_new(arrayname, arraysize);
+    x->gl_obj.ob_pd = array_define_class;
+    return (x);
+    
+}
+
+    /* just forward any messages to the garray */
+static void array_define_anything(t_glist *x,
+    t_symbol *s, int argc, t_atom *argv)
+{
+    t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
+    if (gl && gl->gl_list && pd_class(&gl->gl_list->g_pd) == garray_class)
+        typedmess(&gl->gl_list->g_pd, s, argc, argv);
+    else bug("array_define_anything");
 }
 
 
@@ -148,7 +164,7 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
         }
         else
         {
-            pd_error(x, "text: couldn't find text buffer '%s'",
+            pd_error(x, "array: couldn't find named array '%s'",
                 x->tc_sym->s_name);
             *glist = 0;
             return (0);
@@ -178,12 +194,13 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
         if (!template_find_field(template,
             x->tc_field, &onset, &type, &arraytype))
         {
-            pd_error(x, "text: no field named %s", x->tc_field->s_name);
+            pd_error(x, "array: no field named %s", x->tc_field->s_name);
             return (0);
         }
-        if (type != DT_LIST)
+        if (type != DT_ARRAY)
         {
-            pd_error(x, "text: field %s not of type list", x->tc_field->s_name);
+            pd_error(x, "array: field %s not of type array",
+                x->tc_field->s_name);
             return (0);
         }
         if (gs->gs_which == GP_GLIST)
@@ -273,9 +290,37 @@ static void array_size_bang(t_array_size *x)
 {
     t_glist *glist;
     t_array *a = array_client_getbuf(&x->x_tc, &glist);
-    outlet_float(x->x_out, a->a_n);
+    if (a)
+        outlet_float(x->x_out, a->a_n);
 }
 
+void array_resize_and_redraw(t_array *array, t_glist *glist, int n);
+
+static void array_size_float(t_array_size *x, t_floatarg f)
+{
+    t_glist *glist;
+    t_array *a = array_client_getbuf(&x->x_tc, &glist);
+    if (a)
+    {
+              /* if it's a named text object we have to go back and find the
+              garray (repeating work done in array_client_getbuf()) because
+              the garray might want to adjust.  Maybe array_client_getbuf
+              should have a return slot for the garray if any?  */
+        if (x->x_tc.tc_sym)
+        {
+            t_garray *y = (t_garray *)pd_findbyclass(x->x_tc.tc_sym,
+                garray_class);
+            garray_resize(y, f);
+        }
+        else
+        {
+            int n = f;
+            if (n < 1)
+                n = 1;
+             array_resize_and_redraw(a, glist, n);
+        }
+    }
+}
 
 /* overall creator for "array" objects - dispatch to "array define" etc */
 static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
@@ -298,12 +343,16 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
     return (newest);
 }
 
+void canvas_add_for_class(t_class *c);
 
 /* ---------------- global setup function -------------------- */
 
 void x_array_setup(void )
 {
-    post("x_array_setup");
+    array_define_class = class_new(gensym("array define"), 0,
+        (t_method)canvas_free, sizeof(t_canvas), 0, 0);
+    canvas_add_for_class(array_define_class);
+    class_addanything(array_define_class, array_define_anything);
 
     class_addcreator((t_newmethod)arrayobj_new, gensym("array"), A_GIMME, 0);
 
@@ -314,4 +363,5 @@ void x_array_setup(void )
         (t_newmethod)array_size_new, (t_method)array_client_free,
             sizeof(t_array_size), 0, A_GIMME, 0);
     class_addbang(array_size_class, array_size_bang);
+    class_addfloat(array_size_class, array_size_float);
 }

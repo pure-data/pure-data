@@ -85,7 +85,7 @@ void array_resize(t_array *x, int n)
     x->a_valid = ++glist_valid;
 }
 
-static void array_resize_and_redraw(t_array *array, t_glist *glist, int n)
+void array_resize_and_redraw(t_array *array, t_glist *glist, int n)
 {
     t_array *a2 = array;
     int vis = glist_isvisible(glist);

@@ -1081,23 +1081,29 @@ t_glist *glist_findgraph(t_glist *x)
 
 extern void canvas_menuarray(t_glist *canvas);
 
-void g_graph_setup(void)
+void g_graph_setup_class(t_class *c)
 {
-    class_setwidget(canvas_class, &graph_widgetbehavior);
-    class_addmethod(canvas_class, (t_method)graph_bounds, gensym("bounds"),
+    class_setwidget(c, &graph_widgetbehavior);
+    class_addmethod(c, (t_method)graph_bounds, gensym("bounds"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    class_addmethod(canvas_class, (t_method)graph_xticks, gensym("xticks"),
+    class_addmethod(c, (t_method)graph_xticks, gensym("xticks"),
         A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    class_addmethod(canvas_class, (t_method)graph_xlabel, gensym("xlabel"),
+    class_addmethod(c, (t_method)graph_xlabel, gensym("xlabel"),
         A_GIMME, 0);
-    class_addmethod(canvas_class, (t_method)graph_yticks, gensym("yticks"),
+    class_addmethod(c, (t_method)graph_yticks, gensym("yticks"),
         A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    class_addmethod(canvas_class, (t_method)graph_ylabel, gensym("ylabel"),
+    class_addmethod(c, (t_method)graph_ylabel, gensym("ylabel"),
         A_GIMME, 0);
-    class_addmethod(canvas_class, (t_method)graph_array, gensym("array"),
+    class_addmethod(c, (t_method)graph_array, gensym("array"),
         A_SYMBOL, A_FLOAT, A_SYMBOL, A_DEFFLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_menuarray,
+    class_addmethod(c, (t_method)canvas_menuarray,
         gensym("menuarray"), A_NULL);
-    class_addmethod(canvas_class, (t_method)glist_sort,
+    class_addmethod(c, (t_method)glist_sort,
         gensym("sort"), A_NULL);
 }
+
+void g_graph_setup( void)
+{
+    g_graph_setup_class(canvas_class);
+}
+

@@ -2803,3 +2803,19 @@ void g_editor_setup(void)
 /* -------------- copy buffer ------------------ */
     copy_binbuf = binbuf_new();
 }
+
+void canvas_editor_for_class(t_class *c)
+{
+    class_addmethod(c, (t_method)canvas_mouse, gensym("mouse"),
+        A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(c, (t_method)canvas_mouseup, gensym("mouseup"),
+        A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(c, (t_method)canvas_key, gensym("key"),
+        A_GIMME, A_NULL);
+    class_addmethod(c, (t_method)canvas_motion, gensym("motion"),
+        A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+
+/* ------------------------ menu actions ---------------------------- */
+    class_addmethod(c, (t_method)canvas_menuclose,
+        gensym("menuclose"), A_DEFFLOAT, 0);
+}
