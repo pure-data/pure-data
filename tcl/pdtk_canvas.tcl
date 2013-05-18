@@ -40,8 +40,8 @@ proc pdtk_canvas_place_window {width height geometry} {
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
     # fit the geometry onto screen
-    set x [ expr $x % $screenwidth - $::windowframex]
-    set y [ expr $y % $screenheight - $::windowframey]
+    set x [ expr max($x % $screenwidth - $::windowframex, 0)]
+    set y [ expr max($y % $screenheight - $::windowframey, 0)]
     if {$width > $screenwidth} {
         set width $screenwidth
         set x 0
