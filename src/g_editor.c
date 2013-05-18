@@ -1317,13 +1317,18 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         {
             int noutlet;
                 /* resize?  only for "true" text boxes or canvases*/
-            if (ob &&
+            if (ob && !x->gl_editor->e_textedfor &&
                 (ob->te_pd->c_wb == &text_widgetbehavior ||
                     ob->ob_pd == canvas_class) &&
                         xpos >= x2-4 && ypos < y2-4)
             {
                 if (doit)
                 {
+                    if (!glist_isselected(x, y))
+                    {
+                        glist_noselect(x);
+                        glist_select(x, y);
+                    }
                     x->gl_editor->e_onmotion = MA_RESIZE;
                     x->gl_editor->e_xwas = x1;
                     x->gl_editor->e_ywas = y1;
@@ -1604,9 +1609,11 @@ void canvas_mouseup(t_canvas *x,
         canvas_doconnect(x, xpos, ypos, which, 1);
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 1);
-    else if (x->gl_editor->e_onmotion == MA_MOVE)
+    else if (x->gl_editor->e_onmotion == MA_MOVE ||
+        x->gl_editor->e_onmotion == MA_RESIZE)
     {
-            /* after motion, if there's only one item selected, activate it */
+            /* after motion or resizing, if there's only one text item
+                selected, activate the text */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
