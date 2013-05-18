@@ -255,6 +255,12 @@ t_glist *garray_getglist(t_garray *x)
     return (x->x_glist);
 }
 
+    /* get a garray's associated scalar */
+t_scalar *garray_getscalar(t_garray *x)
+{
+    return (x->x_scalar);
+}
+
         /* if there is one garray in a graph, reset the graph's coordinates
             to fit a new size and style for the garray */
 static void garray_fittograph(t_garray *x, int n, int style)

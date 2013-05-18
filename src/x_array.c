@@ -96,7 +96,6 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     t_symbol *arrayname = &s_;
     float arraysize = 100;
     t_glist *x;
-    post("foo 8");
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -125,6 +124,27 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     x->gl_obj.ob_pd = array_define_class;
     return (x);
     
+}
+
+t_scalar *garray_getscalar(t_garray *x);
+
+    /* send a pointer to the scalar that owns this array to
+    whomever is bound to the given symbol */
+static void array_define_send(t_glist *x, t_symbol *s)
+{
+    t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
+    if (!s->s_thing)
+        pd_error(x, "array_define_send: %s: no such object", s->s_name);
+    else if (gl && gl->gl_list && pd_class(&gl->gl_list->g_pd) == garray_class)
+    {
+        t_gpointer gp;
+        gpointer_init(&gp);
+        gpointer_setglist(&gp, gl,
+            garray_getscalar((t_garray *)gl->gl_list));
+        pd_pointer(s->s_thing, &gp);
+        gpointer_unset(&gp);
+    }
+    else bug("array_define_anything");
 }
 
     /* just forward any messages to the garray */
@@ -352,6 +372,9 @@ void x_array_setup(void )
     array_define_class = class_new(gensym("array define"), 0,
         (t_method)canvas_free, sizeof(t_canvas), 0, 0);
     canvas_add_for_class(array_define_class);
+    class_addmethod(array_define_class, (t_method)array_define_send,
+        gensym("send"), A_SYMBOL, 0);
+
     class_addanything(array_define_class, array_define_anything);
 
     class_addcreator((t_newmethod)arrayobj_new, gensym("array"), A_GIMME, 0);
