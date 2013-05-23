@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-1999 Miller Puckette and others.
+/* Copyright (c) 1997-2013 Miller Puckette and others.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
@@ -38,7 +38,7 @@ extern t_pd *newest;    /* OK - this should go into a .h file now :) */
 #define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
 #endif
 
-/* --"table" - classic"array define" object by Guenter Geiger --*/
+/* -- "table" - classic "array define" object by Guenter Geiger --*/
 
 static int tabcount = 0;
 
@@ -121,9 +121,12 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv);
     }
     x = (t_glist *)table_new(arrayname, arraysize);
+    
+        /* bash the class to "array define".  We don't do this earlier in
+        part so that canvas_getcurrent() will work while the glist and
+        garray are being created.  There may be other, unknown side effects. */
     x->gl_obj.ob_pd = array_define_class;
     return (x);
-    
 }
 
 t_scalar *garray_getscalar(t_garray *x);
