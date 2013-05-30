@@ -2,7 +2,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-/* The "array" object. */
+/* The "scalar" object. */
 
 #include "m_pd.h"
 #include "g_canvas.h"
@@ -61,7 +61,7 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
     template = template_findbyname(templatesym);
     if (!template)
     {
-        pd_error(x, "scalar defines: couldn't find template %s",
+        pd_error(x, "scalar define: couldn't find template %s",
             templatesym->s_name);
         goto noscalar;
     }
@@ -131,6 +131,7 @@ void x_scalar_setup(void )
     canvas_add_for_class(scalar_define_class);
     class_addmethod(scalar_define_class, (t_method)scalar_define_send,
         gensym("send"), A_SYMBOL, 0);
+    class_sethelpsymbol(scalar_define_class, gensym("scalar-object"));
 
     class_addcreator((t_newmethod)scalarobj_new, gensym("scalar"), A_GIMME, 0);
 

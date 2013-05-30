@@ -377,8 +377,8 @@ void x_array_setup(void )
     canvas_add_for_class(array_define_class);
     class_addmethod(array_define_class, (t_method)array_define_send,
         gensym("send"), A_SYMBOL, 0);
-
     class_addanything(array_define_class, array_define_anything);
+    class_sethelpsymbol(array_define_class, gensym("array-object"));
 
     class_addcreator((t_newmethod)arrayobj_new, gensym("array"), A_GIMME, 0);
 
@@ -390,4 +390,5 @@ void x_array_setup(void )
             sizeof(t_array_size), 0, A_GIMME, 0);
     class_addbang(array_size_class, array_size_bang);
     class_addfloat(array_size_class, array_size_float);
+    class_sethelpsymbol(array_size_class, gensym("array-object"));
 }
