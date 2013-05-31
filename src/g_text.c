@@ -1386,7 +1386,7 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
     else binbuf_text(x->te_binbuf, buf, bufsize);
 }
 
-    /* this gets called when amessage gets sent to an object whose creation
+    /* this gets called when a message gets sent to an object whose creation
     failed, presumably because of loading a patch with a missing extern or
     abstraction */
 static void text_anything(t_text *x, t_symbol *s, int argc, t_atom *argv)

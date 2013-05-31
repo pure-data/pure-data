@@ -65,6 +65,7 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
             templatesym->s_name);
         goto noscalar;
     }
+    else post("template %s", templatesym->s_name);
     sc = scalar_new(x, templatesym);
     if (!sc)
     {
