@@ -38,7 +38,7 @@ void sys_doflags( void);
 
     /* Hmm... maybe better would be #ifndef _WIN32  */
 #if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD_kernel__) \
-|| defined(__GNU__) || defined(ANDROID) || defined(__APPLE)
+|| defined(__GNU__) || defined(ANDROID) || defined(__APPLE__)
 
 static char *sys_prefbuf;
 static int sys_prefbufsize;
