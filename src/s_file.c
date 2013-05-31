@@ -36,7 +36,9 @@ int sys_defeatrt;
 t_symbol *sys_flags = &s_;
 void sys_doflags( void);
 
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(ANDROID)
+    /* Hmm... maybe better would be #ifndef _WIN32  */
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD_kernel__) \
+|| defined(__GNU__) || defined(ANDROID) || defined(__APPLE)
 
 static char *sys_prefbuf;
 static int sys_prefbufsize;
@@ -218,7 +220,7 @@ static void sys_donesavepreferences( void)
 
 #endif /* _WIN32 */
 
-#ifdef __APPLE__
+#ifdef __APPLE_USE_NATIVE_DEFAULTS__
 
 static void sys_initloadpreferences( void)
 {
@@ -282,7 +284,7 @@ static void sys_donesavepreferences( void)
 {
 }
 
-#endif /* __APPLE__ */
+#endif /* __APPLE_USE_NATIVE_DEFAULTS____ */
 
 
 void sys_loadpreferences( void)
