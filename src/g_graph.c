@@ -977,9 +977,12 @@ static void graph_delete(t_gobj *z, t_glist *glist)
     while (y = x->gl_list)
         glist_delete(x, y);
     if (glist_isvisible(x))
-    {
         text_widgetbehavior.w_deletefn(z, glist);
-    }
+            /* if we have connections to the actual 'canvas' object, zap
+            them as well (e.g., array or scalar objects that are implemented
+            as canvases with "real" inlets).  Connections to ordinary canvas
+            in/outlets already got zapped when we cleared the contents above */
+    canvas_deletelinesfor(glist, &x->gl_obj);
 }
 
 static t_float graph_lastxpix, graph_lastypix;
