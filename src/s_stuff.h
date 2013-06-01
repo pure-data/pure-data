@@ -86,7 +86,9 @@ EXTERN void sys_set_audio_settings_reopen(int naudioindev, int *audioindev,
     int srate, int advance, int callback, int blocksize);
 EXTERN void sys_reopen_audio( void);
 EXTERN void sys_close_audio(void);
-
+    /* return true if the interface prefers always being open (ala jack) : */
+EXTERN int audio_shouldkeepopen( void);
+EXTERN int audio_isopen( void);     /* true if audio interface is open */
 
 int sys_send_dacs(void);
 void sys_reportidle(void);

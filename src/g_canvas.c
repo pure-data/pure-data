@@ -1120,8 +1120,6 @@ and can perhaps regard this is a design flaw in jack that we're working around
 here.  The function audio_shouldkeepopen() is provided by s_audio.c to tell
 us that we should elide the step of closing audio when DSP is turned off.*/
 
-int audio_shouldkeepopen( void);
-
 void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int newstate;

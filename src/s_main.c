@@ -306,7 +306,8 @@ int sys_main(int argc, char **argv)
     {
             /* open audio and MIDI */
         sys_reopen_midi();
-        sys_reopen_audio();
+        if (audio_shouldkeepopen())
+            sys_reopen_audio();
             /* run scheduler until it quits */
         return (m_mainloop());
     }

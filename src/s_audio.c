@@ -73,7 +73,7 @@ static int audio_nextinchans, audio_nextoutchans;
 void sched_audio_callbackfn(void);
 void sched_reopenmeplease(void);
 
-static int audio_isopen(void)
+int audio_isopen(void)
 {
     return (audio_state &&
         ((audio_naudioindev > 0 && audio_audiochindev[0] > 0) 
@@ -960,7 +960,7 @@ void glob_audio_setapi(void *dummy, t_floatarg f)
     {
         if (newapi == sys_audioapi)
         {
-            if (!audio_isopen())
+            if (!audio_isopen() && audio_shouldkeepopen())
                 sys_reopen_audio();
         }
         else

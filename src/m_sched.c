@@ -335,7 +335,7 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 void dsp_tick(void);
 
-static int sched_useaudio = SCHED_AUDIO_POLL;
+static int sched_useaudio = SCHED_AUDIO_NONE;
 static double sched_referencerealtime, sched_referencelogicaltime;
 double sys_time_per_dsp_tick;
 
@@ -569,8 +569,11 @@ int m_mainloop(void)
         if (sys_quit == SYS_QUIT_RESTART)
         {
             sys_quit = 0;
-            sys_close_audio();
-            sys_reopen_audio();
+            if (audio_isopen())
+            {
+                sys_close_audio();
+                sys_reopen_audio();
+            }
         }
     }
     return (0);
