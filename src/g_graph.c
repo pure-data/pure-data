@@ -952,24 +952,6 @@ static void graph_activate(t_gobj *z, t_glist *glist, int state)
         text_widgetbehavior.w_activatefn(z, glist, state);
 }
 
-#if 0
-static void graph_delete(t_gobj *z, t_glist *glist)
-{
-    t_glist *x = (t_glist *)z;
-    if (!x->gl_isgraph)
-        text_widgetbehavior.w_deletefn(z, glist);
-    else
-    {
-        t_gobj *y;
-        while (y = x->gl_list) glist_delete(x, y);
-#if 0       /* I think this was just wrong. */
-        if (glist_isvisible(x))
-            sys_vgui(".x%lx.c delete graph%lx\n", glist_getcanvas(glist), x);
-#endif
-    }
-}
-#endif
-
 static void graph_delete(t_gobj *z, t_glist *glist)
 {
     t_glist *x = (t_glist *)z;

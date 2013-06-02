@@ -1,9 +1,13 @@
-font courier not found?
-control C control
-window titles wrong on Macintosh
+new objects in canvas help windo
+scalar to save to parent (by default?)
+nameable scalars
+better clicking on arrays
+dialog or other controls on click to show changing values?
 
 ---------------- dolist --------------------
 
+linux sometimes complains font courier not found
+check if window titles wrong on Macintosh
 portaudio: put call to PA_Terminate back in where appropriate
     (first test situation on windows)
 compile on various versions of linux
