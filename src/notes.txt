@@ -1,8 +1,11 @@
-new objects in canvas help windo
+new objects in canvas help window
+scalar no symbol to default to float
+rename float and floatarray templates
 scalar to save to parent (by default?)
 nameable scalars
 better clicking on arrays
 dialog or other controls on click to show changing values?
+look at search dialog - can't find qlist in belp-intro.pd?
 
 ---------------- dolist --------------------
 

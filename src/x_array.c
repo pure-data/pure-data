@@ -100,7 +100,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         *argv->a_w.w_symbol->s_name == '-')
     {
         {
-            error("text define: unknown flag ...");
+            error("array define: unknown flag ...");
             postatom(argc, argv);
         }
         argc--; argv++;
@@ -117,7 +117,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (argc)
     {
-        post("warning: text define ignoring extra argument: ");
+        post("warning: array define ignoring extra argument: ");
         postatom(argc, argv);
     }
     x = (t_glist *)table_new(arrayname, arraysize);
@@ -177,7 +177,7 @@ typedef struct _array_client
         0 on failure. */
 static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
 {
-    if (x->tc_sym)       /* named text object */
+    if (x->tc_sym)       /* named array object */
     {
         t_garray *y = (t_garray *)pd_findbyclass(x->tc_sym, garray_class);
         if (y)
@@ -202,12 +202,12 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
         t_symbol *arraytype;
         if (!template)
         {
-            pd_error(x, "text: couldn't find struct %s", x->tc_struct->s_name);
+            pd_error(x, "array: couldn't find struct %s", x->tc_struct->s_name);
             return (0);
         }
         if (!gpointer_check(&x->tc_gp, 0))
         {
-            pd_error(x, "text: stale or empty pointer");
+            pd_error(x, "array: stale or empty pointer");
             return (0);
         }
         if (gs->gs_which == GP_ARRAY)
@@ -283,7 +283,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            pd_error(x, "text setline: unknown flag ...");
+            pd_error(x, "array setline: unknown flag ...");
             postatom(argc, argv);
         }
         argc--; argv++;
@@ -292,7 +292,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
     {
         if (x->x_struct)
         {
-            pd_error(x, "text setline: extra names after -s..");
+            pd_error(x, "array setline: extra names after -s..");
             postatom(argc, argv);
         }
         else x->x_sym = argv->a_w.w_symbol;
@@ -300,7 +300,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (argc)
     {
-        post("warning: text setline ignoring extra argument: ");
+        post("warning: array setline ignoring extra argument: ");
         postatom(argc, argv);
     }
     if (x->x_struct)
@@ -325,7 +325,7 @@ static void array_size_float(t_array_size *x, t_floatarg f)
     t_array *a = array_client_getbuf(&x->x_tc, &glist);
     if (a)
     {
-              /* if it's a named text object we have to go back and find the
+              /* if it's a named array object we have to go back and find the
               garray (repeating work done in array_client_getbuf()) because
               the garray might want to adjust.  Maybe array_client_getbuf
               should have a return slot for the garray if any?  */

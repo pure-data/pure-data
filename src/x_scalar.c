@@ -30,7 +30,7 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
         *argv->a_w.w_symbol->s_name == '-')
     {
         {
-            error("text define: unknown flag ...");
+            error("scalar define: unknown flag ...");
             postatom(argc, argv);
         }
         argc--; argv++;
@@ -42,7 +42,7 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (argc)
     {
-        post("warning: text define ignoring extra argument: ");
+        post("warning: scalar define ignoring extra argument: ");
         postatom(argc, argv);
     }
     
@@ -56,9 +56,9 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
     x = canvas_new(0, 0, 6, a);
 
     x->gl_owner = z;
-        /* put a scalar in it */
 
-    template = template_findbyname(templatesym);
+        /* put a scalar in it */
+    template = template_findbyname(canvas_makebindsym(templatesym));
     if (!template)
     {
         pd_error(x, "scalar define: couldn't find template %s",
@@ -66,7 +66,7 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
         goto noscalar;
     }
     else post("template %s", templatesym->s_name);
-    sc = scalar_new(x, templatesym);
+    sc = scalar_new(x, canvas_makebindsym(templatesym));
     if (!sc)
     {
         pd_error(x, "%s: couldn't create scalar", templatesym->s_name);
