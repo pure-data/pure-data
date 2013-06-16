@@ -31,9 +31,9 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- */
-/*
  * modified 2002/07/13 by olaf.matthes@gmx.de to allow any number if channels
+ *
+ * extensively hacked by msp@ucsd.edu for various reasons
  *
  */
 
@@ -44,18 +44,18 @@
 #include <string.h>
 
 /* Clear buffer. Should only be called when buffer is NOT being read. */
-static void sys_ringbuf_Flush(volatile sys_ringbuf *rbuf,
-    volatile void *dataPtr, long nfill);
+static void sys_ringbuf_Flush(PA_VOLATILE sys_ringbuf *rbuf,
+    PA_VOLATILE void *dataPtr, long nfill);
 
 /* Get address of region(s) to which we can write data.
 ** If the region is contiguous, size2 will be zero.
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be written or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetWriteRegions(volatile  sys_ringbuf *rbuf,
-    long numBytes, volatile void **dataPtr1, long *sizePtr1,
-    volatile void **dataPtr2, long *sizePtr2, volatile char *buffer);
-static long sys_ringbuf_AdvanceWriteIndex(volatile sys_ringbuf *rbuf,
+static long sys_ringbuf_GetWriteRegions(PA_VOLATILE  sys_ringbuf *rbuf,
+    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
+    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer);
+static long sys_ringbuf_AdvanceWriteIndex(PA_VOLATILE sys_ringbuf *rbuf,
     long numBytes);
 
 /* Get address of region(s) from which we can read data.
@@ -63,18 +63,18 @@ static long sys_ringbuf_AdvanceWriteIndex(volatile sys_ringbuf *rbuf,
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be read or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetReadRegions(volatile sys_ringbuf *rbuf,
-    long numBytes, volatile void **dataPtr1, long *sizePtr1,
-    volatile void **dataPtr2, long *sizePtr2, volatile char *buffer);
+static long sys_ringbuf_GetReadRegions(PA_VOLATILE sys_ringbuf *rbuf,
+    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
+    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer);
 
-static long sys_ringbuf_AdvanceReadIndex(volatile sys_ringbuf *rbuf,
+static long sys_ringbuf_AdvanceReadIndex(PA_VOLATILE sys_ringbuf *rbuf,
     long numBytes );
 
 /***************************************************************************
  * Initialize FIFO.
  */
-long sys_ringbuf_init(volatile sys_ringbuf *rbuf, long numBytes, volatile char *dataPtr,
-    long nfill)
+long sys_ringbuf_init(PA_VOLATILE sys_ringbuf *rbuf, long numBytes, 
+    PA_VOLATILE char *dataPtr, long nfill)
 {
     rbuf->bufferSize = numBytes;
     sys_ringbuf_Flush(rbuf, dataPtr,  nfill);
@@ -82,7 +82,7 @@ long sys_ringbuf_init(volatile sys_ringbuf *rbuf, long numBytes, volatile char *
 }
 /***************************************************************************
 ** Return number of bytes available for reading. */
-long sys_ringbuf_getreadavailable(volatile sys_ringbuf *rbuf)
+long sys_ringbuf_getreadavailable(PA_VOLATILE sys_ringbuf *rbuf)
 {
     long ret = rbuf->writeIndex - rbuf->readIndex;
     if (ret < 0)
@@ -94,17 +94,17 @@ long sys_ringbuf_getreadavailable(volatile sys_ringbuf *rbuf)
 }
 /***************************************************************************
 ** Return number of bytes available for writing. */
-long sys_ringbuf_getwriteavailable(volatile sys_ringbuf *rbuf)
+long sys_ringbuf_getwriteavailable(PA_VOLATILE sys_ringbuf *rbuf)
 {
     return ( rbuf->bufferSize - sys_ringbuf_getreadavailable(rbuf));
 }
 
 /***************************************************************************
 ** Clear buffer. Should only be called when buffer is NOT being read. */
-static void sys_ringbuf_Flush(volatile sys_ringbuf *rbuf,
-    volatile void *dataPtr, long nfill)
+static void sys_ringbuf_Flush(PA_VOLATILE sys_ringbuf *rbuf,
+    PA_VOLATILE void *dataPtr, long nfill)
 {
-    volatile char *s;
+    PA_VOLATILE char *s;
     long n;
     rbuf->readIndex = 0;
     rbuf->writeIndex = nfill;
@@ -118,9 +118,9 @@ static void sys_ringbuf_Flush(volatile sys_ringbuf *rbuf,
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be written or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetWriteRegions(volatile  sys_ringbuf *rbuf,
-    long numBytes, volatile void **dataPtr1, long *sizePtr1,
-    volatile void **dataPtr2, long *sizePtr2, volatile char *buffer)
+static long sys_ringbuf_GetWriteRegions(PA_VOLATILE  sys_ringbuf *rbuf,
+    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
+    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer)
 {
     long   index;
     long   available = sys_ringbuf_getwriteavailable( rbuf );
@@ -151,7 +151,7 @@ static long sys_ringbuf_GetWriteRegions(volatile  sys_ringbuf *rbuf,
 
 /***************************************************************************
 */
-static long sys_ringbuf_AdvanceWriteIndex(volatile sys_ringbuf *rbuf,
+static long sys_ringbuf_AdvanceWriteIndex(PA_VOLATILE sys_ringbuf *rbuf,
     long numBytes)
 {
     long ret = (rbuf->writeIndex + numBytes);
@@ -166,9 +166,9 @@ static long sys_ringbuf_AdvanceWriteIndex(volatile sys_ringbuf *rbuf,
 ** If non-contiguous, size2 will be the size of second region.
 ** Returns room available to be written or numBytes, whichever is smaller.
 */
-static long sys_ringbuf_GetReadRegions(volatile sys_ringbuf *rbuf,
-    long numBytes, volatile void **dataPtr1, long *sizePtr1,
-    volatile void **dataPtr2, long *sizePtr2, volatile char *buffer)
+static long sys_ringbuf_GetReadRegions(PA_VOLATILE sys_ringbuf *rbuf,
+    long numBytes, PA_VOLATILE void **dataPtr1, long *sizePtr1,
+    PA_VOLATILE void **dataPtr2, long *sizePtr2, PA_VOLATILE char *buffer)
 {
     long   index;
     long   available = sys_ringbuf_getreadavailable( rbuf );
@@ -198,7 +198,7 @@ static long sys_ringbuf_GetReadRegions(volatile sys_ringbuf *rbuf,
 }
 /***************************************************************************
 */
-static long sys_ringbuf_AdvanceReadIndex(volatile sys_ringbuf *rbuf,
+static long sys_ringbuf_AdvanceReadIndex(PA_VOLATILE sys_ringbuf *rbuf,
     long numBytes)
 {
     long ret = (rbuf->readIndex + numBytes);
@@ -209,11 +209,11 @@ static long sys_ringbuf_AdvanceReadIndex(volatile sys_ringbuf *rbuf,
 
 /***************************************************************************
 ** Return bytes written. */
-long sys_ringbuf_write(volatile sys_ringbuf *rbuf, const void *data,
-    long numBytes, volatile char *buffer)
+long sys_ringbuf_write(PA_VOLATILE sys_ringbuf *rbuf, const void *data,
+    long numBytes, PA_VOLATILE char *buffer)
 {
     long size1, size2, numWritten;
-    volatile void *data1, *data2;
+    PA_VOLATILE void *data1, *data2;
     numWritten = sys_ringbuf_GetWriteRegions( rbuf, numBytes, &data1, &size1,
         &data2, &size2, buffer);
     if( size2 > 0 )
@@ -233,11 +233,11 @@ long sys_ringbuf_write(volatile sys_ringbuf *rbuf, const void *data,
 
 /***************************************************************************
 ** Return bytes read. */
-long sys_ringbuf_read(volatile sys_ringbuf *rbuf, void *data, long numBytes,
-    volatile char *buffer)
+long sys_ringbuf_read(PA_VOLATILE sys_ringbuf *rbuf, void *data, long numBytes,
+    PA_VOLATILE char *buffer)
 {
     long size1, size2, numRead;
-    volatile void *data1, *data2;
+    PA_VOLATILE void *data1, *data2;
     numRead = sys_ringbuf_GetReadRegions( rbuf, numBytes, &data1, &size1,
         &data2, &size2, buffer);
     if( size2 > 0 )

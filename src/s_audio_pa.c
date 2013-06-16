@@ -40,7 +40,6 @@
 # include <stddef.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
 
-
 #if defined(__APPLE__)
 #define FAKEBLOCKING
 #endif
@@ -65,10 +64,10 @@ static int pa_dio_error;
 
 #ifdef FAKEBLOCKING
 #include "s_audio_paring.h"
-static volatile char *pa_outbuf;
-static sys_ringbuf pa_outring;
-static volatile char *pa_inbuf;
-static sys_ringbuf pa_inring;
+static PA_VOLATILE char *pa_outbuf;
+static PA_VOLATILE sys_ringbuf pa_outring;
+static PA_VOLATILE char *pa_inbuf;
+static PA_VOLATILE sys_ringbuf pa_inring;
 #ifdef THREADSIGNAL
 #include <pthread.h>
 pthread_mutex_t pa_mutex;
