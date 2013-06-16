@@ -65,9 +65,9 @@ static int pa_dio_error;
 
 #ifdef FAKEBLOCKING
 #include "s_audio_paring.h"
-static float *pa_outbuf;
+static volatile char *pa_outbuf;
 static sys_ringbuf pa_outring;
-static float *pa_inbuf;
+static volatile char *pa_inbuf;
 static sys_ringbuf pa_inring;
 #ifdef THREADSIGNAL
 #include <pthread.h>
@@ -173,23 +173,23 @@ static int pa_fifo_callback(const void *inputBuffer,
     float *fbuf;
 
 #if CHECKFIFOS
-    if (pa_inchans * sys_ringbuf_GetReadAvailable(&pa_outring) !=   
-        pa_outchans * sys_ringbuf_GetWriteAvailable(&pa_inring))
+    if (pa_inchans * sys_ringbuf_getreadavailable(&pa_outring) !=   
+        pa_outchans * sys_ringbuf_getwriteavailable(&pa_inring))
             fprintf(stderr, "warning: in and out rings unequal (%d, %d)\n",
-                sys_ringbuf_GetReadAvailable(&pa_outring),
-                 sys_ringbuf_GetWriteAvailable(&pa_inring));
+                sys_ringbuf_getreadavailable(&pa_outring),
+                 sys_ringbuf_getwriteavailable(&pa_inring));
 #endif
-    fiforoom = sys_ringbuf_GetReadAvailable(&pa_outring);
+    fiforoom = sys_ringbuf_getreadavailable(&pa_outring);
     if ((unsigned)fiforoom >= nframes*pa_outchans*sizeof(float))
     {
         if (outputBuffer)
-            sys_ringbuf_Read(&pa_outring, outputBuffer,
-                nframes*pa_outchans*sizeof(float));
+            sys_ringbuf_read(&pa_outring, outputBuffer,
+                nframes*pa_outchans*sizeof(float), pa_outbuf);
         else if (pa_outchans)
             fprintf(stderr, "no outputBuffer but output channels\n");
         if (inputBuffer)
-            sys_ringbuf_Write(&pa_inring, inputBuffer,
-                nframes*pa_inchans*sizeof(float));
+            sys_ringbuf_write(&pa_inring, inputBuffer,
+                nframes*pa_inchans*sizeof(float), pa_inbuf);
         else if (pa_inchans)
             fprintf(stderr, "no inputBuffer but input channels\n");
     }
@@ -385,9 +385,9 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
 
 #ifdef FAKEBLOCKING
     if (pa_inbuf)
-        free(pa_inbuf), pa_inbuf = 0;
+        free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
-        free(pa_outbuf), pa_outbuf = 0;
+        free((char *)pa_outbuf), pa_outbuf = 0;
 #endif
 
     if (! inchans && !outchans)
@@ -405,14 +405,14 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         if (pa_inchans)
         {
             pa_inbuf = malloc(nbuffers*framesperbuf*pa_inchans*sizeof(float));
-            sys_ringbuf_Init(&pa_inring,
+            sys_ringbuf_init(&pa_inring,
                 nbuffers*framesperbuf*pa_inchans*sizeof(float), pa_inbuf,
                     nbuffers*framesperbuf*pa_inchans*sizeof(float));
         }
         if (pa_outchans)
         {
             pa_outbuf = malloc(nbuffers*framesperbuf*pa_outchans*sizeof(float));
-            sys_ringbuf_Init(&pa_outring,
+            sys_ringbuf_init(&pa_outring,
                 nbuffers*framesperbuf*pa_outchans*sizeof(float), pa_outbuf, 0);
         }
         err = pa_open_callback(rate, inchans, outchans,
@@ -447,9 +447,9 @@ void pa_close_audio( void)
     pa_stream = 0;
 #ifdef FAKEBLOCKING
     if (pa_inbuf)
-        free(pa_inbuf), pa_inbuf = 0;
+        free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
-        free(pa_outbuf), pa_outbuf = 0;
+        free((char *)pa_outbuf), pa_outbuf = 0;
 #endif
 }
 
@@ -474,7 +474,7 @@ int pa_send_dacs(void)
 #ifdef THREADSIGNAL
         pthread_mutex_lock(&pa_mutex);
 #endif
-        while (sys_ringbuf_GetWriteAvailable(&pa_outring) <
+        while (sys_ringbuf_getwriteavailable(&pa_outring) <
             (long)(sys_outchannels * DEFDACBLKSIZE * sizeof(float)))
         {
             rtnval = SENDDACS_SLEPT;
@@ -500,15 +500,15 @@ int pa_send_dacs(void)
                 for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
                     k++, fp++, fp3 += sys_outchannels)
                         *fp3 = *fp;
-        sys_ringbuf_Write(&pa_outring, conversionbuf,
-            sys_outchannels*(DEFDACBLKSIZE*sizeof(float)));
+        sys_ringbuf_write(&pa_outring, conversionbuf,
+            sys_outchannels*(DEFDACBLKSIZE*sizeof(float)), pa_outbuf);
     }
     if (sys_inchannels)    /* if there is input sync on it */
     {
 #ifdef THREADSIGNAL
         pthread_mutex_lock(&pa_mutex);
 #endif
-        while (sys_ringbuf_GetReadAvailable(&pa_inring) <
+        while (sys_ringbuf_getreadavailable(&pa_inring) <
             (long)(sys_inchannels * DEFDACBLKSIZE * sizeof(float)))
         {
             rtnval = SENDDACS_SLEPT;
@@ -528,8 +528,8 @@ int pa_send_dacs(void)
     }
     if (sys_inchannels)
     {
-        sys_ringbuf_Read(&pa_inring, conversionbuf,
-            sys_inchannels*(DEFDACBLKSIZE*sizeof(float)));
+        sys_ringbuf_read(&pa_inring, conversionbuf,
+            sys_inchannels*(DEFDACBLKSIZE*sizeof(float)), pa_inbuf);
         for (j = 0, fp = sys_soundin, fp2 = conversionbuf;
             j < sys_inchannels; j++, fp2++)
                 for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
