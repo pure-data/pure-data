@@ -5,19 +5,30 @@
   BSD license; see README.txt in this distribution for details.
 */
 
+#ifdef _WIN32
+#include <io.h>
+#include <fcntl.h>
+#include <process.h>
+#include <windows.h>
+typedef int socklen_t;
+#define EADDRINUSE WSAEADDRINUSE
+#else
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#endif
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
+#define snprintf sprintf_s
+#define stat _stat
 #endif
 
 #ifdef MSP
@@ -33,7 +44,7 @@ typedef double t_floatarg;
 #define A_SYMBOL A_SYM
 #define getbytes t_getbytes
 #define freebytes t_freebytes
-#define ERROR error(
+#define PDERROR error(
 void *pd_tilde_class;
 #define MAXPDSTRING 4096
 #define DEFDACBLKSIZE 64
@@ -43,8 +54,7 @@ void *pd_tilde_class;
 #include "m_pd.h"
 #include "s_stuff.h"
 static t_class *pd_tilde_class;
-char *class_gethelpdir(t_class *c);
-#define ERROR pd_error(x, 
+#define PDERROR pd_error(x, 
 
 #endif
 
@@ -114,12 +124,19 @@ char *strcpy(char *s1, const char *s2);
 static void pd_tilde_tick(t_pd_tilde *x);
 static void pd_tilde_close(t_pd_tilde *x)
 {
+#ifdef _WIN32
+    int termstat;
+#endif
     if (x->x_outfd)
         fclose(x->x_outfd);
     if (x->x_infd)
         fclose(x->x_infd);
     if (x->x_childpid > 0)
+#ifdef _WIN32
+        _cwait(&termstat, x->x_childpid, WAIT_CHILD);
+#else
         waitpid(x->x_childpid, 0, 0);
+#endif
     if (x->x_msgbuf)
         free(x->x_msgbuf);
     x->x_infd = x->x_outfd = 0;
@@ -137,7 +154,7 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
         int c = getc(infd);
         if (c == EOF)
         {
-            ERROR "pd~: %s", strerror(errno));
+            PDERROR "pd~: read failed: %s", strerror(errno));
             pd_tilde_close(x);
             break;
         }
@@ -146,7 +163,7 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
             char *z = realloc(x->x_msgbuf, x->x_msgbufsize+MSGBUFSIZE);
             if (!z)
             {
-                ERROR "pd~: failed to grow input buffer");
+                PDERROR "pd~: failed to grow input buffer");
                 pd_tilde_close(x);
                 break;
             }
@@ -169,92 +186,188 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
         x->x_infill = 0;
 }
 
+#define FIXEDARG 11
+#define MAXARG 100
+#ifdef _WIN32
+#define EXTENT ".com"
+#else
+#define EXTENT ""
+#endif
+
 static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
-    char *patchdir, char *pdargs, int ninsig, int noutsig, int fifo,
-    t_float samplerate)
+    char *patchdir, int argc, t_atom *argv, int ninsig, int noutsig,
+    int fifo, t_float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
-    char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING];
+    char pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING], tmpbuf[MAXPDSTRING];
+    char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
+        sampleratestr[40];
     struct stat statbuf;
     x->x_infd = x->x_outfd = 0;
     x->x_childpid = -1;
-    snprintf(pdexecbuf, MAXPDSTRING, "%s/bin/pd", pddir);
+    if (argc > MAXARG)
+    {
+        post("pd~: args truncated to %d items", MAXARG);
+        argc = MAXARG;
+    }
+    sprintf(ninsigstr, "%d", ninsig);
+    sprintf(noutsigstr, "%d", noutsig);
+    sprintf(sampleratestr, "%f", (float)samplerate);
+    snprintf(tmpbuf, MAXPDSTRING, "%s/bin/pd" EXTENT, pddir);
+    sys_bashfilename(tmpbuf, pdexecbuf);
     if (stat(pdexecbuf, &statbuf) < 0)
     {
-        snprintf(pdexecbuf, MAXPDSTRING, "%s/../../../bin/pd", pddir);
+        snprintf(tmpbuf, MAXPDSTRING, "%s/../../../bin/pd" EXTENT, pddir);
+        sys_bashfilename(tmpbuf, pdexecbuf);
         if (stat(pdexecbuf, &statbuf) < 0)
         {
-            snprintf(pdexecbuf, MAXPDSTRING, "%s/pd", pddir);
+            snprintf(tmpbuf, MAXPDSTRING, "%s/pd EXTENT", pddir);
+            sys_bashfilename(tmpbuf, pdexecbuf);
             if (stat(pdexecbuf, &statbuf) < 0)
             {
-                ERROR "pd~: can't stat %s", pdexecbuf);
+                PDERROR "pd~: can't stat %s", pdexecbuf);
                 goto fail1;
             }
         }
     }
-    snprintf(schedbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
+        /* check that the scheduler dynamic linkable exists w either sffix */
+    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
         pd_tilde_dllextent);
+    sys_bashfilename(tmpbuf, schedbuf);
     if (stat(schedbuf, &statbuf) < 0)
     {
-        snprintf(schedbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
+        snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
             pd_tilde_dllextent2);
+        sys_bashfilename(tmpbuf, schedbuf);
         if (stat(schedbuf, &statbuf) < 0)
         {
-            ERROR "pd~: can't stat %s", schedbuf);
+            PDERROR "pd~: can't stat %s", schedbuf);
             goto fail1;
         }       
     }
-    snprintf(cmdbuf, MAXPDSTRING,
+        /* but the sub-process wants the scheduler name without the suffix */
+    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
+    sys_bashfilename(tmpbuf, schedbuf);
+    /* was: snprintf(cmdbuf, MAXPDSTRING,
 "'%s' -schedlib '%s'/pdsched -path '%s' -inchannels %d -outchannels %d -r %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
-#if 0
-#ifdef PD
-    fprintf(stderr, "%s", cmdbuf);
-#endif
-    post("cmd: %s", cmdbuf);
-#endif
-    if (pipe(pipe1) < 0)   
+        */
+    execargv[0] = pdexecbuf;
+    execargv[1] = "-schedlib";
+    execargv[2] = schedbuf;
+    execargv[3] = "-path";
+    execargv[4] = patchdir;
+    execargv[5] = "-inchannels";
+    execargv[6] = ninsigstr;
+    execargv[7] = "-outchannels";
+    execargv[8] = noutsigstr;
+    execargv[9] = "-r";
+    execargv[10] = sampleratestr;
+
+        /* convert atom arguments to strings (temporarily allocating space) */
+    for (i = 0; i < argc; i++)
     {
-        ERROR "pd~: can't create pipe");
+#ifdef PD
+        atom_string(&argv[i], tmpbuf, MAXPDSTRING);
+#endif
+#ifdef MSP
+            /* because Mac pathnames sometimes have an evil preceeding
+            colon character, we test for and silently eat them */
+        if (argv[i].a_type == A_SYM)
+            strncpy(tmpbuf, (*argv->a_w.w_sym->s_name == ':'?
+                argv->a_w.w_sym->s_name+1 : argv->a_w.w_sym->s_name),
+                MAXPDSTRING-3);
+        else if (argv[i].a_type == A_LONG)
+            sprintf(tmpbuf, "%ld", argv->a_w.w_long);
+        else if (argv[i].a_type == A_FLOAT)
+            sprintf(tmpbuf,  "%f", argv->a_w.w_float);
+#endif
+        execargv[FIXEDARG+i] = malloc(strlen(tmpbuf) + 1);
+        strcpy(execargv[FIXEDARG+i], tmpbuf);
+    }
+    execargv[argc+FIXEDARG] = 0;
+#if 0
+    for (i = 0; i < argc+FIXEDARG; i++)
+        fprintf(stderr, "%s ", execargv[i]);
+    fprintf(stderr, "\n");
+#endif
+#ifdef _WIN32
+    if (_pipe(pipe1, 65536, O_BINARY | O_NOINHERIT) < 0)   
+#else
+    if (pipe(pipe1) < 0)   
+#endif
+    {
+        PDERROR "pd~: can't create pipe");
         goto fail1;
     }
+#ifdef _WIN32
+    if (_pipe(pipe2, 65536, O_BINARY | O_NOINHERIT) < 0)   
+#else
     if (pipe(pipe2) < 0)   
+#endif
     {
-        ERROR "pd~: can't create pipe");
+        PDERROR "pd~: can't create pipe");
         goto fail2;
     }
+#ifdef _WIN32
+    {
+        int stdinwas = _dup(0), stdoutwas = _dup(1);
+        if (pipe2[1] == 0)
+            pipe2[1] = _dup(pipe2[1]);
+        if (pipe1[0] != 0)
+            _dup2(pipe1[0], 0);
+        if (pipe2[1] != 1)
+            _dup2(pipe2[1], 1);
+        pid = _spawnv(P_NOWAIT, execargv[0], execargv);
+        if (pid < 0)
+        {
+            post("%s: couldn't start subprocess (%s)\n", execargv[0],
+                strerror(errno));
+            goto fail1;
+        }
+        _dup2(stdinwas, 0);
+        _dup2(stdoutwas, 1);
+        _close(stdinwas);
+        _close(stdoutwas);
+    }
+#else /* _WIN32 */
     if ((pid = fork()) < 0)
     {
-        ERROR "pd~: can't fork");
+        PDERROR "pd~: can't fork");
         goto fail3;
     }
     else if (pid == 0)
     {
         /* child process */
+            /* the first dup2 below would bash pipe2[1] if it happens to be
+                zero so in that case renumber it */
         if (pipe2[1] == 0)
+            pipe2[1] = dup(pipe2[1]);
+        if (pipe1[0] != 0)
         {
-            dup2(pipe2[1], 20);
-            close(pipe2[1]);
-            pipe2[1] = 20;
+            dup2(pipe1[0], 0);
+            close (pipe1[0]);
         }
-        dup2(pipe1[0], 0);
-        dup2(pipe2[1], 1);
-        if (pipe1[0] >= 2)
-            close(pipe1[0]);
+        if (pipe2[1] != 1)
+        {
+            dup2(pipe2[1], 1);
+            close (pipe2[1]);
+        }
         if (pipe1[1] >= 2)
             close(pipe1[1]);
         if (pipe2[0] >= 2)
             close(pipe2[0]);
-        if (pipe2[1] >= 2)
-            close(pipe2[1]);
-        execl("/bin/sh", "sh", "-c", cmdbuf, (char*)0);
+        execv(execargv[0], execargv);
         _exit(1);
     }
-        /* OK, we're parent */
+#endif /* _WIN32 */
+        /* done with fork/exec or spawn; parent continues here */
     close(pipe1[0]);
     close(pipe2[1]);
+#ifndef _WIN32      /* this was done in windows via the O_NOINHERIT flag */
     fcntl(pipe1[1],  F_SETFD, FD_CLOEXEC);
     fcntl(pipe2[0],  F_SETFD, FD_CLOEXEC);
+#endif
     x->x_outfd = fdopen(pipe1[1], "w");
     x->x_infd = fdopen(pipe2[0], "r");
     x->x_childpid = pid;
@@ -263,20 +376,25 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     fflush(x->x_outfd);
     if (!(x->x_msgbuf = calloc(MSGBUFSIZE, 1)))
     {
-        ERROR "pd~: can't allocate message buffer");
+        PDERROR "pd~: can't allocate message buffer");
         goto fail3;
     }
     x->x_msgbufsize = MSGBUFSIZE;
     x->x_infill = 0;
-    /* fprintf(stderr, "read...\n"); */
     pd_tilde_readmessages(x);
-    /* fprintf(stderr, "... done.\n"); */
     return;
 fail3:
     close(pipe2[0]);
     close(pipe2[1]);
     if (x->x_childpid > 0)
+#ifdef _WIN32
+    {
+        int termstat;
+        _cwait(&termstat, x->x_childpid, WAIT_CHILD);
+    }
+#else
         waitpid(x->x_childpid, 0, 0);
+#endif
 fail2:
     close(pipe1[0]);
     close(pipe1[1]);
@@ -316,8 +434,8 @@ static t_int *pd_tilde_perform(t_int *w)
             if (c == EOF)
             {
                 if (errno)
-                    ERROR "pd~: %s", strerror(errno));
-                else ERROR "pd~: subprocess exited");
+                    PDERROR "pd~: %s", strerror(errno));
+                else PDERROR "pd~: subprocess exited");
                 pd_tilde_close(x);
                 goto zeroit;
             }
@@ -391,35 +509,9 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
         pdargstring[0] = 0;
         argc--; argv++;
 #ifdef PD
-        while (argc--)
-        {
-            atom_string(argv++, pdargstring + strlen(pdargstring), 
-                MAXPDSTRING - strlen(pdargstring));
-            if (strlen(pdargstring) < MAXPDSTRING-1)
-                strcat(pdargstring, " ");
-        }
         patchdir = canvas_getdir(x->x_canvas)->s_name;
 #endif
 #ifdef MSP
-        while (argc--)
-        {
-                /* because Mac pathnames sometimes have an evil preceeding
-                colon character, we test for and silently eat them */
-            if (argv->a_type == A_SYM)
-                strncat(pdargstring, (*argv->a_w.w_sym->s_name == ':'?
-                    argv->a_w.w_sym->s_name+1 : argv->a_w.w_sym->s_name),
-                    MAXPDSTRING - strlen(pdargstring)-3);
-            else if (argv->a_type == A_LONG)
-                snprintf(pdargstring+strlen(pdargstring),
-                    MAXPDSTRING - strlen(pdargstring)-3, "%ld",
-                        argv->a_w.w_long);
-            else if (argv->a_type == A_FLOAT)
-                snprintf(pdargstring+strlen(pdargstring),
-                    MAXPDSTRING - strlen(pdargstring)-3, "%f",
-                        argv->a_w.w_float);
-            strcat(pdargstring, " ");
-            argv++;
-        }
         patchdir = ".";
 #endif
         schedlibdir = x->x_schedlibdir;
@@ -433,7 +525,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
             schedlibdir = gensym(scheddirstring);
         }
         pd_tilde_donew(x, x->x_pddir->s_name, schedlibdir->s_name,
-            patchdir, pdargstring, x->x_ninsig, x->x_noutsig, x->x_fifo,
+            patchdir, argc, argv, x->x_ninsig, x->x_noutsig, x->x_fifo,
                 x->x_sr);
     }
     else if (sel == gensym("stop"))
@@ -452,9 +544,9 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
 #endif
             x->x_pddir = sym;
         }
-        else ERROR "pd~ pddir: needs symbol argument");
+        else PDERROR "pd~ pddir: needs symbol argument");
     }
-    else ERROR "pd~: unknown control message: %s", sel->s_name);
+    else PDERROR "pd~: unknown control message: %s", sel->s_name);
 }
 
 static void pd_tilde_free(t_pd_tilde *x)
@@ -585,8 +677,9 @@ static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_outlet1 = outlet_new(&x->x_obj, 0);
     for (j = 0, g = x->x_outsig; j < noutsig; j++, g++)
         outlet_new(&x->x_obj, &s_signal);
+#ifndef _WIN32
     signal(SIGPIPE, SIG_IGN);
-
+#endif
     return (x);
 }
 

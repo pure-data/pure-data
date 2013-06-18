@@ -18,7 +18,6 @@ void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
     int selectem);
 
 void open_via_helppath(const char *name, const char *dir);
-char *class_gethelpdir(t_class *c);
 
 /* ------------------ forward declarations --------------- */
 static void canvas_doclear(t_canvas *x);

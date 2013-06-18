@@ -48,7 +48,7 @@ EXTERN int sys_nearestfontsize(int fontsize);
 EXTERN int sys_hostfontsize(int fontsize);
 
 extern int sys_defaultfont;
-extern t_symbol *sys_libdir;    /* library directory for auxilliary files */
+EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
 extern t_symbol *sys_guidir;    /* directory holding pd_gui, u_pdsend, etc */
 
 /* s_loader.c */
@@ -66,8 +66,8 @@ EXTERN void sys_register_loader(loader_t loader);
 #define DEFDACBLKSIZE 64
 extern int sys_schedblocksize;  /* audio block size for scheduler */
 extern int sys_hipriority;      /* real-time flag, true if priority boosted */
-extern t_sample *sys_soundout;
-extern t_sample *sys_soundin;
+EXTERN t_sample *sys_soundout;
+EXTERN t_sample *sys_soundin;
 extern int sys_inchannels;
 extern int sys_outchannels;
 extern int sys_advance_samples; /* scheduler advance in samples */
@@ -334,7 +334,7 @@ void dummy_listdevs( void);
 void sys_listmididevs(void);
 EXTERN void sys_set_midi_api(int whichapi);
 EXTERN void sys_set_audio_api(int whichapi);
-extern int sys_audioapi;
+EXTERN int sys_audioapi;
 EXTERN void sys_set_audio_state(int onoff);
 
 /* API dependent audio flags and settings */

@@ -1,4 +1,4 @@
-#N canvas 577 21 563 559 12;
+#N canvas 1233 66 646 598 12;
 #X obj 202 395 r foo;
 #X obj 202 423 print foo;
 #X obj 87 174 adc~;
@@ -6,12 +6,12 @@
 #X msg 72 364 a b c;
 #X msg 455 441 \; pd dsp 1;
 #X obj 87 201 env~ 8192;
-#X floatatom 87 250 5 0 0 0 - - -;
+#X floatatom 87 250 5 0 0 0 - - -, f 5;
 #X obj 87 226 i;
 #X obj 263 253 dac~;
 #X obj 262 185 osc~ 440;
 #X obj 262 219 *~;
-#X obj 297 220 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 297 220 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 332 186 osc~ 440;
 #X obj 332 220 *~;
@@ -20,7 +20,7 @@
 #X msg 86 411 bang;
 #X obj 455 417 loadbang;
 #X obj 160 201 env~ 8192;
-#X floatatom 160 250 5 0 0 0 - - -;
+#X floatatom 160 250 5 0 0 0 - - -, f 5;
 #X obj 160 226 i;
 #X msg 86 388 4;
 #X text 62 8 This is a test patch to demonstrate the Pd~ object. It's

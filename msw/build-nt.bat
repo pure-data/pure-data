@@ -17,6 +17,6 @@ cd ..\pique
 nmake /NOLOGO pd_nt
 cd ..\sigmund~
 nmake /NOLOGO pd_nt
+cd ..\pd~
+nmake /NOLOGO pd_nt
 cd ..
-
-

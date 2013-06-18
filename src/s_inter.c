@@ -31,9 +31,6 @@ that didn't really belong anywhere. */
 #include <process.h>
 #include <winsock.h>
 #include <windows.h>
-# ifdef _MSC_VER
-typedef int pid_t;
-# endif
 typedef int socklen_t;
 #define EADDRINUSE WSAEADDRINUSE
 #endif
@@ -836,7 +833,6 @@ static int defaultfontshit[MAXFONTS] = {
 
 int sys_startgui(const char *libdir)
 {
-    pid_t childpid;
     char cmdbuf[4*MAXPDSTRING];
     struct sockaddr_in server;
     int msgsock;
@@ -849,6 +845,7 @@ int sys_startgui(const char *libdir)
     WSADATA nobby;
 #else
     int stdinpipe[2];
+    pid_t childpid;
 #endif /* _WIN32 */
     /* create an empty FD poll list */
     sys_fdpoll = (t_fdpoll *)t_getbytes(0);
@@ -1096,7 +1093,7 @@ int sys_startgui(const char *libdir)
         strcat(scriptbuf, "/" PDGUIDIR "pd-gui.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
         
-                sprintf(portbuf, "%d", portno);
+        sprintf(portbuf, "%d", portno);
 
         strcpy(wishbuf, libdir);
         strcat(wishbuf, "/" PDBINDIR WISHAPP);

@@ -35,6 +35,15 @@ static void stdout_anything(t_stdout *x, t_symbol *s, int argc, t_atom *argv)
         sp += strlen(sp);
     }
     printf("%s;\n", msgbuf);
+        /* for some reason in MS windows we have to flush standard out here -
+        otherwise these outputs get out of order from the ones from pdsched.c
+        over in ../pd~.  I'm guessing mingw (with its different C runtime
+        support) will handle this correctly and so am only ifdeffing this on
+        Microsoft C compiler.  It's an efficiency hit, possibly a serious
+        one. */
+#ifdef _MSC_VER   
+    fflush(stdout);
+#endif
 }
 
 static void stdout_free(t_stdout *x)

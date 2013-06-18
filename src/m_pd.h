@@ -443,6 +443,7 @@ EXTERN void class_setparentwidget(t_class *c, t_parentwidgetbehavior *w);
 EXTERN t_parentwidgetbehavior *class_parentwidget(t_class *c);
 EXTERN char *class_getname(t_class *c);
 EXTERN char *class_gethelpname(t_class *c);
+EXTERN char *class_gethelpdir(t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
 EXTERN int class_isdrawcommand(t_class *c);
 EXTERN void class_domainsignalin(t_class *c, int onset);
