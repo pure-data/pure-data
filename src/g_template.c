@@ -75,7 +75,8 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
             newtype = DT_FLOAT;
         else if (newtypesym == &s_symbol)
             newtype = DT_SYMBOL;
-        else if (newtypesym == gensym("text"))
+                /* "list" is old name.. accepted here but never saved as such */
+        else if (newtypesym == gensym("text") || newtypesym == &s_list)
             newtype = DT_TEXT;
         else if (newtypesym == gensym("array"))
         {

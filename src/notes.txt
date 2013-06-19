@@ -1,12 +1,16 @@
--k flag to keep array/text contents
-realize text pointer generation
+text:
 text dimension setting (message or creation arg)
-text messages to get/set fields and lines
+text messages to get/set fields
+'drawtext' menu command in structs - or just 'draw'?
+
+arrays:
+-k flag to keep array contents
 array messages: sum, quantile, random (take ranges somehow)
+better clicking on arrays
+array y range to reflect y increment sign (so no 1 to -1 range)
 
 scalar -k flag
 nameable scalars
-better clicking on arrays
 dialog or other controls on click to show changing values?
 look at search dialog - can't find qlist in belp-intro.pd?
 

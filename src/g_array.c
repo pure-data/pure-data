@@ -170,7 +170,7 @@ void garray_init( void)
 }
 
 /* create a new scalar attached to a symbol.  Used to make floating-point
-arrays (the scalar will be of type "_float_array").  Currently this is
+arrays (the scalar will be of type "float-array").  Currently this is
 always called by graph_array() below; but when we make a more general way
 to save and create arrays this might get called more directly. */
 
@@ -1037,7 +1037,7 @@ static void garray_save(t_gobj *z, t_binbuf *b)
     t_garray *x = (t_garray *)z;
     t_array *array = garray_getarray(x);
     t_template *scalartemplate;
-    if (x->x_scalar->sc_template != gensym("pd-_float_array"))
+    if (x->x_scalar->sc_template != gensym("pd-float-array"))
     {
             /* LATER "save" the scalar as such */ 
         pd_error(x, "can't save arrays of type %s yet", 

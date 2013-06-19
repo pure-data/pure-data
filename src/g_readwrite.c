@@ -698,7 +698,7 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
                 case DT_FLOAT: type = &s_float; break;
                 case DT_SYMBOL: type = &s_symbol; break;
                 case DT_ARRAY: type = gensym("array"); break;
-                case DT_TEXT: type = &s_list; break;
+                case DT_TEXT: type = gensym("text"); break;
                 default: type = &s_float; bug("canvas_write");
             }
             if (template->t_vec[j].ds_type == DT_ARRAY)
