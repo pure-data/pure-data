@@ -1,24 +1,28 @@
 /* pmwinmm.c -- system specific definitions */
 
-/* without this define, InitializeCriticalSectionAndSpinCount is undefined */
-/* this version level means "Windows 2000 and higher" */
-#define _WIN32_WINNT 0x0500
+#ifdef _MSC_VER
+ #pragma warning(disable: 4133) // stop warnings about implicit typecasts
+#endif
+
+#ifndef _WIN32_WINNT
+    /* without this define, InitializeCriticalSectionAndSpinCount is 
+     * undefined. This version level means "Windows 2000 and higher" 
+     */
+    #define _WIN32_WINNT 0x0500
+#endif
 
 #include "windows.h"
 #include "mmsystem.h"
 #include "portmidi.h"
-#ifdef NEWBUFFER
 #include "pmutil.h"
-#endif
 #include "pminternal.h"
 #include "pmwinmm.h"
-#include "string.h"
+#include <string.h>
 #include "porttime.h"
 
 /* asserts used to verify portMidi code logic is sound; later may want
     something more graceful */
 #include <assert.h>
-#define DEBUG 1
 #ifdef DEBUG
 /* this printf stuff really important for debugging client app w/host errors.
     probably want to do something else besides read/write from/to console
@@ -39,9 +43,11 @@ static void CALLBACK winmm_in_callback(HMIDIIN hMidiIn,
 static void CALLBACK winmm_streamout_callback(HMIDIOUT hmo, UINT wMsg,
                                               DWORD dwInstance, DWORD dwParam1, 
                                               DWORD dwParam2);
+#ifdef USE_SYSEX_BUFFERS
 static void CALLBACK winmm_out_callback(HMIDIOUT hmo, UINT wMsg,
                                         DWORD dwInstance, DWORD dwParam1, 
                                         DWORD dwParam2);
+#endif
 
 extern pm_fns_node pm_winmm_in_dictionary;
 extern pm_fns_node pm_winmm_out_dictionary;
@@ -158,8 +164,8 @@ static void pm_winmm_general_inputs()
     UINT i;
     WORD wRtn;
     midi_num_inputs = midiInGetNumDevs();
-    midi_in_caps = pm_alloc(sizeof(MIDIINCAPS) * midi_num_inputs);
-
+    midi_in_caps = (MIDIINCAPS *) pm_alloc(sizeof(MIDIINCAPS) * 
+                                           midi_num_inputs);
     if (midi_in_caps == NULL) {
         /* if you can't open a particular system-level midi interface
          * (such as winmm), we just consider that system or API to be
@@ -575,11 +581,12 @@ static PmError winmm_in_open(PmInternal *midi, void *driverInfo)
      */
     InitializeCriticalSectionAndSpinCount(&m->lock, 4000);
     /* open device */
-    pm_hosterror = midiInOpen(&(m->handle.in),  /* input device handle */
-                              dwDevice,  /* device ID */
-                              (DWORD) winmm_in_callback,  /* callback address */
-                              (DWORD) midi,  /* callback instance data */
-                              CALLBACK_FUNCTION); /* callback is a procedure */
+    pm_hosterror = midiInOpen(
+	    &(m->handle.in),  /* input device handle */
+	    dwDevice,  /* device ID */
+	    (DWORD_PTR) winmm_in_callback,  /* callback address */
+	    (DWORD_PTR) midi,  /* callback instance data */
+	    CALLBACK_FUNCTION); /* callback is a procedure */
     if (pm_hosterror) goto free_descriptor;
 
     if (num_input_buffers < MIN_INPUT_BUFFERS)
@@ -668,22 +675,29 @@ static void FAR PASCAL winmm_in_callback(
     PmInternal *midi = (PmInternal *) dwInstance;
     midiwinmm_type m = (midiwinmm_type) midi->descriptor;
 
-    /* if this callback is reentered with data, we're in trouble. It's hard
-     * to imagine that Microsoft would allow callbacks to be reentrant --
-     * isn't the model that this is like a hardware interrupt? -- but I've
-     * seen reentrant behavior using a debugger, so it happens.
+    /* NOTE: we do not just EnterCriticalSection() here because an
+     * MIM_CLOSE message arrives when the port is closed, but then
+     * the m->lock has been destroyed.
      */
-    EnterCriticalSection(&m->lock);
 
     switch (wMsg) {
     case MIM_DATA: {
+        /* if this callback is reentered with data, we're in trouble. 
+         * It's hard to imagine that Microsoft would allow callbacks 
+         * to be reentrant -- isn't the model that this is like a 
+         * hardware interrupt? -- but I've seen reentrant behavior 
+         * using a debugger, so it happens.
+         */
+        long new_driver_time;
+        EnterCriticalSection(&m->lock);
+
         /* dwParam1 is MIDI data received, packed into DWORD w/ 1st byte of
                 message LOB;
            dwParam2 is time message received by input device driver, specified
             in [ms] from when midiInStart called.
            each message is expanded to include the status byte */
 
-        long new_driver_time = dwParam2;
+        new_driver_time = dwParam2;
 
         if ((dwParam1 & 0x80) == 0) {
             /* not a status byte -- ignore it. This happened running the
@@ -699,13 +713,16 @@ static void FAR PASCAL winmm_in_callback(
             event.message = dwParam1;
             pm_read_short(midi, &event);
         }
+        LeaveCriticalSection(&m->lock);
         break;
     }
     case MIM_LONGDATA: {
         MIDIHDR *lpMidiHdr = (MIDIHDR *) dwParam1;
-        unsigned char *data = lpMidiHdr->lpData;
+        unsigned char *data = (unsigned char *) lpMidiHdr->lpData;
         unsigned int processed = 0;
         int remaining = lpMidiHdr->dwBytesRecorded;
+
+        EnterCriticalSection(&m->lock);
         /* printf("midi_in_callback -- lpMidiHdr %x, %d bytes, %2x...\n", 
                 lpMidiHdr, lpMidiHdr->dwBytesRecorded, *data); */
         if (midi->time_proc)
@@ -718,56 +735,30 @@ static void FAR PASCAL winmm_in_callback(
             remaining -= amt;
             processed += amt;
         }
-#ifdef DELETE_THIS
-        unsigned int i = 0;
-        long size = sizeof(MIDIHDR) + lpMidiHdr->dwBufferLength;
 
-        while (i < lpMidiHdr->dwBytesRecorded) {
-            /* optimization: if message_count == 0, we are on an (output)
-             * message boundary so we can transfer data directly to the
-             * queue
-             */
-            PmEvent event;
-            if (midi->sysex_message_count == 0 &&
-                !midi->flush &&
-                i <= lpMidiHdr->dwBytesRecorded - 4 &&
-                ((event.message = (((long) data[0]) | 
-                        (((long) data[1]) << 8) | (((long) data[2]) << 16) |
-                        (((long) data[3]) << 24))) &
-                 0x80808080) == 0) { /* all data, no status */
-                event.timestamp = dwParam2;
-                if (Pm_Enqueue(midi->queue, &event) == pmBufferOverflow) {
-                    midi->flush = TRUE;
-                }
-                i += 4;
-                data += 4;
-            /* non-optimized: process one byte at a time. This is used to 
-             * handle any embedded SYSEX or EOX bytes and to finish */
-            } else {
-                pm_read_byte(midi, *data, dwParam2);
-                data++;
-                i++;
-            }
-        }
-#endif
         /* when a device is closed, the pending MIM_LONGDATA buffers are
            returned to this callback with dwBytesRecorded == 0. In this
            case, we do not want to send them back to the interface (if
            we do, the interface will not close, and Windows OS may hang). */
         if (lpMidiHdr->dwBytesRecorded > 0) {
+            MMRESULT rslt;
             lpMidiHdr->dwBytesRecorded = 0;
             lpMidiHdr->dwFlags = 0;
+			
             /* note: no error checking -- can this actually fail? */
-            assert(midiInPrepareHeader(hMidiIn, lpMidiHdr, 
-                        sizeof(MIDIHDR)) == MMSYSERR_NOERROR);
+            rslt = midiInPrepareHeader(hMidiIn, lpMidiHdr, sizeof(MIDIHDR));
+            assert(rslt == MMSYSERR_NOERROR);
             /* note: I don't think this can fail except possibly for
              * MMSYSERR_NOMEM, but the pain of reporting this
              * unlikely but probably catastrophic error does not seem
              * worth it.
              */
-            assert(midiInAddBuffer(hMidiIn, lpMidiHdr, 
-                        sizeof(MIDIHDR)) == MMSYSERR_NOERROR);
+            rslt = midiInAddBuffer(hMidiIn, lpMidiHdr, sizeof(MIDIHDR));
+            assert(rslt == MMSYSERR_NOERROR);
+            LeaveCriticalSection(&m->lock);
         } else {
+            midiInUnprepareHeader(hMidiIn,lpMidiHdr,sizeof(MIDIHDR));
+            LeaveCriticalSection(&m->lock);
             pm_free(lpMidiHdr);
         }
         break;
@@ -785,7 +776,6 @@ static void FAR PASCAL winmm_in_callback(
     default:
         break;
     }
-    LeaveCriticalSection(&m->lock);
 }
 
 /*
@@ -874,20 +864,22 @@ static PmError winmm_out_open(PmInternal *midi, void *driverInfo)
     /* open device */
     if (midi->latency == 0) {
         /* use simple midi out calls */
-        pm_hosterror = midiOutOpen((LPHMIDIOUT) & m->handle.out,  /* device Handle */
-                                   dwDevice,  /* device ID  */
-                                   /* note: same callback fn as for StreamOpen: */
-                                   (DWORD) winmm_streamout_callback, /* callback fn */
-                                   (DWORD) midi,  /* callback instance data */
-                                   CALLBACK_FUNCTION); /* callback type */
+        pm_hosterror = midiOutOpen(
+                (LPHMIDIOUT) & m->handle.out,  /* device Handle */
+		dwDevice,  /* device ID  */
+		/* note: same callback fn as for StreamOpen: */
+		(DWORD_PTR) winmm_streamout_callback, /* callback fn */
+		(DWORD_PTR) midi,  /* callback instance data */
+		CALLBACK_FUNCTION); /* callback type */
     } else {
         /* use stream-based midi output (schedulable in future) */
-        pm_hosterror = midiStreamOpen(&m->handle.stream,  /* device Handle */
-                                      (LPUINT) & dwDevice,  /* device ID pointer */
-                                      1,  /* reserved, must be 1 */
-                                      (DWORD) winmm_streamout_callback,
-                                      (DWORD) midi,  /* callback instance data */
-                                      CALLBACK_FUNCTION);
+        pm_hosterror = midiStreamOpen(
+	        &m->handle.stream,  /* device Handle */
+		(LPUINT) & dwDevice,  /* device ID pointer */
+		1,  /* reserved, must be 1 */
+		(DWORD_PTR) winmm_streamout_callback,
+		(DWORD_PTR) midi,  /* callback instance data */
+		CALLBACK_FUNCTION);
     }
     if (pm_hosterror != MMSYSERR_NOERROR) {
         goto free_descriptor;
@@ -1215,7 +1207,7 @@ static PmError winmm_write_byte(PmInternal *midi, unsigned char byte,
     if (!hdr) {
         m->hdr = hdr = get_free_output_buffer(midi);
         assert(hdr);
-        midi->fill_base = m->hdr->lpData;
+        midi->fill_base = (unsigned char *) m->hdr->lpData;
         midi->fill_offset_ptr = &(hdr->dwBytesRecorded);
         /* when buffer fills, Pm_WriteSysEx will revert to calling
          * pmwin_write_byte, which expect to have space, so leave
@@ -1319,11 +1311,15 @@ static void CALLBACK winmm_out_callback(HMIDIOUT hmo, UINT wMsg,
        buffers are free, so we need to do something to flag empty buffers if
        we leave them prepared
      */
+    /*
     printf("out_callback: hdr %x, wMsg %x, MOM_DONE %x\n", 
            hdr, wMsg, MOM_DONE);
-    if (wMsg == MOM_DONE)
-    assert(midiOutUnprepareHeader(m->handle.out, hdr,
-                        sizeof(MIDIHDR)) == MMSYSERR_NOERROR);
+    */
+    if (wMsg == MOM_DONE) {
+        MMRESULT ret = midiOutUnprepareHeader(m->handle.out, hdr, 
+                                              sizeof(MIDIHDR));
+        assert(ret == MMSYSERR_NOERROR);
+    }
     /* notify waiting sender that a buffer is available */
     err = SetEvent(m->buffer_signal);
     assert(err); /* false -> error */
@@ -1345,8 +1341,9 @@ static void CALLBACK winmm_streamout_callback(HMIDIOUT hmo, UINT wMsg,
     /* printf("streamout_callback: hdr %x, wMsg %x, MOM_DONE %x\n", 
            hdr, wMsg, MOM_DONE); */
     if (wMsg == MOM_DONE) {
-        assert(midiOutUnprepareHeader(m->handle.out, hdr, 
-                    sizeof(MIDIHDR)) == MMSYSERR_NOERROR);
+        MMRESULT ret = midiOutUnprepareHeader(m->handle.out, hdr, 
+                                              sizeof(MIDIHDR));
+        assert(ret == MMSYSERR_NOERROR);
     }
     /* signal client in case it is blocked waiting for buffer */
     err = SetEvent(m->buffer_signal);

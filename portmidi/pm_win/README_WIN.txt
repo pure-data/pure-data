@@ -1,18 +1,22 @@
 File: PortMidi Win32 Readme
 Author: Belinda Thom, June 16 2002
-Revised by: Roger Dannenberg, June 2002, May 2004
+Revised by: Roger Dannenberg, June 2002, May 2004, June 2007, 
+            Umpei Kurokawa, June 2007
+            Roger Dannenberg Sep 2009
+
+Contents:
+        Using Portmidi
+        To Install Portmidi
+        To Compile Portmidi
+        About Cmake
+        Using other versions of Visual C++
+        To Create Your Own Portmidi Client Application
+        
+
 
 =============================================================================
 USING PORTMIDI:
 =============================================================================
-
-PortMidi has been created using a DLL because the Win32 MMedia API doesn't 
-handle midiInput properly in the debugger. Specifically, it doesn't clean up
-after itself if the user (i.e. you, a PortMidi application) hasn't explicitly
-closed all open midi input devices. This lack of cleanup can lead to much
-pain and agony, including the blue-screen-of-death. This situation becomes
-increasingly unacceptable when you are debugging your code, so a portMidi DLL
-seemed to be the most elegant solution.
 
 Using Microsoft Visual C++ project files (provided with PortMidi), there
 are two configurations of the PortMidi library. The Debug version is 
@@ -33,14 +37,14 @@ is both optimized and lacking the debugging printout code of the Debug
 version.
 
 Read the portmidi.h file for PortMidi API details on using the PortMidi API.
-See <...>\pm_dll_test\test.c or <...>\multithread\test.c for usage examples.
+See <...>\pm_test\test.c and other files in pm_test for usage examples.
 
 =============================================================================
 TO INSTALL PORTMIDI:
 =============================================================================
-1)  download portmidi.zip
+1)  get current source from the portmedia project at SourceForge.net
 
-2)  unzip portmidi.zip into directory: <...>\portmidi
+2)  copy source into directory: <...>\portmidi
 
 =============================================================================
 TO COMPILE PORTMIDI:
@@ -48,58 +52,104 @@ TO COMPILE PORTMIDI:
 
 3)  cd to or open the portmidi directory
 
-4)  start or click on the portmidi.dsw workspace
-
+4)  start or click on the portmidi.sln workspace (note, all Visual Studio
+    files are built by CMake. If you need a different version or have
+    problems with paths, try rebuilding the Visual Studio project files
+    using CMake -- See "Using other versions of visual C++" below.)
+	
 5)  the following projects exist within this workspace:
-    - portmidi (the PortMidi library)
-	- pm_dll (the dll library used to close midi ports on program exit)
-	- porttime (a small portable library implementing timer facilities)
-	- test (simple midi I/O testing)
-	- multithread (an example illustrating low-latency MIDI processing
-            using a dedicated low-latency thread)
-	- sysex (simple sysex message I/O testing)
-	- latency (uses porttime to measure system latency)
+    - portmidi-static, portmidi-dynamic (versions of the PortMidi library)
+    - test (simple midi I/O testing)
+    - midithread (an example illustrating low-latency MIDI processing
+        using a dedicated low-latency thread)
+    - sysex (simple sysex message I/O testing)
+    - latency (uses porttime to measure system latency)
+    - midithru (an example illustrating software MIDI THRU)
+    - qtest (a test of the new multicore-safe queue implementation)
+    - mm  (allows monitoring of midi messages)
+    - pmjni (a dll to provide an interface to PortMidi for Java)
 
-6)  verify that all project settings are for Win32 Debug release:
-	- type Alt-F7
-	- highlight all three projects in left part of Project Settings window; 
-	- "Settings For" should say "Win32 Debug"
+6)  set the Java SDK path using one of two methods:
+    Method 1: open portmidi/CMakeLists.txt with CMake, configure, and 
+        generate -- this should find the Java SDK path and update your
+            solution and project files
+    Method 2: (does not require CMake):
+        - open the pmjni project properties
+        - visit Configuration Properties, C/C++, General
+        - find Additional Include Directories property and open the editor (...)
+        - at the end of the list, you will find two paths mentioning Java
+        - these are absolute paths to the Java SDK; you'll need to install the
+          Java SDK (from Sun) and update these directories in order to build
+          this project.
+        - similarly, the Linker->Input->Additional Dependencies list has a
+          path to the jvm.lib file, which needs to be correct(ed).
 
-7)  use Build->Batch Build ... to build everything in the project
-
-8)  The settings for these projects were distributed in the zip file, so
+6)  use Build->Batch Build ... to build everything in the project. If a 
+    build fails, try building again. There seem to be some missing 
+    dependencies, so you may have to "ALL_BUILD" several times before
+    everything builds successfully.
+	
+7)  The settings for these projects were distributed in the zip file, so
     compile should just work.
 
-9)  IMPORTANT! PortMidi uses a DLL, pm_dll.dll, but there is no simple way
-    to set up projects to use pm_dll. THEREFORE, you need to copy DLLs
-    as follows (you can do this with <...>\portmidi\pm_win\copy-dll.bat):
-        copy <...>\portmidi\pm_win\Debug\pm_dll.dll to:
-            <...>\portmidi\pm_test\latencyDebug\pm_dll.dll
-            <...>\portmidi\pm_test\midithreadDebug\pm_dll.dll
-            <...>\portmidi\pm_test\sysexDebug\pm_dll.dll
-            <...>\portmidi\pm_test\testDebug\pm_dll.dll
-            <...>\portmidi\pm_test\midithruDebug\pm_dll.dll
-        and copy <...>\portmidi\pm_win\Release\pm_dll.dll to:
-            <...>\portmidi\pm_test\latencyRelease\pm_dll.dll
-            <...>\portmidi\pm_test\midithreadRelease\pm_dll.dll
-            <...>\portmidi\pm_test\sysexRelease\pm_dll.dll
-            <...>\portmidi\pm_test\testRelease\pm_dll.dll
-            <...>\portmidi\pm_test\midithruRelease\pm_dll.dll
-    each time you rebuild the pm_dll project, these copies must be redone!
-
-    Since Windows will look in the executable directory for DLLs, we 
-    recommend that you always install a copy of pm_dll.dll (either the
-    debug version or the release version) in the same directory as the
-    application using PortMidi. The release DLL is about 40KB. This will 
-    ensure that the application uses the correct DLL.
-
-10) run test project; use the menu that shows up from the command prompt to
+8)  run test project; use the menu that shows up from the command prompt to
     test that portMidi works on your system. tests include: 
 		- verify midi output works
 		- verify midi input works
-		- verify midi input w/midi thru works
 
-11) run other projects if you wish: sysex, latency, midithread, mm, qtest
+9) run other projects if you wish: sysex, latency, midithread, mm, 
+    qtest, midithru
+
+10) compile the java code:
+    - cd pm_java
+    - make.bat
+        + If there is a problem running javac, note that you must have
+          a path to javac.exe on your PATH environment variable. Edit
+          your path (in Vista) using Control Panel > User Accounts > 
+          User Accounts > Change my environment variables; then select
+          Path and click Edit... After changing, you will have to 
+          restart the command window to see any effect.
+        + In Vista, you may get a warning about running 
+          UpdateRsrcJavaExe.exe. This is called by make.bat, and you
+          should allow the program to run.
+        + Note that make.bat does not build pmjni\jportmidi_JPortMidiApi.h
+          because it is included in the distribution. You can rebuild it 
+          from sources as follows:
+              cd pm_java
+              javah jportmidi.JPortMidiApi
+              move jportmidi_JPortMidiApi pmjni\jportmidi_JPortMidiApi.h
+       
+11) you might wish to move pm_java/win32 to another location; run the
+    pmdefaults.exe program from the (entire) win32 directory to use 
+    PmDefaults. This program let's you select default input/output 
+    midi devices for PortMidi applications.
+
+============================================================================
+ABOUT CMAKE
+============================================================================
+
+cmake was used to generate .vcproj files. cmake embeds absolute paths
+into .vcproj files, which makes the files non-portable to other systems.
+To work around this problem, pm_win\clean_up_vcproj.bat can be used to 
+replace absolute paths with relative paths. To use it, you will need to
+install gawk and set your search path to allow you to execute gawk, e.g. 
+my path includes "C:\Program Files\GnuWin32\bin;". You will also need to
+edit pm_win\clean_up_vcproj.awk, replacing C:\Users\rbd\portmidi with
+whatever absolute path cmake uses in your vcproj files.
+
+This is not a general or robust fix, but it seems to work with the 
+vcproj files currently created by CMake.
+
+============================================================================
+USING OTHER VERSIONS OF VISUAL C++
+============================================================================
+
+You can use cmake to make Visual Studio solution and project files.
+If you do not want to use the provided Version 9 project files, install
+cmake, run it, set the "Where is the source code" box to your portmidi
+directory, and click on Configure. A menu will allow you to choose the
+Visual Studio project version you want. Click Configure once again, then
+Generate, and you should be all set to open portmidi.sln.
 
 ============================================================================
 TO CREATE YOUR OWN PORTMIDI CLIENT APPLICATION:
@@ -119,43 +169,35 @@ The easiest way is to start a new project w/in the portMidi workspace:
       in the next step)
 	- Click OK
 	- Select "An Empty Project" and click Finish
-
+	
+	In Visual C++ 2005 Express Edition, 
+	- File->New->Projects
+	- Location: <...>\portmidi\<yourProjectName>
+	- select Add to solution
+	- select CLR Empty project in CLR
+	- select Win32 Console Application in Win32
+	- select Empty project in General
+	
 2) Now this project will be the active project. Make it explicitly depend
    on PortMidi dll:
 	- Project->Dependencies
 	- Click pm_dll
 
-3) Important! in order to be able to use portMidi DLL from your new project
-   and set breakpoints,	copy following files from <...>\pm_dll\Debug into 
-   <...>\<yourProjectName>\Debug directory:
-		pm_dll.lib
-		pm_dll.dll
-    each time you rebuild pm_dll, these copies must be redone!
-
-4) add whatever files you wish to add to your new project, using portMidi
+3) add whatever files you wish to add to your new project, using portMidi
    calls as desired (see USING PORTMIDI at top of this readme)
 
-5) when you include portMidi files, do so like this:
-	- #include "..\pm_dll\portmidi.h"
+4) when you include portMidi files, do so like this:
+	- #include "..\pm_common\portmidi.h"
 	- etc.
 
-6) build and run your project
+5) build and run your project
 
 ============================================================================
 DESIGN NOTES
 ============================================================================
 
-The DLL is used so that PortMidi can (usually) close open devices when the
-program terminates. Failure to close input devices under WinNT, Win2K, and
-probably later systems causes the OS to crash.
-
-This is accomplished with a .LIB/.DLL pair, linking to the .LIB
-in order to access functions in the .DLL. 
-
-PortMidi for Win32 exists as a simple library,
+PortMidi for Win32 exists as a simple static library,
 with Win32-specific code in pmwin.c and MM-specific code in pmwinmm.c.
-pmwin.c uses a DLL in pmdll.c to call Pm_Terminate() when the program
-exits to make sure that all MIDI ports are closed.
 
 Orderly cleanup after errors are encountered is based on a fixed order of
 steps and state changes to reflect each step. Here's the order:
@@ -171,10 +213,8 @@ To open input:
         set descriptor field of PmInternal structure
         - open device
         set handle field of midiwinmm_type structure
-        - allocate buffer 1 for sysex
-        buffer is added to input port
-        - allocate buffer 2 for sysex
-        buffer is added to input port
+        - allocate buffers
+        - start device
         - return
     - return
 
@@ -287,5 +327,15 @@ part of PortMidi is allowed to directly copy sysex bytes to
 "fill_base[*fill_offset_ptr++]" until *fill_offset_ptr reaches
 fill_length. See the code for details.
 
+-----------
 
-  
+Additional notes on using VS 2005 (maybe this is obsolete now?):
+
+1) Make sure "Configuration: All Configurations" is selected in all of the following Properties modifications!
+
+2) In my case the project defaulted to compiling all .c files with the C++ compiler, which was disastrous. I had to go to set Properties for each file, to wit: Expand Configuration Properties, Expand C/C++, Select Advanced, set the Compile As popup to Compile as C Code (/TC). (For better or worse, the project I inherited has a bunch of .c files that rely on C++ features, so I couldn't reliably set this the project properties level.)
+
+3) While you're there, make sure that the C/C++ -> General -> "Compile with Common Language Runtime support" is set to "No Common Language Runtime support" (the C compiler *can't* support CLR, but VS won't do anything useful like automatically set the two options to match)-.
+
+4) I never got VS precompiled header thing to work sensibly, so I took the path of least resistance and turned PCH's off for all my files. Properties -> Configuration Properties -> C/C++ -> Precompiled Headers -> Create/Use Precompiled Header popup set to "Not Using Precompiled Headers". The compiler is reasonably fast even if it has to parse all the header files, so unless someone wants to explain VS's PCHs to me, the hell with it, I say.
+

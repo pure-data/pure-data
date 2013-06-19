@@ -1,4 +1,3 @@
-new objects in canvas help window
 scalar no symbol to default to float
 rename float and floatarray templates
 scalar to save to parent (by default?)

@@ -64,6 +64,8 @@ SYSSRC += s_midi_pm.c s_audio_pa.c s_audio_paring.c \
     ../portaudio/src/hostapi/coreaudio/pa_mac_core_utilities.c \
     ../portmidi/pm_mac/pmmac.c         \
     ../portmidi/pm_mac/pmmacosxcm.c    \
+    ../portmidi/pm_mac/finddefault.c    \
+    ../portmidi/pm_mac/readbinaryplist.c    \
     ../portmidi/pm_common/pmutil.c     \
     ../portmidi/pm_common/portmidi.c   \
     ../portmidi/porttime/ptmacosx_cf.c
