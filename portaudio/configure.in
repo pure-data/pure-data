@@ -11,8 +11,6 @@ dnl Init autoconf and make sure configure is being called
 dnl from the right directory
 AC_INIT([include/portaudio.h])
 
-AC_PROG_MKDIR_P
-
 dnl Define build, build_cpu, build_vendor, build_os
 AC_CANONICAL_BUILD
 dnl Define host, host_cpu, host_vendor, host_os
@@ -210,7 +208,7 @@ case "${host_os}" in
         LIBS="-framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon"
 
         if test "x$enable_mac_universal" = "xyes" ; then
-           case "xcodebuild -version | sed -n 's/Xcode \(.*\)/\1/p'" in
+           case `xcodebuild -version | sed -n 's/Xcode \(.*\)/\1/p'` in
 
            [12]*|3.0|3.1)
               dnl In pre-3.2 versions of Xcode, xcodebuild doesn't
@@ -303,12 +301,12 @@ case "${host_os}" in
             DLL_LIBS="${DLL_LIBS} -lwinmm -lm -lole32 -luuid"
             CFLAGS="$CFLAGS -ffast-math -fomit-frame-pointer -I\$(top_srcdir)/src/hostapi/asio -I$ASIODIR/host/pc -I$ASIODIR/common -I$ASIODIR/host -UPA_USE_ASIO -DPA_USE_ASIO=1 -DWINDOWS"
 
-            dnl Setting the windows version flags below resolves a conflict between Interlocked*
-            dnl definitions in mingw winbase.h and Interlocked* hacks in ASIO SDK combase.h
+            dnl Setting the windows version flags below resolves a conflict between Interlocked* 
+            dnl definitions in mingw winbase.h and Interlocked* hacks in ASIO SDK combase.h 
             dnl combase.h is included by asiodrvr.h
-            dnl PortAudio does not actually require Win XP (winver 501) APIs
+            dnl PortAudio does not actually require Win XP (winver 501) APIs 
             CFLAGS="$CFLAGS -D_WIN32_WINNT=0x0501 -DWINVER=0x0501"
-
+            
             CXXFLAGS="$CFLAGS"
         fi
 
@@ -367,7 +365,7 @@ case "${host_os}" in
         dnl The _REENTRANT option for pthread safety. Perhaps not necessary but it 'll do no harm.
         dnl
         THREAD_CFLAGS="-D_REENTRANT"
-
+    
         OTHER_OBJS="pa_sgi/pa_sgi.o src/os/unix/pa_unix_hostapis.o src/os/unix/pa_unix_util.o"
 
         dnl SGI books say -lpthread should be the last of the libs mentioned.
@@ -381,7 +379,7 @@ case "${host_os}" in
         dnl Unix configuration
 
         CFLAGS="$CFLAGS -I\$(top_srcdir)/src/os/unix"
-
+        
         AC_CHECK_LIB(pthread, pthread_create,[have_pthread="yes"],
                 AC_MSG_ERROR([libpthread not found!]))
 
@@ -460,7 +458,7 @@ fi
 AC_SUBST(WITH_ASIO_TRUE)
 AC_SUBST(WITH_ASIO_FALSE)
 
-AC_OUTPUT([Makefile])
+AC_OUTPUT([Makefile portaudio-2.0.pc])
 
 AC_MSG_RESULT([
 Configuration summary:
