@@ -1,11 +1,10 @@
-#N struct scalar-help-template1 float x float y;
 #N struct array-help-struct float x float y array z float;
 #N struct float float y;
-#N canvas 442 433 688 433 12;
+#N canvas 535 422 688 433 12;
 #X text 34 388 see also:;
 #X text 444 398 updated for Pd version 0.45.;
 #X text 485 171 (click for details:), f 11;
-#N canvas 1027 152 716 699 define 1;
+#N canvas 1025 150 716 699 define 0;
 #X text 324 399 creation arguments:;
 #X text 352 417 optional -k flag to keep contents (TBW);
 #X text 212 152 send a pointer to a named receive object;
@@ -18,17 +17,16 @@
 #X text 349 437 template;
 #X text 354 458 optional name (TBW);
 #X obj 145 275 get scalar-help-template1 x;
-#N canvas 466 266 450 300 scalar-help-template1 1;
-#X scalar scalar-help-template1 40 40 \;;
+#N canvas 465 265 450 300 scalar-help-template1 0;
 #X obj 62 55 struct scalar-help-template1 float x float y;
 #X obj 55 99 drawpolygon 3 3 0 0 0 30 30 30 30 0 0 0;
 #X msg 89 193 traverse pd-scalar-help-template1 \, bang;
 #X obj 89 218 pointer;
 #X msg 20 195 40 40;
 #X obj 53 252 append scalar-help-template1 x y;
-#X connect 3 0 4 0;
-#X connect 4 0 6 2;
-#X connect 5 0 6 0;
+#X connect 2 0 3 0;
+#X connect 3 0 5 2;
+#X connect 4 0 5 0;
 #X restore 471 57 pd scalar-help-template1;
 #X floatatom 404 244 3 0 500 0 - - -, f 3;
 #X obj 506 244 r scalar-help-send;
@@ -46,13 +44,13 @@
 #X connect 16 0 15 1;
 #X restore 486 212 pd define;
 #X obj 163 388 text;
-#X text 193 210 - create \, store \, and/or edit one;
-#N canvas 624 91 516 514 array-and-data-structures 0;
+#X text 201 210 - create \, store \, and/or edit one;
+#N canvas 621 88 516 514 array-and-data-structures 0;
 #X obj 46 397 print;
 #X obj 83 318 pointer;
 #X text 53 36 The array objects can also reference arrays within structures
 via pointers.;
-#N canvas 804 396 504 278 array-help-struct 0;
+#N canvas 801 393 504 278 array-help-struct 0;
 #X scalar array-help-struct 20 20 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
 \; -5 \; -2 \; 8 \; 12 \; 12 \; 12 \; 10 \; 8 \; 6 \; 1 \; \;;
 #X obj 88 204 pointer;
@@ -67,7 +65,7 @@ via pointers.;
 #X connect 2 0 3 0;
 #X connect 4 0 1 0;
 #X restore 60 112 pd array-help-struct;
-#N canvas 1207 234 450 300 array-help-data 0;
+#N canvas 1205 232 450 300 array-help-data 0;
 #X scalar array-help-struct 84 93 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
 \; -5 \; -2 \; 5 \; -7 \; -41 \; -47 \; -45 \; -34 \; -17 \; 8 \; 5
 \; 2 \; -2 \; -11 \; -16 \; -26 \; -43 \; 16 \; 24 \; 26 \; 21 \; 20
@@ -106,3 +104,6 @@ via pointers.;
 #X text 81 180 The first argument sets the function:;
 #X obj 114 387 array;
 #X obj 204 388 list;
+#X text 101 57 experimental - doesn't do much yet. This is included
+in 0.45 to check that its design will work coherently with the array
+and text objects.;

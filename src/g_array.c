@@ -135,7 +135,7 @@ struct _garray
 static t_pd *garray_arraytemplatecanvas;
 static char garray_arraytemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
-#X obj 43 31 struct _float_array array z float float style\n\
+#X obj 43 31 struct float-array array z float float style\n\
 float linewidth float color;\n\
 #X obj 43 70 plot z color linewidth 0 0 1 style;\n\
 ";
@@ -144,7 +144,7 @@ canvas 0 0 458 153 10;\n\
 #X obj 39 26 struct float float y;\n\
 ";
 
-/* create invisible, built-in canvases to determine the templates for floats
+/* create invisible, built-in canvases to supply templates for floats
 and float-arrays. */
 
 void garray_init( void)
@@ -154,12 +154,12 @@ void garray_init( void)
         return;
     b = binbuf_new();
     
-    glob_setfilename(0, gensym("_float"), gensym("."));
+    glob_setfilename(0, gensym("_float_template"), gensym("."));
     binbuf_text(b, garray_floattemplatefile, strlen(garray_floattemplatefile));
     binbuf_eval(b, &pd_canvasmaker, 0, 0);
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
     
-    glob_setfilename(0, gensym("_float_array"), gensym("."));
+    glob_setfilename(0, gensym("_float_array_template"), gensym("."));
     binbuf_text(b, garray_arraytemplatefile, strlen(garray_arraytemplatefile));
     binbuf_eval(b, &pd_canvasmaker, 0, 0);
     garray_arraytemplatecanvas = s__X.s_thing;
@@ -304,7 +304,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         error("array %s: only 'float' type understood", templateargsym->s_name);
         return (0);
     }
-    templatesym = gensym("pd-_float_array");
+    templatesym = gensym("pd-float-array");
     template = template_findbyname(templatesym);
     if (!template)
     {

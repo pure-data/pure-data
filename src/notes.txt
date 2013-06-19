@@ -1,6 +1,10 @@
-scalar no symbol to default to float
-rename float and floatarray templates
-scalar to save to parent (by default?)
+-k flag to keep array/text contents
+realize text pointer generation
+text dimension setting (message or creation arg)
+text messages to get/set fields and lines
+array messages: sum, quantile, random (take ranges somehow)
+
+scalar -k flag
 nameable scalars
 better clicking on arrays
 dialog or other controls on click to show changing values?

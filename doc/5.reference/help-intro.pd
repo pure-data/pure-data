@@ -1,4 +1,4 @@
-#N canvas 381 83 573 856 12;
+#N canvas 380 82 573 856 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -288,11 +288,8 @@
 #X obj 25 4032 append;
 #X text 125 4032 - add an element to a list;
 #X obj 25 4056 scalar;
-#X obj 22 4115 scope~;
 #X text 122 4115 (use tabwrite~ now);
 #X obj 22 4140 namecanvas;
-#X obj 22 4165 template;
-#X text 122 4165 (use struct now);
 #X obj 142 3386 czero_rev~;
 #X obj 26 2465 threshold~;
 #X text 126 2465 - detect signal thresholds;
@@ -369,3 +366,6 @@ included in this list are messages \, atoms \, graphs \, etc. which
 aren't typed into object boxes but come straight off the "add" menu.)
 Right-click (or control-click on a Macintosh) on any object to get
 its "help window".;
+#X msg 22 4113 scope~;
+#X msg 22 4165 template;
+#X text 121 4166 (use struct now);

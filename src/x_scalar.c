@@ -23,7 +23,7 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
     t_atom a[9];
     t_glist *gl;
     t_canvas *x, *z = canvas_getcurrent();
-    t_symbol *templatesym = &s_;
+    t_symbol *templatesym = &s_float;
     t_template *template;
     t_scalar *sc;
     while (argc && argv->a_type == A_SYMBOL &&
@@ -65,7 +65,6 @@ static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
             templatesym->s_name);
         goto noscalar;
     }
-    else post("template %s", templatesym->s_name);
     sc = scalar_new(x, canvas_makebindsym(templatesym));
     if (!sc)
     {

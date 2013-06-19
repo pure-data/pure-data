@@ -9,7 +9,7 @@ t_class *glob_pdobject;
 static t_class *maxclass;
 
 int sys_perf;   /* true if we should query user on close and quit */
-int pd_compatibilitylevel;  /* e.g., 43 for pd 0.43 compatibility */
+int pd_compatibilitylevel = 100000;  /* e.g., 43 for pd 0.43 compatibility */
 
 /* These "glob" routines, which implement messages to Pd, are from all
 over.  Some others are prototyped in m_imp.h as well. */

@@ -400,9 +400,9 @@ static t_binbuf *text_client_getbuf(t_text_client *x)
             pd_error(x, "text: no field named %s", x->tc_field->s_name);
             return (0);
         }
-        if (type != DT_LIST)
+        if (type != DT_TEXT)
         {
-            pd_error(x, "text: field %s not of type list", x->tc_field->s_name);
+            pd_error(x, "text: field %s not of type text", x->tc_field->s_name);
             return (0);
         }
         return (*(t_binbuf **)(((char *)vec) + onset));
@@ -941,8 +941,36 @@ static void textfile_rewind(t_qlist *x)
 
 /* ---------------- global setup function -------------------- */
 
+static t_pd *text_templatecanvas;
+static char text_templatefile[] = "\
+canvas 0 0 458 153 10;\n\
+#X obj 43 31 struct text float x float y text text;\n\
+";
+
+/* create invisible, built-in canvas to supply template containing one text
+field, named, oddly enough, 'text'.  I don't know how to make this not break
+pre-0.45 patches using templates named 'text'... perhaps this is a minor
+enough incompatibility that I'll just get away with it. */
+
+static void text_template_init( void)
+{
+    t_binbuf *b;
+    if (text_templatecanvas)
+        return;
+    b = binbuf_new();
+    
+    glob_setfilename(0, gensym("_text_template"), gensym("."));
+    binbuf_text(b, text_templatefile, strlen(text_templatefile));
+    binbuf_eval(b, &pd_canvasmaker, 0, 0);
+    vmess(s__X.s_thing, gensym("pop"), "i", 0);
+    
+    glob_setfilename(0, &s_, &s_);
+    binbuf_free(b);  
+}
+
 void x_qlist_setup(void )
 {
+    text_template_init();
     text_define_class = class_new(gensym("text define"),
         (t_newmethod)text_define_new,
         (t_method)text_define_free, sizeof(t_text_define), 0, A_GIMME, 0);

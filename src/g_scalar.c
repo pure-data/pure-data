@@ -29,7 +29,7 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
             wp->w_array = array_new(datatypes->ds_arraytemplate, gp);
-        else if (type == DT_LIST)
+        else if (type == DT_TEXT)
             wp->w_list = binbuf_new();
     }
 }
@@ -77,7 +77,7 @@ void word_free(t_word *wp, t_template *template)
     {
         if (dt->ds_type == DT_ARRAY)
             array_free(wp[i].w_array);
-        else if (dt->ds_type == DT_LIST)
+        else if (dt->ds_type == DT_TEXT)
             binbuf_free(wp[i].w_list);
     }
 }

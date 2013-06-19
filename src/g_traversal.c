@@ -188,7 +188,7 @@ t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
             templatesym->s_name, s->s_name);
         return (0);
     }
-    if (type != DT_LIST)
+    if (type != DT_TEXT)
     {
         pd_error(x, "%s: %s.%s: not a list", fname,
             templatesym->s_name, s->s_name);

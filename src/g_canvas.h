@@ -196,7 +196,7 @@ struct _glist
 
 #define DT_FLOAT 0
 #define DT_SYMBOL 1
-#define DT_LIST 2
+#define DT_TEXT 2
 #define DT_ARRAY 3
 
 typedef struct _dataslot

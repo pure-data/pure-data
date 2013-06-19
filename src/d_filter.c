@@ -117,7 +117,7 @@ static void sighip_dsp(t_sighip *x, t_signal **sp)
 {
     x->x_sr = sp[0]->s_sr;
     sighip_ft1(x,  x->x_hz);
-    dsp_add((! pd_compatibilitylevel || pd_compatibilitylevel > 43 ?
+    dsp_add((pd_compatibilitylevel > 43 ?
         sighip_perform : sighip_perform_old),
             4, sp[0]->s_vec, sp[1]->s_vec, x->x_ctl, sp[0]->s_n);
 }
