@@ -269,7 +269,9 @@ proc set_pd_paths {} {
 proc init_for_platform {} {
     # we are not using Tk scaling, so fix it to 1 on all platforms.  This
     # guarantees that patches will be pixel-exact on every platform
-    tk scaling 1
+    # 2013.07.19 msp - trying without this to see what breaks - it's having
+    # deleterious effects on dialog window font sizes.
+    # tk scaling 1
 
     switch -- $::windowingsystem {
         "x11" {
