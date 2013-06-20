@@ -1,26 +1,24 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 212 276 689 431 12;
-#X obj 140 380 list;
+#N canvas 208 272 638 476 12;
+#X obj 131 432 list;
 #X obj 18 6 text;
-#X text 34 379 see also:;
+#X text 25 431 see also:;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array table4 100 float 0;
 #X coords 0 1 99 -1 500 300 1;
 #X restore 50 50 graph;
-#X restore 180 380 array;
-#X obj 90 203 text define;
-#X text 444 389 updated for Pd version 0.45.;
-#X text 47 171 The text object's first argument sets its function:
-;
-#X text 186 203 - create \, store \, and/or edit text;
-#X text 50 56 In Pd a "text" refers to a list of atoms that can include
+#X restore 171 432 array;
+#X obj 280 215 text define;
+#X text 365 430 updated for Pd version 0.45.;
+#X text 81 172 The text object's first argument sets its function:
+, f 30;
+#X text 62 50 In Pd a "text" refers to a list of atoms that can include
 commas \, semicolons \, and dollar-sign constructs - anything that
 can go in a message box or a patch (as a saved file). You can use them
 to store a semicolon-separated list of lists \, or as material to "execute"
 as in a sequencer or message box.;
-#X text 485 162 (click for details:), f 11;
-#N canvas 412 164 739 473 define 0;
+#N canvas 411 163 739 473 define 0;
 #X msg 35 138 clear;
 #X obj 38 400 text define -k text-help-1;
 #A addline this is a message \; this is another 1 ... \;;
@@ -43,35 +41,83 @@ file formats - like this:);
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
 #X connect 3 0 1 0;
-#X restore 486 203 pd define;
-#X obj 90 227 text getline;
-#X text 194 227 - read and output a line;
-#N canvas 944 186 823 548 getline 0;
-#X obj 72 330 text define -k text-help-2;
-#A addline x y z w w \; 12 23 34 45 56 56 \; 1 2 3 \, 4 5 6 \;;
-#X text 32 20 "text getline" reads the nth line from the named text
-and outputs it.;
-#X floatatom 83 171 5 0 0 0 - - -, f 5;
-#X msg 83 140 0;
-#X msg 159 140 2;
-#X msg 119 140 1;
-#X obj 83 240 print;
-#X obj 176 240 print type;
-#X obj 83 195 text getline text-help-2, f 12;
-#X msg 196 143 3;
-#X msg 236 145 4;
-#X text 276 242 "type" is 0 if terminated by a semicolon \, 1 if by
+#X restore 389 217 pd define;
+#X obj 280 240 text get;
+#N canvas 745 243 859 566 get 0;
+#X floatatom 47 115 5 0 5 0 - - -, f 5;
+#X msg 47 84 0;
+#X msg 123 84 2;
+#X msg 83 84 1;
+#X obj 47 262 print;
+#X obj 148 287 print type;
+#X msg 160 87 3;
+#X msg 200 89 4;
+#X text 242 285 "type" is 0 if terminated by a semicolon \, 1 if by
 a comma \, or 2 if the line number was out of range.;
-#X connect 2 0 8 0;
-#X connect 3 0 2 0;
-#X connect 4 0 2 0;
-#X connect 5 0 2 0;
-#X connect 8 0 6 0;
-#X connect 8 1 7 0;
-#X connect 9 0 2 0;
-#X connect 10 0 2 0;
-#X restore 486 227 pd getline;
-#N canvas 533 87 516 514 text-and-data-structures 0;
+#X obj 72 520 text define -k text-help-get;
+#A addline x y z w w \; 12 23 34 45 56 56 \; 1 2 3 \, 4 5 6 \;;
+#X obj 47 217 text get text-help-get, f 13;
+#X floatatom 50 394 5 0 0 0 - - -, f 5;
+#X msg 50 363 0;
+#X msg 126 363 2;
+#X msg 86 363 1;
+#X obj 50 465 print;
+#X msg 163 366 3;
+#X msg 203 368 4;
+#X obj 50 438 text get text-help-get 1;
+#X text 165 204 arguments: name of the text object or "-s struct-name"
+;
+#X floatatom 462 410 5 0 0 0 - - -, f 5;
+#X msg 462 379 0;
+#X msg 538 379 2;
+#X msg 498 379 1;
+#X obj 462 461 print;
+#X msg 575 382 3;
+#X msg 615 384 4;
+#X text 259 437 read field number 1 (zero for first field), f 23;
+#X obj 461 434 text get text-help-get 1 3;
+#X text 127 332 examples showing field selection:;
+#X text 32 20 "text get" reads the nth line from the named text and
+outputs it \, or optionally reads one or more specific fields (atoms)
+from the line.;
+#X text 101 115 spedcify line number (0 for first line);
+#X floatatom 97 144 5 0 5 0 - - -, f 5;
+#X floatatom 148 170 5 0 5 0 - - -, f 5;
+#X text 196 169 specify number of fields (1 by default \, but ignored
+if whole line), f 66;
+#X text 680 434 read 3 fields starting at field 1, f 21;
+#X text 145 143 starting field number (-1 \, the default \, gives the
+whole line), f 61;
+#X text 162 224 next optional arg to set starting field number (first
+inlet -- none to specify whole line), f 63;
+#X text 166 261 next optional arg to set inlet 2 (number of fields
+\, defaults to one), f 68;
+#X connect 0 0 10 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 10 0 4 0;
+#X connect 10 1 5 0;
+#X connect 11 0 18 0;
+#X connect 12 0 11 0;
+#X connect 13 0 11 0;
+#X connect 14 0 11 0;
+#X connect 16 0 11 0;
+#X connect 17 0 11 0;
+#X connect 18 0 15 0;
+#X connect 20 0 28 0;
+#X connect 21 0 20 0;
+#X connect 22 0 20 0;
+#X connect 23 0 20 0;
+#X connect 25 0 20 0;
+#X connect 26 0 20 0;
+#X connect 28 0 24 0;
+#X connect 32 0 10 1;
+#X connect 33 0 10 2;
+#X restore 389 241 pd get;
+#N canvas 532 86 516 514 text-and-data-structures 0;
 #X floatatom 68 196 5 0 0 0 - - -, f 5;
 #X msg 59 165 0;
 #X msg 132 167 2;
@@ -79,7 +125,7 @@ a comma \, or 2 if the line number was out of range.;
 #X obj 65 387 print;
 #X obj 206 391 print type;
 #X obj 106 304 pointer;
-#X obj 65 347 text getline -s text-help-struct z, f 18;
+#X obj 65 347 text get -s text-help-struct z, f 18;
 #N canvas 808 400 450 300 text-help-struct 0;
 #X scalar text-help-struct 20 20 \; a b c d \;;
 #X obj 13 83 filledpolygon 0 0 0 0 0 0 10 50 10 50 0 0 0;
@@ -111,25 +157,60 @@ via pointers.;
 #X connect 9 0 7 0;
 #X connect 9 1 12 0;
 #X connect 12 0 6 0;
-#X restore 81 324 pd text-and-data-structures;
-#X obj 90 251 text setline;
-#X text 195 251 - replace or add a line;
-#N canvas 852 160 644 440 setline 0;
-#X floatatom 398 211 5 0 0 0 - - -, f 5;
-#X msg 354 145 0;
-#X msg 427 147 2;
-#X msg 387 147 1;
-#X msg 174 187 list x y z w;
-#X msg 206 213 1 2 3;
-#X msg 166 155 12 23 34 45 56 56;
-#X text 46 9 "text setline" replaces the nth line with the incoming
-list. If the numbe n is greater than the number of lines in the text
-the new line is added.;
-#X obj 71 330 text define -k text-help-3;
+#X restore 81 360 pd text-and-data-structures;
+#X text 71 336 here's how to access texts inside data structures:;
+#X text 63 6 - manage a list of messages;
+#X obj 219 432 scalar;
+#X obj 280 288 text size;
+#N canvas 849 157 597 296 size 0;
+#X obj 71 55 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 50 198 text define -k text-help-size;
+#A addline asd dfg \; 1 2 3 \;;
+#X obj 71 131 text size text-help-size;
+#X floatatom 71 156 5 0 0 0 - - -, f 5;
+#X floatatom 80 91 5 0 2 0 - - -, f 5;
+#X text 46 11 "text size" reports the number of lines in the text or
+the length of a specified line.;
+#X text 100 52 bang for number of lines;
+#X text 129 89 float for length of nth line (-1 if line number out
+of range);
+#X connect 0 0 2 0;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X restore 390 287 pd size;
+#X obj 280 264 text set;
+#N canvas 754 360 834 537 set 0;
+#X floatatom 134 201 5 0 0 0 - - -, f 5;
+#X msg 134 167 0;
+#X msg 207 169 2;
+#X msg 167 169 1;
+#X msg 62 111 list x y z w;
+#X msg 68 137 1 2 3;
+#X msg 53 84 12 23 34 45 56 56;
+#X text 46 9 "text set" replaces the nth line with the incoming list.
+If the numbe n is greater than the number of lines in the text the
+new line is added.;
+#X obj 52 481 text define -k text-help-3;
 #A addline 12 23 34 45 56 56 \; x y z w \; 1 2 3 \; 12 23 34 45 56
 56 \; x y z w \; 1 2 3 \;;
-#X obj 211 252 text setline text-help-3;
-#X msg 470 147 1e+06;
+#X obj 56 279 text set text-help-3;
+#X msg 250 169 1e+06;
+#X floatatom 213 232 5 0 0 0 - - -, f 5;
+#X text 211 85 list to write into the text;
+#X text 192 201 line number - use a large number to append a line;
+#X text 260 231 field number - if supplied \, replace text starting
+at this field \, or if not \, replace whole line.;
+#X text 244 271 arguments: name of the text object or "-s struct-name"
+;
+#X text 244 296 next optional arg to set inlet 1 (line number), f
+63;
+#X text 245 324 next optional arg to set inlet 2 (number of fields
+\, defaults to whole line), f 52;
+#X text 70 383 if inlet 2 is supplied to specify a starting field \,
+the line is not resized - instead \, as many items are replaced as
+were in the list at left. Otherwise \, the line is resized to the size
+of the list.;
 #X connect 0 0 9 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -138,7 +219,10 @@ the new line is added.;
 #X connect 5 0 9 0;
 #X connect 6 0 9 0;
 #X connect 10 0 0 0;
-#X restore 486 249 pd setline;
-#X text 71 300 here's how to access texts inside data structures:;
-#X text 63 6 - manage a list of messages;
-#X obj 228 380 scalar;
+#X connect 11 0 9 2;
+#X restore 389 264 pd set;
+#X text 388 176 (click for details), f 11;
+#X text 60 216 create \, store \, and/or edit;
+#X text 91 239 read and output a line;
+#X text 100 263 replace or add a line;
+#X text 115 288 get number of lines;

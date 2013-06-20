@@ -356,6 +356,42 @@ typedef struct _text_client
     t_symbol *tc_field;
 } t_text_client;
 
+    /* parse buffer-finding arguments */
+static void text_client_argparse(t_text_client *x, int *argcp, t_atom **argvp,
+    char *name)
+{
+    int argc = *argcp;
+    t_atom *argv = *argvp;
+    x->tc_sym = x->tc_struct = x->tc_field = 0;
+    gpointer_init(&x->tc_gp);
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
+            argc >= 3 && argv[1].a_type == A_SYMBOL && argv[2].a_type == A_SYMBOL)
+        {
+            x->tc_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
+            x->tc_field = argv[2].a_w.w_symbol;
+            argc -= 2; argv += 2;
+        }
+        else
+        {
+            pd_error(x, "%s: unknown flag '%s'...", name,
+                argv->a_w.w_symbol->s_name);
+        }
+        argc--; argv++;
+    }
+    if (argc && argv->a_type == A_SYMBOL)
+    {
+        if (x->tc_struct)
+            pd_error(x, "%s: extra names after -s..", name);
+        else x->tc_sym = argv->a_w.w_symbol;
+        argc--; argv++;
+    }
+    *argcp = argc;
+    *argvp = argv;
+}
+
     /* find the binbuf for this object.  This should be reusable for other
     objects.  Prints an error  message and returns 0 on failure. */
 static t_binbuf *text_client_getbuf(t_text_client *x)
@@ -431,15 +467,17 @@ static void text_client_free(t_text_client *x)
     gpointer_unset(&x->tc_gp);
 }
 
-/* ---------------- text_getline object - output nth line --------------*/
-t_class *text_getline_class;
+/* ------- text_get object - output all or part of nth lines ----------- */
+t_class *text_get_class;
 
-typedef struct _text_getline
+typedef struct _text_get
 {
     t_text_client x_tc;
     t_outlet *x_out1;       /* list */
     t_outlet *x_out2;       /* 1 if comma terminated, 0 if semi, 2 if none */
-} t_text_getline;
+    t_float x_f1;           /* field number, -1 for whole line */
+    t_float x_f2;           /* number of fields */
+} t_text_get;
 
 #define x_obj x_tc.tc_obj
 #define x_sym x_tc.tc_sym
@@ -447,50 +485,250 @@ typedef struct _text_getline
 #define x_struct x_tc.tc_struct
 #define x_field x_tc.tc_field
 
-static void *text_getline_new(t_symbol *s, int ac, t_atom *av)
+static void *text_get_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_text_getline *x = (t_text_getline *)pd_new(text_getline_class);
+    t_text_get *x = (t_text_get *)pd_new(text_get_class);
     x->x_out1 = outlet_new(&x->x_obj, &s_list);
     x->x_out2 = outlet_new(&x->x_obj, &s_float);
-    x->x_sym = x->x_struct = x->x_field = 0;
-    gpointer_init(&x->x_gp);
-    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    floatinlet_new(&x->x_obj, &x->x_f1);
+    floatinlet_new(&x->x_obj, &x->x_f2);
+    x->x_f1 = -1;
+    x->x_f2 = 1;
+    text_client_argparse(&x->x_tc, &argc, &argv, "text get");
+    if (argc)
     {
-        if (!strcmp(av->a_w.w_symbol->s_name, "-s") &&
-            ac >= 3 && av[1].a_type == A_SYMBOL && av[2].a_type == A_SYMBOL)
-        {
-            x->x_struct = canvas_makebindsym(av[1].a_w.w_symbol);
-            x->x_field = av[2].a_w.w_symbol;
-            ac -= 2; av += 2;
-        }
+        if (argv->a_type == A_FLOAT)
+            x->x_f1 = argv->a_w.w_float;
         else
         {
-            pd_error(x, "text getline: unknown flag ...");
-            postatom(ac, av);
+            post("text get: can't understand field number");
+            postatom(argc, argv);
         }
-        ac--; av++;
+        argc--; argv++;
     }
-    if (ac && av->a_type == A_SYMBOL)
+    if (argc)
     {
-        if (x->x_struct)
+        if (argv->a_type == A_FLOAT)
+            x->x_f2 = argv->a_w.w_float;
+        else
         {
-            pd_error(x, "text getline: extra names after -s..");
-            postatom(ac, av);
+            post("text get: can't understand field count");
+            postatom(argc, argv);
         }
-        else x->x_sym = av->a_w.w_symbol;
-        ac--; av++;
+        argc--; argv++;
     }
-    if (ac)
+    if (argc)
     {
-        post("warning: text getline ignoring extra argument: ");
-        postatom(ac, av);
+        post("warning: text get ignoring extra argument: ");
+        postatom(argc, argv);
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_obj, &x->x_gp);
     return (x);
 }
 
-static void text_getline_float(t_text_getline *x, t_floatarg f)
+static void text_get_float(t_text_get *x, t_floatarg f)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int start, end, n, startfield, nfield;
+    t_atom *vec;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    startfield = x->x_f1;
+    nfield = x->x_f2;
+    if (text_nthline(n, vec, f, &start, &end))
+    {
+        int outc = end - start, k;
+        t_atom *outv;
+        if (x->x_f1 < 0)    /* negative start field for whole line */
+        {
+                /* tell us what terminated the line (semi or comma) */
+            outlet_float(x->x_out2, (end < n && vec[end].a_type == A_COMMA));
+            ATOMS_ALLOCA(outv, outc);
+            for (k = 0; k < outc; k++)
+                outv[k] = vec[start+k];
+            outlet_list(x->x_out1, 0, outc, outv);
+            ATOMS_FREEA(outv, outc);
+        }
+        else if (startfield + nfield > outc)
+            pd_error(x, "text get: field request (%d %d) out of range",
+                startfield, nfield); 
+        else
+        {
+            ATOMS_ALLOCA(outv, nfield);
+            for (k = 0; k < nfield; k++)
+                outv[k] = vec[(start+startfield)+k];
+            outlet_list(x->x_out1, 0, nfield, outv);
+            ATOMS_FREEA(outv, nfield);
+        }
+    }
+    else if (x->x_f1 < 0)   /* whole line but out of range: empty list and 2 */
+    {
+        outlet_float(x->x_out2, 2);         /* 2 for out of range */
+        outlet_list(x->x_out1, 0, 0, 0);    /* ... and empty list */
+    }
+}
+
+/* --------- text_set object - replace all or part of nth line ----------- */
+typedef struct _text_set
+{
+    t_text_client x_tc;
+    t_float x_f1;           /* line number */
+    t_float x_f2;           /* field number, -1 for whole line */
+} t_text_set;
+
+t_class *text_set_class;
+
+static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_set *x = (t_text_set *)pd_new(text_set_class);
+    floatinlet_new(&x->x_obj, &x->x_f1);
+    floatinlet_new(&x->x_obj, &x->x_f2);
+    x->x_f1 = 0;
+    x->x_f2 = -1;
+    text_client_argparse(&x->x_tc, &argc, &argv, "text get");
+    if (argc)
+    {
+        if (argv->a_type == A_FLOAT)
+            x->x_f1 = argv->a_w.w_float;
+        else
+        {
+            post("text get: can't understand field number");
+            postatom(argc, argv);
+        }
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        if (argv->a_type == A_FLOAT)
+            x->x_f2 = argv->a_w.w_float;
+        else
+        {
+            post("text get: can't understand field count");
+            postatom(argc, argv);
+        }
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        post("warning: text set ignoring extra argument: ");
+        postatom(argc, argv);
+    }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_obj, &x->x_gp);
+    return (x);
+}
+
+static void text_set_list(t_text_set *x,
+    t_symbol *s, int argc, t_atom *argv)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int start, end, n, lineno = x->x_f1, fieldno = x->x_f2, i;
+    t_atom *vec;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    if (lineno < 0)
+    {
+        pd_error(x, "text set: line number (%d) < 0", lineno);
+        return;
+    }
+    if (text_nthline(n, vec, lineno, &start, &end))
+    {
+        if (fieldno < 0)
+        {
+            if (end - start != argc)  /* grow or shrink */
+            {
+                (void)binbuf_resize(b, (n = n + (argc - (end-start))));
+                vec = binbuf_getvec(b);
+                memmove(&vec[start + argc], &vec[end],
+                    sizeof(*vec) * (n - (start+argc)));
+            }
+        }
+        else
+        {
+            if (fieldno >= end - start)
+            {
+                pd_error(x, "text set: field number (%d) past end of line",
+                    fieldno);
+                return;
+            }
+            if (fieldno + argc > end - start)
+                argc = (end - start) - fieldno;
+        }
+    }
+    else if (fieldno < 0)  /* if line number too high just append to end */
+    {
+        int addsemi = (n && vec[n-1].a_type != A_SEMI &&
+            vec[n-1].a_type != A_COMMA), newsize = n + addsemi + argc + 1;
+        (void)binbuf_resize(b, newsize);
+        vec = binbuf_getvec(b);
+        if (addsemi)
+            SETSEMI(&vec[n]);
+        SETSEMI(&vec[newsize-1]);
+        start = n+addsemi;
+    }
+    else
+    {
+        post("text set: %d: line number out of range", lineno);
+        return;
+    }
+    for (i = 0; i < argc; i++)
+    {
+        if (argv[i].a_type == A_POINTER)
+            SETSYMBOL(&vec[start+i], gensym("(pointer)"));
+        else vec[start+i] = argv[i];
+    }
+    text_client_senditup(&x->x_tc);
+}
+
+/* ---------------- text_size object - output number of lines -------------- */
+t_class *text_size_class;
+
+typedef struct _text_size
+{
+    t_text_client x_tc;
+    t_outlet *x_out1;       /* float */
+} t_text_size;
+
+static void *text_size_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_size *x = (t_text_size *)pd_new(text_size_class);
+    x->x_out1 = outlet_new(&x->x_obj, &s_float);
+    text_client_argparse(&x->x_tc, &argc, &argv, "text size");
+    if (argc)
+    {
+        post("warning: text size ignoring extra argument: ");
+        postatom(argc, argv);
+    }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_obj, &x->x_gp);
+    return (x);
+}
+
+static void text_size_bang(t_text_size *x)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int n, i, cnt = 0;
+    t_atom *vec;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    for (i = 0; i < n; i++)
+    {
+        if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
+            cnt++;
+    }
+    if (vec[n-1].a_type != A_SEMI && vec[n-1].a_type != A_COMMA)
+        cnt++;
+    outlet_float(x->x_out1, cnt);
+}
+
+static void text_size_float(t_text_size *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
     int start, end, n;
@@ -500,117 +738,8 @@ static void text_getline_float(t_text_getline *x, t_floatarg f)
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
     if (text_nthline(n, vec, f, &start, &end))
-    {
-        int outc = end - start, k;
-        t_atom *outv;
-        outlet_float(x->x_out2, (end < n && vec[end].a_type == A_COMMA));
-        ATOMS_ALLOCA(outv, outc);
-        for (k = 0; k < outc; k++)
-            outv[k] = vec[start+k];
-        outlet_list(x->x_out1, 0, outc, outv);
-        ATOMS_FREEA(outv, outc);
-    }
-    else
-    {
-        outlet_float(x->x_out2, 2);         /* 2 for out of range */
-        outlet_list(x->x_out1, 0, 0, 0);    /* ... and empty list */
-    }
-}
-
-/* ---------------- text_setline object - output nth line --------------*/
-typedef struct _text_setline
-{
-    t_text_client x_tc;
-    t_float x_f;            /* line number */
-} t_text_setline;
-
-t_class *text_setline_class;
-
-static void *text_setline_new(t_symbol *s, int ac, t_atom *av)
-{
-    t_text_setline *x = (t_text_setline *)pd_new(text_setline_class);
-    floatinlet_new(&x->x_obj, &x->x_f);
-    x->x_sym = x->x_struct = x->x_field = 0;
-    gpointer_init(&x->x_gp);
-    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
-    {
-        if (!strcmp(av->a_w.w_symbol->s_name, "-s") &&
-            ac >= 3 && av[1].a_type == A_SYMBOL && av[2].a_type == A_SYMBOL)
-        {
-            x->x_struct = canvas_makebindsym(av[1].a_w.w_symbol);
-            x->x_field = av[2].a_w.w_symbol;
-            ac -= 2; av += 2;
-        }
-        else
-        {
-            pd_error(x, "text setline: unknown flag ...");
-            postatom(ac, av);
-        }
-        ac--; av++;
-    }
-    if (ac && av->a_type == A_SYMBOL)
-    {
-        if (x->x_struct)
-        {
-            pd_error(x, "text setline: extra names after -s..");
-            postatom(ac, av);
-        }
-        else x->x_sym = av->a_w.w_symbol;
-        ac--; av++;
-    }
-    if (ac)
-    {
-        post("warning: text setline ignoring extra argument: ");
-        postatom(ac, av);
-    }
-    if (x->x_struct)
-        pointerinlet_new(&x->x_obj, &x->x_gp);
-    return (x);
-}
-
-static void text_setline_list(t_text_setline *x,
-    t_symbol *s, int ac, t_atom *av)
-{
-    t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, lineno = x->x_f, i;
-    t_atom *vec;
-    if (!b)
-       return;
-    vec = binbuf_getvec(b);
-    n = binbuf_getnatom(b);
-    if (lineno < 0)
-    {
-        pd_error(x, "text setline: line number (%d) < 0", lineno);
-        return;
-    }
-    if (text_nthline(n, vec, lineno, &start, &end))
-    {
-        if (end - start != ac)  /* grow or shrink */
-        {
-            (void)binbuf_resize(b, (n = n + (ac - (end-start))));
-            vec = binbuf_getvec(b);
-            memmove(&vec[start + ac], &vec[end],
-                sizeof(*vec) * (n - (start+ac)));
-        }
-    }
-    else    /* if line number too high just append to end */
-    {
-        int addsemi = (n && vec[n-1].a_type != A_SEMI &&
-            vec[n-1].a_type != A_COMMA), newsize = n + addsemi + ac + 1;
-        (void)binbuf_resize(b, newsize);
-        vec = binbuf_getvec(b);
-        if (addsemi)
-            SETSEMI(&vec[n]);
-        SETSEMI(&vec[newsize-1]);
-        start = n+addsemi;
-    }
-    for (i = 0; i < ac; i++)
-    {
-        if (av[i].a_type == A_POINTER)
-            SETSYMBOL(&vec[start+i], gensym("(pointer)"));
-        else vec[start+i] = av[i];
-    }
-    text_client_senditup(&x->x_tc);
+        outlet_float(x->x_out1, end-start);
+    else outlet_float(x->x_out1, -1);
 }
 
 /* overall creator for "text" objects - dispatch to "text define" etc */
@@ -623,10 +752,12 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
         char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "d") || !strcmp(str, "define"))
             newest = text_define_new(s, argc-1, argv+1);
-        else if (!strcmp(str, "getline"))
-            newest = text_getline_new(s, argc-1, argv+1);
-        else if (!strcmp(str, "setline"))
-            newest = text_setline_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "get"))
+            newest = text_get_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "set"))
+            newest = text_set_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "size"))
+            newest = text_size_new(s, argc-1, argv+1);
         else 
         {
             error("list %s: unknown function", str);
@@ -991,17 +1122,24 @@ void x_qlist_setup(void )
 
     class_addcreator((t_newmethod)text_new, gensym("text"), A_GIMME, 0);
 
-    text_getline_class = class_new(gensym("text getline"),
-        (t_newmethod)text_getline_new, (t_method)text_client_free,
-            sizeof(t_text_getline), 0, A_GIMME, 0);
-    class_addfloat(text_getline_class, text_getline_float);
-    class_sethelpsymbol(text_getline_class, gensym("text-object"));
+    text_get_class = class_new(gensym("text get"),
+        (t_newmethod)text_get_new, (t_method)text_client_free,
+            sizeof(t_text_get), 0, A_GIMME, 0);
+    class_addfloat(text_get_class, text_get_float);
+    class_sethelpsymbol(text_get_class, gensym("text-object"));
     
-    text_setline_class = class_new(gensym("text setline"),
-        (t_newmethod)text_setline_new, (t_method)text_client_free,
-            sizeof(t_text_getline), 0, A_GIMME, 0);
-    class_addlist(text_setline_class, text_setline_list);
-    class_sethelpsymbol(text_setline_class, gensym("text-object"));
+    text_set_class = class_new(gensym("text set"),
+        (t_newmethod)text_set_new, (t_method)text_client_free,
+            sizeof(t_text_set), 0, A_GIMME, 0);
+    class_addlist(text_set_class, text_set_list);
+    class_sethelpsymbol(text_set_class, gensym("text-object"));
+    
+    text_size_class = class_new(gensym("text size"),
+        (t_newmethod)text_size_new, (t_method)text_client_free,
+            sizeof(t_text_size), 0, A_GIMME, 0);
+    class_addbang(text_size_class, text_size_bang);
+    class_addfloat(text_size_class, text_size_float);
+    class_sethelpsymbol(text_size_class, gensym("text-object"));
 
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);

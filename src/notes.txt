@@ -1,7 +1,8 @@
 text:
-text dimension setting (message or creation arg)
-text messages to get/set fields
+text size _ float to get number of fields in a line
+text dimension setting (message or creation arg - how to do it in data structs?)
 'drawtext' menu command in structs - or just 'draw'?
+searching and sorting
 
 arrays:
 -k flag to keep array contents
