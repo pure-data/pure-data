@@ -691,7 +691,7 @@ void pd_tilde_setup(void)
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_dsp, gensym("dsp"), 0);
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"), A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
-    post("pd~ version 0.2");
+    post("pd~ version 0.3");
 }
 #endif
 
@@ -781,7 +781,7 @@ int main()
 
     class_register(CLASS_BOX, c);
     pd_tilde_class = c;
-    post("pd~ version 0.2");
+    post("pd~ version 0.3");
     return (0);
 }
 
