@@ -1,7 +1,7 @@
 text:
-text size _ float to get number of fields in a line
 text dimension setting (message or creation arg - how to do it in data structs?)
 'drawtext' menu command in structs - or just 'draw'?
+... double-click on drawn text to create editor window
 searching and sorting
 
 arrays:

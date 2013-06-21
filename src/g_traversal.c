@@ -197,7 +197,7 @@ t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
     if (gs->gs_which == GP_ARRAY)
         vec = gp->gp_un.gp_w;
     else vec = gp->gp_un.gp_scalar->sc_vec;
-    return (vec[onset].w_list);
+    return (vec[onset].w_binbuf);
 }
 
 

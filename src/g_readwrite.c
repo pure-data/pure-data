@@ -102,7 +102,7 @@ static void glist_readatoms(t_glist *x, int natoms, t_atom *vec,
             for (last = first; last < natoms && vec[last].a_type != A_SEMI;
                 last++);
             binbuf_restore(z, last-first, vec+first);
-            binbuf_add(w[i].w_list, binbuf_getnatom(z), binbuf_getvec(z));
+            binbuf_add(w[i].w_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
             binbuf_free(z);
             last++;
             if (last > natoms) last = natoms;
@@ -416,8 +416,8 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
         }
         else if (template->t_vec[i].ds_type == DT_TEXT)
         {
-            int k, n = binbuf_getnatom(w[i].w_list);
-            t_atom *ap = binbuf_getvec(w[i].w_list), at;
+            int k, n = binbuf_getnatom(w[i].w_binbuf);
+            t_atom *ap = binbuf_getvec(w[i].w_binbuf), at;
             for (k = 0; k < n; k++)
             {
                 if (ap[k].a_type == A_FLOAT ||
