@@ -458,7 +458,28 @@ static  void text_client_senditup(t_text_client *x)
     }
     else if (x->tc_struct)   /* by pointer */
     {
-        /* figure this out LATER */
+        t_template *template = template_findbyname(x->tc_struct);
+        t_gstub *gs = x->tc_gp.gp_stub;
+        if (!template)
+        {
+            pd_error(x, "text: couldn't find struct %s", x->tc_struct->s_name);
+            return;
+        }
+        if (!gpointer_check(&x->tc_gp, 0))
+        {
+            pd_error(x, "text: stale or empty pointer");
+            return;
+        }
+        if (gs->gs_which == GP_GLIST)
+            scalar_redraw(x->tc_gp.gp_un.gp_scalar, gs->gs_un.gs_glist);  
+        else
+        {
+            t_array *owner_array = gs->gs_un.gs_array;
+            while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
+                owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
+            scalar_redraw(owner_array->a_gp.gp_un.gp_scalar,
+                owner_array->a_gp.gp_stub->gs_un.gs_glist);  
+        }
     }
 }
 

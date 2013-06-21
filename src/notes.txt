@@ -1,10 +1,9 @@
-text:
-text dimension setting (message or creation arg - how to do it in data structs?)
-'drawtext' menu command in structs - or just 'draw'?
-... double-click on drawn text to create editor window
-searching and sorting
+x_text.c:
+text dimension setting (message or creation arg - how to do it in structs?)
+... double-click on drawtext in scalar to create editor window
+searching, sorting, packing whole text in a msg
 
-arrays:
+x_array.c:
 -k flag to keep array contents
 array messages: sum, quantile, random (take ranges somehow)
 better clicking on arrays
