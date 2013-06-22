@@ -314,6 +314,8 @@ static void ptrobj_next(t_ptrobj *x)
 {
     ptrobj_vnext(x, 0);
 }
+
+    /* send a message to the window containing the object pointed to */
 static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_scalar *sc;
@@ -325,7 +327,7 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     t_gstub *gs;
     if (!gpointer_check(&x->x_gp, 1))
     {
-        pd_error(x, "ptrobj_bang: empty pointer");
+        pd_error(x, "send-window: empty pointer");
         return;
     }
     gs = x->x_gp.gp_stub;

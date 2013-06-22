@@ -231,8 +231,12 @@ static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
 typedef struct _text_define
 {
     t_textbuf x_textbuf;
-    unsigned char x_keep;   /* whether to embed contents in patch on save */
+    t_outlet *x_out;
     t_symbol *x_bindsym;
+    t_scalar *x_scalar;     /* faux scalar (struct text-scalar) to point to */
+    t_gpointer x_gp;        /* pointer to it */
+    t_canvas *x_canvas;     /* owning canvas whose stub we use for x_gp */
+    unsigned char x_keep;   /* whether to embed contents in patch on save */
 } t_text_define;
 
 #define x_ob x_textbuf.b_ob
@@ -269,6 +273,13 @@ static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv);
     }
     textbuf_init(&x->x_textbuf);
+        /* set up a scalar and a pointer to it that we can output */
+    x->x_scalar = scalar_new(canvas_getcurrent(), gensym("pd-text"));
+    binbuf_free(x->x_scalar->sc_vec[2].w_binbuf);
+    x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf;
+    x->x_out = outlet_new(&x->x_ob, &s_pointer);
+    gpointer_init(&x->x_gp);
+    x->x_canvas = canvas_getcurrent();
            /* bashily unbind #A -- this would create garbage if #A were
            multiply bound but we believe in this context it's at most
            bound to whichever text_define or array was created most recently */
@@ -289,6 +300,8 @@ static void text_define_clear(t_text_define *x)
 t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
     const char *fname);
 
+    /* these are unused; they copy text from this object to and from a text
+        field in a scalar. */
 static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
     t_symbol *s)
 {
@@ -305,7 +318,7 @@ static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
 static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
 {
     t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
-        gp, s, "text_frompointer");
+        gp, s, "text_topointer");
     if (b)
     {
         t_gstub *gs = gp->gp_stub;
@@ -325,20 +338,20 @@ static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
     } 
 }
 
+    /* bang: output a pointer to a struct containing this text */
+void text_define_bang(t_text_define *x)
+{
+    gpointer_setglist(&x->x_gp, x->x_canvas, x->x_scalar);
+    outlet_pointer(x->x_out, &x->x_gp);
+}
+
 void text_define_save(t_gobj *z, t_binbuf *bb)
 {
-    t_text_define *b = (t_text_define *)z;
+    t_text_define *x = (t_text_define *)z;
     binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
-        (float)b->x_ob.te_xpix, (float)b->x_ob.te_ypix);
-    binbuf_addbinbuf(bb, b->x_ob.ob_binbuf);
+        (float)x->x_ob.te_xpix, (float)x->x_ob.te_ypix);
+    binbuf_addbinbuf(bb, x->x_ob.ob_binbuf);
     binbuf_addsemi(bb);
-
-    if (b->x_keep)
-    {
-        binbuf_addv(bb, "ss", gensym("#A"), gensym("addline"));
-        binbuf_addbinbuf(bb, b->x_binbuf);
-        binbuf_addsemi(bb);
-    }
 }
 
 static void text_define_free(t_text_define *x)
@@ -346,6 +359,7 @@ static void text_define_free(t_text_define *x)
     textbuf_free(&x->x_textbuf);
     if (x->x_bindsym != &s_)
         pd_unbind(&x->x_ob.ob_pd, x->x_bindsym);
+    gpointer_unset(&x->x_gp);
 }
 
 /* ---  text_client - common code for objects that refer to text buffers -- */
@@ -1099,11 +1113,11 @@ static void textfile_rewind(t_qlist *x)
 static t_pd *text_templatecanvas;
 static char text_templatefile[] = "\
 canvas 0 0 458 153 10;\n\
-#X obj 43 31 struct text float x float y text text;\n\
+#X obj 43 31 struct text float x float y text t;\n\
 ";
 
 /* create invisible, built-in canvas to supply template containing one text
-field, named, oddly enough, 'text'.  I don't know how to make this not break
+field named 't'.  I don't know how to make this not break
 pre-0.45 patches using templates named 'text'... perhaps this is a minor
 enough incompatibility that I'll just get away with it. */
 
@@ -1142,6 +1156,7 @@ void x_qlist_setup(void )
     class_addmethod(text_define_class, (t_method)textbuf_read,
         gensym("read"), A_GIMME, 0);
     class_setsavefn(text_define_class, text_define_save);
+    class_addbang(text_define_class, text_define_bang);
     class_sethelpsymbol(text_define_class, gensym("text-object"));
 
     class_addcreator((t_newmethod)text_new, gensym("text"), A_GIMME, 0);

@@ -1,10 +1,14 @@
+'send' messages to number boxes, float/symbol/pointer/value, text, scalar,
+maybe array (but would have to confect a one-off struct to do that?)
+
 x_text.c:
 text dimension setting (message or creation arg - how to do it in structs?)
 ... double-click on drawtext in scalar to create editor window
 searching, sorting, packing whole text in a msg
 
 x_array.c:
--k flag to keep array contents
+catch "save", key, ... inside subwindow
+save ticks, labels, other flags (and add dialog to set them)
 array messages: sum, quantile, random (take ranges somehow)
 better clicking on arrays
 array y range to reflect y increment sign (so no 1 to -1 range)
