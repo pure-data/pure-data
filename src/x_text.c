@@ -107,80 +107,82 @@ static void textbuf_close(t_textbuf *x)
     }    
 }
 
-static void textbuf_addline(t_textbuf *b, t_symbol *s, int ac, t_atom *av)
+static void textbuf_addline(t_textbuf *b, t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *z = binbuf_new();
-    binbuf_restore(z, ac, av);
+    binbuf_restore(z, argc, argv);
     binbuf_add(b->b_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
     binbuf_free(z);
     textbuf_senditup(b);
 }
 
-static void textbuf_read(t_textbuf *x, t_symbol *s, int ac, t_atom *av)
+static void textbuf_read(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
 {
     int cr = 0;
     t_symbol *filename;
-    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        if (!strcmp(av->a_w.w_symbol->s_name, "-c"))
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-c"))
             cr = 1;
         else
         {
             pd_error(x, "text read: unknown flag ...");
-            postatom(ac, av);
+            postatom(argc, argv);
         }
-        ac--; av++;
+        argc--; argv++;
     }
-    if (ac && av->a_type == A_SYMBOL)
+    if (argc && argv->a_type == A_SYMBOL)
     {
-        filename = av->a_w.w_symbol;
-        ac--; av++;
+        filename = argv->a_w.w_symbol;
+        argc--; argv++;
     }
     else
     {
         pd_error(x, "text read: no file name given");
         return;
     }
-    if (ac)
+    if (argc)
     {
         post("warning: text define ignoring extra argument: ");
-        postatom(ac, av);
+        postatom(argc, argv);
     }
     if (binbuf_read_via_canvas(x->b_binbuf, filename->s_name, x->b_canvas, cr))
             pd_error(x, "%s: read failed", filename->s_name);
     textbuf_senditup(x);
 }
 
-static void textbuf_write(t_textbuf *x, t_symbol *s, int ac, t_atom *av)
+static void textbuf_write(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
 {
     int cr = 0;
     t_symbol *filename;
     char buf[MAXPDSTRING];
-    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        if (!strcmp(av->a_w.w_symbol->s_name, "-c"))
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-c"))
             cr = 1;
         else
         {
             pd_error(x, "text write: unknown flag ...");
-            postatom(ac, av);
+            postatom(argc, argv);
         }
-        ac--; av++;
+        argc--; argv++;
     }
-    if (ac && av->a_type == A_SYMBOL)
+    if (argc && argv->a_type == A_SYMBOL)
     {
-        filename = av->a_w.w_symbol;
-        ac--; av++;
+        filename = argv->a_w.w_symbol;
+        argc--; argv++;
     }
     else
     {
         pd_error(x, "text write: no file name given");
         return;
     }
-    if (ac)
+    if (argc)
     {
         post("warning: text define ignoring extra argument: ");
-        postatom(ac, av);
+        postatom(argc, argv);
     }
     canvas_makefilename(x->b_canvas, filename->s_name,
         buf, MAXPDSTRING);
@@ -237,33 +239,34 @@ typedef struct _text_define
 #define x_binbuf x_textbuf.b_binbuf
 #define x_canvas x_textbuf.b_canvas
 
-static void *text_define_new(t_symbol *s, int ac, t_atom *av)
+static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_define *x = (t_text_define *)pd_new(text_define_class);
     t_symbol *asym = gensym("#A");
     x->x_keep = 0;
     x->x_bindsym = &s_;
-    while (ac && av->a_type == A_SYMBOL && *av->a_w.w_symbol->s_name == '-')
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        if (!strcmp(av->a_w.w_symbol->s_name, "-k"))
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-k"))
             x->x_keep = 1;
         else
         {
             pd_error(x, "text define: unknown flag ...");
-            postatom(ac, av);
+            postatom(argc, argv);
         }
-        ac--; av++;
+        argc--; argv++;
     }
-    if (ac && av->a_type == A_SYMBOL)
+    if (argc && argv->a_type == A_SYMBOL)
     {
-        pd_bind(&x->x_ob.ob_pd, av->a_w.w_symbol);
-        x->x_bindsym = av->a_w.w_symbol;
-        ac--; av++;
+        pd_bind(&x->x_ob.ob_pd, argv->a_w.w_symbol);
+        x->x_bindsym = argv->a_w.w_symbol;
+        argc--; argv++;
     }
-    if (ac)
+    if (argc)
     {
         post("warning: text define ignoring extra argument: ");
-        postatom(ac, av);
+        postatom(argc, argv);
     }
     textbuf_init(&x->x_textbuf);
            /* bashily unbind #A -- this would create garbage if #A were
@@ -951,17 +954,17 @@ static void qlist_tick(t_qlist *x)
     qlist_donext(x, 0, 1);
 }
 
-static void qlist_add(t_qlist *x, t_symbol *s, int ac, t_atom *av)
+static void qlist_add(t_qlist *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom a;
     SETSEMI(&a);
-    binbuf_add(x->x_binbuf, ac, av);
+    binbuf_add(x->x_binbuf, argc, argv);
     binbuf_add(x->x_binbuf, 1, &a);
 }
 
-static void qlist_add2(t_qlist *x, t_symbol *s, int ac, t_atom *av)
+static void qlist_add2(t_qlist *x, t_symbol *s, int argc, t_atom *argv)
 {
-    binbuf_add(x->x_binbuf, ac, av);
+    binbuf_add(x->x_binbuf, argc, argv);
 }
 
 static void qlist_clear(t_qlist *x)
@@ -970,10 +973,10 @@ static void qlist_clear(t_qlist *x)
     binbuf_clear(x->x_binbuf);
 }
 
-static void qlist_set(t_qlist *x, t_symbol *s, int ac, t_atom *av)
+static void qlist_set(t_qlist *x, t_symbol *s, int argc, t_atom *argv)
 {
     qlist_clear(x);
-    qlist_add(x, s, ac, av);
+    qlist_add(x, s, argc, argv);
 }
 
 static void qlist_read(t_qlist *x, t_symbol *filename, t_symbol *format)

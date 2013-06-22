@@ -42,7 +42,7 @@ extern t_pd *newest;    /* OK - this should go into a .h file now :) */
 
 static int tabcount = 0;
 
-static void *table_new(t_symbol *s, t_floatarg f)
+static void *table_donew(t_symbol *s, t_floatarg f, t_floatarg flags)
 {
     t_atom a[9];
     t_glist *gl;
@@ -70,13 +70,18 @@ static void *table_new(t_symbol *s, t_floatarg f)
     gl = glist_addglist((t_glist*)x, &s_, 0, -1, (f > 1 ? f-1 : 1), 1,
         50, 350, 550, 50);
 
-    graph_array(gl, s, &s_float, f, 0);
+    graph_array(gl, s, &s_float, f, flags);
 
     newest = &x->gl_pd;     /* mimic action of canvas_pop() */
     pd_popsym(&x->gl_pd);
     x->gl_loading = 0;
 
     return (x);
+}
+
+static void *table_new(t_symbol *s, t_floatarg f)
+{
+    return (table_donew(s, f, 0));
 }
 
     /* return true if the "canvas" object is a "table". */
@@ -96,9 +101,13 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     t_symbol *arrayname = &s_;
     float arraysize = 100;
     t_glist *x;
+    int keep = 0;
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-k"))
+            keep = 1;
+        else
         {
             error("array define: unknown flag ...");
             postatom(argc, argv);
@@ -120,13 +129,27 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         post("warning: array define ignoring extra argument: ");
         postatom(argc, argv);
     }
-    x = (t_glist *)table_new(arrayname, arraysize);
+    x = (t_glist *)table_donew(arrayname, arraysize, keep);
     
         /* bash the class to "array define".  We don't do this earlier in
         part so that canvas_getcurrent() will work while the glist and
         garray are being created.  There may be other, unknown side effects. */
     x->gl_obj.ob_pd = array_define_class;
     return (x);
+}
+
+void garray_savecontentsto(t_garray *x, t_binbuf *b);
+
+void array_define_save(t_gobj *z, t_binbuf *bb)
+{
+    t_glist *x = (t_glist *)z;
+    t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
+    binbuf_addv(bb, "ssff", &s__X, gensym("obj"),
+        (float)x->gl_obj.te_xpix, (float)x->gl_obj.te_ypix);
+    binbuf_addbinbuf(bb, x->gl_obj.ob_binbuf);
+    binbuf_addsemi(bb);
+
+    garray_savecontentsto((t_garray *)gl->gl_list, bb);
 }
 
 t_scalar *garray_getscalar(t_garray *x);
@@ -379,6 +402,7 @@ void x_array_setup(void )
         gensym("send"), A_SYMBOL, 0);
     class_addanything(array_define_class, array_define_anything);
     class_sethelpsymbol(array_define_class, gensym("array-object"));
+    class_setsavefn(array_define_class, array_define_save);
 
     class_addcreator((t_newmethod)arrayobj_new, gensym("array"), A_GIMME, 0);
 

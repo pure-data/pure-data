@@ -1031,6 +1031,28 @@ static int garray_click(t_gobj *z, t_glist *glist,
 
 #define ARRAYWRITECHUNKSIZE 1000
 
+void garray_savecontentsto(t_garray *x, t_binbuf *b)
+{
+    if (x->x_saveit)
+    {
+        t_array *array = garray_getarray(x);
+        int n = array->a_n, n2 = 0;
+        if (n > 200000)
+            post("warning: I'm saving an array with %d points!\n", n);
+        while (n2 < n)
+        {
+            int chunk = n - n2, i;
+            if (chunk > ARRAYWRITECHUNKSIZE)
+                chunk = ARRAYWRITECHUNKSIZE;
+            binbuf_addv(b, "si", gensym("#A"), n2);
+            for (i = 0; i < chunk; i++)
+                binbuf_addv(b, "f", ((t_word *)(array->a_vec))[n2+i].w_float);
+            binbuf_addv(b, ";");
+            n2 += chunk;
+        }
+    }
+}
+
 static void garray_save(t_gobj *z, t_binbuf *b)
 {
     int style, filestyle;
@@ -1057,23 +1079,7 @@ static void garray_save(t_gobj *z, t_binbuf *b)
     binbuf_addv(b, "sssisi;", gensym("#X"), gensym("array"),
         x->x_name, array->a_n, &s_float,
             x->x_saveit + 2 * filestyle + 8*x->x_hidename);
-    if (x->x_saveit)
-    {
-        int n = array->a_n, n2 = 0;
-        if (n > 200000)
-            post("warning: I'm saving an array with %d points!\n", n);
-        while (n2 < n)
-        {
-            int chunk = n - n2, i;
-            if (chunk > ARRAYWRITECHUNKSIZE)
-                chunk = ARRAYWRITECHUNKSIZE;
-            binbuf_addv(b, "si", gensym("#A"), n2);
-            for (i = 0; i < chunk; i++)
-                binbuf_addv(b, "f", ((t_word *)(array->a_vec))[n2+i].w_float);
-            binbuf_addv(b, ";");
-            n2 += chunk;
-        }
-    }
+    garray_savecontentsto(x, b);
 }
 
 t_widgetbehavior garray_widgetbehavior =
