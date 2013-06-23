@@ -296,9 +296,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     char *str;
     int flags = fflags;
     t_gpointer gp;
-    int filestyle = ((flags & 6) >> 1);
-    int style = (filestyle == 0 ? PLOTSTYLE_POLY :
-        (filestyle == 1 ? PLOTSTYLE_POINTS : filestyle));
+    int style = ((flags & 6) >> 1);
     if (templateargsym != &s_float)
     {
         error("array %s: only 'float' type understood", templateargsym->s_name);
