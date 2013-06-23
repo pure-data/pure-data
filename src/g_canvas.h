@@ -538,6 +538,7 @@ EXTERN t_array *array_new(t_symbol *templatesym, t_gpointer *parent);
 EXTERN void array_resize(t_array *x, int n);
 EXTERN void array_free(t_array *x);
 EXTERN void array_redraw(t_array *a, t_glist *glist);
+EXTERN void array_resize_and_redraw(t_array *array, t_glist *glist, int n);
 
 /* --------------------- gpointers and stubs ---------------- */
 EXTERN t_gstub *gstub_new(t_glist *gl, t_array *a);
@@ -556,12 +557,6 @@ EXTERN void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey);
 EXTERN void scalar_redraw(t_scalar *x, t_glist *glist);
 
 /* ------helper routines for "garrays" and "plots" -------------- */
-EXTERN int array_doclick(t_array *array, t_glist *glist, t_scalar *sc, t_array *ap,
-    t_symbol *elemtemplatesym,
-    t_float linewidth, t_float xloc, t_float xinc, t_float yloc, t_float scalarvis,
-    t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
-    int xpix, int ypix, int shift, int alt, int dbl, int doit);
-
 EXTERN void array_getcoordinate(t_glist *glist,
     char *elem, int xonset, int yonset, int wonset, int indx,
     t_float basex, t_float basey, t_float xinc,

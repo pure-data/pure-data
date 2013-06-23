@@ -340,8 +340,6 @@ static void array_size_bang(t_array_size *x)
         outlet_float(x->x_out, a->a_n);
 }
 
-void array_resize_and_redraw(t_array *array, t_glist *glist, int n);
-
 static void array_size_float(t_array_size *x, t_floatarg f)
 {
     t_glist *glist;

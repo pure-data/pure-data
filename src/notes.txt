@@ -12,7 +12,7 @@ x_array.c:
 catch "save", key, ... inside subwindow
 save ticks, labels, other flags (and add dialog to set them)
 array messages: sum, quantile, random (take ranges somehow)
-better clicking on arrays, plus no-click flag, "clip" flag
+no-click and clip flags for plotting
 bug setting "points" when creating new array
 array y range to reflect y increment sign (so no 1 to -1 range)
 
