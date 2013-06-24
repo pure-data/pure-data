@@ -196,6 +196,11 @@ typedef struct _array_client
     t_canvas *tc_canvas;
 } t_array_client;
 
+#define x_sym x_tc.tc_sym
+#define x_struct x_tc.tc_struct
+#define x_field x_tc.tc_field
+#define x_gp x_tc.tc_gp
+
     /* find the array for this object.  Prints an error  message and returns
         0 on failure. */
 static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
@@ -276,17 +281,13 @@ static void array_client_free(t_array_client *x)
 }
 
 /* ----------  array size : get or set size of an array ---------------- */
-t_class *array_size_class;
+static t_class *array_size_class;
 
 typedef struct _array_size
 {
     t_array_client x_tc;
-    t_outlet *x_out;
 } t_array_size;
-#define x_sym x_tc.tc_sym
-#define x_struct x_tc.tc_struct
-#define x_field x_tc.tc_field
-#define x_gp x_tc.tc_gp
+#define x_outlet x_tc.tc_obj.ob_outlet
 
 static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -328,7 +329,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
-    x->x_out = outlet_new(&x->x_tc.tc_obj, &s_float);
+    outlet_new(&x->x_tc.tc_obj, &s_float);
     return (x);
 }
 
@@ -337,7 +338,7 @@ static void array_size_bang(t_array_size *x)
     t_glist *glist;
     t_array *a = array_client_getbuf(&x->x_tc, &glist);
     if (a)
-        outlet_float(x->x_out, a->a_n);
+        outlet_float(x->x_outlet, a->a_n);
 }
 
 static void array_size_float(t_array_size *x, t_floatarg f)
@@ -366,6 +367,132 @@ static void array_size_float(t_array_size *x, t_floatarg f)
     }
 }
 
+/* --------  array sum : get sum of all or a range in an array -------- */
+static t_class *array_sum_class;
+
+typedef struct _array_rangeop   /* any operation meaningful on a subrange */
+{
+    t_array_client x_tc;
+    float x_onset;
+    float x_n;
+    t_symbol *x_elemfield;
+    t_symbol *x_elemtemplate;   /* unused - perhaps should at least check it */
+} t_array_rangeop;
+
+#define t_array_sum t_array_rangeop
+
+static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_rangeop *x = (t_array_rangeop *)pd_new(array_sum_class);
+    x->x_sym = x->x_struct = x->x_field = 0;
+    gpointer_init(&x->x_gp);
+    x->x_elemtemplate = &s_;
+    x->x_elemfield = gensym("y"); 
+    x->x_onset = 0;
+    x->x_n = -1;
+    floatinlet_new(&x->x_tc.tc_obj, &x->x_n);
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
+            argc >= 3 && argv[1].a_type == A_SYMBOL &&
+                argv[2].a_type == A_SYMBOL)
+        {
+            x->x_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
+            x->x_field = argv[2].a_w.w_symbol;
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
+            argc >= 3 && argv[1].a_type == A_SYMBOL &&
+                argv[2].a_type == A_SYMBOL)
+        {
+            x->x_elemtemplate = argv[1].a_w.w_symbol;
+            x->x_elemfield = argv[2].a_w.w_symbol;
+            argc -= 2; argv += 2;
+        }
+        else
+        {
+            pd_error(x, "array setline: unknown flag ...");
+            postatom(argc, argv);
+        }
+        argc--; argv++;
+    }
+    if (argc && argv->a_type == A_SYMBOL)
+    {
+        if (x->x_struct)
+        {
+            pd_error(x, "array setline: extra names after -s..");
+            postatom(argc, argv);
+        }
+        else x->x_sym = argv->a_w.w_symbol;
+        argc--; argv++;
+    }
+    if (argc && argv->a_type == A_FLOAT)
+    {
+        x->x_onset = argv->a_w.w_float;
+        argc--; argv++;
+    }
+    if (argc && argv->a_type == A_FLOAT)
+    {
+        x->x_n = argv->a_w.w_float;
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        post("warning: array setline ignoring extra argument: ");
+        postatom(argc, argv);
+    }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
+    outlet_new(&x->x_tc.tc_obj, &s_float);
+    return (x);
+}
+
+static void array_sum_bang(t_array_rangeop *x)
+{
+    t_glist *glist;
+    t_array *a = array_client_getbuf(&x->x_tc, &glist);
+    char *elemp;
+    int stride, onset, firstitem, nitem, i, type;
+    t_symbol *arraytype;
+    double sum;
+    t_template *template;
+    if (!a)
+        return;
+    template = template_findbyname(a->a_templatesym);
+    if (!template_find_field(template, x->x_elemfield, &onset,
+        &type, &arraytype) || type != DT_FLOAT)
+    {
+        pd_error(x, "can't find field %s in struct %s",
+            x->x_elemfield->s_name, a->a_templatesym->s_name);
+        return;
+    }
+    stride = a->a_elemsize;
+    firstitem = x->x_onset;
+    if (firstitem < 0)
+        firstitem = 0;
+    else if (firstitem > a->a_n)
+        firstitem = a->a_n;
+    if (x->x_n < 0)
+        nitem = a->a_n - firstitem;
+    else
+    {
+        nitem = x->x_n;
+        if (nitem + firstitem > a->a_n)
+            nitem = a->a_n - firstitem;
+    }
+    for (i = 0, sum = 0, elemp = a->a_vec+onset+firstitem*stride; i < nitem;
+        i++, elemp += stride)
+            sum += *(t_float *)elemp;
+    outlet_float(x->x_outlet, sum);
+}
+
+static void array_sum_float(t_array_rangeop *x, t_floatarg f)
+{
+    x->x_onset = f;
+    array_sum_bang(x);
+}
+
 /* overall creator for "array" objects - dispatch to "array define" etc */
 static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -378,6 +505,8 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
             newest = array_define_new(s, argc-1, argv+1);
         else if (!strcmp(str, "size"))
             newest = array_size_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "sum"))
+            newest = array_sum_new(s, argc-1, argv+1);
         else 
         {
             error("array %s: unknown function", str);
@@ -413,4 +542,11 @@ void x_array_setup(void )
     class_addbang(array_size_class, array_size_bang);
     class_addfloat(array_size_class, array_size_float);
     class_sethelpsymbol(array_size_class, gensym("array-object"));
+
+    array_sum_class = class_new(gensym("array sum"),
+        (t_newmethod)array_sum_new, (t_method)array_client_free,
+            sizeof(t_array_sum), 0, A_GIMME, 0);
+    class_addbang(array_sum_class, array_sum_bang);
+    class_addfloat(array_sum_class, array_sum_float);
+    class_sethelpsymbol(array_sum_class, gensym("array-object"));
 }

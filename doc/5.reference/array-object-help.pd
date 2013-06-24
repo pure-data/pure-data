@@ -1,11 +1,11 @@
 #N struct array-help-struct float x float y array z float;
 #N struct float float y;
-#N canvas 674 232 688 433 12;
+#N canvas 630 231 688 433 12;
 #X obj 208 388 list;
 #X text 34 388 see also:;
 #X text 444 398 updated for Pd version 0.45.;
 #X text 485 171 (click for details:), f 11;
-#N canvas 1030 155 900 716 define 0;
+#N canvas 1029 154 900 716 define 0;
 #X text 295 562 creation arguments:;
 #X text 325 597 optional name;
 #X text 322 164 read from a file;
@@ -107,8 +107,8 @@ via pointers.;
 #X connect 12 0 10 0;
 #X connect 12 1 11 0;
 #X connect 13 0 12 0;
-#X restore 81 333 pd array-and-data-structures;
-#N canvas 1025 306 600 467 size 0;
+#X restore 87 348 pd array-and-data-structures;
+#N canvas 1024 305 600 467 size 0;
 #X floatatom 83 171 5 1 100 0 - - -, f 5;
 #X obj 83 252 print;
 #X text 45 19 "array size" outputs the size (if sent a bang) or sets
@@ -122,8 +122,8 @@ the size (if sent a number).;
 #X connect 4 0 3 0;
 #X restore 485 237 pd size;
 #X obj 90 212 array define;
-#X text 78 309 accessing arrays inside data structures:;
-#X text 96 260 (later);
+#X text 84 324 accessing arrays inside data structures:;
+#X text 25 261 (later);
 #X text 65 6 - accessing arrays;
 #X text 50 43 In Pd an array may be part of a "garray" (a graphical
 array of numbers) or appear as a slot in a data structure (in which
@@ -134,3 +134,25 @@ to get or change its size \, set or read its elements \, and so on.
 ;
 #X text 93 183 The first argument sets its function:;
 #X obj 153 388 scalar;
+#X obj 90 260 array sum;
+#X obj 90 283 array quantile;
+#X text 212 284 - get a quantile (e.g. \, median);
+#N canvas 1041 349 600 467 sum 1;
+#X floatatom 83 171 5 0 10 0 - - -, f 5;
+#X obj 92 198 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 72 330 array define -k array-help-3 10;
+#A 0 0.140005 -0.186667 0.44001 0.133338 -0.0933325 0.560012 0.326675
+0.160005 0.586679 0.653347;
+#X obj 83 223 array sum array-help-3;
+#X msg 72 299 const 1;
+#X floatatom 83 248 5 0 0 0 - - -, f 5;
+#X floatatom 244 172 5 -1 10 0 - - -, f 5;
+#X text 45 19 "array sum" outputs the sum of all or a selected range
+of elements of the array.;
+#X connect 0 0 3 0;
+#X connect 1 0 3 0;
+#X connect 3 0 5 0;
+#X connect 4 0 2 0;
+#X connect 6 0 3 1;
+#X restore 485 261 pd sum;
