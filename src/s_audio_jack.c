@@ -321,13 +321,14 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
             inchans, MAX_JACK_PORTS);
         inchans = MAX_JACK_PORTS;
     }
-    /* try to become a client of the JACK server */
-    /* if no JACK server exists, start a default one (jack_client_open() does that for us... */
+    /* try to become a client of the JACK server.  (If no JACK server exists,
+        we could start a default one but this seems to stop Pd from exiting
+        sometimes - see Pd mailing list, yvan volochine, June 2013) */
     if (!jack_client) {
         do {
           sprintf(client_name,"pure_data_%d",client_iterator);
           client_iterator++;
-          jack_client = jack_client_open (client_name, JackNullOption, &status, NULL);
+          jack_client = jack_client_open (client_name, JackNoStartServer, &status, NULL);
           if (status & JackServerFailed) {
             error("JACK: unable to connect to JACK server");
             jack_client=NULL;
