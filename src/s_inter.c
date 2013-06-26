@@ -1186,6 +1186,11 @@ int sys_startgui(const char *libdir)
             sys_set_priority(0);
             setuid(getuid());      /* lose setuid priveliges */
             close(pipe9[0]);
+                /* set close-on-exec so that watchdog will see an EOF when we
+                close our copy - otherwise it might hang waiting for some
+                stupid child process (as seems to happen if jackd auto-starts
+                for us.) */
+            fcntl(pipe9[1], F_SETFD, FD_CLOEXEC);
             sys_watchfd = pipe9[1];
                 /* We also have to start the ping loop in the GUI;
                 this is done later when the socket is open. */
