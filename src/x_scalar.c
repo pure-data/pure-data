@@ -104,11 +104,11 @@ static void *scalarobj_new(t_symbol *s, int argc, t_atom *argv)
 }
 
     /* send a pointer to the scalar to whomever is bound to the symbol */
-static void scalar_define_send(t_glist *x, t_symbol *s)
+static void scalar_define_s(t_glist *x, t_symbol *s)
 {
     t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
     if (!s->s_thing)
-        pd_error(x, "scalar_define_send: %s: no such object", s->s_name);
+        pd_error(x, "scalar_define_s: %s: no such object", s->s_name);
     else if (gl && gl->gl_list && pd_class(&gl->gl_list->g_pd) == scalar_class)
     {
         t_gpointer gp;
@@ -117,7 +117,7 @@ static void scalar_define_send(t_glist *x, t_symbol *s)
         pd_pointer(s->s_thing, &gp);
         gpointer_unset(&gp);
     }
-    else bug("scalar_define_send");
+    else bug("scalar_define_s");
 }
 
 void canvas_add_for_class(t_class *c);
@@ -129,8 +129,8 @@ void x_scalar_setup(void )
     scalar_define_class = class_new(gensym("scalar define"), 0,
         (t_method)canvas_free, sizeof(t_canvas), 0, 0);
     canvas_add_for_class(scalar_define_class);
-    class_addmethod(scalar_define_class, (t_method)scalar_define_send,
-        gensym("send"), A_SYMBOL, 0);
+    class_addmethod(scalar_define_class, (t_method)scalar_define_s,
+        gensym("s"), A_SYMBOL, 0);
     class_sethelpsymbol(scalar_define_class, gensym("scalar-object"));
 
     class_addcreator((t_newmethod)scalarobj_new, gensym("scalar"), A_GIMME, 0);

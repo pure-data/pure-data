@@ -1,22 +1,21 @@
-'send' messages to number boxes, float/symbol/pointer/value, text, scalar,
-maybe array (but would have to confect a one-off struct to do that?)
+'send' messages to number boxes, float/symbol/pointer/value, text, scalar
 GUIs 0.45 mode (no clipping, toggle for 0/1)
 
 x_text.c:
 text dimension setting (message or creation arg - how to do it in structs?)
 double-click on drawtext in scalar to create editor window
-searching, sorting, packing whole text in a msg
+searching, sorting, packing whole text in a msg; evaluating text
 copying ala text_define_topointer
-"open" and "save as" mesages to open text window
+"open" and "save as" messages to open text window
 
 x_array.c:
 catch "save", key, ... inside subwindow
 messages for 'define' - xrange, pixel size, x and y ticks and labels
 allow for lying about x and y labels
 save ticks, labels, other flags (and add dialog to set them)
-array messages: quantile, random, get, set
-no-click and clip flags for plotting
+no-click, quantize and clip flags for plotting/mousing
 array y range to reflect y increment sign (so no 1 to -1 range)
+argmax, argmin, maybe search?
 
 scalar -k flag
 nameable scalars

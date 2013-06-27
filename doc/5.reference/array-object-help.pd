@@ -3,11 +3,11 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 237 123 691 494 12;
+#N canvas 235 121 691 494 12;
 #X obj 208 461 list;
 #X text 34 461 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 905 374 900 716 define 0;
+#N canvas 903 372 900 716 define 1;
 #X text 295 562 creation arguments:;
 #X text 325 597 optional name;
 #X text 322 164 read from a file;
@@ -25,7 +25,6 @@ that other objects can find it (and later should have some alternative
 #X msg 45 224 resize 100;
 #X text 71 255 ... other messages are also forwarded to the array like
 those above - xticks \, etc \, and also lists to set values.;
-#X msg 49 313 send array-help-send;
 #X obj 154 412 r array-help-send;
 #X text 221 313 send a pointer to a named receive object;
 #X floatatom 154 460 5 0 0 0 - - -, f 5;
@@ -41,17 +40,18 @@ it as shown in these examples:;
 #X obj 38 659 array define -k array-help-2 10;
 #A 0 -0.320006 -0.506676 -0.326673 0.43334 0.540009 0.373339 0 0 0
 0;
+#X msg 49 313 s array-help-send;
 #X connect 7 0 11 0;
 #X connect 9 0 11 0;
 #X connect 10 0 11 0;
 #X connect 12 0 11 0;
-#X connect 14 0 11 0;
-#X connect 15 0 22 0;
-#X connect 18 0 21 0;
-#X connect 21 0 23 0;
-#X connect 21 1 23 1;
-#X connect 22 0 17 0;
-#X connect 23 0 19 0;
+#X connect 14 0 21 0;
+#X connect 17 0 20 0;
+#X connect 20 0 22 0;
+#X connect 20 1 22 1;
+#X connect 21 0 16 0;
+#X connect 22 0 18 0;
+#X connect 25 0 11 0;
 #X restore 486 212 pd define;
 #X obj 112 461 text;
 #X obj 90 236 array size;
