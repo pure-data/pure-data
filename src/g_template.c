@@ -2413,7 +2413,7 @@ static void drawnumber_getbuf(t_drawnumber *x, t_word *data,
                 &buf2, &size2);
             ncopy = (size2 > DRAWNUMBER_BUFSIZE-1-nchars ? 
                 DRAWNUMBER_BUFSIZE-1-nchars: size2);
-            bcopy(buf2, buf+nchars, ncopy);
+            memcpy(buf+nchars, buf2, ncopy);
             buf2[nchars+ncopy] = 0;
             if (nchars+ncopy == DRAWNUMBER_BUFSIZE-1)
                 strcpy(buf+(DRAWNUMBER_BUFSIZE-4), "...");

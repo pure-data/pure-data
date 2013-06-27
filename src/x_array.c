@@ -110,7 +110,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         else
         {
             error("array define: unknown flag ...");
-            postatom(argc, argv);
+            postatom(argc, argv); endpost();
         }
         argc--; argv++;
     }
@@ -127,7 +127,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     if (argc)
     {
         post("warning: array define ignoring extra argument: ");
-        postatom(argc, argv);
+        postatom(argc, argv); endpost();
     }
     x = (t_glist *)table_donew(arrayname, arraysize, keep);
     
@@ -268,7 +268,7 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
     else return (0);    /* shouldn't happen */
 }
 
-static  void array_client_senditup(t_array_client *x)
+static void array_client_senditup(t_array_client *x)
 {
     t_glist *glist;
     t_array *a = array_client_getbuf(x, &glist);
@@ -308,7 +308,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
         else
         {
             pd_error(x, "array setline: unknown flag ...");
-            postatom(argc, argv);
+            postatom(argc, argv); endpost();
         }
         argc--; argv++;
     }
@@ -317,7 +317,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
         if (x->x_struct)
         {
             pd_error(x, "array setline: extra names after -s..");
-            postatom(argc, argv);
+            postatom(argc, argv); endpost();
         }
         else x->x_sym = argv->a_w.w_symbol;
         argc--; argv++;
@@ -325,7 +325,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
     if (argc)
     {
         post("warning: array setline ignoring extra argument: ");
-        postatom(argc, argv);
+        postatom(argc, argv); endpost();
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
@@ -367,7 +367,7 @@ static void array_size_float(t_array_size *x, t_floatarg f)
     }
 }
 
-/* --------  array sum : get sum of all or a range in an array -------- */
+/* ------  range operations - act on a specifiable range in an array ----- */
 static t_class *array_sum_class;
 
 typedef struct _array_rangeop   /* any operation meaningful on a subrange */
@@ -379,18 +379,32 @@ typedef struct _array_rangeop   /* any operation meaningful on a subrange */
     t_symbol *x_elemtemplate;   /* unused - perhaps should at least check it */
 } t_array_rangeop;
 
-#define t_array_sum t_array_rangeop
-
-static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
+    /* generic creator for operations on ranges (array {get,set,sum,random,
+        quantile,search,...}  "onsetin" and "nin" are true if we should make
+        inlets for onset and n - if no inlet for 'n' we also won't allow
+        it to be specified as an argument.  Everything can take an onset but
+        sometimes we don't need an inlet because it's the inlet itself.  In
+        any case we allow onset to be specified as an argument (even if it's
+        the 'hot inlet') -- for the same reason as in the 'delay' object.
+        Finally we can optionally warn if there are extra arguemnts; some
+        specific arguemtns (e.g., search) allow them but most don't. */
+static void *array_rangeop_new(t_class *class,
+    t_symbol *s, int *argcp, t_atom **argvp,
+    int onsetin, int nin, int warnextra)
 {
-    t_array_rangeop *x = (t_array_rangeop *)pd_new(array_sum_class);
+    int argc = *argcp;
+    t_atom *argv = *argvp;
+    t_array_rangeop *x = (t_array_rangeop *)pd_new(class);
     x->x_sym = x->x_struct = x->x_field = 0;
     gpointer_init(&x->x_gp);
     x->x_elemtemplate = &s_;
     x->x_elemfield = gensym("y"); 
     x->x_onset = 0;
     x->x_n = -1;
-    floatinlet_new(&x->x_tc.tc_obj, &x->x_n);
+    if (onsetin)
+        floatinlet_new(&x->x_tc.tc_obj, &x->x_onset);
+    if (nin)
+        floatinlet_new(&x->x_tc.tc_obj, &x->x_n);
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -402,7 +416,7 @@ static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
             x->x_field = argv[2].a_w.w_symbol;
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-f") &&
             argc >= 3 && argv[1].a_type == A_SYMBOL &&
                 argv[2].a_type == A_SYMBOL)
         {
@@ -412,8 +426,8 @@ static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            pd_error(x, "array setline: unknown flag ...");
-            postatom(argc, argv);
+            pd_error(x, "%s: unknown flag ...", class_getname(class));
+            postatom(argc, argv); endpost();
         }
         argc--; argv++;
     }
@@ -421,8 +435,8 @@ static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
     {
         if (x->x_struct)
         {
-            pd_error(x, "array setline: extra names after -s..");
-            postatom(argc, argv);
+            pd_error(x, "%s: extra names after -s..", class_getname(class));
+            postatom(argc, argv); endpost();
         }
         else x->x_sym = argv->a_w.w_symbol;
         argc--; argv++;
@@ -437,18 +451,20 @@ static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
         x->x_n = argv->a_w.w_float;
         argc--; argv++;
     }
-    if (argc)
+    if (argc && warnextra)
     {
-        post("warning: array setline ignoring extra argument: ");
-        postatom(argc, argv);
+        post("warning: %s ignoring extra argument: ", class_getname(class));
+        postatom(argc, argv); endpost();
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
-    outlet_new(&x->x_tc.tc_obj, &s_float);
+    *argcp = argc;
+    *argvp = argv;
     return (x);
 }
 
-static void array_sum_bang(t_array_rangeop *x)
+static int array_rangeop_getrange(t_array_rangeop *x,
+    char **firstitemp, int *nitemp, int *stridep)
 {
     t_glist *glist;
     t_array *a = array_client_getbuf(&x->x_tc, &glist);
@@ -458,14 +474,14 @@ static void array_sum_bang(t_array_rangeop *x)
     double sum;
     t_template *template;
     if (!a)
-        return;
+        return (0);
     template = template_findbyname(a->a_templatesym);
     if (!template_find_field(template, x->x_elemfield, &onset,
         &type, &arraytype) || type != DT_FLOAT)
     {
         pd_error(x, "can't find field %s in struct %s",
             x->x_elemfield->s_name, a->a_templatesym->s_name);
-        return;
+        return (0);
     }
     stride = a->a_elemsize;
     firstitem = x->x_onset;
@@ -481,9 +497,36 @@ static void array_sum_bang(t_array_rangeop *x)
         if (nitem + firstitem > a->a_n)
             nitem = a->a_n - firstitem;
     }
-    for (i = 0, sum = 0, elemp = a->a_vec+onset+firstitem*stride; i < nitem;
-        i++, elemp += stride)
-            sum += *(t_float *)elemp;
+    *firstitemp = a->a_vec+onset+firstitem*stride;
+    *nitemp = nitem;
+    *stridep = stride;
+    return (1);
+}
+
+/* --------  specific operations on ranges of arrays -------- */
+
+/* ----------------  array sum -- add them up ------------------- */
+static t_class *array_sum_class;
+
+#define t_array_sum t_array_rangeop
+
+static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_sum *x = array_rangeop_new(array_sum_class, s, &argc, &argv,
+        0, 1, 1);
+    outlet_new(&x->x_tc.tc_obj, &s_float);
+    return (x);
+}
+
+static void array_sum_bang(t_array_rangeop *x)
+{
+    char *itemp, *firstitem;
+    int stride, nitem, i;
+    double sum;
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+        return;
+    for (i = 0, sum = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
+        sum += *(t_float *)itemp;
     outlet_float(x->x_outlet, sum);
 }
 
@@ -491,6 +534,138 @@ static void array_sum_float(t_array_rangeop *x, t_floatarg f)
 {
     x->x_onset = f;
     array_sum_bang(x);
+}
+
+/* ----------------  array get -- output as list ------------------- */
+static t_class *array_get_class;
+
+#define t_array_get t_array_rangeop
+
+static void *array_get_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_get *x = array_rangeop_new(array_get_class, s, &argc, &argv,
+        0, 1, 1);
+    outlet_new(&x->x_tc.tc_obj, &s_float);
+    return (x);
+}
+
+static void array_get_bang(t_array_rangeop *x)
+{
+    char *itemp, *firstitem;
+    int stride, nitem, i;
+    t_atom *outv;
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+        return;
+    ATOMS_ALLOCA(outv, nitem);
+    for (i = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
+        SETFLOAT(&outv[i],  *(t_float *)itemp);
+    outlet_list(x->x_outlet, 0, nitem, outv);
+}
+
+static void array_get_float(t_array_rangeop *x, t_floatarg f)
+{
+    x->x_onset = f;
+    array_get_bang(x);
+}
+
+/* --------------  array set -- copy list to array -------------- */
+static t_class *array_set_class;
+
+#define t_array_set t_array_rangeop
+
+static void *array_set_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_set *x = array_rangeop_new(array_set_class, s, &argc, &argv,
+        1, 0, 1);
+    return (x);
+}
+
+static void array_set_list(t_array_rangeop *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    char *itemp, *firstitem;
+    int stride, nitem, i;
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+        return;
+    if (nitem > argc)
+        nitem = argc;
+    for (i = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
+        *(t_float *)itemp = atom_getfloatarg(i, argc, argv);
+    array_client_senditup(&x->x_tc);
+}
+
+/* -----  array quantile -- output quantile for input from 0 to 1 ------- */
+static t_class *array_quantile_class;
+
+#define t_array_quantile t_array_rangeop
+
+static void *array_quantile_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_quantile *x = array_rangeop_new(array_quantile_class, s,
+        &argc, &argv, 1, 1, 1);
+    outlet_new(&x->x_tc.tc_obj, &s_float);
+    return (x);
+}
+
+static void array_quantile_float(t_array_rangeop *x, t_floatarg f)
+{
+    char *itemp, *firstitem;
+    int stride, nitem, i;
+    double sum;
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+        return;
+    for (i = 0, sum = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
+        sum += (*(t_float *)itemp > 0? *(t_float *)itemp : 0);
+    sum *= f;
+    for (i = 0, itemp = firstitem; i < (nitem-1); i++, itemp += stride)
+    {
+        sum -= (*(t_float *)itemp > 0? *(t_float *)itemp : 0);
+        if (sum < 0)
+            break;
+    }
+    outlet_float(x->x_outlet, i);
+}
+
+/* ----  array random -- output random value with array as distribution ---- */
+static t_class *array_random_class;
+
+typedef struct _array_random   /* any operation meaningful on a subrange */
+{
+    t_array_rangeop x_r;
+    unsigned int x_state;
+} t_array_random;
+
+static void *array_random_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_random *x = array_rangeop_new(array_random_class, s,
+        &argc, &argv, 0, 1, 1);
+    static unsigned int random_nextseed = 584926371;
+    random_nextseed = random_nextseed * 435898247 + 938284287;
+    x->x_state = random_nextseed;
+    outlet_new(&x->x_r.x_tc.tc_obj, &s_float);
+    return (x);
+}
+
+static void array_random_seed(t_array_random *x, t_floatarg f)
+{
+    x->x_state = f;
+}
+
+static void array_random_bang(t_array_random *x)
+{
+    char *itemp, *firstitem;
+    int stride, nitem, i;
+    
+    if (!array_rangeop_getrange(&x->x_r, &firstitem, &nitem, &stride))
+        return;
+    x->x_state = x->x_state * 472940017 + 832416023;
+    array_quantile_float(&x->x_r, (1./4294967296.0) * (x->x_state&0x7fffffff));
+}
+
+static void array_random_float(t_array_random *x, t_floatarg f)
+{
+    x->x_r.x_onset = f;
+    array_random_bang(x);
 }
 
 /* overall creator for "array" objects - dispatch to "array define" etc */
@@ -507,6 +682,14 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
             newest = array_size_new(s, argc-1, argv+1);
         else if (!strcmp(str, "sum"))
             newest = array_sum_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "get"))
+            newest = array_get_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "set"))
+            newest = array_set_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "quantile"))
+            newest = array_quantile_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "random"))
+            newest = array_random_new(s, argc-1, argv+1);
         else 
         {
             error("array %s: unknown function", str);
@@ -549,4 +732,32 @@ void x_array_setup(void )
     class_addbang(array_sum_class, array_sum_bang);
     class_addfloat(array_sum_class, array_sum_float);
     class_sethelpsymbol(array_sum_class, gensym("array-object"));
+
+    array_get_class = class_new(gensym("array get"),
+        (t_newmethod)array_get_new, (t_method)array_client_free,
+            sizeof(t_array_get), 0, A_GIMME, 0);
+    class_addbang(array_get_class, array_get_bang);
+    class_addfloat(array_get_class, array_get_float);
+    class_sethelpsymbol(array_get_class, gensym("array-object"));
+
+    array_set_class = class_new(gensym("array set"),
+        (t_newmethod)array_set_new, (t_method)array_client_free,
+            sizeof(t_array_set), 0, A_GIMME, 0);
+    class_addlist(array_set_class, array_set_list);
+    class_sethelpsymbol(array_set_class, gensym("array-object"));
+
+    array_quantile_class = class_new(gensym("array quantile"),
+        (t_newmethod)array_quantile_new, (t_method)array_client_free,
+            sizeof(t_array_quantile), 0, A_GIMME, 0);
+    class_addfloat(array_quantile_class, array_quantile_float);
+    class_sethelpsymbol(array_quantile_class, gensym("array-object"));
+
+    array_random_class = class_new(gensym("array random"),
+        (t_newmethod)array_random_new, (t_method)array_client_free,
+            sizeof(t_array_random), 0, A_GIMME, 0);
+    class_addmethod(array_random_class, (t_method)array_random_seed,
+        gensym("seed"), A_FLOAT, 0);
+    class_addfloat(array_random_class, array_random_float);
+    class_addbang(array_random_class, array_random_bang);
+    class_sethelpsymbol(array_random_class, gensym("array-object"));
 }

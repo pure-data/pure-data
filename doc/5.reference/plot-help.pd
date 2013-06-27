@@ -4,8 +4,8 @@ array array2 help-plot-array2-template array array3 help-plot-array3-template
 #N struct help-plot-array1-template float y;
 #N struct help-plot-array2-template float x float y;
 #N struct help-plot-array3-template float y float w;
-#N canvas 477 38 516 229 12;
-#N canvas 145 122 626 710 help-plot-template 0;
+#N canvas 441 118 516 229 12;
+#N canvas 435 109 626 710 help-plot-template 0;
 #X text 29 34 creation arguments:;
 #X text 49 241 - RGB color (0=black \, 999=white \, 900=red \, 90=green
 \, 9=blue \, 555=grey \, etc.);
@@ -28,10 +28,6 @@ help-plot-array1-template array array2 help-plot-array2-template array
 array3 help-plot-array3-template;
 #X text 34 546 here's the "struct" for all this:;
 #X text 46 220 - field to plot (the array);
-#X text 63 419 This is the green spiral (color 70 \, line width 3 \,
-location (100 \, 0). Since the template for array2 contains an "x"
-variable \, play ignores x spacing requests and takes x from the data
-itself.;
 #X text 48 51 - optional "-n" flag to make invisible initially;
 #X text 47 70 - alternatively \, an optional "-v [variable]" flag to
 assign a variable to make this visible/invisible.;
@@ -44,6 +40,10 @@ of scalars along the path of the plot.;
 ;
 #X text 48 173 - optional "-w [variable]" flag to use different w variable
 ;
+#X text 63 419 This is the green spiral (color 70 \, line width 3 \,
+location (100 \, 0). Since the template for array2 contains an "x"
+variable \, plot ignores x spacing requests and takes x from the data
+itself.;
 #X restore 243 78 pd help-plot-template;
 #N canvas 196 292 273 120 help-plot-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
@@ -52,7 +52,7 @@ of scalars along the path of the plot.;
 #N canvas 161 163 273 120 help-plot-array2-template 0;
 #X obj 32 26 struct help-plot-array2-template float x float y;
 #X restore 243 123 pd help-plot-array2-template;
-#N canvas 0 0 411 207 help-plot-data 1;
+#N canvas 2 52 411 207 help-plot-data 1;
 #X scalar help-plot-template 39 73 \; 0 \; 20 \; 0 \; 30 \; 0 \; \;
 0 0 \; 0 10 \; 20 0 \; 0 -30 \; -40 0 \; 0 50 \; 60 0 \; \; 0 0 \;
 10 10 \; 0 10 \; 0 1 \; 20 1 \; 20 10 \; 20 1 \; \;;
