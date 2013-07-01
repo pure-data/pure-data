@@ -1,4 +1,4 @@
-'send' messages to number boxes, float/symbol/pointer/value, text, scalar
+'send' messages to number boxes, float/symbol/pointer/value, text
 GUIs 0.45 mode (no clipping, toggle for 0/1)
 
 x_text.c:

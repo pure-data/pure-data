@@ -1316,9 +1316,9 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         {
             int noutlet;
                 /* resize?  only for "true" text boxes or canvases*/
-            if (ob && !x->gl_editor->e_textedfor &&
+            if (ob && !x->gl_editor->e_selection &&
                 (ob->te_pd->c_wb == &text_widgetbehavior ||
-                    ob->ob_pd == canvas_class) &&
+                    pd_checkglist(&ob->te_pd)) &&
                         xpos >= x2-4 && ypos < y2-4)
             {
                 if (doit)
@@ -1878,7 +1878,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             t_gotfn sizefn;
             t_object *ob = pd_checkobject(&y1->g_pd);
             if (ob && ob->te_pd->c_wb == &text_widgetbehavior ||
-                    (ob->ob_pd == canvas_class &&
+                    (pd_checkglist(&ob->te_pd) &&
                         !((t_canvas *)ob)->gl_isgraph))
             {
                 wantwidth = wantwidth / sys_fontwidth(glist_getfont(x));
