@@ -7,6 +7,8 @@ SOURCES =  fiddle~.c
 PATCHES =  fiddle~-help.pd
 OTHERDATA = 
 
+EXTRA_DIST = makefile
+
 ###############################
 # you shouldn't need to add anything below here
 dist_external_DATA = $(PATCHES) $(OTHERDATA)

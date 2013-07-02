@@ -2,17 +2,18 @@
 
 NAME=pd~
 
+external_LTLIBRARIES = pd~.la pdsched.la
 PATCHES =  pd~-help.pd pd~-subprocess.pd
 OTHERDATA = 
 
 pd__la_SOURCES = pd~.c
 pdsched_la_SOURCES = pdsched.c
 
-external_LTLIBRARIES = pd~.la pdsched.la
+EXTRA_DIST = makefile notes.txt
+
+###############################
+# you shouldn't need to add anything below here
 dist_external_DATA = $(PATCHES) $(OTHERDATA)
-
-
-
 
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS	 = -I$(top_srcdir)/src -DPD

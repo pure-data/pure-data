@@ -24,7 +24,9 @@ libpdpodir = $(pkglibdir)/po
 libpdpo_DATA = $(MSGFILES)
 dist_libpdpo_DATA =
 
-EXTRA_DIST = $(POFILES)
+EXTRA_DIST = $(POFILES) \
+	iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl \
+	template.pot
 
 # generate .msg files from the .po files
 all-local: $(MSGFILES)

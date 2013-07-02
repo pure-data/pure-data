@@ -7,6 +7,8 @@ SOURCES =  loop~.c
 PATCHES =  loop~-help.pd test-loop~.pd
 OTHERDATA = 
 
+EXTRA_DIST = makefile
+
 ###############################
 # you shouldn't need to add anything below here
 dist_external_DATA = $(PATCHES) $(OTHERDATA)
