@@ -39,7 +39,12 @@ include_HEADERS = m_pd.h
 noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h
 
 # we want these in the dist tarball
-EXTRA_DIST = CHANGELOG.txt notes.txt makefile.mingw
+EXTRA_DIST = CHANGELOG.txt notes.txt \
+	pd.ico pd.rc \
+	makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
+	d_fft_fftsg.c d_fftsg_h.c \
+	s_audio_dummy.c s_audio_audiounit.c s_audio_esd.c
+
 
 # configurations per library
 if ALSA
