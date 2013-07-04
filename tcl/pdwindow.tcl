@@ -125,8 +125,8 @@ proc ::pdwindow::error {message} {logpost {} 1 $message}
 proc ::pdwindow::post {message} {logpost {} 2 $message}
 proc ::pdwindow::debug {message} {logpost {} 3 $message}
 # for backwards compatibility
-proc ::pdwindow::bug {message} {logpost {} 1 \\
-    [concat consistency check failed: $message}
+proc ::pdwindow::bug {message} {logpost {} 1 \
+    [concat consistency check failed: $message]}
 proc ::pdwindow::pdtk_post {message} {post $message}
 
 proc ::pdwindow::endpost {} {

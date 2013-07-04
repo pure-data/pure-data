@@ -109,26 +109,6 @@ static void dologpost(const void *object, const int level, const char *s)
     }
 }
 
-static void dobug(const char *s)
-{
-    char upbuf[MAXPDSTRING];
-    upbuf[MAXPDSTRING-1]=0;
-
-    // what about sys_printhook_bug ?
-    if (sys_printhook) 
-    {
-        snprintf(upbuf, MAXPDSTRING-1, "consistency check failed: %s", s);
-        (*sys_printhook)(upbuf);
-    }
-    else if (sys_printtostderr)
-        fprintf(stderr, "consistency check failed: %s", s);
-    else
-    {
-        char upbuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::bug {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
-    }
-}
-
 void logpost(const void *object, const int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
@@ -302,12 +282,12 @@ void bug(const char *fmt, ...)
     va_list ap;
     t_int arg[8];
     int i;
+    strcpy(buf, "consistency check failed: ");
     va_start(ap, fmt);
-    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf+strlen(buf), MAXPDSTRING-1, fmt, ap);
     va_end(ap);
-    strcat(buf, "\n");
 
-    dobug(buf);
+    error(buf);
 }
 
     /* this isn't worked out yet. */
