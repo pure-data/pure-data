@@ -116,6 +116,8 @@ static void scalar_define_s(t_glist *x, t_symbol *s)
         gpointer_setglist(&gp, gl, (t_scalar *)&gl->gl_list->g_pd);
         pd_pointer(s->s_thing, &gp);
         gpointer_unset(&gp);
+        pd_float(s->s_thing, 123);
+        post("it's %s", s->s_name);
     }
     else bug("scalar_define_s");
 }
