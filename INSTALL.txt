@@ -4,9 +4,12 @@ compiler chain.  Then in this directory, type "./autogen.sh", then
 "./configure"; then "make".
 
 Alternatively, you can use the fallback makefiles in "src" for gnu/linux, Mac
-OSX, or Microsoft Visual C.  (Special instructions for Microsoft Visual C: cd
-to src and type "make -f makefile.nt".  Then CD to the various subdirs of extra
-and type "make nt" in each.)
+OSX, or Microsoft Visual C.  On linux, for example, cd to src and type "make -f
+makefile.gnu" and (if you wish) "sudo make -f makefile.gnu install".
+
+Special instructions for Microsoft Visual C: cd to src and type "make -f
+makefile.nt".  Then CD to the various subdirs of extra and type "make nt" in
+each.
 
 Various dependencies: in linux and Mac you need TK (apparently always present
 for Mac and usually there for linux).  On linux you may also need an ALSA
