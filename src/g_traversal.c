@@ -346,6 +346,17 @@ static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
     else pd_error(x, "send-window: no message?");
 }
 
+
+    /* send the pointer to the named object */
+static void ptrobj_send(t_ptrobj *x, t_symbol *s)
+{
+    if (!s->s_thing)
+        pd_error(x, "%s: no such object", s->s_name);
+    else if (!gpointer_check(&x->x_gp, 1))
+        pd_error(x, "pointer_send: empty pointer");
+    else pd_pointer(s->s_thing, &x->x_gp);
+}
+
 static void ptrobj_bang(t_ptrobj *x)
 {
     t_symbol *templatesym;
@@ -353,7 +364,7 @@ static void ptrobj_bang(t_ptrobj *x)
     t_typedout *to;
     if (!gpointer_check(&x->x_gp, 1))
     {
-        pd_error(x, "ptrobj_bang: empty pointer");
+        pd_error(x, "pointer_bang: empty pointer");
         return;
     }
     templatesym = gpointer_gettemplatesym(&x->x_gp);
@@ -412,9 +423,11 @@ static void ptrobj_setup(void)
 {
     ptrobj_class = class_new(gensym("pointer"), (t_newmethod)ptrobj_new,
         (t_method)ptrobj_free, sizeof(t_ptrobj), 0, A_GIMME, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_next, gensym("next"), 0); 
+    class_addmethod(ptrobj_class, (t_method)ptrobj_send, gensym("send"), 
+        A_SYMBOL, 0); 
     class_addmethod(ptrobj_class, (t_method)ptrobj_traverse, gensym("traverse"),
         A_SYMBOL, 0); 
-    class_addmethod(ptrobj_class, (t_method)ptrobj_next, gensym("next"), 0); 
     class_addmethod(ptrobj_class, (t_method)ptrobj_vnext, gensym("vnext"), 
         A_DEFFLOAT, 0); 
     class_addmethod(ptrobj_class, (t_method)ptrobj_sendwindow,

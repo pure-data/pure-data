@@ -19,7 +19,8 @@ no-click, quantize and clip flags for plotting/mousing
 array y range to reflect y increment sign (so no 1 to -1 range)
 argmax, argmin, maybe search?
 
-revisit scalar object - naming; accessor objects
+build out scalar object - naming; accessor objects
+pointer methods to search and delete
 
 ---------------- dolist --------------------
 
