@@ -106,18 +106,15 @@ static void *scalarobj_new(t_symbol *s, int argc, t_atom *argv)
     /* send a pointer to the scalar to whomever is bound to the symbol */
 static void scalar_define_s(t_glist *x, t_symbol *s)
 {
-    t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
     if (!s->s_thing)
         pd_error(x, "scalar_define_s: %s: no such object", s->s_name);
-    else if (gl && gl->gl_list && pd_class(&gl->gl_list->g_pd) == scalar_class)
+    else if (x->gl_list && pd_class(&x->gl_list->g_pd) == scalar_class)
     {
         t_gpointer gp;
         gpointer_init(&gp);
-        gpointer_setglist(&gp, gl, (t_scalar *)&gl->gl_list->g_pd);
+        gpointer_setglist(&gp, x, (t_scalar *)&x->gl_list->g_pd);
         pd_pointer(s->s_thing, &gp);
         gpointer_unset(&gp);
-        pd_float(s->s_thing, 123);
-        post("it's %s", s->s_name);
     }
     else bug("scalar_define_s");
 }
