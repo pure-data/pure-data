@@ -354,7 +354,7 @@ void text_define_set(t_text_define *x, t_symbol *s, int argc, t_atom *argv)
 
 void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto);
 
-void text_define_save(t_gobj *z, t_binbuf *bb)
+static void text_define_save(t_gobj *z, t_binbuf *bb)
 {
     t_text_define *x = (t_text_define *)z;
     binbuf_addv(bb, "ssff", &s__X, gensym("obj"),

@@ -1,12 +1,14 @@
 GUIs 0.45 mode (no clipping, toggle for 0/1)
 look at search dialog - can't find qlist in belp-intro.pd?
+dialog or other controls when clicking on scalars to show changing values
 
 x_text.c:
 text dimension setting (message or creation arg - how to do it in structs?)
 double-click on drawtext in scalar to create editor window
-searching, sorting, packing whole text in a msg; evaluating text
+searching, sorting, sequencing/evaluating
 copying ala text_define_topointer
 "open" and "save as" messages to open text window
+how to integrate message boxes !?
 
 x_array.c:
 catch "save", key, ... inside subwindow
@@ -17,9 +19,7 @@ no-click, quantize and clip flags for plotting/mousing
 array y range to reflect y increment sign (so no 1 to -1 range)
 argmax, argmin, maybe search?
 
-scalar -k flag
-nameable scalars
-dialog or other controls on click to show changing values?
+revisit scalar object - naming; accessor objects
 
 ---------------- dolist --------------------
 

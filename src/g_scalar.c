@@ -130,9 +130,6 @@ t_scalar *scalar_new(t_glist *owner, t_symbol *templatesym)
     /* Pd method to create a new scalar, add it to a glist, and initialize
     it from the message arguments. */
 
-int glist_readscalar(t_glist *x, int natoms, t_atom *vec,
-    int *p_nextmsg, int selectit);
-
 void glist_scalar(t_glist *glist,
     t_symbol *classname, t_int argc, t_atom *argv)
 {
@@ -152,7 +149,7 @@ void glist_scalar(t_glist *glist,
     binbuf_restore(b, argc, argv);
     natoms = binbuf_getnatom(b);
     vec = binbuf_getvec(b);
-    glist_readscalar(glist, natoms, vec, &nextmsg, 0);
+    canvas_readscalar(glist, natoms, vec, &nextmsg, 0);
     binbuf_free(b);
 }
 
@@ -376,9 +373,6 @@ static int scalar_click(t_gobj *z, struct _glist *owner,
     return (scalar_doclick(x->sc_vec, template, x, 0,
         owner, 0, 0, xpix, ypix, shift, alt, dbl, doit));
 }
-
-void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
-    int amarrayelement);
 
 static void scalar_save(t_gobj *z, t_binbuf *b)
 {

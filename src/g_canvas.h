@@ -187,6 +187,7 @@ struct _glist
     unsigned int gl_goprect:1;      /* draw rectangle for graph-on-parent */
     unsigned int gl_isgraph:1;      /* show as graph on parent */
     unsigned int gl_hidetext:1;     /* hide object-name + args when doing graph on parent */
+    unsigned int gl_private:1;      /* private flag used in x_scalar.c */
 };
 
 #define gl_gobj gl_obj.te_g
@@ -555,6 +556,10 @@ EXTERN t_scalar *scalar_new(t_glist *owner,
 EXTERN void word_free(t_word *wp, t_template *tmpl);
 EXTERN void scalar_getbasexy(t_scalar *x, t_float *basex, t_float *basey);
 EXTERN void scalar_redraw(t_scalar *x, t_glist *glist);
+EXTERN void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
+    int amarrayelement);
+EXTERN int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
+    int *p_nextmsg, int selectit);
 
 /* ------helper routines for "garrays" and "plots" -------------- */
 EXTERN void array_getcoordinate(t_glist *glist,
