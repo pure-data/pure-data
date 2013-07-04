@@ -1,10 +1,10 @@
-#N canvas 563 354 688 433 12;
+#N canvas 562 353 688 433 12;
 #X text 34 388 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 1023 148 716 699 define 0;
+#N canvas 1022 147 716 699 define 1;
 #X text 324 399 creation arguments:;
 #X text 352 417 optional -k flag to keep contents (TBW);
-#X text 212 152 send a pointer to a named receive object;
+#X text 217 152 send a pointer to a named receive object;
 #X floatatom 145 299 5 0 0 0 - - -, f 5;
 #X text 46 408 click to open or edit array:;
 #X msg 31 116 read scalar-object-help.txt;
@@ -31,17 +31,17 @@
 #X text 32 20 "scalar define" defines and maintains a scalar.;
 #X text 471 29 here's the template:;
 #X obj 27 435 scalar define scalar-help-template1;
-#X msg 40 152 s scalar-help-send;
 #X obj 145 324 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X connect 3 0 20 0;
+#X msg 40 152 send scalar-help-send;
+#X connect 3 0 19 0;
 #X connect 5 0 18 0;
 #X connect 7 0 10 0;
 #X connect 10 0 3 0;
 #X connect 12 0 14 0;
 #X connect 13 0 14 2;
 #X connect 15 0 14 1;
-#X connect 19 0 18 0;
+#X connect 20 0 18 0;
 #X restore 486 212 pd define;
 #X obj 163 388 text;
 #X text 201 210 - create \, store \, and/or edit one;

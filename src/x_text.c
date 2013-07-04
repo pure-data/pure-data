@@ -345,6 +345,15 @@ void text_define_bang(t_text_define *x)
     outlet_pointer(x->x_out, &x->x_gp);
 }
 
+    /* set from a list */
+void text_define_set(t_text_define *x, t_symbol *s, int argc, t_atom *argv)
+{
+    binbuf_restore(x->x_binbuf, argc, argv);
+    textbuf_senditup(&x->x_textbuf);
+}
+
+void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto);
+
 void text_define_save(t_gobj *z, t_binbuf *bb)
 {
     t_text_define *x = (t_text_define *)z;
@@ -352,6 +361,12 @@ void text_define_save(t_gobj *z, t_binbuf *bb)
         (float)x->x_ob.te_xpix, (float)x->x_ob.te_ypix);
     binbuf_addbinbuf(bb, x->x_ob.ob_binbuf);
     binbuf_addsemi(bb);
+    if (x->x_keep)
+    {
+        binbuf_addv(bb, "ss", gensym("#A"), gensym("set"));
+        binbuf_addbinbuf(bb, x->x_binbuf);
+        binbuf_addsemi(bb);
+    }
 }
 
 static void text_define_free(t_text_define *x)
@@ -780,6 +795,69 @@ static void text_size_float(t_text_size *x, t_floatarg f)
     else outlet_float(x->x_out1, -1);
 }
 
+/* ---------------- text_tolist object - output text as a list ----------- */
+t_class *text_tolist_class;
+
+#define t_text_tolist t_text_client
+
+static void *text_tolist_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_tolist *x = (t_text_tolist *)pd_new(text_tolist_class);
+    outlet_new(&x->tc_obj, &s_list);
+    text_client_argparse(x, &argc, &argv, "text tolist");
+    if (argc)
+    {
+        post("warning: text tolist ignoring extra argument: ");
+        postatom(argc, argv);
+    }
+    if (x->tc_struct)
+        pointerinlet_new(&x->tc_obj, &x->tc_gp);
+    return (x);
+}
+
+static void text_tolist_bang(t_text_tolist *x)
+{
+    t_binbuf *b = text_client_getbuf(x), *b2;
+    int n, i, cnt = 0;
+    t_atom *vec;
+    if (!b)
+       return;
+    b2 = binbuf_new();
+    binbuf_addbinbuf(b2, b);
+    outlet_list(x->tc_obj.ob_outlet, 0, binbuf_getnatom(b2), binbuf_getvec(b2));
+    binbuf_free(b2);
+}
+
+/* ------------- text_fromlist object - set text from a list -------- */
+t_class *text_fromlist_class;
+
+#define t_text_fromlist t_text_client
+
+static void *text_fromlist_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_fromlist *x = (t_text_fromlist *)pd_new(text_fromlist_class);
+    text_client_argparse(x, &argc, &argv, "text fromlist");
+    if (argc)
+    {
+        post("warning: text fromlist ignoring extra argument: ");
+        postatom(argc, argv);
+    }
+    if (x->tc_struct)
+        pointerinlet_new(&x->tc_obj, &x->tc_gp);
+    return (x);
+}
+
+static void text_fromlist_list(t_text_fromlist *x,
+    t_symbol *s, int argc, t_atom *argv)
+{
+    t_binbuf *b = text_client_getbuf(x);
+    if (!b)
+       return;
+    binbuf_clear(b);
+    binbuf_restore(b, argc, argv);
+    text_client_senditup(x);
+}
+
 /* overall creator for "text" objects - dispatch to "text define" etc */
 static void *text_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -796,6 +874,10 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             newest = text_set_new(s, argc-1, argv+1);
         else if (!strcmp(str, "size"))
             newest = text_size_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "tolist"))
+            newest = text_tolist_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "fromlist"))
+            newest = text_fromlist_new(s, argc-1, argv+1);
         else 
         {
             error("list %s: unknown function", str);
@@ -1149,6 +1231,8 @@ void x_qlist_setup(void )
         gensym("close"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_addline, 
         gensym("addline"), A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)text_define_set,
+        gensym("set"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)text_define_clear,
         gensym("clear"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_write,
@@ -1179,6 +1263,18 @@ void x_qlist_setup(void )
     class_addbang(text_size_class, text_size_bang);
     class_addfloat(text_size_class, text_size_float);
     class_sethelpsymbol(text_size_class, gensym("text-object"));
+
+    text_tolist_class = class_new(gensym("text tolist"),
+        (t_newmethod)text_tolist_new, (t_method)text_client_free,
+            sizeof(t_text_tolist), 0, A_GIMME, 0);
+    class_addbang(text_tolist_class, text_tolist_bang);
+    class_sethelpsymbol(text_tolist_class, gensym("text-object"));
+
+    text_fromlist_class = class_new(gensym("text fromlist"),
+        (t_newmethod)text_fromlist_new, (t_method)text_client_free,
+            sizeof(t_text_fromlist), 0, A_GIMME, 0);
+    class_addlist(text_fromlist_class, text_fromlist_list);
+    class_sethelpsymbol(text_fromlist_class, gensym("text-object"));
 
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);

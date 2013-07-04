@@ -290,18 +290,18 @@ done:
 }
 
 /* add a binbuf to another one for saving.  Semicolons and commas go to
-symbols ";", "'",; We assume here (probably incorrectly) that there's
-no symbol whose name is ";" - should we be escaping those?. */
+symbols ";", "'",; and inside symbols, characters ';', ',' and '$' get
+escaped.  LATER also figure out about escaping white space */
 
 void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
 {
     t_binbuf *z = binbuf_new();
-    int i;
+    int i, fixit;
     t_atom *ap;
     binbuf_add(z, y->b_n, y->b_vec);
     for (i = 0, ap = z->b_vec; i < z->b_n; i++, ap++)
     {
-        char tbuf[MAXPDSTRING];
+        char tbuf[MAXPDSTRING], *s;
         switch (ap->a_type)
         {
         case A_FLOAT:
@@ -321,6 +321,14 @@ void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
             SETSYMBOL(ap, gensym(tbuf));
             break;
         case A_SYMBOL:
+            for (s = ap->a_w.w_symbol->s_name, fixit = 0; *s; s++)
+                if (*s == ';' || *s == ',' || *s == '$')
+                    fixit = 1;
+            if (fixit)
+            {
+                atom_string(ap, tbuf, MAXPDSTRING);
+                SETSYMBOL(ap, gensym(tbuf));
+            }
             break;
         default:
             bug("binbuf_addbinbuf");
@@ -1531,3 +1539,30 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
     s__X.s_thing = boundx;
     return x;
 }
+
+    /* save a text object to a binbuf for a file or copy buf */
+void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto)
+{
+    int k, n = binbuf_getnatom(bfrom);
+    t_atom *ap = binbuf_getvec(bfrom), at;
+    for (k = 0; k < n; k++)
+    {
+        if (ap[k].a_type == A_FLOAT ||
+            ap[k].a_type == A_SYMBOL &&
+                !strchr(ap[k].a_w.w_symbol->s_name, ';') &&
+                !strchr(ap[k].a_w.w_symbol->s_name, ',') &&
+                !strchr(ap[k].a_w.w_symbol->s_name, '$'))
+                    binbuf_add(bto, 1, &ap[k]);
+        else
+        {
+            char buf[MAXPDSTRING+1];
+            atom_string(&ap[k], buf, MAXPDSTRING);
+            SETSYMBOL(&at, gensym(buf));
+            atom_string(&at, buf, MAXPDSTRING);
+            SETSYMBOL(&at, gensym(buf));
+            binbuf_add(bto, 1, &at);
+        }
+    }
+    binbuf_addsemi(bto);
+}
+

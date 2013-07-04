@@ -156,11 +156,11 @@ t_scalar *garray_getscalar(t_garray *x);
 
     /* send a pointer to the scalar that owns this array to
     whomever is bound to the given symbol */
-static void array_define_s(t_glist *x, t_symbol *s)
+static void array_define_send(t_glist *x, t_symbol *s)
 {
     t_glist *gl = (x->gl_list ? pd_checkglist(&x->gl_list->g_pd) : 0);
     if (!s->s_thing)
-        pd_error(x, "array_define_s: %s: no such object", s->s_name);
+        pd_error(x, "array_define_send: %s: no such object", s->s_name);
     else if (gl && gl->gl_list && pd_class(&gl->gl_list->g_pd) == garray_class)
     {
         t_gpointer gp;
@@ -708,8 +708,8 @@ void x_array_setup(void )
     array_define_class = class_new(gensym("array define"), 0,
         (t_method)canvas_free, sizeof(t_canvas), 0, 0);
     canvas_add_for_class(array_define_class);
-    class_addmethod(array_define_class, (t_method)array_define_s,
-        gensym("s"), A_SYMBOL, 0);
+    class_addmethod(array_define_class, (t_method)array_define_send,
+        gensym("send"), A_SYMBOL, 0);
     class_addanything(array_define_class, array_define_anything);
     class_sethelpsymbol(array_define_class, gensym("array-object"));
     class_setsavefn(array_define_class, array_define_save);

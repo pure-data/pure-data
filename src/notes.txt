@@ -1,5 +1,5 @@
-'send' messages to number boxes, float/symbol/pointer/value, text
 GUIs 0.45 mode (no clipping, toggle for 0/1)
+look at search dialog - can't find qlist in belp-intro.pd?
 
 x_text.c:
 text dimension setting (message or creation arg - how to do it in structs?)
@@ -20,7 +20,6 @@ argmax, argmin, maybe search?
 scalar -k flag
 nameable scalars
 dialog or other controls on click to show changing values?
-look at search dialog - can't find qlist in belp-intro.pd?
 
 ---------------- dolist --------------------
 

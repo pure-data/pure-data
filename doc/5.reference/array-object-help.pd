@@ -3,11 +3,11 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 235 121 691 494 12;
+#N canvas 234 120 691 494 12;
 #X obj 208 461 list;
 #X text 34 461 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 903 372 900 716 define 1;
+#N canvas 902 371 900 716 define 1;
 #X text 295 562 creation arguments:;
 #X text 325 597 optional name;
 #X text 322 164 read from a file;
@@ -40,7 +40,7 @@ it as shown in these examples:;
 #X obj 38 659 array define -k array-help-2 10;
 #A 0 -0.320006 -0.506676 -0.326673 0.43334 0.540009 0.373339 0 0 0
 0;
-#X msg 49 313 s array-help-send;
+#X msg 49 313 send array-help-send;
 #X connect 7 0 11 0;
 #X connect 9 0 11 0;
 #X connect 10 0 11 0;
