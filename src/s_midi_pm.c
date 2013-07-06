@@ -21,6 +21,29 @@
 #include "portmidi.h"
 #include "porttime.h"
 
+#define MIDINOTEOFF       0x80  /* 2 following 'data bytes' */
+#define MIDINOTEON        0x90  /* 2 */
+#define MIDIPOLYTOUCH     0xa0  /* 2 */
+#define MIDICONTROLCHANGE 0xb0  /* 2 */
+#define MIDIPROGRAMCHANGE 0xc0  /* 1 */
+#define MIDICHANNELTOUCH  0xd0  /* 1 */
+#define MIDIPITCHBEND     0xe0  /* 2 */
+#define MIDISTARTSYSEX    0xf0  /* (until F7) */
+#define MIDITIMECODE      0xf1  /* 1 */
+#define MIDISONGPOS       0xf2  /* 2 */
+#define MIDISONGSELECT    0xf3  /* 1 */
+#define MIDIRESERVED1     0xf4  /* ? */
+#define MIDIRESERVED2     0xf5  /* ? */
+#define MIDITUNEREQUEST   0xf6  /* 0 */
+#define MIDIENDSYSEX      0xf7  /* 0 */
+#define MIDICLOCK         0xf8  /* 0 */
+#define MIDITICK          0xf9  /* 0 */
+#define MIDISTART         0xfa  /* 0 */
+#define MIDICONT          0xfb  /* 0 */
+#define MIDISTOP          0xfc  /* 0 */
+#define MIDIACTIVESENSE   0xfe  /* 0 */
+#define MIDIRESET         0xff  /* 0 */
+
 static PmStream *mac_midiindevlist[MAXMIDIINDEV];
 static PmStream *mac_midioutdevlist[MAXMIDIOUTDEV];
 static int mac_nmidiindev;
@@ -211,7 +234,8 @@ void sys_putmidibyte(int portno, int byte)
 
 int nd_sysex_mode=0;
 
-/* send in 4 bytes of sysex data. if one of the bytes is 0xF7 (sysex end) stop and unset nd_sysex_mode */ 
+/* send in 4 bytes of sysex data. if one of the bytes is 0xF7 (sysex end)
+    stop and unset nd_sysex_mode */ 
 void nd_sysex_inword(int midiindev, int status, int data1, int data2, int data3)
 {
     if (nd_sysex_mode) {
@@ -255,31 +279,37 @@ void sys_poll_midi(void)
                 int status = Pm_MessageStatus(buffer.message);
                 int data1  = Pm_MessageData1(buffer.message);
                 int data2  = Pm_MessageData2(buffer.message);
-                int data3 = ((buffer.message >> 24) & 0xFF);
-                int msgtype = (status >> 4) - 8;
-                switch (msgtype)
+                int data3 = ((buffer.message >> 24) & 0xff);
+                int msgtype = ((status & 0xf0) == 0xf0 ?
+                    status : (status & 0xf0));
+                if (nd_sysex_mode)
+                    nd_sysex_inword(i, status, data1, data2, data3);
+                else switch (msgtype)
                 {
-                case 0: 
-                case 1: 
-                case 2:
-                case 3:
-                case 6:
+                case MIDINOTEOFF: 
+                case MIDINOTEON: 
+                case MIDIPOLYTOUCH:
+                case MIDICONTROLCHANGE:
+                case MIDIPITCHBEND:
+                case MIDISONGPOS:
                     sys_midibytein(i, status);
                     sys_midibytein(i, data1);
                     sys_midibytein(i, data2);
                     break; 
-                case 4:
-                case 5:
+                case MIDIPROGRAMCHANGE:
+                case MIDICHANNELTOUCH:
+                case MIDITIMECODE:
+                case MIDISONGSELECT:
                     sys_midibytein(i, status);
                     sys_midibytein(i, data1);
                     break;
-                case 7:
+                case MIDISTARTSYSEX:
                     nd_sysex_mode=1;
                     nd_sysex_inword(i, status, data1, data2, data3);
                     break; 
                 default:
-                    if (nd_sysex_mode)
-                        nd_sysex_inword(i, status, data1, data2, data3);
+                    sys_midibytein(i, status);
+                    break;
                 }
             }
             else break;
