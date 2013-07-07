@@ -1,14 +1,14 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 583 301 638 476 12;
-#X obj 131 432 list;
+#N canvas 581 299 660 583 12;
+#X obj 131 474 list;
 #X obj 18 6 text;
-#X text 25 431 see also:;
+#X text 25 473 see also:;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array table4 100 float 0;
 #X coords 0 1 99 -1 500 300 1;
 #X restore 50 50 graph;
-#X restore 171 432 array;
+#X restore 171 474 array;
 #X obj 280 217 text define;
 #X text 81 173 The text object's first argument sets its function:
 , f 30;
@@ -158,8 +158,8 @@ inlet -- none to specify whole line), f 63;
 #X text 58 35 a simple example showing how to access text in data structures
 via pointers.;
 #N canvas 851 144 450 300 text-help-data 0;
-#X scalar text-help-struct 20 20 \; a b c d \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-1 2 3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+#X scalar text-help-struct 20 20 \; a b c d \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+1 2 3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 \;;
 #X text 13 86 We have one datum (above) whose "z" field is text.;
 #X restore 209 108 pd text-help-data;
@@ -195,10 +195,10 @@ via pointers.;
 #X connect 21 0 18 0;
 #X connect 22 0 17 0;
 #X connect 23 0 17 0;
-#X restore 83 392 pd text-and-data-structures;
-#X text 73 368 here's how to access texts inside data structures:;
+#X restore 83 434 pd text-and-data-structures;
+#X text 73 410 here's how to access texts inside data structures:;
 #X text 63 6 - manage a list of messages;
-#X obj 219 432 scalar;
+#X obj 219 474 scalar;
 #X obj 280 287 text size;
 #N canvas 847 155 741 313 size 0;
 #X obj 71 55 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -271,7 +271,7 @@ of the list.;
 #X text 91 239 read and output a line;
 #X text 100 263 replace or add a line;
 #X text 115 288 get number of lines;
-#X text 365 430 updated for Pd version 0.45;
+#X text 365 472 updated for Pd version 0.45;
 #X text 62 50 In Pd a "text" refers to a list of atoms that can include
 commas \, semicolons \, and dollar-sign constructs - anything that
 can go in a message box or a patch (as a saved file). You can use them
@@ -326,3 +326,105 @@ contained is discarded.;
 #X connect 7 0 0 1;
 #X restore 392 334 pd fromlist;
 #X text 131 336 convert from list;
+#X text 218 359 search;
+#X obj 280 358 text search;
+#N canvas 137 75 1011 913 search 0;
+#X floatatom 60 313 5 0 0 0 - - -, f 5;
+#X text 385 232 find another text by name or pointer, f 18;
+#X text 207 280 arguments: name of the text object or "-s struct-name"
+, f 30;
+#X text 46 11 "text search" outputs the line number of the line that
+best matches a search key. By default it seeks a line whose leading
+fields match the incoming list.;
+#X obj 52 873 text define -k text-help-search;
+#A set 1 2 3 dog \; 7 8 9 cat \; 4 5 3 dog \; 7 8 9 alligator \; random
+line that won't match numbers \;;
+#X obj 60 270 text search text-help-search, f 16;
+#X msg 182 244 symbol text-help-search;
+#X msg 60 77 1;
+#X msg 60 101 2;
+#X msg 60 125 4;
+#X msg 69 188 4 5;
+#X msg 69 211 4 13;
+#X msg 60 149 7;
+#X text 110 76 matches first line (number 0);
+#X text 102 99 doesn't match first field of any line so -1;
+#X text 103 125 matches second line;
+#X text 114 188 matches two fields of second line;
+#X text 113 210 fails on second field so no match;
+#X text 211 314 ... then optional search fields. Each is a field number
+(starting from 0) optionally preceeded by ">". ">=" \, "<" \, "<="
+\, or "near".;
+#X text 98 150 if two lines match only the first is output (but see
+below for finding best matches).;
+#X msg 47 446 7 cat;
+#X msg 47 470 7 alligator;
+#X floatatom 47 574 5 0 0 0 - - -, f 5;
+#X msg 47 494 7 dog;
+#X obj 47 518 text search text-help-search 0 3, f 16;
+#X floatatom 503 600 5 0 0 0 - - -, f 5;
+#X obj 503 541 text search text-help-search 1, f 16;
+#X msg 504 508 8 9;
+#X msg 559 486 8 9 alligator;
+#X msg 504 482 8;
+#X msg 559 513 symbol line;
+#X text 43 392 in this example we ask to match both field 0 and field
+3 exactly. In field 3 we're testing symbols for equality., f 39;
+#X text 401 382 If the search pattern (the incoming list) has more
+fields than we have specified search fields \, extra search patterns
+match succeeding fields starting from the last one give as an argument.
+So for example if there are no arguments we look for matches to any
+number of fields starting from the beginning of the line in the text.
+;
+#X floatatom 49 834 5 0 0 0 - - -, f 5;
+#X obj 49 778 text search text-help-search > 0, f 16;
+#X text 45 613 Match a line for which the search key is greater than
+field zero of that line. The line getting closest to the key wins.
+, f 41;
+#X msg 49 671 2;
+#X msg 49 713 4;
+#X text 86 664 lines 1 \, 2 \, and 3 match \, but 2 wins because its
+first field (4) is closest to the search key 2, f 48;
+#X text 88 703 this matches lines 1 and 3 \, and each is equally good
+\, so line 1 wins., f 43;
+#X text 86 744 nobody's first field is greater than 10;
+#X msg 49 745 10;
+#X obj 507 809 text search text-help-search 2 near 0, f 18;
+#X floatatom 507 866 5 0 0 0 - - -, f 5;
+#X msg 507 685 3 3;
+#X msg 507 714 3 2.5 1;
+#X msg 507 775 3 3 1;
+#X text 506 628 Hear we ask for field 2 to equal 3 and fields starting
+at 0 to be 'near' the following arguments., f 33;
+#X text 547 684 field 2 is 3 and field 0 nearest 3;
+#X text 575 706 here lines 0 and 2 tie over 2.4 (1 and 4 are equally
+far from it) so line 0 whose second field is closer to 1 wins., f
+40;
+#X text 560 766 Here line 2 wins because its field 0 is nearer to 3
+\, notwithstanding that its field 1 is farther from 1;
+#X connect 5 0 0 0;
+#X connect 6 0 5 1;
+#X connect 7 0 5 0;
+#X connect 8 0 5 0;
+#X connect 9 0 5 0;
+#X connect 10 0 5 0;
+#X connect 11 0 5 0;
+#X connect 12 0 5 0;
+#X connect 20 0 24 0;
+#X connect 21 0 24 0;
+#X connect 23 0 24 0;
+#X connect 24 0 22 0;
+#X connect 26 0 25 0;
+#X connect 27 0 26 0;
+#X connect 28 0 26 0;
+#X connect 29 0 26 0;
+#X connect 30 0 26 0;
+#X connect 34 0 33 0;
+#X connect 36 0 34 0;
+#X connect 37 0 34 0;
+#X connect 41 0 34 0;
+#X connect 42 0 43 0;
+#X connect 44 0 42 0;
+#X connect 45 0 42 0;
+#X connect 46 0 42 0;
+#X restore 393 358 pd search;

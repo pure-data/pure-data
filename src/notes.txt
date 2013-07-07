@@ -4,10 +4,11 @@ dialog or other controls when clicking on scalars to show changing values
 pointer methods to search and delete
 
 x_text.c:
+
 figure out about -cr
 text dimension setting (message or creation arg - how to do it in structs?)
 double-click on drawtext in scalar to create editor window
-searching, sorting, sequencing/evaluating
+searching, sorting, sequencing/evaluating, delete/insert
 copying ala text_define_topointer
 "open" and "save as" messages to open text window
 how to integrate message boxes !?
