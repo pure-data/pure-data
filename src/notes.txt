@@ -1,6 +1,7 @@
 GUIs 0.45 mode (no clipping, toggle for 0/1)
 look at search dialog - can't find qlist in belp-intro.pd?
 dialog or other controls when clicking on scalars to show changing values
+pointer methods to search and delete
 
 x_text.c:
 text dimension setting (message or creation arg - how to do it in structs?)
@@ -19,8 +20,7 @@ no-click, quantize and clip flags for plotting/mousing
 array y range to reflect y increment sign (so no 1 to -1 range)
 argmax, argmin, maybe search?
 
-build out scalar object - naming; accessor objects
-pointer methods to search and delete
+build out scalar object - naming; "scalar set/get" objects
 
 ---------------- dolist --------------------
 

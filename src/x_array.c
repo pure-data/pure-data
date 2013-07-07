@@ -329,6 +329,7 @@ static void *array_size_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_sym);
     outlet_new(&x->x_tc.tc_obj, &s_float);
     return (x);
 }
@@ -458,6 +459,7 @@ static void *array_rangeop_new(t_class *class,
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_tc.tc_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_sym);
     *argcp = argc;
     *argvp = argv;
     return (x);

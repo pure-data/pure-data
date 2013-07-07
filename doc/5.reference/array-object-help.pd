@@ -3,11 +3,11 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 234 120 691 494 12;
+#N canvas 232 118 691 494 12;
 #X obj 208 461 list;
 #X text 34 461 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 902 371 900 716 define 1;
+#N canvas 849 222 900 716 define 0;
 #X text 295 562 creation arguments:;
 #X text 325 597 optional name;
 #X text 322 164 read from a file;
@@ -38,8 +38,7 @@ those above - xticks \, etc \, and also lists to set values.;
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
 #X obj 38 659 array define -k array-help-2 10;
-#A 0 -0.320006 -0.506676 -0.326673 0.43334 0.540009 0.373339 0 0 0
-0;
+#A 0 -0.320006 0 0 0 0 0 0 0 0 0;
 #X msg 49 313 send array-help-send;
 #X connect 7 0 11 0;
 #X connect 9 0 11 0;
@@ -63,7 +62,7 @@ it as shown in these examples:;
 #X text 193 210 - create \, store \, and/or edit one;
 #X text 193 237 - get or change size;
 #X text 194 261 - sum all or a range of elements;
-#N canvas 620 87 677 677 array-and-data-structures 0;
+#N canvas 624 95 689 679 array-and-data-structures 0;
 #X obj 98 247 pointer;
 #N canvas 804 396 504 278 array-help-struct 0;
 #X scalar array-help-struct 20 20 \; 0 \; 0 \; -1 \; -6 \; -9 \; -10
@@ -139,6 +138,8 @@ in the array we're referring to. In this example the array has (x \,
 y \, w) triples (struct element-struct2) and we're asking for the "w"
 field using the "-f" flag and its two arguments.;
 #X text 128 629 sum of all the 'w' values in the array;
+#X text 225 267 when "-s" is given this inlet takes a pointer in place
+of a name., f 35;
 #X connect 0 0 6 2;
 #X connect 3 0 0 0;
 #X connect 4 0 5 0;
@@ -152,19 +153,26 @@ field using the "-f" flag and its two arguments.;
 #X connect 18 0 11 0;
 #X connect 22 0 14 0;
 #X restore 87 421 pd array-and-data-structures;
-#N canvas 772 175 769 381 size 0;
-#X floatatom 25 119 5 1 100 0 - - -, f 5;
+#N canvas 771 174 751 261 size 0;
+#X floatatom 26 95 5 1 100 0 - - -, f 5;
 #X obj 25 200 print;
 #X text 45 19 "array size" outputs the size (if sent a bang) or sets
 the size (if sent a number).;
 #X obj 25 171 array size array-help-2;
-#X obj 34 146 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X obj 35 122 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X text 226 169 creations arguments: either array name or "-s" and
 optional "-f" flags to refer to an array in a data structure;
+#X msg 249 137 symbol array-help-2;
+#X text 414 110 inlet to set name or pointer;
+#X text 74 94 number to set size;
+#X text 59 121 bang outputs size;
+#X msg 248 113 symbol array-help-1;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;
 #X connect 4 0 3 0;
+#X connect 6 0 3 1;
+#X connect 10 0 3 1;
 #X restore 486 236 pd size;
 #X obj 90 212 array define;
 #X text 84 397 accessing arrays inside data structures:;
@@ -180,83 +188,92 @@ to get or change its size \, set or read its elements \, and so on.
 #X obj 153 461 scalar;
 #X obj 90 260 array sum;
 #X obj 90 332 array quantile;
-#N canvas 896 192 776 362 sum 0;
+#N canvas 791 201 776 362 sum 0;
 #X floatatom 74 135 5 0 10 0 - - -, f 5;
 #X obj 65 114 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X floatatom 65 238 5 0 0 0 - - -, f 5;
-#X floatatom 158 162 5 -1 10 0 - - -, f 5;
+#X floatatom 65 268 5 0 0 0 - - -, f 5;
+#X floatatom 111 162 5 -1 10 0 - - -, f 5;
 #X text 45 19 "array sum" outputs the sum of all or a selected range
 of elements of the array.;
-#X obj 65 188 array sum array-help-2, f 12;
-#X text 224 228 - optional number to initialize onset - default 0;
-#X text 223 247 - optional number to initialize number of points -
+#X obj 65 223 array sum array-help-2, f 12;
+#X text 183 262 - optional number to initialize onset - default 0;
+#X text 183 281 - optional number to initialize number of points -
 default -1, f 61;
 #X text 91 112 bang to output sum;
-#X text 228 191 creation arguments: either array name or "-s" and optional
+#X text 184 226 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
 #X text 124 131 onset (first index to sum from) \, zero for start of
 array;
-#X text 206 157 number of points or -1 for end of array;
-#X text 65 298 (array-help-2 is defined in the "define" subwindow).
+#X text 159 157 number of points or -1 for end of array;
+#X text 65 328 (array-help-2 is defined in the "define" subwindow).
 ;
+#X msg 158 189 symbol array-help-2;
+#X text 322 188 set name or pointer;
 #X connect 0 0 5 0;
 #X connect 1 0 5 0;
 #X connect 3 0 5 1;
 #X connect 5 0 2 0;
+#X connect 13 0 5 2;
 #X restore 486 260 pd sum;
 #X obj 90 284 array get;
-#N canvas 283 641 805 335 get 0;
-#X floatatom 138 125 5 0 10 0 - - -, f 5;
-#X obj 121 100 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X floatatom 212 148 5 -1 10 0 - - -, f 5;
-#X obj 119 170 array get array-help-2, f 12;
-#X obj 119 211 print;
+#N canvas 344 599 805 335 get 0;
+#X floatatom 135 103 5 0 10 0 - - -, f 5;
+#X obj 118 78 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 165 126 5 -1 10 0 - - -, f 5;
+#X obj 119 185 array get array-help-2, f 12;
+#X obj 119 226 print;
 #X text 45 19 "array get" outputs all or a selected range of elements
 of the array as a list.;
-#X text 276 223 - optional number to initialize onset - default 0;
-#X text 275 242 - optional number to initialize number of points -
+#X text 276 238 - optional number to initialize onset - default 0;
+#X text 275 257 - optional number to initialize number of points -
 default -1, f 61;
-#X text 280 186 creation arguments: either array name or "-s" and optional
+#X text 280 201 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
-#X text 184 124 onset (first index to sum from) \, zero for start of
+#X text 181 102 onset (first index to sum from) \, zero for start of
 array;
-#X text 259 150 number of points or -1 for end of array;
-#X text 143 100 bang for output;
+#X text 212 128 number of points or -1 for end of array;
+#X text 140 78 bang for output;
 #X text 65 298 (array-help-2 is defined in the "define" subwindow).
 ;
+#X msg 212 155 symbol array-help-2;
+#X text 376 154 set name or pointer;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 1;
 #X connect 3 0 4 0;
+#X connect 13 0 3 2;
 #X restore 486 284 pd get;
 #X obj 90 308 array set;
-#N canvas 788 265 752 328 set 0;
-#X obj 119 170 array set array-help-2, f 12;
-#X msg 118 117 0.1 0.2 0.3 0.4 0.3 0.2 0.1;
+#N canvas 525 369 752 328 set 0;
+#X obj 119 203 array set array-help-2, f 12;
+#X msg 119 117 0.1 0.2 0.3 0.4 0.3 0.2 0.1;
 #X text 45 19 "array set" sets values of an array from an incoming
 list \, starting from a specified onset (0 by default). The size of
 the array is not changed -- values that would be written past the end
 of the array are dropped.;
-#X floatatom 212 147 5 0 0 0 - - -, f 5;
-#X text 262 145 onset (first index to write to);
-#X text 252 211 - optional number to initialize onset - default 0;
-#X text 256 174 creation arguments: either array name or "-s" and optional
+#X floatatom 165 143 5 0 0 0 - - -, f 5;
+#X text 215 141 onset (first index to write to);
+#X text 252 244 - optional number to initialize onset - default 0;
+#X text 256 207 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
 #X text 349 118 list of values to write to array;
 #X text 56 265 (array-help-2 is defined in the "define" subwindow).
 ;
+#X msg 212 170 symbol array-help-2;
+#X text 376 169 set name or pointer;
 #X connect 1 0 0 0;
 #X connect 3 0 0 1;
+#X connect 9 0 0 2;
 #X restore 486 308 pd set;
 #X text 194 285 - get contents as a list;
 #X text 194 309 - set contents from a list;
 #X text 212 333 - get a quantile;
 #X obj 90 356 array random;
-#N canvas 103 244 843 624 quantile+random 0;
-#X floatatom 117 164 5 0 100 0 - - -, f 5;
-#X obj 63 214 array quantile array-help-3, f 14;
+#N canvas 102 243 816 629 quantile+random 0;
+#X floatatom 75 177 5 0 100 0 - - -, f 5;
+#X obj 39 251 array quantile array-help-3, f 14;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array-help-3 100 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0.00715053 0.00715053 0.0285789 0.0500072
@@ -269,53 +286,59 @@ of the array are dropped.;
 0.349997 0.335712 0.321426 0.278569 0.192856 0.149999 0.135714 0.114285
 0.0999998 0.0714298 0.0642871 0.0571443 0.0285732 0 0 0 0 0;
 #X coords 0 1 99 0 200 140 1 0 0;
-#X restore 72 371 graph;
-#X floatatom 172 185 5 -1 100 0 - - -, f 5;
-#X msg 78 520 \; array-help-3 const 0;
-#X floatatom 63 143 5 -1 100 0 - - -, f 5;
-#X obj 63 168 / 100;
-#X floatatom 62 258 5 0 100 0 - - -, f 5;
-#X text 110 140 quantile;
-#X floatatom 393 545 5 0 100 0 - - -, f 5;
-#X obj 395 501 array random array-help-3, f 13;
-#X obj 395 410 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X restore 37 375 graph;
+#X floatatom 111 198 5 -1 100 0 - - -, f 5;
+#X msg 43 524 \; array-help-3 const 0;
+#X floatatom 39 131 5 -1 100 0 - - -, f 5;
+#X obj 39 152 / 100;
+#X floatatom 39 295 5 0 100 0 - - -, f 5;
+#X floatatom 368 599 5 0 100 0 - - -, f 5;
+#X obj 370 555 array random array-help-3, f 13;
+#X obj 370 435 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 408 459 5 0 0 0 - - -, f 5;
-#X floatatom 496 479 5 0 0 0 - - -, f 5;
-#X text 328 333 "array random" makes a pseudo-random numbver from 0
+#X floatatom 383 484 5 0 0 0 - - -, f 5;
+#X floatatom 420 507 5 0 0 0 - - -, f 5;
+#X text 303 358 "array random" makes a pseudo-random numbver from 0
 to 1 and outputs its quantile (which will therefore have probabilities
 proportional to the table's values.);
-#X text 419 405 bang to generate a random value;
-#X msg 402 431 seed 56;
-#X text 470 431 set random seed;
-#X text 216 251 - optional number to initialize onset - default 0;
-#X text 215 270 - optional number to initialize number of points -
+#X text 394 430 bang to generate a random value;
+#X msg 377 456 seed 56;
+#X text 445 456 set random seed;
+#X text 170 286 - optional number to initialize onset - default 0;
+#X text 169 305 - optional number to initialize number of points -
 default -1, f 61;
-#X text 519 515 same creation arguments;
-#X text 220 214 creation arguments: either array name or "-s" and optional
+#X text 494 569 same creation arguments;
+#X text 174 249 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
-#X text 162 161 onset (first index to sum from) \, zero for start of
+#X text 120 174 onset (first index to sum from) \, zero for start of
 array;
-#X text 221 183 number of points or -1 for end of array;
-#X text 40 9 "array quantile" outputs the specified quantile of the
+#X text 160 196 number of points or -1 for end of array;
+#X text 130 5 "array quantile" outputs the specified quantile of the
 array - so for instance \, the 0.5 quantile is the median of the array.
 This generalizes the "array random" function allowing you to use the
 same source of randomness on several arrays \, for example. Negative
 numbers in the array are silently replaced by zero. Quantiles outside
 the range 0-1 output the x values at the two extremes of the array
 (0 and 99 here).;
-#X text 453 456 onset;
-#X text 542 477 number of points;
+#X text 428 481 onset;
+#X text 466 505 number of points;
+#X text 88 130 quantile (between 0 and 1);
+#X msg 149 218 symbol array-help-2;
+#X text 313 217 set name or pointer;
+#X msg 471 529 symbol array-help-2;
+#X text 635 528 set name or pointer;
 #X connect 0 0 1 1;
 #X connect 1 0 7 0;
 #X connect 3 0 1 2;
 #X connect 5 0 6 0;
 #X connect 6 0 1 0;
+#X connect 9 0 8 0;
 #X connect 10 0 9 0;
-#X connect 11 0 10 0;
-#X connect 12 0 10 0;
-#X connect 13 0 10 1;
-#X connect 16 0 10 0;
-#X restore 489 346 pd quantile+random;
+#X connect 11 0 9 0;
+#X connect 12 0 9 1;
+#X connect 15 0 9 0;
+#X connect 27 0 1 3;
+#X connect 29 0 9 2;
+#X restore 485 346 pd quantile+random;
 #X text 195 356 - random - array as probabilities;
 #X text 444 471 updated for Pd version 0.45;
