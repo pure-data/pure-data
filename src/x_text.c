@@ -577,6 +577,7 @@ static void *text_get_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
     return (x);
 }
 
@@ -671,6 +672,7 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
     return (x);
 }
 
@@ -759,6 +761,7 @@ static void *text_size_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->x_struct)
         pointerinlet_new(&x->x_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
     return (x);
 }
 
@@ -812,6 +815,7 @@ static void *text_tolist_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->tc_struct)
         pointerinlet_new(&x->tc_obj, &x->tc_gp);
+    else symbolinlet_new(&x->tc_obj, &x->tc_sym);
     return (x);
 }
 
@@ -844,6 +848,7 @@ static void *text_fromlist_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (x->tc_struct)
         pointerinlet_new(&x->tc_obj, &x->tc_gp);
+    else symbolinlet_new(&x->tc_obj, &x->tc_sym);
     return (x);
 }
 
