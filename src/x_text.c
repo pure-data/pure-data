@@ -1110,6 +1110,117 @@ static void text_search_list(t_text_search *x,
     outlet_float(x->x_out1, bestline);
 }
 
+/* ---------------- text_sequence object - sequencer ----------- */
+
+t_class *text_sequence_class;
+
+typedef struct _text_sequence
+{
+    t_text_client x_tc;
+    t_outlet *x_out1;
+    t_outlet *x_out2;	/* bang at end */
+    int x_onset;
+    int x_argc;
+    t_atom *x_argv;
+} t_text_sequence;
+
+static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_sequence *x = (t_text_sequence *)pd_new(text_sequence_class);
+    x->x_out1 = outlet_new(&x->x_obj, &s_list);
+    x->x_out2 = outlet_new(&x->x_obj, &s_bang);
+    text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
+    if (argc)
+    {
+        post("warning: text sequence ignoring extra argument: ");
+        postatom(argc, argv);
+    }
+    if (x->x_tc.tc_struct)
+        pointerinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_gp);
+    else symbolinlet_new(&x->x_tc.tc_obj, &x->x_tc.tc_sym);
+    x->x_argc = 0;
+    x->x_argv = (t_atom *)getbytes(0);
+    x->x_onset = 0x7fffffff;
+    return (x);
+}
+
+static void text_sequence_bang(t_text_sequence *x)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
+    int n, i, nfield;
+    t_atom *vec, *outvec, *ap;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    if (x->x_onset >= n)
+    {
+        x->x_onset = 0x7fffffff;
+    	outlet_bang(x->x_out2);
+	return;
+    }
+    for (i = x->x_onset; i < n && vec[i].a_type != A_SEMI &&
+        vec[i].a_type != A_COMMA; i++)
+            ;
+    nfield = i - x->x_onset;
+    i++;
+    if (i >= n)
+        i = 0x7fffffff;
+    x->x_onset = i;
+    ATOMS_ALLOCA(outvec, nfield);
+    for (i = 0, ap = vec+onset; i < nfield; i++)
+    {
+        int type = ap->a_type;
+        if (type == A_DOLLAR)
+        {
+            if (ap->a.w.w_float < 0 ||ap->a.w.w_float > x->x_argc)
+            {
+                pd_serror(x, "argument $%d out of range", ap->a.w.w_float);
+                SETFLOAT(outvec+i, 0);
+            }
+            else outvec[i] = x->x_argv[ap->a.w.w_float];
+        }
+        else if (type == A_DOLLSYM)
+        {
+            t_symbol *s = binbuf_realizedollsym(at->a_w.w_symbol,
+                argc, argv, 0);
+            if (s)
+                SETSYMBOL(outvec+i, s);
+            else
+            {
+                error("$%s: not enough arguments supplied",
+                    at->a_w.w_symbol->s_name);
+                SETSYMBOL(outvec+i, &s_symbol);
+            }
+        }
+        else outvec[i] = *ap;
+    }
+    ATOMS_FREEA(outvec, nfield);
+}
+
+static void text_sequence_goto(t_text_sequence *x, t_floatarg *f)
+{
+    t_binbuf *b = text_client_getbuf(x), *b2;
+    int n, start, end;
+    t_atom *vec;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    if (!text_nthline(n, vec, f, &start, &end))
+    {
+        pd_error(x, "text sequence: line number %d out of range", (int)f);
+        x->x_onset = 0x7fffffff;
+    }
+    else x->x_onset = start;
+}
+
+static void text_sequence_free(t_text_sequence *x)
+{
+    t_freebytes(x->x_argv, sizeof(t_atom) * x->x_argv);
+    text_client_free(&x->x_tc);
+}
+
 /* --- overall creator for "text" objects: dispatch to "text define" etc --- */
 static void *text_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -1535,6 +1646,12 @@ void x_qlist_setup(void )
             sizeof(t_text_search), 0, A_GIMME, 0);
     class_addlist(text_search_class, text_search_list);
     class_sethelpsymbol(text_search_class, gensym("text-object"));
+
+    text_sequence_class = class_new(gensym("text sequence"),
+        (t_newmethod)text_sequence_new, (t_method)text_sequence_free,
+            sizeof(t_text_sequence), 0, A_GIMME, 0);
+    class_addlist(text_sequence_class, text_sequence_list);
+    class_sethelpsymbol(text_sequence_class, gensym("text-object"));
 
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);
