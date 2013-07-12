@@ -1118,7 +1118,7 @@ typedef struct _text_sequence
 {
     t_text_client x_tc;
     t_outlet *x_out1;
-    t_outlet *x_out2;	/* bang at end */
+    t_outlet *x_out2;   /* bang at end */
     int x_onset;
     int x_argc;
     t_atom *x_argv;
@@ -1147,7 +1147,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 static void text_sequence_bang(t_text_sequence *x)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
-    int n, i, nfield;
+    int n, i, onset, nfield;
     t_atom *vec, *outvec, *ap;
     if (!b)
        return;
@@ -1156,51 +1156,54 @@ static void text_sequence_bang(t_text_sequence *x)
     if (x->x_onset >= n)
     {
         x->x_onset = 0x7fffffff;
-    	outlet_bang(x->x_out2);
-	return;
+        outlet_bang(x->x_out2);
+        return;
     }
-    for (i = x->x_onset; i < n && vec[i].a_type != A_SEMI &&
+    onset = x->x_onset;
+    for (i = onset; i < n && vec[i].a_type != A_SEMI &&
         vec[i].a_type != A_COMMA; i++)
             ;
-    nfield = i - x->x_onset;
+    nfield = i - onset;
     i++;
     if (i >= n)
         i = 0x7fffffff;
     x->x_onset = i;
     ATOMS_ALLOCA(outvec, nfield);
-    for (i = 0, ap = vec+onset; i < nfield; i++)
+    for (i = 0, ap = vec+onset; i < nfield; i++, ap++)
     {
         int type = ap->a_type;
         if (type == A_DOLLAR)
         {
-            if (ap->a.w.w_float < 0 ||ap->a.w.w_float > x->x_argc)
+            int atno = ap->a_w.w_index-1;
+            if (atno < 0 || atno >= x->x_argc)
             {
-                pd_serror(x, "argument $%d out of range", ap->a.w.w_float);
+                pd_error(x, "argument $%d out of range", atno+1);
                 SETFLOAT(outvec+i, 0);
             }
-            else outvec[i] = x->x_argv[ap->a.w.w_float];
+            else outvec[i] = x->x_argv[atno];
         }
         else if (type == A_DOLLSYM)
         {
-            t_symbol *s = binbuf_realizedollsym(at->a_w.w_symbol,
-                argc, argv, 0);
+            t_symbol *s = binbuf_realizedollsym(ap->a_w.w_symbol,
+                x->x_argc, x->x_argv, 0);
             if (s)
                 SETSYMBOL(outvec+i, s);
             else
             {
                 error("$%s: not enough arguments supplied",
-                    at->a_w.w_symbol->s_name);
+                    ap->a_w.w_symbol->s_name);
                 SETSYMBOL(outvec+i, &s_symbol);
             }
         }
         else outvec[i] = *ap;
     }
+    outlet_list(x->x_out1, 0, nfield, outvec);
     ATOMS_FREEA(outvec, nfield);
 }
 
-static void text_sequence_goto(t_text_sequence *x, t_floatarg *f)
+static void text_sequence_goto(t_text_sequence *x, t_floatarg f)
 {
-    t_binbuf *b = text_client_getbuf(x), *b2;
+    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
     int n, start, end;
     t_atom *vec;
     if (!b)
@@ -1215,9 +1218,20 @@ static void text_sequence_goto(t_text_sequence *x, t_floatarg *f)
     else x->x_onset = start;
 }
 
+static void text_sequence_args(t_text_sequence *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    int i;
+    x->x_argv = t_resizebytes(x->x_argv,
+        x->x_argc * sizeof(t_atom), argc * sizeof(t_atom));
+    for (i = 0; i < argc; i++)
+        x->x_argv[i] = argv[i];
+    x->x_argc = argc;
+}
+
 static void text_sequence_free(t_text_sequence *x)
 {
-    t_freebytes(x->x_argv, sizeof(t_atom) * x->x_argv);
+    t_freebytes(x->x_argv, sizeof(t_atom) * x->x_argc);
     text_client_free(&x->x_tc);
 }
 
@@ -1243,6 +1257,8 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             newest = text_fromlist_new(s, argc-1, argv+1);
         else if (!strcmp(str, "search"))
             newest = text_search_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "sequence"))
+            newest = text_sequence_new(s, argc-1, argv+1);
         else 
         {
             error("list %s: unknown function", str);
@@ -1650,7 +1666,11 @@ void x_qlist_setup(void )
     text_sequence_class = class_new(gensym("text sequence"),
         (t_newmethod)text_sequence_new, (t_method)text_sequence_free,
             sizeof(t_text_sequence), 0, A_GIMME, 0);
-    class_addlist(text_sequence_class, text_sequence_list);
+    class_addmethod(text_sequence_class, (t_method)text_sequence_goto, 
+        gensym("goto"), A_FLOAT, 0);
+    class_addmethod(text_sequence_class, (t_method)text_sequence_args, 
+        gensym("args"), A_GIMME, 0);
+    class_addbang(text_sequence_class, text_sequence_bang);
     class_sethelpsymbol(text_sequence_class, gensym("text-object"));
 
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
