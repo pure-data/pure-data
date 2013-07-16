@@ -1,3 +1,5 @@
+retyping resized messages and objects should restore width?
+-- also objects that save their contents should keep formatting
 GUIs 0.45 mode (no clipping, toggle for 0/1)
 look at search dialog - can't find qlist in belp-intro.pd?
 dialog or other controls when clicking on scalars to show changing values

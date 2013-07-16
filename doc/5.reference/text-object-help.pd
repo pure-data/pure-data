@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 575 293 660 583 12;
+#N canvas 346 319 660 583 12;
 #X obj 131 474 list;
 #X obj 18 6 text;
 #X text 25 473 see also:;
@@ -158,8 +158,8 @@ inlet -- none to specify whole line), f 63;
 #X text 58 35 a simple example showing how to access text in data structures
 via pointers.;
 #N canvas 851 144 450 300 text-help-data 0;
-#X scalar text-help-struct 20 20 \; a b c d \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
-1 2 3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+#X scalar text-help-struct 20 20 \; a b c d \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
+1 2 3 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 \;;
 #X text 13 86 We have one datum (above) whose "z" field is text.;
 #X restore 209 108 pd text-help-data;
@@ -430,33 +430,143 @@ far from it) so line 0 whose second field is closer to 1 wins., f
 #X restore 393 358 pd search;
 #X text 76 383 sequencer/message-sender;
 #X obj 280 381 text sequence;
-#N canvas 735 121 837 695 sequence 1;
-#X text 210 238 arguments: name of the text object or "-s struct-name"
-, f 30;
-#X text 46 11 "text search" outputs the line number of the line that
-best matches a search key. By default it seeks a line whose leading
-fields match the incoming list.;
-#X msg 182 208 symbol text-help-search;
-#X obj 67 606 text define -k text-help-sequence;
-#A set 1 2 3 4 \; 5 6 7 8 \; 9 10 11 12 \; 13 \$1 \$3 \$1-\$2-\$3 \;
-;
-#X text 385 196 specify another text by name or pointer, f 22;
-#X msg 60 78 bang;
-#X text 130 77 bang to output next line;
-#X obj 60 289 print out1;
-#X obj 193 290 print out2;
-#X msg 60 101 goto 0;
-#X msg 60 125 goto 1;
-#X text 135 104 goto to select next line number to output (counting
-from 0), f 32;
-#X msg 60 153 args 1 2 fuzz;
-#X obj 60 234 text sequence text-help-sequence, f 18;
-#X text 181 154 set values for \$1 \, \$2 \, etc. in sequence;
-#X connect 2 0 13 1;
-#X connect 5 0 13 0;
-#X connect 9 0 13 0;
-#X connect 10 0 13 0;
-#X connect 12 0 13 0;
-#X connect 13 0 7 0;
-#X connect 13 1 8 0;
+#N canvas 618 112 1154 891 sequence 0;
+#X msg 139 439 symbol text-help-search;
+#X text 102 414 specify another text by name or pointer;
+#X msg 38 225 bang;
+#X obj 38 619 print out1;
+#X obj 139 617 print out2;
+#X msg 47 386 args 1 2 fuzz;
+#X msg 38 167 line 0;
+#X obj 655 282 text sequence text-help-seq2 -g, f 17;
+#X obj 889 300 text define -k text-help-seq2;
+#A set test1 1 2 3 \; 1000 test2 6 7 8 \; test1 9 10 \; 500 1500 test1
+\; test2 13 14 \;;
+#X msg 771 248 bang;
+#X msg 655 248 line 0;
+#X obj 338 709 print test1;
+#X obj 338 682 r test1;
+#X obj 338 744 r test2;
+#X obj 338 771 print test2;
+#X obj 749 329 print done;
+#X obj 47 362 loadbang;
+#X text 164 385 set values for \$1 \, \$2 \, etc;
+#X msg 38 198 step;
+#X text 82 198 output next line;
+#X text 98 160 set current line number (counting from 0), f 23;
+#X msg 820 248 auto;
+#X msg 868 248 stop;
+#X msg 38 263 auto;
+#X text 80 219 output all lines starting from current one to next waiting
+point, f 34;
+#X text 44 644 lists;
+#X text 134 640 bang if done;
+#X text 163 498 -g to specify global mode (each line begins with a
+symbolic destination), f 39;
+#X text 165 533 -w <symbol> specifies that lines beginning with the
+symbol are waiting points, f 43;
+#X text 166 568 -w <number> specifies that every line's leading n atoms
+are used as a waiting point, f 43;
+#X obj 38 468 text sequence text-help-seq, f 13;
+#X text 231 460 creation arguments:, f 30;
+#X text 165 479 name of the text object or "-s struct-name";
+#X obj 59 703 text define -k text-help-seq;
+#A set 1 2 3 \; 4 5 symbol 7 \; 8 \$1 \$2 \; 9 \$3 \$1-\$2-\$3 \;;
+#X obj 653 328 print wait;
+#X msg 37 327 stop;
+#X text 84 328 stop the sequence;
+#X text 30 10 "text sequence" outputs lines from a text buffer \, either
+to an outlet \, or as messages to named destinations. The text is interpreted
+as a sequence of lists \, and possibly some interspersed waiting instructions
+(called "waits" here). You can ask for one line at a time ("step" message")
+\, or to proceed without delay to the next wait ("bang") \, or to automatically
+sequence through a series of waits (with each wait specifying a delay
+in milliseconds);
+#X text 79 255 automatically sequence \, interpreting waits as delay
+times (but note there aren't any waits in this example - see at right)
+, f 36;
+#X text 625 20 The -g flag (which must be given after specifying the
+text with a name or a "-s" argument) specifies that the text contains
+messages to send to global symbols. Lines beginning with symbols are
+sent to the corresponding receive (or other named object). Leading
+numbers are then interpreted as waits. If you use "bang" to sequence
+the text the waits will be output as lists for you to interpret as
+you wish. If you send an "auto" message \, wait points that consist
+of a single number are interpreted as delay times in milliseconds (but
+waits with 2 or more arguments are treated as in "bang"). Here the
+two waits are "1000" and "500 1500".;
+#X text 653 228 rewind;
+#X text 912 274 click to see the sequence:;
+#X msg 723 248 step;
+#X msg 761 448 bang;
+#X msg 629 448 line 0;
+#X obj 825 535 print done;
+#X msg 816 448 auto;
+#X msg 869 449 stop;
+#X obj 726 535 print wait;
+#X msg 704 448 step;
+#X obj 885 496 text define -k text-help-seq3;
+#A set 1 2 3 \; fred 1000 \; 4 5 6 \; blanch 7 8 \; fred 500 \; 9 10
+\;;
+#X obj 629 482 text sequence text-help-seq3 -w fred, f 22;
+#X obj 629 535 print out1;
+#X text 624 365 Alternatively \, with the "-w" flag (with or without
+"-g" but most usefully without) \, you can specify a symbol that tags
+an entire line as a wait. Here the three outlets are for lists (regular
+lines) \, waits \, and a bang at end of sequence:;
+#X msg 760 718 bang;
+#X msg 628 718 line 0;
+#X msg 815 718 auto;
+#X msg 868 719 stop;
+#X msg 703 718 step;
+#X text 623 576 If you want to use leading numbers in lists as waits
+without having to specify "-g" \, specify "-w 3" for example and up
+to 3 leading numbers (fewer if there's a symbol among the first 3 items)
+wil be taken as a wait. Waits specified this way can only have numeric
+elements (while waits spefied with a symbol tag as above could have
+symbols too if desired.) Here we use "-w 1" so the "auto" feature can
+simply sequence a list of numbers:;
+#X text 934 472 sequence:;
+#X text 962 746 sequence:;
+#X obj 884 766 text define -k text-help-seq4;
+#A set 0 1 2 3 \; 1000 4 5 6 \; 500 7 8 9 \; 500 10 11 12 \;;
+#X obj 628 752 text sequence text-help-seq4 -w 1, f 19;
+#X obj 824 802 print done;
+#X obj 725 802 print wait;
+#X obj 628 802 print out1;
+#X connect 0 0 30 1;
+#X connect 2 0 30 0;
+#X connect 5 0 30 0;
+#X connect 6 0 30 0;
+#X connect 7 0 34 0;
+#X connect 7 1 15 0;
+#X connect 9 0 7 0;
+#X connect 10 0 7 0;
+#X connect 12 0 11 0;
+#X connect 13 0 14 0;
+#X connect 16 0 5 0;
+#X connect 18 0 30 0;
+#X connect 21 0 7 0;
+#X connect 22 0 7 0;
+#X connect 23 0 30 0;
+#X connect 30 0 3 0;
+#X connect 30 1 4 0;
+#X connect 35 0 30 0;
+#X connect 42 0 7 0;
+#X connect 43 0 51 0;
+#X connect 44 0 51 0;
+#X connect 46 0 51 0;
+#X connect 47 0 51 0;
+#X connect 49 0 51 0;
+#X connect 51 0 52 0;
+#X connect 51 1 48 0;
+#X connect 51 2 45 0;
+#X connect 54 0 63 0;
+#X connect 55 0 63 0;
+#X connect 56 0 63 0;
+#X connect 57 0 63 0;
+#X connect 58 0 63 0;
+#X connect 63 0 66 0;
+#X connect 63 1 65 0;
+#X connect 63 2 64 0;
 #X restore 393 381 pd sequence;

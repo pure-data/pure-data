@@ -1036,7 +1036,7 @@ static void text_search_list(t_text_search *x,
                 {
                     if (field >= thisn
                         || vec[thisstart+field].a_type != argv[j].a_type)
-                            bug("list search 2");
+                            bug("text search 2");
                     if (argv[j].a_type == A_FLOAT)      /* arg is a float */
                     {
                         float thisv = vec[thisstart+field].a_w.w_float, 
@@ -1117,19 +1117,59 @@ t_class *text_sequence_class;
 typedef struct _text_sequence
 {
     t_text_client x_tc;
-    t_outlet *x_out1;
-    t_outlet *x_out2;   /* bang at end */
+    t_outlet *x_mainout;    /* outlet for lists, zero if "global" */
+    t_outlet *x_waitout;    /* outlet for wait times, zero if we never wait */
+    t_outlet *x_endout;    /* bang when hit end */
     int x_onset;
     int x_argc;
     t_atom *x_argv;
+    t_symbol *x_waitsym;    /* symbol to initiate wait, zero if none */
+    int x_waitargc;         /* how many leading numbers to use for waiting */
+    t_clock *x_clock;       /* calback for auto mode */
+    t_float x_nextdelay;
+    unsigned char x_eaten;  /* true if we've eaten leading numbers already */
+    unsigned char x_loop;   /* true if we can send multiple lines */
+    unsigned char x_auto;   /* set timer when we hit single-number time list */
 } t_text_sequence;
+
+static void text_sequence_tick(t_text_sequence *x);
 
 static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_sequence *x = (t_text_sequence *)pd_new(text_sequence_class);
-    x->x_out1 = outlet_new(&x->x_obj, &s_list);
-    x->x_out2 = outlet_new(&x->x_obj, &s_bang);
+    int global = 0;
     text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
+    x->x_waitsym = 0;
+    x->x_waitargc = 0;
+    x->x_eaten = 0;
+    x->x_loop = 0;
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-w") && argc >= 2)
+        {
+            if (argv[1].a_type == A_SYMBOL)
+            {
+                x->x_waitsym = argv[1].a_w.w_symbol;
+                x->x_waitargc = 0;
+            }
+            else
+            {
+                x->x_waitsym = 0;
+                if ((x->x_waitargc = argv[1].a_w.w_float) < 0)
+                    x->x_waitargc = 0;
+            }
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-g"))
+            global = 1;
+        else
+        {
+            pd_error("text sequence: unknown flag '%s'...",
+                argv->a_w.w_symbol->s_name);
+        }
+        argc--; argv++;
+    }
     if (argc)
     {
         post("warning: text sequence ignoring extra argument: ");
@@ -1141,13 +1181,25 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_argc = 0;
     x->x_argv = (t_atom *)getbytes(0);
     x->x_onset = 0x7fffffff;
+    x->x_mainout = (!global ? outlet_new(&x->x_obj, &s_list) : 0);
+    x->x_waitout = (global || x->x_waitsym || x->x_waitargc ?
+        outlet_new(&x->x_obj, &s_list) : 0);
+    x->x_endout = outlet_new(&x->x_obj, &s_bang);
+    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
+    if (global)
+    {
+        if (x->x_waitargc)
+            pd_error(x, 
+       "warning: text sequence: numeric 'w' argument ignored if '-g' given");
+        x->x_waitargc = 0x7fffffff;
+    }
     return (x);
 }
 
-static void text_sequence_bang(t_text_sequence *x)
+static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
-    int n, i, onset, nfield;
+    int n, i, onset, nfield, wait, eatsemi = 1;
     t_atom *vec, *outvec, *ap;
     if (!b)
        return;
@@ -1156,36 +1208,70 @@ static void text_sequence_bang(t_text_sequence *x)
     if (x->x_onset >= n)
     {
         x->x_onset = 0x7fffffff;
-        outlet_bang(x->x_out2);
+        x->x_loop = x->x_auto = 0;
+        outlet_bang(x->x_endout);
         return;
     }
     onset = x->x_onset;
-    for (i = onset; i < n && vec[i].a_type != A_SEMI &&
-        vec[i].a_type != A_COMMA; i++)
-            ;
+
+        /* test if leading numbers, or a leading symbol equal to our
+        "wait symbol", are directing us to wait */
+    if (vec[onset].a_type == A_FLOAT && x->x_waitargc && !x->x_eaten ||
+        vec[onset].a_type == A_SYMBOL &&
+            vec[onset].a_w.w_symbol == x->x_waitsym)
+    {
+        if (vec[onset].a_type == A_FLOAT)
+        {
+            for (i = onset; i < n && i < onset + x->x_waitargc &&
+                vec[i].a_type == A_FLOAT; i++)
+                    ;
+            x->x_eaten = 1;
+            eatsemi = 0;
+        }
+        else
+        {
+            for (i = onset; i < n && vec[i].a_type != A_SEMI &&
+                vec[i].a_type != A_COMMA; i++)
+                    ;
+            x->x_eaten = 1;
+            onset++;    /* symbol isn't part of wait list */
+        }
+        wait = 1;
+    }
+    else    /* message to send */
+    {
+        for (i = onset; i < n && vec[i].a_type != A_SEMI &&
+            vec[i].a_type != A_COMMA; i++)
+                ;
+        wait = 0;
+        x->x_eaten = 0;
+    }
     nfield = i - onset;
-    i++;
+    i += eatsemi;
     if (i >= n)
         i = 0x7fffffff;
     x->x_onset = i;
+        /* generate output list, realizing dolar sign atoms */
     ATOMS_ALLOCA(outvec, nfield);
     for (i = 0, ap = vec+onset; i < nfield; i++, ap++)
     {
         int type = ap->a_type;
-        if (type == A_DOLLAR)
+        if (type == A_FLOAT || type == A_SYMBOL)
+            outvec[i] = *ap;
+        else if (type == A_DOLLAR)
         {
             int atno = ap->a_w.w_index-1;
-            if (atno < 0 || atno >= x->x_argc)
+            if (atno < 0 || atno >= argc)
             {
                 pd_error(x, "argument $%d out of range", atno+1);
                 SETFLOAT(outvec+i, 0);
             }
-            else outvec[i] = x->x_argv[atno];
+            else outvec[i] = argv[atno];
         }
         else if (type == A_DOLLSYM)
         {
-            t_symbol *s = binbuf_realizedollsym(ap->a_w.w_symbol,
-                x->x_argc, x->x_argv, 0);
+            t_symbol *s =
+                binbuf_realizedollsym(ap->a_w.w_symbol, argc, argv, 0);
             if (s)
                 SETSYMBOL(outvec+i, s);
             else
@@ -1195,13 +1281,88 @@ static void text_sequence_bang(t_text_sequence *x)
                 SETSYMBOL(outvec+i, &s_symbol);
             }
         }
-        else outvec[i] = *ap;
+        else bug("text sequence");
     }
-    outlet_list(x->x_out1, 0, nfield, outvec);
+    if (wait)
+    {
+        x->x_loop = 0;
+        if (x->x_auto && nfield == 1 && outvec[0].a_type == A_FLOAT)
+            x->x_nextdelay = outvec[0].a_w.w_float;
+        else if (!x->x_waitout)
+            bug("text sequence 3");
+        else
+        {
+            x->x_auto = 0;
+            outlet_list(x->x_waitout, 0, nfield, outvec);
+        }
+    }
+    else if (x->x_mainout)
+        outlet_list(x->x_mainout, 0, nfield, outvec);
+    else if (nfield)
+    {
+        if (outvec[0].a_type != A_SYMBOL)
+            bug("text sequence 2");
+        else if (!outvec[0].a_w.w_symbol->s_thing)
+            pd_error(x, "%s: no such object", outvec[0].a_w.w_symbol->s_name);
+        else if (nfield > 1 && outvec[1].a_type == A_SYMBOL)
+            typedmess(outvec[0].a_w.w_symbol->s_thing,
+                outvec[1].a_w.w_symbol, nfield-2, outvec+2);
+        else pd_list(outvec[0].a_w.w_symbol->s_thing, 0, nfield-1, outvec+1);
+    }
     ATOMS_FREEA(outvec, nfield);
 }
 
-static void text_sequence_goto(t_text_sequence *x, t_floatarg f)
+static void text_sequence_list(t_text_sequence *x, t_symbol *s, int argc,
+    t_atom *argv)
+{
+    x->x_loop = 1;
+    while (x->x_loop)
+    {
+        if (argc)
+            text_sequence_doit(x, argc, argv);
+        else text_sequence_doit(x, x->x_argc, x->x_argv);
+    }
+}
+
+static void text_sequence_stop(t_text_sequence *x)
+{
+    x->x_loop = 0;
+    if (x->x_auto)
+    {
+        clock_unset(x->x_clock);
+        x->x_auto = 0;
+    }
+}
+
+static void text_sequence_tick(t_text_sequence *x)  /* clock callback */
+{
+    while (x->x_auto)
+    {
+        x->x_loop = 1;
+        while (x->x_loop)  
+            text_sequence_doit(x, x->x_argc, x->x_argv);
+        if (x->x_nextdelay > 0) 
+            break;
+    }
+    if (x->x_auto)
+        clock_delay(x->x_clock, x->x_nextdelay);
+}
+
+static void text_sequence_auto(t_text_sequence *x)
+{
+    if (x->x_auto)
+        clock_unset(x->x_clock);
+    x->x_auto = 1;
+    text_sequence_tick(x);
+}
+
+static void text_sequence_step(t_text_sequence *x)
+{
+    text_sequence_stop(x);
+    text_sequence_doit(x, x->x_argc, x->x_argv);
+}
+
+static void text_sequence_line(t_text_sequence *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
     int n, start, end;
@@ -1216,6 +1377,7 @@ static void text_sequence_goto(t_text_sequence *x, t_floatarg f)
         x->x_onset = 0x7fffffff;
     }
     else x->x_onset = start;
+    x->x_eaten = 0;
 }
 
 static void text_sequence_args(t_text_sequence *x, t_symbol *s,
@@ -1232,6 +1394,7 @@ static void text_sequence_args(t_text_sequence *x, t_symbol *s,
 static void text_sequence_free(t_text_sequence *x)
 {
     t_freebytes(x->x_argv, sizeof(t_atom) * x->x_argc);
+    clock_free(x->x_clock);
     text_client_free(&x->x_tc);
 }
 
@@ -1666,11 +1829,17 @@ void x_qlist_setup(void )
     text_sequence_class = class_new(gensym("text sequence"),
         (t_newmethod)text_sequence_new, (t_method)text_sequence_free,
             sizeof(t_text_sequence), 0, A_GIMME, 0);
-    class_addmethod(text_sequence_class, (t_method)text_sequence_goto, 
-        gensym("goto"), A_FLOAT, 0);
+    class_addmethod(text_sequence_class, (t_method)text_sequence_step, 
+        gensym("step"), 0);
+    class_addmethod(text_sequence_class, (t_method)text_sequence_line, 
+        gensym("line"), A_FLOAT, 0);
+    class_addmethod(text_sequence_class, (t_method)text_sequence_auto, 
+        gensym("auto"), 0);
+    class_addmethod(text_sequence_class, (t_method)text_sequence_stop, 
+        gensym("stop"), 0);
     class_addmethod(text_sequence_class, (t_method)text_sequence_args, 
         gensym("args"), A_GIMME, 0);
-    class_addbang(text_sequence_class, text_sequence_bang);
+    class_addlist(text_sequence_class, text_sequence_list);
     class_sethelpsymbol(text_sequence_class, gensym("text-object"));
 
     qlist_class = class_new(gensym("qlist"), (t_newmethod)qlist_new,
