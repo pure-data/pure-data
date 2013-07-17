@@ -56,8 +56,7 @@ COMMON_OBJS = \
 	src/common/pa_front.o \
 	src/common/pa_process.o \
 	src/common/pa_stream.o \
-	src/common/pa_trace.o \
-	src/hostapi/skeleton/pa_hostapi_skeleton.o
+	src/common/pa_trace.o
 
 LOOPBACK_OBJS = \
 	qa/loopback/src/audio_analyzer.o \
@@ -68,52 +67,10 @@ LOOPBACK_OBJS = \
 	qa/loopback/src/paqa.o
 	
 EXAMPLES = \
-	bin/pa_devs \
-	bin/pa_fuzz \
-	bin/paex_pink \
-	bin/paex_read_write_wire \
-	bin/paex_record \
-	bin/paex_saw \
-	bin/paex_sine \
-	bin/paex_write_sine \
-	bin/paex_write_sine_nonint
 
 SELFTESTS = \
-	bin/paqa_devs \
-	bin/paqa_errs \
-	bin/paqa_latency
 	
 TESTS = \
-	bin/patest1 \
-	bin/patest_buffer \
-	bin/patest_callbackstop \
-	bin/patest_clip \
-	bin/patest_dither \
-	bin/patest_hang \
-	bin/patest_in_overflow \
-	bin/patest_latency \
-	bin/patest_leftright \
-	bin/patest_longsine \
-	bin/patest_many \
-	bin/patest_maxsines \
-	bin/patest_mono \
-	bin/patest_multi_sine \
-	bin/patest_out_underflow \
-	bin/patest_prime \
-	bin/patest_ringmix \
-	bin/patest_sine8 \
-	bin/patest_sine_channelmaps \
-	bin/patest_sine_formats \
-	bin/patest_sine_time \
-	bin/patest_sine_srate \
-	bin/patest_start_stop \
-	bin/patest_stop \
-	bin/patest_stop_playout \
-	bin/patest_toomanysines \
-	bin/patest_two_rates \
-	bin/patest_underflow \
-	bin/patest_wire \
-	bin/pa_minlat
 
 # Most of these don't compile yet.  Put them in TESTS, above, if
 # you want to try to compile them...

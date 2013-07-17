@@ -331,7 +331,6 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/hdial-help.pd \
 	doc/5.reference/help-intro.pd \
 	doc/5.reference/hip~-help.pd \
-	doc/5.reference/hradio-help.pd \
 	doc/5.reference/hslider-help.pd \
 	doc/5.reference/int-help.pd \
 	doc/5.reference/key-help.pd \
@@ -401,8 +400,6 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/tabosc4~-help.pd \
 	doc/5.reference/tabplay~-help.pd \
 	doc/5.reference/tabread-help.pd \
-	doc/5.reference/tabread4-help.pd \
-	doc/5.reference/tabread~-help.pd \
 	doc/5.reference/tabread4~-help.pd \
 	doc/5.reference/tabreceive~-help.pd \
 	doc/5.reference/tabsend~-help.pd \
@@ -410,7 +407,6 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/tabwrite~-help.pd \
 	doc/5.reference/text-help.pd \
 	doc/5.reference/text-object-help.pd \
-	doc/5.reference/text-object-help.txt \
 	doc/5.reference/textfile-help.pd \
 	doc/5.reference/textfile.txt \
 	doc/5.reference/threshold~-help.pd \
@@ -425,7 +421,6 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/vdial-help.pd \
 	doc/5.reference/vd~-help.pd \
 	doc/5.reference/vline~-help.pd \
-	doc/5.reference/vradio-help.pd \
 	doc/5.reference/vslider-help.pd \
 	doc/5.reference/vu-help.pd \
 	doc/5.reference/wrap~-help.pd \
