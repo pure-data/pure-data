@@ -1,10 +1,6 @@
-retyping resized messages and objects should restore width?
-control-enter to deselect an object?
-DAC on/off graphic feedback
 flag to expand to "nominal" widths/heights
-
 GUIs 0.45 mode (no clipping, toggle for 0/1)
-look at search dialog - can't find qlist in belp-intro.pd?
+look at search dialog - scroll to view when find off screen
 dialog or other controls when clicking on scalars to show changing values
 pointer methods to search and delete
 
@@ -75,7 +71,6 @@ scofo reports error on reading score1.txt
 loading e-mailed patches without removing headers crashes pd
 check if _vsnprintf with zero argument in windows works any better...
 detect adc~ and dac~ reblocking
-wierd bug: help doesn't work if pd is started in 5.reference directory
 
 more demonstration patches:
 vibrato using variable delay
@@ -83,6 +78,7 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
+control-enter to deselect an object?
 add way to query readsf~ for fill pointer (sf feature request 3598776)
 'route' object to sprout inlet if no args (like sel)
 optionally suppress leading "." directories and files on "open"

@@ -16,6 +16,7 @@ namespace eval ::pdwindow:: {
     namespace export pdtk_post
     namespace export pdtk_pd_dsp
     namespace export pdtk_pd_dio
+    namespace export pdtk_pd_audio
 }
 
 # TODO make the Pd window save its size and location between running
@@ -178,11 +179,15 @@ proc ::pdwindow::pdtk_pd_dsp {value} {
 
 proc ::pdwindow::pdtk_pd_dio {red} {
     if {$red == 1} {
-        .pdwindow.header.dio configure -foreground red
+        .pdwindow.header.ioframe.dio configure -foreground red
     } else {
-        .pdwindow.header.dio configure -foreground lightgray
+        .pdwindow.header.ioframe.dio configure -foreground lightgray
     }
         
+}
+
+proc ::pdwindow::pdtk_pd_audio {state} {
+    .pdwindow.header.ioframe.iostate configure -text [concat audio $state]
 }
 
 #--bindings specific to the Pd window------------------------------------------#
@@ -330,12 +335,27 @@ proc ::pdwindow::create_window {} {
         -font {$::font_family 18 bold} -takefocus 1 -background lightgray \
         -borderwidth 0  -command {pdsend "pd dsp $::dsp"}
     pack .pdwindow.header.dsp -side right -fill y -anchor e -padx 5 -pady 0
-# DIO button
-    label .pdwindow.header.dio -text [_ "audio I/O error"] -borderwidth 0 \
+
+# frame for DIO error and audio in/out labels
+    frame .pdwindow.header.ioframe -background lightgray
+    pack .pdwindow.header.ioframe -side right -padx 30
+
+# I/O state label (shows I/O on/off/in-only/out-only)
+    label .pdwindow.header.ioframe.iostate \
+        -text [_ "audio I/O off"] -borderwidth 0 \
+        -background lightgray -foreground black \
+        -takefocus 0 \
+        -font {$::font_family 14}
+
+# DIO error label
+    label .pdwindow.header.ioframe.dio \
+        -text [_ "audio I/O error"] -borderwidth 0 \
         -background lightgray -foreground lightgray \
         -takefocus 0 \
         -font {$::font_family 14}
-    pack .pdwindow.header.dio -side right -fill y -padx 30 -pady 0
+
+    pack .pdwindow.header.ioframe.iostate .pdwindow.header.ioframe.dio \
+        -side top
 
     label .pdwindow.header.loglabel -text [_ "Log:"] -anchor e \
         -background lightgray

@@ -357,6 +357,7 @@ void sched_set_using_audio(int flag)
         
     sys_time_per_dsp_tick = (TIMEUNITPERSEC) *
         ((double)sys_schedblocksize) / sys_dacsr;
+    sys_vgui("pdtk_pd_audio %s\n", flag ? "on" : "off");
 }
 
     /* take the scheduler forward one DSP tick, also handling clock timeouts */

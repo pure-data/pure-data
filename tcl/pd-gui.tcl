@@ -62,6 +62,7 @@ namespace import ::pd_menucommands::*
 namespace import ::pd_connect::pdsend
 namespace import ::pdwindow::pdtk_post
 namespace import ::pdwindow::pdtk_pd_dio
+namespace import ::pdwindow::pdtk_pd_audio
 namespace import ::pdwindow::pdtk_pd_dsp
 namespace import ::pdwindow::pdtk_pd_meters
 namespace import ::pdtk_canvas::pdtk_canvas_popup
