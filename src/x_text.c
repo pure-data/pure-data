@@ -352,7 +352,6 @@ void text_define_set(t_text_define *x, t_symbol *s, int argc, t_atom *argv)
     textbuf_senditup(&x->x_textbuf);
 }
 
-void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto);
 
 static void text_define_save(t_gobj *z, t_binbuf *bb)
 {
@@ -367,6 +366,7 @@ static void text_define_save(t_gobj *z, t_binbuf *bb)
         binbuf_addbinbuf(bb, x->x_binbuf);
         binbuf_addsemi(bb);
     }
+    obj_saveformat(&x->x_ob, bb);
 }
 
 static void text_define_free(t_text_define *x)

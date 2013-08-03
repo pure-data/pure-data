@@ -1,12 +1,14 @@
 retyping resized messages and objects should restore width?
--- also objects that save their contents should keep formatting
+control-enter to deselect an object?
+DAC on/off graphic feedback
+flag to expand to "nominal" widths/heights
+
 GUIs 0.45 mode (no clipping, toggle for 0/1)
 look at search dialog - can't find qlist in belp-intro.pd?
 dialog or other controls when clicking on scalars to show changing values
 pointer methods to search and delete
 
 x_text.c:
-
 figure out about -cr
 text dimension setting (message or creation arg - how to do it in structs?)
 double-click on drawtext in scalar to create editor window
@@ -14,6 +16,7 @@ searching, sorting, sequencing/evaluating, delete/insert
 copying ala text_define_topointer
 "open" and "save as" messages to open text window
 how to integrate message boxes !?
+timeunit message
 
 x_array.c:
 catch "save", key, ... inside subwindow
@@ -45,6 +48,7 @@ mac:
 Gnome: why don't windows pop up when clicked on?
 
 problems:
+fix behavior when dragging bject outside screen (stop the evil auto-scrolls)
 pd~ "start" followed by messages gives race condition because of "fromgui" biz
 find asdf$1 (e.g.) doesn't work
 check real-time gaps in writesf~

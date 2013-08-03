@@ -189,9 +189,6 @@ static void glist_checkanddeselectall(t_glist *gl, t_gobj *g)
 void glist_deselect(t_glist *x, t_gobj *y)
 {
     int fixdsp = 0;
-    static int reenter = 0;
-    /* if (reenter) return; */
-    reenter = 1;
     if (x->gl_editor)
     {
         t_selection *sel, *sel2;
@@ -246,7 +243,6 @@ void glist_deselect(t_glist *x, t_gobj *y)
         if (fixdsp)
             canvas_resume_dsp(1);
     }
-    reenter = 0;
 }
 
 void glist_noselect(t_glist *x)
@@ -2668,12 +2664,26 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
 {
     x->gl_edit = (unsigned int) state;
     if (x->gl_edit && glist_isvisible(x) && glist_istoplevel(x))
+    {
+        t_gobj *g;
+        t_object *ob;
         canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
+        for (g = x->gl_list; g; g = g->g_next)
+            if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT)
+        {
+            t_rtext *y = glist_findrtext(x, ob);
+            text_drawborder(ob, x,
+                rtext_gettag(y), rtext_width(y), rtext_height(y), 1);
+        }
+    }
     else
     {
         glist_noselect(x);
         if (glist_isvisible(x) && glist_istoplevel(x))
+        {
             canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
+            sys_vgui(".x%lx.c delete commentbar\n", glist_getcanvas(x));
+        }
     }
     if (glist_isvisible(x))
       sys_vgui("pdtk_canvas_editmode .x%lx %d\n",

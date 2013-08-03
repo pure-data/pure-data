@@ -150,6 +150,7 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
     binbuf_addsemi(bb);
 
     garray_savecontentsto((t_garray *)gl->gl_list, bb);
+    obj_saveformat(&x->gl_obj, bb);
 }
 
 t_scalar *garray_getscalar(t_garray *x);
