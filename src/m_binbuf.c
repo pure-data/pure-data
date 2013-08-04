@@ -1445,42 +1445,6 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
     return (newb);
 }
 
-    /* function to support searching */
-int binbuf_match(t_binbuf *inbuf, t_binbuf *searchbuf, int wholeword)
-{
-    int indexin, nmatched;
-    for (indexin = 0; indexin <= inbuf->b_n - searchbuf->b_n; indexin++)
-    {
-        for (nmatched = 0; nmatched < searchbuf->b_n; nmatched++)
-        {
-            t_atom *a1 = &inbuf->b_vec[indexin + nmatched], 
-                *a2 = &searchbuf->b_vec[nmatched];
-            if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
-            {
-                if (a2->a_type != a1->a_type)
-                    goto nomatch;
-            }
-            else if (a1->a_type == A_FLOAT || a1->a_type == A_DOLLAR)
-            {
-                if (a2->a_type != a1->a_type || 
-                    a1->a_w.w_float != a2->a_w.w_float)
-                        goto nomatch;
-            }
-            else if (a1->a_type == A_SYMBOL || a1->a_type == A_DOLLSYM)
-            {
-                if ((a2->a_type != A_SYMBOL && a2->a_type != A_DOLLSYM)
-                    || (wholeword && a1->a_w.w_symbol != a2->a_w.w_symbol)
-                    || (!wholeword &&  !strstr(a1->a_w.w_symbol->s_name,
-                                        a2->a_w.w_symbol->s_name)))
-                        goto nomatch;
-            }           
-        }
-        return (1);
-    nomatch: ;
-    }
-    return (0);
-}
-
 void pd_doloadbang(void);
 
 /* LATER make this evaluate the file on-the-fly. */

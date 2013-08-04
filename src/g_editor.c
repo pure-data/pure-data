@@ -2022,13 +2022,51 @@ static void canvas_menufont(t_canvas *x)
 
 static int canvas_find_index1, canvas_find_index2, canvas_find_wholeword;
 static t_binbuf *canvas_findbuf;
-int binbuf_match(t_binbuf *inbuf, t_binbuf *searchbuf, int wholeword);
+
+    /* function to support searching */
+static int atoms_match(int inargc, t_atom *inargv, int searchargc,
+    t_atom *searchargv, int wholeword)
+{
+    int indexin, nmatched;
+    for (indexin = 0; indexin <= inargc - searchargc; indexin++)
+    {
+        for (nmatched = 0; nmatched < searchargc; nmatched++)
+        {
+            t_atom *a1 = &inargv[indexin + nmatched], 
+                *a2 = &searchargv[nmatched];
+            if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
+            {
+                if (a2->a_type != a1->a_type)
+                    goto nomatch;
+            }
+            else if (a1->a_type == A_FLOAT || a1->a_type == A_DOLLAR)
+            {
+                if (a2->a_type != a1->a_type || 
+                    a1->a_w.w_float != a2->a_w.w_float)
+                        goto nomatch;
+            }
+            else if (a1->a_type == A_SYMBOL || a1->a_type == A_DOLLSYM)
+            {
+                if ((a2->a_type != A_SYMBOL && a2->a_type != A_DOLLSYM)
+                    || (wholeword && a1->a_w.w_symbol != a2->a_w.w_symbol)
+                    || (!wholeword &&  !strstr(a1->a_w.w_symbol->s_name,
+                                        a2->a_w.w_symbol->s_name)))
+                        goto nomatch;
+            }           
+        }
+        return (1);
+    nomatch: ;
+    }
+    return (0);
+}
 
     /* find an atom or string of atoms */
 static int canvas_dofind(t_canvas *x, int *myindex1p)
 {
     t_gobj *y;
-    int myindex1 = *myindex1p, myindex2;
+    int myindex1 = *myindex1p, myindex2,
+        findargc = binbuf_getnatom(canvas_findbuf);
+    t_atom *findargv = binbuf_getvec(canvas_findbuf);
     if (myindex1 >= canvas_find_index1)
     {
         for (y = x->gl_list, myindex2 = 0; y;
@@ -2037,8 +2075,9 @@ static int canvas_dofind(t_canvas *x, int *myindex1p)
             t_object *ob = 0;
             if (ob = pd_checkobject(&y->g_pd))
             {
-                if (binbuf_match(ob->ob_binbuf, canvas_findbuf,
-                    canvas_find_wholeword))
+                if (atoms_match(binbuf_getnatom(ob->ob_binbuf), 
+                    binbuf_getvec(ob->ob_binbuf), findargc, findargv,
+                        canvas_find_wholeword))
                 {
                     if (myindex1 > canvas_find_index1 ||
                         myindex1 == canvas_find_index1 &&
