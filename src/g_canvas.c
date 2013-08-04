@@ -1575,5 +1575,6 @@ void canvas_add_for_class(t_class *c)
     class_addmethod(c, (t_method)canvas_setbounds,
         gensym("setbounds"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     canvas_editor_for_class(c);
+    canvas_readwrite_for_class(c);
     g_graph_setup_class(c);
 }

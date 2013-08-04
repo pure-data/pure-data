@@ -13,23 +13,6 @@
 #define ARRAYPAGESIZE 1000  /* this should match the page size in u_main.tk */
 /* } jsarlo */
 
-    /* aux routine to bash leading '#' to '$' for dialogs in u_main.tk
-    which can't send symbols starting with '$' (because the Pd message
-    interpreter would change them!) */
-
-static t_symbol *sharptodollar(t_symbol *s)
-{
-    if (*s->s_name == '#')
-    {
-        char buf[MAXPDSTRING];
-        strncpy(buf, s->s_name, MAXPDSTRING);
-        buf[MAXPDSTRING-1] = 0;
-        buf[0] = '$';
-        return (gensym(buf));
-    }
-    else return (s);
-}
-
 /* --------- "pure" arrays with scalars for elements. --------------- */
 
 /* Pure arrays have no a priori graphical capabilities.
@@ -368,6 +351,10 @@ void garray_properties(t_garray *x)
     char cmdbuf[200];
     t_array *a = garray_getarray(x);
     t_scalar *sc = x->x_scalar;
+    int style = template_getfloat(template_findbyname(sc->sc_template),
+        gensym("style"), x->x_scalar->sc_vec, 1);
+    int filestyle = (style == 0 ? PLOTSTYLE_POLY :
+        (style == 1 ? PLOTSTYLE_POINTS : style));
 
     if (!a)
         return;
@@ -375,12 +362,9 @@ void garray_properties(t_garray *x)
         /* create dialog window.  LATER fix this to escape '$'
         properly; right now we just detect a leading '$' and escape
         it.  There should be a systematic way of doing this. */
-    sprintf(cmdbuf, ((x->x_name->s_name[0] == '$') ?
-        "pdtk_array_dialog %%s \\%s %d %d 0\n" :
-        "pdtk_array_dialog %%s %s %d %d 0\n"),
-            x->x_name->s_name, a->a_n, x->x_saveit + 
-            2 * (int)(template_getfloat(template_findbyname(sc->sc_template),
-            gensym("style"), x->x_scalar->sc_vec, 1)));
+    sprintf(cmdbuf, "pdtk_array_dialog %%s %s %d %d 0\n",
+            iemgui_dollar2raute(x->x_name)->s_name, a->a_n, x->x_saveit + 
+            2 * filestyle);
     gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
 }
 
@@ -397,7 +381,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     if (otherflag == 0 || (!(gl = glist_findgraph(parent))))
         gl = glist_addglist(parent, &s_, 0, 1,
             (size > 1 ? size-1 : size), -1, 0, 0, 0, 0);
-    a = graph_array(gl, sharptodollar(name), &s_float, size, flags);
+    a = graph_array(gl, iemgui_raute2dollar(name), &s_float, size, flags);
     canvas_dirty(parent, 1);
 }
 
@@ -407,7 +391,9 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 {
     int flags = fflags;
     int saveit = ((flags & 1) != 0);
-    int style = ((flags & 6) >> 1);
+    int filestyle = ((flags & 6) >> 1);
+    int style = (filestyle == 0 ? PLOTSTYLE_POLY :
+        (filestyle == 1 ? PLOTSTYLE_POINTS : filestyle));
     t_float stylewas = template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1);
@@ -423,7 +409,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         long size;
         int styleonset, styletype;
         t_symbol *stylearraytype;
-        t_symbol *argname = sharptodollar(name);
+        t_symbol *argname = iemgui_raute2dollar(name);
         t_array *a = garray_getarray(x);
         t_template *scalartemplate;
         if (!a)

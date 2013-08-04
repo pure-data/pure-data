@@ -14,11 +14,10 @@ how to integrate message boxes !?
 timeunit message
 
 x_array.c:
-catch "save", key, ... inside subwindow
-messages for 'define' - xrange, pixel size, x and y ticks and labels
+messages for 'define' - yrange, pixel size, x and y ticks and labels
 allow for lying about x and y labels
-save ticks, labels, other flags (and add dialog to set them)
 no-click, quantize and clip flags for plotting/mousing
+save ticks, labels, other flags (and add dialog to set them)
 array y range to reflect y increment sign (so no 1 to -1 range)
 argmax, argmin, maybe search?
 
