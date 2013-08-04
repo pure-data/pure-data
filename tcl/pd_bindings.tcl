@@ -265,6 +265,7 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
     set mytoplevel [winfo toplevel $window]
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$mytoplevel key $state $key $shift"
+    } else {
+    pdsend "pd key $state $key $shift"
     }
-    # TODO send to 'pd key' for global key events in Pd?
 }

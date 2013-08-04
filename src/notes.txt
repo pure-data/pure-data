@@ -1,6 +1,5 @@
 flag to expand to "nominal" widths/heights
 GUIs 0.45 mode (no clipping, toggle for 0/1)
-look at search dialog - scroll to view when find off screen
 dialog or other controls when clicking on scalars to show changing values
 pointer methods to search and delete
 
@@ -44,7 +43,7 @@ mac:
 Gnome: why don't windows pop up when clicked on?
 
 problems:
-fix behavior when dragging bject outside screen (stop the evil auto-scrolls)
+fix behavior when dragging object outside screen (stop the evil auto-scrolls)
 pd~ "start" followed by messages gives race condition because of "fromgui" biz
 find asdf$1 (e.g.) doesn't work
 check real-time gaps in writesf~
