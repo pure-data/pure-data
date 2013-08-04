@@ -2080,10 +2080,7 @@ static void canvas_find(t_canvas *x, t_symbol *s, t_floatarg wholeword)
     canvas_find_wholeword = wholeword;
     canvas_whichfind = x;
     if (!canvas_dofind(x, &myindex1))
-    {
-        binbuf_print(canvas_findbuf);
         sys_vgui("pdtk_couldnotfind .x%lx\n", x);
-    }
 }
 
 static void canvas_find_again(t_canvas *x)
