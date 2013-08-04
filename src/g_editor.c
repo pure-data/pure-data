@@ -2020,7 +2020,7 @@ static void canvas_menufont(t_canvas *x)
     gfxstub_new(&x2->gl_pd, &x2->gl_pd, buf);
 }
 
-static int canvas_find_index1, canvas_find_index2, canvas_find_wholeword;
+static int canvas_find_index, canvas_find_wholeword;
 static t_binbuf *canvas_findbuf;
 
     /* function to support searching */
@@ -2061,77 +2061,61 @@ static int atoms_match(int inargc, t_atom *inargv, int searchargc,
 }
 
     /* find an atom or string of atoms */
-static int canvas_dofind(t_canvas *x, int *myindex1p)
+static int canvas_dofind(t_canvas *x, int *myindexp)
 {
     t_gobj *y;
-    int myindex1 = *myindex1p, myindex2,
-        findargc = binbuf_getnatom(canvas_findbuf);
+    int findargc = binbuf_getnatom(canvas_findbuf), didit = 0;
     t_atom *findargv = binbuf_getvec(canvas_findbuf);
-    if (myindex1 >= canvas_find_index1)
+    for (y = x->gl_list; y; y = y->g_next)
     {
-        for (y = x->gl_list, myindex2 = 0; y;
-            y = y->g_next, myindex2++)
+        t_object *ob = 0;
+        if (ob = pd_checkobject(&y->g_pd))
         {
-            t_object *ob = 0;
-            if (ob = pd_checkobject(&y->g_pd))
+            if (atoms_match(binbuf_getnatom(ob->ob_binbuf), 
+                binbuf_getvec(ob->ob_binbuf), findargc, findargv,
+                    canvas_find_wholeword))
             {
-                if (atoms_match(binbuf_getnatom(ob->ob_binbuf), 
-                    binbuf_getvec(ob->ob_binbuf), findargc, findargv,
-                        canvas_find_wholeword))
+                if (*myindexp == canvas_find_index)
                 {
-                    if (myindex1 > canvas_find_index1 ||
-                        myindex1 == canvas_find_index1 &&
-                            myindex2 > canvas_find_index2)
-                    {
-                        canvas_find_index1 = myindex1;
-                        canvas_find_index2 = myindex2;
-                        glist_noselect(x);
-                        vmess(&x->gl_pd, gensym("menu-open"), "");
-                        canvas_editmode(x, 1.);
-                        glist_select(x, y);
-                        return (1);
-                    }
+                    glist_noselect(x);
+                    vmess(&x->gl_pd, gensym("menu-open"), "");
+                    canvas_editmode(x, 1.);
+                    glist_select(x, y);
+                    didit = 1;
                 }
+                (*myindexp)++;
             }
         }
     }
-    for (y = x->gl_list, myindex2 = 0; y; y = y->g_next, myindex2++)
-    {
+    for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
-        {
-            (*myindex1p)++;
-            if (canvas_dofind((t_canvas *)y, myindex1p))
-                return (1);
-        }
-    }
-    return (0);
+            didit |= canvas_dofind((t_canvas *)y, myindexp);
+    return (didit);
 }
 
 static void canvas_find(t_canvas *x, t_symbol *s, t_floatarg wholeword)
 {
-    int myindex1 = 0;
+    int myindex = 0;
     t_symbol *decodedsym = sys_decodedialog(s);
     if (!canvas_findbuf)
         canvas_findbuf = binbuf_new();
     binbuf_text(canvas_findbuf, decodedsym->s_name, strlen(decodedsym->s_name));
-    canvas_find_index1 = 0;
-    canvas_find_index2 = -1;
+    canvas_find_index = 0;
     canvas_find_wholeword = wholeword;
     canvas_whichfind = x;
-    if (!canvas_dofind(x, &myindex1))
+    if (!canvas_dofind(x, &myindex))
         sys_vgui("pdtk_couldnotfind .x%lx\n", x);
+    else post("found item %d out of %d total", ++canvas_find_index, myindex);
 }
 
 static void canvas_find_again(t_canvas *x)
 {
-    int myindex1 = 0;
+    int myindex = 0;
     if (!canvas_findbuf || !canvas_whichfind)
         return;
-    if (!canvas_dofind(canvas_whichfind, &myindex1))
-    {
-        binbuf_print(canvas_findbuf);
+    if (!canvas_dofind(canvas_whichfind, &myindex))
         sys_vgui("pdtk_couldnotfind .x%lx\n", x);
-    }
+    else post("found item %d out of %d total", ++canvas_find_index, myindex);
 }
 
 static void canvas_find_parent(t_canvas *x)
