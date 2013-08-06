@@ -100,7 +100,6 @@ void array_free(t_array *x)
 /* --------------------- graphical arrays (garrays) ------------------- */
 
 t_class *garray_class;
-static int gcount = 0;
 
 struct _garray
 {
@@ -340,8 +339,15 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
 void canvas_menuarray(t_glist *canvas)
 {
     t_glist *x = (t_glist *)canvas;
-    char cmdbuf[200];
-    sprintf(cmdbuf, "pdtk_array_dialog %%s array%d 100 3 1\n", gcount+1);
+    int gcount;
+    char cmdbuf[200], arraybuf[80];
+    for (gcount = 1; gcount < 1000; gcount++)
+    {
+        sprintf(arraybuf, "array%d", gcount);
+        if (!pd_findbyclass(gensym(arraybuf), garray_class))
+            break;
+    }
+    sprintf(cmdbuf, "pdtk_array_dialog %%s array%d 100 3 1\n", gcount);
     gfxstub_new(&x->gl_pd, x, cmdbuf);
 }
 

@@ -21,8 +21,6 @@ array set drawas_button {}
 # and the "delete array" checkbutton
 array set otherflag_button {}
 
-# TODO figure out how to escape $ args so sharptodollar() isn't needed
-
 ############ pdtk_array_dialog -- dialog window for arrays #########
 
 proc ::dialog_array::pdtk_array_listview_setpage {arrayName page} {
@@ -213,13 +211,8 @@ proc ::dialog_array::listview_close {mytoplevel arrayName} {
 }
 
 proc ::dialog_array::apply {mytoplevel} {
-# TODO figure out how to ditch this escaping mechanism
-    set mofo [$mytoplevel.name.entry get]
-    if {[string index $mofo 0] == "$"} {
-        set mofo [string replace $mofo 0 0 #] }
-
     pdsend "$mytoplevel arraydialog \
-            $mofo \
+            [::dialog_gatom::escape [$mytoplevel.name.entry get]] \
             [$mytoplevel.size.entry get] \
             [expr $::saveme_button($mytoplevel) + (2 * $::drawas_button($mytoplevel))] \
             $::otherflag_button($mytoplevel)"
@@ -246,7 +239,7 @@ proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
         create_dialog $mytoplevel $newone
     }
 
-    $mytoplevel.name.entry insert 0 $name
+    $mytoplevel.name.entry insert 0 [::dialog_gatom::unescape $name]
     $mytoplevel.size.entry insert 0 $size
     set ::saveme_button($mytoplevel) [expr $flags & 1]
     set ::drawas_button($mytoplevel) [expr ( $flags & 6 ) >> 1]
