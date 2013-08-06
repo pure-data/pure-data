@@ -2681,6 +2681,8 @@ void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av)
 
 void canvas_editmode(t_canvas *x, t_floatarg state)
 {
+    if (x->gl_edit == (unsigned int) state)
+        return;
     x->gl_edit = (unsigned int) state;
     if (x->gl_edit && glist_isvisible(x) && glist_istoplevel(x))
     {
