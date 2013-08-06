@@ -1,23 +1,51 @@
-#N canvas 50 24 682 520 12;
+#N canvas 88 85 813 713 12;
 #X obj 100 323 netreceive 3000;
-#X floatatom 202 353 0 0 0;
-#X obj 100 414 netreceive 3001 1;
-#X text 33 36 The Netreceive object opens a socket for TCP ("stream") or UDP ("datagram") network reception on a specified port. If using TCP \, an outlet gives you the number of Netsend objects (or other compatible clients) have opened connections here.;
-#X text 31 117 Incoming network messages appear on "receive" objects \; it's up to the sender to select which one. Here \, a "receive foo" fields messages sent from the Netsend help window \, q.v.;
-#X text 108 270 first argument: portnumber = 3000;
-#X text 105 291 second argument: 0 or none for TCP \, nonzero for UDP;
-#X text 238 322 <-- TCP \, port 3000;
-#X text 262 413 <-- UDP \, port 3001;
-#X text 236 354 <--- number of open connections;
-#X text 85 12 Netreceive -- listen for incoming messages from network;
-#X text 26 383 incoming messages;
-#X text 203 488 see also:;
-#X obj 289 490 netsend;
-#X obj 100 353 print tcp;
-#X obj 100 442 print udp;
-#X text 425 484 updated for Pd version 0.33;
-#X text 30 207 SECURITY ALERT: don't publish the port number of your netreceive unless you wouldn't mind other people being able to send you messages.;
-#X text 32 168 There are some possibilities for intercommunication with other programs... see the help for "netsend.";
-#X connect 0 0 14 0;
+#X floatatom 217 411 0 0 0 0 - - -;
+#X text 251 412 <--- number of open connections;
+#X text 85 12 Netreceive -- listen for incoming messages from network
+;
+#X text 112 667 see also:;
+#X obj 198 669 netsend;
+#X obj 100 411 print tcp;
+#X obj 99 517 print udp;
+#X text 29 167 There are some possibilities for intercommunication
+with other programs... see the help for "netsend.", f 85;
+#X obj 593 606 netreceive 3003 1;
+#X text 607 582 (UDP port 3003);
+#X text 32 590 An old (pre-0.45) calling convention is provided for
+compatibility: port number and following "0" or "1" for TCP or UDP
+respectively:, f 67;
+#X text 564 666 updated for Pd version 0.45;
+#X obj 99 489 netreceive -u 3001;
+#X text 234 319 creation arguments:;
+#X text 302 338 optional -u flag for UDP;
+#X text 302 357 optional -b flag for binary;
+#X text 301 378 optional port number;
+#X text 225 448 otehr examples:;
+#X obj 505 493 netreceive -u -b 3003;
+#X obj 304 493 netreceive -b 3002;
+#X obj 304 521 print tcp-binary;
+#X obj 504 521 print udp-binary;
+#X msg 100 292 listen 0;
+#X text 210 268 listen message to set or change port;
+#X text 206 293 (0 or negative number to close);
+#X msg 100 266 listen 3000;
+#X text 33 36 The Netreceive object opens a socket for TCP ("stream")
+or UDP ("datagram") network reception on a specified port. If using
+TCP \, an outlet gives you the number of Netsend objects (or other
+compatible clients) that have opened connections here., f 84;
+#X text 31 205 SECURITY NOTE: don't publish the port number of your
+netreceive unless you wouldn't mind other people being able to send
+you messages., f 85;
+#X text 31 93 By default the messages are ASCII text messages compatible
+with Pd (i.e. \, numbers and symbols terminated with a semicolon --
+the "FUDI" protocol). The "-b" creation argument specifies binary messages
+instead \, which appear in Pd as lists of numbers from 0 to 255 (You
+could use this for OSC messages \, for example.), f 83;
+#X connect 0 0 6 0;
 #X connect 0 1 1 0;
-#X connect 2 0 15 0;
+#X connect 13 0 7 0;
+#X connect 19 0 22 0;
+#X connect 20 0 21 0;
+#X connect 23 0 0 0;
+#X connect 26 0 0 0;

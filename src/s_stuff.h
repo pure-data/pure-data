@@ -175,7 +175,7 @@ EXTERN int sys_pollgui(void);
 EXTERN_STRUCT _socketreceiver;
 #define t_socketreceiver struct _socketreceiver
 
-typedef void (*t_socketnotifier)(void *x);
+typedef void (*t_socketnotifier)(void *x, int n);
 typedef void (*t_socketreceivefn)(void *x, t_binbuf *b);
 
 EXTERN t_socketreceiver *socketreceiver_new(void *owner,

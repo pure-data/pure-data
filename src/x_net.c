@@ -20,6 +20,14 @@
 #define SOCKET_ERROR -1
 #endif
 
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
+#else
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
+
 static t_class *netsend_class;
 
 typedef struct _netsend
@@ -27,14 +35,40 @@ typedef struct _netsend
     t_object x_obj;
     int x_fd;
     int x_protocol;
+    int x_bin;
 } t_netsend;
 
-static void *netsend_new(t_floatarg udpflag)
+static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_netsend *x = (t_netsend *)pd_new(netsend_class);
     outlet_new(&x->x_obj, &s_float);
+    x->x_protocol = SOCK_STREAM;
+    x->x_bin = 0;
+    if (argc && argv->a_type == A_FLOAT)
+    {
+        x->x_protocol = (argv->a_w.w_float != 0 ? SOCK_DGRAM : SOCK_STREAM);
+        argc = 0;
+    }
+    else while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-b"))
+            x->x_bin = 1;
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-u"))
+            x->x_protocol = SOCK_DGRAM;
+        else
+        {
+            pd_error(x, "netsend: unknown flag ...");
+            postatom(argc, argv); endpost();
+        }
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        pd_error(x, "netsend: extra arguments ignored:");
+        postatom(argc, argv); endpost();
+    }
     x->x_fd = -1;
-    x->x_protocol = (udpflag != 0 ? SOCK_DGRAM : SOCK_STREAM);
     return (x);
 }
 
@@ -120,14 +154,26 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
     if (x->x_fd >= 0)
     {
-        t_binbuf *b = binbuf_new();
         char *buf, *bp;
         int length, sent;
-        t_atom at;
-        binbuf_add(b, argc, argv);
-        SETSEMI(&at);
-        binbuf_add(b, 1, &at);
-        binbuf_gettext(b, &buf, &length);
+        t_binbuf *b = 0;
+        if (x->x_bin)
+        {
+            buf = alloca(argc);
+            int i;
+            for (i = 0; i < argc; i++)
+                ((unsigned char *)buf)[i] = atom_getfloatarg(i, argc, argv);
+            length = argc;
+        }
+        else
+        {
+            b = binbuf_new();
+            t_atom at;
+            binbuf_add(b, argc, argv);
+            SETSEMI(&at);
+            binbuf_add(b, 1, &at);
+            binbuf_gettext(b, &buf, &length);
+        }
         for (bp = buf, sent = 0; sent < length;)
         {
             static double lastwarntime;
@@ -141,7 +187,8 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                 if (timeafter > lastwarntime + 2)
                 {
                      post("netsend blocked %d msec",
-                        (int)(1000 * ((timeafter - timebefore) + pleasewarn)));
+                        (int)(1000 * ((timeafter - timebefore) +
+                            pleasewarn)));
                      pleasewarn = 0;
                      lastwarntime = timeafter;
                 }
@@ -159,8 +206,11 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                 bp += res;
             }
         }
-        t_freebytes(buf, length);
-        binbuf_free(b);
+        if (!x->x_bin)
+        {
+            t_freebytes(buf, length);
+            binbuf_free(b);
+        }
     }
     else error("netsend: not connected");
 }
@@ -174,7 +224,7 @@ static void netsend_setup(void)
 {
     netsend_class = class_new(gensym("netsend"), (t_newmethod)netsend_new,
         (t_method)netsend_free,
-        sizeof(t_netsend), 0, A_DEFFLOAT, 0);
+        sizeof(t_netsend), 0, A_GIMME, 0);
     class_addmethod(netsend_class, (t_method)netsend_connect,
         gensym("connect"), A_SYMBOL, A_FLOAT, 0);
     class_addmethod(netsend_class, (t_method)netsend_disconnect,
@@ -192,14 +242,61 @@ typedef struct _netreceive
     t_object x_obj;
     t_outlet *x_msgout;
     t_outlet *x_connectout;
-    int x_connectsocket;
     int x_nconnections;
     int x_udp;
+    int x_bin;
+    int x_sockfd;
+    int *x_connections;
+    int x_old;
 } t_netreceive;
 
-static void netreceive_notify(t_netreceive *x)
+static void netreceive_notify(t_netreceive *x, int fd)
 {
-    outlet_float(x->x_connectout, --x->x_nconnections);
+    int i;
+    for (i = 0; i < x->x_nconnections; i++)
+    {
+        if (x->x_connections[i] == fd)
+        {
+            memmove(x->x_connections+i, x->x_connections+(i+1),
+                sizeof(int) * (x->x_nconnections - (i+1)));
+            x->x_connections = (int *)t_resizebytes(x->x_connections,
+                x->x_nconnections * sizeof(int), 
+                    (x->x_nconnections-1) * sizeof(int));
+            x->x_nconnections--;
+        }
+    }
+    outlet_float(x->x_connectout, x->x_nconnections);
+}
+
+static void netreceive_readbin(t_netreceive *x, int fd)
+{
+    unsigned char inbuf[MAXPDSTRING];
+    int ret = recv(fd, inbuf, MAXPDSTRING, 0), i;
+    if (!x->x_msgout)
+    {
+        bug("netreceive_readbin");
+        return;
+    }
+    if (ret <= 0)
+    {
+        if (ret < 0)
+            sys_sockerror("recv");
+        sys_rmpollfn(fd);
+        sys_closesocket(fd);
+        netreceive_notify(x, fd);
+    }
+    else if (x->x_udp)
+    {
+        t_atom *ap = (t_atom *)alloca(ret * sizeof(t_atom));
+        for (i = 0; i < ret; i++)
+            SETFLOAT(ap+i, inbuf[i]);
+        outlet_list(x->x_msgout, 0, ret, ap);
+    }
+    else
+    {
+        for (i = 0; i < ret; i++)
+            outlet_float(x->x_msgout, inbuf[i]);
+    }
 }
 
 static void netreceive_doit(void *z, t_binbuf *b)
@@ -240,127 +337,193 @@ static void netreceive_doit(void *z, t_binbuf *b)
 
 static void netreceive_connectpoll(t_netreceive *x)
 {
-    int fd = accept(x->x_connectsocket, 0, 0);
+    int fd = accept(x->x_sockfd, 0, 0);
     if (fd < 0) post("netreceive: accept failed");
     else
     {
-        t_socketreceiver *y = socketreceiver_new((void *)x, 
+        int nconnections = x->x_nconnections+1;
+        
+        x->x_connections = (int *)t_resizebytes(x->x_connections,
+            x->x_nconnections * sizeof(int), nconnections * sizeof(int));
+        x->x_connections[x->x_nconnections] = fd;
+        if (x->x_bin)
+            sys_addpollfn(fd, (t_fdpollfn)netreceive_readbin, x);
+        else
+        {
+            t_socketreceiver *y = socketreceiver_new((void *)x, 
             (t_socketnotifier)netreceive_notify,
                 (x->x_msgout ? netreceive_doit : 0), 0);
-        sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
-        outlet_float(x->x_connectout, ++x->x_nconnections);
+            sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
+        }
+        outlet_float(x->x_connectout, (x->x_nconnections = nconnections));
     }
 }
 
-static void *netreceive_new(t_symbol *compatflag,
-    t_floatarg fportno, t_floatarg udpflag)
+static void netreceive_closeall(t_netreceive *x)
 {
-    t_netreceive *x;
+    int i;
+    for (i = 0; i < x->x_nconnections; i++)
+    {
+        sys_rmpollfn(x->x_connections[i]);
+        sys_closesocket(x->x_connections[i]);
+    }
+    x->x_connections = (int *)t_resizebytes(x->x_connections, 
+        x->x_nconnections * sizeof(int), 0);
+    x->x_nconnections = 0;
+    if (x->x_sockfd >= 0)
+    {
+        sys_rmpollfn(x->x_sockfd);
+        sys_closesocket(x->x_sockfd);
+    }
+    x->x_sockfd = -1;
+}
+
+static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
+{
+    int portno = fportno, intarg;
     struct sockaddr_in server;
-    int sockfd, portno = fportno, udp = (udpflag != 0);
-    int old = !strcmp(compatflag->s_name , "old");
-    int intarg;
-        /* create a socket */
-    sockfd = socket(AF_INET, (udp ? SOCK_DGRAM : SOCK_STREAM), 0);
-#if 0
-    fprintf(stderr, "receive socket %d\n", sockfd);
-#endif
-    if (sockfd < 0)
+    netreceive_closeall(x);
+    if (portno <= 0)
+        return;
+    x->x_sockfd = socket(AF_INET, (x->x_udp ? SOCK_DGRAM : SOCK_STREAM), 0);
+    if (x->x_sockfd < 0)
     {
         sys_sockerror("socket");
-        return (0);
+        return;
     }
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
+#if 0
+    fprintf(stderr, "receive socket %d\n", x->x_ sockfd);
+#endif
 
 #if 1
         /* ask OS to allow another Pd to repoen this port after we close it. */
     intarg = 1;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR,
+    if (setsockopt(x->x_sockfd, SOL_SOCKET, SO_REUSEADDR,
         (char *)&intarg, sizeof(intarg)) < 0)
-            post("setsockopt (SO_REUSEADDR) failed\n");
+            post("netreceive: setsockopt (SO_REUSEADDR) failed\n");
 #endif
 #if 0
     intarg = 0;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF,
+    if (setsockopt(x->x_sockfd, SOL_SOCKET, SO_RCVBUF,
         &intarg, sizeof(intarg)) < 0)
             post("setsockopt (SO_RCVBUF) failed\n");
 #endif
     intarg = 1;
-    if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, 
-                  (const void *)&intarg, sizeof(intarg)) < 0)
-        post("setting SO_BROADCAST");
+    if (setsockopt(x->x_sockfd, SOL_SOCKET, SO_BROADCAST, 
+        (const void *)&intarg, sizeof(intarg)) < 0)
+            post("netreceive: failed to sett SO_BROADCAST");
         /* Stream (TCP) sockets are set NODELAY */
-    if (!udp)
+    if (!x->x_udp)
     {
         intarg = 1;
-        if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,
+        if (setsockopt(x->x_sockfd, IPPROTO_TCP, TCP_NODELAY,
             (char *)&intarg, sizeof(intarg)) < 0)
                 post("setsockopt (TCP_NODELAY) failed\n");
     }
-        /* assign server port number */
+        /* assign server port number etc */
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons((u_short)portno);
 
         /* name the socket */
-    if (bind(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
+    if (bind(x->x_sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
     {
         sys_sockerror("bind");
-        sys_closesocket(sockfd);
-        return (0);
+        sys_closesocket(x->x_sockfd);
+        x->x_sockfd = -1;
+        return;
     }
-    x = (t_netreceive *)pd_new(netreceive_class);
-    if (old)
+
+    if (x->x_udp)        /* datagram protocol */
+    {
+        if (x->x_bin)
+            sys_addpollfn(x->x_sockfd, (t_fdpollfn)netreceive_readbin, x);
+        else
+        {
+            t_socketreceiver *y = socketreceiver_new((void *)x, 
+                (t_socketnotifier)netreceive_notify,
+                    (x->x_msgout ? netreceive_doit : 0), 1);
+            sys_addpollfn(x->x_sockfd, (t_fdpollfn)socketreceiver_read, y);
+            x->x_connectout = 0;
+        }
+    }
+    else        /* streaming protocol */
+    {
+        if (listen(x->x_sockfd, 5) < 0)
+        {
+            sys_sockerror("listen");
+            sys_closesocket(x->x_sockfd);
+            x->x_sockfd = -1;
+        }
+        else
+        {
+            sys_addpollfn(x->x_sockfd, (t_fdpollfn)netreceive_connectpoll, x);
+            x->x_connectout = outlet_new(&x->x_obj, &s_float);
+        }
+    }
+}
+
+static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_netreceive *x = (t_netreceive *)pd_new(netreceive_class);
+    int portno = 0;
+    x->x_udp = 0;
+    x->x_old = 0;
+    x->x_bin = 0;
+    x->x_nconnections = 0;
+    x->x_connections = (int *)t_getbytes(0);
+    x->x_sockfd = -1;
+    if (argc && argv->a_type == A_FLOAT)
+    {
+        portno = atom_getfloatarg(0, argc, argv);
+        x->x_udp = (atom_getfloatarg(1, argc, argv) != 0);
+        x->x_old = (!strcmp(atom_getsymbolarg(2, argc, argv)->s_name, "old"));
+        argc = 0;
+    }
+    else 
+    {
+        while (argc && argv->a_type == A_SYMBOL &&
+            *argv->a_w.w_symbol->s_name == '-')
+        {
+            if (!strcmp(argv->a_w.w_symbol->s_name, "-b"))
+                x->x_bin = 1;
+            else if (!strcmp(argv->a_w.w_symbol->s_name, "-u"))
+                x->x_udp = 1;
+            else
+            {
+                pd_error(x, "netreceive: unknown flag ...");
+                postatom(argc, argv); endpost();
+            }
+            argc--; argv++;
+        }
+    }
+    if (argc && argv->a_type == A_FLOAT)
+        portno = argv->a_w.w_float, argc--, argv++;
+    if (argc)
+    {
+        pd_error(x, "netreceive: extra arguments ignored:");
+        postatom(argc, argv); endpost();
+    }
+    if (x->x_old)
     {
         /* old style, nonsecure version */
         x->x_msgout = 0;
     }
     else x->x_msgout = outlet_new(&x->x_obj, &s_anything);
-
-    if (udp)        /* datagram protocol */
-    {
-        t_socketreceiver *y = socketreceiver_new((void *)x, 
-            (t_socketnotifier)netreceive_notify,
-                (x->x_msgout ? netreceive_doit : 0), 1);
-        sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
-        x->x_connectout = 0;
-    }
-    else        /* streaming protocol */
-    {
-        if (listen(sockfd, 5) < 0)
-        {
-            sys_sockerror("listen");
-            sys_closesocket(sockfd);
-            sockfd = -1;
-        }
-        else
-        {
-            sys_addpollfn(sockfd, (t_fdpollfn)netreceive_connectpoll, x);
-            x->x_connectout = outlet_new(&x->x_obj, &s_float);
-        }
-    }
-    x->x_connectsocket = sockfd;
-    x->x_nconnections = 0;
-    x->x_udp = udp;
+        /* create a socket */
+    if (portno > 0)
+        netreceive_listen(x, portno);
 
     return (x);
-}
-
-static void netreceive_free(t_netreceive *x)
-{
-        /* LATER make me clean up open connections */
-    if (x->x_connectsocket >= 0)
-    {
-        sys_rmpollfn(x->x_connectsocket);
-        sys_closesocket(x->x_connectsocket);
-    }
 }
 
 static void netreceive_setup(void)
 {
     netreceive_class = class_new(gensym("netreceive"),
-        (t_newmethod)netreceive_new, (t_method)netreceive_free,
-        sizeof(t_netreceive), CLASS_NOINLET, A_DEFFLOAT, A_DEFFLOAT, 
-            A_DEFSYM, 0);
+        (t_newmethod)netreceive_new, (t_method)netreceive_closeall,
+        sizeof(t_netreceive), 0, A_GIMME, 0);
+    class_addmethod(netreceive_class, (t_method)netreceive_listen,
+        gensym("listen"), A_FLOAT, 0);
 }
 
 void x_net_setup(void)
