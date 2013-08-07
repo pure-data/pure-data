@@ -478,17 +478,16 @@ static t_symbol *symhash[HASHSIZE];
 t_symbol *dogensym(const char *s, t_symbol *oldsym)
 {
     t_symbol **sym1, *sym2;
-    unsigned int hash1 = 0,  hash2 = 0;
+    unsigned int hash = 5381;
     int length = 0;
     const char *s2 = s;
-    while (*s2)
+    while (*s2) /* djb2 hash algo */
     {
-        hash1 += *s2;
-        hash2 += hash1;
+        hash = ((hash << 5) + hash) + *s2;
         length++;
         s2++;
     }
-    sym1 = symhash + (hash2 & (HASHSIZE-1));
+    sym1 = symhash + (hash & (HASHSIZE-1));
     while (sym2 = *sym1)
     {
         if (!strcmp(sym2->s_name, s)) return(sym2);
