@@ -24,7 +24,7 @@ CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes \
-    -Wno-unused -Wno-parentheses -Wno-switch
+    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch
 
 MORECFLAGS = -O3 -fno-strict-aliasing -ffast-math -funroll-loops \
     -fomit-frame-pointer 
