@@ -33,7 +33,7 @@ CPPFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" \
 ARCH_CFLAGS = -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-parentheses \
     -Wno-switch
-MORECFLAGS = -Wno-error -ffast-math -fno-strict-aliasing -O6
+MORECFLAGS = -Wno-error -ffast-math -fno-strict-aliasing -O3
 
 LDFLAGS = -Wl -framework CoreAudio -framework AudioUnit \
     -framework AudioToolbox -framework Carbon -framework CoreMIDI \

@@ -1,4 +1,3 @@
-comment bars not getting erased?
 flag to expand to "nominal" widths/heights
 GUIs 0.45 mode (no clipping, toggle for 0/1)
 dialog or other controls when clicking on scalars to show changing values
