@@ -87,7 +87,7 @@ void glist_delete(t_glist *x, t_gobj *y)
         if (pd_class(&y->g_pd) == canvas_class)
         {
             t_glist *gl = (t_glist *)y;
-            if (gl->gl_isgraph)
+            if (gl->gl_isgraph && glist_isvisible(x))
             {
                 char tag[80];
                 sprintf(tag, "graph%lx", (t_int)gl);
