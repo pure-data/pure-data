@@ -1639,6 +1639,8 @@ static void plot_activate(t_gobj *z, t_glist *glist,
         /* not yet */
 }
 
+#define CLIP(x) ((x) < 1e20 && (x) > -1e20 ? x : 0)
+
 static void plot_vis(t_gobj *z, t_glist *glist, 
     t_word *data, t_template *template, t_float basex, t_float basey,
     int tovis)
@@ -1706,10 +1708,11 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 if (yonset >= 0)
                     yval = yloc + *(t_float *)((elem + elemsize * i) + yonset);
                 else yval = 0;
-                if (yval > maxyval)
-                    maxyval = yval;
+                yval = CLIP(yval);
                 if (yval < minyval)
                     minyval = yval;
+                if (yval > maxyval)
+                    maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
                     sys_vgui(".x%lx.c create rectangle %d %d %d %d \
@@ -1752,7 +1755,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     if (yonset >= 0)
                         yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
+                    yval = CLIP(yval);
                     wval = *(t_float *)((elem + elemsize * i) + wonset);
+                    wval = CLIP(wval);
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
@@ -1779,7 +1784,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     if (yonset >= 0)
                         yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
+                    yval = CLIP(yval);
                     wval = *(t_float *)((elem + elemsize * i) + wonset);
+                    wval = CLIP(wval);
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
@@ -1831,6 +1838,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     if (yonset >= 0)
                         yval = *(t_float *)((elem + elemsize * i) + yonset);
                     else yval = 0;
+                    yval = CLIP(yval);
                     xpix = glist_xtopixels(glist,
                         basex + fielddesc_cvttocoord(xfielddesc, usexloc));
                     ixpix = xpix + 0.5;
