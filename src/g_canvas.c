@@ -1413,7 +1413,7 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
-extern t_class *array_define_class;     /* LATER datum calss too */
+extern t_class *array_define_class;     /* LATER datum class too */
 
     /* check if a pd can be treated as a glist - true if we're of any of
     the glist classes, which all have 'glist' as the first item in struct */
@@ -1576,5 +1576,5 @@ void canvas_add_for_class(t_class *c)
         gensym("setbounds"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     canvas_editor_for_class(c);
     canvas_readwrite_for_class(c);
-    g_graph_setup_class(c);
+    /* g_graph_setup_class(c); */
 }

@@ -715,6 +715,11 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_gobj *g;
         t_symbol *arrayname;
         t_garray *ga;
+        char *ylabelanchor =
+            (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
+        char *xlabelanchor =
+            (x->gl_xlabely > 0.5*(x->gl_y1 + x->gl_y2) ? "s" : "n");
+            
             /* draw a rectangle around the graph */
         sys_vgui(".x%lx.c create line\
             %d %d %d %d %d %d %d %d %d %d -tags [list %s graph]\n",
@@ -811,22 +816,22 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             /* draw x labels */
         for (i = 0; i < x->gl_nxlabels; i++)
             sys_vgui(".x%lx.c create text\
-        %d %d -text {%s} -font {{%s} -%d %s} -tags [list %s label graph]\n",
+ %d %d -text {%s} -font {{%s} -%d %s} -anchor %s -tags [list %s label graph]\n",
                 glist_getcanvas(x),
                 (int)glist_xtopixels(x, atof(x->gl_xlabel[i]->s_name)),
                 (int)glist_ytopixels(x, x->gl_xlabely),
-                x->gl_xlabel[i]->s_name, sys_font, 
-                     glist_getfont(x), sys_fontweight, tag);
+                x->gl_xlabel[i]->s_name, sys_font,
+                     glist_getfont(x), sys_fontweight, xlabelanchor, tag);
 
             /* draw y labels */
         for (i = 0; i < x->gl_nylabels; i++)
             sys_vgui(".x%lx.c create text\
-        %d %d -text {%s} -font {{%s} -%d %s} -tags [list %s label graph]\n",
+ %d %d -text {%s} -font {{%s} -%d %s} -anchor %s -tags [list %s label graph]\n",
                 glist_getcanvas(x),
                 (int)glist_xtopixels(x, x->gl_ylabelx),
                 (int)glist_ytopixels(x, atof(x->gl_ylabel[i]->s_name)),
                 x->gl_ylabel[i]->s_name, sys_font,
-                glist_getfont(x), sys_fontweight, tag);
+                glist_getfont(x), sys_fontweight, ylabelanchor, tag);
 
             /* draw contents of graph as glist */
         for (g = x->gl_list; g; g = g->g_next)
