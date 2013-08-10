@@ -1,6 +1,10 @@
+/* Copyright (c) 2003, Miller Puckette and others.
+* For information on usage and redistribution, and for a DISCLAIMER OF ALL
+* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
+/*  Audio back-end for connecting with the JACK audio interconnect system. 
+*/
 
-/* ----------------------- Experimental routines for jack -------------- */
 #ifdef USEAPI_JACK
 
 #include <stdio.h>
@@ -12,16 +16,15 @@
 #include <regex.h>
 
 #define MAX_CLIENTS 100
-#define MAX_JACK_PORTS 128  /* seems like higher values give bad xrun problems */
+#define MAX_JACK_PORTS 128  /* higher values seem to give bad xrun problems */
 #define BUF_JACK 4096
-static jack_nframes_t jack_out_max;
 #define JACK_OUT_MAX  64
+
+static jack_nframes_t jack_out_max;
 static jack_nframes_t jack_filled = 0;
 static t_sample *jack_outbuf;
 static t_sample *jack_inbuf;
 static int jack_started = 0;
-
-
 static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static int outport_count = 0;
@@ -29,13 +32,10 @@ static jack_client_t *jack_client = NULL;
 char *jack_client_names[MAX_CLIENTS];
 static int jack_dio_error;
 static t_audiocallback jack_callback;
-
 pthread_mutex_t jack_mutex;
 pthread_cond_t jack_sem;
 
-
-static int
-process (jack_nframes_t nframes, void *arg)
+static int pollprocess(jack_nframes_t nframes, void *arg)
 {
     int j;
     jack_default_audio_sample_t *out, *in;
@@ -250,34 +250,38 @@ static char** jack_get_clients(void)
 
 static int jack_connect_ports(char* client)
 {
-  char  regex_pattern[100]; /* its always the same, ... */
-  int i;
-  const char **jack_ports;
-    
-  if (strlen(client) > 96)  return -1;
+    char  regex_pattern[100]; /* its always the same, ... */
+    int i;
+    const char **jack_ports;
 
-  sprintf( regex_pattern, "%s:.*", client );
+    if (strlen(client) > 96)  return -1;
 
-  jack_ports = jack_get_ports( jack_client, regex_pattern,
-                               NULL, JackPortIsOutput);
-  if (jack_ports) 
-    for (i=0;jack_ports[i] != NULL && i < sys_inchannels;i++)      
-      if (jack_connect (jack_client, jack_ports[i], jack_port_name (input_port[i]))) 
-        error ("JACK: cannot connect input ports %s -> %s", jack_ports[i],jack_port_name (input_port[i]));
-      
-  
-  
-  jack_ports = jack_get_ports( jack_client, regex_pattern,
-                               NULL, JackPortIsInput);
-  if (jack_ports) 
-    for (i=0;jack_ports[i] != NULL && i < sys_outchannels;i++)      
-      if (jack_connect (jack_client, jack_port_name (output_port[i]), jack_ports[i])) 
-        error( "JACK: cannot connect output ports %s -> %s", jack_port_name (output_port[i]),jack_ports[i]);
-  
-  
-  
-  free(jack_ports);
-  return 0;
+    sprintf( regex_pattern, "%s:.*", client );
+
+    jack_ports = jack_get_ports( jack_client, regex_pattern,
+                                 NULL, JackPortIsOutput);
+    if (jack_ports)
+    {
+        for (i=0;jack_ports[i] != NULL && i < sys_inchannels;i++)      
+            if (jack_connect (jack_client, jack_ports[i],
+               jack_port_name (input_port[i]))) 
+                  error ("JACK: cannot connect input ports %s -> %s",
+                      jack_ports[i],jack_port_name (input_port[i]));
+        free(jack_ports);
+    }
+    jack_ports = jack_get_ports( jack_client, regex_pattern,
+                                 NULL, JackPortIsInput);
+    if (jack_ports)
+    {
+        for (i=0;jack_ports[i] != NULL && i < sys_outchannels;i++)      
+          if (jack_connect (jack_client, jack_port_name (output_port[i]),
+            jack_ports[i])) 
+              error( "JACK: cannot connect output ports %s -> %s",
+                jack_port_name (output_port[i]),jack_ports[i]);
+
+        free(jack_ports);
+    }
+    return 0;
 }
 
 
@@ -321,6 +325,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
             inchans, MAX_JACK_PORTS);
         inchans = MAX_JACK_PORTS;
     }
+
     /* try to become a client of the JACK server.  (If no JACK server exists,
         jack_client_open() will start uone up by default.  It's not clear
         whether or not this is desirable; see long Pd list thread started by 
@@ -329,7 +334,8 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         do {
           sprintf(client_name,"pure_data_%d",client_iterator);
           client_iterator++;
-          jack_client = jack_client_open (client_name, JackNullOption, &status, NULL);
+          jack_client = jack_client_open (client_name, JackNullOption, &status,
+            NULL);
           if (status & JackServerFailed) {
             error("JACK: unable to connect to JACK server");
             jack_client=NULL;
@@ -365,17 +371,16 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
         jack_get_clients();
 
-        /* tell the JACK server to call `process()' whenever
-           there is work to be done.
-        */
+        /* set JACK callback functions */
+
         jack_callback = callback;
-        jack_set_process_callback (jack_client, 
-            (callback? callbackprocess : process), 0);
+        jack_set_process_callback(jack_client, 
+            (callback? callbackprocess : pollprocess), 0);
 
         jack_set_error_function (pd_jack_error_callback);
 
 #ifdef JACK_XRUN
-      jack_set_xrun_callback (jack_client, jack_xrun, NULL);
+        jack_set_xrun_callback (jack_client, jack_xrun, NULL);
 #endif
 
         /* tell the JACK server to call `srate()' whenever
@@ -410,21 +415,29 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
     /* create the ports */
 
-    for (j = 0; j < inchans; j++) {
+    for (j = 0; j < inchans; j++)
+    {
         sprintf(port_name, "input%d", j);
-        if (!input_port[j]) input_port[j] = jack_port_register (jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-        if (!input_port[j]) {
-          error("JACK: can only register %d input ports (instead of requested %d)", j, inchans);
+        if (!input_port[j]) input_port[j] = jack_port_register (jack_client,
+            port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
+        if (!input_port[j])
+        {
+          error("JACK: can only register %d input ports (of %d requested)",
+            j, inchans);
           sys_inchannels = inchans = j;
           break;
         }
     }
 
-    for (j = 0; j < outchans; j++) {
+    for (j = 0; j < outchans; j++)
+    {
         sprintf(port_name, "output%d", j);
-        if (!output_port[j]) output_port[j] = jack_port_register (jack_client, port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
-        if (!output_port[j]) {
-          error("JACK: can only register %d output ports (instead of requested %d)", j, outchans);
+        if (!output_port[j]) output_port[j] = jack_port_register (jack_client,
+            port_name, JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+        if (!output_port[j])
+        {
+          error("JACK: can only register %d output ports (of %d requested)",
+            j, outchans);
           sys_outchannels = outchans = j;
           break;
         }
@@ -433,7 +446,8 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
     /* tell the JACK server that we are ready to roll */
 
-    if (new_jack) {
+    if (new_jack)
+    {
         if (jack_activate (jack_client)) {
             error("cannot activate client");
             sys_inchannels = sys_outchannels = 0;
@@ -475,7 +489,6 @@ void jack_close_audio(void)
 }
 
 int jack_send_dacs(void)
-
 {
     t_sample * fp;
     int j;

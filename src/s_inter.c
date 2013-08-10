@@ -902,8 +902,10 @@ int sys_startgui(const char *libdir)
         struct hostent *hp;
 #ifdef __APPLE__
             /* sys_guisock might be 1 or 2, which will have offensive results
-            if somebody writes to stdout or stderr - so we just keep duping
-            until we get a fd >= 3. */
+            if somebody writes to stdout or stderr - so we just open a few
+            files to try to fill fds 0 through 2.  (I tried using dup()
+            instead, which would seem the logical way to do this, but couldn't
+            get it to work.) */
         int burnfd1 = open("/dev/null", 0), burnfd2 = open("/dev/null", 0),
             burnfd3 = open("/dev/null", 0);
         if (burnfd1 > 2)
@@ -1300,12 +1302,13 @@ void sys_bail(int n)
 
 void glob_quit(void *dummy)
 {
-    sys_vgui("exit\n");
+    sys_close_audio();
+    sys_close_midi();
     if (!sys_nogui)
     {
         sys_closesocket(sys_guisock);
         sys_rmpollfn(sys_guisock);
     }
-    sys_bail(0); 
+    exit(0); 
 }
 

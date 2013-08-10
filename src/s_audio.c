@@ -425,7 +425,7 @@ void sys_reopen_audio( void)
 #ifdef USEAPI_JACK
     if (sys_audioapi == API_JACK) 
         outcome = jack_open_audio((naudioindev > 0 ? chindev[0] : 0),
-            (naudioindev > 0 ? choutdev[0] : 0), rate,
+            (naudiooutdev > 0 ? choutdev[0] : 0), rate,
                 (callback ? sched_audio_callbackfn : 0));
 
     else
