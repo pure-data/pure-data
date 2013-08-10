@@ -123,7 +123,7 @@ proc pdtk_canvas_raise {mytoplevel} {
     focus $mycanvas
 }
 
-proc pdtk_canvas_saveas {name initialfile initialdir} {
+proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
     if { ! [file isdirectory $initialdir]} {set initialdir $::env(HOME)}
     set filename [tk_getSaveFile -initialfile $initialfile -initialdir $initialdir \
                       -defaultextension .pd -filetypes $::filetypes]
@@ -144,7 +144,8 @@ proc pdtk_canvas_saveas {name initialfile initialdir} {
     }
     set dirname [file dirname $filename]
     set basename [file tail $filename]
-    pdsend "$name savetofile [enquote_path $basename] [enquote_path $dirname]"
+    pdsend "$name savetofile [enquote_path $basename] [enquote_path $dirname] \
+ $destroyflag"
     set ::filenewdir $dirname
     # add to recentfiles
     ::pd_guiprefs::update_recentfiles $filename
@@ -158,16 +159,7 @@ proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
     switch -- $answer {
-        yes { 
-            pdsend "$mytoplevel menusave"
-            if {[regexp {Untitled-[0-9]+} $filename]} {
-                # wait until pdtk_canvas_saveas finishes and writes to
-                # this var, otherwise the close command will be sent
-                # immediately and the file won't get saved
-                vwait ::filenewdir
-            }
-            pdsend $reply_to_pd
-        }
+        yes {pdsend "$mytoplevel menusave 1"}
         no {pdsend $reply_to_pd}
         cancel {}
     }
