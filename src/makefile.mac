@@ -9,6 +9,7 @@ BIN_DIR = ../bin
 PDEXEC = $(BIN_DIR)/pd
 EXT= pd_darwin
 GUINAME= libPdTcl.dylib
+ARCH= -arch i386 -arch ppc
 
 prefix = /usr/local
 exec_prefix = ${prefix}
@@ -30,14 +31,13 @@ CPPFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" \
     -I../portaudio/src/os/mac_osx/ -I../portmidi/pm_common \
     -I../portmidi/pm_mac -I../portmidi/porttime \
     -DUSEAPI_PORTAUDIO -DPA_USE_COREAUDIO -DNEWBUFFER
-ARCH_CFLAGS = -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc 
+ARCH_CFLAGS = -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(ARCH) 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-unused-parameter \
      -Wno-parentheses -Wno-switch
 MORECFLAGS = -Wno-error -ffast-math -fno-strict-aliasing -O3
 
 LDFLAGS = -Wl -framework CoreAudio -framework AudioUnit \
-    -framework AudioToolbox -framework Carbon -framework CoreMIDI \
-    -arch i386 -arch ppc
+    -framework AudioToolbox -framework Carbon -framework CoreMIDI $(ARCH) \
 
 LIB =   -ldl -lm -lpthread
 
