@@ -50,10 +50,12 @@ void glob_audio(void *dummy, t_floatarg adc, t_floatarg dac);
 /* a method you add for debugging printout */
 void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv);
 
-#if 0
+#if 1
 void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    *(int *)1 = 3;
+    post("foo 1");
+    printf("barbarbar 2\n");
+    post("foo 3");
 }
 #endif
 

@@ -1048,7 +1048,7 @@ void alsa_printstate( void);
 #endif
 
     /* debugging */
-void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
+/* void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *arg = atom_getsymbolarg(0, argc, argv);
     if (arg == gensym("restart"))
@@ -1069,4 +1069,4 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
         alsa_printstate();
     }
 #endif
-}
+} */

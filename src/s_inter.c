@@ -840,7 +840,7 @@ int sys_startgui(const char *libdir)
     char buf[15];
     int len = sizeof(server);
     int ntry = 0, portno = FIRSTPORTNUM;
-    int xsock = -1;
+    int xsock = -1, dumbo = -1;
 #ifdef _WIN32
     short version = MAKEWORD(2, 0);
     WSADATA nobby;
@@ -900,11 +900,24 @@ int sys_startgui(const char *libdir)
     {
         struct sockaddr_in server;
         struct hostent *hp;
+#ifdef __APPLE__
+        int burnfd[3], nburn = 0, n2;
+#endif
         /* create a socket */
         sys_guisock = socket(AF_INET, SOCK_STREAM, 0);
         if (sys_guisock < 0)
             sys_sockerror("socket");
-
+#ifdef __APPLE__
+        while (sys_guisock >= 0 && sys_guisock < 3 && nburn < 3)
+        {
+            burnfd[nburn] = sys_guisock;
+            sys_guisock = dup(sys_guisock);
+            nburn++;
+        }
+        for (n2 = 0; n2 < nburn; n2++)
+            close(burnfd[nburn]);
+#endif
+        
         /* connect socket using hostname provided in command line */
         server.sin_family = AF_INET;
 
@@ -1259,7 +1272,6 @@ int sys_startgui(const char *libdir)
         sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     }
     return (0);
-
 }
 
 extern void sys_exit(void);
