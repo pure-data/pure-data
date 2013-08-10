@@ -55,7 +55,6 @@ void canvas_reflecttitle(t_canvas *x);
 static void canvas_addtolist(t_canvas *x);
 static void canvas_takeofflist(t_canvas *x);
 static void canvas_pop(t_canvas *x, t_floatarg fvis);
-static int canvas_should_bind(t_canvas *x);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
 
@@ -560,6 +559,21 @@ t_symbol *canvas_makebindsym(t_symbol *s)
     return (gensym(buf));
 }
 
+    /* functions to bind and unbind canvases to symbol "pd-blah".  As
+    discussed on Pd dev list there should be a way to defeat this for
+    abstractions.  (Claude Heiland et al. Aug 9 2013) */
+static void canvas_bind(t_canvas *x)
+{
+    if (strcmp(x->gl_name->s_name, "Pd"))
+        pd_bind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+}
+
+static void canvas_unbind(t_canvas *x)
+{
+    if (strcmp(x->gl_name->s_name, "Pd"))
+        pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
+}
+
 void canvas_reflecttitle(t_canvas *x)
 {
     char namebuf[MAXPDSTRING];
@@ -982,27 +996,6 @@ int canvas_isabstraction(t_canvas *x)
 {
     return (x->gl_env != 0);
 }
-
-    /* return true if the "canvas" object should be bound to a name */
-static int canvas_should_bind(t_canvas *x)
-{
-        /* FIXME should have a "backwards compatible" mode */
-        /* not named "Pd" && (is top level || is subpatch) */
-    return strcmp(x->gl_name->s_name, "Pd") && (!x->gl_owner || !x->gl_env);
-}
-
-static void canvas_bind(t_canvas *x)
-{
-    if (canvas_should_bind(x))
-        pd_bind(&x->gl_pd, canvas_makebindsym(x->gl_name));
-}
-
-static void canvas_unbind(t_canvas *x)
-{
-    if (canvas_should_bind(x))
-        pd_unbind(&x->gl_pd, canvas_makebindsym(x->gl_name));
-}
-
 
     /* return true if the "canvas" object should be treated as a text
     object.  This is true for abstractions but also for "table"s... */
