@@ -901,22 +901,22 @@ int sys_startgui(const char *libdir)
         struct sockaddr_in server;
         struct hostent *hp;
 #ifdef __APPLE__
-        int burnfd[3], nburn = 0, n2;
+            /* sys_guisock might be 1 or 2, which will have offensive results
+            if somebody writes to stdout or stderr - so we just keep duping
+            until we get a fd >= 3. */
+        int burnfd1 = open("/dev/null", 0), burnfd2 = open("/dev/null", 0),
+            burnfd3 = open("/dev/null", 0);
+        if (burnfd1 > 2)
+            close(burnfd1);
+        if (burnfd2 > 2)
+            close(burnfd2);
+        if (burnfd3 > 2)
+            close(burnfd3);
 #endif
         /* create a socket */
         sys_guisock = socket(AF_INET, SOCK_STREAM, 0);
         if (sys_guisock < 0)
             sys_sockerror("socket");
-#ifdef __APPLE__
-        while (sys_guisock >= 0 && sys_guisock < 3 && nburn < 3)
-        {
-            burnfd[nburn] = sys_guisock;
-            sys_guisock = dup(sys_guisock);
-            nburn++;
-        }
-        for (n2 = 0; n2 < nburn; n2++)
-            close(burnfd[nburn]);
-#endif
         
         /* connect socket using hostname provided in command line */
         server.sin_family = AF_INET;
@@ -1286,6 +1286,7 @@ void sys_bail(int n)
     {
         reentered = 1;
 #if !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__GNU__) /* sys_close_audio() hangs if you're in a signal? */
+        fprintf(stderr ,"sys_guisock %d - ", sys_guisock);
         fprintf(stderr, "closing audio...\n");
         sys_close_audio();
         fprintf(stderr, "closing MIDI...\n");
