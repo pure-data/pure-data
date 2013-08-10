@@ -1,12 +1,12 @@
-#N canvas 160 334 492 362 12;
-#X floatatom 72 273 3 0 0 0 - - -;
+#N canvas 160 334 509 380 12;
+#X floatatom 72 273 3 0 0 0 - - -, f 3;
 #X obj 27 221 notein;
 #X obj 27 247 stripnote;
-#X floatatom 27 272 3 0 0 0 - - -;
+#X floatatom 27 272 3 0 0 0 - - -, f 3;
 #X text 219 234 MIDI OUT;
 #X text 27 197 MIDI IN;
-#X floatatom 150 272 3 0 0 0 - - -;
-#X floatatom 120 271 3 0 0 0 - - -;
+#X floatatom 150 272 3 0 0 0 - - -, f 3;
+#X floatatom 120 271 3 0 0 0 - - -, f 3;
 #X obj 120 246 ctlin;
 #N canvas 0 50 484 446 midi 0;
 #X obj 96 65 inlet;
@@ -50,8 +50,8 @@
 #X connect 14 0 10 0;
 #X connect 20 0 19 0;
 #X restore 219 284 pd midi;
-#X floatatom 178 93 3 0 0 0 - tone-vu1 -;
-#X floatatom 205 93 3 0 0 0 - tone-vu2 -;
+#X floatatom 178 93 3 0 0 0 - tone-vu1 -, f 3;
+#X floatatom 205 93 3 0 0 0 - tone-vu2 -, f 3;
 #X obj 177 126 tgl 20 0 tone-ch1 tone-ch1 1 5 -8 0 12 -262144 -1 -1
 1 1;
 #X obj 202 126 tgl 20 0 tone-ch2 tone-ch2 2 5 -8 0 12 -262144 -1 -1
@@ -111,10 +111,10 @@
 -1 -1;
 #X obj 428 138 bng 15 250 50 0 tone-none empty NONE 20 8 0 12 -262144
 -1 -1;
-#X floatatom 244 93 3 0 0 0 - tone-vu3 -;
-#X floatatom 272 93 3 0 0 0 - tone-vu4 -;
-#X floatatom 310 93 3 0 0 0 - tone-vu5 -;
-#X floatatom 338 93 3 0 0 0 - tone-vu6 -;
+#X floatatom 244 93 3 0 0 0 - tone-vu3 -, f 3;
+#X floatatom 272 93 3 0 0 0 - tone-vu4 -, f 3;
+#X floatatom 310 93 3 0 0 0 - tone-vu5 -, f 3;
+#X floatatom 338 93 3 0 0 0 - tone-vu6 -, f 3;
 #X text 237 73 AUDIO INPUT (RMS dB);
 #X text 101 88 noise;
 #X text 100 105 tone;
@@ -122,8 +122,8 @@
 -262144 -1 -1 1;
 #X obj 22 91 vradio 15 1 0 3 tone-radio tone-radio-set empty 0 -6 0
 8 -262144 -1 -1 2;
-#X floatatom 376 93 3 0 0 0 - tone-vu7 -;
-#X floatatom 404 93 3 0 0 0 - tone-vu8 -;
+#X floatatom 376 93 3 0 0 0 - tone-vu7 -, f 3;
+#X floatatom 404 93 3 0 0 0 - tone-vu8 -, f 3;
 #X obj 375 126 tgl 20 0 tone-ch7 tone-ch7 7 5 -8 0 12 -262144 -1 -1
 1 1;
 #X obj 400 126 tgl 20 0 tone-ch8 tone-ch8 8 5 -8 0 12 -262144 -1 -1
@@ -492,9 +492,10 @@ set 1 \;;
 #X connect 10 0 11 0;
 #X connect 11 0 4 0;
 #X restore 388 243 pd audio;
-#X floatatom 22 144 3 0 100 1 - tone-level-set tone-level;
-#X floatatom 84 123 5 0 100 1 pitch tone-pitch-set tone-pitch;
-#X floatatom 84 145 5 0 20000 1 HZ tone-hz-set tone-hz;
+#X floatatom 22 144 3 0 100 1 - tone-level-set tone-level, f 3;
+#X floatatom 84 123 5 0 100 1 pitch tone-pitch-set tone-pitch, f 5
+;
+#X floatatom 84 145 5 0 20000 1 HZ tone-hz-set tone-hz, f 5;
 #X text 48 145 dB;
 #X text 34 67 TEST TONES;
 #X text 233 156 AUDIO OUTPUT ON/OFF;
