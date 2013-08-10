@@ -2260,7 +2260,6 @@ static void *writesf_child_main(void *zz)
 #ifdef DEBUG_SOUNDFILE
                 pute("77\n");
 #endif
-
                     /* if the head is < the tail, we can immediately write
                     from tail to end of fifo to disk; otherwise we hold off
                     writing until there are at least WRITESIZE bytes in the
@@ -2424,20 +2423,21 @@ static t_int *writesf_perform(t_int *w)
     t_sample *fp;
     if (x->x_state == STATE_STREAM)
     {
-        int wantbytes;
+        int wantbytes, roominfifo;
         pthread_mutex_lock(&x->x_mutex);
         wantbytes = sfchannels * vecsize * bytespersample;
-        while (x->x_fifotail > x->x_fifohead &&
-            x->x_fifotail < x->x_fifohead + wantbytes + 1)
+        roominfifo = x->x_fifotail - x->x_fifohead;
+        if (roominfifo <= 0)
+            roominfifo += x->x_fifosize;
+        while (roominfifo < wantbytes + 1)
         {
-#ifdef DEBUG_SOUNDFILE
-            pute("wait...\n");
-#endif
+            fprintf(stderr, "writesf waiting for disk write..\n");
             sfread_cond_signal(&x->x_requestcondition);
             sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
-#ifdef DEBUG_SOUNDFILE
-            pute("done\n");
-#endif
+            fprintf(stderr, "... done waiting.\n");
+            roominfifo = x->x_fifotail - x->x_fifohead;
+            if (roominfifo <= 0)
+                roominfifo += x->x_fifosize;
         }
 
         soundfile_xferout_sample(sfchannels, x->x_outvec,
@@ -2542,10 +2542,8 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
         (x->x_bytespersample * x->x_sfchannels * MAXVECSIZE));
             /* arrange for the "request" condition to be signalled 16
             times per buffer */
-    x->x_sigcountdown = x->x_sigperiod =
-        (x->x_fifosize /
-            (16 * x->x_bytespersample * x->x_sfchannels *
-                x->x_vecsize));
+    x->x_sigcountdown = x->x_sigperiod = (x->x_fifosize /
+            (16 * x->x_bytespersample * x->x_sfchannels * x->x_vecsize));
     sfread_cond_signal(&x->x_requestcondition);
     pthread_mutex_unlock(&x->x_mutex);
 }
@@ -2555,9 +2553,8 @@ static void writesf_dsp(t_writesf *x, t_signal **sp)
     int i, ninlets = x->x_sfchannels;
     pthread_mutex_lock(&x->x_mutex);
     x->x_vecsize = sp[0]->s_n;
-    
     x->x_sigperiod = (x->x_fifosize /
-        (x->x_bytespersample * ninlets * x->x_vecsize));
+            (16 * x->x_bytespersample * x->x_sfchannels * x->x_vecsize));
     for (i = 0; i < ninlets; i++)
         x->x_outvec[i] = sp[i]->s_vec;
     x->x_insamplerate = sp[0]->s_sr;

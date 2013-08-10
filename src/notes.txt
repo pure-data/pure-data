@@ -13,7 +13,6 @@ how to integrate message boxes !?
 timeunit message
 
 x_array.c:
-more creation args for 'define' - x and y ticks and labels
 allow for lying about x and y labels
 no-click, quantize and clip flags for plotting/mousing
 save ticks, labels, other flags (and add dialog to set them)
