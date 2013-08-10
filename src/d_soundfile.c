@@ -22,6 +22,7 @@ objects use Posix-like threads.  */
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #include "m_pd.h"
 
@@ -186,6 +187,21 @@ static void swapstring(char *foo, int doit)
         char a = foo[0], b = foo[1], c = foo[2], d = foo[3];
         foo[0] = d; foo[1] = c; foo[2] = b; foo[3] = a;
     }
+}
+
+    /* write a sample rate as an 80-bit AIFF-compatible number */
+static void makeaiffsamprate(double sr, unsigned char *shit)
+{
+    int exponent;
+    double mantissa = frexp(sr, &exponent);
+    unsigned long fixmantissa = ldexp(mantissa, 32);
+    shit[0] = (exponent+16382)>>8;
+    shit[1] = exponent+16382;
+    shit[2] = fixmantissa >> 24;
+    shit[3] = fixmantissa >> 16;
+    shit[4] = fixmantissa >> 8;
+    shit[5] = fixmantissa;
+    shit[6] = shit[7] = shit[8] = shit[9] = 0;
 }
 
 /******************** soundfile access routines **********************/
@@ -781,7 +797,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
         longtmp = swap4(nframes, swap);
         memcpy(&aiffhdr->a_nframeshi, &longtmp, 4);
         aiffhdr->a_bitspersamp = swap2(8 * bytespersamp, swap);
-        memcpy(aiffhdr->a_samprate, dogdoo, sizeof(dogdoo));
+        makeaiffsamprate(samplerate, aiffhdr->a_samprate);
         longtmp = swap4(datasize + 8, swap);
         memcpy(headerbuf +
             ((aiffhdr->a_samprate + sizeof(dogdoo))-(unsigned char *)aiffhdr),
@@ -2432,6 +2448,8 @@ static t_int *writesf_perform(t_int *w)
         while (roominfifo < wantbytes + 1)
         {
             fprintf(stderr, "writesf waiting for disk write..\n");
+            fprintf(stderr, "(head %d, tail %d, room %d, want %d)\n",
+                x->x_fifohead, x->x_fifotail, roominfifo, wantbytes);
             sfread_cond_signal(&x->x_requestcondition);
             sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
             fprintf(stderr, "... done waiting.\n");
