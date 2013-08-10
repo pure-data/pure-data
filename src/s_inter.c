@@ -1236,26 +1236,27 @@ int sys_startgui(const char *libdir)
     }
     if (!sys_nogui)
     {
-      char buf[256], buf2[256];
-         sys_socketreceiver = socketreceiver_new(0, 0, 0, 0);
-         sys_addpollfn(sys_guisock, (t_fdpollfn)socketreceiver_read,
-             sys_socketreceiver);
+        char buf[256], buf2[256];
+        sys_socketreceiver = socketreceiver_new(0, 0, 0, 0);
+        sys_addpollfn(sys_guisock, (t_fdpollfn)socketreceiver_read,
+            sys_socketreceiver);
 
             /* here is where we start the pinging. */
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
-         if (sys_hipriority)
-             sys_gui("pdtk_watchdog\n");
+        if (sys_hipriority)
+            sys_gui("pdtk_watchdog\n");
 #endif
-         sys_get_audio_apis(buf);
-         sys_get_midi_apis(buf2);
-         sys_set_searchpath();     /* tell GUI about path and startup flags */
-         sys_set_extrapath();
-         sys_set_startup();
-                            /* ... and about font, medio APIS, etc */
-         sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
-                  PD_MAJOR_VERSION, PD_MINOR_VERSION, 
-                  PD_BUGFIX_VERSION, PD_TEST_VERSION,
-                  buf, buf2, sys_font, sys_fontweight); 
+        sys_get_audio_apis(buf);
+        sys_get_midi_apis(buf2);
+        sys_set_searchpath();     /* tell GUI about path and startup flags */
+        sys_set_extrapath();
+        sys_set_startup();
+                           /* ... and about font, medio APIS, etc */
+        sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
+                 PD_MAJOR_VERSION, PD_MINOR_VERSION, 
+                 PD_BUGFIX_VERSION, PD_TEST_VERSION,
+                 buf, buf2, sys_font, sys_fontweight); 
+        sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     }
     return (0);
 
