@@ -53,7 +53,7 @@ LINUXINCLUDE =  -I../../src
 
 d_ppc: $(NAME).d_ppc
 d_fat: $(NAME).d_fat
-
+DARWINARCH= -arch i386 -arch x86_64 -arch ppc 
 .SUFFIXES: .d_ppc .d_fat
 
 DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
@@ -65,8 +65,8 @@ DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
 	rm -f $*.o
 
 .c.d_fat:
-	$(CC) -arch i386 -arch ppc $(DARWINCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
-	$(CC) -arch i386 -arch ppc -bundle -undefined suppress -flat_namespace \
+	$(CC) $(DARWINARCH) $(DARWINCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
+	$(CC) $(DARWINARCH) -bundle -undefined suppress -flat_namespace \
 	    -o $*.d_fat $*.o 
 	rm -f $*.o
 

@@ -94,6 +94,7 @@ MACOSXCFLAGS = -DMACOSX -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch 
 
 MACOSXINCLUDE =  -I../../src
+MACOSXARCH= -arch i386 -arch x86_64 -arch ppc 
 
 d_ppc: expr.d_ppc expr~.d_ppc fexpr~.d_ppc
 .c.d_ppc_o:
@@ -125,11 +126,11 @@ install_d_fat:
 
 d_fat: expr.d_fat expr~.d_fat fexpr~.d_fat
 .c.d_fat_o:
-	$(CC) -g $(MACOSXCFLAGS) $(MACOSXINCLUDE)  -arch i386 -arch ppc \
+	$(CC) -g $(MACOSXCFLAGS) $(MACOSXINCLUDE) $(MACOSXARCH) \
 	-o $*.d_fat_o -c $*.c
 
 expr.d_fat: $(MACOSXOBJ)
-	$(CC) -arch i386 -arch ppc -bundle -undefined suppress  -flat_namespace \
+	$(CC) $(MACOSXARCH) -bundle -undefined suppress  -flat_namespace \
 		-o expr.d_fat $(MACOSXOBJ)  -lm
 	rm -f ../expr.d_fat
 	-ln -s expr~/expr.d_fat ..

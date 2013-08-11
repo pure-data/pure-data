@@ -31,7 +31,7 @@ CPPFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" \
     -I../portaudio/src/os/mac_osx/ -I../portmidi/pm_common \
     -I../portmidi/pm_mac -I../portmidi/porttime \
     -DUSEAPI_PORTAUDIO -DPA_USE_COREAUDIO -DNEWBUFFER
-ARCH_CFLAGS = -isysroot /Developer/SDKs/MacOSX10.4u.sdk $(ARCH) 
+ARCH_CFLAGS = $(ARCH) 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-unused-parameter \
      -Wno-parentheses -Wno-switch
 MORECFLAGS = -Wno-error -ffast-math -fno-strict-aliasing -O3
