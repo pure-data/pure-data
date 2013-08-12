@@ -6,6 +6,60 @@
 
 #include "m_pd.h"
 #include <stdio.h>
+#include <string.h>
+
+    /* parse a time unit such as "5 msec", "60 perminute", or "1 sample" to
+    a form usable by clock_setunit)( and clock_gettimesincewithunits().
+    This brute-force search through symbols really ought not to be done on
+    the fly for incoming 'tempo' messages, hmm...  This isn't public because
+    its interface migth want to change - but it's used in x_text.c as well
+    as here. */
+void parsetimeunits(void *x, t_float amount, t_symbol *unitname,
+    t_float *unit, int *samps)
+{
+    char *s = unitname->s_name;
+    if (amount <= 0)
+        amount = 1;
+    if (s[0] == 'p' && s[1] == 'e' && s[2] == 'r')  /* starts with 'per' */
+    {
+        char *s2 = s+3;
+        if (!strcmp(s2, "millisecond") || !strcmp(s2, "msec"))  /* msec */
+            *samps = 0, *unit = 1./amount;
+        else if (!strncmp(s2, "sec", 3))        /* seconds */
+            *samps = 0, *unit = 1000./amount;
+        else if (!strncmp(s2, "min", 3))        /* minutes */
+            *samps = 0, *unit = 60000./amount;
+        else if (!strncmp(s2, "sam", 3))        /* samples */
+            *samps = 1, *unit = 1./amount;
+        else goto fail;
+    }
+    else
+    {
+            /* empty string defaults to msec */
+        if (!strcmp(s, "millisecond") || !strcmp(s, "msec"))
+            *samps = 0, *unit = amount;
+        else if (!strncmp(s, "sec", 3))
+            *samps = 0, *unit = 1000.*amount;
+        else if (!strncmp(s, "min", 3))
+            *samps = 0, *unit = 60000.*amount;
+        else if (!strncmp(s, "sam", 3))
+            *samps = 1, *unit = amount;
+        else
+        {
+        fail:
+                /* empty time unit specification defaults to 1 msec for
+                back compatibility, since it's possible someone threw a
+                float argument to timer which had previously been ignored. */
+            if (*s)
+                pd_error(x, "%s: unknown time unit", s);
+            else pd_error(x,
+                "tempo setting needs time unit ('sec', 'samp', 'permin', etc.");
+            *unit = 1;
+            *samps = 0;
+        }
+    }
+}
+
 /* -------------------------- delay ------------------------------ */
 static t_class *delay_class;
 
@@ -15,6 +69,17 @@ typedef struct _delay
     t_clock *x_clock;
     double x_deltime;
 } t_delay;
+
+static void delay_ft1(t_delay *x, t_floatarg g)
+{
+    if (g < 0) g = 0;
+    x->x_deltime = g;
+}
+
+static void delay_tick(t_delay *x)
+{
+    outlet_bang(x->x_obj.ob_outlet);
+}
 
 static void delay_bang(t_delay *x)
 {
@@ -26,21 +91,18 @@ static void delay_stop(t_delay *x)
     clock_unset(x->x_clock);
 }
 
-static void delay_ft1(t_delay *x, t_floatarg g)
-{
-    if (g < 0) g = 0;
-    x->x_deltime = g;
-}
-
 static void delay_float(t_delay *x, t_float f)
 {
     delay_ft1(x, f);
     delay_bang(x);
 }
 
-static void delay_tick(t_delay *x)
+static void delay_tempo(t_delay *x, t_symbol *unitname, t_floatarg tempo)
 {
-    outlet_bang(x->x_obj.ob_outlet);
+    t_float unit;
+    int samps;
+    parsetimeunits(x, tempo, unitname, &unit, &samps);
+    clock_setunit(x->x_clock, unit, samps);
 }
 
 static void delay_free(t_delay *x)
@@ -48,25 +110,30 @@ static void delay_free(t_delay *x)
     clock_free(x->x_clock);
 }
 
-static void *delay_new(t_floatarg f)
+static void *delay_new(t_symbol *unitname, t_floatarg f, t_floatarg tempo)
 {
     t_delay *x = (t_delay *)pd_new(delay_class);
     delay_ft1(x, f);
     x->x_clock = clock_new(x, (t_method)delay_tick);
     outlet_new(&x->x_obj, gensym("bang"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
+    if (tempo != 0)
+        delay_tempo(x, unitname, tempo);
     return (x);
 }
 
 static void delay_setup(void)
 {
     delay_class = class_new(gensym("delay"), (t_newmethod)delay_new,
-        (t_method)delay_free, sizeof(t_delay), 0, A_DEFFLOAT, 0);
+        (t_method)delay_free, sizeof(t_delay), 0,
+            A_DEFFLOAT, A_DEFFLOAT, A_DEFSYM, 0);
     class_addcreator((t_newmethod)delay_new, gensym("del"), A_DEFFLOAT, 0);
     class_addbang(delay_class, delay_bang);
     class_addmethod(delay_class, (t_method)delay_stop, gensym("stop"), 0);
     class_addmethod(delay_class, (t_method)delay_ft1,
         gensym("ft1"), A_FLOAT, 0);
+    class_addmethod(delay_class, (t_method)delay_tempo,
+        gensym("tempo"), A_FLOAT, A_SYMBOL, 0);
     class_addfloat(delay_class, (t_method)delay_float);
 }
 
@@ -80,6 +147,13 @@ typedef struct _metro
     double x_deltime;
     int x_hit;
 } t_metro;
+
+static void metro_ft1(t_metro *x, t_floatarg g)
+{
+    if (g <= 0) /* as of 0.45, we're willing to try any positive time value */
+        g = 1;  /* but default to 1 (arbitrary and probably not so good) */
+    x->x_deltime = g;
+}
 
 static void metro_tick(t_metro *x)
 {
@@ -105,10 +179,12 @@ static void metro_stop(t_metro *x)
     metro_float(x, 0);
 }
 
-static void metro_ft1(t_metro *x, t_floatarg g)
+static void metro_tempo(t_metro *x, t_symbol *unitname, t_floatarg tempo)
 {
-    if (g < 1) g = 1;
-    x->x_deltime = g;
+    t_float unit;
+    int samps;
+    parsetimeunits(x, tempo, unitname, &unit, &samps);
+    clock_setunit(x->x_clock, unit, samps);
 }
 
 static void metro_free(t_metro *x)
@@ -116,7 +192,7 @@ static void metro_free(t_metro *x)
     clock_free(x->x_clock);
 }
 
-static void *metro_new(t_floatarg f)
+static void *metro_new(t_symbol *unitname, t_floatarg f, t_floatarg tempo)
 {
     t_metro *x = (t_metro *)pd_new(metro_class);
     metro_ft1(x, f);
@@ -124,17 +200,22 @@ static void *metro_new(t_floatarg f)
     x->x_clock = clock_new(x, (t_method)metro_tick);
     outlet_new(&x->x_obj, gensym("bang"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("ft1"));
+    if (tempo != 0)
+        metro_tempo(x, unitname, tempo);
     return (x);
 }
 
 static void metro_setup(void)
 {
     metro_class = class_new(gensym("metro"), (t_newmethod)metro_new,
-        (t_method)metro_free, sizeof(t_metro), 0, A_DEFFLOAT, 0);
+        (t_method)metro_free, sizeof(t_metro), 0,
+            A_DEFFLOAT, A_DEFFLOAT, A_DEFSYM, 0);
     class_addbang(metro_class, metro_bang);
     class_addmethod(metro_class, (t_method)metro_stop, gensym("stop"), 0);
     class_addmethod(metro_class, (t_method)metro_ft1, gensym("ft1"),
         A_FLOAT, 0);
+    class_addmethod(metro_class, (t_method)metro_tempo,
+        gensym("tempo"), A_FLOAT, A_SYMBOL, 0);
     class_addfloat(metro_class, (t_method)metro_float);
 }
 
@@ -264,33 +345,53 @@ typedef struct _timer
 {
     t_object x_obj;
     double x_settime;
+    double x_moreelapsed;
+    t_float x_unit;
+    int x_samps;
 } t_timer;
 
 static void timer_bang(t_timer *x)
 {
     x->x_settime = clock_getsystime();
+    x->x_moreelapsed = 0;
 }
 
 static void timer_bang2(t_timer *x)
 {
-    outlet_float(x->x_obj.ob_outlet, clock_gettimesince(x->x_settime));
+    outlet_float(x->x_obj.ob_outlet,
+        clock_gettimesincewithunits(x->x_settime, x->x_unit, x->x_samps)
+            + x->x_moreelapsed);
 }
 
-static void *timer_new(t_floatarg f)
+static void timer_tempo(t_timer *x, t_symbol *unitname, t_floatarg tempo)
+{
+    x->x_moreelapsed +=  clock_gettimesincewithunits(x->x_settime,
+        x->x_unit, x->x_samps);
+    x->x_settime = clock_getsystime();
+    parsetimeunits(x, tempo, unitname, &x->x_unit, &x->x_samps);
+}
+
+static void *timer_new(t_symbol *unitname, t_floatarg tempo)
 {
     t_timer *x = (t_timer *)pd_new(timer_class);
+    x->x_unit = 1;
+    x->x_samps = 0;
     timer_bang(x);
     outlet_new(&x->x_obj, gensym("float"));
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("bang"), gensym("bang2"));
+    if (tempo != 0)
+        timer_tempo(x, unitname, tempo);
     return (x);
 }
 
 static void timer_setup(void)
 {
     timer_class = class_new(gensym("timer"), (t_newmethod)timer_new, 0,
-        sizeof(t_timer), 0, A_DEFFLOAT, 0);
+        sizeof(t_timer), 0, A_DEFFLOAT, A_DEFSYM, 0);
     class_addbang(timer_class, timer_bang);
     class_addmethod(timer_class, (t_method)timer_bang2, gensym("bang2"), 0);
+    class_addmethod(timer_class, (t_method)timer_tempo,
+        gensym("tempo"), A_FLOAT, A_SYMBOL, 0);
 }
 
 

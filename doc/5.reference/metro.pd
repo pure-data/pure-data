@@ -1,29 +1,46 @@
-#N canvas 39 7 634 372 12;
-#X text 19 36 The metro object sends a series of bangs at a constant rate. The right inlet takes the value in milliseconds between each bang. The left inlet takes a 1 or 0 \, turning the metronome on or off.;
-#X obj 67 285 + 1;
-#X obj 32 284 int;
-#X floatatom 32 317 4 0 0;
-#X obj 32 243 metro 500;
-#X obj 5 6 metro;
-#X floatatom 81 220 4 0 0;
-#X text 104 282 These objects work together as a counter. For each bang sent by metro \, the output adds 1;
-#X obj 32 103 loadbang;
+#N canvas 19 47 645 526 12;
+#X obj 32 291 metro 500;
+#X obj 70 9 metro;
+#X floatatom 101 268 4 0 0 0 - - -, f 4;
 #X msg 32 125 1;
 #X text 92 135 nonzero number or "bang" to start;
 #X msg 49 172 0;
 #X msg 38 148 bang;
 #X msg 49 194 stop;
 #X text 99 181 zero or "stop" to stop.;
-#X text 351 332 Updated for Pd version 0.33;
-#X text 130 220 right inlet sets the rate in msec per tick.;
-#X text 127 243 creation argument initializes rate in msec;
-#X connect 1 0 2 1;
-#X connect 2 0 3 0;
-#X connect 2 0 1 0;
-#X connect 4 0 2 0;
-#X connect 6 0 4 1;
-#X connect 8 0 9 0;
-#X connect 9 0 4 0;
-#X connect 11 0 4 0;
-#X connect 12 0 4 0;
-#X connect 13 0 4 0;
+#X text 150 268 right inlet sets the rate in msec per tick.;
+#X text 377 471 Updated for Pd version 0.45;
+#X text 121 8 - metronome;
+#X text 23 35 The metro object sends a series of bangs at regular time
+intervals. The right inlet takes the value in milliseconds between
+each bang. The left inlet takes a 1 or 0 \, turning the metronome on
+or off.;
+#X obj 32 317 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 116 292 <-- optional creation arguments:;
+#X text 165 311 - delay time (float);
+#X text 166 329 - tempo (float) and time unit (symbol) as in "tempo"
+message, f 31;
+#X msg 51 220 tempo 2 msec;
+#X text 165 219 set tempo in units of miliseconds (msec for short)
+\, seconds (sec) \, minutes (min) or samples (samp)., f 51;
+#X text 79 472 see also:;
+#X obj 173 470 timer;
+#X text 41 373 for example \, a metronome at intervals of one beat
+at 120 beats per minute:, f 37;
+#X obj 360 395 metro 1 120 permin;
+#X obj 360 373 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 360 420 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 220 435 delay;
+#X text 50 428 for details on tempo setting \, see:, f 20;
+#X connect 0 0 13 0;
+#X connect 2 0 0 1;
+#X connect 3 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 7 0 0 0;
+#X connect 17 0 0 0;
+#X connect 22 0 24 0;
+#X connect 23 0 22 0;

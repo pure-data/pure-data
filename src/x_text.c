@@ -1111,7 +1111,6 @@ static void text_search_list(t_text_search *x,
 }
 
 /* ---------------- text_sequence object - sequencer ----------- */
-
 t_class *text_sequence_class;
 
 typedef struct _text_sequence
@@ -1133,6 +1132,10 @@ typedef struct _text_sequence
 } t_text_sequence;
 
 static void text_sequence_tick(t_text_sequence *x);
+static void text_sequence_tempo(t_text_sequence *x,
+    t_symbol *unitname, t_floatarg tempo);
+void parsetimeunits(void *x, t_float amount, t_symbol *unitname,
+    t_float *unit, int *samps); /* time unit parsing from x_time.c */
 
 static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -1159,10 +1162,16 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
                 if ((x->x_waitargc = argv[1].a_w.w_float) < 0)
                     x->x_waitargc = 0;
             }
-            argc -= 2; argv += 2;
+            argc -= 1; argv += 1;
         }
         else if (!strcmp(argv->a_w.w_symbol->s_name, "-g"))
             global = 1;
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-t") && argc >= 3)
+        {
+            text_sequence_tempo(x, atom_getsymbolarg(2, argc, argv),
+                atom_getfloatarg(1, argc, argv));
+             argc -= 2; argv += 2;
+        }
         else
         {
             pd_error("text sequence: unknown flag '%s'...",
@@ -1191,7 +1200,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
         if (x->x_waitargc)
             pd_error(x, 
        "warning: text sequence: numeric 'w' argument ignored if '-g' given");
-        x->x_waitargc = 0x7fffffff;
+        x->x_waitargc = 0x40000000;
     }
     return (x);
 }
@@ -1227,6 +1236,8 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                     ;
             x->x_eaten = 1;
             eatsemi = 0;
+            post("got %d items; this one %f, waitargc %d i %d, n %d",
+                i-onset, vec[onset].a_w.w_float, x->x_waitargc, i, n);
         }
         else
         {
@@ -1389,6 +1400,15 @@ static void text_sequence_args(t_text_sequence *x, t_symbol *s,
     for (i = 0; i < argc; i++)
         x->x_argv[i] = argv[i];
     x->x_argc = argc;
+}
+
+static void text_sequence_tempo(t_text_sequence *x,
+    t_symbol *unitname, t_floatarg tempo)
+{
+    t_float unit;
+    int samps;
+    parsetimeunits(x, tempo, unitname, &unit, &samps);
+    clock_setunit(x->x_clock, unit, samps);
 }
 
 static void text_sequence_free(t_text_sequence *x)
@@ -1839,6 +1859,8 @@ void x_qlist_setup(void )
         gensym("stop"), 0);
     class_addmethod(text_sequence_class, (t_method)text_sequence_args, 
         gensym("args"), A_GIMME, 0);
+    class_addmethod(text_sequence_class, (t_method)text_sequence_tempo, 
+        gensym("tempo"), A_FLOAT, A_SYMBOL, 0);
     class_addlist(text_sequence_class, text_sequence_list);
     class_sethelpsymbol(text_sequence_class, gensym("text-object"));
 

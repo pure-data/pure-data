@@ -1,15 +1,44 @@
-#N canvas 440 273 514 280 10;
-#X msg 60 146 bang;
+#N canvas 58 53 601 508 12;
+#X msg 67 190 bang;
 #X msg 30 115 bang;
-#X obj 30 175 timer;
-#X obj 66 15 timer;
-#X text 111 16 - measure logical time;
-#X floatatom 30 206;
-#X text 71 113 Click here to reset;
-#X text 98 147 Click here to get elapsed logical time;
-#X text 27 232 Output is in milliseconds;
-#X text 6 51 The timer object measures elapsed logical time. Logical time moves forward as if all computation were instantaneous and as if all "delay" and "metro" objects were exact.;
-#X text 319 260 updated for Pd version 0.25;
+#X obj 30 220 timer;
+#X obj 84 13 timer;
+#X text 129 14 - measure logical time;
+#X floatatom 30 251 0 0 0 0 - - -;
+#X text 12 48 The timer object measures elapsed logical time. Logical
+time moves forward as if all computation were instantaneous and as
+if all "delay" and "metro" objects were exact.;
+#X text 337 458 updated for Pd version 0.45;
+#X text 27 277 Output is in the specified time units \, milliseconds
+by default., f 63;
+#X text 105 191 Bang in inlet: output elapsed time;
+#X text 73 113 bang: reset elapsed time to zero, f 33;
+#X msg 29 154 tempo 2 msec;
+#X text 142 149 set tempo in units of milliseconds (msec for short)
+\, seconds (sec) \, minutes (min) or samples (samp)., f 52;
+#X text 46 453 see also:;
+#X obj 406 301 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 407 372 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 266 396 delay;
+#X text 96 389 for details on tempo setting \, see:, f 20;
+#X obj 443 377 sel 1;
+#X floatatom 443 432 5 0 0 0 - - -, f 5;
+#X obj 406 321 t f f;
+#X obj 134 453 metro;
+#X obj 407 347 metro 1 90 permin;
+#X obj 443 407 timer 90 permin;
+#X text 97 309 for example \, this metronome outputs at intervals of
+one beat at 90 beats per minute \, as measured by a timer also set
+to that tempo:, f 37;
 #X connect 0 0 2 1;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
+#X connect 14 0 20 0;
+#X connect 15 0 23 1;
+#X connect 18 0 23 0;
+#X connect 20 0 22 0;
+#X connect 20 1 18 0;
+#X connect 22 0 15 0;
+#X connect 23 0 19 0;

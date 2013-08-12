@@ -335,9 +335,12 @@ EXTERN t_clock *clock_new(void *owner, t_method fn);
 EXTERN void clock_set(t_clock *x, double systime);
 EXTERN void clock_delay(t_clock *x, double delaytime);
 EXTERN void clock_unset(t_clock *x);
+EXTERN void clock_setunit(t_clock *x, double timeunit, int sampflag);
 EXTERN double clock_getlogicaltime(void);
 EXTERN double clock_getsystime(void); /* OBSOLETE; use clock_getlogicaltime() */
 EXTERN double clock_gettimesince(double prevsystime);
+EXTERN double clock_gettimesincewithunits(double prevsystime,
+    double units, int sampflag);
 EXTERN double clock_getsystimeafter(double delaytime);
 EXTERN void clock_free(t_clock *x);
 
