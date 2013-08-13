@@ -947,7 +947,7 @@ static void text_search_list(t_text_search *x,
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
     int i, j, n, lineno, bestline = -1, beststart, bestn, thisstart, thisn,
-        nkeys = x->x_nkeys, failed = 0;;
+        nkeys = x->x_nkeys, failed = 0;
     t_atom *vec;
     t_key *kp = x->x_keyvec;
     if (!b)

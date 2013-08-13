@@ -159,16 +159,16 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         t_binbuf *b = 0;
         if (x->x_bin)
         {
-            buf = alloca(argc);
             int i;
+            buf = alloca(argc);
             for (i = 0; i < argc; i++)
                 ((unsigned char *)buf)[i] = atom_getfloatarg(i, argc, argv);
             length = argc;
         }
         else
         {
-            b = binbuf_new();
             t_atom at;
+            b = binbuf_new();
             binbuf_add(b, argc, argv);
             SETSEMI(&at);
             binbuf_add(b, 1, &at);

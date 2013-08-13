@@ -4,13 +4,11 @@ GUIs 0.45 mode (no clipping, toggle for 0/1)
 pointer methods to search and delete
 
 x_text.c:
-figure out about -cr
 text dimension setting (message or creation arg - how to do it in structs?)
 double-click on drawtext in scalar to create editor window
 copying ala text_define_topointer
 "open" and "save as" messages to open text window
 how to integrate message boxes !?
-timeunit message
 
 x_array.c:
 allow for lying about x and y labels
