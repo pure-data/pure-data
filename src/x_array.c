@@ -717,6 +717,88 @@ static void array_random_float(t_array_random *x, t_floatarg f)
     array_random_bang(x);
 }
 
+/* ----  array max -- output largest value and its index ------------ */
+static t_class *array_max_class;
+
+typedef struct _array_max
+{
+    t_array_rangeop x_rangeop;
+    t_outlet *x_out1;       /* value */
+    t_outlet *x_out2;       /* index */
+    int x_onset;            /* search onset */
+} t_array_max;
+
+static void *array_max_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_max *x = array_rangeop_new(array_max_class, s, &argc, &argv,
+        0, 1, 1);
+    x->x_out1 = outlet_new(&x->x_rangeop.x_tc.tc_obj, &s_float);
+    x->x_out2 = outlet_new(&x->x_rangeop.x_tc.tc_obj, &s_float);
+    return (x);
+}
+
+static void array_max_bang(t_array_max *x)
+{
+    char *itemp, *firstitem;
+    int stride, nitem, i, besti;
+    t_float bestf;
+    if (!array_rangeop_getrange(&x->x_rangeop, &firstitem, &nitem, &stride))
+        return;
+    for (i = 0, besti = 0, bestf= -1e30, itemp = firstitem;
+        i < nitem; i++, itemp += stride)
+            if (*(t_float *)itemp > bestf)
+                bestf = *(t_float *)itemp, besti = i;
+    outlet_float(x->x_out2, besti+x->x_onset);
+    outlet_float(x->x_out1, bestf);
+}
+
+static void array_max_float(t_array_max *x, t_floatarg f)
+{
+    x->x_onset = f;
+    array_max_bang(x);
+}
+
+/* ----  array min -- output largest value and its index ------------ */
+static t_class *array_min_class;
+
+typedef struct _array_min
+{
+    t_array_rangeop x_rangeop;
+    t_outlet *x_out1;       /* value */
+    t_outlet *x_out2;       /* index */
+    int x_onset;            /* search onset */
+} t_array_min;
+
+static void *array_min_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_array_min *x = array_rangeop_new(array_min_class, s, &argc, &argv,
+        0, 1, 1);
+    x->x_out1 = outlet_new(&x->x_rangeop.x_tc.tc_obj, &s_float);
+    x->x_out2 = outlet_new(&x->x_rangeop.x_tc.tc_obj, &s_float);
+    return (x);
+}
+
+static void array_min_bang(t_array_min *x)
+{
+    char *itemp, *firstitem;
+    int stride, nitem, i, besti;
+    t_float bestf;
+    if (!array_rangeop_getrange(&x->x_rangeop, &firstitem, &nitem, &stride))
+        return;
+    for (i = 0, besti = 0, bestf= 1e30, itemp = firstitem;
+        i < nitem; i++, itemp += stride)
+            if (*(t_float *)itemp < bestf)
+                bestf = *(t_float *)itemp, besti = i;
+    outlet_float(x->x_out2, besti+x->x_onset);
+    outlet_float(x->x_out1, bestf);
+}
+
+static void array_min_float(t_array_min *x, t_floatarg f)
+{
+    x->x_onset = f;
+    array_min_bang(x);
+}
+
 /* overall creator for "array" objects - dispatch to "array define" etc */
 static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -739,6 +821,10 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
             newest = array_quantile_new(s, argc-1, argv+1);
         else if (!strcmp(str, "random"))
             newest = array_random_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "max"))
+            newest = array_max_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "min"))
+            newest = array_min_new(s, argc-1, argv+1);
         else 
         {
             error("array %s: unknown function", str);
@@ -812,4 +898,18 @@ void x_array_setup(void )
     class_addfloat(array_random_class, array_random_float);
     class_addbang(array_random_class, array_random_bang);
     class_sethelpsymbol(array_random_class, gensym("array-object"));
+
+    array_max_class = class_new(gensym("array max"),
+        (t_newmethod)array_max_new, (t_method)array_client_free,
+            sizeof(t_array_max), 0, A_GIMME, 0);
+    class_addfloat(array_max_class, array_max_float);
+    class_addbang(array_max_class, array_max_bang);
+    class_sethelpsymbol(array_max_class, gensym("array-object"));
+
+    array_min_class = class_new(gensym("array min"),
+        (t_newmethod)array_min_new, (t_method)array_client_free,
+            sizeof(t_array_min), 0, A_GIMME, 0);
+    class_addfloat(array_min_class, array_min_float);
+    class_addbang(array_min_class, array_min_bang);
+    class_sethelpsymbol(array_min_class, gensym("array-object"));
 }

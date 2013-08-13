@@ -15,7 +15,7 @@ allow for lying about x and y labels
 no-click, quantize and clip flags for plotting/mousing
 save ticks, labels, other flags (and add dialog to set them)
 array y range to reflect y increment sign (so no 1 to -1 range)
-argmax, argmin, maybe search?
+argmax, argmin, maybe search and sort?
 
 build out scalar object - naming; "scalar set/get" objects
 
