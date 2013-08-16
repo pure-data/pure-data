@@ -136,55 +136,56 @@ s_entry_com.obj: s_entry.c
 	$(MSCC) /c -DCOMMANDVERSION s_entry_com.c 
 	$(DELETE) s_entry_com.c
 
+PACF= -DPA_USE_ASIO -DPA_USE_WMME $(ALLCF)
 # explicit rules to compile portaudio sources:
 pa_stream.obj: $(PASRC)/common/pa_stream.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_stream.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_stream.c
 pa_trace.obj: $(PASRC)/common/pa_trace.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_trace.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_trace.c
 pa_process.obj: $(PASRC)/common/pa_process.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_process.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_process.c
 pa_front.obj: $(PASRC)/common/pa_front.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_front.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_front.c
 pa_dither.obj: $(PASRC)/common/pa_dither.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_dither.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_dither.c
 pa_cpuload.obj: $(PASRC)/common/pa_cpuload.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_cpuload.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_cpuload.c
 pa_converters.obj: $(PASRC)/common/pa_converters.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_converters.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_converters.c
 pa_allocation.obj: $(PASRC)/common/pa_allocation.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_allocation.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_allocation.c
 pa_ringbuffer.obj: $(PASRC)/common/pa_ringbuffer.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\common\\pa_ringbuffer.c
+	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_ringbuffer.c
 
 pa_win_hostapis.obj: $(PASRC)/os/win/pa_win_hostapis.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\os\\win\\pa_win_hostapis.c
+	$(MSCC) /c $(PACF) $(PASRC)\\os\\win\\pa_win_hostapis.c
 pa_win_util.obj: $(PASRC)/os/win/pa_win_util.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\os\\win\\pa_win_util.c
+	$(MSCC) /c $(PACF) $(PASRC)\\os\\win\\pa_win_util.c
 pa_win_waveformat.obj: $(PASRC)/os/win/pa_win_waveformat.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\os\\win\\pa_win_waveformat.c
+	$(MSCC) /c $(PACF) $(PASRC)\\os\\win\\pa_win_waveformat.c
 pa_win_coinitialize.obj: $(PASRC)/os/win/pa_win_coinitialize.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\os\\win\\pa_win_coinitialize.c
+	$(MSCC) /c $(PACF) $(PASRC)\\os\\win\\pa_win_coinitialize.c
 pa_win_wmme.obj: $(PASRC)/hostapi/wmme/pa_win_wmme.c
-	$(MSCC) /c $(ALLCF) $(PASRC)\\hostapi\\wmme\\pa_win_wmme.c
+	$(MSCC) /c $(PACF) $(PASRC)\\hostapi\\wmme\\pa_win_wmme.c
 pa_win_wdmks.obj: $(PADIR)/a_win_wdmks/pa_win_wdmks.c
-	$(MSCC) /c $(ALLCF) \
+	$(MSCC) /c $(PACF) \
 	-DWINVER=0x400 -DKSAUDIO_SPEAKER_DIRECTOUT \
 	$(PADIR)\\pa_win_wdmks\\pa_win_wdmks.c
 pa_asio.obj: $(PASRC)/hostapi/asio/pa_asio.cpp
-	$(MSCC) /c $(ALLCF) $(PASRC)\\hostapi\\asio\\pa_asio.cpp
+	$(MSCC) /c $(PACF) $(PASRC)\\hostapi\\asio\\pa_asio.cpp
 
 portmidi.obj: $(PMDIR)/pm_common/portmidi.c
-	$(MSCC) /c $(ALLCF) $(PMDIR)\\pm_common\\portmidi.c
+	$(MSCC) /c $(PACF) $(PMDIR)\\pm_common\\portmidi.c
 pmutil.obj: $(PMDIR)/pm_common/pmutil.c
-	$(MSCC) /c $(ALLCF) $(PMDIR)\\pm_common\\pmutil.c
+	$(MSCC) /c $(PACF) $(PMDIR)\\pm_common\\pmutil.c
 pmwin.obj: $(PMDIR)/pm_win/pmwin.c
-	$(MSCC) /c $(ALLCF) $(PMDIR)\\pm_win\\pmwin.c
+	$(MSCC) /c $(PACF) $(PMDIR)\\pm_win\\pmwin.c
 pmwinmm.obj: $(PMDIR)/pm_win/pmwinmm.c
-	$(MSCC) /c $(ALLCF) $(PMDIR)\\pm_win\\pmwinmm.c
+	$(MSCC) /c $(PACF) $(PMDIR)\\pm_win\\pmwinmm.c
 porttime.obj: $(PMDIR)/porttime/porttime.c
-	$(MSCC) /c $(ALLCF) $(PMDIR)\\porttime\\porttime.c
+	$(MSCC) /c $(PACF) $(PMDIR)\\porttime\\porttime.c
 ptwinmm.obj: $(PMDIR)/porttime/ptwinmm.c
-	$(MSCC) /c $(ALLCF) $(PMDIR)\\porttime\\ptwinmm.c
+	$(MSCC) /c $(PACF) $(PMDIR)\\porttime\\ptwinmm.c
 
 # the following should also clean up "bin" but it doesn't because "bin" holds
 # precious stuff from elsewhere.
