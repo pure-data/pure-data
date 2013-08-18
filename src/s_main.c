@@ -274,7 +274,10 @@ int sys_main(int argc, char **argv)
 # ifdef _MSC_VER /* MS Visual Studio */
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
-    int _fmode = _O_BINARY;
+    {
+        extern int _fmode;
+        _fmode = _O_BINARY;
+    }
 # endif /* _MSC_VER */
 #endif  /* WIN32 */
     pd_init();                                  /* start the message system */

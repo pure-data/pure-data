@@ -1,8 +1,14 @@
-# how Miller builds Pd on Windows:
+# makefile to compile for windows using the mingw suite.
+# To use this makefile to cross-compile from linux, type for example:
+# make -f makefile.mingw CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-c++ \
+#  WINDRES=i686-w64-mingw32-windres
+
+# Miller's Windows build uses Microsoft Visual C and makefile.msvc:
 # http://lists.puredata.info/pipermail/pd-dev/2004-10/002981.html
 
 CC = gcc
 CXX = g++
+WINDRES = windres
 
 cvs_root_dir = ../..
 pd_src = $(cvs_root_dir)/pd
@@ -27,14 +33,19 @@ libpddir = $(prefix)
 pddocdir = $(libpddir)/doc
 libpdbindir = $(libpddir)/bin
 
-PDEXEC = pd.exe
-PDDLL = pd.dll
+EXECDIR=../bin
+PDEXEC = $(EXECDIR)/pd.exe
+PDDLL = $(EXECDIR)/pd.dll
+PDCOM = $(EXECDIR)/pd.com
+PDRECEIVE = $(EXECDIR)/pdreceive.exe
+PDSEND = $(EXECDIR)/pdsend.exe
+
 DLLWRAP= dllwrap
 
-MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer 
+MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer -fno-strict-aliasing
 
 PADIR = $(pd_src)/portaudio
-ASIODIR = $(pd_src)/asio/ASIOSDK2
+ASIODIR = $(pd_src)/lib/ASIOSDK2.3
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
@@ -42,7 +53,8 @@ INCLUDE = -I$(pd_src)/src
 GINCLUDE = -I/usr/local/include $(INCLUDE)
 
 LDFLAGS = 
-LIBS = -lm -lwsock32 -lwinmm -lole32 -lpthreadGC2
+LIBS = -lm -lwsock32 -lwinmm -lole32 -lpthreadGC2 \
+    -static-libgcc -static-libstdc++
 
 OPT_CFLAGS = 
 
@@ -147,7 +159,7 @@ endif
 
 .PHONY: all install clean testbin
 
-all: $(PDDLL) $(PDEXEC) pdsend.exe pdreceive.exe pd.com
+all: $(PDDLL) $(PDEXEC) $(PDSEND) $(PDRECEIVE) $(PDCOM)
 
 $(OBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
@@ -170,21 +182,21 @@ $(PMOBJ) : %.o : %.c
 $(VOBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
 
-pdsend.exe: u_pdsend.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o pdsend.exe u_pdsend.o $(LIBS)
-	$(STRIP) pdsend.exe
+$(PDSEND): u_pdsend.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o $(LIBS)
+	$(STRIP) $(PDSEND)
 
-pdreceive.exe: u_pdreceive.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o pdreceive.exe u_pdreceive.o $(LIBS)
-	$(STRIP) pdreceive.exe
+$(PDRECEIVE): u_pdreceive.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o $(LIBS)
+	$(STRIP) $(PDRECEIVE)
 
 $(PDEXEC): s_entry.o pd.res
-	$(CC) $(LDFLAGS) -mwindows -o $(PDEXEC) s_entry.o pd.res $(LIBS) -L. -lpd
+	$(CXX) $(LDFLAGS) -mwindows -o $(PDEXEC) s_entry.o pd.res $(LIBS) pd.a
 	$(STRIP) -s $(PDEXEC)
 
-pd.com: s_entry.o
-	$(CC) $(LDFLAGS) -o pd.com s_entry.o $(LIBS) -L. -lpd
-	$(STRIP) -s pd.com
+$(PDCOM): s_entry.o
+	$(CXX) $(LDFLAGS) -o $(PDCOM) s_entry.o $(LIBS) pd.a
+	$(STRIP) -s $(PDCOM)
 
 $(PDDLL): $(OBJC)
 	$(CXX) -shared $(LDFLAGS) -o $(PDDLL) $(OBJC) $(LIBS) \
@@ -192,7 +204,13 @@ $(PDDLL): $(OBJC)
 	$(STRIP) $(PDDLL)
 
 pd.res: pd.rc
-	windres pd.rc -O coff -o pd.res
+	$(WINDRES) pd.rc -O coff -o pd.res
+
+../bin/pdstatic.exe: $(OBJC)
+	$(CXX) -static \
+            $(LDFLAGS) -o ../bin/pdstatic.exe $(OBJC) \
+            $(LIBS) -lole32 -static-libgcc -static-libstdc++
+	$(STRIP) -s ../bin/pdstatic.exe
 
 #vstschedlib.dll: $(VOBJ)
 #	$(DLLWRAP) --export-all-symbols --output-def vst.def \
@@ -202,13 +220,12 @@ externs:
 	make -C ../extra all
 
 # kludge to put stuff into the pd/bin dir for testing
-testbin: $(PDEXEC) $(PDDLL) pd.com
+testbin: $(PDEXEC) $(PDDLL) $(PDCOM)
 	echo "Copying files to $(BIN_DIR)"
 	install -d $(BIN_DIR)
-	install -p *.tcl $(BIN_DIR)
 	install -p $(PDDLL) $(BIN_DIR)
 	install -p pd.ico $(BIN_DIR)
-	install -p pd.com $(BIN_DIR)
+	install -p $(PDCOM) $(BIN_DIR)
 	install -p $(PDEXEC) $(BIN_DIR)
 
 ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
@@ -221,11 +238,11 @@ install:  all
 	install -d $(DESTDIR)$(bindir)
 	install -p ../tcl/*.tcl $(DESTDIR)$(bindir)/
 	install -p $(PDEXEC) $(DESTDIR)$(bindir)/$(PDEXEC)
-	install -p pd.com $(DESTDIR)$(bindir)/pd.com
+	install -p $(PDCOM) $(DESTDIR)$(bindir)/$(PDCOM)
 	install -p pd.dll $(DESTDIR)$(bindir)/pd.dll
 	install -p pd.ico $(DESTDIR)$(bindir)/pd.ico
-	install -p pdsend.exe $(DESTDIR)$(bindir)/pdsend.exe
-	install -p pdreceive.exe $(DESTDIR)$(bindir)/pdreceive.exe
+	install -p $(PDSEND) $(DESTDIR)$(bindir)/$(PDSEND)
+	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/$(PDRECEIVE)
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
 		echo "installing $$dir"; \
 		install -d $(DESTDIR)$(pddocdir)/$$dir ; \
@@ -255,7 +272,7 @@ install:  all
 clean:
 	-rm -f -- $(BIN_DIR)/*.*
 	-rm -f -- *.o *.a *.def
-	-rm -f -- pd*.exe pd*.dll pd.com
+	-rm -f -- pd*.exe pd*.dll $(PDCOM)
 	-rm -f -- $(OBJ) $(GOBJ) $(SROBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
 	-rm -f -- $(pd_src)/extra/*/*.dll $(pd_src)/extra/*/*.o
 	-rm -f makefile.dependencies

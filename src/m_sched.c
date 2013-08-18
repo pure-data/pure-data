@@ -16,8 +16,10 @@
 #define TIMEUNITPERMSEC (32. * 441.)
 #define TIMEUNITPERSECOND (TIMEUNITPERMSEC * 1000.)
 
-#define THREAD_LOCKING  
+#define THREAD_LOCKING 1
+#if THREAD_LOCKING
 #include "pthread.h"
+#endif
 
 #define SYS_QUIT_QUIT 1
 #define SYS_QUIT_RESTART 2
@@ -450,7 +452,7 @@ static void m_pollingscheduler( void)
     sys_time_per_dsp_tick = (TIMEUNITPERSECOND) *
         ((double)sys_schedblocksize) / sys_dacsr;
 
-#ifdef THREAD_LOCKING
+#if THREAD_LOCKING
         sys_lock();
 #endif
 
@@ -471,7 +473,7 @@ static void m_pollingscheduler( void)
     waitfortick:
         if (sched_useaudio != SCHED_AUDIO_NONE)
         {
-#ifdef THREAD_LOCKING
+#if THREAD_LOCKING
             /* T.Grill - send_dacs may sleep -> 
                 unlock thread lock make that time available 
                 - could messaging do any harm while sys_send_dacs is running?
@@ -479,7 +481,7 @@ static void m_pollingscheduler( void)
             sys_unlock();
 #endif
             timeforward = sys_send_dacs();
-#ifdef THREAD_LOCKING
+#if THREAD_LOCKING
             /* T.Grill - done */
             sys_lock();
 #endif
@@ -539,7 +541,7 @@ static void m_pollingscheduler( void)
         {
             sched_pollformeters();
             sys_reportidle();
-#ifdef THREAD_LOCKING
+#if THREAD_LOCKING
             sys_unlock();   /* unlock while we idle */
 #endif
                 /* call externally installed idle function if any. */
@@ -549,7 +551,7 @@ static void m_pollingscheduler( void)
                 if (timeforward != SENDDACS_SLEPT)
                     sys_microsleep(sys_sleepgrain);
             }
-#ifdef THREAD_LOCKING
+#if THREAD_LOCKING
             sys_lock();
 #endif
             sys_addhist(5);
@@ -557,7 +559,7 @@ static void m_pollingscheduler( void)
         }
     }
 
-#ifdef THREAD_LOCKING
+#if THREAD_LOCKING
     sys_unlock();
 #endif
 }
@@ -632,7 +634,7 @@ int m_batchmain(void)
 
 /* ------------ thread locking ------------------- */
 
-#ifdef THREAD_LOCKING
+#if THREAD_LOCKING
 static pthread_mutex_t sys_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void sys_lock(void)
@@ -654,7 +656,7 @@ int sys_trylock(void)
 
 void sys_lock(void) {}
 void sys_unlock(void) {}
-int sys_trylock(void) {}
+int sys_trylock(void) {return (1);}
 
 #endif
 

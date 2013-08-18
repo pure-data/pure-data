@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 #include <windows.h>
-#include <MMSYSTEM.H>
+#include <mmsystem.h>
 
     /* ------------- MIDI time stamping from audio clock ------------ */
 

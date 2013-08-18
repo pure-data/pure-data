@@ -7,16 +7,11 @@ rm -rf /tmp/pd /tmp/pd.zip
 cd /tmp
 tar xzf $MSWDIR/pdprototype.tgz
 
-# hack to stick in new msgcat -- DELETE THIS when updating tcl/tk
-cd /tmp/pd/lib
-unzip $MSWDIR/msgcat.zip
-
 cd $PDDIR
-cp src/*.{c,h} src/notes.txt /tmp/pd/src
+cp src/*.{c,h} src/notes.txt src/makefile.mingw /tmp/pd/src
 cp src/makefile.msvc /tmp/pd/src/makefile
 textconvert u w < $MSWDIR/build-nt.bat > /tmp/pd/src/build.bat
 
-#FIXME: take this out of prototype
 cp tcl/*  /tmp/pd/tcl
 cp -a portaudio  /tmp/pd/portaudio
 cp -a portmidi /tmp/pd/portmidi
@@ -34,15 +29,6 @@ for i in `find . -name "*.c" -o -name "*.h"  -o -name "*.cpp" \
 	textconvert u w < $i > /tmp/xxx
 	mv /tmp/xxx $i
 done
-
-for i in `find lib/asio -name "*.c" -o -name "*.h"  -o -name "*.cpp" \
-    -o -name "make*" -o -name "*.txt" -o -name "*.pd" -o -name "*.htm" \
-    -o -name "*.html"` ; do
-        echo FOO----- $i
-	textconvert w u < $i > /tmp/xxx
-	textconvert u w < /tmp/xxx > $i
-done
-
 
 cd ..
 rm -f pd.zip

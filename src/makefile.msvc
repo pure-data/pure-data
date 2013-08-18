@@ -50,35 +50,19 @@ PADIR = ../portaudio
 INCPA = -I$(PADIR)\\include -I$(PADIR)\\src\\common -I$(PADIR)\\src\\os\\win \
     -I..\\lib\\asio
 PASRC = $(PADIR)/src
-SRCPA = $(PASRC)/common/pa_stream.c \
-        $(PASRC)/common/pa_trace.c \
-        $(PASRC)/common/pa_process.c \
-        $(PASRC)/common/pa_front.c \
-        $(PASRC)/common/pa_dither.c \
-        $(PASRC)/common/pa_cpuload.c \
-        $(PASRC)/common/pa_converters.c \
-        $(PASRC)/common/pa_allocation.c \
-        $(PASRC)/common/pa_ringbuffer.c \
-        $(PASRC)/os/win/pa_win_hostapis.c \
-        $(PASRC)/os/win/pa_win_util.c \
-        $(PASRC)/os/win/pa_win_waveformat.c \
-        $(PASRC)/os/win/pa_win_coinitialize.c \
-        $(PASRC)/hostapi/wmme/pa_win_wmme.c 
-
-SRCASIO = $(PADIR)/pa_asio/pa_asio.cpp 
 
 ASIOLIB = $(LDIR)\\user32.lib $(LDIR)\\gdi32.lib $(LDIR)\\winspool.lib \
 $(LDIR)\\comdlg32.lib $(LDIR)\\advapi32.lib $(LDIR)\\shell32.lib \
 $(LDIR)\\ole32.lib $(LDIR)\\oleaut32.lib $(LDIR)\\uuid.lib \
 $(LDIR)\\odbc32.lib $(LDIR)\\odbccp32.lib ..\\lib\\asio\\asiolib.lib
 
-
+PAASIO = pa_asio.obj pa_win_coinitialize.obj 
 PAOBJ = pa_stream.obj pa_trace.obj pa_process.obj \
 	pa_front.obj pa_dither.obj pa_cpuload.obj pa_converters.obj \
 	pa_allocation.obj pa_ringbuffer.obj \
         pa_win_hostapis.obj pa_win_util.obj pa_win_waveformat.obj \
-        pa_win_coinitialize.obj pa_win_wmme.obj \
-        pa_asio.obj 
+        pa_win_wmme.obj \
+        $(PAASIO)
 	
 #       pa_win_wdmks.obj
 
@@ -136,7 +120,8 @@ s_entry_com.obj: s_entry.c
 	$(MSCC) /c -DCOMMANDVERSION s_entry_com.c 
 	$(DELETE) s_entry_com.c
 
-PACF= -DPA_USE_ASIO -DPA_USE_WMME $(ALLCF)
+PAAPI = -DPA_USE_ASIO -DPA_USE_WMME
+PACF= $(PAAPI) $(ALLCF)
 # explicit rules to compile portaudio sources:
 pa_stream.obj: $(PASRC)/common/pa_stream.c
 	$(MSCC) /c $(PACF) $(PASRC)\\common\\pa_stream.c

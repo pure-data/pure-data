@@ -11,7 +11,7 @@
 
 #include <windows.h>
 
-#include <MMSYSTEM.H>
+#include <mmsystem.h>
 
 /* ------------------------- audio -------------------------- */
 

@@ -40,8 +40,12 @@
 # include <stddef.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
 
-#if defined(__APPLE__)
+#if 1
 #define FAKEBLOCKING
+#endif
+
+#if defined (FAKEBLOCKING) && defined(_WIN32)
+#include <windows.h>    /* for Sleep() */
 #endif
 
 /* define this to enable thread signaling instead of polling */
