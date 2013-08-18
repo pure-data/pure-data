@@ -1,7 +1,7 @@
 id ICON "pd.ico"
 1 VERSIONINFO
-FILEVERSION     0,44,3,0
-PRODUCTVERSION  0,44,3,0
+FILEVERSION     0,45,0,0
+PRODUCTVERSION  0,45,0,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -14,7 +14,7 @@ BEGIN
       VALUE "LegalCopyright", "Miller Puckette, et al."
       VALUE "OriginalFilename", "pd.exe"
       VALUE "ProductName", "Pure Data"
-      VALUE "ProductVersion", "0.44-3"
+      VALUE "ProductVersion", "0.45-0test1"
     END
   END
 
