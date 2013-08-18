@@ -255,10 +255,19 @@ static void garray_fittograph(t_garray *x, int n, int style)
             0., gl->gl_y1, (double)
                 (style == PLOTSTYLE_POINTS || n == 1 ? n : n-1),
                     gl->gl_y2);
-                /* close any dialogs that might have the wrong info now... */
+        
+            /* hack - if the xlabels seem to want to be from 0 to table size-1,
+            update the second label */
+        if (gl->gl_nxlabels == 2 && !strcmp(gl->gl_xlabel[0]->s_name, "0"))
+        {
+            t_atom a;
+            SETFLOAT(&a, n-1);
+            gl->gl_xlabel[1] = atom_gensym(&a);
+            glist_redraw(gl);
+        }
+            /* close any dialogs that might have the wrong info now... */
         gfxstub_deleteforkey(gl);
     }
-    array_resize_and_redraw(array, x->x_glist, n);
 }
 
 /* handle "array" message to glists; call graph_scalar above with
