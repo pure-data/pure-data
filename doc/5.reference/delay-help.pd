@@ -1,4 +1,4 @@
-#N canvas 2 59 631 711 12;
+#N canvas 549 146 631 711 12;
 #X obj 123 11 delay;
 #X floatatom 128 418 0 0 0 0 - - -;
 #X text 168 12 - CALLBACK AFTER TIME DELAY;
@@ -48,10 +48,10 @@ set the time units in the creation arguments or with a "tempo" message.
 #X text 125 234 Set tempo. Units can be miliseconds (msec for short)
 \, seconds (sec) \, minutes (min) or samples (samp). In this example
 the unit is set to 1/2 millisecond so that '1000' gives a delay of
-2000 msec (2 seconds). Equivalently you can say "tempo 2 permsec" or
+500 msec (1/2 second). Equivalently you can say "tempo 2 permsec" or
 even "120000 permin". A more traditionally musical way to specify a
 one-second delay would be "delay 1" with "tempo 60 permin" as in the
-second example below., f 58;
+second example below.;
 #X connect 1 0 18 1;
 #X connect 3 0 18 0;
 #X connect 7 0 18 0;
