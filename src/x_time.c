@@ -127,7 +127,8 @@ static void delay_setup(void)
     delay_class = class_new(gensym("delay"), (t_newmethod)delay_new,
         (t_method)delay_free, sizeof(t_delay), 0,
             A_DEFFLOAT, A_DEFFLOAT, A_DEFSYM, 0);
-    class_addcreator((t_newmethod)delay_new, gensym("del"), A_DEFFLOAT, 0);
+    class_addcreator((t_newmethod)delay_new, gensym("del"),
+        A_DEFFLOAT, , A_DEFFLOAT, A_DEFSYM, 0);
     class_addbang(delay_class, delay_bang);
     class_addmethod(delay_class, (t_method)delay_stop, gensym("stop"), 0);
     class_addmethod(delay_class, (t_method)delay_ft1,
