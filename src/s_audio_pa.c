@@ -634,9 +634,20 @@ void pa_getdevs(char *indevlist, int *nindevs,
         const PaDeviceInfo *pdi = Pa_GetDeviceInfo(i);
         if (pdi->maxInputChannels > 0 && nin < maxndev)
         {
-            sprintf(indevlist + nin * devdescsize, "(%d)%s",
-                pdi->hostApi,pdi->name);
-            /* strcpy(indevlist + nin * devdescsize, pdi->name); */
+                /* LATER figure out how to get API name correctly */
+#ifdef _WIN32
+            snprintf(indevlist + nin * devdescsize, devdescsize, "%s:%s",
+              (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : ?)),
+                pdi->name);
+#else
+#ifdef __APPLE__
+            snprintf(indevlist + nin * devdescsize, devdescsize, "%s",
+                pdi->name);
+#else
+            snprintf(indevlist + nin * devdescsize, devdescsize, "(%d) %s",
+                pdi->hostApi, pdi->name);
+#endif
+#endif
             nin++;
         }
         if (pdi->maxOutputChannels > 0 && nout < maxndev)
