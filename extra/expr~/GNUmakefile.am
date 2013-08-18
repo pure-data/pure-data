@@ -26,7 +26,15 @@ externaldir = $(pkglibdir)/extra/$(NAME)
 # so we install everything in the install-data-hook
 install-data-hook:
 	cd $(DESTDIR)$(externaldir) && ( \
-	  $(LN_S) expr~.@EXTERNAL_EXTENSION@ expr.@EXTERNAL_EXTENSION@; \
+	  rm -f expr.@EXTERNAL_EXTENSION@; \
+          rm -f fexpr~.@EXTERNAL_EXTENSION@; \
+          rm -f ../expr.@EXTERNAL_EXTENSION@; \
+          rm -f ../expr~.@EXTERNAL_EXTENSION@; \
+          rm -f ../fexpr~.@EXTERNAL_EXTENSION@; \
+          rm -f ../expr-help.pd; \
+          rm -f ../expr~-help.pd; \
+          rm -f ../fexpr~-help.pd; \
+          $(LN_S) expr~.@EXTERNAL_EXTENSION@ expr.@EXTERNAL_EXTENSION@; \
 	  $(LN_S) expr~.@EXTERNAL_EXTENSION@ fexpr~.@EXTERNAL_EXTENSION@; \
 	  cd ..; \
 	  $(LN_S) $(NAME)/expr.@EXTERNAL_EXTENSION@ expr.@EXTERNAL_EXTENSION@; \
