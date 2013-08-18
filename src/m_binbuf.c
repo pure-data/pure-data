@@ -1522,8 +1522,6 @@ void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto)
             char buf[MAXPDSTRING+1];
             atom_string(&ap[k], buf, MAXPDSTRING);
             SETSYMBOL(&at, gensym(buf));
-            atom_string(&at, buf, MAXPDSTRING);
-            SETSYMBOL(&at, gensym(buf));
             binbuf_add(bto, 1, &at);
         }
     }
