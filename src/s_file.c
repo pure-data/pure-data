@@ -130,7 +130,7 @@ static FILE *sys_prefsavefp;
 
 static void sys_initsavepreferences( void)
 {
-    char filenamebuf[MAXPDSTRING], errbuf[MAXPDSTRING],
+    char filenamebuf[MAXPDSTRING],
         *homedir = getenv("HOME");
     FILE *fp;
 
@@ -140,8 +140,7 @@ static void sys_initsavepreferences( void)
     filenamebuf[MAXPDSTRING-1] = 0;
     if ((sys_prefsavefp = fopen(filenamebuf, "w")) == NULL)
     {
-        snprintf(errbuf, MAXPDSTRING, "%s: %s",filenamebuf, strerror(errno));
-        pd_error(0, errbuf);
+        pd_error(0, "%s: %s", filenamebuf, strerror(errno));
     }
 }
 

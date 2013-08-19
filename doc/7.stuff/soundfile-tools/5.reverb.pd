@@ -42,7 +42,7 @@
 #N canvas 0 0 632 395 audio-transformation 0;
 #X obj 101 49 inlet~;
 #X obj 105 268 outlet~;
-#X obj 101 148 ../../../extra/rev1~ xxx;
+#X obj 101 148 rev1~ xxx;
 #X obj 339 79 r revgain;
 #X obj 338 102 dbtorms;
 #X obj 338 130 pack 0 50;

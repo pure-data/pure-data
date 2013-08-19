@@ -74,7 +74,7 @@
 #X obj 601 61 loadbang;
 #X msg 598 91 \; transposition 0 \; looplength 0 \; startpoint 0 \;
 smoothing 0;
-#X obj 236 263 ../../../extra/loop~;
+#X obj 236 263 loop~;
 #X obj 285 233 * 441;
 #X obj 284 307 *~;
 #X obj 133 41 loadbang;
