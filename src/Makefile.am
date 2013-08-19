@@ -85,8 +85,8 @@ endif
 endif
 
 if PORTAUDIO
-pd_CFLAGS += -DUSEAPI_PORTAUDIO
-pd_LDADD += -lportaudio
+pd_CFLAGS += -DUSEAPI_PORTAUDIO  -I$(top_srcdir)/portaudio/include
+pd_LDADD += $(top_builddir)/portaudio/lib/libportaudio.la
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
 endif
 
@@ -96,7 +96,8 @@ pd_LDADD += $(top_builddir)/asio/libasio.la
 endif
 
 if PORTMIDI
-pd_LDADD += -lportmidi -lporttime
+INCLUDES += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
+pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 pd_SOURCES += s_midi_pm.c
 endif
 

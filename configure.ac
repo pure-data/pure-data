@@ -5,6 +5,11 @@ AC_CONFIG_AUX_DIR([m4/config])
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4/generated])
 
+if test -d "$srcdir/portaudio"; then
+  AC_CONFIG_SUBDIRS([portaudio])
+fi
+
+
 AC_CANONICAL_HOST
 
 # you will need to install iPhone XCode on Mac OS X to use this:
@@ -246,6 +251,7 @@ AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 man/Makefile
+                portmidi/Makefile
                 tcl/Makefile
                 po/Makefile
                 src/Makefile
