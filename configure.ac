@@ -37,7 +37,7 @@ case $host in
 	LDFLAGS="$LDFLAGS -L/sw/lib"
 	EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
 	;;
-*linux*|GNU|GNU/kFreeBSD)
+*linux*|GNU|*kfreebsd*gnu*)
 # GNU and GNU/kFreeBSD are for Debian, were they are treated very similar to linux
 	if test "x${host}" = "xGNU"; then
 	 HURD=yes
