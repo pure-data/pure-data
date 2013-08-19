@@ -36,5 +36,10 @@ zip -q -r pd.zip pd
 ls -l /tmp/pd.zip
 
 cd ~/bis/var/wine/script
-./build-msw.sh
+if  ./build-msw.sh
+    then echo -n ; else exit 1; fi
 
+if  ./mingw-compile.sh
+    then echo -n ; else exit 1; fi
+
+exit 0

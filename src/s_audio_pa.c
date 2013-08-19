@@ -106,10 +106,7 @@ static void pa_init(void)
 #endif
         if ( err != paNoError ) 
         {
-            fprintf( stderr,
-                "Error number %d occured initializing portaudio\n",
-                err); 
-            fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+            post("Error opening audio: %s", err, Pa_GetErrorText(err));
             return;
         }
         initialized = 1;
@@ -126,7 +123,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     float *fbuf, *fp2, *fp3, *soundiop;
     if (nframes % DEFDACBLKSIZE)
     {
-        fprintf(stderr, "portaudio: nframes %ld not a multiple of blocksize %d\n",
+        post("warning: audio nframes %ld not a multiple of blocksize %d",
             nframes, (int)DEFDACBLKSIZE);
         nframes -= (nframes % DEFDACBLKSIZE);
     }
@@ -182,7 +179,7 @@ static int pa_fifo_callback(const void *inputBuffer,
 #if CHECKFIFOS
     if (pa_inchans * sys_ringbuf_getreadavailable(&pa_outring) !=   
         pa_outchans * sys_ringbuf_getwriteavailable(&pa_inring))
-            fprintf(stderr, "warning: in and out rings unequal (%d, %d)\n",
+            post("warning: in and out rings unequal (%d, %d)",
                 sys_ringbuf_getreadavailable(&pa_outring),
                  sys_ringbuf_getwriteavailable(&pa_inring));
 #endif
@@ -193,12 +190,12 @@ static int pa_fifo_callback(const void *inputBuffer,
             sys_ringbuf_read(&pa_outring, outputBuffer,
                 nframes*pa_outchans*sizeof(float), pa_outbuf);
         else if (pa_outchans)
-            fprintf(stderr, "no outputBuffer but output channels\n");
+            post("audio error: no outputBuffer but output channels");
         if (inputBuffer)
             sys_ringbuf_write(&pa_inring, inputBuffer,
                 nframes*pa_inchans*sizeof(float), pa_inbuf);
         else if (pa_inchans)
-            fprintf(stderr, "no inputBuffer but input channels\n");
+            post("audio error: no inputBuffer but input channels");
     }
     else
     {        /* PD could not keep up; generate zeros */
@@ -307,7 +304,8 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     err = Pa_StartStream(pa_stream);
     if (err != paNoError)
     {
-        fprintf(stderr, "Pa_StartStream failed; closing audio stream...\n");
+        post("error opening failed; closing audio stream: %s",
+            Pa_GetErrorText(err));
         pa_close_audio();
         goto error;
     }
@@ -433,9 +431,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_nbuffers = nbuffers;
     if ( err != paNoError ) 
     {
-        fprintf(stderr, "Error number %d opening portaudio stream\n",
-            err); 
-        fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
+        post("Error opening audio: %s", Pa_GetErrorText(err));
         /* Pa_Terminate(); */
         return (1);
     }
@@ -584,45 +580,6 @@ int pa_send_dacs(void)
     return (rtnval);
 }
 
-void pa_listdevs(void)     /* lifted from pa_devs.c in portaudio */
-{
-    int      i,j;
-    int      numDevices;
-    const    PaDeviceInfo *pdi;
-    PaError  err;
-    pa_init();
-    numDevices = Pa_GetDeviceCount();
-    if( numDevices < 0 )
-    {
-        fprintf(stderr, "ERROR: Pa_GetDeviceCount returned %d\n", numDevices );
-        err = numDevices;
-        goto error;
-    }
-    fprintf(stderr, "Audio Devices:\n");
-    for( i=0; i<numDevices; i++ )
-    {
-        pdi = Pa_GetDeviceInfo( i );
-        fprintf(stderr, "device %d:", i+1 );
-        fprintf(stderr, " %s;", pdi->name );
-        fprintf(stderr, "%d inputs, ", pdi->maxInputChannels  );
-        fprintf(stderr, "%d outputs", pdi->maxOutputChannels  );
-        if ( i == Pa_GetDefaultInputDevice() )
-            fprintf(stderr, " (Default Input)");
-        if ( i == Pa_GetDefaultOutputDevice() )
-            fprintf(stderr, " (Default Output)");
-        fprintf(stderr, "\n");
-    }
-
-    fprintf(stderr, "\n");
-    return;
-
-error:
-    fprintf( stderr, "An error occured while using the portaudio stream\n" ); 
-    fprintf( stderr, "Error number: %d\n", err );
-    fprintf( stderr, "Error message: %s\n", Pa_GetErrorText( err ) );
-
-}
-
     /* scanning for devices */
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti, 
@@ -639,26 +596,32 @@ void pa_getdevs(char *indevlist, int *nindevs,
         if (pdi->maxInputChannels > 0 && nin < maxndev)
         {
                 /* LATER figure out how to get API name correctly */
+            snprintf(indevlist + nin * devdescsize, devdescsize,
 #ifdef _WIN32
-            snprintf(indevlist + nin * devdescsize, devdescsize, "%s:%s",
-              (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
-                pdi->name);
+     "%s:%s", (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
 #else
 #ifdef __APPLE__
-            snprintf(indevlist + nin * devdescsize, devdescsize, "%s",
-                pdi->name);
+             "%s",
 #else
-            snprintf(indevlist + nin * devdescsize, devdescsize, "(%d) %s",
-                pdi->hostApi, pdi->name);
+            "(%d) %s", pdi->hostApi,
 #endif
 #endif
+                pdi->name);
             nin++;
         }
         if (pdi->maxOutputChannels > 0 && nout < maxndev)
         {
-            sprintf(outdevlist + nout * devdescsize, "(%d)%s",
-                pdi->hostApi,pdi->name);
-            /* strcpy(outdevlist + nout * devdescsize, pdi->name); */
+            snprintf(outdevlist + nout * devdescsize, devdescsize,
+#ifdef _WIN32
+     "%s:%s", (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
+#else
+#ifdef __APPLE__
+             "%s",
+#else
+            "(%d) %s", pdi->hostApi,
+#endif
+#endif
+                pdi->name);
             nout++;
         }
     }
