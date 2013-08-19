@@ -111,7 +111,18 @@ pd_SOURCES += s_midi_dummy.c
 endif
 
 if HURD
-pd_SOURCES += s_midi_dummy.c
+libpdbindir = $(pkglibdir)/bin
+libpdbin_DATA =
+libpdbin_PROGRAMS = pd-watchdog pd
+# this flag has to have a single leading "-" for libtool, even though ld uses
+# --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
+pd_LDFLAGS += -export-dynamic
+# on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
+pd_LDFLAGS += $(LIBM)
+# force linking to pthread, which should really be done with some autotools way
+pd_LDFLAGS += -lpthread
+# force linking to dl, which should really be done with some autotools way
+pd_LDFLAGS += -ldl
 endif
 
 if LINUX 

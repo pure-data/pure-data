@@ -32,16 +32,20 @@ case $host in
 	LDFLAGS="$LDFLAGS -L/sw/lib"
 	EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
 	;;
-*linux*|GNU|*kfreebsd*gnu*)
-# GNU and GNU/kFreeBSD are for Debian, were they are treated very similar to linux
-	if test "x${host}" = "xGNU"; then
-	 HURD=yes
-	fi
+*linux*|*kfreebsd*gnu*)
+# GNU/kFreeBSD are for Debian, were they are treated very similar to linux
 	if test "x${ANDROID}" = "xno"; then
 	 LINUX=yes
 	 portaudio=yes
 	 CFLAGS="$CFLAGS -O3 -funroll-loops -fomit-frame-pointer"
 	fi
+	EXTERNAL_CFLAGS="-fPIC"
+	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
+	EXTERNAL_EXTENSION=pd_linux
+	;;
+*-*-gnu*)
+	HURD=yes
+	CFLAGS="-O6 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	EXTERNAL_CFLAGS="-fPIC"
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
 	EXTERNAL_EXTENSION=pd_linux
