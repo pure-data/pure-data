@@ -50,9 +50,15 @@ proc ::helpbrowser::make_rootlistbox {base} {
                              -height 20 -width 23 -exportselection 0 -bd 0]
 	pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
-    foreach item [concat [lsort [concat $libdirlist $helplist]]] {
-		$current_listbox insert end $item
-	}
+    # first show the directories (for easier navigation)
+    foreach item [lsort  $libdirlist] {
+        $current_listbox insert end $item
+    }
+    # then show the (potentially) long list of patches
+    foreach item [lsort $helplist] {
+        $current_listbox insert end $item
+    }
+
 	bind $current_listbox <Button-1> \
         [list ::helpbrowser::root_navigate %W %x %y]
     bind $current_listbox <Key-Return> \
