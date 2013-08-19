@@ -32,7 +32,7 @@ case $host in
 	 EXTERNAL_EXTENSION=pd_darwin
 	fi
 
-	CFLAGS="$CFLAGS -O3 -funroll-loops -fomit-frame-pointer"
+	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	INCLUDES="$INCLUDES -I/sw/include"
 	LDFLAGS="$LDFLAGS -L/sw/lib"
 	EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
