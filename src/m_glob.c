@@ -68,7 +68,7 @@ static void glob_version(t_pd *dummy, float f)
             post("warning: file format (%g) newer than this version (%g) of Pd",
                 f, PD_MAJOR_VERSION + 0.01*PD_MINOR_VERSION);
         else if (warned < 2)
-            post("(... more file format messsages suppressed)");
+            post("(... more file format messages suppressed)");
         warned++;
     }
 }
