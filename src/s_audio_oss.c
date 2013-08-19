@@ -5,11 +5,7 @@
 
 /* this file inputs and outputs audio using the OSS API available on linux. */
 
-#if defined(__FreeBSD_kernel__)
-# include <sys/soundcard.h>
-#else
-# include <linux/soundcard.h>
-#endif
+#include <sys/soundcard.h>
 
 #ifndef SNDCTL_DSP_GETISPACE
 #define SNDCTL_DSP_GETISPACE SOUND_PCM_GETISPACE
