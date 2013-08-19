@@ -501,7 +501,9 @@ void sys_get_midi_apis(char *buf)
 {
     int n = 0;
     strcpy(buf, "{ ");
+#ifdef USEAPI_OSS
     sprintf(buf + strlen(buf), "{OSS-MIDI %d} ", API_DEFAULTMIDI); n++;
+#endif
 #ifdef USEAPI_ALSA
     sprintf(buf + strlen(buf), "{ALSA-MIDI %d} ", API_ALSA); n++;
 #endif
