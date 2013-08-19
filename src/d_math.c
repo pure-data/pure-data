@@ -90,20 +90,26 @@ static void init_rsqrt(void)
 
 t_float q8_rsqrt(t_float f0)
 {
-    float f = (float)f0;
-    long l = *(long *)(&f);
-    if (f < 0) return (0);
-    else return (rsqrt_exptab[(l >> 23) & 0xff] *
-            rsqrt_mantissatab[(l >> 13) & 0x3ff]);
+    union {
+      float f;
+      long l;
+    } u;
+    u.f=f0;
+    if (u.f < 0) return (0);
+    else return (rsqrt_exptab[(u.l >> 23) & 0xff] *
+            rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
 t_float q8_sqrt(t_float f0)
 {
-    float f = (float)f0;
-    long l = *(long *)(&f);
-    if (f < 0) return (0);
-    else return (f * rsqrt_exptab[(l >> 23) & 0xff] *
-            rsqrt_mantissatab[(l >> 13) & 0x3ff]);
+    union {
+      float f;
+      long l;
+    } u;
+    u.f=f0;
+    if (u.f < 0) return (0);
+    else return (u.f * rsqrt_exptab[(u.l >> 23) & 0xff] *
+            rsqrt_mantissatab[(u.l >> 13) & 0x3ff]);
 }
 
 t_float qsqrt(t_float f) {return (q8_sqrt(f)); }

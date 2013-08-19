@@ -82,9 +82,24 @@ typedef unsigned __int64  uint64_t;
 #if !defined(PD_LONGINTTYPE)
 #define PD_LONGINTTYPE long
 #endif
-#if !defined(PD_FLOATTYPE)
-#define PD_FLOATTYPE float
+
+#if !defined(PD_FLOATSIZE)
+  /* normally, our floats (t_float, t_sample,...) are 32bit */
+# define PD_FLOATSIZE 32
 #endif
+
+#if PD_FLOATSIZE == 32
+# define PD_FLOATTYPE float
+/* an unsigned int of the same size as FLOATTYPE: */
+# define PD_FLOATUINTTYPE unsigned int
+
+#elif PD_FLOATSIZE == 64
+# define PD_FLOATTYPE double
+# define PD_FLOATUINTTYPE unsigned long
+#else
+# error invalid FLOATSIZE: must be 32 or 64
+#endif
+
 typedef PD_LONGINTTYPE t_int;       /* pointer-size integer */
 typedef PD_FLOATTYPE t_float;       /* a float type at most the same size */
 typedef PD_FLOATTYPE t_floatarg;    /* float type for function calls */
@@ -521,6 +536,10 @@ EXTERN int sys_trylock(void);
 /* --------------- signals ----------------------------------- */
 
 typedef PD_FLOATTYPE t_sample;
+typedef union _sampleint_union {
+  t_sample f;
+  PD_FLOATUINTTYPE i;
+} t_sampleint_union;
 #define MAXLOGSIG 32
 #define MAXSIGSIZE (1 << MAXLOGSIG)
 
@@ -675,14 +694,26 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
 /* a test for NANs and denormals.  Should only be necessary on i386. */
-#define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
-    (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
+# if PD_FLOATSIZE == 32
+static inline int PD_BADFLOAT(t_sample f) {
+  t_sampleint_union u;
+  u.f=f;
+  return ((u.i & 0x7f800000)==0) || ((u.i&0x7f800000)==0x7f800000);
+}
 /* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
-#define PD_BIGORSMALL(f) ((((*(unsigned int*)&(f))&0x60000000)==0) || \
-    (((*(unsigned int*)&(f))&0x60000000)==0x60000000))
+static inline int PD_BIGORSMALL(t_sample f) {
+  t_sampleint_union u;
+  u.f=f;
+  return ((u.i & 0x60000000)==0) || ((u.i & 0x60000000)==0x60000000);
+}
+# else
+#  warning 64bit mode: BIGORSMALL not implemented yet
+#  define PD_BADFLOAT(f) 0
+#  define PD_BIGORSMALL(f) 0
+# endif
 #else
-#define PD_BADFLOAT(f) 0
-#define PD_BIGORSMALL(f) 0
+# define PD_BADFLOAT(f) 0
+# define PD_BIGORSMALL(f) 0
 #endif
 
     /* get version number at run time */

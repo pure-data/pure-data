@@ -44,6 +44,11 @@ objects use Posix-like threads.  */
 
 /***************** soundfile header structures ************************/
 
+typedef union _samplelong {
+  t_sample f;
+  long     l;
+} t_sampleuint;
+
 #define FORMAT_WAVE 0
 #define FORMAT_AIFF 1
 #define FORMAT_NEXT 2
@@ -257,12 +262,12 @@ int open_soundfile_via_fd(int fd, int headersize,
         swap = (bigendian != garray_ambigendian());
         if (format == FORMAT_NEXT)   /* nextstep header */
         {
-            uint32_t param;
+            t_nextstep*nsbuf=(t_nextstep *)buf;
             if (bytesread < (int)sizeof(t_nextstep))
                 goto badheader;
-            nchannels = swap4(((t_nextstep *)buf)->ns_nchans, swap);
-            format = swap4(((t_nextstep *)buf)->ns_format, swap);
-            headersize = swap4(((t_nextstep *)buf)->ns_onset, swap);
+            nchannels = swap4(nsbuf->ns_nchans, swap);
+            format = swap4(nsbuf->ns_format, swap);
+            headersize = swap4(nsbuf->ns_onset, swap);
             if (format == NS_FORMAT_LINEAR_16)
                 bytespersamp = 2;
             else if (format == NS_FORMAT_LINEAR_24)
@@ -274,6 +279,7 @@ int open_soundfile_via_fd(int fd, int headersize,
         }
         else if (format == FORMAT_WAVE)     /* wave header */
         {
+               t_wavechunk*wavechunk=(t_wavechunk *)buf;
                /*  This is awful.  You have to skip over chunks,
                except that if one happens to be a "fmt" chunk, you want to
                find out the format from that one.  The case where the
@@ -293,13 +299,13 @@ int open_soundfile_via_fd(int fd, int headersize,
                     ((t_wavechunk *)buf)->wc_id[2],
                     ((t_wavechunk *)buf)->wc_id[3]); */
                 /* read chunks in loop until we get to the data chunk */
-            while (strncmp(((t_wavechunk *)buf)->wc_id, "data", 4))
+            while (strncmp(wavechunk->wc_id, "data", 4))
             {
-                long chunksize = swap4(((t_wavechunk *)buf)->wc_size,
+                long chunksize = swap4(wavechunk->wc_size,
                     swap), seekto = headersize + chunksize + 8, seekout;
                 if (seekto & 1)     /* pad up to even number of bytes */
                     seekto++;                
-                if (!strncmp(((t_wavechunk *)buf)->wc_id, "fmt ", 4))
+                if (!strncmp(wavechunk->wc_id, "fmt ", 4))
                 {
                     long commblockonset = headersize + 8;
                     seekout = lseek(fd, commblockonset, SEEK_SET);
@@ -324,18 +330,19 @@ int open_soundfile_via_fd(int fd, int headersize,
                     (int) sizeof(t_wavechunk))
                         goto badheader;
                 /* post("new chunk %c %c %c %c at %d",
-                    ((t_wavechunk *)buf)->wc_id[0],
-                    ((t_wavechunk *)buf)->wc_id[1],
-                    ((t_wavechunk *)buf)->wc_id[2],
-                    ((t_wavechunk *)buf)->wc_id[3], seekto); */
+                    wavechunk->wc_id[0],
+                    wavechunk->wc_id[1],
+                    wavechunk->wc_id[2],
+                    wavechunk->wc_id[3], seekto); */
                 headersize = seekto;
             }
-            bytelimit = swap4(((t_wavechunk *)buf)->wc_size, swap);
+            bytelimit = swap4(wavechunk->wc_size, swap);
             headersize += 8;
         }
         else
         {
                 /* AIFF.  same as WAVE; actually predates it.  Disgusting. */
+            t_datachunk*datachunk;
             headersize = 12;
             if (bytesread < 20)
                 goto badheader;
@@ -346,28 +353,31 @@ int open_soundfile_via_fd(int fd, int headersize,
                 /* copy the first chunk header to beginnning of buffer. */
             memcpy(buf, buf + headersize, sizeof(t_datachunk));
                 /* read chunks in loop until we get to the data chunk */
-            while (strncmp(((t_datachunk *)buf)->dc_id, "SSND", 4))
+            datachunk=(t_datachunk*)buf;
+            while (strncmp(datachunk->dc_id, "SSND", 4))
             {
-                long chunksize = swap4(((t_datachunk *)buf)->dc_size,
+                long chunksize = swap4(datachunk->dc_size,
                     swap), seekto = headersize + chunksize + 8, seekout;
                 if (seekto & 1)     /* pad up to even number of bytes */
                     seekto++;
                 /* post("chunk %c %c %c %c seek %d",
-                    ((t_datachunk *)buf)->dc_id[0],
-                    ((t_datachunk *)buf)->dc_id[1],
-                    ((t_datachunk *)buf)->dc_id[2],
-                    ((t_datachunk *)buf)->dc_id[3], seekto); */
-                if (!strncmp(((t_datachunk *)buf)->dc_id, "COMM", 4))
+                    datachunk->dc_id[0],
+                    datachunk->dc_id[1],
+                    datachunk->dc_id[2],
+                    datachunk->dc_id[3], seekto); */
+                if (!strncmp(datachunk->dc_id, "COMM", 4))
                 {
                     long commblockonset = headersize + 8;
+                    t_comm*commchunk;
                     seekout = lseek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
                     if (read(fd, buf, sizeof(t_comm)) <
                         (int) sizeof(t_comm))
                             goto badheader;
-                    nchannels = swap2(((t_comm *)buf)->c_nchannels, swap);
-                    format = swap2(((t_comm *)buf)->c_bitspersamp, swap);
+                    commchunk=(t_comm *)buf;
+                    nchannels = swap2(commchunk->c_nchannels, swap);
+                    format = swap2(commchunk->c_bitspersamp, swap);
                     if (format == 16)
                         bytespersamp = 2;
                     else if (format == 24)
@@ -382,7 +392,7 @@ int open_soundfile_via_fd(int fd, int headersize,
                         goto badheader;
                 headersize = seekto;
             }
-            bytelimit = swap4(((t_datachunk *)buf)->dc_size, swap) - 8;
+            bytelimit = swap4(datachunk->dc_size, swap) - 8;
             headersize += sizeof(t_datachunk);
         }
     }
@@ -920,7 +930,6 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
     unsigned char *sp, *sp2;
     t_sample *fp;
     int bytesperframe = bytespersamp * nchannels;
-    long xx;
     for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
     {
         if (bytespersamp == 2)
@@ -1000,10 +1009,10 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp += spread)
                 {
-                    t_sample f2 = *fp * normalfactor;
-                    xx = *(long *)&f2;
-                    sp2[0] = (xx >> 24); sp2[1] = (xx >> 16);
-                    sp2[2] = (xx >> 8); sp2[3] = xx;
+                    t_sampleuint f2;
+                    f2.f = *fp * normalfactor;
+                    sp2[0] = (f2.l >> 24); sp2[1] = (f2.l >> 16);
+                    sp2[2] = (f2.l >> 8); sp2[3] = f2.l;
                 }
             }
             else
@@ -1011,10 +1020,10 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp += spread)
                 {
-                    t_sample f2 = *fp * normalfactor;
-                    xx = *(long *)&f2;
-                    sp2[3] = (xx >> 24); sp2[2] = (xx >> 16);
-                    sp2[1] = (xx >> 8); sp2[0] = xx;
+                    t_sampleuint f2;
+                    f2.f = *fp * normalfactor;
+                    sp2[3] = (f2.l >> 24); sp2[2] = (f2.l >> 16);
+                    sp2[1] = (f2.l >> 8); sp2[0] = f2.l;
                 }
             }
         }
@@ -1028,7 +1037,6 @@ static void soundfile_xferout_float(int nchannels, t_float **vecs,
     unsigned char *sp, *sp2;
     t_float *fp;
     int bytesperframe = bytespersamp * nchannels;
-    long xx;
     for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
     {
         if (bytespersamp == 2)
@@ -1108,10 +1116,10 @@ static void soundfile_xferout_float(int nchannels, t_float **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp += spread)
                 {
-                    t_sample f2 = *fp * normalfactor;
-                    xx = *(long *)&f2;
-                    sp2[0] = (xx >> 24); sp2[1] = (xx >> 16);
-                    sp2[2] = (xx >> 8); sp2[3] = xx;
+                    t_sampleuint f2;
+                    f2.f = *fp * normalfactor;
+                    sp2[0] = (f2.l >> 24); sp2[1] = (f2.l >> 16);
+                    sp2[2] = (f2.l >> 8); sp2[3] = f2.l;
                 }
             }
             else
@@ -1119,10 +1127,10 @@ static void soundfile_xferout_float(int nchannels, t_float **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp += spread)
                 {
-                    t_sample f2 = *fp * normalfactor;
-                    xx = *(long *)&f2;
-                    sp2[3] = (xx >> 24); sp2[2] = (xx >> 16);
-                    sp2[1] = (xx >> 8); sp2[0] = xx;
+                    t_sampleuint f2;
+                    f2.f = *fp * normalfactor;
+                    sp2[3] = (f2.l >> 24); sp2[2] = (f2.l >> 16);
+                    sp2[1] = (f2.l >> 8); sp2[0] = f2.l;
                 }
             }
         }
