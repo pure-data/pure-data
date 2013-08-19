@@ -641,7 +641,7 @@ void pa_getdevs(char *indevlist, int *nindevs,
                 /* LATER figure out how to get API name correctly */
 #ifdef _WIN32
             snprintf(indevlist + nin * devdescsize, devdescsize, "%s:%s",
-              (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : ?)),
+              (pdi->hostApi == 0 ? "MMIO" : (pdi->hostApi == 1 ? "ASIO" : "?")),
                 pdi->name);
 #else
 #ifdef __APPLE__
