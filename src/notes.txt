@@ -1,3 +1,11 @@
+doc:
+  new behavior of inlet and hip~
+  
+  
+
+
+
+
 warn on template names starting in '-'
 flag to expand to "nominal" widths/heights
 GUIs 0.45 mode (no clipping, toggle for 0/1)

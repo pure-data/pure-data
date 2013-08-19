@@ -935,18 +935,21 @@ void alsa_getdevs(char *indevlist, int *nindevs,
             snd_ctl_card_info_malloc(&info);
             snd_ctl_card_info(ctl, info);
             desc = snd_ctl_card_info_get_name(info);
+            sprintf(indevlist + 2*ndev * devdescsize, "%s (hardware)", desc);
+            sprintf(indevlist + (2*ndev + 1) * devdescsize, "%s (plug-in)", desc);
+            sprintf(outdevlist + 2*ndev * devdescsize, "%s (hardware)", desc);
+            sprintf(outdevlist + (2*ndev + 1) * devdescsize, "%s (plug-in)", desc);
             snd_ctl_card_info_free(info);
         }
         else
         {
             fprintf(stderr, "ALSA card scan error\n");
-            desc = "???";
+            sprintf(indevlist + 2*ndev * devdescsize, "???");
+            sprintf(indevlist + (2*ndev + 1) * devdescsize, "???");
+            sprintf(outdevlist + 2*ndev * devdescsize, "???");
+            sprintf(outdevlist + (2*ndev + 1) * devdescsize, "???");
         }
         /* fprintf(stderr, "name: %s\n", snd_ctl_card_info_get_name(info)); */
-        sprintf(indevlist + 2*ndev * devdescsize, "%s (hardware)", desc);
-        sprintf(indevlist + (2*ndev + 1) * devdescsize, "%s (plug-in)", desc);
-        sprintf(outdevlist + 2*ndev * devdescsize, "%s (hardware)", desc);
-        sprintf(outdevlist + (2*ndev + 1) * devdescsize, "%s (plug-in)", desc);
         ndev++;
     }
     for (i = 0, j = 2*ndev; i < alsa_nnames; i++, j++)
