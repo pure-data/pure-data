@@ -28,6 +28,10 @@
 #include <string.h>
 #include <portaudio.h>
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif
+
 #ifndef _WIN32          /* for the "dup2" workaround -- do we still need it? */
 #include <unistd.h>
 #endif
