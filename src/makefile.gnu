@@ -26,8 +26,7 @@ CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
     -Wall -W -Wstrict-prototypes \
     -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch
 
-MORECFLAGS = -O3 -fno-strict-aliasing -ffast-math -funroll-loops \
-    -fomit-frame-pointer 
+MORECFLAGS = -O3 -ffast-math -funroll-loops -fomit-frame-pointer 
 
 LDFLAGS = -Wl,-export-dynamic
 LIB =   -ldl -lm -lpthread
