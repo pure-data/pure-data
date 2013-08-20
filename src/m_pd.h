@@ -692,6 +692,7 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #define PD_USE_TE_XPIX
 
+#ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
 #if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
 /* a test for NANs and denormals.  Should only be necessary on i386. */
 # if PD_FLOATSIZE == 32
@@ -715,7 +716,13 @@ static inline int PD_BIGORSMALL(t_sample f) {
 # define PD_BADFLOAT(f) 0
 # define PD_BIGORSMALL(f) 0
 #endif
-
+#else   /* _MSC_VER */
+#define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
+    (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
+/* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
+#define PD_BIGORSMALL(f) ((((*(unsigned int*)&(f))&0x60000000)==0) || \
+    (((*(unsigned int*)&(f))&0x60000000)==0x60000000))
+#endif /* _MSC_VER */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
