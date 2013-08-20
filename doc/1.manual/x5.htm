@@ -20,6 +20,61 @@
 
 <H3> <A name="s2"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.45 ---------------------------
+
+<P> multi-purpose "array" and "text" objects.  "Array" is a more general
+replacement for the "table", "tabread" and "tabwrite" obejcts.  "text" is
+sort of like Max's "coll" but simpler and hopefully more powerful.
+"text"s are also avaioable as fields in data structures.
+
+<P> "tempo" messages for delay, metro, timer, and "test sequence".  In
+particular you can specify or measure time in samples, but you can also use this
+for changing the speed of an ensemble of delay loops while keeping them in sync.
+
+<P> binary netsend/netreceive (so you should no longer need an extern for OSC).
+
+<P> pd~ (multiprocessing) works on windows and is less likely to deadlock
+although not yet perfect.
+
+<P> Objects/messages/comments have settable box widths.  By default they're
+auto, but you can change that by draging on the right-hand-side border.  You can
+set it back to the default just by dragging ot to whatever width the default
+would have been.  If a box's width isn't "auto" and you open the patch back in
+Pd version 0.44 you'll see a warning; if you open it in earlier versions you'll
+get pages of error messages but no real harm.  You can open and save a patch in
+0.44 if you'd like to reset all box widths to auto.
+
+<P> The Pd window now tells you whether PD has an audio device open or not,
+and various error and status messages that used to go to standard error now
+appear on the Pd window (this improvement was way overdue!)
+
+<P> Fixed hangups exiting when using jack.
+
+<P> Got ASIO working again on PC (it was apparently broken; I don't know for how
+long.)
+
+<P> Various other small improvements in audio and midi handling:  Notably,
+except when using Jack, Pd doesn't open audio on startup; sometimes you want to
+get to the dialog panel before audio ever starts (for instance, on Mac,
+to revent Pd from hanging when someone walks in the building with an apple TV --
+gee, thanks, Apple!)
+
+<P> Took a patch from Iohannes Zmoelnig to make Pd source conform to strict
+aliasing rules.  The vanilla release is still compiled with -fno-strict-aliasing
+but this will be dropped after more testing.
+
+<P> The vanilla release now includes a 64 bit binary for MacOS.  This is a
+separate app and it won't load externs that haven't been compiled with
+-arch x86_64.  (Externs can be future-proofed by including both i386 and i86_64
+binaries by compiling with  -arch i386 -arch x86_64).
+
+<P> The soundfiler now writes correct sample rate to AIFF files (was previously
+hard-coded to 44100).  Still no way to detect the sample rate of a file when
+reading it.
+
+
+
+
 <P> ------------------ 0.44-3 ---------------------------
 
 <P> Fix hip~ AC gain once more (still didn't have it right).
