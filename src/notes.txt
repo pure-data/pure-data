@@ -80,6 +80,7 @@ real-time spectrum grapher
 document ||, |, etc, better
 
 features:
+-nomidibuf flag (Nicola Pandini on pd list Aug 8 2013)
 control-enter to deselect an object?
 add way to query readsf~ for fill pointer (sf feature request 3598776)
 'route' object to sprout inlet if no args (like sel)
