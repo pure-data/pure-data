@@ -252,7 +252,11 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     t_atom *ap;
     int count;
     t_inlet *ip = ((t_object *)x)->ob_inlet;
-    if (!argc) return;
+    if (!argc) 
+    {
+        pd_emptylist(&x->ob_pd);
+        return;
+    }
     for (count = argc-1, ap = argv+1; ip && count--; ap++, ip = ip->i_next)
     {
         if (ap->a_type == A_POINTER) pd_pointer(&ip->i_pd, ap->a_w.w_gpointer);

@@ -54,6 +54,8 @@ struct _class
     char c_drawcommand;             /* a drawing command for a template */
 };
 
+/* m_class.c */
+EXTERN void pd_emptylist(t_pd *x);
 
 /* m_obj.c */
 EXTERN int obj_noutlets(t_object *x);

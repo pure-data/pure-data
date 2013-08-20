@@ -42,6 +42,18 @@ static void pd_defaultbang(t_pd *x)
     else (*(*x)->c_anymethod)(x, &s_bang, 0, 0);
 }
 
+    /* am empty list calls the 'bang' method unless it's the default
+    bang method -- that might turn around and call our 'list' method
+    which could be an infinite recorsion.  Fall through to calling our
+    'anything' method.  That had better not turn around and call us with
+    an empty list.  */
+void pd_emptylist(t_pd *x)
+{
+    if (*(*x)->c_bangmethod != pd_defaultbang)
+        (*(*x)->c_bangmethod)(x);
+    else (*(*x)->c_anymethod)(x, &s_bang, 0, 0);
+}
+
 static void pd_defaultpointer(t_pd *x, t_gpointer *gp)
 {
     if (*(*x)->c_listmethod != pd_defaultlist)
