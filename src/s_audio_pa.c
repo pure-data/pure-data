@@ -83,19 +83,21 @@ pthread_cond_t pa_sem;
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
 
-
-static void pa_init(void)
+static void pa_init(void)        /* Initialize PortAudio  */
 {
     static int initialized;
     if (!initialized)
     {
-#ifndef _WIN32
-        /* Initialize PortAudio  */
-        /* for some reason Pa_Initialize(0 closes file descriptor 1.
-        As a workaround, dup it to another number and dup2 it back
-        afterward. */
+#ifdef _APPLE__
+        /* for some reason, on the Mac Pa_Initialize() closes file descriptor
+        1 (standard output) As a workaround, dup it to another number and dup2
+        it back afterward. */
         int newfd = dup(1);
+        int another = open("/dev/null", 0);
+        dup2(another, 1);
         int err = Pa_Initialize();
+        close(1);
+        close(another);
         if (newfd >= 0)
         {
             dup2(newfd, 1);
@@ -104,6 +106,8 @@ static void pa_init(void)
 #else
         int err = Pa_Initialize();
 #endif
+
+
         if ( err != paNoError ) 
         {
             post("Error opening audio: %s", err, Pa_GetErrorText(err));
