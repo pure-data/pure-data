@@ -1,78 +1,57 @@
-doc:
-  new behavior of inlet and hip~
-  
-  
+---------------- dolist --------------------
 
-
-
-
-warn on template names starting in '-'
-flag to expand to "nominal" widths/heights
-GUIs 0.45 mode (no clipping, toggle for 0/1)
-pointer methods to search and delete
+GUIs: slider, etc "clip (pre-0.46) " (on for old ones, off by default)
+toggle to get "track value (pre-0.46)"
 
 x_text.c:
 text dimension setting (message or creation arg - how to do it in structs?)
-double-click on drawtext in scalar to create editor window
 copying ala text_define_topointer
 "open" and "save as" messages to open text window
 how to integrate message boxes !?
 
 x_array.c:
 allow for lying about x and y labels
-no-click, quantize and clip flags for plotting/mousing
+no-mouse, quantize and clip flags for plotting/mousing
 save ticks, labels, other flags (and add dialog to set them)
 array y range to reflect y increment sign (so no 1 to -1 range)
 array search and array sort objects
+maybe: array segment, array spline, array sinesum, etc? or array gen?  or
+array forward (forwards message to defining array)
+Is there a way to generate a pointer to an anonymous array? (do we need that?)
 
-build out scalar object - naming; "scalar set/get" objects
-
----------------- dolist --------------------
-
-linux sometimes complains font courier not found
-check if window titles wrong on Macintosh
-portaudio: put call to PA_Terminate back in where appropriate
-    (first test situation on windows)
-compile on various versions of linux
+OS specific:
+linux:
+  rpm packages; BSD versions (set up VMs for testing)
 windows:
-  modal dialogs confuse watchdog
-  check the right-click-on-empty-canvas
-  MIDI I/O (inc. sysex)
+  put call to PA_Terminate back in where appropriate (first test on windows)
   "-audiodev" with no args in registry can't start up?
+  mmio out of portaudio but consider adding wdmks
 mac:
+  check if window titles wrong on Macintosh
   clicking on windows seems sometimes not to open them
-  what does OSX do when jack is compiled into Pd but not installed??
+  compile for jack on OSX by default (32 bit version at least).
   turn on paMacCore_ChangeDeviceParameters for mac (pa_mac_core.h)
-Gnome: why don't windows pop up when clicked on?
 
 problems:
 fix behavior when dragging object outside screen (stop the evil auto-scrolls)
 pd~ "start" followed by messages gives race condition because of "fromgui" biz
+pd~ deadlock protection
 find asdf$1 (e.g.) doesn't work
-check real-time gaps in writesf~
-fix declare to update current patch when changed
 objects on GOP don't erase if you edit the GOP while they're showing
 add -stack option to make 'regular' stack larger
-TK menu on Windows says "wish"
-offer both new and old help browser style
+menu item to save help patches to directory
 look again at array vis/invis conundrum, g_template.c
-TK commands to nonexistent windows? (occasionally still happens)
-open_via_path call in d_soundfile.c isn't threadsafe
 floor, ciel functions in expr misdeclared
 graph names don't appear until graph moved? (invis/vis on new array/rename)
 don't filter locked click() through getrect
-should linux stop grabbing focus on vis?  Is there a way to detect whether
-    the mouse is in a window when it opens?
-arrays that don't fit in bounds don't update (same as red rectangle problem?)
 patcher inlets don't deal with scalars (zbug.pd)
 read xx.txt in "bad" gives warnings
 Krzysztof's qlist_next reentrancy bug
 don't draw in/outlets on gui objects in graph-on-parent
 get rid of messages causing renaming; try to prevent patches closing themselves.
 scofo reports error on reading score1.txt
-loading e-mailed patches without removing headers crashes pd
-check if _vsnprintf with zero argument in windows works any better...
-detect adc~ and dac~ reblocking
+better error message for adc~ / dac~ reblocking
+fix limitations in number of array elements that can be graphed
 
 more demonstration patches:
 vibrato using variable delay
@@ -81,103 +60,84 @@ document ||, |, etc, better
 
 features:
 -nomidibuf flag (Nicola Pandini on pd list Aug 8 2013)
-control-enter to deselect an object?
 add way to query readsf~ for fill pointer (sf feature request 3598776)
 'route' object to sprout inlet if no args (like sel)
 optionally suppress leading "." directories and files on "open"
-"installation mode" - turn off Pd window, accelerators, menu bars, scrollbars
-flag to prevent unlocking patches
-messages to suppress menus&accelerators, and invisibilize Pd window
-machine-independent fonts
-sigmund~: sort by pitch; one-shot
+"installation mode": flag or messages to suppress menus&accelerators,
+  and invisibilize Pd window
+sigmund~: sort by pitch; pitch estimate to include pitch height; message
+  to lie about previous track output
 expr to parse exponential notation
-pipe to handle symbols&pointers (just takes floats now???)
 mem alignment for SSE
 replace gatom_escapit with a quoting mechanism (handle '[', spaces, etc.)
-unicode in filenames???  How does this work?  (bug report about windows)
-more list functions (see x_list.c)
 poly inlet to turn stealing on/off, plus mode to handle note-with-duration
 integrate video into tilde objects
-pixel font sizes
-tables:
-    if there's just one array, don't do stringent hit check.
-    array click protection (Krzysztof's suggestion)
-    make graph labels persistent and add to dialog
-    graph "hide name" flag controllable from dialog
-    object to get/set table size; random; quantile
-    flag to hide array names 
-think of a way to embed abstractions in a patch
-make watchdog work for MACOSX
+think of a way to embed abstractions in a patch (zlib?)
 delete-in-rectangle message to Pds
 put serial object in main dist (see rat@telecoma, Apr. 25; winfried May 22)
-open/save panel to take messages to init directory, and to set extent list
-flags to defeat pre-loading specified classes
+see x_list.c for more "list" object ideas
+open64() for linux (if 32 bits, close soundfile and open64 it)
+
+paths:
+fix declare to update current patch when changed
+open_via_path call in d_soundfile.c isn't threadsafe
+open/save panel to take messages to set extent list
+new open_via_path to take list of extents
+
 editing:
-    pasting should look at current mouse location
-    clickless connection (hit 'c' key? see Bouchard paper)
-    tab to jump to a connected object (first one?) (shift-tab to back up?)
-    arrow keys to shift connections left and right
-    menu item to connect selected objects
-    highlight connections (and I/Os) on mouse motion
-    select line and hit "insert" to interpolate an object
-    option-drag an outlet to make a new, connected object
-    (also, a way to make multiple connections?)
+control-enter to deselect an object?
+pasting should look at current mouse location
+clickless connection (hit 'c' key? see Bouchard paper)
+tab to jump to a connected object (first one?) (shift-tab to back up?)
+arrow keys to shift connections left and right
+menu item to connect selected objects
+highlight connections (and I/Os) on mouse motion
+select line and hit "insert" to interpolate an object
+option-drag an outlet to make a new, connected object
+make a way to make multiple connections  
+"fix width" menu item
+close-subwindows menu item
+canvas zooming (use tcl/tk canvas scale command?)
 
 data:
 add -x [-n?] flag to drawnumbers
 flag to disable edits for arrays
 make a 2-pass process for finding hot spot closest to any given click
-replace list element with binbuf??
 hooks for table mousing, other changes (scalars?)
 data to save as succession of "list" messages that textfile can store, etc.
 data copy/paste doesn't check templates aren't changed
-arrays of non-existent templates crash
 pointer == and select equivalents
 cursor to show (x, y) location and/or what parameter is being set to what
 improve typing at drawnumbers
 append doesn't do symbols yet.
 non-clickable arrays (plus arrays that respond more easily than default)
 set -any, get -any
+build out scalar object - naming; "scalar set/get" objects
+pointer methods to search and delete
+optimize by pre-fetching field name offsets in accessor objects
+double-click on drawtext in scalar to create editor window
 
 more features:
-
-"-march=pentium4 -O2 -mfpmath=sse -msse -msse2 -mmmx" ?
-try to improve for AMD - try "-march=athlon-xp -msse2"
-search for -mcpu=cpu-type in man gcc.
--Wno-unused to -Wno-unused-paramter and clean up unused automatic variables
-security module system in 2.6 - see the kernel module replacing jackstart
 signal inlets to sense signals; fix +~ etc, vcf~, biquad~, other filters
-try to reduce startup time
-investigate gcc 3.3 warnings; try to reinstate -fstrict-aliasing
+fix for -fstrict-aliasing
 message dialog not to disappear
-why does changing the name of an explode in jupiter patch take so long?
-close-subwindows menu item
-show results of opening audio and MIDI on dialogs
-windows escape from control-C
+show results of opening MIDI on dialog
 new: abs~, nexttick~, extend threshold~ and snapshot~ (vthreshold~ etc)
-incorporate pddp doc
-try again to fix the font scene
-??? have a way to disambiguate externs from different libs???
 netsend separate thread
-netreceive (and netsend?) message to set port number
-graph_vis() to decorate graphs when they're toplevel (parent_glist == 0)
 in glist_delete, consider why this can't be just "vis 0" -- why do we need it?
-closebang
+closebang and initbang
 put in something for tilde order forcing
 extensible "toolbar" so people can add external GUI objects
 number boxes to darken for typing and/or received messages
 new message box look
-bonk~ file path handling
 dialog to give values of $1, ... for the canvas
 bang at end of line~, tabwrite~, etc.
-recording to part of a table
 should sys_bail kill all "threads" on the way out?
-check a_valid usage
 allow backslashes (or else really disallow them)
 icon & desktop integration
-benchmarking
-fancier text editing
 tools (reassigns meaning of primary click)
+
+code style improvements:
+-Wno-unused to -Wno-unused-paramter and clean up unused automatic variables
 rewrite t_getbytes properly (m_newmemory.c in pd/attic)
 obj_new should do a longjmp on out-of-memory
-

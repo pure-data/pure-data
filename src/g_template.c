@@ -615,6 +615,9 @@ static void *gtemplate_new(t_symbol *s, int argc, t_atom *argv)
     t_symbol *sym = atom_getsymbolarg(0, argc, argv);
     if (argc >= 1)
         argc--; argv++;
+    if (sym->s_name[0] == '-')
+        pd_error("warning: struct '%s' initial '-' may confuse get/set, etc.",
+            sym->s_name);  
     return (gtemplate_donew(canvas_makebindsym(sym), argc, argv));
 }
 
