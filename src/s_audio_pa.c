@@ -88,7 +88,7 @@ static void pa_init(void)        /* Initialize PortAudio  */
     static int initialized;
     if (!initialized)
     {
-#ifdef _APPLE__
+#ifdef __APPLE__
         /* for some reason, on the Mac Pa_Initialize() closes file descriptor
         1 (standard output) As a workaround, dup it to another number and dup2
         it back afterward. */
@@ -100,6 +100,7 @@ static void pa_init(void)        /* Initialize PortAudio  */
         close(another);
         if (newfd >= 0)
         {
+            fflush(stdout);
             dup2(newfd, 1);
             close(newfd);
         }
