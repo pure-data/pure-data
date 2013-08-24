@@ -236,24 +236,32 @@ int open_soundfile_via_fd(int fd, int headersize,
     }
     else
     {
-        char buf[OBUFSIZE];
-        int bytesread = read(fd, buf, READHDRSIZE);
+        union
+        {
+            char b_c[OBUFSIZE];
+            t_fmt b_fmt;
+            t_nextstep b_nextstep;
+            t_wavechunk b_wavechunk;
+            t_datachunk b_datachunk;
+            t_comm b_commchunk;
+        } buf;
+        int bytesread = read(fd, buf.b_c, READHDRSIZE);
         int format;
         if (bytesread < 4)
             goto badheader;
-        if (!strncmp(buf, ".snd", 4))
+        if (!strncmp(buf.b_c, ".snd", 4))
             format = FORMAT_NEXT, bigendian = 1;
-        else if (!strncmp(buf, "dns.", 4))
+        else if (!strncmp(buf.b_c, "dns.", 4))
             format = FORMAT_NEXT, bigendian = 0;
-        else if (!strncmp(buf, "RIFF", 4))
+        else if (!strncmp(buf.b_c, "RIFF", 4))
         {
-            if (bytesread < 12 || strncmp(buf + 8, "WAVE", 4))
+            if (bytesread < 12 || strncmp(buf.b_c + 8, "WAVE", 4))
                 goto badheader;
             format = FORMAT_WAVE, bigendian = 0;
         }
-        else if (!strncmp(buf, "FORM", 4))
+        else if (!strncmp(buf.b_c, "FORM", 4))
         {
-            if (bytesread < 12 || strncmp(buf + 8, "AIFF", 4))
+            if (bytesread < 12 || strncmp(buf.b_c + 8, "AIFF", 4))
                 goto badheader;
             format = FORMAT_AIFF, bigendian = 1;
         }
@@ -262,7 +270,7 @@ int open_soundfile_via_fd(int fd, int headersize,
         swap = (bigendian != garray_ambigendian());
         if (format == FORMAT_NEXT)   /* nextstep header */
         {
-            t_nextstep*nsbuf=(t_nextstep *)buf;
+            t_nextstep *nsbuf = &buf.b_nextstep;
             if (bytesread < (int)sizeof(t_nextstep))
                 goto badheader;
             nchannels = swap4(nsbuf->ns_nchans, swap);
@@ -279,7 +287,7 @@ int open_soundfile_via_fd(int fd, int headersize,
         }
         else if (format == FORMAT_WAVE)     /* wave header */
         {
-               t_wavechunk*wavechunk=(t_wavechunk *)buf;
+               t_wavechunk *wavechunk = &buf.b_wavechunk;
                /*  This is awful.  You have to skip over chunks,
                except that if one happens to be a "fmt" chunk, you want to
                find out the format from that one.  The case where the
@@ -292,7 +300,7 @@ int open_soundfile_via_fd(int fd, int headersize,
             nchannels = 1;
             bytespersamp = 2;
                 /* copy the first chunk header to beginnning of buffer. */
-            memcpy(buf, buf + headersize, sizeof(t_wavechunk));
+            memcpy(buf.b_c, buf.b_c + headersize, sizeof(t_wavechunk));
             /* post("chunk %c %c %c %c",
                     ((t_wavechunk *)buf)->wc_id[0],
                     ((t_wavechunk *)buf)->wc_id[1],
@@ -311,10 +319,10 @@ int open_soundfile_via_fd(int fd, int headersize,
                     seekout = lseek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
-                    if (read(fd, buf, sizeof(t_fmt)) < (int) sizeof(t_fmt))
+                    if (read(fd, buf.b_c, sizeof(t_fmt)) < (int) sizeof(t_fmt))
                             goto badheader;
-                    nchannels = swap2(((t_fmt *)buf)->f_nchannels, swap);
-                    format = swap2(((t_fmt *)buf)->f_nbitspersample, swap);
+                    nchannels = swap2(buf.b_fmt.f_nchannels, swap);
+                    format = swap2(buf.b_fmt.f_nbitspersample, swap);
                     if (format == 16)
                         bytespersamp = 2;
                     else if (format == 24)
@@ -326,7 +334,7 @@ int open_soundfile_via_fd(int fd, int headersize,
                 seekout = lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
-                if (read(fd, buf, sizeof(t_wavechunk)) <
+                if (read(fd, buf.b_c, sizeof(t_wavechunk)) <
                     (int) sizeof(t_wavechunk))
                         goto badheader;
                 /* post("new chunk %c %c %c %c at %d",
@@ -342,7 +350,7 @@ int open_soundfile_via_fd(int fd, int headersize,
         else
         {
                 /* AIFF.  same as WAVE; actually predates it.  Disgusting. */
-            t_datachunk*datachunk;
+            t_datachunk *datachunk;
             headersize = 12;
             if (bytesread < 20)
                 goto badheader;
@@ -351,9 +359,9 @@ int open_soundfile_via_fd(int fd, int headersize,
             nchannels = 1;
             bytespersamp = 2;
                 /* copy the first chunk header to beginnning of buffer. */
-            memcpy(buf, buf + headersize, sizeof(t_datachunk));
+            memcpy(buf.b_c, buf.b_c + headersize, sizeof(t_datachunk));
                 /* read chunks in loop until we get to the data chunk */
-            datachunk=(t_datachunk*)buf;
+            datachunk = &buf.b_datachunk;
             while (strncmp(datachunk->dc_id, "SSND", 4))
             {
                 long chunksize = swap4(datachunk->dc_size,
@@ -368,14 +376,14 @@ int open_soundfile_via_fd(int fd, int headersize,
                 if (!strncmp(datachunk->dc_id, "COMM", 4))
                 {
                     long commblockonset = headersize + 8;
-                    t_comm*commchunk;
+                    t_comm *commchunk;
                     seekout = lseek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
-                    if (read(fd, buf, sizeof(t_comm)) <
+                    if (read(fd, buf.b_c, sizeof(t_comm)) <
                         (int) sizeof(t_comm))
                             goto badheader;
-                    commchunk=(t_comm *)buf;
+                    commchunk = &buf.b_commchunk;
                     nchannels = swap2(commchunk->c_nchannels, swap);
                     format = swap2(commchunk->c_bitspersamp, swap);
                     if (format == 16)
@@ -387,7 +395,7 @@ int open_soundfile_via_fd(int fd, int headersize,
                 seekout = lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
-                if (read(fd, buf, sizeof(t_datachunk)) <
+                if (read(fd, buf.b_c, sizeof(t_datachunk)) <
                     (int) sizeof(t_datachunk))
                         goto badheader;
                 headersize = seekto;
