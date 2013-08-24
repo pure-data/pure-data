@@ -42,7 +42,7 @@ PDSEND = $(EXECDIR)/pdsend.exe
 
 DLLWRAP= dllwrap
 
-MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer -fno-strict-aliasing
+MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer
 
 PADIR = $(pd_src)/portaudio
 ASIODIR = $(pd_src)/lib/ASIOSDK2.3
