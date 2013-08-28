@@ -1174,7 +1174,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            pd_error("text sequence: unknown flag '%s'...",
+            pd_error(x, "text sequence: unknown flag '%s'...",
                 argv->a_w.w_symbol->s_name);
         }
         argc--; argv++;

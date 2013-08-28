@@ -282,12 +282,11 @@ void bug(const char *fmt, ...)
     va_list ap;
     t_int arg[8];
     int i;
-    strcpy(buf, "consistency check failed: ");
     va_start(ap, fmt);
-    vsnprintf(buf+strlen(buf), MAXPDSTRING-1, fmt, ap);
+    vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
 
-    error(buf);
+    error("consistency check failed: %s", buf);
 }
 
     /* this isn't worked out yet. */
