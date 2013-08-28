@@ -449,7 +449,6 @@ void rtext_select(t_rtext *x, int state)
     t_canvas *canvas = glist_getcanvas(glist);
     sys_vgui(".x%lx.c itemconfigure %s -fill %s\n", canvas, 
         x->x_tag, (state? "blue" : "black"));
-    canvas_editing = canvas;
 }
 
 void rtext_activate(t_rtext *x, int state)

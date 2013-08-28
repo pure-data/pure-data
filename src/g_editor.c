@@ -2675,8 +2675,8 @@ static void canvas_texteditor(t_canvas *x)
 
 void glob_key(void *dummy, t_symbol *s, int ac, t_atom *av)
 {
-        /* canvas_editing can be zero; canvas_key checks for that */
-    canvas_key(canvas_editing, s, ac, av);
+        /* canvas_key checks for zero */
+    canvas_key(0, s, ac, av);
 }
 
 void canvas_editmode(t_canvas *x, t_floatarg state)

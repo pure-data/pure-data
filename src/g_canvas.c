@@ -42,7 +42,6 @@ desktops because the borders have both window title area and menus. */
 extern t_pd *newest;
 t_class *canvas_class;
 int canvas_dspstate;                /* whether DSP is on or off */  
-t_canvas *canvas_editing;           /* last canvas to start text edting */ 
 t_canvas *canvas_whichfind;         /* last canvas we did a find in */ 
 t_canvas *canvas_list;              /* list of all root canvases */
 
@@ -725,8 +724,6 @@ void canvas_free(t_canvas *x)
     t_gobj *y;
     int dspstate = canvas_suspend_dsp();
     canvas_noundo(x);
-    if (canvas_editing == x)
-        canvas_editing = 0;
     if (canvas_whichfind == x)
         canvas_whichfind = 0;
     glist_noselect(x);
