@@ -31,6 +31,6 @@ rm -f *.pd
 cd /tmp
 tar czf pd-$1.src.tar.gz pd-$1
 rm -rf $TMPPD
-mv -i pd-$1.src.tar.gz $ROOTDIR/archive/dist/ && \
-ls -l $ROOTDIR/archive/dist/pd-$1.src.tar.gz
+mv -i pd-$1.src.tar.gz $ROOTDIR/dist/ && \
+ls -l $ROOTDIR/dist/pd-$1.src.tar.gz
 
