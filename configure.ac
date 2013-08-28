@@ -42,7 +42,7 @@ case $host in
 	if test "x${ANDROID}" = "xno"; then
 	 LINUX=yes
 	 portaudio=yes
-	 CFLAGS="$CFLAGS -O3 -funroll-loops -fomit-frame-pointer"
+	 CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	fi
 	EXTERNAL_CFLAGS="-fPIC"
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
@@ -50,7 +50,7 @@ case $host in
 	;;
 *-*-gnu*)
 	HURD=yes
-	CFLAGS="-O6 -funroll-loops -fomit-frame-pointer $CFLAGS"
+	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	EXTERNAL_CFLAGS="-fPIC"
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
 	EXTERNAL_EXTENSION=pd_linux
@@ -62,7 +62,7 @@ case $host in
 #        to make the final linking phase use g++
 #		asio=yes
 	portaudio=yes
-	CFLAGS="$CFLAGS -O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501"
+	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
 # ASIO is a C++ library, so if its included, then use g++ to build
 	CC=g++
 	EXTERNAL_CFLAGS="-mms-bitfields"
@@ -73,7 +73,7 @@ case $host in
 	WINDOWS=yes
 	CYGWIN=yes
 	portaudio=yes
-	CFLAGS="$CFLAGS -O3 -funroll-loops -fomit-frame-pointer"
+	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	EXTERNAL_CFLAGS=
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
 	EXTERNAL_EXTENSION=dll
