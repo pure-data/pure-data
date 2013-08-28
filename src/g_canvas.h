@@ -336,7 +336,6 @@ struct _parentwidgetbehavior
 #define CURSOR_EDITMODE_RESIZE 7
 EXTERN void canvas_setcursor(t_glist *x, unsigned int cursornum);
 
-extern t_canvas *canvas_editing;    /* last canvas to start text edting */ 
 extern t_canvas *canvas_whichfind;  /* last canvas we did a find in */ 
 extern t_canvas *canvas_list;       /* list of all root canvases */
 extern t_class *vinlet_class, *voutlet_class;
