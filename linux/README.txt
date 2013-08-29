@@ -8,7 +8,7 @@ release checklist
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
     git push; git push --tags
-    copy from ~/pd/archive/dist to ~/bis/lib/public_html/Software/
+    copy from ~/pd/dist to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
         ~/bis/lib/public_html/Pd_documentation/
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
@@ -16,6 +16,8 @@ release checklist
     edit /home/msp/bis/lib/public_html/software.htm
     rsync  -avzl --delete --exclude tmp \
         /home/msp/bis/lib/public_html/ crca:public_html/
+
+
     mail release notice from /home/msp/pd/attic/pd-announce
 
 rpm building (inactive)

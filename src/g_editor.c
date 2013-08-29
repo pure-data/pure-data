@@ -2821,6 +2821,8 @@ void g_editor_setup(void)
         gensym("find"), A_SYMBOL, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find_again,
         gensym("findagain"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_find_parent,
+        gensym("findparent"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_done_popup,
         gensym("done-popup"), A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_donecanvasdialog,
