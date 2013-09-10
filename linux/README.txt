@@ -15,8 +15,7 @@ release checklist
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
     edit /home/msp/bis/lib/public_html/software.htm
     rsync  -avzl --delete --exclude tmp \
-        /home/msp/bis/lib/public_html/ crca:public_html/
-
+        /home/msp/bis/lib/public_html/ foo:/mnt/a/bis/crca-mirror/public_html/
 
     mail release notice from /home/msp/pd/attic/pd-announce
 
