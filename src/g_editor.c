@@ -2426,7 +2426,7 @@ static void canvas_paste(t_canvas *x)
     if (x->gl_editor->e_textedfor)
     {
         /* simulate keystrokes as if the copy buffer were typed in. */
-        sys_gui("pdtk_pastetext\n");
+        sys_vgui("pdtk_pastetext .x%lx\n", x);
     }
     else
     {
