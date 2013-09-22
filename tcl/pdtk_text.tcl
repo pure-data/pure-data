@@ -34,7 +34,7 @@ proc pdtk_pastetext {tkcanvas} {
         for {set i 0} {$i < [string length $pdtk_pastebuffer]} {incr i 1} {
             set cha [string index $pdtk_pastebuffer $i]
             scan $cha %c keynum
-            pdsend "$tkcanvas key 1 $keynum 0"
+            pdsend "[winfo toplevel $tkcanvas] key 1 $keynum 0"
         }
     }
 }
