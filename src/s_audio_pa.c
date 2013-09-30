@@ -240,14 +240,19 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     instreamparams.device = indeviceno;
     instreamparams.channelCount = inchannels;
     instreamparams.sampleFormat = paFloat32;
-    instreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;
     instreamparams.hostApiSpecificStreamInfo = 0;
     
     outstreamparams.device = outdeviceno;
     outstreamparams.channelCount = outchannels;
     outstreamparams.sampleFormat = paFloat32;
-    outstreamparams.suggestedLatency = nbuffers*framesperbuf/sampleRate;;
     outstreamparams.hostApiSpecificStreamInfo = 0;
+
+#ifdef FAKEBLOCKING
+    instreamparams.suggestedLatency = outstreamparams.suggestedLatency = 0;
+#else
+    instreamparams.suggestedLatency = outstreamparams.suggestedLatency = 
+        nbuffers*framesperbuf/sampleRate;
+#endif /* FAKEBLOCKING */
 
     if( inchannels>0 && indeviceno >= 0)
         p_instreamparams=&instreamparams;
