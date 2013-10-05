@@ -7,7 +7,7 @@ release checklist
     ... compile on windows/Mac 
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
-    git push; git push --tags
+    git push --mirror
     copy from ~/pd/dist to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
         ~/bis/lib/public_html/Pd_documentation/
