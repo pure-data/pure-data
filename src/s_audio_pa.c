@@ -250,7 +250,7 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
 #ifdef FAKEBLOCKING
     instreamparams.suggestedLatency = outstreamparams.suggestedLatency = 0;
 #else
-    instreamparams.suggestedLatency = outstreamparams.suggestedLatency = 
+    instreamparams.suggestedLatency = outstreamparams.suggestedLatency =
         nbuffers*framesperbuf/sampleRate;
 #endif /* FAKEBLOCKING */
 
