@@ -1,4 +1,4 @@
-#N canvas 0 0 1052 581 12;
+#N canvas 2 52 1082 583 12;
 #X obj 382 492 spigot;
 #X msg 484 293 bang;
 #X obj 483 454 bonk~;
@@ -107,7 +107,7 @@ Bonk check the attack against a collection of stored templates to try
 to guess which of two or more instruments was hit. Bonk is described
 theoretically in the 1998 ICMC proceedings \, reprinted on crca.ucsd.edu/~msp
 .;
-#N canvas 0 0 699 717 creation-arguments 1;
+#N canvas 2 52 699 717 creation-arguments 0;
 #X text 228 14 creation arguments for bonk~;
 #X text 70 272 -npts 256;
 #X text 44 244 default value:;
