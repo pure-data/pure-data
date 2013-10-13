@@ -3,14 +3,17 @@ current:
 
 clean: ; rm -f *.pd_linux *.o
 
-# ----------------------- NT -----------------------
+# ----------------------- Windows-----------------------
+# note; you will certainly have to edit the definition of VC to agree with
+# whatever you've got installed on your machine:
+
+VC="D:\Program Files\Microsoft Visual Studio\Vc98"
 
 pd_nt: obj1.dll obj2.dll obj3.dll obj4.dll obj5.dll dspobj~.dll
 
 .SUFFIXES: .obj .dll
 
 PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo
-VC="D:\Program Files\Microsoft Visual Studio\Vc98"
 
 PDNTINCLUDE = /I. /I\tcl\include /I..\..\src /I$(VC)\include
 
@@ -29,29 +32,15 @@ dspobj~.dll: dspobj~.c;
 	cl $(PDNTCFLAGS) $(PDNTINCLUDE) /c $*.c
 	link /dll /export:dspobj_tilde_setup $*.obj $(PDNTLIB)
 
-# ----------------------- IRIX 5.x -----------------------
-
-pd_irix5: obj1.pd_irix5 obj2.pd_irix5 \
-    obj3.pd_irix5 obj4.pd_irix5 obj5.pd_irix5 dspobj~.pd_irix5
-
-.SUFFIXES: .pd_irix5
-
-SGICFLAGS5 = -o32 -DPD -DUNIX -DIRIX -O2
-
-
-SGIINCLUDE =  -I../../src/
-
-.c.pd_irix5:
-	cc $(SGICFLAGS5) $(SGIINCLUDE) -o $*.o -c $*.c
-	ld -elf -shared -rdata_shared -o $*.pd_irix5 $*.o
-	rm $*.o
-
 # ----------------------- LINUX i386 -----------------------
 
-pd_linux: obj1.pd_linux obj2.pd_linux obj3.pd_linux obj4.pd_linux \
-    obj5.pd_linux dspobj~.pd_linux
+pd_linux: obj1.l_ia64 obj2.l_ia64 obj3.l_ia64 obj4.l_ia64 \
+    obj5.l_ia64 dspobj~.l_ia64
 
-.SUFFIXES: .pd_linux
+pd_linux32: obj1.l_i386 obj2.l_i386 obj3.l_i386 obj4.l_i386 \
+    obj5.l_i386 dspobj~.l_i386
+
+.SUFFIXES: .l_i386 .l_ia64
 
 LINUXCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer \
     -Wall -W -Wshadow -Wstrict-prototypes -Werror \
@@ -59,10 +48,16 @@ LINUXCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer \
 
 LINUXINCLUDE =  -I../../src
 
-.c.pd_linux:
+.c.l_i386:
 	cc $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
-	ld -shared -o $*.pd_linux $*.o -lc -lm
-	strip --strip-unneeded $*.pd_linux
+	ld -shared -o $*.l_i386 $*.o -lc -lm
+	strip --strip-unneeded $*.l_i386
+	rm $*.o
+
+.c.l_ia64:
+	cc $(LINUXCFLAGS) $(LINUXINCLUDE) -fPIC -o $*.o -c $*.c
+	ld -shared -o $*.l_ia64 $*.o -lc -lm
+	strip --strip-unneeded $*.l_ia64
 	rm $*.o
 
 # ----------------------- Mac OSX -----------------------
@@ -73,10 +68,11 @@ pd_darwin: obj1.pd_darwin obj2.pd_darwin \
 .SUFFIXES: .pd_darwin
 
 DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
-    -Wno-unused -Wno-parentheses -Wno-switch
+    -Wno-unused -Wno-parentheses -Wno-switch -arch i386 -arch x86_64
 
 .c.pd_darwin:
 	cc $(DARWINCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
-	cc -bundle -undefined suppress -flat_namespace -o $*.pd_darwin $*.o 
+	cc -bundle -undefined suppress -arch i386 -arch x86_64 \
+            -flat_namespace -o $*.pd_darwin $*.o 
 	rm -f $*.o
 
