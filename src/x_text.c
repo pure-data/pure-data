@@ -697,10 +697,15 @@ static void text_set_list(t_text_set *x,
         {
             if (end - start != argc)  /* grow or shrink */
             {
-                (void)binbuf_resize(b, (n = n + (argc - (end-start))));
+                int oldn = n;
+                n = n + (argc - (end-start));
+                if (n > oldn)
+                    (void)binbuf_resize(b, n);
                 vec = binbuf_getvec(b);
                 memmove(&vec[start + argc], &vec[end],
-                    sizeof(*vec) * (n - (start+argc)));
+                    sizeof(*vec) * (oldn - end));
+                if (n < oldn)
+                    (void)binbuf_resize(b, n);
             }
         }
         else
@@ -713,6 +718,7 @@ static void text_set_list(t_text_set *x,
             }
             if (fieldno + argc > end - start)
                 argc = (end - start) - fieldno;
+            start += fieldno;
         }
     }
     else if (fieldno < 0)  /* if line number too high just append to end */
