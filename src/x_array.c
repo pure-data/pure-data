@@ -708,7 +708,7 @@ static void array_random_bang(t_array_random *x)
     if (!array_rangeop_getrange(&x->x_r, &firstitem, &nitem, &stride))
         return;
     x->x_state = x->x_state * 472940017 + 832416023;
-    array_quantile_float(&x->x_r, (1./4294967296.0) * (x->x_state&0x7fffffff));
+    array_quantile_float(&x->x_r, (1./4294967296.0) * (double)(x->x_state));
 }
 
 static void array_random_float(t_array_random *x, t_floatarg f)
