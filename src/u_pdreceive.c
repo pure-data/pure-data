@@ -163,6 +163,21 @@ static void doconnect(void)
     else addport(fd);
 }
 
+static void makeoutput(char *buf, int len)
+{
+#ifdef _WIN32
+    int j;
+    for (j = 0; j < len; j++)
+        putchar(buf[j]);
+#else
+    if (write(1, buf, len) < len)
+    {
+        perror("write");
+        exit(1);
+    }
+#endif
+}
+
 static void udpread(void)
 {
     char buf[BUFSIZE];
@@ -174,19 +189,7 @@ static void udpread(void)
         exit(1);
     }
     else if (ret > 0)
-    {
-#ifdef _WIN32
-        int j;
-        for (j = 0; j < ret; j++)
-            putchar(buf[j]);
-#else
-        if (write(1, buf, ret) < ret)
-        {
-            perror("write");
-            exit(1);
-        }
-#endif
-    }
+        makeoutput(buf, ret);
 }
 
 static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
@@ -213,17 +216,7 @@ static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
         {
             outbuf[outlen++] = '\n';
             if (!x->fdp_discard)
-            {
-#ifdef _WIN32
-                {
-                    int j;
-                    for (j = 0; j < outlen; j++)
-                        putchar(outbuf[j]);
-                }
-#else
-                write(1, outbuf, outlen);
-#endif
-            } /* if (!x->fdp_discard) */
+               makeoutput(outbuf, outlen);
 
             outlen = 0;
             x->fdp_discard = 0;
