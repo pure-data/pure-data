@@ -1,7 +1,7 @@
-#N canvas 670 228 606 493 12;
+#N canvas 596 172 606 493 12;
 #X obj 29 11 list;
 #X text 76 12 - building and using variable-length messages;
-#N canvas 91 129 654 658 about-lists 0;
+#N canvas 89 127 654 658 about-lists 0;
 #X obj 50 629 print message;
 #X msg 50 442 list x.wav 44100;
 #X msg 50 600 read \$1 \$2;
@@ -12,15 +12,6 @@
 #X text 155 548 reset message as it was;
 #X text 207 442 good;
 #X text 196 473 bad;
-#X text 47 12 Messages in Pd are simewhat artificially divided into
-two classes. First are data-holding messages (bang \, float \, symbol
-\, list) which are the primary way of communicating between objects.
-Second is "everything else" (you could call them out-of-band messages
-or metamessages) that describe changes in configuration \, read and
-write files \, quit Pd \, etc. These are provided so that complex objects
-don't need to have 100 separate inlets for every possible functionality.
-It's not clear whether this was a good design choice \, but it's entrenched.
-;
 #X text 162 501 ugly;
 #X text 48 180 The distinction becomes visible \, and ugly \, when
 the leading item in a data-holding message is a symbol. In this case
@@ -39,14 +30,23 @@ content of the message box itself (click on the longer message box
 below to repair the damage.) The "ugly" message \, since it is neither
 "list" nor "set" \, gets interpreted in an arbitrary (and probably
 inappropriate!) way.;
+#X text 47 12 Messages in Pd are somewhat artificially divided into
+two classes. First are data-holding messages (bang \, float \, symbol
+\, list) which are the primary way of communicating between objects.
+Second is "everything else" (you could call them out-of-band messages
+or metamessages) that describe changes in configuration \, read and
+write files \, quit Pd \, etc. These are provided so that complex objects
+don't need to have 100 separate inlets for every possible functionality.
+It's not clear whether this was a good design choice \, but it's entrenched.
+;
 #X connect 1 0 2 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;
 #X connect 6 0 4 0;
-#X connect 13 0 15 0;
-#X connect 14 0 15 0;
+#X connect 12 0 14 0;
+#X connect 13 0 14 0;
 #X restore 51 328 pd about-lists;
 #X obj 22 82 list append;
 #X obj 22 107 list prepend;
