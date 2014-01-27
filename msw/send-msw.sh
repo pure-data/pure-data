@@ -35,7 +35,7 @@ rm -f pd.zip
 zip -q -r pd.zip pd
 ls -l /tmp/pd.zip
 
-cd ~/bis/var/wine/script
+cd ~/bis/work/wine/script
 if  ./build-msw.sh
     then echo -n ; else exit 1; fi
 

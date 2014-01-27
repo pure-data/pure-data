@@ -833,7 +833,9 @@ expr_setup(void)
 
 
 
-        post("expr, expr~, fexpr~ version %s under GNU General Public License ", exp_version);
+        post(
+   "expr, expr~, fexpr~ version %s under GNU Lesser General Public License ",
+            exp_version);
 
 }
 
