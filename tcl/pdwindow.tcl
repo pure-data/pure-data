@@ -276,7 +276,7 @@ proc ::pdwindow::create_tcl_entry {} {
     pack .pdwindow.tcl.label -side left
     entry .pdwindow.tcl.entry -width 200 \
        -exportselection 1 -insertwidth 2 -insertbackground blue \
-       -textvariable ::pdwindow::tclentry -font {$::font_family 12}
+       -textvariable ::pdwindow::tclentry -font {$::font_family -12}
     pack .pdwindow.tcl.entry -side left -fill x
 # bindings for the Tcl entry widget
     bind .pdwindow.tcl.entry <$::modifier-Key-a> "%W selection range 0 end; break"
@@ -332,7 +332,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.pad1 -side left -padx 12
 
     checkbutton .pdwindow.header.dsp -text [_ "DSP"] -variable ::dsp \
-        -font {$::font_family 18 bold} -takefocus 1 -background lightgray \
+        -font {$::font_family -18 bold} -takefocus 1 -background lightgray \
         -borderwidth 0  -command {pdsend "pd dsp $::dsp"}
     pack .pdwindow.header.dsp -side right -fill y -anchor e -padx 5 -pady 0
 
@@ -345,14 +345,14 @@ proc ::pdwindow::create_window {} {
         -text [_ "audio I/O off"] -borderwidth 0 \
         -background lightgray -foreground black \
         -takefocus 0 \
-        -font {$::font_family 14}
+        -font {$::font_family -14}
 
 # DIO error label
     label .pdwindow.header.ioframe.dio \
         -text [_ "audio I/O error"] -borderwidth 0 \
         -background lightgray -foreground lightgray \
         -takefocus 0 \
-        -font {$::font_family 14}
+        -font {$::font_family -14}
 
     pack .pdwindow.header.ioframe.iostate .pdwindow.header.ioframe.dio \
         -side top
@@ -381,7 +381,7 @@ proc ::pdwindow::create_window {} {
     frame .pdwindow.tcl -borderwidth 0
     pack .pdwindow.tcl -side bottom -fill x
 # TODO this should use the pd_font_$size created in pd-gui.tcl    
-    text .pdwindow.text -relief raised -bd 2 -font {-size 10} \
+    text .pdwindow.text -relief raised -bd 2 -font {$::font_family -12} \
         -highlightthickness 0 -borderwidth 1 -relief flat \
         -yscrollcommand ".pdwindow.scroll set" -width 60 \
         -undo false -autoseparators false -maxundo 1 -takefocus 0
