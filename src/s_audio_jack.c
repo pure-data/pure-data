@@ -53,15 +53,15 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
         {
             for (j = 0; j < sys_outchannels;  j++)
             {
-                out = jack_port_get_buffer (output_port[j], nframes);
-                memcpy(out, jack_outbuf + (j * BUF_JACK),
-                    sizeof (jack_default_audio_sample_t) * nframes);
+                if (out = jack_port_get_buffer(output_port[j], nframes))
+                    memcpy(out, jack_outbuf + (j * BUF_JACK),
+                        sizeof (jack_default_audio_sample_t) * nframes);
             }
             for (j = 0; j < sys_inchannels; j++)
             {
-                in = jack_port_get_buffer( input_port[j], nframes);
-                memcpy(jack_inbuf + (j * BUF_JACK), in,
-                    sizeof (jack_default_audio_sample_t) * nframes);
+                if (in = jack_port_get_buffer(input_port[j], nframes))
+                    memcpy(jack_inbuf + (j * BUF_JACK), in,
+                        sizeof (jack_default_audio_sample_t) * nframes);
             }
         } 
         else
@@ -70,32 +70,32 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
             t_sample*data;
             for (j = 0; j < sys_outchannels;  j++)
             {
-                out = jack_port_get_buffer (output_port[j], nframes);
-                data = jack_outbuf + (j * BUF_JACK);
-                for(frame=0; frame<nframes; frame++)
+                if (out = jack_port_get_buffer (output_port[j], nframes))
                 {
-                    *out++=*data++;
+                    data = jack_outbuf + (j * BUF_JACK);
+                    for (frame=0; frame<nframes; frame++)
+                        *out++ = *data++;
                 }
             }
             for (j = 0; j < sys_inchannels; j++)
             {
-                in = jack_port_get_buffer( input_port[j], nframes);
-                data = jack_inbuf + (j * BUF_JACK);
-                for(frame=0; frame<nframes; frame++)
+                if (in = jack_port_get_buffer( input_port[j], nframes))
                 {
-                    *data++=*in++;
+                    data = jack_inbuf + (j * BUF_JACK);
+                    for (frame=0; frame<nframes; frame++)
+                        *data++ = *in++;
                 }
             }
         }
         jack_filled -= nframes;
     }
     else
-            { /* PD could not keep up ! */
+    {           /* PD could not keep up ! */
         if (jack_started) jack_dio_error = 1;
         for (j = 0; j < outport_count;  j++)
         {
-            out = jack_port_get_buffer (output_port[j], nframes);
-            memset(out, 0, sizeof (float) * nframes); 
+            if (out = jack_port_get_buffer (output_port[j], nframes))
+                memset(out, 0, sizeof (float) * nframes); 
             memset(jack_outbuf + j * BUF_JACK, 0, BUF_JACK * sizeof(t_sample));
         }
         jack_filled = 0;
@@ -125,6 +125,7 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
     {
         t_sample *fp;
         for (chan = 0; chan < sys_inchannels; chan++)
+            if (in[chan])
         {
             for (fp = sys_soundin + chan*DEFDACBLKSIZE,
                 jp = in[chan] + n, j=0; j < DEFDACBLKSIZE; j++)
@@ -138,6 +139,7 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
         }
         (*jack_callback)();
         for (chan = 0; chan < sys_outchannels; chan++)
+            if (out[chan])
         {
             for (fp = sys_soundout + chan*DEFDACBLKSIZE, jp = out[chan] + n,
                 j=0; j < DEFDACBLKSIZE; j++)
