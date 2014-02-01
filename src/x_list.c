@@ -28,6 +28,7 @@ extern t_pd *newest;
     list split - first n elements to first outlet, rest to second outlet 
     list trim - trim off "list" selector
     list length - output number of items in list
+    list fromsymbol - "explode" a symbol into a list of character codes
 
 Need to think more about:
     list foreach - spit out elements of a list one by one (also in reverse?)
@@ -491,6 +492,43 @@ static void list_length_setup(void)
     class_sethelpsymbol(list_length_class, &s_list);
 }
 
+/* ------------- list fromsymbol --------------------- */
+
+t_class *list_fromsymbol_class;
+
+typedef struct _list_fromsymbol
+{
+    t_object x_obj;
+} t_list_fromsymbol;
+
+static void *list_fromsymbol_new( void)
+{
+    t_list_fromsymbol *x = (t_list_fromsymbol *)pd_new(list_fromsymbol_class);
+    outlet_new(&x->x_obj, &s_list);
+    return (x);
+}
+
+static void list_fromsymbol_symbol(t_list_append *x, t_symbol *s)
+{
+    t_atom *outv;
+    int n, outc = strlen(s->s_name);
+    ATOMS_ALLOCA(outv, outc);
+    for (n=0; n<outc; n++) {
+    	SETFLOAT(outv + n, (int)s->s_name[n]);
+    }
+    outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
+    ATOMS_FREEA(outv, outc);
+}
+
+static void list_fromsymbol_setup(void)
+{
+    list_fromsymbol_class = class_new(gensym("list fromsymbol"),
+        (t_newmethod)list_fromsymbol_new, 0,
+        sizeof(t_list_fromsymbol), 0, A_DEFSYM, 0);
+    class_addsymbol(list_fromsymbol_class, list_fromsymbol_symbol);
+    class_sethelpsymbol(list_fromsymbol_class, &s_list);
+}
+
 /* ------------- list ------------------- */
 
 static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
@@ -510,6 +548,8 @@ static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             newest = list_trim_new();
         else if (s2 == gensym("length"))
             newest = list_length_new();
+        else if (s2 == gensym("fromsymbol"))
+            newest = list_fromsymbol_new();
         else 
         {
             error("list %s: unknown function", s2->s_name);
@@ -527,5 +567,6 @@ void x_list_setup(void)
     list_split_setup();
     list_trim_setup();
     list_length_setup();
+    list_fromsymbol_setup();
     class_addcreator((t_newmethod)list_new, &s_list, A_GIMME, 0);
 }
