@@ -12,6 +12,7 @@
 #else
 # include <stddef.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
+#include <string.h>
 
 extern t_pd *newest;
 
@@ -513,9 +514,8 @@ static void list_fromsymbol_symbol(t_list_append *x, t_symbol *s)
     t_atom *outv;
     int n, outc = strlen(s->s_name);
     ATOMS_ALLOCA(outv, outc);
-    for (n=0; n<outc; n++) {
+    for (n = 0; n < outc; n++)
     	SETFLOAT(outv + n, (int)s->s_name[n]);
-    }
     outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
     ATOMS_FREEA(outv, outc);
 }
@@ -523,10 +523,52 @@ static void list_fromsymbol_symbol(t_list_append *x, t_symbol *s)
 static void list_fromsymbol_setup(void)
 {
     list_fromsymbol_class = class_new(gensym("list fromsymbol"),
-        (t_newmethod)list_fromsymbol_new, 0,
-        sizeof(t_list_fromsymbol), 0, A_DEFSYM, 0);
+        (t_newmethod)list_fromsymbol_new, 0, sizeof(t_list_fromsymbol), 0, 0);
     class_addsymbol(list_fromsymbol_class, list_fromsymbol_symbol);
     class_sethelpsymbol(list_fromsymbol_class, &s_list);
+}
+
+/* ------------- list tosymbol --------------------- */
+
+t_class *list_tosymbol_class;
+
+typedef struct _list_tosymbol
+{
+    t_object x_obj;
+} t_list_tosymbol;
+
+static void *list_tosymbol_new( void)
+{
+    t_list_tosymbol *x = (t_list_tosymbol *)pd_new(list_tosymbol_class);
+    outlet_new(&x->x_obj, &s_symbol);
+    return (x);
+}
+
+static void list_tosymbol_list(t_list_append *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    int i;
+#if HAVE_ALLOCA
+    char *str = alloca(argc + 1);
+#else
+    char *str = getbytes(argc + 1);
+#endif
+    for (i = 0; i < argc; i++)
+    	str[i] = (char)atom_getfloatarg(i, argc, argv);
+    str[argc] = 0;
+    outlet_symbol(x->x_obj.ob_outlet, gensym(str));
+#if HAVE_ALLOCA
+#else
+    freebytes(str, argc+1);
+#endif
+}
+
+static void list_tosymbol_setup(void)
+{
+    list_tosymbol_class = class_new(gensym("list tosymbol"),
+        (t_newmethod)list_tosymbol_new, 0, sizeof(t_list_tosymbol), 0, 0);
+    class_addlist(list_tosymbol_class, list_tosymbol_list);
+    class_sethelpsymbol(list_tosymbol_class, &s_list);
 }
 
 /* ------------- list ------------------- */
@@ -550,6 +592,8 @@ static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             newest = list_length_new();
         else if (s2 == gensym("fromsymbol"))
             newest = list_fromsymbol_new();
+        else if (s2 == gensym("tosymbol"))
+            newest = list_tosymbol_new();
         else 
         {
             error("list %s: unknown function", s2->s_name);
@@ -568,5 +612,6 @@ void x_list_setup(void)
     list_trim_setup();
     list_length_setup();
     list_fromsymbol_setup();
+    list_tosymbol_setup();
     class_addcreator((t_newmethod)list_new, &s_list, A_GIMME, 0);
 }
