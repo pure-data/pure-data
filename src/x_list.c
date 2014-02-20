@@ -515,7 +515,7 @@ static void list_fromsymbol_symbol(t_list_append *x, t_symbol *s)
     int n, outc = strlen(s->s_name);
     ATOMS_ALLOCA(outv, outc);
     for (n = 0; n < outc; n++)
-    	SETFLOAT(outv + n, (int)s->s_name[n]);
+        SETFLOAT(outv + n, (int)s->s_name[n]);
     outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
     ATOMS_FREEA(outv, outc);
 }
@@ -554,7 +554,7 @@ static void list_tosymbol_list(t_list_append *x, t_symbol *s,
     char *str = getbytes(argc + 1);
 #endif
     for (i = 0; i < argc; i++)
-    	str[i] = (char)atom_getfloatarg(i, argc, argv);
+        str[i] = (char)atom_getfloatarg(i, argc, argv);
     str[argc] = 0;
     outlet_symbol(x->x_obj.ob_outlet, gensym(str));
 #if HAVE_ALLOCA
