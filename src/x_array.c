@@ -317,7 +317,7 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
 
 static void array_client_senditup(t_array_client *x)
 {
-    t_glist *glist;
+    t_glist *glist = 0;
     t_array *a = array_client_getbuf(x, &glist);
     array_redraw(a, glist);
 }

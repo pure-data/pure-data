@@ -247,7 +247,7 @@ typedef struct _text t_object;
 
 typedef void (*t_method)(void);
 typedef void *(*t_newmethod)( void);
-typedef void (*t_gotfn)(void *x, ...);
+typedef void (*t_gotfn)(void *x);
 
 /* ---------------- pre-defined objects and symbols --------------*/
 EXTERN t_pd pd_objectmaker;     /* factory for creating "object" boxes */
@@ -273,12 +273,27 @@ EXTERN t_gotfn getfn(t_pd *x, t_symbol *s);
 EXTERN t_gotfn zgetfn(t_pd *x, t_symbol *s);
 EXTERN void nullfn(void);
 EXTERN void pd_vmess(t_pd *x, t_symbol *s, char *fmt, ...);
+
+/* the following macrose are for sending non-type-checkable mesages, i.e.,
+using function lookup but circumventing type checking on arguments.  Only
+use for internal messaging protected by A_CANT so that the message can't
+be generated at patch level. */
 #define mess0(x, s) ((*getfn((x), (s)))((x)))
-#define mess1(x, s, a) ((*getfn((x), (s)))((x), (a)))
-#define mess2(x, s, a,b) ((*getfn((x), (s)))((x), (a),(b)))
-#define mess3(x, s, a,b,c) ((*getfn((x), (s)))((x), (a),(b),(c)))
-#define mess4(x, s, a,b,c,d) ((*getfn((x), (s)))((x), (a),(b),(c),(d)))
-#define mess5(x, s, a,b,c,d,e) ((*getfn((x), (s)))((x), (a),(b),(c),(d),(e)))
+typedef void (*t_gotfn1)(void *x, void *arg1);
+#define mess1(x, s, a) ((*(t_gotfn1)getfn((x), (s)))((x), (a)))
+typedef void (*t_gotfn2)(void *x, void *arg1, void *arg2);
+#define mess2(x, s, a,b) ((*(t_gotfn2)getfn((x), (s)))((x), (a),(b)))
+typedef void (*t_gotfn3)(void *x, void *arg1, void *arg2, void *arg3);
+#define mess3(x, s, a,b,c) ((*(t_gotfn3)getfn((x), (s)))((x), (a),(b),(c)))
+typedef void (*t_gotfn4)(void *x,
+    void *arg1, void *arg2, void *arg3, void *arg4);
+#define mess4(x, s, a,b,c,d) \
+    ((*(t_gotfn4)getfn((x), (s)))((x), (a),(b),(c),(d)))
+typedef void (*t_gotfn5)(void *x,
+    void *arg1, void *arg2, void *arg3, void *arg4, void *arg5);
+#define mess5(x, s, a,b,c,d,e) \
+    ((*(t_gotfn5)getfn((x), (s)))((x), (a),(b),(c),(d),(e)))
+
 EXTERN void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN t_pd *pd_newest(void);
 
