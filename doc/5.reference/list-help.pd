@@ -1,4 +1,4 @@
-#N canvas 1010 142 597 581 12;
+#N canvas 1009 137 597 581 12;
 #X obj 29 11 list;
 #X text 76 12 - building and using variable-length messages;
 #N canvas 88 122 654 658 about-lists 0;
@@ -388,8 +388,7 @@ in a list or other message.;
 #X obj 22 207 list fromsymbol;
 #X obj 22 232 list tosymbol;
 #X text 138 220 - convert symbols to/from numeric characters;
-#N canvas 614 95 552 344 from/to 1;
-#X msg 71 200 symbol seventeen;
+#N canvas 613 90 552 344 from/to 0;
 #X symbolatom 71 226 10 0 0 0 - - -, f 10;
 #X obj 71 249 list fromsymbol;
 #X text 92 15 fromsymbol and tosymbol - symbols to and from lists of
@@ -402,10 +401,11 @@ a filename for '/' characters). THey convert a list of numbers (which
 might be ASCII or might be unicode if \, for example \, they represent
 a filename on a non-ASCII machine) to or from a symbol., f 63;
 #X symbolatom 236 258 10 0 0 0 - - -, f 10;
+#X msg 71 200 symbol seventeen;
 #X connect 0 0 1 0;
-#X connect 1 0 2 0;
-#X connect 2 0 6 0;
-#X connect 4 0 5 0;
-#X connect 5 0 8 0;
+#X connect 1 0 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 7 0;
+#X connect 8 0 0 0;
 #X restore 483 221 pd from/to;
 #X text 355 526 updated for Pd version 0.46.;
