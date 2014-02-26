@@ -515,7 +515,7 @@ static void list_fromsymbol_symbol(t_list_append *x, t_symbol *s)
     int n, outc = strlen(s->s_name);
     ATOMS_ALLOCA(outv, outc);
     for (n = 0; n < outc; n++)
-        SETFLOAT(outv + n, (int)s->s_name[n]);
+        SETFLOAT(outv + n, (unsigned char)s->s_name[n]);
     outlet_list(x->x_obj.ob_outlet, &s_list, outc, outv);
     ATOMS_FREEA(outv, outc);
 }
