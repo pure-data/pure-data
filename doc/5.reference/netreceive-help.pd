@@ -1,35 +1,34 @@
-#N canvas 88 85 813 713 12;
-#X obj 100 323 netreceive 3000;
-#X floatatom 217 411 0 0 0 0 - - -;
-#X text 251 412 <--- number of open connections;
+#N canvas 115 149 813 713 12;
+#X obj 100 359 netreceive 3000;
+#X floatatom 217 447 0 0 0 0 - - -;
+#X text 251 448 <--- number of open connections;
 #X text 85 12 Netreceive -- listen for incoming messages from network
 ;
 #X text 112 667 see also:;
 #X obj 198 669 netsend;
-#X obj 100 411 print tcp;
-#X obj 99 517 print udp;
+#X obj 100 447 print tcp;
+#X obj 99 553 print udp;
 #X text 29 167 There are some possibilities for intercommunication
 with other programs... see the help for "netsend.", f 85;
 #X obj 593 606 netreceive 3003 1;
 #X text 607 582 (UDP port 3003);
-#X text 32 590 An old (pre-0.45) calling convention is provided for
+#X text 26 618 An old (pre-0.45) calling convention is provided for
 compatibility: port number and following "0" or "1" for TCP or UDP
 respectively:, f 67;
 #X text 564 666 updated for Pd version 0.45;
-#X obj 99 489 netreceive -u 3001;
-#X text 234 319 creation arguments:;
-#X text 302 338 optional -u flag for UDP;
-#X text 302 357 optional -b flag for binary;
-#X text 301 378 optional port number;
-#X text 225 448 otehr examples:;
-#X obj 505 493 netreceive -u -b 3003;
-#X obj 304 493 netreceive -b 3002;
-#X obj 304 521 print tcp-binary;
-#X obj 504 521 print udp-binary;
-#X msg 100 292 listen 0;
-#X text 210 268 listen message to set or change port;
-#X text 206 293 (0 or negative number to close);
-#X msg 100 266 listen 3000;
+#X obj 99 525 netreceive -u 3001;
+#X text 234 355 creation arguments:;
+#X text 302 374 optional -u flag for UDP;
+#X text 302 393 optional -b flag for binary;
+#X text 301 414 optional port number;
+#X obj 505 529 netreceive -u -b 3003;
+#X obj 291 550 netreceive -b 3002;
+#X obj 291 578 print tcp-binary;
+#X obj 504 557 print udp-binary;
+#X msg 100 283 listen 0;
+#X text 210 259 listen message to set or change port;
+#X text 206 284 (0 or negative number to close);
+#X msg 100 257 listen 3000;
 #X text 33 36 The Netreceive object opens a socket for TCP ("stream")
 or UDP ("datagram") network reception on a specified port. If using
 TCP \, an outlet gives you the number of Netsend objects (or other
@@ -42,10 +41,21 @@ with Pd (i.e. \, numbers and symbols terminated with a semicolon --
 the "FUDI" protocol). The "-b" creation argument specifies binary messages
 instead \, which appear in Pd as lists of numbers from 0 to 255 (You
 could use this for OSC messages \, for example.), f 83;
+#X msg 121 332 send foo \$1;
+#X floatatom 121 309 0 0 0 0 - - -;
+#X msg 290 526 send foo \$1;
+#X floatatom 290 503 0 0 0 0 - - -;
+#X text 232 479 other examples:;
+#X text 158 309 "send" (for TCP connections only) sends back to connected
+netreceive objects, f 76;
 #X connect 0 0 6 0;
 #X connect 0 1 1 0;
 #X connect 13 0 7 0;
-#X connect 19 0 22 0;
-#X connect 20 0 21 0;
-#X connect 23 0 0 0;
-#X connect 26 0 0 0;
+#X connect 18 0 21 0;
+#X connect 19 0 20 0;
+#X connect 22 0 0 0;
+#X connect 25 0 0 0;
+#X connect 29 0 0 0;
+#X connect 30 0 29 0;
+#X connect 31 0 19 0;
+#X connect 32 0 31 0;
