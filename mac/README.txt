@@ -8,3 +8,7 @@ and type,
 
 and if all goes well, you'll soon see a new app appear named Pd-0.45-4.app
 
+Note: The "wish-shell.tgz" is an archive of this app I found on my mac:
+System/Library/Frameworks/Tk.framework/Versions/8.4/Resources/Wish Shell.app
+A smarter version of the scripts ought to be able to find that file
+automatically on your system so I wouldn't have to include it here.
