@@ -1,0 +1,10 @@
+This directory contains the support files for compiling Pd on Macintosh
+systems, as it is built for the 'vanilla' releases on msp.ucsd.edu.  To
+build Pd, copy this ('mac') directory somewhere like ~/mac.  Also copy
+a source tarball there, such as pd-0.45-4.src.tar.gz .  then cd to ~/mac
+and type,
+
+./build-macosx 0.45-3
+
+and if all goes well, you'll soon see a new app appear named Pd-0.45-4.app
+

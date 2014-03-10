@@ -1,0 +1,44 @@
+#!/bin/sh
+#usage: ./build 0.38-0 or 0.38-0test4
+
+if test x$1 == x
+then
+   echo usage: ./build 0.38-0 or 0.38-0test4
+   exit 1
+fi
+
+if test -d Pd-$1-64bit.app
+then
+    chmod -R 777 Pd-$1-64bit.app
+    rm -rf Pd-$1-64bit.app
+fi
+
+tar xzf stuff/wish-shell.tgz
+mv "Wish Shell.app" Pd-$1-64bit.app
+cd Pd-$1-64bit.app/Contents
+chmod 755 .
+rm -f Info.plist
+cp -p  ../../stuff/Info.plist .
+cd MacOS
+chmod 755 .
+mv "Wish Shell" Pd
+cd ..
+cd Resources
+chmod 755 .
+rm -f Wish.icns
+cp -p ../../../stuff/pd.icns ../../../stuff/pd-file.icns .
+mv "Wish Shell.rsrc" Pd.rsrc
+tar xzf ../../../pd-$1.src.tar.gz
+mv pd-$1/* .
+rmdir pd-$1
+cd src
+make -f makefile.mac "ARCH=-arch x86_64"
+cd ..
+ln -s tcl Scripts
+chmod 555 . .. 
+cd ../../..
+pwd
+chmod 755 Pd-$1-64bit.app
+touch Pd-$1-64bit.app
+chmod 555 Pd-$1-64bit.app
+tar czf pd-$1-64bit.mac.tar.gz Pd-$1-64bit.app

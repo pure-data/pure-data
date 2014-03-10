@@ -2,4 +2,4 @@
 
 cd ~/pd
 git add INSTALL.txt LICENSE.txt README.txt configure.ac doc extra man \
-    portaudio portmidi src tcl msw linux
+    portaudio portmidi src tcl msw linux mac
