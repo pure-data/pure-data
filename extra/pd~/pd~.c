@@ -221,7 +221,7 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         sys_bashfilename(tmpbuf, pdexecbuf);
         if (stat(pdexecbuf, &statbuf) < 0)
         {
-            snprintf(tmpbuf, MAXPDSTRING, "%s/pd EXTENT", pddir);
+            snprintf(tmpbuf, MAXPDSTRING, "%s/pd" EXTENT, pddir);
             sys_bashfilename(tmpbuf, pdexecbuf);
             if (stat(pdexecbuf, &statbuf) < 0)
             {
