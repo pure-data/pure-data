@@ -32,7 +32,7 @@ tar xzf ../../../pd-$1.src.tar.gz
 mv pd-$1/* .
 rmdir pd-$1
 cd src
-make -f makefile.mac "ARCH=-arch x86_64"
+JACK=true make -f makefile.mac "ARCH=-arch x86_64"
 cd ..
 ln -s tcl Scripts
 chmod 555 . .. 
