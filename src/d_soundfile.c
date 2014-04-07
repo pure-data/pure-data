@@ -793,8 +793,6 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     {
         long datasize = nframes * nchannels * bytespersamp;
         long longtmp;
-        static unsigned char dogdoo[] =
-            {0x40, 0x0e, 0xac, 0x44, 0, 0, 0, 0, 0, 0, 'S', 'S', 'N', 'D'};
         if (strcmp(filenamebuf + strlen(filenamebuf)-4, ".aif") &&
             strcmp(filenamebuf + strlen(filenamebuf)-5, ".aiff"))
                 strcat(filenamebuf, ".aif");
@@ -808,13 +806,10 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
         memcpy(&aiffhdr->a_nframeshi, &longtmp, 4);
         aiffhdr->a_bitspersamp = swap2(8 * bytespersamp, swap);
         makeaiffsamprate(samplerate, aiffhdr->a_samprate);
+        strncpy(((char *)(&aiffhdr->a_samprate))+10, "SSND", 4);
         longtmp = swap4(datasize + 8, swap);
-        memcpy(headerbuf +
-            ((aiffhdr->a_samprate + sizeof(dogdoo))-(unsigned char *)aiffhdr),
-                &longtmp, 4);
-        memset(headerbuf +
-            ((aiffhdr->a_samprate + sizeof(dogdoo))-(unsigned char *)aiffhdr)
-                + 4, 0, 8);
+        memcpy(((char *)(&aiffhdr->a_samprate))+14, &longtmp, 4);
+        memset(((char *)(&aiffhdr->a_samprate))+18, 0, 8);
         headersize = AIFFPLUS;
     }
     else    /* WAVE format */
