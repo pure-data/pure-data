@@ -264,6 +264,7 @@ proc ::pd_menus::build_media_menu {mymenu} {
             -command {pdsend "pd midi-setapi $::pd_whichmidiapi"}
     }
 
+    $mymenu add  separator
     $mymenu add command -label [_ "Audio Settings..."] \
         -command {pdsend "pd audio-properties"}
     $mymenu add command -label [_ "MIDI Settings..."] \
