@@ -1014,7 +1014,7 @@ void sys_get_audio_apis(char *buf)
     sprintf(buf + strlen(buf),
         "{\"ASIO (via portaudio)\" %d} ", API_PORTAUDIO);
 #else
-#ifdef __APPLE__
+#ifdef OSX
     sprintf(buf + strlen(buf),
         "{\"standard (portaudio)\" %d} ", API_PORTAUDIO);
 #else
