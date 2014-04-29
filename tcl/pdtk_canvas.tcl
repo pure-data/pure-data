@@ -301,14 +301,21 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
-    set mytoplevel [winfo toplevel $tkcanvas]    
+    set mytoplevel [winfo toplevel $tkcanvas]
+    set height [winfo height $tkcanvas]
+    set width [winfo width $tkcanvas]
+    
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
     set xupperleft [lindex $bbox 0]
     set yupperleft [lindex $bbox 1]
     if {$xupperleft > 0} {set xupperleft 0}
     if {$yupperleft > 0} {set yupperleft 0}
-    set scrollregion [concat $xupperleft $yupperleft [lindex $bbox 2] [lindex $bbox 3]]
+    set xlowerright [lindex $bbox 2]
+    set ylowerright [lindex $bbox 3]
+    if {$xlowerright < $width} {set xlowerright $width}
+    if {$ylowerright < $height} {set ylowerright $height}
+    set scrollregion [concat $xupperleft $yupperleft $xlowerright $ylowerright]
     $tkcanvas configure -scrollregion $scrollregion
     # X scrollbar
     if {[lindex [$tkcanvas xview] 0] == 0.0 && [lindex [$tkcanvas xview] 1] == 1.0} {
