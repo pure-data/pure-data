@@ -54,6 +54,17 @@ struct _class
     char c_drawcommand;             /* a drawing command for a template */
 };
 
+#define SYMBOLHASHSIZE 1024
+
+typedef struct _pdinstance
+{
+    t_symbol *pd_symhash[SYMBOLHASHSIZE];
+    t_pd pd_objectmaker;    /* factory for creating "object" boxes */
+    t_pd pd_canvasmaker;    /* factory for creating canvases */
+} t_pdinstance;
+
+extern t_pdinstance *pd_this;
+
 /* m_class.c */
 EXTERN void pd_emptylist(t_pd *x);
 

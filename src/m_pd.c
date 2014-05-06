@@ -181,8 +181,6 @@ void pd_unbind(t_pd *x, t_symbol *s)
     else pd_error(x, "%s: couldn't unbind", s->s_name);
 }
 
-void zz(void) {}
-
 t_pd *pd_findbyclass(t_symbol *s, t_class *c)
 {
     t_pd *x = 0;
@@ -199,7 +197,6 @@ t_pd *pd_findbyclass(t_symbol *s, t_class *c)
         {
             if (x && !warned)
             {
-                zz();
                 post("warning: %s: multiply defined", s->s_name);
                 warned = 1;
             }
@@ -295,8 +292,13 @@ void conf_init(void);
 void glob_init(void);
 void garray_init(void);
 
+t_pdinstance *pd_this;
+
 void pd_init(void)
 {
+    fprintf(stderr, "pd init\n");
+    if (!pd_this)
+        pd_this = getbytes(sizeof(*pd_this));
     mess_init();
     obj_init();
     conf_init();
