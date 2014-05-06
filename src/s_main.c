@@ -105,7 +105,7 @@ t_sample* get_sys_soundin() { return sys_soundin; }
 int* get_sys_main_advance() { return &sys_main_advance; }
 double* get_sys_time_per_dsp_tick() { return &sys_time_per_dsp_tick; }
 int* get_sys_schedblocksize() { return &sys_schedblocksize; }
-double* get_sys_time() { return &sys_time; }
+double* get_sys_time() { return &pd_this->pd_systime; }
 t_float* get_sys_dacsr() { return &sys_dacsr; }
 int* get_sys_sleepgrain() { return &sys_sleepgrain; }
 int* get_sys_schedadvance() { return &sys_schedadvance; }

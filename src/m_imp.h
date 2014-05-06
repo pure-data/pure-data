@@ -58,9 +58,13 @@ struct _class
 
 typedef struct _pdinstance
 {
-    t_symbol *pd_symhash[SYMBOLHASHSIZE];
-    t_pd pd_objectmaker;    /* factory for creating "object" boxes */
-    t_pd pd_canvasmaker;    /* factory for creating canvases */
+    t_symbol *pd_symhash[SYMBOLHASHSIZE];   /* symbol table */
+    t_pd pd_objectmaker;        /* factory for creating "object" boxes */
+    t_pd pd_canvasmaker;        /* factory for creating canvases */
+    double pd_systime;          /* global time in Pd ticks */
+    t_clock *pd_clock_setlist;  /* list of set clocks */
+    t_int *pd_dspchain;         /* DSP chain */
+    int pd_dspchainsize;        /* number of elements in DSP chain */
 } t_pdinstance;
 
 extern t_pdinstance *pd_this;
