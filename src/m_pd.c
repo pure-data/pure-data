@@ -299,6 +299,10 @@ void pd_init(void)
     fprintf(stderr, "pd init\n");
     if (!pd_this)
         pd_this = getbytes(sizeof(*pd_this));
+    pd_this->pd_systime = 0;
+    pd_this->pd_clock_setlist = 0;
+    pd_this->pd_dspchain = 0;
+    pd_this->pd_dspchainsize = 0;
     mess_init();
     obj_init();
     conf_init();
