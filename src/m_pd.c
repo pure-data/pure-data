@@ -296,7 +296,6 @@ t_pdinstance *pd_this;
 
 void pd_init(void)
 {
-    fprintf(stderr, "pd init\n");
     if (!pd_this)
         pd_this = getbytes(sizeof(*pd_this));
     pd_this->pd_systime = 0;
