@@ -56,7 +56,7 @@ struct _class
 
 #define SYMBOLHASHSIZE 1024
 
-typedef struct _pdinstance
+struct _pdinstance
 {
     t_symbol *pd_symhash[SYMBOLHASHSIZE];   /* symbol table */
     t_pd pd_objectmaker;        /* factory for creating "object" boxes */
@@ -65,7 +65,7 @@ typedef struct _pdinstance
     t_clock *pd_clock_setlist;  /* list of set clocks */
     t_int *pd_dspchain;         /* DSP chain */
     int pd_dspchainsize;        /* number of elements in DSP chain */
-} t_pdinstance;
+};
 
 extern t_pdinstance *pd_this;
 

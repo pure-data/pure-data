@@ -296,6 +296,8 @@ t_pdinstance *pd_this;
 
 void pd_init(void)
 {
+    fprintf(stderr, "pd_init %p %p\n",
+        &pd_this, pd_this );
     if (!pd_this)
         pd_this = getbytes(sizeof(*pd_this));
     pd_this->pd_systime = 0;
@@ -307,5 +309,21 @@ void pd_init(void)
     conf_init();
     glob_init();
     garray_init();
+}
+
+t_pdinstance *pdinstance_new(void)
+{
+    t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
+    return (x);
+}
+
+EXTERN void pd_setinstance(t_pdinstance *x)
+{
+    pd_this = x;
+}
+
+EXTERN void pdinstance_free(t_pdinstance *x)
+{
+    /* placeholder - try to free symtab, dsp chain, classes and canvases */
 }
 
