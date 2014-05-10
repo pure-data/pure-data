@@ -8,7 +8,6 @@ moment it also defines "text" but it may later be better to split this off. */
 #include "m_pd.h"
 #include "g_canvas.h"    /* just for glist_getfont, bother */
 #include "s_stuff.h"    /* just for sys_hostfontsize, phooey */
-#include "m_imp.h"
 #include <string.h>
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
@@ -1783,7 +1782,7 @@ static void text_template_init( void)
     
     glob_setfilename(0, gensym("_text_template"), gensym("."));
     binbuf_text(b, text_templatefile, strlen(text_templatefile));
-    binbuf_eval(b, &pd_this->pd_canvasmaker, 0, 0);
+    binbuf_eval(b, &pd_canvasmaker, 0, 0);
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
     
     glob_setfilename(0, &s_, &s_);

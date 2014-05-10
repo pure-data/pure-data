@@ -58,9 +58,6 @@ struct _class
 
 struct _pdinstance
 {
-    t_symbol *pd_symhash[SYMBOLHASHSIZE];   /* symbol table */
-    t_pd pd_objectmaker;        /* factory for creating "object" boxes */
-    t_pd pd_canvasmaker;        /* factory for creating canvases */
     double pd_systime;          /* global time in Pd ticks */
     t_clock *pd_clock_setlist;  /* list of set clocks */
     t_int *pd_dspchain;         /* DSP chain */

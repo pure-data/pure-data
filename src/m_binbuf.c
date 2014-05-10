@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 #include "m_pd.h"
-#include "m_imp.h"
 #include "s_stuff.h"
 #include <stdio.h>
 #include <errno.h>
@@ -609,7 +608,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
             that the pd_objectmaker target can't come up via a named
             destination in the message, only because the original "target"
             points there. */
-        if (target == &pd_this->pd_objectmaker)
+        if (target == &pd_objectmaker)
             maxnargs = ac;
         else
         {
@@ -702,7 +701,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
             case A_SEMI:
                     /* semis and commas in new message just get bashed to
                     a symbol.  This is needed so you can pass them to "expr." */
-                if (target == &pd_this->pd_objectmaker)
+                if (target == &pd_objectmaker)
                 {
                     SETSYMBOL(msp, gensym(";"));
                     break;
@@ -713,7 +712,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
                     goto gotmess;
                 }
             case A_COMMA:
-                if (target == &pd_this->pd_objectmaker)
+                if (target == &pd_objectmaker)
                 {
                     SETSYMBOL(msp, gensym(","));
                     break;
@@ -730,7 +729,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
                     SETFLOAT(msp, canvas_getdollarzero());
                 else
                 {
-                    if (target == &pd_this->pd_objectmaker)
+                    if (target == &pd_objectmaker)
                         SETFLOAT(msp, 0);
                     else
                     {
@@ -742,7 +741,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
                 break;
             case A_DOLLSYM:
                 s9 = binbuf_realizedollsym(at->a_w.w_symbol, argc, argv,
-                    target == &pd_this->pd_objectmaker);
+                    target == &pd_objectmaker);
                 if (!s9)
                 {
                     error("%s: argument number out of range", at->a_w.w_symbol->s_name);
@@ -1465,7 +1464,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
             /* save bindings of symbols #N, #A (and restore afterward) */
         t_pd *bounda = gensym("#A")->s_thing, *boundn = s__N.s_thing;
         gensym("#A")->s_thing = 0;
-        s__N.s_thing = &pd_this->pd_canvasmaker;
+        s__N.s_thing = &pd_canvasmaker;
         if (import)
         {
             t_binbuf *newb = binbuf_convert(b, 1);

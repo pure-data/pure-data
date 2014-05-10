@@ -25,6 +25,8 @@
 static t_symbol *class_loadsym;     /* name under which an extern is invoked */
 static void pd_defaultfloat(t_pd *x, t_float f);
 static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv);
+t_pd pd_objectmaker;    /* factory for creating "object" boxes */
+t_pd pd_canvasmaker;    /* factory for creating canvases */
 
 static t_symbol *class_extern_dir = &s_;
 
@@ -190,10 +192,10 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         *vp = va_arg(ap, t_atomtype);
     }
     va_end(ap);
-    if (pd_this->pd_objectmaker && newmethod)
+    if (pd_objectmaker && newmethod)
     {
             /* add a "new" method by the name specified by the object */
-        class_addmethod(pd_this->pd_objectmaker, (t_method)newmethod, s,
+        class_addmethod(pd_objectmaker, (t_method)newmethod, s,
             vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
         if (class_loadsym)
         {
@@ -203,7 +205,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             char *loadstring = class_loadsym->s_name,
                 l1 = strlen(s->s_name), l2 = strlen(loadstring);
             if (l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
-                class_addmethod(pd_this->pd_objectmaker, (t_method)newmethod,
+                class_addmethod(pd_objectmaker, (t_method)newmethod,
                     class_loadsym,
                     vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
         }
@@ -262,7 +264,7 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
         *vp = va_arg(ap, t_atomtype);
     } 
     va_end(ap);
-    class_addmethod(pd_this->pd_objectmaker, (t_method)newmethod, s,
+    class_addmethod(pd_objectmaker, (t_method)newmethod, s,
         vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
 }
 
@@ -285,8 +287,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
         c->c_floatsignalin = -1;
     }
         /* check for special cases.  "Pointer" is missing here so that
-        pd_this->pd_objectmaker's pointer method can be typechecked 
-        differently.  */
+        pd_objectmaker's pointer method can be typechecked differently.  */
     if (sel == &s_bang)
     {
         if (argtype) goto phooey;
@@ -321,7 +322,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
             char nbuf[80];
             snprintf(nbuf, 80, "%s_aliased", sel->s_name);
             c->c_methods[i].me_name = gensym(nbuf);
-            if (c == pd_this->pd_objectmaker)
+            if (c == pd_objectmaker)
                 post("warning: class '%s' overwritten; old one renamed '%s'",
                     sel->s_name, nbuf);
             else post("warning: old method '%s' for class '%s' renamed '%s'",
@@ -482,6 +483,10 @@ t_propertiesfn class_getpropertiesfn(t_class *c)
 
 /* ---------------- the symbol table ------------------------ */
 
+#define HASHSIZE 1024
+
+static t_symbol *symhash[HASHSIZE];
+
 t_symbol *dogensym(const char *s, t_symbol *oldsym)
 {
     t_symbol **sym1, *sym2;
@@ -494,7 +499,7 @@ t_symbol *dogensym(const char *s, t_symbol *oldsym)
         length++;
         s2++;
     }
-    sym1 = pd_this->pd_symhash + (hash & (SYMBOLHASHSIZE-1));
+    sym1 = symhash + (hash & (HASHSIZE-1));
     while (sym2 = *sym1)
     {
         if (!strcmp(sym2->s_name, s)) return(sym2);
@@ -603,13 +608,14 @@ void mess_init(void)
     t_symbol **sp;
     int i;
 
+    if (pd_objectmaker) return;    
     for (i = sizeof(symlist)/sizeof(*symlist), sp = symlist; i--; sp++)
         (void) dogensym((*sp)->s_name, *sp);
-    pd_this->pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, 
-        sizeof(t_pd), CLASS_DEFAULT, A_NULL);
-    pd_this->pd_canvasmaker = class_new(gensym("classmaker"), 0, 0, 
-        sizeof(t_pd), CLASS_DEFAULT, A_NULL);
-    class_addanything(pd_this->pd_objectmaker, (t_method)new_anything);
+    pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    pd_canvasmaker = class_new(gensym("classmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    class_addanything(pd_objectmaker, (t_method)new_anything);
 }
 
 t_pd *newest;
@@ -688,13 +694,13 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
         wp = m->me_arg;
         if (*wp == A_GIMME)
         {
-            if (x == &pd_this->pd_objectmaker)
+            if (x == &pd_objectmaker)
                 newest = (*((t_newgimme)(m->me_fun)))(s, argc, argv);
             else (*((t_messgimme)(m->me_fun)))(x, s, argc, argv);
             return;
         }
         if (argc > MAXPDARG) argc = MAXPDARG;
-        if (x != &pd_this->pd_objectmaker) *(ap++) = (t_int)x, narg++;
+        if (x != &pd_objectmaker) *(ap++) = (t_int)x, narg++;
         while (wanttype = *wp++)
         {
             switch (wanttype)
@@ -738,7 +744,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                             as zero here; cheat and bash it to the null
                             symbol.  Unfortunately, this lets real zeros
                             pass as symbols too, which seems wrong... */
-                    else if (x == &pd_this->pd_objectmaker && argv->a_type == A_FLOAT
+                    else if (x == &pd_objectmaker && argv->a_type == A_FLOAT
                         && argv->a_w.w_float == 0)
                         *ap = (t_int)(&s_);
                     else goto badarg;
@@ -770,7 +776,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                 ad[0], ad[1], ad[2], ad[3], ad[4]); break;
         default: bonzo = 0;
         }
-        if (x == &pd_this->pd_objectmaker)
+        if (x == &pd_objectmaker)
             newest = bonzo;
         return;
     }

@@ -92,7 +92,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     newest = 0;
     canvas_setcurrent((t_canvas *)gl);
     canvas_getargs(&argc, &argv);
-    binbuf_eval(b, &pd_this->pd_objectmaker, argc, argv);
+    binbuf_eval(b, &pd_objectmaker, argc, argv);
     if (binbuf_getnatom(b))
     {
         if (!newest)

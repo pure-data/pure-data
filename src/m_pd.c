@@ -296,14 +296,8 @@ t_pdinstance *pd_this;
 
 void pd_init(void)
 {
-    fprintf(stderr, "pd_init %p %p\n",
-        &pd_this, pd_this );
     if (!pd_this)
-        pd_this = getbytes(sizeof(*pd_this));
-    pd_this->pd_systime = 0;
-    pd_this->pd_clock_setlist = 0;
-    pd_this->pd_dspchain = 0;
-    pd_this->pd_dspchainsize = 0;
+        pd_this = pdinstance_new();
     mess_init();
     obj_init();
     conf_init();
@@ -314,6 +308,10 @@ void pd_init(void)
 t_pdinstance *pdinstance_new(void)
 {
     t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
+    x->pd_systime = 0;
+    x->pd_clock_setlist = 0;
+    x->pd_dspchain = 0;
+    x->pd_dspchainsize = 0;
     return (x);
 }
 

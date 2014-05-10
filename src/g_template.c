@@ -9,7 +9,6 @@
 #include "m_pd.h"
 #include "s_stuff.h"    /* for sys_hostfontsize */
 #include "g_canvas.h"
-#include "m_imp.h"
 
 /*
 This file contains text objects you would put in a canvas to define a
@@ -539,7 +538,7 @@ static void template_setup(void)
 {
     template_class = class_new(gensym("template"), 0, (t_method)template_free,
         sizeof(t_template), CLASS_PD, 0);
-    class_addmethod(pd_this->pd_canvasmaker, (t_method)template_usetemplate,
+    class_addmethod(pd_canvasmaker, (t_method)template_usetemplate,
         gensym("struct"), A_GIMME, 0);
         
 }

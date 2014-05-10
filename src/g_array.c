@@ -7,7 +7,6 @@
 #include <stdio.h>      /* for read/write to files */
 #include "m_pd.h"
 #include "g_canvas.h"
-#include "m_imp.h"
 #include <math.h>
 
 /* jsarlo { */
@@ -139,12 +138,12 @@ void garray_init( void)
     
     glob_setfilename(0, gensym("_float_template"), gensym("."));
     binbuf_text(b, garray_floattemplatefile, strlen(garray_floattemplatefile));
-    binbuf_eval(b, &pd_this->pd_canvasmaker, 0, 0);
+    binbuf_eval(b, &pd_canvasmaker, 0, 0);
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
     
     glob_setfilename(0, gensym("_float_array_template"), gensym("."));
     binbuf_text(b, garray_arraytemplatefile, strlen(garray_arraytemplatefile));
-    binbuf_eval(b, &pd_this->pd_canvasmaker, 0, 0);
+    binbuf_eval(b, &pd_canvasmaker, 0, 0);
     garray_arraytemplatecanvas = s__X.s_thing;
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
 

@@ -1471,8 +1471,8 @@ void g_canvas_setup(void)
             /* here is the real creator function, invoked in patch files
             by sending the "canvas" message to #N, which is bound
             to pd_camvasmaker. */
-    class_addmethod(pd_this->pd_canvasmaker, (t_method)canvas_new, 
-        gensym("canvas"), A_GIMME, 0);
+    class_addmethod(pd_canvasmaker, (t_method)canvas_new, gensym("canvas"),
+        A_GIMME, 0);
     class_addmethod(canvas_class, (t_method)canvas_restore,
         gensym("restore"), A_GIMME, 0);
     class_addmethod(canvas_class, (t_method)canvas_coords,

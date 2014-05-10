@@ -260,6 +260,8 @@ typedef void (*t_gotfn)(void *x, ...);
 #endif
 
 /* ---------------- pre-defined objects and symbols --------------*/
+EXTERN t_pd pd_objectmaker;     /* factory for creating "object" boxes */
+EXTERN t_pd pd_canvasmaker;     /* factory for creating canvases */
 EXTERN t_symbol s_pointer;
 EXTERN t_symbol s_float;
 EXTERN t_symbol s_symbol;

@@ -2396,7 +2396,7 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
         *boundn = s__N.s_thing;
     asym->s_thing = 0;
     s__X.s_thing = &x->gl_pd;
-    s__N.s_thing = &pd_this->pd_canvasmaker;
+    s__N.s_thing = &pd_canvasmaker;
 
     canvas_editmode(x, 1.);
     glist_noselect(x);
