@@ -74,7 +74,7 @@ int pd_extern_sched(char *flags)
                 for (; chan < chin; chan++)
                     for (j = 0; j < DEFDACBLKSIZE; j++)
                         *fp++ = 0;
-                sched_tick(pd_this->pd_systime+sys_time_per_dsp_tick);
+                sched_tick();
                 sys_pollgui();
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
                 pollwatchdog();
