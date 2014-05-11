@@ -759,6 +759,7 @@ EXTERN_STRUCT _pdinstance;
 EXTERN t_pdinstance *pdinstance_new(void);
 EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
+EXTERN t_canvas *pd_getcanvaslist(void);
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

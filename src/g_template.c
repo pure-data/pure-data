@@ -437,7 +437,7 @@ void template_conform(t_template *tfrom, t_template *tto)
     if (doit)
     {
         t_glist *gl;
-        for (gl = canvas_list; gl; gl = gl->gl_next)
+        for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
             template_conformglist(tfrom, tto, gl, conformaction);
     }
     freebytes(conformaction, sizeof(int) * nto);

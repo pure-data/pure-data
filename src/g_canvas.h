@@ -337,7 +337,6 @@ struct _parentwidgetbehavior
 EXTERN void canvas_setcursor(t_glist *x, unsigned int cursornum);
 
 extern t_canvas *canvas_whichfind;  /* last canvas we did a find in */ 
-extern t_canvas *canvas_list;       /* list of all root canvases */
 extern t_class *vinlet_class, *voutlet_class;
 extern int glist_valid;         /* incremented when pointers might be stale */
 

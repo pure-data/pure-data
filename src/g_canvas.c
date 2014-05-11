@@ -41,9 +41,7 @@ desktops because the borders have both window title area and menus. */
 
 extern t_pd *newest;
 t_class *canvas_class;
-int canvas_dspstate;                /* whether DSP is on or off */  
 t_canvas *canvas_whichfind;         /* last canvas we did a find in */ 
-t_canvas *canvas_list;              /* list of all root canvases */
 
 /* ------------------ forward function declarations --------------- */
 static void canvas_start_dsp(void);
@@ -74,18 +72,18 @@ void canvas_updatewindowlist( void)
     /* add a glist the list of "root" canvases (toplevels without parents.) */
 static void canvas_addtolist(t_canvas *x)
 {
-    x->gl_next = canvas_list;
-    canvas_list = x;
+    x->gl_next = pd_this->pd_canvaslist;
+    pd_this->pd_canvaslist = x;
 }
 
 static void canvas_takeofflist(t_canvas *x)
 {
         /* take it off the window list */
-    if (x == canvas_list) canvas_list = x->gl_next;
+    if (x == pd_this->pd_canvaslist) pd_this->pd_canvaslist = x->gl_next;
     else
     {
         t_canvas *z;
-        for (z = canvas_list; z->gl_next != x; z = z->gl_next)
+        for (z = pd_this->pd_canvaslist; z->gl_next != x; z = z->gl_next)
             ;
         z->gl_next = x->gl_next;
     }
@@ -1077,23 +1075,23 @@ static void canvas_dsp(t_canvas *x, t_signal **sp)
 static void canvas_start_dsp(void)
 {
     t_canvas *x;
-    if (canvas_dspstate) ugen_stop();
+    if (pd_this->pd_dspstate) ugen_stop();
     else sys_gui("pdtk_pd_dsp ON\n");
     ugen_start();
     
-    for (x = canvas_list; x; x = x->gl_next)
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_dodsp(x, 1, 0);
     
-    canvas_dspstate = 1;
+    pd_this->pd_dspstate = 1;
 }
 
 static void canvas_stop_dsp(void)
 {
-    if (canvas_dspstate)
+    if (pd_this->pd_dspstate)
     {
         ugen_stop();
         sys_gui("pdtk_pd_dsp OFF\n");
-        canvas_dspstate = 0;
+        pd_this->pd_dspstate = 0;
     }
 }
 
@@ -1104,7 +1102,7 @@ static void canvas_stop_dsp(void)
 
 int canvas_suspend_dsp(void)
 {
-    int rval = canvas_dspstate;
+    int rval = pd_this->pd_dspstate;
     if (rval) canvas_stop_dsp();
     return (rval);
 }
@@ -1117,7 +1115,7 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (canvas_dspstate) canvas_start_dsp();
+    if (pd_this->pd_dspstate) canvas_start_dsp();
 }
 
 /* the "dsp" message to pd starts and stops DSP somputation, and, if
@@ -1135,19 +1133,19 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
     if (argc)
     {
         newstate = atom_getintarg(0, argc, argv);
-        if (newstate && !canvas_dspstate)
+        if (newstate && !pd_this->pd_dspstate)
         {
             sys_set_audio_state(1);
             canvas_start_dsp();
         }
-        else if (!newstate && canvas_dspstate)
+        else if (!newstate && pd_this->pd_dspstate)
         {
             canvas_stop_dsp();
             if (!audio_shouldkeepopen())
                 sys_set_audio_state(0);
         }
     }
-    else post("dsp state %d", canvas_dspstate);
+    else post("dsp state %d", pd_this->pd_dspstate);
 }
 
 void *canvas_getblock(t_class *blockclass, t_canvas **canvasp)
@@ -1200,7 +1198,7 @@ void canvas_redrawallfortemplate(t_template *template, int action)
 {
     t_canvas *x;
         /* find all root canvases */
-    for (x = canvas_list; x; x = x->gl_next)
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
         glist_redrawall(x, action);
 }
 

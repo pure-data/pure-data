@@ -312,6 +312,8 @@ t_pdinstance *pdinstance_new(void)
     x->pd_clock_setlist = 0;
     x->pd_dspchain = 0;
     x->pd_dspchainsize = 0;
+    x->pd_canvaslist = 0;
+    x->pd_dspstate = 0;
     return (x);
 }
 
@@ -323,5 +325,11 @@ EXTERN void pd_setinstance(t_pdinstance *x)
 EXTERN void pdinstance_free(t_pdinstance *x)
 {
     /* placeholder - try to free symtab, dsp chain, classes and canvases */
+}
+
+
+EXTERN t_canvas *pd_getcanvaslist(void)
+{
+    return (pd_this->pd_canvaslist);
 }
 

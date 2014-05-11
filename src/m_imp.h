@@ -62,6 +62,8 @@ struct _pdinstance
     t_clock *pd_clock_setlist;  /* list of set clocks */
     t_int *pd_dspchain;         /* DSP chain */
     int pd_dspchainsize;        /* number of elements in DSP chain */
+    t_canvas *pd_canvaslist;    /* list of all root canvases */
+    int pd_dspstate;            /* whether DSP is on or off */  
 };
 
 extern t_pdinstance *pd_this;
