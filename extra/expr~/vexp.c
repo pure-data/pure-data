@@ -265,6 +265,14 @@ expr_donew(struct expr *expr, int ac, t_atom *av)
                   (struct ex_ex *)fts_malloc(max_node * sizeof (struct ex_ex));
                 expr->exp_nexpr++;
                 ret = ex_match(list, (long)0);
+                if (expr->exp_nexpr > MAX_VARS) 
+                    /* we cannot exceed MAX_VARS '$' variables */
+                {
+                        post_error((fts_object_t *) expr, 
+                            "expr: too many variables (maximum %d allowed)",
+                                MAX_VARS);
+                        goto error;   
+                } 
                 if (!ret)               /* syntax error */
                         goto error;
                 ret = ex_parse(expr,
