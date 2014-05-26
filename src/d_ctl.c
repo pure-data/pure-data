@@ -79,7 +79,8 @@ static void sig_tilde_setup(void)
     sig_tilde_class = class_new(gensym("sig~"), (t_newmethod)sig_tilde_new, 0,
         sizeof(t_sig), 0, A_DEFFLOAT, 0);
     class_addfloat(sig_tilde_class, (t_method)sig_tilde_float);
-    class_addmethod(sig_tilde_class, (t_method)sig_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(sig_tilde_class, (t_method)sig_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* -------------------------- line~ ------------------------------ */
@@ -220,7 +221,7 @@ static void line_tilde_setup(void)
         sizeof(t_line), 0, 0);
     class_addfloat(line_tilde_class, (t_method)line_tilde_float);
     class_addmethod(line_tilde_class, (t_method)line_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(line_tilde_class, (t_method)line_tilde_stop,
         gensym("stop"), 0);
 }
@@ -415,7 +416,7 @@ static void vline_tilde_setup(void)
         (t_method)vline_tilde_stop, sizeof(t_vline), 0, 0);
     class_addfloat(vline_tilde_class, (t_method)vline_tilde_float);
     class_addmethod(vline_tilde_class, (t_method)vline_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(vline_tilde_class, (t_method)vline_tilde_stop,
         gensym("stop"), 0);
 }
@@ -469,7 +470,7 @@ static void snapshot_tilde_setup(void)
         sizeof(t_snapshot), 0, 0);
     CLASS_MAINSIGNALIN(snapshot_tilde_class, t_snapshot, x_f);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(snapshot_tilde_class, (t_method)snapshot_tilde_set,
         gensym("set"), A_DEFFLOAT, 0);
     class_addbang(snapshot_tilde_class, snapshot_tilde_bang);
@@ -556,7 +557,8 @@ static void vsnapshot_tilde_setup(void)
         vsnapshot_tilde_new, (t_method)vsnapshot_tilde_ff,
         sizeof(t_vsnapshot), 0, 0);
     CLASS_MAINSIGNALIN(vsnapshot_tilde_class, t_vsnapshot, x_f);
-    class_addmethod(vsnapshot_tilde_class, (t_method)vsnapshot_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(vsnapshot_tilde_class, (t_method)vsnapshot_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addbang(vsnapshot_tilde_class, vsnapshot_tilde_bang);
 }
 
@@ -694,7 +696,8 @@ void env_tilde_setup(void )
     env_tilde_class = class_new(gensym("env~"), (t_newmethod)env_tilde_new,
         (t_method)env_tilde_ff, sizeof(t_sigenv), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(env_tilde_class, t_sigenv, x_f);
-    class_addmethod(env_tilde_class, (t_method)env_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(env_tilde_class, (t_method)env_tilde_dsp,
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* --------------------- threshold~ ----------------------------- */
@@ -829,7 +832,7 @@ static void threshold_tilde_setup( void)
     class_addmethod(threshold_tilde_class, (t_method)threshold_tilde_ft1,
         gensym("ft1"), A_FLOAT, 0);
     class_addmethod(threshold_tilde_class, (t_method)threshold_tilde_dsp,
-        gensym("dsp"), 0);
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* ------------------------ global setup routine ------------------------- */

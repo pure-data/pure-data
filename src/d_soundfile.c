@@ -2150,7 +2150,8 @@ static void readsf_setup(void)
     class_addfloat(readsf_class, (t_method)readsf_float);
     class_addmethod(readsf_class, (t_method)readsf_start, gensym("start"), 0);
     class_addmethod(readsf_class, (t_method)readsf_stop, gensym("stop"), 0);
-    class_addmethod(readsf_class, (t_method)readsf_dsp, gensym("dsp"), 0);
+    class_addmethod(readsf_class, (t_method)readsf_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(readsf_class, (t_method)readsf_open, gensym("open"), 
         A_GIMME, 0);
     class_addmethod(readsf_class, (t_method)readsf_print, gensym("print"), 0);
@@ -2632,7 +2633,8 @@ static void writesf_setup(void)
         (t_method)writesf_free, sizeof(t_writesf), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(writesf_class, (t_method)writesf_start, gensym("start"), 0);
     class_addmethod(writesf_class, (t_method)writesf_stop, gensym("stop"), 0);
-    class_addmethod(writesf_class, (t_method)writesf_dsp, gensym("dsp"), 0);
+    class_addmethod(writesf_class, (t_method)writesf_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(writesf_class, (t_method)writesf_open, gensym("open"), 
         A_GIMME, 0);
     class_addmethod(writesf_class, (t_method)writesf_print, gensym("print"), 0);

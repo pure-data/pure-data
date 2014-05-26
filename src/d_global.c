@@ -66,7 +66,8 @@ static void sigsend_setup(void)
         (t_method)sigsend_free, sizeof(t_sigsend), 0, A_DEFSYM, 0);
     class_addcreator((t_newmethod)sigsend_new, gensym("s~"), A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(sigsend_class, t_sigsend, x_f);
-    class_addmethod(sigsend_class, (t_method)sigsend_dsp, gensym("dsp"), 0);
+    class_addmethod(sigsend_class, (t_method)sigsend_dsp,
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* ----------------------------- receive~ ----------------------------- */
@@ -181,8 +182,8 @@ static void sigreceive_setup(void)
     class_addcreator((t_newmethod)sigreceive_new, gensym("r~"), A_DEFSYM, 0);
     class_addmethod(sigreceive_class, (t_method)sigreceive_set, gensym("set"),
         A_SYMBOL, 0);
-    class_addmethod(sigreceive_class, (t_method)sigreceive_dsp, gensym("dsp"),
-        0);
+    class_addmethod(sigreceive_class, (t_method)sigreceive_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigreceive_class, gensym("send~"));
 }
 
@@ -257,7 +258,8 @@ static void sigcatch_setup(void)
 {
     sigcatch_class = class_new(gensym("catch~"), (t_newmethod)sigcatch_new,
         (t_method)sigcatch_free, sizeof(t_sigcatch), CLASS_NOINLET, A_DEFSYM, 0);
-    class_addmethod(sigcatch_class, (t_method)sigcatch_dsp, gensym("dsp"), 0);
+    class_addmethod(sigcatch_class, (t_method)sigcatch_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigcatch_class, gensym("throw~"));
 }
 
@@ -343,7 +345,8 @@ static void sigthrow_setup(void)
     class_addmethod(sigthrow_class, (t_method)sigthrow_set, gensym("set"),
         A_SYMBOL, 0);
     CLASS_MAINSIGNALIN(sigthrow_class, t_sigthrow, x_f);
-    class_addmethod(sigthrow_class, (t_method)sigthrow_dsp, gensym("dsp"), 0);
+    class_addmethod(sigthrow_class, (t_method)sigthrow_dsp,
+        gensym("dsp"), A_CANT, 0);
 }
 
 /* ----------------------- global setup routine ---------------- */

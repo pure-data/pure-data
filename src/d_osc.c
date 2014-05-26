@@ -116,7 +116,8 @@ static void phasor_setup(void)
     phasor_class = class_new(gensym("phasor~"), (t_newmethod)phasor_new, 0,
         sizeof(t_phasor), 0, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(phasor_class, t_phasor, x_f);
-    class_addmethod(phasor_class, (t_method)phasor_dsp, gensym("dsp"), 0);
+    class_addmethod(phasor_class, (t_method)phasor_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(phasor_class, (t_method)phasor_ft1,
         gensym("ft1"), A_FLOAT, 0);
 }
@@ -223,7 +224,7 @@ static void cos_setup(void)
     cos_class = class_new(gensym("cos~"), (t_newmethod)cos_new, 0,
         sizeof(t_cos), 0, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(cos_class, t_cos, x_f);
-    class_addmethod(cos_class, (t_method)cos_dsp, gensym("dsp"), 0);
+    class_addmethod(cos_class, (t_method)cos_dsp, gensym("dsp"), A_CANT, 0);
     cos_maketable();
 }
 
@@ -323,7 +324,7 @@ static void osc_setup(void)
     osc_class = class_new(gensym("osc~"), (t_newmethod)osc_new, 0,
         sizeof(t_osc), 0, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(osc_class, t_osc, x_f);
-    class_addmethod(osc_class, (t_method)osc_dsp, gensym("dsp"), 0);
+    class_addmethod(osc_class, (t_method)osc_dsp, gensym("dsp"), A_CANT, 0);
     class_addmethod(osc_class, (t_method)osc_ft1, gensym("ft1"), A_FLOAT, 0);
 
     cos_maketable();
@@ -447,7 +448,8 @@ void sigvcf_setup(void)
     sigvcf_class = class_new(gensym("vcf~"), (t_newmethod)sigvcf_new, 0,
         sizeof(t_sigvcf), 0, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(sigvcf_class, t_sigvcf, x_f);
-    class_addmethod(sigvcf_class, (t_method)sigvcf_dsp, gensym("dsp"), 0);
+    class_addmethod(sigvcf_class, (t_method)sigvcf_dsp,
+        gensym("dsp"), A_CANT, 0);
     class_addmethod(sigvcf_class, (t_method)sigvcf_ft1,
         gensym("ft1"), A_FLOAT, 0);
 }
@@ -495,7 +497,7 @@ static void noise_setup(void)
 {
     noise_class = class_new(gensym("noise~"), (t_newmethod)noise_new, 0,
         sizeof(t_noise), 0, 0);
-    class_addmethod(noise_class, (t_method)noise_dsp, gensym("dsp"), 0);
+    class_addmethod(noise_class, (t_method)noise_dsp, gensym("dsp"), A_CANT, 0);
 }
 
 
