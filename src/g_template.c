@@ -963,7 +963,7 @@ typedef struct _curve
     t_canvas *x_canvas;
 } t_curve;
 
-static void *curve_new(t_symbol *classsym, t_int argc, t_atom *argv)
+static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_curve *x = (t_curve *)pd_new(curve_class);
     char *classname = classsym->s_name;
@@ -1341,7 +1341,7 @@ typedef struct _plot
     t_fielddesc x_scalarvis;    /* true if drawing the scalar at each point */
 } t_plot;
 
-static void *plot_new(t_symbol *classsym, t_int argc, t_atom *argv)
+static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_plot *x = (t_plot *)pd_new(plot_class);
     int defstyle = PLOTSTYLE_POLY;
@@ -2339,7 +2339,7 @@ typedef struct _drawnumber
     t_canvas *x_canvas;
 } t_drawnumber;
 
-static void *drawnumber_new(t_symbol *classsym, t_int argc, t_atom *argv)
+static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_drawnumber *x = (t_drawnumber *)pd_new(drawnumber_class);
     char *classname = classsym->s_name;

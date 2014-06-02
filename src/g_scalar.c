@@ -131,7 +131,7 @@ t_scalar *scalar_new(t_glist *owner, t_symbol *templatesym)
     it from the message arguments. */
 
 void glist_scalar(t_glist *glist,
-    t_symbol *classname, t_int argc, t_atom *argv)
+    t_symbol *classname, int argc, t_atom *argv)
 {
     t_symbol *templatesym =
         canvas_makebindsym(atom_getsymbolarg(0, argc, argv));
