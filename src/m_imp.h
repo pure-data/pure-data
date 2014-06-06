@@ -54,8 +54,6 @@ struct _class
     char c_drawcommand;             /* a drawing command for a template */
 };
 
-#define SYMBOLHASHSIZE 1024
-
 struct _pdinstance
 {
     double pd_systime;          /* global time in Pd ticks */

@@ -622,8 +622,8 @@ typedef struct _resample
 {
   int method;       /* up/downsampling method ID */
 
-  t_int downsample; /* downsampling factor */
-  t_int upsample;   /* upsampling factor */
+  int downsample; /* downsampling factor */
+  int upsample;   /* upsampling factor */
 
   t_sample *s_vec;   /* here we hold the resampled data */
   int      s_n;

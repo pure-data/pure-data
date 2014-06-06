@@ -311,7 +311,7 @@ IEM_VU_OFFSET	g_all_guis.h	65;"	d
 IEM_VU_STEPS	g_all_guis.h	61;"	d
 IMAG	d_fftroutine.c	113;"	d	file:
 INBUFSIZE	s_inter.c	82;"	d	file:
-INITVSTAKEN	d_ctl.c	567;"	d	file:
+INITVSTAKEN	d_ctl.c	569;"	d	file:
 INPUT_BUFFER_SIZE	s_midi_mmio.c	116;"	d	file:
 INT32_MAX	s_audio_alsa.h	20;"	d
 INT32_MAX	s_audio_alsamm.c	50;"	d	file:
@@ -368,7 +368,7 @@ MAXMIDIOUTDEV	s_stuff.h	108;"	d
 MAXNDEV	s_audio.c	29;"	d	file:
 MAXNDEV	s_midi.c	575;"	d	file:
 MAXOBJDEPTH	m_class.c	536;"	d	file:
-MAXOVERLAP	d_ctl.c	566;"	d	file:
+MAXOVERLAP	d_ctl.c	568;"	d	file:
 MAXPDARG	m_pd.h	79;"	d
 MAXPDSTRING	m_pd.h	78;"	d
 MAXRESYNC	s_audio_mmio.c	307;"	d	file:
@@ -497,9 +497,9 @@ PD_TEST_VERSION	m_pd.h	14;"	d
 PD_USE_TE_XPIX	m_pd.h	718;"	d
 PHASE	d_fftroutine.c	116;"	d	file:
 PI	d_fftroutine.c	108;"	d	file:
-PLOTSTYLE_BEZ	g_canvas.h	346;"	d
-PLOTSTYLE_POINTS	g_canvas.h	344;"	d
-PLOTSTYLE_POLY	g_canvas.h	345;"	d
+PLOTSTYLE_BEZ	g_canvas.h	345;"	d
+PLOTSTYLE_POINTS	g_canvas.h	343;"	d
+PLOTSTYLE_POLY	g_canvas.h	344;"	d
 PNTR_SIZE	d_fftroutine.c	106;"	d	file:
 POLAR	d_fftroutine.c	117;"	d	file:
 PROLOGCALL	d_ugen.c	231;"	d	file:
@@ -520,10 +520,10 @@ RESYNC	s_audio_mmio.c	466;"	d	file:
 RIGHTCLICK	g_editor.c	1212;"	d	file:
 RMARGIN	g_rtext.c	20;"	d	file:
 RME_DEFAULTCH	s_audio_oss.c	42;"	d	file:
-RTEXT_DBL	g_canvas.h	426;"	d
-RTEXT_DOWN	g_canvas.h	424;"	d
-RTEXT_DRAG	g_canvas.h	425;"	d
-RTEXT_SHIFT	g_canvas.h	427;"	d
+RTEXT_DBL	g_canvas.h	425;"	d
+RTEXT_DOWN	g_canvas.h	423;"	d
+RTEXT_DRAG	g_canvas.h	424;"	d
+RTEXT_SHIFT	g_canvas.h	426;"	d
 SAMPBLK	d_delay.c	36;"	d	file:
 SAMPBUFSIZE	d_soundfile.c	1145;"	d	file:
 SAMPLE	d_fftroutine.c	101;"	d	file:
@@ -563,7 +563,6 @@ STARTUPNAME	s_path.c	536;"	d	file:
 STATE_IDLE	d_soundfile.c	1532;"	d	file:
 STATE_STARTUP	d_soundfile.c	1533;"	d	file:
 STATE_STREAM	d_soundfile.c	1534;"	d	file:
-SYMBOLHASHSIZE	m_imp.h	57;"	d
 SYS_BYTESPERCHAN	s_audio.c	26;"	d	file:
 SYS_DEFAULTCH	s_audio.c	23;"	d	file:
 SYS_QUIT_QUIT	m_sched.c	24;"	d	file:
@@ -604,9 +603,9 @@ UCS4	s_utf8.h	7;"	d
 UCUT_CLEAR	g_editor.c	472;"	d	file:
 UCUT_CUT	g_editor.c	471;"	d	file:
 UCUT_TEXT	g_editor.c	473;"	d	file:
-UNDO_FREE	g_canvas.h	498;"	d
-UNDO_REDO	g_canvas.h	500;"	d
-UNDO_UNDO	g_canvas.h	499;"	d
+UNDO_FREE	g_canvas.h	497;"	d
+UNDO_REDO	g_canvas.h	499;"	d
+UNDO_UNDO	g_canvas.h	498;"	d
 UNITBIT32	d_array.c	501;"	d	file:
 UNITBIT32	d_osc.c	11;"	d	file:
 UPBUFSIZE	g_rtext.c	181;"	d	file:
@@ -644,7 +643,7 @@ XTRASAMPS	d_delay.c	35;"	d	file:
 YTOLERANCE	g_editor.c	2557;"	d	file:
 _RINGBUFFER_H	s_audio_paring.h	2;"	d
 __m_imp_h_	m_imp.h	95;"	d
-__m_pd_h_	m_pd.h	767;"	d
+__m_pd_h_	m_pd.h	768;"	d
 _abs_tilde	d_math.c	/^typedef struct _abs_tilde$/;"	s	file:
 _adc	d_dac.c	/^typedef struct _adc$/;"	s	file:
 _aiff	d_soundfile.c	/^typedef struct _aiff$/;"	s	file:
@@ -1491,7 +1490,6 @@ canvas_dosetbounds	g_canvas.c	/^static void canvas_dosetbounds(t_canvas *x, int 
 canvas_drawlines	g_canvas.c	/^static void canvas_drawlines(t_canvas *x)$/;"	f	file:
 canvas_drawredrect	g_canvas.c	/^void canvas_drawredrect(t_canvas *x, int doit)$/;"	f
 canvas_dsp	g_canvas.c	/^static void canvas_dsp(t_canvas *x, t_signal **sp)$/;"	f	file:
-canvas_dspstate	g_canvas.c	/^int canvas_dspstate;                \/* whether DSP is on or off *\/  $/;"	v
 canvas_dspstate	m_pd.h	/^EXTERN int canvas_dspstate;$/;"	v
 canvas_duplicate	g_editor.c	/^static void canvas_duplicate(t_canvas *x)$/;"	f	file:
 canvas_editmode	g_editor.c	/^void canvas_editmode(t_canvas *x, t_floatarg state)$/;"	f
@@ -1532,7 +1530,6 @@ canvas_key	g_editor.c	/^void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom
 canvas_last_glist	g_editor.c	/^static t_glist *canvas_last_glist;$/;"	v	file:
 canvas_last_glist_x	g_editor.c	/^static int canvas_last_glist_x, canvas_last_glist_y;$/;"	v	file:
 canvas_last_glist_y	g_editor.c	/^static int canvas_last_glist_x, canvas_last_glist_y;$/;"	v	file:
-canvas_list	g_canvas.c	/^t_canvas *canvas_list;              \/* list of all root canvases *\/$/;"	v
 canvas_loadbang	g_canvas.c	/^void canvas_loadbang(t_canvas *x)$/;"	f
 canvas_loadbangabstractions	g_canvas.c	/^static void canvas_loadbangabstractions(t_canvas *x)$/;"	f	file:
 canvas_loadbangsubpatches	g_canvas.c	/^void canvas_loadbangsubpatches(t_canvas *x)$/;"	f
@@ -1839,7 +1836,7 @@ curve_motion_xper	g_template.c	/^static t_float curve_motion_xper;$/;"	v	file:
 curve_motion_ybase	g_template.c	/^static t_float curve_motion_ybase;$/;"	v	file:
 curve_motion_ycumulative	g_template.c	/^static t_float curve_motion_ycumulative;$/;"	v	file:
 curve_motion_yper	g_template.c	/^static t_float curve_motion_yper;$/;"	v	file:
-curve_new	g_template.c	/^static void *curve_new(t_symbol *classsym, t_int argc, t_atom *argv)$/;"	f	file:
+curve_new	g_template.c	/^static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)$/;"	f	file:
 curve_select	g_template.c	/^static void curve_select(t_gobj *z, t_glist *glist,$/;"	f	file:
 curve_setup	g_template.c	/^static void curve_setup(void)$/;"	f	file:
 curve_vis	g_template.c	/^static void curve_vis(t_gobj *z, t_glist *glist, $/;"	f	file:
@@ -1943,7 +1940,7 @@ dogensym	m_class.c	/^t_symbol *dogensym(const char *s, t_symbol *oldsym)$/;"	f
 dologpost	s_print.c	/^static void dologpost(const void *object, const int level, const char *s)$/;"	f	file:
 dopoll	u_pdreceive.c	/^static void dopoll(void)$/;"	f	file:
 dopost	s_print.c	/^static void dopost(const char *s)$/;"	f	file:
-downsample	m_pd.h	/^  t_int downsample; \/* downsampling factor *\/$/;"	m	struct:_resample
+downsample	m_pd.h	/^  int downsample; \/* downsampling factor *\/$/;"	m	struct:_resample
 downsampling_perform_0	d_resample.c	/^t_int *downsampling_perform_0(t_int *w)$/;"	f
 drawnumber_activate	g_template.c	/^static void drawnumber_activate(t_gobj *z, t_glist *glist,$/;"	f	file:
 drawnumber_class	g_template.c	/^t_class *drawnumber_class;$/;"	v
@@ -1965,7 +1962,7 @@ drawnumber_motion_template	g_template.c	/^static t_template *drawnumber_motion_t
 drawnumber_motion_type	g_template.c	/^static int drawnumber_motion_type;$/;"	v	file:
 drawnumber_motion_wp	g_template.c	/^static t_word *drawnumber_motion_wp;$/;"	v	file:
 drawnumber_motion_ycumulative	g_template.c	/^static t_float drawnumber_motion_ycumulative;$/;"	v	file:
-drawnumber_new	g_template.c	/^static void *drawnumber_new(t_symbol *classsym, t_int argc, t_atom *argv)$/;"	f	file:
+drawnumber_new	g_template.c	/^static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)$/;"	f	file:
 drawnumber_select	g_template.c	/^static void drawnumber_select(t_gobj *z, t_glist *glist,$/;"	f	file:
 drawnumber_setup	g_template.c	/^static void drawnumber_setup(void)$/;"	f	file:
 drawnumber_vis	g_template.c	/^static void drawnumber_vis(t_gobj *z, t_glist *glist, $/;"	f	file:
@@ -3383,6 +3380,7 @@ paste_canvas	g_editor.c	/^static t_canvas *paste_canvas;$/;"	v	file:
 paste_onset	g_editor.c	/^static int paste_onset;$/;"	v	file:
 pd_bang	m_pd.c	/^void pd_bang(t_pd *x)$/;"	f
 pd_bind	m_pd.c	/^void pd_bind(t_pd *x, t_symbol *s)$/;"	f
+pd_canvaslist	m_imp.h	/^    t_canvas *pd_canvaslist;    \/* list of all root canvases *\/$/;"	m	struct:_pdinstance
 pd_canvasmaker	m_class.c	/^t_pd pd_canvasmaker;    \/* factory for creating canvases *\/$/;"	v
 pd_canvasmaker	m_pd.h	/^EXTERN t_pd pd_canvasmaker;     \/* factory for creating canvases *\/$/;"	v
 pd_checkglist	g_canvas.c	/^t_glist *pd_checkglist(t_pd *x)$/;"	f
@@ -3401,6 +3399,7 @@ pd_defaultsymbol	m_class.c	/^static void pd_defaultsymbol(t_pd *x, t_symbol *s)$
 pd_doloadbang	m_pd.c	/^void pd_doloadbang(void)$/;"	f
 pd_dspchain	m_imp.h	/^    t_int *pd_dspchain;         \/* DSP chain *\/$/;"	m	struct:_pdinstance
 pd_dspchainsize	m_imp.h	/^    int pd_dspchainsize;        \/* number of elements in DSP chain *\/$/;"	m	struct:_pdinstance
+pd_dspstate	m_imp.h	/^    int pd_dspstate;            \/* whether DSP is on or off *\/  $/;"	m	struct:_pdinstance
 pd_emptylist	m_class.c	/^void pd_emptylist(t_pd *x)$/;"	f
 pd_error	s_print.c	/^void pd_error(void *object, const char *fmt, ...)$/;"	f
 pd_fft	d_fftroutine.c	/^void pd_fft(t_float *buf, int npoints, int inverse)$/;"	f
@@ -3409,6 +3408,7 @@ pd_float	m_pd.c	/^void pd_float(t_pd *x, t_float f)$/;"	f
 pd_floatforsignal	m_class.c	/^static void pd_floatforsignal(t_pd *x, t_float f)$/;"	f	file:
 pd_forwardmess	m_class.c	/^void pd_forwardmess(t_pd *x, int argc, t_atom *argv)$/;"	f
 pd_free	m_pd.c	/^void pd_free(t_pd *x)$/;"	f
+pd_getcanvaslist	m_pd.c	/^EXTERN t_canvas *pd_getcanvaslist(void)$/;"	f
 pd_getparentwidget	m_class.c	/^t_parentwidgetbehavior *pd_getparentwidget(t_pd *x)$/;"	f
 pd_init	m_pd.c	/^void pd_init(void)$/;"	f
 pd_jack_error_callback	s_audio_jack.c	/^static void pd_jack_error_callback(const char *desc) {$/;"	f	file:
@@ -3483,7 +3483,7 @@ plot_click	g_template.c	/^static int plot_click(t_gobj *z, t_glist *glist, $/;"	
 plot_displace	g_template.c	/^static void plot_displace(t_gobj *z, t_glist *glist,$/;"	f	file:
 plot_float	g_template.c	/^void plot_float(t_plot *x, t_floatarg f)$/;"	f
 plot_getrect	g_template.c	/^static void plot_getrect(t_gobj *z, t_glist *glist,$/;"	f	file:
-plot_new	g_template.c	/^static void *plot_new(t_symbol *classsym, t_int argc, t_atom *argv)$/;"	f	file:
+plot_new	g_template.c	/^static void *plot_new(t_symbol *classsym, int argc, t_atom *argv)$/;"	f	file:
 plot_readownertemplate	g_template.c	/^static int plot_readownertemplate(t_plot *x,$/;"	f	file:
 plot_select	g_template.c	/^static void plot_select(t_gobj *z, t_glist *glist,$/;"	f	file:
 plot_setup	g_template.c	/^static void plot_setup(void)$/;"	f	file:
@@ -3812,7 +3812,7 @@ sched_referencelogicaltime	m_sched.c	/^static double sched_referencerealtime, sc
 sched_referencerealtime	m_sched.c	/^static double sched_referencerealtime, sched_referencelogicaltime;$/;"	v	file:
 sched_reopenmeplease	m_sched.c	/^void sched_reopenmeplease(void)   \/* request from s_audio for deferred reopen *\/$/;"	f
 sched_set_using_audio	m_sched.c	/^void sched_set_using_audio(int flag)$/;"	f
-sched_tick	m_sched.c	/^void sched_tick(double next_sys_time)$/;"	f
+sched_tick	m_sched.c	/^void sched_tick( void)$/;"	f
 sched_useaudio	m_sched.c	/^static int sched_useaudio = SCHED_AUDIO_NONE;$/;"	v	file:
 sel1_class	x_connective.c	/^static t_class *sel1_class;$/;"	v	file:
 sel1_float	x_connective.c	/^static void sel1_float(t_sel1 *x, t_float f)$/;"	f	file:
@@ -4519,7 +4519,7 @@ t_delwritectl	d_delay.c	/^} t_delwritectl;$/;"	t	typeref:struct:delwritectl	file
 t_displacefn	g_canvas.h	/^typedef void (*t_displacefn)(t_gobj *x, struct _glist *glist, int dx, int dy);$/;"	t
 t_drawnumber	g_template.c	/^} t_drawnumber;$/;"	t	typeref:struct:_drawnumber	file:
 t_dspcontext	d_ugen.c	548;"	d	file:
-t_dspcontext	g_canvas.c	1023;"	d	file:
+t_dspcontext	g_canvas.c	1021;"	d	file:
 t_editor	g_canvas.h	/^} t_editor;$/;"	t	typeref:struct:_editor
 t_elem	g_traversal.c	/^} t_elem;$/;"	t	typeref:struct:_elem	file:
 t_exp_tilde	d_math.c	/^} t_exp_tilde;$/;"	t	typeref:struct:_exp_tilde	file:
@@ -4820,7 +4820,7 @@ t_wave	d_soundfile.c	/^} t_wave;$/;"	t	typeref:struct:_wave	file:
 t_wavechunk	d_soundfile.c	/^} t_wavechunk;$/;"	t	typeref:struct:_wavechunk	file:
 t_widgetbehavior	m_pd.h	454;"	d
 t_word	m_pd.h	/^} t_word;$/;"	t	typeref:union:word
-t_writesf	d_soundfile.c	2163;"	d	file:
+t_writesf	d_soundfile.c	2164;"	d	file:
 t_xxx	s_loader.c	/^typedef void (*t_xxx)(void);$/;"	t	file:
 tabcount	x_array.c	/^static int tabcount = 0;$/;"	v	file:
 tabfudge	d_array.c	/^union tabfudge$/;"	u	file:
@@ -5201,7 +5201,7 @@ until_setup	x_connective.c	/^static void until_setup(void)$/;"	f	file:
 upd_array	g_canvas.h	/^    unsigned int upd_array:1;       \/* true if array, false if glist *\/$/;"	m	struct:_updateheader
 upd_next	g_canvas.h	/^    struct _updateheader *upd_next;$/;"	m	struct:_updateheader	typeref:struct:_updateheader::_updateheader
 upd_queued	g_canvas.h	/^    unsigned int upd_queued:1;      \/* true if we're queued *\/$/;"	m	struct:_updateheader
-upsample	m_pd.h	/^  t_int upsample;   \/* upsampling factor *\/$/;"	m	struct:_resample
+upsample	m_pd.h	/^  int upsample;   \/* upsampling factor *\/$/;"	m	struct:_resample
 upsampling_perform_0	d_resample.c	/^t_int *upsampling_perform_0(t_int *w)$/;"	f
 upsampling_perform_hold	d_resample.c	/^t_int *upsampling_perform_hold(t_int *w)$/;"	f
 upsampling_perform_linear	d_resample.c	/^t_int *upsampling_perform_linear(t_int *w)$/;"	f
