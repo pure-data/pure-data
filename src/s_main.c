@@ -380,7 +380,7 @@ static char *(usagemessage[]) = {
 "-nomidiout       -- suppress MIDI output\n",
 "-nomidi          -- suppress MIDI input and output\n",
 #ifdef USEAPI_OSS
-"-ossmidi         -- use OSS audio API\n",
+"-ossmidi         -- use OSS midi API\n",
 #endif
 #ifdef USEAPI_ALSA
 "-alsamidi        -- use ALSA midi API\n",
@@ -850,7 +850,7 @@ int sys_argparse(int argc, char **argv)
         {
             sys_printtostderr = 0;
             argc--; argv++;
-	}
+        }
         else if (!strcmp(*argv, "-stderr"))
         {
             sys_printtostderr = 1;
