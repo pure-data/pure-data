@@ -1217,11 +1217,12 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
     int n, i, onset, nfield, wait, eatsemi = 1;
     t_atom *vec, *outvec, *ap;
     if (!b)
-       return;
+        goto nosequence;
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
     if (x->x_onset >= n)
     {
+    nosequence:
         x->x_onset = 0x7fffffff;
         x->x_loop = x->x_auto = 0;
         outlet_bang(x->x_endout);
