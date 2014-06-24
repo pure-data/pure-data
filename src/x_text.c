@@ -1243,8 +1243,6 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                     ;
             x->x_eaten = 1;
             eatsemi = 0;
-            post("got %d items; this one %f, waitargc %d i %d, n %d",
-                i-onset, vec[onset].a_w.w_float, x->x_waitargc, i, n);
         }
         else
         {
