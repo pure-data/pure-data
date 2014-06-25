@@ -1042,8 +1042,9 @@ void garray_properties(t_garray *x);
     /* tell GUI to create a properties dialog on the canvas.  We tell
     the user the negative of the "pixel" y scale to make it appear to grow
     naturally upward, whereas pixels grow downward. */
-void canvas_properties(t_glist *x)
+void canvas_properties(t_gobj*z, t_glist*unused)
 {
+    t_glist *x = (t_glist*)z;
     t_gobj *y;
     char graphbuf[200];
     if (glist_isgraph(x) != 0)
@@ -1200,7 +1201,7 @@ static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float 
         }
     }
     if (which == 0)
-        canvas_properties(x);
+        canvas_properties(&x->gl_gobj, 0);
     else if (which == 2)
         open_via_helppath("intro.pd", canvas_getdir((t_canvas *)x)->s_name);
 }

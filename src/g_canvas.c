@@ -1458,7 +1458,7 @@ extern void glist_scalar(t_glist *canvas, t_symbol *s, int argc, t_atom *argv);
 void g_graph_setup(void);
 void g_editor_setup(void);
 void g_readwrite_setup(void);
-extern void canvas_properties(t_gobj *z);
+extern void canvas_properties(t_gobj *z, t_glist *canvas);
 
 void g_canvas_setup(void)
 {
@@ -1533,7 +1533,7 @@ void g_canvas_setup(void)
         gensym("map"), A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_dirty,
         gensym("dirty"), A_FLOAT, A_NULL);
-    class_setpropertiesfn(canvas_class, (t_propertiesfn)canvas_properties);
+    class_setpropertiesfn(canvas_class, canvas_properties);
 
 /* ---------------------- list handling ------------------------ */
     class_addmethod(canvas_class, (t_method)glist_clear, gensym("clear"),
