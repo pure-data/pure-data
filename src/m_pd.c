@@ -3,6 +3,7 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "m_pd.h"
 #include "m_imp.h"
 
@@ -294,10 +295,49 @@ void garray_init(void);
 
 t_pdinstance *pd_this;
 
+static t_symbol *midi_gensym(const char *prefix, const char *name)
+{
+    char buf[80];
+    strcpy(buf, prefix);
+    strncat(buf, name, 79 - strlen(buf));
+    return (gensym(buf));
+}
+
+static t_pdinstance *pdinstance_donew(int useprefix)
+{
+    t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
+    char midiprefix[80];
+    if (useprefix)
+        sprintf(midiprefix, "%p", x);
+    else midiprefix[0] = 0;
+    x->pd_systime = 0;
+    x->pd_clock_setlist = 0;
+    x->pd_dspchain = 0;
+    x->pd_dspchainsize = 0;
+    x->pd_canvaslist = 0;
+    x->pd_dspstate = 0;
+    x->pd_midiin_sym = midi_gensym(midiprefix, "#midiin");
+    x->pd_sysexin_sym = midi_gensym(midiprefix, "#sysexin");
+    x->pd_notein_sym = midi_gensym(midiprefix, "#notein");
+    x->pd_ctlin_sym = midi_gensym(midiprefix, "#ctlin");
+    x->pd_pgmin_sym = midi_gensym(midiprefix, "#pgmin");
+    x->pd_bendin_sym = midi_gensym(midiprefix, "#bendin");
+    x->pd_touchin_sym = midi_gensym(midiprefix, "#touchin");
+    x->pd_polytouchin_sym = midi_gensym(midiprefix, "#polytouchin");
+    x->pd_midiclkin_sym = midi_gensym(midiprefix, "#midiclkin");
+    x->pd_midirealtimein_sym = midi_gensym(midiprefix, "#midirealtimein");
+    return (x);
+}
+
+EXTERN t_pdinstance *pdinstance_new(void)
+{
+    return (pdinstance_donew(1));
+}
+
 void pd_init(void)
 {
     if (!pd_this)
-        pd_this = pdinstance_new();
+        pd_this = pdinstance_donew(0);
     mess_init();
     obj_init();
     conf_init();
@@ -305,17 +345,6 @@ void pd_init(void)
     garray_init();
 }
 
-t_pdinstance *pdinstance_new(void)
-{
-    t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
-    x->pd_systime = 0;
-    x->pd_clock_setlist = 0;
-    x->pd_dspchain = 0;
-    x->pd_dspchainsize = 0;
-    x->pd_canvaslist = 0;
-    x->pd_dspstate = 0;
-    return (x);
-}
 
 EXTERN void pd_setinstance(t_pdinstance *x)
 {
