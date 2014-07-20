@@ -753,6 +753,9 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                 }
                 narg++;
                 ap++;
+                break;
+            default:
+                goto badarg;
             }
         }
         switch (narg)

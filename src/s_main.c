@@ -105,7 +105,7 @@ t_sample* get_sys_soundin() { return sys_soundin; }
 int* get_sys_main_advance() { return &sys_main_advance; }
 double* get_sys_time_per_dsp_tick() { return &sys_time_per_dsp_tick; }
 int* get_sys_schedblocksize() { return &sys_schedblocksize; }
-double* get_sys_time() { return &sys_time; }
+double* get_sys_time() { return &pd_this->pd_systime; }
 t_float* get_sys_dacsr() { return &sys_dacsr; }
 int* get_sys_sleepgrain() { return &sys_sleepgrain; }
 int* get_sys_schedadvance() { return &sys_schedadvance; }
@@ -332,6 +332,8 @@ static char *(usagemessage[]) = {
 "-nodac           -- suppress audio output\n",
 "-noadc           -- suppress audio input\n",
 "-noaudio         -- suppress audio input and output (-nosound is synonym) \n",
+"-callback        -- use callbacks if possible\n",
+"-nocallback      -- use polling-mode (true by default)\n",
 "-listdev         -- list audio and MIDI devices\n",
 
 #ifdef USEAPI_OSS
@@ -377,6 +379,9 @@ static char *(usagemessage[]) = {
 "-nomidiin        -- suppress MIDI input\n",
 "-nomidiout       -- suppress MIDI output\n",
 "-nomidi          -- suppress MIDI input and output\n",
+#ifdef USEAPI_OSS
+"-ossmidi         -- use OSS midi API\n",
+#endif
 #ifdef USEAPI_ALSA
 "-alsamidi        -- use ALSA midi API\n",
 #endif
@@ -393,23 +398,31 @@ static char *(usagemessage[]) = {
 "-font-face <name>  -- specify default font\n",
 "-font-weight <name>-- specify default font weight (normal or bold)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
+"-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
 "-d <n>           -- specify debug level\n",
+"-loadbang        -- do not suppress all loadbangs (true by default)\n",
 "-noloadbang      -- suppress all loadbangs\n",
 "-stderr          -- send printout to standard error instead of GUI\n",
+"-nostderr        -- send printout to GUI instead of standard error (true by default)\n",
+"-gui             -- start GUI (true by default)\n",
 "-nogui           -- suppress starting the GUI\n",
 "-guiport <n>     -- connect to pre-existing GUI over port <n>\n",
 "-guicmd \"cmd...\" -- start alternatve GUI program (e.g., remote via ssh)\n",
 "-send \"msg...\"   -- send a message at startup, after patches are loaded\n",
+"-prefs           -- load preferences on startup (true by default)\n",
 "-noprefs         -- suppress loading preferences on startup\n",
 #ifdef HAVE_UNISTD_H
 "-rt or -realtime -- use real-time priority\n",
 "-nrt             -- don't use real-time priority\n",
 #endif
+"-sleep           -- sleep when idle, don't spin (true by default)\n",
 "-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)\n",
 "-schedlib <file> -- plug in external scheduler\n",
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
+"-nobatch         -- run interactively (true by default)\n",
+"-autopatch       -- enable auto-connecting new from selected objects (true by default)\n",
 "-noautopatch     -- defeat auto-patching new from selected objects\n",
 "-compatibility <f> -- set back-compatibility to version <f>\n",
 };
@@ -588,6 +601,11 @@ int sys_argparse(int argc, char **argv)
             sys_main_callback = 1;
             argc--; argv++;
         }
+        else if (!strcmp(*argv, "-nocallback"))
+        {
+            sys_main_callback = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-blocksize"))
         {
             sys_main_blocksize = atoi(argv[1]);
@@ -620,6 +638,11 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-oss"))
         {
             sys_set_audio_api(API_OSS);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-ossmidi"))
+        {
+          sys_set_midi_api(API_OSS);
             argc--; argv++;
         }
 #endif
@@ -781,6 +804,11 @@ int sys_argparse(int argc, char **argv)
             sys_verbose++;
             argc--; argv++;
         }
+        else if (!strcmp(*argv, "-noverbose"))
+        {
+            sys_verbose=0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-version"))
         {
             sys_version = 1;
@@ -792,14 +820,24 @@ int sys_argparse(int argc, char **argv)
             argc -= 2;
             argv += 2;
         }
+        else if (!strcmp(*argv, "-loadbang"))
+        {
+            sys_noloadbang = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-noloadbang"))
         {
             sys_noloadbang = 1;
             argc--; argv++;
         }
+        else if (!strcmp(*argv, "-gui"))
+        {
+            sys_nogui = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-nogui"))
         {
-            sys_printtostderr = sys_nogui = 1;
+            sys_nogui = 1;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-guiport") && argc > 1 &&
@@ -808,14 +846,15 @@ int sys_argparse(int argc, char **argv)
             argc -= 2;
             argv += 2;
         }
+        else if (!strcmp(*argv, "-nostderr"))
+        {
+            sys_printtostderr = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-stderr"))
         {
             sys_printtostderr = 1;
             argc--; argv++;
-#ifdef _WIN32
-            /* we need to tell Windows to output UTF-8 */
-            SetConsoleOutputCP(CP_UTF8);
-#endif
         }
         else if (!strcmp(*argv, "-guicmd") && argc > 1)
         {
@@ -851,7 +890,16 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-batch"))
         {
             sys_batch = 1;
-            sys_printtostderr = sys_nogui = 1;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-nobatch"))
+        {
+            sys_batch = 0;
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-autopatch"))
+        {
+            sys_noautopatch = 0;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-noautopatch"))
@@ -874,12 +922,17 @@ int sys_argparse(int argc, char **argv)
             sys_hipriority = 1;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-nrt"))
+        else if (!strcmp(*argv, "-nrt") || !strcmp(*argv, "-nort") || !strcmp(*argv, "-norealtime"))
         {
             sys_hipriority = 0;
             argc--; argv++;
         }
 #endif
+        else if (!strcmp(*argv, "-sleep"))
+        {
+            sys_nosleep = 0;
+            argc--; argv++;
+        }
         else if (!strcmp(*argv, "-nosleep"))
         {
             sys_nosleep = 1;
@@ -925,6 +978,15 @@ int sys_argparse(int argc, char **argv)
             return (1);
         }
     }
+    if (sys_batch)
+        sys_nogui = 1;
+    if (sys_nogui)
+        sys_printtostderr = 1;
+#ifdef _WIN32
+    if (sys_printtostderr)
+        /* we need to tell Windows to output UTF-8 */
+        SetConsoleOutputCP(CP_UTF8);
+#endif
     if (!sys_defaultfont)
         sys_defaultfont = DEFAULTFONT;
     for (; argc > 0; argc--, argv++) 

@@ -168,6 +168,7 @@ void sched_set_using_audio(int flag);
 /* s_inter.c */
 
 EXTERN void sys_microsleep(int microsec);
+EXTERN void sys_init_fdpoll(void);
 
 EXTERN void sys_bail(int exitcode);
 EXTERN int sys_pollgui(void);
@@ -380,7 +381,7 @@ EXTERN void sys_clearhist(void );
 EXTERN void sys_initmidiqueue(void );
 EXTERN int sys_addhist(int phase);
 EXTERN void sys_setmiditimediff(double inbuftime, double outbuftime);
-EXTERN void sched_tick(double next_sys_time);
+EXTERN void sched_tick( void);
 EXTERN void sys_pollmidiqueue(void );
 EXTERN int sys_pollgui(void );
 EXTERN void sys_setchsr(int chin, int chout, int sr);

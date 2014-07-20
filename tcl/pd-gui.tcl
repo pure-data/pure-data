@@ -540,6 +540,17 @@ proc pdtk_check {mytoplevel message reply_to_pd default} {
     }
 }
 
+# store plugin callbacks for dispatched messages from running Pd patches
+global plugin_dispatch_receivers
+
+# dispatch a message from running Pd patches to the intended plugin receiver
+proc pdtk_plugin_dispatch { args } {
+    set receiver [ lindex $args 0 ]
+    foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
+        $callback [ lrange $args 1 end ]
+    }
+}
+
 # ------------------------------------------------------------------------------
 # parse command line args when Wish/pd-gui.tcl is started first
  

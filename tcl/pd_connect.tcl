@@ -4,10 +4,12 @@ package provide pd_connect 0.1
 namespace eval ::pd_connect:: {
     variable pd_socket
     variable cmds_from_pd ""
+    variable plugin_dispatch_receivers
 
     namespace export to_pd
     namespace export create_socket
     namespace export pdsend
+    namespace export register_plugin_dispatch_receiver
 }
 
 # TODO figure out how to escape { } properly
@@ -56,6 +58,12 @@ proc ::pd_connect::pdsend {message} {
         puts stderr "pdsend errorname: >>$errorname<<"
         error "Not connected to 'pd' process"
     }
+}
+
+# register a plugin to receive messages from running Pd patches
+proc ::pd_connect::register_plugin_dispatch_receiver { nameatom callback } {
+    variable plugin_dispatch_receivers
+    lappend plugin_dispatch_receivers($nameatom) $callback
 }
 
 proc ::pd_connect::pd_readsocket {} {

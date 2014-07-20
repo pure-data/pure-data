@@ -622,8 +622,8 @@ typedef struct _resample
 {
   int method;       /* up/downsampling method ID */
 
-  t_int downsample; /* downsampling factor */
-  t_int upsample;   /* upsampling factor */
+  int downsample; /* downsampling factor */
+  int upsample;   /* upsampling factor */
 
   t_sample *s_vec;   /* here we hold the resampled data */
   int      s_n;
@@ -750,6 +750,16 @@ static inline int PD_BIGORSMALL(t_sample f) {
 #endif /* _MSC_VER */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
+
+EXTERN_STRUCT _pdinstance;
+#define t_pdinstance struct _pdinstance       /* m_imp.h */
+
+/* m_pd.c */
+
+EXTERN t_pdinstance *pdinstance_new( void);
+EXTERN void pd_setinstance(t_pdinstance *x);
+EXTERN void pdinstance_free(t_pdinstance *x);
+EXTERN t_canvas *pd_getcanvaslist(void);
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

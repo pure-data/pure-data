@@ -54,6 +54,28 @@ struct _class
     char c_drawcommand;             /* a drawing command for a template */
 };
 
+struct _pdinstance
+{
+    double pd_systime;          /* global time in Pd ticks */
+    t_clock *pd_clock_setlist;  /* list of set clocks */
+    t_int *pd_dspchain;         /* DSP chain */
+    int pd_dspchainsize;        /* number of elements in DSP chain */
+    t_canvas *pd_canvaslist;    /* list of all root canvases */
+    int pd_dspstate;            /* whether DSP is on or off */
+    t_symbol *pd_midiin_sym;    /* symbols bound to incoming MIDI... */
+    t_symbol *pd_sysexin_sym;
+    t_symbol *pd_notein_sym;
+    t_symbol *pd_ctlin_sym;
+    t_symbol *pd_pgmin_sym;
+    t_symbol *pd_bendin_sym;
+    t_symbol *pd_touchin_sym;
+    t_symbol *pd_polytouchin_sym;
+    t_symbol *pd_midiclkin_sym;
+    t_symbol *pd_midirealtimein_sym;
+};
+
+extern t_pdinstance *pd_this;
+
 /* m_class.c */
 EXTERN void pd_emptylist(t_pd *x);
 

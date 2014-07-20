@@ -11,7 +11,6 @@
     interconnections.
 */
 
-
 #include "m_pd.h"
 #include "m_imp.h"
 #include <stdlib.h>
@@ -20,8 +19,6 @@
 extern t_class *vinlet_class, *voutlet_class, *canvas_class;
 t_float *obj_findsignalscalar(t_object *x, int m);
 static int ugen_loud;
-static t_int *dsp_chain;
-static int dsp_chainsize;
 
 EXTERN_STRUCT _vinlet;
 EXTERN_STRUCT _voutlet;
@@ -219,11 +216,11 @@ static void block_float(t_block *x, t_floatarg f)
 
 static void block_bang(t_block *x)
 {
-    if (x->x_switched && !x->x_switchon && dsp_chain)
+    if (x->x_switched && !x->x_switchon && pd_this->pd_dspchain)
     {
         t_int *ip;
         x->x_return = 1;
-        for (ip = dsp_chain + x->x_chainonset; ip; )
+        for (ip = pd_this->pd_dspchain + x->x_chainonset; ip; )
             ip = (*(t_perfroutine)(*ip))(ip);
         x->x_return = 0;
     }
@@ -286,7 +283,7 @@ void block_tilde_setup(void)
         A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(block_class, (t_method)block_set, gensym("set"), 
         A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
-    class_addmethod(block_class, (t_method)block_dsp, gensym("dsp"), 0);
+    class_addmethod(block_class, (t_method)block_dsp, gensym("dsp"), A_CANT, 0);
     class_addfloat(block_class, block_float);
     class_addbang(block_class, block_bang);
 }
@@ -300,40 +297,40 @@ static t_int dsp_done(t_int *w)
 
 void dsp_add(t_perfroutine f, int n, ...)
 {
-    int newsize = dsp_chainsize + n+1, i;
+    int newsize = pd_this->pd_dspchainsize + n+1, i;
     va_list ap;
 
-    dsp_chain = t_resizebytes(dsp_chain, dsp_chainsize * sizeof (t_int),
-        newsize * sizeof (t_int));
-    dsp_chain[dsp_chainsize-1] = (t_int)f;
+    pd_this->pd_dspchain = t_resizebytes(pd_this->pd_dspchain, 
+        pd_this->pd_dspchainsize * sizeof (t_int), newsize * sizeof (t_int));
+    pd_this->pd_dspchain[pd_this->pd_dspchainsize-1] = (t_int)f;
     va_start(ap, n);
     for (i = 0; i < n; i++)
-        dsp_chain[dsp_chainsize + i] = va_arg(ap, t_int);
+        pd_this->pd_dspchain[pd_this->pd_dspchainsize + i] = va_arg(ap, t_int);
     va_end(ap);
-    dsp_chain[newsize-1] = (t_int)dsp_done;
-    dsp_chainsize = newsize;
+    pd_this->pd_dspchain[newsize-1] = (t_int)dsp_done;
+    pd_this->pd_dspchainsize = newsize;
 }
 
     /* at Guenter's suggestion, here's a vectorized version */
 void dsp_addv(t_perfroutine f, int n, t_int *vec)
 {
-    int newsize = dsp_chainsize + n+1, i;
+    int newsize = pd_this->pd_dspchainsize + n+1, i;
     
-    dsp_chain = t_resizebytes(dsp_chain, dsp_chainsize * sizeof (t_int),
-        newsize * sizeof (t_int));
-    dsp_chain[dsp_chainsize-1] = (t_int)f;
+    pd_this->pd_dspchain = t_resizebytes(pd_this->pd_dspchain, 
+        pd_this->pd_dspchainsize * sizeof (t_int), newsize * sizeof (t_int));
+    pd_this->pd_dspchain[pd_this->pd_dspchainsize-1] = (t_int)f;
     for (i = 0; i < n; i++)
-        dsp_chain[dsp_chainsize + i] = vec[i];
-    dsp_chain[newsize-1] = (t_int)dsp_done;
-    dsp_chainsize = newsize;
+        pd_this->pd_dspchain[pd_this->pd_dspchainsize + i] = vec[i];
+    pd_this->pd_dspchain[newsize-1] = (t_int)dsp_done;
+    pd_this->pd_dspchainsize = newsize;
 }
 
 void dsp_tick(void)
 {
-    if (dsp_chain)
+    if (pd_this->pd_dspchain)
     {
         t_int *ip;
-        for (ip = dsp_chain; ip; ) ip = (*(t_perfroutine)(*ip))(ip);
+        for (ip = pd_this->pd_dspchain; ip; ) ip = (*(t_perfroutine)(*ip))(ip);
         dsp_phase++;
     }
 }
@@ -557,10 +554,11 @@ void ugen_stop(void)
 {
     t_signal *s;
     int i;
-    if (dsp_chain)
+    if (pd_this->pd_dspchain)
     {
-        freebytes(dsp_chain, dsp_chainsize * sizeof (t_int));
-        dsp_chain = 0;
+        freebytes(pd_this->pd_dspchain, 
+            pd_this->pd_dspchainsize * sizeof (t_int));
+        pd_this->pd_dspchain = 0;
     }
     signal_cleanup();
     
@@ -570,9 +568,9 @@ void ugen_start(void)
 {
     ugen_stop();
     ugen_sortno++;
-    dsp_chain = (t_int *)getbytes(sizeof(*dsp_chain));
-    dsp_chain[0] = (t_int)dsp_done;
-    dsp_chainsize = 1;
+    pd_this->pd_dspchain = (t_int *)getbytes(sizeof(*pd_this->pd_dspchain));
+    pd_this->pd_dspchain[0] = (t_int)dsp_done;
+    pd_this->pd_dspchainsize = 1;
     if (ugen_currentcontext) bug("ugen_start");
 }
 
@@ -1022,12 +1020,12 @@ void ugen_done_graph(t_dspcontext *dc)
                 outsigs, vecsize, calcsize, dsp_phase, period, frequency,
                     downsample, upsample, reblock, switched);
     }    
-    chainblockbegin = dsp_chainsize;
+    chainblockbegin = pd_this->pd_dspchainsize;
 
     if (blk && (reblock || switched))   /* add the block DSP prolog */
     {
         dsp_add(block_prolog, 1, blk);
-        blk->x_chainonset = dsp_chainsize - 1;
+        blk->x_chainonset = pd_this->pd_dspchainsize - 1;
     }   
         /* Initialize for sorting */
     for (u = dc->dc_ugenlist; u; u = u->u_next)
@@ -1082,7 +1080,7 @@ void ugen_done_graph(t_dspcontext *dc)
 
     if (blk && (reblock || switched))    /* add block DSP epilog */
         dsp_add(block_epilog, 1, blk);
-    chainblockend = dsp_chainsize;
+    chainblockend = pd_this->pd_dspchainsize;
 
         /* add epilogs for outlets.  */
 
@@ -1099,7 +1097,7 @@ void ugen_done_graph(t_dspcontext *dc)
         }
     }
 
-    chainafterall = dsp_chainsize;
+    chainafterall = pd_this->pd_dspchainsize;
     if (blk)
     {
         blk->x_blocklength = chainblockend - chainblockbegin;
@@ -1111,8 +1109,9 @@ void ugen_done_graph(t_dspcontext *dc)
     {
         t_int *ip;
         if (!dc->dc_parentcontext)
-            for (i = dsp_chainsize, ip = dsp_chain; i--; ip++)
-                post("chain %lx", *ip);
+            for (i = pd_this->pd_dspchainsize, ip = pd_this->pd_dspchain; 
+                i--; ip++)
+                    post("chain %lx", *ip);
         post("... ugen_done_graph done.");
     }
         /* now delete everything. */

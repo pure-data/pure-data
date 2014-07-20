@@ -1132,6 +1132,7 @@ typedef struct _text_sequence
     int x_waitargc;         /* how many leading numbers to use for waiting */
     t_clock *x_clock;       /* calback for auto mode */
     t_float x_nextdelay;
+    t_symbol *x_lastto;     /* destination symbol if we're after a comma */
     unsigned char x_eaten;  /* true if we've eaten leading numbers already */
     unsigned char x_loop;   /* true if we can send multiple lines */
     unsigned char x_auto;   /* set timer when we hit single-number time list */
@@ -1152,6 +1153,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_waitargc = 0;
     x->x_eaten = 0;
     x->x_loop = 0;
+    x->x_lastto = 0;
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -1214,14 +1216,15 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
-    int n, i, onset, nfield, wait, eatsemi = 1;
+    int n, i, onset, nfield, wait, eatsemi = 1, gotcomma = 0;
     t_atom *vec, *outvec, *ap;
     if (!b)
-       return;
+        goto nosequence;
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
     if (x->x_onset >= n)
     {
+    nosequence:
         x->x_onset = 0x7fffffff;
         x->x_loop = x->x_auto = 0;
         outlet_bang(x->x_endout);
@@ -1231,9 +1234,10 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
 
         /* test if leading numbers, or a leading symbol equal to our
         "wait symbol", are directing us to wait */
-    if (vec[onset].a_type == A_FLOAT && x->x_waitargc && !x->x_eaten ||
-        vec[onset].a_type == A_SYMBOL &&
-            vec[onset].a_w.w_symbol == x->x_waitsym)
+    if (!x->x_lastto && (
+        vec[onset].a_type == A_FLOAT && x->x_waitargc && !x->x_eaten ||
+            vec[onset].a_type == A_SYMBOL &&
+                vec[onset].a_w.w_symbol == x->x_waitsym))
     {
         if (vec[onset].a_type == A_FLOAT)
         {
@@ -1242,8 +1246,6 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                     ;
             x->x_eaten = 1;
             eatsemi = 0;
-            post("got %d items; this one %f, waitargc %d i %d, n %d",
-                i-onset, vec[onset].a_w.w_float, x->x_waitargc, i, n);
         }
         else
         {
@@ -1262,14 +1264,17 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
                 ;
         wait = 0;
         x->x_eaten = 0;
+        if (i < n && vec[i].a_type == A_COMMA)
+            gotcomma = 1;
     }
     nfield = i - onset;
     i += eatsemi;
     if (i >= n)
         i = 0x7fffffff;
     x->x_onset = i;
-        /* generate output list, realizing dolar sign atoms */
-    ATOMS_ALLOCA(outvec, nfield);
+        /* generate output list, realizing dolar sign atoms.  Allocate one
+        extra atom in case we want to prepend a symbol later */
+    ATOMS_ALLOCA(outvec, nfield+1);
     for (i = 0, ap = vec+onset; i < nfield; i++, ap++)
     {
         int type = ap->a_type;
@@ -1303,6 +1308,7 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
     if (wait)
     {
         x->x_loop = 0;
+        x->x_lastto = 0;
         if (x->x_auto && nfield == 1 && outvec[0].a_type == A_FLOAT)
             x->x_nextdelay = outvec[0].a_w.w_float;
         else if (!x->x_waitout)
@@ -1314,19 +1320,48 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
         }
     }
     else if (x->x_mainout)
-        outlet_list(x->x_mainout, 0, nfield, outvec);
+    {
+        int n2 = nfield;
+        if (x->x_lastto)
+        {
+            memmove(outvec+1, outvec, nfield * sizeof(*outvec));
+            SETSYMBOL(outvec, x->x_lastto);
+            n2++;
+        }
+        if (!gotcomma)
+            x->x_lastto = 0;
+        else if (!x->x_lastto && nfield && outvec->a_type == A_SYMBOL)
+            x->x_lastto = outvec->a_w.w_symbol;
+        outlet_list(x->x_mainout, 0, n2, outvec);
+    }
     else if (nfield)
     {
-        if (outvec[0].a_type != A_SYMBOL)
-            bug("text sequence 2");
-        else if (!outvec[0].a_w.w_symbol->s_thing)
-            pd_error(x, "%s: no such object", outvec[0].a_w.w_symbol->s_name);
-        else if (nfield > 1 && outvec[1].a_type == A_SYMBOL)
-            typedmess(outvec[0].a_w.w_symbol->s_thing,
-                outvec[1].a_w.w_symbol, nfield-2, outvec+2);
-        else pd_list(outvec[0].a_w.w_symbol->s_thing, 0, nfield-1, outvec+1);
+        t_symbol *tosym = x->x_lastto;
+        t_pd *to = 0;
+        t_atom *vecleft = outvec;
+        int nleft = nfield;
+        if (!tosym)
+        {
+            if (outvec[0].a_type != A_SYMBOL)
+                bug("text sequence 2");
+            else tosym = outvec[0].a_w.w_symbol;
+            vecleft++;
+            nleft--;
+        }
+        if (tosym)
+        {
+            if (!(to = tosym->s_thing))
+                pd_error(x, "%s: no such object", tosym->s_name);
+        }
+        x->x_lastto = (gotcomma ? tosym : 0);
+        if (to)
+        {
+            if (nleft > 0 && vecleft[0].a_type == A_SYMBOL)
+                typedmess(to, vecleft->a_w.w_symbol, nleft-1, vecleft+1);
+            else pd_list(to, 0, nleft, vecleft);
+        }
     }
-    ATOMS_FREEA(outvec, nfield);
+    ATOMS_FREEA(outvec, nfield+1);
 }
 
 static void text_sequence_list(t_text_sequence *x, t_symbol *s, int argc,
@@ -1353,6 +1388,7 @@ static void text_sequence_stop(t_text_sequence *x)
 
 static void text_sequence_tick(t_text_sequence *x)  /* clock callback */
 {
+    x->x_lastto = 0;
     while (x->x_auto)
     {
         x->x_loop = 1;
@@ -1367,6 +1403,7 @@ static void text_sequence_tick(t_text_sequence *x)  /* clock callback */
 
 static void text_sequence_auto(t_text_sequence *x)
 {
+    x->x_lastto = 0;
     if (x->x_auto)
         clock_unset(x->x_clock);
     x->x_auto = 1;
@@ -1386,6 +1423,7 @@ static void text_sequence_line(t_text_sequence *x, t_floatarg f)
     t_atom *vec;
     if (!b)
        return;
+    x->x_lastto = 0;
     vec = binbuf_getvec(b);
     n = binbuf_getnatom(b);
     if (!text_nthline(n, vec, f, &start, &end))

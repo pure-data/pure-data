@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 740 129 625 526 12;
+#N canvas 737 126 625 526 12;
 #X obj 131 474 list;
 #X obj 18 6 text;
 #X text 25 473 see also:;
@@ -431,7 +431,7 @@ far from it) so line 0 whose second field is closer to 1 wins., f
 #X restore 393 358 pd search;
 #X text 76 383 sequencer/message-sender;
 #X obj 280 381 text sequence;
-#N canvas 406 90 1151 849 sequence 0;
+#N canvas 200 58 1151 740 sequence 1;
 #X msg 138 468 symbol text-help-search;
 #X text 101 443 specify another text by name or pointer;
 #X msg 37 225 bang;
@@ -441,8 +441,8 @@ far from it) so line 0 whose second field is closer to 1 wins., f
 #X msg 37 167 line 0;
 #X obj 655 282 text sequence text-help-seq2 -g, f 17;
 #X obj 889 300 text define -k text-help-seq2;
-#A set test1 1 2 3 \; 1000 test2 6 7 8 \; test1 9 10 \; 500 1500 test1
-\; test2 13 14 \;;
+#A set test1 1 2 3 \; 1000 test2 6 7 8 \; test1 9 10 \, 21 22 23 \,
+walk the dog \; 500 1500 test1 \; test2 13 14 \;;
 #X msg 771 248 bang;
 #X msg 655 248 line 0;
 #X obj 334 748 print test1;
@@ -486,16 +486,6 @@ in milliseconds);
 #X text 78 255 automatically sequence \, interpreting waits as delay
 times (but note there aren't any waits in this example - see at right)
 , f 36;
-#X text 625 20 The -g flag (which must be given after specifying the
-text with a name or a "-s" argument) specifies that the text contains
-messages to send to global symbols. Lines beginning with symbols are
-sent to the corresponding receive (or other named object). Leading
-numbers are then interpreted as waits. If you use "bang" to sequence
-the text the waits will be output as lists for you to interpret as
-you wish. If you send an "auto" message \, wait points that consist
-of a single number are interpreted as delay times in milliseconds (but
-waits with 2 or more arguments are treated as in "bang"). Here the
-two waits are "1000" and "500 1500".;
 #X text 653 228 rewind;
 #X text 912 274 click to see the sequence:;
 #X msg 723 248 step;
@@ -520,13 +510,6 @@ lines) \, waits \, and a bang at end of sequence:;
 #X msg 815 718 auto;
 #X msg 868 719 stop;
 #X msg 703 718 step;
-#X text 623 576 If you want to use leading numbers in lists as waits
-without having to specify "-g" \, specify "-w 3" for example and up
-to 3 leading numbers (fewer if there's a symbol among the first 3 items)
-wil be taken as a wait. Waits specified this way can only have numeric
-elements (while waits spefied with a symbol tag as above could have
-symbols too if desired.) Here we use "-w 1" so the "auto" feature can
-simply sequence a list of numbers:;
 #X text 934 472 sequence:;
 #X text 962 746 sequence:;
 #X obj 884 766 text define -k text-help-seq4;
@@ -543,6 +526,23 @@ simply sequence a list of numbers:;
 message above., f 36;
 #X msg 915 248 tempo 2 permsec;
 #X text 937 226 set 2x tempo;
+#X text 625 20 The -g flag (which must be given after specifying the
+text with a name or a "-s" argument) specifies that the text contains
+messages to send to global symbols. Lines beginning with symbols are
+sent to the corresponding receive (or other named object). Leading
+numbers are then interpreted as waits. If you use "bang" to sequence
+the text the waits will be output as lists for you to interpret as
+you wish. If you send an "auto" message \, waits that consist of a
+single number are interpreted as delay times in milliseconds (but waits
+with 2 or more arguments are treated as in "bang"). Here the two waits
+are "1000" and "500 1500".;
+#X text 623 576 If you want to use leading numbers in lists as waits
+without having to specify "-g" \, specify "-w 3" for example and up
+to 3 leading numbers (fewer if there's a symbol among the first 3 items)
+will be taken as a wait. Waits specified this way can only have numeric
+elements (while waits specified with a symbol tag as above could have
+symbols too if desired.) Here we use "-w 1" so the "auto" feature can
+simply sequence a list of numbers:;
 #X connect 0 0 30 1;
 #X connect 2 0 30 0;
 #X connect 5 0 30 0;
@@ -561,23 +561,23 @@ message above., f 36;
 #X connect 30 0 3 0;
 #X connect 30 1 4 0;
 #X connect 35 0 30 0;
-#X connect 42 0 7 0;
-#X connect 43 0 51 0;
-#X connect 44 0 51 0;
-#X connect 46 0 51 0;
-#X connect 47 0 51 0;
-#X connect 49 0 51 0;
-#X connect 51 0 52 0;
-#X connect 51 1 48 0;
-#X connect 51 2 45 0;
-#X connect 54 0 63 0;
-#X connect 55 0 63 0;
-#X connect 56 0 63 0;
-#X connect 57 0 63 0;
-#X connect 58 0 63 0;
-#X connect 63 0 66 0;
-#X connect 63 1 65 0;
-#X connect 63 2 64 0;
-#X connect 67 0 30 0;
-#X connect 71 0 7 0;
+#X connect 41 0 7 0;
+#X connect 42 0 50 0;
+#X connect 43 0 50 0;
+#X connect 45 0 50 0;
+#X connect 46 0 50 0;
+#X connect 48 0 50 0;
+#X connect 50 0 51 0;
+#X connect 50 1 47 0;
+#X connect 50 2 44 0;
+#X connect 53 0 61 0;
+#X connect 54 0 61 0;
+#X connect 55 0 61 0;
+#X connect 56 0 61 0;
+#X connect 57 0 61 0;
+#X connect 61 0 64 0;
+#X connect 61 1 63 0;
+#X connect 61 2 62 0;
+#X connect 65 0 30 0;
+#X connect 69 0 7 0;
 #X restore 393 381 pd sequence;

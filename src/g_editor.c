@@ -762,7 +762,7 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_gobj *except)
     int dspwas = canvas_suspend_dsp();
     glist_amreloadingabstractions = 1;
         /* find all root canvases */
-    for (x = canvas_list; x; x = x->gl_next)
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
         glist_doreload(x, name, dir, except);
     glist_amreloadingabstractions = 0;
     canvas_resume_dsp(dspwas);
@@ -1042,8 +1042,9 @@ void garray_properties(t_garray *x);
     /* tell GUI to create a properties dialog on the canvas.  We tell
     the user the negative of the "pixel" y scale to make it appear to grow
     naturally upward, whereas pixels grow downward. */
-void canvas_properties(t_glist *x)
+void canvas_properties(t_gobj*z, t_glist*unused)
 {
+    t_glist *x = (t_glist*)z;
     t_gobj *y;
     char graphbuf[200];
     if (glist_isgraph(x) != 0)
@@ -1200,7 +1201,7 @@ static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float 
         }
     }
     if (which == 0)
-        canvas_properties(x);
+        canvas_properties(&x->gl_gobj, 0);
     else if (which == 2)
         open_via_helppath("intro.pd", canvas_getdir((t_canvas *)x)->s_name);
 }
@@ -1942,7 +1943,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
 {
     t_glist *g, *g2;
         /* find all root canvases */
-    for (g = canvas_list; g; g = g->gl_next)
+    for (g = pd_getcanvaslist(); g; g = g->gl_next)
         if (g2 = glist_finddirty(g))
     {
         canvas_vis(g2, 1);
@@ -2150,7 +2151,7 @@ void canvas_finderror(void *error_object)
 {
     t_canvas *x;
         /* find all root canvases */
-    for (x = canvas_list; x; x = x->gl_next)
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
     {
         if (glist_dofinderror(x, error_object))
             return;
