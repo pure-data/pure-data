@@ -330,7 +330,7 @@ static void osc_setup(void)
     cos_maketable();
 }
 
-/* ---------------- vcf~ - 2-pole bandpass filter. ----------------- */
+/* ---- vcf~ - resonant filter with audio-rate center frequency input ----- */
 
 typedef struct vcfctl
 {
