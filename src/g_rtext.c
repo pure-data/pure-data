@@ -532,8 +532,8 @@ be printable in whatever 8-bit character set we find ourselves. */
             int ch_nbytes = u8_wc_nbytes(n);
             newsize = x->x_bufsize + ch_nbytes;
             x->x_buf = resizebytes(x->x_buf, x->x_bufsize, newsize);
-            for (i = x->x_bufsize; i > x->x_selstart; i--)
-                x->x_buf[i] = x->x_buf[i-1];
+            for (i = newsize-1; i > x->x_selstart; i--)
+                x->x_buf[i] = x->x_buf[i-ch_nbytes];
             x->x_bufsize = newsize;
             /*-- moo: assume canvas_key() has encoded keysym as UTF-8 */
             strncpy(x->x_buf+x->x_selstart, keysym->s_name, ch_nbytes);
