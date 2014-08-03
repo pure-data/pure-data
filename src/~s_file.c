@@ -54,8 +54,7 @@ static void sys_initloadpreferences( void)
 
     snprintf(default_prefs_file, MAXPDSTRING, "%s/default.pdsettings", 
         sys_libdir->s_name);
-    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings", 
-        (homedir ? homedir : "."));
+    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings", homedir);
     if (stat(user_prefs_file, &statbuf) == 0) 
         strncpy(filenamebuf, user_prefs_file, MAXPDSTRING);
     else if (stat(default_prefs_file, &statbuf) == 0)

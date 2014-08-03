@@ -114,6 +114,7 @@ static void sys_expandpath(const char *from, char *to, int bufsize)
             strncpy(to + strlen(to), from + 1, bufsize - strlen(to));
             to[bufsize-1] = 0;
         }
+        else *to = 0;
     }
     else
     {

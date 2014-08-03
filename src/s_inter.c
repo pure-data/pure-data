@@ -1060,10 +1060,14 @@ int sys_startgui(const char *libdir)
                         wish_paths[i], libdir, PDGUIDIR, portno);
             }
 #else /* __APPLE__ */
+            /* sprintf the wish command with needed environment variables.
+            For some reason the wish script fails if HOME isn't defined so
+            if necessary we put that in here too. */
             sprintf(cmdbuf,
-  "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\" \
+  "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\"%s \
   wish \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
-                 libdir, libdir, libdir, portno);
+                 libdir, libdir, (getenv("HOME") ? "" : " HOME=/tmp"),
+                    libdir, portno);
 #endif /* __APPLE__ */
             sys_guicmd = cmdbuf;
         }
