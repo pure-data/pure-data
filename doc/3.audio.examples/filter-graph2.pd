@@ -1,4 +1,4 @@
-#N canvas 72 200 758 579 10;
+#N canvas 195 211 758 579 10;
 #X obj 266 177 *~;
 #X obj 317 175 *~;
 #X obj 182 276 t b b;
@@ -17,7 +17,7 @@
 #X msg 447 525 0;
 #X msg 474 526 1;
 #X obj 447 481 sel symbol;
-#X floatatom 447 549 5 0 0 0 - - -;
+#X floatatom 447 549 5 0 0 0 - - -, f 5;
 #X obj 195 493 f;
 #X obj 265 135 inlet~;
 #X obj 318 135 inlet~;
@@ -62,6 +62,7 @@ need the three outputs of filter-graph1 \, plus the filter output.
 #X text 518 39 creation arguments:;
 #X text 438 71 2 (optional): table name for phase response;
 #X obj 266 260 butterworth3~ 80 100000 0;
+#X obj 409 353 * -1;
 #X connect 0 0 59 0;
 #X connect 1 0 6 0;
 #X connect 2 0 4 0;
@@ -69,7 +70,7 @@ need the three outputs of filter-graph1 \, plus the filter output.
 #X connect 3 0 8 0;
 #X connect 4 0 31 0;
 #X connect 5 0 33 1;
-#X connect 5 0 47 1;
+#X connect 5 0 60 0;
 #X connect 6 0 5 0;
 #X connect 7 0 36 0;
 #X connect 8 0 24 0;
@@ -119,3 +120,4 @@ need the three outputs of filter-graph1 \, plus the filter output.
 #X connect 48 0 6 4;
 #X connect 48 0 59 4;
 #X connect 59 0 4 0;
+#X connect 60 0 47 1;
