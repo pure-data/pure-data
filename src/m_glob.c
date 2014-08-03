@@ -37,6 +37,11 @@ void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_watchdog(t_pd *dummy);
 void glob_savepreferences(t_pd *dummy);
 
+static void glob_helpintro(t_pd *dummy)
+{
+    open_via_helppath("intro.pd", "");
+}
+
 static void glob_compatibility(t_pd *dummy, t_floatarg level)
 {
     int dspwas = canvas_suspend_dsp();
@@ -167,7 +172,10 @@ void glob_init(void)
         gensym("perf"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_compatibility,
         gensym("compatibility"), A_FLOAT, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_plugindispatch, gensym("plugin-dispatch"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_plugindispatch,
+        gensym("plugin-dispatch"), A_GIMME, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_helpintro,
+        gensym("help-intro"), A_GIMME, 0);
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
     class_addmethod(glob_pdobject, (t_method)glob_watchdog,
         gensym("watchdog"), 0);

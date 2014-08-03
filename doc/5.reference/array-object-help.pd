@@ -3,11 +3,11 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 185 76 694 542 12;
+#N canvas 311 131 694 542 12;
 #X obj 208 496 list;
 #X text 34 496 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 849 222 900 716 define 0;
+#N canvas 845 218 900 716 define 0;
 #X text 295 562 creation arguments:;
 #X text 325 597 optional name;
 #X text 322 164 read from a file;
@@ -15,7 +15,6 @@
 #X text 32 20 "array define" maintains an array and can name it so
 that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 323 580 optional -k flag to keep contents (TBW);
 #X text 324 614 optional size (100 by default);
 #X msg 35 138 const 0;
 #X text 325 138 set to a constant (0 \, for instance);
@@ -38,19 +37,20 @@ those above - xticks \, etc \, and also lists to set values.;
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
 #X obj 38 659 array define -k array-help-2 10;
-#A 0 -0.320006 0 0 0 0 0 0 0 0 0;
+#A 0 -0.320006 0 0 0 0.973333 0 0 0 0 0;
 #X msg 49 313 send array-help-send;
-#X connect 7 0 11 0;
-#X connect 9 0 11 0;
-#X connect 10 0 11 0;
-#X connect 12 0 11 0;
-#X connect 14 0 21 0;
-#X connect 17 0 20 0;
-#X connect 20 0 22 0;
-#X connect 20 1 22 1;
-#X connect 21 0 16 0;
-#X connect 22 0 18 0;
-#X connect 25 0 11 0;
+#X text 323 580 optional -k flag to keep contents;
+#X connect 6 0 10 0;
+#X connect 8 0 10 0;
+#X connect 9 0 10 0;
+#X connect 11 0 10 0;
+#X connect 13 0 20 0;
+#X connect 16 0 19 0;
+#X connect 19 0 21 0;
+#X connect 19 1 21 1;
+#X connect 20 0 15 0;
+#X connect 21 0 17 0;
+#X connect 24 0 10 0;
 #X restore 486 212 pd define;
 #X obj 112 496 text;
 #X obj 90 236 array size;

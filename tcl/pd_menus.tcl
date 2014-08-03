@@ -305,6 +305,8 @@ proc ::pd_menus::build_help_menu {mymenu} {
         -command {menu_doc_open doc/1.manual index.htm}
     $mymenu add command -label [_ "Browser..."] \
         -command {menu_helpbrowser} 
+    $mymenu add command -label [_ "List of objects..."] \
+        -command {pdsend "pd help-intro"} 
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
         -command {menu_openfile {http://puredata.info}} 

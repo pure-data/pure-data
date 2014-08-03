@@ -17,8 +17,6 @@
 void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
     int selectem);
 
-void open_via_helppath(const char *name, const char *dir);
-
 /* ------------------ forward declarations --------------- */
 static void canvas_doclear(t_canvas *x);
 static void glist_setlastxy(t_glist *gl, int xval, int yval);

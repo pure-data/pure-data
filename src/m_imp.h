@@ -102,5 +102,8 @@ EXTERN int obj_sigoutletindex(t_object *x, int m);
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
 EXTERN void glob_quit(void *dummy);
+EXTERN void open_via_helppath(const char *name, const char *dir);
+
+
 #define __m_imp_h_
 #endif /* __m_imp_h_ */

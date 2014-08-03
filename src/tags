@@ -22,34 +22,34 @@ ALSA_SAMPLEWIDTH_16	s_audio_alsa.h	9;"	d
 ALSA_SAMPLEWIDTH_32	s_audio_alsa.h	10;"	d
 ALSA_XFERSIZE16	s_audio_alsa.h	11;"	d
 ALSA_XFERSIZE32	s_audio_alsa.h	12;"	d
-ALTMOD	g_editor.c	1211;"	d	file:
-API_ALSA	s_stuff.h	195;"	d
-API_AUDIOUNIT	s_stuff.h	201;"	d
-API_DEFAULT	s_stuff.h	212;"	d
-API_DEFAULT	s_stuff.h	215;"	d
-API_DEFAULT	s_stuff.h	218;"	d
-API_DEFAULT	s_stuff.h	221;"	d
-API_DEFAULT	s_stuff.h	224;"	d
-API_DEFAULT	s_stuff.h	227;"	d
-API_DEFAULT	s_stuff.h	230;"	d
-API_DEFAULT	s_stuff.h	236;"	d
+ALTMOD	g_editor.c	1212;"	d	file:
+API_ALSA	s_stuff.h	196;"	d
+API_AUDIOUNIT	s_stuff.h	202;"	d
+API_DEFAULT	s_stuff.h	213;"	d
+API_DEFAULT	s_stuff.h	216;"	d
+API_DEFAULT	s_stuff.h	219;"	d
+API_DEFAULT	s_stuff.h	222;"	d
+API_DEFAULT	s_stuff.h	225;"	d
+API_DEFAULT	s_stuff.h	228;"	d
+API_DEFAULT	s_stuff.h	231;"	d
+API_DEFAULT	s_stuff.h	237;"	d
 API_DEFAULTMIDI	s_midi.c	44;"	d	file:
-API_DEFSTRING	s_stuff.h	213;"	d
-API_DEFSTRING	s_stuff.h	216;"	d
-API_DEFSTRING	s_stuff.h	219;"	d
-API_DEFSTRING	s_stuff.h	222;"	d
-API_DEFSTRING	s_stuff.h	225;"	d
-API_DEFSTRING	s_stuff.h	228;"	d
-API_DEFSTRING	s_stuff.h	231;"	d
-API_DEFSTRING	s_stuff.h	237;"	d
-API_DUMMY	s_stuff.h	203;"	d
-API_ESD	s_stuff.h	202;"	d
-API_JACK	s_stuff.h	199;"	d
-API_MMIO	s_stuff.h	197;"	d
-API_NONE	s_stuff.h	194;"	d
-API_OSS	s_stuff.h	196;"	d
-API_PORTAUDIO	s_stuff.h	198;"	d
-API_SGI	s_stuff.h	200;"	d
+API_DEFSTRING	s_stuff.h	214;"	d
+API_DEFSTRING	s_stuff.h	217;"	d
+API_DEFSTRING	s_stuff.h	220;"	d
+API_DEFSTRING	s_stuff.h	223;"	d
+API_DEFSTRING	s_stuff.h	226;"	d
+API_DEFSTRING	s_stuff.h	229;"	d
+API_DEFSTRING	s_stuff.h	232;"	d
+API_DEFSTRING	s_stuff.h	238;"	d
+API_DUMMY	s_stuff.h	204;"	d
+API_ESD	s_stuff.h	203;"	d
+API_JACK	s_stuff.h	200;"	d
+API_MMIO	s_stuff.h	198;"	d
+API_NONE	s_stuff.h	195;"	d
+API_OSS	s_stuff.h	197;"	d
+API_PORTAUDIO	s_stuff.h	199;"	d
+API_SGI	s_stuff.h	201;"	d
 ARRAYPAGESIZE	g_array.c	13;"	d	file:
 ARRAYWRITECHUNKSIZE	g_array.c	712;"	d	file:
 ATOMBUFSIZE	g_text.c	491;"	d	file:
@@ -129,7 +129,7 @@ CLOCKHZ	x_misc.c	27;"	d	file:
 CLOCKHZ	x_misc.c	31;"	d	file:
 CLOSED	g_template.c	788;"	d	file:
 COSTABSIZE	m_pd.h	613;"	d
-CTRLMOD	g_editor.c	1210;"	d	file:
+CTRLMOD	g_editor.c	1211;"	d	file:
 CURSOR_EDITMODE_CONNECT	g_canvas.h	334;"	d
 CURSOR_EDITMODE_DISCONNECT	g_canvas.h	335;"	d
 CURSOR_EDITMODE_NOTHING	g_canvas.h	333;"	d
@@ -140,7 +140,7 @@ CURSOR_RUNMODE_NOTHING	g_canvas.h	329;"	d
 CURSOR_RUNMODE_THICKEN	g_canvas.h	331;"	d
 DACJITTER	s_audio_mmio.c	254;"	d	file:
 DB	d_fftroutine.c	121;"	d	file:
-DCLICKINTERVAL	g_editor.c	1216;"	d	file:
+DCLICKINTERVAL	g_editor.c	1217;"	d	file:
 DCST_LOOP_DIV	d_fftsg_h.c	551;"	d	file:
 DEBUG	s_audio_alsa.c	31;"	d	file:
 DEBUG	s_audio_alsamm.c	130;"	d	file:
@@ -153,22 +153,22 @@ DEBUG2	s_audio_alsamm.c	162;"	d	file:
 DEBUG2	s_audio_oss.c	35;"	d	file:
 DEBUG_MESSDOWN	s_inter.c	55;"	d	file:
 DEBUG_MESSUP	s_inter.c	54;"	d	file:
-DEFAULTADVANCE	s_stuff.h	249;"	d
-DEFAULTADVANCE	s_stuff.h	252;"	d
-DEFAULTADVANCE	s_stuff.h	254;"	d
-DEFAULTAUDIODEV	s_stuff.h	240;"	d
+DEFAULTADVANCE	s_stuff.h	250;"	d
+DEFAULTADVANCE	s_stuff.h	253;"	d
+DEFAULTADVANCE	s_stuff.h	255;"	d
+DEFAULTAUDIODEV	s_stuff.h	241;"	d
 DEFAULTCHANS	s_audio_mmio.c	25;"	d	file:
 DEFAULTFONT	s_main.c	179;"	d	file:
 DEFAULTLINEGRAIN	x_time.c	224;"	d	file:
 DEFAULTSRATE	s_audio_mmio.c	26;"	d	file:
-DEFAULTSRATE	s_stuff.h	247;"	d
+DEFAULTSRATE	s_stuff.h	248;"	d
 DEFBUFFER	s_audio_mmio.c	33;"	d	file:
 DEFBUFPERCHAN	d_soundfile.c	1522;"	d	file:
 DEFDACBLKSIZE	s_audio_esd.c	71;"	d	file:
 DEFDACBLKSIZE	s_stuff.h	66;"	d
 DEFDELVS	d_delay.c	10;"	d	file:
 DEFMAXSIZE	d_soundfile.c	1144;"	d	file:
-DEFMIDIDEV	s_stuff.h	245;"	d
+DEFMIDIDEV	s_stuff.h	246;"	d
 DEFREALDACBLKSIZE	s_audio_mmio.c	30;"	d	file:
 DEFSENDVS	d_global.c	10;"	d	file:
 DEVDESCSIZE	s_audio.c	30;"	d	file:
@@ -204,7 +204,7 @@ FAST_TRIG	d_fft_mayer.c	66;"	d	file:
 FFTFLT	d_fft_fftsg.c	30;"	d	file:
 FFT_NET	d_fftroutine.c	/^} FFT_NET;$/;"	t	typeref:struct:Tfft_net	file:
 FHT_SWAP	d_fft_mayer.c	70;"	d	file:
-FIRSTPORTNUM	s_inter.c	827;"	d	file:
+FIRSTPORTNUM	s_inter.c	833;"	d	file:
 FMAX	s_audio_alsa.c	46;"	d	file:
 FMAX	s_audio_oss.c	84;"	d	file:
 FORMAT_AIFF	d_soundfile.c	53;"	d	file:
@@ -353,15 +353,15 @@ LPCIRCULARBUFFER	s_midi_mmio.c	/^typedef CIRCULARBUFFER FAR *LPCIRCULARBUFFER;$/
 LPEVENT	s_midi_mmio.c	/^typedef EVENT FAR *LPEVENT;$/;"	t	file:
 MAG	d_fftroutine.c	115;"	d	file:
 MAXADDMESSV	m_binbuf.c	259;"	d	file:
-MAXAUDIOINDEV	s_stuff.h	242;"	d
-MAXAUDIOOUTDEV	s_stuff.h	243;"	d
+MAXAUDIOINDEV	s_stuff.h	243;"	d
+MAXAUDIOOUTDEV	s_stuff.h	244;"	d
 MAXBUFFER	s_audio_mmio.c	32;"	d	file:
 MAXBUFSIZE	d_soundfile.c	1524;"	d	file:
 MAXBYTESPERSAMPLE	d_soundfile.c	1517;"	d	file:
 MAXCHANS	s_audio_esd.c	72;"	d	file:
 MAXFFT	d_fft_fftw.c	15;"	d	file:
-MAXFONTS	s_inter.c	829;"	d	file:
-MAXLOG	x_arithmetic.c	622;"	d	file:
+MAXFONTS	s_inter.c	835;"	d	file:
+MAXLOG	x_arithmetic.c	627;"	d	file:
 MAXLOGSIG	m_pd.h	568;"	d
 MAXMIDIINDEV	s_stuff.h	107;"	d
 MAXMIDIOUTDEV	s_stuff.h	108;"	d
@@ -443,11 +443,11 @@ MSW	m_pd.h	20;"	d
 M_PI_2	d_fftsg_h.c	463;"	d	file:
 NAPORTS	s_audio_mmio.c	23;"	d	file:
 NBIN	m_sched.c	177;"	d	file:
-NDEFAULTFONT	s_inter.c	833;"	d	file:
+NDEFAULTFONT	s_inter.c	839;"	d	file:
 NFONT	s_main.c	129;"	d	file:
-NHIST	g_editor.c	2558;"	d	file:
+NHIST	g_editor.c	2559;"	d	file:
 NHIST	m_sched.c	178;"	d	file:
-NOMOD	g_editor.c	1208;"	d	file:
+NOMOD	g_editor.c	1209;"	d	file:
 NOMOUSE	g_template.c	790;"	d	file:
 NOTHING	s_audio_mmio.c	467;"	d	file:
 NRESYNC	m_sched.c	236;"	d	file:
@@ -517,7 +517,7 @@ REQUEST_NOTHING	d_soundfile.c	1526;"	d	file:
 REQUEST_OPEN	d_soundfile.c	1527;"	d	file:
 REQUEST_QUIT	d_soundfile.c	1529;"	d	file:
 RESYNC	s_audio_mmio.c	466;"	d	file:
-RIGHTCLICK	g_editor.c	1212;"	d	file:
+RIGHTCLICK	g_editor.c	1213;"	d	file:
 RMARGIN	g_rtext.c	20;"	d	file:
 RME_DEFAULTCH	s_audio_oss.c	42;"	d	file:
 RTEXT_DBL	g_canvas.h	425;"	d
@@ -548,7 +548,7 @@ SETFLOAT	m_pd.h	323;"	d
 SETPOINTER	m_pd.h	321;"	d
 SETSEMI	m_pd.h	319;"	d
 SETSYMBOL	m_pd.h	324;"	d
-SHIFTMOD	g_editor.c	1209;"	d	file:
+SHIFTMOD	g_editor.c	1210;"	d	file:
 SHORT_SIZE	d_fftroutine.c	103;"	d	file:
 SMALLMSG	m_binbuf.c	567;"	d	file:
 SNDCTL_DSP_GETISPACE	s_audio_oss.c	11;"	d	file:
@@ -609,7 +609,7 @@ UNDO_UNDO	g_canvas.h	498;"	d
 UNITBIT32	d_array.c	501;"	d	file:
 UNITBIT32	d_osc.c	11;"	d	file:
 UPBUFSIZE	g_rtext.c	181;"	d	file:
-USEAPI_DUMMY	s_stuff.h	234;"	d
+USEAPI_DUMMY	s_stuff.h	235;"	d
 USE_CDFT_THREADS	d_fft_fftsg.c	898;"	d	file:
 USE_CDFT_THREADS	d_fft_fftsg.c	925;"	d	file:
 USE_CDFT_THREADS	d_fftsg_h.c	489;"	d	file:
@@ -638,11 +638,11 @@ WRAPFWD	s_audio_mmio.c	305;"	d	file:
 WRITEHDRSIZE	d_soundfile.c	159;"	d	file:
 WRITESIZE	d_soundfile.c	1521;"	d	file:
 WinMain	s_entry.c	/^int WINAPI WinMain(HINSTANCE hInstance,$/;"	f
-XTOLERANCE	g_editor.c	2556;"	d	file:
+XTOLERANCE	g_editor.c	2557;"	d	file:
 XTRASAMPS	d_delay.c	35;"	d	file:
-YTOLERANCE	g_editor.c	2557;"	d	file:
+YTOLERANCE	g_editor.c	2558;"	d	file:
 _RINGBUFFER_H	s_audio_paring.h	2;"	d
-__m_imp_h_	m_imp.h	95;"	d
+__m_imp_h_	m_imp.h	105;"	d
 __m_pd_h_	m_pd.h	768;"	d
 _abs_tilde	d_math.c	/^typedef struct _abs_tilde$/;"	s	file:
 _adc	d_dac.c	/^typedef struct _adc$/;"	s	file:
@@ -1181,7 +1181,6 @@ bendin_free	x_midi.c	/^static void bendin_free(t_bendin *x)$/;"	f	file:
 bendin_list	x_midi.c	/^static void bendin_list(t_bendin *x, t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 bendin_new	x_midi.c	/^static void *bendin_new(t_floatarg f)$/;"	f	file:
 bendin_setup	x_midi.c	/^static void bendin_setup(void)$/;"	f	file:
-bendin_sym	x_midi.c	/^static t_symbol *bendin_sym;$/;"	v	file:
 bendout_class	x_midi.c	/^static t_class *bendout_class;$/;"	v	file:
 bendout_float	x_midi.c	/^static void bendout_float(t_bendout *x, t_float f)$/;"	f	file:
 bendout_new	x_midi.c	/^static void *bendout_new(t_floatarg channel)$/;"	f	file:
@@ -1562,7 +1561,7 @@ canvas_paste	g_editor.c	/^static void canvas_paste(t_canvas *x)$/;"	f	file:
 canvas_pop	g_canvas.c	/^static void canvas_pop(t_canvas *x, t_floatarg fvis)$/;"	f	file:
 canvas_popabstraction	g_canvas.c	/^void canvas_popabstraction(t_canvas *x)$/;"	f
 canvas_print	g_editor.c	/^void canvas_print(t_canvas *x, t_symbol *s)$/;"	f
-canvas_properties	g_editor.c	/^void canvas_properties(t_glist *x)$/;"	f
+canvas_properties	g_editor.c	/^void canvas_properties(t_gobj*z, t_glist*unused)$/;"	f
 canvas_readerror	g_readwrite.c	/^static void canvas_readerror(int natoms, t_atom *vec, int message, $/;"	f	file:
 canvas_readscalar	g_readwrite.c	/^int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,$/;"	f
 canvas_readwrite_for_class	g_readwrite.c	/^void canvas_readwrite_for_class(t_class *c)$/;"	f
@@ -1809,7 +1808,6 @@ ctlin_free	x_midi.c	/^static void ctlin_free(t_ctlin *x)$/;"	f	file:
 ctlin_list	x_midi.c	/^static void ctlin_list(t_ctlin *x, t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 ctlin_new	x_midi.c	/^static void *ctlin_new(t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 ctlin_setup	x_midi.c	/^static void ctlin_setup(void)$/;"	f	file:
-ctlin_sym	x_midi.c	/^static t_symbol *ctlin_sym;$/;"	v	file:
 ctlout_class	x_midi.c	/^static t_class *ctlout_class;$/;"	v	file:
 ctlout_float	x_midi.c	/^static void ctlout_float(t_ctlout *x, t_float f)$/;"	f	file:
 ctlout_new	x_midi.c	/^static void *ctlout_new(t_floatarg ctl, t_floatarg channel)$/;"	f	file:
@@ -2400,6 +2398,7 @@ glob_path_dialog	s_path.c	/^void glob_path_dialog(t_pd *dummy, t_symbol *s, int 
 glob_pdobject	m_glob.c	/^t_class *glob_pdobject;$/;"	v
 glob_perf	m_glob.c	/^static void glob_perf(t_pd *dummy, float f)$/;"	f	file:
 glob_ping	s_inter.c	/^void glob_ping(t_pd *dummy)$/;"	f
+glob_plugindispatch	m_glob.c	/^void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)$/;"	f
 glob_quit	s_inter.c	/^void glob_quit(void *dummy)$/;"	f
 glob_savepreferences	s_file.c	/^void glob_savepreferences(t_pd *dummy)$/;"	f
 glob_setfilename	g_canvas.c	/^void glob_setfilename(void *dummy, t_symbol *filesym, t_symbol *dirsym)$/;"	f
@@ -2952,6 +2951,7 @@ midiInCaps	s_midi_mmio.c	/^MIDIINCAPS midiInCaps[MAXMIDIINDEV]; \/\/ Device capa
 midiInputHandler	s_midi_mmio.c	/^void FAR PASCAL midiInputHandler($/;"	f
 midi_alsa_getdevs	s_midi_alsa.c	/^void midi_alsa_getdevs(char *indevlist, int *nindevs,$/;"	f
 midi_alsa_init	s_midi_alsa.c	/^void midi_alsa_init(void)     $/;"	f
+midi_gensym	m_pd.c	/^static t_symbol *midi_gensym(const char *prefix, const char *name)$/;"	f	file:
 midi_getdevs	s_midi_dummy.c	/^void midi_getdevs(char *indevlist, int *nindevs,$/;"	f
 midi_getdevs	s_midi_mmio.c	/^void midi_getdevs(char *indevlist, int *nindevs,$/;"	f
 midi_getdevs	s_midi_oss.c	/^void midi_getdevs(char *indevlist, int *nindevs,$/;"	f
@@ -2973,14 +2973,12 @@ midiclkin_free	x_midi.c	/^static void midiclkin_free(t_midiclkin *x)$/;"	f	file:
 midiclkin_list	x_midi.c	/^static void midiclkin_list(t_midiclkin *x, t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 midiclkin_new	x_midi.c	/^static void *midiclkin_new(t_floatarg f)$/;"	f	file:
 midiclkin_setup	x_midi.c	/^static void midiclkin_setup(void)$/;"	f	file:
-midiclkin_sym	x_midi.c	/^static t_symbol *midiclkin_sym;$/;"	v	file:
 midiev	s_midi_alsa.c	/^static snd_midi_event_t *midiev;$/;"	v	file:
 midiin_class	x_midi.c	/^static t_class *midiin_class, *sysexin_class;$/;"	v	file:
 midiin_free	x_midi.c	/^static void midiin_free(t_midiin *x)$/;"	f	file:
 midiin_list	x_midi.c	/^static void midiin_list(t_midiin *x, t_symbol *s, int ac, t_atom *av)$/;"	f	file:
 midiin_new	x_midi.c	/^static void *midiin_new( void)$/;"	f	file:
 midiin_setup	x_midi.c	/^static void midiin_setup(void)$/;"	f	file:
-midiin_sym	x_midi.c	/^static t_symbol *midiin_sym, *sysexin_sym;$/;"	v	file:
 midiout_class	x_midi.c	/^static t_class *midiout_class;$/;"	v	file:
 midiout_float	x_midi.c	/^static void midiout_float(t_midiout *x, t_floatarg f)$/;"	f	file:
 midiout_new	x_midi.c	/^static void *midiout_new(t_floatarg portno)$/;"	f	file:
@@ -2991,7 +2989,6 @@ midirealtimein_free	x_midi.c	/^static void midirealtimein_free(t_midirealtimein 
 midirealtimein_list	x_midi.c	/^static void midirealtimein_list(t_midirealtimein *x, t_symbol *s,$/;"	f	file:
 midirealtimein_new	x_midi.c	/^static void *midirealtimein_new( void)$/;"	f	file:
 midirealtimein_setup	x_midi.c	/^static void midirealtimein_setup(void)$/;"	f	file:
-midirealtimein_sym	x_midi.c	/^static t_symbol *midirealtimein_sym;$/;"	v	file:
 min_class	d_arithmetic.c	/^static t_class *min_class, *scalarmin_class;$/;"	v	file:
 min_dsp	d_arithmetic.c	/^static void min_dsp(t_min *x, t_signal **sp)$/;"	f	file:
 min_new	d_arithmetic.c	/^static void *min_new(t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
@@ -3163,7 +3160,6 @@ notein_free	x_midi.c	/^static void notein_free(t_notein *x)$/;"	f	file:
 notein_list	x_midi.c	/^static void notein_list(t_notein *x, t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 notein_new	x_midi.c	/^static void *notein_new(t_floatarg f)$/;"	f	file:
 notein_setup	x_midi.c	/^static void notein_setup(void)$/;"	f	file:
-notein_sym	x_midi.c	/^static t_symbol *notein_sym;$/;"	v	file:
 noteout_class	x_midi.c	/^static t_class *noteout_class;$/;"	v	file:
 noteout_float	x_midi.c	/^static void noteout_float(t_noteout *x, t_float f)$/;"	f	file:
 noteout_new	x_midi.c	/^static void *noteout_new(t_floatarg channel)$/;"	f	file:
@@ -3379,6 +3375,7 @@ parsetimeunits	x_time.c	/^void parsetimeunits(void *x, t_float amount, t_symbol 
 paste_canvas	g_editor.c	/^static t_canvas *paste_canvas;$/;"	v	file:
 paste_onset	g_editor.c	/^static int paste_onset;$/;"	v	file:
 pd_bang	m_pd.c	/^void pd_bang(t_pd *x)$/;"	f
+pd_bendin_sym	m_imp.h	/^    t_symbol *pd_bendin_sym;$/;"	m	struct:_pdinstance
 pd_bind	m_pd.c	/^void pd_bind(t_pd *x, t_symbol *s)$/;"	f
 pd_canvaslist	m_imp.h	/^    t_canvas *pd_canvaslist;    \/* list of all root canvases *\/$/;"	m	struct:_pdinstance
 pd_canvasmaker	m_class.c	/^t_pd pd_canvasmaker;    \/* factory for creating canvases *\/$/;"	v
@@ -3390,6 +3387,7 @@ pd_clock_setlist	m_imp.h	/^    t_clock *pd_clock_setlist;  \/* list of set clock
 pd_compatibilitylevel	m_glob.c	/^int pd_compatibilitylevel = 100000;  \/* e.g., 43 for pd 0.43 compatibility *\/$/;"	v
 pd_compiledate	s_main.c	/^char pd_compiledate[] = __DATE__;$/;"	v
 pd_compiletime	s_main.c	/^char pd_compiletime[] = __TIME__;$/;"	v
+pd_ctlin_sym	m_imp.h	/^    t_symbol *pd_ctlin_sym;$/;"	m	struct:_pdinstance
 pd_defaultanything	m_class.c	/^static void pd_defaultanything(t_pd *x, t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 pd_defaultbang	m_class.c	/^static void pd_defaultbang(t_pd *x)$/;"	f	file:
 pd_defaultfloat	m_class.c	/^static void pd_defaultfloat(t_pd *x, t_float f)$/;"	f	file:
@@ -3399,7 +3397,7 @@ pd_defaultsymbol	m_class.c	/^static void pd_defaultsymbol(t_pd *x, t_symbol *s)$
 pd_doloadbang	m_pd.c	/^void pd_doloadbang(void)$/;"	f
 pd_dspchain	m_imp.h	/^    t_int *pd_dspchain;         \/* DSP chain *\/$/;"	m	struct:_pdinstance
 pd_dspchainsize	m_imp.h	/^    int pd_dspchainsize;        \/* number of elements in DSP chain *\/$/;"	m	struct:_pdinstance
-pd_dspstate	m_imp.h	/^    int pd_dspstate;            \/* whether DSP is on or off *\/  $/;"	m	struct:_pdinstance
+pd_dspstate	m_imp.h	/^    int pd_dspstate;            \/* whether DSP is on or off *\/$/;"	m	struct:_pdinstance
 pd_emptylist	m_class.c	/^void pd_emptylist(t_pd *x)$/;"	f
 pd_error	s_print.c	/^void pd_error(void *object, const char *fmt, ...)$/;"	f
 pd_fft	d_fftroutine.c	/^void pd_fft(t_float *buf, int npoints, int inverse)$/;"	f
@@ -3414,18 +3412,26 @@ pd_init	m_pd.c	/^void pd_init(void)$/;"	f
 pd_jack_error_callback	s_audio_jack.c	/^static void pd_jack_error_callback(const char *desc) {$/;"	f	file:
 pd_list	m_pd.c	/^void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv)$/;"	f
 pd_loadingabstraction	m_pd.c	/^static t_symbol *pd_loadingabstraction;$/;"	v	file:
+pd_midiclkin_sym	m_imp.h	/^    t_symbol *pd_midiclkin_sym;$/;"	m	struct:_pdinstance
+pd_midiin_sym	m_imp.h	/^    t_symbol *pd_midiin_sym;    \/* symbols bound to incoming MIDI... *\/$/;"	m	struct:_pdinstance
+pd_midirealtimein_sym	m_imp.h	/^    t_symbol *pd_midirealtimein_sym;$/;"	m	struct:_pdinstance
 pd_new	m_pd.c	/^t_pd *pd_new(t_class *c)$/;"	f
 pd_newest	m_class.c	/^t_pd *pd_newest(void)$/;"	f
+pd_notein_sym	m_imp.h	/^    t_symbol *pd_notein_sym;$/;"	m	struct:_pdinstance
 pd_objectmaker	m_class.c	/^t_pd pd_objectmaker;    \/* factory for creating "object" boxes *\/$/;"	v
 pd_objectmaker	m_pd.h	/^EXTERN t_pd pd_objectmaker;     \/* factory for creating "object" boxes *\/$/;"	v
+pd_pgmin_sym	m_imp.h	/^    t_symbol *pd_pgmin_sym;$/;"	m	struct:_pdinstance
 pd_pointer	m_pd.c	/^void pd_pointer(t_pd *x, t_gpointer *gp)$/;"	f
+pd_polytouchin_sym	m_imp.h	/^    t_symbol *pd_polytouchin_sym;$/;"	m	struct:_pdinstance
 pd_popsym	m_pd.c	/^void pd_popsym(t_pd *x)$/;"	f
 pd_pushsym	m_pd.c	/^void pd_pushsym(t_pd *x)$/;"	f
 pd_setinstance	m_pd.c	/^EXTERN void pd_setinstance(t_pdinstance *x)$/;"	f
 pd_setloadingabstraction	m_pd.c	/^int pd_setloadingabstraction(t_symbol *sym)$/;"	f
 pd_symbol	m_pd.c	/^void pd_symbol(t_pd *x, t_symbol *s)$/;"	f
+pd_sysexin_sym	m_imp.h	/^    t_symbol *pd_sysexin_sym;$/;"	m	struct:_pdinstance
 pd_systime	m_imp.h	/^    double pd_systime;          \/* global time in Pd ticks *\/$/;"	m	struct:_pdinstance
 pd_this	m_pd.c	/^t_pdinstance *pd_this;$/;"	v
+pd_touchin_sym	m_imp.h	/^    t_symbol *pd_touchin_sym;$/;"	m	struct:_pdinstance
 pd_typedmess	m_class.c	/^void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)$/;"	f
 pd_unbind	m_pd.c	/^void pd_unbind(t_pd *x, t_symbol *s)$/;"	f
 pd_version	s_main.c	/^char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) " (" stringify(PD_TEST_VERSION) ")";$/;"	v
@@ -3437,8 +3443,9 @@ pdfloat_new	x_connective.c	/^static void *pdfloat_new(t_pd *dummy, t_float f)$/;
 pdfloat_new2	x_connective.c	/^static void *pdfloat_new2(t_floatarg f)$/;"	f	file:
 pdfloat_send	x_connective.c	/^static void pdfloat_send(t_pdfloat *x, t_symbol *s)$/;"	f	file:
 pdfloat_setup	x_connective.c	/^void pdfloat_setup(void)$/;"	f
+pdinstance_donew	m_pd.c	/^static t_pdinstance *pdinstance_donew(int useprefix)$/;"	f	file:
 pdinstance_free	m_pd.c	/^EXTERN void pdinstance_free(t_pdinstance *x)$/;"	f
-pdinstance_new	m_pd.c	/^t_pdinstance *pdinstance_new(void)$/;"	f
+pdinstance_new	m_pd.c	/^EXTERN t_pdinstance *pdinstance_new(void)$/;"	f
 pdint_bang	x_connective.c	/^static void pdint_bang(t_pdint *x)$/;"	f	file:
 pdint_class	x_connective.c	/^static t_class *pdint_class;$/;"	v	file:
 pdint_float	x_connective.c	/^static void pdint_float(t_pdint *x, t_float f)$/;"	f	file:
@@ -3457,7 +3464,6 @@ pgmin_free	x_midi.c	/^static void pgmin_free(t_pgmin *x)$/;"	f	file:
 pgmin_list	x_midi.c	/^static void pgmin_list(t_pgmin *x, t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 pgmin_new	x_midi.c	/^static void *pgmin_new(t_floatarg f)$/;"	f	file:
 pgmin_setup	x_midi.c	/^static void pgmin_setup(void)$/;"	f	file:
-pgmin_sym	x_midi.c	/^static t_symbol *pgmin_sym;$/;"	v	file:
 pgmout_class	x_midi.c	/^static t_class *pgmout_class;$/;"	v	file:
 pgmout_float	x_midi.c	/^static void pgmout_float(t_pgmout *x, t_floatarg f)$/;"	f	file:
 pgmout_new	x_midi.c	/^static void *pgmout_new(t_floatarg channel)$/;"	f	file:
@@ -3513,7 +3519,6 @@ polytouchin_free	x_midi.c	/^static void polytouchin_free(t_polytouchin *x)$/;"	f
 polytouchin_list	x_midi.c	/^static void polytouchin_list(t_polytouchin *x, t_symbol *s, int argc,$/;"	f	file:
 polytouchin_new	x_midi.c	/^static void *polytouchin_new(t_floatarg f)$/;"	f	file:
 polytouchin_setup	x_midi.c	/^static void polytouchin_setup(void)$/;"	f	file:
-polytouchin_sym	x_midi.c	/^static t_symbol *polytouchin_sym;$/;"	v	file:
 polytouchout_class	x_midi.c	/^static t_class *polytouchout_class;$/;"	v	file:
 polytouchout_float	x_midi.c	/^static void polytouchout_float(t_polytouchout *x, t_float n)$/;"	f	file:
 polytouchout_new	x_midi.c	/^static void *polytouchout_new(t_floatarg channel)$/;"	f	file:
@@ -4282,6 +4287,7 @@ sys_huphandler	s_inter.c	/^static void sys_huphandler(int n)$/;"	f	file:
 sys_idlehook	m_pd.h	/^EXTERN int (*sys_idlehook)(void);   \/* hook to add idle time computation *\/$/;"	v
 sys_idlehook	m_sched.c	/^int (*sys_idlehook)(void);$/;"	v
 sys_inchannels	s_audio.c	/^int sys_inchannels;$/;"	v
+sys_init_fdpoll	s_inter.c	/^void sys_init_fdpoll(void)$/;"	f
 sys_initloadpreferences	s_file.c	/^static void sys_initloadpreferences( void)$/;"	f	file:
 sys_initmidiqueue	s_midi.c	/^void sys_initmidiqueue( void)$/;"	f
 sys_initntclock	s_inter.c	/^static void sys_initntclock(void)$/;"	f	file:
@@ -4409,6 +4415,7 @@ sys_set_startup	s_path.c	/^void sys_set_startup( void)$/;"	f
 sys_setalarm	s_inter.c	/^void sys_setalarm(int microsec)$/;"	f
 sys_setchsr	s_audio.c	/^void sys_setchsr(int chin, int chout, int sr)$/;"	f
 sys_setextrapath	s_path.c	/^void sys_setextrapath(const char *p)$/;"	f
+sys_setmidiprefix	x_midi.c	/^void sys_setmidiprefix(const char *prefix)$/;"	f
 sys_setmiditimediff	s_midi.c	/^void sys_setmiditimediff(double inbuftime, double outbuftime)$/;"	f
 sys_signal	s_inter.c	/^static void sys_signal(int signo, sig_t sigfun)$/;"	f	file:
 sys_sleepgrain	m_sched.c	/^int sys_sleepgrain;$/;"	v
@@ -4448,7 +4455,6 @@ sys_whenupdate	s_midi.c	/^static double sys_whenupdate;$/;"	v	file:
 sysexin_class	x_midi.c	/^static t_class *midiin_class, *sysexin_class;$/;"	v	file:
 sysexin_free	x_midi.c	/^static void sysexin_free(t_midiin *x)$/;"	f	file:
 sysexin_new	x_midi.c	/^static void *sysexin_new( void)$/;"	f	file:
-sysexin_sym	x_midi.c	/^static t_symbol *midiin_sym, *sysexin_sym;$/;"	v	file:
 t_abs_tilde	d_math.c	/^} t_abs_tilde;$/;"	t	typeref:struct:_abs_tilde	file:
 t_activatefn	g_canvas.h	/^typedef void (*t_activatefn)(t_gobj *x, struct _glist *glist, int state);$/;"	t
 t_adc	d_dac.c	/^} t_adc;$/;"	t	typeref:struct:_adc	file:
@@ -4749,7 +4755,7 @@ t_sigwrap	d_math.c	/^} t_sigwrap;$/;"	t	typeref:struct:wrap	file:
 t_snapshot	d_ctl.c	/^} t_snapshot;$/;"	t	typeref:struct:_snapshot	file:
 t_socketnotifier	s_stuff.h	/^typedef void (*t_socketnotifier)(void *x, int n);$/;"	t
 t_socketreceivefn	s_stuff.h	/^typedef void (*t_socketreceivefn)(void *x, t_binbuf *b);$/;"	t
-t_socketreceiver	s_stuff.h	176;"	d
+t_socketreceiver	s_stuff.h	177;"	d
 t_soundfiler	d_soundfile.c	/^} t_soundfiler;$/;"	t	typeref:struct:_soundfiler	file:
 t_spigot	x_connective.c	/^} t_spigot;$/;"	t	typeref:struct:_spigot	file:
 t_stripnote	x_midi.c	/^} t_stripnote;$/;"	t	typeref:struct:_stripnote	file:
@@ -5088,7 +5094,6 @@ touchin_free	x_midi.c	/^static void touchin_free(t_touchin *x)$/;"	f	file:
 touchin_list	x_midi.c	/^static void touchin_list(t_touchin *x, t_symbol *s, int argc, t_atom *argv)$/;"	f	file:
 touchin_new	x_midi.c	/^static void *touchin_new(t_floatarg f)$/;"	f	file:
 touchin_setup	x_midi.c	/^static void touchin_setup(void)$/;"	f	file:
-touchin_sym	x_midi.c	/^static t_symbol *touchin_sym;$/;"	v	file:
 touchout_class	x_midi.c	/^static t_class *touchout_class;$/;"	v	file:
 touchout_float	x_midi.c	/^static void touchout_float(t_touchout *x, t_float f)$/;"	f	file:
 touchout_new	x_midi.c	/^static void *touchout_new(t_floatarg channel)$/;"	f	file:
@@ -5485,7 +5490,7 @@ x_bcol	g_all_guis.h	/^    int                x_bcol;$/;"	m	struct:_iemgui
 x_bigendian	d_soundfile.c	/^    int x_bigendian;        \/* true if file is big-endian *\/$/;"	m	struct:_readsf	file:
 x_biginc	d_ctl.c	/^    t_sample x_biginc;$/;"	m	struct:_line	file:
 x_bin	x_net.c	/^    int x_bin;$/;"	m	struct:_netsend	file:
-x_binbuf	x_text.c	1479;"	d	file:
+x_binbuf	x_text.c	1517;"	d	file:
 x_binbuf	x_text.c	243;"	d	file:
 x_binbufindex	g_all_guis.h	/^    int                x_binbufindex;       \/* where in binbuf to find these *\/$/;"	m	struct:_iemgui
 x_bindsym	x_text.c	/^    t_symbol *x_bindsym;$/;"	m	struct:_text_define	file:
@@ -5514,7 +5519,7 @@ x_canvas	g_template.c	/^    t_canvas *x_canvas;$/;"	m	struct:_drawnumber	file:
 x_canvas	g_template.c	/^    t_canvas *x_canvas;$/;"	m	struct:_plot	file:
 x_canvas	x_gui.c	/^    t_canvas *x_canvas;$/;"	m	struct:_savepanel	file:
 x_canvas	x_text.c	/^    t_canvas *x_canvas;     \/* owning canvas whose stub we use for x_gp *\/$/;"	m	struct:_text_define	file:
-x_canvas	x_text.c	1480;"	d	file:
+x_canvas	x_text.c	1518;"	d	file:
 x_canvas	x_text.c	244;"	d	file:
 x_center	g_all_guis.h	/^    int      x_center;$/;"	m	struct:_hslider
 x_chainonset	d_ugen.c	/^    int x_chainonset;   \/* beginning of code in DSP chain *\/$/;"	m	struct:_block	file:
@@ -5814,6 +5819,7 @@ x_lastout	d_filter.c	/^    t_sample x_lastout;$/;"	m	struct:sigsamphold	file:
 x_lastre	d_filter.c	/^    t_sample x_lastre;$/;"	m	struct:sigcpole	file:
 x_lastre	d_filter.c	/^    t_sample x_lastre;$/;"	m	struct:sigczero	file:
 x_lastre	d_filter.c	/^    t_sample x_lastre;$/;"	m	struct:sigczero_rev	file:
+x_lastto	x_text.c	/^    t_symbol *x_lastto;     \/* destination symbol if we're after a comma *\/$/;"	m	struct:_text_sequence	file:
 x_lcol	g_all_guis.h	/^    int                x_lcol;$/;"	m	struct:_iemgui
 x_ldx	g_all_guis.h	/^    int                x_ldx;$/;"	m	struct:_iemgui
 x_ldy	g_all_guis.h	/^    int                x_ldy;$/;"	m	struct:_iemgui
@@ -5895,7 +5901,7 @@ x_numwidth	g_all_guis.h	/^    int      x_numwidth;$/;"	m	struct:_my_numbox
 x_ob	x_arithmetic.c	/^    t_object x_ob;$/;"	m	struct:_atan2	file:
 x_ob	x_arithmetic.c	/^    t_object x_ob;$/;"	m	struct:_clip	file:
 x_ob	x_connective.c	/^    t_object x_ob;$/;"	m	struct:_moses	file:
-x_ob	x_text.c	1478;"	d	file:
+x_ob	x_text.c	1516;"	d	file:
 x_ob	x_text.c	242;"	d	file:
 x_obj	d_arithmetic.c	/^    t_object x_obj;$/;"	m	struct:_max	file:
 x_obj	d_arithmetic.c	/^    t_object x_obj;$/;"	m	struct:_min	file:
