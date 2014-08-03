@@ -438,13 +438,18 @@ static void *binop3_pc_new(t_floatarg f)
 static void binop2_pc_bang(t_binop *x)
 {
     int n2 = x->x_f2;
-    outlet_float(x->x_obj.ob_outlet, ((int)(x->x_f1)) % (n2 ? n2 : 1));
+        /* apparently "%" raises an exception for INT_MIN and -1 */
+    if (n2 == -1)
+        outlet_float(x->x_obj.ob_outlet, 0);
+    else outlet_float(x->x_obj.ob_outlet, ((int)(x->x_f1)) % (n2 ? n2 : 1));
 }
 
 static void binop2_pc_float(t_binop *x, t_float f)
 {
     int n2 = x->x_f2;
-    outlet_float(x->x_obj.ob_outlet, ((int)(x->x_f1 = f)) % (n2 ? n2 : 1));
+    if (n2 == -1)
+        outlet_float(x->x_obj.ob_outlet, 0);
+    else outlet_float(x->x_obj.ob_outlet, ((int)(x->x_f1 = f)) % (n2 ? n2 : 1));
 }
 
 /* --------------------------- mod ---------------------------- */
