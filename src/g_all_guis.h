@@ -174,14 +174,12 @@ typedef struct _hslider
     t_iemgui x_gui;
     int      x_pos;
     int      x_val;
-    int      x_center;
-    int      x_thick;
     int      x_lin0_log1;
     int      x_steady;
     double   x_min;
     double   x_max;
     double   x_k;
-    float    x_fval;
+    t_float  x_fval;
 } t_hslider;
 
 typedef struct _hdial
@@ -192,6 +190,7 @@ typedef struct _hdial
     int      x_change;
     int      x_number;
     int      x_drawn;
+    t_float  x_fval;
     t_atom   x_at[2];
 } t_hdial;
 
@@ -220,7 +219,7 @@ typedef struct _vslider
     double   x_min;
     double   x_max;
     double   x_k;
-    float    x_fval;
+    t_float  x_fval;
 } t_vslider;
 
 typedef struct _vu
@@ -229,8 +228,8 @@ typedef struct _vu
     int      x_led_size;
     int      x_peak;
     int      x_rms;
-    t_float    x_fp;
-    t_float    x_fr;
+    t_float  x_fp;
+    t_float  x_fr;
     int      x_scale;
     void     *x_out_rms;
     void     *x_out_peak;
@@ -261,6 +260,7 @@ typedef struct _vdial
     int      x_change;
     int      x_number;
     int      x_drawn;
+    t_float  x_fval;
     t_atom   x_at[2];
 } t_vdial;
 

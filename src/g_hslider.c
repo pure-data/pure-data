@@ -486,22 +486,8 @@ static void hslider_float(t_hslider *x, t_floatarg f)
     double out;
 
     hslider_set(x, f);
-    if (pd_compatibilitylevel < 46)
-    {
-        if(x->x_lin0_log1)
-            out = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
-        else
-            out = (double)(x->x_val)*0.01*x->x_k + x->x_min;
-        if((out < 1.0e-10)&&(out > -1.0e-10))
-            out = 0.0;
-    }
-    else out = x->x_fval;
     if(x->x_gui.x_fsf.x_put_in2out)
-    {
-        outlet_float(x->x_gui.x_obj.ob_outlet, out);
-        if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_float(x->x_gui.x_snd->s_thing, out);
-    }
+        hslider_bang(x);
 }
 
 static void hslider_loadbang(t_hslider *x)
@@ -551,7 +537,7 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
         bflcol[0] = (int)atom_getintarg(13, argc, argv);
         bflcol[1] = (int)atom_getintarg(14, argc, argv);
         bflcol[2] = (int)atom_getintarg(15, argc, argv);
-        v = (int)atom_getfloatarg(16, argc, argv);
+        v = atom_getfloatarg(16, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 6, 0);
     if((argc == 18)&&IS_A_FLOAT(argv,17))

@@ -288,7 +288,7 @@ static void toggle_set(t_toggle *x, t_floatarg f)
 {
     int old = (x->x_on != 0);
     x->x_on = f;
-    if (f != 0.0)
+    if (f != 0.0 && pd_compatibilitylevel < 46)
         x->x_nonzero = f;
     if ((x->x_on != 0) != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);

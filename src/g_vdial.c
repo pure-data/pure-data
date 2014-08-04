@@ -241,7 +241,7 @@ static void vradio_save(t_gobj *z, t_binbuf *b)
     t_symbol *srl[3];
 
     iemgui_save(&x->x_gui, srl, bflcol);
-    binbuf_addv(b, "ssiisiiiisssiiiiiiii", gensym("#X"),gensym("obj"),
+    binbuf_addv(b, "ssiisiiiisssiiiiiiif", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix,
                 (int)x->x_gui.x_obj.te_ypix,
                 (pd_class(&x->x_gui.x_obj.ob_pd) == vradio_old_class ?
@@ -251,7 +251,7 @@ static void vradio_save(t_gobj *z, t_binbuf *b)
                 srl[0], srl[1], srl[2],
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
-                bflcol[0], bflcol[1], bflcol[2], x->x_on);
+                bflcol[0], bflcol[1], bflcol[2], x->x_fval);
     binbuf_addv(b, ";");
 }
 
@@ -321,6 +321,7 @@ static void vradio_set(t_vradio *x, t_floatarg f)
     int i=(int)f;
     int old;
 
+    x->x_fval = f;
     if(i < 0)
         i = 0;
     if(i >= x->x_number)
@@ -362,9 +363,10 @@ static void vradio_bang(t_vradio *x)
     }
     else
     {
-        outlet_float(x->x_gui.x_obj.ob_outlet, x->x_on);
+        float outval = (pd_compatibilitylevel < 46 ? x->x_on : x->x_fval);
+        outlet_float(x->x_gui.x_obj.ob_outlet, outval);
         if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_float(x->x_gui.x_snd->s_thing, x->x_on);
+            pd_float(x->x_gui.x_snd->s_thing, outval);
     }
 }
 
@@ -372,6 +374,7 @@ static void vradio_fout(t_vradio *x, t_floatarg f)
 {
     int i=(int)f;
 
+    x->x_fval = f;
     if(i < 0)
         i = 0;
     if(i >= x->x_number)
@@ -401,12 +404,13 @@ static void vradio_fout(t_vradio *x, t_floatarg f)
     }
     else
     {
+        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
-        outlet_float(x->x_gui.x_obj.ob_outlet, x->x_on);
+        outlet_float(x->x_gui.x_obj.ob_outlet, outval);
         if (x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-            pd_float(x->x_gui.x_snd->s_thing, x->x_on);
+            pd_float(x->x_gui.x_snd->s_thing, outval);
     }
 }
 
@@ -414,6 +418,7 @@ static void vradio_float(t_vradio *x, t_floatarg f)
 {
     int i=(int)f;
 
+    x->x_fval = f;
     if(i < 0)
         i = 0;
     if(i >= x->x_number)
@@ -449,14 +454,15 @@ static void vradio_float(t_vradio *x, t_floatarg f)
     }
     else
     {
+        float outval = (pd_compatibilitylevel < 46 ? i : x->x_fval);
         x->x_on_old = x->x_on;
         x->x_on = i;
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         if (x->x_gui.x_fsf.x_put_in2out)
         {
-            outlet_float(x->x_gui.x_obj.ob_outlet, x->x_on);
+            outlet_float(x->x_gui.x_obj.ob_outlet, outval);
             if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
-                pd_float(x->x_gui.x_snd->s_thing, x->x_on);
+                pd_float(x->x_gui.x_snd->s_thing, outval);
         }
     }
 }
@@ -549,11 +555,12 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
     t_vradio *x = (t_vradio *)pd_new(old? vradio_old_class : vradio_class);
     int bflcol[]={-262144, -1, -1};
-    int a=IEM_GUI_DEFAULTSIZE, on=0, f=0;
+    int a=IEM_GUI_DEFAULTSIZE, on = 0, f=0;
     int ldx=0, ldy=-8, chg=1, num=8;
     int fs=10;
     int ftbreak=IEM_BNG_DEFAULTBREAKFLASHTIME, fthold=IEM_BNG_DEFAULTHOLDFLASHTIME;
     char str[144];
+    float fval = 0;
 
     if((argc == 15)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2)
        &&IS_A_FLOAT(argv,3)
@@ -576,7 +583,7 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         bflcol[0] = (int)atom_getintarg(11, argc, argv);
         bflcol[1] = (int)atom_getintarg(12, argc, argv);
         bflcol[2] = (int)atom_getintarg(13, argc, argv);
-        on = (int)atom_getintarg(14, argc, argv);
+        fval = atom_getintarg(14, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);
     x->x_gui.x_draw = (t_iemfunptr)vradio_draw;
@@ -596,6 +603,8 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     if(num > IEM_RADIO_MAX)
         num = IEM_RADIO_MAX;
     x->x_number = num;
+    x->x_fval = fval;
+    on = fval;
     if(on < 0)
         on = 0;
     if(on >= x->x_number)
