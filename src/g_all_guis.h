@@ -129,7 +129,6 @@ typedef struct _iem_init_symargs
     unsigned int x_scale:1;
     unsigned int x_flashed:1;
     unsigned int x_locked:1;
-    unsigned int x_reverse:1; /* bugfix */
     unsigned int dummy:3;
 } t_iem_init_symargs;
 
