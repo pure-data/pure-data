@@ -1,4 +1,4 @@
-#N canvas 380 82 573 856 12;
+#N canvas 378 80 573 856 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -119,7 +119,6 @@
 #X text 125 1590 - receive them;
 #X obj 25 1621 qlist;
 #X text 125 1621 - message sequencer;
-#X obj 25 1645 textfile;
 #X text 125 1645 - file to message converter;
 #X obj 25 1703 openpanel;
 #X text 125 1703 - "Open" dialog;
@@ -357,7 +356,6 @@
 #X text 128 1452 - general array creation and manipulation;
 #X text 17 1306 ----------------- ARRAYS/TABLES -------------------
 ;
-#X obj 25 1669 textfile;
 #X text 125 4055 - create a single scalar;
 #X text 121 4141 (potentially dangerous but no substitute exists yet)
 ;
@@ -369,3 +367,5 @@ its "help window".;
 #X msg 22 4113 scope~;
 #X msg 22 4165 template;
 #X text 121 4166 (use struct now);
+#X obj 25 1645 textfile;
+#X obj 25 1669 text;
