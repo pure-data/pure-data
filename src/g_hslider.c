@@ -212,7 +212,7 @@ static void hslider_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                x->x_fval, x->x_steady);
+                100 * x->x_fval, x->x_steady);
     binbuf_addv(b, ";");
 }
 
@@ -518,10 +518,11 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     t_hslider *x = (t_hslider *)pd_new(hslider_class);
     int bflcol[]={-262144, -1, -1};
     int w=IEM_SL_DEFAULTSIZE, h=IEM_GUI_DEFAULTSIZE;
-    int lilo=0, ldx=-2, ldy=-8, f=0, v=0, steady=1;
+    int lilo=0, ldx=-2, ldy=-8, f=0, steady=1;
     int fs=10;
     double min=0.0, max=(double)(IEM_SL_DEFAULTSIZE-1);
     char str[144];
+    float v = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
@@ -550,7 +551,7 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
         bflcol[0] = (int)atom_getintarg(13, argc, argv);
         bflcol[1] = (int)atom_getintarg(14, argc, argv);
         bflcol[2] = (int)atom_getintarg(15, argc, argv);
-        v = (int)atom_getintarg(16, argc, argv);
+        v = (int)atom_getfloatarg(16, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 6, 0);
     if((argc == 18)&&IS_A_FLOAT(argv,17))
@@ -563,7 +564,7 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
 
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
     if(x->x_gui.x_isa.x_loadinit)
-        x->x_fval = v;
+        x->x_fval = v/100.;
     else
         x->x_fval = 0;
     x->x_pos = x->x_val = 100 * x->x_fval;
