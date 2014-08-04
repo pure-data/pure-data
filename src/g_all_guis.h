@@ -116,7 +116,6 @@ typedef struct _iem_fstyle_flags
     unsigned int x_thick:1;
     unsigned int x_lin0_log1:1;
     unsigned int x_steady:1;
-    unsigned int dummy:1;
 } t_iem_fstyle_flags;
 
 typedef struct _iem_init_symargs
@@ -129,7 +128,6 @@ typedef struct _iem_init_symargs
     unsigned int x_scale:1;
     unsigned int x_flashed:1;
     unsigned int x_locked:1;
-    unsigned int dummy:3;
 } t_iem_init_symargs;
 
 typedef void (*t_iemfunptr)(void *x, t_glist *glist, int mode);
@@ -160,14 +158,6 @@ typedef struct _iemgui
     int                x_labelbindex;       /* where in binbuf to find label */
 } t_iemgui;
 
-typedef struct _iemguidummy
-{
-    t_iemgui x_gui;
-    int      x_dum1;
-    int      x_dum2;
-    int      x_dum3;
-} t_iemguidummy;
-
 typedef struct _bng
 {
     t_iemgui x_gui;
@@ -191,6 +181,7 @@ typedef struct _hslider
     double   x_min;
     double   x_max;
     double   x_k;
+    float    x_fval;
 } t_hslider;
 
 typedef struct _hdial
@@ -229,6 +220,7 @@ typedef struct _vslider
     double   x_min;
     double   x_max;
     double   x_k;
+    float    x_fval;
 } t_vslider;
 
 typedef struct _vu
@@ -299,7 +291,6 @@ EXTERN void iemgui_all_dollarzero2unique(t_iemgui *iemgui, t_symbol **srlsym);
 EXTERN t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym);
-EXTERN void iemgui_first_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym);
 EXTERN void iemgui_all_col2save(t_iemgui *iemgui, int *bflcol);
 EXTERN void iemgui_all_colfromload(t_iemgui *iemgui, int *bflcol);
 EXTERN int iemgui_compatible_col(int i);

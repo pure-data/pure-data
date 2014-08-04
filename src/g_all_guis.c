@@ -263,11 +263,6 @@ void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym)
     srlsym[2] = iemgui->x_lab_unexpanded;
 }
 
-void iemgui_first_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym)
-{
-    /* delete this function */
-}
-
 void iemgui_all_col2save(t_iemgui *iemgui, int *bflcol)
 {
     bflcol[0] = -1 - (((0xfc0000 & iemgui->x_bcol) >> 6)|
@@ -498,20 +493,20 @@ void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 
 void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy)
 {
-    t_iemguidummy *x = (t_iemguidummy *)z;
+    t_iemgui *x = (t_iemgui *)z;
 
-    x->x_gui.x_obj.te_xpix += dx;
-    x->x_gui.x_obj.te_ypix += dy;
-    (*x->x_gui.x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_MOVE);
+    x->x_obj.te_xpix += dx;
+    x->x_obj.te_ypix += dy;
+    (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_MOVE);
     canvas_fixlinesfor(glist, (t_text *)z);
 }
 
 void iemgui_select(t_gobj *z, t_glist *glist, int selected)
 {
-    t_iemguidummy *x = (t_iemguidummy *)z;
+    t_iemgui *x = (t_iemgui *)z;
 
-    x->x_gui.x_fsf.x_selected = selected;
-    (*x->x_gui.x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_SELECT);
+    x->x_fsf.x_selected = selected;
+    (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_SELECT);
 }
 
 void iemgui_delete(t_gobj *z, t_glist *glist)
@@ -521,13 +516,13 @@ void iemgui_delete(t_gobj *z, t_glist *glist)
 
 void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
 {
-    t_iemguidummy *x = (t_iemguidummy *)z;
+    t_iemgui *x = (t_iemgui *)z;
 
     if (vis)
-        (*x->x_gui.x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_NEW);
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_NEW);
     else
     {
-        (*x->x_gui.x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_ERASE);
+        (*x->x_draw)((void *)z, glist, IEM_GUI_DRAW_MODE_ERASE);
         sys_unqueuegui(z);
     }
 }
@@ -634,21 +629,27 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     return(oldsndrcvable);
 }
 
+/* pre-0.46 the flags were 1 for 'loadinit' and 1<<20 for 'scale'.
+Starting in 0.46, take either 1<<20 or 1<<1 for 'scale' and save to both
+bits (so that old versions can read files we write).  In the future (2015?)
+we can stop writing the annoying  1<<20 bit. */
+#define LOADINIT 1
+#define SCALE 2
+#define SCALEBIS (1<<20)
+
 void iem_inttosymargs(t_iem_init_symargs *symargp, int n)
 {
     memset(symargp, 0, sizeof(*symargp));
-    symargp->x_loadinit = (n >>  0);
-    symargp->x_scale = (n >>  20);
+    symargp->x_loadinit = ((n & LOADINIT) != 0);
+    symargp->x_scale = ((n & SCALE) || (n & SCALEBIS)) ;
     symargp->x_flashed = 0;
     symargp->x_locked = 0;
-    symargp->dummy = 0;
 }
 
 int iem_symargstoint(t_iem_init_symargs *symargp)
 {
-    return (
-        (((symargp->x_loadinit & 1) <<  0) |
-        ((symargp->x_scale & 1) <<  20)));
+    return ((symargp->x_loadinit ? LOADINIT : 0) |
+        (symargp->x_scale ? (SCALE | SCALEBIS) : 0));
 }
 
 void iem_inttofstyle(t_iem_fstyle_flags *fstylep, int n)
@@ -663,7 +664,6 @@ void iem_inttofstyle(t_iem_fstyle_flags *fstylep, int n)
     fstylep->x_thick = 0;
     fstylep->x_lin0_log1 = 0;
     fstylep->x_steady = 0;
-    fstylep->dummy = 0;
 }
 
 int iem_fstyletoint(t_iem_fstyle_flags *fstylep)

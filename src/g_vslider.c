@@ -35,7 +35,8 @@ static void vslider_draw_update(t_gobj *client, t_glist *glist)
     t_vslider *x = (t_vslider *)client;
     if (glist_isvisible(glist))
     {
-        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h - (x->x_val + 50)/100;
+        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h - 
+            (x->x_val + 50)/100;
         int xpos=text_xpix(&x->x_gui.x_obj, glist);
 
         sys_vgui(".x%lx.c coords %lxKNOB %d %d %d %d\n",
