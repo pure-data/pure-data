@@ -925,9 +925,6 @@ void alsa_getdevs(char *indevlist, int *nindevs,
         const char *desc;
         if (2 * ndev + 2  > maxndev)
             break;
-            /* apparently, "cardno" is just a counter; but check that here */
-        if (ndev != cardno)
-            fprintf(stderr, "oops: ALSA cards not reported in order?\n");
         sprintf(devname, "hw:%d", cardno );
         /* fprintf(stderr, "\ntry %s...\n", devname); */
         if (snd_ctl_open(&ctl, devname, 0) >= 0)
