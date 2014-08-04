@@ -260,10 +260,6 @@ void vslider_check_minmax(t_vslider *x, double min, double max)
     }
     x->x_min = min;
     x->x_max = max;
-    if(x->x_min > x->x_max)                /* bugfix */
-        x->x_gui.x_isa.x_reverse = 1;
-    else
-        x->x_gui.x_isa.x_reverse = 0;
     if(x->x_lin0_log1)
         x->x_k = log(x->x_max/x->x_min)/(double)(x->x_gui.x_h - 1);
     else
@@ -405,7 +401,7 @@ static void vslider_set(t_vslider *x, t_floatarg f)
     int old = x->x_val;
     double g;
 
-    if(x->x_gui.x_isa.x_reverse)    /* bugfix */
+    if (x->x_min > x->x_max)
     {
         if(f > x->x_min)
             f = x->x_min;

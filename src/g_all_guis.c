@@ -641,7 +641,6 @@ void iem_inttosymargs(t_iem_init_symargs *symargp, int n)
     symargp->x_scale = (n >>  20);
     symargp->x_flashed = 0;
     symargp->x_locked = 0;
-    symargp->x_reverse = 0;
     symargp->dummy = 0;
 }
 

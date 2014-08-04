@@ -247,7 +247,6 @@ typedef struct _sigvd
 static void *sigvd_new(t_symbol *s)
 {
     t_sigvd *x = (t_sigvd *)pd_new(sigvd_class);
-    if (!*s->s_name) s = gensym("vd~");
     x->x_sym = s;
     x->x_sr = 1;
     x->x_zerodel = 0;
