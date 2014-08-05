@@ -1,4 +1,4 @@
-#N canvas 205 140 489 376 10;
+#N canvas 331 179 463 463 10;
 #X obj 1 1 cnv 8 100 60 empty empty toggle=tgl 20 20 1 18 -262144 -1109
 0;
 #X text 21 296 (c) musil@iem.kug.ac.at;
@@ -17,11 +17,11 @@
 #X obj 10 117 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
 #X msg 26 39 33;
-#X obj 26 180 tgl 60 1 foo6_snd foo6_rcv big_toggle 63 20 194 13 -228992
+#X obj 26 180 tgl 60 1 foo6_snd foo6_rcv big_toggle 63 20 2 13 -228992
 -4033 -34 1 1;
 #X msg 42 79 1;
 #X msg 49 99 0;
-#X floatatom 26 249 4 0 0;
+#X floatatom 26 249 4 0 0 0 - - -, f 4;
 #X msg 33 59 -0.001;
 #X msg 103 135 set 1;
 #X msg 108 157 set 0;
@@ -44,33 +44,33 @@
 #X obj 47 126 pack 0 0 0;
 #X obj 47 98 f;
 #X msg 24 50 bang;
-#X floatatom 63 48 3 0 29;
-#X floatatom 79 68 3 0 29;
-#X floatatom 112 84 3 0 29;
+#X floatatom 63 48 3 0 29 0 - - -, f 3;
+#X floatatom 79 68 3 0 29 0 - - -, f 3;
+#X floatatom 112 84 3 0 29 0 - - -, f 3;
 #X text 91 48 background;
 #X text 106 68 front-color;
 #X text 140 85 label-color;
 #X obj 49 223 f;
 #X msg 27 202 bang;
-#X floatatom 65 201 3 63 88;
-#X floatatom 100 223 3 0 37;
+#X floatatom 65 201 3 63 88 0 - - -, f 3;
+#X floatatom 100 223 3 0 37 0 - - -, f 3;
 #X obj 49 246 pack 0 0;
 #X text 127 223 y-label;
 #X text 93 201 x-label;
 #X msg 49 271 \; foo6_rcv label_pos \$1 \$2;
-#X floatatom 505 55 3 8 75;
+#X floatatom 505 55 3 8 75 0 - - -, f 3;
 #X text 532 55 size;
 #X msg 505 76 \; foo6_rcv size \$1;
 #X obj 282 182 f;
 #X msg 260 161 bang;
-#X floatatom 298 160 3 -10 10;
-#X floatatom 333 182 3 -10 10;
+#X floatatom 298 160 3 -10 10 0 - - -, f 3;
+#X floatatom 333 182 3 -10 10 0 - - -, f 3;
 #X obj 282 205 pack 0 0;
 #X msg 282 230 \; foo6_rcv delta \$1 \$2;
 #X obj 296 301 f;
 #X msg 274 280 bang;
-#X floatatom 312 279 3 20 60;
-#X floatatom 347 301 3 150 200;
+#X floatatom 312 279 3 20 60 0 - - -, f 3;
+#X floatatom 347 301 3 150 200 0 - - -, f 3;
 #X obj 296 324 pack 0 0;
 #X msg 296 349 \; foo6_rcv pos \$1 \$2;
 #X text 326 160 x-delta;
@@ -79,8 +79,8 @@
 #X text 374 301 y-position;
 #X obj 305 423 f;
 #X msg 283 402 bang;
-#X floatatom 321 401 3 -10 10;
-#X floatatom 356 423 3 -10 10;
+#X floatatom 321 401 3 -10 10 0 - - -, f 3;
+#X floatatom 356 423 3 -10 10 0 - - -, f 3;
 #X obj 305 446 pack 0 0;
 #X text 383 423 y-label;
 #X text 349 401 x-label;
@@ -93,13 +93,13 @@
 #X msg 41 484 \; foo6_rcv label big_toggle;
 #X obj 69 338 f;
 #X msg 47 317 bang;
-#X floatatom 85 316 3 0 2;
-#X floatatom 120 338 3 4 36;
+#X floatatom 85 316 3 0 2 0 - - -, f 3;
+#X floatatom 120 338 3 4 36 0 - - -, f 3;
 #X obj 69 361 pack 0 0;
 #X msg 69 386 \; foo6_rcv label_font \$1 \$2;
 #X text 113 316 font;
 #X text 149 338 height;
-#X floatatom 498 307 5 -200 200;
+#X floatatom 498 307 5 -200 200 0 - - -, f 5;
 #X text 542 307 nonzero-value;
 #X msg 498 331 \; foo6_rcv nonzero \$1;
 #X msg 503 412 \; foo6_rcv init 0;
@@ -195,9 +195,9 @@
 #X connect 36 2 29 0;
 #X connect 36 3 35 0;
 #X restore 285 108 pd RGB_____________;
-#X floatatom 327 77 3 0 255;
-#X floatatom 370 77 3 0 255;
-#X floatatom 413 78 3 0 255;
+#X floatatom 327 77 3 0 255 0 - - -, f 3;
+#X floatatom 370 77 3 0 255 0 - - -, f 3;
+#X floatatom 413 78 3 0 255 0 - - -, f 3;
 #X text 34 22 preset-colors;
 #X text 296 19 RGB-colors;
 #X text 327 59 red;
@@ -247,11 +247,39 @@
 #X connect 72 0 70 2;
 #X connect 73 0 70 3;
 #X restore 278 136 pd edit;
-#X obj 222 276 tgl 15 0 bbb bbb empty 20 8 192 8 -262144 -1 -1 1 1
-;
-#X text 191 320 updated for Pd version 0.35;
+#X obj 222 276 tgl 15 0 bbb bbb empty 20 8 0 8 -262144 -1 -1 0 1;
 #X text 38 321 graz \, austria 2002;
 #X obj 127 255 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
+#X text 223 431 updated for Pd version 0.46;
+#N canvas 324 270 524 322 old-behavior 0;
+#X floatatom 26 40 5 0 0 0 - - -, f 5;
+#X floatatom 24 180 5 0 0 0 - - -, f 5;
+#X msg 96 192 \; pd compatibility 0.45;
+#X msg 275 193 \; pd compatibility 0.46;
+#X text 113 230 Old "compatible" behavior, f 16;
+#X text 282 230 Mew "correct" behavior;
+#X obj 26 69 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 16
+;
+#X msg 28 17 0;
+#X msg 65 19 50;
+#X floatatom 106 23 5 0 0 0 - - -, f 5;
+#X msg 102 41 nonzero \$1;
+#X text 63 74 Pressing the toggle \, if it is in "off" state \, resets
+it to its "value" which is normally one. Prior to Pd version 0.46 \,
+the value itself was changed if non-zero numbers were sent to the toggle.
+Now the value may still be changed explicitly with a "nonzero" message
+but doesn't change by toggling. You can get the old behavior globally
+by sending Pd a compatibility message as below:;
+#X connect 0 0 6 0;
+#X connect 6 0 1 0;
+#X connect 7 0 0 0;
+#X connect 8 0 0 0;
+#X connect 9 0 10 0;
+#X connect 10 0 6 0;
+#X restore 290 391 pd old-behavior;
+#X text 29 352 COMPATIBILIY NOTE: as of Pd 0.46 \, sending numbers
+through a toggle no longer resets the "value" field. You can get the
+old behavior back this way:;
 #X connect 5 0 7 0;
 #X connect 8 0 6 0;
 #X connect 8 0 24 0;

@@ -1,4 +1,4 @@
-#N canvas 543 153 349 487 10;
+#N canvas 65 57 380 567 10;
 #X obj 1 1 cnv 8 100 60 empty empty vradio 20 20 1 18 -262144 -1109
 0;
 #X text 109 130 click properties to;
@@ -9,40 +9,40 @@
 -1;
 #X obj 59 206 s foo11_rcv;
 #X obj 60 232 r foo11_snd;
-#X floatatom 21 398 4 0 0 0 - - -;
+#X floatatom 21 398 4 0 0 0 - - -, f 4;
 #X obj 21 420 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
 #X msg 157 73 set \$1;
-#X floatatom 157 52 4 0 9 0 - - -;
-#X floatatom 44 54 4 0 9 0 - - -;
+#X floatatom 157 52 4 0 9 0 - - -, f 4;
+#X floatatom 44 54 4 0 9 0 - - -, f 4;
 #X msg 84 50 7 0 -5.44;
 #X msg 88 72 3 3 4.55;
 #X obj 62 388 print;
-#X floatatom 84 280 4 0 0 0 - - -;
+#X floatatom 84 280 4 0 0 0 - - -, f 4;
 #X msg 84 254 \$1;
 #X msg 59 185 set \$1;
-#X floatatom 59 164 4 0 9 0 - - -;
+#X floatatom 59 164 4 0 9 0 - - -, f 4;
 #X text 59 318 UP- \, DOWN- \, LEFT- or RIGHT-key;
 #X text 58 329 for moving selected gui-objects;
 #N canvas 221 206 699 530 edit 0;
 #X obj 42 198 f;
 #X msg 20 177 bang;
-#X floatatom 58 176 3 63 156 0 - - -;
-#X floatatom 93 198 3 -20 37 0 - - -;
+#X floatatom 58 176 3 63 156 0 - - -, f 3;
+#X floatatom 93 198 3 -20 37 0 - - -, f 3;
 #X obj 42 221 pack 0 0;
 #X text 120 198 y-label;
 #X text 86 176 x-label;
-#X floatatom 270 187 3 8 50 0 - - -;
+#X floatatom 270 187 3 8 50 0 - - -, f 3;
 #X text 297 187 size;
 #X obj 286 293 f;
 #X msg 264 272 bang;
-#X floatatom 302 271 3 -10 10 0 - - -;
-#X floatatom 337 293 3 -10 10 0 - - -;
+#X floatatom 302 271 3 -10 10 0 - - -, f 3;
+#X floatatom 337 293 3 -10 10 0 - - -, f 3;
 #X obj 286 316 pack 0 0;
 #X obj 300 412 f;
 #X msg 278 391 bang;
-#X floatatom 316 390 3 20 60 0 - - -;
-#X floatatom 351 412 3 100 200 0 - - -;
+#X floatatom 316 390 3 20 60 0 - - -, f 3;
+#X floatatom 351 412 3 100 200 0 - - -, f 3;
 #X obj 300 435 pack 0 0;
 #X text 330 271 x-delta;
 #X text 364 293 y-delta;
@@ -50,14 +50,14 @@
 #X text 378 412 y-position;
 #X obj 62 313 f;
 #X msg 40 292 bang;
-#X floatatom 78 291 3 0 2 0 - - -;
-#X floatatom 113 313 3 4 36 0 - - -;
+#X floatatom 78 291 3 0 2 0 - - -, f 3;
+#X floatatom 113 313 3 4 36 0 - - -, f 3;
 #X obj 62 336 pack 0 0;
 #X text 106 291 font;
 #X text 142 313 height;
 #X text 504 293 no init;
 #X text 475 348 init value on loadbang;
-#X floatatom 482 228 5 2 20 0 - - -;
+#X floatatom 482 228 5 2 20 0 - - -, f 5;
 #X msg 47 125 \; foo11_rcv color \$1 \$2 \$3;
 #X msg 42 246 \; foo11_rcv label_pos \$1 \$2;
 #X msg 62 361 \; foo11_rcv label_font \$1 \$2;
@@ -80,9 +80,9 @@
 #X obj 47 104 pack 0 0 0;
 #X obj 47 76 f;
 #X msg 24 28 bang;
-#X floatatom 63 26 3 0 29 0 - - -;
-#X floatatom 79 46 3 0 29 0 - - -;
-#X floatatom 112 62 3 0 29 0 - - -;
+#X floatatom 63 26 3 0 29 0 - - -, f 3;
+#X floatatom 79 46 3 0 29 0 - - -, f 3;
+#X floatatom 112 62 3 0 29 0 - - -, f 3;
 #X text 91 26 background;
 #X text 106 46 front-color;
 #X text 140 63 label-color;
@@ -175,9 +175,9 @@
 #X connect 36 2 29 0;
 #X connect 36 3 35 0;
 #X restore 285 86 pd RGB_____________;
-#X floatatom 327 55 3 0 255 0 - - -;
-#X floatatom 370 55 3 0 255 0 - - -;
-#X floatatom 413 56 3 0 255 0 - - -;
+#X floatatom 327 55 3 0 255 0 - - -, f 3;
+#X floatatom 370 55 3 0 255 0 - - -, f 3;
+#X floatatom 413 56 3 0 255 0 - - -, f 3;
 #X text 34 0 preset-colors;
 #X text 296 -3 RGB-colors;
 #X text 327 37 red;
@@ -222,7 +222,6 @@
 #X connect 67 0 65 2;
 #X connect 68 0 65 3;
 #X restore 166 220 pd edit;
-#X text 145 289 updated for Pd version 0.34;
 #X text 144 11 gui-vertical dial:;
 #X text 133 437 IEM KUG;
 #X text 117 425 musil;
@@ -239,17 +238,44 @@
 #X obj 253 46 vradio 8 1 0 8 hhh hhh empty 0 -6 0 8 -262144 -1 -1 0
 ;
 #X text 46 355 float out;
-#X connect 4 0 30 0;
+#X text 174 533 updated for Pd version 0.46;
+#N canvas 108 94 526 340 old-behavior 0;
+#X floatatom 29 39 5 0 0 0 - - -, f 5;
+#X floatatom 27 207 5 0 0 0 - - -, f 5;
+#X msg 18 229 \; pd compatibility 0.45;
+#X msg 197 230 \; pd compatibility 0.46;
+#X text 35 267 Old "compatible" behavior, f 16;
+#X text 204 267 Mew "correct" behavior;
+#X text 65 70 Prior to Pd version 0.46 \, values sent to IEM controls
+were restricted to the control's own values before passing them through
+to the output. This behavior is changed in 0.46. You can toggle back
+and forth between the two behaviors using the messages boxes below.
+If you want to get the behavior in an up-to-date patch \, you can use
+"int" and "clip" objects to quantize and restrict the range o numbers.
+;
+#X msg 75 38 0.5;
+#X msg 110 38 -12;
+#X obj 28 65 vradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X connect 0 0 9 0;
+#X connect 7 0 9 0;
+#X connect 8 0 9 0;
+#X connect 9 0 1 0;
+#X restore 234 512 pd old-behavior;
+#X text 14 469 COMPATIBILIY NOTE: as of Pd 0.46 \, you can pass through
+numbers ouside the object's range. You can get the old behavior back
+this way:, f 48;
+#X connect 4 0 29 0;
 #X connect 6 0 3 0;
 #X connect 6 0 16 0;
 #X connect 7 0 8 0;
-#X connect 9 0 30 0;
+#X connect 9 0 29 0;
 #X connect 10 0 9 0;
-#X connect 11 0 30 0;
-#X connect 12 0 30 0;
-#X connect 13 0 30 0;
+#X connect 11 0 29 0;
+#X connect 12 0 29 0;
+#X connect 13 0 29 0;
 #X connect 16 0 15 0;
 #X connect 17 0 5 0;
 #X connect 18 0 17 0;
-#X connect 30 0 7 0;
-#X connect 30 0 14 0;
+#X connect 29 0 7 0;
+#X connect 29 0 14 0;

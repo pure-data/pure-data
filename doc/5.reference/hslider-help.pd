@@ -1,24 +1,24 @@
-#N canvas 243 228 551 413 10;
+#N canvas 333 147 509 514 10;
 #X obj 1 1 cnv 8 100 60 empty empty hslider=hsl 20 20 1 18 -262144
 -1109 0;
-#X floatatom 38 127 9 0 0;
+#X floatatom 38 127 9 0 0 0 - - -, f 9;
 #X msg 47 84 set \$1;
-#X floatatom 38 41 7 0 0;
+#X floatatom 38 41 7 0 0 0 - - -, f 7;
 #X text 13 355 (c) musil@iem.kug.ac.at;
 #X text 55 368 IEM KUG;
 #X obj 38 149 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
 #X obj 18 41 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 41 107 hsl 101 15 25 75 0 1 foo1_snd foo1_rcv empty 8 -8 192
-10 -225280 -1109 -1 6200 1;
+#X obj 41 107 hsl 101 15 25 75 0 1 foo1_snd foo1_rcv empty 8 -8 0 10
+-225280 -1109 -1 6200 1;
 #X text 174 11 gui-horicontal-slider:;
-#X floatatom 47 62 7 0 0;
-#X floatatom 116 150 9 0 0;
+#X floatatom 47 62 7 0 0 0 - - -, f 7;
+#X floatatom 116 150 9 0 0 0 - - -, f 9;
 #X obj 110 308 r goo2_snd;
 #X obj 145 248 s goo2_rcv;
-#X floatatom 105 40 7 0 0;
-#X floatatom 145 206 7 0 0;
+#X floatatom 105 40 7 0 0 0 - - -, f 7;
+#X floatatom 145 206 7 0 0 0 - - -, f 7;
 #X obj 60 170 print;
 #N canvas 276 200 290 224 once 0;
 #X obj 38 47 t b b f;
@@ -38,13 +38,13 @@
 #X connect 5 0 0 0;
 #X restore 60 147 pd once;
 #X obj 40 265 hsl 73 15 55 3520 1 1 goo2_snd goo2_rcv log.freq. 8 -8
-192 10 -42246 -260818 -90133 1600 1;
+0 10 -42246 -260818 -90133 1600 1;
 #X obj 37 308 ftom;
-#X floatatom 37 330 9 0 0;
-#X floatatom 64 287 9 0 0;
-#X floatatom 110 329 9 0 0;
+#X floatatom 37 330 9 0 0 0 - - -, f 9;
+#X floatatom 64 287 9 0 0 0 - - -, f 9;
+#X floatatom 110 329 9 0 0 0 - - -, f 9;
 #X text 175 176 click properties to;
-#X floatatom 37 203 8 0 0;
+#X floatatom 37 203 8 0 0 0 - - -, f 8;
 #X obj 37 226 mtof;
 #X text 12 184 --------------------;
 #X text 163 187 modify geometry \, colors \, etc.;
@@ -60,20 +60,20 @@
 #N canvas 207 113 716 530 edit 0;
 #X obj 32 220 f;
 #X msg 10 199 bang;
-#X floatatom 48 198 3 63 88;
-#X floatatom 83 220 3 0 37;
+#X floatatom 48 198 3 63 88 0 - - -, f 3;
+#X floatatom 83 220 3 0 37 0 - - -, f 3;
 #X obj 32 243 pack 0 0;
 #X text 110 220 y-label;
 #X text 76 198 x-label;
 #X obj 279 246 f;
 #X msg 257 225 bang;
-#X floatatom 295 224 3 -10 10;
-#X floatatom 330 246 3 -10 10;
+#X floatatom 295 224 3 -10 10 0 - - -, f 3;
+#X floatatom 330 246 3 -10 10 0 - - -, f 3;
 #X obj 279 269 pack 0 0;
 #X obj 292 358 f;
 #X msg 270 337 bang;
-#X floatatom 308 336 3 20 60;
-#X floatatom 343 358 3 150 200;
+#X floatatom 308 336 3 20 60 0 - - -, f 3;
+#X floatatom 343 358 3 150 200 0 - - -, f 3;
 #X obj 292 381 pack 0 0;
 #X text 323 224 x-delta;
 #X text 357 246 y-delta;
@@ -81,12 +81,12 @@
 #X text 370 358 y-position;
 #X obj 52 335 f;
 #X msg 30 314 bang;
-#X floatatom 68 313 3 0 2;
-#X floatatom 103 335 3 4 36;
+#X floatatom 68 313 3 0 2 0 - - -, f 3;
+#X floatatom 103 335 3 4 36 0 - - -, f 3;
 #X obj 52 358 pack 0 0;
 #X text 96 313 font;
 #X text 132 335 height;
-#X floatatom 476 188 1 0 1;
+#X floatatom 476 188 1 0 1 0 - - -, f 1;
 #X text 523 401 no init;
 #X text 493 453 init value on loadbang;
 #X msg 47 154 \; goo2_rcv color \$1 \$2 \$3;
@@ -104,8 +104,8 @@
 #X text 520 188 steady;
 #X obj 486 291 f;
 #X msg 464 270 bang;
-#X floatatom 502 269 3 55 440;
-#X floatatom 537 291 6 440 3520;
+#X floatatom 502 269 3 55 440 0 - - -, f 3;
+#X floatatom 537 291 6 440 3520 0 - - -, f 6;
 #X obj 486 314 pack 0 0;
 #X text 530 269 left-range-bound;
 #X text 586 291 right-range-bound;
@@ -115,8 +115,8 @@
 #X text 269 448 linear / logarithmical;
 #X obj 275 133 f;
 #X msg 250 112 bang;
-#X floatatom 291 111 3 15 73;
-#X floatatom 326 133 3 8 50;
+#X floatatom 291 111 3 15 73 0 - - -, f 3;
+#X floatatom 326 133 3 8 50 0 - - -, f 3;
 #X obj 275 156 pack 0 0;
 #X text 319 111 width;
 #X text 357 134 height;
@@ -126,9 +126,9 @@
 #X obj 47 100 pack 0 0 0;
 #X obj 47 72 f;
 #X msg 24 24 bang;
-#X floatatom 63 22 3 0 29;
-#X floatatom 79 42 3 0 29;
-#X floatatom 112 58 3 0 29;
+#X floatatom 63 22 3 0 29 0 - - -, f 3;
+#X floatatom 79 42 3 0 29 0 - - -, f 3;
+#X floatatom 112 58 3 0 29 0 - - -, f 3;
 #X text 91 22 background;
 #X text 106 42 front-color;
 #X text 140 59 label-color;
@@ -221,9 +221,9 @@
 #X connect 36 2 29 0;
 #X connect 36 3 35 0;
 #X restore 277 82 pd RGB_____________;
-#X floatatom 319 52 3 0 255;
-#X floatatom 362 52 3 0 255;
-#X floatatom 405 53 3 0 255;
+#X floatatom 319 52 3 0 255 0 - - -, f 3;
+#X floatatom 362 52 3 0 255 0 - - -, f 3;
+#X floatatom 405 53 3 0 255 0 - - -, f 3;
 #X text 34 -1 preset-colors;
 #X text 290 1 RGB-colors;
 #X text 319 34 red;
@@ -277,11 +277,37 @@
 #X connect 80 0 78 2;
 #X connect 81 0 78 3;
 #X restore 314 245 pd edit;
-#X obj 221 61 hsl 128 15 0 127 0 0 ddd ddd empty 20 8 192 8 -262144
--1 -1 10600 1;
-#X text 187 379 updated for Pd version 0.35;
+#X obj 221 61 hsl 128 15 0 127 0 0 ddd ddd empty 20 8 0 8 -262144 -1
+-1 0 1;
 #X text 30 380 graz \, austria 2002;
 #X obj 168 34 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
+#N canvas 108 94 494 298 old-behavior 0;
+#X floatatom 65 127 5 0 0 0 - - -, f 5;
+#X floatatom 65 173 5 0 0 0 - - -, f 5;
+#X msg 60 208 \; pd compatibility 0.45;
+#X msg 239 209 \; pd compatibility 0.46;
+#X text 77 246 Old "compatible" behavior, f 16;
+#X text 246 246 Mew "correct" behavior;
+#X text 38 21 Prior to Pd version 0.46 \, values sent to IEM controls
+were restricted to the control's own values before passing them through
+to the output. This behavior is changed in 0.46. You can toggle back
+and forth between the two behaviors using the messages boxes below.
+If you want to get the behavior in an up-to-date patch \, you can use
+"int" and "clip" objects to quantize and restrict the range o numbers.
+;
+#X msg 111 126 0.5;
+#X msg 146 126 -12;
+#X obj 69 151 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X connect 0 0 9 0;
+#X connect 7 0 9 0;
+#X connect 8 0 9 0;
+#X connect 9 0 1 0;
+#X restore 260 446 pd old-behavior;
+#X text 40 403 COMPATIBILIY NOTE: as of Pd 0.46 \, you can pass through
+numbers ouside the object's range. You can get the old behavior back
+this way:, f 48;
+#X text 219 480 updated for Pd version 0.46;
 #X connect 1 0 6 0;
 #X connect 2 0 8 0;
 #X connect 3 0 8 0;
