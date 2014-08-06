@@ -114,11 +114,6 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
     return (x);
 }
 
-int template_size(t_template *x)
-{
-    return (x->t_n * sizeof(t_word));
-}
-
 int template_find_field(t_template *x, t_symbol *name, int *p_onset,
     int *p_type, t_symbol **p_arraytype)
 {

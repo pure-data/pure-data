@@ -290,11 +290,14 @@ void glist_mergefile(t_glist *x, t_symbol *filename, t_symbol *format)
 
     /* read text from a "properties" window, called from a gfxstub set
     up in scalar_properties().  We try to restore the object; if successful
-    we delete the scalar and put the new thing in its place on the list. */
+    we either copy the data from the new scalar to the old one in place
+    (if their templates match) or else delete the old scalar and put the new
+    thing in its place on the list. */
 void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
 {
     int ntotal, nnew, scindex;
     t_gobj *y, *y2 = 0, *newone, *oldone = 0;
+    t_template *template;
     for (y = x->gl_list, ntotal = 0, scindex = -1; y; y = y->g_next)
     {
         if (y == &sc->sc_gobj)
@@ -303,31 +306,48 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
     }
     
     if (scindex == -1)
-        bug("data_properties: scalar disappeared");
+    {
+        error("data_properties: scalar disappeared");
+        return;
+    }
     glist_readfrombinbuf(x, b, "properties dialog", 0);
     newone = 0;
-    if (scindex >= 0)
-    {
         /* take the new object off the list */
-        if (ntotal)
+    if (ntotal)
+    {
+        for (y = x->gl_list, nnew = 1; y2 = y->g_next;
+            y = y2, nnew++)
+                if (nnew == ntotal)
         {
-            for (y = x->gl_list, nnew = 1; y2 = y->g_next;
-                y = y2, nnew++)
-                    if (nnew == ntotal)
-            {
-                newone = y2;
-                y->g_next = y2->g_next;
-                break;    
-            }
+            newone = y2;
+            gobj_vis(newone, x, 0);
+            y->g_next = y2->g_next;
+            break;    
         }
-        else newone = x->gl_list, x->gl_list = newone->g_next;
     }
+    else gobj_vis((newone = x->gl_list), x, 0), x->gl_list = newone->g_next;
     if (!newone)
         error("couldn't update properties (perhaps a format problem?)");
     else if (!oldone)
         bug("data_properties: couldn't find old element");
+    else if (newone->g_pd == scalar_class && oldone->g_pd == scalar_class
+        && ((t_scalar *)newone)->sc_template ==
+            ((t_scalar *)oldone)->sc_template 
+        && (template = template_findbyname(((t_scalar *)newone)->sc_template)))
+    {
+            /* copy new one to old one and deete new one */
+        memcpy(&((t_scalar *)oldone)->sc_vec, &((t_scalar *)newone)->sc_vec,
+            template->t_n * sizeof(t_word));
+        pd_free(&newone->g_pd);
+        if (glist_isvisible(x))
+        {
+            gobj_vis(oldone, x, 0);
+            gobj_vis(oldone, x, 1);
+        }
+    }
     else
     {
+            /* delete old one; put new one where the old one was on glist */
         glist_delete(x, oldone);
         if (scindex > 0)
         {
