@@ -51,7 +51,7 @@ static int ooura_init( int n)
             t_freebytes(ooura_bitrev, ooura_bitrevsize);
             t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT) / 2);
         }
-        ooura_bitrevsize = sizeof(int *) * (2 + (1 << (ilog2(n)/2)));
+        ooura_bitrevsize = sizeof(int) * (2 + (1 << (ilog2(n)/2)));
         ooura_bitrev = (int *)t_getbytes(ooura_bitrevsize);
         ooura_bitrev[0] = 0;
         if (!ooura_bitrev)
@@ -85,7 +85,7 @@ EXTERN void mayer_dofft(t_sample *fz1, t_sample *fz2, int n, int sgn)
     int i;
     t_sample *fp1, *fp2;
     buf = alloca(n * (2 * sizeof(FFTFLT)));
-    if (!ooura_init(n))
+    if (!ooura_init(2*n))
         return;
     for (i = 0, fp1 = fz1, fp2 = fz2, fp3 = buf; i < n; i++)
     {
