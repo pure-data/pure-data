@@ -150,6 +150,22 @@ EXTERN void mayer_realifft(int n, t_sample *fz)
         fz[i] = 2*buf[i];
 }
 
+    /* ancient ISPW-like version, used in fiddle~ and perhaps other externs
+    here and there. */
+void pd_fft(t_float *buf, int npoints, int inverse)
+{
+    FFTFLT *buf2 = (FFTFLT *)alloca(2 * npoints * sizeof(FFTFLT)), *bp2;
+    t_float *fp;
+    int i;
+    if (!ooura_init(2*npoints))
+        return;
+    for (i = 0, bp2 = buf2, fp = buf; i < 2 * npoints; i++, bp2++, fp++)
+        *bp2 = *fp;
+    cdft(2*npoints, (inverse ? 1 : -1), buf2, ooura_bitrev, ooura_costab);
+    for (i = 0, bp2 = buf2, fp = buf; i < 2 * npoints; i++, bp2++, fp++)
+        *fp = *bp2;
+}
+
 /****************** end Pd-specific prologue ***********************/
 /*
 Fast Fourier/Cosine/Sine Transform

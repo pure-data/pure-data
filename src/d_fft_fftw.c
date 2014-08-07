@@ -161,3 +161,16 @@ EXTERN void mayer_realifft(int n, float *fz)
         fz[i] = p->out[i];
 }
 
+    /* ancient ISPW-like version, used in fiddle~ and perhaps other externs
+    here and there. */
+void pd_fft(t_float *buf, int npoints, int inverse)
+{
+    cfftw_info *p = cfftw_getplan(npoints, !inverse);
+    int i;
+    for (i = 0; i < 2 * npoints; i++)
+        p->in[i] = buf[i];
+    fftwf_execute(p->plan);
+    for (i = 0; i < 2 * npoints; i++)
+        buf[i] = p->out[i];
+}
+

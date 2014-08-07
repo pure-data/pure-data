@@ -42,7 +42,6 @@ noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h
 EXTRA_DIST = CHANGELOG.txt notes.txt \
 	pd.ico pd.rc \
 	makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
-	d_fft_fftsg.c d_fftsg_h.c \
 	s_audio_dummy.c s_audio_audiounit.c s_audio_esd.c
 
 
@@ -59,9 +58,9 @@ LIBS += -framework CoreAudio -framework CoreMIDI \
 endif
 
 if FFTW
-pd_SOURCES +=  d_fft_fftw.c d_fftroutine.c
+pd_SOURCES +=  d_fft_fftw.c
 else
-pd_SOURCES +=  d_fft_mayer.c d_fftroutine.c
+pd_SOURCES +=  d_fft_fftsg.c
 endif
 
 # TODO support Jack xrun
