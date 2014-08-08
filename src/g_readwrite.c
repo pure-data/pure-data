@@ -224,15 +224,15 @@ void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename, int selectem)
                 templateargs[ntemplateargs + 2] = vec[message + 2];
             ntemplateargs = newnargs;
         }
-        newtemplate = template_new(templatesym, ntemplateargs, templateargs);
-        t_freebytes(templateargs, sizeof (*templateargs) * ntemplateargs);
         if (!(existtemplate = template_findbyname(templatesym)))
         {
             error("%s: template not found in current patch",
                 templatesym->s_name);
-            template_free(newtemplate);
+            t_freebytes(templateargs, sizeof (*templateargs) * ntemplateargs);
             return;
         }
+        newtemplate = template_new(templatesym, ntemplateargs, templateargs);
+        t_freebytes(templateargs, sizeof (*templateargs) * ntemplateargs);
         if (!template_match(existtemplate, newtemplate))
         {
             error("%s: template doesn't match current one",
