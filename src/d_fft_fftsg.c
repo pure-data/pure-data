@@ -47,7 +47,6 @@ static int ooura_init( int n)
         return (0);
     if (n > ooura_maxn)
     {
-        post("init");
         if (ooura_maxn)
         {
             t_freebytes(ooura_bitrev, ooura_bitrevsize);
