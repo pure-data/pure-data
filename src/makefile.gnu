@@ -94,7 +94,8 @@ endif
 
 .PHONY: pd externs all depend
 
-all: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive externs
+all: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive externs \
+    makefile.dependencies
 
 bin: pd $(BIN_DIR)/pd-watchdog $(BIN_DIR)/pdsend $(BIN_DIR)/pdreceive
 
@@ -181,8 +182,6 @@ local-clean:
 	-rm -f *~
 	-(cd ../doc/6.externs; rm -f *.pd_linux)
 	-rm -f makefile.dependencies
-	touch makefile.dependencies
-	chmod 666 makefile.dependencies
 
 extra-clean:
 	-rm -f `find ../extra/ -name "*.pd_*"`
@@ -203,7 +202,7 @@ depend: makefile.dependencies
 $(OBJ_DIR):
 	test -d $(OBJ_DIR) || mkdir -p $(OBJ_DIR)
 
-makefile.dependencies: $(SRC)
+makefile.dependencies:
 	$(CC) $(CPPFLAGS) -M $(SRC) > makefile.dependencies
 
 uninstall:
@@ -216,7 +215,7 @@ uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pdsend.1.gz
 	rm -f $(DESTDIR)$(mandir)/man1/pdreceive.1.gz
 
-include makefile.dependencies
+-include makefile.dependencies
 
 
 

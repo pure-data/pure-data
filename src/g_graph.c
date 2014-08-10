@@ -69,6 +69,7 @@ void glist_delete(t_glist *x, t_gobj *y)
     t_object *ob;
     t_gotfn chkdsp = zgetfn(&y->g_pd, gensym("dsp"));
     t_canvas *canvas = glist_getcanvas(x);
+    t_rtext *rtext = 0;
     int drawcommand = class_isdrawcommand(y->g_pd);
     int wasdeleting;
     
@@ -112,7 +113,7 @@ void glist_delete(t_glist *x, t_gobj *y)
         gobj_vis(y, x, 0);
     }
     if (x->gl_editor && (ob = pd_checkobject(&y->g_pd)))
-        rtext_new(x, ob);
+        rtext = rtext_new(x, ob);
     if (x->gl_list == y) x->gl_list = y->g_next;
     else for (g = x->gl_list; g; g = g->g_next)
         if (g->g_next == y)
@@ -121,6 +122,8 @@ void glist_delete(t_glist *x, t_gobj *y)
         break;
     }
     pd_free(&y->g_pd);
+    if (rtext)
+        rtext_free(rtext);
     if (chkdsp) canvas_update_dsp();
     if (drawcommand)
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(

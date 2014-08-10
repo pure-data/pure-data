@@ -84,6 +84,8 @@ static void vinlet_anything(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 static void vinlet_free(t_vinlet *x)
 {
     canvas_rminlet(x->x_canvas, x->x_inlet);
+    if (x->x_buf)
+        t_freebytes(x->x_buf, x->x_bufsize * sizeof(*x->x_buf));
     resample_free(&x->x_updown);
 }
 
@@ -361,6 +363,8 @@ static void voutlet_anything(t_voutlet *x, t_symbol *s, int argc, t_atom *argv)
 static void voutlet_free(t_voutlet *x)
 {
     canvas_rmoutlet(x->x_canvas, x->x_parentoutlet);
+    if (x->x_buf)
+        t_freebytes(x->x_buf, x->x_bufsize * sizeof(*x->x_buf));
     resample_free(&x->x_updown);
 }
 
