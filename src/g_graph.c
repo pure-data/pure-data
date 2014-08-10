@@ -897,7 +897,6 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
             hadwindow = x->gl_havewindow;
             x->gl_havewindow = 0;
             for (g = x->gl_list; g; g = g->g_next)
-                if (gobj_shouldvis(g, x))
             {
                     /* don't do this for arrays, just let them hang outside the
                     box. */

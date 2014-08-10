@@ -66,19 +66,32 @@ void gobj_delete(t_gobj *x, t_glist *glist)
 int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 {
     t_object *ob;
+            /* if our parent is a graph, and if that graph itself isn't
+            visible, then we aren't either. */
+    if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_owner
+        && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
+            return (0);
+            /* if we're graphing-on-parent and the object falls outside the
+            graph rectangle, don't draw it. */
     if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
-        glist->gl_owner && (pd_class(&x->g_pd) != scalar_class)
-            && (pd_class(&x->g_pd) != garray_class))
+        glist->gl_owner)
     {
-        /* if we're graphing-on-parent and the object falls outside the
-        graph rectangle, don't draw it. */
         int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
+            /* for some reason the bounds check on arrays and scalars
+            don't seem to apply here.  Perhaps this was in order to allow
+            arrays to reach outside their containers?  I no longer understand
+            this. */
+        if (pd_class(&x->g_pd) == scalar_class
+            || pd_class(&x->g_pd) == garray_class)
+                return (1);
         gobj_getrect(&glist->gl_gobj, glist->gl_owner, &x1, &y1, &x2, &y2);
         if (x1 > x2)
             m = x1, x1 = x2, x2 = m;
         if (y1 > y2)
             m = y1, y1 = y2, y2 = m;
         gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
+        /* post("graph %d %d %d %d, %s %d %d %d %d",
+            x1, x2, y1, y2, class_gethelpname(x->g_pd), gx1, gx2, gy1, gy2); */
         if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
             gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
                 return (0);

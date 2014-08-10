@@ -783,7 +783,7 @@ void garray_usedindsp(t_garray *x)
 static void garray_doredraw(t_gobj *client, t_glist *glist)
 {
     t_garray *x = (t_garray *)client;
-    if (glist_isvisible(x->x_glist))
+    if (glist_isvisible(x->x_glist) && gobj_shouldvis(client, glist))
     {
         garray_vis(&x->x_gobj, x->x_glist, 0); 
         garray_vis(&x->x_gobj, x->x_glist, 1);
