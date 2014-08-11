@@ -514,6 +514,7 @@ static void hang_free(t_hang *h)
     for (gp = h->h_gp, i = x->x_nptr; i--; gp++)
         gpointer_unset(gp);
     freebytes(h->h_gp, x->x_nptr * sizeof(*h->h_gp));
+    freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
     clock_free(h->h_clock);
     freebytes(h, sizeof(*h) + (x->x_n - 1) * sizeof(*h->h_vec));
 }

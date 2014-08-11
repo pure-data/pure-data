@@ -914,9 +914,9 @@ void canvas_destroy_editor(t_glist *x)
     glist_noselect(x);
     if (x->gl_editor)
     {
-        for (y = x->gl_list; y; y = y->g_next)
-            if (ob = pd_checkobject(&y->g_pd))
-                rtext_free(glist_findrtext(x, ob));
+        t_rtext *rtext;
+        while (rtext = x->gl_editor->e_rtext)
+            rtext_free(rtext);
         editor_free(x->gl_editor, x);
         x->gl_editor = 0;
     }
