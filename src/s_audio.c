@@ -60,9 +60,11 @@ static int audio_state;
 static int audio_naudioindev = -1;
 static int audio_audioindev[MAXAUDIOINDEV];
 static int audio_audiochindev[MAXAUDIOINDEV];
+static char audio_indevnames[MAXMIDIINDEV * DEVDESCSIZE];
 static int audio_naudiooutdev = -1;
 static int audio_audiooutdev[MAXAUDIOOUTDEV];
 static int audio_audiochoutdev[MAXAUDIOOUTDEV];
+static char audio_outdevnames[MAXMIDIINDEV * DEVDESCSIZE];
 static int audio_rate;
 static int audio_advance = -1;
 static int audio_callback;
@@ -85,15 +87,25 @@ void sys_get_audio_params(
     int *pnaudiooutdev, int *paudiooutdev, int *choutdev,
     int *prate, int *padvance, int *pcallback, int *pblocksize)
 {
-    int i;
+    int i, devn;
     *pnaudioindev = audio_naudioindev;
-    for (i = 0; i < MAXAUDIOINDEV; i++)
-        paudioindev[i] = audio_audioindev[i],
-            chindev[i] = audio_audiochindev[i]; 
+    for (i = 0; i < audio_naudioindev; i++)
+    {
+        if ((devn = sys_audiodevnametonumber(0,
+            &audio_indevnames[i * DEVDESCSIZE])) >= 0)
+                paudioindev[i] = devn;
+        else paudioindev[i] = audio_audioindev[i];
+        chindev[i] = audio_audiochindev[i];
+    }
     *pnaudiooutdev = audio_naudiooutdev;
-    for (i = 0; i < MAXAUDIOOUTDEV; i++)
-        paudiooutdev[i] = audio_audiooutdev[i],
-            choutdev[i] = audio_audiochoutdev[i]; 
+    for (i = 0; i < audio_naudiooutdev; i++)
+    {
+        if ((devn = sys_audiodevnametonumber(1,
+            &audio_outdevnames[i * DEVDESCSIZE])) >= 0)
+                paudiooutdev[i] = devn;
+        else paudiooutdev[i] = audio_audiooutdev[i];
+        choutdev[i] = audio_audiochoutdev[i]; 
+    }
     *prate = audio_rate;
     *padvance = audio_advance;
     *pcallback = audio_callback;
@@ -107,13 +119,21 @@ void sys_save_audio_params(
 {
     int i;
     audio_naudioindev = naudioindev;
-    for (i = 0; i < MAXAUDIOINDEV; i++)
+    for (i = 0; i < naudioindev; i++)
+    {
         audio_audioindev[i] = audioindev[i],
-            audio_audiochindev[i] = chindev[i]; 
+        audio_audiochindev[i] = chindev[i];
+        sys_audiodevnumbertoname(0, audioindev[i],
+            &audio_indevnames[i * DEVDESCSIZE], DEVDESCSIZE);
+    }
     audio_naudiooutdev = naudiooutdev;
     for (i = 0; i < MAXAUDIOOUTDEV; i++)
+    {
         audio_audiooutdev[i] = audiooutdev[i],
-            audio_audiochoutdev[i] = choutdev[i]; 
+        audio_audiochoutdev[i] = choutdev[i];
+        sys_audiodevnumbertoname(1, audiooutdev[i],
+            &audio_outdevnames[i * DEVDESCSIZE], DEVDESCSIZE);
+    }
     audio_rate = rate;
     audio_advance = advance;
     audio_callback = callback;
@@ -1047,26 +1067,61 @@ void alsa_getzeros(int n);
 void alsa_printstate( void);
 #endif
 
-    /* debugging */
-/* void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
+/* convert a device name to a (1-based) device number.  (Output device if
+'output' parameter is true, otherwise input device).  Negative on failure. */
+
+int sys_audiodevnametonumber(int output, const char *name)
 {
-    t_symbol *arg = atom_getsymbolarg(0, argc, argv);
-    if (arg == gensym("restart"))
-        sys_reopen_audio();
-#ifdef USEAPI_ALSA
-    else if (arg == gensym("alsawrite"))
+    char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    int nindevs = 0, noutdevs = 0, i, canmulti, cancallback;
+
+    sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs,
+        &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE);
+
+    if (output)
     {
-        int n = atom_getintarg(1, argc, argv);
-        alsa_putzeros(n);
+        for (i = 0; i < noutdevs; i++)
+        {
+            unsigned int comp = strlen(name);
+            if (comp > strlen(outdevlist + i * DEVDESCSIZE))
+                comp = strlen(outdevlist + i * DEVDESCSIZE);
+            if (!strncmp(name, outdevlist + i * DEVDESCSIZE, comp))
+                return (i);
+        }
     }
-    else if (arg == gensym("alsaread"))
+    else
     {
-        int n = atom_getintarg(1, argc, argv);
-        alsa_getzeros(n);
+        for (i = 0; i < nindevs; i++)
+        {
+            unsigned int comp = strlen(name);
+            if (comp > strlen(indevlist + i * DEVDESCSIZE))
+                comp = strlen(indevlist + i * DEVDESCSIZE);
+            if (!strncmp(name, indevlist + i * DEVDESCSIZE, comp))
+                return (i);
+        }
     }
-    else if (arg == gensym("print"))
+    return (-1);
+}
+
+/* convert a (1-based) device number to a device name.  (Output device if
+'output' parameter is true, otherwise input device).  Empty string on failure.
+*/
+
+void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
+{
+    char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
+    int nindevs = 0, noutdevs = 0, i, canmulti, cancallback;
+    if (devno < 0)
     {
-        alsa_printstate();
+        *name = 0;
+        return;
     }
-#endif
-} */
+    sys_get_audio_devs(indevlist, &nindevs, outdevlist, &noutdevs,
+        &canmulti, &cancallback, MAXNDEV, DEVDESCSIZE);
+    if (output && (devno < noutdevs))
+        strncpy(name, outdevlist + devno * DEVDESCSIZE, namesize);
+    else if (!output && (devno < nindevs))
+        strncpy(name, indevlist + devno * DEVDESCSIZE, namesize);
+    else *name = 0;
+    name[namesize-1] = 0;
+}

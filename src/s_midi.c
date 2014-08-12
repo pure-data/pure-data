@@ -529,7 +529,7 @@ void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
     {
         if ((devn = sys_mididevnametonumber(0,
             &midi_indevnames[i * DEVDESCSIZE])) >= 0)
-        pmidiindev[i] = devn;
+                pmidiindev[i] = devn;
         else pmidiindev[i] = midi_midiindev[i]; 
     }
     *pnmidioutdev = midi_nmidioutdev;
@@ -537,7 +537,7 @@ void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
     {
         if ((devn = sys_mididevnametonumber(1,
             &midi_outdevnames[i * DEVDESCSIZE])) >= 0)
-        pmidioutdev[i] = devn;
+                pmidioutdev[i] = devn;
         else pmidioutdev[i] = midi_midioutdev[i]; 
     }
 }

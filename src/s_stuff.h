@@ -89,6 +89,9 @@ EXTERN void sys_close_audio(void);
     /* return true if the interface prefers always being open (ala jack) : */
 EXTERN int audio_shouldkeepopen( void);
 EXTERN int audio_isopen( void);     /* true if audio interface is open */
+EXTERN int sys_audiodevnametonumber(int output, const char *name);
+EXTERN void sys_audiodevnumbertoname(int output, int devno, char *name,
+    int namesize);
 
 int sys_send_dacs(void);
 void sys_reportidle(void);
