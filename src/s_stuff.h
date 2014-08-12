@@ -121,6 +121,9 @@ EXTERN void sys_get_midi_devs(char *indevlist, int *nindevs,
    int maxndev, int devdescsize);
 EXTERN void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
     int *pnmidioutdev, int *pmidioutdev);
+EXTERN int sys_mididevnametonumber(int output, const char *name);
+EXTERN void sys_mididevnumbertoname(int output, int devno, char *name,
+    int namesize);
 
 EXTERN void sys_reopen_midi( void);
 EXTERN void sys_close_midi( void);

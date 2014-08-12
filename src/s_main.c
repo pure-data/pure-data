@@ -376,6 +376,8 @@ static char *(usagemessage[]) = {
 "-midiindev ...   -- midi in device list; e.g., \"1,3\" for first and third\n",
 "-midioutdev ...  -- midi out device list, same format\n",
 "-mididev ...     -- specify -midioutdev and -midiindev together\n",
+"-midiaddindev    -- add a MIDI input device by name\n",
+"-midiaddoutdev   -- add a MIDI output device by name\n",
 "-nomidiin        -- suppress MIDI input\n",
 "-nomidiout       -- suppress MIDI output\n",
 "-nomidi          -- suppress MIDI input and output\n",
@@ -745,6 +747,22 @@ int sys_argparse(int argc, char **argv)
                 argv[1]);
             if (!sys_nmidiout)
                 goto usage;
+            argc -= 2; argv += 2;
+        }
+        else if (!strcmp(*argv, "-midiaddindev") && (argc > 1))
+        {
+            if (sys_nmidiin < 0)
+                sys_nmidiin = 0;
+            else if (sys_nmidiin < MAXMIDIINDEV)
+            {
+                int devn = sys_mididevnametonumber(0, argv[1]);
+                if (devn < 0)
+                    fprintf(stderr, "Couldn't find MIDI input device: %s",
+                        argv[1]);
+                else sys_midiindevlist[sys_nmidiin++] = devn + 1;
+            }
+            else fprintf(stderr, "number of MIDI devices limited to %d",
+                MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-path") && (argc > 1))
