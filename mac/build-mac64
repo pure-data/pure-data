@@ -35,10 +35,9 @@ cd src
 JACK=true make -f makefile.mac "ARCH=-arch x86_64"
 cd ..
 ln -s tcl Scripts
-chmod 555 . .. 
 cd ../../..
 pwd
-chmod 755 Pd-$1-64bit.app
+chmod 755 Pd-$1-64bit.app/Contents Pd-$1-64bit.app
 touch Pd-$1-64bit.app
 chmod 555 Pd-$1-64bit.app
 tar czf pd-$1-64bit.mac.tar.gz Pd-$1-64bit.app
