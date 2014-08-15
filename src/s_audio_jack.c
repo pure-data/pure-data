@@ -12,6 +12,7 @@
 #include <string.h>
 #include "m_pd.h"
 #include "s_stuff.h"
+#include <jack/weakjack.h>
 #include <jack/jack.h>
 #include <regex.h>
 
@@ -305,9 +306,9 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
     jack_status_t status;
 
 #ifdef __APPLE__
-    if (NULL==jack_client_open)
+    if (!jack_client_open)
     {
-        error("JACK framework not available");
+        error("Can't open Jack (it seems not to be installed on this Mac)");
         return 1;
     }
 #endif

@@ -44,7 +44,7 @@ LIB =   -ldl -lm -lpthread
 ifdef JACK
 CPPFLAGS += -DUSEAPI_JACK
 SYSSRC += s_audio_jack.c
-LIB += -ljack
+LIB += -weak_framework Jackmp
 endif
 
 CFLAGS = $(ARCH_CFLAGS) $(WARN_CFLAGS) $(CPPFLAGS) $(MORECFLAGS)
