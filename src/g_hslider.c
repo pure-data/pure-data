@@ -380,7 +380,15 @@ static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy)
         x->x_pos -= x->x_pos%100;
     }
     x->x_fval = 0.01 * x->x_val;
-    if(old != x->x_val)
+
+    if (x->x_lin0_log1)
+        x->x_fval = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
+    else
+        x->x_fval = (double)(x->x_val)*0.01*x->x_k + x->x_min;
+    if ((x->x_fval < 1.0e-10)&&(x->x_fval > -1.0e-10))
+        x->x_fval = 0.0;
+
+    if (old != x->x_val)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         hslider_bang(x);
