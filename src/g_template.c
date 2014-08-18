@@ -2088,11 +2088,12 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
         array_motion_template = elemtemplate;
         array_motion_xperpix = glist_dpixtodx(glist, 1);
         array_motion_yperpix = glist_dpixtody(glist, 1);
-            /* if we're the only array here and if we appear to have
+            /* if we're a garray, the only one here, and if we appear to have
             only a 'y' field, click always succeeds and furthermore we'll
             call "motion" later. */
-        if (glist->gl_list && !glist->gl_list->g_next &&
-            elemsize == sizeof(t_word))
+        if (glist->gl_list && pd_class(&glist->gl_list->g_pd) == garray_class
+            && !glist->gl_list->g_next &&
+                elemsize == sizeof(t_word))
         {
             int xval = glist_pixelstox(glist, xpix);
             if (xval < 0)
