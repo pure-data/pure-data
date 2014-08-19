@@ -312,19 +312,24 @@ static void hslider_set(t_hslider *x, t_floatarg f)    /* bugfix */
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
 }
 
+    /* compute numeric value (fval) from pixel location (val) and range */
+static t_float hslider_getfval(t_hslider *x)
+{
+    t_float fval;
+    if (x->x_lin0_log1)
+        fval = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
+    else fval = (double)(x->x_val)*0.01*x->x_k + x->x_min;
+    if ((fval < 1.0e-10) && (fval > -1.0e-10))
+        fval = 0.0;
+    return (fval);
+}
+
 static void hslider_bang(t_hslider *x)
 {
     double out;
 
     if (pd_compatibilitylevel < 46)
-    {
-        if(x->x_lin0_log1)
-            out = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
-        else
-            out = (double)(x->x_val)*0.01*x->x_k + x->x_min;
-        if((out < 1.0e-10)&&(out > -1.0e-10))
-            out = 0.0;
-    }
+        out = hslider_getfval(x);
     else out = x->x_fval;
     outlet_float(x->x_gui.x_obj.ob_outlet, out);
     if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
@@ -379,15 +384,7 @@ static void hslider_motion(t_hslider *x, t_floatarg dx, t_floatarg dy)
         x->x_pos -= 50;
         x->x_pos -= x->x_pos%100;
     }
-    x->x_fval = 0.01 * x->x_val;
-
-    if (x->x_lin0_log1)
-        x->x_fval = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
-    else
-        x->x_fval = (double)(x->x_val)*0.01*x->x_k + x->x_min;
-    if ((x->x_fval < 1.0e-10)&&(x->x_fval > -1.0e-10))
-        x->x_fval = 0.0;
-
+    x->x_fval = hslider_getfval(x);
     if (old != x->x_val)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -404,7 +401,7 @@ static void hslider_click(t_hslider *x, t_floatarg xpos, t_floatarg ypos,
         x->x_val = 100*x->x_gui.x_w - 100;
     if(x->x_val < 0)
         x->x_val = 0;
-    x->x_fval = 0.01 * x->x_val;
+    x->x_fval = hslider_getfval(x);
     x->x_pos = x->x_val;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
     hslider_bang(x);
