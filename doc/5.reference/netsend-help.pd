@@ -1,4 +1,4 @@
-#N canvas 578 68 1043 631 12;
+#N canvas 299 17 1043 631 12;
 #X obj 38 389 netsend;
 #X msg 38 285 connect localhost 3000;
 #X msg 47 367 send foo \$1;

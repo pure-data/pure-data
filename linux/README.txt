@@ -13,7 +13,7 @@ release checklist
         ~/bis/lib/public_html/Pd_documentation/
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
-    edit /home/msp/bis/lib/public_html/software.htm
+    nedit-client /home/msp/bis/lib/public_html/software.htm
     rsync  -avzl --delete --exclude tmp \
         /home/msp/bis/lib/public_html/ foo:/mnt/a/bis/crca-mirror/public_html/
 

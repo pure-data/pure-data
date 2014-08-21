@@ -31,6 +31,13 @@
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
 
+#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
+# include <alloca.h>        /* linux, mac, mingw, cygwin */
+#elif defined _MSC_VER
+# include <malloc.h>        /* MSVC */
+#else
+# include <stddef.h>        /* BSDs for example */
+#endif                      /* end alloca() ifdef nonsense */
 
 /* -------------------------- random ------------------------------ */
 /* this is strictly homebrew and untested. */
@@ -314,6 +321,382 @@ static void realtime_setup(void)
         0);
 }
 
+/* ---------- oscparse - parse simple OSC messages ----------------- */
+
+static t_class *oscparse_class;
+
+typedef struct _oscparse
+{
+    t_object x_obj;
+} t_oscparse;
+
+#define ROUNDUPTO4(x) (((x) + 3) & (~3))
+
+#define READINT(x)  ((((int)(((x)  )->a_w.w_float)) & 0xff) << 24) | \
+                    ((((int)(((x)+1)->a_w.w_float)) & 0xff) << 16) | \
+                    ((((int)(((x)+2)->a_w.w_float)) & 0xff) << 8) | \
+                    ((((int)(((x)+3)->a_w.w_float)) & 0xff) << 0)
+
+static t_symbol *grabstring(int argc, t_atom *argv, int *ip, int slash)
+{
+    char buf[MAXPDSTRING];
+    int first, nchar;
+    if (slash)
+        while (*ip < argc && argv[*ip].a_w.w_float == '/')
+            (*ip)++;
+    for (nchar = 0; nchar < MAXPDSTRING-1 && *ip < argc; nchar++, (*ip)++)
+    {
+        char c = argv[*ip].a_w.w_float;
+        if (c == 0 || (slash && c == '/'))
+            break;
+        buf[nchar] = c;
+    }
+    buf[nchar] = 0;
+    if (!slash)
+        *ip = ROUNDUPTO4(*ip);
+    if (*ip > argc)
+        *ip = argc;
+    return (gensym(buf));
+}
+
+static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int i, j, j2, k, outc = 1, blob = 0, typeonset, dataonset, nfield;
+    t_atom *outv;
+    if (!argc)
+        return;
+    for (i = 0; i < argc; i++)
+        if (argv[i].a_type != A_FLOAT)
+    {
+        pd_error(x, "oscparse: takes numbers only");
+        return;
+    }
+    if (argv[0].a_w.w_float != '/')
+    {
+        pd_error(x, "oscparse: not an OSC message (no leading slash)");
+        return;
+    }
+    for (i = 1; i < argc && argv[i].a_w.w_float != 0; i++)
+        if (argv[i].a_w.w_float == '/')
+            outc++;
+    i = ROUNDUPTO4(i+1);
+    if (argv[i].a_w.w_float != ',' || (i+1) >= argc)
+    {
+        pd_error(x, "oscparse: malformed type string (char %d, index %d)",
+            (int)(argv[i].a_w.w_float), i);
+        return;
+    }
+    typeonset = ++i;
+    for (; i < argc && argv[i].a_w.w_float != 0; i++)
+        if (argv[i].a_w.w_float == 'b')
+            blob = 1;
+    nfield = i - typeonset;
+    if (blob)
+        outc += argc - typeonset;
+    else outc += nfield;
+    outv = (t_atom *)alloca(outc * sizeof(t_atom));
+    dataonset = ROUNDUPTO4(i + 1);
+    /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset, 
+        dataonset, nfield); */
+    for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
+        j < outc; j++)
+            SETSYMBOL(outv+j, grabstring(argc, argv, &i, 1));
+    for (i = typeonset, k = dataonset; i < typeonset + nfield; i++)
+    {
+        union
+        {
+            float z_f;
+            uint32_t z_i;
+        } z;
+        float f;
+        int blobsize;
+        switch ((int)(argv[i].a_w.w_float))
+        {
+        case 'f':
+            if (k > argc - 4)
+                goto tooshort;
+            z.z_i = READINT(argv+k);
+            f = z.z_f;
+            if (PD_BADFLOAT(f))
+                f = 0;
+            if (j >= outc)
+            {
+                bug("oscparse 1: %d >=%d", j, outc);
+                return;
+            }
+            SETFLOAT(outv+j, f);
+            j++; k += 4;
+            break;
+        case 'i':
+            if (k > argc - 4)
+                goto tooshort;
+            if (j >= outc)
+            {
+                bug("oscparse 2");
+                return;
+            }
+            SETFLOAT(outv+j, READINT(argv+k));
+            j++; k += 4;
+            break;
+        case 's':
+            if (j >= outc)
+            {
+                bug("oscparse 3");
+                return;
+            }
+            SETSYMBOL(outv+j, grabstring(argc, argv, &k, 0));
+            j++;
+            break;
+        case 'b':
+            if (k > argc - 4)
+                goto tooshort;
+            blobsize = READINT(argv+k);
+            k += 4;
+            if (blobsize < 0 || blobsize > argc - k)
+                goto tooshort;
+            if (j + blobsize + 1 > outc)
+            {
+                bug("oscparse 4");
+                return;
+            }
+            if (k + blobsize > argc)
+                goto tooshort;
+            SETFLOAT(outv+j, blobsize);
+            j++;
+            for (j2 = 0; j2 < blobsize; j++, j2++, k++)
+                SETFLOAT(outv+j, argv[k].a_w.w_float);
+            k = ROUNDUPTO4(k);
+            break;
+        default:
+            pd_error(x, "oscparse: unknown tag '%c' (%d)", 
+                (int)(argv[i].a_w.w_float), (int)(argv[i].a_w.w_float));
+        } 
+    }
+    outlet_list(x->x_obj.ob_outlet, 0, j, outv);
+    return;
+tooshort:
+    pd_error(x, "oscparse: OSC message ended prematurely");
+}
+
+static t_oscparse *oscparse_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_oscparse *x = (t_oscparse *)pd_new(oscparse_class);
+    outlet_new(&x->x_obj, gensym("list"));
+    return (x);
+}
+
+void oscparse_setup(void)
+{
+    oscparse_class = class_new(gensym("oscparse"), (t_newmethod)oscparse_new,
+        0, sizeof(t_oscparse), 0, A_GIMME, 0);
+    class_addlist(oscparse_class, oscparse_list);
+}
+
+/* --------- oscformat - format simple OSC messages -------------- */
+static t_class *oscformat_class;
+
+typedef struct _oscformat
+{
+    t_object x_obj;
+    char *x_pathbuf;
+    int x_pathsize;
+    t_symbol *x_format;
+} t_oscformat;
+
+static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
+{
+    char buf[MAXPDSTRING];
+    int i, newsize;
+    *x->x_pathbuf = 0;
+    buf[0] = '/';
+    for (i = 0; i < argc; i++)
+    {
+        char *where = (argv[i].a_type == A_SYMBOL &&
+            *argv[i].a_w.w_symbol->s_name == '/' ? buf : buf+1);
+        atom_string(&argv[i], where, MAXPDSTRING-1);
+        if ((newsize = strlen(buf) + strlen(x->x_pathbuf) + 1) > x->x_pathsize)
+        {
+            x->x_pathbuf = resizebytes(x->x_pathbuf, x->x_pathsize, newsize);
+            x->x_pathsize = newsize;
+        }
+        strcat(x->x_pathbuf, buf);
+    }
+}
+
+static void oscformat_format(t_oscformat *x, t_symbol *s)
+{
+    char *sp;
+    for (sp = s->s_name; *sp; sp++)
+    {
+        if (*sp != 'f' && *sp != 'i' && *sp != 's' && *sp != 'b')
+        {
+            pd_error(x,
+                "oscformat '%s' may only contain 'f', 'i'. 's', and/or 'b'",
+                    sp);
+            return;
+        }
+    }
+    x->x_format = s;
+}
+
+#define WRITEINT(msg, i)    SETFLOAT((msg),   (((i) >> 24) & 0xff)); \
+                            SETFLOAT((msg)+1, (((i) >> 16) & 0xff)); \
+                            SETFLOAT((msg)+2, (((i) >>  8) & 0xff)); \
+                            SETFLOAT((msg)+3, (((i)      ) & 0xff))
+
+static void putstring(t_atom *msg, int *ip, const char *s)
+{
+    const char *sp = s;
+    do
+    {
+        SETFLOAT(&msg[*ip], *sp & 0xff);
+        (*ip)++;
+    }
+    while (*sp++);
+    while (*ip & 3)
+    {
+        SETFLOAT(&msg[*ip], 0);
+        (*ip)++;
+    }
+}
+
+static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int typeindex = 0, j, msgindex, msgsize, datastart, ndata;
+    t_atom *msg;
+    char *sp, *formatp = x->x_format->s_name, typecode;
+        /* pass 1: go through args to find overall message size */
+    for (j = ndata = 0, sp = formatp, msgindex = 0; j < argc;)
+    {
+        if (*sp)
+            typecode = *sp++;
+        else if (argv[j].a_type == A_SYMBOL)
+            typecode = 's';
+        else typecode = 'f';
+        if (typecode == 's')
+            msgindex += ROUNDUPTO4(strlen(argv[j].a_w.w_symbol->s_name) + 1);
+        else if (typecode == 'b')
+        {
+            int blobsize = 0x7fffffff, blobindex;
+                /* check if we have a nonnegative size field */ 
+            if (argv[j].a_type == A_FLOAT &&
+                (int)(argv[j].a_w.w_float) >= 0)
+                    blobsize = (int)(argv[j].a_w.w_float);
+            if (blobsize > argc - j - 1)
+                blobsize = argc - j - 1;    /* if no or bad size, eat it all */ 
+            msgindex += 4 + ROUNDUPTO4(blobsize);
+            j += blobsize;
+        }
+        else msgindex += 4;
+        j++;
+        ndata++;
+    }
+    datastart = ROUNDUPTO4(strlen(x->x_pathbuf)+1) + ROUNDUPTO4(ndata + 2);
+    msgsize = datastart + msgindex;
+    msg = (t_atom *)alloca(msgsize * sizeof(t_atom));
+    putstring(msg, &typeindex, x->x_pathbuf);
+    SETFLOAT(&msg[typeindex], ',');
+    typeindex++;
+        /* pass 2: fill in types and data portion of packet */
+    for (j = 0, sp = formatp, msgindex = datastart; j < argc;)
+    {
+        if (*sp)
+            typecode = *sp++;
+        else if (argv[j].a_type == A_SYMBOL)
+            typecode = 's';
+        else typecode = 'f';
+        SETFLOAT(&msg[typeindex], typecode & 0xff);
+        typeindex++;
+        if (typecode == 'f')
+        {
+            union
+            {
+                float z_f;
+                uint32_t z_i;
+            } z;
+            z.z_f = atom_getfloat(&argv[j]);
+            WRITEINT(msg+msgindex, z.z_i);
+            msgindex += 4;
+        }
+        else if (typecode == 'i')
+        {
+            int dat = atom_getfloat(&argv[j]);
+            WRITEINT(msg+msgindex, dat);
+            msgindex += 4;
+        }
+        else if (typecode == 's')
+            putstring(msg, &msgindex, argv[j].a_w.w_symbol->s_name);
+        else if (typecode == 'b')
+        {
+            int blobsize = 0x7fffffff, blobindex;
+            if (argv[j].a_type == A_FLOAT &&
+                (int)(argv[j].a_w.w_float) >= 0)
+                    blobsize = (int)(argv[j].a_w.w_float);
+            if (blobsize > argc - j - 1)
+                blobsize = argc - j - 1;
+            WRITEINT(msg+msgindex, blobsize);
+            msgindex += 4;
+            for (blobindex = 0; blobindex < blobsize; blobindex++)
+                SETFLOAT(msg+msgindex+blobindex,
+                    (argv[j+1+blobindex].a_type == A_FLOAT ?
+                        argv[j+1+blobindex].a_w.w_float :
+                        (argv[j+1+blobindex].a_type == A_SYMBOL ?
+                            argv[j+1+blobindex].a_w.w_symbol->s_name[0] & 0xff :
+                            0)));
+            j += blobsize;
+            while (blobsize & 3)
+                SETFLOAT(msg+msgindex+blobsize, 0), blobsize++;
+            msgindex += blobsize;
+        }
+        j++;
+    }
+    SETFLOAT(&msg[typeindex], 0);
+    typeindex++;
+    while (typeindex & 3)
+        SETFLOAT(&msg[typeindex], 0), typeindex++;
+    if (typeindex != datastart || msgindex != msgsize)
+        bug("oscformat: typeindex %d, datastart %d, msgindex %d, msgsize %d",
+            typeindex, datastart, msgindex, msgsize);
+    /* else post("datastart %d, msgsize %d", datastart, msgsize); */
+    outlet_list(x->x_obj.ob_outlet, 0, msgsize, msg);
+}
+
+static void oscformat_free(t_oscformat *x)
+{
+    freebytes(x->x_pathbuf, x->x_pathsize);
+}
+
+static void *oscformat_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_oscformat *x = (t_oscformat *)pd_new(oscformat_class);
+    outlet_new(&x->x_obj, gensym("list"));
+    x->x_pathbuf = getbytes(1);
+    x->x_pathsize = 1;
+    *x->x_pathbuf = 0;
+    x->x_format = &s_;
+    if (argc > 1 && argv[0].a_type == A_SYMBOL &&
+        argv[1].a_type == A_SYMBOL &&
+            !strcmp(argv[0].a_w.w_symbol->s_name, "-f"))
+    {
+        oscformat_format(x, argv[1].a_w.w_symbol);
+        argc -= 2;
+        argv += 2;
+    }
+    oscformat_set(x, 0, argc, argv);
+    return (x);
+}
+
+void oscformat_setup(void)
+{
+    oscformat_class = class_new(gensym("oscformat"), (t_newmethod)oscformat_new,
+        (t_method)oscformat_free, sizeof(t_oscformat), 0, A_GIMME, 0);
+    class_addmethod(oscformat_class, (t_method)oscformat_set,
+        gensym("set"), A_GIMME, 0);
+    class_addmethod(oscformat_class, (t_method)oscformat_format,
+        gensym("format"), A_DEFSYM, 0);
+    class_addlist(oscformat_class, oscformat_list);
+}
+
 void x_misc_setup(void)
 {
     random_setup();
@@ -322,4 +705,6 @@ void x_misc_setup(void)
     serial_setup();
     cputime_setup();
     realtime_setup();
+    oscparse_setup();
+    oscformat_setup();
 }

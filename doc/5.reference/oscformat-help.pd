@@ -1,0 +1,79 @@
+#N canvas 48 64 758 768 12;
+#X text 36 11 oscformat - convert lists to Open Sound Control (OSC)
+packets, f 61;
+#X msg 72 560 format b;
+#X msg 72 147 1 2 3;
+#X obj 72 268 oscformat cat horse pig;
+#X msg 94 203 set dog ferret;
+#X msg 92 230 set mouse banana;
+#X obj 180 302 oscparse;
+#X obj 72 301 print packet;
+#X msg 80 174 4 5 weasel 6 7 rat;
+#X obj 148 661 oscparse;
+#X obj 148 686 print parse-output;
+#X obj 42 662 print packet;
+#X msg 57 507 -1 1 2 mule 4 5;
+#X msg 69 605 format ifisf;
+#X obj 42 635 oscformat -f b wombat;
+#X msg 45 479 5 6 7 squirrel;
+#X msg 70 582 format fiiib;
+#X text 270 266 creation arguments are OSC address;
+#X text 138 137 OSC messages with numbers and symbols. Except as shown
+below the message will contain 'float' and 'string' data.;
+#X msg 342 379 disconnect;
+#X obj 334 406 netsend -u -b;
+#X msg 343 355 connect localhost 5000;
+#X obj 335 305 list prepend send;
+#X obj 335 330 list trim;
+#X obj 180 327 print reassembled;
+#X text 25 736 see also:;
+#X text 381 733 updated for Pd version 0.46;
+#X obj 267 736 list;
+#X obj 113 736 oscparse;
+#X obj 197 736 netsend;
+#X text 29 45 oscformat makes OSC packets suitable for sending over
+the network via netsend (in UDP binary mode). The OSC address (the
+strings between the slashes) are given by the creation arguments or
+by "set" messages. Incoming lists are output as OSC messages \, byte
+by byte., f 61;
+#X text 437 379 don't send;
+#X text 226 205 set message to change OSC address;
+#X text 232 632 the '-f' creation argument initializes the format;
+#X msg 73 535 format;
+#X text 142 535 no format;
+#X text 150 558 a 'blob';
+#X text 180 593 mixtures;
+#X text 530 354 send as UDP;
+#X text 258 452 The format \, if any (initialized or set by a 'format'
+message) instructs oscformat to interpret incoming data as integer
+\, float \, string \, or 'blob'. Blobs are given as an atom count followed
+by that number of elements. (If an elements is a symbol \, its first
+byte is sent). If the count is negative \, the entire remaining message
+is included in the blob (but the OSC parser will report the actual
+number of elements). If the elements aren't exhausted at the end of
+the format string \, the default (float and symbol) conversions are
+made for the rest.;
+#X text 306 666 Note: there's no way using oscparse to distinguish
+between floats and integers \, nor to see blobs unambiguously., f
+40;
+#X connect 1 0 14 0;
+#X connect 2 0 3 0;
+#X connect 3 0 7 0;
+#X connect 3 0 22 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 6 0 24 0;
+#X connect 8 0 3 0;
+#X connect 9 0 10 0;
+#X connect 12 0 14 0;
+#X connect 13 0 14 0;
+#X connect 14 0 11 0;
+#X connect 14 0 9 0;
+#X connect 15 0 14 0;
+#X connect 16 0 14 0;
+#X connect 19 0 20 0;
+#X connect 21 0 20 0;
+#X connect 22 0 23 0;
+#X connect 23 0 20 0;
+#X connect 34 0 14 0;

@@ -223,13 +223,16 @@ static void netsend_connect(t_netsend *x, t_symbol *hostname,
         return;
     }
     x->x_sockfd = sockfd;
-    if (x->x_bin)
-        sys_addpollfn(sockfd, (t_fdpollfn)netsend_readbin, x);
-    else
+    if (x->x_msgout)    /* add polling function for return messages */
     {
-        t_socketreceiver *y =
-            socketreceiver_new((void *)x, 0, netsend_doit, 0);
-        sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
+        if (x->x_bin)
+            sys_addpollfn(sockfd, (t_fdpollfn)netsend_readbin, x);
+        else
+        {
+            t_socketreceiver *y =
+                socketreceiver_new((void *)x, 0, netsend_doit, 0);
+            sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
+        }
     }
     outlet_float(x->x_obj.ob_outlet, 1);
 }
