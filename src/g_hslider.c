@@ -203,7 +203,7 @@ static void hslider_save(t_gobj *z, t_binbuf *b)
     t_symbol *srl[3];
 
     iemgui_save(&x->x_gui, srl, bflcol);
-    binbuf_addv(b, "ssiisiiffiisssiiiiiiifi", gensym("#X"),gensym("obj"),
+    binbuf_addv(b, "ssiisiiffiisssiiiiiiiii", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
                 gensym("hsl"), x->x_gui.x_w, x->x_gui.x_h,
                 (t_float)x->x_min, (t_float)x->x_max,
@@ -212,7 +212,7 @@ static void hslider_save(t_gobj *z, t_binbuf *b)
                 x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[1], bflcol[2],
-                100 * x->x_fval, x->x_steady);
+                x->x_val, x->x_steady);
     binbuf_addv(b, ";");
 }
 
@@ -554,11 +554,10 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fsf.x_rcv_able = 1;
 
     x->x_gui.x_glist = (t_glist *)canvas_getcurrent();
-    if(x->x_gui.x_isa.x_loadinit)
-        x->x_fval = v/100.;
-    else
-        x->x_fval = 0;
-    x->x_pos = x->x_val = 100 * x->x_fval;
+    if (x->x_gui.x_isa.x_loadinit)
+        x->x_val = v;
+    else x->x_val = 0;
+    x->x_pos = x->x_val;
     if(lilo != 0) lilo = 1;
     x->x_lin0_log1 = lilo;
     if(steady != 0) steady = 1;
@@ -571,7 +570,7 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     else if(x->x_gui.x_fsf.x_font_style == 2) strcpy(x->x_gui.x_font, "times");
     else { x->x_gui.x_fsf.x_font_style = 0;
         strcpy(x->x_gui.x_font, sys_font); }
-    if(x->x_gui.x_fsf.x_rcv_able)
+    if (x->x_gui.x_fsf.x_rcv_able)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
@@ -584,6 +583,7 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     iemgui_all_colfromload(&x->x_gui, bflcol);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_float);
+    x->x_fval = hslider_getfval(x);
     return (x);
 }
 
