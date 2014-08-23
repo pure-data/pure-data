@@ -19,7 +19,7 @@
 #include "s_stuff.h"
 
 #define NSEARCH 10
-static int oss_nmidiindevs, oss_nmidioutdevs, oss_initted;
+static int oss_nmidiindevs, oss_nmidioutdevs;
 static char oss_indevnames[NSEARCH][4], oss_outdevnames[NSEARCH][4];
 static int oss_nmidiin;
 static int oss_midiinfd[MAXMIDIINDEV];
@@ -227,8 +227,6 @@ void midi_oss_init(void)
     char namebuf[80];
     oss_nmidiindevs = oss_nmidioutdevs = 0;
 
-    oss_initted = 1;
-
     for (devno = 0; devno < NSEARCH; devno++)
     {
         if (devno == 0)
@@ -289,6 +287,8 @@ void midi_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int maxndev, int devdescsize)
 {
     int i, ndev;
+    midi_oss_init();
+        
     if ((ndev = oss_nmidiindevs) > maxndev)
         ndev = maxndev;
     for (i = 0; i < ndev; i++)

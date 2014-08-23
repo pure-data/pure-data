@@ -727,7 +727,7 @@ int sys_argparse(int argc, char **argv)
             sys_nmidiin = sys_nmidiout = 0;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-midiindev"))
+        else if (!strcmp(*argv, "-midiindev") && (argc > 1))
         {
             sys_parsedevlist(&sys_nmidiin, sys_midiindevlist, MAXMIDIINDEV,
                 argv[1]);
@@ -761,11 +761,11 @@ int sys_argparse(int argc, char **argv)
             {
                 int devn = sys_mididevnametonumber(0, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find MIDI input device: %s",
+                    fprintf(stderr, "Couldn't find MIDI input device: %s\n",
                         argv[1]);
                 else sys_midiindevlist[sys_nmidiin++] = devn + 1;
             }
-            else fprintf(stderr, "number of MIDI devices limited to %d",
+            else fprintf(stderr, "number of MIDI devices limited to %d\n",
                 MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
@@ -777,11 +777,11 @@ int sys_argparse(int argc, char **argv)
             {
                 int devn = sys_mididevnametonumber(1, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find MIDI output device: %s",
+                    fprintf(stderr, "Couldn't find MIDI output device: %s\n",
                         argv[1]);
-                else sys_midioutdevlist[sys_nmidiin++] = devn + 1;
+                else sys_midioutdevlist[sys_nmidiout++] = devn + 1;
             }
-            else fprintf(stderr, "number of MIDI devices limited to %d",
+            else fprintf(stderr, "number of MIDI devices limited to %d\n",
                 MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
@@ -795,14 +795,14 @@ int sys_argparse(int argc, char **argv)
             {
                 int devn = sys_mididevnametonumber(1, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find MIDI output device: %s",
+                    fprintf(stderr, "Couldn't find MIDI output device: %s\n",
                         argv[1]);
                 else sys_midioutdevlist[sys_nmidiin++] = devn + 1;
                 devn = sys_mididevnametonumber(1, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find MIDI output device: %s",
+                    fprintf(stderr, "Couldn't find MIDI output device: %s\n",
                         argv[1]);
-                else sys_midioutdevlist[sys_nmidiin++] = devn + 1;
+                else sys_midioutdevlist[sys_nmidiout++] = devn + 1;
             }
             else fprintf(stderr, "number of MIDI devices limited to %d",
                 MAXMIDIINDEV);
@@ -1036,11 +1036,11 @@ int sys_argparse(int argc, char **argv)
             {
                 int devn = sys_audiodevnametonumber(0, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio input device: %s",
+                    fprintf(stderr, "Couldn't find audio input device: %s\n",
                         argv[1]);
                 else sys_soundindevlist[sys_nsoundin++] = devn + 1;
             }
-            else fprintf(stderr, "number of audio devices limited to %d",
+            else fprintf(stderr, "number of audio devices limited to %d\n",
                 MAXAUDIOINDEV);
             argc -= 2; argv += 2;
         }
@@ -1052,11 +1052,11 @@ int sys_argparse(int argc, char **argv)
             {
                 int devn = sys_audiodevnametonumber(1, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio output device: %s",
+                    fprintf(stderr, "Couldn't find audio output device: %s\n",
                         argv[1]);
                 else sys_soundoutdevlist[sys_nsoundout++] = devn + 1;
             }
-            else fprintf(stderr, "number of audio devices limited to %d",
+            else fprintf(stderr, "number of audio devices limited to %d\n",
                 MAXAUDIOINDEV);
             argc -= 2; argv += 2;
         }
@@ -1070,12 +1070,12 @@ int sys_argparse(int argc, char **argv)
             {
                 int devn = sys_audiodevnametonumber(0, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio input device: %s",
+                    fprintf(stderr, "Couldn't find audio input device: %s\n",
                         argv[1]);
                 else sys_soundindevlist[sys_nsoundin++] = devn + 1;
                 devn = sys_audiodevnametonumber(1, argv[1]);
                 if (devn < 0)
-                    fprintf(stderr, "Couldn't find audio output device: %s",
+                    fprintf(stderr, "Couldn't find audio output device: %s\n",
                         argv[1]);
                 else sys_soundoutdevlist[sys_nsoundout++] = devn + 1;
             }
