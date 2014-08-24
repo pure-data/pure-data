@@ -14,8 +14,7 @@ release checklist
     cp -a ~/pd/README.txt ~/bis/lib/public_html/Software/pd-README.txt
     (cd /home/msp/bis/lib/public_html/Software; htmldir.perl .)
     nedit-client /home/msp/bis/lib/public_html/software.htm
-    rsync  -avzl --delete --exclude tmp \
-        /home/msp/bis/lib/public_html/ foo:/mnt/a/bis/crca-mirror/public_html/
+    copy-out.sh +
 
     mail release notice from /home/msp/pd/attic/pd-announce
 

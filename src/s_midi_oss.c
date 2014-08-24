@@ -225,6 +225,12 @@ void midi_oss_init(void)
     int fd, devno;
     struct stat statbuf;
     char namebuf[80];
+         /* we only try to detect devices before trying to open them, because
+         when they're open, they migth not be possible to reopen here */
+    static int initted = 0;
+    if (initted)
+        return;
+    initted = 1;
     oss_nmidiindevs = oss_nmidioutdevs = 0;
 
     for (devno = 0; devno < NSEARCH; devno++)

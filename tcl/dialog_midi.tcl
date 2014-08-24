@@ -12,19 +12,31 @@ namespace eval ::dialog_midi:: {
 ####################### midi dialog ##################
 
 proc ::dialog_midi::apply {mytoplevel} {
-    global midi_indev1 midi_indev2 midi_indev3 midi_indev4 
-    global midi_outdev1 midi_outdev2 midi_outdev3 midi_outdev4
+    global midi_indev1 midi_indev2 midi_indev3 midi_indev4 midi_indev5 \
+        midi_indev6 midi_indev7 midi_indev8 midi_indev9
+    global midi_outdev1 midi_outdev2 midi_outdev3 midi_outdev4 midi_outdev5 \
+        midi_outdev6 midi_outdev7 midi_outdev8 midi_outdev9
     global midi_alsain midi_alsaout
-    
+
     pdsend "pd midi-dialog \
         $midi_indev1 \
         $midi_indev2 \
         $midi_indev3 \
         $midi_indev4 \
+        $midi_indev5 \
+        $midi_indev6 \
+        $midi_indev7 \
+        $midi_indev8 \
+        $midi_indev9 \
         $midi_outdev1 \
         $midi_outdev2 \
         $midi_outdev3 \
         $midi_outdev4 \
+        $midi_outdev5 \
+        $midi_outdev6 \
+        $midi_outdev7 \
+        $midi_outdev8 \
+        $midi_outdev9 \
         $midi_alsain \
         $midi_alsaout"
 }
@@ -64,10 +76,14 @@ proc midi_popup {name buttonname varname devlist} {
 # start a dialog window to select midi devices.  "longform" asks us to make
 # controls for opening several devices; if not, we get an extra button to
 # turn longform on and restart the dialog.
-proc ::dialog_midi::pdtk_midi_dialog {id indev1 indev2 indev3 indev4 \
-        outdev1 outdev2 outdev3 outdev4 longform} {
-    global midi_indev1 midi_indev2 midi_indev3 midi_indev4 
-    global midi_outdev1 midi_outdev2 midi_outdev3 midi_outdev4
+proc ::dialog_midi::pdtk_midi_dialog {id \
+      indev1 indev2 indev3 indev4 indev5 indev6 indev7 indev8 indev9 \
+      outdev1 outdev2 outdev3 outdev4 outdev5 outdev6 outdev7 outdev8 outdev9 \
+      longform} {
+    global midi_indev1 midi_indev2 midi_indev3 midi_indev4 midi_indev5 \
+         midi_indev6 midi_indev7 midi_indev8 midi_indev9
+    global midi_outdev1 midi_outdev2 midi_outdev3 midi_outdev4 midi_outdev5 \
+         midi_outdev6 midi_outdev7 midi_outdev8 midi_outdev9
     global midi_indevlist midi_outdevlist
     global midi_alsain midi_alsaout
 
@@ -75,10 +91,20 @@ proc ::dialog_midi::pdtk_midi_dialog {id indev1 indev2 indev3 indev4 \
     set midi_indev2 $indev2
     set midi_indev3 $indev3
     set midi_indev4 $indev4
+    set midi_indev5 $indev5
+    set midi_indev6 $indev6
+    set midi_indev7 $indev7
+    set midi_indev8 $indev8
+    set midi_indev9 $indev9
     set midi_outdev1 $outdev1
     set midi_outdev2 $outdev2
     set midi_outdev3 $outdev3
     set midi_outdev4 $outdev4
+    set midi_outdev5 $outdev5
+    set midi_outdev6 $outdev6
+    set midi_outdev7 $outdev7
+    set midi_outdev8 $outdev8
+    set midi_outdev9 $outdev9
     set midi_alsain [llength $midi_indevlist]
     set midi_alsaout [llength $midi_outdevlist]
 
@@ -150,6 +176,66 @@ proc ::dialog_midi::pdtk_midi_dialog {id indev1 indev2 indev3 indev4 \
         pack $id.in4f.l1 $id.in4f.x1 -side left
     }
 
+        # input device 5
+    if {$longform && [llength $midi_indevlist] > 5} {
+        frame $id.in5f
+        pack $id.in5f -side top
+
+        label $id.in5f.l1 -text [_ "Input device 5:"]
+        button $id.in5f.x1 -text [lindex $midi_indevlist $midi_indev5] \
+            -command [list midi_popup $id $id.in5f.x1 midi_indev5 \
+                $midi_indevlist]
+        pack $id.in5f.l1 $id.in5f.x1 -side left
+    }
+
+        # input device 6
+    if {$longform && [llength $midi_indevlist] > 6} {
+        frame $id.in6f
+        pack $id.in6f -side top
+
+        label $id.in6f.l1 -text [_ "Input device 6:"]
+        button $id.in6f.x1 -text [lindex $midi_indevlist $midi_indev6] \
+            -command [list midi_popup $id $id.in6f.x1 midi_indev6 \
+                $midi_indevlist]
+        pack $id.in6f.l1 $id.in6f.x1 -side left
+    }
+
+        # input device 7
+    if {$longform && [llength $midi_indevlist] > 7} {
+        frame $id.in7f
+        pack $id.in7f -side top
+
+        label $id.in7f.l1 -text [_ "Input device 7:"]
+        button $id.in7f.x1 -text [lindex $midi_indevlist $midi_indev7] \
+            -command [list midi_popup $id $id.in7f.x1 midi_indev7 \
+                $midi_indevlist]
+        pack $id.in7f.l1 $id.in7f.x1 -side left
+    }
+
+        # input device 8
+    if {$longform && [llength $midi_indevlist] > 8} {
+        frame $id.in8f
+        pack $id.in8f -side top
+
+        label $id.in8f.l1 -text [_ "Input device 8:"]
+        button $id.in8f.x1 -text [lindex $midi_indevlist $midi_indev8] \
+            -command [list midi_popup $id $id.in8f.x1 midi_indev8 \
+                $midi_indevlist]
+        pack $id.in8f.l1 $id.in8f.x1 -side left
+    }
+
+        # input device 9
+    if {$longform && [llength $midi_indevlist] > 9} {
+        frame $id.in9f
+        pack $id.in9f -side top
+
+        label $id.in9f.l1 -text [_ "Input device 9:"]
+        button $id.in9f.x1 -text [lindex $midi_indevlist $midi_indev9] \
+            -command [list midi_popup $id $id.in9f.x1 midi_indev9 \
+                $midi_indevlist]
+        pack $id.in9f.l1 $id.in9f.x1 -side left
+    }
+
         # output device 1
 
     frame $id.out1f
@@ -191,6 +277,61 @@ proc ::dialog_midi::pdtk_midi_dialog {id indev1 indev2 indev3 indev4 \
             -command \
             [list midi_popup $id $id.out4f.x1 midi_outdev4 $midi_outdevlist]
         pack $id.out4f.l1 $id.out4f.x1 -side left
+    }
+
+        # output device 5
+    if {$longform && [llength $midi_outdevlist] > 5} {
+        frame $id.out5f
+        pack $id.out5f -side top
+        label $id.out5f.l1 -text [_ "Output device 5:"]
+        button $id.out5f.x1 -text [lindex $midi_outdevlist $midi_outdev5] \
+            -command \
+            [list midi_popup $id $id.out5f.x1 midi_outdev5 $midi_outdevlist]
+        pack $id.out5f.l1 $id.out5f.x1 -side left
+    }
+
+        # output device 6
+    if {$longform && [llength $midi_outdevlist] > 6} {
+        frame $id.out6f
+        pack $id.out6f -side top
+        label $id.out6f.l1 -text [_ "Output device 6:"]
+        button $id.out6f.x1 -text [lindex $midi_outdevlist $midi_outdev6] \
+            -command \
+            [list midi_popup $id $id.out6f.x1 midi_outdev6 $midi_outdevlist]
+        pack $id.out6f.l1 $id.out6f.x1 -side left
+    }
+
+        # output device 7
+    if {$longform && [llength $midi_outdevlist] > 7} {
+        frame $id.out7f
+        pack $id.out7f -side top
+        label $id.out7f.l1 -text [_ "Output device 7:"]
+        button $id.out7f.x1 -text [lindex $midi_outdevlist $midi_outdev7] \
+            -command \
+            [list midi_popup $id $id.out7f.x1 midi_outdev7 $midi_outdevlist]
+        pack $id.out7f.l1 $id.out7f.x1 -side left
+    }
+
+        # output device 8
+    if {$longform && [llength $midi_outdevlist] > 8} {
+        frame $id.out8f
+        pack $id.out8f -side top
+        label $id.out8f.l1 -text [_ "Output device 8:"]
+        button $id.out8f.x1 -text [lindex $midi_outdevlist $midi_outdev8] \
+            -command \
+            [list midi_popup $id $id.out8f.x1 midi_outdev8 $midi_outdevlist]
+        pack $id.out8f.l1 $id.out8f.x1 -side left
+    }
+
+        # output device 9
+    if {$longform && [llength $midi_outdevlist] > 9} {
+        frame $id.out9f
+        pack $id.out9f -side top
+        label $id.out9f.l1 -text [_ "Output device 9:"]
+        button $id.out9f.x1 -text [lindex $midi_outdevlist $midi_outdev9] \
+            -command \
+            [list midi_popup $id $id.out9f.x1 midi_outdev9 $midi_outdevlist]
+        pack $id.out9f.l1 $id.out9f.x1 -side left
     }
 
         # if not the "long form" make a button to

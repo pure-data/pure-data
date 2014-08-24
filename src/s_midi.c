@@ -524,6 +524,7 @@ void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
     int *pnmidioutdev, int *pmidioutdev)
 {
     int i, devn;
+    post("get params %d", midi_nmidiindev);
     *pnmidiindev = midi_nmidiindev;
     for (i = 0; i < midi_nmidiindev; i++)
     {
@@ -547,6 +548,7 @@ static void sys_save_midi_params(
     int nmidioutdev, int *midioutdev)
 {
     int i;
+    post("save params %d", nmidiindev);
     midi_nmidiindev = nmidiindev;
     for (i = 0; i < nmidiindev; i++)
     {
@@ -641,26 +643,18 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform);
 void glob_midi_setapi(void *dummy, t_floatarg f)
 {
     int newapi = f;
-    if (newapi == sys_midiapi)
-    {
-      //if (!midi_isopen())
-      //  s_reopen_midi();
-    }
-    else
+    if (newapi != sys_midiapi)
     {
 #ifdef USEAPI_ALSA
-      if (sys_midiapi == API_ALSA)
-          sys_alsa_close_midi();
-      else
+        if (sys_midiapi == API_ALSA)
+            sys_alsa_close_midi();
+        else
 #endif
-          sys_close_midi();
-      sys_midiapi = newapi;
-      /* bash device params back to default */
-      midi_nmidiindev = midi_nmidioutdev = 1;
-      sys_reopen_midi();
+              sys_close_midi();
+        sys_midiapi = newapi;
+        sys_reopen_midi();
     }
-
-    glob_midi_properties(0, 0);
+    glob_midi_properties(0, (midi_nmidiindev > 1 || midi_nmidioutdev > 1));
 }
 
 extern t_class *glob_pdobject;
@@ -672,8 +666,10 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
         /* these are the devices you're using: */
     int nindev, midiindev[MAXMIDIINDEV];
     int noutdev, midioutdev[MAXMIDIOUTDEV];
-    int midiindev1, midiindev2, midiindev3, midiindev4,
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4;
+    int midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
+        midiindev6, midiindev7, midiindev8, midiindev9,
+        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
+        midioutdev6, midioutdev7, midioutdev8, midioutdev9;
 
         /* these are all the devices on your system: */
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
@@ -701,10 +697,20 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     midiindev2 = (nindev > 1 &&  midiindev[1]>= 0 ? midiindev[1]+1 : 0);
     midiindev3 = (nindev > 2 &&  midiindev[2]>= 0 ? midiindev[2]+1 : 0);
     midiindev4 = (nindev > 3 &&  midiindev[3]>= 0 ? midiindev[3]+1 : 0);
-    midioutdev1 = (noutdev > 0 && midioutdev[0]>=0 ? midioutdev[0]+1 : 0);  
-    midioutdev2 = (noutdev > 1 && midioutdev[1]>=0 ? midioutdev[1]+1 : 0);  
-    midioutdev3 = (noutdev > 2 && midioutdev[2]>=0 ? midioutdev[2]+1 : 0);  
-    midioutdev4 = (noutdev > 3 && midioutdev[3]>=0 ? midioutdev[3]+1 : 0);  
+    midiindev5 = (nindev > 4 &&  midiindev[4]>= 0 ? midiindev[4]+1 : 0);
+    midiindev6 = (nindev > 5 &&  midiindev[5]>= 0 ? midiindev[5]+1 : 0);
+    midiindev7 = (nindev > 6 &&  midiindev[6]>= 0 ? midiindev[6]+1 : 0);
+    midiindev8 = (nindev > 7 &&  midiindev[7]>= 0 ? midiindev[7]+1 : 0);
+    midiindev9 = (nindev > 8 &&  midiindev[8]>= 0 ? midiindev[8]+1 : 0);
+    midioutdev1 = (noutdev > 0 && midioutdev[0]>= 0 ? midioutdev[0]+1 : 0); 
+    midioutdev2 = (noutdev > 1 && midioutdev[1]>= 0 ? midioutdev[1]+1 : 0); 
+    midioutdev3 = (noutdev > 2 && midioutdev[2]>= 0 ? midioutdev[2]+1 : 0); 
+    midioutdev4 = (noutdev > 3 && midioutdev[3]>= 0 ? midioutdev[3]+1 : 0); 
+    midioutdev5 = (noutdev > 4 && midioutdev[4]>= 0 ? midioutdev[4]+1 : 0);
+    midioutdev6 = (noutdev > 5 && midioutdev[5]>= 0 ? midioutdev[5]+1 : 0);
+    midioutdev7 = (noutdev > 6 && midioutdev[6]>= 0 ? midioutdev[6]+1 : 0);
+    midioutdev8 = (noutdev > 7 && midioutdev[7]>= 0 ? midioutdev[7]+1 : 0);
+    midioutdev9 = (noutdev > 8 && midioutdev[8]>= 0 ? midioutdev[8]+1 : 0);
 
 #ifdef USEAPI_ALSA
       if (sys_midiapi == API_ALSA)
@@ -719,10 +725,13 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 #endif
     sprintf(buf,
 "pdtk_midi_dialog %%s \
-%d %d %d %d %d %d %d %d \
+%d %d %d %d %d %d %d %d %d \
+%d %d %d %d %d %d %d %d %d \
 %d\n",
-        midiindev1, midiindev2, midiindev3, midiindev4, 
-        midioutdev1, midioutdev2, midioutdev3, midioutdev4,
+        midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
+        midiindev6, midiindev7, midiindev8, midiindev9, 
+        midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
+        midioutdev6, midioutdev7, midioutdev8, midioutdev9,
         (flongform != 0));
 
     gfxstub_deleteforkey(0);
@@ -735,16 +744,16 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
     int i, nindev, noutdev;
-    int newmidiindev[4], newmidioutdev[4];
+    int newmidiindev[9], newmidioutdev[9];
     int alsadevin, alsadevout;
 
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < 9; i++)
     {
         newmidiindev[i] = atom_getintarg(i, argc, argv);
-        newmidioutdev[i] = atom_getintarg(i+4, argc, argv);
+        newmidioutdev[i] = atom_getintarg(i+9, argc, argv);
     }
 
-    for (i = 0, nindev = 0; i < 4; i++)
+    for (i = 0, nindev = 0; i < 9; i++)
     {
         if (newmidiindev[i] > 0)
         {
@@ -752,7 +761,7 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             nindev++;
         }
     }
-    for (i = 0, noutdev = 0; i < 4; i++)
+    for (i = 0, noutdev = 0; i < 9; i++)
     {
         if (newmidioutdev[i] > 0)
         {
@@ -760,9 +769,10 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             noutdev++;
         }
     }
-    alsadevin = atom_getintarg(8, argc, argv);
-    alsadevout = atom_getintarg(9, argc, argv);
-        
+    alsadevin = atom_getintarg(18, argc, argv);
+    alsadevout = atom_getintarg(19, argc, argv);
+    sys_save_midi_params(nindev, newmidiindev,
+        noutdev, newmidioutdev);
 #ifdef USEAPI_ALSA
     if (sys_midiapi == API_ALSA)
       {
@@ -773,6 +783,7 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 #endif
       {
         sys_close_midi();
+        post("nindev %d", nindev);
         sys_open_midi(nindev, newmidiindev, noutdev, newmidioutdev, 1);
       }
 
