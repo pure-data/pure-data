@@ -371,7 +371,27 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
         pd_error(x, "oscparse: takes numbers only");
         return;
     }
-    if (argv[0].a_w.w_float != '/')
+    if (argv[0].a_w.w_float == '#') /* it's a fucking bundle */
+    {
+        if (argv[1].a_w.w_float != 'b' || argc < 16)
+        {
+            pd_error(x, "oscparse: malformed bundle");
+            return;
+        }
+        for (i = 16; i < argc-4; )
+        {
+            int msize = READINT(argv+i);
+            if (msize <= 0 || msize & 3)
+            {
+                pd_error(x, "oscparse: bad bundle element size");
+                return;
+            }
+            oscparse_list(x, 0, msize, argv+i+4);
+            i += msize+4;
+        }
+        return;
+    }
+    else if (argv[0].a_w.w_float != '/')
     {
         pd_error(x, "oscparse: not an OSC message (no leading slash)");
         return;

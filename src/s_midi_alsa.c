@@ -32,7 +32,6 @@ static snd_seq_t *midi_handle;
 
 static snd_midi_event_t *midiev;
 
-
 void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     int nmidiout, int *midioutvec)
 {
@@ -221,23 +220,31 @@ void sys_alsa_close_midi()
       }
 }
 
-#define NSEARCH 10
-static int alsa_nmidiindevs, alsa_nmidioutdevs, alsa_initted;
+static int alsa_nmidiindevs = 1, alsa_nmidioutdevs = 1;
 
 void midi_alsa_init(void)     
 {
-    int i;
-    if (alsa_initted)
-        return;
-    alsa_initted = 1;
+}
+
+void midi_alsa_setndevs(int in, int out)
+{
+    alsa_nmidiindevs = in;
+    alsa_nmidioutdevs = out;
 }
 
 void midi_alsa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int maxndev, int devdescsize)
 {
     int i, ndev;
-    *nindevs = 1;
-    sprintf(indevlist, "default");
-    *noutdevs = 1;
-    sprintf(outdevlist, "default");
+    if ((ndev = alsa_nmidiindevs) > maxndev)
+        ndev = maxndev;
+    for (i = 0; i < ndev; i++)
+        sprintf(indevlist + i * devdescsize, "ALSA MIDI device #%d", i+1);
+    *nindevs = ndev;
+
+    if ((ndev = alsa_nmidioutdevs) > maxndev)
+        ndev = maxndev;
+    for (i = 0; i < ndev; i++)
+        sprintf(outdevlist + i * devdescsize, "ALSA MIDI device #%d", i+1);
+    *noutdevs = ndev;
 }

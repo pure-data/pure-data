@@ -348,8 +348,11 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
 
 proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
         outdev1 outdev2 outdev3 outdev4 longform alsa} {
-    global midi_indev1 midi_indev2 midi_indev3 midi_indev4 
-    global midi_outdev1 midi_outdev2 midi_outdev3 midi_outdev4
+
+    global midi_indev1 midi_indev2 midi_indev3 midi_indev4 midi_indev5 \
+         midi_indev6 midi_indev7 midi_indev8 midi_indev9
+    global midi_outdev1 midi_outdev2 midi_outdev3 midi_outdev4 midi_outdev5 \
+         midi_outdev6 midi_outdev7 midi_outdev8 midi_outdev9
     global midi_indevlist midi_outdevlist
     global midi_alsain midi_alsaout
 
@@ -357,12 +360,22 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     set midi_indev2 $indev2
     set midi_indev3 $indev3
     set midi_indev4 $indev4
+    set midi_indev5 0
+    set midi_indev6 0
+    set midi_indev7 0
+    set midi_indev8 0
+    set midi_indev9 0
     set midi_outdev1 $outdev1
     set midi_outdev2 $outdev2
     set midi_outdev3 $outdev3
     set midi_outdev4 $outdev4
-    set midi_alsain [llength $midi_indevlist]
-    set midi_alsaout [llength $midi_outdevlist]
+    set midi_outdev5 0
+    set midi_outdev6 0
+    set midi_outdev7 0
+    set midi_outdev8 0
+    set midi_outdev9 0
+    set midi_alsain [expr [llength $midi_indevlist] - 1]
+    set midi_alsaout [expr [llength $midi_outdevlist] - 1]
     
     toplevel $id
     wm title $id [_ "ALSA MIDI Settings"]
@@ -384,103 +397,6 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     frame $id.in1f
     pack $id.in1f -side top
 
-  if {$alsa == 0} {
-        # input device 1
-    label $id.in1f.l1 -text [_ "Input device 1:"]
-    button $id.in1f.x1 -text [lindex $midi_indevlist $midi_indev1] \
-        -command [list midi_popup $id $id.in1f.x1 midi_indev1 $midi_indevlist]
-    pack $id.in1f.l1 $id.in1f.x1 -side left
-
-        # input device 2
-    if {$longform && [llength $midi_indevlist] > 2} {
-        frame $id.in2f
-        pack $id.in2f -side top
-
-        label $id.in2f.l1 -text [_ "Input device 2:"]
-        button $id.in2f.x1 -text [lindex $midi_indevlist $midi_indev2] \
-            -command [list midi_popup $id $id.in2f.x1 midi_indev2 \
-                $midi_indevlist]
-        pack $id.in2f.l1 $id.in2f.x1 -side left
-    }
-
-        # input device 3
-    if {$longform && [llength $midi_indevlist] > 3} {
-        frame $id.in3f
-        pack $id.in3f -side top
-
-        label $id.in3f.l1 -text [_ "Input device 3:"]
-        button $id.in3f.x1 -text [lindex $midi_indevlist $midi_indev3] \
-            -command [list midi_popup $id $id.in3f.x1 midi_indev3 \
-                $midi_indevlist]
-        pack $id.in3f.l1 $id.in3f.x1 -side left
-    }
-
-        # input device 4
-    if {$longform && [llength $midi_indevlist] > 4} {
-        frame $id.in4f
-        pack $id.in4f -side top
-
-        label $id.in4f.l1 -text [_ "Input device 4:"]
-        button $id.in4f.x1 -text [lindex $midi_indevlist $midi_indev4] \
-            -command [list midi_popup $id $id.in4f.x1 midi_indev4 \
-                $midi_indevlist]
-        pack $id.in4f.l1 $id.in4f.x1 -side left
-    }
-
-        # output device 1
-
-    frame $id.out1f
-    pack $id.out1f -side top
-    label $id.out1f.l1 -text [_ "Output device 1:"]
-    button $id.out1f.x1 -text [lindex $midi_outdevlist $midi_outdev1] \
-        -command [list midi_popup $id $id.out1f.x1 midi_outdev1 \
-            $midi_outdevlist]
-    pack $id.out1f.l1 $id.out1f.x1 -side left
-
-        # output device 2
-    if {$longform && [llength $midi_outdevlist] > 2} {
-        frame $id.out2f
-        pack $id.out2f -side top
-        label $id.out2f.l1 -text [_ "Output device 2:"]
-        button $id.out2f.x1 -text [lindex $midi_outdevlist $midi_outdev2] \
-            -command \
-            [list midi_popup $id $id.out2f.x1 midi_outdev2 $midi_outdevlist]
-        pack $id.out2f.l1 $id.out2f.x1 -side left
-    }
-
-        # output device 3
-    if {$longform && [llength $midi_outdevlist] > 3} {
-        frame $id.out3f
-        pack $id.out3f -side top
-        label $id.out3f.l1 -text [_ "Output device 3:"]
-        button $id.out3f.x1 -text [lindex $midi_outdevlist $midi_outdev3] \
-            -command \
-            [list midi_popup $id $id.out3f.x1 midi_outdev3 $midi_outdevlist]
-        pack $id.out3f.l1 $id.out3f.x1 -side left
-    }
-
-        # output device 4
-    if {$longform && [llength $midi_outdevlist] > 4} {
-        frame $id.out4f
-        pack $id.out4f -side top
-        label $id.out4f.l1 -text [_ "Output device 4:"]
-        button $id.out4f.x1 -text [lindex $midi_outdevlist $midi_outdev4] \
-            -command \
-            [list midi_popup $id $id.out4f.x1 midi_outdev4 $midi_outdevlist]
-        pack $id.out4f.l1 $id.out4f.x1 -side left
-    }
-
-        # if not the "long form" make a button to
-        # restart with longform set. 
-    
-    if {$longform == 0} {
-        frame $id.longbutton
-        pack $id.longbutton -side top
-        button $id.longbutton.b -text [_ "Use multiple ALSA devices"] \
-            -command  {pdsend "pd midi-properties 1"}
-        pack $id.longbutton.b
-    }
-    }
     if {$alsa} {
         label $id.in1f.l1 -text [_ "In Ports:"]
         entry $id.in1f.x1 -textvariable midi_alsain -width 4

@@ -602,13 +602,7 @@ void sys_listmididevs(void )
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i;
 
-#ifdef USEAPI_ALSA
-    if (sys_midiapi == API_ALSA)
-      midi_alsa_getdevs(indevlist, &nindevs, outdevlist, &noutdevs,
-        MAXNDEV, DEVDESCSIZE);
-    else
-#endif /* ALSA */
-    midi_getdevs(indevlist, &nindevs, outdevlist, &noutdevs,
+    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
 
     if (!nindevs)
@@ -637,6 +631,7 @@ void sys_set_midi_api(int which)
 }
 
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform);
+void midi_alsa_setndevs(int in, int out);
 
 void glob_midi_setapi(void *dummy, t_floatarg f)
 {
@@ -652,6 +647,9 @@ void glob_midi_setapi(void *dummy, t_floatarg f)
         sys_midiapi = newapi;
         sys_reopen_midi();
     }
+#ifdef USEAPI_ALSA
+    midi_alsa_setndevs(midi_nmidiindev, midi_nmidioutdev);
+#endif
     glob_midi_properties(0, (midi_nmidiindev > 1 || midi_nmidioutdev > 1));
 }
 
@@ -673,7 +671,7 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i;
 
-    midi_getdevs(indevlist, &nindevs, outdevlist, &noutdevs,
+    sys_get_midi_devs(indevlist, &nindevs, outdevlist, &noutdevs,
         MAXNDEV, DEVDESCSIZE);
 
     sys_gui("global midi_indevlist; set midi_indevlist {none}\n");
@@ -769,21 +767,35 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     }
     alsadevin = atom_getintarg(18, argc, argv);
     alsadevout = atom_getintarg(19, argc, argv);
+#ifdef USEAPI_ALSA
+            /* invent a story so that saving/recalling "settings" will
+            be able to restore the number of devices.  ALSA MIDI handling
+            uses its own set of variables.  LATER figure out how to get
+            this to work coherently */
+    if (sys_midiapi == API_ALSA)
+    {
+        nindev = alsadevin;
+        noutdev = alsadevout;
+        for (i = 0; i < nindev; i++)
+            newmidiindev[i] = i;
+        for (i = 0; i < noutdev; i++)
+            newmidioutdev[i] = i;
+    }
+#endif
     sys_save_midi_params(nindev, newmidiindev,
         noutdev, newmidioutdev);
 #ifdef USEAPI_ALSA
     if (sys_midiapi == API_ALSA)
-      {
+    {
         sys_alsa_close_midi();
         sys_open_midi(alsadevin, newmidiindev, alsadevout, newmidioutdev, 1);
-      }
+    }
     else
 #endif
-      {
+    {
         sys_close_midi();
-        post("nindev %d", nindev);
         sys_open_midi(nindev, newmidiindev, noutdev, newmidioutdev, 1);
-      }
+    }
 
 }
 
