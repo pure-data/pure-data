@@ -371,13 +371,17 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
         pd_error(x, "oscparse: takes numbers only");
         return;
     }
-    if (argv[0].a_w.w_float == '#') /* it's a fucking bundle */
+    if (argv[0].a_w.w_float == '#') /* it's a bundle */
     {
         if (argv[1].a_w.w_float != 'b' || argc < 16)
         {
             pd_error(x, "oscparse: malformed bundle");
             return;
         }
+            /* we ignore the timetag since there's no correct way to
+            convert it to Pd logical time that I can think of.  LATER
+            consider at least outputting timetag differentially converted
+            into Pd time units. */
         for (i = 16; i < argc-4; )
         {
             int msize = READINT(argv+i);
