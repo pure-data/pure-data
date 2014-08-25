@@ -1194,7 +1194,6 @@ static void sys_afterargparse(void)
     sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
     if (sys_nmidiin >= 0)
     {
-        post("sys_nmidiin %d, nmidiindev %d", sys_nmidiin, nmidiindev);
         nmidiindev = sys_nmidiin;
         for (i = 0; i < nmidiindev; i++)
             midiindev[i] = sys_midiindevlist[i];
