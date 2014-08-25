@@ -514,7 +514,6 @@ static void hang_free(t_hang *h)
     for (gp = h->h_gp, i = x->x_nptr; i--; gp++)
         gpointer_unset(gp);
     freebytes(h->h_gp, x->x_nptr * sizeof(*h->h_gp));
-    freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
     clock_free(h->h_clock);
     freebytes(h, sizeof(*h) + (x->x_n - 1) * sizeof(*h->h_vec));
 }
@@ -621,10 +620,16 @@ static void pipe_clear(t_pipe *x)
     }
 }
 
+static void pipe_free(t_pipe *x)
+{
+    pipe_clear(x);
+    freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
+}
+
 static void pipe_setup(void)
 {
     pipe_class = class_new(gensym("pipe"), 
-        (t_newmethod)pipe_new, (t_method)pipe_clear,
+        (t_newmethod)pipe_new, (t_method)pipe_free,
         sizeof(t_pipe), 0, A_GIMME, 0);
     class_addlist(pipe_class, pipe_list);
     class_addmethod(pipe_class, (t_method)pipe_flush, gensym("flush"), 0);
