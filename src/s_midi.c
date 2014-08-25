@@ -524,7 +524,6 @@ void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
     int *pnmidioutdev, int *pmidioutdev)
 {
     int i, devn;
-    post("get params %d", midi_nmidiindev);
     *pnmidiindev = midi_nmidiindev;
     for (i = 0; i < midi_nmidiindev; i++)
     {
@@ -548,7 +547,6 @@ static void sys_save_midi_params(
     int nmidioutdev, int *midioutdev)
 {
     int i;
-    post("save params %d", nmidiindev);
     midi_nmidiindev = nmidiindev;
     for (i = 0; i < nmidiindev; i++)
     {

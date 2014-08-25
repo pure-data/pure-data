@@ -236,15 +236,8 @@ void midi_alsa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int maxndev, int devdescsize)
 {
     int i, ndev;
-    if ((ndev = alsa_nmidiindevs) > maxndev)
-        ndev = maxndev;
-    for (i = 0; i < ndev; i++)
-        sprintf(indevlist + i * devdescsize, "ALSA MIDI device #%d", i+1);
-    *nindevs = ndev;
-
-    if ((ndev = alsa_nmidioutdevs) > maxndev)
-        ndev = maxndev;
-    for (i = 0; i < ndev; i++)
-        sprintf(outdevlist + i * devdescsize, "ALSA MIDI device #%d", i+1);
-    *noutdevs = ndev;
+    *nindevs = 1;
+    sprintf(indevlist, "default");
+    *noutdevs = 1;
+    sprintf(outdevlist, "default");
 }
