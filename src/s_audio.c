@@ -127,7 +127,7 @@ void sys_save_audio_params(
             &audio_indevnames[i * DEVDESCSIZE], DEVDESCSIZE);
     }
     audio_naudiooutdev = naudiooutdev;
-    for (i = 0; i < MAXAUDIOOUTDEV; i++)
+    for (i = 0; i < naudiooutdev; i++)
     {
         audio_audiooutdev[i] = audiooutdev[i],
         audio_audiochoutdev[i] = choutdev[i];
