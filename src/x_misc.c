@@ -353,7 +353,7 @@ static t_symbol *grabstring(int argc, t_atom *argv, int *ip, int slash)
     }
     buf[nchar] = 0;
     if (!slash)
-        *ip = ROUNDUPTO4(*ip);
+        *ip = ROUNDUPTO4(*ip+1);
     if (*ip > argc)
         *ip = argc;
     return (gensym(buf));
