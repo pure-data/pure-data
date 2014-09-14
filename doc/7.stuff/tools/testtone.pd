@@ -1,4 +1,4 @@
-#N canvas 160 272 518 377 12;
+#N canvas 156 268 518 377 12;
 #X floatatom 72 273 3 0 0 0 - - -, f 3;
 #X obj 27 221 notein;
 #X obj 27 247 stripnote;
@@ -500,9 +500,9 @@ set 1 \;;
 #X connect 11 0 4 0;
 #X restore 388 243 pd audio;
 #X floatatom 22 144 3 0 100 1 - tone-level-set tone-level, f 3;
-#X floatatom 84 123 5 0 100 1 pitch tone-pitch-set tone-pitch, f 5
+#X floatatom 84 123 5 0 136 1 pitch tone-pitch-set tone-pitch, f 5
 ;
-#X floatatom 84 145 5 0 20000 1 HZ tone-hz-set tone-hz, f 5;
+#X floatatom 84 145 6 0 20000 1 HZ tone-hz-set tone-hz, f 6;
 #X text 48 145 dB;
 #X text 34 67 TEST TONES;
 #X text 233 156 AUDIO OUTPUT ON/OFF;
