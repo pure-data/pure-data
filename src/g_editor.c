@@ -1013,9 +1013,6 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
     if (!flag && glist_isgraph(x))
     {
-        int hadeditor = (x->gl_editor != 0);
-        if (hadeditor)
-            canvas_destroy_editor(x);
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
         x->gl_isgraph = 0;
