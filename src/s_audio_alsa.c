@@ -169,7 +169,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
 
         /* set the number of channels */
     tmp_uint = *channels;
-    err = snd_pcm_hw_params_set_channels_min(dev->a_handle,
+    err = snd_pcm_hw_params_set_channels_near(dev->a_handle,
         hw_params, &tmp_uint);
     check_error(err, out, "snd_pcm_hw_params_set_channels");
     if (tmp_uint != (unsigned)*channels)
