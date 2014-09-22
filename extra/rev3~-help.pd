@@ -1,7 +1,7 @@
-#N canvas 70 263 765 380 12;
+#N canvas 322 266 765 380 12;
 #X floatatom 99 212 0 0 120 0 - - -;
 #X floatatom 105 340 0 0 120 0 - - -;
-#N canvas 0 0 539 448 tests 0;
+#N canvas 0 50 539 448 tests 0;
 #X obj 67 33 inlet;
 #X obj 309 189 inlet;
 #X obj 235 207 line~;
@@ -66,7 +66,7 @@
 #X obj 16 32 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X text 36 26 impulse;
-#N canvas 0 0 450 300 output 0;
+#N canvas 0 50 450 300 output 0;
 #X obj 54 202 dac~;
 #X obj 132 119 pack 0 100;
 #X obj 132 142 line~;
@@ -96,7 +96,7 @@
 #X text 140 212 level \, dB;
 #X floatatom 134 234 0 0 100 0 - - -;
 #X text 175 234 liveness \, 0-100;
-#X floatatom 169 258 4 0 5000 0 - - -;
+#X floatatom 169 258 4 0 5000 0 - - -, f 4;
 #X floatatom 204 281 0 0 100 0 - - -;
 #X text 217 256 crossover frequency \, Hz.;
 #X text 240 283 HF damping \, percent;
