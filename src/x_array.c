@@ -55,7 +55,7 @@ static void *table_donew(t_symbol *s, int size, int flags,
          sprintf(tabname, "%s%d", t->s_name, tabcount++);
          s = gensym(tabname); 
     }
-    if (size <= 1)
+    if (size < 1)
         size = 100;
     SETFLOAT(a, 0);
     SETFLOAT(a+1, 50);
