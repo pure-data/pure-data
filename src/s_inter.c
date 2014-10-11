@@ -297,6 +297,8 @@ void sys_set_priority(int higher)
                 p3);
         else fprintf(stderr, "priority %d scheduling failed.\n", p3);
     }
+    else if (!higher && sys_verbose)
+        post("priority %d scheduling enabled.\n", p3);
 #endif
 
 #ifdef REALLY_POSIX_MEMLOCK /* this doesn't work on Fedora 4, for example. */
