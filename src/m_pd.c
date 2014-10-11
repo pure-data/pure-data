@@ -345,7 +345,6 @@ void pd_init(void)
     garray_init();
 }
 
-
 EXTERN void pd_setinstance(t_pdinstance *x)
 {
     pd_this = x;
@@ -353,12 +352,16 @@ EXTERN void pd_setinstance(t_pdinstance *x)
 
 EXTERN void pdinstance_free(t_pdinstance *x)
 {
-    /* placeholder - try to free symtab, dsp chain, classes and canvases */
+    /* placeholder - LATER free symtab, dsp chain, classes and canvases */
 }
-
 
 EXTERN t_canvas *pd_getcanvaslist(void)
 {
     return (pd_this->pd_canvaslist);
+}
+
+EXTERN int pd_getdspstate(void)
+{
+    return (pd_this->pd_dspstate);
 }
 

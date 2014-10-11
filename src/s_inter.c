@@ -1166,7 +1166,7 @@ int sys_startgui(const char *libdir)
             sys_hipriority = 0;
         }
     }
-    else if (pd_verbose)
+    else if (sys_verbose)
         post("not setting real-time priority");
     
     if (sys_hipriority)
