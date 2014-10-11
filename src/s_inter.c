@@ -1166,7 +1166,9 @@ int sys_startgui(const char *libdir)
             sys_hipriority = 0;
         }
     }
-
+    else if (pd_verbose)
+        post("not setting real-time priority");
+    
     if (sys_hipriority)
     {
             /* To prevent lockup, we fork off a watchdog process with
