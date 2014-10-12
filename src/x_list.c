@@ -509,7 +509,7 @@ static void *list_fromsymbol_new( void)
     return (x);
 }
 
-static void list_fromsymbol_symbol(t_list_append *x, t_symbol *s)
+static void list_fromsymbol_symbol(t_list_fromsymbol *x, t_symbol *s)
 {
     t_atom *outv;
     int n, outc = strlen(s->s_name);
@@ -544,7 +544,7 @@ static void *list_tosymbol_new( void)
     return (x);
 }
 
-static void list_tosymbol_list(t_list_append *x, t_symbol *s,
+static void list_tosymbol_list(t_list_tosymbol *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     int i;
