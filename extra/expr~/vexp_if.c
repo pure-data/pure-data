@@ -281,7 +281,7 @@ Nexpr_new(t_symbol *s, int ac, t_atom *av)
                 x = (t_expr *)pd_new(fexpr_tilde_class);
                 SET_FEXPR_TILDE(x);
         } else {
-                post("expr_new: bad object name '%s'");
+                post("expr_new: bad object name '%s'", s->s_name);
                 /* assume expr */
                 x = (t_expr *)pd_new(expr_class);
                 SET_EXPR(x);
