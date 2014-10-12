@@ -882,7 +882,7 @@ void sigcpole_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
-/* -------------- czero~ - complex one-pole filter (raw) --------------- */
+/* -------------- czero~ - complex one-zero filter (raw) --------------- */
 
 typedef struct sigczero
 {
@@ -972,7 +972,7 @@ void sigczero_setup(void)
         gensym("dsp"), A_CANT, 0);
 }
 
-/* -------------- czero_rev~ - complex one-pole filter (raw) --------------- */
+/* ------ czero_rev~ - complex one-zero filter (raw, reverse form) ----- */
 
 typedef struct sigczero_rev
 {
