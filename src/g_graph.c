@@ -902,9 +902,11 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
             for (g = x->gl_list; g; g = g->g_next)
             {
                     /* don't do this for arrays, just let them hang outside the
-                    box. */
-                if (pd_class(&g->g_pd) == garray_class)
-                    continue;
+                    box.  And ignore "text" objects which aren't shown on 
+                    parent */
+                if (pd_class(&g->g_pd) == garray_class ||
+                    pd_checkobject(&g->g_pd))
+                        continue;
                 gobj_getrect(g, x, &x21, &y21, &x22, &y22);
                 if (x22 > x2) 
                     x2 = x22;
