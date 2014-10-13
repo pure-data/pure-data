@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 737 126 625 526 12;
+#N canvas 736 125 625 526 12;
 #X obj 131 474 list;
 #X obj 18 6 text;
 #X text 25 473 see also:;
@@ -431,7 +431,7 @@ far from it) so line 0 whose second field is closer to 1 wins., f
 #X restore 393 358 pd search;
 #X text 76 383 sequencer/message-sender;
 #X obj 280 381 text sequence;
-#N canvas 200 58 1151 740 sequence 1;
+#N canvas 199 57 1155 839 sequence 0;
 #X msg 138 468 symbol text-help-search;
 #X text 101 443 specify another text by name or pointer;
 #X msg 37 225 bang;
