@@ -243,6 +243,9 @@ void pd_error(void *object, const char *fmt, ...)
     doerror(object, buf);
 
     error_object = object;
+    strncpy(error_string, buf, 256);
+    error_string[255] = 0;
+
     if (!saidit)
     {
         logpost(NULL, 4,
