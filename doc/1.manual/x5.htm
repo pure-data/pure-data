@@ -20,6 +20,23 @@
 
 <H3> <A name="s2"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.46-2 ------------------------------
+
+<P> fixed bug calculating widths of pre-version-0.39 GOPs
+
+<P> added a pd_getdspstate() function to replace dspstate external variable
+which was moved to the pd instance structure.  Strictly speaking this doesn't
+restore binary compatibility but I beleive only one extern writer was using
+dspstate (and he's actively maintaining the externs) so I think this is OK.
+
+<P> The old standard-error "realtime priority" debug message under linux
+only appears if Pd is strted 'verbose'.  OTOH, if realtime priority-setting
+fails, the user is notified in the Pd window.
+
+<P> fixed debian compile bug.
+
+<P> fixed "array" object to allow a size of 1.
+
 <P> ------------------ 0.46-1 ------------------------------
 
 <P> Bug fix in oscparse (truncated some messages)

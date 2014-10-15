@@ -10,6 +10,7 @@ PDEXEC = $(BIN_DIR)/pd
 EXT= pd_darwin
 GUINAME= libPdTcl.dylib
 ARCH= -arch i386 -arch ppc
+EXTRAARCH= -arch i386 -arch x86_64 -arch ppc
 
 prefix = /usr/local
 exec_prefix = ${prefix}
@@ -143,16 +144,16 @@ $(PDEXEC): $(OBJ) $(BIN_DIR)
 	cd ../obj;  $(CC) $(LDFLAGS) $(DBG_CFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
 
 externs: 
-	make -C ../extra/bonk~    d_fat
-	make -C ../extra/choice   d_fat
-	make -C ../extra/expr~    d_fat
-	make -C ../extra/fiddle~  d_fat
-	make -C ../extra/loop~    d_fat
-	make -C ../extra/lrshift~ d_fat
-	make -C ../extra/pique    d_fat
-	make -C ../extra/sigmund~ d_fat
-	make -C ../extra/pd~      d_fat
-	make -C ../extra/stdout   d_fat
+	make -C ../extra/bonk~    DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/choice   DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/expr~    DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/fiddle~  DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/loop~    DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/lrshift~ DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/pique    DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/sigmund~ DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/pd~      DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/stdout   DARWINARCH="$(EXTRAARCH)" d_fat
 
 BINARYMODE=-m755
 

@@ -7,6 +7,14 @@ then
    exit 1
 fi
 
+if test -f pd-$1.src.tar.gz
+then
+   echo -n
+else
+   echo cant find file pd-$1.src.tar.gz
+   exit 1
+fi
+
 if test -d Pd-$1-64bit.app
 then
     chmod -R 777 Pd-$1-64bit.app
@@ -32,7 +40,7 @@ tar xzf ../../../pd-$1.src.tar.gz
 mv pd-$1/* .
 rmdir pd-$1
 cd src
-JACK=true make -f makefile.mac "ARCH=-arch x86_64"
+JACK=true make -f makefile.mac "ARCH=-arch x86_64" "EXTRAARCH=-arch x86_64"
 cd ..
 ln -s tcl Scripts
 cd ../../..
