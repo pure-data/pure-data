@@ -343,7 +343,7 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/makenote-help.pd \
 	doc/5.reference/math-help.pd \
 	doc/5.reference/message-help.pd \
-	doc/5.reference/metro.pd \
+	doc/5.reference/metro-help.pd \
 	doc/5.reference/midi-help.pd \
 	doc/5.reference/moses-help.pd \
 	doc/5.reference/my_canvas-help.pd \
