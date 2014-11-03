@@ -58,17 +58,17 @@ install-data-local:
 # these files go into libpddir defined above
 nobase_dist_libpd_DATA = \
 	doc/1.manual/1.introduction.txt \
+	doc/1.manual/fig11.1.png \
+	doc/1.manual/fig11.2.png \
+	doc/1.manual/fig11.3.png \
+	doc/1.manual/fig11.4.png \
 	doc/1.manual/fig1.1.png \
 	doc/1.manual/fig1.2.jpg \
 	doc/1.manual/fig1.3.jpg \
 	doc/1.manual/fig1.4.png \
 	doc/1.manual/fig1.5.jpg \
-	doc/1.manual/fig11.1.png \
-	doc/1.manual/fig11.2.png \
-	doc/1.manual/fig11.3.png \
-	doc/1.manual/fig11.4.png \
-	doc/1.manual/fig3.1.jpg \
 	doc/1.manual/fig3.10.jpg \
+	doc/1.manual/fig3.1.jpg \
 	doc/1.manual/fig3.2.jpg \
 	doc/1.manual/fig3.3.jpg \
 	doc/1.manual/fig3.4.jpg \
@@ -125,8 +125,8 @@ nobase_dist_libpd_DATA = \
 	doc/2.control.examples/22.random-walk.pd \
 	doc/2.control.examples/23.sequencing.pd \
 	doc/2.control.examples/24.loops.pd \
-	doc/2.control.examples/dollarsign.pd \
 	doc/2.control.examples/dollarsign2.pd \
+	doc/2.control.examples/dollarsign.pd \
 	doc/2.control.examples/sendnumber.pd \
 	doc/3.audio.examples/A00.intro.pd \
 	doc/3.audio.examples/A00.intro.txt \
@@ -256,12 +256,12 @@ nobase_dist_libpd_DATA = \
 	doc/3.audio.examples/osc-voice.pd \
 	doc/3.audio.examples/output~.pd \
 	doc/3.audio.examples/partial.pd \
+	doc/3.audio.examples/qlist2.txt \
 	doc/3.audio.examples/qlist-sampler.txt \
 	doc/3.audio.examples/qlist.txt \
-	doc/3.audio.examples/qlist2.txt \
 	doc/3.audio.examples/reverb-echo.pd \
-	doc/3.audio.examples/sampvoice.pd \
 	doc/3.audio.examples/sampvoice2.pd \
+	doc/3.audio.examples/sampvoice.pd \
 	doc/3.audio.examples/shepvoice.pd \
 	doc/3.audio.examples/sinevoice.pd \
 	doc/3.audio.examples/spectrum-partial.pd \
@@ -291,15 +291,15 @@ nobase_dist_libpd_DATA = \
 	doc/4.data.structures/z.txt \
 	doc/5.reference/0_all_guis-INTRO.txt \
 	doc/5.reference/abs~-help.pd \
-	doc/5.reference/acoustics-help.pd \
 	doc/5.reference/acoustics~-help.pd \
+	doc/5.reference/acoustics-help.pd \
 	doc/5.reference/adc~_dac~-help.pd \
 	doc/5.reference/append-help.pd \
 	doc/5.reference/array-object-help.pd \
 	doc/5.reference/array-object-help.txt \
 	doc/5.reference/bag-help.pd \
-	doc/5.reference/bang-help.pd \
 	doc/5.reference/bang~-help.pd \
+	doc/5.reference/bang-help.pd \
 	doc/5.reference/biquad~-help.pd \
 	doc/5.reference/block~-help.pd \
 	doc/5.reference/bng-help.pd \
@@ -310,8 +310,8 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/cos~-help.pd \
 	doc/5.reference/cpole~-help.pd \
 	doc/5.reference/cputime-help.pd \
-	doc/5.reference/czero_rev~-help.pd \
 	doc/5.reference/czero~-help.pd \
+	doc/5.reference/czero_rev~-help.pd \
 	doc/5.reference/declare-help.pd \
 	doc/5.reference/delay-help.pd \
 	doc/5.reference/delread~-help.pd \
@@ -331,11 +331,12 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/hdial-help.pd \
 	doc/5.reference/help-intro.pd \
 	doc/5.reference/hip~-help.pd \
+	doc/5.reference/hradio-help.pd \
 	doc/5.reference/hslider-help.pd \
 	doc/5.reference/int-help.pd \
 	doc/5.reference/key-help.pd \
-	doc/5.reference/line-help.pd \
 	doc/5.reference/line~-help.pd \
+	doc/5.reference/line-help.pd \
 	doc/5.reference/list-help.pd \
 	doc/5.reference/log~-help.pd \
 	doc/5.reference/lop~-help.pd \
@@ -354,7 +355,9 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/numbox2-help.pd \
 	doc/5.reference/openpanel-help.pd \
 	doc/5.reference/operators-help.pd \
+	doc/5.reference/oscformat-help.pd \
 	doc/5.reference/osc~-help.pd \
+	doc/5.reference/oscparse-help.pd \
 	doc/5.reference/otherbinops-help.pd \
 	doc/5.reference/pack-help.pd \
 	doc/5.reference/pd-help.pd \
@@ -364,8 +367,8 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/pointer-help.pd \
 	doc/5.reference/poly-help.pd \
 	doc/5.reference/pow~-help.pd \
-	doc/5.reference/print-help.pd \
 	doc/5.reference/print~-help.pd \
+	doc/5.reference/print-help.pd \
 	doc/5.reference/qlist-help.pd \
 	doc/5.reference/qlist.txt \
 	doc/5.reference/random-help.pd \
@@ -375,14 +378,14 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/route-help.pd \
 	doc/5.reference/rpole~-help.pd \
 	doc/5.reference/rsqrt~-help.pd \
-	doc/5.reference/rzero_rev~-help.pd \
 	doc/5.reference/rzero~-help.pd \
+	doc/5.reference/rzero_rev~-help.pd \
 	doc/5.reference/samphold~-help.pd \
 	doc/5.reference/savepanel-help.pd \
 	doc/5.reference/scalar-object-help.pd \
 	doc/5.reference/select-help.pd \
-	doc/5.reference/send-help.pd \
 	doc/5.reference/send~-help.pd \
+	doc/5.reference/send-help.pd \
 	doc/5.reference/set-help.pd \
 	doc/5.reference/setsize-help.pd \
 	doc/5.reference/setsize.txt \
@@ -396,19 +399,23 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/struct-help.pd \
 	doc/5.reference/swap-help.pd \
 	doc/5.reference/switch~-help.pd \
+	doc/5.reference/symbol-help.pd \
 	doc/5.reference/table.txt \
 	doc/5.reference/tabosc4~-help.pd \
 	doc/5.reference/tabplay~-help.pd \
-	doc/5.reference/tabread-help.pd \
 	doc/5.reference/tabread4~-help.pd \
+	doc/5.reference/tabread4-help.pd \
+	doc/5.reference/tabread~-help.pd \
+	doc/5.reference/tabread-help.pd \
 	doc/5.reference/tabreceive~-help.pd \
 	doc/5.reference/tabsend~-help.pd \
-	doc/5.reference/tabwrite-help.pd \
 	doc/5.reference/tabwrite~-help.pd \
-	doc/5.reference/text-help.pd \
-	doc/5.reference/text-object-help.pd \
+	doc/5.reference/tabwrite-help.pd \
 	doc/5.reference/textfile-help.pd \
 	doc/5.reference/textfile.txt \
+	doc/5.reference/text-help.pd \
+	doc/5.reference/text-object-help.pd \
+	doc/5.reference/text-object-help.txt \
 	doc/5.reference/threshold~-help.pd \
 	doc/5.reference/throw~-help.pd \
 	doc/5.reference/timer-help.pd \
@@ -418,9 +425,10 @@ nobase_dist_libpd_DATA = \
 	doc/5.reference/until-help.pd \
 	doc/5.reference/value-help.pd \
 	doc/5.reference/vcf~-help.pd \
-	doc/5.reference/vdial-help.pd \
 	doc/5.reference/vd~-help.pd \
+	doc/5.reference/vdial-help.pd \
 	doc/5.reference/vline~-help.pd \
+	doc/5.reference/vradio-help.pd \
 	doc/5.reference/vslider-help.pd \
 	doc/5.reference/vu-help.pd \
 	doc/5.reference/wrap~-help.pd \
@@ -440,6 +448,7 @@ nobase_dist_libpd_DATA = \
 	doc/6.externs/test-obj3.pd \
 	doc/6.externs/test-obj4.pd \
 	doc/6.externs/test-obj5.pd \
+	doc/7.stuff/soundfile-tools \
 	doc/7.stuff/soundfile-tools/1.ring-mod.pd \
 	doc/7.stuff/soundfile-tools/2.bandpass.pd \
 	doc/7.stuff/soundfile-tools/3.phase.vocoder.pd \
@@ -447,21 +456,24 @@ nobase_dist_libpd_DATA = \
 	doc/7.stuff/soundfile-tools/5.reverb.pd \
 	doc/7.stuff/soundfile-tools/6.vocoder.pd \
 	doc/7.stuff/soundfile-tools/README.txt \
+	doc/7.stuff/synth \
 	doc/7.stuff/synth/1.poly.synth.pd \
 	doc/7.stuff/synth/gadsr.pd \
 	doc/7.stuff/synth/numset.pd \
-	doc/7.stuff/synth/preset.pd \
 	doc/7.stuff/synth/preset1.txt \
 	doc/7.stuff/synth/preset2.txt \
 	doc/7.stuff/synth/preset3.txt \
 	doc/7.stuff/synth/preset4.txt \
+	doc/7.stuff/synth/preset.pd \
 	doc/7.stuff/synth/README.txt \
 	doc/7.stuff/synth/synthvoice.pd \
 	doc/7.stuff/synth/test-gadsr.pd \
+	doc/7.stuff/tools \
 	doc/7.stuff/tools/latency.pd \
 	doc/7.stuff/tools/load-meter.pd \
-	doc/7.stuff/tools/testtone.pd \
 	doc/7.stuff/tools/testtone16.pd \
+	doc/7.stuff/tools/testtone.pd \
 	doc/sound/bell.aiff \
-	doc/sound/voice.wav \
-	doc/sound/voice2.wav
+	doc/sound/voice2.wav \
+	doc/sound/voice.wav
+
