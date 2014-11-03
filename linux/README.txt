@@ -1,4 +1,5 @@
 release checklist
+    update Makefile.am doc list: cd pd; find doc -type f | sort
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
