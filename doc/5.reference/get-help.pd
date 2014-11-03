@@ -1,51 +1,72 @@
 #N struct help-get-template1 float x float y symbol s;
-#N canvas 489 102 633 413 12;
-#X text 22 324 see also:;
-#X obj 93 344 set;
-#X obj 125 344 append;
-#X obj 184 344 getsize;
-#X obj 252 344 setsize;
-#X obj 320 344 element;
-#X obj 25 369 sublist;
-#X msg 60 130 next;
+#N canvas 546 108 630 629 12;
+#X text 24 576 see also:;
+#X obj 190 574 set;
+#X obj 225 574 append;
+#X obj 27 602 getsize;
+#X obj 95 602 setsize;
+#X obj 163 602 element;
+#X msg 58 117 next;
 #N canvas 292 338 631 204 help-get-template1 0;
 #X obj 41 87 filledpolygon 9 0 1 0 0 20 0 20 30 0 30;
 #X obj 60 21 struct help-get-template1 float x float y symbol s;
-#X restore 376 234 pd help-get-template1;
-#N canvas 0 0 276 156 help-get-data 1;
+#X restore 447 508 pd help-get-template1;
+#N canvas 2 131 276 156 help-get-data 1;
 #X scalar help-get-template1 46 23 dog \;;
 #X scalar help-get-template1 106 73 cat \;;
-#X restore 376 212 pd help-get-data;
+#X restore 447 486 pd help-get-data;
 #X obj 21 10 get;
-#X text 86 10 -- get values from a scalar;
-#X msg 45 102 traverse pd-help-get-data \, next;
-#X floatatom 45 211 5 0 0 0 - - -;
-#X floatatom 168 211 5 0 0 0 - - -;
-#X obj 45 157 pointer;
-#X text 337 101 output first scalar in list;
-#X text 103 129 output next item;
-#X text 24 267 If you have data whose template varies (from a heterogeneous
-list \, for example) you can use "pointer" to select according to template
-before sending to "get".;
-#X text 31 37 "Get" \, when sent a pointer to a scalar \, retrieves
-fields from it by name. The fields can be float or symbol. In the future
-this will also allow access to sublists of scalars.;
-#X text 307 167 First argument selects template.;
-#X text 308 182 Remaining args are names of fields.;
-#X text 41 227 x output;
-#X text 166 228 y output;
-#X obj 25 344 pointer;
-#X obj 93 369 struct;
-#X text 377 377 updated for Pd version 0.39;
-#X obj 45 185 get help-get-template1 x y s;
-#X text 252 229 s output;
-#X symbolatom 256 211 6 0 0 0 - - -;
-#X obj 118 158 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X text 61 8 -- get values from a scalar;
+#X msg 43 89 traverse pd-help-get-data \, next;
+#X floatatom 43 198 5 0 0 0 - - -, f 5;
+#X floatatom 166 198 5 0 0 0 - - -, f 5;
+#X obj 43 144 pointer;
+#X text 321 88 output first scalar in list;
+#X text 101 116 output next item;
+#X text 306 153 First argument selects template.;
+#X text 306 169 Remaining args are names of fields.;
+#X text 39 214 x output;
+#X text 164 215 y output;
+#X obj 123 574 pointer;
+#X obj 231 602 struct;
+#X obj 43 172 get help-get-template1 x y s;
+#X text 250 216 s output;
+#X symbolatom 254 198 6 0 0 0 - - -, f 6;
+#X obj 116 145 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X connect 7 0 15 0;
-#X connect 12 0 15 0;
-#X connect 15 0 27 0;
-#X connect 15 1 30 0;
-#X connect 27 0 13 0;
-#X connect 27 1 14 0;
-#X connect 27 2 29 0;
+#X msg 461 248 traverse pd-help-get-data \, next, f 17;
+#X obj 461 304 pointer;
+#X msg 122 435 traverse pd-help-get-data \, next;
+#X obj 122 461 pointer;
+#X obj 122 544 get;
+#X msg 137 486 set help-get-template1 x;
+#X msg 136 511 set - y;
+#X obj 461 330 get - x;
+#X floatatom 461 355 5 0 0 0 - - -, f 5;
+#X text 390 593 updated for Pd version 0.47;
+#X text 22 378 If there are zero or one data fields specified \, you
+can use the "set" message to change the template and/or field name
+on the fly:, f 47;
+#X text 31 37 "Get" \, when sent a pointer to a scalar \, retrieves
+fields from it by name. The fields can be float or symbol., f 59;
+#X text 527 327 wild card template, f 9;
+#X text 14 252 If you have data whose template is variable (from a
+heterogeneous list \, for example) you can use the template "-" as
+a wild card. In Pd 0.47 and earlier \, there is no penalty for this
+\, but future versions may run faster with pre-specified templates
+than with "-" (by looking up the variable names in advance)., f 46
+;
+#X connect 6 0 14 0;
+#X connect 11 0 14 0;
+#X connect 14 0 23 0;
+#X connect 14 1 26 0;
+#X connect 23 0 12 0;
+#X connect 23 1 13 0;
+#X connect 23 2 25 0;
+#X connect 27 0 28 0;
+#X connect 28 0 34 0;
+#X connect 29 0 30 0;
+#X connect 30 0 31 0;
+#X connect 32 0 31 0;
+#X connect 33 0 31 0;
+#X connect 34 0 35 0;
