@@ -1054,21 +1054,27 @@ static void setsize_float(t_setsize *x, t_float f)
             gobj_vis((t_gobj *)(owner_array->a_gp.gp_un.gp_scalar),
                 owner_array->a_gp.gp_stub->gs_un.gs_glist, 0);  
     }
-        /* now do the resizing and, if growing, initialize new scalars */
+        /* if shrinking, free the scalars that will disappear */
+    if (newsize < nitems)
+    {
+        char *elem;
+        int count;       
+        for (elem = ((char *)array->a_vec) + newsize * elemsize,
+            count = nitems - newsize; count--; elem += elemsize)
+                word_free((t_word *)elem, elemtemplate);
+    }
+        /* resize the array  */
     array->a_vec = (char *)resizebytes(array->a_vec,
         elemsize * nitems, elemsize * newsize);
     array->a_n = newsize;
+        /* if growing, initialize new scalars */
     if (newsize > nitems)
     {
-        char *newelem = ((char *)array->a_vec) + nitems * elemsize;
-        int i = 0, nnew = newsize - nitems;
-        
-        while (nnew--)
-        {
-            word_init((t_word *)newelem, elemtemplate, gp);
-            newelem += elemsize;
-            /* post("new %lx %lx, ntypes %d", newelem, *(int *)newelem, ntypes); */
-        }
+        char *elem;
+        int count;       
+        for (elem = ((char *)array->a_vec) + nitems * elemsize,
+            count = newsize - nitems; count--; elem += elemsize)
+                word_init((t_word *)elem, elemtemplate, gp);
     }
 
     /* redraw again. */
@@ -1087,7 +1093,6 @@ static void setsize_float(t_setsize *x, t_float f)
                 owner_array->a_gp.gp_stub->gs_un.gs_glist, 1);  
     }
 }
-
 
 static void setsize_free(t_setsize *x)
 {
