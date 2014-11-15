@@ -448,7 +448,6 @@ nobase_dist_libpd_DATA = \
 	doc/6.externs/test-obj3.pd \
 	doc/6.externs/test-obj4.pd \
 	doc/6.externs/test-obj5.pd \
-	doc/7.stuff/soundfile-tools \
 	doc/7.stuff/soundfile-tools/1.ring-mod.pd \
 	doc/7.stuff/soundfile-tools/2.bandpass.pd \
 	doc/7.stuff/soundfile-tools/3.phase.vocoder.pd \
@@ -456,7 +455,6 @@ nobase_dist_libpd_DATA = \
 	doc/7.stuff/soundfile-tools/5.reverb.pd \
 	doc/7.stuff/soundfile-tools/6.vocoder.pd \
 	doc/7.stuff/soundfile-tools/README.txt \
-	doc/7.stuff/synth \
 	doc/7.stuff/synth/1.poly.synth.pd \
 	doc/7.stuff/synth/gadsr.pd \
 	doc/7.stuff/synth/numset.pd \
@@ -468,7 +466,6 @@ nobase_dist_libpd_DATA = \
 	doc/7.stuff/synth/README.txt \
 	doc/7.stuff/synth/synthvoice.pd \
 	doc/7.stuff/synth/test-gadsr.pd \
-	doc/7.stuff/tools \
 	doc/7.stuff/tools/latency.pd \
 	doc/7.stuff/tools/load-meter.pd \
 	doc/7.stuff/tools/testtone16.pd \
