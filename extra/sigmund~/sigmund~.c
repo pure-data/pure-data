@@ -495,7 +495,7 @@ done:
 /*************** gather peak lists into sinusoidal tracks *************/
 
 static void sigmund_peaktrack(int ninpeak, t_peak *inpeakv, 
-    int noutpeak, t_peak *outpeakv, int loud)
+    int noutpeak, t_peak *outpeakv, float maxerror, int loud)
 {
     int incnt, outcnt;
     for (outcnt = 0; outcnt < noutpeak; outcnt++)
@@ -510,8 +510,10 @@ static void sigmund_peaktrack(int ninpeak, t_peak *inpeakv,
         inpeakv[incnt].p_tmp = -1;
         for (outcnt = 0; outcnt < noutpeak; outcnt++)
         {
-            t_float thiserror =
-                inpeakv[incnt].p_freq - outpeakv[outcnt].p_freq;
+            t_float thiserror;
+            if (outpeakv[outcnt].p_amp == 0)
+                continue;
+            thiserror = inpeakv[incnt].p_freq - outpeakv[outcnt].p_freq;
             if (thiserror < 0)
                 thiserror = -thiserror;
             if (thiserror < besterror)
@@ -520,7 +522,7 @@ static void sigmund_peaktrack(int ninpeak, t_peak *inpeakv,
                 bestcnt = outcnt;
             }
         }
-        if (outpeakv[bestcnt].p_tmp < 0)
+        if (bestcnt >= 0 && besterror < maxerror && outpeakv[bestcnt].p_tmp < 0)
         {
             outpeakv[bestcnt] = inpeakv[incnt];
             inpeakv[incnt].p_tmp = 0;
@@ -982,11 +984,11 @@ static void sigmund_doit(t_sigmund *x, int npts, t_float *arraypoints,
         x->x_param1, x->x_param2, loud);
     if (x->x_donote)
         notefinder_doit(&x->x_notefinder, freq, power, &note, x->x_vibrato, 
-            1 + x->x_stabletime * 0.001 * x->x_sr / (t_float)x->x_hop,
+            1 + x->x_stabletime * 0.001 * srate / (t_float)x->x_hop,
                 exp(LOG10*0.1*(x->x_minpower - 100)), x->x_growth, loud);
     if (x->x_dotracks)
-        sigmund_peaktrack(nfound, peakv, x->x_ntrack, x->x_trackv, loud);
-    
+        sigmund_peaktrack(nfound, peakv, x->x_ntrack, x->x_trackv, 
+            2* srate / npts, loud);
     for (cnt = x->x_nvarout; cnt--;)
     {
         t_varout *v = &x->x_varoutv[cnt];
