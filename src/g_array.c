@@ -395,7 +395,7 @@ void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
         size = 1;
     if (otherflag == 0 || (!(gl = glist_findgraph(parent))))
         gl = glist_addglist(parent, &s_, 0, 1,
-            (size > 1 ? size-1 : size), -1, 0, 0, 0, 0);
+            size, -1, 0, 0, 0, 0);
     a = graph_array(gl, iemgui_raute2dollar(name), &s_float, size, flags);
     canvas_dirty(parent, 1);
 }

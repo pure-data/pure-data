@@ -2100,13 +2100,6 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 xval = 0;
             else if (xval >= array->a_n)
                 xval = array->a_n - 1;
-            if (doit)
-            {
-                fielddesc_setcoord(yfield, elemtemplate,
-                    (t_word *)(((char *)array->a_vec) + elemsize * xval),
-                        glist_pixelstoy(glist, ypix), 1);
-                glist_grab(glist, 0, array_motion, 0, xpix, ypix);
-            }
             array_motion_yfield = yfield;
             array_motion_ycumulative = glist_pixelstoy(glist, ypix);
             array_motion_fatten = 0;
@@ -2115,6 +2108,17 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
             array_motion_lastx = array_motion_initx = xval;
             array_motion_npoints = array->a_n;
             array_motion_wp = (t_word *)((char *)array->a_vec);
+            if (doit)
+            {
+                fielddesc_setcoord(yfield, elemtemplate,
+                    (t_word *)(((char *)array->a_vec) + elemsize * xval),
+                        glist_pixelstoy(glist, ypix), 1);
+                glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                if (array_motion_scalar)
+                    scalar_redraw(array_motion_scalar, array_motion_glist);
+                if (array_motion_array)
+                    array_redraw(array_motion_array, array_motion_glist);
+            }
         }
         else
         {
