@@ -3,11 +3,11 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 311 131 694 542 12;
+#N canvas 310 130 694 542 12;
 #X obj 208 496 list;
 #X text 34 496 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 845 218 900 716 define 0;
+#N canvas 844 217 900 716 define 0;
 #X text 295 562 creation arguments:;
 #X text 325 597 optional name;
 #X text 322 164 read from a file;
@@ -217,7 +217,7 @@ array;
 #X connect 13 0 5 2;
 #X restore 486 260 pd sum;
 #X obj 90 284 array get;
-#N canvas 344 599 805 335 get 0;
+#N canvas 342 597 805 335 get 0;
 #X floatatom 135 103 5 0 10 0 - - -, f 5;
 #X obj 118 78 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -231,19 +231,19 @@ of the array as a list.;
 default -1, f 61;
 #X text 280 201 creation arguments: either array name or "-s" and optional
 "-f" flags to refer to an array in a data structure;
-#X text 181 102 onset (first index to sum from) \, zero for start of
-array;
 #X text 212 128 number of points or -1 for end of array;
 #X text 140 78 bang for output;
 #X text 65 298 (array-help-2 is defined in the "define" subwindow).
 ;
 #X msg 212 155 symbol array-help-2;
 #X text 376 154 set name or pointer;
+#X text 181 102 onset (first index to output) \, zero for start of
+array;
 #X connect 0 0 3 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 1;
 #X connect 3 0 4 0;
-#X connect 13 0 3 2;
+#X connect 12 0 3 2;
 #X restore 486 284 pd get;
 #X obj 90 308 array set;
 #N canvas 525 369 752 328 set 0;
