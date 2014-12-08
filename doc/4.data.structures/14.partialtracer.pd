@@ -3,7 +3,7 @@ ampimag float used;
 #N struct trace-template float x float y float voiceno array bazoo
 point-template;
 #N struct point-template float y float amp;
-#N canvas 791 86 913 595 12;
+#N canvas 641 85 913 595 12;
 #X declare -path lib;
 #X floatatom 777 74 0 0 100 0 - - -;
 #N canvas 516 98 663 557 (subpatch) 0;
@@ -87,7 +87,7 @@ float ampimag float used;
 #X scalar peak-template 141.831 330 -105.395 -0.000346356 0.000453872
 0 \;;
 #X restore 298 457 pd peak-list;
-#N canvas 62 281 745 526 trace-list 1;
+#N canvas 29 445 745 526 trace-list 1;
 #X scalar trace-template 0 0 0 \; 66.5367 62.9806 \; \;;
 #X scalar trace-template 0 0 1 \; 60.0435 58.3026 \; \;;
 #X scalar trace-template 0 0 3 \; 93.5856 53.4024 \; \;;
@@ -1691,7 +1691,7 @@ as a plot (yet).;
 #X text 33 110 click here first;
 #X text 741 489 live sample;
 #X text 677 25 AMPLITUDES;
-#N canvas 358 95 1152 664 make-trace 1;
+#N canvas 357 94 1152 664 make-trace 0;
 #X obj 781 133 pointer;
 #X obj 757 603 setsize trace-template bazoo;
 #X obj 757 490 random 200;
@@ -2180,7 +2180,7 @@ as a plot (yet).;
 #X obj 301 306 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
 #X msg 207 130 \; read-sample ../doc/sound/bell.aiff 44100;
-#N canvas 145 194 728 480 sigmund 1;
+#N canvas 144 193 728 480 sigmund 0;
 #X obj 2 227 spigot;
 #X obj 165 94 f;
 #X obj 165 128 pack;

@@ -620,7 +620,7 @@ static void *set_new(t_symbol *why, int argc, t_atom *argv)
     x->x_nin = varcount;
     for (i = 0, sp = x->x_variables; i < varcount; i++, sp++)
     {
-        sp->gv_sym = atom_getsymbolarg(i, argc, argv);
+        sp->gv_sym = atom_getsymbolarg(i, varcount, varvec);
         if (x->x_issymbol)
             sp->gv_w.w_symbol = &s_;
         else sp->gv_w.w_float = 0;
@@ -1149,7 +1149,7 @@ static void *append_new(t_symbol *why, int argc, t_atom *argv)
     x->x_nin = varcount;
     for (i = 0, sp = x->x_variables; i < varcount; i++, sp++)
     {
-        sp->gv_sym = atom_getsymbolarg(i, argc, argv);
+        sp->gv_sym = atom_getsymbolarg(i, varcount, varvec);
         sp->gv_f = 0;
         if (i) floatinlet_new(&x->x_obj, &sp->gv_f);
     }
