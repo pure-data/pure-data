@@ -3,7 +3,7 @@ ampimag float used;
 #N struct trace-template float x float y float voiceno array bazoo
 point-template;
 #N struct point-template float y float amp;
-#N canvas 189 60 913 595 12;
+#N canvas 51 52 913 595 12;
 #X declare -path lib;
 #X floatatom 777 74 0 0 100 0 - - -;
 #N canvas 516 98 663 557 (subpatch) 0;
@@ -87,7 +87,7 @@ float ampimag float used;
 #X scalar peak-template 141.831 330 -105.395 -0.000346356 0.000453872
 0 \;;
 #X restore 298 457 pd peak-list;
-#N canvas 54 388 745 526 trace-list 1;
+#N canvas 405 331 745 526 trace-list 1;
 #X scalar trace-template 0 0 0 \; 43.3302 66.0521 \; 44.6492 75.851
 \; 44.6956 82.9816 \; 44.3137 85.9148 \; 43.4352 86.2268 \; 43.1128
 85.6468 \; 43.0306 84.9578 \; 42.9591 84.0919 \; 42.7109 82.2432 \;

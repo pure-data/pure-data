@@ -287,7 +287,7 @@ void sys_set_priority(int higher)
 #ifdef USEAPI_JACK    
     p3 = (higher ? p1 + 7 : p1 + 5);
 #else
-    p3 = (higher ? p2 - 1 : p2 - 3);
+    p3 = (higher ? p2 - 5 : p2 - 7);
 #endif
     par.sched_priority = p3;
     if (sched_setscheduler(0,SCHED_FIFO,&par) < 0)
