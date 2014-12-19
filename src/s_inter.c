@@ -793,14 +793,14 @@ void sys_queuegui(void *client, t_glist *glist, t_guicallbackfn f)
 void sys_unqueuegui(void *client)
 {
     t_guiqueue *gq, *gq2;
-    if (!sys_guiqueuehead)
-        return;
-    while (sys_guiqueuehead->gq_client == client)
+    while (sys_guiqueuehead && sys_guiqueuehead->gq_client == client)
     {
         gq = sys_guiqueuehead;
         sys_guiqueuehead = sys_guiqueuehead->gq_next;
         t_freebytes(gq, sizeof(*gq));
     }
+    if (!sys_guiqueuehead)
+        return;
     for (gq = sys_guiqueuehead; gq2 = gq->gq_next; gq = gq2)
         if (gq2->gq_client == client)
     {
