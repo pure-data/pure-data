@@ -341,6 +341,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     pd_bind(&x->x_gobj.g_pd, asym); 
 
     garray_redraw(x);
+    canvas_update_dsp();
     return (x);
 }
 
@@ -458,6 +459,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
                 gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 0);
                 gobj_vis(&x->x_glist->gl_gobj, x->x_glist->gl_owner, 1);
             }
+            canvas_update_dsp();
         }
         size = fsize;
         if (size < 1)
