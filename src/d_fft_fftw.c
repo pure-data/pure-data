@@ -167,10 +167,11 @@ void pd_fft(t_float *buf, int npoints, int inverse)
 {
     cfftw_info *p = cfftw_getplan(npoints, !inverse);
     int i;
-    for (i = 0; i < 2 * npoints; i++)
-        p->in[i] = buf[i];
+    float *fz;
+    for (i = 0, fz = (float *)(p->in); i < 2 * npoints; i++)
+        *fz++ = buf[i];
     fftwf_execute(p->plan);
-    for (i = 0; i < 2 * npoints; i++)
-        buf[i] = p->out[i];
+    for (i = 0, fz = (float *)(p->out); i < 2 * npoints; i++)
+        buf[i] = *fz++;
 }
 
