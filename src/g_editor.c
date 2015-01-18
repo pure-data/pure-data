@@ -2351,9 +2351,9 @@ static void canvas_cut(t_canvas *x)
 {
     if (!x->gl_editor)  /* ignore if invisible */ 
         return;
-    if (x->gl_editor && x->gl_editor->e_selectedline)
+    if (x->gl_editor && x->gl_editor->e_selectedline)   /* delete line */
         canvas_clearline(x);
-    else if (x->gl_editor->e_textedfor)
+    else if (x->gl_editor->e_textedfor) /* delete selected text in a box */
     {
         char *buf;
         int bufsize;
@@ -2361,9 +2361,10 @@ static void canvas_cut(t_canvas *x)
         if (!bufsize && x->gl_editor->e_selection &&
             !x->gl_editor->e_selection->sel_next)
         {
-            t_object *ob = (t_object *)x->gl_editor->e_selection->sel_what;
-            glist_noselect(x);
-            glist_select(x, &ob->te_g);
+                /* if the text is already empty, delete the box.  We
+                first clear 'textedfor' so that canvas_doclear later will
+                think the whole box was selected, not the text */
+            x->gl_editor->e_textedfor = 0;
             goto deleteobj;
         }
         canvas_copy(x);
@@ -2372,7 +2373,7 @@ static void canvas_cut(t_canvas *x)
     }
     else if (x->gl_editor && x->gl_editor->e_selection)
     {
-    deleteobj:
+    deleteobj:      /* delete one or more objects */
         canvas_setundo(x, canvas_undo_cut,
             canvas_undo_set_cut(x, UCUT_CUT), "cut");
         canvas_copy(x);
