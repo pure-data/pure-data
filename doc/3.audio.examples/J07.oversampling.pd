@@ -74,7 +74,7 @@ H13.butterworth.pd in this series.;
 #X text 32 224 16x up-;
 #X text 26 268 The "pd 16x" subpatch at left contains a phasor~ object
 \, but is locally upsampled by a factor of sixteen. Without upsampling
-\, partials as low as 24 Khz. fold back over into the audible range.
+\, partials as low as 24 kHz. fold back over into the audible range.
 With upsampling \, the first audibly folding over partial is at almost
 700 Hz \, 29 times higher. The relevant partials will be 29 times \,
 or almost 30 dB \, quieter when upsampled.;
