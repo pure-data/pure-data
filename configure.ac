@@ -212,13 +212,13 @@ AC_ARG_ENABLE([portmidi],
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
 if test x$portmidi = xyes; then echo Using included portmidi; fi
 
-dnl fftw v2
+dnl fftw v3
 AC_ARG_ENABLE([fftw],
-	[AS_HELP_STRING([--enable-fftw],
-		[use FFTW package])],
+        [AS_HELP_STRING([--enable-fftw],
+                [use FFTW package])],
     [fftw=$enableval])
 if test x$fftw = xyes; then
-    AC_CHECK_LIB(fftw, fftw_one, [LIBS="$LIBS -lfftw"],
+    AC_CHECK_LIB(fftw3f, sfftw_plan_dft_1d_, [LIBS="$LIBS -lfftw3f"],
         [AC_MSG_NOTICE([fftw package not found - using built-in FFT]); fftw=no])
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
