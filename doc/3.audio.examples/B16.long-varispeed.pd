@@ -75,9 +75,9 @@
 #X text 469 456 Each 100 msec \, poll phase of phasor~;
 #X text 24 29 Here is how to use the tabread~ "onset" input to allow
 clean varispeed playback from a long table. At left \, a phasor~ is
-naiveley rescaled to the size of the tble. At right \, the phasor~
+naively rescaled to the size of the table. At right \, the phasor~
 gets only a 10000-point range about a moving "onset". Ten times per
-second \, we poll tha phasor~ phase \, sum its value into the onset
+second \, we poll the phasor~ phase \, sum its value into the onset
 \, and back up the phase of the phasor~ correspondingly.;
 #X text 22 143 The tricky bits are \, first \, that we need to poll
 the phasor~ phase one sample into the future (so we add the per-sample

@@ -15,10 +15,10 @@
 #X floatatom 342 210 0 0 0;
 #X floatatom 371 233 0 0 0;
 #X floatatom 409 234 0 0 0;
-#X text 30 20 Pd provides at least four objects for doing conditioonal
-computations. The "select" object tests its input against its argumt(s)
+#X text 30 20 Pd provides at least four objects for doing conditional
+computations. The "select" object tests its input against its argument(s)
 \, and outputs "bang" when they match. The "route" object works similarly
-but also copies data. In other wors \, "route" takes a list \, tests
+but also copies data. In other words \, "route" takes a list \, tests
 its first element \, and conditionally passes on the rest of the list.
 ;
 #X text 56 262 You also get "spigot" which turns a flow of messages

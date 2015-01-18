@@ -23,7 +23,7 @@ title bar tells you the creation arguments for this particular instance.
 You can use this to make internal local connections as shown below.
 The "$1-c" boxes act locally whereas the middle boxes get crosstalk
 between the windows. The boxes at right also get unique names but in
-this case you don't have to secify "$0" \, it's just something unique.
+this case you don't have to specify "$0" \, it's just something unique.
 ;
 #X connect 0 0 1 0;
 #X connect 5 0 2 0;

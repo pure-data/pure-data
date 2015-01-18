@@ -3,7 +3,7 @@
 #X text 28 36 Pd is usually compiled to work on 32-bit audio samples.
 These do not \, in general \, have enough precision for use as indices
 into an array of more than about 32K samples. This is because the mantissa
-of a 23-bit floating point number has only 24 bits \, out of which
+of a 32-bit floating point number has only 24 bits \, out of which
 you would be using 16 bits or more to address a sample more than 32K
 into the array \, so there would remain 8 or fewer bits to supply the
 fraction. In the most extreme situation possible \, the sample could

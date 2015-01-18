@@ -25,7 +25,7 @@ as "+" only trigger on their left inlets: it's easy to build up from
 there \, but if more than one inlet were "hot" \, you wouldn't be able
 to change both of them without firing the calculation twice.;
 #X text 197 112 Because of the two inlets and the one outlet \, the
-containing box (int eh parent patch) has two inlets and one outlet.
+containing box (in the parent patch) has two inlets and one outlet.
 They respect the left-to-right order of the inlet and outlet objects
 in the subpatch.;
 #X connect 0 0 4 0;
