@@ -3,7 +3,8 @@ release checklist
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
-    compile on linux
+    test compilation on linux/msw/mac
+    git commit
     ./make-release 0.35-0  or 0.35-test11, etc
     ... compile on windows/Mac 
     git tag (to see existing tags)
