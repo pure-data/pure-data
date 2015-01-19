@@ -218,7 +218,7 @@ AC_ARG_ENABLE([fftw],
                 [use FFTW package])],
     [fftw=$enableval])
 if test x$fftw = xyes; then
-    AC_CHECK_LIB(fftw3f, sfftw_plan_dft_1d_, [LIBS="$LIBS -lfftw3f"],
+    AC_CHECK_LIB(fftw3f, fftwf_execute, [LIBS="$LIBS -lfftw3f"],
         [AC_MSG_NOTICE([fftw package not found - using built-in FFT]); fftw=no])
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
