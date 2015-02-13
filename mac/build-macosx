@@ -16,15 +16,12 @@ fi
 tar xzf stuff/wish-shell.tgz
 mv "Wish Shell.app" Pd-$1.app
 cd Pd-$1.app/Contents
-chmod 755 .
 rm -f Info.plist
 cp -p  ../../stuff/Info.plist .
 cd MacOS
-chmod 755 .
 mv "Wish Shell" Pd
 cd ..
 cd Resources
-chmod 755 .
 rm -f Wish.icns
 cp -p ../../../stuff/pd.icns ../../../stuff/pd-file.icns .
 mv "Wish Shell.rsrc" Pd.rsrc
@@ -37,7 +34,5 @@ cd ..
 ln -s tcl Scripts
 cd ../../..
 pwd
-chmod 755 Pd-$1.app
 touch Pd-$1.app
-chmod 555 Pd-$1.app/Contents Pd-$1.app
 tar czf pd-$1.mac.tar.gz Pd-$1.app

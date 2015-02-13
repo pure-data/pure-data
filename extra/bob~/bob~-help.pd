@@ -1,0 +1,158 @@
+#N canvas 27 58 1062 722 12;
+#X obj 231 347 env~ 8192, f 4;
+#X floatatom 230 387 5 0 0 0 - - -, f 5;
+#X floatatom 408 193 5 0 200 0 - - -, f 5;
+#X obj 39 260 env~ 8192, f 5;
+#X floatatom 39 300 5 0 0 0 - - -, f 5;
+#X obj 279 317 bob~;
+#X obj 408 215 / 25;
+#X msg 950 229 print;
+#X obj 87 259 output~;
+#X floatatom 291 179 5 0 150 0 - - -, f 5;
+#X obj 291 201 mtof;
+#X obj 292 246 pack 0 50;
+#X obj 292 271 line~;
+#X msg 886 227 clear;
+#X obj 280 349 output~;
+#X floatatom 291 224 7 0 0 0 - - -, f 7;
+#X floatatom 611 177 5 0 999 0 - - -, f 5;
+#X msg 611 223 saturation \$1;
+#X obj 611 127 loadbang;
+#X obj 611 199 / 100;
+#X text 885 183 clear or print;
+#X text 889 202 filter state;
+#X floatatom 748 197 5 1 10 0 - - -, f 5;
+#X text 744 122 oversampling;
+#X msg 748 224 oversample \$1;
+#X text 419 88 "resonance";
+#X text 418 105 (>4 to oscillate);
+#X obj 748 145 loadbang;
+#X msg 748 170 2;
+#X text 456 211 scaled to 0-8;
+#X text 455 193 0-200 control;
+#X text 263 86 resonant or cutoff frequency, f 16;
+#X text 300 60 ----- filter parameters ----;
+#X text 609 59 ------ optimizations / setup params -------;
+#X text 899 161 debugging:;
+#X text 603 88 saturation point;
+#X text 600 105 of "transistors";
+#X msg 611 152 300;
+#X obj 408 142 loadbang;
+#X msg 408 167 10;
+#X text 521 625 "Clear" momentarily shorts out the capacitors in case
+the filter has gone unstable and stopped working.;
+#X text 523 410 By default bob~ does one step of 4th-order Runge-Kutte
+integration per audio sample. This works OK for resonant/cutoff frequencies
+up to about 1/2 Nyquist. To improve accuracy and/or to extend the range
+of the filter to higher cutoff frequencies you can oversample by any
+factor - but note that computation time rises accordingly. At high
+cutoff frequencies/resonance values the RK approximation can go unstable.
+You can combat this by raising the oversampling factor.;
+#X obj 407 243 line~;
+#N canvas 743 303 450 300 test 0;
+#X obj 102 122 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 313 127 min~;
+#X obj 357 103 -~ 1;
+#X obj 357 128 *~ -50;
+#X floatatom 102 102 5 0 128 0 - - -, f 5;
+#X obj 235 72 mtof;
+#X obj 102 141 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X text 196 32 test signal;
+#X text 147 102 pitch;
+#X text 119 140 sawtooth;
+#X obj 312 70 phasor~ 220;
+#X obj 233 107 osc~ 220;
+#X obj 102 160 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 121 120 sine;
+#X text 120 159 noise;
+#X floatatom 103 181 3 0 100 0 - - -, f 3;
+#X obj 62 24 loadbang;
+#X msg 62 49 57;
+#X msg 48 163 80;
+#X text 133 180 dB out;
+#X msg 60 111 1;
+#X obj 362 189 noise~;
+#X obj 204 207 *~ 0;
+#X obj 316 184 *~ 0;
+#X obj 315 217 *~ 0;
+#X obj 208 238 +~;
+#X obj 208 263 outlet~;
+#X connect 0 0 22 1;
+#X connect 1 0 23 0;
+#X connect 2 0 3 0;
+#X connect 3 0 1 1;
+#X connect 4 0 5 0;
+#X connect 5 0 10 0;
+#X connect 5 0 11 0;
+#X connect 6 0 23 1;
+#X connect 10 0 1 0;
+#X connect 10 0 2 0;
+#X connect 11 0 22 0;
+#X connect 12 0 24 1;
+#X connect 16 0 17 0;
+#X connect 16 0 18 0;
+#X connect 16 0 20 0;
+#X connect 17 0 4 0;
+#X connect 18 0 15 0;
+#X connect 20 0 6 0;
+#X connect 21 0 24 0;
+#X connect 22 0 25 0;
+#X connect 23 0 25 1;
+#X connect 24 0 25 1;
+#X connect 25 0 26 0;
+#X coords 0 -1 1 1 95 100 2 100 100;
+#X restore 101 96 pd test;
+#X text 228 410 output monitor;
+#X text 35 321 input monitor;
+#X obj 291 130 loadbang;
+#X msg 291 155 69;
+#X text 47 65 ----- test input ----;
+#X text 356 366 <--- adjust output "dB" to hear filter output.;
+#X text 21 558 The design is based on papers by Tim Stilson \, Timothy
+E. Stinchcombe \, and Antti Huovilainen. See README.txt for pointers.
+;
+#X text 23 459 The three audio inputs are the signal to filter \, the
+cutoff/resonant frequency in cycles per second \, and "resonance" (the
+sharpness of the filter). Nominally \, a resonance of 4 should be the
+limit of stability -- above that \, the filter oscillates.;
+#X text 24 10 bob~ - Runge-Kutte numerical simulation of the Moog analog
+resonant filter, f 79;
+#X text 876 676 updated for Pd 0.47;
+#X text 522 565 The saturation parameter determines at what signal
+level the "transistors" in the model saturate. The maximum output amplitude
+is about 2/3 of that value.;
+#X connect 0 0 1 0;
+#X connect 2 0 6 0;
+#X connect 3 0 4 0;
+#X connect 5 0 0 0;
+#X connect 5 0 14 0;
+#X connect 5 0 14 1;
+#X connect 6 0 42 0;
+#X connect 7 0 5 0;
+#X connect 9 0 10 0;
+#X connect 10 0 15 0;
+#X connect 11 0 12 0;
+#X connect 12 0 5 1;
+#X connect 13 0 5 0;
+#X connect 15 0 11 0;
+#X connect 16 0 19 0;
+#X connect 17 0 5 0;
+#X connect 18 0 37 0;
+#X connect 19 0 17 0;
+#X connect 22 0 24 0;
+#X connect 24 0 5 0;
+#X connect 27 0 28 0;
+#X connect 28 0 22 0;
+#X connect 37 0 16 0;
+#X connect 38 0 39 0;
+#X connect 39 0 2 0;
+#X connect 42 0 5 2;
+#X connect 43 0 8 0;
+#X connect 43 0 8 1;
+#X connect 43 0 3 0;
+#X connect 43 0 5 0;
+#X connect 46 0 47 0;
+#X connect 47 0 9 0;

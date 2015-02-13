@@ -1,4 +1,4 @@
-#N canvas 235 81 579 948 12;
+#N canvas 220 52 579 948 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -287,8 +287,8 @@
 #X obj 25 4032 append;
 #X text 125 4032 - add an element to a list;
 #X obj 25 4056 scalar;
-#X text 122 4115 (use tabwrite~ now);
-#X obj 22 4140 namecanvas;
+#X text 130 4401 (use tabwrite~ now);
+#X obj 30 4426 namecanvas;
 #X obj 142 3417 czero_rev~;
 #X obj 26 2498 threshold~;
 #X text 126 2498 - detect signal thresholds;
@@ -314,7 +314,7 @@
 #X obj 118 884 <;
 #X obj 149 884 >=;
 #X obj 180 884 <=;
-#X text 18 4090 ------------------------ OBSOLETE --------------------------
+#X text 26 4376 ------------------------ OBSOLETE --------------------------
 ;
 #X obj 54 861 -;
 #X obj 87 861 *;
@@ -355,16 +355,16 @@
 #X text 17 1343 ----------------- ARRAYS/TABLES -------------------
 ;
 #X text 125 4055 - create a single scalar;
-#X text 121 4141 (potentially dangerous but no substitute exists yet)
+#X text 129 4427 (potentially dangerous but no substitute exists yet)
 ;
 #X text 23 22 The following is a list of built-in objects in Pd. (Not
 included in this list are messages \, atoms \, graphs \, etc. which
 aren't typed into object boxes but come straight off the "add" menu.)
 Right-click (or control-click on a Macintosh) on any object to get
 its "help window".;
-#X msg 22 4113 scope~;
-#X msg 22 4165 template;
-#X text 121 4166 (use struct now);
+#X msg 30 4399 scope~;
+#X msg 30 4451 template;
+#X text 129 4452 (use struct now);
 #X obj 25 1682 textfile;
 #X obj 25 1706 text;
 #X obj 180 907 <<;
@@ -377,3 +377,31 @@ its "help window".;
 #X obj 21 1326 oscformat;
 #X text 113 1303 - OSC messages to Pd lists;
 #X text 113 1326 - Pd lists to OSC messages;
+#X text 18 4087 -------- "EXTRA" (patches and externs in pd/extra)
+---------;
+#X obj 26 4116 sigmund~;
+#X text 126 4116 - pitch tracker;
+#X obj 26 4141 bonk~;
+#X text 126 4141 - attack detector;
+#X obj 26 4166 choice;
+#X text 126 4166 - best match of list to templates;
+#X obj 26 4190 hilbert~;
+#X obj 104 4190 complex-mod~;
+#X text 218 4191 - phase quadrature / frequency shifting;
+#X text 195 4217 - C-style expressions (control and signal);
+#X obj 76 4216 expr~;
+#X obj 26 4215 expr;
+#X obj 129 4216 fexpr~;
+#X obj 26 4242 loop~;
+#X text 122 4245 - phasor~ with S/H on its frequency input;
+#X obj 26 4267 lrshift~;
+#X text 122 4270 - left and right shift (useful with FFT objects);
+#X obj 27 4293 pd~;
+#X text 124 4291 - run another copy of Pd (for multiprocessing);
+#X obj 27 4320 rev1~;
+#X obj 79 4320 rev2~;
+#X obj 128 4320 rev3~;
+#X text 188 4320 - reverberators;
+#X obj 60 4293 stdout;
+#X obj 27 4347 bob~;
+#X text 123 4349 - Moog resonant filter model;

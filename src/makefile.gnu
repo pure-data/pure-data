@@ -133,6 +133,7 @@ externs:
 	make -C ../extra/sigmund~ 
 	make -C ../extra/pd~      
 	make -C ../extra/stdout   
+	make -C ../extra/bob~  
 
 BINARYMODE=-m755
 
