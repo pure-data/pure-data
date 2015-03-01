@@ -1,4 +1,4 @@
 NAME=bob~
 CSYM=bob~_tilde
 
-include makefile.include
+include ../makefile.subdir
