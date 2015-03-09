@@ -558,7 +558,7 @@ static void sys_save_midi_params(
     for (i = 0; i < nmidioutdev; i++)
     {
         midi_midioutdev[i] = midioutdev[i]; 
-        sys_mididevnumbertoname(0, midioutdev[i],
+        sys_mididevnumbertoname(1, midioutdev[i],
             &midi_outdevnames[i * DEVDESCSIZE], DEVDESCSIZE);
     }
 }
