@@ -542,7 +542,7 @@ void glob_savepreferences(t_pd *dummy)
         sprintf(buf2, "%d", midioutdev[i]);
         sys_putpreference(buf1, buf2);
         sprintf(buf1, "midioutdevname%d", i+1);
-        sys_mididevnumbertoname(0, midioutdev[i], buf2, MAXPDSTRING);
+        sys_mididevnumbertoname(1, midioutdev[i], buf2, MAXPDSTRING);
         if (! *buf2)
             strcat(buf2, "?");
         sys_putpreference(buf1, buf2);
