@@ -256,6 +256,7 @@ AC_CONFIG_FILES([Makefile
                 po/Makefile
                 src/Makefile
                 extra/Makefile
+		extra/bob~/GNUmakefile
 		extra/bonk~/GNUmakefile
 		extra/choice/GNUmakefile
 		extra/expr~/GNUmakefile
