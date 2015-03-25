@@ -891,7 +891,6 @@ typedef struct _text_search
 {
     t_text_client x_tc;
     t_outlet *x_out1;       /* line indices */
-    t_outlet *x_out2;       /* number of matches */
     int x_nkeys;
     t_key *x_keyvec;
 } t_text_search;
@@ -901,7 +900,6 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     t_text_search *x = (t_text_search *)pd_new(text_search_class);
     int i, key, nkey, nextop;
     x->x_out1 = outlet_new(&x->x_obj, &s_list);
-    x->x_out2 = outlet_new(&x->x_obj, &s_bang);
     text_client_argparse(&x->x_tc, &argc, &argv, "text search");
     for (i = nkey = 0; i < argc; i++)
         if (argv[i].a_type == A_FLOAT)
