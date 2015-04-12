@@ -13,10 +13,12 @@ namespace eval ::dialog_find:: {
     # if the search hasn't changed, then the Find button sends "findagain"
     variable previous_wholeword_button 0
     variable previous_findstring ""
+    variable find_in_window ""
+    variable window_changed 0
     variable find_history {}
     variable history_position 0
 
-    namespace export pdtk_couldnotfind
+    namespace export pdtk_showfindresult
 }
 
 proc ::dialog_find::get_history {direction} {
@@ -38,6 +40,7 @@ proc ::dialog_find::ok {mytoplevel} {
     variable wholeword_button
     variable previous_wholeword_button
     variable previous_findstring
+    variable window_changed
     variable find_history
 
     set findstring [.find.entry get]
@@ -62,7 +65,8 @@ proc ::dialog_find::ok {mytoplevel} {
         }
     } else {
         if {$findstring eq $previous_findstring \
-                && $wholeword_button == $previous_wholeword_button} {
+                && $wholeword_button == $previous_wholeword_button \
+                    && !$window_changed} {
             pdsend "$find_in_window findagain"
         } else {
             pdsend [concat $find_in_window find [pdtk_encodedialog $findstring] \
@@ -71,6 +75,7 @@ proc ::dialog_find::ok {mytoplevel} {
             set previous_wholeword_button $wholeword_button
             lappend find_history $findstring
         }
+        set window_changed 0
     }
     if {$::windowingsystem eq "aqua"} {
         # (Mac OS X) hide panel after success, but keep it if unsuccessful by
@@ -89,8 +94,15 @@ proc ::dialog_find::cancel {mytoplevel} {
 }
 
 proc ::dialog_find::set_window_to_search {mytoplevel} {
-    variable find_in_window $mytoplevel
-    if {[winfo exists .find.frame.targetlabel]} {
+    variable find_in_window
+    variable window_changed
+    if {$find_in_window eq $mytoplevel} {
+        set window_changed 0
+    } else {
+        set window_changed 1
+    }
+    set find_in_window $mytoplevel
+    if {[winfo exists $find_in_window]} {
         if {$find_in_window eq ".find"} {
             set find_in_window [winfo toplevel [lindex [wm stackorder .] end-1]]
         }
@@ -98,15 +110,25 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
         if {$::tcl_version >= 8.5} {
             wm transient .find $find_in_window
         }
-        .find.frame.targetlabel configure -text \
-            [lookup_windowname $find_in_window]
+        .find.searchin configure -text \
+            [concat [_ "Search in"] [lookup_windowname $find_in_window] \
+                [_ "for:"] ]
+            
     }
 }
 
-proc ::dialog_find::pdtk_couldnotfind {mytoplevel} {
-    if {$::windowingsystem eq "aqua"} {bell}
-    ::pdwindow::error [format [_ "Couldn't find '%s' in %s\n"] \
-                   [.find.entry get] [lookup_windowname $mytoplevel] ]
+proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
+    if {$success eq 0} {
+        if {$::windowingsystem eq "aqua"} {bell}
+        .find.searchin configure -text \
+        [format [_ "Couldn't find '%s' in %s"] \
+            [.find.entry get] [lookup_windowname $mytoplevel] ]
+    } else {
+        .find.searchin configure -text \
+        [format [_ "Showing '%d' out of %d items in %s"] \
+            $which $total \
+            [.find.entry get] [lookup_windowname $mytoplevel] ]
+    }
     if {$::windowingsystem eq "aqua"} {open_find_dialog $mytoplevel}
 }
 
@@ -141,12 +163,10 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     bind .find <$::modifier-Key-p> \
         {menu_print $::focused_window; break}
     
-    frame .find.frame
-    pack .find.frame -side top -fill x -pady 1
-    label .find.frame.searchin -text [_ "Search in"]
-    label .find.frame.targetlabel -text [_ "Pd window"]
-    label .find.frame.for -text [_ "for:"]
-    pack .find.frame.searchin .find.frame.targetlabel .find.frame.for -side left
+    label .find.searchin -text \
+        [concat [_ "Search in"] [_ "Pd window"] [_ "for:"] ]
+    pack .find.searchin -side top -fill x -pady 1
+
     entry .find.entry -width 54 -font 18 -relief sunken \
         -highlightthickness 1 -highlightcolor blue
     pack .find.entry -side top -padx 10
