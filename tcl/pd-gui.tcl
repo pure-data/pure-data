@@ -75,7 +75,7 @@ namespace import ::dialog_array::pdtk_array_dialog
 namespace import ::dialog_audio::pdtk_audio_dialog
 namespace import ::dialog_canvas::pdtk_canvas_dialog
 namespace import ::dialog_data::pdtk_data_dialog
-namespace import ::dialog_find::pdtk_couldnotfind
+namespace import ::dialog_find::pdtk_showfindresult
 namespace import ::dialog_font::pdtk_canvas_dofont
 namespace import ::dialog_gatom::pdtk_gatom_dialog
 namespace import ::dialog_iemgui::pdtk_iemgui_dialog

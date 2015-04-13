@@ -2103,7 +2103,7 @@ static int canvas_dofind(t_canvas *x, int *myindexp)
 
 static void canvas_find(t_canvas *x, t_symbol *s, t_floatarg wholeword)
 {
-    int myindex = 0;
+    int myindex = 0, found;
     t_symbol *decodedsym = sys_decodedialog(s);
     if (!canvas_findbuf)
         canvas_findbuf = binbuf_new();
@@ -2111,19 +2111,21 @@ static void canvas_find(t_canvas *x, t_symbol *s, t_floatarg wholeword)
     canvas_find_index = 0;
     canvas_find_wholeword = wholeword;
     canvas_whichfind = x;
-    if (!canvas_dofind(x, &myindex))
-        sys_vgui("pdtk_couldnotfind .x%lx\n", x);
-    else post("found item %d out of %d total", ++canvas_find_index, myindex);
+    found = canvas_dofind(x, &myindex);
+    if (found)
+        canvas_find_index = 1;
+    sys_vgui("pdtk_showfindresult .x%lx %d %d %d\n", x, found, canvas_find_index,
+        myindex);
 }
 
 static void canvas_find_again(t_canvas *x)
 {
-    int myindex = 0;
+    int myindex = 0, found;
     if (!canvas_findbuf || !canvas_whichfind)
         return;
-    if (!canvas_dofind(canvas_whichfind, &myindex))
-        sys_vgui("pdtk_couldnotfind .x%lx\n", x);
-    else post("found item %d out of %d total", ++canvas_find_index, myindex);
+    found = canvas_dofind(canvas_whichfind, &myindex);
+    sys_vgui("pdtk_showfindresult .x%lx %d %d %d\n", x, found, ++canvas_find_index,
+        myindex);
 }
 
 static void canvas_find_parent(t_canvas *x)
