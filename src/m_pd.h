@@ -720,33 +720,70 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 #ifndef _MSC_VER /* Microoft compiler can't handle "inline" function/macros */
 #if defined(__i386__) || defined(__x86_64__) || defined(__arm__)
 /* a test for NANs and denormals.  Should only be necessary on i386. */
-# if PD_FLOATSIZE == 32
-static inline int PD_BADFLOAT(t_sample f) {
-  t_sampleint_union u;
-  u.f=f;
-  return ((u.i & 0x7f800000)==0) || ((u.i&0x7f800000)==0x7f800000);
+#if PD_FLOATSIZE == 32
+
+typedef  union
+{
+    t_float f;
+    unsigned int ui;
+}t_bigorsmall32;
+
+static inline int PD_BADFLOAT(t_float f)  /* malformed float */
+{
+    t_bigorsmall32 pun;
+    pun.f = f;
+    pun.ui &= 0x7f800000;
+    return((pun.ui == 0) | (pun.ui == 0x7f800000));
 }
-/* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
-static inline int PD_BIGORSMALL(t_sample f) {
-  t_sampleint_union u;
-  u.f=f;
-  return ((u.i & 0x60000000)==0) || ((u.i & 0x60000000)==0x60000000);
+
+static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
+{
+    t_bigorsmall32 pun;
+    pun.f = f;
+    return((pun.ui & 0x20000000) == ((pun.ui >> 1) & 0x20000000));
 }
-# else
-#  warning 64bit mode: BIGORSMALL not implemented yet
-#  define PD_BADFLOAT(f) 0
-#  define PD_BIGORSMALL(f) 0
-# endif
-#else
-# define PD_BADFLOAT(f) 0
-# define PD_BIGORSMALL(f) 0
+
+#elif PD_FLOATSIZE == 64
+
+typedef  union
+{
+    t_float f;
+    unsigned int ui[2]; 
+}t_bigorsmall64; 
+
+static inline int PD_BADFLOAT(t_float f)  /* malformed double */
+{
+    t_bigorsmall64 pun;
+    pun.f = f;
+    pun.ui[1] &= 0x7ff00000;
+    return((pun.ui[1] == 0) | (pun.ui[1] == 0x7ff00000));
+}
+
+static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
+{
+    t_bigorsmall64 pun;
+    pun.f = f;
+    return((pun.ui[1] & 0x20000000) == ((pun.ui[1] >> 1) & 0x20000000));
+}
+
+#endif /* PD_FLOATSIZE */
+#else /* not INTEL or ARM */
+#define PD_BADFLOAT(f) 0
+#define PD_BIGORSMALL(f) 0
 #endif
+
 #else   /* _MSC_VER */
+#if PD_FLOATSIZE == 32
 #define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
     (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
 /* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
 #define PD_BIGORSMALL(f) ((((*(unsigned int*)&(f))&0x60000000)==0) || \
     (((*(unsigned int*)&(f))&0x60000000)==0x60000000))
+#else   /* 64 bits... don't know what to do here */
+#define PD_BADFLOAT(f) (!(((f) >= 0) || ((f) <= 0)))
+#define PD_BIGORSMALL(f) ((f) > 1e150 || (f) <  -1e150 \
+    || (f) > -1e-150 && (f) < 1e-150 )
+#endif
 #endif /* _MSC_VER */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);

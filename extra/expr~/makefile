@@ -48,7 +48,8 @@ LINUXOBJ =  vexp.pd_linux_o vexp_fun.pd_linux_o vexp_if.pd_linux_o
 
 LINUXCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer -fPIC \
     -fno-strict-aliasing -Wall -W -Wshadow -Wstrict-prototypes \
-    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch 
+    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch \
+    $(MORECFLAGS)
 
 LINUXINCLUDE =  -I../../src
 

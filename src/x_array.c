@@ -421,8 +421,8 @@ static t_class *array_sum_class;
 typedef struct _array_rangeop   /* any operation meaningful on a subrange */
 {
     t_array_client x_tc;
-    float x_onset;
-    float x_n;
+    t_float x_onset;
+    t_float x_n;
     t_symbol *x_elemfield;
     t_symbol *x_elemtemplate;   /* unused - perhaps should at least check it */
 } t_array_rangeop;

@@ -971,9 +971,10 @@ static void bonk_bang(t_bonk *x)
 #ifdef PD
 static void bonk_read(t_bonk *x, t_symbol *s)
 {
-    t_float vec[MAXNFILTERS];
+    float vec[MAXNFILTERS];
     int i, ntemplate = 0, remaining;
-    t_float *fp, *fp2;
+    float *fp;
+    t_float *fp2;
 
     /* fbar: canvas_open code taken from g_array.c */
     FILE *fd;

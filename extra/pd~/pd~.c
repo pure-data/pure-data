@@ -450,7 +450,11 @@ static t_int *pd_tilde_perform(t_int *w)
                 if (numbuffill)
                 {
                     numbuf[numbuffill] = 0;
+#if PD_FLOATSIZE == 32
                     if (sscanf(numbuf, "%f", &z) < 1)
+#else
+                    if (sscanf(numbuf, "%lf", &z) < 1)
+#endif
                         continue;
                     if (i < x->x_noutsig)
                         x->x_outsig[i][j] = z;
