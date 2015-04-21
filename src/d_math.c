@@ -140,13 +140,17 @@ static t_int *sigrsqrt_perform(t_int *w)
     t_int n = *(t_int *)(w+3);
     while (n--)
     {   
-        t_sample f = *in;
-        long l = *(long *)(in++);
+        t_sample f = *in++;
+        union {
+          float f;
+          long l;
+        } u;
+        u.f = f;
         if (f < 0) *out++ = 0;
         else
         {
-            t_sample g = rsqrt_exptab[(l >> 23) & 0xff] *
-                rsqrt_mantissatab[(l >> 13) & 0x3ff];
+            t_sample g = rsqrt_exptab[(u.l >> 23) & 0xff] *
+                rsqrt_mantissatab[(u.l >> 13) & 0x3ff];
             *out++ = 1.5 * g - 0.5 * g * g * g * f;
         }
     }
@@ -195,13 +199,17 @@ t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
     t_int n = *(t_int *)(w+3);
     while (n--)
     {   
-        t_sample f = *in;
-        long l = *(long *)(in++);
+        t_sample f = *in++;
+        union {
+          float f;
+          long l;
+        } u;
+        u.f = f;
         if (f < 0) *out++ = 0;
         else
         {
-            t_sample g = rsqrt_exptab[(l >> 23) & 0xff] *
-                rsqrt_mantissatab[(l >> 13) & 0x3ff];
+            t_sample g = rsqrt_exptab[(u.l >> 23) & 0xff] *
+                rsqrt_mantissatab[(u.l >> 13) & 0x3ff];
             *out++ = f * (1.5 * g - 0.5 * g * g * g * f);
         }
     }
