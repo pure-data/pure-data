@@ -353,17 +353,15 @@ int ilog2(int n)
 static t_signal *signal_freelist[MAXLOGSIG+1];
     /* list of reusable "borrowed" signals (which don't own sample buffers) */
 static t_signal *signal_freeborrowed;
-    /* list of all signals allocated (not including "borrowed" ones) */
-static t_signal *signal_usedlist;
 
     /* call this when DSP is stopped to free all the signals */
 void signal_cleanup(void)
 {
     t_signal **svec, *sig, *sig2;
     int i;
-    while (sig = signal_usedlist)
+    while (sig = pd_this->pd_signals)
     {
-        signal_usedlist = sig->s_nextused;
+        pd_this->pd_signals = sig->s_nextused;
         if (!sig->s_isborrowed)
             t_freebytes(sig->s_vec, sig->s_vecsize * sizeof (*sig->s_vec));
         t_freebytes(sig, sizeof *sig);
@@ -458,8 +456,8 @@ t_signal *signal_new(int n, t_float sr)
             ret->s_vec = 0;
             ret->s_isborrowed = 1;
         }
-        ret->s_nextused = signal_usedlist;
-        signal_usedlist = ret;
+        ret->s_nextused = pd_this->pd_signals;
+        pd_this->pd_signals = ret;
     }
     ret->s_n = n;
     ret->s_vecsize = vecsize;
@@ -554,6 +552,7 @@ void ugen_stop(void)
 {
     t_signal *s;
     int i;
+    fprintf(stderr, "stop %x\n", pd_this);
     if (pd_this->pd_dspchain)
     {
         freebytes(pd_this->pd_dspchain, 
@@ -566,7 +565,9 @@ void ugen_stop(void)
 
 void ugen_start(void)
 {
+    fprintf(stderr, "start %x\n", pd_this);
     ugen_stop();
+    fprintf(stderr, "continue start %x\n", pd_this);
     ugen_sortno++;
     pd_this->pd_dspchain = (t_int *)getbytes(sizeof(*pd_this->pd_dspchain));
     pd_this->pd_dspchain[0] = (t_int)dsp_done;
@@ -584,7 +585,7 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i, count;
     t_signal *sig;
-    for (count = 0, sig = signal_usedlist; sig;
+    for (count = 0, sig = pd_this->pd_signals; sig;
         count++, sig = sig->s_nextused)
             ;
     post("used signals %d", count);

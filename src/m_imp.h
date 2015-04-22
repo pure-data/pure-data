@@ -62,6 +62,7 @@ struct _pdinstance
     int pd_dspchainsize;        /* number of elements in DSP chain */
     t_canvas *pd_canvaslist;    /* list of all root canvases */
     int pd_dspstate;            /* whether DSP is on or off */
+    t_signal *pd_signals;       /* list of signals used by DSP chain */
     t_symbol *pd_midiin_sym;    /* symbols bound to incoming MIDI... */
     t_symbol *pd_sysexin_sym;
     t_symbol *pd_notein_sym;
