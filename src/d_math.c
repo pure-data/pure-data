@@ -575,7 +575,7 @@ static void *pow_tilde_new(t_floatarg f)
     signalinlet_new(&x->x_obj, f);
     outlet_new(&x->x_obj, &s_signal);
     x->x_f = 0;
-    
+
     return (x);
 }
 
