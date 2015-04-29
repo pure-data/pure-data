@@ -1,4 +1,4 @@
-#N canvas 54 94 607 373 12;
+#N canvas 273 107 607 373 12;
 #X floatatom 72 273 3 0 0 0 - - -, f 3;
 #X obj 27 221 notein;
 #X obj 27 247 stripnote;
@@ -97,7 +97,7 @@
 #X obj 34 175 * 5;
 #X obj 34 200 s tone-hip;
 #X obj 34 144 r tone-hipass;
-#N canvas 612 135 459 296 glue+loadbang 0;
+#N canvas 860 185 459 296 glue+loadbang 0;
 #X obj 8 20 loadbang;
 #X obj 204 19 r tone-all;
 #X obj 314 17 r tone-none;
@@ -106,7 +106,7 @@
 #X msg 314 48 \; tone-ch1 0 \; tone-ch2 0 \; tone-ch3 0 \; tone-ch4
 0 \; tone-ch5 0 \; tone-ch6 0 \; tone-ch7 0 \; tone-ch8 0;
 #X msg 8 48 \; pd dsp 1 \; tone-pitch 69 \; tone-radio 2 \; tone-radio-set
-set 2 \; tone-type 1 \; tone-type-set 1 \; tone-all 1 \; tone-highpass
+set 2 \; tone-type 1 \; tone-type-set 1 \; tone-all 1 \; tone-hipass
 1 \; tone-hipass-set set 1 \;;
 #X connect 0 0 5 0;
 #X connect 1 0 3 0;
