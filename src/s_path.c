@@ -252,9 +252,9 @@ void sys_setextrapath(const char *p)
 #endif
 
 #ifdef _WIN32
-    sys_expandpath("%ProgramFiles%/Common Files/Pd", pathbuf, MAXPDSTRING);
+    sys_expandpath("%CommonProgramFiles%/Pd", pathbuf, MAXPDSTRING);
     sys_staticpath = namelist_append(0, pathbuf, 0);
-    sys_expandpath("%UserProfile%/Application Data/Pd", pathbuf, MAXPDSTRING);
+    sys_expandpath("%AppData%/Pd", pathbuf, MAXPDSTRING);
     sys_staticpath = namelist_append(sys_staticpath, pathbuf, 0);
 #endif
     /* add built-in "extra" path last so its checked last */
