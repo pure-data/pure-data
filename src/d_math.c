@@ -569,12 +569,13 @@ typedef struct _pow_tilde
     t_float x_f;
 } t_pow_tilde;
 
-static void *pow_tilde_new(t_symbol *s, int argc, t_atom *argv)
+static void *pow_tilde_new(t_floatarg f)
 {
     t_pow_tilde *x = (t_pow_tilde *)pd_new(pow_tilde_class);
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    signalinlet_new(&x->x_obj, f);
     outlet_new(&x->x_obj, &s_signal);
     x->x_f = 0;
+    
     return (x);
 }
 
@@ -620,7 +621,7 @@ typedef struct _exp_tilde
     t_float x_f;
 } t_exp_tilde;
 
-static void *exp_tilde_new(t_symbol *s, int argc, t_atom *argv)
+static void *exp_tilde_new( void)
 {
     t_exp_tilde *x = (t_exp_tilde *)pd_new(exp_tilde_class);
     outlet_new(&x->x_obj, &s_signal);
@@ -661,7 +662,7 @@ typedef struct _log_tilde
     t_float x_f;
 } t_log_tilde;
 
-static void *log_tilde_new(t_symbol *s, int argc, t_atom *argv)
+static void *log_tilde_new( void)
 {
     t_log_tilde *x = (t_log_tilde *)pd_new(log_tilde_class);
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
@@ -713,7 +714,7 @@ typedef struct _abs_tilde
     t_float x_f;
 } t_abs_tilde;
 
-static void *abs_tilde_new(t_symbol *s, int argc, t_atom *argv)
+static void *abs_tilde_new( void)
 {
     t_abs_tilde *x = (t_abs_tilde *)pd_new(abs_tilde_class);
     outlet_new(&x->x_obj, &s_signal);
