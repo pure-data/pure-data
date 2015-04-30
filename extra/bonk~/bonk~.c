@@ -288,6 +288,7 @@ t_float qrsqrt(t_float f);
 double clock_getsystime();
 double clock_gettimesince(double prevsystime);
 char *strcpy(char *s1, const char *s2);
+#define SETFLOAT A_SETFLOAT
 #endif
 
 static void bonk_tick(t_bonk *x);
@@ -607,9 +608,9 @@ static void bonk_tick(t_bonk *x)
         post("bonk out: number %d, vel %f, temperature %f",
             nfit, vel, temperature);
     
-    A_SETFLOAT(at2, nfit);
-    A_SETFLOAT(at2+1, vel);
-    A_SETFLOAT(at2+2, temperature);
+    SETFLOAT(at2, nfit);
+    SETFLOAT(at2+1, vel);
+    SETFLOAT(at2+2, temperature);
     outlet_list(x->x_cookedout, 0, 3, at2);
     
     for (n = 0, gp = x->x_insig + (ninsig-1),
@@ -806,21 +807,6 @@ static t_int *bonk_perform(t_int *w)
     return (w+3);
 }
 
-static void bonk_perform64(t_bonk *x, t_object *dsp64, double **ins,
-                           long numins, double **outs, long numouts,
-                           long sampleframes, long flags, void *userparam)
-{
-    int n = sampleframes;
-
-    int i = sampleframes, ninsig = x->x_ninsig;
-    t_insig *gp;
-
-    for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
-        gp->g_invec = ins[0];
-
-    bonk_perform_generic(x, n);
-}
-
 static void bonk_dsp(t_bonk *x, t_signal **sp)
 {
     int i, n = sp[0]->s_n, ninsig = x->x_ninsig;
@@ -832,14 +818,6 @@ static void bonk_dsp(t_bonk *x, t_signal **sp)
         gp->g_invec = (*(sp++))->s_vec;
     
     dsp_add(bonk_perform, 2, x, n);
-}
-
-static void bonk_dsp64(t_bonk *x, t_object *dsp64, short *count,
-                       double samplerate, long maxvectorsize, long flags)
-{
-
-    x->x_sr = samplerate;
-    object_method(dsp64, gensym("dsp_add64"), x, bonk_perform64, 0, NULL);
 }
 
 static void bonk_thresh(t_bonk *x, t_floatarg f1, t_floatarg f2)
@@ -1051,6 +1029,30 @@ nomore:
 #endif
 
 #ifdef MSP
+static void bonk_perform64(t_bonk *x, t_object *dsp64, double **ins,
+                           long numins, double **outs, long numouts,
+                           long sampleframes, long flags, void *userparam)
+{
+    int n = sampleframes;
+
+    int i = sampleframes, ninsig = x->x_ninsig;
+    t_insig *gp;
+
+    for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
+        gp->g_invec = ins[0];
+
+    bonk_perform_generic(x, n);
+}
+
+static void bonk_dsp64(t_bonk *x, t_object *dsp64, short *count,
+                       double samplerate, long maxvectorsize, long flags)
+{
+
+    x->x_sr = samplerate;
+    object_method(dsp64, gensym("dsp_add64"), x, bonk_perform64, 0, NULL);
+}
+
+
 static void bonk_read(t_bonk *x, t_symbol *s)
 {
     defer(x, (method)bonk_doread, s, 0, NULL);
