@@ -16,7 +16,10 @@
 #define TIMEUNITPERMSEC (32. * 441.)
 #define TIMEUNITPERSECOND (TIMEUNITPERMSEC * 1000.)
 
+#ifndef THREAD_LOCKING
 #define THREAD_LOCKING 1
+#endif
+
 #if THREAD_LOCKING
 #include "pthread.h"
 #endif
