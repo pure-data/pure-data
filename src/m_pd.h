@@ -249,11 +249,11 @@ typedef void (*t_method)(void);
 typedef void *(*t_newmethod)( void);
 
 /* in ARM 64 a varargs prototype generates a different function call sequence
-from a fixed one, so in that special case we maek a more restrictive
+from a fixed one, so in that special case we make a more restrictive
 definition for t_gotfn.  This will break some code in the "chaos" package
 in Pd extended.  (that code will run incorrectly anyhow so why not catch it
 at compile time anyhow.) */
-#ifdef __aarch64__
+#if defined(__APPLE__) && defined(__aarch64__)
 typedef void (*t_gotfn)(void *x);
 #else
 typedef void (*t_gotfn)(void *x, ...);
