@@ -1329,3 +1329,17 @@ void glob_quit(void *dummy)
     exit(0); 
 }
 
+ /* more work needed here - for some reason we can't restart the gui after
+ shutting it down this way.  I think the second 'init' message never makes
+ it because the to-gui buffer isn't re-initialized. */
+void sys_stopgui( void)
+{
+    if (sys_guisock >= 0)
+    {
+        sys_closesocket(sys_guisock);
+        sys_rmpollfn(sys_guisock);
+        sys_guisock = -1;
+        sys_guicmd = 0;
+    }
+    sys_nogui = 1;
+}
