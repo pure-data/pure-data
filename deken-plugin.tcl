@@ -1,5 +1,5 @@
 # META NAME PdExternalsSearch
-# META DESCRIPTION Search for externals collections on puredata.info
+# META DESCRIPTION Search for externals zipfiles on puredata.info
 # META AUTHOR <Chris McCormick> chris@mccormick.cx
 
 # Search URL:
@@ -74,7 +74,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     search_for "" $mytoplevel.f.resultstext
 }
 
-# actually perform the remote HTTP call and display the results
+# make a remote HTTP call and parse and display the results
 proc ::dialog_externals_search::search_for {term destination} {
     ::pdwindow::post "Searching for externals...\n"
     set token [http::geturl "http://puredata.info/search_rss?SearchableText=xtrnl-"]
