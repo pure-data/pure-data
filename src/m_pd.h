@@ -39,12 +39,15 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #define EXTERN extern
 #endif /* _WIN32 */
 
-    /* and depending on the compiler, hidden data structures are
-    declared differently: */
-#if defined( __GNUC__) || defined( __BORLANDC__ ) || defined( __MWERKS__ )
-#define EXTERN_STRUCT struct
-#else
+    /* On most c compilers, you can just say "struct foo;" to declare a
+    structure whose elements are defined elsewhere.  On MSVC, when compiling
+    C (but not C++) code, you have to say "extern struct foo;".  So we make
+    a stupid macro: */
+#if defined(_MSC_VER) && !defined(_LANGUAGE_C_PLUS_PLUS) \
+    && !defined(__cplusplus)
 #define EXTERN_STRUCT extern struct
+#else
+#define EXTERN_STRUCT struct
 #endif
 
 /* Define some attributes, specific to the compiler */
