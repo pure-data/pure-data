@@ -19,7 +19,9 @@ if MACOSX
 INCLUDES +=  -Ipm_mac
 libportmidi_la_SOURCES += porttime/ptmacosx_cf.c \
         pm_mac/pmmac.c \
-        pm_mac/pmmacosxcm.c
+        pm_mac/pmmacosxcm.c \
+        pm_mac/finddefault.c \
+        pm_mac/readbinaryplist.c
 endif
 
 if WINDOWS
