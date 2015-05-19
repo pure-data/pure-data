@@ -6,9 +6,9 @@
 # http://puredata.info/search_rss?SearchableText=xtrnl-
 
 # The minimum version of TCL that allows the plugin to run
-package require Tcl 8.5
+package require Tcl 8.4
 # If Tk or Ttk is needed
-package require Ttk
+#package require Ttk
 # Any elements of the Pd GUI that are required
 # + require everything and all your script needs.
 #   If a requirement is missing,
@@ -18,6 +18,8 @@ package require http 2
 
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
+set ::tcl_platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
+pdwindow::post "Platform: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
 
 namespace eval ::dialog_externals_search:: {
     variable searchfont [list {DejaVu Sans}]
