@@ -79,7 +79,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
 # make a remote HTTP call and parse and display the results
 proc ::dialog_externals_search::search_for {term destination} {
     ::pdwindow::post "Searching for externals...\n"
-    set token [http::geturl "http://puredata.info/search_rss?SearchableText=xtrnl-"]
+    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+xtrnl+.zip&portal_type%3Alist=IAEMFile"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
     foreach ele $splitCont {
@@ -91,6 +91,7 @@ proc ::dialog_externals_search::search_for {term destination} {
         }
     }
     http::cleanup $token
+    ::pdwindow::post "Done.\n"
 }
 
 # create an entry for our search in the "help" menu
