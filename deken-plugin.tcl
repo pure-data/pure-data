@@ -19,7 +19,7 @@ package require http 2
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
 set ::tcl_platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
-pdwindow::post "Platform: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
+pdwindow::post "Platform detected: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
 
 namespace eval ::dialog_externals_search:: {
     variable searchfont [list {DejaVu Sans}]
