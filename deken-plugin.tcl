@@ -66,11 +66,15 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
 
 proc ::dialog_externals_search::initiate_search {mytoplevel} {
     set results [search_for [$mytoplevel.entry get]]
+    # build the list UI of results
+    set current_listbox [listbox "[set b $mytoplevel.root]" -yscrollcommand "$b-scroll set" \
+        -highlightbackground white -highlightthickness 5 \
+        -highlightcolor "#D6E5FC" -selectborderwidth 0 \
+        -height 20 -exportselection 0 -bd 0]
+    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+        -side left -fill both -expand 1
     foreach {title URL creator date} $results {
-        ::pdwindow::post $creator
-        ::pdwindow::post $date
-        ::pdwindow::post $title
-        ::pdwindow::post $URL
+        $current_listbox insert end "$creator - $date\n\t$title\n\t$URL"
     }
 }
 
