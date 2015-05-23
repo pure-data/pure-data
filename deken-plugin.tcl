@@ -22,62 +22,55 @@ set ::tcl_platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
 pdwindow::post "Platform detected: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
 
 namespace eval ::dialog_externals_search:: {
-    variable searchfont [list {DejaVu Sans}]
+    namespace export open_searchui
 }
 
 # this function gets called when the menu is clicked
 proc ::dialog_externals_search::open_searchui {mytoplevel} {
-    #if {[winfo exists $mytoplevel]} {
-    #    wm deiconify $mytoplevel
-    #    raise $mytoplevel
-    #} else {
-    #    create_dialog $mytoplevel
-    #}
-    search_for "" $mytoplevel.f.resultstext
+    if {[winfo exists $mytoplevel]} {
+        wm deiconify $mytoplevel
+        raise $mytoplevel
+    } else {
+        create_dialog $mytoplevel
+    }
+    #search_for "freeverb" $mytoplevel.f.resultstext
 }
 
 # build the externals search dialog window
 proc ::dialog_externals_search::create_dialog {mytoplevel} {
-    # much of this is lifted from Jonathan's search plugin.
-    variable searchfont
     toplevel $mytoplevel -class DialogWindow
-    wm title $mytoplevel [_ "Finding Pd externals on puredata.info"]
+    wm title $mytoplevel [_ "Find externals"]
     wm geometry $mytoplevel 670x550+0+30
     wm minsize $mytoplevel 230 360
-    ttk::style configure Entry.TCombobox -arrowsize 0
-    ttk::style configure Genre.TCombobox
-    ttk::style configure Search.TButton -font menufont
-    ttk::style configure Search.TCheckbutton -font menufont
-    
-    ttk::frame $mytoplevel.f -padding 3
-    ttk::combobox $mytoplevel.f.searchtextentry -textvar ::dialog_externals_search::searchtext -font "$searchfont 12" -style "Entry.TCombobox" -cursor "xterm"
-    ttk::button $mytoplevel.f.searchbutton -text [_ "Search"] -takefocus 0 -command ::dialog_helpbrowser2::search -style Search.TButton
-    text $mytoplevel.resultstext -yscrollcommand "$mytoplevel.yscrollbar set" -bg white -highlightcolor blue -height 30 -wrap word -state disabled -padx 8 -pady 3 -spacing3 2 -bd 0 -highlightthickness 0 -fg black
-    ttk::scrollbar $mytoplevel.yscrollbar -command "$mytoplevel.resultstext yview" -takefocus 0
-    
-    grid $mytoplevel.f.searchtextentry -column 0 -columnspan 3 -row 0 -padx 3 -pady 2 -sticky ew
-    grid $mytoplevel.f.searchbutton -column 3 -columnspan 2 -row 0 -padx 3 -sticky ew
-    grid $mytoplevel.resultstext -column 0 -columnspan 4 -row 3 -sticky nsew -ipady 0 -pady 0
-    grid $mytoplevel.yscrollbar -column 4 -row 3 -sticky nsew
-    
-    grid columnconfigure $mytoplevel.f 0 -weight 0
-    grid columnconfigure $mytoplevel.f 1 -weight 0
-    grid columnconfigure $mytoplevel.f 2 -weight 1
-    grid columnconfigure $mytoplevel.f 3 -weight 0
-    grid columnconfigure $mytoplevel 0 -weight 1
-    grid columnconfigure $mytoplevel 4 -weight 0
-    grid rowconfigure    $mytoplevel 2 -weight 0
-    grid rowconfigure    $mytoplevel 3 -weight 1
-    
-    $mytoplevel.f.searchtextentry insert 0 [_ "Pd external name..."]
-    $mytoplevel.f.searchtextentry selection range 0 end
-    focus $mytoplevel.f.searchtextentry
-    # ::dialog_externals_search::intro $mytoplevel.resultstext
-    search_for "" $mytoplevel.f.resultstext
+    wm transient $mytoplevel
+    $mytoplevel configure -padx 10 -pady 5
+
+    if {$::windowingsystem eq "aqua"} {
+        $mytoplevel configure -menu $::dialog_menubar
+    }
+
+    entry $mytoplevel.entry -font 18 -relief sunken \
+        -highlightthickness 1 -highlightcolor blue
+    pack $mytoplevel.entry -side top -padx 10 -fill x
+
+    button $mytoplevel.button -text [_ "Search"] -default active -width 9 \
+        -command "dialog_externals_search::initiate_search $mytoplevel"
+    pack $mytoplevel.button -side top  -padx 6 -pady 3 -fill x
+
+    frame $mytoplevel.frame
+    pack $mytoplevel.frame -side top -fill both
+    # build_references
+    # make_rootlistbox .help_browser.frame
+    # search_for "" $mytoplevel.f.resultstext
+}
+
+proc ::dialog_externals_search::initiate_search {mytoplevel} {
+    set results [search_for [$mytoplevel.entry get]]
+    parray results
 }
 
 # make a remote HTTP call and parse and display the results
-proc ::dialog_externals_search::search_for {term destination} {
+proc ::dialog_externals_search::search_for {term} {
     ::pdwindow::post "Searching for externals...\n"
     set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+xtrnl+.zip&portal_type%3Alist=IAEMFile"]
     set contents [http::data $token]
