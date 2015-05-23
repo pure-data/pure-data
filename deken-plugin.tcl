@@ -66,25 +66,30 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
 
 proc ::dialog_externals_search::initiate_search {mytoplevel} {
     set results [search_for [$mytoplevel.entry get]]
-    parray results
+    foreach {title URL creator date} $results {
+        ::pdwindow::post $creator
+        ::pdwindow::post $date
+        ::pdwindow::post $title
+        ::pdwindow::post $URL
+    }
 }
 
 # make a remote HTTP call and parse and display the results
 proc ::dialog_externals_search::search_for {term} {
     ::pdwindow::post "Searching for externals...\n"
+    set searchresults [list]
     set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+xtrnl+.zip&portal_type%3Alist=IAEMFile"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
+    # loop through the resulting XML parsing out entries containing results with a regular expression
     foreach ele $splitCont {
-        if {[regexp {<title>(.*?)</title>(.*?)<link>(.*?)</link>(.*?)<dc:creator>(.*?)</dc:creator>(.*?)<dc:date>(.*?)</dc:date>} $ele -> title junk link junk creator junk date]} {
-            ::pdwindow::post "\n$title\n"
-            ::pdwindow::post "\t$link\n"
-            ::pdwindow::post "$creator $date\n"
-            # $destination insert end "$title" hello
+        if {[regexp {<title>(.*?)</title>(.*?)<link>(.*?)</link>(.*?)<dc:creator>(.*?)</dc:creator>(.*?)<dc:date>(.*?)</dc:date>} $ele -> title junk URL junk creator junk date]} {
+            lappend searchresults $title $URL $creator $date
         }
     }
     http::cleanup $token
     ::pdwindow::post "Done.\n"
+    return $searchresults
 }
 
 # create an entry for our search in the "help" menu
