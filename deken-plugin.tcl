@@ -52,6 +52,8 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     entry $mytoplevel.entry -font 18 -relief sunken \
         -highlightthickness 1 -highlightcolor blue
     pack $mytoplevel.entry -side top -padx 10 -fill x
+    bind $mytoplevel.entry <Key-Return> "::dialog_externals_search::initiate_search $mytoplevel"
+    focus $mytoplevel.entry
 
     button $mytoplevel.button -text [_ "Search"] -default active -width 9 \
         -command "dialog_externals_search::initiate_search $mytoplevel"
