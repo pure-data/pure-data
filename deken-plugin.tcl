@@ -27,6 +27,14 @@ namespace eval ::dialog_externals_search:: {
     variable mytoplevelref
 }
 
+# architectures that can be substituted for eachother
+array set architecture_substitutes {}
+set architecture_substitutes(x86_64) [list "ia64" "i386" "i586" "i686"]
+set architecture_substitutes(i686) [list "i586" "i386"]
+set architecture_substitutes(i586) [list "i386"]
+set architecture_substitutes(armv6l) [list]
+set architecture_substitutes(armv7l) [list "armv6l"]
+
 # this function gets called when the menu is clicked
 proc ::dialog_externals_search::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
@@ -79,16 +87,25 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
     $mytoplevel.results delete 1.0 end
     set counter 0
     # build the list UI of results
-    # TODO: filter these for the platform, machine, and bits
     foreach r $reversed {
         foreach {title URL creator date} $r {break}
-        set tag ch$counter
-        $mytoplevel.results insert end "$title\n\tBy $creator - $date\n\n" $tag
-        $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
-        $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
-        # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-        $mytoplevel.results tag bind $tag <1> [list dialog_externals_search::clicked_link $mytoplevel [urldecode $URL] $title]
-        incr counter
+        # sanity check - is this the same OS
+        if {[regexp "$::tcl_platform(os)" $title]} {
+            set tag ch$counter
+            set readable_date [regsub -all {[TZ]} $date { }]
+            $mytoplevel.results insert end "$title\n\tBy $creator - $readable_date\n\n" $tag
+            $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
+            if {[dialog_externals_search::architecture_match $title]} {
+                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
+                $mytoplevel.results tag configure $tag -foreground black
+            } else {
+                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
+                $mytoplevel.results tag configure $tag -foreground gray
+            }
+            # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
+            $mytoplevel.results tag bind $tag <1> [list dialog_externals_search::clicked_link $mytoplevel [urldecode $URL] $title]
+            incr counter
+        }
     }
 }
 
@@ -128,6 +145,25 @@ proc ::dialog_externals_search::download_progress {token total current} {
     variable mytoplevelref
     set computed [expr {round(100 * (1.0 * $current / $total))}]
     $mytoplevelref.results insert end "= $computed%\n"
+}
+
+# test for platform match with our current platform
+proc ::dialog_externals_search::architecture_match {title} {
+    # if the word size doesn't match, return false
+    if {![regexp "$::tcl_platform(bits)bit" $title]} {
+        return 0
+    }
+    # see if the exact architecture string matches
+    if {[regexp "$::tcl_platform(machine)" $title]} {
+        return 1
+    }
+    # see if any substitute architectures match
+    foreach arch $::architecture_substitutes($::tcl_platform(machine)) {
+        if {[regexp "$arch" $title]} {
+            return 1
+        }
+    }
+    return 0
 }
 
 # make a remote HTTP call and parse and display the results
