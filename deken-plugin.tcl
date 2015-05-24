@@ -57,25 +57,31 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
         -command "dialog_externals_search::initiate_search $mytoplevel"
     pack $mytoplevel.button -side top  -padx 6 -pady 3 -fill x
 
-    frame $mytoplevel.frame
-    pack $mytoplevel.frame -side top -fill both
-    # build_references
-    # make_rootlistbox .help_browser.frame
-    # search_for "" $mytoplevel.f.resultstext
+    text $mytoplevel.results -takefocus 0
+    pack $mytoplevel.results -side top -padx 6 -pady 3 -fill x
+
 }
 
 proc ::dialog_externals_search::initiate_search {mytoplevel} {
     set results [search_for [$mytoplevel.entry get]]
     # build the list UI of results
-    set current_listbox [listbox "[set b $mytoplevel.root]" -yscrollcommand "$b-scroll set" \
-        -highlightbackground white -highlightthickness 5 \
-        -highlightcolor "#D6E5FC" -selectborderwidth 0 \
-        -height 20 -exportselection 0 -bd 0]
-    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
-        -side left -fill both -expand 1
+    # delete all text in the results
+    $mytoplevel.results delete 1.0 end
+    set counter 0
     foreach {title URL creator date} $results {
-        $current_listbox insert end "$creator - $date\n\t$title\n\t$URL"
+        # $current_listbox insert end "$creator - $date\n\t$title\n\t$URL"
+        set tag ch$counter
+        $mytoplevel.results insert end "$title\n\tBy $creator - $date\n\t$URL\n\n" $tag
+        $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
+        $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
+        $mytoplevel.results tag bind $tag <1> [list "dialog_externals_search::clicked_link" .t $tag $counter $URL]
+        incr counter
     }
+}
+
+# handle a clicked link
+proc ::dialog_externals_search::clicked_link {t tag counter URL} {
+    ::pdwindow::post "$t $tag $counter $URL"
 }
 
 # make a remote HTTP call and parse and display the results
