@@ -62,7 +62,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
         -command "dialog_externals_search::initiate_search $mytoplevel"
     pack $mytoplevel.button -side top  -padx 6 -pady 3 -fill x
 
-    text $mytoplevel.results -takefocus 0
+    text $mytoplevel.results -takefocus 0 -cursor hand2
     pack $mytoplevel.results -side top -padx 6 -pady 3 -fill x
 }
 
