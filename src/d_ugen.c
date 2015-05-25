@@ -735,7 +735,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         if (!uin->i_nconnect)
         {
             t_float *scalar;
-            s3 = signal_new(dc->dc_vecsize, dc->dc_srate);
+            s3 = signal_new(dc->dc_calcsize, dc->dc_srate);
             /* post("%s: unconnected signal inlet set to zero",
                 class_getname(u->u_obj->ob_pd)); */
             if (scalar = obj_findsignalscalar(u->u_obj, i))
@@ -778,7 +778,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
                 signal_new(0, dc->dc_srate);
         }
         else
-            *sig = uout->o_signal = signal_new(dc->dc_vecsize, dc->dc_srate);
+            *sig = uout->o_signal = signal_new(dc->dc_calcsize, dc->dc_srate);
         (*sig)->s_refcount = uout->o_nconnect;
     }
         /* now call the DSP scheduling routine for the ugen.  This
