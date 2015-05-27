@@ -1,6 +1,7 @@
 # META NAME PdExternalsSearch
 # META DESCRIPTION Search for externals zipfiles on puredata.info
 # META AUTHOR <Chris McCormick> chris@mccormick.cx
+# ex: set setl sw=2 sts=2 et
 
 # Search URL:
 # http://puredata.info/search_rss?SearchableText=xtrnl-
