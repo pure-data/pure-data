@@ -30,7 +30,8 @@ namespace eval ::dialog_externals_search:: {
 
 # architectures that can be substituted for eachother
 array set architecture_substitutes {}
-set architecture_substitutes(x86_64) [list "ia64" "i386" "i586" "i686"]
+set architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
+set architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
 set architecture_substitutes(i686) [list "i586" "i386"]
 set architecture_substitutes(i586) [list "i386"]
 set architecture_substitutes(armv6l) [list]
