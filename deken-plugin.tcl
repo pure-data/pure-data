@@ -82,32 +82,36 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
     $mytoplevel.results insert end "Searching for externals...\n"
     # make the ajax call
     set results [search_for [$mytoplevel.entry get]]
-    # sort the results by reverse date - latest upload first
-    set sorted [lsort -index 3 $results]
-    for {set i [llength $sorted]} {[incr i -1] >= 0} {} {lappend reversed [lindex $sorted $i]}
     # delete all text in the results
     $mytoplevel.results delete 1.0 end
-    set counter 0
-    # build the list UI of results
-    foreach r $reversed {
-        foreach {title URL creator date} $r {break}
-        # sanity check - is this the same OS
-        if {[regexp "$::tcl_platform(os)" $title]} {
-            set tag ch$counter
-            set readable_date [regsub -all {[TZ]} $date { }]
-            $mytoplevel.results insert end "$title\n\tBy $creator - $readable_date\n\n" $tag
-            $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
-            if {[dialog_externals_search::architecture_match $title]} {
-                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
-                $mytoplevel.results tag configure $tag -foreground black
-            } else {
-                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
-                $mytoplevel.results tag configure $tag -foreground gray
+    if {[llength $results] != 0} {
+        # sort the results by reverse date - latest upload first
+        set sorted [lsort -index 3 $results]
+        for {set i [llength $sorted]} {[incr i -1] >= 0} {} {lappend reversed [lindex $sorted $i]}
+        set counter 0
+        # build the list UI of results
+        foreach r $reversed {
+            foreach {title URL creator date} $r {break}
+            # sanity check - is this the same OS
+            if {[regexp "$::tcl_platform(os)" $title]} {
+                set tag ch$counter
+                set readable_date [regsub -all {[TZ]} $date { }]
+                $mytoplevel.results insert end "$title\n\tBy $creator - $readable_date\n\n" $tag
+                $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
+                if {[dialog_externals_search::architecture_match $title]} {
+                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
+                    $mytoplevel.results tag configure $tag -foreground black
+                } else {
+                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
+                    $mytoplevel.results tag configure $tag -foreground gray
+                }
+                # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
+                $mytoplevel.results tag bind $tag <1> [list dialog_externals_search::clicked_link $mytoplevel [urldecode $URL] $title]
+                incr counter
             }
-            # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-            $mytoplevel.results tag bind $tag <1> [list dialog_externals_search::clicked_link $mytoplevel [urldecode $URL] $title]
-            incr counter
         }
+    } else {
+        $mytoplevel.results insert end "No matching externals found. Try using the full name e.g. 'freeverb'.\n"
     }
 }
 
