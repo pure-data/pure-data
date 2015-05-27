@@ -62,18 +62,25 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
         $mytoplevel configure -menu $::dialog_menubar
     }
 
-    entry $mytoplevel.entry -font 18 -relief sunken \
-        -highlightthickness 1 -highlightcolor blue
-    pack $mytoplevel.entry -side top -padx 10 -fill x
-    bind $mytoplevel.entry <Key-Return> "::dialog_externals_search::initiate_search $mytoplevel"
-    focus $mytoplevel.entry
+    frame $mytoplevel.searchbit
+    pack $mytoplevel.searchbit -side top -fill x
+    
+    entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
+    pack $mytoplevel.searchbit.entry -side left -padx 10 -fill x -expand true
+    bind $mytoplevel.searchbit.entry <Key-Return> "::dialog_externals_search::initiate_search $mytoplevel"
+    focus $mytoplevel.searchbit.entry
 
-    button $mytoplevel.button -text [_ "Search"] -default active -width 9 \
-        -command "dialog_externals_search::initiate_search $mytoplevel"
-    pack $mytoplevel.button -side top  -padx 6 -pady 3 -fill x
+    button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "dialog_externals_search::initiate_search $mytoplevel"
+    pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
-    text $mytoplevel.results -takefocus 0 -cursor hand2
-    pack $mytoplevel.results -side top -padx 6 -pady 3 -fill x
+    frame $mytoplevel.resultscontainer
+    pack $mytoplevel.resultscontainer -side top -fill both
+
+    text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
+    scrollbar $mytoplevel.results.ys -orient vertical -command "$mytoplevel.results yview"
+    pack $mytoplevel.results.ys -side right -fill y
+    pack $mytoplevel.results -side left -padx 6 -pady 3 -fill both -expand true
+
 }
 
 proc ::dialog_externals_search::initiate_search {mytoplevel} {
@@ -81,7 +88,7 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Searching for externals...\n"
     # make the ajax call
-    set results [search_for [$mytoplevel.entry get]]
+    set results [search_for [$mytoplevel.searchbit.entry get]]
     # delete all text in the results
     $mytoplevel.results delete 1.0 end
     if {[llength $results] != 0} {
