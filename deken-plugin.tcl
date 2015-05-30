@@ -73,14 +73,10 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "dialog_externals_search::initiate_search $mytoplevel"
     pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
-    frame $mytoplevel.resultscontainer
-    pack $mytoplevel.resultscontainer -side top -fill both
-
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
     scrollbar $mytoplevel.results.ys -orient vertical -command "$mytoplevel.results yview"
     pack $mytoplevel.results.ys -side right -fill y
     pack $mytoplevel.results -side left -padx 6 -pady 3 -fill both -expand true
-
 }
 
 proc ::dialog_externals_search::initiate_search {mytoplevel} {
