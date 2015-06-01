@@ -178,7 +178,7 @@ proc ::dialog_externals_search::architecture_match {title} {
 # make a remote HTTP call and parse and display the results
 proc ::dialog_externals_search::search_for {term} {
     set searchresults [list]
-    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+xtrnl+.zip&portal_type%3Alist=IAEMFile"]
+    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
     # loop through the resulting XML parsing out entries containing results with a regular expression
