@@ -159,16 +159,16 @@ proc ::dialog_externals_search::download_progress {token total current} {
 # test for platform match with our current platform
 proc ::dialog_externals_search::architecture_match {title} {
     # if the word size doesn't match, return false
-    if {![regexp "$::tcl_platform(bits)bit" $title]} {
+    if {![regexp "-$::tcl_platform(bits)\\\)" $title]} {
         return 0
     }
     # see if the exact architecture string matches
-    if {[regexp "$::tcl_platform(machine)" $title]} {
+    if {[regexp "-$::tcl_platform(machine)-" $title]} {
         return 1
     }
     # see if any substitute architectures match
     foreach arch $::architecture_substitutes($::tcl_platform(machine)) {
-        if {[regexp "$arch" $title]} {
+        if {[regexp "-$arch-" $title]} {
             return 1
         }
     }
