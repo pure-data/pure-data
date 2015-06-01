@@ -66,7 +66,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     pack $mytoplevel.searchbit -side top -fill x
     
     entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
-    pack $mytoplevel.searchbit.entry -side left -padx 10 -fill x -expand true
+    pack $mytoplevel.searchbit.entry -side left -padx 6 -fill x -expand true
     bind $mytoplevel.searchbit.entry <Key-Return> "::dialog_externals_search::initiate_search $mytoplevel"
     focus $mytoplevel.searchbit.entry
 
