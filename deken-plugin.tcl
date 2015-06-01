@@ -99,7 +99,7 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
             if {[regexp "$::tcl_platform(os)" $title]} {
                 set tag ch$counter
                 set readable_date [regsub -all {[TZ]} $date { }]
-                $mytoplevel.results insert end "$title\n\tBy $creator - $readable_date\n\n" $tag
+                $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
                 $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
                 if {[dialog_externals_search::architecture_match $title]} {
                     $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
