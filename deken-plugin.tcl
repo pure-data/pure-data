@@ -34,8 +34,8 @@ set architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
 set architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
 set architecture_substitutes(i686) [list "i586" "i386"]
 set architecture_substitutes(i586) [list "i386"]
-set architecture_substitutes(armv6l) [list]
-set architecture_substitutes(armv7l) [list "armv6l"]
+set architecture_substitutes(armv6l) [list "armv6" "arm"]
+set architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
 
 # this function gets called when the menu is clicked
 proc ::dialog_externals_search::open_searchui {mytoplevel} {
