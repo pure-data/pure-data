@@ -174,7 +174,6 @@ proc ::dialog_externals_search::architecture_match {title} {
     # see if any substitute architectures match
     if {[llength [array names ::architecture_substitutes -exact $::tcl_platform(machine)]] == 1} {
         foreach arch $::architecture_substitutes($::tcl_platform(machine)) {
-            ::pdwindow::post $arch
             if {[regexp "-$arch-" $title]} {
                 return 1
             }
