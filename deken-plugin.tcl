@@ -70,6 +70,11 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     bind $mytoplevel.searchbit.entry <Key-Return> "::dialog_externals_search::initiate_search $mytoplevel"
     focus $mytoplevel.searchbit.entry
 
+    frame $mytoplevel.warning
+    pack $mytoplevel.warning -side top -fill x
+    label $mytoplevel.warning.label -text "Only install externals uploaded by people you trust."
+    pack $mytoplevel.warning.label -side left -padx 6
+
     button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "dialog_externals_search::initiate_search $mytoplevel"
     pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
