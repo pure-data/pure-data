@@ -22,6 +22,7 @@ namespace eval ::deken:: {
     namespace export open_searchui
     variable mytoplevelref
     variable platform
+    variable architecture_substitutes
 }
 
 
@@ -48,13 +49,13 @@ if { "Windows" eq "$::deken::platform(os)" } {
 pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
 
 # architectures that can be substituted for eachother
-array set architecture_substitutes {}
-set architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
-set architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
-set architecture_substitutes(i686) [list "i586" "i386"]
-set architecture_substitutes(i586) [list "i386"]
-set architecture_substitutes(armv6l) [list "armv6" "arm"]
-set architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
+array set ::deken::architecture_substitutes {}
+set ::deken::architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
+set ::deken::architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
+set ::deken::architecture_substitutes(i686) [list "i586" "i386"]
+set ::deken::architecture_substitutes(i586) [list "i386"]
+set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
+set ::deken::architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
 
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
@@ -193,8 +194,8 @@ proc ::deken::architecture_match {title} {
         return 1
     }
     # see if any substitute architectures match
-    if {[llength [array names ::architecture_substitutes -exact $::deken::platform(machine)]] == 1} {
-        foreach arch $::architecture_substitutes($::deken::platform(machine)) {
+    if {[llength [array names ::deken::architecture_substitutes -exact $::deken::platform(machine)]] == 1} {
+        foreach arch $::deken::architecture_substitutes($::deken::platform(machine)) {
             if {[regexp -- "-$arch-" $title]} {
                 return 1
             }
@@ -206,7 +207,7 @@ proc ::deken::architecture_match {title} {
 # make a remote HTTP call and parse and display the results
 proc ::deken::search_for {term} {
     set searchresults [list]
-    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile"]
+    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
     # loop through the resulting XML parsing out entries containing results with a regular expression
