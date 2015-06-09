@@ -95,7 +95,7 @@ proc ::deken::create_dialog {mytoplevel} {
     label $mytoplevel.warning.label -text "Only install externals uploaded by people you trust."
     pack $mytoplevel.warning.label -side left -padx 6
 
-    button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "dialog_externals_search::initiate_search $mytoplevel"
+    button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
     pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
@@ -126,7 +126,7 @@ proc ::deken::initiate_search {mytoplevel} {
                 set readable_date [regsub -all {[TZ]} $date { }]
                 $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
                 $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
-                if {[dialog_externals_search::architecture_match $title]} {
+                if {[::deken::architecture_match $title]} {
                     $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
                     $mytoplevel.results tag configure $tag -foreground black
                 } else {
@@ -134,7 +134,7 @@ proc ::deken::initiate_search {mytoplevel} {
                     $mytoplevel.results tag configure $tag -foreground gray
                 }
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                $mytoplevel.results tag bind $tag <1> [list dialog_externals_search::clicked_link $mytoplevel [urldecode $URL] $title]
+                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $title]
                 incr counter
             }
         }
@@ -148,7 +148,7 @@ proc ::deken::clicked_link {mytoplevel URL title} {
     set destination "$::current_plugin_loadpath/$title"
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
-    dialog_externals_search::download_file $URL $destination
+    ::deken::download_file $URL $destination
     # Open both the destination folder and the zipfile itself
     # NOTE: in tcl 8.5 it should be possible to use the zlib interface to actually do the unzip
     pd_menucommands::menu_openfile $::current_plugin_loadpath
@@ -165,7 +165,7 @@ proc ::deken::download_file {URL outputfilename} {
     set status ""
     set errorstatus ""
     fconfigure $f -translation binary
-    set httpresult [http::geturl $URL -binary true -progress "dialog_externals_search::download_progress" -channel $f]
+    set httpresult [http::geturl $URL -binary true -progress "::deken::download_progress" -channel $f]
     set status [::http::status $httpresult]
     set errorstatus [::http::error $httpresult]
     flush $f
