@@ -101,7 +101,7 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
         foreach r $reversed {
             foreach {title URL creator date} $r {break}
             # sanity check - is this the same OS
-            if {[regexp "$::tcl_platform(os)" $title]} {
+            if {[regexp -- "$::tcl_platform(os)" $title]} {
                 set tag ch$counter
                 set readable_date [regsub -all {[TZ]} $date { }]
                 $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
@@ -164,17 +164,17 @@ proc ::dialog_externals_search::download_progress {token total current} {
 # test for platform match with our current platform
 proc ::dialog_externals_search::architecture_match {title} {
     # if the word size doesn't match, return false
-    if {![regexp "-$::tcl_platform(bits)\\\)" $title]} {
+    if {![regexp -- "-$::tcl_platform(bits)\\\)" $title]} {
         return 0
     }
     # see if the exact architecture string matches
-    if {[regexp "-$::tcl_platform(machine)-" $title]} {
+    if {[regexp -- "-$::tcl_platform(machine)-" $title]} {
         return 1
     }
     # see if any substitute architectures match
     if {[llength [array names ::architecture_substitutes -exact $::tcl_platform(machine)]] == 1} {
         foreach arch $::architecture_substitutes($::tcl_platform(machine)) {
-            if {[regexp "-$arch-" $title]} {
+            if {[regexp -- "-$arch-" $title]} {
                 return 1
             }
         }
@@ -190,7 +190,7 @@ proc ::dialog_externals_search::search_for {term} {
     set splitCont [split $contents "\n"]
     # loop through the resulting XML parsing out entries containing results with a regular expression
     foreach ele $splitCont {
-        if {[regexp {<title>(.*?)</title>(.*?)<link>(.*?)</link>(.*?)<dc:creator>(.*?)</dc:creator>(.*?)<dc:date>(.*?)</dc:date>} $ele -> title junk URL junk creator junk date]} {
+        if {[regexp -- {<title>(.*?)</title>(.*?)<link>(.*?)</link>(.*?)<dc:creator>(.*?)</dc:creator>(.*?)<dc:date>(.*?)</dc:date>} $ele -> title junk URL junk creator junk date]} {
             set result [list $title $URL $creator $date]
             lappend searchresults $result
         }
