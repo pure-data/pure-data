@@ -156,9 +156,11 @@ proc ::dialog_externals_search::download_file {URL outputfilename} {
 
 # print the download progress to the results window
 proc ::dialog_externals_search::download_progress {token total current} {
-    variable mytoplevelref
-    set computed [expr {round(100 * (1.0 * $current / $total))}]
-    $mytoplevelref.results insert end "= $computed%\n"
+    if { $total > 0 } {
+        variable mytoplevelref
+        set computed [expr {round(100 * (1.0 * $current / $total))}]
+        $mytoplevelref.results insert end "= $computed%\n"
+    }
 }
 
 # test for platform match with our current platform
