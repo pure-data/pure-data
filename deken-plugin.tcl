@@ -21,6 +21,19 @@ package require pd_menucommands 0.1
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
 set ::tcl_platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
+# normalize W32 OSs
+if { [ string match "Windows *" "$::tcl_platform(os)" ] > 0 } {
+    # we are not interested in the w32 flavour, so we just use 'Windows' for all of them
+    set ::tcl_platform(os) "Windows"
+}
+# normalize W32 CPUs
+if { "Windows" eq "$::tcl_platform(os)" } {
+    # in redmond, intel only produces 32bit CPUs,...
+    if { "intel" eq "$::tcl_platform(machine)" } { set ::tcl_platform(machine) "i386" }
+    # ... and all 64bit CPUs are manufactured by amd
+    #if { "amd64" eq "$::tcl_platform(machine)" } { set ::tcl_platform(machine) "x86_64" }
+}
+
 pdwindow::post "Platform detected: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
 
 namespace eval ::dialog_externals_search:: {
