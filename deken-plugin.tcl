@@ -21,26 +21,31 @@ package require pd_menucommands 0.1
 namespace eval ::deken:: {
     namespace export open_searchui
     variable mytoplevelref
+    variable platform
 }
 
 
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
-set ::tcl_platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
+
+set ::deken::platform(os) $::tcl_platform(os)
+set ::deken::platform(machine) $::tcl_platform(machine)
+set ::deken::platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
+
 # normalize W32 OSs
-if { [ string match "Windows *" "$::tcl_platform(os)" ] > 0 } {
+if { [ string match "Windows *" "$::deken::platform(os)" ] > 0 } {
     # we are not interested in the w32 flavour, so we just use 'Windows' for all of them
-    set ::tcl_platform(os) "Windows"
+    set ::deken::platform(os) "Windows"
 }
 # normalize W32 CPUs
-if { "Windows" eq "$::tcl_platform(os)" } {
+if { "Windows" eq "$::deken::platform(os)" } {
     # in redmond, intel only produces 32bit CPUs,...
-    if { "intel" eq "$::tcl_platform(machine)" } { set ::tcl_platform(machine) "i386" }
+    if { "intel" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "i386" }
     # ... and all 64bit CPUs are manufactured by amd
-    #if { "amd64" eq "$::tcl_platform(machine)" } { set ::tcl_platform(machine) "x86_64" }
+    #if { "amd64" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "x86_64" }
 }
 
-pdwindow::post "Platform detected: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
+pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
 
 # architectures that can be substituted for eachother
 array set architecture_substitutes {}
@@ -115,7 +120,7 @@ proc ::deken::initiate_search {mytoplevel} {
         foreach r $reversed {
             foreach {title URL creator date} $r {break}
             # sanity check - is this the same OS
-            if {[regexp -- "$::tcl_platform(os)" $title]} {
+            if {[regexp -- "$::deken::platform(os)" $title]} {
                 set tag ch$counter
                 set readable_date [regsub -all {[TZ]} $date { }]
                 $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
@@ -180,16 +185,16 @@ proc ::deken::download_progress {token total current} {
 # test for platform match with our current platform
 proc ::deken::architecture_match {title} {
     # if the word size doesn't match, return false
-    if {![regexp -- "-$::tcl_platform(bits)\\\)" $title]} {
+    if {![regexp -- "-$::deken::platform(bits)\\\)" $title]} {
         return 0
     }
     # see if the exact architecture string matches
-    if {[regexp -- "-$::tcl_platform(machine)-" $title]} {
+    if {[regexp -- "-$::deken::platform(machine)-" $title]} {
         return 1
     }
     # see if any substitute architectures match
-    if {[llength [array names ::architecture_substitutes -exact $::tcl_platform(machine)]] == 1} {
-        foreach arch $::architecture_substitutes($::tcl_platform(machine)) {
+    if {[llength [array names ::architecture_substitutes -exact $::deken::platform(machine)]] == 1} {
+        foreach arch $::architecture_substitutes($::deken::platform(machine)) {
             if {[regexp -- "-$arch-" $title]} {
                 return 1
             }
