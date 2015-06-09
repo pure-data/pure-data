@@ -151,7 +151,7 @@ proc ::dialog_externals_search::download_file {URL outputfilename} {
     flush $f
     close $f
     http::cleanup $httpresult
-    return status errorstatus
+    return [list $status $errorstatus ]
 }
 
 # print the download progress to the results window
