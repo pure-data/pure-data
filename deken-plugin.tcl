@@ -18,6 +18,12 @@ package require http 2
 package require pdwindow 0.1
 package require pd_menucommands 0.1
 
+namespace eval ::deken:: {
+    namespace export open_searchui
+    variable mytoplevelref
+}
+
+
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
 set ::tcl_platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
@@ -36,11 +42,6 @@ if { "Windows" eq "$::tcl_platform(os)" } {
 
 pdwindow::post "Platform detected: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
 
-namespace eval ::dialog_externals_search:: {
-    namespace export open_searchui
-    variable mytoplevelref
-}
-
 # architectures that can be substituted for eachother
 array set architecture_substitutes {}
 set architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
@@ -51,7 +52,7 @@ set architecture_substitutes(armv6l) [list "armv6" "arm"]
 set architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
 
 # this function gets called when the menu is clicked
-proc ::dialog_externals_search::open_searchui {mytoplevel} {
+proc ::deken::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -62,7 +63,7 @@ proc ::dialog_externals_search::open_searchui {mytoplevel} {
 }
 
 # build the externals search dialog window
-proc ::dialog_externals_search::create_dialog {mytoplevel} {
+proc ::deken::create_dialog {mytoplevel} {
     toplevel $mytoplevel -class DialogWindow
     variable mytoplevelref $mytoplevel
     wm title $mytoplevel [_ "Find externals"]
@@ -80,7 +81,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     
     entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
     pack $mytoplevel.searchbit.entry -side left -padx 6 -fill x -expand true
-    bind $mytoplevel.searchbit.entry <Key-Return> "::dialog_externals_search::initiate_search $mytoplevel"
+    bind $mytoplevel.searchbit.entry <Key-Return> "::deken::initiate_search $mytoplevel"
     focus $mytoplevel.searchbit.entry
 
     frame $mytoplevel.warning
@@ -97,7 +98,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     pack $mytoplevel.results -side left -padx 6 -pady 3 -fill both -expand true
 }
 
-proc ::dialog_externals_search::initiate_search {mytoplevel} {
+proc ::deken::initiate_search {mytoplevel} {
     # let the user know what we're doing
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Searching for externals...\n"
@@ -137,7 +138,7 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
 }
 
 # handle a clicked link
-proc ::dialog_externals_search::clicked_link {mytoplevel URL title} {
+proc ::deken::clicked_link {mytoplevel URL title} {
     set destination "$::current_plugin_loadpath/$title"
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
@@ -153,7 +154,7 @@ proc ::dialog_externals_search::clicked_link {mytoplevel URL title} {
 
 # download a file to a location
 # http://wiki.tcl.tk/15303
-proc ::dialog_externals_search::download_file {URL outputfilename} {
+proc ::deken::download_file {URL outputfilename} {
     set f [open $outputfilename w]
     set status ""
     set errorstatus ""
@@ -168,7 +169,7 @@ proc ::dialog_externals_search::download_file {URL outputfilename} {
 }
 
 # print the download progress to the results window
-proc ::dialog_externals_search::download_progress {token total current} {
+proc ::deken::download_progress {token total current} {
     if { $total > 0 } {
         variable mytoplevelref
         set computed [expr {round(100 * (1.0 * $current / $total))}]
@@ -177,7 +178,7 @@ proc ::dialog_externals_search::download_progress {token total current} {
 }
 
 # test for platform match with our current platform
-proc ::dialog_externals_search::architecture_match {title} {
+proc ::deken::architecture_match {title} {
     # if the word size doesn't match, return false
     if {![regexp -- "-$::tcl_platform(bits)\\\)" $title]} {
         return 0
@@ -198,7 +199,7 @@ proc ::dialog_externals_search::architecture_match {title} {
 }
 
 # make a remote HTTP call and parse and display the results
-proc ::dialog_externals_search::search_for {term} {
+proc ::deken::search_for {term} {
     set searchresults [list]
     set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile"]
     set contents [http::data $token]
@@ -222,8 +223,8 @@ if {$::windowingsystem eq "aqua"} {
     set inserthere 4
 }
 $mymenu insert $inserthere separator
-$mymenu insert $inserthere command -label [_ "Find externals"] -command {::dialog_externals_search::open_searchui .externals_searchui}
-# bind all <$::modifier-Key-s> {::dialog_externals_search::open_helpbrowser .helpbrowser2}
+$mymenu insert $inserthere command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
+# bind all <$::modifier-Key-s> {::deken::open_helpbrowser .helpbrowser2}
 
 # http://rosettacode.org/wiki/URL_decoding#Tcl
 proc urldecode {str} {
