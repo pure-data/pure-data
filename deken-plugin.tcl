@@ -64,7 +64,7 @@ proc ::deken::open_searchui {mytoplevel} {
         raise $mytoplevel
     } else {
         create_dialog $mytoplevel
-	$mytoplevel.results tag configure warn -foreground orange
+        $mytoplevel.results tag configure warn -foreground orange
     }
     #search_for "freeverb" $mytoplevel.f.resultstext
 }
@@ -151,12 +151,12 @@ proc ::deken::clicked_link {mytoplevel URL title} {
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
     ::deken::download_file $URL $destination
     if { [ catch {
-	set PWD [ pwd ]
-	cd $::current_plugin_loadpath
-	exec unzip $destination
-	cd $PWD
+        set PWD [ pwd ]
+        cd $::current_plugin_loadpath
+        exec unzip $destination
+        cd $PWD
     } stdout options ] } {
-	puts $stdout
+        puts $stdout
         # Open both the destination folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
         $mytoplevel.results insert end "Unable to extract package automatically.\n" warn
