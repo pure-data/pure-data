@@ -23,8 +23,10 @@ namespace eval ::deken:: {
     variable mytoplevelref
     variable platform
     variable architecture_substitutes
+    variable installpath
 }
 
+set ::deken::installpath [ lindex $::sys_staticpath 0 ]
 
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
@@ -146,12 +148,12 @@ proc ::deken::initiate_search {mytoplevel} {
 
 # handle a clicked link
 proc ::deken::clicked_link {mytoplevel URL filename} {
-    set fullzipfile "$::current_plugin_loadpath/$filename"
+    set fullzipfile "$::deken::installpath/$filename"
     $mytoplevel.results delete 1.0 end
-    $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
+    $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::deken::installpath...\n"
     ::deken::download_file $URL $fullzipfile
     set PWD [ pwd ]
-    cd $::current_plugin_loadpath
+    cd $::deken::installpath
     set success 1
     if { [ catch { exec unzip $fullzipfile } stdout ] } {
         puts $stdout
@@ -162,13 +164,13 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
         $mytoplevel.results insert end "Please perform the following steps manually:\n"
         $mytoplevel.results insert end "1. Unzip $fullzipfile.\n"
         pd_menucommands::menu_openfile $fullzipfile
-        $mytoplevel.results insert end "2. Copy the contents into $::current_plugin_loadpath.\n\n"
-        pd_menucommands::menu_openfile $::current_plugin_loadpath
+        $mytoplevel.results insert end "2. Copy the contents into $::deken::installpath.\n\n"
+        pd_menucommands::menu_openfile $::deken::installpath
         # destroy $mytoplevel
     }
     cd $PWD
     if { $success > 0 } {
-        $mytoplevel.results insert end "Successfully unzipped $filename into $::current_plugin_loadpath.\n\n"
+        $mytoplevel.results insert end "Successfully unzipped $filename into $::deken::installpath.\n\n"
     }
 }
 
