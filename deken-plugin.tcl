@@ -150,12 +150,9 @@ proc ::deken::clicked_link {mytoplevel URL title} {
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
     ::deken::download_file $URL $destination
-    if { [ catch {
-        set PWD [ pwd ]
-        cd $::current_plugin_loadpath
-        exec unzip $destination
-        cd $PWD
-    } stdout options ] } {
+    set PWD [ pwd ]
+    cd $::current_plugin_loadpath
+    if { [ catch { exec unzip $destination } stdout ] } {
         puts $stdout
         # Open both the destination folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
@@ -167,6 +164,7 @@ proc ::deken::clicked_link {mytoplevel URL title} {
         pd_menucommands::menu_openfile $::current_plugin_loadpath
         # destroy $mytoplevel
     }
+    cd $PWD
 }
 
 # download a file to a location
