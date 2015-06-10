@@ -18,27 +18,47 @@ package require http 2
 package require pdwindow 0.1
 package require pd_menucommands 0.1
 
-# console message to let them know we're loaded
-pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
-set ::tcl_platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
-pdwindow::post "Platform detected: $tcl_platform(os)-$tcl_platform(machine)-$tcl_platform(bits)bit\n"
-
-namespace eval ::dialog_externals_search:: {
+namespace eval ::deken:: {
     namespace export open_searchui
     variable mytoplevelref
+    variable platform
+    variable architecture_substitutes
 }
 
+
+# console message to let them know we're loaded
+pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
+
+set ::deken::platform(os) $::tcl_platform(os)
+set ::deken::platform(machine) $::tcl_platform(machine)
+set ::deken::platform(bits) [ expr [ string length [ format %X -1 ] ] * 4 ]
+
+# normalize W32 OSs
+if { [ string match "Windows *" "$::deken::platform(os)" ] > 0 } {
+    # we are not interested in the w32 flavour, so we just use 'Windows' for all of them
+    set ::deken::platform(os) "Windows"
+}
+# normalize W32 CPUs
+if { "Windows" eq "$::deken::platform(os)" } {
+    # in redmond, intel only produces 32bit CPUs,...
+    if { "intel" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "i386" }
+    # ... and all 64bit CPUs are manufactured by amd
+    #if { "amd64" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "x86_64" }
+}
+
+pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
+
 # architectures that can be substituted for eachother
-array set architecture_substitutes {}
-set architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
-set architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
-set architecture_substitutes(i686) [list "i586" "i386"]
-set architecture_substitutes(i586) [list "i386"]
-set architecture_substitutes(armv6l) [list "armv6" "arm"]
-set architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
+array set ::deken::architecture_substitutes {}
+set ::deken::architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
+set ::deken::architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
+set ::deken::architecture_substitutes(i686) [list "i586" "i386"]
+set ::deken::architecture_substitutes(i586) [list "i386"]
+set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
+set ::deken::architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
 
 # this function gets called when the menu is clicked
-proc ::dialog_externals_search::open_searchui {mytoplevel} {
+proc ::deken::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -49,7 +69,7 @@ proc ::dialog_externals_search::open_searchui {mytoplevel} {
 }
 
 # build the externals search dialog window
-proc ::dialog_externals_search::create_dialog {mytoplevel} {
+proc ::deken::create_dialog {mytoplevel} {
     toplevel $mytoplevel -class DialogWindow
     variable mytoplevelref $mytoplevel
     wm title $mytoplevel [_ "Find externals"]
@@ -67,7 +87,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     
     entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
     pack $mytoplevel.searchbit.entry -side left -padx 6 -fill x -expand true
-    bind $mytoplevel.searchbit.entry <Key-Return> "::dialog_externals_search::initiate_search $mytoplevel"
+    bind $mytoplevel.searchbit.entry <Key-Return> "::deken::initiate_search $mytoplevel"
     focus $mytoplevel.searchbit.entry
 
     frame $mytoplevel.warning
@@ -75,7 +95,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     label $mytoplevel.warning.label -text "Only install externals uploaded by people you trust."
     pack $mytoplevel.warning.label -side left -padx 6
 
-    button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "dialog_externals_search::initiate_search $mytoplevel"
+    button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
     pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
@@ -84,7 +104,7 @@ proc ::dialog_externals_search::create_dialog {mytoplevel} {
     pack $mytoplevel.results -side left -padx 6 -pady 3 -fill both -expand true
 }
 
-proc ::dialog_externals_search::initiate_search {mytoplevel} {
+proc ::deken::initiate_search {mytoplevel} {
     # let the user know what we're doing
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Searching for externals...\n"
@@ -101,12 +121,12 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
         foreach r $reversed {
             foreach {title URL creator date} $r {break}
             # sanity check - is this the same OS
-            if {[regexp "$::tcl_platform(os)" $title]} {
+            if {[regexp -- "$::deken::platform(os)" $title]} {
                 set tag ch$counter
                 set readable_date [regsub -all {[TZ]} $date { }]
                 $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
                 $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
-                if {[dialog_externals_search::architecture_match $title]} {
+                if {[::deken::architecture_match $title]} {
                     $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
                     $mytoplevel.results tag configure $tag -foreground black
                 } else {
@@ -114,7 +134,7 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
                     $mytoplevel.results tag configure $tag -foreground gray
                 }
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                $mytoplevel.results tag bind $tag <1> [list dialog_externals_search::clicked_link $mytoplevel [urldecode $URL] $title]
+                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $title]
                 incr counter
             }
         }
@@ -124,11 +144,11 @@ proc ::dialog_externals_search::initiate_search {mytoplevel} {
 }
 
 # handle a clicked link
-proc ::dialog_externals_search::clicked_link {mytoplevel URL title} {
+proc ::deken::clicked_link {mytoplevel URL title} {
     set destination "$::current_plugin_loadpath/$title"
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
-    dialog_externals_search::download_file $URL $destination
+    ::deken::download_file $URL $destination
     # Open both the destination folder and the zipfile itself
     # NOTE: in tcl 8.5 it should be possible to use the zlib interface to actually do the unzip
     pd_menucommands::menu_openfile $::current_plugin_loadpath
@@ -140,41 +160,43 @@ proc ::dialog_externals_search::clicked_link {mytoplevel URL title} {
 
 # download a file to a location
 # http://wiki.tcl.tk/15303
-proc ::dialog_externals_search::download_file {URL outputfilename} {
+proc ::deken::download_file {URL outputfilename} {
     set f [open $outputfilename w]
     set status ""
     set errorstatus ""
     fconfigure $f -translation binary
-    set httpresult [http::geturl $URL -binary true -progress "dialog_externals_search::download_progress" -channel $f]
+    set httpresult [http::geturl $URL -binary true -progress "::deken::download_progress" -channel $f]
     set status [::http::status $httpresult]
     set errorstatus [::http::error $httpresult]
     flush $f
     close $f
     http::cleanup $httpresult
-    return status errorstatus
+    return [list $status $errorstatus ]
 }
 
 # print the download progress to the results window
-proc ::dialog_externals_search::download_progress {token total current} {
-    variable mytoplevelref
-    set computed [expr {round(100 * (1.0 * $current / $total))}]
-    $mytoplevelref.results insert end "= $computed%\n"
+proc ::deken::download_progress {token total current} {
+    if { $total > 0 } {
+        variable mytoplevelref
+        set computed [expr {round(100 * (1.0 * $current / $total))}]
+        $mytoplevelref.results insert end "= $computed%\n"
+    }
 }
 
 # test for platform match with our current platform
-proc ::dialog_externals_search::architecture_match {title} {
+proc ::deken::architecture_match {title} {
     # if the word size doesn't match, return false
-    if {![regexp "-$::tcl_platform(bits)\\\)" $title]} {
+    if {![regexp -- "-$::deken::platform(bits)\\\)" $title]} {
         return 0
     }
     # see if the exact architecture string matches
-    if {[regexp "-$::tcl_platform(machine)-" $title]} {
+    if {[regexp -- "-$::deken::platform(machine)-" $title]} {
         return 1
     }
     # see if any substitute architectures match
-    if {[llength [array names ::architecture_substitutes -exact $::tcl_platform(machine)]] == 1} {
-        foreach arch $::architecture_substitutes($::tcl_platform(machine)) {
-            if {[regexp "-$arch-" $title]} {
+    if {[llength [array names ::deken::architecture_substitutes -exact $::deken::platform(machine)]] == 1} {
+        foreach arch $::deken::architecture_substitutes($::deken::platform(machine)) {
+            if {[regexp -- "-$arch-" $title]} {
                 return 1
             }
         }
@@ -183,14 +205,14 @@ proc ::dialog_externals_search::architecture_match {title} {
 }
 
 # make a remote HTTP call and parse and display the results
-proc ::dialog_externals_search::search_for {term} {
+proc ::deken::search_for {term} {
     set searchresults [list]
-    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile"]
+    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
     # loop through the resulting XML parsing out entries containing results with a regular expression
     foreach ele $splitCont {
-        if {[regexp {<title>(.*?)</title>(.*?)<link>(.*?)</link>(.*?)<dc:creator>(.*?)</dc:creator>(.*?)<dc:date>(.*?)</dc:date>} $ele -> title junk URL junk creator junk date]} {
+        if {[regexp -- {<title>(.*?)</title>(.*?)<link>(.*?)</link>(.*?)<dc:creator>(.*?)</dc:creator>(.*?)<dc:date>(.*?)</dc:date>} $ele -> title junk URL junk creator junk date]} {
             set result [list $title $URL $creator $date]
             lappend searchresults $result
         }
@@ -207,8 +229,8 @@ if {$::windowingsystem eq "aqua"} {
     set inserthere 4
 }
 $mymenu insert $inserthere separator
-$mymenu insert $inserthere command -label [_ "Find externals"] -command {::dialog_externals_search::open_searchui .externals_searchui}
-# bind all <$::modifier-Key-s> {::dialog_externals_search::open_helpbrowser .helpbrowser2}
+$mymenu insert $inserthere command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
+# bind all <$::modifier-Key-s> {::deken::open_helpbrowser .helpbrowser2}
 
 # http://rosettacode.org/wiki/URL_decoding#Tcl
 proc urldecode {str} {
