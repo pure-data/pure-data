@@ -207,13 +207,17 @@ proc ::deken::architecture_match {title} {
 # make a remote HTTP call and parse and display the results
 proc ::deken::search_for {term} {
     set searchresults [list]
-    set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
+    #set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
+    set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
     # loop through the resulting XML parsing out entries containing results with a regular expression
     foreach ele $splitCont {
-        if {[regexp -- {<title>(.*?)</title>(.*?)<link>(.*?)</link>(.*?)<dc:creator>(.*?)</dc:creator>(.*?)<dc:date>(.*?)</dc:date>} $ele -> title junk URL junk creator junk date]} {
-            set result [list $title $URL $creator $date]
+	set ele [ string trim $ele ]
+	if { "" ne $ele } {
+	    set sele [ split $ele "\t" ]
+	    set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 0 ]]]
+            #set result [list $title $URL $creator $date]
             lappend searchresults $result
         }
     }
