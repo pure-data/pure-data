@@ -145,26 +145,31 @@ proc ::deken::initiate_search {mytoplevel} {
 }
 
 # handle a clicked link
-proc ::deken::clicked_link {mytoplevel URL title} {
-    set destination "$::current_plugin_loadpath/$title"
+proc ::deken::clicked_link {mytoplevel URL filename} {
+    set fullzipfile "$::current_plugin_loadpath/$filename"
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
-    ::deken::download_file $URL $destination
+    ::deken::download_file $URL $fullzipfile
     set PWD [ pwd ]
     cd $::current_plugin_loadpath
-    if { [ catch { exec unzip $destination } stdout ] } {
+    set success 1
+    if { [ catch { exec unzip $fullzipfile } stdout ] } {
         puts $stdout
-        # Open both the destination folder and the zipfile itself
+        set success 0
+        # Open both the fullzipfile folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
         $mytoplevel.results insert end "Unable to extract package automatically.\n" warn
         $mytoplevel.results insert end "Please perform the following steps manually:\n"
-        $mytoplevel.results insert end "1. Unzip $destination.\n"
-        pd_menucommands::menu_openfile $destination
+        $mytoplevel.results insert end "1. Unzip $fullzipfile.\n"
+        pd_menucommands::menu_openfile $fullzipfile
         $mytoplevel.results insert end "2. Copy the contents into $::current_plugin_loadpath.\n\n"
         pd_menucommands::menu_openfile $::current_plugin_loadpath
         # destroy $mytoplevel
     }
     cd $PWD
+    if { $success > 0 } {
+        $mytoplevel.results insert end "Successfully unzipped $filename into $::current_plugin_loadpath.\n\n"
+    }
 }
 
 # download a file to a location
