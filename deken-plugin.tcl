@@ -148,6 +148,8 @@ proc ::deken::initiate_search {mytoplevel} {
 
 # handle a clicked link
 proc ::deken::clicked_link {mytoplevel URL filename} {
+    ## make sure that the destination path exists
+    file mkdir $::deken::installpath
     set fullzipfile "$::deken::installpath/$filename"
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::deken::installpath...\n"
