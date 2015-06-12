@@ -243,10 +243,10 @@ proc ::deken::search_for {term} {
     set splitCont [split $contents "\n"]
     # loop through the resulting XML parsing out entries containing results with a regular expression
     foreach ele $splitCont {
-	set ele [ string trim $ele ]
-	if { "" ne $ele } {
-	    set sele [ split $ele "\t" ]
-	    set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 0 ]]]
+        set ele [ string trim $ele ]
+        if { "" ne $ele } {
+            set sele [ split $ele "\t" ]
+            set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 3 ]]]
             #set result [list $title $URL $creator $date]
             lappend searchresults $result
         }
