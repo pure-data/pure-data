@@ -124,12 +124,14 @@ proc ::deken::initiate_search {mytoplevel} {
         foreach r $reversed {
             foreach {title URL creator date} $r {break}
             # sanity check - is this the same OS
-            if {[regexp -- "$::deken::platform(os)" $title]} {
+            ## JMZ: FIXXME filename should be calculated from URL
+            set filename [ file tail $URL ]
+            if {[regexp -- "$::deken::platform(os)" $filename]} {
                 set tag ch$counter
                 set readable_date [regsub -all {[TZ]} $date { }]
                 $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
                 $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
-                if {[::deken::architecture_match $title]} {
+                if {[::deken::architecture_match $filename]} {
                     $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
                     $mytoplevel.results tag configure $tag -foreground black
                 } else {
@@ -137,7 +139,7 @@ proc ::deken::initiate_search {mytoplevel} {
                     $mytoplevel.results tag configure $tag -foreground gray
                 }
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $title]
+                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
                 incr counter
             }
         }
