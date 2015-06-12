@@ -150,29 +150,39 @@ proc ::deken::initiate_search {mytoplevel} {
 proc ::deken::clicked_link {mytoplevel URL filename} {
     ## make sure that the destination path exists
     file mkdir $::deken::installpath
-    set fullzipfile "$::deken::installpath/$filename"
+    set fullpkgfile "$::deken::installpath/$filename"
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::deken::installpath...\n"
-    ::deken::download_file $URL $fullzipfile
+    ::deken::download_file $URL $fullpkgfile
     set PWD [ pwd ]
     cd $::deken::installpath
     set success 1
-    if { [ catch { exec unzip $fullzipfile } stdout ] } {
+    if { [ string match *.zip $fullpkgfile ] } then {
+        if { [ catch { exec unzip $fullpkgfile } stdout ] } {
         puts $stdout
-        set success 0
-        # Open both the fullzipfile folder and the zipfile itself
-        # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
-        $mytoplevel.results insert end "Unable to extract package automatically.\n" warn
-        $mytoplevel.results insert end "Please perform the following steps manually:\n"
-        $mytoplevel.results insert end "1. Unzip $fullzipfile.\n"
-        pd_menucommands::menu_openfile $fullzipfile
-        $mytoplevel.results insert end "2. Copy the contents into $::deken::installpath.\n\n"
-        pd_menucommands::menu_openfile $::deken::installpath
-        # destroy $mytoplevel
+            set success 0
+        }
+    } elseif  { [ string match *.tar.gz $fullpkgfile ]
+                || [ string match *.tgz $fullpkgfile ]
+              } then {
+        if { [ catch { exec tar xzf $fullpkgfile } stdout ] } {
+            puts $stdout
+            set success 0
+        }
     }
     cd $PWD
     if { $success > 0 } {
         $mytoplevel.results insert end "Successfully unzipped $filename into $::deken::installpath.\n\n"
+    } else {
+        # Open both the fullpkgfile folder and the zipfile itself
+        # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
+        $mytoplevel.results insert end "Unable to extract package automatically.\n" warn
+        $mytoplevel.results insert end "Please perform the following steps manually:\n"
+        $mytoplevel.results insert end "1. Unzip $fullpkgfile.\n"
+        pd_menucommands::menu_openfile $fullpkgfile
+        $mytoplevel.results insert end "2. Copy the contents into $::deken::installpath.\n\n"
+        pd_menucommands::menu_openfile $::deken::installpath
+        # destroy $mytoplevel
     }
 }
 
