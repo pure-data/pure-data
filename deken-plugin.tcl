@@ -23,8 +23,10 @@ namespace eval ::deken:: {
     variable mytoplevelref
     variable platform
     variable architecture_substitutes
+    variable installpath
 }
 
+set ::deken::installpath [ lindex $::sys_staticpath 0 ]
 
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
@@ -122,12 +124,14 @@ proc ::deken::initiate_search {mytoplevel} {
         foreach r $reversed {
             foreach {title URL creator date} $r {break}
             # sanity check - is this the same OS
-            if {[regexp -- "$::deken::platform(os)" $title]} {
+            ## JMZ: FIXXME filename should be calculated from URL
+            set filename [ file tail $URL ]
+            if {[regexp -- "$::deken::platform(os)" $filename]} {
                 set tag ch$counter
                 set readable_date [regsub -all {[TZ]} $date { }]
                 $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
                 $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
-                if {[::deken::architecture_match $title]} {
+                if {[::deken::architecture_match $filename]} {
                     $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
                     $mytoplevel.results tag configure $tag -foreground black
                 } else {
@@ -135,7 +139,7 @@ proc ::deken::initiate_search {mytoplevel} {
                     $mytoplevel.results tag configure $tag -foreground gray
                 }
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $title]
+                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
                 incr counter
             }
         }
@@ -145,26 +149,43 @@ proc ::deken::initiate_search {mytoplevel} {
 }
 
 # handle a clicked link
-proc ::deken::clicked_link {mytoplevel URL title} {
-    set destination "$::current_plugin_loadpath/$title"
+proc ::deken::clicked_link {mytoplevel URL filename} {
+    ## make sure that the destination path exists
+    file mkdir $::deken::installpath
+    set fullpkgfile "$::deken::installpath/$filename"
     $mytoplevel.results delete 1.0 end
-    $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::current_plugin_loadpath...\n"
-    ::deken::download_file $URL $destination
+    $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::deken::installpath...\n"
+    ::deken::download_file $URL $fullpkgfile
     set PWD [ pwd ]
-    cd $::current_plugin_loadpath
-    if { [ catch { exec unzip $destination } stdout ] } {
+    cd $::deken::installpath
+    set success 1
+    if { [ string match *.zip $fullpkgfile ] } then {
+        if { [ catch { exec unzip $fullpkgfile } stdout ] } {
         puts $stdout
-        # Open both the destination folder and the zipfile itself
+            set success 0
+        }
+    } elseif  { [ string match *.tar.gz $fullpkgfile ]
+                || [ string match *.tgz $fullpkgfile ]
+              } then {
+        if { [ catch { exec tar xzf $fullpkgfile } stdout ] } {
+            puts $stdout
+            set success 0
+        }
+    }
+    cd $PWD
+    if { $success > 0 } {
+        $mytoplevel.results insert end "Successfully unzipped $filename into $::deken::installpath.\n\n"
+    } else {
+        # Open both the fullpkgfile folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
         $mytoplevel.results insert end "Unable to extract package automatically.\n" warn
         $mytoplevel.results insert end "Please perform the following steps manually:\n"
-        $mytoplevel.results insert end "1. Unzip $destination.\n"
-        pd_menucommands::menu_openfile $destination
-        $mytoplevel.results insert end "2. Copy the contents into $::current_plugin_loadpath.\n\n"
-        pd_menucommands::menu_openfile $::current_plugin_loadpath
+        $mytoplevel.results insert end "1. Unzip $fullpkgfile.\n"
+        pd_menucommands::menu_openfile $fullpkgfile
+        $mytoplevel.results insert end "2. Copy the contents into $::deken::installpath.\n\n"
+        pd_menucommands::menu_openfile $::deken::installpath
         # destroy $mytoplevel
     }
-    cd $PWD
 }
 
 # download a file to a location
@@ -222,10 +243,10 @@ proc ::deken::search_for {term} {
     set splitCont [split $contents "\n"]
     # loop through the resulting XML parsing out entries containing results with a regular expression
     foreach ele $splitCont {
-	set ele [ string trim $ele ]
-	if { "" ne $ele } {
-	    set sele [ split $ele "\t" ]
-	    set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 0 ]]]
+        set ele [ string trim $ele ]
+        if { "" ne $ele } {
+            set sele [ split $ele "\t" ]
+            set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 3 ]]]
             #set result [list $title $URL $creator $date]
             lappend searchresults $result
         }
