@@ -59,6 +59,11 @@ set ::deken::architecture_substitutes(i586) [list "i386"]
 set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
 set ::deken::architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
 
+proc ::deken::status {msg} {
+    variable mytoplevelref
+    $mytoplevelref.results insert end "$msg\n"
+}
+
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
@@ -112,7 +117,12 @@ proc ::deken::initiate_search {mytoplevel} {
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Searching for externals...\n"
     # make the ajax call
-    set results [search_for [$mytoplevel.searchbit.entry get]]
+    if { [ catch {
+	set results [search_for [$mytoplevel.searchbit.entry get]]
+    } ] } {
+	puts "online?"
+	::deken::status "Unable to perform search. Are you online?"
+    } else {
     # delete all text in the results
     $mytoplevel.results delete 1.0 end
     if {[llength $results] != 0} {
@@ -146,7 +156,7 @@ proc ::deken::initiate_search {mytoplevel} {
     } else {
         $mytoplevel.results insert end "No matching externals found. Try using the full name e.g. 'freeverb'.\n"
     }
-}
+}}
 
 # handle a clicked link
 proc ::deken::clicked_link {mytoplevel URL filename} {
