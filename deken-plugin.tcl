@@ -154,7 +154,7 @@ proc ::deken::initiate_search {mytoplevel} {
                 set tag ch$counter
                 set readable_date [regsub -all {[TZ]} $date { }]
                 $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
-                $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue"
+                $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
                 if {[::deken::architecture_match $filename]} {
                     $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
                     $mytoplevel.results tag configure $tag -foreground black
