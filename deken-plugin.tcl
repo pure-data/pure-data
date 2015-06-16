@@ -25,8 +25,9 @@ namespace eval ::deken:: {
     variable architecture_substitutes
     variable installpath
     variable statustext
+    variable statustimer
 }
-
+set ::deken::statustimer ""
 set ::deken::installpath [ lindex $::sys_staticpath 0 ]
 
 # console message to let them know we're loaded
@@ -64,7 +65,13 @@ proc ::deken::status {msg} {
     #variable mytoplevelref
     #$mytoplevelref.results insert end "$msg\n"
     #$mytoplevelref.status.label -text "$msg"
-    if {"" ne $msg} { set ::deken::statustext "STATUS: $msg" } { set ::deken::statustext "" }
+    after cancel $::deken::statustimer
+    if {"" ne $msg} {
+	set ::deken::statustext "STATUS: $msg"
+	set ::deken::statustimer [after 5000 [list set ::deken::statustext ""]]
+    } {
+	set ::deken::statustext ""
+    }
 }
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
