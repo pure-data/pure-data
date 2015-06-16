@@ -24,6 +24,7 @@ namespace eval ::deken:: {
     variable platform
     variable architecture_substitutes
     variable installpath
+    variable statustext
 }
 
 set ::deken::installpath [ lindex $::sys_staticpath 0 ]
@@ -60,10 +61,11 @@ set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
 set ::deken::architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
 
 proc ::deken::status {msg} {
-    variable mytoplevelref
-    $mytoplevelref.results insert end "$msg\n"
+    #variable mytoplevelref
+    #$mytoplevelref.results insert end "$msg\n"
+    #$mytoplevelref.status.label -text "$msg"
+    if {"" ne $msg} { set ::deken::statustext "STATUS: $msg" } { set ::deken::statustext "" }
 }
-
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
@@ -102,6 +104,11 @@ proc ::deken::create_dialog {mytoplevel} {
     pack $mytoplevel.warning -side top -fill x
     label $mytoplevel.warning.label -text "Only install externals uploaded by people you trust."
     pack $mytoplevel.warning.label -side left -padx 6
+
+    frame $mytoplevel.status
+    pack $mytoplevel.status -side bottom -fill x
+    label $mytoplevel.status.label -textvariable ::deken::statustext
+    pack $mytoplevel.status.label -side left -padx 6
 
     button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
     pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
@@ -247,6 +254,8 @@ proc ::deken::architecture_match {title} {
 # make a remote HTTP call and parse and display the results
 proc ::deken::search_for {term} {
     set searchresults [list]
+    ::deken::status "searching for '$term'"
+
     #set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
     set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
     set contents [http::data $token]
