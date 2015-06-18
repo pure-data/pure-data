@@ -249,6 +249,11 @@ proc ::deken::download_progress {token total current} {
 
 # test for platform match with our current platform
 proc ::deken::architecture_match {title} {
+    # if there are no architecture sections this must be arch-independent
+    if {![regexp -- "\\\((.*?)-(.*?)-(.*?)\\\)" $title]} {
+        return 1;
+    }
+    
     # if the OS doesn't match, return false
     if {![regexp -- "$::deken::platform(os)" $title]} {
         return 0
