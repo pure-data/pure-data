@@ -146,31 +146,43 @@ proc ::deken::initiate_search {mytoplevel} {
         set counter 0
         # build the list UI of results
         foreach r $reversed {
-            foreach {title URL creator date} $r {break}
-            # sanity check - is this the same OS
-            ## JMZ: FIXXME filename should be calculated from URL
-            set filename [ file tail $URL ]
-            if {[regexp -- "$::deken::platform(os)" $filename]} {
-                set tag ch$counter
-                set readable_date [regsub -all {[TZ]} $date { }]
-                $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
-                $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
-                if {[::deken::architecture_match $filename]} {
-                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
-                    $mytoplevel.results tag configure $tag -foreground black
-                } else {
-                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
-                    $mytoplevel.results tag configure $tag -foreground gray
-                }
-                # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
-                incr counter
-            }
+            ::deken::show_result $mytoplevel $counter $r 1
+            incr counter
+        }
+        foreach r $reversed {
+            ::deken::show_result $mytoplevel $counter $r 0
+            incr counter
         }
     } else {
         $mytoplevel.results insert end "No matching externals found. Try using the full name e.g. 'freeverb'.\n"
     }
 }}
+
+# display a single found entry
+proc ::deken::show_result {mytoplevel counter result showmatches} {
+            foreach {title URL creator date} $result {break}
+            # sanity check - is this the same OS
+            ## JMZ: FIXXME filename should be calculated from URL
+            set filename [ file tail $URL ]
+            if {[regexp -- "$::deken::platform(os)" $filename]} {
+                set tag ch$counter
+                set archmatch [::deken::architecture_match $filename]
+                set readable_date [regsub -all {[TZ]} $date { }]
+                if {($archmatch == $showmatches)} {
+                    $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
+                    $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
+                    # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
+                    $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+                }
+                if {($archmatch == 1) && ($showmatches == 1)} {
+                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
+                    $mytoplevel.results tag configure $tag -foreground black
+                } elseif {($archmatch == 0) && ($showmatches == 0)} {
+                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
+                    $mytoplevel.results tag configure $tag -foreground gray
+                }
+            }
+}
 
 # handle a clicked link
 proc ::deken::clicked_link {mytoplevel URL filename} {
