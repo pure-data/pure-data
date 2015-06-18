@@ -164,23 +164,21 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
             # sanity check - is this the same OS
             ## JMZ: FIXXME filename should be calculated from URL
             set filename [ file tail $URL ]
-            if {[regexp -- "$::deken::platform(os)" $filename]} {
-                set tag ch$counter
-                set archmatch [::deken::architecture_match $filename]
-                set readable_date [regsub -all {[TZ]} $date { }]
-                if {($archmatch == $showmatches)} {
-                    $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
-                    $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
-                    # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                    $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
-                }
-                if {($archmatch == 1) && ($showmatches == 1)} {
-                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
-                    $mytoplevel.results tag configure $tag -foreground black
-                } elseif {($archmatch == 0) && ($showmatches == 0)} {
-                    $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
-                    $mytoplevel.results tag configure $tag -foreground gray
-                }
+            set tag ch$counter
+            set archmatch [::deken::architecture_match $filename]
+            set readable_date [regsub -all {[TZ]} $date { }]
+            if {($archmatch == $showmatches)} {
+                $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
+                $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
+                # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
+                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+            }
+            if {($archmatch == 1) && ($showmatches == 1)} {
+                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
+                $mytoplevel.results tag configure $tag -foreground black
+            } elseif {($archmatch == 0) && ($showmatches == 0)} {
+                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
+                $mytoplevel.results tag configure $tag -foreground gray
             }
 }
 
@@ -251,6 +249,11 @@ proc ::deken::download_progress {token total current} {
 
 # test for platform match with our current platform
 proc ::deken::architecture_match {title} {
+    # if the OS doesn't match, return false
+    if {![regexp -- "$::deken::platform(os)" $title]} {
+        return 0
+    }
+    
     # if the word size doesn't match, return false
     if {![regexp -- "-$::deken::platform(bits)\\\)" $title]} {
         return 0
