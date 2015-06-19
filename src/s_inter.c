@@ -1261,6 +1261,7 @@ int sys_startgui(const char *libdir)
         if (sys_guisock < 0) sys_sockerror("accept");
         if (sys_verbose)
             fprintf(stderr, "... connected\n");
+        sys_guibufhead = sys_guibuftail = 0;
     }
     if (!sys_nogui)
     {
