@@ -36,6 +36,7 @@ char pd_compiledate[] = __DATE__;
 void pd_init(void);
 int sys_argparse(int argc, char **argv);
 void sys_findprogdir(char *progname);
+void sys_setsignalhandlers( void);
 int sys_startgui(const char *guipath);
 int sys_rcfile(void);
 int m_mainloop(void);
@@ -298,8 +299,9 @@ int sys_main(int argc, char **argv)
         pd_version, pd_compiletime, pd_compiledate);
     if (sys_version)    /* if we were just asked our version, exit here. */
         return (0);
+    sys_setsignalhandlers();
     if (sys_startgui(sys_libdir->s_name))       /* start the gui */
-        return(1);
+        return (1);
     if (sys_externalschedlib)
         return (sys_run_scheduler(sys_externalschedlibname,
             sys_extraflagsstring));

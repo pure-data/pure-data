@@ -251,6 +251,29 @@ static void sys_huphandler(int n)
     select(1, 0, 0, 0, &timout);
 }
 
+    /* on startup, set various signal handlers */
+void sys_setsignalhandlers( void)
+{
+#if !defined(_WIN32) && !defined(__CYGWIN__)
+    signal(SIGHUP, sys_huphandler);
+    signal(SIGINT, sys_exithandler);
+    signal(SIGQUIT, sys_exithandler);
+    signal(SIGILL, sys_exithandler);
+# ifdef SIGIOT
+    signal(SIGIOT, sys_exithandler);
+# endif
+    signal(SIGFPE, SIG_IGN);
+    /* signal(SIGILL, sys_exithandler);
+    signal(SIGBUS, sys_exithandler);
+    signal(SIGSEGV, sys_exithandler); */
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGALRM, SIG_IGN);
+#if 0  /* GG says: don't use that */
+    signal(SIGSTKFLT, sys_exithandler);
+#endif
+#endif /* NOT _WIN32 && NOT __CYGWIN__ */
+}
+
 void sys_setalarm(int microsec)
 {
     struct itimerval gonzo;
@@ -817,6 +840,8 @@ int sys_pollgui(void)
 
 void sys_init_fdpoll(void)
 {
+    if (sys_fdpoll)
+        return;
     /* create an empty FD poll list */
     sys_fdpoll = (t_fdpoll *)t_getbytes(0);
     sys_nfdpoll = 0;
@@ -863,25 +888,6 @@ int sys_startgui(const char *libdir)
     pid_t childpid;
 #endif /* _WIN32 */
     sys_init_fdpoll();
-    
-#if !defined(_WIN32) && !defined(__CYGWIN__)
-    signal(SIGHUP, sys_huphandler);
-    signal(SIGINT, sys_exithandler);
-    signal(SIGQUIT, sys_exithandler);
-    signal(SIGILL, sys_exithandler);
-# ifdef SIGIOT
-    signal(SIGIOT, sys_exithandler);
-# endif
-    signal(SIGFPE, SIG_IGN);
-    /* signal(SIGILL, sys_exithandler);
-    signal(SIGBUS, sys_exithandler);
-    signal(SIGSEGV, sys_exithandler); */
-    signal(SIGPIPE, SIG_IGN);
-    signal(SIGALRM, SIG_IGN);
-#if 0  /* GG says: don't use that */
-    signal(SIGSTKFLT, sys_exithandler);
-#endif
-#endif /* NOT _WIN32 && NOT __CYGWIN__ */
 
 #ifdef _WIN32
     if (WSAStartup(version, &nobby)) sys_sockerror("WSAstartup");
@@ -940,7 +946,7 @@ int sys_startgui(const char *libdir)
         {
             fprintf(stderr,
                 "localhost not found (inet protocol not installed?)\n");
-            exit(1);
+            return (1);
         }
         memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
 
@@ -952,7 +958,7 @@ int sys_startgui(const char *libdir)
             < 0)
         {
             sys_sockerror("connecting stream socket");
-            exit(1);
+            return (1);
         }
     }
     else    /* default behavior: start up the GUI ourselves. */
@@ -968,16 +974,6 @@ int sys_startgui(const char *libdir)
         /* create a socket */
         xsock = socket(AF_INET, SOCK_STREAM, 0);
         if (xsock < 0) sys_sockerror("socket");
-#if 0
-        intarg = 0;
-        if (setsockopt(xsock, SOL_SOCKET, SO_SNDBUF,
-            &intarg, sizeof(intarg)) < 0)
-                post("setsockopt (SO_RCVBUF) failed\n");
-        intarg = 0;
-        if (setsockopt(xsock, SOL_SOCKET, SO_RCVBUF,
-            &intarg, sizeof(intarg)) < 0)
-                post("setsockopt (SO_RCVBUF) failed\n");
-#endif
         intarg = 1;
         if (setsockopt(xsock, IPPROTO_TCP, TCP_NODELAY,
             &intarg, sizeof(intarg)) < 0)
@@ -1008,7 +1004,7 @@ int sys_startgui(const char *libdir)
                     "Pd needs your machine to be configured with\n");
                 fprintf(stderr,
                   "'networking' turned on (see Pd's html doc for details.)\n");
-                exit(1);
+                return (1);
             }
             portno++;
             server.sin_port = htons((unsigned short)(portno));
@@ -1135,7 +1131,7 @@ int sys_startgui(const char *libdir)
         {
             perror("spawnl");
             fprintf(stderr, "%s: couldn't load TCL\n", wishbuf);
-            exit(1);
+            return (1);
         }
 
 #endif /* NOT _WIN32 */
