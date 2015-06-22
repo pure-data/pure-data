@@ -194,7 +194,7 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     cd $::deken::installpath
     set success 1
     if { [ string match *.zip $fullpkgfile ] } then {
-        if { [ catch { exec unzip $fullpkgfile } stdout ] } {
+        if { [ catch { exec unzip -uo $fullpkgfile } stdout ] } {
         puts $stdout
             set success 0
         }
