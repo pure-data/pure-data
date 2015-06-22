@@ -31,6 +31,7 @@ pd_SOURCES = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c \
     x_arithmetic.c x_connective.c x_interface.c x_midi.c x_misc.c \
     x_time.c x_acoustics.c x_net.c x_text.c x_gui.c x_list.c x_array.c \
     x_scalar.c
+nodist_EXTRA_pd_SOURCES =
 
 pd_includedir = ${includedir}/pd
 pd_include_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h
@@ -92,6 +93,7 @@ endif
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
 pd_LDADD += $(top_builddir)/asio/libasio.la
+nodist_EXTRA_pd_SOURCES += dummy.cxx
 endif
 
 if PORTMIDI
