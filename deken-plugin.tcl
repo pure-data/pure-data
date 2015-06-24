@@ -102,6 +102,36 @@ proc ::deken::status {msg} {
 	set ::deken::statustext ""
     }
 }
+
+proc ::deken::post {msg {tag ""}} {
+    variable mytoplevelref
+    $mytoplevelref.results insert end "$msg\n" $tag
+}
+proc ::deken::clearpost {} {
+    variable mytoplevelref
+    $mytoplevelref.results delete 1.0 end
+}
+proc ::deken::bind_posttag {tag key cmd} {
+    variable mytoplevelref
+    $mytoplevelref.results tag bind $tag $key $cmd
+}
+proc ::deken::highlightable_posttag {tag} {
+    variable mytoplevelref
+    ::deken::bind_posttag $tag <Enter> \
+        "$mytoplevelref.results tag add highlight [ $mytoplevelref.results tag ranges $tag ]"
+    ::deken::bind_posttag $tag <Leave> \
+        "$mytoplevelref.results tag remove highlight [ $mytoplevelref.results tag ranges $tag ]"
+    # make sure that the 'highlight' tag is topmost
+    $mytoplevelref.results tag raise highlight
+}
+proc ::deken::update_searchbutton {mytoplevel} {
+    if { [$mytoplevel.searchbit.entry get] == "" } {
+        $mytoplevel.searchbit.button configure -text [_ "Show all" ]
+    } {
+        $mytoplevel.searchbit.button configure -text [_ "Search" ]
+    }
+}
+
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
@@ -110,8 +140,13 @@ proc ::deken::open_searchui {mytoplevel} {
     } else {
         create_dialog $mytoplevel
         $mytoplevel.results tag configure warn -foreground orange
+        $mytoplevel.results tag configure info -foreground grey
+        $mytoplevel.results tag configure highlight -foreground blue
+        $mytoplevel.results tag configure archmatch -foreground black
+        $mytoplevel.results tag configure noarchmatch -foreground grey
     }
     #search_for "freeverb" $mytoplevel.f.resultstext
+    ::deken::post "To get a list of all available externals, try an empty search." info
 }
 
 # build the externals search dialog window
@@ -134,6 +169,7 @@ proc ::deken::create_dialog {mytoplevel} {
     entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
     pack $mytoplevel.searchbit.entry -side left -padx 6 -fill x -expand true
     bind $mytoplevel.searchbit.entry <Key-Return> "::deken::initiate_search $mytoplevel"
+    bind $mytoplevel.searchbit.entry <KeyRelease> "::deken::update_searchbutton $mytoplevel"
     focus $mytoplevel.searchbit.entry
 
     frame $mytoplevel.warning
@@ -146,7 +182,7 @@ proc ::deken::create_dialog {mytoplevel} {
     label $mytoplevel.status.label -textvariable ::deken::statustext
     pack $mytoplevel.status.label -side left -padx 6
 
-    button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
+    button $mytoplevel.searchbit.button -text [_ "Show all"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
     pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
@@ -157,8 +193,8 @@ proc ::deken::create_dialog {mytoplevel} {
 
 proc ::deken::initiate_search {mytoplevel} {
     # let the user know what we're doing
-    $mytoplevel.results delete 1.0 end
-    $mytoplevel.results insert end "Searching for externals...\n"
+    ::deken::clearpost
+    ::deken::post "Searching for externals..."
     # make the ajax call
     if { [ catch {
 	set results [search_for [$mytoplevel.searchbit.entry get]]
@@ -167,7 +203,7 @@ proc ::deken::initiate_search {mytoplevel} {
 	::deken::status "Unable to perform search. Are you online?"
     } else {
     # delete all text in the results
-    $mytoplevel.results delete 1.0 end
+    ::deken::clearpost
     if {[llength $results] != 0} {
         # sort the results by reverse date - latest upload first
         set sorted [lsort -index 3 $results]
@@ -183,7 +219,7 @@ proc ::deken::initiate_search {mytoplevel} {
             incr counter
         }
     } else {
-        $mytoplevel.results insert end "No matching externals found. Try using the full name e.g. 'freeverb'.\n"
+        ::deken::post "No matching externals found. Try using the full name e.g. 'freeverb'."
     }
 }}
 
@@ -195,19 +231,15 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
             set filename [ file tail $URL ]
             set tag ch$counter
             set archmatch [::deken::architecture_match $filename]
+            set matchtag noarchmatch
+            if { ($archmatch == 1) } { set matchtag archmatch }
             set readable_date [regsub -all {[TZ]} $date { }]
             if {($archmatch == $showmatches)} {
-                $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
-                $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
+                ::deken::post "$title\n\tUploaded by $creator $readable_date\n" [list $tag $matchtag]
+                ::deken::highlightable_posttag $tag
+                ::deken::bind_posttag $tag <Enter> "+::deken::status $URL"
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
-            }
-            if {($archmatch == 1) && ($showmatches == 1)} {
-                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
-                $mytoplevel.results tag configure $tag -foreground black
-            } elseif {($archmatch == 0) && ($showmatches == 0)} {
-                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
-                $mytoplevel.results tag configure $tag -foreground gray
+                ::deken::bind_posttag $tag <l> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
             }
 }
 
@@ -222,8 +254,8 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
         $mytoplevel.results insert end "Cannot download/install libraries!\n" warn
     } {
     set fullpkgfile "$::deken::installpath/$filename"
-    $mytoplevel.results delete 1.0 end
-    $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::deken::installpath...\n"
+    ::deken::clearpost
+    ::deken::post "Commencing downloading of:\n$URL\nInto $::deken::installpath..."
     ::deken::download_file $URL $fullpkgfile
     set PWD [ pwd ]
     cd $::deken::installpath
@@ -243,15 +275,15 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     }
     cd $PWD
     if { $success > 0 } {
-        $mytoplevel.results insert end "Successfully unzipped $filename into $::deken::installpath.\n\n"
+        ::deken::post "Successfully unzipped $filename into $::deken::installpath.\n"
     } else {
         # Open both the fullpkgfile folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
-        $mytoplevel.results insert end "Unable to extract package automatically.\n" warn
-        $mytoplevel.results insert end "Please perform the following steps manually:\n"
-        $mytoplevel.results insert end "1. Unzip $fullpkgfile.\n"
+        ::deken::post "Unable to extract package automatically." warn
+        ::deken::post "Please perform the following steps manually:"
+        ::deken::post "1. Unzip $fullpkgfile."
         pd_menucommands::menu_openfile $fullpkgfile
-        $mytoplevel.results insert end "2. Copy the contents into $::deken::installpath.\n\n"
+        ::deken::post "2. Copy the contents into $::deken::installpath.\n"
         pd_menucommands::menu_openfile $::deken::installpath
         # destroy $mytoplevel
     }
@@ -279,7 +311,7 @@ proc ::deken::download_progress {token total current} {
     if { $total > 0 } {
         variable mytoplevelref
         set computed [expr {round(100 * (1.0 * $current / $total))}]
-        $mytoplevelref.results insert end "= $computed%\n"
+        ::deken::post "= $computed%\n"
     }
 }
 
