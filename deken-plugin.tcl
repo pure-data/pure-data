@@ -104,11 +104,13 @@ proc ::deken::open_searchui {mytoplevel} {
     } else {
         create_dialog $mytoplevel
         $mytoplevel.results tag configure warn -foreground orange
+        $mytoplevel.results tag configure info -foreground grey
         $mytoplevel.results tag configure highlight -foreground blue
         $mytoplevel.results tag configure archmatch -foreground black
         $mytoplevel.results tag configure noarchmatch -foreground grey
     }
     #search_for "freeverb" $mytoplevel.f.resultstext
+    ::deken::post "To get a list of all available externals, try an empty search." info
 }
 
 # build the externals search dialog window
