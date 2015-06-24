@@ -85,7 +85,15 @@ proc ::deken::clearpost {} {
 proc ::deken::bind_posttag {tag key cmd} {
     variable mytoplevelref
     $mytoplevelref.results tag bind $tag $key $cmd
-
+}
+proc ::deken::highlightable_posttag {tag} {
+    variable mytoplevelref
+    ::deken::bind_posttag $tag <Enter> \
+        "$mytoplevelref.results tag add highlight [ $mytoplevelref.results tag ranges $tag ]"
+    ::deken::bind_posttag $tag <Leave> \
+        "$mytoplevelref.results tag remove highlight [ $mytoplevelref.results tag ranges $tag ]"
+    # make sure that the 'highlight' tag is topmost
+    $mytoplevelref.results tag raise highlight
 }
 
 # this function gets called when the menu is clicked
@@ -96,6 +104,9 @@ proc ::deken::open_searchui {mytoplevel} {
     } else {
         create_dialog $mytoplevel
         $mytoplevel.results tag configure warn -foreground orange
+        $mytoplevel.results tag configure highlight -foreground blue
+        $mytoplevel.results tag configure archmatch -foreground black
+        $mytoplevel.results tag configure noarchmatch -foreground grey
     }
     #search_for "freeverb" $mytoplevel.f.resultstext
 }
@@ -181,19 +192,15 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
             set filename [ file tail $URL ]
             set tag ch$counter
             set archmatch [::deken::architecture_match $filename]
+            set matchtag noarchmatch
+            if { ($archmatch == 1) } { set matchtag archmatch }
             set readable_date [regsub -all {[TZ]} $date { }]
             if {($archmatch == $showmatches)} {
-                ::deken::post "$title\n\tUploaded by $creator $readable_date\n" $tag
-                ::deken::bind_posttag $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
+                ::deken::post "$title\n\tUploaded by $creator $readable_date\n" [list $tag $matchtag]
+                ::deken::highlightable_posttag $tag
+                ::deken::bind_posttag $tag <Enter> "+::deken::status $URL"
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
                 ::deken::bind_posttag $tag <l> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
-            }
-            if {($archmatch == 1) && ($showmatches == 1)} {
-                ::deken::bind_posttag $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
-                $mytoplevel.results tag configure $tag -foreground black
-            } elseif {($archmatch == 0) && ($showmatches == 0)} {
-                ::deken::bind_posttag $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
-                $mytoplevel.results tag configure $tag -foreground gray
             }
 }
 
