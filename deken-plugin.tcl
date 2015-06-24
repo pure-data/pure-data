@@ -239,7 +239,7 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
                 ::deken::highlightable_posttag $tag
                 ::deken::bind_posttag $tag <Enter> "+::deken::status $URL"
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                ::deken::bind_posttag $tag <l> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+                ::deken::bind_posttag $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
             }
 }
 
