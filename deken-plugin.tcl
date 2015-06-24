@@ -28,10 +28,39 @@ namespace eval ::deken:: {
     variable statustimer
 }
 set ::deken::statustimer ""
-set ::deken::installpath [ lindex $::sys_staticpath 0 ]
+
+proc ::deken::get_writable_dir {paths} {
+    set fs [file separator]
+    set access [list RDWR CREAT EXCL TRUNC]
+    foreach p $paths {
+        if { [ catch { file mkdir $p } ] } {}
+        for {set i 0} {True} {incr i} {
+            set tmpfile "${p}${fs}dekentmp.${i}"
+            if {![file exists $tmpfile]} {
+                break
+            }
+        }
+        # try creating tmpfile
+        if {![catch {open $tmpfile $access} channel]} {
+            close $channel
+            file delete $tmpfile
+            return $p
+        }
+    }
+    return
+}
+
+
+set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ]
+#pdwindow::post "installpath: $::deken::installpath\n"
 
 # console message to let them know we're loaded
 pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
+if { "$::deken::installpath" == "" } {
+    ::pdwindow::error "deken: No writeable directory found in:\n"
+    foreach p $::sys_staticpath { ::pdwindow::error "\t- $p\n" }
+    ::pdwindow::error "deken: Will not be able to download/install libraries\n"
+}
 
 set ::deken::platform(os) $::tcl_platform(os)
 set ::deken::platform(machine) $::tcl_platform(machine)
@@ -185,7 +214,13 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
 # handle a clicked link
 proc ::deken::clicked_link {mytoplevel URL filename} {
     ## make sure that the destination path exists
-    file mkdir $::deken::installpath
+    if { "$::deken::installpath" == "" } { set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ] }
+    if { "$::deken::installpath" == "" } {
+        $mytoplevel.results delete 1.0 end
+        $mytoplevel.results insert end "No writeable directory found in:\n" warn
+        foreach p $::sys_staticpath { $mytoplevel.results insert end "\t- $p\n" warn }
+        $mytoplevel.results insert end "Cannot download/install libraries!\n" warn
+    } {
     set fullpkgfile "$::deken::installpath/$filename"
     $mytoplevel.results delete 1.0 end
     $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::deken::installpath...\n"
@@ -219,6 +254,7 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
         $mytoplevel.results insert end "2. Copy the contents into $::deken::installpath.\n\n"
         pd_menucommands::menu_openfile $::deken::installpath
         # destroy $mytoplevel
+    }
     }
 }
 
