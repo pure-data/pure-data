@@ -95,6 +95,13 @@ proc ::deken::highlightable_posttag {tag} {
     # make sure that the 'highlight' tag is topmost
     $mytoplevelref.results tag raise highlight
 }
+proc ::deken::update_searchbutton {mytoplevel} {
+    if { [$mytoplevel.searchbit.entry get] == "" } {
+        $mytoplevel.searchbit.button configure -text [_ "Show all" ]
+    } {
+        $mytoplevel.searchbit.button configure -text [_ "Search" ]
+    }
+}
 
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
@@ -133,6 +140,7 @@ proc ::deken::create_dialog {mytoplevel} {
     entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
     pack $mytoplevel.searchbit.entry -side left -padx 6 -fill x -expand true
     bind $mytoplevel.searchbit.entry <Key-Return> "::deken::initiate_search $mytoplevel"
+    bind $mytoplevel.searchbit.entry <KeyRelease> "::deken::update_searchbutton $mytoplevel"
     focus $mytoplevel.searchbit.entry
 
     frame $mytoplevel.warning
@@ -145,7 +153,7 @@ proc ::deken::create_dialog {mytoplevel} {
     label $mytoplevel.status.label -textvariable ::deken::statustext
     pack $mytoplevel.status.label -side left -padx 6
 
-    button $mytoplevel.searchbit.button -text [_ "Search"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
+    button $mytoplevel.searchbit.button -text [_ "Show all"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
     pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
