@@ -73,6 +73,19 @@ proc ::deken::status {msg} {
 	set ::deken::statustext ""
     }
 }
+
+proc ::deken::post {msg {tag ""}} {
+    variable mytoplevelref
+    $mytoplevelref.results insert end "$msg\n" $tag
+}
+proc ::deken::clearpost {} {
+    variable mytoplevelref
+    $mytoplevelref.results delete 1.0 end
+}
+proc ::deken::bindtag {} {
+
+}
+
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
@@ -128,8 +141,8 @@ proc ::deken::create_dialog {mytoplevel} {
 
 proc ::deken::initiate_search {mytoplevel} {
     # let the user know what we're doing
-    $mytoplevel.results delete 1.0 end
-    $mytoplevel.results insert end "Searching for externals...\n"
+    ::deken::clearpost
+    ::deken::post "Searching for externals..."
     # make the ajax call
     if { [ catch {
 	set results [search_for [$mytoplevel.searchbit.entry get]]
@@ -138,7 +151,7 @@ proc ::deken::initiate_search {mytoplevel} {
 	::deken::status "Unable to perform search. Are you online?"
     } else {
     # delete all text in the results
-    $mytoplevel.results delete 1.0 end
+    ::deken::clearpost
     if {[llength $results] != 0} {
         # sort the results by reverse date - latest upload first
         set sorted [lsort -index 3 $results]
@@ -154,7 +167,7 @@ proc ::deken::initiate_search {mytoplevel} {
             incr counter
         }
     } else {
-        $mytoplevel.results insert end "No matching externals found. Try using the full name e.g. 'freeverb'.\n"
+        ::deken::post "No matching externals found. Try using the full name e.g. 'freeverb'."
     }
 }}
 
@@ -168,7 +181,7 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
             set archmatch [::deken::architecture_match $filename]
             set readable_date [regsub -all {[TZ]} $date { }]
             if {($archmatch == $showmatches)} {
-                $mytoplevel.results insert end "$title\n\tUploaded by $creator $readable_date\n\n" $tag
+                ::deken::post "$title\n\tUploaded by $creator $readable_date\n" $tag
                 $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
                 $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
@@ -187,8 +200,8 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     ## make sure that the destination path exists
     file mkdir $::deken::installpath
     set fullpkgfile "$::deken::installpath/$filename"
-    $mytoplevel.results delete 1.0 end
-    $mytoplevel.results insert end "Commencing downloading of:\n$URL\nInto $::deken::installpath...\n"
+    ::deken::clearpost
+    ::deken::post "Commencing downloading of:\n$URL\nInto $::deken::installpath..."
     ::deken::download_file $URL $fullpkgfile
     set PWD [ pwd ]
     cd $::deken::installpath
@@ -208,15 +221,15 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     }
     cd $PWD
     if { $success > 0 } {
-        $mytoplevel.results insert end "Successfully unzipped $filename into $::deken::installpath.\n\n"
+        ::deken::post "Successfully unzipped $filename into $::deken::installpath.\n"
     } else {
         # Open both the fullpkgfile folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
-        $mytoplevel.results insert end "Unable to extract package automatically.\n" warn
-        $mytoplevel.results insert end "Please perform the following steps manually:\n"
-        $mytoplevel.results insert end "1. Unzip $fullpkgfile.\n"
+        ::deken::post "Unable to extract package automatically." warn
+        ::deken::post "Please perform the following steps manually:"
+        ::deken::post "1. Unzip $fullpkgfile."
         pd_menucommands::menu_openfile $fullpkgfile
-        $mytoplevel.results insert end "2. Copy the contents into $::deken::installpath.\n\n"
+        ::deken::post "2. Copy the contents into $::deken::installpath.\n"
         pd_menucommands::menu_openfile $::deken::installpath
         # destroy $mytoplevel
     }
@@ -243,7 +256,7 @@ proc ::deken::download_progress {token total current} {
     if { $total > 0 } {
         variable mytoplevelref
         set computed [expr {round(100 * (1.0 * $current / $total))}]
-        $mytoplevelref.results insert end "= $computed%\n"
+        ::deken::post "= $computed%\n"
     }
 }
 
