@@ -82,7 +82,9 @@ proc ::deken::clearpost {} {
     variable mytoplevelref
     $mytoplevelref.results delete 1.0 end
 }
-proc ::deken::bindtag {} {
+proc ::deken::bind_posttag {tag key cmd} {
+    variable mytoplevelref
+    $mytoplevelref.results tag bind $tag $key $cmd
 
 }
 
@@ -182,15 +184,15 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
             set readable_date [regsub -all {[TZ]} $date { }]
             if {($archmatch == $showmatches)} {
                 ::deken::post "$title\n\tUploaded by $creator $readable_date\n" $tag
-                $mytoplevel.results tag bind $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
+                ::deken::bind_posttag $tag <Enter> "$mytoplevel.results tag configure $tag -foreground blue; ::deken::status $URL"
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                $mytoplevel.results tag bind $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+                ::deken::bind_posttag $tag <l> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
             }
             if {($archmatch == 1) && ($showmatches == 1)} {
-                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
+                ::deken::bind_posttag $tag <Leave> "$mytoplevel.results tag configure $tag -foreground black"
                 $mytoplevel.results tag configure $tag -foreground black
             } elseif {($archmatch == 0) && ($showmatches == 0)} {
-                $mytoplevel.results tag bind $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
+                ::deken::bind_posttag $tag <Leave> "$mytoplevel.results tag configure $tag -foreground gray"
                 $mytoplevel.results tag configure $tag -foreground gray
             }
 }
