@@ -52,10 +52,10 @@ proc ::deken::get_writable_dir {paths} {
 
 
 set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ]
-#pdwindow::post "installpath: $::deken::installpath\n"
+#::pdwindow::post "installpath: $::deken::installpath\n"
 
 # console message to let them know we're loaded
-pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
+::pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
 if { "$::deken::installpath" == "" } {
     ::pdwindow::error "deken: No writeable directory found in:\n"
     foreach p $::sys_staticpath { ::pdwindow::error "\t- $p\n" }
@@ -79,7 +79,7 @@ if { "Windows" eq "$::deken::platform(os)" } {
     #if { "amd64" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "x86_64" }
 }
 
-pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
+::pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
 
 # architectures that can be substituted for eachother
 array set ::deken::architecture_substitutes {}
@@ -248,10 +248,10 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     ## make sure that the destination path exists
     if { "$::deken::installpath" == "" } { set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ] }
     if { "$::deken::installpath" == "" } {
-        $mytoplevel.results delete 1.0 end
-        $mytoplevel.results insert end "No writeable directory found in:\n" warn
-        foreach p $::sys_staticpath { $mytoplevel.results insert end "\t- $p\n" warn }
-        $mytoplevel.results insert end "Cannot download/install libraries!\n" warn
+	::deken::clearpost
+	::deken::post "No writeable directory found in:" warn
+        foreach p $::sys_staticpath { ::deken::post "\t- $p\n" warn }
+        ::deken::post "Cannot download/install libraries!\n" warn
     } {
     set fullpkgfile "$::deken::installpath/$filename"
     ::deken::clearpost
@@ -311,7 +311,7 @@ proc ::deken::download_progress {token total current} {
     if { $total > 0 } {
         variable mytoplevelref
         set computed [expr {round(100 * (1.0 * $current / $total))}]
-        ::deken::post "= $computed%\n"
+        ::deken::post "= $computed%"
     }
 }
 
