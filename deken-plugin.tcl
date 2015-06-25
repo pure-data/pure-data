@@ -227,7 +227,6 @@ proc ::deken::initiate_search {mytoplevel} {
 proc ::deken::show_result {mytoplevel counter result showmatches} {
             foreach {title URL creator date} $result {break}
             # sanity check - is this the same OS
-            ## JMZ: FIXXME filename should be calculated from URL
             set filename [ file tail $URL ]
             set tag ch$counter
             set archmatch [::deken::architecture_match $filename]
