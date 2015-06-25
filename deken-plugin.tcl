@@ -145,7 +145,6 @@ proc ::deken::open_searchui {mytoplevel} {
         $mytoplevel.results tag configure archmatch -foreground black
         $mytoplevel.results tag configure noarchmatch -foreground grey
     }
-    #search_for "freeverb" $mytoplevel.f.resultstext
     ::deken::post "To get a list of all available externals, try an empty search." info
 }
 
