@@ -138,7 +138,7 @@ proc ::deken::open_searchui {mytoplevel} {
         wm deiconify $mytoplevel
         raise $mytoplevel
     } else {
-        create_dialog $mytoplevel
+        ::deken::create_dialog $mytoplevel
         $mytoplevel.results tag configure warn -foreground orange
         $mytoplevel.results tag configure info -foreground grey
         $mytoplevel.results tag configure highlight -foreground blue
@@ -196,7 +196,7 @@ proc ::deken::initiate_search {mytoplevel} {
     ::deken::post "Searching for externals..."
     # make the ajax call
     if { [ catch {
-	set results [search_for [$mytoplevel.searchbit.entry get]]
+	set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
     } ] } {
 	puts "online?"
 	::deken::status "Unable to perform search. Are you online?"
