@@ -29,6 +29,8 @@ namespace eval ::deken:: {
     variable backends
     namespace export register
 }
+namespace eval ::deken::search:: { }
+
 set ::deken::statustimer ""
 
 set ::deken::backends [list]
@@ -388,7 +390,7 @@ proc urldecode {str} {
 # ####################################################################
 
 ## searching puredata.info
-proc ::deken::search_puredatainfo {term} {
+proc ::deken::search::puredata.info {term} {
     set searchresults [list]
 
     set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
@@ -407,4 +409,4 @@ proc ::deken::search_puredatainfo {term} {
     http::cleanup $token
     return $searchresults
 }
-::deken::register ::deken::search_puredatainfo
+::deken::register ::deken::search::puredata.info
