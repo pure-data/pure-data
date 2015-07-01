@@ -388,6 +388,40 @@ proc urldecode {str} {
 # search backends
 # ####################################################################
 
+## API draft
+
+# each backend is implemented via a single proc
+## that takes a single argument "term", the term to search fo
+## an empty term indicates "search for all"
+# the backend then returns a list of results
+## each result is a list of the following elements:
+##   <title> <cmd> <match> <comment> <status>
+## title: the primary name to display
+##        (the user will select the element by this name)
+##        e.g. "frobscottle-1.10 (Linux/amd64)"
+## cmd  : a command that will install the selected library
+##        e.g. "[list ::deken::clicked_link http://bfg.org/frobscottle-1.10.zip frobscottle-1.10.zip]"
+## match: an integer indicating whether this entry is actually usable
+##        on this host (1) or not (0)
+## comment: secondary line to display
+##        e.g. "uploaded by the BFG in 1982"
+## status: line to display in the status-line
+##        e.g. "http://bfg.org/frobscottle-1.10.zip"
+# note on sorting:
+## the results ought to be sorted with most up-to-date first
+##  (filtering based on architecture-matches should be ignored when sorting!)
+# note on helper-functions:
+## you can put whatever you like into <cmd>, even your own proc
+
+
+# registration
+## to register a new search function, call `::deken::register $myfun`
+
+# namespace
+## you are welcome to use the ::deken::search:: namespace
+
+
+
 ## searching puredata.info
 proc ::deken::search::puredata.info {term} {
     set searchresults [list]
