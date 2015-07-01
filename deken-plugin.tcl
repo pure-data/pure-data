@@ -391,11 +391,10 @@ proc urldecode {str} {
 proc ::deken::search_puredatainfo {term} {
     set searchresults [list]
 
-    #set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
     set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
-    # loop through the resulting XML parsing out entries containing results with a regular expression
+    # loop through the resulting tab-delimited table
     foreach ele $splitCont {
         set ele [ string trim $ele ]
         if { "" ne $ele } {
