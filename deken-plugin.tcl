@@ -352,6 +352,8 @@ proc ::deken::architecture_match {title} {
 }
 
 proc ::deken::search_for {term} {
+    ::deken::status "searching for '$term'"
+
     set result [list]
     foreach searcher $::deken::backends {
 	set res [ $searcher $term ]
@@ -388,7 +390,6 @@ proc urldecode {str} {
 ## searching puredata.info
 proc ::deken::search_puredatainfo {term} {
     set searchresults [list]
-    ::deken::status "searching for '$term'"
 
     #set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
     set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
