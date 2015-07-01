@@ -26,8 +26,15 @@ namespace eval ::deken:: {
     variable installpath
     variable statustext
     variable statustimer
+    variable backends
+    namespace export register
 }
 set ::deken::statustimer ""
+
+set ::deken::backends [list]
+proc ::deken::register {fun} {
+    lappend ::deken::backends $fun
+}
 
 proc ::deken::get_writable_dir {paths} {
     set fs [file separator]
@@ -344,27 +351,13 @@ proc ::deken::architecture_match {title} {
     return 0
 }
 
-# make a remote HTTP call and parse and display the results
 proc ::deken::search_for {term} {
-    set searchresults [list]
-    ::deken::status "searching for '$term'"
-
-    #set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
-    set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
-    set contents [http::data $token]
-    set splitCont [split $contents "\n"]
-    # loop through the resulting XML parsing out entries containing results with a regular expression
-    foreach ele $splitCont {
-        set ele [ string trim $ele ]
-        if { "" ne $ele } {
-            set sele [ split $ele "\t" ]
-            set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 3 ]]]
-            #set result [list $title $URL $creator $date]
-            lappend searchresults $result
-        }
+    set result [list]
+    foreach searcher $::deken::backends {
+	set res [ $searcher $term ]
+	lappend result {*}$res
     }
-    http::cleanup $token
-    return $searchresults
+    return $result
 }
 
 # create an entry for our search in the "help" menu
@@ -386,3 +379,32 @@ proc urldecode {str} {
     set modStr [regsub -all $seqRE [string map $specialMap $str] $replacement]
     return [encoding convertfrom utf-8 [subst -nobackslash -novariable $modStr]]
 }
+
+
+# ####################################################################
+# search backends
+# ####################################################################
+
+## searching puredata.info
+proc ::deken::search_puredatainfo {term} {
+    set searchresults [list]
+    ::deken::status "searching for '$term'"
+
+    #set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
+    set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
+    set contents [http::data $token]
+    set splitCont [split $contents "\n"]
+    # loop through the resulting XML parsing out entries containing results with a regular expression
+    foreach ele $splitCont {
+        set ele [ string trim $ele ]
+        if { "" ne $ele } {
+            set sele [ split $ele "\t" ]
+            set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 3 ]]]
+            #set result [list $title $URL $creator $date]
+            lappend searchresults $result
+        }
+    }
+    http::cleanup $token
+    return $searchresults
+}
+::deken::register ::deken::search_puredatainfo
