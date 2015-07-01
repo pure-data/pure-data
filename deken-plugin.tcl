@@ -148,6 +148,7 @@ proc ::deken::open_searchui {mytoplevel} {
         raise $mytoplevel
     } else {
         ::deken::create_dialog $mytoplevel
+        $mytoplevel.results tag configure error -foreground red
         $mytoplevel.results tag configure warn -foreground orange
         $mytoplevel.results tag configure info -foreground grey
         $mytoplevel.results tag configure highlight -foreground blue
