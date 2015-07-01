@@ -237,6 +237,7 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
     #if { [ ($match) ] } { set matchtag archmatch } { set matchtag noarchmatch }
             set matchtag [expr $match?"archmatch":"noarchmatch" ]
             if {($match == $showmatches)} {
+                set comment [string map {"\n" "\n\t"} $comment]
                 ::deken::post "$title\n\t$comment\n" [list $tag $matchtag]
                 ::deken::highlightable_posttag $tag
                 ::deken::bind_posttag $tag <Enter> "+::deken::status $status"
