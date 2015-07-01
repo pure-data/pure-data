@@ -105,10 +105,10 @@ proc ::deken::status {msg} {
     #$mytoplevelref.status.label -text "$msg"
     after cancel $::deken::statustimer
     if {"" ne $msg} {
-	set ::deken::statustext "STATUS: $msg"
-	set ::deken::statustimer [after 5000 [list set ::deken::statustext ""]]
+        set ::deken::statustext "STATUS: $msg"
+        set ::deken::statustimer [after 5000 [list set ::deken::statustext ""]]
     } {
-	set ::deken::statustext ""
+        set ::deken::statustext ""
     }
 }
 
@@ -205,10 +205,10 @@ proc ::deken::initiate_search {mytoplevel} {
     ::deken::post "Searching for externals..."
     # make the ajax call
     if { [ catch {
-	set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
+        set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
     } ] } {
-	puts "online?"
-	::deken::status "Unable to perform search. Are you online?"
+        puts "online?"
+        ::deken::status "Unable to perform search. Are you online?"
     } else {
     # delete all text in the results
     ::deken::clearpost
@@ -255,8 +255,8 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     ## make sure that the destination path exists
     if { "$::deken::installpath" == "" } { set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ] }
     if { "$::deken::installpath" == "" } {
-	::deken::clearpost
-	::deken::post "No writeable directory found in:" warn
+        ::deken::clearpost
+        ::deken::post "No writeable directory found in:" warn
         foreach p $::sys_staticpath { ::deken::post "\t- $p\n" warn }
         ::deken::post "Cannot download/install libraries!\n" warn
     } {
@@ -269,7 +269,7 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     set success 1
     if { [ string match *.zip $fullpkgfile ] } then {
         if { [ catch { exec unzip -uo $fullpkgfile } stdout ] } {
-        puts $stdout
+            puts $stdout
             set success 0
         }
     } elseif  { [ string match *.tar.gz $fullpkgfile ]
@@ -292,7 +292,6 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
         pd_menucommands::menu_openfile $fullpkgfile
         ::deken::post "2. Copy the contents into $::deken::installpath.\n"
         pd_menucommands::menu_openfile $::deken::installpath
-        # destroy $mytoplevel
     }
     }
 }
@@ -358,8 +357,8 @@ proc ::deken::search_for {term} {
 
     set result [list]
     foreach searcher $::deken::backends {
-	set res [ $searcher $term ]
-	lappend result {*}$res
+        set res [ $searcher $term ]
+        lappend result {*}$res
     }
     return $result
 }
