@@ -213,16 +213,13 @@ proc ::deken::initiate_search {mytoplevel} {
     # delete all text in the results
     ::deken::clearpost
     if {[llength $results] != 0} {
-        # sort the results by reverse date - latest upload first
-        set sorted [lsort -index 3 $results]
-        for {set i [llength $sorted]} {[incr i -1] >= 0} {} {lappend reversed [lindex $sorted $i]}
         set counter 0
         # build the list UI of results
-        foreach r $reversed {
+        foreach r $results {
             ::deken::show_result $mytoplevel $counter $r 1
             incr counter
         }
-        foreach r $reversed {
+        foreach r $results {
             ::deken::show_result $mytoplevel $counter $r 0
             incr counter
         }
@@ -233,25 +230,23 @@ proc ::deken::initiate_search {mytoplevel} {
 
 # display a single found entry
 proc ::deken::show_result {mytoplevel counter result showmatches} {
-            foreach {title URL creator date} $result {break}
-            # sanity check - is this the same OS
-            set filename [ file tail $URL ]
+            foreach {title cmd match comment status} $result {break}
+
             set tag ch$counter
-            set archmatch [::deken::architecture_match $filename]
-            set matchtag noarchmatch
-            if { ($archmatch == 1) } { set matchtag archmatch }
-            set readable_date [regsub -all {[TZ]} $date { }]
-            if {($archmatch == $showmatches)} {
-                ::deken::post "$title\n\tUploaded by $creator $readable_date\n" [list $tag $matchtag]
+    #if { [ ($match) ] } { set matchtag archmatch } { set matchtag noarchmatch }
+            set matchtag [expr $match?"archmatch":"noarchmatch" ]
+            if {($match == $showmatches)} {
+                ::deken::post "$title\n\t$comment\n" [list $tag $matchtag]
                 ::deken::highlightable_posttag $tag
-                ::deken::bind_posttag $tag <Enter> "+::deken::status $URL"
+                ::deken::bind_posttag $tag <Enter> "+::deken::status $status"
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                ::deken::bind_posttag $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+                #::deken::bind_posttag $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+                ::deken::bind_posttag $tag <1> "$cmd"
             }
 }
 
 # handle a clicked link
-proc ::deken::clicked_link {mytoplevel URL filename} {
+proc ::deken::clicked_link {URL filename} {
     ## make sure that the destination path exists
     if { "$::deken::installpath" == "" } { set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ] }
     if { "$::deken::installpath" == "" } {
@@ -434,12 +429,23 @@ proc ::deken::search::puredata.info {term} {
         set ele [ string trim $ele ]
         if { "" ne $ele } {
             set sele [ split $ele "\t" ]
-            set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 3 ]]]
-            #set result [list $title $URL $creator $date]
-            lappend searchresults $result
+
+            set name  [ string trim [ lindex $sele 0 ]]
+            set URL   [ string trim [ lindex $sele 1 ]]
+            set creator [ string trim [ lindex $sele 2 ]]
+            set date    [regsub -all {[TZ]} [ string trim [ lindex $sele 3 ] ] { }]
+            set decURL [urldecode $URL]
+            set filename [ file tail $URL ]
+            set cmd [list ::deken::clicked_link $decURL $filename]
+            set match [::deken::architecture_match $filename]
+
+            set comment "Uploaded by $creator @ $date"
+            set status $URL
+            set res [list $name $cmd $match $comment $status $filename]
+            lappend searchresults $res
         }
     }
     http::cleanup $token
-    return $searchresults
+    return [lsort -dictionary -decreasing -index 5 $searchresults ]
 }
 ::deken::register ::deken::search::puredata.info
