@@ -26,8 +26,17 @@ namespace eval ::deken:: {
     variable installpath
     variable statustext
     variable statustimer
+    variable backends
+    namespace export register
 }
+namespace eval ::deken::search:: { }
+
 set ::deken::statustimer ""
+
+set ::deken::backends [list]
+proc ::deken::register {fun} {
+    lappend ::deken::backends $fun
+}
 
 proc ::deken::get_writable_dir {paths} {
     set fs [file separator]
@@ -96,10 +105,10 @@ proc ::deken::status {msg} {
     #$mytoplevelref.status.label -text "$msg"
     after cancel $::deken::statustimer
     if {"" ne $msg} {
-	set ::deken::statustext "STATUS: $msg"
-	set ::deken::statustimer [after 5000 [list set ::deken::statustext ""]]
+        set ::deken::statustext "STATUS: $msg"
+        set ::deken::statustimer [after 5000 [list set ::deken::statustext ""]]
     } {
-	set ::deken::statustext ""
+        set ::deken::statustext ""
     }
 }
 
@@ -138,14 +147,14 @@ proc ::deken::open_searchui {mytoplevel} {
         wm deiconify $mytoplevel
         raise $mytoplevel
     } else {
-        create_dialog $mytoplevel
+        ::deken::create_dialog $mytoplevel
+        $mytoplevel.results tag configure error -foreground red
         $mytoplevel.results tag configure warn -foreground orange
         $mytoplevel.results tag configure info -foreground grey
         $mytoplevel.results tag configure highlight -foreground blue
         $mytoplevel.results tag configure archmatch -foreground black
         $mytoplevel.results tag configure noarchmatch -foreground grey
     }
-    #search_for "freeverb" $mytoplevel.f.resultstext
     ::deken::post "To get a list of all available externals, try an empty search." info
 }
 
@@ -197,24 +206,21 @@ proc ::deken::initiate_search {mytoplevel} {
     ::deken::post "Searching for externals..."
     # make the ajax call
     if { [ catch {
-	set results [search_for [$mytoplevel.searchbit.entry get]]
+        set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
     } ] } {
-	puts "online?"
-	::deken::status "Unable to perform search. Are you online?"
+        puts "online?"
+        ::deken::status "Unable to perform search. Are you online?"
     } else {
     # delete all text in the results
     ::deken::clearpost
     if {[llength $results] != 0} {
-        # sort the results by reverse date - latest upload first
-        set sorted [lsort -index 3 $results]
-        for {set i [llength $sorted]} {[incr i -1] >= 0} {} {lappend reversed [lindex $sorted $i]}
         set counter 0
         # build the list UI of results
-        foreach r $reversed {
+        foreach r $results {
             ::deken::show_result $mytoplevel $counter $r 1
             incr counter
         }
-        foreach r $reversed {
+        foreach r $results {
             ::deken::show_result $mytoplevel $counter $r 0
             incr counter
         }
@@ -225,31 +231,29 @@ proc ::deken::initiate_search {mytoplevel} {
 
 # display a single found entry
 proc ::deken::show_result {mytoplevel counter result showmatches} {
-            foreach {title URL creator date} $result {break}
-            # sanity check - is this the same OS
-            ## JMZ: FIXXME filename should be calculated from URL
-            set filename [ file tail $URL ]
+            foreach {title cmd match comment status} $result {break}
+
             set tag ch$counter
-            set archmatch [::deken::architecture_match $filename]
-            set matchtag noarchmatch
-            if { ($archmatch == 1) } { set matchtag archmatch }
-            set readable_date [regsub -all {[TZ]} $date { }]
-            if {($archmatch == $showmatches)} {
-                ::deken::post "$title\n\tUploaded by $creator $readable_date\n" [list $tag $matchtag]
+    #if { [ ($match) ] } { set matchtag archmatch } { set matchtag noarchmatch }
+            set matchtag [expr $match?"archmatch":"noarchmatch" ]
+            if {($match == $showmatches)} {
+                set comment [string map {"\n" "\n\t"} $comment]
+                ::deken::post "$title\n\t$comment\n" [list $tag $matchtag]
                 ::deken::highlightable_posttag $tag
-                ::deken::bind_posttag $tag <Enter> "+::deken::status $URL"
+                ::deken::bind_posttag $tag <Enter> "+::deken::status $status"
                 # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                ::deken::bind_posttag $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+                #::deken::bind_posttag $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
+                ::deken::bind_posttag $tag <1> "$cmd"
             }
 }
 
 # handle a clicked link
-proc ::deken::clicked_link {mytoplevel URL filename} {
+proc ::deken::clicked_link {URL filename} {
     ## make sure that the destination path exists
     if { "$::deken::installpath" == "" } { set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ] }
     if { "$::deken::installpath" == "" } {
-	::deken::clearpost
-	::deken::post "No writeable directory found in:" warn
+        ::deken::clearpost
+        ::deken::post "No writeable directory found in:" warn
         foreach p $::sys_staticpath { ::deken::post "\t- $p\n" warn }
         ::deken::post "Cannot download/install libraries!\n" warn
     } {
@@ -262,7 +266,7 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
     set success 1
     if { [ string match *.zip $fullpkgfile ] } then {
         if { [ catch { exec unzip -uo $fullpkgfile } stdout ] } {
-        puts $stdout
+            puts $stdout
             set success 0
         }
     } elseif  { [ string match *.tar.gz $fullpkgfile ]
@@ -285,7 +289,6 @@ proc ::deken::clicked_link {mytoplevel URL filename} {
         pd_menucommands::menu_openfile $fullpkgfile
         ::deken::post "2. Copy the contents into $::deken::installpath.\n"
         pd_menucommands::menu_openfile $::deken::installpath
-        # destroy $mytoplevel
     }
     }
 }
@@ -346,27 +349,15 @@ proc ::deken::architecture_match {title} {
     return 0
 }
 
-# make a remote HTTP call and parse and display the results
 proc ::deken::search_for {term} {
-    set searchresults [list]
     ::deken::status "searching for '$term'"
 
-    #set token [http::geturl "http://puredata.info/search_rss?SearchableText=$term+externals.zip&portal_type%3Alist=IAEMFile&portal_type%3Alist=PSCfile"]
-    set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
-    set contents [http::data $token]
-    set splitCont [split $contents "\n"]
-    # loop through the resulting XML parsing out entries containing results with a regular expression
-    foreach ele $splitCont {
-        set ele [ string trim $ele ]
-        if { "" ne $ele } {
-            set sele [ split $ele "\t" ]
-            set result [list [ string trim [ lindex $sele 0 ]] [ string trim [ lindex $sele 1 ]] [ string trim [ lindex $sele 2 ]] [ string trim [ lindex $sele 3 ]]]
-            #set result [list $title $URL $creator $date]
-            lappend searchresults $result
-        }
+    set result [list]
+    foreach searcher $::deken::backends {
+        set res [ $searcher $term ]
+        lappend result {*}$res
     }
-    http::cleanup $token
-    return $searchresults
+    return $result
 }
 
 # create an entry for our search in the "help" menu
@@ -387,4 +378,165 @@ proc urldecode {str} {
     set replacement {[format "%c" [scan "\1" "%2x"]]}
     set modStr [regsub -all $seqRE [string map $specialMap $str] $replacement]
     return [encoding convertfrom utf-8 [subst -nobackslash -novariable $modStr]]
+}
+
+
+# ####################################################################
+# search backends
+# ####################################################################
+
+## API draft
+
+# each backend is implemented via a single proc
+## that takes a single argument "term", the term to search fo
+## an empty term indicates "search for all"
+# the backend then returns a list of results
+## each result is a list of the following elements:
+##   <title> <cmd> <match> <comment> <status>
+## title: the primary name to display
+##        (the user will select the element by this name)
+##        e.g. "frobscottle-1.10 (Linux/amd64)"
+## cmd  : a command that will install the selected library
+##        e.g. "[list ::deken::clicked_link http://bfg.org/frobscottle-1.10.zip frobscottle-1.10.zip]"
+## match: an integer indicating whether this entry is actually usable
+##        on this host (1) or not (0)
+## comment: secondary line to display
+##        e.g. "uploaded by the BFG in 1982"
+## status: line to display in the status-line
+##        e.g. "http://bfg.org/frobscottle-1.10.zip"
+# note on sorting:
+## the results ought to be sorted with most up-to-date first
+##  (filtering based on architecture-matches should be ignored when sorting!)
+# note on helper-functions:
+## you can put whatever you like into <cmd>, even your own proc
+
+
+# registration
+## to register a new search function, call `::deken::register $myfun`
+
+# namespace
+## you are welcome to use the ::deken::search:: namespace
+
+
+
+## ####################################################################
+## searching puredata.info
+proc ::deken::search::puredata.info {term} {
+    set searchresults [list]
+
+    set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
+    set contents [http::data $token]
+    set splitCont [split $contents "\n"]
+    # loop through the resulting tab-delimited table
+    foreach ele $splitCont {
+        set ele [ string trim $ele ]
+        if { "" ne $ele } {
+            set sele [ split $ele "\t" ]
+
+            set name  [ string trim [ lindex $sele 0 ]]
+            set URL   [ string trim [ lindex $sele 1 ]]
+            set creator [ string trim [ lindex $sele 2 ]]
+            set date    [regsub -all {[TZ]} [ string trim [ lindex $sele 3 ] ] { }]
+            set decURL [urldecode $URL]
+            set filename [ file tail $URL ]
+            set cmd [list ::deken::clicked_link $decURL $filename]
+            set match [::deken::architecture_match $filename]
+
+            set comment "Uploaded by $creator @ $date"
+            set status $URL
+            set res [list $name $cmd $match $comment $status $filename]
+            lappend searchresults $res
+        }
+    }
+    http::cleanup $token
+    return [lsort -dictionary -decreasing -index 5 $searchresults ]
+}
+::deken::register ::deken::search::puredata.info
+
+
+## ####################################################################
+## searching apt (if available)
+namespace eval ::deken::apt {
+    namespace export search
+    namespace export install
+    variable distribution
+}
+
+if { [ catch { exec lsb_release -si } ::deken::apt::distribution options ] } { unset ::deken::apt::distribution }
+
+proc ::deken::apt::search {name} {
+    set result []
+    if { [ catch { exec apt-cache madison } _ options ] } {
+        ::deken::post "Unable to run 'apt-cache madison'" error
+    } {
+    set name [ string tolower $name ]
+    if { "$name" eq "gem" } {
+        set searchname $name
+    } elseif { "$name" eq "" } {
+        set searchname "^pd-.*"
+    } else {
+        set searchname "^pd-${name}.*"
+    }
+    array unset pkgs
+    array set pkgs {}
+    set io [ open "|apt-cache madison $searchname" r ]
+    while { [ gets $io line ] >= 0 } {
+        #puts $line
+        set llin [ split "$line" "|" ]
+        set pkgname [ string trim [ lindex $llin 0 ] ]
+
+        #if { $pkgname ne $searchname } { continue }
+        set ver_  [ string trim [ lindex $llin 1 ] ]
+        set info_ [ string trim [ lindex $llin 2 ] ]
+        if { "Packages" eq [ lindex $info_ end ] } {
+            set suite [ lindex $info_ 1 ]
+            set arch  [ lindex $info_ 2 ]
+            if { ! [ info exists pkgs($ver_) ] } {
+                set pkgs($ver_) [ list $pkgname $suite $arch ]
+            }
+        }
+    }
+    foreach {v inf} [ array get pkgs ] {
+        set pkgname [ lindex $inf 0 ]
+        set suite   [ lindex $inf 1 ]
+        set arch    [ lindex $inf 2 ]
+        set name $pkgname/$v
+        set cmd "::deken::apt::install ${pkgname}=$v"
+        set match 1
+        set comment "Provided by ${::deken::apt::distribution} (${suite})"
+        set status "${pkgname}_${v}_${arch}.deb"
+
+        lappend result [list $name $cmd $match $comment $status]
+    }
+    }
+    return [lsort -dictionary -decreasing -index 1 $result ]
+}
+
+proc ::deken::apt::install {pkg} {
+    if { [ catch { exec which gksudo } gsudo options ] } {
+        ::deken::post "Please install 'gksudo', if you want to install system packages via deken..." error
+    } {
+        ::deken::clearpost
+        set prog "apt-get install -y --show-progress ${pkg}"
+        # for whatever reasons, we cannot have 'deken' as the description
+        # (it will always show $prog instead)
+        set desc deken::apt
+        set cmdline "$gsudo -D $desc -- $prog"
+        #puts $cmdline
+        set io [ open "|${cmdline}" ]
+        while { [ gets $io line ] >= 0 } {
+            ::deken::post "apt: $line"
+        }
+        if { [ catch { close $io } ret options ] } {
+            ::deken::post "apt::install failed to install $pkg" error
+            ::deken::post "\tDid you provide the correct password and/or" error
+            ::deken::post "\tis the apt database locked by another process?" error
+            #puts stderr "::deken::apt::install ${options}"
+        }
+    }
+}
+
+# only add this backend, if we are actually running Debian or a derivative
+if { [ info exists ::deken::apt::distribution ] } {
+  ::deken::register ::deken::apt::search
 }
