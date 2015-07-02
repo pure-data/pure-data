@@ -516,15 +516,22 @@ proc ::deken::apt::install {pkg} {
     if { [ catch { exec which gksudo } gsudo options ] } {
         ::deken::post "Please install 'gksudo', if you want to install system packages via deken..." error
     } {
+        ::deken::clearpost
         set prog "apt-get install -y --show-progress ${pkg}"
         # for whatever reasons, we cannot have 'deken' as the description
         # (it will always show $prog instead)
         set desc deken::apt
         set cmdline "$gsudo -D $desc -- $prog"
-        #::deken::post $cmdline
+        #puts $cmdline
         set io [ open "|${cmdline}" ]
         while { [ gets $io line ] >= 0 } {
             ::deken::post "apt: $line"
+        }
+        if { [ catch { close $io } ret options ] } {
+            ::deken::post "apt::install failed to install $pkg" error
+            ::deken::post "\tDid you provide the correct password and/or" error
+            ::deken::post "\tis the apt database locked by another process?" error
+            #puts stderr "::deken::apt::install ${options}"
         }
     }
 }
