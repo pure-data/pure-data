@@ -174,7 +174,7 @@ proc ::deken::create_dialog {mytoplevel} {
 
     frame $mytoplevel.searchbit
     pack $mytoplevel.searchbit -side top -fill x
-    
+
     entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
     pack $mytoplevel.searchbit.entry -side left -padx 6 -fill x -expand true
     bind $mytoplevel.searchbit.entry <Key-Return> "::deken::initiate_search $mytoplevel"
@@ -318,18 +318,39 @@ proc ::deken::download_progress {token total current} {
     }
 }
 
+# parse a deken-packagefilename into it's components: <pkgname>[-v<version>-]?{(<arch>)}-externals.zip
+# return: list <pkgname> <version> [list <arch> ...]
+proc ::deken::parse_filename {filename} {
+    set pkgname $filename
+    set archs [list]
+    if { [ regexp {(.*)-externals\..*} $filename match basename] } {
+	set pkgname $basename
+	# basename <pkgname>[-v<version>-]?{(<arch>)}
+	## strip off the archs
+	baselist = [split $basename () ]
+
+	# get pkgname + version
+	set pkgver [lindex $baselist 0]
+
+	# get archs
+	foreach {a _} [lreplace $baselist 0 0] { lappend archs $a }
+
+    }
+
+}
+
 # test for platform match with our current platform
 proc ::deken::architecture_match {title} {
     # if there are no architecture sections this must be arch-independent
     if {![regexp -- "\\\((.*?)-(.*?)-(.*?)\\\)" $title]} {
         return 1;
     }
-    
+
     # if the OS doesn't match, return false
     if {![regexp -- "$::deken::platform(os)" $title]} {
         return 0
     }
-    
+
     # if the word size doesn't match, return false
     if {![regexp -- "-$::deken::platform(bits)\\\)" $title]} {
         return 0
@@ -363,7 +384,7 @@ proc ::deken::search_for {term} {
 # create an entry for our search in the "help" menu
 set mymenu .menubar.help
 if {$::windowingsystem eq "aqua"} {
-    set inserthere 3    
+    set inserthere 3
 } else {
     set inserthere 4
 }
