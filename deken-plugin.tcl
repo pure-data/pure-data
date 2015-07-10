@@ -462,8 +462,9 @@ namespace eval ::deken::apt {
     variable distribution
 }
 
-
+if { [ catch { exec apt-cache -v } _ ] } { } {
 if { [ catch { exec lsb_release -si } ::deken::apt::distribution ] } { unset ::deken::apt::distribution }
+}
 proc ::deken::apt::search {name} {
     set result []
     if { [ catch { exec apt-cache madison } _ ] } {
