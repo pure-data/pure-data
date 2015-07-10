@@ -462,11 +462,11 @@ namespace eval ::deken::apt {
     variable distribution
 }
 
-if { [ catch { exec lsb_release -si } ::deken::apt::distribution options ] } { unset ::deken::apt::distribution }
 
+if { [ catch { exec lsb_release -si } ::deken::apt::distribution ] } { unset ::deken::apt::distribution }
 proc ::deken::apt::search {name} {
     set result []
-    if { [ catch { exec apt-cache madison } _ options ] } {
+    if { [ catch { exec apt-cache madison } _ ] } {
         ::deken::post "Unable to run 'apt-cache madison'" error
     } {
     set name [ string tolower $name ]
@@ -513,7 +513,7 @@ proc ::deken::apt::search {name} {
 }
 
 proc ::deken::apt::install {pkg} {
-    if { [ catch { exec which gksudo } gsudo options ] } {
+    if { [ catch { exec which gksudo } gsudo ] } {
         ::deken::post "Please install 'gksudo', if you want to install system packages via deken..." error
     } {
         ::deken::clearpost
@@ -527,7 +527,7 @@ proc ::deken::apt::install {pkg} {
         while { [ gets $io line ] >= 0 } {
             ::deken::post "apt: $line"
         }
-        if { [ catch { close $io } ret options ] } {
+        if { [ catch { close $io } ret ] } {
             ::deken::post "apt::install failed to install $pkg" error
             ::deken::post "\tDid you provide the correct password and/or" error
             ::deken::post "\tis the apt database locked by another process?" error
