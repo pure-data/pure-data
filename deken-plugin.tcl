@@ -464,10 +464,13 @@ proc ::deken::search::puredata.info {term} {
             set decURL [urldecode $URL]
             set filename [ file tail $URL ]
             set cmd [list ::deken::clicked_link $decURL $filename]
+            set pkgverarch [ ::deken::parse_filename $filename ]
+
             set match [::deken::architecture_match $filename]
 
             set comment "Uploaded by $creator @ $date"
             set status $URL
+            set sortname [lindex $pkgverarch 0]--[lindex $pkgverarch 1]--$date
             set res [list $name $cmd $match $comment $status $filename]
             lappend searchresults $res
         }
