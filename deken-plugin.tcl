@@ -207,8 +207,9 @@ proc ::deken::initiate_search {mytoplevel} {
     # make the ajax call
     if { [ catch {
         set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
-    } ] } {
+    } stdout ] } {
         puts "online?"
+        puts "$stdout"
         ::deken::status "Unable to perform search. Are you online?"
     } else {
     # delete all text in the results
