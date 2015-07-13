@@ -343,30 +343,25 @@ proc ::deken::parse_filename {filename} {
 }
 
 # test for platform match with our current platform
-proc ::deken::architecture_match {title} {
+proc ::deken::architecture_match {archs} {
     # if there are no architecture sections this must be arch-independent
-    if {![regexp -- "\\\((.*?)-(.*?)-(.*?)\\\)" $title]} {
-        return 1;
-    }
+    if { ! [llength $archs] } { return 1}
 
-    # if the OS doesn't match, return false
-    if {![regexp -- "$::deken::platform(os)" $title]} {
-        return 0
-    }
-
-    # if the word size doesn't match, return false
-    if {![regexp -- "-$::deken::platform(bits)\\\)" $title]} {
-        return 0
-    }
-    # see if the exact architecture string matches
-    if {[regexp -- "-$::deken::platform(machine)-" $title]} {
-        return 1
-    }
-    # see if any substitute architectures match
-    if {[llength [array names ::deken::architecture_substitutes -exact $::deken::platform(machine)]] == 1} {
-        foreach arch $::deken::architecture_substitutes($::deken::platform(machine)) {
-            if {[regexp -- "-$arch-" $title]} {
-                return 1
+    # check each architecture in our list against the current one
+    foreach arch $archs {
+        if { [ regexp -- {(.*)-(.*)-(.*)} $arch _ os machine bits ] } {
+            if { "${os}" eq "$::deken::platform(os)" &&
+                 "${bits}" eq "$::deken::platform(bits)"
+             } {
+                ## so OS and word size match
+                ## check whether the CPU matches as well
+                if { "${machine}" eq "$::deken::platform(machine)" } {return 1}
+                ## not exactly; see whether it is in the list of compat CPUs
+                if {[llength [array names ::deken::architecture_substitutes -exact $::deken::platform(machine)]]} {
+                    foreach cpu $::deken::architecture_substitutes($::deken::platform(machine)) {
+                        if { "${machine}" eq "${cpu}" } {return 1}
+                    }
+                }
             }
         }
     }
@@ -466,7 +461,7 @@ proc ::deken::search::puredata.info {term} {
             set cmd [list ::deken::clicked_link $decURL $filename]
             set pkgverarch [ ::deken::parse_filename $filename ]
 
-            set match [::deken::architecture_match $filename]
+            set match [::deken::architecture_match $pkgverarch]
 
             set comment "Uploaded by $creator @ $date"
             set status $URL
