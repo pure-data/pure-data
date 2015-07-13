@@ -323,20 +323,23 @@ proc ::deken::download_progress {token total current} {
 proc ::deken::parse_filename {filename} {
     set pkgname $filename
     set archs [list]
+    set version ""
     if { [ regexp {(.*)-externals\..*} $filename match basename] } {
-	set pkgname $basename
-	# basename <pkgname>[-v<version>-]?{(<arch>)}
-	## strip off the archs
-	baselist = [split $basename () ]
+        set pkgname $basename
+        # basename <pkgname>[-v<version>-]?{(<arch>)}
+        ## strip off the archs
+        set baselist [split $basename () ]
 
-	# get pkgname + version
-	set pkgver [lindex $baselist 0]
-
-	# get archs
-	foreach {a _} [lreplace $baselist 0 0] { lappend archs $a }
-
+        # get pkgname + version
+        set pkgver [lindex $baselist 0]
+        if { ! [ regexp "(.*)-(.*)-" $pkgver pkgname version ] } {
+            set pkgname $pkgver
+            set $version ""
+        }
+        # get archs
+        foreach {a _} [lreplace $baselist 0 0] { lappend archs $a }
     }
-
+    return [list $pkgname $version $archs]
 }
 
 # test for platform match with our current platform
