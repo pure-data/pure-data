@@ -110,8 +110,12 @@ proc ::deken::readconfig {paths filename} {
 }
 
 
-set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ]
-#::pdwindow::post "installpath: $::deken::installpath\n"
+::deken::readconfig $::sys_staticpath deken-plugin.conf
+if { [ info exists ::deken::installpath ] } {
+    set ::deken::installpath [ ::deken::get_writable_dir [list $::deken::installpath ] ]
+} {
+    set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ]
+}
 
 # console message to let them know we're loaded
 ::pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
