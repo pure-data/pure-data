@@ -451,7 +451,6 @@ proc ::deken::search::puredata.info {term} {
     http::cleanup $token
     return [lsort -dictionary -decreasing -index 5 $searchresults ]
 }
-::deken::register ::deken::search::puredata.info
 
 
 ## ####################################################################
@@ -541,3 +540,4 @@ proc ::deken::apt::install {pkg} {
 if { [ info exists ::deken::apt::distribution ] } {
   ::deken::register ::deken::apt::search
 }
+::deken::register ::deken::search::puredata.info
