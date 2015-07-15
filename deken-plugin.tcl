@@ -424,7 +424,7 @@ proc urldecode {str} {
 proc ::deken::search::puredata.info {term} {
     set searchresults [list]
 
-    set token [http::geturl "http://puredata.info/dekenpackages?name=$term"]
+    set token [http::geturl "http://deken.puredata.info/search?name=$term"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
     # loop through the resulting tab-delimited table
