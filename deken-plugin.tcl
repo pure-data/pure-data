@@ -59,9 +59,63 @@ proc ::deken::get_writable_dir {paths} {
     return
 }
 
+# list-reverter (compat for tcl<8.5)
+if {[info command lreverse] == ""} {
+    proc lreverse list {
+        set res {}
+        set i [llength $list]
+        while {$i} {
+            lappend res [lindex $list [incr i -1]]
+        }
+        set res
+    } ;# RS
+}
 
-set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ]
-#::pdwindow::post "installpath: $::deken::installpath\n"
+
+## where to look for the config-files:
+## - near the deken-plugin.tcl file
+## + at some user-specific place (e.g. ~/pd-externals/deken-plugin/)
+## it's probably easiest to iterate through curdir and ::sys_staticpath (in reverse order)
+## and read all (existing) configurations
+#
+## the configfile's format is simple:
+# the first element of a line is the variable name, the rest the value. e.g.
+#    foo bar baz
+# will create a variable '::deken::foo' with value [list bar baz]
+## LATER: this is rather insecure, as it allows people to overwrite
+##        virtually everything... (e.g. ::deken::search_for)
+proc ::deken::readconfig {paths filename} {
+    proc doreadconfig {fname} {
+        if {[file exists $fname]} {
+            set fp [open $fname r]
+            while {![eof $fp]} {
+                set data [gets $fp]
+                if { [string is list $data ] } {
+                    if { [llength $data ] > 1 } {
+                        set ::deken::[lindex $data 0] [lrange $data 1 end]
+                    }
+                }
+            }
+            return True
+        }
+        return False
+    }
+    set fs [file separator]
+    doreadconfig "$::current_plugin_loadpath${fs}${filename}"
+    foreach p0 [lreverse $paths] {
+        foreach p1 [ list "" "${fs}deken-plugin" ] {
+            doreadconfig "${p0}${p1}${fs}${filename}"
+        }
+    }
+}
+
+
+::deken::readconfig $::sys_staticpath deken-plugin.conf
+if { [ info exists ::deken::installpath ] } {
+    set ::deken::installpath [ ::deken::get_writable_dir [list $::deken::installpath ] ]
+} {
+    set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ]
+}
 
 # console message to let them know we're loaded
 ::pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
@@ -174,7 +228,7 @@ proc ::deken::create_dialog {mytoplevel} {
 
     frame $mytoplevel.searchbit
     pack $mytoplevel.searchbit -side top -fill x
-    
+
     entry $mytoplevel.searchbit.entry -font 18 -relief sunken -highlightthickness 1 -highlightcolor blue
     pack $mytoplevel.searchbit.entry -side left -padx 6 -fill x -expand true
     bind $mytoplevel.searchbit.entry <Key-Return> "::deken::initiate_search $mytoplevel"
@@ -207,8 +261,9 @@ proc ::deken::initiate_search {mytoplevel} {
     # make the ajax call
     if { [ catch {
         set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
-    } ] } {
+    } stdout ] } {
         puts "online?"
+        puts "$stdout"
         ::deken::status "Unable to perform search. Are you online?"
     } else {
     # delete all text in the results
@@ -318,31 +373,50 @@ proc ::deken::download_progress {token total current} {
     }
 }
 
+# parse a deken-packagefilename into it's components: <pkgname>[-v<version>-]?{(<arch>)}-externals.zip
+# return: list <pkgname> <version> [list <arch> ...]
+proc ::deken::parse_filename {filename} {
+    set pkgname $filename
+    set archs [list]
+    set version ""
+    if { [ regexp {(.*)-externals\..*} $filename match basename] } {
+        set pkgname $basename
+        # basename <pkgname>[-v<version>-]?{(<arch>)}
+        ## strip off the archs
+        set baselist [split $basename () ]
+
+        # get pkgname + version
+        set pkgver [lindex $baselist 0]
+        if { ! [ regexp "(.*)-(.*)-" $pkgver pkgname version ] } {
+            set pkgname $pkgver
+            set $version ""
+        }
+        # get archs
+        foreach {a _} [lreplace $baselist 0 0] { lappend archs $a }
+    }
+    return [list $pkgname $version $archs]
+}
+
 # test for platform match with our current platform
-proc ::deken::architecture_match {title} {
+proc ::deken::architecture_match {archs} {
     # if there are no architecture sections this must be arch-independent
-    if {![regexp -- "\\\((.*?)-(.*?)-(.*?)\\\)" $title]} {
-        return 1;
-    }
-    
-    # if the OS doesn't match, return false
-    if {![regexp -- "$::deken::platform(os)" $title]} {
-        return 0
-    }
-    
-    # if the word size doesn't match, return false
-    if {![regexp -- "-$::deken::platform(bits)\\\)" $title]} {
-        return 0
-    }
-    # see if the exact architecture string matches
-    if {[regexp -- "-$::deken::platform(machine)-" $title]} {
-        return 1
-    }
-    # see if any substitute architectures match
-    if {[llength [array names ::deken::architecture_substitutes -exact $::deken::platform(machine)]] == 1} {
-        foreach arch $::deken::architecture_substitutes($::deken::platform(machine)) {
-            if {[regexp -- "-$arch-" $title]} {
-                return 1
+    if { ! [llength $archs] } { return 1}
+
+    # check each architecture in our list against the current one
+    foreach arch $archs {
+        if { [ regexp -- {(.*)-(.*)-(.*)} $arch _ os machine bits ] } {
+            if { "${os}" eq "$::deken::platform(os)" &&
+                 "${bits}" eq "$::deken::platform(bits)"
+             } {
+                ## so OS and word size match
+                ## check whether the CPU matches as well
+                if { "${machine}" eq "$::deken::platform(machine)" } {return 1}
+                ## not exactly; see whether it is in the list of compat CPUs
+                if {[llength [array names ::deken::architecture_substitutes -exact $::deken::platform(machine)]]} {
+                    foreach cpu $::deken::architecture_substitutes($::deken::platform(machine)) {
+                        if { "${machine}" eq "${cpu}" } {return 1}
+                    }
+                }
             }
         }
     }
@@ -363,7 +437,7 @@ proc ::deken::search_for {term} {
 # create an entry for our search in the "help" menu
 set mymenu .menubar.help
 if {$::windowingsystem eq "aqua"} {
-    set inserthere 3    
+    set inserthere 3
 } else {
     set inserthere 4
 }
@@ -440,10 +514,13 @@ proc ::deken::search::puredata.info {term} {
             set decURL [urldecode $URL]
             set filename [ file tail $URL ]
             set cmd [list ::deken::clicked_link $decURL $filename]
-            set match [::deken::architecture_match $filename]
+            set pkgverarch [ ::deken::parse_filename $filename ]
+
+            set match [::deken::architecture_match $pkgverarch]
 
             set comment "Uploaded by $creator @ $date"
             set status $URL
+            set sortname [lindex $pkgverarch 0]--[lindex $pkgverarch 1]--$date
             set res [list $name $cmd $match $comment $status $filename]
             lappend searchresults $res
         }
