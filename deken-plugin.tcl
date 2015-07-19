@@ -515,7 +515,7 @@ proc ::deken::search::puredata.info {term} {
             set cmd [list ::deken::clicked_link $decURL $filename]
             set pkgverarch [ ::deken::parse_filename $filename ]
 
-            set match [::deken::architecture_match $pkgverarch]
+            set match [::deken::architecture_match [lindex $pkgverarch 2] ]
 
             set comment "Uploaded by $creator @ $date"
             set status $URL
