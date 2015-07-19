@@ -379,7 +379,7 @@ proc ::deken::parse_filename {filename} {
     set pkgname $filename
     set archs [list]
     set version ""
-    if { [ regexp {(.*)-externals\..*} $filename match basename] } {
+    if { [ regexp {(.*)-externals\..*} $filename _ basename] } {
         set pkgname $basename
         # basename <pkgname>[-v<version>-]?{(<arch>)}
         ## strip off the archs
@@ -387,7 +387,7 @@ proc ::deken::parse_filename {filename} {
 
         # get pkgname + version
         set pkgver [lindex $baselist 0]
-        if { ! [ regexp "(.*)-(.*)-" $pkgver pkgname version ] } {
+        if { ! [ regexp "(.*)-(.*)-" $pkgver _ pkgname version ] } {
             set pkgname $pkgver
             set $version ""
         }
