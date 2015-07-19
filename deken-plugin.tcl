@@ -428,8 +428,7 @@ proc ::deken::search_for {term} {
 
     set result [list]
     foreach searcher $::deken::backends {
-        set res [ $searcher $term ]
-        lappend result {*}$res
+        set result [concat $result [ $searcher $term ] ]
     }
     return $result
 }
