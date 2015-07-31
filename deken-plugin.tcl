@@ -152,6 +152,8 @@ set ::deken::architecture_substitutes(i686) [list "i586" "i386"]
 set ::deken::architecture_substitutes(i586) [list "i386"]
 set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
 set ::deken::architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
+set ::deken::architecture_substitutes(PowerPC) [list "ppc"]
+set ::deken::architecture_substitutes(ppc) [list "PowerPC"]
 
 proc ::deken::status {msg} {
     #variable mytoplevelref
