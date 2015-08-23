@@ -217,9 +217,13 @@ proc ::pd_guiprefs::write_config_x11 {data {adomain} {akey}} {
 # linux only! : look for pd config directory and create it if needed
 #
 proc ::pd_guiprefs::prepare_configdir {} {
-    if {[file isdirectory $::recentfiles_domain] != 1} {
-        file mkdir $::recentfiles_domain
-        ::pdwindow::debug "$::recentfiles_domain was created.\n"
+    if { [catch {
+        if {[file isdirectory $::recentfiles_domain] != 1} {
+            file mkdir $::recentfiles_domain
+            ::pdwindow::debug "$::recentfiles_domain was created.\n"
+            }
+    }]} {
+                ::pdwindow::error "$::recentfiles_domain was *NOT* created.\n"
     }
 }
 
