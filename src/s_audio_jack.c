@@ -337,10 +337,10 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         do {
           sprintf(client_name,"pure_data_%d",client_iterator);
           client_iterator++;
-          jack_client = jack_client_open (client_name, JackNullOption, &status,
-            NULL);
+          jack_client = jack_client_open (client_name, JackNoStartServer,
+            &status, NULL);
           if (status & JackServerFailed) {
-            error("JACK: unable to connect to JACK server");
+            error("JACK: unable to connect to JACK server.  Is JACK running?");
             jack_client=NULL;
             break;
           }
