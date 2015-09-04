@@ -434,8 +434,8 @@ typedef struct _array_rangeop   /* any operation meaningful on a subrange */
         sometimes we don't need an inlet because it's the inlet itself.  In
         any case we allow onset to be specified as an argument (even if it's
         the 'hot inlet') -- for the same reason as in the 'delay' object.
-        Finally we can optionally warn if there are extra arguemnts; some
-        specific arguemtns (e.g., search) allow them but most don't. */
+        Finally we can optionally warn if there are extra arguments; some
+        specific arguments (e.g., search) allow them but most don't. */
 static void *array_rangeop_new(t_class *class,
     t_symbol *s, int *argcp, t_atom **argvp,
     int onsetin, int nin, int warnextra)
@@ -725,7 +725,6 @@ typedef struct _array_max
     t_array_rangeop x_rangeop;
     t_outlet *x_out1;       /* value */
     t_outlet *x_out2;       /* index */
-    int x_onset;            /* search onset */
 } t_array_max;
 
 static void *array_max_new(t_symbol *s, int argc, t_atom *argv)
@@ -748,13 +747,13 @@ static void array_max_bang(t_array_max *x)
         i < nitem; i++, itemp += stride)
             if (*(t_float *)itemp > bestf)
                 bestf = *(t_float *)itemp, besti = i;
-    outlet_float(x->x_out2, besti+x->x_onset);
+    outlet_float(x->x_out2, besti + x->x_rangeop.x_onset);
     outlet_float(x->x_out1, bestf);
 }
 
 static void array_max_float(t_array_max *x, t_floatarg f)
 {
-    x->x_onset = f;
+    x->x_rangeop.x_onset = f;
     array_max_bang(x);
 }
 
@@ -766,7 +765,6 @@ typedef struct _array_min
     t_array_rangeop x_rangeop;
     t_outlet *x_out1;       /* value */
     t_outlet *x_out2;       /* index */
-    int x_onset;            /* search onset */
 } t_array_min;
 
 static void *array_min_new(t_symbol *s, int argc, t_atom *argv)
@@ -789,13 +787,13 @@ static void array_min_bang(t_array_min *x)
         i < nitem; i++, itemp += stride)
             if (*(t_float *)itemp < bestf)
                 bestf = *(t_float *)itemp, besti = i;
-    outlet_float(x->x_out2, besti+x->x_onset);
+    outlet_float(x->x_out2, besti + x->x_rangeop.x_onset);
     outlet_float(x->x_out1, bestf);
 }
 
 static void array_min_float(t_array_min *x, t_floatarg f)
 {
-    x->x_onset = f;
+    x->x_rangeop.x_onset = f;
     array_min_bang(x);
 }
 
