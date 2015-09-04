@@ -1,17 +1,17 @@
 #N struct help-drawnumber-template float x float y float cat float
-dog;
-#N canvas 51 46 538 189 12;
+dog symbol weasel;
+#N canvas 445 324 600 204 12;
 #X text 15 103 see also:;
 #X obj 18 7 drawnumber;
 #X obj 187 132 plot;
 #X obj 83 131 drawpolygon;
-#X text 114 7 -- draw numeric fields from data structures;
-#N canvas 14 10 297 129 help-drawnumber-data 1;
-#X scalar help-drawnumber-template 50 100 23 43 \;;
-#X scalar help-drawnumber-template 150 50 3.14 -1.618 \;;
+#X text 240 0 -- draw numeric fields from data structures;
+#N canvas 11 52 375 224 help-drawnumber-data 1;
+#X scalar help-drawnumber-template 50 100 23 43 ethel \;;
+#X scalar help-drawnumber-template 150 50 3.14 -1.618 fred \;;
 #X restore 273 71 pd help-drawnumber-data;
-#N canvas 528 70 575 505 help-drawnumber-template 1;
-#X text 23 438 This object defines the fields for this template. Their
+#N canvas 439 52 565 765 help-drawnumber-template 1;
+#X text 25 567 This object defines the fields for this template. Their
 values are initialized in the "works" subwindow. You can see them by
 right-clicking on the object in the "data" window and selecting "properties."
 ;
@@ -35,9 +35,14 @@ cut \, copy \, and paste the objects.);
 to assign a variable to make this visible/invisible.;
 #X text 20 273 Any of these (except the two flags) can be numbers or
 field names \, like "dog" and "cat" here.;
-#X obj 13 397 struct help-drawnumber-template float x float y float
-cat float dog;
+#X obj 27 646 struct help-drawnumber-template float x float y float
+cat float dog symbol weasel;
+#X obj 26 460 drawsymbol weasel 0 -30 0 weasel=;
+#X text 26 405 To draw a symbol \, use the drawsymbol object. Same
+arguments. No way to edit symbols though - they can only be changed
+through "set" objects..;
 #X connect 11 0 4 0;
 #X restore 273 44 pd help-drawnumber-template;
 #X obj 22 130 struct;
 #X text 275 159 updated for Pd version 0.39;
+#X obj 107 8 drawsymbol;
