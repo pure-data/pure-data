@@ -642,14 +642,14 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
     floatinlet_new(&x->x_obj, &x->x_f2);
     x->x_f1 = 0;
     x->x_f2 = -1;
-    text_client_argparse(&x->x_tc, &argc, &argv, "text get");
+    text_client_argparse(&x->x_tc, &argc, &argv, "text set");
     if (argc)
     {
         if (argv->a_type == A_FLOAT)
             x->x_f1 = argv->a_w.w_float;
         else
         {
-            post("text get: can't understand field number");
+            post("text set: can't understand field number");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -660,7 +660,7 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
             x->x_f2 = argv->a_w.w_float;
         else
         {
-            post("text get: can't understand field count");
+            post("text set: can't understand field count");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -742,6 +742,55 @@ static void text_set_list(t_text_set *x,
         if (argv[i].a_type == A_POINTER)
             SETSYMBOL(&vec[start+i], gensym("(pointer)"));
         else vec[start+i] = argv[i];
+    }
+    text_client_senditup(&x->x_tc);
+}
+
+/* --------- text_delete object - delete nth line ----------- */
+typedef struct _text_delete
+{
+    t_text_client x_tc;
+} t_text_delete;
+
+t_class *text_delete_class;
+
+static void *text_delete_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_delete *x = (t_text_delete *)pd_new(text_delete_class);
+    text_client_argparse(&x->x_tc, &argc, &argv, "text delete");
+    if (argc)
+    {
+        post("warning: text delete ignoring extra argument: ");
+        postatom(argc, argv); endpost();
+    }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    return (x);
+}
+
+static void text_delete_float(t_text_delete *x, t_floatarg f)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int start, end, n, lineno = f;
+    t_atom *vec;
+    if (!b)
+       return;
+    vec = binbuf_getvec(b);
+    n = binbuf_getnatom(b);
+    if (lineno < 0)
+        binbuf_clear(b);
+    else if (text_nthline(n, vec, lineno, &start, &end))
+    {
+        if (end < n)
+            end++;
+        memmove(&vec[start], &vec[end], sizeof(*vec) * (n - end));
+        (void)binbuf_resize(b, n - (end - start));
+    }
+    else
+    {
+        post("text delete: %d: line number out of range", lineno);
+        return;
     }
     text_client_senditup(&x->x_tc);
 }
@@ -1474,6 +1523,8 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             newest = text_get_new(s, argc-1, argv+1);
         else if (!strcmp(str, "set"))
             newest = text_set_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "delete"))
+            newest = text_delete_new(s, argc-1, argv+1);
         else if (!strcmp(str, "size"))
             newest = text_size_new(s, argc-1, argv+1);
         else if (!strcmp(str, "tolist"))
@@ -1863,6 +1914,12 @@ void x_qlist_setup(void )
     class_addlist(text_set_class, text_set_list);
     class_sethelpsymbol(text_set_class, gensym("text-object"));
     
+    text_delete_class = class_new(gensym("text delete"),
+        (t_newmethod)text_delete_new, (t_method)text_client_free,
+            sizeof(t_text_delete), 0, A_GIMME, 0);
+    class_addfloat(text_delete_class, text_delete_float);
+    class_sethelpsymbol(text_delete_class, gensym("text-object"));
+
     text_size_class = class_new(gensym("text size"),
         (t_newmethod)text_size_new, (t_method)text_client_free,
             sizeof(t_text_size), 0, A_GIMME, 0);

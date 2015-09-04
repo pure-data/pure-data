@@ -1,14 +1,14 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 667 152 625 526 12;
-#X obj 131 474 list;
+#N canvas 633 152 622 555 12;
+#X obj 131 499 list;
 #X obj 18 6 text;
-#X text 25 473 see also:;
+#X text 25 498 see also:;
 #N canvas 0 50 600 400 (subpatch) 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array table4 100 float 0;
 #X coords 0 1 99 -1 500 300 1;
 #X restore 50 50 graph;
-#X restore 171 474 array;
+#X restore 171 499 array;
 #X obj 280 217 text define;
 #X text 81 173 The text object's first argument sets its function:
 , f 30;
@@ -194,11 +194,11 @@ via pointers.;
 #X connect 21 0 18 0;
 #X connect 22 0 17 0;
 #X connect 23 0 17 0;
-#X restore 83 434 pd text-and-data-structures;
-#X text 73 410 here's how to access texts inside data structures:;
+#X restore 83 459 pd text-and-data-structures;
+#X text 73 435 here's how to access texts inside data structures:;
 #X text 63 6 - manage a list of messages;
-#X obj 219 474 scalar;
-#X obj 280 287 text size;
+#X obj 219 499 scalar;
+#X obj 280 312 text size;
 #N canvas 847 155 741 313 size 0;
 #X obj 71 55 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -220,9 +220,9 @@ of range);
 #X connect 2 0 3 0;
 #X connect 4 0 2 0;
 #X connect 9 0 2 1;
-#X restore 392 286 pd size;
+#X restore 392 311 pd size;
 #X obj 280 264 text set;
-#N canvas 116 67 834 537 set 0;
+#N canvas 114 65 834 537 set 0;
 #X floatatom 107 197 5 0 0 0 - - -, f 5;
 #X msg 107 163 0;
 #X msg 180 165 2;
@@ -239,10 +239,7 @@ of range);
 #X text 165 197 line number - use a large number to append a line;
 #X text 240 295 arguments: name of the text object or "-s struct-name"
 ;
-#X text 240 320 next optional arg to set inlet 1 (line number), f
-63;
-#X text 241 348 next optional arg to set inlet 2 (number of fields
-\, defaults to whole line), f 52;
+#X text 240 320 next optional arg to set inlet 1 (line number);
 #X text 66 407 if inlet 2 is supplied to specify a starting field \,
 the line is not resized - instead \, as many items are replaced as
 were in the list at left. Otherwise \, the line is resized to the size
@@ -256,6 +253,8 @@ line., f 62;
 #X text 46 9 "text set" replaces the nth line with the incoming list.
 If the number n is greater than the number of lines in the text the
 new line is added.;
+#X text 241 348 next optional arg to set inlet 2 (field number \, defaults
+to whole line), f 47;
 #X connect 0 0 8 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -265,21 +264,20 @@ new line is added.;
 #X connect 6 0 8 0;
 #X connect 9 0 0 0;
 #X connect 10 0 8 2;
-#X connect 17 0 8 3;
+#X connect 16 0 8 3;
 #X restore 392 263 pd set;
 #X text 391 176 (click for details), f 11;
 #X text 60 216 create \, store \, and/or edit;
 #X text 91 239 read and output a line;
 #X text 100 263 replace or add a line;
-#X text 115 288 get number of lines;
-#X text 365 472 updated for Pd version 0.45;
+#X text 115 313 get number of lines;
 #X text 62 50 In Pd a "text" refers to a list of atoms that can include
 commas \, semicolons \, and dollar-sign constructs - anything that
 can go in a message box or a patch (as a saved file). You can use them
 to store a semicolon-separated list of lists \, or as messages to "execute"
 as in a sequencer or message box.;
-#X text 145 312 convert to list;
-#X obj 280 310 text tolist;
+#X text 145 337 convert to list;
+#X obj 280 335 text tolist;
 #N canvas 842 231 590 379 tolist 0;
 #X obj 86 99 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -307,8 +305,8 @@ backslashes).;
 #X connect 5 0 6 0;
 #X connect 7 0 6 0;
 #X connect 11 0 3 1;
-#X restore 392 310 pd tolist;
-#X obj 280 334 text fromlist;
+#X restore 392 335 pd tolist;
+#X obj 280 359 text fromlist;
 #N canvas 842 231 604 318 fromlist 0;
 #X obj 81 202 text fromlist text-help-fromlist;
 #X obj 114 263 text define text-help-fromlist;
@@ -325,10 +323,10 @@ contained is discarded.;
 #X connect 3 0 0 0;
 #X connect 5 0 0 0;
 #X connect 7 0 0 1;
-#X restore 392 334 pd fromlist;
-#X text 131 336 convert from list;
-#X text 218 359 search;
-#X obj 280 358 text search;
+#X restore 392 359 pd fromlist;
+#X text 131 361 convert from list;
+#X text 218 384 search;
+#X obj 280 383 text search;
 #N canvas 626 77 1011 913 search 0;
 #X floatatom 60 313 5 0 0 0 - - -, f 5;
 #X text 385 232 find another text by name or pointer, f 18;
@@ -428,9 +426,9 @@ far from it) so line 0 whose second field is closer to 1 wins., f
 #X connect 42 0 40 0;
 #X connect 43 0 40 0;
 #X connect 44 0 40 0;
-#X restore 393 358 pd search;
-#X text 76 383 sequencer/message-sender;
-#X obj 280 381 text sequence;
+#X restore 393 383 pd search;
+#X text 76 408 sequencer/message-sender;
+#X obj 280 406 text sequence;
 #N canvas 199 57 1155 839 sequence 0;
 #X msg 138 468 symbol text-help-search;
 #X text 101 443 specify another text by name or pointer;
@@ -580,4 +578,32 @@ simply sequence a list of numbers:;
 #X connect 61 2 62 0;
 #X connect 65 0 30 0;
 #X connect 69 0 7 0;
-#X restore 393 381 pd sequence;
+#X restore 393 406 pd sequence;
+#X text 365 497 updated for Pd version 0.47;
+#X text 100 287 delete a line or clear;
+#X obj 280 288 text delete;
+#N canvas 358 63 749 465 delete 1;
+#X text 413 166 find another text by name or pointer;
+#X text 323 279 <-- click here to see text;
+#X text 46 9 "text set" replaces the nth line with the incoming list.
+If the number n is greater than the number of lines in the text the
+new line is added.;
+#X obj 53 199 text delete text-help-delete;
+#X text 299 202 argument: name of the text object or "-s struct-name"
+;
+#X msg 210 166 symbol text-help-delete;
+#X obj 59 279 text define -k text-help-delete;
+#A set line 0 \; line 1 \;;
+#X msg 53 84 2;
+#X text 92 84 delete second line (counting from 0);
+#X msg 62 111 -1;
+#X text 102 114 clear whole text;
+#X obj 61 423 text fromlist text-help-delete;
+#X msg 61 398 list line 0 \\\; line 1 \\\; line 2 \\\; line 3 \\\;
+line 4 \\\;;
+#X text 82 375 click below to get original text back:;
+#X connect 5 0 3 1;
+#X connect 7 0 3 0;
+#X connect 9 0 3 0;
+#X connect 12 0 11 0;
+#X restore 392 287 pd delete;
