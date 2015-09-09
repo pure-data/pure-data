@@ -157,7 +157,6 @@ if MINGW
 # XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
 pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DWINVER=0x0502
-bin_PROGRAMS += pd-watchdog
 endif
 
 etags: TAGS
