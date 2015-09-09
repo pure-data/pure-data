@@ -1299,17 +1299,25 @@ static void canvas_completepath(char *from, char *to, int bufsize)
     to[bufsize-1] = '\0';
 }
 
-#include <fcntl.h>
+/* maybe we should rename check_exists() to sys_access() and move it to s_path */
+#ifdef _WIN32
 static int check_exists(const char*path)
 {
-    int fd=sys_open(path, O_RDONLY);
-    if (fd>=0)
-    {
-        sys_close(fd);
-        return 1;
-    }
-    return 0;
+    char pathbuf[MAXPDSTRING];
+    wchar_t ucs2path[MAXPDSTRING];
+    sys_bashfilename(path, pathbuf);
+    u8_utf8toucs2(ucs2path, MAXPDSTRING, pathbuf, MAXPDSTRING-1);
+    return (0 ==  _waccess(ucs2path, 0));
 }
+#else
+#include <unistd.h>
+static int check_exists(const char*path)
+{
+    char pathbuf[MAXPDSTRING];
+    sys_bashfilename(path, pathbuf);
+    return (0 == access(pathbuf, 0));
+}
+#endif
 
 extern t_namelist *sys_staticpath;
 
@@ -1319,7 +1327,7 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(stdpath))
     {
-        e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+        e->ce_path = namelist_append(e->ce_path, stdpath, 0);
         return;
     }
 
