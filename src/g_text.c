@@ -96,11 +96,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     if (binbuf_getnatom(b))
     {
         if (!newest)
-        {
-            binbuf_print(b);
-            error("... couldn't create");
             x = 0;
-        }
         else if (!(x = pd_checkobject(newest)))
         {
             binbuf_print(b);
@@ -112,6 +108,11 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     {
             /* LATER make the color reflect this */
         x = (t_text *)pd_new(text_class);
+        if (binbuf_getnatom(b))
+        {
+            binbuf_print(b);
+            pd_error(x, "... couldn't create");
+        }
     }
     x->te_binbuf = b;
     x->te_xpix = xpix;
