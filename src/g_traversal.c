@@ -1076,6 +1076,8 @@ static void setsize_float(t_setsize *x, t_float f)
             count = newsize - nitems; count--; elem += elemsize)
                 word_init((t_word *)elem, elemtemplate, gp);
     }
+        /* invalidate all gpointers into the array */
+    array->a_valid++;
 
     /* redraw again. */
     if (gs->gs_which == GP_GLIST)
