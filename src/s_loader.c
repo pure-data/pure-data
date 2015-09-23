@@ -91,17 +91,22 @@ void sys_putonloadlist(char *classname) /* add to list of loaded modules */
 
 void class_set_extern_dir(t_symbol *s);
 
-static int sys_do_load_abs(t_canvas *canvas, char *objectname);
-static int sys_do_load_lib(t_canvas *canvas, char *objectname)
+static int sys_do_load_abs(t_canvas *canvas, const char *objectname, const char*path);
+static int sys_do_load_lib(t_canvas *canvas, const char *objectname, const char*path)
 {
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
-        *classname, *nameptr, altsymname[MAXPDSTRING];
+        *nameptr, altsymname[MAXPDSTRING];
+    const char *classname;
     void *dlobj;
     t_xxx makeout = NULL;
     int i, hexmunge = 0, fd;
 #ifdef _WIN32
     HINSTANCE ntdll;
 #endif
+        /* NULL-path is only used as a last resort,
+           but we have already tried all paths */
+    if(!path)return (0);
+
     if (classname = strrchr(objectname, '/'))
         classname++;
     else classname = objectname;
@@ -144,11 +149,11 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
     fprintf(stderr, "lib: %s\n", classname);
 #endif
         /* try looking in the path for (objectname).(sys_dllextent) ... */
-    if ((fd = canvas_open(canvas, objectname, sys_dllextent,
+    if ((fd = sys_trytoopenone(path, objectname, sys_dllextent,
         dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
             goto gotone;
         /* same, with the more generic sys_dllextent2 */
-    if ((fd = canvas_open(canvas, objectname, sys_dllextent2,
+    if ((fd = sys_trytoopenone(path, objectname, sys_dllextent2,
         dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
             goto gotone;
         /* next try (objectname)/(classname).(sys_dllextent) ... */
@@ -157,10 +162,10 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
     strcat(filename, "/");
     strncat(filename, classname, MAXPDSTRING-strlen(filename));
     filename[MAXPDSTRING-1] = 0;
-    if ((fd = canvas_open(canvas, filename, sys_dllextent,
+    if ((fd = sys_trytoopenone(path, filename, sys_dllextent,
         dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
             goto gotone;
-    if ((fd = canvas_open(canvas, filename, sys_dllextent2,
+    if ((fd = sys_trytoopenone(path, filename, sys_dllextent2,
         dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
             goto gotone;
 #ifdef ANDROID
@@ -171,7 +176,7 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
     if (libname[len-1] == '~' && len < MAXPDSTRING - 6) {
         strcpy(libname+len-1, "_tilde");
     }
-    if ((fd = canvas_open(canvas, libname, ".so",
+    if ((fd = sys_trytoopenone(path, libname, ".so",
         dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
             goto gotone;
 #endif
@@ -274,18 +279,47 @@ void sys_register_loader(loader_t loader)
     }
 }
 
-int sys_load_lib(t_canvas *canvas, char *classname)
+#include "g_canvas.h"
+
+/* the data passed to the iter-function */
+struct _loadlib_data {
+    t_canvas*canvas;
+    const char*classname;
+
+    int ok;
+};
+int sys_loadlib_iter(const char*path, struct _loadlib_data*data)
 {
-    int dspstate = canvas_suspend_dsp();
     int ok = 0;
     loader_queue_t *q;
     for(q = &loaders; q; q = q->next)
-        if (ok = q->loader(canvas, classname)) break;
-    /* if all loaders fail, try to load as abstraction */
+        if (ok = q->loader(data->canvas, data->classname, path))
+            break;
+    /* if all loaders failed, try to load as abstraction */
     if(!ok)
-        ok=sys_do_load_abs(canvas, classname);
+        ok=sys_do_load_abs(data->canvas, data->classname, path);
+    data->ok=ok;
+    return (ok==0);
+}
+
+int sys_load_lib(t_canvas *canvas, const char *classname)
+{
+    int dspstate = canvas_suspend_dsp();
+    struct _loadlib_data data;
+    data.canvas=canvas;
+    data.classname=classname;
+    data.ok=0;
+
+    canvas_path_iterate(canvas, sys_loadlib_iter,
+        CANVAS_PATHITER_SINGLECE, &data);
+
+    /* if loaders failed to far, we try a last time without a PATH
+     * let the loaders search wherever they want */
+    if (!data.ok)
+        sys_loadlib_iter(0, &data);
+
     canvas_resume_dsp(dspstate);
-    return ok;
+    return data.ok;
 }
 
 int sys_run_scheduler(const char *externalschedlibname,
@@ -355,11 +389,11 @@ extern t_pd *newest;
 
 static t_canvas *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
 {
-        /*
-         * TODO: check if the there is a binbuf cached for <canvas::symbol>
-            and use that instead.  We'll have to invalidate the cache once we
-            are done (either with a clock_delay(0) or something else)
-         */
+    /*
+     * TODO: check if the there is a binbuf cached for <canvas::symbol>
+        and use that instead.  We'll have to invalidate the cache once we
+        are done (either with a clock_delay(0) or something else)
+     */
     if (!pd_setloadingabstraction(s))
     {
         const char*objectname=s->s_name;
@@ -372,9 +406,9 @@ static t_canvas *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
         if ((fd = canvas_open(canvas, objectname, ".pd",
                   dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas, objectname, ".pat",
-			      dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
+                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas, classslashclass, ".pd",
-			      dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
+                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
             close(fd);
         }
         canvas_setargs(argc, argv);
@@ -393,17 +427,20 @@ static t_canvas *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
 }
 
 /* search for abstraction; register a loader if found */
-static int sys_do_load_abs(t_canvas *canvas, char *objectname)
+static int sys_do_load_abs(t_canvas *canvas, const char *objectname ,const char *path)
 {
     int fd;
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
+        /* NULL-path is only used as a last resort,
+           but we have already tried all paths */
+    if(!path)return (0);
     snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
-    if ((fd = canvas_open(canvas, objectname, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-        (fd = canvas_open(canvas, objectname, ".pat",
-			  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-        (fd = canvas_open(canvas, classslashclass, ".pd",
-			  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
+    if ((fd = sys_trytoopenone(path, objectname, ".pd",
+              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
+        (fd = sys_trytoopenone(path, objectname, ".pat",
+              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
+        (fd = sys_trytoopenone(path, classslashclass, ".pd",
+              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0) {
         close(fd);
         class_addcreator((t_newmethod)do_create_abstraction,
             gensym(objectname), A_GIMME, 0);
