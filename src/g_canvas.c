@@ -1425,6 +1425,29 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+typedef struct _canvasopen
+{
+    const char *name;
+    const char *ext;
+    char *dirresult;
+    char **nameresult;
+    unsigned int size;
+    int bin;
+    int fd;
+} t_canvasopen;
+
+static int canvas_open_iter(const char *path, t_canvasopen *co)
+{
+    int fd;
+    if ((fd = sys_trytoopenone(path, co->name, co->ext,
+        co->dirresult, co->nameresult, co->size, co->bin)) >= 0)
+    {
+        co->fd = fd;
+        return 0;
+    }
+    return 1;
+}
+
     /* utility function to read a file, looking first down the canvas's search
     path (set with "declare" objects in the patch and recursively in calling
     patches), then down the system one.  The filename is the concatenation of
@@ -1437,7 +1460,6 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     attempted, otherwise ASCII (this only matters on Microsoft.)
     If "x" is zero, the file is sought in the directory "." or in the
     global path.*/
-
 int canvas_open(t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
@@ -1445,17 +1467,37 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
     int fd = -1;
     char listbuf[MAXPDSTRING];
     t_canvas *y;
+    t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */
     if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
         return (fd);
 
-        /* otherwise "name" is relative; start trying in directories named
-        in this and parent environments */
+        /* otherwise "name" is relative; iterate over all the search-paths */
+    co.name = name;
+    co.ext = ext;
+    co.dirresult = dirresult;
+    co.nameresult = nameresult;
+    co.size = size;
+    co.bin = bin;
+    co.fd = -1;
+
+    canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, 0, &co);
+
+    return (co.fd);
+}
+
+int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, int flags,
+    void *user_data)
+{
+    t_canvas *y = 0;
+    t_namelist *nl = 0;
+    int count = 0;
+    if (!fun)
+        return 0;
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
-        t_namelist *nl;
         t_canvas *x2 = x;
         char *dir;
         while (x2 && x2->gl_owner)
@@ -1465,9 +1507,7 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
         {
             char realname[MAXPDSTRING];
             if (sys_isabsolutepath(nl->nl_string))
-            {
                 realname[0] = '\0';
-            }
             else
             {   /* if not absolute path, append Pd lib dir */
                 strncpy(realname, dir, MAXPDSTRING);
@@ -1476,13 +1516,35 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
             }
             strncat(realname, nl->nl_string, MAXPDSTRING-strlen(realname));
             realname[MAXPDSTRING-1] = 0;
-            if ((fd = sys_trytoopenone(realname, name, ext,
-                dirresult, nameresult, size, bin)) >= 0)
-                    return (fd);
+            if (!fun(realname, user_data))
+                return count+1;
+	    count++;
         }
+	if (flags && CANVAS_PATHITER_SINGLECE)
+            break;
     }
-    return (open_via_path((x ? canvas_getdir(x)->s_name : "."), name, ext,
-        dirresult, nameresult, size, bin));
+    /* try canvas dir */
+    if (!fun((x ? canvas_getdir(x)->s_name : "."), user_data))
+        return count+1;
+    count++;
+
+    /* now iterate through the global paths */
+    for (nl = sys_searchpath; nl; nl = nl->nl_next)
+    {
+        if (!fun(nl->nl_string, user_data))
+            return count+1;
+        count++;
+    }
+    /* and the default paths */
+    if (sys_usestdpath)
+        for (nl = sys_staticpath; nl; nl = nl->nl_next)
+        {
+            if (!fun(nl->nl_string, user_data))
+                return count+1;
+            count++;
+        }
+
+    return count;
 }
 
 static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
