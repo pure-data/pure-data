@@ -91,6 +91,7 @@ void sys_putonloadlist(char *classname) /* add to list of loaded modules */
 
 void class_set_extern_dir(t_symbol *s);
 
+static int sys_do_load_abs(t_canvas *canvas, char *objectname);
 static int sys_do_load_lib(t_canvas *canvas, char *objectname)
 {
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
@@ -163,7 +164,7 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
         dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
             goto gotone;
 #ifdef ANDROID
-    /* Android libs always have a 'lib' prefix, '.so' suffix and don't allow ~ */
+    /* Android libs have a 'lib' prefix, '.so' suffix and don't allow ~ */
     char libname[MAXPDSTRING] = "lib";
     strncat(libname, objectname, MAXPDSTRING - 4);
     int len = strlen(libname);
@@ -228,7 +229,8 @@ gotone:
     if(!makeout)
         makeout = (t_xxx)dlsym(dlobj,  "setup");
 #else
-#warning "No dynamic loading mechanism specified, libdl or WIN32 required for loading externals!"
+#warning "No dynamic loading mechanism specified, \
+    libdl or WIN32 required for loading externals!"
 #endif
 
     if (!makeout)
@@ -279,6 +281,9 @@ int sys_load_lib(t_canvas *canvas, char *classname)
     loader_queue_t *q;
     for(q = &loaders; q; q = q->next)
         if (ok = q->loader(canvas, classname)) break;
+    /* if all loaders fail, try to load as abstraction */
+    if(!ok)
+        ok=sys_do_load_abs(canvas, classname);
     canvas_resume_dsp(dspstate);
     return ok;
 }
@@ -339,4 +344,70 @@ int sys_run_scheduler(const char *externalschedlibname,
             filename);
         return (0);
     }
+}
+
+
+/* abstraction loading */
+#include "g_canvas.h"
+void canvas_popabstraction(t_canvas *x);
+int pd_setloadingabstraction(t_symbol *sym);
+extern t_pd *newest;
+
+static t_canvas *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
+{
+        /*
+         * TODO: check if the there is a binbuf cached for <canvas::symbol>
+            and use that instead.  We'll have to invalidate the cache once we
+            are done (either with a clock_delay(0) or something else)
+         */
+    if (!pd_setloadingabstraction(s))
+    {
+        const char*objectname=s->s_name;
+        char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
+        t_glist *glist=(t_glist *)canvas_getcurrent();
+        t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
+        int fd=-1;
+
+        t_pd *was = s__X.s_thing;
+        if ((fd = canvas_open(canvas, objectname, ".pd",
+                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
+            (fd = canvas_open(canvas, objectname, ".pat",
+			      dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
+            (fd = canvas_open(canvas, classslashclass, ".pd",
+			      dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
+            close(fd);
+        }
+        canvas_setargs(argc, argv);
+
+        binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
+        if (s__X.s_thing && was != s__X.s_thing)
+            canvas_popabstraction((t_canvas *)(s__X.s_thing));
+        else s__X.s_thing = was;
+        canvas_setargs(0, 0);
+
+        return pd_newest();
+    }
+    else error("%s: can't load abstraction within itself\n", s->s_name);
+    newest=0;
+    return 0;
+}
+
+/* search for abstraction; register a loader if found */
+static int sys_do_load_abs(t_canvas *canvas, char *objectname)
+{
+    int fd;
+    char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
+    snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
+    if ((fd = canvas_open(canvas, objectname, ".pd",
+              dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
+        (fd = canvas_open(canvas, objectname, ".pat",
+			  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
+        (fd = canvas_open(canvas, classslashclass, ".pd",
+			  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
+        close(fd);
+        class_addcreator((t_newmethod)do_create_abstraction,
+            gensym(objectname), A_GIMME, 0);
+        return(1);
+    }
+    return(0);
 }

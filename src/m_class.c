@@ -562,29 +562,6 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     class_loadsym = 0;
-    /* for class/class.pd support, to match class/class.pd_linux  */
-    snprintf(classslashclass, MAXPDSTRING, "%s/%s", s->s_name, s->s_name);
-    if ((fd = canvas_open(canvas_getcurrent(), s->s_name, ".pd",
-        dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-            (fd = canvas_open(canvas_getcurrent(), s->s_name, ".pat",
-                dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-               (fd = canvas_open(canvas_getcurrent(), classslashclass, ".pd",
-                    dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
-    {
-        close (fd);
-        if (!pd_setloadingabstraction(s))
-        {
-            t_pd *was = s__X.s_thing;
-            canvas_setargs(argc, argv);
-            binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
-            if (s__X.s_thing && was != s__X.s_thing)
-                canvas_popabstraction((t_canvas *)(s__X.s_thing));
-            else s__X.s_thing = was;
-            canvas_setargs(0, 0);
-        }
-        else error("%s: can't load abstraction within itself\n", s->s_name);
-    }
-    else newest = 0;
 }
 
 t_symbol  s_pointer =   {"pointer", 0, 0};
