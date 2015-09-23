@@ -58,6 +58,7 @@ static void canvas_takeofflist(t_canvas *x);
 static void canvas_pop(t_canvas *x, t_floatarg fvis);
 static void canvas_bind(t_canvas *x);
 static void canvas_unbind(t_canvas *x);
+void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
 /* --------- functions to handle the canvas environment ----------- */
 
@@ -1257,6 +1258,12 @@ static void *declare_new(t_symbol *s, int argc, t_atom *argv)
     x->x_useme = 1;
     x->x_canvas = canvas_getcurrent();
         /* LATER update environment and/or load libraries */
+    if (!x->x_canvas->gl_loading)
+    {
+        /* the object is created by the user (not by loading a patch),
+         * so update canvas's properties on the fly */
+        canvas_declare(x->x_canvas, s, argc, argv);
+    }
     return (x);
 }
 
@@ -1381,7 +1388,7 @@ static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
 }
 
 
-static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
+void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
     t_canvasenvironment *e = canvas_getenv(x);
