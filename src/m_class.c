@@ -323,9 +323,9 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
             snprintf(nbuf, 80, "%s_aliased", sel->s_name);
             c->c_methods[i].me_name = gensym(nbuf);
             if (c == pd_objectmaker)
-                post("warning: class '%s' overwritten; old one renamed '%s'",
+                verbose(1, "warning: class '%s' overwritten; old one renamed '%s'",
                     sel->s_name, nbuf);
-            else post("warning: old method '%s' for class '%s' renamed '%s'",
+            else verbose(1, "warning: old method '%s' for class '%s' renamed '%s'",
                 sel->s_name, c->c_name->s_name, nbuf);
         }
         c->c_methods = t_resizebytes(c->c_methods,
