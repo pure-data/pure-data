@@ -47,13 +47,17 @@ void array_resize(t_array *x, int n)
 {
     int elemsize, oldn;
     t_gpointer *gp;
+    char *tmp;
     t_template *template = template_findbyname(x->a_templatesym);
     if (n < 1)
         n = 1;
     oldn = x->a_n;
     elemsize = sizeof(t_word) * template->t_n;
 
-    x->a_vec = (char *)resizebytes(x->a_vec, oldn * elemsize, n * elemsize);
+    tmp = (char *)resizebytes(x->a_vec, oldn * elemsize, n * elemsize);
+    if (!tmp)
+        return;
+    x->a_vec = tmp;
     x->a_n = n;
     if (n > oldn)
     {
