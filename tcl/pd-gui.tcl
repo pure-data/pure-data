@@ -714,6 +714,7 @@ proc load_startup_plugins {} {
             load_plugin_script $filename
         }
     }
+    load_plugin_script [file join $::sys_guidir pd_deken.tcl]
 }
 
 # ------------------------------------------------------------------------------
