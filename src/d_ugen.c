@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-extern t_class *vinlet_class, *voutlet_class, *canvas_class;
+extern t_class *vinlet_class, *voutlet_class, *canvas_class, *text_class;
 t_float *obj_findsignalscalar(t_object *x, int m);
 static int ugen_loud;
 
@@ -684,8 +684,11 @@ void ugen_connect(t_dspcontext *dc, t_object *x1, int outno, t_object *x2,
     {
         if (!u1)
             error("object with signal outlets but no DSP method?");
-        else pd_error(u1->u_obj,
-            "signal outlet connect to nonsignal inlet (ignored)");
+                /* check if it's a "text" (i.e., object wasn't created) -
+                if so fail silently */
+        else if (!(x2 && (pd_class(&x2->ob_pd) == text_class)))
+            pd_error(u1->u_obj,
+                "signal outlet connect to nonsignal inlet (ignored)");
         return;
     }
     if (sigoutno < 0 || sigoutno >= u1->u_nout || siginno >= u2->u_nin)
