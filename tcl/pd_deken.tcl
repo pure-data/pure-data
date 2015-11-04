@@ -28,6 +28,7 @@ namespace eval ::deken:: {
     variable statustimer
     variable backends
     namespace export register
+    variable version 0.1
 }
 namespace eval ::deken::search:: { }
 
