@@ -75,7 +75,7 @@ STRIP = strip --strip-unneeded -R .note -R .comment
 # the sources
 
 PASRC = s_audio_pa.c s_audio_paring.c \
-	s_audio_mmio.c s_midi_mmio.c \
+	s_audio_mmio.c \
 	$(PADIR)/src/common/pa_stream.c \
         $(PADIR)/src/common/pa_trace.c \
         $(PADIR)/src/common/pa_process.c \
@@ -100,8 +100,10 @@ ASIOSRC = 	$(PADIR)/src/hostapi/asio/iasiothiscallresolver.cpp \
 #VSRC =  s_audio_vst.c
 
 PMDIR = ../portmidi
-PMINCLUDE = -I$(PMDIR)/pm_common -I$(PMDIR)/pm_win -I$(PMDIR)/porttime -DNEWBUFFER
-PMSRC = $(PMDIR)/pm_common/portmidi.c \
+PMINCLUDE = -I$(PMDIR)/pm_common -I$(PMDIR)/pm_win -I$(PMDIR)/porttime \
+    -DNEWBUFFER
+PMSRC =  s_midi_pm.c \
+        $(PMDIR)/pm_common/portmidi.c \
         $(PMDIR)/pm_common/pmutil.c \
         $(PMDIR)/porttime/porttime.c \
         $(PMDIR)/porttime/ptwinmm.c \
