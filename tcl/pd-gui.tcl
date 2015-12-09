@@ -10,7 +10,7 @@
 # second while pd loads.
 if { [catch {wm withdraw .} fid] } { exit 2 }
 
-package require Tcl 8.3
+package require Tcl 8.4
 package require Tk
 #package require tile
 ## replace Tk widgets with Ttk widgets on 8.5
