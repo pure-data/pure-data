@@ -1518,9 +1518,9 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, int flags,
             realname[MAXPDSTRING-1] = 0;
             if (!fun(realname, user_data))
                 return count+1;
-	    count++;
+            count++;
         }
-	if (flags && CANVAS_PATHITER_SINGLECE)
+        if (flags && CANVAS_PATHITER_SINGLECE)
             break;
     }
     /* try canvas dir */

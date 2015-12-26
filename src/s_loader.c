@@ -70,7 +70,7 @@ typedef struct _loadedlist
 } t_loadlist;
 
 static t_loadlist *sys_loaded;
-int sys_onloadlist(char *classname) /* return true if already loaded */
+int sys_onloadlist(const char *classname) /* return true if already loaded */
 {
     t_symbol *s = gensym(classname);
     t_loadlist *ll;
@@ -80,7 +80,8 @@ int sys_onloadlist(char *classname) /* return true if already loaded */
     return (0);
 }
 
-void sys_putonloadlist(char *classname) /* add to list of loaded modules */
+     /* add to list of loaded modules */
+void sys_putonloadlist(const char *classname)
 {
     t_loadlist *ll = (t_loadlist *)getbytes(sizeof(*ll));
     ll->ll_name = gensym(classname);
@@ -91,12 +92,14 @@ void sys_putonloadlist(char *classname) /* add to list of loaded modules */
 
 void class_set_extern_dir(t_symbol *s);
 
-static int sys_do_load_abs(t_canvas *canvas, const char *objectname, const char*path);
-static int sys_do_load_lib(t_canvas *canvas, const char *objectname, const char*path)
+static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
+    const char *path);
+static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
+    const char *path)
 {
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
         *nameptr, altsymname[MAXPDSTRING];
-    const char *classname;
+    const char *classname, *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;
     int i, hexmunge = 0, fd;
@@ -115,9 +118,10 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname, const char*
         verbose(1, "%s: already loaded", objectname);
         return (1);
     }
-    for (i = 0, nameptr = classname; i < MAXPDSTRING-7 && *nameptr; nameptr++)
+    for (i = 0, cnameptr = classname; i < MAXPDSTRING-7 && *cnameptr;
+        cnameptr++)
     {
-        char c = *nameptr;
+        char c = *cnameptr;
         if ((c>='0' && c<='9') || (c>='A' && c<='Z')||
            (c>='a' && c<='z' )|| c == '_')
         {
@@ -125,7 +129,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname, const char*
             i++;
         }
             /* trailing tilde becomes "_tilde" */
-        else if (c == '~' && nameptr[1] == 0)
+        else if (c == '~' && cnameptr[1] == 0)
         {
             strcpy(symname+i, "_tilde");
             i += strlen(symname+i);
@@ -288,7 +292,7 @@ struct _loadlib_data {
 
     int ok;
 };
-int sys_loadlib_iter(const char*path, struct _loadlib_data*data)
+int sys_loadlib_iter(const char *path, struct _loadlib_data *data)
 {
     int ok = 0;
     loader_queue_t *q;
@@ -296,10 +300,10 @@ int sys_loadlib_iter(const char*path, struct _loadlib_data*data)
         if (ok = q->loader(data->canvas, data->classname, path))
             break;
     /* if all loaders failed, try to load as abstraction */
-    if(!ok)
-        ok=sys_do_load_abs(data->canvas, data->classname, path);
-    data->ok=ok;
-    return (ok==0);
+    if (!ok)
+        ok = sys_do_load_abs(data->canvas, data->classname, path);
+    data->ok = ok;
+    return (ok == 0);
 }
 
 int sys_load_lib(t_canvas *canvas, const char *classname)
@@ -310,7 +314,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     data.classname=classname;
     data.ok=0;
 
-    canvas_path_iterate(canvas, sys_loadlib_iter,
+    canvas_path_iterate(canvas, (t_canvas_path_iterator)sys_loadlib_iter,
         CANVAS_PATHITER_SINGLECE, &data);
 
     /* if loaders failed to far, we try a last time without a PATH
@@ -382,12 +386,11 @@ int sys_run_scheduler(const char *externalschedlibname,
 
 
 /* abstraction loading */
-#include "g_canvas.h"
 void canvas_popabstraction(t_canvas *x);
 int pd_setloadingabstraction(t_symbol *sym);
 extern t_pd *newest;
 
-static t_canvas *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
+static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
 {
     /*
      * TODO: check if the there is a binbuf cached for <canvas::symbol>
@@ -419,11 +422,11 @@ static t_canvas *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
         else s__X.s_thing = was;
         canvas_setargs(0, 0);
 
-        return pd_newest();
+        return (pd_newest());
     }
     else error("%s: can't load abstraction within itself\n", s->s_name);
-    newest=0;
-    return 0;
+    newest = 0;
+    return (0);
 }
 
 /* search for abstraction; register a loader if found */
@@ -433,7 +436,7 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname ,const char 
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
         /* NULL-path is only used as a last resort,
            but we have already tried all paths */
-    if(!path)return (0);
+    if (!path) return (0);
     snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
     if ((fd = sys_trytoopenone(path, objectname, ".pd",
               dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
@@ -444,7 +447,7 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname ,const char 
         close(fd);
         class_addcreator((t_newmethod)do_create_abstraction,
             gensym(objectname), A_GIMME, 0);
-        return(1);
+        return (1);
     }
-    return(0);
+    return (0);
 }
