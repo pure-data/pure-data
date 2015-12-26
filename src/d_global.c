@@ -100,12 +100,12 @@ static t_int *sigreceive_perform(t_int *w)
     if (in)
     {
         while (n--)
-            *out++ = *in++; 
+            *out++ = *in++;
     }
     else
     {
         while (n--)
-            *out++ = 0; 
+            *out++ = 0;
     }
     return (w+4);
 }
@@ -121,16 +121,16 @@ static t_int *sigreceive_perf8(t_int *w)
     {
         for (; n; n -= 8, in += 8, out += 8)
         {
-            out[0] = in[0]; out[1] = in[1]; out[2] = in[2]; out[3] = in[3]; 
-            out[4] = in[4]; out[5] = in[5]; out[6] = in[6]; out[7] = in[7]; 
+            out[0] = in[0]; out[1] = in[1]; out[2] = in[2]; out[3] = in[3];
+            out[4] = in[4]; out[5] = in[5]; out[6] = in[6]; out[7] = in[7];
         }
     }
     else
     {
         for (; n; n -= 8, in += 8, out += 8)
         {
-            out[0] = 0; out[1] = 0; out[2] = 0; out[3] = 0; 
-            out[4] = 0; out[5] = 0; out[6] = 0; out[7] = 0; 
+            out[0] = 0; out[1] = 0; out[2] = 0; out[3] = 0;
+            out[4] = 0; out[5] = 0; out[6] = 0; out[7] = 0;
         }
     }
     return (w+4);
@@ -215,7 +215,7 @@ static t_int *sigcatch_perform(t_int *w)
     t_sample *in = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    while (n--) *out++ = *in, *in++ = 0; 
+    while (n--) *out++ = *in, *in++ = 0;
     return (w+4);
 }
 
@@ -227,11 +227,11 @@ static t_int *sigcatch_perf8(t_int *w)
     int n = (int)(w[3]);
     for (; n; n -= 8, in += 8, out += 8)
     {
-       out[0] = in[0]; out[1] = in[1]; out[2] = in[2]; out[3] = in[3]; 
-       out[4] = in[4]; out[5] = in[5]; out[6] = in[6]; out[7] = in[7]; 
-    
-       in[0] = 0; in[1] = 0; in[2] = 0; in[3] = 0; 
-       in[4] = 0; in[5] = 0; in[6] = 0; in[7] = 0; 
+       out[0] = in[0]; out[1] = in[1]; out[2] = in[2]; out[3] = in[3];
+       out[4] = in[4]; out[5] = in[5]; out[6] = in[6]; out[7] = in[7];
+
+       in[0] = 0; in[1] = 0; in[2] = 0; in[3] = 0;
+       in[4] = 0; in[5] = 0; in[6] = 0; in[7] = 0;
     }
     return (w+4);
 }

@@ -6,7 +6,7 @@
 Pd, but not shared with Pd objects. */
 
 /* NOTE: this file describes Pd implementation details which may change
-in future releases.  The public (stable) API is in m_pd.h. */  
+in future releases.  The public (stable) API is in m_pd.h. */
 
 /* LATER consider whether to use 'char' for method arg types to save space */
 #ifndef __m_imp_h_

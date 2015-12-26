@@ -35,7 +35,7 @@ static void vslider_draw_update(t_gobj *client, t_glist *glist)
     t_vslider *x = (t_vslider *)client;
     if (glist_isvisible(glist))
     {
-        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h - 
+        int r = text_ypix(&x->x_gui.x_obj, glist) + x->x_gui.x_h -
             (x->x_val + 50)/100;
         int xpos=text_xpix(&x->x_gui.x_obj, glist);
 
@@ -63,7 +63,7 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
              -font {{%s} -%d %s} -fill #%6.6x -tags [list %lxLABEL label text]\n",
              canvas, xpos+x->x_gui.x_ldx, ypos+x->x_gui.x_ldy,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
-             x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight, 
+             x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]\n",
@@ -125,7 +125,7 @@ static void vslider_draw_config(t_vslider* x,t_glist* glist)
     t_canvas *canvas=glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%6.6x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight, 
+             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"");
     sys_vgui(".x%lx.c itemconfigure %lxKNOB -fill #%6.6x\n", canvas,

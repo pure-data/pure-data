@@ -589,7 +589,7 @@ static void my_numbox_log_height(t_my_numbox *x, t_floatarg lh)
         x->x_k = exp(log(x->x_max/x->x_min)/(double)(x->x_log_height));
     else
         x->x_k = 1.0;
-    
+
 }
 
 static void my_numbox_float(t_my_numbox *x, t_floatarg f)

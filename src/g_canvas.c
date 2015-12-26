@@ -45,7 +45,7 @@ desktops because the borders have both window title area and menus. */
 
 extern t_pd *newest;
 t_class *canvas_class;
-t_canvas *canvas_whichfind;         /* last canvas we did a find in */ 
+t_canvas *canvas_whichfind;         /* last canvas we did a find in */
 
 /* ------------------ forward function declarations --------------- */
 static void canvas_start_dsp(void);
@@ -69,7 +69,7 @@ static t_atom *canvas_newargv;
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist( void)
 {
-    if (! glist_amreloadingabstractions)  /* not if we're in a reload */         
+    if (! glist_amreloadingabstractions)  /* not if we're in a reload */
         sys_gui("::pd_menus::update_window_menu\n");
 }
 
@@ -203,7 +203,7 @@ void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
         strcat(result, "/");
         strncat(result, file, nleft);
         result[resultsize-1] = 0;
-    }           
+    }
 }
 
 void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir)
@@ -291,7 +291,7 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
         t->tr_x21 = t->tr_y21 = t->tr_x22 = t->tr_y22 = 0;
         t->tr_lx1 = t->tr_ly1 = t->tr_lx2 = t->tr_ly2 = 0;
     }
-    
+
     return (rval);
 }
 
@@ -315,7 +315,7 @@ void glist_init(t_glist *x)
 }
 
     /* make a new glist.  It will either be a "root" canvas or else
-    it appears as a "text" object in another window (canvas_getcurrnet() 
+    it appears as a "text" object in another window (canvas_getcurrnet()
     tells us which.) */
 t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
 {
@@ -378,7 +378,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_y2 = 1;
     canvas_dosetbounds(x, xloc, yloc, xloc + width, yloc + height);
     x->gl_owner = owner;
-    x->gl_name = (*s->s_name ? s : 
+    x->gl_name = (*s->s_name ? s :
         (canvas_newfilename ? canvas_newfilename : gensym("Pd")));
     canvas_bind(x);
     x->gl_loading = 1;
@@ -386,7 +386,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         /* cancel "vis" flag if we're a subpatch of an
          abstraction inside another patch.  A separate mechanism prevents
          the toplevel abstraction from showing up. */
-    if (vis && gensym("#X")->s_thing && 
+    if (vis && gensym("#X")->s_thing &&
         ((*gensym("#X")->s_thing) == canvas_class))
     {
         t_canvas *zzz = (t_canvas *)(gensym("#X")->s_thing);
@@ -494,14 +494,14 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     /* call glist_addglist from a Pd message */
 void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
 {
-    t_symbol *sym = atom_getsymbolarg(0, argc, argv);   
-    t_float x1 = atom_getfloatarg(1, argc, argv);  
-    t_float y1 = atom_getfloatarg(2, argc, argv);  
-    t_float x2 = atom_getfloatarg(3, argc, argv);  
-    t_float y2 = atom_getfloatarg(4, argc, argv);  
-    t_float px1 = atom_getfloatarg(5, argc, argv);  
-    t_float py1 = atom_getfloatarg(6, argc, argv);  
-    t_float px2 = atom_getfloatarg(7, argc, argv);  
+    t_symbol *sym = atom_getsymbolarg(0, argc, argv);
+    t_float x1 = atom_getfloatarg(1, argc, argv);
+    t_float y1 = atom_getfloatarg(2, argc, argv);
+    t_float x2 = atom_getfloatarg(3, argc, argv);
+    t_float y2 = atom_getfloatarg(4, argc, argv);
+    t_float px1 = atom_getfloatarg(5, argc, argv);
+    t_float py1 = atom_getfloatarg(6, argc, argv);
+    t_float px2 = atom_getfloatarg(7, argc, argv);
     t_float py2 = atom_getfloatarg(8, argc, argv);
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
 }
@@ -515,7 +515,7 @@ int glist_isgraph(t_glist *x)
 
     /* This is sent from the GUI to inform a toplevel that its window has been
     moved or resized. */
-static void canvas_setbounds(t_canvas *x, t_float left, t_float top, 
+static void canvas_setbounds(t_canvas *x, t_float left, t_float top,
                              t_float right, t_float bottom)
 {
     canvas_dosetbounds(x, (int)left, (int)top, (int)right, (int)bottom);
@@ -533,7 +533,7 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
     x->gl_screeny1 = y1;
     x->gl_screenx2 = x2;
     x->gl_screeny2 = y2;
-    if (!glist_isgraph(x) && (x->gl_y2 < x->gl_y1)) 
+    if (!glist_isgraph(x) && (x->gl_y2 < x->gl_y1))
     {
             /* if it's flipped so that y grows upward,
             fix so that zero is bottom edge and redraw.  This is
@@ -589,7 +589,7 @@ void canvas_reflecttitle(t_canvas *x)
                 break;
             if (i != 0)
                 strcat(namebuf, " ");
-            atom_string(&env->ce_argv[i], namebuf + strlen(namebuf), 
+            atom_string(&env->ce_argv[i], namebuf + strlen(namebuf),
                 MAXPDSTRING/2);
         }
         strcat(namebuf, ")");
@@ -683,7 +683,7 @@ void glist_menu_open(t_glist *x)
     if (glist_isvisible(x) && !glist_istoplevel(x))
     {
         t_glist *gl2 = x->gl_owner;
-        if (!gl2) 
+        if (!gl2)
             bug("glist_menu_open");  /* shouldn't happen but not dangerous */
         else
         {
@@ -762,7 +762,7 @@ static void canvas_drawlines(t_canvas *x)
         while (oc = linetraverser_next(&t))
             sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                     glist_getcanvas(x),
-                        t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2, 
+                        t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
                             (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1),
                                 oc);
     }
@@ -982,7 +982,7 @@ static void canvas_rename_method(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         t_canvasenvironment *e = canvas_getenv(x);
         canvas_setcurrent(x);
         canvas_rename(x, binbuf_realizedollsym(av->a_w.w_symbol,
-            e->ce_argc, e->ce_argv, 1), 0); 
+            e->ce_argc, e->ce_argv, 1), 0);
         canvas_unsetcurrent(x);
     }
     else canvas_rename(x, gensym("Pd"), 0);
@@ -1045,7 +1045,7 @@ static void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
     t_gobj *y;
     t_object *ob;
     t_symbol *dspsym = gensym("dsp");
-    t_dspcontext *dc;    
+    t_dspcontext *dc;
 
         /* create a new "DSP graph" object to use in sorting this canvas.
         If we aren't toplevel, there are already other dspcontexts around. */
@@ -1055,7 +1055,7 @@ static void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
         obj_nsigoutlets(&x->gl_obj));
 
         /* find all the "dsp" boxes and add them to the graph */
-    
+
     for (y = x->gl_list; y; y = y->g_next)
         if ((ob = pd_checkobject(&y->g_pd)) && zgetfn(&y->g_pd, dspsym))
             ugen_add(dc, ob);
@@ -1084,10 +1084,10 @@ static void canvas_start_dsp(void)
     if (pd_this->pd_dspstate) ugen_stop();
     else sys_gui("pdtk_pd_dsp ON\n");
     ugen_start();
-    
+
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_dodsp(x, 1, 0);
-    
+
     canvas_dspstate = pd_this->pd_dspstate = 1;
 }
 
@@ -1167,10 +1167,10 @@ void *canvas_getblock(t_class *blockclass, t_canvas **canvasp)
     *canvasp = canvas->gl_owner;
     return(ret);
 }
-    
+
 /******************* redrawing  data *********************/
 
-    /* redraw all "scalars" (do this if a drawing command is changed.) 
+    /* redraw all "scalars" (do this if a drawing command is changed.)
     LATER we'll use the "template" information to select which ones we
     redraw.   Action = 0 for redraw, 1 for draw only, 2 for erase. */
 static void glist_redrawall(t_glist *gl, int action)
@@ -1395,7 +1395,7 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
         if ((argc > i+1) && !strcmp(flag, "-path"))
         {
-            e->ce_path = namelist_append(e->ce_path, 
+            e->ce_path = namelist_append(e->ce_path,
                 atom_getsymbolarg(i+1, argc, argv)->s_name, 0);
             i++;
         }
@@ -1427,7 +1427,7 @@ static void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     be "size" bytes.  The "nameresult" pointer will be set somewhere in
     the interior of "dirresult" and will give the file basename (with
     slashes trimmed).  If "bin" is set a 'binary' open is
-    attempted, otherwise ASCII (this only matters on Microsoft.) 
+    attempted, otherwise ASCII (this only matters on Microsoft.)
     If "x" is zero, the file is sought in the directory "." or in the
     global path.*/
 
@@ -1442,7 +1442,7 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
         /* first check if "name" is absolute (and if so, try to open) */
     if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
         return (fd);
-    
+
         /* otherwise "name" is relative; start trying in directories named
         in this and parent environments */
     for (y = x; y; y = y->gl_owner)

@@ -17,7 +17,7 @@
 #ifdef _WIN32
 #include <winsock.h>
 #include <sys/types.h>
-#include <sys/timeb.h> 
+#include <sys/timeb.h>
 #include <wtypes.h>
 #endif
 #include <string.h>
@@ -304,7 +304,7 @@ static void sys_dispatchnextmidiin( void)
         bug("sys_dispatchnextmidiin 2");
     parserp = parser + portno;
     outlet_setstacklim();
-    
+
     if (byte >= 0xf8)
         inmidi_realtimein(portno, byte);
     else
@@ -378,7 +378,7 @@ static void sys_dispatchnextmidiin( void)
             case MIDISTARTSYSEX:
                 inmidi_sysex(portno, byte);
                 break;
-                
+
                 /* other kinds of messages are just dropped here.  We'll
                 need another status byte before we start letting MIDI in
                 again (no running status across "system" messages). */
@@ -390,7 +390,7 @@ static void sys_dispatchnextmidiin( void)
                 break;
             }
         }
-    }  
+    }
     midi_intail  = (midi_intail + 1 == MIDIQSIZE ? 0 : midi_intail + 1);
 }
 
@@ -530,7 +530,7 @@ void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
         if ((devn = sys_mididevnametonumber(0,
             &midi_indevnames[i * DEVDESCSIZE])) >= 0)
                 pmidiindev[i] = devn;
-        else pmidiindev[i] = midi_midiindev[i]; 
+        else pmidiindev[i] = midi_midiindev[i];
     }
     *pnmidioutdev = midi_nmidioutdev;
     for (i = 0; i < midi_nmidioutdev; i++)
@@ -538,7 +538,7 @@ void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
         if ((devn = sys_mididevnametonumber(1,
             &midi_outdevnames[i * DEVDESCSIZE])) >= 0)
                 pmidioutdev[i] = devn;
-        else pmidioutdev[i] = midi_midioutdev[i]; 
+        else pmidioutdev[i] = midi_midioutdev[i];
     }
 }
 
@@ -557,7 +557,7 @@ static void sys_save_midi_params(
     midi_nmidioutdev = nmidioutdev;
     for (i = 0; i < nmidioutdev; i++)
     {
-        midi_midioutdev[i] = midioutdev[i]; 
+        midi_midioutdev[i] = midioutdev[i];
         sys_mididevnumbertoname(1, midioutdev[i],
             &midi_outdevnames[i * DEVDESCSIZE], DEVDESCSIZE);
     }
@@ -698,10 +698,10 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
     midiindev7 = (nindev > 6 &&  midiindev[6]>= 0 ? midiindev[6]+1 : 0);
     midiindev8 = (nindev > 7 &&  midiindev[7]>= 0 ? midiindev[7]+1 : 0);
     midiindev9 = (nindev > 8 &&  midiindev[8]>= 0 ? midiindev[8]+1 : 0);
-    midioutdev1 = (noutdev > 0 && midioutdev[0]>= 0 ? midioutdev[0]+1 : 0); 
-    midioutdev2 = (noutdev > 1 && midioutdev[1]>= 0 ? midioutdev[1]+1 : 0); 
-    midioutdev3 = (noutdev > 2 && midioutdev[2]>= 0 ? midioutdev[2]+1 : 0); 
-    midioutdev4 = (noutdev > 3 && midioutdev[3]>= 0 ? midioutdev[3]+1 : 0); 
+    midioutdev1 = (noutdev > 0 && midioutdev[0]>= 0 ? midioutdev[0]+1 : 0);
+    midioutdev2 = (noutdev > 1 && midioutdev[1]>= 0 ? midioutdev[1]+1 : 0);
+    midioutdev3 = (noutdev > 2 && midioutdev[2]>= 0 ? midioutdev[2]+1 : 0);
+    midioutdev4 = (noutdev > 3 && midioutdev[3]>= 0 ? midioutdev[3]+1 : 0);
     midioutdev5 = (noutdev > 4 && midioutdev[4]>= 0 ? midioutdev[4]+1 : 0);
     midioutdev6 = (noutdev > 5 && midioutdev[5]>= 0 ? midioutdev[5]+1 : 0);
     midioutdev7 = (noutdev > 6 && midioutdev[6]>= 0 ? midioutdev[6]+1 : 0);
@@ -714,7 +714,7 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 "pdtk_alsa_midi_dialog %%s \
 %d %d %d %d %d %d %d %d \
 %d 1\n",
-        midiindev1, midiindev2, midiindev3, midiindev4, 
+        midiindev1, midiindev2, midiindev3, midiindev4,
         midioutdev1, midioutdev2, midioutdev3, midioutdev4,
         (flongform != 0));
       else
@@ -725,7 +725,7 @@ void glob_midi_properties(t_pd *dummy, t_floatarg flongform)
 %d %d %d %d %d %d %d %d %d \
 %d\n",
         midiindev1, midiindev2, midiindev3, midiindev4, midiindev5,
-        midiindev6, midiindev7, midiindev8, midiindev9, 
+        midiindev6, midiindev7, midiindev8, midiindev9,
         midioutdev1, midioutdev2, midioutdev3, midioutdev4, midioutdev5,
         midioutdev6, midioutdev7, midioutdev8, midioutdev9,
         (flongform != 0));
@@ -800,13 +800,13 @@ void glob_midi_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 }
 
 void sys_get_midi_devs(char *indevlist, int *nindevs,
-                       char *outdevlist, int *noutdevs, 
+                       char *outdevlist, int *noutdevs,
                        int maxndevs, int devdescsize)
 {
 
 #ifdef USEAPI_ALSA
   if (sys_midiapi == API_ALSA)
-    midi_alsa_getdevs(indevlist, nindevs, outdevlist, noutdevs, 
+    midi_alsa_getdevs(indevlist, nindevs, outdevlist, noutdevs,
                       maxndevs, devdescsize);
   else
 #endif /* ALSA */

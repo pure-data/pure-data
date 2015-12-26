@@ -231,7 +231,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_floatsignalin = 0;
     c->c_externdir = class_extern_dir;
     c->c_savefn = (typeflag == CLASS_PATCHABLE ? text_save : class_nosavefn);
-#if 0 
+#if 0
     post("class: %s", c->c_name->s_name);
 #endif
     return (c);
@@ -242,7 +242,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     can belong to, but this won't be used until the newmethod is actually
     called back (and the new method explicitly takes care of this.) */
 
-void class_addcreator(t_newmethod newmethod, t_symbol *s, 
+void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...)
 {
     va_list ap;
@@ -262,7 +262,7 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
         vp++;
         count++;
         *vp = va_arg(ap, t_atomtype);
-    } 
+    }
     va_end(ap);
     class_addmethod(pd_objectmaker, (t_method)newmethod, s,
         vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
@@ -275,7 +275,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     t_methodentry *m;
     t_atomtype argtype = arg1;
     int nargs;
-    
+
     va_start(ap, arg1);
         /* "signal" method specifies that we take audio signals but
         that we don't want automatic float to signal conversion.  This
@@ -608,7 +608,7 @@ void mess_init(void)
     t_symbol **sp;
     int i;
 
-    if (pd_objectmaker) return;    
+    if (pd_objectmaker) return;
     for (i = sizeof(symlist)/sizeof(*symlist), sp = symlist; i--; sp++)
         (void) dogensym((*sp)->s_name, *sp);
     pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
@@ -658,7 +658,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_floatarg ad[MAXPDARG+1], *dp = ad;
     int narg = 0;
     t_pd *bonzo;
-    
+
         /* check for messages that are handled by fixed slots in the class
         structure.  We don't catch "pointer" though so that sending "pointer"
         to pd_objectmaker doesn't require that we supply a pointer value. */
@@ -812,7 +812,7 @@ void pd_vmess(t_pd *x, t_symbol *sel, char *fmt, ...)
         {
         case 'f': SETFLOAT(at, va_arg(ap, double)); break;
         case 's': SETSYMBOL(at, va_arg(ap, t_symbol *)); break;
-        case 'i': SETFLOAT(at, va_arg(ap, t_int)); break;       
+        case 'i': SETFLOAT(at, va_arg(ap, t_int)); break;
         case 'p': SETPOINTER(at, va_arg(ap, t_gpointer *)); break;
         default: goto done;
         }

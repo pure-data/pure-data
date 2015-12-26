@@ -277,7 +277,7 @@ static void line_float(t_line *x, t_float f)
             x->x_grain = DEFAULTLINEGRAIN;
         clock_delay(x->x_clock,
             (x->x_grain > x->x_in1val ? x->x_in1val : x->x_grain));
-    
+
     }
     else
     {
@@ -628,7 +628,7 @@ static void pipe_free(t_pipe *x)
 
 static void pipe_setup(void)
 {
-    pipe_class = class_new(gensym("pipe"), 
+    pipe_class = class_new(gensym("pipe"),
         (t_newmethod)pipe_new, (t_method)pipe_free,
         sizeof(t_pipe), 0, A_GIMME, 0);
     class_addlist(pipe_class, pipe_list);

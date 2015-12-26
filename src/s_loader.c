@@ -15,7 +15,7 @@
 #include <windows.h>
 #endif
 #ifdef __APPLE__
-#include <mach-o/dyld.h> 
+#include <mach-o/dyld.h>
 #endif
 #include <string.h>
 #include "m_pd.h"
@@ -138,7 +138,7 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
         strncpy(symname, "setup_", 6);
     }
     else strcat(symname, "_setup");
-    
+
 #if 0
     fprintf(stderr, "lib: %s\n", classname);
 #endif
@@ -211,7 +211,7 @@ gotone:
             class_set_extern_dir(&s_);
             return (0);
         }
-        makeout = (t_xxx)GetProcAddress(ntdll, symname);  
+        makeout = (t_xxx)GetProcAddress(ntdll, symname);
         if (!makeout)
              makeout = (t_xxx)GetProcAddress(ntdll, "setup");
         SetDllDirectory(NULL); /* reset DLL dir to nothing */
@@ -257,10 +257,10 @@ void sys_register_loader(loader_t loader)
 {
     loader_queue_t *q = &loaders;
     while (1)
-    {   
+    {
         if (q->loader == loader)    /* already loaded - nothing to do */
             return;
-        else if (q->next) 
+        else if (q->next)
             q = q->next;
         else
         {
@@ -269,7 +269,7 @@ void sys_register_loader(loader_t loader)
             q->next->next = NULL;
             break;
         }
-    }   
+    }
 }
 
 int sys_load_lib(t_canvas *canvas, char *classname)
@@ -299,7 +299,7 @@ int sys_run_scheduler(const char *externalschedlibname,
         snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
             sys_dllextent2);
         sys_bashfilename(filename, filename);
-    }       
+    }
 #ifdef _WIN32
     {
         HINSTANCE ntdll = LoadLibrary(filename);

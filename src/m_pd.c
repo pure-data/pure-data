@@ -12,7 +12,7 @@
 t_pd *pd_new(t_class *c)
 {
     t_pd *x;
-    if (!c) 
+    if (!c)
         bug ("pd_new: apparently called before setup routine");
     x = (t_pd *)t_getbytes(c->c_size);
     *x = c;
@@ -185,7 +185,7 @@ void pd_unbind(t_pd *x, t_symbol *s)
 t_pd *pd_findbyclass(t_symbol *s, t_class *c)
 {
     t_pd *x = 0;
-    
+
     if (!s->s_thing) return (0);
     if (*s->s_thing == c) return (s->s_thing);
     if (*s->s_thing == bindlist_class)
