@@ -17,6 +17,13 @@ Special instructions for Microsoft Visual C: cd to src and type "make -f
 makefile.nt". Then CD to the various subdirs of extra and type "make nt" in
 each.
 
-Various dependencies: in linux and Mac you need TK (apparently always present
-for Mac and usually there for linux). On linux you may also need an ALSA
-"dev" package: (yum install alsa-lib-devel) or (apt-get install libasound2-dev).
+Various dependencies: 
+
+- in linux and Mac you need Tcl/Tk 
+    (apparently always present for Mac and usually there for linux). 
+
+- On linux you may also need:
+    - the ALSA "dev" package: (yum install alsa-lib-devel) or (sudo apt-get install libasound2-dev)    
+    - the JACK "dev" package: (yum install alsa-lib-devel) or (sudo apt-get install libasound2-dev)
+    - libtool (sudo apt-get install libtool) 
+

@@ -1,6 +1,6 @@
 This is the README file for Pd, a free real-time computer music software
 package resembling Max.  You can get Pd for Linux, Mac OSX, or MS Windows,
-from http://www.crca.ucsd.edu/~msp/software.html.  
+from http://www.crca.ucsd.edu/~msp/software.html.
 Installation instructions are in the HTML DOCUMENTATION at:
 
     http://www.crca.ucsd.edu/~msp/Pd_documentation/index.htm
