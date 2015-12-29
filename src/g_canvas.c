@@ -1483,13 +1483,12 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
     co.bin = bin;
     co.fd = -1;
 
-    canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, 0, &co);
+    canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, &co);
 
     return (co.fd);
 }
 
-int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, int flags,
-    void *user_data)
+int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
 {
     t_canvas *y = 0;
     t_namelist *nl = 0;
@@ -1521,8 +1520,6 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, int flags,
                 return count+1;
             count++;
         }
-        if (flags && CANVAS_PATHITER_SINGLECE)
-            break;
     }
     /* try canvas dir */
     if (!fun((x ? canvas_getdir(x)->s_name : "."), user_data))

@@ -525,11 +525,8 @@ typedef int (*t_canvas_path_iterator)(const char *path, void *user_data);
  * <data>
  * iteration stops once all paths are exhausted or calling <fun> returned 0.
  */
-#define CANVAS_PATHITER_DEFAULT 0
-    /* don't iterate over paths in parent canvas-environments */
-#define CANVAS_PATHITER_SINGLECE (1<< 1)
 EXTERN int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
-    int flags, void *user_data);
+    void *user_data);
 
 /* ---- functions on canvasses as objects  --------------------- */
 

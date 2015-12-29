@@ -316,7 +316,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     data.ok = 0;
 
     canvas_path_iterate(canvas, (t_canvas_path_iterator)sys_loadlib_iter,
-        0, &data);
+        &data);
 
     /* if loaders failed to far, we try a last time without a PATH
      * let the loaders search wherever they want */
