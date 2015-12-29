@@ -390,7 +390,7 @@ void canvas_popabstraction(t_canvas *x);
 int pd_setloadingabstraction(t_symbol *sym);
 extern t_pd *newest;
 
-static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
+static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
 {
     /*
      * TODO: check if the there is a binbuf cached for <canvas::symbol>
@@ -399,11 +399,11 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
      */
     if (!pd_setloadingabstraction(s))
     {
-        const char*objectname=s->s_name;
+        const char *objectname = s->s_name;
         char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
-        t_glist *glist=(t_glist *)canvas_getcurrent();
-        t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
-        int fd=-1;
+        t_glist *glist = (t_glist *)canvas_getcurrent();
+        t_canvas *canvas = (t_canvas*)glist_getcanvas(glist);
+        int fd = -1;
 
         t_pd *was = s__X.s_thing;
         if ((fd = canvas_open(canvas, objectname, ".pd",
@@ -411,18 +411,19 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom*argv)
             (fd = canvas_open(canvas, objectname, ".pat",
                   dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas, classslashclass, ".pd",
-                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
+                  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
+        {
             close(fd);
+            canvas_setargs(argc, argv);
+
+            binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
+            if (s__X.s_thing && was != s__X.s_thing)
+                canvas_popabstraction((t_canvas *)(s__X.s_thing));
+            else s__X.s_thing = was;
+            canvas_setargs(0, 0);
+            return (newest);
         }
-        canvas_setargs(argc, argv);
-
-        binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
-        if (s__X.s_thing && was != s__X.s_thing)
-            canvas_popabstraction((t_canvas *)(s__X.s_thing));
-        else s__X.s_thing = was;
-        canvas_setargs(0, 0);
-
-        return (pd_newest());
+            /* otherwise we couldn't do it; just return 0 */
     }
     else error("%s: can't load abstraction within itself\n", s->s_name);
     newest = 0;

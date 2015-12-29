@@ -1285,8 +1285,9 @@ void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
             binbuf_addbinbuf(b, ((t_declare *)y)->x_obj.te_binbuf);
             binbuf_addv(b, ";");
         }
-        else if (pd_class(&y->g_pd) == canvas_class)
-            canvas_savedeclarationsto((t_canvas *)y, b);
+        else if (pd_checkglist(&y->g_pd) &&
+            !canvas_isabstraction((t_canvas *)y))
+                canvas_savedeclarationsto((t_canvas *)y, b);
     }
 }
 
