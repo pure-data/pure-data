@@ -286,12 +286,13 @@ void sys_register_loader(loader_t loader)
 #include "g_canvas.h"
 
 /* the data passed to the iter-function */
-struct _loadlib_data {
-    t_canvas*canvas;
-    const char*classname;
-
+struct _loadlib_data
+{
+    t_canvas *canvas;
+    const char *classname;
     int ok;
 };
+
 int sys_loadlib_iter(const char *path, struct _loadlib_data *data)
 {
     int ok = 0;
@@ -310,12 +311,12 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
 {
     int dspstate = canvas_suspend_dsp();
     struct _loadlib_data data;
-    data.canvas=canvas;
-    data.classname=classname;
-    data.ok=0;
+    data.canvas = canvas;
+    data.classname = classname;
+    data.ok = 0;
 
     canvas_path_iterate(canvas, (t_canvas_path_iterator)sys_loadlib_iter,
-        CANVAS_PATHITER_SINGLECE, &data);
+        0, &data);
 
     /* if loaders failed to far, we try a last time without a PATH
      * let the loaders search wherever they want */
@@ -406,6 +407,7 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
         int fd = -1;
 
         t_pd *was = s__X.s_thing;
+        snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
         if ((fd = canvas_open(canvas, objectname, ".pd",
                   dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
             (fd = canvas_open(canvas, objectname, ".pat",
@@ -431,7 +433,8 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
 }
 
 /* search for abstraction; register a loader if found */
-static int sys_do_load_abs(t_canvas *canvas, const char *objectname ,const char *path)
+static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
+    const char *path)
 {
     int fd;
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
@@ -444,7 +447,8 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname ,const char 
         (fd = sys_trytoopenone(path, objectname, ".pat",
               dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
         (fd = sys_trytoopenone(path, classslashclass, ".pd",
-              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0) {
+              dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+    {
         close(fd);
         class_addcreator((t_newmethod)do_create_abstraction,
             gensym(objectname), A_GIMME, 0);
