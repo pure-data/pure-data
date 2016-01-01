@@ -160,11 +160,11 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_gatom::cancel $mytoplevel"
     pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 10
-    if {$::windowingsystem ne "aqua"} {
-        button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
-            -command "::dialog_gatom::apply $mytoplevel"
+
+    button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
+        -command "::dialog_gatom::apply $mytoplevel"
     pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 10
-    }
+
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_gatom::ok $mytoplevel"
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 10
