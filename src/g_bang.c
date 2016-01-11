@@ -197,11 +197,11 @@ static void bng_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2,
 static void bng_save(t_gobj *z, t_binbuf *b)
 {
     t_bng *x = (t_bng *)z;
-    int bflcol[3];
+    t_symbol *bflcol[3];
     t_symbol *srl[3];
 
     iemgui_save(&x->x_gui, srl, bflcol);
-    binbuf_addv(b, "ssiisiiiisssiiiiiii", gensym("#X"),gensym("obj"),
+    binbuf_addv(b, "ssiisiiiisssiiiisss", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
                 gensym("bng"), x->x_gui.x_w,
                 x->x_flashtime_hold, x->x_flashtime_break,
@@ -245,7 +245,7 @@ static void bng_properties(t_gobj *z, t_glist *owner)
             %s %s \
             %s %d %d \
             %d %d \
-            %d %d %d\n",
+            #%06x #%06x #%06x\n",
             x->x_gui.x_w, IEM_GUI_MINSIZE,
             x->x_flashtime_break, x->x_flashtime_hold, 2,/*min_max_schedule+clip*/
             -1, x->x_gui.x_isa.x_loadinit, -1, -1,/*no linlog, no multi*/
@@ -432,7 +432,6 @@ static void bng_tick_lck(t_bng *x)
 static void *bng_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_bng *x = (t_bng *)pd_new(bng_class);
-    int bflcol[]={-262144, -1, -1};
     int a=IEM_GUI_DEFAULTSIZE;
     int ldx=17, ldy=7;
     int fs=10;
@@ -443,6 +442,10 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
 
+    x->x_gui.x_bcol = 0xFCFCFC;
+    x->x_gui.x_fcol = 0x00;
+    x->x_gui.x_lcol = 0x00;
+
     if((argc == 14)&&IS_A_FLOAT(argv,0)
        &&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2)
        &&IS_A_FLOAT(argv,3)
@@ -450,8 +453,7 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
        &&(IS_A_SYMBOL(argv,5)||IS_A_FLOAT(argv,5))
        &&(IS_A_SYMBOL(argv,6)||IS_A_FLOAT(argv,6))
        &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)
-       &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10)&&IS_A_FLOAT(argv,11)
-       &&IS_A_FLOAT(argv,12)&&IS_A_FLOAT(argv,13))
+       &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10))
     {
 
         a = (int)atom_getintarg(0, argc, argv);
@@ -463,9 +465,7 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
         ldy = (int)atom_getintarg(8, argc, argv);
         iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(9, argc, argv));
         fs = (int)atom_getintarg(10, argc, argv);
-        bflcol[0] = (int)atom_getintarg(11, argc, argv);
-        bflcol[1] = (int)atom_getintarg(12, argc, argv);
-        bflcol[2] = (int)atom_getintarg(13, argc, argv);
+        iemgui_all_loadcolors(&x->x_gui, argv+11, argv+12, argv+13);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);
 
@@ -495,7 +495,6 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     bng_check_minmax(x, ftbreak, fthold);
-    iemgui_all_colfromload(&x->x_gui, bflcol);
     x->x_gui.x_isa.x_locked = 0;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     x->x_clock_hld = clock_new(x, (t_method)bng_tick_hld);

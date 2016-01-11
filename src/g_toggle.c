@@ -35,9 +35,9 @@ void toggle_draw_update(t_toggle *x, t_glist *glist)
     {
         t_canvas *canvas=glist_getcanvas(glist);
 
-        sys_vgui(".x%lx.c itemconfigure %lxX1 -fill #%6.6x\n", canvas, x,
+        sys_vgui(".x%lx.c itemconfigure %lxX1 -fill #%06x\n", canvas, x,
                  (x->x_on!=0.0)?x->x_gui.x_fcol:x->x_gui.x_bcol);
-        sys_vgui(".x%lx.c itemconfigure %lxX2 -fill #%6.6x\n", canvas, x,
+        sys_vgui(".x%lx.c itemconfigure %lxX2 -fill #%06x\n", canvas, x,
                  (x->x_on!=0.0)?x->x_gui.x_fcol:x->x_gui.x_bcol);
     }
 }
@@ -51,17 +51,17 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
         w = 2;
     if(x->x_gui.x_w >= 60)
         w = 3;
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -tags %lxBASE\n",
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%06x -tags %lxBASE\n",
              canvas, xx, yy, xx + x->x_gui.x_w, yy + x->x_gui.x_h,
              x->x_gui.x_bcol, x);
-    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%6.6x -tags %lxX1\n",
+    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxX1\n",
              canvas, xx+w+1, yy+w+1, xx + x->x_gui.x_w-w, yy + x->x_gui.x_h-w, w,
              (x->x_on!=0.0)?x->x_gui.x_fcol:x->x_gui.x_bcol, x);
-    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%6.6x -tags %lxX2\n",
+    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxX2\n",
              canvas, xx+w+1, yy + x->x_gui.x_h-w-1, xx + x->x_gui.x_w-w, yy+w, w,
              (x->x_on!=0.0)?x->x_gui.x_fcol:x->x_gui.x_bcol, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {{%s} -%d %s} -fill #%6.6x -tags [list %lxLABEL label text]\n",
+             -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
              canvas, xx+x->x_gui.x_ldx,
              yy+x->x_gui.x_ldy,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
@@ -121,15 +121,15 @@ void toggle_draw_config(t_toggle* x, t_glist* glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%6.6x -text {%s} \n",
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
              canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"");
-    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%6.6x\n", canvas, x,
+    sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas, x,
              x->x_gui.x_bcol);
-    sys_vgui(".x%lx.c itemconfigure %lxX1 -fill #%6.6x\n", canvas, x,
+    sys_vgui(".x%lx.c itemconfigure %lxX1 -fill #%06x\n", canvas, x,
              x->x_on?x->x_gui.x_fcol:x->x_gui.x_bcol);
-    sys_vgui(".x%lx.c itemconfigure %lxX2 -fill #%6.6x\n", canvas, x,
+    sys_vgui(".x%lx.c itemconfigure %lxX2 -fill #%06x\n", canvas, x,
              x->x_on?x->x_gui.x_fcol:x->x_gui.x_bcol);
 }
 
@@ -160,13 +160,13 @@ void toggle_draw_select(t_toggle* x, t_glist* glist)
 
     if(x->x_gui.x_fsf.x_selected)
     {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%6.6x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%6.6x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
+        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
     }
     else
     {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%6.6x\n", canvas, x, IEM_GUI_COLOR_NORMAL);
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%6.6x\n", canvas, x, x->x_gui.x_lcol);
+        sys_vgui(".x%lx.c itemconfigure %lxBASE -outline #%06x\n", canvas, x, IEM_GUI_COLOR_NORMAL);
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, x->x_gui.x_lcol);
     }
 }
 
@@ -203,11 +203,11 @@ static void toggle_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *x
 static void toggle_save(t_gobj *z, t_binbuf *b)
 {
     t_toggle *x = (t_toggle *)z;
-    int bflcol[3];
+    t_symbol *bflcol[3];
     t_symbol *srl[3];
 
     iemgui_save(&x->x_gui, srl, bflcol);
-    binbuf_addv(b, "ssiisiisssiiiiiiiff", gensym("#X"),gensym("obj"),
+    binbuf_addv(b, "ssiisiisssiiiisssff", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix,
                 (int)x->x_gui.x_obj.te_ypix,
                 gensym("tgl"), x->x_gui.x_w,
@@ -233,7 +233,7 @@ static void toggle_properties(t_gobj *z, t_glist *owner)
             %s %s \
             %s %d %d \
             %d %d \
-            %d %d %d\n",
+            #%06x #%06x #%06x\n",
             x->x_gui.x_w, IEM_GUI_MINSIZE,
             x->x_nonzero, 1.0,/*non_zero-schedule*/
             x->x_gui.x_isa.x_loadinit, -1, -1,/*no multi*/
@@ -364,7 +364,6 @@ static void toggle_nonzero(t_toggle *x, t_floatarg f)
 static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_toggle *x = (t_toggle *)pd_new(toggle_class);
-    int bflcol[]={-262144, -1, -1};
     int a=IEM_GUI_DEFAULTSIZE, f=0;
     int ldx=17, ldy=7;
     int fs=10;
@@ -374,14 +373,17 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
 
+    x->x_gui.x_bcol = 0xFCFCFC;
+    x->x_gui.x_fcol = 0x00;
+    x->x_gui.x_lcol = 0x00;
+
     if(((argc == 13)||(argc == 14))&&IS_A_FLOAT(argv,0)
        &&IS_A_FLOAT(argv,1)
        &&(IS_A_SYMBOL(argv,2)||IS_A_FLOAT(argv,2))
        &&(IS_A_SYMBOL(argv,3)||IS_A_FLOAT(argv,3))
        &&(IS_A_SYMBOL(argv,4)||IS_A_FLOAT(argv,4))
        &&IS_A_FLOAT(argv,5)&&IS_A_FLOAT(argv,6)
-       &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)&&IS_A_FLOAT(argv,9)
-       &&IS_A_FLOAT(argv,10)&&IS_A_FLOAT(argv,11)&&IS_A_FLOAT(argv,12))
+       &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)&&IS_A_FLOAT(argv,12))
     {
         a = (int)atom_getintarg(0, argc, argv);
         iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(1, argc, argv));
@@ -390,9 +392,7 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
         ldy = (int)atom_getintarg(6, argc, argv);
         iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(7, argc, argv));
         fs = (int)atom_getintarg(8, argc, argv);
-        bflcol[0] = (int)atom_getintarg(9, argc, argv);
-        bflcol[1] = (int)atom_getintarg(10, argc, argv);
-        bflcol[2] = (int)atom_getintarg(11, argc, argv);
+        iemgui_all_loadcolors(&x->x_gui, argv+9, argv+10, argv+11);
         on = (t_float)atom_getfloatarg(12, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 2, 0);
@@ -426,7 +426,6 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fontsize = fs;
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
-    iemgui_all_colfromload(&x->x_gui, bflcol);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_float);
     return (x);

@@ -274,7 +274,6 @@ extern char *iemgui_vu_scale_str[];
 
 EXTERN int iemgui_clip_size(int size);
 EXTERN int iemgui_clip_font(int size);
-EXTERN int iemgui_modulo_color(int col);
 EXTERN t_symbol *iemgui_unique2dollarzero(t_symbol *s, int unique_num, int and_unique_flag);
 EXTERN t_symbol *iemgui_sym2dollararg(t_symbol *s, int nth_arg, int tail_len);
 EXTERN t_symbol *iemgui_dollarzero2unique(t_symbol *s, int unique_num);
@@ -290,9 +289,7 @@ EXTERN void iemgui_all_dollarzero2unique(t_iemgui *iemgui, t_symbol **srlsym);
 EXTERN t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym);
-EXTERN void iemgui_all_col2save(t_iemgui *iemgui, int *bflcol);
-EXTERN void iemgui_all_colfromload(t_iemgui *iemgui, int *bflcol);
-EXTERN int iemgui_compatible_col(int i);
+EXTERN void iemgui_all_loadcolors(t_iemgui *iemgui, t_atom*bcol, t_atom*fcol, t_atom*lcol);
 EXTERN void iemgui_all_dollar2raute(t_symbol **srlsym);
 EXTERN void iemgui_all_raute2dollar(t_symbol **srlsym);
 EXTERN void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s);
@@ -309,7 +306,7 @@ EXTERN void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy);
 EXTERN void iemgui_select(t_gobj *z, t_glist *glist, int selected);
 EXTERN void iemgui_delete(t_gobj *z, t_glist *glist);
 EXTERN void iemgui_vis(t_gobj *z, t_glist *glist, int vis);
-EXTERN void iemgui_save(t_iemgui *iemgui, t_symbol **srl, int *bflcol);
+EXTERN void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol **bflcol);
 EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
 
