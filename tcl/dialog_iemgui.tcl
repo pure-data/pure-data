@@ -143,23 +143,23 @@ proc ::dialog_iemgui::set_col_example {mytoplevel} {
     global $var_iemgui_lcol
     
     $mytoplevel.colors.sections.exp.lb_bk configure \
-        -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-        -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-        -foreground [format "#%6.6x" [eval concat $$var_iemgui_lcol]] \
-        -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_lcol]]
+        -background [eval concat $$var_iemgui_bcol] \
+        -activebackground [eval concat $$var_iemgui_bcol] \
+        -foreground [eval concat $$var_iemgui_lcol] \
+        -activeforeground [eval concat $$var_iemgui_lcol]
     
-    if { [eval concat $$var_iemgui_fcol] >= 0 } {
+    if { [eval concat $$var_iemgui_fcol] ne "none" } {
         $mytoplevel.colors.sections.exp.fr_bk configure \
-            -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -foreground [format "#%6.6x" [eval concat $$var_iemgui_fcol]] \
-            -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_fcol]]
+            -background [eval concat $$var_iemgui_bcol] \
+            -activebackground [eval concat $$var_iemgui_bcol] \
+            -foreground [eval concat $$var_iemgui_fcol] \
+            -activeforeground [eval concat $$var_iemgui_fcol]
     } else {
         $mytoplevel.colors.sections.exp.fr_bk configure \
-            -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -foreground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_bcol]]}
+            -background [eval concat $$var_iemgui_bcol] \
+            -activebackground [eval concat $$var_iemgui_bcol] \
+            -foreground [eval concat $$var_iemgui_bcol] \
+            -activeforeground [eval concat $$var_iemgui_bcol]}
     
     # for OSX live updates
     if {$::windowingsystem eq "aqua"} {
@@ -198,25 +198,21 @@ proc ::dialog_iemgui::choose_col_bkfrlb {mytoplevel} {
     global $var_iemgui_lcol
     
     if {[eval concat $$var_iemgui_l2_f1_b0] == 0} {
-        set $var_iemgui_bcol [expr [eval concat $$var_iemgui_bcol] & 0xFCFCFC]
-        set helpstring [tk_chooseColor -title [_ "Background color"] -initialcolor [format "#%6.6x" [eval concat $$var_iemgui_bcol]]]
+        set $var_iemgui_bcol [eval concat $$var_iemgui_bcol]
+        set helpstring [tk_chooseColor -title [_ "Background color"] -initialcolor [eval concat $$var_iemgui_bcol]]
         if { $helpstring ne "" } {
-            set $var_iemgui_bcol [string replace $helpstring 0 0 "0x"]
-            set $var_iemgui_bcol [expr [eval concat $$var_iemgui_bcol] & 0xFCFCFC] }
+            set $var_iemgui_bcol $helpstring }
     }
     if {[eval concat $$var_iemgui_l2_f1_b0] == 1} {
-        set $var_iemgui_fcol [expr [eval concat $$var_iemgui_fcol] & 0xFCFCFC]
-        set helpstring [tk_chooseColor -title [_ "Foreground color"] -initialcolor [format "#%6.6x" [eval concat $$var_iemgui_fcol]]]
+        set $var_iemgui_fcol [eval concat $$var_iemgui_fcol]
+        set helpstring [tk_chooseColor -title [_ "Foreground color"] -initialcolor [eval concat $$var_iemgui_fcol]]
         if { $helpstring ne "" } {
-            set $var_iemgui_fcol [string replace $helpstring 0 0 "0x"]
-            set $var_iemgui_fcol [expr [eval concat $$var_iemgui_fcol] & 0xFCFCFC] }
+            set $var_iemgui_fcol $helpstring }
     }
     if {[eval concat $$var_iemgui_l2_f1_b0] == 2} {
-        set $var_iemgui_lcol [expr [eval concat $$var_iemgui_lcol] & 0xFCFCFC]
-        set helpstring [tk_chooseColor -title [_ "Label color"] -initialcolor [format "#%6.6x" [eval concat $$var_iemgui_lcol]]]
+        set helpstring [tk_chooseColor -title [_ "Label color"] -initialcolor [eval concat $$var_iemgui_lcol]]
         if { $helpstring ne "" } {
-            set $var_iemgui_lcol [string replace $helpstring 0 0 "0x"]
-            set $var_iemgui_lcol [expr [eval concat $$var_iemgui_lcol] & 0xFCFCFC] }
+            set $var_iemgui_lcol $helpstring }
     }
     ::dialog_iemgui::set_col_example $mytoplevel
 }
@@ -722,7 +718,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $var_iemgui_l2_f1_b0 -text [_ "Front"] -justify left
     radiobutton $mytoplevel.colors.select.radio2 -value 2 -variable \
         $var_iemgui_l2_f1_b0 -text [_ "Label"] -justify left
-    if { [eval concat $$var_iemgui_fcol] >= 0 } {
+    if { [eval concat $$var_iemgui_fcol] ne "none" } {
         pack $mytoplevel.colors.select.radio0 $mytoplevel.colors.select.radio1 \
             $mytoplevel.colors.select.radio2 -side left
     } else {
@@ -737,77 +733,47 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         -expand yes -fill x
     frame $mytoplevel.colors.sections.exp
     pack $mytoplevel.colors.sections.exp -side right -padx 5
-    if { [eval concat $$var_iemgui_fcol] >= 0 } {
+    if { [eval concat $$var_iemgui_fcol] ne "none" } {
         label $mytoplevel.colors.sections.exp.fr_bk -text "o=||=o" -width 6 \
-            -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -foreground [format "#%6.6x" [eval concat $$var_iemgui_fcol]] \
-            -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_fcol]] \
+            -background [eval concat $$var_iemgui_bcol] \
+            -activebackground [eval concat $$var_iemgui_bcol] \
+            -foreground [eval concat $$var_iemgui_fcol] \
+            -activeforeground [eval concat $$var_iemgui_fcol] \
             -font [list $current_font 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     } else {
         label $mytoplevel.colors.sections.exp.fr_bk -text "o=||=o" -width 6 \
-            -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -foreground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-            -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
+            -background [eval concat $$var_iemgui_bcol] \
+            -activebackground [eval concat $$var_iemgui_bcol] \
+            -foreground [eval concat $$var_iemgui_bcol] \
+            -activeforeground [eval concat $$var_iemgui_bcol] \
             -font [list $current_font 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     }
     label $mytoplevel.colors.sections.exp.lb_bk -text [_ "Test label"] \
-        -background [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-        -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
-        -foreground [format "#%6.6x" [eval concat $$var_iemgui_lcol]] \
-        -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_lcol]] \
+        -background [eval concat $$var_iemgui_bcol] \
+        -activebackground [eval concat $$var_iemgui_bcol] \
+        -foreground [eval concat $$var_iemgui_lcol] \
+        -activeforeground [eval concat $$var_iemgui_lcol] \
         -font [list $current_font 14 $::font_weight] -padx 2 -pady 2 -relief ridge
     pack $mytoplevel.colors.sections.exp.lb_bk $mytoplevel.colors.sections.exp.fr_bk \
         -side right -anchor e -expand yes -fill both -pady 7
     
     # color scheme by Mary Ann Benedetto http://piR2.org
-    frame $mytoplevel.colors.r1
-    pack $mytoplevel.colors.r1 -side top
-    foreach i { 0 1 2 3 4 5 6 7 8 9} \
-        hexcol { 0xFFFFFF 0xDFDFDF 0xBBBBBB 0xFFC7C6 0xFFE3C6 \
-                     0xFEFFC6 0xC6FFC7 0xc6FEFF 0xC7C6FF 0xE3C6FF } \
-        {
-            label $mytoplevel.colors.r1.c$i -background [format "#%6.6x" $hexcol] \
-                -activebackground [format "#%6.6x" $hexcol] -relief ridge \
-                -padx 7 -pady 0
-            bind $mytoplevel.colors.r1.c$i <Button> [format "::dialog_iemgui::preset_col %s %d" $mytoplevel $hexcol] 
-        }
-    pack $mytoplevel.colors.r1.c0 $mytoplevel.colors.r1.c1 $mytoplevel.colors.r1.c2 $mytoplevel.colors.r1.c3 \
-        $mytoplevel.colors.r1.c4 $mytoplevel.colors.r1.c5 $mytoplevel.colors.r1.c6 $mytoplevel.colors.r1.c7 \
-        $mytoplevel.colors.r1.c8 $mytoplevel.colors.r1.c9 -side left
-    
-    frame $mytoplevel.colors.r2
-    pack $mytoplevel.colors.r2 -side top
-    foreach i { 0 1 2 3 4 5 6 7 8 9 } \
-        hexcol { 0x9F9F9F 0x7C7C7C 0x606060 0xFF0400 0xFF8300 \
-                     0xFAFF00 0x00FF04 0x00FAFF 0x0400FF 0x9C00FF } \
-        {
-            label $mytoplevel.colors.r2.c$i -background [format "#%6.6x" $hexcol] \
-                -activebackground [format "#%6.6x" $hexcol] -relief ridge \
-                -padx 7 -pady 0
-            bind  $mytoplevel.colors.r2.c$i <Button> \
-                [format "::dialog_iemgui::preset_col %s %d" $mytoplevel $hexcol] 
-        }
-    pack $mytoplevel.colors.r2.c0 $mytoplevel.colors.r2.c1 $mytoplevel.colors.r2.c2 $mytoplevel.colors.r2.c3 \
-        $mytoplevel.colors.r2.c4 $mytoplevel.colors.r2.c5 $mytoplevel.colors.r2.c6 $mytoplevel.colors.r2.c7 \
-        $mytoplevel.colors.r2.c8 $mytoplevel.colors.r2.c9 -side left
-    
-    frame $mytoplevel.colors.r3
-    pack $mytoplevel.colors.r3 -side top
-    foreach i { 0 1 2 3 4 5 6 7 8 9 } \
-        hexcol { 0x404040 0x202020 0x000000 0x551312 0x553512 \
-                     0x535512 0x0F4710 0x0E4345 0x131255 0x2F004D } \
-        {
-            label $mytoplevel.colors.r3.c$i -background [format "#%6.6x" $hexcol] \
-                -activebackground [format "#%6.6x" $hexcol] -relief ridge \
-                -padx 7 -pady 0
-            bind  $mytoplevel.colors.r3.c$i <Button> \
-                [format "::dialog_iemgui::preset_col %s %d" $mytoplevel $hexcol] 
-        }
-    pack $mytoplevel.colors.r3.c0 $mytoplevel.colors.r3.c1 $mytoplevel.colors.r3.c2 $mytoplevel.colors.r3.c3 \
-        $mytoplevel.colors.r3.c4 $mytoplevel.colors.r3.c5 $mytoplevel.colors.r3.c6 $mytoplevel.colors.r3.c7 \
-        $mytoplevel.colors.r3.c8 $mytoplevel.colors.r3.c9 -side left
+    foreach r {r1 r2 r3} hexcols {
+       { "#FFFFFF" "#DFDFDF" "#BBBBBB" "#FFC7C6" "#FFE3C6" "#FEFFC6" "#C6FFC7" "#C6FEFF" "#C7C6FF" "#E3C6FF" }
+       { "#9F9F9F" "#7C7C7C" "#606060" "#FF0400" "#FF8300" "#FAFF00" "#00FF04" "#00FAFF" "#0400FF" "#9C00FF" }
+       { "#404040" "#202020" "#000000" "#551312" "#553512" "#535512" "#0F4710" "#0E4345" "#131255" "#2F004D" } } \
+    {
+       frame $mytoplevel.colors.$r
+       pack $mytoplevel.colors.$r -side top
+       foreach i { 0 1 2 3 4 5 6 7 8 9} hexcol $hexcols \
+           {
+               label $mytoplevel.colors.$r.c$i -background $hexcol -activebackground $hexcol -relief ridge -padx 7 -pady 0
+               bind $mytoplevel.colors.$r.c$i <Button> "::dialog_iemgui::preset_col $mytoplevel $hexcol"
+           }
+       pack $mytoplevel.colors.$r.c0 $mytoplevel.colors.$r.c1 $mytoplevel.colors.$r.c2 $mytoplevel.colors.$r.c3 \
+           $mytoplevel.colors.$r.c4 $mytoplevel.colors.$r.c5 $mytoplevel.colors.$r.c6 $mytoplevel.colors.$r.c7 \
+           $mytoplevel.colors.$r.c8 $mytoplevel.colors.$r.c9 -side left
+    }
     
     # buttons
     frame $mytoplevel.cao -pady 10
