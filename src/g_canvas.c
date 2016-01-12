@@ -1299,9 +1299,9 @@ static void canvas_completepath(char *from, char *to, int bufsize)
     }
     else
     {   // if not absolute path, append Pd lib dir
-        strncpy(to, sys_libdir->s_name, bufsize-4);
-        to[bufsize-3] = '\0';
-        strcat(to, "/");
+        strncpy(to, sys_libdir->s_name, bufsize-10);
+        to[bufsize-9] = '\0';
+        strcat(to, "/extra/");
     }
     strncat(to, from, bufsize-strlen(to));
     to[bufsize-1] = '\0';
@@ -1339,15 +1339,17 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         return;
     }
 
+    /* strip    "extra/"-prefix */
+    if (!strncmp("extra/", stdpath, 6))
+        stdpath+=6;
+
+        /* prefix full pd-path (including extra) */
     canvas_completepath(stdpath, strbuf, MAXPDSTRING);
     if (check_exists(strbuf))
     {
         e->ce_path = namelist_append(e->ce_path, strbuf, 0);
         return;
     }
-    /* strip    "extra/"-prefix */
-    if (!strncmp("extra/", stdpath, 6))
-        stdpath+=6;
     /* check whether the given subdir is in one of the standard-paths */
     for (nl=sys_staticpath; nl; nl=nl->nl_next)
     {
@@ -1370,13 +1372,14 @@ static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
         return;
     }
 
+        /* strip    "extra/"-prefix */
+    if (!strncmp("extra/", stdlib, 6))
+        stdlib+=6;
+
+        /* prefix full pd-path (including extra) */
     canvas_completepath(stdlib, strbuf, MAXPDSTRING);
     if (sys_load_lib(0, strbuf))
         return;
-
-    // strip    "extra/"-prefix
-    if (!strncmp("extra/", stdlib, 6))
-        stdlib+=6;
 
     /* check whether the given library is located in one of the standard-paths */
     for (nl=sys_staticpath; nl; nl=nl->nl_next)
@@ -1495,6 +1498,7 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     int count = 0;
     if (!fun)
         return 0;
+        /* iterate through canvas-local paths */
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
