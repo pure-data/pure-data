@@ -312,13 +312,30 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     int dspstate = canvas_suspend_dsp();
     struct _loadlib_data data;
     data.canvas = canvas;
-    data.classname = classname;
     data.ok = 0;
+        /* if classname is absolute, try this first */
+    if (sys_isabsolutepath(classname))
+    {
+            /* this is just copied from sys_open_absolute()
+               LATER avoid code duplication */
+        char dirbuf[MAXPDSTRING], *z = strrchr(classname, '/');
+        int dirlen;
+        if (!z)
+            return (0);
+        dirlen = z - classname;
+        if (dirlen > MAXPDSTRING-1)
+            dirlen = MAXPDSTRING-1;
+        strncpy(dirbuf, classname, dirlen);
+        dirbuf[dirlen] = 0;
+        data.classname=classname+(dirlen+1);
+        sys_loadlib_iter(dirbuf, &data);
+    }
+    data.classname = classname;
+    if(!data.ok)
+        canvas_path_iterate(canvas, (t_canvas_path_iterator)sys_loadlib_iter,
+            &data);
 
-    canvas_path_iterate(canvas, (t_canvas_path_iterator)sys_loadlib_iter,
-        &data);
-
-    /* if loaders failed to far, we try a last time without a PATH
+    /* if loaders failed so far, we try a last time without a PATH
      * let the loaders search wherever they want */
     if (!data.ok)
         sys_loadlib_iter(0, &data);
