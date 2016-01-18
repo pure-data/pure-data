@@ -2429,7 +2429,8 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     canvas_resume_dsp(dspstate);
     canvas_dirty(x, 1);
     sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
-    glist_donewloadbangs(x);
+    if (!sys_noloadbang)
+        glist_donewloadbangs(x);
     asym->s_thing = bounda;
     s__X.s_thing = boundx;
     s__N.s_thing = boundn;

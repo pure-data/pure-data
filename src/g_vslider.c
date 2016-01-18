@@ -504,9 +504,9 @@ static void vslider_steady(t_vslider *x, t_floatarg f)
     x->x_steady = (f==0.0)?0:1;
 }
 
-static void vslider_loadbang(t_vslider *x)
+static void vslider_loadbang(t_vslider *x, t_floatarg action)
 {
-    if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
+    if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         vslider_bang(x);
@@ -610,7 +610,8 @@ void g_vslider_setup(void)
                     A_FLOAT, A_FLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_dialog, gensym("dialog"),
                     A_GIMME, 0);
-    class_addmethod(vslider_class, (t_method)vslider_loadbang, gensym("loadbang"), 0);
+    class_addmethod(vslider_class, (t_method)vslider_loadbang,
+        gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_set, gensym("set"), A_FLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_size, gensym("size"), A_GIMME, 0);
     class_addmethod(vslider_class, (t_method)vslider_delta, gensym("delta"), A_GIMME, 0);

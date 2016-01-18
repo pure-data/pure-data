@@ -869,7 +869,6 @@ void canvas_restore(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 static void canvas_loadbangabstractions(t_canvas *x)
 {
     t_gobj *y;
-    t_symbol *s = gensym("loadbang");
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
     {
@@ -893,7 +892,7 @@ void canvas_loadbangsubpatches(t_canvas *x)
     for (y = x->gl_list; y; y = y->g_next)
         if ((pd_class(&y->g_pd) != canvas_class) &&
             zgetfn(&y->g_pd, s))
-                pd_vmess(&y->g_pd, s, "");
+                pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
 }
 
 void canvas_loadbang(t_canvas *x)
@@ -901,6 +900,48 @@ void canvas_loadbang(t_canvas *x)
     t_gobj *y;
     canvas_loadbangabstractions(x);
     canvas_loadbangsubpatches(x);
+}
+
+/* JMZ/MSP:
+ * initbang is emitted after a canvas is read from a file, but before the
+   parent canvas is finished loading.  This is apparently used so that
+   abstractions can create inlets/outlets as a function of creation arguments.
+   This practice is quite ugly but there's no other way to do it so far.
+ */
+void canvas_initbang(t_canvas *x)
+{
+    t_gobj *y;
+    t_symbol *s = gensym("loadbang");
+    if (!x || x->gl_pd != canvas_class)
+    /* run "initbang" for all subpatches, but NOT for the child abstractions */
+    for (y = x->gl_list; y; y = y->g_next)
+        if (pd_class(&y->g_pd) == canvas_class)
+    {
+        if (!canvas_isabstraction((t_canvas *)y))
+            canvas_initbang((t_canvas *)y);
+    }
+    /* call the initbang()-method for objects that have one */
+    for (y = x->gl_list; y; y = y->g_next)
+        if ((pd_class(&y->g_pd) != canvas_class) && zgetfn(&y->g_pd, s))
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_INIT);
+}
+
+/* JMZ:
+ * closebang is emitted before the canvas is destroyed
+ * and BEFORE subpatches/abstractions in this canvas are destroyed
+ */
+void canvas_closebang(t_canvas *x)
+{
+    t_gobj *y;
+    t_symbol *s = gensym("loadbang");
+
+    /* call the closebang()-method for objects that have one
+     * but NOT for subpatches/abstractions: these are called separately
+     * from g_graph:glist_delete()
+     */
+    for (y = x->gl_list; y; y = y->g_next)
+        if ((pd_class(&y->g_pd) != canvas_class) && zgetfn(&y->g_pd, s))
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_CLOSE);
 }
 
 /* no longer used by 'pd-gui', but kept here for backwards compatibility.  The

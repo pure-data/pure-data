@@ -1446,6 +1446,8 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 }
 
 void pd_doloadbang(void);
+void canvas_initbang(t_canvas *x);
+extern t_symbol s__X;
 
 /* LATER make this evaluate the file on-the-fly. */
 /* LATER figure out how to log errors */
@@ -1472,6 +1474,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
             b = newb;
         }
         binbuf_eval(b, 0, 0, 0);
+        canvas_initbang((t_canvas *)(s__X.s_thing)); /* JMZ*/
         gensym("#A")->s_thing = bounda;
         s__N.s_thing = boundn;
     }
@@ -1498,7 +1501,8 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
         x = s__X.s_thing;
         vmess(x, gensym("pop"), "i", 1);
     }
-    pd_doloadbang();
+    if (!sys_noloadbang)
+        pd_doloadbang();
     canvas_resume_dsp(dspstate);
     s__X.s_thing = boundx;
     return x;

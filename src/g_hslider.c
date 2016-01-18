@@ -495,9 +495,9 @@ static void hslider_float(t_hslider *x, t_floatarg f)
         hslider_bang(x);
 }
 
-static void hslider_loadbang(t_hslider *x)
+static void hslider_loadbang(t_hslider *x, t_floatarg action)
 {
-    if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
+    if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
     {
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
         hslider_bang(x);
@@ -608,7 +608,8 @@ void g_hslider_setup(void)
     class_addmethod(hslider_class, (t_method)hslider_motion, gensym("motion"),
                     A_FLOAT, A_FLOAT, 0);
     class_addmethod(hslider_class, (t_method)hslider_dialog, gensym("dialog"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_loadbang, gensym("loadbang"), 0);
+    class_addmethod(hslider_class, (t_method)hslider_loadbang,
+        gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(hslider_class, (t_method)hslider_set, gensym("set"), A_FLOAT, 0);
     class_addmethod(hslider_class, (t_method)hslider_size, gensym("size"), A_GIMME, 0);
     class_addmethod(hslider_class, (t_method)hslider_delta, gensym("delta"), A_GIMME, 0);

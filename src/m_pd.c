@@ -6,6 +6,7 @@
 #include <string.h>
 #include "m_pd.h"
 #include "m_imp.h"
+#include "g_canvas.h"   /* just for LB_LOAD */
 
     /* FIXME no out-of-memory testing yet! */
 
@@ -255,10 +256,10 @@ void pd_popsym(t_pd *x)
     }
 }
 
-void pd_doloadbang(void)
+void pd_doloadbang( void)
 {
     if (lastpopped)
-        pd_vmess(lastpopped, gensym("loadbang"), "");
+        pd_vmess(lastpopped, gensym("loadbang"), "f", LB_LOAD);
     lastpopped = 0;
 }
 
