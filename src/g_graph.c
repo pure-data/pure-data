@@ -62,6 +62,9 @@ int canvas_setdeleting(t_canvas *x, int flag)
     return (ret);
 }
 
+    /* JMZ: emit a closebang message */
+void canvas_closebang(t_canvas *x);
+
     /* delete an object from a glist and free it */
 void glist_delete(t_glist *x, t_gobj *y)
 {
@@ -72,6 +75,11 @@ void glist_delete(t_glist *x, t_gobj *y)
     t_rtext *rtext = 0;
     int drawcommand = class_isdrawcommand(y->g_pd);
     int wasdeleting;
+
+    if (pd_class(&y->g_pd) == canvas_class) {
+            /* JMZ: send a closebang to the canvas */
+        canvas_closebang((t_canvas *)y);
+    }
 
     wasdeleting = canvas_setdeleting(canvas, 1);
     if (x->gl_editor)
