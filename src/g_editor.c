@@ -1172,7 +1172,7 @@ static void canvas_donecanvasdialog(t_glist *x,
         "open," or "help." */
 static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float ypos)
 {
-    char pathbuf[MAXPDSTRING], namebuf[MAXPDSTRING];
+    char pathbuf[MAXPDSTRING], namebuf[MAXPDSTRING], *basenamep;
     t_gobj *y;
     for (y = x->gl_list; y; y = y->g_next)
     {
@@ -1205,6 +1205,15 @@ static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float 
                     if (ac < 1)
                         return;
                     atom_string(av, namebuf, MAXPDSTRING);
+
+                    // strip dir from name :
+                    basenamep = strrchr(namebuf, '/');
+                    #ifdef _WIN32
+                    if(!*basenamep) basenamep = strrchr(namebuf, '\\');
+                    #endif
+                    if(!*basenamep) basenamep = namebuf;
+                    else basenamep++; //strip last '/'
+
                     dir = canvas_getdir((t_canvas *)y)->s_name;
                 }
                 else
@@ -1212,11 +1221,12 @@ static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float 
                     strncpy(namebuf, class_gethelpname(pd_class(&y->g_pd)), MAXPDSTRING-1);
                     namebuf[MAXPDSTRING-1] = 0;
                     dir = class_gethelpdir(pd_class(&y->g_pd));
+                    basenamep = namebuf;
                 }
                 if (strlen(namebuf) < 4 ||
                     strcmp(namebuf + strlen(namebuf) - 3, ".pd"))
                         strcat(namebuf, ".pd");
-                open_via_helppath(namebuf, dir);
+                open_via_helppath(basenamep, dir);
                 return;
             }
         }
