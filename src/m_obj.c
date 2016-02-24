@@ -699,21 +699,18 @@ int obj_issignaloutlet(t_object *x, int m)
 
 t_float *obj_findsignalscalar(t_object *x, int m)
 {
-    int n = 0;
     t_inlet *i;
     if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
         if (!m--)
             return (x->ob_pd->c_floatsignalin > 0 ?
                 (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) : 0);
-        n++;
     }
-    for (i = x->ob_inlet; i; i = i->i_next, m--)
+    for (i = x->ob_inlet; i; i = i->i_next)
         if (i->i_symfrom == &s_signal)
     {
-        if (m == 0)
+        if (m-- == 0)
             return (&i->i_un.iu_floatsignalvalue);
-        n++;
     }
     return (0);
 }
