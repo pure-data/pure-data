@@ -258,21 +258,28 @@ proc ::helpbrowser::build_references {} {
                                   ]
     foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
         if { ! [file isdirectory $pathdir]} {continue}
+
         # Fix the directory name, this ensures the directory name is in the
         # native format for the platform and contains a final directory seperator
         set dir [string trimright [file join [file normalize $pathdir] { }]]
+
         ## find the libdirs
-        foreach filename [glob -nocomplain -type d -path $dir "*"] {
-            add_entry libdirlist $filename
-        }
-        ## find the stray help patches
-        foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
-            add_entry helplist $filename
+
+        if { [lsearch $::sys_searchpath $pathdir] ne -1} {
+            # Directory comes from sys_searchpath (aka preferences (& [declare]s?))
+            # Then add an entry for this directory in Help browser's root column :
+            add_entry libdirlist $dir
+        } else {
+            # Directory comes from sys_staticpath (aka hardcoded)
+            # Then add an entry for each subdir of this directory in Help browser's root column :
+            foreach filename [glob -nocomplain -type d -path $dir "*"] {
+                add_entry libdirlist $filename
+            }
+            ## find the stray help patches
+            foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
+                add_entry helplist $filename
+            }
         }
     }
 }
 
-
-
-
- 	  	 
