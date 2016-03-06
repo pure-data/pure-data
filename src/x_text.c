@@ -705,7 +705,10 @@ static void text_set_list(t_text_set *x,
                 memmove(&vec[start + argc], &vec[end],
                     sizeof(*vec) * (oldn - end));
                 if (n < oldn)
+                {
                     (void)binbuf_resize(b, n);
+                    vec = binbuf_getvec(b);
+                }
             }
         }
         else
