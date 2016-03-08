@@ -626,6 +626,8 @@ static void pipe_free(t_pipe *x)
 {
     pipe_clear(x);
     freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
+    freebytes(x->x_gp, x->x_nptr * sizeof(*x->x_gp));
+
 }
 
 static void pipe_setup(void)
