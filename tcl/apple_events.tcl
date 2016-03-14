@@ -23,12 +23,12 @@ proc ::tk::mac::OpenDocument {args} {
 
 # kEventAppHidden
 proc ::tk::mac::OnHide {args} {
-    ::pdwindow::verbose 1 "::tk::mac::OnHide $args +++++++++++++++++++++"
+    ::pdwindow::verbose 1 "::tk::mac::OnHide $args +++++++++++++++++++++\n"
 }
 
 # kEventAppShown
 proc ::tk::mac::OnShow {args} {
-    ::pdwindow::verbose 1 "::tk::mac::OnShow $args +++++++++++++++++++++"
+    ::pdwindow::verbose 1 "::tk::mac::OnShow $args +++++++++++++++++++++\n"
 }
 
 # open About Pd... in Tk/Cocoa
@@ -38,7 +38,7 @@ proc tkAboutDialog {} {
 
 # kAEShowPreferences
 proc ::tk::mac::ShowPreferences {args} {
-    ::pdwindow::verbose 1 "::tk::mac::ShowPreferences $args ++++++++++++"
+    ::pdwindow::verbose 1 "::tk::mac::ShowPreferences $args ++++++++++++\n"
     pdsend "pd start-path-dialog"
 }
 
@@ -57,9 +57,9 @@ proc ::tk::mac::PrintDocument {args} {
 }
 
 proc ::tk::mac::OpenApplication {args} {
-    ::pdwindow::verbose 1 "::tk::mac::OpenApplication $args ++++++++++++"
+    ::pdwindow::verbose 1 "::tk::mac::OpenApplication $args ++++++++++++\n"
 }
 
 proc ::tk::mac::ReopenApplication {args} {
-    ::pdwindow::verbose 1 "::tk::mac::ReopenApplication $args ++++++++++"
+    ::pdwindow::verbose 1 "::tk::mac::ReopenApplication $args ++++++++++\n"
 }
