@@ -48,7 +48,7 @@ static t_int *tabwrite_tilde_perform(t_int *w)
     t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]), phase = x->x_phase, endphase = x->x_nsampsintab;
     if (!x->x_vec) goto bad;
-    
+
     if (endphase > phase)
     {
         int nxfer = endphase - phase;
@@ -175,7 +175,7 @@ static t_int *tabplay_tilde_perform(t_int *w)
             x->x_nsampsintab : x->x_limit), nxfer, n3;
     if (!x->x_vec || phase >= endphase)
         goto zero;
-    
+
     nxfer = endphase - phase;
     wp = x->x_vec + phase;
     if (nxfer > n)
@@ -192,7 +192,7 @@ static t_int *tabplay_tilde_perform(t_int *w)
             *out++ = 0;
     }
     else x->x_phase = phase;
-    
+
     return (w+4);
 zero:
     while (n--) *out++ = 0;
@@ -294,11 +294,11 @@ static t_int *tabread_tilde_perform(t_int *w)
     t_tabread_tilde *x = (t_tabread_tilde *)(w[1]);
     t_sample *in = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);    
+    int n = (int)(w[4]);
     int maxindex;
     t_word *buf = x->x_vec;
     int i;
-    
+
     maxindex = x->x_npoints - 1;
     if(maxindex<0) goto zero;
     if (!buf) goto zero;
@@ -322,7 +322,7 @@ static t_int *tabread_tilde_perform(t_int *w)
 static void tabread_tilde_set(t_tabread_tilde *x, t_symbol *s)
 {
     t_garray *a;
-    
+
     x->x_arrayname = s;
     if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
     {
@@ -394,12 +394,12 @@ static t_int *tabread4_tilde_perform(t_int *w)
     t_tabread4_tilde *x = (t_tabread4_tilde *)(w[1]);
     t_sample *in = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
-    int n = (int)(w[4]);    
+    int n = (int)(w[4]);
     int maxindex;
     t_word *buf = x->x_vec, *wp;
     double onset = x->x_onset;
     int i;
-    
+
     maxindex = x->x_npoints - 3;
     if(maxindex<0) goto zero;
 
@@ -454,7 +454,7 @@ static t_int *tabread4_tilde_perform(t_int *w)
 static void tabread4_tilde_set(t_tabread4_tilde *x, t_symbol *s)
 {
     t_garray *a;
-    
+
     x->x_arrayname = s;
     if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
     {
@@ -520,16 +520,16 @@ static void tabread4_tilde_setup(void)
 #define BYTE_ORDER LITTLE_ENDIAN
 #endif
 
-#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)                         
-#error No byte order defined                                                    
+#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
+#error No byte order defined
 #endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN
-# define HIOFFSET 1                                                              
-# define LOWOFFSET 0                                                             
-#else                                                                           
-# define HIOFFSET 0    /* word offset to find MSB */                             
-# define LOWOFFSET 1    /* word offset to find LSB */                            
+# define HIOFFSET 1
+# define LOWOFFSET 0
+#else
+# define HIOFFSET 0    /* word offset to find MSB */
+# define LOWOFFSET 1    /* word offset to find LSB */
 #endif
 
 union tabfudge
@@ -716,7 +716,7 @@ static t_int *tabsend_perform(t_int *w)
     if (n > x->x_npoints)
         n = x->x_npoints;
     while (n--)
-    {   
+    {
         t_sample f = *in++;
         if (PD_BIGORSMALL(f))
             f = 0;
@@ -738,7 +738,7 @@ bad:
 static void tabsend_set(t_tabsend *x, t_symbol *s)
 {
     t_garray *a;
-    
+
     x->x_arrayname = s;
     if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
     {
@@ -814,7 +814,7 @@ static t_int *tabreceive_perform(t_int *w)
 static void tabreceive_set(t_tabreceive *x, t_symbol *s)
 {
     t_garray *a;
-    
+
     x->x_arrayname = s;
     if (!(a = (t_garray *)pd_findbyclass(x->x_arrayname, garray_class)))
     {

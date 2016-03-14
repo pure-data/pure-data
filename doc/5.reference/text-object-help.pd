@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 633 152 622 555 12;
+#N canvas 632 151 622 555 12;
 #X obj 131 499 list;
 #X obj 18 6 text;
 #X text 25 498 see also:;
@@ -582,7 +582,7 @@ simply sequence a list of numbers:;
 #X text 365 497 updated for Pd version 0.47;
 #X text 100 287 delete a line or clear;
 #X obj 280 288 text delete;
-#N canvas 358 63 749 465 delete 1;
+#N canvas 357 62 749 465 delete 0;
 #X text 413 166 find another text by name or pointer;
 #X text 323 279 <-- click here to see text;
 #X text 46 9 "text set" replaces the nth line with the incoming list.

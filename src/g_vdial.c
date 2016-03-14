@@ -53,7 +53,7 @@ void vradio_draw_new(t_vradio *x, t_glist *glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
     int n=x->x_number, i, dy=x->x_gui.x_h, s4=dy/4;
-    int yy11b=text_ypix(&x->x_gui.x_obj, glist); 
+    int yy11b=text_ypix(&x->x_gui.x_obj, glist);
     int yy11=yy11b, yy12=yy11+dy;
     int yy21=yy11+s4, yy22=yy12-s4;
     int xx11=text_xpix(&x->x_gui.x_obj, glist), xx12=xx11+dy;
@@ -142,7 +142,7 @@ void vradio_draw_config(t_vradio* x, t_glist* glist)
     int n=x->x_number, i;
 
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%6.6x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight, 
+             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"");
     for(i=0; i<n; i++)
@@ -484,9 +484,9 @@ static int vradio_newclick(t_gobj *z, struct _glist *glist,
     return (1);
 }
 
-static void vradio_loadbang(t_vradio *x)
+static void vradio_loadbang(t_vradio *x, t_floatarg action)
 {
-    if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
+    if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
         vradio_bang(x);
 }
 
@@ -658,7 +658,7 @@ void g_vradio_setup(void)
     class_addmethod(vradio_class, (t_method)vradio_dialog, gensym("dialog"),
                     A_GIMME, 0);
     class_addmethod(vradio_class, (t_method)vradio_loadbang,
-        gensym("loadbang"), 0);
+        gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(vradio_class, (t_method)vradio_set,
         gensym("set"), A_FLOAT, 0);
     class_addmethod(vradio_class, (t_method)vradio_size,

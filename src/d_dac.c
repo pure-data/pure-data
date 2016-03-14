@@ -53,7 +53,7 @@ static void dac_dsp(t_dac *x, t_signal **sp)
         else if (ch >= 0 && ch < sys_get_outchannels())
             dsp_add(plus_perform, 4, sys_soundout + DEFDACBLKSIZE*ch,
                 (*sp2)->s_vec, sys_soundout + DEFDACBLKSIZE*ch, DEFDACBLKSIZE);
-    }    
+    }
 }
 
 static void dac_set(t_dac *x, t_symbol *s, int argc, t_atom *argv)
@@ -115,7 +115,7 @@ t_int *copy_perform(t_int *w)
     t_sample *in1 = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    while (n--) *out++ = *in1++; 
+    while (n--) *out++ = *in1++;
     return (w+4);
 }
 
@@ -124,7 +124,7 @@ static t_int *copy_perf8(t_int *w)
     t_sample *in1 = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    
+
     for (; n; n -= 8, in1 += 8, out += 8)
     {
         t_sample f0 = in1[0];
@@ -152,7 +152,7 @@ void dsp_add_copy(t_sample *in, t_sample *out, int n)
 {
     if (n&7)
         dsp_add(copy_perform, 3, in, out, n);
-    else        
+    else
         dsp_add(copy_perf8, 3, in, out, n);
 }
 
@@ -169,7 +169,7 @@ static void adc_dsp(t_adc *x, t_signal **sp)
             dsp_add_copy(sys_soundin + DEFDACBLKSIZE*ch,
                 (*sp2)->s_vec, DEFDACBLKSIZE);
         else dsp_add_zero((*sp2)->s_vec, DEFDACBLKSIZE);
-    }    
+    }
 }
 
 static void adc_set(t_adc *x, t_symbol *s, int argc, t_atom *argv)

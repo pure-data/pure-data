@@ -19,7 +19,7 @@ int audiounit_open_audio(int inchans, int outchans, int rate)
     return 0;
 }
 
-void audiounit_close_audio(void) 
+void audiounit_close_audio(void)
 {
 }
 
@@ -29,7 +29,7 @@ int audiounit_send_dacs(void)
 }
 
 void audiounit_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize)
 {
     post("device getting not implemented for AudioUnit yet\n");

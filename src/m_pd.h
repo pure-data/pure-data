@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 46
-#define PD_BUGFIX_VERSION 7
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 47
+#define PD_BUGFIX_VERSION 0
+#define PD_TEST_VERSION "test"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -140,7 +140,7 @@ typedef struct _gstub
 typedef struct _gpointer           /* pointer to a gobj in a glist */
 {
     union
-    {   
+    {
         struct _scalar *gp_scalar;  /* scalar we're in (if glist) */
         union word *gp_w;           /* raw data (if array) */
     } gp_un;
@@ -168,7 +168,7 @@ typedef enum
     A_COMMA,
     A_DEFFLOAT,
     A_DEFSYM,
-    A_DOLLAR, 
+    A_DOLLAR,
     A_DOLLSYM,
     A_GIMME,
     A_CANT
@@ -473,7 +473,7 @@ EXTERN t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
-EXTERN void class_addcreator(t_newmethod newmethod, t_symbol *s, 
+EXTERN void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...);
 EXTERN void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     t_atomtype arg1, ...);
@@ -555,7 +555,7 @@ EXTERN int sys_close(int fd);
 EXTERN FILE *sys_fopen(const char *filename, const char *mode);
 EXTERN int sys_fclose(FILE *stream);
 
-/* ------------  threading ------------------- */ 
+/* ------------  threading ------------------- */
 EXTERN void sys_lock(void);
 EXTERN void sys_unlock(void);
 EXTERN int sys_trylock(void);
@@ -655,7 +655,7 @@ EXTERN t_float dbtopow(t_float);
 
 EXTERN t_float q8_sqrt(t_float);
 EXTERN t_float q8_rsqrt(t_float);
-#ifndef N32     
+#ifndef N32
 EXTERN t_float qsqrt(t_float);  /* old names kept for extern compatibility */
 EXTERN t_float qrsqrt(t_float);
 #endif
@@ -751,8 +751,8 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-64,64) */
 typedef  union
 {
     t_float f;
-    unsigned int ui[2]; 
-}t_bigorsmall64; 
+    unsigned int ui[2];
+}t_bigorsmall64;
 
 static inline int PD_BADFLOAT(t_float f)  /* malformed double */
 {

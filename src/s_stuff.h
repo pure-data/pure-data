@@ -5,7 +5,7 @@
 /* Audio and MIDI I/O, and other scheduling and system stuff. */
 
 /* NOTE: this file describes Pd implementation details which may change
-in future releases.  The public (stable) API is in m_pd.h. */  
+in future releases.  The public (stable) API is in m_pd.h. */
 
 /* in s_path.c */
 
@@ -53,14 +53,14 @@ extern t_symbol *sys_guidir;    /* directory holding pd_gui, u_pdsend, etc */
 
 /* s_loader.c */
 
-typedef int (*loader_t)(t_canvas *canvas, char *classname); /* callback type */
-EXTERN int sys_load_lib(t_canvas *canvas, char *filename);
+typedef int (*loader_t)(t_canvas *canvas, const char *classname, const char*path); /* callback type */
+EXTERN int sys_load_lib(t_canvas *canvas, const char *classname);
 EXTERN void sys_register_loader(loader_t loader);
 
 /* s_audio.c */
 
 #define SENDDACS_NO 0           /* return values for sys_send_dacs() */
-#define SENDDACS_YES 1 
+#define SENDDACS_YES 1
 #define SENDDACS_SLEPT 2
 
 #define DEFDACBLKSIZE 64
@@ -102,7 +102,7 @@ void sys_listdevs(void);
 void sys_setblocksize(int n);
 
 EXTERN void sys_get_audio_devs(char *indevlist, int *nindevs,
-                          char *outdevlist, int *noutdevs, int *canmulti, int *cancallback, 
+                          char *outdevlist, int *noutdevs, int *canmulti, int *cancallback,
                           int maxndev, int devdescsize);
 EXTERN void sys_get_audio_apis(char *buf);
 
@@ -120,7 +120,7 @@ EXTERN void sys_open_midi(int nmidiin, int *midiinvec,
 
 EXTERN void sys_get_midi_apis(char *buf);
 EXTERN void sys_get_midi_devs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, 
+    char *outdevlist, int *noutdevs,
    int maxndev, int devdescsize);
 EXTERN void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
     int *pnmidioutdev, int *pmidioutdev);
@@ -167,7 +167,7 @@ EXTERN void sys_log_error(int type);
 #define ERR_DATALATE 4
 
 #define SCHED_AUDIO_NONE 0
-#define SCHED_AUDIO_POLL 1 
+#define SCHED_AUDIO_POLL 1
 #define SCHED_AUDIO_CALLBACK 2
 void sched_set_using_audio(int flag);
 
@@ -213,7 +213,7 @@ void sys_setalarm(int microsec);
     likely to offer a working device takes precedence so that if you
     start up Pd for the first time there's a reasonable chance you'll have
     sound.  (You'd think portaudio would be best but it seems to default
-    to jack on linux, and and on Windows we only use it for ASIO). 
+    to jack on linux, and and on Windows we only use it for ASIO).
     If nobody shows up, define DUMMY and make it the default.*/
 #if defined(USEAPI_MMIO)
 # define API_DEFAULT API_MMIO
@@ -236,13 +236,13 @@ void sys_setalarm(int microsec);
 #elif defined(USEAPI_JACK)
 # define API_DEFAULT API_JACK
 # define API_DEFSTRING "Jack audio connection kit"
-#else 
+#else
 # ifndef USEAPI_DUMMY   /* we need at least one so bring in the dummy */
 # define USEAPI_DUMMY
 # endif /* USEAPI_DUMMY */
 # define API_DEFAULT API_DUMMY
 # define API_DEFSTRING "dummy audio"
-#endif 
+#endif
 
 #define DEFAULTAUDIODEV 0
 
@@ -272,7 +272,7 @@ int pa_send_dacs(void);
 void sys_reportidle(void);
 void pa_listdevs(void);
 void pa_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
 int oss_open_audio(int naudioindev, int *audioindev, int nchindev,
@@ -282,7 +282,7 @@ void oss_close_audio(void);
 int oss_send_dacs(void);
 void oss_reportidle(void);
 void oss_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
 int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
@@ -292,7 +292,7 @@ void alsa_close_audio(void);
 int alsa_send_dacs(void);
 void alsa_reportidle(void);
 void alsa_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
 int jack_open_audio(int wantinchans, int wantoutchans, int srate,
@@ -301,7 +301,7 @@ void jack_close_audio(void);
 int jack_send_dacs(void);
 void jack_reportidle(void);
 void jack_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 void jack_listdevs(void);
 
@@ -312,7 +312,7 @@ void mmio_close_audio( void);
 void mmio_reportidle(void);
 int mmio_send_dacs(void);
 void mmio_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
 int audiounit_open_audio(int naudioindev, int *audioindev, int nchindev,
@@ -322,7 +322,7 @@ void audiounit_close_audio(void);
 int audiounit_send_dacs(void);
 void audiounit_listdevs(void);
 void audiounit_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
 int esd_open_audio(int naudioindev, int *audioindev, int nchindev,
@@ -332,7 +332,7 @@ void esd_close_audio(void);
 int esd_send_dacs(void);
 void esd_listdevs(void);
 void esd_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize);
 
 int dummy_open_audio(int nin, int nout, int sr);

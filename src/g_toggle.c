@@ -313,9 +313,9 @@ static void toggle_fout(t_toggle *x, t_floatarg f)
         pd_float(x->x_gui.x_snd->s_thing, x->x_on);
 }
 
-static void toggle_loadbang(t_toggle *x)
+static void toggle_loadbang(t_toggle *x, t_floatarg action)
 {
-    if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
+    if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
         toggle_fout(x, (t_float)x->x_on);
 }
 
@@ -450,7 +450,8 @@ void g_toggle_setup(void)
                     A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_dialog, gensym("dialog"),
                     A_GIMME, 0);
-    class_addmethod(toggle_class, (t_method)toggle_loadbang, gensym("loadbang"), 0);
+    class_addmethod(toggle_class, (t_method)toggle_loadbang,
+        gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_set, gensym("set"), A_FLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_size, gensym("size"), A_GIMME, 0);
     class_addmethod(toggle_class, (t_method)toggle_delta, gensym("delta"), A_GIMME, 0);

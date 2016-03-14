@@ -77,7 +77,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                     namebuf, fd);
         }
         if (fd >= 0)
-            oss_midiinfd[oss_nmidiin++] = fd;       
+            oss_midiinfd[oss_nmidiin++] = fd;
         else post("couldn't open MIDI input device %s", namebuf);
     }
     for (i = 0, oss_nmidiout = 0; i < nmidiout; i++)
@@ -97,7 +97,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                     namebuf, fd);
         }
         if (fd >= 0)
-            oss_midioutfd[oss_nmidiout++] = fd;     
+            oss_midioutfd[oss_nmidiout++] = fd;
         else post("couldn't open MIDI output device %s", namebuf);
     }
 
@@ -118,16 +118,16 @@ void sys_putmidimess(int portno, int a, int b, int c)
        switch (md_msglen(a))
        {
        case 2:
-            oss_midiout(oss_midioutfd[portno],a);        
-            oss_midiout(oss_midioutfd[portno],b);        
+            oss_midiout(oss_midioutfd[portno],a);
+            oss_midiout(oss_midioutfd[portno],b);
             oss_midiout(oss_midioutfd[portno],c);
             return;
        case 1:
-            oss_midiout(oss_midioutfd[portno],a);        
-            oss_midiout(oss_midioutfd[portno],b);        
+            oss_midiout(oss_midioutfd[portno],a);
+            oss_midiout(oss_midioutfd[portno],b);
             return;
        case 0:
-            oss_midiout(oss_midioutfd[portno],a);        
+            oss_midiout(oss_midioutfd[portno],a);
             return;
        };
     }
@@ -136,7 +136,7 @@ void sys_putmidimess(int portno, int a, int b, int c)
 void sys_putmidibyte(int portno, int byte)
 {
     if (portno >= 0 && portno < oss_nmidiout)
-        oss_midiout(oss_midioutfd[portno], byte);       
+        oss_midiout(oss_midioutfd[portno], byte);
 }
 
 #if 0   /* this is the "select" version which doesn't work with OSS
@@ -177,7 +177,7 @@ void sys_poll_midi(void)
         }
     }
 }
-#else 
+#else
 
     /* this version uses the asynchronous "read()" ... */
 void sys_poll_midi(void)
@@ -220,7 +220,7 @@ void sys_close_midi()
     oss_nmidiin = oss_nmidiout = 0;
 }
 
-void midi_oss_init(void)     
+void midi_oss_init(void)
 {
     int fd, devno;
     struct stat statbuf;
@@ -269,7 +269,7 @@ void midi_oss_init(void)
         }
         if (oss_nmidiindevs >= NSEARCH || oss_nmidioutdevs >= NSEARCH)
             break;
-        
+
         sprintf(namebuf, "/dev/midi%2.2d", devno);
         fd = open(namebuf, O_RDONLY | O_NDELAY);
         if (fd >= 0)
@@ -294,7 +294,7 @@ void midi_getdevs(char *indevlist, int *nindevs,
 {
     int i, ndev;
     midi_oss_init();
-        
+
     if ((ndev = oss_nmidiindevs) > maxndev)
         ndev = maxndev;
     for (i = 0; i < ndev; i++)

@@ -2,7 +2,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-/*  Audio back-end for connecting with the JACK audio interconnect system. 
+/*  Audio back-end for connecting with the JACK audio interconnect system.
 */
 
 #ifdef USEAPI_JACK
@@ -50,7 +50,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
             fprintf(stderr,"Partial read\n");
         /* hmm, how to find out whether 't_sample' and
             'jack_default_audio_sample_t' are actually the same type??? */
-        if (sizeof(t_sample)==sizeof(jack_default_audio_sample_t)) 
+        if (sizeof(t_sample)==sizeof(jack_default_audio_sample_t))
         {
             for (j = 0; j < sys_outchannels;  j++)
             {
@@ -64,7 +64,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
                     memcpy(jack_inbuf + (j * BUF_JACK), in,
                         sizeof (jack_default_audio_sample_t) * nframes);
             }
-        } 
+        }
         else
         {
             unsigned int frame=0;
@@ -96,7 +96,7 @@ static int pollprocess(jack_nframes_t nframes, void *arg)
         for (j = 0; j < outport_count;  j++)
         {
             if (out = jack_port_get_buffer (output_port[j], nframes))
-                memset(out, 0, sizeof (float) * nframes); 
+                memset(out, 0, sizeof (float) * nframes);
             memset(jack_outbuf + j * BUF_JACK, 0, BUF_JACK * sizeof(t_sample));
         }
         jack_filled = 0;
@@ -146,7 +146,7 @@ static int callbackprocess(jack_nframes_t nframes, void *arg)
                 j=0; j < DEFDACBLKSIZE; j++)
                     *jp++ = *fp++;
         }
-    }       
+    }
     return 0;
 }
 
@@ -164,7 +164,7 @@ static void
 jack_shutdown (void *arg)
 {
   error("JACK: server shut down");
-  
+
   jack_deactivate (jack_client);
   //jack_client_close(jack_client); /* likely to hang if the server shut down */
   jack_client = NULL;
@@ -246,7 +246,7 @@ static char** jack_get_clients(void)
     return jack_client_names;
 }
 
-/*   
+/*
  *   Wire up all the ports of one client.
  *
  */
@@ -265,9 +265,9 @@ static int jack_connect_ports(char* client)
                                  NULL, JackPortIsOutput);
     if (jack_ports)
     {
-        for (i=0;jack_ports[i] != NULL && i < sys_inchannels;i++)      
+        for (i=0;jack_ports[i] != NULL && i < sys_inchannels;i++)
             if (jack_connect (jack_client, jack_ports[i],
-               jack_port_name (input_port[i]))) 
+               jack_port_name (input_port[i])))
                   error ("JACK: cannot connect input ports %s -> %s",
                       jack_ports[i],jack_port_name (input_port[i]));
         free(jack_ports);
@@ -276,9 +276,9 @@ static int jack_connect_ports(char* client)
                                  NULL, JackPortIsInput);
     if (jack_ports)
     {
-        for (i=0;jack_ports[i] != NULL && i < sys_outchannels;i++)      
+        for (i=0;jack_ports[i] != NULL && i < sys_outchannels;i++)
           if (jack_connect (jack_client, jack_port_name (output_port[i]),
-            jack_ports[i])) 
+            jack_ports[i]))
               error( "JACK: cannot connect output ports %s -> %s",
                 jack_port_name (output_port[i]),jack_ports[i]);
 
@@ -331,7 +331,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
 
     /* try to become a client of the JACK server.  (If no JACK server exists,
         jack_client_open() will start uone up by default.  It's not clear
-        whether or not this is desirable; see long Pd list thread started by 
+        whether or not this is desirable; see long Pd list thread started by
         yvan volochine, June 2013) */
     if (!jack_client) {
         do {
@@ -360,24 +360,24 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
             sys_inchannels = sys_outchannels = 0;
             return 1;
         }
-        
+
         sys_inchannels = inchans;
         sys_outchannels = outchans;
         if (jack_inbuf)
             free(jack_inbuf);
         if (sys_inchannels)
-            jack_inbuf = calloc(sizeof(t_sample), sys_inchannels * BUF_JACK); 
+            jack_inbuf = calloc(sizeof(t_sample), sys_inchannels * BUF_JACK);
         if (jack_outbuf)
             free(jack_outbuf);
         if (sys_outchannels)
-            jack_outbuf = calloc(sizeof(t_sample), sys_outchannels * BUF_JACK); 
+            jack_outbuf = calloc(sizeof(t_sample), sys_outchannels * BUF_JACK);
 
         jack_get_clients();
 
         /* set JACK callback functions */
 
         jack_callback = callback;
-        jack_set_process_callback(jack_client, 
+        jack_set_process_callback(jack_client,
             (callback? callbackprocess : pollprocess), 0);
 
         jack_set_error_function (pd_jack_error_callback);
@@ -444,7 +444,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
           sys_outchannels = outchans = j;
           break;
         }
-    } 
+    }
     outport_count = outchans;
 
     /* tell the JACK server that we are ready to roll */
@@ -457,7 +457,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
             return 1;
         }
 
-        for (j = 0; j < outchans; j++) 
+        for (j = 0; j < outchans; j++)
             memset(jack_outbuf + j * BUF_JACK, 0,
                 BUF_JACK * sizeof(t_sample));
 
@@ -470,7 +470,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
     return 0;
 }
 
-void jack_close_audio(void) 
+void jack_close_audio(void)
 {
     if (jack_client){
         jack_deactivate (jack_client);
@@ -488,7 +488,7 @@ void jack_close_audio(void)
         free(jack_inbuf), jack_inbuf = 0;
     if (jack_outbuf)
         free(jack_outbuf), jack_outbuf = 0;
- 
+
 }
 
 int jack_send_dacs(void)
@@ -499,7 +499,7 @@ int jack_send_dacs(void)
     int timenow;
     int timeref = sys_getrealtime();
     if (!jack_client) return SENDDACS_NO;
-    if (!sys_inchannels && !sys_outchannels) return (SENDDACS_NO); 
+    if (!sys_inchannels && !sys_outchannels) return (SENDDACS_NO);
     if (jack_dio_error)
     {
         sys_log_error(ERR_RESYNC);
@@ -521,7 +521,7 @@ int jack_send_dacs(void)
     {
         memcpy(jack_outbuf + (j * BUF_JACK) + jack_filled, fp,
             DEFDACBLKSIZE*sizeof(t_sample));
-        fp += DEFDACBLKSIZE;  
+        fp += DEFDACBLKSIZE;
     }
     fp = sys_soundin;
     for (j = 0; j < sys_inchannels; j++)
@@ -542,7 +542,7 @@ int jack_send_dacs(void)
 }
 
 void jack_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize)
 {
     int i, ndev;

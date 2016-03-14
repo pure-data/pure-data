@@ -124,7 +124,7 @@ void my_canvas_draw(t_my_canvas *x, t_glist *glist, int mode)
 static void my_canvas_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *xp2, int *yp2)
 {
     t_my_canvas *x = (t_my_canvas *)z;
-    
+
     *xp1 = text_xpix(&x->x_gui.x_obj, glist);
     *yp1 = text_ypix(&x->x_gui.x_obj, glist);
     *xp2 = *xp1 + x->x_gui.x_w;

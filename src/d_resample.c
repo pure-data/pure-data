@@ -32,7 +32,7 @@ t_int *upsampling_perform_0(t_int *w)
 
   int n=parent*up;
   t_sample *dummy = out;
-  
+
   while(n--)*out++=0;
 
   n = parent;
@@ -56,7 +56,7 @@ t_int *upsampling_perform_hold(t_int *w)
   int n=parent;
   t_sample *dum_out = out;
   t_sample *dum_in  = in;
-  
+
   while (i--) {
     n = parent;
     out = dum_out+i;
@@ -81,7 +81,7 @@ t_int *upsampling_perform_linear(t_int *w)
   t_sample *fp;
   t_sample a=*x->buffer, b=*in;
 
-  
+
   for (n=0; n<length; n++) {
     t_sample findex = (t_sample)(n+1)/up;
     int     index  = findex;
@@ -192,7 +192,7 @@ void resamplefrom_dsp(t_resample *x,
 }
 
 void resampleto_dsp(t_resample *x,
-                         t_sample *out, 
+                         t_sample *out,
                          int insize, int outsize, int method)
 {
   if (insize==outsize) {

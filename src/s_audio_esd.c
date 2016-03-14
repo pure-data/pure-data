@@ -1,4 +1,4 @@
-/* Copyright (c) 2006 Guenter Geiger, 
+/* Copyright (c) 2006 Guenter Geiger,
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
@@ -27,18 +27,18 @@ static int esd_channels_in;
 
 int esd_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
     int noutdev, int *outdev, int nchout, int *chout, int rate)
-{ 
+{
 
     esd_format_t format = ESD_BITS16 | ESD_STEREO | ESD_STREAM | ESD_PLAY;
 
     indev[0] = 0;
     nindev = 1;
-    
+
     outdev[0] = 0;
     noutdev = 1;
 
     rate = sys_dacsr = ESD_DEFAULT_RATE;
-     
+
     if (*chout == 2) {
       esd_socket_out = esd_play_stream_fallback(format, ESD_DEFAULT_RATE, NULL, "pd");
       if (esd_socket_out <= 0) {
@@ -48,7 +48,7 @@ int esd_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
       }
       esd_channels_out = *chout = 2;
     }
-    
+
     if (*chin == 2) {
       esd_socket_in = esd_record_stream_fallback(format, ESD_DEFAULT_RATE, NULL, "pd-in");
       if (esd_socket_in <= 0) {
@@ -82,7 +82,7 @@ int esd_send_dacs(void)
   /* Do input */
 
   if (esd_channels_in) {
-    read(esd_socket_in,buf,DEFDACBLKSIZE*esd_channels_out*2);  
+    read(esd_socket_in,buf,DEFDACBLKSIZE*esd_channels_out*2);
     for (i = DEFDACBLKSIZE,  fp1 = sys_soundin,
                  sp = (short *)buf; i--; fp1++, sp += esd_channels_in) {
       for (j=0, fp2 = fp1; j<esd_channels_in; j++, fp2 += DEFDACBLKSIZE)
@@ -106,10 +106,10 @@ int esd_send_dacs(void)
           sp[j] = s;
         }
     }
-  
-    write(esd_socket_out,buf,DEFDACBLKSIZE*esd_channels_out*2);  
+
+    write(esd_socket_out,buf,DEFDACBLKSIZE*esd_channels_out*2);
   }
-  
+
   memset(sys_soundin,0,DEFDACBLKSIZE*esd_channels_out*2);
   memset(sys_soundout,0,DEFDACBLKSIZE*esd_channels_out*4);
 
@@ -122,7 +122,7 @@ void esd_listdevs( void)
 }
 
 void esd_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize)
 {
     int i, ndev;
