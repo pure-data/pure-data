@@ -71,20 +71,20 @@ proc ::dialog_iemgui::sched_rng {mytoplevel} {
             set $var_iemgui_min_rng [eval concat $$var_iemgui_max_rng]
             set $var_iemgui_max_rng $hhh
             $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
-            $mytoplevel.rng.min_ent configure -textvariable $var_iemgui_min_rng }
+            $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng }
         if {[eval concat $$var_iemgui_max_rng] < $define_min_flashhold} {
             set $var_iemgui_max_rng $define_min_flashhold
             $mytoplevel.rng.max_ent configure -textvariable $var_iemgui_max_rng
         }
         if {[eval concat $$var_iemgui_min_rng] < $define_min_flashbreak} {
             set $var_iemgui_min_rng $define_min_flashbreak
-            $mytoplevel.rng.min_ent configure -textvariable $var_iemgui_min_rng
+            $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng
         }
     }
     if {[eval concat $$var_iemgui_rng_sch] == 1} {
         if {[eval concat $$var_iemgui_min_rng] == 0.0} {
             set $var_iemgui_min_rng 1.0
-            $mytoplevel.rng.min_ent configure -textvariable $var_iemgui_min_rng
+            $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng
         }
     }
 }
@@ -107,7 +107,7 @@ proc ::dialog_iemgui::verify_rng {mytoplevel} {
         if {[eval concat $$var_iemgui_max_rng] > 0} {
             if {[eval concat $$var_iemgui_min_rng] <= 0} {
                 set $var_iemgui_min_rng [expr [eval concat $$var_iemgui_max_rng] * 0.01]
-                $mytoplevel.rng.min_ent configure -textvariable $var_iemgui_min_rng
+                $mytoplevel.rng.min.ent configure -textvariable $var_iemgui_min_rng
             }
         } else {
             if {[eval concat $$var_iemgui_min_rng] > 0} {
@@ -498,12 +498,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     
     set $var_iemgui_l2_f1_b0 0
 
-    # set labels based on gui type, override incoming values for now
-    # this is a proof of concept, the real way to do this involves
-    # removing label string sending from C and handling strings
-    # (& translations) here
-    set iemgui_type ""
-    set iemgui_range_header [_ "Output Range"]
+    # Override incoming values for known iem guis.
+    set iemgui_type [_ $mainheader] 
+    set iemgui_range_header [_ $rng_header]
+    set lilo_width 5
     switch -- $mainheader {
         "|bang|" {
             set iemgui_type [_ "Bang"]
@@ -520,6 +518,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             set iemgui_type [_ "Number2"]
             set wdt_label [_ "Width (digits):"]
             set hgt_label [_ "Height:"]
+            set iemgui_range_header [_ "Output Range"]
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"]
             set num_label [_ "Log height:"] }
@@ -527,12 +526,14 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             set iemgui_type [_ "Vslider"]
             set wdt_label [_ "Width:"]
             set hgt_label [_ "Height:"]
+            set iemgui_range_header [_ "Output Range"]
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"] }
         "|hsl|" {
             set iemgui_type [_ "Hslider"]
             set wdt_label [_ "Width:"]
             set hgt_label [_ "Height:"]
+            set iemgui_range_header [_ "Output Range"]
             set min_rng_label [_ "Lower:"]
             set max_rng_label [_ "Upper:"] }
         "|vradio|" {
@@ -546,13 +547,15 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         "|vu|" {
             set iemgui_type [_ "VU Meter"]
             set wdt_label [_ "Width:"]
-            set hgt_label [_ "Height:"] }
+            set hgt_label [_ "Height:"]
+            # VU needs more room to display "no_scale"
+            set lilo_width 8 }
         "|cnv|" {
             set iemgui_type [_ "Canvas"]
             set wdt_label [_ "Size:"]
+            set iemgui_range_header [_ "Visible Rectangle (pix)"]
             set min_rng_label [_ "Width:"]
-            set max_rng_label [_ "Height:"]
-            set iemgui_range_header [_ "Visible Rectangle (pix)"] }
+            set max_rng_label [_ "Height:"] }
     }
     
     toplevel $mytoplevel -class DialogWindow
@@ -567,13 +570,11 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     # dimensions
     frame $mytoplevel.dim -height 7
     pack $mytoplevel.dim -side top
-    label $mytoplevel.dim.head -text [_ $dim_header]
     label $mytoplevel.dim.w_lab -text [_ $wdt_label]
     entry $mytoplevel.dim.w_ent -textvariable $var_iemgui_wdt -width 4
     label $mytoplevel.dim.dummy1 -text "" -width 1
     label $mytoplevel.dim.h_lab -text [_ $hgt_label]
     entry $mytoplevel.dim.h_ent -textvariable $var_iemgui_hgt -width 4
-    #pack $mytoplevel.dim.head -side top
     pack $mytoplevel.dim.w_lab $mytoplevel.dim.w_ent -side left
     if { $hgt_label ne "empty" } {
         pack $mytoplevel.dim.dummy1 $mytoplevel.dim.h_lab $mytoplevel.dim.h_ent -side left }
@@ -581,7 +582,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     # range
     labelframe $mytoplevel.rng
     pack $mytoplevel.rng -side top -fill x
-    label $mytoplevel.rng.head -text [_ $rng_header]
     frame $mytoplevel.rng.min
     label $mytoplevel.rng.min.lab -text [_ $min_rng_label]
     entry $mytoplevel.rng.min.ent -textvariable $var_iemgui_min_rng -width 7
@@ -589,7 +589,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     label $mytoplevel.rng.max_lab -text [_ $max_rng_label]
     entry $mytoplevel.rng.max_ent -textvariable $var_iemgui_max_rng -width 7
     if { $rng_header ne "empty" } {
-        #pack $mytoplevel.rng.head -side top
         $mytoplevel.rng config -borderwidth 1 -pady 4 -text [_ $iemgui_range_header]
         if { $min_rng_label ne "empty" } {
             pack $mytoplevel.rng.min
@@ -599,24 +598,15 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             pack configure $mytoplevel.rng.min -side left
             pack $mytoplevel.rng.dummy1 $mytoplevel.rng.max_lab $mytoplevel.rng.max_ent -side left}
     }
-    
-    # if { [eval concat $$var_iemgui_lin0_log1] >= 0 || [eval concat $$var_iemgui_loadbang] >= 0 || [eval concat $$var_iemgui_num] > 0 || [eval concat $$var_iemgui_steady] >= 0 } {
-    #     label $mytoplevel.space1 -text ""
-    #     pack $mytoplevel.space1 -side top }
 
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
-    #label $mytoplevel.para.dummy2 -text "" -width 0
-    #label $mytoplevel.para.dummy3 -text "" -width 0
     if {[eval concat $$var_iemgui_lin0_log1] == 0} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo0]] -width 5 \
+        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo0]] -width $lilo_width \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {[eval concat $$var_iemgui_lin0_log1] == 1} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo1]] -width 5 \
+        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo1]] -width $lilo_width \
             -command "::dialog_iemgui::lilo $mytoplevel" }
-    if { $iemgui_type eq "VU Meter" } {
-        # VU needs more room to display "no_scale"
-        $mytoplevel.para.lilo configure -width 8 }
     if {[eval concat $$var_iemgui_loadbang] == 0} {
         button $mytoplevel.para.lb -text [_ "No init"] \
             -command "::dialog_iemgui::lb $mytoplevel" -width 7 }
@@ -642,9 +632,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         pack $mytoplevel.para.num -side left -expand 1}
     if {[eval concat $$var_iemgui_steady] >= 0} {
         pack $mytoplevel.para.stdy_jmp -side left -expand 1}
-    
-    #frame $mytoplevel.spacer0 -height 4
-    #pack $mytoplevel.spacer0 -side top
     
     labelframe $mytoplevel.s_r -borderwidth 1 -padx 5 -pady 5 -text [_ "Messages"]
     pack $mytoplevel.s_r -side top -fill x
@@ -672,9 +659,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         { set current_font "Helvetica" }
     if {[eval concat $$var_iemgui_gn_f] == 2} \
         { set current_font "Times" }
-    
-    # frame $mytoplevel.spacer1 -height 7
-    # pack $mytoplevel.spacer1 -side top
     
     labelframe $mytoplevel.label -borderwidth 1 -text [_ "Label"] -padx 5 -pady 5
     pack $mytoplevel.label -side top -fill x -pady 5
@@ -717,9 +701,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         -command "::dialog_iemgui::toggle_font $mytoplevel 2" 
     bind $mytoplevel.label.fontpopup_label <Button> \
         [list tk_popup $mytoplevel.popup %X %Y]
-    
-    # frame $mytoplevel.spacer2 -height 7
-    # pack $mytoplevel.spacer2 -side top
     
     labelframe $mytoplevel.colors -borderwidth 1 -text [_ "Colors"] -padx 5 -pady 5
     pack $mytoplevel.colors -fill x
