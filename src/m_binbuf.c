@@ -142,7 +142,7 @@ void binbuf_text(t_binbuf *x, char *text, size_t size)
                         if (!digit) floatstate = -1;
                     }
                 }
-                if (!lastslash && c == '$' && (textp != etext && 
+                if (!lastslash && c == '$' && (textp != etext &&
                     textp[0] >= '0' && textp[0] <= '9'))
                         dollar = 1;
                 if (!slash) bufp++;
@@ -152,7 +152,7 @@ void binbuf_text(t_binbuf *x, char *text, size_t size)
                     slash = 0;
                 }
             }
-            while (textp != etext && bufp != ebuf && 
+            while (textp != etext && bufp != ebuf &&
                 (slash || (*textp != ' ' && *textp != '\n' && *textp != '\r'
                     && *textp != '\t' &&*textp != ',' && *textp != ';')));
             *bufp = 0;
@@ -168,7 +168,7 @@ void binbuf_text(t_binbuf *x, char *text, size_t size)
                 was. */
             else if (dollar)
             {
-                if (buf[0] != '$') 
+                if (buf[0] != '$')
                     dollar = 0;
                 for (bufp = buf+1; *bufp; bufp++)
                     if (*bufp < '0' || *bufp > '9')
@@ -334,7 +334,7 @@ void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
             bug("binbuf_addbinbuf");
         }
     }
-    
+
     binbuf_add(x, z->b_n, z->b_vec);
 }
 
@@ -428,7 +428,7 @@ void binbuf_print(t_binbuf *x)
         postatom(1, x->b_vec + i);
         if (x->b_vec[i].a_type == A_SEMI)
             newline = 1;
-        else newline = 0; 
+        else newline = 0;
     }
     if (startedpost) endpost();
 }
@@ -553,7 +553,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av, int tonew)
         {
             strncat(buf2, str, (substr-str));
             str=substr+1;
-        } 
+        }
         else
         {
             strcat(buf2, str);
@@ -653,13 +653,13 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
                 {
                     error("$%d: not enough arguments supplied",
                             at->a_w.w_index);
-                    goto cleanup; 
+                    goto cleanup;
                 }
                 else if (argv[at->a_w.w_index-1].a_type != A_SYMBOL)
                 {
                     error("$%d: symbol needed as message destination",
                         at->a_w.w_index);
-                    goto cleanup; 
+                    goto cleanup;
                 }
                 else s = argv[at->a_w.w_index-1].a_w.w_symbol;
             }
@@ -778,7 +778,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
         at++;
         ac--;
     }
-broken: 
+broken:
     if (maxnargs > SMALLMSG)
          ATOMS_FREEA(mstack, maxnargs);
 }
@@ -790,19 +790,19 @@ int binbuf_read(t_binbuf *b, char *filename, char *dirname, int crflag)
     int readret;
     char *buf;
     char namebuf[MAXPDSTRING];
-    
+
     namebuf[0] = 0;
     if (*dirname)
         strcat(namebuf, dirname), strcat(namebuf, "/");
     strcat(namebuf, filename);
-    
+
     if ((fd = sys_open(namebuf, 0)) < 0)
     {
         fprintf(stderr, "open: ");
         perror(namebuf);
         return (1);
     }
-    if ((length = lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0 
+    if ((length = lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
         || !(buf = t_getbytes(length)))
     {
         fprintf(stderr, "lseek: ");
@@ -896,7 +896,7 @@ int binbuf_write(t_binbuf *x, char *filename, char *dir, int crflag)
         x = binbuf_convert(x, 0);
         deleteit = 1;
     }
-    
+
     if (!(f = sys_fopen(fbuf, "w")))
     {
         fprintf(stderr, "open: ");
@@ -946,7 +946,7 @@ int binbuf_write(t_binbuf *x, char *filename, char *dir, int crflag)
         goto fail;
     }
 
-    if (fflush(f) != 0) 
+    if (fflush(f) != 0)
     {
         sys_unixerror(fbuf);
         goto fail;
@@ -965,7 +965,7 @@ fail:
 }
 
 /* The following routine attempts to convert from max to pd or back.  The
-max to pd direction is working OK but you will need to make lots of 
+max to pd direction is working OK but you will need to make lots of
 abstractions for objects like "gate" which don't exist in Pd.  conversion
 from Pd to Max hasn't been tested for patches with subpatches yet!  */
 
@@ -1007,7 +1007,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
         if (maxtopd)
         {
                 /* case 1: importing a ".pat" file into Pd. */
-                
+
                 /* dollar signs in file translate to symbols */
             for (i = 0; i < natom; i++)
             {
@@ -1036,7 +1036,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                     stack[stackdepth] = nobj;
                     stackdepth++;
                     nobj = 0;
-                    binbuf_addv(newb, "ssfffff;", 
+                    binbuf_addv(newb, "ssfffff;",
                         gensym("#N"), gensym("canvas"),
                             atom_getfloatarg(2, natom, nextmess),
                             atom_getfloatarg(3, natom, nextmess),
@@ -1094,7 +1094,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                     binbuf_add(newb, natom - 1, outmess);
                     nobj++;
                 }
-                else if (!strcmp(second, "message") || 
+                else if (!strcmp(second, "message") ||
                     !strcmp(second, "comment"))
                 {
                     SETSYMBOL(outmess, gensym("#X"));
@@ -1160,7 +1160,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                         gensym("#X"), gensym("obj"),
                         atom_getfloatarg(2, natom, nextmess),
                         atom_getfloatarg(3, natom, nextmess),
-                        gensym((natom > 5 ? "inlet~" : "inlet"))); 
+                        gensym((natom > 5 ? "inlet~" : "inlet")));
                     nobj++;
                 }
                 else if (!strcmp(second, "outlet"))
@@ -1169,7 +1169,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                         gensym("#X"), gensym("obj"),
                         atom_getfloatarg(2, natom, nextmess),
                         atom_getfloatarg(3, natom, nextmess),
-                        gensym((natom > 5 ? "outlet~" : "outlet"))); 
+                        gensym((natom > 5 ? "outlet~" : "outlet")));
                     nobj++;
                 }
                 else if (!strcmp(second, "user"))
@@ -1191,7 +1191,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                                     range + offset,
                                     0., 0.,
                                     gensym("empty"), gensym("empty"), gensym("empty"),
-                                    0., -8., 0., 8., -262144., -1., -1., 0., 1.); 
+                                    0., -8., 0., 8., -262144., -1., -1., 0., 1.);
                    }
                     else if (!strcmp(third, "uslider"))
                     {
@@ -1227,7 +1227,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                         nobj - atom_getfloatarg(2, natom, nextmess) - 1,
                         atom_getfloatarg(3, natom, nextmess),
                         nobj - atom_getfloatarg(4, natom, nextmess) - 1,
-                        atom_getfloatarg(5, natom, nextmess)); 
+                        atom_getfloatarg(5, natom, nextmess));
                 }
             }
         }
@@ -1252,7 +1252,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                     }
                     x = atom_getfloatarg(2, natom, nextmess);
                     y = atom_getfloatarg(3, natom, nextmess);
-                    binbuf_addv(newb, "ssffff;", 
+                    binbuf_addv(newb, "ssffff;",
                         gensym("#N"), gensym("vpatcher"),
                             x, y,
                             atom_getfloatarg(4, natom, nextmess) + x,
@@ -1332,7 +1332,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                                     (atom_getfloatarg(6, natom, nextmess) == 1? 1 :
                                          atom_getfloatarg(6, natom, nextmess) - 1),
                             atom_getfloatarg(7, natom, nextmess));
-                    else if (classname == gensym("hsl")) 
+                    else if (classname == gensym("hsl"))
                     {
                         t_float slmin = atom_getfloatarg(7, natom, nextmess);
                         t_float slmax = atom_getfloatarg(8, natom, nextmess);
@@ -1373,7 +1373,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                                 SETSYMBOL(outmess + i + 2, gensym("l"));
                             else if (arg == gensym("symbol"))
                                 SETSYMBOL(outmess + i + 2, gensym("s"));
-                            else 
+                            else
                                 outmess[i+2] = nextmess[i];
                         }
                         SETSEMI(outmess + natom + 2);
@@ -1395,9 +1395,9 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                         binbuf_add(newb, natom + 3, outmess);
                     }
                     nobj++;
-                
+
                 }
-                else if (!strcmp(second, "msg") || 
+                else if (!strcmp(second, "msg") ||
                     !strcmp(second, "text"))
                 {
                     SETSYMBOL(outmess, gensym("#P"));
@@ -1431,7 +1431,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
                         nobj - atom_getfloatarg(2, natom, nextmess) - 1,
                         atom_getfloatarg(3, natom, nextmess),
                         nobj - atom_getfloatarg(4, natom, nextmess) - 1,
-                        atom_getfloatarg(5, natom, nextmess)); 
+                        atom_getfloatarg(5, natom, nextmess));
                 }
             }
         }
@@ -1446,6 +1446,8 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 }
 
 void pd_doloadbang(void);
+void canvas_initbang(t_canvas *x);
+extern t_symbol s__X;
 
 /* LATER make this evaluate the file on-the-fly. */
 /* LATER figure out how to log errors */
@@ -1472,6 +1474,7 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
             b = newb;
         }
         binbuf_eval(b, 0, 0, 0);
+        canvas_initbang((t_canvas *)(s__X.s_thing)); /* JMZ*/
         gensym("#A")->s_thing = bounda;
         s__N.s_thing = boundn;
     }
@@ -1493,12 +1496,13 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
         s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
                                 for the caller to grab it. */
     binbuf_evalfile(name, dir);
-    while ((x != s__X.s_thing) && s__X.s_thing) 
+    while ((x != s__X.s_thing) && s__X.s_thing)
     {
         x = s__X.s_thing;
         vmess(x, gensym("pop"), "i", 1);
     }
-    pd_doloadbang();
+    if (!sys_noloadbang)
+        pd_doloadbang();
     canvas_resume_dsp(dspstate);
     s__X.s_thing = boundx;
     return x;

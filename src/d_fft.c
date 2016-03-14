@@ -20,12 +20,12 @@ static t_int *sigfft_swap(t_int *w)
     t_sample *in2 = (t_sample *)(w[2]);
     int n = w[3];
     for (;n--; in1++, in2++)
-    {   
+    {
         t_sample f = *in1;
         *in1 = *in2;
         *in2 = f;
     }
-    return (w+4);    
+    return (w+4);
 }
 
     /* take array1 (supply a pointer to beginning) and copy it,
@@ -287,7 +287,7 @@ static t_int *sigframp_perform(t_int *w)
     int n = w[5];
     int m = n + 1;
     t_sample fbin = 1, oneovern2 = 1.f/((t_sample)n * (t_sample)n);
-    
+
     inreal += 2;
     inimag += 2;
     *outamp++ = *outfreq++ = 0;

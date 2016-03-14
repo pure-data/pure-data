@@ -80,12 +80,12 @@ static void init_rsqrt(void)
         } u;
         int32_t l = (i ? (i == DUMTAB1SIZE-1 ? DUMTAB1SIZE-2 : i) : 1)<< 23;
         u.l = l;
-        rsqrt_exptab[i] = 1./sqrt(u.f);   
+        rsqrt_exptab[i] = 1./sqrt(u.f);
     }
     for (i = 0; i < DUMTAB2SIZE; i++)
     {
         float f = 1 + (1./DUMTAB2SIZE) * i;
-        rsqrt_mantissatab[i] = 1./sqrt(f);      
+        rsqrt_mantissatab[i] = 1./sqrt(f);
     }
 }
 
@@ -139,7 +139,7 @@ static t_int *sigrsqrt_perform(t_int *w)
     t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     while (n--)
-    {   
+    {
         t_sample f = *in++;
         union {
           float f;
@@ -198,7 +198,7 @@ t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
     t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     while (n--)
-    {   
+    {
         t_sample f = *in++;
         union {
           float f;
@@ -254,7 +254,7 @@ static t_int *sigwrap_perform(t_int *w)
     t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
     t_int n = *(t_int *)(w+3);
     while (n--)
-    {   
+    {
         t_sample f = *in++;
         int k = f;
         if (f > 0) *out++ = f-k;
@@ -462,7 +462,7 @@ static void rmstodb_tilde_dsp(t_rmstodb_tilde *x, t_signal **sp)
 
 void rmstodb_tilde_setup(void)
 {
-    rmstodb_tilde_class = class_new(gensym("rmstodb~"), 
+    rmstodb_tilde_class = class_new(gensym("rmstodb~"),
         (t_newmethod)rmstodb_tilde_new, 0, sizeof(t_rmstodb_tilde), 0, 0);
     CLASS_MAINSIGNALIN(rmstodb_tilde_class, t_rmstodb_tilde, x_f);
     class_addmethod(rmstodb_tilde_class, (t_method)rmstodb_tilde_dsp,
@@ -583,7 +583,7 @@ static void *pow_tilde_new(t_floatarg f)
     signalinlet_new(&x->x_obj, f);
     outlet_new(&x->x_obj, &s_signal);
     x->x_f = 0;
-    
+
     return (x);
 }
 

@@ -315,7 +315,7 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_array::cancel $mytoplevel"
     pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 10
-    if {$newone == 0 && $::windowingsystem ne "aqua"} {
+    if {$newone == 0} {
         button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
             -command "::dialog_array::apply $mytoplevel"
         pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 10

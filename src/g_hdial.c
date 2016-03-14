@@ -479,9 +479,9 @@ static int hradio_newclick(t_gobj *z, struct _glist *glist, int xpix, int ypix, 
     return (1);
 }
 
-static void hradio_loadbang(t_hradio *x)
+static void hradio_loadbang(t_hradio *x, t_floatarg action)
 {
-    if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
+    if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
         hradio_bang(x);
 }
 
@@ -656,7 +656,7 @@ void g_hradio_setup(void)
     class_addmethod(hradio_class, (t_method)hradio_dialog, gensym("dialog"),
                     A_GIMME, 0);
     class_addmethod(hradio_class, (t_method)hradio_loadbang,
-        gensym("loadbang"), 0);
+        gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(hradio_class, (t_method)hradio_set,
         gensym("set"), A_FLOAT, 0);
     class_addmethod(hradio_class, (t_method)hradio_size,

@@ -31,14 +31,14 @@
 #define BYTE_ORDER LITTLE_ENDIAN
 #endif
 
-#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN) 
-#error No byte order defined                                                    
+#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN)
+#error No byte order defined
 #endif
 
 #if BYTE_ORDER == LITTLE_ENDIAN
-# define HIOFFSET 1                                                              
-# define LOWOFFSET 0                                                             
-#else                                                                           
+# define HIOFFSET 1
+# define LOWOFFSET 0
+#else
 # define HIOFFSET 0    /* word offset to find MSB */
 # define LOWOFFSET 1    /* word offset to find LSB */
 #endif
@@ -153,7 +153,7 @@ static t_int *cos_perform(t_int *w)
     double dphase;
     int normhipart;
     union tabfudge tf;
-    
+
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
 
@@ -204,7 +204,7 @@ static void cos_maketable(void)
     int i;
     float *fp, phase, phsinc = (2. * 3.14159) / COSTABSIZE;
     union tabfudge tf;
-    
+
     if (cos_table) return;
     cos_table = (float *)getbytes(sizeof(float) * (COSTABSIZE+1));
     for (i = COSTABSIZE + 1, fp = cos_table, phase = 0; i--;
@@ -262,7 +262,7 @@ static t_int *osc_perform(t_int *w)
     int normhipart;
     union tabfudge tf;
     float conv = x->x_conv;
-    
+
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
 #if 0
@@ -320,7 +320,7 @@ static void osc_ft1(t_osc *x, t_float f)
 }
 
 static void osc_setup(void)
-{    
+{
     osc_class = class_new(gensym("osc~"), (t_newmethod)osc_new, 0,
         sizeof(t_osc), 0, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(osc_class, t_osc, x_f);
@@ -391,7 +391,7 @@ static t_int *sigvcf_perform(t_int *w)
     double dphase;
     int normhipart, tabindex;
     union tabfudge tf;
-    
+
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
 
@@ -421,7 +421,7 @@ static t_int *sigvcf_perform(t_int *w)
 
         f1 = *in1++;
         re2 = re;
-        *out1++ = re = ampcorrect * oneminusr * f1 
+        *out1++ = re = ampcorrect * oneminusr * f1
             + coefr * re2 - coefi * im;
         *out2++ = im = coefi * re2 + coefr * im;
     }
@@ -438,7 +438,7 @@ static void sigvcf_dsp(t_sigvcf *x, t_signal **sp)
 {
     x->x_ctl->c_isr = 6.28318f/sp[0]->s_sr;
     dsp_add(sigvcf_perform, 6,
-        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec, 
+        sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
             x->x_ctl, sp[0]->s_n);
 
 }
@@ -467,7 +467,7 @@ static void *noise_new(void)
 {
     t_noise *x = (t_noise *)pd_new(noise_class);
     static int init = 307;
-    x->x_val = (init *= 1319); 
+    x->x_val = (init *= 1319);
     outlet_new(&x->x_obj, gensym("signal"));
     return (x);
 }

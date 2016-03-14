@@ -151,7 +151,7 @@ static void pdsymbol_anything(t_pdsymbol *x, t_symbol *s, int ac, t_atom *av)
     Otherwise it's not clear what we should do so we just go for the
     "anything" method.  LATER figure out if there are other places where
     empty lists aren't equivalent to "bang"???  Should Pd's message passer
-    always check and call the more specific method, or should it be the 
+    always check and call the more specific method, or should it be the
     object's responsibility?  Dunno... */
 static void pdsymbol_list(t_pdsymbol *x, t_symbol *s, int ac, t_atom *av)
 {
@@ -326,7 +326,7 @@ static void receive_free(t_receive *x)
 
 static void receive_setup(void)
 {
-    receive_class = class_new(gensym("receive"), (t_newmethod)receive_new, 
+    receive_class = class_new(gensym("receive"), (t_newmethod)receive_new,
         (t_method)receive_free, sizeof(t_receive), CLASS_NOINLET, A_DEFSYM, 0);
     class_addcreator((t_newmethod)receive_new, gensym("r"), A_DEFSYM, 0);
     class_addbang(receive_class, receive_bang);
@@ -503,7 +503,7 @@ static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
 {
     t_routeelement *e;
     int nelement;
-    if (x->x_type == A_SYMBOL) 
+    if (x->x_type == A_SYMBOL)
     {
         for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == sel)
@@ -1467,19 +1467,19 @@ void value_release(t_symbol *s)
 }
 
 /*
- * value_getfloat -- obtain the float value of a "value" object 
+ * value_getfloat -- obtain the float value of a "value" object
  *                  return 0 on success, 1 otherwise
  */
 int
-value_getfloat(t_symbol *s, t_float *f) 
+value_getfloat(t_symbol *s, t_float *f)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
         return (1);
     *f = c->c_f;
-    return (0); 
+    return (0);
 }
- 
+
 /*
  * value_setfloat -- set the float value of a "value" object
  *                  return 0 on success, 1 otherwise
@@ -1490,8 +1490,8 @@ value_setfloat(t_symbol *s, t_float f)
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
         return (1);
-    c->c_f = f; 
-    return (0); 
+    c->c_f = f;
+    return (0);
 }
 
 static void vcommon_float(t_vcommon *x, t_float f)

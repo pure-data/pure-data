@@ -14,7 +14,7 @@ installer (.exe) out of a Pure Data build tree.
 Features of the resulting installer:
 
  * Install Pure Data to user selectable destination
-   (Default: "%Program Files%\Pure Data")
+   (Default: "%Program Files%\Pd")
 
  * Create Startmenu entries (optional)
 

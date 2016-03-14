@@ -54,11 +54,11 @@ static void sys_initloadpreferences( void)
     char default_prefs_file[MAXPDSTRING];
     struct stat statbuf;
 
-    snprintf(default_prefs_file, MAXPDSTRING, "%s/default.pdsettings", 
+    snprintf(default_prefs_file, MAXPDSTRING, "%s/default.pdsettings",
         sys_libdir->s_name);
-    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings", 
+    snprintf(user_prefs_file, MAXPDSTRING, "%s/.pdsettings",
         (homedir ? homedir : "."));
-    if (stat(user_prefs_file, &statbuf) == 0) 
+    if (stat(user_prefs_file, &statbuf) == 0)
         strncpy(filenamebuf, user_prefs_file, MAXPDSTRING);
     else if (stat(default_prefs_file, &statbuf) == 0)
         strncpy(filenamebuf, default_prefs_file, MAXPDSTRING);
@@ -276,7 +276,7 @@ static void sys_initsavepreferences( void)
 static void sys_putpreference(const char *key, const char *value)
 {
     char cmdbuf[MAXPDSTRING];
-    snprintf(cmdbuf, MAXPDSTRING, 
+    snprintf(cmdbuf, MAXPDSTRING,
         "defaults write org.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
     system(cmdbuf);
 }
@@ -321,7 +321,7 @@ void sys_loadpreferences( void)
             if (sscanf(prefbuf, "%d %d", &audioindev[i], &chindev[i]) < 2)
                 break;
                 /* possibly override device number if the device name was
-                also saved and if it matches one we have now */        
+                also saved and if it matches one we have now */
             sprintf(keybuf, "audioindevname%d", i+1);
             if (sys_getpreference(keybuf, prefbuf, MAXPDSTRING)
                 && (devn = sys_audiodevnametonumber(0, prefbuf)) >= 0)
@@ -366,7 +366,7 @@ void sys_loadpreferences( void)
     sys_set_audio_settings(naudioindev, audioindev, naudioindev, chindev,
         naudiooutdev, audiooutdev, naudiooutdev, choutdev, rate, advance,
         callback, blocksize);
-        
+
         /* load MIDI preferences */
         /* JMZ/MB: brackets for initializing */
     if (sys_getpreference("nomidiin", prefbuf, MAXPDSTRING) &&
@@ -563,7 +563,7 @@ void glob_savepreferences(t_pd *dummy)
     sys_putpreference("standardpath", buf1);
     sprintf(buf1, "%d", sys_verbose);
     sys_putpreference("verbose", buf1);
-    
+
         /* startup */
     for (i = 0; 1; i++)
     {
@@ -577,8 +577,8 @@ void glob_savepreferences(t_pd *dummy)
     sys_putpreference("nloadlib", buf1);
     sprintf(buf1, "%d", sys_defeatrt);
     sys_putpreference("defeatrt", buf1);
-    sys_putpreference("flags", 
+    sys_putpreference("flags",
         (sys_flags ? sys_flags->s_name : ""));
     sys_donesavepreferences();
-    
+
 }

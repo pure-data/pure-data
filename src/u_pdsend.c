@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 
         /* try to connect.  */
     for (nretry = 0; nretry < (protocol == SOCK_STREAM ? 10 : 1); nretry++)
-    
+
     {
         if (nretry > 0)
         {

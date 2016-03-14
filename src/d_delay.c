@@ -108,7 +108,7 @@ static t_int *sigdelwrite_perform(t_int *w)
             phase -= nsamps;
         }
     }
-    c->c_phase = phase; 
+    c->c_phase = phase;
     return (w+4);
 }
 
@@ -129,7 +129,7 @@ static void sigdelwrite_free(t_sigdelwrite *x)
 
 static void sigdelwrite_setup(void)
 {
-    sigdelwrite_class = class_new(gensym("delwrite~"), 
+    sigdelwrite_class = class_new(gensym("delwrite~"),
         (t_newmethod)sigdelwrite_new, (t_method)sigdelwrite_free,
         sizeof(t_sigdelwrite), 0, A_DEFSYM, A_DEFFLOAT, 0);
     CLASS_MAINSIGNALIN(sigdelwrite_class, t_sigdelwrite, x_f);

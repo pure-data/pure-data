@@ -27,7 +27,7 @@ typedef struct _alsa_dev
     int a_sampwidth;
     int a_channels;
     char **a_addr;
-    int a_synced; 
+    int a_synced;
 } t_alsa_dev;
 
 extern t_alsa_dev alsa_indev[ALSA_MAXDEV];

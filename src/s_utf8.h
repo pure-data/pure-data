@@ -17,7 +17,7 @@
 /* UTF8_MAXBYTES
  *   maximum number of bytes required to represent a single character in UTF-8
  *
- * UTF8_MAXBYTES1 = UTF8_MAXBYTES+1 
+ * UTF8_MAXBYTES1 = UTF8_MAXBYTES+1
  *  maximum bytes per character including NUL terminator
  */
 #ifdef UTF8_SUPPORT_FULL_UCS4

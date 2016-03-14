@@ -89,7 +89,7 @@ static void textbuf_open(t_textbuf *x)
     {
         char buf[40];
         sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s: %s} %d\n",
-            x, 600, 340, "myname", "text", 
+            x, 600, 340, "myname", "text",
                  sys_hostfontsize(glist_getfont(x->b_canvas)));
         sprintf(buf, ".x%lx", (unsigned long)x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
@@ -104,7 +104,7 @@ static void textbuf_close(t_textbuf *x)
     {
         guiconnect_notarget(x->b_guiconnect, 1000);
         x->b_guiconnect = 0;
-    }    
+    }
 }
 
 static void textbuf_addline(t_textbuf *b, t_symbol *s, int argc, t_atom *argv)
@@ -286,7 +286,7 @@ static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
     asym->s_thing = 0;
         /* and now bind #A to us to receive following messages in the
         saved file or copy buffer */
-    pd_bind(&x->x_ob.ob_pd, asym); 
+    pd_bind(&x->x_ob.ob_pd, asym);
     return (x);
 }
 
@@ -312,7 +312,7 @@ static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
         t_gstub *gs = gp->gp_stub;
         binbuf_clear(x->x_textbuf.b_binbuf);
         binbuf_add(x->x_textbuf.b_binbuf, binbuf_getnatom(b), binbuf_getvec(b));
-    } 
+    }
 }
 
 static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
@@ -326,16 +326,16 @@ static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
         binbuf_add(b, binbuf_getnatom(x->x_textbuf.b_binbuf),
             binbuf_getvec(x->x_textbuf.b_binbuf));
         if (gs->gs_which == GP_GLIST)
-            scalar_redraw(gp->gp_un.gp_scalar, gs->gs_un.gs_glist);  
+            scalar_redraw(gp->gp_un.gp_scalar, gs->gs_un.gs_glist);
         else
         {
             t_array *owner_array = gs->gs_un.gs_array;
             while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
                 owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
             scalar_redraw(owner_array->a_gp.gp_un.gp_scalar,
-                owner_array->a_gp.gp_stub->gs_un.gs_glist);  
+                owner_array->a_gp.gp_stub->gs_un.gs_glist);
         }
-    } 
+    }
 }
 
     /* bang: output a pointer to a struct containing this text */
@@ -445,7 +445,7 @@ static t_binbuf *text_client_getbuf(t_text_client *x)
     {
         t_template *template = template_findbyname(x->tc_struct);
         t_gstub *gs = x->tc_gp.gp_stub;
-        t_word *vec; 
+        t_word *vec;
         int onset, type;
         t_symbol *arraytype;
         if (!template)
@@ -503,14 +503,14 @@ static  void text_client_senditup(t_text_client *x)
             return;
         }
         if (gs->gs_which == GP_GLIST)
-            scalar_redraw(x->tc_gp.gp_un.gp_scalar, gs->gs_un.gs_glist);  
+            scalar_redraw(x->tc_gp.gp_un.gp_scalar, gs->gs_un.gs_glist);
         else
         {
             t_array *owner_array = gs->gs_un.gs_array;
             while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
                 owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
             scalar_redraw(owner_array->a_gp.gp_un.gp_scalar,
-                owner_array->a_gp.gp_stub->gs_un.gs_glist);  
+                owner_array->a_gp.gp_stub->gs_un.gs_glist);
         }
     }
 }
@@ -608,7 +608,7 @@ static void text_get_float(t_text_get *x, t_floatarg f)
         }
         else if (startfield + nfield > outc)
             pd_error(x, "text get: field request (%d %d) out of range",
-                startfield, nfield); 
+                startfield, nfield);
         else
         {
             ATOMS_ALLOCA(outv, nfield);
@@ -705,7 +705,10 @@ static void text_set_list(t_text_set *x,
                 memmove(&vec[start + argc], &vec[end],
                     sizeof(*vec) * (oldn - end));
                 if (n < oldn)
+                {
                     (void)binbuf_resize(b, n);
+                    vec = binbuf_getvec(b);
+                }
             }
         }
         else
@@ -958,7 +961,7 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     x->x_nkeys = nkey;
     x->x_keyvec = (t_key *)getbytes(nkey * sizeof(*x->x_keyvec));
     if (!argc)
-        x->x_keyvec[0].k_field = 0, x->x_keyvec[0].k_binop = KB_EQ; 
+        x->x_keyvec[0].k_field = 0, x->x_keyvec[0].k_binop = KB_EQ;
     else for (i = key = 0, nextop = -1; i < argc; i++)
     {
         if (argv[i].a_type == A_FLOAT)
@@ -1092,7 +1095,7 @@ static void text_search_list(t_text_search *x,
                             bug("text search 2");
                     if (argv[j].a_type == A_FLOAT)      /* arg is a float */
                     {
-                        float thisv = vec[thisstart+field].a_w.w_float, 
+                        float thisv = vec[thisstart+field].a_w.w_float,
                             bestv = vec[beststart+field].a_w.w_float;
                         switch (binop)
                         {
@@ -1134,12 +1137,12 @@ static void text_search_list(t_text_search *x,
                                         d1 = -d1;
                                     if (d2 < 0)
                                         d2 = -d2;
-                                        
+
                                     if (d1 < d2)
                                         goto replace;
                                     else if (d1 > d2)
                                         goto nomatch;
-                                }   
+                                }
                             break;
                                 /* the other possibility ('=') never decides */
                         }
@@ -1253,7 +1256,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     if (global)
     {
         if (x->x_waitargc)
-            pd_error(x, 
+            pd_error(x,
        "warning: text sequence: numeric 'w' argument ignored if '-g' given");
         x->x_waitargc = 0x40000000;
     }
@@ -1439,9 +1442,9 @@ static void text_sequence_tick(t_text_sequence *x)  /* clock callback */
     while (x->x_auto)
     {
         x->x_loop = 1;
-        while (x->x_loop)  
+        while (x->x_loop)
             text_sequence_doit(x, x->x_argc, x->x_argv);
-        if (x->x_nextdelay > 0) 
+        if (x->x_nextdelay > 0)
             break;
     }
     if (x->x_auto)
@@ -1535,7 +1538,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             newest = text_search_new(s, argc-1, argv+1);
         else if (!strcmp(str, "sequence"))
             newest = text_sequence_new(s, argc-1, argv+1);
-        else 
+        else
         {
             error("list %s: unknown function", str);
             newest = 0;
@@ -1547,7 +1550,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
 /*  the qlist and textfile objects, as of 0.44, are 'derived' from
 * the text object above.  Maybe later it will be desirable to add new
 * functionality to textfile; qlist is an ancient holdover (1987) and
-* is probably best left alone. 
+* is probably best left alone.
 */
 
 typedef struct _qlist
@@ -1652,7 +1655,7 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
             ap++;
             onset++;
             count--;
-            if (!count) 
+            if (!count)
             {
                 x->x_onset = onset2;
                 continue;
@@ -1661,7 +1664,7 @@ static void qlist_donext(t_qlist *x, int drop, int automatic)
         wasrewound = x->x_rewound;
         x->x_rewound = 0;
         if (!drop)
-        {   
+        {
             if (ap->a_type == A_FLOAT)
                 typedmess(target, &s_list, count, ap);
             else if (ap->a_type == A_SYMBOL)
@@ -1866,14 +1869,14 @@ static void text_template_init( void)
     if (text_templatecanvas)
         return;
     b = binbuf_new();
-    
+
     glob_setfilename(0, gensym("_text_template"), gensym("."));
     binbuf_text(b, text_templatefile, strlen(text_templatefile));
     binbuf_eval(b, &pd_canvasmaker, 0, 0);
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
-    
+
     glob_setfilename(0, &s_, &s_);
-    binbuf_free(b);  
+    binbuf_free(b);
 }
 
 void x_qlist_setup(void )
@@ -1886,7 +1889,7 @@ void x_qlist_setup(void )
         gensym("click"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_close,
         gensym("close"), 0);
-    class_addmethod(text_define_class, (t_method)textbuf_addline, 
+    class_addmethod(text_define_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)text_define_set,
         gensym("set"), A_GIMME, 0);
@@ -1907,13 +1910,13 @@ void x_qlist_setup(void )
             sizeof(t_text_get), 0, A_GIMME, 0);
     class_addfloat(text_get_class, text_get_float);
     class_sethelpsymbol(text_get_class, gensym("text-object"));
-    
+
     text_set_class = class_new(gensym("text set"),
         (t_newmethod)text_set_new, (t_method)text_client_free,
             sizeof(t_text_set), 0, A_GIMME, 0);
     class_addlist(text_set_class, text_set_list);
     class_sethelpsymbol(text_set_class, gensym("text-object"));
-    
+
     text_delete_class = class_new(gensym("text delete"),
         (t_newmethod)text_delete_new, (t_method)text_client_free,
             sizeof(t_text_delete), 0, A_GIMME, 0);
@@ -1938,7 +1941,7 @@ void x_qlist_setup(void )
             sizeof(t_text_fromlist), 0, A_GIMME, 0);
     class_addlist(text_fromlist_class, text_fromlist_list);
     class_sethelpsymbol(text_fromlist_class, gensym("text-object"));
- 
+
     text_search_class = class_new(gensym("text search"),
         (t_newmethod)text_search_new, (t_method)text_client_free,
             sizeof(t_text_search), 0, A_GIMME, 0);
@@ -1948,17 +1951,17 @@ void x_qlist_setup(void )
     text_sequence_class = class_new(gensym("text sequence"),
         (t_newmethod)text_sequence_new, (t_method)text_sequence_free,
             sizeof(t_text_sequence), 0, A_GIMME, 0);
-    class_addmethod(text_sequence_class, (t_method)text_sequence_step, 
+    class_addmethod(text_sequence_class, (t_method)text_sequence_step,
         gensym("step"), 0);
-    class_addmethod(text_sequence_class, (t_method)text_sequence_line, 
+    class_addmethod(text_sequence_class, (t_method)text_sequence_line,
         gensym("line"), A_FLOAT, 0);
-    class_addmethod(text_sequence_class, (t_method)text_sequence_auto, 
+    class_addmethod(text_sequence_class, (t_method)text_sequence_auto,
         gensym("auto"), 0);
-    class_addmethod(text_sequence_class, (t_method)text_sequence_stop, 
+    class_addmethod(text_sequence_class, (t_method)text_sequence_stop,
         gensym("stop"), 0);
-    class_addmethod(text_sequence_class, (t_method)text_sequence_args, 
+    class_addmethod(text_sequence_class, (t_method)text_sequence_args,
         gensym("args"), A_GIMME, 0);
-    class_addmethod(text_sequence_class, (t_method)text_sequence_tempo, 
+    class_addmethod(text_sequence_class, (t_method)text_sequence_tempo,
         gensym("tempo"), A_FLOAT, A_SYMBOL, 0);
     class_addlist(text_sequence_class, text_sequence_list);
     class_sethelpsymbol(text_sequence_class, gensym("text-object"));
@@ -1967,7 +1970,7 @@ void x_qlist_setup(void )
         (t_method)qlist_free, sizeof(t_qlist), 0, 0);
     class_addmethod(qlist_class, (t_method)qlist_rewind, gensym("rewind"), 0);
     class_addmethod(qlist_class, (t_method)qlist_next,
-        gensym("next"), A_DEFFLOAT, 0);  
+        gensym("next"), A_DEFFLOAT, 0);
     class_addmethod(qlist_class, (t_method)qlist_set, gensym("set"),
         A_GIMME, 0);
     class_addmethod(qlist_class, (t_method)qlist_clear, gensym("clear"), 0);
@@ -1983,7 +1986,7 @@ void x_qlist_setup(void )
         A_SYMBOL, A_DEFSYM, 0);
     class_addmethod(qlist_class, (t_method)textbuf_open, gensym("click"), 0);
     class_addmethod(qlist_class, (t_method)textbuf_close, gensym("close"), 0);
-    class_addmethod(qlist_class, (t_method)textbuf_addline, 
+    class_addmethod(qlist_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
     class_addmethod(qlist_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);
@@ -2004,14 +2007,14 @@ void x_qlist_setup(void )
         A_GIMME, 0);
     class_addmethod(textfile_class, (t_method)qlist_add, gensym("append"),
         A_GIMME, 0);
-    class_addmethod(textfile_class, (t_method)qlist_read, gensym("read"), 
+    class_addmethod(textfile_class, (t_method)qlist_read, gensym("read"),
         A_SYMBOL, A_DEFSYM, 0);
-    class_addmethod(textfile_class, (t_method)qlist_write, gensym("write"), 
+    class_addmethod(textfile_class, (t_method)qlist_write, gensym("write"),
         A_SYMBOL, A_DEFSYM, 0);
     class_addmethod(textfile_class, (t_method)textbuf_open, gensym("click"), 0);
-    class_addmethod(textfile_class, (t_method)textbuf_close, gensym("close"), 
+    class_addmethod(textfile_class, (t_method)textbuf_close, gensym("close"),
         0);
-    class_addmethod(textfile_class, (t_method)textbuf_addline, 
+    class_addmethod(textfile_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
     class_addmethod(textfile_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);

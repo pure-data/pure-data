@@ -267,7 +267,6 @@ typedef struct _vdial
 #define t_vradio t_vdial
 #define t_hradio t_hdial
 
-extern int sys_noloadbang;
 extern int iemgui_color_hex[];
 extern int iemgui_vu_db2i[];
 extern int iemgui_vu_col[];
