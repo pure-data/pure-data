@@ -208,9 +208,11 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     button $mytoplevel.buttons.cancel -text [_ "Cancel"] \
         -command "::dialog_canvas::cancel $mytoplevel"
     pack $mytoplevel.buttons.cancel -side left -expand 1 -fill x -padx 10
-    button $mytoplevel.buttons.apply -text [_ "Apply"] \
-        -command "::dialog_canvas::apply $mytoplevel"
-    pack $mytoplevel.buttons.apply -side left -expand 1 -fill x -padx 10
+    if {$::windowingsystem ne "aqua"} {
+        button $mytoplevel.buttons.apply -text [_ "Apply"] \
+            -command "::dialog_canvas::apply $mytoplevel"
+        pack $mytoplevel.buttons.apply -side left -expand 1 -fill x -padx 10
+    }
     button $mytoplevel.buttons.ok -text [_ "OK"] \
         -command "::dialog_canvas::ok $mytoplevel"
     pack $mytoplevel.buttons.ok -side left -expand 1 -fill x -padx 10
