@@ -44,11 +44,11 @@ proc ::dialog_iemgui::clip_num {mytoplevel} {
     
     if {[eval concat $$var_iemgui_num] > 2000} {
         set $var_iemgui_num 2000
-        $mytoplevel.para.num_ent configure -textvariable $var_iemgui_num
+        $mytoplevel.para.num.ent configure -textvariable $var_iemgui_num
     }
     if {[eval concat $$var_iemgui_num] < 1} {
         set $var_iemgui_num 1
-        $mytoplevel.para.num_ent configure -textvariable $var_iemgui_num
+        $mytoplevel.para.num.ent configure -textvariable $var_iemgui_num
     }
 }
 
@@ -160,6 +160,11 @@ proc ::dialog_iemgui::set_col_example {mytoplevel} {
             -activebackground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
             -foreground [format "#%6.6x" [eval concat $$var_iemgui_bcol]] \
             -activeforeground [format "#%6.6x" [eval concat $$var_iemgui_bcol]]}
+    
+    # for OSX live updates
+    if {$::windowingsystem eq "aqua"} {
+        ::dialog_iemgui::apply_and_rebind_return $mytoplevel
+    }
 }
 
 proc ::dialog_iemgui::preset_col {mytoplevel presetcol} {
@@ -599,6 +604,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             pack $mytoplevel.rng.dummy1 $mytoplevel.rng.max_lab $mytoplevel.rng.max_ent -side left}
     }
 
+    # parameters
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
     if {[eval concat $$var_iemgui_lin0_log1] == 0} {
@@ -633,6 +639,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     if {[eval concat $$var_iemgui_steady] >= 0} {
         pack $mytoplevel.para.stdy_jmp -side left -expand 1}
     
+    # messages
     labelframe $mytoplevel.s_r -borderwidth 1 -padx 5 -pady 5 -text [_ "Messages"]
     pack $mytoplevel.s_r -side top -fill x
     frame $mytoplevel.s_r.send
@@ -660,6 +667,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     if {[eval concat $$var_iemgui_gn_f] == 2} \
         { set current_font "Times" }
     
+    # label
     labelframe $mytoplevel.label -borderwidth 1 -text [_ "Label"] -padx 5 -pady 5
     pack $mytoplevel.label -side top -fill x -pady 5
     entry $mytoplevel.label.name_entry -textvariable $var_iemgui_gui_nam \
@@ -702,6 +710,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     bind $mytoplevel.label.fontpopup_label <Button> \
         [list tk_popup $mytoplevel.popup %X %Y]
     
+    # colors
     labelframe $mytoplevel.colors -borderwidth 1 -text [_ "Colors"] -padx 5 -pady 5
     pack $mytoplevel.colors -fill x
     
@@ -800,16 +809,17 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.colors.r3.c4 $mytoplevel.colors.r3.c5 $mytoplevel.colors.r3.c6 $mytoplevel.colors.r3.c7 \
         $mytoplevel.colors.r3.c8 $mytoplevel.colors.r3.c9 -side left
     
+    # buttons
     frame $mytoplevel.cao -pady 10
     pack $mytoplevel.cao -side top -expand 1 -fill x
     button $mytoplevel.cao.cancel -text [_ "Cancel"] \
         -command "::dialog_iemgui::cancel $mytoplevel"
     pack $mytoplevel.cao.cancel -side left -padx 10 -expand 1 -fill x
-
-    button $mytoplevel.cao.apply -text [_ "Apply"] \
-        -command "::dialog_iemgui::apply $mytoplevel"
-    pack $mytoplevel.cao.apply -side left -padx 10 -expand 1 -fill x
-
+    if {$::windowingsystem ne "aqua"} {
+        button $mytoplevel.cao.apply -text [_ "Apply"] \
+            -command "::dialog_iemgui::apply $mytoplevel"
+        pack $mytoplevel.cao.apply -side left -padx 10 -expand 1 -fill x
+    }
     button $mytoplevel.cao.ok -text [_ "OK"] \
         -command "::dialog_iemgui::ok $mytoplevel"
     pack $mytoplevel.cao.ok -side left -padx 10 -expand 1 -fill x
@@ -817,5 +827,71 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     $mytoplevel.dim.w_ent select from 0
     $mytoplevel.dim.w_ent select adjust end
     focus $mytoplevel.dim.w_ent
+
+    # live widget updates on OSX in lieu of Apply button
+    if {$::windowingsystem eq "aqua"} {
+
+        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
+        bind $mytoplevel.dim.w_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.dim.h_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.rng.min.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.rng.max_ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.para.num.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.label.name_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.s_r.send.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.s_r.receive.ent <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.label.xy.x_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.label.xy.y_entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.label.fontsize.entry <KeyPress-Return> "::dialog_iemgui::apply_and_rebind_return $mytoplevel"
+
+        # unbind Return from ok button when an entry takes focus
+        $mytoplevel.dim.w_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.dim.h_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.rng.min.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.rng.max_ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.para.num.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.label.name_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.s_r.send.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.s_r.receive.ent config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.label.xy.x_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.label.xy.y_entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+        $mytoplevel.label.fontsize.entry config -validate focusin -vcmd "::dialog_iemgui::unbind_return $mytoplevel"
+
+        # remove cancel button from focus list since it's not activated on Return
+        $mytoplevel.cao.cancel config -takefocus 0
+
+        # can't see focus for buttons, so disable it
+        if {[winfo exists $mytoplevel.para.lilo]} {
+            $mytoplevel.para.lilo config -takefocus 0
+        }
+        if {[winfo exists $mytoplevel.para.lb]} {
+            $mytoplevel.para.lb config -takefocus 0
+        }
+        if {[winfo exists $mytoplevel.para.stdy_jmp]} {
+            $mytoplevel.para.stdy_jmp config -takefocus 0
+        }
+        $mytoplevel.label.fontpopup_label config -takefocus 0
+        $mytoplevel.colors.select.radio0 config -takefocus 0
+        $mytoplevel.colors.select.radio1 config -takefocus 0
+        $mytoplevel.colors.select.radio2 config -takefocus 0
+        $mytoplevel.colors.sections.but config -takefocus 0
+
+        # show active focus on the ok button as it *is* activated on Return
+        bind $mytoplevel.cao.ok <FocusIn> "$mytoplevel.cao.ok config -default active"
+        bind $mytoplevel.cao.ok <FocusOut> "$mytoplevel.cao.ok config -default normal"
+    }
 }
 
+# for live widget updates on OSX
+proc ::dialog_iemgui::apply_and_rebind_return {mytoplevel} {
+    ::dialog_iemgui::apply $mytoplevel
+    bind $mytoplevel <KeyPress-Return> "::dialog_iemgui::ok $mytoplevel"
+    focus $mytoplevel.cao.ok
+    return 0
+}
+
+# for live widget updates on OSX
+proc ::dialog_iemgui::unbind_return {mytoplevel} {
+    bind $mytoplevel <KeyPress-Return> break
+    return 1
+}
