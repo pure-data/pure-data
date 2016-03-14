@@ -214,7 +214,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         pack $mytoplevel.buttons.apply -side left -expand 1 -fill x -padx 10
     }
     button $mytoplevel.buttons.ok -text [_ "OK"] \
-        -command "::dialog_canvas::ok $mytoplevel"
+        -command "::dialog_canvas::ok $mytoplevel" -default active
     pack $mytoplevel.buttons.ok -side left -expand 1 -fill x -padx 10
 
     # live checkbutton & entry Return updates on OSX
