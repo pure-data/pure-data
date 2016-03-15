@@ -201,6 +201,7 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
         $mytoplevel.buttonframe.cancel config -takefocus 0
 
         # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.buttonframe.ok config -default normal
         bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
     }

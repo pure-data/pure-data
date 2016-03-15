@@ -326,7 +326,7 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
         pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 10
     }
     button $mytoplevel.buttonframe.ok -text [_ "OK"]\
-        -command "::dialog_array::ok $mytoplevel"
+        -command "::dialog_array::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 10
 
     # live widget updates on OSX in lieu of Apply button
@@ -372,6 +372,7 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
         }
 
         # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.buttonframe.ok config -default normal
         bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
     }

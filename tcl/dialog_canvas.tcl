@@ -174,7 +174,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     pack $mytoplevel.range -side top -fill x
     frame $mytoplevel.range.x -padx 2 -pady 2
     pack $mytoplevel.range.x -side top
-    label $mytoplevel.range.x.from_label -text [_ "X range, from"]
+    label $mytoplevel.range.x.from_label -text [_ "X range: from"]
     entry $mytoplevel.range.x.from_entry -width 6
     label $mytoplevel.range.x.to_label -text [_ "to"]
     entry $mytoplevel.range.x.to_entry -width 6
@@ -189,7 +189,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         -side left
     frame $mytoplevel.range.y -padx 2 -pady 2
     pack $mytoplevel.range.y -side top
-    label $mytoplevel.range.y.from_label -text [_ "Y range, from"]
+    label $mytoplevel.range.y.from_label -text [_ "Y range: from"]
     entry $mytoplevel.range.y.from_entry -width 6
     label $mytoplevel.range.y.to_label -text [_ "to"]
     entry $mytoplevel.range.y.to_entry -width 6
@@ -256,6 +256,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         $mytoplevel.parent.hidetext config -takefocus 0
 
         # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.buttons.ok config -default normal
         bind $mytoplevel.buttons.ok <FocusIn> "$mytoplevel.buttons.ok config -default active"
         bind $mytoplevel.buttons.ok <FocusOut> "$mytoplevel.buttons.ok config -default normal"
     }

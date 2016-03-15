@@ -821,7 +821,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         pack $mytoplevel.cao.apply -side left -padx 10 -expand 1 -fill x
     }
     button $mytoplevel.cao.ok -text [_ "OK"] \
-        -command "::dialog_iemgui::ok $mytoplevel"
+        -command "::dialog_iemgui::ok $mytoplevel" -default active
     pack $mytoplevel.cao.ok -side left -padx 10 -expand 1 -fill x
     
     $mytoplevel.dim.w_ent select from 0
@@ -877,6 +877,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.colors.sections.but config -takefocus 0
 
         # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.cao.ok config -default normal
         bind $mytoplevel.cao.ok <FocusIn> "$mytoplevel.cao.ok config -default active"
         bind $mytoplevel.cao.ok <FocusOut> "$mytoplevel.cao.ok config -default normal"
     }
