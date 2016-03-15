@@ -132,7 +132,7 @@ proc ::scrollbox::release { mytoplevel x y } {
 # edit_method - method to be called when we edit an existing item
 proc ::scrollbox::make { mytoplevel listdata add_method edit_method } {
     frame $mytoplevel.listbox
-    listbox $mytoplevel.listbox.box \
+    listbox $mytoplevel.listbox.box -relief raised -highlightthickness 0 \
         -selectmode browse -activestyle dotbox \
         -yscrollcommand [list "$mytoplevel.listbox.scrollbar" set]
 
