@@ -357,7 +357,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     # set focus
     focus $id.buttonframe.ok
 
-    # live widget updates on OSX in lieu of Apply button
+    # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
 
         # remove cancel button from focus list since it's not activated on Return
@@ -495,14 +495,14 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     pack $id.buttonframe.ok -side left -expand 1
 }
 
-# for live widget updates on OSX
+# for focus handling on OSX
 proc ::dialog_midi::rebind_return {mytoplevel} {
     bind $mytoplevel <KeyPress-Return> "::dialog_midi::ok $mytoplevel"
     focus $mytoplevel.buttonframe.ok
     return 0
 }
 
-# for live widget updates on OSX
+# for focus handling on OSX
 proc ::dialog_midi::unbind_return {mytoplevel} {
     bind $mytoplevel <KeyPress-Return> break
     return 1

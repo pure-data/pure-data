@@ -342,7 +342,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     $mytoplevel.settings.srd.sr_entry select adjust end
     focus $mytoplevel.settings.srd.sr_entry
 
-    # live widget updates on OSX in lieu of Apply button
+    # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
 
         # call apply on Return in entry boxes that are in focus & rebind Return to ok button
@@ -406,14 +406,14 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     }
 }
 
-# for live widget updates on OSX
+# for focus handling on OSX
 proc ::dialog_audio::rebind_return {mytoplevel} {
     bind $mytoplevel <KeyPress-Return> "::dialog_audio::ok $mytoplevel"
     focus $mytoplevel.buttonframe.ok
     return 0
 }
 
-# for live widget updates on OSX
+# for focus handling on OSX
 proc ::dialog_audio::unbind_return {mytoplevel} {
     bind $mytoplevel <KeyPress-Return> break
     return 1
