@@ -181,9 +181,9 @@ proc ::scrollbox::make { mytoplevel listdata add_method edit_method } {
     button $mytoplevel.actions.delete_path -text {Delete} \
         -command "::scrollbox::delete_item $mytoplevel"
 
-    pack $mytoplevel.actions.delete_path -side right -pady 2m
-    pack $mytoplevel.actions.edit_path -side right -pady 2m
-    pack $mytoplevel.actions.add_path -side right -pady 2m
+    pack $mytoplevel.actions.delete_path -side right -pady 2m -padx 5
+    pack $mytoplevel.actions.edit_path -side right -pady 2m -padx 5
+    pack $mytoplevel.actions.add_path -side right -pady 2m -padx 5
 
     $mytoplevel.listbox.box activate end
     $mytoplevel.listbox.box selection set end

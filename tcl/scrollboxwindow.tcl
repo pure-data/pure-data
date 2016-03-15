@@ -84,13 +84,13 @@ proc ::scrollboxwindow::make {mytoplevel listdata add_method edit_method commit_
 
     button $mytoplevel.nb.buttonframe.cancel -text [_ "Cancel"] \
         -command "::scrollboxwindow::cancel $mytoplevel"
-    pack $mytoplevel.nb.buttonframe.cancel -side left -expand 1 -fill x
+    pack $mytoplevel.nb.buttonframe.cancel -side left -expand 1 -fill x -padx 5
     if {$::windowingsystem ne "aqua"} {
         button $mytoplevel.nb.buttonframe.apply -text [_ "Apply"] \
             -command "::scrollboxwindow::apply $mytoplevel $commit_method"
-        pack $mytoplevel.nb.buttonframe.apply -side left -expand 1 -fill x
+        pack $mytoplevel.nb.buttonframe.apply -side left -expand 1 -fill x -padx 5
     }
     button $mytoplevel.nb.buttonframe.ok -text [_ "OK"] \
         -command "::scrollboxwindow::ok $mytoplevel $commit_method"
-    pack $mytoplevel.nb.buttonframe.ok -side left -expand 1 -fill x
+    pack $mytoplevel.nb.buttonframe.ok -side left -expand 1 -fill x -padx 5
 }
