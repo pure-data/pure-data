@@ -361,8 +361,10 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         # can't see focus for buttons, so disable it
         $mytoplevel.settings.bsc.bs_popup config -takefocus 0
         $mytoplevel.settings.bsc.c_button config -takefocus 0
-        $mytoplevel.inputs.in1f.x1 config -takefocus 0
-        $mytoplevel.inputs.in1f.x0 config -takefocus 0
+        if {[winfo exists $mytoplevel.inputs.in1f.x1]} {
+            $mytoplevel.inputs.in1f.x1 config -takefocus 0
+            $mytoplevel.inputs.in1f.x0 config -takefocus 0
+        }
         if {[winfo exists $mytoplevel.inputs.in2f.x1]} {
             $mytoplevel.inputs.in2f.x1 config -takefocus 0
             $mytoplevel.inputs.in2f.x0 config -takefocus 0
@@ -393,8 +395,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         }
 
         # show active focus on save settings button
-        bind $mytoplevel.saveall <FocusIn> "$mytoplevel.saveall config -default active"
-        bind $mytoplevel.saveall <FocusOut> "$mytoplevel.saveall config -default normal"
+        bind $mytoplevel.saveall <KeyPress-Return> "$mytoplevel.saveall invoke"
+        bind $mytoplevel.saveall <FocusIn> "::dialog_audio::unbind_return $mytoplevel; $mytoplevel.saveall config -default active"
+        bind $mytoplevel.saveall <FocusOut> "::dialog_audio::rebind_return $mytoplevel; $mytoplevel.saveall config -default normal"
 
         # show active focus on the ok button as it *is* activated on Return
         $mytoplevel.buttonframe.ok config -default normal
