@@ -160,7 +160,7 @@ static void netsend_doit(void *z, t_binbuf *b)
 static void netsend_connect(t_netsend *x, t_symbol *hostname,
     t_floatarg fportno)
 {
-    struct sockaddr_in server;
+    struct sockaddr_in server = {0};
     struct hostent *hp;
     int sockfd;
     int portno = fportno;
@@ -187,6 +187,7 @@ static void netsend_connect(t_netsend *x, t_symbol *hostname,
     if (hp == 0)
     {
         post("bad host?\n");
+        sys_closesocket(sockfd);
         return;
     }
 #if 0
@@ -405,7 +406,7 @@ static void netreceive_closeall(t_netreceive *x)
 static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
 {
     int portno = fportno, intarg;
-    struct sockaddr_in server;
+    struct sockaddr_in server = {0};
     netreceive_closeall(x);
     if (portno <= 0)
         return;

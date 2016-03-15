@@ -609,7 +609,7 @@ static void *gtemplate_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *sym = atom_getsymbolarg(0, argc, argv);
     if (argc >= 1)
-        argc--; argv++;
+        argc--, argv++;
     if (sym->s_name[0] == '-')
         post("warning: struct '%s' initial '-' may confuse get/set, etc.",
             sym->s_name);

@@ -184,7 +184,6 @@ void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename, int selectem)
         strcmp(vec[message].a_w.w_symbol->s_name, "data"))
     {
         pd_error(x, "%s: file apparently of wrong type", filename);
-        binbuf_free(b);
         return;
     }
         /* read in templates and check for consistency */
@@ -196,7 +195,10 @@ void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename, int selectem)
         int ntemplateargs = 0, newnargs;
         nline = canvas_scanbinbuf(natoms, vec, &message, &nextmsg);
         if (nline < 2)
+        {
+            t_freebytes(templateargs, sizeof (*templateargs) * ntemplateargs);
             break;
+        }
         else if (nline > 2)
             canvas_readerror(natoms, vec, message, nline,
                 "extra items ignored");
@@ -237,10 +239,10 @@ void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename, int selectem)
         {
             error("%s: template doesn't match current one",
                 templatesym->s_name);
-            template_free(newtemplate);
+            pd_free(&newtemplate->t_pdobj);
             return;
         }
-        template_free(newtemplate);
+        pd_free(&newtemplate->t_pdobj);
     }
     while (nextmsg < natoms)
     {
@@ -552,6 +554,7 @@ t_binbuf *glist_writetobinbuf(t_glist *x, int wholething)
                 ((t_scalar *)y)->sc_vec,  b, 0);
         }
     }
+    t_freebytes(templatevec, ntemplates*sizeof(*templatevec));
     return (b);
 }
 
@@ -560,8 +563,6 @@ static void glist_write(t_glist *x, t_symbol *filename, t_symbol *format)
     int cr = 0, i;
     t_binbuf *b;
     char buf[MAXPDSTRING];
-    t_symbol **templatevec = getbytes(0);
-    int ntemplates = 0;
     t_gobj *y;
     t_canvas *canvas = glist_getcanvas(x);
     canvas_makefilename(canvas, filename->s_name, buf, MAXPDSTRING);

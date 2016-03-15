@@ -213,6 +213,15 @@ void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,
 
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int indevs = 0, outdevs = 0, canmulti = 0, cancallback = 0;
+
+    /* initialize device-arrays */
+    for(i=0; i<MAXAUDIOINDEV; i++)
+        realindev[i]  = realinchans[i]  = 0;
+    for(i=0; i<MAXAUDIOOUTDEV; i++)
+        realoutdev[i] = realoutchans[i] = 0;
+    for(i=0; i<MAXNDEV*DEVDESCSIZE; i++)
+        indevlist[i]  = outdevlist[i]   = 0;
+
     audio_getdevs(indevlist, &indevs, outdevlist, &outdevs, &canmulti,
         &cancallback, MAXNDEV, DEVDESCSIZE);
 

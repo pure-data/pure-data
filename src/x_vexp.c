@@ -195,7 +195,7 @@ expr_donew(struct expr *expr, int ac, t_atom *av)
         b = binbuf_new();
         binbuf_add(b, ac, av);
         binbuf_gettext(b, &exp_string, &exp_strlen);
-
+        binbuf_free(b);
 #else /* MSP */
  {
     char *buf = getbytes(0), *newbuf;

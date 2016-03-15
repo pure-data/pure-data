@@ -874,7 +874,7 @@ static int defaultfontshit[MAXFONTS] = {
 int sys_startgui(const char *libdir)
 {
     char cmdbuf[4*MAXPDSTRING];
-    struct sockaddr_in server;
+    struct sockaddr_in server = {0};
     int msgsock;
     char buf[15];
     int len = sizeof(server);
@@ -915,7 +915,7 @@ int sys_startgui(const char *libdir)
     }
     else if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
     {
-        struct sockaddr_in server;
+        struct sockaddr_in server = {0};
         struct hostent *hp;
 #ifdef __APPLE__
             /* sys_guisock might be 1 or 2, which will have offensive results

@@ -299,7 +299,8 @@ t_pdinstance *pd_this;
 static t_symbol *midi_gensym(const char *prefix, const char *name)
 {
     char buf[80];
-    strcpy(buf, prefix);
+    strncpy(buf, prefix, 79);
+    buf[79] = 0;
     strncat(buf, name, 79 - strlen(buf));
     return (gensym(buf));
 }

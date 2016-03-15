@@ -29,7 +29,7 @@ void x_closesocket(int fd);
 int main(int argc, char **argv)
 {
     int sockfd, portno, protocol;
-    struct sockaddr_in server;
+    struct sockaddr_in server = {0};
     struct hostent *hp;
     char *hostname;
     int nretry = 10;

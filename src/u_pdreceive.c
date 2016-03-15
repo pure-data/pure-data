@@ -51,7 +51,7 @@ static void dopoll(void);
 int main(int argc, char **argv)
 {
     int portno;
-    struct sockaddr_in server;
+    struct sockaddr_in server = {0};
     int nretry = 10;
 #ifdef _WIN32
     short version = MAKEWORD(2, 0);

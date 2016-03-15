@@ -585,7 +585,6 @@ int sys_rcfile(void)
 
     /* parse the options */
 
-    fclose(file);
     if (sys_verbose)
     {
         if (rcargc)
@@ -606,6 +605,8 @@ int sys_rcfile(void)
 
 
  cleanup: /* prevent memleak */
+    fclose(file);
+
     for (i = 1; i < NUMARGS-1; i++)
       if(rcargv[i])free(rcargv[i]);
 

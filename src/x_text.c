@@ -1047,6 +1047,7 @@ static void text_search_list(t_text_search *x,
                             if (vec[thisstart+field].a_w.w_float <
                                 argv[j].a_w.w_float)
                                     goto nomatch;
+                        break;
                         case KB_LT:
                             if (vec[thisstart+field].a_w.w_float >=
                                 argv[j].a_w.w_float)

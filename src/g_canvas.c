@@ -556,8 +556,8 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
 t_symbol *canvas_makebindsym(t_symbol *s)
 {
     char buf[MAXPDSTRING];
-    strcpy(buf, "pd-");
-    strcat(buf, s->s_name);
+    snprintf(buf, MAXPDSTRING-1, "pd-%s", s->s_name);
+    buf[MAXPDSTRING-1] = 0;
     return (gensym(buf));
 }
 

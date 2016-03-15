@@ -951,7 +951,10 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
                 !garray_getfloatwords(garray, &size, &wvec)) {
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
-                pd_error(expr, "no such table to store '%s'", s->s_name);
+                if (s)
+                    pd_error(expr, "no such table to store '%s'", s->s_name);
+                else
+                    pd_error(expr, "cannot store in unnamed table");
                 return (1);
         }
         optr->ex_type = ET_FLT;
@@ -1245,7 +1248,7 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 int
 max_ex_var_store(struct expr *expr, t_symbol * var, struct ex_ex *eptr, struct ex_ex *optr)
 {
-                float value;
+                t_float value = 0.;
 
                 *optr = *eptr;
                 switch (eptr->ex_type) {

@@ -190,8 +190,13 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
     binbuf_addbinbuf(bb, x->gl_obj.ob_binbuf);
     binbuf_addsemi(bb);
 
-    garray_savecontentsto((t_garray *)gl->gl_list, bb);
-    obj_saveformat(&x->gl_obj, bb);
+    if (gl)
+    {
+        garray_savecontentsto((t_garray *)gl->gl_list, bb);
+	obj_saveformat(&x->gl_obj, bb);
+    }
+    else
+        bug("array_define_save");
 }
 
 t_scalar *garray_getscalar(t_garray *x);
@@ -319,7 +324,8 @@ static void array_client_senditup(t_array_client *x)
 {
     t_glist *glist = 0;
     t_array *a = array_client_getbuf(x, &glist);
-    array_redraw(a, glist);
+    if (glist)
+       array_redraw(a, glist);
 }
 
 static void array_client_free(t_array_client *x)

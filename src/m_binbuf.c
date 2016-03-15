@@ -336,6 +336,7 @@ void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
     }
 
     binbuf_add(x, z->b_n, z->b_vec);
+    binbuf_free(z);
 }
 
 void binbuf_addsemi(t_binbuf *x)
@@ -791,10 +792,11 @@ int binbuf_read(t_binbuf *b, char *filename, char *dirname, int crflag)
     char *buf;
     char namebuf[MAXPDSTRING];
 
-    namebuf[0] = 0;
     if (*dirname)
-        strcat(namebuf, dirname), strcat(namebuf, "/");
-    strcat(namebuf, filename);
+        snprintf(namebuf, MAXPDSTRING-1, "%s/%s", dirname, filename);
+    else
+        snprintf(namebuf, MAXPDSTRING-1, "%s", filename);
+    namebuf[MAXPDSTRING-1] = 0;
 
     if ((fd = sys_open(namebuf, 0)) < 0)
     {
@@ -886,10 +888,12 @@ int binbuf_write(t_binbuf *x, char *filename, char *dir, int crflag)
     int indx, deleteit = 0;
     int ncolumn = 0;
 
-    fbuf[0] = 0;
     if (*dir)
-        strcat(fbuf, dir), strcat(fbuf, "/");
-    strcat(fbuf, filename);
+        snprintf(fbuf, MAXPDSTRING-1, "%s/%s", dir, filename);
+    else
+        snprintf(fbuf, MAXPDSTRING-1, "%s", filename);
+    fbuf[MAXPDSTRING-1] = 0;
+
     if (!strcmp(filename + strlen(filename) - 4, ".pat") ||
         !strcmp(filename + strlen(filename) - 4, ".mxt"))
     {
@@ -978,7 +982,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 {
     t_binbuf *newb = binbuf_new();
     t_atom *vec = oldb->b_vec;
-    t_int n = oldb->b_n, nextindex, stackdepth = 0, stack[MAXSTACK],
+    t_int n = oldb->b_n, nextindex, stackdepth = 0, stack[MAXSTACK] = {0},
         nobj = 0, i, gotfontsize = 0;
     t_atom outmess[MAXSTACK], *nextmess;
     t_float fontsize = 10;

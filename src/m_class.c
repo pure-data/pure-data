@@ -344,9 +344,9 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
         if (argtype != A_NULL)
             error("%s_%s: only 5 arguments are typecheckable; use A_GIMME",
                 c->c_name->s_name, sel->s_name);
-        va_end(ap);
         m->me_arg[nargs] = A_NULL;
     }
+    va_end(ap);
     return;
 phooey:
     bug("class_addmethod: %s_%s: bad argument types\n",
