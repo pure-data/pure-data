@@ -174,6 +174,13 @@ proc ::pd_guiprefs::write_config_aqua {data {adomain} {akey} {arr false}} {
         set escaped [escape_for_plist $data]
         exec defaults write $adomain $akey '$escaped'
     }
+
+    # Disable window state saving by default for 10.7+ as there is a chance
+    # pd will hang on start due to conflicting patch resources until the state
+    # is purged. State saving will still work, it just has to be explicitly
+    # asked for by holding the Option/Alt button when quitting via the File
+    # menu or with the Cmd+Q key binding.
+    exec defaults write $adomain NSQuitAlwaysKeepsWindows -bool false
 }
 
 # ------------------------------------------------------------------------------
