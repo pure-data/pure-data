@@ -84,8 +84,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv); endpost();
     }
     x->x_sockfd = -1;
-    if (x->x_protocol == SOCK_STREAM)
-        x->x_msgout = outlet_new(&x->x_obj, &s_anything);
+    x->x_msgout = outlet_new(&x->x_obj, &s_anything);
     return (x);
 }
 
@@ -230,7 +229,8 @@ static void netsend_connect(t_netsend *x, t_symbol *hostname,
         else
         {
             t_socketreceiver *y =
-                socketreceiver_new((void *)x, 0, netsend_doit, 0);
+                socketreceiver_new((void *)x, 0, netsend_doit,
+                    x->x_protocol == SOCK_DGRAM);
             sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
         }
     }
