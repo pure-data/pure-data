@@ -1,14 +1,6 @@
-/*
- * jMax
- * Copyright (C) 1994, 1995, 1998, 1999 by IRCAM-Centre Georges Pompidou, Paris, France.
- *
- * This is licensed under LGPL -- see the file, LICENSE.txt in this directory.
- *
- * Based on Max/ISPW by Miller Puckette.
- *
- * Authors: Maurizio De Cecco, Francois Dechelle, Enzo Maggi, Norbert Schnell.
- *
- */
+/* Copyright (c) IRCAM.
+* For information on usage and redistribution, and for a DISCLAIMER OF ALL
+* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* "expr" was written by Shahrokh Yadegari c. 1989. -msp */
 /* "expr~" and "fexpr~" conversion by Shahrokh Yadegari c. 1999,2000 */
