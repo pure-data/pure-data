@@ -261,8 +261,6 @@ whynot:
     return (0);
 }
 
-#define O_AUDIOFLAG O_NDELAY
-
 int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
     int noutdev, int *outdev, int nchout, int *chout, int rate,
         int blocksize)
@@ -310,7 +308,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         if (inindex >= 0)
         {
             sys_setalarm(1000000);
-            if ((fd = open(devname, O_RDWR | O_AUDIOFLAG)) == -1)
+            if ((fd = open(devname, O_RDWR | O_NDELAY)) == -1)
             {
                 post("%s (read/write): %s", devname, strerror(errno));
                 post("(now will try write-only...)");
@@ -321,7 +319,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                     post("couldn't set close-on-exec flag on audio");
                 if ((flags = fcntl(fd, F_GETFL)) < 0)
                     post("couldn't get audio device flags");
-                else if (fcntl(fd, F_SETFL, flags & (!O_NDELAY)) < 0)
+                else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                     post("couldn't set audio device flags");
                 if (sys_verbose)
                     post("opened %s for reading and writing\n", devname);
@@ -332,7 +330,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         if (fd == -1)
         {
             sys_setalarm(1000000);
-            if ((fd = open(devname, O_WRONLY | O_AUDIOFLAG)) == -1)
+            if ((fd = open(devname, O_WRONLY | O_NDELAY)) == -1)
             {
                 post("%s (writeonly): %s",
                      devname, strerror(errno));
@@ -342,7 +340,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                 post("couldn't set close-on-exec flag on audio");
             if ((flags = fcntl(fd, F_GETFL)) < 0)
                 post("couldn't get audio device flags");
-            else if (fcntl(fd, F_SETFL, flags & (!O_NDELAY)) < 0)
+            else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                 post("couldn't set audio device flags");
             if (sys_verbose)
                 post("opened %s for writing only\n", devname);
@@ -411,7 +409,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         else
         {
                 /* otherwise try to open it here. */
-            if ((fd = open(devname, O_RDONLY | O_AUDIOFLAG)) == -1)
+            if ((fd = open(devname, O_RDONLY | O_NDELAY)) == -1)
             {
                 post("%s (readonly): %s", devname, strerror(errno));
                 goto end_in_loop;
@@ -420,7 +418,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                 post("couldn't set close-on-exec flag on audio");
             if ((flags = fcntl(fd, F_GETFL)) < 0)
                 post("couldn't get audio device flags");
-            else if (fcntl(fd, F_SETFL, flags & (!O_NDELAY)) < 0)
+            else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                 post("couldn't set audio device flags");
             if (sys_verbose)
                 post("opened %s for reading only\n", devname);
