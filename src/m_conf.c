@@ -40,6 +40,7 @@ void x_qlist_setup(void);
 void x_gui_setup(void);
 void x_list_setup(void);
 void x_scalar_setup(void);
+void expr_setup(void);
 void d_arithmetic_setup(void);
 void d_array_setup(void);
 void d_ctl_setup(void);
@@ -89,6 +90,7 @@ void conf_init(void)
     x_gui_setup();
     x_list_setup();
     x_scalar_setup();
+    expr_setup();
     d_arithmetic_setup();
     d_array_setup();
     d_ctl_setup();

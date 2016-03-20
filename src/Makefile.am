@@ -30,7 +30,7 @@ pd_SOURCES = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c \
     d_delay.c d_resample.c  d_soundfile.c \
     x_arithmetic.c x_connective.c x_interface.c x_midi.c x_misc.c \
     x_time.c x_acoustics.c x_net.c x_text.c x_gui.c x_list.c x_array.c \
-    x_scalar.c
+    x_scalar.c  x_vexp.c x_vexp_if.c x_vexp_fun.c
 nodist_EXTRA_pd_SOURCES =
 
 pd_includedir = ${includedir}/pd
