@@ -406,9 +406,14 @@ t_rtext *glist_findrtext(t_glist *gl, t_text *who)
     t_rtext *x;
     if (!gl->gl_editor)
         canvas_create_editor(gl);
+    {
+        int i = 0;
+        for (x = gl->gl_editor->e_rtext; x && x->x_text != who; x = x->x_next)
+            i++;
+        // post("i=%d", i);
+    }
     for (x = gl->gl_editor->e_rtext; x && x->x_text != who; x = x->x_next)
         ;
-    if (!x) bug("glist_findrtext");
     return (x);
 }
 
