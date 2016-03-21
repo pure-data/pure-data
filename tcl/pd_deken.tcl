@@ -28,7 +28,6 @@ namespace eval ::deken:: {
     variable statustimer
     variable backends
     namespace export register
-    variable version 0.1
 }
 namespace eval ::deken::search:: { }
 
@@ -43,6 +42,7 @@ proc ::deken::get_writable_dir {paths} {
     set fs [file separator]
     set access [list RDWR CREAT EXCL TRUNC]
     foreach p $paths {
+        if { [ catch { file mkdir $p } ] } {}
         for {set i 0} {True} {incr i} {
             set tmpfile "${p}${fs}dekentmp.${i}"
             if {![file exists $tmpfile]} {
@@ -118,7 +118,7 @@ if { [ info exists ::deken::installpath ] } {
 }
 
 # console message to let them know we're loaded
-# ::pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
+::pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
 if { "$::deken::installpath" == "" } {
     ::pdwindow::error "deken: No writeable directory found in:\n"
     foreach p $::sys_staticpath { ::pdwindow::error "\t- $p\n" }
@@ -142,7 +142,7 @@ if { "Windows" eq "$::deken::platform(os)" } {
     #if { "amd64" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "x86_64" }
 }
 
-# ::pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
+::pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
 
 # architectures that can be substituted for eachother
 array set ::deken::architecture_substitutes {}
@@ -306,12 +306,13 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
 
 # handle a clicked link
 proc ::deken::clicked_link {URL filename} {
-    set ::deken::installpath [tk_chooseDirectory \
-        -initialdir $::deken::installpath -title "Install to directory:"]
     ## make sure that the destination path exists
     if { "$::deken::installpath" == "" } { set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ] }
     if { "$::deken::installpath" == "" } {
-        return
+        ::deken::clearpost
+        ::deken::post "No writeable directory found in:" warn
+        foreach p $::sys_staticpath { ::deken::post "\t- $p\n" warn }
+        ::deken::post "Cannot download/install libraries!\n" warn
     } {
     set fullpkgfile "$::deken::installpath/$filename"
     ::deken::clearpost
@@ -336,7 +337,6 @@ proc ::deken::clicked_link {URL filename} {
     cd $PWD
     if { $success > 0 } {
         ::deken::post "Successfully unzipped $filename into $::deken::installpath.\n"
-        catch { exec rm $fullpkgfile }
     } else {
         # Open both the fullpkgfile folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
@@ -437,7 +437,13 @@ proc ::deken::search_for {term} {
 
 # create an entry for our search in the "help" menu
 set mymenu .menubar.help
-$mymenu add command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
+if {$::windowingsystem eq "aqua"} {
+    set inserthere 3
+} else {
+    set inserthere 4
+}
+$mymenu insert $inserthere separator
+$mymenu insert $inserthere command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
 # bind all <$::modifier-Key-s> {::deken::open_helpbrowser .helpbrowser2}
 
 # http://rosettacode.org/wiki/URL_decoding#Tcl
@@ -524,4 +530,92 @@ proc ::deken::search::puredata.info {term} {
     return [lsort -dictionary -decreasing -index 5 $searchresults ]
 }
 
+
+## ####################################################################
+## searching apt (if available)
+namespace eval ::deken::apt {
+    namespace export search
+    namespace export install
+    variable distribution
+}
+
+if { [ catch { exec apt-cache -v } _ ] } { } {
+if { [ catch { exec lsb_release -si } ::deken::apt::distribution ] } { unset ::deken::apt::distribution }
+}
+proc ::deken::apt::search {name} {
+    set result []
+    if { [ catch { exec apt-cache madison } _ ] } {
+        ::deken::post "Unable to run 'apt-cache madison'" error
+    } {
+    set name [ string tolower $name ]
+    if { "$name" eq "gem" } {
+        set searchname $name
+    } elseif { "$name" eq "" } {
+        set searchname "^pd-.*"
+    } else {
+        set searchname "^pd-${name}.*"
+    }
+    array unset pkgs
+    array set pkgs {}
+    set io [ open "|apt-cache madison $searchname" r ]
+    while { [ gets $io line ] >= 0 } {
+        #puts $line
+        set llin [ split "$line" "|" ]
+        set pkgname [ string trim [ lindex $llin 0 ] ]
+
+        #if { $pkgname ne $searchname } { continue }
+        set ver_  [ string trim [ lindex $llin 1 ] ]
+        set info_ [ string trim [ lindex $llin 2 ] ]
+        if { "Packages" eq [ lindex $info_ end ] } {
+            set suite [ lindex $info_ 1 ]
+            set arch  [ lindex $info_ 2 ]
+            if { ! [ info exists pkgs($ver_) ] } {
+                set pkgs($ver_) [ list $pkgname $suite $arch ]
+            }
+        }
+    }
+    foreach {v inf} [ array get pkgs ] {
+        set pkgname [ lindex $inf 0 ]
+        set suite   [ lindex $inf 1 ]
+        set arch    [ lindex $inf 2 ]
+        set name $pkgname/$v
+        set cmd "::deken::apt::install ${pkgname}=$v"
+        set match 1
+        set comment "Provided by ${::deken::apt::distribution} (${suite})"
+        set status "${pkgname}_${v}_${arch}.deb"
+
+        lappend result [list $name $cmd $match $comment $status]
+    }
+    }
+    return [lsort -dictionary -decreasing -index 1 $result ]
+}
+
+proc ::deken::apt::install {pkg} {
+    if { [ catch { exec which gksudo } gsudo ] } {
+        ::deken::post "Please install 'gksudo', if you want to install system packages via deken..." error
+    } {
+        ::deken::clearpost
+        set prog "apt-get install -y --show-progress ${pkg}"
+        # for whatever reasons, we cannot have 'deken' as the description
+        # (it will always show $prog instead)
+        set desc deken::apt
+        set cmdline "$gsudo -D $desc -- $prog"
+        #puts $cmdline
+        set io [ open "|${cmdline}" ]
+        while { [ gets $io line ] >= 0 } {
+            ::deken::post "apt: $line"
+        }
+        if { [ catch { close $io } ret ] } {
+            ::deken::post "apt::install failed to install $pkg" error
+            ::deken::post "\tDid you provide the correct password and/or" error
+            ::deken::post "\tis the apt database locked by another process?" error
+            #puts stderr "::deken::apt::install ${options}"
+        }
+    }
+}
+
+# only add this backend, if we are actually running Debian or a derivative
+if { [ info exists ::deken::apt::distribution ] } {
+  ::deken::register ::deken::apt::search
+}
 ::deken::register ::deken::search::puredata.info
