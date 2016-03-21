@@ -1,4 +1,4 @@
-SUBDIRS=bob~ bonk~ choice expr~ fiddle~ loop~ lrshift~ pd~ pique sigmund~ stdout
+SUBDIRS=bob~ bonk~ choice fiddle~ loop~ lrshift~ pd~ pique sigmund~ stdout
 
 DIST_SUBDIRS=$(SUBDIRS)
 

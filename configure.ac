@@ -258,7 +258,6 @@ AC_CONFIG_FILES([Makefile
 		extra/bob~/GNUmakefile
 		extra/bonk~/GNUmakefile
 		extra/choice/GNUmakefile
-		extra/expr~/GNUmakefile
 		extra/fiddle~/GNUmakefile
 		extra/loop~/GNUmakefile
 		extra/lrshift~/GNUmakefile
