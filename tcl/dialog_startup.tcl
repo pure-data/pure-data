@@ -45,6 +45,14 @@ proc ::dialog_startup::chooseCommand { prompt initialValue } {
     return $cmd
 }
 
+proc ::dialog_startup::cancel {mytoplevel} {
+    ::scrollboxwindow::cancel $mytoplevel
+}
+
+proc ::dialog_startup::ok {mytoplevel} {
+    ::scrollboxwindow::ok $mytoplevel dialog_startup::commit
+}
+
 proc ::dialog_startup::add {} {
     return [chooseCommand [_ "Add new library"] ""]
 }
@@ -77,20 +85,64 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     ::scrollboxwindow::make $mytoplevel $::startup_libraries \
         dialog_startup::add dialog_startup::edit dialog_startup::commit \
         [_ "Pd libraries to load on startup"] \
-        400 300
+        400 320 0
+    ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
-    label $mytoplevel.entryname -text [_ "Startup flags:"]
-    entry $mytoplevel.entry -textvariable ::startup_flags -width 60
-    pack $mytoplevel.entryname $mytoplevel.entry -side left
-    pack $mytoplevel.entry -side right -padx 2m -fill x -expand 1
+    frame $mytoplevel.flags
+    pack $mytoplevel.flags -side top -anchor e -fill x -padx 2m 
+    label $mytoplevel.flags.entryname -text [_ "Startup flags:"]
+    entry $mytoplevel.flags.entry -textvariable ::startup_flags -width 41
+    pack $mytoplevel.flags.entry $mytoplevel.flags.entryname -side right
 
     frame $mytoplevel.defeatrtframe
-    pack $mytoplevel.defeatrtframe -side bottom -fill x -pady 2m
+    pack $mytoplevel.defeatrtframe -side top -fill x -padx 2m -pady 2m
     if {$::windowingsystem ne "win32"} {
         checkbutton $mytoplevel.defeatrtframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::dialog_startup::defeatrt_button
-        pack $mytoplevel.defeatrtframe.defeatrt -side left
+        pack $mytoplevel.defeatrtframe.defeatrt -side left -expand 1
+    }
+
+    # focus handling on OSX
+    if {$::windowingsystem eq "aqua"} {
+
+        # unbind ok button when in listbox
+        bind $mytoplevel.listbox.box <FocusIn> "::dialog_startup::unbind_return $mytoplevel"
+        bind $mytoplevel.listbox.box <FocusOut> "::dialog_startup::rebind_return $mytoplevel"
+
+        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
+        bind $mytoplevel.flags.entry <KeyPress-Return> "::dialog_startup::rebind_return $mytoplevel"
+
+        # unbind Return from ok button when an entry takes focus
+        $mytoplevel.flags.entry config -validate focusin -vcmd "::dialog_startup::unbind_return $mytoplevel"
+
+        # can't see focus for buttons, so disable it
+        $mytoplevel.actions.delete_path config -takefocus 0
+        $mytoplevel.actions.edit_path config -takefocus 0
+        $mytoplevel.actions.add_path config -takefocus 0
+        $mytoplevel.defeatrtframe.defeatrt config -takefocus 0
+
+        # remove cancel button from focus list since it's not activated on Return
+        $mytoplevel.nb.buttonframe.cancel config -takefocus 0
+
+        # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.nb.buttonframe.ok config -default normal
+        bind $mytoplevel.nb.buttonframe.ok <FocusIn> "$mytoplevel.nb.buttonframe.ok config -default active"
+        bind $mytoplevel.nb.buttonframe.ok <FocusOut> "$mytoplevel.nb.buttonframe.ok config -default normal"
     }
 }
 
+# for focus handling on OSX
+proc ::dialog_startup::rebind_return {mytoplevel} {
+    bind $mytoplevel <KeyPress-Escape> "::dialog_startup::cancel $mytoplevel"
+    bind $mytoplevel <KeyPress-Return> "::dialog_startup::ok $mytoplevel"
+    focus $mytoplevel.nb.buttonframe.ok
+    return 0
+}
+
+# for focus handling on OSX
+proc ::dialog_startup::unbind_return {mytoplevel} {
+    bind $mytoplevel <KeyPress-Escape> break
+    bind $mytoplevel <KeyPress-Return> break
+    return 1
+}

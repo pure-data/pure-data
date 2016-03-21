@@ -15,7 +15,6 @@ package require scrollbox
 namespace eval scrollboxwindow {
 }
 
-
 proc ::scrollboxwindow::get_listdata {mytoplevel} {
     return [$mytoplevel.listbox.box get 0 end]
 }
@@ -53,12 +52,16 @@ proc ::scrollboxwindow::ok {mytoplevel commit_method } {
 # commit_method -- same as above, to commit during the "apply" action
 # title -- top-level title for the dialog
 # width, height -- initial width and height dimensions for the window, also minimum size
-proc ::scrollboxwindow::make {mytoplevel listdata add_method edit_method commit_method title width height } {
+# resizable -- 0 or 1, set to 1 for dialog to be resizeable
+proc ::scrollboxwindow::make {mytoplevel listdata add_method edit_method commit_method title width height resizable } {
     wm deiconify .pdwindow
     raise .pdwindow
     toplevel $mytoplevel -class DialogWindow
     wm title $mytoplevel $title
     wm group $mytoplevel .
+    if {$resizable == 0} {
+        wm resizable $mytoplevel 0 0
+    }
     wm transient $mytoplevel .pdwindow
     wm protocol $mytoplevel WM_DELETE_WINDOW "::scrollboxwindow::cancel $mytoplevel"
 
@@ -71,24 +74,23 @@ proc ::scrollboxwindow::make {mytoplevel listdata add_method edit_method commit_
     # Add the scrollbox widget
     ::scrollbox::make $mytoplevel $listdata $add_method $edit_method
 
-    # Use two frames for the buttons, since we want them both
-    # bottom and right
+    # Use two frames for the buttons, since we want them both bottom and right
     frame $mytoplevel.nb
     pack $mytoplevel.nb -side bottom -fill x -pady 2m
 
+    # buttons
     frame $mytoplevel.nb.buttonframe
-    pack $mytoplevel.nb.buttonframe -side right -padx 2m
+    pack $mytoplevel.nb.buttonframe -side right -fill x -padx 2m
 
-    button $mytoplevel.nb.buttonframe.cancel -text [_ "Cancel"]\
+    button $mytoplevel.nb.buttonframe.cancel -text [_ "Cancel"] \
         -command "::scrollboxwindow::cancel $mytoplevel"
-    button $mytoplevel.nb.buttonframe.apply -text [_ "Apply"]\
-        -command "::scrollboxwindow::apply $mytoplevel $commit_method"
-    button $mytoplevel.nb.buttonframe.ok -text [_ "OK"]\
+    pack $mytoplevel.nb.buttonframe.cancel -side left -expand 1 -fill x -padx 5
+    if {$::windowingsystem ne "aqua"} {
+        button $mytoplevel.nb.buttonframe.apply -text [_ "Apply"] \
+            -command "::scrollboxwindow::apply $mytoplevel $commit_method"
+        pack $mytoplevel.nb.buttonframe.apply -side left -expand 1 -fill x -padx 5
+    }
+    button $mytoplevel.nb.buttonframe.ok -text [_ "OK"] \
         -command "::scrollboxwindow::ok $mytoplevel $commit_method"
-
-    pack $mytoplevel.nb.buttonframe.cancel -side left -expand 1 -padx 2m
-    pack $mytoplevel.nb.buttonframe.apply -side left -expand 1 -padx 2m
-    pack $mytoplevel.nb.buttonframe.ok -side left -expand 1 -padx 2m
+    pack $mytoplevel.nb.buttonframe.ok -side left -expand 1 -fill x -padx 5
 }
-
-

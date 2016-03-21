@@ -101,7 +101,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     frame .font.buttonframe
     pack .font.buttonframe -side bottom -fill x -pady 2m
     button .font.buttonframe.ok -text [_ "OK"] \
-        -command "::dialog_font::ok $gfxstub"
+        -command "::dialog_font::ok $gfxstub" -default active
     pack .font.buttonframe.ok -side left -expand 1
     
     labelframe .font.fontsize -text [_ "Font Size"] -padx 5 -pady 4 -borderwidth 1 \
