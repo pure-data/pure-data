@@ -193,7 +193,7 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
     if (gl)
     {
         garray_savecontentsto((t_garray *)gl->gl_list, bb);
-	obj_saveformat(&x->gl_obj, bb);
+        obj_saveformat(&x->gl_obj, bb);
     }
     else
         bug("array_define_save");

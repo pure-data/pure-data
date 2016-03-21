@@ -168,7 +168,6 @@ $(PDEXEC): $(OBJ_DIR) $(OBJ)
 externs: 
 	make -C ../extra/bonk~     MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/choice    MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/expr~     MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/fiddle~   MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/loop~     MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/lrshift~  MORECFLAGS="$(MORECFLAGS)" 

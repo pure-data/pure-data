@@ -146,7 +146,6 @@ $(PDEXEC): $(OBJ) $(BIN_DIR)
 externs: 
 	make -C ../extra/bonk~    DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/choice   DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/expr~    DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/fiddle~  DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/loop~    DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/lrshift~ DARWINARCH="$(EXTRAARCH)" d_fat
