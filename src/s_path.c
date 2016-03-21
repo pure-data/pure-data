@@ -177,7 +177,10 @@ t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup)
         for (nl = listwas; ;)
         {
             if (!allowdup && !strcmp(nl->nl_string, s))
+            {
+                freebytes(nl2->nl_string, strlen(nl2->nl_string) + 1);
                 return (listwas);
+            }
             if (!nl->nl_next)
                 break;
             nl = nl->nl_next;
