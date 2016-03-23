@@ -483,7 +483,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
 
     # buttons
     frame $id.buttonframe
-    pack $id.buttonframe -side top-fill x -pady 2m
+    pack $id.buttonframe -side top -fill x -pady 2m
     button $id.buttonframe.cancel -text [_ "Cancel"]\
         -command "::dialog_midi::cancel $id"
     button $id.buttonframe.apply -text [_ "Apply"]\
