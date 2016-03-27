@@ -110,7 +110,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
            but we have already tried all paths */
     if(!path)return (0);
 
-    if (classname = strrchr(objectname, '/'))
+    if ((classname = strrchr(objectname, '/')))
         classname++;
     else classname = objectname;
     if (sys_onloadlist(objectname))
@@ -298,7 +298,7 @@ int sys_loadlib_iter(const char *path, struct _loadlib_data *data)
     int ok = 0;
     loader_queue_t *q;
     for(q = &loaders; q; q = q->next)
-        if (ok = q->loader(data->canvas, data->classname, path))
+        if ((ok = q->loader(data->canvas, data->classname, path)))
             break;
     /* if all loaders failed, try to load as abstraction */
     if (!ok)

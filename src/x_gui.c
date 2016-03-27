@@ -86,7 +86,7 @@ static void gfxstub_offlist(t_gfxstub *x)
     t_gfxstub *y1, *y2;
     if (gfxstub_list == x)
         gfxstub_list = x->x_next;
-    else for (y1 = gfxstub_list; y2 = y1->x_next; y1 = y2)
+    else for (y1 = gfxstub_list; (y2 = y1->x_next); y1 = y2)
         if (y2 == x)
     {
         y1->x_next = y2->x_next;
