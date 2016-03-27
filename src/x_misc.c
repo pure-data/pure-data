@@ -32,13 +32,13 @@
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
 
-#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
-# include <alloca.h>        /* linux, mac, mingw, cygwin */
-#elif defined _MSC_VER
-# include <malloc.h>        /* MSVC */
+#ifdef _MSC_VER
+# include <malloc.h> /* MSVC */
+#elif defined(__linux__) || defined(__APPLE__) || defined(_WIN32)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
-# include <stddef.h>        /* BSDs for example */
-#endif                      /* end alloca() ifdef nonsense */
+# include <stdlib.h> /* BSDs for example */
+#endif
 
 /* -------------------------- random ------------------------------ */
 /* this is strictly homebrew and untested. */
