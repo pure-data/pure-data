@@ -51,9 +51,9 @@ static void *table_donew(t_symbol *s, int size, int flags,
     if (s == &s_)
     {
          char  tabname[255];
-         t_symbol *t = gensym("table"); 
+         t_symbol *t = gensym("table");
          sprintf(tabname, "%s%d", t->s_name, tabcount++);
-         s = gensym(tabname); 
+         s = gensym(tabname);
     }
     if (size < 1)
         size = 100;
@@ -170,7 +170,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv); endpost();
     }
     x = (t_glist *)table_donew(arrayname, arraysize, keep, xpix, ypix);
-    
+
         /* bash the class to "array define".  We don't do this earlier in
         part so that canvas_getcurrent() will work while the glist and
         garray are being created.  There may be other, unknown side effects. */
@@ -190,8 +190,13 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
     binbuf_addbinbuf(bb, x->gl_obj.ob_binbuf);
     binbuf_addsemi(bb);
 
-    garray_savecontentsto((t_garray *)gl->gl_list, bb);
-    obj_saveformat(&x->gl_obj, bb);
+    if (gl)
+    {
+        garray_savecontentsto((t_garray *)gl->gl_list, bb);
+        obj_saveformat(&x->gl_obj, bb);
+    }
+    else
+        bug("array_define_save");
 }
 
 t_scalar *garray_getscalar(t_garray *x);
@@ -272,7 +277,7 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
     {
         t_template *template = template_findbyname(x->tc_struct);
         t_gstub *gs = x->tc_gp.gp_stub;
-        t_word *vec; 
+        t_word *vec;
         int onset, type;
         t_symbol *arraytype;
         if (!template)
@@ -319,7 +324,8 @@ static void array_client_senditup(t_array_client *x)
 {
     t_glist *glist = 0;
     t_array *a = array_client_getbuf(x, &glist);
-    array_redraw(a, glist);
+    if (glist)
+       array_redraw(a, glist);
 }
 
 static void array_client_free(t_array_client *x)
@@ -434,8 +440,8 @@ typedef struct _array_rangeop   /* any operation meaningful on a subrange */
         sometimes we don't need an inlet because it's the inlet itself.  In
         any case we allow onset to be specified as an argument (even if it's
         the 'hot inlet') -- for the same reason as in the 'delay' object.
-        Finally we can optionally warn if there are extra arguemnts; some
-        specific arguemtns (e.g., search) allow them but most don't. */
+        Finally we can optionally warn if there are extra arguments; some
+        specific arguments (e.g., search) allow them but most don't. */
 static void *array_rangeop_new(t_class *class,
     t_symbol *s, int *argcp, t_atom **argvp,
     int onsetin, int nin, int warnextra)
@@ -446,7 +452,7 @@ static void *array_rangeop_new(t_class *class,
     x->x_sym = x->x_struct = x->x_field = 0;
     gpointer_init(&x->x_gp);
     x->x_elemtemplate = &s_;
-    x->x_elemfield = gensym("y"); 
+    x->x_elemfield = gensym("y");
     x->x_onset = 0;
     x->x_n = -1;
     if (onsetin)
@@ -513,19 +519,19 @@ static void *array_rangeop_new(t_class *class,
 }
 
 static int array_rangeop_getrange(t_array_rangeop *x,
-    char **firstitemp, int *nitemp, int *stridep)
+    char **firstitemp, int *nitemp, int *stridep, int *arrayonsetp)
 {
     t_glist *glist;
     t_array *a = array_client_getbuf(&x->x_tc, &glist);
     char *elemp;
-    int stride, onset, firstitem, nitem, i, type;
+    int stride, fieldonset, arrayonset, nitem, i, type;
     t_symbol *arraytype;
     double sum;
     t_template *template;
     if (!a)
         return (0);
     template = template_findbyname(a->a_templatesym);
-    if (!template_find_field(template, x->x_elemfield, &onset,
+    if (!template_find_field(template, x->x_elemfield, &fieldonset,
         &type, &arraytype) || type != DT_FLOAT)
     {
         pd_error(x, "can't find field %s in struct %s",
@@ -533,22 +539,23 @@ static int array_rangeop_getrange(t_array_rangeop *x,
         return (0);
     }
     stride = a->a_elemsize;
-    firstitem = x->x_onset;
-    if (firstitem < 0)
-        firstitem = 0;
-    else if (firstitem > a->a_n)
-        firstitem = a->a_n;
+    arrayonset = x->x_onset;
+    if (arrayonset < 0)
+        arrayonset = 0;
+    else if (arrayonset > a->a_n)
+        arrayonset = a->a_n;
     if (x->x_n < 0)
-        nitem = a->a_n - firstitem;
+        nitem = a->a_n - arrayonset;
     else
     {
         nitem = x->x_n;
-        if (nitem + firstitem > a->a_n)
-            nitem = a->a_n - firstitem;
+        if (nitem + arrayonset > a->a_n)
+            nitem = a->a_n - arrayonset;
     }
-    *firstitemp = a->a_vec+onset+firstitem*stride;
+    *firstitemp = a->a_vec+(fieldonset+arrayonset*stride);
     *nitemp = nitem;
     *stridep = stride;
+    *arrayonsetp = arrayonset;
     return (1);
 }
 
@@ -570,9 +577,9 @@ static void *array_sum_new(t_symbol *s, int argc, t_atom *argv)
 static void array_sum_bang(t_array_rangeop *x)
 {
     char *itemp, *firstitem;
-    int stride, nitem, i;
+    int stride, nitem, arrayonset, i;
     double sum;
-    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
     for (i = 0, sum = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
         sum += *(t_float *)itemp;
@@ -601,14 +608,15 @@ static void *array_get_new(t_symbol *s, int argc, t_atom *argv)
 static void array_get_bang(t_array_rangeop *x)
 {
     char *itemp, *firstitem;
-    int stride, nitem, i;
+    int stride, nitem, arrayonset, i;
     t_atom *outv;
-    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
     ATOMS_ALLOCA(outv, nitem);
     for (i = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
         SETFLOAT(&outv[i],  *(t_float *)itemp);
     outlet_list(x->x_outlet, 0, nitem, outv);
+    ATOMS_FREEA(outv, nitem);
 }
 
 static void array_get_float(t_array_rangeop *x, t_floatarg f)
@@ -633,8 +641,8 @@ static void array_set_list(t_array_rangeop *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     char *itemp, *firstitem;
-    int stride, nitem, i;
-    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+    int stride, nitem, arrayonset, i;
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
     if (nitem > argc)
         nitem = argc;
@@ -659,9 +667,9 @@ static void *array_quantile_new(t_symbol *s, int argc, t_atom *argv)
 static void array_quantile_float(t_array_rangeop *x, t_floatarg f)
 {
     char *itemp, *firstitem;
-    int stride, nitem, i;
+    int stride, nitem, arrayonset, i;
     double sum;
-    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride))
+    if (!array_rangeop_getrange(x, &firstitem, &nitem, &stride, &arrayonset))
         return;
     for (i = 0, sum = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
         sum += (*(t_float *)itemp > 0? *(t_float *)itemp : 0);
@@ -703,10 +711,11 @@ static void array_random_seed(t_array_random *x, t_floatarg f)
 static void array_random_bang(t_array_random *x)
 {
     char *itemp, *firstitem;
-    int stride, nitem, i;
-    
-    if (!array_rangeop_getrange(&x->x_r, &firstitem, &nitem, &stride))
-        return;
+    int stride, nitem, arrayonset, i;
+
+    if (!array_rangeop_getrange(&x->x_r, &firstitem, &nitem, &stride,
+        &arrayonset))
+            return;
     x->x_state = x->x_state * 472940017 + 832416023;
     array_quantile_float(&x->x_r, (1./4294967296.0) * (double)(x->x_state));
 }
@@ -725,7 +734,6 @@ typedef struct _array_max
     t_array_rangeop x_rangeop;
     t_outlet *x_out1;       /* value */
     t_outlet *x_out2;       /* index */
-    int x_onset;            /* search onset */
 } t_array_max;
 
 static void *array_max_new(t_symbol *s, int argc, t_atom *argv)
@@ -740,21 +748,22 @@ static void *array_max_new(t_symbol *s, int argc, t_atom *argv)
 static void array_max_bang(t_array_max *x)
 {
     char *itemp, *firstitem;
-    int stride, nitem, i, besti;
+    int stride, nitem, arrayonset, i, besti;
     t_float bestf;
-    if (!array_rangeop_getrange(&x->x_rangeop, &firstitem, &nitem, &stride))
-        return;
-    for (i = 0, besti = 0, bestf= -1e30, itemp = firstitem;
+    if (!array_rangeop_getrange(&x->x_rangeop, &firstitem, &nitem, &stride,
+        &arrayonset))
+            return;
+    for (i = 0, besti = -1, bestf= -1e30, itemp = firstitem;
         i < nitem; i++, itemp += stride)
             if (*(t_float *)itemp > bestf)
-                bestf = *(t_float *)itemp, besti = i;
-    outlet_float(x->x_out2, besti+x->x_onset);
+                bestf = *(t_float *)itemp, besti = i+arrayonset;
+    outlet_float(x->x_out2, besti);
     outlet_float(x->x_out1, bestf);
 }
 
 static void array_max_float(t_array_max *x, t_floatarg f)
 {
-    x->x_onset = f;
+    x->x_rangeop.x_onset = f;
     array_max_bang(x);
 }
 
@@ -766,7 +775,6 @@ typedef struct _array_min
     t_array_rangeop x_rangeop;
     t_outlet *x_out1;       /* value */
     t_outlet *x_out2;       /* index */
-    int x_onset;            /* search onset */
 } t_array_min;
 
 static void *array_min_new(t_symbol *s, int argc, t_atom *argv)
@@ -781,21 +789,22 @@ static void *array_min_new(t_symbol *s, int argc, t_atom *argv)
 static void array_min_bang(t_array_min *x)
 {
     char *itemp, *firstitem;
-    int stride, nitem, i, besti;
+    int stride, nitem, i, arrayonset, besti;
     t_float bestf;
-    if (!array_rangeop_getrange(&x->x_rangeop, &firstitem, &nitem, &stride))
-        return;
-    for (i = 0, besti = 0, bestf= 1e30, itemp = firstitem;
+    if (!array_rangeop_getrange(&x->x_rangeop, &firstitem, &nitem, &stride,
+        &arrayonset))
+            return;
+    for (i = 0, besti = -1, bestf= 1e30, itemp = firstitem;
         i < nitem; i++, itemp += stride)
             if (*(t_float *)itemp < bestf)
-                bestf = *(t_float *)itemp, besti = i;
-    outlet_float(x->x_out2, besti+x->x_onset);
+                bestf = *(t_float *)itemp, besti = i+arrayonset;
+    outlet_float(x->x_out2, besti);
     outlet_float(x->x_out1, bestf);
 }
 
 static void array_min_float(t_array_min *x, t_floatarg f)
 {
-    x->x_onset = f;
+    x->x_rangeop.x_onset = f;
     array_min_bang(x);
 }
 
@@ -825,7 +834,7 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
             newest = array_max_new(s, argc-1, argv+1);
         else if (!strcmp(str, "min"))
             newest = array_min_new(s, argc-1, argv+1);
-        else 
+        else
         {
             error("array %s: unknown function", str);
             newest = 0;

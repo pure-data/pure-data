@@ -5,7 +5,7 @@
 /* this file calls Ross Bencina's and Phil Burk's Portaudio package.  It's
     the main way in for Mac OS and, with Michael Casey's help, also into
     ASIO in Windows.
-    
+
     Both blocking and non-blocking call styles are supported.  If non-blocking
     is requested, either we call portaudio in non-blocking mode, or else we
     call portaudio in callback mode and manage our own FIFO se we can offer
@@ -17,7 +17,7 @@
     and polling; the latter seems to work better so far.
 */
 
-/* dolist...  
+/* dolist...
     switch to usleep in s_inter.c
 */
 
@@ -109,7 +109,7 @@ static void pa_init(void)        /* Initialize PortAudio  */
 #endif
 
 
-        if ( err != paNoError ) 
+        if ( err != paNoError )
         {
             post("Error opening audio: %s", err, Pa_GetErrorText(err));
             return;
@@ -120,10 +120,10 @@ static void pa_init(void)        /* Initialize PortAudio  */
 
 static int pa_lowlevel_callback(const void *inputBuffer,
     void *outputBuffer, unsigned long nframes,
-    const PaStreamCallbackTimeInfo *outTime, PaStreamCallbackFlags myflags, 
+    const PaStreamCallbackTimeInfo *outTime, PaStreamCallbackFlags myflags,
     void *userData)
 {
-    int i; 
+    int i;
     unsigned int n, j;
     float *fbuf, *fp2, *fp3, *soundiop;
     if (nframes % DEFDACBLKSIZE)
@@ -172,7 +172,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
     to poll for us; so far polling seems to work better. */
 static int pa_fifo_callback(const void *inputBuffer,
     void *outputBuffer, unsigned long nframes,
-    const PaStreamCallbackTimeInfo *outTime, PaStreamCallbackFlags myflags, 
+    const PaStreamCallbackTimeInfo *outTime, PaStreamCallbackFlags myflags,
     void *userData)
 {
     /* callback routine for non-callback client... throw samples into
@@ -182,7 +182,7 @@ static int pa_fifo_callback(const void *inputBuffer,
     float *fbuf;
 
 #if CHECKFIFOS
-    if (pa_inchans * sys_ringbuf_getreadavailable(&pa_outring) !=   
+    if (pa_inchans * sys_ringbuf_getreadavailable(&pa_outring) !=
         pa_outchans * sys_ringbuf_getwriteavailable(&pa_inring))
             post("warning: in and out rings unequal (%d, %d)",
                 sys_ringbuf_getreadavailable(&pa_outring),
@@ -241,7 +241,7 @@ PaError pa_open_callback(double sampleRate, int inchannels, int outchannels,
     instreamparams.channelCount = inchannels;
     instreamparams.sampleFormat = paFloat32;
     instreamparams.hostApiSpecificStreamInfo = 0;
-    
+
     outstreamparams.device = outdeviceno;
     outstreamparams.channelCount = outchannels;
     outstreamparams.sampleFormat = paFloat32;
@@ -332,12 +332,12 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
 {
     PaError err;
     int j, devno, pa_indev = -1, pa_outdev = -1;
-    
+
     pa_callback = callbackfn;
     /* fprintf(stderr, "open callback %d\n", (callbackfn != 0)); */
     pa_init();
     /* post("in %d out %d rate %d device %d", inchans, outchans, rate, deviceno); */
-    
+
     if (pa_stream)
         pa_close_audio();
 
@@ -359,8 +359,8 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 devno++;
             }
         }
-    }   
-    
+    }
+
     if (outchans > 0)
     {
         for (j = 0, devno = 0; j < Pa_GetDeviceCount(); j++)
@@ -379,13 +379,13 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
                 devno++;
             }
         }
-    }   
+    }
 
     if (inchans > 0 && pa_indev == -1)
         inchans = 0;
     if (outchans > 0 && pa_outdev == -1)
         outchans = 0;
-    
+
     if (sys_verbose)
     {
         post("input device %d, channels %d", pa_indev, inchans);
@@ -407,7 +407,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
 
     if (! inchans && !outchans)
         return (0);
-    
+
     if (callbackfn)
     {
         pa_callback = callbackfn;
@@ -439,7 +439,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     }
     pa_started = 0;
     pa_nbuffers = nbuffers;
-    if ( err != paNoError ) 
+    if ( err != paNoError )
     {
         post("Error opening audio: %s", Pa_GetErrorText(err));
         /* Pa_Terminate(); */
@@ -477,7 +477,7 @@ int pa_send_dacs(void)
     double timebefore;
 #endif /* FAKEBLOCKING */
     if (!sys_inchannels && !sys_outchannels || !pa_stream)
-        return (SENDDACS_NO); 
+        return (SENDDACS_NO);
     conversionbuf = (float *)alloca((sys_inchannels > sys_outchannels?
         sys_inchannels:sys_outchannels) * DEFDACBLKSIZE * sizeof(float));
 
@@ -592,7 +592,7 @@ int pa_send_dacs(void)
 
     /* scanning for devices */
 void pa_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize)
 {
     int i, nin = 0, nout = 0, ndev;

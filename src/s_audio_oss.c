@@ -43,7 +43,7 @@
 typedef int16_t t_oss_int16;
 typedef int32_t t_oss_int32;
 #define OSS_MAXSAMPLEWIDTH sizeof(t_oss_int32)
-#define OSS_BYTESPERCHAN(width) (DEFDACBLKSIZE * (width)) 
+#define OSS_BYTESPERCHAN(width) (DEFDACBLKSIZE * (width))
 #define OSS_XFERSAMPS(chans) (DEFDACBLKSIZE* (chans))
 #define OSS_XFERSIZE(chans, width) (DEFDACBLKSIZE * (chans) * (width))
 
@@ -77,16 +77,16 @@ t_sample *sys_soundin;
 
     /* OSS-specific private variables */
 static int oss_blockmode = 1;   /* flag to use "blockmode"  */
-static char ossdsp[] = "/dev/dsp%d"; 
+static char ossdsp[] = "/dev/dsp%d";
 
-    /* don't assume we can turn all 31 bits when doing float-to-fix; 
+    /* don't assume we can turn all 31 bits when doing float-to-fix;
     otherwise some audio drivers (e.g. Midiman/ALSA) wrap around. */
 #define FMAX 0x7ffff000
 #define CLIP32(x) (((x)>FMAX)?FMAX:((x) < -FMAX)?-FMAX:(x))
 
 /* ---------------- public routines ----------------------- */
 
-static int oss_ndev = 0; 
+static int oss_ndev = 0;
 
     /* find out how many OSS devices we have.  Since this has to
     open the devices to find out if they're there, we have
@@ -150,12 +150,12 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
             wantformat, param);
 
     /* sample rate */
-    orig = param = srate; 
+    orig = param = srate;
     if (ioctl(fd, SNDCTL_DSP_SPEED, &param) == -1)
         fprintf(stderr,"OSS: Could not set sampling rate for device\n");
     else if( orig != param )
         fprintf(stderr,"OSS: sampling rate: wanted %d, got %d\n",
-            orig, param );                              
+            orig, param );
 
     if (oss_blockmode && !skipblocksize)
     {
@@ -247,21 +247,19 @@ static int oss_setchannels(int fd, int wantchannels, char *devname)
         }
     }
     param = wantchannels;
-whynot:    
+whynot:
     while (param > 1)
     {
         int save = param;
         if (ioctl(fd, SNDCTL_DSP_CHANNELS, &param) == -1)
             error("OSS: SNDCTL_DSP_CHANNELS failed %s",devname);
-        else if (param == save) 
+        else if (param == save)
             return (param);
         param = save - 1;
     }
 
     return (0);
 }
-
-#define O_AUDIOFLAG O_NDELAY
 
 int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
     int noutdev, int *outdev, int nchout, int *chout, int rate,
@@ -304,13 +302,13 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         for (j = 0; j < nindev; j++)
             if (indev[j] == thisdevice && chin[j] == wantchannels)
                 inindex = j;
-        
+
             /* if the same device is requested for input and output,
             try to open it read/write */
         if (inindex >= 0)
         {
             sys_setalarm(1000000);
-            if ((fd = open(devname, O_RDWR | O_AUDIOFLAG)) == -1)
+            if ((fd = open(devname, O_RDWR | O_NDELAY)) == -1)
             {
                 post("%s (read/write): %s", devname, strerror(errno));
                 post("(now will try write-only...)");
@@ -321,7 +319,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                     post("couldn't set close-on-exec flag on audio");
                 if ((flags = fcntl(fd, F_GETFL)) < 0)
                     post("couldn't get audio device flags");
-                else if (fcntl(fd, F_SETFL, flags & (!O_NDELAY)) < 0)
+                else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                     post("couldn't set audio device flags");
                 if (sys_verbose)
                     post("opened %s for reading and writing\n", devname);
@@ -332,7 +330,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         if (fd == -1)
         {
             sys_setalarm(1000000);
-            if ((fd = open(devname, O_WRONLY | O_AUDIOFLAG)) == -1)
+            if ((fd = open(devname, O_WRONLY | O_NDELAY)) == -1)
             {
                 post("%s (writeonly): %s",
                      devname, strerror(errno));
@@ -342,7 +340,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                 post("couldn't set close-on-exec flag on audio");
             if ((flags = fcntl(fd, F_GETFL)) < 0)
                 post("couldn't get audio device flags");
-            else if (fcntl(fd, F_SETFL, flags & (!O_NDELAY)) < 0)
+            else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                 post("couldn't set audio device flags");
             if (sys_verbose)
                 post("opened %s for writing only\n", devname);
@@ -411,7 +409,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         else
         {
                 /* otherwise try to open it here. */
-            if ((fd = open(devname, O_RDONLY | O_AUDIOFLAG)) == -1)
+            if ((fd = open(devname, O_RDONLY | O_NDELAY)) == -1)
             {
                 post("%s (readonly): %s", devname, strerror(errno));
                 goto end_in_loop;
@@ -420,7 +418,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                 post("couldn't set close-on-exec flag on audio");
             if ((flags = fcntl(fd, F_GETFL)) < 0)
                 post("couldn't get audio device flags");
-            else if (fcntl(fd, F_SETFL, flags & (!O_NDELAY)) < 0)
+            else if (fcntl(fd, F_SETFL, flags & (~O_NDELAY)) < 0)
                 post("couldn't set audio device flags");
             if (sys_verbose)
                 post("opened %s for reading only\n", devname);
@@ -441,7 +439,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
         }
 
         linux_adcs[linux_nindevs].d_nchannels = gotchans;
-        
+
         oss_configure(linux_adcs+linux_nindevs, rate, 0, alreadyopened,
             blocksize);
 
@@ -454,7 +452,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
     end_in_loop: ;
     }
 
-    /* We have to do a read to start the engine. This is 
+    /* We have to do a read to start the engine. This is
        necessary because sys_send_dacs waits until the input
        buffer is filled and only reads on a filled buffer.
        This is good, because it's a way to make sure that we
@@ -547,7 +545,7 @@ void linux_audiostatus(void)
 }
 
 /* this call resyncs audio output and input which will cause discontinuities
-in audio output and/or input. */ 
+in audio output and/or input. */
 
 static void oss_doresync( void)
 {
@@ -569,7 +567,7 @@ static void oss_doresync( void)
             OSS_XFERSIZE(linux_adcs[dev].d_nchannels,
                 linux_adcs[dev].d_bytespersamp))
         {
-            linux_adcs_read(linux_adcs[dev].d_fd, buf, 
+            linux_adcs_read(linux_adcs[dev].d_fd, buf,
                 OSS_XFERSIZE(linux_adcs[dev].d_nchannels,
                     linux_adcs[dev].d_bytespersamp));
             if (ioctl(linux_adcs[dev].d_fd, SNDCTL_DSP_GETISPACE, &ainfo) < 0)
@@ -586,7 +584,7 @@ static void oss_doresync( void)
             up */
     for (dev = 0; dev < linux_noutdevs; dev++)
     {
-        while (linux_dacs[dev].d_space > linux_dacs[dev].d_bufsize - 
+        while (linux_dacs[dev].d_space > linux_dacs[dev].d_bufsize -
             sys_advance_samples * (linux_dacs[dev].d_nchannels *
                 linux_dacs[dev].d_bytespersamp))
         {
@@ -594,7 +592,7 @@ static void oss_doresync( void)
             {
                 unsigned int i;
                 for (i = 0; i < OSS_XFERSAMPS(linux_dacs[dev].d_nchannels);
-                    i++)    
+                    i++)
                         buf[i] = 0;
                 zeroed = 1;
             }
@@ -614,11 +612,11 @@ static void oss_doresync( void)
             number of frames which will let the others catch up. */
     for (dev = 0; dev < linux_noutdevs; dev++)
     {
-        if (linux_dacs[dev].d_space > linux_dacs[dev].d_bufsize - 
+        if (linux_dacs[dev].d_space > linux_dacs[dev].d_bufsize -
             (sys_advance_samples - 1) * linux_dacs[dev].d_nchannels *
                 linux_dacs[dev].d_bytespersamp)
         {
-            linux_dacs[dev].d_dropcount = sys_advance_samples - 1 - 
+            linux_dacs[dev].d_dropcount = sys_advance_samples - 1 -
                 (linux_dacs[dev].d_space - linux_dacs[dev].d_bufsize) /
                      (linux_dacs[dev].d_nchannels *
                         linux_dacs[dev].d_bytespersamp) ;
@@ -650,11 +648,11 @@ int oss_send_dacs(void)
         output device has fewer than (sys_advance_samples) blocks buffered
         already. */
         oss_calcspace();
-    
+
         for (dev=0; dev < linux_noutdevs; dev++)
             if (linux_dacs[dev].d_dropcount ||
                 (linux_dacs[dev].d_bufsize - linux_dacs[dev].d_space >
-                    sys_advance_samples * linux_dacs[dev].d_bytespersamp * 
+                    sys_advance_samples * linux_dacs[dev].d_bytespersamp *
                         linux_dacs[dev].d_nchannels))
                             idle = 1;
         for (dev=0; dev < linux_nindevs; dev++)
@@ -663,7 +661,7 @@ int oss_send_dacs(void)
                     linux_adcs[dev].d_bytespersamp))
                         idle = 1;
     }
-    
+
     if (idle && !oss_blockmode)
     {
             /* sometimes---rarely---when the ADC available-byte-count is
@@ -672,7 +670,7 @@ int oss_send_dacs(void)
             distinguish between the two by waiting 2 msec and asking again.
             There should be an error flag we could check instead; look for this
             someday... */
-        for (dev = 0;dev < linux_nindevs; dev++) 
+        for (dev = 0;dev < linux_nindevs; dev++)
             if (linux_adcs[dev].d_space == 0)
         {
             audio_buf_info ainfo;
@@ -691,7 +689,7 @@ int oss_send_dacs(void)
             input device should have more than one buffer readable and
             no output device should have less than sys_advance_samples-1
             */
-            
+
         for (dev=0; dev < linux_noutdevs; dev++)
             if (!linux_dacs[dev].d_dropcount &&
                 (linux_dacs[dev].d_bufsize - linux_dacs[dev].d_space <
@@ -711,7 +709,7 @@ int oss_send_dacs(void)
         sys_log_error(ERR_RESYNC);
         oss_doresync();
         return (SENDDACS_NO);
-        
+
     }
 
         /* do output */
@@ -726,7 +724,7 @@ int oss_send_dacs(void)
         {
             if (linux_dacs[dev].d_bytespersamp == 2)
             {
-                for (i = DEFDACBLKSIZE,  fp1 = sys_soundout +   
+                for (i = DEFDACBLKSIZE,  fp1 = sys_soundout +
                     DEFDACBLKSIZE*thischan,
                     sp = (t_oss_int16 *)buf; i--; fp1++, sp += nchannels)
                 {
@@ -780,13 +778,13 @@ int oss_send_dacs(void)
                     fp1[j*DEFDACBLKSIZE] = (float)sp[j]*(float)3.051850e-05;
             }
         }
-        thischan += nchannels;    
+        thischan += nchannels;
      }
      return (rtnval);
 }
 
 void oss_getdevs(char *indevlist, int *nindevs,
-    char *outdevlist, int *noutdevs, int *canmulti, 
+    char *outdevlist, int *noutdevs, int *canmulti,
         int maxndev, int devdescsize)
 {
     int i, ndev;

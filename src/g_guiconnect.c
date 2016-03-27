@@ -37,7 +37,7 @@ static void guiconnect_free(t_guiconnect *x)
     if (x->x_sym)
         pd_unbind(&x->x_obj.ob_pd, x->x_sym);
     if (x->x_clock)
-        clock_free(x->x_clock); 
+        clock_free(x->x_clock);
 }
 
     /* this is called when the clock times out to indicate the GUI should
@@ -62,7 +62,7 @@ void guiconnect_notarget(t_guiconnect *x, double timedelay)
             x->x_clock = clock_new(x, (t_method)guiconnect_tick);
             clock_delay(x->x_clock, timedelay);
         }
-    }    
+    }
 }
 
     /* the GUI calls this to send messages to the target. */

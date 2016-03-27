@@ -25,6 +25,12 @@ proc ::dialog_data::ok {mytoplevel} {
 }
 
 proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
+    variable modifier
+    set modkeyname "Ctrl"
+    if {$::windowingsystem eq "aqua"} {
+        set modkeyname "Cmd"
+    }
+
     toplevel $mytoplevel -class DialogWindow
     wm title $mytoplevel [_ "Data Properties"]
     wm group $mytoplevel $::focused_window
@@ -34,20 +40,21 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
 
     frame $mytoplevel.buttonframe
     pack $mytoplevel.buttonframe -side bottom -fill x -pady 2m
-    button $mytoplevel.buttonframe.send -text [_ "Send (Ctrl s)"] \
+    button $mytoplevel.buttonframe.send -text [_ "Send ($modkeyname-S)"] \
         -command "::dialog_data::send $mytoplevel"
-    button $mytoplevel.buttonframe.ok -text [_ "OK (Ctrl t)"] \
+    button $mytoplevel.buttonframe.ok -text [_ "Done ($modkeyname-D)"] \
         -command "::dialog_data::ok $mytoplevel"
     pack $mytoplevel.buttonframe.send -side left -expand 1
     pack $mytoplevel.buttonframe.ok -side left -expand 1
 
-    text $mytoplevel.text -relief raised -bd 2 -height 40 -width 60 \
-        -yscrollcommand "$mytoplevel.scroll set"
+    text $mytoplevel.text -relief raised -highlightthickness 0 -bd 2 -height 40 -width 60 \
+        -yscrollcommand "$mytoplevel.scroll set" -background white
     scrollbar $mytoplevel.scroll -command "$mytoplevel.text yview"
     pack $mytoplevel.scroll -side right -fill y
     pack $mytoplevel.text -side left -fill both -expand 1
     $mytoplevel.text insert end $stuff
+    bind $mytoplevel.text <$::modifier-Key-s> "::dialog_data::send $mytoplevel"
+    bind $mytoplevel.text <$::modifier-Key-d> "::dialog_data::ok $mytoplevel"
+    bind $mytoplevel.text <$::modifier-Key-w> "::dialog_data::cancel $mytoplevel"
     focus $mytoplevel.text
-    bind $mytoplevel.text <Control-t> "::dialog_data::ok $mytoplevel"
-    bind $mytoplevel.text <Control-s> "::dialog_data::send $mytoplevel"
 }

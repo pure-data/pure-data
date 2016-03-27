@@ -25,9 +25,9 @@ int ilog2(int n);
          out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
          p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
      ...
-         fftw_execute(p); 
+         fftw_execute(p);
      ...
-     fftw_destroy_plan(p);  
+     fftw_destroy_plan(p);
          fftw_free(in); fftw_free(out);
      }
 
@@ -54,11 +54,11 @@ static cfftw_info *cfftw_getplan(int n,int fwd)
     if (logn < MINFFT || logn > MAXFFT)
         return (0);
     info = (fwd?cfftw_fwd:cfftw_bwd)+(logn-MINFFT);
-    if (!info->plan) 
+    if (!info->plan)
     {
         info->in = (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
         info->out = (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
-        info->plan = fftwf_plan_dft_1d(n, info->in, info->out, fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);        
+        info->plan = fftwf_plan_dft_1d(n, info->in, info->out, fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);
     }
     return info;
 }
@@ -80,7 +80,7 @@ static rfftw_info *rfftw_getplan(int n,int fwd)
     if (logn < MINFFT || logn > MAXFFT)
         return (0);
     info = (fwd?rfftw_fwd:rfftw_bwd)+(logn-MINFFT);
-    if (!info->plan) 
+    if (!info->plan)
     {
         info->in = (float*) fftwf_malloc(sizeof(float) * n);
         info->out = (float*) fftwf_malloc(sizeof(float) * n);
@@ -103,12 +103,12 @@ static void mayer_do_cfft(int n, float *fz1, float *fz2, int fwd)
     cfftw_info *p = cfftw_getplan(n, fwd);
     if (!p)
         return;
-        
+
     for (i = 0, fz = (float *)p->in; i < n; i++)
         fz[i*2] = fz1[i], fz[i*2+1] = fz2[i];
-        
+
     fftwf_execute(p->plan);
-    
+
     for (i = 0, fz = (float *)p->out; i < n; i++)
         fz1[i] = fz[i*2], fz2[i] = fz[i*2+1];
 }
@@ -123,11 +123,11 @@ EXTERN void mayer_ifft(int n, float *fz1, float *fz2)
     mayer_do_cfft(n, fz1, fz2, 0);
 }
 
-/* 
-    in the following the sign flips are done to 
+/*
+    in the following the sign flips are done to
     be compatible with the mayer_fft implementation,
     but it's probably the mayer_fft that should be corrected...
-*/ 
+*/
 
 EXTERN void mayer_realfft(int n, float *fz)
 {
@@ -135,7 +135,7 @@ EXTERN void mayer_realfft(int n, float *fz)
     rfftw_info *p = rfftw_getplan(n, 1);
     if (!p)
         return;
-        
+
     for (i = 0; i < n; i++)
         p->in[i] = fz[i];
     fftwf_execute(p->plan);
@@ -151,11 +151,11 @@ EXTERN void mayer_realifft(int n, float *fz)
     rfftw_info *p = rfftw_getplan(n, 0);
     if (!p)
         return;
-        
+
     for (i = 0; i < n/2+1; i++)
         p->in[i] = fz[i];
     for (; i < n; i++)
-        p->in[i] = -fz[i];    
+        p->in[i] = -fz[i];
     fftwf_execute(p->plan);
     for (i = 0; i < n; i++)
         fz[i] = p->out[i];

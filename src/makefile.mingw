@@ -75,7 +75,7 @@ STRIP = strip --strip-unneeded -R .note -R .comment
 # the sources
 
 PASRC = s_audio_pa.c s_audio_paring.c \
-	s_audio_mmio.c s_midi_mmio.c \
+	s_audio_mmio.c \
 	$(PADIR)/src/common/pa_stream.c \
         $(PADIR)/src/common/pa_trace.c \
         $(PADIR)/src/common/pa_process.c \
@@ -100,8 +100,10 @@ ASIOSRC = 	$(PADIR)/src/hostapi/asio/iasiothiscallresolver.cpp \
 #VSRC =  s_audio_vst.c
 
 PMDIR = ../portmidi
-PMINCLUDE = -I$(PMDIR)/pm_common -I$(PMDIR)/pm_win -I$(PMDIR)/porttime -DNEWBUFFER
-PMSRC = $(PMDIR)/pm_common/portmidi.c \
+PMINCLUDE = -I$(PMDIR)/pm_common -I$(PMDIR)/pm_win -I$(PMDIR)/porttime \
+    -DNEWBUFFER
+PMSRC =  s_midi_pm.c \
+        $(PMDIR)/pm_common/portmidi.c \
         $(PMDIR)/pm_common/pmutil.c \
         $(PMDIR)/porttime/porttime.c \
         $(PMDIR)/porttime/ptwinmm.c \
@@ -126,7 +128,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     d_delay.c d_resample.c d_soundfile.c \
     x_arithmetic.c x_connective.c x_interface.c x_midi.c x_misc.c \
     x_time.c x_acoustics.c x_net.c x_text.c x_gui.c x_list.c x_array.c \
-    x_scalar.c
+    x_scalar.c x_vexp.c x_vexp_if.c x_vexp_fun.c
 
 SRSRC = u_pdsend.c u_pdreceive.c
 

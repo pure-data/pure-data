@@ -96,11 +96,7 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     if (binbuf_getnatom(b))
     {
         if (!newest)
-        {
-            binbuf_print(b);
-            error("... couldn't create");
             x = 0;
-        }
         else if (!(x = pd_checkobject(newest)))
         {
             binbuf_print(b);
@@ -112,6 +108,11 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     {
             /* LATER make the color reflect this */
         x = (t_text *)pd_new(text_class);
+        if (binbuf_getnatom(b))
+        {
+            binbuf_print(b);
+            pd_error(x, "... couldn't create");
+        }
     }
     x->te_binbuf = b;
     x->te_xpix = xpix;
@@ -153,7 +154,7 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
             *ypixp = y2 + 5;
         }
         glist_noselect(x);
-            /* search back for 'selected' and if it isn't on the list, 
+            /* search back for 'selected' and if it isn't on the list,
                 plan just to connect from the last item on the list. */
         for (g = x->gl_list, n2 = 0; g; g = g->g_next, n2++)
         {
@@ -328,7 +329,7 @@ static void messresponder_symbol(t_messresponder *x, t_symbol *s)
     outlet_symbol(x->mr_outlet, s);
 }
 
-static void messresponder_list(t_messresponder *x, 
+static void messresponder_list(t_messresponder *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     outlet_list(x->mr_outlet, s, argc, argv);
@@ -428,7 +429,7 @@ static void message_click(t_message *x,
     if (glist_isvisible(x->m_glist))
     {
         t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-        sys_vgui(".x%lx.c itemconfigure %sR -width 5\n", 
+        sys_vgui(".x%lx.c itemconfigure %sR -width 5\n",
             glist_getcanvas(x->m_glist), rtext_gettag(y));
         clock_delay(x->m_clock, 120);
     }
@@ -472,7 +473,7 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     {
         int connectme, xpix, ypix, indx, nobj;
         canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
-        
+
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         x->m_text.te_xpix = xpix;
         x->m_text.te_ypix = ypix;
@@ -704,7 +705,7 @@ static void gatom_key(void *z, t_floatarg f)
         {
             /* the wchar could expand to up to 4 bytes, which
              * which might overrun our a_buf;
-             * therefore we first expand into a temporary buffer, 
+             * therefore we first expand into a temporary buffer,
              * and only if the resulting utf8 string fits into a_buf
              * we apply it
              */
@@ -715,7 +716,7 @@ static void gatom_key(void *z, t_floatarg f)
                 int j=0;
                 for(j=0; j<utf8len; j++)
                     x->a_buf[len+j] = utf8[j];
-                 
+
                 x->a_buf[len+utf8len] = 0;
             }
             goto redraw;
@@ -850,7 +851,7 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
 {
     t_gatom *x = (t_gatom*)z;
     text_displace(z, glist, dx, dy);
-    sys_vgui(".x%lx.c move %lx.l %d %d\n", glist_getcanvas(glist), 
+    sys_vgui(".x%lx.c move %lx.l %d %d\n", glist_getcanvas(glist),
         x, dx, dy);
 }
 
@@ -997,7 +998,7 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 
         /* for number boxes, we know width and height a priori, and should
         report them here so that graphs can get swelled to fit. */
-    
+
     if (x->te_type == T_ATOM && x->te_width > 0)
     {
         int font = glist_getfont(glist);
@@ -1053,7 +1054,7 @@ static void text_select(t_gobj *z, t_glist *glist, int state)
     t_rtext *y = glist_findrtext(glist, x);
     rtext_select(y, state);
     if (glist_isvisible(glist) && gobj_shouldvis(&x->te_g, glist))
-        sys_vgui(".x%lx.c itemconfigure %sR -fill %s\n", glist, 
+        sys_vgui(".x%lx.c itemconfigure %sR -fill %s\n", glist,
             rtext_gettag(y), (state? "blue" : "black"));
 }
 
@@ -1138,10 +1139,10 @@ void text_save(t_gobj *z, t_binbuf *b)
             /* if we have a "saveto" method, and if we don't happen to be
             a canvas that's an abstraction, the saveto method does the work */
         if (zgetfn(&x->te_pd, gensym("saveto")) &&
-            !((pd_class(&x->te_pd) == canvas_class) && 
+            !((pd_class(&x->te_pd) == canvas_class) &&
                 (canvas_isabstraction((t_canvas *)x)
                     || canvas_istable((t_canvas *)x))))
-        {  
+        {
             mess1(&x->te_pd, gensym("saveto"), b);
             binbuf_addv(b, "ssii", gensym("#X"), gensym("restore"),
                 (int)x->te_xpix, (int)x->te_ypix);
@@ -1173,8 +1174,8 @@ void text_save(t_gobj *z, t_binbuf *b)
             (double)((t_gatom *)x)->a_draghi,
             (double)((t_gatom *)x)->a_wherelabel,
             label, symfrom, symto);
-    }           
-    else        
+    }
+    else
     {
         binbuf_addv(b, "ssii", gensym("#X"), gensym("text"),
             (int)x->te_xpix, (int)x->te_ypix);

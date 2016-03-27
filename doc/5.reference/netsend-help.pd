@@ -1,4 +1,4 @@
-#N canvas 299 17 1043 631 12;
+#N canvas 104 267 1043 631 12;
 #X obj 38 389 netsend;
 #X msg 38 285 connect localhost 3000;
 #X msg 47 367 send foo \$1;
@@ -13,9 +13,9 @@
 #X text 713 311 Close the connection;
 #X obj 178 594 netreceive;
 #X text 87 594 see also:;
-#X obj 657 521 netsend 1;
-#X text 742 520 (UDP);
-#X text 75 513 An old (pre-0.45) calling convention is provided for
+#X obj 713 520 netsend 1;
+#X text 798 519 (UDP);
+#X text 62 552 An old (pre-0.45) calling convention is provided for
 compatibility: a single float argument \, "0" or "1" for TCP or UDP
 respectively:, f 69;
 #X obj 232 388 netsend -u;
@@ -59,9 +59,13 @@ could use this to send OSC messages \, for example.), f 83;
 #X obj 477 422 print backward;
 #X text 61 455 First outlet is nonzero if connection is open \, zero
 otherwise., f 62;
-#X text 72 474 Second outlet (TCP only) outputs messages sent back
-from netreceive object., f 75;
-#X text 754 592 updated for Pd version 0.46;
+#X obj 281 420 print backward;
+#X obj 674 419 print backward;
+#X text 754 592 updated for Pd version 0.47;
+#X text 61 477 Second outlet outputs messages sent back from netreceive
+object. In TCP mode this works for any established connection. In UDP
+you have to send at least one message forward through the connection
+for backward messages to find their way back., f 75;
 #X connect 0 0 8 0;
 #X connect 0 1 43 0;
 #X connect 1 0 0 0;
@@ -72,6 +76,7 @@ from netreceive object., f 75;
 #X connect 6 0 17 0;
 #X connect 7 0 17 0;
 #X connect 17 0 9 0;
+#X connect 17 1 46 0;
 #X connect 21 0 5 0;
 #X connect 25 0 38 0;
 #X connect 27 0 28 0;
@@ -81,6 +86,7 @@ from netreceive object., f 75;
 #X connect 32 0 34 0;
 #X connect 34 0 35 0;
 #X connect 35 0 31 0;
+#X connect 35 1 47 0;
 #X connect 38 0 26 0;
 #X connect 38 1 44 0;
 #X connect 39 0 35 0;

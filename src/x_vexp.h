@@ -1,14 +1,6 @@
-/*
- * jMax
- * Copyright (C) 1994, 1995, 1998, 1999 by IRCAM-Centre Georges Pompidou, Paris, France.
- * 
- * This is licensed under LGPL -- see the file, LICENSE.txt in this directory.
- *
- * Based on Max/ISPW by Miller Puckette.
- *
- * Authors: Maurizio De Cecco, Francois Dechelle, Enzo Maggi, Norbert Schnell.
- *
- */
+/* Copyright (c) IRCAM.
+* For information on usage and redistribution, and for a DISCLAIMER OF ALL
+* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* "expr" was written by Shahrokh Yadegari c. 1989. -msp */
 /* "expr~" and "fexpr~" conversion by Shahrokh Yadegari c. 1999,2000 */
@@ -25,16 +17,40 @@
 #include "z_dsp.h"
 #endif
 
-#include "fts_to_pd.h"
-/* This is put in fts_to_pd.h
+#define fts_malloc malloc
+#define fts_calloc calloc
+#define fts_free free
+#define fts_realloc realloc
+#define fts_atom_t t_atom
+#define fts_object_t t_object
+typedef t_symbol *fts_symbol_t;
 
 #ifdef MSP
-#define t_atom  Atom
-#define t_symbol Symbol
+#define t_atom          Atom
+#define t_symbol        Symbol
 #define pd_new(x)       newobject(x);
-#define t_outlet void
-#endif
-*/
+#define pd_free(x)      freeobject(x);
+#define t_outlet        void
+#define t_binbuf        void
+typedef t_class         *t_pd;
+typedef float           t_floatarg;
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+#include <errno.h>
+
+void pd_error(void *object, char *fmt, ...);
+
+#endif /* MSP */
+
+#define post_error pd_error
+#define fts_is_floatg(x) ((x)->a_type == A_FLOAT)
+
+#define fts_new_symbol_copy gensym
+
+#define fts_symbol_name(x) ((x)->s_name)
 
 /*
  * Currently the maximum number of variables (inlets) that are supported
@@ -54,33 +70,33 @@
  */
 
 #define OP_SEMI         ((long)(1<<16|1))               /* ; */
-#define OP_COMMA        ((long)(2<<16|2))               /* , */
-#define OP_LOR          ((long)(3<<16|3))               /* || */
-#define OP_LAND         ((long)(4<<16|4))               /* && */
-#define OP_OR           ((long)(5<<16|5))               /* | */
-#define OP_XOR          ((long)(6<<16|6))               /* ^ */
-#define OP_AND          ((long)(7<<16|7))               /* & */
-#define OP_NE           ((long)(8<<16|8))               /* != */
-#define OP_EQ           ((long)(8<<16|9))               /* == */
-#define OP_GE           ((long)(9<<16|10))              /* >= */
-#define OP_GT           ((long)(9<<16|11))              /* > */
-#define OP_LE           ((long)(9<<16|12))              /* <= */
-#define OP_LT           ((long)(9<<16|13))              /* < */
-#define OP_SR           ((long)(10<<16|14))             /* >> */
-#define OP_SL           ((long)(10<<16|15))             /* << */
-#define OP_SUB          ((long)(11<<16|16))             /* - */
-#define OP_ADD          ((long)(11<<16|17))             /* + */
-#define OP_MOD          ((long)(12<<16|18))             /* % */
-#define OP_DIV          ((long)(12<<16|19))             /* / */
-#define OP_MUL          ((long)(12<<16|20))             /* * */
-#define OP_UMINUS       ((long)(13<<16|21))             /* - unary minus */
-#define OP_NEG          ((long)(13<<16|22))             /* ~ one complement */
-#define OP_NOT          ((long)(13<<16|23))             /* ! */
-#define OP_RB           ((long)(14<<16|24))             /* ] */
-#define OP_LB           ((long)(14<<16|25))             /* [ */
-#define OP_RP           ((long)(14<<16|26))             /* ) */
-#define OP_LP           ((long)(14<<16|27))             /* ( */
-#define OP_STORE        ((long)(15<<16|28))             /* = */
+#define OP_STORE        ((long)(2<<16|28))             /* = */
+#define OP_COMMA        ((long)(3<<16|2))               /* , */
+#define OP_LOR          ((long)(4<<16|3))               /* || */
+#define OP_LAND         ((long)(5<<16|4))               /* && */
+#define OP_OR           ((long)(6<<16|5))               /* | */
+#define OP_XOR          ((long)(7<<16|6))               /* ^ */
+#define OP_AND          ((long)(8<<16|7))               /* & */
+#define OP_NE           ((long)(9<<16|8))               /* != */
+#define OP_EQ           ((long)(9<<16|9))               /* == */
+#define OP_GE           ((long)(10<<16|10))              /* >= */
+#define OP_GT           ((long)(10<<16|11))              /* > */
+#define OP_LE           ((long)(10<<16|12))              /* <= */
+#define OP_LT           ((long)(10<<16|13))              /* < */
+#define OP_SR           ((long)(11<<16|14))             /* >> */
+#define OP_SL           ((long)(11<<16|15))             /* << */
+#define OP_SUB          ((long)(12<<16|16))             /* - */
+#define OP_ADD          ((long)(12<<16|17))             /* + */
+#define OP_MOD          ((long)(13<<16|18))             /* % */
+#define OP_DIV          ((long)(13<<16|19))             /* / */
+#define OP_MUL          ((long)(13<<16|20))             /* * */
+#define OP_UMINUS       ((long)(14<<16|21))             /* - unary minus */
+#define OP_NEG          ((long)(14<<16|22))             /* ~ one complement */
+#define OP_NOT          ((long)(14<<16|23))             /* ! */
+#define OP_RB           ((long)(15<<16|24))             /* ] */
+#define OP_LB           ((long)(15<<16|25))             /* [ */
+#define OP_RP           ((long)(15<<16|26))             /* ) */
+#define OP_LP           ((long)(15<<16|27))             /* ( */
 #define HI_PRE          ((long)(100<<16))       /* infinite precedence */
 #define PRE_MASK        ((long)0xffff0000)      /* precedence level mask */
 
@@ -150,15 +166,15 @@ struct ex_ex {
 
 #define SET_EXPR(x)     (x)->exp_flags |= EF_EXPR; \
                         (x)->exp_flags &= ~EF_EXPR_TILDE;  \
-                        (x)->exp_flags &= ~EF_FEXPR_TILDE; 
+                        (x)->exp_flags &= ~EF_FEXPR_TILDE;
 
 #define SET_EXPR_TILDE(x)       (x)->exp_flags &= ~EF_EXPR; \
                                 (x)->exp_flags |= EF_EXPR_TILDE;  \
-                                (x)->exp_flags &= ~EF_FEXPR_TILDE; 
+                                (x)->exp_flags &= ~EF_FEXPR_TILDE;
 
 #define SET_FEXPR_TILDE(x)      (x)->exp_flags &= ~EF_EXPR; \
                                 (x)->exp_flags &= ~EF_EXPR_TILDE;  \
-                                (x)->exp_flags |= EF_FEXPR_TILDE; 
+                                (x)->exp_flags |= EF_FEXPR_TILDE;
 
 /*
  * defines for expr_error
@@ -207,8 +223,15 @@ typedef struct ex_funcs {
 
 /* function prototypes for pd-related functions called withing vexp.h */
 
-extern int max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg, struct ex_ex *optr);
-extern int max_ex_var(struct expr *expr, t_symbol *s, struct ex_ex *optr);
+extern int
+max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
+                                                                        struct ex_ex *rval, struct ex_ex *optr);
+extern int
+max_ex_tab(struct expr *expr, t_symbol *s, struct ex_ex *arg,
+                                                                                                                struct ex_ex *optr);
+extern int max_ex_var(struct expr *expr, t_symbol *s, struct ex_ex *optr,
+                                                                                                                                        int idx);
+extern int max_ex_var_store(struct expr *, t_symbol *, struct ex_ex *, struct ex_ex *);
 extern int ex_getsym(char *p, t_symbol **s);
 extern const char *ex_symname(t_symbol *s);
 void ex_mkvector(t_float *fp, t_float x, int size);

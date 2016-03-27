@@ -42,7 +42,7 @@ extern "C"
 
 /* If it's ever desired to use shared memory so that one process reads and
 another one writes to the same ring buffer, define this as 'volatile' : */
-#define PA_VOLATILE 
+#define PA_VOLATILE
 
 typedef struct
 {

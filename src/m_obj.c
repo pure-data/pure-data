@@ -80,7 +80,7 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
     /* LATER figure out how to make these efficient: */
 static void inlet_bang(t_inlet *x)
 {
-    if (x->i_symfrom == &s_bang) 
+    if (x->i_symfrom == &s_bang)
         pd_vmess(x->i_dest, x->i_symto, "");
     else if (!x->i_symfrom) pd_bang(x->i_dest);
     else if (x->i_symfrom == &s_list)
@@ -90,7 +90,7 @@ static void inlet_bang(t_inlet *x)
 
 static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 {
-    if (x->i_symfrom == &s_pointer) 
+    if (x->i_symfrom == &s_pointer)
         pd_vmess(x->i_dest, x->i_symto, "p", gp);
     else if (!x->i_symfrom) pd_pointer(x->i_dest, gp);
     else if (x->i_symfrom == &s_list)
@@ -121,7 +121,7 @@ static void inlet_float(t_inlet *x, t_float f)
 
 static void inlet_symbol(t_inlet *x, t_symbol *s)
 {
-    if (x->i_symfrom == &s_symbol) 
+    if (x->i_symfrom == &s_symbol)
         pd_vmess(x->i_dest, x->i_symto, "s", s);
     else if (!x->i_symfrom) pd_symbol(x->i_dest, s);
     else if (x->i_symfrom == &s_list)
@@ -252,7 +252,7 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     t_atom *ap;
     int count;
     t_inlet *ip = ((t_object *)x)->ob_inlet;
-    if (!argc) 
+    if (!argc)
     {
         pd_emptylist(&x->ob_pd);
         return;
@@ -266,7 +266,7 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     if (argv->a_type == A_POINTER) pd_pointer(&x->ob_pd, argv->a_w.w_gpointer);
     else if (argv->a_type == A_FLOAT) pd_float(&x->ob_pd, argv->a_w.w_float);
     else pd_symbol(&x->ob_pd, argv->a_w.w_symbol);
-} 
+}
 
 void obj_init(void)
 {
@@ -283,7 +283,7 @@ void obj_init(void)
         sizeof(t_inlet), CLASS_PD, 0);
     class_addpointer(pointerinlet_class, pointerinlet_pointer);
     class_addanything(pointerinlet_class, inlet_wrong);
-    
+
     floatinlet_class = class_new(gensym("inlet"), 0, 0,
         sizeof(t_inlet), CLASS_PD, 0);
     class_addfloat(floatinlet_class, (t_method)floatinlet_float);
@@ -306,7 +306,7 @@ static int outlet_eventno;
     /* set a stack limit (on each incoming event that can set off messages)
     for the outlet functions to check to prevent stack overflow from message
     recursion */
-        
+
 void outlet_setstacklim(void)
 {
     outlet_eventno++;
@@ -358,7 +358,7 @@ void outlet_bang(t_outlet *x)
     t_outconnect *oc;
     if(++stackcount >= STACKITER)
         outlet_stackerror(x);
-    else 
+    else
     for (oc = x->o_connections; oc; oc = oc->oc_next)
         pd_bang(oc->oc_to);
     --stackcount;
@@ -450,10 +450,10 @@ t_outconnect *obj_connect(t_object *source, int outno,
     t_outlet *o;
     t_pd *to;
     t_outconnect *oc, *oc2;
-    
+
     for (o = source->ob_outlet; o && outno; o = o->o_next, outno--) ;
     if (!o) return (0);
-    
+
     if (sink->ob_pd->c_firstin)
     {
         if (!inno)
@@ -489,7 +489,7 @@ void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
     t_outlet *o;
     t_pd *to;
     t_outconnect *oc, *oc2;
-    
+
     for (o = source->ob_outlet; o && outno; o = o->o_next, outno--)
     if (!o) return;
     if (sink->ob_pd->c_firstin)
@@ -730,7 +730,7 @@ int outlet_getsignalindex(t_outlet *x)
 {
     int n = 0;
     t_outlet *o;
-    for (o = x->o_owner->ob_outlet, n = 0; o && o != x; o = o->o_next) 
+    for (o = x->o_owner->ob_outlet, n = 0; o && o != x; o = o->o_next)
         if (o->o_sym == &s_signal) n++;
     return (n);
 }

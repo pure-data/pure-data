@@ -589,7 +589,7 @@ static void my_numbox_log_height(t_my_numbox *x, t_floatarg lh)
         x->x_k = exp(log(x->x_max/x->x_min)/(double)(x->x_log_height));
     else
         x->x_k = 1.0;
-    
+
 }
 
 static void my_numbox_float(t_my_numbox *x, t_floatarg f)
@@ -685,9 +685,9 @@ static void my_numbox_init(t_my_numbox *x, t_floatarg f)
     x->x_gui.x_isa.x_loadinit = (f==0.0)?0:1;
 }
 
-static void my_numbox_loadbang(t_my_numbox *x)
+static void my_numbox_loadbang(t_my_numbox *x, t_floatarg action)
 {
-    if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
+    if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
     {
         sys_queuegui(x, x->x_gui.x_glist, my_numbox_draw_update);
         my_numbox_bang(x);
@@ -862,7 +862,7 @@ void g_numbox_setup(void)
     class_addmethod(my_numbox_class, (t_method)my_numbox_dialog,
         gensym("dialog"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_loadbang,
-        gensym("loadbang"), 0);
+        gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_set,
         gensym("set"), A_FLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_size,

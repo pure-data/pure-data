@@ -1,28 +1,6 @@
-/*
- * jMax
- * Copyright (C) 1994, 1995, 1998, 1999 by IRCAM-Centre Georges Pompidou, Paris, France.
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * See file LICENSE for further informations on licensing terms.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
- * Based on Max/ISPW by Miller Puckette.
- *
- * Authors: Maurizio De Cecco, Francois Dechelle, Enzo Maggi, Norbert Schnell.
- *
- */
+/* Copyright (c) IRCAM.
+* For information on usage and redistribution, and for a DISCLAIMER OF ALL
+* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 /* "expr" was written by Shahrokh Yadegari c. 1989. -msp
  *
@@ -56,7 +34,18 @@
  *              hypoth - Euclidean distance function
  *              trunc
  *              round
- *              nearbyint - 
+ *              nearbyint -
+ *  November 2015
+ *                              - drem() is now obsolete but it is kept here so that other patches do not break
+ *                              - added remainder() - floating-point remainder function
+ *                              - fixed the bug that unary operators could be used as
+ *                                binary ones (10 ~ 1)
+ *                              - fixed ceil() and floor() which should have only one argument
+ *                              - added copysign  (the previous one "copysig" which was
+ *                                defined with one argument was kept for compatibilty)
+ *                              - fixed sum("table"), and Sum("table", x, y)
+ *                              - deleted avg(), Avg() as they can be simple expressions
+ *                              - deleted store as this can be achieved by the '=' operator
  */
 
 
@@ -86,7 +75,7 @@
 #undef __STRICT_BSD__
 
 
-#include "vexp.h"
+#include "x_vexp.h"
 
 /* forward declarations */
 
@@ -134,15 +123,16 @@ static void ex_finite(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex 
 static void ex_isnan(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_copysign(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_drem(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
-#endif
-#ifdef notdef
-/* the following will be added once they are more popular in math libraries */
+static void ex_remainder(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_round(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_trunc(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_nearbyint(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+#endif
+#ifdef notdef
+/* the following will be added once they are more popular in math libraries */
 static void ex_hypoth(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 #endif
- 
+
 
 t_ex_func ex_funcs[] = {
         {"min",         ex_min,         2},
@@ -151,8 +141,8 @@ t_ex_func ex_funcs[] = {
         {"rint",        ex_rint,        1},
         {"float",       ex_tofloat,     1},
         {"fmod",        ex_fmod,        2},
-        {"floor",       ex_floor,       2},
-        {"ceil",        ex_ceil,        2},
+        {"floor",       ex_floor,       1},
+        {"ceil",        ex_ceil,        1},
         {"pow",         ex_pow,         2},
         {"sqrt",        ex_sqrt,        1},
         {"exp",         ex_exp,         1},
@@ -173,8 +163,8 @@ t_ex_func ex_funcs[] = {
         {"random",      ex_random,      2},     /* random number */
         {"abs",         ex_abs,         1},
         {"if",          ex_if,          3},
-        {"ldexp ",      ex_ldexp,       1},
-        {"imodf ",      ex_imodf,       1},
+        {"ldexp",       ex_ldexp,       2},
+        {"imodf",       ex_imodf,       1},
         {"modf",        ex_modf,        1},
 #ifndef _WIN32
         {"cbrt",        ex_cbrt,        1},
@@ -185,25 +175,22 @@ t_ex_func ex_funcs[] = {
         {"isinf",       ex_isinf,       1},
         {"finite",      ex_finite,      1},
         {"isnan",       ex_isnan,       1},
-        {"copysig",     ex_copysign,    1},
-        {"drem",        ex_drem,        1},
+        {"copysign",    ex_copysign,    2},
+        {"remainder",   ex_remainder,           2},
         {"asinh",       ex_asinh,       1},
         {"acosh",       ex_acosh,       1},
         {"atanh",       ex_atanh,       1},     /* hyperbolic atan */
+        {"round",       ex_round,       1},
+        {"trunc",       ex_trunc,       1},
+        {"nearbyint",   ex_nearbyint,   1},
 #endif
 #ifdef PD
         {"size",        ex_size,        1},
         {"sum",         ex_sum,         1},
         {"Sum",         ex_Sum,         3},
-        {"avg",         ex_avg,         1},
-        {"Avg",         ex_Avg,         3},
-        {"store",       ex_store,       3},
 #endif
 #ifdef notdef
 /* the following will be added once they are more popular in math libraries */
-        {"round",       ex_round,       1},
-        {"trunc",       ex_trunc,       1},
-        {"nearbyint",   ex_nearbyint,   1},
         {"hypoth",      ex_hypoth,      1},
 #endif
         {0,             0,              0}
@@ -587,7 +574,7 @@ ex_tofloat(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         left = argv++;
 
 #define tofloat(x)      ((t_float)(x))
-        FUNC_EVAL_UNARY(left, tofloat, (int), optr, 1);
+        FUNC_EVAL_UNARY(left, tofloat, (t_float), optr, 1);
 }
 
 
@@ -926,7 +913,7 @@ ex_dofact(int i)
         if (i)
                 ret = 1;
         else
-                return (0);
+                return (1);
 
         do {
                 ret *= i;
@@ -952,7 +939,12 @@ ex_fact(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 static int
 ex_dorandom(int i1, int i2)
 {
-        return(i1 + (((i2 - i1) * (rand() & 0x7fffL)) >> 15));
+                int i;
+                int j;
+
+                j = rand() & 0x7fffL;
+                i = i1 + (int)((((float)(i2 - i1)) * (float)j) / pow (2, 15));
+                return (i);
 }
 /*
  * ex_random -- return a random number
@@ -1204,7 +1196,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                       __LINE__, res->ex_type);
                 return;
         }
-        
+
 }
 
 /*
@@ -1286,17 +1278,15 @@ FUNC_DEF_UNARY(ex_isnan, isnan, (double), 0);
 FUNC_DEF(ex_copysign, copysign, (double), (double), 1);
 
 /*
+ * drem() is now obsolute
  * ex_drem - floating-point remainder function
  */
 FUNC_DEF(ex_drem, remainder, (double), (double), 1);
-#endif
 
-#ifdef notdef
-/* the following will be added once they are more popular in math libraries */
 /*
- * ex_hypoth - Euclidean distance function
+ * ex_remainder - floating-point remainder function
  */
-FUNC_DEF(ex_hypoth, hypoth, (double), (double), 1);
+FUNC_DEF(ex_remainder, remainder, (double), (double), 1);
 
 /*
  * ex_round -  round to nearest integer, away from zero
@@ -1312,4 +1302,14 @@ FUNC_DEF_UNARY(ex_trunc, trunc, (double), 1);
  * ex_nearbyint -  round to nearest integer
  */
 FUNC_DEF_UNARY(ex_nearbyint, nearbyint, (double), 1);
+
+#endif
+
+#ifdef notdef
+/* the following will be added once they are more popular in math libraries */
+/*
+ * ex_hypoth - Euclidean distance function
+ */
+FUNC_DEF(ex_hypoth, hypoth, (double), (double), 1);
+
 #endif

@@ -6,6 +6,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "g_canvas.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -111,9 +112,9 @@ static void *loadbang_new(void)
     return (x);
 }
 
-static void loadbang_loadbang(t_loadbang *x)
+static void loadbang_loadbang(t_loadbang *x, t_floatarg action)
 {
-    if (!sys_noloadbang)
+    if (action == LB_LOAD)
         outlet_bang(x->x_obj.ob_outlet);
 }
 
@@ -122,7 +123,7 @@ static void loadbang_setup(void)
     loadbang_class = class_new(gensym("loadbang"), (t_newmethod)loadbang_new, 0,
         sizeof(t_loadbang), CLASS_NOINLET, 0);
     class_addmethod(loadbang_class, (t_method)loadbang_loadbang,
-        gensym("loadbang"), 0);
+        gensym("loadbang"), A_DEFFLOAT, 0);
 }
 
 /* ------------- namecanvas (delete this later) --------------------- */
@@ -249,7 +250,7 @@ static void cputime_bang2(t_cputime *x)
     FILETIME ignorethis, ignorethat;
     LARGE_INTEGER usertime, kerneltime;
     BOOL retval;
-    
+
     retval = GetProcessTimes(GetCurrentProcess(), &ignorethis, &ignorethat,
         (FILETIME *)&kerneltime, (FILETIME *)&usertime);
     if (retval)
@@ -420,7 +421,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     else outc += nfield;
     outv = (t_atom *)alloca(outc * sizeof(t_atom));
     dataonset = ROUNDUPTO4(i + 1);
-    /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset, 
+    /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
         j < outc; j++)
@@ -492,9 +493,9 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
             k = ROUNDUPTO4(k);
             break;
         default:
-            pd_error(x, "oscparse: unknown tag '%c' (%d)", 
+            pd_error(x, "oscparse: unknown tag '%c' (%d)",
                 (int)(argv[i].a_w.w_float), (int)(argv[i].a_w.w_float));
-        } 
+        }
     }
     outlet_list(x->x_obj.ob_outlet, 0, j, outv);
     return;
@@ -602,12 +603,12 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
         else if (typecode == 'b')
         {
             int blobsize = 0x7fffffff, blobindex;
-                /* check if we have a nonnegative size field */ 
+                /* check if we have a nonnegative size field */
             if (argv[j].a_type == A_FLOAT &&
                 (int)(argv[j].a_w.w_float) >= 0)
                     blobsize = (int)(argv[j].a_w.w_float);
             if (blobsize > argc - j - 1)
-                blobsize = argc - j - 1;    /* if no or bad size, eat it all */ 
+                blobsize = argc - j - 1;    /* if no or bad size, eat it all */
             msgindex += 4 + ROUNDUPTO4(blobsize);
             j += blobsize;
         }

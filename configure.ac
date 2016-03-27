@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT(pd,0.46.6)
+AC_INIT(pd,0.46.7)
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AM_INIT_AUTOMAKE
@@ -60,11 +60,10 @@ case $host in
 	MINGW=yes
 # ASIO doesn't build yet with the autotools setup. We need to figure out how
 #        to make the final linking phase use g++
-#		asio=yes
+	asio=yes
 	portaudio=yes
 	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
 # ASIO is a C++ library, so if its included, then use g++ to build
-	CC=g++
 	EXTERNAL_CFLAGS="-mms-bitfields"
 	EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
 	EXTERNAL_EXTENSION=dll
@@ -259,7 +258,6 @@ AC_CONFIG_FILES([Makefile
 		extra/bob~/GNUmakefile
 		extra/bonk~/GNUmakefile
 		extra/choice/GNUmakefile
-		extra/expr~/GNUmakefile
 		extra/fiddle~/GNUmakefile
 		extra/loop~/GNUmakefile
 		extra/lrshift~/GNUmakefile

@@ -1,3 +1,12 @@
+#!/bin/sh
+#usage: ./send-mw.sh 0.38-0 or 0.38-0test4
+
+if test x$1 == x
+then
+   echo usage: ./build 0.38-0 or 0.38-0test4
+   exit 1
+fi
+
 PDDIR=`pwd`/..
 MSWDIR=`pwd`
 
@@ -41,5 +50,19 @@ if  ./build-msw.sh
 
 if  ./mingw-compile.sh
     then echo -n ; else exit 1; fi
+
+# that has put a zip file in /tmp/pd-out.zip.  Now make the self-extracting
+# installer using nsis.  Thanks to Roman Haefeli.
+
+cd $MSWDIR
+rm -f /tmp/pd-$1.windows-installer.exe /tmp/pd-$1.msw.zip
+
+rm -rf /tmp/zz
+mkdir /tmp/zz
+(cd /tmp/zz; unzip ../pd-out.zip)
+./build-nsi.sh  /tmp/zz/pd $1
+
+mv /tmp/pd-out.zip /tmp/pd-$1.msw.zip
+ls -l /tmp/pd-$1.windows-installer.exe /tmp/pd-$1.msw.zip
 
 exit 0

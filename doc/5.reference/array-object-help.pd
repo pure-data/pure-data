@@ -3,7 +3,7 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 310 130 694 542 12;
+#N canvas 309 129 694 542 12;
 #X obj 208 496 list;
 #X text 34 496 see also:;
 #X text 485 171 (click for details:), f 11;
@@ -343,7 +343,7 @@ the range 0-1 output the x values at the two extremes of the array
 #X text 195 356 - random - array as probabilities;
 #X text 444 471 updated for Pd version 0.45;
 #X obj 90 379 array max;
-#N canvas 690 163 744 595 min+max 0;
+#N canvas 727 168 744 595 min+max 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array-help-4 100 float 3;
 #A 0 0.335714 0.37857 0.421427 0.442855 0.478569 0.521426 0.535711

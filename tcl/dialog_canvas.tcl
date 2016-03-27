@@ -42,8 +42,8 @@ proc ::dialog_canvas::ok {mytoplevel} {
 
 proc ::dialog_canvas::checkcommand {mytoplevel} {
     if { $::graphme_button($mytoplevel) != 0 } {
-        $mytoplevel.scale.x.entry configure -state disabled
-        $mytoplevel.scale.y.entry configure -state disabled
+        $mytoplevel.scale.x.entry configure -state disabled -takefocus 0
+        $mytoplevel.scale.y.entry configure -state disabled -takefocus 0
         $mytoplevel.parent.hidetext configure -state normal
         $mytoplevel.range.x.from_entry configure -state normal
         $mytoplevel.range.x.to_entry configure -state normal
@@ -73,8 +73,8 @@ proc ::dialog_canvas::checkcommand {mytoplevel} {
             $mytoplevel.range.y.margin_entry insert 0 100
        }
     } else {
-        $mytoplevel.scale.x.entry configure -state normal
-        $mytoplevel.scale.y.entry configure -state normal
+        $mytoplevel.scale.x.entry configure -state normal -takefocus 1
+        $mytoplevel.scale.y.entry configure -state normal -takefocus 1
         $mytoplevel.parent.hidetext configure -state disabled
         $mytoplevel.range.x.from_entry configure -state disabled
         $mytoplevel.range.x.to_entry configure -state disabled
@@ -174,7 +174,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     pack $mytoplevel.range -side top -fill x
     frame $mytoplevel.range.x -padx 2 -pady 2
     pack $mytoplevel.range.x -side top
-    label $mytoplevel.range.x.from_label -text [_ "X range, from"]
+    label $mytoplevel.range.x.from_label -text [_ "X range: from"]
     entry $mytoplevel.range.x.from_entry -width 6
     label $mytoplevel.range.x.to_label -text [_ "to"]
     entry $mytoplevel.range.x.to_entry -width 6
@@ -189,7 +189,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         -side left
     frame $mytoplevel.range.y -padx 2 -pady 2
     pack $mytoplevel.range.y -side top
-    label $mytoplevel.range.y.from_label -text [_ "Y range, from"]
+    label $mytoplevel.range.y.from_label -text [_ "Y range: from"]
     entry $mytoplevel.range.y.from_entry -width 6
     label $mytoplevel.range.y.to_label -text [_ "to"]
     entry $mytoplevel.range.y.to_entry -width 6
@@ -214,6 +214,70 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         pack $mytoplevel.buttons.apply -side left -expand 1 -fill x -padx 10
     }
     button $mytoplevel.buttons.ok -text [_ "OK"] \
-        -command "::dialog_canvas::ok $mytoplevel"
+        -command "::dialog_canvas::ok $mytoplevel" -default active
     pack $mytoplevel.buttons.ok -side left -expand 1 -fill x -padx 10
+
+    # live checkbutton & entry Return updates on OSX
+    if {$::windowingsystem eq "aqua"} {
+
+        # call apply on checkbutton changes
+        $mytoplevel.parent.graphme config -command [ concat ::dialog_canvas::checkcommand_and_apply $mytoplevel ]
+        $mytoplevel.parent.hidetext config -command [ concat ::dialog_canvas::checkcommand_and_apply $mytoplevel ]
+
+        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
+        bind $mytoplevel.scale.x.entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.scale.y.entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.x.from_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.y.from_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.x.to_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.y.to_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.x.size_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.y.size_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.x.margin_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.range.y.margin_entry <KeyPress-Return> "::dialog_canvas::apply_and_rebind_return $mytoplevel"
+
+        # unbind Return from ok button when an entry takes focus
+        $mytoplevel.scale.x.entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.scale.y.entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.x.from_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.y.from_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.x.to_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.y.to_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.x.size_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.y.size_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.x.margin_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+        $mytoplevel.range.y.margin_entry config -validate focusin -vcmd "::dialog_canvas::unbind_return $mytoplevel"
+
+        # remove cancel button from focus list since it's not activated on Return
+        $mytoplevel.buttons.cancel config -takefocus 0
+
+        # can't see focus for checkbuttons, so disable it
+        $mytoplevel.parent.graphme config -takefocus 0
+        $mytoplevel.parent.hidetext config -takefocus 0
+
+        # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.buttons.ok config -default normal
+        bind $mytoplevel.buttons.ok <FocusIn> "$mytoplevel.buttons.ok config -default active"
+        bind $mytoplevel.buttons.ok <FocusOut> "$mytoplevel.buttons.ok config -default normal"
+    }
  }
+
+# for live updates on OSX
+proc ::dialog_canvas::checkcommand_and_apply {mytoplevel} {
+    ::dialog_canvas::checkcommand $mytoplevel
+    ::dialog_canvas::apply $mytoplevel
+}
+
+ # for live widget updates on OSX
+proc ::dialog_canvas::apply_and_rebind_return {mytoplevel} {
+    ::dialog_canvas::apply $mytoplevel
+    bind $mytoplevel <KeyPress-Return> "::dialog_canvas::ok $mytoplevel"
+    focus $mytoplevel.buttons.ok
+    return 0
+}
+
+# for live widget updates on OSX
+proc ::dialog_canvas::unbind_return {mytoplevel} {
+    bind $mytoplevel <KeyPress-Return> break
+    return 1
+}
