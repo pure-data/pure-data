@@ -599,7 +599,7 @@ int sys_argparse(int argc, char **argv)
 
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-soundbuf") || !strcmp(*argv, "-audiobuf") && (argc > 1))
+        else if (!strcmp(*argv, "-soundbuf") || (!strcmp(*argv, "-audiobuf") && (argc > 1)))
         {
             sys_main_advance = atoi(argv[1]);
             argc -= 2; argv += 2;

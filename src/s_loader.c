@@ -101,7 +101,7 @@ static int sys_do_load_lib(t_canvas *canvas, char *objectname)
 #ifdef _WIN32
     HINSTANCE ntdll;
 #endif
-    if (classname = strrchr(objectname, '/'))
+    if ((classname = strrchr(objectname, '/')))
         classname++;
     else classname = objectname;
     if (sys_onloadlist(objectname))
@@ -278,7 +278,7 @@ int sys_load_lib(t_canvas *canvas, char *classname)
     int ok = 0;
     loader_queue_t *q;
     for(q = &loaders; q; q = q->next)
-        if (ok = q->loader(canvas, classname)) break;
+        if ((ok = q->loader(canvas, classname))) break;
     canvas_resume_dsp(dspstate);
     return ok;
 }

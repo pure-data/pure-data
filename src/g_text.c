@@ -699,7 +699,7 @@ static void gatom_key(void *z, t_floatarg f)
     {
             /* for numbers, only let reasonable characters through */
         if ((x->a_atom.a_type == A_SYMBOL) ||
-            (c >= '0' && c <= '9' || c == '.' || c == '-'
+            ((c >= '0' && c <= '9') || c == '.' || c == '-'
                 || c == 'e' || c == 'E'))
         {
             /* the wchar could expand to up to 4 bytes, which
@@ -1330,7 +1330,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     }
         /* draw inlets/outlets */
     
-    if (ob = pd_checkobject(&x->te_pd))
+    if ((ob = pd_checkobject(&x->te_pd)))
         glist_drawiofor(glist, ob, firsttime, tag, x1, y1, x2, y2);
 }
 

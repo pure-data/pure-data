@@ -56,7 +56,7 @@ t_namelist *sys_helppath;
 void sys_bashfilename(const char *from, char *to)
 {
     char c;
-    while (c = *from++)
+    while ((c = *from++))
     {
 #ifdef _WIN32
         if (c == '/') c = '\\';
@@ -70,7 +70,7 @@ void sys_bashfilename(const char *from, char *to)
 void sys_unbashfilename(const char *from, char *to)
 {
     char c;
-    while (c = *from++)
+    while ((c = *from++))
     {
 #ifdef _WIN32
         if (c == '\\') c = '/';

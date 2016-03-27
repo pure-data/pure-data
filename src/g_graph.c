@@ -138,7 +138,7 @@ void glist_clear(t_glist *x)
     t_gobj *y, *y2;
     int dspstate = 0, suspended = 0;
     t_symbol *dspsym = gensym("dsp");
-    while (y = x->gl_list)
+    while ((y = x->gl_list))
     {
             /* to avoid unnecessary DSP resorting, we suspend DSP
             only if we hit a patchable object. */
@@ -225,7 +225,7 @@ static t_gobj *glist_merge(t_glist *x, t_gobj *g1, t_gobj *g2)
         if (g9)
             g9->g_next = g1, g9 = g1;
         else g9 = g = g1;
-        if (g1 = g1->g_next)
+        if ((g1 = g1->g_next))
             f1 = gobj_getxforsort(g1);
         g9->g_next = 0;
         continue;
@@ -233,7 +233,7 @@ static t_gobj *glist_merge(t_glist *x, t_gobj *g1, t_gobj *g2)
         if (g9)
             g9->g_next = g2, g9 = g2;
         else g9 = g = g2;
-        if (g2 = g2->g_next)
+        if ((g2 = g2->g_next))
             f2 = gobj_getxforsort(g2);
         g9->g_next = 0;
         continue;
@@ -643,7 +643,7 @@ void glist_redraw(t_glist *x)
             }
                 /* redraw all the lines */
             linetraverser_start(&t, x);
-            while (oc = linetraverser_next(&t))
+            while ((oc = linetraverser_next(&t)))
                 sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
                     glist_getcanvas(x), oc,
                         t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
@@ -965,7 +965,7 @@ static void graph_delete(t_gobj *z, t_glist *glist)
 {
     t_glist *x = (t_glist *)z;
     t_gobj *y;
-    while (y = x->gl_list)
+    while ((y = x->gl_list))
         glist_delete(x, y);
     if (glist_isvisible(x))
         text_widgetbehavior.w_deletefn(z, glist);

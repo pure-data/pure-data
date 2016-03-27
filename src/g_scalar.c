@@ -233,7 +233,7 @@ static void scalar_select(t_gobj *z, t_glist *owner, int state)
     gpointer_init(&gp);
     gpointer_setglist(&gp, owner, x);
     SETPOINTER(&at, &gp);
-    if (tmpl = template_findbyname(templatesym))
+    if ((tmpl = template_findbyname(templatesym)))
         template_notify(tmpl, (state ? gensym("select") : gensym("deselect")),
             1, &at);
     gpointer_unset(&gp);
@@ -357,9 +357,9 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     {
         t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
-        if (hit = (*wb->w_parentclickfn)(y, owner,
+        if ((hit = (*wb->w_parentclickfn)(y, owner,
             data, template, sc, ap, basex + xloc, basey + yloc,
-            xpix, ypix, shift, alt, dbl, doit))
+            xpix, ypix, shift, alt, dbl, doit)))
                 return (hit);
     }
     return (0);
