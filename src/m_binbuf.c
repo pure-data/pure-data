@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "g_canvas.h"
 #include <stdio.h>
 #include <errno.h>
 #ifdef HAVE_UNISTD_H
@@ -1450,7 +1451,6 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 }
 
 void pd_doloadbang(void);
-void canvas_initbang(t_canvas *x);
 extern t_symbol s__X;
 
 /* LATER make this evaluate the file on-the-fly. */

@@ -26,6 +26,7 @@ void g_scalar_setup(void);
 void g_template_setup(void);
 void g_text_setup(void);
 void g_traversal_setup(void);
+void clone_setup(void);
 void m_pd_setup(void);
 void x_acoustics_setup(void);
 void x_interface_setup(void);
@@ -76,6 +77,7 @@ void conf_init(void)
     g_template_setup();
     g_text_setup();
     g_traversal_setup();
+    clone_setup();
     m_pd_setup();
     x_acoustics_setup();
     x_interface_setup();

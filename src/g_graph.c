@@ -63,7 +63,6 @@ int canvas_setdeleting(t_canvas *x, int flag)
 }
 
     /* JMZ: emit a closebang message */
-void canvas_closebang(t_canvas *x);
 void rtext_freefortext(t_glist *gl, t_text *who);
 
     /* delete an object from a glist and free it */

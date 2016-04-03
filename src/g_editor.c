@@ -1980,7 +1980,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
 {
     int force = fforce;
     t_glist *g;
-    if (x->gl_owner && (force == 0 || force == 1))
+    if ((x->gl_owner || x->gl_isclone) && (force == 0 || force == 1))
         canvas_vis(x, 0);   /* if subpatch, just invis it */
     else if (force == 0)
     {

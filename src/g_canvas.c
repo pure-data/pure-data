@@ -379,6 +379,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_y2 = 1;
     canvas_dosetbounds(x, xloc, yloc, xloc + width, yloc + height);
     x->gl_owner = owner;
+    x->gl_isclone = 0;
     x->gl_name = (*s->s_name ? s :
         (canvas_newfilename ? canvas_newfilename : gensym("Pd")));
     canvas_bind(x);
