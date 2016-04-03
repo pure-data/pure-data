@@ -188,6 +188,7 @@ struct _glist
     unsigned int gl_isgraph:1;      /* show as graph on parent */
     unsigned int gl_hidetext:1;     /* hide object-name + args when doing graph on parent */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
+    unsigned int gl_isclone:1;      /* esists as part of a clone object */
 };
 
 #define gl_gobj gl_obj.te_g
@@ -455,6 +456,8 @@ EXTERN void canvas_deletelinesfor(t_canvas *x, t_text *text);
 EXTERN void canvas_stowconnections(t_canvas *x);
 EXTERN void canvas_restoreconnections(t_canvas *x);
 EXTERN void canvas_redraw(t_canvas *x);
+EXTERN void canvas_closebang(t_canvas *x);
+EXTERN void canvas_initbang(t_canvas *x);
 
 EXTERN t_inlet *canvas_addinlet(t_canvas *x, t_pd *who, t_symbol *sym);
 EXTERN void canvas_rminlet(t_canvas *x, t_inlet *ip);

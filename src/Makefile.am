@@ -17,7 +17,8 @@ pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
 pd_LDADD = 
 pd_SOURCES = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c \
-	g_io.c g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c \
+    g_io.c g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c \
+    g_clone.c \
     g_all_guis.c g_bang.c g_hdial.c g_hslider.c g_mycanvas.c g_numbox.c \
     g_toggle.c g_vdial.c g_vslider.c g_vumeter.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
