@@ -24,7 +24,7 @@ static t_class *text_define_class;
 #elif defined _MSC_VER
 # include <malloc.h>        /* MSVC */
 #else
-# include <stddef.h>        /* BSDs for example */
+# include <stdlib.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
 
 #ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
@@ -200,7 +200,7 @@ static void textbuf_free(t_textbuf *x)
         guiconnect_notarget(x->b_guiconnect, 1000);
     }
         /* just in case we're still bound to #A from loading... */
-    while (x2 = pd_findbyclass(gensym("#A"), text_define_class))
+    while ((x2 = pd_findbyclass(gensym("#A"), text_define_class)))
         pd_unbind(x2, gensym("#A"));
 }
 
@@ -1286,9 +1286,9 @@ static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
         /* test if leading numbers, or a leading symbol equal to our
         "wait symbol", are directing us to wait */
     if (!x->x_lastto && (
-        vec[onset].a_type == A_FLOAT && x->x_waitargc && !x->x_eaten ||
-            vec[onset].a_type == A_SYMBOL &&
-                vec[onset].a_w.w_symbol == x->x_waitsym))
+        (vec[onset].a_type == A_FLOAT && x->x_waitargc && !x->x_eaten) ||
+            (vec[onset].a_type == A_SYMBOL &&
+                vec[onset].a_w.w_symbol == x->x_waitsym)))
     {
         if (vec[onset].a_type == A_FLOAT)
         {

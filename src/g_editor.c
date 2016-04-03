@@ -96,7 +96,7 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
             gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
                 return (0);
     }
-    if (ob = pd_checkobject(&x->g_pd))
+    if ((ob = pd_checkobject(&x->g_pd)))
     {
         /* return true if the text box should be drawn.  We don't show text
         boxes inside graphs---except comments, if we're doing the new
@@ -229,7 +229,7 @@ void glist_deselect(t_glist *x, t_gobj *y)
         }
         else
         {
-            for (sel = x->gl_editor->e_selection; sel2 = sel->sel_next;
+            for (sel = x->gl_editor->e_selection; (sel2 = sel->sel_next);
                 sel = sel2)
             {
                 if (sel2->sel_what == y)
@@ -279,7 +279,7 @@ void glist_selectall(t_glist *x)
             x->gl_editor->e_selection = sel;
             sel->sel_what = y;
             gobj_select(y, x, 1);
-            while (y = y->g_next)
+            while ((y = y->g_next))
             {
                 t_selection *sel2 = (t_selection *)getbytes(sizeof(*sel2));
                 sel->sel_next = sel2;
@@ -432,7 +432,7 @@ void canvas_disconnect(t_canvas *x,
     t_linetraverser t;
     t_outconnect *oc;
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         int srcno = canvas_getindex(x, &t.tr_ob->ob_g);
         int sinkno = canvas_getindex(x, &t.tr_ob2->ob_g);
@@ -509,7 +509,7 @@ static void *canvas_undo_set_cut(t_canvas *x, int mode)
         /* store connections into/out of the selection */
     buf->u_reconnectbuf = binbuf_new();
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         int issel1 = glist_isselected(x, &t.tr_ob->ob_g);
         int issel2 = glist_isselected(x, &t.tr_ob2->ob_g);
@@ -555,7 +555,7 @@ static void canvas_undo_cut(t_canvas *x, void *z, int action)
         {
             t_gobj *y1, *y2;
             glist_noselect(x);
-            for (y1 = x->gl_list; y2 = y1->g_next; y1 = y2)
+            for (y1 = x->gl_list; (y2 = y1->g_next); y1 = y2)
                 ;
             if (y1)
             {
@@ -581,7 +581,7 @@ static void canvas_undo_cut(t_canvas *x, void *z, int action)
         else if (mode == UCUT_TEXT)
         {
             t_gobj *y1, *y2;
-            for (y1 = x->gl_list; y2 = y1->g_next; y1 = y2)
+            for (y1 = x->gl_list; (y2 = y1->g_next); y1 = y2)
                 ;
             if (y1)
                 glist_delete(x, y1);
@@ -906,7 +906,7 @@ void canvas_create_editor(t_glist *x)
     {
         x->gl_editor = editor_new(x);
         for (y = x->gl_list; y; y = y->g_next)
-            if (ob = pd_checkobject(&y->g_pd))
+            if ((ob = pd_checkobject(&y->g_pd)))
                 rtext_new(x, ob);
     }
 }
@@ -919,7 +919,7 @@ void canvas_destroy_editor(t_glist *x)
     if (x->gl_editor)
     {
         t_rtext *rtext;
-        while (rtext = x->gl_editor->e_rtext)
+        while ((rtext = x->gl_editor->e_rtext))
             rtext_free(rtext);
         editor_free(x->gl_editor, x);
         x->gl_editor = 0;
@@ -1294,7 +1294,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         return;
     }
         /* if not a runmode left click, fall here. */
-    if (y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2))
+    if ((y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2)))
     {
         t_object *ob = pd_checkobject(&y->g_pd);
             /* check you're in the rectangle */
@@ -1424,7 +1424,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         t_float fx = xpos, fy = ypos;
         t_glist *glist2 = glist_getcanvas(x);
         linetraverser_start(&t, glist2);
-        while (oc = linetraverser_next(&t))
+        while ((oc = linetraverser_next(&t)))
         {
             t_float lx1 = t.tr_lx1, ly1 = t.tr_ly1,
                 lx2 = t.tr_lx2, ly2 = t.tr_ly2;
@@ -1468,7 +1468,7 @@ int canvas_isconnected (t_canvas *x, t_text *ob1, int n1,
     t_linetraverser t;
     t_outconnect *oc;
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
         if (t.tr_ob == ob1 && t.tr_outno == n1 &&
             t.tr_ob2 == ob2 && t.tr_inno == n2)
                 return (1);
@@ -1879,14 +1879,14 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     {
         int x11=0, y11=0, x12=0, y12=0;
         t_gobj *y1;
-        if (y1 = canvas_findhitbox(x,
+        if ((y1 = canvas_findhitbox(x,
             x->gl_editor->e_xwas, x->gl_editor->e_ywas,
-                &x11, &y11, &x12, &y12))
+                &x11, &y11, &x12, &y12)))
         {
             int wantwidth = xpos - x11;
             t_gotfn sizefn;
             t_object *ob = pd_checkobject(&y1->g_pd);
-            if (ob && ob->te_pd->c_wb == &text_widgetbehavior ||
+            if ((ob && ob->te_pd->c_wb == &text_widgetbehavior) ||
                     (pd_checkglist(&ob->te_pd) &&
                         !((t_canvas *)ob)->gl_isgraph))
             {
@@ -1957,7 +1957,7 @@ void glob_verifyquit(void *dummy, t_floatarg f)
     t_glist *g, *g2;
         /* find all root canvases */
     for (g = pd_getcanvaslist(); g; g = g->gl_next)
-        if (g2 = glist_finddirty(g))
+        if ((g2 = glist_finddirty(g)))
     {
         canvas_vis(g2, 1);
             sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 3;\n}\n",
@@ -2082,7 +2082,7 @@ static int canvas_dofind(t_canvas *x, int *myindexp)
     for (y = x->gl_list; y; y = y->g_next)
     {
         t_object *ob = 0;
-        if (ob = pd_checkobject(&y->g_pd))
+        if ((ob = pd_checkobject(&y->g_pd)))
         {
             if (atoms_match(binbuf_getnatom(ob->ob_binbuf),
                 binbuf_getvec(ob->ob_binbuf), findargc, findargv,
@@ -2220,7 +2220,7 @@ void canvas_stowconnections(t_canvas *x)
         /* add connections to binbuf */
     binbuf_clear(x->gl_editor->e_connectbuf);
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         int s1 = glist_isselected(x, &t.tr_ob->ob_g);
         int s2 = glist_isselected(x, &t.tr_ob2->ob_g);
@@ -2252,7 +2252,7 @@ static t_binbuf *canvas_docopy(t_canvas *x)
             gobj_save(y, b);
     }
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         if (glist_isselected(x, &t.tr_ob->ob_g)
             && glist_isselected(x, &t.tr_ob2->ob_g))
@@ -2684,7 +2684,7 @@ static void canvas_texteditor(t_canvas *x)
     t_rtext *foo;
     char *buf;
     int bufsize;
-    if (foo = x->gl_editor->e_textedfor)
+    if ((foo = x->gl_editor->e_textedfor))
         rtext_gettext(foo, &buf, &bufsize);
     else buf = "", bufsize = 0;
     sys_vgui("pdtk_pd_texteditor {%.*s}\n", bufsize, buf);

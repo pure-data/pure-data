@@ -317,7 +317,7 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
         /* take the new object off the list */
     if (ntotal)
     {
-        for (y = x->gl_list, nnew = 1; y2 = y->g_next;
+        for (y = x->gl_list, nnew = 1; (y2 = y->g_next);
             y = y2, nnew++)
                 if (nnew == ntotal)
         {
@@ -621,7 +621,7 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
         gobj_save(y, b);
 
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         int srcno = canvas_getindex(x, &t.tr_ob->ob_g);
         int sinkno = canvas_getindex(x, &t.tr_ob2->ob_g);

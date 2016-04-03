@@ -21,7 +21,7 @@ extern t_pd *newest;    /* OK - this should go into a .h file now :) */
 #elif defined _MSC_VER
 # include <malloc.h>        /* MSVC */
 #else
-# include <stddef.h>        /* BSDs for example */
+# include <stdlib.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
 
 #ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */

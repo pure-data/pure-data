@@ -126,7 +126,7 @@ void gpointer_copy(const t_gpointer *gpfrom, t_gpointer *gpto)
 void gpointer_unset(t_gpointer *gp)
 {
     t_gstub *gs;
-    if (gs = gp->gp_stub)
+    if ((gs = gp->gp_stub))
     {
         gstub_dis(gs);
         gp->gp_stub = 0;
@@ -136,7 +136,7 @@ void gpointer_unset(t_gpointer *gp)
 void gpointer_setglist(t_gpointer *gp, t_glist *glist, t_scalar *x)
 {
     t_gstub *gs;
-    if (gs = gp->gp_stub) gstub_dis(gs);
+    if ((gs = gp->gp_stub)) gstub_dis(gs);
     gp->gp_stub = gs = glist->gl_stub;
     gp->gp_valid = glist->gl_valid;
     gp->gp_un.gp_scalar = x;
@@ -146,7 +146,7 @@ void gpointer_setglist(t_gpointer *gp, t_glist *glist, t_scalar *x)
 void gpointer_setarray(t_gpointer *gp, t_array *array, t_word *w)
 {
     t_gstub *gs;
-    if (gs = gp->gp_stub) gstub_dis(gs);
+    if ((gs = gp->gp_stub)) gstub_dis(gs);
     gp->gp_stub = gs = array->a_stub;
     gp->gp_valid = array->a_valid;
     gp->gp_un.gp_w = w;

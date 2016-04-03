@@ -28,7 +28,7 @@
 #elif defined _MSC_VER
 # include <malloc.h>        /* MSVC */
 #else
-# include <stddef.h>        /* BSDs for example */
+# include <stdlib.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
 
 #include <string.h>
@@ -56,7 +56,7 @@ t_namelist *sys_helppath;
 void sys_bashfilename(const char *from, char *to)
 {
     char c;
-    while (c = *from++)
+    while ((c = *from++))
     {
 #ifdef _WIN32
         if (c == '/') c = '\\';
@@ -70,7 +70,7 @@ void sys_bashfilename(const char *from, char *to)
 void sys_unbashfilename(const char *from, char *to)
 {
     char c;
-    while (c = *from++)
+    while ((c = *from++))
     {
 #ifdef _WIN32
         if (c == '\\') c = '/';

@@ -166,7 +166,7 @@ void pd_unbind(t_pd *x, t_symbol *s)
             b->b_list = e->e_next;
             freebytes(e, sizeof(t_bindelem));
         }
-        else for (e = b->b_list; e2 = e->e_next; e = e2)
+        else for (e = b->b_list; (e2 = e->e_next); e = e2)
             if (e2->e_who == x)
         {
             e->e_next = e2->e_next;

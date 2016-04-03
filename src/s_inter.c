@@ -824,7 +824,7 @@ void sys_unqueuegui(void *client)
     }
     if (!sys_guiqueuehead)
         return;
-    for (gq = sys_guiqueuehead; gq2 = gq->gq_next; gq = gq2)
+    for (gq = sys_guiqueuehead; (gq2 = gq->gq_next); gq = gq2)
         if (gq2->gq_client == client)
     {
         gq->gq_next = gq2->gq_next;

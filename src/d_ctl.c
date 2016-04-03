@@ -359,7 +359,7 @@ static void vline_tilde_float(t_vline *x, t_float f)
     }
     else
     {
-        for (s1 = x->x_list; s2 = s1->s_next; s1 = s2)
+        for (s1 = x->x_list; (s2 = s1->s_next); s1 = s2)
         {
             if (s2->s_starttime > starttime ||
                 (s2->s_starttime == starttime &&
