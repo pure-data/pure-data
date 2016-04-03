@@ -579,7 +579,7 @@ done:
 #elif defined _MSC_VER
 # include <malloc.h>        /* MSVC */
 #else
-# include <stddef.h>        /* BSDs for example */
+# include <stdlib.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
 
 #define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < HUGEMSG ?  \
@@ -771,8 +771,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
                 if (nargs == 1) pd_float(target, mstack->a_w.w_float);
                 else pd_list(target, 0, nargs, mstack);
                 break;
-            default:
-                break;
+            default: break;
             }
         }
         msp = mstack;

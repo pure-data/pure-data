@@ -37,7 +37,7 @@
 #elif defined _MSC_VER
 # include <malloc.h>        /* MSVC */
 #else
-# include <stddef.h>        /* BSDs for example */
+# include <stdlib.h>        /* BSDs for example */
 #endif                      /* end alloca() ifdef nonsense */
 
 /* -------------------------- random ------------------------------ */
