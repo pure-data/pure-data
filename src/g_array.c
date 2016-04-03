@@ -583,7 +583,7 @@ static void garray_free(t_garray *x)
     gfxstub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
         /* just in case we're still bound to #A from loading... */
-    while (x2 = pd_findbyclass(gensym("#A"), garray_class))
+    while ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
         pd_unbind(x2, gensym("#A"));
     pd_free(&x->x_scalar->sc_gobj.g_pd);
 }

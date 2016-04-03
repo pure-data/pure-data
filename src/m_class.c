@@ -500,7 +500,7 @@ t_symbol *dogensym(const char *s, t_symbol *oldsym)
         s2++;
     }
     sym1 = symhash + (hash & (HASHSIZE-1));
-    while (sym2 = *sym1)
+    while ((sym2 = *sym1))
     {
         if (!strcmp(sym2->s_name, s)) return(sym2);
         sym1 = &sym2->s_next;
@@ -678,7 +678,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
         }
         if (argc > MAXPDARG) argc = MAXPDARG;
         if (x != &pd_objectmaker) *(ap++) = (t_int)x, narg++;
-        while (wanttype = *wp++)
+        while ((wanttype = *wp++))
         {
             switch (wanttype)
             {

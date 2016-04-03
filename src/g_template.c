@@ -287,7 +287,7 @@ static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
         else
         {
             t_gobj *y, *y2;
-            for (y = glist->gl_list; y2 = y->g_next; y = y2)
+            for (y = glist->gl_list; (y2 = y->g_next); y = y2)
                 if (y2 == &scfrom->sc_gobj)
             {
                 x->sc_gobj.g_next = y2->g_next;
@@ -570,7 +570,7 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
         if (t->t_list)
         {
             t_gtemplate *x2, *x3;
-            for (x2 = x->x_template->t_list; x3 = x2->x_next; x2 = x3)
+            for (x2 = x->x_template->t_list; (x3 = x2->x_next); x2 = x3)
                 ;
             x2->x_next = x;
             post("template %s: warning: already exists.", sym->s_name);
@@ -664,7 +664,7 @@ static void gtemplate_free(t_gtemplate *x)
     else
     {
         t_gtemplate *x2, *x3;
-        for (x2 = t->t_list; x3 = x2->x_next; x2 = x3)
+        for (x2 = t->t_list; (x3 = x2->x_next); x2 = x3)
         {
             if (x == x3)
             {
@@ -2053,12 +2053,12 @@ static int array_doclick_element(t_array *array, t_glist *glist,
         else usexloc = xloc + xsum, xsum += xinc;
         useyloc = yloc + (yonset >= 0 ? fielddesc_cvttocoord(yfield,
             *(t_float *)(((char *)(array->a_vec) + elemsize * i) + yonset)) : 0);
-
-        if (hit = scalar_doclick(
+        
+        if ((hit = scalar_doclick(
             (t_word *)((char *)(array->a_vec) + i * elemsize),
             elemtemplate, 0, array,
             glist, usexloc, useyloc,
-            xpix, ypix, shift, alt, dbl, doit))
+            xpix, ypix, shift, alt, dbl, doit)))
                 return (hit);
     }
     return (0);
@@ -2466,7 +2466,7 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
     drawnumber_getbuf(x, data, template, buf);
     width = 0;
     height = 1;
-    for (startline = buf; newline = strchr(startline, '\n');
+    for (startline = buf; (newline = strchr(startline, '\n'));
         startline = newline+1)
     {
         if (newline - startline > width)

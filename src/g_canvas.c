@@ -254,7 +254,7 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
             if (!t->tr_ob) y = t->tr_x->gl_list;
             else y = t->tr_ob->ob_g.g_next;
             for (; y; y = y->g_next)
-                if (ob = pd_checkobject(&y->g_pd)) break;
+                if ((ob = pd_checkobject(&y->g_pd))) break;
             if (!ob) return (0);
             t->tr_ob = ob;
             t->tr_nout = obj_noutlets(ob);
@@ -731,7 +731,7 @@ void canvas_free(t_canvas *x)
     if (canvas_whichfind == x)
         canvas_whichfind = 0;
     glist_noselect(x);
-    while (y = x->gl_list)
+    while ((y = x->gl_list))
         glist_delete(x, y);
     if (x == glist_getcanvas(x))
         canvas_vis(x, 0);
@@ -761,7 +761,7 @@ static void canvas_drawlines(t_canvas *x)
     t_outconnect *oc;
     {
         linetraverser_start(&t, x);
-        while (oc = linetraverser_next(&t))
+        while ((oc = linetraverser_next(&t)))
             sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                     glist_getcanvas(x),
                         t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
@@ -776,7 +776,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
     t_outconnect *oc;
 
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
@@ -793,7 +793,7 @@ void canvas_deletelinesfor(t_canvas *x, t_text *text)
     t_linetraverser t;
     t_outconnect *oc;
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         if (t.tr_ob == text || t.tr_ob2 == text)
         {
@@ -814,7 +814,7 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_linetraverser t;
     t_outconnect *oc;
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         if ((t.tr_ob == text && t.tr_outlet == outp) ||
             (t.tr_ob2 == text && t.tr_inlet == inp))
@@ -1105,7 +1105,7 @@ static void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
 
         /* ... and all dsp interconnections */
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
         if (obj_issignaloutlet(t.tr_ob, t.tr_outno))
             ugen_connect(dc, t.tr_ob, t.tr_outno, t.tr_ob2, t.tr_inno);
 
@@ -1603,9 +1603,9 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (!x->gl_list)
         return;
-    for (g = x->gl_list; g2 = g->g_next; g = g2)
+    for (g = x->gl_list; (g2 = g->g_next); g = g2)
         ;
-    if (ob = pd_checkobject(&g->g_pd))
+    if ((ob = pd_checkobject(&g->g_pd)))
     {
         ob->te_width = atom_getfloatarg(0, argc, argv);
         if (glist_isvisible(x))

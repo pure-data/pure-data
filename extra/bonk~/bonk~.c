@@ -1014,7 +1014,7 @@ static void bonk_read(t_bonk *x, t_symbol *s)
         ntemplate++;
     }
 nomore:
-    if (remaining = (ntemplate % x->x_ninsig))
+    if ((remaining = (ntemplate % x->x_ninsig)))
     {
         post("bonk_read: %d templates not a multiple of %d; dropping extras");
         x->x_template = (t_template *)t_resizebytes(x->x_template,

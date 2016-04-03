@@ -222,7 +222,7 @@ void binbuf_gettext(t_binbuf *x, char **bufp, int *lengthp)
     }
     if (length && buf[length-1] == ' ')
     {
-        if (newbuf = t_resizebytes(buf, length, length-1))
+        if ((newbuf = t_resizebytes(buf, length, length-1)))
         {
             buf = newbuf;
             length--;
@@ -239,8 +239,8 @@ void binbuf_add(t_binbuf *x, int argc, t_atom *argv)
 {
     int newsize = x->b_n + argc, i;
     t_atom *ap;
-    if (ap = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec),
-        newsize * sizeof(*x->b_vec)))
+    if ((ap = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec),
+        newsize * sizeof(*x->b_vec))))
             x->b_vec = ap;
     else
     {
@@ -354,8 +354,8 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
 {
     int newsize = x->b_n + argc, i;
     t_atom *ap;
-    if (ap = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec),
-        newsize * sizeof(*x->b_vec)))
+    if ((ap = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec),
+        newsize * sizeof(*x->b_vec))))
             x->b_vec = ap;
     else
     {
@@ -771,6 +771,8 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
             case A_FLOAT:
                 if (nargs == 1) pd_float(target, mstack->a_w.w_float);
                 else pd_list(target, 0, nargs, mstack);
+                break;
+            default:
                 break;
             }
         }
@@ -1520,10 +1522,10 @@ void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto)
     for (k = 0; k < n; k++)
     {
         if (ap[k].a_type == A_FLOAT ||
-            ap[k].a_type == A_SYMBOL &&
+            (ap[k].a_type == A_SYMBOL &&
                 !strchr(ap[k].a_w.w_symbol->s_name, ';') &&
                 !strchr(ap[k].a_w.w_symbol->s_name, ',') &&
-                !strchr(ap[k].a_w.w_symbol->s_name, '$'))
+                !strchr(ap[k].a_w.w_symbol->s_name, '$')))
                     binbuf_add(bto, 1, &ap[k]);
         else
         {

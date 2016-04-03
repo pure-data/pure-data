@@ -359,7 +359,7 @@ void signal_cleanup(void)
 {
     t_signal **svec, *sig, *sig2;
     int i;
-    while (sig = pd_this->pd_signals)
+    while ((sig = pd_this->pd_signals))
     {
         pd_this->pd_signals = sig->s_nextused;
         if (!sig->s_isborrowed)
@@ -440,7 +440,7 @@ t_signal *signal_new(int n, t_float sr)
         whichlist = &signal_freeborrowed;
 
         /* first try to reclaim one from the free list */
-    if (ret = *whichlist)
+    if ((ret = *whichlist))
         *whichlist = ret->s_nextfree;
     else
     {
@@ -717,14 +717,14 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         is set.  We don't yet know if a subcanvas will be "blocking" so there
         we delay new signal creation, which will be handled by calling
         signal_setborrowed in the ugen_done_graph routine below. */
-    int nonewsigs = (class == canvas_class ||
-        (class == vinlet_class) && !(dc->dc_reblock));
+    int nonewsigs = (class == canvas_class || 
+        ((class == vinlet_class) && !(dc->dc_reblock)));
         /* when we encounter a subcanvas or a signal outlet, suppress freeing
         the input signals as they may be "borrowed" for the super or sub
         patch; same exception as above, but also if we're "switched" we
         have to do a copy rather than a borrow.  */
-    int nofreesigs = (class == canvas_class ||
-        (class == voutlet_class) &&  !(dc->dc_reblock || dc->dc_switched));
+    int nofreesigs = (class == canvas_class || 
+        ((class == voutlet_class) &&  !(dc->dc_reblock || dc->dc_switched)));
     t_signal **insig, **outsig, **sig, *s1, *s2, *s3;
     t_ugenbox *u2;
 
@@ -738,7 +738,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             s3 = signal_new(dc->dc_calcsize, dc->dc_srate);
             /* post("%s: unconnected signal inlet set to zero",
                 class_getname(u->u_obj->ob_pd)); */
-            if (scalar = obj_findsignalscalar(u->u_obj, i))
+            if ((scalar = obj_findsignalscalar(u->u_obj, i)))
                 dsp_add_scalarcopy(scalar, s3->s_vec, s3->s_n);
             else
                 dsp_add_zero(s3->s_vec, s3->s_n);
@@ -818,7 +818,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
             u2 = oc->oc_who;
             uin = &u2->u_in[oc->oc_inno];
                 /* if there's already someone here, sum the two */
-            if (s2 = uin->i_signal)
+            if ((s2 = uin->i_signal))
             {
                 s1->s_refcount--;
                 s2->s_refcount--;

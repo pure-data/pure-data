@@ -53,9 +53,9 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
     else x->i_symto = s2;
     x->i_symfrom = s1;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -189,9 +189,9 @@ t_inlet *pointerinlet_new(t_object *owner, t_gpointer *gp)
     x->i_symfrom = &s_pointer;
     x->i_pointerslot = gp;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -211,9 +211,9 @@ t_inlet *floatinlet_new(t_object *owner, t_float *fp)
     x->i_symfrom = &s_float;
     x->i_floatslot = fp;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -233,9 +233,9 @@ t_inlet *symbolinlet_new(t_object *owner, t_symbol **sp)
     x->i_symfrom = &s_symbol;
     x->i_symslot = sp;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -337,9 +337,9 @@ t_outlet *outlet_new(t_object *owner, t_symbol *s)
     t_outlet *x = (t_outlet *)getbytes(sizeof(*x)), *y, *y2;
     x->o_owner = owner;
     x->o_next = 0;
-    if (y = owner->ob_outlet)
+    if ((y = owner->ob_outlet))
     {
-        while (y2 = y->o_next) y = y2;
+        while ((y2 = y->o_next)) y = y2;
         y->o_next = x;
     }
     else owner->ob_outlet = x;
@@ -512,7 +512,7 @@ doit:
         freebytes(oc, sizeof(*oc));
         goto done;
     }
-    while (oc2 = oc->oc_next)
+    while ((oc2 = oc->oc_next))
     {
         if (oc2->oc_to == to)
         {

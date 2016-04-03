@@ -924,7 +924,7 @@ static void makenote_tick(t_hang *hang)
     outlet_float(x->x_velout, 0);
     outlet_float(x->x_pitchout, hang->h_pitch);
     if (x->x_hang == hang) x->x_hang = hang->h_next;
-    else for (h2 = x->x_hang; h3 = h2->h_next; h2 = h3)
+    else for (h2 = x->x_hang; (h3 = h2->h_next); h2 = h3)
     {
         if (h3 == hang)
         {
@@ -954,7 +954,7 @@ static void makenote_float(t_makenote *x, t_float f)
 static void makenote_stop(t_makenote *x)
 {
     t_hang *hang;
-    while (hang = x->x_hang)
+    while ((hang = x->x_hang))
     {
         outlet_float(x->x_velout, 0);
         outlet_float(x->x_pitchout, hang->h_pitch);
@@ -967,7 +967,7 @@ static void makenote_stop(t_makenote *x)
 static void makenote_clear(t_makenote *x)
 {
     t_hang *hang;
-    while (hang = x->x_hang)
+    while ((hang = x->x_hang))
     {
         x->x_hang = hang->h_next;
         clock_free(hang->h_clock);
@@ -1195,7 +1195,7 @@ static void bag_float(t_bag *x, t_float f)
         if (!x->x_first) x->x_first = bagelem;
         else    /* LATER replace with a faster algorithm */
         {
-            for (e2 = x->x_first; e3 = e2->e_next; e2 = e3)
+            for (e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
                 ;
             e2->e_next = bagelem;
         }
@@ -1210,7 +1210,7 @@ static void bag_float(t_bag *x, t_float f)
             freebytes(bagelem, sizeof(*bagelem));
             return;
         }
-        for (e2 = x->x_first; e3 = e2->e_next; e2 = e3)
+        for (e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
             if (e3->e_value == f)
         {
             e2->e_next = e3->e_next;
@@ -1223,7 +1223,7 @@ static void bag_float(t_bag *x, t_float f)
 static void bag_flush(t_bag *x)
 {
     t_bagelem *bagelem;
-    while (bagelem = x->x_first)
+    while ((bagelem = x->x_first))
     {
         outlet_float(x->x_obj.ob_outlet, bagelem->e_value);
         x->x_first = bagelem->e_next;
@@ -1234,7 +1234,7 @@ static void bag_flush(t_bag *x)
 static void bag_clear(t_bag *x)
 {
     t_bagelem *bagelem;
-    while (bagelem = x->x_first)
+    while ((bagelem = x->x_first))
     {
         x->x_first = bagelem->e_next;
         freebytes(bagelem, sizeof(*bagelem));
