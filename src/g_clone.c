@@ -1,21 +1,22 @@
 #include "m_pd.h"
 #include "g_canvas.h"
+#include "m_imp.h"
 #include <string.h>
 
 /* ---------- clone - maintain copies of a patch ----------------- */
 
-static t_class *clone_class, *in_class, *out_class;
+static t_class *clone_class, *clone_in_class, *clone_out_class;
 
 typedef struct _copy
 {
     t_canvas *c_x;
-    int c_on;       /* DSP running */
+    int c_on;           /* DSP running */
 } t_copy;
 
 typedef struct _in
 {
     t_class *i_pd;
-    t_inlet *i_inlet;
+    struct _clone *i_owner;
     int i_signal;
     int i_n;
 } t_in;
@@ -41,6 +42,28 @@ typedef struct _clone
     int x_argc;         /* creation arguments for abstractions */
     t_atom *x_argv;
 } t_clone;
+
+void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv);
+
+static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int n;
+    if (argc < 1 || argv[0].a_type != A_FLOAT)
+        pd_error(x->i_owner, "clone: no instance number in message");
+    else if ((n = argv[0].a_w.w_float) < 0 || n >= x->i_owner->x_n)
+        pd_error(x->i_owner, "clone: instance number %d out of range", n);
+    else if (argc > 1 && argv[1].a_type == A_SYMBOL)
+        obj_sendinlet(&x->i_owner->x_vec[n].c_x->gl_obj, x->i_n,
+            argv[1].a_w.w_symbol, argc-2, argv+2);
+    else obj_sendinlet(&x->i_owner->x_vec[n].c_x->gl_obj, x->i_n,
+            &s_list, argc-1, argv+1);
+}
+
+static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
+{
+        /* TBW */
+    post("out %d", x->o_n);
+}
 
 static void clone_free(t_clone *x)
 {
@@ -140,7 +163,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_clone *x = (t_clone *)pd_new(clone_class);
     t_canvas *c;
-    int wantn, dspstate;
+    int wantn, dspstate, i;
     x->x_invec = 0;
     x->x_outvec = 0;
     if (argc == 0)
@@ -170,6 +193,17 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_vec = (t_copy *)getbytes(sizeof(*x->x_vec));
     x->x_vec[0].c_x = c;
     x->x_n = 1;
+    x->x_nin = obj_ninlets(&x->x_vec[0].c_x->gl_obj);
+    x->x_invec = (t_in *)getbytes(x->x_nin * sizeof(*x->x_invec));
+    for (i = 0; i < x->x_nin; i++)
+    {
+        x->x_invec[i].i_pd = clone_in_class;
+        x->x_invec[i].i_owner = x;
+        x->x_invec[i].i_signal = obj_issignalinlet(&x->x_vec[0].c_x->gl_obj, i);
+        x->x_invec[i].i_n = i;
+        inlet_new(&x->x_vec[0].c_x->gl_obj, &x->x_invec[i].i_pd,
+            (x->x_invec[i].i_signal ? &s_signal : 0), 0);
+    }
     clone_setn(x, (t_floatarg)(wantn));
     canvas_resume_dsp(dspstate);
     return (x);
@@ -187,4 +221,12 @@ void clone_setup(void)
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(clone_class, (t_method)clone_vis, gensym("vis"),
         A_FLOAT, A_FLOAT, 0);
+
+    clone_in_class = class_new(gensym("clone-inlet"), 0, 0,
+        sizeof(t_in), CLASS_PD, 0);
+    class_addlist(clone_in_class, (t_method)clone_in_list);
+
+    clone_out_class = class_new(gensym("clone-outlet"), 0, 0,
+        sizeof(t_in), CLASS_PD, 0);
+    class_addanything(clone_out_class, (t_method)clone_out_anything);
 }

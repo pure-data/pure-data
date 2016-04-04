@@ -741,3 +741,14 @@ void obj_saveformat(t_object *x, t_binbuf *bb)
         binbuf_addv(bb, "ssf;", &s__X, gensym("f"), (float)x->te_width);
 }
 
+/* this one only in g_clone.c -- LATER consider sending the message
+without having to chase the linked list every time? */
+void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv)
+{
+    t_inlet *i;
+    for (i = x->ob_inlet; i && n; i = i->i_next, n--)
+        ;
+    if (i)
+        typedmess(&i->i_pd, s, argc, argv);
+    else bug("obj_sendinlet");
+}
