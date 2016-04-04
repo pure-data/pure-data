@@ -4,6 +4,24 @@
 #include <string.h>
 
 /* ---------- clone - maintain copies of a patch ----------------- */
+/* OOPS - have to add outlet vector to each copy to disambiguate */
+/* next: feed each instance its serial number */
+/* next next: DSP method */
+
+
+#ifdef _MSC_VER
+# include <malloc.h> /* MSVC */
+#elif defined(__linux__) || defined(__APPLE__) || defined(_WIN32)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
+#else
+# include <stdlib.h> /* BSDs for example */
+#endif
+#define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
+
+#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < LIST_NGETBYTE ?  \
+        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
+#define ATOMS_FREEA(x, n) ( \
+    ((n) < LIST_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
 
 static t_class *clone_class, *clone_in_class, *clone_out_class;
 
@@ -61,8 +79,17 @@ static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
 
 static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
 {
-        /* TBW */
-    post("out %d", x->o_n);
+    t_atom *outv, *ap;
+    int first =
+        1 + (s != &s_list && s != &s_float && s != &s_symbol && s != &s_bang),
+            outc = argc + first;
+    ATOMS_ALLOCA(outv, outc);
+    SETFLOAT(outv, x->o_n);
+    if (first == 2)
+        SETSYMBOL(outv + 1, s);
+    memcpy(outv+first, argv, sizeof(t_atom) * argc);
+    outlet_list(x->o_outlet, 0, outc, outv);
+    ATOMS_FREEA(outv, outc);
 }
 
 static void clone_free(t_clone *x)
@@ -107,7 +134,7 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
 void clone_setn(t_clone *x, t_floatarg f)
 {
     int dspstate = canvas_suspend_dsp();
-    int nwas = x->x_n, wantn = f, i;
+    int nwas = x->x_n, wantn = f, i, j;
     if (wantn < 1)
     {
         pd_error(x, "can't resize to zero or negative number; setting to 1");
@@ -126,6 +153,11 @@ void clone_setn(t_clone *x, t_floatarg f)
             (i+1) * sizeof(t_copy *));
         x->x_vec[i].c_x = c;
         x->x_vec[i].c_on = 0;
+        for (j = 0; j < x->x_nout; j++)
+        {
+            obj_connect(&x->x_vec[i].c_x->gl_obj, j, 
+                (t_object *)(&x->x_outvec[j]), 0);
+        }
         x->x_n++;
     }
     if (wantn < nwas)
@@ -201,8 +233,21 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         x->x_invec[i].i_owner = x;
         x->x_invec[i].i_signal = obj_issignalinlet(&x->x_vec[0].c_x->gl_obj, i);
         x->x_invec[i].i_n = i;
-        inlet_new(&x->x_vec[0].c_x->gl_obj, &x->x_invec[i].i_pd,
+        inlet_new(&x->x_obj, &x->x_invec[i].i_pd,
             (x->x_invec[i].i_signal ? &s_signal : 0), 0);
+    }
+    x->x_nout = obj_noutlets(&x->x_vec[0].c_x->gl_obj);
+    x->x_outvec = (t_out *)getbytes(x->x_nout * sizeof(*x->x_outvec));
+    for (i = 0; i < x->x_nout; i++)
+    {
+        x->x_outvec[i].o_pd = clone_out_class;
+        x->x_outvec[i].o_signal =
+            obj_issignaloutlet(&x->x_vec[0].c_x->gl_obj, i);
+        x->x_outvec[i].o_n = i;
+        x->x_outvec[i].o_outlet =
+            outlet_new(&x->x_obj, (x->x_outvec[i].o_signal ? &s_signal : 0));
+        obj_connect(&x->x_vec[0].c_x->gl_obj, i, 
+            (t_object *)(&x->x_outvec[i]), 0);
     }
     clone_setn(x, (t_floatarg)(wantn));
     canvas_resume_dsp(dspstate);

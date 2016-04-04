@@ -443,6 +443,9 @@ void outlet_free(t_outlet *x)
     t_freebytes(x, sizeof(*x));
 }
 
+    /* connect an outlet of one object to an inlet of another.  The receiving
+    "pd" is usually a patchable object, but this may be used to add a
+    non-patchable pd to an outlet by specifying the 0th inlet. */
 t_outconnect *obj_connect(t_object *source, int outno,
     t_object *sink, int inno)
 {
