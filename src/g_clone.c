@@ -143,6 +143,7 @@ void clone_setn(t_clone *x, t_floatarg f)
     if (wantn > nwas)
         for (i = nwas; i < wantn; i++)
     {
+        SETFLOAT(x->x_argv, i);
         t_canvas *c = clone_makeone(x->x_s, x->x_argc, x->x_argv);
         if (!c)
         {
@@ -217,9 +218,12 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         goto fail;
     }
     x->x_s = argv[1].a_w.w_symbol;
-    x->x_argc = argc - 2;
+        /* store a copy of the argmuents with an extra space (argc+1) for
+        supplying an instance number, which we'll bash as we go. */
+    x->x_argc = argc - 1;
     x->x_argv = getbytes(x->x_argc * sizeof(*x->x_argv));
-    memcpy(x->x_argv, argv+2, x->x_argc * sizeof(*x->x_argv));
+    memcpy(x->x_argv, argv+1, x->x_argc * sizeof(*x->x_argv));
+    SETFLOAT(x->x_argv, 0);
     if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
         goto fail;
     x->x_vec = (t_copy *)getbytes(sizeof(*x->x_vec));
