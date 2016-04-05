@@ -150,8 +150,8 @@ void clone_setn(t_clone *x, t_floatarg f)
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
             goto done;
         }
-        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, i * sizeof(t_copy *),
-            (i+1) * sizeof(t_copy *));
+        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, i * sizeof(t_copy),
+            (i+1) * sizeof(t_copy));
         x->x_vec[i].c_x = c;
         x->x_vec[i].c_on = 0;
         for (j = 0; j < x->x_nout; j++)
