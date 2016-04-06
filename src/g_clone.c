@@ -99,8 +99,8 @@ void clone_setn(t_clone *x, t_floatarg f)
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
             goto done;
         }
-        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, i * sizeof(t_copy *),
-            (i+1) * sizeof(t_copy *));
+        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, i * sizeof(*x->x_vec),
+            (i+1) * sizeof(*x->x_vec));
         x->x_vec[i].c_x = c;
         x->x_vec[i].c_on = 0;
         x->x_n++;
@@ -112,8 +112,8 @@ void clone_setn(t_clone *x, t_floatarg f)
             canvas_closebang(x->x_vec[i].c_x);
             pd_free(&x->x_vec[i].c_x->gl_pd);
         }
-        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, nwas * sizeof(t_copy *),
-            wantn * sizeof(t_copy *));
+        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, nwas * sizeof(*x->x_vec),
+            wantn * sizeof(*x->x_vec));
         x->x_n = wantn;
     }
 done:
