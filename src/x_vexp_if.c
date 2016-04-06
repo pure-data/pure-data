@@ -78,7 +78,7 @@ expr_list(t_expr *x, t_symbol *s, int argc, const fts_atom_t *argv)
 static void
 expr_flt(t_expr *x, t_float f, int in)
 {
-        if (in > MAX_VARS)
+        if (in >= MAX_VARS)
                 return;
 
         if (x->exp_var[in].ex_type == ET_FI)
@@ -116,7 +116,7 @@ exprproxy_float(t_exprproxy *p, t_floatarg f)
         t_expr *x = p->p_owner;
         int in = p->p_index;
 
-        if (in > MAX_VARS)
+        if (in >= MAX_VARS)
                 return;
 
         if (x->exp_var[in].ex_type == ET_FI)
