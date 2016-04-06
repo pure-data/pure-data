@@ -1113,6 +1113,7 @@ static void text_search_list(t_text_search *x,
                                     goto replace;
                                 else if (thisv < bestv)
                                     goto nomatch;
+                            break;
                             case KB_NEAR:
                                 if (thisv >= argv[j].a_w.w_float &&
                                     bestv >= argv[j].a_w.w_float)
