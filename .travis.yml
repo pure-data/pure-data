@@ -12,7 +12,7 @@ language: c
 env:
   global:
         # COVERITY envs:
-	## the following is an encrypted authentication token or coverity.scan
+        ## the following is an encrypted authentication token or coverity.scan
         - secure: "ifC0UBN+k/lpPL3+amsz8lBNpbmDxi/XGRMIXLpRlNq67cSxOK3pF67HSvM1rFtVS5q9pN+MF2Cfq0jEoeqOJht9SiP+gvb1YlKZITNz4XiNgx2oxKnQLxJhc/EH1bd5hkJ9rpgoOAJGGgDGiI/GFsiwb6wrGQ52i3GPNw3QDPMHjDL8lMPCJQ+GP444j+maXQscWsKqLLa0Eeov0hd60T9fYwvDEGzA95X/UcMW9LFEqq9gW1neiv82ga1y7S/pR8ovqasER+wjFBNdfYh9JekRZv7mRjXK45gRWFg3vArEprfbsgQhPNXsXqXP/HbzMV/cpF0Atn+cyd+GxVRn5PdqiJvn73H9612QQQfXc195JcJXFN79ZeoIYxZI9gZt8emHZE1V90AoTthqCDv0lC/qKwH1SpqqrJ07gGh08ZiUTpN5xBerMzWBdhaUpAGRWeC9xO2xDXz3QKmDb8onWpuoQSCfvM8L2uw2UZnB7Hi93wwyb3nb1kw4CW+3HbgdWIOYtNFc8NAnqbk5BHQLZwCYHOAKPZc6Wae1y2sz5Lm/cOHBdN9msA1jTp5A2K/NjBIhOB6k//uTeSZvkwAWeIcxuNG/xxyk1a76sXGN3WNRSiWeR4jAuNt0k6j0QrEI03Vmv7u12MRiwGBI5WDMhvaMHzltCSmSz2tGsfIEfm8="
         ## a forwarding address to receive notifications of new defects
         - COVERITY_SCAN_NOTIFICATION_EMAIL="pd.coverity@iem.at"
