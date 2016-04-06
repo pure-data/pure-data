@@ -89,7 +89,7 @@ static void canvas_takeofflist(t_canvas *x)
     {
         t_canvas *z;
         for (z = pd_this->pd_canvaslist; z->gl_next != x; z = z->gl_next)
-            ;
+            if (!z->gl_next) return;
         z->gl_next = x->gl_next;
     }
 }
