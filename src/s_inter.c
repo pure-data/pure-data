@@ -973,7 +973,11 @@ int sys_startgui(const char *libdir)
 
         /* create a socket */
         xsock = socket(AF_INET, SOCK_STREAM, 0);
-        if (xsock < 0) sys_sockerror("socket");
+        if (xsock < 0)
+        {
+            sys_sockerror("socket");
+            return (1);
+        }
         intarg = 1;
         if (setsockopt(xsock, IPPROTO_TCP, TCP_NODELAY,
             &intarg, sizeof(intarg)) < 0)
