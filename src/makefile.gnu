@@ -60,7 +60,7 @@ CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
     -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch
 
 # code generation flags (e.g., optimization).  
-CODECFLAGS = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
+CODECFLAGS = -g -O3 -ffast-math -funroll-loops -fomit-frame-pointer
 
 # anything else you want to specify.  Also passed on to "extra" makefiles.
 MORECFLAGS =
