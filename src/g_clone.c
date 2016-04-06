@@ -51,6 +51,7 @@ static void clone_free(t_clone *x)
         pd_free(&x->x_vec[i].c_x->gl_pd);
     }
     t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
+    t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
 }
 
 extern t_pd *newest;
