@@ -548,6 +548,13 @@ struct _dspcontext
 static int ugen_sortno = 0;
 static t_dspcontext *ugen_currentcontext;
 
+    /* get a new signal for the current context - used by clone~ object */
+t_signal *signal_newfromcontext( void)
+{
+    return (signal_new(ugen_currentcontext->dc_calcsize,
+        ugen_currentcontext->dc_srate));
+}
+
 void ugen_stop(void)
 {
     t_signal *s;
@@ -608,16 +615,14 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
     int ninlets, int noutlets)
 {
     t_dspcontext *dc = (t_dspcontext *)getbytes(sizeof(*dc));
-    t_float parent_srate, srate;
     int parent_vecsize, vecsize;
 
     if (ugen_loud) post("ugen_start_graph...");
 
-    /* protect against invalid numsignals
-     * this might happen if we have an abstraction with inlet~/outlet~ opened as a toplevel patch
-     */
-    if(toplevel)
-        ninlets=noutlets=0;
+    /* protect against invalid numsignals.  This might happen if we have
+    an abstraction with inlet~/outlet~  opened as a toplevel patch */
+    if (toplevel)
+        ninlets = noutlets = 0;
 
     dc->dc_ugenlist = 0;
     dc->dc_toplevel = toplevel;

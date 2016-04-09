@@ -1081,7 +1081,7 @@ void ugen_done_graph(t_dspcontext *dc);
     canvases, but is also called from the "dsp" method for sub-
     canvases, which are treated almost like any other tilde object.  */
 
-static void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
+void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
 {
     t_linetraverser t;
     t_outconnect *oc;

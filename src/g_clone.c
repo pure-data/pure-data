@@ -192,6 +192,49 @@ static void clone_click(t_clone *x, t_floatarg xpos, t_floatarg ypos,
     clone_vis(x, 0, 1);
 }
 
+void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp);
+t_signal *signal_newfromcontext( void);
+void signal_makereusable(t_signal *sig);
+
+static void clone_dsp(t_clone *x, t_signal **sp)
+{
+    int i, j, nin, nout;
+    for (i = nin = 0; i < x->x_nin; i++)
+        if (x->x_invec[i].i_signal)
+            nin++;
+    for (i = nout = 0; i < x->x_nout; i++)
+        if (x->x_outvec[i].o_signal)
+            nout++;
+    t_signal **tempsigs =
+        (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
+        /* generate 2 * nout output signals */
+    for (i = 0; i < 2 * nout; i++)
+        tempsigs[i] = signal_newfromcontext();
+        /* load input signals into signal vector to send subpatches */
+    for (i = 0; i < nin; i++)
+        tempsigs[2 * nout + i] = sp[i];
+        /* for first copy, write output to first nout temp sigs */
+    for (i = 0; i < nout; i++)
+        tempsigs[2 * nout + nin + i] = tempsigs[i];
+    canvas_dodsp(x->x_vec[0].c_x, 0, tempsigs + 2*nout);
+        /* for remaining copies, write to second nout temp sigs */
+    for (i = 0; i < nout; i++)
+        tempsigs[2 * nout + nin + i] = tempsigs[nout + i];
+    for (j = 1; j < x->x_n; j++)
+    {
+        canvas_dodsp(x->x_vec[j].c_x, 0, tempsigs + 2*nout);
+        for (i = 0; i < nout; i++)
+            dsp_add_plus(tempsigs[nout + i]->s_vec, tempsigs[i]->s_vec,
+                tempsigs[i]->s_vec, tempsigs[i]->s_n);
+    }
+        /* copy to output signsls */
+    for (i = 0; i < nout; i++)
+        dsp_add_copy(tempsigs[i]->s_vec, sp[nin+i]->s_vec, tempsigs[i]->s_n);
+        /* release the temporary signals */
+    for (i = 0; i < 2 * nout; i++)
+        signal_makereusable(tempsigs[i]);
+}
+
 static void *clone_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_clone *x = (t_clone *)pd_new(clone_class);
