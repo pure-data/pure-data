@@ -549,9 +549,9 @@ static int ugen_sortno = 0;
 static t_dspcontext *ugen_currentcontext;
 
     /* get a new signal for the current context - used by clone~ object */
-t_signal *signal_newfromcontext( void)
+t_signal *signal_newfromcontext(int borrowed)
 {
-    return (signal_new(ugen_currentcontext->dc_calcsize,
+    return (signal_new((borrowed? 0 : ugen_currentcontext->dc_calcsize),
         ugen_currentcontext->dc_srate));
 }
 
@@ -673,7 +673,9 @@ void ugen_connect(t_dspcontext *dc, t_object *x1, int outno, t_object *x2,
     for (u2 = dc->dc_ugenlist; u2 && u2->u_obj != x2; u2 = u2->u_next);
     if (!u1 || !u2 || siginno < 0)
     {
-        pd_error(u1->u_obj,
+        if (!u1)
+            error("object with signal outlets but no DSP method?");
+        else pd_error(u1->u_obj,
             "signal outlet connect to nonsignal inlet (ignored)");
         return;
     }

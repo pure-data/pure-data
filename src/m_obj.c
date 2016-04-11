@@ -637,10 +637,12 @@ int obj_siginletindex(t_object *x, int m)
 {
     int n = 0;
     t_inlet *i;
-    if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
+    if (x->ob_pd->c_firstin)
     {
-        if (!m--) return (0);
-        n++;
+        if (!m--)
+            return (0);
+        if (x->ob_pd->c_floatsignalin)
+            n++;
     }
     for (i = x->ob_inlet; i; i = i->i_next, m--)
         if (i->i_symfrom == &s_signal)

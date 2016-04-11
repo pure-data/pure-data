@@ -1386,8 +1386,11 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
             canvas_objtext(glist, xwas, ywas, widthwas, 0, b);
             canvas_restoreconnections(glist_getcanvas(glist));
                 /* if it's an abstraction loadbang it here */
-            if (newest && pd_class(newest) == canvas_class)
-                canvas_loadbang((t_canvas *)newest);
+            if (newest)
+                if (pd_class(newest) == canvas_class)
+                    canvas_loadbang((t_canvas *)newest);
+                else if (zgetfn(newest, gensym("loadbang")))
+                    vmess(newest, gensym("loadbang"), "f", LB_LOAD);
         }
             /* if we made a new "pd" or changed a window name,
                 update window list */
