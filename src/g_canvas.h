@@ -495,9 +495,15 @@ EXTERN int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
     int *x1p, int *y1p, int *x2p, int *y2p);
 EXTERN int canvas_setdeleting(t_canvas *x, int flag);
 
-#define LB_LOAD 0       /* "loadbang" actions */
-#define LB_INIT 1
-#define LB_CLOSE 2
+#define LB_LOAD 0       /* "loadbang" actions - 0 for original meaning */
+#define LB_INIT 1       /* loaded but not yet connected to parent patch */
+#define LB_CLOSE 2      /* about to close */
+
+    /* Pointer to canvas that was saved necessitating a reload of abstractions
+    of that name.  We use as a flag to stop canvases from being marked "dirty"
+    if we have to touch them to reload; also suppress window list update.
+    "clone~" uses this to identify which copy NOT to reload */
+t_glist *glist_reloadingabstraction;
 
 typedef void (*t_undofn)(t_canvas *canvas, void *buf,
     int action);        /* a function that does UNDO/REDO */
@@ -638,6 +644,9 @@ EXTERN void guiconnect_notarget(t_guiconnect *x, double timedelay);
 /* ------------- IEMGUI routines used in other g_ files ---------------- */
 EXTERN t_symbol *iemgui_raute2dollar(t_symbol *s);
 EXTERN t_symbol *iemgui_dollar2raute(t_symbol *s);
+
+/*-------------  g_clone.c ------------- */
+extern t_class *clone_class;
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

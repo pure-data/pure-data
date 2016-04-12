@@ -732,10 +732,23 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     int hadwindow = (gl->gl_editor != 0);
     for (g = gl->gl_list, i = 0; g && i < nobj; i++)
     {
-        if (g != except && pd_class(&g->g_pd) == canvas_class &&
+            /* remake the object if it's an abstraction that appears to have
+            been loaded from the file we just saved */
+        int remakeit = (g != except && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
-                    canvas_getdir((t_canvas *)g) == dir)
+                    canvas_getdir((t_canvas *)g) == dir);
+            /* also remake it if it's a "clone" with that name */
+        if (pd_class(&g->g_pd) == clone_class &&
+            binbuf_getnatom(((t_object *)g)->te_binbuf) >= 3 &&
+                binbuf_getvec(((t_object *)g)[2].te_binbuf)->a_type == A_SYMBOL
+                && binbuf_getvec(((t_object *)g)[2].te_binbuf)->a_w.w_symbol ==
+                    name)
+        {
+                /* LATER try not to remake the one that equals "except" */
+            remakeit = 1;
+        }
+        if (remakeit)
         {
                 /* we're going to remake the object, so "g" will go stale.
                 Get its index here, and afterward restore g.  Also, the
@@ -766,20 +779,16 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         canvas_vis(glist_getcanvas(gl), 0);
 }
 
-    /* this flag stops canvases from being marked "dirty" if we have to touch
-    them to reload an abstraction; also suppress window list update */
-int glist_amreloadingabstractions = 0;
-
     /* call canvas_doreload on everyone */
-void canvas_reload(t_symbol *name, t_symbol *dir, t_gobj *except)
+void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
 {
     t_canvas *x;
     int dspwas = canvas_suspend_dsp();
-    glist_amreloadingabstractions = 1;
+    glist_reloadingabstraction = except;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        glist_doreload(x, name, dir, except);
-    glist_amreloadingabstractions = 0;
+        glist_doreload(x, name, dir, &except->gl_gobj);
+    glist_reloadingabstraction = 0;
     canvas_resume_dsp(dspwas);
 }
 

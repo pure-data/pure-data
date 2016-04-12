@@ -70,7 +70,7 @@ static t_atom *canvas_newargv;
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist( void)
 {
-    if (! glist_amreloadingabstractions)  /* not if we're in a reload */
+    if (!glist_reloadingabstraction)  /* not if we're in a reload */
         sys_gui("::pd_menus::update_window_menu\n");
 }
 
@@ -605,7 +605,7 @@ void canvas_reflecttitle(t_canvas *x)
 void canvas_dirty(t_canvas *x, t_floatarg n)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    if (glist_amreloadingabstractions)
+    if (glist_reloadingabstraction)
         return;
     if ((unsigned)n != x2->gl_dirty)
     {

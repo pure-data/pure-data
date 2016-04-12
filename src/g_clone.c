@@ -23,7 +23,8 @@
 #define ATOMS_FREEA(x, n) ( \
     ((n) < LIST_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
 
-static t_class *clone_class, *clone_in_class, *clone_out_class;
+t_class *clone_class;
+static t_class *clone_in_class, *clone_out_class;
 
 typedef struct _copy
 {
@@ -195,10 +196,11 @@ static void clone_click(t_clone *x, t_floatarg xpos, t_floatarg ypos,
 static void clone_loadbang(t_clone *x, t_floatarg f)
 {
     int i;
-    for (i = 0; i < x->x_n; i++)
-        if (f == LB_LOAD)
+    if (f == LB_LOAD)
+        for (i = 0; i < x->x_n; i++)
             canvas_loadbang(x->x_vec[i].c_x);
-        else if (f == LB_CLOSE)
+    else if (f == LB_CLOSE)
+        for (i = 0; i < x->x_n; i++)
             canvas_closebang(x->x_vec[i].c_x);
 }
 
