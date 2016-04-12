@@ -303,9 +303,17 @@ void dsp_add(t_perfroutine f, int n, ...)
     pd_this->pd_dspchain = t_resizebytes(pd_this->pd_dspchain,
         pd_this->pd_dspchainsize * sizeof (t_int), newsize * sizeof (t_int));
     pd_this->pd_dspchain[pd_this->pd_dspchainsize-1] = (t_int)f;
+    if (ugen_loud)
+        post("add to chain: %lx",
+            pd_this->pd_dspchain[pd_this->pd_dspchainsize-1]);
     va_start(ap, n);
     for (i = 0; i < n; i++)
+    {
         pd_this->pd_dspchain[pd_this->pd_dspchainsize + i] = va_arg(ap, t_int);
+        if (ugen_loud)
+            post("add to chain: %lx",
+                pd_this->pd_dspchain[pd_this->pd_dspchainsize + i]);
+    }
     va_end(ap);
     pd_this->pd_dspchain[newsize-1] = (t_int)dsp_done;
     pd_this->pd_dspchainsize = newsize;
@@ -464,7 +472,7 @@ t_signal *signal_new(int n, t_float sr)
     ret->s_sr = sr;
     ret->s_refcount = 0;
     ret->s_borrowedfrom = 0;
-    if (ugen_loud) post("new %lx: %d", ret, ret->s_isborrowed);
+    if (ugen_loud) post("new %lx: %lx", ret, ret->s_vec);
     return (ret);
 }
 
@@ -483,6 +491,7 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
     sig->s_vec = sig2->s_vec;
     sig->s_n = sig2->s_n;
     sig->s_vecsize = sig2->s_vecsize;
+    if (ugen_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
 }
 
 int signal_compatible(t_signal *s1, t_signal *s2)
@@ -584,7 +593,7 @@ int ugen_getsortno(void)
     return (ugen_sortno);
 }
 
-#if 0
+#if 1
 void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i, count;
@@ -709,6 +718,7 @@ static int ugen_index(t_dspcontext *dc, t_ugenbox *x)
         if (u == x) return (ret);
     return (-1);
 }
+extern t_class *clone_class;
 
     /* put a ugenbox on the chain, recursively putting any others on that
     this one might uncover. */
@@ -730,7 +740,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         the input signals as they may be "borrowed" for the super or sub
         patch; same exception as above, but also if we're "switched" we
         have to do a copy rather than a borrow.  */
-    int nofreesigs = (class == canvas_class || 
+    int nofreesigs = (class == canvas_class || class == clone_class ||
         ((class == voutlet_class) &&  !(dc->dc_reblock || dc->dc_switched)));
     t_signal **insig, **outsig, **sig, *s1, *s2, *s3;
     t_ugenbox *u2;

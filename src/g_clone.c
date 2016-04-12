@@ -236,14 +236,15 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 dsp_add_zero(sp[nin+i]->s_vec, sp[nin+i]->s_n);
             return;
         }
-                
     }
      t_signal **tempsigs =
         (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
         /* load input signals into signal vector to send subpatches */
     for (i = 0; i < nin; i++)
     {
-        sp[i]->s_refcount += nin;
+            /* we already have one reference "counted" for our presumed
+            use of this input signal but we must add the others. */
+        sp[i]->s_refcount += x->x_n-1;
         tempsigs[2 * nout + i] = sp[i];
     }
         /* for first copy, write output to first nout temp sigs */
