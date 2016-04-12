@@ -721,6 +721,8 @@ else if (action == UNDO_FREE)
         t_freebytes(buf, sizeof(*buf));
 }
 
+int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
+
     /* recursively check for abstractions to reload as result of a save.
     Don't reload the one we just saved ("except") though. */
     /*  LATER try to do the same trick for externs. */
@@ -740,10 +742,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
                     canvas_getdir((t_canvas *)g) == dir);
             /* also remake it if it's a "clone" with that name */
         if (pd_class(&g->g_pd) == clone_class &&
-            binbuf_getnatom(((t_object *)g)->te_binbuf) >= 3 &&
-                binbuf_getvec(((t_object *)g)[2].te_binbuf)->a_type == A_SYMBOL
-                && binbuf_getvec(((t_object *)g)[2].te_binbuf)->a_w.w_symbol ==
-                    name)
+            clone_match(&g->g_pd, name, dir))
         {
                 /* LATER try not to remake the one that equals "except" */
             remakeit = 1;

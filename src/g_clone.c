@@ -28,7 +28,7 @@ static t_class *clone_in_class, *clone_out_class;
 
 typedef struct _copy
 {
-    t_canvas *c_x;
+    t_glist *c_gl;
     int c_on;           /* DSP running */
 } t_copy;
 
@@ -62,6 +62,13 @@ typedef struct _clone
     t_atom *x_argv;
 } t_clone;
 
+int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
+{
+    t_clone *x = (t_clone *)z;
+    t_glist *gl = x->x_vec[0].c_gl;
+    return (gl->gl_name == name && canvas_getdir(gl) == dir);
+}
+
 void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv);
 
 static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
@@ -72,9 +79,9 @@ static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
     else if ((n = argv[0].a_w.w_float) < 0 || n >= x->i_owner->x_n)
         pd_error(x->i_owner, "clone: instance number %d out of range", n);
     else if (argc > 1 && argv[1].a_type == A_SYMBOL)
-        obj_sendinlet(&x->i_owner->x_vec[n].c_x->gl_obj, x->i_n,
+        obj_sendinlet(&x->i_owner->x_vec[n].c_gl->gl_obj, x->i_n,
             argv[1].a_w.w_symbol, argc-2, argv+2);
-    else obj_sendinlet(&x->i_owner->x_vec[n].c_x->gl_obj, x->i_n,
+    else obj_sendinlet(&x->i_owner->x_vec[n].c_gl->gl_obj, x->i_n,
             &s_list, argc-1, argv+1);
 }
 
@@ -98,8 +105,8 @@ static void clone_free(t_clone *x)
     int i;
     for (i = 0; i < x->x_n; i++)
     {
-        canvas_closebang(x->x_vec[i].c_x);
-        pd_free(&x->x_vec[i].c_x->gl_pd);
+        canvas_closebang(x->x_vec[i].c_gl);
+        pd_free(&x->x_vec[i].c_gl->gl_pd);
     }
     t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
 }
@@ -153,11 +160,11 @@ void clone_setn(t_clone *x, t_floatarg f)
         }
         x->x_vec = (t_copy *)t_resizebytes(x->x_vec, i * sizeof(t_copy),
             (i+1) * sizeof(t_copy));
-        x->x_vec[i].c_x = c;
+        x->x_vec[i].c_gl = c;
         x->x_vec[i].c_on = 0;
         for (j = 0; j < x->x_nout; j++)
         {
-            obj_connect(&x->x_vec[i].c_x->gl_obj, j, 
+            obj_connect(&x->x_vec[i].c_gl->gl_obj, j, 
                 (t_object *)(&x->x_outvec[j]), 0);
         }
         x->x_n++;
@@ -166,8 +173,8 @@ void clone_setn(t_clone *x, t_floatarg f)
     {
         for (i = wantn; i < nwas; i++)
         {
-            canvas_closebang(x->x_vec[i].c_x);
-            pd_free(&x->x_vec[i].c_x->gl_pd);
+            canvas_closebang(x->x_vec[i].c_gl);
+            pd_free(&x->x_vec[i].c_gl->gl_pd);
         }
         x->x_vec = (t_copy *)t_resizebytes(x->x_vec, nwas * sizeof(t_copy *),
             wantn * sizeof(t_copy *));
@@ -184,7 +191,7 @@ static void clone_vis(t_clone *x, t_floatarg fn, t_floatarg vis)
         n = 0;
     else if (n >= x->x_n)
         n = x->x_n - 1;
-    canvas_vis(x->x_vec[n].c_x, (vis != 0));
+    canvas_vis(x->x_vec[n].c_gl, (vis != 0));
 }
 
 static void clone_click(t_clone *x, t_floatarg xpos, t_floatarg ypos,
@@ -198,10 +205,10 @@ static void clone_loadbang(t_clone *x, t_floatarg f)
     int i;
     if (f == LB_LOAD)
         for (i = 0; i < x->x_n; i++)
-            canvas_loadbang(x->x_vec[i].c_x);
+            canvas_loadbang(x->x_vec[i].c_gl);
     else if (f == LB_CLOSE)
         for (i = 0; i < x->x_n; i++)
-            canvas_closebang(x->x_vec[i].c_x);
+            canvas_closebang(x->x_vec[i].c_gl);
 }
 
 void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp);
@@ -217,7 +224,21 @@ static void clone_dsp(t_clone *x, t_signal **sp)
     for (i = nout = 0; i < x->x_nout; i++)
         if (x->x_outvec[i].o_signal)
             nout++;
-    t_signal **tempsigs =
+    for (j = 0; j < x->x_n; j++)
+    {
+        if (obj_ninlets(&x->x_vec[j].c_gl->gl_obj) != x->x_nin ||
+            obj_noutlets(&x->x_vec[j].c_gl->gl_obj) != x->x_nout ||
+                obj_nsiginlets(&x->x_vec[j].c_gl->gl_obj) != nin ||
+                    obj_nsigoutlets(&x->x_vec[j].c_gl->gl_obj) != nout)
+        {
+            pd_error(x, "clone: can't do DSP until edited copy is saved");
+            for (i = 0; i < nout; i++)
+                dsp_add_zero(sp[nin+i]->s_vec, sp[nin+i]->s_n);
+            return;
+        }
+                
+    }
+     t_signal **tempsigs =
         (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
         /* load input signals into signal vector to send subpatches */
     for (i = 0; i < nin; i++)
@@ -228,14 +249,14 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         /* for first copy, write output to first nout temp sigs */
     for (i = 0; i < nout; i++)
         tempsigs[i] = tempsigs[2 * nout + nin + i] = signal_newfromcontext(1);
-    canvas_dodsp(x->x_vec[0].c_x, 0, tempsigs + 2*nout);
+    canvas_dodsp(x->x_vec[0].c_gl, 0, tempsigs + 2*nout);
         /* for remaining copies, write to second nout temp sigs */
     for (j = 1; j < x->x_n; j++)
     {
         for (i = 0; i < nout; i++)
             tempsigs[nout+i] = tempsigs[2 * nout + nin + i] =
                 signal_newfromcontext(1);
-        canvas_dodsp(x->x_vec[j].c_x, 0, tempsigs + 2*nout);
+        canvas_dodsp(x->x_vec[j].c_gl, 0, tempsigs + 2*nout);
         for (i = 0; i < nout; i++)
         {
             dsp_add_plus(tempsigs[nout + i]->s_vec, tempsigs[i]->s_vec,
@@ -286,32 +307,33 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
         goto fail;
     x->x_vec = (t_copy *)getbytes(sizeof(*x->x_vec));
-    x->x_vec[0].c_x = c;
+    x->x_vec[0].c_gl = c;
     x->x_n = 1;
-    x->x_nin = obj_ninlets(&x->x_vec[0].c_x->gl_obj);
+    x->x_nin = obj_ninlets(&x->x_vec[0].c_gl->gl_obj);
     x->x_invec = (t_in *)getbytes(x->x_nin * sizeof(*x->x_invec));
     for (i = 0; i < x->x_nin; i++)
     {
         x->x_invec[i].i_pd = clone_in_class;
         x->x_invec[i].i_owner = x;
-        x->x_invec[i].i_signal = obj_issignalinlet(&x->x_vec[0].c_x->gl_obj, i);
+        x->x_invec[i].i_signal =
+            obj_issignalinlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_invec[i].i_n = i;
         post("in %d, signal %d", i, x->x_invec[i].i_signal);
         if (x->x_invec[i].i_signal)
             signalinlet_new(&x->x_obj, 0);
         else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
     }
-    x->x_nout = obj_noutlets(&x->x_vec[0].c_x->gl_obj);
+    x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
     x->x_outvec = (t_out *)getbytes(x->x_nout * sizeof(*x->x_outvec));
     for (i = 0; i < x->x_nout; i++)
     {
         x->x_outvec[i].o_pd = clone_out_class;
         x->x_outvec[i].o_signal =
-            obj_issignaloutlet(&x->x_vec[0].c_x->gl_obj, i);
+            obj_issignaloutlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_outvec[i].o_n = i;
         x->x_outvec[i].o_outlet =
             outlet_new(&x->x_obj, (x->x_outvec[i].o_signal ? &s_signal : 0));
-        obj_connect(&x->x_vec[0].c_x->gl_obj, i, 
+        obj_connect(&x->x_vec[0].c_gl->gl_obj, i, 
             (t_object *)(&x->x_outvec[i]), 0);
     }
     clone_setn(x, (t_floatarg)(wantn));
