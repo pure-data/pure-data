@@ -60,6 +60,7 @@ typedef struct _clone
     t_symbol *x_s;      /* name of abstraction */
     int x_argc;         /* creation arguments for abstractions */
     t_atom *x_argv;
+    int x_phase;
 } t_clone;
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
@@ -83,6 +84,47 @@ static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
             argv[1].a_w.w_symbol, argc-2, argv+2);
     else obj_sendinlet(&x->i_owner->x_vec[n].c_gl->gl_obj, x->i_n,
             &s_list, argc-1, argv+1);
+}
+
+static void clone_in_this(t_in *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int phase = x->i_owner->x_phase;
+    if (phase < 0 || phase >= x->i_owner->x_n)
+        phase = 0;
+    if (argc <= 0)
+        return;
+    else if (argv->a_type == A_SYMBOL)
+        obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
+            argv[0].a_w.w_symbol, argc-1, argv+1);
+    else obj_sendinlet(&x->i_owner->x_vec[phase].c_gl->gl_obj, x->i_n,
+            &s_list, argc, argv);
+}
+
+static void clone_in_next(t_in *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int phase = x->i_owner->x_phase + 1;
+    if (phase < 0 || phase >= x->i_owner->x_n)
+        phase = 0;
+    x->i_owner->x_phase = phase;
+    clone_in_this(x, s, argc, argv);
+}
+
+static void clone_in_set(t_in *x, t_floatarg f)
+{
+    int phase = f;
+    if (phase < 0 || phase >= x->i_owner->x_n)
+        phase = 0;
+    x->i_owner->x_phase = phase;
+}
+
+static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
+{
+    int n = fn;
+    if (n < 0)
+        n = 0;
+    else if (n >= x->i_owner->x_n)
+        n = x->i_owner->x_n - 1;
+    canvas_vis(x->i_owner->x_vec[n].c_gl, (vis != 0));
 }
 
 static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
@@ -184,20 +226,10 @@ done:
     canvas_resume_dsp(dspstate);
 }
 
-static void clone_vis(t_clone *x, t_floatarg fn, t_floatarg vis)
-{
-    int n = fn;
-    if (n < 0)
-        n = 0;
-    else if (n >= x->x_n)
-        n = x->x_n - 1;
-    canvas_vis(x->x_vec[n].c_gl, (vis != 0));
-}
-
 static void clone_click(t_clone *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
-    clone_vis(x, 0, 1);
+    canvas_vis(x->x_vec[0].c_gl, 1);
 }
 
 static void clone_loadbang(t_clone *x, t_floatarg f)
@@ -338,6 +370,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             (t_object *)(&x->x_outvec[i]), 0);
     }
     clone_setn(x, (t_floatarg)(wantn));
+    x->x_phase = wantn-1;
     canvas_resume_dsp(dspstate);
     return (x);
 fail:
@@ -349,11 +382,9 @@ fail:
 void clone_setup(void)
 {
     clone_class = class_new(gensym("clone"), (t_newmethod)clone_new,
-        (t_method)clone_free, sizeof(t_clone), 0, A_GIMME, 0);
+        (t_method)clone_free, sizeof(t_clone), CLASS_NOINLET, A_GIMME, 0);
     class_addmethod(clone_class, (t_method)clone_click, gensym("click"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    class_addmethod(clone_class, (t_method)clone_vis, gensym("vis"),
-        A_FLOAT, A_FLOAT, 0);
     class_addmethod(clone_class, (t_method)clone_loadbang, gensym("loadbang"),
         A_FLOAT, 0);
     class_addmethod(clone_class, (t_method)clone_dsp,
@@ -361,6 +392,14 @@ void clone_setup(void)
 
     clone_in_class = class_new(gensym("clone-inlet"), 0, 0,
         sizeof(t_in), CLASS_PD, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_next, gensym("next"),
+        A_GIMME, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_this, gensym("this"),
+        A_GIMME, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_set, gensym("set"),
+        A_FLOAT, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_vis, gensym("vis"),
+        A_FLOAT, A_FLOAT, 0);
     class_addlist(clone_in_class, (t_method)clone_in_list);
 
     clone_out_class = class_new(gensym("clone-outlet"), 0, 0,
