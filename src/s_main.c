@@ -113,10 +113,7 @@ int* get_sys_schedadvance() { return &sys_schedadvance; }
 
 typedef struct _fontinfo
 {
-    int fi_fontsize;
-    int fi_maxwidth;
-    int fi_maxheight;
-    int fi_hostfontsize;
+    int fi_pointsize;
     int fi_width;
     int fi_height;
 } t_fontinfo;
@@ -124,10 +121,12 @@ typedef struct _fontinfo
     /* these give the nominal point size and maximum height of the characters
     in the six fonts.  */
 
-static t_fontinfo sys_fontlist[] = {
-    {8, 6, 10, 1, 1, 1}, {10, 7, 13, 1, 1, 1}, {12, 9, 16, 1, 1, 1},
-    {16, 10, 21, 1, 1, 1}, {24, 15, 25, 1, 1, 1}, {36, 25, 45, 1, 1, 1}};
-#define NFONT (sizeof(sys_fontlist)/sizeof(*sys_fontlist))
+static t_fontinfo sys_fontspec[] = {
+    {8, 6, 10}, {10, 7, 13}, {12, 9, 16},
+    {16, 10, 21}, {24, 15, 25}, {36, 25, 45}};
+#define NFONT (sizeof(sys_fontspec)/sizeof(*sys_fontspec))
+#define NZOOM 2
+static t_fontinfo sys_gotfonts[NZOOM][NFONT];
 
 /* here are the actual font size structs on msp's systems:
 MSW:
@@ -147,33 +146,33 @@ font 24 15 25 24 15 24
 font 36 25 42 36 22 41
 */
 
-static t_fontinfo *sys_findfont(int fontsize)
+static int sys_findfont(int fontsize)
 {
     unsigned int i;
     t_fontinfo *fi;
-    for (i = 0, fi = sys_fontlist; i < (NFONT-1); i++, fi++)
-        if (fontsize < fi[1].fi_fontsize) return (fi);
-    return (sys_fontlist + (NFONT-1));
+    for (i = 0, fi = sys_fontspec; i < (NFONT-1); i++, fi++)
+        if (fontsize < fi[1].fi_pointsize) return (i);
+    return ((NFONT-1));
 }
 
 int sys_nearestfontsize(int fontsize)
 {
-    return (sys_findfont(fontsize)->fi_fontsize);
+    return (sys_fontspec[sys_findfont(fontsize)].fi_pointsize);
 }
 
 int sys_hostfontsize(int fontsize)
 {
-    return (sys_findfont(fontsize)->fi_hostfontsize);
+    return (sys_gotfonts[0][sys_findfont(fontsize)].fi_pointsize);
 }
 
 int sys_fontwidth(int fontsize)
 {
-    return (sys_findfont(fontsize)->fi_width);
+    return (sys_gotfonts[0][sys_findfont(fontsize)].fi_width);
 }
 
 int sys_fontheight(int fontsize)
 {
-    return (sys_findfont(fontsize)->fi_height);
+    return (sys_gotfonts[0][sys_findfont(fontsize)].fi_height);
 }
 
 int sys_defaultfont;
@@ -207,36 +206,19 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     t_namelist *nl;
     unsigned int i;
     int j;
-    int nhostfont = (argc-2)/3;
     sys_oldtclversion = atom_getfloatarg(1, argc, argv);
-    if (argc != 2 + 3 * nhostfont) bug("glob_initfromgui");
-    for (i = 0; i < NFONT; i++)
+    if (argc != 2 + 3 * NZOOM * NFONT)
+        bug("glob_initfromgui");
+    for (j = 0; j < NZOOM; j++)
+        for (i = 0; i < NFONT; i++)
     {
-        int best = 0;
-        int wantheight = sys_fontlist[i].fi_maxheight;
-        int wantwidth = sys_fontlist[i].fi_maxwidth;
-        for (j = 1; j < nhostfont; j++)
-        {
-            if (atom_getintarg(3 * j + 4, argc, argv) <= wantheight &&
-                atom_getintarg(3 * j + 3, argc, argv) <= wantwidth)
-                    best = j;
-        }
-            /* best is now the host font index for the desired font index i. */
-        sys_fontlist[i].fi_hostfontsize =
-            atom_getintarg(3 * best + 2, argc, argv);
-        sys_fontlist[i].fi_width = atom_getintarg(3 * best + 3, argc, argv);
-        sys_fontlist[i].fi_height = atom_getintarg(3 * best + 4, argc, argv);
+        sys_gotfonts[j][i].fi_pointsize =
+            atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
+        sys_gotfonts[j][i].fi_width =
+            atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
+        sys_gotfonts[j][i].fi_height =
+            atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
     }
-#if 0
-    for (i = 0; i < 6; i++)
-        fprintf(stderr, "font (%d %d %d) -> (%d %d %d)\n",
-            sys_fontlist[i].fi_fontsize,
-            sys_fontlist[i].fi_maxwidth,
-            sys_fontlist[i].fi_maxheight,
-            sys_fontlist[i].fi_hostfontsize,
-            sys_fontlist[i].fi_width,
-            sys_fontlist[i].fi_height);
-#endif
         /* load dynamic libraries specified with "-lib" args */
     for  (nl = sys_externlist; nl; nl = nl->nl_next)
         if (!sys_load_lib(0, nl->nl_string))
