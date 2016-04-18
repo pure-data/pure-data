@@ -325,6 +325,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     if (argc == 0)
     {
         x->x_vec = 0;
+        x->x_n = 0;
         return (x);
     }
     dspstate = canvas_suspend_dsp();
