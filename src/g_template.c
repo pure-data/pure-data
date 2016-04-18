@@ -2447,7 +2447,7 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
 {
     t_drawnumber *x = (t_drawnumber *)z;
     t_atom at;
-    int xloc, yloc, font, fontwidth, fontheight, bufsize, width, height;
+    int xloc, yloc, fontwidth, fontheight, bufsize, width, height;
     char buf[DRAWNUMBER_BUFSIZE], *startline, *newline;
 
     if (!fielddesc_getfloat(&x->x_vis, template, data, 0))
@@ -2460,9 +2460,8 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
         basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
     yloc = glist_ytopixels(glist,
         basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
-    font = glist_getfont(glist);
-    fontwidth = sys_fontwidth(font);
-        fontheight = sys_fontheight(font);
+    fontwidth = glist_fontwidth(glist);
+    fontheight = glist_fontheight(glist);
     drawnumber_getbuf(x, data, template, buf);
     width = 0;
     height = 1;
@@ -2526,7 +2525,8 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
-                 sys_hostfontsize(glist_getfont(glist)), sys_fontweight);
+            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
+                sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
     else sys_vgui(".x%lx.c delete drawnumber%lx\n", glist_getcanvas(glist), data);

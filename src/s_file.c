@@ -462,6 +462,8 @@ void sys_loadpreferences( void)
         sys_hipriority = 1;
 #endif
 #endif
+    if (sys_getpreference("zoom", prefbuf, MAXPDSTRING))
+        sscanf(prefbuf, "%d", &sys_zoom_open);
 }
 
 void glob_savepreferences(t_pd *dummy)
@@ -579,6 +581,9 @@ void glob_savepreferences(t_pd *dummy)
     sys_putpreference("defeatrt", buf1);
     sys_putpreference("flags",
         (sys_flags ? sys_flags->s_name : ""));
-    sys_donesavepreferences();
+        /* misc */
+    sprintf(buf1, "%d", sys_zoom_open);
+    sys_putpreference("zoom", buf1);
 
+    sys_donesavepreferences();
 }

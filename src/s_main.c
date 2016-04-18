@@ -160,19 +160,36 @@ int sys_nearestfontsize(int fontsize)
     return (sys_fontspec[sys_findfont(fontsize)].fi_pointsize);
 }
 
-int sys_hostfontsize(int fontsize)
+int sys_hostfontsize(int fontsize, int zoom)
 {
-    return (sys_gotfonts[0][sys_findfont(fontsize)].fi_pointsize);
+    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_pointsize);
 }
 
-int sys_fontwidth(int fontsize)
+int sys_zoomfontwidth(int fontsize, int zoom, int worstcase)
 {
-    return (sys_gotfonts[0][sys_findfont(fontsize)].fi_width);
+    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    if (worstcase)
+        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_width);
+    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width);
+}
+
+int sys_zoomfontheight(int fontsize, int zoom, int worstcase)
+{
+    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    if (worstcase)
+        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
+    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height);
+}
+
+int sys_fontwidth(int fontsize) /* old version for extern compatibility */
+{
+    return (sys_zoomfontwidth(fontsize, 1, 0));
 }
 
 int sys_fontheight(int fontsize)
 {
-    return (sys_gotfonts[0][sys_findfont(fontsize)].fi_height);
+    return (sys_zoomfontheight(fontsize, 1, 0));
 }
 
 int sys_defaultfont;
@@ -218,6 +235,11 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
             atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
         sys_gotfonts[j][i].fi_height =
             atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+#if 0
+            fprintf(stderr, "font (%d %d %d)\n",
+                sys_gotfonts[j][i].fi_pointsize, sys_gotfonts[j][i].fi_width,
+                    sys_gotfonts[j][i].fi_height);
+#endif
     }
         /* load dynamic libraries specified with "-lib" args */
     for  (nl = sys_externlist; nl; nl = nl->nl_next)

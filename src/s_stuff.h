@@ -45,7 +45,7 @@ extern int sys_nogui;
 extern char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);
-EXTERN int sys_hostfontsize(int fontsize);
+EXTERN int sys_hostfontsize(int fontsize, int zoom);
 
 extern int sys_defaultfont;
 EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
@@ -409,3 +409,5 @@ EXTERN void inmidi_polyaftertouch(int portno,
                                   int value);
 /* } jsarlo */
 extern t_widgetbehavior text_widgetbehavior;
+EXTERN int sys_zoom_open;
+

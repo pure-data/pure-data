@@ -589,6 +589,10 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
     t_gobj *y;
     t_linetraverser t;
     t_outconnect *oc;
+    int zoomwas = x->gl_zoom;
+
+    if (zoomwas > 1)
+        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)1);
         /* subpatch */
     if (x->gl_owner && !x->gl_env)
     {
@@ -650,6 +654,8 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
                 (t_float)x->gl_pixwidth, (t_float)x->gl_pixheight,
                 (t_float)x->gl_isgraph);
     }
+    if (zoomwas > 1)
+        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)zoomwas);
 }
 
     /* call this recursively to collect all the template names for

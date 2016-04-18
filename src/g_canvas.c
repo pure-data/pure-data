@@ -400,6 +400,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_willvis = vis;
     x->gl_edit = !strncmp(x->gl_name->s_name, "Untitled", 8);
     x->gl_font = sys_nearestfontsize(font);
+    x->gl_zoom = 1;
     pd_pushsym(&x->gl_pd);
     return(x);
 }
@@ -477,6 +478,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_pixheight = py2 - py1;
     x->gl_font =  (canvas_getcurrent() ?
         canvas_getcurrent()->gl_font : sys_defaultfont);
+    x->gl_zoom = 1;
     x->gl_screenx1 = 0;
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = 450;
@@ -723,6 +725,24 @@ int glist_getfont(t_glist *x)
     return (x->gl_font);
 }
 
+int glist_getzoom(t_glist *x)
+{
+    t_glist *gl2 = x;
+    while (!glist_istoplevel(gl2) && gl2->gl_owner)
+        gl2 = gl2->gl_owner;
+    return (gl2->gl_zoom);
+}
+
+int glist_fontwidth(t_glist *x)
+{
+    return (sys_zoomfontwidth(glist_getfont(x), glist_getzoom(x), 0));
+}
+
+int glist_fontheight(t_glist *x)
+{
+    return (sys_zoomfontheight(glist_getfont(x), glist_getzoom(x), 0));
+}
+
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
@@ -762,11 +782,12 @@ static void canvas_drawlines(t_canvas *x)
     {
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
-            sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-                    glist_getcanvas(x),
-                        t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
-                            (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1),
-                                oc);
+            sys_vgui(
+        ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
+                glist_getcanvas(x),
+                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
+                (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
+                oc);
     }
 }
 
@@ -831,6 +852,8 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
 
 static void canvas_pop(t_canvas *x, t_floatarg fvis)
 {
+    if (glist_istoplevel(x) && (sys_zoom_open == 2))
+        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)2);
     if (fvis != 0)
         canvas_vis(x, 1);
     pd_popsym(&x->gl_pd);
