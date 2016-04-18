@@ -66,6 +66,8 @@ typedef struct _clone
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
 {
     t_clone *x = (t_clone *)z;
+    if (!x->x_n)
+        return (0);
     t_glist *gl = x->x_vec[0].c_gl;
     return (gl->gl_name == name && canvas_getdir(gl) == dir);
 }
@@ -239,6 +241,8 @@ done:
 static void clone_click(t_clone *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
+    if (!x->x_n)
+        return;
     canvas_vis(x->x_vec[0].c_gl, 1);
 }
 
