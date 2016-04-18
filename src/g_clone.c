@@ -231,7 +231,7 @@ void clone_setn(t_clone *x, t_floatarg f)
             canvas_closebang(x->x_vec[i].c_gl);
             pd_free(&x->x_vec[i].c_gl->gl_pd);
         }
-        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, nwas * sizeof(*x->x_vec),
+        x->x_vec = (t_copy *)t_resizebytes(x->x_vec, nwas * sizeof(t_copy),
             wantn * sizeof(*x->x_vec));
         x->x_n = wantn;
     }
