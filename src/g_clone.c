@@ -117,6 +117,16 @@ static void clone_in_set(t_in *x, t_floatarg f)
     x->i_owner->x_phase = phase;
 }
 
+static void clone_in_all(t_in *x, t_symbol *s, int argc, t_atom *argv)
+{
+    int phasewas = x->i_owner->x_phase, i;
+    for (i = 0; i < x->i_owner->x_n; i++)
+    {
+        x->i_owner->x_phase = i;
+        clone_in_this(x, s, argc, argv);
+    }
+}
+
 static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
 {
     int n = fn;
@@ -398,6 +408,8 @@ void clone_setup(void)
         A_GIMME, 0);
     class_addmethod(clone_in_class, (t_method)clone_in_set, gensym("set"),
         A_FLOAT, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_all, gensym("all"),
+        A_GIMME, 0);
     class_addmethod(clone_in_class, (t_method)clone_in_vis, gensym("vis"),
         A_FLOAT, A_FLOAT, 0);
     class_addlist(clone_in_class, (t_method)clone_in_list);

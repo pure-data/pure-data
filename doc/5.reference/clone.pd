@@ -1,0 +1,69 @@
+#N canvas 141 67 747 746 12;
+#X floatatom 220 300 5 36 144 0 - - -, f 5;
+#X obj 220 321 t b f;
+#X obj 220 345 f;
+#X obj 220 369 + 1;
+#X obj 220 393 mod 16;
+#X obj 220 417 pack;
+#X msg 326 404 next \$1;
+#X floatatom 326 384 5 36 144 0 - - -, f 5;
+#X floatatom 326 434 5 36 144 0 - - -, f 5;
+#X msg 326 453 this \$1;
+#X floatatom 325 481 5 36 144 0 - - -, f 5;
+#X msg 325 500 set \$1;
+#X msg 82 368 vis 5 1;
+#X msg 81 396 vis 5 0;
+#X floatatom 324 527 5 36 144 0 - - -, f 5;
+#X msg 324 548 all \$1;
+#X obj 218 596 clone 16 clone-subpatch;
+#X obj 218 655 ../3.audio.examples/output~;
+#X text 488 708 updated for Pd version 0.47;
+#X text 15 11 clone~ - make multiple copies of a subpatch;
+#X text 498 576 creation arguments:;
+#X text 485 598 number of copies \; filename \; optional arguments
+;
+#X text 65 597 click to open ->;
+#X text 53 619 (first copy only);
+#X text 69 322 open or close copy number 5:, f 14;
+#X text 278 297 A list beginning with a number dispatches the rest
+of the list as a message, f 23;
+#X text 25 43 clone~ creates any number of copies of a desired abstraction.
+To disambiguate between them \, each copy is given its own instance
+number (counting upward from 0) as its first arguemnt. (Additional
+arguments to "clone~" are provided to the abstraction after that first
+one)., f 71;
+#X text 22 122 clone~'s inlets and outlets correspond to those of the
+contained patch \, and my be signal and/or control inlets and outlets.
+(In this example there's one control inlet and one signal outlet).
+You can click on the clone~ object to see the first of the created
+instances., f 72;
+#X text 402 374 "next" forwards a message to the next instance (incrementing
+and repeating circularly)., f 33;
+#X text 406 427 "this" forwards a message to the previous instance
+sent to by "this" or "next", f 30;
+#X text 390 482 "set" sets the "next"/"this" counter;
+#X text 385 528 "all" broadcasts a message to all instances;
+#X text 22 206 Signal inlets are copied to all the instances. Control
+inlets forward messages as shown below. Signal outlets output the sum
+of all instances' outputs \, and control outlets forward messages after
+prepending the number of the instance., f 67;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 1 5 1;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 2 1;
+#X connect 4 0 5 0;
+#X connect 5 0 16 0;
+#X connect 6 0 16 0;
+#X connect 7 0 6 0;
+#X connect 8 0 9 0;
+#X connect 9 0 16 0;
+#X connect 10 0 11 0;
+#X connect 11 0 16 0;
+#X connect 12 0 16 0;
+#X connect 13 0 16 0;
+#X connect 14 0 15 0;
+#X connect 15 0 16 0;
+#X connect 16 0 17 0;
+#X connect 16 0 17 1;
