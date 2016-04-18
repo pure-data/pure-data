@@ -85,7 +85,7 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     ::scrollboxwindow::make $mytoplevel $::startup_libraries \
         dialog_startup::add dialog_startup::edit dialog_startup::commit \
         [_ "Pd libraries to load on startup"] \
-        400 320 0
+        450 320 0
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     frame $mytoplevel.flags

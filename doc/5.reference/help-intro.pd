@@ -1,4 +1,4 @@
-#N canvas 220 52 579 948 12;
+#N canvas 503 52 579 948 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -251,15 +251,15 @@
 #X text 124 3527 - read from a delay line at a variable delay time
 ;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X restore 24 3587 pd;
-#X text 124 3587 - define a subwindow;
+#X restore 25 3577 pd;
+#X text 125 3577 - define a subwindow;
 #X obj 25 1463 table;
-#X obj 24 3611 inlet;
-#X text 124 3611 - add an inlet to a pd;
-#X obj 24 3635 outlet;
-#X text 124 3635 - add an outlet to a pd;
-#X obj 24 3659 inlet~;
-#X obj 84 3659 outlet~;
+#X obj 25 3601 inlet;
+#X text 125 3601 - add an inlet to a pd;
+#X obj 25 3625 outlet;
+#X text 125 3625 - add an outlet to a pd;
+#X obj 25 3649 inlet~;
+#X obj 85 3649 outlet~;
 #X obj 24 3728 struct;
 #X text 124 3728 - define a data structure;
 #X obj 24 3752 drawcurve;
@@ -298,7 +298,7 @@
 #X text 20 831 ------------------------- MATH -----------------;
 #X text 20 630 ------------------------- TIME --------------------------
 ;
-#X text 18 3558 ------------------------ SUBWINDOWS ------------------------
+#X text 17 3553 ------------------------ SUBWINDOWS ------------------------
 ;
 #X text 18 3698 ---------------------- DATA TEMPLATES ----------------------
 ;
@@ -332,7 +332,7 @@
 #X obj 121 1973 /~;
 #X obj 25 1912 declare;
 #X text 125 1912 - set search path and/or load libraries;
-#X text 162 3660 - signal versions;
+#X text 163 3650 - signal versions;
 #X obj 22 1094 wrap;
 #X text 121 1094 - wrap a number to range [0 \, 1);
 #X text 126 2132 - wraparound (fractional part);
@@ -405,3 +405,5 @@ its "help window".;
 #X obj 60 4293 stdout;
 #X obj 27 4347 bob~;
 #X text 123 4349 - Moog resonant filter model;
+#X text 118 3676 - make copies of a subpatch;
+#X obj 26 3676 clone;

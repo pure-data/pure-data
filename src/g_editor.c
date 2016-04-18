@@ -721,6 +721,8 @@ else if (action == UNDO_FREE)
         t_freebytes(buf, sizeof(*buf));
 }
 
+int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
+
     /* recursively check for abstractions to reload as result of a save.
     Don't reload the one we just saved ("except") though. */
     /*  LATER try to do the same trick for externs. */
@@ -732,10 +734,20 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     int hadwindow = (gl->gl_editor != 0);
     for (g = gl->gl_list, i = 0; g && i < nobj; i++)
     {
-        if (g != except && pd_class(&g->g_pd) == canvas_class &&
+            /* remake the object if it's an abstraction that appears to have
+            been loaded from the file we just saved */
+        int remakeit = (g != except && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
-                    canvas_getdir((t_canvas *)g) == dir)
+                    canvas_getdir((t_canvas *)g) == dir);
+            /* also remake it if it's a "clone" with that name */
+        if (pd_class(&g->g_pd) == clone_class &&
+            clone_match(&g->g_pd, name, dir))
+        {
+                /* LATER try not to remake the one that equals "except" */
+            remakeit = 1;
+        }
+        if (remakeit)
         {
                 /* we're going to remake the object, so "g" will go stale.
                 Get its index here, and afterward restore g.  Also, the
@@ -766,20 +778,16 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         canvas_vis(glist_getcanvas(gl), 0);
 }
 
-    /* this flag stops canvases from being marked "dirty" if we have to touch
-    them to reload an abstraction; also suppress window list update */
-int glist_amreloadingabstractions = 0;
-
     /* call canvas_doreload on everyone */
-void canvas_reload(t_symbol *name, t_symbol *dir, t_gobj *except)
+void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
 {
     t_canvas *x;
     int dspwas = canvas_suspend_dsp();
-    glist_amreloadingabstractions = 1;
+    glist_reloadingabstraction = except;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
-        glist_doreload(x, name, dir, except);
-    glist_amreloadingabstractions = 0;
+        glist_doreload(x, name, dir, &except->gl_gobj);
+    glist_reloadingabstraction = 0;
     canvas_resume_dsp(dspwas);
 }
 
@@ -1347,7 +1355,8 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                 else canvas_setcursor(x, CURSOR_EDITMODE_RESIZE);
             }
                 /* look for an outlet */
-            else if (ob && (noutlet = obj_noutlets(ob)) && ypos >= y2-4)
+            else if (ob && (noutlet = obj_noutlets(ob)) &&
+                ypos >= y2 - 1 - 3*x->gl_zoom)
             {
                 int width = x2 - x1;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
@@ -1366,7 +1375,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         sys_vgui(
                           ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
                                 x, xpos, ypos, xpos, ypos,
-                                    (issignal ? 2 : 1));
+                                    (issignal ? 2 : 1) * x->gl_zoom);
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
                 }
@@ -1551,7 +1560,8 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                 sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                     glist_getcanvas(x),
                         lx1, ly1, lx2, ly2,
-                            (obj_issignaloutlet(ob1, closest1) ? 2 : 1), oc);
+                        (obj_issignaloutlet(ob1, closest1) ? 2 : 1) * x->gl_zoom,
+                        oc);
                 canvas_dirty(x, 1);
                 canvas_setundo(x, canvas_undo_connect,
                     canvas_undo_set_connect(x,
@@ -1890,7 +1900,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
                     (pd_checkglist(&ob->te_pd) &&
                         !((t_canvas *)ob)->gl_isgraph))
             {
-                wantwidth = wantwidth / sys_fontwidth(glist_getfont(x));
+                wantwidth = wantwidth / glist_fontwidth(x);
                 if (wantwidth < 1)
                     wantwidth = 1;
                 ob->te_width = wantwidth;
@@ -2031,6 +2041,33 @@ static void canvas_menufont(t_canvas *x)
     gfxstub_deleteforkey(x2);
     sprintf(buf, "pdtk_canvas_dofont %%s %d\n", x2->gl_font);
     gfxstub_new(&x2->gl_pd, &x2->gl_pd, buf);
+}
+
+#define REZOOM(x, y) ((x) = ((y) == 2 ? (x)*2 : (x)/2))
+static void canvas_zoom(t_canvas *x, t_floatarg zoom)
+{
+    if (zoom != x->gl_zoom && (zoom == 1 || zoom == 2))
+    {
+        t_gobj *g;
+        t_object *obj;
+        x->gl_zoom = zoom;
+        REZOOM(x->gl_xmargin, zoom);
+        REZOOM(x->gl_ymargin, zoom);
+        REZOOM(x->gl_pixwidth, zoom);
+        REZOOM(x->gl_pixheight, zoom);
+        for (g = x->gl_list; g; g = g->g_next)
+            if ((obj = pd_checkobject(&g->g_pd)))
+        {
+            REZOOM(obj->te_xpix, zoom);
+            REZOOM(obj->te_ypix, zoom);
+                /* any GOPs (new style) get soomed too */
+            if (pd_class(&obj->te_pd) == canvas_class &&
+                ((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect)
+                    canvas_zoom((t_glist *)obj, zoom);
+        }
+        if (x->gl_havewindow)
+            canvas_redraw(x);
+    }
 }
 
 static int canvas_find_index, canvas_find_wholeword;
@@ -2400,6 +2437,8 @@ static void glist_donewloadbangs(t_glist *x)
         for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
             if (pd_class(&sel->sel_what->g_pd) == canvas_class)
                 canvas_loadbang((t_canvas *)(&sel->sel_what->g_pd));
+            else if (zgetfn(&sel->sel_what->g_pd, gensym("loadbang")))
+                vmess(&sel->sel_what->g_pd, gensym("loadbang"), "f", LB_LOAD);
     }
 }
 
@@ -2835,6 +2874,8 @@ void g_editor_setup(void)
         gensym("menufont"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_font,
         gensym("font"), A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_zoom,
+        gensym("zoom"), A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find,
         gensym("find"), A_SYMBOL, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_find_again,

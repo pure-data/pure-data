@@ -4,6 +4,7 @@
 
 #include "m_pd.h"
 #include "m_imp.h"
+#include "s_stuff.h"
 
 t_class *glob_pdobject;
 static t_class *maxclass;
@@ -56,7 +57,7 @@ void glob_audio(void *dummy, t_floatarg adc, t_floatarg dac);
 /* a method you add for debugging printout */
 void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv);
 
-#if 1
+#if 0
 void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     post("foo 1");
@@ -114,6 +115,12 @@ void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_vgui("\n");
 }
 
+int sys_zoom_open = 1;
+void glob_zoom_open(t_pd *dummy, t_floatarg f)
+{
+    sys_zoom_open = (f != 0 ? 2 : 1);
+}
+
 void glob_init(void)
 {
     maxclass = class_new(gensym("max"), 0, 0, sizeof(t_pd),
@@ -166,6 +173,8 @@ void glob_init(void)
     class_addmethod(glob_pdobject, (t_method)glob_ping, gensym("ping"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_savepreferences,
         gensym("save-preferences"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_zoom_open,
+        gensym("zoom-open"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_version,
         gensym("version"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_perf,

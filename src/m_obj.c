@@ -443,6 +443,9 @@ void outlet_free(t_outlet *x)
     t_freebytes(x, sizeof(*x));
 }
 
+    /* connect an outlet of one object to an inlet of another.  The receiving
+    "pd" is usually a patchable object, but this may be used to add a
+    non-patchable pd to an outlet by specifying the 0th inlet. */
 t_outconnect *obj_connect(t_object *source, int outno,
     t_object *sink, int inno)
 {
@@ -634,10 +637,12 @@ int obj_siginletindex(t_object *x, int m)
 {
     int n = 0;
     t_inlet *i;
-    if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
+    if (x->ob_pd->c_firstin)
     {
-        if (!m--) return (0);
-        n++;
+        if (!m--)
+            return (0);
+        if (x->ob_pd->c_floatsignalin)
+            n++;
     }
     for (i = x->ob_inlet; i; i = i->i_next, m--)
         if (i->i_symfrom == &s_signal)
@@ -741,3 +746,14 @@ void obj_saveformat(t_object *x, t_binbuf *bb)
         binbuf_addv(bb, "ssf;", &s__X, gensym("f"), (float)x->te_width);
 }
 
+/* this one only in g_clone.c -- LATER consider sending the message
+without having to chase the linked list every time? */
+void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv)
+{
+    t_inlet *i;
+    for (i = x->ob_inlet; i && n; i = i->i_next, n--)
+        ;
+    if (i)
+        typedmess(&i->i_pd, s, argc, argv);
+    else bug("obj_sendinlet");
+}

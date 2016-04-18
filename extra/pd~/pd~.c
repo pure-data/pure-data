@@ -492,7 +492,10 @@ static void pd_tilde_dsp(t_pd_tilde *x, t_signal **sp)
         
     for (i = 0, g = x->x_insig; i < x->x_ninsig; i++, g++)
         *g = (*(sp++))->s_vec;
-    
+        /* if there were no input signals Pd still provided us with one,
+        which we ignore: */
+    if (!x->x_ninsig)
+        sp++;
     for (i = 0, g = x->x_outsig; i < x->x_noutsig; i++, g++)
         *g = (*(sp++))->s_vec;
     

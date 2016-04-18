@@ -70,7 +70,7 @@ static t_atom *canvas_newargv;
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist( void)
 {
-    if (! glist_amreloadingabstractions)  /* not if we're in a reload */
+    if (!glist_reloadingabstraction)  /* not if we're in a reload */
         sys_gui("::pd_menus::update_window_menu\n");
 }
 
@@ -400,6 +400,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_willvis = vis;
     x->gl_edit = !strncmp(x->gl_name->s_name, "Untitled", 8);
     x->gl_font = sys_nearestfontsize(font);
+    x->gl_zoom = 1;
     pd_pushsym(&x->gl_pd);
     return(x);
 }
@@ -477,6 +478,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_pixheight = py2 - py1;
     x->gl_font =  (canvas_getcurrent() ?
         canvas_getcurrent()->gl_font : sys_defaultfont);
+    x->gl_zoom = 1;
     x->gl_screenx1 = 0;
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = 450;
@@ -605,7 +607,7 @@ void canvas_reflecttitle(t_canvas *x)
 void canvas_dirty(t_canvas *x, t_floatarg n)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    if (glist_amreloadingabstractions)
+    if (glist_reloadingabstraction)
         return;
     if ((unsigned)n != x2->gl_dirty)
     {
@@ -723,6 +725,24 @@ int glist_getfont(t_glist *x)
     return (x->gl_font);
 }
 
+int glist_getzoom(t_glist *x)
+{
+    t_glist *gl2 = x;
+    while (!glist_istoplevel(gl2) && gl2->gl_owner)
+        gl2 = gl2->gl_owner;
+    return (gl2->gl_zoom);
+}
+
+int glist_fontwidth(t_glist *x)
+{
+    return (sys_zoomfontwidth(glist_getfont(x), glist_getzoom(x), 0));
+}
+
+int glist_fontheight(t_glist *x)
+{
+    return (sys_zoomfontheight(glist_getfont(x), glist_getzoom(x), 0));
+}
+
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
@@ -749,7 +769,7 @@ void canvas_free(t_canvas *x)
     freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
     gstub_cutoff(x->gl_stub);
     gfxstub_deleteforkey(x);        /* probably unnecessary */
-    if (!x->gl_owner)
+    if (!x->gl_owner && !x->gl_isclone)
         canvas_takeofflist(x);
 }
 
@@ -762,11 +782,12 @@ static void canvas_drawlines(t_canvas *x)
     {
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
-            sys_vgui(".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-                    glist_getcanvas(x),
-                        t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
-                            (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1),
-                                oc);
+            sys_vgui(
+        ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
+                glist_getcanvas(x),
+                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
+                (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
+                oc);
     }
 }
 
@@ -831,6 +852,8 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
 
 static void canvas_pop(t_canvas *x, t_floatarg fvis)
 {
+    if (glist_istoplevel(x) && (sys_zoom_open == 2))
+        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)2);
     if (fvis != 0)
         canvas_vis(x, 1);
     pd_popsym(&x->gl_pd);
@@ -1081,7 +1104,7 @@ void ugen_done_graph(t_dspcontext *dc);
     canvases, but is also called from the "dsp" method for sub-
     canvases, which are treated almost like any other tilde object.  */
 
-static void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
+void canvas_dodsp(t_canvas *x, int toplevel, t_signal **sp)
 {
     t_linetraverser t;
     t_outconnect *oc;
