@@ -2043,6 +2043,8 @@ static void canvas_menufont(t_canvas *x)
     gfxstub_new(&x2->gl_pd, &x2->gl_pd, buf);
 }
 
+typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
+
 #define REZOOM(x, y) ((x) = ((y) == 2 ? (x)*2 : (x)/2))
 static void canvas_zoom(t_canvas *x, t_floatarg zoom)
 {
@@ -2058,12 +2060,15 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
         for (g = x->gl_list; g; g = g->g_next)
             if ((obj = pd_checkobject(&g->g_pd)))
         {
+            t_gotfn zoommethod;
             REZOOM(obj->te_xpix, zoom);
             REZOOM(obj->te_ypix, zoom);
-                /* any GOPs (new style) get soomed too */
-            if (pd_class(&obj->te_pd) == canvas_class &&
-                ((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect)
-                    canvas_zoom((t_glist *)obj, zoom);
+                /* pass zoom message on to all objects, except canvases
+                that aren't new-style GOPs */
+            if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
+                (!(pd_class(&obj->te_pd) == canvas_class) ||
+                ((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect))
+                    (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
         }
         if (x->gl_havewindow)
             canvas_redraw(x);

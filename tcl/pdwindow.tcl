@@ -276,7 +276,7 @@ proc ::pdwindow::create_tcl_entry {} {
     pack .pdwindow.tcl.label -side left
     entry .pdwindow.tcl.entry -width 200 \
        -exportselection 1 -insertwidth 2 -insertbackground blue \
-       -textvariable ::pdwindow::tclentry -font {$::font_family -12}
+       -textvariable ::pdwindow::tclentry -font TkTextFont
     pack .pdwindow.tcl.entry -side left -fill x
 # bindings for the Tcl entry widget
     bind .pdwindow.tcl.entry <$::modifier-Key-a> "%W selection range 0 end; break"
