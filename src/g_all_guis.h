@@ -156,6 +156,7 @@ typedef struct _iemgui
     t_symbol           *x_lab_unexpanded;
     int                x_binbufindex;       /* where in binbuf to find these */
     int                x_labelbindex;       /* where in binbuf to find label */
+    int                x_zoom;              /* zoom multiple */
 } t_iemgui;
 
 typedef struct _bng
@@ -310,6 +311,7 @@ EXTERN void iemgui_select(t_gobj *z, t_glist *glist, int selected);
 EXTERN void iemgui_delete(t_gobj *z, t_glist *glist);
 EXTERN void iemgui_vis(t_gobj *z, t_glist *glist, int vis);
 EXTERN void iemgui_save(t_iemgui *iemgui, t_symbol **srl, int *bflcol);
+EXTERN void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom);
 EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
 
