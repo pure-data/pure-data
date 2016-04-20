@@ -37,7 +37,7 @@ void my_canvas_draw_new(t_my_canvas *x, t_glist *glist)
 
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -outline #%6.6x -tags %lxRECT\n",
              canvas, xpos, ypos,
-             xpos + x->x_vis_w, ypos + x->x_vis_h,
+             xpos + x->x_vis_w*x->x_gui.x_zoom, ypos + x->x_vis_h*x->x_gui.x_zoom,
              x->x_gui.x_bcol, x->x_gui.x_bcol, x);
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -outline #%6.6x -tags %lxBASE\n",
              canvas, xpos, ypos,
@@ -58,8 +58,8 @@ void my_canvas_draw_move(t_my_canvas *x, t_glist *glist)
     t_canvas *canvas=glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxRECT %d %d %d %d\n",
-             canvas, x, xpos, ypos, xpos + x->x_vis_w,
-             ypos + x->x_vis_h);
+             canvas, x, xpos, ypos, xpos + x->x_vis_w*x->x_gui.x_zoom,
+             ypos + x->x_vis_h*x->x_gui.x_zoom);
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
              canvas, x, xpos, ypos,
              xpos + x->x_gui.x_w, ypos + x->x_gui.x_h);
@@ -338,6 +338,7 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
+    x->x_gui.x_zoom = 1;
     if(fs < 4)
         fs = 4;
     x->x_gui.x_fontsize = fs;
@@ -372,6 +373,8 @@ void g_mycanvas_setup(void)
     class_addmethod(my_canvas_class, (t_method)my_canvas_label_pos, gensym("label_pos"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_label_font, gensym("label_font"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_get_pos, gensym("get_pos"), 0);
+    class_addmethod(my_canvas_class, (t_method)iemgui_zoom, gensym("zoom"),
+        A_CANT, 0);
 
     my_canvas_widgetbehavior.w_getrectfn = my_canvas_getrect;
     my_canvas_widgetbehavior.w_displacefn = iemgui_displace;
