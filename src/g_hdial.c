@@ -60,8 +60,8 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
 
     for(i=0; i<n; i++)
     {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -tags %lxBASE%d\n",
-                 canvas, xx11, yy11, xx11+dx, yy12,
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%6.6x -tags %lxBASE%d\n",
+                 canvas, xx11, yy11, xx11+dx, yy12, x->x_gui.x_zoom,
                  x->x_gui.x_bcol, x, i);
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -outline #%6.6x -tags %lxBUT%d\n",
                  canvas, xx21, yy21, xx22, yy22,
@@ -79,11 +79,11 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
              x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]\n",
-             canvas, xx11b, yy12-1, xx11b + IOWIDTH, yy12, x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
+             canvas, xx11b, yy12+1-2*x->x_gui.x_zoom, xx11b + IOWIDTH, yy12, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxIN%d inlet]\n",
-             canvas, xx11b, yy11, xx11b + IOWIDTH, yy11+1, x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
+             canvas, xx11b, yy11, xx11b + IOWIDTH, yy11-1+2*x->x_gui.x_zoom, x, 0);
 
 }
 
@@ -113,10 +113,10 @@ void hradio_draw_move(t_hradio *x, t_glist *glist)
              canvas, x, xx11b+x->x_gui.x_ldx, yy11+x->x_gui.x_ldy);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
-             canvas, x, 0, xx11b, yy12-1, xx11b + IOWIDTH, yy12);
+             canvas, x, 0, xx11b, yy12+1-2*x->x_gui.x_zoom, xx11b + IOWIDTH, yy12);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
-             canvas, x, 0, xx11b, yy11, xx11b + IOWIDTH, yy11+1);
+             canvas, x, 0, xx11b, yy11, xx11b + IOWIDTH, yy11-1+2*x->x_gui.x_zoom);
 }
 
 void hradio_draw_erase(t_hradio* x, t_glist* glist)
@@ -622,6 +622,7 @@ static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     x->x_gui.x_fontsize = fs;
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
+    x->x_gui.x_zoom = 1;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_all_colfromload(&x->x_gui, bflcol);
     outlet_new(&x->x_gui.x_obj, &s_list);
@@ -685,6 +686,8 @@ void g_hradio_setup(void)
         gensym("single_change"), 0);
     class_addmethod(hradio_class, (t_method)hradio_double_change,
         gensym("double_change"), 0);
+    class_addmethod(hradio_class, (t_method)iemgui_zoom, gensym("zoom"),
+        A_CANT, 0);
     hradio_widgetbehavior.w_getrectfn = hradio_getrect;
     hradio_widgetbehavior.w_displacefn = iemgui_displace;
     hradio_widgetbehavior.w_selectfn = iemgui_select;
@@ -740,6 +743,8 @@ void g_hradio_setup(void)
         gensym("single_change"), 0);
     class_addmethod(hradio_old_class, (t_method)hradio_double_change,
         gensym("double_change"), 0);
+    class_addmethod(hradio_old_class, (t_method)iemgui_zoom, gensym("zoom"),
+        A_CANT, 0);
     class_setwidget(hradio_old_class, &hradio_widgetbehavior);
     class_sethelpsymbol(hradio_old_class, gensym("hradio"));
 }

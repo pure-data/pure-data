@@ -104,10 +104,10 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
     int k1=x->x_led_size+1, k2=IEM_VU_STEPS+1, k3=k1/2;
     int led_col, yyy, i, k4=ypos-k3;
 
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -tags %lxBASE\n",
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%6.6x -tags %lxBASE\n",
              canvas, xpos-1, ypos-2,
              xpos+x->x_gui.x_w+1,
-             ypos+x->x_gui.x_h+2, x->x_gui.x_bcol, x);
+             ypos+x->x_gui.x_h+2, x->x_gui.x_zoom, x->x_gui.x_bcol, x);
     for(i=1; i<=IEM_VU_STEPS; i++)
     {
         led_col = iemgui_vu_col[i];
@@ -145,28 +145,28 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
     {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
              canvas,
-             xpos-1, ypos + x->x_gui.x_h+1,
+             xpos-1, ypos + x->x_gui.x_h+3-2*x->x_gui.x_zoom,
              xpos + IOWIDTH-1, ypos + x->x_gui.x_h+2,
              x, 0);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]x\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]x\n",
              canvas,
-             xpos+x->x_gui.x_w+1-IOWIDTH, ypos + x->x_gui.x_h+1,
+             xpos+x->x_gui.x_w+1-IOWIDTH, ypos + x->x_gui.x_h+3-2*x->x_gui.x_zoom,
              xpos+x->x_gui.x_w+1, ypos + x->x_gui.x_h+2,
              x, 1);
     }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxIN%d inlet]\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
              canvas,
              xpos-1, ypos-2,
-             xpos + IOWIDTH-1, ypos-1,
+             xpos + IOWIDTH-1, ypos-2+2*x->x_gui.x_zoom,
              x, 0);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxIN%d inlet]\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
              canvas,
              xpos+x->x_gui.x_w+1-IOWIDTH, ypos-2,
-             xpos+x->x_gui.x_w+1, ypos-1,
+             xpos+x->x_gui.x_w+1, ypos-2+2*x->x_gui.x_zoom,
              x, 1);
     }
     x->x_updaterms = x->x_updatepeak = 1;
@@ -214,11 +214,11 @@ static void vu_draw_move(t_vu *x, t_glist *glist)
     {
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
              canvas, x, 0,
-             xpos-1, ypos + x->x_gui.x_h+1,
+             xpos-1, ypos + x->x_gui.x_h+3-2*x->x_gui.x_zoom,
              xpos + IOWIDTH-1, ypos + x->x_gui.x_h+2);
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
              canvas, x, 1,
-             xpos+x->x_gui.x_w+1-IOWIDTH, ypos + x->x_gui.x_h+1,
+             xpos+x->x_gui.x_w+1-IOWIDTH, ypos + x->x_gui.x_h+3-2*x->x_gui.x_zoom,
                  xpos+x->x_gui.x_w+1, ypos + x->x_gui.x_h+2);
     }
     if(!x->x_gui.x_fsf.x_rcv_able)
@@ -681,7 +681,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-
+    x->x_gui.x_zoom = 1;
     if(fs < 4)
         fs = 4;
     x->x_gui.x_fontsize = fs;
@@ -727,6 +727,8 @@ void g_vumeter_setup(void)
     class_addmethod(vu_class, (t_method)vu_label, gensym("label"), A_DEFSYM, 0);
     class_addmethod(vu_class, (t_method)vu_label_pos, gensym("label_pos"), A_GIMME, 0);
     class_addmethod(vu_class, (t_method)vu_label_font, gensym("label_font"), A_GIMME, 0);
+    class_addmethod(vu_class, (t_method)iemgui_zoom, gensym("zoom"),
+        A_CANT, 0);
     vu_widgetbehavior.w_getrectfn =    vu_getrect;
     vu_widgetbehavior.w_displacefn =   iemgui_displace;
     vu_widgetbehavior.w_selectfn =     iemgui_select;
