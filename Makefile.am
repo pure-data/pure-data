@@ -476,5 +476,5 @@ nobase_dist_libpd_DATA = \
      doc/7.stuff/tools/testtone.pd \
      doc/sound/bell.aiff \
      doc/sound/voice2.wav \
-     doc/sound/voice.wav \
+     doc/sound/voice.wav
 
