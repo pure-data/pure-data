@@ -19,6 +19,10 @@
 #include <string.h>
 #include <stdarg.h>
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif
+
 struct _binbuf
 {
     int b_n;
