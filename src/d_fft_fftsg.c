@@ -21,9 +21,9 @@ for another, more permissive-sounding copyright notice.  -MSP
 /* ---------- Pd interface to OOURA FFT; imitate Mayer API ---------- */
 #include "m_pd.h"
 
-#ifdef _MSC_VER
-# include <malloc.h> /* MSVC */
-#elif defined(__linux__) || defined(__APPLE__) || defined(_WIN32)
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */

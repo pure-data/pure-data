@@ -19,13 +19,13 @@ moment it also defines "text" but it may later be better to split this off. */
 extern t_pd *newest;    /* OK - this should go into a .h file now :) */
 static t_class *text_define_class;
 
-#ifdef _MSC_VER
-# include <malloc.h> /* MSVC */
-#elif defined(__linux__) || defined(__APPLE__) || defined(_WIN32)
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
-#endif  
+#endif
 
 #ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
 #define HAVE_ALLOCA 1
