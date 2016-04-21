@@ -66,9 +66,9 @@ typedef struct _clone
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
 {
     t_clone *x = (t_clone *)z;
+    t_glist *gl = x->x_vec[0].c_gl;
     if (!x->x_n)
         return (0);
-    t_glist *gl = x->x_vec[0].c_gl;
     return (gl->gl_name == name && canvas_getdir(gl) == dir);
 }
 
@@ -170,8 +170,8 @@ extern t_pd *newest;
 
 static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
 {
-    newest = 0;
     t_canvas *retval;
+    newest = 0;
     typedmess(&pd_objectmaker, s, argc, argv);
     if (newest == 0)
     {
@@ -206,8 +206,8 @@ void clone_setn(t_clone *x, t_floatarg f)
     if (wantn > nwas)
         for (i = nwas; i < wantn; i++)
     {
-        SETFLOAT(x->x_argv, i);
         t_canvas *c = clone_makeone(x->x_s, x->x_argc, x->x_argv);
+        SETFLOAT(x->x_argv, i);
         if (!c)
         {
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
@@ -265,6 +265,7 @@ void signal_makereusable(t_signal *sig);
 static void clone_dsp(t_clone *x, t_signal **sp)
 {
     int i, j, nin, nout;
+    t_signal **tempsigs;
     for (i = nin = 0; i < x->x_nin; i++)
         if (x->x_invec[i].i_signal)
             nin++;
@@ -284,8 +285,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             return;
         }
     }
-     t_signal **tempsigs =
-        (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
+    tempsigs = (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
         /* load input signals into signal vector to send subpatches */
     for (i = 0; i < nin; i++)
     {
