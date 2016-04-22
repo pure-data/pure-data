@@ -80,7 +80,7 @@ PmDeviceID find_default_device(char *path, int input, PmDeviceID id)
             pref_str[i] = c;
         }
         if (i == STRING_MAX) continue; // value too long, ignore
-        pref_str[i] == 0;
+        pref_str[i] = 0;
         i = pm_find_default_device(pref_str, input);
         if (i != pmNoDevice) {
             id = i;

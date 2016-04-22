@@ -1,6 +1,16 @@
 README_LINUX.txt for PortMidi
 Roger Dannenberg
-14 Oct 2009
+6 Dec 2012
+
+Contents:
+        To make PortMidi
+        The pmdefaults program
+        Setting LD_LIBRARY_PATH
+        A note about amd64
+        Using autoconf
+        Using configure
+        Changelog
+
 
 To make PortMidi, you need cmake and the Java SDK.
 Go back up to the portmidi directory and type:
@@ -13,6 +23,11 @@ by typing 't' (toggle to advanced mode) and using the
 editor to change the fields. You can find possible values
 for JAVA_INCLUDE_PATH by typing "locate jni.h", and for
 JAVA_JVM_LIBRARY by typing locate libjvm".
+
+Alternatively, try 
+    export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
+before running ccmake ., and note that your JAVA_HOME
+may be different.
 
 You also need JAVA_INCLUDE_PATH2, but this will normally
 be set automatically after you set JAVA_INCLUDE_PATH and
@@ -88,7 +103,47 @@ http://www.gentoo.org/proj/en/base/amd64/howtos/index.xml?part=1&chap=3
 On certain architectures (AMD64 amongst them), shared libraries *must* 
 be "PIC-enabled".
 
+USING AUTOCONF
+
+Audacity (the audio editor ) uses an autoconf-based build system, and 
+the files are also included in the PortMidi download. The associated
+files are tested only in the context of building Audacity, but if you
+really prefer autoconf to cmake or want to include portmidi in another
+autoconf-based project (like Audacity), maybe this will be useful.
+
+The files are: configure.ac, portmidi-uninstalled.pc.in, portmidi.pc.in,
+    and everything in autotools/.
+
+To build from these files, run aclocal, which will produce
+    aclocal.m4 and autom4te.cache
+
+Run autoconf, which will produce
+    configure
+
+Run automake, which will produce
+    Makefile.in
+
+Now that you have a configure and Makefile.in, 
+continue with the next section.
+
+
+USING CONFIGURE
+
+Run ./configure to produce:
+    config.status
+    Makefile
+    portmidi.pc
+    portmidi-uninstalled.pc
+
+
+Finally, run make to create
+    
+
+
 CHANGELOG
+
+6-dec-2012 Roger B. Dannenberg
+   Copied notes on Autoconf from Audacity sources
 
 22-jan-2010 Roger B. Dannenberg
    Updated instructions about Java paths

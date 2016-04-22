@@ -56,6 +56,11 @@ TO COMPILE PORTMIDI:
     files are built by CMake. If you need a different version or have
     problems with paths, try rebuilding the Visual Studio project files
     using CMake -- See "Using other versions of visual C++" below.)
+    Apparently, CMake adds a linker option (see Properties:Configuration
+    Properties:Linker:Command Line:Additional Options) for the machine
+    type (x86 or x64) you may have to remove to avoid the compiler error:
+    "error LNK1112: module machine type 'X86' conflicts with target machine
+    type 'x64'"
 	
 5)  the following projects exist within this workspace:
     - portmidi-static, portmidi-dynamic (versions of the PortMidi library)
@@ -87,7 +92,7 @@ TO COMPILE PORTMIDI:
 6)  use Build->Batch Build ... to build everything in the project. If a 
     build fails, try building again. There seem to be some missing 
     dependencies, so you may have to "ALL_BUILD" several times before
-    everything builds successfully.
+    everything builds successfully or build libraries first.
 	
 7)  The settings for these projects were distributed in the zip file, so
     compile should just work.
