@@ -149,12 +149,12 @@ PaError PaMacCore_SetError(OSStatus error, int line, int isError)
     case kAudioUnitErr_TooManyFramesToProcess:
         errorText = "Audio Unit: Too Many Frames";
         result = paInternalError; break;
-    /* case kAudioUnitErr_IllegalInstrument: (apparently obsolete now)
+    case kAudioUnitErr_IllegalInstrument:
         errorText = "Audio Unit: Illegal Instrument";
         result = paInternalError; break;
     case kAudioUnitErr_InstrumentTypeNotFound:
         errorText = "Audio Unit: Instrument Type Not Found";
-        result = paInternalError; break; */
+        result = paInternalError; break;
     case kAudioUnitErr_InvalidFile:
         errorText = "Audio Unit: Invalid File";
         result = paInternalError; break;
