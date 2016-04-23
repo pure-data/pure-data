@@ -52,14 +52,13 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
     int r = ypos + x->x_gui.x_h - (x->x_val + 50)/100;
     t_canvas *canvas=glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%6.6x -tags %lxBASE\n",
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -tags %lxBASE\n",
              canvas, xpos, ypos-2,
              xpos + x->x_gui.x_w, ypos + x->x_gui.x_h+3,
-             x->x_gui.x_zoom,
              x->x_gui.x_bcol, x);
-    sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%6.6x -tags %lxKNOB\n",
+    sys_vgui(".x%lx.c create line %d %d %d %d -width 3 -fill #%6.6x -tags %lxKNOB\n",
              canvas, xpos+1, r,
-             xpos + x->x_gui.x_w, r, 1 + 2 * x->x_gui.x_zoom, x->x_gui.x_fcol, x);
+             xpos + x->x_gui.x_w, r, x->x_gui.x_fcol, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%6.6x -tags [list %lxLABEL label text]\n",
              canvas, xpos+x->x_gui.x_ldx, ypos+x->x_gui.x_ldy,
@@ -67,15 +66,15 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
              x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]\n",
              canvas,
-             xpos, ypos + x->x_gui.x_h+3-2*x->x_gui.x_zoom,
+             xpos, ypos + x->x_gui.x_h+2,
              xpos+7, ypos + x->x_gui.x_h+3,
              x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxIN%d inlet]\n",
              canvas,
-             xpos, ypos-3+2*x->x_gui.x_zoom,
+             xpos, ypos-2,
              xpos+7, ypos-1,
              x, 0);
 }
@@ -99,13 +98,13 @@ static void vslider_draw_move(t_vslider *x, t_glist *glist)
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
              canvas, x, 0,
-             xpos, ypos + x->x_gui.x_h+3-2*x->x_gui.x_zoom,
+             xpos, ypos + x->x_gui.x_h+2,
              xpos+7, ypos + x->x_gui.x_h+3);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
              canvas, x, 0,
              xpos, ypos-2,
-             xpos+7, ypos-3+2*x->x_gui.x_zoom);
+             xpos+7, ypos-1);
 }
 
 static void vslider_draw_erase(t_vslider* x,t_glist* glist)
@@ -578,7 +577,6 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
     if(x->x_gui.x_fsf.x_rcv_able) pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    x->x_gui.x_zoom = 1;
     if(fs < 4)
         fs = 4;
     x->x_gui.x_fontsize = fs;
@@ -629,8 +627,6 @@ void g_vslider_setup(void)
     class_addmethod(vslider_class, (t_method)vslider_lin, gensym("lin"), 0);
     class_addmethod(vslider_class, (t_method)vslider_init, gensym("init"), A_FLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_steady, gensym("steady"), A_FLOAT, 0);
-    class_addmethod(vslider_class, (t_method)iemgui_zoom, gensym("zoom"),
-        A_CANT, 0);
     vslider_widgetbehavior.w_getrectfn =    vslider_getrect;
     vslider_widgetbehavior.w_displacefn =   iemgui_displace;
     vslider_widgetbehavior.w_selectfn =     iemgui_select;
