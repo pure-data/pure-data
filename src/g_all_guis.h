@@ -167,7 +167,6 @@ typedef struct _bng
     t_clock  *x_clock_hld;
     t_clock  *x_clock_brk;
     t_clock  *x_clock_lck;
-    double x_lastflashtime;
 } t_bng;
 
 typedef struct _hslider
