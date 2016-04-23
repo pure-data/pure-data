@@ -2,7 +2,7 @@ AC_PREREQ(2.59)
 AC_INIT(pd,0.47.0)
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4/generated])
 
 if test -d "$srcdir/portaudio"; then
