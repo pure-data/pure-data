@@ -114,7 +114,7 @@ AC_SUBST(EXTERNAL_LDFLAGS)
 AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_LIBS])
 
-dnl Checks for libraries.
+# Checks for libraries.
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIBM
 # AC_CHECK_LIBM computes LIBM but does not add to LIBS, hence we add it in
@@ -130,20 +130,20 @@ AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
 
 AC_HEADER_STDC
 
-dnl Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only 
-dnl includes OSS for UNIX
+# Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only 
+# includes OSS for UNIX
 AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
 AM_CONDITIONAL(OSS, test x$oss = xyes)
 
 AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
-dnl AC_CHECK_HEADER(Jackmp/jack.h, [jack=yes], [jack=no])
+# AC_CHECK_HEADER(Jackmp/jack.h, [jack=yes], [jack=no])
 
-dnl portaudio/CoreAudio doesn't work with iPhone
+# portaudio/CoreAudio doesn't work with iPhone
 test x$IPHONEOS = xyes && coreaudio=no
 
 AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 
-dnl TODO implement debug and static
+# TODO implement debug and static
 #AC_ARG_ENABLE(static,   [  --enable-static         link statically],
 #    static=$enableval)
 
@@ -154,9 +154,9 @@ dnl TODO implement debug and static
 #    CFLAGS="$CFLAGS -g"
 #fi
 
-dnl ALSA
-dnl shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
-dnl alternatively we could use pkg-config
+# ALSA
+# shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
+# alternatively we could use pkg-config
 AC_ARG_ENABLE([alsa],
     [AS_HELP_STRING([--disable-alsa],
         [do not use ALSA audio driver])],
@@ -165,7 +165,7 @@ AS_IF([test x$alsa = xyes], [
     AC_CHECK_LIB(asound,snd_pcm_info,ALSA_LIBS="-lasound",alsa=no)])
 AM_CONDITIONAL(ALSA, test x$alsa = xyes)
 
-dnl ASIO
+# ASIO
 AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio],
         [use ASIO audio driver])],
@@ -174,15 +174,15 @@ AS_IF([test x$asio = xyes], [
     AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h],[asio=yes],[asio=no])])
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
 
-dnl JACK
-dnl shouldn't we use pkg-config?
-dnl TODO support jack xrun
+# JACK
+# shouldn't we use pkg-config?
+# TODO support jack xrun
 AC_ARG_ENABLE([jack],
     [AS_HELP_STRING([--enable-jack],
         [use JACK audio server])],
     [jack=$enableval])
-dnl on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
-dnl this is set in src/Makefile.am based on the JACK var
+# on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
+# this is set in src/Makefile.am based on the JACK var
 AS_IF([test x$MACOSX != xyes], [
     AS_IF([test x$jack = xyes], [
         AC_CHECK_LIB(rt,shm_open,LIBS="$LIBS -lrt")
@@ -191,7 +191,7 @@ AS_IF([test x$MACOSX != xyes], [
                   jack=no)])])
 AM_CONDITIONAL(JACK, test x$jack = xyes)
 
-dnl portaudio
+# portaudio
 AC_ARG_ENABLE([portaudio],
         [AS_HELP_STRING([--disable-portaudio],
             [do not use portaudio])],
@@ -204,7 +204,7 @@ if test x$portaudio = xyes; then
     fi
 fi
 
-dnl portmidi
+# portmidi
 AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi],
         [use portmidi])],
@@ -212,7 +212,7 @@ AC_ARG_ENABLE([portmidi],
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
 if test x$portmidi = xyes; then echo Using included portmidi; fi
 
-dnl fftw v3
+# fftw v3
 AC_ARG_ENABLE([fftw],
         [AS_HELP_STRING([--enable-fftw],
                 [use FFTW package])],
@@ -271,7 +271,7 @@ AC_CONFIG_FILES([Makefile
 
 AC_OUTPUT
 
-dnl output some messages at the end
+# output some messages at the end
 
 AS_IF([test x$windows = xyes], [
     AS_IF([test x$asio = xno], [
