@@ -14,34 +14,31 @@ PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no , AC_MSG_ERROR([Android SDK not availab
 case $host in
 *darwin*)
     if test "x${IPHONEOS}" = "xno"; then
-     portaudio=yes
-     portmidi=yes
-     MACOSX=yes
-
-     EXTERNAL_CFLAGS="-fPIC"
-     EXTERNAL_EXTENSION=d_fat
+        portaudio=yes
+        portmidi=yes
+        MACOSX=yes
+        EXTERNAL_CFLAGS="-fPIC"
+        EXTERNAL_EXTENSION=d_fat
     else
-     portaudio=no
-
-     EXTERNAL_CFLAGS=
-     EXTERNAL_EXTENSION=pd_darwin
+        portaudio=no
+        EXTERNAL_CFLAGS=
+        EXTERNAL_EXTENSION=pd_darwin
     fi
-
     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
     INCLUDES="$INCLUDES -I/sw/include"
     LDFLAGS="$LDFLAGS -L/sw/lib"
     EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
     ;;
 *linux*|*kfreebsd*gnu*)
-# GNU/kFreeBSD are for Debian, were they are treated very similar to linux
+    # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
     if test "x${ANDROID}" = "xno"; then
-     LINUX=yes
-     portaudio=yes
-     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+        LINUX=yes
+        portaudio=yes
+        CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
     fi
-    EXTERNAL_CFLAGS="-fPIC"
-    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
-    EXTERNAL_EXTENSION=pd_linux
+        EXTERNAL_CFLAGS="-fPIC"
+        EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
+        EXTERNAL_EXTENSION=pd_linux
     ;;
 *-*-gnu*)
     HURD=yes
@@ -53,12 +50,14 @@ case $host in
 *mingw*)
     WINDOWS=yes
     MINGW=yes
-# ASIO doesn't build yet with the autotools setup. We need to figure out how
-#        to make the final linking phase use g++
+    
+    # ASIO doesn't build yet with the autotools setup. We need to figure out how
+    # to make the final linking phase use g++
     asio=yes
     portaudio=yes
     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
-# ASIO is a C++ library, so if its included, then use g++ to build
+
+    # ASIO is a C++ library, so if its included, then use g++ to build
     EXTERNAL_CFLAGS="-mms-bitfields"
     EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
     EXTERNAL_EXTENSION=dll
@@ -77,8 +76,8 @@ esac
 PD_CHECK_UNIVERSAL(ARCH, universal=yes, universal=no)
 AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
 if test "x${universal}" = "xyes"; then
- CFLAGS="${CFLAGS} ${ARCH_CFLAGS}"
- LDFLAGS="${LDFLAGS} ${ARCH_LDFLAGS}"
+    CFLAGS="${CFLAGS} ${ARCH_CFLAGS}"
+    LDFLAGS="${LDFLAGS} ${ARCH_LDFLAGS}"
 fi
 
 AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
