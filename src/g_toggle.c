@@ -51,9 +51,8 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
         w = 2;
     if(x->x_gui.x_w >= 60)
         w = 3;
-    sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%6.6x -tags %lxBASE\n",
+    sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -tags %lxBASE\n",
              canvas, xx, yy, xx + x->x_gui.x_w, yy + x->x_gui.x_h,
-             x->x_gui.x_zoom,
              x->x_gui.x_bcol, x);
     sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%6.6x -tags %lxX1\n",
              canvas, xx+w+1, yy+w+1, xx + x->x_gui.x_w-w, yy + x->x_gui.x_h-w, w,
@@ -69,12 +68,11 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
              x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
-             canvas, xx, yy + x->x_gui.x_h+1-2*x->x_gui.x_zoom,
-                xx + IOWIDTH, yy + x->x_gui.x_h, x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]\n",
+             canvas, xx, yy + x->x_gui.x_h-1, xx + IOWIDTH, yy + x->x_gui.x_h, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
-             canvas, xx, yy, xx + IOWIDTH, yy-1+2*x->x_gui.x_zoom, x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxIN%d inlet]\n",
+             canvas, xx, yy, xx + IOWIDTH, yy+1, x, 0);
 }
 
 void toggle_draw_move(t_toggle *x, t_glist *glist)
@@ -99,10 +97,10 @@ void toggle_draw_move(t_toggle *x, t_glist *glist)
              canvas, x, xx+x->x_gui.x_ldx, yy+x->x_gui.x_ldy);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
-             canvas, x, 0, xx, yy + x->x_gui.x_h+1-2*x->x_gui.x_zoom, xx + IOWIDTH, yy + x->x_gui.x_h);
+             canvas, x, 0, xx, yy + x->x_gui.x_h-1, xx + IOWIDTH, yy + x->x_gui.x_h);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
-             canvas, x, 0, xx, yy, xx + IOWIDTH, yy-1+2*x->x_gui.x_zoom);
+             canvas, x, 0, xx, yy, xx + IOWIDTH, yy+1);
 }
 
 void toggle_draw_erase(t_toggle* x, t_glist* glist)
@@ -428,7 +426,6 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fontsize = fs;
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
-    x->x_gui.x_zoom = 1;
     iemgui_all_colfromload(&x->x_gui, bflcol);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_float);
@@ -467,8 +464,6 @@ void g_toggle_setup(void)
     class_addmethod(toggle_class, (t_method)toggle_label_font, gensym("label_font"), A_GIMME, 0);
     class_addmethod(toggle_class, (t_method)toggle_init, gensym("init"), A_FLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_nonzero, gensym("nonzero"), A_FLOAT, 0);
-    class_addmethod(toggle_class, (t_method)iemgui_zoom, gensym("zoom"),
-        A_CANT, 0);
     toggle_widgetbehavior.w_getrectfn = toggle_getrect;
     toggle_widgetbehavior.w_displacefn = iemgui_displace;
     toggle_widgetbehavior.w_selectfn = iemgui_select;
