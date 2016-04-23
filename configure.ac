@@ -5,9 +5,6 @@ AC_CONFIG_AUX_DIR([m4/config])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4/generated])
 
-if test -d "$srcdir/portaudio"; then
-  AC_CONFIG_SUBDIRS([portaudio])
-fi
 
 
 AC_CANONICAL_HOST
@@ -202,6 +199,12 @@ AC_ARG_ENABLE([portaudio],
 			[do not use portaudio])],
     	[portaudio=$enableval])	
 AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
+if test x$portaudio = xyes; then
+	if test -d "$srcdir/portaudio"; then
+		echo Using included portaudio;
+  		AC_CONFIG_SUBDIRS([portaudio])
+	fi
+fi
 
 dnl portmidi
 AC_ARG_ENABLE([portmidi],
