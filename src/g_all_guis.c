@@ -16,6 +16,10 @@
 #include "g_all_guis.h"
 #include <math.h>
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif
+
 #ifdef _WIN32
 #include <io.h>
 #else
