@@ -5,8 +5,6 @@ AC_CONFIG_AUX_DIR([m4/config])
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4/generated])
 
-
-
 AC_CANONICAL_HOST
 
 # you will need to install iPhone XCode on Mac OS X to use this:
@@ -15,65 +13,65 @@ PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no , AC_MSG_ERROR([Android SDK not availab
 
 case $host in
 *darwin*)
-	if test "x${IPHONEOS}" = "xno"; then
-	 portaudio=yes
-	 portmidi=yes
-	 MACOSX=yes
+    if test "x${IPHONEOS}" = "xno"; then
+     portaudio=yes
+     portmidi=yes
+     MACOSX=yes
 
-	 EXTERNAL_CFLAGS="-fPIC"
-	 EXTERNAL_EXTENSION=d_fat
-	else
-	 portaudio=no
+     EXTERNAL_CFLAGS="-fPIC"
+     EXTERNAL_EXTENSION=d_fat
+    else
+     portaudio=no
 
-	 EXTERNAL_CFLAGS=
-	 EXTERNAL_EXTENSION=pd_darwin
-	fi
+     EXTERNAL_CFLAGS=
+     EXTERNAL_EXTENSION=pd_darwin
+    fi
 
-	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
-	INCLUDES="$INCLUDES -I/sw/include"
-	LDFLAGS="$LDFLAGS -L/sw/lib"
-	EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
-	;;
+    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+    INCLUDES="$INCLUDES -I/sw/include"
+    LDFLAGS="$LDFLAGS -L/sw/lib"
+    EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
+    ;;
 *linux*|*kfreebsd*gnu*)
 # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
-	if test "x${ANDROID}" = "xno"; then
-	 LINUX=yes
-	 portaudio=yes
-	 CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
-	fi
-	EXTERNAL_CFLAGS="-fPIC"
-	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
-	EXTERNAL_EXTENSION=pd_linux
-	;;
+    if test "x${ANDROID}" = "xno"; then
+     LINUX=yes
+     portaudio=yes
+     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+    fi
+    EXTERNAL_CFLAGS="-fPIC"
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
+    EXTERNAL_EXTENSION=pd_linux
+    ;;
 *-*-gnu*)
-	HURD=yes
-	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
-	EXTERNAL_CFLAGS="-fPIC"
-	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
-	EXTERNAL_EXTENSION=pd_linux
-	;;
+    HURD=yes
+    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+    EXTERNAL_CFLAGS="-fPIC"
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
+    EXTERNAL_EXTENSION=pd_linux
+    ;;
 *mingw*)
-	WINDOWS=yes
-	MINGW=yes
+    WINDOWS=yes
+    MINGW=yes
 # ASIO doesn't build yet with the autotools setup. We need to figure out how
 #        to make the final linking phase use g++
-	asio=yes
-	portaudio=yes
-	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
+    asio=yes
+    portaudio=yes
+    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
 # ASIO is a C++ library, so if its included, then use g++ to build
-	EXTERNAL_CFLAGS="-mms-bitfields"
-	EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
-	EXTERNAL_EXTENSION=dll
-	;;
+    EXTERNAL_CFLAGS="-mms-bitfields"
+    EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
+    EXTERNAL_EXTENSION=dll
+    ;;
 *cygwin*)
-	WINDOWS=yes
-	CYGWIN=yes
-	portaudio=yes
-	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
-	EXTERNAL_CFLAGS=
-	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
-	EXTERNAL_EXTENSION=dll
-	;;
+    WINDOWS=yes
+    CYGWIN=yes
+    portaudio=yes
+    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+    EXTERNAL_CFLAGS=
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
+    EXTERNAL_EXTENSION=dll
+    ;;
 esac
 
 PD_CHECK_UNIVERSAL(ARCH, universal=yes, universal=no)
@@ -150,8 +148,8 @@ dnl TODO implement debug and static
 #    static=$enableval)
 
 #AC_ARG_ENABLE([debug],
-#	[AS_HELP_STRING([--enable-debug], [use debugging support])], 
-#		[debug=$enableval])
+#   [AS_HELP_STRING([--enable-debug], [use debugging support])], 
+#       [debug=$enableval])
 #if test x$debug = xyes; then
 #    CFLAGS="$CFLAGS -g"
 #fi
@@ -160,8 +158,8 @@ dnl ALSA
 dnl shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
 dnl alternatively we could use pkg-config
 AC_ARG_ENABLE([alsa],
-	[AS_HELP_STRING([--disable-alsa],
-		[do not use ALSA audio driver])],
+    [AS_HELP_STRING([--disable-alsa],
+        [do not use ALSA audio driver])],
     [alsa=$enableval], [alsa=yes])
 AS_IF([test x$alsa = xyes], [
     AC_CHECK_LIB(asound,snd_pcm_info,ALSA_LIBS="-lasound",alsa=no)])
@@ -169,8 +167,8 @@ AM_CONDITIONAL(ALSA, test x$alsa = xyes)
 
 dnl ASIO
 AC_ARG_ENABLE([asio],
-	[AS_HELP_STRING([--enable-asio],
-		[use ASIO audio driver])],
+    [AS_HELP_STRING([--enable-asio],
+        [use ASIO audio driver])],
     [asio=$enableval])
 AS_IF([test x$asio = xyes], [
     AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h],[asio=yes],[asio=no])])
@@ -180,9 +178,9 @@ dnl JACK
 dnl shouldn't we use pkg-config?
 dnl TODO support jack xrun
 AC_ARG_ENABLE([jack],
-	[AS_HELP_STRING([--enable-jack],
-		[use JACK audio server])],
-	[jack=$enableval])
+    [AS_HELP_STRING([--enable-jack],
+        [use JACK audio server])],
+    [jack=$enableval])
 dnl on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
 dnl this is set in src/Makefile.am based on the JACK var
 AS_IF([test x$MACOSX != xyes], [
@@ -190,26 +188,26 @@ AS_IF([test x$MACOSX != xyes], [
         AC_CHECK_LIB(rt,shm_open,LIBS="$LIBS -lrt")
         AC_CHECK_LIB(jack,jack_set_xrun_callback,JACK_LIBS="-ljack";jack=xrun)
         AC_CHECK_LIB(jack,jack_set_error_function,JACK_LIBS="-ljack";jack=yes,
-	              jack=no)])])
+                  jack=no)])])
 AM_CONDITIONAL(JACK, test x$jack = xyes)
 
 dnl portaudio
 AC_ARG_ENABLE([portaudio],
-		[AS_HELP_STRING([--disable-portaudio],
-			[do not use portaudio])],
-    	[portaudio=$enableval])	
+        [AS_HELP_STRING([--disable-portaudio],
+            [do not use portaudio])],
+        [portaudio=$enableval]) 
 AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
 if test x$portaudio = xyes; then
-	if test -d "$srcdir/portaudio"; then
-		echo Using included portaudio;
-  		AC_CONFIG_SUBDIRS([portaudio])
-	fi
+    if test -d "$srcdir/portaudio"; then
+        echo Using included portaudio;
+        AC_CONFIG_SUBDIRS([portaudio])
+    fi
 fi
 
 dnl portmidi
 AC_ARG_ENABLE([portmidi],
-	[AS_HELP_STRING([--enable-portmidi],
-		[use portmidi])],
+    [AS_HELP_STRING([--enable-portmidi],
+        [use portmidi])],
     [portmidi=$enableval])
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
 if test x$portmidi = xyes; then echo Using included portmidi; fi
@@ -258,16 +256,16 @@ AC_CONFIG_FILES([Makefile
                 po/Makefile
                 src/Makefile
                 extra/Makefile
-		extra/bob~/GNUmakefile
-		extra/bonk~/GNUmakefile
-		extra/choice/GNUmakefile
-		extra/fiddle~/GNUmakefile
-		extra/loop~/GNUmakefile
-		extra/lrshift~/GNUmakefile
-		extra/pd~/GNUmakefile
-		extra/pique/GNUmakefile
-		extra/sigmund~/GNUmakefile
-		extra/stdout/GNUmakefile
+                extra/bob~/GNUmakefile
+                extra/bonk~/GNUmakefile
+                extra/choice/GNUmakefile
+                extra/fiddle~/GNUmakefile
+                extra/loop~/GNUmakefile
+                extra/lrshift~/GNUmakefile
+                extra/pd~/GNUmakefile
+                extra/pique/GNUmakefile
+                extra/sigmund~/GNUmakefile
+                extra/stdout/GNUmakefile
                 pd.pc
                 ])
 
@@ -277,8 +275,6 @@ dnl output some messages at the end
 
 AS_IF([test x$windows = xyes], [
     AS_IF([test x$asio = xno], [
-	    AC_MSG_RESULT(
+        AC_MSG_RESULT(
 ASIO SDK not found! You need to download asiosdk2.2.zip from: 
     http://www.steinberg.net/en/company/3rd_party_developer.html)])])
-
-

@@ -42,10 +42,9 @@ noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt \
-	pd.ico pd.rc \
-	makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
-	s_audio_dummy.c s_audio_audiounit.c s_audio_esd.c
-
+    pd.ico pd.rc \
+    makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
+    s_audio_dummy.c s_audio_audiounit.c s_audio_esd.c
 
 # configurations per library
 if ALSA
@@ -56,7 +55,7 @@ endif
 
 if COREAUDIO
 LIBS += -framework CoreAudio -framework CoreMIDI \
-	-framework AudioUnit -framework AudioToolbox
+    -framework AudioUnit -framework AudioToolbox
 endif
 
 if FFTW
@@ -102,7 +101,6 @@ INCLUDES += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
 pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 pd_SOURCES += s_midi_pm.c
 endif
-
 
 # FIXXXME
 # GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)

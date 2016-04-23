@@ -5,7 +5,6 @@ SUFFIXES = .tcl
 # we want these in the dist tarball
 #EXTRA_DIST = CHANGELOG.txt notes.txt makefile.mingw
 
-
 bin_SCRIPTS = pd-gui.tcl
 
 libpdtcldir = $(pkglibdir)/tcl

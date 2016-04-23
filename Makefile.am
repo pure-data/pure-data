@@ -477,4 +477,3 @@ nobase_dist_libpd_DATA = \
      doc/sound/bell.aiff \
      doc/sound/voice2.wav \
      doc/sound/voice.wav
-
