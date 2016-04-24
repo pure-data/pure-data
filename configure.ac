@@ -1,15 +1,20 @@
+#########################################
+##### Prelude #####
+
 AC_PREREQ(2.59)
-AC_INIT(pd,0.47.0)
+AC_INIT([pd], [0.47.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
-AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4/generated])
-
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CANONICAL_HOST
 
-# you will need to install iPhone XCode on Mac OS X to use this:
-PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iPhoneOS SDK not available]))
-PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no , AC_MSG_ERROR([Android SDK not available]))
+#########################################
+##### Build Options #####
+
+# you will need to install XCode on Mac OS X to use this:
+PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iOS SDK not available]))
+PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not available]))
 
 case $host in
 *darwin*)
@@ -17,10 +22,12 @@ case $host in
         portaudio=yes
         portmidi=yes
         MACOSX=yes
+        PLATFORM=macosx
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
     else
         portaudio=no
+        PLATFORM=ios
         EXTERNAL_CFLAGS=
         EXTERNAL_EXTENSION=pd_darwin
     fi
@@ -33,15 +40,18 @@ case $host in
     # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
     if test "x${ANDROID}" = "xno"; then
         LINUX=yes
+        PLATFORM=linux
         portaudio=yes
         CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
     fi
+        PLATFORM=android
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
         EXTERNAL_EXTENSION=pd_linux
     ;;
 *-*-gnu*)
     HURD=yes
+    PLATFORM=hurd
     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
     EXTERNAL_CFLAGS="-fPIC"
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
@@ -50,7 +60,8 @@ case $host in
 *mingw*)
     WINDOWS=yes
     MINGW=yes
-    
+    PLATFORM=mingw
+
     # ASIO doesn't build yet with the autotools setup. We need to figure out how
     # to make the final linking phase use g++
     asio=yes
@@ -65,11 +76,15 @@ case $host in
 *cygwin*)
     WINDOWS=yes
     CYGWIN=yes
+    PLATFORM=cygwin
     portaudio=yes
     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
     EXTERNAL_EXTENSION=dll
+    ;;
+*)
+    PLATFORM=unknown
     ;;
 esac
 
@@ -89,6 +104,9 @@ AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
 AM_CONDITIONAL(CYGWIN, test x$MINGW = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
 
+#########################################
+##### Check for programs, libs, & headers #####
+
 # Configure libtool
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
@@ -104,14 +122,61 @@ AC_PROG_LN_S
 #AC_PROG_GREP
 #AC_PROG_SED
 
-AC_SUBST(EXTERNTARGET)
-AC_SUBST(INCLUDES)
+AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
+test x$HAVE_MSGFMT = xyes || AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
+AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 
-AC_SUBST(EXTERNAL_EXTENSION)
-AC_SUBST(EXTERNAL_CFLAGS)
-AC_SUBST(EXTERNAL_LDFLAGS)
-AC_SUBST([ALSA_LIBS])
-AC_SUBST([JACK_LIBS])
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([fcntl.h \
+                  limits.h \
+                  malloc.h \
+                  netdb.h \
+                  netinet/in.h \
+                  stddef.h \
+                  stdlib.h \
+                  string.h \
+                  sys/ioctl.h \
+                  sys/param.h \
+                  sys/socket.h \
+                  sys/soundcard.h \
+                  sys/time.h \
+                  sys/timeb.h \
+                  unistd.h
+                  ])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+
+# Checks for functions.
+AC_FUNC_ALLOCA
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS([dup2 \
+                floor \
+                getcwd \
+                gethostbyname \
+                gettimeofday \
+                memmove \
+                memset \
+                pow \
+                regcomp \
+                select \
+                socket \
+                sqrt \
+                strchr \
+                strerror \
+                strrchr \
+                strstr \
+                strtol
+                ])
 
 # Checks for libraries.
 AC_CHECK_LIB([dl], [dlopen])
@@ -127,8 +192,6 @@ AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
             AC_CHECK_LIB([pthreadGC], [pthread_create], LIBS="-lpthreadGC $LIBS",
          AC_MSG_WARN([pthreads required])))))
 
-AC_HEADER_STDC
-
 # Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only 
 # includes OSS for UNIX
 AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
@@ -139,12 +202,24 @@ AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
 
 # portaudio/CoreAudio doesn't work with iPhone
 test x$IPHONEOS = xyes && coreaudio=no
-
 AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 
+# Define variables for use in Makefile.in
+AC_SUBST(EXTERNTARGET)
+AC_SUBST(INCLUDES)
+AC_SUBST(EXTERNAL_EXTENSION)
+AC_SUBST(EXTERNAL_CFLAGS)
+AC_SUBST(EXTERNAL_LDFLAGS)
+AC_SUBST([ALSA_LIBS])
+AC_SUBST([JACK_LIBS])
+
+#########################################
+##### Options #####
+
 # TODO implement debug and static
-#AC_ARG_ENABLE(static,   [  --enable-static         link statically],
-#    static=$enableval)
+#AC_ARG_ENABLE([static],
+#    [AS_HELP_STRING([--enable-static], [link statically])],
+#    [static=$enableval], [static=yes])
 
 #AC_ARG_ENABLE([debug],
 #   [AS_HELP_STRING([--enable-debug], [use debugging support])], 
@@ -157,8 +232,7 @@ AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 # shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
 # alternatively we could use pkg-config
 AC_ARG_ENABLE([alsa],
-    [AS_HELP_STRING([--disable-alsa],
-        [do not use ALSA audio driver])],
+    [AS_HELP_STRING([--disable-alsa], [do not use ALSA audio driver])],
     [alsa=$enableval], [alsa=yes])
 AS_IF([test x$alsa = xyes], [
     AC_CHECK_LIB(asound,snd_pcm_info,ALSA_LIBS="-lasound",alsa=no)])
@@ -166,20 +240,22 @@ AM_CONDITIONAL(ALSA, test x$alsa = xyes)
 
 # ASIO
 AC_ARG_ENABLE([asio],
-    [AS_HELP_STRING([--enable-asio],
-        [use ASIO audio driver])],
-    [asio=$enableval])
+    [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
+    [asio=$enableval], [asio=no])
 AS_IF([test x$asio = xyes], [
-    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h],[asio=yes],[asio=no])])
+    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h],[asio=yes],[asio=no])
+    AS_IF([test x$windows = xyes], [
+        AS_IF([test x$asio = xno], [
+            AC_MSG_ERROR(ASIO SDK not found! You need to download asiosdk2.2.zip from: http://www.steinberg.net/en/company/3rd_party_developer.html)])])
+    ])
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
 
 # JACK
 # shouldn't we use pkg-config?
 # TODO support jack xrun
 AC_ARG_ENABLE([jack],
-    [AS_HELP_STRING([--enable-jack],
-        [use JACK audio server])],
-    [jack=$enableval])
+    [AS_HELP_STRING([--enable-jack], [use JACK audio server])],
+    [jack=$enableval], [jack=no])
 # on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
 # this is set in src/Makefile.am based on the JACK var
 AS_IF([test x$MACOSX != xyes], [
@@ -192,59 +268,38 @@ AM_CONDITIONAL(JACK, test x$jack = xyes)
 
 # portaudio
 AC_ARG_ENABLE([portaudio],
-        [AS_HELP_STRING([--disable-portaudio],
-            [do not use portaudio])],
-        [portaudio=$enableval]) 
+    [AS_HELP_STRING([--disable-portaudio], [do not use portaudio])],
+    [portaudio=$enableval], [portaudio=yes])
 AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
 if test x$portaudio = xyes; then
     if test -d "$srcdir/portaudio"; then
-        echo Using included portaudio;
+        AC_MSG_NOTICE([Using included portaudio])
         AC_CONFIG_SUBDIRS([portaudio])
     fi
 fi
 
 # portmidi
 AC_ARG_ENABLE([portmidi],
-    [AS_HELP_STRING([--enable-portmidi],
-        [use portmidi])],
-    [portmidi=$enableval])
+    [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
+    [portmidi=$enableval], [portmidi=no])
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
-if test x$portmidi = xyes; then echo Using included portmidi; fi
+if test x$portmidi = xyes; then
+    AC_MSG_NOTICE([Using included portmidi])
+fi
 
 # fftw v3
 AC_ARG_ENABLE([fftw],
-        [AS_HELP_STRING([--enable-fftw],
-                [use FFTW package])],
-    [fftw=$enableval])
-if test x$fftw = xyes; then
-    AC_CHECK_LIB(fftw3f, fftwf_execute, [LIBS="$LIBS -lfftw3f"],
-        [AC_MSG_NOTICE([fftw package not found - using built-in FFT]); fftw=no])
-fi
+    [AS_HELP_STRING([--enable-fftw], [use FFTW package])],
+    [fftw=$enableval], [fftw=no])
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
+if test x$fftw = xyes; then
+    AC_CHECK_LIB(fftw3f, fftwf_execute,
+        [LIBS="$LIBS -lfftw3f"],
+        [AC_MSG_NOTICE([fftw package not found, using built-in FFT]) ; fftw=no])
+fi
 
-# Checks for header files.
-AC_FUNC_ALLOCA
-AC_CHECK_HEADERS([fcntl.h limits.h malloc.h netdb.h netinet/in.h stddef.h stdlib.h string.h sys/ioctl.h sys/param.h sys/socket.h sys/soundcard.h sys/time.h sys/timeb.h unistd.h])
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_TYPE_INT16_T
-AC_TYPE_INT32_T
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_SIZE_T
-
-# Checks for library functions.
-AC_FUNC_ERROR_AT_LINE
-AC_FUNC_FORK
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
-AC_TYPE_SIGNAL
-AC_CHECK_FUNCS([dup2 floor getcwd gethostbyname gettimeofday memmove memset pow regcomp select socket sqrt strchr strerror strrchr strstr strtol])
-
-# check for programs
-AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
-test x$HAVE_MSGFMT = xyes || AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
-AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
+#########################################
+##### Output files #####
 
 # Specify what files are to be created.
 AC_CONFIG_FILES([Makefile
@@ -267,13 +322,33 @@ AC_CONFIG_FILES([Makefile
                 extra/stdout/GNUmakefile
                 pd.pc
                 ])
-
 AC_OUTPUT
 
-# output some messages at the end
+#########################################
+##### Print a summary for the user #####
 
-AS_IF([test x$windows = xyes], [
-    AS_IF([test x$asio = xno], [
-        AC_MSG_RESULT(
-ASIO SDK not found! You need to download asiosdk2.2.zip from: 
-    http://www.steinberg.net/en/company/3rd_party_developer.html)])])
+AC_MSG_NOTICE([
+
+    $PACKAGE $VERSION is now configured
+
+    Platform:             $PLATFORM
+    Universal build:      $universal
+    Source directory:     $srcdir
+    Installation prefix:  $prefix
+    
+    Compiler:             $CC
+    CFLAGS:               $CFLAGS
+    LDFLAGS:              $LDFLAGS
+    INCLUDES:             $INCLUDES
+    
+    External extension:   $EXTERNAL_EXTENSION
+    External CFLAGS:      $EXTERNAL_CFLAGS
+    External LDFLAGS:     $EXTERNAL_LDFLAGS
+
+    alsa:                 $alsa
+    asio:                 $asio
+    jack:                 $jack
+    portaudio:            $portaudio
+    portmidi:             $portmidi
+    fftw:                 $fftw
+])
