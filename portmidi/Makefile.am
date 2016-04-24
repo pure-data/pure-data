@@ -2,21 +2,21 @@
 # http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = -DNEWBUFFER
-INCLUDES = -Ipm_common -Iporttime
+AM_CPPFLAGS = -Ipm_common -Iporttime
 
 noinst_LTLIBRARIES = libportmidi.la
 
 libportmidi_la_SOURCES = pm_common/pmutil.c pm_common/portmidi.c
 
 if LINUX
-INCLUDES +=  -Ipm_linux
+AM_CPPFLAGS +=  -Ipm_linux
 libportmidi_la_SOURCES += porttime/ptlinux.c \
 		pm_linux/pmlinux.c \
 		pm_linux/pmlinuxalsa.c
 endif
 
 if MACOSX
-INCLUDES +=  -Ipm_mac
+AM_CPPFLAGS +=  -Ipm_mac
 libportmidi_la_SOURCES += porttime/ptmacosx_cf.c \
         pm_mac/pmmac.c \
         pm_mac/pmmacosxcm.c \
@@ -25,7 +25,7 @@ libportmidi_la_SOURCES += porttime/ptmacosx_cf.c \
 endif
 
 if WINDOWS
-INCLUDES +=  -Ipm_win
+AM_CPPFLAGS +=  -Ipm_win
 libportmidi_la_SOURCES += porttime/porttime.c \
         porttime/ptwinmm.c \
         pm_win/pmwin.c \

@@ -32,7 +32,7 @@ case $host in
         EXTERNAL_EXTENSION=pd_darwin
     fi
     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
-    INCLUDES="$INCLUDES -I/sw/include"
+    AM_CPPFLAGS="$INCLUDES -I/sw/include"
     LDFLAGS="$LDFLAGS -L/sw/lib"
     EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
     ;;
@@ -206,7 +206,6 @@ AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 
 # Define variables for use in Makefile.in
 AC_SUBST(EXTERNTARGET)
-AC_SUBST(INCLUDES)
 AC_SUBST(EXTERNAL_EXTENSION)
 AC_SUBST(EXTERNAL_CFLAGS)
 AC_SUBST(EXTERNAL_LDFLAGS)
@@ -339,7 +338,7 @@ AC_MSG_NOTICE([
     Compiler:             $CC
     CFLAGS:               $CFLAGS
     LDFLAGS:              $LDFLAGS
-    INCLUDES:             $INCLUDES
+    INCLUDES:             $AM_CPPFLAGS
     
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS

@@ -14,7 +14,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = 
-INCLUDES = -I./ASIOSDK2/host -I./ASIOSDK2/host/pc -I./ASIOSDK2/common
+AM_CPPFLAGS = -I./ASIOSDK2/host -I./ASIOSDK2/host/pc -I./ASIOSDK2/common
 
 noinst_LTLIBRARIES = libasio.la
 

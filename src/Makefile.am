@@ -7,7 +7,6 @@ pdsend_CFLAGS =
 pdreceive_CFLAGS = 
 pd_watchdog_CFLAGS = 
 LIBS = @LIBS@
-INCLUDES = @INCLUDES@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 
@@ -97,7 +96,7 @@ nodist_EXTRA_pd_SOURCES += dummy.cxx
 endif
 
 if PORTMIDI
-INCLUDES += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
+AM_CPPFLAGS = -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
 pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 pd_SOURCES += s_midi_pm.c
 endif
