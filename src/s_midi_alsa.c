@@ -150,13 +150,13 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
         else if (a >= 144)      // note on
         {
             channel = a-144;
-	    snd_seq_ev_set_noteon(&ev,channel,b,c);
+            snd_seq_ev_set_noteon(&ev,channel,b,c);
         }
         else if (a >= 128)      // note off
-	{
+        {
             channel = a-128;
-	    snd_seq_ev_set_noteoff(&ev,channel,b,c);
-	}
+            snd_seq_ev_set_noteoff(&ev,channel,b,c);
+        }
         snd_seq_ev_set_direct(&ev);
         snd_seq_ev_set_subs(&ev);
         snd_seq_ev_set_source(&ev,alsa_midioutfd[portno]);

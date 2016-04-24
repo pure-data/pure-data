@@ -433,7 +433,7 @@ proc load_locale {} {
 
 # this proc gets the internal font name associated with each size
 proc get_font_for_size {fsize} {
-    return [list $::font_family -$fsize bold]
+    return [list $::font_family -$fsize $::font_weight]
 }
 
 # searches for a font to use as the default.  Tk automatically assigns a
