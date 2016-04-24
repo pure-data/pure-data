@@ -9,14 +9,14 @@ noinst_LTLIBRARIES = libportmidi.la
 libportmidi_la_SOURCES = pm_common/pmutil.c pm_common/portmidi.c
 
 if LINUX
-AM_CPPFLAGS +=  -Ipm_linux
+AM_CPPFLAGS += -Ipm_linux
 libportmidi_la_SOURCES += porttime/ptlinux.c \
-		pm_linux/pmlinux.c \
-		pm_linux/pmlinuxalsa.c
+        pm_linux/pmlinux.c \
+        pm_linux/pmlinuxalsa.c
 endif
 
 if MACOSX
-AM_CPPFLAGS +=  -Ipm_mac
+AM_CPPFLAGS += -Ipm_mac
 libportmidi_la_SOURCES += porttime/ptmacosx_cf.c \
         pm_mac/pmmac.c \
         pm_mac/pmmacosxcm.c \
@@ -25,7 +25,7 @@ libportmidi_la_SOURCES += porttime/ptmacosx_cf.c \
 endif
 
 if WINDOWS
-AM_CPPFLAGS +=  -Ipm_win
+AM_CPPFLAGS += -Ipm_win
 libportmidi_la_SOURCES += porttime/porttime.c \
         porttime/ptwinmm.c \
         pm_win/pmwin.c \
@@ -34,13 +34,12 @@ endif
 
 # include the headers in the dist so you can build
 nobase_noinst_HEADERS = \
-	pm_common/pminternal.h \
-	pm_common/pmutil.h \
-	pm_common/portmidi.h \
-	pm_linux/pmlinux.h \
-	pm_linux/pmlinuxalsa.h \
-	pm_mac/pmmac.h \
-	pm_mac/pmmacosxcm.h \
-	pm_win/pmdll.h \
-	pm_win/pmwinmm.h \
-	porttime/porttime.h
+    pm_common/pminternal.h \
+    pm_common/pmutil.h \
+    pm_common/portmidi.h \
+    pm_linux/pmlinux.h \
+    pm_linux/pmlinuxalsa.h \
+    pm_mac/pmmac.h \
+    pm_mac/pmmacosxcm.h \
+    pm_win/pmwinmm.h \
+    porttime/porttime.h
