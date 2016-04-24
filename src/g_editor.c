@@ -2077,7 +2077,7 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
                 that aren't new-style GOPs */
             if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
                 (!(pd_class(&obj->te_pd) == canvas_class) ||
-                ((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect))
+                (((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect)))
                     (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
         }
         if (x->gl_havewindow)
