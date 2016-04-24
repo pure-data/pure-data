@@ -310,25 +310,32 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
 
 static int colfromatomload(t_atom*colatom)
 {
-        /* compat color */
-    if(IS_A_FLOAT(colatom, 0))
+    int color;
+        /* old-fashioned color arguement, either a number or symbol
+        evaluating to an integer */
+    if (colatom->a_type == A_FLOAT)
+        color = atom_getint(colatom);
+    else if (colatom->a_type == A_SYMBOL &&
+        (isdigit(colatom->a_w.w_symbol->s_name[0]) ||
+            colatom->a_w.w_symbol->s_name[0] == '-'))
+                color = atoi(colatom->a_w.w_symbol->s_name);
+
+        /* symbolic color */
+    else return (iemgui_getcolorarg(0, 1, colatom));
+    if (color < 0)
     {
-        int col=atom_getint(colatom);
-        if(col < 0)
-        {
-            col = -1 - col;
-            col = ((col & 0x3f000) << 6)|((col & 0xfc0) << 4)|((col & 0x3f) << 2);
-        }
-        else
-        {
-            col = iemgui_modulo_color(col);
-            col = iemgui_color_hex[col];
-        }
-        return col;
+        color = -1 - color;
+        color = ((color & 0x3f000) << 6)|((color & 0xfc0) << 4)|
+            ((color & 0x3f) << 2);
     }
-        /* symbol color */
-    return iemgui_getcolorarg(0, 1, colatom);
+    else
+    {
+        color = iemgui_modulo_color(color);
+        color = iemgui_color_hex[color];
+    }
+    return (color);
 }
+
 void iemgui_all_loadcolors(t_iemgui *iemgui, t_atom*bcol, t_atom*fcol, t_atom*lcol)
 {
     if(bcol)iemgui->x_bcol = colfromatomload(bcol);
