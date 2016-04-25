@@ -206,9 +206,9 @@ void clone_setn(t_clone *x, t_floatarg f)
     if (wantn > nwas)
         for (i = nwas; i < wantn; i++)
     {
-        t_canvas *c = clone_makeone(x->x_s, x->x_argc, x->x_argv);
+        t_canvas *c;
         SETFLOAT(x->x_argv, i);
-        if (!c)
+        if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
         {
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
             goto done;
