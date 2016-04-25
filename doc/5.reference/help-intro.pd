@@ -1,4 +1,4 @@
-#N canvas 503 52 579 948 12;
+#N canvas 502 52 579 948 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
