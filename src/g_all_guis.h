@@ -98,6 +98,8 @@
 #define IEM_GUI_COLOR_EDITED 16711680
 #define IEMGUI_MAX_NUM_LEN 32
 
+#define IEMGUI_ZOOM(x) ((x)->x_gui.x_glist->gl_zoom)
+
 typedef struct _iem_fstyle_flags
 {
     unsigned int x_font_style:6;
@@ -156,7 +158,6 @@ typedef struct _iemgui
     t_symbol           *x_lab_unexpanded;
     int                x_binbufindex;       /* where in binbuf to find these */
     int                x_labelbindex;       /* where in binbuf to find label */
-    int                x_zoom;              /* zoom multiple */
 } t_iemgui;
 
 typedef struct _bng

@@ -579,11 +579,11 @@ void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
 
 void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom)
 {
-    if (iemgui->x_zoom < 1)
-        iemgui->x_zoom = 1;
-    iemgui->x_w = ((int)(iemgui->x_w)/(int)iemgui->x_zoom)*(int)zoom;
-    iemgui->x_h = ((int)(iemgui->x_h)/(int)iemgui->x_zoom)*(int)zoom;
-    iemgui->x_zoom = zoom;
+    int oldzoom = iemgui->x_glist->gl_zoom;
+    if (oldzoom < 1)
+        oldzoom = 1;
+    iemgui->x_w = (int)(iemgui->x_w)/oldzoom*(int)zoom;
+    iemgui->x_h = (int)(iemgui->x_h)/oldzoom*(int)zoom;
 }
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)

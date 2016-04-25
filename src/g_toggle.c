@@ -46,14 +46,15 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
     int w=1, xx=text_xpix(&x->x_gui.x_obj, glist), yy=text_ypix(&x->x_gui.x_obj, glist);
-
+    int zoomlabel =
+        1 + (IEMGUI_ZOOM(x)-1) * (x->x_gui.x_ldx >= 0 && x->x_gui.x_ldy >= 0);
     if(x->x_gui.x_w >= 30)
         w = 2;
     if(x->x_gui.x_w >= 60)
         w = 3;
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
              canvas, xx, yy, xx + x->x_gui.x_w, yy + x->x_gui.x_h,
-             x->x_gui.x_zoom,
+             IEMGUI_ZOOM(x),
              x->x_gui.x_bcol, x);
     sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxX1\n",
              canvas, xx+w+1, yy+w+1, xx + x->x_gui.x_w-w, yy + x->x_gui.x_h-w, w,
@@ -63,24 +64,26 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
              (x->x_on!=0.0)?x->x_gui.x_fcol:x->x_gui.x_bcol, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
-             canvas, xx+x->x_gui.x_ldx,
-             yy+x->x_gui.x_ldy,
+             canvas, xx+x->x_gui.x_ldx * zoomlabel,
+             yy+x->x_gui.x_ldy * zoomlabel,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
              x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
-             canvas, xx, yy + x->x_gui.x_h+1-2*x->x_gui.x_zoom,
+             canvas, xx, yy + x->x_gui.x_h+1-2*IEMGUI_ZOOM(x),
                 xx + IOWIDTH, yy + x->x_gui.x_h, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
-             canvas, xx, yy, xx + IOWIDTH, yy-1+2*x->x_gui.x_zoom, x, 0);
+             canvas, xx, yy, xx + IOWIDTH, yy-1+2*IEMGUI_ZOOM(x), x, 0);
 }
 
 void toggle_draw_move(t_toggle *x, t_glist *glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
     int w=1, xx=text_xpix(&x->x_gui.x_obj, glist), yy=text_ypix(&x->x_gui.x_obj, glist);
+    int zoomlabel =
+        1 + (IEMGUI_ZOOM(x)-1) * (x->x_gui.x_ldx >= 0 && x->x_gui.x_ldy >= 0);
 
     if(x->x_gui.x_w >= 30)
         w = 2;
@@ -96,13 +99,14 @@ void toggle_draw_move(t_toggle *x, t_glist *glist)
     sys_vgui(".x%lx.c coords %lxX2 %d %d %d %d\n",
              canvas, x, xx+w+1, yy + x->x_gui.x_h-w-1, xx + x->x_gui.x_w-w, yy+w);
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x, xx+x->x_gui.x_ldx, yy+x->x_gui.x_ldy);
+             canvas, x, xx+x->x_gui.x_ldx * zoomlabel,
+             yy+x->x_gui.x_ldy * zoomlabel);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
-             canvas, x, 0, xx, yy + x->x_gui.x_h+1-2*x->x_gui.x_zoom, xx + IOWIDTH, yy + x->x_gui.x_h);
+             canvas, x, 0, xx, yy + x->x_gui.x_h+1-2*IEMGUI_ZOOM(x), xx + IOWIDTH, yy + x->x_gui.x_h);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
-             canvas, x, 0, xx, yy, xx + IOWIDTH, yy-1+2*x->x_gui.x_zoom);
+             canvas, x, 0, xx, yy, xx + IOWIDTH, yy-1+2*IEMGUI_ZOOM(x));
 }
 
 void toggle_draw_erase(t_toggle* x, t_glist* glist)
@@ -428,7 +432,6 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fontsize = fs;
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
-    x->x_gui.x_zoom = 1;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     outlet_new(&x->x_gui.x_obj, &s_float);
     return (x);
