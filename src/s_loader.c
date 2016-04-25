@@ -113,11 +113,6 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     if ((classname = strrchr(objectname, '/')))
         classname++;
     else classname = objectname;
-    if (sys_onloadlist(objectname))
-    {
-        verbose(1, "%s: already loaded", objectname);
-        return (1);
-    }
     for (i = 0, cnameptr = classname; i < MAXPDSTRING-7 && *cnameptr;
         cnameptr++)
     {
@@ -250,7 +245,6 @@ gotone:
     }
     (*makeout)();
     class_set_extern_dir(&s_);
-    sys_putonloadlist(objectname);
     return (1);
 }
 
@@ -313,6 +307,12 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     struct _loadlib_data data;
     data.canvas = canvas;
     data.ok = 0;
+
+    if (sys_onloadlist(classname))
+    {
+        verbose(1, "%s: already loaded", classname);
+        return (1);
+    }
         /* if classname is absolute, try this first */
     if (sys_isabsolutepath(classname))
     {
@@ -339,6 +339,10 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
      * let the loaders search wherever they want */
     if (!data.ok)
         sys_loadlib_iter(0, &data);
+
+    if(data.ok)
+      sys_putonloadlist(classname);
+
 
     canvas_resume_dsp(dspstate);
     return data.ok;
