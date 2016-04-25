@@ -6,7 +6,7 @@ AC_INIT([pd], [0.47.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([subdir-objects -Wno-error])
 AC_CANONICAL_HOST
 
 #########################################
@@ -31,10 +31,23 @@ case $host in
         EXTERNAL_CFLAGS=
         EXTERNAL_EXTENSION=pd_darwin
     fi
+    
     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
-    AM_CPPFLAGS="$INCLUDES -I/sw/include"
-    LDFLAGS="$LDFLAGS -L/sw/lib"
+
+    # fink paths
+    if test -e /sw ; then
+        AM_CPPFLAGS="$INCLUDES -I/sw/include"
+        LDFLAGS="$LDFLAGS -L/sw/lib"
+    fi
+
+    # macports paths
+    if test -e /opt ; then
+        AM_CPPFLAGS="$INCLUDES -I/opt/local/include"
+        LDFLAGS="$LDFLAGS -L/opt/local/lib"
+    fi
+
     EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
+
     ;;
 *linux*|*kfreebsd*gnu*)
     # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
@@ -88,7 +101,7 @@ case $host in
     ;;
 esac
 
-PD_CHECK_UNIVERSAL(ARCH, universal=yes, universal=no)
+PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
 AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
 if test "x${universal}" = "xyes"; then
     CFLAGS="${CFLAGS} ${ARCH_CFLAGS}"
@@ -107,7 +120,7 @@ AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
 #########################################
 ##### Check for programs, libs, & headers #####
 
-# Configure libtool
+# Configure libtool.
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
@@ -116,14 +129,15 @@ AC_PROG_LIBTOOL
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
-AC_PROG_LIBTOOL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
-#AC_PROG_GREP
-#AC_PROG_SED
+AC_PROG_GREP
+AC_PROG_SED
 
 AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
-test x$HAVE_MSGFMT = xyes || AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
+if test x$HAVE_MSGFMT = xyes ; then
+    AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
+fi
 AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 
 # Checks for header files.
@@ -233,20 +247,21 @@ AC_SUBST([JACK_LIBS])
 AC_ARG_ENABLE([alsa],
     [AS_HELP_STRING([--disable-alsa], [do not use ALSA audio driver])],
     [alsa=$enableval], [alsa=yes])
-AS_IF([test x$alsa = xyes], [
-    AC_CHECK_LIB(asound,snd_pcm_info,ALSA_LIBS="-lasound",alsa=no)])
+if test x$alsa = xyes ; then
+    AC_CHECK_LIB([asound], [snd_pcm_info], [ALSA_LIBS="-lasound"], [alsa=no])
+fi
 AM_CONDITIONAL(ALSA, test x$alsa = xyes)
 
 # ASIO
 AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
     [asio=$enableval], [asio=no])
-AS_IF([test x$asio = xyes], [
-    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h],[asio=yes],[asio=no])
-    AS_IF([test x$windows = xyes], [
-        AS_IF([test x$asio = xno], [
-            AC_MSG_ERROR(ASIO SDK not found! You need to download asiosdk2.2.zip from: http://www.steinberg.net/en/company/3rd_party_developer.html)])])
-    ])
+if test x$asio = xyes ; then
+    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h], [asio=yes], [asio=no])
+    if [ test x$windows = xyes ] && [ test x$asio = xno ] ; then
+        AC_MSG_ERROR([ASIO SDK not found! You need to download asiosdk2.2.zip from: http://www.steinberg.net/en/company/3rd_party_developer.html])
+    fi
+fi
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
 
 # JACK
@@ -257,12 +272,11 @@ AC_ARG_ENABLE([jack],
     [jack=$enableval], [jack=no])
 # on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
 # this is set in src/Makefile.am based on the JACK var
-AS_IF([test x$MACOSX != xyes], [
-    AS_IF([test x$jack = xyes], [
-        AC_CHECK_LIB(rt,shm_open,LIBS="$LIBS -lrt")
-        AC_CHECK_LIB(jack,jack_set_xrun_callback,JACK_LIBS="-ljack";jack=xrun)
-        AC_CHECK_LIB(jack,jack_set_error_function,JACK_LIBS="-ljack";jack=yes,
-                  jack=no)])])
+if [ test x$MACOSX != xyes ] && [ test x$jack = xyes ] ; then
+    AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
+    AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
+    AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes], [jack=no])
+fi
 AM_CONDITIONAL(JACK, test x$jack = xyes)
 
 # portaudio
@@ -270,11 +284,9 @@ AC_ARG_ENABLE([portaudio],
     [AS_HELP_STRING([--disable-portaudio], [do not use portaudio])],
     [portaudio=$enableval], [portaudio=yes])
 AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
-if test x$portaudio = xyes; then
-    if test -d "$srcdir/portaudio"; then
-        AC_MSG_NOTICE([Using included portaudio])
-        AC_CONFIG_SUBDIRS([portaudio])
-    fi
+if [ test x$portaudio = xyes ] && [ test -d "$srcdir/portaudio" ] ; then
+    AC_MSG_NOTICE([Using included portaudio])
+    AC_CONFIG_SUBDIRS([portaudio])
 fi
 
 # portmidi
@@ -295,6 +307,12 @@ if test x$fftw = xyes; then
     AC_CHECK_LIB(fftw3f, fftwf_execute,
         [LIBS="$LIBS -lfftw3f"],
         [AC_MSG_NOTICE([fftw package not found, using built-in FFT]) ; fftw=no])
+fi
+
+# throw an error for now if we end up trying to build without an audio api
+if [ test x$alsa = xno ] && [ test x$asio = xno ] && [ test x$jack = xno] && [ test x$portaudio = xno ] ; then
+    AC_MSG_ERROR([No audio api specificed or detected, using dummy interface])
+    CFLAGS+="-DUSEAPI_DUMMY"
 fi
 
 #########################################
