@@ -1,4 +1,4 @@
-#N canvas 619 112 747 746 12;
+#N canvas 618 111 747 746 12;
 #X floatatom 220 300 5 36 144 0 - - -, f 5;
 #X obj 220 321 t b f;
 #X obj 220 345 f;
@@ -41,8 +41,8 @@ contained patch \, and my be signal and/or control inlets and outlets.
 (In this example there's one control inlet and one signal outlet).
 You can click on the clone~ object to see the first of the created
 instances., f 72;
-#X text 15 11 clone - make multiple copies of a patch;
-#X text 25 43 clone creates any number of copies of a desired abstraction
+#X text 24 8 clone - make multiple copies of a patch;
+#X text 24 41 clone creates any number of copies of a desired abstraction
 (a patch loaded as an object in another patch). To disambiguate between
 them \, each copy is given its own instance number (counting upward
 from 0) as its first argument. (Additional arguments to "clone~" are
