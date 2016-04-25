@@ -66,10 +66,10 @@ typedef struct _clone
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
 {
     t_clone *x = (t_clone *)z;
-    t_glist *gl = x->x_vec[0].c_gl;
     if (!x->x_n)
         return (0);
-    return (gl->gl_name == name && canvas_getdir(gl) == dir);
+    return (x->x_vec[0].c_gl->gl_name == name &&
+        canvas_getdir(x->x_vec[0].c_gl) == dir);
 }
 
 void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv);
@@ -266,6 +266,8 @@ static void clone_dsp(t_clone *x, t_signal **sp)
 {
     int i, j, nin, nout;
     t_signal **tempsigs;
+    if (!x->x_n)
+        return;
     for (i = nin = 0; i < x->x_nin; i++)
         if (x->x_invec[i].i_signal)
             nin++;

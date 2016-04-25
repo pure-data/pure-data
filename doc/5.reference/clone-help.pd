@@ -1,4 +1,4 @@
-#N canvas 140 66 747 746 12;
+#N canvas 619 112 747 746 12;
 #X floatatom 220 300 5 36 144 0 - - -, f 5;
 #X obj 220 321 t b f;
 #X obj 220 345 f;
@@ -18,7 +18,6 @@
 #X obj 218 596 clone 16 clone-subpatch;
 #X obj 218 655 ../3.audio.examples/output~;
 #X text 488 708 updated for Pd version 0.47;
-#X text 15 11 clone~ - make multiple copies of a subpatch;
 #X text 498 576 creation arguments:;
 #X text 485 598 number of copies \; filename \; optional arguments
 ;
@@ -27,16 +26,6 @@
 #X text 69 322 open or close copy number 5:, f 14;
 #X text 278 297 A list beginning with a number dispatches the rest
 of the list as a message, f 23;
-#X text 25 43 clone~ creates any number of copies of a desired abstraction.
-To disambiguate between them \, each copy is given its own instance
-number (counting upward from 0) as its first arguemnt. (Additional
-arguments to "clone~" are provided to the abstraction after that first
-one)., f 71;
-#X text 22 122 clone~'s inlets and outlets correspond to those of the
-contained patch \, and my be signal and/or control inlets and outlets.
-(In this example there's one control inlet and one signal outlet).
-You can click on the clone~ object to see the first of the created
-instances., f 72;
 #X text 402 374 "next" forwards a message to the next instance (incrementing
 and repeating circularly)., f 33;
 #X text 406 427 "this" forwards a message to the previous instance
@@ -47,6 +36,17 @@ sent to by "this" or "next", f 30;
 inlets forward messages as shown below. Signal outlets output the sum
 of all instances' outputs \, and control outlets forward messages after
 prepending the number of the instance., f 67;
+#X text 22 131 clone's inlets and outlets correspond to those of the
+contained patch \, and my be signal and/or control inlets and outlets.
+(In this example there's one control inlet and one signal outlet).
+You can click on the clone~ object to see the first of the created
+instances., f 72;
+#X text 15 11 clone - make multiple copies of a patch;
+#X text 25 43 clone creates any number of copies of a desired abstraction
+(a patch loaded as an object in another patch). To disambiguate between
+them \, each copy is given its own instance number (counting upward
+from 0) as its first argument. (Additional arguments to "clone~" are
+provided to the abstraction after that first one)., f 71;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 5 1;
