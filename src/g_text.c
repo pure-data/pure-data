@@ -106,7 +106,6 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     else x = 0;
     if (!x)
     {
-            /* LATER make the color reflect this */
         x = (t_text *)pd_new(text_class);
         if (binbuf_getnatom(b))
         {
@@ -119,6 +118,10 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     x->te_ypix = ypix;
     x->te_width = width;
     x->te_type = T_OBJECT;
+        /* not sure this goes here, but possibly inform the new object about
+        the zoom status if its glist */
+    if (gl->gl_zoom > 1 && zgetfn(&x->te_g.g_pd, gensym("zoom")))
+        vmess(&x->te_g.g_pd, gensym("zoom"), "i", gl->gl_zoom);
     glist_add(gl, &x->te_g);
     if (selected)
     {
@@ -1389,10 +1392,12 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
             canvas_restoreconnections(glist_getcanvas(glist));
                 /* if it's an abstraction loadbang it here */
             if (newest)
+            {
                 if (pd_class(newest) == canvas_class)
                     canvas_loadbang((t_canvas *)newest);
                 else if (zgetfn(newest, gensym("loadbang")))
                     vmess(newest, gensym("loadbang"), "f", LB_LOAD);
+            }
         }
             /* if we made a new "pd" or changed a window name,
                 update window list */

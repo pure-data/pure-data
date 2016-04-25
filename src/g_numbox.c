@@ -196,7 +196,8 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
         x->x_gui.x_fcol, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
         -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
-        canvas, xpos+x->x_gui.x_ldx, ypos+x->x_gui.x_ldy,
+        canvas, xpos+x->x_gui.x_ldx,
+        ypos+x->x_gui.x_ldy,
         strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
         x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);

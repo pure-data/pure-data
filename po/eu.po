@@ -567,7 +567,7 @@ msgstr "ADI: Letraren familia '%s' aurkiturik ez, (%s) lehenetsi erabiltzen"
 #: ../src/pd-gui.tcl:278 ../src/pd-gui.tcl:298
 #, tcl-format
 msgid "WARNING: Font weight '%s' not found, using default (%s)"
-msgstr "ADI: "
+msgstr ""
 
 #: ../src/pd-gui.tcl:303 ../src/pd-gui.tcl:323
 #, tcl-format

@@ -49,31 +49,33 @@ static void hslider_draw_new(t_hslider *x, t_glist *glist)
     int xpos=text_xpix(&x->x_gui.x_obj, glist);
     int ypos=text_ypix(&x->x_gui.x_obj, glist);
     int r = xpos + (x->x_val + 50)/100;
+    int zoomlabel =
+        1 + (IEMGUI_ZOOM(x)-1) * (x->x_gui.x_ldx >= 0 && x->x_gui.x_ldy >= 0);
     t_canvas *canvas=glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
              canvas, xpos-3, ypos,
              xpos + x->x_gui.x_w+2, ypos + x->x_gui.x_h,
-             x->x_gui.x_zoom,
+             IEMGUI_ZOOM(x),
              x->x_gui.x_bcol, x);
     sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxKNOB\n",
              canvas, r, ypos+1, r,
-             ypos + x->x_gui.x_h, 1 + 2 * x->x_gui.x_zoom, x->x_gui.x_fcol, x);
+             ypos + x->x_gui.x_h, 1 + 2 * IEMGUI_ZOOM(x), x->x_gui.x_fcol, x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
-             canvas, xpos+x->x_gui.x_ldx,
-             ypos+x->x_gui.x_ldy,
+             canvas, xpos+x->x_gui.x_ldx * zoomlabel,
+             ypos+x->x_gui.x_ldy * zoomlabel,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
              x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
-             canvas, xpos-3, ypos + x->x_gui.x_h+1-2*x->x_gui.x_zoom,
+             canvas, xpos-3, ypos + x->x_gui.x_h+1-2*IEMGUI_ZOOM(x),
              xpos+4, ypos + x->x_gui.x_h, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
              canvas, xpos-3, ypos,
-             xpos+4, ypos-1+2*x->x_gui.x_zoom, x, 0);
+             xpos+4, ypos-1+2*IEMGUI_ZOOM(x), x, 0);
 }
 
 static void hslider_draw_move(t_hslider *x, t_glist *glist)
@@ -81,6 +83,8 @@ static void hslider_draw_move(t_hslider *x, t_glist *glist)
     int xpos=text_xpix(&x->x_gui.x_obj, glist);
     int ypos=text_ypix(&x->x_gui.x_obj, glist);
     int r = xpos + (x->x_val + 50)/100;
+    int zoomlabel =
+        1 + (IEMGUI_ZOOM(x)-1) * (x->x_gui.x_ldx >= 0 && x->x_gui.x_ldy >= 0);
     t_canvas *canvas=glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
@@ -91,17 +95,18 @@ static void hslider_draw_move(t_hslider *x, t_glist *glist)
              canvas, x, r, ypos+1,
              r, ypos + x->x_gui.x_h);
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x, xpos+x->x_gui.x_ldx, ypos+x->x_gui.x_ldy);
+             canvas, x, xpos+x->x_gui.x_ldx * zoomlabel,
+             ypos+x->x_gui.x_ldy * zoomlabel);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
              canvas, x, 0,
-             xpos-3, ypos + x->x_gui.x_h+1-2*x->x_gui.x_zoom,
+             xpos-3, ypos + x->x_gui.x_h+1-2*IEMGUI_ZOOM(x),
              xpos+4, ypos + x->x_gui.x_h);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
              canvas, x, 0,
              xpos-3, ypos,
-             xpos+4, ypos-1+2*x->x_gui.x_zoom);
+             xpos+4, ypos-1+2*IEMGUI_ZOOM(x));
 }
 
 static void hslider_draw_erase(t_hslider* x,t_glist* glist)
@@ -575,7 +580,6 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
         pd_bind(&x->x_gui.x_obj.ob_pd, x->x_gui.x_rcv);
     x->x_gui.x_ldx = ldx;
     x->x_gui.x_ldy = ldy;
-    x->x_gui.x_zoom = 1;
     if(fs < 4)
         fs = 4;
     x->x_gui.x_fontsize = fs;

@@ -2062,11 +2062,6 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
     {
         t_gobj *g;
         t_object *obj;
-        x->gl_zoom = zoom;
-        REZOOM(x->gl_xmargin, zoom);
-        REZOOM(x->gl_ymargin, zoom);
-        REZOOM(x->gl_pixwidth, zoom);
-        REZOOM(x->gl_pixheight, zoom);
         for (g = x->gl_list; g; g = g->g_next)
             if ((obj = pd_checkobject(&g->g_pd)))
         {
@@ -2077,9 +2072,14 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
                 that aren't new-style GOPs */
             if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
                 (!(pd_class(&obj->te_pd) == canvas_class) ||
-                ((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect))
+                (((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect)))
                     (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
         }
+        x->gl_zoom = zoom;
+        REZOOM(x->gl_xmargin, zoom);
+        REZOOM(x->gl_ymargin, zoom);
+        REZOOM(x->gl_pixwidth, zoom);
+        REZOOM(x->gl_pixheight, zoom);
         if (x->gl_havewindow)
             canvas_redraw(x);
     }
