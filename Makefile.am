@@ -39,16 +39,9 @@ BUILT_SOURCES += locales
 SUBDIRS += po
 endif
 
-## FIXXXME
-## $(pkglibdir) is used throughout the other Makefile.amS
-##       simply ignoring the special case for other OSs...
-if LINUX
-libpddir = $(pkglibdir)
-else
 # default doc location is $(prefix)/doc/pd,
 # but we want $(prefix)/lib/pd/doc
-libpddir = $(libdir)/$(PACKAGE)
-endif
+libpddir = $(pkglibdir)
 
 # Symlinks don't work on Windows/MinGW but they do on Cygwin.
 bin:

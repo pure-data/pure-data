@@ -80,7 +80,7 @@ $(TEMPLATE): $(FILES)
 		$(FILES)
 
 # I guess officially, the .po file should depend on the template.pot, but its
-# mostly annoying since it wasnts to update the template.pot and .po files any
+# mostly annoying since it wants to update the template.pot and .po files any
 # time a .tcl file changes
 # $(POFILES): %.po: $(TEMPLATE)
 $(POFILES): %.po:
