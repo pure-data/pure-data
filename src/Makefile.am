@@ -4,9 +4,9 @@ pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 
 pd_LDFLAGS =
 
-pdsend_CFLAGS = 
-pdreceive_CFLAGS = 
-pd_watchdog_CFLAGS = 
+pdsend_CFLAGS =
+pdreceive_CFLAGS =
+pd_watchdog_CFLAGS =
 LIBS = @LIBS@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
@@ -15,7 +15,7 @@ bin_PROGRAMS = pd pdsend pdreceive
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
-pd_LDADD = 
+pd_LDADD =
 pd_SOURCES = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c \
     g_io.c g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c \
     g_clone.c \
@@ -129,9 +129,9 @@ pd_LDFLAGS += -lpthread
 pd_LDFLAGS += -ldl
 endif
 
-if LINUX 
+if LINUX
 libpdbindir = $(pkglibdir)/bin
-libpdbin_DATA = 
+libpdbin_DATA =
 libpdbin_PROGRAMS = pd-watchdog pd
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
@@ -143,13 +143,13 @@ endif
 if MACOSX
 LIBS += -framework Carbon
 pd_CFLAGS += -DMACOSX #kludge, should use auto macro __APPLE__
-bin_SCRIPTS = 
+bin_SCRIPTS =
 bin_PROGRAMS += pd-watchdog
 endif
 
 if WINDOWS
 LIBS += -lwsock32 -lwinmm -lole32
-bin_SCRIPTS = 
+bin_SCRIPTS =
 endif
 
 if MINGW
