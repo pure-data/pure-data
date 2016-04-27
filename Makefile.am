@@ -29,6 +29,8 @@ EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 SUBDIRS = $(EXTRA_SUBDIRS) src man tcl extra
 
 # subdirs that are always included in the dist, etc.
+# note: the contents of the doc folder are handled via
+# libpd_DATA so doc does not need to be in this list 
 DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
 
 BUILT_SOURCES = 
@@ -43,7 +45,9 @@ endif
 if LINUX
 libpddir = $(pkglibdir)
 else
-libpddir = $(prefix)
+# default doc location is $(prefix)/doc/pd,
+# but we want $(prefix)/lib/pd/doc
+libpddir = $(libdir)/$(PACKAGE)
 endif
 
 # Symlinks don't work on Windows/MinGW but they do on Cygwin.
