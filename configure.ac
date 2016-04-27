@@ -268,7 +268,7 @@ AS_IF([test x$alsa = xyes], [midi_backends="alsa ${midi_backends}"])
 # TODO support jack xrun
 AC_ARG_ENABLE([jack],
     [AS_HELP_STRING([--enable-jack], [use JACK audio server])],
-    [jack=$enableval], [jack=no])
+    [jack=$enableval], [jack=yes])
 # on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
 # this is set in src/Makefile.am based on the JACK var
 if [ test x$MACOSX != xyes ] && [ test x$jack = xyes ] ; then
