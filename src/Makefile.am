@@ -74,13 +74,9 @@ pd_LDADD += @JACK_LIBS@
 endif
 endif
 
-# Cygwin has a function OSS /dev/dsp, but not MIDI, and Pd is only set up to
-# handle a single MIDI API
 if OSS
-if !WINDOWS
 pd_CFLAGS += -DUSEAPI_OSS
 pd_SOURCES += s_audio_oss.c s_midi_oss.c
-endif
 endif
 
 if PORTAUDIO
@@ -101,13 +97,20 @@ pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 pd_SOURCES += s_midi_pm.c
 endif
 
+if MMIO
+pd_CFLAGS +=  -DUSEAPI_MMIO
+pd_SOURCES += s_audio_mmio.c s_midi_mmio.c
+endif
+
 # FIXXXME
 # GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
-#  i think it would be better to add s_midi_dummy.c only if no other midi API can be found
-#  (without OS-specific checks)
 # even better would be, to allow Pd to have simply have no MIDI (nor AUDIO)
-if IPHONEOS
+if MIDI_DUMMY
 pd_SOURCES += s_midi_dummy.c
+endif
+if AUDIO_DUMMY
+pd_CFLAGS +=  -DUSEAPI_DUMMY
+pd_SOURCES += s_audio_dummy.c
 endif
 
 if HURD
@@ -145,8 +148,7 @@ endif
 
 if WINDOWS
 LIBS += -lwsock32 -lwinmm -lole32
-pd_CFLAGS +=  -DUSEAPI_MMIO -DPD_INTERNAL
-pd_SOURCES += s_audio_mmio.c s_midi_mmio.c
+pd_CFLAGS +=  -DPD_INTERNAL
 bin_SCRIPTS = 
 endif
 

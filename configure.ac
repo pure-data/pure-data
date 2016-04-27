@@ -10,6 +10,11 @@ AM_INIT_AUTOMAKE([subdir-objects])
 AC_CANONICAL_HOST
 
 #########################################
+##### Default values #####
+audio_backends=""
+midi_backends=""
+
+#########################################
 ##### Build Options #####
 
 # you will need to install XCode on Mac OS X to use this:
@@ -27,6 +32,7 @@ case $host in
         EXTERNAL_EXTENSION=d_fat
     else
         portaudio=no
+        portmidi=no
         PLATFORM=ios
         EXTERNAL_CFLAGS=
         EXTERNAL_EXTENSION=pd_darwin
@@ -199,18 +205,6 @@ AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
             AC_CHECK_LIB([pthreadGC], [pthread_create], LIBS="-lpthreadGC $LIBS",
          AC_MSG_WARN([pthreads required])))))
 
-# Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only
-# includes OSS for UNIX
-AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
-AM_CONDITIONAL(OSS, test x$oss = xyes)
-
-AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
-# AC_CHECK_HEADER(Jackmp/jack.h, [jack=yes], [jack=no])
-
-# portaudio/CoreAudio doesn't work with iPhone
-test x$IPHONEOS = xyes && coreaudio=no
-AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
-
 # Define variables for use in Makefile.in
 AC_SUBST(EXTERNTARGET)
 AC_SUBST(EXTERNAL_EXTENSION)
@@ -241,6 +235,21 @@ fi
 #    CFLAGS="$CFLAGS -g"
 #fi
 
+# OSS
+# Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only
+# includes OSS for UNIX
+AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
+AC_ARG_ENABLE([oss],
+    [AS_HELP_STRING([--disable-oss], [do not use OSS driver])],
+    [oss=$enableval], [oss=yes])
+# Cygwin has a function OSS /dev/dsp, but not MIDI,
+# and Pd is only set up to handle a single MIDI API
+test x$WINDOWS = xyes && oss=no
+AM_CONDITIONAL(OSS, test x$oss = xyes)
+AS_IF([test x$oss = xyes], [audio_backends="OSS ${audio_backends}"])
+AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
+
+
 # ALSA
 # shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
 # alternatively we could use pkg-config
@@ -251,18 +260,8 @@ if test x$alsa = xyes ; then
     AC_CHECK_LIB([asound], [snd_pcm_info], [ALSA_LIBS="-lasound"], [alsa=no])
 fi
 AM_CONDITIONAL(ALSA, test x$alsa = xyes)
-
-# ASIO
-AC_ARG_ENABLE([asio],
-    [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
-    [asio=$enableval], [asio=no])
-if test x$asio = xyes ; then
-    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h], [asio=yes], [asio=no])
-    if [ test x$windows = xyes ] && [ test x$asio = xno ] ; then
-        AC_MSG_ERROR([ASIO SDK not found! You need to download it from: http://www.steinberg.net/en/company/developers.html])
-    fi
-fi
-AM_CONDITIONAL(ASIO, test x$asio = xyes)
+AS_IF([test x$alsa = xyes], [audio_backends="alsa ${audio_backends}"])
+AS_IF([test x$alsa = xyes], [midi_backends="alsa ${midi_backends}"])
 
 # JACK
 # shouldn't we use pkg-config?
@@ -278,8 +277,41 @@ if [ test x$MACOSX != xyes ] && [ test x$jack = xyes ] ; then
     AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes], [jack=no])
 fi
 AM_CONDITIONAL(JACK, test x$jack = xyes)
+AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 
-# portaudio
+# Apple's CoreAudio
+AC_ARG_ENABLE([coreaudio],
+    [AS_HELP_STRING([--disable-coreaudio], [do not use CoreAudio driver])])
+AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
+test x$enable_coreaudio = xno && coreaudio=no
+# portaudio/CoreAudio doesn't work with iPhone
+test x$IPHONEOS = xyes && coreaudio=no
+
+AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
+AS_IF([test x$coreaudio = xyes], [audio_backends="CoreAudio ${audio_backends}"])
+
+# MMIO
+AC_ARG_ENABLE([mmio],
+    [AS_HELP_STRING([--disable-mmio], [do not use MMIO driver])],
+    [mmio=$enableval])
+test x$WINDOWS = xyes || mmio=no
+AM_CONDITIONAL(MMIO, test x$mmio = xyes)
+AS_IF([test x$mmio = xyes], [audio_backends="mmio ${audio_backends}"])
+AS_IF([test x$mmio = xyes], [midi_backends="mmio ${midi_backends}"])
+
+# ASIO
+AC_ARG_ENABLE([asio],
+    [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
+    [asio=$enableval], [asio=no])
+if test x$asio = xyes ; then
+    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h], [asio=yes], [asio=no])
+    if [ test x$windows = xyes ] && [ test x$asio = xno ] ; then
+        AC_MSG_ERROR([ASIO SDK not found! You need to download it from: http://www.steinberg.net/en/company/developers.html])
+    fi
+fi
+AM_CONDITIONAL(ASIO, test x$asio = xyes)
+
+# PortAudio
 AC_ARG_ENABLE([portaudio],
     [AS_HELP_STRING([--disable-portaudio], [do not use portaudio])],
     [portaudio=$enableval], [portaudio=yes])
@@ -288,8 +320,9 @@ if [ test x$portaudio = xyes ] && [ test -d "$srcdir/portaudio" ] ; then
     AC_MSG_NOTICE([Using included portaudio])
     AC_CONFIG_SUBDIRS([portaudio])
 fi
+AS_IF([test x$portaudio = xyes], [audio_backends="PortAudio ${audio_backends}"])
 
-# portmidi
+# PortMidi
 AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
     [portmidi=$enableval], [portmidi=no])
@@ -297,6 +330,7 @@ AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
 if [ test x$portmidi = xyes ] && [ test -d "$srcdir/portmidi" ] ; then
     AC_MSG_NOTICE([Using included portmidi])
 fi
+AS_IF([test x$portmidi = xyes], [midi_backends="PortMidi ${midi_backends}"])
 
 # fftw v3
 AC_ARG_ENABLE([fftw],
@@ -310,11 +344,17 @@ if test x$fftw = xyes; then
 fi
 
 # throw an error for now if we end up trying to build without an audio api
-if [ test x$alsa = xno ] && [ test x$asio = xno ] && \
-   [ test x$jack = xno ] && [ test x$portaudio = xno ] ; then
-    AC_MSG_ERROR([No audio api specificed or detected])
-    CFLAGS+="-DUSEAPI_DUMMY"
-fi
+AM_CONDITIONAL(AUDIO_DUMMY, test "x$audio_backends" = "x")
+AS_IF([test "x$audio_backends" = "x"],[
+    AC_MSG_WARN([No audio API specificed or detected])
+    audio_backends="NONE!"
+])
+AM_CONDITIONAL(MIDI_DUMMY, test "x$midi_backends" = "x")
+AS_IF([test "x$midi_backends" = "x"],[
+    AC_MSG_WARN([No MIDI API specificed or detected])
+    midi_backends="NONE!"
+])
+
 
 #########################################
 ##### Output files #####
