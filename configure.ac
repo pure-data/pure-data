@@ -310,7 +310,8 @@ if test x$fftw = xyes; then
 fi
 
 # throw an error for now if we end up trying to build without an audio api
-if [ test x$alsa = xno ] && [ test x$asio = xno ] && [ test x$jack = xno] && [ test x$portaudio = xno ] ; then
+if [ test x$alsa = xno ] && [ test x$asio = xno ] && \
+   [ test x$jack = xno ] && [ test x$portaudio = xno ] ; then
     AC_MSG_ERROR([No audio api specificed or detected])
     CFLAGS+="-DUSEAPI_DUMMY"
 fi
