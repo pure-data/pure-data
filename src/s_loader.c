@@ -113,11 +113,6 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     if ((classname = strrchr(objectname, '/')))
         classname++;
     else classname = objectname;
-    if (sys_onloadlist(objectname))
-    {
-        verbose(1, "%s: already loaded", objectname);
-        return (1);
-    }
     for (i = 0, cnameptr = classname; i < MAXPDSTRING-7 && *cnameptr;
         cnameptr++)
     {
@@ -250,7 +245,6 @@ gotone:
     }
     (*makeout)();
     class_set_extern_dir(&s_);
-    sys_putonloadlist(objectname);
     return (1);
 }
 
@@ -313,6 +307,12 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     struct _loadlib_data data;
     data.canvas = canvas;
     data.ok = 0;
+
+    if (sys_onloadlist(classname))
+    {
+        verbose(1, "%s: already loaded", classname);
+        return (1);
+    }
         /* if classname is absolute, try this first */
     if (sys_isabsolutepath(classname))
     {
@@ -339,6 +339,10 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
      * let the loaders search wherever they want */
     if (!data.ok)
         sys_loadlib_iter(0, &data);
+
+    if(data.ok)
+      sys_putonloadlist(classname);
+
 
     canvas_resume_dsp(dspstate);
     return data.ok;
@@ -449,15 +453,17 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
     return (0);
 }
 
-/* search for abstraction; register a loader if found */
+/* search for abstraction; register a creator if found */
 static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
     const char *path)
 {
     int fd;
+    static t_gobj*abstraction_classes = 0;
     char dirbuf[MAXPDSTRING], classslashclass[MAXPDSTRING], *nameptr;
         /* NULL-path is only used as a last resort,
            but we have already tried all paths */
     if (!path) return (0);
+
     snprintf(classslashclass, MAXPDSTRING, "%s/%s", objectname, objectname);
     if ((fd = sys_trytoopenone(path, objectname, ".pd",
               dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0 ||
@@ -466,9 +472,23 @@ static int sys_do_load_abs(t_canvas *canvas, const char *objectname,
         (fd = sys_trytoopenone(path, classslashclass, ".pd",
               dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
     {
+        t_class*c=0;
         close(fd);
-        class_addcreator((t_newmethod)do_create_abstraction,
-            gensym(objectname), A_GIMME, 0);
+            /* found an abstraction, now register it as a new pseudo-class */
+        class_set_extern_dir(gensym(dirbuf));
+        if((c=class_new(gensym(objectname),
+                        (t_newmethod)do_create_abstraction, 0,
+                        0, 0, A_GIMME, 0)))
+        {
+                /* store away the newly created class, maybe we will need it one day */
+            t_gobj*absclass=0;
+            absclass=t_getbytes(sizeof(*absclass));
+            absclass->g_pd=c;
+            absclass->g_next=abstraction_classes;
+            abstraction_classes=absclass;
+        }
+        class_set_extern_dir(&s_);
+
         return (1);
     }
     return (0);

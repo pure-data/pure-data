@@ -79,6 +79,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     variable fontsize $initsize
     variable whichstretch 1
     variable stretchval 100
+    if {$fontsize < 8} {set fontsize 12}
     if {[winfo exists .font]} {
         wm deiconify .font
         raise .font
