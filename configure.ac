@@ -101,13 +101,6 @@ case $host in
     ;;
 esac
 
-PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
-AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
-if test "x${universal}" = "xyes"; then
-    CFLAGS="${CFLAGS} ${ARCH_CFLAGS}"
-    LDFLAGS="${LDFLAGS} ${ARCH_LDFLAGS}"
-fi
-
 AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
 AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
 AM_CONDITIONAL(LINUX, test x$LINUX = xyes)
@@ -229,6 +222,13 @@ AC_SUBST([JACK_LIBS])
 #########################################
 ##### Options #####
 
+PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
+AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
+if test "x${universal}" = "xyes"; then
+    CFLAGS="${CFLAGS} ${ARCH_CFLAGS}"
+    LDFLAGS="${LDFLAGS} ${ARCH_LDFLAGS}"
+fi
+
 # TODO implement debug and static
 #AC_ARG_ENABLE([static],
 #    [AS_HELP_STRING([--enable-static], [link statically])],
@@ -311,7 +311,7 @@ fi
 
 # throw an error for now if we end up trying to build without an audio api
 if [ test x$alsa = xno ] && [ test x$asio = xno ] && [ test x$jack = xno] && [ test x$portaudio = xno ] ; then
-    AC_MSG_ERROR([No audio api specificed or detected, using dummy interface])
+    AC_MSG_ERROR([No audio api specificed or detected])
     CFLAGS+="-DUSEAPI_DUMMY"
 fi
 
