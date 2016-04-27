@@ -259,7 +259,7 @@ AC_ARG_ENABLE([asio],
 if test x$asio = xyes ; then
     AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h], [asio=yes], [asio=no])
     if [ test x$windows = xyes ] && [ test x$asio = xno ] ; then
-        AC_MSG_ERROR([ASIO SDK not found! You need to download asiosdk2.2.zip from: http://www.steinberg.net/en/company/3rd_party_developer.html])
+        AC_MSG_ERROR([ASIO SDK not found! You need to download it from: http://www.steinberg.net/en/company/developers.html])
     fi
 fi
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
