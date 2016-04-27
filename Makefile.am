@@ -4,6 +4,8 @@ ACLOCAL_AMFLAGS =  -I m4/generated -I m4
 CFLAGS += @DEFS@
 EXTRA_SUBDIRS = 
 
+empty=""
+
 # pkg-config support
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pd.pc
@@ -477,4 +479,5 @@ nobase_dist_libpd_DATA = \
      doc/7.stuff/tools/testtone.pd \
      doc/sound/bell.aiff \
      doc/sound/voice2.wav \
-     doc/sound/voice.wav
+     doc/sound/voice.wav \
+     $(empty)
