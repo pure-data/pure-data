@@ -31,7 +31,7 @@ case $host in
         EXTERNAL_CFLAGS=
         EXTERNAL_EXTENSION=pd_darwin
     fi
-    
+
     CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 
     # fink paths
@@ -199,7 +199,7 @@ AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
             AC_CHECK_LIB([pthreadGC], [pthread_create], LIBS="-lpthreadGC $LIBS",
          AC_MSG_WARN([pthreads required])))))
 
-# Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only 
+# Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only
 # includes OSS for UNIX
 AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
 AM_CONDITIONAL(OSS, test x$oss = xyes)
@@ -235,7 +235,7 @@ fi
 #    [static=$enableval], [static=yes])
 
 #AC_ARG_ENABLE([debug],
-#   [AS_HELP_STRING([--enable-debug], [use debugging support])], 
+#   [AS_HELP_STRING([--enable-debug], [use debugging support])],
 #       [debug=$enableval])
 #if test x$debug = xyes; then
 #    CFLAGS="$CFLAGS -g"
@@ -354,12 +354,12 @@ AC_MSG_NOTICE([
     Translations:         $HAVE_MSGFMT
     Source directory:     $srcdir
     Installation prefix:  $prefix
-    
+
     Compiler:             $CC
     CFLAGS:               $CFLAGS
     LDFLAGS:              $LDFLAGS
     INCLUDES:             $AM_CPPFLAGS
-    
+
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
