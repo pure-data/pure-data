@@ -41,7 +41,7 @@ case $host in
     fi
 
     # macports paths
-    if test -e /opt ; then
+    if test -e /opt/local ; then
         AM_CPPFLAGS="$INCLUDES -I/opt/local/include"
         LDFLAGS="$LDFLAGS -L/opt/local/lib"
     fi
@@ -128,7 +128,7 @@ AC_PROG_GREP
 AC_PROG_SED
 
 AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
-if test x$HAVE_MSGFMT = xyes ; then
+if test x$HAVE_MSGFMT = xno ; then
     AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
 fi
 AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
@@ -294,7 +294,7 @@ AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
     [portmidi=$enableval], [portmidi=no])
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
-if test x$portmidi = xyes; then
+if [ test x$portmidi = xyes ] && [ test -d "$srcdir/portmidi" ] ; then
     AC_MSG_NOTICE([Using included portmidi])
 fi
 
@@ -350,6 +350,7 @@ AC_MSG_NOTICE([
 
     Platform:             $PLATFORM
     Universal build:      $universal
+    Translations:         $HAVE_MSGFMT
     Source directory:     $srcdir
     Installation prefix:  $prefix
     
