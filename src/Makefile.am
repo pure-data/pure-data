@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
-pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\"
+pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
+
 pd_LDFLAGS =
 
 pdsend_CFLAGS = 
@@ -148,7 +149,6 @@ endif
 
 if WINDOWS
 LIBS += -lwsock32 -lwinmm -lole32
-pd_CFLAGS +=  -DPD_INTERNAL
 bin_SCRIPTS = 
 endif
 
