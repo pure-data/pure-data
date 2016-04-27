@@ -404,10 +404,16 @@ AC_MSG_NOTICE([
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
 
+    fftw:                 $fftw
+
+    oss:                  $oss
     alsa:                 $alsa
-    asio:                 $asio
     jack:                 $jack
+    coreaudio:            $coreaudio
+    mmio:                 $mmio
+    asio:                 $asio
     portaudio:            $portaudio
     portmidi:             $portmidi
-    fftw:                 $fftw
+    audio APIs:           $audio_backends
+    midi APIs:            $midi_backends
 ])
