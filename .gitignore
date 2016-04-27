@@ -34,6 +34,7 @@ ASIOSDK2
 pd-0.*
 pd.pc
 dist
+portaudio/bin-stamp
 portaudio/lib-stamp
 portaudio/ltmain.sh
 portaudio/portaudio-2.0.pc
