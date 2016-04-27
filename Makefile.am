@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS =  -I m4/generated -I m4
 CFLAGS += @DEFS@
 EXTRA_SUBDIRS = 
 
-empty=""
+empty=
 
 # pkg-config support
 pkgconfigdir = $(libdir)/pkgconfig

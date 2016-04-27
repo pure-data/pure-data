@@ -6,7 +6,7 @@ AC_INIT([pd], [0.47.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
-AM_INIT_AUTOMAKE([subdir-objects -Wno-error])
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CANONICAL_HOST
 
 #########################################
