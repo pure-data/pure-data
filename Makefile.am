@@ -43,6 +43,20 @@ endif
 # but we want $(prefix)/lib/pd/doc
 libpddir = $(pkglibdir)
 
+# get version info from m_pd.h to use in doc/1.manual/1.introduction.txt
+PD_MAJOR_VERSION = $(shell grep PD_MAJOR_VERSION src/m_pd.h | \
+    sed 's|^.define *PD_MAJOR_VERSION *\([0-9]*\).*|\1|' )
+PD_MINOR_VERSION = $(shell grep PD_MINOR_VERSION src/m_pd.h | \
+    sed 's|^.define *PD_MINOR_VERSION *\([0-9]*\).*|\1|' )
+PD_BUGFIX_VERSION = $(shell grep PD_BUGFIX_VERSION src/m_pd.h | \
+    sed 's|^.define *PD_BUGFIX_VERSION *\([0-9]*\).*|\1|' )
+PD_TEST_VERSION = $(shell grep PD_TEST_VERSION src/m_pd.h | \
+    sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
+PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
+
+# about text file, needed to write version string into
+ABOUT_FILE=$(libpddir)/doc/1.manual/1.introduction.txt
+
 # Symlinks don't work on Windows/MinGW but they do on Cygwin.
 bin:
 	$(LN_S) src bin
@@ -53,6 +67,20 @@ locales:
 install-data-local:
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup/disabled
+
+# build version string & write into about file during install
+install-data-hook:
+	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
+	if test "x${PD_TEST_VERSION}" == "x" ; then \
+	    cat $(ABOUT_FILE).tmp | \
+	    sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
+	    > $(ABOUT_FILE) ; \
+	else \
+	    cat $(ABOUT_FILE).tmp | \
+	    sed 's|PD_VERSION|Pd version $(PD_VERSION)-$(PD_TEST_VERSION)|' \
+	    > $(ABOUT_FILE) ; \
+	fi
+	rm $(ABOUT_FILE).tmp
 
 # this is at the end because its loooong
 # these files go into libpddir defined above
