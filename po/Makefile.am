@@ -2,11 +2,6 @@ AUTOMAKE_OPTIONS = foreign
 
 SUFFIXES = .po .pot .msg
 
-# this is the only way to get gettext 0.17 with Fink
-if MACOSX
-PATH := /sw/lib/gettext-tools-0.17/bin:${PATH}
-endif
-
 TCLFILES = \
     apple_events.tcl \
     dialog_canvas.tcl \
