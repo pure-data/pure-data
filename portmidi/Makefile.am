@@ -10,26 +10,29 @@ libportmidi_la_SOURCES = pm_common/pmutil.c pm_common/portmidi.c
 
 if LINUX
 AM_CPPFLAGS += -Ipm_linux
-libportmidi_la_SOURCES += porttime/ptlinux.c \
-        pm_linux/pmlinux.c \
-        pm_linux/pmlinuxalsa.c
+libportmidi_la_SOURCES += \
+    porttime/ptlinux.c \
+    pm_linux/pmlinux.c \
+    pm_linux/pmlinuxalsa.c
 endif
 
 if MACOSX
 AM_CPPFLAGS += -Ipm_mac
-libportmidi_la_SOURCES += porttime/ptmacosx_cf.c \
-        pm_mac/pmmac.c \
-        pm_mac/pmmacosxcm.c \
-        pm_mac/finddefault.c \
-        pm_mac/readbinaryplist.c
+libportmidi_la_SOURCES += \
+    porttime/ptmacosx_cf.c \
+    pm_mac/pmmac.c \
+    pm_mac/pmmacosxcm.c \
+    pm_mac/finddefault.c \
+    pm_mac/readbinaryplist.c
 endif
 
 if WINDOWS
 AM_CPPFLAGS += -Ipm_win
-libportmidi_la_SOURCES += porttime/porttime.c \
-        porttime/ptwinmm.c \
-        pm_win/pmwin.c \
-        pm_win/pmwinmm.c
+libportmidi_la_SOURCES += \
+    porttime/porttime.c \
+    porttime/ptwinmm.c \
+    pm_win/pmwin.c \
+    pm_win/pmwinmm.c
 endif
 
 # include the headers in the dist so you can build

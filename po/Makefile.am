@@ -3,41 +3,40 @@ AUTOMAKE_OPTIONS = foreign
 SUFFIXES = .po .pot .msg
 
 # this is the only way to get gettext 0.17 with Fink
-#UNAME := $(shell uname -s)
-#ifeq ($(UNAME),Darwin)
 if MACOSX
-  PATH := /sw/lib/gettext-tools-0.17/bin:${PATH}
+PATH := /sw/lib/gettext-tools-0.17/bin:${PATH}
 endif
 
-TCLFILES = apple_events.tcl \
-           dialog_canvas.tcl \
-           dialog_gatom.tcl \
-           dialog_path.tcl \
-           pd_bindings.tcl \
-           pd_menus.tcl \
-           pdwindow.tcl \
-           scrollboxwindow.tcl \
-           AppMain.tcl \
-           dialog_data.tcl \
-           dialog_iemgui.tcl \
-           dialog_startup.tcl \
-           pd_connect.tcl \
-           pkgIndex.tcl \
-           wheredoesthisgo.tcl \
-           dialog_array.tcl \
-           dialog_find.tcl \
-           dialog_message.tcl \
-           helpbrowser.tcl \
-           pdtk_canvas.tcl \
-           pkg_mkIndex.tcl \
-           dialog_audio.tcl \
-           dialog_font.tcl \
-           dialog_midi.tcl \
-           opt_parser.tcl \
-           pd_menucommands.tcl \
-           pdtk_text.tcl \
-           scrollbox.tcl \
-           pd_guiprefs.tcl
+TCLFILES = \
+    apple_events.tcl \
+    dialog_canvas.tcl \
+    dialog_gatom.tcl \
+    dialog_path.tcl \
+    pd_bindings.tcl \
+    pd_menus.tcl \
+    pdwindow.tcl \
+    scrollboxwindow.tcl \
+    AppMain.tcl \
+    dialog_data.tcl \
+    dialog_iemgui.tcl \
+    dialog_startup.tcl \
+    pd_connect.tcl \
+    pkgIndex.tcl \
+    wheredoesthisgo.tcl \
+    dialog_array.tcl \
+    dialog_find.tcl \
+    dialog_message.tcl \
+    helpbrowser.tcl \
+    pdtk_canvas.tcl \
+    pkg_mkIndex.tcl \
+    dialog_audio.tcl \
+    dialog_font.tcl \
+    dialog_midi.tcl \
+    opt_parser.tcl \
+    pd_menucommands.tcl \
+    pdtk_text.tcl \
+    scrollbox.tcl \
+    pd_guiprefs.tcl
 
 FILES = $(addprefix ../tcl/, $(TCLFILES)) iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl
 
@@ -53,8 +52,8 @@ libpdpo_DATA = $(MSGFILES)
 dist_libpdpo_DATA =
 
 EXTRA_DIST = $(POFILES) \
-	iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl \
-	template.pot
+    iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl \
+    template.pot
 
 # generate .msg files from the .po files
 all-local: $(MSGFILES)
@@ -73,7 +72,7 @@ $(TEMPLATE): $(FILES)
 	xgettext --join-existing \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
 		--sort-by-file --output=$(TEMPLATE) \
-		--package-name="Pure Data" --package-version=0.43 \
+		--package-name="Pure Data" --package-version=$(VERSION) \
 		--copyright-holder='This file is put in the public domain' \
 		--foreign-user \
 		--msgid-bugs-address=pd-dev@iem.at \
