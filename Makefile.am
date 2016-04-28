@@ -11,15 +11,15 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pd.pc
 
 if ASIO
-EXTRA_SUBDIRS += asio
+     EXTRA_SUBDIRS += asio
 endif
 
 if PORTAUDIO
-EXTRA_SUBDIRS += portaudio
+     EXTRA_SUBDIRS += portaudio
 endif
 
 if PORTMIDI
-EXTRA_SUBDIRS += portmidi
+     EXTRA_SUBDIRS += portmidi
 endif
 
 # files that are included but not built
@@ -35,8 +35,8 @@ DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
 
 BUILT_SOURCES = 
 if MSGFMT
-BUILT_SOURCES += locales
-SUBDIRS += po
+     BUILT_SOURCES += locales
+     SUBDIRS += po
 endif
 
 # default doc location is $(prefix)/doc/pd,
