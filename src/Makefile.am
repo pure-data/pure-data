@@ -44,7 +44,7 @@ noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h
 EXTRA_DIST = CHANGELOG.txt notes.txt \
     pd.ico pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
-    s_audio_dummy.c s_audio_audiounit.c s_audio_esd.c
+    s_audio_dummy.c s_audio_audiounit.c s_audio_esd.c s_midi_dummy.c
 
 # configurations per library
 if ALSA
@@ -84,6 +84,9 @@ if PORTAUDIO
 pd_CFLAGS += -DUSEAPI_PORTAUDIO  -I$(top_srcdir)/portaudio/include
 pd_LDADD += $(top_builddir)/portaudio/lib/libportaudio.la
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
+if MACOSX
+LIBS += -framework Carbon
+endif
 endif
 
 # ASIO needs to go after PORTAUDIO in order for it to link properly
@@ -103,15 +106,14 @@ pd_CFLAGS +=  -DUSEAPI_MMIO
 pd_SOURCES += s_audio_mmio.c s_midi_mmio.c
 endif
 
-# FIXXXME
-# GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
-# even better would be, to allow Pd to have simply have no MIDI (nor AUDIO)
-if MIDI_DUMMY
-pd_SOURCES += s_midi_dummy.c
-endif
+# if no audio or midi api was detected/specified, fall back to dummy apis
+# ie. GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
 if AUDIO_DUMMY
 pd_CFLAGS +=  -DUSEAPI_DUMMY
 pd_SOURCES += s_audio_dummy.c
+endif
+if MIDI_DUMMY
+pd_SOURCES += s_midi_dummy.c
 endif
 
 if HURD
@@ -141,7 +143,6 @@ pd_LDFLAGS += $(LIBM)
 endif
 
 if MACOSX
-LIBS += -framework Carbon
 pd_CFLAGS += -DMACOSX #kludge, should use auto macro __APPLE__
 bin_SCRIPTS =
 bin_PROGRAMS += pd-watchdog
