@@ -1206,19 +1206,22 @@ static void canvas_done_popup(t_canvas *x, t_float which, t_float xpos, t_float 
                         return;
                     atom_string(av, namebuf, MAXPDSTRING);
 
-                    // strip dir from name :
+                    /* strip dir from name : */
                     basenamep = strrchr(namebuf, '/');
-                    #ifdef _WIN32
-                    if(!*basenamep) basenamep = strrchr(namebuf, '\\');
-                    #endif
-                    if(!*basenamep) basenamep = namebuf;
-                    else basenamep++; //strip last '/'
+#ifdef _WIN32
+                    if (!basenamep)
+                        basenamep = strrchr(namebuf, '\\');
+#endif
+                    if (!basenamep)
+                        basenamep = namebuf;
+                    else basenamep++;   /* strip last '/' */
 
                     dir = canvas_getdir((t_canvas *)y)->s_name;
                 }
                 else
                 {
-                    strncpy(namebuf, class_gethelpname(pd_class(&y->g_pd)), MAXPDSTRING-1);
+                    strncpy(namebuf, class_gethelpname(pd_class(&y->g_pd)),
+                        MAXPDSTRING-1);
                     namebuf[MAXPDSTRING-1] = 0;
                     dir = class_gethelpdir(pd_class(&y->g_pd));
                     basenamep = namebuf;
