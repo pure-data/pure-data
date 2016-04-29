@@ -723,7 +723,7 @@ static void notefinder_doit(t_notefinder *x, t_float freq, t_float power,
         (x->n_hifreq <= 0 || freq > x->n_hifreq || freq < x->n_lofreq))
     {
         t_float testfhi = freq, testflo = freq,
-            maxpow = x->n_hist[x->n_histphase].h_freq;
+            maxpow = x->n_hist[x->n_histphase].h_power;
         for (i = 0, k = x->n_histphase; i < stableperiod-1; i++)
         {
             if (--k < 0)
