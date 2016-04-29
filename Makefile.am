@@ -1,3 +1,6 @@
+# empty empty
+empty=
+
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS =  -I m4/generated -I m4
 
@@ -24,7 +27,7 @@ endif
 EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 
 # subdirs that are built
-SUBDIRS = $(EXTRA_SUBDIRS) src man tcl po extra
+SUBDIRS = $(EXTRA_SUBDIRS) src man tcl extra
 
 # subdirs that are always included in the dist, etc.
 DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
@@ -32,6 +35,7 @@ DIST_SUBDIRS = asio extra man po portaudio portmidi src tcl
 BUILT_SOURCES = 
 if MSGFMT
 BUILT_SOURCES += locales
+SUBDIRS += po
 endif
 
 ## FIXXXME
