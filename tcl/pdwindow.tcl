@@ -332,7 +332,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.pad1 -side left -padx 12
 
     checkbutton .pdwindow.header.dsp -text [_ "DSP"] -variable ::dsp \
-        -font {$::font_family -18 bold} -takefocus 1 -background lightgray \
+        -takefocus 1 -background lightgray \
         -borderwidth 0  -command {pdsend "pd dsp $::dsp"}
     pack .pdwindow.header.dsp -side right -fill y -anchor e -padx 5 -pady 0
 
