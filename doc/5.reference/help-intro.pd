@@ -1,4 +1,4 @@
-#N canvas 502 52 579 948 12;
+#N canvas 524 42 579 948 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -86,10 +86,10 @@
 #X obj 133 1142 pgmin;
 #X obj 183 1142 bendin;
 #X obj 242 1142 touchin;
-#X obj 23 1165 polytouchin;
-#X obj 127 1165 midiin;
-#X obj 186 1165 sysexin;
-#X text 325 1154 - MIDI input;
+#X obj 310 1142 polytouchin;
+#X obj 24 1166 midiin;
+#X obj 85 1166 sysexin;
+#X text 412 1158 - MIDI input;
 #X obj 22 1198 noteout;
 #X obj 90 1198 ctlout;
 #X obj 150 1198 pgmout;
@@ -407,3 +407,5 @@ its "help window".;
 #X text 123 4349 - Moog resonant filter model;
 #X text 118 3676 - make copies of a subpatch;
 #X obj 26 3676 clone;
+#X obj 157 1167 midirealtimein;
+#X obj 301 1169 midiclkin;
