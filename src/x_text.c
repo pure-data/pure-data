@@ -1003,7 +1003,7 @@ static void text_search_list(t_text_search *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int i, j, n, lineno, bestline = -1, beststart, bestn, thisstart, thisn,
+    int i, j, n, lineno, bestline = -1, beststart=-1, bestn, thisstart, thisn,
         nkeys = x->x_nkeys, failed = 0;
     t_atom *vec;
     t_key *kp = x->x_keyvec;
@@ -1098,7 +1098,8 @@ static void text_search_list(t_text_search *x,
                     if (argv[j].a_type == A_FLOAT)      /* arg is a float */
                     {
                         float thisv = vec[thisstart+field].a_w.w_float,
-                            bestv = vec[beststart+field].a_w.w_float;
+                            bestv = (beststart >= 0 ?
+                                vec[beststart+field].a_w.w_float : -1e20);
                         switch (binop)
                         {
                             case KB_GT:
