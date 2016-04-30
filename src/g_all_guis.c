@@ -517,17 +517,16 @@ void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 
 void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    switch(ac)
-    {
-        default:
-            iemgui->x_lcol = iemgui_compatible_colorarg(2, ac, av);
-        case 2:
-            iemgui->x_fcol = iemgui_compatible_colorarg(1, ac, av);
-        case 1:
-            iemgui->x_bcol = iemgui_compatible_colorarg(0, ac, av);
-        case 0:
-            break;
-    }
+    if (ac >= 1)
+        iemgui->x_bcol = iemgui_compatible_colorarg(0, ac, av);
+    if (ac == 2 && pd_compatibilitylevel < 47)
+            /* old versions of Pd updated foreground and label color
+            if only two args; now we do it more coherently. */
+        iemgui->x_lcol = iemgui_compatible_colorarg(1, ac, av);
+    else if (ac >= 2)
+        iemgui->x_fcol = iemgui_compatible_colorarg(1, ac, av);
+    if (ac >= 3)
+        iemgui->x_lcol = iemgui_compatible_colorarg(2, ac, av);
     if(glist_isvisible(iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);
 }
