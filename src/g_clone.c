@@ -61,6 +61,7 @@ typedef struct _clone
     int x_argc;         /* creation arguments for abstractions */
     t_atom *x_argv;
     int x_phase;
+    int x_startvoice;   /* number of first voice, 0 by default */
 } t_clone;
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
@@ -79,8 +80,10 @@ static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
     int n;
     if (argc < 1 || argv[0].a_type != A_FLOAT)
         pd_error(x->i_owner, "clone: no instance number in message");
-    else if ((n = argv[0].a_w.w_float) < 0 || n >= x->i_owner->x_n)
-        pd_error(x->i_owner, "clone: instance number %d out of range", n);
+    else if ((n = argv[0].a_w.w_float - x->i_owner->x_startvoice) < 0 ||
+        n >= x->i_owner->x_n)
+            pd_error(x->i_owner, "clone: instance number %d out of range",
+                n + x->i_owner->x_startvoice);
     else if (argc > 1 && argv[1].a_type == A_SYMBOL)
         obj_sendinlet(&x->i_owner->x_vec[n].c_gl->gl_obj, x->i_n,
             argv[1].a_w.w_symbol, argc-2, argv+2);
@@ -131,7 +134,7 @@ static void clone_in_all(t_in *x, t_symbol *s, int argc, t_atom *argv)
 
 static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
 {
-    int n = fn;
+    int n = fn - x->i_owner->x_startvoice;
     if (n < 0)
         n = 0;
     else if (n >= x->i_owner->x_n)
@@ -216,7 +219,7 @@ void clone_setn(t_clone *x, t_floatarg f)
     {
         t_canvas *c;
         t_out *outvec;
-        SETFLOAT(x->x_argv, i);
+        SETFLOAT(x->x_argv, x->x_startvoice + i);
         if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
         {
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
@@ -235,7 +238,7 @@ void clone_setn(t_clone *x, t_floatarg f)
             outvec[j].o_pd = clone_out_class;
             outvec[j].o_signal =
                 obj_issignaloutlet(&x->x_vec[0].c_gl->gl_obj, i);
-            outvec[j].o_n = i;
+            outvec[j].o_n = x->x_startvoice + i;
             outvec[j].o_outlet =
                 x->x_outvec[0][j].o_outlet;
             obj_connect(&x->x_vec[i].c_gl->gl_obj, j,
@@ -349,6 +352,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     t_out *outvec;
     x->x_invec = 0;
     x->x_outvec = 0;
+    x->x_startvoice = 0;
     if (argc == 0)
     {
         x->x_vec = 0;
@@ -362,19 +366,27 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             post("warning: 'clone' is experimental - may change incompatbly");
         warned = 1;
     }
+    while (argc > 0 && argv[0].a_type == A_SYMBOL &&
+        argv[0].a_w.w_symbol->s_name[0] == '-')
+    {
+        if (!strcmp(argv[0].a_w.w_symbol->s_name, "-s") && argc > 1 &&
+            argv[1].a_type == A_FLOAT)
+        {
+            x->x_startvoice = argv[1].a_w.w_float;
+            argc -= 2; argv += 2;
+        }
+        else goto usage;
+    }
     if (argc < 2 || (wantn = atom_getfloatarg(0, argc, argv)) <= 0
         || argv[1].a_type != A_SYMBOL)
-    {
-        error("usage: clone <number> <name> [arguments]");
-        goto fail;
-    }
+            goto usage;
     x->x_s = argv[1].a_w.w_symbol;
         /* store a copy of the argmuents with an extra space (argc+1) for
         supplying an instance number, which we'll bash as we go. */
     x->x_argc = argc - 1;
     x->x_argv = getbytes(x->x_argc * sizeof(*x->x_argv));
     memcpy(x->x_argv, argv+1, x->x_argc * sizeof(*x->x_argv));
-    SETFLOAT(x->x_argv, 0);
+    SETFLOAT(x->x_argv, x->x_startvoice);
     if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
         goto fail;
     x->x_vec = (t_copy *)getbytes(sizeof(*x->x_vec));
@@ -389,7 +401,6 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         x->x_invec[i].i_signal =
             obj_issignalinlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_invec[i].i_n = i;
-        post("in %d, signal %d", i, x->x_invec[i].i_signal);
         if (x->x_invec[i].i_signal)
             signalinlet_new(&x->x_obj, 0);
         else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
@@ -403,7 +414,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         outvec[i].o_pd = clone_out_class;
         outvec[i].o_signal =
             obj_issignaloutlet(&x->x_vec[0].c_gl->gl_obj, i);
-        outvec[i].o_n = 0;
+        outvec[i].o_n = x->x_startvoice;
         outvec[i].o_outlet =
             outlet_new(&x->x_obj, (outvec[i].o_signal ? &s_signal : 0));
         obj_connect(&x->x_vec[0].c_gl->gl_obj, i, 
@@ -413,6 +424,8 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_phase = wantn-1;
     canvas_resume_dsp(dspstate);
     return (x);
+usage:
+    error("usage: clone [-s starting-number] <number> <name> [arguments]");
 fail:
     freebytes(x, sizeof(t_clone));
     canvas_resume_dsp(dspstate);
