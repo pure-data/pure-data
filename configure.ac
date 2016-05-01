@@ -332,21 +332,15 @@ if [ test x$portaudio = xyes ] && [ test -d "$srcdir/portaudio" ] ; then
 fi
 AS_IF([test x$portaudio = xyes], [audio_backends="PortAudio ${audio_backends}"])
 
-AS_IF([test x$portaudio = xyes], [
- AS_IF([test -d "$srcdir/portaudio" ], [
-  AC_CONFIG_SUBDIRS([portaudio])
- ])
-])
-
-
-dnl portmidi
+# PortMidi
 AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
     [portmidi=$enableval])
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
-AS_IF([test x$portmidi = xyes], [
- AC_MSG_NOTICE([using included portmidi])
-])
+if [ test x$portmidi = xyes ] && [ test -d "$srcdir/portmidi" ] ; then
+    AC_MSG_NOTICE([Using included PortMidi])
+fi
+AS_IF([test x$portmidi = xyes], [midi_backends="PortMidi ${midi_backends}"])
 
 # fftw v3
 AC_ARG_ENABLE([fftw],

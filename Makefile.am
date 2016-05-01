@@ -88,7 +88,6 @@ empty=
 # to regenerate:
 # find doc -type f | sort | awk '{print "    ", $1, "\\"}'; echo '    $(empty)'
 nobase_dist_libpd_DATA = \
-<<<<<<< HEAD
     doc/1.manual/1.introduction.txt \
     doc/1.manual/fig11.1.png \
     doc/1.manual/fig11.2.png \
