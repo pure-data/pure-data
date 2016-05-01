@@ -1,30 +1,27 @@
-#N canvas 618 111 747 746 12;
-#X floatatom 220 300 5 36 144 0 - - -, f 5;
-#X obj 220 321 t b f;
-#X obj 220 345 f;
-#X obj 220 369 + 1;
-#X obj 220 393 mod 16;
-#X obj 220 417 pack;
+#N canvas 529 52 856 763 12;
+#X floatatom 217 311 5 36 144 0 - - -, f 5;
+#X obj 217 332 t b f;
+#X obj 217 356 f;
+#X obj 217 380 + 1;
+#X obj 217 404 mod 16;
+#X obj 217 428 pack;
 #X msg 326 404 next \$1;
 #X floatatom 326 384 5 36 144 0 - - -, f 5;
 #X floatatom 326 434 5 36 144 0 - - -, f 5;
 #X msg 326 453 this \$1;
 #X floatatom 325 481 5 36 144 0 - - -, f 5;
 #X msg 325 500 set \$1;
-#X msg 82 368 vis 5 1;
-#X msg 81 396 vis 5 0;
+#X msg 79 379 vis 5 1;
+#X msg 78 407 vis 5 0;
 #X floatatom 324 527 5 36 144 0 - - -, f 5;
 #X msg 324 548 all \$1;
-#X obj 218 596 clone 16 clone-subpatch;
-#X obj 218 655 ../3.audio.examples/output~;
-#X text 488 708 updated for Pd version 0.47;
-#X text 498 576 creation arguments:;
-#X text 485 598 number of copies \; filename \; optional arguments
-;
-#X text 65 597 click to open ->;
-#X text 53 619 (first copy only);
-#X text 69 322 open or close copy number 5:, f 14;
-#X text 278 297 A list beginning with a number dispatches the rest
+#X obj 177 657 ../3.audio.examples/output~;
+#X text 562 686 updated for Pd version 0.47;
+#X text 495 561 creation arguments:;
+#X text 25 592 click to open ->;
+#X text 13 614 (first copy only);
+#X text 66 333 open or close copy number 5:, f 14;
+#X text 275 308 A list beginning with a number dispatches the rest
 of the list as a message, f 23;
 #X text 402 374 "next" forwards a message to the next instance (incrementing
 and repeating circularly)., f 33;
@@ -32,21 +29,25 @@ and repeating circularly)., f 33;
 sent to by "this" or "next", f 30;
 #X text 390 482 "set" sets the "next"/"this" counter;
 #X text 385 528 "all" broadcasts a message to all instances;
-#X text 22 206 Signal inlets are copied to all the instances. Control
+#X text 18 229 Signal inlets are copied to all the instances. Control
 inlets forward messages as shown below. Signal outlets output the sum
 of all instances' outputs \, and control outlets forward messages after
 prepending the number of the instance., f 67;
-#X text 22 131 clone's inlets and outlets correspond to those of the
+#X text 18 148 clone's inlets and outlets correspond to those of the
 contained patch \, and my be signal and/or control inlets and outlets.
 (In this example there's one control inlet and one signal outlet).
 You can click on the clone~ object to see the first of the created
 instances., f 72;
 #X text 24 8 clone - make multiple copies of a patch;
+#X text 428 586 optional "-s #" to set starting voice number \; number
+of copies \; filename \; optional arguments;
 #X text 24 41 clone creates any number of copies of a desired abstraction
 (a patch loaded as an object in another patch). To disambiguate between
 them \, each copy is given its own instance number (counting upward
-from 0) as its first argument. (Additional arguments to "clone~" are
-provided to the abstraction after that first one)., f 71;
+from 0 or from another starting voice number is specified with "-s
+1" for instance) as its first argument. (Additional arguments to "clone~"
+are provided to the abstraction after that first one)., f 71;
+#X obj 178 591 clone 16 clone-subpatch;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 5 1;
@@ -54,16 +55,16 @@ provided to the abstraction after that first one)., f 71;
 #X connect 3 0 4 0;
 #X connect 4 0 2 1;
 #X connect 4 0 5 0;
-#X connect 5 0 16 0;
-#X connect 6 0 16 0;
+#X connect 5 0 32 0;
+#X connect 6 0 32 0;
 #X connect 7 0 6 0;
 #X connect 8 0 9 0;
-#X connect 9 0 16 0;
+#X connect 9 0 32 0;
 #X connect 10 0 11 0;
-#X connect 11 0 16 0;
-#X connect 12 0 16 0;
-#X connect 13 0 16 0;
+#X connect 11 0 32 0;
+#X connect 12 0 32 0;
+#X connect 13 0 32 0;
 #X connect 14 0 15 0;
-#X connect 15 0 16 0;
-#X connect 16 0 17 0;
-#X connect 16 0 17 1;
+#X connect 15 0 32 0;
+#X connect 32 0 16 0;
+#X connect 32 0 16 1;

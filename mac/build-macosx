@@ -34,5 +34,6 @@ cd ..
 ln -s tcl Scripts
 cd ../../..
 pwd
+chmod -R u+w Pd-$1.app
 touch Pd-$1.app
 tar czf pd-$1.mac.tar.gz Pd-$1.app

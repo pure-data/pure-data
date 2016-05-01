@@ -317,9 +317,9 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
 
 static void sigvd_setup(void)
 {
-    sigvd_class = class_new(gensym("vd~"), (t_newmethod)sigvd_new, 0,
+    sigvd_class = class_new(gensym("delread4~"), (t_newmethod)sigvd_new, 0,
         sizeof(t_sigvd), 0, A_DEFSYM, 0);
-    class_addmethod(sigvd_class, (t_method)sigvd_dsp, gensym("dsp"), A_CANT, 0);
+    class_addcreator((t_newmethod)sigvd_new, gensym("vd~"), A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(sigvd_class, t_sigvd, x_f);
 }
 

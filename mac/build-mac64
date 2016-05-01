@@ -42,5 +42,6 @@ cd ..
 ln -s tcl Scripts
 cd ../../..
 pwd
+chmod -R u+w Pd-$1-64bit.app
 touch Pd-$1-64bit.app
 tar czf pd-$1-64bit.mac.tar.gz Pd-$1-64bit.app
