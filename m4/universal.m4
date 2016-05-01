@@ -41,6 +41,9 @@ if test "$universal_binary" != no; then
         *darwin*)
           TARGET_ARCHS="ppc i386 x86_64"
           ;;
+        *linux*|*kfreebsd*gnu*)
+          TARGET_ARCHS="i386 x86_64"
+          ;;
         *)
           TARGET_ARCHS=""
           ;;
