@@ -1,4 +1,4 @@
-#N canvas 524 42 579 948 12;
+#N canvas 523 52 579 948 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -247,9 +247,6 @@
 #X text 124 3479 - write to a delay line;
 #X obj 24 3503 delread~;
 #X text 124 3503 - read from a delay line;
-#X obj 24 3527 vd~;
-#X text 124 3527 - read from a delay line at a variable delay time
-;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X restore 25 3577 pd;
 #X text 125 3577 - define a subwindow;
@@ -409,3 +406,6 @@ its "help window".;
 #X obj 26 3676 clone;
 #X obj 157 1167 midirealtimein;
 #X obj 301 1169 midiclkin;
+#X obj 24 3529 delread4~;
+#X text 154 3530 - read with a time-varying delay time;
+#X obj 118 3530 vd~;
