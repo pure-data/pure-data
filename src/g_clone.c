@@ -56,7 +56,7 @@ typedef struct _clone
     int x_nin;
     t_in *x_invec;
     int x_nout;
-    t_out *x_outvec;
+    t_out **x_outvec;
     t_symbol *x_s;      /* name of abstraction */
     int x_argc;         /* creation arguments for abstractions */
     t_atom *x_argv;
@@ -156,14 +156,22 @@ static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
 
 static void clone_free(t_clone *x)
 {
-    int i;
-    for (i = 0; i < x->x_n; i++)
+    if (x->x_vec)
     {
-        canvas_closebang(x->x_vec[i].c_gl);
-        pd_free(&x->x_vec[i].c_gl->gl_pd);
+        int i;
+        for (i = 0; i < x->x_n; i++)
+        {
+            canvas_closebang(x->x_vec[i].c_gl);
+            pd_free(&x->x_vec[i].c_gl->gl_pd);
+        }
+        t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
+        t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
+        t_freebytes(x->x_invec, x->x_nin * sizeof(*x->x_invec));
+        for (i = 0; i < x->x_nout; i++)
+            t_freebytes(x->x_outvec[i],
+                x->x_nout * sizeof(*x->x_outvec[i]));
+        t_freebytes(x->x_outvec, x->x_nout * sizeof(*x->x_outvec));
     }
-    t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
-    t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
 }
 
 extern t_pd *newest;
@@ -207,6 +215,7 @@ void clone_setn(t_clone *x, t_floatarg f)
         for (i = nwas; i < wantn; i++)
     {
         t_canvas *c;
+        t_out *outvec;
         SETFLOAT(x->x_argv, i);
         if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
         {
@@ -217,10 +226,20 @@ void clone_setn(t_clone *x, t_floatarg f)
             (i+1) * sizeof(t_copy));
         x->x_vec[i].c_gl = c;
         x->x_vec[i].c_on = 0;
+        x->x_outvec = (t_out **)t_resizebytes(x->x_outvec,
+            i * sizeof(*x->x_outvec), (i+1) * sizeof(*x->x_outvec));
+        x->x_outvec[i] = outvec =
+            (t_out *)getbytes(x->x_nout * sizeof(*outvec));
         for (j = 0; j < x->x_nout; j++)
         {
-            obj_connect(&x->x_vec[i].c_gl->gl_obj, j, 
-                (t_object *)(&x->x_outvec[j]), 0);
+            outvec[j].o_pd = clone_out_class;
+            outvec[j].o_signal =
+                obj_issignaloutlet(&x->x_vec[0].c_gl->gl_obj, i);
+            outvec[j].o_n = i;
+            outvec[j].o_outlet =
+                x->x_outvec[0][j].o_outlet;
+            obj_connect(&x->x_vec[i].c_gl->gl_obj, j,
+                (t_object *)(&outvec[j]), 0);
         }
         x->x_n++;
     }
@@ -272,7 +291,7 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         if (x->x_invec[i].i_signal)
             nin++;
     for (i = nout = 0; i < x->x_nout; i++)
-        if (x->x_outvec[i].o_signal)
+        if (x->x_outvec[0][i].o_signal)
             nout++;
     for (j = 0; j < x->x_n; j++)
     {
@@ -327,6 +346,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     t_clone *x = (t_clone *)pd_new(clone_class);
     t_canvas *c;
     int wantn, dspstate, i;
+    t_out *outvec;
     x->x_invec = 0;
     x->x_outvec = 0;
     if (argc == 0)
@@ -375,17 +395,19 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
     }
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
-    x->x_outvec = (t_out *)getbytes(x->x_nout * sizeof(*x->x_outvec));
+    x->x_outvec = (t_out **)getbytes(sizeof(*x->x_outvec));
+    x->x_outvec[0] = outvec =
+        (t_out *)getbytes(x->x_nout * sizeof(*x->x_outvec));
     for (i = 0; i < x->x_nout; i++)
     {
-        x->x_outvec[i].o_pd = clone_out_class;
-        x->x_outvec[i].o_signal =
+        outvec[i].o_pd = clone_out_class;
+        outvec[i].o_signal =
             obj_issignaloutlet(&x->x_vec[0].c_gl->gl_obj, i);
-        x->x_outvec[i].o_n = i;
-        x->x_outvec[i].o_outlet =
-            outlet_new(&x->x_obj, (x->x_outvec[i].o_signal ? &s_signal : 0));
+        outvec[i].o_n = 0;
+        outvec[i].o_outlet =
+            outlet_new(&x->x_obj, (outvec[i].o_signal ? &s_signal : 0));
         obj_connect(&x->x_vec[0].c_gl->gl_obj, i, 
-            (t_object *)(&x->x_outvec[i]), 0);
+            (t_object *)(&outvec[i]), 0);
     }
     clone_setn(x, (t_floatarg)(wantn));
     x->x_phase = wantn-1;

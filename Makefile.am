@@ -1,3 +1,6 @@
+# empty empty
+empty=
+
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4/generated -I m4
 
