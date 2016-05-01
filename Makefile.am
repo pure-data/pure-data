@@ -1,13 +1,8 @@
-# empty empty
-empty=
-
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4/generated -I m4
 
 CFLAGS += @DEFS@
 EXTRA_SUBDIRS = 
-
-empty=
 
 # pkg-config support
 pkgconfigdir = $(libdir)/pkgconfig
@@ -84,6 +79,9 @@ install-data-hook:
 	    > $(ABOUT_FILE) ; \
 	fi
 	rm $(ABOUT_FILE).tmp
+
+# empty var for data list footer
+empty=
 
 # this is at the end because its loooong
 # these files go into libpddir defined above

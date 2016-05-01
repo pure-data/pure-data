@@ -21,8 +21,12 @@ portmidi=no
 audio_backends=""
 midi_backends=""
 
+# debug/release defaults
+DEBUG_CFLAGS="-g -O0"
+RELEASE_CFLAGS="-O3 -ffast-math -funroll-loops -fomit-frame-pointer"
+
 #########################################
-##### Build Options #####
+##### OS Detection #####
 
 # you will need to install XCode on Mac OS X to use this:
 PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iOS SDK not available]))
@@ -31,22 +35,16 @@ PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not availabl
 case $host in
 *darwin*)
     if test "x${IPHONEOS}" = "xno"; then
+        MACOSX=yes
+        platform="Mac OSX"
         coreaudio=yes
         portaudio=yes
         portmidi=yes
-        MACOSX=yes
-        PLATFORM=macosx
         EXTERNAL_CFLAGS="-fPIC"
-        EXTERNAL_EXTENSION=d_fat
-    else
-        portaudio=no
-        portmidi=no
-        PLATFORM=ios
-        EXTERNAL_CFLAGS=
         EXTERNAL_EXTENSION=pd_darwin
+    else
+        platform=iOS
     fi
-
-    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 
     # fink paths
     if test -e /sw ; then
@@ -67,19 +65,19 @@ case $host in
     # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
     if test "x${ANDROID}" = "xno"; then
         LINUX=yes
-        PLATFORM=linux
+        platform=Linux
         portaudio=yes
-        CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
-    fi
-        PLATFORM=android
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
         EXTERNAL_EXTENSION=pd_linux
+    else
+        platform=Android
+    fi
+        
     ;;
 *-*-gnu*)
     HURD=yes
-    PLATFORM=hurd
-    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+    platform=Hurd
     EXTERNAL_CFLAGS="-fPIC"
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
     EXTERNAL_EXTENSION=pd_linux
@@ -87,13 +85,12 @@ case $host in
 *mingw*)
     WINDOWS=yes
     MINGW=yes
-    PLATFORM=mingw
+    platform=Mingw
+    portaudio=yes
 
     # ASIO doesn't build yet with the autotools setup. We need to figure out how
     # to make the final linking phase use g++
     asio=yes
-    portaudio=yes
-    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
 
     # ASIO is a C++ library, so if its included, then use g++ to build
     EXTERNAL_CFLAGS="-mms-bitfields"
@@ -103,15 +100,14 @@ case $host in
 *cygwin*)
     WINDOWS=yes
     CYGWIN=yes
-    PLATFORM=cygwin
+    platform=Cygwin
     portaudio=yes
-    CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
     EXTERNAL_EXTENSION=dll
     ;;
 *)
-    PLATFORM=unknown
+    platform=Unknown
     ;;
 esac
 
@@ -121,7 +117,7 @@ AM_CONDITIONAL(LINUX, test x$LINUX = xyes)
 AM_CONDITIONAL(HURD, test x$HURD = xyes)
 AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
 AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
-AM_CONDITIONAL(CYGWIN, test x$MINGW = xyes)
+AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
 
 #########################################
@@ -140,13 +136,6 @@ AC_PROG_MAKE_SET
 AC_PROG_LN_S
 AC_PROG_GREP
 AC_PROG_SED
-
-# Gettext is needed to build language localizations.
-AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
-if test x$HAVE_MSGFMT = xno ; then
-    AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
-fi
-AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -206,6 +195,13 @@ AC_CHECK_LIBM
 # AC_CHECK_LIBM computes LIBM but does not add to LIBS, hence we add it in
 # src/Makefile.am under pd_LDFLAGS as well
 
+# Apple's CoreAudio
+# not used directly, implicitly needed when using PortAudio on OSX
+AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
+# portaudio doesn't work with iPhone, so don't bother with CoreAudio
+test x$IPHONEOS = xyes && coreaudio=no
+AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
+
 # Checking for `pthread_create' function in -pthread (MinGW uses unusual names)
 ## CHECK whether this can be replaced by AX_PTHREAD
 AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
@@ -214,7 +210,7 @@ AC_CHECK_LIB([pthread], [pthread_create],LIBS="-lpthread $LIBS",
             AC_CHECK_LIB([pthreadGC], [pthread_create], LIBS="-lpthreadGC $LIBS",
          AC_MSG_WARN([pthreads required])))))
 
-# Define variables for use in Makefile.in
+# Define variables for use in Makefiles
 AC_SUBST(EXTERNTARGET)
 AC_SUBST(EXTERNAL_EXTENSION)
 AC_SUBST(EXTERNAL_CFLAGS)
@@ -223,26 +219,43 @@ AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_LIBS])
 
 #########################################
-##### Options #####
-
-PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
-AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
-if test "x${universal}" = "xyes"; then
-    CFLAGS="${CFLAGS} ${ARCH_CFLAGS}"
-    LDFLAGS="${LDFLAGS} ${ARCH_LDFLAGS}"
-fi
+##### Configure Options #####
 
 # TODO implement debug and static
 #AC_ARG_ENABLE([static],
 #    [AS_HELP_STRING([--enable-static], [link statically])],
 #    [static=$enableval], [static=yes])
 
-#AC_ARG_ENABLE([debug],
-#   [AS_HELP_STRING([--enable-debug], [use debugging support])],
-#       [debug=$enableval])
-#if test x$debug = xyes; then
-#    CFLAGS="$CFLAGS -g"
-#fi
+# Build with debug flags?
+AC_ARG_ENABLE([debug],
+    [AS_HELP_STRING([--enable-debug], [use debugging support])],
+    [debug=$enableval], [debug=no])
+if test x$debug = xyes; then
+    CFLAGS="$DEBUG_CFLAGS $CFLAGS"
+else
+    CFLAGS="$RELEASE_CFLAGS $CFLAGS"
+fi
+
+# Universal/multi architecture build on OSX
+PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
+AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
+if test x$universal = xyes ; then
+    CFLAGS="$ARCH_CFLAGS $CFLAGS"
+    LDFLAGS="$ARCH_LDFLAGS $LDFLAGS"
+fi
+
+# Gettext is needed to build language localizations.
+AC_ARG_ENABLE([locales],
+    [AS_HELP_STRING([--disable-locales], [do not compile localizations (requires gettext)])],
+    [locales=$enableval], [locales=yes])
+if test xlocales = xyes ; then
+    AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
+    if test x$HAVE_MSGFMT = xno ; then
+        AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
+    fi
+    locales=$HAVE_MSGFMT
+fi
+AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 
 # OSS
 # Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only
@@ -286,14 +299,6 @@ if [ test x$MACOSX != xyes ] && [ test x$jack = xyes ] ; then
 fi
 AM_CONDITIONAL(JACK, test x$jack = xyes)
 AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
-
-# Apple's CoreAudio
-# not used directly, implicitly needed when using PortAudio on OSX
-AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
-test x$enable_coreaudio = xno && coreaudio=no
-# portaudio/CoreAudio doesn't work with iPhone
-test x$IPHONEOS = xyes && coreaudio=no
-AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 
 # MMIO
 AC_ARG_ENABLE([mmio],
@@ -393,9 +398,10 @@ AC_MSG_NOTICE([
 
     $PACKAGE $VERSION is now configured
 
-    Platform:             $PLATFORM
+    Platform:             $platform
+    Debug build:          $debug
     Universal build:      $universal
-    Localizations:        $HAVE_MSGFMT
+    Localizations:        $locales
     Source directory:     $srcdir
     Installation prefix:  $prefix
 

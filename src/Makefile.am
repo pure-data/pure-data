@@ -206,7 +206,15 @@ pd_LDFLAGS += $(LIBM)
 endif
 
 if MACOSX
-pd_CFLAGS += -DMACOSX # kludge, should use auto macro __APPLE__
+
+# required for dlopen & weak linking
+pd_CFLAGS += -mmacosx-version-min=10.4
+
+# kludge, should use auto macro __APPLE__
+# but who knows what externals rely on this
+pd_CFLAGS += -DMACOSX
+
+LIBS += -ldl -lm -lpthread
 bin_SCRIPTS =
 bin_PROGRAMS += pd-watchdog
 endif
