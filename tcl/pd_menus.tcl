@@ -174,9 +174,9 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         $mymenu add command -label [_ "Font"] \
             -command {menu_font_dialog}
     }
-    $mymenu add command -label [_ "Zoom In"] -accelerator "$accelerator+'+'" \
+    $mymenu add command -label [_ "Zoom In"] -accelerator "$accelerator++" \
         -command {menu_send_float $::focused_window zoom 2}
-    $mymenu add command -label [_ "Zoom Out"] -accelerator "$accelerator+'-'" \
+    $mymenu add command -label [_ "Zoom Out"] -accelerator "$accelerator+-" \
         -command {menu_send_float $::focused_window zoom 1}
     $mymenu add command -label [_ "Tidy Up"] \
         -command {menu_send $::focused_window tidy}

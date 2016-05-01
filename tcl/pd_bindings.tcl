@@ -62,9 +62,9 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-period> {pdsend "pd dsp 0"}
     bind all <$::modifier-greater>    {menu_raisenextwindow}
     bind all <$::modifier-less>       {menu_raisepreviouswindow}
-    bind all <$::modifier-Key-plus>    {menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-minus>   {menu_send_float %W zoom 1}
-    bind all <$::modifier-Key-KP_Add>  {menu_send_float %W zoom 2}
+    bind all <$::modifier-Key-equal>  {menu_send_float %W zoom 2}
+    bind all <$::modifier-Key-minus>  {menu_send_float %W zoom 1}
+    bind all <$::modifier-Key-KP_Equal>      {menu_send_float %W zoom 2}
     bind all <$::modifier-Key-KP_Subtract>   {menu_send_float %W zoom 1}
 
     # annoying, but Tk's bind needs uppercase letter to get the Shift
