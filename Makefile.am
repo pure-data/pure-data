@@ -312,6 +312,7 @@ nobase_dist_libpd_DATA = \
      doc/5.reference/canvas-help.pd \
      doc/5.reference/change-help.pd \
      doc/5.reference/clip~-help.pd \
+     doc/5.reference/clip-help.pd \
      doc/5.reference/clone-help.pd \
      doc/5.reference/clone-subpatch.pd \
      doc/5.reference/cos~-help.pd \
@@ -321,6 +322,7 @@ nobase_dist_libpd_DATA = \
      doc/5.reference/czero_rev~-help.pd \
      doc/5.reference/declare-help.pd \
      doc/5.reference/delay-help.pd \
+     doc/5.reference/delread4~-help.pd \
      doc/5.reference/delread~-help.pd \
      doc/5.reference/delwrite~-help.pd \
      doc/5.reference/drawpolygon-help.pd \
@@ -367,6 +369,7 @@ nobase_dist_libpd_DATA = \
      doc/5.reference/osc~-help.pd \
      doc/5.reference/oscparse-help.pd \
      doc/5.reference/otherbinops-help.pd \
+     doc/5.reference/out1~.pd \
      doc/5.reference/pack-help.pd \
      doc/5.reference/pd-help.pd \
      doc/5.reference/phasor~-help.pd \
@@ -389,6 +392,7 @@ nobase_dist_libpd_DATA = \
      doc/5.reference/rzero~-help.pd \
      doc/5.reference/rzero_rev~-help.pd \
      doc/5.reference/samphold~-help.pd \
+     doc/5.reference/samplerate~-help.pd \
      doc/5.reference/savepanel-help.pd \
      doc/5.reference/scalar-object-help.pd \
      doc/5.reference/select-help.pd \
@@ -433,11 +437,11 @@ nobase_dist_libpd_DATA = \
      doc/5.reference/until-help.pd \
      doc/5.reference/value-help.pd \
      doc/5.reference/vcf~-help.pd \
-     doc/5.reference/vd~-help.pd \
      doc/5.reference/vdial-help.pd \
      doc/5.reference/vline~-help.pd \
      doc/5.reference/vradio-help.pd \
      doc/5.reference/vslider-help.pd \
+     doc/5.reference/vsnapshot~-help.pd \
      doc/5.reference/vu-help.pd \
      doc/5.reference/wrap~-help.pd \
      doc/5.reference/writesf~-help.pd \
@@ -481,4 +485,3 @@ nobase_dist_libpd_DATA = \
      doc/sound/bell.aiff \
      doc/sound/voice2.wav \
      doc/sound/voice.wav
-
