@@ -32,10 +32,10 @@ endif
 EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 
 # subdirs that are built
-SUBDIRS = $(EXTRA_SUBDIRS) src man doc tcl extra
+SUBDIRS = $(EXTRA_SUBDIRS) src mac man doc tcl extra
 
 # subdirs that are always included in the dist, etc.
-DIST_SUBDIRS = asio doc extra man po portmidi portaudio src tcl
+DIST_SUBDIRS = asio doc extra mac man po portmidi portaudio src tcl
 
 # Symlinks don't work on Windows/MinGW but they do on Cygwin.
 bin:
@@ -43,3 +43,9 @@ bin:
 
 locales:
 	make -C po all
+
+# forward target to mac/Makefile
+app: 
+	cd mac && $(MAKE) $(AM_MAKEFLAGS) app
+
+.PHONY: app

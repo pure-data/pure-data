@@ -1,0 +1,25 @@
+
+# files that are included but not built
+EXTRA_DIST = \
+    osx-app.sh \
+    stuff/Info.plist \
+    stuff/pd-file.icns \
+    stuff/pd.icns
+
+if MACOSX
+
+# build an app bundle on OSX
+app:
+	rm -f $(top_srcdir)/Pd-$(VERSION).app
+	$(SH) $(top_srcdir)/mac/osx-app.sh $(VERSION)
+	mv $(top_srcdir)/mac/Pd-$(VERSION).app $(top_srcdir)
+
+else
+
+# don't bother on other platforms
+app:
+	echo "app bundle only supported when building on OS X"
+
+endif
+
+.PHONY: app

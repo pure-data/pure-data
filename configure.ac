@@ -59,7 +59,6 @@ case $host in
     fi
 
     EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
-
     ;;
 *linux*|*kfreebsd*gnu*)
     # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
@@ -73,7 +72,6 @@ case $host in
     else
         platform=Android
     fi
-        
     ;;
 *-*-gnu*)
     HURD=yes
@@ -372,6 +370,7 @@ AS_IF([test "x$midi_backends" = "x"],[
 AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
+                mac/Makefile
                 man/Makefile
                 portmidi/Makefile
                 tcl/Makefile
