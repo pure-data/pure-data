@@ -371,6 +371,7 @@ AS_IF([test "x$midi_backends" = "x"],[
 # Specify what files are to be created.
 AC_CONFIG_FILES([Makefile
                 asio/Makefile
+                doc/Makefile
                 man/Makefile
                 portmidi/Makefile
                 tcl/Makefile

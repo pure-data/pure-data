@@ -37,6 +37,9 @@ LT_CURRENT=@LT_CURRENT@
 LT_REVISION=@LT_REVISION@
 LT_AGE=@LT_AGE@
 
+## !!! Added for PureData distdir target !!!
+MKDIR_P=@MKDIR_P@
+
 OTHER_OBJS = @OTHER_OBJS@
 INCLUDES = @INCLUDES@
 
@@ -167,6 +170,7 @@ install: lib/$(PALIB) portaudio-2.0.pc
 uninstall:
 	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$(PALIB)
 	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(includedir)/portaudio.h
+	$(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/pkgconfig/portaudio-2.0.pc
 	$(MAKE) uninstall-recursive
 
 clean:
@@ -212,3 +216,7 @@ install-recursive:
 
 uninstall-recursive:
 	if test -n "$(SUBDIRS)" ; then for dir in "$(SUBDIRS)"; do $(MAKE) -C $$dir uninstall; done ; fi
+
+## !!! Added for PureData distdir target !!!
+## dist/distdir targets by IOhannes m zmölnig
+include $(srcdir)/Makefile.dist

@@ -2,14 +2,14 @@
 # http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = -DNEWBUFFER
-AM_CPPFLAGS = -Ipm_common -Iporttime
+AM_CPPFLAGS = -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
 
 noinst_LTLIBRARIES = libportmidi.la
 
 libportmidi_la_SOURCES = pm_common/pmutil.c pm_common/portmidi.c
 
 if LINUX
-AM_CPPFLAGS += -Ipm_linux
+AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_linux
 libportmidi_la_SOURCES += \
     porttime/ptlinux.c \
     pm_linux/pmlinux.c \
@@ -17,7 +17,7 @@ libportmidi_la_SOURCES += \
 endif
 
 if MACOSX
-AM_CPPFLAGS += -Ipm_mac
+AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_mac
 libportmidi_la_SOURCES += \
     porttime/ptmacosx_cf.c \
     pm_mac/pmmac.c \
@@ -27,7 +27,7 @@ libportmidi_la_SOURCES += \
 endif
 
 if WINDOWS
-AM_CPPFLAGS += -Ipm_win
+AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_win
 libportmidi_la_SOURCES += \
     porttime/porttime.c \
     porttime/ptwinmm.c \
@@ -44,5 +44,6 @@ nobase_noinst_HEADERS = \
     pm_linux/pmlinuxalsa.h \
     pm_mac/pmmac.h \
     pm_mac/pmmacosxcm.h \
+    pm_mac/readbinaryplist.h \
     pm_win/pmwinmm.h \
     porttime/porttime.h

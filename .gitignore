@@ -9,8 +9,10 @@ GNUmakefile
 GNUmakefile.in
 aclocal.m4
 configure
+config.guess
 config.log
 config.status
+config.sub
 libtool
 m4/generated
 m4/config
@@ -35,6 +37,7 @@ pd-0.*
 pd.pc
 dist
 portaudio/bin-stamp
+portaudio/install-sh
 portaudio/lib-stamp
 portaudio/ltmain.sh
 portaudio/portaudio-2.0.pc

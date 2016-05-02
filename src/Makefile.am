@@ -1,4 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
+AM_CPPFLAGS =
 
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 
@@ -92,15 +93,15 @@ pd_SOURCES = \
 nodist_EXTRA_pd_SOURCES =
 
 pd_includedir = ${includedir}/pd
-pd_include_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h
+pd_include_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h x_vexp.h
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h
+noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h x_vexp.h
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
-    s_audio_dummy.c s_audio_audiounit.c s_audio_esd.c s_midi_dummy.c
+    s_audio_audiounit.c s_audio_esd.c
 
 # configurations per library
 if ALSA
@@ -138,7 +139,8 @@ pd_SOURCES += s_audio_oss.c s_midi_oss.c
 endif
 
 if PORTAUDIO
-pd_CFLAGS += -DUSEAPI_PORTAUDIO -I$(top_srcdir)/portaudio/include
+AM_CPPFLAGS += -I$(top_srcdir)/portaudio/include
+pd_CFLAGS += -DUSEAPI_PORTAUDIO
 pd_LDADD += $(top_builddir)/portaudio/lib/libportaudio.la
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
 if MACOSX
@@ -153,14 +155,14 @@ nodist_EXTRA_pd_SOURCES += dummy.cxx
 endif
 
 if PORTMIDI
-AM_CPPFLAGS = -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
+AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
 pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 pd_SOURCES += s_midi_pm.c
 endif
 
 if MMIO
 pd_CFLAGS += -DUSEAPI_MMIO
-pd_SOURCES += s_audio_mmio.c s_midi_mmio.c
+pd_SOURCES += s_audio_mmio.c
 endif
 
 # if no audio or midi api was detected/specified, fall back to dummy apis
