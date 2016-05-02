@@ -49,4 +49,4 @@ before_script:
 
 script:
 ## the actual build
-- make
+- make distcheck
