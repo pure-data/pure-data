@@ -42,4 +42,4 @@ dist_libpdtcl_DATA = \
     pd.ico
 
 etags: TAGS
-    etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
+	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
