@@ -360,12 +360,6 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         return (x);
     }
     dspstate = canvas_suspend_dsp();
-    {
-        static int warned;
-        if (!warned)
-            post("warning: 'clone' is experimental - may change incompatbly");
-        warned = 1;
-    }
     while (argc > 0 && argv[0].a_type == A_SYMBOL &&
         argv[0].a_w.w_symbol->s_name[0] == '-')
     {
@@ -408,7 +402,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
     x->x_outvec = (t_out **)getbytes(sizeof(*x->x_outvec));
     x->x_outvec[0] = outvec =
-        (t_out *)getbytes(x->x_nout * sizeof(*x->x_outvec));
+        (t_out *)getbytes(x->x_nout * sizeof(*outvec));
     for (i = 0; i < x->x_nout; i++)
     {
         outvec[i].o_pd = clone_out_class;
