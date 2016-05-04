@@ -35,18 +35,18 @@ of arrays via control messages:;
 #X msg 19 444 \; array99 cosinesum 64 0.2 0.2 0.2 0.2;
 #X text 23 378 Fourier synthesis (resizes table);
 #X text 257 484 read a soundfile;
-#X text 735 698 last updated for release 0.34;
+#X text 735 698 updated for Pd version 0.46.7;
 #X obj 175 715 tabread4;
 #X obj 602 628 tabread~;
 #X msg 267 511 read ../sound/voice2.wav array99;
 #X text 19 47 Arrays in Pd provide a unified way to deal with lists
-of numbers \, treating them as either audio samples or for "control"
-uses. To make one \, select "array" on the "new" menu. Dialogs appear
+of numbers \, treating them as either audio samples or control
+messages. To make an array \, select "Array" on the "Put" menu. Dialogs appear
 to help you choose the name \, number of elements \, and various flags.
 ;
 #X text 17 134 You can also change the array size using the "resize"
 message shown below. Arrays live in graphs and graphs may hold more
-than one array--however \, graphs containing more than one array won't
+than one array.  However \, graphs containing more than one array won't
 know how to readjust themselves automatically when the arrays are resized.
 ;
 #X msg 15 507 \; array99 read 15.file.txt;
