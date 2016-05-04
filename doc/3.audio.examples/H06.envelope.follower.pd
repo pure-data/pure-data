@@ -1,25 +1,25 @@
-#N canvas 87 74 585 621 12;
-#X floatatom 354 464 4 0 0 0 - - -;
-#X floatatom 150 316 3 0 999 0 - #0-osc2 -;
+#N canvas 824 83 585 621 12;
+#X floatatom 354 464 4 0 0 0 - - -, f 4;
+#X floatatom 150 316 3 0 999 0 - #0-osc2 -, f 3;
 #X obj 150 336 osc~;
-#X text 162 12 ENVELOPE FOLLOWER;
-#X text 22 33 An envelope follower measures the mean square power of
+#X text 161 3 ENVELOPE FOLLOWER;
+#X text 21 24 An envelope follower measures the mean square power of
 an signal as it changes over time. (You can convert mean square power
 to RMS ampitude or to decibels if you wish.) The term "mean square"
 means simply that the signal should be squared \, and then averaged.
 The averageing is done using a low-pass filter such as lop~.;
 #X obj 62 466 lop~;
-#X floatatom 93 444 3 0 100 0 - #0-lop -;
+#X floatatom 93 444 3 0 100 0 - #0-lop -, f 3;
 #X obj 61 356 +~;
 #X text 187 317 <-- frequency of second oscillator;
 #X obj 62 330 osc~ 500;
 #X obj 62 413 *~;
 #X obj 62 522 snapshot~;
-#X floatatom 62 573 5 0 999 0 - - -;
+#X floatatom 62 573 5 0 999 0 - - -, f 5;
 #X obj 62 545 sqrt;
 #X text 335 361 built-in envelope;
 #X obj 354 491 dbtorms;
-#X floatatom 354 518 5 0 999 0 - - -;
+#X floatatom 354 518 5 0 999 0 - - -, f 5;
 #N canvas 536 459 382 265 startup 0;
 #X obj 22 24 loadbang;
 #X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
@@ -59,12 +59,12 @@ homemade one at left.;
 #X obj 185 360 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
 #X text 204 358 <-- on/off;
-#X text 20 128 Here we're adding two oscillators so the result should
+#X text 19 131 Here we're adding two oscillators so the result should
 be an RMS of one if the second oscillator is on \, 0.707 otherwise.
 Note two effects: first \, the more responsive the envelope follower
 \, the less accurate the result (but the faster it responds). Second
 \, if the two oscillators are tuned close to each other their beating
-affects the nombers coming out.;
+affects the numbers coming out.;
 #X connect 0 0 15 0;
 #X connect 1 0 2 0;
 #X connect 2 0 32 0;
