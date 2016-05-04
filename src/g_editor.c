@@ -45,9 +45,13 @@ void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
         (*x->g_pd->c_wb->w_displacefn)(x, glist, dx, dy);
 }
 
+    /* here we add an extra check whether we're mapped, because some
+    editing moves are carried out on invisible windows (notably, re-creating
+    abstractions when one is saved).  Should any other widget finctions also
+    be doing this?  */
 void gobj_select(t_gobj *x, t_glist *glist, int state)
 {
-    if (x->g_pd->c_wb && x->g_pd->c_wb->w_selectfn)
+    if (glist->gl_mapped && x->g_pd->c_wb && x->g_pd->c_wb->w_selectfn)
         (*x->g_pd->c_wb->w_selectfn)(x, glist, state);
 }
 
@@ -2486,7 +2490,8 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     paste_canvas = 0;
     canvas_resume_dsp(dspstate);
     canvas_dirty(x, 1);
-    sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+    if (x->gl_mapped)
+        sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
     if (!sys_noloadbang)
         glist_donewloadbangs(x);
     asym->s_thing = bounda;
