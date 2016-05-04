@@ -265,7 +265,7 @@ static t_int *sigvd_perform(t_int *w)
     int n = (int)(w[5]);
 
     int nsamps = ctl->c_n;
-    t_sample limit = nsamps;
+    t_sample limit = nsamps - n;
     t_sample fn = n-1;
     t_sample *vp = ctl->c_vec, *bp, *wp = vp + ctl->c_phase;
     t_sample zerodel = x->x_zerodel;
