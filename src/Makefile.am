@@ -2,8 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS =
 
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
-
 pd_LDFLAGS =
+pd_LDADD =
 
 pdsend_CFLAGS =
 pdreceive_CFLAGS =
@@ -16,7 +16,6 @@ bin_PROGRAMS = pd pdsend pdreceive
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
-pd_LDADD =
 pd_SOURCES = \
     d_arithmetic.c \
     d_array.c \
@@ -141,7 +140,7 @@ endif
 if PORTAUDIO
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/include
 pd_CFLAGS += -DUSEAPI_PORTAUDIO
-pd_LDADD += $(top_builddir)/portaudio/lib/libportaudio.la
+pd_LDADD += $(top_builddir)/portaudio/libportaudio.la
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
 if MACOSX
 LIBS += -framework Carbon
@@ -233,5 +232,20 @@ if MINGW
 pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DWINVER=0x0502
 endif
 
+# create a bin folder & symlinks to the binaries in order to
+# replicate the src/makefile.* build result
+all-local:
+	$(MKDIR_P) $(top_builddir)/bin
+	rm -rf $(top_builddir)/bin/pd*
+	$(LN_S) $(top_builddir)/src/pd $(top_builddir)/bin/pd
+	$(LN_S) $(top_builddir)/src/pdsend $(top_builddir)/bin/pdsend
+	$(LN_S) $(top_builddir)/src/pdreceive $(top_builddir)/bin/pdreceive
+	test -e $(top_builddir)/src/pd-watchdog && \
+	    $(LN_S) $(top_builddir)/src/pd-watchdog $(top_builddir)/bin/pd-watchdog
+
+clean-local:
+	rm -rf $(top_builddir)/bin
+
+# generate Emacs tags
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
