@@ -157,6 +157,9 @@ if PORTMIDI
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
 pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 pd_SOURCES += s_midi_pm.c
+if MACOSX
+LIBS += -framework CoreFoundation -framework Carbon
+endif
 endif
 
 if MMIO
