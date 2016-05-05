@@ -9,7 +9,7 @@ is a "send" destination.;
 #X text 461 260 updated for Pd version 0.26;
 #X text 154 103 When you call an abstraction by typing \, say \, "sendnumber
 1 x" in an object box. the subpatch can access the values of the creation
-arguments (1 and x) as "$1" and "$2" innside object boxes. Typing \$1
+arguments (1 and x) as "$1" and "$2" inside object boxes. Typing \$1
 inside a message box has a different meaning (see the message box help
 window.);
 #X text 155 31 This window is used by 11.subpatch.pd to demonstrate
