@@ -326,7 +326,6 @@ AC_ARG_ENABLE([portaudio],
 AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
 if [ test x$portaudio = xyes ] && [ test -d "$srcdir/portaudio" ] ; then
     AC_MSG_NOTICE([Using included PortAudio])
-    AC_CONFIG_SUBDIRS([portaudio])
 fi
 AS_IF([test x$portaudio = xyes], [audio_backends="PortAudio ${audio_backends}"])
 
@@ -372,6 +371,7 @@ AC_CONFIG_FILES([Makefile
                 doc/Makefile
                 mac/Makefile
                 man/Makefile
+                portaudio/Makefile
                 portmidi/Makefile
                 tcl/Makefile
                 po/Makefile
