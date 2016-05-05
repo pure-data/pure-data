@@ -6,7 +6,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/portti
 
 noinst_LTLIBRARIES = libportmidi.la
 
-libportmidi_la_SOURCES = pm_common/pmutil.c pm_common/portmidi.c
+libportmidi_la_SOURCES = pm_common/pmutil.c pm_common/portmidi.c porttime/porttime.c
 
 if LINUX
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_linux
@@ -29,7 +29,6 @@ endif
 if WINDOWS
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_win
 libportmidi_la_SOURCES += \
-    porttime/porttime.c \
     porttime/ptwinmm.c \
     pm_win/pmwin.c \
     pm_win/pmwinmm.c
