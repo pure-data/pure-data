@@ -38,7 +38,7 @@ libportaudio_la_SOURCES += \
 
 # required for PortAudio to build on newer versions of OSX as it
 # disables deprecation warnings stopping the build
-AM_CFLAGS += -Wno-error
+AM_CFLAGS += -Wno-error -Wno-deprecated
 
 endif
 
