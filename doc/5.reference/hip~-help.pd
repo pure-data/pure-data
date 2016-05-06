@@ -1,25 +1,25 @@
 #N canvas 394 118 644 497 12;
-#X obj 76 238 env~;
-#X floatatom 76 261 0 0 0 0 - - -;
-#X floatatom 120 184 0 0 0 0 - - -;
-#X obj 76 211 hip~ 5;
+#X obj 85 238 env~;
+#X floatatom 85 261 0 0 0 0 - - -;
+#X floatatom 129 184 0 0 0 0 - - -;
+#X obj 85 211 hip~ 5;
 #X obj 18 238 env~;
 #X floatatom 18 260 0 0 0 0 - - -;
-#X text 121 240 env~ gives the amplitude of the signal envelop in dB.
+#X text 130 240 env~ gives the amplitude of the signal envelop in dB.
 ;
 #X floatatom 18 112 0 0 0 0 - - -;
 #X obj 18 135 osc~ 100;
 #X text 69 112 <-- scroll to change input frequency;
-#X msg 76 159 clear;
-#X text 128 158 <-- reinitialize internal state;
+#X msg 85 159 clear;
+#X text 137 158 <-- reinitialize internal state;
 #X obj 83 6 hip~;
 #X text 128 5 - one-pole high pass filter;
 #X text 409 464 updated for Pd version 0.44;
 #X msg 127 439 \; pd compatibility 0.43;
 #X text 11 31 hip~ is a one-pole high pass filter with a specified
 cutoff frequency.;
-#X text 141 213 Creation argument initializes cutoff frequency.;
-#X text 172 183 <-- set cutoff frequency;
+#X text 150 213 Creation argument initializes cutoff frequency.;
+#X text 181 183 <-- set cutoff frequency;
 #X text 13 68 Left (audio) inlet is the incoming audio signal.;
 #X text 12 87 Right (contol) inlet sets cutoff frequency.;
 #X text 21 293 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
