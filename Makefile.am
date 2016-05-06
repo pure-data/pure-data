@@ -13,11 +13,11 @@ if ASIO
 EXTRA_SUBDIRS += asio
 endif
 
-if PORTAUDIO
+if LOCAL_PORTAUDIO
 EXTRA_SUBDIRS += portaudio
 endif
 
-if PORTMIDI
+if LOCAL_PORTMIDI
 EXTRA_SUBDIRS += portmidi
 endif
 

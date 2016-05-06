@@ -1,5 +1,4 @@
 AUTOMAKE_OPTIONS = foreign
-AM_CPPFLAGS =
 
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 pd_LDFLAGS =
@@ -138,13 +137,22 @@ pd_SOURCES += s_audio_oss.c s_midi_oss.c
 endif
 
 if PORTAUDIO
-AM_CPPFLAGS += -I$(top_srcdir)/portaudio/include
 pd_CFLAGS += -DUSEAPI_PORTAUDIO
-pd_LDADD += $(top_builddir)/portaudio/libportaudio.la
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
+
+if LOCAL_PORTAUDIO
+# link the included portaudio
+AM_CPPFLAGS += -I$(top_srcdir)/portaudio/include
+pd_LDADD += $(top_builddir)/portaudio/libportaudio.la
+else
+# link the system's portaudio
+pd_LDADD += -lportaudio
+endif
+
 if MACOSX
 LIBS += -framework Carbon
 endif
+
 endif
 
 # ASIO needs to go after PORTAUDIO in order for it to link properly
@@ -154,12 +162,21 @@ nodist_EXTRA_pd_SOURCES += dummy.cxx
 endif
 
 if PORTMIDI
+pd_SOURCES += s_midi_pm.c
+
+if LOCAL_PORTMIDI
+# link the included portmidi
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
 pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
-pd_SOURCES += s_midi_pm.c
+else
+# link the system's portmidi
+pd_LDADD += -lportmidi
+endif
+
 if MACOSX
 LIBS += -framework CoreFoundation -framework Carbon
 endif
+
 endif
 
 if MMIO

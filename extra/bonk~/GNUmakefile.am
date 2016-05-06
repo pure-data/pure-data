@@ -14,7 +14,7 @@ EXTRA_DIST = makefile
 dist_external_DATA = $(PATCHES) $(OTHERDATA)
 
 AUTOMAKE_OPTIONS = foreign
-AM_CPPFLAGS	 = -I$(top_srcdir)/src -DPD
+AM_CPPFLAGS	+= -I$(top_srcdir)/src -DPD
 AM_CFLAGS = @ARCH_CFLAGS@
 AM_LIBS = $(LIBM)
 AM_LDFLAGS = -module -avoid-version -shared @ARCH_LDFLAGS@ -shrext .@EXTERNAL_EXTENSION@ -L$(top_srcdir)/src

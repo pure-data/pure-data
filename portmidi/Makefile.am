@@ -2,7 +2,7 @@
 # http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = -DNEWBUFFER
-AM_CPPFLAGS = -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
+AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
 
 noinst_LTLIBRARIES = libportmidi.la
 

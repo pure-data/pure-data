@@ -16,6 +16,8 @@ AC_CANONICAL_HOST
 # below are not overwritten if the configure argument isn't used
 portaudio=no
 portmidi=no
+local_portaudio=yes
+local_portmidi=yes
 
 # list of detected apis
 audio_backends=""
@@ -45,6 +47,10 @@ case $host in
     else
         platform=iOS
     fi
+
+    # homebrew paths
+    AM_CPPFLAGS="$INCLUDES -I/usr/local/include"
+    LDFLAGS="$LDFLAGS -L/usr/local/lib"
 
     # fink paths
     if test -e /sw ; then
@@ -117,6 +123,9 @@ AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
 AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
 AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
+
+# pass include paths down to all Makefiles
+AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 
 #########################################
 ##### Check for programs, libs, & headers #####
@@ -324,32 +333,64 @@ AM_CONDITIONAL(ASIO, test x$asio = xyes)
 AC_ARG_ENABLE([portaudio],
     [AS_HELP_STRING([--disable-portaudio], [do not use portaudio])],
     [portaudio=$enableval])
-AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
-if [ test x$portaudio = xyes ] && [ test -d "$srcdir/portaudio" ] ; then
-    AC_MSG_NOTICE([Using included PortAudio])
+AC_ARG_WITH([local-portaudio],
+    [AS_HELP_STRING([--without-local-portaudio], [do not use the portaudio included with pd])],
+    [local_portaudio=$withval])
+if test x$portaudio = xyes ; then
+    if test x$local_portaudio = xno ; then
+        # fall back to local portaudio if not foud
+        AC_CHECK_LIB([portaudio], [Pa_Initialize],
+            [AC_MSG_NOTICE([Using system PortAudio])], [local_portaudio=yes])
+    fi
+    if test x$local_portaudio = xyes ; then
+        if test -d "$srcdir/portaudio" ; then
+            AC_MSG_NOTICE([Using included PortAudio])
+        else
+            AC_MSG_WARN([PortAudio not found in pd source directory])
+            portaudio=no
+        fi
+    fi
 fi
+AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
+AM_CONDITIONAL(LOCAL_PORTAUDIO, test x$local_portaudio = xyes)
 AS_IF([test x$portaudio = xyes], [audio_backends="PortAudio ${audio_backends}"])
 
 # PortMidi
 AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
     [portmidi=$enableval])
-AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
-if [ test x$portmidi = xyes ] && [ test -d "$srcdir/portmidi" ] ; then
-    AC_MSG_NOTICE([Using included PortMidi])
+AC_ARG_WITH([local-portmidi],
+    [AS_HELP_STRING([--without-local-portmidi], [do not use the portmidi included with pd])],
+    [local_portmidi=$withval])
+if test x$portmidi = xyes ; then
+    if test x$local_portmidi = xno ; then
+        # fall back to local portmidi if not foud
+        AC_CHECK_LIB([portmidi], [Pm_Initialize],
+            [AC_MSG_NOTICE([Using system PortMidi])], [local_portmidi=yes])
+    fi
+    if test x$local_portmidi = xyes ; then
+        if test -d "$srcdir/portmidi" ; then
+            AC_MSG_NOTICE([Using included PortMidi])
+        else
+            AC_MSG_WARN([PortMidi not found in pd source directory])
+            portmidi=no
+        fi
+    fi
 fi
+AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
+AM_CONDITIONAL(LOCAL_PORTMIDI, test x$local_portmidi = xyes)
 AS_IF([test x$portmidi = xyes], [midi_backends="PortMidi ${midi_backends}"])
 
 # fftw v3
 AC_ARG_ENABLE([fftw],
     [AS_HELP_STRING([--enable-fftw], [use FFTW package])],
     [fftw=$enableval], [fftw=no])
-AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 if test x$fftw = xyes; then
-    AC_CHECK_LIB(fftw3f, fftwf_execute,
+    AC_CHECK_LIB([fftw3f], [fftwf_execute],
         [LIBS="$LIBS -lfftw3f"],
         [AC_MSG_NOTICE([fftw package not found, using built-in FFT]) ; fftw=no])
 fi
+AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 
 # throw an error for now if we end up trying to build without an audio api
 AM_CONDITIONAL(AUDIO_DUMMY, test "x$audio_backends" = "x")

@@ -2,7 +2,7 @@
 # http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = -DNEWBUFFER
-AM_CPPFLAGS = -I$(top_srcdir)/portaudio/include -I$(top_srcdir)/portaudio/src/common
+AM_CPPFLAGS += -I$(top_srcdir)/portaudio/include -I$(top_srcdir)/portaudio/src/common
 
 noinst_LTLIBRARIES = libportaudio.la
 
