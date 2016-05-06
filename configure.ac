@@ -229,13 +229,6 @@ AC_SUBST([JACK_LIBS])
 #########################################
 ##### Configure Options #####
 
-# Prefer static linking? (Up to the compiler/linker & the system.)
-# Uses autoconf's existing --enable-static option & $enable_static var.
-# Note: This option does not effect local portaudio or portmidi linking.
-if test x$enable_static = xyes ; then
-    LDFLAGS="-static $LDFLAGS"
-fi
-
 # Build with debug flags?
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [use debugging support])],
@@ -444,7 +437,6 @@ AC_MSG_NOTICE([
 
     Platform:             $platform
     Debug build:          $debug
-    Static linking:       $enable_static
     Universal build:      $universal
     Localizations:        $locales
     Source directory:     $srcdir
