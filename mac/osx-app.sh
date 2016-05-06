@@ -123,6 +123,7 @@ else
             rm $APP/Contents/version.plist
         fi
         mv $APP/Contents/MacOS/Wish $APP/Contents/MacOS/Pd
+        rm -f $APP/Contents/MacOS/Wish\ Shell
         if [ -e $APP/Contents/Resources/Wish.rsrc ] ; then
             mv $APP/Contents/Resources/Wish.rsrc $APP/Contents/Resources/Pd.rsrc
         else
@@ -142,10 +143,16 @@ cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
 
 # install pd
-cp -R $verbose $SRC/bin   $DEST/
+mkdir -p $DEST/bin
+cp -R $verbose $SRC/src/pd $DEST/bin/
+cp -R $verbose $SRC/src/pdsend $DEST/bin/
+cp -R $verbose $SRC/src/pdreceive $DEST/bin/
+cp -R $verbose $SRC/src/pd-watchdog $DEST/bin/
 cp -R $verbose $SRC/doc   $DEST/
 cp -R $verbose $SRC/extra $DEST/
 cp -R $verbose $SRC/tcl   $DEST/
+cp $verbose $SRC/README.txt $DEST/
+cp $verbose $SRC/LICENSE.txt $DEST/
 
 mkdir -p $DEST/po
 cp $verbose $SRC/po/*.po $DEST/po

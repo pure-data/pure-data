@@ -10,7 +10,7 @@ if MACOSX
 
 # build an app bundle on OSX
 app:
-	rm -f $(top_srcdir)/Pd-$(VERSION).app
+	rm -rf $(top_srcdir)/Pd-$(VERSION).app
 	$(SH) $(top_srcdir)/mac/osx-app.sh $(VERSION)
 	mv $(top_srcdir)/mac/Pd-$(VERSION).app $(top_srcdir)
 
