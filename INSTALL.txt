@@ -1,5 +1,5 @@
 Quick compilation instructions for Gnu/linux or Mac OSX, or Windows if you have
-installed gygwin: make sure "automake" is installed as well as the usual C
+installed Cygwin: make sure "automake" is installed as well as the usual C
 compiler chain. Then in this directory, run the following commands:
   ./autogen.sh
   ./configure

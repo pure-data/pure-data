@@ -19,5 +19,5 @@
 #X msg 17 166 \; array98 0 -1 1 -1 1 -1 1 -1 1 -1;
 #X msg 305 472 \; array99 ylabel 5.15 -1 0 1;
 #X text 556 575 last updated for release 0.33;
-#X text 10 39 Arrays have methods to set their values explicitly \; to set their "bounds" rectangles \, to rename them (but if you have two with the same name this won't necessarily do what you want) and to add markings. To set values by message \, send a list whise first element gives the index to start at. The second example sets two values starting at index three. Indices count up from zero.;
+#X text 10 39 Arrays have methods to set their values explicitly \; to set their "bounds" rectangles \, to rename them (but if you have two with the same name this won't necessarily do what you want) and to add markings. To set values by message \, send a list whose first element gives the index to start at. The second example sets two values starting at index three. Indices count up from zero.;
 #X text 11 522 You can also change x and y range and size in the "properties" dialog. Note that information about size and ranges is saved \, but ticks \, labels \, and the actual data are lost between Pd sessions.;

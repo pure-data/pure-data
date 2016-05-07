@@ -201,11 +201,18 @@ proc ::deken::highlightable_posttag {tag} {
     # make sure that the 'highlight' tag is topmost
     $mytoplevelref.results tag raise highlight
 }
-proc ::deken::prompt_installdir {} {
-    set installdir [tk_chooseDirectory -title "Install libraries to directory:"]
+proc ::deken::prompt_installdir {suggestdir} {
+    if { "$suggestdir" == "" } {
+        set installdir [tk_chooseDirectory \
+            -title "Install libraries to directory:"]
+    } else {
+        set installdir [tk_chooseDirectory \
+            -title "Install libraries to directory:" -initialdir $suggestdir]
+    }
     if { "$installdir" != "" } {
         set ::deken::installpath $installdir
     }
+    return $installdir
 }
 
 
@@ -268,8 +275,6 @@ proc ::deken::create_dialog {mytoplevel} {
     pack $mytoplevel.status -side bottom -fill x
     label $mytoplevel.status.label -textvariable ::deken::statustext
     pack $mytoplevel.status.label -side left -padx 6
-    button $mytoplevel.status.button -text [_ "Set install dir"] -default active -width 9 -command "::deken::prompt_installdir"
-    pack $mytoplevel.status.button -side right -padx 6 -pady 3
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
     scrollbar $mytoplevel.results.ys -orient vertical -command "$mytoplevel.results yview"
@@ -340,16 +345,19 @@ proc ::deken::clicked_link {URL filename} {
         ## search the default paths
         set installdir [ ::deken::get_writable_dir $::sys_staticpath ]
     }
+    ## ask the user (and remember the decision)
+    set installdir [::deken::prompt_installdir $installdir]
+    set installdir
+    ## if user didn't choose a directory cancel
     if { "$installdir" == "" } {
-        ## ask the user (and remember the decision)
-        ::deken::prompt_installdir
-        set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ]
+        ::deken::post "Download canceled" warn
+        return
     }
+    set installdir [ ::deken::get_writable_dir $installdir ]
     if { "$installdir" == "" } {
         #::deken::clearpost
-        ::deken::post "No writeable directory found in:" warn
-        foreach p $::sys_staticpath { ::deken::post "\t- $p" warn }
-        ::deken::post "Cannot download/install libraries!" warn
+        ::deken::post "Cannot write to directory $installdir" warn
+        ::deken::post "Download canceled" warn
         return
     }
     set fullpkgfile "$installdir/$filename"
