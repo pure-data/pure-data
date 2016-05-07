@@ -1,4 +1,4 @@
-#N canvas 105 52 651 713 12;
+#N canvas 104 52 651 713 12;
 #X floatatom 116 488 0 0 0 0 - - -;
 #X floatatom 79 487 0 0 0 0 - - -;
 #X floatatom 39 486 0 0 0 0 - - -;
@@ -75,13 +75,16 @@ right inlet:, f 25;
 #X obj 51 574 f;
 #X obj 51 616 div;
 #X obj 91 617 mod;
-#X text 175 554 div and mod do integer division. div outputs the integer
-quotient and mod outputs the remainder (modulus).;
 #X text 36 376 see also:;
 #X text 404 674 Updated for version 0.47;
 #X obj 301 635 +;
 #X text 336 636 (etc) - arithmetic;
 #X text 205 634 see also:;
+#X text 166 540 div and mod do integer division. div outputs the integer
+quotient and mod outputs the remainder (modulus). In addition the "%"
+operator (provided for back compatibility) is like "mod" but acts differently
+for negative inputs (and might act variously depending on CPU design).
+;
 #X connect 5 0 0 0;
 #X connect 14 0 7 0;
 #X connect 15 0 6 0;
