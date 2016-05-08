@@ -650,9 +650,9 @@ void canvas_map(t_canvas *x, t_floatarg f)
             }
             for (y = x->gl_list; y; y = y->g_next)
                 gobj_vis(y, x, 1);
+            x->gl_mapped = 1;
             for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
                 gobj_select(sel->sel_what, x, 1);
-            x->gl_mapped = 1;
             canvas_drawlines(x);
             if (x->gl_isgraph && x->gl_goprect)
                 canvas_drawredrect(x, 1);

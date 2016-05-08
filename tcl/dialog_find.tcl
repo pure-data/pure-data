@@ -120,9 +120,15 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
 proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
     if {$success eq 0} {
         if {$::windowingsystem eq "aqua"} {bell}
-        .find.searchin configure -text \
-        [format [_ "Couldn't find '%s' in %s"] \
-            [.find.entry get] [lookup_windowname $mytoplevel] ]
+        if {$total eq 0} {
+            .find.searchin configure -text \
+                [format [_ "Couldn't find '%s' in %s"] \
+                [.find.entry get] [lookup_windowname $mytoplevel] ]
+        } else {
+            .find.searchin configure -text \
+                [format [_ "Showed last '%s' in %s"] \
+                [.find.entry get] [lookup_windowname $mytoplevel] ]
+        }
     } else {
         .find.searchin configure -text \
         [format [_ "Showing '%d' out of %d items in %s"] \
