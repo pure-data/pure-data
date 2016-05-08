@@ -971,6 +971,8 @@ void sys_set_audio_api(int which)
 #ifdef USEAPI_DUMMY
     ok += (which == API_DUMMY);
 #endif
+    if (!which)
+        ok++;
     if (!ok)
     {
         post("API %d not supported, reverting to %d (%s)",

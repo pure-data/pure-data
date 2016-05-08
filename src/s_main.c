@@ -943,6 +943,7 @@ int sys_argparse(int argc, char **argv)
             sys_externalschedlib = 1;
             strncpy(sys_externalschedlibname, argv[1],
                 sizeof(sys_externalschedlibname) - 1);
+            sys_set_audio_api(0);
             argv += 2;
             argc -= 2;
         }
