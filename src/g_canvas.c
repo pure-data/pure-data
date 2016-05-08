@@ -1354,8 +1354,11 @@ void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
             binbuf_addbinbuf(b, ((t_declare *)y)->x_obj.te_binbuf);
             binbuf_addv(b, ";");
         }
+            /* before 0.47 we also allowed abstractions to write out to the
+            parent's declarations; now we only allow non-abstraction subpatches
+            to do so. */
         else if (pd_checkglist(&y->g_pd) &&
-            !canvas_isabstraction((t_canvas *)y))
+            (pd_compatibilitylevel < 47 || !canvas_isabstraction((t_canvas *)y)))
                 canvas_savedeclarationsto((t_canvas *)y, b);
     }
 }
