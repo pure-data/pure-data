@@ -43,7 +43,7 @@ AM_CFLAGS += -Wno-error -Wno-deprecated
 endif
 
 if WINDOWS
-AM_CFLAGS += -DPA_USE_ASIO -DPA_USE_WMME
+AM_CFLAGS += -DPA_USE_WMME
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/src/os/win
 libportaudio_la_SOURCES += \
     src/os/win/pa_win_coinitialize.c \
@@ -54,6 +54,7 @@ libportaudio_la_SOURCES += \
     src/os/win/pa_x86_plain_converters.c \
     src/hostapi/wmme/pa_win_wmme.c
 if ASIO
+AM_CFLAGS += -DPA_USE_ASIO
 libportaudio_la_SOURCES += \
     src/hostapi/asio/iasiothiscallresolver.cpp \
     src/hostapi/asio/pa_asio.cpp
