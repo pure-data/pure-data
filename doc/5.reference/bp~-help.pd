@@ -1,4 +1,4 @@
-#N canvas 531 65 657 420 12;
+#N canvas 530 64 651 484 12;
 #X obj 124 11 bp~;
 #X text 159 11 - BANDPASS FILTER;
 #X floatatom 113 293 5 0 0 0 - - -, f 5;
@@ -24,11 +24,14 @@ left with the amplitude of the filtered signal on the right.;
 #X text 222 222 <-- Q;
 #X text 11 35 bp~ passes a sinusoid at the center frequency at unit
 gain (approximately). Other frequencies are attenuated.;
-#X text 21 367 see also:;
-#X obj 106 367 vcf~;
+#X text 23 445 see also:;
+#X obj 108 445 vcf~;
 #X obj 15 268 env~ 8192;
 #X obj 113 268 env~ 8192;
-#X text 398 371 updated for Pd version 0.46;
+#X text 400 449 updated for Pd version 0.46;
+#X text 15 363 NOTE: the maximum center frequency is sample rate divided
+by 6.28 \, or about 12kHz at the "usual" rates - for a more general
+and stable (but slightly more CPU-expensive) filter \, try vcf~.;
 #X connect 3 0 15 1;
 #X connect 6 0 8 0;
 #X connect 8 0 15 0;
