@@ -37,15 +37,16 @@ SUBDIRS = $(EXTRA_SUBDIRS) src mac man doc tcl extra
 # subdirs that are always included in the dist, etc.
 DIST_SUBDIRS = asio doc extra mac man po portmidi portaudio src tcl
 
-# Symlinks don't work on Windows/MinGW but they do on Cygwin.
-bin:
-	$(LN_S) src bin
+.PHONY: app
 
+# build localizations
 locales:
 	make -C po all
 
 # forward target to mac/Makefile
 app: 
-	cd mac && $(MAKE) $(AM_MAKEFLAGS) app
+	make -C mac $(AM_MAKEFLAGS) app
 
-.PHONY: app
+# remove left over folders
+uninstall-hook:
+	if test -d $(libdir)/pd; then rm -rf $(libdir)/pd; fi
