@@ -45,7 +45,7 @@ locales:
 
 # forward target to mac/Makefile
 app: 
-	make -C mac $(AM_MAKEFLAGS) app
+	make -C mac app
 
 # remove left over folders
 uninstall-hook:

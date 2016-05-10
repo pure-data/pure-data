@@ -159,9 +159,13 @@ cp -R $verbose $SRC/tcl      $DEST/
 cp $verbose $SRC/README.txt  $DEST/
 cp $verbose $SRC/LICENSE.txt $DEST/
 
-# install translations
-mkdir -p $DEST/po
-cp $verbose $SRC/po/*.po $DEST/po/
+# install translations if they were built
+if [ -e $SRC/po/af.msg ] ; then
+    mkdir -p $DEST/po
+    cp $verbose $SRC/po/*.msg $DEST/po/
+else
+    echo "No localizations found. Skipping po dir..."
+fi
 
 # install headers
 mkdir -p $DEST/include
