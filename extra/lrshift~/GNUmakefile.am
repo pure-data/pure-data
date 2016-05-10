@@ -3,8 +3,8 @@
 NAME=lrshift~
 
 external_LTLIBRARIES = lrshift~.la
-SOURCES =  lrshift~.c
-PATCHES =  lrshift~-help.pd
+SOURCES = lrshift~.c
+PATCHES = lrshift~-help.pd
 OTHERDATA = 
 
 EXTRA_DIST = makefile
@@ -21,10 +21,17 @@ AM_LDFLAGS = -module -avoid-version -shared @ARCH_LDFLAGS@ -shrext .@EXTERNAL_EX
 
 externaldir = $(pkglibdir)/extra/$(NAME)
 
-
 if MINGW
 AM_LIBS += -lpd
 endif
 
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
+
+# create convenience link for running locally
+all-local:
+	rm -f *.@EXTERNAL_EXTENSION@
+	$(LN_S) .libs/*.@EXTERNAL_EXTENSION@ ./
+
+clean-local:
+	rm -f *.@EXTERNAL_EXTENSION@

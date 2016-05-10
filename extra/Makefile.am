@@ -22,4 +22,9 @@ EXTRA_DIST = makefile.subdir README.txt
 
 libpdextradir = $(pkglibdir)/extra
 
-dist_libpdextra_DATA = $(PATCHES) $(HELPPATCHES) 
+dist_libpdextra_DATA = $(PATCHES) $(HELPPATCHES)
+
+# remove .la files after installation since they are
+# not needed for loading pd externals
+install-exec-hook:
+	find $(DESTDIR)/$(libpdextradir) -name "*.la" -type f -delete

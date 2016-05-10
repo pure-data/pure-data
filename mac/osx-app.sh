@@ -91,6 +91,7 @@ SRC=..
 DEST=$APP/Contents/Resources
 
 SYS_WISH_APP=/System/Library/Frameworks/Tk.framework/Versions/$TK/Resources/Wish.app
+EXTERNAL_EXT=pd_darwin
 
 cd $WD
 
@@ -142,27 +143,61 @@ rm $APP/Contents/Resources/Wish.icns
 cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
 
-# install pd
+# install binaries
 mkdir -p $DEST/bin
-cp -R $verbose $SRC/src/pd $DEST/bin/
-cp -R $verbose $SRC/src/pdsend $DEST/bin/
-cp -R $verbose $SRC/src/pdreceive $DEST/bin/
+cp -R $verbose $SRC/src/pd          $DEST/bin/
+cp -R $verbose $SRC/src/pdsend      $DEST/bin/
+cp -R $verbose $SRC/src/pdreceive   $DEST/bin/
 cp -R $verbose $SRC/src/pd-watchdog $DEST/bin/
-cp -R $verbose $SRC/doc   $DEST/
-cp -R $verbose $SRC/extra $DEST/
-cp -R $verbose $SRC/tcl   $DEST/
-cp $verbose $SRC/README.txt $DEST/
+
+# install resources
+cp -R $verbose $SRC/doc      $DEST/
+cp -R $verbose $SRC/extra    $DEST/
+cp -R $verbose $SRC/tcl      $DEST/
+
+# install licenses
+cp $verbose $SRC/README.txt  $DEST/
 cp $verbose $SRC/LICENSE.txt $DEST/
 
+# install translations
 mkdir -p $DEST/po
-cp $verbose $SRC/po/*.po $DEST/po
+cp $verbose $SRC/po/*.po $DEST/po/
+
+# install headers
+mkdir -p $DEST/include
+cp $verbose $SRC/src/*.h $DEST/include/
+
+# clean extra folders
+cd $DEST/extra
+find * -prune -type d | while read ext; do
+    ext_lib=$ext.$EXTERNAL_EXT
+    if [ -e $ext/.libs/$ext_lib ] ; then
+
+        # remove any symlinks to the compiled external
+        rm -f $ext/$ext_lib
+
+        # mv compiled external into main folder
+        mv $ext/.libs/$ext_lib $ext/
+
+        # remove libtool build folders & uneeded build files
+        rm -rf $ext/.libs
+        rm -rf $ext/.deps
+        rm -f $ext/*.c $ext/*.o $ext/*.lo $ext/*.la
+        rm -f $ext/GNUmakefile* $ext/makefile*
+    fi
+done
+cd -
+
+# clean Makefiles
+find $(pwd)/$DEST -name "Makefile*" -type f -delete
 
 # create any needed symlinks
 cd $DEST
 ln -s tcl Scripts
-cd ../../../
+cd -
 
 # finish up
+rm -rf tmp
 touch $APP
 
 if [ "$verbose" != "" ] ; then 

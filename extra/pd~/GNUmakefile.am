@@ -3,7 +3,7 @@
 NAME=pd~
 
 external_LTLIBRARIES = pd~.la pdsched.la
-PATCHES =  pd~-help.pd pd~-subprocess.pd
+PATCHES = pd~-help.pd pd~-subprocess.pd
 OTHERDATA = 
 
 pd__la_SOURCES = pd~.c
@@ -23,10 +23,17 @@ AM_LDFLAGS = -module -avoid-version -shared @ARCH_LDFLAGS@ -shrext .@EXTERNAL_EX
 
 externaldir = $(pkglibdir)/extra/$(NAME)
 
-
 if MINGW
 AM_LIBS += -lpd
 endif
 
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
+
+# create convenience link for running locally
+all-local:
+	rm -f *.@EXTERNAL_EXTENSION@
+	$(LN_S) .libs/*.@EXTERNAL_EXTENSION@ ./
+
+clean-local:
+	rm -f *.@EXTERNAL_EXTENSION@
