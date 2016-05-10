@@ -49,4 +49,4 @@ app:
 
 # remove left over folders
 uninstall-hook:
-	if test -d $(libdir)/pd; then rm -rf $(libdir)/pd; fi
+	if test -d $(DESTDIR)/$(libdir)/pd; then rm -rf $(DESTDIR)/$(libdir)/pd; fi
