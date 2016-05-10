@@ -48,13 +48,13 @@ are all considered special cases of lists.;
 #X text 97 9 - route messages according to their first element;
 #X obj 43 8 route;
 #X text 482 627 updated for Pd version 0.43;
-#X obj 132 564 route 4;
-#X msg 84 539 1 2 3;
-#X floatatom 187 540 5 0 0 0 - - -;
-#X msg 132 539 4 5 6;
-#X obj 131 590 print w1;
-#X obj 200 591 print w2;
-#X text 278 549 With zero or one argument \, route sprouts an inlet
+#X obj 82 562 route 4;
+#X msg 26 537 1 2 3;
+#X floatatom 137 538 5 0 0 0 - - -, f 5;
+#X msg 82 537 4 5 6;
+#X obj 81 588 print w1;
+#X obj 150 589 print w2;
+#X text 210 547 With zero or one argument \, route sprouts an inlet
 to set the arument (which may be float or symbol).;
 #X connect 4 0 0 0;
 #X connect 4 1 1 0;

@@ -1,20 +1,20 @@
-#N canvas 234 84 730 277 12;
-#X floatatom 80 180 0 0 0;
-#X floatatom 205 180 0 0 0;
-#X floatatom 243 180 0 0 0;
-#X floatatom 46 180 0 0 0;
-#X obj 117 180 print foo;
-#X obj 133 243 pack;
-#X text 51 242 See also;
+#N canvas 234 84 702 287 12;
+#X floatatom 80 194 0 0 0 0 - - -;
+#X floatatom 205 194 0 0 0 0 - - -;
+#X floatatom 243 194 0 0 0 0 - - -;
+#X floatatom 46 194 0 0 0 0 - - -;
+#X obj 117 194 print foo;
+#X obj 133 249 pack;
+#X text 51 248 See also;
 #X obj 101 9 unpack;
 #X text 164 8 - split a message to atoms;
-#X text 196 139 <-- creation arguments specify the types of atoms expected
+#X text 196 153 <-- creation arguments specify the types of atoms expected
 ;
-#X msg 46 102 1 2;
-#X msg 85 102 3 4 shut;
-#X msg 164 102 5 6 pick 7 8;
-#X text 368 239 updated for Pd version 0.33;
-#X obj 46 139 unpack 0 0 s 0 0;
+#X msg 46 116 1 2;
+#X msg 85 116 3 4 shut;
+#X msg 164 116 5 6 pick 7 8;
+#X text 368 245 updated for Pd version 0.33;
+#X obj 46 153 unpack 0 0 s 0 0;
 #X text 25 36 unpack takes lists of atoms and distributes them to its
 outlets. The creation arguments specify float (any number or the symbol
 'f') \, pointer (symbol 'p') or symbol (symbol 's').;

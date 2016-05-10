@@ -865,10 +865,9 @@ void glob_watchdog(t_pd *dummy)
 
 #define FIRSTPORTNUM 5400
 
-#define MAXFONTS 21
-static int defaultfontshit[MAXFONTS] = {
-    8, 5, 9, 10, 6, 10, 12, 7, 13, 14, 9, 17, 16, 10, 19, 24, 15, 28,
-        24, 15, 28};
+static int defaultfontshit[] = {
+9, 5, 10, 11, 7, 13, 14, 8, 16, 17, 10, 20, 22, 13, 25, 39, 23, 45,
+17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 int sys_startgui(const char *libdir)
@@ -911,7 +910,7 @@ int sys_startgui(const char *libdir)
         for (i = 0; i < (int)NDEFAULTFONT; i++)
             SETFLOAT(zz+i+1, defaultfontshit[i]);
         SETFLOAT(zz+NDEFAULTFONT+1,0);
-        glob_initfromgui(0, 0, 23, zz);
+        glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
     }
     else if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
     {

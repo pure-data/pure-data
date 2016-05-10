@@ -1,7 +1,7 @@
-#N canvas 1009 137 597 581 12;
+#N canvas 1008 136 597 581 12;
 #X obj 29 11 list;
 #X text 76 12 - building and using variable-length messages;
-#N canvas 88 122 654 658 about-lists 0;
+#N canvas 87 121 654 658 about-lists 0;
 #X obj 50 629 print message;
 #X msg 50 442 list x.wav 44100;
 #X msg 50 600 read \$1 \$2;
@@ -201,7 +201,7 @@ the split point.;
 #X connect 9 0 22 1;
 #X connect 22 0 5 0;
 #X restore 484 106 pd prepend;
-#X text 32 299 In general \, inlets that take lists (two each for append/prepend
+#X text 33 298 In general \, inlets that take lists (two each for append/prepend
 \, and one each for split and trim) will convert non-list messages
 (such as "set 5") to lists (such as "list set 5" automatically. Here's
 more about lists in Pd:;
@@ -328,26 +328,29 @@ by taking the "pitch" output before the delay object (previously the
 #X restore 224 494 pd example2;
 #X text 58 496 another sequencer;
 #X text 117 523 serializer;
-#N canvas 116 50 673 426 example3 0;
-#X obj 19 287 list split 1;
-#X obj 19 378 print;
-#X obj 19 204 until;
-#X obj 19 242 list append;
-#X obj 45 171 t b l;
-#X obj 149 287 bang;
-#X msg 45 148 1 2 3 4 a b c;
+#N canvas 115 52 673 426 example3 0;
+#X obj 50 299 list split 1;
+#X obj 50 390 print;
+#X obj 50 216 until;
+#X obj 50 254 list append;
+#X obj 76 183 t b l;
+#X obj 180 299 bang;
+#X msg 76 160 1 2 3 4 a b c;
 #X text 34 21 example 3: serializing a message without delays;
-#X text 17 55 The "until" object can be used as shown to iterate through
+#X text 21 54 The "until" object can be used as shown to iterate through
 all the items of a list.;
-#X text 178 147 <- click to test;
-#X text 101 171 First store list \, then start the loop;
-#X text 118 199 "until" bangs its output until told to stop by a "bang"
+#X text 209 159 <- click to test;
+#X text 132 183 First store list \, then start the loop;
+#X text 149 211 "until" bangs its output until told to stop by a "bang"
 to its right inlet.;
-#X text 137 241 Store the remaining list.;
-#X text 194 286 third outlet of "split" tells us to stop.;
-#X text 67 318 Second outlet of "split" becomes the new list for "list
+#X text 168 253 Store the remaining list.;
+#X text 225 298 third outlet of "split" tells us to stop.;
+#X text 98 330 Second outlet of "split" becomes the new list for "list
 append" above.;
-#X text 75 377 First outlet is the output.;
+#X text 106 389 First outlet is the output.;
+#X text 23 95 NOTE: this method is inefficient for long lists - see
+discussions on the Pd list indicating external objects that do this
+better.;
 #X connect 0 0 1 0;
 #X connect 0 1 3 1;
 #X connect 0 2 5 0;
@@ -387,25 +390,28 @@ in a list or other message.;
 #X text 23 53 The list object's first argument sets its function:;
 #X obj 22 207 list fromsymbol;
 #X obj 22 232 list tosymbol;
-#X text 138 220 - convert symbols to/from numeric characters;
-#N canvas 613 90 552 344 from/to 0;
-#X symbolatom 71 226 10 0 0 0 - - -, f 10;
-#X obj 71 249 list fromsymbol;
-#X text 92 15 fromsymbol and tosymbol - symbols to and from lists of
+#X text 154 211 - convert symbols to/from numeric characters, f 25
+;
+#N canvas 612 89 552 344 from/to 0;
+#X symbolatom 64 254 10 0 0 0 - - -, f 10;
+#X obj 64 277 list fromsymbol;
+#X text 83 9 fromsymbol and tosymbol - symbols to and from lists of
 numeric character codes, f 41;
-#X msg 237 204 115 101 118 101 110 116 101 101 110;
-#X obj 236 232 list tosymbol;
-#X obj 71 273 print from-symbol;
-#X text 39 69 These allow you to do string manipulations (such as scanning
-a filename for '/' characters). THey convert a list of numbers (which
+#X msg 230 232 115 101 118 101 110 116 101 101 110;
+#X obj 229 260 list tosymbol;
+#X obj 64 301 print from-symbol;
+#X symbolatom 229 286 10 0 0 0 - - -, f 10;
+#X msg 64 228 symbol seventeen;
+#X text 43 162 Neither of these objects promote non-list messages to
+lists (that would make little sense in this context).;
+#X text 25 66 These allow you to do string manipulations (such as scanning
+a filename for '/' characters). They convert a list of numbers (which
 might be ASCII or might be unicode if \, for example \, they represent
 a filename on a non-ASCII machine) to or from a symbol., f 63;
-#X symbolatom 236 258 10 0 0 0 - - -, f 10;
-#X msg 71 200 symbol seventeen;
 #X connect 0 0 1 0;
 #X connect 1 0 5 0;
 #X connect 3 0 4 0;
-#X connect 4 0 7 0;
-#X connect 8 0 0 0;
-#X restore 483 221 pd from/to;
+#X connect 4 0 6 0;
+#X connect 7 0 0 0;
+#X restore 485 226 pd from/to;
 #X text 355 526 updated for Pd version 0.46.;

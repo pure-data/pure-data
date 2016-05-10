@@ -1,11 +1,11 @@
-#N canvas 2 52 1082 583 12;
-#X obj 382 492 spigot;
-#X msg 484 293 bang;
-#X obj 483 454 bonk~;
-#X msg 483 357 print;
-#X obj 435 428 adc~;
-#X msg 637 506 \; pd dsp 1;
-#X obj 300 492 spigot;
+#N canvas 118 87 1124 603 12;
+#X obj 402 492 spigot;
+#X msg 504 293 bang;
+#X obj 503 454 bonk~;
+#X msg 503 357 print;
+#X obj 455 428 adc~;
+#X msg 657 506 \; pd dsp 1;
+#X obj 320 492 spigot;
 #N canvas 366 126 604 404 synth 0;
 #X obj 112 24 r bonk-cooked;
 #X obj 112 49 unpack;
@@ -57,35 +57,35 @@
 #X connect 21 0 1 0;
 #X connect 22 0 6 0;
 #X connect 23 0 9 0;
-#X restore 869 523 pd synth;
-#X floatatom 869 500 0 0 0 0 - - -;
-#X msg 869 470 0;
-#X msg 900 470 90;
-#X text 625 472 click here;
-#X text 626 485 to start DSP;
-#X text 5 285 In this patch \, after starting DSP \, you can print
+#X restore 889 523 pd synth;
+#X floatatom 889 500 0 0 0 0 - - -;
+#X msg 889 470 0;
+#X msg 920 470 90;
+#X text 645 472 click here;
+#X text 646 485 to start DSP;
+#X text 5 291 In this patch \, after starting DSP \, you can print
 out the raw or cooked output using the two "spigots" or listen to a
 synthesizer output by raising its volume.;
-#X text 770 469 output volume;
-#X text 784 487 (0-100);
-#X msg 483 138 mask 4 0.7;
-#X text 578 120 Describes how energy in each frequency band masks later
+#X text 772 470 output volume;
+#X text 786 488 (0-100);
+#X msg 503 138 mask 4 0.7;
+#X text 600 120 Describes how energy in each frequency band masks later
 energy in the band. Here the masking is total for 4 analysis periods
 and then drops by 0.7 each period.;
-#X text 528 286 Poll the current spectrum via "raw" outlet \, You can
+#X text 548 286 Poll the current spectrum via "raw" outlet \, You can
 set a very high threshold if you don't want attacks mixed in.;
-#X msg 483 331 debug 0;
-#X text 561 331 turn debugging on or off.;
-#X obj 349 493 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#X msg 503 331 debug 0;
+#X text 581 331 turn debugging on or off.;
+#X obj 369 493 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X obj 431 493 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#X obj 451 493 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X obj 382 522 print cooked;
-#X obj 300 522 print raw;
-#X text 162 491 enable printout:;
-#X text 560 202 Minimum "velocity" to output (quieter notes are ignored.)
+#X obj 402 522 print cooked;
+#X obj 320 522 print raw;
+#X text 182 491 enable printout:;
+#X text 580 202 Minimum "velocity" to output (quieter notes are ignored.)
 ;
-#X obj 485 481 s bonk-cooked;
+#X obj 505 481 s bonk-cooked;
 #X text 8 145 Bonk's two outputs are the raw spectrum of the attack
 (provided as a list of 11 numbers giving the signal "loudness" in the
 11 frequency bands used) \, and the "cooked" output which gives only
@@ -94,12 +94,12 @@ an instrument number (counting up from zero) and a "velocity". This
 bands \, normalized so that 100 is an attack of amplitude of about
 1 The instrument number is significant only if Bonk has a "template
 set" in memory.;
-#X text 580 35 Set low and high thresholds. Signal growth must exceed
+#X text 612 35 Set low and high thresholds. Signal growth must exceed
 the high one and then fall to the low one to make an attack. The unit
 is the sum of the proportional growth in the 11 filter bands. Proportional
 growth is essentially the logarithmic time derivative.;
-#X msg 483 384 print 1;
-#X text 551 386 print out filterbank settings;
+#X msg 503 384 print 1;
+#X text 571 386 print out filterbank settings;
 #X text 9 33 The Bonk object takes an audio signal input and looks
 for "attacks" defined as sharp changes in the spectral envelope of
 the incoming sound. Optionally \, and less reliably \, you can have
@@ -143,15 +143,15 @@ be at least 1.5.;
 #X text 212 567 center frequency \, in bins \, of the lowest filter.
 The others are computed from this.;
 #X restore 147 414 pd creation-arguments;
-#N canvas 660 173 579 589 templates 0;
-#X msg 76 197 learn 0;
-#X msg 76 227 forget;
-#X msg 76 257 write templates.txt;
-#X msg 76 287 read templates.txt;
-#X msg 76 107 debounce 0;
-#X msg 76 137 learn 10;
-#X obj 62 431 outlet;
-#X text 155 133 Forget all templates and start learning new ones. The
+#N canvas 411 161 680 476 templates 0;
+#X msg 58 197 learn 0;
+#X msg 58 227 forget;
+#X msg 58 257 write templates.txt;
+#X msg 58 287 read templates.txt;
+#X msg 58 107 debounce 0;
+#X msg 58 137 learn 10;
+#X obj 31 402 outlet;
+#X text 155 134 Forget all templates and start learning new ones. The
 argument gives the number of times you will hit each instrument (10
 recommended.) Turn on the output volume above for audible feedback
 as you train Bonk. "Learn 0" exits learn mode.;
@@ -167,24 +167,24 @@ to erase and record over a template.;
 #X connect 3 0 6 0;
 #X connect 4 0 6 0;
 #X connect 5 0 6 0;
-#X restore 500 421 pd templates;
-#X msg 483 68 thresh 2.5 5;
-#X msg 483 173 attack-frames 1;
-#X text 608 174 number of frames over which to measure growth;
-#X text 605 422 more messages for managing templates;
-#X msg 483 201 minvel 7;
-#X msg 483 228 spew 0;
-#X text 550 230 Turn spew mode on/off;
-#X msg 483 255 useloudness 0;
-#X text 597 254 experimental: use alternative loudness units;
+#X restore 520 421 pd templates;
+#X msg 503 68 thresh 2.5 5;
+#X msg 503 173 attack-frames 1;
+#X text 628 174 number of frames over which to measure growth;
+#X text 625 422 more messages for managing templates;
+#X msg 503 201 minvel 7;
+#X msg 503 228 spew 0;
+#X text 570 230 Turn spew mode on/off;
+#X msg 503 255 useloudness 0;
+#X text 617 254 experimental: use alternative loudness units;
 #X text 212 9 BONK~ - attack detection and spectral envelope measurement
 ;
-#X text 734 552 Updated for Pd version 0.42;
+#X text 754 552 Updated for Pd version 0.42;
 #X text 5 344 By default bonk's analysis is carried out on a 256-point
 window (6 msec at 44.1 kHz) and the analysis period is 128 samples.
 These and other parameters may be overridden using creation arguments
 as shown in the subpatch below:;
-#X text 552 356 Print out settings and templates.;
+#X text 572 356 Print out settings and templates.;
 #X connect 0 0 23 0;
 #X connect 1 0 2 0;
 #X connect 2 0 6 0;

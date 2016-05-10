@@ -300,6 +300,7 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
     int ntotal, nnew, scindex;
     t_gobj *y, *y2 = 0, *newone, *oldone = 0;
     t_template *template;
+    glist_noselect(x);
     for (y = x->gl_list, ntotal = 0, scindex = -1; y; y = y->g_next)
     {
         if (y == &sc->sc_gobj)
@@ -338,8 +339,13 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
         && (template = template_findbyname(((t_scalar *)newone)->sc_template)))
     {
             /* copy new one to old one and deete new one */
-        memcpy(&((t_scalar *)oldone)->sc_vec, &((t_scalar *)newone)->sc_vec,
-            template->t_n * sizeof(t_word));
+        int i;
+        for (i = 0; i < template->t_n; i++)
+        {
+            t_word w = ((t_scalar *)newone)->sc_vec[i];
+            ((t_scalar *)newone)->sc_vec[i] = ((t_scalar *)newone)->sc_vec[i];
+            ((t_scalar *)newone)->sc_vec[i] = w;
+        }
         pd_free(&newone->g_pd);
         if (glist_isvisible(x))
         {

@@ -1,50 +1,50 @@
-#N canvas 79 19 533 567 12;
-#X obj 54 90 osc~ 100;
-#X msg 62 117 clear;
-#X obj 79 547 lop~;
-#X text 10 550 see also:;
-#X text 333 549 updated for Pd version-0.38;
-#X obj 86 497 rzero~;
-#X obj 37 517 cpole~;
-#X obj 37 497 rpole~;
-#X obj 135 497 rzero_rev~;
-#X obj 86 517 czero~;
-#X obj 135 517 czero_rev~;
-#X text 213 497 real;
-#X text 212 518 complex;
-#X text 34 481 1-pole;
-#X text 83 481 1-zero;
-#X text 133 481 1-zero \, reversed;
-#X text 59 466 summary of raw filters:;
-#X text 106 116 <-- clear internal state to zero;
+#N canvas 79 22 585 638 12;
+#X obj 54 104 osc~ 100;
+#X msg 62 131 clear;
+#X obj 90 578 lop~;
+#X text 10 579 see also:;
+#X text 334 601 updated for Pd version-0.38;
+#X obj 96 525 rzero~;
+#X obj 37 550 cpole~;
+#X obj 37 525 rpole~;
+#X obj 155 525 rzero_rev~;
+#X obj 96 550 czero~;
+#X obj 155 550 czero_rev~;
+#X text 243 525 real;
+#X text 242 551 complex;
+#X text 34 505 1-pole;
+#X text 94 505 1-zero;
+#X text 154 505 1-zero \, reversed;
+#X text 59 484 summary of raw filters:;
+#X text 109 130 <-- clear internal state to zero;
 #N canvas 255 257 585 372 test 0;
-#X obj 152 296 env~ 16384;
-#X floatatom 152 320 5 0 0 0 - - -;
-#X floatatom 484 121 4 -1000 1000 0 - - -;
+#X obj 124 296 env~ 16384;
+#X floatatom 124 320 5 0 0 0 - - -, f 5;
+#X floatatom 495 121 4 -1000 1000 0 - - -, f 4;
 #X obj 349 324 dac~;
 #X obj 349 288 *~;
 #X obj 375 115 cos~;
-#X floatatom 301 60 5 0 0 0 - - -;
-#X obj 329 112 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#X floatatom 301 60 5 0 0 0 - - -, f 5;
+#X obj 341 112 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
 #X obj 301 110 *~;
 #X obj 301 83 phasor~;
-#X floatatom 382 66 5 0 0 0 - - -;
+#X floatatom 382 66 5 0 0 0 - - -, f 5;
 #X obj 382 89 / 1000;
-#X obj 408 116 -~ 0.25;
-#X obj 408 138 cos~;
-#X obj 484 140 / 1000;
+#X obj 419 116 -~ 0.25;
+#X obj 419 138 cos~;
+#X obj 495 140 / 1000;
 #X obj 374 166 *~;
-#X obj 408 166 *~;
+#X obj 419 166 *~;
 #X obj 228 296 env~ 16384;
-#X floatatom 228 320 5 0 0 0 - - -;
+#X floatatom 228 320 5 0 0 0 - - -, f 5;
 #X obj 381 284 dbtorms;
-#X floatatom 382 264 5 0 0 0 - - -;
+#X floatatom 382 264 5 0 0 0 - - -, f 5;
 #X obj 245 220 czero~;
-#X floatatom 201 132 4 -1000 1000 0 - - -;
+#X floatatom 201 132 4 -1000 1000 0 - - -, f 4;
 #X obj 92 126 cos~;
 #X obj 112 85 phasor~;
-#X floatatom 115 60 5 0 0 0 - - -;
+#X floatatom 115 60 5 0 0 0 - - -, f 5;
 #X obj 125 127 -~ 0.25;
 #X obj 125 149 cos~;
 #X obj 201 151 / 1000;
@@ -86,36 +86,36 @@
 #X connect 28 0 29 1;
 #X connect 29 0 21 0;
 #X connect 30 0 21 1;
-#X restore 459 483 pd test;
-#X text 113 550 etc.: user-friendly filters;
-#X text 10 387 (Pd also provides a suite of user-friendly filters.
+#X restore 459 507 pd test;
+#X text 130 581 etc.: user-friendly filters;
+#X text 10 401 (Pd also provides a suite of user-friendly filters.
 This and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
 for an introduction to the necessary theory.);
-#X text 118 91 <-- signal to filter (real part);
-#X text 117 173 <-- signal to filter (imaginary part);
-#X obj 84 172 sig~;
-#X obj 115 197 sig~;
-#X text 149 199 <-- filter coefficient (real part);
-#X obj 145 219 sig~;
-#X text 159 246 <-- creation arguments initialize filter;
-#X text 187 262 coefficient (real and imaginary part);
-#X text 150 144 <-- set internal state (real&imaginary parts);
-#X msg 64 143 set 0.6 0.8;
+#X text 130 105 <-- signal to filter (real part);
+#X text 130 187 <-- signal to filter (imaginary part);
+#X obj 89 186 sig~;
+#X obj 125 210 sig~;
+#X text 167 209 <-- filter coefficient (real part);
+#X obj 162 233 sig~;
+#X text 179 260 <-- creation arguments initialize filter;
+#X text 207 276 coefficient (real and imaginary part);
+#X text 164 158 <-- set internal state (real&imaginary parts);
+#X msg 64 157 set 0.6 0.8;
 #X obj 52 7 czero~;
 #X text 112 7 complex one-zero (non-recursive) filter \, raw;
 #X text 8 31 Czero~ filters a complex audio signal (first two inlets)
 via a one-zero filter \, whose coefficients are controlled by creation
 arguments or by another complex audio signal (remaining two inlets).
 ;
-#X text 179 221 <-- filter coefficient (imaginary part);
-#X text 14 279 The action of czero~ is:;
-#X text 73 300 y[n] = x[n] - a[n] * x[n-1];
-#X text 11 320 where y[n] is the output \, x[n] the input \, and a[n]
+#X text 202 233 <-- filter coefficient (imaginary part);
+#X text 14 293 The action of czero~ is:;
+#X text 73 314 y[n] = x[n] - a[n] * x[n-1];
+#X text 11 334 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient (all complex numbers). The filter is always
 stable.;
-#X text 12 369 The transfer function is H(Z) = 1 - aZ^-1.;
-#X obj 53 244 czero~ 0.9 0.4;
+#X text 12 383 The transfer function is H(Z) = 1 - aZ^-1.;
+#X obj 53 258 czero~ 0.9 0.4;
 #X connect 0 0 39 0;
 #X connect 1 0 39 0;
 #X connect 23 0 39 1;

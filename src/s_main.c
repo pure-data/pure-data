@@ -943,6 +943,15 @@ int sys_argparse(int argc, char **argv)
             sys_externalschedlib = 1;
             strncpy(sys_externalschedlibname, argv[1],
                 sizeof(sys_externalschedlibname) - 1);
+#ifndef  __APPLE__
+                /* no real audio please, unless overwritten by later args.
+                This is to circumvent a problem running pd~ subprocesses
+                with -nogui; they would open an audio device before pdsched.c
+                could set the API ito nothing.  For some reason though, on
+                MACOSX this causes Pd to switch to JACK so we just give up
+                and suppress the workaround there. */
+            sys_set_audio_api(0);
+#endif
             argv += 2;
             argc -= 2;
         }

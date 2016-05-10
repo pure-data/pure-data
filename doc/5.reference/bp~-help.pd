@@ -1,34 +1,37 @@
-#N canvas 531 65 657 420 12;
+#N canvas 530 64 651 484 12;
 #X obj 124 11 bp~;
 #X text 159 11 - BANDPASS FILTER;
-#X floatatom 109 286 5 0 0 0 - - -, f 5;
-#X floatatom 147 192 0 0 0 0 - - -;
-#X floatatom 12 287 5 0 0 0 - - -, f 5;
-#X text 199 264 env~ gives the amplitude of the signal envelop in dB.
+#X floatatom 113 293 5 0 0 0 - - -, f 5;
+#X floatatom 151 199 0 0 0 0 - - -;
+#X floatatom 16 294 5 0 0 0 - - -, f 5;
+#X text 203 271 env~ gives the amplitude of the signal envelop in dB.
 ;
-#X floatatom 12 123 0 0 0 0 - - -;
+#X floatatom 16 130 0 0 0 0 - - -;
 #X msg 544 67 \; pd dsp 0;
-#X obj 12 146 osc~ 100;
-#X text 57 121 <-- scroll to change input frequency;
-#X msg 101 169 clear;
-#X text 151 168 <-- reinitialize internal state;
+#X obj 16 153 osc~ 100;
+#X text 61 128 <-- scroll to change input frequency;
+#X msg 105 176 clear;
+#X text 155 175 <-- reinitialize internal state;
 #X msg 544 28 \; pd dsp 1;
 #X text 13 73 The left inlet is the incoming audio signal \, the middle
 control input sets center frequency and the rigth input sets "Q".;
-#X text 179 193 <-- center frequency;
-#X obj 109 236 bp~ 100 10;
-#X text 208 240 Arguments initialize center frequency and Q.;
-#X text 12 311 Compare the amplitude of the original signal on the
+#X text 183 200 <-- center frequency;
+#X obj 113 243 bp~ 100 10;
+#X text 212 247 Arguments initialize center frequency and Q.;
+#X text 16 318 Compare the amplitude of the original signal on the
 left with the amplitude of the filtered signal on the right.;
-#X floatatom 186 214 0 0 0 0 - - -;
-#X text 218 215 <-- Q;
+#X floatatom 190 221 0 0 0 0 - - -;
+#X text 222 222 <-- Q;
 #X text 11 35 bp~ passes a sinusoid at the center frequency at unit
 gain (approximately). Other frequencies are attenuated.;
-#X text 21 367 see also:;
-#X obj 106 367 vcf~;
-#X obj 11 261 env~ 8192;
-#X obj 109 261 env~ 8192;
-#X text 398 371 updated for Pd version 0.46;
+#X text 23 445 see also:;
+#X obj 108 445 vcf~;
+#X obj 15 268 env~ 8192;
+#X obj 113 268 env~ 8192;
+#X text 400 449 updated for Pd version 0.46;
+#X text 15 363 NOTE: the maximum center frequency is sample rate divided
+by 6.28 \, or about 12kHz at the "usual" rates - for a more general
+and stable (but slightly more CPU-expensive) filter \, try vcf~.;
 #X connect 3 0 15 1;
 #X connect 6 0 8 0;
 #X connect 8 0 15 0;
