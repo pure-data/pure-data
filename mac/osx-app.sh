@@ -201,7 +201,6 @@ ln -s tcl Scripts
 cd -
 
 # finish up
-rm -rf tmp
 touch $APP
 
 if [ "$verbose" != "" ] ; then 
