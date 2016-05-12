@@ -256,14 +256,18 @@ endif
 
 # create a bin folder & symlinks to the binaries in order to
 # replicate the src/makefile.* build result
-all-local:
+.PHONY: convenience-links
+all-local: convenience-links
+
+convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(MKDIR_P) $(top_builddir)/bin
 	rm -rf $(top_builddir)/bin/pd*
 	$(LN_S) $(top_builddir)/src/pd $(top_builddir)/bin/pd
 	$(LN_S) $(top_builddir)/src/pdsend $(top_builddir)/bin/pdsend
 	$(LN_S) $(top_builddir)/src/pdreceive $(top_builddir)/bin/pdreceive
-	test -e $(top_builddir)/src/pd-watchdog && \
+	-test -e $(top_builddir)/src/pd-watchdog && \
 	    $(LN_S) $(top_builddir)/src/pd-watchdog $(top_builddir)/bin/pd-watchdog
+
 
 clean-local:
 	rm -rf $(top_builddir)/bin
