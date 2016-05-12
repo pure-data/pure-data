@@ -207,7 +207,9 @@ AC_CHECK_LIBM
 # not used directly, implicitly needed when using PortAudio on OSX
 AC_CHECK_HEADER(CoreAudio/CoreAudio.h, [coreaudio=yes], [coreaudio=no])
 # portaudio doesn't work with iPhone, so don't bother with CoreAudio
-test x$IPHONEOS = xyes && coreaudio=no
+AS_IF([test x$IPHONEOS = xyes -a x$coreaudio != xno],
+  [AC_MSG_WARN([PortAudio not working on iPhone..disabling])
+  coreaudio=no])
 AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 
 # Checking for `pthread_create' function in -pthread (MinGW uses unusual names)
@@ -269,7 +271,9 @@ AC_ARG_ENABLE([oss],
 AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
 # Cygwin has a function OSS /dev/dsp, but not MIDI,
 # and Pd is only set up to handle a single MIDI API
-test x$WINDOWS = xyes && oss=no
+AS_IF([test x$WINDOW = xyes -a x$oss != xno],
+  [AC_MSG_WARN([OSS not working on W32..disabling])
+  oss=no])
 AM_CONDITIONAL(OSS, test x$oss = xyes)
 AS_IF([test x$oss = xyes], [audio_backends="OSS ${audio_backends}"])
 AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
@@ -358,7 +362,9 @@ AC_ARG_WITH([local-portmidi],
     [AS_HELP_STRING([--without-local-portmidi], [do not use the portmidi included with pd])],
     [local_portmidi=$withval])
 # don't allow portmidi if already using oss
-test x$oss = xyes && portmidi=no
+AS_IF([test x$oss = xyes -a x$portmidi != xno],
+  [AC_MSG_WARN([Cannot enable both OSS-midi and PortMidi..preferring OSS])
+  portmidi=no])
 if test x$portmidi = xyes ; then
     if test x$local_portmidi = xno ; then
         # fall back to local portmidi if not foud
