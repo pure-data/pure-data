@@ -357,6 +357,8 @@ AC_ARG_ENABLE([portmidi],
 AC_ARG_WITH([local-portmidi],
     [AS_HELP_STRING([--without-local-portmidi], [do not use the portmidi included with pd])],
     [local_portmidi=$withval])
+# don't allow portmidi if already using oss
+test x$oss = xyes && portmidi=no
 if test x$portmidi = xyes ; then
     if test x$local_portmidi = xno ; then
         # fall back to local portmidi if not foud
