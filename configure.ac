@@ -43,7 +43,7 @@ case $host in
         portaudio=yes
         portmidi=yes
         EXTERNAL_CFLAGS="-fPIC"
-        EXTERNAL_EXTENSION=pd_darwin
+        EXTERNAL_EXTENSION=d_fat
     else
         platform=iOS
     fi
@@ -387,7 +387,7 @@ if test x$fftw = xyes; then
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 
-# throw an error for now if we end up trying to build without an audio api
+# warn if we end up trying to build without an audio or midi api
 AM_CONDITIONAL(AUDIO_DUMMY, test "x$audio_backends" = "x")
 AS_IF([test "x$audio_backends" = "x"],[
     AC_MSG_WARN([No audio API specified or detected])
