@@ -90,8 +90,8 @@ pd_SOURCES = \
     x_vexp_if.c
 nodist_EXTRA_pd_SOURCES =
 
-pd_includedir = ${includedir}/pd
-pd_include_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h x_vexp.h
+# these install to ${includedir}/pd
+pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h x_vexp.h
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
 noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h x_vexp.h
@@ -248,8 +248,8 @@ bin_SCRIPTS =
 endif
 
 if MINGW
-# To use SetDllDirectory() in s_loader.c, we need a minium of Windows
-# XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
+# To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
+# XP SP1. WINVER isnt' fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
 pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DWINVER=0x0502
 endif
@@ -268,9 +268,16 @@ convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	-test -e $(top_builddir)/src/pd-watchdog && \
 	    $(LN_S) $(top_builddir)/src/pd-watchdog $(top_builddir)/bin/pd-watchdog
 
-
 clean-local:
 	rm -rf $(top_builddir)/bin
+
+# remove the leftover $(inludedir)/pd folder, fail silently if the it's not empty
+# The "|| true" ensures that if the dir is *not* empty, then rmdir does not throw
+# an error and stop make.
+uninstall-hook:
+	if test -d $(DESTDIR)/$(pkgincludedir) ; then \
+	    rmdir $(DESTDIR)/$(pkgincludedir) 2>/dev/null || true ; \
+	fi
 
 # generate Emacs tags
 etags: TAGS

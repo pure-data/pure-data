@@ -39,6 +39,14 @@ DIST_SUBDIRS = asio doc extra mac man po portmidi portaudio src tcl
 
 .PHONY: app
 
+# startup lock files (?)
+install-data-local:
+	$(INSTALL) -d $(DESTDIR)/$(libdir)/pd/startup
+	$(INSTALL) -d $(DESTDIR)/$(libdir)/pd/startup/disabled
+
+uninstall-local:
+	rm -rf $(DESTDIR)/$(libdir)/pd/startup
+
 # build localizations
 locales:
 	make -C po all
@@ -47,6 +55,11 @@ locales:
 app: 
 	make -C mac app
 
-# remove left over folders
+# remove left over folders, does *not* remove anything that still has contents
+# Essentially builds a depth-first list of dirs in $(libdir)/pd, then tries to
+# remove them if they are empty. The "|| true" ensures that if the dir is *not*
+# empty, then rmdir does not throw an error and stop make.
 uninstall-hook:
-	if test -d $(DESTDIR)/$(libdir)/pd; then rm -rf $(DESTDIR)/$(libdir)/pd; fi
+	if test -d $(DESTDIR)/$(libdir)/pd ; then \
+	    find $(DESTDIR)/$(libdir)/pd -type d -depth | xargs rmdir 2>/dev/null || true ; \
+	fi
