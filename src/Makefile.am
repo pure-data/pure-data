@@ -142,7 +142,7 @@ pd_SOURCES += s_audio_pa.c s_audio_paring.c
 
 if LOCAL_PORTAUDIO
 # link the included portaudio
-AM_CPPFLAGS += -I$(top_srcdir)/portaudio/include
+AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/include
 pd_LDADD += $(top_builddir)/portaudio/libportaudio.la
 else
 # link the system's portaudio
@@ -166,7 +166,9 @@ pd_SOURCES += s_midi_pm.c
 
 if LOCAL_PORTMIDI
 # link the included portmidi
-AM_CPPFLAGS += -I$(top_srcdir)/portmidi/pm_common -I$(top_srcdir)/portmidi/porttime
+AM_CPPFLAGS += \
+    -I$(top_srcdir)/portmidi/portmidi/pm_common \
+    -I$(top_srcdir)/portmidi/portmidi/porttime
 pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
 else
 # link the system's portmidi
