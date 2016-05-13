@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# script to launch the Pure Data gui
+
+PD_PREFIX=..
+exec ${PD_PREFIX}/tcl/pd-gui.tcl $@
