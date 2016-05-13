@@ -64,7 +64,7 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
         err = snd_seq_open(&midi_handle,"default",SND_SEQ_OPEN_INPUT,0);
     else if (nmidiout > 0)
         err = snd_seq_open(&midi_handle,"default",SND_SEQ_OPEN_OUTPUT,0);
-    
+
     if (err!=0)
     {
             sys_setalarm(1000000);
@@ -76,10 +76,10 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
         int port;
         sprintf(portname,"Pure Data Midi-In %d",i+1);
         port = snd_seq_create_simple_port(midi_handle,portname,
-                                          SND_SEQ_PORT_CAP_WRITE |SND_SEQ_PORT_CAP_SUBS_WRITE, 
+                                          SND_SEQ_PORT_CAP_WRITE |SND_SEQ_PORT_CAP_SUBS_WRITE,
                                           SND_SEQ_PORT_TYPE_APPLICATION);
-        alsa_midiinfd[i] = port;        
-        if (port < 0) goto error;        
+        alsa_midiinfd[i] = port;
+        if (port < 0) goto error;
     }
 
     for (i=0;i<nmidiout;i++)
@@ -87,12 +87,12 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
         int port;
         sprintf(portname,"Pure Data Midi-Out %d",i+1);
         port = snd_seq_create_simple_port(midi_handle,portname,
-                                          SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ, 
+                                          SND_SEQ_PORT_CAP_READ | SND_SEQ_PORT_CAP_SUBS_READ,
                                           SND_SEQ_PORT_TYPE_APPLICATION);
-        alsa_midioutfd[i] = port;       
-        if (port < 0) goto error;        
+        alsa_midioutfd[i] = port;
+        if (port < 0) goto error;
     }
-   
+
     snd_seq_client_info_malloc(&alsainfo);
     snd_seq_get_client_info(midi_handle,alsainfo);
     snd_seq_client_info_set_name(alsainfo,"Pure Data");
@@ -147,13 +147,15 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
             channel = a-160;
             snd_seq_ev_set_keypress(&ev,channel,b,c);
         }
-        else if (a >= 144)      // note
+        else if (a >= 144)      // note on
         {
             channel = a-144;
-            if (c)
-                snd_seq_ev_set_noteon(&ev,channel,b,c);
-            else
-                snd_seq_ev_set_noteoff(&ev,channel,b,c);
+            snd_seq_ev_set_noteon(&ev,channel,b,c);
+        }
+        else if (a >= 128)      // note off
+        {
+            channel = a-128;
+            snd_seq_ev_set_noteoff(&ev,channel,b,c);
         }
         snd_seq_ev_set_direct(&ev);
         snd_seq_ev_set_subs(&ev);
@@ -190,7 +192,7 @@ void sys_alsa_poll_midi(void)
    snd_seq_event_t *midievent = NULL;
 
    if (alsa_nmidiout == 0 && alsa_nmidiin == 0) return;
-   
+
    snd_midi_event_init(midiev);
 
    if (!alsa_nmidiout && !alsa_nmidiin) return;
@@ -222,7 +224,7 @@ void sys_alsa_close_midi()
 
 static int alsa_nmidiindevs = 1, alsa_nmidioutdevs = 1;
 
-void midi_alsa_init(void)     
+void midi_alsa_init(void)
 {
 }
 

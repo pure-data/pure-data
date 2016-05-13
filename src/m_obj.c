@@ -53,9 +53,9 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
     else x->i_symto = s2;
     x->i_symfrom = s1;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -80,7 +80,7 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv);
     /* LATER figure out how to make these efficient: */
 static void inlet_bang(t_inlet *x)
 {
-    if (x->i_symfrom == &s_bang) 
+    if (x->i_symfrom == &s_bang)
         pd_vmess(x->i_dest, x->i_symto, "");
     else if (!x->i_symfrom) pd_bang(x->i_dest);
     else if (x->i_symfrom == &s_list)
@@ -90,7 +90,7 @@ static void inlet_bang(t_inlet *x)
 
 static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 {
-    if (x->i_symfrom == &s_pointer) 
+    if (x->i_symfrom == &s_pointer)
         pd_vmess(x->i_dest, x->i_symto, "p", gp);
     else if (!x->i_symfrom) pd_pointer(x->i_dest, gp);
     else if (x->i_symfrom == &s_list)
@@ -121,7 +121,7 @@ static void inlet_float(t_inlet *x, t_float f)
 
 static void inlet_symbol(t_inlet *x, t_symbol *s)
 {
-    if (x->i_symfrom == &s_symbol) 
+    if (x->i_symfrom == &s_symbol)
         pd_vmess(x->i_dest, x->i_symto, "s", s);
     else if (!x->i_symfrom) pd_symbol(x->i_dest, s);
     else if (x->i_symfrom == &s_list)
@@ -189,9 +189,9 @@ t_inlet *pointerinlet_new(t_object *owner, t_gpointer *gp)
     x->i_symfrom = &s_pointer;
     x->i_pointerslot = gp;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -211,9 +211,9 @@ t_inlet *floatinlet_new(t_object *owner, t_float *fp)
     x->i_symfrom = &s_float;
     x->i_floatslot = fp;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -233,9 +233,9 @@ t_inlet *symbolinlet_new(t_object *owner, t_symbol **sp)
     x->i_symfrom = &s_symbol;
     x->i_symslot = sp;
     x->i_next = 0;
-    if (y = owner->ob_inlet)
+    if ((y = owner->ob_inlet))
     {
-        while (y2 = y->i_next) y = y2;
+        while ((y2 = y->i_next)) y = y2;
         y->i_next = x;
     }
     else owner->ob_inlet = x;
@@ -252,7 +252,7 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     t_atom *ap;
     int count;
     t_inlet *ip = ((t_object *)x)->ob_inlet;
-    if (!argc) 
+    if (!argc)
     {
         pd_emptylist(&x->ob_pd);
         return;
@@ -266,7 +266,7 @@ void obj_list(t_object *x, t_symbol *s, int argc, t_atom *argv)
     if (argv->a_type == A_POINTER) pd_pointer(&x->ob_pd, argv->a_w.w_gpointer);
     else if (argv->a_type == A_FLOAT) pd_float(&x->ob_pd, argv->a_w.w_float);
     else pd_symbol(&x->ob_pd, argv->a_w.w_symbol);
-} 
+}
 
 void obj_init(void)
 {
@@ -283,7 +283,7 @@ void obj_init(void)
         sizeof(t_inlet), CLASS_PD, 0);
     class_addpointer(pointerinlet_class, pointerinlet_pointer);
     class_addanything(pointerinlet_class, inlet_wrong);
-    
+
     floatinlet_class = class_new(gensym("inlet"), 0, 0,
         sizeof(t_inlet), CLASS_PD, 0);
     class_addfloat(floatinlet_class, (t_method)floatinlet_float);
@@ -306,7 +306,7 @@ static int outlet_eventno;
     /* set a stack limit (on each incoming event that can set off messages)
     for the outlet functions to check to prevent stack overflow from message
     recursion */
-        
+
 void outlet_setstacklim(void)
 {
     outlet_eventno++;
@@ -337,9 +337,9 @@ t_outlet *outlet_new(t_object *owner, t_symbol *s)
     t_outlet *x = (t_outlet *)getbytes(sizeof(*x)), *y, *y2;
     x->o_owner = owner;
     x->o_next = 0;
-    if (y = owner->ob_outlet)
+    if ((y = owner->ob_outlet))
     {
-        while (y2 = y->o_next) y = y2;
+        while ((y2 = y->o_next)) y = y2;
         y->o_next = x;
     }
     else owner->ob_outlet = x;
@@ -358,7 +358,7 @@ void outlet_bang(t_outlet *x)
     t_outconnect *oc;
     if(++stackcount >= STACKITER)
         outlet_stackerror(x);
-    else 
+    else
     for (oc = x->o_connections; oc; oc = oc->oc_next)
         pd_bang(oc->oc_to);
     --stackcount;
@@ -443,6 +443,9 @@ void outlet_free(t_outlet *x)
     t_freebytes(x, sizeof(*x));
 }
 
+    /* connect an outlet of one object to an inlet of another.  The receiving
+    "pd" is usually a patchable object, but this may be used to add a
+    non-patchable pd to an outlet by specifying the 0th inlet. */
 t_outconnect *obj_connect(t_object *source, int outno,
     t_object *sink, int inno)
 {
@@ -450,10 +453,10 @@ t_outconnect *obj_connect(t_object *source, int outno,
     t_outlet *o;
     t_pd *to;
     t_outconnect *oc, *oc2;
-    
+
     for (o = source->ob_outlet; o && outno; o = o->o_next, outno--) ;
     if (!o) return (0);
-    
+
     if (sink->ob_pd->c_firstin)
     {
         if (!inno)
@@ -489,7 +492,7 @@ void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
     t_outlet *o;
     t_pd *to;
     t_outconnect *oc, *oc2;
-    
+
     for (o = source->ob_outlet; o && outno; o = o->o_next, outno--)
     if (!o) return;
     if (sink->ob_pd->c_firstin)
@@ -512,7 +515,7 @@ doit:
         freebytes(oc, sizeof(*oc));
         goto done;
     }
-    while (oc2 = oc->oc_next)
+    while ((oc2 = oc->oc_next))
     {
         if (oc2->oc_to == to)
         {
@@ -634,10 +637,12 @@ int obj_siginletindex(t_object *x, int m)
 {
     int n = 0;
     t_inlet *i;
-    if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
+    if (x->ob_pd->c_firstin)
     {
-        if (!m--) return (0);
-        n++;
+        if (!m--)
+            return (0);
+        if (x->ob_pd->c_floatsignalin)
+            n++;
     }
     for (i = x->ob_inlet; i; i = i->i_next, m--)
         if (i->i_symfrom == &s_signal)
@@ -694,21 +699,18 @@ int obj_issignaloutlet(t_object *x, int m)
 
 t_float *obj_findsignalscalar(t_object *x, int m)
 {
-    int n = 0;
     t_inlet *i;
     if (x->ob_pd->c_firstin && x->ob_pd->c_floatsignalin)
     {
         if (!m--)
             return (x->ob_pd->c_floatsignalin > 0 ?
                 (t_float *)(((char *)x) + x->ob_pd->c_floatsignalin) : 0);
-        n++;
     }
-    for (i = x->ob_inlet; i; i = i->i_next, m--)
+    for (i = x->ob_inlet; i; i = i->i_next)
         if (i->i_symfrom == &s_signal)
     {
-        if (m == 0)
+        if (m-- == 0)
             return (&i->i_un.iu_floatsignalvalue);
-        n++;
     }
     return (0);
 }
@@ -730,7 +732,7 @@ int outlet_getsignalindex(t_outlet *x)
 {
     int n = 0;
     t_outlet *o;
-    for (o = x->o_owner->ob_outlet, n = 0; o && o != x; o = o->o_next) 
+    for (o = x->o_owner->ob_outlet, n = 0; o && o != x; o = o->o_next)
         if (o->o_sym == &s_signal) n++;
     return (n);
 }
@@ -741,3 +743,14 @@ void obj_saveformat(t_object *x, t_binbuf *bb)
         binbuf_addv(bb, "ssf;", &s__X, gensym("f"), (float)x->te_width);
 }
 
+/* this one only in g_clone.c -- LATER consider sending the message
+without having to chase the linked list every time? */
+void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv)
+{
+    t_inlet *i;
+    for (i = x->ob_inlet; i && n; i = i->i_next, n--)
+        ;
+    if (i)
+        typedmess(&i->i_pd, s, argc, argv);
+    else bug("obj_sendinlet");
+}

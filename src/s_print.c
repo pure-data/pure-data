@@ -9,7 +9,8 @@
 #include <string.h>
 #include <errno.h>
 #include "s_stuff.h"
-#ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
+
+#ifdef _MSC_VER
 #define snprintf sprintf_s
 #endif
 
@@ -30,9 +31,9 @@ static char* strnescape(char *dest, const char *src, size_t len)
         if (c==0) break;
     }
 
-    if(ptout < len) 
+    if(ptout < len)
         dest[ptout]=0;
-    else 
+    else
         dest[len-1]=0;
 
     return dest;
@@ -41,7 +42,7 @@ static char* strnescape(char *dest, const char *src, size_t len)
 static char* strnpointerid(char *dest, const void *pointer, size_t len)
 {
     *dest=0;
-    if (pointer) 
+    if (pointer)
         snprintf(dest, len, ".x%lx", (unsigned long)pointer);
     return dest;
 }
@@ -69,7 +70,7 @@ static void doerror(const void *object, const char *s)
     upbuf[MAXPDSTRING-1]=0;
 
     // what about sys_printhook_error ?
-    if (sys_printhook) 
+    if (sys_printhook)
     {
         snprintf(upbuf, MAXPDSTRING-1, "error: %s", s);
         (*sys_printhook)(upbuf);
@@ -80,7 +81,7 @@ static void doerror(const void *object, const char *s)
     {
         char obuf[MAXPDSTRING];
         sys_vgui("::pdwindow::logpost {%s} 1 {%s}\n",
-                 strnpointerid(obuf, object, MAXPDSTRING), 
+                 strnpointerid(obuf, object, MAXPDSTRING),
                  strnescape(upbuf, s, MAXPDSTRING));
     }
 }
@@ -91,20 +92,20 @@ static void dologpost(const void *object, const int level, const char *s)
     upbuf[MAXPDSTRING-1]=0;
 
     // what about sys_printhook_verbose ?
-    if (sys_printhook) 
+    if (sys_printhook)
     {
         snprintf(upbuf, MAXPDSTRING-1, "verbose(%d): %s", level, s);
         (*sys_printhook)(upbuf);
     }
-    else if (sys_printtostderr) 
+    else if (sys_printtostderr)
     {
         fprintf(stderr, "verbose(%d): %s", level, s);
     }
     else
     {
         char obuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::logpost {%s} %d {%s}\n", 
-                 strnpointerid(obuf, object, MAXPDSTRING), 
+        sys_vgui("::pdwindow::logpost {%s} %d {%s}\n",
+                 strnpointerid(obuf, object, MAXPDSTRING),
                  level, strnescape(upbuf, s, MAXPDSTRING));
     }
 }

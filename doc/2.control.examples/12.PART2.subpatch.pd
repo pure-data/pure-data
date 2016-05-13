@@ -15,8 +15,8 @@
 #X obj 62 188 outlet;
 #X obj 118 101 t b f;
 #X obj 62 156 +;
-#X text 197 23 this is a sample subpatch which maintains the sum of
-two inputs \, doing the computation when either input changes. IF it's
+#X text 197 23 This is a sample subpatch which maintains the sum of
+two inputs \, doing the computation when either input changes. If it's
 the left input \, the "+" object takes care if it \; if the right \,
 the "trigger" object first gives the "+" the new value \, then "bangs"
 the right inlet to make "+" do the computation.;
@@ -24,7 +24,7 @@ the right inlet to make "+" do the computation.;
 as "+" only trigger on their left inlets: it's easy to build up from
 there \, but if more than one inlet were "hot" \, you wouldn't be able
 to change both of them without firing the calculation twice.;
-#X text 197 112 Because of the two inlets and the one outlet \, the
+#X text 197 137 Because of the two inlets and the one outlet \, the
 containing box (in the parent patch) has two inlets and one outlet.
 They respect the left-to-right order of the inlet and outlet objects
 in the subpatch.;
@@ -45,8 +45,8 @@ that sends a number to a "receive" on command:;
 #X msg 226 314 bang;
 #X obj 226 341 sendnumber 67 pretzels;
 #X floatatom 519 341 0 0 0;
-#X text 27 553 note that "$1" \, etc \, has a different meaning in
-object boxes (open one of the "sendnumber" abstractions for comments.)
+#X text 27 553 Note that "$1" \, etc \, has a different meaning in
+object boxes.  Open one of the "sendnumber" abstractions for details.
 ;
 #X text 26 470 If you change one copy of an abstraction the change
 isn't automatically made on any other copies. You must keep track \,

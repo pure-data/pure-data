@@ -212,8 +212,8 @@ proc ::dialog_array::listview_close {mytoplevel arrayName} {
 
 proc ::dialog_array::apply {mytoplevel} {
     pdsend "$mytoplevel arraydialog \
-            [::dialog_gatom::escape [$mytoplevel.name.entry get]] \
-            [$mytoplevel.size.entry get] \
+            [::dialog_gatom::escape [$mytoplevel.array.name.entry get]] \
+            [$mytoplevel.array.size.entry get] \
             [expr $::saveme_button($mytoplevel) + (2 * $::drawas_button($mytoplevel))] \
             $::otherflag_button($mytoplevel)"
 }
@@ -239,8 +239,8 @@ proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
         create_dialog $mytoplevel $newone
     }
 
-    $mytoplevel.name.entry insert 0 [::dialog_gatom::unescape $name]
-    $mytoplevel.size.entry insert 0 $size
+    $mytoplevel.array.name.entry insert 0 [::dialog_gatom::unescape $name]
+    $mytoplevel.array.size.entry insert 0 $size
     set ::saveme_button($mytoplevel) [expr $flags & 1]
     set ::drawas_button($mytoplevel) [expr ( $flags & 6 ) >> 1]
     set ::otherflag_button($mytoplevel) 0
@@ -261,22 +261,26 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "array"
 
-    frame $mytoplevel.name
-    pack $mytoplevel.name -side top
-    label $mytoplevel.name.label -text [_ "Name:"]
-    entry $mytoplevel.name.entry
-    pack $mytoplevel.name.label $mytoplevel.name.entry -anchor w
+    # array
+    labelframe $mytoplevel.array -borderwidth 1 -text [_ "Array"] -padx 5
+    pack $mytoplevel.array -side top -fill x
+    frame $mytoplevel.array.name -height 7 -padx 5
+    pack $mytoplevel.array.name -side top -anchor e
+    label $mytoplevel.array.name.label -text [_ "Name:"]
+    entry $mytoplevel.array.name.entry -width 17
+    pack $mytoplevel.array.name.entry $mytoplevel.array.name.label -side right
 
-    frame $mytoplevel.size
-    pack $mytoplevel.size -side top
-    label $mytoplevel.size.label -text [_ "Size:"]
-    entry $mytoplevel.size.entry
-    pack $mytoplevel.size.label $mytoplevel.size.entry -anchor w
+    frame $mytoplevel.array.size -height 7 -padx 5
+    pack $mytoplevel.array.size -side top -anchor e
+    label $mytoplevel.array.size.label -text [_ "Size:"]
+    entry $mytoplevel.array.size.entry -width 17
+    pack $mytoplevel.array.size.entry $mytoplevel.array.size.label -side right
 
-    checkbutton $mytoplevel.saveme -text [_ "Save contents"] \
+    checkbutton $mytoplevel.array.saveme -text [_ "Save contents"] \
         -variable ::saveme_button($mytoplevel) -anchor w
-    pack $mytoplevel.saveme -side top
+    pack $mytoplevel.array.saveme -side top
 
+    # draw as
     labelframe $mytoplevel.drawas -text [_ "Draw as:"] -padx 20 -borderwidth 1
     pack $mytoplevel.drawas -side top -fill x
     radiobutton $mytoplevel.drawas.points -value 0 \
@@ -289,27 +293,28 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
     pack $mytoplevel.drawas.polygon -side top -anchor w
     pack $mytoplevel.drawas.bezier -side top -anchor w
 
-    if {$newone != 0} {
-        labelframe $mytoplevel.radio -text [_ "Put array into:"] -padx 20 -borderwidth 1
-        pack $mytoplevel.radio -side top -fill x
-        radiobutton $mytoplevel.radio.radio0 -value 0 \
+    # options
+    if {$newone == 1} {
+        labelframe $mytoplevel.options -text [_ "Put array into:"] -padx 20 -borderwidth 1
+        pack $mytoplevel.options -side top -fill x
+        radiobutton $mytoplevel.options.radio0 -value 0 \
             -variable ::otherflag_button($mytoplevel) -text [_ "New graph"]
-        radiobutton $mytoplevel.radio.radio1 -value 1 \
+        radiobutton $mytoplevel.options.radio1 -value 1 \
             -variable ::otherflag_button($mytoplevel) -text [_ "Last graph"]
-        pack $mytoplevel.radio.radio0 -side top -anchor w
-        pack $mytoplevel.radio.radio1 -side top -anchor w
-    } else {    
-        checkbutton $mytoplevel.deletearray -text [_ "Delete array"] \
+        pack $mytoplevel.options.radio0 -side top -anchor w
+        pack $mytoplevel.options.radio1 -side top -anchor w
+    } else {
+        labelframe $mytoplevel.options -text [_ "Options"] -padx 20 -borderwidth 1
+        pack $mytoplevel.options -side top -fill x
+        button $mytoplevel.options.listview -text [_ "Open List View..."] \
+            -command "::dialog_array::openlistview $mytoplevel [$mytoplevel.array.name.entry get]"
+        pack $mytoplevel.options.listview -side top
+        checkbutton $mytoplevel.options.deletearray -text [_ "Delete array"] \
             -variable ::otherflag_button($mytoplevel) -anchor w
-        pack $mytoplevel.deletearray -side top
+        pack $mytoplevel.options.deletearray -side top
     }
-    # jsarlo
-    if {$newone == 0} {
-        button $mytoplevel.listview -text [_ "Open List View..."] \
-            -command "::dialog_array::openlistview $mytoplevel [$mytoplevel.name.entry get]"
-        pack $mytoplevel.listview -side top
-    }
-    # end jsarlo
+
+    # buttons
     frame $mytoplevel.buttonframe
     pack $mytoplevel.buttonframe -side bottom -expand 1 -fill x -pady 2m
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
@@ -321,6 +326,68 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
         pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 10
     }
     button $mytoplevel.buttonframe.ok -text [_ "OK"]\
-        -command "::dialog_array::ok $mytoplevel"
+        -command "::dialog_array::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 10
+
+    # live widget updates on OSX in lieu of Apply button
+    if {$::windowingsystem eq "aqua"} {
+
+        # only bind if there is an existing array to edit
+        if {$newone == 0} {
+
+            # call apply on button changes
+            $mytoplevel.array.saveme config -command [ concat ::dialog_array::apply $mytoplevel ]
+            $mytoplevel.drawas.points config -command [ concat ::dialog_array::apply $mytoplevel ]
+            $mytoplevel.drawas.polygon config -command [ concat ::dialog_array::apply $mytoplevel ]
+            $mytoplevel.drawas.bezier config -command [ concat ::dialog_array::apply $mytoplevel ]
+
+            # call apply on Return in entry boxes that are in focus & rebind Return to ok button
+            bind $mytoplevel.array.name.entry <KeyPress-Return> "::dialog_array::apply_and_rebind_return $mytoplevel"
+            bind $mytoplevel.array.size.entry <KeyPress-Return> "::dialog_array::apply_and_rebind_return $mytoplevel"
+
+            # unbind Return from ok button when an entry takes focus
+            $mytoplevel.array.name.entry config -validate focusin -vcmd "::dialog_array::unbind_return $mytoplevel"
+            $mytoplevel.array.size.entry config -validate focusin -vcmd "::dialog_array::unbind_return $mytoplevel"
+        }
+
+        # remove cancel button from focus list since it's not activated on Return
+        $mytoplevel.buttonframe.cancel config -takefocus 0
+
+        # can't see focus for buttons, so disable it
+        $mytoplevel.array.saveme config -takefocus 0
+        $mytoplevel.drawas.points config -takefocus 0
+        $mytoplevel.drawas.polygon config -takefocus 0
+        $mytoplevel.drawas.bezier config -takefocus 0
+        if {[winfo exists $mytoplevel.options.radio0]} {
+            $mytoplevel.options.radio0 config -takefocus 0
+        }
+        if {[winfo exists $mytoplevel.options.radio1]} {
+            $mytoplevel.options.radio1 config -takefocus 0
+        }
+        if {[winfo exists $mytoplevel.options.deletearray]} {
+            $mytoplevel.options.deletearray config -takefocus 0
+        }
+        if {[winfo exists $mytoplevel.options.listview]} {
+            $mytoplevel.options.listview config -takefocus 0
+        }
+
+        # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.buttonframe.ok config -default normal
+        bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
+        bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
+    }
+}
+
+# for live widget updates on OSX
+proc ::dialog_array::apply_and_rebind_return {mytoplevel} {
+    ::dialog_array::apply $mytoplevel
+    bind $mytoplevel <KeyPress-Return> "::dialog_array::ok $mytoplevel"
+    focus $mytoplevel.buttonframe.ok
+    return 0
+}
+
+# for live widget updates on OSX
+proc ::dialog_array::unbind_return {mytoplevel} {
+    bind $mytoplevel <KeyPress-Return> break
+    return 1
 }

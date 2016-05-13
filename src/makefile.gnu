@@ -60,7 +60,7 @@ CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
     -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch
 
 # code generation flags (e.g., optimization).  
-CODECFLAGS = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
+CODECFLAGS = -g -O3 -ffast-math -funroll-loops -fomit-frame-pointer
 
 # anything else you want to specify.  Also passed on to "extra" makefiles.
 MORECFLAGS =
@@ -100,7 +100,7 @@ endif
 CFLAGS = $(CPPFLAGS) $(CODECFLAGS) $(MORECFLAGS)
 
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
-    g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c \
+    g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c g_clone.c \
     g_all_guis.c g_bang.c g_hdial.c g_hslider.c g_mycanvas.c g_numbox.c \
     g_toggle.c g_vdial.c g_vslider.c g_vumeter.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
@@ -112,7 +112,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     d_delay.c d_resample.c d_soundfile.c \
     x_arithmetic.c x_connective.c x_interface.c x_midi.c x_misc.c \
     x_time.c x_acoustics.c x_net.c x_text.c x_gui.c x_list.c x_array.c \
-    x_scalar.c \
+    x_scalar.c  x_vexp.c x_vexp_if.c x_vexp_fun.c \
     $(SYSSRC)
 
 OBJ = $(SRC:.c=.o) 
@@ -168,7 +168,6 @@ $(PDEXEC): $(OBJ_DIR) $(OBJ)
 externs: 
 	make -C ../extra/bonk~     MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/choice    MORECFLAGS="$(MORECFLAGS)" 
-	make -C ../extra/expr~     MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/fiddle~   MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/loop~     MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/lrshift~  MORECFLAGS="$(MORECFLAGS)" 

@@ -1,26 +1,26 @@
-#N canvas 143 0 673 325 12;
-#X msg 268 277 bang;
-#X obj 244 303 print~;
-#X msg 185 278 bang;
-#X obj 161 304 print~;
-#X text 53 117 click here first;
-#X msg 72 270 bang;
-#X obj 48 296 print~;
-#X text 162 222 shift left;
-#X text 243 224 shift right;
-#X obj 161 252 lrshift~ 1;
-#X obj 244 251 lrshift~ -1;
+#N canvas 143 22 712 368 12;
+#X msg 294 284 bang;
+#X obj 270 310 print~;
+#X msg 189 285 bang;
+#X obj 165 311 print~;
+#X text 53 121 click here first;
+#X msg 76 273 bang;
+#X obj 52 299 print~;
+#X text 166 229 shift left;
+#X text 272 231 shift right;
+#X obj 165 259 lrshift~ 1;
+#X obj 270 258 lrshift~ -1;
 #X text 39 37 Acting at whatever vector size the window is running
 at \, lrshift~ shifts samples to the left (toward the beginning sample)
 or to the right. The argument gives the direction and the amount of
 the shift. The rightmost (or leftmost) samples are set to zero.;
-#N canvas 0 0 450 300 (subpatch) 0;
+#N canvas 0 22 450 300 (subpatch) 0;
 #X array shiftin 64 float 0;
 #X coords 0 1 63 0 200 140 1;
-#X restore 448 118 graph;
+#X restore 449 139 graph;
 #X text 115 11 -- shift signal vector elements left or right;
-#X msg 54 138 \; pd dsp 1 \; shiftin 1 1;
-#X obj 48 204 tabreceive~ shiftin;
+#X msg 54 142 \; pd dsp 1 \; shiftin 1 1;
+#X obj 52 211 tabreceive~ shiftin;
 #X text 525 308 Updated for Pd 0.31.;
 #X obj 47 11 lrshift~;
 #X connect 0 0 1 0;

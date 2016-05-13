@@ -1,4 +1,4 @@
-#N canvas 103 177 618 583 12;
+#N canvas 85 244 580 626 12;
 #X declare;
 #X obj 48 10 declare;
 #X text 120 11 - set environment for loading patch;
@@ -16,18 +16,17 @@ to Pd in preparation for opening the patch from a file. Usage is "declare
 #X text 40 231 (for any of these you may use a full pathname such as
 "/tmp/dir" or \, in Windows \, "C:/garbage" instead of a relative path).
 ;
+#X text 129 163 add to search path \, relative to Pd;
+#X text 43 473 BUG: The name "-stdpath" is confusing \, as it has a
+quite different effect from "-stdpath" on the pd command line.;
 #X text 39 293 For instance \, if you put abstractions and/or other
 supporting files in a subdirectory "more" \, you can put an object
 \, "declare -path more" to make sure Pd sees them when the patch is
-loaded. Or \, if you have zexy installed in the directory extra/zexy
-(in the Pd installation") you can get it using "declare -stdpath extra/zexy".
+loaded. Or \, if you have files installed in the directory extra/stillmore
+(in the Pd installation) you can get it using "declare -stdpath stillmore".
 ;
-#X text 129 163 add to search path \, relative to Pd;
-#X text 367 557 updated for Pd version 0.41;
-#X text 42 395 WARNING: you might want to avoid putting "declare" statements
-inside abstractions \, as their effects will extend to the calling
-patch. As of version 0.41 \, "declare path" is ignored inside abstractions
-\, although \, probably unwisely \, "-stdpath" takes effect (on the
-calling patch as well as the abstraction.);
-#X text 42 494 BUG: The name "-stdpath" is confusing \, as it has a
-quite different effect from "-stdpath" on the pd command line.;
+#X text 340 546 updated for Pd version 0.47;
+#X text 41 395 WARNING: as of version 0.47 \, "declare -path" and "declare
+-stdpath" inside abstractions take effect only within those abstractions.
+If pd's compatibility version is set to 0.46 or earlier the old (buggy)
+behavior takes effect.;

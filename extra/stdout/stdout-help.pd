@@ -1,4 +1,4 @@
-#N canvas 121 60 488 321 12;
+#N canvas 121 60 539 339 12;
 #X msg 126 203 walk the dog;
 #X msg 117 156 1;
 #X obj 117 240 stdout;

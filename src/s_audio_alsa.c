@@ -227,7 +227,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
         memset(alsa_snd_buf, 0, bufsizeforthis);
         alsa_snd_bufsize = bufsizeforthis;
     }
-    
+
     err = snd_pcm_sw_params_current(dev->a_handle, sw_params);
     if (err < 0)
     {
@@ -243,7 +243,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
             (out ? "output" : "input"), snd_strerror(err));
         return (-1);
     }
-    
+
     err = snd_pcm_sw_params_set_avail_min(dev->a_handle, sw_params, 4);
     if (err < 0)
     {
@@ -453,7 +453,7 @@ int alsa_send_dacs(void)
     callno++;
 #endif
 
-   
+
     for (iodev = 0; iodev < alsa_nindev; iodev++)
     {
         result = snd_pcm_state(alsa_indev[iodev].a_handle);
@@ -667,7 +667,7 @@ int alsa_send_dacs(void)
         {
             checkcountdown = 10;
             if (alsa_nindev + alsa_noutdev > 1)
-                alsa_checkiosync();   /*  check I/O are in sync */     
+                alsa_checkiosync();   /*  check I/O are in sync */
         }
     }
     return SENDDACS_YES;
@@ -676,7 +676,7 @@ int alsa_send_dacs(void)
 void alsa_printstate( void)
 {
     int i, result, iodev = 0;
-    snd_pcm_sframes_t indelay, outdelay;
+    snd_pcm_sframes_t indelay = 0, outdelay = 0;
     if (sys_audioapi != API_ALSA)
     {
         error("restart-audio: implemented for ALSA only.");
@@ -835,7 +835,7 @@ static void alsa_checkiosync( void)
 #ifdef DEBUG_ALSA_XFER
             post("resync audio %d %d %d", xferno, minphase, maxphase);
 #endif
-        
+
         for (iodev = 0; iodev < alsa_noutdev; iodev++)
         {
             result = snd_pcm_delay(alsa_outdev[iodev].a_handle, &outdelay);

@@ -20,6 +20,46 @@
 
 <H3> <A name="s2"> 5.1. release notes </A> </H3>
 
+<P> ------------------ 0.47-0 ------------------------------
+
+<P> The "deken" plug-in is integrated into the Pd help menu - you can download
+and install Pd libraries using the "Find Externals" menu command.
+
+<P> New clone object that opens multiple copies of an abstraction and
+routes messages and signals to/from them, for making banks of voices or
+whatnot
+
+<P> "Zoom" feature for dealing with high-resolution displays.  IEM GUIs are
+only somewhat dodgily handled (font sizes of labels aren't managed well).
+
+<P> Controllable font sizes for menus and dialogs: setting the "pd window"
+font size also sets font sizes for menus/dialogs.
+
+<P> The expr, expr~, and fexpr~ objects are included in Pd proper, not loaded
+as externs as before.  THis reflects their new license (lgpl) and should allow
+them to be used in IOS apps via libpd.  Shahrohk Yadegari has updated the
+source and made manifold improvements in the objects.  Notably, they now allow
+access to variables in Pd defined via the "value" object.
+
+<P> Backward messaging to netsend now works in UDP as well as TCP.
+
+<P> Dialogs now work more Appleshly (changes taking place without the need
+to hit an "apply" button in many cases).  Thanks to danomatica.
+
+<P> API support for "initbang" and "closebang" objects (from IEM library
+I think, but anyhow you can now get them in Pd Vanilla via deken (help
+menu "Find externals").
+
+<P> "Declare" object path settings now take effect immediately when you edit
+the declare object.
+
+<P> (Iohannes) Abstractions, externs, and stuff written in other languages
+(pythin, Lua, etc) are now loaded logically, that is, if you have one patch
+that loads an external named X, you can still load abstractions named X in
+other patches.  Miller now oficially Does Not Know How This Works (DNKHTW).
+
+<P> Many bug fixes.
+
 <P> ------------------ 0.46-7 ------------------------------
 
 <P> Fixed non-working declare -stdpath on windows

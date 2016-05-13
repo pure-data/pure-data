@@ -24,7 +24,7 @@ void word_init(t_word *wp, t_template *template, t_gpointer *gp)
     {
         int type = datatypes->ds_type;
         if (type == DT_FLOAT)
-            wp->w_float = 0; 
+            wp->w_float = 0;
         else if (type == DT_SYMBOL)
             wp->w_symbol = &s_symbol;
         else if (type == DT_ARRAY)
@@ -51,7 +51,7 @@ void word_restore(t_word *wp, t_template *template,
                 argv++, argc--;
             }
             else f = 0;
-            wp->w_float = f; 
+            wp->w_float = f;
         }
         else if (type == DT_SYMBOL)
         {
@@ -201,7 +201,7 @@ static void scalar_getrect(t_gobj *z, t_glist *owner,
     *xp1 = x1;
     *yp1 = y1;
     *xp2 = x2;
-    *yp2 = y2; 
+    *yp2 = y2;
 }
 
 static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
@@ -209,7 +209,7 @@ static void scalar_drawselectrect(t_scalar *x, t_glist *glist, int state)
     if (state)
     {
         int x1, y1, x2, y2;
-       
+
         scalar_getrect(&x->sc_gobj, glist, &x1, &y1, &x2, &y2);
         x1--; x2++; y1--; y2++;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d \
@@ -233,7 +233,7 @@ static void scalar_select(t_gobj *z, t_glist *owner, int state)
     gpointer_init(&gp);
     gpointer_setglist(&gp, owner, x);
     SETPOINTER(&at, &gp);
-    if (tmpl = template_findbyname(templatesym))
+    if ((tmpl = template_findbyname(templatesym)))
         template_notify(tmpl, (state ? gensym("select") : gensym("deselect")),
             1, &at);
     gpointer_unset(&gp);
@@ -351,15 +351,15 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     SETFLOAT(at, basex + xloc);
     SETFLOAT(at+1, basey + yloc);
     if (doit)
-        template_notifyforscalar(template, owner, 
+        template_notifyforscalar(template, owner,
             sc, gensym("click"), 2, at);
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
         if (!wb) continue;
-        if (hit = (*wb->w_parentclickfn)(y, owner,
+        if ((hit = (*wb->w_parentclickfn)(y, owner,
             data, template, sc, ap, basex + xloc, basey + yloc,
-            xpix, ypix, shift, alt, dbl, doit))
+            xpix, ypix, shift, alt, dbl, doit)))
                 return (hit);
     }
     return (0);

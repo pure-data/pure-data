@@ -276,7 +276,7 @@ proc ::pdwindow::create_tcl_entry {} {
     pack .pdwindow.tcl.label -side left
     entry .pdwindow.tcl.entry -width 200 \
        -exportselection 1 -insertwidth 2 -insertbackground blue \
-       -textvariable ::pdwindow::tclentry -font {$::font_family -12}
+       -textvariable ::pdwindow::tclentry -font TkTextFont
     pack .pdwindow.tcl.entry -side left -fill x
 # bindings for the Tcl entry widget
     bind .pdwindow.tcl.entry <$::modifier-Key-a> "%W selection range 0 end; break"
@@ -332,7 +332,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.pad1 -side left -padx 12
 
     checkbutton .pdwindow.header.dsp -text [_ "DSP"] -variable ::dsp \
-        -font {$::font_family -18 bold} -takefocus 1 -background lightgray \
+        -takefocus 1 -background lightgray \
         -borderwidth 0  -command {pdsend "pd dsp $::dsp"}
     pack .pdwindow.header.dsp -side right -fill y -anchor e -padx 5 -pady 0
 

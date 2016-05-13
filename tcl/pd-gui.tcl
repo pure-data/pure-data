@@ -123,20 +123,27 @@ set port 0
 set font_family "courier"
 set font_weight "normal"
 # sizes of chars for each of the Pd fixed font sizes:
-#  fontsize  width(pixels)  height(pixels)
-set font_fixed_metrics {
-    8 6 11
-    9 6 12
-    10 7 13
-    12 9 16
-    14 8 17
-    16 10 20
-    18 11 22
-    24 15 25
-    30 18 37
-    36 25 45
+# width(pixels)  height(pixels)
+set font_metrics {
+    6 10
+    7 13
+    9 16
+    10 21
+    15 25
+    25 45
 }
-set font_measured_metrics {}
+
+# sizes as above for zoomed-in view
+set font_zoom2_metrics {
+    12 20
+    14 26
+    18 32
+    20 42
+    30 50
+    50 90
+}
+set font_measured {}
+set font_zoom2_measured {}
 
 # root path to lib of Pd's files, see s_main.c for more info
 set sys_libdir {}
@@ -425,8 +432,8 @@ proc load_locale {} {
 # font handling
 
 # this proc gets the internal font name associated with each size
-proc get_font_for_size {size} {
-    return "::pd_font_${size}"
+proc get_font_for_size {fsize} {
+    return [list $::font_family -$fsize $::font_weight]
 }
 
 # searches for a font to use as the default.  Tk automatically assigns a
@@ -463,38 +470,37 @@ proc set_base_font {family weight} {
     }
 }
 
-# creates all the base fonts (i.e. pd_font_8 thru pd_font_36) so that they fit
+# create all the base fonts (i.e. pd_font_8 thru pd_font_36) so that they fit
 # into the metrics given by $::font_fixed_metrics for any given font/weight
 proc fit_font_into_metrics {} {
-# TODO the fonts picked seem too small, probably on fixed width
-    foreach {size width height} $::font_fixed_metrics {
-        set myfont [get_font_for_size $size]
-        font create $myfont -family $::font_family -weight $::font_weight \
-            -size [expr {-$height}]
-        set height2 $height
-        set giveup 0
-        while {[font measure $myfont M] > $width || \
-            [font metrics $myfont -linespace] > $height} {
-            incr height2 -1
-            font configure $myfont -size [expr {-$height2}]
-            if {$height2 * 2 <= $height} {
-                set giveup 1
-                set ::font_measured_metrics $::font_fixed_metrics
-                break
-            }
+    set lastsize 0
+    set lastwidth 0
+    set lastheight 0
+
+    for {set fsize 6} {$fsize < 120 && [llength $::font_zoom2_metrics] > 1} \
+            {incr fsize} {
+        set foo [list $::font_family -$fsize bold]
+        set height [font metrics $foo -linespace]
+        set width [font measure $foo M]
+        # puts stderr [concat $fsize $width $height]
+        if {[llength $::font_metrics] > 1 && \
+            ( $width > [lindex $::font_metrics 0] || \
+            $height > [lindex $::font_metrics 1] )} {
+                # puts [concat SINGLE $fsize]
+                lappend ::font_measured $lastsize $lastwidth  $lastheight
+                set ::font_metrics [lrange $::font_metrics 2 end]
         }
-        set ::font_measured_metrics \
-            "$::font_measured_metrics  $size\
-                [font measure $myfont M] [font metrics $myfont -linespace]"
-        if {$giveup} {
-            ::pdwindow::post [format \
-    [_ "WARNING: %s failed to find font size (%s) that fits into %sx%s!\n"]\
-               [lindex [info level 0] 0] $size $width $height]
-            continue
+        if {$width > [lindex $::font_zoom2_metrics 0] || \
+            $height > [lindex $::font_zoom2_metrics 1]} {
+                # puts [concat DOUBLE $fsize]
+                lappend ::font_zoom2_measured $lastsize $lastwidth  $lastheight
+                set ::font_zoom2_metrics [lrange $::font_zoom2_metrics 2 end]
         }
+        set lastsize $fsize
+        set lastwidth $width
+        set lastheight $height
     }
 }
-
 
 # ------------------------------------------------------------------------------
 # procs called directly by pd
@@ -512,7 +518,8 @@ proc pdtk_pd_startup {major minor bugfix test
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
     ::pd_guiprefs::init
-    pdsend "pd init [enquote_path [pwd]] $oldtclversion $::font_measured_metrics"
+    pdsend "pd init [enquote_path [pwd]] $oldtclversion \
+        $::font_measured $::font_zoom2_measured"
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
@@ -540,14 +547,13 @@ proc pdtk_check {mytoplevel message reply_to_pd default} {
     }
 }
 
-# store plugin callbacks for dispatched messages from running Pd patches
-global plugin_dispatch_receivers
-
 # dispatch a message from running Pd patches to the intended plugin receiver
 proc pdtk_plugin_dispatch { args } {
     set receiver [ lindex $args 0 ]
-    foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
-        $callback [ lrange $args 1 end ]
+    if [ info exists ::pd_connect::plugin_dispatch_receivers($receiver) ] {
+	   foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
+               $callback [ lrange $args 1 end ]
+	   }
     }
 }
 
@@ -705,6 +711,10 @@ proc load_plugin_script {filename} {
 }
 
 proc load_startup_plugins {} {
+    # load built-in plugins
+    load_plugin_script [file join $::sys_guidir pd_deken.tcl]
+
+    # load other installed plugins
     foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
@@ -714,7 +724,6 @@ proc load_startup_plugins {} {
             load_plugin_script $filename
         }
     }
-    load_plugin_script [file join $::sys_guidir pd_deken.tcl]
 }
 
 # ------------------------------------------------------------------------------

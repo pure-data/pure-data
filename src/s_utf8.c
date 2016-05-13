@@ -18,10 +18,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#ifdef WIN32
-#include <malloc.h>
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
-#include <alloca.h>
+# include <stdlib.h> /* BSDs for example */
 #endif
 
 #include "s_utf8.h"

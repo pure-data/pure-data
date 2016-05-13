@@ -5,8 +5,6 @@ cd bonk~
 nmake /NOLOGO pd_nt
 cd ..\choice
 nmake /NOLOGO pd_nt
-cd ..\expr~
-nmake /NOLOGO pd_nt
 cd ..\fiddle~
 nmake /NOLOGO pd_nt
 cd ..\loop~

@@ -141,7 +141,7 @@ double nt_tixtotime(LARGE_INTEGER *dumbass)
 
     /* get "real time" in seconds; take the
     first time we get called as a reference time of zero. */
-double sys_getrealtime(void)    
+double sys_getrealtime(void)
 {
 #ifndef _WIN32
     static struct timeval then;
@@ -300,14 +300,14 @@ void sys_setsignalhandlers( void)
 #include <sched.h>
 #endif
 
-void sys_set_priority(int higher) 
+void sys_set_priority(int higher)
 {
 #ifdef _POSIX_PRIORITY_SCHEDULING
     struct sched_param par;
     int p1 ,p2, p3;
     p1 = sched_get_priority_min(SCHED_FIFO);
     p2 = sched_get_priority_max(SCHED_FIFO);
-#ifdef USEAPI_JACK    
+#ifdef USEAPI_JACK
     p3 = (higher ? p1 + 7 : p1 + 5);
 #else
     p3 = (higher ? p2 - 5 : p2 - 7);
@@ -334,7 +334,7 @@ void sys_set_priority(int higher)
         setrlimit(RLIMIT_MEMLOCK,&mlock_limit);
     }
     /* } tb */
-    if (mlockall(MCL_FUTURE) != -1) 
+    if (mlockall(MCL_FUTURE) != -1)
         fprintf(stderr, "memory locking enabled.\n");
 #endif
 #endif
@@ -477,7 +477,7 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         else
         {
             char *semi = strchr(buf, ';');
-            if (semi) 
+            if (semi)
                 *semi = 0;
             binbuf_text(inbinbuf, buf, strlen(buf));
             outlet_setstacklim();
@@ -662,7 +662,7 @@ void sys_vgui(char *fmt, ...)
     msglen = vsnprintf(sys_guibuf + sys_guibufhead,
         sys_guibufsize - sys_guibufhead, fmt, ap);
     va_end(ap);
-    if(msglen < 0) 
+    if(msglen < 0)
     {
         fprintf(stderr, "Pd: buffer space wasn't sufficient for long GUI string\n");
         return;
@@ -699,7 +699,7 @@ static int sys_flushtogui( void)
     if (writesize > 0)
         nwrote = send(sys_guisock, sys_guibuf + sys_guibuftail, writesize, 0);
 
-#if 0   
+#if 0
     if (writesize)
         fprintf(stderr, "wrote %d of %d\n", nwrote, writesize);
 #endif
@@ -775,11 +775,11 @@ static int sys_poll_togui(void) /* returns 1 if did anything */
         /* if the flush wasn't complete, wait. */
     if (sys_guibufhead > sys_guibuftail)
         return (0);
-    
+
         /* check for queued updates */
     if (sys_flushqueue())
         return (1);
-    
+
     return (0);
 }
 
@@ -824,7 +824,7 @@ void sys_unqueuegui(void *client)
     }
     if (!sys_guiqueuehead)
         return;
-    for (gq = sys_guiqueuehead; gq2 = gq->gq_next; gq = gq2)
+    for (gq = sys_guiqueuehead; (gq2 = gq->gq_next); gq = gq2)
         if (gq2->gq_client == client)
     {
         gq->gq_next = gq2->gq_next;
@@ -865,16 +865,15 @@ void glob_watchdog(t_pd *dummy)
 
 #define FIRSTPORTNUM 5400
 
-#define MAXFONTS 21
-static int defaultfontshit[MAXFONTS] = {
-    8, 5, 9, 10, 6, 10, 12, 7, 13, 14, 9, 17, 16, 10, 19, 24, 15, 28,
-        24, 15, 28};
+static int defaultfontshit[] = {
+9, 5, 10, 11, 7, 13, 14, 8, 16, 17, 10, 20, 22, 13, 25, 39, 23, 45,
+17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 int sys_startgui(const char *libdir)
 {
     char cmdbuf[4*MAXPDSTRING];
-    struct sockaddr_in server;
+    struct sockaddr_in server = {0};
     int msgsock;
     char buf[15];
     int len = sizeof(server);
@@ -905,17 +904,17 @@ int sys_startgui(const char *libdir)
 #else
         if (!getcwd(cmdbuf, MAXPDSTRING))
             strcpy(cmdbuf, ".");
-        
+
 #endif
         SETSYMBOL(zz, gensym(cmdbuf));
         for (i = 0; i < (int)NDEFAULTFONT; i++)
             SETFLOAT(zz+i+1, defaultfontshit[i]);
         SETFLOAT(zz+NDEFAULTFONT+1,0);
-        glob_initfromgui(0, 0, 23, zz);
+        glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
     }
     else if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
     {
-        struct sockaddr_in server;
+        struct sockaddr_in server = {0};
         struct hostent *hp;
 #ifdef __APPLE__
             /* sys_guisock might be 1 or 2, which will have offensive results
@@ -936,7 +935,7 @@ int sys_startgui(const char *libdir)
         sys_guisock = socket(AF_INET, SOCK_STREAM, 0);
         if (sys_guisock < 0)
             sys_sockerror("socket");
-        
+
         /* connect socket using hostname provided in command line */
         server.sin_family = AF_INET;
 
@@ -973,7 +972,11 @@ int sys_startgui(const char *libdir)
 
         /* create a socket */
         xsock = socket(AF_INET, SOCK_STREAM, 0);
-        if (xsock < 0) sys_sockerror("socket");
+        if (xsock < 0)
+        {
+            sys_sockerror("socket");
+            return (1);
+        }
         intarg = 1;
         if (setsockopt(xsock, IPPROTO_TCP, TCP_NODELAY,
             &intarg, sizeof(intarg)) < 0)
@@ -981,8 +984,8 @@ int sys_startgui(const char *libdir)
                 post("setsockopt (TCP_NODELAY) failed\n")
 #endif
                     ;
-        
-        
+
+
         server.sin_family = AF_INET;
         server.sin_addr.s_addr = INADDR_ANY;
 
@@ -1060,7 +1063,7 @@ int sys_startgui(const char *libdir)
                     if (stat(wish_paths[i], &statbuf) >= 0)
                         break;
                 }
-                sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n", 
+                sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
                         wish_paths[i], libdir, PDGUIDIR, portno);
             }
 #else /* __APPLE__ */
@@ -1076,7 +1079,7 @@ int sys_startgui(const char *libdir)
             sys_guicmd = cmdbuf;
         }
 
-        if (sys_verbose) 
+        if (sys_verbose)
             fprintf(stderr, "%s", sys_guicmd);
 
         childpid = fork();
@@ -1114,18 +1117,18 @@ int sys_startgui(const char *libdir)
        }
 #else /* NOT _WIN32 */
         /* fprintf(stderr, "%s\n", libdir); */
-        
+
         strcpy(scriptbuf, "\"");
         strcat(scriptbuf, libdir);
         strcat(scriptbuf, "/" PDGUIDIR "pd-gui.tcl\"");
         sys_bashfilename(scriptbuf, scriptbuf);
-        
+
         sprintf(portbuf, "%d", portno);
 
         strcpy(wishbuf, libdir);
         strcat(wishbuf, "/" PDBINDIR WISHAPP);
         sys_bashfilename(wishbuf, wishbuf);
-        
+
         spawnret = _spawnl(P_NOWAIT, wishbuf, WISHAPP, scriptbuf, portbuf, 0);
         if (spawnret < 0)
         {
@@ -1165,7 +1168,7 @@ int sys_startgui(const char *libdir)
     }
     else if (sys_verbose)
         post("not setting real-time priority");
-    
+
     if (sys_hipriority)
     {
             /* To prevent lockup, we fork off a watchdog process with
@@ -1253,7 +1256,7 @@ int sys_startgui(const char *libdir)
             fprintf(stderr, "Waiting for connection request... \n");
         if (listen(xsock, 5) < 0) sys_sockerror("listen");
 
-        sys_guisock = accept(xsock, (struct sockaddr *) &server, 
+        sys_guisock = accept(xsock, (struct sockaddr *) &server,
             (socklen_t *)&len);
 #ifdef OOPS
         sys_closesocket(xsock);
@@ -1282,9 +1285,9 @@ int sys_startgui(const char *libdir)
         sys_set_startup();
                            /* ... and about font, medio APIS, etc */
         sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
-                 PD_MAJOR_VERSION, PD_MINOR_VERSION, 
+                 PD_MAJOR_VERSION, PD_MINOR_VERSION,
                  PD_BUGFIX_VERSION, PD_TEST_VERSION,
-                 buf, buf2, sys_font, sys_fontweight); 
+                 buf, buf2, sys_font, sys_fontweight);
         sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     }
     return (0);
@@ -1323,7 +1326,7 @@ void glob_quit(void *dummy)
         sys_closesocket(sys_guisock);
         sys_rmpollfn(sys_guisock);
     }
-    exit(0); 
+    exit(0);
 }
 
  /* more work needed here - for some reason we can't restart the gui after

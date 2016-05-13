@@ -4,7 +4,7 @@
 # ex: set setl sw=2 sts=2 et
 
 # Search URL:
-# http://puredata.info/search_rss?SearchableText=xtrnl-
+# http://deken.puredata.info/search?name=foobar
 
 # The minimum version of TCL that allows the plugin to run
 package require Tcl 8.4
@@ -17,6 +17,25 @@ package require Tcl 8.4
 package require http 2
 package require pdwindow 0.1
 package require pd_menucommands 0.1
+
+namespace eval ::deken:: {
+    variable version
+}
+
+## only register this plugin if there isn't any newer version already registered
+## (if ::deken::version is defined and is higher than our own version)
+proc ::deken::versioncheck {version} {
+    if { [info exists ::deken::version ] && [string compare $::deken::version $version] >= 0} {
+        ::pdwindow::debug "\[deken\]: the installed version appears to be up-to-date or newer...skipping!\n"
+        ::pdwindow::debug "\[deken\]: \t$::deken::version >= $version\n"
+        return 0
+    }
+    set ::deken::version $version
+    return 1
+}
+
+## put the current version of this package here:
+if { [::deken::versioncheck 0.1] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -42,6 +61,7 @@ proc ::deken::get_writable_dir {paths} {
     set fs [file separator]
     set access [list RDWR CREAT EXCL TRUNC]
     foreach p $paths {
+        #if { [ catch { file mkdir $p } ] } {}
         for {set i 0} {True} {incr i} {
             set tmpfile "${p}${fs}dekentmp.${i}"
             if {![file exists $tmpfile]} {
@@ -110,19 +130,6 @@ proc ::deken::readconfig {paths filename} {
 
 
 ::deken::readconfig $::sys_staticpath deken-plugin.conf
-if { [ info exists ::deken::installpath ] } {
-    set ::deken::installpath [ ::deken::get_writable_dir [list $::deken::installpath ] ]
-} {
-    set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ]
-}
-
-# console message to let them know we're loaded
-# ::pdwindow::post  "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
-if { "$::deken::installpath" == "" } {
-    ::pdwindow::error "deken: No writeable directory found in:\n"
-    foreach p $::sys_staticpath { ::pdwindow::error "\t- $p\n" }
-    ::pdwindow::error "deken: Will not be able to download/install libraries\n"
-}
 
 set ::deken::platform(os) $::tcl_platform(os)
 set ::deken::platform(machine) $::tcl_platform(machine)
@@ -141,7 +148,12 @@ if { "Windows" eq "$::deken::platform(os)" } {
     #if { "amd64" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "x86_64" }
 }
 
-# ::pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
+# console message to let them know we're loaded
+## but only if we are being called as a plugin (not as built-in)
+if { "" != "$::current_plugin_loadpath" } {
+    ::pdwindow::post "deken-plugin.tcl (Pd externals search) in $::current_plugin_loadpath loaded.\n"
+    ::pdwindow::post "Platform detected: $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit\n"
+}
 
 # architectures that can be substituted for eachother
 array set ::deken::architecture_substitutes {}
@@ -170,6 +182,7 @@ proc ::deken::status {msg} {
 proc ::deken::post {msg {tag ""}} {
     variable mytoplevelref
     $mytoplevelref.results insert end "$msg\n" $tag
+    $mytoplevelref.results see end
 }
 proc ::deken::clearpost {} {
     variable mytoplevelref
@@ -188,6 +201,21 @@ proc ::deken::highlightable_posttag {tag} {
     # make sure that the 'highlight' tag is topmost
     $mytoplevelref.results tag raise highlight
 }
+proc ::deken::prompt_installdir {suggestdir} {
+    if { "$suggestdir" == "" } {
+        set installdir [tk_chooseDirectory \
+            -title "Install libraries to directory:"]
+    } else {
+        set installdir [tk_chooseDirectory \
+            -title "Install libraries to directory:" -initialdir $suggestdir]
+    }
+    if { "$installdir" != "" } {
+        set ::deken::installpath $installdir
+    }
+    return $installdir
+}
+
+
 proc ::deken::update_searchbutton {mytoplevel} {
     if { [$mytoplevel.searchbit.entry get] == "" } {
         $mytoplevel.searchbit.button configure -text [_ "Show all" ]
@@ -235,6 +263,8 @@ proc ::deken::create_dialog {mytoplevel} {
     bind $mytoplevel.searchbit.entry <Key-Return> "::deken::initiate_search $mytoplevel"
     bind $mytoplevel.searchbit.entry <KeyRelease> "::deken::update_searchbutton $mytoplevel"
     focus $mytoplevel.searchbit.entry
+    button $mytoplevel.searchbit.button -text [_ "Show all"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
+    pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
     frame $mytoplevel.warning
     pack $mytoplevel.warning -side top -fill x
@@ -245,9 +275,6 @@ proc ::deken::create_dialog {mytoplevel} {
     pack $mytoplevel.status -side bottom -fill x
     label $mytoplevel.status.label -textvariable ::deken::statustext
     pack $mytoplevel.status.label -side left -padx 6
-
-    button $mytoplevel.searchbit.button -text [_ "Show all"] -default active -width 9 -command "::deken::initiate_search $mytoplevel"
-    pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
     scrollbar $mytoplevel.results.ys -orient vertical -command "$mytoplevel.results yview"
@@ -305,19 +332,40 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
 
 # handle a clicked link
 proc ::deken::clicked_link {URL filename} {
-    set ::deken::installpath [tk_chooseDirectory \
-        -initialdir $::deken::installpath -title "Install to directory:"]
     ## make sure that the destination path exists
-    if { "$::deken::installpath" == "" } { set ::deken::installpath [ ::deken::get_writable_dir $::sys_staticpath ] }
-    if { "$::deken::installpath" == "" } {
+    ### if ::deken::installpath is set, use the first writable item
+    ### if not, get a writable item from one of the searchpaths
+    ### if this still doesn't help, ask the user
+    set installdir ""
+    if { [ info exists ::deken::installpath ] } {
+        ## any previous choice?
+        set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ]
+    }
+    if { "$installdir" == "" } {
+        ## search the default paths
+        set installdir [ ::deken::get_writable_dir $::sys_staticpath ]
+    }
+    ## ask the user (and remember the decision)
+    set installdir [::deken::prompt_installdir $installdir]
+    set installdir
+    ## if user didn't choose a directory cancel
+    if { "$installdir" == "" } {
+        ::deken::post "Download canceled" warn
         return
-    } {
-    set fullpkgfile "$::deken::installpath/$filename"
+    }
+    set installdir [ ::deken::get_writable_dir $installdir ]
+    if { "$installdir" == "" } {
+        #::deken::clearpost
+        ::deken::post "Cannot write to directory $installdir" warn
+        ::deken::post "Download canceled" warn
+        return
+    }
+    set fullpkgfile "$installdir/$filename"
     ::deken::clearpost
-    ::deken::post "Commencing downloading of:\n$URL\nInto $::deken::installpath..."
+    ::deken::post "Commencing downloading of:\n$URL\nInto $installdir..."
     ::deken::download_file $URL $fullpkgfile
     set PWD [ pwd ]
-    cd $::deken::installpath
+    cd $installdir
     set success 1
     if { [ string match *.zip $fullpkgfile ] } then {
         if { [ catch { exec unzip -uo $fullpkgfile } stdout ] } {
@@ -334,7 +382,7 @@ proc ::deken::clicked_link {URL filename} {
     }
     cd $PWD
     if { $success > 0 } {
-        ::deken::post "Successfully unzipped $filename into $::deken::installpath.\n"
+        ::deken::post "Successfully unzipped $filename into $installdir.\n"
         catch { exec rm $fullpkgfile }
     } else {
         # Open both the fullpkgfile folder and the zipfile itself
@@ -343,9 +391,8 @@ proc ::deken::clicked_link {URL filename} {
         ::deken::post "Please perform the following steps manually:"
         ::deken::post "1. Unzip $fullpkgfile."
         pd_menucommands::menu_openfile $fullpkgfile
-        ::deken::post "2. Copy the contents into $::deken::installpath.\n"
-        pd_menucommands::menu_openfile $::deken::installpath
-    }
+        ::deken::post "2. Copy the contents into $installdir.\n"
+        pd_menucommands::menu_openfile $installdir
     }
 }
 
@@ -523,92 +570,5 @@ proc ::deken::search::puredata.info {term} {
     return [lsort -dictionary -decreasing -index 5 $searchresults ]
 }
 
-
-## ####################################################################
-## searching apt (if available)
-namespace eval ::deken::apt {
-    namespace export search
-    namespace export install
-    variable distribution
-}
-
-if { [ catch { exec apt-cache -v } _ ] } { } {
-if { [ catch { exec lsb_release -si } ::deken::apt::distribution ] } { unset ::deken::apt::distribution }
-}
-proc ::deken::apt::search {name} {
-    set result []
-    if { [ catch { exec apt-cache madison } _ ] } {
-        ::deken::post "Unable to run 'apt-cache madison'" error
-    } {
-    set name [ string tolower $name ]
-    if { "$name" eq "gem" } {
-        set searchname $name
-    } elseif { "$name" eq "" } {
-        set searchname "^pd-.*"
-    } else {
-        set searchname "^pd-${name}.*"
-    }
-    array unset pkgs
-    array set pkgs {}
-    set io [ open "|apt-cache madison $searchname" r ]
-    while { [ gets $io line ] >= 0 } {
-        #puts $line
-        set llin [ split "$line" "|" ]
-        set pkgname [ string trim [ lindex $llin 0 ] ]
-
-        #if { $pkgname ne $searchname } { continue }
-        set ver_  [ string trim [ lindex $llin 1 ] ]
-        set info_ [ string trim [ lindex $llin 2 ] ]
-        if { "Packages" eq [ lindex $info_ end ] } {
-            set suite [ lindex $info_ 1 ]
-            set arch  [ lindex $info_ 2 ]
-            if { ! [ info exists pkgs($ver_) ] } {
-                set pkgs($ver_) [ list $pkgname $suite $arch ]
-            }
-        }
-    }
-    foreach {v inf} [ array get pkgs ] {
-        set pkgname [ lindex $inf 0 ]
-        set suite   [ lindex $inf 1 ]
-        set arch    [ lindex $inf 2 ]
-        set name $pkgname/$v
-        set cmd "::deken::apt::install ${pkgname}=$v"
-        set match 1
-        set comment "Provided by ${::deken::apt::distribution} (${suite})"
-        set status "${pkgname}_${v}_${arch}.deb"
-
-        lappend result [list $name $cmd $match $comment $status]
-    }
-    }
-    return [lsort -dictionary -decreasing -index 1 $result ]
-}
-
-proc ::deken::apt::install {pkg} {
-    if { [ catch { exec which gksudo } gsudo ] } {
-        ::deken::post "Please install 'gksudo', if you want to install system packages via deken..." error
-    } {
-        ::deken::clearpost
-        set prog "apt-get install -y --show-progress ${pkg}"
-        # for whatever reasons, we cannot have 'deken' as the description
-        # (it will always show $prog instead)
-        set desc deken::apt
-        set cmdline "$gsudo -D $desc -- $prog"
-        #puts $cmdline
-        set io [ open "|${cmdline}" ]
-        while { [ gets $io line ] >= 0 } {
-            ::deken::post "apt: $line"
-        }
-        if { [ catch { close $io } ret ] } {
-            ::deken::post "apt::install failed to install $pkg" error
-            ::deken::post "\tDid you provide the correct password and/or" error
-            ::deken::post "\tis the apt database locked by another process?" error
-            #puts stderr "::deken::apt::install ${options}"
-        }
-    }
-}
-
-# only add this backend, if we are actually running Debian or a derivative
-if { [ info exists ::deken::apt::distribution ] } {
-  ::deken::register ::deken::apt::search
-}
 ::deken::register ::deken::search::puredata.info
+}

@@ -24,7 +24,7 @@ static t_int *sig_tilde_perform(t_int *w)
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     while (n--)
-        *out++ = f; 
+        *out++ = f;
     return (w+4);
 }
 
@@ -33,7 +33,7 @@ static t_int *sig_tilde_perf8(t_int *w)
     t_float f = *(t_float *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    
+
     for (; n; n -= 8, out += 8)
     {
         out[0] = f;
@@ -52,7 +52,7 @@ void dsp_add_scalarcopy(t_float *in, t_sample *out, int n)
 {
     if (n&7)
         dsp_add(sig_tilde_perform, 3, in, out, n);
-    else        
+    else
         dsp_add(sig_tilde_perf8, 3, in, out, n);
 }
 
@@ -166,7 +166,7 @@ static t_int *line_tilde_perf8(t_int *w)
         t_sample f = x->x_value = x->x_target;
         for (; n; n -= 8, out += 8)
         {
-            out[0] = f; out[1] = f; out[2] = f; out[3] = f; 
+            out[0] = f; out[1] = f; out[2] = f; out[3] = f;
             out[4] = f; out[5] = f; out[6] = f; out[7] = f;
         }
     }
@@ -359,7 +359,7 @@ static void vline_tilde_float(t_vline *x, t_float f)
     }
     else
     {
-        for (s1 = x->x_list; s2 = s1->s_next; s1 = s2)
+        for (s1 = x->x_list; (s2 = s1->s_next); s1 = s2)
         {
             if (s2->s_starttime > starttime ||
                 (s2->s_starttime == starttime &&
@@ -412,7 +412,7 @@ static void *vline_tilde_new(void)
 
 static void vline_tilde_setup(void)
 {
-    vline_tilde_class = class_new(gensym("vline~"), vline_tilde_new, 
+    vline_tilde_class = class_new(gensym("vline~"), vline_tilde_new,
         (t_method)vline_tilde_stop, sizeof(t_vline), 0, 0);
     class_addfloat(vline_tilde_class, (t_method)vline_tilde_float);
     class_addmethod(vline_tilde_class, (t_method)vline_tilde_dsp,
@@ -626,7 +626,7 @@ static t_int *env_tilde_perform(t_int *w)
     t_sample *in = (t_sample *)(w[2]);
     int n = (int)(w[3]);
     int count;
-    t_sample *sump; 
+    t_sample *sump;
     in += n;
     for (count = x->x_phase, sump = x->x_sumbuf;
         count < x->x_npoints; count += x->x_realperiod, sump++)
@@ -635,7 +635,7 @@ static t_int *env_tilde_perform(t_int *w)
         t_sample *fp = in;
         t_sample sum = *sump;
         int i;
-        
+
         for (i = 0; i < n; i++)
         {
             fp--;
@@ -763,7 +763,7 @@ static void threshold_tilde_ft1(t_threshold_tilde *x, t_floatarg f)
     x->x_deadwait = 0;
 }
 
-static void threshold_tilde_tick(t_threshold_tilde *x)  
+static void threshold_tilde_tick(t_threshold_tilde *x)
 {
     if (x->x_state)
         outlet_bang(x->x_outlet1);

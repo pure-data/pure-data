@@ -1,69 +1,69 @@
-#N canvas 55 21 1008 526 12;
-#X obj 148 439 dac~;
-#X obj 58 72 line~;
-#X msg 58 49 0 \, 10000 5;
-#X obj 58 118 cos~;
-#X msg 146 70 1;
-#X obj 146 47 loadbang;
-#X obj 58 95 clip~ 0 0.25;
-#X floatatom 173 264 0 0 0;
-#X obj 251 134 line~;
-#X obj 251 157 cos~;
-#X msg 324 54 -0.25 \, 0.25 100;
-#X obj 251 8 loadbang;
-#X msg 251 31 -0.25;
-#X obj 251 203 *~;
-#X obj 58 140 hip~ 5;
-#X floatatom 162 328 0 0 0;
-#X obj 162 373 pack 0 100;
-#X obj 162 396 line~;
-#X obj 148 416 *~;
-#X obj 162 350 dbtorms;
-#X msg 324 77 -0.25 \, 0.25 400;
-#X floatatom 324 145 0 0 0;
-#X obj 324 191 osc~ 440;
-#X obj 324 168 mtof;
-#X msg 324 31 -0.25 \, 0.25 20;
-#X obj 251 180 *~ 0.1;
-#X msg 324 100 -0.25 \, 0.25 1000;
-#X msg 324 122 -0.25 \, 0.25 2000;
-#X obj 324 226 *~;
-#X obj 342 252 *~;
-#X obj 58 439 dac~;
-#X floatatom 68 323 0 0 0;
-#X obj 68 368 pack 0 100;
-#X obj 68 391 line~;
-#X obj 58 416 *~;
-#X obj 68 346 dbtorms;
-#X msg 324 8 0;
-#X obj 308 257 *~;
-#X obj 58 26 metro 2000;
-#X floatatom 58 4 0 0 0;
-#X msg 220 265 bang;
-#X obj 284 322 env~ 32768;
-#X floatatom 284 344 0 0 0;
-#X text 166 244 1 sec;
-#X text 143 226 dB after;
-#X text 220 245 clear;
-#X text 1 51 impulse;
-#X text 362 7 tone;
-#X text 484 31 beeps;
-#X text 428 167 This is an experimental reverberator design composed
+#N canvas 55 22 956 541 12;
+#X obj 167 441 dac~;
+#X obj 70 74 line~;
+#X msg 70 51 0 \, 10000 5;
+#X obj 70 120 cos~;
+#X msg 158 72 1;
+#X obj 158 49 loadbang;
+#X obj 70 97 clip~ 0 0.25;
+#X floatatom 185 266 0 0 0 0 - - -;
+#X obj 263 136 line~;
+#X obj 263 159 cos~;
+#X msg 336 56 -0.25 \, 0.25 100;
+#X obj 263 10 loadbang;
+#X msg 263 33 -0.25;
+#X obj 263 205 *~;
+#X obj 70 142 hip~ 5;
+#X floatatom 181 330 0 0 0 0 - - -;
+#X obj 181 375 pack 0 100;
+#X obj 181 398 line~;
+#X obj 167 418 *~;
+#X obj 181 352 dbtorms;
+#X msg 336 79 -0.25 \, 0.25 400;
+#X floatatom 336 147 0 0 0 0 - - -;
+#X obj 336 193 osc~ 440;
+#X obj 336 170 mtof;
+#X msg 336 33 -0.25 \, 0.25 20;
+#X obj 263 182 *~ 0.1;
+#X msg 336 102 -0.25 \, 0.25 1000;
+#X msg 336 124 -0.25 \, 0.25 2000;
+#X obj 336 228 *~;
+#X obj 354 254 *~;
+#X obj 70 441 dac~;
+#X floatatom 80 325 0 0 0 0 - - -;
+#X obj 80 370 pack 0 100;
+#X obj 80 393 line~;
+#X obj 70 418 *~;
+#X obj 80 348 dbtorms;
+#X msg 336 10 0;
+#X obj 320 259 *~;
+#X obj 70 28 metro 2000;
+#X floatatom 70 6 0 0 0 0 - - -;
+#X msg 232 267 bang;
+#X obj 303 324 env~ 32768;
+#X floatatom 303 346 0 0 0 0 - - -;
+#X text 178 246 1 sec;
+#X text 155 228 dB after;
+#X text 232 247 clear;
+#X text 7 51 impulse;
+#X text 374 9 tone;
+#X text 496 33 beeps;
+#X text 440 169 This is an experimental reverberator design composed
 of a series of allpass filters with exponentially growing delay times.
 Each allpass filter has a gain of 0.7. The reverb time is adjusted
 by adjusting the input gains of the allpass filters. The last unit
 is modified so that its first two "echos" mimic those of an allpass
 but its loop gain depends on reverb time.;
-#X text 430 299 Reverb time is controlled by specifying the dB gain
+#X text 442 301 Reverb time is controlled by specifying the dB gain
 (100 normal) after one second \, so that 100 corresponds to infinite
 reverb time \, 70 to two seconds \, 40 to one second \, and 0 to 0
 ;
-#X text 671 499 modified for Pd version 0.30.;
-#X msg 560 34 \; pd dsp 1;
-#X text 427 475 The rev1~ module eats about 18% of my 300mHz P2 machine.
+#X text 683 501 modified for Pd version 0.30.;
+#X msg 572 36 \; pd dsp 1;
+#X text 439 477 The rev1~ module eats about 18% of my 300mHz P2 machine.
 ;
-#X obj 148 289 rev1~;
-#X text 428 381 The "clear" button impolitely clears out all the delay
+#X obj 167 291 rev1~;
+#X text 440 383 The "clear" button impolitely clears out all the delay
 lines \, You may immediately resume pumping the reverberator \, but
 the input signal should be cleanly enveloped. The output \, too \,
 must be enveloped and may not be opened until 5 msec after the "clear"

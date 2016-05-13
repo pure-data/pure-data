@@ -277,7 +277,7 @@ static void line_float(t_line *x, t_float f)
             x->x_grain = DEFAULTLINEGRAIN;
         clock_delay(x->x_clock,
             (x->x_grain > x->x_in1val ? x->x_in1val : x->x_grain));
-    
+
     }
     else
     {
@@ -526,7 +526,7 @@ static void hang_tick(t_hang *h)
     int i;
     union word *w;
     if (x->x_hang == h) x->x_hang = h->h_next;
-    else for (h2 = x->x_hang; h3 = h2->h_next; h2 = h3)
+    else for (h2 = x->x_hang; (h3 = h2->h_next); h2 = h3)
     {
         if (h3 == h)
         {
@@ -546,6 +546,7 @@ static void hang_tick(t_hang *h)
                 outlet_pointer(p->p_outlet, w->w_gpointer);
             else pd_error(x, "pipe: stale pointer");
             break;
+        default: break;
         }
     }
     hang_free(h);
@@ -585,6 +586,7 @@ static void pipe_list(t_pipe *x, t_symbol *s, int ac, t_atom *av)
                 if (gp->gp_stub) gp->gp_stub->gs_refcount++;
             }
             gp++;
+        default: break;
         }
     }
     for (i = 0, gp = x->x_gp, gp2 = h->h_gp, p = x->x_vec, w = h->h_vec;
@@ -613,7 +615,7 @@ static void pipe_flush(t_pipe *x)
 static void pipe_clear(t_pipe *x)
 {
     t_hang *hang;
-    while (hang = x->x_hang)
+    while ((hang = x->x_hang))
     {
         x->x_hang = hang->h_next;
         hang_free(hang);
@@ -628,7 +630,7 @@ static void pipe_free(t_pipe *x)
 
 static void pipe_setup(void)
 {
-    pipe_class = class_new(gensym("pipe"), 
+    pipe_class = class_new(gensym("pipe"),
         (t_newmethod)pipe_new, (t_method)pipe_free,
         sizeof(t_pipe), 0, A_GIMME, 0);
     class_addlist(pipe_class, pipe_list);

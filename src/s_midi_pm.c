@@ -3,7 +3,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
 
-   this file calls portmidi to do MIDI I/O for MSW and Mac OSX. 
+   this file calls portmidi to do MIDI I/O for MSW and Mac OSX.
 
 */
 
@@ -55,7 +55,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
     int i = 0, j, devno;
     int n = 0;
     PmError err;
-    
+
     Pt_Start(1, 0, 0); /* start a timer with millisecond accuracy */
 
     mac_nmidiindev = 0;
@@ -73,8 +73,8 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                     if (err)
                         post("could not open midi input %d (%s): %s",
                             j, info->name, Pm_GetErrorText(err));
-        
-                    else        
+
+                    else
                     {
                         if (sys_verbose)
                             post("Midi Input (%s) opened.",
@@ -85,7 +85,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                 devno++;
             }
         }
-    }   
+    }
 
     mac_nmidioutdev = 0;
     for (i = 0; i < nmidiout; i++)
@@ -103,7 +103,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                     if (err)
                         post("could not open midi output %d (%s): %s",
                             j, info->name, Pm_GetErrorText(err));
-                    else        
+                    else
                     {
                         if (sys_verbose)
                             post("Midi Output (%s) opened.",
@@ -114,7 +114,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                 devno++;
             }
         }
-    }   
+    }
 }
 
 void sys_close_midi( void)
@@ -125,7 +125,7 @@ void sys_close_midi( void)
     mac_nmidiindev = 0;
     for (i = 0; i < mac_nmidioutdev; i++)
         Pm_Close(mac_midioutdevlist[i]);
-    mac_nmidioutdev = 0; 
+    mac_nmidioutdev = 0;
 }
 
 void sys_putmidimess(int portno, int a, int b, int c)
@@ -235,7 +235,7 @@ void sys_putmidibyte(int portno, int byte)
 int nd_sysex_mode=0;
 
 /* send in 4 bytes of sysex data. if one of the bytes is 0xF7 (sysex end)
-    stop and unset nd_sysex_mode */ 
+    stop and unset nd_sysex_mode */
 void nd_sysex_inword(int midiindev, int status, int data1, int data2, int data3)
 {
     if (nd_sysex_mode) {
@@ -286,8 +286,8 @@ void sys_poll_midi(void)
                     nd_sysex_inword(i, status, data1, data2, data3);
                 else switch (msgtype)
                 {
-                case MIDINOTEOFF: 
-                case MIDINOTEON: 
+                case MIDINOTEOFF:
+                case MIDINOTEON:
                 case MIDIPOLYTOUCH:
                 case MIDICONTROLCHANGE:
                 case MIDIPITCHBEND:
@@ -295,7 +295,7 @@ void sys_poll_midi(void)
                     sys_midibytein(i, status);
                     sys_midibytein(i, data1);
                     sys_midibytein(i, data2);
-                    break; 
+                    break;
                 case MIDIPROGRAMCHANGE:
                 case MIDICHANNELTOUCH:
                 case MIDITIMECODE:
@@ -306,7 +306,7 @@ void sys_poll_midi(void)
                 case MIDISTARTSYSEX:
                     nd_sysex_mode=1;
                     nd_sysex_inword(i, status, data1, data2, data3);
-                    break; 
+                    break;
                 default:
                     sys_midibytein(i, status);
                     break;

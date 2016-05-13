@@ -80,11 +80,11 @@ void clock_set(t_clock *x, double setticks)
     if (setticks < pd_this->pd_systime) setticks = pd_this->pd_systime;
     clock_unset(x);
     x->c_settime = setticks;
-    if (pd_this->pd_clock_setlist && 
+    if (pd_this->pd_clock_setlist &&
         pd_this->pd_clock_setlist->c_settime <= setticks)
     {
         t_clock *cbefore, *cafter;
-        for (cbefore = pd_this->pd_clock_setlist, 
+        for (cbefore = pd_this->pd_clock_setlist,
             cafter = pd_this->pd_clock_setlist->c_next;
                 cbefore; cbefore = cafter, cafter = cbefore->c_next)
         {
@@ -103,7 +103,7 @@ void clock_set(t_clock *x, double setticks)
 void clock_delay(t_clock *x, double delaytime)
 {
     clock_set(x, (x->c_unit > 0 ?
-        pd_this->pd_systime + x->c_unit * delaytime : 
+        pd_this->pd_systime + x->c_unit * delaytime :
             pd_this->pd_systime - (x->c_unit*(TIMEUNITPERSECOND/sys_dacsr)) * delaytime));
 }
 
@@ -119,7 +119,7 @@ void clock_setunit(t_clock *x, double timeunit, int sampflag)
     if ((sampflag && (timeunit == -x->c_unit)) ||
         (!sampflag && (timeunit == x->c_unit * TIMEUNITPERMSEC)))
             return;
-    
+
         /* figure out time left in the units we were in */
     timeleft = (x->c_settime < 0 ? -1 :
         (x->c_settime - pd_this->pd_systime)/((x->c_unit > 0)? x->c_unit :
@@ -225,7 +225,7 @@ int sys_addhist(int phase)
     int msec = (newtime - sys_histtime) * 1000.;
     for (j = NBIN-1; j >= 0; j--)
     {
-        if (msec >= sys_bin[j]) 
+        if (msec >= sys_bin[j])
         {
             sys_histogram[phasewas][j]++;
             break;
@@ -272,7 +272,7 @@ void glob_audiostatus(void)
         errtype = oss_resync[nresyncphase].r_error;
         if (errtype < 0 || errtype > 4)
             errtype = 0;
-        
+
         post("%9.2f\t%s",
             (sched_diddsp - oss_resync[nresyncphase].r_ntick)
                 * ((double)sys_schedblocksize) / sys_dacsr,
@@ -400,7 +400,7 @@ void sched_set_using_audio(int flag)
             sched_useaudio == SCHED_AUDIO_CALLBACK)
                 post("sorry, can't turn off callbacks yet; restart Pd");
                     /* not right yet! */
-        
+
     sys_time_per_dsp_tick = (TIMEUNITPERSECOND) *
         ((double)sys_schedblocksize) / sys_dacsr;
     sys_vgui("pdtk_pd_audio %s\n", flag ? "on" : "off");
@@ -411,7 +411,7 @@ void sched_tick( void)
 {
     double next_sys_time = pd_this->pd_systime + sys_time_per_dsp_tick;
     int countdown = 5000;
-    while (pd_this->pd_clock_setlist && 
+    while (pd_this->pd_clock_setlist &&
         pd_this->pd_clock_setlist->c_settime < next_sys_time)
     {
         t_clock *c = pd_this->pd_clock_setlist;
@@ -479,8 +479,8 @@ static void m_pollingscheduler( void)
         if (sched_useaudio != SCHED_AUDIO_NONE)
         {
 #if THREAD_LOCKING
-            /* T.Grill - send_dacs may sleep -> 
-                unlock thread lock make that time available 
+            /* T.Grill - send_dacs may sleep ->
+                unlock thread lock make that time available
                 - could messaging do any harm while sys_send_dacs is running?
             */
             sys_unlock();

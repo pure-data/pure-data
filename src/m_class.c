@@ -231,7 +231,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_floatsignalin = 0;
     c->c_externdir = class_extern_dir;
     c->c_savefn = (typeflag == CLASS_PATCHABLE ? text_save : class_nosavefn);
-#if 0 
+#if 0
     post("class: %s", c->c_name->s_name);
 #endif
     return (c);
@@ -242,7 +242,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     can belong to, but this won't be used until the newmethod is actually
     called back (and the new method explicitly takes care of this.) */
 
-void class_addcreator(t_newmethod newmethod, t_symbol *s, 
+void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...)
 {
     va_list ap;
@@ -262,7 +262,7 @@ void class_addcreator(t_newmethod newmethod, t_symbol *s,
         vp++;
         count++;
         *vp = va_arg(ap, t_atomtype);
-    } 
+    }
     va_end(ap);
     class_addmethod(pd_objectmaker, (t_method)newmethod, s,
         vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
@@ -275,7 +275,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     t_methodentry *m;
     t_atomtype argtype = arg1;
     int nargs;
-    
+
     va_start(ap, arg1);
         /* "signal" method specifies that we take audio signals but
         that we don't want automatic float to signal conversion.  This
@@ -323,9 +323,9 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
             snprintf(nbuf, 80, "%s_aliased", sel->s_name);
             c->c_methods[i].me_name = gensym(nbuf);
             if (c == pd_objectmaker)
-                post("warning: class '%s' overwritten; old one renamed '%s'",
+                verbose(1, "warning: class '%s' overwritten; old one renamed '%s'",
                     sel->s_name, nbuf);
-            else post("warning: old method '%s' for class '%s' renamed '%s'",
+            else verbose(1, "warning: old method '%s' for class '%s' renamed '%s'",
                 sel->s_name, c->c_name->s_name, nbuf);
         }
         c->c_methods = t_resizebytes(c->c_methods,
@@ -344,9 +344,9 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
         if (argtype != A_NULL)
             error("%s_%s: only 5 arguments are typecheckable; use A_GIMME",
                 c->c_name->s_name, sel->s_name);
-        va_end(ap);
         m->me_arg[nargs] = A_NULL;
     }
+    va_end(ap);
     return;
 phooey:
     bug("class_addmethod: %s_%s: bad argument types\n",
@@ -500,7 +500,7 @@ t_symbol *dogensym(const char *s, t_symbol *oldsym)
         s2++;
     }
     sym1 = symhash + (hash & (HASHSIZE-1));
-    while (sym2 = *sym1)
+    while ((sym2 = *sym1))
     {
         if (!strcmp(sym2->s_name, s)) return(sym2);
         sym1 = &sym2->s_next;
@@ -562,29 +562,6 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     class_loadsym = 0;
-    /* for class/class.pd support, to match class/class.pd_linux  */
-    snprintf(classslashclass, MAXPDSTRING, "%s/%s", s->s_name, s->s_name);
-    if ((fd = canvas_open(canvas_getcurrent(), s->s_name, ".pd",
-        dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-            (fd = canvas_open(canvas_getcurrent(), s->s_name, ".pat",
-                dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-               (fd = canvas_open(canvas_getcurrent(), classslashclass, ".pd",
-                    dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
-    {
-        close (fd);
-        if (!pd_setloadingabstraction(s))
-        {
-            t_pd *was = s__X.s_thing;
-            canvas_setargs(argc, argv);
-            binbuf_evalfile(gensym(nameptr), gensym(dirbuf));
-            if (s__X.s_thing && was != s__X.s_thing)
-                canvas_popabstraction((t_canvas *)(s__X.s_thing));
-            else s__X.s_thing = was;
-            canvas_setargs(0, 0);
-        }
-        else error("%s: can't load abstraction within itself\n", s->s_name);
-    }
-    else newest = 0;
 }
 
 t_symbol  s_pointer =   {"pointer", 0, 0};
@@ -608,7 +585,7 @@ void mess_init(void)
     t_symbol **sp;
     int i;
 
-    if (pd_objectmaker) return;    
+    if (pd_objectmaker) return;
     for (i = sizeof(symlist)/sizeof(*symlist), sp = symlist; i--; sp++)
         (void) dogensym((*sp)->s_name, *sp);
     pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
@@ -658,7 +635,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     t_floatarg ad[MAXPDARG+1], *dp = ad;
     int narg = 0;
     t_pd *bonzo;
-    
+
         /* check for messages that are handled by fixed slots in the class
         structure.  We don't catch "pointer" though so that sending "pointer"
         to pd_objectmaker doesn't require that we supply a pointer value. */
@@ -701,7 +678,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
         }
         if (argc > MAXPDARG) argc = MAXPDARG;
         if (x != &pd_objectmaker) *(ap++) = (t_int)x, narg++;
-        while (wanttype = *wp++)
+        while ((wanttype = *wp++))
         {
             switch (wanttype)
             {
@@ -812,7 +789,7 @@ void pd_vmess(t_pd *x, t_symbol *sel, char *fmt, ...)
         {
         case 'f': SETFLOAT(at, va_arg(ap, double)); break;
         case 's': SETSYMBOL(at, va_arg(ap, t_symbol *)); break;
-        case 'i': SETFLOAT(at, va_arg(ap, t_int)); break;       
+        case 'i': SETFLOAT(at, va_arg(ap, t_int)); break;
         case 'p': SETPOINTER(at, va_arg(ap, t_gpointer *)); break;
         default: goto done;
         }

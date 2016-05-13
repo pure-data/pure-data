@@ -65,7 +65,7 @@ FunctionEnd
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
-InstallDir "$PROGRAMFILES\Pure Data"
+InstallDir "$PROGRAMFILES\Pd"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -79,10 +79,10 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
   Section "${COMPONENT_STARTMENU_TEXT}" StartMenu
     SetOutPath $INSTDIR
     WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-    CreateDirectory "$SMPROGRAMS\Pure Data"
-    CreateShortCut "$SMPROGRAMS\Pure Data\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-    CreateShortCut "$SMPROGRAMS\Pure Data\Uninstall.lnk" "$INSTDIR\uninst.exe"
-    CreateShortCut "$SMPROGRAMS\Pure Data\Pd.lnk" "$INSTDIR\bin\pd.exe"
+    CreateDirectory "$SMPROGRAMS\Pd"
+    CreateShortCut "$SMPROGRAMS\Pd\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+    CreateShortCut "$SMPROGRAMS\Pd\Uninstall.lnk" "$INSTDIR\uninst.exe"
+    CreateShortCut "$SMPROGRAMS\Pd\Pd.lnk" "$INSTDIR\bin\pd.exe"
   SectionEnd
 
   Section "${COMPONENT_DESKTOPSHORTCUT_TEXT}" DesktopShortcut
@@ -131,10 +131,10 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$SMPROGRAMS\Pure Data\Uninstall.lnk"
-  Delete "$SMPROGRAMS\Pure Data\Website.lnk"
-  Delete "$SMPROGRAMS\Pure Data\Pd.lnk"
-  RMDir "$SMPROGRAMS\Pure Data"
+  Delete "$SMPROGRAMS\Pd\Uninstall.lnk"
+  Delete "$SMPROGRAMS\Pd\Website.lnk"
+  Delete "$SMPROGRAMS\Pd\Pd.lnk"
+  RMDir "$SMPROGRAMS\Pd"
   Delete "$DESKTOP\Pd.lnk"
 
   !include "/tmp/uninstall_files_list.nsh"

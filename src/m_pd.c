@@ -6,13 +6,14 @@
 #include <string.h>
 #include "m_pd.h"
 #include "m_imp.h"
+#include "g_canvas.h"   /* just for LB_LOAD */
 
     /* FIXME no out-of-memory testing yet! */
 
 t_pd *pd_new(t_class *c)
 {
     t_pd *x;
-    if (!c) 
+    if (!c)
         bug ("pd_new: apparently called before setup routine");
     x = (t_pd *)t_getbytes(c->c_size);
     *x = c;
@@ -165,7 +166,7 @@ void pd_unbind(t_pd *x, t_symbol *s)
             b->b_list = e->e_next;
             freebytes(e, sizeof(t_bindelem));
         }
-        else for (e = b->b_list; e2 = e->e_next; e = e2)
+        else for (e = b->b_list; (e2 = e->e_next); e = e2)
             if (e2->e_who == x)
         {
             e->e_next = e2->e_next;
@@ -185,7 +186,7 @@ void pd_unbind(t_pd *x, t_symbol *s)
 t_pd *pd_findbyclass(t_symbol *s, t_class *c)
 {
     t_pd *x = 0;
-    
+
     if (!s->s_thing) return (0);
     if (*s->s_thing == c) return (s->s_thing);
     if (*s->s_thing == bindlist_class)
@@ -255,10 +256,10 @@ void pd_popsym(t_pd *x)
     }
 }
 
-void pd_doloadbang(void)
+void pd_doloadbang( void)
 {
     if (lastpopped)
-        pd_vmess(lastpopped, gensym("loadbang"), "");
+        pd_vmess(lastpopped, gensym("loadbang"), "f", LB_LOAD);
     lastpopped = 0;
 }
 
@@ -298,7 +299,8 @@ t_pdinstance *pd_this;
 static t_symbol *midi_gensym(const char *prefix, const char *name)
 {
     char buf[80];
-    strcpy(buf, prefix);
+    strncpy(buf, prefix, 79);
+    buf[79] = 0;
     strncat(buf, name, 79 - strlen(buf));
     return (gensym(buf));
 }

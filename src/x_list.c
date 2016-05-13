@@ -3,16 +3,15 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include "m_pd.h"
-/* #include <string.h> */
-
-#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
-# include <alloca.h>        /* linux, mac, mingw, cygwin */
-#elif defined _MSC_VER
-# include <malloc.h>        /* MSVC */
-#else
-# include <stddef.h>        /* BSDs for example */
-#endif                      /* end alloca() ifdef nonsense */
 #include <string.h>
+
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
+#else
+# include <stdlib.h> /* BSDs for example */
+#endif
 
 extern t_pd *newest;
 
@@ -26,7 +25,7 @@ extern t_pd *newest;
 
     list append - append a list to another
     list prepend - prepend a list to another
-    list split - first n elements to first outlet, rest to second outlet 
+    list split - first n elements to first outlet, rest to second outlet
     list trim - trim off "list" selector
     list length - output number of items in list
     list fromsymbol - "explode" a symbol into a list of character codes
@@ -144,7 +143,7 @@ static void alist_anything(t_alist *x, t_symbol *s, int argc, t_atom *argv)
         x->l_vec[i+1].l_a = argv[i];
         if (x->l_vec[i+1].l_a.a_type == A_POINTER)
         {
-            x->l_npointer++;            
+            x->l_npointer++;
             gpointer_copy(x->l_vec[i+1].l_a.a_w.w_gpointer, &x->l_vec[i+1].l_p);
             x->l_vec[i+1].l_a.a_w.w_gpointer = &x->l_vec[i+1].l_p;
         }
@@ -594,7 +593,7 @@ static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             newest = list_fromsymbol_new();
         else if (s2 == gensym("tosymbol"))
             newest = list_tosymbol_new();
-        else 
+        else
         {
             error("list %s: unknown function", s2->s_name);
             newest = 0;

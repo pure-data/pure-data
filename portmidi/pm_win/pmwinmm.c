@@ -38,16 +38,12 @@
 
 /* callback routines */
 static void CALLBACK winmm_in_callback(HMIDIIN hMidiIn,
-                                       WORD wMsg, DWORD dwInstance, 
-                                       DWORD dwParam1, DWORD dwParam2);
+                                       UINT wMsg, DWORD_PTR dwInstance, 
+                                       DWORD_PTR dwParam1, DWORD_PTR dwParam2);
 static void CALLBACK winmm_streamout_callback(HMIDIOUT hmo, UINT wMsg,
-                                              DWORD dwInstance, DWORD dwParam1, 
-                                              DWORD dwParam2);
-#ifdef USE_SYSEX_BUFFERS
-static void CALLBACK winmm_out_callback(HMIDIOUT hmo, UINT wMsg,
-                                        DWORD dwInstance, DWORD dwParam1, 
-                                        DWORD dwParam2);
-#endif
+                                              DWORD_PTR dwInstance, 
+                                              DWORD_PTR dwParam1,
+                                              DWORD_PTR dwParam2);
 
 extern pm_fns_node pm_winmm_in_dictionary;
 extern pm_fns_node pm_winmm_out_dictionary;
@@ -97,10 +93,6 @@ The following constants help to represent these design parameters:
 #define MIDIHDR_SYSEX_BUFFER_LENGTH(x) ((x) + sizeof(long)*3)
 /* A MIDIHDR with a sysex message is the buffer length plus the header size */
 #define MIDIHDR_SYSEX_SIZE(x) (MIDIHDR_SYSEX_BUFFER_LENGTH(x) + sizeof(MIDIHDR))
-#ifdef USE_SYSEX_BUFFERS
-/* Size of a MIDIHDR with a buffer contaning multiple MIDIEVENT structures */
-#define MIDIHDR_SIZE(x) ((x) + sizeof(MIDIHDR))
-#endif
 
 /*
 ==============================================================================
@@ -133,13 +125,6 @@ typedef struct midiwinmm_struct {
     int num_buffers;        /* how many buffers allocated in buffers array */
     int next_buffer;        /* index of next buffer to send */
     HANDLE buffer_signal;   /* used to wait for buffer to become free */
-#ifdef USE_SYSEX_BUFFERS
-    /* sysex buffers will be allocated only when
-     * a sysex message is sent. The size of the buffer is fixed.
-     */
-    LPMIDIHDR sysex_buffers[NUM_SYSEX_BUFFERS]; /* pool of buffers for sysex data */
-    int next_sysex_buffer;      /* index of next sysexbuffer to send */
-#endif
     unsigned long last_time;    /* last output time */
     int first_message;          /* flag: treat first message differently */
     int sysex_mode;             /* middle of sending sysex */
@@ -260,6 +245,7 @@ static unsigned int winmm_has_host_error(PmInternal * midi)
  */
 static int str_copy_len(char *dst, char *src, int len)
 {
+    // Note: Visual C will suggest using a non-portable strncpy_s here
     strncpy(dst, src, len);
     /* just in case suffex is greater then len, terminate with zero */
     dst[len - 1] = 0;
@@ -319,22 +305,6 @@ static MIDIHDR *allocate_buffer(long data_size)
     return hdr;
 }
 
-#ifdef USE_SYSEX_BUFFERS
-static MIDIHDR *allocate_sysex_buffer(long data_size)
-{
-    /* we're actually allocating more than data_size because the buffer 
-     * will include the MIDIEVENT header in addition to the data 
-     */
-    LPMIDIHDR hdr = (LPMIDIHDR) pm_alloc(MIDIHDR_SYSEX_SIZE(data_size));
-    MIDIEVENT *evt;
-    if (!hdr) return NULL;
-    evt = (MIDIEVENT *) (hdr + 1); /* place MIDIEVENT after header */
-    hdr->lpData = (LPSTR) evt;
-    hdr->dwFlags = 0;
-    hdr->dwUser = 0;
-    return hdr;
-}
-#endif
 
 static PmError allocate_buffers(midiwinmm_type m, long data_size, long count)
 {
@@ -358,56 +328,6 @@ static PmError allocate_buffers(midiwinmm_type m, long data_size, long count)
     return pmNoError;
 }
 
-#ifdef USE_SYSEX_BUFFERS
-static PmError allocate_sysex_buffers(midiwinmm_type m, long data_size)
-{
-    PmError rslt = pmNoError;
-    /* sysex_buffers is an array of count pointers to MIDIHDR/MIDIEVENT struct */
-    int i;
-    for (i = 0; i < NUM_SYSEX_BUFFERS; i++) {
-        LPMIDIHDR hdr = allocate_sysex_buffer(data_size);
-
-        if (!hdr) rslt = pmInsufficientMemory;
-        m->sysex_buffers[i] = hdr; /* this may be NULL if allocation fails */
-        hdr->dwFlags = 0; /* mark as free */
-    }
-    return rslt;
-}
-#endif
-
-#ifdef USE_SYSEX_BUFFERS
-static LPMIDIHDR get_free_sysex_buffer(PmInternal *midi)
-{
-    LPMIDIHDR r = NULL;
-    midiwinmm_type m = (midiwinmm_type) midi->descriptor;
-    if (!m->sysex_buffers[0]) {
-        if (allocate_sysex_buffers(m, SYSEX_BYTES_PER_BUFFER)) {
-            return NULL;
-        }
-    }
-    /* busy wait until we find a free buffer */
-    while (TRUE) {
-        int i;
-        for (i = 0; i < NUM_SYSEX_BUFFERS; i++) {
-            /* cycle through buffers, modulo NUM_SYSEX_BUFFERS */
-            m->next_sysex_buffer++;
-            if (m->next_sysex_buffer >= NUM_SYSEX_BUFFERS) m->next_sysex_buffer = 0;
-            r = m->sysex_buffers[m->next_sysex_buffer];
-            if ((r->dwFlags & MHDR_PREPARED) == 0) goto found_sysex_buffer;
-        }
-        /* after scanning every buffer and not finding anything, block */
-        if (WaitForSingleObject(m->buffer_signal, 1000) == WAIT_TIMEOUT) {
-#ifdef DEBUG
-            printf("PortMidi warning: get_free_sysex_buffer() wait timed out after 1000ms\n");
-#endif
-        }
-    }
-found_sysex_buffer:
-    r->dwBytesRecorded = 0;
-    r->dwBufferLength = 0; /* changed to correct value later */
-    return r;
-}
-#endif
 
 static LPMIDIHDR get_free_output_buffer(PmInternal *midi)
 {
@@ -561,11 +481,6 @@ static PmError winmm_in_open(PmInternal *midi, void *driverInfo)
     m->buffers_expanded = 0; /* not used for input */
     m->next_buffer = 0; /* not used for input */
     m->buffer_signal = 0; /* not used for input */
-#ifdef USE_SYSEX_BUFFERS
-    for (i = 0; i < NUM_SYSEX_BUFFERS; i++) 
-        m->sysex_buffers[i] = NULL; /* not used for input */
-    m->next_sysex_buffer = 0; /* not used for input */
-#endif
     m->last_time = 0;
     m->first_message = TRUE; /* not used for input */
     m->sysex_mode = FALSE;
@@ -665,11 +580,11 @@ static PmError winmm_in_close(PmInternal *midi)
 
 /* Callback function executed via midiInput SW interrupt (via midiInOpen). */
 static void FAR PASCAL winmm_in_callback(
-    HMIDIIN hMidiIn,    /* midiInput device Handle */
-    WORD wMsg,          /* midi msg */
-    DWORD dwInstance,   /* application data */
-    DWORD dwParam1,     /* MIDI data */
-    DWORD dwParam2)    /* device timestamp (wrt most recent midiInStart) */
+    HMIDIIN hMidiIn,       /* midiInput device Handle */
+    UINT wMsg,             /* midi msg */
+    DWORD_PTR dwInstance,  /* application data */
+    DWORD_PTR dwParam1,    /* MIDI data */
+    DWORD_PTR dwParam2)    /* device timestamp (wrt most recent midiInStart) */
 {
     static int entry = 0;
     PmInternal *midi = (PmInternal *) dwInstance;
@@ -688,7 +603,6 @@ static void FAR PASCAL winmm_in_callback(
          * hardware interrupt? -- but I've seen reentrant behavior 
          * using a debugger, so it happens.
          */
-        long new_driver_time;
         EnterCriticalSection(&m->lock);
 
         /* dwParam1 is MIDI data received, packed into DWORD w/ 1st byte of
@@ -696,8 +610,6 @@ static void FAR PASCAL winmm_in_callback(
            dwParam2 is time message received by input device driver, specified
             in [ms] from when midiInStart called.
            each message is expanded to include the status byte */
-
-        new_driver_time = dwParam2;
 
         if ((dwParam1 & 0x80) == 0) {
             /* not a status byte -- ignore it. This happened running the
@@ -709,8 +621,8 @@ static void FAR PASCAL winmm_in_callback(
             PmEvent event;
             if (midi->time_proc)
                 dwParam2 = (*midi->time_proc)(midi->time_info);
-            event.timestamp = dwParam2;
-            event.message = dwParam1;
+            event.timestamp = (PmTimestamp)dwParam2;
+            event.message = (PmMessage)dwParam1;
             pm_read_short(midi, &event);
         }
         LeaveCriticalSection(&m->lock);
@@ -731,7 +643,7 @@ static void FAR PASCAL winmm_in_callback(
         /* assume yes and iterate through them */
         while (remaining > 0) {
             unsigned int amt = pm_read_bytes(midi, data + processed, 
-                                             remaining, dwParam2);
+                                             remaining, (PmTimestamp)dwParam2);
             remaining -= amt;
             processed += amt;
         }
@@ -840,11 +752,6 @@ static PmError winmm_out_open(PmInternal *midi, void *driverInfo)
     m->max_buffers = 0;
     m->buffers_expanded = FALSE;
     m->next_buffer = 0;
-#ifdef USE_SYSEX_BUFFERS
-    m->sysex_buffers[0] = NULL;
-    m->sysex_buffers[1] = NULL;
-    m->next_sysex_buffer = 0;
-#endif
     m->last_time = 0;
     m->first_message = TRUE; /* we treat first message as special case */
     m->sysex_mode = FALSE;
@@ -958,12 +865,6 @@ static void winmm_out_delete(PmInternal *midi)
         m->num_buffers = 0;
         pm_free(m->buffers);
         m->max_buffers = 0;
-#ifdef USE_SYSEX_BUFFERS
-        /* free sysex buffers */
-        for (i = 0; i < NUM_SYSEX_BUFFERS; i++) {
-            if (m->sysex_buffers[i]) pm_free(m->sysex_buffers[i]);
-        }
-#endif
     }
     midi->descriptor = NULL;
     pm_free(m); /* delete */
@@ -1038,72 +939,6 @@ static PmError winmm_write_flush(PmInternal *midi, PmTimestamp timestamp)
     }
     return pmNoError;
 }
-
-
-
-#ifdef GARBAGE
-static PmError winmm_write_sysex_byte(PmInternal *midi, unsigned char byte)
-{
-    midiwinmm_type m = (midiwinmm_type) midi->descriptor;
-    unsigned char *msg_buffer;
-
-    /* at the beginning of sysex, m->hdr is NULL */
-    if (!m->hdr) { /* allocate a buffer if none allocated yet */
-        m->hdr = get_free_output_buffer(midi);
-        if (!m->hdr) return pmInsufficientMemory;
-        m->sysex_byte_count = 0;
-    }
-    /* figure out where to write byte */
-    msg_buffer = (unsigned char *) (m->hdr->lpData);
-    assert(m->hdr->lpData == (char *) (m->hdr + 1));
-
-    /* check for overflow */
-    if (m->sysex_byte_count >= m->hdr->dwBufferLength) {
-        /* allocate a bigger message -- double it every time */
-        LPMIDIHDR big = allocate_buffer(m->sysex_byte_count * 2);
-        /* printf("expand to %d bytes\n", m->sysex_byte_count * 2); */
-        if (!big) return pmInsufficientMemory;
-        m->error = midiOutPrepareHeader(m->handle.out, big,
-                                        sizeof(MIDIHDR));
-        if (m->error) {
-            m->hdr = NULL;
-            return pmHostError;
-        }
-        memcpy(big->lpData, msg_buffer, m->sysex_byte_count);
-        msg_buffer = (unsigned char *) (big->lpData);
-        if (m->buffers[0] == m->hdr) {
-            m->buffers[0] = big;
-            pm_free(m->hdr);
-            /* printf("freed m->hdr\n"); */
-        } else if (m->buffers[1] == m->hdr) {
-            m->buffers[1] = big;
-            pm_free(m->hdr);
-            /* printf("freed m->hdr\n"); */
-        }
-        m->hdr = big;
-    }
-
-    /* append byte to message */
-    msg_buffer[m->sysex_byte_count++] = byte;
-
-    /* see if we have a complete message */
-    if (byte == MIDI_EOX) {
-        m->hdr->dwBytesRecorded = m->sysex_byte_count;
-        /*
-        { int i; int len = m->hdr->dwBytesRecorded;
-          printf("OutLongMsg %d ", len);
-          for (i = 0; i < len; i++) {
-              printf("%2x ", msg_buffer[i]);
-          }
-        }
-        */
-        m->error = midiOutLongMsg(m->handle.out, m->hdr, sizeof(MIDIHDR));
-        m->hdr = NULL; /* stop using this message buffer */
-        if (m->error) return pmHostError;
-    }
-    return pmNoError;
-}
-#endif
 
 
 static PmError winmm_write_short(PmInternal *midi, PmEvent *event)
@@ -1247,27 +1082,6 @@ static PmError winmm_write_byte(PmInternal *midi, unsigned char byte,
     return rslt;
 }
 
-#ifdef EXPANDING_SYSEX_BUFFERS
-note: this code is here as an aid in case you want sysex buffers
-      to expand to hold large messages completely. If so, you
-      will want to change SYSEX_BYTES_PER_BUFFER above to some
-      variable that remembers the buffer size. A good place to 
-      put this value would be in the hdr->dwUser field.
-
-            rslt = resize_sysex_buffer(midi, m->sysex_byte_count, 
-                                       m->sysex_byte_count * 2);
-
-            if (rslt == pmBufferMaxSize) /* if the buffer can't be resized */
-#endif
-#ifdef EXPANDING_SYSEX_BUFFERS
-            int bytesRecorded = hdr->dwBytesRecorded; /* this field gets wiped out, so we'll save it */
-            rslt = resize_sysex_buffer(midi, bytesRecorded, 2 * bytesRecorded);
-            hdr->dwBytesRecorded = bytesRecorded;
-
-            if (rslt == pmBufferMaxSize) /* if buffer can't be resized */
-#endif
-
-
 
 static PmTimestamp winmm_synchronize(PmInternal *midi)
 {
@@ -1295,40 +1109,10 @@ static PmTimestamp winmm_synchronize(PmInternal *midi)
     return real_time;
 }
 
-#ifdef USE_SYSEX_BUFFERS
-/* winmm_out_callback -- recycle sysex buffers */
-static void CALLBACK winmm_out_callback(HMIDIOUT hmo, UINT wMsg,
-                                        DWORD dwInstance, DWORD dwParam1, 
-                                        DWORD dwParam2)
-{
-    PmInternal *midi = (PmInternal *) dwInstance;
-    midiwinmm_type m = (midiwinmm_type) midi->descriptor;
-    LPMIDIHDR hdr = (LPMIDIHDR) dwParam1;
-    int err = 0;  /* set to 0 so that no buffer match will also be an error */
-
-    /* Future optimization: eliminate UnprepareHeader calls -- they aren't
-       necessary; however, this code uses the prepared-flag to indicate which
-       buffers are free, so we need to do something to flag empty buffers if
-       we leave them prepared
-     */
-    /*
-    printf("out_callback: hdr %x, wMsg %x, MOM_DONE %x\n", 
-           hdr, wMsg, MOM_DONE);
-    */
-    if (wMsg == MOM_DONE) {
-        MMRESULT ret = midiOutUnprepareHeader(m->handle.out, hdr, 
-                                              sizeof(MIDIHDR));
-        assert(ret == MMSYSERR_NOERROR);
-    }
-    /* notify waiting sender that a buffer is available */
-    err = SetEvent(m->buffer_signal);
-    assert(err); /* false -> error */
-}
-#endif
 
 /* winmm_streamout_callback -- unprepare (free) buffer header */
 static void CALLBACK winmm_streamout_callback(HMIDIOUT hmo, UINT wMsg,
-        DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
+        DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
 {
     PmInternal *midi = (PmInternal *) dwInstance;
     midiwinmm_type m = (midiwinmm_type) midi->descriptor;

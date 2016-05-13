@@ -1,0 +1,35 @@
+#N canvas 395 121 628 486 12;
+#X floatatom 58 275 0 0 1000 0 - - -;
+#X text 166 394 signal output (delayed signal);
+#X text 128 327 signal input (delay time in ms);
+#X text 262 359 creation argument: name of delay line;
+#X text 44 442 see also:;
+#X obj 132 445 delwrite~;
+#X obj 221 444 delread~;
+#X obj 28 17 delread4~;
+#X text 37 85 delread4~ implements a 4-point interpolating delay tap
+from a corresponding delwrite~ object. The delay in milliseconds of
+the tap is specified by the incoming signal.;
+#X text 140 12 read a signal from a delay line at a variable delay
+time (4-point-interpolation), f 44;
+#X obj 30 52 vd~;
+#X text 72 53 old \, slightly rude synonym;
+#X text 383 440 updated for Pd version 0.47;
+#X text 38 139 The delay time is always at least one sample and at
+most the length of the delay line (specified by a corresponding delwrite~).
+In addition \, in case the delwrite~ runs later in the DSP loop than
+the delread4~ \, the delay is constrained below by one vector length
+(64 samples.) An example showing how to control this to obtain very
+short delays is included in doc/3.audio.examples/G05.execution.order.pd
+;
+#X obj 58 360 delread4~ \$0-delay;
+#X obj 419 307 delwrite~ \$0-delay 1000;
+#X obj 59 303 pack 0 1000;
+#X obj 59 328 line~;
+#X obj 419 282 osc~ 440;
+#X obj 57 386 out1~;
+#X connect 0 0 16 0;
+#X connect 14 0 19 0;
+#X connect 16 0 17 0;
+#X connect 17 0 14 0;
+#X connect 18 0 15 0;

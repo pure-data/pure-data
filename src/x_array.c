@@ -16,13 +16,13 @@
 #endif
 extern t_pd *newest;    /* OK - this should go into a .h file now :) */
 
-#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
-# include <alloca.h>        /* linux, mac, mingw, cygwin */
-#elif defined _MSC_VER
-# include <malloc.h>        /* MSVC */
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
-# include <stddef.h>        /* BSDs for example */
-#endif                      /* end alloca() ifdef nonsense */
+# include <stdlib.h> /* BSDs for example */
+#endif
 
 #ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
 #define HAVE_ALLOCA 1
@@ -51,9 +51,9 @@ static void *table_donew(t_symbol *s, int size, int flags,
     if (s == &s_)
     {
          char  tabname[255];
-         t_symbol *t = gensym("table"); 
+         t_symbol *t = gensym("table");
          sprintf(tabname, "%s%d", t->s_name, tabcount++);
-         s = gensym(tabname); 
+         s = gensym(tabname);
     }
     if (size < 1)
         size = 100;
@@ -170,7 +170,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv); endpost();
     }
     x = (t_glist *)table_donew(arrayname, arraysize, keep, xpix, ypix);
-    
+
         /* bash the class to "array define".  We don't do this earlier in
         part so that canvas_getcurrent() will work while the glist and
         garray are being created.  There may be other, unknown side effects. */
@@ -190,8 +190,13 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
     binbuf_addbinbuf(bb, x->gl_obj.ob_binbuf);
     binbuf_addsemi(bb);
 
-    garray_savecontentsto((t_garray *)gl->gl_list, bb);
-    obj_saveformat(&x->gl_obj, bb);
+    if (gl)
+    {
+        garray_savecontentsto((t_garray *)gl->gl_list, bb);
+        obj_saveformat(&x->gl_obj, bb);
+    }
+    else
+        bug("array_define_save");
 }
 
 t_scalar *garray_getscalar(t_garray *x);
@@ -272,7 +277,7 @@ static t_array *array_client_getbuf(t_array_client *x, t_glist **glist)
     {
         t_template *template = template_findbyname(x->tc_struct);
         t_gstub *gs = x->tc_gp.gp_stub;
-        t_word *vec; 
+        t_word *vec;
         int onset, type;
         t_symbol *arraytype;
         if (!template)
@@ -319,7 +324,8 @@ static void array_client_senditup(t_array_client *x)
 {
     t_glist *glist = 0;
     t_array *a = array_client_getbuf(x, &glist);
-    array_redraw(a, glist);
+    if (glist)
+       array_redraw(a, glist);
 }
 
 static void array_client_free(t_array_client *x)
@@ -446,7 +452,7 @@ static void *array_rangeop_new(t_class *class,
     x->x_sym = x->x_struct = x->x_field = 0;
     gpointer_init(&x->x_gp);
     x->x_elemtemplate = &s_;
-    x->x_elemfield = gensym("y"); 
+    x->x_elemfield = gensym("y");
     x->x_onset = 0;
     x->x_n = -1;
     if (onsetin)
@@ -610,6 +616,7 @@ static void array_get_bang(t_array_rangeop *x)
     for (i = 0, itemp = firstitem; i < nitem; i++, itemp += stride)
         SETFLOAT(&outv[i],  *(t_float *)itemp);
     outlet_list(x->x_outlet, 0, nitem, outv);
+    ATOMS_FREEA(outv, nitem);
 }
 
 static void array_get_float(t_array_rangeop *x, t_floatarg f)
@@ -705,7 +712,7 @@ static void array_random_bang(t_array_random *x)
 {
     char *itemp, *firstitem;
     int stride, nitem, arrayonset, i;
-    
+
     if (!array_rangeop_getrange(&x->x_r, &firstitem, &nitem, &stride,
         &arrayonset))
             return;
@@ -827,7 +834,7 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
             newest = array_max_new(s, argc-1, argv+1);
         else if (!strcmp(str, "min"))
             newest = array_min_new(s, argc-1, argv+1);
-        else 
+        else
         {
             error("array %s: unknown function", str);
             newest = 0;

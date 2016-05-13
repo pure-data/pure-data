@@ -16,6 +16,10 @@
 #include "g_all_guis.h"
 #include <math.h>
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif
+
 #ifdef _WIN32
 #include <io.h>
 #else
@@ -263,64 +267,98 @@ void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym)
     srlsym[2] = iemgui->x_lab_unexpanded;
 }
 
-void iemgui_all_col2save(t_iemgui *iemgui, int *bflcol)
-{
-    bflcol[0] = -1 - (((0xfc0000 & iemgui->x_bcol) >> 6)|
-                      ((0xfc00 & iemgui->x_bcol) >> 4)|((0xfc & iemgui->x_bcol) >> 2));
-    bflcol[1] = -1 - (((0xfc0000 & iemgui->x_fcol) >> 6)|
-                      ((0xfc00 & iemgui->x_fcol) >> 4)|((0xfc & iemgui->x_fcol) >> 2));
-    bflcol[2] = -1 - (((0xfc0000 & iemgui->x_lcol) >> 6)|
-                      ((0xfc00 & iemgui->x_lcol) >> 4)|((0xfc & iemgui->x_lcol) >> 2));
+static t_symbol* color2symbol(int col) {
+    const int  compat = (pd_compatibilitylevel < 48)?1:
+        /* FIXXME: for Pd>=0.48, the default compatibility mode should be OFF */
+        1;
+
+    char colname[MAXPDSTRING];
+    colname[0] = colname[MAXPDSTRING-1] = 0;
+
+    if (compat)
+    {
+            /* compatibility with Pd<=0.47: saves colors as numbers with limited resolution */
+        int col2 = -1 - (((0xfc0000 & col) >> 6)|((0xfc00 & col) >> 4)|((0xfc & col) >> 2));
+        snprintf(colname, MAXPDSTRING-1, "%d", col2);
+    } else {
+        snprintf(colname, MAXPDSTRING-1, "#%06x", col);
+    }
+    return gensym(colname);
 }
 
-void iemgui_all_colfromload(t_iemgui *iemgui, int *bflcol)
+void iemgui_all_col2save(t_iemgui *iemgui, t_symbol**bflcol)
 {
-    if(bflcol[0] < 0)
-    {
-        bflcol[0] = -1 - bflcol[0];
-        iemgui->x_bcol = ((bflcol[0] & 0x3f000) << 6)|((bflcol[0] & 0xfc0) << 4)|
-            ((bflcol[0] & 0x3f) << 2);
-    }
-    else
-    {
-        bflcol[0] = iemgui_modulo_color(bflcol[0]);
-        iemgui->x_bcol = iemgui_color_hex[bflcol[0]];
-    }
-    if(bflcol[1] < 0)
-    {
-        bflcol[1] = -1 - bflcol[1];
-        iemgui->x_fcol = ((bflcol[1] & 0x3f000) << 6)|((bflcol[1] & 0xfc0) << 4)|
-            ((bflcol[1] & 0x3f) << 2);
-    }
-    else
-    {
-        bflcol[1] = iemgui_modulo_color(bflcol[1]);
-        iemgui->x_fcol = iemgui_color_hex[bflcol[1]];
-    }
-    if(bflcol[2] < 0)
-    {
-        bflcol[2] = -1 - bflcol[2];
-        iemgui->x_lcol = ((bflcol[2] & 0x3f000) << 6)|((bflcol[2] & 0xfc0) << 4)|
-            ((bflcol[2] & 0x3f) << 2);
-    }
-    else
-    {
-        bflcol[2] = iemgui_modulo_color(bflcol[2]);
-        iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
-    }
+    bflcol[0] = color2symbol(iemgui->x_bcol);
+    bflcol[1] = color2symbol(iemgui->x_fcol);
+    bflcol[2] = color2symbol(iemgui->x_lcol);
 }
 
-int iemgui_compatible_col(int i)
+static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
 {
-    int j;
-
-    if(i >= 0)
+    if(index < 0 || index >= argc)
+        return 0;
+    if(IS_A_FLOAT(argv,index))
+        return atom_getintarg(index, argc, argv);
+    if(IS_A_SYMBOL(argv,index))
     {
-        j = iemgui_modulo_color(i);
-        return(iemgui_color_hex[(j)]);
+        t_symbol*s=atom_getsymbolarg(index, argc, argv);
+        if ('#' == s->s_name[0])
+            return strtol(s->s_name+1, 0, 16);
+    }
+    return 0;
+}
+
+static int colfromatomload(t_atom*colatom)
+{
+    int color;
+        /* old-fashioned color arguement, either a number or symbol
+        evaluating to an integer */
+    if (colatom->a_type == A_FLOAT)
+        color = atom_getint(colatom);
+    else if (colatom->a_type == A_SYMBOL &&
+        (isdigit(colatom->a_w.w_symbol->s_name[0]) ||
+            colatom->a_w.w_symbol->s_name[0] == '-'))
+                color = atoi(colatom->a_w.w_symbol->s_name);
+
+        /* symbolic color */
+    else return (iemgui_getcolorarg(0, 1, colatom));
+    if (color < 0)
+    {
+        color = -1 - color;
+        color = ((color & 0x3f000) << 6)|((color & 0xfc0) << 4)|
+            ((color & 0x3f) << 2);
     }
     else
-        return((-1 -i)&0xffffff);
+    {
+        color = iemgui_modulo_color(color);
+        color = iemgui_color_hex[color];
+    }
+    return (color);
+}
+
+void iemgui_all_loadcolors(t_iemgui *iemgui, t_atom*bcol, t_atom*fcol, t_atom*lcol)
+{
+    if(bcol)iemgui->x_bcol = colfromatomload(bcol);
+    if(fcol)iemgui->x_fcol = colfromatomload(fcol);
+    if(lcol)iemgui->x_lcol = colfromatomload(lcol);
+}
+
+int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
+{
+    if (index < 0 || index >= argc)
+        return 0;
+    if(IS_A_FLOAT(argv,index))
+        {
+            int col=atom_getintarg(index, argc, argv);
+            if(col >= 0)
+            {
+                int idx = iemgui_modulo_color(col);
+                return(iemgui_color_hex[(idx)]);
+            }
+            else
+               return((-1 -col)&0xffffff);
+        }
+    return iemgui_getcolorarg(index, argc, argv);
 }
 
 void iemgui_all_dollar2raute(t_symbol **srlsym)
@@ -442,7 +480,7 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     iemgui->x_fontsize = f;
     if(glist_isvisible(iemgui->x_glist))
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s}\n",
-                 glist_getcanvas(iemgui->x_glist), x, iemgui->x_font, 
+                 glist_getcanvas(iemgui->x_glist), x, iemgui->x_font,
                  iemgui->x_fontsize, sys_fontweight);
 }
 
@@ -479,14 +517,16 @@ void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 
 void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    iemgui->x_bcol = iemgui_compatible_col(atom_getintarg(0, ac, av));
-    if(ac > 2)
-    {
-        iemgui->x_fcol = iemgui_compatible_col(atom_getintarg(1, ac, av));
-        iemgui->x_lcol = iemgui_compatible_col(atom_getintarg(2, ac, av));
-    }
-    else
-        iemgui->x_lcol = iemgui_compatible_col(atom_getintarg(1, ac, av));
+    if (ac >= 1)
+        iemgui->x_bcol = iemgui_compatible_colorarg(0, ac, av);
+    if (ac == 2 && pd_compatibilitylevel < 47)
+            /* old versions of Pd updated foreground and label color
+            if only two args; now we do it more coherently. */
+        iemgui->x_lcol = iemgui_compatible_colorarg(1, ac, av);
+    else if (ac >= 2)
+        iemgui->x_fcol = iemgui_compatible_colorarg(1, ac, av);
+    if (ac >= 3)
+        iemgui->x_lcol = iemgui_compatible_colorarg(2, ac, av);
     if(glist_isvisible(iemgui->x_glist))
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_CONFIG);
 }
@@ -527,13 +567,22 @@ void iemgui_vis(t_gobj *z, t_glist *glist, int vis)
     }
 }
 
-void iemgui_save(t_iemgui *iemgui, t_symbol **srl, int *bflcol)
+void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
 {
     srl[0] = iemgui->x_snd;
     srl[1] = iemgui->x_rcv;
     srl[2] = iemgui->x_lab;
     iemgui_all_sym2dollararg(iemgui, srl);
     iemgui_all_col2save(iemgui, bflcol);
+}
+
+void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom)
+{
+    int oldzoom = iemgui->x_glist->gl_zoom;
+    if (oldzoom < 1)
+        oldzoom = 1;
+    iemgui->x_w = (int)(iemgui->x_w)/oldzoom*(int)zoom;
+    iemgui->x_h = (int)(iemgui->x_h)/oldzoom*(int)zoom;
 }
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
@@ -553,9 +602,9 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
     int ldy = (int)atom_getintarg(11, argc, argv);
     int f = (int)atom_getintarg(12, argc, argv);
     int fs = (int)atom_getintarg(13, argc, argv);
-    int bcol = (int)atom_getintarg(14, argc, argv);
-    int fcol = (int)atom_getintarg(15, argc, argv);
-    int lcol = (int)atom_getintarg(16, argc, argv);
+    int bcol = (int)iemgui_getcolorarg(14, argc, argv);
+    int fcol = (int)iemgui_getcolorarg(15, argc, argv);
+    int lcol = (int)iemgui_getcolorarg(16, argc, argv);
     int sndable=1, rcvable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)

@@ -218,7 +218,7 @@ static void ctlin_free(t_ctlin *x)
 
 static void ctlin_setup(void)
 {
-    ctlin_class = class_new(gensym("ctlin"), (t_newmethod)ctlin_new, 
+    ctlin_class = class_new(gensym("ctlin"), (t_newmethod)ctlin_new,
         (t_method)ctlin_free, sizeof(t_ctlin),
             CLASS_NOINLET, A_GIMME, 0);
     class_addlist(ctlin_class, ctlin_list);
@@ -530,8 +530,8 @@ static void midiclkin_free(t_midiclkin *x)
 
 static void midiclkin_setup(void)
 {
-    midiclkin_class = class_new(gensym("midiclkin"), 
-        (t_newmethod)midiclkin_new, (t_method)midiclkin_free, 
+    midiclkin_class = class_new(gensym("midiclkin"),
+        (t_newmethod)midiclkin_new, (t_method)midiclkin_free,
             sizeof(t_midiclkin), CLASS_NOINLET, A_DEFFLOAT, 0);
     class_addlist(midiclkin_class, midiclkin_list);
         class_sethelpsymbol(midiclkin_class, gensym("midi"));
@@ -549,7 +549,7 @@ void inmidi_clk(double timing)
         t_atom at[2];
         diff =timing - prev;
         count++;
-   
+
         if (count == 3)
         {  /* 24 count per quoter note */
              SETFLOAT(at, 1 );
@@ -600,8 +600,8 @@ static void midirealtimein_free(t_midirealtimein *x)
 
 static void midirealtimein_setup(void)
 {
-    midirealtimein_class = class_new(gensym("midirealtimein"), 
-        (t_newmethod)midirealtimein_new, (t_method)midirealtimein_free, 
+    midirealtimein_class = class_new(gensym("midirealtimein"),
+        (t_newmethod)midirealtimein_new, (t_method)midirealtimein_free,
             sizeof(t_midirealtimein), CLASS_NOINLET, A_DEFFLOAT, 0);
     class_addlist(midirealtimein_class, midirealtimein_list);
         class_sethelpsymbol(midirealtimein_class, gensym("midi"));
@@ -875,7 +875,7 @@ static void polytouchout_float(t_polytouchout *x, t_float n)
 
 static void polytouchout_setup(void)
 {
-    polytouchout_class = class_new(gensym("polytouchout"), 
+    polytouchout_class = class_new(gensym("polytouchout"),
         (t_newmethod)polytouchout_new, 0,
         sizeof(t_polytouchout), 0, A_DEFFLOAT, 0);
     class_addfloat(polytouchout_class, polytouchout_float);
@@ -924,7 +924,7 @@ static void makenote_tick(t_hang *hang)
     outlet_float(x->x_velout, 0);
     outlet_float(x->x_pitchout, hang->h_pitch);
     if (x->x_hang == hang) x->x_hang = hang->h_next;
-    else for (h2 = x->x_hang; h3 = h2->h_next; h2 = h3)
+    else for (h2 = x->x_hang; (h3 = h2->h_next); h2 = h3)
     {
         if (h3 == hang)
         {
@@ -954,7 +954,7 @@ static void makenote_float(t_makenote *x, t_float f)
 static void makenote_stop(t_makenote *x)
 {
     t_hang *hang;
-    while (hang = x->x_hang)
+    while ((hang = x->x_hang))
     {
         outlet_float(x->x_velout, 0);
         outlet_float(x->x_pitchout, hang->h_pitch);
@@ -967,7 +967,7 @@ static void makenote_stop(t_makenote *x)
 static void makenote_clear(t_makenote *x)
 {
     t_hang *hang;
-    while (hang = x->x_hang)
+    while ((hang = x->x_hang))
     {
         x->x_hang = hang->h_next;
         clock_free(hang->h_clock);
@@ -977,7 +977,7 @@ static void makenote_clear(t_makenote *x)
 
 static void makenote_setup(void)
 {
-    makenote_class = class_new(gensym("makenote"), 
+    makenote_class = class_new(gensym("makenote"),
         (t_newmethod)makenote_new, (t_method)makenote_clear,
         sizeof(t_makenote), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addfloat(makenote_class, makenote_float);
@@ -1007,7 +1007,7 @@ static void *stripnote_new(void )
     x->x_velout = outlet_new(&x->x_obj, &s_float);
     return (x);
 }
-    
+
 static void stripnote_float(t_stripnote *x, t_float f)
 {
     t_hang *hang;
@@ -1149,7 +1149,7 @@ static void poly_free(t_poly *x)
 
 static void poly_setup(void)
 {
-    poly_class = class_new(gensym("poly"), 
+    poly_class = class_new(gensym("poly"),
         (t_newmethod)poly_new, (t_method)poly_free,
         sizeof(t_poly), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addfloat(poly_class, poly_float);
@@ -1195,7 +1195,7 @@ static void bag_float(t_bag *x, t_float f)
         if (!x->x_first) x->x_first = bagelem;
         else    /* LATER replace with a faster algorithm */
         {
-            for (e2 = x->x_first; e3 = e2->e_next; e2 = e3)
+            for (e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
                 ;
             e2->e_next = bagelem;
         }
@@ -1210,7 +1210,7 @@ static void bag_float(t_bag *x, t_float f)
             freebytes(bagelem, sizeof(*bagelem));
             return;
         }
-        for (e2 = x->x_first; e3 = e2->e_next; e2 = e3)
+        for (e2 = x->x_first; (e3 = e2->e_next); e2 = e3)
             if (e3->e_value == f)
         {
             e2->e_next = e3->e_next;
@@ -1223,7 +1223,7 @@ static void bag_float(t_bag *x, t_float f)
 static void bag_flush(t_bag *x)
 {
     t_bagelem *bagelem;
-    while (bagelem = x->x_first)
+    while ((bagelem = x->x_first))
     {
         outlet_float(x->x_obj.ob_outlet, bagelem->e_value);
         x->x_first = bagelem->e_next;
@@ -1234,7 +1234,7 @@ static void bag_flush(t_bag *x)
 static void bag_clear(t_bag *x)
 {
     t_bagelem *bagelem;
-    while (bagelem = x->x_first)
+    while ((bagelem = x->x_first))
     {
         x->x_first = bagelem->e_next;
         freebytes(bagelem, sizeof(*bagelem));
@@ -1243,7 +1243,7 @@ static void bag_clear(t_bag *x)
 
 static void bag_setup(void)
 {
-    bag_class = class_new(gensym("bag"), 
+    bag_class = class_new(gensym("bag"),
         (t_newmethod)bag_new, (t_method)bag_clear,
         sizeof(t_bag), 0, 0);
     class_addfloat(bag_class, bag_float);

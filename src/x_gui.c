@@ -2,7 +2,7 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-/* dialogs.  LATER, deal with the situation where the object goes 
+/* dialogs.  LATER, deal with the situation where the object goes
 away before the panel does... */
 
 #include "m_pd.h"
@@ -19,7 +19,7 @@ protected from getting deleted and then having the dialog call you back.  In
 this design the calling object doesn't have to keep the address of the dialog
 window around; instead we keep a list of all open dialogs.  Any object that
 might have dialogs, when it is deleted, simply checks down the dialog window
-list and breaks off any dialogs that might later have sent messages to it. 
+list and breaks off any dialogs that might later have sent messages to it.
 Only when the dialog window itself closes do we delete the gfxstub object. */
 
 static t_class *gfxstub_class;
@@ -86,8 +86,8 @@ static void gfxstub_offlist(t_gfxstub *x)
     t_gfxstub *y1, *y2;
     if (gfxstub_list == x)
         gfxstub_list = x->x_next;
-    else for (y1 = gfxstub_list; y2 = y1->x_next; y1 = y2)
-        if (y2 == x) 
+    else for (y1 = gfxstub_list; (y2 = y1->x_next); y1 = y2)
+        if (y2 == x)
     {
         y1->x_next = y2->x_next;
         break;
@@ -381,7 +381,7 @@ static void key_setup(void)
     class_addfloat(keyup_class, keyup_float);
     keyup_sym = gensym("#keyup");
     class_sethelpsymbol(keyup_class, gensym("key"));
-    
+
     keyname_class = class_new(gensym("keyname"),
         (t_newmethod)keyname_new, (t_method)keyname_free,
         sizeof(t_keyname), CLASS_NOINLET, 0);

@@ -6,8 +6,8 @@
 from Pd via the netsend/netreceive ("FUDI") protocol, and copies them to
 standard output. */
 
-/* May 2008 : fixed a buffer overflow problem; pdreceive sometimes 
-    repeated infinitely its buffer during high speed transfer. 
+/* May 2008 : fixed a buffer overflow problem; pdreceive sometimes
+    repeated infinitely its buffer during high speed transfer.
     Moonix::Antoine Rousseau
 */
 
@@ -31,7 +31,7 @@ standard output. */
 typedef struct _fdpoll
 {
     int fdp_fd;
-    char *fdp_outbuf;/*output message buffer*/ 
+    char *fdp_outbuf;/*output message buffer*/
     int fdp_outlen;     /*length of output message*/
     int fdp_discard;/*buffer overflow: output message is incomplete, discard it*/
     int fdp_gotsemi;/*last char from input was a semicolon*/
@@ -51,7 +51,7 @@ static void dopoll(void);
 int main(int argc, char **argv)
 {
     int portno;
-    struct sockaddr_in server;
+    struct sockaddr_in server = {0};
     int nretry = 10;
 #ifdef _WIN32
     short version = MAKEWORD(2, 0);
@@ -197,20 +197,20 @@ static int tcpmakeoutput(t_fdpoll *x, char *inbuf, int len)
     int i;
     int outlen = x->fdp_outlen;
     char *outbuf = x->fdp_outbuf;
-    
+
     for (i = 0 ; i < len ; i++)
     {
         char c = inbuf[i];
-        
+
         if((c != '\n') || (!x->fdp_gotsemi))
             outbuf[outlen++] = c;
-        x->fdp_gotsemi = 0; 
+        x->fdp_gotsemi = 0;
         if (outlen >= (BUFSIZE-1)) /*output buffer overflow; reserve 1 for '\n' */
         {
             fprintf(stderr, "pdreceive: message too long; discarding\n");
             outlen = 0;
             x->fdp_discard = 1;
-        }  
+        }
             /* search for a semicolon.   */
         if (c == ';')
         {

@@ -1,5 +1,5 @@
 Quick compilation instructions for Gnu/linux or Mac OSX, or Windows if you have
-installed gygwin: make sure "automake" is installed as well as the usual C
+installed Cygwin: make sure "automake" is installed as well as the usual C
 compiler chain. Then in this directory, run the following commands:
   ./autogen.sh
   ./configure
@@ -17,6 +17,12 @@ Special instructions for Microsoft Visual C: cd to src and type "make -f
 makefile.nt". Then CD to the various subdirs of extra and type "make nt" in
 each.
 
-Various dependencies: in linux and Mac you need TK (apparently always present
-for Mac and usually there for linux). On linux you may also need an ALSA
-"dev" package: (yum install alsa-lib-devel) or (apt-get install libasound2-dev).
+Various dependencies:
+
+- in linux and Mac you need Tcl/Tk
+    (apparently always present for Mac and usually there for linux).
+
+- On linux you may also need:
+    - the ALSA "dev" package: (yum install alsa-lib-devel) or (sudo apt-get install libasound2-dev)
+    - the JACK "dev" package: (yum install jack-audio-connection-kit-devel) or (sudo apt-get install libjack-dev) or (sudo apt-get install libjack-jackd2-dev)
+    - libtool (sudo apt-get install libtool)

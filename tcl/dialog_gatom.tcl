@@ -87,6 +87,8 @@ proc ::dialog_gatom::pdtk_gatom_dialog {mytoplevel initwidth initlower initupper
         $mytoplevel.s_r.receive.entry insert 0 \
             [::dialog_gatom::unescape $initreceive]
     }
+    $mytoplevel.width.entry select range 0 end
+    focus $mytoplevel.width.entry
 }
 
 proc ::dialog_gatom::create_dialog {mytoplevel} {
@@ -158,18 +160,63 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     frame $mytoplevel.buttonframe -pady 5
     pack $mytoplevel.buttonframe -side top -fill x -expand 1 -pady 2m
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
-        -command "::dialog_gatom::cancel $mytoplevel"
+        -command "::dialog_gatom::cancel $mytoplevel" -highlightcolor green
     pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 10
     if {$::windowingsystem ne "aqua"} {
         button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
             -command "::dialog_gatom::apply $mytoplevel"
-    pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 10
+        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 10
     }
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
-        -command "::dialog_gatom::ok $mytoplevel"
+        -command "::dialog_gatom::ok $mytoplevel" -default active
     pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 10
 
-    $mytoplevel.width.entry select from 0
-    $mytoplevel.width.entry select adjust end
-    focus $mytoplevel.width.entry
+    # live widget updates on OSX in lieu of Apply button
+    if {$::windowingsystem eq "aqua"} {
+
+        # call apply on radiobutton changes
+        $mytoplevel.gatomlabel.radio.left config -command [ concat ::dialog_gatom::apply $mytoplevel ]
+        $mytoplevel.gatomlabel.radio.right config -command [ concat ::dialog_gatom::apply $mytoplevel ]
+        $mytoplevel.gatomlabel.radio.top config -command [ concat ::dialog_gatom::apply $mytoplevel ]
+        $mytoplevel.gatomlabel.radio.bottom config -command [ concat ::dialog_gatom::apply $mytoplevel ]
+
+        # call apply on Return in entry boxes that are in focus & rebind Return to ok button
+        bind $mytoplevel.width.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.limits.lower.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.limits.upper.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.gatomlabel.name.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.s_r.send.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
+        bind $mytoplevel.s_r.receive.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
+
+        # unbind Return from ok button when an entry takes focus
+        $mytoplevel.width.entry config -validate focusin -vcmd "::dialog_gatom::unbind_return $mytoplevel"
+        $mytoplevel.width.entry config -validate focusin -vcmd "::dialog_gatom::unbind_return $mytoplevel"
+        $mytoplevel.limits.lower.entry config -validate focusin -vcmd "::dialog_gatom::unbind_return $mytoplevel"
+        $mytoplevel.limits.upper.entry config -validate focusin -vcmd "::dialog_gatom::unbind_return $mytoplevel"
+        $mytoplevel.gatomlabel.name.entry config -validate focusin -vcmd "::dialog_gatom::unbind_return $mytoplevel"
+        $mytoplevel.s_r.send.entry config -validate focusin -vcmd "::dialog_gatom::unbind_return $mytoplevel"
+        $mytoplevel.s_r.receive.entry config -validate focusin -vcmd "::dialog_gatom::unbind_return $mytoplevel"
+
+        # remove cancel button from focus list since it's not activated on Return
+        $mytoplevel.buttonframe.cancel config -takefocus 0
+
+        # show active focus on the ok button as it *is* activated on Return
+        $mytoplevel.buttonframe.ok config -default normal
+        bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
+        bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
+    }
+}
+
+# for live widget updates on OSX
+proc ::dialog_gatom::apply_and_rebind_return {mytoplevel} {
+    ::dialog_gatom::apply $mytoplevel
+    bind $mytoplevel <KeyPress-Return> "::dialog_gatom::ok $mytoplevel"
+    focus $mytoplevel.buttonframe.ok
+    return 0
+}
+
+# for live widget updates on OSX
+proc ::dialog_gatom::unbind_return {mytoplevel} {
+    bind $mytoplevel <KeyPress-Return> break
+    return 1
 }

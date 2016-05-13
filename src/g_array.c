@@ -47,13 +47,17 @@ void array_resize(t_array *x, int n)
 {
     int elemsize, oldn;
     t_gpointer *gp;
+    char *tmp;
     t_template *template = template_findbyname(x->a_templatesym);
     if (n < 1)
         n = 1;
     oldn = x->a_n;
     elemsize = sizeof(t_word) * template->t_n;
 
-    x->a_vec = (char *)resizebytes(x->a_vec, oldn * elemsize, n * elemsize);
+    tmp = (char *)resizebytes(x->a_vec, oldn * elemsize, n * elemsize);
+    if (!tmp)
+        return;
+    x->a_vec = tmp;
     x->a_n = n;
     if (n > oldn)
     {
@@ -135,12 +139,12 @@ void garray_init( void)
     if (garray_arraytemplatecanvas)
         return;
     b = binbuf_new();
-    
+
     glob_setfilename(0, gensym("_float_template"), gensym("."));
     binbuf_text(b, garray_floattemplatefile, strlen(garray_floattemplatefile));
     binbuf_eval(b, &pd_canvasmaker, 0, 0);
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
-    
+
     glob_setfilename(0, gensym("_float_array_template"), gensym("."));
     binbuf_text(b, garray_arraytemplatefile, strlen(garray_arraytemplatefile));
     binbuf_eval(b, &pd_canvasmaker, 0, 0);
@@ -148,7 +152,7 @@ void garray_init( void)
     vmess(s__X.s_thing, gensym("pop"), "i", 0);
 
     glob_setfilename(0, &s_, &s_);
-    binbuf_free(b);  
+    binbuf_free(b);
 }
 
 /* create a new scalar attached to a symbol.  Used to make floating-point
@@ -166,7 +170,7 @@ static t_garray *graph_scalar(t_glist *gl, t_symbol *s, t_symbol *templatesym,
     char *str;
     t_gpointer gp;
     if (!template_findbyname(templatesym))
-        return (0);  
+        return (0);
     x = (t_garray *)pd_new(garray_class);
     x->x_scalar = scalar_new(gl, templatesym);
     x->x_name = s;
@@ -193,7 +197,7 @@ t_array *garray_getarray(t_garray *x)
         error("array: couldn't find template %s", templatesym->s_name);
         return (0);
     }
-    if (!template_find_field(template, gensym("z"), 
+    if (!template_find_field(template, gensym("z"),
         &zonset, &ztype, &zarraytype))
     {
         error("array: template %s has no 'z' field", templatesym->s_name);
@@ -255,7 +259,7 @@ static void garray_fittograph(t_garray *x, int n, int style)
             0., gl->gl_y1, (double)
                 (style == PLOTSTYLE_POINTS || n == 1 ? n : n-1),
                     gl->gl_y2);
-        
+
             /* hack - if the xlabels seem to want to be from 0 to table size-1,
             update the second label */
         if (gl->gl_nxlabels == 2 && !strcmp(gl->gl_xlabel[0]->s_name, "0"))
@@ -302,7 +306,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         error("array: couldn't find template %s", templatesym->s_name);
         return (0);
     }
-    if (!template_find_field(template, gensym("z"), 
+    if (!template_find_field(template, gensym("z"),
         &zonset, &ztype, &zarraytype))
     {
         error("array: template %s has no 'z' field", templatesym->s_name);
@@ -329,7 +333,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
 
     template_setfloat(template, gensym("style"), x->x_scalar->sc_vec,
         style, 1);
-    template_setfloat(template, gensym("linewidth"), x->x_scalar->sc_vec, 
+    template_setfloat(template, gensym("linewidth"), x->x_scalar->sc_vec,
         ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
 
            /* bashily unbind #A -- this would create garbage if #A were
@@ -338,7 +342,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     asym->s_thing = 0;
         /* and now bind #A to us to receive following messages in the
         saved file or copy buffer */
-    pd_bind(&x->x_gobj.g_pd, asym); 
+    pd_bind(&x->x_gobj.g_pd, asym);
 
     garray_redraw(x);
     canvas_update_dsp();
@@ -379,12 +383,12 @@ void garray_properties(t_garray *x)
         properly; right now we just detect a leading '$' and escape
         it.  There should be a systematic way of doing this. */
     sprintf(cmdbuf, "pdtk_array_dialog %%s %s %d %d 0\n",
-            iemgui_dollar2raute(x->x_name)->s_name, a->a_n, x->x_saveit + 
+            iemgui_dollar2raute(x->x_name)->s_name, a->a_n, x->x_saveit +
             2 * filestyle);
     gfxstub_new(&x->x_gobj.g_pd, x, cmdbuf);
 }
 
-    /* this is called back from the dialog window to create a garray. 
+    /* this is called back from the dialog window to create a garray.
     The otherflag requests that we find an existing graph to put it in. */
 void glist_arraydialog(t_glist *parent, t_symbol *name, t_floatarg size,
     t_floatarg fflags, t_floatarg otherflag)
@@ -518,7 +522,7 @@ void garray_arrayviewlist_fillpage(t_garray *x,
     char cmdbuf[200];
     t_symbol *arraytype;
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
-    
+
     topItem = (int)fTopItem;
     if (!a)
     {
@@ -579,7 +583,7 @@ static void garray_free(t_garray *x)
     gfxstub_deleteforkey(x);
     pd_unbind(&x->x_gobj.g_pd, x->x_realname);
         /* just in case we're still bound to #A from loading... */
-    while (x2 = pd_findbyclass(gensym("#A"), garray_class))
+    while ((x2 = pd_findbyclass(gensym("#A"), garray_class)))
         pd_unbind(x2, gensym("#A"));
     pd_free(&x->x_scalar->sc_gobj.g_pd);
 }
@@ -613,7 +617,7 @@ void array_getcoordinate(t_glist *glist,
     {
             /* found "w" field which controls linewidth. */
         t_float wval = *(t_float *)(elem + wonset);
-        wpix = glist_ytopixels(glist, basey + 
+        wpix = glist_ytopixels(glist, basey +
             fielddesc_cvttocoord(yfielddesc, yval) +
                 fielddesc_cvttocoord(wfielddesc, wval)) - ypix;
         if (wpix < 0)
@@ -743,8 +747,8 @@ static void garray_save(t_gobj *z, t_binbuf *b)
     t_template *scalartemplate;
     if (x->x_scalar->sc_template != gensym("pd-float-array"))
     {
-            /* LATER "save" the scalar as such */ 
-        pd_error(x, "can't save arrays of type %s yet", 
+            /* LATER "save" the scalar as such */
+        pd_error(x, "can't save arrays of type %s yet",
             x->x_scalar->sc_template->s_name);
         return;
     }
@@ -755,9 +759,9 @@ static void garray_save(t_gobj *z, t_binbuf *b)
         return;
     }
     style = template_getfloat(scalartemplate, gensym("style"),
-            x->x_scalar->sc_vec, 0);    
-    filestyle = (style == PLOTSTYLE_POINTS ? 1 : 
-        (style == PLOTSTYLE_POLY ? 0 : style)); 
+            x->x_scalar->sc_vec, 0);
+    filestyle = (style == PLOTSTYLE_POINTS ? 1 :
+        (style == PLOTSTYLE_POLY ? 0 : style));
     binbuf_addv(b, "sssisi;", gensym("#X"), gensym("array"),
         x->x_name, array->a_n, &s_float,
             x->x_saveit + 2 * filestyle + 8*x->x_hidename);
@@ -787,7 +791,7 @@ static void garray_doredraw(t_gobj *client, t_glist *glist)
     t_garray *x = (t_garray *)client;
     if (glist_isvisible(x->x_glist) && gobj_shouldvis(client, glist))
     {
-        garray_vis(&x->x_gobj, x->x_glist, 0); 
+        garray_vis(&x->x_gobj, x->x_glist, 0);
         garray_vis(&x->x_gobj, x->x_glist, 1);
     }
 }
@@ -814,7 +818,7 @@ void garray_redraw(t_garray *x)
 t_template *garray_template(t_garray *x)
 {
     t_array *array = garray_getarray(x);
-    t_template *template = 
+    t_template *template =
         (array ? template_findbyname(array->a_templatesym) : 0);
     if (!template)
         bug("garray_template");
@@ -929,7 +933,7 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
 }
 
 static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
-{    
+{
     t_float *svec;
     long npoints;
     int i;
@@ -942,10 +946,10 @@ static void garray_sinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
     npoints = atom_getfloatarg(0, argc, argv);
     argv++, argc--;
-    
+
     svec = (t_float *)t_getbytes(sizeof(t_float) * argc);
     if (!svec) return;
-    
+
     for (i = 0; i < argc; i++)
         svec[i] = atom_getfloatarg(i, argc, argv);
     garray_dofo(x, npoints, 0, argc, svec, 1);
@@ -966,7 +970,7 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
     npoints = atom_getfloatarg(0, argc, argv);
     argv++, argc--;
-    
+
     svec = (t_float *)t_getbytes(sizeof(t_float) * argc);
     if (!svec) return;
 
@@ -1105,7 +1109,7 @@ static void garray_read(t_garray *x, t_symbol *filename)
     }
     nelem = array->a_n;
     if ((filedesc = canvas_open(glist_getcanvas(x->x_glist),
-            filename->s_name, "", buf, &bufptr, MAXPDSTRING, 0)) < 0 
+            filename->s_name, "", buf, &bufptr, MAXPDSTRING, 0)) < 0
                 || !(fd = fdopen(filedesc, "r")))
     {
         error("%s: can't open", filename->s_name);

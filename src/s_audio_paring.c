@@ -73,7 +73,7 @@ static long sys_ringbuf_AdvanceReadIndex(PA_VOLATILE sys_ringbuf *rbuf,
 /***************************************************************************
  * Initialize FIFO.
  */
-long sys_ringbuf_init(PA_VOLATILE sys_ringbuf *rbuf, long numBytes, 
+long sys_ringbuf_init(PA_VOLATILE sys_ringbuf *rbuf, long numBytes,
     PA_VOLATILE char *dataPtr, long nfill)
 {
     rbuf->bufferSize = numBytes;
@@ -177,7 +177,7 @@ static long sys_ringbuf_GetReadRegions(PA_VOLATILE sys_ringbuf *rbuf,
     index = rbuf->readIndex;
     while (index >= rbuf->bufferSize)
         index -= rbuf->bufferSize;
-    
+
     if( (index + numBytes) > rbuf->bufferSize )
     {
         /* Write data in two blocks that wrap the buffer. */

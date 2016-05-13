@@ -243,8 +243,20 @@ case "${host_os}" in
               elif xcodebuild -version -sdk macosx10.7 Path >/dev/null 2>&1 ; then
                  mac_version_min="-mmacosx-version-min=10.4"
                  mac_sysroot="-isysroot `xcodebuild -version -sdk macosx10.7 Path`"
-              else
-                 AC_MSG_ERROR([Couldn't find 10.5, 10.6, or 10.7 SDK])
+			elif xcodebuild -version -sdk macosx10.8 Path >/dev/null 2>&1 ; then
+					mac_version_min="-mmacosx-version-min=10.4"
+					mac_sysroot="-isysroot `xcodebuild -version -sdk macosx10.8 Path`"
+			elif xcodebuild -version -sdk macosx10.9 Path >/dev/null 2>&1 ; then
+					mac_version_min="-mmacosx-version-min=10.4"
+					mac_sysroot="-isysroot `xcodebuild -version -sdk macosx10.9 Path`"
+			elif xcodebuild -version -sdk macosx10.10 Path >/dev/null 2>&1 ; then
+					mac_version_min="-mmacosx-version-min=10.4"
+					mac_sysroot="-isysroot `xcodebuild -version -sdk macosx10.10 Path`"
+			elif xcodebuild -version -sdk macosx10.11 Path >/dev/null 2>&1 ; then
+					mac_version_min="-mmacosx-version-min=10.4"
+					mac_sysroot="-isysroot `xcodebuild -version -sdk macosx10.11 Path`"
+            else
+                 AC_MSG_ERROR([Couldn't find 10.5, 10.6, 10.7, 10.8, 10.9, 10.10, 0r 10.11  SDK])
               fi
            esac
 

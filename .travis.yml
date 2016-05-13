@@ -1,0 +1,52 @@
+## Travis-CI configuration for Pure Data
+#
+# this automatically builds Pd whenever a new commit is pushed to github...
+#   https://travis-ci.org/pure-data/pure-data
+# it also supports coverity.scan static code analysis (whenever something is
+#     pushed to either 'master' or the 'coverity-scan' branch.
+#     note that there is a rate-limit for code-analysis.
+#   https://scan.coverity.com/projects/pure-data-pure-data
+
+language: c
+
+env:
+  global:
+        # COVERITY envs:
+        ## the following is an encrypted authentication token or coverity.scan
+        - secure: "ifC0UBN+k/lpPL3+amsz8lBNpbmDxi/XGRMIXLpRlNq67cSxOK3pF67HSvM1rFtVS5q9pN+MF2Cfq0jEoeqOJht9SiP+gvb1YlKZITNz4XiNgx2oxKnQLxJhc/EH1bd5hkJ9rpgoOAJGGgDGiI/GFsiwb6wrGQ52i3GPNw3QDPMHjDL8lMPCJQ+GP444j+maXQscWsKqLLa0Eeov0hd60T9fYwvDEGzA95X/UcMW9LFEqq9gW1neiv82ga1y7S/pR8ovqasER+wjFBNdfYh9JekRZv7mRjXK45gRWFg3vArEprfbsgQhPNXsXqXP/HbzMV/cpF0Atn+cyd+GxVRn5PdqiJvn73H9612QQQfXc195JcJXFN79ZeoIYxZI9gZt8emHZE1V90AoTthqCDv0lC/qKwH1SpqqrJ07gGh08ZiUTpN5xBerMzWBdhaUpAGRWeC9xO2xDXz3QKmDb8onWpuoQSCfvM8L2uw2UZnB7Hi93wwyb3nb1kw4CW+3HbgdWIOYtNFc8NAnqbk5BHQLZwCYHOAKPZc6Wae1y2sz5Lm/cOHBdN9msA1jTp5A2K/NjBIhOB6k//uTeSZvkwAWeIcxuNG/xxyk1a76sXGN3WNRSiWeR4jAuNt0k6j0QrEI03Vmv7u12MRiwGBI5WDMhvaMHzltCSmSz2tGsfIEfm8="
+        ## a forwarding address to receive notifications of new defects
+        - COVERITY_SCAN_NOTIFICATION_EMAIL="pd.coverity@iem.at"
+        ## which branches are submitted to coverity scan
+        - COVERITY_SCAN_BRANCH_PATTERN="(master|travis-ci|coverity-.*)"
+        - COVERITY_SCAN_BUILD_COMMAND="make"
+
+## build-matrix that builds on both gcc and clang.
+## coverity.scan is only triggered in one of the nodes (namely gcc)
+matrix:
+  include:
+    - compiler: clang
+    - compiler: gcc
+      env:
+        # enable coverity.scan
+        - COVERITY_SCAN_PROJECT_NAME="$TRAVIS_REPO_SLUG"
+
+before_install:
+## install some dependencies
+- sudo apt-get update -qq
+- sudo apt-get install -qq  libasound2-dev libjack-dev
+
+
+before_script:
+## basic autoconf setup
+  - ./autogen.sh
+  - ./configure --enable-jack
+  ## check whether we want to use coverity.scan and haven't met the quota yet.
+  ## if so, build and submit. (else we skip to the ordinary build)
+  # (implement Coverity Scan with before_script instead of addons.coverity_scan
+  #  to work around too-early quota check by the coverity_scan addon)
+  - if [[ -n $COVERITY_SCAN_PROJECT_NAME ]] ; then curl -s 'https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh' | bash || true ; fi
+  - if [[ -e cov-int/scm_log.txt ]] ; then cat cov-int/scm_log.txt; else echo "no coverity log found"; fi
+
+script:
+## the actual build
+- make

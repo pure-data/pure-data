@@ -1,13 +1,12 @@
-#N canvas 256 52 566 300 12;
-#X text 290 257 updated for Pd version 0.32;
+#N canvas 255 52 571 359 12;
 #X floatatom 36 55 5 0 0 0 - - -, f 5;
-#X text 50 249 abbreviation:;
+#X text 42 276 abbreviation:;
 #X text 79 10 -- nonlocal shared value (named variable);
 #X floatatom 36 130 5 0 0 0 - - -, f 5;
 #X msg 46 78 bang;
 #X obj 21 10 value;
 #X obj 36 105 value help-value1;
-#X obj 167 250 v;
+#X obj 159 277 v;
 #X floatatom 180 55 5 0 0 0 - - -, f 5;
 #X floatatom 180 130 5 0 0 0 - - -, f 5;
 #X msg 190 78 bang;
@@ -16,17 +15,22 @@
 #X floatatom 328 130 5 0 0 0 - - -, f 5;
 #X msg 338 78 bang;
 #X obj 328 105 value help-value2;
-#X text 31 171 "Value" stores a numeric value which is shared between
+#X text 30 169 "Value" stores a numeric value which is shared between
 all values with the same name (which need not be in the same Pd window.)
 ;
 #X text 382 54 numbers set the value;
 #X text 386 77 bang retrieves it;
-#X connect 1 0 7 0;
-#X connect 5 0 7 0;
-#X connect 7 0 4 0;
-#X connect 9 0 12 0;
-#X connect 11 0 12 0;
-#X connect 12 0 10 0;
-#X connect 13 0 16 0;
-#X connect 15 0 16 0;
-#X connect 16 0 14 0;
+#X text 39 308 see also:;
+#X obj 126 307 expr;
+#X text 31 225 The value may also be stored or recalled in expressions
+via the expr. expr~ \, and fexpr~ objects.;
+#X text 317 321 updated for Pd version 0.47;
+#X connect 0 0 6 0;
+#X connect 4 0 6 0;
+#X connect 6 0 3 0;
+#X connect 8 0 11 0;
+#X connect 10 0 11 0;
+#X connect 11 0 9 0;
+#X connect 12 0 15 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;

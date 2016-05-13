@@ -39,10 +39,10 @@ void vradio_draw_update(t_gobj *client, t_glist *glist)
     {
         t_canvas *canvas=glist_getcanvas(glist);
 
-        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%6.6x -outline #%6.6x\n",
+        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%06x -outline #%06x\n",
                  canvas, x, x->x_drawn,
                  x->x_gui.x_bcol, x->x_gui.x_bcol);
-        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%6.6x -outline #%6.6x\n",
+        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%06x -outline #%06x\n",
                  canvas, x, x->x_on,
                  x->x_gui.x_fcol, x->x_gui.x_fcol);
         x->x_drawn = x->x_on;
@@ -53,18 +53,20 @@ void vradio_draw_new(t_vradio *x, t_glist *glist)
 {
     t_canvas *canvas=glist_getcanvas(glist);
     int n=x->x_number, i, dy=x->x_gui.x_h, s4=dy/4;
-    int yy11b=text_ypix(&x->x_gui.x_obj, glist); 
+    int yy11b=text_ypix(&x->x_gui.x_obj, glist);
     int yy11=yy11b, yy12=yy11+dy;
     int yy21=yy11+s4, yy22=yy12-s4;
     int xx11=text_xpix(&x->x_gui.x_obj, glist), xx12=xx11+dy;
     int xx21=xx11+s4, xx22=xx12-s4;
+    int zoomlabel =
+        1 + (IEMGUI_ZOOM(x)-1) * (x->x_gui.x_ldx >= 0 && x->x_gui.x_ldy >= 0);
 
     for(i=0; i<n; i++)
     {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -tags %lxBASE%d\n",
-                 canvas, xx11, yy11, xx12, yy12,
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE%d\n",
+                 canvas, xx11, yy11, xx12, yy12, IEMGUI_ZOOM(x),
                  x->x_gui.x_bcol, x, i);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%6.6x -outline #%6.6x -tags %lxBUT%d\n",
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill #%06x -outline #%06x -tags %lxBUT%d\n",
                  canvas, xx21, yy21, xx22, yy22,
                  (x->x_on==i)?x->x_gui.x_fcol:x->x_gui.x_bcol,
                  (x->x_on==i)?x->x_gui.x_fcol:x->x_gui.x_bcol, x, i);
@@ -75,17 +77,18 @@ void vradio_draw_new(t_vradio *x, t_glist *glist)
         x->x_drawn = x->x_on;
     }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
-             -font {{%s} -%d %s} -fill #%6.6x -tags [list %lxLABEL label text]\n",
-             canvas, xx11+x->x_gui.x_ldx, yy11b+x->x_gui.x_ldy,
+             -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
+             canvas, xx11+x->x_gui.x_ldx * zoomlabel,
+             yy11b+x->x_gui.x_ldy * zoomlabel,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
              x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_lcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxOUT%d outlet]\n",
-             canvas, xx11, yy11-1, xx11 + IOWIDTH, yy11, x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
+             canvas, xx11, yy11+1-2*IEMGUI_ZOOM(x), xx11 + IOWIDTH, yy11, x, 0);
     if(!x->x_gui.x_fsf.x_rcv_able)
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags [list %lxIN%d inlet]\n",
-             canvas, xx11, yy11b, xx11 + IOWIDTH, yy11b+1, x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
+             canvas, xx11, yy11b, xx11 + IOWIDTH, yy11b-1+2*IEMGUI_ZOOM(x), x, 0);
 }
 
 void vradio_draw_move(t_vradio *x, t_glist *glist)
@@ -97,6 +100,8 @@ void vradio_draw_move(t_vradio *x, t_glist *glist)
     int yy21=yy11+s4, yy22=yy12-s4;
     int xx11=text_xpix(&x->x_gui.x_obj, glist), xx12=xx11+dy;
     int xx21=xx11+s4, xx22=xx12-s4;
+    int zoomlabel =
+        1 + (IEMGUI_ZOOM(x)-1) * (x->x_gui.x_ldx >= 0 && x->x_gui.x_ldy >= 0);
 
     for(i=0; i<n; i++)
     {
@@ -110,13 +115,14 @@ void vradio_draw_move(t_vradio *x, t_glist *glist)
         yy22 += dy;
     }
     sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x, xx11+x->x_gui.x_ldx, yy11b+x->x_gui.x_ldy);
+             canvas, x, xx11+x->x_gui.x_ldx * zoomlabel,
+             yy11b+x->x_gui.x_ldy * zoomlabel);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
-             canvas, x, 0, xx11, yy11-1, xx11 + IOWIDTH, yy11);
+             canvas, x, 0, xx11, yy11+1-2*IEMGUI_ZOOM(x), xx11 + IOWIDTH, yy11);
     if(!x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c coords %lxIN%d %d %d %d %d\n",
-             canvas, x, 0, xx11, yy11b, xx11 + IOWIDTH, yy11b+1);
+             canvas, x, 0, xx11, yy11b, xx11 + IOWIDTH, yy11b-1+2*IEMGUI_ZOOM(x));
 }
 
 void vradio_draw_erase(t_vradio* x, t_glist* glist)
@@ -141,15 +147,15 @@ void vradio_draw_config(t_vradio* x, t_glist* glist)
     t_canvas *canvas=glist_getcanvas(glist);
     int n=x->x_number, i;
 
-    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%6.6x -text {%s} \n",
-             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight, 
+    sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
+             canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize, sys_fontweight,
              x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
              strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"");
     for(i=0; i<n; i++)
     {
-        sys_vgui(".x%lx.c itemconfigure %lxBASE%d -fill #%6.6x\n", canvas, x, i,
+        sys_vgui(".x%lx.c itemconfigure %lxBASE%d -fill #%06x\n", canvas, x, i,
                  x->x_gui.x_bcol);
-        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%6.6x -outline #%6.6x\n", canvas, x, i,
+        sys_vgui(".x%lx.c itemconfigure %lxBUT%d -fill #%06x -outline #%06x\n", canvas, x, i,
                  (x->x_on==i)?x->x_gui.x_fcol:x->x_gui.x_bcol,
                  (x->x_on==i)?x->x_gui.x_fcol:x->x_gui.x_bcol);
     }
@@ -187,19 +193,19 @@ void vradio_draw_select(t_vradio* x, t_glist* glist)
     {
         for(i=0; i<n; i++)
         {
-            sys_vgui(".x%lx.c itemconfigure %lxBASE%d -outline #%6.6x\n", canvas, x, i,
+            sys_vgui(".x%lx.c itemconfigure %lxBASE%d -outline #%06x\n", canvas, x, i,
                      IEM_GUI_COLOR_SELECTED);
         }
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%6.6x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x, IEM_GUI_COLOR_SELECTED);
     }
     else
     {
         for(i=0; i<n; i++)
         {
-            sys_vgui(".x%lx.c itemconfigure %lxBASE%d -outline #%6.6x\n", canvas, x, i,
+            sys_vgui(".x%lx.c itemconfigure %lxBASE%d -outline #%06x\n", canvas, x, i,
                      IEM_GUI_COLOR_NORMAL);
         }
-        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%6.6x\n", canvas, x,
+        sys_vgui(".x%lx.c itemconfigure %lxLABEL -fill #%06x\n", canvas, x,
                  x->x_gui.x_lcol);
     }
 }
@@ -237,11 +243,11 @@ static void vradio_getrect(t_gobj *z, t_glist *glist, int *xp1, int *yp1, int *x
 static void vradio_save(t_gobj *z, t_binbuf *b)
 {
     t_vradio *x = (t_vradio *)z;
-    int bflcol[3];
+    t_symbol *bflcol[3];
     t_symbol *srl[3];
 
     iemgui_save(&x->x_gui, srl, bflcol);
-    binbuf_addv(b, "ssiisiiiisssiiiiiiif", gensym("#X"),gensym("obj"),
+    binbuf_addv(b, "ssiisiiiisssiiiisssf", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix,
                 (int)x->x_gui.x_obj.te_ypix,
                 (pd_class(&x->x_gui.x_obj.ob_pd) == vradio_old_class ?
@@ -272,7 +278,7 @@ static void vradio_properties(t_gobj *z, t_glist *owner)
             %s %s \
             %s %d %d \
             %d %d \
-            %d %d %d\n",
+            #%06x #%06x #%06x\n",
             x->x_gui.x_w, IEM_GUI_MINSIZE,
             0,/*no_schedule*/
             hchange, x->x_gui.x_isa.x_loadinit, -1, x->x_number,
@@ -484,9 +490,9 @@ static int vradio_newclick(t_gobj *z, struct _glist *glist,
     return (1);
 }
 
-static void vradio_loadbang(t_vradio *x)
+static void vradio_loadbang(t_vradio *x, t_floatarg action)
 {
-    if(!sys_noloadbang && x->x_gui.x_isa.x_loadinit)
+    if (action == LB_LOAD && x->x_gui.x_isa.x_loadinit)
         vradio_bang(x);
 }
 
@@ -554,7 +560,6 @@ static void vradio_single_change(t_vradio *x)
 static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
     t_vradio *x = (t_vradio *)pd_new(old? vradio_old_class : vradio_class);
-    int bflcol[]={-262144, -1, -1};
     int a=IEM_GUI_DEFAULTSIZE, on = 0, f=0;
     int ldx=0, ldy=-8, chg=1, num=8;
     int fs=10;
@@ -562,14 +567,17 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     char str[144];
     float fval = 0;
 
+    x->x_gui.x_bcol = 0xFCFCFC;
+    x->x_gui.x_fcol = 0x00;
+    x->x_gui.x_lcol = 0x00;
+
     if((argc == 15)&&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2)
        &&IS_A_FLOAT(argv,3)
        &&(IS_A_SYMBOL(argv,4)||IS_A_FLOAT(argv,4))
        &&(IS_A_SYMBOL(argv,5)||IS_A_FLOAT(argv,5))
        &&(IS_A_SYMBOL(argv,6)||IS_A_FLOAT(argv,6))
        &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)
-       &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10)&&IS_A_FLOAT(argv,11)
-       &&IS_A_FLOAT(argv,12)&&IS_A_FLOAT(argv,13)&&IS_A_FLOAT(argv,14))
+       &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10)&&IS_A_FLOAT(argv,14))
     {
         a = (int)atom_getintarg(0, argc, argv);
         chg = (int)atom_getintarg(1, argc, argv);
@@ -580,9 +588,7 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
         ldy = (int)atom_getintarg(8, argc, argv);
         iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(9, argc, argv));
         fs = (int)atom_getintarg(10, argc, argv);
-        bflcol[0] = (int)atom_getintarg(11, argc, argv);
-        bflcol[1] = (int)atom_getintarg(12, argc, argv);
-        bflcol[2] = (int)atom_getintarg(13, argc, argv);
+        iemgui_all_loadcolors(&x->x_gui, argv+11, argv+12, argv+13);
         fval = atom_getintarg(14, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);
@@ -625,7 +631,6 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
     x->x_gui.x_w = iemgui_clip_size(a);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_verify_snd_ne_rcv(&x->x_gui);
-    iemgui_all_colfromload(&x->x_gui, bflcol);
     outlet_new(&x->x_gui.x_obj, &s_list);
     return (x);
 }
@@ -658,7 +663,7 @@ void g_vradio_setup(void)
     class_addmethod(vradio_class, (t_method)vradio_dialog, gensym("dialog"),
                     A_GIMME, 0);
     class_addmethod(vradio_class, (t_method)vradio_loadbang,
-        gensym("loadbang"), 0);
+        gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(vradio_class, (t_method)vradio_set,
         gensym("set"), A_FLOAT, 0);
     class_addmethod(vradio_class, (t_method)vradio_size,
@@ -687,6 +692,8 @@ void g_vradio_setup(void)
         gensym("single_change"), 0);
     class_addmethod(vradio_class, (t_method)vradio_double_change,
         gensym("double_change"), 0);
+    class_addmethod(vradio_class, (t_method)iemgui_zoom, gensym("zoom"),
+        A_CANT, 0);
     vradio_widgetbehavior.w_getrectfn = vradio_getrect;
     vradio_widgetbehavior.w_displacefn = iemgui_displace;
     vradio_widgetbehavior.w_selectfn = iemgui_select;
@@ -723,6 +730,8 @@ void g_vradio_setup(void)
     class_addmethod(vradio_old_class, (t_method)vradio_number, gensym("number"), A_FLOAT, 0);
     class_addmethod(vradio_old_class, (t_method)vradio_single_change, gensym("single_change"), 0);
     class_addmethod(vradio_old_class, (t_method)vradio_double_change, gensym("double_change"), 0);
+    class_addmethod(vradio_old_class, (t_method)iemgui_zoom, gensym("zoom"),
+        A_CANT, 0);
     class_setwidget(vradio_old_class, &vradio_widgetbehavior);
     class_sethelpsymbol(vradio_old_class, gensym("vradio"));
 }

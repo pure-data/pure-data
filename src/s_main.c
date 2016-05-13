@@ -25,10 +25,10 @@
 #define snprintf sprintf_s
 #endif
 
-       
+
 #define stringify(s) str(s)
 #define str(s) #s
- 
+
 char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) " (" stringify(PD_TEST_VERSION) ")";
 char pd_compiletime[] = __TIME__;
 char pd_compiledate[] = __DATE__;
@@ -113,10 +113,7 @@ int* get_sys_schedadvance() { return &sys_schedadvance; }
 
 typedef struct _fontinfo
 {
-    int fi_fontsize;
-    int fi_maxwidth;
-    int fi_maxheight;
-    int fi_hostfontsize;
+    int fi_pointsize;
     int fi_width;
     int fi_height;
 } t_fontinfo;
@@ -124,10 +121,12 @@ typedef struct _fontinfo
     /* these give the nominal point size and maximum height of the characters
     in the six fonts.  */
 
-static t_fontinfo sys_fontlist[] = {
-    {8, 6, 10, 1, 1, 1}, {10, 7, 13, 1, 1, 1}, {12, 9, 16, 1, 1, 1},
-    {16, 10, 21, 1, 1, 1}, {24, 15, 25, 1, 1, 1}, {36, 25, 45, 1, 1, 1}};
-#define NFONT (sizeof(sys_fontlist)/sizeof(*sys_fontlist))
+static t_fontinfo sys_fontspec[] = {
+    {8, 6, 10}, {10, 7, 13}, {12, 9, 16},
+    {16, 10, 21}, {24, 15, 25}, {36, 25, 45}};
+#define NFONT (sizeof(sys_fontspec)/sizeof(*sys_fontspec))
+#define NZOOM 2
+static t_fontinfo sys_gotfonts[NZOOM][NFONT];
 
 /* here are the actual font size structs on msp's systems:
 MSW:
@@ -147,33 +146,50 @@ font 24 15 25 24 15 24
 font 36 25 42 36 22 41
 */
 
-static t_fontinfo *sys_findfont(int fontsize)
+static int sys_findfont(int fontsize)
 {
     unsigned int i;
     t_fontinfo *fi;
-    for (i = 0, fi = sys_fontlist; i < (NFONT-1); i++, fi++)
-        if (fontsize < fi[1].fi_fontsize) return (fi);
-    return (sys_fontlist + (NFONT-1));
+    for (i = 0, fi = sys_fontspec; i < (NFONT-1); i++, fi++)
+        if (fontsize < fi[1].fi_pointsize) return (i);
+    return ((NFONT-1));
 }
 
 int sys_nearestfontsize(int fontsize)
 {
-    return (sys_findfont(fontsize)->fi_fontsize);
+    return (sys_fontspec[sys_findfont(fontsize)].fi_pointsize);
 }
 
-int sys_hostfontsize(int fontsize)
+int sys_hostfontsize(int fontsize, int zoom)
 {
-    return (sys_findfont(fontsize)->fi_hostfontsize);
+    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_pointsize);
 }
 
-int sys_fontwidth(int fontsize)
+int sys_zoomfontwidth(int fontsize, int zoom, int worstcase)
 {
-    return (sys_findfont(fontsize)->fi_width);
+    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    if (worstcase)
+        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_width);
+    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width);
+}
+
+int sys_zoomfontheight(int fontsize, int zoom, int worstcase)
+{
+    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    if (worstcase)
+        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
+    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height);
+}
+
+int sys_fontwidth(int fontsize) /* old version for extern compatibility */
+{
+    return (sys_zoomfontwidth(fontsize, 1, 0));
 }
 
 int sys_fontheight(int fontsize)
 {
-    return (sys_findfont(fontsize)->fi_height);
+    return (sys_zoomfontheight(fontsize, 1, 0));
 }
 
 int sys_defaultfont;
@@ -194,7 +210,7 @@ static void openit(const char *dirname, const char *filename)
 }
 
 /* this is called from the gui process.  The first argument is the cwd, and
-succeeding args give the widths and heights of known fonts.  We wait until 
+succeeding args give the widths and heights of known fonts.  We wait until
 these are known to open files and send messages specified on the command line.
 We ask the GUI to specify the "cwd" in case we don't have a local OS to get it
 from; for instance we could be some kind of RT embedded system.  However, to
@@ -207,36 +223,24 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     t_namelist *nl;
     unsigned int i;
     int j;
-    int nhostfont = (argc-2)/3;
     sys_oldtclversion = atom_getfloatarg(1, argc, argv);
-    if (argc != 2 + 3 * nhostfont) bug("glob_initfromgui");
-    for (i = 0; i < NFONT; i++)
+    if (argc != 2 + 3 * NZOOM * NFONT)
+        bug("glob_initfromgui");
+    for (j = 0; j < NZOOM; j++)
+        for (i = 0; i < NFONT; i++)
     {
-        int best = 0;
-        int wantheight = sys_fontlist[i].fi_maxheight;
-        int wantwidth = sys_fontlist[i].fi_maxwidth;
-        for (j = 1; j < nhostfont; j++)
-        {
-            if (atom_getintarg(3 * j + 4, argc, argv) <= wantheight &&
-                atom_getintarg(3 * j + 3, argc, argv) <= wantwidth)
-                    best = j;
-        }
-            /* best is now the host font index for the desired font index i. */
-        sys_fontlist[i].fi_hostfontsize =
-            atom_getintarg(3 * best + 2, argc, argv);
-        sys_fontlist[i].fi_width = atom_getintarg(3 * best + 3, argc, argv);
-        sys_fontlist[i].fi_height = atom_getintarg(3 * best + 4, argc, argv);
-    }
+        sys_gotfonts[j][i].fi_pointsize =
+            atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
+        sys_gotfonts[j][i].fi_width =
+            atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
+        sys_gotfonts[j][i].fi_height =
+            atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
 #if 0
-    for (i = 0; i < 6; i++)
-        fprintf(stderr, "font (%d %d %d) -> (%d %d %d)\n",
-            sys_fontlist[i].fi_fontsize,
-            sys_fontlist[i].fi_maxwidth,
-            sys_fontlist[i].fi_maxheight,
-            sys_fontlist[i].fi_hostfontsize,
-            sys_fontlist[i].fi_width,
-            sys_fontlist[i].fi_height);
+            fprintf(stderr, "font (%d %d %d)\n",
+                sys_gotfonts[j][i].fi_pointsize, sys_gotfonts[j][i].fi_width,
+                    sys_gotfonts[j][i].fi_height);
 #endif
+    }
         /* load dynamic libraries specified with "-lib" args */
     for  (nl = sys_externlist; nl; nl = nl->nl_next)
         if (!sys_load_lib(0, nl->nl_string))
@@ -473,7 +477,7 @@ static int sys_getmultidevchannels(int n, int *devlist)
 void sys_findprogdir(char *progname)
 {
     char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING], *sp;
-    char *lastslash; 
+    char *lastslash;
 #ifndef _WIN32
     struct stat statbuf;
 #endif /* NOT _WIN32 */
@@ -492,7 +496,7 @@ void sys_findprogdir(char *progname)
     {
             /* bash last slash to zero so that sbuf is directory pd was in,
                 e.g., ~/pd/bin */
-        *lastslash = 0; 
+        *lastslash = 0;
             /* go back to the parent from there, e.g., ~/pd */
         lastslash = strrchr(sbuf, '/');
         if (lastslash)
@@ -599,7 +603,7 @@ int sys_argparse(int argc, char **argv)
 
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-soundbuf") || !strcmp(*argv, "-audiobuf") && (argc > 1))
+        else if (!strcmp(*argv, "-soundbuf") || (!strcmp(*argv, "-audiobuf") && (argc > 1)))
         {
             sys_main_advance = atoi(argv[1]);
             argc -= 2; argv += 2;
@@ -939,6 +943,15 @@ int sys_argparse(int argc, char **argv)
             sys_externalschedlib = 1;
             strncpy(sys_externalschedlibname, argv[1],
                 sizeof(sys_externalschedlibname) - 1);
+#ifndef  __APPLE__
+                /* no real audio please, unless overwritten by later args.
+                This is to circumvent a problem running pd~ subprocesses
+                with -nogui; they would open an audio device before pdsched.c
+                could set the API ito nothing.  For some reason though, on
+                MACOSX this causes Pd to switch to JACK so we just give up
+                and suppress the workaround there. */
+            sys_set_audio_api(0);
+#endif
             argv += 2;
             argc -= 2;
         }
@@ -1107,7 +1120,7 @@ int sys_argparse(int argc, char **argv)
 #endif
     if (!sys_defaultfont)
         sys_defaultfont = DEFAULTFONT;
-    for (; argc > 0; argc--, argv++) 
+    for (; argc > 0; argc--, argv++)
         sys_openlist = namelist_append_files(sys_openlist, *argv);
 
 
@@ -1158,7 +1171,7 @@ static void sys_afterargparse(void)
         sys_midioutdevlist[i]--;
     if (sys_listplease)
         sys_listdevs();
-        
+
             /* get the current audio parameters.  These are set
             by the preferences mechanism (sys_loadpreferences()) or
             else are the default.  Overwrite them with any results
@@ -1179,7 +1192,7 @@ static void sys_afterargparse(void)
         for (i = 0; i < naudioindev; i++)
             audioindev[i] = sys_soundindevlist[i];
     }
-    
+
     if (sys_nchout >= 0)
     {
         nchoutdev = sys_nchout;
@@ -1215,7 +1228,7 @@ static void sys_afterargparse(void)
     if (sys_main_blocksize)
         blocksize = sys_main_blocksize;
     sys_set_audio_settings(naudioindev, audioindev, nchindev, chindev,
-        naudiooutdev, audiooutdev, nchoutdev, choutdev, rate, advance, 
+        naudiooutdev, audiooutdev, nchoutdev, choutdev, rate, advance,
         callback, blocksize);
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
 }

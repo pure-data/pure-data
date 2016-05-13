@@ -1,13 +1,9 @@
 AC_PREREQ(2.59)
-AC_INIT(pd,0.46.7)
+AC_INIT(pd,0.47.0)
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4/generated])
-
-if test -d "$srcdir/portaudio"; then
-  AC_CONFIG_SUBDIRS([portaudio])
-fi
 
 
 AC_CANONICAL_HOST
@@ -32,7 +28,7 @@ case $host in
 	 EXTERNAL_EXTENSION=pd_darwin
 	fi
 
-	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	INCLUDES="$INCLUDES -I/sw/include"
 	LDFLAGS="$LDFLAGS -L/sw/lib"
 	EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
@@ -42,7 +38,7 @@ case $host in
 	if test "x${ANDROID}" = "xno"; then
 	 LINUX=yes
 	 portaudio=yes
-	 CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+	 CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	fi
 	EXTERNAL_CFLAGS="-fPIC"
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
@@ -50,7 +46,7 @@ case $host in
 	;;
 *-*-gnu*)
 	HURD=yes
-	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	EXTERNAL_CFLAGS="-fPIC"
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
 	EXTERNAL_EXTENSION=pd_linux
@@ -62,7 +58,7 @@ case $host in
 #        to make the final linking phase use g++
 	asio=yes
 	portaudio=yes
-	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
+	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer -DWINVER=0x0501 -D_WIN32_WINNT=0x0501 $CFLAGS"
 # ASIO is a C++ library, so if its included, then use g++ to build
 	EXTERNAL_CFLAGS="-mms-bitfields"
 	EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
@@ -72,7 +68,7 @@ case $host in
 	WINDOWS=yes
 	CYGWIN=yes
 	portaudio=yes
-	CFLAGS="-O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
+	CFLAGS="-g -O3 -funroll-loops -fomit-frame-pointer $CFLAGS"
 	EXTERNAL_CFLAGS=
 	EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
 	EXTERNAL_EXTENSION=dll
@@ -203,13 +199,22 @@ AC_ARG_ENABLE([portaudio],
     	[portaudio=$enableval])	
 AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
 
+AS_IF([test x$portaudio = xyes], [
+ AS_IF([test -d "$srcdir/portaudio" ], [
+  AC_CONFIG_SUBDIRS([portaudio])
+ ])
+])
+
+
 dnl portmidi
 AC_ARG_ENABLE([portmidi],
 	[AS_HELP_STRING([--enable-portmidi],
 		[use portmidi])],
     [portmidi=$enableval])
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
-if test x$portmidi = xyes; then echo Using included portmidi; fi
+AS_IF([test x$portmidi = xyes], [
+ AC_MSG_NOTICE([using included portmidi])
+])
 
 dnl fftw v3
 AC_ARG_ENABLE([fftw],
@@ -258,7 +263,6 @@ AC_CONFIG_FILES([Makefile
 		extra/bob~/GNUmakefile
 		extra/bonk~/GNUmakefile
 		extra/choice/GNUmakefile
-		extra/expr~/GNUmakefile
 		extra/fiddle~/GNUmakefile
 		extra/loop~/GNUmakefile
 		extra/lrshift~/GNUmakefile

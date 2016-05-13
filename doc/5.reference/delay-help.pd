@@ -1,51 +1,51 @@
-#N canvas 549 146 631 711 12;
-#X obj 123 11 delay;
-#X floatatom 128 418 0 0 0 0 - - -;
-#X text 168 12 - CALLBACK AFTER TIME DELAY;
-#X msg -5 184 stop;
-#X text 11 667 see also:;
-#X obj 133 666 timer;
-#X obj 85 666 metro;
-#X msg -5 208 2000;
-#X obj -4 472 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#N canvas 192 35 659 724 12;
+#X obj 148 9 delay;
+#X floatatom 153 416 0 0 0 0 - - -;
+#X text 193 10 - CALLBACK AFTER TIME DELAY;
+#X msg 20 182 stop;
+#X text 33 665 see also:;
+#X obj 158 664 timer;
+#X obj 110 664 metro;
+#X msg 20 206 2000;
+#X obj 21 470 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj -5 162 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X obj 20 160 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 140 642 del;
-#X text 17 642 Also known as:;
-#X text 371 659 updated for Pd version 0.45;
-#X text 16 159 bang: start;
-#X text 55 182 stop: cancel the delay;
-#X text 54 208 number: set delay time and start;
-#X text 157 419 <-- number in inlet: set delay time but don't start
+#X obj 165 640 del;
+#X text 42 640 Also known as:;
+#X text 396 657 updated for Pd version 0.45;
+#X text 41 157 bang: start;
+#X text 80 180 stop: cancel the delay;
+#X text 79 206 number: set delay time and start;
+#X text 182 417 <-- number in inlet: set delay time but don't start
 ;
-#X text 182 446 <-- optional creation arguments:;
-#X obj -5 445 delay 1000 1 msec;
-#X msg -5 234 tempo 0.5 msec;
-#X text 231 465 - delay time (float);
-#X text 232 483 - tempo (float) and time unit (symbol) as in "tempo"
+#X text 207 444 <-- optional creation arguments:;
+#X obj 20 443 delay 1000 1 msec;
+#X msg 20 232 tempo 0.5 msec;
+#X text 256 463 - delay time (float);
+#X text 257 481 - tempo (float) and time unit (symbol) as in "tempo"
 message, f 31;
-#X obj 274 547 delay 1 60 permin;
-#X text 14 538 example: specify a delay of one beat at 60 beats per
+#X obj 299 545 delay 1 60 permin;
+#X text 39 536 example: specify a delay of one beat at 60 beats per
 minute, f 31;
-#X obj 305 604 delay 1 1 persec;
-#X obj 305 580 delay 1 1 sec;
-#X obj 446 580 delay 1 44100 samp;
-#X obj 446 604 delay 44100 1 samp;
-#X obj 305 627 delay 0.01676 1 min;
-#X text 14 579 other possible ways to get a one-second delay (but the
+#X obj 330 602 delay 1 1 persec;
+#X obj 330 578 delay 1 1 sec;
+#X obj 471 578 delay 1 44100 samp;
+#X obj 471 602 delay 44100 1 samp;
+#X obj 330 625 delay 0.01676 1 min;
+#X text 39 577 other possible ways to get a one-second delay (but the
 rightmost ones are sample-rate dependent), f 35;
-#X text 45 37 The delay object sends a bang to its outlet after a delay
+#X text 70 35 The delay object sends a bang to its outlet after a delay
 in milliseconds specified by its right inlet or its creation argument.
 Sending a bang to a delay which is already set will reschedule its
 output \, replacing any previous setting.;
-#X text 42 114 Delays are in millisconds by default \, but you can
+#X text 67 112 Delays are in millisconds by default \, but you can
 set the time units in the creation arguments or with a "tempo" message.
 , f 63;
-#X text 117 368 If the tempo is changed while the delay is in progress
+#X text 142 366 If the tempo is changed while the delay is in progress
 \, the change only applies to the remaining fraction of the delay.
 ;
-#X text 125 234 Set tempo. Units can be miliseconds (msec for short)
+#X text 150 232 Set tempo. Units can be miliseconds (msec for short)
 \, seconds (sec) \, minutes (min) or samples (samp). In this example
 the unit is set to 1/2 millisecond so that '1000' gives a delay of
 500 msec (1/2 second). Equivalently you can say "tempo 2 permsec" or

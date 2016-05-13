@@ -34,7 +34,7 @@ glist has its own window, even if miniaturized.
 */
 
 /* NOTE: this file describes Pd implementation details which may change
-in future releases.  The public (stable) API is in m_pd.h. */  
+in future releases.  The public (stable) API is in m_pd.h. */
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 extern "C" {
@@ -71,7 +71,7 @@ EXTERN_STRUCT _tscalar;
 #define t_tscalar struct _tscalar
 
 EXTERN_STRUCT _canvasenvironment;
-#define t_canvasenvironment struct _canvasenvironment 
+#define t_canvasenvironment struct _canvasenvironment
 
 EXTERN_STRUCT _fielddesc;
 #define t_fielddesc struct _fielddesc
@@ -124,11 +124,11 @@ typedef struct _editor
 /* editor structure for "garrays".  We don't bother to delete and regenerate
 this structure when the "garray" becomes invisible or visible, although we
 could do so if the structure gets big (like the "editor" above.) */
-    
+
 typedef struct _arrayvis
 {
     t_updateheader av_upd;          /* update header structure */
-    t_garray *av_garray;            /* owning structure */    
+    t_garray *av_garray;            /* owning structure */
 } t_arrayvis;
 
 /* the t_tick structure describes where to draw x and y "ticks" for a glist */
@@ -146,7 +146,7 @@ area of a window.
 */
 
 struct _glist
-{  
+{
     t_object gl_obj;            /* header in case we're a glist */
     t_gobj *gl_list;            /* the actual data */
     struct _gstub *gl_stub;     /* safe pointer handler */
@@ -164,7 +164,7 @@ struct _glist
     int gl_screeny2;
     int gl_xmargin;                /* origin for GOP rectangle */
     int gl_ymargin;
-    t_tick gl_xtick;            /* ticks marking X values */    
+    t_tick gl_xtick;            /* ticks marking X values */
     int gl_nxlabels;            /* number of X coordinate labels */
     t_symbol **gl_xlabel;           /* ... an array to hold them */
     t_float gl_xlabely;               /* ... and their Y coordinates */
@@ -175,19 +175,21 @@ struct _glist
     t_editor *gl_editor;        /* editor structure when visible */
     t_symbol *gl_name;          /* symbol bound here */
     int gl_font;                /* nominal font size in points, e.g., 10 */
+    int gl_zoom;                /* zoom factor (integer zoom-in only) */
     struct _glist *gl_next;         /* link in list of toplevels */
     t_canvasenvironment *gl_env;    /* root canvases and abstractions only */
     unsigned int gl_havewindow:1;   /* true if we own a window */
     unsigned int gl_mapped:1;       /* true if, moreover, it's "mapped" */
     unsigned int gl_dirty:1;        /* (root canvas only:) patch has changed */
     unsigned int gl_loading:1;      /* am now loading from file */
-    unsigned int gl_willvis:1;      /* make me visible after loading */ 
+    unsigned int gl_willvis:1;      /* make me visible after loading */
     unsigned int gl_edit:1;         /* edit mode */
     unsigned int gl_isdeleting:1;   /* we're inside glist_delete -- hack! */
     unsigned int gl_goprect:1;      /* draw rectangle for graph-on-parent */
     unsigned int gl_isgraph:1;      /* show as graph on parent */
     unsigned int gl_hidetext:1;     /* hide object-name + args when doing graph on parent */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
+    unsigned int gl_isclone:1;      /* esists as part of a clone object */
 };
 
 #define gl_gobj gl_obj.te_g
@@ -294,7 +296,7 @@ typedef void (*t_parentgetrectfn)(t_gobj *x, struct _glist *glist,
     t_word *data, t_template *tmpl, t_float basex, t_float basey,
     int *x1, int *y1, int *x2, int *y2);
         /* displace it */
-typedef void (*t_parentdisplacefn)(t_gobj *x, struct _glist *glist, 
+typedef void (*t_parentdisplacefn)(t_gobj *x, struct _glist *glist,
     t_word *data, t_template *tmpl, t_float basex, t_float basey,
     int dx, int dy);
         /* change color to show selection */
@@ -336,7 +338,7 @@ struct _parentwidgetbehavior
 #define CURSOR_EDITMODE_RESIZE 7
 EXTERN void canvas_setcursor(t_glist *x, unsigned int cursornum);
 
-extern t_canvas *canvas_whichfind;  /* last canvas we did a find in */ 
+extern t_canvas *canvas_whichfind;  /* last canvas we did a find in */
 extern t_class *vinlet_class, *voutlet_class;
 extern int glist_valid;         /* incremented when pointers might be stale */
 
@@ -379,6 +381,9 @@ EXTERN int glist_isvisible(t_glist *x);
 EXTERN int glist_istoplevel(t_glist *x);
 EXTERN t_glist *glist_findgraph(t_glist *x);
 EXTERN int glist_getfont(t_glist *x);
+EXTERN int glist_fontwidth(t_glist *x);
+EXTERN int glist_fontheight(t_glist *x);
+EXTERN int glist_getzoom(t_glist *x);
 EXTERN void glist_sort(t_glist *canvas);
 EXTERN void glist_read(t_glist *x, t_symbol *filename, t_symbol *format);
 EXTERN void glist_mergefile(t_glist *x, t_symbol *filename, t_symbol *format);
@@ -407,7 +412,7 @@ EXTERN void canvas_create_editor(t_glist *x);
 EXTERN void canvas_destroy_editor(t_glist *x);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
-extern int glist_amreloadingabstractions; /* stop GUI changes while reloading */ 
+extern int glist_amreloadingabstractions; /* stop GUI changes while reloading */
 
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize);
@@ -455,6 +460,8 @@ EXTERN void canvas_deletelinesfor(t_canvas *x, t_text *text);
 EXTERN void canvas_stowconnections(t_canvas *x);
 EXTERN void canvas_restoreconnections(t_canvas *x);
 EXTERN void canvas_redraw(t_canvas *x);
+EXTERN void canvas_closebang(t_canvas *x);
+EXTERN void canvas_initbang(t_canvas *x);
 
 EXTERN t_inlet *canvas_addinlet(t_canvas *x, t_pd *who, t_symbol *sym);
 EXTERN void canvas_rminlet(t_canvas *x, t_inlet *ip);
@@ -492,6 +499,16 @@ EXTERN int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
     int *x1p, int *y1p, int *x2p, int *y2p);
 EXTERN int canvas_setdeleting(t_canvas *x, int flag);
 
+#define LB_LOAD 0       /* "loadbang" actions - 0 for original meaning */
+#define LB_INIT 1       /* loaded but not yet connected to parent patch */
+#define LB_CLOSE 2      /* about to close */
+
+    /* Pointer to canvas that was saved necessitating a reload of abstractions
+    of that name.  We use as a flag to stop canvases from being marked "dirty"
+    if we have to touch them to reload; also suppress window list update.
+    "clone~" uses this to identify which copy NOT to reload */
+t_glist *glist_reloadingabstraction;
+
 typedef void (*t_undofn)(t_canvas *canvas, void *buf,
     int action);        /* a function that does UNDO/REDO */
 #define UNDO_FREE 0                     /* free current undo/redo buffer */
@@ -512,6 +529,21 @@ EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy)
 
 EXTERN t_glist *pd_checkglist(t_pd *x);
 
+/* a function that gets called for each path by canvas_path_iterate
+ * if the function returns 0, the iteration is terminated;
+ * <path> pointer to the path
+ * <data> is the pointer given to canvas_path_iterate()
+ * <ce> is a pointer to the canvas-environment that provided <path> in its
+ * search-path (or NULL)
+ */
+typedef int (*t_canvas_path_iterator)(const char *path, void *user_data);
+/*
+ * iterate over all search-paths for <x> calling <fun> with the user-supplied
+ * <data>
+ * iteration stops once all paths are exhausted or calling <fun> returned 0.
+ */
+EXTERN int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+    void *user_data);
 
 /* ---- functions on canvasses as objects  --------------------- */
 
@@ -569,7 +601,7 @@ EXTERN void array_getcoordinate(t_glist *glist,
 EXTERN int array_getfields(t_symbol *elemtemplatesym,
     t_canvas **elemtemplatecanvasp,
     t_template **elemtemplatep, int *elemsizep,
-    t_fielddesc *xfielddesc, t_fielddesc *yfielddesc, t_fielddesc *wfielddesc, 
+    t_fielddesc *xfielddesc, t_fielddesc *yfielddesc, t_fielddesc *wfielddesc,
     int *xonsetp, int *yonsetp, int *wonsetp);
 
 /* --------------------- templates ------------------------- */
@@ -616,6 +648,9 @@ EXTERN void guiconnect_notarget(t_guiconnect *x, double timedelay);
 /* ------------- IEMGUI routines used in other g_ files ---------------- */
 EXTERN t_symbol *iemgui_raute2dollar(t_symbol *s);
 EXTERN t_symbol *iemgui_dollar2raute(t_symbol *s);
+
+/*-------------  g_clone.c ------------- */
+extern t_class *clone_class;
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

@@ -1,0 +1,38 @@
+#N canvas 647 320 470 387 10;
+#X obj 112 74 inlet;
+#X obj 112 171 osc~;
+#X obj 112 224 outlet~;
+#X obj 112 193 *~;
+#X obj 257 195 *~;
+#X obj 257 223 *~;
+#X obj 257 167 line~;
+#X obj 256 122 del 10;
+#X obj 112 96 t f b;
+#X obj 112 118 mtof;
+#X obj 256 144 pack 0 4000;
+#X obj 175 124 pack 1 10;
+#X text 32 26 This is the subpatch for the clone help patch. It plays
+tones at pitches sent to its inlet.;
+#X obj 333 303 float \$1;
+#X obj 333 281 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 333 325 print;
+#X text 129 306 You can access the instance number within the patch:
+, f 27;
+#X connect 0 0 8 0;
+#X connect 1 0 3 0;
+#X connect 3 0 2 0;
+#X connect 4 0 5 0;
+#X connect 4 0 5 1;
+#X connect 5 0 3 1;
+#X connect 6 0 4 0;
+#X connect 6 0 4 1;
+#X connect 7 0 10 0;
+#X connect 8 0 9 0;
+#X connect 8 1 7 0;
+#X connect 8 1 11 0;
+#X connect 9 0 1 0;
+#X connect 10 0 6 0;
+#X connect 11 0 6 0;
+#X connect 13 0 15 0;
+#X connect 14 0 13 0;

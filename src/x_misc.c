@@ -6,6 +6,7 @@
 
 #include "m_pd.h"
 #include "s_stuff.h"
+#include "g_canvas.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,13 +32,13 @@
 #define CLOCKHZ CLOCKS_PER_SEC
 #endif
 
-#ifdef HAVE_ALLOCA_H        /* ifdef nonsense to find include for alloca() */
-# include <alloca.h>        /* linux, mac, mingw, cygwin */
-#elif defined _MSC_VER
-# include <malloc.h>        /* MSVC */
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
-# include <stddef.h>        /* BSDs for example */
-#endif                      /* end alloca() ifdef nonsense */
+# include <stdlib.h> /* BSDs for example */
+#endif
 
 /* -------------------------- random ------------------------------ */
 /* this is strictly homebrew and untested. */
@@ -111,9 +112,9 @@ static void *loadbang_new(void)
     return (x);
 }
 
-static void loadbang_loadbang(t_loadbang *x)
+static void loadbang_loadbang(t_loadbang *x, t_floatarg action)
 {
-    if (!sys_noloadbang)
+    if (action == LB_LOAD)
         outlet_bang(x->x_obj.ob_outlet);
 }
 
@@ -122,7 +123,7 @@ static void loadbang_setup(void)
     loadbang_class = class_new(gensym("loadbang"), (t_newmethod)loadbang_new, 0,
         sizeof(t_loadbang), CLASS_NOINLET, 0);
     class_addmethod(loadbang_class, (t_method)loadbang_loadbang,
-        gensym("loadbang"), 0);
+        gensym("loadbang"), A_DEFFLOAT, 0);
 }
 
 /* ------------- namecanvas (delete this later) --------------------- */
@@ -154,48 +155,6 @@ static void namecanvas_setup(void)
     namecanvas_class = class_new(gensym("namecanvas"),
         (t_newmethod)namecanvas_new, (t_method)namecanvas_free,
             sizeof(t_namecanvas), CLASS_NOINLET, A_DEFSYM, 0);
-}
-
-/* ---------------serial ports (_WIN32 only -- hack) ------------------------- */
-#define MAXSERIAL 100
-
-static t_class *serial_class;
-
-typedef struct _serial
-{
-    t_object x_obj;
-    int x_portno;
-    int x_open;
-} t_serial;
-
-static void serial_float(t_serial *x, t_float f)
-{
-    int n = f;
-    char message[MAXSERIAL * 4 + 100];
-    if (!x->x_open)
-    {
-        sys_vgui("com%d_open\n", x->x_portno);
-        x->x_open = 1;
-    }
-    sprintf(message, "com%d_send \"\\%3.3o\"\n", x->x_portno, n);
-    sys_gui(message);
-}
-
-static void *serial_new(t_floatarg fportno)
-{
-    int portno = fportno;
-    t_serial *x = (t_serial *)pd_new(serial_class);
-    if (!portno) portno = 1;
-    x->x_portno = portno;
-    x->x_open = 0;
-    return (x);
-}
-
-static void serial_setup(void)
-{
-    serial_class = class_new(gensym("serial"), (t_newmethod)serial_new, 0,
-        sizeof(t_serial), 0, A_DEFFLOAT, 0);
-    class_addfloat(serial_class, serial_float);
 }
 
 /* -------------------------- cputime ------------------------------ */
@@ -249,7 +208,7 @@ static void cputime_bang2(t_cputime *x)
     FILETIME ignorethis, ignorethat;
     LARGE_INTEGER usertime, kerneltime;
     BOOL retval;
-    
+
     retval = GetProcessTimes(GetCurrentProcess(), &ignorethis, &ignorethat,
         (FILETIME *)&kerneltime, (FILETIME *)&usertime);
     if (retval)
@@ -420,7 +379,7 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
     else outc += nfield;
     outv = (t_atom *)alloca(outc * sizeof(t_atom));
     dataonset = ROUNDUPTO4(i + 1);
-    /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset, 
+    /* post("outc %d, typeonset %d, dataonset %d, nfield %d", outc, typeonset,
         dataonset, nfield); */
     for (i = j = 0; i < typeonset-1 && argv[i].a_w.w_float != 0 &&
         j < outc; j++)
@@ -492,9 +451,9 @@ static void oscparse_list(t_oscparse *x, t_symbol *s, int argc, t_atom *argv)
             k = ROUNDUPTO4(k);
             break;
         default:
-            pd_error(x, "oscparse: unknown tag '%c' (%d)", 
+            pd_error(x, "oscparse: unknown tag '%c' (%d)",
                 (int)(argv[i].a_w.w_float), (int)(argv[i].a_w.w_float));
-        } 
+        }
     }
     outlet_list(x->x_obj.ob_outlet, 0, j, outv);
     return;
@@ -602,12 +561,12 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
         else if (typecode == 'b')
         {
             int blobsize = 0x7fffffff, blobindex;
-                /* check if we have a nonnegative size field */ 
+                /* check if we have a nonnegative size field */
             if (argv[j].a_type == A_FLOAT &&
                 (int)(argv[j].a_w.w_float) >= 0)
                     blobsize = (int)(argv[j].a_w.w_float);
             if (blobsize > argc - j - 1)
-                blobsize = argc - j - 1;    /* if no or bad size, eat it all */ 
+                blobsize = argc - j - 1;    /* if no or bad size, eat it all */
             msgindex += 4 + ROUNDUPTO4(blobsize);
             j += blobsize;
         }
@@ -726,7 +685,6 @@ void x_misc_setup(void)
     random_setup();
     loadbang_setup();
     namecanvas_setup();
-    serial_setup();
     cputime_setup();
     realtime_setup();
     oscparse_setup();

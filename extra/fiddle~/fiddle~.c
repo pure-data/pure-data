@@ -1117,9 +1117,9 @@ int sigfiddle_doinit(t_sigfiddle *x, long npoints, long npitch,
     int i;
 
     if (!npeakanal && !npeakout) npeakanal = DEFNPEAK, npeakout = 0;
-    if (!npeakanal < 0) npeakanal = 0;
+    if (npeakanal < 0) npeakanal = 0;
     else if (npeakanal > MAXPEAK) npeakanal = MAXPEAK;
-    if (!npeakout < 0) npeakout = 0;
+    if (npeakout < 0) npeakout = 0;
     else if (npeakout > MAXPEAK) npeakout = MAXPEAK;
     if (npitch <= 0) npitch = 0;
     else if (npitch > MAXNPITCH) npitch = MAXNPITCH;
