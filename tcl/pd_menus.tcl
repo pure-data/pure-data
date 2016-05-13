@@ -36,6 +36,7 @@ proc ::pd_menus::create_menubar {} {
         set accelerator "Ctrl"
     }
     menu $menubar
+    if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
     set menulist "file edit put find media window help"
     foreach mymenu $menulist {    
         menu $menubar.$mymenu
@@ -43,7 +44,6 @@ proc ::pd_menus::create_menubar {} {
             -menu $menubar.$mymenu
         [format build_%s_menu $mymenu] $menubar.$mymenu
     }
-    if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
     if {$::windowingsystem eq "win32"} {create_system_menu $menubar}
     . configure -menu $menubar
 }
@@ -509,13 +509,12 @@ proc ::pd_menus::create_apple_menu {mymenu} {
     # TODO this should open a Pd patch called about.pd
     menu $mymenu.apple
     $mymenu.apple add command -label [_ "About Pd"] -command {menu_aboutpd}
-    $mymenu.apple add  separator
+    $mymenu.apple add separator
     create_preferences_menu $mymenu.apple.preferences
     $mymenu.apple add cascade -label [_ "Preferences"] \
         -menu $mymenu.apple.preferences
     # this needs to be last for things to function properly
     $mymenu add cascade -label "Apple" -menu $mymenu.apple
-    
 }
 
 proc ::pd_menus::build_file_menu_aqua {mymenu} {

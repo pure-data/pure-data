@@ -326,6 +326,9 @@ proc init_for_platform {} {
             set ::cursor_editmode_resize "sb_h_double_arrow"
         }
         "aqua" {
+            # load tk::mac event callbacks here, this way launching pd
+            # from the commandline incorporates the special mac event handling
+            package require apple_events
             set ::modifier "Mod1"
             option add *DialogWindow*background "#E8E8E8" startupFile
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
@@ -533,9 +536,10 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
-    ::pdtk_canvas::create_popup
     ::pdwindow::create_window
+    ::pdwindow::configure_menubar
     ::pd_menus::configure_for_pdwindow
+    ::pdtk_canvas::create_popup
     load_startup_plugins
     open_filestoopen
     set ::done_init 1
