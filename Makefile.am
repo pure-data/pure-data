@@ -1,3 +1,6 @@
+#########################################
+##### Defaults & Paths #####
+
 AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I m4/generated -I m4
 
@@ -8,19 +11,25 @@ EXTRA_SUBDIRS =
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pd.pc
 
-# optional apis
+#########################################
+##### Files, Binaries, & Libs #####
+
+##### ASIO #####
 if ASIO
 EXTRA_SUBDIRS += asio
 endif
 
+##### PortAudio #####
 if LOCAL_PORTAUDIO
 EXTRA_SUBDIRS += portaudio
 endif
 
+##### PortMidi #####
 if LOCAL_PORTMIDI
 EXTRA_SUBDIRS += portmidi
 endif
 
+##### Localizations #####
 # optionally build localizations
 BUILT_SOURCES = 
 if MSGFMT
@@ -36,6 +45,9 @@ SUBDIRS = $(EXTRA_SUBDIRS) src mac man doc tcl extra
 
 # subdirs that are always included in the dist, etc.
 DIST_SUBDIRS = asio doc extra mac man po portmidi portaudio src tcl
+
+#########################################
+##### Targets #####
 
 .PHONY: app
 

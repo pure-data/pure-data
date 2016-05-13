@@ -1,10 +1,17 @@
 # this is built as a "libtool convenience library"
 # http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
+
+#########################################
+##### Defaults & Paths #####
+
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = -DNEWBUFFER
 AM_CPPFLAGS += \
     -I$(top_srcdir)/portmidi/portmidi/pm_common \
     -I$(top_srcdir)/portmidi/portmidi/porttime
+
+#########################################
+##### Files, Binaries, & Libs #####
 
 noinst_LTLIBRARIES = libportmidi.la
 

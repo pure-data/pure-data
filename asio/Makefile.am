@@ -12,9 +12,15 @@
 # this is built as a "libtool convenience library"
 # http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
 
+#########################################
+##### Defaults & Paths #####
+
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = 
 AM_CPPFLAGS += -I./ASIOSDK2/host -I./ASIOSDK2/host/pc -I./ASIOSDK2/common
+
+#########################################
+##### Files, Binaries, & Libs #####
 
 noinst_LTLIBRARIES = libasio.la
 

@@ -1,6 +1,12 @@
+#########################################
+##### Defaults & Paths #####
+
 AUTOMAKE_OPTIONS = foreign
 
 SUFFIXES = .tcl
+
+#########################################
+##### Files, Binaries, & Libs #####
 
 bin_SCRIPTS = pd-gui.tcl
 
@@ -40,6 +46,9 @@ dist_libpdtcl_DATA = \
     pd_guiprefs.tcl \
     pd_deken.tcl \
     pd.ico
+
+#########################################
+##### Targets #####
 
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl

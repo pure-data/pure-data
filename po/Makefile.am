@@ -1,6 +1,12 @@
+#########################################
+##### Defaults & Paths #####
+
 AUTOMAKE_OPTIONS = foreign
 
 SUFFIXES = .po .pot .msg
+
+#########################################
+##### Files, Binaries, & Libs #####
 
 TCLFILES = \
     apple_events.tcl \
@@ -49,6 +55,9 @@ dist_libpdpo_DATA =
 EXTRA_DIST = $(POFILES) \
     iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl \
     template.pot
+
+#########################################
+##### Targets #####
 
 # generate .msg files from the .po files
 all-local: $(MSGFILES)

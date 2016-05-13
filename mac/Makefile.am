@@ -1,3 +1,5 @@
+#########################################
+##### Files, Binaries, & Libs #####
 
 # files that are included but not built
 EXTRA_DIST = \
@@ -5,6 +7,11 @@ EXTRA_DIST = \
     stuff/Info.plist \
     stuff/pd-file.icns \
     stuff/pd.icns
+
+#########################################
+##### Targets #####
+
+.PHONY: app
 
 if MACOSX
 
@@ -21,5 +28,3 @@ app:
 	echo "app bundle only supported when building on OS X"
 
 endif
-
-.PHONY: app

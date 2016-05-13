@@ -1,3 +1,6 @@
+#########################################
+##### Defaults & Paths #####
+
 AUTOMAKE_OPTIONS = foreign
 
 # default doc location is $(prefix)/doc/pd,
@@ -21,6 +24,9 @@ PD_TEST_VERSION = $(shell grep PD_TEST_VERSION $(M_PD) | \
     sed 's|^.define *PD_TEST_VERSION *"\(.*\)".*|\1|' )
 PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
 
+#########################################
+##### Targets #####
+
 # startup lock files (?)
 install-data-local:
 	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup
@@ -39,6 +45,9 @@ install-data-hook:
 	    > $(DESTDIR)/$(libpddir)/$(ABOUT_FILE) ; \
 	fi
 	rm $(DESTDIR)/$(libpddir)/$(ABOUT_FILE).tmp
+
+#########################################
+##### Files, Binaries, & Libs #####
 
 # empty var for data list footer
 empty=

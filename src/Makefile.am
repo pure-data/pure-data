@@ -1,3 +1,6 @@
+#########################################
+##### Defaults & Paths #####
+
 AUTOMAKE_OPTIONS = foreign
 
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
@@ -10,6 +13,9 @@ pd_watchdog_CFLAGS =
 LIBS = @LIBS@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
+
+#########################################
+##### Files, Binaries, & Libs #####
 
 bin_PROGRAMS = pd pdsend pdreceive
 pdsend_SOURCES = u_pdsend.c
@@ -101,25 +107,24 @@ EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
     s_audio_audiounit.c s_audio_esd.c
 
-# configurations per library
+#########################################
+##### Configurations Per Library #####
+
+##### Advanced Linux Sound Architecture #####
 if ALSA
 pd_CFLAGS += -DUSEAPI_ALSA
 pd_LDADD += @ALSA_LIBS@
 pd_SOURCES += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 endif
 
+##### OSX CoreAudio #####
 # needed by PortAudio on OSX
 if COREAUDIO
 LIBS += -framework CoreAudio -framework CoreMIDI \
         -framework AudioUnit -framework AudioToolbox
 endif
 
-if FFTW
-pd_SOURCES += d_fft_fftw.c
-else
-pd_SOURCES += d_fft_fftsg.c
-endif
-
+##### Jack Audio Connection Kit #####
 # TODO support Jack xrun
 if JACK
 pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
@@ -131,11 +136,19 @@ pd_LDADD += @JACK_LIBS@
 endif
 endif
 
+##### GNU/Linux Open Sound System #####
 if OSS
 pd_CFLAGS += -DUSEAPI_OSS
 pd_SOURCES += s_audio_oss.c s_midi_oss.c
 endif
 
+##### Windows MultiMedia (File) I/O #####
+if MMIO
+pd_CFLAGS += -DUSEAPI_MMIO
+pd_SOURCES += s_audio_mmio.c
+endif
+
+##### PortAudio #####
 if PORTAUDIO
 pd_CFLAGS += -DUSEAPI_PORTAUDIO
 pd_SOURCES += s_audio_pa.c s_audio_paring.c
@@ -149,18 +162,21 @@ else
 pd_LDADD += -lportaudio
 endif
 
+# need Carbon framework for PA on Mac
 if MACOSX
 LIBS += -framework Carbon
 endif
 
 endif
 
+##### ASIO #####
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
 pd_LDADD += $(top_builddir)/asio/libasio.la
 nodist_EXTRA_pd_SOURCES += dummy.cxx
 endif
 
+##### PortMidi #####
 if PORTMIDI
 pd_SOURCES += s_midi_pm.c
 
@@ -175,17 +191,14 @@ else
 pd_LDADD += -lportmidi
 endif
 
+# need  Carbon framework for PM on Mac
 if MACOSX
 LIBS += -framework CoreFoundation -framework Carbon
 endif
 
 endif
 
-if MMIO
-pd_CFLAGS += -DUSEAPI_MMIO
-pd_SOURCES += s_audio_mmio.c
-endif
-
+##### NO API? #####
 # if no audio or midi api was detected/specified, fall back to dummy apis
 # ie. GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
 if AUDIO_DUMMY
@@ -196,6 +209,17 @@ if MIDI_DUMMY
 pd_SOURCES += s_midi_dummy.c
 endif
 
+##### FFTW fft library #####
+if FFTW
+pd_SOURCES += d_fft_fftw.c
+else
+pd_SOURCES += d_fft_fftsg.c
+endif
+
+#########################################
+##### Configurations Per Platform #####
+
+##### GNU/Hurd #####
 if HURD
 libpdbindir = $(pkglibdir)/bin
 libpdbin_DATA =
@@ -215,6 +239,7 @@ pd_LDFLAGS += -lpthread
 pd_LDFLAGS += -ldl
 endif
 
+##### GNU/Linux #####
 if LINUX
 libpdbindir = $(pkglibdir)/bin
 libpdbin_DATA =
@@ -228,6 +253,7 @@ pd_LDFLAGS += -export-dynamic
 pd_LDFLAGS += $(LIBM)
 endif
 
+##### Apple Mac OSX #####
 if MACOSX
 
 # required for dlopen & weak linking
@@ -242,11 +268,13 @@ bin_SCRIPTS =
 bin_PROGRAMS += pd-watchdog
 endif
 
+##### Windows #####
 if WINDOWS
 LIBS += -lwsock32 -lwinmm -lole32
 bin_SCRIPTS =
 endif
 
+##### Windows MinGW #####
 if MINGW
 # To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
 # XP SP1. WINVER isnt' fine-grained enough for that, so we use the
@@ -254,9 +282,13 @@ if MINGW
 pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DWINVER=0x0502
 endif
 
+#########################################
+##### Targets #####
+
+.PHONY: convenience-links
+
 # create a bin folder & symlinks to the binaries in order to
 # replicate the src/makefile.* build result
-.PHONY: convenience-links
 all-local: convenience-links
 
 convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)

@@ -1,3 +1,6 @@
+#########################################
+##### Files, Binaries, & Libs #####
+
 SUBDIRS = bob~ bonk~ choice fiddle~ loop~ lrshift~ pd~ pique sigmund~ stdout
 
 DIST_SUBDIRS = $(SUBDIRS)
