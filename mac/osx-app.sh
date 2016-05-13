@@ -10,42 +10,66 @@
 # Dan Wilcox danomatika.com
 #
 
+# stop on error
+set -e
+
 WD=$(dirname $0)
 
 verbose=
-included_wish=false
-TK=Current
+universal=
+included_wish=true
+EXTERNAL_EXT=pd_darwin
+TK=
+SYS_TK=Current
+WISH=
 
 # Help message
 #----------------------------------------------------------
 help() {
 echo -e "
-Usage: osx-app.sh [OPTIONS] VERSION
+Usage: osx-app.sh [OPTIONS] VERSION WISH
 
-  Creates a Pd .app bundle for OS X
+  Creates a Pd .app bundle for OS X using a Tk Wish.app wrapper
+
+  Uses the included Wish.app in stuff/wish-shell.tgz by default
 
 Options:
   -h,--help           display this help message
+
   -v,--verbose        verbose copy prints
-  -t,--tk VER         build using a specific version of the Tk
-                      Wish.app on the system (default: Current)
-  -i,--included-wish  build using the included Tk 8.4 Wish.app,
-                      *may not* be present (default: no)
+
+  -w,--wish APP       use a specific Wish.app
+  
+  -s,--system-tk VER  use a version of the Tk Wish.app
+                      on the system (Current, 8.4, etc)
+
+  -t,--tk VER         use a version of Wish.app with embedded Tcl/Tk
+                      frameworks, downloads and builds using tcltk-wish.sh
+
+  --universal         \"universal\" multi-arch build when using -t,--tk:
+                      i386 & x86_64 (& ppc if 10.6 SDK found)
 
 Arguments:
 
   VERSION             version string to use in file name (required)
+  WISH                provide a source Wish.app to use (optional)
 
 Examples:
 
-    $ create d-0.47-0.app with the current Wish.app
+    # create Pd-0.47-0.app with included Tk 8.4 Wish
     osx-app.sh 0.47-0
 
-    # create Pd-0.47-0.app with included Wish
-    osx-app.sh -i 0.47-0
-
     # create Pd-0.47-0.app with the system's Tk 8.4 Wish.app
-    osx-app.sh -t 8.4 0.47-0
+    osx-app.sh --system-tk 8.4 0.47-0
+
+    # create Pd-0.47-0.app by downloading & building Tk 8.5.19
+    osx-app.sh --tk 8.5.19 0.47-0
+
+    # same as above, but with a \"universal\" multi-arch build 
+    osx-app.sh --tk 8.5.19 --universal 0.47-0
+
+    # use Wish-8.6.5.app manually built with tcltk-wish.sh
+    osx-app.sh --wish Wish-8.6.5 0.47-0
 "
 }
 
@@ -55,14 +79,31 @@ while [ "$1" != "" ] ; do
     case $1 in
         -t|--tk)
             if [ $# == 0 ] ; then
-                echo "-t,--tk option requires an argument"
+                echo "-t,--tk option requires a VER argument"
                 exit 1
             fi
             shift 1
             TK=$1
+            included_wish=false
             ;;
-        -i|--included-wish)
-            included_wish=true
+        -s|--system-tk)
+            if [ $# != 0 ] ; then
+                shift 1
+                SYS_TK=$1
+            fi
+            included_wish=false
+            ;;
+        -w|--wish)
+            if [ $# == 0 ] ; then
+                echo "-w,--wish option requires an APP argument"
+                exit 1
+            fi
+            shift 1
+            WISH=$1
+            included_wish=false
+            ;;
+        --universal)
+            universal=--universal
             ;;
         -v|--verbose)
             verbose=-v
@@ -90,9 +131,6 @@ APP=Pd-$1.app
 SRC=..
 DEST=$APP/Contents/Resources
 
-SYS_WISH_APP=/System/Library/Frameworks/Tk.framework/Versions/$TK/Resources/Wish.app
-EXTERNAL_EXT=pd_darwin
-
 cd $WD
 
 # remove old app if found
@@ -110,32 +148,57 @@ if [ "$verbose" != "" ] ; then
     echo "==== Creating $APP"
 fi
 
-# extract Wish app & rename binary
+# extract included Wish app
 if [ $included_wish == true ] ; then
     tar xzf stuff/wish-shell.tgz
-    mv "Wish Shell.app" $APP
+    mv "Wish Shell.app" Wish.app
+    WISH=Wish.app
+
+# build Wish or use the system Wish
+elif [ "$WISH" == "" ] ; then
+    if [ "$TK" != "" ] ; then
+        echo "Using custom $TK Wish.app"
+        tcltk-wish.sh $universal $TK
+        WISH=Wish-${TK}.app
+    elif [ "$SYS_TK" != "" ] ; then
+        echo "Using system $SYS_TK Wish.app"
+        cp -R $verbose /System/Library/Frameworks/Tk.framework/Versions/$SYS_TK/Resources/Wish.app .
+        WISH=Wish.app
+    fi
+
+# make a copy if using a given Wish.app
+else 
+    cp -R "$WISH" "$WISH-tmp"
+    WISH="$WISH-tmp"
+fi
+
+# sanity check
+if [ ! -e $WISH ] ; then
+    echo "$WISH not found"
+    exit 1
+fi
+
+# change app name and rename resources
+# try to handle both older "Wish Shell.app" & newer "Wish.app"
+mv "$WISH" $APP
+chmod -R u+w $APP
+if [ -e $APP/Contents/version.plist ] ; then
+    rm $APP/Contents/version.plist
+fi
+# older "Wish Shell.app" does not have a symlink but a real file
+if [ -f $APP/Contents/MacOS/Wish\ Shell ] ; then
     mv $APP/Contents/MacOS/Wish\ Shell $APP/Contents/MacOS/Pd
     mv $APP/Contents/Resources/Wish\ Shell.rsrc $APP/Contents/Resources/Pd.rsrc
 else
-    echo "Using $TK system Wish.app"
-    if [ -e $SYS_WISH_APP ] ; then
-        cp -R $SYS_WISH_APP $APP
-        if [ -e $APP/Contents/version.plist ] ; then
-            rm $APP/Contents/version.plist
-        fi
-        mv $APP/Contents/MacOS/Wish $APP/Contents/MacOS/Pd
-        rm -f $APP/Contents/MacOS/Wish\ Shell
-        if [ -e $APP/Contents/Resources/Wish.rsrc ] ; then
-            mv $APP/Contents/Resources/Wish.rsrc $APP/Contents/Resources/Pd.rsrc
-        else
-            mv $APP/Contents/Resources/Wish.sdef $APP/Contents/Resources/Pd.sdef
-        fi
+    mv $APP/Contents/MacOS/Wish $APP/Contents/MacOS/Pd
+    if [ -e $APP/Contents/Resources/Wish.rsrc ] ; then
+        mv $APP/Contents/Resources/Wish.rsrc $APP/Contents/Resources/Pd.rsrc
     else
-        echo "$TK system Wish.app not found: $SYS_WISH"
-        exit 1
+        mv $APP/Contents/Resources/Wish.sdef $APP/Contents/Resources/Pd.sdef
     fi
 fi
-chmod -R u+w $APP
+rm -f $APP/Contents/MacOS/Wish
+rm -f $APP/Contents/MacOS/Wish\ Shell
 
 # prepare bundle resources
 cp stuff/Info.plist $APP/Contents/
@@ -190,7 +253,7 @@ find * -prune -type d | while read ext; do
         rm -f $ext/GNUmakefile* $ext/makefile*
     fi
 done
-cd -
+cd - > /dev/null # quiet
 
 # clean Makefiles
 find $(pwd)/$DEST -name "Makefile*" -type f -delete
@@ -198,9 +261,10 @@ find $(pwd)/$DEST -name "Makefile*" -type f -delete
 # create any needed symlinks
 cd $DEST
 ln -s tcl Scripts
-cd -
+cd - > /dev/null # quiet
 
 # finish up
+rm -rf tmp
 touch $APP
 
 if [ "$verbose" != "" ] ; then 
