@@ -103,6 +103,9 @@ pd_SOURCES = \
 # declared for ASIO
 nodist_EXTRA_pd_SOURCES =
 
+# pd-watchdog and "local" pd symlink location for tcl scripts
+libpdbindir = $(pkglibdir)/bin
+
 # these install to ${includedir}/pd
 pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h x_vexp.h
 # compatibility: m_pd.h also goes into ${includedir}/
@@ -234,7 +237,6 @@ endif
 if HURD
 
 # install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbindir = $(pkglibdir)/bin
 libpdbin_PROGRAMS = pd-watchdog
 
 # this flag has to have a single leading "-" for libtool, even though ld uses
@@ -255,7 +257,6 @@ endif
 if LINUX
 
 # install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbindir = $(pkglibdir)/bin
 libpdbin_PROGRAMS = pd-watchdog
 
 # this flag has to have a single leading "-" for libtool, even though ld uses
@@ -270,7 +271,6 @@ endif
 if MACOSX
 
 # install watchdog to $(libdir)/pd/bin as it's not a user facing program
-libpdbindir = $(pkglibdir)/bin
 libpdbin_PROGRAMS = pd-watchdog
 
 # required for dlopen & weak linking
@@ -304,36 +304,6 @@ endif
 
 .PHONY: convenience-links
 
-# replace the relative PD_PREFIX in the pd-gui launcher
-# with the actual $(libdir)/pd location
-install-data-hook:
-	mv $(DESTDIR)$(bindir)/pd-gui $(DESTDIR)$(bindir)/pd-gui.tmp
-	cat $(DESTDIR)$(bindir)/pd-gui.tmp | \
-	    sed 's:PD_PREFIX=..:PD_PREFIX=$(DESTDIR)$(libdir)/pd:' > $(DESTDIR)$(bindir)/pd-gui
-	rm $(DESTDIR)$(bindir)/pd-gui.tmp
-	chmod +x $(DESTDIR)$(bindir)/pd-gui
-
-# link to $(libdir)/pd/bin so the tcl scripts can
-# launch the core if the gui is started first
-# We have to make the dir just in case as it may not exist yet &
-# we remove any existing symlink if doing a repeated install.
-install-exec-hook:
-	$(MKDIR_P) $(DESTDIR)$(libpdbindir)
-	rm -f $(DESTDIR)$(libpdbindir)/pd
-	$(LN_S) $(DESTDIR)$(bindir)/pd $(DESTDIR)$(libpdbindir)/pd
-
-# remove the $(libdir)/pd/bin link, create dir if necessary
-# &
-# remove the leftover $(inludedir)/pd folder, fail silently if the it's not empty
-# The "|| true" ensures that if the dir is *not* empty, then rmdir does not throw
-# an error and stop make.
-uninstall-hook:
-	rm -f $(DESTDIR)$(libpdbindir)/pd
-	
-	if test -d $(DESTDIR)$(pkgincludedir) ; then \
-	    rmdir $(DESTDIR)$(pkgincludedir) 2>/dev/null || true ; \
-	fi
-
 # create a bin folder & symlinks to the binaries in order to
 # replicate the src/makefile.* build result
 all-local: convenience-links
@@ -350,6 +320,36 @@ convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 
 clean-local:
 	rm -rf $(top_builddir)/bin
+
+# replace the relative PD_PREFIX in the pd-gui launcher
+# with the actual $(libdir)/pd location
+install-data-hook:
+	mv $(DESTDIR)$(bindir)/pd-gui $(DESTDIR)$(bindir)/pd-gui.tmp
+	cat $(DESTDIR)$(bindir)/pd-gui.tmp | \
+	    sed 's:PD_PREFIX=..:PD_PREFIX=$(DESTDIR)$(pkglibdir):' > $(DESTDIR)$(bindir)/pd-gui
+	rm $(DESTDIR)$(bindir)/pd-gui.tmp
+	chmod +x $(DESTDIR)$(bindir)/pd-gui
+
+# link to $(libdir)/pd/bin so the tcl scripts can
+# launch the core if the gui is started first
+# We have to make the dir just in case as it may not exist yet &
+# we remove any existing symlink if doing a repeated install.
+install-exec-hook:
+	$(MKDIR_P) $(DESTDIR)$(libpdbindir)
+	rm -f $(DESTDIR)$(libpdbindir)/pd
+	$(LN_S) $(DESTDIR)$(bindir)/pd $(DESTDIR)$(libpdbindir)/pd
+
+# remove the $(libdir)/pd/bin link
+# &
+# remove the leftover $(inludedir)/pd dir, fail silently on any non-empty dirs
+# The "|| true" ensures that if the dir is *not* empty, then rmdir does not throw
+# an error and stop make.
+uninstall-hook:
+	rm -f $(DESTDIR)$(libpdbindir)/pd
+	
+	if test -d $(DESTDIR)$(pkgincludedir) ; then \
+	    rmdir $(DESTDIR)$(pkgincludedir) 2>/dev/null || true ; \
+	fi
 
 # generate Emacs tags
 etags: TAGS

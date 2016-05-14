@@ -28,3 +28,9 @@ app:
 	echo "app bundle only supported when building on OS X"
 
 endif
+
+# kludge that relies on this Makefile being called *before* the src/Makefile
+# since we remove empty folders in $(libdir)/pd last in the main Makefile,
+# make sure multiple calls to `make uninstall` do not fail due to missing bin dir
+uninstall-local:
+	$(MKDIR_P) $(DESTDIR)$(pkglibdir)/bin

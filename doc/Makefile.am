@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # default doc location is $(prefix)/doc/pd,
 # but we want $(prefix)/lib/pd/doc
-libpddir = $(libdir)/pd/doc
+libpddir = $(pkglibdir)/doc
 
 # about text file, needed to write version string into
 ABOUT_FILE=1.manual/1.introduction.txt
