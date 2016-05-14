@@ -17,9 +17,9 @@ if MACOSX
 
 # build an app bundle on OSX
 app:
-	rm -rf $(top_srcdir)/Pd-$(VERSION).app
+	rm -rf $(top_builddir)/Pd-$(VERSION).app
 	$(SH) $(top_srcdir)/mac/osx-app.sh $(VERSION)
-	mv $(top_srcdir)/mac/Pd-$(VERSION).app $(top_srcdir)
+	mv $(top_builddir)/mac/Pd-$(VERSION).app $(top_builddir)
 
 else
 
