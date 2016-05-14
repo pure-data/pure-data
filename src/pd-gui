@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# script to launch the Pure Data gui
+
+# this will be replaced with a full path during `make install`,
+# see the install-data-hook target in `src/Makefile.am`
+PD_PREFIX=..
+
+exec ${PD_PREFIX}/tcl/pd-gui.tcl $@

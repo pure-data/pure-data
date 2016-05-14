@@ -17,7 +17,12 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 #########################################
 ##### Files, Binaries, & Libs #####
 
+# pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
+
+# install gui launcher script to $(prefix)/bin
+dist_bin_SCRIPTS = pd-gui
+
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
@@ -94,7 +99,12 @@ pd_SOURCES = \
     x_vexp.c \
     x_vexp_fun.c \
     x_vexp_if.c
+
+# declared for ASIO
 nodist_EXTRA_pd_SOURCES =
+
+# pd-watchdog and "local" pd symlink location for tcl scripts
+libpdbindir = $(pkglibdir)/bin
 
 # these install to ${includedir}/pd
 pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h x_vexp.h
@@ -129,11 +139,15 @@ endif
 if JACK
 pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
 pd_SOURCES += s_audio_jack.c
+
 if MACOSX
+# link to Jackmp on OSX
 pd_LDFLAGS += -weak_framework Jackmp
 else
+# link to Jack discovered by configure
 pd_LDADD += @JACK_LIBS@
 endif
+
 endif
 
 ##### GNU/Linux Open Sound System #####
@@ -191,7 +205,7 @@ else
 pd_LDADD += -lportmidi
 endif
 
-# need  Carbon framework for PM on Mac
+# need Carbon framework for PM on Mac
 if MACOSX
 LIBS += -framework CoreFoundation -framework Carbon
 endif
@@ -221,9 +235,9 @@ endif
 
 ##### GNU/Hurd #####
 if HURD
-libpdbindir = $(pkglibdir)/bin
-libpdbin_DATA =
-libpdbin_PROGRAMS = pd-watchdog pd
+
+# install watchdog to $(libdir)/pd/bin as it's not a user facing program
+libpdbin_PROGRAMS = pd-watchdog
 
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
@@ -241,9 +255,9 @@ endif
 
 ##### GNU/Linux #####
 if LINUX
-libpdbindir = $(pkglibdir)/bin
-libpdbin_DATA =
-libpdbin_PROGRAMS = pd-watchdog pd
+
+# install watchdog to $(libdir)/pd/bin as it's not a user facing program
+libpdbin_PROGRAMS = pd-watchdog
 
 # this flag has to have a single leading "-" for libtool, even though ld uses
 # --export-dynamic, and libtool sends -Wl,--export-dynamic to ld...
@@ -256,6 +270,9 @@ endif
 ##### Apple Mac OSX #####
 if MACOSX
 
+# install watchdog to $(libdir)/pd/bin as it's not a user facing program
+libpdbin_PROGRAMS = pd-watchdog
+
 # required for dlopen & weak linking
 pd_CFLAGS += -mmacosx-version-min=10.4
 
@@ -263,15 +280,15 @@ pd_CFLAGS += -mmacosx-version-min=10.4
 # but who knows what externals rely on this
 pd_CFLAGS += -DMACOSX
 
+# for dynamic loading & threading
 LIBS += -ldl -lm -lpthread
-bin_SCRIPTS =
-bin_PROGRAMS += pd-watchdog
+
 endif
 
 ##### Windows #####
 if WINDOWS
+# win32 sockets, multimedia, and all that
 LIBS += -lwsock32 -lwinmm -lole32
-bin_SCRIPTS =
 endif
 
 ##### Windows MinGW #####
@@ -297,18 +314,41 @@ convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(LN_S) $(top_builddir)/src/pd $(top_builddir)/bin/pd
 	$(LN_S) $(top_builddir)/src/pdsend $(top_builddir)/bin/pdsend
 	$(LN_S) $(top_builddir)/src/pdreceive $(top_builddir)/bin/pdreceive
+	$(LN_S) $(top_builddir)/src/pd-gui $(top_builddir)/bin/pd-gui
 	-test -e $(top_builddir)/src/pd-watchdog && \
 	    $(LN_S) $(top_builddir)/src/pd-watchdog $(top_builddir)/bin/pd-watchdog
 
 clean-local:
 	rm -rf $(top_builddir)/bin
 
-# remove the leftover $(inludedir)/pd folder, fail silently if the it's not empty
+# replace the relative PD_PREFIX in the pd-gui launcher
+# with the actual $(libdir)/pd location
+install-data-hook:
+	mv $(DESTDIR)$(bindir)/pd-gui $(DESTDIR)$(bindir)/pd-gui.tmp
+	cat $(DESTDIR)$(bindir)/pd-gui.tmp | \
+	    sed 's:PD_PREFIX=..:PD_PREFIX=$(DESTDIR)$(pkglibdir):' > $(DESTDIR)$(bindir)/pd-gui
+	rm $(DESTDIR)$(bindir)/pd-gui.tmp
+	chmod +x $(DESTDIR)$(bindir)/pd-gui
+
+# link to $(libdir)/pd/bin so the tcl scripts can
+# launch the core if the gui is started first
+# We have to make the dir just in case as it may not exist yet &
+# we remove any existing symlink if doing a repeated install.
+install-exec-hook:
+	$(MKDIR_P) $(DESTDIR)$(libpdbindir)
+	rm -f $(DESTDIR)$(libpdbindir)/pd
+	$(LN_S) $(DESTDIR)$(bindir)/pd $(DESTDIR)$(libpdbindir)/pd
+
+# remove the $(libdir)/pd/bin link
+# &
+# remove the leftover $(inludedir)/pd dir, fail silently on any non-empty dirs
 # The "|| true" ensures that if the dir is *not* empty, then rmdir does not throw
 # an error and stop make.
 uninstall-hook:
-	if test -d $(DESTDIR)/$(pkgincludedir) ; then \
-	    rmdir $(DESTDIR)/$(pkgincludedir) 2>/dev/null || true ; \
+	rm -f $(DESTDIR)$(libpdbindir)/pd
+	
+	if test -d $(DESTDIR)$(pkgincludedir) ; then \
+	    rmdir $(DESTDIR)$(pkgincludedir) 2>/dev/null || true ; \
 	fi
 
 # generate Emacs tags

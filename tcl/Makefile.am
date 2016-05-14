@@ -5,14 +5,12 @@ AUTOMAKE_OPTIONS = foreign
 
 SUFFIXES = .tcl
 
+libpdtcldir = $(pkglibdir)/tcl
+
 #########################################
 ##### Files, Binaries, & Libs #####
 
-bin_SCRIPTS = pd-gui.tcl
-
-libpdtcldir = $(pkglibdir)/tcl
 dist_libpdtcl_SCRIPTS = pd-gui.tcl
-
 dist_libpdtcl_DATA = \
     apple_events.tcl \
     dialog_canvas.tcl \
@@ -50,5 +48,6 @@ dist_libpdtcl_DATA = \
 #########################################
 ##### Targets #####
 
+# generate Emacs tags
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl

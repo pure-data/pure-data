@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # default doc location is $(prefix)/doc/pd,
 # but we want $(prefix)/lib/pd/doc
-libpddir = $(libdir)/pd/doc
+libpddir = $(pkglibdir)/doc
 
 # about text file, needed to write version string into
 ABOUT_FILE=1.manual/1.introduction.txt
@@ -27,24 +27,19 @@ PD_VERSION = $(PD_MAJOR_VERSION).$(PD_MINOR_VERSION).$(PD_BUGFIX_VERSION)
 #########################################
 ##### Targets #####
 
-# startup lock files (?)
-install-data-local:
-	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup
-	$(INSTALL) -d $(DESTDIR)$(libpddir)/startup/disabled
-
 # build version string & write into about file during install
 install-data-hook:
-	mv $(DESTDIR)/$(libpddir)/$(ABOUT_FILE) $(DESTDIR)/$(libpddir)/$(ABOUT_FILE).tmp
+	mv $(DESTDIR)$(libpddir)/$(ABOUT_FILE) $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
 	if test "x${PD_TEST_VERSION}" == "x" ; then \
-	    cat $(DESTDIR)/$(libpddir)/$(ABOUT_FILE).tmp | \
+	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
 	    sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
-	    > $(DESTDIR)/$(libpddir)/$(ABOUT_FILE) ; \
+	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
 	else \
-	    cat $(DESTDIR)/$(libpddir)/$(ABOUT_FILE).tmp | \
+	    cat $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp | \
 	    sed 's|PD_VERSION|Pd version $(PD_VERSION)-$(PD_TEST_VERSION)|' \
-	    > $(DESTDIR)/$(libpddir)/$(ABOUT_FILE) ; \
+	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
 	fi
-	rm $(DESTDIR)/$(libpddir)/$(ABOUT_FILE).tmp
+	rm $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
 
 #########################################
 ##### Files, Binaries, & Libs #####
