@@ -21,7 +21,7 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 bin_PROGRAMS = pd pdsend pdreceive
 
 # install gui launcher script to $(prefix)/bin
-bin_SCRIPTS = pd-gui
+dist_bin_SCRIPTS = pd-gui
 
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
