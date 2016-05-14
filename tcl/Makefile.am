@@ -59,6 +59,6 @@ etags: TAGS
 install-data-hook:
 	mv $(DESTDIR)$(bindir)/pd-gui $(DESTDIR)$(bindir)/pd-gui.tmp
 	cat $(DESTDIR)$(bindir)/pd-gui.tmp | \
-	    sed 's:PD_PREFIX=..:PD_PREFIX=$(DESTDIR)$(pkglibdir):' > $(DESTDIR)$(bindir)/pd-gui
+	    sed 's:PD_PREFIX=..:PD_PREFIX=$(pkglibdir):' > $(DESTDIR)$(bindir)/pd-gui
 	rm $(DESTDIR)$(bindir)/pd-gui.tmp
 	chmod +x $(DESTDIR)$(bindir)/pd-gui
