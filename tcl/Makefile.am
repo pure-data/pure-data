@@ -9,6 +9,8 @@ libpdtcldir = $(pkglibdir)/tcl
 
 #########################################
 ##### Files, Binaries, & Libs #####
+# install gui launcher script to $(prefix)/bin
+dist_bin_SCRIPTS = pd-gui
 
 dist_libpdtcl_SCRIPTS = pd-gui.tcl
 dist_libpdtcl_DATA = \
@@ -51,3 +53,12 @@ dist_libpdtcl_DATA = \
 # generate Emacs tags
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
+
+# replace the relative PD_PREFIX in the pd-gui launcher
+# with the actual $(libdir)/pd location
+install-data-hook:
+	mv $(DESTDIR)$(bindir)/pd-gui $(DESTDIR)$(bindir)/pd-gui.tmp
+	cat $(DESTDIR)$(bindir)/pd-gui.tmp | \
+	    sed 's:PD_PREFIX=..:PD_PREFIX=$(DESTDIR)$(pkglibdir):' > $(DESTDIR)$(bindir)/pd-gui
+	rm $(DESTDIR)$(bindir)/pd-gui.tmp
+	chmod +x $(DESTDIR)$(bindir)/pd-gui
