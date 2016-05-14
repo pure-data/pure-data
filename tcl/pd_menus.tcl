@@ -284,13 +284,16 @@ proc ::pd_menus::build_media_menu {mymenu} {
 proc ::pd_menus::build_window_menu {mymenu} {
     variable accelerator
     if {$::windowingsystem eq "aqua"} {
-        $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M"\
-            -command {menu_minimize $::focused_window}
-        $mymenu add command -label [_ "Zoom"] \
-            -command {menu_maximize $::focused_window}
-        $mymenu add  separator
-        $mymenu add command -label [_ "Bring All to Front"] \
-            -command {menu_bringalltofront}
+        # Tk 8.5+ automatically adds default Mac window menu items
+        if {$::tcl_version < 8.5} {
+            $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M"\
+                -command {menu_minimize $::focused_window}
+            $mymenu add command -label [_ "Zoom"] \
+                -command {menu_maximize $::focused_window}
+            $mymenu add  separator
+            $mymenu add command -label [_ "Bring All to Front"] \
+                -command {menu_bringalltofront}
+        }
     } else {
 		$mymenu add command -label [_ "Next Window"] \
             -command {menu_raisenextwindow} \
