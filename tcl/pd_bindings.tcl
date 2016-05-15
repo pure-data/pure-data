@@ -17,19 +17,18 @@ namespace eval ::pd_bindings:: {
 # the opposite of most menu/bind commands here and in pd_menus.tcl, which use
 # {} to force execution of any variables (i.e. $::focused_window) until later
 
-
 # binding by class is not recursive, so its useful for window events
 proc ::pd_bindings::class_bindings {} {
     # and the Pd window is in a class to itself
-    bind PdWindow <FocusIn>                "::pd_bindings::window_focusin %W"
+    bind PdWindow <FocusIn>           "::pd_bindings::window_focusin %W"
     # bind to all the windows dedicated to patch canvases
-    bind PatchWindow <FocusIn>                "::pd_bindings::window_focusin %W"
-    bind PatchWindow <Map>                    "::pd_bindings::map %W"
-    bind PatchWindow <Unmap>                  "::pd_bindings::unmap %W"
-    bind PatchWindow <Configure> "::pd_bindings::patch_configure %W %w %h %x %y"
+    bind PatchWindow <FocusIn>        "::pd_bindings::window_focusin %W"
+    bind PatchWindow <Map>            "::pd_bindings::map %W"
+    bind PatchWindow <Unmap>          "::pd_bindings::unmap %W"
+    bind PatchWindow <Configure>      "::pd_bindings::patch_configure %W %w %h %x %y"
     # dialog panel windows bindings, which behave differently than PatchWindows
-    bind DialogWindow <Configure>              "::pd_bindings::dialog_configure %W"
-    bind DialogWindow <FocusIn>                "::pd_bindings::dialog_focusin %W"
+    bind DialogWindow <Configure>     "::pd_bindings::dialog_configure %W"
+    bind DialogWindow <FocusIn>       "::pd_bindings::dialog_focusin %W"
 }
 
 proc ::pd_bindings::global_bindings {} {
@@ -60,16 +59,15 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-5>      {menu_send_float %W text 0}
     bind all <$::modifier-Key-slash>  {pdsend "pd dsp 1"}
     bind all <$::modifier-Key-period> {pdsend "pd dsp 0"}
-    bind all <$::modifier-greater>    {menu_raisenextwindow}
-    bind all <$::modifier-less>       {menu_raisepreviouswindow}
-# take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
-# "+" key... this only makes sense on US keyboards but some users
-# expected it... go figure.
+
+    # take the '=' key as a zoom-in accelerator, because '=' is the non-shifted
+    # "+" key... this only makes sense on US keyboards but some users
+    # expected it... go figure.
     bind all <$::modifier-Key-equal>  {menu_send_float %W zoom 2}
     bind all <$::modifier-Key-plus>   {menu_send_float %W zoom 2}
     bind all <$::modifier-Key-minus>  {menu_send_float %W zoom 1}
     bind all <$::modifier-Key-KP_Add>      {menu_send_float %W zoom 2}
-    bind all <$::modifier-Key-KP_Subtract>   {menu_send_float %W zoom 1}
+    bind all <$::modifier-Key-KP_Subtract> {menu_send_float %W zoom 1}
 
     # annoying, but Tk's bind needs uppercase letter to get the Shift
     bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
@@ -90,15 +88,22 @@ proc ::pd_bindings::global_bindings {} {
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
         # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
-        bind all <$::modifier-Key-m>       {menu_minimize %W}
         bind all <$::modifier-Key-t>       {menu_font_dialog}
-        bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
+        # TK 8.5+ Cocoa handles these for us
+        if {$::tcl_version < 8.5} {
+            bind all <$::modifier-Key-m>     {menu_minimize %W}
+            bind all <$::modifier-quoteleft> {menu_raisenextwindow}
+        }
     } else {
         bind all <$::modifier-Key-m>       {menu_message_dialog}
         #bind all <$::modifier-Key-t>       {menu_texteditor}
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
+
+        # these can conflict with Cmd+comma & Cmd+period bindings in Tk Cococa
+        bind all <$::modifier-greater>     {menu_raisenextwindow}
+        bind all <$::modifier-less>        {menu_raisepreviouswindow}
     }
 
     bind all <KeyPress>         {::pd_bindings::sendkey %W 1 %K %A 0}
@@ -113,8 +118,8 @@ proc ::pd_bindings::global_bindings {} {
 proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     variable modifier
 
-    bind $mytoplevel <KeyPress-Escape> "dialog_${dialogname}::cancel $mytoplevel"
-    bind $mytoplevel <KeyPress-Return> "dialog_${dialogname}::ok $mytoplevel"
+    bind $mytoplevel <KeyPress-Escape>   "dialog_${dialogname}::cancel $mytoplevel"
+    bind $mytoplevel <KeyPress-Return>   "dialog_${dialogname}::ok $mytoplevel"
     bind $mytoplevel <$::modifier-Key-w> "dialog_${dialogname}::cancel $mytoplevel"
     # these aren't supported in the dialog, so alert the user, then break so
     # that no other key bindings are run
@@ -134,12 +139,12 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     # mouse bindings -----------------------------------------------------------
     # these need to be bound to $tkcanvas because %W will return $mytoplevel for
     # events over the window frame and $tkcanvas for events over the canvas
-    bind $tkcanvas <Motion>                   "pdtk_canvas_motion %W %x %y 0"
-    bind $tkcanvas <$::modifier-Motion>         "pdtk_canvas_motion %W %x %y 2"
-    bind $tkcanvas <ButtonPress-1>            "pdtk_canvas_mouse %W %x %y %b 0"
-    bind $tkcanvas <ButtonRelease-1>          "pdtk_canvas_mouseup %W %x %y %b"
-    bind $tkcanvas <$::modifier-ButtonPress-1>  "pdtk_canvas_mouse %W %x %y %b 2"
-    bind $tkcanvas <Shift-ButtonPress-1>        "pdtk_canvas_mouse %W %x %y %b 1"
+    bind $tkcanvas <Motion>                    "pdtk_canvas_motion %W %x %y 0"
+    bind $tkcanvas <$::modifier-Motion>        "pdtk_canvas_motion %W %x %y 2"
+    bind $tkcanvas <ButtonPress-1>             "pdtk_canvas_mouse %W %x %y %b 0"
+    bind $tkcanvas <ButtonRelease-1>           "pdtk_canvas_mouseup %W %x %y %b"
+    bind $tkcanvas <$::modifier-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 2"
+    bind $tkcanvas <Shift-ButtonPress-1>       "pdtk_canvas_mouse %W %x %y %b 1"
 
     if {$::windowingsystem eq "x11"} {
         # from http://wiki.tcl.tk/3893
@@ -158,17 +163,17 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     # "right clicks" are defined differently on each platform
     switch -- $::windowingsystem { 
         "aqua" {
-            bind $tkcanvas <ButtonPress-2>      "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-2>        "pdtk_canvas_rightclick %W %x %y %b"
             # on Mac OS X, make a rightclick with Ctrl-click for 1 button mice
-            bind $tkcanvas <Control-Button-1> "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <Control-Button-1>     "pdtk_canvas_rightclick %W %x %y %b"
             bind $tkcanvas <Option-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"    
         } "x11" {
-            bind $tkcanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-3>     "pdtk_canvas_rightclick %W %x %y %b"
             # on X11, button 2 "pastes" from the X windows clipboard
-            bind $tkcanvas <ButtonPress-2>   "pdtk_canvas_clickpaste %W %x %y %b"
+            bind $tkcanvas <ButtonPress-2>     "pdtk_canvas_clickpaste %W %x %y %b"
             bind $tkcanvas <Alt-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"
         } "win32" {
-            bind $tkcanvas <ButtonPress-3>   "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-3>     "pdtk_canvas_rightclick %W %x %y %b"
             bind $tkcanvas <Alt-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"
         }
     }
@@ -274,6 +279,6 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$mytoplevel key $state $key $shift"
     } else {
-    pdsend "pd key $state $key $shift"
+        pdsend "pd key $state $key $shift"
     }
 }
