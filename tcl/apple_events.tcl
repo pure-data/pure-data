@@ -4,8 +4,10 @@ package provide apple_events 0.1
 package require pdwindow
 package require wheredoesthisgo
 
-# from http://wiki.tcl.tk/12987
-# also helpful http://www.tkdocs.com/tutorial/menus.html
+# references:
+# https://www.tcl.tk/man/tcl/TkCmd/tk_mac.htm
+# http://www.tkdocs.com/tutorial/menus.html
+# http://wiki.tcl.tk/12987
 
 set ::tk::mac::CGAntialiasLimit 0 ;# min line thickness to anti-alias (default: 3)
 set ::tk::mac::antialiasedtext  1 ;# enable anti-aliased text
@@ -45,7 +47,13 @@ proc ::tk::mac::ShowPreferences {args} {
 
 # kAEQuitApplication
 proc ::tk::mac::Quit {args} {
-    pdsend "pd verifyquit"
+    # Tk 8.4 doesn't seem to catch the Cmd-Q global binding,
+    # so we catch the quit event here
+    if {$::tcl_version < 8.5} {
+        pdsend "pd verifyquit"
+        # give pdsend enough time to avoid a socket error
+        after 50
+    }
 }
 
 # on Tk/Cocoa, respond to the "Pd Help" option in the Help menu which
