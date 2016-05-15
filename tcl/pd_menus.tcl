@@ -166,7 +166,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     if {$::windowingsystem eq "aqua"} {
 #        $mymenu add command -label [_ "Text Editor"] \
 #            -command {menu_texteditor}
-        $mymenu add command -label [_ "Font"]  -accelerator "$accelerator+T" \
+        $mymenu add command -label [_ "Font"]   -accelerator "$accelerator+T" \
             -command {menu_font_dialog}
     } else {
 #        $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T"\
@@ -174,9 +174,9 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         $mymenu add command -label [_ "Font"] \
             -command {menu_font_dialog}
     }
-    $mymenu add command -label [_ "Zoom In"] -accelerator "$accelerator++" \
+    $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
         -command {menu_send_float $::focused_window zoom 2}
-    $mymenu add command -label [_ "Zoom Out"] -accelerator "$accelerator+-" \
+    $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
         -command {menu_send_float $::focused_window zoom 1}
     $mymenu add command -label [_ "Tidy Up"] \
         -command {menu_send $::focused_window tidy}
@@ -184,7 +184,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -accelerator "Shift+$accelerator+L" -command {menu_clear_console}
     $mymenu add  separator
     #TODO madness! how to set the state of the check box without invoking the menu!
-    $mymenu add check -label [_ "Edit Mode"] -accelerator "$accelerator+E" \
+    $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
         -variable ::editmode_button \
         -command {menu_editmode $::editmode_button}
     if {$::windowingsystem ne "aqua"} {
@@ -199,34 +199,34 @@ proc ::pd_menus::build_put_menu {mymenu} {
     # The trailing 0 in menu_send_float basically means leave the object box
     # sticking to the mouse cursor. The iemguis alway do that when created
     # from the menu, as defined in canvas_iemguis()
-    $mymenu add command -label [_ "Object"] -accelerator "$accelerator+1" \
+    $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
         -command {menu_send_float $::focused_window obj 0} 
-    $mymenu add command -label [_ "Message"] -accelerator "$accelerator+2" \
+    $mymenu add command -label [_ "Message"]  -accelerator "$accelerator+2" \
         -command {menu_send_float $::focused_window msg 0}
-    $mymenu add command -label [_ "Number"] -accelerator "$accelerator+3" \
+    $mymenu add command -label [_ "Number"]   -accelerator "$accelerator+3" \
         -command {menu_send_float $::focused_window floatatom 0}
-    $mymenu add command -label [_ "Symbol"] -accelerator "$accelerator+4" \
+    $mymenu add command -label [_ "Symbol"]   -accelerator "$accelerator+4" \
         -command {menu_send_float $::focused_window symbolatom 0}
-    $mymenu add command -label [_ "Comment"] -accelerator "$accelerator+5" \
+    $mymenu add command -label [_ "Comment"]  -accelerator "$accelerator+5" \
         -command {menu_send_float $::focused_window text 0}
     $mymenu add  separator
-    $mymenu add command -label [_ "Bang"]    -accelerator "Shift+$accelerator+B" \
+    $mymenu add command -label [_ "Bang"]     -accelerator "Shift+$accelerator+B" \
         -command {menu_send $::focused_window bng}
-    $mymenu add command -label [_ "Toggle"]  -accelerator "Shift+$accelerator+T" \
+    $mymenu add command -label [_ "Toggle"]   -accelerator "Shift+$accelerator+T" \
         -command {menu_send $::focused_window toggle}
-    $mymenu add command -label [_ "Number2"] -accelerator "Shift+$accelerator+N" \
+    $mymenu add command -label [_ "Number2"]  -accelerator "Shift+$accelerator+N" \
         -command {menu_send $::focused_window numbox}
-    $mymenu add command -label [_ "Vslider"] -accelerator "Shift+$accelerator+V" \
+    $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
         -command {menu_send $::focused_window vslider}
-    $mymenu add command -label [_ "Hslider"] -accelerator "Shift+$accelerator+H" \
+    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+H" \
         -command {menu_send $::focused_window hslider}
-    $mymenu add command -label [_ "Vradio"]  -accelerator "Shift+$accelerator+D" \
+    $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
         -command {menu_send $::focused_window vradio}
-    $mymenu add command -label [_ "Hradio"]  -accelerator "Shift+$accelerator+I" \
+    $mymenu add command -label [_ "Hradio"]   -accelerator "Shift+$accelerator+I" \
         -command {menu_send $::focused_window hradio}
-    $mymenu add command -label [_ "VU Meter"] -accelerator "Shift+$accelerator+U"\
+    $mymenu add command -label [_ "VU Meter"] -accelerator "Shift+$accelerator+U" \
         -command {menu_send $::focused_window vumeter}
-    $mymenu add command -label [_ "Canvas"]  -accelerator "Shift+$accelerator+C" \
+    $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
         -command {menu_send $::focused_window mycnv}
     $mymenu add  separator
     $mymenu add command -label [_ "Graph"] -command {menu_send $::focused_window graph}
@@ -245,7 +245,7 @@ proc ::pd_menus::build_find_menu {mymenu} {
 
 proc ::pd_menus::build_media_menu {mymenu} {
     variable accelerator
-    $mymenu add radiobutton -label [_ "DSP On"] -accelerator "$accelerator+/" \
+    $mymenu add radiobutton -label [_ "DSP On"]  -accelerator "$accelerator+/" \
         -variable ::dsp -value 1 -command {pdsend "pd dsp 1"}
     $mymenu add radiobutton -label [_ "DSP Off"] -accelerator "$accelerator+." \
         -variable ::dsp -value 0 -command {pdsend "pd dsp 0"}
@@ -398,7 +398,6 @@ proc ::pd_menus::update_recentfiles_on_menu {mymenu {write}} {
     # insert the list from the end because we insert each element on the top
     set i [llength $::recentfiles_list]
     while {[incr i -1] > 0} {
-
         set filename [lindex $::recentfiles_list $i]
         $mymenu insert [expr $top_separator+1] command \
             -label [file tail $filename] -command "open_file {$filename}"
@@ -528,14 +527,14 @@ proc ::pd_menus::create_apple_menu {mymenu} {
 
 proc ::pd_menus::build_file_menu_aqua {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]       -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]      -accelerator "$accelerator+O"
+    $mymenu add command -label [_ "New"]        -accelerator "$accelerator+N"
+    $mymenu add command -label [_ "Open"]       -accelerator "$accelerator+O"
     # this is now done in main ::pd_menus::build_file_menu
     #::pd_menus::update_openrecent_menu_aqua .openrecent
     $mymenu add cascade -label [_ "Open Recent"] -menu .openrecent
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]     -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Save"]      -accelerator "$accelerator+S"
+    $mymenu add command -label [_ "Close"]      -accelerator "$accelerator+W"
+    $mymenu add command -label [_ "Save"]       -accelerator "$accelerator+S"
     $mymenu add command -label [_ "Save As..."] -accelerator "$accelerator+Shift+S"
     #$mymenu add command -label [_ "Save All"]
     #$mymenu add command -label [_ "Revert to Saved"]
@@ -560,22 +559,22 @@ proc ::pd_menus::build_window_menu_aqua {mymenu} {
 
 proc ::pd_menus::build_file_menu_x11 {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]        -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]       -accelerator "$accelerator+O"
+    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
+    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
     $mymenu add  separator
-    $mymenu add command -label [_ "Save"]       -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."] -accelerator "Shift+$accelerator+S"
+    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
+    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]    -accelerator "$accelerator+M"
+    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
+    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
     $mymenu add  separator
     # the recent files get inserted in here by update_recentfiles_on_menu
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]      -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]       -accelerator "$accelerator+Q" \
+    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
+    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {pdsend "pd verifyquit"}
 }
 
@@ -607,22 +606,22 @@ proc ::pd_menus::create_system_menu {mymenubar} {
 
 proc ::pd_menus::build_file_menu_win32 {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]      -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]     -accelerator "$accelerator+O"
+    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
+    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
     $mymenu add  separator
-    $mymenu add command -label [_ "Save"]      -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."] -accelerator "Shift+$accelerator+S"
+    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
+    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
     $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."] -accelerator "$accelerator+P"
+    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
     $mymenu add  separator
     # the recent files get inserted in here by update_recentfiles_on_menu
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]    -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]     -accelerator "$accelerator+Q"\
+    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
+    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {pdsend "pd verifyquit"}
 }
 

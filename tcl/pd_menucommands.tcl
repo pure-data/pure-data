@@ -270,7 +270,6 @@ proc ::pd_menucommands::menu_openfile {filename} {
 # open the help-intro.pd patch which provides a list of core objects
 proc ::pd_menucommands::menu_objectlist {} {
     pdsend "pd help-intro"
-    return 0
 }
 
 # ------------------------------------------------------------------------------
