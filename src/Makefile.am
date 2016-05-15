@@ -20,9 +20,6 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 # pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
 
-# install gui launcher script to $(prefix)/bin
-dist_bin_SCRIPTS = pd-gui
-
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
@@ -314,21 +311,12 @@ convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(LN_S) $(top_builddir)/src/pd $(top_builddir)/bin/pd
 	$(LN_S) $(top_builddir)/src/pdsend $(top_builddir)/bin/pdsend
 	$(LN_S) $(top_builddir)/src/pdreceive $(top_builddir)/bin/pdreceive
-	$(LN_S) $(top_builddir)/src/pd-gui $(top_builddir)/bin/pd-gui
+	$(LN_S) $(top_builddir)/tcl/pd-gui $(top_builddir)/bin/pd-gui
 	-test -e $(top_builddir)/src/pd-watchdog && \
 	    $(LN_S) $(top_builddir)/src/pd-watchdog $(top_builddir)/bin/pd-watchdog
 
 clean-local:
 	rm -rf $(top_builddir)/bin
-
-# replace the relative PD_PREFIX in the pd-gui launcher
-# with the actual $(libdir)/pd location
-install-data-hook:
-	mv $(DESTDIR)$(bindir)/pd-gui $(DESTDIR)$(bindir)/pd-gui.tmp
-	cat $(DESTDIR)$(bindir)/pd-gui.tmp | \
-	    sed 's:PD_PREFIX=..:PD_PREFIX=$(DESTDIR)$(pkglibdir):' > $(DESTDIR)$(bindir)/pd-gui
-	rm $(DESTDIR)$(bindir)/pd-gui.tmp
-	chmod +x $(DESTDIR)$(bindir)/pd-gui
 
 # link to $(libdir)/pd/bin so the tcl scripts can
 # launch the core if the gui is started first
