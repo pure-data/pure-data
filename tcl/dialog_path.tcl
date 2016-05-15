@@ -24,10 +24,11 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
     global verbose_button
     set use_standard_extensions_button $extrapath
     set verbose_button $verbose
-
     if {[winfo exists $mytoplevel]} {
+        # this doesn't seem to be called...
         wm deiconify $mytoplevel
         raise $mytoplevel
+        focus $mytoplevel
     } else {
         create_dialog $mytoplevel
     }
@@ -52,6 +53,11 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
+
+        # set position on Tk Cocoa, otherwise this dialog tends to move each time it's created
+        if {$::tcl_version >= 8.5} {
+            wm geometry $mytoplevel "400x300+30+82"
+        }
 
         # unbind ok button when in listbox
         bind $mytoplevel.listbox.box <FocusIn> "::dialog_path::unbind_return $mytoplevel"
