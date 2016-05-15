@@ -319,7 +319,7 @@ proc ::pd_menus::build_help_menu {mymenu} {
     $mymenu add command -label [_ "Browser..."] \
         -command {menu_helpbrowser} 
     $mymenu add command -label [_ "List of objects..."] \
-        -command {pdsend "pd help-intro"} 
+        -command {menu_objectlist} 
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
         -command {menu_openfile {http://puredata.info}} 
@@ -467,6 +467,12 @@ proc ::pd_menus::add_list_to_menu {mymenu window parentlist} {
 # update the list of windows on the Window menu. This expects run on the
 # Window menu, and to insert below the last separator
 proc ::pd_menus::update_window_menu {} {
+    
+    # TK 8.5+ Cocoa on Mac handles the window list for us 
+    if {$::windowingsystem eq "aqua" && $::tcl_version >= 8.5} {
+        return 0
+    }
+
     set mymenu $::patch_menubar.window
     # find the last separator and delete everything after that
     for {set i 0} {$i <= [$mymenu index end]} {incr i} {

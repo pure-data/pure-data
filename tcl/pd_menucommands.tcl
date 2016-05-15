@@ -168,14 +168,15 @@ proc ::pd_menucommands::menu_raise_pdwindow {} {
 
 # used for cycling thru windows of an app
 proc ::pd_menucommands::menu_raisepreviouswindow {} {
-    lower [lindex [wm stackorder .] end] [lindex [wm stackorder .] 0]
-    focus [lindex [wm stackorder .] end]
+    set mytoplevel [lindex [wm stackorder .] end]
+    lower $mytoplevel [lindex [wm stackorder .] 0]
+    focus $mytoplevel
 }
 
 # used for cycling thru windows of an app the other direction
 proc ::pd_menucommands::menu_raisenextwindow {} {
     set mytoplevel [lindex [wm stackorder .] 0]
-    raise $mytoplevel
+    raise $mytoplevel [lindex [wm stackorder .] end]
     focus $mytoplevel
 }
 
@@ -263,6 +264,13 @@ proc ::pd_menucommands::menu_openfile {filename} {
             }
         }
     }
+}
+
+# ------------------------------------------------------------------------------
+# open the help-intro.pd patch which provides a list of core objects
+proc ::pd_menucommands::menu_objectlist {} {
+    pdsend "pd help-intro"
+    return 0
 }
 
 # ------------------------------------------------------------------------------
