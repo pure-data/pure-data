@@ -155,11 +155,14 @@ proc ::pd_menucommands::menu_maximize {window} {
 }
 
 proc ::pd_menucommands::menu_raise_pdwindow {} {
+    # explicitly raise/lower & focus relative to the current window stack for Tk Cocoa
     if {$::focused_window eq ".pdwindow" && [winfo viewable .pdwindow]} {
-        lower .pdwindow
+        lower .pdwindow [lindex [wm stackorder .] 0]
+        focus [lindex [wm stackorder .] end]
     } else {
         wm deiconify .pdwindow
-        raise .pdwindow
+        raise .pdwindow [lindex [wm stackorder .] end]
+        focus .pdwindow
     }
 }
 
