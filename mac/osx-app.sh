@@ -99,7 +99,7 @@ while [ "$1" != "" ] ; do
                 exit 1
             fi
             shift 1
-            WISH=$1
+            WISH=${1%/} # remove trailing slash
             included_wish=false
             ;;
         --universal)
