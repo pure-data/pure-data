@@ -334,6 +334,7 @@ proc init_for_platform {} {
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
             option add *DialogWindow*Button.highlightBackground "#E8E8E8" startupFile
             option add *DialogWindow*Entry.background "white" startupFile
+            option add *DialogWindow*Menu.foreground "black" startupFile
             # Mac OS X needs a menubar all the time
             set ::dialog_menubar ".menubar"
             # set file types that open/save recognize

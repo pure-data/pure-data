@@ -62,7 +62,6 @@ proc audio_popup_action {buttonname varname devlist index} {
 proc audio_popup {name buttonname varname devlist} {
     if [winfo exists $name.popup] {destroy $name.popup}
     menu $name.popup -tearoff false
-    $name.popup configure -foreground black
     if {$::windowingsystem eq "win32"} {
         $name.popup configure -font menuFont
     }
@@ -161,7 +160,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set blocksizes {64 128 256 512 1024 2048}
     set bsmenu \
         [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize $blocksizes]
-    $bsmenu configure -foreground black
 
     pack $mytoplevel.settings.bsc.bs_label $mytoplevel.settings.bsc.bs_popup -side left
     if {$audio_callback >= 0} {
