@@ -767,7 +767,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
        pack $mytoplevel.colors.$r -side top
        foreach i { 0 1 2 3 4 5 6 7 8 9} hexcol $hexcols \
            {
-               label $mytoplevel.colors.$r.c$i -background $hexcol -activebackground $hexcol -relief ridge -padx 7 -pady 0
+               label $mytoplevel.colors.$r.c$i -background $hexcol -activebackground $hexcol -relief ridge -padx 7 -pady 0 -width 1
                bind $mytoplevel.colors.$r.c$i <Button> "::dialog_iemgui::preset_col $mytoplevel $hexcol"
            }
        pack $mytoplevel.colors.$r.c0 $mytoplevel.colors.$r.c1 $mytoplevel.colors.$r.c2 $mytoplevel.colors.$r.c3 \
