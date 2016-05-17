@@ -112,6 +112,7 @@ proc ::pd_menucommands::menu_find_dialog {} {
 proc ::pd_menucommands::menu_font_dialog {} {
     if {[winfo exists .font]} {
         raise .font
+        focus .font
     } elseif {$::focused_window eq ".pdwindow"} {
         pdtk_canvas_dofont .pdwindow [lindex [.pdwindow.text cget -font] 1]
     } else {
@@ -122,6 +123,7 @@ proc ::pd_menucommands::menu_font_dialog {} {
 proc ::pd_menucommands::menu_path_dialog {} {
     if {[winfo exists .path]} {
         raise .path
+        focus .path
     } else {
         pdsend "pd start-path-dialog"
     }
@@ -130,6 +132,7 @@ proc ::pd_menucommands::menu_path_dialog {} {
 proc ::pd_menucommands::menu_startup_dialog {} {
     if {[winfo exists .startup]} {
         raise .startup
+        focus .startup
     } else {
         pdsend "pd start-startup-dialog"
     }
@@ -206,6 +209,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
     if {[winfo exists .aboutpd]} {
         wm deiconify .aboutpd
         raise .aboutpd
+        focus .aboutpd
     } else {
         toplevel .aboutpd -class TextWindow
         wm title .aboutpd [_ "About Pd"]

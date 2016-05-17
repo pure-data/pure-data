@@ -143,6 +143,7 @@ proc ::dialog_find::open_find_dialog {mytoplevel} {
     if {[winfo exists .find]} {
         wm deiconify .find
         raise .find
+        focus .find
         ::dialog_find::set_window_to_search $mytoplevel
     } else {
         create_dialog $mytoplevel

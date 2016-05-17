@@ -49,6 +49,7 @@ proc ::dialog_message::open_message_dialog {mytoplevel} {
     if {[winfo exists .message]} {
         wm deiconify .message
         raise .message
+        focus .message
     } else {
         create_dialog $mytoplevel
     }
