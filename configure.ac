@@ -18,6 +18,7 @@ portaudio=no
 portmidi=no
 local_portaudio=yes
 local_portmidi=yes
+locales=yes
 
 # list of detected apis
 audio_backends=""
@@ -46,6 +47,7 @@ case $host in
         EXTERNAL_EXTENSION=d_fat
     else
         platform=iOS
+        locales=no
     fi
 
     # homebrew paths
@@ -247,13 +249,13 @@ fi
 # Gettext is needed to build language localizations.
 AC_ARG_ENABLE([locales],
     [AS_HELP_STRING([--disable-locales], [do not compile localizations (requires gettext)])],
-    [locales=$enableval], [locales=yes])
-if test xlocales = xyes ; then
+    [locales=$enableval])
+if test x$locales = xyes ; then
     AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
     if test x$HAVE_MSGFMT = xno ; then
         AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
+        locales=no
     fi
-    locales=$HAVE_MSGFMT
 fi
 AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 
