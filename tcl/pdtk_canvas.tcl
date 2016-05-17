@@ -306,7 +306,7 @@ proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
     set width [winfo width $tkcanvas]
 
     # call update if the window is not fully created aka 1x1
-    if {$width == 1 && $height == 1} {
+    if {$width == 1 || $height == 1} {
         update
     }
 

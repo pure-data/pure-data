@@ -189,7 +189,7 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
 
 proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     # call update if the window is not fully created aka 1x1
-    if {$width == 1 && $height == 1} {
+    if {$width == 1 || $height == 1} {
         update
     }
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
