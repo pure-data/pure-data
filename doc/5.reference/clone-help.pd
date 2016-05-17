@@ -1,4 +1,4 @@
-#N canvas 119 52 856 763 12;
+#N canvas 39 55 844 782 12;
 #X floatatom 217 311 5 36 144 0 - - -, f 5;
 #X obj 217 332 t b f;
 #X obj 217 356 f;
@@ -15,8 +15,8 @@
 #X msg 78 407 vis 5 0;
 #X floatatom 324 527 5 36 144 0 - - -, f 5;
 #X msg 324 548 all \$1;
-#X obj 177 657 ../3.audio.examples/output~;
-#X text 583 706 updated for Pd version 0.47;
+#X obj 177 644 ../3.audio.examples/output~;
+#X text 596 731 updated for Pd version 0.47;
 #X text 495 561 creation arguments:;
 #X text 25 592 click to open ->;
 #X text 13 614 (first copy only);
@@ -29,13 +29,7 @@ and repeating circularly)., f 33;
 sent to by "this" or "next", f 30;
 #X text 390 482 "set" sets the "next"/"this" counter;
 #X text 385 528 "all" broadcasts a message to all instances;
-#X text 18 229 Signal inlets are copied to all the instances. Control
-inlets forward messages as shown below. Signal outlets output the sum
-of all instances' outputs \, and control outlets forward messages after
-prepending the number of the instance., f 67;
 #X text 24 8 clone - make multiple copies of a patch;
-#X text 428 586 optional "-s #" to set starting voice number \; number
-of copies \; filename \; optional arguments;
 #X text 21 39 clone creates any number of copies of a desired abstraction
 (a patch loaded as an object in another patch). Within each copy \,
 "\$1" is set to the instance number. (These count from 0 unless overridden
@@ -45,9 +39,18 @@ contained patch \, and may be signal and/or control inlets and outlets.
 (In this example there's one control inlet and one signal outlet).
 You can click on the clone~ object to see the first of the created
 instances., f 72;
-#X obj 178 591 clone 16 clone-subpatch;
 #X text 22 111 You can pass additional arguments to the copies that
 appear as \$2 and onward., f 71;
+#X obj 178 591 clone clone-subpatch 16;
+#X text 428 586 optional "-s #" to set starting voice number \; filename
+\; number of copies \; optional arguments to copies;
+#X text 29 716 note: for backward compatibility \, you can also invoke
+this as "clone clone-subpatch 16" (for instance) \, swapping the abstraction
+name and the mumber of voices.;
+#X text 18 229 Signal inlets are copied to all the instances. Control
+inlets forward messages as shown below. Signal outlets output the sum
+of all instances' outputs \, and control outlets forward messages with
+the number of the instance prepended to them., f 67;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 5 1;
@@ -55,16 +58,16 @@ appear as \$2 and onward., f 71;
 #X connect 3 0 4 0;
 #X connect 4 0 2 1;
 #X connect 4 0 5 0;
-#X connect 5 0 32 0;
-#X connect 6 0 32 0;
+#X connect 5 0 31 0;
+#X connect 6 0 31 0;
 #X connect 7 0 6 0;
 #X connect 8 0 9 0;
-#X connect 9 0 32 0;
+#X connect 9 0 31 0;
 #X connect 10 0 11 0;
-#X connect 11 0 32 0;
-#X connect 12 0 32 0;
-#X connect 13 0 32 0;
+#X connect 11 0 31 0;
+#X connect 12 0 31 0;
+#X connect 13 0 31 0;
 #X connect 14 0 15 0;
-#X connect 15 0 32 0;
-#X connect 32 0 16 0;
-#X connect 32 0 16 1;
+#X connect 15 0 31 0;
+#X connect 31 0 16 0;
+#X connect 31 0 16 1;

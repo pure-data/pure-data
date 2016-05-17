@@ -371,10 +371,13 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         }
         else goto usage;
     }
-    if (argc < 2 || (wantn = atom_getfloatarg(0, argc, argv)) <= 0
-        || argv[1].a_type != A_SYMBOL)
-            goto usage;
-    x->x_s = argv[1].a_w.w_symbol;
+    if (argc >= 2 && (wantn = atom_getfloatarg(0, argc, argv)) >= 0
+        && argv[1].a_type == A_SYMBOL)
+            x->x_s = argv[1].a_w.w_symbol;
+    else if (argc >= 2 && (wantn = atom_getfloatarg(1, argc, argv)) >= 0
+        && argv[0].a_type == A_SYMBOL)
+            x->x_s = argv[0].a_w.w_symbol;
+    else goto usage;
         /* store a copy of the argmuents with an extra space (argc+1) for
         supplying an instance number, which we'll bash as we go. */
     x->x_argc = argc - 1;
