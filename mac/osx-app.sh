@@ -13,8 +13,6 @@
 # stop on error
 set -e
 
-WD=$(dirname $0)
-
 verbose=
 universal=
 included_wish=true
@@ -31,7 +29,7 @@ Usage: osx-app.sh [OPTIONS] VERSION WISH
 
   Creates a Pd .app bundle for OS X using a Tk Wish.app wrapper
 
-  Uses the included Wish.app in stuff/wish-shell.tgz by default
+  Uses the included Wish.app at mac/stuff/wish-shell.tgz by default
 
 Options:
   -h,--help           display this help message
@@ -126,12 +124,18 @@ fi
 
 # Go
 #----------------------------------------------------------
-APP=Pd-$1.app
 
+PWD=$(pwd)
+
+# create the app in the dir the script is run from
+APP=$(pwd)/Pd-$1.app
+
+# change to the dir of this script
+cd $(dirname $0)
+
+# pd source and app bundle destination paths
 SRC=..
 DEST=$APP/Contents/Resources
-
-cd $WD
 
 # remove old app if found
 if [ -d $APP ] ; then
@@ -139,8 +143,9 @@ if [ -d $APP ] ; then
 fi
 
 # check if pd is already built
-if [ ! -e ../bin/pd ] ; then
-    echo "Doesn't look like pd has been built yet. Maybe run make first?"
+echo "$SRC/bin/pd"
+if [ ! -e "$SRC/bin/pd" ] ; then
+    echo "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
 fi
 
@@ -166,10 +171,21 @@ elif [ "$WISH" == "" ] ; then
         WISH=Wish.app
     fi
 
-# make a copy if using a given Wish.app
-else 
-    cp -R "$WISH" "$WISH-tmp"
-    WISH="$WISH-tmp"
+# make a local copy if using a given Wish.app
+else
+    
+    # get absolute path
+    WISH=$(cd "$(dirname "$WISH")"; pwd)/$(basename "$WISH")
+    if [ ! -e $WISH ] ; then
+        echo "$WISH not found"
+        exit 1
+    fi
+    echo "Using $(basename $WISH)"
+
+    # copy
+    WISH_TMP=$(basename $WISH)-tmp
+    cp -R $WISH $WISH_TMP
+    WISH=$WISH_TMP
 fi
 
 # sanity check
@@ -246,7 +262,7 @@ find * -prune -type d | while read ext; do
         # mv compiled external into main folder
         mv $ext/.libs/$ext_lib $ext/
 
-        # remove libtool build folders & uneeded build files
+        # remove libtool build folders & unneeded build files
         rm -rf $ext/.libs
         rm -rf $ext/.deps
         rm -f $ext/*.c $ext/*.o $ext/*.lo $ext/*.la
@@ -256,7 +272,7 @@ done
 cd - > /dev/null # quiet
 
 # clean Makefiles
-find $(pwd)/$DEST -name "Makefile*" -type f -delete
+find $DEST -name "Makefile*" -type f -delete
 
 # create any needed symlinks
 cd $DEST
@@ -264,7 +280,6 @@ ln -s tcl Scripts
 cd - > /dev/null # quiet
 
 # finish up
-rm -rf tmp
 touch $APP
 
 if [ "$verbose" != "" ] ; then 
