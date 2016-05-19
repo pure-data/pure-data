@@ -667,13 +667,15 @@ static t_class *log_tilde_class;
 typedef struct _log_tilde
 {
     t_object x_obj;
+    t_inlet  *x_inlet;
     t_float x_f;
 } t_log_tilde;
 
-static void *log_tilde_new( void)
+static void *log_tilde_new(t_floatarg f)
 {
     t_log_tilde *x = (t_log_tilde *)pd_new(log_tilde_class);
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    x->x_inlet = inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+    pd_float((t_pd *)x->x_inlet, f);
     outlet_new(&x->x_obj, &s_signal);
     x->x_f = 0;
     return (x);
