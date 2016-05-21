@@ -3,6 +3,8 @@
 # Downloads and builds a Wish.app with with a
 # chosen Tcl/TK framework version.
 #
+# Check available versions at https://sourceforge.net/projects/tcl/files/Tcl
+#
 # References:
 # * http://www.tcl.tk/software/tcltk
 # * tk distribution macosx/README
@@ -12,8 +14,6 @@
 
 # stop on error
 set -e
-
-WD=$(dirname $0)
 
 UNIVERSAL=false
 ARCH=
@@ -85,12 +85,14 @@ fi
 #----------------------------------------------------------
 
 TCLTK=$1
+WISH=$(pwd)/Wish-${TCLTK}.app
 
-cd $WD
+# change to the dir of this script
+cd $(dirname $0)
 
 # remove old app if found
-if [ -d Wish-${TCLTK}.app ] ; then
-    rm -rf Wish-${TCLTK}.app
+if [ -d "$WISH" ] ; then
+    rm -rf "$WISH"
 fi
 
 echo "==== Creating Tcl/Tk $TCLTK Wish.app"
@@ -127,7 +129,7 @@ make -C tcl${TCLTK}/macosx install-embedded INSTALL_ROOT=`pwd`/embedded
 make -C tk${TCLTK}/macosx  install-embedded INSTALL_ROOT=`pwd`/embedded
 
 # move Wish.app located in "embedded"
-mv embedded/Applications/Utilities/Wish.app ./Wish-${TCLTK}.app
+mv embedded/Applications/Utilities/Wish.app $WISH
 
 # finish up
 rm -rf tcl${TCLTK}* tk${TCLTK}*
