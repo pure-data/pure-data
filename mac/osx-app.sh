@@ -143,7 +143,6 @@ if [ -d $APP ] ; then
 fi
 
 # check if pd is already built
-echo "$SRC/bin/pd"
 if [ ! -e "$SRC/bin/pd" ] ; then
     echo "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
