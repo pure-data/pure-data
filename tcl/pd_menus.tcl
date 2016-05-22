@@ -178,7 +178,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {menu_send_float $::focused_window zoom 2}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
         -command {menu_send_float $::focused_window zoom 1}
-    $mymenu add command -label [_ "Tidy Up"] \
+    $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
         -command {menu_send $::focused_window tidy}
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {menu_clear_console}
@@ -218,7 +218,7 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {menu_send $::focused_window numbox}
     $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
         -command {menu_send $::focused_window vslider}
-    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+H" \
+    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+G" \
         -command {menu_send $::focused_window hslider}
     $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
         -command {menu_send $::focused_window vradio}
@@ -229,8 +229,10 @@ proc ::pd_menus::build_put_menu {mymenu} {
     $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
         -command {menu_send $::focused_window mycnv}
     $mymenu add  separator
-    $mymenu add command -label [_ "Graph"] -command {menu_send $::focused_window graph}
-    $mymenu add command -label [_ "Array"] -command {menu_send $::focused_window menuarray}
+    $mymenu add command -label [_ "Graph"]    -accelerator "Shift+$accelerator+G" \
+        -command {menu_send $::focused_window graph}
+    $mymenu add command -label [_ "Array"]    -accelerator "Shift+$accelerator+A" \
+        -command {menu_send $::focused_window menuarray}
 }
 
 proc ::pd_menus::build_find_menu {mymenu} {
@@ -539,7 +541,7 @@ proc ::pd_menus::build_file_menu_aqua {mymenu} {
     #$mymenu add command -label [_ "Save All"]
     #$mymenu add command -label [_ "Revert to Saved"]
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]
+    $mymenu add command -label [_ "Message..."] -accelerator "$accelerator+Shift+M"
     $mymenu add  separator
     $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
 }

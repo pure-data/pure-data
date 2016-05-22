@@ -69,41 +69,69 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-KP_Add>      {menu_send_float %W zoom 2}
     bind all <$::modifier-Key-KP_Subtract> {menu_send_float %W zoom 1}
 
-    # annoying, but Tk's bind needs uppercase letter to get the Shift
-    bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
-    bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
-    bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
-    bind all <$::modifier-Shift-Key-H> {menu_send %W hslider}
-    bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
-    bind all <$::modifier-Shift-Key-L> {menu_clear_console}
-    bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
-    bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
-    bind all <$::modifier-Shift-Key-S> {menu_send %W menusaveas}
-    bind all <$::modifier-Shift-Key-T> {menu_send %W toggle}
-    bind all <$::modifier-Shift-Key-U> {menu_send %W vumeter}
-    bind all <$::modifier-Shift-Key-V> {menu_send %W vslider}
-    bind all <$::modifier-Shift-Key-W> {menu_send_float %W menuclose 1}
-    bind all <$::modifier-Shift-Key-Z> {menu_redo}
-
     # OS-specific bindings
+    set shiftcaps 1
     if {$::windowingsystem eq "aqua"} {
         # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
-        bind all <$::modifier-Key-t>       {menu_font_dialog}
-        bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
-        # TK 8.5+ Cocoa handles these for us
-        if {$::tcl_version < 8.5} {
+        bind all <$::modifier-Key-t>         {menu_font_dialog}
+        if {$::tcl_version >= 8.5} {
+            # Tk Cocoa wants lower case keys when binding with shift
+            set shiftcaps 0
+            # TK 8.5+ Cocoa handles minimize & raise next window for us
+        } else {
             bind all <$::modifier-Key-m>     {menu_minimize %W}
             bind all <$::modifier-quoteleft> {menu_raisenextwindow}
+            bind all <$::modifier-Key-comma> {pdsend "pd start-path-dialog"}
         }
     } else {
-        bind all <$::modifier-Key-m>       {menu_message_dialog}
         #bind all <$::modifier-Key-t>       {menu_texteditor}
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
-
         # these can conflict with Cmd+comma & Cmd+period bindings in Tk Cococa
         bind all <$::modifier-greater>     {menu_raisenextwindow}
         bind all <$::modifier-less>        {menu_raisepreviouswindow}
+    }
+
+    # annoying, but somtimes Tk's bind needs uppercase letters to get the Shift
+    if {$shiftcaps == 1 } {
+        bind all <$::modifier-Shift-Key-A> {menu_send %W menuarray}
+        bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
+        bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
+        bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
+        bind all <$::modifier-Shift-Key-G> {menu_send %W graph}
+        bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
+        bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
+        bind all <$::modifier-Shift-Key-K> {menu_message_dialog}
+        bind all <$::modifier-Shift-Key-L> {menu_clear_console}
+        bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
+        bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
+        bind all <$::modifier-Shift-Key-R> {menu_send %W tidy}
+        bind all <$::modifier-Shift-Key-S> {menu_send %W menusaveas}
+        bind all <$::modifier-Shift-Key-T> {menu_send %W toggle}
+        bind all <$::modifier-Shift-Key-U> {menu_send %W vumeter}
+        bind all <$::modifier-Shift-Key-V> {menu_send %W vslider}
+        bind all <$::modifier-Shift-Key-W> {menu_send_float %W menuclose 1}
+        bind all <$::modifier-Shift-Key-Z> {menu_redo}
+    } else {
+        # ... and sometimes not (I'm looking at you Tk Cocoa on Mac)
+        bind all <$::modifier-Shift-Key-a> {menu_send %W menuarray}
+        bind all <$::modifier-Shift-Key-b> {menu_send %W bng}
+        bind all <$::modifier-Shift-Key-c> {menu_send %W mycnv}
+        bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
+        bind all <$::modifier-Shift-Key-g> {menu_send %W graph}
+        bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
+        bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
+        bind all <$::modifier-Shift-Key-k> {menu_message_dialog}
+        bind all <$::modifier-Shift-Key-l> {menu_clear_console}
+        bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
+        bind all <$::modifier-Shift-Key-q> {pdsend "pd quit"}
+        bind all <$::modifier-Shift-Key-r> {menu_send %W tidy}
+        bind all <$::modifier-Shift-Key-s> {menu_send %W menusaveas}
+        bind all <$::modifier-Shift-Key-t> {menu_send %W toggle}
+        bind all <$::modifier-Shift-Key-u> {menu_send %W vumeter}
+        bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
+        bind all <$::modifier-Shift-Key-w> {menu_send_float %W menuclose 1}
+        bind all <$::modifier-Shift-Key-z> {menu_redo}
     }
 
     bind all <KeyPress>         {::pd_bindings::sendkey %W 1 %K %A 0}
@@ -124,6 +152,7 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     # these aren't supported in the dialog, so alert the user, then break so
     # that no other key bindings are run
     bind $mytoplevel <$::modifier-Key-s>       {bell; break}
+    bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
     bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
     bind $mytoplevel <$::modifier-Key-p>       {bell; break}
 
