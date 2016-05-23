@@ -83,6 +83,7 @@ proc ::dialog_font::pdtk_canvas_dofont {gfxstub initsize} {
     if {[winfo exists .font]} {
         wm deiconify .font
         raise .font
+        focus .font
         # the gfxstub stuff expects multiple font windows, we only have one,
         # so kill the new gfxstub requests as the come in.  We'll save the
         # original gfxstub for when the font panel gets closed

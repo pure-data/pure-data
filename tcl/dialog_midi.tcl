@@ -70,7 +70,10 @@ proc midi_popup {name buttonname varname devlist} {
             -command [list midi_popup_action \
                 $buttonname $varname $devlist $x] 
     }
-    tk_popup $name.popup [winfo pointerx $name] [winfo pointery $name] 0
+    # open popup over source button
+    set x [expr [winfo rootx $buttonname] + ( [winfo width $buttonname] / 2 )]
+    set y [expr [winfo rooty $buttonname] + ( [winfo height $buttonname] / 2 )]
+    tk_popup $name.popup $x $y 0
 }
 
 # start a dialog window to select midi devices.  "longform" asks us to make
