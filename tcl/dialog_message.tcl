@@ -81,6 +81,7 @@ proc ::dialog_message::create_dialog {mytoplevel} {
     label .message.label -text [_ "(use arrow keys for history)"]
     pack .message.label -side bottom
 
+    bind .message <$::modifier-Key-w> "::dialog_message::cancel %W"
     bind .message.f.entry <Up> "::dialog_message::get_history 1"
     bind .message.f.entry <Down> "::dialog_message::get_history -1"
 }
