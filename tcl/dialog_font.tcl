@@ -97,6 +97,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
     .font configure -menu $::dialog_menubar
     .font configure -padx 10 -pady 5
     wm group .font .
+    wm title .font "Font"
 #    wm resizable .font 0 0
     wm transient .font $::focused_window
     ::pd_bindings::dialog_bindings .font "font"
