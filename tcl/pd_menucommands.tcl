@@ -34,6 +34,8 @@ proc ::pd_menucommands::menu_open {} {
     }
 }
 
+# TODO set the current font family & size via the -fontmap option:
+# http://wiki.tcl.tk/41871
 proc ::pd_menucommands::menu_print {mytoplevel} {
     set filename [tk_getSaveFile -initialfile pd.ps \
                       -defaultextension .ps \
