@@ -20,6 +20,10 @@ env:
         - COVERITY_SCAN_BRANCH_PATTERN="(master|travis-ci|coverity-.*)"
         - COVERITY_SCAN_BUILD_COMMAND="make"
 
+os:
+  - linux
+  - osx
+
 ## build-matrix that builds on both gcc and clang.
 ## coverity.scan is only triggered in one of the nodes (namely gcc)
 matrix:
