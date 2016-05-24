@@ -936,14 +936,11 @@ void canvas_initbang(t_canvas *x)
 {
     t_gobj *y;
     t_symbol *s = gensym("loadbang");
-    if (!x || x->gl_pd != canvas_class)
     /* run "initbang" for all subpatches, but NOT for the child abstractions */
     for (y = x->gl_list; y; y = y->g_next)
-        if (pd_class(&y->g_pd) == canvas_class)
-    {
-        if (!canvas_isabstraction((t_canvas *)y))
-            canvas_initbang((t_canvas *)y);
-    }
+        if (pd_class(&y->g_pd) == canvas_class &&
+            !canvas_isabstraction((t_canvas *)y))
+                canvas_initbang((t_canvas *)y);
     /* call the initbang()-method for objects that have one */
     for (y = x->gl_list; y; y = y->g_next)
         if ((pd_class(&y->g_pd) != canvas_class) && zgetfn(&y->g_pd, s))

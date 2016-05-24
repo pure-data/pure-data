@@ -719,3 +719,49 @@ int iem_fstyletoint(t_iem_fstyle_flags *fstylep)
 {
     return ((fstylep->x_font_style << 0) & 63);
 }
+
+    /* for compatibility with pre-0.47 unofficial IEM GUIS like "knob". */
+void iemgui_all_colfromload(t_iemgui *iemgui, int *bflcol)
+{
+    static int warned;
+    if (!warned)
+    {
+        post("warning:\
+external GUI object uses obsolete Pd function iemgui_all_colfromload()");
+        warned = 1;
+    }
+    if(bflcol[0] < 0)
+    {
+        bflcol[0] = -1 - bflcol[0];
+        iemgui->x_bcol = ((bflcol[0] & 0x3f000) << 6)|((bflcol[0] & 0xfc0) << 4)|
+            ((bflcol[0] & 0x3f) << 2);
+    }
+    else
+    {
+        bflcol[0] = iemgui_modulo_color(bflcol[0]);
+        iemgui->x_bcol = iemgui_color_hex[bflcol[0]];
+    }
+    if(bflcol[1] < 0)
+    {
+        bflcol[1] = -1 - bflcol[1];
+        iemgui->x_fcol = ((bflcol[1] & 0x3f000) << 6)|((bflcol[1] & 0xfc0) << 4)|
+            ((bflcol[1] & 0x3f) << 2);
+    }
+    else
+    {
+        bflcol[1] = iemgui_modulo_color(bflcol[1]);
+        iemgui->x_fcol = iemgui_color_hex[bflcol[1]];
+    }
+    if(bflcol[2] < 0)
+    {
+        bflcol[2] = -1 - bflcol[2];
+        iemgui->x_lcol = ((bflcol[2] & 0x3f000) << 6)|((bflcol[2] & 0xfc0) << 4)|
+            ((bflcol[2] & 0x3f) << 2);
+    }
+    else
+    {
+        bflcol[2] = iemgui_modulo_color(bflcol[2]);
+        iemgui->x_lcol = iemgui_color_hex[bflcol[2]];
+    }
+}
+

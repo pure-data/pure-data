@@ -562,8 +562,12 @@ static void gatom_set(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
     int changed = 0;
     if (!argc) return;
     if (x->a_atom.a_type == A_FLOAT)
-        x->a_atom.a_w.w_float = atom_getfloat(argv),
-            changed = (x->a_atom.a_w.w_float != oldatom.a_w.w_float);
+    {
+        x->a_atom.a_w.w_float = atom_getfloat(argv);
+        changed = ((x->a_atom.a_w.w_float != oldatom.a_w.w_float));
+        if (isnan(x->a_atom.a_w.w_float) != isnan(oldatom.a_w.w_float))
+            changed = 1;
+    }
     else if (x->a_atom.a_type == A_SYMBOL)
         x->a_atom.a_w.w_symbol = atom_getsymbol(argv),
             changed = (x->a_atom.a_w.w_symbol != oldatom.a_w.w_symbol);
