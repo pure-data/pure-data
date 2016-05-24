@@ -125,8 +125,6 @@ fi
 # Go
 #----------------------------------------------------------
 
-PWD=$(pwd)
-
 # create the app in the dir the script is run from
 APP=$(pwd)/Pd-$1.app
 
@@ -173,8 +171,10 @@ elif [ "$WISH" == "" ] ; then
 # make a local copy if using a given Wish.app
 else
     
-    # get absolute path
+    # get absolute path in original location
+    cd - > /dev/null # quiet
     WISH=$(cd "$(dirname "$WISH")"; pwd)/$(basename "$WISH")
+    cd - > /dev/null # quiet
     if [ ! -e $WISH ] ; then
         echo "$WISH not found"
         exit 1
