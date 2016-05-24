@@ -33,11 +33,11 @@ matrix:
       compiler: clang
     - os: osx
 
-before_install:
-## install some dependencies
-- sudo apt-get update -qq
-- sudo apt-get install -qq  libasound2-dev libjack-dev
-
+addons:
+  apt:
+    packages:
+      - libasound2-dev
+      - libjack-dev
 
 before_script:
 ## basic autoconf setup
