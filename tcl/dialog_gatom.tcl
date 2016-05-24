@@ -181,6 +181,12 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
         $mytoplevel.gatomlabel.radio.top config -command [ concat ::dialog_gatom::apply $mytoplevel ]
         $mytoplevel.gatomlabel.radio.bottom config -command [ concat ::dialog_gatom::apply $mytoplevel ]
 
+        # allow radiobutton focus
+        $mytoplevel.gatomlabel.radio.left config -takefocus 1
+        $mytoplevel.gatomlabel.radio.right config -takefocus 1
+        $mytoplevel.gatomlabel.radio.top config -takefocus 1
+        $mytoplevel.gatomlabel.radio.bottom config -takefocus 1
+
         # call apply on Return in entry boxes that are in focus & rebind Return to ok button
         bind $mytoplevel.width.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
         bind $mytoplevel.limits.lower.entry <KeyPress-Return> "::dialog_gatom::apply_and_rebind_return $mytoplevel"
@@ -205,6 +211,10 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
         $mytoplevel.buttonframe.ok config -default normal
         bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.buttonframe.ok config -highlightthickness 0
+        $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
 }
 

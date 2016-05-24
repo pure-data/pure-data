@@ -199,6 +199,9 @@ set popup_xcanvas 0
 set popup_ycanvas 0
 # modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
 set modifier ""
+# most backends require uppercase letters when binding with the shift key,
+# but some (ie. TK Cocoa) need lowercase
+set bind_shiftcaps 1
 # current state of the Edit Mode menu item
 set editmode_button 0
 
@@ -330,6 +333,10 @@ proc init_for_platform {} {
             # from the commandline incorporates the special mac event handling
             package require apple_events
             set ::modifier "Mod1"
+            if {$::tcl_version >= 8.5} {
+                # Tk Cocoa wants lower case keys when binding with shift
+                set ::bind_shiftcaps 0
+            }
             option add *DialogWindow*background "#E8E8E8" startupFile
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
             option add *DialogWindow*Button.highlightBackground "#E8E8E8" startupFile

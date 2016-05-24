@@ -106,7 +106,7 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
     variable menubar
     # these are meaningless for the dialog panels, so disable them except for
-    # the ones that make senes in the Find dialog panel
+    # the ones that make sense in the Find dialog panel
     # File menu
     if {$mytoplevel ne ".find"} {
         $menubar.file entryconfigure [_ "Save"] -state disabled
@@ -115,6 +115,7 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     }
     $menubar.file entryconfigure [_ "Close"] -state disabled
     # Edit menu
+    $menubar.edit entryconfigure [_ "Font"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled

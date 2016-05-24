@@ -23,12 +23,15 @@ proc ::pd_bindings::class_bindings {} {
     bind PdWindow <FocusIn>           "::pd_bindings::window_focusin %W"
     # bind to all the windows dedicated to patch canvases
     bind PatchWindow <FocusIn>        "::pd_bindings::window_focusin %W"
-    bind PatchWindow <Map>            "::pd_bindings::map %W"
-    bind PatchWindow <Unmap>          "::pd_bindings::unmap %W"
+    bind PatchWindow <Map>            "::pd_bindings::patch_map %W"
+    bind PatchWindow <Unmap>          "::pd_bindings::patch_unmap %W"
     bind PatchWindow <Configure>      "::pd_bindings::patch_configure %W %w %h %x %y"
     # dialog panel windows bindings, which behave differently than PatchWindows
     bind DialogWindow <Configure>     "::pd_bindings::dialog_configure %W"
     bind DialogWindow <FocusIn>       "::pd_bindings::dialog_focusin %W"
+    # help browser bindings
+    bind HelpBrowser <Configure>      "::pd_bindings::dialog_configure %W"
+    bind HelpBrowser <FocusIn>        "::pd_bindings::dialog_focusin %W"
 }
 
 proc ::pd_bindings::global_bindings {} {
@@ -49,7 +52,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-r>      {menu_raise_pdwindow}
     bind all <$::modifier-Key-s>      {menu_send %W menusave}
     bind all <$::modifier-Key-v>      {menu_send %W paste}
-    bind all <$::modifier-Key-w>      {menu_send_float %W menuclose 0}
+    bind all <$::modifier-Key-w>      {::pd_bindings::window_close %W}
     bind all <$::modifier-Key-x>      {menu_send %W cut}
     bind all <$::modifier-Key-z>      {menu_undo}
     bind all <$::modifier-Key-1>      {menu_send_float %W obj 0}
@@ -70,15 +73,11 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-KP_Subtract> {menu_send_float %W zoom 1}
 
     # OS-specific bindings
-    set shiftcaps 1
     if {$::windowingsystem eq "aqua"} {
         # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
         bind all <$::modifier-Key-t>         {menu_font_dialog}
-        if {$::tcl_version >= 8.5} {
-            # Tk Cocoa wants lower case keys when binding with shift
-            set shiftcaps 0
+        if {$::tcl_version < 8.5} {
             # TK 8.5+ Cocoa handles minimize & raise next window for us
-        } else {
             bind all <$::modifier-Key-m>     {menu_minimize %W}
             bind all <$::modifier-quoteleft> {menu_raisenextwindow}
             bind all <$::modifier-Key-comma> {pdsend "pd start-path-dialog"}
@@ -93,7 +92,7 @@ proc ::pd_bindings::global_bindings {} {
     }
 
     # annoying, but somtimes Tk's bind needs uppercase letters to get the Shift
-    if {$shiftcaps == 1 } {
+    if {$::bind_shiftcaps == 1 } {
         bind all <$::modifier-Shift-Key-A> {menu_send %W menuarray}
         bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
         bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
@@ -209,34 +208,12 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
 
     # window protocol bindings
     wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"$mytoplevel menuclose 0\""
-    bind $tkcanvas <Destroy> "::pd_bindings::window_destroy %W"
+    bind $tkcanvas <Destroy> "::pd_bindings::patch_destroy %W"
 }
 
 
 #------------------------------------------------------------------------------#
 # event handlers
-
-proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
-    # call update if the window is not fully created aka 1x1
-    if {$width == 1 || $height == 1} {
-        update
-    }
-    pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
-    # send the size/location of the window and canvas to 'pd' in the form of:
-    #    left top right bottom
-    pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
-}
-    
-proc ::pd_bindings::window_destroy {window} {
-    set mytoplevel [winfo toplevel $window]
-    unset ::editmode($mytoplevel)
-    unset ::editingtext($mytoplevel)
-    unset ::loaded($mytoplevel)
-    # unset my entries all of the window data tracking arrays
-    array unset ::windowname $mytoplevel
-    array unset ::parentwindows $mytoplevel
-    array unset ::childwindows $mytoplevel
-}
 
 # do tasks when changing focus (Window menu, scrollbars, etc.)
 proc ::pd_bindings::window_focusin {mytoplevel} {
@@ -256,29 +233,61 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
     if {$::editmode($mytoplevel)} {
         $mytoplevel configure -cursor hand2
     }
-    # TODO handle enabling/disabling the Cut/Copy/Paste menu items in Edit
+}
+
+# global window close event, patch windows are closed by pd
+# while other window types are closed via their own bindings
+proc ::pd_bindings::window_close {mytoplevel} {
+    # catch any non-existent windows
+    # ie. the helpbrowser after it's been
+    # closed by it's own binding
+    if {![winfo exists $mytoplevel]} {
+        return
+    }
+    menu_send_float $mytoplevel menuclose 0
+}
+
+# "map" event tells us when the canvas becomes visible, and "unmap",
+# invisible.  Invisibility means the Window Manager has minimized us.  We
+# don't get a final "unmap" event when we destroy the window.
+proc ::pd_bindings::patch_map {mytoplevel} {
+    pdsend "$mytoplevel map 1"
+    ::pdtk_canvas::finished_loading_file $mytoplevel
+}
+
+proc ::pd_bindings::patch_unmap {mytoplevel} {
+    pdsend "$mytoplevel map 0"
+}
+
+proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
+    # call update if the window is not fully created aka 1x1
+    if {$width == 1 || $height == 1} {
+        update
+    }
+    pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
+    # send the size/location of the window and canvas to 'pd' in the form of:
+    #    left top right bottom
+    pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
+}
+    
+proc ::pd_bindings::patch_destroy {window} {
+    set mytoplevel [winfo toplevel $window]
+    unset ::editmode($mytoplevel)
+    unset ::editingtext($mytoplevel)
+    unset ::loaded($mytoplevel)
+    # unset my entries all of the window data tracking arrays
+    array unset ::windowname $mytoplevel
+    array unset ::parentwindows $mytoplevel
+    array unset ::childwindows $mytoplevel
 }
 
 proc ::pd_bindings::dialog_configure {mytoplevel} {
 }
 
 proc ::pd_bindings::dialog_focusin {mytoplevel} {
-    # TODO disable things on the menus that don't work for dialogs
+    set ::focused_window $mytoplevel
     ::pd_menus::configure_for_dialog $mytoplevel
 }
-
-# "map" event tells us when the canvas becomes visible, and "unmap",
-# invisible.  Invisibility means the Window Manager has minimized us.  We
-# don't get a final "unmap" event when we destroy the window.
-proc ::pd_bindings::map {mytoplevel} {
-    pdsend "$mytoplevel map 1"
-    ::pdtk_canvas::finished_loading_file $mytoplevel
-}
-
-proc ::pd_bindings::unmap {mytoplevel} {
-    pdsend "$mytoplevel map 0"
-}
-
 
 #------------------------------------------------------------------------------#
 # key usage

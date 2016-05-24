@@ -363,44 +363,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.buttonframe.cancel config -takefocus 0
 
-        # can't see focus for buttons, so disable it
-        $mytoplevel.settings.bsc.bs_popup config -takefocus 0
-        if {[winfo exists $mytoplevel.settings.bsc.c_button]} {
-            $mytoplevel.settings.bsc.c_button config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in1f.x1]} {
-            $mytoplevel.inputs.in1f.x1 config -takefocus 0
-            $mytoplevel.inputs.in1f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in2f.x1]} {
-            $mytoplevel.inputs.in2f.x1 config -takefocus 0
-            $mytoplevel.inputs.in2f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in3f.x1]} {
-            $mytoplevel.inputs.in3f.x1 config -takefocus 0
-            $mytoplevel.inputs.in3f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in4f.x1]} {
-            $mytoplevel.inputs.in4f.x1 config -takefocus 0
-            $mytoplevel.inputs.in4f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out1f.x1]} {
-            $mytoplevel.outputs.out1f.x1 config -takefocus 0
-            $mytoplevel.outputs.out1f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out2f.x1]} {
-            $mytoplevel.outputs.out2f.x1 config -takefocus 0
-            $mytoplevel.outputs.out2f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out3f.x1]} {
-            $mytoplevel.outputs.out3f.x1 config -takefocus 0
-            $mytoplevel.outputs.out3f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out4f.x1]} {
-            $mytoplevel.outputs.out4f.x1 config -takefocus 0
-            $mytoplevel.outputs.out4f.x0 config -takefocus 0
-        }
-
         # show active focus on save settings button
         bind $mytoplevel.saveall <KeyPress-Return> "$mytoplevel.saveall invoke"
         bind $mytoplevel.saveall <FocusIn> "::dialog_audio::unbind_return $mytoplevel; $mytoplevel.saveall config -default active"
@@ -410,6 +372,11 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.buttonframe.ok config -default normal
         bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.saveall config -highlightthickness 0
+        $mytoplevel.buttonframe.ok config -highlightthickness 0
+        $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
 }
 

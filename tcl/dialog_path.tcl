@@ -54,21 +54,9 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     # focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
 
-        # set position on Tk Cocoa, otherwise this dialog tends to move each time it's created
-        if {$::tcl_version >= 8.5} {
-            wm geometry $mytoplevel "400x300+30+82"
-        }
-
         # unbind ok button when in listbox
         bind $mytoplevel.listbox.box <FocusIn> "::dialog_path::unbind_return $mytoplevel"
         bind $mytoplevel.listbox.box <FocusOut> "::dialog_path::rebind_return $mytoplevel"
-
-        # can't see focus for buttons, so disable it
-        $mytoplevel.actions.delete_path config -takefocus 0
-        $mytoplevel.actions.edit_path config -takefocus 0
-        $mytoplevel.actions.add_path config -takefocus 0
-        $mytoplevel.extraframe.extra config -takefocus 0
-        $mytoplevel.extraframe.verbose config -takefocus 0
 
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.nb.buttonframe.cancel config -takefocus 0
@@ -77,6 +65,10 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -default normal
         bind $mytoplevel.nb.buttonframe.ok <FocusIn> "$mytoplevel.nb.buttonframe.ok config -default active"
         bind $mytoplevel.nb.buttonframe.ok <FocusOut> "$mytoplevel.nb.buttonframe.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
+        $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
 }
 
@@ -118,4 +110,3 @@ proc ::dialog_path::commit { new_path } {
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_extensions_button $verbose_button $::sys_searchpath"
 }
-

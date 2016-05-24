@@ -252,14 +252,14 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.buttons.cancel config -takefocus 0
 
-        # can't see focus for checkbuttons, so disable it
-        $mytoplevel.parent.graphme config -takefocus 0
-        $mytoplevel.parent.hidetext config -takefocus 0
-
         # show active focus on the ok button as it *is* activated on Return
         $mytoplevel.buttons.ok config -default normal
         bind $mytoplevel.buttons.ok <FocusIn> "$mytoplevel.buttons.ok config -default active"
         bind $mytoplevel.buttons.ok <FocusOut> "$mytoplevel.buttons.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.buttons.ok config -highlightthickness 0
+        $mytoplevel.buttons.cancel config -highlightthickness 0
     }
  }
 

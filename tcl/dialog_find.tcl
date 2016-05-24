@@ -166,11 +166,11 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     bind .find <$::modifier-Key-s> \
         {menu_send $::focused_window menusave; break}
     # TK Cocoa requires lowercase with Shift modifier
-    if {$::windowingsystem eq "aqua" && $::tcl_version >= 8.5} {
-        bind .find <$::modifier-Shift-Key-s> \
+    if {$::bind_shiftcaps == 1 } {
+        bind .find <$::modifier-Shift-Key-S> \
             {menu_send $::focused_window menusaveas; break}
     } else {
-        bind .find <$::modifier-Shift-Key-S> \
+        bind .find <$::modifier-Shift-Key-s> \
             {menu_send $::focused_window menusaveas; break}
     }
     bind .find <$::modifier-Key-p> \
