@@ -442,6 +442,7 @@ AC_CONFIG_FILES([Makefile
                 portaudio/Makefile
                 portmidi/Makefile
                 tcl/Makefile
+                tcl/pd-gui
                 po/Makefile
                 src/Makefile
                 extra/Makefile
@@ -456,7 +457,6 @@ AC_CONFIG_FILES([Makefile
                 extra/sigmund~/GNUmakefile
                 extra/stdout/GNUmakefile
                 pd.pc
-                tcl/pd-gui
                 ])
 AC_OUTPUT
 
