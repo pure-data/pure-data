@@ -442,6 +442,7 @@ AC_CONFIG_FILES([Makefile
                 portaudio/Makefile
                 portmidi/Makefile
                 tcl/Makefile
+                tcl/pd-gui
                 po/Makefile
                 src/Makefile
                 extra/Makefile

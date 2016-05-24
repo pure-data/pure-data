@@ -5,6 +5,16 @@ AUTOMAKE_OPTIONS = foreign
 
 SUFFIXES = .po .pot .msg
 
+if MSGFMT
+XGETTEXT=xgettext
+MSGMERGE=msgmerge
+MSGFMT=msgfmt
+else
+XGETTEXT=echo fake:xgettext
+MSGMERGE=echo fake:msgmerge
+MSGFMT=echo fake:msgfmt
+endif
+
 #########################################
 ##### Files, Binaries, & Libs #####
 
@@ -73,7 +83,7 @@ po: $(POFILES)
 template: $(TEMPLATE)
 
 $(TEMPLATE): $(FILES)
-	xgettext --join-existing \
+	$(XGETTEXT) --join-existing \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
 		--sort-by-file --output=$(TEMPLATE) \
 		--package-name="Pure Data" --package-version=$(VERSION) \
@@ -87,10 +97,10 @@ $(TEMPLATE): $(FILES)
 # time a .tcl file changes
 # $(POFILES): %.po: $(TEMPLATE)
 $(POFILES): %.po:
-	msgmerge --sort-by-file --update $< $(TEMPLATE)
+	$(MSGMERGE) --sort-by-file --update $< $(TEMPLATE)
 
 %.msg: %.po
-	msgfmt --check --tcl --locale=$* -d . $<
+	$(MSGFMT) --check --tcl --locale=$* -d . $<
 
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl

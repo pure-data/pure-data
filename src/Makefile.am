@@ -311,7 +311,7 @@ convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(LN_S) $(top_builddir)/src/pd $(top_builddir)/bin/pd
 	$(LN_S) $(top_builddir)/src/pdsend $(top_builddir)/bin/pdsend
 	$(LN_S) $(top_builddir)/src/pdreceive $(top_builddir)/bin/pdreceive
-	$(LN_S) $(top_builddir)/tcl/pd-gui $(top_builddir)/bin/pd-gui
+	$(LN_S) $(top_srcdir)/tcl/pd-gui.in $(top_builddir)/bin/pd-gui
 	-test -e $(top_builddir)/src/pd-watchdog && \
 	    $(LN_S) $(top_builddir)/src/pd-watchdog $(top_builddir)/bin/pd-watchdog
 
