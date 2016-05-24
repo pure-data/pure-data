@@ -18,6 +18,7 @@ portaudio=no
 portmidi=no
 local_portaudio=yes
 local_portmidi=yes
+locales=yes
 
 # list of detected apis
 audio_backends=""
@@ -46,6 +47,7 @@ case $host in
         EXTERNAL_EXTENSION=d_fat
     else
         platform=iOS
+        locales=no
     fi
 
     # homebrew paths
@@ -226,7 +228,7 @@ AC_SUBST([JACK_LIBS])
 #########################################
 ##### Configure Options #####
 
-# Build with debug flags?
+##### Build with debug flags? #####
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [use debugging support])],
     [debug=$enableval], [debug=no])
@@ -236,7 +238,7 @@ else
     CFLAGS="$RELEASE_CFLAGS $CFLAGS"
 fi
 
-# Universal/multi architecture build on OSX
+##### Universal/multi architecture build on OSX #####
 PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
 AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
 if test x$universal = xyes ; then
@@ -244,20 +246,21 @@ if test x$universal = xyes ; then
     LDFLAGS="$ARCH_LDFLAGS $LDFLAGS"
 fi
 
+##### Gettext #####
 # Gettext is needed to build language localizations.
 AC_ARG_ENABLE([locales],
     [AS_HELP_STRING([--disable-locales], [do not compile localizations (requires gettext)])],
-    [locales=$enableval], [locales=yes])
-if test xlocales = xyes ; then
+    [locales=$enableval])
+if test x$locales = xyes ; then
     AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
     if test x$HAVE_MSGFMT = xno ; then
         AC_MSG_WARN([Install GNU gettext with msgfmt if you want localizations to be compiled!])
+        locales=no
     fi
-    locales=$HAVE_MSGFMT
 fi
 AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 
-# OSS
+##### OSS #####
 # Cygwin has sys/soundcard.h but Pd isn't ready for Cygwin since it only
 # includes OSS for UNIX
 AC_ARG_ENABLE([oss],
@@ -265,7 +268,7 @@ AC_ARG_ENABLE([oss],
     [oss=$enableval], [oss=yes])
 AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
 
-# ALSA
+##### ALSA #####
 # shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
 # alternatively we could use pkg-config
 AC_ARG_ENABLE([alsa],
@@ -275,7 +278,7 @@ if test x$alsa = xyes ; then
     AC_CHECK_LIB([asound], [snd_pcm_info], [ALSA_LIBS="-lasound"], [alsa=no])
 fi
 
-# JACK
+##### JACK #####
 # shouldn't we use pkg-config?
 # TODO support jack xrun
 AC_ARG_ENABLE([jack],
@@ -289,13 +292,13 @@ if [ test x$MACOSX != xyes ] && [ test x$jack = xyes ] ; then
     AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes], [jack=no])
 fi
 
-# MMIO
+##### MMIO #####
 AC_ARG_ENABLE([mmio],
     [AS_HELP_STRING([--disable-mmio], [do not use MMIO driver])],
     [mmio=$enableval])
 test x$WINDOWS = xyes || mmio=no
 
-# ASIO
+##### ASIO #####
 AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
     [asio=$enableval], [asio=no])
@@ -306,7 +309,7 @@ if test x$asio = xyes ; then
     fi
 fi
 
-# PortAudio
+##### PortAudio #####
 AC_ARG_ENABLE([portaudio],
     [AS_HELP_STRING([--disable-portaudio], [do not use portaudio])],
     [portaudio=$enableval])
@@ -329,7 +332,7 @@ if test x$portaudio = xyes ; then
     fi
 fi
 
-# PortMidi
+##### PortMidi #####
 AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
     [portmidi=$enableval])
@@ -356,7 +359,7 @@ if test x$portmidi = xyes ; then
     fi
 fi
 
-# fftw v3
+##### fftw v3 #####
 AC_ARG_ENABLE([fftw],
     [AS_HELP_STRING([--enable-fftw], [use FFTW package])],
     [fftw=$enableval], [fftw=no])
@@ -367,9 +370,10 @@ if test x$fftw = xyes; then
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 
+##### Configure Build From Options #####
 ## configure the build based on what we have found above
 
-## OSS
+##### OSS #####
 # Cygwin has a function OSS /dev/dsp, but not MIDI,
 # and Pd is only set up to handle a single MIDI API
 AS_IF([test x$WINDOW = xyes -a x$oss != xno],
@@ -379,40 +383,41 @@ AM_CONDITIONAL(OSS, test x$oss = xyes)
 AS_IF([test x$oss = xyes], [audio_backends="OSS ${audio_backends}"])
 AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
 
-## alsa
+##### ALSA #####
 AM_CONDITIONAL(ALSA, test x$alsa = xyes)
 AS_IF([test x$alsa = xyes], [audio_backends="alsa ${audio_backends}"])
 AS_IF([test x$alsa = xyes], [midi_backends="alsa ${midi_backends}"])
 
-## jack
+##### JACK #####
 AM_CONDITIONAL(JACK, test x$jack = xyes)
 AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 
-## mmio
+##### MMIO #####
 AM_CONDITIONAL(MMIO, test x$mmio = xyes)
 AS_IF([test x$mmio = xyes], [audio_backends="mmio ${audio_backends}"])
 AS_IF([test x$mmio = xyes], [midi_backends="mmio ${midi_backends}"])
 
-## asio
+##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
 
-## CoreAudio
+##### CoreAudio #####
 # portaudio doesn't work with iPhone, so don't bother with CoreAudio
 AS_IF([test x$IPHONEOS = xyes -a x$coreaudio != xno],
   [AC_MSG_WARN([PortAudio not working on iPhone..disabling CoreAudio])
   coreaudio=no])
 AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 
-## PortAudio
+##### PortAudio #####
 AM_CONDITIONAL(PORTAUDIO, test x$portaudio = xyes)
 AM_CONDITIONAL(LOCAL_PORTAUDIO, test x$local_portaudio = xyes)
 AS_IF([test x$portaudio = xyes], [audio_backends="PortAudio ${audio_backends}"])
 
-## PortMidi
+##### PortMidi #####
 AM_CONDITIONAL(PORTMIDI, test x$portmidi = xyes)
 AM_CONDITIONAL(LOCAL_PORTMIDI, test x$local_portmidi = xyes)
 AS_IF([test x$portmidi = xyes], [midi_backends="PortMidi ${midi_backends}"])
 
+##### DUMMY #####
 # warn if we end up trying to build without an audio or midi api
 AM_CONDITIONAL(AUDIO_DUMMY, test "x$audio_backends" = "x")
 AS_IF([test "x$audio_backends" = "x"],[

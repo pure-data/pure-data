@@ -62,6 +62,7 @@ typedef struct _clone
     t_atom *x_argv;
     int x_phase;
     int x_startvoice;   /* number of first voice, 0 by default */
+    int x_suppressvoice; /* suppress voice number as $1 arg */
 } t_clone;
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
@@ -220,7 +221,8 @@ void clone_setn(t_clone *x, t_floatarg f)
         t_canvas *c;
         t_out *outvec;
         SETFLOAT(x->x_argv, x->x_startvoice + i);
-        if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
+        if (!(c = clone_makeone(x->x_s, x->x_argc - x->x_suppressvoice,
+            x->x_argv + x->x_suppressvoice)))
         {
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
             goto done;
@@ -353,6 +355,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     x->x_invec = 0;
     x->x_outvec = 0;
     x->x_startvoice = 0;
+    x->x_suppressvoice = 0;
     if (argc == 0)
     {
         x->x_vec = 0;
@@ -369,20 +372,26 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             x->x_startvoice = argv[1].a_w.w_float;
             argc -= 2; argv += 2;
         }
+        else if (!strcmp(argv[0].a_w.w_symbol->s_name, "-x"))
+            x->x_suppressvoice = 1, argc--, argv++;
         else goto usage;
     }
-    if (argc < 2 || (wantn = atom_getfloatarg(0, argc, argv)) <= 0
-        || argv[1].a_type != A_SYMBOL)
-            goto usage;
-    x->x_s = argv[1].a_w.w_symbol;
+    if (argc >= 2 && (wantn = atom_getfloatarg(0, argc, argv)) >= 0
+        && argv[1].a_type == A_SYMBOL)
+            x->x_s = argv[1].a_w.w_symbol;
+    else if (argc >= 2 && (wantn = atom_getfloatarg(1, argc, argv)) >= 0
+        && argv[0].a_type == A_SYMBOL)
+            x->x_s = argv[0].a_w.w_symbol;
+    else goto usage;
         /* store a copy of the argmuents with an extra space (argc+1) for
         supplying an instance number, which we'll bash as we go. */
     x->x_argc = argc - 1;
     x->x_argv = getbytes(x->x_argc * sizeof(*x->x_argv));
     memcpy(x->x_argv, argv+1, x->x_argc * sizeof(*x->x_argv));
     SETFLOAT(x->x_argv, x->x_startvoice);
-    if (!(c = clone_makeone(x->x_s, x->x_argc, x->x_argv)))
-        goto fail;
+    if (!(c = clone_makeone(x->x_s, x->x_argc - x->x_suppressvoice,
+        x->x_argv + x->x_suppressvoice)))
+            goto fail;
     x->x_vec = (t_copy *)getbytes(sizeof(*x->x_vec));
     x->x_vec[0].c_gl = c;
     x->x_n = 1;
