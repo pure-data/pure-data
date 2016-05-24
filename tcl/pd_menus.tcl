@@ -71,6 +71,9 @@ proc ::pd_menus::configure_for_pdwindow {} {
         # catch errors that happen when trying to disable separators
         catch {$menubar.put entryconfigure $i -state disabled }
     }
+    # Help menu
+    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
+    $menubar.help entryconfigure [_ "List of objects..."] -state normal
 }
 
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
@@ -95,6 +98,9 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
         }
     }
     update_undo_on_menu $mytoplevel
+    # Help menu
+    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
+    $menubar.help entryconfigure [_ "List of objects..."] -state normal
 }
 
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
@@ -123,6 +129,9 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
         # catch errors that happen when trying to disable separators
         catch {$menubar.put entryconfigure $i -state disabled }
     }
+    # Help menu
+    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
+    $menubar.help entryconfigure [_ "List of objects..."] -state normal
 }
 
 
@@ -288,7 +297,7 @@ proc ::pd_menus::build_window_menu {mymenu} {
     if {$::windowingsystem eq "aqua"} {
         # Tk 8.5+ automatically adds default Mac window menu items
         if {$::tcl_version < 8.5} {
-            $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M"\
+            $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
                 -command {menu_minimize $::focused_window}
             $mymenu add command -label [_ "Zoom"] \
                 -command {menu_maximize $::focused_window}
