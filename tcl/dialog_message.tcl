@@ -41,7 +41,7 @@ proc ::dialog_message::ok {mytoplevel} {
 
 # mytoplevel isn't used here, but is kept for compatibility with other dialog cancel procs
 proc ::dialog_message::cancel {mytoplevel} {
-    wm withdraw .message
+    destroy .message
 }
 
 # the message panel is opened from the menu and key bindings

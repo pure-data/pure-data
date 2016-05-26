@@ -217,12 +217,12 @@ proc ::pd_menucommands::menu_aboutpd {} {
         wm title .aboutpd [_ "About Pd"]
         wm group .aboutpd .
         .aboutpd configure -menu $::dialog_menubar
-        text .aboutpd.text -relief flat -borderwidth 0 \
+        text .aboutpd.text -relief flat -borderwidth 0 -highlightthickness 0 \
             -yscrollcommand ".aboutpd.scroll set" -background white
         scrollbar .aboutpd.scroll -command ".aboutpd.text yview"
         pack .aboutpd.scroll -side right -fill y
         pack .aboutpd.text -side left -fill both -expand 1
-        bind .aboutpd <$::modifier-Key-w>   "wm withdraw .aboutpd"
+        bind .aboutpd <$::modifier-Key-w> "destroy .aboutpd"
         
         set textfile [open $filename]
         while {![eof $textfile]} {
