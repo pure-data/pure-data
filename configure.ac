@@ -26,7 +26,7 @@ midi_backends=""
 
 # debug/release defaults
 DEBUG_CFLAGS="-g -O0"
-RELEASE_CFLAGS="-O3 -ffast-math -funroll-loops -fomit-frame-pointer"
+RELEASE_CFLAGS="-g -O3 -ffast-math -funroll-loops -fomit-frame-pointer"
 
 # override the default flags set by AC_PROG_CC & AC_PROG_CXX,
 # these can still be overriden by CFLAGS & CXXFLAGS set by the user
