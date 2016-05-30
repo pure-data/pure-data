@@ -48,7 +48,6 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-n>      {menu_new}
     bind all <$::modifier-Key-o>      {menu_open}
     bind all <$::modifier-Key-p>      {menu_print $::focused_window}
-    bind all <$::modifier-Key-q>      {pdsend "pd verifyquit"}
     bind all <$::modifier-Key-r>      {menu_raise_pdwindow}
     bind all <$::modifier-Key-s>      {menu_send %W menusave}
     bind all <$::modifier-Key-v>      {menu_send %W paste}
@@ -77,12 +76,14 @@ proc ::pd_bindings::global_bindings {} {
         # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
         bind all <$::modifier-Key-t>         {menu_font_dialog}
         if {$::tcl_version < 8.5} {
-            # TK 8.5+ Cocoa handles minimize & raise next window for us
+            # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
+            bind all <$::modifier-Key-q>     {pdsend "pd verifyquit"}
             bind all <$::modifier-Key-m>     {menu_minimize %W}
             bind all <$::modifier-quoteleft> {menu_raisenextwindow}
             bind all <$::modifier-Key-comma> {pdsend "pd start-path-dialog"}
         }
     } else {
+        bind all <$::modifier-Key-q>       {pdsend "pd verifyquit"}
         #bind all <$::modifier-Key-t>       {menu_texteditor}
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown

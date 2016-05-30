@@ -3,6 +3,7 @@ package provide apple_events 0.1
 
 package require pdwindow
 package require wheredoesthisgo
+package pd_connect
 
 # references:
 # https://www.tcl.tk/man/tcl/TkCmd/tk_mac.htm
@@ -47,13 +48,7 @@ proc ::tk::mac::ShowPreferences {args} {
 
 # kAEQuitApplication
 proc ::tk::mac::Quit {args} {
-    # Tk 8.4 doesn't seem to catch the Cmd-Q global binding,
-    # so we catch the quit event here
-    if {$::tcl_version < 8.5} {
-        pdsend "pd verifyquit"
-        # give pdsend enough time to avoid a socket error
-        after 50
-    }
+    pdsend "pd verifyquit"
 }
 
 # on Tk/Cocoa, respond to the "Pd Help" option in the Help menu which
