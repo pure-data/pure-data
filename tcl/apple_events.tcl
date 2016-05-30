@@ -3,7 +3,6 @@ package provide apple_events 0.1
 
 package require pdwindow
 package require wheredoesthisgo
-package pd_connect
 
 # references:
 # https://www.tcl.tk/man/tcl/TkCmd/tk_mac.htm
