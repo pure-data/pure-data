@@ -18,6 +18,9 @@ set -e
 UNIVERSAL=false
 ARCH=
 
+# set deployment target to enable weak-linking for older OSX version support
+CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
+
 # Help message
 #----------------------------------------------------------
 help() {
@@ -108,21 +111,22 @@ tar -xzf tk${TCLTK}-src.tar.gz
 # set a specific arch
 if [ "$ARCH" != "" ] ; then
     CFLAGS="-arch $ARCH $CFLAGS"
-    export CFLAGS
 fi
 
 # try a universal build
 if [ $UNIVERSAL == true ] ; then
-    CFLAGS="-arch i386 -arch x86_64 -mmacosx-version-min=10.5 $CFLAGS"
+    CFLAGS="-arch i386 -arch x86_64 $CFLAGS"
     # check if the 10.6 SDK is available, if so we can build for ppc
     if [ xcodebuild -version -sdk macosx10.6 Path >/dev/null 2>&1 ] ; then
         CFLAGS="-arch ppc $CFLAGS"
     fi
-    export CFLAGS
 fi
 
+# set any custom flags
+export CFLAGS
+
 # build Tcl and Tk
-# outputs into a local "build" & "embedded" directories 
+# outputs into local "build" & "embedded" directories 
 make -C tcl${TCLTK}/macosx embedded
 make -C tk${TCLTK}/macosx embedded
 make -C tcl${TCLTK}/macosx install-embedded INSTALL_ROOT=`pwd`/embedded
