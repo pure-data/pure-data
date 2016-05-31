@@ -270,9 +270,6 @@ if MACOSX
 # install watchdog to $(libdir)/pd/bin as it's not a user facing program
 libpdbin_PROGRAMS = pd-watchdog
 
-# required for dlopen & weak linking
-pd_CFLAGS += -mmacosx-version-min=10.4
-
 # kludge, should use auto macro __APPLE__
 # but who knows what externals rely on this
 pd_CFLAGS += -DMACOSX

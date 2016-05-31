@@ -51,6 +51,9 @@ case $host in
         portmidi=yes
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
+
+        # required for dlopen & weak linking for older OSX version support
+        CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
     else
         platform=iOS
         locales=no
