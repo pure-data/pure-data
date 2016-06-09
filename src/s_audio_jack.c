@@ -33,6 +33,7 @@ static jack_client_t *jack_client = NULL;
 char *jack_client_names[MAX_CLIENTS];
 static int jack_dio_error;
 static t_audiocallback jack_callback;
+static int jack_should_autoconnect = 1;
 pthread_mutex_t jack_mutex;
 pthread_cond_t jack_sem;
 
@@ -461,7 +462,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
             memset(jack_outbuf + j * BUF_JACK, 0,
                 BUF_JACK * sizeof(t_sample));
 
-        if (jack_client_names[0])
+        if (jack_client_names[0] && jack_should_autoconnect)
             jack_connect_ports(jack_client_names[0]);
 
         pthread_mutex_init(&jack_mutex, NULL);
@@ -559,6 +560,11 @@ void jack_getdevs(char *indevlist, int *nindevs,
 void jack_listdevs( void)
 {
     post("device listing not implemented for jack yet\n");
+}
+
+void jack_autoconnect(int v)
+{
+    jack_should_autoconnect = v;
 }
 
 #endif /* JACK */
