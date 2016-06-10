@@ -336,7 +336,7 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         yvan volochine, June 2013) */
     if (!jack_client) {
         do {
-          if (strlen(desired_client_name)) {
+          if (desired_client_name && strlen(desired_client_name)) {
             if (client_iterator == 0)
               strcpy(client_name, desired_client_name);
             else
@@ -573,6 +573,7 @@ void jack_client_name(char *name)
 {
     if (desired_client_name) {
       free(desired_client_name);
+      desired_client_name = NULL;
     }
     if (name) {
       desired_client_name = (char*)getbytes(strlen(name) + 1);
