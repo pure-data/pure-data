@@ -426,6 +426,13 @@ proc ::deken::clicked_link {URL filename} {
         ::deken::post "Cannot download/install libraries!" warn
         return
     }
+    if {[tk_messageBox -message \
+        "Install to to directory $installdir?" \
+        -type yesno -default "yes" \
+        -icon question] != "yes"} {
+            return
+    }
+
     set fullpkgfile "$installdir/$filename"
     ::deken::clearpost
     ::deken::post "Commencing downloading of:\n$URL\nInto $installdir..."
