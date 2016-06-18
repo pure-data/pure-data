@@ -48,7 +48,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.2.0] } {
+if { [::deken::versioncheck 0.2.1] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -281,7 +281,9 @@ proc ::deken::prompt_installdir {} {
     set installdir [tk_chooseDirectory -title "Install libraries to directory:"]
     if { "$installdir" != "" } {
         set ::deken::installpath $installdir
+        return 1
     }
+    return 0
 }
 
 
@@ -344,8 +346,6 @@ proc ::deken::create_dialog {mytoplevel} {
     pack $mytoplevel.status -side bottom -fill x
     label $mytoplevel.status.label -textvariable ::deken::statustext
     pack $mytoplevel.status.label -side left -padx 6
-    button $mytoplevel.status.button -text [_ "Set install dir"] -default active -width 9 -command "::deken::prompt_installdir"
-    pack $mytoplevel.status.button -side right -padx 6 -pady 3
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
     scrollbar $mytoplevel.results.ys -orient vertical -command "$mytoplevel.results yview"
@@ -426,12 +426,15 @@ proc ::deken::clicked_link {URL filename} {
         ::deken::post "Cannot download/install libraries!" warn
         return
     }
-    if {[tk_messageBox -message \
-        "Install to to directory $installdir?" \
-        -type yesno -default "yes" \
-        -icon question] != "yes"} {
-            return
-    }
+    switch -- [tk_messageBox -message \
+                   "Install to directory $installdir?" \
+                   -type yesnocancel -default "yes" \
+                   -icon question] {
+                       no {set installdir ""
+                           if {[::deken::prompt_installdir]} {
+                               set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ] }
+                           if { "$installdir" eq "" } return}
+                       cancel return}
 
     set fullpkgfile "$installdir/$filename"
     ::deken::clearpost
