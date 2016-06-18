@@ -9,9 +9,13 @@ If you need jack support, add the corresponding flag to "configure":
 
   ./configure --enable-jack
 
-Alternatively, you can use the fallback makefiles in "src" for gnu/linux, Mac
-OSX, or Microsoft Visual C. On linux, for example, cd to src and type "make -f
-makefile.gnu" and (if you wish) "sudo make -f makefile.gnu install".
+If made this way, Pd will not run until it has been "installed", either via
+$ sudo make install or, for instance, $ make install DESTDIR=~/pd-xxx prefix=/
+
+Alternatively, and often more simply, you can use the fallback makefiles in
+"src" for gnu/linux, Mac OSX, or Microsoft Visual C. On linux, for example, cd
+to src and type "make -f makefile.gnu".  You can then run directly out of the
+pd/bin directory without even having to do the "install" step.
 
 Special instructions for Microsoft Visual C: cd to src and type "make -f
 makefile.nt". Then CD to the various subdirs of extra and type "make nt" in
@@ -23,6 +27,15 @@ Various dependencies:
     (apparently always present for Mac and usually there for linux).
 
 - On linux you may also need:
-    - the ALSA "dev" package: (yum install alsa-lib-devel) or (sudo apt-get install libasound2-dev)
-    - the JACK "dev" package: (yum install jack-audio-connection-kit-devel) or (sudo apt-get install libjack-dev) or (sudo apt-get install libjack-jackd2-dev)
-    - libtool (sudo apt-get install libtool)
+    - the ALSA "dev" package:
+        $ yum install alsa-lib-devel
+    or
+        $ sudo apt-get install libasound2-dev
+    - the JACK "dev" package:
+        $ yum install jack-audio-connection-kit-devel
+    or
+        $ sudo apt-get install libjack-dev
+    or
+        $ sudo apt-get install libjack-jackd2-dev)
+    - libtool (if using the "autogen" method):
+        $ sudo apt-get install libtool
