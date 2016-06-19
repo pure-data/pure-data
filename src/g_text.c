@@ -556,6 +556,11 @@ static void gatom_retext(t_gatom *x, int senditup)
         sys_queuegui(x, x->a_glist, gatom_redraw);
 }
 
+#ifdef _MSC_VER
+#include <float.h>
+#define isnan _isnan
+#endif
+
 static void gatom_set(t_gatom *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom oldatom = x->a_atom;

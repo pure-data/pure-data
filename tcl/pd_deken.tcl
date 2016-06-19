@@ -1,6 +1,7 @@
 # META NAME PdExternalsSearch
 # META DESCRIPTION Search for externals zipfiles on puredata.info
 # META AUTHOR <Chris McCormick> chris@mccormick.cx
+# META AUTHOR <IOhannes m zmölnig> zmoelnig@iem.at
 # ex: set setl sw=2 sts=2 et
 
 # Search URL:
@@ -25,9 +26,21 @@ namespace eval ::deken:: {
 ## only register this plugin if there isn't any newer version already registered
 ## (if ::deken::version is defined and is higher than our own version)
 proc ::deken::versioncheck {version} {
-    if { [info exists ::deken::version ] && [string compare $::deken::version $version] >= 0} {
-        ::pdwindow::debug "\[deken\]: the installed version appears to be up-to-date or newer...skipping!\n"
-        ::pdwindow::debug "\[deken\]: \t$::deken::version >= $version\n"
+    if { [info exists ::deken::version ] } {
+        set v0 [split $::deken::version "."]
+        set v1 [split $version "."]
+        foreach x $v0 y $v1 {
+            if { $x > $y } {
+                ::pdwindow::debug "\[deken\]: installed version \[$::deken::version\] > $version...skipping!\n"
+                return 0
+            }
+            if { $x < $y } {
+                ::pdwindow::debug "\[deken\]: installed version \[$::deken::version\] < $version...overwriting!\n"
+                set ::deken::version $version
+                return 1
+            }
+        }
+        ::pdwindow::debug "\[deken\]: installed version \[$::deken::version\] == $version...skipping!\n"
         return 0
     }
     set ::deken::version $version
@@ -35,7 +48,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.1] } {
+if { [::deken::versioncheck 0.2.1] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -54,8 +67,68 @@ set ::deken::statustimer ""
 
 set ::deken::backends [list]
 proc ::deken::register {fun} {
-    lappend ::deken::backends $fun
+    set ::deken::backends [linsert $::deken::backends 0 $fun]
 }
+
+proc ::deken::gettmpdir {} {
+    proc _iswdir {d} { expr [file isdirectory $d] * [file writable $d] }
+    set tmpdir ""
+    catch {set tmpdir $::env(TRASH_FOLDER)} ;# very old Macintosh. Mac OS X doesn't have this.
+    if {[_iswdir $tmpdir]} {return $tmpdir}
+    catch {set tmpdir $::env(TMP)}
+    if {[_iswdir $tmpdir]} {return $tmpdir}
+    catch {set tmpdir $::env(TEMP)}
+    if {[_iswdir $tmpdir]} {return $tmpdir}
+    set tmpdir "/tmp"
+    set tmpdir [pwd]
+    if {[_iswdir $tmpdir]} {return $tmpdir}
+}
+proc ::deken::vbs_unzipper {zipfile {path .}} {
+    ## this is w32 only
+    if { "Windows" eq "$::deken::platform(os)" } { } { return 0 }
+    if { "" eq $::deken::_vbsunzip } {
+        set ::deken::_vbsunzip [ file join [::deken::gettmpdir] unzip.vbs ]
+    }
+
+    if {[file exists $::deken::_vbsunzip]} {} {
+        ## no script yet, create one
+        set script {
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+'The location of the zip file.
+ZipFile = fso.GetAbsolutePathName(WScript.Arguments.Item(0))
+'The folder the contents should be extracted to.
+ExtractTo = fso.GetAbsolutePathName(WScript.Arguments.Item(1))
+
+'If the extraction location does not exist create it.
+If NOT fso.FolderExists(ExtractTo) Then
+   fso.CreateFolder(ExtractTo)
+End If
+
+'Extract the contants of the zip file.
+set objShell = CreateObject("Shell.Application")
+set FilesInZip=objShell.NameSpace(ZipFile).items
+objShell.NameSpace(ExtractTo).CopyHere(FilesInZip)
+Set fso = Nothing
+Set objShell = Nothing
+}
+        if {![catch {set fileId [open $::deken::_vbsunzip "w"]}]} {
+            puts $fileId $script
+            close $fileId
+        }
+    }
+    if {[file exists $::deken::_vbsunzip]} {} {
+        ## still no script, give up
+        return 0
+    }
+    ## try to call the script
+    if { [ catch { exec cscript $::deken::_vbsunzip $zipfile .} stdout ] } {
+        ::pdwindow::debug "\[deken\] VBS-unzip: $::deken::_vbsunzip\n$stdout\n"
+        return 0
+    }
+    return 1
+}
+set ::deken::_vbsunzip ""
 
 proc ::deken::get_writable_dir {paths} {
     set fs [file separator]
@@ -143,7 +216,7 @@ if { [ string match "Windows *" "$::deken::platform(os)" ] > 0 } {
 # normalize W32 CPUs
 if { "Windows" eq "$::deken::platform(os)" } {
     # in redmond, intel only produces 32bit CPUs,...
-    if { "intel" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "i386" }
+    if { "intel" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "i686" }
     # ... and all 64bit CPUs are manufactured by amd
     #if { "amd64" eq "$::deken::platform(machine)" } { set ::deken::platform(machine) "x86_64" }
 }
@@ -178,7 +251,10 @@ proc ::deken::status {msg} {
         set ::deken::statustext ""
     }
 }
-
+proc ::deken::scrollup {} {
+    variable mytoplevelref
+    $mytoplevelref.results see 0.0
+}
 proc ::deken::post {msg {tag ""}} {
     variable mytoplevelref
     $mytoplevelref.results insert end "$msg\n" $tag
@@ -201,18 +277,13 @@ proc ::deken::highlightable_posttag {tag} {
     # make sure that the 'highlight' tag is topmost
     $mytoplevelref.results tag raise highlight
 }
-proc ::deken::prompt_installdir {suggestdir} {
-    if { "$suggestdir" == "" } {
-        set installdir [tk_chooseDirectory \
-            -title "Install libraries to directory:"]
-    } else {
-        set installdir [tk_chooseDirectory \
-            -title "Install libraries to directory:" -initialdir $suggestdir]
-    }
+proc ::deken::prompt_installdir {} {
+    set installdir [tk_chooseDirectory -title "Install libraries to directory:"]
     if { "$installdir" != "" } {
         set ::deken::installpath $installdir
+        return 1
     }
-    return $installdir
+    return 0
 }
 
 
@@ -235,7 +306,7 @@ proc ::deken::open_searchui {mytoplevel} {
         $mytoplevel.results tag configure warn -foreground orange
         $mytoplevel.results tag configure info -foreground grey
         $mytoplevel.results tag configure highlight -foreground blue
-        $mytoplevel.results tag configure archmatch -foreground black
+        $mytoplevel.results tag configure archmatch
         $mytoplevel.results tag configure noarchmatch -foreground grey
     }
     ::deken::post "To get a list of all available externals, try an empty search." info
@@ -290,8 +361,7 @@ proc ::deken::initiate_search {mytoplevel} {
     if { [ catch {
         set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
     } stdout ] } {
-        puts "online?"
-        puts "$stdout"
+        ::pdwindow::debug "\[deken\]: online? $stdout\n"
         ::deken::status "Unable to perform search. Are you online?"
     } else {
     # delete all text in the results
@@ -307,6 +377,7 @@ proc ::deken::initiate_search {mytoplevel} {
             ::deken::show_result $mytoplevel $counter $r 0
             incr counter
         }
+	::deken::scrollup
     } else {
         ::deken::post "No matching externals found. Try using the full name e.g. 'freeverb'."
     }
@@ -324,8 +395,6 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
                 ::deken::post "$title\n\t$comment\n" [list $tag $matchtag]
                 ::deken::highlightable_posttag $tag
                 ::deken::bind_posttag $tag <Enter> "+::deken::status $status"
-                # have to decode the URL here because otherwise percent signs cause tcl to bug out - not sure why - scripting languages...
-                #::deken::bind_posttag $tag <1> [list ::deken::clicked_link $mytoplevel [urldecode $URL] $filename]
                 ::deken::bind_posttag $tag <1> "$cmd"
             }
 }
@@ -345,21 +414,28 @@ proc ::deken::clicked_link {URL filename} {
         ## search the default paths
         set installdir [ ::deken::get_writable_dir $::sys_staticpath ]
     }
-    ## ask the user (and remember the decision)
-    set installdir [::deken::prompt_installdir $installdir]
-    set installdir
-    ## if user didn't choose a directory cancel
     if { "$installdir" == "" } {
-        ::deken::post "Download canceled" warn
-        return
+        ## ask the user (and remember the decision)
+        ::deken::prompt_installdir
+        set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ]
     }
-    set installdir [ ::deken::get_writable_dir $installdir ]
     if { "$installdir" == "" } {
         #::deken::clearpost
-        ::deken::post "Cannot write to directory $installdir" warn
-        ::deken::post "Download canceled" warn
+        ::deken::post "No writeable directory found in:" warn
+        foreach p $::sys_staticpath { ::deken::post "\t- $p" warn }
+        ::deken::post "Cannot download/install libraries!" warn
         return
     }
+    switch -- [tk_messageBox -message \
+                   "Install to directory $installdir?" \
+                   -type yesnocancel -default "yes" \
+                   -icon question] {
+                       no {set installdir ""
+                           if {[::deken::prompt_installdir]} {
+                               set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ] }
+                           if { "$installdir" eq "" } return}
+                       cancel return}
+
     set fullpkgfile "$installdir/$filename"
     ::deken::clearpost
     ::deken::post "Commencing downloading of:\n$URL\nInto $installdir..."
@@ -368,15 +444,17 @@ proc ::deken::clicked_link {URL filename} {
     cd $installdir
     set success 1
     if { [ string match *.zip $fullpkgfile ] } then {
-        if { [ catch { exec unzip -uo $fullpkgfile } stdout ] } {
-            puts $stdout
-            set success 0
+        if { [ ::deken::vbs_unzipper $fullpkgfile  $installdir ] } { } {
+            if { [ catch { exec unzip -uo $fullpkgfile } stdout ] } {
+                ::pdwindow::debug "$stdout\n"
+                set success 0
+            }
         }
     } elseif  { [ string match *.tar.gz $fullpkgfile ]
                 || [ string match *.tgz $fullpkgfile ]
               } then {
         if { [ catch { exec tar xzf $fullpkgfile } stdout ] } {
-            puts $stdout
+            ::pdwindow::debug "$stdout\n"
             set success 0
         }
     }
@@ -481,9 +559,13 @@ proc ::deken::search_for {term} {
     return $result
 }
 
-# create an entry for our search in the "help" menu
+# create an entry for our search in the "help" menu (or re-use an existing one)
 set mymenu .menubar.help
-$mymenu add command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
+if { [catch {
+    $mymenu entryconfigure [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
+} _ ] } {
+    $mymenu add command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
+}
 # bind all <$::modifier-Key-s> {::deken::open_helpbrowser .helpbrowser2}
 
 # http://rosettacode.org/wiki/URL_decoding#Tcl
@@ -539,6 +621,7 @@ proc urldecode {str} {
 proc ::deken::search::puredata.info {term} {
     set searchresults [list]
 
+    set term [ join $term "&name=" ]
     set token [http::geturl "http://deken.puredata.info/search?name=$term"]
     set contents [http::data $token]
     set splitCont [split $contents "\n"]
@@ -556,8 +639,9 @@ proc ::deken::search::puredata.info {term} {
             set filename [ file tail $URL ]
             set cmd [list ::deken::clicked_link $decURL $filename]
             set pkgverarch [ ::deken::parse_filename $filename ]
+            set archs [lindex $pkgverarch 2]
 
-            set match [::deken::architecture_match [lindex $pkgverarch 2] ]
+            set match [::deken::architecture_match "$archs" ]
 
             set comment "Uploaded by $creator @ $date"
             set status $URL
