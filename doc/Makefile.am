@@ -339,6 +339,7 @@ nobase_dist_libpd_DATA = \
     5.reference/line~-help.pd \
     5.reference/line-help.pd \
     5.reference/list-help.pd \
+    5.reference/loadbang-help.pd \
     5.reference/log~-help.pd \
     5.reference/lop~-help.pd \
     5.reference/makefilename-help.pd \
