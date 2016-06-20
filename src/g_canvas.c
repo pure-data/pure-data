@@ -46,6 +46,7 @@ desktops because the borders have both window title area and menus. */
 extern t_pd *newest;
 t_class *canvas_class;
 t_canvas *canvas_whichfind;         /* last canvas we did a find in */
+t_glist *glist_reloadingabstraction;
 
 /* ------------------ forward function declarations --------------- */
 static void canvas_start_dsp(void);

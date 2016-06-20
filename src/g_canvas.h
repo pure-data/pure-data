@@ -507,7 +507,7 @@ EXTERN int canvas_setdeleting(t_canvas *x, int flag);
     of that name.  We use as a flag to stop canvases from being marked "dirty"
     if we have to touch them to reload; also suppress window list update.
     "clone~" uses this to identify which copy NOT to reload */
-t_glist *glist_reloadingabstraction;
+EXTERN t_glist *glist_reloadingabstraction;
 
 typedef void (*t_undofn)(t_canvas *canvas, void *buf,
     int action);        /* a function that does UNDO/REDO */
