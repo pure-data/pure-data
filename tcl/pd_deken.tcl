@@ -400,18 +400,18 @@ proc ::deken::initiate_search {mytoplevel} {
 
 # display a single found entry
 proc ::deken::show_result {mytoplevel counter result showmatches} {
-            foreach {title cmd match comment status} $result {break}
+    foreach {title cmd match comment status} $result {break}
 
-            set tag ch$counter
+    set tag ch$counter
     #if { [ ($match) ] } { set matchtag archmatch } { set matchtag noarchmatch }
-            set matchtag [expr $match?"archmatch":"noarchmatch" ]
-            if {($match == $showmatches)} {
-                set comment [string map {"\n" "\n\t"} $comment]
-                ::deken::post "$title\n\t$comment\n" [list $tag $matchtag]
-                ::deken::highlightable_posttag $tag
-                ::deken::bind_posttag $tag <Enter> "+::deken::status $status"
-                ::deken::bind_posttag $tag <1> "$cmd"
-            }
+    set matchtag [expr $match?"archmatch":"noarchmatch" ]
+    if {($match == $showmatches)} {
+        set comment [string map {"\n" "\n\t"} $comment]
+        ::deken::post "$title\n\t$comment\n" [list $tag $matchtag]
+        ::deken::highlightable_posttag $tag
+        ::deken::bind_posttag $tag <Enter> "+::deken::status $status"
+        ::deken::bind_posttag $tag <1> "$cmd"
+    }
 }
 
 # handle a clicked link
