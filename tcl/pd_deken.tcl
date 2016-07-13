@@ -59,6 +59,7 @@ namespace eval ::deken:: {
     variable statustext
     variable statustimer
     variable backends
+    variable progressvar
     namespace export register
 }
 namespace eval ::deken::search:: { }
@@ -295,6 +296,10 @@ proc ::deken::update_searchbutton {mytoplevel} {
     }
 }
 
+proc ::deken::progress {x} {
+    ::deken::post "= ${x}%"
+}
+
 # this function gets called when the menu is clicked
 proc ::deken::open_searchui {mytoplevel} {
     if {[winfo exists $mytoplevel]} {
@@ -350,13 +355,23 @@ proc ::deken::create_dialog {mytoplevel} {
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
     scrollbar $mytoplevel.results.ys -orient vertical -command "$mytoplevel.results yview"
     pack $mytoplevel.results.ys -side right -fill y
-    pack $mytoplevel.results -side left -padx 6 -pady 3 -fill both -expand true
+    pack $mytoplevel.results -side top -padx 6 -pady 3 -fill both -expand true
+
+    if { [ catch {
+        ttk::progressbar $mytoplevel.progress -orient horizontal -length 640 -maximum 100 -mode determinate -variable ::deken::progressvar } stdout ] } {
+    } {
+        pack $mytoplevel.progress -side bottom
+        proc ::deken::progress {x} {
+            set ::deken::progressvar $x
+        }
+    }
 }
 
 proc ::deken::initiate_search {mytoplevel} {
     # let the user know what we're doing
     ::deken::clearpost
     ::deken::post "Searching for externals..."
+    set ::deken::progressvar 0
     # make the ajax call
     if { [ catch {
         set results [::deken::search_for [$mytoplevel.searchbit.entry get]]
@@ -493,9 +508,7 @@ proc ::deken::download_file {URL outputfilename} {
 # print the download progress to the results window
 proc ::deken::download_progress {token total current} {
     if { $total > 0 } {
-        variable mytoplevelref
-        set computed [expr {round(100 * (1.0 * $current / $total))}]
-        ::deken::post "= $computed%"
+        ::deken::progress [expr {round(100 * (1.0 * $current / $total))}]
     }
 }
 
