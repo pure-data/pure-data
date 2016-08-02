@@ -66,6 +66,7 @@ static t_symbol *canvas_newfilename = &s_;
 static t_symbol *canvas_newdirectory = &s_;
 static int canvas_newargc;
 static t_atom *canvas_newargv;
+t_glist *glist_reloadingabstraction;
 
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist( void)
