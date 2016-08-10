@@ -1,4 +1,4 @@
-#N canvas 155 58 847 810 12;
+#N canvas 154 57 847 810 12;
 #X floatatom 218 329 5 36 144 0 - - -, f 5;
 #X obj 218 350 t b f;
 #X obj 218 374 f;
@@ -36,9 +36,6 @@ contained patch \, and may be signal and/or control inlets and outlets.
 You can click on the clone~ object to see the first of the created
 instances., f 72;
 #X obj 179 609 clone clone-subpatch 16;
-#X text 30 734 note: for backward compatibility \, you can also invoke
-this as "clone clone-subpatch 16" (for instance) \, swapping the abstraction
-name and the mumber of voices.;
 #X text 19 247 Signal inlets are copied to all the instances. Control
 inlets forward messages as shown below. Signal outlets output the sum
 of all instances' outputs \, and control outlets forward messages with
@@ -54,6 +51,9 @@ using the "-x" option.), f 71;
 #X text 23 129 You can pass additional arguments to the copies that
 appear as \$2 and onward (or \$1 and onward with "-x" option)., f
 71;
+#X text 30 734 note: for backward compatibility \, you can also invoke
+this as "clone 16 clone-subpatch" (for instance) \, swapping the abstraction
+name and the mumber of voices.;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 5 1;
