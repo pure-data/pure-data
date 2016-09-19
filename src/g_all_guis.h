@@ -311,6 +311,7 @@ EXTERN void iemgui_delete(t_gobj *z, t_glist *glist);
 EXTERN void iemgui_vis(t_gobj *z, t_glist *glist, int vis);
 EXTERN void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol **bflcol);
 EXTERN void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom);
+EXTERN void iemgui_newzoom(t_iemgui *iemgui);
 EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
 
