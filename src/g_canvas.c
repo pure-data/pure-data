@@ -851,10 +851,16 @@ void canvas_deletelinesforio(t_canvas *x, t_text *text,
     }
 }
 
+typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
+
 static void canvas_pop(t_canvas *x, t_floatarg fvis)
 {
     if (glist_istoplevel(x) && (sys_zoom_open == 2))
-        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)2);
+    {
+        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
+        if (zoommethod)
+            (*zoommethod)(&x->gl_pd, (t_floatarg)2);
+    }
     if (fvis != 0)
         canvas_vis(x, 1);
     pd_popsym(&x->gl_pd);
