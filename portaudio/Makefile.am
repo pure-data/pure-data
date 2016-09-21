@@ -61,6 +61,7 @@ libportaudio_la_SOURCES += \
     portaudio/src/os/win/pa_win_waveformat.c \
     portaudio/src/os/win/pa_win_wdmks_utils.c \
     portaudio/src/os/win/pa_x86_plain_converters.c \
+    portaudio/src/hostapi/wasapi/pa_win_wasapi.c \
     portaudio/src/hostapi/wmme/pa_win_wmme.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
@@ -98,6 +99,27 @@ nobase_noinst_HEADERS = \
     portaudio/src/hostapi/coreaudio/pa_mac_core_blocking.h \
     portaudio/src/hostapi/coreaudio/pa_mac_core_internal.h \
     portaudio/src/hostapi/coreaudio/pa_mac_core_utilities.h \
+    portaudio/src/hostapi/wasapi/mingw-include/audioclient.h \
+    portaudio/src/hostapi/wasapi/mingw-include/AudioSessionTypes.h \
+    portaudio/src/hostapi/wasapi/mingw-include/devicetopology.h \
+    portaudio/src/hostapi/wasapi/mingw-include/endpointvolume.h \
+    portaudio/src/hostapi/wasapi/mingw-include/functiondiscoverykeys.h \
+    portaudio/src/hostapi/wasapi/mingw-include/FunctionDiscoveryKeys_devpkey.h \
+    portaudio/src/hostapi/wasapi/mingw-include/ks.h \
+    portaudio/src/hostapi/wasapi/mingw-include/ksguid.h \
+    portaudio/src/hostapi/wasapi/mingw-include/ksmedia.h \
+    portaudio/src/hostapi/wasapi/mingw-include/ksproxy.h \
+    portaudio/src/hostapi/wasapi/mingw-include/ksuuids.h \
+    portaudio/src/hostapi/wasapi/mingw-include/mmdeviceapi.h \
+    portaudio/src/hostapi/wasapi/mingw-include/propidl.h \
+    portaudio/src/hostapi/wasapi/mingw-include/propkey.h \
+    portaudio/src/hostapi/wasapi/mingw-include/propkeydef.h \
+    portaudio/src/hostapi/wasapi/mingw-include/propsys.h \
+    portaudio/src/hostapi/wasapi/mingw-include/rpcsal.h \
+    portaudio/src/hostapi/wasapi/mingw-include/sal.h \
+    portaudio/src/hostapi/wasapi/mingw-include/sdkddkver.h \
+    portaudio/src/hostapi/wasapi/mingw-include/shtypes.h \
+    portaudio/src/hostapi/wasapi/mingw-include/structuredquery.h \
     portaudio/src/os/unix/pa_unix_util.h \
     portaudio/src/os/win/pa_win_coinitialize.h \
     portaudio/src/os/win/pa_win_wdmks_utils.h \
