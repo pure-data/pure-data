@@ -40,6 +40,9 @@ addons:
       - libjack-dev
 
 before_script:
+## fix glibtool on OSX...
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall libtool; brew install libtool; fi
 ## basic autoconf setup
   - ./autogen.sh
   - ./configure --enable-jack
