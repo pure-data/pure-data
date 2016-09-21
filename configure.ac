@@ -109,7 +109,7 @@ case $host in
 
     # ASIO is a C++ library, so if its included, then use g++ to build
     EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
+    EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -no-undefined -lpd"
     EXTERNAL_EXTENSION=dll
     ;;
 *cygwin*)
