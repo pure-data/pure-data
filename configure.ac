@@ -107,7 +107,7 @@ case $host in
     # to make the final linking phase use g++
     asio=yes
 
-    # ASIO is a C++ library, so if its included, then use g++ to build
+    # link to a static pd.lib
     EXTERNAL_CFLAGS="-mms-bitfields"
     EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -no-undefined -lpd"
     EXTERNAL_EXTENSION=dll
@@ -117,6 +117,8 @@ case $host in
     CYGWIN=yes
     platform=Cygwin
     portaudio=yes
+
+    # link to a static pd.lib
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
     EXTERNAL_EXTENSION=dll
