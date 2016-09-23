@@ -25,9 +25,13 @@ AM_LDFLAGS = -module -avoid-version -shared @EXTERNAL_LDFLAGS@ \
 
 externaldir = $(pkglibdir)/extra/$(NAME)
 
-#if MINGW
-#AM_LIBS += -lpd
-#endif
+# dynamically link to pd on windows
+if MINGW
+AM_LIBS += $(top_builddir)/src/.libs/pd.dll
+endif
+if CYGWIN
+AM_LIBS += $(top_builddir)/src/.libs/pd.dll
+endif
 
 #########################################
 ##### Targets #####

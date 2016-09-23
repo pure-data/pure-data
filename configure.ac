@@ -84,7 +84,7 @@ case $host in
         platform=Linux
         portaudio=yes
         EXTERNAL_CFLAGS="-fPIC"
-        EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
+        EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
         EXTERNAL_EXTENSION=pd_linux
     else
         platform=Android
@@ -94,7 +94,7 @@ case $host in
     HURD=yes
     platform=Hurd
     EXTERNAL_CFLAGS="-fPIC"
-    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
     EXTERNAL_EXTENSION=pd_linux
     ;;
 *mingw*)
@@ -107,9 +107,9 @@ case $host in
     # to make the final linking phase use g++
     asio=yes
 
-    # link to a static pd.lib
+    # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -no-undefined -lpd"
+    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined"
     EXTERNAL_EXTENSION=dll
     ;;
 *cygwin*)
@@ -118,9 +118,9 @@ case $host in
     platform=Cygwin
     portaudio=yes
 
-    # link to a static pd.lib
+    # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS=
-    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
     EXTERNAL_EXTENSION=dll
     ;;
 *)
