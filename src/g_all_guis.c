@@ -576,6 +576,8 @@ void iemgui_save(t_iemgui *iemgui, t_symbol **srl, t_symbol**bflcol)
     iemgui_all_col2save(iemgui, bflcol);
 }
 
+    /* inform GUIs that glist's zoom is about to change.  The glist will
+    take care of x,y locations but we have to adjust width and height */
 void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom)
 {
     int oldzoom = iemgui->x_glist->gl_zoom;
@@ -583,6 +585,19 @@ void iemgui_zoom(t_iemgui *iemgui, t_floatarg zoom)
         oldzoom = 1;
     iemgui->x_w = (int)(iemgui->x_w)/oldzoom*(int)zoom;
     iemgui->x_h = (int)(iemgui->x_h)/oldzoom*(int)zoom;
+}
+
+    /* when creating a new GUI from menu onto a zoomed canvas, pretend to
+    change the canvas's zoom so we'll get properly sized */
+void iemgui_newzoom(t_iemgui *iemgui)
+{
+    if (iemgui->x_glist->gl_zoom != 1)
+    {
+        int newzoom = iemgui->x_glist->gl_zoom;
+        iemgui->x_glist->gl_zoom = 1;
+        iemgui_zoom(iemgui, (t_floatarg)newzoom);
+        iemgui->x_glist->gl_zoom = newzoom;
+    }
 }
 
 void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)

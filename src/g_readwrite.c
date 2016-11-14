@@ -588,6 +588,8 @@ static void glist_write(t_glist *x, t_symbol *filename, t_symbol *format)
 
 /* ------ routines to save and restore canvases (patches) recursively. ----*/
 
+typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
+
     /* save to a binbuf, called recursively; cf. canvas_savetofile() which
     saves the document, and is only called on root canvases. */
 static void canvas_saveto(t_canvas *x, t_binbuf *b)
@@ -598,7 +600,11 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
     int zoomwas = x->gl_zoom;
 
     if (zoomwas > 1)
-        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)1);
+    {
+        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
+        if (zoommethod)
+            (*zoommethod)(&x->gl_pd, (t_floatarg)1);
+    }
         /* subpatch */
     if (x->gl_owner && !x->gl_env)
     {
@@ -661,7 +667,11 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
                 (t_float)x->gl_isgraph);
     }
     if (zoomwas > 1)
-        vmess(&x->gl_pd, gensym("zoom"), "f", (t_floatarg)zoomwas);
+    {
+        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
+        if (zoommethod)
+            (*zoommethod)(&x->gl_pd, (t_floatarg)zoomwas);
+    }
 }
 
     /* call this recursively to collect all the template names for

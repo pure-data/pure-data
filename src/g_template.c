@@ -588,7 +588,7 @@ static void *gtemplate_donew(t_symbol *sym, int argc, t_atom *argv)
                     /* conform everyone to the new template */
                 template_conform(t, y);
                 pd_free(&t->t_pdobj);
-                t = template_new(sym, argc, argv);
+                x->x_template = t = template_new(sym, argc, argv);
             }
             pd_free(&y->t_pdobj);
             t->t_list = x;

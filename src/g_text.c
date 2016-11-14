@@ -118,10 +118,6 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     x->te_ypix = ypix;
     x->te_width = width;
     x->te_type = T_OBJECT;
-        /* not sure this goes here, but possibly inform the new object about
-        the zoom status if its glist */
-    if (gl->gl_zoom > 1 && zgetfn(&x->te_g.g_pd, gensym("zoom")))
-        vmess(&x->te_g.g_pd, gensym("zoom"), "i", gl->gl_zoom);
     glist_add(gl, &x->te_g);
     if (selected)
     {
