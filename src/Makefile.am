@@ -285,6 +285,8 @@ if WINDOWS
 LIBS += -lwsock32 -lwinmm -lole32
 pd_LDFLAGS += -Wl,--output-def=pd.def \
       -Wl,--out-implib=pd.lib
+bin_SCRIPTS = pd.lib pd.def
+pd.lib pd.def: pd$(EXEEXT)
 endif
 
 ##### Windows MinGW #####
