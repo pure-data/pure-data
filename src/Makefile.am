@@ -286,7 +286,15 @@ LIBS += -lwsock32 -lwinmm -lole32
 pd_LDFLAGS += -Wl,--output-def=pd.def \
       -Wl,--out-implib=pd.lib
 bin_SCRIPTS = pd.lib pd.def
+noinst_SCRIPTS = libpd.a
+
 pd.lib pd.def: pd$(EXEEXT)
+libpd.a: pd.lib
+	$(LN_S) $^ $@
+clean-local: clean-pdlib
+
+clean-pdlib:
+	-rm -f pd.lib pd.def libpd.a
 endif
 
 ##### Windows MinGW #####
