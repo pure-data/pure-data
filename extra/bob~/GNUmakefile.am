@@ -34,7 +34,7 @@ libtool: $(LIBTOOL_DEPS)
 # create convenience link for running locally
 all-local:
 	rm -f *.@EXTERNAL_EXTENSION@
-	$(LN_S) .libs/*.@EXTERNAL_EXTENSION@ ./
+	-$(LN_S) $(wildcard .libs/*.@EXTERNAL_EXTENSION@) ./
 
 clean-local:
 	rm -f *.@EXTERNAL_EXTENSION@
