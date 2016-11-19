@@ -283,6 +283,7 @@ endif
 if WINDOWS
 # win32 sockets, multimedia, and all that
 LIBS += -lwsock32 -lwinmm -lole32
+# this is actually not yet fully working yet
 pd_LDFLAGS += -Wl,--output-def=pd.def \
       -Wl,--out-implib=pd.lib
 bin_SCRIPTS = pd.lib pd.def
@@ -342,7 +343,7 @@ install-exec-hook:
 # an error and stop make.
 uninstall-hook:
 	rm -f $(DESTDIR)$(libpdbindir)/pd
-	
+
 	if test -d $(DESTDIR)$(pkgincludedir) ; then \
 	    rmdir $(DESTDIR)$(pkgincludedir) 2>/dev/null || true ; \
 	fi
