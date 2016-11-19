@@ -21,7 +21,7 @@ AM_CFLAGS = @EXTERNAL_CFLAGS@
 AM_CPPFLAGS	+= -I$(top_srcdir)/src -DPD
 AM_LIBS = $(LIBM)
 AM_LDFLAGS = -module -avoid-version -shared @EXTERNAL_LDFLAGS@ \
-    -shrext .@EXTERNAL_EXTENSION@ -L$(top_srcdir)/src
+    -shrext .@EXTERNAL_EXTENSION@ -L$(top_builddir)/src
 
 externaldir = $(pkglibdir)/extra/$(NAME)
 
