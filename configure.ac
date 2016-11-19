@@ -109,7 +109,7 @@ case $host in
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined"
+    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined -lpd"
     EXTERNAL_EXTENSION=dll
     ;;
 *cygwin*)
