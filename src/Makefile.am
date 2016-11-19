@@ -283,6 +283,8 @@ endif
 if WINDOWS
 # win32 sockets, multimedia, and all that
 LIBS += -lwsock32 -lwinmm -lole32
+pd_LDFLAGS += -Wl,--output-def=pd.def \
+      -Wl,--out-implib=pd.lib
 endif
 
 ##### Windows MinGW #####
