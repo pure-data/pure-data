@@ -307,12 +307,11 @@ all-local: convenience-links
 convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(MKDIR_P) $(top_builddir)/bin
 	rm -rf $(top_builddir)/bin/pd*
-	$(LN_S) $(top_builddir)/src/pd $(top_builddir)/bin/pd
-	$(LN_S) $(top_builddir)/src/pdsend $(top_builddir)/bin/pdsend
-	$(LN_S) $(top_builddir)/src/pdreceive $(top_builddir)/bin/pdreceive
+	$(LN_S) $(top_builddir)/src/pd$(EXEEXT) $(top_builddir)/bin/pd$(EXEEXT)
+	$(LN_S) $(top_builddir)/src/pdsend$(EXEEXT) $(top_builddir)/bin/pdsend$(EXEEXT)
+	$(LN_S) $(top_builddir)/src/pdreceive$(EXEEXT) $(top_builddir)/bin/pdreceive$(EXEEXT)
 	$(LN_S) $(top_srcdir)/tcl/pd-gui.in $(top_builddir)/bin/pd-gui
-	-test -e $(top_builddir)/src/pd-watchdog && \
-	    $(LN_S) $(top_builddir)/src/pd-watchdog $(top_builddir)/bin/pd-watchdog
+	test -e $(top_builddir)/src/pd-watchdog$(EXEEXT) && $(LN_S) $(top_builddir)/src/pd-watchdog$(EXEEXT) $(top_builddir)/bin/pd-watchdog$(EXEEXT) || true
 
 clean-local:
 	rm -rf $(top_builddir)/bin
