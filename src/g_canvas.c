@@ -1580,6 +1580,28 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     {
         t_canvas *x2 = x;
         char *dir;
+
+        /* first try applying canvas-local paths locally */
+        dir = (canvas_getdir(y)->s_name);
+        for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
+        {
+            char realname[MAXPDSTRING];
+            if (sys_isabsolutepath(nl->nl_string))
+                realname[0] = '\0';
+            else
+            {   /* if not absolute path, append Pd lib dir */
+                strncpy(realname, dir, MAXPDSTRING);
+                realname[MAXPDSTRING-3] = 0;
+                strcat(realname, "/");
+            }
+            strncat(realname, nl->nl_string, MAXPDSTRING-strlen(realname));
+            realname[MAXPDSTRING-1] = 0;
+            if (!fun(realname, user_data))
+                return count+1;
+            count++;
+        }
+
+        /* then try applying canvas-local paths to topmost owner */
         while (x2 && x2->gl_owner)
             x2 = x2->gl_owner;
         dir = (x2 ? canvas_getdir(x2)->s_name : ".");
