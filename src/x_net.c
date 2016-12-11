@@ -157,84 +157,115 @@ static void netsend_doit(void *z, t_binbuf *b)
 }
 
 
-static void netsend_connect(t_netsend *x, t_symbol *hostname,
-    t_floatarg fportno)
+static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
-    struct sockaddr_in server = {0};
-    struct hostent *hp;
-    int sockfd;
-    int portno = fportno;
-    int intarg;
-    if (x->x_sockfd >= 0)
-    {
-        error("netsend_connect: already connected");
-        return;
+  /* check argument types */
+  if ((argc < 2) ||
+      argv[0].a_type != A_SYMBOL ||
+      argv[1].a_type != A_FLOAT ||
+      ((argc > 2) && argv[2].a_type != A_FLOAT)) {
+      error("netsend_connect: bad arguments");
+      return;
     }
+  t_symbol *hostname = argv[0].a_w.w_symbol;
+  int fportno = (int)argv[1].a_w.w_float;
+  int sportno = (argc>2)?(int)argv[2].a_w.w_float:0;
 
-        /* create a socket */
-    sockfd = socket(AF_INET, x->x_protocol, 0);
+  struct sockaddr_in server = {0};
+  struct sockaddr_in srcaddr = {0};
+  struct hostent *hp;
+  int sockfd;
+  int portno = fportno;
+  int srcportno = sportno;
+  int intarg;
+  if (x->x_sockfd >= 0)
+    {
+      error("netsend_connect: already connected");
+      return;
+    }
+  
+  /* create a socket */
+  sockfd = socket(AF_INET, x->x_protocol, 0);
 #if 0
-    fprintf(stderr, "send socket %d\n", sockfd);
+  fprintf(stderr, "send socket %d\n", sockfd);
 #endif
-    if (sockfd < 0)
+  if (sockfd < 0)
     {
-        sys_sockerror("socket");
-        return;
+      sys_sockerror("socket");
+      return;
     }
-    /* connect socket using hostname provided in command line */
-    server.sin_family = AF_INET;
-    hp = gethostbyname(hostname->s_name);
-    if (hp == 0)
+  /* connect socket using hostname provided in command line */
+  server.sin_family = AF_INET;
+  hp = gethostbyname(hostname->s_name);
+  if (hp == 0)
     {
-        post("bad host?\n");
-        sys_closesocket(sockfd);
-        return;
+      post("bad host?\n");
+      sys_closesocket(sockfd);
+      return;
     }
 #if 0
-    intarg = 0;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
-        &intarg, sizeof(intarg)) < 0)
-            post("setsockopt (SO_RCVBUF) failed\n");
+  intarg = 0;
+  if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
+                 &intarg, sizeof(intarg)) < 0)
+    post("setsockopt (SO_RCVBUF) failed\n");
 #endif
-    intarg = 1;
-    if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
-                  (const void *)&intarg, sizeof(intarg)) < 0)
-        post("setting SO_BROADCAST");
-        /* for stream (TCP) sockets, specify "nodelay" */
-    if (x->x_protocol == SOCK_STREAM)
-    {
-        intarg = 1;
-        if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,
-            (char *)&intarg, sizeof(intarg)) < 0)
-                post("setsockopt (TCP_NODELAY) failed\n");
-    }
+  intarg = 1;
+  if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
+                (const void *)&intarg, sizeof(intarg)) < 0)
+    post("setting SO_BROADCAST");
+  /* for stream (TCP) sockets, specify "nodelay" */
+  if (x->x_protocol == SOCK_STREAM)
+        {
+          intarg = 1;
+          if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,
+                         (char *)&intarg, sizeof(intarg)) < 0)
+            post("setsockopt (TCP_NODELAY) failed\n");
+        }
     memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
-
+    
     /* assign client port number */
     server.sin_port = htons((u_short)portno);
-
-    post("connecting to port %d", portno);
-        /* try to connect.  LATER make a separate thread to do this
-        because it might block */
+    
+    
+    if (sportno != 0) {
+      post("connecting to dest port %d, src port %d", portno, sportno);
+      memset(&srcaddr, 0, sizeof(srcaddr));
+      srcaddr.sin_family = AF_INET;
+      srcaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+      srcaddr.sin_port = htons((u_short)sportno);
+      
+      if (bind (sockfd,(struct sockaddr *) &srcaddr, sizeof (srcaddr)) < 0)
+        {
+          sys_sockerror("setting source port");
+          sys_closesocket(sockfd);
+          return;
+        }
+    }
+    else {
+      post("connecting to port %d", portno);
+    }
+    /* try to connect.  LATER make a separate thread to do this
+       because it might block */
     if (connect(sockfd, (struct sockaddr *) &server, sizeof (server)) < 0)
-    {
+      {
         sys_sockerror("connecting stream socket");
         sys_closesocket(sockfd);
         return;
-    }
+      }
+
     x->x_sockfd = sockfd;
     if (x->x_msgout)    /* add polling function for return messages */
-    {
+      {
         if (x->x_bin)
-            sys_addpollfn(sockfd, (t_fdpollfn)netsend_readbin, x);
+          sys_addpollfn(sockfd, (t_fdpollfn)netsend_readbin, x);
         else
-        {
+          {
             t_socketreceiver *y =
-                socketreceiver_new((void *)x, 0, netsend_doit,
-                    x->x_protocol == SOCK_DGRAM);
+              socketreceiver_new((void *)x, 0, netsend_doit,
+                                 x->x_protocol == SOCK_DGRAM);
             sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
-        }
-    }
+          }
+      }
     outlet_float(x->x_obj.ob_outlet, 1);
 }
 
@@ -334,7 +365,7 @@ static void netsend_setup(void)
         (t_method)netsend_free,
         sizeof(t_netsend), 0, A_GIMME, 0);
     class_addmethod(netsend_class, (t_method)netsend_connect,
-        gensym("connect"), A_SYMBOL, A_FLOAT, 0);
+                    gensym("connect"), A_GIMME, 0);
     class_addmethod(netsend_class, (t_method)netsend_disconnect,
         gensym("disconnect"), 0);
     class_addmethod(netsend_class, (t_method)netsend_send, gensym("send"),
