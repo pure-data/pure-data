@@ -1473,7 +1473,6 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
         error("%s: read failed; %s", name->s_name, strerror(errno));
     else
     {
-        t_canvas *c;
             /* save bindings of symbols #N, #A (and restore afterward) */
         t_pd *bounda = gensym("#A")->s_thing, *boundn = s__N.s_thing;
         gensym("#A")->s_thing = 0;
@@ -1486,9 +1485,8 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
         }
         binbuf_eval(b, 0, 0, 0);
             /* avoid crashing if no canvas was created by binbuf eval */
-        c = (t_canvas *)(s__X.s_thing);
-        if (c && c->gl_pd == canvas_class)
-            canvas_initbang(c); /* JMZ*/
+        if (s__X.s_thing && *s__X.s_thing == canvas_class)
+            canvas_initbang((t_canvas *)(s__X.s_thing)); /* JMZ*/
         gensym("#A")->s_thing = bounda;
         s__N.s_thing = boundn;
     }
