@@ -316,7 +316,7 @@ proc ::helpbrowser::add_entry {reflist entry} {
 }
 
 proc ::helpbrowser::build_references {} {
-    variable libdirlist {" Pure Data/" "-\\/------libraries------\\/-"}
+    variable libdirlist {" Pure Data/" "---- libraries: -----"}
     variable helplist {}
     variable reference_count
     variable reference_paths
@@ -324,7 +324,7 @@ proc ::helpbrowser::build_references {} {
     array set reference_count {}
     array set reference_paths [list \
                                    " Pure Data/" $::sys_libdir/doc \
-                                   "-\\/------libraries------\\/-" "" \
+                                   "---- libraries: -----" "" \
                                   ]
     foreach pathdir $::sys_staticpath {
         if { ! [file isdirectory $pathdir]} {continue}
