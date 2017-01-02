@@ -183,7 +183,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
       error("netsend_connect: already connected");
       return;
     }
-  
+
   /* create a socket */
   sockfd = socket(AF_INET, x->x_protocol, 0);
 #if 0
@@ -222,18 +222,18 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             post("setsockopt (TCP_NODELAY) failed\n");
         }
     memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
-    
+
     /* assign client port number */
     server.sin_port = htons((u_short)portno);
-    
-    
+
+
     if (sportno != 0) {
       post("connecting to dest port %d, src port %d", portno, sportno);
       memset(&srcaddr, 0, sizeof(srcaddr));
       srcaddr.sin_family = AF_INET;
       srcaddr.sin_addr.s_addr = htonl(INADDR_ANY);
       srcaddr.sin_port = htons((u_short)sportno);
-      
+
       if (bind (sockfd,(struct sockaddr *) &srcaddr, sizeof (srcaddr)) < 0)
         {
           sys_sockerror("setting source port");
