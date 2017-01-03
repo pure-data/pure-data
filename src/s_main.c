@@ -687,7 +687,7 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-jackname") && (argc > 1))
         {
             if (argc > 1)
-                jack_client_name(argv[1]);
+                sys_set_audio_api(API_JACK), jack_client_name(argv[1]);
             else goto usage;
             argc -= 2; argv +=2;
         }
