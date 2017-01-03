@@ -11,9 +11,9 @@ dnl with or without modifications, as long as this notice is preserved.
 # [VARIABLE-NAME]_CFLAGS will hold a list of cflags to compile for all requested archs
 # [VARIABLE-NAME]_LDFLAGS will hold a list of ldflags to link for all requested archs
 
-AC_DEFUN([PD_CHECK_UNIVERSAL],
-[
-AC_REQUIRE([AC_CANONICAL_HOST])dnl
+AC_DEFUN([PD_CHECK_UNIVERSAL], [
+
+AC_REQUIRE([AC_CANONICAL_HOST])
 
 AC_ARG_ENABLE(universal,
        [  --enable-universal=<ARCHS>
@@ -21,69 +21,76 @@ AC_ARG_ENABLE(universal,
                           ARCHS is a comma-delimited list of architectures for
                           which to build; if ARCHS is omitted, then the package
                           will be built for all architectures supported by the
-                          platform (e.g. "ppc,i386" for MacOS/X and Darwin); 
+                          platform ("ppc,i386,x86_64" for Mac OSX and Darwin); 
                           if this option is disabled or omitted entirely, then
                           the package will be built only for the target 
                           platform],
        [universal_binary=$enableval], [universal_binary=no])
 
 if test "$universal_binary" != no; then
-    AC_MSG_CHECKING([target architectures])
+  AC_MSG_CHECKING([target architectures])
 
-    # Respect TARGET_ARCHS setting from environment if available.
-    if test -z "$TARGET_ARCHS"; then
-     # Respect ARCH given to --enable-universal-binary if present.
-     if test "$universal_binary" != yes; then
-	    TARGET_ARCHS=$(echo "$universal_binary" | tr ',' ' ')
-     else 
-	    # Choose a default set of architectures based upon platform.
-	case $host in
-	*darwin*)
-          TARGET_ARCHS="ppc i386"
-	;;
-	*)
-	  TARGET_ARCHS=""
-	;;
-	esac
-     fi
+  # Respect TARGET_ARCHS setting from environment if available.
+  if test -z "$TARGET_ARCHS"; then
+    # Respect ARCH given to --enable-universal if present.
+    if test "$universal_binary" != yes; then
+      TARGET_ARCHS=$(echo "$universal_binary" | tr ',' ' ')
+    else 
+      # Choose a default set of architectures based upon platform.
+      case $host in
+        *darwin*)
+          TARGET_ARCHS="ppc i386 x86_64"
+          ;;
+        *linux*|*kfreebsd*gnu*)
+          TARGET_ARCHS="i386 x86_64"
+          ;;
+        *)
+          TARGET_ARCHS=""
+          ;;
+        esac
     fi
-    AC_MSG_RESULT([$TARGET_ARCHS])
+  fi
+  AC_MSG_RESULT([$TARGET_ARCHS])
 
-   # /usr/lib/arch_tool -archify_list $TARGET_ARCHS
-   _pd_universal=""
-   for archs in $TARGET_ARCHS 
-   do
-    _pd_universal="$_pd_universal -arch $archs"
-   done
+  # /usr/lib/arch_tool -archify_list $TARGET_ARCHS
+  _pd_universal=""
+  for arch in $TARGET_ARCHS; do
 
-dnl run checks whether the compiler linker like this...
-   if test "x$_pd_universal" != "x"; then
+    # run checks whether the compiler linker likes this...
     tmp_arch_cflags="$CFLAGS"
     tmp_arch_ldflags="$LDFLAGS"
     
-    CFLAGS="$CFLAGS $_pd_universal"
-    LDFLAGS="$LDFLAGS $_universal"
+    CFLAGS="$CFLAGS -arch $arch"
+    LDFLAGS="$LDFLAGS -arch $arch"
+    
+    dnl add to arch list if it passes the linker
+    AC_MSG_CHECKING([if linker accepts arch: $arch])
     AC_TRY_LINK([], [return 0;], [
-        if test "x$1" != "x"; then
-	  $1[]_CFLAGS="$[]$1[]_CFLAGS $_pd_universal"
-	  $1[]_LDFLAGS="$[]$1[]_LDFLAGS $_pd_universal"
-	  AC_SUBST($1[]_CFLAGS)
-	  AC_SUBST($1[]_LDFLAGS)
-        fi
-	[$2]
-	], [
-	:
-	[$3]
-	])
+      _pd_universal="$_pd_universal -arch $arch"
+      AC_MSG_RESULT([yes])
+    ], [
+      AC_MSG_RESULT([no])
+    ])
 
     CFLAGS="$tmp_arch_cflags"
     LDFLAGS="$tmp_arch_ldflags"
-   else
+
+  done
+
+  # set the archs allowed by the linker
+  if test "x$_pd_universal" != "x"; then    
+    $1[]_CFLAGS="$[]$1[]_CFLAGS $_pd_universal"
+    $1[]_LDFLAGS="$[]$1[]_LDFLAGS $_pd_universal"
+    AC_SUBST($1[]_CFLAGS)
+    AC_SUBST($1[]_LDFLAGS)
+    [$2]
+  else
     :
-   [$3]
-   fi
+    [$3]
+  fi
 else
- :
- [$3]
+  :
+  [$3]
 fi
-])# GEM_CHECK_UNIVERSAL
+
+])# PD_CHECK_UNIVERSAL

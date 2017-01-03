@@ -1,9 +1,10 @@
-## Makefile.am -- Process this file with automake to produce Makefile.in
+#########################################
+##### Defaults & Paths #####
 
 NAME=pd~
 
 external_LTLIBRARIES = pd~.la pdsched.la
-PATCHES =  pd~-help.pd pd~-subprocess.pd
+PATCHES = pd~-help.pd pd~-subprocess.pd
 OTHERDATA = 
 
 pd__la_SOURCES = pd~.c
@@ -11,22 +12,31 @@ pdsched_la_SOURCES = pdsched.c
 
 EXTRA_DIST = makefile notes.txt
 
-###############################
+#########################################
+##### Files, Binaries, & Libs #####
+
 # you shouldn't need to add anything below here
 dist_external_DATA = $(PATCHES) $(OTHERDATA)
 
 AUTOMAKE_OPTIONS = foreign
-AM_CPPFLAGS	 = -I$(top_srcdir)/src -DPD
-AM_CFLAGS = @ARCH_CFLAGS@
+AM_CFLAGS = @EXTERNAL_CFLAGS@
+AM_CPPFLAGS	+= -I$(top_srcdir)/src -DPD
 AM_LIBS = $(LIBM)
-AM_LDFLAGS = -module -avoid-version -shared @ARCH_LDFLAGS@ -shrext .@EXTERNAL_EXTENSION@ -L$(top_srcdir)/src
+AM_LDFLAGS = -module -avoid-version -shared @EXTERNAL_LDFLAGS@ \
+    -shrext .@EXTERNAL_EXTENSION@ -L$(top_builddir)/src
 
 externaldir = $(pkglibdir)/extra/$(NAME)
 
-
-if MINGW
-AM_LIBS += -lpd
-endif
+#########################################
+##### Targets #####
 
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
+
+# create convenience link for running locally
+all-local:
+	rm -f *.@EXTERNAL_EXTENSION@
+	-$(LN_S) $(wildcard .libs/*.@EXTERNAL_EXTENSION@) ./
+
+clean-local:
+	rm -f *.@EXTERNAL_EXTENSION@

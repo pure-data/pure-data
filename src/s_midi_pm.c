@@ -13,8 +13,10 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #include <sys/time.h>
+#ifndef _WIN32
 #include <sys/resource.h>
-#endif
+#endif /* _WIN32 */
+#endif /* HAVE_UNISTD_H */
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>

@@ -46,7 +46,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     x_scalar.c  x_vexp.c x_vexp_if.c x_vexp_fun.c \
     $(SYSSRC)
 
-PADIR = ../portaudio
+PADIR = ../portaudio/portaudio
 INCPA = -I$(PADIR)\\include -I$(PADIR)\\src\\common -I$(PADIR)\\src\\os\\win \
     -I..\\lib\\asio
 PASRC = $(PADIR)/src
@@ -66,7 +66,7 @@ PAOBJ = pa_stream.obj pa_trace.obj pa_process.obj \
 	
 #       pa_win_wdmks.obj
 
-PMDIR = ../portmidi
+PMDIR = ../portmidi/portmidi
 INCPM = -I$(PMDIR)\\pm_common -I$(PMDIR)\\pm_win -I$(PMDIR)\\porttime -DNEWBUFFER
 SRCPM = $(PADIR)/pm_common/portmidi.c \
         $(PMDIR)/pm_common/pmutil.c \
