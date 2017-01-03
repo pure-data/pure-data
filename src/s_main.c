@@ -356,6 +356,7 @@ static char *(usagemessage[]) = {
 
 #ifdef USEAPI_JACK
 "-jack            -- use JACK audio API\n",
+"-jackname <name> -- a name for your JACK client\n",
 #endif
 
 #ifdef USEAPI_PORTAUDIO
@@ -682,6 +683,13 @@ int sys_argparse(int argc, char **argv)
         {
             sys_set_audio_api(API_JACK);
             argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-jackname") && (argc > 1))
+        {
+            if (argc > 1)
+                jack_client_name(argv[1]);
+            else goto usage;
+            argc -= 2; argv +=2;
         }
 #endif
 #ifdef USEAPI_PORTAUDIO

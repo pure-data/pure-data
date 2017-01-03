@@ -30,6 +30,7 @@ static jack_port_t *input_port[MAX_JACK_PORTS];
 static jack_port_t *output_port[MAX_JACK_PORTS];
 static int outport_count = 0;
 static jack_client_t *jack_client = NULL;
+static char * desired_client_name = NULL;
 char *jack_client_names[MAX_CLIENTS];
 static int jack_dio_error;
 static t_audiocallback jack_callback;
@@ -335,7 +336,14 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         yvan volochine, June 2013) */
     if (!jack_client) {
         do {
-          sprintf(client_name,"pure_data_%d",client_iterator);
+          if (desired_client_name && strlen(desired_client_name)) {
+            if (client_iterator == 0)
+              strcpy(client_name, desired_client_name);
+            else
+              sprintf(client_name,"%s_%d", desired_client_name, client_iterator);
+          } else {
+            sprintf(client_name,"pure_data_%d",client_iterator);
+          }
           client_iterator++;
           jack_client = jack_client_open (client_name, JackNoStartServer,
             &status, NULL);
@@ -559,6 +567,18 @@ void jack_getdevs(char *indevlist, int *nindevs,
 void jack_listdevs( void)
 {
     post("device listing not implemented for jack yet\n");
+}
+
+void jack_client_name(char *name)
+{
+    if (desired_client_name) {
+      free(desired_client_name);
+      desired_client_name = NULL;
+    }
+    if (name) {
+      desired_client_name = (char*)getbytes(strlen(name) + 1);
+      strcpy(desired_client_name, name);
+    }
 }
 
 #endif /* JACK */
