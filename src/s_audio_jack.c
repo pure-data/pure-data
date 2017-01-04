@@ -337,7 +337,14 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         yvan volochine, June 2013) */
     if (!jack_client) {
         do {
-          sprintf(client_name,"pure_data_%d",client_iterator);
+          if (desired_client_name && strlen(desired_client_name)) {
+            if (client_iterator == 0)
+              strcpy(client_name, desired_client_name);
+            else
+              sprintf(client_name,"%s_%d", desired_client_name, client_iterator);
+          } else {
+            sprintf(client_name,"pure_data_%d",client_iterator);
+          }
           client_iterator++;
           jack_client = jack_client_open (client_name, JackNoStartServer,
             &status, NULL);
