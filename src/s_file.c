@@ -295,7 +295,7 @@ void sys_loadpreferences( void)
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
     int i, rate = 0, advance = -1, callback = 0, blocksize = 0,
-        api, nolib, maxi;
+        api, midiapi, nolib, maxi;
     char prefbuf[MAXPDSTRING], keybuf[80];
 
     sys_initloadpreferences();
@@ -368,6 +368,9 @@ void sys_loadpreferences( void)
         callback, blocksize);
 
         /* load MIDI preferences */
+    if (sys_getpreference("midiapi", prefbuf, MAXPDSTRING)
+        && sscanf(prefbuf, "%d", &midiapi) > 0)
+            sys_set_midi_api(midiapi);
         /* JMZ/MB: brackets for initializing */
     if (sys_getpreference("nomidiin", prefbuf, MAXPDSTRING) &&
         (!strcmp(prefbuf, ".") || !strcmp(prefbuf, "True")))
@@ -524,6 +527,9 @@ void glob_savepreferences(t_pd *dummy)
     sys_putpreference("blocksize", buf1);
 
         /* MIDI settings */
+    sprintf(buf1, "%d", sys_midiapi);
+    sys_putpreference("midiapi", buf1);
+
     sys_get_midi_params(&nmidiindev, midiindev, &nmidioutdev, midioutdev);
     sys_putpreference("nomidiin", (nmidiindev <= 0 ? "True" : "False"));
     for (i = 0; i < nmidiindev; i++)
