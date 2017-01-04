@@ -305,6 +305,7 @@ void jack_getdevs(char *indevlist, int *nindevs,
         int maxndev, int devdescsize);
 void jack_listdevs(void);
 void jack_client_name(char *name);
+void jack_autoconnect(int);
 
 int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,
