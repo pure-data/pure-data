@@ -863,6 +863,8 @@ ex_getsym(char *p, fts_symbol_t *s)
 const char *
 ex_symname(fts_symbol_t s)
 {
+        if (!s)
+            return (0);
         return (fts_symbol_name(s));
 }
 
@@ -892,7 +894,7 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
         {
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
-                pd_error(expr, "no such table '%s'", s->s_name);
+                pd_error(expr, "no such table '%s'", ex_symname(s));
                 return (1);
         }
         optr->ex_type = ET_FLT;
