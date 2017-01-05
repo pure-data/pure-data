@@ -402,7 +402,7 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     t_dataslot *ds;
     t_template *template = template_findbyname(templatesym);
     t_atom *a = (t_atom *)t_getbytes(0);
-    int i, n = template->t_n, natom = 0;
+    int i, n = template?(template->t_n):0, natom = 0;
     if (!amarrayelement)
     {
         t_atom templatename;
@@ -704,12 +704,13 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
     for (i = 0; i < ntemplates; i++)
     {
         t_template *template = template_findbyname(templatevec[i]);
-        int j, m = template->t_n;
+        int j, m;
         if (!template)
         {
             bug("canvas_savetemplatesto");
             continue;
         }
+        m = template->t_n;
             /* drop "pd-" prefix from template symbol to print */
         binbuf_addv(b, "sss", &s__N, gensym("struct"),
             gensym(templatevec[i]->s_name + 3));
