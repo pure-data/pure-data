@@ -673,7 +673,13 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-ossmidi"))
         {
-          sys_set_midi_api(API_OSS);
+            sys_set_midi_api(API_OSS);
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-oss") || !strcmp(*argv, "-ossmidi"))
+        {
+            fprintf(stderr, "Pd compiled without OSS-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -693,8 +699,21 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-alsamidi"))
         {
-          sys_set_midi_api(API_ALSA);
+            sys_set_midi_api(API_ALSA);
             argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-alsa") || !strcmp(*argv, "-alsamidi"))
+        {
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-alsaadd"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
         }
 #endif
 #ifdef USEAPI_JACK
@@ -722,16 +741,36 @@ int sys_argparse(int argc, char **argv)
             argc -= 2; argv +=2;
 
         }
+#else
+        else if (!strcmp(*argv, "-jack") || !strcmp(*argv, "-nojackconnect")
+            || !strcmp(*argv, "-jackconnect"))
+        {
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-jackname"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
+        }
 #endif
 #ifdef USEAPI_PORTAUDIO
         else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
-#ifdef _WIN32
             || !strcmp(*argv, "-asio")
-#endif
             )
         {
             sys_set_audio_api(API_PORTAUDIO);
             sys_mmio = 0;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
+            || !strcmp(*argv, "-asio")
+            )
+        {
+            fprintf(stderr, "Pd compiled without PortAudio-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -740,6 +779,12 @@ int sys_argparse(int argc, char **argv)
         {
             sys_set_audio_api(API_MMIO);
             sys_mmio = 1;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-mmio"))
+        {
+            fprintf(stderr, "Pd compiled without MMIO-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -1092,6 +1137,14 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-nrt") || !strcmp(*argv, "-nort") || !strcmp(*argv, "-norealtime"))
         {
             sys_hipriority = 0;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-rt") || !strcmp(*argv, "-realtime")
+                 || !strcmp(*argv, "-nrt") || !strcmp(*argv, "-nort")
+                 || !strcmp(*argv, "-norealtime"))
+        {
+            fprintf(stderr, "Pd compiled without realtime priority-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
