@@ -180,7 +180,8 @@ static int sys_domicrosleep(int microsec, int pollem)
                 Sleep(microsec/1000);
         else
 #endif
-        select(sys_maxfd+1, &readset, &writeset, &exceptset, &timout);
+        if(select(sys_maxfd+1, &readset, &writeset, &exceptset, &timout) < 0)
+          perror("microsleep select");
         for (i = 0; i < sys_nfdpoll; i++)
             if (FD_ISSET(sys_fdpoll[i].fdp_fd, &readset))
         {
@@ -1226,7 +1227,8 @@ int sys_startgui(const char *libdir)
                 close our copy - otherwise it might hang waiting for some
                 stupid child process (as seems to happen if jackd auto-starts
                 for us.) */
-            fcntl(pipe9[1], F_SETFD, FD_CLOEXEC);
+            if(fcntl(pipe9[1], F_SETFD, FD_CLOEXEC) < 0)
+              perror("close-on-exec");
             sys_watchfd = pipe9[1];
                 /* We also have to start the ping loop in the GUI;
                 this is done later when the socket is open. */
