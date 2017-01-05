@@ -167,19 +167,26 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
 
 void sys_alsa_putmidibyte(int portno, int byte)
 {
-    snd_seq_event_t ev;
-    snd_seq_ev_clear(&ev);
-    if (portno >= 0 && portno < alsa_nmidiout)
-    {
-        // repack into 1 byte char and put somewhere to point at
-        unsigned char data = (unsigned char)byte;
-
-        snd_seq_ev_set_sysex(&ev,1,&data); //...set_variable *should* have worked but didn't
-        snd_seq_ev_set_direct(&ev);
-        snd_seq_ev_set_subs(&ev);
-        snd_seq_ev_set_source(&ev,alsa_midioutfd[portno]);
-        snd_seq_event_output_direct(midi_handle,&ev);
-    }
+  static snd_midi_event_t *dev = NULL;
+  int res;
+  snd_seq_event_t ev;
+  if (!dev) {
+    snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &dev);
+    //assert(dev);
+    snd_midi_event_init(dev);
+  }
+  snd_seq_ev_clear(&ev);
+  res = snd_midi_event_encode_byte(dev, byte, &ev);
+  if (res > 0 && ev.type != SND_SEQ_EVENT_NONE) {
+    // got a complete event, output it
+    snd_seq_ev_set_direct(&ev);
+    snd_seq_ev_set_subs(&ev);
+    snd_seq_ev_set_source(&ev, alsa_midioutfd[portno]);
+    snd_seq_event_output_direct(midi_handle, &ev);
+  }
+  if (res != 0)
+    // reinitialize the parser
+    snd_midi_event_init(dev);
 }
 
 

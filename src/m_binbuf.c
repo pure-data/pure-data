@@ -1484,7 +1484,9 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
             b = newb;
         }
         binbuf_eval(b, 0, 0, 0);
-        canvas_initbang((t_canvas *)(s__X.s_thing)); /* JMZ*/
+            /* avoid crashing if no canvas was created by binbuf eval */
+        if (s__X.s_thing && *s__X.s_thing == canvas_class)
+            canvas_initbang((t_canvas *)(s__X.s_thing)); /* JMZ*/
         gensym("#A")->s_thing = bounda;
         s__N.s_thing = boundn;
     }

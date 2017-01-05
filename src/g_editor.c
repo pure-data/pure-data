@@ -1031,7 +1031,7 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
     {
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
-        x->gl_isgraph = 0;
+        x->gl_isgraph = x->gl_hidetext = 0;
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -1114,7 +1114,9 @@ static void canvas_donecanvasdialog(t_glist *x,
     ypix = atom_getfloatarg(8, argc, argv);
     xmargin = atom_getfloatarg(9, argc, argv);
     ymargin = atom_getfloatarg(10, argc, argv);
-
+        /* hack - graphme is 0 for no, 1 for yes, and 3 for yes-and-hide-text*/
+    if (!(graphme & 1))
+        graphme = 0;
     x->gl_pixwidth = xpix;
     x->gl_pixheight = ypix;
     x->gl_xmargin = xmargin;

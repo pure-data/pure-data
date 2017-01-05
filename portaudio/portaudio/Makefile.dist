@@ -4,10 +4,37 @@
 ##  for Pd!
 ##  so we provide a simplified target here, to satisfy autotools needs
 
-# list of all files to be installed
+## note: the following *must* be added to the following files if either
+##       are upgraded for `make dist` to pass
+##
+## portaudio/configure.in:
+##
+##     AC_PROG_MKDIR_P
+##
+## portaudio/Makefile.in:
+##
+##     MKDIR_P=@MKDIR_P@
+##     include $(srcdir)/Makefile.dist
+##
+##   and to uninstall:
+##
+##     $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/pkgconfig/portaudio-2.0.pc
+##
+
+## list of all files to be installed
 ## generated with `make distclean; find . -type f`
-DISTFILES=\
+DISTFILES = \
+	aclocal.m4 \
+	configure \
+	configure.in \
+	config.guess \
+	config.sub \
+	install-sh \
+	ltmain.sh \
 	LICENSE.txt \
+	Makefile.in \
+	Makefile.dist \
+	portaudio-2.0.pc.in \
 	include/pa_asio.h \
 	include/pa_jack.h \
 	include/pa_linux_alsa.h \
@@ -68,18 +95,7 @@ DISTFILES=\
 	src/os/win/pa_win_wdmks_utils.c \
 	src/os/win/pa_win_wdmks_utils.h \
 	src/os/win/pa_x86_plain_converters.c \
-	src/os/win/pa_x86_plain_converters.h \
-	aclocal.m4 \
-	configure.in \
-	configure \
-	Makefile.in \
-	Makefile.dist \
-	Makefile \
-	config.guess \
-	config.sub \
-	config.status \
-	install-sh \
-	ltmain.sh
+	src/os/win/pa_x86_plain_converters.h
 
 ## this is the actual target, stolen from an automake generated Makefile
 distdir: $(DISTFILES)
@@ -88,28 +104,28 @@ distdir: $(DISTFILES)
 	list='$(DISTFILES)'; \
 	  dist_files=`for file in $$list; do echo $$file; done | \
 	  sed -e "s|^$$srcdirstrip/||;t" \
-	      -e "s|^$$topsrcdirstrip/|$(top_builddir)/|;t"`; \
+		  -e "s|^$$topsrcdirstrip/|$(top_builddir)/|;t"`; \
 	case $$dist_files in \
 	  */*) $(MKDIR_P) `echo "$$dist_files" | \
-	                   sed '/\//!d;s|^|$(distdir)/|;s,/[^/]*$$,,' | \
-	                   sort -u` ;; \
+					   sed '/\//!d;s|^|$(distdir)/|;s,/[^/]*$$,,' | \
+					   sort -u` ;; \
 	esac; \
 	for file in $$dist_files; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  if test -d $$d/$$file; then \
-	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
-	    if test -d "$(distdir)/$$file"; then \
-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
-	    fi; \
-	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
-	      cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
-	    fi; \
-	    cp -fpR $$d/$$file "$(distdir)$$dir" || exit 1; \
+		dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
+		if test -d "$(distdir)/$$file"; then \
+		  find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+		fi; \
+		if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
+		  cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
+		  find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+		fi; \
+		cp -fpR $$d/$$file "$(distdir)$$dir" || exit 1; \
 	  else \
-	    test -f "$(distdir)/$$file" \
-	    || cp -p $$d/$$file "$(distdir)/$$file" \
-	    || exit 1; \
+		test -f "$(distdir)/$$file" \
+		|| cp -p $$d/$$file "$(distdir)/$$file" \
+		|| exit 1; \
 	  fi; \
 	done
 

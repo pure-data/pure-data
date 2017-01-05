@@ -420,7 +420,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         outvec[i].o_n = x->x_startvoice;
         outvec[i].o_outlet =
             outlet_new(&x->x_obj, (outvec[i].o_signal ? &s_signal : 0));
-        obj_connect(&x->x_vec[0].c_gl->gl_obj, i, 
+        obj_connect(&x->x_vec[0].c_gl->gl_obj, i,
             (t_object *)(&outvec[i]), 0);
     }
     clone_setn(x, (t_floatarg)(wantn));

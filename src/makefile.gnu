@@ -259,10 +259,3 @@ uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pdreceive.1.gz
 
 -include makefile.dependencies
-
-
-
-
-
-
-
