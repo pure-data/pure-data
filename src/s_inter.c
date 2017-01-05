@@ -562,6 +562,8 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
 void sys_closesocket(int fd)
 {
 #ifdef HAVE_UNISTD_H
+    if(fd<0)
+        return;
     close(fd);
 #endif
 #ifdef _WIN32
