@@ -27,9 +27,9 @@ proc ::helpbrowser::open_helpbrowser {} {
             .helpbrowser configure -menu $::dialog_menubar
         }
 
-        wm resizable .helpbrowser 0 0
+        wm resizable .helpbrowser 0 1
         frame .helpbrowser.frame
-        pack .helpbrowser.frame -side top -fill both
+        pack .helpbrowser.frame -side top -fill both -expand 1
         build_references
         make_rootlistbox
     }
