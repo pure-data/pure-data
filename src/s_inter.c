@@ -1087,6 +1087,7 @@ int sys_startgui(const char *libdir)
         {
             if (errno) perror("sys_startgui");
             else fprintf(stderr, "sys_startgui failed\n");
+            sys_closesocket(xsock);
             return (1);
         }
         else if (!childpid)                     /* we're the child */
@@ -1196,6 +1197,7 @@ int sys_startgui(const char *libdir)
             if (errno)
                 perror("sys_startgui");
             else fprintf(stderr, "sys_startgui failed\n");
+            sys_closesocket(xsock);
             return (1);
         }
         else if (!watchpid)             /* we're the child */
