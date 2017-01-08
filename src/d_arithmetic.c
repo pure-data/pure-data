@@ -450,8 +450,8 @@ t_int *over_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        t_sample g = *in2++;
-        *out++ = (g ? *in1++ / g : 0);
+        t_sample f = *in1++, g = *in2++;
+        *out++ = (g ? f / g : 0);
     }
     return (w+5);
 }

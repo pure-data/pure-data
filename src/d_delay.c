@@ -5,6 +5,7 @@
 /*  send~, delread~, throw~, catch~ */
 
 #include "m_pd.h"
+#include <string.h>
 extern int ugen_getsortno(void);
 
 #define DEFDELVS 64             /* LATER get this from canvas at DSP time */
@@ -50,6 +51,13 @@ static void sigdelwrite_updatesr(t_sigdelwrite *x, t_float sr) /* added by Mathi
         x->x_cspace.c_phase = XTRASAMPS;
     }
 }
+
+static void sigdelwrite_clear (t_sigdelwrite *x) /* added by Orm Finnendahl */
+{
+  if (x->x_cspace.c_n > 0)
+    memset(x->x_cspace.c_vec, 0, sizeof(t_sample)*(x->x_cspace.c_n + XTRASAMPS));
+}
+
 
     /* routine to check that all delwrites/delreads/vds have same vecsize */
 static void sigdelwrite_checkvecsize(t_sigdelwrite *x, int vecsize)
@@ -136,6 +144,8 @@ static void sigdelwrite_setup(void)
     CLASS_MAINSIGNALIN(sigdelwrite_class, t_sigdelwrite, x_f);
     class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_dsp,
         gensym("dsp"), A_CANT, 0);
+    class_addmethod(sigdelwrite_class, (t_method)sigdelwrite_clear,
+                    gensym("clear"), 0);
 }
 
 /* ----------------------------- delread~ ----------------------------- */

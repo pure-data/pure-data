@@ -360,7 +360,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
 
         # can't see focus for buttons, so disable it
         $mytoplevel.settings.bsc.bs_popup config -takefocus 0
-        $mytoplevel.settings.bsc.c_button config -takefocus 0
+        if {[winfo exists $mytoplevel.settings.bsc.c_button]} {
+            $mytoplevel.settings.bsc.c_button config -takefocus 0
+        }
         if {[winfo exists $mytoplevel.inputs.in1f.x1]} {
             $mytoplevel.inputs.in1f.x1 config -takefocus 0
             $mytoplevel.inputs.in1f.x0 config -takefocus 0
