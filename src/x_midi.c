@@ -356,7 +356,7 @@ void inmidi_pitchbend(int portno, int channel, int value)
     if (pd_this->pd_bendin_sym->s_thing)
     {
         t_atom at[2];
-        SETFLOAT(at, value);
+        SETFLOAT(at, value-8192);
         SETFLOAT(at+1, (channel + (portno << 4) + 1));
         pd_list(pd_this->pd_bendin_sym->s_thing, &s_list, 2, at);
     }
