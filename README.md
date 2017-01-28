@@ -1,4 +1,5 @@
-**Pure Data - Graphical Object Oriented Opensource Envirnment for Computer Music** and **Digital Media Arts**
+**Pure Data:** 
+<h3>Graphical Object Oriented Opensource Envirnment for Computer Music and Digital Media Arts</h3>
 =======================
 
 **What Is Pure Data?**
