@@ -1,10 +1,9 @@
-#N canvas 0 0 591 442 12;
-#X floatatom 225 110 0 0 0;
-#X floatatom 184 109 0 0 0;
+#N canvas 325 23 1280 687 12;
+#X floatatom 225 110 0 0 0 0 - - -;
+#X floatatom 184 109 0 0 0 0 - - -;
 #X msg 184 56 5 6;
-#X floatatom 132 108 0 0 0;
-#X floatatom 64 105 0 0 0;
-#X text 30 21 Most Pd messages are just numbers or short lists of numbers:;
+#X floatatom 132 108 0 0 0 0 - - -;
+#X floatatom 64 105 0 0 0 0 - - -;
 #X msg 64 55 5;
 #X obj 64 80 + 9;
 #X obj 132 83 +;
@@ -13,23 +12,124 @@
 #X obj 288 107 print;
 #X obj 288 81 pack 34 78;
 #X msg 132 55 5 6;
-#X floatatom 195 328 0 0 0;
+#X floatatom 195 328 0 0 0 0 - - -;
 #X obj 195 303 +;
 #X msg 195 254 1.2 3.4;
 #X msg 205 277 5 6;
-#X text 36 206 Unlike Max \, in Pd all numbers are floating point. Numbers whose values happen to be integers are displayed without decimal points.;
-#X text 31 363 For more on messages \, get help on any message box by right-clicking.;
+#X text 36 206 Unlike Max \, in Pd all numbers are floating point.
+Numbers whose values happen to be integers are displayed without decimal
+points.;
+#X text 31 363 For more on messages \, get help on any message box
+by right-clicking.;
 #X text 329 409 updated for Pd release 0.33;
-#X text 34 149 If you send a list to an object with more than one inlet \, the items in the list are spread out over the inlets \, as seen in the 5+6 example above.;
-#X connect 2 0 9 0;
-#X connect 6 0 7 0;
-#X connect 7 0 4 0;
-#X connect 8 0 3 0;
-#X connect 9 0 1 0;
-#X connect 9 1 0 0;
-#X connect 10 0 12 0;
-#X connect 12 0 11 0;
-#X connect 13 0 8 0;
+#X text 34 149 If you send a list to an object with more than one inlet
+\, the items in the list are spread out over the inlets \, as seen
+in the 5+6 example above.;
+#N canvas 875 210 450 300 pulseGen1 0;
+#X obj 198 -36 loadbang;
+#X msg 200 16 1;
+#X obj 201 56 metro 1250;
+#X obj 262 19 random 1250;
+#X obj 200 89 t b;
+#X obj 186 135 outlet;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 2 1;
+#X connect 4 0 5 0;
+#X restore 82 -108 pd pulseGen1;
+#X obj 71 -77 t b b;
+#X obj 100 -44 random 6;
+#X obj 67 -14 route 0 1 2 3 4 5;
+#X obj 66 14 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 94 15 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 123 16 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 159 15 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 184 12 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 211 15 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 245 15 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 306 -82 t b b;
+#X obj 335 -49 random 6;
+#X obj 302 -19 route 0 1 2 3 4 5;
+#X obj 301 9 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 329 10 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 365 11 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 394 10 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 419 7 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 446 10 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 480 10 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#N canvas 875 210 450 300 pulseGen2 0;
+#X obj 198 -36 loadbang;
+#X msg 200 16 1;
+#X obj 201 56 metro 1250;
+#X obj 262 19 random 1250;
+#X obj 200 89 t b;
+#X obj 186 135 outlet;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 2 1;
+#X connect 4 0 5 0;
+#X restore 317 -113 pd pulseGen2;
+#X connect 2 0 8 0;
+#X connect 5 0 6 0;
+#X connect 6 0 4 0;
+#X connect 7 0 3 0;
+#X connect 8 0 1 0;
+#X connect 8 1 0 0;
+#X connect 9 0 11 0;
+#X connect 11 0 10 0;
+#X connect 12 0 7 0;
+#X connect 14 0 13 0;
 #X connect 15 0 14 0;
-#X connect 16 0 15 0;
-#X connect 17 0 15 0;
+#X connect 16 0 14 0;
+#X connect 21 0 22 0;
+#X connect 22 0 24 0;
+#X connect 22 1 23 0;
+#X connect 23 0 24 0;
+#X connect 24 0 25 0;
+#X connect 24 1 26 0;
+#X connect 24 2 27 0;
+#X connect 24 3 28 0;
+#X connect 24 4 29 0;
+#X connect 24 5 30 0;
+#X connect 24 6 31 0;
+#X connect 25 0 5 0;
+#X connect 26 0 12 0;
+#X connect 27 0 2 0;
+#X connect 28 0 9 0;
+#X connect 29 0 15 0;
+#X connect 30 0 16 0;
+#X connect 32 0 34 0;
+#X connect 32 1 33 0;
+#X connect 33 0 34 0;
+#X connect 34 0 35 0;
+#X connect 34 1 36 0;
+#X connect 34 2 37 0;
+#X connect 34 3 38 0;
+#X connect 34 4 39 0;
+#X connect 34 5 40 0;
+#X connect 34 6 41 0;
+#X connect 35 0 5 0;
+#X connect 36 0 12 0;
+#X connect 37 0 2 0;
+#X connect 38 0 9 0;
+#X connect 39 0 15 0;
+#X connect 40 0 16 0;
+#X connect 42 0 32 0;
