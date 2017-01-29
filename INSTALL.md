@@ -16,8 +16,8 @@ cd pure-data/packages/linux_make
 make install && make package
 It will then build for a while, then you'll see a .tar.bz2 or .deb in pure-data/packages/linux_make/build. The Makefile checks for the Debian utility dpkg-shlibdeps to determine whether it should build a .deb package or a tarball. If you want to force building the tarball, you can run the build like this:
 
-cd pure-data/packages/linux_make
-make PACKAGE_TYPE=tarbz2 install && make PACKAGE_TYPE=tarbz2 package
+$ cd pure-data/packages/linux_make
+$ make PACKAGE_TYPE=tarbz2 install && make PACKAGE_TYPE=tarbz2 package
 
 you may also install it on linux by running:
 
@@ -45,17 +45,17 @@ $ sudo apt-get install pd-extended
 
 Once you have all of the sources, then you can start compiling. Try building the whole thing and see if it works for you:
 
-cd pure-data/packages/darwin_app
-make install && make package
-It will then build for a while, and it should end up with a Pd-extended.dmg package in pure-data/packages/darwin_app/build.
+$ cd pure-data/packages/darwin_app
+$ make install && make package
+$ It will then build for a while, and it should end up with a Pd-extended.dmg package in pure-data/packages/darwin_app/build.
 
 **Windows**
 ======================
 
 Once you have all of the sources, then you can start compiling. Try building the whole thing and see if it works for you:
 
-cd pure-data/packages/win32_inno
-make install && make package
+$ cd pure-data/packages/win32_inno
+$ make install && make package
 It will then build for a while, and it should end up with a Pd-extended.exe package in pure-data/packages/win32_inno/Output.
 
 **Auto-Build Scripts**
@@ -69,10 +69,10 @@ then run the scripts: AutoBuildScripts
 
 So in the Terminal, do something like this for Pd-extended:
 
-mkdir ~/auto-build
-cd ~/auto-build
+$ mkdir ~/auto-build
+$ cd ~/auto-build
 https://pure-data.svn.sourceforge.net/svnroot/pure-data/branches/pd-extended/0.43 pd-extended
-~/auto-build/pd-extended/scripts/auto-build/pd-extended-auto-builder.sh
+$ ~/auto-build/pd-extended/scripts/auto-build/pd-extended-auto-builder.sh
 Building Pd-Extended For Development
 See WorkingWithPdExtendedSources In order to build Pd-Extended from sources under version control in a manner that enables an effective development cycle.
 
