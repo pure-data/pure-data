@@ -19,6 +19,27 @@ It will then build for a while, then you'll see a .tar.bz2 or .deb in pure-data/
 cd pure-data/packages/linux_make
 make PACKAGE_TYPE=tarbz2 install && make PACKAGE_TYPE=tarbz2 package
 
+you may also install it on linux by running:
+
+$ yum install alsa-lib-devel
+$ sudo apt-get install libasound2-dev
+$ yum install jack-audio-connection-kit-devel
+$ sudo apt-get install libjack-dev
+$ sudo apt-get install libjack-jackd2-dev)
+$ sudo apt-get install libtool
+
+and finally:
+
+$ sudo add-apt-repository "deb http://apt.puredata.info/releases `lsb_release -c | awk '{print $2}'` main"
+$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 9f0fe587374bbe81
+$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key D63D3D09C39F5EEB
+$ sudo apt-get update
+$ sudo apt-get install pd-extended
+ 
+$ sudo add-apt-repository ppa:eighthave/pd-extended
+$ sudo apt-get update
+$ sudo apt-get install pd-extended
+
 **Mac OS X**
 ======================
 
