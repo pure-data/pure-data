@@ -59,3 +59,7 @@ portaudio/portaudio/lib-stamp
 portaudio/portaudio/ltmain.sh
 portaudio/portaudio/portaudio-2.0.pc
 *.dirstamp
+
+# macOS
+.DS_Store
+
