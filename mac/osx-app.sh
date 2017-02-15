@@ -225,6 +225,7 @@ cp stuff/pd-file.icns $APP/Contents/Resources/
 PLIST_VERSION=${1/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
 plutil -replace CFBundleVersion -string $PLIST_VERSION $APP/Contents/Info.plist
 plutil -replace CFBundleShortVersionString -string $PLIST_VERSION $APP/Contents/Info.plist
+plutil -replace CFBundleGetInfoString -string "$PLIST_VERSION" $APP/Contents/Info.plist
 
 # install binaries
 mkdir -p $DEST/bin
