@@ -221,6 +221,11 @@ rm $APP/Contents/Resources/Wish.icns
 cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
 
+# update version identifiers in Info.plist
+PLIST_VERSION=${1/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
+plutil -replace CFBundleVersion -string $PLIST_VERSION $APP/Contents/Info.plist
+plutil -replace CFBundleShortVersionString -string $PLIST_VERSION $APP/Contents/Info.plist
+
 # install binaries
 mkdir -p $DEST/bin
 cp -R $verbose $SRC/src/pd          $DEST/bin/
