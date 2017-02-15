@@ -13,7 +13,7 @@
 WD=$(dirname $0)
 
 verbose=
-included_wish=false
+included_wish=true
 TK=Current
 
 # Help message
@@ -28,9 +28,8 @@ Options:
   -h,--help           display this help message
   -v,--verbose        verbose copy prints
   -t,--tk VER         build using a specific version of the Tk
-                      Wish.app on the system (default: Current)
-  -i,--included-wish  build using the included Tk 8.4 Wish.app,
-                      *may not* be present (default: no)
+                      Wish.app on the system
+  -i,--included-wish  build using the included Tk 8.4 Wish.app (default)
 
 Arguments:
 
@@ -142,6 +141,7 @@ cp stuff/Info.plist $APP/Contents/
 rm $APP/Contents/Resources/Wish.icns
 cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
+cp -R ../font $APP/Contents/Resources/
 
 # install binaries
 mkdir -p $DEST/bin
