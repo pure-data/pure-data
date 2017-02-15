@@ -1092,6 +1092,7 @@ int sys_startgui(const char *libdir)
         else if (!childpid)                     /* we're the child */
         {
             setuid(getuid());          /* lose setuid priveliges */
+            sys_closesocket(xsock);    /* child doesn't listen */
 #ifndef __APPLE__
 // TODO this seems unneeded on any platform hans@eds.org
                 /* the wish process in Unix will make a wish shell and
@@ -1201,6 +1202,7 @@ int sys_startgui(const char *libdir)
         {
             sys_set_priority(1);
             setuid(getuid());      /* lose setuid priveliges */
+            sys_closesocket(xsock);    /* child doesn't listen */
             if (pipe9[1] != 0)
             {
                 dup2(pipe9[0], 0);
@@ -1258,9 +1260,9 @@ int sys_startgui(const char *libdir)
 
         sys_guisock = accept(xsock, (struct sockaddr *) &server,
             (socklen_t *)&len);
-#ifdef OOPS
+
         sys_closesocket(xsock);
-#endif
+
         if (sys_guisock < 0) sys_sockerror("accept");
         if (sys_verbose)
             fprintf(stderr, "... connected\n");

@@ -25,118 +25,8 @@ audio_backends=""
 midi_backends=""
 
 # debug/release defaults
-DEBUG_CFLAGS="-g -O0"
-RELEASE_CFLAGS="-g -O3 -ffast-math -funroll-loops -fomit-frame-pointer"
-
-# override the default flags set by AC_PROG_CC & AC_PROG_CXX,
-# these can still be overriden by CFLAGS & CXXFLAGS set by the user
-# see the autoconf manual entries on AC_PROG_CC & AC_PROG_CXX for more info
-: ${CFLAGS=""}
-: ${CXXFLAGS=""}
-
-#########################################
-##### OS Detection #####
-
-# you will need to install XCode on Mac OS X to use this:
-PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iOS SDK not available]))
-PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not available]))
-
-case $host in
-*darwin*)
-    if test "x${IPHONEOS}" = "xno"; then
-        MACOSX=yes
-        platform="Mac OSX"
-        coreaudio=yes
-        portaudio=yes
-        portmidi=yes
-        EXTERNAL_CFLAGS="-fPIC"
-        EXTERNAL_EXTENSION=d_fat
-
-        # required for dlopen & weak linking for older OSX version support
-        CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
-    else
-        platform=iOS
-        locales=no
-    fi
-
-    # homebrew paths
-    AM_CPPFLAGS="$INCLUDES -I/usr/local/include"
-    LDFLAGS="$LDFLAGS -L/usr/local/lib"
-
-    # fink paths
-    if test -e /sw ; then
-        AM_CPPFLAGS="$INCLUDES -I/sw/include"
-        LDFLAGS="$LDFLAGS -L/sw/lib"
-    fi
-
-    # macports paths
-    if test -e /opt/local ; then
-        AM_CPPFLAGS="$INCLUDES -I/opt/local/include"
-        LDFLAGS="$LDFLAGS -L/opt/local/lib"
-    fi
-
-    EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
-    ;;
-*linux*|*kfreebsd*gnu*)
-    # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
-    if test "x${ANDROID}" = "xno"; then
-        LINUX=yes
-        platform=Linux
-        portaudio=yes
-        EXTERNAL_CFLAGS="-fPIC"
-        EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
-        EXTERNAL_EXTENSION=pd_linux
-    else
-        platform=Android
-    fi
-    ;;
-*-*-gnu*)
-    HURD=yes
-    platform=Hurd
-    EXTERNAL_CFLAGS="-fPIC"
-    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -fPIC"
-    EXTERNAL_EXTENSION=pd_linux
-    ;;
-*mingw*)
-    WINDOWS=yes
-    MINGW=yes
-    platform=Mingw
-    portaudio=yes
-
-    # ASIO doesn't build yet with the autotools setup. We need to figure out how
-    # to make the final linking phase use g++
-    asio=yes
-
-    # ASIO is a C++ library, so if its included, then use g++ to build
-    EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-s -shared -Wl,--enable-auto-import -lpd"
-    EXTERNAL_EXTENSION=dll
-    ;;
-*cygwin*)
-    WINDOWS=yes
-    CYGWIN=yes
-    platform=Cygwin
-    portaudio=yes
-    EXTERNAL_CFLAGS=
-    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -shared -lpd"
-    EXTERNAL_EXTENSION=dll
-    ;;
-*)
-    platform=Unknown
-    ;;
-esac
-
-AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
-AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
-AM_CONDITIONAL(LINUX, test x$LINUX = xyes)
-AM_CONDITIONAL(HURD, test x$HURD = xyes)
-AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
-AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
-AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
-AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
-
-# pass include paths down to all Makefiles
-AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
+DEBUG_CFLAGS="-O0"
+RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer"
 
 #########################################
 ##### Check for programs, libs, & headers #####
@@ -235,6 +125,114 @@ AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_LIBS])
 
 #########################################
+##### OS Detection #####
+
+# you will need to install XCode on Mac OS X to use this:
+PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iOS SDK not available]))
+PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not available]))
+
+case $host in
+*darwin*)
+    if test "x${IPHONEOS}" = "xno"; then
+        MACOSX=yes
+        platform="Mac OSX"
+        coreaudio=yes
+        portaudio=yes
+        portmidi=yes
+        EXTERNAL_CFLAGS="-fPIC"
+        EXTERNAL_EXTENSION=d_fat
+
+        # required for dlopen & weak linking for older OSX version support
+        CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
+    else
+        platform=iOS
+        locales=no
+    fi
+
+    # homebrew paths
+    if test -e /usr/local ; then
+        AM_CPPFLAGS="-I/usr/local/include $INCLUDES"
+        LDFLAGS="-L/usr/local/lib $LDFLAGS"
+    fi
+
+    # fink paths
+    if test -e /sw ; then
+        AM_CPPFLAGS="-I/sw/include $INCLUDES"
+        LDFLAGS="-L/sw/lib $LDFLAGS"
+    fi
+
+    # macports paths
+    if test -e /opt/local ; then
+        AM_CPPFLAGS="-I/opt/local/include $INCLUDES"
+        LDFLAGS="-L/opt/local/lib $LDFLAGS"
+    fi
+
+    EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
+    ;;
+*linux*|*kfreebsd*gnu*)
+    # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
+    if test "x${ANDROID}" = "xno"; then
+        LINUX=yes
+        platform=Linux
+        portaudio=yes
+        EXTERNAL_CFLAGS="-fPIC"
+        EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
+        EXTERNAL_EXTENSION=pd_linux
+    else
+        platform=Android
+    fi
+    ;;
+*-*-gnu*)
+    HURD=yes
+    platform=Hurd
+    EXTERNAL_CFLAGS="-fPIC"
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
+    EXTERNAL_EXTENSION=pd_linux
+    ;;
+*mingw*)
+    WINDOWS=yes
+    MINGW=yes
+    platform=Mingw
+    portaudio=yes
+
+    # ASIO doesn't build yet with the autotools setup. We need to figure out how
+    # to make the final linking phase use g++
+    asio=yes
+
+    # externals are dynamically linked to pd.dll in their individual automake files
+    EXTERNAL_CFLAGS="-mms-bitfields"
+    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined -lpd"
+    EXTERNAL_EXTENSION=dll
+    ;;
+*cygwin*)
+    WINDOWS=yes
+    CYGWIN=yes
+    platform=Cygwin
+    portaudio=yes
+
+    # externals are dynamically linked to pd.dll in their individual automake files
+    EXTERNAL_CFLAGS=
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
+    EXTERNAL_EXTENSION=dll
+    ;;
+*)
+    platform=Unknown
+    ;;
+esac
+
+AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
+AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
+AM_CONDITIONAL(LINUX, test x$LINUX = xyes)
+AM_CONDITIONAL(HURD, test x$HURD = xyes)
+AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
+AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
+AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
+AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
+
+# pass include paths down to all Makefiles
+AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
+
+#########################################
 ##### Configure Options #####
 
 ##### Build with debug flags? #####
@@ -242,9 +240,9 @@ AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug], [use debugging support])],
     [debug=$enableval], [debug=no])
 if test x$debug = xyes ; then
-    CFLAGS="$DEBUG_CFLAGS $CFLAGS"
+    CFLAGS="$CFLAGS $DEBUG_CFLAGS"
 else
-    CFLAGS="$RELEASE_CFLAGS $CFLAGS"
+    CFLAGS="$CFLAGS $RELEASE_CFLAGS"
 fi
 
 ##### Universal/multi architecture build on OSX #####

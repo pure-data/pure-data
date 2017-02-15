@@ -737,7 +737,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         is set.  We don't yet know if a subcanvas will be "blocking" so there
         we delay new signal creation, which will be handled by calling
         signal_setborrowed in the ugen_done_graph routine below. */
-    int nonewsigs = (class == canvas_class || 
+    int nonewsigs = (class == canvas_class ||
         ((class == vinlet_class) && !(dc->dc_reblock)));
         /* when we encounter a subcanvas or a signal outlet, suppress freeing
         the input signals as they may be "borrowed" for the super or sub

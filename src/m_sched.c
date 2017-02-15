@@ -490,6 +490,11 @@ static void m_pollingscheduler( void)
             /* T.Grill - done */
             sys_lock();
 #endif
+#if 0   /* in linux and windoes, sometimes audio devices would freeze, which
+               in turn would freeze Pd.  This code unfroze things by closing
+               audio in such cases.  But this seems no longer necessary, and
+               on Macs at least, this seems to cause audio to get dropped if
+               the machine sleeps.  */
                 /* if dacs remain "idle" for 1 sec, they're hung up. */
             if (timeforward != 0)
                 idlecount = 0;
@@ -517,6 +522,7 @@ static void m_pollingscheduler( void)
                     }
                 }
             }
+#endif /* 0 */
         }
         else
         {

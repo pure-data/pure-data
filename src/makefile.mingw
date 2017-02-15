@@ -99,7 +99,7 @@ ASIOSRC = $(PADIR)/src/hostapi/asio/iasiothiscallresolver.cpp \
 
 #VSRC =  s_audio_vst.c
 
-PMDIR = ../portmidi
+PMDIR = ../portmidi/portmidi
 PMINCLUDE = -I$(PMDIR)/pm_common -I$(PMDIR)/pm_win -I$(PMDIR)/porttime \
     -DNEWBUFFER
 PMSRC =  s_midi_pm.c \
