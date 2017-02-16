@@ -417,5 +417,14 @@ proc ::pdwindow::create_window {} {
     # wait until .pdwindow.tcl.entry is visible before opening files so that
     # the loading logic can grab it and put up the busy cursor
     tkwait visibility .pdwindow.text
-#    create_tcl_entry
+    #    create_tcl_entry
+
+    # on X11 measure the size of the window decoration, so we can open windows at the correct position
+    if {$::windowingsystem eq "x11"} {
+        regexp -- {([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+)} [wm geometry .pdwindow] -> \
+            _ _ _left _top
+        set ::windowframex [expr {[winfo rootx .pdwindow] - $_left}]
+        set ::windowframey [expr {[winfo rooty .pdwindow] - $_top}]
+        puts "window frame: $::windowframex $::windowframey"
+    }
 }
