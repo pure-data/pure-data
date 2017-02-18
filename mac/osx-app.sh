@@ -25,7 +25,7 @@ WISH=
 #----------------------------------------------------------
 help() {
 echo -e "
-Usage: osx-app.sh [OPTIONS] VERSION WISH
+Usage: osx-app.sh [OPTIONS] VERSION
 
   Creates a Pd .app bundle for OS X using a Tk Wish.app wrapper
 
@@ -50,7 +50,6 @@ Options:
 Arguments:
 
   VERSION             version string to use in file name (required)
-  WISH                provide a source Wish.app to use (optional)
 
 Examples:
 
