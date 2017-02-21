@@ -109,7 +109,7 @@ proc ::pd_guiprefs::init {} {
             # linux: read a config file and return its lines splitted.
             #
             proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
-                set filename [file join $adomain $akey]
+                set filename [file join $adomain ${akey}.conf]
                 set conf {}
                 if {
                     [file exists $filename] == 1
@@ -130,7 +130,7 @@ proc ::pd_guiprefs::init {} {
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
                 # right now I (yvan) assume that data are just \n separated, i.e. no keys
                 set data [join $data "\n"]
-                set filename [file join $adomain $akey]
+                set filename [file join $adomain ${akey}.conf]
                 if {[catch {set fl [open $filename w]} errorMsg]} {
                     ::pdwindow::error "write_config $data $akey: $errorMsg\n"
                 } else {
@@ -164,7 +164,7 @@ proc ::pd_guiprefs::init_win {} {
 proc ::pd_guiprefs::init_x11 {} {
     # linux uses ~/.config/pure-data dir
     set ::pd_guiprefs::domain "~/.config/pure-data"
-    set ::recentfiles_key "recentfiles.conf"
+    set ::recentfiles_key "recentfiles"
     prepare_configdir
 }
 
