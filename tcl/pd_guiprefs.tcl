@@ -67,6 +67,7 @@ proc ::pd_guiprefs::init {} {
                 # asked for by holding the Option/Alt button when quitting via the File
                 # menu or with the Cmd+Q key binding.
                 exec defaults write $adomain NSQuitAlwaysKeepsWindows -bool false
+                return
             }
 
         }
@@ -79,9 +80,8 @@ proc ::pd_guiprefs::init {} {
                 package require registry
                 if {![catch {registry get $adomain $akey} conf]} {
                     return [expr {$conf}]
-                } else {
-                    return {}
                 }
+                return {}
             }
             # ------------------------------------------------------------------------------
             # w32: write configs to registry
@@ -99,6 +99,7 @@ proc ::pd_guiprefs::init {} {
                         ::pdwindow::error "write_config $data $akey: $errorMsg\n"
                     }
                 }
+                return
             }
 
         }
