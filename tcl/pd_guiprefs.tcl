@@ -26,7 +26,11 @@ set ::pd_guiprefs::domain ""
 proc ::pd_guiprefs::init {} {
     switch -- $::windowingsystem {
         "aqua" {
-            init_aqua
+            # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
+            set ::pd_guiprefs::domain org.puredata
+            set ::recentfiles_key "NSRecentDocuments"
+            set ::total_recentfiles 10
+
             # ------------------------------------------------------------------------------
             # osx: read a plist file
             #
@@ -43,7 +47,7 @@ proc ::pd_guiprefs::init {} {
                 return $conf
             }
             # ------------------------------------------------------------------------------
-            # write configs to plist file
+            # osx: write configs to plist file
             # if $arr is true, we write an array
             #
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
@@ -72,7 +76,10 @@ proc ::pd_guiprefs::init {} {
 
         }
         "win32" {
-            init_win
+            # windows uses registry
+            set ::pd_guiprefs::domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
+            set ::recentfiles_key "RecentDocs"
+
             # ------------------------------------------------------------------------------
             # w32: read in the registry
             #
@@ -104,7 +111,11 @@ proc ::pd_guiprefs::init {} {
 
         }
         "x11" {
-            init_x11
+            set ::pd_guiprefs::domain pure-data
+            set ::recentfiles_key "recentfiles"
+
+            prepare_configdir
+
             # ------------------------------------------------------------------------------
             # linux: read a config file and return its lines splitted.
             #
@@ -148,31 +159,6 @@ proc ::pd_guiprefs::init {} {
         $::recentfiles_key $arr]}
 }
 
-proc ::pd_guiprefs::init_aqua {} {
-    # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
-    set ::pd_guiprefs::domain org.puredata
-    set ::recentfiles_key "NSRecentDocuments"
-    set ::total_recentfiles 10
-}
-
-proc ::pd_guiprefs::init_win {} {
-    # windows uses registry
-    set ::pd_guiprefs::domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
-    set ::recentfiles_key "RecentDocs"
-}
-
-proc ::pd_guiprefs::init_x11 {} {
-    # linux uses ~/.config/pure-data dir
-    if {[info exists ::env(XDG_CONFIG_HOME)]} {
-        set confdir $::env(XDG_CONFIG_HOME)
-    } {set confdir ""}
-    if {"" eq ${confdir}} {
-        set confdir [file join ~ .config]
-    }
-    set ::pd_guiprefs::domain [file join $confdir pure-data]
-    set ::recentfiles_key "recentfiles"
-    prepare_configdir
-}
 
 #################################################################
 # main read/write procedures
@@ -205,10 +191,21 @@ proc ::pd_guiprefs::get {key {arr false} {domain {}}} {
 # ------------------------------------------------------------------------------
 # linux only! : look for pd config directory and create it if needed
 #
-proc ::pd_guiprefs::prepare_configdir {} {
+proc ::pd_guiprefs::prepare_configdir {{domain pure-data}} {
+    set confdir ""
+    # linux uses ~/.config/pure-data dir
+    if {[info exists ::env(XDG_CONFIG_HOME)]} {
+        set confdir $::env(XDG_CONFIG_HOME)
+    }
+    if {"" eq ${confdir}} {
+        set confdir [file join ~ .config]
+    }
+    set configfile [file join $confdir $domain]
+    set ::pd_guiprefs::domain $configfile
+
     if { [catch {
-        if {[file isdirectory $::pd_guiprefs::domain] != 1} {
-            file mkdir $::pd_guiprefs::domain
+        if {[file isdirectory $configfile] != 1} {
+            file mkdir $configfile
             ::pdwindow::debug "$::pd_guiprefs::domain was created.\n"
             }
     }]} {
