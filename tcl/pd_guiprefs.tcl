@@ -120,34 +120,14 @@ proc ::pd_guiprefs::init {} {
             # linux: read a config file and return its lines splitted.
             #
             proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
-                set filename [file join $adomain ${akey}.conf]
-                set conf {}
-                if {
-                    [file exists $filename] == 1
-                    && [file readable $filename]
-                } {
-                    set fl [open $filename r]
-                    while {[gets $fl line] >= 0} {
-                        lappend conf $line
-                    }
-                    close $fl
-                }
-                return $conf
+                return [::pd_guiprefs::get_config_file $adomain $akey $arr]
             }
             # ------------------------------------------------------------------------------
             # linux: write configs to USER_APP_CONFIG_DIR
             # $arr is true if the data needs to be written in an array
             #
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-                # right now I (yvan) assume that data are just \n separated, i.e. no keys
-                set data [join $data "\n"]
-                set filename [file join $adomain ${akey}.conf]
-                if {[catch {set fl [open $filename w]} errorMsg]} {
-                    ::pdwindow::error "write_config $data $akey: $errorMsg\n"
-                } else {
-                    puts -nonewline $fl $data
-                    close $fl
-                }
+                return [::pd_guiprefs::write_config_file $data $adomain $akey $arr]
             }
         }
     }
@@ -159,6 +139,39 @@ proc ::pd_guiprefs::init {} {
         $::recentfiles_key $arr]}
 }
 
+# ------------------------------------------------------------------------------
+# read a config file and return its lines splitted.
+#
+proc ::pd_guiprefs::get_config_file {adomain {akey} {arr false}} {
+    set filename [file join ${adomain} ${akey}.conf]
+    set conf {}
+    if {
+        [file exists $filename] == 1
+        && [file readable $filename]
+    } {
+        set fl [open $filename r]
+        while {[gets $fl line] >= 0} {
+            lappend conf $line
+        }
+        close $fl
+    }
+    return $conf
+}
+# ------------------------------------------------------------------------------
+# write configs to USER_APP_CONFIG_DIR
+# $arr is true if the data needs to be written in an array
+#
+proc ::pd_guiprefs::write_config_file {data {adomain} {akey} {arr false}} {
+    # right now I (yvan) assume that data are just \n separated, i.e. no keys
+    set data [join $data "\n"]
+    set filename [file join ${adomain} ${akey}.conf]
+    if {[catch {set fl [open $filename w]} errorMsg]} {
+        ::pdwindow::error "write_config $data $akey: $errorMsg\n"
+    } else {
+        puts -nonewline $fl $data
+        close $fl
+    }
+}
 
 #################################################################
 # main read/write procedures
