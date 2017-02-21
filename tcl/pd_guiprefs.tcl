@@ -15,7 +15,7 @@ namespace eval ::pd_guiprefs:: {
 # FIXME should these be globals ?
 set ::recentfiles_key ""
 set ::pd_guiprefs::domain ""
-
+set ::pd_guiprefs::configdir ""
 
 #################################################################
 # global procedures
@@ -113,10 +113,8 @@ proc ::pd_guiprefs::init {} {
             }
         }
         default {
-            set ::pd_guiprefs::domain pure-data
             set ::recentfiles_key "recentfiles"
-
-            prepare_configdir
+            set ::pd_guiprefs::domain [prepare_configdir]
 
             # ------------------------------------------------------------------------------
             # linux: read a config file and return its lines splitted.
@@ -143,7 +141,7 @@ proc ::pd_guiprefs::init {} {
 # read a config file and return its lines splitted.
 #
 proc ::pd_guiprefs::get_config_file {adomain {akey} {arr false}} {
-    set filename [file join ${adomain} ${akey}.conf]
+    set filename [file join ${::pd_guiprefs::configdir} ${adomain} ${akey}.conf]
     set conf {}
     if {
         [file exists $filename] == 1
@@ -164,7 +162,7 @@ proc ::pd_guiprefs::get_config_file {adomain {akey} {arr false}} {
 proc ::pd_guiprefs::write_config_file {data {adomain} {akey} {arr false}} {
     # right now I (yvan) assume that data are just \n separated, i.e. no keys
     set data [join $data "\n"]
-    set filename [file join ${adomain} ${akey}.conf]
+    set filename [file join ${::pd_guiprefs::configdir} ${adomain} ${akey}.conf]
     if {[catch {set fl [open $filename w]} errorMsg]} {
         ::pdwindow::error "write_config $data $akey: $errorMsg\n"
     } else {
@@ -213,17 +211,18 @@ proc ::pd_guiprefs::prepare_configdir {{domain pure-data}} {
     if {"" eq ${confdir}} {
         set confdir [file join ~ .config]
     }
-    set configfile [file join $confdir $domain]
-    set ::pd_guiprefs::domain $configfile
+    set ::pd_guiprefs::configdir $confdir
+    set fullconfigdir [file join $confdir $::pd_guiprefs::domain]
 
     if { [catch {
-        if {[file isdirectory $configfile] != 1} {
-            file mkdir $configfile
-            ::pdwindow::debug "$::pd_guiprefs::domain was created.\n"
+        if {[file isdirectory $fullconfigdir] != 1} {
+            file mkdir $fullconfigdir
+            ::pdwindow::debug "$::pd_guiprefs::domain was created in $confdir.\n"
             }
     }]} {
-        ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created.\n"
+        ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created in $confdir.\n"
     }
+    return $domain
 }
 
 # ------------------------------------------------------------------------------
