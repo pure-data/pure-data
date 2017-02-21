@@ -58,8 +58,8 @@ package require pd_guiprefs
 namespace import ::pd_guiprefs::init
 namespace import ::pd_guiprefs::update_recentfiles
 namespace import ::pd_guiprefs::write_recentfiles
-# make global since they are used throughout    
-namespace import ::pd_menucommands::* 
+# make global since they are used throughout
+namespace import ::pd_menucommands::*
 
 # import into the global namespace for backwards compatibility
 namespace import ::pd_connect::pdsend
@@ -209,7 +209,7 @@ array set editingtext {};# if an obj, msg, or comment is being edited, per patch
 array set loaded {}     ;# store whether a patch has completed loading
 array set xscrollable {};# keep track of whether the scrollbars are present
 array set yscrollable {}
-# patch window tree, these might contain patch IDs without a mapped toplevel 
+# patch window tree, these might contain patch IDs without a mapped toplevel
 array set windowname {}    ;# window names based on mytoplevel IDs
 array set childwindows {}  ;# all child windows based on mytoplevel IDs
 array set parentwindows {} ;# topmost parent window ID based on mytoplevel IDs
@@ -239,8 +239,8 @@ namespace eval ::pdgui:: {
 #
 # these are preliminary ideas, we'll change them as we work things out:
 # - when possible use "" doublequotes to delimit messages
-# - use '$::myvar' instead of 'global myvar' 
-# - for the sake of clarity, there should not be any inline code, everything 
+# - use '$::myvar' instead of 'global myvar'
+# - for the sake of clarity, there should not be any inline code, everything
 #   should be in a proc that is ultimately triggered from main()
 # - if a menu_* proc opens a dialog panel, that proc is called menu_*_dialog
 # - use "eq/ne" for string comparison, NOT "==/!=" (http://wiki.tcl.tk/15323)
@@ -291,7 +291,7 @@ proc init_for_platform {} {
             option add *PatchWindow*Canvas.background "white" startupFile
             # add control to show/hide hidden files in the open panel (load
             # the tk_getOpenFile dialog once, otherwise it will not work)
-            catch {tk_getOpenFile -with-invalid-argument} 
+            catch {tk_getOpenFile -with-invalid-argument}
             set ::tk::dialog::file::showHiddenBtn 1
             set ::tk::dialog::file::showHiddenVar 0
             # set file types that open/save recognize
@@ -375,7 +375,7 @@ proc init_for_platform {} {
             set ::menubarsize 0
             # Tk handles the window placement differently on each platform, on
             # Mac OS X, the x,y placement refers to the content window's upper
-            # left corner. http://wiki.tcl.tk/11502 
+            # left corner. http://wiki.tcl.tk/11502
             # TODO this probably needs a script layer: http://wiki.tcl.tk/11291
             set ::windowframex 0
             set ::windowframey 0
@@ -415,7 +415,7 @@ proc load_locale {} {
         }
     } elseif {$::tcl_platform(platform) eq "windows"} {
         # using LANG on Windows is useful for easy debugging
-        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {  
+        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
             ::msgcat::mclocale $::env(LANG)
         } elseif {![catch {package require registry}]} {
             ::msgcat::mclocale [string tolower \
@@ -564,7 +564,7 @@ proc pdtk_plugin_dispatch { args } {
 
 # ------------------------------------------------------------------------------
 # parse command line args when Wish/pd-gui.tcl is started first
- 
+
 proc parse_args {argc argv} {
     opt_parser::init {
         {-stderr    set {::stderr}}
@@ -576,7 +576,7 @@ proc parse_args {argc argv} {
         if { [string is int $argv] && $argv > 0} {
             # 'pd-gui' got the port number from 'pd'
             set ::host "localhost"
-            set ::port $argv 
+            set ::port $argv
         } else {
             set hostport [split $argv ":"]
             set ::port [lindex $hostport 1]
