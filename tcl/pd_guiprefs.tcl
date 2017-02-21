@@ -14,7 +14,7 @@ namespace eval ::pd_guiprefs:: {
 
 # FIXME should these be globals ?
 set ::recentfiles_key ""
-set ::recentfiles_domain ""
+set ::pd_guiprefs::domain ""
 
 
 #################################################################
@@ -33,26 +33,26 @@ proc ::pd_guiprefs::init {} {
     # osx special case for arrays
     set arr [expr { $::windowingsystem eq "aqua" }]
     set ::recentfiles_list ""
-    catch {set ::recentfiles_list [get_config $::recentfiles_domain \
+    catch {set ::recentfiles_list [get_config $::pd_guiprefs::domain \
         $::recentfiles_key $arr]}
 }
 
 proc ::pd_guiprefs::init_aqua {} {
     # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
-    set ::recentfiles_domain org.puredata
+    set ::pd_guiprefs::domain org.puredata
     set ::recentfiles_key "NSRecentDocuments"
     set ::total_recentfiles 10
 }
 
 proc ::pd_guiprefs::init_win {} {
     # windows uses registry
-    set ::recentfiles_domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
+    set ::pd_guiprefs::domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
     set ::recentfiles_key "RecentDocs"
 }
 
 proc ::pd_guiprefs::init_x11 {} {
     # linux uses ~/.config/pure-data dir
-    set ::recentfiles_domain "~/.config/pure-data"
+    set ::pd_guiprefs::domain "~/.config/pure-data"
     set ::recentfiles_key "recentfiles.conf"
     prepare_configdir
 }
@@ -61,7 +61,7 @@ proc ::pd_guiprefs::init_x11 {} {
 # write recent files
 #
 proc ::pd_guiprefs::write_recentfiles {} {
-    write_config $::recentfiles_list $::recentfiles_domain $::recentfiles_key true
+    write_config $::recentfiles_list $::pd_guiprefs::domain $::recentfiles_key true
 }
 
 # ------------------------------------------------------------------------------
@@ -225,12 +225,12 @@ proc ::pd_guiprefs::write_config_x11 {data {adomain} {akey}} {
 #
 proc ::pd_guiprefs::prepare_configdir {} {
     if { [catch {
-        if {[file isdirectory $::recentfiles_domain] != 1} {
-            file mkdir $::recentfiles_domain
-            ::pdwindow::debug "$::recentfiles_domain was created.\n"
+        if {[file isdirectory $::pd_guiprefs::domain] != 1} {
+            file mkdir $::pd_guiprefs::domain
+            ::pdwindow::debug "$::pd_guiprefs::domain was created.\n"
             }
     }]} {
-                ::pdwindow::error "$::recentfiles_domain was *NOT* created.\n"
+                ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created.\n"
     }
 }
 
