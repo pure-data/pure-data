@@ -49,7 +49,7 @@ proc ::pd_guiprefs::init {} {
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
                 # FIXME empty and write again so we don't loose the order
                 if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
-                    ::pdwindow::error "write_config $akey: $errorMsg"
+                    ::pdwindow::error "write_config $akey: $errorMsg\n"
                 }
                 if {$arr} {
                     foreach filepath $data {
@@ -92,11 +92,11 @@ proc ::pd_guiprefs::init {} {
                 # FIXME: ugly
                 if {$arr} {
                     if {[catch {registry set $adomain $akey $data multi_sz} errorMsg]} {
-                        ::pdwindow::error "write_config $data $akey: $errorMsg"
+                        ::pdwindow::error "write_config $data $akey: $errorMsg\n"
                     }
                 } else {
                     if {[catch {registry set $adomain $akey $data sz} errorMsg]} {
-                        ::pdwindow::error "write_config $data $akey: $errorMsg"
+                        ::pdwindow::error "write_config $data $akey: $errorMsg\n"
                     }
                 }
             }
@@ -131,7 +131,7 @@ proc ::pd_guiprefs::init {} {
                 set data [join $data "\n"]
                 set filename [file join $adomain $akey]
                 if {[catch {set fl [open $filename w]} errorMsg]} {
-                    ::pdwindow::error "write_config $data $akey: $errorMsg"
+                    ::pdwindow::error "write_config $data $akey: $errorMsg\n"
                 } else {
                     puts -nonewline $fl $data
                     close $fl
@@ -193,12 +193,15 @@ proc ::pd_guiprefs::update_recentfiles {afile} {
 
 ## these are stubs that will be overwritten in ::pd_guiprefs::init()
 proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-    ::pdwindow::error "::pd_guiprefs::write_config not implemented for $::windowingsystem"
+    ::pdwindow::error "::pd_guiprefs::write_config not implemented for $::windowingsystem\n"
 }
 proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
-    ::pdwindow::error "::pd_guiprefs::get_config not implemented for $::windowingsystem"
+    ::pdwindow::error "::pd_guiprefs::get_config not implemented for $::windowingsystem\n"
 }
 
+# the new API
+proc ::pd_guiprefs::write {key data {arr false} {domain $::pd_guiprefs::domain}} {
+    puts "::pd_guiprefs::write '${key}' '${data}' '${arr}' '${domain}'"
 }
 
 #################################################################
@@ -215,7 +218,7 @@ proc ::pd_guiprefs::prepare_configdir {} {
             ::pdwindow::debug "$::pd_guiprefs::domain was created.\n"
             }
     }]} {
-                ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created.\n"
+        ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created.\n"
     }
 }
 
