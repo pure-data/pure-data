@@ -174,26 +174,6 @@ proc ::pd_guiprefs::init_x11 {} {
     prepare_configdir
 }
 
-# ------------------------------------------------------------------------------
-# write recent files
-#
-proc ::pd_guiprefs::write_recentfiles {} {
-    write_config $::recentfiles_list $::pd_guiprefs::domain $::recentfiles_key true
-}
-
-# ------------------------------------------------------------------------------
-# this is called when opening a document (wheredoesthisshouldgo.tcl)
-#
-proc ::pd_guiprefs::update_recentfiles {afile} {
-    # remove duplicates first
-    set index [lsearch -exact $::recentfiles_list $afile]
-    set ::recentfiles_list [lreplace $::recentfiles_list $index $index]
-    # insert new one in the beginning and crop the list
-    set ::recentfiles_list [linsert $::recentfiles_list 0 $afile]
-    set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
-    ::pd_menus::update_recentfiles_menu
-}
-
 #################################################################
 # main read/write procedures
 #################################################################
@@ -260,4 +240,30 @@ proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
 # so they need to be escaped
 proc ::pd_guiprefs::escape_for_plist {str} {
     return \"[regsub -all -- {"} $str {\\"}]\"
+}
+
+
+#################################################################
+# recent files
+#################################################################
+
+
+# ------------------------------------------------------------------------------
+# write recent files
+#
+proc ::pd_guiprefs::write_recentfiles {} {
+    write_config $::recentfiles_list $::pd_guiprefs::domain $::recentfiles_key true
+}
+
+# ------------------------------------------------------------------------------
+# this is called when opening a document (wheredoesthisshouldgo.tcl)
+#
+proc ::pd_guiprefs::update_recentfiles {afile} {
+    # remove duplicates first
+    set index [lsearch -exact $::recentfiles_list $afile]
+    set ::recentfiles_list [lreplace $::recentfiles_list $index $index]
+    # insert new one in the beginning and crop the list
+    set ::recentfiles_list [linsert $::recentfiles_list 0 $afile]
+    set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
+    ::pd_menus::update_recentfiles_menu
 }
