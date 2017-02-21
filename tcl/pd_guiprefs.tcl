@@ -24,12 +24,16 @@ set ::pd_guiprefs::domain ""
 # init preferences
 #
 proc ::pd_guiprefs::init {} {
-    switch -- $::windowingsystem {
-        "aqua" {
+    set arr 0
+
+    switch -- $::platform {
+        "Darwin" {
             # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
             set ::pd_guiprefs::domain org.puredata
             set ::recentfiles_key "NSRecentDocuments"
             set ::total_recentfiles 10
+            # osx special case for arrays
+            set arr 1
 
             # ------------------------------------------------------------------------------
             # osx: read a plist file
@@ -73,9 +77,8 @@ proc ::pd_guiprefs::init {} {
                 exec defaults write $adomain NSQuitAlwaysKeepsWindows -bool false
                 return
             }
-
         }
-        "win32" {
+        "W32" {
             # windows uses registry
             set ::pd_guiprefs::domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
             set ::recentfiles_key "RecentDocs"
@@ -108,9 +111,8 @@ proc ::pd_guiprefs::init {} {
                 }
                 return
             }
-
         }
-        "x11" {
+        default {
             set ::pd_guiprefs::domain pure-data
             set ::recentfiles_key "recentfiles"
 
@@ -132,8 +134,6 @@ proc ::pd_guiprefs::init {} {
         }
     }
     # assign gui preferences
-    # osx special case for arrays
-    set arr [expr { $::windowingsystem eq "aqua" }]
     set ::recentfiles_list ""
     catch {set ::recentfiles_list [get_config $::pd_guiprefs::domain \
         $::recentfiles_key $arr]}
