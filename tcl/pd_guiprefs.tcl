@@ -204,12 +204,24 @@ proc ::pd_guiprefs::get {key {arr false} {domain {}}} {
 #
 proc ::pd_guiprefs::prepare_configdir {{domain pure-data}} {
     set confdir ""
-    # linux uses ~/.config/pure-data dir
-    if {[info exists ::env(XDG_CONFIG_HOME)]} {
-        set confdir $::env(XDG_CONFIG_HOME)
-    }
-    if {"" eq ${confdir}} {
-        set confdir [file join ~ .config]
+    switch -- $::platform {
+        "W32" {
+            # W32 uses %AppData%/Pd/config dir
+            if { "" eq ${domain} } { set domain [file join "Pd" "GUI-Preferences" ]}
+            if {[info exists ::env(AppData)]} {
+                set confdir [file join $::env(AppData)]
+            }
+        }
+        "Linux" {
+            # linux uses ~/.config/pure-data dir
+            if { "" eq ${domain} } { set domain "pure-data" }
+            if {[info exists ::env(XDG_CONFIG_HOME)]} {
+                set confdir $::env(XDG_CONFIG_HOME)
+            }
+            if {"" eq ${confdir}} {
+                set confdir [file join ~ .config]
+            }
+        }
     }
     set ::pd_guiprefs::configdir $confdir
     set fullconfigdir [file join $confdir $::pd_guiprefs::domain]
