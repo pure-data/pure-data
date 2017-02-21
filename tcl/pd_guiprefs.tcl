@@ -200,9 +200,16 @@ proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
     ::pdwindow::error "::pd_guiprefs::get_config not implemented for $::windowingsystem\n"
 }
 
-# the new API
-proc ::pd_guiprefs::write {key data {arr false} {domain $::pd_guiprefs::domain}} {
-    puts "::pd_guiprefs::write '${key}' '${data}' '${arr}' '${domain}'"
+# simple API (with a default domain)
+proc ::pd_guiprefs::write {key data {arr false} {domain {}}} {
+    if {"" eq $domain} { set domain ${::pd_guiprefs::domain} }
+    set result [::pd_guiprefs::write_config $data $domain $key $arr]
+    return $result
+}
+proc ::pd_guiprefs::get {key {arr false} {domain {}}} {
+    if {"" eq $domain} { set domain ${::pd_guiprefs::domain} }
+    set result [::pd_guiprefs::get_config $domain $key $arr]
+    return $result
 }
 
 #################################################################
