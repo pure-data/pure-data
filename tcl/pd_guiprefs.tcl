@@ -163,7 +163,13 @@ proc ::pd_guiprefs::init_win {} {
 
 proc ::pd_guiprefs::init_x11 {} {
     # linux uses ~/.config/pure-data dir
-    set ::pd_guiprefs::domain "~/.config/pure-data"
+    if {[info exists ::env(XDG_CONFIG_HOME)]} {
+        set confdir $::env(XDG_CONFIG_HOME)
+    } {set confdir ""}
+    if {"" eq ${confdir}} {
+        set confdir [file join ~ .config]
+    }
+    set ::pd_guiprefs::domain [file join $confdir pure-data]
     set ::recentfiles_key "recentfiles"
     prepare_configdir
 }
