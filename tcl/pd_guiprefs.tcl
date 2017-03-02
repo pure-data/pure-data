@@ -1,10 +1,11 @@
 #
 # Copyright (c) 1997-2009 Miller Puckette.
 # Copyright (c) 2011 Yvan Volochine.
-#(c) 2008 WordTech Communications LLC. License: standard Tcl license, http://www.tcl.tk/software/tcltk/license.html
+# Copyright (c) 2017 IOhannes m zmölnig.
+# Copyright (c) 2008 WordTech Communications LLC.
+#               License: standard Tcl license, http://www.tcl.tk/software/tcltk/license.html
 
 package provide pd_guiprefs 0.1
-
 
 namespace eval ::pd_guiprefs:: {
     namespace export init
@@ -18,6 +19,43 @@ set ::pd_guiprefs::domain ""
 set ::pd_guiprefs::configdir ""
 
 #################################################################
+# perferences storage locations
+#
+# legacy
+#   registry
+#    HKEY_CURRENT_USER\Software\Pure-Data <key>:<value>
+#    domain: HKEY_CURRENT_USER\Software\Pure-Data
+#   plist
+#    org.puredata <key> <value>
+#    domain: org.puredata
+#   linux:
+#    ~/.config/pure-data/<key>.conf
+#    domain: ~/.config/pure-data/
+#
+# new
+#   plist
+#    (as is)
+#   registry
+#    HKEY_CURRENT_USER\Software\Pure-Data\org.puredata <key>:<value>
+#    domain: org.puredata
+#   file
+#    linux: ~/.config/pd/org.puredata/<key>.conf
+#       - env(XDG_CONFIG_HOME)=~/.config/
+#       - env(PD_CONFIG_DIR)=~/.config/pd/
+#       - domain=org.puredata
+#    OSX  : ~/Library/Preferences/Pd/org.puredata/<key>.conf
+#       - env(PD_CONFIG_DIR)=~/Library/Preferences/Pd/
+#       - domain=org.puredata
+#    W32  : %AppData%\Pd\.config\org.puredata\<key>.conf
+#       - env(PD_CONFIG_DIR)=%AppData%\Pd\.config
+#       - domain=org.puredata
+#
+#  maybe the domain should be 'org.puredata.pd.pd-gui' (Pd-extended used this)
+#
+#################################################################
+
+
+#################################################################
 # global procedures
 #################################################################
 # ------------------------------------------------------------------------------
@@ -25,7 +63,6 @@ set ::pd_guiprefs::configdir ""
 #
 proc ::pd_guiprefs::init {} {
     set arr 0
-
     switch -- $::platform {
         "Darwin" {
             set backend "plist"
@@ -36,6 +73,11 @@ proc ::pd_guiprefs::init {} {
         default {
             set backend "file"
         }
+    }
+    # let the user force the cross-platform 'file' backend
+    if {[info exists ::env(PD_CONFIG_DIR)]} {
+        set backend "file"
+    }
 
     switch -- $backend {
         "plist" {
@@ -149,7 +191,7 @@ proc ::pd_guiprefs::init {} {
     # assign gui preferences
     set ::recentfiles_list ""
     catch {set ::recentfiles_list [get_config $::pd_guiprefs::domain \
-        $::recentfiles_key $arr]}
+                                       $::recentfiles_key $arr]}
 }
 
 # ------------------------------------------------------------------------------
@@ -175,6 +217,7 @@ proc ::pd_guiprefs::get_config_file {adomain {akey} {arr false}} {
 # $arr is true if the data needs to be written in an array
 #
 proc ::pd_guiprefs::write_config_file {data {adomain} {akey} {arr false}} {
+    ::pd_guiprefs::prepare_domain ${adomain}
     # right now I (yvan) assume that data are just \n separated, i.e. no keys
     set data [join $data "\n"]
     set filename [file join ${::pd_guiprefs::configdir} ${adomain} ${akey}.conf]
@@ -192,10 +235,10 @@ proc ::pd_guiprefs::write_config_file {data {adomain} {akey} {arr false}} {
 
 ## these are stubs that will be overwritten in ::pd_guiprefs::init()
 proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-    ::pdwindow::error "::pd_guiprefs::write_config not implemented for $::windowingsystem\n"
+    ::pdwindow::error "::pd_guiprefs::write_config not implemented for $::platform\n"
 }
 proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
-    ::pdwindow::error "::pd_guiprefs::get_config not implemented for $::windowingsystem\n"
+    ::pdwindow::error "::pd_guiprefs::get_config not implemented for $::platform\n"
 }
 
 # simple API (with a default domain)
@@ -204,7 +247,7 @@ proc ::pd_guiprefs::write {key data {arr false} {domain {}}} {
     set result [::pd_guiprefs::write_config $data $domain $key $arr]
     return $result
 }
-proc ::pd_guiprefs::get {key {arr false} {domain {}}} {
+proc ::pd_guiprefs::read {key {arr false} {domain {}}} {
     if {"" eq $domain} { set domain ${::pd_guiprefs::domain} }
     set result [::pd_guiprefs::get_config $domain $key $arr]
     return $result
@@ -215,37 +258,44 @@ proc ::pd_guiprefs::get {key {arr false} {domain {}}} {
 #################################################################
 
 # ------------------------------------------------------------------------------
-# linux only! : look for pd config directory and create it if needed
+# file-backend only! : look for pd config directory and create it if needed
 #
-proc ::pd_guiprefs::prepare_configdir {{domain pure-data}} {
+proc ::pd_guiprefs::prepare_configdir {{domain org.puredata.pd.pd-gui}} {
     set confdir ""
     switch -- $::platform {
         "W32" {
-            # W32 uses %AppData%/Pd/config dir
-            if { "" eq ${domain} } { set domain [file join "Pd" "GUI-Preferences" ]}
-            if {[info exists ::env(AppData)]} {
-                set confdir [file join $::env(AppData)]
-            }
+            # W32 uses %AppData%/Pd/.config dir
+            # FIXXME: how to create hidden directories on W32??
+            set confdir [file join $::env(AppData) Pd .config]
         }
-        "Linux" {
+        "OSX" {
+            set confdir [file join ~ Library Preferences Pd]
+        }
+        default {
             # linux uses ~/.config/pure-data dir
-            if { "" eq ${domain} } { set domain "pure-data" }
+            set confdir [file join ~ .config Pd]
             if {[info exists ::env(XDG_CONFIG_HOME)]} {
-                set confdir $::env(XDG_CONFIG_HOME)
-            }
-            if {"" eq ${confdir}} {
-                set confdir [file join ~ .config]
+                set confdir [file join $::env(XDG_CONFIG_HOME) pd]
             }
         }
     }
-    set ::pd_guiprefs::configdir $confdir
-    set fullconfigdir [file join $confdir $::pd_guiprefs::domain]
+    # let the user override the Pd-config-path
+    if {[info exists ::env(PD_CONFIG_DIR)]} {
+        set confdir $::env(PD_CONFIG_DIR)
+    }
 
+    set ::pd_guiprefs::configdir $confdir
+    set ::pd_guiprefs::domain $domain
+
+    return [::pd_guiprefs::prepare_domain ${::pd_guiprefs::domain}]
+}
+proc ::pd_guiprefs::prepare_domain {{domain org.puredata.pd.pd-gui}} {
     if { [catch {
+        set fullconfigdir [file join ${::pd_guiprefs::configdir} ${domain}]
         if {[file isdirectory $fullconfigdir] != 1} {
             file mkdir $fullconfigdir
-            ::pdwindow::debug "$::pd_guiprefs::domain was created in $confdir.\n"
-            }
+            #::pdwindow::debug "$::pd_guiprefs::domain was created in $confdir.\n"
+        }
     }]} {
         ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created in $confdir.\n"
     }
