@@ -28,6 +28,17 @@ proc ::pd_guiprefs::init {} {
 
     switch -- $::platform {
         "Darwin" {
+            set backend "plist"
+        }
+        "W32" {
+            set backend "registry"
+        }
+        default {
+            set backend "file"
+        }
+
+    switch -- $backend {
+        "plist" {
             # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
             set ::pd_guiprefs::domain org.puredata
             set ::recentfiles_key "NSRecentDocuments"
@@ -78,7 +89,7 @@ proc ::pd_guiprefs::init {} {
                 return
             }
         }
-        "W32" {
+        "registry" {
             # windows uses registry
             set ::pd_guiprefs::domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
             set ::recentfiles_key "RecentDocs"
@@ -112,7 +123,7 @@ proc ::pd_guiprefs::init {} {
                 return
             }
         }
-        default {
+        "file" {
             set ::recentfiles_key "recentfiles"
             set ::pd_guiprefs::domain [prepare_configdir]
 
@@ -130,6 +141,10 @@ proc ::pd_guiprefs::init {} {
                 return [::pd_guiprefs::write_config_file $data $adomain $akey $arr]
             }
         }
+        default {
+            ::pdwindow::error "Unknown configuration backend '$backend'.\n"
+        }
+
     }
     # assign gui preferences
     set ::recentfiles_list ""
