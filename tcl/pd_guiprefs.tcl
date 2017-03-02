@@ -285,7 +285,9 @@ proc ::pd_guiprefs::prepare_configdir {domain} {
     }
     # let the user override the Pd-config-path
     if {[info exists ::env(PD_CONFIG_DIR)]} {
-        set confdir $::env(PD_CONFIG_DIR)
+        if { "$::env(PD_CONFIG_DIR)" != "" } {
+            set confdir $::env(PD_CONFIG_DIR)
+        }
     }
 
     set ::pd_guiprefs::configdir $confdir
