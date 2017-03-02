@@ -63,6 +63,8 @@ set ::pd_guiprefs::configdir ""
 #
 proc ::pd_guiprefs::init {} {
     set arr 0
+    set ::pd_guiprefs::domain org.puredata.pd.pd-gui
+
     switch -- $::platform {
         "Darwin" {
             set backend "plist"
@@ -133,7 +135,7 @@ proc ::pd_guiprefs::init {} {
         }
         "registry" {
             # windows uses registry
-            set ::pd_guiprefs::domain "HKEY_CURRENT_USER\\Software\\Pure-Data"
+            set ::pd_guiprefs::registrypath "HKEY_CURRENT_USER\\Software\\Pure-Data"
             set ::recentfiles_key "RecentDocs"
 
             # ------------------------------------------------------------------------------
@@ -141,7 +143,8 @@ proc ::pd_guiprefs::init {} {
             #
             proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
                 package require registry
-                if {![catch {registry get $adomain $akey} conf]} {
+                set adomain [join [list ${::pd_guiprefs::registrypath} ${adomain}] \\]
+                if {![catch {registry get ${adomain} $akey} conf]} {
                     return [expr {$conf}]
                 }
                 return {}
@@ -153,12 +156,13 @@ proc ::pd_guiprefs::init {} {
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
                 package require registry
                 # FIXME: ugly
+                set adomain [join [list ${::pd_guiprefs::registrypath} ${adomain}] \\]
                 if {$arr} {
-                    if {[catch {registry set $adomain $akey $data multi_sz} errorMsg]} {
+                    if {[catch {registry set ${adomain} $akey $data multi_sz} errorMsg]} {
                         ::pdwindow::error "write_config $data $akey: $errorMsg\n"
                     }
                 } else {
-                    if {[catch {registry set $adomain $akey $data sz} errorMsg]} {
+                    if {[catch {registry set ${adomain} $akey $data sz} errorMsg]} {
                         ::pdwindow::error "write_config $data $akey: $errorMsg\n"
                     }
                 }
@@ -167,7 +171,7 @@ proc ::pd_guiprefs::init {} {
         }
         "file" {
             set ::recentfiles_key "recentfiles"
-            set ::pd_guiprefs::domain [prepare_configdir]
+            prepare_configdir ${::pd_guiprefs::domain}
 
             # ------------------------------------------------------------------------------
             # linux: read a config file and return its lines splitted.
@@ -260,7 +264,7 @@ proc ::pd_guiprefs::read {key {arr false} {domain {}}} {
 # ------------------------------------------------------------------------------
 # file-backend only! : look for pd config directory and create it if needed
 #
-proc ::pd_guiprefs::prepare_configdir {{domain org.puredata.pd.pd-gui}} {
+proc ::pd_guiprefs::prepare_configdir {domain} {
     set confdir ""
     switch -- $::platform {
         "W32" {
@@ -289,7 +293,10 @@ proc ::pd_guiprefs::prepare_configdir {{domain org.puredata.pd.pd-gui}} {
 
     return [::pd_guiprefs::prepare_domain ${::pd_guiprefs::domain}]
 }
-proc ::pd_guiprefs::prepare_domain {{domain org.puredata.pd.pd-gui}} {
+proc ::pd_guiprefs::prepare_domain {{domain {}}} {
+    if { "${domain}" == "" } {
+        set domain ${::pd_guiprefs::domain}
+    }
     if { [catch {
         set fullconfigdir [file join ${::pd_guiprefs::configdir} ${domain}]
         if {[file isdirectory $fullconfigdir] != 1} {
