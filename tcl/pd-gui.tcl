@@ -113,6 +113,7 @@ set TCL_BUGFIX_VERSION 0
 
 # for testing which platform we are running on ("aqua", "win32", or "x11")
 set windowingsystem ""
+set platform ""
 
 # args about how much and where to log
 set loglevel 2
@@ -735,6 +736,11 @@ proc load_startup_plugins {} {
 proc main {argc argv} {
     # TODO Tcl/Tk 8.3 doesn't have [tk windowingsystem]
     set ::windowingsystem [tk windowingsystem]
+    set ::platform $::tcl_platform(os)
+    if { $::tcl_platform(platform) eq "windows"} {
+       set ::platform W32
+    }
+
     tk appname pd-gui
     load_locale
     parse_args $argc $argv
