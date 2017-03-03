@@ -753,7 +753,11 @@ proc load_startup_plugins {} {
 proc main {argc argv} {
     # TODO Tcl/Tk 8.3 doesn't have [tk windowingsystem]
     set ::windowingsystem [tk windowingsystem]
-    ::pdwindow::debug "Tcl version: [info patchlevel]\n"
+    set ::platform $::tcl_platform(os)
+    if { $::tcl_platform(platform) eq "windows"} {
+       set ::platform W32
+    }
+
     tk appname pd-gui
     load_locale
     parse_args $argc $argv
