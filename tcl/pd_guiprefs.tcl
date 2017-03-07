@@ -117,11 +117,11 @@ proc ::pd_guiprefs::init {} {
                 if {$arr} {
                     foreach filepath $data {
                         set escaped [escape_for_plist $filepath]
-                        exec defaults write $adomain $akey -array-add "$escaped"
+                        exec defaults write $adomain $akey -array-add $escaped
                     }
                 } else {
                     set escaped [escape_for_plist $data]
-                    exec defaults write $adomain $akey '$escaped'
+                    exec defaults write $adomain $akey $escaped
                 }
 
                 # Disable window state saving by default for 10.7+ as there is a chance
@@ -334,7 +334,7 @@ proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
 # the Mac OS X 'defaults' command uses single quotes to quote things,
 # so they need to be escaped
 proc ::pd_guiprefs::escape_for_plist {str} {
-    return \"[regsub -all -- {"} $str {\\"}]\"
+    return '[regsub -all -- {'} $str {\\'}]'
 }
 
 
