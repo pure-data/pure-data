@@ -237,12 +237,12 @@ static int sys_getpreference(const char *key, char *value, int size)
     struct stat statbuf;
    /* the 'defaults' command expects the filename without .plist at the
         end */
-    snprintf(embedded_prefs, MAXPDSTRING, "%s/../org.puredata.pd",
+    snprintf(embedded_prefs, MAXPDSTRING, "%s/../info.puredata.pd",
         sys_libdir->s_name);
     snprintf(user_prefs, MAXPDSTRING,
-        "%s/Library/Preferences/org.puredata.pd.plist", homedir);
+        "%s/Library/Preferences/info.puredata.pd.plist", homedir);
     if (stat(user_prefs, &statbuf) == 0)
-        snprintf(cmdbuf, 256, "defaults read org.puredata.pd %s 2> /dev/null\n",
+        snprintf(cmdbuf, 256, "defaults read info.puredata.pd %s 2> /dev/null\n",
             key);
     else snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
             embedded_prefs, key);
@@ -277,7 +277,7 @@ static void sys_putpreference(const char *key, const char *value)
 {
     char cmdbuf[MAXPDSTRING];
     snprintf(cmdbuf, MAXPDSTRING,
-        "defaults write org.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
+        "defaults write info.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
     system(cmdbuf);
 }
 

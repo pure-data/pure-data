@@ -39,7 +39,7 @@ proc ::pd_guiprefs::init {} {
 
 proc ::pd_guiprefs::init_aqua {} {
     # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
-    set ::recentfiles_domain org.puredata
+    set ::recentfiles_domain info.puredata.pd
     set ::recentfiles_key "NSRecentDocuments"
     set ::total_recentfiles 10
 }
