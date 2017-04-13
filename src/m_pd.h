@@ -265,18 +265,6 @@ typedef void (*t_gotfn)(void *x, ...);
 /* ---------------- pre-defined objects and symbols --------------*/
 EXTERN t_pd pd_objectmaker;     /* factory for creating "object" boxes */
 EXTERN t_pd pd_canvasmaker;     /* factory for creating canvases */
-EXTERN t_symbol s_pointer;
-EXTERN t_symbol s_float;
-EXTERN t_symbol s_symbol;
-EXTERN t_symbol s_bang;
-EXTERN t_symbol s_list;
-EXTERN t_symbol s_anything;
-EXTERN t_symbol s_signal;
-EXTERN t_symbol s__N;
-EXTERN t_symbol s__X;
-EXTERN t_symbol s_x;
-EXTERN t_symbol s_y;
-EXTERN t_symbol s_;
 
 /* --------- prototypes from the central message system ----------- */
 EXTERN void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv);
@@ -793,14 +781,72 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
-EXTERN_STRUCT _pdinstance;
-#define t_pdinstance struct _pdinstance       /* m_imp.h */
+struct _pdinstance
+{
+    double pd_systime;          /* global time in Pd ticks */
+    t_clock *pd_clock_setlist;  /* list of set clocks */
+    t_int *pd_dspchain;         /* DSP chain */
+    int pd_dspchainsize;        /* number of elements in DSP chain */
+    t_canvas *pd_canvaslist;    /* list of all root canvases */
+    int pd_dspstate;            /* whether DSP is on or off */
+    t_signal *pd_signals;       /* list of signals used by DSP chain */
+    int pd_instanceno;          /* ordinal number of this instance */
+    t_symbol  pd_s_pointer;
+    t_symbol  pd_s_float;
+    t_symbol  pd_s_symbol;
+    t_symbol  pd_s_bang;
+    t_symbol  pd_s_list;
+    t_symbol  pd_s_anything;
+    t_symbol  pd_s_signal;
+    t_symbol  pd_s__N;
+    t_symbol  pd_s__X;
+    t_symbol  pd_s_x;
+    t_symbol  pd_s_y;
+    t_symbol  pd_s_;
+    t_symbol **pd_symhash;
+};
+#define t_pdinstance struct _pdinstance
+
+#ifdef PDINSTANCE
+#define s_pointer   (pd_this->pd_s_pointer)
+#define s_float     (pd_this->pd_s_float)
+#define s_symbol    (pd_this->pd_s_symbol)
+#define s_bang      (pd_this->pd_s_bang)
+#define s_list      (pd_this->pd_s_list)
+#define s_anything  (pd_this->pd_s_anything)
+#define s_signal    (pd_this->pd_s_signal)
+#define s__N        (pd_this->pd_s__N)
+#define s__X        (pd_this->pd_s__X)
+#define s_x         (pd_this->pd_s_x)
+#define s_y         (pd_this->pd_s_y)
+#define s_          (pd_this->pd_s_)
+#else
+extern t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
+  s_signal, s__N, s__X, s_x, s_y, s_;
+#endif
 
 /* m_pd.c */
-
+#ifdef PDINSTANCE
 EXTERN t_pdinstance *pdinstance_new( void);
 EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
+#endif /* PDINSTANCE */
+
+#ifdef PDTHREADS
+#define PERTHREAD __thread
+#else
+#define PERTHREAD
+#endif
+
+#ifdef PDINSTANCE
+PERTHREAD extern t_pdinstance *pd_this;
+extern t_pdinstance **pd_instances;
+extern int pd_ninstances;
+#else
+extern t_pdinstance pd_maininstance;
+#define pd_this (&pd_maininstance)
+#endif /* PDINSTANCE */
+
 EXTERN t_canvas *pd_getcanvaslist(void);
 EXTERN int pd_getdspstate(void);
 

@@ -33,7 +33,7 @@
 #endif
 
 int sys_defeatrt;
-t_symbol *sys_flags = &s_;
+t_symbol *sys_flags;
 void sys_doflags( void);
 
     /* Hmm... maybe better would be to #if on not-apple-or-windows  */

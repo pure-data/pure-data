@@ -1457,7 +1457,6 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 }
 
 void pd_doloadbang(void);
-extern t_symbol s__X;
 
 /* LATER make this evaluate the file on-the-fly. */
 /* LATER figure out how to log errors */

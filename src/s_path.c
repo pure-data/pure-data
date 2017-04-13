@@ -619,9 +619,12 @@ int sys_rcfile(void)
 
 void sys_doflags( void)
 {
-    int i, beginstring = 0, state = 0, len = strlen(sys_flags->s_name);
+    int i, beginstring = 0, state = 0, len;
     int rcargc = 0;
     char *rcargv[MAXPDSTRING];
+    if (!sys_flags)
+        sys_flags = &s_;
+    len = strlen(sys_flags->s_name);
     if (len > MAXPDSTRING)
     {
         error("flags: %s: too long", sys_flags->s_name);
@@ -748,7 +751,8 @@ void sys_set_startup( void)
     int i;
     t_namelist *nl;
 
-    sys_vgui("set ::startup_flags {%s}\n", sys_flags->s_name);
+    sys_vgui("set ::startup_flags {%s}\n",
+        (sys_flags? sys_flags->s_name : ""));
     sys_gui("set ::startup_libraries {}\n");
     for (nl = sys_externlist, i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
@@ -761,7 +765,7 @@ void glob_start_startup_dialog(t_pd *dummy)
 
     sys_set_startup();
     sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
-        sys_flags->s_name);
+        (sys_flags? sys_flags->s_name : ""));
     gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
 }
 

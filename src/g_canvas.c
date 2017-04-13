@@ -62,8 +62,8 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
 /* --------- functions to handle the canvas environment ----------- */
 
-static t_symbol *canvas_newfilename = &s_;
-static t_symbol *canvas_newdirectory = &s_;
+static t_symbol *canvas_newfilename = 0;
+static t_symbol *canvas_newdirectory = 0;
 static int canvas_newargc;
 static t_atom *canvas_newargv;
 t_glist *glist_reloadingabstraction;
@@ -352,7 +352,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     }
         /* (otherwise assume we're being created from the menu.) */
 
-    if (canvas_newdirectory->s_name[0])
+    if (canvas_newdirectory && canvas_newdirectory->s_name[0])
     {
         static int dollarzero = 1000;
         t_canvasenvironment *env = x->gl_env =
@@ -1145,7 +1145,7 @@ static void canvas_dsp(t_canvas *x, t_signal **sp)
     canvas_dodsp(x, 0, sp);
 }
 
-int canvas_dspstate;
+int canvas_dspstate;    /* for back compatibility with externs - don't use */
 
     /* this routine starts DSP for all root canvases. */
 static void canvas_start_dsp(void)
