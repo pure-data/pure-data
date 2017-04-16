@@ -28,7 +28,7 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 t_pd pd_objectmaker;    /* factory for creating "object" boxes */
 t_pd pd_canvasmaker;    /* factory for creating canvases */
 
-static t_symbol *class_extern_dir = &pd_maininstance.pd_s_;
+static t_symbol *class_extern_dir;
 
 #ifdef PDINSTANCE
 static t_class *class_list = 0;
@@ -43,6 +43,8 @@ t_pdinstance pd_maininstance;
 
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance);
+void x_midi_newpdinstance( void);
+void x_midi_freepdinstance( void);
 
 static t_pdinstance *pdinstance_init(t_pdinstance *x)
 {
@@ -69,6 +71,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     dogensym("x",         &x->pd_s_x,        x);
     dogensym("y",         &x->pd_s_y,        x);
     dogensym("",          &x->pd_s_,         x);
+    pd_this = x;
 #else
     dogensym("pointer",   &s_pointer,  x);
     dogensym("float",     &s_float,    x);
@@ -83,6 +86,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     dogensym("y",         &s_y,        x);
     dogensym("",          &s_,         x);
 #endif
+    x_midi_newpdinstance();
     return (x);
 }
 
@@ -187,6 +191,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         }
     }
     freebytes(x->pd_symhash, SYMTABHASHSIZE * sizeof (*x->pd_symhash));
+    x_midi_freepdinstance();
     for (i = instanceno; i < pd_ninstances-1; i++)
         pd_instances[i] = pd_instances[i+1];
     pd_instances = (t_pdinstance **)resizebytes(pd_instances,
@@ -626,6 +631,7 @@ void class_set_extern_dir(t_symbol *s)
 
 char *class_gethelpdir(t_class *c)
 {
+    post("externdir %x, name %s", c->c_externdir, c->c_externdir->s_name);
     return (c->c_externdir->s_name);
 }
 
@@ -739,6 +745,7 @@ void mess_init(void)
     pd_this = &pd_maininstance;
 #endif
     pdinstance_init(&pd_maininstance);
+    class_extern_dir = &s_;
     pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
         CLASS_DEFAULT, A_NULL);
     pd_canvasmaker = class_new(gensym("classmaker"), 0, 0, sizeof(t_pd),

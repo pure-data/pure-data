@@ -781,6 +781,9 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
+EXTERN_STRUCT _midiinstance;
+#define t_midiinstance struct _midiinstance
+
 struct _pdinstance
 {
     double pd_systime;          /* global time in Pd ticks */
@@ -791,6 +794,7 @@ struct _pdinstance
     int pd_dspstate;            /* whether DSP is on or off */
     t_signal *pd_signals;       /* list of signals used by DSP chain */
     int pd_instanceno;          /* ordinal number of this instance */
+#ifdef PDINSTANCE
     t_symbol  pd_s_pointer;
     t_symbol  pd_s_float;
     t_symbol  pd_s_symbol;
@@ -803,27 +807,11 @@ struct _pdinstance
     t_symbol  pd_s_x;
     t_symbol  pd_s_y;
     t_symbol  pd_s_;
+#endif
     t_symbol **pd_symhash;
+    t_midiinstance *pd_midi;
 };
 #define t_pdinstance struct _pdinstance
-
-#ifdef PDINSTANCE
-#define s_pointer   (pd_this->pd_s_pointer)
-#define s_float     (pd_this->pd_s_float)
-#define s_symbol    (pd_this->pd_s_symbol)
-#define s_bang      (pd_this->pd_s_bang)
-#define s_list      (pd_this->pd_s_list)
-#define s_anything  (pd_this->pd_s_anything)
-#define s_signal    (pd_this->pd_s_signal)
-#define s__N        (pd_this->pd_s__N)
-#define s__X        (pd_this->pd_s__X)
-#define s_x         (pd_this->pd_s_x)
-#define s_y         (pd_this->pd_s_y)
-#define s_          (pd_this->pd_s_)
-#else
-extern t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
-  s_signal, s__N, s__X, s_x, s_y, s_;
-#endif
 
 /* m_pd.c */
 #ifdef PDINSTANCE
@@ -846,6 +834,24 @@ extern int pd_ninstances;
 extern t_pdinstance pd_maininstance;
 #define pd_this (&pd_maininstance)
 #endif /* PDINSTANCE */
+
+#ifdef PDINSTANCE
+#define s_pointer   (pd_this->pd_s_pointer)
+#define s_float     (pd_this->pd_s_float)
+#define s_symbol    (pd_this->pd_s_symbol)
+#define s_bang      (pd_this->pd_s_bang)
+#define s_list      (pd_this->pd_s_list)
+#define s_anything  (pd_this->pd_s_anything)
+#define s_signal    (pd_this->pd_s_signal)
+#define s__N        (pd_this->pd_s__N)
+#define s__X        (pd_this->pd_s__X)
+#define s_x         (pd_this->pd_s_x)
+#define s_y         (pd_this->pd_s_y)
+#define s_          (pd_this->pd_s_)
+#else
+extern t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
+  s_signal, s__N, s__X, s_x, s_y, s_;
+#endif
 
 EXTERN t_canvas *pd_getcanvaslist(void);
 EXTERN int pd_getdspstate(void);

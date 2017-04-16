@@ -62,8 +62,8 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
 /* --------- functions to handle the canvas environment ----------- */
 
-static t_symbol *canvas_newfilename = 0;
-static t_symbol *canvas_newdirectory = 0;
+static t_symbol *canvas_newfilename;
+static t_symbol *canvas_newdirectory;
 static int canvas_newargc;
 static t_atom *canvas_newargv;
 t_glist *glist_reloadingabstraction;
@@ -1793,6 +1793,7 @@ void g_canvas_setup(void)
     g_graph_setup();
     g_editor_setup();
     g_readwrite_setup();
+    canvas_newfilename = canvas_newdirectory = &s_;
 }
 
     /* functions to add basic gui (e.g., clicking but not editing) to things
