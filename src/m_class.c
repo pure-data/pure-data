@@ -45,6 +45,8 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance);
 void x_midi_newpdinstance( void);
 void x_midi_freepdinstance( void);
+void s_inter_newpdinstance( void);
+void s_inter_freepdinstance( void);
 
 static t_pdinstance *pdinstance_init(t_pdinstance *x)
 {
@@ -87,6 +89,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     dogensym("",          &s_,         x);
 #endif
     x_midi_newpdinstance();
+
     return (x);
 }
 
@@ -139,6 +142,9 @@ EXTERN t_pdinstance *pdinstance_new(void)
     t_class *c;
     int i;
     pdinstance_init(x);
+    pd_this = x;
+    sys_lock();
+    pd_globallock();
     pd_instances = (t_pdinstance **)resizebytes(pd_instances,
         pd_ninstances * sizeof(*pd_instances),
         (pd_ninstances+1) * sizeof(*pd_instances));
@@ -157,6 +163,8 @@ EXTERN t_pdinstance *pdinstance_new(void)
     }
     pd_ninstances++;
     pdinstance_renumber();
+    pd_globalunlock();
+    sys_unlock();
     return (x);
 }
 
@@ -167,6 +175,9 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     int i, instanceno = x->pd_instanceno;
     t_class *c;
     pd_setinstance(x);
+    sys_lock();
+    pd_globallock();
+
     canvas_suspend_dsp();
     while (x->pd_canvaslist)
         pd_free((t_pd *)x->pd_canvaslist);
@@ -192,6 +203,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     }
     freebytes(x->pd_symhash, SYMTABHASHSIZE * sizeof (*x->pd_symhash));
     x_midi_freepdinstance();
+    s_inter_freepdinstance();
     for (i = instanceno; i < pd_ninstances-1; i++)
         pd_instances[i] = pd_instances[i+1];
     pd_instances = (t_pdinstance **)resizebytes(pd_instances,
@@ -199,6 +211,8 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         (pd_ninstances-1) * sizeof(*pd_instances));
     pd_ninstances--;
     pdinstance_renumber();
+    pd_globalunlock();
+    sys_unlock();
     pd_setinstance(&pd_maininstance);
 }
 
@@ -366,6 +380,9 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         *vp = va_arg(ap, t_atomtype);
     }
     va_end(ap);
+
+    pd_globallock();
+
     if (pd_objectmaker && newmethod)
     {
             /* add a "new" method by the name specified by the object */
@@ -417,6 +434,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 #if 0       /* enable this if you want to see a list of all classes */
     post("class: %s", c->c_name->s_name);
 #endif
+    pd_globalunlock();
     return (c);
 }
 
@@ -499,6 +517,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     else
     {
         t_atomtype argvec[MAXPDARG+1];
+        pd_globallock();
         nargs = 0;
         while (argtype != A_NULL && nargs < MAXPDARG)
         {
@@ -521,6 +540,7 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
             (t_gotfn)fn, sel, argvec, &pd_maininstance);
 #endif
         c->c_nmethod++;
+        pd_globalunlock();
     }
     goto done;
 phooey:

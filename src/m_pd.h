@@ -781,8 +781,11 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
-EXTERN_STRUCT _midiinstance;
-#define t_midiinstance struct _midiinstance
+EXTERN_STRUCT _instancemidi;
+#define t_instancemidi struct _instancemidi
+
+EXTERN_STRUCT _instancemutex;
+#define t_instancemutex struct _instancemutex
 
 struct _pdinstance
 {
@@ -809,7 +812,9 @@ struct _pdinstance
     t_symbol  pd_s_;
 #endif
     t_symbol **pd_symhash;
-    t_midiinstance *pd_midi;
+    t_instancemidi *pd_midi;
+    t_instancemutex *pd_mutex;
+    int *pd_islocked;
 };
 #define t_pdinstance struct _pdinstance
 
@@ -819,6 +824,10 @@ EXTERN t_pdinstance *pdinstance_new( void);
 EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
+
+#ifndef PDTHREADS
+#define PDTHREADS 1
+#endif
 
 #ifdef PDTHREADS
 #define PERTHREAD __thread

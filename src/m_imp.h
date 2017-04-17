@@ -83,6 +83,10 @@ EXTERN int obj_nsigoutlets(t_object *x);
 EXTERN int obj_siginletindex(t_object *x, int m);
 EXTERN int obj_sigoutletindex(t_object *x, int m);
 
+/* s_inter.c */
+void pd_globallock( void);
+void pd_globalunlock( void);
+
 /* misc */
 #define SYMTABHASHSIZE 1024
 

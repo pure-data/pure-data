@@ -14,7 +14,7 @@ void outmidi_polyaftertouch(int portno, int channel, int pitch, int value);
 void outmidi_mclk(int portno);
 void outmidi_byte(int portno, int value);
 
-struct _midiinstance
+struct _instancemidi
 {
     t_symbol *m_midiin_sym;
     t_symbol *m_sysexin_sym;
@@ -1296,7 +1296,7 @@ void x_midi_setup(void)
 
 void x_midi_newpdinstance( void)
 {
-    pd_this->pd_midi = getbytes(sizeof(t_midiinstance));
+    pd_this->pd_midi = getbytes(sizeof(t_instancemidi));
     pd_this->pd_midi->m_midiin_sym = gensym("#midiin");
     pd_this->pd_midi->m_sysexin_sym = gensym("#sysexin");
     pd_this->pd_midi->m_notein_sym = gensym("#notein");
@@ -1311,5 +1311,5 @@ void x_midi_newpdinstance( void)
 
 void x_midi_freepdinstance( void)
 {
-    freebytes(pd_this->pd_midi, sizeof(t_midiinstance));
+    freebytes(pd_this->pd_midi, sizeof(t_instancemidi));
 }

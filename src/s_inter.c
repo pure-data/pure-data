@@ -1345,3 +1345,117 @@ void sys_stopgui( void)
     }
     sys_nogui = 1;
 }
+
+/* ----------- mutexes for thread safety --------------- */
+
+#if PDTHREADS
+#include "pthread.h"
+
+#ifdef PDINSTNCE
+typedef struct _instancemutex
+{
+    pthread_mutex_t im_mutex;
+};
+
+static pthread_rwlock_t sys_rwlock = PTHREAD_RWLOCK_INITIALIZER;
+#else /* PDINSTANCE */
+static pthread_mutex_t sys_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif /* PDINSTANCE */
+
+void s_inter_newpdinstance( void)
+{
+#ifdef PDINSTNCE
+    t_instancemutex *x = getbytes(sizeof(*x));
+    x->im_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pd_this->pd_mutex = x;
+    pd_this->pd_islocked = 0;
+#endif
+}
+
+void s_inter_freepdinstance( void)
+{
+#ifdef PDINSTNCE
+    freebytes(pd_this->pd_mutex, sizeof(*pd_this->pd_mutex));
+#endif
+}
+
+
+/* routines to lock and unlock Pd's global class structure or list of Pd
+instances.  These are called internally within Pd when creating classes, adding
+methods to them, or creating or freeing Pd instances.  They should probably
+not be called from outside Pd.  They should be called at a point where the
+current instance of Pd is currently locked via sys_lock() below; this gains
+read access to the class and instance lists which must be released for the
+write-lock to be available. */
+
+void pd_globallock( void)
+{
+#ifdef PDINSTANCE
+    if (!pd_this->pd_islocked)
+        bug("pd_globallock");
+    pthread_rwlock_unlock(&sys_rwlock);
+    pthread_rwlock_wrlock(&sys_rwlock);
+#endif /* PDINSTANCE */
+}
+
+void pd_globalunlock( void)
+{
+#ifdef PDINSTANCE
+    pthread_rwlock_unlock(&sys_rwlock);
+    pthread_rwlock_rdlock(&sys_rwlock);
+#endif /* PDINSTANCE */
+}
+
+/* routines to lock/unlock a Pd instance for thread safety.  Call pd_setinsance
+first.  The "pd_this"  variable can be written and read thread-safely as it
+is defined as per-thread storage. */
+void sys_lock( void)
+{
+#ifdef PDINSTANCE
+    pthread_mutex_lock(&pd_this->pd_mutex->im_mutex);
+    pthread_rwlock_rdlock(&sys_rwlock);
+    pd_this->pd_islocked = 1;
+#else
+    pthread_mutex_lock(&sys_mutex);
+#endif
+}
+
+void sys_unlock( void)
+{
+#ifdef PDINSTANCE
+    pd_this->pd_islocked = 0;
+    pthread_rwlock_unlock(&sys_rwlock);
+    pthread_mutex_unlock(&pd_this->pd_mutex->im_mutex);
+#else
+    pthread_mutex_unlock(&sys_mutex);
+#endif
+}
+
+int sys_trylock( void)
+{
+#ifdef PDINSTANCE
+    int ret;
+    if (!(ret = pthread_mutex_trylock(&pd_this->pd_mutex->im_mutex)))
+    {
+        if (!(ret = pthread_rwlock_tryrdlock(&sys_rwlock)))
+            return (0);
+        else
+        {
+            pthread_mutex_unlock(&pd_this->pd_mutex->im_mutex);
+            return (ret);
+        }
+    }
+    else return (ret);
+#else
+    return pthread_mutex_trylock(&sys_mutex);
+#endif
+}
+
+#else /* PDTHREADS */
+
+void sys_lock( void) {}
+void sys_unlock( void) {}
+void pd_globallock( void) {}
+void pd_globalunlock( void) {}
+
+#endif /* PDTHREADS */

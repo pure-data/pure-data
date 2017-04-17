@@ -16,14 +16,6 @@
 #define TIMEUNITPERMSEC (32. * 441.)
 #define TIMEUNITPERSECOND (TIMEUNITPERMSEC * 1000.)
 
-#ifndef THREAD_LOCKING
-#define THREAD_LOCKING 1
-#endif
-
-#if THREAD_LOCKING
-#include "pthread.h"
-#endif
-
 #define SYS_QUIT_QUIT 1
 #define SYS_QUIT_RESTART 2
 static int sys_quit;
@@ -457,10 +449,7 @@ static void m_pollingscheduler( void)
     sys_time_per_dsp_tick = (TIMEUNITPERSECOND) *
         ((double)sys_schedblocksize) / sys_dacsr;
 
-#if THREAD_LOCKING
-        sys_lock();
-#endif
-
+    sys_lock();
     sys_clearhist();
     if (sys_sleepgrain < 100)
         sys_sleepgrain = sys_schedadvance/4;
@@ -478,18 +467,9 @@ static void m_pollingscheduler( void)
     waitfortick:
         if (sched_useaudio != SCHED_AUDIO_NONE)
         {
-#if THREAD_LOCKING
-            /* T.Grill - send_dacs may sleep ->
-                unlock thread lock make that time available
-                - could messaging do any harm while sys_send_dacs is running?
-            */
             sys_unlock();
-#endif
             timeforward = sys_send_dacs();
-#if THREAD_LOCKING
-            /* T.Grill - done */
             sys_lock();
-#endif
 #if 0   /* in linux and windoes, sometimes audio devices would freeze, which
                in turn would freeze Pd.  This code unfroze things by closing
                audio in such cases.  But this seems no longer necessary, and
@@ -552,9 +532,7 @@ static void m_pollingscheduler( void)
         {
             sched_pollformeters();
             sys_reportidle();
-#if THREAD_LOCKING
             sys_unlock();   /* unlock while we idle */
-#endif
                 /* call externally installed idle function if any. */
             if (!sys_idlehook || !sys_idlehook())
             {
@@ -562,17 +540,12 @@ static void m_pollingscheduler( void)
                 if (timeforward != SENDDACS_SLEPT)
                     sys_microsleep(sys_sleepgrain);
             }
-#if THREAD_LOCKING
             sys_lock();
-#endif
             sys_addhist(5);
             sched_didnothing++;
         }
     }
-
-#if THREAD_LOCKING
     sys_unlock();
-#endif
 }
 
 void sched_audio_callbackfn(void)
@@ -642,34 +615,6 @@ int m_batchmain(void)
         sched_tick();
     return (0);
 }
-
-/* ------------ thread locking ------------------- */
-
-#if THREAD_LOCKING
-static pthread_mutex_t sys_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-void sys_lock(void)
-{
-    pthread_mutex_lock(&sys_mutex);
-}
-
-void sys_unlock(void)
-{
-    pthread_mutex_unlock(&sys_mutex);
-}
-
-int sys_trylock(void)
-{
-    return pthread_mutex_trylock(&sys_mutex);
-}
-
-#else
-
-void sys_lock(void) {}
-void sys_unlock(void) {}
-int sys_trylock(void) {return (1);}
-
-#endif
 
 void sys_exit(void)
 {
