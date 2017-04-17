@@ -89,6 +89,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     dogensym("",          &s_,         x);
 #endif
     x_midi_newpdinstance();
+    s_inter_newpdinstance();
 
     return (x);
 }
@@ -163,6 +164,8 @@ EXTERN t_pdinstance *pdinstance_new(void)
     }
     pd_ninstances++;
     pdinstance_renumber();
+    pd_bind(&glob_pdobject, gensym("pd"));
+
     pd_globalunlock();
     sys_unlock();
     return (x);
@@ -765,12 +768,14 @@ void mess_init(void)
     pd_this = &pd_maininstance;
 #endif
     pdinstance_init(&pd_maininstance);
+    sys_lock();
     class_extern_dir = &s_;
     pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
         CLASS_DEFAULT, A_NULL);
-    pd_canvasmaker = class_new(gensym("classmaker"), 0, 0, sizeof(t_pd),
+    pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
         CLASS_DEFAULT, A_NULL);
     class_addanything(pd_objectmaker, (t_method)new_anything);
+    sys_unlock();
 }
 
 t_pd *newest;

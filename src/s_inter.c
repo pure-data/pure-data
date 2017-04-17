@@ -1351,8 +1351,8 @@ void sys_stopgui( void)
 #if PDTHREADS
 #include "pthread.h"
 
-#ifdef PDINSTNCE
-typedef struct _instancemutex
+#ifdef PDINSTANCE
+struct _instancemutex
 {
     pthread_mutex_t im_mutex;
 };
@@ -1364,9 +1364,9 @@ static pthread_mutex_t sys_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void s_inter_newpdinstance( void)
 {
-#ifdef PDINSTNCE
+#ifdef PDINSTANCE
     t_instancemutex *x = getbytes(sizeof(*x));
-    x->im_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_init( &x->im_mutex, NULL);
     pd_this->pd_mutex = x;
     pd_this->pd_islocked = 0;
 #endif
@@ -1374,7 +1374,7 @@ void s_inter_newpdinstance( void)
 
 void s_inter_freepdinstance( void)
 {
-#ifdef PDINSTNCE
+#ifdef PDINSTANCE
     freebytes(pd_this->pd_mutex, sizeof(*pd_this->pd_mutex));
 #endif
 }

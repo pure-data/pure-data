@@ -814,7 +814,7 @@ struct _pdinstance
     t_symbol **pd_symhash;
     t_instancemidi *pd_midi;
     t_instancemutex *pd_mutex;
-    int *pd_islocked;
+    int pd_islocked;
 };
 #define t_pdinstance struct _pdinstance
 
@@ -836,7 +836,7 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif
 
 #ifdef PDINSTANCE
-PERTHREAD extern t_pdinstance *pd_this;
+extern PERTHREAD t_pdinstance *pd_this;
 extern t_pdinstance **pd_instances;
 extern int pd_ninstances;
 #else

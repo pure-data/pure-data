@@ -306,10 +306,12 @@ void pd_init(void)
     pd_ninstances = 1;
 #endif
     mess_init();
+    sys_lock();
     obj_init();
     conf_init();
     glob_init();
     garray_init();
+    sys_unlock();
 }
 
 EXTERN t_canvas *pd_getcanvaslist(void)
