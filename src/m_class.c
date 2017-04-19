@@ -89,7 +89,6 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     dogensym("",          &s_,         x);
 #endif
     x_midi_newpdinstance();
-    s_inter_newpdinstance();
 
     return (x);
 }
@@ -142,8 +141,9 @@ EXTERN t_pdinstance *pdinstance_new(void)
     t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
     t_class *c;
     int i;
-    pdinstance_init(x);
     pd_this = x;
+    s_inter_newpdinstance();
+    pdinstance_init(x);
     sys_lock();
     pd_globallock();
     pd_instances = (t_pdinstance **)resizebytes(pd_instances,
@@ -384,8 +384,6 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     }
     va_end(ap);
 
-    pd_globallock();
-
     if (pd_objectmaker && newmethod)
     {
             /* add a "new" method by the name specified by the object */
@@ -437,7 +435,6 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 #if 0       /* enable this if you want to see a list of all classes */
     post("class: %s", c->c_name->s_name);
 #endif
-    pd_globalunlock();
     return (c);
 }
 
@@ -520,7 +517,6 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     else
     {
         t_atomtype argvec[MAXPDARG+1];
-        pd_globallock();
         nargs = 0;
         while (argtype != A_NULL && nargs < MAXPDARG)
         {
@@ -543,7 +539,6 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
             (t_gotfn)fn, sel, argvec, &pd_maininstance);
 #endif
         c->c_nmethod++;
-        pd_globalunlock();
     }
     goto done;
 phooey:
@@ -751,6 +746,7 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     }
     newest = 0;
     class_loadsym = s;
+    pd_globallock();
     if (sys_load_lib(canvas_getcurrent(), s->s_name))
     {
         tryingalready++;
@@ -759,22 +755,27 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     class_loadsym = 0;
+    pd_globalunlock();
 }
 
 void mess_init(void)
 {
-    if (pd_objectmaker) return;
+    if (pd_objectmaker)
+        return;
 #ifdef PDINSTANCE
     pd_this = &pd_maininstance;
 #endif
-    pdinstance_init(&pd_maininstance);
+    s_inter_newpdinstance();
     sys_lock();
+    pd_globallock();
+    pdinstance_init(&pd_maininstance);
     class_extern_dir = &s_;
     pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
         CLASS_DEFAULT, A_NULL);
     pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
         CLASS_DEFAULT, A_NULL);
     class_addanything(pd_objectmaker, (t_method)new_anything);
+    pd_globalunlock();
     sys_unlock();
 }
 
