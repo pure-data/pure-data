@@ -870,7 +870,7 @@ static int defaultfontshit[] = {
 17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
-int sys_startgui(const char *libdir)
+static int sys_do_startgui(const char *libdir)
 {
     char cmdbuf[4*MAXPDSTRING];
     struct sockaddr_in server = {0};
@@ -1331,11 +1331,49 @@ void glob_quit(void *dummy)
     exit(0);
 }
 
+    /* recursively descend to all canvases and send them "vis" messages
+    if they believe they're visible, to make it really so. */
+static void glist_maybevis(t_glist *gl)
+{
+    t_gobj *g;
+    for (g = gl->gl_list; g; g = g->g_next)
+        if (pd_class(&g->g_pd) == canvas_class)
+            glist_maybevis((t_glist *)g);
+    if (gl->gl_havewindow)
+    {
+        canvas_vis(gl, 0);
+        canvas_vis(gl, 1);
+    }
+}
+
+int sys_startgui(const char *libdir)
+{
+    t_canvas *x;
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
+        canvas_vis(x, 0);
+    sys_nogui = 0;
+    if (sys_do_startgui(libdir))
+        return -1;
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
+        if (strcmp(x->gl_name->s_name, "_float_template") &&
+            strcmp(x->gl_name->s_name, "_float_array_template") &&
+                strcmp(x->gl_name->s_name, "_text_template"))
+    {
+        glist_maybevis(x);
+        canvas_vis(x, 1);
+    }
+    return 0;
+}
+
  /* more work needed here - for some reason we can't restart the gui after
  shutting it down this way.  I think the second 'init' message never makes
  it because the to-gui buffer isn't re-initialized. */
 void sys_stopgui( void)
 {
+    t_canvas *x;
+    for (x = pd_getcanvaslist(); x; x = x->gl_next)
+        canvas_vis(x, 0);
+    sys_vgui("%s", "exit\n");
     if (sys_guisock >= 0)
     {
         sys_closesocket(sys_guisock);
