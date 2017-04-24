@@ -1483,7 +1483,7 @@ is defined as per-thread storage. */
 void sys_lock( void)
 {
 #ifdef PDINSTANCE
-    pthread_mutex_lock(&pd_this->pd_mutex->im_mutex);
+    pthread_mutex_lock(&pd_this->pd_inter->i_mutex);
     pthread_rwlock_rdlock(&sys_rwlock);
     pd_this->pd_islocked = 1;
 #else
@@ -1496,7 +1496,7 @@ void sys_unlock( void)
 #ifdef PDINSTANCE
     pd_this->pd_islocked = 0;
     pthread_rwlock_unlock(&sys_rwlock);
-    pthread_mutex_unlock(&pd_this->pd_mutex->im_mutex);
+    pthread_mutex_unlock(&pd_this->pd_inter->i_mutex);
 #else
     pthread_mutex_unlock(&sys_mutex);
 #endif
@@ -1506,13 +1506,13 @@ int sys_trylock( void)
 {
 #ifdef PDINSTANCE
     int ret;
-    if (!(ret = pthread_mutex_trylock(&pd_this->pd_mutex->im_mutex)))
+    if (!(ret = pthread_mutex_trylock(&pd_this->pd_inter->i_mutex)))
     {
         if (!(ret = pthread_rwlock_tryrdlock(&sys_rwlock)))
             return (0);
         else
         {
-            pthread_mutex_unlock(&pd_this->pd_mutex->im_mutex);
+            pthread_mutex_unlock(&pd_this->pd_inter->i_mutex);
             return (ret);
         }
     }
