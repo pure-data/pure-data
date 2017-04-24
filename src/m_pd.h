@@ -784,8 +784,12 @@ EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 EXTERN_STRUCT _instancemidi;
 #define t_instancemidi struct _instancemidi
 
-EXTERN_STRUCT _instancemutex;
-#define t_instancemutex struct _instancemutex
+EXTERN_STRUCT _instanceinter;
+#define t_instanceinter struct _instanceinter
+
+#ifndef PDTHREADS
+#define PDTHREADS 1
+#endif
 
 struct _pdinstance
 {
@@ -812,9 +816,11 @@ struct _pdinstance
     t_symbol  pd_s_;
 #endif
     t_symbol **pd_symhash;
-    t_instancemidi *pd_midi;
-    t_instancemutex *pd_mutex;
+    t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
+    t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
+#if PDTHREADS
     int pd_islocked;
+#endif
 };
 #define t_pdinstance struct _pdinstance
 
@@ -824,10 +830,6 @@ EXTERN t_pdinstance *pdinstance_new( void);
 EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
-
-#ifndef PDTHREADS
-#define PDTHREADS 1
-#endif
 
 #ifdef PDTHREADS
 #define PERTHREAD __thread
