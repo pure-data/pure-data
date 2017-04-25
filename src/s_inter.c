@@ -906,7 +906,7 @@ static int defaultfontshit[] = {
 
 static int sys_do_startgui(const char *libdir)
 {
-    char cmdbuf[4*MAXPDSTRING];
+    char cmdbuf[4*MAXPDSTRING], *guicmd;
     struct sockaddr_in server = {0};
     int msgsock;
     char buf[15];
@@ -920,6 +920,7 @@ static int sys_do_startgui(const char *libdir)
     int stdinpipe[2];
     pid_t childpid;
 #endif /* _WIN32 */
+
     sys_init_fdpoll();
 
 #ifdef _WIN32
@@ -1051,7 +1052,9 @@ static int sys_do_startgui(const char *libdir)
 
 
 #ifndef _WIN32
-        if (!sys_guicmd)
+        if (sys_guicmd)
+            guicmd = sys_guicmd;
+        else
         {
 #ifdef __APPLE__
             int i;
@@ -1111,11 +1114,10 @@ static int sys_do_startgui(const char *libdir)
                  libdir, libdir, (getenv("HOME") ? "" : " HOME=/tmp"),
                     libdir, portno);
 #endif /* __APPLE__ */
-            sys_guicmd = cmdbuf;
+            guicmd = cmdbuf;
         }
-
         if (sys_verbose)
-            fprintf(stderr, "%s", sys_guicmd);
+            fprintf(stderr, "%s", guicmd);
 
         childpid = fork();
         if (childpid < 0)
@@ -1146,7 +1148,7 @@ static int sys_do_startgui(const char *libdir)
                 }
             }
 #endif /* NOT __APPLE__ */
-            execl("/bin/sh", "sh", "-c", sys_guicmd, (char*)0);
+            execl("/bin/sh", "sh", "-c", guicmd, (char*)0);
             perror("pd: exec");
             fprintf(stderr, "Perhaps tcl and tk aren't yet installed?\n");
             _exit(1);
@@ -1417,7 +1419,6 @@ void sys_stopgui( void)
         sys_closesocket(pd_this->pd_inter->i_guisock);
         sys_rmpollfn(pd_this->pd_inter->i_guisock);
         pd_this->pd_inter->i_guisock = -1;
-        sys_guicmd = 0;
     }
     sys_nogui = 1;
 }

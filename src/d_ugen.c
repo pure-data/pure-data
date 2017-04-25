@@ -554,8 +554,8 @@ struct _dspcontext
 
 #define t_dspcontext struct _dspcontext
 
-static int ugen_sortno = 0;
-static t_dspcontext *ugen_currentcontext;
+static PERTHREAD ugen_sortno = 0;
+static PERTHREAD t_dspcontext *ugen_currentcontext;
 
     /* get a new signal for the current context - used by clone~ object */
 t_signal *signal_newfromcontext(int borrowed)

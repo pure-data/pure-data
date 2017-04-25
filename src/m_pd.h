@@ -787,6 +787,9 @@ EXTERN_STRUCT _instancemidi;
 EXTERN_STRUCT _instanceinter;
 #define t_instanceinter struct _instanceinter
 
+EXTERN_STRUCT _canvasinter;
+#define t_canvasinter struct _canvasinter
+
 #ifndef PDTHREADS
 #define PDTHREADS 1
 #endif
@@ -818,6 +821,7 @@ struct _pdinstance
     t_symbol **pd_symhash;
     t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
     t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
+    t_canvasinter *pd_canvas;   /* private stuff for g_canvas.h */
 #if PDTHREADS
     int pd_islocked;
 #endif

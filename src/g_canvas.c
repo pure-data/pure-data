@@ -62,16 +62,12 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
 /* --------- functions to handle the canvas environment ----------- */
 
-static t_symbol *canvas_newfilename;
-static t_symbol *canvas_newdirectory;
-static int canvas_newargc;
-static t_atom *canvas_newargv;
-t_glist *glist_reloadingabstraction;
 
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
 void canvas_updatewindowlist( void)
 {
-    if (!glist_reloadingabstraction)  /* not if we're in a reload */
+            /* not if we're in a reload */
+    if (!pd_this->pd_canvas->i_reloadingabstraction)
         sys_gui("::pd_menus::update_window_menu\n");
 }
 
@@ -101,16 +97,16 @@ void canvas_setargs(int argc, t_atom *argv)
         /* if there's an old one lying around free it here.  This
         happens if an abstraction is loaded but never gets as far
         as calling canvas_new(). */
-    if (canvas_newargv)
-        freebytes(canvas_newargv, canvas_newargc * sizeof(t_atom));
-    canvas_newargc = argc;
-    canvas_newargv = copybytes(argv, argc * sizeof(t_atom));
+    if (pd_this->pd_canvas->i_newargv)
+        freebytes(pd_this->pd_canvas->i_newargv, pd_this->pd_canvas->i_newargc * sizeof(t_atom));
+    pd_this->pd_canvas->i_newargc = argc;
+    pd_this->pd_canvas->i_newargv = copybytes(argv, argc * sizeof(t_atom));
 }
 
 void glob_setfilename(void *dummy, t_symbol *filesym, t_symbol *dirsym)
 {
-    canvas_newfilename = filesym;
-    canvas_newdirectory = dirsym;
+    pd_this->pd_canvas->i_newfilename = filesym;
+    pd_this->pd_canvas->i_newdirectory = dirsym;
 }
 
 void glob_menunew(void *dummy, t_symbol *filesym, t_symbol *dirsym)
@@ -155,7 +151,10 @@ int canvas_getdollarzero( void)
 
 void canvas_getargs(int *argcp, t_atom **argvp)
 {
-    t_canvasenvironment *e = canvas_getenv(canvas_getcurrent());
+    t_canvas *x = canvas_getcurrent();
+    if (!x)
+        bug("canvas_getargs");
+    t_canvasenvironment *e = canvas_getenv(x);
     *argcp = e->ce_argc;
     *argvp = e->ce_argv;
 }
@@ -317,7 +316,7 @@ void glist_init(t_glist *x)
 }
 
     /* make a new glist.  It will either be a "root" canvas or else
-    it appears as a "text" object in another window (canvas_getcurrnet()
+    it appears as a "text" object in another window (canvas_getcurrent()
     tells us which.) */
 t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
 {
@@ -327,6 +326,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = 0, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
+    static int dollarzero = 1000;
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
@@ -352,23 +352,21 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     }
         /* (otherwise assume we're being created from the menu.) */
 
-    if (canvas_newdirectory && canvas_newdirectory->s_name[0])
-    {
-        static int dollarzero = 1000;
-        t_canvasenvironment *env = x->gl_env =
-            (t_canvasenvironment *)getbytes(sizeof(*x->gl_env));
-        if (!canvas_newargv)
-            canvas_newargv = getbytes(0);
-        env->ce_dir = canvas_newdirectory;
-        env->ce_argc = canvas_newargc;
-        env->ce_argv = canvas_newargv;
-        env->ce_dollarzero = dollarzero++;
-        env->ce_path = 0;
-        canvas_newdirectory = &s_;
-        canvas_newargc = 0;
-        canvas_newargv = 0;
-    }
-    else x->gl_env = 0;
+    
+    x->gl_env = (t_canvasenvironment *)getbytes(sizeof(*x->gl_env));
+    if (!pd_this->pd_canvas->i_newargv)
+        pd_this->pd_canvas->i_newargv = getbytes(0);
+    if (pd_this->pd_canvas->i_newdirectory &&
+        pd_this->pd_canvas->i_newdirectory->s_name[0])
+            x->gl_env->ce_dir = pd_this->pd_canvas->i_newdirectory;
+    else x->gl_env->ce_dir = gensym(".");
+    x->gl_env->ce_argc = pd_this->pd_canvas->i_newargc;
+    x->gl_env->ce_argv = pd_this->pd_canvas->i_newargv;
+    x->gl_env->ce_dollarzero = dollarzero++;
+    x->gl_env->ce_path = 0;
+    pd_this->pd_canvas->i_newdirectory  = &s_;
+    pd_this->pd_canvas->i_newargc = 0;
+    pd_this->pd_canvas->i_newargv = 0;
 
     if (yloc < GLIST_DEFCANVASYLOC)
         yloc = GLIST_DEFCANVASYLOC;
@@ -382,7 +380,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_owner = owner;
     x->gl_isclone = 0;
     x->gl_name = (*s->s_name ? s :
-        (canvas_newfilename ? canvas_newfilename : gensym("Pd")));
+        (pd_this->pd_canvas->i_newfilename ? pd_this->pd_canvas->i_newfilename : gensym("Pd")));
     canvas_bind(x);
     x->gl_loading = 1;
     x->gl_goprect = 0;      /* no GOP rectangle unless it's turned on later */
@@ -608,7 +606,7 @@ void canvas_reflecttitle(t_canvas *x)
 void canvas_dirty(t_canvas *x, t_floatarg n)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    if (glist_reloadingabstraction)
+    if (pd_this->pd_canvas->i_reloadingabstraction)
         return;
     if ((unsigned)n != x2->gl_dirty)
     {
@@ -1793,7 +1791,6 @@ void g_canvas_setup(void)
     g_graph_setup();
     g_editor_setup();
     g_readwrite_setup();
-    canvas_newfilename = canvas_newdirectory = &s_;
 }
 
     /* functions to add basic gui (e.g., clicking but not editing) to things
@@ -1818,3 +1815,19 @@ void canvas_add_for_class(t_class *c)
     canvas_readwrite_for_class(c);
     /* g_graph_setup_class(c); */
 }
+
+void g_canvas_newpdinstance( void)
+{
+    pd_this->pd_canvas = getbytes(sizeof(*pd_this->pd_canvas));
+    pd_this->pd_canvas->i_newfilename =
+        pd_this->pd_canvas->i_newdirectory = &s_;
+    pd_this->pd_canvas->i_newargc = 0;
+    pd_this->pd_canvas->i_newargv = 0;
+    pd_this->pd_canvas->i_reloadingabstraction = 0;
+}
+
+void g_canvas_freepdinstance( void)
+{
+    freebytes(pd_this->pd_canvas, sizeof(*pd_this->pd_canvas));
+}
+

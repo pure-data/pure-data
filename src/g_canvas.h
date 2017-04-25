@@ -248,6 +248,15 @@ typedef struct _linetraverser
     int tr_nextoutno;
 } t_linetraverser;
 
+struct _canvasinter
+{
+    t_symbol *i_newfilename;
+    t_symbol *i_newdirectory;
+    int i_newargc;
+    t_atom *i_newargv;
+    t_glist *i_reloadingabstraction;
+};
+
 /* function types used to define graphical behavior for gobjs, a bit like X
 widgets.  We don't use Pd methods because Pd's typechecking can't specify the
 types of pointer arguments.  Also it's more convenient this way, since

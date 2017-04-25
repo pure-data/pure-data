@@ -47,6 +47,8 @@ void x_midi_newpdinstance( void);
 void x_midi_freepdinstance( void);
 void s_inter_newpdinstance( void);
 void s_inter_freepdinstance( void);
+void g_canvas_newpdinstance( void);
+void g_canvas_freepdinstance( void);
 
 static t_pdinstance *pdinstance_init(t_pdinstance *x)
 {
@@ -89,6 +91,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     dogensym("",          &s_,         x);
 #endif
     x_midi_newpdinstance();
+    g_canvas_newpdinstance();
 
     return (x);
 }
@@ -206,6 +209,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     }
     freebytes(x->pd_symhash, SYMTABHASHSIZE * sizeof (*x->pd_symhash));
     x_midi_freepdinstance();
+    g_canvas_freepdinstance();
     s_inter_freepdinstance();
     for (i = instanceno; i < pd_ninstances-1; i++)
         pd_instances[i] = pd_instances[i+1];
