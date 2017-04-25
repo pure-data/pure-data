@@ -18,7 +18,6 @@
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class, *text_class;
 t_float *obj_findsignalscalar(t_object *x, int m);
-static int ugen_loud;
 
 EXTERN_STRUCT _vinlet;
 EXTERN_STRUCT _voutlet;
@@ -32,6 +31,35 @@ void voutlet_dspprolog(struct _voutlet *x, t_signal **parentsigs,
 void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
     int myvecsize, int calcsize, int phase, int period, int frequency,
     int downsample, int upsample, int reblock, int switched);
+
+struct _instanceugen
+{
+    t_int *u_dspchain;         /* DSP chain */
+    int u_dspchainsize;        /* number of elements in DSP chain */
+    t_signal *u_signals;       /* list of signals used by DSP chain */
+    int u_sortno;               /* number of DSP sortings so far */
+        /* list of signals which can be reused, sorted by buffer size */
+    t_signal *u_freelist[MAXLOGSIG+1];
+        /* list of reusable "borrowed" signals (which don't own sample buffers) */
+    t_signal *u_freeborrowed;
+    int u_phase;
+    int u_loud;
+};
+
+#define THIS (pd_this->pd_ugen)
+
+void d_ugen_newpdinstance( void)
+{
+    THIS = getbytes(sizeof(*THIS));
+    THIS->u_dspchain = 0;
+    THIS->u_dspchainsize = 0;
+    THIS->u_signals = 0;
+}
+
+void d_ugen_freepdinstance( void)
+{
+    freebytes(THIS, sizeof(*THIS));
+}
 
 t_int *zero_perform(t_int *w)   /* zero out a vector */
 {
@@ -98,7 +126,6 @@ ONLY run when the block is switched off; in this case the epilog code simply
 copies zeros to all signal outlets.
 */
 
-static int dsp_phase;
 static t_class *block_class;
 
 typedef struct _block
@@ -216,11 +243,11 @@ static void block_float(t_block *x, t_floatarg f)
 
 static void block_bang(t_block *x)
 {
-    if (x->x_switched && !x->x_switchon && pd_this->pd_dspchain)
+    if (x->x_switched && !x->x_switchon && THIS->u_dspchain)
     {
         t_int *ip;
         x->x_return = 1;
-        for (ip = pd_this->pd_dspchain + x->x_chainonset; ip; )
+        for (ip = THIS->u_dspchain + x->x_chainonset; ip; )
             ip = (*(t_perfroutine)(*ip))(ip);
         x->x_return = 0;
     }
@@ -297,49 +324,49 @@ static t_int dsp_done(t_int *w)
 
 void dsp_add(t_perfroutine f, int n, ...)
 {
-    int newsize = pd_this->pd_dspchainsize + n+1, i;
+    int newsize = THIS->u_dspchainsize + n+1, i;
     va_list ap;
 
-    pd_this->pd_dspchain = t_resizebytes(pd_this->pd_dspchain,
-        pd_this->pd_dspchainsize * sizeof (t_int), newsize * sizeof (t_int));
-    pd_this->pd_dspchain[pd_this->pd_dspchainsize-1] = (t_int)f;
-    if (ugen_loud)
+    THIS->u_dspchain = t_resizebytes(THIS->u_dspchain,
+        THIS->u_dspchainsize * sizeof (t_int), newsize * sizeof (t_int));
+    THIS->u_dspchain[THIS->u_dspchainsize-1] = (t_int)f;
+    if (THIS->u_loud)
         post("add to chain: %lx",
-            pd_this->pd_dspchain[pd_this->pd_dspchainsize-1]);
+            THIS->u_dspchain[THIS->u_dspchainsize-1]);
     va_start(ap, n);
     for (i = 0; i < n; i++)
     {
-        pd_this->pd_dspchain[pd_this->pd_dspchainsize + i] = va_arg(ap, t_int);
-        if (ugen_loud)
+        THIS->u_dspchain[THIS->u_dspchainsize + i] = va_arg(ap, t_int);
+        if (THIS->u_loud)
             post("add to chain: %lx",
-                pd_this->pd_dspchain[pd_this->pd_dspchainsize + i]);
+                THIS->u_dspchain[THIS->u_dspchainsize + i]);
     }
     va_end(ap);
-    pd_this->pd_dspchain[newsize-1] = (t_int)dsp_done;
-    pd_this->pd_dspchainsize = newsize;
+    THIS->u_dspchain[newsize-1] = (t_int)dsp_done;
+    THIS->u_dspchainsize = newsize;
 }
 
     /* at Guenter's suggestion, here's a vectorized version */
 void dsp_addv(t_perfroutine f, int n, t_int *vec)
 {
-    int newsize = pd_this->pd_dspchainsize + n+1, i;
+    int newsize = THIS->u_dspchainsize + n+1, i;
 
-    pd_this->pd_dspchain = t_resizebytes(pd_this->pd_dspchain,
-        pd_this->pd_dspchainsize * sizeof (t_int), newsize * sizeof (t_int));
-    pd_this->pd_dspchain[pd_this->pd_dspchainsize-1] = (t_int)f;
+    THIS->u_dspchain = t_resizebytes(THIS->u_dspchain,
+        THIS->u_dspchainsize * sizeof (t_int), newsize * sizeof (t_int));
+    THIS->u_dspchain[THIS->u_dspchainsize-1] = (t_int)f;
     for (i = 0; i < n; i++)
-        pd_this->pd_dspchain[pd_this->pd_dspchainsize + i] = vec[i];
-    pd_this->pd_dspchain[newsize-1] = (t_int)dsp_done;
-    pd_this->pd_dspchainsize = newsize;
+        THIS->u_dspchain[THIS->u_dspchainsize + i] = vec[i];
+    THIS->u_dspchain[newsize-1] = (t_int)dsp_done;
+    THIS->u_dspchainsize = newsize;
 }
 
 void dsp_tick(void)
 {
-    if (pd_this->pd_dspchain)
+    if (THIS->u_dspchain)
     {
         t_int *ip;
-        for (ip = pd_this->pd_dspchain; ip; ) ip = (*(t_perfroutine)(*ip))(ip);
-        dsp_phase++;
+        for (ip = THIS->u_dspchain; ip; ) ip = (*(t_perfroutine)(*ip))(ip);
+        THIS->u_phase++;
     }
 }
 
@@ -357,26 +384,22 @@ int ilog2(int n)
     return (r);
 }
 
-    /* list of signals which can be reused, sorted by buffer size */
-static t_signal *signal_freelist[MAXLOGSIG+1];
-    /* list of reusable "borrowed" signals (which don't own sample buffers) */
-static t_signal *signal_freeborrowed;
 
     /* call this when DSP is stopped to free all the signals */
 void signal_cleanup(void)
 {
     t_signal **svec, *sig, *sig2;
     int i;
-    while ((sig = pd_this->pd_signals))
+    while ((sig = THIS->u_signals))
     {
-        pd_this->pd_signals = sig->s_nextused;
+        THIS->u_signals = sig->s_nextused;
         if (!sig->s_isborrowed)
             t_freebytes(sig->s_vec, sig->s_vecsize * sizeof (*sig->s_vec));
         t_freebytes(sig, sizeof *sig);
     }
     for (i = 0; i <= MAXLOGSIG; i++)
-        signal_freelist[i] = 0;
-    signal_freeborrowed = 0;
+        THIS->u_freelist[i] = 0;
+    THIS->u_freeborrowed = 0;
 }
 
     /* mark the signal "reusable." */
@@ -385,7 +408,7 @@ void signal_makereusable(t_signal *sig)
     int logn = ilog2(sig->s_vecsize);
 #if 1
     t_signal *s5;
-    for (s5 = signal_freeborrowed; s5; s5 = s5->s_nextfree)
+    for (s5 = THIS->u_freeborrowed; s5; s5 = s5->s_nextfree)
     {
         if (s5 == sig)
         {
@@ -393,7 +416,7 @@ void signal_makereusable(t_signal *sig)
             return;
         }
     }
-    for (s5 = signal_freelist[logn]; s5; s5 = s5->s_nextfree)
+    for (s5 = THIS->u_freelist[logn]; s5; s5 = s5->s_nextfree)
     {
         if (s5 == sig)
         {
@@ -402,7 +425,7 @@ void signal_makereusable(t_signal *sig)
         }
     }
 #endif
-    if (ugen_loud) post("free %lx: %d", sig, sig->s_isborrowed);
+    if (THIS->u_loud) post("free %lx: %d", sig, sig->s_isborrowed);
     if (sig->s_isborrowed)
     {
             /* if the signal is borrowed, decrement the borrowed-from signal's
@@ -413,16 +436,16 @@ void signal_makereusable(t_signal *sig)
         s2->s_refcount--;
         if (!s2->s_refcount)
             signal_makereusable(s2);
-        sig->s_nextfree = signal_freeborrowed;
-        signal_freeborrowed = sig;
+        sig->s_nextfree = THIS->u_freeborrowed;
+        THIS->u_freeborrowed = sig;
     }
     else
     {
             /* if it's a real signal (not borrowed), put it on the free list
                 so we can reuse it. */
-        if (signal_freelist[logn] == sig) bug("signal_free 2");
-        sig->s_nextfree = signal_freelist[logn];
-        signal_freelist[logn] = sig;
+        if (THIS->u_freelist[logn] == sig) bug("signal_free 2");
+        sig->s_nextfree = THIS->u_freelist[logn];
+        THIS->u_freelist[logn] = sig;
     }
 }
 
@@ -442,10 +465,10 @@ t_signal *signal_new(int n, t_float sr)
             vecsize *= 2;
         if (logn > MAXLOGSIG)
             bug("signal buffer too large");
-        whichlist = signal_freelist + logn;
+        whichlist = THIS->u_freelist + logn;
     }
     else
-        whichlist = &signal_freeborrowed;
+        whichlist = &THIS->u_freeborrowed;
 
         /* first try to reclaim one from the free list */
     if ((ret = *whichlist))
@@ -464,15 +487,15 @@ t_signal *signal_new(int n, t_float sr)
             ret->s_vec = 0;
             ret->s_isborrowed = 1;
         }
-        ret->s_nextused = pd_this->pd_signals;
-        pd_this->pd_signals = ret;
+        ret->s_nextused = THIS->u_signals;
+        THIS->u_signals = ret;
     }
     ret->s_n = n;
     ret->s_vecsize = vecsize;
     ret->s_sr = sr;
     ret->s_refcount = 0;
     ret->s_borrowedfrom = 0;
-    if (ugen_loud) post("new %lx: %lx", ret, ret->s_vec);
+    if (THIS->u_loud) post("new %lx: %lx", ret, ret->s_vec);
     return (ret);
 }
 
@@ -491,7 +514,7 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
     sig->s_vec = sig2->s_vec;
     sig->s_n = sig2->s_n;
     sig->s_vecsize = sig2->s_vecsize;
-    if (ugen_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
+    if (THIS->u_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
 }
 
 int signal_compatible(t_signal *s1, t_signal *s2)
@@ -554,7 +577,6 @@ struct _dspcontext
 
 #define t_dspcontext struct _dspcontext
 
-static PERTHREAD ugen_sortno = 0;
 static PERTHREAD t_dspcontext *ugen_currentcontext;
 
     /* get a new signal for the current context - used by clone~ object */
@@ -568,11 +590,11 @@ void ugen_stop(void)
 {
     t_signal *s;
     int i;
-    if (pd_this->pd_dspchain)
+    if (THIS->u_dspchain)
     {
-        freebytes(pd_this->pd_dspchain,
-            pd_this->pd_dspchainsize * sizeof (t_int));
-        pd_this->pd_dspchain = 0;
+        freebytes(THIS->u_dspchain,
+            THIS->u_dspchainsize * sizeof (t_int));
+        THIS->u_dspchain = 0;
     }
     signal_cleanup();
 
@@ -581,16 +603,16 @@ void ugen_stop(void)
 void ugen_start(void)
 {
     ugen_stop();
-    ugen_sortno++;
-    pd_this->pd_dspchain = (t_int *)getbytes(sizeof(*pd_this->pd_dspchain));
-    pd_this->pd_dspchain[0] = (t_int)dsp_done;
-    pd_this->pd_dspchainsize = 1;
+    THIS->u_sortno++;
+    THIS->u_dspchain = (t_int *)getbytes(sizeof(*THIS->u_dspchain));
+    THIS->u_dspchain[0] = (t_int)dsp_done;
+    THIS->u_dspchainsize = 1;
     if (ugen_currentcontext) bug("ugen_start");
 }
 
 int ugen_getsortno(void)
 {
-    return (ugen_sortno);
+    return (THIS->u_sortno);
 }
 
 #if 1
@@ -598,24 +620,24 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i, count;
     t_signal *sig;
-    for (count = 0, sig = pd_this->pd_signals; sig;
+    for (count = 0, sig = THIS->u_signals; sig;
         count++, sig = sig->s_nextused)
             ;
     post("used signals %d", count);
     for (i = 0; i < MAXLOGSIG; i++)
     {
-        for (count = 0, sig = signal_freelist[i]; sig;
+        for (count = 0, sig = THIS->u_freelist[i]; sig;
             count++, sig = sig->s_nextfree)
                 ;
         if (count)
             post("size %d: free %d", (1 << i), count);
     }
-    for (count = 0, sig = signal_freeborrowed; sig;
+    for (count = 0, sig = THIS->u_freeborrowed; sig;
         count++, sig = sig->s_nextfree)
             ;
     post("free borrowed %d", count);
 
-    ugen_loud = argc;
+    THIS->u_loud = argc;
 }
 #endif
 
@@ -626,7 +648,7 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
     t_dspcontext *dc = (t_dspcontext *)getbytes(sizeof(*dc));
     int parent_vecsize, vecsize;
 
-    if (ugen_loud) post("ugen_start_graph...");
+    if (THIS->u_loud) post("ugen_start_graph...");
 
     /* protect against invalid numsignals.  This might happen if we have
     an abstraction with inlet~/outlet~  opened as a toplevel patch */
@@ -674,7 +696,7 @@ void ugen_connect(t_dspcontext *dc, t_object *x1, int outno, t_object *x2,
     t_sigoutconnect *oc;
     int sigoutno = obj_sigoutletindex(x1, outno);
     int siginno = obj_siginletindex(x2, inno);
-    if (ugen_loud)
+    if (THIS->u_loud)
         post("%s -> %s: %d->%d",
             class_getname(x1->ob_pd),
                 class_getname(x2->ob_pd), outno, inno);
@@ -748,7 +770,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
     t_signal **insig, **outsig, **sig, *s1, *s2, *s3;
     t_ugenbox *u2;
 
-    if (ugen_loud) post("doit %s %d %d", class_getname(class), nofreesigs,
+    if (THIS->u_loud) post("doit %s %d %d", class_getname(class), nofreesigs,
         nonewsigs);
     for (i = 0, uin = u->u_in; i < u->u_nin; i++, uin++)
     {
@@ -815,7 +837,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
         if (!(*sig)->s_refcount)
             signal_makereusable(*sig);
     }
-    if (ugen_loud)
+    if (THIS->u_loud)
     {
         if (u->u_nin + u->u_nout == 0) post("put %s %d",
             class_getname(u->u_obj->ob_pd), ugen_index(dc, u));
@@ -900,7 +922,7 @@ void ugen_done_graph(t_dspcontext *dc)
     int downsample = 1, upsample = 1;
     /* debugging printout */
 
-    if (ugen_loud)
+    if (THIS->u_loud)
     {
         post("ugen_done_graph...");
         for (u = dc->dc_ugenlist; u; u = u->u_next)
@@ -964,7 +986,7 @@ void ugen_done_graph(t_dspcontext *dc)
         if (frequency < 1) frequency = 1;
         blk->x_frequency = frequency;
         blk->x_period = period;
-        blk->x_phase = dsp_phase & (period - 1);
+        blk->x_phase = THIS->u_phase & (period - 1);
         if (! parent_context || (realoverlap != 1) ||
             (vecsize != parent_vecsize) ||
                 (downsample != 1) || (upsample != 1))
@@ -1006,13 +1028,13 @@ void ugen_done_graph(t_dspcontext *dc)
                     signal_new(parent_vecsize, parent_srate));
                 (*sigp)->s_refcount++;
 
-                if (ugen_loud) post("set %lx->%lx", *sigp,
+                if (THIS->u_loud) post("set %lx->%lx", *sigp,
                     (*sigp)->s_borrowedfrom);
             }
         }
     }
 
-    if (ugen_loud)
+    if (THIS->u_loud)
         post("reblock %d, switched %d", reblock, switched);
 
         /* schedule prologs for inlets and outlets.  If the "reblock" flag
@@ -1031,19 +1053,19 @@ void ugen_done_graph(t_dspcontext *dc)
 
         if (pd_class(zz) == vinlet_class)
             vinlet_dspprolog((struct _vinlet *)zz,
-                dc->dc_iosigs, vecsize, calcsize, dsp_phase, period, frequency,
+                dc->dc_iosigs, vecsize, calcsize, THIS->u_phase, period, frequency,
                     downsample, upsample, reblock, switched);
         else if (pd_class(zz) == voutlet_class)
             voutlet_dspprolog((struct _voutlet *)zz,
-                outsigs, vecsize, calcsize, dsp_phase, period, frequency,
+                outsigs, vecsize, calcsize, THIS->u_phase, period, frequency,
                     downsample, upsample, reblock, switched);
     }
-    chainblockbegin = pd_this->pd_dspchainsize;
+    chainblockbegin = THIS->u_dspchainsize;
 
     if (blk && (reblock || switched))   /* add the block DSP prolog */
     {
         dsp_add(block_prolog, 1, blk);
-        blk->x_chainonset = pd_this->pd_dspchainsize - 1;
+        blk->x_chainonset = THIS->u_dspchainsize - 1;
     }
         /* Initialize for sorting */
     for (u = dc->dc_ugenlist; u; u = u->u_next)
@@ -1088,7 +1110,7 @@ void ugen_done_graph(t_dspcontext *dc)
                 signal_setborrowed(*sigp, s3);
                 (*sigp)->s_refcount++;
                 dsp_add_zero(s3->s_vec, s3->s_n);
-                if (ugen_loud)
+                if (THIS->u_loud)
                     post("oops, belatedly set %lx->%lx", *sigp,
                         (*sigp)->s_borrowedfrom);
             }
@@ -1098,7 +1120,7 @@ void ugen_done_graph(t_dspcontext *dc)
 
     if (blk && (reblock || switched))    /* add block DSP epilog */
         dsp_add(block_epilog, 1, blk);
-    chainblockend = pd_this->pd_dspchainsize;
+    chainblockend = THIS->u_dspchainsize;
 
         /* add epilogs for outlets.  */
 
@@ -1110,12 +1132,12 @@ void ugen_done_graph(t_dspcontext *dc)
             t_signal **iosigs = dc->dc_iosigs;
             if (iosigs) iosigs += dc->dc_ninlets;
             voutlet_dspepilog((struct _voutlet *)zz,
-                iosigs, vecsize, calcsize, dsp_phase, period, frequency,
+                iosigs, vecsize, calcsize, THIS->u_phase, period, frequency,
                     downsample, upsample, reblock, switched);
         }
     }
 
-    chainafterall = pd_this->pd_dspchainsize;
+    chainafterall = THIS->u_dspchainsize;
     if (blk)
     {
         blk->x_blocklength = chainblockend - chainblockbegin;
@@ -1123,11 +1145,11 @@ void ugen_done_graph(t_dspcontext *dc)
         blk->x_reblock = reblock;
     }
 
-    if (ugen_loud)
+    if (THIS->u_loud)
     {
         t_int *ip;
         if (!dc->dc_parentcontext)
-            for (i = pd_this->pd_dspchainsize, ip = pd_this->pd_dspchain;
+            for (i = THIS->u_dspchainsize, ip = THIS->u_dspchain;
                 i--; ip++)
                     post("chain %lx", *ip);
         post("... ugen_done_graph done.");

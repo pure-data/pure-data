@@ -1149,25 +1149,25 @@ int canvas_dspstate;    /* for back compatibility with externs - don't use */
 static void canvas_start_dsp(void)
 {
     t_canvas *x;
-    if (pd_this->pd_dspstate) ugen_stop();
+    if (THIS->i_dspstate) ugen_stop();
     else sys_gui("pdtk_pd_dsp ON\n");
     ugen_start();
 
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_dodsp(x, 1, 0);
 
-    canvas_dspstate = pd_this->pd_dspstate = 1;
+    canvas_dspstate = THIS->i_dspstate = 1;
     if (gensym("pd-dsp-started")->s_thing)
         pd_bang(gensym("pd-dsp-started")->s_thing);
 }
 
 static void canvas_stop_dsp(void)
 {
-    if (pd_this->pd_dspstate)
+    if (THIS->i_dspstate)
     {
         ugen_stop();
         sys_gui("pdtk_pd_dsp OFF\n");
-        canvas_dspstate = pd_this->pd_dspstate = 0;
+        canvas_dspstate = THIS->i_dspstate = 0;
         if (gensym("pd-dsp-stopped")->s_thing)
             pd_bang(gensym("pd-dsp-stopped")->s_thing);
     }
@@ -1180,7 +1180,7 @@ static void canvas_stop_dsp(void)
 
 int canvas_suspend_dsp(void)
 {
-    int rval = pd_this->pd_dspstate;
+    int rval = THIS->i_dspstate;
     if (rval) canvas_stop_dsp();
     return (rval);
 }
@@ -1193,7 +1193,7 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (pd_this->pd_dspstate) canvas_start_dsp();
+    if (THIS->i_dspstate) canvas_start_dsp();
 }
 
 /* the "dsp" message to pd starts and stops DSP somputation, and, if
@@ -1211,19 +1211,19 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
     if (argc)
     {
         newstate = atom_getintarg(0, argc, argv);
-        if (newstate && !pd_this->pd_dspstate)
+        if (newstate && !THIS->i_dspstate)
         {
             sys_set_audio_state(1);
             canvas_start_dsp();
         }
-        else if (!newstate && pd_this->pd_dspstate)
+        else if (!newstate && THIS->i_dspstate)
         {
             canvas_stop_dsp();
             if (!audio_shouldkeepopen())
                 sys_set_audio_state(0);
         }
     }
-    else post("dsp state %d", pd_this->pd_dspstate);
+    else post("dsp state %d", THIS->i_dspstate);
 }
 
 void *canvas_getblock(t_class *blockclass, t_canvas **canvasp)
@@ -1818,12 +1818,13 @@ void canvas_add_for_class(t_class *c)
 
 void g_canvas_newpdinstance( void)
 {
-    pd_this->pd_canvas = getbytes(sizeof(*pd_this->pd_canvas));
-    pd_this->pd_canvas->i_newfilename =
-        pd_this->pd_canvas->i_newdirectory = &s_;
-    pd_this->pd_canvas->i_newargc = 0;
-    pd_this->pd_canvas->i_newargv = 0;
-    pd_this->pd_canvas->i_reloadingabstraction = 0;
+    THIS = getbytes(sizeof(*THIS));
+    THIS->i_newfilename =
+    THIS->i_newdirectory = &s_;
+    THIS->i_newargc = 0;
+    THIS->i_newargv = 0;
+    THIS->i_reloadingabstraction = 0;
+    THIS->i_dspstate = 0;
 }
 
 void g_canvas_freepdinstance( void)
@@ -1831,3 +1832,7 @@ void g_canvas_freepdinstance( void)
     freebytes(pd_this->pd_canvas, sizeof(*pd_this->pd_canvas));
 }
 
+EXTERN int pd_getdspstate(void)
+{
+    return (THIS->i_dspstate);
+}

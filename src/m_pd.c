@@ -319,8 +319,3 @@ EXTERN t_canvas *pd_getcanvaslist(void)
     return (pd_this->pd_canvaslist);
 }
 
-EXTERN int pd_getdspstate(void)
-{
-    return (pd_this->pd_dspstate);
-}
-

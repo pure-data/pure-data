@@ -49,16 +49,15 @@ void s_inter_newpdinstance( void);
 void s_inter_freepdinstance( void);
 void g_canvas_newpdinstance( void);
 void g_canvas_freepdinstance( void);
+void d_ugen_newpdinstance( void);
+void d_ugen_freepdinstance( void);
 
 static t_pdinstance *pdinstance_init(t_pdinstance *x)
 {
     int i;
     x->pd_systime = 0;
     x->pd_clock_setlist = 0;
-    x->pd_dspchain = 0;
-    x->pd_dspchainsize = 0;
-    x->pd_canvaslist = 0;
-    x->pd_dspstate = 0;
+     x->pd_canvaslist = 0;
     x->pd_symhash = getbytes(SYMTABHASHSIZE * sizeof(*x->pd_symhash));
     for (i = 0; i < SYMTABHASHSIZE; i++)
         x->pd_symhash[i] = 0;
@@ -92,6 +91,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
 #endif
     x_midi_newpdinstance();
     g_canvas_newpdinstance();
+    d_ugen_newpdinstance();
 
     return (x);
 }
@@ -210,6 +210,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     freebytes(x->pd_symhash, SYMTABHASHSIZE * sizeof (*x->pd_symhash));
     x_midi_freepdinstance();
     g_canvas_freepdinstance();
+    d_ugen_freepdinstance();
     s_inter_freepdinstance();
     for (i = instanceno; i < pd_ninstances-1; i++)
         pd_instances[i] = pd_instances[i+1];

@@ -787,8 +787,11 @@ EXTERN_STRUCT _instancemidi;
 EXTERN_STRUCT _instanceinter;
 #define t_instanceinter struct _instanceinter
 
-EXTERN_STRUCT _canvasinter;
-#define t_canvasinter struct _canvasinter
+EXTERN_STRUCT _instancecanvas;
+#define t_instancecanvas struct _instancecanvas
+
+EXTERN_STRUCT _instanceugen;
+#define t_instanceugen struct _instanceugen
 
 #ifndef PDTHREADS
 #define PDTHREADS 1
@@ -798,11 +801,7 @@ struct _pdinstance
 {
     double pd_systime;          /* global time in Pd ticks */
     t_clock *pd_clock_setlist;  /* list of set clocks */
-    t_int *pd_dspchain;         /* DSP chain */
-    int pd_dspchainsize;        /* number of elements in DSP chain */
     t_canvas *pd_canvaslist;    /* list of all root canvases */
-    int pd_dspstate;            /* whether DSP is on or off */
-    t_signal *pd_signals;       /* list of signals used by DSP chain */
     int pd_instanceno;          /* ordinal number of this instance */
 #ifdef PDINSTANCE
     t_symbol  pd_s_pointer;
@@ -821,7 +820,8 @@ struct _pdinstance
     t_symbol **pd_symhash;
     t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
     t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
-    t_canvasinter *pd_canvas;   /* private stuff for g_canvas.h */
+    t_instanceugen *pd_ugen;    /* private stuff for d_ugen.c */
+    t_instancecanvas *pd_canvas;   /* private stuff for g_canvas.h */
 #if PDTHREADS
     int pd_islocked;
 #endif
