@@ -351,22 +351,24 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         vis = atom_getintarg(5, argc, argv);
     }
         /* (otherwise assume we're being created from the menu.) */
-
-    
-    x->gl_env = (t_canvasenvironment *)getbytes(sizeof(*x->gl_env));
-    if (!pd_this->pd_canvas->i_newargv)
-        pd_this->pd_canvas->i_newargv = getbytes(0);
     if (pd_this->pd_canvas->i_newdirectory &&
         pd_this->pd_canvas->i_newdirectory->s_name[0])
-            x->gl_env->ce_dir = pd_this->pd_canvas->i_newdirectory;
-    else x->gl_env->ce_dir = gensym(".");
-    x->gl_env->ce_argc = pd_this->pd_canvas->i_newargc;
-    x->gl_env->ce_argv = pd_this->pd_canvas->i_newargv;
-    x->gl_env->ce_dollarzero = dollarzero++;
-    x->gl_env->ce_path = 0;
-    pd_this->pd_canvas->i_newdirectory  = &s_;
-    pd_this->pd_canvas->i_newargc = 0;
-    pd_this->pd_canvas->i_newargv = 0;
+    {
+        static int dollarzero = 1000;
+        t_canvasenvironment *env = x->gl_env =
+            (t_canvasenvironment *)getbytes(sizeof(*x->gl_env));
+        if (!pd_this->pd_canvas->i_newargv)
+            pd_this->pd_canvas->i_newargv = getbytes(0);
+        env->ce_dir = pd_this->pd_canvas->i_newdirectory;
+        env->ce_argc = pd_this->pd_canvas->i_newargc;
+        env->ce_argv = pd_this->pd_canvas->i_newargv;
+        env->ce_dollarzero = dollarzero++;
+        env->ce_path = 0;
+        pd_this->pd_canvas->i_newdirectory = &s_;
+        pd_this->pd_canvas->i_newargc = 0;
+        pd_this->pd_canvas->i_newargv = 0;
+    }
+    else x->gl_env = 0;
 
     if (yloc < GLIST_DEFCANVASYLOC)
         yloc = GLIST_DEFCANVASYLOC;
