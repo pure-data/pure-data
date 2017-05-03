@@ -835,7 +835,7 @@ EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
-#ifdef PDTHREADS
+#if defined(PDTHREADS) && defined(PDINSTANCE)
 #define PERTHREAD __thread
 #else
 #define PERTHREAD
