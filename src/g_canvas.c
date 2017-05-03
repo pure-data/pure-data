@@ -18,6 +18,12 @@ to be different but are now unified except for some fossilized names.) */
 #define snprintf sprintf_s
 #endif
 
+#if 0 //1:DEBUG ON
+#define DEBUG_SEARCHPATHS(x) x
+#else
+#define DEBUG_SEARCHPATHS(x)
+#endif
+
     /* LATER consider adding font size to this struct (see glist_getfont()) */
 struct _canvasenvironment
 {
@@ -1544,10 +1550,10 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
     t_namelist *nl, thislist;
     int fd = -1;
     char listbuf[MAXPDSTRING];
-    t_canvas *y;
     t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */
+    DEBUG_SEARCHPATHS(post("- try absolute"));
     if (sys_open_absolute(name, ext, dirresult, nameresult, size, bin, &fd))
         return (fd);
 
@@ -1560,6 +1566,7 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
     co.bin = bin;
     co.fd = -1;
 
+    DEBUG_SEARCHPATHS(post("- try iterate %s", x->gl_name->s_name));
     canvas_path_iterate(x, (t_canvas_path_iterator)canvas_open_iter, &co);
 
     return (co.fd);
@@ -1572,12 +1579,40 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     int count = 0;
     if (!fun)
         return 0;
+
         /* iterate through canvas-local paths */
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
         t_canvas *x2 = x;
         char *dir;
+
+        /* first try applying canvas-local paths locally if not toplevel */
+        if(y->gl_owner) {
+            DEBUG_SEARCHPATHS(post("--- try local %s", y->gl_name->s_name));
+            dir = (canvas_getdir(y)->s_name);
+            for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
+            {
+                char realname[MAXPDSTRING];
+                if (sys_isabsolutepath(nl->nl_string))
+                    realname[0] = '\0';
+                else
+                {   /* if not absolute path, append Pd lib dir */
+                    strncpy(realname, dir, MAXPDSTRING);
+                    realname[MAXPDSTRING-3] = 0;
+                    strcat(realname, "/");
+                }
+                strncat(realname, nl->nl_string, MAXPDSTRING-strlen(realname));
+                realname[MAXPDSTRING-1] = 0;
+                DEBUG_SEARCHPATHS(post("------ search %s", realname));
+                if (!fun(realname, user_data))
+                    return count+1;
+                count++;
+            }
+        }
+
+        /* then try applying canvas-local paths to topmost owner */
+        DEBUG_SEARCHPATHS(post("--- try topmost"));
         while (x2 && x2->gl_owner)
             x2 = x2->gl_owner;
         dir = (x2 ? canvas_getdir(x2)->s_name : ".");
@@ -1594,17 +1629,21 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
             }
             strncat(realname, nl->nl_string, MAXPDSTRING-strlen(realname));
             realname[MAXPDSTRING-1] = 0;
+            DEBUG_SEARCHPATHS(post("------ search %s", realname));
             if (!fun(realname, user_data))
                 return count+1;
             count++;
         }
     }
+
     /* try canvas dir */
+    DEBUG_SEARCHPATHS(post("--- try canvas dir"));
     if (!fun((x ? canvas_getdir(x)->s_name : "."), user_data))
         return count+1;
     count++;
 
     /* now iterate through the global paths */
+    DEBUG_SEARCHPATHS(post("--- try global"));
     for (nl = sys_searchpath; nl; nl = nl->nl_next)
     {
         if (!fun(nl->nl_string, user_data))
