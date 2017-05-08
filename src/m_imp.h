@@ -59,8 +59,6 @@ struct _class
     char c_drawcommand;             /* a drawing command for a template */
 };
 
-extern t_pdinstance pd_maininstance;
-
 /* m_class.c */
 EXTERN void pd_emptylist(t_pd *x);
 

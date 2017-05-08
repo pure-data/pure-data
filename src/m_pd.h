@@ -848,11 +848,11 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif
 
 #ifdef PDINSTANCE
-extern PERTHREAD t_pdinstance *pd_this;
-extern t_pdinstance **pd_instances;
-extern int pd_ninstances;
+EXTERN PERTHREAD t_pdinstance *pd_this;
+EXTERN t_pdinstance **pd_instances;
+EXTERN int pd_ninstances;
 #else
-extern t_pdinstance pd_maininstance;
+EXTERN t_pdinstance pd_maininstance;
 #define pd_this (&pd_maininstance)
 #endif /* PDINSTANCE */
 
@@ -870,7 +870,7 @@ extern t_pdinstance pd_maininstance;
 #define s_y         (pd_this->pd_s_y)
 #define s_          (pd_this->pd_s_)
 #else
-extern t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
+EXTERN t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
   s_signal, s__N, s__X, s_x, s_y, s_;
 #endif
 
