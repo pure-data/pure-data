@@ -363,8 +363,6 @@ extern int sys_printtostderr;
 
 /* jsarlo { */
 
-EXTERN double sys_time;
-EXTERN double sys_time_per_dsp_tick;
 EXTERN int sys_externalschedlib;
 
 EXTERN t_sample* get_sys_soundout(void ) ;
@@ -417,6 +415,7 @@ struct _instancestuff
     int st_outchannels;
     t_sample *st_soundout;
     t_sample *st_soundin;
+    double st_time_per_dsp_tick;
 };
 
 #define STUFF (pd_this->pd_stuff)

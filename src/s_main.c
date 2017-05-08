@@ -104,7 +104,7 @@ static int sys_choutlist[MAXAUDIOOUTDEV];
 t_sample* get_sys_soundout() { return STUFF->st_soundout; }
 t_sample* get_sys_soundin() { return STUFF->st_soundin; }
 int* get_sys_main_advance() { return &sys_main_advance; }
-double* get_sys_time_per_dsp_tick() { return &sys_time_per_dsp_tick; }
+double* get_sys_time_per_dsp_tick() { return &STUFF->st_time_per_dsp_tick; }
 int* get_sys_schedblocksize() { return &STUFF->st_schedblocksize; }
 double* get_sys_time() { return &pd_this->pd_systime; }
 t_float* get_sys_dacsr() { return &STUFF->st_dacsr; }

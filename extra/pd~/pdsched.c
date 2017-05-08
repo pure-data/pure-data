@@ -30,7 +30,7 @@ static void pollwatchdog( void)
         glob_watchdog(0);
             /* ping every 2 seconds */
         sched_nextpingtime = sched_diddsp +
-            2 * (int)(sys_dacsr /(double)sys_schedblocksize);
+            2 * (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
     }
 }
 #endif
@@ -68,7 +68,7 @@ int pd_extern_sched(char *flags)
                 /* a list -- take it as incoming signals. */
                 int chan, nchan = n/DEFDACBLKSIZE;
                 t_sample *fp;
-                for (i = chan = 0, fp = sys_soundin; chan < nchan; chan++)
+                for (i = chan = 0, fp = STUFF->st_soundin; chan < nchan; chan++)
                     for (j = 0; j < DEFDACBLKSIZE; j++)
                         *fp++ = atom_getfloat(ap++);
                 for (; chan < chin; chan++)
@@ -80,7 +80,7 @@ int pd_extern_sched(char *flags)
                 pollwatchdog();
 #endif
                 printf(";\n");
-                for (i = chout*DEFDACBLKSIZE, fp = sys_soundout; i--; fp++)
+                for (i = chout*DEFDACBLKSIZE, fp = STUFF->st_soundout; i--; fp++)
                 {
                     printf("%g\n", *fp);
                     *fp = 0;
