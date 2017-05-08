@@ -59,7 +59,7 @@ void binbuf_clear(t_binbuf *x)
 }
 
     /* convert text to a binbuf */
-void binbuf_text(t_binbuf *x, char *text, size_t size)
+void binbuf_text(t_binbuf *x, const char *text, size_t size)
 {
     char buf[MAXPDSTRING+1], *bufp, *ebuf = buf+MAXPDSTRING;
     const char *textp = text, *etext = text+size;

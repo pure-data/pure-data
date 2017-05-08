@@ -52,6 +52,19 @@ void g_canvas_freepdinstance( void);
 void d_ugen_newpdinstance( void);
 void d_ugen_freepdinstance( void);
 
+void s_stuff_newpdinstance( void)
+{
+    STUFF = getbytes(sizeof(*STUFF));
+    STUFF->st_externlist = STUFF->st_searchpath =
+        STUFF->st_staticpath = STUFF->st_helppath = 0;
+    STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
+}
+
+void s_stuff_freepdinstance( void)
+{
+    freebytes(STUFF, sizeof(*STUFF));
+}
+
 static t_pdinstance *pdinstance_init(t_pdinstance *x)
 {
     int i;
@@ -92,7 +105,7 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     x_midi_newpdinstance();
     g_canvas_newpdinstance();
     d_ugen_newpdinstance();
-
+    s_stuff_newpdinstance();
     return (x);
 }
 
@@ -211,6 +224,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     x_midi_freepdinstance();
     g_canvas_freepdinstance();
     d_ugen_freepdinstance();
+    s_stuff_freepdinstance();
     s_inter_freepdinstance();
     for (i = instanceno; i < pd_ninstances-1; i++)
         pd_instances[i] = pd_instances[i+1];
@@ -362,6 +376,7 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     how this is handled.  */
 
 extern void text_save(t_gobj *z, t_binbuf *b);
+extern t_widgetbehavior text_widgetbehavior;
 
 t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)

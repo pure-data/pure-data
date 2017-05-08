@@ -787,11 +787,11 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
 {
     t_canvas *x;
     int dspwas = canvas_suspend_dsp();
-    pd_this->pd_canvas->i_reloadingabstraction = except;
+    THISGUI->i_reloadingabstraction = except;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         glist_doreload(x, name, dir, &except->gl_gobj);
-    pd_this->pd_canvas->i_reloadingabstraction = 0;
+    THISGUI->i_reloadingabstraction = 0;
     canvas_resume_dsp(dspwas);
 }
 

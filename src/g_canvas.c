@@ -67,7 +67,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 void canvas_updatewindowlist( void)
 {
             /* not if we're in a reload */
-    if (!pd_this->pd_canvas->i_reloadingabstraction)
+    if (!THISGUI->i_reloadingabstraction)
         sys_gui("::pd_menus::update_window_menu\n");
 }
 
@@ -97,16 +97,16 @@ void canvas_setargs(int argc, t_atom *argv)
         /* if there's an old one lying around free it here.  This
         happens if an abstraction is loaded but never gets as far
         as calling canvas_new(). */
-    if (pd_this->pd_canvas->i_newargv)
-        freebytes(pd_this->pd_canvas->i_newargv, pd_this->pd_canvas->i_newargc * sizeof(t_atom));
-    pd_this->pd_canvas->i_newargc = argc;
-    pd_this->pd_canvas->i_newargv = copybytes(argv, argc * sizeof(t_atom));
+    if (THISGUI->i_newargv)
+        freebytes(THISGUI->i_newargv, THISGUI->i_newargc * sizeof(t_atom));
+    THISGUI->i_newargc = argc;
+    THISGUI->i_newargv = copybytes(argv, argc * sizeof(t_atom));
 }
 
 void glob_setfilename(void *dummy, t_symbol *filesym, t_symbol *dirsym)
 {
-    pd_this->pd_canvas->i_newfilename = filesym;
-    pd_this->pd_canvas->i_newdirectory = dirsym;
+    THISGUI->i_newfilename = filesym;
+    THISGUI->i_newdirectory = dirsym;
 }
 
 void glob_menunew(void *dummy, t_symbol *filesym, t_symbol *dirsym)
@@ -351,22 +351,22 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         vis = atom_getintarg(5, argc, argv);
     }
         /* (otherwise assume we're being created from the menu.) */
-    if (pd_this->pd_canvas->i_newdirectory &&
-        pd_this->pd_canvas->i_newdirectory->s_name[0])
+    if (THISGUI->i_newdirectory &&
+        THISGUI->i_newdirectory->s_name[0])
     {
         static int dollarzero = 1000;
         t_canvasenvironment *env = x->gl_env =
             (t_canvasenvironment *)getbytes(sizeof(*x->gl_env));
-        if (!pd_this->pd_canvas->i_newargv)
-            pd_this->pd_canvas->i_newargv = getbytes(0);
-        env->ce_dir = pd_this->pd_canvas->i_newdirectory;
-        env->ce_argc = pd_this->pd_canvas->i_newargc;
-        env->ce_argv = pd_this->pd_canvas->i_newargv;
+        if (!THISGUI->i_newargv)
+            THISGUI->i_newargv = getbytes(0);
+        env->ce_dir = THISGUI->i_newdirectory;
+        env->ce_argc = THISGUI->i_newargc;
+        env->ce_argv = THISGUI->i_newargv;
         env->ce_dollarzero = dollarzero++;
         env->ce_path = 0;
-        pd_this->pd_canvas->i_newdirectory = &s_;
-        pd_this->pd_canvas->i_newargc = 0;
-        pd_this->pd_canvas->i_newargv = 0;
+        THISGUI->i_newdirectory = &s_;
+        THISGUI->i_newargc = 0;
+        THISGUI->i_newargv = 0;
     }
     else x->gl_env = 0;
 
@@ -382,7 +382,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_owner = owner;
     x->gl_isclone = 0;
     x->gl_name = (*s->s_name ? s :
-        (pd_this->pd_canvas->i_newfilename ? pd_this->pd_canvas->i_newfilename : gensym("Pd")));
+        (THISGUI->i_newfilename ? THISGUI->i_newfilename : gensym("Pd")));
     canvas_bind(x);
     x->gl_loading = 1;
     x->gl_goprect = 0;      /* no GOP rectangle unless it's turned on later */
@@ -608,7 +608,7 @@ void canvas_reflecttitle(t_canvas *x)
 void canvas_dirty(t_canvas *x, t_floatarg n)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    if (pd_this->pd_canvas->i_reloadingabstraction)
+    if (THISGUI->i_reloadingabstraction)
         return;
     if ((unsigned)n != x2->gl_dirty)
     {
@@ -1151,25 +1151,25 @@ int canvas_dspstate;    /* for back compatibility with externs - don't use */
 static void canvas_start_dsp(void)
 {
     t_canvas *x;
-    if (THIS->i_dspstate) ugen_stop();
+    if (THISGUI->i_dspstate) ugen_stop();
     else sys_gui("pdtk_pd_dsp ON\n");
     ugen_start();
 
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_dodsp(x, 1, 0);
 
-    canvas_dspstate = THIS->i_dspstate = 1;
+    canvas_dspstate = THISGUI->i_dspstate = 1;
     if (gensym("pd-dsp-started")->s_thing)
         pd_bang(gensym("pd-dsp-started")->s_thing);
 }
 
 static void canvas_stop_dsp(void)
 {
-    if (THIS->i_dspstate)
+    if (THISGUI->i_dspstate)
     {
         ugen_stop();
         sys_gui("pdtk_pd_dsp OFF\n");
-        canvas_dspstate = THIS->i_dspstate = 0;
+        canvas_dspstate = THISGUI->i_dspstate = 0;
         if (gensym("pd-dsp-stopped")->s_thing)
             pd_bang(gensym("pd-dsp-stopped")->s_thing);
     }
@@ -1182,7 +1182,7 @@ static void canvas_stop_dsp(void)
 
 int canvas_suspend_dsp(void)
 {
-    int rval = THIS->i_dspstate;
+    int rval = THISGUI->i_dspstate;
     if (rval) canvas_stop_dsp();
     return (rval);
 }
@@ -1195,7 +1195,7 @@ void canvas_resume_dsp(int oldstate)
     /* this is equivalent to suspending and resuming in one step. */
 void canvas_update_dsp(void)
 {
-    if (THIS->i_dspstate) canvas_start_dsp();
+    if (THISGUI->i_dspstate) canvas_start_dsp();
 }
 
 /* the "dsp" message to pd starts and stops DSP somputation, and, if
@@ -1213,19 +1213,19 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
     if (argc)
     {
         newstate = atom_getintarg(0, argc, argv);
-        if (newstate && !THIS->i_dspstate)
+        if (newstate && !THISGUI->i_dspstate)
         {
             sys_set_audio_state(1);
             canvas_start_dsp();
         }
-        else if (!newstate && THIS->i_dspstate)
+        else if (!newstate && THISGUI->i_dspstate)
         {
             canvas_stop_dsp();
             if (!audio_shouldkeepopen())
                 sys_set_audio_state(0);
         }
     }
-    else post("dsp state %d", THIS->i_dspstate);
+    else post("dsp state %d", THISGUI->i_dspstate);
 }
 
 void *canvas_getblock(t_class *blockclass, t_canvas **canvasp)
@@ -1403,8 +1403,6 @@ static int check_exists(const char*path)
 }
 #endif
 
-extern t_namelist *sys_staticpath;
-
 static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
 {
     t_namelist*nl;
@@ -1427,7 +1425,7 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         return;
     }
     /* check whether the given subdir is in one of the standard-paths */
-    for (nl=sys_staticpath; nl; nl=nl->nl_next)
+    for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
         strbuf[MAXPDSTRING-1]=0;
@@ -1458,7 +1456,7 @@ static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
         return;
 
     /* check whether the given library is located in one of the standard-paths */
-    for (nl=sys_staticpath; nl; nl=nl->nl_next)
+    for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
         strbuf[MAXPDSTRING-1]=0;
@@ -1607,7 +1605,7 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     count++;
 
     /* now iterate through the global paths */
-    for (nl = sys_searchpath; nl; nl = nl->nl_next)
+    for (nl = STUFF->st_searchpath; nl; nl = nl->nl_next)
     {
         if (!fun(nl->nl_string, user_data))
             return count+1;
@@ -1615,7 +1613,7 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     }
     /* and the default paths */
     if (sys_usestdpath)
-        for (nl = sys_staticpath; nl; nl = nl->nl_next)
+        for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
         {
             if (!fun(nl->nl_string, user_data))
                 return count+1;
@@ -1820,21 +1818,21 @@ void canvas_add_for_class(t_class *c)
 
 void g_canvas_newpdinstance( void)
 {
-    THIS = getbytes(sizeof(*THIS));
-    THIS->i_newfilename =
-    THIS->i_newdirectory = &s_;
-    THIS->i_newargc = 0;
-    THIS->i_newargv = 0;
-    THIS->i_reloadingabstraction = 0;
-    THIS->i_dspstate = 0;
+    THISGUI = getbytes(sizeof(*THISGUI));
+    THISGUI->i_newfilename =
+    THISGUI->i_newdirectory = &s_;
+    THISGUI->i_newargc = 0;
+    THISGUI->i_newargv = 0;
+    THISGUI->i_reloadingabstraction = 0;
+    THISGUI->i_dspstate = 0;
 }
 
 void g_canvas_freepdinstance( void)
 {
-    freebytes(pd_this->pd_canvas, sizeof(*pd_this->pd_canvas));
+    freebytes(THISGUI, sizeof(*THISGUI));
 }
 
 EXTERN int pd_getdspstate(void)
 {
-    return (THIS->i_dspstate);
+    return (THISGUI->i_dspstate);
 }

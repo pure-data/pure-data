@@ -7,7 +7,6 @@ moment it also defines "text" but it may later be better to split this off. */
 
 #include "m_pd.h"
 #include "g_canvas.h"    /* just for glist_getfont, bother */
-#include "s_stuff.h"    /* just for sys_hostfontsize, phooey */
 #include <string.h>
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H

@@ -335,7 +335,7 @@ EXTERN t_binbuf *binbuf_new(void);
 EXTERN void binbuf_free(t_binbuf *x);
 EXTERN t_binbuf *binbuf_duplicate(t_binbuf *y);
 
-EXTERN void binbuf_text(t_binbuf *x, char *text, size_t size);
+EXTERN void binbuf_text(t_binbuf *x, const char *text, size_t size);
 EXTERN void binbuf_gettext(t_binbuf *x, char **bufp, int *lengthp);
 EXTERN void binbuf_clear(t_binbuf *x);
 EXTERN void binbuf_add(t_binbuf *x, int argc, t_atom *argv);
@@ -433,6 +433,7 @@ EXTERN void canvas_makefilename(t_glist *c, char *file,
 EXTERN t_symbol *canvas_getdir(t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
 EXTERN char sys_fontweight[]; /* default font weight set in s_main.c */
+EXTERN int sys_hostfontsize(int fontsize, int zoom);
 EXTERN int sys_zoomfontwidth(int fontsize, int zoom, int worstcase);
 EXTERN int sys_zoomfontheight(int fontsize, int zoom, int worstcase);
 EXTERN int sys_fontwidth(int fontsize);
@@ -793,6 +794,9 @@ EXTERN_STRUCT _instancecanvas;
 EXTERN_STRUCT _instanceugen;
 #define t_instanceugen struct _instanceugen
 
+EXTERN_STRUCT _instancestuff;
+#define t_instancestuff struct _instancestuff
+
 #ifndef PDTHREADS
 #define PDTHREADS 1
 #endif
@@ -803,6 +807,12 @@ struct _pdinstance
     t_clock *pd_clock_setlist;  /* list of set clocks */
     t_canvas *pd_canvaslist;    /* list of all root canvases */
     int pd_instanceno;          /* ordinal number of this instance */
+    t_symbol **pd_symhash;
+    t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
+    t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
+    t_instanceugen *pd_ugen;    /* private stuff for d_ugen.c */
+    t_instancecanvas *pd_gui;   /* semi-private stuff in g_canvas.h */
+    t_instancestuff *pd_stuff;  /* semi-private stuff in s_stuff.h */
 #ifdef PDINSTANCE
     t_symbol  pd_s_pointer;
     t_symbol  pd_s_float;
@@ -817,11 +827,6 @@ struct _pdinstance
     t_symbol  pd_s_y;
     t_symbol  pd_s_;
 #endif
-    t_symbol **pd_symhash;
-    t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
-    t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
-    t_instanceugen *pd_ugen;    /* private stuff for d_ugen.c */
-    t_instancecanvas *pd_canvas;   /* private stuff for g_canvas.h */
 #if PDTHREADS
     int pd_islocked;
 #endif

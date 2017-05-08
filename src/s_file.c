@@ -426,7 +426,8 @@ void sys_loadpreferences( void)
         sprintf(keybuf, "path%d", i+1);
         if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
             break;
-        sys_searchpath = namelist_append_files(sys_searchpath, prefbuf);
+        STUFF->st_searchpath =
+            namelist_append_files(STUFF->st_searchpath, prefbuf);
     }
     if (sys_getpreference("standardpath", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_usestdpath);
@@ -442,7 +443,7 @@ void sys_loadpreferences( void)
         sprintf(keybuf, "loadlib%d", i+1);
         if (!sys_getpreference(keybuf, prefbuf, MAXPDSTRING))
             break;
-        sys_externlist = namelist_append_files(sys_externlist, prefbuf);
+        STUFF->st_externlist = namelist_append_files(STUFF->st_externlist, prefbuf);
     }
     if (sys_getpreference("defeatrt", prefbuf, MAXPDSTRING))
         sscanf(prefbuf, "%d", &sys_defeatrt);
@@ -559,7 +560,7 @@ void glob_savepreferences(t_pd *dummy)
 
     for (i = 0; 1; i++)
     {
-        char *pathelem = namelist_get(sys_searchpath, i);
+        char *pathelem = namelist_get(STUFF->st_searchpath, i);
         if (!pathelem)
             break;
         sprintf(buf1, "path%d", i+1);
@@ -575,7 +576,7 @@ void glob_savepreferences(t_pd *dummy)
         /* startup */
     for (i = 0; 1; i++)
     {
-        char *pathelem = namelist_get(sys_externlist, i);
+        char *pathelem = namelist_get(STUFF->st_externlist, i);
         if (!pathelem)
             break;
         sprintf(buf1, "loadlib%d", i+1);

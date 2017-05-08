@@ -258,7 +258,7 @@ struct _instancecanvas
     int i_dspstate;
 };
 
-#define THIS (pd_this->pd_canvas)
+#define THISGUI (pd_this->pd_gui)
 
 /* function types used to define graphical behavior for gobjs, a bit like X
 widgets.  We don't use Pd methods because Pd's typechecking can't specify the
@@ -435,6 +435,7 @@ EXTERN int text_xcoord(t_text *x, t_glist *glist);
 EXTERN int text_ycoord(t_text *x, t_glist *glist);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
+extern t_widgetbehavior text_widgetbehavior;
 
 /* -------------------- functions on rtexts ------------------------- */
 #define RTEXT_DOWN 1

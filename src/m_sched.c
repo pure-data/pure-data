@@ -20,7 +20,6 @@
 #define SYS_QUIT_RESTART 2
 static int sys_quit;
 
-int sys_schedblocksize = DEFDACBLKSIZE;
 int sys_usecsincelastsleep(void);
 int sys_sleepgrain;
 
@@ -96,7 +95,8 @@ void clock_delay(t_clock *x, double delaytime)
 {
     clock_set(x, (x->c_unit > 0 ?
         pd_this->pd_systime + x->c_unit * delaytime :
-            pd_this->pd_systime - (x->c_unit*(TIMEUNITPERSECOND/sys_dacsr)) * delaytime));
+            pd_this->pd_systime -
+                (x->c_unit*(TIMEUNITPERSECOND/STUFF->st_dacsr)) * delaytime));
 }
 
     /* set the time unit in msec or (if 'samps' is set) in samples.  This
@@ -115,7 +115,7 @@ void clock_setunit(t_clock *x, double timeunit, int sampflag)
         /* figure out time left in the units we were in */
     timeleft = (x->c_settime < 0 ? -1 :
         (x->c_settime - pd_this->pd_systime)/((x->c_unit > 0)? x->c_unit :
-            (x->c_unit*(TIMEUNITPERSECOND/sys_dacsr))));
+            (x->c_unit*(TIMEUNITPERSECOND/STUFF->st_dacsr))));
     if (sampflag)
         x->c_unit = -timeunit;  /* negate to flag sample-based */
     else x->c_unit = timeunit * TIMEUNITPERMSEC;
@@ -149,7 +149,7 @@ double clock_gettimesincewithunits(double prevsystime,
             DSP ticks, the result will be exact. */
     if (sampflag)
         return ((pd_this->pd_systime - prevsystime)/
-            ((TIMEUNITPERSECOND/sys_dacsr)*units));
+            ((TIMEUNITPERSECOND/STUFF->st_dacsr)*units));
     else return ((pd_this->pd_systime - prevsystime)/(TIMEUNITPERMSEC*units));
 }
 
@@ -267,7 +267,7 @@ void glob_audiostatus(void)
 
         post("%9.2f\t%s",
             (sched_diddsp - oss_resync[nresyncphase].r_ntick)
-                * ((double)sys_schedblocksize) / sys_dacsr,
+                * ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr,
             oss_errornames[errtype]);
         nresyncphase--;
     }
@@ -290,7 +290,7 @@ void sys_log_error(int type)
         sched_diored = 1;
     }
     sched_dioredtime =
-        sched_diddsp + (int)(sys_dacsr /(double)sys_schedblocksize);
+        sched_diddsp + (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
 }
 
 static int sched_lastinclip, sched_lastoutclip,
@@ -311,7 +311,7 @@ static void sched_pollformeters( void)
         glob_watchdog(0);
             /* ping every 2 seconds */
         sched_nextpingtime = sched_diddsp +
-            2 * (int)(sys_dacsr /(double)sys_schedblocksize);
+            2 * (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
     }
 #endif
 
@@ -346,7 +346,7 @@ static void sched_pollformeters( void)
         sched_lastoutdb = outdb;
     }
     sched_nextmeterpolltime =
-        sched_diddsp + (int)(sys_dacsr /(double)sys_schedblocksize);
+        sched_diddsp + (int)(STUFF->st_dacsr /(double)STUFF->st_schedblocksize);
 }
 
 void glob_meters(void *dummy, t_float f)
@@ -394,7 +394,7 @@ void sched_set_using_audio(int flag)
                     /* not right yet! */
 
     sys_time_per_dsp_tick = (TIMEUNITPERSECOND) *
-        ((double)sys_schedblocksize) / sys_dacsr;
+        ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr;
     sys_vgui("pdtk_pd_audio %s\n", flag ? "on" : "off");
 }
 
@@ -447,7 +447,7 @@ static void m_pollingscheduler( void)
 {
     int idlecount = 0;
     sys_time_per_dsp_tick = (TIMEUNITPERSECOND) *
-        ((double)sys_schedblocksize) / sys_dacsr;
+        ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr;
 
     sys_lock();
     sys_clearhist();
@@ -610,7 +610,7 @@ int m_mainloop(void)
 int m_batchmain(void)
 {
     sys_time_per_dsp_tick = (TIMEUNITPERSECOND) *
-        ((double)sys_schedblocksize) / sys_dacsr;
+        ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr;
     while (sys_quit != SYS_QUIT_QUIT)
         sched_tick();
     return (0);

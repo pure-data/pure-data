@@ -119,13 +119,13 @@ struct _garray
 };
 
 static t_pd *garray_arraytemplatecanvas;
-static char garray_arraytemplatefile[] = "\
+static const char garray_arraytemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
 #X obj 43 31 struct float-array array z float float style\n\
 float linewidth float color;\n\
 #X obj 43 70 plot z color linewidth 0 0 1 style;\n\
 ";
-static char garray_floattemplatefile[] = "\
+static const char garray_floattemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
 #X obj 39 26 struct float float y;\n\
 ";
