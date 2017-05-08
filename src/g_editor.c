@@ -2363,7 +2363,6 @@ static void canvas_clearline(t_canvas *x)
     }
 }
 
-extern t_pd *newest;
 static void canvas_doclear(t_canvas *x)
 {
     t_gobj *y, *y2;
@@ -2390,12 +2389,12 @@ static void canvas_doclear(t_canvas *x)
     if (x->gl_editor->e_textedfor)
     {
         t_gobj *selwas = x->gl_editor->e_selection->sel_what;
-        newest = 0;
+        pd_this->pd_newest = 0;
         glist_noselect(x);
-        if (newest)
+        if (pd_this->pd_newest)
         {
             for (y = x->gl_list; y; y = y->g_next)
-                if (&y->g_pd == newest) glist_select(x, y);
+                if (&y->g_pd == pd_this->pd_newest) glist_select(x, y);
         }
     }
     while (1)   /* this is pretty wierd...  should rewrite it */

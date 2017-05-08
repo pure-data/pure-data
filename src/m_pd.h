@@ -807,12 +807,13 @@ struct _pdinstance
     t_clock *pd_clock_setlist;  /* list of set clocks */
     t_canvas *pd_canvaslist;    /* list of all root canvases */
     int pd_instanceno;          /* ordinal number of this instance */
-    t_symbol **pd_symhash;
+    t_symbol **pd_symhash;      /* symbol table hash table */
     t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
     t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
     t_instanceugen *pd_ugen;    /* private stuff for d_ugen.c */
     t_instancecanvas *pd_gui;   /* semi-private stuff in g_canvas.h */
     t_instancestuff *pd_stuff;  /* semi-private stuff in s_stuff.h */
+    t_pd *pd_newest;            /* most recently created object */
 #ifdef PDINSTANCE
     t_symbol  pd_s_pointer;
     t_symbol  pd_s_float;

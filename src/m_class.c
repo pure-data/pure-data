@@ -749,7 +749,6 @@ static t_symbol *addfileextent(t_symbol *s)
 static int tryingalready;
 
 void canvas_popabstraction(t_canvas *x);
-extern t_pd *newest;
 
 t_symbol* pathsearch(t_symbol *s,char* ext);
 int pd_setloadingabstraction(t_symbol *sym);
@@ -764,7 +763,7 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
       error("maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
     }
-    newest = 0;
+    pd_this->pd_newest = 0;
     class_loadsym = s;
     pd_globallock();
     if (sys_load_lib(canvas_getcurrent(), s->s_name))
@@ -799,13 +798,11 @@ void mess_init(void)
     sys_unlock();
 }
 
-t_pd *newest;
-
 /* This is externally available, but note that it might later disappear; the
 whole "newest" thing is a hack which needs to be redesigned. */
 t_pd *pd_newest(void)
 {
-    return (newest);
+    return (pd_this->pd_newest);
 }
 
     /* horribly, we need prototypes for each of the artificial function
@@ -881,7 +878,8 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
         if (*wp == A_GIMME)
         {
             if (x == &pd_objectmaker)
-                newest = (*((t_newgimme)(m->me_fun)))(s, argc, argv);
+                pd_this->pd_newest =
+                    (*((t_newgimme)(m->me_fun)))(s, argc, argv);
             else (*((t_messgimme)(m->me_fun)))(x, s, argc, argv);
             return;
         }
@@ -966,7 +964,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
         default: bonzo = 0;
         }
         if (x == &pd_objectmaker)
-            newest = bonzo;
+            pd_this->pd_newest = bonzo;
         return;
     }
     (*c->c_anymethod)(x, s, argc, argv);

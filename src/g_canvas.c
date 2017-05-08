@@ -43,7 +43,6 @@ desktops because the borders have both window title area and menus. */
 
 /* ---------------------- variables --------------------------- */
 
-extern t_pd *newest;
 t_class *canvas_class;
 t_canvas *canvas_whichfind;         /* last canvas we did a find in */
 
@@ -989,7 +988,7 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
 
 void canvas_popabstraction(t_canvas *x)
 {
-    newest = &x->gl_pd;
+    pd_this->pd_newest = &x->gl_pd;
     pd_popsym(&x->gl_pd);
     x->gl_loading = 0;
     canvas_resortinlets(x);
