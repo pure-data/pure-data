@@ -833,6 +833,7 @@ struct _pdinstance
 #endif
 };
 #define t_pdinstance struct _pdinstance
+EXTERN t_pdinstance pd_maininstance;
 
 /* m_pd.c */
 #ifdef PDINSTANCE
@@ -852,7 +853,6 @@ EXTERN PERTHREAD t_pdinstance *pd_this;
 EXTERN t_pdinstance **pd_instances;
 EXTERN int pd_ninstances;
 #else
-EXTERN t_pdinstance pd_maininstance;
 #define pd_this (&pd_maininstance)
 #endif /* PDINSTANCE */
 
