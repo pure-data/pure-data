@@ -159,62 +159,62 @@ static void netsend_doit(void *z, t_binbuf *b)
 
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
-  /* check argument types */
-  if ((argc < 2) ||
-      argv[0].a_type != A_SYMBOL ||
-      argv[1].a_type != A_FLOAT ||
-      ((argc > 2) && argv[2].a_type != A_FLOAT)) {
-      error("netsend_connect: bad arguments");
-      return;
-    }
-  t_symbol *hostname = argv[0].a_w.w_symbol;
-  int fportno = (int)argv[1].a_w.w_float;
-  int sportno = (argc>2)?(int)argv[2].a_w.w_float:0;
-
-  struct sockaddr_in server = {0};
-  struct sockaddr_in srcaddr = {0};
-  struct hostent *hp;
-  int sockfd;
-  int portno = fportno;
-  int srcportno = sportno;
-  int intarg;
-  if (x->x_sockfd >= 0)
+    t_symbol *hostname;
+    int fportno, sportno, sockfd, portno, srcportno, intarg;
+    struct sockaddr_in server = {0};
+    struct sockaddr_in srcaddr = {0};
+    struct hostent *hp;
+    /* check argument types */
+    if ((argc < 2) ||
+        argv[0].a_type != A_SYMBOL ||
+        argv[1].a_type != A_FLOAT ||
+        ((argc > 2) && argv[2].a_type != A_FLOAT))
     {
-      error("netsend_connect: already connected");
-      return;
+        error("netsend_connect: bad arguments");
+        return;
+    }
+    hostname = argv[0].a_w.w_symbol;
+    fportno = (int)argv[1].a_w.w_float;
+    sportno = (argc>2)?(int)argv[2].a_w.w_float:0;
+    portno = fportno;
+    srcportno = sportno;
+    if (x->x_sockfd >= 0)
+    {
+        error("netsend_connect: already connected");
+        return;
     }
 
-  /* create a socket */
-  sockfd = socket(AF_INET, x->x_protocol, 0);
+    /* create a socket */
+    sockfd = socket(AF_INET, x->x_protocol, 0);
 #if 0
-  fprintf(stderr, "send socket %d\n", sockfd);
+    fprintf(stderr, "send socket %d\n", sockfd);
 #endif
-  if (sockfd < 0)
+    if (sockfd < 0)
     {
-      sys_sockerror("socket");
-      return;
+        sys_sockerror("socket");
+        return;
     }
   /* connect socket using hostname provided in command line */
-  server.sin_family = AF_INET;
-  hp = gethostbyname(hostname->s_name);
-  if (hp == 0)
+    server.sin_family = AF_INET;
+    hp = gethostbyname(hostname->s_name);
+    if (hp == 0)
     {
       post("bad host?\n");
       sys_closesocket(sockfd);
       return;
     }
 #if 0
-  intarg = 0;
-  if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
+    intarg = 0;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
                  &intarg, sizeof(intarg)) < 0)
     post("setsockopt (SO_RCVBUF) failed\n");
 #endif
-  intarg = 1;
-  if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
+    intarg = 1;
+    if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
                 (const void *)&intarg, sizeof(intarg)) < 0)
     post("setting SO_BROADCAST");
-  /* for stream (TCP) sockets, specify "nodelay" */
-  if (x->x_protocol == SOCK_STREAM)
+    /* for stream (TCP) sockets, specify "nodelay" */
+    if (x->x_protocol == SOCK_STREAM)
         {
           intarg = 1;
           if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,

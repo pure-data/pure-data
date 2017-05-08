@@ -45,7 +45,6 @@ typedef int socklen_t;
 #ifdef __APPLE__
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <pthread.h>
 #include <glob.h>
 #else
 #include <stdlib.h>
@@ -70,6 +69,10 @@ typedef int socklen_t;
 #define LOCALHOST "127.0.0.1"
 #else
 #define LOCALHOST "localhost"
+#endif
+
+#if PDTHREADS
+#include "pthread.h"
 #endif
 
 typedef struct _fdpoll
@@ -118,7 +121,7 @@ struct _instanceinter
 
 #ifdef _WIN32
     LARGE_INTEGER i_inittime;
-    double i_freq = 0;
+    double i_freq;
 #endif
 #if PDTHREADS
     pthread_mutex_t i_mutex;
@@ -1424,9 +1427,6 @@ void sys_stopgui( void)
 }
 
 /* ----------- mutexes for thread safety --------------- */
-#if PDTHREADS
-#include "pthread.h"
-#endif
 
 void s_inter_newpdinstance( void)
 {
@@ -1434,6 +1434,9 @@ void s_inter_newpdinstance( void)
 #if PDTHREADS
     pthread_mutex_init(&pd_this->pd_inter->i_mutex, NULL);
     pd_this->pd_islocked = 0;
+#endif
+#ifdef _WIN32
+    pd_this->pd_inter->i_freq = 0;
 #endif
 }
 

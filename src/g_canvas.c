@@ -152,8 +152,6 @@ int canvas_getdollarzero( void)
 void canvas_getargs(int *argcp, t_atom **argvp)
 {
     t_canvas *x = canvas_getcurrent();
-    if (!x)
-        bug("canvas_getargs");
     t_canvasenvironment *e = canvas_getenv(x);
     *argcp = e->ce_argc;
     *argvp = e->ce_argv;
