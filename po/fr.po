@@ -3,11 +3,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.43\n"
+"Project-Id-Version: Pure Data 0.47-1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2009-08-18 20:56-0400\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Cyrille Henry\n"
+"PO-Revision-Date: 2017-05-09 08:12+0200\n"
+"Last-Translator: Antoine Villeret\n"
 "Language: fr\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "Polygone"
 
 #: ../src/dialog_array.tcl:293
 msgid "Bezier curve"
-msgstr "courbe de Bezier"
+msgstr "Courbe de Bézier"
 
 #: ../src/dialog_array.tcl:299
 msgid "Put array into:"
@@ -69,7 +69,7 @@ msgstr ""
 
 #: ../src/dialog_array.tcl:308
 msgid "Delete array"
-msgstr "supprimer le tableau"
+msgstr "Supprimer le tableau"
 
 #: ../src/dialog_array.tcl:314
 msgid "Open List View..."
@@ -98,15 +98,15 @@ msgstr "Propriétés du Canvas"
 
 #: ../src/dialog_canvas.tcl:146
 msgid "Scale"
-msgstr "Echéle"
+msgstr "Echelle"
 
 #: ../src/dialog_canvas.tcl:150
 msgid "X units per pixel:"
-msgstr ""
+msgstr "X unités par pixel"
 
 #: ../src/dialog_canvas.tcl:155
 msgid "Y units per pixel:"
-msgstr ""
+msgstr "Y unités par pixel"
 
 #: ../src/dialog_canvas.tcl:159
 msgid "Appearance on parent patch"
@@ -118,15 +118,15 @@ msgstr ""
 
 #: ../src/dialog_canvas.tcl:165
 msgid "Hide object name and arguments"
-msgstr "cacher le nom et arguments de l'objet"
+msgstr "Cacher le nom et les arguments de l'objet"
 
 #: ../src/dialog_canvas.tcl:170
 msgid "Range and size"
-msgstr "taille et échèle"
+msgstr "Taille et échelle"
 
 #: ../src/dialog_canvas.tcl:174
 msgid "X range, from"
-msgstr ""
+msgstr "Plage de valeur en X, de"
 
 #: ../src/dialog_canvas.tcl:176 ../src/dialog_canvas.tcl:191
 msgid "to"
@@ -138,7 +138,7 @@ msgstr "Marges"
 
 #: ../src/dialog_canvas.tcl:189
 msgid "Y range, from"
-msgstr ""
+msgstr "Plage de valeur Y, de"
 
 #: ../src/dialog_find.tcl:63 ../src/dialog_find.tcl:80 ../src/pd_menus.tcl:45
 msgid "Find"
@@ -162,11 +162,11 @@ msgid "Patch Font"
 msgstr "Police du patch"
 
 #: ../src/dialog_font.tcl:61
-msgid "Font Size:"
-msgstr "taille de la police:"
+msgid "Font Size"
+msgstr "Taille"
 
 #: ../src/dialog_font.tcl:89
-msgid "Stretch:"
+msgid "Stretch"
 msgstr "Étirer"
 
 #: ../src/dialog_font.tcl:96
@@ -232,7 +232,7 @@ msgstr "Envoyer au symbole:"
 
 #: ../src/dialog_gatom.tcl:155 ../src/dialog_iemgui.tcl:585
 msgid "Receive symbol:"
-msgstr "Reçois du symbole"
+msgstr "Reçois du symbole:"
 
 #: ../src/dialog_iemgui.tcl:197
 msgid "Background color"
@@ -244,7 +244,7 @@ msgstr "Couleur du premier plan"
 
 #: ../src/dialog_iemgui.tcl:211
 msgid "Label color"
-msgstr ""
+msgstr "Couleur du label"
 
 #: ../src/dialog_iemgui.tcl:272
 msgid "Init"
@@ -265,7 +265,19 @@ msgstr ""
 #: ../src/dialog_iemgui.tcl:498
 #, tcl-format
 msgid "%s Properties"
-msgstr "%s Propriétés"
+msgstr "Propriétés de l'objet %s"
+
+msgid "Parameters"
+msgstr "Paramètres"
+
+msgid "Width (digits):"
+msgstr "Nombre de chiffre à afficher:"
+
+msgid "Height:"
+msgstr "Hauteur de l'objet (px):"
+
+msgid "Output Range"
+msgstr "Plage de valeurs"
 
 #: ../src/dialog_iemgui.tcl:550 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:260
 #: ../src/pd_menus.tcl:288 ../src/pd_menus.tcl:325
@@ -286,15 +298,15 @@ msgstr "Couleur"
 
 #: ../src/dialog_iemgui.tcl:648
 msgid "Background"
-msgstr ""
+msgstr "Arrière plan"
 
 #: ../src/dialog_iemgui.tcl:650
 msgid "Front"
-msgstr "Police de caractére"
+msgstr "Police de caractère"
 
 #: ../src/dialog_iemgui.tcl:662
 msgid "Compose color"
-msgstr "créer la couleur"
+msgstr "Créer la couleur"
 
 #: ../src/dialog_iemgui.tcl:682
 msgid "Test label"
@@ -391,7 +403,7 @@ msgstr "Sélectionner tout"
 
 #: ../src/pd_menus.tcl:110 ../src/pd_menus.tcl:115
 msgid "Text Editor"
-msgstr "éditeur de texte..."
+msgstr "Éditeur de texte..."
 
 #: ../src/pd_menus.tcl:120
 msgid "Tidy Up"
@@ -431,7 +443,7 @@ msgstr "Bang"
 
 #: ../src/pd_menus.tcl:158
 msgid "Toggle"
-msgstr "interrupteur"
+msgstr "Interrupteur"
 
 #: ../src/pd_menus.tcl:160
 msgid "Number2"
@@ -439,19 +451,19 @@ msgstr "Nombre2"
 
 #: ../src/pd_menus.tcl:162
 msgid "Vslider"
-msgstr "slider_V"
+msgstr "Slider vertical"
 
 #: ../src/pd_menus.tcl:164
 msgid "Hslider"
-msgstr "Slider_H"
+msgstr "Slider horizontal"
 
 #: ../src/pd_menus.tcl:166
 msgid "Vradio"
-msgstr "selecteur_V"
+msgstr "Sélecteur vertical"
 
 #: ../src/pd_menus.tcl:168
 msgid "Hradio"
-msgstr "selecteur_H"
+msgstr "Sélecteur horizontal"
 
 #: ../src/pd_menus.tcl:170
 msgid "VU Meter"
@@ -523,7 +535,7 @@ msgstr "Préférences..."
 
 #: ../src/pd_menus.tcl:257
 msgid "Open Recent"
-msgstr "ouvrir éléments récent"
+msgstr "Ouvrir un élément récent"
 
 #: ../src/pd_menus.tcl:296 ../src/pd_menus.tcl:333
 msgid "Quit"
@@ -541,3 +553,90 @@ msgstr "Propriétés"
 
 #~ msgid "Paths"
 #~ msgstr "Chemins..."
+
+msgid "Browser..."
+msgstr "Navigateur d'aide"
+
+msgid "HTML Manual..."
+msgstr "Aide HTML"
+
+msgid "List of objects..."
+msgstr "Liste des objets"
+
+msgid "Find externals"
+msgstr "Trouver des objets supplémentaires"
+
+msgid "Report a bug"
+msgstr "Signaler un problème"
+
+msgid "Audio Settings..."
+msgstr "Réglage audio"
+
+msgid "MIDI Settings..."
+msgstr "Réglage MIDI"
+
+msgid "Input Devices"
+msgstr "Périphérique d'entrée"
+
+msgid "Output Devices"
+msgstr "Périphérique de sortie"
+
+msgid "Channels:"
+msgstr "Nombre de canaux:"
+
+msgid "Use multiple devices"
+msgstr "Utiliser plusieurs périphériques simultanément"
+
+msgid "Settings"
+msgstr "Réglages"
+
+msgid "Sample rate:"
+msgstr "Fréquence d'échantillonnage:"
+
+msgid "Delay (msec):"
+msgstr "Délai (ms):"
+
+msgid "Save All Settings"
+msgstr "Sauver tous les réglages"
+
+msgid "Block size:"
+msgstr "Échantillons par bloc:"
+
+msgid "Startup..."
+msgstr "Option de démarrage..."
+
+msgid "Path..."
+msgstr "Chemin..."
+
+msgid "Startup flags:"
+msgstr "Options:"
+
+msgid "New..."
+msgstr "Nouveau"
+
+msgid "Edit..."
+msgstr "Éditer"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Pd libraries to load on startup"
+msgstr "Bibliothèques à charger au démarrage"
+
+msgid "Send a Pd message"
+msgstr "Envoyer un message à Pd"
+
+msgid "(use arrow keys for history)"
+msgstr "Utiliser les flèches haut et bas pour accéder à l'historique"
+
+msgid "Show &Hidden Files and Directories"
+msgstr "Affic&her les fichiers et dossiers cachés"
+
+msgid "Next Window"
+msgstr "Fenêtre suivante"
+
+msgid "Previous Window"
+msgstr "Fenêtre précédente"
+
+msgid "Zoom new windows"
+msgstr "Zoomer les nouvelles fenêtres"
