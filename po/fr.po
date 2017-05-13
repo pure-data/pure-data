@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2009-08-18 20:56-0400\n"
 "PO-Revision-Date: 2017-05-09 08:12+0200\n"
-"Last-Translator: Antoine Villeret\n"
+"Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret\n"
 "Language: fr\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Sauver le contenu"
 
 #: ../src/dialog_array.tcl:286
 msgid "Draw as:"
-msgstr ""
+msgstr "Dessiner en:"
 
 #: ../src/dialog_array.tcl:289
 msgid "Points"
@@ -57,7 +57,7 @@ msgstr "Courbe de Bézier"
 
 #: ../src/dialog_array.tcl:299
 msgid "Put array into:"
-msgstr ""
+msgstr "Placer le tableau dans:"
 
 #: ../src/dialog_array.tcl:302
 msgid "New graph"
@@ -65,7 +65,7 @@ msgstr "Nouveau graphique"
 
 #: ../src/dialog_array.tcl:304
 msgid "Last graph"
-msgstr ""
+msgstr "Graphique précédent"
 
 #: ../src/dialog_array.tcl:308
 msgid "Delete array"
@@ -73,7 +73,7 @@ msgstr "Supprimer le tableau"
 
 #: ../src/dialog_array.tcl:314
 msgid "Open List View..."
-msgstr ""
+msgstr "Ouvrir en liste..."
 
 #: ../src/dialog_array.tcl:321 ../src/dialog_canvas.tcl:205
 #: ../src/dialog_font.tcl:51 ../src/dialog_gatom.tcl:161
@@ -98,23 +98,23 @@ msgstr "Propriétés du Canvas"
 
 #: ../src/dialog_canvas.tcl:146
 msgid "Scale"
-msgstr "Echelle"
+msgstr "Échelle"
 
 #: ../src/dialog_canvas.tcl:150
 msgid "X units per pixel:"
-msgstr "X unités par pixel"
+msgstr "X unités par pixel:"
 
 #: ../src/dialog_canvas.tcl:155
 msgid "Y units per pixel:"
-msgstr "Y unités par pixel"
+msgstr "Y unités par pixel:"
 
 #: ../src/dialog_canvas.tcl:159
 msgid "Appearance on parent patch"
-msgstr ""
+msgstr "Aspect dans le patch parent"
 
 #: ../src/dialog_canvas.tcl:161
 msgid "Graph-On-Parent"
-msgstr ""
+msgstr "Graph-On-Parent (dessiner dans le patch parent)"
 
 #: ../src/dialog_canvas.tcl:165
 msgid "Hide object name and arguments"
@@ -126,7 +126,7 @@ msgstr "Taille et échelle"
 
 #: ../src/dialog_canvas.tcl:174
 msgid "X range, from"
-msgstr "Plage de valeur en X, de"
+msgstr "Échelle X, de"
 
 #: ../src/dialog_canvas.tcl:176 ../src/dialog_canvas.tcl:191
 msgid "to"
@@ -134,11 +134,11 @@ msgstr "à"
 
 #: ../src/dialog_canvas.tcl:180 ../src/dialog_canvas.tcl:195
 msgid "Margin:"
-msgstr "Marges"
+msgstr "Marges:"
 
 #: ../src/dialog_canvas.tcl:189
 msgid "Y range, from"
-msgstr "Plage de valeur Y, de"
+msgstr "Échelle Y, de"
 
 #: ../src/dialog_find.tcl:63 ../src/dialog_find.tcl:80 ../src/pd_menus.tcl:45
 msgid "Find"
@@ -150,7 +150,7 @@ msgstr "Rechercher dans"
 
 #: ../src/dialog_find.tcl:72
 msgid "for:"
-msgstr "pour:"
+msgstr ":"
 
 #: ../src/dialog_find.tcl:83 ../src/pd_menus.tcl:86 ../src/pd_menus.tcl:259
 #: ../src/pd_menus.tcl:295 ../src/pd_menus.tcl:332
@@ -232,7 +232,7 @@ msgstr "Envoyer au symbole:"
 
 #: ../src/dialog_gatom.tcl:155 ../src/dialog_iemgui.tcl:585
 msgid "Receive symbol:"
-msgstr "Reçois du symbole:"
+msgstr "Reçoit du symbole:"
 
 #: ../src/dialog_iemgui.tcl:197
 msgid "Background color"
@@ -252,15 +252,15 @@ msgstr "Initialisation"
 
 #: ../src/dialog_iemgui.tcl:275 ../src/dialog_iemgui.tcl:546
 msgid "No init"
-msgstr "Pas d'initialisation"
+msgstr "Pas d'init."
 
 #: ../src/dialog_iemgui.tcl:287 ../src/dialog_iemgui.tcl:558
 msgid "Jump on click"
-msgstr ""
+msgstr "Instantané"
 
 #: ../src/dialog_iemgui.tcl:290 ../src/dialog_iemgui.tcl:561
 msgid "Steady on click"
-msgstr ""
+msgstr "Glissant"
 
 #: ../src/dialog_iemgui.tcl:498
 #, tcl-format
@@ -302,7 +302,7 @@ msgstr "Arrière plan"
 
 #: ../src/dialog_iemgui.tcl:650
 msgid "Front"
-msgstr "Police de caractère"
+msgstr "Premier plan"
 
 #: ../src/dialog_iemgui.tcl:662
 msgid "Compose color"
@@ -364,7 +364,6 @@ msgstr "Fenêtre"
 #: ../src/pd_menus.tcl:322
 msgid "New"
 msgstr "Nouveau"
-""
 
 #: ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:286
 #: ../src/pd_menus.tcl:323 ../src/pdtk_canvas.tcl:46
@@ -519,7 +518,7 @@ msgstr "Zoom"
 
 #: ../src/pd_menus.tcl:210
 msgid "Parent Window"
-msgstr "Fenêtre"
+msgstr "Fenêtre parente"
 
 #: ../src/pd_menus.tcl:216
 msgid "Bring All to Front"
