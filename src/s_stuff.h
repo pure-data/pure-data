@@ -261,7 +261,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int indeviceno, int outdeviceno, t_audiocallback callback);
 void pa_close_audio(void);
 int pa_send_dacs(void);
-void sys_reportidle(void);
 void pa_listdevs(void);
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -378,10 +377,8 @@ EXTERN int* get_sys_schedadvance(void ) ;
 EXTERN void sys_clearhist(void );
 EXTERN void sys_initmidiqueue(void );
 EXTERN int sys_addhist(int phase);
-EXTERN void sys_setmiditimediff(double inbuftime, double outbuftime);
 EXTERN void sched_tick( void);
 EXTERN void sys_pollmidiqueue(void );
-EXTERN int sys_pollgui(void );
 EXTERN void sys_setchsr(int chin, int chout, int sr);
 
 EXTERN void inmidi_realtimein(int portno, int cmd);
