@@ -101,13 +101,13 @@ static int sys_nchout = -1;
 static int sys_chinlist[MAXAUDIOINDEV];
 static int sys_choutlist[MAXAUDIOOUTDEV];
 
-t_sample* get_sys_soundout() { return sys_soundout; }
-t_sample* get_sys_soundin() { return sys_soundin; }
+t_sample* get_sys_soundout() { return STUFF->st_soundout; }
+t_sample* get_sys_soundin() { return STUFF->st_soundin; }
 int* get_sys_main_advance() { return &sys_main_advance; }
-double* get_sys_time_per_dsp_tick() { return &sys_time_per_dsp_tick; }
-int* get_sys_schedblocksize() { return &sys_schedblocksize; }
+double* get_sys_time_per_dsp_tick() { return &STUFF->st_time_per_dsp_tick; }
+int* get_sys_schedblocksize() { return &STUFF->st_schedblocksize; }
 double* get_sys_time() { return &pd_this->pd_systime; }
-t_float* get_sys_dacsr() { return &sys_dacsr; }
+t_float* get_sys_dacsr() { return &STUFF->st_dacsr; }
 int* get_sys_sleepgrain() { return &sys_sleepgrain; }
 int* get_sys_schedadvance() { return &sys_schedadvance; }
 
@@ -242,7 +242,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 #endif
     }
         /* load dynamic libraries specified with "-lib" args */
-    for  (nl = sys_externlist; nl; nl = nl->nl_next)
+    for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
         if (!sys_load_lib(0, nl->nl_string))
             post("%s: can't load library", nl->nl_string);
         /* open patches specifies with "-open" args */
@@ -838,7 +838,8 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-path") && (argc > 1))
         {
-            sys_searchpath = namelist_append_files(sys_searchpath, argv[1]);
+            STUFF->st_searchpath =
+                namelist_append_files(STUFF->st_searchpath, argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nostdpath"))
@@ -853,7 +854,8 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-helppath"))
         {
-            sys_helppath = namelist_append_files(sys_helppath, argv[1]);
+            STUFF->st_helppath =
+                namelist_append_files(STUFF->st_helppath, argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-open") && argc > 1)
@@ -863,7 +865,8 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-lib") && argc > 1)
         {
-            sys_externlist = namelist_append_files(sys_externlist, argv[1]);
+            STUFF->st_externlist =
+                namelist_append_files(STUFF->st_externlist, argv[1]);
             argc -= 2; argv += 2;
         }
         else if ((!strcmp(*argv, "-font-size") || !strcmp(*argv, "-font"))
@@ -1175,7 +1178,7 @@ static void sys_afterargparse(void)
     strncpy(sbuf, sys_libdir->s_name, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/doc/5.reference");
-    sys_helppath = namelist_append_files(sys_helppath, sbuf);
+    STUFF->st_staticpath = namelist_append_files(STUFF->st_staticpath, sbuf);
         /* correct to make audio and MIDI device lists zero based.  On
         MMIO, however, "1" really means the second device (the first one
         is "mapper" which is was not included when the command args were

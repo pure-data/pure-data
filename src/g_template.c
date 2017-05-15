@@ -7,7 +7,6 @@
 #include <stdio.h>
 
 #include "m_pd.h"
-#include "s_stuff.h"    /* for sys_hostfontsize */
 #include "g_canvas.h"
 
 /*

@@ -265,18 +265,6 @@ typedef void (*t_gotfn)(void *x, ...);
 /* ---------------- pre-defined objects and symbols --------------*/
 EXTERN t_pd pd_objectmaker;     /* factory for creating "object" boxes */
 EXTERN t_pd pd_canvasmaker;     /* factory for creating canvases */
-EXTERN t_symbol s_pointer;
-EXTERN t_symbol s_float;
-EXTERN t_symbol s_symbol;
-EXTERN t_symbol s_bang;
-EXTERN t_symbol s_list;
-EXTERN t_symbol s_anything;
-EXTERN t_symbol s_signal;
-EXTERN t_symbol s__N;
-EXTERN t_symbol s__X;
-EXTERN t_symbol s_x;
-EXTERN t_symbol s_y;
-EXTERN t_symbol s_;
 
 /* --------- prototypes from the central message system ----------- */
 EXTERN void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv);
@@ -347,7 +335,7 @@ EXTERN t_binbuf *binbuf_new(void);
 EXTERN void binbuf_free(t_binbuf *x);
 EXTERN t_binbuf *binbuf_duplicate(t_binbuf *y);
 
-EXTERN void binbuf_text(t_binbuf *x, char *text, size_t size);
+EXTERN void binbuf_text(t_binbuf *x, const char *text, size_t size);
 EXTERN void binbuf_gettext(t_binbuf *x, char **bufp, int *lengthp);
 EXTERN void binbuf_clear(t_binbuf *x);
 EXTERN void binbuf_add(t_binbuf *x, int argc, t_atom *argv);
@@ -445,6 +433,7 @@ EXTERN void canvas_makefilename(t_glist *c, char *file,
 EXTERN t_symbol *canvas_getdir(t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
 EXTERN char sys_fontweight[]; /* default font weight set in s_main.c */
+EXTERN int sys_hostfontsize(int fontsize, int zoom);
 EXTERN int sys_zoomfontwidth(int fontsize, int zoom, int worstcase);
 EXTERN int sys_zoomfontheight(int fontsize, int zoom, int worstcase);
 EXTERN int sys_fontwidth(int fontsize);
@@ -793,14 +782,98 @@ static inline int PD_BIGORSMALL(t_float f)  /* exponent outside (-512,512) */
     /* get version number at run time */
 EXTERN void sys_getversion(int *major, int *minor, int *bugfix);
 
-EXTERN_STRUCT _pdinstance;
-#define t_pdinstance struct _pdinstance       /* m_imp.h */
+EXTERN_STRUCT _instancemidi;
+#define t_instancemidi struct _instancemidi
+
+EXTERN_STRUCT _instanceinter;
+#define t_instanceinter struct _instanceinter
+
+EXTERN_STRUCT _instancecanvas;
+#define t_instancecanvas struct _instancecanvas
+
+EXTERN_STRUCT _instanceugen;
+#define t_instanceugen struct _instanceugen
+
+EXTERN_STRUCT _instancestuff;
+#define t_instancestuff struct _instancestuff
+
+#ifndef PDTHREADS
+#define PDTHREADS 1
+#endif
+
+struct _pdinstance
+{
+    double pd_systime;          /* global time in Pd ticks */
+    t_clock *pd_clock_setlist;  /* list of set clocks */
+    t_canvas *pd_canvaslist;    /* list of all root canvases */
+    int pd_instanceno;          /* ordinal number of this instance */
+    t_symbol **pd_symhash;      /* symbol table hash table */
+    t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
+    t_instanceinter *pd_inter;  /* private stuff for s_inter.c */
+    t_instanceugen *pd_ugen;    /* private stuff for d_ugen.c */
+    t_instancecanvas *pd_gui;   /* semi-private stuff in g_canvas.h */
+    t_instancestuff *pd_stuff;  /* semi-private stuff in s_stuff.h */
+    t_pd *pd_newest;            /* most recently created object */
+#ifdef PDINSTANCE
+    t_symbol  pd_s_pointer;
+    t_symbol  pd_s_float;
+    t_symbol  pd_s_symbol;
+    t_symbol  pd_s_bang;
+    t_symbol  pd_s_list;
+    t_symbol  pd_s_anything;
+    t_symbol  pd_s_signal;
+    t_symbol  pd_s__N;
+    t_symbol  pd_s__X;
+    t_symbol  pd_s_x;
+    t_symbol  pd_s_y;
+    t_symbol  pd_s_;
+#endif
+#if PDTHREADS
+    int pd_islocked;
+#endif
+};
+#define t_pdinstance struct _pdinstance
+EXTERN t_pdinstance pd_maininstance;
 
 /* m_pd.c */
-
+#ifdef PDINSTANCE
 EXTERN t_pdinstance *pdinstance_new( void);
 EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
+#endif /* PDINSTANCE */
+
+#if defined(PDTHREADS) && defined(PDINSTANCE)
+#define PERTHREAD __thread
+#else
+#define PERTHREAD
+#endif
+
+#ifdef PDINSTANCE
+EXTERN PERTHREAD t_pdinstance *pd_this;
+EXTERN t_pdinstance **pd_instances;
+EXTERN int pd_ninstances;
+#else
+#define pd_this (&pd_maininstance)
+#endif /* PDINSTANCE */
+
+#ifdef PDINSTANCE
+#define s_pointer   (pd_this->pd_s_pointer)
+#define s_float     (pd_this->pd_s_float)
+#define s_symbol    (pd_this->pd_s_symbol)
+#define s_bang      (pd_this->pd_s_bang)
+#define s_list      (pd_this->pd_s_list)
+#define s_anything  (pd_this->pd_s_anything)
+#define s_signal    (pd_this->pd_s_signal)
+#define s__N        (pd_this->pd_s__N)
+#define s__X        (pd_this->pd_s__X)
+#define s_x         (pd_this->pd_s_x)
+#define s_y         (pd_this->pd_s_y)
+#define s_          (pd_this->pd_s_)
+#else
+EXTERN t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
+  s_signal, s__N, s__X, s_x, s_y, s_;
+#endif
+
 EXTERN t_canvas *pd_getcanvaslist(void);
 EXTERN int pd_getdspstate(void);
 

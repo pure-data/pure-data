@@ -59,7 +59,7 @@ void binbuf_clear(t_binbuf *x)
 }
 
     /* convert text to a binbuf */
-void binbuf_text(t_binbuf *x, char *text, size_t size)
+void binbuf_text(t_binbuf *x, const char *text, size_t size)
 {
     char buf[MAXPDSTRING+1], *bufp, *ebuf = buf+MAXPDSTRING;
     const char *textp = text, *etext = text+size;
@@ -1457,7 +1457,6 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 }
 
 void pd_doloadbang(void);
-extern t_symbol s__X;
 
 /* LATER make this evaluate the file on-the-fly. */
 /* LATER figure out how to log errors */

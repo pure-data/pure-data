@@ -397,8 +397,8 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     }
     return (0);
 blewit:
-    sys_inchannels = 0;
-    sys_outchannels = 0;
+    STUFF->st_inchannels = 0;
+    STUFF->st_outchannels = 0;
     alsa_close_audio();
     return (1);
 }
@@ -439,8 +439,8 @@ int alsa_send_dacs(void)
     if (!alsa_nindev && !alsa_noutdev)
         return (SENDDACS_NO);
 
-    chansintogo = sys_inchannels;
-    chansouttogo = sys_outchannels;
+    chansintogo = STUFF->st_inchannels;
+    chansouttogo = STUFF->st_outchannels;
     transfersize = DEFDACBLKSIZE;
 
     timelast = timenow;
@@ -487,7 +487,8 @@ int alsa_send_dacs(void)
     post("xfer %d", transfersize);
 #endif
     /* do output */
-    for (iodev = 0, fp1 = sys_soundout, ch = 0; iodev < alsa_noutdev; iodev++)
+    for (iodev = 0, fp1 = STUFF->st_soundout, ch = 0;
+        iodev < alsa_noutdev; iodev++)
     {
         int thisdevchans = alsa_outdev[iodev].a_channels;
         int chans = (chansouttogo < thisdevchans ? chansouttogo : thisdevchans);
@@ -572,8 +573,8 @@ int alsa_send_dacs(void)
         }
 
         /* zero out the output buffer */
-        memset(sys_soundout, 0, DEFDACBLKSIZE * sizeof(*sys_soundout) *
-               sys_outchannels);
+        memset(STUFF->st_soundout, 0, DEFDACBLKSIZE * sizeof(*STUFF->st_soundout) *
+               STUFF->st_outchannels);
         if (sys_getrealtime() - timenow > 0.002)
         {
     #ifdef DEBUG_ALSA_XFER
@@ -586,7 +587,7 @@ int alsa_send_dacs(void)
     }
 
             /* do input */
-    for (iodev = 0, fp1 = sys_soundin, ch = 0; iodev < alsa_nindev; iodev++)
+    for (iodev = 0, fp1 = STUFF->st_soundin, ch = 0; iodev < alsa_nindev; iodev++)
     {
         int thisdevchans = alsa_indev[iodev].a_channels;
         int chans = (chansintogo < thisdevchans ? chansintogo : thisdevchans);
@@ -682,14 +683,14 @@ void alsa_printstate( void)
         error("restart-audio: implemented for ALSA only.");
         return;
     }
-    if (sys_inchannels)
+    if (STUFF->st_inchannels)
     {
         result = snd_pcm_delay(alsa_indev[iodev].a_handle, &indelay);
         if (result < 0)
             post("snd_pcm_delay 1 failed");
         else post("in delay %d", indelay);
     }
-    if (sys_outchannels)
+    if (STUFF->st_outchannels)
     {
         result = snd_pcm_delay(alsa_outdev[iodev].a_handle, &outdelay);
         if (result < 0)
