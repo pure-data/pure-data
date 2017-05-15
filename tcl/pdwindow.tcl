@@ -425,6 +425,5 @@ proc ::pdwindow::create_window {} {
             _ _ _left _top
         set ::windowframex [expr {[winfo rootx .pdwindow] - $_left}]
         set ::windowframey [expr {[winfo rooty .pdwindow] - $_top}]
-        puts "window frame: $::windowframex $::windowframey"
     }
 }
