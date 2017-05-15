@@ -1,3 +1,4 @@
+#pragma once
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
@@ -66,7 +67,7 @@ EXTERN void sys_register_loader(loader_t loader);
 extern int sys_hipriority;      /* real-time flag, true if priority boosted */
 extern int sys_schedadvance;
 extern int sys_sleepgrain;
-    int sys_advance_samples;    /* scheduler advance in samples */
+extern int sys_advance_samples;    /* scheduler advance in samples */
 EXTERN void sys_set_audio_settings(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
