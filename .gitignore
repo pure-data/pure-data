@@ -1,7 +1,12 @@
-*.o
-TAGS
-*.o
-TAGS
+# binaries
+bin
+src/makefile
+src/pd
+src/pd-watchdog
+src/pdreceive
+src/pdsend
+
+# autotools
 autom4te.cache
 Makefile
 Makefile.in
@@ -15,22 +20,43 @@ libtool
 m4/generated
 m4/config
 makefile.dependencies
+dist
+tags
+
+# build
+*.o
+
+# libtool
 .deps
 .libs
 *.lo
 *.la
+
+# externals
 *.pd_linux
 *.pd_darwin
 *.d_fat
 *.d_fat_o
-po/*.msg
-bin
-src/makefile
-src/pd
-src/pd-watchdog
-src/pdreceive
-src/pdsend
-ASIOSDK2
+*.dll
+
+# distribution tarballs
 pd-0.*
+
+# gettext
+po/*.msg
+
+# emacs tags
+TAGS
+
+# asio sdk
+ASIOSDK2
+
+# pkgconfig
 pd.pc
-dist
+
+# portaudio configure
+portaudio/portaudio/bin-stamp
+portaudio/portaudio/lib-stamp
+portaudio/portaudio/ltmain.sh
+portaudio/portaudio/portaudio-2.0.pc
+*.dirstamp

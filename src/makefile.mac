@@ -26,11 +26,14 @@ pddocdir = $(libpddir)/doc
 libpdbindir = $(libpddir)/bin
 libpdtcldir = $(libpddir)/tcl
 
+PADIR = ../portaudio/portaudio
+PMDIR = ../portmidi/portmidi
+
 CPPFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" \
     -DHAVE_LIBDL -DMACOSX -DHAVE_UNISTD_H -I/usr/X11R6/include \
-    -I../portaudio/include -I../portaudio/src/common  \
-    -I../portaudio/src/os/mac_osx/ -I../portmidi/pm_common \
-    -I../portmidi/pm_mac -I../portmidi/porttime \
+    -I$(PADIR)/include -I$(PADIR)/src/common  \
+    -I$(PADIR)/src/os/mac_osx/ -I$(PMDIR)/pm_common \
+    -I$(PMDIR)/pm_mac -I$(PMDIR)/porttime \
     -DUSEAPI_PORTAUDIO -DPA_USE_COREAUDIO -DNEWBUFFER
 ARCH_CFLAGS = $(ARCH) 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-unused-parameter \
@@ -40,7 +43,7 @@ MORECFLAGS = -Wno-error -ffast-math -O3
 LDFLAGS = -Wl -framework CoreAudio -framework AudioUnit \
     -framework AudioToolbox -framework Carbon -framework CoreMIDI $(ARCH) \
 
-LIB =   -ldl -lm -lpthread
+LIB = -ldl -lm -lpthread
 
 ifdef JACK
 CPPFLAGS += -DUSEAPI_JACK
@@ -52,29 +55,29 @@ CFLAGS = $(ARCH_CFLAGS) $(WARN_CFLAGS) $(CPPFLAGS) $(MORECFLAGS)
 
 # the sources
 
-SYSSRC += s_midi_pm.c s_audio_pa.c s_audio_paring.c \
-    ../portaudio/src/common/pa_allocation.c  \
-    ../portaudio/src/common/pa_converters.c  \
-    ../portaudio/src/common/pa_cpuload.c     \
-    ../portaudio/src/common/pa_dither.c      \
-    ../portaudio/src/common/pa_front.c       \
-    ../portaudio/src/common/pa_process.c     \
-    ../portaudio/src/common/pa_stream.c      \
-    ../portaudio/src/common/pa_trace.c       \
-    ../portaudio/src/common/pa_debugprint.c  \
-    ../portaudio/src/common/pa_ringbuffer.c  \
-    ../portaudio/src/os/unix/pa_unix_util.c  \
-    ../portaudio/src/os/mac_osx/pa_mac_hostapis.c              \
-    ../portaudio/src/hostapi/coreaudio/pa_mac_core.c           \
-    ../portaudio/src/hostapi/coreaudio/pa_mac_core_blocking.c  \
-    ../portaudio/src/hostapi/coreaudio/pa_mac_core_utilities.c \
-    ../portmidi/pm_mac/pmmac.c         \
-    ../portmidi/pm_mac/pmmacosxcm.c    \
-    ../portmidi/pm_mac/finddefault.c    \
-    ../portmidi/pm_mac/readbinaryplist.c    \
-    ../portmidi/pm_common/pmutil.c     \
-    ../portmidi/pm_common/portmidi.c   \
-    ../portmidi/porttime/ptmacosx_cf.c
+SYSSRC += s_midi_pm.c s_audio_pa.c s_audio_paring.c    \
+    $(PADIR)/src/common/pa_allocation.c  \
+    $(PADIR)/src/common/pa_converters.c  \
+    $(PADIR)/src/common/pa_cpuload.c     \
+    $(PADIR)/src/common/pa_dither.c      \
+    $(PADIR)/src/common/pa_front.c       \
+    $(PADIR)/src/common/pa_process.c     \
+    $(PADIR)/src/common/pa_stream.c      \
+    $(PADIR)/src/common/pa_trace.c       \
+    $(PADIR)/src/common/pa_debugprint.c  \
+    $(PADIR)/src/common/pa_ringbuffer.c  \
+    $(PADIR)/src/os/unix/pa_unix_util.c  \
+    $(PADIR)/src/os/mac_osx/pa_mac_hostapis.c              \
+    $(PADIR)/src/hostapi/coreaudio/pa_mac_core.c           \
+    $(PADIR)/src/hostapi/coreaudio/pa_mac_core_blocking.c  \
+    $(PADIR)/src/hostapi/coreaudio/pa_mac_core_utilities.c \
+    $(PMDIR)/pm_mac/pmmac.c           \
+    $(PMDIR)/pm_mac/pmmacosxcm.c      \
+    $(PMDIR)/pm_mac/finddefault.c     \
+    $(PMDIR)/pm_mac/readbinaryplist.c \
+    $(PMDIR)/pm_common/pmutil.c       \
+    $(PMDIR)/pm_common/portmidi.c     \
+    $(PMDIR)/porttime/ptmacosx_cf.c
 
 
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
@@ -237,10 +240,3 @@ uninstall:
 	rm -f $(DESTDIR)$(mandir)/man1/pdreceive.1.gz
 
 include makefile.dependencies
-
-
-
-
-
-
-

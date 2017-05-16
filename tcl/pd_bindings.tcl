@@ -129,17 +129,45 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     variable modifier
     set tkcanvas [tkcanvas_name $mytoplevel]
 
+    # on Mac OS X/Aqua, the Alt/Option key is called Option in Tcl
+    if {$::windowingsystem eq "aqua"} {
+        set alt "Option"
+    } else {
+        set alt "Alt"
+    }
+
     # TODO move mouse bindings to global and bind to 'all'
 
     # mouse bindings -----------------------------------------------------------
     # these need to be bound to $tkcanvas because %W will return $mytoplevel for
     # events over the window frame and $tkcanvas for events over the canvas
     bind $tkcanvas <Motion>                   "pdtk_canvas_motion %W %x %y 0"
-    bind $tkcanvas <$::modifier-Motion>         "pdtk_canvas_motion %W %x %y 2"
-    bind $tkcanvas <ButtonPress-1>            "pdtk_canvas_mouse %W %x %y %b 0"
+    bind $tkcanvas <Shift-Motion>             "pdtk_canvas_motion %W %x %y 1"
+    bind $tkcanvas <$::modifier-Motion>       "pdtk_canvas_motion %W %x %y 2"
+    bind $tkcanvas <$::modifier-Shift-Motion> "pdtk_canvas_motion %W %x %y 3"
+    bind $tkcanvas <$alt-Motion>               "pdtk_canvas_motion %W %x %y 4"
+    bind $tkcanvas <$alt-Shift-Motion>         "pdtk_canvas_motion %W %x %y 5"
+    bind $tkcanvas <$::modifier-$alt-Motion>   "pdtk_canvas_motion %W %x %y 6"
+    bind $tkcanvas <$::modifier-$alt-Shift-Motion> "pdtk_canvas_motion %W %x %y 7"
+
+    bind $tkcanvas <ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 0"
+    bind $tkcanvas <Shift-ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 1"
+    bind $tkcanvas <$::modifier-ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 2"
+    bind $tkcanvas <$::modifier-Shift-ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 3"
+    bind $tkcanvas <$alt-ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 4"
+    bind $tkcanvas <$alt-Shift-ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 5"
+    bind $tkcanvas <$::modifier-$alt-ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 6"
+    bind $tkcanvas <$::modifier-$alt-Shift-ButtonPress-1> \
+        "pdtk_canvas_mouse %W %x %y %b 7"
+
     bind $tkcanvas <ButtonRelease-1>          "pdtk_canvas_mouseup %W %x %y %b"
-    bind $tkcanvas <$::modifier-ButtonPress-1>  "pdtk_canvas_mouse %W %x %y %b 2"
-    bind $tkcanvas <Shift-ButtonPress-1>        "pdtk_canvas_mouse %W %x %y %b 1"
 
     if {$::windowingsystem eq "x11"} {
         # from http://wiki.tcl.tk/3893
@@ -161,15 +189,12 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
             bind $tkcanvas <ButtonPress-2>      "pdtk_canvas_rightclick %W %x %y %b"
             # on Mac OS X, make a rightclick with Ctrl-click for 1 button mice
             bind $tkcanvas <Control-Button-1> "pdtk_canvas_rightclick %W %x %y %b"
-            bind $tkcanvas <Option-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"    
         } "x11" {
             bind $tkcanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
             # on X11, button 2 "pastes" from the X windows clipboard
             bind $tkcanvas <ButtonPress-2>   "pdtk_canvas_clickpaste %W %x %y %b"
-            bind $tkcanvas <Alt-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"
         } "win32" {
             bind $tkcanvas <ButtonPress-3>   "pdtk_canvas_rightclick %W %x %y %b"
-            bind $tkcanvas <Alt-ButtonPress-1> "pdtk_canvas_mouse %W %x %y %b 3"
         }
     }
 

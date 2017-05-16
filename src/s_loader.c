@@ -408,7 +408,6 @@ int sys_run_scheduler(const char *externalschedlibname,
 /* abstraction loading */
 void canvas_popabstraction(t_canvas *x);
 int pd_setloadingabstraction(t_symbol *sym);
-extern t_pd *newest;
 
 static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
 {
@@ -442,12 +441,12 @@ static t_pd *do_create_abstraction(t_symbol*s, int argc, t_atom *argv)
                 canvas_popabstraction((t_canvas *)(s__X.s_thing));
             else s__X.s_thing = was;
             canvas_setargs(0, 0);
-            return (newest);
+            return (pd_this->pd_newest);
         }
             /* otherwise we couldn't do it; just return 0 */
     }
     else error("%s: can't load abstraction within itself\n", s->s_name);
-    newest = 0;
+    pd_this->pd_newest = 0;
     return (0);
 }
 

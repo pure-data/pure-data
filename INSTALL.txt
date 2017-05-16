@@ -1,13 +1,19 @@
-Quick compilation instructions for Gnu/linux or Mac OSX, or Windows if you have
-installed Cygwin: make sure "automake" is installed as well as the usual C
+Quick compilation instructions for GNU/Linux, Mac OS X, or Windows if you have
+installed MinGW or Cygwin: make sure "automake" is installed as well as the usual C
 compiler chain. Then in this directory, run the following commands:
-  ./autogen.sh
-  ./configure
-  make
+
+    ./autogen.sh
+    ./configure
+    make
 
 If you need jack support, add the corresponding flag to "configure":
 
-  ./configure --enable-jack
+    ./configure --enable-jack
+
+See the ./configure help print for other options such as a multi architecture
+(universal) build, etc:
+
+    ./configure --help
 
 If made this way, Pd will not run until it has been "installed", either via
 $ sudo make install or, for instance, $ make install DESTDIR=~/pd-xxx prefix=/
@@ -18,13 +24,13 @@ to src and type "make -f makefile.gnu".  You can then run directly out of the
 pd/bin directory without even having to do the "install" step.
 
 Special instructions for Microsoft Visual C: cd to src and type "make -f
-makefile.nt". Then CD to the various subdirs of extra and type "make nt" in
+makefile.msvc". Then cd to the various subdirs of extra and type "make pd_nt" in
 each.
 
 Various dependencies:
 
-- in linux and Mac you need Tcl/Tk
-    (apparently always present for Mac and usually there for linux).
+- in Linux and Mac you need Tcl/Tk
+    (apparently always present for Mac and usually there for Linux).
 
 - On linux you may also need:
     - the ALSA "dev" package:

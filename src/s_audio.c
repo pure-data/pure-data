@@ -46,10 +46,6 @@ static t_sample sys_outmax;        /* max output amplitude */
 
     /* exported variables */
 int sys_schedadvance;   /* scheduler advance in microseconds */
-t_float sys_dacsr;
-
-t_sample *sys_soundout;
-t_sample *sys_soundin;
 
     /* the "state" is normally one if we're open and zero otherwise;
     but if the state is one, we still haven't necessarily opened the
@@ -167,30 +163,30 @@ void sys_setchsr(int chin, int chout, int sr)
     int outbytes = (chout ? chout : 2) *
                 (DEFDACBLKSIZE*sizeof(t_sample));
 
-    if (sys_soundin)
-        freebytes(sys_soundin,
-            (sys_inchannels? sys_inchannels : 2) *
+    if (STUFF->st_soundin)
+        freebytes(STUFF->st_soundin,
+            (STUFF->st_inchannels? STUFF->st_inchannels : 2) *
                 (DEFDACBLKSIZE*sizeof(t_sample)));
-    if (sys_soundout)
-        freebytes(sys_soundout,
-            (sys_outchannels? sys_outchannels : 2) *
+    if (STUFF->st_soundout)
+        freebytes(STUFF->st_soundout,
+            (STUFF->st_outchannels? STUFF->st_outchannels : 2) *
                 (DEFDACBLKSIZE*sizeof(t_sample)));
-    sys_inchannels = chin;
-    sys_outchannels = chout;
-    sys_dacsr = sr;
-    sys_advance_samples = (sys_schedadvance * sys_dacsr) / (1000000.);
+    STUFF->st_inchannels = chin;
+    STUFF->st_outchannels = chout;
+    STUFF->st_dacsr = sr;
+    sys_advance_samples = (sys_schedadvance * STUFF->st_dacsr) / (1000000.);
     if (sys_advance_samples < DEFDACBLKSIZE)
         sys_advance_samples = DEFDACBLKSIZE;
 
-    sys_soundin = (t_sample *)getbytes(inbytes);
-    memset(sys_soundin, 0, inbytes);
+    STUFF->st_soundin = (t_sample *)getbytes(inbytes);
+    memset(STUFF->st_soundin, 0, inbytes);
 
-    sys_soundout = (t_sample *)getbytes(outbytes);
-    memset(sys_soundout, 0, outbytes);
+    STUFF->st_soundout = (t_sample *)getbytes(outbytes);
+    memset(STUFF->st_soundout, 0, outbytes);
 
     if (sys_verbose)
         post("input channels = %d, output channels = %d",
-            sys_inchannels, sys_outchannels);
+            STUFF->st_inchannels, STUFF->st_outchannels);
     canvas_resume_dsp(canvas_suspend_dsp());
 }
 
@@ -443,8 +439,8 @@ void sys_reopen_audio( void)
         if (sys_verbose)
             fprintf(stderr, "blksize %d, advance %d\n", blksize, sys_advance_samples/blksize);
         outcome = pa_open_audio((naudioindev > 0 ? chindev[0] : 0),
-        (naudiooutdev > 0 ? choutdev[0] : 0), rate, sys_soundin,
-            sys_soundout, blksize, sys_advance_samples/blksize,
+        (naudiooutdev > 0 ? choutdev[0] : 0), rate, STUFF->st_soundin,
+            STUFF->st_soundout, blksize, sys_advance_samples/blksize,
              (naudioindev > 0 ? audioindev[0] : 0),
               (naudiooutdev > 0 ? audiooutdev[0] : 0),
                (callback ? sched_audio_callbackfn : 0));
@@ -530,15 +526,15 @@ int sys_send_dacs(void)
         for (i = 0, n = sys_inchannels * DEFDACBLKSIZE, maxsamp = sys_inmax;
             i < n; i++)
         {
-            t_sample f = sys_soundin[i];
+            t_sample f = STUFF->st_soundin[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
         sys_inmax = maxsamp;
-        for (i = 0, n = sys_outchannels * DEFDACBLKSIZE, maxsamp = sys_outmax;
-            i < n; i++)
+        for (i = 0, n = STUFF->st_outchannels * DEFDACBLKSIZE,
+            maxsamp = sys_outmax; i < n; i++)
         {
-            t_sample f = sys_soundout[i];
+            t_sample f = STUFF->st_soundout[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -591,17 +587,17 @@ int sys_send_dacs(void)
 
 t_float sys_getsr(void)
 {
-     return (sys_dacsr);
+     return (STUFF->st_dacsr);
 }
 
 int sys_get_outchannels(void)
 {
-     return (sys_outchannels);
+     return (STUFF->st_outchannels);
 }
 
 int sys_get_inchannels(void)
 {
-     return (sys_inchannels);
+     return (STUFF->st_inchannels);
 }
 
 void sys_getmeters(t_sample *inmax, t_sample *outmax)

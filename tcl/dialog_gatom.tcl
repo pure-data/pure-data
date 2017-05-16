@@ -72,6 +72,7 @@ proc ::dialog_gatom::pdtk_gatom_dialog {mytoplevel initwidth initlower initupper
     }
 
     $mytoplevel.width.entry insert 0 $initwidth
+    $mytoplevel.width.entry selection range 0 end
     $mytoplevel.limits.lower.entry insert 0 $initlower
     $mytoplevel.limits.upper.entry insert 0 $initupper
     if {$initgatomlabel ne "-"} {

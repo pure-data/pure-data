@@ -245,6 +245,7 @@ proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
     regsub -all -- {^\(} $filelist {} filelist
     regsub -all -- {\)$} $filelist {} filelist
     regsub -line -- {^'(.*)'$} $filelist {\1} filelist
+    regsub -all -- {\\\\U} $filelist {\\u} filelist
 
     foreach file $filelist {
         set filename [regsub -- {,$} $file {}]
@@ -256,5 +257,5 @@ proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
 # the Mac OS X 'defaults' command uses single quotes to quote things,
 # so they need to be escaped
 proc ::pd_guiprefs::escape_for_plist {str} {
-    return [regsub -all -- {'} $str {\\'}]
+    return \"[regsub -all -- {"} $str {\\"}]\"
 }

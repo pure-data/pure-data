@@ -7,7 +7,6 @@
 #include <stdio.h>
 
 #include "m_pd.h"
-#include "s_stuff.h"    /* for sys_hostfontsize */
 #include "g_canvas.h"
 
 /*
@@ -2053,7 +2052,7 @@ static int array_doclick_element(t_array *array, t_glist *glist,
         else usexloc = xloc + xsum, xsum += xinc;
         useyloc = yloc + (yonset >= 0 ? fielddesc_cvttocoord(yfield,
             *(t_float *)(((char *)(array->a_vec) + elemsize * i) + yonset)) : 0);
-        
+
         if ((hit = scalar_doclick(
             (t_word *)((char *)(array->a_vec) + i * elemsize),
             elemtemplate, 0, array,

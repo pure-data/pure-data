@@ -787,11 +787,11 @@ void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except)
 {
     t_canvas *x;
     int dspwas = canvas_suspend_dsp();
-    glist_reloadingabstraction = except;
+    THISGUI->i_reloadingabstraction = except;
         /* find all root canvases */
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         glist_doreload(x, name, dir, &except->gl_gobj);
-    glist_reloadingabstraction = 0;
+    THISGUI->i_reloadingabstraction = 0;
     canvas_resume_dsp(dspwas);
 }
 
@@ -1031,7 +1031,7 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
     {
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
-        x->gl_isgraph = 0;
+        x->gl_isgraph = x->gl_hidetext = 0;
         if (x->gl_owner && !x->gl_loading && glist_isvisible(x->gl_owner))
         {
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
@@ -1114,7 +1114,9 @@ static void canvas_donecanvasdialog(t_glist *x,
     ypix = atom_getfloatarg(8, argc, argv);
     xmargin = atom_getfloatarg(9, argc, argv);
     ymargin = atom_getfloatarg(10, argc, argv);
-
+        /* hack - graphme is 0 for no, 1 for yes, and 3 for yes-and-hide-text*/
+    if (!(graphme & 1))
+        graphme = 0;
     x->gl_pixwidth = xpix;
     x->gl_pixheight = ypix;
     x->gl_xmargin = xmargin;
@@ -2361,7 +2363,6 @@ static void canvas_clearline(t_canvas *x)
     }
 }
 
-extern t_pd *newest;
 static void canvas_doclear(t_canvas *x)
 {
     t_gobj *y, *y2;
@@ -2388,12 +2389,12 @@ static void canvas_doclear(t_canvas *x)
     if (x->gl_editor->e_textedfor)
     {
         t_gobj *selwas = x->gl_editor->e_selection->sel_what;
-        newest = 0;
+        pd_this->pd_newest = 0;
         glist_noselect(x);
-        if (newest)
+        if (pd_this->pd_newest)
         {
             for (y = x->gl_list; y; y = y->g_next)
-                if (&y->g_pd == newest) glist_select(x, y);
+                if (&y->g_pd == pd_this->pd_newest) glist_select(x, y);
         }
     }
     while (1)   /* this is pretty wierd...  should rewrite it */

@@ -12,9 +12,12 @@ if { [catch {wm withdraw .} fid] } { exit 2 }
 
 package require Tcl 8.3
 package require Tk
-#package require tile
-## replace Tk widgets with Ttk widgets on 8.5
-#namespace import -force ttk::*
+if { [info patchlevel] >= 8.5 } {
+    #package require tile
+
+    # replace Tk widgets with Ttk widgets on 8.5
+    namespace import -force ttk::*
+}
 
 package require msgcat
 # TODO create a constructor in each package to create things at startup, that
@@ -468,6 +471,7 @@ proc set_base_font {family weight} {
             [_ "WARNING: Font weight '%s' not found, using default (%s)\n"] \
                 $weight $::font_weight]
     }
+    ::pdwindow::verbose 0 "Base font: $::font_family $::font_weight\n"
 }
 
 # create all the base fonts (i.e. pd_font_8 thru pd_font_36) so that they fit

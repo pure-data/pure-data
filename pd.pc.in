@@ -8,7 +8,7 @@ includedir=@includedir@
 
 ###############################
 # variables
-# the default file-extension for externals (e.g. "l_i386")
+# the default file-extension for externals (e.g. "pd_linux")
 extension=@EXTERNAL_EXTENSION@
 # where to install externals
 externaldir=${libdir}/pd/extra
@@ -16,7 +16,7 @@ externaldir=${libdir}/pd/extra
 ###############################
 # core configuration
 Name: pd
-Description: Pure data externals
+Description: Pure Data
 Version: @PACKAGE_VERSION@
 Cflags: -I${includedir}/pd -DPD @EXTERNAL_CFLAGS@
 Libs: @EXTERNAL_LDFLAGS@

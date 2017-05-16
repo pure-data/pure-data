@@ -8,7 +8,7 @@
 
 #include <string.h>
 #include <stdio.h>
-extern t_pd *newest;
+#include <stdlib.h>
 
 /* -------------------------- int ------------------------------ */
 static t_class *pdint_class;
@@ -75,7 +75,7 @@ static void *pdfloat_new(t_pd *dummy, t_float f)
     x->x_f = f;
     outlet_new(&x->x_obj, &s_float);
     floatinlet_new(&x->x_obj, &x->x_f);
-    newest = &x->x_obj.ob_pd;
+    pd_this->pd_newest = &x->x_obj.ob_pd;
     return (x);
 }
 
@@ -94,6 +94,20 @@ static void pdfloat_float(t_pdfloat *x, t_float f)
     outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 
+#ifdef _MSC_VER
+#define strtof _atoldbl
+#endif
+
+static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
+{
+    t_float f = 0.0f;
+    char *str_end = NULL;
+    f = strtof(s->s_name, &str_end);
+    if (f == 0 && s->s_name == str_end)
+        pd_error(x, "Couldn't convert %s to float.", s->s_name);
+    else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
+}
+
 static void pdfloat_send(t_pdfloat *x, t_symbol *s)
 {
     if (s->s_thing)
@@ -110,6 +124,7 @@ void pdfloat_setup(void)
         A_SYMBOL, 0);
     class_addbang(pdfloat_class, pdfloat_bang);
     class_addfloat(pdfloat_class, (t_method)pdfloat_float);
+    class_addsymbol(pdfloat_class, (t_method)pdfloat_symbol);
 }
 
 /* -------------------------- symbol ------------------------------ */
@@ -127,7 +142,7 @@ static void *pdsymbol_new(t_pd *dummy, t_symbol *s)
     x->x_s = s;
     outlet_new(&x->x_obj, &s_symbol);
     symbolinlet_new(&x->x_obj, &x->x_s);
-    newest = &x->x_obj.ob_pd;
+    pd_this->pd_newest = &x->x_obj.ob_pd;
     return (x);
 }
 
@@ -183,7 +198,7 @@ static void *bang_new(t_pd *dummy)
 {
     t_bang *x = (t_bang *)pd_new(bang_class);
     outlet_new(&x->x_obj, &s_bang);
-    newest = &x->x_obj.ob_pd;
+    pd_this->pd_newest = &x->x_obj.ob_pd;
     return (x);
 }
 

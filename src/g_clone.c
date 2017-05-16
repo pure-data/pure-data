@@ -178,29 +178,27 @@ static void clone_free(t_clone *x)
     }
 }
 
-extern t_pd *newest;
-
 static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
 {
     t_canvas *retval;
-    newest = 0;
+    pd_this->pd_newest = 0;
     typedmess(&pd_objectmaker, s, argc, argv);
-    if (newest == 0)
+    if (pd_this->pd_newest == 0)
     {
         error("clone: can't create subpatch '%s'",
             s->s_name);
         return (0);
     }
-    if (*newest != canvas_class)
+    if (*pd_this->pd_newest != canvas_class)
     {
         error("clone: can't clone '%s' because it's not an abstraction",
             s->s_name);
-        pd_free(newest);
-        newest = 0;
+        pd_free(pd_this->pd_newest);
+        pd_this->pd_newest = 0;
         return (0);
     }
-    retval = (t_canvas *)newest;
-    newest = 0;
+    retval = (t_canvas *)pd_this->pd_newest;
+    pd_this->pd_newest = 0;
     retval->gl_owner = 0;
     retval->gl_isclone = 1;
     return (retval);
@@ -420,7 +418,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
         outvec[i].o_n = x->x_startvoice;
         outvec[i].o_outlet =
             outlet_new(&x->x_obj, (outvec[i].o_signal ? &s_signal : 0));
-        obj_connect(&x->x_vec[0].c_gl->gl_obj, i, 
+        obj_connect(&x->x_vec[0].c_gl->gl_obj, i,
             (t_object *)(&outvec[i]), 0);
     }
     clone_setn(x, (t_floatarg)(wantn));
