@@ -20,6 +20,7 @@ for another, more permissive-sounding copyright notice.  -MSP
 
 /* ---------- Pd interface to OOURA FFT; imitate Mayer API ---------- */
 #include "m_pd.h"
+#include "m_imp.h"
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
@@ -47,30 +48,37 @@ static int ooura_init( int n)
         return (0);
     if (n > ooura_maxn)
     {
-        if (ooura_maxn)
+        pd_globallock();
+        if (n > ooura_maxn)    /* recheck in case it got set while we waited */
         {
-            t_freebytes(ooura_bitrev, ooura_bitrevsize);
-            t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT) / 2);
+            if (ooura_maxn)
+            {
+                t_freebytes(ooura_bitrev, ooura_bitrevsize);
+                t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT) / 2);
+            }
+            ooura_bitrevsize = sizeof(int) * (2 + (1 << (ilog2(n)/2)));
+            ooura_bitrev = (int *)t_getbytes(ooura_bitrevsize);
+            ooura_bitrev[0] = 0;
+            if (!ooura_bitrev)
+            {
+                error("out of memory allocating FFT buffer");
+                ooura_maxn = 0;
+                pd_globalunlock();
+                return (0);
+            }
+            ooura_costab = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT)/2);
+            if (!ooura_costab)
+            {
+                error("out of memory allocating FFT buffer");
+                t_freebytes(ooura_bitrev, ooura_bitrevsize);
+                ooura_maxn = 0;
+                pd_globalunlock();
+                return (0);
+            }
+            ooura_maxn = n;
+            ooura_bitrev[0] = 0;
         }
-        ooura_bitrevsize = sizeof(int) * (2 + (1 << (ilog2(n)/2)));
-        ooura_bitrev = (int *)t_getbytes(ooura_bitrevsize);
-        ooura_bitrev[0] = 0;
-        if (!ooura_bitrev)
-        {
-            error("out of memory allocating FFT buffer");
-            ooura_maxn = 0;
-            return (0);
-        }
-        ooura_costab = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT)/2);
-        if (!ooura_costab)
-        {
-            error("out of memory allocating FFT buffer");
-            t_freebytes(ooura_bitrev, ooura_bitrevsize);
-            ooura_maxn = 0;
-            return (0);
-        }
-        ooura_maxn = n;
-        ooura_bitrev[0] = 0;
+        pd_globalunlock();
     }
     return (1);
 }

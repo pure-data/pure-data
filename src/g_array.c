@@ -118,7 +118,7 @@ struct _garray
     char x_hidename;        /* don't print name above graph */
 };
 
-static t_pd *garray_arraytemplatecanvas;
+static t_pd *garray_arraytemplatecanvas;  /* written at setup w/ global lock */
 static const char garray_arraytemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
 #X obj 43 31 struct float-array array z float float style\n\

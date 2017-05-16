@@ -44,6 +44,7 @@ struct _instanceugen
     t_signal *u_freeborrowed;
     int u_phase;
     int u_loud;
+    struct _dspcontext *u_context;
 };
 
 #define THIS (pd_this->pd_ugen)
@@ -572,18 +573,15 @@ struct _dspcontext
     char dc_toplevel;       /* true if "iosigs" is invalid. */
     char dc_reblock;        /* true if we have to reblock inlets/outlets */
     char dc_switched;       /* true if we're switched */
-
 };
 
 #define t_dspcontext struct _dspcontext
 
-static PERTHREAD t_dspcontext *ugen_currentcontext;
-
     /* get a new signal for the current context - used by clone~ object */
 t_signal *signal_newfromcontext(int borrowed)
 {
-    return (signal_new((borrowed? 0 : ugen_currentcontext->dc_calcsize),
-        ugen_currentcontext->dc_srate));
+    return (signal_new((borrowed? 0 : THIS->u_context->dc_calcsize),
+        THIS->u_context->dc_srate));
 }
 
 void ugen_stop(void)
@@ -607,7 +605,7 @@ void ugen_start(void)
     THIS->u_dspchain = (t_int *)getbytes(sizeof(*THIS->u_dspchain));
     THIS->u_dspchain[0] = (t_int)dsp_done;
     THIS->u_dspchainsize = 1;
-    if (ugen_currentcontext) bug("ugen_start");
+    if (THIS->u_context) bug("ugen_start");
 }
 
 int ugen_getsortno(void)
@@ -660,8 +658,8 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
     dc->dc_iosigs = sp;
     dc->dc_ninlets = ninlets;
     dc->dc_noutlets = noutlets;
-    dc->dc_parentcontext = ugen_currentcontext;
-    ugen_currentcontext = dc;
+    dc->dc_parentcontext = THIS->u_context;
+    THIS->u_context = dc;
     return (dc);
 }
 
@@ -1176,19 +1174,19 @@ void ugen_done_graph(t_dspcontext *dc)
         dc->dc_ugenlist = u->u_next;
         freebytes(u, sizeof *u);
     }
-    if (ugen_currentcontext == dc)
-        ugen_currentcontext = dc->dc_parentcontext;
-    else bug("ugen_currentcontext");
+    if (THIS->u_context == dc)
+        THIS->u_context = dc->dc_parentcontext;
+    else bug("THIS->u_context");
     freebytes(dc, sizeof(*dc));
 
 }
 
 t_signal *ugen_getiosig(int index, int inout)
 {
-    if (!ugen_currentcontext) bug("ugen_getiosig");
-    if (ugen_currentcontext->dc_toplevel) return (0);
-    if (inout) index += ugen_currentcontext->dc_ninlets;
-    return (ugen_currentcontext->dc_iosigs[index]);
+    if (!THIS->u_context) bug("ugen_getiosig");
+    if (THIS->u_context->dc_toplevel) return (0);
+    if (inout) index += THIS->u_context->dc_ninlets;
+    return (THIS->u_context->dc_iosigs[index]);
 }
 
 /* ------------------------ samplerate~~ -------------------------- */
