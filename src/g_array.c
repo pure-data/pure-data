@@ -768,7 +768,7 @@ static void garray_save(t_gobj *z, t_binbuf *b)
     garray_savecontentsto(x, b);
 }
 
-t_widgetbehavior garray_widgetbehavior =
+const t_widgetbehavior garray_widgetbehavior =
 {
     garray_getrect,
     garray_displace,

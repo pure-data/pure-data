@@ -1195,7 +1195,7 @@ void text_save(t_gobj *z, t_binbuf *b)
 }
 
     /* this one is for everyone but "gatoms"; it's imposed in m_class.c */
-t_widgetbehavior text_widgetbehavior =
+const t_widgetbehavior text_widgetbehavior =
 {
     text_getrect,
     text_displace,
@@ -1206,7 +1206,7 @@ t_widgetbehavior text_widgetbehavior =
     text_click,
 };
 
-static t_widgetbehavior gatom_widgetbehavior =
+static const t_widgetbehavior gatom_widgetbehavior =
 {
     text_getrect,
     gatom_displace,

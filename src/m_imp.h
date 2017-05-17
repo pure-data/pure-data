@@ -47,8 +47,8 @@ struct _class
     t_symbolmethod c_symbolmethod;
     t_listmethod c_listmethod;
     t_anymethod c_anymethod;
-    struct _widgetbehavior *c_wb;       /* "gobjs" only */
-    struct _parentwidgetbehavior *c_pwb;/* widget behavior in parent */
+    const struct _widgetbehavior *c_wb; /* "gobjs" only */
+    const struct _parentwidgetbehavior *c_pwb;/* widget behavior in parent */
     t_savefn c_savefn;                  /* function to call when saving */
     t_propertiesfn c_propertiesfn;      /* function to start prop dialog */
     struct _class *c_next;

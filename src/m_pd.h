@@ -449,7 +449,7 @@ EXTERN_STRUCT _widgetbehavior;
 
 EXTERN_STRUCT _parentwidgetbehavior;
 #define t_parentwidgetbehavior struct _parentwidgetbehavior
-EXTERN t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
+EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 
 /* -------------------- classes -------------- */
 
@@ -475,9 +475,9 @@ EXTERN void class_addsymbol(t_class *c, t_method fn);
 EXTERN void class_addlist(t_class *c, t_method fn);
 EXTERN void class_addanything(t_class *c, t_method fn);
 EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
-EXTERN void class_setwidget(t_class *c, t_widgetbehavior *w);
-EXTERN void class_setparentwidget(t_class *c, t_parentwidgetbehavior *w);
-EXTERN t_parentwidgetbehavior *class_parentwidget(t_class *c);
+EXTERN void class_setwidget(t_class *c, const t_widgetbehavior *w);
+EXTERN void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *w);
+EXTERN const t_parentwidgetbehavior *class_parentwidget(t_class *c);
 EXTERN char *class_getname(t_class *c);
 EXTERN char *class_gethelpname(t_class *c);
 EXTERN char *class_gethelpdir(t_class *c);

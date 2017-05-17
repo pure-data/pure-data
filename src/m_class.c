@@ -6,6 +6,7 @@
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
+#include "g_canvas.h"
 #include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -376,7 +377,6 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     how this is handled.  */
 
 extern void text_save(t_gobj *z, t_binbuf *b);
-extern t_widgetbehavior text_widgetbehavior;
 
 t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)
@@ -600,12 +600,12 @@ void class_addanything(t_class *c, t_method fn)
     c->c_anymethod = (t_anymethod)fn;
 }
 
-void class_setwidget(t_class *c, t_widgetbehavior *w)
+void class_setwidget(t_class *c, const t_widgetbehavior *w)
 {
     c->c_wb = w;
 }
 
-void class_setparentwidget(t_class *c, t_parentwidgetbehavior *pw)
+void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *pw)
 {
     c->c_pwb = pw;
 }
@@ -625,7 +625,7 @@ void class_sethelpsymbol(t_class *c, t_symbol *s)
     c->c_helpname = s;
 }
 
-t_parentwidgetbehavior *pd_getparentwidget(t_pd *x)
+const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x)
 {
     return ((*x)->c_pwb);
 }

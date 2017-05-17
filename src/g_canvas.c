@@ -350,7 +350,6 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     if (THISGUI->i_newdirectory &&
         THISGUI->i_newdirectory->s_name[0])
     {
-        static int dollarzero = 1000;
         t_canvasenvironment *env = x->gl_env =
             (t_canvasenvironment *)getbytes(sizeof(*x->gl_env));
         if (!THISGUI->i_newargv)
@@ -358,7 +357,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         env->ce_dir = THISGUI->i_newdirectory;
         env->ce_argc = THISGUI->i_newargc;
         env->ce_argv = THISGUI->i_newargv;
-        env->ce_dollarzero = dollarzero++;
+        env->ce_dollarzero = THISGUI->i_dollarzero++;
         env->ce_path = 0;
         THISGUI->i_newdirectory = &s_;
         THISGUI->i_newargc = 0;
@@ -428,7 +427,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     t_float x1, t_float y1, t_float x2, t_float y2,
     t_float px1, t_float py1, t_float px2, t_float py2)
 {
-    static int gcount = 0;
+    static int gcount = 0;  /* it's OK if two threads get the same value */
     int zz;
     int menu = 0;
     char *str;
@@ -1820,6 +1819,7 @@ void g_canvas_newpdinstance( void)
     THISGUI->i_newargv = 0;
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
+    THISGUI->i_dollarzero = 1000;
     g_editor_newpdinstance();
     g_template_newpdinstance();
 }

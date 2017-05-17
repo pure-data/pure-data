@@ -1320,7 +1320,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
     return (1);
 }
 
-t_parentwidgetbehavior curve_widgetbehavior =
+const t_parentwidgetbehavior curve_widgetbehavior =
 {
     curve_getrect,
     curve_displace,
@@ -1627,7 +1627,8 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
                 for (y = elemtemplatecanvas->gl_list; y; y = y->g_next)
                 {
                     int xx1, xx2, yy1, yy2;
-                    t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
+                    const t_parentwidgetbehavior *wb =
+                        pd_getparentwidget(&y->g_pd);
                     if (!wb) continue;
                     (*wb->w_parentgetrectfn)(y, glist,
                         (t_word *)((char *)(array->a_vec) + elemsize * i),
@@ -1920,7 +1921,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     fielddesc_cvttocoord(yfielddesc, yval);
                 for (y = elemtemplatecanvas->gl_list; y; y = y->g_next)
                 {
-                    t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
+                    const t_parentwidgetbehavior *wb =
+                        pd_getparentwidget(&y->g_pd);
                     if (!wb) continue;
                     (*wb->w_parentvisfn)(y, glist,
                         (t_word *)(elem + elemsize * i),
@@ -1940,7 +1942,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 t_gobj *y;
                 for (y = elemtemplatecanvas->gl_list; y; y = y->g_next)
                 {
-                    t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);
+                    const t_parentwidgetbehavior *wb =
+                        pd_getparentwidget(&y->g_pd);
                     if (!wb) continue;
                     (*wb->w_parentvisfn)(y, glist,
                         (t_word *)(elem + elemsize * i), elemtemplate,
@@ -2334,7 +2337,7 @@ static int plot_click(t_gobj *z, t_glist *glist,
     else return (0);
 }
 
-t_parentwidgetbehavior plot_widgetbehavior =
+const t_parentwidgetbehavior plot_widgetbehavior =
 {
     plot_getrect,
     plot_displace,
@@ -2713,7 +2716,7 @@ static int drawnumber_click(t_gobj *z, t_glist *glist,
     else return (0);
 }
 
-t_parentwidgetbehavior drawnumber_widgetbehavior =
+const t_parentwidgetbehavior drawnumber_widgetbehavior =
 {
     drawnumber_getrect,
     drawnumber_displace,

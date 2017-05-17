@@ -258,7 +258,8 @@ struct _instancecanvas
     t_atom *i_newargv;
     t_glist *i_reloadingabstraction;
     int i_dspstate;
-
+    int i_dollarzero;
+    t_float i_graph_lastxpix, i_graph_lastypix;
 };
 
 void g_editor_newpdinstance( void);
@@ -445,7 +446,7 @@ EXTERN int text_xcoord(t_text *x, t_glist *glist);
 EXTERN int text_ycoord(t_text *x, t_glist *glist);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
-extern t_widgetbehavior text_widgetbehavior;
+extern const t_widgetbehavior text_widgetbehavior;
 
 /* -------------------- functions on rtexts ------------------------- */
 #define RTEXT_DOWN 1

@@ -407,7 +407,7 @@ static void scalar_properties(t_gobj *z, struct _glist *owner)
     t_freebytes(buf, bufsize+1);
 }
 
-static t_widgetbehavior scalar_widgetbehavior =
+static const t_widgetbehavior scalar_widgetbehavior =
 {
     scalar_getrect,
     scalar_displace,
