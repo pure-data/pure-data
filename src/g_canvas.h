@@ -250,15 +250,25 @@ typedef struct _linetraverser
 
 struct _instancecanvas
 {
+    struct _instanceeditor *i_editor;
+    struct _instancetemplate *i_template;
     t_symbol *i_newfilename;
     t_symbol *i_newdirectory;
     int i_newargc;
     t_atom *i_newargv;
     t_glist *i_reloadingabstraction;
     int i_dspstate;
+
 };
 
+void g_editor_newpdinstance( void);
+void g_template_newpdinstance( void);
+void g_editor_freepdinstance( void);
+void g_template_freepdinstance( void);
+
 #define THISGUI (pd_this->pd_gui)
+#define EDITOR (pd_this->pd_gui->i_editor)
+#define TEMPLATE (pd_this->pd_gui->i_template)
 
 /* function types used to define graphical behavior for gobjs, a bit like X
 widgets.  We don't use Pd methods because Pd's typechecking can't specify the

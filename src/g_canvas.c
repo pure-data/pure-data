@@ -323,7 +323,6 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = 0, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
-    static int dollarzero = 1000;
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
@@ -1816,16 +1815,19 @@ void canvas_add_for_class(t_class *c)
 void g_canvas_newpdinstance( void)
 {
     THISGUI = getbytes(sizeof(*THISGUI));
-    THISGUI->i_newfilename =
-    THISGUI->i_newdirectory = &s_;
+    THISGUI->i_newfilename = THISGUI->i_newdirectory = &s_;
     THISGUI->i_newargc = 0;
     THISGUI->i_newargv = 0;
     THISGUI->i_reloadingabstraction = 0;
     THISGUI->i_dspstate = 0;
+    g_editor_newpdinstance();
+    g_template_newpdinstance();
 }
 
 void g_canvas_freepdinstance( void)
 {
+    g_editor_freepdinstance();
+    g_template_freepdinstance();
     freebytes(THISGUI, sizeof(*THISGUI));
 }
 
