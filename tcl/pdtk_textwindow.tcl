@@ -16,7 +16,7 @@ proc pdtk_textwindow_open {name geometry title font} {
  if {[winfo exists $name]} {
         $name.text delete 1.0 end
     } else {
-        toplevel $name
+        toplevel $name -class DialogWindow
         wm title $name $title
         wm geometry $name $geometry
         wm protocol $name WM_DELETE_WINDOW \
@@ -24,7 +24,7 @@ proc pdtk_textwindow_open {name geometry title font} {
         bind $name <<Modified>> "pdtk_textwindow_dodirty $name"
         text $name.text -relief raised -highlightthickness 0 -bd 2 \
             -font [get_font_for_size $font] \
-            -yscrollcommand "$name.scroll set" -background white
+            -yscrollcommand "$name.scroll set"
         scrollbar $name.scroll -command "$name.text yview"
         pack $name.scroll -side right -fill y
         pack $name.text -side left -fill both -expand 1
