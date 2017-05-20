@@ -262,6 +262,27 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_messagelist = 0;
 }
 
+static void sys_fakefromgui(void)
+{
+        /* fake the GUI's message giving cwd and font sizes in case
+        we aren't starting the gui. */
+    t_atom zz[NDEFAULTFONT+2];
+    int i;
+#ifdef _WIN32
+    if (GetCurrentDirectory(MAXPDSTRING, cmdbuf) == 0)
+        strcpy(cmdbuf, ".");
+#else
+    if (!getcwd(cmdbuf, MAXPDSTRING))
+        strcpy(cmdbuf, ".");
+
+#endif
+    SETSYMBOL(zz, gensym(cmdbuf));
+    for (i = 0; i < (int)NDEFAULTFONT; i++)
+        SETFLOAT(zz+i+1, defaultfontshit[i]);
+    SETFLOAT(zz+NDEFAULTFONT+1,0);
+    glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
+}
+
 static void sys_afterargparse(void);
 
 /* this is called from main() in s_entry.c */
@@ -304,7 +325,9 @@ int sys_main(int argc, char **argv)
     if (sys_version)    /* if we were just asked our version, exit here. */
         return (0);
     sys_setsignalhandlers();
-    if (!sys_nogui && sys_startgui(sys_libdir->s_name)) /* start the gui */
+    if (!sys_nogui)
+        sys_fakefromgui();
+    else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);
     if (sys_externalschedlib)
         return (sys_run_scheduler(sys_externalschedlibname,

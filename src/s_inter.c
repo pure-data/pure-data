@@ -930,27 +930,7 @@ static int sys_do_startgui(const char *libdir)
     if (WSAStartup(version, &nobby)) sys_sockerror("WSAstartup");
 #endif /* _WIN32 */
 
-    if (sys_nogui)
-    {
-            /* fake the GUI's message giving cwd and font sizes; then
-            skip starting the GUI up. */
-        t_atom zz[NDEFAULTFONT+2];
-        int i;
-#ifdef _WIN32
-        if (GetCurrentDirectory(MAXPDSTRING, cmdbuf) == 0)
-            strcpy(cmdbuf, ".");
-#else
-        if (!getcwd(cmdbuf, MAXPDSTRING))
-            strcpy(cmdbuf, ".");
-
-#endif
-        SETSYMBOL(zz, gensym(cmdbuf));
-        for (i = 0; i < (int)NDEFAULTFONT; i++)
-            SETFLOAT(zz+i+1, defaultfontshit[i]);
-        SETFLOAT(zz+NDEFAULTFONT+1,0);
-        glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
-    }
-    else if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
+    if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
     {
         struct sockaddr_in server = {0};
         struct hostent *hp;
