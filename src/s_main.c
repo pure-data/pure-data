@@ -262,21 +262,27 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_messagelist = 0;
 }
 
+static int defaultfontshit[] = {
+9, 5, 10, 11, 7, 13, 14, 8, 16, 17, 10, 20, 22, 13, 25, 39, 23, 45,
+17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
+#define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
+
 static void sys_fakefromgui(void)
 {
         /* fake the GUI's message giving cwd and font sizes in case
         we aren't starting the gui. */
     t_atom zz[NDEFAULTFONT+2];
     int i;
+    char buf[MAXPDSTRING];
 #ifdef _WIN32
-    if (GetCurrentDirectory(MAXPDSTRING, cmdbuf) == 0)
-        strcpy(cmdbuf, ".");
+    if (GetCurrentDirectory(MAXPDSTRING, buf) == 0)
+        strcpy(buf, ".");
 #else
-    if (!getcwd(cmdbuf, MAXPDSTRING))
-        strcpy(cmdbuf, ".");
+    if (!getcwd(buf, MAXPDSTRING))
+        strcpy(buf, ".");
 
 #endif
-    SETSYMBOL(zz, gensym(cmdbuf));
+    SETSYMBOL(zz, gensym(buf));
     for (i = 0; i < (int)NDEFAULTFONT; i++)
         SETFLOAT(zz+i+1, defaultfontshit[i]);
     SETFLOAT(zz+NDEFAULTFONT+1,0);
@@ -325,7 +331,7 @@ int sys_main(int argc, char **argv)
     if (sys_version)    /* if we were just asked our version, exit here. */
         return (0);
     sys_setsignalhandlers();
-    if (!sys_nogui)
+    if (sys_nogui)
         sys_fakefromgui();
     else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);

@@ -396,9 +396,11 @@ void sys_sockerror(char *s)
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
 {
-    int nfd = pd_this->pd_inter->i_nfdpoll;
-    int size = nfd * sizeof(t_fdpoll);
+    int nfd, size;
     t_fdpoll *fp;
+    sys_init_fdpoll();
+    nfd = pd_this->pd_inter->i_nfdpoll;
+    size = nfd * sizeof(t_fdpoll);
     pd_this->pd_inter->i_fdpoll = (t_fdpoll *)t_resizebytes(
         pd_this->pd_inter->i_fdpoll, size, size + sizeof(t_fdpoll));
     fp = pd_this->pd_inter->i_fdpoll + nfd;
@@ -901,11 +903,6 @@ void glob_watchdog(t_pd *dummy)
 #endif
 
 #define FIRSTPORTNUM 5400
-
-static int defaultfontshit[] = {
-9, 5, 10, 11, 7, 13, 14, 8, 16, 17, 10, 20, 22, 13, 25, 39, 23, 45,
-17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
-#define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 static int sys_do_startgui(const char *libdir)
 {
