@@ -53,6 +53,25 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-w>      {menu_send_float %W menuclose 0}
     bind all <$::modifier-Key-x>      {menu_send %W cut}
     bind all <$::modifier-Key-z>      {menu_undo}
+    # uppercase bindings, for the CapsLock case
+    bind all <$::modifier-Key-A>      {menu_send %W selectall}
+    bind all <$::modifier-Key-B>      {menu_helpbrowser}
+    bind all <$::modifier-Key-C>      {menu_send %W copy}
+    bind all <$::modifier-Key-D>      {menu_send %W duplicate}
+    bind all <$::modifier-Key-E>      {menu_toggle_editmode}
+    bind all <$::modifier-Key-F>      {menu_find_dialog}
+    bind all <$::modifier-Key-G>      {menu_send %W findagain}
+    bind all <$::modifier-Key-N>      {menu_new}
+    bind all <$::modifier-Key-O>      {menu_open}
+    bind all <$::modifier-Key-P>      {menu_print $::focused_window}
+    bind all <$::modifier-Key-Q>      {pdsend "pd verifyquit"}
+    bind all <$::modifier-Key-R>      {menu_raise_pdwindow}
+    bind all <$::modifier-Key-S>      {menu_send %W menusave}
+    bind all <$::modifier-Key-V>      {menu_send %W paste}
+    bind all <$::modifier-Key-W>      {menu_send_float %W menuclose 0}
+    bind all <$::modifier-Key-X>      {menu_send %W cut}
+    bind all <$::modifier-Key-Z>      {menu_undo}
+
     bind all <$::modifier-Key-1>      {menu_send_float %W obj 0}
     bind all <$::modifier-Key-2>      {menu_send_float %W msg 0}
     bind all <$::modifier-Key-3>      {menu_send_float %W floatatom 0}
@@ -86,17 +105,39 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-V> {menu_send %W vslider}
     bind all <$::modifier-Shift-Key-W> {menu_send_float %W menuclose 1}
     bind all <$::modifier-Shift-Key-Z> {menu_redo}
+    # lowercase bindings, for the CapsLock case
+    bind all <$::modifier-Shift-Key-b> {menu_send %W bng}
+    bind all <$::modifier-Shift-Key-c> {menu_send %W mycnv}
+    bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-h> {menu_send %W hslider}
+    bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
+    bind all <$::modifier-Shift-Key-l> {menu_clear_console}
+    bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
+    bind all <$::modifier-Shift-Key-q> {pdsend "pd quit"}
+    bind all <$::modifier-Shift-Key-s> {menu_send %W menusaveas}
+    bind all <$::modifier-Shift-Key-t> {menu_send %W toggle}
+    bind all <$::modifier-Shift-Key-u> {menu_send %W vumeter}
+    bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
+    bind all <$::modifier-Shift-Key-w> {menu_send_float %W menuclose 1}
+    bind all <$::modifier-Shift-Key-z> {menu_redo}
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
         # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
         bind all <$::modifier-Key-m>       {menu_minimize %W}
         bind all <$::modifier-Key-t>       {menu_font_dialog}
-        bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
+        bind all <$::modifier-Key-M>       {menu_minimize %W}
+        bind all <$::modifier-Key-T>       {menu_font_dialog}
+        bind all <$::modifier-Shift-Key-k> {menu_message_dialog}
+
+        bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
     } else {
         bind all <$::modifier-Key-m>       {menu_message_dialog}
         #bind all <$::modifier-Key-t>       {menu_texteditor}
+        bind all <$::modifier-Key-M>       {menu_message_dialog}
+        #bind all <$::modifier-Key-T>       {menu_texteditor}
+
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
     }
@@ -121,6 +162,11 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     bind $mytoplevel <$::modifier-Key-s>       {bell; break}
     bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
     bind $mytoplevel <$::modifier-Key-p>       {bell; break}
+    # and the CapsLock case...
+    bind $mytoplevel <$::modifier-Key-W> "dialog_${dialogname}::cancel $mytoplevel"
+    bind $mytoplevel <$::modifier-Key-S>       {bell; break}
+    bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
+    bind $mytoplevel <$::modifier-Key-P>       {bell; break}
 
     wm protocol $mytoplevel WM_DELETE_WINDOW "dialog_${dialogname}::cancel $mytoplevel"
 }
