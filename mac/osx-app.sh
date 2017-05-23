@@ -13,7 +13,7 @@
 WD=$(dirname $0)
 
 verbose=
-included_wish=false
+included_wish=true
 TK=Current
 
 # Help message
@@ -28,9 +28,9 @@ Options:
   -h,--help           display this help message
   -v,--verbose        verbose copy prints
   -t,--tk VER         build using a specific version of the Tk
-                      Wish.app on the system (default: Current)
+                      Wish.app on the system
   -i,--included-wish  build using the included Tk 8.4 Wish.app,
-                      *may not* be present (default: no)
+                      *may not* be present (default)
 
 Arguments:
 
