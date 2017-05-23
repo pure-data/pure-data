@@ -348,13 +348,12 @@ void sys_set_priority(int higher)
     par.sched_priority = p3;
     if (sched_setscheduler(0,SCHED_FIFO,&par) < 0)
     {
-        if (!higher)
-            post("priority %d scheduling failed; running at normal priority",
-                p3);
+        if (!higher) fprintf(stderr,
+                "priority %d scheduling failed; running at normal priority.\n", p3);
         else fprintf(stderr, "priority %d scheduling failed.\n", p3);
     }
-    else if (!higher && sys_verbose)
-        post("priority %d scheduling enabled.\n", p3);
+    else if (sys_verbose)
+        fprintf(stderr, "priority %d scheduling enabled.\n", p3);
 #endif
 
 #ifdef REALLY_POSIX_MEMLOCK /* this doesn't work on Fedora 4, for example. */
