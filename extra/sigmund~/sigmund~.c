@@ -1071,6 +1071,7 @@ static void sigmund_free(t_sigmund *x)
     }
     if (x->x_trackv)
         freebytes(x->x_trackv, x->x_ntrack * sizeof(*x->x_trackv));
+    freebytes(x->x_varoutv, x->x_nvarout * sizeof(t_varout));
     clock_free(x->x_clock);
 }
 
