@@ -10,6 +10,7 @@
 void g_array_setup(void);
 void g_canvas_setup(void);
 void g_guiconnect_setup(void);
+void g_canvas_cleanup(void);
 /* iemlib */
 void g_bang_setup(void);
 void g_hradio_setup(void);
@@ -108,3 +109,7 @@ void conf_init(void)
     d_ugen_setup();
 }
 
+void conf_term(void)
+{
+    g_canvas_cleanup();
+}
