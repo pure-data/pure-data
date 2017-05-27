@@ -59,6 +59,10 @@ struct _class
     char c_drawcommand;             /* a drawing command for a template */
 };
 
+/* m_pd.c */
+EXTERN void pd_init_systems(void);
+EXTERN void pd_term_systems(void);
+
 /* m_class.c */
 EXTERN void pd_emptylist(t_pd *x);
 

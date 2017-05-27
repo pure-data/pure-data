@@ -293,6 +293,7 @@ void obj_init(void);
 void conf_init(void);
 void glob_init(void);
 void garray_init(void);
+void conf_term(void);
 
 void pd_init(void)
 {
@@ -308,12 +309,22 @@ void pd_init(void)
     pd_instances[0] = &pd_maininstance;
     pd_ninstances = 1;
 #endif
+    pd_init_systems();
+}
+
+EXTERN void pd_init_systems(void) {
     mess_init();
     sys_lock();
     obj_init();
     conf_init();
     glob_init();
     garray_init();
+    sys_unlock();
+}
+
+EXTERN void pd_term_systems(void) {
+    sys_lock();
+    conf_term();
     sys_unlock();
 }
 
