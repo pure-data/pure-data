@@ -4191,8 +4191,8 @@ void g_editor_setup(void)
 
 void g_editor_cleanup(void)
 {
-  binbuf_free(EDITOR->copy_binbuf);
-  EDITOR->copy_binbuf = 0;
+    binbuf_free(EDITOR->copy_binbuf);
+    EDITOR->copy_binbuf = 0;
 }
 
 void canvas_editor_for_class(t_class *c)
