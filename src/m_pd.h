@@ -208,6 +208,8 @@ EXTERN_STRUCT _glist;
 #define t_glist struct _glist
 #define t_canvas struct _glist  /* LATER lose this */
 
+EXTERN_STRUCT _template;
+
 typedef t_class *t_pd;      /* pure datum: nothing but a class pointer */
 
 typedef struct _gobj        /* a graphical object */
@@ -807,6 +809,7 @@ struct _pdinstance
     double pd_systime;          /* global time in Pd ticks */
     t_clock *pd_clock_setlist;  /* list of set clocks */
     t_canvas *pd_canvaslist;    /* list of all root canvases */
+    struct _template *pd_templatelist;  /* list of all templates */
     int pd_instanceno;          /* ordinal number of this instance */
     t_symbol **pd_symhash;      /* symbol table hash table */
     t_instancemidi *pd_midi;    /* private stuff for x_midi.c */
