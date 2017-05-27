@@ -296,11 +296,14 @@ void garray_init(void);
 
 void pd_init(void)
 {
+#ifndef PDINSTANCE
     static int initted = 0;
     if (initted)
         return;
     initted = 1;
-#ifdef PDINSTANCE
+#else
+    if (pd_instances)
+        return;
     pd_instances = (t_pdinstance **)getbytes(sizeof(*pd_instances));
     pd_instances[0] = &pd_maininstance;
     pd_ninstances = 1;

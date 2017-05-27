@@ -112,6 +112,7 @@ typedef struct _symbol
     char *s_name;
     struct _class **s_thing;
     struct _symbol *s_next;
+    int s_allocd;
 } t_symbol;
 
 EXTERN_STRUCT _array;
@@ -506,6 +507,10 @@ EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 #define class_addsymbol(x, y) class_addsymbol((x), (t_method)(y))
 #define class_addlist(x, y) class_addlist((x), (t_method)(y))
 #define class_addanything(x, y) class_addanything((x), (t_method)(y))
+#endif
+
+#ifdef PDINSTANCE
+EXTERN t_class *class_list;
 #endif
 
 /* ------------   printing --------------------------------- */

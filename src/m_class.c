@@ -32,7 +32,7 @@ t_pd pd_canvasmaker;    /* factory for creating canvases */
 static t_symbol *class_extern_dir;
 
 #ifdef PDINSTANCE
-static t_class *class_list = 0;
+t_class *class_list = 0;
 PERTHREAD t_pdinstance *pd_this;
 t_pdinstance **pd_instances;
 int pd_ninstances;
@@ -47,7 +47,7 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
 void x_midi_newpdinstance( void);
 void x_midi_freepdinstance( void);
 void s_inter_newpdinstance( void);
-void s_inter_freepdinstance( void);
+void s_inter_free(t_instanceinter *inter);
 void g_canvas_newpdinstance( void);
 void g_canvas_freepdinstance( void);
 void d_ugen_newpdinstance( void);
@@ -194,6 +194,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     t_canvas *canvas;
     int i, instanceno = x->pd_instanceno;
     t_class *c;
+    t_instanceinter *inter = x->pd_inter;
     pd_setinstance(x);
     sys_lock();
     pd_globallock();
@@ -203,22 +204,22 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         pd_free((t_pd *)x->pd_canvaslist);
     for (c = class_list; c; c = c->c_next)
     {
+        freebytes(c->c_methods[instanceno],
+            c->c_nmethod * sizeof(*c->c_methods));
+        for (i = instanceno; i < pd_ninstances-1; i++)
+            c->c_methods[i] = c->c_methods[i+1];
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
             pd_ninstances * sizeof(*c->c_methods),
-            (pd_ninstances + 1) * sizeof(*c->c_methods));
-        c->c_methods[pd_ninstances] = t_getbytes(0);
-        for (i = 0; i < c->c_nmethod; i++)
-            class_addmethodtolist(c, &c->c_methods[pd_ninstances], i,
-                c->c_methods[0][i].me_fun,
-                dogensym(c->c_methods[0][i].me_name->s_name, 0, x),
-                    c->c_methods[0][i].me_arg, x);
+            (pd_ninstances - 1) * sizeof(*c->c_methods));
     }
     for (i =0; i < SYMTABHASHSIZE; i++)
     {
         while ((s = x->pd_symhash[i]))
         {
             x->pd_symhash[i] = s->s_next;
-            freebytes(s, sizeof(*s));
+            freebytes(s->s_name, strlen(s->s_name)+1);
+            if (s->s_allocd)
+                freebytes(s, sizeof(*s));
         }
     }
     freebytes(x->pd_symhash, SYMTABHASHSIZE * sizeof (*x->pd_symhash));
@@ -226,7 +227,6 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     g_canvas_freepdinstance();
     d_ugen_freepdinstance();
     s_stuff_freepdinstance();
-    s_inter_freepdinstance();
     for (i = instanceno; i < pd_ninstances-1; i++)
         pd_instances[i] = pd_instances[i+1];
     pd_instances = (t_pdinstance **)resizebytes(pd_instances,
@@ -237,6 +237,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     pd_globalunlock();
     sys_unlock();
     pd_setinstance(&pd_maininstance);
+    s_inter_free(inter);  /* must happen after sys_unlock() */
 }
 
 #endif /* PDINSTANCE */
@@ -493,7 +494,6 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     t_atomtype arg1, ...)
 {
     va_list ap;
-    t_methodentry *m;
     t_atomtype argtype = arg1;
     int nargs, i;
 
@@ -721,7 +721,10 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     }
     if (oldsym)
         sym2 = oldsym;
-    else sym2 = (t_symbol *)t_getbytes(sizeof(*sym2));
+    else {
+        sym2 = (t_symbol *)t_getbytes(sizeof(*sym2));
+        sym2->s_allocd = 1;
+    }
     sym2->s_name = t_getbytes(length+1);
     sym2->s_next = 0;
     sym2->s_thing = 0;

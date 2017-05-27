@@ -127,6 +127,7 @@ static void phasor_setup(void)
 /* ------------------------ cos~ ----------------------------- */
 
 float *cos_table;
+static float cos_table_buf[COSTABSIZE+1];
 
 static t_class *cos_class;
 
@@ -206,7 +207,7 @@ static void cos_maketable(void)
     union tabfudge tf;
 
     if (cos_table) return;
-    cos_table = (float *)getbytes(sizeof(float) * (COSTABSIZE+1));
+    cos_table = cos_table_buf;
     for (i = COSTABSIZE + 1, fp = cos_table, phase = 0; i--;
         fp++, phase += phsinc)
             *fp = cos(phase);
