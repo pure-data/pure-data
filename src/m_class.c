@@ -71,7 +71,8 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     int i;
     x->pd_systime = 0;
     x->pd_clock_setlist = 0;
-     x->pd_canvaslist = 0;
+    x->pd_canvaslist = 0;
+    x->pd_templatelist = 0;
     x->pd_symhash = getbytes(SYMTABHASHSIZE * sizeof(*x->pd_symhash));
     for (i = 0; i < SYMTABHASHSIZE; i++)
         x->pd_symhash[i] = 0;
@@ -202,6 +203,8 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     canvas_suspend_dsp();
     while (x->pd_canvaslist)
         pd_free((t_pd *)x->pd_canvaslist);
+    while (x->pd_templatelist)
+        pd_free((t_pd *)x->pd_templatelist);
     for (c = class_list; c; c = c->c_next)
     {
         freebytes(c->c_methods[instanceno],

@@ -216,6 +216,7 @@ typedef struct _template
     t_symbol *t_sym;            /* name */
     int t_n;                    /* number of dataslots (fields) */
     t_dataslot *t_vec;          /* array of dataslots */
+    struct _template *t_next;
 } t_template;
 
 struct _array
