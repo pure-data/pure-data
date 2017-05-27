@@ -1473,8 +1473,6 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 #endif
     return (newb);
 }
-void pd_doloadbang(void);
-
 
 /* LATER make this evaluate the file on-the-fly. */
 /* LATER figure out how to log errors */

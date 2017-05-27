@@ -207,15 +207,13 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         pd_free((t_pd *)x->pd_canvaslist);
     for (c = class_list; c; c = c->c_next)
     {
+        freebytes(c->c_methods[instanceno],
+            c->c_nmethod * sizeof(*c->c_methods));
+        for (i = instanceno; i < pd_ninstances-1; i++)
+            c->c_methods[i] = c->c_methods[i+1];
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
             pd_ninstances * sizeof(*c->c_methods),
-            (pd_ninstances + 1) * sizeof(*c->c_methods));
-        c->c_methods[pd_ninstances] = t_getbytes(0);
-        for (i = 0; i < c->c_nmethod; i++)
-            class_addmethodtolist(c, &c->c_methods[pd_ninstances], i,
-                c->c_methods[0][i].me_fun,
-                dogensym(c->c_methods[0][i].me_name->s_name, 0, x),
-                    c->c_methods[0][i].me_arg, x);
+            (pd_ninstances - 1) * sizeof(*c->c_methods));
     }
     for (i =0; i < SYMTABHASHSIZE; i++)
     {
