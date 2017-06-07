@@ -21,6 +21,7 @@ m4/generated
 m4/config
 makefile.dependencies
 dist
+tags
 
 # build
 *.o

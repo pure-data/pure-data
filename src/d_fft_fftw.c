@@ -56,9 +56,17 @@ static cfftw_info *cfftw_getplan(int n,int fwd)
     info = (fwd?cfftw_fwd:cfftw_bwd)+(logn-MINFFT);
     if (!info->plan)
     {
-        info->in = (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
-        info->out = (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
-        info->plan = fftwf_plan_dft_1d(n, info->in, info->out, fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);
+        pd_globallock();
+        if (!info->plan)    /* recheck in case it got set while we waited */
+        {
+            info->in =
+                (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
+            info->out =
+                (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * n);
+            info->plan = fftwf_plan_dft_1d(n, info->in, info->out,
+                fwd?FFTW_FORWARD:FFTW_BACKWARD, FFTW_MEASURE);
+        }
+        pd_globalunlock();
     }
     return info;
 }

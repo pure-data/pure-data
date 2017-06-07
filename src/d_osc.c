@@ -466,6 +466,8 @@ typedef struct _noise
 static void *noise_new(void)
 {
     t_noise *x = (t_noise *)pd_new(noise_class);
+        /* seed each instance differently.  Once in a blue moon two threads
+        could grab the same seed value.  We can live with that. */
     static int init = 307;
     x->x_val = (init *= 1319);
     outlet_new(&x->x_obj, gensym("signal"));

@@ -80,7 +80,6 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 
 /* ----------------- the "object" object.  ------------------ */
 
-extern t_pd *newest;
 void canvas_getargs(int *argcp, t_atom **argvp);
 
 static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
@@ -89,15 +88,15 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     t_text *x;
     int argc;
     t_atom *argv;
-    newest = 0;
+    pd_this->pd_newest = 0;
     canvas_setcurrent((t_canvas *)gl);
     canvas_getargs(&argc, &argv);
     binbuf_eval(b, &pd_objectmaker, argc, argv);
     if (binbuf_getnatom(b))
     {
-        if (!newest)
+        if (!pd_this->pd_newest)
             x = 0;
-        else if (!(x = pd_checkobject(newest)))
+        else if (!(x = pd_checkobject(pd_this->pd_newest)))
         {
             binbuf_print(b);
             error("... didn't return a patchable object");
@@ -1196,7 +1195,7 @@ void text_save(t_gobj *z, t_binbuf *b)
 }
 
     /* this one is for everyone but "gatoms"; it's imposed in m_class.c */
-t_widgetbehavior text_widgetbehavior =
+const t_widgetbehavior text_widgetbehavior =
 {
     text_getrect,
     text_displace,
@@ -1207,7 +1206,7 @@ t_widgetbehavior text_widgetbehavior =
     text_click,
 };
 
-static t_widgetbehavior gatom_widgetbehavior =
+static const t_widgetbehavior gatom_widgetbehavior =
 {
     text_getrect,
     gatom_displace,
@@ -1396,12 +1395,12 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
             canvas_objtext(glist, xwas, ywas, widthwas, 0, b);
             canvas_restoreconnections(glist_getcanvas(glist));
                 /* if it's an abstraction loadbang it here */
-            if (newest)
+            if (pd_this->pd_newest)
             {
-                if (pd_class(newest) == canvas_class)
-                    canvas_loadbang((t_canvas *)newest);
-                else if (zgetfn(newest, gensym("loadbang")))
-                    vmess(newest, gensym("loadbang"), "f", LB_LOAD);
+                if (pd_class(pd_this->pd_newest) == canvas_class)
+                    canvas_loadbang((t_canvas *)pd_this->pd_newest);
+                else if (zgetfn(pd_this->pd_newest, gensym("loadbang")))
+                    vmess(pd_this->pd_newest, gensym("loadbang"), "f", LB_LOAD);
             }
         }
             /* if we made a new "pd" or changed a window name,

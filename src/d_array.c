@@ -426,7 +426,6 @@ static t_int *tabread4_tilde_perform(t_int *w)
         double findex = *in++ + onset;
         int index = findex;
         t_sample frac,  a,  b,  c,  d, cminusb;
-        static int count;
         if (index < 1)
             index = 1, frac = 0;
         else if (index > maxindex)

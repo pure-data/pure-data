@@ -1064,8 +1064,8 @@ int alsamm_send_dacs(void)
   /*
      unused channels should be zeroed out on startup (open) and stay this
   */
-  int inchannels = sys_inchannels;
-  int outchannels = sys_outchannels;
+  int inchannels = STUFF->st_inchannels;
+  int outchannels = STUFF->st_outchannels;
 
   timelast = sys_getrealtime();
 
@@ -1098,7 +1098,7 @@ int alsamm_send_dacs(void)
 
 
   /* OUTPUT Transfer */
-  fpo = sys_soundout;
+  fpo = STUFF->st_soundout;
   for(devno = 0;devno < alsa_noutdev;devno++){
 
     t_alsa_dev *dev = &alsa_outdev[devno];
@@ -1234,7 +1234,7 @@ int alsamm_send_dacs(void)
   }/* for devno */
 
 
-  fpi = sys_soundin; /* star first card first channel */
+  fpi = STUFF->st_soundin; /* star first card first channel */
 
   for(devno = 0;devno < alsa_nindev;devno++){
 
