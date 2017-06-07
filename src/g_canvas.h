@@ -248,6 +248,29 @@ typedef struct _linetraverser
     int tr_nextoutno;
 } t_linetraverser;
 
+struct _instancecanvas
+{
+    struct _instanceeditor *i_editor;
+    struct _instancetemplate *i_template;
+    t_symbol *i_newfilename;
+    t_symbol *i_newdirectory;
+    int i_newargc;
+    t_atom *i_newargv;
+    t_glist *i_reloadingabstraction;
+    int i_dspstate;
+    int i_dollarzero;
+    t_float i_graph_lastxpix, i_graph_lastypix;
+};
+
+void g_editor_newpdinstance( void);
+void g_template_newpdinstance( void);
+void g_editor_freepdinstance( void);
+void g_template_freepdinstance( void);
+
+#define THISGUI (pd_this->pd_gui)
+#define EDITOR (pd_this->pd_gui->i_editor)
+#define TEMPLATE (pd_this->pd_gui->i_template)
+
 /* function types used to define graphical behavior for gobjs, a bit like X
 widgets.  We don't use Pd methods because Pd's typechecking can't specify the
 types of pointer arguments.  Also it's more convenient this way, since
@@ -423,6 +446,7 @@ EXTERN int text_xcoord(t_text *x, t_glist *glist);
 EXTERN int text_ycoord(t_text *x, t_glist *glist);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
+extern const t_widgetbehavior text_widgetbehavior;
 
 /* -------------------- functions on rtexts ------------------------- */
 #define RTEXT_DOWN 1

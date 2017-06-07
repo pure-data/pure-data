@@ -399,15 +399,17 @@ proc ::pd_menus::update_recentfiles_on_menu {mymenu {write}} {
     }
     # insert the list from the end because we insert each element on the top
     set i [llength $::recentfiles_list]
-    while {[incr i -1] > 0} {
-
+    while {[incr i -1] > -1} {
         set filename [lindex $::recentfiles_list $i]
+        set j [expr $i + 1]
+        if {$::windowingsystem eq "aqua"} {
+            set label [file tail $filename]
+        } else {
+            set label [concat "$j. " [file tail $filename]]
+        }
         $mymenu insert [expr $top_separator+1] command \
-            -label [file tail $filename] -command "open_file {$filename}"
+            -label $label -command "open_file {$filename}" -underline 0
     }
-    set filename [lindex $::recentfiles_list 0]
-    $mymenu insert [expr $top_separator+1] command \
-        -label [file tail $filename] -command "open_file {$filename}"
 
     # write to config file
     if {$write == true} { ::pd_guiprefs::write_recentfiles }
