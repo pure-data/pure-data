@@ -743,7 +743,10 @@ static void my_numbox_key(void *z, t_floatarg fkey)
 
 static void my_numbox_list(t_my_numbox *x, t_symbol *s, int ac, t_atom *av)
 {
-    if (IS_A_FLOAT(av,0))
+    if (!ac) {
+        my_numbox_bang(x);
+    }
+    else if (IS_A_FLOAT(av,0))
     {
         my_numbox_set(x, atom_getfloatarg(0, ac, av));
         my_numbox_bang(x);
