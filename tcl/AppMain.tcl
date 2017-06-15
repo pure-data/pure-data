@@ -3,8 +3,6 @@
 # other configuration, like when 'pd' launches Wish.app or when 'pd' is using
 # an X11 wish on Mac OS X.  GNU/Linux and Windows will never use this file.
 
-package require apple_events
-
 # TODO is there anything useful to do with the psn (Process Serial Number)?
 if {[string first "-psn" [lindex $argv 0]] == 0} { 
     set argv [lrange $argv 1 end]

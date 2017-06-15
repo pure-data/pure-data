@@ -33,5 +33,7 @@
 	<string>pd.icns</string>
 	<key>CFBundleVersion</key>
 	<string>0.38</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
 </dict>
 </plist>

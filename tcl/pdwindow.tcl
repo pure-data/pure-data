@@ -167,7 +167,7 @@ proc ::pdwindow::save_logbuffer_to_file {} {
 
 #--compute audio/DSP checkbutton-----------------------------------------------#
 
-# set the checkbox on the "Compute Audio" menuitem and checkbox
+# set the checkbox on the "DSP" menuitems and checkbox
 proc ::pdwindow::pdtk_pd_dsp {value} {
     # TODO canvas_startdsp/stopdsp should really send 1 or 0, not "ON" or "OFF"
     if {$value eq "ON"} {
@@ -187,7 +187,7 @@ proc ::pdwindow::pdtk_pd_dio {red} {
 }
 
 proc ::pdwindow::pdtk_pd_audio {state} {
-    .pdwindow.header.ioframe.iostate configure -text [concat audio $state]
+    .pdwindow.header.ioframe.iostate configure -text [concat Audio $state]
 }
 
 #--bindings specific to the Pd window------------------------------------------#
@@ -323,7 +323,6 @@ proc ::pdwindow::create_window {} {
         wm minsize .pdwindow 400 51
     }
     wm geometry .pdwindow =500x400+20+50
-    .pdwindow configure -menu .menubar
 
     frame .pdwindow.header -borderwidth 1 -relief flat -background lightgray
     pack .pdwindow.header -side top -fill x -ipady 5
@@ -342,14 +341,14 @@ proc ::pdwindow::create_window {} {
 
 # I/O state label (shows I/O on/off/in-only/out-only)
     label .pdwindow.header.ioframe.iostate \
-        -text [_ "audio I/O off"] -borderwidth 0 \
+        -text [_ "Audio off"] -borderwidth 1 \
         -background lightgray -foreground black \
         -takefocus 0 \
         -font {$::font_family -14}
 
 # DIO error label
     label .pdwindow.header.ioframe.dio \
-        -text [_ "audio I/O error"] -borderwidth 0 \
+        -text [_ "Audio I/O error"] -borderwidth 1 \
         -background lightgray -foreground lightgray \
         -takefocus 0 \
         -font {$::font_family -14}
@@ -418,4 +417,12 @@ proc ::pdwindow::create_window {} {
     # the loading logic can grab it and put up the busy cursor
     tkwait visibility .pdwindow.text
 #    create_tcl_entry
+}
+
+#--configure the window menu---------------------------------------------------#
+
+# this needs to happen *after* the main menu is created, otherwise the default Wish
+# menu is not replaced by the custom Apple menu on OSX
+proc ::pdwindow::configure_menubar {} {
+    .pdwindow configure -menu .menubar
 }
