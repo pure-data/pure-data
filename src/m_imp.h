@@ -34,7 +34,11 @@ struct _class
     t_symbol *c_helpname;               /* name of help file */
     t_symbol *c_externdir;              /* directory extern was loaded from */
     size_t c_size;                      /* size of an instance */
-    t_methodentry *c_methods;           /* methods other than bang, etc below */
+#ifdef PDINSTANCE
+    t_methodentry **c_methods;          /* methods other than bang, etc below */
+#else
+    t_methodentry *c_methods;
+#endif
     int c_nmethod;                      /* number of methods */
     t_method c_freemethod;              /* function to call before freeing */
     t_bangmethod c_bangmethod;          /* common methods */
@@ -43,39 +47,17 @@ struct _class
     t_symbolmethod c_symbolmethod;
     t_listmethod c_listmethod;
     t_anymethod c_anymethod;
-    struct _widgetbehavior *c_wb;       /* "gobjs" only */
-    struct _parentwidgetbehavior *c_pwb;/* widget behavior in parent */
+    const struct _widgetbehavior *c_wb; /* "gobjs" only */
+    const struct _parentwidgetbehavior *c_pwb;/* widget behavior in parent */
     t_savefn c_savefn;                  /* function to call when saving */
     t_propertiesfn c_propertiesfn;      /* function to start prop dialog */
+    struct _class *c_next;
     int c_floatsignalin;                /* onset to float for signal input */
     char c_gobj;                        /* true if is a gobj */
     char c_patchable;                   /* true if we have a t_object header */
     char c_firstin;                 /* if patchable, true if draw first inlet */
     char c_drawcommand;             /* a drawing command for a template */
 };
-
-struct _pdinstance
-{
-    double pd_systime;          /* global time in Pd ticks */
-    t_clock *pd_clock_setlist;  /* list of set clocks */
-    t_int *pd_dspchain;         /* DSP chain */
-    int pd_dspchainsize;        /* number of elements in DSP chain */
-    t_canvas *pd_canvaslist;    /* list of all root canvases */
-    int pd_dspstate;            /* whether DSP is on or off */
-    t_signal *pd_signals;       /* list of signals used by DSP chain */
-    t_symbol *pd_midiin_sym;    /* symbols bound to incoming MIDI... */
-    t_symbol *pd_sysexin_sym;
-    t_symbol *pd_notein_sym;
-    t_symbol *pd_ctlin_sym;
-    t_symbol *pd_pgmin_sym;
-    t_symbol *pd_bendin_sym;
-    t_symbol *pd_touchin_sym;
-    t_symbol *pd_polytouchin_sym;
-    t_symbol *pd_midiclkin_sym;
-    t_symbol *pd_midirealtimein_sym;
-};
-
-extern t_pdinstance *pd_this;
 
 /* m_class.c */
 EXTERN void pd_emptylist(t_pd *x);
@@ -99,7 +81,13 @@ EXTERN int obj_nsigoutlets(t_object *x);
 EXTERN int obj_siginletindex(t_object *x, int m);
 EXTERN int obj_sigoutletindex(t_object *x, int m);
 
+/* s_inter.c */
+void pd_globallock( void);
+void pd_globalunlock( void);
+
 /* misc */
+#define SYMTABHASHSIZE 1024
+
 EXTERN t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir);
 EXTERN void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv);
 EXTERN void glob_quit(void *dummy);

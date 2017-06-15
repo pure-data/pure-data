@@ -10,7 +10,6 @@ to this file... */
 #include "m_pd.h"
 
 #include "g_canvas.h"
-#include "s_stuff.h"    /* for sys_hostfontsize */
 #include <stdio.h>
 #include <string.h>
 
@@ -986,21 +985,20 @@ static void graph_delete(t_gobj *z, t_glist *glist)
     canvas_deletelinesfor(glist, &x->gl_obj);
 }
 
-static t_float graph_lastxpix, graph_lastypix;
-
 static void graph_motion(void *z, t_floatarg dx, t_floatarg dy)
 {
     t_glist *x = (t_glist *)z;
-    t_float newxpix = graph_lastxpix + dx, newypix = graph_lastypix + dy;
+    t_float newxpix = THISGUI->i_graph_lastxpix + dx,
+        newypix = THISGUI->i_graph_lastypix + dy;
     t_garray *a = (t_garray *)(x->gl_list);
-    int oldx = 0.5 + glist_pixelstox(x, graph_lastxpix);
+    int oldx = 0.5 + glist_pixelstox(x, THISGUI->i_graph_lastxpix);
     int newx = 0.5 + glist_pixelstox(x, newxpix);
     t_word *vec;
     int nelem, i;
-    t_float oldy = glist_pixelstoy(x, graph_lastypix);
+    t_float oldy = glist_pixelstoy(x, THISGUI->i_graph_lastypix);
     t_float newy = glist_pixelstoy(x, newypix);
-    graph_lastxpix = newxpix;
-    graph_lastypix = newypix;
+    THISGUI->i_graph_lastxpix = newxpix;
+    THISGUI->i_graph_lastypix = newypix;
         /* verify that the array is OK */
     if (!a || pd_class((t_pd *)a) != garray_class)
         return;
@@ -1060,7 +1058,7 @@ static int graph_click(t_gobj *z, struct _glist *glist,
     }
 }
 
-t_widgetbehavior graph_widgetbehavior =
+const t_widgetbehavior graph_widgetbehavior =
 {
     graph_getrect,
     graph_displace,

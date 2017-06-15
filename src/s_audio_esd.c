@@ -13,9 +13,6 @@
 
 /* exported variables */
 
-float sys_dacsr;
-
-
 /* private data */
 
 static int esd_socket_out;

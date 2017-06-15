@@ -32,7 +32,6 @@ int nt_realdacblksize;
 #define MAXBUFFER 100   /* number of buffers in use at maximum advance */
 #define DEFBUFFER 30    /* default is about 30x6 = 180 msec! */
 static int nt_naudiobuffer = DEFBUFFER;
-float sys_dacsr = DEFAULTSRATE;
 
 static int nt_whichapi = API_MMIO;
 static int nt_meters;        /* true if we're metering */
@@ -130,8 +129,8 @@ int mmio_do_open_audio(void)
 
     form.wf.wFormatTag = WAVE_FORMAT_PCM;
     form.wf.nChannels = CHANNELS_PER_DEVICE;
-    form.wf.nSamplesPerSec = sys_dacsr;
-    form.wf.nAvgBytesPerSec = sys_dacsr * (CHANNELS_PER_DEVICE * SAMPSIZE);
+    form.wf.nSamplesPerSec = STUFF->st_dacsr;
+    form.wf.nAvgBytesPerSec = STUFF->st_dacsr * (CHANNELS_PER_DEVICE * SAMPSIZE);
     form.wf.nBlockAlign = CHANNELS_PER_DEVICE * SAMPSIZE;
     form.wBitsPerSample = 8 * SAMPSIZE;
 
@@ -281,7 +280,7 @@ static void nt_midisync(void)
     if (initsystime == -1) nt_resetmidisync();
     jittersec = (nt_dacjitterbufsallowed > nt_adcjitterbufsallowed ?
         nt_dacjitterbufsallowed : nt_adcjitterbufsallowed)
-            * nt_realdacblksize / sys_getsr();
+            * nt_realdacblksize / STUFF->st_getsr();
     diff = sys_getrealtime() - 0.001 * clock_gettimesince(initsystime);
     if (diff > nt_hibuftime) nt_hibuftime = diff;
     if (diff < nt_hibuftime - jittersec)
@@ -487,9 +486,6 @@ void nt_logerror(int which)
 }
 
 /* system buffer with t_sample types for one tick */
-t_sample *sys_soundout;
-t_sample *sys_soundin;
-float sys_dacsr;
 
 int mmio_send_dacs(void)
 {
@@ -511,7 +507,7 @@ int mmio_send_dacs(void)
         for (i = 0, n = 2 * nt_nwavein * DEFDACBLKSIZE, maxsamp = nt_inmax;
             i < n; i++)
         {
-            float f = sys_soundin[i];
+            float f = STUFF->st_soundin[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -519,7 +515,7 @@ int mmio_send_dacs(void)
         for (i = 0, n = 2 * nt_nwaveout * DEFDACBLKSIZE, maxsamp = nt_outmax;
             i < n; i++)
         {
-            float f = sys_soundout[i];
+            float f = STUFF->st_soundout[i];
             if (f > maxsamp) maxsamp = f;
             else if (-f > maxsamp) maxsamp = -f;
         }
@@ -566,7 +562,7 @@ int mmio_send_dacs(void)
 
         /* Convert audio output to fixed-point and put it in the output
         buffer. */
-    for (nda = 0, fp1 = sys_soundout; nda < nt_nwaveout; nda++)
+    for (nda = 0, fp1 = STUFF->st_soundout; nda < nt_nwaveout; nda++)
     {
         int phase = ntsnd_outphase[nda];
 
@@ -584,12 +580,12 @@ int mmio_send_dacs(void)
             }
         }
     }
-    memset(sys_soundout, 0,
+    memset(STUFF->st_soundout, 0,
         (DEFDACBLKSIZE *sizeof(t_sample)*CHANNELS_PER_DEVICE)*nt_nwaveout);
 
         /* vice versa for the input buffer */
 
-    for (nad = 0, fp1 = sys_soundin; nad < nt_nwavein; nad++)
+    for (nad = 0, fp1 = STUFF->st_soundin; nad < nt_nwavein; nad++)
     {
         int phase = ntsnd_inphase[nad];
 
@@ -716,8 +712,8 @@ int mmio_open_audio(int naudioindev, int *audioindev,
     if (nt_dacjitterbufsallowed > nbuf - 2)
         nt_dacjitterbufsallowed = nbuf - 2;
 
-    nt_nwavein = sys_inchannels / 2;
-    nt_nwaveout = sys_outchannels / 2;
+    nt_nwavein = STUFF->st_inchannels / 2;
+    nt_nwaveout = STUFF->st_outchannels / 2;
     nt_whichadc = (naudioindev < 1 ?
         (nt_nwavein > 1 ? WAVE_MAPPER : -1) : audioindev[0]);
     nt_whichdac = (naudiooutdev < 1 ?
