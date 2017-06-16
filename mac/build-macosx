@@ -18,6 +18,10 @@ mv "Wish Shell.app" Pd-$1.app
 cd Pd-$1.app/Contents
 rm -f Info.plist
 cp -p  ../../stuff/Info.plist .
+VERSION=${1/-/.}; VERSION=${VERSION/test/.}
+plutil -replace CFBundleVersion -string $VERSION ./Info.plist
+plutil -replace CFBundleShortVersionString -string $VERSION ./Info.plist
+plutil -replace CFBundleGetInfoString -string "$VERSION" $APP/Contents/Info.plist
 cd MacOS
 mv "Wish Shell" Pd
 cd ..

@@ -240,6 +240,15 @@ proc ::dialog_iemgui::lilo {mytoplevel} {
     }
 }
 
+# open popup over source button
+proc ::dialog_iemgui::font_popup {mytoplevel} {
+    $mytoplevel.popup unpost 
+    set button $mytoplevel.label.fontpopup_label
+    set x [expr [winfo rootx $button] + ( [winfo width $button] / 2 )] 
+    set y [expr [winfo rooty $button] + ( [winfo height $button] / 2 )] 
+    tk_popup $mytoplevel.popup $x $y 0
+}
+
 proc ::dialog_iemgui::toggle_font {mytoplevel gn_f} {
     set vid [string trimleft $mytoplevel .]
     
@@ -681,7 +690,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.label.xy.y_lab $mytoplevel.label.xy.y_entry -side left
     
     button $mytoplevel.label.fontpopup_label -text $current_font \
-        -font [list $current_font 16 $::font_weight] -pady 4
+        -font [list $current_font 16 $::font_weight] -pady 4 \
+        -command "::dialog_iemgui::font_popup $mytoplevel"
     pack $mytoplevel.label.fontpopup_label -side left -anchor w \
         -expand 1 -fill x -padx 5
     frame $mytoplevel.label.fontsize
@@ -702,9 +712,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     $mytoplevel.popup add command \
         -label "Times" \
         -font [format {Times 16 %s} $::font_weight] \
-        -command "::dialog_iemgui::toggle_font $mytoplevel 2" 
-    bind $mytoplevel.label.fontpopup_label <Button> \
-        [list tk_popup $mytoplevel.popup %X %Y]
+        -command "::dialog_iemgui::toggle_font $mytoplevel 2"
     
     # colors
     labelframe $mytoplevel.colors -borderwidth 1 -text [_ "Colors"] -padx 5 -pady 5
@@ -767,7 +775,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
        pack $mytoplevel.colors.$r -side top
        foreach i { 0 1 2 3 4 5 6 7 8 9} hexcol $hexcols \
            {
-               label $mytoplevel.colors.$r.c$i -background $hexcol -activebackground $hexcol -relief ridge -padx 7 -pady 0
+               label $mytoplevel.colors.$r.c$i -background $hexcol -activebackground $hexcol -relief ridge -padx 7 -pady 0 -width 1
                bind $mytoplevel.colors.$r.c$i <Button> "::dialog_iemgui::preset_col $mytoplevel $hexcol"
            }
        pack $mytoplevel.colors.$r.c0 $mytoplevel.colors.$r.c1 $mytoplevel.colors.$r.c2 $mytoplevel.colors.$r.c3 \
@@ -826,26 +834,14 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.cao.cancel config -takefocus 0
 
-        # can't see focus for buttons, so disable it
-        if {[winfo exists $mytoplevel.para.lilo]} {
-            $mytoplevel.para.lilo config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.para.lb]} {
-            $mytoplevel.para.lb config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.para.stdy_jmp]} {
-            $mytoplevel.para.stdy_jmp config -takefocus 0
-        }
-        $mytoplevel.label.fontpopup_label config -takefocus 0
-        $mytoplevel.colors.select.radio0 config -takefocus 0
-        $mytoplevel.colors.select.radio1 config -takefocus 0
-        $mytoplevel.colors.select.radio2 config -takefocus 0
-        $mytoplevel.colors.sections.but config -takefocus 0
-
         # show active focus on the ok button as it *is* activated on Return
         $mytoplevel.cao.ok config -default normal
         bind $mytoplevel.cao.ok <FocusIn> "$mytoplevel.cao.ok config -default active"
         bind $mytoplevel.cao.ok <FocusOut> "$mytoplevel.cao.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.cao.ok config -highlightthickness 0
+        $mytoplevel.cao.cancel config -highlightthickness 0
     }
 }
 

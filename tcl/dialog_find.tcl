@@ -90,7 +90,7 @@ proc ::dialog_find::ok {mytoplevel} {
 
 # mytoplevel isn't used here, but is kept for compatibility with other dialog cancel procs
 proc ::dialog_find::cancel {mytoplevel} {
-    wm withdraw .find
+    destroy .find
 }
 
 proc ::dialog_find::set_window_to_search {mytoplevel} {
@@ -106,14 +106,13 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
         if {$find_in_window eq ".find"} {
             set find_in_window [winfo toplevel [lindex [wm stackorder .] end-1]]
         }
-            # this has funny side effects in tcl 8.4 ???
+        # this has funny side effects in tcl 8.4 ???
         if {$::tcl_version >= 8.5} {
             wm transient .find $find_in_window
         }
         .find.searchin configure -text \
             [concat [_ "Search in"] [lookup_windowname $find_in_window] \
                 [_ "for:"] ]
-            
     }
 }
 
@@ -143,6 +142,7 @@ proc ::dialog_find::open_find_dialog {mytoplevel} {
     if {[winfo exists .find]} {
         wm deiconify .find
         raise .find
+        focus .find
         ::dialog_find::set_window_to_search $mytoplevel
     } else {
         create_dialog $mytoplevel
@@ -164,8 +164,14 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     # the currently focused patch
     bind .find <$::modifier-Key-s> \
         {menu_send $::focused_window menusave; break}
-    bind .find <$::modifier-Shift-Key-S> \
-        {menu_send $::focused_window menusaveas; break}
+    # TK Cocoa requires lowercase with Shift modifier
+    if {$::bind_shiftcaps == 1 } {
+        bind .find <$::modifier-Shift-Key-S> \
+            {menu_send $::focused_window menusaveas; break}
+    } else {
+        bind .find <$::modifier-Shift-Key-s> \
+            {menu_send $::focused_window menusaveas; break}
+    }
     bind .find <$::modifier-Key-p> \
         {menu_print $::focused_window; break}
     

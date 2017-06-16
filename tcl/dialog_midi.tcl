@@ -70,7 +70,10 @@ proc midi_popup {name buttonname varname devlist} {
             -command [list midi_popup_action \
                 $buttonname $varname $devlist $x] 
     }
-    tk_popup $name.popup [winfo pointerx $name] [winfo pointery $name] 0
+    # open popup over source button
+    set x [expr [winfo rootx $buttonname] + ( [winfo width $buttonname] / 2 )]
+    set y [expr [winfo rooty $buttonname] + ( [winfo height $buttonname] / 2 )]
+    tk_popup $name.popup $x $y 0
 }
 
 # start a dialog window to select midi devices.  "longform" asks us to make
@@ -363,62 +366,6 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         # remove cancel button from focus list since it's not activated on Return
         $id.buttonframe.cancel config -takefocus 0
 
-        # can't see focus for buttons, so disable it
-        if {[winfo exists $id.inputs.in1f.x1]} {
-            $id.inputs.in1f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in2f.x1]} {
-            $id.inputs.in2f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in3f.x1]} {
-            $id.inputs.in3f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in4f.x1]} {
-            $id.inputs.in4f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in5f.x1]} {
-            $id.inputs.in5f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in6f.x1]} {
-            $id.inputs.in6f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in7f.x1]} {
-            $id.inputs.in7f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in8f.x1]} {
-            $id.inputs.in8f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.inputs.in9f.x1]} {
-            $id.inputs.in9f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out1f.x1]} {
-            $id.outputs.out1f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out2f.x1]} {
-            $id.outputs.out2f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out3f.x1]} {
-            $id.outputs.out3f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out4f.x1]} {
-            $id.outputs.out4f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out5f.x1]} {
-            $id.outputs.out5f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out6f.x1]} {
-            $id.outputs.out6f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out7f.x1]} {
-            $id.outputs.out7f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out8f.x1]} {
-            $id.outputs.out8f.x1 config -takefocus 0
-        }
-        if {[winfo exists $id.outputs.out9f.x1]} {
-            $id.outputs.out9f.x1 config -takefocus 0
-        }
-
         # show active focus on multiple device button
         if {[winfo exists $id.longbutton.b]} {
             bind $id.longbutton.b <KeyPress-Return> "$id.longbutton.b invoke"
@@ -430,6 +377,13 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         #$id.buttonframe.ok config -default normal
         bind $id.buttonframe.ok <FocusIn> "$id.buttonframe.ok config -default active"
         bind $id.buttonframe.ok <FocusOut> "$id.buttonframe.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        if {[winfo exists $id.longbutton.b]} {
+            $id.longbutton.b config -highlightthickness 0
+        }
+        $id.buttonframe.ok config -highlightthickness 0
+        $id.buttonframe.cancel config -highlightthickness 0
     }
 }
 
@@ -464,7 +418,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     set midi_alsain [expr [llength $midi_indevlist] - 1]
     set midi_alsaout [expr [llength $midi_outdevlist] - 1]
     
-    toplevel $id
+    toplevel $id -class DialogWindow
     wm title $id [_ "ALSA MIDI Settings"]
     if {$::windowingsystem eq "aqua"} {$id configure -menu .menubar}
     ::pd_bindings::dialog_bindings $id "midi"
