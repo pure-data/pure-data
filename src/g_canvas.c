@@ -1571,11 +1571,8 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
-        t_canvas *x2 = x;
         char *dir;
-        while (x2 && x2->gl_owner)
-            x2 = x2->gl_owner;
-        dir = (x2 ? canvas_getdir(x2)->s_name : ".");
+        dir = canvas_getdir(y)->s_name;
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {
             char realname[MAXPDSTRING];
