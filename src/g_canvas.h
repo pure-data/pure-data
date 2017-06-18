@@ -552,20 +552,7 @@ EXTERN int canvas_isconnected (t_canvas *x,
 EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy);
 
 EXTERN t_glist *pd_checkglist(t_pd *x);
-
-/* a function that gets called for each path by canvas_path_iterate
- * if the function returns 0, the iteration is terminated;
- * <path> pointer to the path
- * <data> is the pointer given to canvas_path_iterate()
- * <ce> is a pointer to the canvas-environment that provided <path> in its
- * search-path (or NULL)
- */
 typedef int (*t_canvas_path_iterator)(const char *path, void *user_data);
-/*
- * iterate over all search-paths for <x> calling <fun> with the user-supplied
- * <data>
- * iteration stops once all paths are exhausted or calling <fun> returned 0.
- */
 EXTERN int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
     void *user_data);
 
