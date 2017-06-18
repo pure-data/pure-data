@@ -273,7 +273,9 @@ AM_CONDITIONAL(MSGFMT, test x$HAVE_MSGFMT = xyes)
 AC_ARG_ENABLE([oss],
     [AS_HELP_STRING([--disable-oss], [do not use OSS driver])],
     [oss=$enableval], [oss=yes])
-AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
+if test x$oss = xyes ; then
+    AC_CHECK_HEADER(sys/soundcard.h, [oss=yes], [oss=no])
+fi
 
 ##### ALSA #####
 # shouldn't we use AM_PATH_ALSA from /usr/share/aclocal/alsa.m4
