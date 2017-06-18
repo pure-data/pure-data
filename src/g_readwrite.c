@@ -338,13 +338,13 @@ void canvas_dataproperties(t_canvas *x, t_scalar *sc, t_binbuf *b)
             ((t_scalar *)oldone)->sc_template
         && (template = template_findbyname(((t_scalar *)newone)->sc_template)))
     {
-            /* copy new one to old one and deete new one */
+            /* swap new one with old one; then delete new one */
         int i;
         for (i = 0; i < template->t_n; i++)
         {
             t_word w = ((t_scalar *)newone)->sc_vec[i];
-            ((t_scalar *)newone)->sc_vec[i] = ((t_scalar *)newone)->sc_vec[i];
-            ((t_scalar *)newone)->sc_vec[i] = w;
+            ((t_scalar *)newone)->sc_vec[i] = ((t_scalar *)oldone)->sc_vec[i];
+            ((t_scalar *)oldone)->sc_vec[i] = w;
         }
         pd_free(&newone->g_pd);
         if (glist_isvisible(x))
