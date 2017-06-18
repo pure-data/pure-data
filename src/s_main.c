@@ -604,8 +604,11 @@ int sys_argparse(int argc, char **argv)
             argc -= 2;
             argv += 2;
         }
-        else if (!strcmp(*argv, "-inchannels") && (argc > 1))
+        else if (!strcmp(*argv, "-inchannels"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nchin,
                 sys_chinlist, MAXAUDIOINDEV, argv[1]);
 
@@ -614,8 +617,11 @@ int sys_argparse(int argc, char **argv)
 
           argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-outchannels") && (argc > 1))
+        else if (!strcmp(*argv, "-outchannels"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nchout, sys_choutlist,
                 MAXAUDIOOUTDEV, argv[1]);
 
@@ -624,8 +630,11 @@ int sys_argparse(int argc, char **argv)
 
           argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-channels") && (argc > 1))
+        else if (!strcmp(*argv, "-channels"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nchin, sys_chinlist,MAXAUDIOINDEV,
                 argv[1]);
             sys_parsedevlist(&sys_nchout, sys_choutlist,MAXAUDIOOUTDEV,
@@ -636,8 +645,11 @@ int sys_argparse(int argc, char **argv)
 
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-soundbuf") || (!strcmp(*argv, "-audiobuf") && (argc > 1)))
+        else if (!strcmp(*argv, "-soundbuf") || (!strcmp(*argv, "-audiobuf")))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_main_advance = atoi(argv[1]);
             argc -= 2; argv += 2;
         }
@@ -656,8 +668,11 @@ int sys_argparse(int argc, char **argv)
             sys_main_blocksize = atoi(argv[1]);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-sleepgrain") && (argc > 1))
+        else if (!strcmp(*argv, "-sleepgrain"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_sleepgrain = 1000 * atof(argv[1]);
             argc -= 2; argv += 2;
         }
@@ -687,7 +702,13 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-ossmidi"))
         {
-          sys_set_midi_api(API_OSS);
+            sys_set_midi_api(API_OSS);
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-oss") || !strcmp(*argv, "-ossmidi"))
+        {
+            fprintf(stderr, "Pd compiled without OSS-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -697,17 +718,31 @@ int sys_argparse(int argc, char **argv)
             sys_set_audio_api(API_ALSA);
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-alsaadd") && (argc > 1))
+        else if (!strcmp(*argv, "-alsaadd"))
         {
-            if (argc > 1)
-                alsa_adddev(argv[1]);
-            else goto usage;
+            if (argc < 2)
+                goto usage;
+
+            alsa_adddev(argv[1]);
             argc -= 2; argv +=2;
         }
         else if (!strcmp(*argv, "-alsamidi"))
         {
-          sys_set_midi_api(API_ALSA);
+            sys_set_midi_api(API_ALSA);
             argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-alsa") || !strcmp(*argv, "-alsamidi"))
+        {
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-alsaadd"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without ALSA-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
         }
 #endif
 #ifdef USEAPI_JACK
@@ -726,24 +761,45 @@ int sys_argparse(int argc, char **argv)
             jack_autoconnect(1);
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-jackname") && (argc > 1))
+        else if (!strcmp(*argv, "-jackname"))
         {
-            if (argc > 1)
-                sys_set_audio_api(API_JACK), jack_client_name(argv[1]);
-            else goto usage;
+            if (argc < 2)
+                goto usage;
+
+            sys_set_audio_api(API_JACK), jack_client_name(argv[1]);
             argc -= 2; argv +=2;
 
+        }
+#else
+        else if (!strcmp(*argv, "-jack") || !strcmp(*argv, "-nojackconnect")
+            || !strcmp(*argv, "-jackconnect"))
+        {
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc--; argv++;
+        }
+        else if (!strcmp(*argv, "-jackname"))
+        {
+            if (argc < 2)
+                goto usage;
+            fprintf(stderr, "Pd compiled without JACK-support, ignoring '%s' flag\n", *argv);
+            argc -= 2; argv +=2;
         }
 #endif
 #ifdef USEAPI_PORTAUDIO
         else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
-#ifdef _WIN32
             || !strcmp(*argv, "-asio")
-#endif
             )
         {
             sys_set_audio_api(API_PORTAUDIO);
             sys_mmio = 0;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-pa") || !strcmp(*argv, "-portaudio")
+            || !strcmp(*argv, "-asio")
+            )
+        {
+            fprintf(stderr, "Pd compiled without PortAudio-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -752,6 +808,12 @@ int sys_argparse(int argc, char **argv)
         {
             sys_set_audio_api(API_MMIO);
             sys_mmio = 1;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-mmio"))
+        {
+            fprintf(stderr, "Pd compiled without MMIO-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -784,24 +846,33 @@ int sys_argparse(int argc, char **argv)
             sys_nmidiin = sys_nmidiout = 0;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-midiindev") && (argc > 1))
+        else if (!strcmp(*argv, "-midiindev"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nmidiin, sys_midiindevlist, MAXMIDIINDEV,
                 argv[1]);
             if (!sys_nmidiin)
                 goto usage;
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-midioutdev") && (argc > 1))
+        else if (!strcmp(*argv, "-midioutdev"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nmidiout, sys_midioutdevlist, MAXMIDIOUTDEV,
                 argv[1]);
             if (!sys_nmidiout)
                 goto usage;
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-mididev") && (argc > 1))
+        else if (!strcmp(*argv, "-mididev"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nmidiin, sys_midiindevlist, MAXMIDIINDEV,
                 argv[1]);
             sys_parsedevlist(&sys_nmidiout, sys_midioutdevlist, MAXMIDIOUTDEV,
@@ -810,8 +881,11 @@ int sys_argparse(int argc, char **argv)
                 goto usage;
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-midiaddindev") && (argc > 1))
+        else if (!strcmp(*argv, "-midiaddindev"))
         {
+            if (argc < 2)
+                goto usage;
+
             if (sys_nmidiin < 0)
                 sys_nmidiin = 0;
             if (sys_nmidiin < MAXMIDIINDEV)
@@ -826,8 +900,11 @@ int sys_argparse(int argc, char **argv)
                 MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-midiaddoutdev") && (argc > 1))
+        else if (!strcmp(*argv, "-midiaddoutdev"))
         {
+            if (argc < 2)
+                goto usage;
+
             if (sys_nmidiout < 0)
                 sys_nmidiout = 0;
             if (sys_nmidiout < MAXMIDIINDEV)
@@ -842,8 +919,11 @@ int sys_argparse(int argc, char **argv)
                 MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-midiadddev") && (argc > 1))
+        else if (!strcmp(*argv, "-midiadddev"))
         {
+            if (argc < 2)
+                goto usage;
+
             if (sys_nmidiin < 0)
                 sys_nmidiin = 0;
             if (sys_nmidiout < 0)
@@ -865,8 +945,10 @@ int sys_argparse(int argc, char **argv)
                 MAXMIDIINDEV);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-path") && (argc > 1))
+        else if (!strcmp(*argv, "-path"))
         {
+            if (argc < 2)
+                goto usage;
             STUFF->st_searchpath =
                 namelist_append_files(STUFF->st_searchpath, argv[1]);
             argc -= 2; argv += 2;
@@ -883,38 +965,53 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-helppath"))
         {
+            if (argc < 2)
+                goto usage;
             STUFF->st_helppath =
                 namelist_append_files(STUFF->st_helppath, argv[1]);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-open") && argc > 1)
+        else if (!strcmp(*argv, "-open"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_openlist = namelist_append_files(sys_openlist, argv[1]);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-lib") && argc > 1)
+        else if (!strcmp(*argv, "-lib"))
         {
+            if (argc < 2)
+                goto usage;
+
             STUFF->st_externlist =
                 namelist_append_files(STUFF->st_externlist, argv[1]);
             argc -= 2; argv += 2;
         }
-        else if ((!strcmp(*argv, "-font-size") || !strcmp(*argv, "-font"))
-            && argc > 1)
+        else if ((!strcmp(*argv, "-font-size") || !strcmp(*argv, "-font")))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_defaultfont = sys_nearestfontsize(atoi(argv[1]));
             argc -= 2;
             argv += 2;
         }
-        else if ((!strcmp(*argv, "-font-face") || !strcmp(*argv, "-typeface"))
-            && argc > 1)
+        else if ((!strcmp(*argv, "-font-face") || !strcmp(*argv, "-typeface")))
         {
+            if (argc < 2)
+                goto usage;
+
             strncpy(sys_font,*(argv+1),sizeof(sys_font)-1);
             sys_font[sizeof(sys_font)-1] = 0;
             argc -= 2;
             argv += 2;
         }
-        else if (!strcmp(*argv, "-font-weight") && argc > 1)
+        else if (!strcmp(*argv, "-font-weight"))
         {
+            if (argc < 2)
+                goto usage;
+
             strncpy(sys_fontweight,*(argv+1),sizeof(sys_fontweight)-1);
             sys_fontweight[sizeof(sys_fontweight)-1] = 0;
             argc -= 2;
@@ -977,13 +1074,19 @@ int sys_argparse(int argc, char **argv)
             sys_printtostderr = 1;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-guicmd") && argc > 1)
+        else if (!strcmp(*argv, "-guicmd"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_guicmd = argv[1];
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-send") && argc > 1)
+        else if (!strcmp(*argv, "-send"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_messagelist = namelist_append(sys_messagelist, argv[1], 1);
             argc -= 2; argv += 2;
         }
@@ -992,8 +1095,11 @@ int sys_argparse(int argc, char **argv)
             sys_listplease = 1;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-schedlib") && argc > 1)
+        else if (!strcmp(*argv, "-schedlib"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_externalschedlib = 1;
             strncpy(sys_externalschedlibname, argv[1],
                 sizeof(sys_externalschedlibname) - 1);
@@ -1009,8 +1115,11 @@ int sys_argparse(int argc, char **argv)
             argv += 2;
             argc -= 2;
         }
-        else if (!strcmp(*argv, "-extraflags") && argc > 1)
+        else if (!strcmp(*argv, "-extraflags"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_extraflags = 1;
             strncpy(sys_extraflagsstring, argv[1],
                 sizeof(sys_extraflagsstring) - 1);
@@ -1037,9 +1146,12 @@ int sys_argparse(int argc, char **argv)
             sys_noautopatch = 1;
             argc--; argv++;
         }
-        else if (!strcmp(*argv, "-compatibility") && argc > 1)
+        else if (!strcmp(*argv, "-compatibility"))
         {
             float f;
+            if (argc < 2)
+                goto usage;
+
             if (sscanf(argv[1], "%f", &f) < 1)
                 goto usage;
             pd_compatibilitylevel = 0.5 + 100. * f; /* e.g., 2.44 --> 244 */
@@ -1055,6 +1167,14 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-nrt") || !strcmp(*argv, "-nort") || !strcmp(*argv, "-norealtime"))
         {
             sys_hipriority = 0;
+            argc--; argv++;
+        }
+#else
+        else if (!strcmp(*argv, "-rt") || !strcmp(*argv, "-realtime")
+                 || !strcmp(*argv, "-nrt") || !strcmp(*argv, "-nort")
+                 || !strcmp(*argv, "-norealtime"))
+        {
+            fprintf(stderr, "Pd compiled without realtime priority-support, ignoring '%s' flag\n", *argv);
             argc--; argv++;
         }
 #endif
@@ -1080,15 +1200,20 @@ int sys_argparse(int argc, char **argv)
         else if (!strcmp(*argv, "-soundoutdev") ||
             !strcmp(*argv, "-audiooutdev"))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nsoundout, sys_soundoutdevlist,
                 MAXAUDIOOUTDEV, argv[1]);
             if (!sys_nsoundout)
                 goto usage;
             argc -= 2; argv += 2;
         }
-        else if ((!strcmp(*argv, "-sounddev") || !strcmp(*argv, "-audiodev"))
-                 && (argc > 1))
+        else if ((!strcmp(*argv, "-sounddev") || !strcmp(*argv, "-audiodev")))
         {
+            if (argc < 2)
+                goto usage;
+
             sys_parsedevlist(&sys_nsoundin, sys_soundindevlist,
                 MAXAUDIOINDEV, argv[1]);
             sys_parsedevlist(&sys_nsoundout, sys_soundoutdevlist,
@@ -1097,8 +1222,11 @@ int sys_argparse(int argc, char **argv)
                 goto usage;
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-audioaddindev") && (argc > 1))
+        else if (!strcmp(*argv, "-audioaddindev"))
         {
+            if (argc < 2)
+                goto usage;
+
             if (sys_nsoundin < 0)
                 sys_nsoundin = 0;
             if (sys_nsoundin < MAXAUDIOINDEV)
@@ -1113,8 +1241,11 @@ int sys_argparse(int argc, char **argv)
                 MAXAUDIOINDEV);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-audioaddoutdev") && (argc > 1))
+        else if (!strcmp(*argv, "-audioaddoutdev"))
         {
+            if (argc < 2)
+                goto usage;
+
             if (sys_nsoundout < 0)
                 sys_nsoundout = 0;
             if (sys_nsoundout < MAXAUDIOINDEV)
@@ -1129,8 +1260,11 @@ int sys_argparse(int argc, char **argv)
                 MAXAUDIOINDEV);
             argc -= 2; argv += 2;
         }
-        else if (!strcmp(*argv, "-audioadddev") && (argc > 1))
+        else if (!strcmp(*argv, "-audioadddev"))
         {
+            if (argc < 2)
+                goto usage;
+
             if (sys_nsoundin < 0)
                 sys_nsoundin = 0;
             if (sys_nsoundout < 0)

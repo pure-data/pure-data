@@ -210,8 +210,9 @@ static int sys_domicrosleep(int microsec, int pollem)
                 Sleep(microsec/1000);
         else
 #endif
-        select(pd_this->pd_inter->i_maxfd+1,
-            &readset, &writeset, &exceptset, &timout);
+        if(select(pd_this->pd_inter->i_maxfd+1,
+                  &readset, &writeset, &exceptset, &timout) < 0)
+          perror("microsleep select");
         for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
             if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
@@ -594,6 +595,8 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
 void sys_closesocket(int fd)
 {
 #ifdef HAVE_UNISTD_H
+    if(fd<0)
+        return;
     close(fd);
 #endif
 #ifdef _WIN32
@@ -1104,6 +1107,7 @@ static int sys_do_startgui(const char *libdir)
         {
             if (errno) perror("sys_startgui");
             else fprintf(stderr, "sys_startgui failed\n");
+            sys_closesocket(xsock);
             return (1);
         }
         else if (!childpid)                     /* we're the child */
@@ -1213,6 +1217,7 @@ static int sys_do_startgui(const char *libdir)
             if (errno)
                 perror("sys_startgui");
             else fprintf(stderr, "sys_startgui failed\n");
+            sys_closesocket(xsock);
             return (1);
         }
         else if (!watchpid)             /* we're the child */
@@ -1241,7 +1246,8 @@ static int sys_do_startgui(const char *libdir)
                 close our copy - otherwise it might hang waiting for some
                 stupid child process (as seems to happen if jackd auto-starts
                 for us.) */
-            fcntl(pipe9[1], F_SETFD, FD_CLOEXEC);
+            if(fcntl(pipe9[1], F_SETFD, FD_CLOEXEC) < 0)
+              perror("close-on-exec");
             sys_watchfd = pipe9[1];
                 /* We also have to start the ping loop in the GUI;
                 this is done later when the socket is open. */
