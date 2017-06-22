@@ -25,7 +25,8 @@ static void pollwatchdog( void)
 {
     static int sched_diddsp, sched_nextpingtime;
     sched_diddsp++;
-    if (sys_nogui && sys_hipriority && (sched_diddsp - sched_nextpingtime > 0))
+    if (!sys_havegui() && sys_hipriority &&
+        (sched_diddsp - sched_nextpingtime > 0))
     {
         glob_watchdog(0);
             /* ping every 2 seconds */
