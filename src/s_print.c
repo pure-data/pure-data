@@ -51,7 +51,7 @@ static void dopost(const char *s)
 {
     if (sys_printhook)
         (*sys_printhook)(s);
-    else if (sys_printtostderr)
+    else if (sys_printtostderr || !sys_havegui())
 #ifdef _WIN32
         fwprintf(stderr, L"%S", s);
 #else

@@ -38,6 +38,7 @@ int sys_argparse(int argc, char **argv);
 void sys_findprogdir(char *progname);
 void sys_setsignalhandlers( void);
 int sys_startgui(const char *guipath);
+void sys_setrealtime(const char *guipath);
 int sys_rcfile(void);
 int m_mainloop(void);
 int m_batchmain(void);
@@ -49,7 +50,7 @@ void alsa_adddev(char *name);
 int sys_debuglevel;
 int sys_verbose;
 int sys_noloadbang;
-int sys_nogui;
+static int sys_dontstartgui;
 int sys_hipriority = -1;    /* -1 = don't care; 0 = no; 1 = yes */
 int sys_guisetportnumber;   /* if started from the GUI, this is the port # */
 int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
@@ -312,6 +313,16 @@ int sys_main(int argc, char **argv)
     }
 # endif /* _MSC_VER */
 #endif  /* WIN32 */
+#ifndef _WIN32
+    /* long ago Pd used setuid to promote itself to real-time priority.
+    Just in case anyone's installation script still makes it setuid, we
+    complain to stderr and lose setuid here. */
+    if (getuid() != geteuid())
+    {
+        fprintf(stderr, "warning: canceling setuid privelege\n");
+        setuid(getuid());
+    }
+#endif  /* WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)        /* prescan args for noprefs */
@@ -331,10 +342,12 @@ int sys_main(int argc, char **argv)
     if (sys_version)    /* if we were just asked our version, exit here. */
         return (0);
     sys_setsignalhandlers();
-    if (sys_nogui)
+    if (sys_dontstartgui)
         sys_fakefromgui();
     else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);
+    if (sys_hipriority)
+        sys_setrealtime(sys_libdir->s_name); /* set desired process priority */
     if (sys_externalschedlib)
         return (sys_run_scheduler(sys_externalschedlibname,
             sys_extraflagsstring));
@@ -1050,12 +1063,12 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-gui"))
         {
-            sys_nogui = 0;
+            sys_dontstartgui = 0;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-nogui"))
         {
-            sys_nogui = 1;
+            sys_dontstartgui = 1;
             argc--; argv++;
         }
         else if (!strcmp(*argv, "-guiport") && argc > 1 &&
@@ -1298,8 +1311,8 @@ int sys_argparse(int argc, char **argv)
         }
     }
     if (sys_batch)
-        sys_nogui = 1;
-    if (sys_nogui)
+        sys_dontstartgui = 1;
+    if (sys_dontstartgui)
         sys_printtostderr = 1;
 #ifdef _WIN32
     if (sys_printtostderr)

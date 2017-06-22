@@ -41,7 +41,7 @@ extern t_symbol *sys_flags;
 extern int sys_debuglevel;
 extern int sys_verbose;
 extern int sys_noloadbang;
-extern int sys_nogui;
+EXTERN int sys_havegui( void);
 extern char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);
