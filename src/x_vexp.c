@@ -272,6 +272,7 @@ expr_donew(struct expr *expr, int ac, t_atom *av)
                         list, expr->exp_stack[expr->exp_nexpr - 1], (long *)0);
                 if (!ret)
                         goto error;
+                fts_free(list);
         }
         *ret = nullex;
         t_freebytes(exp_string, exp_strlen+1);

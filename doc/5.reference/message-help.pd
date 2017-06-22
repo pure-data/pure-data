@@ -15,7 +15,7 @@ the printout window:;
 #X text 239 139 <--- message;
 #X text 223 165 <--- object (different border);
 #X text 14 197 You can separate multiple messages by commas. Also \,
-you can use "$1" \, "$2" \, etc. to make variable messages:;
+you can use "\$1" \, "\$2" \, etc. to make variable messages:;
 #X text 14 323 Finally \, if you separate messages by a semicolon instead
 of a comma \, the following message(s) are re-routed to named objects
 such as "receives":;
