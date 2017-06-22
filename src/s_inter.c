@@ -1124,7 +1124,9 @@ static int sys_do_startgui(const char *libdir)
         else if (!childpid)                     /* we're the child */
         {
             sys_closesocket(xsock);     /* child doesn't listen */
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
             sys_set_priority(MODE_NRT);  /* child runs non-real-time */
+#endif
 #ifndef __APPLE__
 // TODO this seems unneeded on any platform hans@eds.org
                 /* the wish process in Unix will make a wish shell and
