@@ -381,7 +381,6 @@ EXTERN int gobj_click(t_gobj *x, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
 EXTERN void gobj_save(t_gobj *x, t_binbuf *b);
 EXTERN void gobj_properties(t_gobj *x, struct _glist *glist);
-EXTERN void gobj_save(t_gobj *x, t_binbuf *b);
 EXTERN int gobj_shouldvis(t_gobj *x, struct _glist *glist);
 
 /* -------------------- functions on glists --------------------- */
@@ -468,7 +467,6 @@ EXTERN void rtext_key(t_rtext *x, int n, t_symbol *s);
 EXTERN void rtext_mouse(t_rtext *x, int xval, int yval, int flag);
 EXTERN void rtext_retext(t_rtext *x);
 EXTERN int rtext_width(t_rtext *x);
-EXTERN int rtext_height(t_rtext *x);
 EXTERN char *rtext_gettag(t_rtext *x);
 EXTERN void rtext_gettext(t_rtext *x, char **buf, int *bufsize);
 EXTERN void rtext_getseltext(t_rtext *x, char **buf, int *bufsize);
@@ -495,7 +493,6 @@ EXTERN void canvas_redrawallfortemplate(t_template *tmpl, int action);
 EXTERN void canvas_redrawallfortemplatecanvas(t_canvas *x, int action);
 EXTERN void canvas_zapallfortemplate(t_canvas *tmpl);
 EXTERN void canvas_setusedastemplate(t_canvas *x);
-EXTERN t_canvas *canvas_getcurrent(void);
 EXTERN void canvas_setcurrent(t_canvas *x);
 EXTERN void canvas_unsetcurrent(t_canvas *x);
 EXTERN t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s);
@@ -636,14 +633,6 @@ EXTERN t_canvas *template_findcanvas(t_template *tmpl);
 EXTERN void template_notify(t_template *tmpl,
     t_symbol *s, int argc, t_atom *argv);
 
-EXTERN t_float template_getfloat(t_template *x, t_symbol *fieldname,
-    t_word *wp, int loud);
-EXTERN void template_setfloat(t_template *x, t_symbol *fieldname,
-    t_word *wp, t_float f, int loud);
-EXTERN t_symbol *template_getsymbol(t_template *x, t_symbol *fieldname,
-    t_word *wp, int loud);
-EXTERN void template_setsymbol(t_template *x, t_symbol *fieldname,
-    t_word *wp, t_symbol *s, int loud);
 EXTERN t_float fielddesc_getcoord(t_fielddesc *f, t_template *tmpl,
     t_word *wp, int loud);
 EXTERN void fielddesc_setcoord(t_fielddesc *f, t_template *tmpl,
