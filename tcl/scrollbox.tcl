@@ -140,7 +140,7 @@ proc ::scrollbox::make { mytoplevel listdata add_method edit_method } {
     # listbox view
     pack $mytoplevel.listbox.box [scrollbar "$mytoplevel.listbox.scrollbar" \
                               -command [list $mytoplevel.listbox.box yview]] \
-        -side left -fill y -anchor w 
+        -side left -fill y -anchor w
 
     # Populate the listbox widget
     foreach item $listdata {
@@ -172,13 +172,13 @@ proc ::scrollbox::make { mytoplevel listdata add_method edit_method } {
     # All widget interactions can be performed without buttons, but
     # we still need a "New..." button since the currently visible window
     # might be full (even though the user can still expand it)
-    frame $mytoplevel.actions 
-    pack $mytoplevel.actions -side top -padx 2m -fill x 
-    button $mytoplevel.actions.add_path -text {New...} \
+    frame $mytoplevel.actions
+    pack $mytoplevel.actions -side top -padx 2m -fill x
+    button $mytoplevel.actions.add_path -text [_ "New..." ] \
         -command "::scrollbox::add_item $mytoplevel $add_method"
-    button $mytoplevel.actions.edit_path -text {Edit...} \
+    button $mytoplevel.actions.edit_path -text [_ "Edit..." ] \
         -command "::scrollbox::edit_item $mytoplevel $edit_method"
-    button $mytoplevel.actions.delete_path -text {Delete} \
+    button $mytoplevel.actions.delete_path -text [_ "Delete" ] \
         -command "::scrollbox::delete_item $mytoplevel"
 
     pack $mytoplevel.actions.delete_path -side right -pady 2m -padx 5
