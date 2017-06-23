@@ -71,6 +71,36 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-KP_Add>      {menu_send_float %W zoom 2}
     bind all <$::modifier-Key-KP_Subtract> {menu_send_float %W zoom 1}
 
+    # annoying, but Tk's bind needs uppercase letter to get the Shift
+    bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
+    bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
+    bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-H> {menu_send %W hslider}
+    bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
+    bind all <$::modifier-Shift-Key-L> {menu_clear_console}
+    bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
+    bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
+    bind all <$::modifier-Shift-Key-S> {menu_send %W menusaveas}
+    bind all <$::modifier-Shift-Key-T> {menu_send %W toggle}
+    bind all <$::modifier-Shift-Key-U> {menu_send %W vumeter}
+    bind all <$::modifier-Shift-Key-V> {menu_send %W vslider}
+    bind all <$::modifier-Shift-Key-W> {menu_send_float %W menuclose 1}
+    bind all <$::modifier-Shift-Key-Z> {menu_redo}
+    # lowercase bindings, for the CapsLock case
+    bind all <$::modifier-Shift-Key-b> {menu_send %W bng}
+    bind all <$::modifier-Shift-Key-c> {menu_send %W mycnv}
+    bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
+    bind all <$::modifier-Shift-Key-h> {menu_send %W hslider}
+    bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
+    bind all <$::modifier-Shift-Key-l> {menu_clear_console}
+    bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
+    bind all <$::modifier-Shift-Key-q> {pdsend "pd quit"}
+    bind all <$::modifier-Shift-Key-s> {menu_send %W menusaveas}
+    bind all <$::modifier-Shift-Key-t> {menu_send %W toggle}
+    bind all <$::modifier-Shift-Key-u> {menu_send %W vumeter}
+    bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
+    bind all <$::modifier-Shift-Key-w> {menu_send_float %W menuclose 1}
+    bind all <$::modifier-Shift-Key-z> {menu_redo}
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
         # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
@@ -79,12 +109,20 @@ proc ::pd_bindings::global_bindings {} {
             # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
             bind all <$::modifier-Key-q>     {pdsend "pd verifyquit"}
             bind all <$::modifier-Key-m>     {menu_minimize %W}
-            bind all <$::modifier-quoteleft> {menu_raisenextwindow}
             bind all <$::modifier-Key-comma> {pdsend "pd start-path-dialog"}
+            bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
+            bind all <$::modifier-Key-M>       {menu_minimize %W}
+            bind all <$::modifier-Key-T>       {menu_font_dialog}
+            bind all <$::modifier-Shift-Key-k> {menu_message_dialog}
+
+            bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         }
     } else {
         bind all <$::modifier-Key-q>       {pdsend "pd verifyquit"}
         #bind all <$::modifier-Key-t>       {menu_texteditor}
+        bind all <$::modifier-Key-M>       {menu_message_dialog}
+        #bind all <$::modifier-Key-T>       {menu_texteditor}
+
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
         # these can conflict with Cmd+comma & Cmd+period bindings in Tk Cococa
@@ -155,6 +193,11 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
     bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
     bind $mytoplevel <$::modifier-Key-p>       {bell; break}
+    # and the CapsLock case...
+    bind $mytoplevel <$::modifier-Key-W> "dialog_${dialogname}::cancel $mytoplevel"
+    bind $mytoplevel <$::modifier-Key-S>       {bell; break}
+    bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
+    bind $mytoplevel <$::modifier-Key-P>       {bell; break}
 
     wm protocol $mytoplevel WM_DELETE_WINDOW "dialog_${dialogname}::cancel $mytoplevel"
 }
