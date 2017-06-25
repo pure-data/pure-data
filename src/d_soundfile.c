@@ -1412,20 +1412,22 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
                 argv[i].a_w.w_symbol->s_name);
         if (nframes > vecsize - onset)
             nframes = vecsize - onset;
-
-        for (j = 0; j < vecsize; j++)
-        {
-            if (vecs[i][j].w_float > biggest)
-                biggest = vecs[i][j].w_float;
-            else if (-vecs[i][j].w_float > biggest)
-                biggest = -vecs[i][j].w_float;
-        }
     }
     if (nframes <= 0)
     {
         pd_error(obj, "soundfiler_write: no samples at onset %ld", onset);
         goto fail;
     }
+    for (i = 0; i < nchannels; i++) // find biggest sample in final computed range
+    {   
+        for (j = onset; j < nframes + onset; j++)
+        {
+            if (vecs[i][j].w_float > biggest)
+                biggest = vecs[i][j].w_float;
+            else if (-vecs[i][j].w_float > biggest)
+                biggest = -vecs[i][j].w_float;
+        }
+    }    
 
     if ((fd = create_soundfile(canvas, filesym->s_name, filetype,
         nframes, bytespersamp, bigendian, nchannels,
