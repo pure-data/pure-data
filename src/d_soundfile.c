@@ -1448,6 +1448,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     else normfactor = 1;
 
     bufframes = SAMPBUFSIZE / (nchannels * bytespersamp);
+    onset *= sizeof(t_word)/sizeof(t_sample);  // convert onset to t_word vector offset  
 
     for (itemswritten = 0; itemswritten < nframes; )
     {
