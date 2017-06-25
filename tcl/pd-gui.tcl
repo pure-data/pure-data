@@ -119,6 +119,7 @@ set TCL_BUGFIX_VERSION 0
 
 # for testing which platform we are running on ("aqua", "win32", or "x11")
 set windowingsystem ""
+set platform ""
 
 # args about how much and where to log
 set loglevel 2
