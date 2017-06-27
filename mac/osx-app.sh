@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# Creates Mac OS X .app bundle from pd build.
+# Creates macOS .app bundle from pd build.
 #
 # Make sure pd has been configured and built
 # before running this.
@@ -20,16 +20,17 @@ EXTERNAL_EXT=pd_darwin
 TK=
 SYS_TK=Current
 WISH=
+PD_VERSION=
 
 # Help message
 #----------------------------------------------------------
 help() {
 echo -e "
-Usage: osx-app.sh [OPTIONS] VERSION
+Usage: osx-app.sh [OPTIONS] [VERSION]
 
-  Creates a Pd .app bundle for OS X using a Tk Wish.app wrapper
+  Creates a Pd .app bundle for macOS using a Tk Wish.app wrapper
 
-  Uses the included Wish.app at mac/stuff/wish-shell.tgz by default
+  Uses the included Tk 8.4 Wish.app at mac/stuff/wish-shell.tgz by default
 
 Options:
   -h,--help           display this help message
@@ -38,8 +39,9 @@ Options:
 
   -w,--wish APP       use a specific Wish.app
   
-  -s,--system-tk VER  use a version of the Tk Wish.app
-                      on the system (Current, 8.4, etc)
+  -s,--system-tk VER  use a version of the Tk Wish.app installed on the system,
+                      searches in /Library first then /System/Library second,
+                      naming is \"8.4\", \"8.5\", \"Current\", etc
 
   -t,--tk VER         use a version of Wish.app with embedded Tcl/Tk
                       frameworks, downloads and builds using tcltk-wish.sh
@@ -49,11 +51,17 @@ Options:
 
 Arguments:
 
-  VERSION             version string to use in file name (required)
+  VERSION             optional string to use in file name ie. Pd-VERSION.app
+                      configure --version output used for app plist if not set
 
 Examples:
 
-    # create Pd-0.47-0.app with included Tk 8.4 Wish
+    # create Pd.app with included Tk 8.4 Wish,
+    # version string set automatically
+    osx-app.sh
+    
+    # create Pd-0.47-0.app with included Tk 8.4 Wish,
+    # uses specified version string
     osx-app.sh 0.47-0
 
     # create Pd-0.47-0.app with the system's Tk 8.4 Wish.app
@@ -115,20 +123,23 @@ while [ "$1" != "" ] ; do
     shift 1
 done
 
-# check for required version argument
-if [ "$1" == "" ] ; then
-   echo "Usage: osx-app.sh [OPTIONS] VERSION"
-   exit 1
+# check for version argument and set app path in the dir the script is run from
+if [ "$1" != "" ] ; then
+    APP=$(pwd)/Pd-$1.app
+else
+    # version not specified
+    APP=$(pwd)/Pd.app
 fi
 
 # Go
 #----------------------------------------------------------
 
-# create the app in the dir the script is run from
-APP=$(pwd)/Pd-$1.app
-
 # change to the dir of this script
 cd $(dirname $0)
+
+# grab package version from configure --version output: line 1, word 3
+# aka "pd configure 0.47.1" -> "0.47.1"
+PD_VERSION=$(../configure --version | head -n 1 | cut -d " " -f 3)
 
 # pd source and app bundle destination paths
 SRC=..
@@ -163,7 +174,16 @@ elif [ "$WISH" == "" ] ; then
         WISH=Wish-${TK}.app
     elif [ "$SYS_TK" != "" ] ; then
         echo "Using system $SYS_TK Wish.app"
-        cp -R $verbose /System/Library/Frameworks/Tk.framework/Versions/$SYS_TK/Resources/Wish.app .
+        tk_path=/Library/Frameworks/Tk.framework/Versions
+        # check /Library first, then fall back to /System/Library
+        if [ ! -e $tk_path/$SYS_TK/Resources/Wish.app ] ; then
+            tk_path=/System${tk_path}
+            if [ ! -e $tk_path/$SYS_TK/Resources/Wish.app ] ; then
+                echo "Wish.app not found"
+                exit 1
+            fi
+        fi
+        cp -R $verbose $tk_path/$SYS_TK/Resources/Wish.app .
         WISH=Wish.app
     fi
 
@@ -200,7 +220,7 @@ if [ -e $APP/Contents/version.plist ] ; then
     rm $APP/Contents/version.plist
 fi
 # older "Wish Shell.app" does not have a symlink but a real file
-if [ -f $APP/Contents/MacOS/Wish\ Shell ] ; then
+if [ -f $APP/Contents/MacOS/Wish\ Shell ] && [ ! -L $APP/Contents/MacOS/Wish\ Shell ] ; then
     mv $APP/Contents/MacOS/Wish\ Shell $APP/Contents/MacOS/Pd
     mv $APP/Contents/Resources/Wish\ Shell.rsrc $APP/Contents/Resources/Pd.rsrc
 else
@@ -220,8 +240,8 @@ rm $APP/Contents/Resources/Wish.icns
 cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
 
-# update version identifiers in Info.plist
-PLIST_VERSION=${1/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
+# update version identifiers in Info.plist, sanitizes version by removing - & test
+PLIST_VERSION=${PD_VERSION/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
 plutil -replace CFBundleVersion -string $PLIST_VERSION $APP/Contents/Info.plist
 plutil -replace CFBundleShortVersionString -string $PLIST_VERSION $APP/Contents/Info.plist
 plutil -replace CFBundleGetInfoString -string "$PLIST_VERSION" $APP/Contents/Info.plist
