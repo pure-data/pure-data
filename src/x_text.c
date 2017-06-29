@@ -112,7 +112,6 @@ static void textbuf_addline(t_textbuf *b, t_symbol *s, int argc, t_atom *argv)
     binbuf_restore(z, argc, argv);
     binbuf_add(b->b_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
     binbuf_free(z);
-    textbuf_senditup(b);
 }
 
 static void textbuf_read(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
@@ -231,6 +230,7 @@ typedef struct _text_define
 {
     t_textbuf x_textbuf;
     t_outlet *x_out;
+    t_outlet *x_notifyout;
     t_symbol *x_bindsym;
     t_scalar *x_scalar;     /* faux scalar (struct text-scalar) to point to */
     t_gpointer x_gp;        /* pointer to it */
@@ -277,6 +277,7 @@ static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
     binbuf_free(x->x_scalar->sc_vec[2].w_binbuf);
     x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf;
     x->x_out = outlet_new(&x->x_ob, &s_pointer);
+    x->x_notifyout = outlet_new(&x->x_ob, 0);
     gpointer_init(&x->x_gp);
     x->x_canvas = canvas_getcurrent();
            /* bashily unbind #A -- this would create garbage if #A were
@@ -351,7 +352,6 @@ void text_define_set(t_text_define *x, t_symbol *s, int argc, t_atom *argv)
     textbuf_senditup(&x->x_textbuf);
 }
 
-
 static void text_define_save(t_gobj *z, t_binbuf *bb)
 {
     t_text_define *x = (t_text_define *)z;
@@ -366,6 +366,13 @@ static void text_define_save(t_gobj *z, t_binbuf *bb)
         binbuf_addsemi(bb);
     }
     obj_saveformat(&x->x_ob, bb);
+}
+
+    /* notification from GUI that we've been updated */
+static void text_define_notify(t_text_define *x)
+{
+    outlet_anything(x->x_notifyout, gensym("updated"), 0, 0);
+    textbuf_senditup(&x->x_textbuf);
 }
 
 static void text_define_free(t_text_define *x)
@@ -1967,6 +1974,8 @@ void x_qlist_setup(void )
         gensym("close"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)text_define_notify,
+        gensym("notify"), 0, 0);
     class_addmethod(text_define_class, (t_method)text_define_set,
         gensym("set"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)text_define_clear,
@@ -2070,6 +2079,8 @@ void x_qlist_setup(void )
     class_addmethod(qlist_class, (t_method)textbuf_close, gensym("close"), 0);
     class_addmethod(qlist_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
+    class_addmethod(qlist_class, (t_method)textbuf_senditup,
+        gensym("notify"), 0, 0);
     class_addmethod(qlist_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);
     class_addmethod(qlist_class, (t_method)qlist_tempo,
@@ -2098,6 +2109,8 @@ void x_qlist_setup(void )
         0);
     class_addmethod(textfile_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
+    class_addmethod(textfile_class, (t_method)textbuf_senditup,
+        gensym("notify"), 0, 0);
     class_addmethod(textfile_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);
     class_addbang(textfile_class, textfile_bang);

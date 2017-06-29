@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 84 257 637 594 12;
+#N canvas 156 256 637 594 12;
 #X obj 141 517 list;
 #X obj 18 6 text;
 #X text 35 516 see also:;
@@ -12,7 +12,7 @@
 #X obj 280 217 text define;
 #X text 81 173 The text object's first argument sets its function:
 , f 30;
-#N canvas 636 98 631 661 define 0;
+#N canvas 636 127 684 718 define 0;
 #X msg 39 141 clear;
 #X msg 37 167 read text-object-help.txt;
 #X msg 40 196 write text-object-help.txt;
@@ -31,29 +31,36 @@ file formats - like this:);
 #X text 277 139 clear;
 #X obj 48 228 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 38 491 t b p;
-#X obj 38 540 text get -s text t;
-#X msg 39 515 0;
-#X obj 38 590 print;
-#X obj 38 565 list trim;
-#X text 204 499 machinery for printing out first line of text when
-output as a pointer (by "bang" method above)., f 30;
-#X text 69 222 bang to output a pointer to a scalar (struct) containing
-the text, f 35;
+#X obj 38 447 t b p;
+#X obj 38 496 text get -s text t;
+#X msg 39 471 0;
+#X obj 38 546 print;
+#X obj 38 521 list trim;
 #X obj 38 400 text define -k text-help-1;
 #A set this is a message \; this is another 1 ... \;;
 #X msg 149 326 write -c /tmp/test-cr.txt;
-#X connect 0 0 20 0;
-#X connect 1 0 20 0;
-#X connect 2 0 20 0;
-#X connect 12 0 20 0;
+#X obj 327 473 print notify-outlet;
+#X text 34 571 First outlet is pointer to a "text" scalar containing
+the text \, which is output when the object is sent a "bang". For example
+\, here's machinery for printing out first line of text., f 30;
+#X text 69 222 bang to output a pointer to a scalar (struct) containing
+the text - see first outlet below, f 45;
+#X text 320 494 Second outlet notifies you when text changes. As of
+Pd 0.48 this only outputs the message "updated" when text changes \,
+but this might be extended to offer more information in the future.
+, f 42;
+#X connect 0 0 18 0;
+#X connect 1 0 18 0;
+#X connect 2 0 18 0;
+#X connect 12 0 18 0;
 #X connect 13 0 15 0;
 #X connect 13 1 14 3;
 #X connect 14 0 17 0;
 #X connect 15 0 14 0;
 #X connect 17 0 16 0;
-#X connect 20 0 13 0;
-#X connect 21 0 20 0;
+#X connect 18 0 13 0;
+#X connect 18 1 20 0;
+#X connect 19 0 18 0;
 #X restore 392 217 pd define;
 #X obj 280 240 text get;
 #N canvas 885 156 859 566 get 0;
@@ -580,7 +587,6 @@ simply sequence a list of numbers:;
 #X connect 65 0 30 0;
 #X connect 69 0 7 0;
 #X restore 392 431 pd sequence;
-#X text 382 521 updated for Pd version 0.47;
 #X text 99 312 delete a line or clear;
 #X obj 279 312 text delete;
 #N canvas 731 191 749 465 delete 0;
@@ -608,7 +614,7 @@ line 4 \\\;;
 #X restore 392 311 pd delete;
 #X text 154 287 insert a line;
 #X obj 280 288 text insert;
-#N canvas 339 255 766 501 insert 1;
+#N canvas 338 254 766 501 insert 0;
 #X text 406 175 find another text by name or pointer;
 #X text 320 290 <-- click here to see text;
 #X msg 203 175 symbol text-help-delete;
@@ -639,3 +645,4 @@ line 4 \\\;;
 #X connect 11 0 16 0;
 #X connect 12 0 16 0;
 #X restore 392 287 pd insert;
+#X text 382 521 updated for Pd version 0.48;
