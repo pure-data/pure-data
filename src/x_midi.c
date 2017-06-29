@@ -45,7 +45,7 @@ static void *midiin_new( void)
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
     pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midiin_sym);
-#ifdef WIN32
+#ifdef _WIN32
     pd_error(x, "midiin: windows: not supported");
 #endif
     return (x);
@@ -68,7 +68,7 @@ static void *sysexin_new( void)
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
     pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_sysexin_sym);
-#ifdef WIN32
+#ifdef _WIN32
     pd_error(x, "sysexin: windows: not supported");
 #endif
     return (x);
