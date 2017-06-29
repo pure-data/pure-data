@@ -482,12 +482,14 @@ void class_free(t_class *c)
     freebytes(c, sizeof(*c));
 }
 
-void class_setfreefn(t_class *c, t_classfreefn fn) {
+void class_setfreefn(t_class *c, t_classfreefn fn)
+{
     c->c_classfreefn = fn;
 }
 
 #if PDINSTANCE
-t_class *class_getfirst() {
+t_class *class_getfirst()
+{
     return class_list;
 }
 #endif

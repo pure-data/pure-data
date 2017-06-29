@@ -506,7 +506,7 @@ typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
 EXTERN void class_setpropertiesfn(t_class *c, t_propertiesfn f);
 EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 
-typedef void (*t_classfreefn)(struct _class *);
+typedef void (*t_classfreefn)(t_class *);
 EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 
 #ifndef PD_CLASS_DEF
