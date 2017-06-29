@@ -298,7 +298,6 @@ void obj_init(void);
 void conf_init(void);
 void glob_init(void);
 void garray_init(void);
-void conf_term(void);
 void ooura_term(void);
 
 void pd_init(void)
@@ -327,7 +326,6 @@ EXTERN void pd_init_systems(void) {
 
 EXTERN void pd_term_systems(void) {
     sys_lock();
-    conf_term();
     ooura_term();
     sys_unlock();
 }
