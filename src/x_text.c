@@ -648,7 +648,7 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
             x->x_f1 = argv->a_w.w_float;
         else
         {
-            post("text set: can't understand field number");
+            post("text set: can't understand line number");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -659,7 +659,7 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
             x->x_f2 = argv->a_w.w_float;
         else
         {
-            post("text set: can't understand field count");
+            post("text set: can't understand field number");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -679,7 +679,9 @@ static void text_set_list(t_text_set *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, lineno = x->x_f1, fieldno = x->x_f2, i;
+    int start, end, n, fieldno = x->x_f2, i,
+            /* check for overflow in this conversion: */
+        lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : x->x_f1);
     t_atom *vec;
     if (!b)
        return;
@@ -748,6 +750,75 @@ static void text_set_list(t_text_set *x,
     text_client_senditup(&x->x_tc);
 }
 
+/* --------- text_insert object - insert a line ----------- */
+typedef struct _text_insert
+{
+    t_text_client x_tc;
+    t_float x_f1;           /* line number */
+} t_text_insert;
+
+t_class *text_insert_class;
+
+static void *text_insert_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_insert *x = (t_text_insert *)pd_new(text_insert_class);
+    floatinlet_new(&x->x_obj, &x->x_f1);
+    x->x_f1 = 0;
+    text_client_argparse(&x->x_tc, &argc, &argv, "text insert");
+    if (argc)
+    {
+        if (argv->a_type == A_FLOAT)
+            x->x_f1 = argv->a_w.w_float;
+        else
+        {
+            post("text insert: can't understand line number");
+            postatom(argc, argv); endpost();
+        }
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        post("warning: text insert ignoring extra argument: ");
+        postatom(argc, argv); endpost();
+    }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    return (x);
+}
+
+static void text_insert_list(t_text_insert *x,
+    t_symbol *s, int argc, t_atom *argv)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int start, end, n, nwas, i,
+         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : x->x_f1);
+
+    t_atom *vec;
+    if (!b)
+       return;
+    if (lineno < 0)
+    {
+        pd_error(x, "text insert: line number (%d) < 0", lineno);
+        return;
+    }
+    nwas = binbuf_getnatom(b);
+    if (!text_nthline(nwas, binbuf_getvec(b), lineno, &start, &end))
+        start = nwas;
+    (void)binbuf_resize(b, (n = nwas + argc + 1));
+    vec = binbuf_getvec(b);
+    if (start < n)
+        memmove(&vec[start+(argc+1)], &vec[start], sizeof(*vec) * (nwas-start));
+    for (i = 0; i < argc; i++)
+    {
+        if (argv[i].a_type == A_POINTER)
+            SETSYMBOL(&vec[start+i], gensym("(pointer)"));
+        else vec[start+i] = argv[i];
+    }
+    SETSEMI(&vec[start+argc]);
+    text_client_senditup(&x->x_tc);
+}
+
 /* --------- text_delete object - delete nth line ----------- */
 typedef struct _text_delete
 {
@@ -774,7 +845,8 @@ static void *text_delete_new(t_symbol *s, int argc, t_atom *argv)
 static void text_delete_float(t_text_delete *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, lineno = f;
+    int start, end, n,
+         lineno = (f > (double)0x7fffffff ? 0x7fffffff : f);
     t_atom *vec;
     if (!b)
        return;
@@ -1528,6 +1600,8 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = text_get_new(s, argc-1, argv+1);
         else if (!strcmp(str, "set"))
             pd_this->pd_newest = text_set_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "insert"))
+            pd_this->pd_newest = text_insert_new(s, argc-1, argv+1);
         else if (!strcmp(str, "delete"))
             pd_this->pd_newest = text_delete_new(s, argc-1, argv+1);
         else if (!strcmp(str, "size"))
@@ -1918,6 +1992,12 @@ void x_qlist_setup(void )
             sizeof(t_text_set), 0, A_GIMME, 0);
     class_addlist(text_set_class, text_set_list);
     class_sethelpsymbol(text_set_class, gensym("text-object"));
+
+    text_insert_class = class_new(gensym("text insert"),
+        (t_newmethod)text_insert_new, (t_method)text_client_free,
+            sizeof(t_text_insert), 0, A_GIMME, 0);
+    class_addlist(text_insert_class, text_insert_list);
+    class_sethelpsymbol(text_insert_class, gensym("text-object"));
 
     text_delete_class = class_new(gensym("text delete"),
         (t_newmethod)text_delete_new, (t_method)text_client_free,
