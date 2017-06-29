@@ -60,10 +60,6 @@ struct _class
     t_classfreefn c_classfreefn;    /* function to call before freeing class */
 };
 
-/* m_pd.c */
-EXTERN void pd_init_systems(void);
-EXTERN void pd_term_systems(void);
-
 /* m_class.c */
 EXTERN void pd_emptylist(t_pd *x);
 
