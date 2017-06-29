@@ -57,6 +57,7 @@ struct _class
     char c_patchable;                   /* true if we have a t_object header */
     char c_firstin;                 /* if patchable, true if draw first inlet */
     char c_drawcommand;             /* a drawing command for a template */
+    t_classfreefn c_classfreefn;    /* function to call before freeing class */
 };
 
 /* m_pd.c */

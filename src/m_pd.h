@@ -467,6 +467,10 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+EXTERN void class_free(t_class *c);
+#if PDINSTANCE
+EXTERN t_class *class_getfirst();
+#endif
 EXTERN void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...);
 EXTERN void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
@@ -502,6 +506,9 @@ typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
 EXTERN void class_setpropertiesfn(t_class *c, t_propertiesfn f);
 EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 
+typedef void (*t_classfreefn)(struct _class *);
+EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
+
 #ifndef PD_CLASS_DEF
 #define class_addbang(x, y) class_addbang((x), (t_method)(y))
 #define class_addpointer(x, y) class_addpointer((x), (t_method)(y))
@@ -509,10 +516,6 @@ EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 #define class_addsymbol(x, y) class_addsymbol((x), (t_method)(y))
 #define class_addlist(x, y) class_addlist((x), (t_method)(y))
 #define class_addanything(x, y) class_addanything((x), (t_method)(y))
-#endif
-
-#ifdef PDINSTANCE
-EXTERN t_class *class_list;
 #endif
 
 /* ------------   printing --------------------------------- */

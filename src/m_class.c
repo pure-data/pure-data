@@ -32,7 +32,7 @@ t_pd pd_canvasmaker;    /* factory for creating canvases */
 static t_symbol *class_extern_dir;
 
 #ifdef PDINSTANCE
-t_class *class_list = 0;
+static t_class *class_list = 0;
 PERTHREAD t_pdinstance *pd_this;
 t_pdinstance **pd_instances;
 int pd_ninstances;
@@ -208,7 +208,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     for (c = class_list; c; c = c->c_next)
     {
         freebytes(c->c_methods[instanceno],
-            c->c_nmethod * sizeof(*c->c_methods));
+            c->c_nmethod * sizeof(**c->c_methods));
         for (i = instanceno; i < pd_ninstances-1; i++)
             c->c_methods[i] = c->c_methods[i+1];
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
@@ -446,6 +446,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     c->c_floatsignalin = 0;
     c->c_externdir = class_extern_dir;
     c->c_savefn = (typeflag == CLASS_PATCHABLE ? text_save : class_nosavefn);
+    c->c_classfreefn = 0;
 #if PDINSTANCE
     c->c_methods = (t_methodentry **)t_getbytes(
         pd_ninstances * sizeof(*c->c_methods));
@@ -461,6 +462,35 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 #endif
     return (c);
 }
+
+void class_free(t_class *c)
+{
+    int i;
+#if PDINSTANCE
+    if (class_list == c)
+        class_list = c->c_next;
+#endif
+    if (c->c_classfreefn)
+        c->c_classfreefn(c);
+#if PDINSTANCE
+    for (i = 0; i < pd_ninstances; i++)
+        freebytes(c->c_methods[i], c->c_nmethod * sizeof(*c->c_methods[i]));
+    freebytes(c->c_methods, pd_ninstances * sizeof(*c->c_methods));
+#else
+    freebytes(c->c_methods, c->c_nmethod * sizeof(*c->c_methods));
+#endif
+    freebytes(c, sizeof(*c));
+}
+
+void class_setfreefn(t_class *c, t_classfreefn fn) {
+    c->c_classfreefn = fn;
+}
+
+#if PDINSTANCE
+t_class *class_getfirst() {
+    return class_list;
+}
+#endif
 
     /* add a creation method, which is a function that returns a Pd object
     suitable for putting in an object box.  We presume you've got a class it
