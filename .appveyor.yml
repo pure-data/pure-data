@@ -2,7 +2,7 @@
 #
 # this automatically builds Pd for W32 using VisualStudio,
 # whenever a new commit is pushed to github...
-#   https://ci.appveyor.com/project/pure-data/pure-data
+#   https://ci.appveyor.com/project/umlaeute/pure-data
 
 environment:
   matrix:
