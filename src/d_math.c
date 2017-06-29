@@ -257,9 +257,7 @@ static t_int *sigwrap_perform(t_int *w)
     while (n--)
     {
         t_sample f = *in++;
-        int k = f;
-        if (f > 0) *out++ = f-k;
-        else *out++ = f - (k-1);
+        *out++ = f - floor(f)    
     }
     return (w + 4);
 }
