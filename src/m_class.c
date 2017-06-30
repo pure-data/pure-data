@@ -467,8 +467,16 @@ void class_free(t_class *c)
 {
     int i;
 #if PDINSTANCE
+    t_class *prev;
     if (class_list == c)
         class_list = c->c_next;
+    else
+    {
+        prev = class_list;
+        while (prev->c_next != c)
+          prev = prev->c_next;
+        prev->c_next = c->c_next;
+    }
 #endif
     if (c->c_classfreefn)
         c->c_classfreefn(c);
