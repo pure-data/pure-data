@@ -71,6 +71,31 @@ static cfftw_info *cfftw_getplan(int n,int fwd)
     return info;
 }
 
+static void cfftw_term(void)
+{
+    int i, j;
+    cfftw_info *cinfo[2];
+
+    for (i = 0; i < MAXFFT+1 - MINFFT; i++)
+    {
+      cinfo[0] = &cfftw_fwd[i];
+      cinfo[1] = &cfftw_bwd[i];
+
+      for (j = 0; j < 2; j++)
+      {
+        if (cinfo[j]->plan)
+        {
+          fftwf_destroy_plan(cinfo[j]->plan);
+          fftwf_free(cinfo[j]->in);
+          fftwf_free(cinfo[j]->out);
+          cinfo[j]->plan = 0;
+          cinfo[j]->in = 0;
+          cinfo[j]->out = 0;
+        }
+      }
+    }
+}
+
 
 /* real stuff */
 
@@ -97,6 +122,49 @@ static rfftw_info *rfftw_getplan(int n,int fwd)
     return info;
 }
 
+static void rfftw_term(void)
+{
+    int i, j;
+    rfftw_info *rinfo[2];
+
+    for (i = 0; i < MAXFFT+1 - MINFFT; i++)
+    {
+      rinfo[0] = &rfftw_fwd[i];
+      rinfo[1] = &rfftw_bwd[i];
+
+      for (j = 0; j < 2; j++)
+      {
+        if (rinfo[j]->plan)
+        {
+          fftwf_destroy_plan(rinfo[j]->plan);
+          fftwf_free(rinfo[j]->in);
+          fftwf_free(rinfo[j]->out);
+          rinfo[j]->plan = 0;
+          rinfo[j]->in = 0;
+          rinfo[j]->out = 0;
+        }
+      }
+    }
+}
+
+static int mayer_refcount = 0;
+
+void mayer_init(void)
+{
+    if (mayer_refcount++ == 0)
+    {
+        /* nothing to do */
+    }
+}
+
+void mayer_term(void)
+{
+    if (--mayer_refcount == 0)
+    {
+        cfftw_term();
+        rfftw_term();
+    }
+}
 
 
 EXTERN void mayer_fht(float *fz, int n)
