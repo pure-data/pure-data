@@ -469,7 +469,7 @@ EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
 EXTERN void class_free(t_class *c);
 #if PDINSTANCE
-EXTERN t_class *class_getfirst();
+EXTERN t_class *class_getfirst(void);
 #endif
 EXTERN void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...);

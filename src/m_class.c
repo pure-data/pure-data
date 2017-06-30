@@ -488,7 +488,7 @@ void class_setfreefn(t_class *c, t_classfreefn fn)
 }
 
 #if PDINSTANCE
-t_class *class_getfirst()
+t_class *class_getfirst(void)
 {
     return class_list;
 }

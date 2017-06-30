@@ -83,7 +83,7 @@ static int ooura_init( int n)
     return (1);
 }
 
-static void ooura_term() {
+static void ooura_term(void) {
   if (!ooura_maxn)
     return;
   t_freebytes(ooura_bitrev, ooura_bitrevsize);
@@ -97,17 +97,20 @@ static void ooura_term() {
 /* -------- initialization and cleanup -------- */
 static int mayer_refcount = 0;
 
-void mayer_init()
+void mayer_init(void)
 {
-    if (mayer_refcount == 0)
-        /* nothing to do */;
-    mayer_refcount++;
+    if (mayer_refcount++ == 0)
+    {
+        /* nothing to do */
+    }
 }
 
-void mayer_term()
+void mayer_term(void)
 {
-    if (--mayer_refcount == 0)  /* clean up */
+    if (--mayer_refcount == 0)
+    {
         ooura_term();
+    }
 }
 
 /* -------- public routines -------- */
