@@ -16,7 +16,6 @@
 
 struct _instanceeditor
 {
-    t_binbuf *copy_binbuf;
     char *canvas_textcopybuf;
     int canvas_textcopybufsize;
     t_undofn canvas_undo_fn;         /* current undo function if any */
@@ -36,6 +35,8 @@ struct _instanceeditor
     t_canvas *canvas_cursorcanvaswas;
     unsigned int canvas_cursorwas;
 };
+
+static t_binbuf *copy_binbuf = 0;
 
 void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
     int selectem);
@@ -570,7 +571,7 @@ static void canvas_undo_cut(t_canvas *x, void *z, int action)
     if (action == UNDO_UNDO)
     {
         if (mode == UCUT_CUT)
-            canvas_dopaste(x, EDITOR->copy_binbuf);
+            canvas_dopaste(x, copy_binbuf);
         else if (mode == UCUT_CLEAR)
             canvas_dopaste(x, buf->u_objectbuf);
         else if (mode == UCUT_TEXT)
@@ -731,7 +732,7 @@ static void canvas_undo_paste(t_canvas *x, void *z, int action)
     else if (action == UNDO_REDO)
     {
         t_selection *sel;
-        canvas_dopaste(x, EDITOR->copy_binbuf);
+        canvas_dopaste(x, copy_binbuf);
             /* if it was "duplicate" have to re-enact the displacement. */
         if (EDITOR->canvas_undo_name && EDITOR->canvas_undo_name[0] == 'd')
             for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
@@ -2342,8 +2343,8 @@ static void canvas_copy(t_canvas *x)
 {
     if (!x->gl_editor || !x->gl_editor->e_selection)
         return;
-    binbuf_free(EDITOR->copy_binbuf);
-    EDITOR->copy_binbuf = canvas_docopy(x);
+    binbuf_free(copy_binbuf);
+    copy_binbuf = canvas_docopy(x);
     if (x->gl_editor->e_textedfor)
     {
         char *buf;
@@ -2522,7 +2523,7 @@ static void canvas_paste(t_canvas *x)
     {
         canvas_setundo(x, canvas_undo_paste, canvas_undo_set_paste(x),
             "paste");
-        canvas_dopaste(x, EDITOR->copy_binbuf);
+        canvas_dopaste(x, copy_binbuf);
     }
 }
 
@@ -2536,7 +2537,7 @@ static void canvas_duplicate(t_canvas *x)
         canvas_copy(x);
         canvas_setundo(x, canvas_undo_paste, canvas_undo_set_paste(x),
             "duplicate");
-        canvas_dopaste(x, EDITOR->copy_binbuf);
+        canvas_dopaste(x, copy_binbuf);
         for (y = x->gl_editor->e_selection; y; y = y->sel_next)
             gobj_displace(y->sel_what, x,
                 10, 10);
@@ -2929,13 +2930,13 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
 /* -------------- copy buffer ------------------ */
-    EDITOR->copy_binbuf = binbuf_new();
+    copy_binbuf = binbuf_new();
 }
 
 void g_editor_cleanup(void)
 {
-    binbuf_free(EDITOR->copy_binbuf);
-    EDITOR->copy_binbuf = 0;
+    binbuf_free(copy_binbuf);
+    copy_binbuf = 0;
 }
 
 void canvas_editor_for_class(t_class *c)
