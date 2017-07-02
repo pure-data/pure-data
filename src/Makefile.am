@@ -137,8 +137,8 @@ if JACK
 pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
 pd_SOURCES += s_audio_jack.c
 
-if MACOSX
-# link to Jackmp on OSX
+if JACK_FRAMEWORK
+# link to Jackmp.framework on macOS
 pd_LDFLAGS += -weak_framework Jackmp
 else
 # link to Jack discovered by configure
