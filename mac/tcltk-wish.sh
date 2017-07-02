@@ -18,7 +18,7 @@ set -e
 UNIVERSAL=false
 ARCH=
 
-# set deployment target to enable weak-linking for older OSX version support
+# set deployment target to enable weak-linking for older macOS version support
 CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
 
 # Help message
@@ -27,8 +27,8 @@ help() {
 echo -e "
 Usage: tcltk-wish.sh [OPTIONS] VERSION
 
-  Downloads and builds a Wish-VERSION.app with the
-  chosen Tcl/Tk framework version
+  Downloads and builds a Wish-VERSION.app for macOS
+  with the chosen Tcl/Tk framework version
 
 Options:
   -h,--help           display this help message
