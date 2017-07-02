@@ -2966,6 +2966,6 @@ void g_editor_freepdinstance( void)
             (EDITOR->canvas_undo_canvas, EDITOR->canvas_undo_buf, UNDO_FREE);
     }
     if (EDITOR->canvas_findbuf)
-        binbuf_free(EDITOR->copy_binbuf);
+        binbuf_free(EDITOR->canvas_findbuf);
     freebytes(EDITOR, sizeof(*EDITOR));
 }
