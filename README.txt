@@ -1,7 +1,7 @@
 This is the README file for Pd, a free real-time computer music software
 package resembling Max.
 
-You can get Pd for Linux, Mac OS X, or MS Windows from:
+You can get Pd for Linux, Mac OS X, or MS-Windows from:
 
     http://msp.ucsd.edu/software.html
 
@@ -9,7 +9,7 @@ Installation instructions are in the HTML DOCUMENTATION at:
 
     http://msp.ucsd.edu/Pd_documentation/index.htm
 
-If you download and unpack Pd, you will also find the html documentation
+If you download and unpack Pd, you will also find the HTML documentation
 locally in the file ".../pd-whatever/doc/1.manual/index.htm".
 
 Linux (or FreeBSD): in some Linux installations you can download Pd via
@@ -30,7 +30,7 @@ check the Pd mailing list:
     http://lists.puredata.info/listinfo
 
 Many extensions to Pd are available, notably for handling video and 3D
-graphics; see the html documentation for pointers.
+graphics; see the HTML documentation for pointers.
 
 COPYRIGHT: except as otherwise noted, all files in the Pd distribution are
 
@@ -38,7 +38,7 @@ COPYRIGHT: except as otherwise noted, all files in the Pd distribution are
 
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "LICENSE.txt," included in the Pd distribution.
-(Note that tcl/tk, expr, and some other files are copyrighted separately).
+(Note that Tcl/Tk, expr, and some other files are copyrighted separately).
 
 ACKNOWLEDGEMENTS: Thanks to Harry Castle, Krzysztof Czaja, Mark Danks,
 Christian Feldbauer, Guenter Geiger, Kerry Hagan, Trevor Johnson, Fernando
