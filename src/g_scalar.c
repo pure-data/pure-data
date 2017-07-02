@@ -422,6 +422,7 @@ static void scalar_free(t_scalar *x)
 {
     int i;
     t_dataslot *datatypes, *dt;
+    sys_unqueuegui(x);
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
     if (!template)
