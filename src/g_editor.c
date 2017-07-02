@@ -4189,12 +4189,6 @@ void g_editor_setup(void)
     EDITOR->copy_binbuf = binbuf_new();
 }
 
-void g_editor_cleanup(void)
-{
-    binbuf_free(EDITOR->copy_binbuf);
-    EDITOR->copy_binbuf = 0;
-}
-
 void canvas_editor_for_class(t_class *c)
 {
     class_addmethod(c, (t_method)canvas_mouse, gensym("mouse"),
