@@ -1,4 +1,4 @@
-#N canvas 519 22 579 803 12;
+#N canvas 518 52 579 803 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -360,12 +360,8 @@ its "help window".;
 #X obj 180 932 <<;
 #X obj 211 932 >>;
 #X obj 26 2126 sqrt~;
-#X text 17 1152 ------------------- MIDI and OSC------------------------
-;
 #X obj 22 1339 oscparse;
-#X obj 21 1363 oscformat;
-#X text 113 1340 - OSC messages to Pd lists;
-#X text 113 1363 - Pd lists to OSC messages;
+#X obj 96 1339 oscformat;
 #X text 18 4157 -------- "EXTRA" (patches and externs in pd/extra)
 ---------;
 #X obj 26 4186 sigmund~;
@@ -408,3 +404,9 @@ its "help window".;
 #X obj 79 2002 fexpr~;
 #X text 145 2003 - C-style expressions;
 #X text 123 854 - C-style expressions;
+#X text 26 1149 ---------I/O via MIDI \, OSC \, and FUDI --------------------
+;
+#X text 180 1339 - OSC messages to and from Pd lists;
+#X obj 21 1365 fudiparse;
+#X obj 100 1365 fudiformat;
+#X text 196 1367 - FUDI messages to and from Pd lists;
