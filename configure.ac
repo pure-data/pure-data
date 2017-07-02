@@ -194,8 +194,9 @@ case $host in
 *mingw*)
     WINDOWS=yes
     MINGW=yes
-    platform=Mingw
+    platform=MinGW
     portaudio=yes
+    portmidi=yes
 
     # ASIO doesn't build yet with the autotools setup. We need to figure out how
     # to make the final linking phase use g++
@@ -211,6 +212,7 @@ case $host in
     CYGWIN=yes
     platform=Cygwin
     portaudio=yes
+    portmidi=yes
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS=
@@ -497,6 +499,7 @@ AC_MSG_NOTICE([
     CFLAGS:               $CFLAGS
     LDFLAGS:              $LDFLAGS
     INCLUDES:             $AM_CPPFLAGS
+    LIBS:                 $LIBS
 
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
