@@ -1109,4 +1109,3 @@ t_gotfn zgetfn(t_pd *x, t_symbol *s)
         if (m->me_name == s) return(m->me_fun);
     return(0);
 }
-

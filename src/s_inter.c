@@ -105,6 +105,7 @@ typedef struct _guiqueue
 
 struct _instanceinter
 {
+    int i_havegui;
     int i_nfdpoll;
     t_fdpoll *i_fdpoll;
     int i_maxfd;
@@ -210,8 +211,9 @@ static int sys_domicrosleep(int microsec, int pollem)
                 Sleep(microsec/1000);
         else
 #endif
-        select(pd_this->pd_inter->i_maxfd+1,
-            &readset, &writeset, &exceptset, &timout);
+        if(select(pd_this->pd_inter->i_maxfd+1,
+                  &readset, &writeset, &exceptset, &timout) < 0)
+          perror("microsleep select");
         for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
             if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
@@ -333,44 +335,51 @@ void sys_setsignalhandlers( void)
 #include <sched.h>
 #endif
 
-void sys_set_priority(int higher)
+#define MODE_NRT 0
+#define MODE_RT 1
+#define MODE_WATCHDOG 2
+
+void sys_set_priority(int mode)
 {
 #ifdef _POSIX_PRIORITY_SCHEDULING
     struct sched_param par;
-    int p1 ,p2, p3;
+    int p1, p2, p3;
     p1 = sched_get_priority_min(SCHED_FIFO);
     p2 = sched_get_priority_max(SCHED_FIFO);
 #ifdef USEAPI_JACK
-    p3 = (higher ? p1 + 7 : p1 + 5);
+    p3 = (mode == MODE_WATCHDOG ? p1 + 7 : (mode == MODE_RT ? p1 + 5 : 0));
 #else
-    p3 = (higher ? p2 - 5 : p2 - 7);
+    p3 = (mode == MODE_WATCHDOG ? p2 - 5 : (mode == MODE_RT ? p2 - 7 : 0));
 #endif
     par.sched_priority = p3;
-    if (sched_setscheduler(0,SCHED_FIFO,&par) < 0)
+    if (sched_setscheduler(0,
+        (mode == MODE_NRT ? SCHED_OTHER : SCHED_FIFO), &par) < 0)
     {
-        if (!higher)
-            post("priority %d scheduling failed; running at normal priority",
+        if (mode == MODE_WATCHDOG)
+            fprintf(stderr, "priority %d scheduling failed.\n", p3);
+        else post("priority %d scheduling failed; running at normal priority",
                 p3);
-        else fprintf(stderr, "priority %d scheduling failed.\n", p3);
     }
-    else if (!higher && sys_verbose)
-        post("priority %d scheduling enabled.\n", p3);
+    else if (sys_verbose)
+    {
+        if (mode == MODE_RT)
+            post("priority %d scheduling enabled.\n", p3);
+        else post("running at normal (non-real-time) priority.\n");
+    }
 #endif
 
-#ifdef REALLY_POSIX_MEMLOCK /* this doesn't work on Fedora 4, for example. */
-#ifdef _POSIX_MEMLOCK
-    /* tb: force memlock to physical memory { */
+    if (mode != MODE_NRT)
     {
+            /* tb: force memlock to physical memory { */
         struct rlimit mlock_limit;
         mlock_limit.rlim_cur=0;
         mlock_limit.rlim_max=0;
         setrlimit(RLIMIT_MEMLOCK,&mlock_limit);
+            /* } tb */
+        if (mlockall(MCL_FUTURE) != -1 && sys_verbose)
+            fprintf(stderr, "memory locking enabled.\n");
     }
-    /* } tb */
-    if (mlockall(MCL_FUTURE) != -1)
-        fprintf(stderr, "memory locking enabled.\n");
-#endif
-#endif
+    else munlockall();
 }
 
 #endif /* __linux__ */
@@ -594,6 +603,8 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
 void sys_closesocket(int fd)
 {
 #ifdef HAVE_UNISTD_H
+    if(fd<0)
+        return;
     close(fd);
 #endif
 #ifdef _WIN32
@@ -659,12 +670,17 @@ static void sys_trytogetmoreguibuf(int newsize)
     }
 }
 
+int sys_havegui( void)
+{
+    return (pd_this->pd_inter->i_havegui);
+}
+
 void sys_vgui(char *fmt, ...)
 {
     int msglen, bytesleft, headwas, nwrote;
     va_list ap;
 
-    if (sys_nogui)
+    if (!sys_havegui())
         return;
     if (!pd_this->pd_inter->i_guibuf)
     {
@@ -804,7 +820,7 @@ static int sys_flushqueue(void )
     /* flush output buffer and update queue to gui in small time slices */
 static int sys_poll_togui(void) /* returns 1 if did anything */
 {
-    if (sys_nogui)
+    if (!sys_havegui())
         return (0);
         /* in case there is stuff still in the buffer, try to flush it. */
     sys_flushtogui();
@@ -906,7 +922,7 @@ void glob_watchdog(t_pd *dummy)
 
 static int sys_do_startgui(const char *libdir)
 {
-    char cmdbuf[4*MAXPDSTRING], *guicmd;
+    char cmdbuf[4*MAXPDSTRING], *guicmd, apibuf[256], apibuf2[256];
     struct sockaddr_in server = {0};
     int msgsock;
     char buf[15];
@@ -1019,9 +1035,7 @@ static int sys_do_startgui(const char *libdir)
             {
                 perror("bind");
                 fprintf(stderr,
-                    "Pd needs your machine to be configured with\n");
-                fprintf(stderr,
-                  "'networking' turned on (see Pd's html doc for details.)\n");
+                    "Pd was unable to find a port number to bind to\n");
                 return (1);
             }
             portno++;
@@ -1104,12 +1118,15 @@ static int sys_do_startgui(const char *libdir)
         {
             if (errno) perror("sys_startgui");
             else fprintf(stderr, "sys_startgui failed\n");
+            sys_closesocket(xsock);
             return (1);
         }
         else if (!childpid)                     /* we're the child */
         {
-            setuid(getuid());          /* lose setuid priveliges */
-            sys_closesocket(xsock);    /* child doesn't listen */
+            sys_closesocket(xsock);     /* child doesn't listen */
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
+            sys_set_priority(MODE_NRT);  /* child runs non-real-time */
+#endif
 #ifndef __APPLE__
 // TODO this seems unneeded on any platform hans@eds.org
                 /* the wish process in Unix will make a wish shell and
@@ -1158,24 +1175,70 @@ static int sys_do_startgui(const char *libdir)
 #endif /* NOT _WIN32 */
     }
 
+
+    if (!sys_guisetportnumber)
+    {
+        if (sys_verbose)
+            fprintf(stderr, "Waiting for connection request... \n");
+        if (listen(xsock, 5) < 0) sys_sockerror("listen");
+
+        pd_this->pd_inter->i_guisock = accept(xsock,
+            (struct sockaddr *) &server, (socklen_t *)&len);
+
+        sys_closesocket(xsock);
+
+        if (pd_this->pd_inter->i_guisock < 0) sys_sockerror("accept");
+        if (sys_verbose)
+            fprintf(stderr, "... connected\n");
+        pd_this->pd_inter->i_guihead = pd_this->pd_inter->i_guitail = 0;
+    }
+
+    pd_this->pd_inter->i_socketreceiver = socketreceiver_new(0, 0, 0, 0);
+    sys_addpollfn(pd_this->pd_inter->i_guisock,
+        (t_fdpollfn)socketreceiver_read,
+            pd_this->pd_inter->i_socketreceiver);
+
+            /* here is where we start the pinging. */
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
-        /* now that we've spun off the child process we can promote
-        our process's priority, if we can and want to.  If not specfied
-        (-1), we assume real-time was wanted.  Afterward, just in case
-        someone made Pd setuid in order to get permission to do this,
-        unset setuid and lose root priveliges after doing this.  Starting
-        in Linux 2.6 this is accomplished by putting lines like:
+    if (sys_hipriority)
+        sys_gui("pdtk_watchdog\n");
+#endif
+    sys_get_audio_apis(apibuf);
+    sys_get_midi_apis(apibuf2);
+    sys_set_searchpath();     /* tell GUI about path and startup flags */
+    sys_set_extrapath();
+    sys_set_startup();
+                       /* ... and about font, medio APIS, etc */
+    sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
+             PD_MAJOR_VERSION, PD_MINOR_VERSION,
+             PD_BUGFIX_VERSION, PD_TEST_VERSION,
+             apibuf, apibuf2, sys_font, sys_fontweight);
+    sys_vgui("set pd_whichapi %d\n", sys_audioapi);
+
+    return (0);
+}
+
+void sys_setrealtime(const char *libdir)
+{
+    char cmdbuf[MAXPDSTRING];
+#if defined(__linux__) || defined(__FreeBSD_kernel__)
+        /*  promote this process's priority, if we can and want to.
+        If sys_hipriority not specfied (-1), we assume real-time was wanted.
+        Starting in Linux 2.6 one can permit real-time operation of Pd by]
+        putting lines like:
                 @audio - rtprio 99
                 @audio - memlock unlimited
         in the system limits file, perhaps /etc/limits.conf or
-        /etc/security/limits.conf */
+        /etc/security/limits.conf, and calling Pd from a user in group audio. */
     if (sys_hipriority == -1)
         sys_hipriority = 1;
 
-    sprintf(cmdbuf, "%s/bin/pd-watchdog", libdir);
+    snprintf(cmdbuf, MAXPDSTRING, "%s/bin/pd-watchdog", libdir);
+    cmdbuf[MAXPDSTRING-1] = 0;
     if (sys_hipriority)
     {
         struct stat statbuf;
+        int pipe9[2], watchpid;
         if (stat(cmdbuf, &statbuf) < 0)
         {
             fprintf(stderr,
@@ -1183,12 +1246,6 @@ static int sys_do_startgui(const char *libdir)
                 cmdbuf);
             sys_hipriority = 0;
         }
-    }
-    else if (sys_verbose)
-        post("not setting real-time priority");
-
-    if (sys_hipriority)
-    {
             /* To prevent lockup, we fork off a watchdog process with
             higher real-time priority than ours.  The GUI has to send
             a stream of ping messages to the watchdog THROUGH the Pd
@@ -1198,28 +1255,23 @@ static int sys_do_startgui(const char *libdir)
             to make it timeshare with the rest of the system.  (Version
             0.33P2 : if there's no GUI, the watchdog pinging is done
             from the scheduler idle routine in this process instead.) */
-        int pipe9[2], watchpid;
 
         if (pipe(pipe9) < 0)
         {
-            setuid(getuid());      /* lose setuid priveliges */
             sys_sockerror("pipe");
-            return (1);
+            return;
         }
         watchpid = fork();
         if (watchpid < 0)
         {
-            setuid(getuid());      /* lose setuid priveliges */
             if (errno)
-                perror("sys_startgui");
-            else fprintf(stderr, "sys_startgui failed\n");
-            return (1);
+                perror("sys_setpriority");
+            else fprintf(stderr, "sys_setpriority failed\n");
+            return;
         }
         else if (!watchpid)             /* we're the child */
         {
-            sys_set_priority(1);
-            setuid(getuid());      /* lose setuid priveliges */
-            sys_closesocket(xsock);    /* child doesn't listen */
+            sys_set_priority(MODE_WATCHDOG);
             if (pipe9[1] != 0)
             {
                 dup2(pipe9[0], 0);
@@ -1234,21 +1286,21 @@ static int sys_do_startgui(const char *libdir)
         }
         else                            /* we're the parent */
         {
-            sys_set_priority(0);
-            setuid(getuid());      /* lose setuid priveliges */
+            sys_set_priority(MODE_RT);
             close(pipe9[0]);
                 /* set close-on-exec so that watchdog will see an EOF when we
                 close our copy - otherwise it might hang waiting for some
                 stupid child process (as seems to happen if jackd auto-starts
                 for us.) */
-            fcntl(pipe9[1], F_SETFD, FD_CLOEXEC);
+            if(fcntl(pipe9[1], F_SETFD, FD_CLOEXEC) < 0)
+              perror("close-on-exec");
             sys_watchfd = pipe9[1];
                 /* We also have to start the ping loop in the GUI;
                 this is done later when the socket is open. */
         }
     }
-
-    setuid(getuid());          /* lose setuid priveliges */
+    else if (sys_verbose)
+        post("not setting real-time priority");
 #endif /* __linux__ */
 
 #ifdef _WIN32
@@ -1268,49 +1320,6 @@ static int sys_do_startgui(const char *libdir)
             post("warning: high priority scheduling failed\n");
     }
 #endif /* __APPLE__ */
-
-    if (!sys_nogui && !sys_guisetportnumber)
-    {
-        if (sys_verbose)
-            fprintf(stderr, "Waiting for connection request... \n");
-        if (listen(xsock, 5) < 0) sys_sockerror("listen");
-
-        pd_this->pd_inter->i_guisock = accept(xsock,
-            (struct sockaddr *) &server, (socklen_t *)&len);
-
-        sys_closesocket(xsock);
-
-        if (pd_this->pd_inter->i_guisock < 0) sys_sockerror("accept");
-        if (sys_verbose)
-            fprintf(stderr, "... connected\n");
-        pd_this->pd_inter->i_guihead = pd_this->pd_inter->i_guitail = 0;
-    }
-    if (!sys_nogui)
-    {
-        char buf[256], buf2[256];
-        pd_this->pd_inter->i_socketreceiver = socketreceiver_new(0, 0, 0, 0);
-        sys_addpollfn(pd_this->pd_inter->i_guisock,
-            (t_fdpollfn)socketreceiver_read,
-                pd_this->pd_inter->i_socketreceiver);
-
-            /* here is where we start the pinging. */
-#if defined(__linux__) || defined(__FreeBSD_kernel__)
-        if (sys_hipriority)
-            sys_gui("pdtk_watchdog\n");
-#endif
-        sys_get_audio_apis(buf);
-        sys_get_midi_apis(buf2);
-        sys_set_searchpath();     /* tell GUI about path and startup flags */
-        sys_set_extrapath();
-        sys_set_startup();
-                           /* ... and about font, medio APIS, etc */
-        sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
-                 PD_MAJOR_VERSION, PD_MINOR_VERSION,
-                 PD_BUGFIX_VERSION, PD_TEST_VERSION,
-                 buf, buf2, sys_font, sys_fontweight);
-        sys_vgui("set pd_whichapi %d\n", sys_audioapi);
-    }
-    return (0);
 }
 
 extern void sys_exit(void);
@@ -1342,7 +1351,7 @@ void glob_quit(void *dummy)
 {
     sys_close_audio();
     sys_close_midi();
-    if (!sys_nogui)
+    if (sys_havegui())
     {
         sys_closesocket(pd_this->pd_inter->i_guisock);
         sys_rmpollfn(pd_this->pd_inter->i_guisock);
@@ -1370,7 +1379,7 @@ int sys_startgui(const char *libdir)
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
         canvas_vis(x, 0);
-    sys_nogui = 0;
+    pd_this->pd_inter->i_havegui = 1;
     pd_this->pd_inter->i_guihead = pd_this->pd_inter->i_guitail = 0;
     if (sys_do_startgui(libdir))
         return (-1);
@@ -1400,7 +1409,7 @@ void sys_stopgui( void)
         sys_rmpollfn(pd_this->pd_inter->i_guisock);
         pd_this->pd_inter->i_guisock = -1;
     }
-    sys_nogui = 1;
+    pd_this->pd_inter->i_havegui = 0;
 }
 
 /* ----------- mutexes for thread safety --------------- */
@@ -1415,6 +1424,7 @@ void s_inter_newpdinstance( void)
 #ifdef _WIN32
     pd_this->pd_inter->i_freq = 0;
 #endif
+    pd_this->pd_inter->i_havegui = 0;
 }
 
 void s_inter_free(t_instanceinter *inter)

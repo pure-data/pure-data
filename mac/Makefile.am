@@ -4,6 +4,7 @@
 # files that are included but not built
 EXTRA_DIST = \
     osx-app.sh \
+    tcltk-wish.sh \
     stuff/Info.plist \
     stuff/pd-file.icns \
     stuff/pd.icns

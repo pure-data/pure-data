@@ -493,7 +493,7 @@ void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
     t_pd *to;
     t_outconnect *oc, *oc2;
 
-    for (o = source->ob_outlet; o && outno; o = o->o_next, outno--)
+    for (o = source->ob_outlet; o && outno; o = o->o_next, outno--) ;
     if (!o) return;
     if (sink->ob_pd->c_firstin)
     {

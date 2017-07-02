@@ -45,7 +45,7 @@ proc ::scrollboxwindow::ok {mytoplevel commit_method } {
 }
 
 # "Constructor" function for building the window
-# id -- the window id to use
+# mytoplevel -- the window id to use
 # listdata -- the data used to populate the scrollbox
 # add_method -- a reference to a proc to be called when the user adds a new item
 # edit_method -- same as above, for editing and existing item

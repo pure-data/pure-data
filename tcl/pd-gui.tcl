@@ -10,10 +10,16 @@
 # second while pd loads.
 if { [catch {wm withdraw .} fid] } { exit 2 }
 
-package require Tcl 8.3
-package require Tk
-if { [info patchlevel] >= 8.5 } {
-    #package require tile
+# This is mainly for OSX as older versions only
+# have 8.4 while newer versions have 8.5.
+if { [catch {package provide Tcl 8.5}] } {
+    # Tcl 8.5 not available
+    package require Tcl 8.4
+    package require Tk
+} else {
+    # Tcl 8.5 is available
+    package require Tcl 8.5
+    package require Tk
 
     # replace Tk widgets with Ttk widgets on 8.5
     namespace import -force ttk::*
@@ -58,8 +64,8 @@ package require pd_guiprefs
 namespace import ::pd_guiprefs::init
 namespace import ::pd_guiprefs::update_recentfiles
 namespace import ::pd_guiprefs::write_recentfiles
-# make global since they are used throughout    
-namespace import ::pd_menucommands::* 
+# make global since they are used throughout
+namespace import ::pd_menucommands::*
 
 # import into the global namespace for backwards compatibility
 namespace import ::pd_connect::pdsend
@@ -193,6 +199,9 @@ set popup_xcanvas 0
 set popup_ycanvas 0
 # modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
 set modifier ""
+# most backends require uppercase letters when binding with the shift key,
+# but some (ie. TK Cocoa) need lowercase
+set bind_shiftcaps 1
 # current state of the Edit Mode menu item
 set editmode_button 0
 
@@ -208,7 +217,7 @@ array set editingtext {};# if an obj, msg, or comment is being edited, per patch
 array set loaded {}     ;# store whether a patch has completed loading
 array set xscrollable {};# keep track of whether the scrollbars are present
 array set yscrollable {}
-# patch window tree, these might contain patch IDs without a mapped toplevel 
+# patch window tree, these might contain patch IDs without a mapped toplevel
 array set windowname {}    ;# window names based on mytoplevel IDs
 array set childwindows {}  ;# all child windows based on mytoplevel IDs
 array set parentwindows {} ;# topmost parent window ID based on mytoplevel IDs
@@ -238,8 +247,8 @@ namespace eval ::pdgui:: {
 #
 # these are preliminary ideas, we'll change them as we work things out:
 # - when possible use "" doublequotes to delimit messages
-# - use '$::myvar' instead of 'global myvar' 
-# - for the sake of clarity, there should not be any inline code, everything 
+# - use '$::myvar' instead of 'global myvar'
+# - for the sake of clarity, there should not be any inline code, everything
 #   should be in a proc that is ultimately triggered from main()
 # - if a menu_* proc opens a dialog panel, that proc is called menu_*_dialog
 # - use "eq/ne" for string comparison, NOT "==/!=" (http://wiki.tcl.tk/15323)
@@ -290,7 +299,7 @@ proc init_for_platform {} {
             option add *PatchWindow*Canvas.background "white" startupFile
             # add control to show/hide hidden files in the open panel (load
             # the tk_getOpenFile dialog once, otherwise it will not work)
-            catch {tk_getOpenFile -with-invalid-argument} 
+            catch {tk_getOpenFile -with-invalid-argument}
             set ::tk::dialog::file::showHiddenBtn 1
             set ::tk::dialog::file::showHiddenVar 0
             # set file types that open/save recognize
@@ -320,11 +329,19 @@ proc init_for_platform {} {
             set ::cursor_editmode_resize "sb_h_double_arrow"
         }
         "aqua" {
+            # load tk::mac event callbacks here, this way launching pd
+            # from the commandline incorporates the special mac event handling
+            package require apple_events
             set ::modifier "Mod1"
+            if {$::tcl_version >= 8.5} {
+                # Tk Cocoa wants lower case keys when binding with shift
+                set ::bind_shiftcaps 0
+            }
             option add *DialogWindow*background "#E8E8E8" startupFile
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
             option add *DialogWindow*Button.highlightBackground "#E8E8E8" startupFile
             option add *DialogWindow*Entry.background "white" startupFile
+            option add *DialogWindow*Menu.foreground "black" startupFile
             # Mac OS X needs a menubar all the time
             set ::dialog_menubar ".menubar"
             # set file types that open/save recognize
@@ -374,7 +391,7 @@ proc init_for_platform {} {
             set ::menubarsize 0
             # Tk handles the window placement differently on each platform, on
             # Mac OS X, the x,y placement refers to the content window's upper
-            # left corner. http://wiki.tcl.tk/11502 
+            # left corner. http://wiki.tcl.tk/11502
             # TODO this probably needs a script layer: http://wiki.tcl.tk/11291
             set ::windowframex 0
             set ::windowframey 0
@@ -414,7 +431,7 @@ proc load_locale {} {
         }
     } elseif {$::tcl_platform(platform) eq "windows"} {
         # using LANG on Windows is useful for easy debugging
-        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {  
+        if {[info exists ::env(LANG)] && $::env(LANG) ne "C" && $::env(LANG) ne ""} {
             ::msgcat::mclocale $::env(LANG)
         } elseif {![catch {package require registry}]} {
             ::msgcat::mclocale [string tolower \
@@ -527,9 +544,10 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pd_bindings::class_bindings
     ::pd_bindings::global_bindings
     ::pd_menus::create_menubar
-    ::pdtk_canvas::create_popup
     ::pdwindow::create_window
+    ::pdwindow::configure_menubar
     ::pd_menus::configure_for_pdwindow
+    ::pdtk_canvas::create_popup
     load_startup_plugins
     open_filestoopen
     set ::done_init 1
@@ -563,7 +581,7 @@ proc pdtk_plugin_dispatch { args } {
 
 # ------------------------------------------------------------------------------
 # parse command line args when Wish/pd-gui.tcl is started first
- 
+
 proc parse_args {argc argv} {
     opt_parser::init {
         {-stderr    set {::stderr}}
@@ -575,7 +593,7 @@ proc parse_args {argc argv} {
         if { [string is int $argv] && $argv > 0} {
             # 'pd-gui' got the port number from 'pd'
             set ::host "localhost"
-            set ::port $argv 
+            set ::port $argv
         } else {
             set hostport [split $argv ":"]
             set ::port [lindex $hostport 1]
@@ -735,6 +753,11 @@ proc load_startup_plugins {} {
 proc main {argc argv} {
     # TODO Tcl/Tk 8.3 doesn't have [tk windowingsystem]
     set ::windowingsystem [tk windowingsystem]
+    set ::platform $::tcl_platform(os)
+    if { $::tcl_platform(platform) eq "windows"} {
+       set ::platform W32
+    }
+
     tk appname pd-gui
     load_locale
     parse_args $argc $argv

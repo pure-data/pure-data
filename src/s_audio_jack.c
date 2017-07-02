@@ -336,39 +336,21 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         whether or not this is desirable; see long Pd list thread started by
         yvan volochine, June 2013) */
     if (!jack_client) {
-        do {
-          if (desired_client_name && strlen(desired_client_name)) {
-            if (client_iterator == 0)
-              strcpy(client_name, desired_client_name);
-            else
-              sprintf(client_name,"%s_%d", desired_client_name, client_iterator);
-          } else {
-            sprintf(client_name,"pure_data_%d",client_iterator);
-          }
-          client_iterator++;
-          jack_client = jack_client_open (client_name, JackNoStartServer,
-            &status, NULL);
-          if (status & JackServerFailed) {
-            error("JACK: unable to connect to JACK server.  Is JACK running?");
+        if (!desired_client_name || !strlen(desired_client_name))
+            jack_client_name("pure_data");
+        jack_client = jack_client_open (desired_client_name, JackNoStartServer,
+          &status, NULL);
+        if (status & JackFailure) {
+            error("JACK: Failure.  Is JACK running?");
+            verbose(1, "JACK: Returned status is: %d", status);
             jack_client=NULL;
-            break;
-          }
-        } while (status & JackNameNotUnique);
-
-        if(status) {
-          if (status & JackServerStarted) {
-            verbose(1, "JACK: started server");
-          } else {
-            error("JACK: server returned status %d", status);
-          }
-        }
-        verbose(1, "JACK: started server as '%s'", client_name);
-
-        if (!jack_client) {
             /* jack spits out enough messages already, do not warn */
             STUFF->st_inchannels = STUFF->st_outchannels = 0;
             return 1;
         }
+        if (status & JackNameNotUnique)
+            jack_client_name(jack_get_client_name(jack_client));
+        verbose(1, "JACK: registered as '%s'", desired_client_name);
 
         STUFF->st_inchannels = inchans;
         STUFF->st_outchannels = outchans;

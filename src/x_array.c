@@ -408,6 +408,11 @@ static void array_size_float(t_array_size *x, t_floatarg f)
         {
             t_garray *y = (t_garray *)pd_findbyclass(x->x_tc.tc_sym,
                 garray_class);
+            if (!y)
+            {
+                pd_error(x, "no such array '%s'", x->x_tc.tc_sym->s_name);
+                return;
+            }
             garray_resize(y, f);
         }
         else

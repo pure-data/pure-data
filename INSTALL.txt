@@ -2,25 +2,39 @@ Quick compilation instructions for GNU/Linux, Mac OS X, or Windows if you have
 installed MinGW or Cygwin: make sure "automake" is installed as well as the usual C
 compiler chain. Then in this directory, run the following commands:
 
-    ./autogen.sh
-    ./configure
-    make
+    $ ./autogen.sh
+    $ ./configure
+    $ make
 
 If you need jack support, add the corresponding flag to "configure":
 
-    ./configure --enable-jack
+    $ ./configure --enable-jack
 
 See the ./configure help print for other options such as a multi architecture
 (universal) build, etc:
 
-    ./configure --help
+    $ ./configure --help
 
-If made this way, Pd will not run until it has been "installed", either via
-$ sudo make install or, for instance, $ make install DESTDIR=~/pd-xxx prefix=/
+Pd can now be run out of the bin directory via:
+
+    $ cd bin
+    $ ./pd
+
+To install Pd on Linux:
+
+    $ sudo make install
+
+or
+
+    $ make install DESTDIR=~/pd-xxx prefix=/
+
+On Max OS X, you build a .app bundle via:
+
+    $ make app
 
 Alternatively, and often more simply, you can use the fallback makefiles in
-"src" for gnu/linux, Mac OSX, or Microsoft Visual C. On linux, for example, cd
-to src and type "make -f makefile.gnu".  You can then run directly out of the
+"src" for GNU/Linux, Mac OS X, or Microsoft Visual C. On Linux, for example, cd
+to src and type "make -f makefile.gnu". You can then run directly out of the
 pd/bin directory without even having to do the "install" step.
 
 Special instructions for Microsoft Visual C: cd to src and type "make -f
@@ -29,19 +43,22 @@ each.
 
 Various dependencies:
 
-- in Linux and Mac you need Tcl/Tk
+- In Linux and Mac you need Tcl/Tk
     (apparently always present for Mac and usually there for Linux).
 
-- On linux you may also need:
+- On Linux you may also need:
+    
     - the ALSA "dev" package:
         $ yum install alsa-lib-devel
     or
         $ sudo apt-get install libasound2-dev
+
     - the JACK "dev" package:
         $ yum install jack-audio-connection-kit-devel
     or
         $ sudo apt-get install libjack-dev
     or
         $ sudo apt-get install libjack-jackd2-dev)
+    
     - libtool (if using the "autogen" method):
         $ sudo apt-get install libtool
