@@ -1684,8 +1684,6 @@ extern void glist_scalar(t_glist *canvas, t_symbol *s, int argc, t_atom *argv);
 void g_graph_setup(void);
 void g_editor_setup(void);
 void g_readwrite_setup(void);
-void g_canvas_cleanup(t_class *c);
-void g_editor_cleanup(void);
 extern void canvas_properties(t_gobj *z, t_glist *canvas);
 
 void g_canvas_setup(void)
@@ -1697,7 +1695,6 @@ void g_canvas_setup(void)
             /* here is the real creator function, invoked in patch files
             by sending the "canvas" message to #N, which is bound
             to pd_camvasmaker. */
-    class_setfreefn(canvas_class, g_canvas_cleanup);
     class_addmethod(pd_canvasmaker, (t_method)canvas_new, gensym("canvas"),
         A_GIMME, 0);
     class_addmethod(canvas_class, (t_method)canvas_restore,
@@ -1792,11 +1789,6 @@ void g_canvas_setup(void)
     g_graph_setup();
     g_editor_setup();
     g_readwrite_setup();
-}
-
-void g_canvas_cleanup(t_class *c)
-{
-    g_editor_cleanup();
 }
 
     /* functions to add basic gui (e.g., clicking but not editing) to things
