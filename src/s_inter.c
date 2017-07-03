@@ -927,6 +927,7 @@ static int sys_do_startgui(const char *libdir)
     int msgsock;
     char buf[15];
     int len = sizeof(server);
+    const int maxtry = 20;
     int ntry = 0, portno = FIRSTPORTNUM;
     int xsock = -1, dumbo = -1;
 #ifdef _WIN32
@@ -1022,7 +1023,6 @@ static int sys_do_startgui(const char *libdir)
 
         /* assign server port number */
         server.sin_port =  htons((unsigned short)portno);
-
         /* name the socket */
         while (bind(xsock, (struct sockaddr *)&server, sizeof(server)) < 0)
         {
@@ -1031,18 +1031,26 @@ static int sys_do_startgui(const char *libdir)
 #else
             int err = errno;
 #endif
-            if ((ntry++ > 20) || (err != EADDRINUSE))
+            if ((ntry++ > maxtry) || (err != EADDRINUSE))
             {
                 perror("bind");
                 fprintf(stderr,
                     "Pd was unable to find a port number to bind to\n");
                 sys_closesocket(xsock);
                 return (1);
-            }
-            portno++;
+            } else if (ntry > maxtry) {
+                    /* last try: let the system pick a random port for us */
+                portno = 0;
+            } else
+                portno++;
             server.sin_port = htons((unsigned short)(portno));
         }
-
+        if (!portno) {
+                /* if the system chose a port for us, we need to know which */
+            socklen_t serversize=sizeof(server);
+            if(!getsockname(xsock, (struct sockaddr *)&server, &serversize))
+                portno = ntohs(server.sin_port);
+        }
         if (sys_verbose) fprintf(stderr, "port %d\n", portno);
 
 
