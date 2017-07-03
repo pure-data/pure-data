@@ -36,6 +36,7 @@ proc ::pd_menus::create_menubar {} {
         set accelerator "Ctrl"
     }
     menu $menubar
+    if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
     set menulist "file edit put find media window help"
     foreach mymenu $menulist {    
         if {$mymenu eq "find"} {
@@ -48,7 +49,6 @@ proc ::pd_menus::create_menubar {} {
             -underline $underlined -menu $menubar.$mymenu
         [format build_%s_menu $mymenu] $menubar.$mymenu
     }
-    if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
     if {$::windowingsystem eq "win32"} {create_system_menu $menubar}
     . configure -menu $menubar
 }
@@ -76,6 +76,9 @@ proc ::pd_menus::configure_for_pdwindow {} {
         # catch errors that happen when trying to disable separators
         catch {$menubar.put entryconfigure $i -state disabled }
     }
+    # Help menu
+    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
+    $menubar.help entryconfigure [_ "List of objects..."] -state normal
 }
 
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
@@ -100,12 +103,15 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
         }
     }
     update_undo_on_menu $mytoplevel
+    # Help menu
+    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
+    $menubar.help entryconfigure [_ "List of objects..."] -state normal
 }
 
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
     variable menubar
     # these are meaningless for the dialog panels, so disable them except for
-    # the ones that make senes in the Find dialog panel
+    # the ones that make sense in the Find dialog panel
     # File menu
     if {$mytoplevel ne ".find"} {
         $menubar.file entryconfigure [_ "Save"] -state disabled
@@ -114,6 +120,7 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     }
     $menubar.file entryconfigure [_ "Close"] -state disabled
     # Edit menu
+    $menubar.edit entryconfigure [_ "Font"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
@@ -128,6 +135,9 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
         # catch errors that happen when trying to disable separators
         catch {$menubar.put entryconfigure $i -state disabled }
     }
+    # Help menu
+    # make sure "List of objects..." is enabled, it sometimes greys out on Mac
+    $menubar.help entryconfigure [_ "List of objects..."] -state normal
 }
 
 
@@ -171,7 +181,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     if {$::windowingsystem eq "aqua"} {
 #        $mymenu add command -label [_ "Text Editor"] \
 #            -command {menu_texteditor}
-        $mymenu add command -label [_ "Font"]  -accelerator "$accelerator+T" \
+        $mymenu add command -label [_ "Font"]   -accelerator "$accelerator+T" \
             -command {menu_font_dialog}
     } else {
 #        $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T"\
@@ -179,17 +189,17 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         $mymenu add command -label [_ "Font"] \
             -command {menu_font_dialog}
     }
-    $mymenu add command -label [_ "Zoom In"] -accelerator "$accelerator++" \
+    $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
         -command {menu_send_float $::focused_window zoom 2}
-    $mymenu add command -label [_ "Zoom Out"] -accelerator "$accelerator+-" \
+    $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
         -command {menu_send_float $::focused_window zoom 1}
-    $mymenu add command -label [_ "Tidy Up"] \
+    $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
         -command {menu_send $::focused_window tidy}
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {menu_clear_console}
     $mymenu add  separator
     #TODO madness! how to set the state of the check box without invoking the menu!
-    $mymenu add check -label [_ "Edit Mode"] -accelerator "$accelerator+E" \
+    $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
         -variable ::editmode_button \
         -command {menu_editmode $::editmode_button}
     if {$::windowingsystem ne "aqua"} {
@@ -204,38 +214,40 @@ proc ::pd_menus::build_put_menu {mymenu} {
     # The trailing 0 in menu_send_float basically means leave the object box
     # sticking to the mouse cursor. The iemguis alway do that when created
     # from the menu, as defined in canvas_iemguis()
-    $mymenu add command -label [_ "Object"] -accelerator "$accelerator+1" \
+    $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
         -command {menu_send_float $::focused_window obj 0} 
-    $mymenu add command -label [_ "Message"] -accelerator "$accelerator+2" \
+    $mymenu add command -label [_ "Message"]  -accelerator "$accelerator+2" \
         -command {menu_send_float $::focused_window msg 0}
-    $mymenu add command -label [_ "Number"] -accelerator "$accelerator+3" \
+    $mymenu add command -label [_ "Number"]   -accelerator "$accelerator+3" \
         -command {menu_send_float $::focused_window floatatom 0}
-    $mymenu add command -label [_ "Symbol"] -accelerator "$accelerator+4" \
+    $mymenu add command -label [_ "Symbol"]   -accelerator "$accelerator+4" \
         -command {menu_send_float $::focused_window symbolatom 0}
-    $mymenu add command -label [_ "Comment"] -accelerator "$accelerator+5" \
+    $mymenu add command -label [_ "Comment"]  -accelerator "$accelerator+5" \
         -command {menu_send_float $::focused_window text 0}
     $mymenu add  separator
-    $mymenu add command -label [_ "Bang"]    -accelerator "Shift+$accelerator+B" \
+    $mymenu add command -label [_ "Bang"]     -accelerator "Shift+$accelerator+B" \
         -command {menu_send $::focused_window bng}
-    $mymenu add command -label [_ "Toggle"]  -accelerator "Shift+$accelerator+T" \
+    $mymenu add command -label [_ "Toggle"]   -accelerator "Shift+$accelerator+T" \
         -command {menu_send $::focused_window toggle}
-    $mymenu add command -label [_ "Number2"] -accelerator "Shift+$accelerator+N" \
+    $mymenu add command -label [_ "Number2"]  -accelerator "Shift+$accelerator+N" \
         -command {menu_send $::focused_window numbox}
-    $mymenu add command -label [_ "Vslider"] -accelerator "Shift+$accelerator+V" \
+    $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
         -command {menu_send $::focused_window vslider}
-    $mymenu add command -label [_ "Hslider"] -accelerator "Shift+$accelerator+H" \
+    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+G" \
         -command {menu_send $::focused_window hslider}
-    $mymenu add command -label [_ "Vradio"]  -accelerator "Shift+$accelerator+D" \
+    $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
         -command {menu_send $::focused_window vradio}
-    $mymenu add command -label [_ "Hradio"]  -accelerator "Shift+$accelerator+I" \
+    $mymenu add command -label [_ "Hradio"]   -accelerator "Shift+$accelerator+I" \
         -command {menu_send $::focused_window hradio}
-    $mymenu add command -label [_ "VU Meter"] -accelerator "Shift+$accelerator+U"\
+    $mymenu add command -label [_ "VU Meter"] -accelerator "Shift+$accelerator+U" \
         -command {menu_send $::focused_window vumeter}
-    $mymenu add command -label [_ "Canvas"]  -accelerator "Shift+$accelerator+C" \
+    $mymenu add command -label [_ "Canvas"]   -accelerator "Shift+$accelerator+C" \
         -command {menu_send $::focused_window mycnv}
     $mymenu add  separator
-    $mymenu add command -label [_ "Graph"] -command {menu_send $::focused_window graph}
-    $mymenu add command -label [_ "Array"] -command {menu_send $::focused_window menuarray}
+    $mymenu add command -label [_ "Graph"]    -accelerator "Shift+$accelerator+G" \
+        -command {menu_send $::focused_window graph}
+    $mymenu add command -label [_ "Array"]    -accelerator "Shift+$accelerator+A" \
+        -command {menu_send $::focused_window menuarray}
 }
 
 proc ::pd_menus::build_find_menu {mymenu} {
@@ -250,7 +262,7 @@ proc ::pd_menus::build_find_menu {mymenu} {
 
 proc ::pd_menus::build_media_menu {mymenu} {
     variable accelerator
-    $mymenu add radiobutton -label [_ "DSP On"] -accelerator "$accelerator+/" \
+    $mymenu add radiobutton -label [_ "DSP On"]  -accelerator "$accelerator+/" \
         -variable ::dsp -value 1 -command {pdsend "pd dsp 1"}
     $mymenu add radiobutton -label [_ "DSP Off"] -accelerator "$accelerator+." \
         -variable ::dsp -value 0 -command {pdsend "pd dsp 0"}
@@ -289,13 +301,16 @@ proc ::pd_menus::build_media_menu {mymenu} {
 proc ::pd_menus::build_window_menu {mymenu} {
     variable accelerator
     if {$::windowingsystem eq "aqua"} {
-        $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M"\
-            -command {menu_minimize $::focused_window}
-        $mymenu add command -label [_ "Zoom"] \
-            -command {menu_maximize $::focused_window}
-        $mymenu add  separator
-        $mymenu add command -label [_ "Bring All to Front"] \
-            -command {menu_bringalltofront}
+        # Tk 8.5+ automatically adds default Mac window menu items
+        if {$::tcl_version < 8.5} {
+            $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
+                -command {menu_minimize $::focused_window}
+            $mymenu add command -label [_ "Zoom"] \
+                -command {menu_maximize $::focused_window}
+            $mymenu add  separator
+            $mymenu add command -label [_ "Bring All to Front"] \
+                -command {menu_bringalltofront}
+        }
     } else {
 		$mymenu add command -label [_ "Next Window"] \
             -command {menu_raisenextwindow} \
@@ -321,7 +336,7 @@ proc ::pd_menus::build_help_menu {mymenu} {
     $mymenu add command -label [_ "Browser..."] \
         -command {menu_helpbrowser} 
     $mymenu add command -label [_ "List of objects..."] \
-        -command {pdsend "pd help-intro"} 
+        -command {menu_objectlist} 
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
         -command {menu_openfile {http://puredata.info}} 
@@ -471,6 +486,12 @@ proc ::pd_menus::add_list_to_menu {mymenu window parentlist} {
 # update the list of windows on the Window menu. This expects run on the
 # Window menu, and to insert below the last separator
 proc ::pd_menus::update_window_menu {} {
+    
+    # TK 8.5+ Cocoa on Mac handles the window list for us 
+    if {$::windowingsystem eq "aqua" && $::tcl_version >= 8.5} {
+        return 0
+    }
+
     set mymenu $::patch_menubar.window
     # find the last separator and delete everything after that
     for {set i 0} {$i <= [$mymenu index end]} {incr i} {
@@ -516,30 +537,29 @@ proc ::pd_menus::create_apple_menu {mymenu} {
     # TODO this should open a Pd patch called about.pd
     menu $mymenu.apple
     $mymenu.apple add command -label [_ "About Pd"] -command {menu_aboutpd}
-    $mymenu.apple add  separator
+    $mymenu.apple add separator
     create_preferences_menu $mymenu.apple.preferences
     $mymenu.apple add cascade -label [_ "Preferences"] \
         -menu $mymenu.apple.preferences
     # this needs to be last for things to function properly
     $mymenu add cascade -label "Apple" -menu $mymenu.apple
-    
 }
 
 proc ::pd_menus::build_file_menu_aqua {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]       -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]      -accelerator "$accelerator+O"
+    $mymenu add command -label [_ "New"]        -accelerator "$accelerator+N"
+    $mymenu add command -label [_ "Open"]       -accelerator "$accelerator+O"
     # this is now done in main ::pd_menus::build_file_menu
     #::pd_menus::update_openrecent_menu_aqua .openrecent
     $mymenu add cascade -label [_ "Open Recent"] -menu .openrecent
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]     -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Save"]      -accelerator "$accelerator+S"
+    $mymenu add command -label [_ "Close"]      -accelerator "$accelerator+W"
+    $mymenu add command -label [_ "Save"]       -accelerator "$accelerator+S"
     $mymenu add command -label [_ "Save As..."] -accelerator "$accelerator+Shift+S"
     #$mymenu add command -label [_ "Save All"]
     #$mymenu add command -label [_ "Revert to Saved"]
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]
+    $mymenu add command -label [_ "Message..."] -accelerator "$accelerator+Shift+M"
     $mymenu add  separator
     $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
 }
@@ -559,22 +579,22 @@ proc ::pd_menus::build_window_menu_aqua {mymenu} {
 
 proc ::pd_menus::build_file_menu_x11 {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]        -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]       -accelerator "$accelerator+O"
+    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
+    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
     $mymenu add  separator
-    $mymenu add command -label [_ "Save"]       -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."] -accelerator "Shift+$accelerator+S"
+    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
+    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]    -accelerator "$accelerator+M"
+    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."]   -accelerator "$accelerator+P"
+    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
     $mymenu add  separator
     # the recent files get inserted in here by update_recentfiles_on_menu
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]      -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]       -accelerator "$accelerator+Q" \
+    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
+    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {pdsend "pd verifyquit"}
 }
 
@@ -606,22 +626,22 @@ proc ::pd_menus::create_system_menu {mymenubar} {
 
 proc ::pd_menus::build_file_menu_win32 {mymenu} {
     variable accelerator
-    $mymenu add command -label [_ "New"]      -accelerator "$accelerator+N"
-    $mymenu add command -label [_ "Open"]     -accelerator "$accelerator+O"
+    $mymenu add command -label [_ "New"]         -accelerator "$accelerator+N"
+    $mymenu add command -label [_ "Open"]        -accelerator "$accelerator+O"
     $mymenu add  separator
-    $mymenu add command -label [_ "Save"]      -accelerator "$accelerator+S"
-    $mymenu add command -label [_ "Save As..."] -accelerator "Shift+$accelerator+S"
+    $mymenu add command -label [_ "Save"]        -accelerator "$accelerator+S"
+    $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
     $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    $mymenu add command -label [_ "Print..."] -accelerator "$accelerator+P"
+    $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
     $mymenu add  separator
     # the recent files get inserted in here by update_recentfiles_on_menu
     $mymenu add  separator
-    $mymenu add command -label [_ "Close"]    -accelerator "$accelerator+W"
-    $mymenu add command -label [_ "Quit"]     -accelerator "$accelerator+Q"\
+    $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
+    $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {pdsend "pd verifyquit"}
 }
 

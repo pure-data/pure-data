@@ -65,8 +65,6 @@ t_rtext *rtext_new(t_glist *glist, t_text *who)
     return (x);
 }
 
-static t_rtext *rtext_entered;
-
 void rtext_free(t_rtext *x)
 {
     if (x->x_glist->gl_editor->e_textedfor == x)
@@ -83,7 +81,6 @@ void rtext_free(t_rtext *x)
             break;
         }
     }
-    if (rtext_entered == x) rtext_entered = 0;
     freebytes(x->x_buf, x->x_bufsize);
     freebytes(x, sizeof *x);
 }

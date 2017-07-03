@@ -70,11 +70,6 @@ static t_oss_dev linux_adcs[OSS_MAXDEV];
 static int linux_noutdevs = 0;
 static int linux_nindevs = 0;
 
-    /* exported variables */
-t_float sys_dacsr;
-t_sample *sys_soundout;
-t_sample *sys_soundin;
-
     /* OSS-specific private variables */
 static int oss_blockmode = 1;   /* flag to use "blockmode"  */
 static char ossdsp[] = "/dev/dsp%d";
@@ -481,8 +476,8 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
                     linux_dacs[i].d_nchannels * DEFDACBLKSIZE);
     }
     sys_setalarm(0);
-    sys_inchannels = inchannels;
-    sys_outchannels = outchannels;
+    STUFF->st_inchannels = inchannels;
+    STUFF->st_outchannels = outchannels;
     return (0);
 }
 
@@ -724,7 +719,7 @@ int oss_send_dacs(void)
         {
             if (linux_dacs[dev].d_bytespersamp == 2)
             {
-                for (i = DEFDACBLKSIZE,  fp1 = sys_soundout +
+                for (i = DEFDACBLKSIZE,  fp1 = STUFF->st_soundout +
                     DEFDACBLKSIZE*thischan,
                     sp = (t_oss_int16 *)buf; i--; fp1++, sp += nchannels)
                 {
@@ -749,8 +744,8 @@ int oss_send_dacs(void)
         }
         thischan += nchannels;
     }
-    memset(sys_soundout, 0,
-        sys_outchannels * (sizeof(t_sample) * DEFDACBLKSIZE));
+    memset(STUFF->st_soundout, 0,
+        STUFF->st_outchannels * (sizeof(t_sample) * DEFDACBLKSIZE));
 
         /* do input */
 
@@ -771,7 +766,7 @@ int oss_send_dacs(void)
 
         if (linux_adcs[dev].d_bytespersamp == 2)
         {
-            for (i = DEFDACBLKSIZE,fp1 = sys_soundin + thischan*DEFDACBLKSIZE,
+            for (i = DEFDACBLKSIZE,fp1 = STUFF->st_soundin + thischan*DEFDACBLKSIZE,
                 sp = (t_oss_int16 *)buf; i--; fp1++, sp += nchannels)
             {
                 for (j=0;j<nchannels;j++)

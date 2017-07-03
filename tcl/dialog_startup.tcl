@@ -17,7 +17,7 @@ proc ::dialog_startup::chooseCommand { prompt initialValue } {
     global cmd
     set cmd $initialValue
     
-    toplevel .inputbox
+    toplevel .inputbox -class DialogWindow
     wm title .inputbox $prompt
     wm group .inputbox .
     wm minsize .inputbox 450 30
@@ -35,9 +35,8 @@ proc ::dialog_startup::chooseCommand { prompt initialValue } {
     bind .inputbox.entry <KeyPress-Escape> { destroy .inputbox }
     pack .inputbox.entry -side right -expand 1 -fill x -padx 2m
 
-    focus .inputbox.entry
-
     raise .inputbox
+    focus .inputbox.entry
     wm transient .inputbox
     grab .inputbox
     tkwait window .inputbox
@@ -76,6 +75,7 @@ proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
+        focus $mytoplevel
     } else {
         create_dialog $mytoplevel
     }
@@ -91,7 +91,7 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     frame $mytoplevel.flags
     pack $mytoplevel.flags -side top -anchor e -fill x -padx 2m 
     label $mytoplevel.flags.entryname -text [_ "Startup flags:"]
-    entry $mytoplevel.flags.entry -textvariable ::startup_flags -width 41
+    entry $mytoplevel.flags.entry -textvariable ::startup_flags -width 36
     pack $mytoplevel.flags.entry $mytoplevel.flags.entryname -side right
 
     frame $mytoplevel.defeatrtframe
@@ -116,12 +116,6 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         # unbind Return from ok button when an entry takes focus
         $mytoplevel.flags.entry config -validate focusin -vcmd "::dialog_startup::unbind_return $mytoplevel"
 
-        # can't see focus for buttons, so disable it
-        $mytoplevel.actions.delete_path config -takefocus 0
-        $mytoplevel.actions.edit_path config -takefocus 0
-        $mytoplevel.actions.add_path config -takefocus 0
-        $mytoplevel.defeatrtframe.defeatrt config -takefocus 0
-
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.nb.buttonframe.cancel config -takefocus 0
 
@@ -129,6 +123,10 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -default normal
         bind $mytoplevel.nb.buttonframe.ok <FocusIn> "$mytoplevel.nb.buttonframe.ok config -default active"
         bind $mytoplevel.nb.buttonframe.ok <FocusOut> "$mytoplevel.nb.buttonframe.ok config -default normal"
+
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
+        $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
 }
 

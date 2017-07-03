@@ -101,19 +101,12 @@ int vinlet_issignal(t_vinlet *x)
     return (x->x_buf != 0);
 }
 
-static int tot;
-
 t_int *vinlet_perform(t_int *w)
 {
     t_vinlet *x = (t_vinlet *)(w[1]);
     t_float *out = (t_float *)(w[2]);
     int n = (int)(w[3]);
     t_float *in = x->x_read;
-#if 0
-    if (tot < 5) post("-in %lx out %lx n %d", in, out, n);
-    if (tot < 5) post("-buf %lx endbuf %lx", x->x_buf, x->x_endbuf);
-    if (tot < 5) post("in[0] %f in[1] %f in[2] %f", in[0], in[1], in[2]);
-#endif
     while (n--) *out++ = *in++;
     if (in == x->x_endbuf) in = x->x_buf;
     x->x_read = in;
@@ -152,10 +145,6 @@ t_int *vinlet_doprolog(t_int *w)
         out -= x->x_hop;
         while (nshift--) *f1++ = *f2++;
     }
-#if 0
-    if (tot < 5) post("in %lx out %lx n %lx", in, out, n), tot++;
-    if (tot < 5) post("in[0] %f in[1] %f in[2] %f", in[0], in[1], in[2]);
-#endif
 
     while (n--) *out++ = *in++;
     x->x_fill = out;
@@ -388,10 +377,6 @@ t_int *voutlet_perform(t_int *w)
     t_float *in = (t_float *)(w[2]);
     int n = (int)(w[3]);
     t_sample *out = x->x_write, *outwas = out;
-#if 0
-    if (tot < 5) post("-in %lx out %lx n %d", in, out, n);
-    if (tot < 5) post("-buf %lx endbuf %lx", x->x_buf, x->x_endbuf);
-#endif
     while (n--)
     {
         *out++ += *in++;
@@ -413,10 +398,6 @@ static t_int *voutlet_doepilog(t_int *w)
     t_sample *in = x->x_empty;
     if (x->x_updown.downsample != x->x_updown.upsample)
         out = x->x_updown.s_vec;
-
-#if 0
-    if (tot < 5) post("outlet in %lx out %lx n %lx", in, out, n), tot++;
-#endif
     for (; n--; in++) *out++ = *in, *in = 0;
     if (in == x->x_endbuf) in = x->x_buf;
     x->x_empty = in;
@@ -429,10 +410,6 @@ static t_int *voutlet_doepilog_resampling(t_int *w)
     int n = (int)(w[2]);
     t_sample *in  = x->x_empty;
     t_sample *out = x->x_updown.s_vec;
-
-#if 0
-    if (tot < 5) post("outlet in %lx out %lx n %lx", in, out, n), tot++;
-#endif
     for (; n--; in++) *out++ = *in, *in = 0;
     if (in == x->x_endbuf) in = x->x_buf;
     x->x_empty = in;

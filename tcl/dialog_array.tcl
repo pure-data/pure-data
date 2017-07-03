@@ -235,6 +235,7 @@ proc ::dialog_array::pdtk_array_dialog {mytoplevel name size flags newone} {
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
+        focus $mytoplevel
     } else {
         create_dialog $mytoplevel $newone
     }
@@ -353,28 +354,14 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.buttonframe.cancel config -takefocus 0
 
-        # can't see focus for buttons, so disable it
-        $mytoplevel.array.saveme config -takefocus 0
-        $mytoplevel.drawas.points config -takefocus 0
-        $mytoplevel.drawas.polygon config -takefocus 0
-        $mytoplevel.drawas.bezier config -takefocus 0
-        if {[winfo exists $mytoplevel.options.radio0]} {
-            $mytoplevel.options.radio0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.options.radio1]} {
-            $mytoplevel.options.radio1 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.options.deletearray]} {
-            $mytoplevel.options.deletearray config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.options.listview]} {
-            $mytoplevel.options.listview config -takefocus 0
-        }
-
         # show active focus on the ok button as it *is* activated on Return
         $mytoplevel.buttonframe.ok config -default normal
         bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.buttonframe.ok config -highlightthickness 0
+        $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
 }
 

@@ -77,24 +77,33 @@ LIB = -ldl -lm -lpthread
 SYSSRC = s_midi_oss.c
 
 # conditionally add code and flags for various audio APIs
-ifdef ALSA
+ifeq ($(ALSA), true)
 CPPFLAGS += -DUSEAPI_ALSA
 SYSSRC += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 LIB += -lasound
+HAVEAUDIOAPI=true
 endif
 ifdef JACK
 CPPFLAGS += -DUSEAPI_JACK
 SYSSRC += s_audio_jack.c
 LIB += -ljack
+HAVEAUDIOAPI=true
 endif
-ifdef OSS
+ifeq ($(OSS), true)
+#error foo
 CPPFLAGS += -DUSEAPI_OSS
 SYSSRC += s_audio_oss.c
+HAVEAUDIOAPI=true
 endif
 ifdef PA
 CPPFLAGS += -DUSEAPI_PORTAUDIO
 SYSSRC += s_audio_pa.c
 LIB += -lportaudio
+HAVEAUDIOAPI=true
+endif
+ifndef HAVEAUDIOAPI
+CPPFLAGS += -DUSEAPI_DUMMY
+SYSSRC += s_audio_dummy.c
 endif
 
 CFLAGS = $(CPPFLAGS) $(CODECFLAGS) $(MORECFLAGS)

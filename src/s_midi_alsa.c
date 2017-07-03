@@ -220,13 +220,15 @@ void sys_alsa_close_midi()
 {
     alsa_nmidiin = alsa_nmidiout = 0;
     if(midi_handle)
-      {
+    {
         snd_seq_close(midi_handle);
-        if(midiev)
-          {
+        midi_handle = NULL;
+        if (midiev)
+        {
             snd_midi_event_free(midiev);
-          }
-      }
+            midiev = NULL;
+        }
+    }
 }
 
 static int alsa_nmidiindevs = 1, alsa_nmidioutdevs = 1;

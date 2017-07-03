@@ -311,14 +311,14 @@ proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
 
     # Workaround for when the window has size 1x1, in which case it
     # probably hasn't been fully created yet. Wait a little and try again.
-    if {$width == 1 && $height == 1} {
+    if {$width == 1 || $height == 1} {
         if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
             after cancel ::pdtk_canvas::::getscroll_tokens($tkcanvas)
         }
         set ::pdtk_canvas::::getscroll_tokens($tkcanvas) \
             [after idle ::pdtk_canvas::pdtk_canvas_getscroll $tkcanvas]
         return
-    }
+    }     
     if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
         unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
     }

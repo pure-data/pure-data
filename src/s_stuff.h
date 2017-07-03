@@ -1,3 +1,4 @@
+#pragma once
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
@@ -41,11 +42,10 @@ extern t_symbol *sys_flags;
 extern int sys_debuglevel;
 extern int sys_verbose;
 extern int sys_noloadbang;
-extern int sys_nogui;
+EXTERN int sys_havegui( void);
 extern char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);
-EXTERN int sys_hostfontsize(int fontsize, int zoom);
 
 extern int sys_defaultfont;
 EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
@@ -64,17 +64,10 @@ EXTERN void sys_register_loader(loader_t loader);
 #define SENDDACS_SLEPT 2
 
 #define DEFDACBLKSIZE 64
-extern int sys_schedblocksize;  /* audio block size for scheduler */
 extern int sys_hipriority;      /* real-time flag, true if priority boosted */
-EXTERN t_sample *sys_soundout;
-EXTERN t_sample *sys_soundin;
-extern int sys_inchannels;
-extern int sys_outchannels;
-extern int sys_advance_samples; /* scheduler advance in samples */
-extern int sys_blocksize;       /* audio I/O block size in sample frames */
-extern t_float sys_dacsr;
 extern int sys_schedadvance;
 extern int sys_sleepgrain;
+extern int sys_advance_samples;    /* scheduler advance in samples */
 EXTERN void sys_set_audio_settings(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
@@ -269,7 +262,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int indeviceno, int outdeviceno, t_audiocallback callback);
 void pa_close_audio(void);
 int pa_send_dacs(void);
-void sys_reportidle(void);
 void pa_listdevs(void);
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -371,8 +363,6 @@ extern int sys_printtostderr;
 
 /* jsarlo { */
 
-EXTERN double sys_time;
-EXTERN double sys_time_per_dsp_tick;
 EXTERN int sys_externalschedlib;
 
 EXTERN t_sample* get_sys_soundout(void ) ;
@@ -388,10 +378,8 @@ EXTERN int* get_sys_schedadvance(void ) ;
 EXTERN void sys_clearhist(void );
 EXTERN void sys_initmidiqueue(void );
 EXTERN int sys_addhist(int phase);
-EXTERN void sys_setmiditimediff(double inbuftime, double outbuftime);
 EXTERN void sched_tick( void);
 EXTERN void sys_pollmidiqueue(void );
-EXTERN int sys_pollgui(void );
 EXTERN void sys_setchsr(int chin, int chout, int sr);
 
 EXTERN void inmidi_realtimein(int portno, int cmd);
@@ -410,6 +398,22 @@ EXTERN void inmidi_polyaftertouch(int portno,
                                   int pitch,
                                   int value);
 /* } jsarlo */
-extern t_widgetbehavior text_widgetbehavior;
 EXTERN int sys_zoom_open;
 
+struct _instancestuff
+{
+    t_namelist *st_externlist;
+    t_namelist *st_searchpath;
+    t_namelist *st_staticpath;
+    t_namelist *st_helppath;
+    int st_schedblocksize;      /* audio block size for scheduler */
+    int st_blocksize;           /* audio I/O block size in sample frames */
+    t_float st_dacsr;           /* I/O sample rate */
+    int st_inchannels;
+    int st_outchannels;
+    t_sample *st_soundout;
+    t_sample *st_soundin;
+    double st_time_per_dsp_tick;
+};
+
+#define STUFF (pd_this->pd_stuff)
