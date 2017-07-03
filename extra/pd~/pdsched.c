@@ -104,5 +104,6 @@ int pd_extern_sched(char *flags)
         else if (fill == BUFSIZE)
             fprintf(stderr, "pd-extern: input buffer overflow\n");
     }
+    binbuf_free(b);
     return (0);
 }
