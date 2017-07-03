@@ -325,6 +325,8 @@ nobase_dist_libpd_DATA = \
     5.reference/fft~-help.pd \
     5.reference/float-help.pd \
     5.reference/framp~-help.pd \
+    5.reference/fudiformat-help.pd \
+    5.reference/fudiparse-help.pd \
     5.reference/gatom-help.pd \
     5.reference/get-help.pd \
     5.reference/getsize-help.pd \
