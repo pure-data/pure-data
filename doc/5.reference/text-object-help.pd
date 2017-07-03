@@ -229,7 +229,7 @@ of range);
 #X connect 9 0 2 1;
 #X restore 392 335 pd size;
 #X obj 280 264 text set;
-#N canvas 651 225 834 537 set 0;
+#N canvas 651 225 834 537 set 1;
 #X floatatom 107 197 5 0 0 0 - - -, f 5;
 #X msg 107 163 0;
 #X msg 180 165 2;
@@ -243,7 +243,6 @@ of range);
 #X obj 55 293 text set text-help-3;
 #X floatatom 159 219 5 0 0 0 - - -, f 5;
 #X text 211 85 list to write into the text;
-#X text 165 197 line number - use a large number to append a line;
 #X text 240 295 arguments: name of the text object or "-s struct-name"
 ;
 #X text 240 320 next optional arg to set inlet 1 (line number);
@@ -262,7 +261,9 @@ If the number n is greater than the number of lines in the text the
 new line is added.;
 #X text 241 348 next optional arg to set inlet 2 (field number \, defaults
 to whole line), f 47;
-#X msg 223 165 1e+15;
+#X msg 223 165 2e+09;
+#X text 165 197 line number - use a large number to append a line (max.
+2e+09), f 62;
 #X connect 0 0 8 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -271,8 +272,8 @@ to whole line), f 47;
 #X connect 5 0 8 0;
 #X connect 6 0 8 0;
 #X connect 9 0 8 2;
-#X connect 15 0 8 3;
-#X connect 21 0 0 0;
+#X connect 14 0 8 3;
+#X connect 20 0 0 0;
 #X restore 392 263 pd set;
 #X text 391 176 (click for details), f 11;
 #X text 60 216 create \, store \, and/or edit;
