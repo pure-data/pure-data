@@ -1036,6 +1036,7 @@ static int sys_do_startgui(const char *libdir)
                 perror("bind");
                 fprintf(stderr,
                     "Pd was unable to find a port number to bind to\n");
+                sys_closesocket(xsock);
                 return (1);
             }
             portno++;
