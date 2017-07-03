@@ -25,11 +25,13 @@
 #define snprintf sprintf_s
 #endif
 
-
 #define stringify(s) str(s)
 #define str(s) #s
 
-char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) " (" stringify(PD_TEST_VERSION) ")";
+char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." \
+stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) "\
+ (" stringify(PD_TEST_VERSION) ")";
+
 char pd_compiletime[] = __TIME__;
 char pd_compiledate[] = __DATE__;
 
@@ -39,7 +41,6 @@ void sys_findprogdir(char *progname);
 void sys_setsignalhandlers( void);
 int sys_startgui(const char *guipath);
 void sys_setrealtime(const char *guipath);
-int sys_rcfile(void);
 int m_mainloop(void);
 int m_batchmain(void);
 void sys_addhelppath(char *p);
@@ -51,7 +52,7 @@ int sys_debuglevel;
 int sys_verbose;
 int sys_noloadbang;
 static int sys_dontstartgui;
-int sys_hipriority = -1;    /* -1 = don't care; 0 = no; 1 = yes */
+int sys_hipriority = -1;    /* -1 = not specified; 0 = no; 1 = yes */
 int sys_guisetportnumber;   /* if started from the GUI, this is the port # */
 int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
 
@@ -296,6 +297,7 @@ static void sys_afterargparse(void);
 int sys_main(int argc, char **argv)
 {
     int i, noprefs;
+    char *prefsfile = "";
     sys_externalschedlib = 0;
     sys_extraflags = 0;
 #ifdef PD_DEBUG
@@ -325,16 +327,16 @@ int sys_main(int argc, char **argv)
 #endif  /* WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
-    for (i = noprefs = 0; i < argc; i++)        /* prescan args for noprefs */
+    for (i = noprefs = 0; i < argc; i++)    /* prescan for prefs override */
+    {
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
-    if (!noprefs)
-        sys_loadpreferences();                  /* load default settings */
-#ifndef _WIN32
-    if (!noprefs)
-        sys_rcfile();                           /* parse the startup file */
-#endif
-    if (sys_argparse(argc-1, argv+1))           /* parse cmd line */
+        else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
+            prefsfile = argv[i+1];
+    }
+    if (!noprefs)       /* load preferences before parsing args to allow ... */
+        sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
+    if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
         return (1);
     sys_afterargparse();                    /* post-argparse settings */
     if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
@@ -462,7 +464,7 @@ static char *(usagemessage[]) = {
 "-loadbang        -- do not suppress all loadbangs (true by default)\n",
 "-noloadbang      -- suppress all loadbangs\n",
 "-stderr          -- send printout to standard error instead of GUI\n",
-"-nostderr        -- send printout to GUI instead of standard error (true by default)\n",
+"-nostderr        -- send printout to GUI (true by default)\n",
 "-gui             -- start GUI (true by default)\n",
 "-nogui           -- suppress starting the GUI\n",
 "-guiport <n>     -- connect to pre-existing GUI over port <n>\n",
@@ -470,6 +472,7 @@ static char *(usagemessage[]) = {
 "-send \"msg...\"   -- send a message at startup, after patches are loaded\n",
 "-prefs           -- load preferences on startup (true by default)\n",
 "-noprefs         -- suppress loading preferences on startup\n",
+"-prefsfile <file>  -- load preferences from a file\n",
 #ifdef HAVE_UNISTD_H
 "-rt or -realtime -- use real-time priority\n",
 "-nrt             -- don't use real-time priority\n",
@@ -480,8 +483,8 @@ static char *(usagemessage[]) = {
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
 "-nobatch         -- run interactively (true by default)\n",
-"-autopatch       -- enable auto-connecting new from selected objects (true by default)\n",
-"-noautopatch     -- defeat auto-patching new from selected objects\n",
+"-autopatch       -- enable auto-patching to new objects (true by default)\n",
+"-noautopatch     -- defeat auto-patching\n",
 "-compatibility <f> -- set back-compatibility to version <f>\n",
 };
 
@@ -1301,13 +1304,15 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-noprefs")) /* did this earlier */
             argc--, argv++;
+        else if (!strcmp(*argv, "-prefsfile") && argc > 1) /* this too */
+            argc -= 2, argv +=2;
         else
         {
             unsigned int i;
         usage:
             for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
                 fprintf(stderr, "%s", usagemessage[i]);
-            return (1);
+            return (0);
         }
     }
     if (sys_batch)

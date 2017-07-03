@@ -510,6 +510,21 @@ proc ::pd_menus::update_window_menu {} {
 
 # ------------------------------------------------------------------------------
 # submenu for Preferences, now used on all platforms
+proc ::pd_menus::savepreferences {} {
+    set filename [tk_getSaveFile -initialdir $::fileopendir]
+    if {$filename ne ""} {pdsend "pd save-preferences $filename"}
+}
+
+proc ::pd_menus::loadpreferences {} {
+    set filename [tk_getOpenFile -initialdir $::fileopendir]
+    if {$filename ne ""} {pdsend "pd load-preferences $filename"}
+}
+
+proc ::pd_menus::forgetpreferences {} {
+    pdtk_check .pdwindow \
+        {Delete all preferences? (takes effect when Pd is restarted)} \
+        {pd forget-preferences} yes
+}
 
 proc ::pd_menus::create_preferences_menu {mymenu} {
     menu $mymenu
@@ -517,16 +532,22 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {pdsend "pd start-path-dialog"}
     $mymenu add command -label [_ "Startup..."] \
         -command {pdsend "pd start-startup-dialog"}
-    $mymenu add command -label [_ "Audio Settings..."] \
+    $mymenu add command -label [_ "Audio..."] \
         -command {pdsend "pd audio-properties"}
-    $mymenu add command -label [_ "MIDI Settings..."] \
+    $mymenu add command -label [_ "MIDI..."] \
         -command {pdsend "pd midi-properties"}
     $mymenu add check -label [_ "Zoom new windows"] \
         -variable ::zoom_open \
         -command {pdsend "pd zoom-open $zoom_open"}
     $mymenu add  separator
-    $mymenu add command -label [_ "Save All Settings"] \
+    $mymenu add command -label [_ "Save all preferences"] \
         -command {pdsend "pd save-preferences"}
+    $mymenu add command -label [_ "Save to ..."] \
+        -command {::pd_menus::savepreferences}
+    $mymenu add command -label [_ "Load from ..."] \
+        -command {::pd_menus::loadpreferences}
+    $mymenu add command -label [_ "Forget all..."] \
+        -command {::pd_menus::forgetpreferences}
 }
 
 # ------------------------------------------------------------------------------
