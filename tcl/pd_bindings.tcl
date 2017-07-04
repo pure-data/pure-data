@@ -207,7 +207,7 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
 }
 
 # this is for canvas windows
-proc ::pd_bindings::patch_bindings {mytoplevel} {
+proc ::pd_bindings::canvas_bindings {mytoplevel} {
     variable modifier
     set tkcanvas [tkcanvas_name $mytoplevel]
 
