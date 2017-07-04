@@ -9,6 +9,7 @@ libpdtcldir = $(pkglibdir)/tcl
 
 #########################################
 ##### Files, Binaries, & Libs #####
+
 # install gui launcher script to $(prefix)/bin
 dist_bin_SCRIPTS = pd-gui
 
