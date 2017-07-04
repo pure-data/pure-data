@@ -178,6 +178,8 @@ proc ::pd_bindings::global_bindings {} {
     bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1}
 }
 
+# bindings for .pdwindow are found in ::pdwindow::pdwindow_bindings in pdwindow.tcl
+
 # this is for the dialogs: find, font, sendmessage, gatom properties, array
 # properties, iemgui properties, canvas properties, data structures
 # properties, Audio setup, and MIDI setup
@@ -193,15 +195,18 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
     bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
     bind $mytoplevel <$::modifier-Key-p>       {bell; break}
+    bind $mytoplevel <$::modifier-Key-t>       {bell; break}
     # and the CapsLock case...
     bind $mytoplevel <$::modifier-Key-W> "dialog_${dialogname}::cancel $mytoplevel"
     bind $mytoplevel <$::modifier-Key-S>       {bell; break}
     bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
     bind $mytoplevel <$::modifier-Key-P>       {bell; break}
+    bind $mytoplevel <$::modifier-Key-T>       {bell; break}
 
     wm protocol $mytoplevel WM_DELETE_WINDOW "dialog_${dialogname}::cancel $mytoplevel"
 }
 
+# this is for canvas windows
 proc ::pd_bindings::patch_bindings {mytoplevel} {
     variable modifier
     set tkcanvas [tkcanvas_name $mytoplevel]

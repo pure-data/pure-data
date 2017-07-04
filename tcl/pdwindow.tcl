@@ -205,8 +205,13 @@ proc ::pdwindow::pdwindow_bindings {} {
 
     # these don't do anything in the Pd window, so alert the user, then break
     # so no more bindings run
-    bind .pdwindow <$::modifier-Key-s> "bell; break"
-    bind .pdwindow <$::modifier-Key-p> "bell; break"
+    bind .pdwindow <$::modifier-Key-s> {bell; break}
+    bind .pdwindow <$::modifier-Key-p> {bell; break}
+    bind .pdwindow <$::modifier-Key-t> {bell; break}
+    # and the CapsLock case...
+    bind .pdwindow <$::modifier-Key-S> {bell; break}
+    bind .pdwindow <$::modifier-Key-P> {bell; break}
+    bind .pdwindow <$::modifier-Key-T> {bell; break}
 
     # ways of hiding/closing the Pd window
     if {$::windowingsystem eq "aqua"} {

@@ -236,11 +236,9 @@ set ::undo_action "no"
 set ::redo_action "no"
 set ::undo_toplevel "."
 
-
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
 }
-
 
 #------------------------------------------------------------------------------#
 # coding style
@@ -751,7 +749,6 @@ proc load_startup_plugins {} {
 # ------------------------------------------------------------------------------
 # main
 proc main {argc argv} {
-    # TODO Tcl/Tk 8.3 doesn't have [tk windowingsystem]
     set ::windowingsystem [tk windowingsystem]
     set ::platform $::tcl_platform(os)
     if { $::tcl_platform(platform) eq "windows"} {
