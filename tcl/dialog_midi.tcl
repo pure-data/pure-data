@@ -385,6 +385,9 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         $id.buttonframe.ok config -highlightthickness 0
         $id.buttonframe.cancel config -highlightthickness 0
     }
+
+    # raise so it's on top
+    after 100 raise "$id"
 }
 
 proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
@@ -447,6 +450,9 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     pack $id.buttonframe.cancel -side left -expand 1
     pack $id.buttonframe.apply -side left -expand 1
     pack $id.buttonframe.ok -side left -expand 1
+
+    # raise so it's on top
+    after 100 raise "$id"
 }
 
 # for focus handling on OSX

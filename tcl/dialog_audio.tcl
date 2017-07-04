@@ -378,6 +378,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.buttonframe.ok config -highlightthickness 0
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
+
+    # raise so it's on top
+    after 100 raise "$mytoplevel"
 }
 
 # for focus handling on OSX
