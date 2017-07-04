@@ -63,7 +63,6 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.file entryconfigure [_ "Close"] -state disabled
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
-    $menubar.edit entryconfigure [_ "Font"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
     $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
