@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.47.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-05 14:55+0200\n"
+"POT-Creation-Date: 2017-07-06 01:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,10 +89,10 @@ msgstr ""
 
 #: ../tcl/dialog_array.tcl:321 ../tcl/dialog_audio.tcl:333
 #: ../tcl/dialog_canvas.tcl:209 ../tcl/dialog_find.tcl:196
-#: ../tcl/dialog_find.tcl:237 ../tcl/dialog_gatom.tcl:164
-#: ../tcl/dialog_iemgui.tcl:789 ../tcl/dialog_midi.tcl:348
-#: ../tcl/dialog_midi.tcl:441 ../tcl/dialog_midi.tcl:444
-#: ../tcl/scrollboxwindow.tcl:85
+#: ../tcl/dialog_find.tcl:236 ../tcl/dialog_find.tcl:237
+#: ../tcl/dialog_gatom.tcl:164 ../tcl/dialog_iemgui.tcl:789
+#: ../tcl/dialog_midi.tcl:348 ../tcl/dialog_midi.tcl:441
+#: ../tcl/dialog_midi.tcl:444 ../tcl/scrollboxwindow.tcl:85
 msgid "Cancel"
 msgstr ""
 
@@ -240,56 +240,64 @@ msgstr ""
 msgid "Data Properties"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:74
+#: ../tcl/dialog_find.tcl:73 ../tcl/dialog_find.tcl:74
 #, tcl-format
 msgid "Found '%s' in %s"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:79 ../tcl/dialog_find.tcl:124
+#: ../tcl/dialog_find.tcl:78 ../tcl/dialog_find.tcl:79
+#: ../tcl/dialog_find.tcl:124 ../tcl/dialog_find.tcl:164
 #: ../tcl/dialog_find.tcl:165
 #, tcl-format
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:114 ../tcl/dialog_find.tcl:149
-#: ../tcl/dialog_find.tcl:179 ../tcl/dialog_find.tcl:220
+#: ../tcl/dialog_find.tcl:114 ../tcl/dialog_find.tcl:148
+#: ../tcl/dialog_find.tcl:149 ../tcl/dialog_find.tcl:179
+#: ../tcl/dialog_find.tcl:219 ../tcl/dialog_find.tcl:220
 msgid "Search in"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:115 ../tcl/dialog_find.tcl:150
-#: ../tcl/dialog_find.tcl:179 ../tcl/dialog_find.tcl:220
+#: ../tcl/dialog_find.tcl:115 ../tcl/dialog_find.tcl:149
+#: ../tcl/dialog_find.tcl:150 ../tcl/dialog_find.tcl:179
+#: ../tcl/dialog_find.tcl:219 ../tcl/dialog_find.tcl:220
 msgid "for:"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:128 ../tcl/dialog_find.tcl:169
+#: ../tcl/dialog_find.tcl:128 ../tcl/dialog_find.tcl:168
+#: ../tcl/dialog_find.tcl:169
 #, tcl-format
 msgid "Showed last '%s' in %s"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:133 ../tcl/dialog_find.tcl:174
+#: ../tcl/dialog_find.tcl:133 ../tcl/dialog_find.tcl:173
+#: ../tcl/dialog_find.tcl:174
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:155 ../tcl/dialog_find.tcl:196
-#: ../tcl/dialog_find.tcl:200 ../tcl/dialog_find.tcl:241
+#: ../tcl/dialog_find.tcl:155 ../tcl/dialog_find.tcl:195
+#: ../tcl/dialog_find.tcl:196 ../tcl/dialog_find.tcl:200
+#: ../tcl/dialog_find.tcl:240 ../tcl/dialog_find.tcl:241
 msgid "Find"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:179 ../tcl/dialog_find.tcl:220
-#: ../tcl/pd_menus.tcl:317 ../tcl/pd_menus.tcl:323
+#: ../tcl/dialog_find.tcl:179 ../tcl/dialog_find.tcl:219
+#: ../tcl/dialog_find.tcl:220 ../tcl/pd_menus.tcl:317 ../tcl/pd_menus.tcl:323
 msgid "Pd window"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:190 ../tcl/dialog_find.tcl:231
+#: ../tcl/dialog_find.tcl:190 ../tcl/dialog_find.tcl:230
+#: ../tcl/dialog_find.tcl:231
 msgid "Match whole word only"
 msgstr ""
 
-#: ../tcl/dialog_find.tcl:204 ../tcl/dialog_find.tcl:245 ../tcl/pd_menus.tcl:63
-#: ../tcl/pd_menus.tcl:90 ../tcl/pd_menus.tcl:121 ../tcl/pd_menus.tcl:122
-#: ../tcl/pd_menus.tcl:154 ../tcl/pd_menus.tcl:155 ../tcl/pd_menus.tcl:556
-#: ../tcl/pd_menus.tcl:571 ../tcl/pd_menus.tcl:596 ../tcl/pd_menus.tcl:611
-#: ../tcl/pd_menus.tcl:643 ../tcl/pd_menus.tcl:658
+#: ../tcl/dialog_find.tcl:204 ../tcl/dialog_find.tcl:244
+#: ../tcl/dialog_find.tcl:245 ../tcl/pd_menus.tcl:63 ../tcl/pd_menus.tcl:90
+#: ../tcl/pd_menus.tcl:121 ../tcl/pd_menus.tcl:122 ../tcl/pd_menus.tcl:154
+#: ../tcl/pd_menus.tcl:155 ../tcl/pd_menus.tcl:556 ../tcl/pd_menus.tcl:571
+#: ../tcl/pd_menus.tcl:596 ../tcl/pd_menus.tcl:611 ../tcl/pd_menus.tcl:643
+#: ../tcl/pd_menus.tcl:658
 msgid "Close"
 msgstr ""
 
@@ -620,9 +628,29 @@ msgstr ""
 msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
+#: ../tcl/pd_deken.tcl:293 ../tcl/pd_deken.tcl:342
+msgid "Show all"
+msgstr ""
+
+#: ../tcl/pd_deken.tcl:295
+msgid "Search"
+msgstr ""
+
+#: ../tcl/pd_deken.tcl:324 ../tcl/pd_deken.tcl:578 ../tcl/pd_deken.tcl:580
+msgid "Find externals"
+msgstr ""
+
+#: ../tcl/pd_deken.tcl:347
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
 #: ../tcl/pd_menucommands.tcl:217 ../tcl/pd_menus.tcl:326
 #: ../tcl/pd_menus.tcl:332 ../tcl/pd_menus.tcl:539 ../tcl/pd_menus.tcl:554
 msgid "About Pd"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:40
+msgid "file edit put find media window help"
 msgstr ""
 
 #: ../tcl/pd_menus.tcl:60 ../tcl/pd_menus.tcl:87 ../tcl/pd_menus.tcl:117
@@ -1112,4 +1140,8 @@ msgstr ""
 
 #: pd_dynamic_strings.tcl:29
 msgid "Redo typing"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:33
+msgid "Show Hidden Files and Directories"
 msgstr ""

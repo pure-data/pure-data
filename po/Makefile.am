@@ -47,7 +47,8 @@ TCLFILES = \
     pd_menucommands.tcl \
     pdtk_text.tcl \
     scrollbox.tcl \
-    pd_guiprefs.tcl
+    pd_guiprefs.tcl \
+    pd_deken.tcl
 
 FILES = $(addprefix ../tcl/, $(TCLFILES)) iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl
 

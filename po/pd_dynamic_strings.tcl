@@ -27,3 +27,7 @@ puts [_ "Redo duplicate"]
 puts [_ "Redo motion"]
 puts [_ "Redo paste"]
 puts [_ "Redo typing"]
+
+# These are strings built into Tk that msgcat should know about.
+
+pus [_ "Show Hidden Files and Directories"]
