@@ -154,14 +154,11 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
         while (1)
         {
             pd_tilde_getatom(&at, x->x_infd);
-            postatom (1, &at);
             if (!nonempty && at.a_type == A_SEMI)
                 break;
             nonempty = (at.a_type != A_SEMI);
             binbuf_add(x->x_binbuf, 1, &at);
         }
-        post("-----");
-        binbuf_print(x->x_binbuf);
     }
     else    /* ASCII */
     {
@@ -471,7 +468,6 @@ static t_int *pd_tilde_perform(t_int *w)
                 pd_tilde_close(x);
                 goto zeroit;
             }
-            postatom (1, &at);
             if (at.a_type == A_SEMI)
                 break;
             else if (at.a_type == A_FLOAT)

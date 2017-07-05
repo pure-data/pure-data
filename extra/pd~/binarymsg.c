@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include "m_pd.h"
 
-void pd_tilde_putfloat(float f, FILE *fd)
+static void pd_tilde_putfloat(float f, FILE *fd)
 {
     putc(A_FLOAT, fd);
     fwrite(&f, sizeof(f), 1, fd);
 }
 
-void pd_tilde_putsymbol(t_symbol *s, FILE *fd)
+static void pd_tilde_putsymbol(t_symbol *s, FILE *fd)
 {
     char *sp = s->s_name;
     putc(A_SYMBOL, fd);
@@ -16,7 +16,7 @@ void pd_tilde_putsymbol(t_symbol *s, FILE *fd)
     while (*sp++);
 }
 
-int pd_tilde_getatom(t_atom *ap, FILE *fd)
+static int pd_tilde_getatom(t_atom *ap, FILE *fd)
 {
     char buf[MAXPDSTRING];
     while (1)
@@ -34,9 +34,6 @@ int pd_tilde_getatom(t_atom *ap, FILE *fd)
             if (fread(&f, sizeof(f), 1, fd) >= 1)
             {
                 SETFLOAT(ap, f);
-#ifdef FOOFOO
-                fprintf(stderr, "float %f\n", f);
-#endif
                 return (1);
             }
             else return (0);
