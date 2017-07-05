@@ -61,6 +61,10 @@ proc ::helpbrowser::check_destroy {level} {
 proc ::helpbrowser::make_rootlistbox {} {
     variable libdirlist
     variable helplist
+
+    # temporarily hide window so we don't see the refresh
+    wm withdraw .helpbrowser
+
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
@@ -89,6 +93,9 @@ proc ::helpbrowser::make_rootlistbox {} {
     bind $current_listbox <FocusIn> \
         [list ::helpbrowser::scroll_destroy %W 2]
     focus $current_listbox
+
+    # bring window back
+    wm deiconify .helpbrowser
 }
 
 # destroy a column
@@ -147,6 +154,10 @@ proc ::helpbrowser::root_doubleclick {window x y} {
 # make the listbox to show the first level contents of a libdir
 proc ::helpbrowser::make_liblistbox {dir} {
     variable doctypes
+
+    # temporarily hide window so we don't see the refresh
+    wm withdraw .helpbrowser
+
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
@@ -183,11 +194,18 @@ proc ::helpbrowser::make_liblistbox {dir} {
         [list ::helpbrowser::dir_left 0]
     bind $current_listbox <FocusIn> \
         [list ::helpbrowser::scroll_destroy %W 3]
+
+    # bring window back
+    wm deiconify .helpbrowser
+
     return $current_listbox
 }
 
 proc ::helpbrowser::make_doclistbox {dir count} {
     variable doctypes
+
+    # temporarily hide window so we don't see the refresh
+    wm withdraw .helpbrowser
 
     check_destroy $count
     # exportselection 0 looks good, but selection gets easily out-of-sync
@@ -219,6 +237,10 @@ proc ::helpbrowser::make_doclistbox {dir count} {
         "::helpbrowser::dir_right {$dir} $count %W"
     bind $current_listbox <FocusIn> \
         "[list ::helpbrowser::scroll_destroy %W [expr $count + 1]]"
+
+    # bring window back
+    wm deiconify .helpbrowser
+
     return $current_listbox
 }
 
