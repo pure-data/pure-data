@@ -110,7 +110,7 @@ proc ::pd_guiprefs::init {} {
             # if $arr is true, we write an array
             #
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-                # FIXME empty and write again so we don't loose the order
+                # FIXME empty and write again so we don't lose the order
                 if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
                     ::pdwindow::error "write_config $akey: $errorMsg\n"
                 }
