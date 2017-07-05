@@ -97,7 +97,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
         $tkcanvas configure -xscrollincrement 1 -yscrollincrement 1
     }
 
-    ::pd_bindings::canvas_bindings $mytoplevel
+    ::pd_bindings::patch_bindings $mytoplevel
 
     # give focus to the canvas so it gets the events rather than the window 	 
     focus $tkcanvas
