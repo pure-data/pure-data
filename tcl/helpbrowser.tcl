@@ -56,11 +56,6 @@ proc ::helpbrowser::check_destroy {level} {
 	}
 }
 
-
-
-
-
-
 # make the root listbox of the help browser using the pre-built lists
 proc ::helpbrowser::make_rootlistbox {} {
     variable libdirlist
@@ -95,24 +90,35 @@ proc ::helpbrowser::make_rootlistbox {} {
 	focus $current_listbox
 }
 
+# destroy a column
 proc ::helpbrowser::scroll_destroy {window level} {
 	$window xview 0
 	check_destroy $level
 }
 
-proc ::helpbrowser::root_right {window} {
+# try to open a file or dir
+proc ::helpbrowser::open_path {dir filename} {
+    ::pdwindow::verbose 0 "menu_doc_open $dir $filename\n"
+    if { [catch {menu_doc_open $dir $filename} fid] } {
+        ::pdwindow::error "Could not open $dir/$filename\n"
+    }
+}
 
+# navigate from one column to the right or open current file
+proc ::helpbrowser::root_right {window} {
 	variable reference_paths
 	if {[set item [$window get active]] eq {}} {
         return
     }
 	set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-    	
         focus [make_liblistbox $filename]
+    } elseif {[file isfile $filename]} {
+        set dir [file dirname $reference_paths($item)]
+        set filename [file tail $reference_paths($item)]
+        open_path $dir $filename
     }
 }
-	
 
 # navigate into a library/directory from the root
 proc ::helpbrowser::root_navigate {window x y} {
@@ -126,18 +132,15 @@ proc ::helpbrowser::root_navigate {window x y} {
     }
 }
 
-# double-click action to open the folder
+# double-click action to open the file or folder
 proc ::helpbrowser::root_doubleclick {window x y} {
     variable reference_paths
-    if {[set listname [$window get [$window index "@$x,$y"]]] eq {}} {
+    if {[set item [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
-    set dir [file dirname $reference_paths($listname)]
-    set filename [file tail $reference_paths($listname)]
-    ::pdwindow::verbose 0 "menu_doc_open $dir $filename"
-    if { [catch {menu_doc_open $dir $filename} fid] } {
-        ::pdwindow::error "Could not open $dir/$filename\n"
-    }
+    set dir [file dirname $reference_paths($item)]
+    set filename [file tail $reference_paths($item)]
+    open_path $dir $filename
 }
 
 # make the listbox to show the first level contents of a libdir
@@ -218,18 +221,21 @@ proc ::helpbrowser::make_doclistbox {dir count} {
 	return $current_listbox
 }
 
+# navigate one column to the left
 proc ::helpbrowser::dir_left {count} {
     focus .helpbrowser.frame.root$count
 }
 
+# navigate one column to the right or open current file
 proc ::helpbrowser::dir_right {dir count window} {
     if {[set newdir [$window get active]] eq {}} {
         return
     }
-    
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
         focus [make_doclistbox $dir_to_open $count]
+    } elseif {[file isfile $dir_to_open]} {
+        open_path $dir $newdir
     }
 }
 
@@ -244,22 +250,12 @@ proc ::helpbrowser::dir_navigate {dir count window x y} {
     }
 }
 
+# double-click action to open the file or folder
 proc ::helpbrowser::dir_doubleclick {dir count window x y} {
     if {[set filename [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
-    if { [catch {menu_doc_open $dir $filename} fid] } {
-        ::pdwindow::error "Could not open $dir/$filename\n"
-    }
-}
-
-proc ::helpbrowser::rightclickmenu {dir count window x y} {
-    if {[set filename [$window get [$window index "@$x,$y"]]] eq {}} {
-        return
-    }
-    if { [catch {menu_doc_open $dir $filename} fid] } {
-        ::pdwindow::error "Could not open $dir/$filename\n"
-    }
+    open_path $dir $filename
 }
 
 #------------------------------------------------------------------------------#
