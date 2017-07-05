@@ -301,7 +301,7 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
     } else {
         ::pd_menus::configure_for_canvas $mytoplevel
     }
-    if {[winfo exists .font]} {wm transient .font $::focused_window}
+    if {[winfo exists .font]} {wm transient .font $mytoplevel}
     # if we regain focus from another app, make sure to editmode cursor is right
     if {$::editmode($mytoplevel)} {
         $mytoplevel configure -cursor hand2
@@ -358,6 +358,7 @@ proc ::pd_bindings::dialog_configure {mytoplevel} {
 proc ::pd_bindings::dialog_focusin {mytoplevel} {
     set ::focused_window $mytoplevel
     ::pd_menus::configure_for_dialog $mytoplevel
+    if {$mytoplevel eq ".find"} {::dialog_find::focus_find}
 }
 
 #------------------------------------------------------------------------------#
@@ -384,7 +385,7 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
     # some pop-up panels also bind to keys like the enter, but then disappear,
     # so ignore their events.  The inputbox in the Startup dialog does this.
     if {! [winfo exists $window]} {return}
-    #$window might be a toplevel or canvas, [winfo toplevel] does the right thing
+    # $window might be a toplevel or canvas, [winfo toplevel] does the right thing
     set mytoplevel [winfo toplevel $window]
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$mytoplevel key $state $key $shift"
