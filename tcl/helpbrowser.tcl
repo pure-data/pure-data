@@ -12,6 +12,7 @@ namespace eval ::helpbrowser:: {
 }
 
 ################## help browser and support functions #########################
+
 proc ::helpbrowser::open_helpbrowser {} {
     if { [winfo exists .helpbrowser.frame] } {
         wm deiconify .helpbrowser
@@ -35,25 +36,25 @@ proc ::helpbrowser::open_helpbrowser {} {
     }
 }
 
-#check for deleting old listboxes
+# check for deleting old listboxes
 proc ::helpbrowser::check_destroy {level} {
-	
-	set winlist list
-	set winlevel 0
-	foreach child [winfo children .helpbrowser.frame] {
-		regexp \\d+ $child winlevel
-		if {$winlevel >= $level} {
-			lappend winlist $child
-		}
-		unset -nocomplain winlevel
-	}
-	# check for [file readable]?
-	# requires Tcl 8.5 but probably deals with special chars better:
-	#        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
-	
-	if { [catch { eval destroy $winlist } errorMessage] } {
-		::pdwindow::error "make_doclistbox: error destroying\n"
-	}
+
+    set winlist list
+    set winlevel 0
+    foreach child [winfo children .helpbrowser.frame] {
+        regexp \\d+ $child winlevel
+        if {$winlevel >= $level} {
+            lappend winlist $child
+        }
+        unset -nocomplain winlevel
+    }
+    # check for [file readable]?
+    # requires Tcl 8.5 but probably deals with special chars better:
+    #        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
+
+    if { [catch { eval destroy $winlist } errorMessage] } {
+        ::pdwindow::error "make_doclistbox: error destroying\n"
+    }
 }
 
 # make the root listbox of the help browser using the pre-built lists
@@ -61,11 +62,11 @@ proc ::helpbrowser::make_rootlistbox {} {
     variable libdirlist
     variable helplist
     # exportselection 0 looks good, but selection gets easily out-of-sync
-	set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
+    set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
                              -highlightcolor "#D6E5FC" -selectborderwidth 0 \
                              -height 20 -width 23 -exportselection 0 -bd 0]
-	pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
     # first show the directories (for easier navigation)
     foreach item [lsort  $libdirlist] {
@@ -75,25 +76,25 @@ proc ::helpbrowser::make_rootlistbox {} {
     foreach item [lsort $helplist] {
         $current_listbox insert end $item
     }
-	bind $current_listbox <Button-1> \
+    bind $current_listbox <Button-1> \
         [list ::helpbrowser::root_navigate %W %x %y]
     bind $current_listbox <Key-Return> \
         [list ::helpbrowser::root_right %W]
-	bind $current_listbox <Double-ButtonRelease-1> \
+    bind $current_listbox <Double-ButtonRelease-1> \
         [list ::helpbrowser::root_doubleclick %W %x %y]
-	bind $current_listbox <$::modifier-Key-o> \
+    bind $current_listbox <$::modifier-Key-o> \
         [list ::helpbrowser::root_doubleclick %W %x %y]
-	bind $current_listbox <Key-Right> \
+    bind $current_listbox <Key-Right> \
         [list ::helpbrowser::root_right %W]
-	bind $current_listbox <FocusIn> \
-		[list ::helpbrowser::scroll_destroy %W 2]
-	focus $current_listbox
+    bind $current_listbox <FocusIn> \
+        [list ::helpbrowser::scroll_destroy %W 2]
+    focus $current_listbox
 }
 
 # destroy a column
 proc ::helpbrowser::scroll_destroy {window level} {
-	$window xview 0
-	check_destroy $level
+    $window xview 0
+    check_destroy $level
 }
 
 # try to open a file or dir
@@ -106,11 +107,11 @@ proc ::helpbrowser::open_path {dir filename} {
 
 # navigate from one column to the right or open current file
 proc ::helpbrowser::root_right {window} {
-	variable reference_paths
-	if {[set item [$window get active]] eq {}} {
+    variable reference_paths
+    if {[set item [$window get active]] eq {}} {
         return
     }
-	set filename $reference_paths($item)
+    set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
         focus [make_liblistbox $filename]
     } elseif {[file isfile $filename]} {
@@ -148,13 +149,13 @@ proc ::helpbrowser::make_liblistbox {dir} {
     variable doctypes
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
-	set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
+    set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
                              -highlightcolor "#D6E5FC" -selectborderwidth 0 \
                              -height 20 -width 23 -exportselection 0 -bd 0]
-	pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
+    pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
-	foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
+    foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
         if {[glob -directory $item -nocomplain -types {f} -- $doctypes] ne "" ||
             [glob -directory $item -nocomplain -types {d} -- *] ne ""} {
             $current_listbox insert end "[file tail $item]/"
@@ -163,25 +164,25 @@ proc ::helpbrowser::make_liblistbox {dir} {
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
                                          *-{help,meta}.pd]]  {
         $current_listbox insert end [file tail $item]
-	}
+    }
     $current_listbox insert end "___________________________"
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
                                          *.txt]]  {
         $current_listbox insert end [file tail $item]
-	}
-	
-	bind $current_listbox <Button-1> \
+    }
+    
+    bind $current_listbox <Button-1> \
         [list ::helpbrowser::dir_navigate $dir 2 %W %x %y]
-	bind $current_listbox <Double-ButtonRelease-1> \
+    bind $current_listbox <Double-ButtonRelease-1> \
         [list ::helpbrowser::dir_doubleclick $dir 2 %W %x %y]
-	bind $current_listbox <Key-Return> \
+    bind $current_listbox <Key-Return> \
         [list ::helpbrowser::dir_right $dir 2 %W]
     bind $current_listbox <Key-Right> \
         [list ::helpbrowser::dir_right $dir 2 %W]
     bind $current_listbox <Key-Left> \
         [list ::helpbrowser::dir_left 0]
     bind $current_listbox <FocusIn> \
-		[list ::helpbrowser::scroll_destroy %W 3]
+        [list ::helpbrowser::scroll_destroy %W 3]
     return $current_listbox
 }
 
@@ -190,35 +191,35 @@ proc ::helpbrowser::make_doclistbox {dir count} {
 
     check_destroy $count
     # exportselection 0 looks good, but selection gets easily out-of-sync
-	set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
+    set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
                              -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
                              -highlightcolor "#D6E5FC" -selectborderwidth 0 \
                              -height 20 -width 23 -exportselection 0 -bd 0]
-	pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
+    pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
         -side left -fill both -expand 1
     
-	foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
-		$current_listbox insert end "[file tail $item]/"
+    foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
+        $current_listbox insert end "[file tail $item]/"
     }
-	foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
+    foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {f} -- \
                                          $doctypes]]  {
-		$current_listbox insert end [file tail $item]
-	}
-	incr count
-	bind $current_listbox <Button-1> \
+        $current_listbox insert end [file tail $item]
+    }
+    incr count
+    bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} $count %W %x %y"
     bind $current_listbox <Key-Right> \
         "::helpbrowser::dir_right {$dir} $count %W"
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left [expr $count - 2]"
-	bind $current_listbox <Double-ButtonRelease-1> \
+    bind $current_listbox <Double-ButtonRelease-1> \
         "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_right {$dir} $count %W"
     bind $current_listbox <FocusIn> \
-		"[list ::helpbrowser::scroll_destroy %W [expr $count + 1]]"
-	return $current_listbox
+        "[list ::helpbrowser::scroll_destroy %W [expr $count + 1]]"
+    return $current_listbox
 }
 
 # navigate one column to the left
@@ -330,12 +331,12 @@ proc ::helpbrowser::build_references {} {
         set dir [string trimright [file join [file normalize $pathdir] { }]]
 
         ## don't find libdirs anymore: supported libs should be in search path
-		# Directory comes from sys_staticpath (aka hardcoded)
-		# Then add an entry for each subdir of this directory in Help browser's root column :
-		
-		foreach filename [glob -nocomplain -type d -path $dir "*"] {
-			add_entry libdirlist $filename
-		}
+        # Directory comes from sys_staticpath (aka hardcoded)
+        # Then add an entry for each subdir of this directory in Help browser's root column :
+
+        foreach filename [glob -nocomplain -type d -path $dir "*"] {
+            add_entry libdirlist $filename
+        }
         ## find the stray help patches
         foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
             add_entry helplist $filename

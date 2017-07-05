@@ -382,7 +382,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.logmenu -side left
     frame .pdwindow.tcl -borderwidth 0
     pack .pdwindow.tcl -side bottom -fill x
-# TODO this should use the pd_font_$size created in pd-gui.tcl    
+    # TODO this should use the pd_font_$size created in pd-gui.tcl
     text .pdwindow.text -relief raised -bd 2 -font {$::font_family -12} \
         -highlightthickness 0 -borderwidth 1 -relief flat \
         -yscrollcommand ".pdwindow.scroll set" -width 60 \

@@ -306,10 +306,10 @@ proc ::pd_menus::build_window_menu {mymenu} {
                 -command {menu_bringalltofront}
         }
     } else {
-		$mymenu add command -label [_ "Next Window"] \
+        $mymenu add command -label [_ "Next Window"] \
             -command {menu_raisenextwindow} \
             -accelerator [_ "$accelerator+Page Down"]
-		$mymenu add command -label [_ "Previous Window"] \
+        $mymenu add command -label [_ "Previous Window"] \
             -command {menu_raisepreviouswindow} \
             -accelerator [_ "$accelerator+Page Up"]
     }

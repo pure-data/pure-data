@@ -315,7 +315,7 @@ proc init_for_platform {} {
             # frame's upper left corner. http://wiki.tcl.tk/11502
             set ::windowframex 3
             set ::windowframey 53
-			# TODO add wm iconphoto/iconbitmap here if it makes sense
+            # TODO add wm iconphoto/iconbitmap here if it makes sense
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "left_ptr"
             set ::cursor_runmode_clickme "arrow"
@@ -571,9 +571,9 @@ proc pdtk_check {mytoplevel message reply_to_pd default} {
 proc pdtk_plugin_dispatch { args } {
     set receiver [ lindex $args 0 ]
     if [ info exists ::pd_connect::plugin_dispatch_receivers($receiver) ] {
-	   foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
+       foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
                $callback [ lrange $args 1 end ]
-	   }
+       }
     }
 }
 
