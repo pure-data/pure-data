@@ -49,7 +49,6 @@ proc ::dialog_find::ok {mytoplevel} {
     variable is_searching_id
 
     set findstring [.find.entry get]
-    ::pdwindow::debug "Searching for \"$findstring\"\n"
     if {$findstring eq ""} {
         if {$::windowingsystem eq "aqua"} {bell}
         return

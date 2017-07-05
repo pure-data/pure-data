@@ -386,7 +386,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         $id.buttonframe.cancel config -highlightthickness 0
     }
 
-    # raise so it's on top
+    # wait a little for creation, then raise so it's on top
     after 100 raise "$id"
 }
 
@@ -451,7 +451,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     pack $id.buttonframe.apply -side left -expand 1
     pack $id.buttonframe.ok -side left -expand 1
 
-    # raise so it's on top
+    # wait a little for creation, then raise so it's on top
     after 100 raise "$id"
 }
 

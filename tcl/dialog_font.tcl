@@ -155,6 +155,6 @@ proc ::dialog_font::create_dialog {gfxstub} {
         .font.buttonframe.ok config -highlightthickness 0
     }
 
-    # raise so it's on top
+    # wait a little for creation, then raise so it's on top
     after 100 raise .font
 }

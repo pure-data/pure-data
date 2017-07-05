@@ -379,7 +379,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
 
-    # raise so it's on top
+    # wait a little for creation, then raise so it's on top
     after 100 raise "$mytoplevel"
 }
 
