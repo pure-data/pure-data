@@ -395,6 +395,14 @@ if test x$fftw = xyes; then
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 
+AC_ARG_WITH([wish],
+    [AS_HELP_STRING([--with-wish=WISH], [which wish-application to use for Pd-GUI])],
+    [WISH=$withval])
+AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
+    [AC_MSG_NOTICE([--with-wish requires an application, ignoring '${WISH}'])
+    WISH=""])
+AC_SUBST([WISH])
+
 ##### Configure Build From Options #####
 ## configure the build based on what we have found above
 
@@ -456,6 +464,9 @@ AS_IF([test "x$midi_backends" = "x"],[
     midi_backends="NONE!"
 ])
 
+wish="${WISH}"
+AS_IF([test "x$wish" = "x"], [wish="(DEFAULT)"])
+
 #########################################
 ##### Output files #####
 
@@ -509,6 +520,8 @@ AC_MSG_NOTICE([
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
+
+    wish(tcl/tk):         $wish
 
     fftw:                 $fftw
 

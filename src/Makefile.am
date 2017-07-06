@@ -114,6 +114,10 @@ EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
     s_audio_audiounit.c s_audio_esd.c
 
+WISH=@WISH@
+WISHDEFINE=$(if $(WISH),-DWISHAPP='"$(WISH)"')
+pd_CFLAGS += $(WISHDEFINE)
+
 #########################################
 ##### Configurations Per Library #####
 
@@ -312,7 +316,7 @@ if MINGW
 # To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
 # XP SP1. WINVER isnt' fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
-pd_CFLAGS += -DWISHAPP='"wish85.exe"' -DWINVER=0x0502
+pd_CFLAGS += -DWINVER=0x0502
 endif
 
 #########################################
