@@ -97,6 +97,7 @@ po: $(POFILES)
 # mostly annoying since it wants to update the template.pot and .po files any
 # time a .tcl file changes.
 $(POFILES): %.po: $(TEMPLATE)
+	-cp $(srcdir)/$@ .
 	$(MSGMERGE) --sort-by-file --quiet --update $@ $(TEMPLATE)
 	touch $@
 	rm -f $@~
