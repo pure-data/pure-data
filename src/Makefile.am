@@ -115,7 +115,7 @@ EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
     s_audio_audiounit.c s_audio_esd.c
 
 WISH=@WISH@
-WISHDEFINE=$(if $(WISH),-DWISHAPP='"$(WISH)"')
+WISHDEFINE=$(if $(WISH),-DWISH='"$(WISH)"')
 pd_CFLAGS += $(WISHDEFINE)
 
 #########################################

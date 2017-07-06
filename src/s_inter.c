@@ -61,11 +61,11 @@ typedef int socklen_t;
 #define PDGUIDIR "tcl/"
 #endif
 
-#ifndef WISHAPP
+#ifndef WISH
 # if defined _WIN32
-#  define WISHAPP "wish85.exe"
+#  define WISH "wish85.exe"
 # else
-#  define WISHAPP "wish"
+#  define WISH "wish"
 # endif
 #endif
 
@@ -1108,7 +1108,7 @@ static int sys_do_startgui(const char *libdir)
             if necessary we put that in here too. */
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\"%s \
-  " WISHAPP " \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
+  " WISH " \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
                  libdir, libdir, (getenv("HOME") ? "" : " HOME=/tmp"),
                     libdir, portno);
 #endif /* __APPLE__ */
@@ -1165,10 +1165,10 @@ static int sys_do_startgui(const char *libdir)
         sprintf(portbuf, "%d", portno);
 
         strcpy(wishbuf, libdir);
-        strcat(wishbuf, "/" PDBINDIR WISHAPP);
+        strcat(wishbuf, "/" PDBINDIR WISH);
         sys_bashfilename(wishbuf, wishbuf);
 
-        spawnret = _spawnl(P_NOWAIT, wishbuf, WISHAPP, scriptbuf, portbuf, 0);
+        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, 0);
         if (spawnret < 0)
         {
             perror("spawnl");
