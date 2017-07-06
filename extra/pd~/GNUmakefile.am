@@ -7,7 +7,7 @@ external_LTLIBRARIES = pd~.la pdsched.la
 PATCHES = pd~-help.pd pd~-subprocess.pd
 OTHERDATA = 
 
-pd__la_SOURCES = pd~.c binarymsg.c
+pd__la_SOURCES = pd~.c
 pdsched_la_SOURCES = pdsched.c
 
 EXTRA_DIST = makefile notes.txt
