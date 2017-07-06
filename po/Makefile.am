@@ -84,7 +84,7 @@ po: $(POFILES)
 template: $(TEMPLATE)
 
 $(TEMPLATE): $(FILES)
-	$(XGETTEXT) --join-existing \
+	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
 		--sort-by-file --output=$(TEMPLATE) \
 		--package-name="Pure Data" --package-version=$(VERSION) \
