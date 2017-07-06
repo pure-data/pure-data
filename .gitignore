@@ -45,6 +45,7 @@ pd-0.*
 
 # gettext
 po/*.msg
+po/*.po~
 
 # emacs tags
 TAGS

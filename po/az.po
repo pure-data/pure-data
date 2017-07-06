@@ -6,950 +6,1218 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2009-08-27 10:01-0400\n"
+"POT-Creation-Date: 2017-07-06 18:10+0200\n"
 "PO-Revision-Date: 2004-03-12 22:22+0200\n"
 "Last-Translator: Metin Amiroff <metin@karegen.com>\n"
-"Language: az\n"
 "Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
+"Language: az\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, fuzzy
-msgid "Undo duplicate"
-msgstr "Tarix"
-
-msgid "Undo paste"
-msgstr ""
-
-msgid "Undo motion"
-msgstr ""
-
-#, fuzzy
-msgid "Undo cut"
-msgstr "Uqanda"
-
-msgid "Undo disconnect"
-msgstr ""
-
-msgid "Undo connect"
-msgstr ""
-
-msgid "Undo clear"
-msgstr ""
-
-msgid "Undo typing"
-msgstr ""
-
-msgid "Discard changes to '%s'?"
-msgstr ""
-
-msgid "Do you want to save the changes you made in '%s'?"
-msgstr ""
-
-#: ../src/dialog_array.tcl:115 ../src/dialog_array.tcl:117
-#: ../src/pd_menus.tcl:100 ../src/pd_menus.tcl:101 ../src/pd_menus.tcl:146
-#: ../src/pd_menus.tcl:147
+#: ../tcl/dialog_array.tcl:113 ../tcl/pd_menus.tcl:173
 msgid "Copy"
 msgstr "Köçür"
 
-#: ../src/dialog_array.tcl:118 ../src/dialog_array.tcl:120
-#: ../src/pd_menus.tcl:102 ../src/pd_menus.tcl:103 ../src/pd_menus.tcl:148
-#: ../src/pd_menus.tcl:149
+#: ../tcl/dialog_array.tcl:116 ../tcl/pd_menus.tcl:175
 #, fuzzy
 msgid "Paste"
 msgstr "Tarix"
 
-#: ../src/dialog_array.tcl:264 ../src/dialog_array.tcl:266
+#: ../tcl/dialog_array.tcl:257
 msgid "Array Properties"
 msgstr ""
 
-#: ../src/dialog_array.tcl:270 ../src/dialog_array.tcl:272
-#, fuzzy
-msgid "Name:"
-msgstr "Ad"
-
-#: ../src/dialog_array.tcl:276 ../src/dialog_array.tcl:278
-#: ../src/dialog_canvas.tcl:178 ../src/dialog_canvas.tcl:193
-#: ../src/dialog_iemgui.tcl:619 ../src/dialog_iemgui.tcl:621
-#, fuzzy
-msgid "Size:"
-msgstr "Böyüklük"
-
-#: ../src/dialog_array.tcl:280 ../src/dialog_array.tcl:282
-#, fuzzy
-msgid "Save contents"
-msgstr "_Məzmun"
-
-#: ../src/dialog_array.tcl:284 ../src/dialog_array.tcl:286
-msgid "Draw as:"
-msgstr ""
-
-#: ../src/dialog_array.tcl:287 ../src/dialog_array.tcl:289
-#, fuzzy
-msgid "Points"
-msgstr "Port"
-
-#: ../src/dialog_array.tcl:289 ../src/dialog_array.tcl:291
-#, fuzzy
-msgid "Polygon"
-msgstr "Polşa"
-
-#: ../src/dialog_array.tcl:291 ../src/dialog_array.tcl:293
-msgid "Bezier curve"
-msgstr ""
-
-#: ../src/dialog_array.tcl:297 ../src/dialog_array.tcl:299
-msgid "Put array into:"
-msgstr ""
-
-#: ../src/dialog_array.tcl:300 ../src/dialog_array.tcl:302
-msgid "New graph"
-msgstr ""
-
-#: ../src/dialog_array.tcl:302 ../src/dialog_array.tcl:304
-#, fuzzy
-msgid "Last graph"
-msgstr "Son ismarış: %s"
-
-#: ../src/dialog_array.tcl:306 ../src/dialog_array.tcl:308
-#, fuzzy
-msgid "Delete array"
-msgstr "Sil"
-
-#: ../src/dialog_array.tcl:312 ../src/dialog_array.tcl:314
-#, fuzzy
-msgid "Open List View..."
-msgstr "Ban Siyahısı..."
-
-#: ../src/dialog_array.tcl:319 ../src/dialog_array.tcl:321
-#: ../src/dialog_audio.tcl:136 ../src/dialog_canvas.tcl:205
-#: ../src/dialog_font.tcl:51 ../src/dialog_gatom.tcl:153
-#: ../src/dialog_gatom.tcl:161 ../src/dialog_iemgui.tcl:742
-#: ../src/dialog_iemgui.tcl:748 ../src/dialog_midi.tcl:91
-#: ../src/dialog_midi.tcl:226
-msgid "Cancel"
-msgstr "Ləğv Et"
-
-#: ../src/dialog_array.tcl:321 ../src/dialog_array.tcl:323
-#: ../src/dialog_audio.tcl:138 ../src/dialog_canvas.tcl:207
-#: ../src/dialog_gatom.tcl:156 ../src/dialog_gatom.tcl:164
-#: ../src/dialog_iemgui.tcl:745 ../src/dialog_iemgui.tcl:751
-#: ../src/dialog_midi.tcl:93 ../src/dialog_midi.tcl:228
-msgid "Apply"
-msgstr "Tətbiq Et"
-
-#: ../src/dialog_array.tcl:323 ../src/dialog_array.tcl:325
-#: ../src/dialog_audio.tcl:140 ../src/dialog_canvas.tcl:209
-#: ../src/dialog_font.tcl:53 ../src/dialog_font.tcl:92
-#: ../src/dialog_font.tcl:100 ../src/dialog_font.tcl:101
-#: ../src/dialog_gatom.tcl:159 ../src/dialog_gatom.tcl:167
-#: ../src/dialog_iemgui.tcl:748 ../src/dialog_iemgui.tcl:754
-#: ../src/dialog_midi.tcl:95 ../src/dialog_midi.tcl:230
-msgid "OK"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:130
-msgid "Audio Settings"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:142
-msgid "Save All Settings"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:151
-msgid "Sample rate:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:153
-msgid "Delay (msec):"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:158
-msgid "Use callbacks"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:166 ../src/dialog_midi.tcl:105
-#: ../src/dialog_midi.tcl:241
-msgid "Input device 1:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:169 ../src/dialog_audio.tcl:183
-#: ../src/dialog_audio.tcl:198 ../src/dialog_audio.tcl:213
-#: ../src/dialog_audio.tcl:232 ../src/dialog_audio.tcl:250
-#: ../src/dialog_audio.tcl:265 ../src/dialog_audio.tcl:280
-#, fuzzy
-msgid "Channels:"
-msgstr "Ləğv Et"
-
-#: ../src/dialog_audio.tcl:179 ../src/dialog_midi.tcl:115
-#: ../src/dialog_midi.tcl:251
-msgid "Input device 2:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:194 ../src/dialog_midi.tcl:127
-#: ../src/dialog_midi.tcl:263
-msgid "Input device 3:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:209 ../src/dialog_midi.tcl:139
-#: ../src/dialog_midi.tcl:275
-msgid "Input device 4:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:223 ../src/dialog_midi.tcl:150
-#: ../src/dialog_midi.tcl:286
-msgid "Output device 1:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:226
-msgid "(same as input device) ..............      "
-msgstr ""
-
-#: ../src/dialog_audio.tcl:246 ../src/dialog_midi.tcl:160
-#: ../src/dialog_midi.tcl:296
-msgid "Output device 2:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:261 ../src/dialog_midi.tcl:171
-#: ../src/dialog_midi.tcl:307
-msgid "Output device 3:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:276 ../src/dialog_midi.tcl:182
-#: ../src/dialog_midi.tcl:318
-msgid "Output device 4:"
-msgstr ""
-
-#: ../src/dialog_audio.tcl:291 ../src/dialog_midi.tcl:195
-msgid "Use multiple devices"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:142
-msgid "Canvas Properties"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:146
-#, fuzzy
-msgid "Scale"
-msgstr "Qeyd Et"
-
-#: ../src/dialog_canvas.tcl:150
-msgid "X units per pixel:"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:155
-msgid "Y units per pixel:"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:159
-msgid "Appearance on parent patch"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:161
-msgid "Graph-On-Parent"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:165
-msgid "Hide object name and arguments"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:170
-msgid "Range and size"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:174
-msgid "X range, from"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:176 ../src/dialog_canvas.tcl:191
-msgid "to"
-msgstr ""
-
-#: ../src/dialog_canvas.tcl:180 ../src/dialog_canvas.tcl:195
-#, fuzzy
-msgid "Margin:"
-msgstr "Ön işarə:"
-
-#: ../src/dialog_canvas.tcl:189
-msgid "Y range, from"
-msgstr ""
-
-#: ../src/dialog_find.tcl:63 ../src/dialog_find.tcl:66
-#: ../src/dialog_find.tcl:79 ../src/dialog_find.tcl:80
-#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:85
-#: ../src/dialog_find.tcl:87 ../src/dialog_find.tcl:101
-#: ../src/dialog_find.tcl:105 ../src/dialog_find.tcl:107
-#: ../src/pd_menus.tcl:45
-msgid "Find"
-msgstr "Axtar"
-
-#: ../src/dialog_find.tcl:70 ../src/dialog_find.tcl:73
-#: ../src/dialog_find.tcl:87 ../src/dialog_find.tcl:91
-#: ../src/dialog_find.tcl:93
-#, fuzzy
-msgid "Search in"
-msgstr "Mətni Axtar..."
-
-#: ../src/dialog_find.tcl:72 ../src/dialog_find.tcl:75
-#: ../src/dialog_find.tcl:89 ../src/dialog_find.tcl:93
-#: ../src/dialog_find.tcl:95
-#, fuzzy
-msgid "for:"
-msgstr "Qapı:"
-
-#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:90
-#: ../src/dialog_find.tcl:104 ../src/dialog_find.tcl:108
-#: ../src/dialog_find.tcl:110 ../src/pd_menus.tcl:86 ../src/pd_menus.tcl:87
-#: ../src/pd_menus.tcl:132 ../src/pd_menus.tcl:133 ../src/pd_menus.tcl:259
-#: ../src/pd_menus.tcl:272 ../src/pd_menus.tcl:295 ../src/pd_menus.tcl:308
-#: ../src/pd_menus.tcl:332 ../src/pd_menus.tcl:345 ../src/pd_menus.tcl:354
-#: ../src/pd_menus.tcl:381 ../src/pd_menus.tcl:392 ../src/pd_menus.tcl:419
-#: ../src/pd_menus.tcl:431 ../src/pd_menus.tcl:458
-msgid "Close"
-msgstr "Bağla"
-
-#: ../src/dialog_find.tcl:83 ../src/dialog_find.tcl:97
-#: ../src/dialog_find.tcl:101 ../src/dialog_find.tcl:103
-msgid "Match whole word only"
-msgstr ""
-
-#: ../src/dialog_find.tcl:92 ../src/dialog_font.tcl:49
-#: ../src/dialog_font.tcl:50 ../src/pd-gui.tcl:280 ../src/pd-gui.tcl:283
-#: ../src/pd-gui.tcl:286 ../src/pd-gui.tcl:288 ../src/pd-gui.tcl:291
-#: ../src/pd_menus.tcl:212 ../src/pd_menus.tcl:258 ../src/pd_menus.tcl:285
-#: ../src/pdwindow.tcl:33
-#, fuzzy
-msgid "Pd window"
-msgstr "Fayl Yolla"
-
-#: ../src/dialog_font.tcl:45
-msgid "Font Properties"
-msgstr ""
-
-#: ../src/dialog_font.tcl:46 ../src/dialog_font.tcl:54
-#: ../src/dialog_font.tcl:55
-#, fuzzy, tcl-format
-msgid "%s Font"
-msgstr "Yazı növü:"
-
-#: ../src/dialog_font.tcl:61 ../src/dialog_font.tcl:96
-#: ../src/dialog_font.tcl:104 ../src/dialog_font.tcl:105
-#, fuzzy
-msgid "Font Size"
-msgstr "Böyüklük"
-
-#: ../src/dialog_font.tcl:89 ../src/dialog_font.tcl:108
-#: ../src/dialog_font.tcl:116 ../src/dialog_font.tcl:117
-#, fuzzy
-msgid "Stretch"
-msgstr "Başlanğıc Vaxtı"
-
-#: ../src/dialog_font.tcl:96 ../src/dialog_font.tcl:115
-#: ../src/dialog_font.tcl:123 ../src/dialog_font.tcl:124
-msgid "X and Y"
-msgstr ""
-
-#: ../src/dialog_font.tcl:98 ../src/dialog_font.tcl:117
-#: ../src/dialog_font.tcl:125 ../src/dialog_font.tcl:126
-msgid "X only"
-msgstr ""
-
-#: ../src/dialog_font.tcl:100 ../src/dialog_font.tcl:119
-#: ../src/dialog_font.tcl:127 ../src/dialog_font.tcl:128
-msgid "Y only"
-msgstr ""
-
-#: ../src/dialog_gatom.tcl:93
-msgid "Atom Box Properties"
-msgstr ""
-
-#: ../src/dialog_gatom.tcl:99
-msgid "Width:"
-msgstr ""
-
-#: ../src/dialog_gatom.tcl:103
-#, fuzzy
-msgid "Limits"
-msgstr "Siyahılar"
-
-#: ../src/dialog_gatom.tcl:107
-msgid "Lower:"
-msgstr ""
-
-#: ../src/dialog_gatom.tcl:112 ../src/dialog_gatom.tcl:113
-#, fuzzy
-msgid "Upper:"
-msgstr "İstifadəçi"
-
-#: ../src/dialog_gatom.tcl:116 ../src/dialog_gatom.tcl:121
-#: ../src/dialog_iemgui.tcl:600 ../src/dialog_iemgui.tcl:652
-#: ../src/dialog_iemgui.tcl:657
-msgid "Label"
-msgstr ""
-
-#: ../src/dialog_gatom.tcl:124 ../src/dialog_gatom.tcl:129
-#, fuzzy
-msgid "Left   "
-msgstr "Solda"
-
-#: ../src/dialog_gatom.tcl:126 ../src/dialog_gatom.tcl:131
-msgid "Right"
-msgstr "Sağda"
-
-#: ../src/dialog_gatom.tcl:128 ../src/dialog_gatom.tcl:133
-msgid "Top"
-msgstr "Üstdə"
-
-#: ../src/dialog_gatom.tcl:130 ../src/dialog_gatom.tcl:135
-msgid "Bottom"
-msgstr "Altda"
-
-#: ../src/dialog_gatom.tcl:137 ../src/dialog_gatom.tcl:145
-#: ../src/dialog_iemgui.tcl:574
-#, fuzzy
-msgid "Messages"
-msgstr "İsmarış"
-
-#: ../src/dialog_gatom.tcl:141 ../src/dialog_gatom.tcl:149
-#: ../src/dialog_iemgui.tcl:578
-msgid "Send symbol:"
-msgstr ""
-
-#: ../src/dialog_gatom.tcl:147 ../src/dialog_gatom.tcl:155
-#: ../src/dialog_iemgui.tcl:585
-#, fuzzy
-msgid "Receive symbol:"
-msgstr "Alıcı"
-
-#: ../src/dialog_iemgui.tcl:197
-#, fuzzy
-msgid "Background color"
-msgstr "Arxa plan:"
-
-#: ../src/dialog_iemgui.tcl:204
-#, fuzzy
-msgid "Foreground color"
-msgstr "Ön plan:"
-
-#: ../src/dialog_iemgui.tcl:211
-#, fuzzy
-msgid "Label color"
-msgstr "Rəng seç"
-
-#: ../src/dialog_iemgui.tcl:272
-#, fuzzy
-msgid "Init"
-msgstr "Dəvət Et"
-
-#: ../src/dialog_iemgui.tcl:275 ../src/dialog_iemgui.tcl:546
-msgid "No init"
-msgstr ""
-
-#: ../src/dialog_iemgui.tcl:287 ../src/dialog_iemgui.tcl:558
-msgid "Jump on click"
-msgstr ""
-
-#: ../src/dialog_iemgui.tcl:290 ../src/dialog_iemgui.tcl:561
-msgid "Steady on click"
-msgstr ""
-
-#: ../src/dialog_iemgui.tcl:498
-#, tcl-format
-msgid "%s Properties"
-msgstr ""
-
-#: ../src/dialog_iemgui.tcl:550 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:84
-#: ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:130 ../src/pd_menus.tcl:260
-#: ../src/pd_menus.tcl:273 ../src/pd_menus.tcl:288 ../src/pd_menus.tcl:301
-#: ../src/pd_menus.tcl:325 ../src/pd_menus.tcl:338 ../src/pd_menus.tcl:355
-#: ../src/pd_menus.tcl:382 ../src/pd_menus.tcl:383 ../src/pd_menus.tcl:410
-#: ../src/pd_menus.tcl:422 ../src/pd_menus.tcl:449
-msgid "Save"
-msgstr "Qeyd Et"
-
-#: ../src/dialog_iemgui.tcl:608
-msgid "X offset"
-msgstr ""
-
-#: ../src/dialog_iemgui.tcl:611 ../src/dialog_iemgui.tcl:612
-msgid "Y offset"
-msgstr ""
-
-#: ../src/dialog_iemgui.tcl:642 ../src/dialog_iemgui.tcl:645
-msgid "Colors"
-msgstr "Rənglər"
-
-#: ../src/dialog_iemgui.tcl:648 ../src/dialog_iemgui.tcl:651
-#, fuzzy
-msgid "Background"
-msgstr "Arxa plan:"
-
-#: ../src/dialog_iemgui.tcl:650 ../src/dialog_iemgui.tcl:654
-#, fuzzy
-msgid "Front"
-msgstr "Yazı növü:"
-
-#: ../src/dialog_iemgui.tcl:662 ../src/dialog_iemgui.tcl:668
-msgid "Compose color"
-msgstr ""
-
-#: ../src/dialog_iemgui.tcl:682 ../src/dialog_iemgui.tcl:688
-#, fuzzy
-msgid "Test label"
-msgstr "Hamısı Sına"
-
-#: ../src/dialog_midi.tcl:85
-msgid "MIDI Settings"
-msgstr ""
-
-#: ../src/dialog_midi.tcl:220
-msgid "ALSA MIDI Settings"
-msgstr ""
-
-#: ../src/dialog_midi.tcl:331
-msgid "Use multiple ALSA devices"
-msgstr ""
-
-#: ../src/dialog_midi.tcl:337
-msgid "In Ports:"
-msgstr ""
-
-#: ../src/dialog_midi.tcl:340
-msgid "Out Ports:"
-msgstr ""
-
-#: ../src/g_editor.c:1663
-msgid "Discard changes to this window??"
-msgstr ""
-
-#: ../src/g_editor.c:1668
-msgid "really quit?"
-msgstr ""
-
-#: ../src/g_editor.c:1699
-#, fuzzy
-msgid "Close this window??"
-msgstr "Bu səkmə/pəncərəni bağla"
-
-#: ../src/pd-gui.tcl:185 ../src/pd-gui.tcl:195 ../src/pd-gui.tcl:203
-#: ../src/pd-gui.tcl:206 ../src/pd-gui.tcl:215 ../src/pd-gui.tcl:226
-msgid "Associated Files"
-msgstr ""
-
-#: ../src/pd-gui.tcl:186 ../src/pd-gui.tcl:196 ../src/pd-gui.tcl:204
-#: ../src/pd-gui.tcl:207 ../src/pd-gui.tcl:216 ../src/pd-gui.tcl:227
-#, fuzzy
-msgid "Pd Files"
-msgstr "Fayl"
-
-#: ../src/pd-gui.tcl:187 ../src/pd-gui.tcl:205 ../src/pd-gui.tcl:208
-#: ../src/pd-gui.tcl:228
-msgid "Max Patch Files"
-msgstr ""
-
-#: ../src/pd-gui.tcl:188 ../src/pd-gui.tcl:206 ../src/pd-gui.tcl:209
-#: ../src/pd-gui.tcl:229
-msgid "Max Text Files"
-msgstr ""
-
-#: ../src/pd-gui.tcl:197 ../src/pd-gui.tcl:217
-msgid "Max Patch Files (.pat)"
-msgstr ""
-
-#: ../src/pd-gui.tcl:198 ../src/pd-gui.tcl:218
-msgid "Max Text Files (.mxt)"
-msgstr ""
-
-#: ../src/pd-gui.tcl:270 ../src/pd-gui.tcl:290
-#, tcl-format
-msgid "WARNING: Font family '%s' not found, using default (%s)"
-msgstr ""
-
-#: ../src/pd-gui.tcl:278 ../src/pd-gui.tcl:298
-#, tcl-format
-msgid "WARNING: Font weight '%s' not found, using default (%s)"
-msgstr ""
-
-#: ../src/pd-gui.tcl:303 ../src/pd-gui.tcl:323
-#, tcl-format
-msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-msgstr ""
-
-#: ../src/pd-gui.tcl:478 ../src/pd-gui.tcl:483 ../src/pd-gui.tcl:501
-msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
-msgstr ""
-
-#: ../src/pd_menucommands.tcl:19
-msgid "Untitled"
-msgstr ""
-
-#: ../src/pd_menucommands.tcl:78 ../src/pd_menucommands.tcl:79
-#: ../src/pd_menucommands.tcl:90
-#, fuzzy
-msgid "Send Message..."
-msgstr "İsmarış"
-
-#: ../src/pd_menucommands.tcl:82 ../src/pd_menucommands.tcl:83
-#: ../src/pd_menucommands.tcl:94 ../src/pd_menus.tcl:87 ../src/pd_menus.tcl:88
-#: ../src/pd_menus.tcl:133 ../src/pd_menus.tcl:134 ../src/pd_menus.tcl:147
-#: ../src/pd_menus.tcl:192 ../src/pd_menus.tcl:193 ../src/pd_menus.tcl:265
-#: ../src/pd_menus.tcl:278 ../src/pd_menus.tcl:292 ../src/pd_menus.tcl:305
-#: ../src/pd_menus.tcl:329 ../src/pd_menus.tcl:342 ../src/pd_menus.tcl:360
-#: ../src/pd_menus.tcl:387 ../src/pd_menus.tcl:414 ../src/pd_menus.tcl:426
-#: ../src/pd_menus.tcl:453 ../startup/object_db.tcl:123
-msgid "Message"
-msgstr "İsmarış"
-
-#: ../src/pd_menucommands.tcl:108 ../src/pd_menucommands.tcl:111
-#: ../src/pd_menus.tcl:112 ../src/pd_menus.tcl:113 ../src/pd_menus.tcl:117
-#: ../src/pd_menus.tcl:118 ../src/pd_menus.tcl:158 ../src/pd_menus.tcl:159
-#: ../src/pd_menus.tcl:163 ../src/pd_menus.tcl:164
-#, fuzzy
-msgid "Font"
-msgstr "Yazı növü:"
-
-#: ../src/pd_menucommands.tcl:123 ../src/pd_menucommands.tcl:126
-#: ../src/pd_menus.tcl:138 ../src/pd_menus.tcl:183 ../src/pd_menus.tcl:184
-#, fuzzy
-msgid "Preferences"
-msgstr "Seçimlər..."
-
-#: ../src/pd_menus.tcl:45
-#, fuzzy
-msgid "Edit"
-msgstr "_Yüklə..."
-
-#: ../src/pd_menus.tcl:45
-msgid "File"
-msgstr "Fayl"
-
-#: ../src/pd_menus.tcl:45 ../src/pdtk_canvas.tcl:48 ../src/pdtk_canvas.tcl:110
-#: ../src/pdtk_canvas.tcl:113
-msgid "Help"
-msgstr "Yardım"
-
-#: ../src/pd_menus.tcl:45
-#, fuzzy
-msgid "Media"
-msgstr "Makedoniya"
-
-#: ../src/pd_menus.tcl:45
-msgid "Put"
-msgstr ""
-
-#: ../src/pd_menus.tcl:45
-#, fuzzy
-msgid "Window"
-msgstr "_Pəncərə"
-
-#: ../src/pd_menus.tcl:81 ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:127
-#: ../src/pd_menus.tcl:128 ../src/pd_menus.tcl:255 ../src/pd_menus.tcl:267
-#: ../src/pd_menus.tcl:285 ../src/pd_menus.tcl:298 ../src/pd_menus.tcl:322
-#: ../src/pd_menus.tcl:335 ../src/pd_menus.tcl:349 ../src/pd_menus.tcl:376
-#: ../src/pd_menus.tcl:380 ../src/pd_menus.tcl:407 ../src/pd_menus.tcl:419
-#: ../src/pd_menus.tcl:446
-msgid "New"
-msgstr "Yeni"
-
-#: ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:128
-#: ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:268
-#: ../src/pd_menus.tcl:286 ../src/pd_menus.tcl:299 ../src/pd_menus.tcl:323
-#: ../src/pd_menus.tcl:336 ../src/pd_menus.tcl:350 ../src/pd_menus.tcl:377
-#: ../src/pd_menus.tcl:381 ../src/pd_menus.tcl:408 ../src/pd_menus.tcl:420
-#: ../src/pd_menus.tcl:447 ../src/pdtk_canvas.tcl:46
-#: ../src/pdtk_canvas.tcl:108 ../src/pdtk_canvas.tcl:111
-#: ../src/pdtk_canvas.tcl:128 ../src/pdtk_canvas.tcl:130
-#: ../src/pdtk_canvas.tcl:131 ../src/pdtk_canvas.tcl:133
-msgid "Open"
-msgstr "Aç"
-
-#: ../src/pd_menus.tcl:84 ../src/pd_menus.tcl:85 ../src/pd_menus.tcl:130
-#: ../src/pd_menus.tcl:131 ../src/pd_menus.tcl:261 ../src/pd_menus.tcl:274
-#: ../src/pd_menus.tcl:289 ../src/pd_menus.tcl:302 ../src/pd_menus.tcl:326
-#: ../src/pd_menus.tcl:339 ../src/pd_menus.tcl:356 ../src/pd_menus.tcl:383
-#: ../src/pd_menus.tcl:384 ../src/pd_menus.tcl:411 ../src/pd_menus.tcl:423
-#: ../src/pd_menus.tcl:450
-#, fuzzy
-msgid "Save As..."
-msgstr "Fərqli Qeyd Et"
-
-#: ../src/pd_menus.tcl:88 ../src/pd_menus.tcl:89 ../src/pd_menus.tcl:134
-#: ../src/pd_menus.tcl:135 ../src/pd_menus.tcl:267 ../src/pd_menus.tcl:280
-#: ../src/pd_menus.tcl:293 ../src/pd_menus.tcl:306 ../src/pd_menus.tcl:330
-#: ../src/pd_menus.tcl:343 ../src/pd_menus.tcl:362 ../src/pd_menus.tcl:388
-#: ../src/pd_menus.tcl:389 ../src/pd_menus.tcl:415 ../src/pd_menus.tcl:427
-#: ../src/pd_menus.tcl:454
-#, fuzzy
-msgid "Print..."
-msgstr "_Yüklə..."
-
-#: ../src/pd_menus.tcl:93 ../src/pd_menus.tcl:94 ../src/pd_menus.tcl:139
-#: ../src/pd_menus.tcl:140
-#, fuzzy
-msgid "Undo"
-msgstr "Uqanda"
-
-#: ../src/pd_menus.tcl:95 ../src/pd_menus.tcl:96 ../src/pd_menus.tcl:141
-#: ../src/pd_menus.tcl:142
-#, fuzzy
-msgid "Redo"
-msgstr "Səbəb"
-
-#: ../src/pd_menus.tcl:98 ../src/pd_menus.tcl:99 ../src/pd_menus.tcl:144
-#: ../src/pd_menus.tcl:145
-msgid "Cut"
-msgstr ""
-
-#: ../src/pd_menus.tcl:104 ../src/pd_menus.tcl:105 ../src/pd_menus.tcl:150
-#: ../src/pd_menus.tcl:151
-#, fuzzy
-msgid "Duplicate"
-msgstr "Tarix"
-
-#: ../src/pd_menus.tcl:106 ../src/pd_menus.tcl:107 ../src/pd_menus.tcl:152
-#: ../src/pd_menus.tcl:153
-#, fuzzy
-msgid "Select All"
-msgstr "Hamısı Sil"
-
-#: ../src/pd_menus.tcl:110 ../src/pd_menus.tcl:111 ../src/pd_menus.tcl:115
-#: ../src/pd_menus.tcl:116 ../src/pd_menus.tcl:156 ../src/pd_menus.tcl:157
-#: ../src/pd_menus.tcl:161 ../src/pd_menus.tcl:162
-#, fuzzy
-msgid "Text Editor"
-msgstr "Rənglər"
-
-#: ../src/pd_menus.tcl:120 ../src/pd_menus.tcl:121 ../src/pd_menus.tcl:166
-#: ../src/pd_menus.tcl:167
-msgid "Tidy Up"
-msgstr ""
-
-#: ../src/pd_menus.tcl:122 ../src/pd_menus.tcl:123 ../src/pd_menus.tcl:168
-#: ../src/pd_menus.tcl:169
-msgid "Toggle Console"
-msgstr ""
-
-#: ../src/pd_menus.tcl:124 ../src/pd_menus.tcl:125 ../src/pd_menus.tcl:170
-#: ../src/pd_menus.tcl:171
-#, fuzzy
-msgid "Clear Console"
-msgstr "Siyahını təmizlə"
-
-#: ../src/pd_menus.tcl:128 ../src/pd_menus.tcl:129 ../src/pd_menus.tcl:174
-#: ../src/pd_menus.tcl:175
-#, fuzzy
-msgid "Edit Mode"
-msgstr "Təfərruatlar"
-
-#: ../src/pd_menus.tcl:145 ../src/pd_menus.tcl:190 ../src/pd_menus.tcl:191
-msgid "Object"
-msgstr ""
-
-#: ../src/pd_menus.tcl:149 ../src/pd_menus.tcl:194 ../src/pd_menus.tcl:195
-#, fuzzy
-msgid "Number"
-msgstr "$ Nömrəsi"
-
-#: ../src/pd_menus.tcl:151 ../src/pd_menus.tcl:196 ../src/pd_menus.tcl:197
-msgid "Symbol"
-msgstr ""
-
-#: ../src/pd_menus.tcl:153 ../src/pd_menus.tcl:198 ../src/pd_menus.tcl:199
-#, fuzzy
-msgid "Comment"
-msgstr "Əmr"
-
-#: ../src/pd_menus.tcl:156 ../src/pd_menus.tcl:201 ../src/pd_menus.tcl:202
-#, fuzzy
-msgid "Bang"
-msgstr "Ban-la"
-
-#: ../src/pd_menus.tcl:158 ../src/pd_menus.tcl:203 ../src/pd_menus.tcl:204
-#, fuzzy
-msgid "Toggle"
-msgstr "Toqo"
-
-#: ../src/pd_menus.tcl:160 ../src/pd_menus.tcl:205 ../src/pd_menus.tcl:206
-#, fuzzy
-msgid "Number2"
-msgstr "$ Nömrəsi"
-
-#: ../src/pd_menus.tcl:162 ../src/pd_menus.tcl:207 ../src/pd_menus.tcl:208
-msgid "Vslider"
-msgstr ""
-
-#: ../src/pd_menus.tcl:164 ../src/pd_menus.tcl:209 ../src/pd_menus.tcl:210
-#, fuzzy
-msgid "Hslider"
-msgstr "Göstərmə"
-
-#: ../src/pd_menus.tcl:166 ../src/pd_menus.tcl:211 ../src/pd_menus.tcl:212
-#, fuzzy
-msgid "Vradio"
-msgstr "Buraxılış"
-
-#: ../src/pd_menus.tcl:168 ../src/pd_menus.tcl:213 ../src/pd_menus.tcl:214
-msgid "Hradio"
-msgstr ""
-
-#: ../src/pd_menus.tcl:170 ../src/pd_menus.tcl:215 ../src/pd_menus.tcl:216
-msgid "VU Meter"
-msgstr ""
-
-#: ../src/pd_menus.tcl:172 ../src/pd_menus.tcl:217 ../src/pd_menus.tcl:218
-#, fuzzy
-msgid "Canvas"
-msgstr "Kanada"
-
-#: ../src/pd_menus.tcl:175 ../src/pd_menus.tcl:220 ../src/pd_menus.tcl:221
-msgid "Graph"
-msgstr "Qrafika"
-
-#: ../src/pd_menus.tcl:176 ../src/pd_menus.tcl:221 ../src/pd_menus.tcl:222
+#: ../tcl/dialog_array.tcl:266 ../tcl/pd_menus.tcl:243
 #, fuzzy
 msgid "Array"
 msgstr "Andorra"
 
-#: ../src/pd_menus.tcl:181 ../src/pd_menus.tcl:226 ../src/pd_menus.tcl:227
+#: ../tcl/dialog_array.tcl:270
 #, fuzzy
-msgid "Find..."
-msgstr "Fayl Göndərilməsi..."
+msgid "Name:"
+msgstr "Ad"
 
-#: ../src/pd_menus.tcl:183 ../src/pd_menus.tcl:228 ../src/pd_menus.tcl:229
-msgid "Find Again"
+#: ../tcl/dialog_array.tcl:276 ../tcl/dialog_canvas.tcl:182
+#: ../tcl/dialog_canvas.tcl:197 ../tcl/dialog_iemgui.tcl:524
+#: ../tcl/dialog_iemgui.tcl:551 ../tcl/dialog_iemgui.tcl:555
+#: ../tcl/dialog_iemgui.tcl:565 ../tcl/dialog_iemgui.tcl:699
+#, fuzzy
+msgid "Size:"
+msgstr "Böyüklük"
+
+#: ../tcl/dialog_array.tcl:280
+#, fuzzy
+msgid "Save contents"
+msgstr "_Məzmun"
+
+#: ../tcl/dialog_array.tcl:285
+msgid "Draw as:"
 msgstr ""
 
-#: ../src/pd_menus.tcl:185 ../src/pd_menus.tcl:230 ../src/pd_menus.tcl:231
-msgid "Find Last Error"
+#: ../tcl/dialog_array.tcl:288
+#, fuzzy
+msgid "Polygon"
+msgstr "Polşa"
+
+#: ../tcl/dialog_array.tcl:290
+#, fuzzy
+msgid "Points"
+msgstr "Port"
+
+#: ../tcl/dialog_array.tcl:292
+msgid "Bezier curve"
 msgstr ""
 
-#: ../src/pd_menus.tcl:191 ../src/pd_menus.tcl:236 ../src/pd_menus.tcl:237
-msgid "DSP On"
+#: ../tcl/dialog_array.tcl:299
+msgid "Put array into:"
 msgstr ""
 
-#: ../src/pd_menus.tcl:193 ../src/pd_menus.tcl:238 ../src/pd_menus.tcl:239
-#, fuzzy
-msgid "DSP Off"
-msgstr "Bağlı"
-
-#: ../src/pd_menus.tcl:196 ../src/pd_menus.tcl:242 ../src/pd_menus.tcl:269
-msgid "Test Audio and MIDI..."
+#: ../tcl/dialog_array.tcl:302
+msgid "New graph"
 msgstr ""
 
-#: ../src/pd_menus.tcl:198 ../src/pd_menus.tcl:244 ../src/pd_menus.tcl:271
+#: ../tcl/dialog_array.tcl:304
 #, fuzzy
-msgid "Load Meter"
-msgstr "Lag ölçəni:"
+msgid "Last graph"
+msgstr "Son ismarış: %s"
 
-#: ../src/pd_menus.tcl:205 ../src/pd_menus.tcl:251 ../src/pd_menus.tcl:278
-msgid "Minimize"
+#: ../tcl/dialog_array.tcl:308
+msgid "Options"
 msgstr ""
 
-#: ../src/pd_menus.tcl:207 ../src/pd_menus.tcl:253 ../src/pd_menus.tcl:280
+#: ../tcl/dialog_array.tcl:310
 #, fuzzy
-msgid "Zoom"
-msgstr "Altda"
+msgid "Open List View..."
+msgstr "Ban Siyahısı..."
 
-#: ../src/pd_menus.tcl:210 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:283
+#: ../tcl/dialog_array.tcl:313
 #, fuzzy
-msgid "Parent Window"
+msgid "Delete array"
+msgstr "Sil"
+
+#: ../tcl/dialog_array.tcl:321 ../tcl/dialog_audio.tcl:333
+#: ../tcl/dialog_canvas.tcl:209 ../tcl/dialog_find.tcl:236
+#: ../tcl/dialog_gatom.tcl:164 ../tcl/dialog_iemgui.tcl:789
+#: ../tcl/dialog_midi.tcl:348 ../tcl/dialog_midi.tcl:444
+#: ../tcl/scrollboxwindow.tcl:85
+msgid "Cancel"
+msgstr "Ləğv Et"
+
+#: ../tcl/dialog_array.tcl:325 ../tcl/dialog_audio.tcl:337
+#: ../tcl/dialog_canvas.tcl:213 ../tcl/dialog_gatom.tcl:168
+#: ../tcl/dialog_iemgui.tcl:793 ../tcl/dialog_midi.tcl:352
+#: ../tcl/dialog_midi.tcl:446 ../tcl/scrollboxwindow.tcl:89
+msgid "Apply"
+msgstr "Tətbiq Et"
+
+#: ../tcl/dialog_array.tcl:329 ../tcl/dialog_audio.tcl:341
+#: ../tcl/dialog_canvas.tcl:217 ../tcl/dialog_font.tcl:117
+#: ../tcl/dialog_gatom.tcl:172 ../tcl/dialog_iemgui.tcl:797
+#: ../tcl/dialog_midi.tcl:356 ../tcl/dialog_midi.tcl:448
+#: ../tcl/dialog_startup.tcl:29 ../tcl/dialog_startup.tcl:30
+#: ../tcl/scrollboxwindow.tcl:93
+msgid "OK"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:137
+msgid "Audio Settings"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:148
+msgid "Settings"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:153
+msgid "Sample rate:"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:155
+msgid "Delay (msec):"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:162
+msgid "Block size:"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:170
+msgid "Use callbacks"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:175 ../tcl/dialog_midi.tcl:126
+msgid "Input Devices"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:183 ../tcl/dialog_audio.tcl:248
+#: ../tcl/dialog_midi.tcl:133 ../tcl/dialog_midi.tcl:241
+msgid "1:"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:186 ../tcl/dialog_audio.tcl:201
+#: ../tcl/dialog_audio.tcl:217 ../tcl/dialog_audio.tcl:233
+#: ../tcl/dialog_audio.tcl:257 ../tcl/dialog_audio.tcl:277
+#: ../tcl/dialog_audio.tcl:293 ../tcl/dialog_audio.tcl:309
+#, fuzzy
+msgid "Channels:"
+msgstr "Ləğv Et"
+
+#: ../tcl/dialog_audio.tcl:197 ../tcl/dialog_audio.tcl:273
+#: ../tcl/dialog_midi.tcl:143 ../tcl/dialog_midi.tcl:251
+msgid "2:"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:213 ../tcl/dialog_audio.tcl:289
+#: ../tcl/dialog_midi.tcl:155 ../tcl/dialog_midi.tcl:262
+msgid "3:"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:229 ../tcl/dialog_audio.tcl:305
+#: ../tcl/dialog_midi.tcl:167 ../tcl/dialog_midi.tcl:273
+msgid "4:"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:240 ../tcl/dialog_midi.tcl:235
+msgid "Output Devices"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:251
+msgid "(same as input device)..."
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:320 ../tcl/dialog_midi.tcl:340
+msgid "Use multiple devices"
+msgstr ""
+
+#: ../tcl/dialog_audio.tcl:326
+msgid "Save All Settings"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:122
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:142
+msgid "Canvas Properties"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:150
+#, fuzzy
+msgid "Scale"
+msgstr "Qeyd Et"
+
+#: ../tcl/dialog_canvas.tcl:154
+msgid "X units per pixel:"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:159
+msgid "Y units per pixel:"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:163
+msgid "Appearance on parent patch"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:165
+msgid "Graph-On-Parent"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:169
+msgid "Hide object name and arguments"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:174
+msgid "Range and size"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:178
+msgid "X range: from"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:180 ../tcl/dialog_canvas.tcl:195
+msgid "to"
+msgstr ""
+
+#: ../tcl/dialog_canvas.tcl:184 ../tcl/dialog_canvas.tcl:199
+#, fuzzy
+msgid "Margin:"
+msgstr "Ön işarə:"
+
+#: ../tcl/dialog_canvas.tcl:193
+msgid "Y range: from"
+msgstr ""
+
+#: ../tcl/dialog_data.tcl:35
+msgid "Data Properties"
+msgstr ""
+
+#: ../tcl/dialog_find.tcl:73
+#, tcl-format
+msgid "Found '%s' in %s"
+msgstr ""
+
+#: ../tcl/dialog_find.tcl:78 ../tcl/dialog_find.tcl:164
+#, tcl-format
+msgid "Couldn't find '%s' in %s"
+msgstr ""
+
+#: ../tcl/dialog_find.tcl:148 ../tcl/dialog_find.tcl:219
+#, fuzzy
+msgid "Search in"
+msgstr "Mətni Axtar..."
+
+#: ../tcl/dialog_find.tcl:149 ../tcl/dialog_find.tcl:219
+#, fuzzy
+msgid "for:"
+msgstr "Qapı:"
+
+#: ../tcl/dialog_find.tcl:168
+#, tcl-format
+msgid "Showed last '%s' in %s"
+msgstr ""
+
+#: ../tcl/dialog_find.tcl:173
+#, tcl-format
+msgid "Showing '%d' out of %d items in %s"
+msgstr ""
+
+#: ../tcl/dialog_find.tcl:195 ../tcl/dialog_find.tcl:240
+msgid "Find"
+msgstr "Axtar"
+
+#: ../tcl/dialog_find.tcl:219 ../tcl/pd_menus.tcl:317
+#, fuzzy
+msgid "Pd window"
 msgstr "Fayl Yolla"
 
-#: ../src/pd_menus.tcl:216 ../src/pd_menus.tcl:262 ../src/pd_menus.tcl:289
-msgid "Bring All to Front"
+#: ../tcl/dialog_find.tcl:230
+msgid "Match whole word only"
 msgstr ""
 
-#: ../src/pd_menus.tcl:224 ../src/pd_menus.tcl:241 ../src/pd_menus.tcl:253
-#: ../src/pd_menus.tcl:270 ../src/pd_menus.tcl:297 ../src/pd_menus.tcl:335
-#: ../src/pd_menus.tcl:362
+#: ../tcl/dialog_find.tcl:244 ../tcl/pd_menus.tcl:63 ../tcl/pd_menus.tcl:90
+#: ../tcl/pd_menus.tcl:122 ../tcl/pd_menus.tcl:155 ../tcl/pd_menus.tcl:571
+#: ../tcl/pd_menus.tcl:611 ../tcl/pd_menus.tcl:658
+msgid "Close"
+msgstr "Bağla"
+
+#: ../tcl/dialog_font.tcl:60
+#, fuzzy, tcl-format
+msgid "%s Font"
+msgstr "Yazı növü:"
+
+#: ../tcl/dialog_font.tcl:101 ../tcl/pd_menus.tcl:93 ../tcl/pd_menus.tcl:124
+#: ../tcl/pd_menus.tcl:184
+#, fuzzy
+msgid "Font"
+msgstr "Yazı növü:"
+
+#: ../tcl/dialog_font.tcl:121
+#, fuzzy
+msgid "Font Size"
+msgstr "Böyüklük"
+
+#: ../tcl/dialog_font.tcl:133
+#, fuzzy
+msgid "Stretch"
+msgstr "Başlanğıc Vaxtı"
+
+#: ../tcl/dialog_font.tcl:140
+msgid "X and Y"
+msgstr ""
+
+#: ../tcl/dialog_font.tcl:142
+msgid "X only"
+msgstr ""
+
+#: ../tcl/dialog_font.tcl:144
+msgid "Y only"
+msgstr ""
+
+#: ../tcl/dialog_gatom.tcl:100
+msgid "Atom Box Properties"
+msgstr ""
+
+#: ../tcl/dialog_gatom.tcl:110 ../tcl/dialog_iemgui.tcl:537
+#: ../tcl/dialog_iemgui.tcl:544 ../tcl/dialog_iemgui.tcl:559
+#: ../tcl/dialog_iemgui.tcl:567
+msgid "Width:"
+msgstr ""
+
+#: ../tcl/dialog_gatom.tcl:114
+#, fuzzy
+msgid "Limits"
+msgstr "Siyahılar"
+
+#: ../tcl/dialog_gatom.tcl:118 ../tcl/dialog_iemgui.tcl:532
+#: ../tcl/dialog_iemgui.tcl:540 ../tcl/dialog_iemgui.tcl:547
+msgid "Lower:"
+msgstr ""
+
+#: ../tcl/dialog_gatom.tcl:123 ../tcl/dialog_iemgui.tcl:533
+#: ../tcl/dialog_iemgui.tcl:541 ../tcl/dialog_iemgui.tcl:548
+#, fuzzy
+msgid "Upper:"
+msgstr "İstifadəçi"
+
+#: ../tcl/dialog_gatom.tcl:127 ../tcl/dialog_iemgui.tcl:676
+#: ../tcl/dialog_iemgui.tcl:728
+msgid "Label"
+msgstr ""
+
+#: ../tcl/dialog_gatom.tcl:135
+#, fuzzy
+msgid "Left   "
+msgstr "Solda"
+
+#: ../tcl/dialog_gatom.tcl:137
+msgid "Right"
+msgstr "Sağda"
+
+#: ../tcl/dialog_gatom.tcl:139
+msgid "Top"
+msgstr "Üstdə"
+
+#: ../tcl/dialog_gatom.tcl:141
+msgid "Bottom"
+msgstr "Altda"
+
+#: ../tcl/dialog_gatom.tcl:148 ../tcl/dialog_iemgui.tcl:648
+#, fuzzy
+msgid "Messages"
+msgstr "İsmarış"
+
+#: ../tcl/dialog_gatom.tcl:152 ../tcl/dialog_iemgui.tcl:652
+msgid "Send symbol:"
+msgstr ""
+
+#: ../tcl/dialog_gatom.tcl:158 ../tcl/dialog_iemgui.tcl:661
+#, fuzzy
+msgid "Receive symbol:"
+msgstr "Alıcı"
+
+#: ../tcl/dialog_iemgui.tcl:202
+#, fuzzy
+msgid "Background color"
+msgstr "Arxa plan:"
+
+#: ../tcl/dialog_iemgui.tcl:208
+#, fuzzy
+msgid "Foreground color"
+msgstr "Ön plan:"
+
+#: ../tcl/dialog_iemgui.tcl:213
+#, fuzzy
+msgid "Label color"
+msgstr "Rəng seç"
+
+#: ../tcl/dialog_iemgui.tcl:282 ../tcl/dialog_iemgui.tcl:625
+#, fuzzy
+msgid "Init"
+msgstr "Dəvət Et"
+
+#: ../tcl/dialog_iemgui.tcl:285 ../tcl/dialog_iemgui.tcl:622
+msgid "No init"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:297 ../tcl/dialog_iemgui.tcl:634
+msgid "Jump on click"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:300 ../tcl/dialog_iemgui.tcl:637
+msgid "Steady on click"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:517 ../tcl/pd_menus.tcl:222
+#, fuzzy
+msgid "Bang"
+msgstr "Ban-la"
+
+#: ../tcl/dialog_iemgui.tcl:519
+msgid "Flash Time (msec)"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:520
+msgid "Intrrpt:"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:521
+msgid "Hold:"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:523 ../tcl/pd_menus.tcl:224
+#, fuzzy
+msgid "Toggle"
+msgstr "Toqo"
+
+#: ../tcl/dialog_iemgui.tcl:525
+msgid "Non Zero Value"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:526
+msgid "Value:"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:528 ../tcl/pd_menus.tcl:226
+#, fuzzy
+msgid "Number2"
+msgstr "$ Nömrəsi"
+
+#: ../tcl/dialog_iemgui.tcl:529
+msgid "Width (digits):"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:530 ../tcl/dialog_iemgui.tcl:538
+#: ../tcl/dialog_iemgui.tcl:545 ../tcl/dialog_iemgui.tcl:560
+#: ../tcl/dialog_iemgui.tcl:568
+#, fuzzy
+msgid "Height:"
+msgstr "Sağda"
+
+#: ../tcl/dialog_iemgui.tcl:531 ../tcl/dialog_iemgui.tcl:539
+#: ../tcl/dialog_iemgui.tcl:546
+msgid "Output Range"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:534
+msgid "Log height:"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:536 ../tcl/pd_menus.tcl:228
+msgid "Vslider"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:543 ../tcl/pd_menus.tcl:230
+#, fuzzy
+msgid "Hslider"
+msgstr "Göstərmə"
+
+#: ../tcl/dialog_iemgui.tcl:550 ../tcl/pd_menus.tcl:232
+#, fuzzy
+msgid "Vradio"
+msgstr "Buraxılış"
+
+#: ../tcl/dialog_iemgui.tcl:552 ../tcl/dialog_iemgui.tcl:556
+msgid "Num cells:"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:554 ../tcl/pd_menus.tcl:234
+msgid "Hradio"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:558 ../tcl/pd_menus.tcl:236
+msgid "VU Meter"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:564 ../tcl/pd_menus.tcl:238
+#, fuzzy
+msgid "Canvas"
+msgstr "Kanada"
+
+#: ../tcl/dialog_iemgui.tcl:566
+msgid "Visible Rectangle (pix)"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:572
+#, tcl-format
+msgid "%s Properties"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:613
+msgid "Parameters"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:684
+msgid "X offset:"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:687
+msgid "Y offset:"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:718
+msgid "Colors"
+msgstr "Rənglər"
+
+#: ../tcl/dialog_iemgui.tcl:724
+#, fuzzy
+msgid "Background"
+msgstr "Arxa plan:"
+
+#: ../tcl/dialog_iemgui.tcl:726
+#, fuzzy
+msgid "Front"
+msgstr "Yazı növü:"
+
+#: ../tcl/dialog_iemgui.tcl:738
+msgid "Compose color"
+msgstr ""
+
+#: ../tcl/dialog_iemgui.tcl:759
+#, fuzzy
+msgid "Test label"
+msgstr "Hamısı Sına"
+
+#: ../tcl/dialog_message.tcl:62
+#, fuzzy
+msgid "Send a Pd message"
+msgstr "İsmarış"
+
+#: ../tcl/dialog_message.tcl:81
+msgid "(use arrow keys for history)"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:115
+msgid "MIDI Settings"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:179 ../tcl/dialog_midi.tcl:284
+msgid "5:"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:191 ../tcl/dialog_midi.tcl:295
+msgid "6:"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:203 ../tcl/dialog_midi.tcl:306
+msgid "7:"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:215 ../tcl/dialog_midi.tcl:317
+msgid "8:"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:227 ../tcl/dialog_midi.tcl:328
+msgid "9:"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:425
+msgid "ALSA MIDI Settings"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:433
+msgid "In Ports:"
+msgstr ""
+
+#: ../tcl/dialog_midi.tcl:436
+msgid "Out Ports:"
+msgstr ""
+
+#: ../tcl/dialog_path.tcl:41
+msgid "Pd search path for objects, help, fonts, and other files"
+msgstr ""
+
+#: ../tcl/dialog_path.tcl:47
+msgid "Use standard extensions"
+msgstr ""
+
+#: ../tcl/dialog_path.tcl:49
+msgid "Verbose"
+msgstr ""
+
+#: ../tcl/dialog_startup.tcl:56
+msgid "Add new library"
+msgstr ""
+
+#: ../tcl/dialog_startup.tcl:60
+msgid "Edit library"
+msgstr ""
+
+#: ../tcl/dialog_startup.tcl:87
+msgid "Pd libraries to load on startup"
+msgstr ""
+
+#: ../tcl/dialog_startup.tcl:93
+msgid "Startup flags:"
+msgstr ""
+
+#: ../tcl/dialog_startup.tcl:101
+msgid "Defeat real-time scheduling"
+msgstr ""
+
+#: ../tcl/helpbrowser.tcl:24
+#, fuzzy
+msgid "Help Browser"
+msgstr "Gəz..."
+
+#: ../tcl/pd_connect.tcl:93 ../tcl/pdwindow.tcl:237
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr ""
+
+#: ../tcl/pd_connect.tcl:96 ../tcl/pdwindow.tcl:241
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr ""
+
+#: ../tcl/pd_connect.tcl:99 ../tcl/pdwindow.tcl:243
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr ""
+
+#: ../tcl/pd_deken.tcl:293 ../tcl/pd_deken.tcl:342
+msgid "Show all"
+msgstr ""
+
+#: ../tcl/pd_deken.tcl:295
+#, fuzzy
+msgid "Search"
+msgstr "Mətni Axtar..."
+
+#: ../tcl/pd_deken.tcl:324 ../tcl/pd_deken.tcl:578 ../tcl/pd_deken.tcl:580
+msgid "Find externals"
+msgstr ""
+
+#: ../tcl/pd_deken.tcl:347
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+#: ../tcl/pd_menucommands.tcl:217 ../tcl/pd_menus.tcl:326
+#: ../tcl/pd_menus.tcl:554
 #, fuzzy
 msgid "About Pd"
 msgstr "_Haqqında"
 
-#: ../src/pd_menus.tcl:227 ../src/pd_menus.tcl:273 ../src/pd_menus.tcl:300
+#: ../tcl/pd_menus.tcl:40
+msgid "file edit put find media window help"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:60 ../tcl/pd_menus.tcl:87 ../tcl/pd_menus.tcl:118
+#: ../tcl/pd_menus.tcl:152 ../tcl/pd_menus.tcl:572 ../tcl/pd_menus.tcl:600
+#: ../tcl/pd_menus.tcl:647
+msgid "Save"
+msgstr "Qeyd Et"
+
+#: ../tcl/pd_menus.tcl:61 ../tcl/pd_menus.tcl:88 ../tcl/pd_menus.tcl:119
+#: ../tcl/pd_menus.tcl:153 ../tcl/pd_menus.tcl:573 ../tcl/pd_menus.tcl:601
+#: ../tcl/pd_menus.tcl:648
+#, fuzzy
+msgid "Save As..."
+msgstr "Fərqli Qeyd Et"
+
+#: ../tcl/pd_menus.tcl:62 ../tcl/pd_menus.tcl:89 ../tcl/pd_menus.tcl:120
+#: ../tcl/pd_menus.tcl:157 ../tcl/pd_menus.tcl:579 ../tcl/pd_menus.tcl:607
+#: ../tcl/pd_menus.tcl:654
+#, fuzzy
+msgid "Print..."
+msgstr "_Yüklə..."
+
+#: ../tcl/pd_menus.tcl:65 ../tcl/pd_menus.tcl:92 ../tcl/pd_menus.tcl:125
+#: ../tcl/pd_menus.tcl:177
+#, fuzzy
+msgid "Duplicate"
+msgstr "Tarix"
+
+#: ../tcl/pd_menus.tcl:66 ../tcl/pd_menus.tcl:94 ../tcl/pd_menus.tcl:126
+#: ../tcl/pd_menus.tcl:186
+#, fuzzy
+msgid "Zoom In"
+msgstr "Altda"
+
+#: ../tcl/pd_menus.tcl:67 ../tcl/pd_menus.tcl:95 ../tcl/pd_menus.tcl:127
+#: ../tcl/pd_menus.tcl:188
+#, fuzzy
+msgid "Zoom Out"
+msgstr "Altda"
+
+#: ../tcl/pd_menus.tcl:68 ../tcl/pd_menus.tcl:96 ../tcl/pd_menus.tcl:128
+#: ../tcl/pd_menus.tcl:190
+msgid "Tidy Up"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:69 ../tcl/pd_menus.tcl:97 ../tcl/pd_menus.tcl:129
+#: ../tcl/pd_menus.tcl:196 ../tcl/pd_menus.tcl:635
+#, fuzzy
+msgid "Edit Mode"
+msgstr "Təfərruatlar"
+
+#: ../tcl/pd_menus.tcl:72 ../tcl/pd_menus.tcl:132 ../tcl/pd_menus.tcl:166
+#: ../tcl/pd_menus.tcl:350
+#, fuzzy
+msgid "Undo"
+msgstr "Uqanda"
+
+#: ../tcl/pd_menus.tcl:73 ../tcl/pd_menus.tcl:133 ../tcl/pd_menus.tcl:168
+#: ../tcl/pd_menus.tcl:356
+#, fuzzy
+msgid "Redo"
+msgstr "Səbəb"
+
+#: ../tcl/pd_menus.tcl:81 ../tcl/pd_menus.tcl:109 ../tcl/pd_menus.tcl:141
+#: ../tcl/pd_menus.tcl:332
+msgid "List of objects..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:150 ../tcl/pd_menus.tcl:565 ../tcl/pd_menus.tcl:597
+#: ../tcl/pd_menus.tcl:644
+msgid "New"
+msgstr "Yeni"
+
+#: ../tcl/pd_menus.tcl:151 ../tcl/pd_menus.tcl:566 ../tcl/pd_menus.tcl:598
+#: ../tcl/pd_menus.tcl:645 ../tcl/pdtk_canvas.tcl:221
+#: ../tcl/pdtk_canvas.tcl:241 ../tcl/pdtk_canvas.tcl:243
+msgid "Open"
+msgstr "Aç"
+
+#: ../tcl/pd_menus.tcl:156 ../tcl/pd_menus.tcl:577 ../tcl/pd_menus.tcl:604
+#: ../tcl/pd_menus.tcl:651
+#, fuzzy
+msgid "Message..."
+msgstr "İsmarış"
+
+#: ../tcl/pd_menus.tcl:171
+msgid "Cut"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:179
+#, fuzzy
+msgid "Select All"
+msgstr "Hamısı Sil"
+
+#: ../tcl/pd_menus.tcl:192
+#, fuzzy
+msgid "Clear Console"
+msgstr "Siyahını təmizlə"
+
+#: ../tcl/pd_menus.tcl:202 ../tcl/pd_menus.tcl:557 ../tcl/pd_menus.tcl:606
+#: ../tcl/pd_menus.tcl:653
+#, fuzzy
+msgid "Preferences"
+msgstr "Seçimlər..."
+
+#: ../tcl/pd_menus.tcl:211
+msgid "Object"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:213
+msgid "Message"
+msgstr "İsmarış"
+
+#: ../tcl/pd_menus.tcl:215
+#, fuzzy
+msgid "Number"
+msgstr "$ Nömrəsi"
+
+#: ../tcl/pd_menus.tcl:217
+msgid "Symbol"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:219
+#, fuzzy
+msgid "Comment"
+msgstr "Əmr"
+
+#: ../tcl/pd_menus.tcl:241
+msgid "Graph"
+msgstr "Qrafika"
+
+#: ../tcl/pd_menus.tcl:249
+#, fuzzy
+msgid "Find..."
+msgstr "Fayl Göndərilməsi..."
+
+#: ../tcl/pd_menus.tcl:251
+msgid "Find Again"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:253
+msgid "Find Last Error"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:259
+msgid "DSP On"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:261
+#, fuzzy
+msgid "DSP Off"
+msgstr "Bağlı"
+
+#: ../tcl/pd_menus.tcl:265
+msgid "Test Audio and MIDI..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:267
+#, fuzzy
+msgid "Load Meter"
+msgstr "Lag ölçəni:"
+
+#: ../tcl/pd_menus.tcl:289
+msgid "Audio Settings..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:291
+msgid "MIDI Settings..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:300
+msgid "Minimize"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:302
+#, fuzzy
+msgid "Zoom"
+msgstr "Altda"
+
+#: ../tcl/pd_menus.tcl:305
+msgid "Bring All to Front"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:309
+#, fuzzy
+msgid "Next Window"
+msgstr "Fayl Yolla"
+
+#: ../tcl/pd_menus.tcl:312
+#, fuzzy
+msgid "Previous Window"
+msgstr "Fayl Yolla"
+
+#: ../tcl/pd_menus.tcl:319
+#, fuzzy
+msgid "Parent Window"
+msgstr "Fayl Yolla"
+
+#: ../tcl/pd_menus.tcl:328
 msgid "HTML Manual..."
 msgstr ""
 
-#: ../src/pd_menus.tcl:229 ../src/pd_menus.tcl:275 ../src/pd_menus.tcl:302
+#: ../tcl/pd_menus.tcl:330
 #, fuzzy
 msgid "Browser..."
 msgstr "Gəz..."
 
-#: ../src/pd_menus.tcl:248 ../src/pd_menus.tcl:260 ../src/pd_menus.tcl:342
-#: ../src/pd_menus.tcl:369
-msgid "Preferences..."
-msgstr "Seçimlər..."
-
-#: ../src/pd_menus.tcl:257 ../src/pd_menus.tcl:270 ../src/pd_menus.tcl:352
-#: ../src/pd_menus.tcl:379
-msgid "Open Recent"
+#: ../tcl/pd_menus.tcl:335
+msgid "puredata.info"
 msgstr ""
 
-#: ../src/pd_menus.tcl:263
-msgid "Audio Settings..."
+#: ../tcl/pd_menus.tcl:337
+msgid "Report a bug"
 msgstr ""
 
-#: ../src/pd_menus.tcl:265
-msgid "MIDI Settings..."
-msgstr ""
-
-#: ../src/pd_menus.tcl:296 ../src/pd_menus.tcl:309 ../src/pd_menus.tcl:333
-#: ../src/pd_menus.tcl:346 ../src/pd_menus.tcl:393 ../src/pd_menus.tcl:420
-#: ../src/pd_menus.tcl:432 ../src/pd_menus.tcl:459
-msgid "Quit"
-msgstr "Çıx"
-
-#: ../src/pd_menus.tcl:304 ../src/pd_menus.tcl:331
+#: ../tcl/pd_menus.tcl:389
 #, fuzzy
 msgid "Clear Menu"
 msgstr "Siyahını təmizlə"
 
-#: ../src/pdtk_canvas.tcl:44 ../src/pdtk_canvas.tcl:106
-#: ../src/pdtk_canvas.tcl:109 ../src/pdtk_canvas.tcl:123
-#: ../src/pdtk_canvas.tcl:125 ../src/pdtk_canvas.tcl:126
-#: ../src/pdtk_canvas.tcl:128
+#: ../tcl/pd_menus.tcl:525
+msgid "Path..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:527
+msgid "Startup..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:529
+msgid "Audio..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:531
+msgid "MIDI..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:533
+msgid "Zoom new windows"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:537
+#, fuzzy
+msgid "Save all preferences"
+msgstr "Seçimlər..."
+
+#: ../tcl/pd_menus.tcl:539
+#, fuzzy
+msgid "Save to ..."
+msgstr "Fərqli Qeyd Et"
+
+#: ../tcl/pd_menus.tcl:541
+msgid "Load from ..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:543
+msgid "Forget all..."
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:569
+msgid "Open Recent"
+msgstr ""
+
+#: ../tcl/pd_menus.tcl:612 ../tcl/pd_menus.tcl:659
+msgid "Quit"
+msgstr "Çıx"
+
+#: ../tcl/pdtk_canvas.tcl:219 ../tcl/pdtk_canvas.tcl:236
+#: ../tcl/pdtk_canvas.tcl:238
 msgid "Properties"
 msgstr ""
 
-#: ../src/pdwindow.tcl:43
+#: ../tcl/pdtk_canvas.tcl:223
+msgid "Help"
+msgstr "Yardım"
+
+#: ../tcl/pdwindow.tcl:239
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:278
+msgid "Tcl:"
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:321 ../tcl/pdwindow.tcl:322
+msgid "Pd"
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:336
 #, fuzzy
 msgid "DSP"
 msgstr "Bağlı"
 
-#: ../startup/object_db.tcl:113
-msgid "Signal"
+#: ../tcl/pdwindow.tcl:347
+msgid "Audio off"
 msgstr ""
 
-#: ../startup/object_db.tcl:114
-msgid "Generators"
+#: ../tcl/pdwindow.tcl:354
+msgid "Audio I/O error"
 msgstr ""
 
-#: ../startup/object_db.tcl:115
+#: ../tcl/pdwindow.tcl:362
+msgid "Log:"
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:367
+msgid "fatal"
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:368
+msgid "error"
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:369
+msgid "normal"
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:370
+msgid "debug"
+msgstr ""
+
+#: ../tcl/pdwindow.tcl:371
+msgid "all"
+msgstr ""
+
+#: ../tcl/scrollbox.tcl:177
+msgid "New..."
+msgstr ""
+
+#: ../tcl/scrollbox.tcl:179
 #, fuzzy
-msgid "Filters"
-msgstr "Fayl"
+msgid "Edit..."
+msgstr "_Yüklə..."
 
-#: ../startup/object_db.tcl:116 ../startup/object_db.tcl:124
-msgid "Math"
+#: ../tcl/scrollbox.tcl:181
+#, fuzzy
+msgid "Delete"
+msgstr "Sil"
+
+#: ../tcl/wheredoesthisgo.tcl:18
+#, tcl-format
+msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#: ../startup/object_db.tcl:117 ../startup/object_db.tcl:125
-msgid "I/O"
+#: iemgui_dynamic_strings.tcl:11
+msgid "-------dimensions(digits)(pix):-------"
 msgstr ""
 
-#: ../startup/object_db.tcl:118 ../startup/object_db.tcl:126
-msgid "Sampling"
+#: iemgui_dynamic_strings.tcl:12
+msgid "--------dimensions(pix)(pix):--------"
 msgstr ""
 
-#: ../startup/object_db.tcl:119 ../startup/object_db.tcl:128
-msgid "Routing"
+#: iemgui_dynamic_strings.tcl:13
+msgid "----------dimensions(pix):-----------"
 msgstr ""
 
-#: ../startup/object_db.tcl:120 ../startup/object_db.tcl:129
-msgid "Others"
+#: iemgui_dynamic_strings.tcl:14
+msgid "--------flash-time(ms)(ms):---------"
 msgstr ""
 
-#: ../startup/object_db.tcl:127
-msgid "GUI"
+#: iemgui_dynamic_strings.tcl:15
+msgid "-----------output-range:-----------"
 msgstr ""
+
+#: iemgui_dynamic_strings.tcl:16
+msgid "------selectable_dimensions(pix):------"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:17
+msgid "------visible_rectangle(pix)(pix):------"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:20
+#, fuzzy
+msgid "bottom:"
+msgstr "Altda"
+
+#: iemgui_dynamic_strings.tcl:21
+#, fuzzy
+msgid "height:"
+msgstr "Sağda"
+
+#: iemgui_dynamic_strings.tcl:22
+msgid "hold:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:23
+msgid "intrrpt:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:24
+msgid "left:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:25
+msgid "lin"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:26
+msgid "log"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:27
+msgid "log-height:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:28
+msgid "max:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:29
+msgid "min:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:30
+#, fuzzy
+msgid "right:"
+msgstr "Sağda"
+
+#: iemgui_dynamic_strings.tcl:31
+#, fuzzy
+msgid "size:"
+msgstr "Böyüklük"
+
+#: iemgui_dynamic_strings.tcl:32
+msgid "top:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:33
+msgid "value:"
+msgstr ""
+
+#: iemgui_dynamic_strings.tcl:34
+msgid "width:"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:10
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:11
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:13
+msgid "Undo clear"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:14
+msgid "Undo connect"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:15
+#, fuzzy
+msgid "Undo cut"
+msgstr "Uqanda"
+
+#: pd_dynamic_strings.tcl:16
+msgid "Undo disconnect"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:17
+#, fuzzy
+msgid "Undo duplicate"
+msgstr "Tarix"
+
+#: pd_dynamic_strings.tcl:18
+msgid "Undo motion"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:19
+msgid "Undo paste"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:20
+msgid "Undo typing"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:22
+msgid "Redo clear"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:23
+msgid "Redo connect"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:24
+#, fuzzy
+msgid "Redo cut"
+msgstr "Uqanda"
+
+#: pd_dynamic_strings.tcl:25
+msgid "Redo disconnect"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:26
+#, fuzzy
+msgid "Redo duplicate"
+msgstr "Tarix"
+
+#: pd_dynamic_strings.tcl:27
+msgid "Redo motion"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:28
+msgid "Redo paste"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:29
+msgid "Redo typing"
+msgstr ""
+
+#: pd_dynamic_strings.tcl:33
+msgid "Show Hidden Files and Directories"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Filters"
+#~ msgstr "Fayl"
+
+#, fuzzy
+#~ msgid "Window"
+#~ msgstr "_Pəncərə"
+
+#, fuzzy
+#~ msgid "Pd Files"
+#~ msgstr "Fayl"
+
+#, fuzzy
+#~ msgid "Close this window??"
+#~ msgstr "Bu səkmə/pəncərəni bağla"
+
+#, fuzzy
+#~ msgid "Media"
+#~ msgstr "Makedoniya"
+
+#~ msgid "Preferences..."
+#~ msgstr "Seçimlər..."
+
+#~ msgid "File"
+#~ msgstr "Fayl"
+
+#, fuzzy
+#~ msgid "Text Editor"
+#~ msgstr "Rənglər"

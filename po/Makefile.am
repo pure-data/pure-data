@@ -52,7 +52,7 @@ TCLFILES = \
 
 FILES = $(addprefix ../tcl/, $(TCLFILES)) iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl
 
-# these are the supported languages, 
+# these are the supported languages
 ALL_LINGUAS = af az be bg de el en_ca eu fr gu he hi hu it pa pt_br pt_pt sq sv vi
 POFILES = $(ALL_LINGUAS:=.po)
 MSGFILES = $(ALL_LINGUAS:=.msg)
@@ -70,20 +70,17 @@ EXTRA_DIST = $(POFILES) \
 #########################################
 ##### Targets #####
 
-# generate .msg files from the .po files
 all-local: $(MSGFILES)
 
-# refresh .po files from the template
 clean-local:
 	-rm -f -- $(MSGFILES)
 	-rm -f -- $(POFILES:=~)
 
-po: $(POFILES)
-
-# refresh the template from the source code
+# refresh template.pot from the source code
 template: $(TEMPLATE)
 
 $(TEMPLATE): $(FILES)
+	touch $(TEMPLATE)
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
 		--sort-by-file --output=$(TEMPLATE) \
@@ -93,13 +90,18 @@ $(TEMPLATE): $(FILES)
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
 
+# refresh .po files from the template
+po: $(POFILES)
+
 # I guess officially, the .po file should depend on the template.pot, but its
 # mostly annoying since it wants to update the template.pot and .po files any
-# time a .tcl file changes
-# $(POFILES): %.po: $(TEMPLATE)
-$(POFILES): %.po:
-	$(MSGMERGE) --sort-by-file --update $< $(TEMPLATE)
+# time a .tcl file changes.
+$(POFILES): %.po: $(TEMPLATE)
+	$(MSGMERGE) --sort-by-file --quiet --update $@ $(TEMPLATE)
+	touch $@
+	rm -f $@~
 
+# generate .msg files from the .po files
 %.msg: %.po
 	$(MSGFMT) --check --tcl --locale=$* -d . $<
 
