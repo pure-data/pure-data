@@ -10,7 +10,7 @@ OTHERDATA =
 pd__la_SOURCES = pd~.c
 pdsched_la_SOURCES = pdsched.c
 
-EXTRA_DIST = makefile notes.txt
+EXTRA_DIST = makefile notes.txt binarymsg.c
 
 #########################################
 ##### Files, Binaries, & Libs #####
