@@ -18,6 +18,7 @@ portaudio=no
 portmidi=no
 local_portaudio=yes
 local_portmidi=yes
+jack_framework=no
 locales=yes
 
 # list of detected apis
@@ -43,6 +44,7 @@ case $host in
         coreaudio=yes
         portaudio=yes
         portmidi=yes
+        jack_framework=yes
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
 
@@ -96,8 +98,9 @@ case $host in
 *mingw*)
     WINDOWS=yes
     MINGW=yes
-    platform=Mingw
+    platform=MinGW
     portaudio=yes
+    portmidi=yes
 
     # ASIO doesn't build yet with the autotools setup. We need to figure out how
     # to make the final linking phase use g++
@@ -117,6 +120,7 @@ case $host in
     CYGWIN=yes
     platform=Cygwin
     portaudio=yes
+    portmidi=yes
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS=
@@ -292,15 +296,22 @@ if test x$alsa = xyes ; then
     AC_CHECK_LIB([asound], [snd_pcm_info], [ALSA_LIBS="-lasound"], [alsa=no])
 fi
 
+##### JACK FRAMEWORK #####
+# on macOS, use the JackOSX.com Jackmp.framework not the jack lib by default
+# this is set in src/Makefile.am based on the JACK & JACK_FRAMEWORK vars
+AC_ARG_ENABLE([jack-framework],
+    [AS_HELP_STRING([--disable-jack-framework], [do not weak link to Jackmp.framework on macOS])],
+    [jack_framework=$enableval])
+test x$MACOSX = xyes || jack_framework=no
+if test x$jack_framework = xyes ; then
+    AC_MSG_NOTICE([Weak linking to Jackmp.framework])
+fi
+
 ##### JACK #####
-# shouldn't we use pkg-config?
-# TODO support jack xrun
 AC_ARG_ENABLE([jack],
     [AS_HELP_STRING([--enable-jack], [use JACK audio server])],
     [jack=$enableval], [jack=no])
-# on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
-# this is set in src/Makefile.am based on the JACK var
-if [ test x$MACOSX != xyes ] && [ test x$jack = xyes ] ; then
+if [ test x$jack_framework != xyes ] && [ test x$jack = xyes ] ; then
     AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
     AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
     AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes], [jack=no])
@@ -404,6 +415,7 @@ AS_IF([test x$alsa = xyes], [midi_backends="alsa ${midi_backends}"])
 
 ##### JACK #####
 AM_CONDITIONAL(JACK, test x$jack = xyes)
+AM_CONDITIONAL(JACK_FRAMEWORK, test x$jack_framework = xyes)
 AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 
 ##### MMIO #####
@@ -492,6 +504,7 @@ AC_MSG_NOTICE([
     CFLAGS:               $CFLAGS
     LDFLAGS:              $LDFLAGS
     INCLUDES:             $AM_CPPFLAGS
+    LIBS:                 $LIBS
 
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS

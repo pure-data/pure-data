@@ -424,6 +424,7 @@ static void scalar_free(t_scalar *x)
     t_dataslot *datatypes, *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
+    sys_unqueuegui(x);
     if (!template)
     {
         error("scalar: couldn't find template %s", templatesym->s_name);
