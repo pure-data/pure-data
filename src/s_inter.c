@@ -62,7 +62,11 @@ typedef int socklen_t;
 #endif
 
 #ifndef WISHAPP
-#define WISHAPP "wish85.exe"
+# if defined _WIN32
+#  define WISHAPP "wish85.exe"
+# else
+#  define WISHAPP "wish"
+# endif
 #endif
 
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
@@ -1104,7 +1108,7 @@ static int sys_do_startgui(const char *libdir)
             if necessary we put that in here too. */
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\"%s \
-  wish \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
+  " WISHAPP " \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
                  libdir, libdir, (getenv("HOME") ? "" : " HOME=/tmp"),
                     libdir, portno);
 #endif /* __APPLE__ */
