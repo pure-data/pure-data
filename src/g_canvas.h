@@ -175,7 +175,6 @@ struct _glist
     t_editor *gl_editor;        /* editor structure when visible */
     t_symbol *gl_name;          /* symbol bound here */
     int gl_font;                /* nominal font size in points, e.g., 10 */
-    int gl_zoom;                /* zoom factor (integer zoom-in only) */
     struct _glist *gl_next;         /* link in list of toplevels */
     t_canvasenvironment *gl_env;    /* root canvases and abstractions only */
     unsigned int gl_havewindow:1;   /* true if we own a window */
@@ -190,6 +189,7 @@ struct _glist
     unsigned int gl_hidetext:1;     /* hide object-name + args when doing graph on parent */
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* esists as part of a clone object */
+    int gl_zoom;                    /* zoom factor (integer zoom-in only) */
 };
 
 #define gl_gobj gl_obj.te_g

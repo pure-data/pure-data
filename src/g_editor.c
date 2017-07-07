@@ -2956,5 +2956,16 @@ void g_editor_newpdinstance( void)
 
 void g_editor_freepdinstance( void)
 {
+    if (EDITOR->copy_binbuf)
+        binbuf_free(EDITOR->copy_binbuf);
+    if (EDITOR->canvas_undo_buf)
+    {
+        if (!EDITOR->canvas_undo_fn)
+            bug("g_editor_freepdinstance");
+        else (*EDITOR->canvas_undo_fn)
+            (EDITOR->canvas_undo_canvas, EDITOR->canvas_undo_buf, UNDO_FREE);
+    }
+    if (EDITOR->canvas_findbuf)
+        binbuf_free(EDITOR->canvas_findbuf);
     freebytes(EDITOR, sizeof(*EDITOR));
 }

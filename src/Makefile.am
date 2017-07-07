@@ -137,8 +137,8 @@ if JACK
 pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
 pd_SOURCES += s_audio_jack.c
 
-if MACOSX
-# link to Jackmp on OSX
+if JACK_FRAMEWORK
+# link to Jackmp.framework on macOS
 pd_LDFLAGS += -weak_framework Jackmp
 else
 # link to Jack discovered by configure
@@ -248,6 +248,10 @@ pd_LDFLAGS += -lpthread
 
 # force linking to dl, which should really be done with some autotools way
 pd_LDFLAGS += -ldl
+
+# dummy target for Windows build
+clean-pdlib:
+
 endif
 
 ##### GNU/Linux #####
@@ -262,6 +266,10 @@ pd_LDFLAGS += -export-dynamic
 
 # on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
 pd_LDFLAGS += $(LIBM)
+
+# dummy target for Windows build
+clean-pdlib:
+
 endif
 
 ##### Apple Mac OSX #####
@@ -276,6 +284,9 @@ pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
 LIBS += -ldl -lm -lpthread
+
+# dummy target for Windows build
+clean-pdlib:
 
 endif
 
@@ -292,8 +303,6 @@ noinst_SCRIPTS = libpd.a
 pd.lib pd.def: pd$(EXEEXT)
 libpd.a: pd.lib
 	$(LN_S) $^ $@
-clean-local: clean-pdlib
-
 clean-pdlib:
 	-rm -f pd.lib pd.def libpd.a
 endif
@@ -324,7 +333,7 @@ convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(LN_S) $(top_srcdir)/tcl/pd-gui.in $(top_builddir)/bin/pd-gui
 	test -e $(top_builddir)/src/pd-watchdog$(EXEEXT) && $(LN_S) $(top_builddir)/src/pd-watchdog$(EXEEXT) $(top_builddir)/bin/pd-watchdog$(EXEEXT) || true
 
-clean-local:
+clean-local: clean-pdlib
 	rm -rf $(top_builddir)/bin
 
 # link to $(libdir)/pd/bin so the tcl scripts can

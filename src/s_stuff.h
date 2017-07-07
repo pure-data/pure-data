@@ -33,8 +33,8 @@ t_symbol *sys_decodedialog(t_symbol *s);
 
 /* s_file.c */
 
-void sys_loadpreferences( void);
-void sys_savepreferences( void);
+void sys_loadpreferences(const char *filename, int startingup);
+void sys_savepreferences(const char *filename);
 extern int sys_defeatrt;
 extern t_symbol *sys_flags;
 

@@ -324,7 +324,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
 
     # save all settings button
     button $mytoplevel.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_audio::ok $mytoplevel; pdsend \"pd save-preferences\""
+        -command "::dialog_audio::apply $mytoplevel; pdsend \"pd save-preferences\""
     pack $mytoplevel.saveall -side top -expand 1 -pady 5
 
     # buttons
