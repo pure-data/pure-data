@@ -96,11 +96,17 @@ po: $(POFILES)
 # I guess officially, the .po file should depend on the template.pot, but its
 # mostly annoying since it wants to update the template.pot and .po files any
 # time a .tcl file changes.
+
+# copy po file for out of tree builds, make sure to update timestamp,
+# & remove any leftover .po~ temp files
+#
+# the preceding "-" tells make to ignore any errors on that line and
+# the "||:" silences make errors if the command failed but was ignored
 $(POFILES): %.po: $(TEMPLATE)
-	-cp $(srcdir)/$@ .
+	-cp $(srcdir)/$@ . 2>>/dev/null ||:
 	$(MSGMERGE) --sort-by-file --quiet --update $@ $(TEMPLATE)
-	touch $@
-	rm -f $@~
+	-touch $@
+	-rm -f $@~
 
 # generate .msg files from the .po files
 %.msg: %.po
