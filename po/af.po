@@ -15,1201 +15,888 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../tcl/dialog_array.tcl:113 ../tcl/pd_menus.tcl:173
-msgid "Copy"
-msgstr "Kopieer"
-
-#: ../tcl/dialog_array.tcl:116 ../tcl/pd_menus.tcl:175
-#, fuzzy
-msgid "Paste"
-msgstr "Datum"
-
-#: ../tcl/dialog_array.tcl:257
-msgid "Array Properties"
-msgstr ""
-
-#: ../tcl/dialog_array.tcl:266 ../tcl/pd_menus.tcl:243
-#, fuzzy
-msgid "Array"
-msgstr "Andorra"
-
-#: ../tcl/dialog_array.tcl:270
-#, fuzzy
-msgid "Name:"
-msgstr "Naam"
-
-#: ../tcl/dialog_array.tcl:276 ../tcl/dialog_canvas.tcl:182
-#: ../tcl/dialog_canvas.tcl:197 ../tcl/dialog_iemgui.tcl:524
-#: ../tcl/dialog_iemgui.tcl:551 ../tcl/dialog_iemgui.tcl:555
-#: ../tcl/dialog_iemgui.tcl:565 ../tcl/dialog_iemgui.tcl:699
-#, fuzzy
-msgid "Size:"
-msgstr "Grootte"
-
-#: ../tcl/dialog_array.tcl:280
-#, fuzzy
-msgid "Save contents"
-msgstr "Inhoud"
-
-#: ../tcl/dialog_array.tcl:285
-msgid "Draw as:"
-msgstr ""
-
-#: ../tcl/dialog_array.tcl:288
-#, fuzzy
-msgid "Polygon"
-msgstr "Pole"
-
-#: ../tcl/dialog_array.tcl:290
-#, fuzzy
-msgid "Points"
-msgstr "Poort"
-
-#: ../tcl/dialog_array.tcl:292
-msgid "Bezier curve"
-msgstr ""
-
-#: ../tcl/dialog_array.tcl:299
-msgid "Put array into:"
-msgstr ""
-
-#: ../tcl/dialog_array.tcl:302
-msgid "New graph"
-msgstr ""
-
-#: ../tcl/dialog_array.tcl:304
-#, fuzzy
-msgid "Last graph"
-msgstr "Laaste Verander..."
-
-#: ../tcl/dialog_array.tcl:308
-msgid "Options"
-msgstr ""
-
-#: ../tcl/dialog_array.tcl:310
-#, fuzzy
-msgid "Open List View..."
-msgstr "/Skommel lys"
-
-#: ../tcl/dialog_array.tcl:313
-#, fuzzy
-msgid "Delete array"
-msgstr "Uitwis"
-
-#: ../tcl/dialog_array.tcl:321 ../tcl/dialog_audio.tcl:333
-#: ../tcl/dialog_canvas.tcl:209 ../tcl/dialog_find.tcl:236
-#: ../tcl/dialog_gatom.tcl:164 ../tcl/dialog_iemgui.tcl:789
-#: ../tcl/dialog_midi.tcl:348 ../tcl/dialog_midi.tcl:444
-#: ../tcl/scrollboxwindow.tcl:85
-#, fuzzy
-msgid "Cancel"
-msgstr "Kanselleer"
-
-#: ../tcl/dialog_array.tcl:325 ../tcl/dialog_audio.tcl:337
-#: ../tcl/dialog_canvas.tcl:213 ../tcl/dialog_gatom.tcl:168
-#: ../tcl/dialog_iemgui.tcl:793 ../tcl/dialog_midi.tcl:352
-#: ../tcl/dialog_midi.tcl:446 ../tcl/scrollboxwindow.tcl:89
-#, fuzzy
-msgid "Apply"
-msgstr "Pas toe"
-
-#: ../tcl/dialog_array.tcl:329 ../tcl/dialog_audio.tcl:341
-#: ../tcl/dialog_canvas.tcl:217 ../tcl/dialog_font.tcl:117
-#: ../tcl/dialog_gatom.tcl:172 ../tcl/dialog_iemgui.tcl:797
-#: ../tcl/dialog_midi.tcl:356 ../tcl/dialog_midi.tcl:448
-#: ../tcl/dialog_startup.tcl:29 ../tcl/dialog_startup.tcl:30
-#: ../tcl/scrollboxwindow.tcl:93
-msgid "OK"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:137
-msgid "Audio Settings"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:148
-msgid "Settings"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:153
-msgid "Sample rate:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:155
-msgid "Delay (msec):"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:162
-msgid "Block size:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:170
-msgid "Use callbacks"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:175 ../tcl/dialog_midi.tcl:126
-msgid "Input Devices"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:183 ../tcl/dialog_audio.tcl:248
-#: ../tcl/dialog_midi.tcl:133 ../tcl/dialog_midi.tcl:241
-msgid "1:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:186 ../tcl/dialog_audio.tcl:201
-#: ../tcl/dialog_audio.tcl:217 ../tcl/dialog_audio.tcl:233
-#: ../tcl/dialog_audio.tcl:257 ../tcl/dialog_audio.tcl:277
-#: ../tcl/dialog_audio.tcl:293 ../tcl/dialog_audio.tcl:309
-#, fuzzy
-msgid "Channels:"
-msgstr "Kanselleer"
-
-#: ../tcl/dialog_audio.tcl:197 ../tcl/dialog_audio.tcl:273
-#: ../tcl/dialog_midi.tcl:143 ../tcl/dialog_midi.tcl:251
-msgid "2:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:213 ../tcl/dialog_audio.tcl:289
-#: ../tcl/dialog_midi.tcl:155 ../tcl/dialog_midi.tcl:262
-msgid "3:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:229 ../tcl/dialog_audio.tcl:305
-#: ../tcl/dialog_midi.tcl:167 ../tcl/dialog_midi.tcl:273
-msgid "4:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:240 ../tcl/dialog_midi.tcl:235
-msgid "Output Devices"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:251
-msgid "(same as input device)..."
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:320 ../tcl/dialog_midi.tcl:340
-msgid "Use multiple devices"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:326
-msgid "Save All Settings"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:122
-msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:142
-msgid "Canvas Properties"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:150
-#, fuzzy
-msgid "Scale"
-msgstr "Stoor"
-
-#: ../tcl/dialog_canvas.tcl:154
-msgid "X units per pixel:"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:159
-msgid "Y units per pixel:"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:163
-msgid "Appearance on parent patch"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:165
-msgid "Graph-On-Parent"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:169
-msgid "Hide object name and arguments"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:174
-msgid "Range and size"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:178
-msgid "X range: from"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:180 ../tcl/dialog_canvas.tcl:195
-msgid "to"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:184 ../tcl/dialog_canvas.tcl:199
-#, fuzzy
-msgid "Margin:"
-msgstr "Merk voor:"
-
-#: ../tcl/dialog_canvas.tcl:193
-msgid "Y range: from"
-msgstr ""
-
-#: ../tcl/dialog_data.tcl:35
-msgid "Data Properties"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:73
-#, tcl-format
-msgid "Found '%s' in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:78 ../tcl/dialog_find.tcl:164
-#, tcl-format
-msgid "Couldn't find '%s' in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:148 ../tcl/dialog_find.tcl:219
-#, fuzzy
-msgid "Search in"
-msgstr "Volgrote teks soektog..."
-
-#: ../tcl/dialog_find.tcl:149 ../tcl/dialog_find.tcl:219
-#, fuzzy
-msgid "for:"
-msgstr "Poort:"
-
-#: ../tcl/dialog_find.tcl:168
-#, tcl-format
-msgid "Showed last '%s' in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:173
-#, tcl-format
-msgid "Showing '%d' out of %d items in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:195 ../tcl/dialog_find.tcl:240
-#, fuzzy
-msgid "Find"
-msgstr "Soek:"
-
-#: ../tcl/dialog_find.tcl:219 ../tcl/pd_menus.tcl:317
-#, fuzzy
-msgid "Pd window"
-msgstr "Description=Stuur Lêer"
-
-#: ../tcl/dialog_find.tcl:230
-msgid "Match whole word only"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:244 ../tcl/pd_menus.tcl:63 ../tcl/pd_menus.tcl:90
-#: ../tcl/pd_menus.tcl:122 ../tcl/pd_menus.tcl:155 ../tcl/pd_menus.tcl:571
-#: ../tcl/pd_menus.tcl:611 ../tcl/pd_menus.tcl:658
-#, fuzzy
-msgid "Close"
-msgstr "Toemaak"
-
-#: ../tcl/dialog_font.tcl:60
-#, fuzzy, tcl-format
-msgid "%s Font"
-msgstr "Font:"
-
-#: ../tcl/dialog_font.tcl:101 ../tcl/pd_menus.tcl:93 ../tcl/pd_menus.tcl:124
-#: ../tcl/pd_menus.tcl:184
-#, fuzzy
-msgid "Font"
-msgstr "Font:"
-
-#: ../tcl/dialog_font.tcl:121
-#, fuzzy
-msgid "Font Size"
-msgstr "Font:"
-
-#: ../tcl/dialog_font.tcl:133
-msgid "Stretch"
-msgstr ""
-
-#: ../tcl/dialog_font.tcl:140
-msgid "X and Y"
-msgstr ""
-
-#: ../tcl/dialog_font.tcl:142
-msgid "X only"
-msgstr ""
-
-#: ../tcl/dialog_font.tcl:144
-msgid "Y only"
-msgstr ""
-
-#: ../tcl/dialog_gatom.tcl:100
-msgid "Atom Box Properties"
-msgstr ""
-
-#: ../tcl/dialog_gatom.tcl:110 ../tcl/dialog_iemgui.tcl:537
-#: ../tcl/dialog_iemgui.tcl:544 ../tcl/dialog_iemgui.tcl:559
-#: ../tcl/dialog_iemgui.tcl:567
-msgid "Width:"
-msgstr ""
-
-#: ../tcl/dialog_gatom.tcl:114
-#, fuzzy
-msgid "Limits"
-msgstr "Maatjie Lyste"
-
-#: ../tcl/dialog_gatom.tcl:118 ../tcl/dialog_iemgui.tcl:532
-#: ../tcl/dialog_iemgui.tcl:540 ../tcl/dialog_iemgui.tcl:547
-msgid "Lower:"
-msgstr ""
-
-#: ../tcl/dialog_gatom.tcl:123 ../tcl/dialog_iemgui.tcl:533
-#: ../tcl/dialog_iemgui.tcl:541 ../tcl/dialog_iemgui.tcl:548
-#, fuzzy
-msgid "Upper:"
-msgstr "Gebruiker"
-
-#: ../tcl/dialog_gatom.tcl:127 ../tcl/dialog_iemgui.tcl:676
-#: ../tcl/dialog_iemgui.tcl:728
-msgid "Label"
-msgstr ""
-
-#: ../tcl/dialog_gatom.tcl:135
-#, fuzzy
-msgid "Left   "
-msgstr "Links"
-
-#: ../tcl/dialog_gatom.tcl:137
-msgid "Right"
-msgstr "Regs"
-
-#: ../tcl/dialog_gatom.tcl:139
-msgid "Top"
-msgstr "Bo"
-
-#: ../tcl/dialog_gatom.tcl:141
-msgid "Bottom"
-msgstr "Onder"
-
-#: ../tcl/dialog_gatom.tcl:148 ../tcl/dialog_iemgui.tcl:648
-#, fuzzy
-msgid "Messages"
-msgstr "Boodskap"
-
-#: ../tcl/dialog_gatom.tcl:152 ../tcl/dialog_iemgui.tcl:652
-msgid "Send symbol:"
-msgstr ""
-
-#: ../tcl/dialog_gatom.tcl:158 ../tcl/dialog_iemgui.tcl:661
-#, fuzzy
-msgid "Receive symbol:"
-msgstr "Ontvanger"
-
-#: ../tcl/dialog_iemgui.tcl:202
-#, fuzzy
-msgid "Background color"
-msgstr "Agtergrond:"
-
-#: ../tcl/dialog_iemgui.tcl:208
-#, fuzzy
-msgid "Foreground color"
-msgstr "Voorgrond:"
-
-#: ../tcl/dialog_iemgui.tcl:213
-#, fuzzy
-msgid "Label color"
-msgstr "Die kleure aandui:"
-
-#: ../tcl/dialog_iemgui.tcl:282 ../tcl/dialog_iemgui.tcl:625
-#, fuzzy
-msgid "Init"
-msgstr "Nooi"
-
-#: ../tcl/dialog_iemgui.tcl:285 ../tcl/dialog_iemgui.tcl:622
-msgid "No init"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:297 ../tcl/dialog_iemgui.tcl:634
-msgid "Jump on click"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:300 ../tcl/dialog_iemgui.tcl:637
-msgid "Steady on click"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:517 ../tcl/pd_menus.tcl:222
-#, fuzzy
-msgid "Bang"
-msgstr "Bhutan"
-
-#: ../tcl/dialog_iemgui.tcl:519
-msgid "Flash Time (msec)"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:520
-msgid "Intrrpt:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:521
-msgid "Hold:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:523 ../tcl/pd_menus.tcl:224
-#, fuzzy
-msgid "Toggle"
-msgstr "Togo"
-
-#: ../tcl/dialog_iemgui.tcl:525
-msgid "Non Zero Value"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:526
-msgid "Value:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:528 ../tcl/pd_menus.tcl:226
-#, fuzzy
-msgid "Number2"
-msgstr "$ Nommer"
-
-#: ../tcl/dialog_iemgui.tcl:529
-msgid "Width (digits):"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:530 ../tcl/dialog_iemgui.tcl:538
-#: ../tcl/dialog_iemgui.tcl:545 ../tcl/dialog_iemgui.tcl:560
-#: ../tcl/dialog_iemgui.tcl:568
-#, fuzzy
-msgid "Height:"
-msgstr "Regs"
-
-#: ../tcl/dialog_iemgui.tcl:531 ../tcl/dialog_iemgui.tcl:539
-#: ../tcl/dialog_iemgui.tcl:546
-msgid "Output Range"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:534
-msgid "Log height:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:536 ../tcl/pd_menus.tcl:228
-msgid "Vslider"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:543 ../tcl/pd_menus.tcl:230
-#, fuzzy
-msgid "Hslider"
-msgstr "Weggesteek"
-
-#: ../tcl/dialog_iemgui.tcl:550 ../tcl/pd_menus.tcl:232
-#, fuzzy
-msgid "Vradio"
-msgstr "Weergawe"
-
-#: ../tcl/dialog_iemgui.tcl:552 ../tcl/dialog_iemgui.tcl:556
-msgid "Num cells:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:554 ../tcl/pd_menus.tcl:234
-msgid "Hradio"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:558 ../tcl/pd_menus.tcl:236
-msgid "VU Meter"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:564 ../tcl/pd_menus.tcl:238
-#, fuzzy
-msgid "Canvas"
-msgstr "Kanada"
-
-#: ../tcl/dialog_iemgui.tcl:566
-msgid "Visible Rectangle (pix)"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:572
-#, tcl-format
-msgid "%s Properties"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:613
-msgid "Parameters"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:684
-msgid "X offset:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:687
-msgid "Y offset:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:718
-msgid "Colors"
-msgstr "Kleure"
-
-#: ../tcl/dialog_iemgui.tcl:724
-#, fuzzy
-msgid "Background"
-msgstr "Agtergrond:"
-
-#: ../tcl/dialog_iemgui.tcl:726
-#, fuzzy
-msgid "Front"
-msgstr "Font:"
-
-#: ../tcl/dialog_iemgui.tcl:738
-msgid "Compose color"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:759
-#, fuzzy
-msgid "Test label"
-msgstr "Toets almal"
-
-#: ../tcl/dialog_message.tcl:62
-#, fuzzy
-msgid "Send a Pd message"
-msgstr "Biep op fout"
-
-#: ../tcl/dialog_message.tcl:81
-msgid "(use arrow keys for history)"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:115
-msgid "MIDI Settings"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:179 ../tcl/dialog_midi.tcl:284
-msgid "5:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:191 ../tcl/dialog_midi.tcl:295
-msgid "6:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:203 ../tcl/dialog_midi.tcl:306
-msgid "7:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:215 ../tcl/dialog_midi.tcl:317
-msgid "8:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:227 ../tcl/dialog_midi.tcl:328
-msgid "9:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:425
-msgid "ALSA MIDI Settings"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:433
-msgid "In Ports:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:436
-msgid "Out Ports:"
-msgstr ""
-
-#: ../tcl/dialog_path.tcl:41
-msgid "Pd search path for objects, help, fonts, and other files"
-msgstr ""
-
-#: ../tcl/dialog_path.tcl:47
-msgid "Use standard extensions"
-msgstr ""
-
-#: ../tcl/dialog_path.tcl:49
-msgid "Verbose"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:56
-msgid "Add new library"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:60
-msgid "Edit library"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:87
-msgid "Pd libraries to load on startup"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:93
-msgid "Startup flags:"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:101
-msgid "Defeat real-time scheduling"
-msgstr ""
-
-#: ../tcl/helpbrowser.tcl:24
-#, fuzzy
-msgid "Help Browser"
-msgstr "Blaai..."
-
-#: ../tcl/pd_connect.tcl:93 ../tcl/pdwindow.tcl:237
-msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
-
-#: ../tcl/pd_connect.tcl:96 ../tcl/pdwindow.tcl:241
-msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
-
-#: ../tcl/pd_connect.tcl:99 ../tcl/pdwindow.tcl:243
-msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
-
-#: ../tcl/pd_deken.tcl:293 ../tcl/pd_deken.tcl:342
-msgid "Show all"
-msgstr ""
-
-#: ../tcl/pd_deken.tcl:295
-#, fuzzy
-msgid "Search"
-msgstr "Volgrote teks soektog..."
-
-#: ../tcl/pd_deken.tcl:324 ../tcl/pd_deken.tcl:578 ../tcl/pd_deken.tcl:580
-msgid "Find externals"
-msgstr ""
-
-#: ../tcl/pd_deken.tcl:347
-msgid "Only install externals uploaded by people you trust."
-msgstr ""
-
-#: ../tcl/pd_menucommands.tcl:217 ../tcl/pd_menus.tcl:326
-#: ../tcl/pd_menus.tcl:554
-#, fuzzy
-msgid "About Pd"
-msgstr "Aangaande"
-
-#: ../tcl/pd_menus.tcl:40
-msgid "file edit put find media window help"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:60 ../tcl/pd_menus.tcl:87 ../tcl/pd_menus.tcl:118
-#: ../tcl/pd_menus.tcl:152 ../tcl/pd_menus.tcl:572 ../tcl/pd_menus.tcl:600
-#: ../tcl/pd_menus.tcl:647
-#, fuzzy
-msgid "Save"
-msgstr "Stoor"
-
-#: ../tcl/pd_menus.tcl:61 ../tcl/pd_menus.tcl:88 ../tcl/pd_menus.tcl:119
-#: ../tcl/pd_menus.tcl:153 ../tcl/pd_menus.tcl:573 ../tcl/pd_menus.tcl:601
-#: ../tcl/pd_menus.tcl:648
-#, fuzzy
-msgid "Save As..."
-msgstr "Stoor As"
-
-#: ../tcl/pd_menus.tcl:62 ../tcl/pd_menus.tcl:89 ../tcl/pd_menus.tcl:120
-#: ../tcl/pd_menus.tcl:157 ../tcl/pd_menus.tcl:579 ../tcl/pd_menus.tcl:607
-#: ../tcl/pd_menus.tcl:654
-#, fuzzy
-msgid "Print..."
-msgstr "/Laai"
-
-#: ../tcl/pd_menus.tcl:65 ../tcl/pd_menus.tcl:92 ../tcl/pd_menus.tcl:125
-#: ../tcl/pd_menus.tcl:177
-#, fuzzy
-msgid "Duplicate"
-msgstr "Datum"
-
-#: ../tcl/pd_menus.tcl:66 ../tcl/pd_menus.tcl:94 ../tcl/pd_menus.tcl:126
-#: ../tcl/pd_menus.tcl:186
-#, fuzzy
-msgid "Zoom In"
-msgstr "Onder"
-
-#: ../tcl/pd_menus.tcl:67 ../tcl/pd_menus.tcl:95 ../tcl/pd_menus.tcl:127
-#: ../tcl/pd_menus.tcl:188
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Onder"
-
-#: ../tcl/pd_menus.tcl:68 ../tcl/pd_menus.tcl:96 ../tcl/pd_menus.tcl:128
-#: ../tcl/pd_menus.tcl:190
-msgid "Tidy Up"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:69 ../tcl/pd_menus.tcl:97 ../tcl/pd_menus.tcl:129
-#: ../tcl/pd_menus.tcl:196 ../tcl/pd_menus.tcl:635
-#, fuzzy
-msgid "Edit Mode"
-msgstr "Redigeermodus"
-
-#: ../tcl/pd_menus.tcl:72 ../tcl/pd_menus.tcl:132 ../tcl/pd_menus.tcl:166
-#: ../tcl/pd_menus.tcl:350
-#, fuzzy
-msgid "Undo"
-msgstr "Uganda "
-
-#: ../tcl/pd_menus.tcl:73 ../tcl/pd_menus.tcl:133 ../tcl/pd_menus.tcl:168
-#: ../tcl/pd_menus.tcl:356
-#, fuzzy
-msgid "Redo"
-msgstr "Rede"
-
-#: ../tcl/pd_menus.tcl:81 ../tcl/pd_menus.tcl:109 ../tcl/pd_menus.tcl:141
-#: ../tcl/pd_menus.tcl:332
-msgid "List of objects..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:150 ../tcl/pd_menus.tcl:565 ../tcl/pd_menus.tcl:597
-#: ../tcl/pd_menus.tcl:644
-#, fuzzy
-msgid "New"
-msgstr "Nuwe"
-
-#: ../tcl/pd_menus.tcl:151 ../tcl/pd_menus.tcl:566 ../tcl/pd_menus.tcl:598
-#: ../tcl/pd_menus.tcl:645 ../tcl/pdtk_canvas.tcl:221
-#: ../tcl/pdtk_canvas.tcl:241 ../tcl/pdtk_canvas.tcl:243
-#, fuzzy
-msgid "Open"
-msgstr "Open"
-
-#: ../tcl/pd_menus.tcl:156 ../tcl/pd_menus.tcl:577 ../tcl/pd_menus.tcl:604
-#: ../tcl/pd_menus.tcl:651
-#, fuzzy
-msgid "Message..."
-msgstr "Boodskap"
-
-#: ../tcl/pd_menus.tcl:171
-msgid "Cut"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:179
-#, fuzzy
-msgid "Select All"
-msgstr "Uitvee Alle"
-
-#: ../tcl/pd_menus.tcl:192
-#, fuzzy
-msgid "Clear Console"
-msgstr "Maak lys skoon"
-
-#: ../tcl/pd_menus.tcl:202 ../tcl/pd_menus.tcl:557 ../tcl/pd_menus.tcl:606
-#: ../tcl/pd_menus.tcl:653
-#, fuzzy
-msgid "Preferences"
-msgstr "Voorkeure..."
-
-#: ../tcl/pd_menus.tcl:211
-msgid "Object"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:213
-#, fuzzy
-msgid "Message"
-msgstr "Boodskap"
-
-#: ../tcl/pd_menus.tcl:215
-#, fuzzy
-msgid "Number"
-msgstr "$ Nommer"
-
-#: ../tcl/pd_menus.tcl:217
-msgid "Symbol"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:219
-#, fuzzy
-msgid "Comment"
-msgstr "Instruksie"
-
-#: ../tcl/pd_menus.tcl:241
-msgid "Graph"
-msgstr "Grafiek"
-
-#: ../tcl/pd_menus.tcl:249
-#, fuzzy
-msgid "Find..."
-msgstr "Description=Stuur Lêer"
-
-#: ../tcl/pd_menus.tcl:251
-msgid "Find Again"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:253
-msgid "Find Last Error"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:259
-msgid "DSP On"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:261
-#, fuzzy
-msgid "DSP Off"
-msgstr "Af"
-
-#: ../tcl/pd_menus.tcl:265
-msgid "Test Audio and MIDI..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:267
-#, fuzzy
-msgid "Load Meter"
-msgstr "Meter Af"
-
-#: ../tcl/pd_menus.tcl:289
-msgid "Audio Settings..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:291
-msgid "MIDI Settings..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:300
-msgid "Minimize"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:302
-#, fuzzy
-msgid "Zoom"
-msgstr "Onder"
-
-#: ../tcl/pd_menus.tcl:305
-msgid "Bring All to Front"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:309
-#, fuzzy
-msgid "Next Window"
-msgstr "Description=Stuur Lêer"
-
-#: ../tcl/pd_menus.tcl:312
-#, fuzzy
-msgid "Previous Window"
-msgstr "Description=Stuur Lêer"
-
-#: ../tcl/pd_menus.tcl:319
-#, fuzzy
-msgid "Parent Window"
-msgstr "Description=Stuur Lêer"
-
-#: ../tcl/pd_menus.tcl:328
-msgid "HTML Manual..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:330
-#, fuzzy
-msgid "Browser..."
-msgstr "Blaai..."
-
-#: ../tcl/pd_menus.tcl:335
-msgid "puredata.info"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:337
-msgid "Report a bug"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:389
-#, fuzzy
-msgid "Clear Menu"
-msgstr "Maak lys skoon"
-
-#: ../tcl/pd_menus.tcl:525
-msgid "Path..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:527
-msgid "Startup..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:529
-msgid "Audio..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:531
-msgid "MIDI..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:533
-msgid "Zoom new windows"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:537
-#, fuzzy
-msgid "Save all preferences"
-msgstr "Voorkeure..."
-
-#: ../tcl/pd_menus.tcl:539
-#, fuzzy
-msgid "Save to ..."
-msgstr "Stoor As"
-
-#: ../tcl/pd_menus.tcl:541
-msgid "Load from ..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:543
-msgid "Forget all..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:569
-msgid "Open Recent"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:612 ../tcl/pd_menus.tcl:659
-#, fuzzy
-msgid "Quit"
-msgstr "Verlaat"
-
-#: ../tcl/pdtk_canvas.tcl:219 ../tcl/pdtk_canvas.tcl:236
-#: ../tcl/pdtk_canvas.tcl:238
-msgid "Properties"
-msgstr ""
-
-#: ../tcl/pdtk_canvas.tcl:223
-#, fuzzy
-msgid "Help"
-msgstr "hulp"
-
-#: ../tcl/pdwindow.tcl:239
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:278
-msgid "Tcl:"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:321 ../tcl/pdwindow.tcl:322
-msgid "Pd"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:336
-#, fuzzy
-msgid "DSP"
-msgstr "Af"
-
-#: ../tcl/pdwindow.tcl:347
-msgid "Audio off"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:354
-msgid "Audio I/O error"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:362
-msgid "Log:"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:367
-msgid "fatal"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:368
-msgid "error"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:369
-msgid "normal"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:370
-msgid "debug"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:371
-msgid "all"
-msgstr ""
-
-#: ../tcl/scrollbox.tcl:177
-msgid "New..."
-msgstr ""
-
-#: ../tcl/scrollbox.tcl:179
-#, fuzzy
-msgid "Edit..."
-msgstr "/Laai"
-
-#: ../tcl/scrollbox.tcl:181
-#, fuzzy
-msgid "Delete"
-msgstr "Uitwis"
-
-#: ../tcl/wheredoesthisgo.tcl:18
-#, tcl-format
-msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr ""
-
-#: iemgui_dynamic_strings.tcl:11
 msgid "-------dimensions(digits)(pix):-------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:12
 msgid "--------dimensions(pix)(pix):--------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:13
 msgid "----------dimensions(pix):-----------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:14
 msgid "--------flash-time(ms)(ms):---------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:15
 msgid "-----------output-range:-----------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:16
 msgid "------selectable_dimensions(pix):------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:17
 msgid "------visible_rectangle(pix)(pix):------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:20
 #, fuzzy
 msgid "bottom:"
 msgstr "Onder"
 
-#: iemgui_dynamic_strings.tcl:21
 #, fuzzy
 msgid "height:"
 msgstr "Regs"
 
-#: iemgui_dynamic_strings.tcl:22
 msgid "hold:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:23
 msgid "intrrpt:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:24
 msgid "left:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:25
 msgid "lin"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:26
 msgid "log"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:27
 msgid "log-height:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:28
 msgid "max:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:29
 msgid "min:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:30
 #, fuzzy
 msgid "right:"
 msgstr "Regs"
 
-#: iemgui_dynamic_strings.tcl:31
 #, fuzzy
 msgid "size:"
 msgstr "Grootte"
 
-#: iemgui_dynamic_strings.tcl:32
 msgid "top:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:33
 msgid "value:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:34
 msgid "width:"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:10
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:11
 #, tcl-format
 msgid "Discard changes to '%s'?"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:13
 msgid "Undo clear"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:14
 msgid "Undo connect"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:15
 msgid "Undo cut"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:16
 msgid "Undo disconnect"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:17
 #, fuzzy
 msgid "Undo duplicate"
 msgstr "Datum"
 
-#: pd_dynamic_strings.tcl:18
 msgid "Undo motion"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:19
 msgid "Undo paste"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:20
 msgid "Undo typing"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:22
 msgid "Redo clear"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:23
 msgid "Redo connect"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:24
 #, fuzzy
 msgid "Redo cut"
 msgstr "Rede"
 
-#: pd_dynamic_strings.tcl:25
 msgid "Redo disconnect"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:26
 #, fuzzy
 msgid "Redo duplicate"
 msgstr "Datum"
 
-#: pd_dynamic_strings.tcl:27
 msgid "Redo motion"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:28
 msgid "Redo paste"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:29
 msgid "Redo typing"
 msgstr ""
 
-#: pd_dynamic_strings.tcl:33
 msgid "Show Hidden Files and Directories"
 msgstr ""
 
+msgid "Copy"
+msgstr "Kopieer"
+
 #, fuzzy
-#~ msgid "Filters"
-#~ msgstr "Lêer"
+msgid "Paste"
+msgstr "Datum"
+
+msgid "Array Properties"
+msgstr ""
+
+#, fuzzy
+msgid "Array"
+msgstr "Andorra"
+
+#, fuzzy
+msgid "Name:"
+msgstr "Naam"
+
+#, fuzzy
+msgid "Size:"
+msgstr "Grootte"
+
+#, fuzzy
+msgid "Save contents"
+msgstr "Inhoud"
+
+msgid "Draw as:"
+msgstr ""
+
+#, fuzzy
+msgid "Polygon"
+msgstr "Pole"
+
+#, fuzzy
+msgid "Points"
+msgstr "Poort"
+
+msgid "Bezier curve"
+msgstr ""
+
+msgid "Put array into:"
+msgstr ""
+
+msgid "New graph"
+msgstr ""
+
+#, fuzzy
+msgid "Last graph"
+msgstr "Laaste Verander..."
+
+msgid "Options"
+msgstr ""
+
+#, fuzzy
+msgid "Open List View..."
+msgstr "/Skommel lys"
+
+#, fuzzy
+msgid "Delete array"
+msgstr "Uitwis"
+
+#, fuzzy
+msgid "Cancel"
+msgstr "Kanselleer"
+
+#, fuzzy
+msgid "Apply"
+msgstr "Pas toe"
+
+msgid "OK"
+msgstr ""
+
+msgid "Audio Settings"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Sample rate:"
+msgstr ""
+
+msgid "Delay (msec):"
+msgstr ""
+
+msgid "Block size:"
+msgstr ""
+
+msgid "Use callbacks"
+msgstr ""
+
+msgid "Input Devices"
+msgstr ""
+
+msgid "1:"
+msgstr ""
+
+#, fuzzy
+msgid "Channels:"
+msgstr "Kanselleer"
+
+msgid "2:"
+msgstr ""
+
+msgid "3:"
+msgstr ""
+
+msgid "4:"
+msgstr ""
+
+msgid "Output Devices"
+msgstr ""
+
+msgid "(same as input device)..."
+msgstr ""
+
+msgid "Use multiple devices"
+msgstr ""
+
+msgid "Save All Settings"
+msgstr ""
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr ""
+
+msgid "Canvas Properties"
+msgstr ""
+
+#, fuzzy
+msgid "Scale"
+msgstr "Stoor"
+
+msgid "X units per pixel:"
+msgstr ""
+
+msgid "Y units per pixel:"
+msgstr ""
+
+msgid "Appearance on parent patch"
+msgstr ""
+
+msgid "Graph-On-Parent"
+msgstr ""
+
+msgid "Hide object name and arguments"
+msgstr ""
+
+msgid "Range and size"
+msgstr ""
+
+msgid "X range: from"
+msgstr ""
+
+msgid "to"
+msgstr ""
+
+#, fuzzy
+msgid "Margin:"
+msgstr "Merk voor:"
+
+msgid "Y range: from"
+msgstr ""
+
+msgid "Data Properties"
+msgstr ""
+
+#, tcl-format
+msgid "Found '%s' in %s"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't find '%s' in %s"
+msgstr ""
+
+#, fuzzy
+msgid "Search in"
+msgstr "Volgrote teks soektog..."
+
+#, fuzzy
+msgid "for:"
+msgstr "Poort:"
+
+#, tcl-format
+msgid "Showed last '%s' in %s"
+msgstr ""
+
+#, tcl-format
+msgid "Showing '%d' out of %d items in %s"
+msgstr ""
+
+#, fuzzy
+msgid "Find"
+msgstr "Soek:"
+
+#, fuzzy
+msgid "Pd window"
+msgstr "Description=Stuur Lêer"
+
+msgid "Match whole word only"
+msgstr ""
+
+#, fuzzy
+msgid "Close"
+msgstr "Toemaak"
+
+#, fuzzy, tcl-format
+msgid "%s Font"
+msgstr "Font:"
+
+#, fuzzy
+msgid "Font"
+msgstr "Font:"
+
+#, fuzzy
+msgid "Font Size"
+msgstr "Font:"
+
+msgid "Stretch"
+msgstr ""
+
+msgid "X and Y"
+msgstr ""
+
+msgid "X only"
+msgstr ""
+
+msgid "Y only"
+msgstr ""
+
+msgid "Atom Box Properties"
+msgstr ""
+
+msgid "Width:"
+msgstr ""
+
+#, fuzzy
+msgid "Limits"
+msgstr "Maatjie Lyste"
+
+msgid "Lower:"
+msgstr ""
+
+#, fuzzy
+msgid "Upper:"
+msgstr "Gebruiker"
+
+msgid "Label"
+msgstr ""
+
+#, fuzzy
+msgid "Left   "
+msgstr "Links"
+
+msgid "Right"
+msgstr "Regs"
+
+msgid "Top"
+msgstr "Bo"
+
+msgid "Bottom"
+msgstr "Onder"
+
+#, fuzzy
+msgid "Messages"
+msgstr "Boodskap"
+
+msgid "Send symbol:"
+msgstr ""
+
+#, fuzzy
+msgid "Receive symbol:"
+msgstr "Ontvanger"
+
+#, fuzzy
+msgid "Background color"
+msgstr "Agtergrond:"
+
+#, fuzzy
+msgid "Foreground color"
+msgstr "Voorgrond:"
+
+#, fuzzy
+msgid "Label color"
+msgstr "Die kleure aandui:"
+
+#, fuzzy
+msgid "Init"
+msgstr "Nooi"
+
+msgid "No init"
+msgstr ""
+
+msgid "Jump on click"
+msgstr ""
+
+msgid "Steady on click"
+msgstr ""
+
+#, fuzzy
+msgid "Bang"
+msgstr "Bhutan"
+
+msgid "Flash Time (msec)"
+msgstr ""
+
+msgid "Intrrpt:"
+msgstr ""
+
+msgid "Hold:"
+msgstr ""
+
+#, fuzzy
+msgid "Toggle"
+msgstr "Togo"
+
+msgid "Non Zero Value"
+msgstr ""
+
+msgid "Value:"
+msgstr ""
+
+#, fuzzy
+msgid "Number2"
+msgstr "$ Nommer"
+
+msgid "Width (digits):"
+msgstr ""
+
+#, fuzzy
+msgid "Height:"
+msgstr "Regs"
+
+msgid "Output Range"
+msgstr ""
+
+msgid "Log height:"
+msgstr ""
+
+msgid "Vslider"
+msgstr ""
+
+#, fuzzy
+msgid "Hslider"
+msgstr "Weggesteek"
+
+#, fuzzy
+msgid "Vradio"
+msgstr "Weergawe"
+
+msgid "Num cells:"
+msgstr ""
+
+msgid "Hradio"
+msgstr ""
+
+msgid "VU Meter"
+msgstr ""
+
+#, fuzzy
+msgid "Canvas"
+msgstr "Kanada"
+
+msgid "Visible Rectangle (pix)"
+msgstr ""
+
+#, tcl-format
+msgid "%s Properties"
+msgstr ""
+
+msgid "Parameters"
+msgstr ""
+
+msgid "X offset:"
+msgstr ""
+
+msgid "Y offset:"
+msgstr ""
+
+msgid "Colors"
+msgstr "Kleure"
+
+#, fuzzy
+msgid "Background"
+msgstr "Agtergrond:"
+
+#, fuzzy
+msgid "Front"
+msgstr "Font:"
+
+msgid "Compose color"
+msgstr ""
+
+#, fuzzy
+msgid "Test label"
+msgstr "Toets almal"
+
+#, fuzzy
+msgid "Send a Pd message"
+msgstr "Biep op fout"
+
+msgid "(use arrow keys for history)"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr ""
+
+msgid "5:"
+msgstr ""
+
+msgid "6:"
+msgstr ""
+
+msgid "7:"
+msgstr ""
+
+msgid "8:"
+msgstr ""
+
+msgid "9:"
+msgstr ""
+
+msgid "ALSA MIDI Settings"
+msgstr ""
+
+msgid "In Ports:"
+msgstr ""
+
+msgid "Out Ports:"
+msgstr ""
+
+msgid "Pd search path for objects, help, fonts, and other files"
+msgstr ""
+
+msgid "Use standard extensions"
+msgstr ""
+
+msgid "Verbose"
+msgstr ""
+
+msgid "Add new library"
+msgstr ""
+
+msgid "Edit library"
+msgstr ""
+
+msgid "Pd libraries to load on startup"
+msgstr ""
+
+msgid "Startup flags:"
+msgstr ""
+
+msgid "Defeat real-time scheduling"
+msgstr ""
+
+#, fuzzy
+msgid "Help Browser"
+msgstr "Blaai..."
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr ""
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr ""
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+#, fuzzy
+msgid "Search"
+msgstr "Volgrote teks soektog..."
+
+msgid "Find externals"
+msgstr ""
+
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+#, fuzzy
+msgid "About Pd"
+msgstr "Aangaande"
+
+msgid "file edit put find media window help"
+msgstr ""
+
+#, fuzzy
+msgid "Save"
+msgstr "Stoor"
+
+#, fuzzy
+msgid "Save As..."
+msgstr "Stoor As"
+
+#, fuzzy
+msgid "Print..."
+msgstr "/Laai"
+
+#, fuzzy
+msgid "Duplicate"
+msgstr "Datum"
+
+#, fuzzy
+msgid "Zoom In"
+msgstr "Onder"
+
+#, fuzzy
+msgid "Zoom Out"
+msgstr "Onder"
+
+msgid "Tidy Up"
+msgstr ""
+
+#, fuzzy
+msgid "Edit Mode"
+msgstr "Redigeermodus"
+
+#, fuzzy
+msgid "Undo"
+msgstr "Uganda "
+
+#, fuzzy
+msgid "Redo"
+msgstr "Rede"
+
+msgid "List of objects..."
+msgstr ""
+
+#, fuzzy
+msgid "New"
+msgstr "Nuwe"
+
+#, fuzzy
+msgid "Open"
+msgstr "Open"
+
+#, fuzzy
+msgid "Message..."
+msgstr "Boodskap"
+
+msgid "Cut"
+msgstr ""
+
+#, fuzzy
+msgid "Select All"
+msgstr "Uitvee Alle"
+
+#, fuzzy
+msgid "Clear Console"
+msgstr "Maak lys skoon"
+
+#, fuzzy
+msgid "Preferences"
+msgstr "Voorkeure..."
+
+msgid "Object"
+msgstr ""
+
+#, fuzzy
+msgid "Message"
+msgstr "Boodskap"
+
+#, fuzzy
+msgid "Number"
+msgstr "$ Nommer"
+
+msgid "Symbol"
+msgstr ""
+
+#, fuzzy
+msgid "Comment"
+msgstr "Instruksie"
+
+msgid "Graph"
+msgstr "Grafiek"
+
+#, fuzzy
+msgid "Find..."
+msgstr "Description=Stuur Lêer"
+
+msgid "Find Again"
+msgstr ""
+
+msgid "Find Last Error"
+msgstr ""
+
+msgid "DSP On"
+msgstr ""
+
+#, fuzzy
+msgid "DSP Off"
+msgstr "Af"
+
+msgid "Test Audio and MIDI..."
+msgstr ""
+
+#, fuzzy
+msgid "Load Meter"
+msgstr "Meter Af"
+
+msgid "Audio Settings..."
+msgstr ""
+
+msgid "MIDI Settings..."
+msgstr ""
+
+msgid "Minimize"
+msgstr ""
+
+#, fuzzy
+msgid "Zoom"
+msgstr "Onder"
+
+msgid "Bring All to Front"
+msgstr ""
+
+#, fuzzy
+msgid "Next Window"
+msgstr "Description=Stuur Lêer"
+
+#, fuzzy
+msgid "Previous Window"
+msgstr "Description=Stuur Lêer"
+
+#, fuzzy
+msgid "Parent Window"
+msgstr "Description=Stuur Lêer"
+
+msgid "HTML Manual..."
+msgstr ""
+
+#, fuzzy
+msgid "Browser..."
+msgstr "Blaai..."
+
+msgid "puredata.info"
+msgstr ""
+
+msgid "Report a bug"
+msgstr ""
+
+#, fuzzy
+msgid "Clear Menu"
+msgstr "Maak lys skoon"
+
+msgid "Path..."
+msgstr ""
+
+msgid "Startup..."
+msgstr ""
+
+msgid "Audio..."
+msgstr ""
+
+msgid "MIDI..."
+msgstr ""
+
+msgid "Zoom new windows"
+msgstr ""
+
+#, fuzzy
+msgid "Save all preferences"
+msgstr "Voorkeure..."
+
+#, fuzzy
+msgid "Save to ..."
+msgstr "Stoor As"
+
+msgid "Load from ..."
+msgstr ""
+
+msgid "Forget all..."
+msgstr ""
+
+msgid "Open Recent"
+msgstr ""
+
+#, fuzzy
+msgid "Quit"
+msgstr "Verlaat"
+
+msgid "Properties"
+msgstr ""
+
+#, fuzzy
+msgid "Help"
+msgstr "hulp"
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr ""
+
+msgid "Tcl:"
+msgstr ""
+
+msgid "Pd"
+msgstr ""
+
+#, fuzzy
+msgid "DSP"
+msgstr "Af"
+
+msgid "Audio off"
+msgstr ""
+
+msgid "Audio I/O error"
+msgstr ""
+
+msgid "Log:"
+msgstr ""
+
+msgid "fatal"
+msgstr ""
+
+msgid "error"
+msgstr ""
+
+msgid "normal"
+msgstr ""
+
+msgid "debug"
+msgstr ""
+
+msgid "all"
+msgstr ""
+
+msgid "New..."
+msgstr ""
+
+#, fuzzy
+msgid "Edit..."
+msgstr "/Laai"
+
+#, fuzzy
+msgid "Delete"
+msgstr "Uitwis"
+
+#, tcl-format
+msgid "Ignoring '%s': doesn't look like a Pd-file"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Text Editor"
+#~ msgstr "Kleure"
 
 #, fuzzy
 #~ msgid "Window"
 #~ msgstr "<venster %d>"
 
 #, fuzzy
-#~ msgid "Pd Files"
+#~ msgid "File"
 #~ msgstr "Lêer"
 
 #, fuzzy
@@ -1221,12 +908,12 @@ msgstr ""
 #~ msgstr "Name=Makedoniese"
 
 #, fuzzy
-#~ msgid "File"
+#~ msgid "Pd Files"
 #~ msgstr "Lêer"
 
 #, fuzzy
-#~ msgid "Text Editor"
-#~ msgstr "Kleure"
+#~ msgid "Filters"
+#~ msgstr "Lêer"
 
 #, fuzzy
 #~ msgid "Preferences..."

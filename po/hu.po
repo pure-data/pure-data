@@ -16,1255 +16,942 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 
-#: ../tcl/dialog_array.tcl:113 ../tcl/pd_menus.tcl:173
-msgid "Copy"
-msgstr "Másol"
-
-#: ../tcl/dialog_array.tcl:116 ../tcl/pd_menus.tcl:175
-msgid "Paste"
-msgstr "Beilleszt"
-
-#: ../tcl/dialog_array.tcl:257
-msgid "Array Properties"
-msgstr "Array tulajdonságai"
-
-#: ../tcl/dialog_array.tcl:266 ../tcl/pd_menus.tcl:243
-msgid "Array"
-msgstr "Array"
-
-#: ../tcl/dialog_array.tcl:270
-msgid "Name:"
-msgstr "Név:"
-
-#: ../tcl/dialog_array.tcl:276 ../tcl/dialog_canvas.tcl:182
-#: ../tcl/dialog_canvas.tcl:197 ../tcl/dialog_iemgui.tcl:524
-#: ../tcl/dialog_iemgui.tcl:551 ../tcl/dialog_iemgui.tcl:555
-#: ../tcl/dialog_iemgui.tcl:565 ../tcl/dialog_iemgui.tcl:699
-msgid "Size:"
-msgstr "Méret:"
-
-#: ../tcl/dialog_array.tcl:280
-msgid "Save contents"
-msgstr "Tartalom mentése"
-
-#: ../tcl/dialog_array.tcl:285
-msgid "Draw as:"
-msgstr "Megjelenítés:"
-
-#: ../tcl/dialog_array.tcl:288
-msgid "Polygon"
-msgstr "Sokszög"
-
-#: ../tcl/dialog_array.tcl:290
-msgid "Points"
-msgstr "Pontok"
-
-#: ../tcl/dialog_array.tcl:292
-msgid "Bezier curve"
-msgstr "Bezier görbe"
-
-#: ../tcl/dialog_array.tcl:299
-msgid "Put array into:"
-msgstr "Array helye:"
-
-#: ../tcl/dialog_array.tcl:302
-msgid "New graph"
-msgstr "Új graph"
-
-#: ../tcl/dialog_array.tcl:304
-msgid "Last graph"
-msgstr "Legutóbbi graph"
-
-#: ../tcl/dialog_array.tcl:308
-msgid "Options"
-msgstr ""
-
-#: ../tcl/dialog_array.tcl:310
-msgid "Open List View..."
-msgstr "Lista nézet megnyitása..."
-
-#: ../tcl/dialog_array.tcl:313
-msgid "Delete array"
-msgstr "Array-t töröl"
-
-#: ../tcl/dialog_array.tcl:321 ../tcl/dialog_audio.tcl:333
-#: ../tcl/dialog_canvas.tcl:209 ../tcl/dialog_find.tcl:236
-#: ../tcl/dialog_gatom.tcl:164 ../tcl/dialog_iemgui.tcl:789
-#: ../tcl/dialog_midi.tcl:348 ../tcl/dialog_midi.tcl:444
-#: ../tcl/scrollboxwindow.tcl:85
-msgid "Cancel"
-msgstr "Mégsem"
-
-#: ../tcl/dialog_array.tcl:325 ../tcl/dialog_audio.tcl:337
-#: ../tcl/dialog_canvas.tcl:213 ../tcl/dialog_gatom.tcl:168
-#: ../tcl/dialog_iemgui.tcl:793 ../tcl/dialog_midi.tcl:352
-#: ../tcl/dialog_midi.tcl:446 ../tcl/scrollboxwindow.tcl:89
-msgid "Apply"
-msgstr "Alkalmaz"
-
-#: ../tcl/dialog_array.tcl:329 ../tcl/dialog_audio.tcl:341
-#: ../tcl/dialog_canvas.tcl:217 ../tcl/dialog_font.tcl:117
-#: ../tcl/dialog_gatom.tcl:172 ../tcl/dialog_iemgui.tcl:797
-#: ../tcl/dialog_midi.tcl:356 ../tcl/dialog_midi.tcl:448
-#: ../tcl/dialog_startup.tcl:29 ../tcl/dialog_startup.tcl:30
-#: ../tcl/scrollboxwindow.tcl:93
-msgid "OK"
-msgstr "OK"
-
-#: ../tcl/dialog_audio.tcl:137
-msgid "Audio Settings"
-msgstr "Hang beállítások"
-
-#: ../tcl/dialog_audio.tcl:148
-#, fuzzy
-msgid "Settings"
-msgstr "MIDI beállítások"
-
-#: ../tcl/dialog_audio.tcl:153
-msgid "Sample rate:"
-msgstr "Mintavétel (Hz):"
-
-#: ../tcl/dialog_audio.tcl:155
-msgid "Delay (msec):"
-msgstr "Késés (ms):"
-
-#: ../tcl/dialog_audio.tcl:162
-msgid "Block size:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:170
-msgid "Use callbacks"
-msgstr "Callback-ek használata"
-
-#: ../tcl/dialog_audio.tcl:175 ../tcl/dialog_midi.tcl:126
-#, fuzzy
-msgid "Input Devices"
-msgstr "1. bemeneti eszköz:"
-
-#: ../tcl/dialog_audio.tcl:183 ../tcl/dialog_audio.tcl:248
-#: ../tcl/dialog_midi.tcl:133 ../tcl/dialog_midi.tcl:241
-msgid "1:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:186 ../tcl/dialog_audio.tcl:201
-#: ../tcl/dialog_audio.tcl:217 ../tcl/dialog_audio.tcl:233
-#: ../tcl/dialog_audio.tcl:257 ../tcl/dialog_audio.tcl:277
-#: ../tcl/dialog_audio.tcl:293 ../tcl/dialog_audio.tcl:309
-msgid "Channels:"
-msgstr "Csatornák:"
-
-#: ../tcl/dialog_audio.tcl:197 ../tcl/dialog_audio.tcl:273
-#: ../tcl/dialog_midi.tcl:143 ../tcl/dialog_midi.tcl:251
-msgid "2:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:213 ../tcl/dialog_audio.tcl:289
-#: ../tcl/dialog_midi.tcl:155 ../tcl/dialog_midi.tcl:262
-msgid "3:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:229 ../tcl/dialog_audio.tcl:305
-#: ../tcl/dialog_midi.tcl:167 ../tcl/dialog_midi.tcl:273
-msgid "4:"
-msgstr ""
-
-#: ../tcl/dialog_audio.tcl:240 ../tcl/dialog_midi.tcl:235
-#, fuzzy
-msgid "Output Devices"
-msgstr "1. kimeneti eszköz:"
-
-#: ../tcl/dialog_audio.tcl:251
-#, fuzzy
-msgid "(same as input device)..."
-msgstr "(ugyanaz mint a bemeneti eszköz) ..............      "
-
-#: ../tcl/dialog_audio.tcl:320 ../tcl/dialog_midi.tcl:340
-msgid "Use multiple devices"
-msgstr "Több eszköz használata"
-
-#: ../tcl/dialog_audio.tcl:326
-msgid "Save All Settings"
-msgstr "Minden bellítást ment"
-
-#: ../tcl/dialog_canvas.tcl:122
-msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
-
-#: ../tcl/dialog_canvas.tcl:142
-msgid "Canvas Properties"
-msgstr "Canvas tulajdonságai"
-
-#: ../tcl/dialog_canvas.tcl:150
-msgid "Scale"
-msgstr "Méretarány"
-
-#: ../tcl/dialog_canvas.tcl:154
-msgid "X units per pixel:"
-msgstr "X egység képpontonként:"
-
-#: ../tcl/dialog_canvas.tcl:159
-msgid "Y units per pixel:"
-msgstr "Y egység képpontonként:"
-
-#: ../tcl/dialog_canvas.tcl:163
-msgid "Appearance on parent patch"
-msgstr "Megjelenés a szülő patch-en"
-
-#: ../tcl/dialog_canvas.tcl:165
-msgid "Graph-On-Parent"
-msgstr "Megjelenítés a szülőn (GOP)"
-
-#: ../tcl/dialog_canvas.tcl:169
-msgid "Hide object name and arguments"
-msgstr "Elemnév és paraméterek elrejtése"
-
-#: ../tcl/dialog_canvas.tcl:174
-msgid "Range and size"
-msgstr "Tartomány és méret"
-
-#: ../tcl/dialog_canvas.tcl:178
-#, fuzzy
-msgid "X range: from"
-msgstr "X tartomány kezdete"
-
-#: ../tcl/dialog_canvas.tcl:180 ../tcl/dialog_canvas.tcl:195
-msgid "to"
-msgstr "vége"
-
-#: ../tcl/dialog_canvas.tcl:184 ../tcl/dialog_canvas.tcl:199
-msgid "Margin:"
-msgstr "Margó:"
-
-#: ../tcl/dialog_canvas.tcl:193
-#, fuzzy
-msgid "Y range: from"
-msgstr "Y tartomány kezdete"
-
-#: ../tcl/dialog_data.tcl:35
-#, fuzzy
-msgid "Data Properties"
-msgstr "Canvas tulajdonságai"
-
-#: ../tcl/dialog_find.tcl:73
-#, tcl-format
-msgid "Found '%s' in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:78 ../tcl/dialog_find.tcl:164
-#, tcl-format
-msgid "Couldn't find '%s' in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:148 ../tcl/dialog_find.tcl:219
-msgid "Search in"
-msgstr "Keresés itt:"
-
-#: ../tcl/dialog_find.tcl:149 ../tcl/dialog_find.tcl:219
-msgid "for:"
-msgstr "erre:"
-
-#: ../tcl/dialog_find.tcl:168
-#, tcl-format
-msgid "Showed last '%s' in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:173
-#, tcl-format
-msgid "Showing '%d' out of %d items in %s"
-msgstr ""
-
-#: ../tcl/dialog_find.tcl:195 ../tcl/dialog_find.tcl:240
-msgid "Find"
-msgstr "Keres"
-
-#: ../tcl/dialog_find.tcl:219 ../tcl/pd_menus.tcl:317
-msgid "Pd window"
-msgstr "Pd ablak"
-
-#: ../tcl/dialog_find.tcl:230
-msgid "Match whole word only"
-msgstr "Csak egész szavas egyezés"
-
-#: ../tcl/dialog_find.tcl:244 ../tcl/pd_menus.tcl:63 ../tcl/pd_menus.tcl:90
-#: ../tcl/pd_menus.tcl:122 ../tcl/pd_menus.tcl:155 ../tcl/pd_menus.tcl:571
-#: ../tcl/pd_menus.tcl:611 ../tcl/pd_menus.tcl:658
-msgid "Close"
-msgstr "Bezár"
-
-#: ../tcl/dialog_font.tcl:60
-#, tcl-format
-msgid "%s Font"
-msgstr "%s betűkészlet"
-
-#: ../tcl/dialog_font.tcl:101 ../tcl/pd_menus.tcl:93 ../tcl/pd_menus.tcl:124
-#: ../tcl/pd_menus.tcl:184
-msgid "Font"
-msgstr "Betű"
-
-#: ../tcl/dialog_font.tcl:121
-msgid "Font Size"
-msgstr "Betűméret"
-
-#: ../tcl/dialog_font.tcl:133
-msgid "Stretch"
-msgstr "Nyújtás"
-
-#: ../tcl/dialog_font.tcl:140
-msgid "X and Y"
-msgstr "X és Y"
-
-#: ../tcl/dialog_font.tcl:142
-msgid "X only"
-msgstr "csak X"
-
-#: ../tcl/dialog_font.tcl:144
-msgid "Y only"
-msgstr "csak Y"
-
-#: ../tcl/dialog_gatom.tcl:100
-msgid "Atom Box Properties"
-msgstr "Atom Box tulajdonságai"
-
-#: ../tcl/dialog_gatom.tcl:110 ../tcl/dialog_iemgui.tcl:537
-#: ../tcl/dialog_iemgui.tcl:544 ../tcl/dialog_iemgui.tcl:559
-#: ../tcl/dialog_iemgui.tcl:567
-msgid "Width:"
-msgstr "Szélesség:"
-
-#: ../tcl/dialog_gatom.tcl:114
-msgid "Limits"
-msgstr "Korlátok"
-
-#: ../tcl/dialog_gatom.tcl:118 ../tcl/dialog_iemgui.tcl:532
-#: ../tcl/dialog_iemgui.tcl:540 ../tcl/dialog_iemgui.tcl:547
-msgid "Lower:"
-msgstr "Alsó:"
-
-#: ../tcl/dialog_gatom.tcl:123 ../tcl/dialog_iemgui.tcl:533
-#: ../tcl/dialog_iemgui.tcl:541 ../tcl/dialog_iemgui.tcl:548
-msgid "Upper:"
-msgstr "Felső:"
-
-#: ../tcl/dialog_gatom.tcl:127 ../tcl/dialog_iemgui.tcl:676
-#: ../tcl/dialog_iemgui.tcl:728
-msgid "Label"
-msgstr "Címke"
-
-#: ../tcl/dialog_gatom.tcl:135
-msgid "Left   "
-msgstr "Bal"
-
-#: ../tcl/dialog_gatom.tcl:137
-msgid "Right"
-msgstr "Jobb"
-
-#: ../tcl/dialog_gatom.tcl:139
-msgid "Top"
-msgstr "Fent"
-
-#: ../tcl/dialog_gatom.tcl:141
-msgid "Bottom"
-msgstr "Lent"
-
-#: ../tcl/dialog_gatom.tcl:148 ../tcl/dialog_iemgui.tcl:648
-msgid "Messages"
-msgstr "Üzenetek"
-
-#: ../tcl/dialog_gatom.tcl:152 ../tcl/dialog_iemgui.tcl:652
-msgid "Send symbol:"
-msgstr "Küldött symbol:"
-
-#: ../tcl/dialog_gatom.tcl:158 ../tcl/dialog_iemgui.tcl:661
-msgid "Receive symbol:"
-msgstr "Fogadott symbol:"
-
-#: ../tcl/dialog_iemgui.tcl:202
-msgid "Background color"
-msgstr "Háttérszín"
-
-#: ../tcl/dialog_iemgui.tcl:208
-msgid "Foreground color"
-msgstr "Szín"
-
-#: ../tcl/dialog_iemgui.tcl:213
-msgid "Label color"
-msgstr "Címkeszín"
-
-#: ../tcl/dialog_iemgui.tcl:282 ../tcl/dialog_iemgui.tcl:625
-msgid "Init"
-msgstr "Kezdőérték"
-
-#: ../tcl/dialog_iemgui.tcl:285 ../tcl/dialog_iemgui.tcl:622
-msgid "No init"
-msgstr "Nincs kezdőérték"
-
-#: ../tcl/dialog_iemgui.tcl:297 ../tcl/dialog_iemgui.tcl:634
-msgid "Jump on click"
-msgstr "Kattintásra ugorjon"
-
-#: ../tcl/dialog_iemgui.tcl:300 ../tcl/dialog_iemgui.tcl:637
-msgid "Steady on click"
-msgstr "Kattintásra várjon"
-
-#: ../tcl/dialog_iemgui.tcl:517 ../tcl/pd_menus.tcl:222
-msgid "Bang"
-msgstr "Bang"
-
-#: ../tcl/dialog_iemgui.tcl:519
-#, fuzzy
-msgid "Flash Time (msec)"
-msgstr "Késés (ms):"
-
-#: ../tcl/dialog_iemgui.tcl:520
-msgid "Intrrpt:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:521
-msgid "Hold:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:523 ../tcl/pd_menus.tcl:224
-msgid "Toggle"
-msgstr "Toggle"
-
-#: ../tcl/dialog_iemgui.tcl:525
-msgid "Non Zero Value"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:526
-msgid "Value:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:528 ../tcl/pd_menus.tcl:226
-msgid "Number2"
-msgstr "Number2"
-
-#: ../tcl/dialog_iemgui.tcl:529
-msgid "Width (digits):"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:530 ../tcl/dialog_iemgui.tcl:538
-#: ../tcl/dialog_iemgui.tcl:545 ../tcl/dialog_iemgui.tcl:560
-#: ../tcl/dialog_iemgui.tcl:568
-#, fuzzy
-msgid "Height:"
-msgstr "Jobb"
-
-#: ../tcl/dialog_iemgui.tcl:531 ../tcl/dialog_iemgui.tcl:539
-#: ../tcl/dialog_iemgui.tcl:546
-msgid "Output Range"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:534
-msgid "Log height:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:536 ../tcl/pd_menus.tcl:228
-msgid "Vslider"
-msgstr "Vslider"
-
-#: ../tcl/dialog_iemgui.tcl:543 ../tcl/pd_menus.tcl:230
-msgid "Hslider"
-msgstr "Hslider"
-
-#: ../tcl/dialog_iemgui.tcl:550 ../tcl/pd_menus.tcl:232
-msgid "Vradio"
-msgstr "Vradio"
-
-#: ../tcl/dialog_iemgui.tcl:552 ../tcl/dialog_iemgui.tcl:556
-msgid "Num cells:"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:554 ../tcl/pd_menus.tcl:234
-msgid "Hradio"
-msgstr "Hradio"
-
-#: ../tcl/dialog_iemgui.tcl:558 ../tcl/pd_menus.tcl:236
-msgid "VU Meter"
-msgstr "VU meter"
-
-#: ../tcl/dialog_iemgui.tcl:564 ../tcl/pd_menus.tcl:238
-msgid "Canvas"
-msgstr "Canvas"
-
-#: ../tcl/dialog_iemgui.tcl:566
-msgid "Visible Rectangle (pix)"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:572
-#, tcl-format
-msgid "%s Properties"
-msgstr "%s tulajdonságai"
-
-#: ../tcl/dialog_iemgui.tcl:613
-msgid "Parameters"
-msgstr ""
-
-#: ../tcl/dialog_iemgui.tcl:684
-#, fuzzy
-msgid "X offset:"
-msgstr "X offszet"
-
-#: ../tcl/dialog_iemgui.tcl:687
-#, fuzzy
-msgid "Y offset:"
-msgstr "Y offszet"
-
-#: ../tcl/dialog_iemgui.tcl:718
-msgid "Colors"
-msgstr "Színek"
-
-#: ../tcl/dialog_iemgui.tcl:724
-msgid "Background"
-msgstr "Háttér"
-
-#: ../tcl/dialog_iemgui.tcl:726
-msgid "Front"
-msgstr "Előtér"
-
-#: ../tcl/dialog_iemgui.tcl:738
-msgid "Compose color"
-msgstr "Színkeverés"
-
-#: ../tcl/dialog_iemgui.tcl:759
-msgid "Test label"
-msgstr "Teszt címke"
-
-#: ../tcl/dialog_message.tcl:62
-#, fuzzy
-msgid "Send a Pd message"
-msgstr "Üzenet küldése..."
-
-#: ../tcl/dialog_message.tcl:81
-msgid "(use arrow keys for history)"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:115
-msgid "MIDI Settings"
-msgstr "MIDI beállítások"
-
-#: ../tcl/dialog_midi.tcl:179 ../tcl/dialog_midi.tcl:284
-msgid "5:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:191 ../tcl/dialog_midi.tcl:295
-msgid "6:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:203 ../tcl/dialog_midi.tcl:306
-msgid "7:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:215 ../tcl/dialog_midi.tcl:317
-msgid "8:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:227 ../tcl/dialog_midi.tcl:328
-msgid "9:"
-msgstr ""
-
-#: ../tcl/dialog_midi.tcl:425
-msgid "ALSA MIDI Settings"
-msgstr "ALSA MIDI beállítások"
-
-#: ../tcl/dialog_midi.tcl:433
-msgid "In Ports:"
-msgstr "Bejövő portok:"
-
-#: ../tcl/dialog_midi.tcl:436
-msgid "Out Ports:"
-msgstr "Kimenő portok:"
-
-#: ../tcl/dialog_path.tcl:41
-msgid "Pd search path for objects, help, fonts, and other files"
-msgstr ""
-
-#: ../tcl/dialog_path.tcl:47
-msgid "Use standard extensions"
-msgstr ""
-
-#: ../tcl/dialog_path.tcl:49
-msgid "Verbose"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:56
-msgid "Add new library"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:60
-msgid "Edit library"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:87
-msgid "Pd libraries to load on startup"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:93
-msgid "Startup flags:"
-msgstr ""
-
-#: ../tcl/dialog_startup.tcl:101
-msgid "Defeat real-time scheduling"
-msgstr ""
-
-#: ../tcl/helpbrowser.tcl:24
-#, fuzzy
-msgid "Help Browser"
-msgstr "Beépített böngésző..."
-
-#: ../tcl/pd_connect.tcl:93 ../tcl/pdwindow.tcl:237
-msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
-
-#: ../tcl/pd_connect.tcl:96 ../tcl/pdwindow.tcl:241
-msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
-
-#: ../tcl/pd_connect.tcl:99 ../tcl/pdwindow.tcl:243
-msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
-
-#: ../tcl/pd_deken.tcl:293 ../tcl/pd_deken.tcl:342
-msgid "Show all"
-msgstr ""
-
-#: ../tcl/pd_deken.tcl:295
-#, fuzzy
-msgid "Search"
-msgstr "Keresés itt:"
-
-#: ../tcl/pd_deken.tcl:324 ../tcl/pd_deken.tcl:578 ../tcl/pd_deken.tcl:580
-msgid "Find externals"
-msgstr ""
-
-#: ../tcl/pd_deken.tcl:347
-msgid "Only install externals uploaded by people you trust."
-msgstr ""
-
-#: ../tcl/pd_menucommands.tcl:217 ../tcl/pd_menus.tcl:326
-#: ../tcl/pd_menus.tcl:554
-msgid "About Pd"
-msgstr "A Pd-ről"
-
-#: ../tcl/pd_menus.tcl:40
-msgid "file edit put find media window help"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:60 ../tcl/pd_menus.tcl:87 ../tcl/pd_menus.tcl:118
-#: ../tcl/pd_menus.tcl:152 ../tcl/pd_menus.tcl:572 ../tcl/pd_menus.tcl:600
-#: ../tcl/pd_menus.tcl:647
-msgid "Save"
-msgstr "Ment"
-
-#: ../tcl/pd_menus.tcl:61 ../tcl/pd_menus.tcl:88 ../tcl/pd_menus.tcl:119
-#: ../tcl/pd_menus.tcl:153 ../tcl/pd_menus.tcl:573 ../tcl/pd_menus.tcl:601
-#: ../tcl/pd_menus.tcl:648
-msgid "Save As..."
-msgstr "Ment új néven..."
-
-#: ../tcl/pd_menus.tcl:62 ../tcl/pd_menus.tcl:89 ../tcl/pd_menus.tcl:120
-#: ../tcl/pd_menus.tcl:157 ../tcl/pd_menus.tcl:579 ../tcl/pd_menus.tcl:607
-#: ../tcl/pd_menus.tcl:654
-msgid "Print..."
-msgstr "Nyomtat..."
-
-#: ../tcl/pd_menus.tcl:65 ../tcl/pd_menus.tcl:92 ../tcl/pd_menus.tcl:125
-#: ../tcl/pd_menus.tcl:177
-msgid "Duplicate"
-msgstr "Duplikál"
-
-#: ../tcl/pd_menus.tcl:66 ../tcl/pd_menus.tcl:94 ../tcl/pd_menus.tcl:126
-#: ../tcl/pd_menus.tcl:186
-#, fuzzy
-msgid "Zoom In"
-msgstr "Nagyító"
-
-#: ../tcl/pd_menus.tcl:67 ../tcl/pd_menus.tcl:95 ../tcl/pd_menus.tcl:127
-#: ../tcl/pd_menus.tcl:188
-#, fuzzy
-msgid "Zoom Out"
-msgstr "Nagyító"
-
-#: ../tcl/pd_menus.tcl:68 ../tcl/pd_menus.tcl:96 ../tcl/pd_menus.tcl:128
-#: ../tcl/pd_menus.tcl:190
-msgid "Tidy Up"
-msgstr "Elrendez"
-
-#: ../tcl/pd_menus.tcl:69 ../tcl/pd_menus.tcl:97 ../tcl/pd_menus.tcl:129
-#: ../tcl/pd_menus.tcl:196 ../tcl/pd_menus.tcl:635
-msgid "Edit Mode"
-msgstr "Szerkesztő üzemmód"
-
-#: ../tcl/pd_menus.tcl:72 ../tcl/pd_menus.tcl:132 ../tcl/pd_menus.tcl:166
-#: ../tcl/pd_menus.tcl:350
-msgid "Undo"
-msgstr "Mégsem!"
-
-#: ../tcl/pd_menus.tcl:73 ../tcl/pd_menus.tcl:133 ../tcl/pd_menus.tcl:168
-#: ../tcl/pd_menus.tcl:356
-msgid "Redo"
-msgstr "Mégis!"
-
-#: ../tcl/pd_menus.tcl:81 ../tcl/pd_menus.tcl:109 ../tcl/pd_menus.tcl:141
-#: ../tcl/pd_menus.tcl:332
-msgid "List of objects..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:150 ../tcl/pd_menus.tcl:565 ../tcl/pd_menus.tcl:597
-#: ../tcl/pd_menus.tcl:644
-msgid "New"
-msgstr "Új"
-
-#: ../tcl/pd_menus.tcl:151 ../tcl/pd_menus.tcl:566 ../tcl/pd_menus.tcl:598
-#: ../tcl/pd_menus.tcl:645 ../tcl/pdtk_canvas.tcl:221
-#: ../tcl/pdtk_canvas.tcl:241 ../tcl/pdtk_canvas.tcl:243
-msgid "Open"
-msgstr "Megnyit"
-
-#: ../tcl/pd_menus.tcl:156 ../tcl/pd_menus.tcl:577 ../tcl/pd_menus.tcl:604
-#: ../tcl/pd_menus.tcl:651
-#, fuzzy
-msgid "Message..."
-msgstr "Üzenet"
-
-#: ../tcl/pd_menus.tcl:171
-msgid "Cut"
-msgstr "Kivág"
-
-#: ../tcl/pd_menus.tcl:179
-msgid "Select All"
-msgstr "Mindent kijelöl"
-
-#: ../tcl/pd_menus.tcl:192
-msgid "Clear Console"
-msgstr "Konzolt ürít"
-
-#: ../tcl/pd_menus.tcl:202 ../tcl/pd_menus.tcl:557 ../tcl/pd_menus.tcl:606
-#: ../tcl/pd_menus.tcl:653
-msgid "Preferences"
-msgstr "Beállítások"
-
-#: ../tcl/pd_menus.tcl:211
-msgid "Object"
-msgstr "Object"
-
-#: ../tcl/pd_menus.tcl:213
-msgid "Message"
-msgstr "Üzenet"
-
-#: ../tcl/pd_menus.tcl:215
-msgid "Number"
-msgstr "Number"
-
-#: ../tcl/pd_menus.tcl:217
-msgid "Symbol"
-msgstr "Symbol"
-
-#: ../tcl/pd_menus.tcl:219
-msgid "Comment"
-msgstr "Comment"
-
-#: ../tcl/pd_menus.tcl:241
-msgid "Graph"
-msgstr "Graph"
-
-#: ../tcl/pd_menus.tcl:249
-msgid "Find..."
-msgstr "Keres..."
-
-#: ../tcl/pd_menus.tcl:251
-msgid "Find Again"
-msgstr "Újra keres"
-
-#: ../tcl/pd_menus.tcl:253
-msgid "Find Last Error"
-msgstr "Legutóbbi hiba helye"
-
-#: ../tcl/pd_menus.tcl:259
-msgid "DSP On"
-msgstr "DSP be"
-
-#: ../tcl/pd_menus.tcl:261
-msgid "DSP Off"
-msgstr "DSP ki"
-
-#: ../tcl/pd_menus.tcl:265
-msgid "Test Audio and MIDI..."
-msgstr "Hang és MIDI tesztelése..."
-
-#: ../tcl/pd_menus.tcl:267
-msgid "Load Meter"
-msgstr "Terhelésmérő"
-
-#: ../tcl/pd_menus.tcl:289
-msgid "Audio Settings..."
-msgstr "Hang beállítások..."
-
-#: ../tcl/pd_menus.tcl:291
-msgid "MIDI Settings..."
-msgstr "MIDI beállítások..."
-
-#: ../tcl/pd_menus.tcl:300
-msgid "Minimize"
-msgstr "Kicsinyít"
-
-#: ../tcl/pd_menus.tcl:302
-msgid "Zoom"
-msgstr "Nagyító"
-
-#: ../tcl/pd_menus.tcl:305
-msgid "Bring All to Front"
-msgstr "Mindent előtérbe hoz"
-
-#: ../tcl/pd_menus.tcl:309
-#, fuzzy
-msgid "Next Window"
-msgstr "Szülő ablak"
-
-#: ../tcl/pd_menus.tcl:312
-#, fuzzy
-msgid "Previous Window"
-msgstr "Szülő ablak"
-
-#: ../tcl/pd_menus.tcl:319
-msgid "Parent Window"
-msgstr "Szülő ablak"
-
-#: ../tcl/pd_menus.tcl:328
-msgid "HTML Manual..."
-msgstr "HTML kézikönyv..."
-
-#: ../tcl/pd_menus.tcl:330
-msgid "Browser..."
-msgstr "Beépített böngésző..."
-
-#: ../tcl/pd_menus.tcl:335
-msgid "puredata.info"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:337
-msgid "Report a bug"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:389
-msgid "Clear Menu"
-msgstr "Menüt ürít"
-
-#: ../tcl/pd_menus.tcl:525
-msgid "Path..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:527
-msgid "Startup..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:529
-#, fuzzy
-msgid "Audio..."
-msgstr "Hang beállítások..."
-
-#: ../tcl/pd_menus.tcl:531
-#, fuzzy
-msgid "MIDI..."
-msgstr "MIDI beállítások..."
-
-#: ../tcl/pd_menus.tcl:533
-msgid "Zoom new windows"
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:537
-#, fuzzy
-msgid "Save all preferences"
-msgstr "Beállítások"
-
-#: ../tcl/pd_menus.tcl:539
-#, fuzzy
-msgid "Save to ..."
-msgstr "Ment új néven..."
-
-#: ../tcl/pd_menus.tcl:541
-msgid "Load from ..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:543
-msgid "Forget all..."
-msgstr ""
-
-#: ../tcl/pd_menus.tcl:569
-msgid "Open Recent"
-msgstr "Legutóbbi fájlok"
-
-#: ../tcl/pd_menus.tcl:612 ../tcl/pd_menus.tcl:659
-msgid "Quit"
-msgstr "Kilép"
-
-#: ../tcl/pdtk_canvas.tcl:219 ../tcl/pdtk_canvas.tcl:236
-#: ../tcl/pdtk_canvas.tcl:238
-msgid "Properties"
-msgstr "Tulajdonságok"
-
-#: ../tcl/pdtk_canvas.tcl:223
-msgid "Help"
-msgstr "Súgó"
-
-#: ../tcl/pdwindow.tcl:239
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:278
-msgid "Tcl:"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:321 ../tcl/pdwindow.tcl:322
-msgid "Pd"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:336
-msgid "DSP"
-msgstr "DSP"
-
-#: ../tcl/pdwindow.tcl:347
-msgid "Audio off"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:354
-msgid "Audio I/O error"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:362
-msgid "Log:"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:367
-msgid "fatal"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:368
-msgid "error"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:369
-msgid "normal"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:370
-msgid "debug"
-msgstr ""
-
-#: ../tcl/pdwindow.tcl:371
-msgid "all"
-msgstr ""
-
-#: ../tcl/scrollbox.tcl:177
-msgid "New..."
-msgstr ""
-
-#: ../tcl/scrollbox.tcl:179
-#, fuzzy
-msgid "Edit..."
-msgstr "Szerkeszt"
-
-#: ../tcl/scrollbox.tcl:181
-#, fuzzy
-msgid "Delete"
-msgstr "Array-t töröl"
-
-#: ../tcl/wheredoesthisgo.tcl:18
-#, tcl-format
-msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr ""
-
-#: iemgui_dynamic_strings.tcl:11
 msgid "-------dimensions(digits)(pix):-------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:12
 msgid "--------dimensions(pix)(pix):--------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:13
 msgid "----------dimensions(pix):-----------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:14
 msgid "--------flash-time(ms)(ms):---------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:15
 msgid "-----------output-range:-----------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:16
 msgid "------selectable_dimensions(pix):------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:17
 msgid "------visible_rectangle(pix)(pix):------"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:20
 #, fuzzy
 msgid "bottom:"
 msgstr "Lent"
 
-#: iemgui_dynamic_strings.tcl:21
 #, fuzzy
 msgid "height:"
 msgstr "Jobb"
 
-#: iemgui_dynamic_strings.tcl:22
 msgid "hold:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:23
 msgid "intrrpt:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:24
 msgid "left:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:25
 msgid "lin"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:26
 msgid "log"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:27
 msgid "log-height:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:28
 msgid "max:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:29
 msgid "min:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:30
 #, fuzzy
 msgid "right:"
 msgstr "Jobb"
 
-#: iemgui_dynamic_strings.tcl:31
 #, fuzzy
 msgid "size:"
 msgstr "Méret:"
 
-#: iemgui_dynamic_strings.tcl:32
 msgid "top:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:33
 msgid "value:"
 msgstr ""
 
-#: iemgui_dynamic_strings.tcl:34
 #, fuzzy
 msgid "width:"
 msgstr "Szélesség:"
 
-#: pd_dynamic_strings.tcl:10
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
 msgstr "El akarja menteni '%s' változásait?"
 
-#: pd_dynamic_strings.tcl:11
 #, tcl-format
 msgid "Discard changes to '%s'?"
 msgstr "Elveti '%s' változtatásait?"
 
-#: pd_dynamic_strings.tcl:13
 msgid "Undo clear"
 msgstr "Mégsem töröl"
 
-#: pd_dynamic_strings.tcl:14
 msgid "Undo connect"
 msgstr "Mégsem csatlakoztat"
 
-#: pd_dynamic_strings.tcl:15
 msgid "Undo cut"
 msgstr "Mégsem vág ki"
 
-#: pd_dynamic_strings.tcl:16
 msgid "Undo disconnect"
 msgstr "Mégsem törli a csatlakozást"
 
-#: pd_dynamic_strings.tcl:17
 msgid "Undo duplicate"
 msgstr "Mégsem duplikál"
 
-#: pd_dynamic_strings.tcl:18
 msgid "Undo motion"
 msgstr "Mégsem mozgat"
 
-#: pd_dynamic_strings.tcl:19
 msgid "Undo paste"
 msgstr "Mégsem illeszt be"
 
-#: pd_dynamic_strings.tcl:20
 msgid "Undo typing"
 msgstr "Mégsem ír"
 
-#: pd_dynamic_strings.tcl:22
 #, fuzzy
 msgid "Redo clear"
 msgstr "Mégsem töröl"
 
-#: pd_dynamic_strings.tcl:23
 #, fuzzy
 msgid "Redo connect"
 msgstr "Mégsem csatlakoztat"
 
-#: pd_dynamic_strings.tcl:24
 #, fuzzy
 msgid "Redo cut"
 msgstr "Mégsem vág ki"
 
-#: pd_dynamic_strings.tcl:25
 #, fuzzy
 msgid "Redo disconnect"
 msgstr "Mégsem törli a csatlakozást"
 
-#: pd_dynamic_strings.tcl:26
 #, fuzzy
 msgid "Redo duplicate"
 msgstr "Mégsem duplikál"
 
-#: pd_dynamic_strings.tcl:27
 #, fuzzy
 msgid "Redo motion"
 msgstr "Mégsem mozgat"
 
-#: pd_dynamic_strings.tcl:28
 #, fuzzy
 msgid "Redo paste"
 msgstr "Mégsem illeszt be"
 
-#: pd_dynamic_strings.tcl:29
 #, fuzzy
 msgid "Redo typing"
 msgstr "Mégsem ír"
 
-#: pd_dynamic_strings.tcl:33
 msgid "Show Hidden Files and Directories"
 msgstr ""
 
-#~ msgid "Patch Font"
-#~ msgstr "Patch betűkészlet"
+msgid "Copy"
+msgstr "Másol"
 
-#~ msgid "Put"
-#~ msgstr "Új"
+msgid "Paste"
+msgstr "Beilleszt"
 
-#~ msgid "GUI"
-#~ msgstr "Kezelőfelület"
+msgid "Array Properties"
+msgstr "Array tulajdonságai"
 
-#~ msgid "Others"
-#~ msgstr "Egyéb"
+msgid "Array"
+msgstr "Array"
 
-#~ msgid "Output device 3:"
-#~ msgstr "3. kimeneti eszköz:"
+msgid "Name:"
+msgstr "Név:"
 
-#~ msgid "Output device 4:"
-#~ msgstr "4. kimeneti eszköz:"
+msgid "Size:"
+msgstr "Méret:"
 
-#~ msgid "Font Properties"
-#~ msgstr "Betű tulajdonságai"
+msgid "Save contents"
+msgstr "Tartalom mentése"
 
-#~ msgid "Use multiple ALSA devices"
-#~ msgstr "Több ALSA eszköz használata"
+msgid "Draw as:"
+msgstr "Megjelenítés:"
 
-#~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "FIGYELEM: nem található %s betűkészlet %sx%s (%s) méretben!"
+msgid "Polygon"
+msgstr "Sokszög"
 
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "FIGYELEM: Nem található '%s' betűvastagság, az alapbeállítás (%s) érvényes"
+msgid "Points"
+msgstr "Pontok"
 
-#~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
-#~ msgstr "HIBA: a 'pd' nem jelentkezett, a 'pd-gui' kilép!"
+msgid "Bezier curve"
+msgstr "Bezier görbe"
 
-#~ msgid "Discard changes to this window??"
-#~ msgstr "Elveti az ablak változtatásait?"
+msgid "Put array into:"
+msgstr "Array helye:"
 
-#~ msgid "Untitled"
-#~ msgstr "Névtelen"
+msgid "New graph"
+msgstr "Új graph"
 
-#~ msgid "I/O"
-#~ msgstr "I/O"
+msgid "Last graph"
+msgstr "Legutóbbi graph"
 
-#~ msgid "Input device 4:"
-#~ msgstr "4. bemeneti eszköz:"
+msgid "Options"
+msgstr ""
 
-#~ msgid "Close this window??"
-#~ msgstr "Bezárja ezt az ablakot?"
+msgid "Open List View..."
+msgstr "Lista nézet megnyitása..."
+
+msgid "Delete array"
+msgstr "Array-t töröl"
+
+msgid "Cancel"
+msgstr "Mégsem"
+
+msgid "Apply"
+msgstr "Alkalmaz"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Audio Settings"
+msgstr "Hang beállítások"
+
+#, fuzzy
+msgid "Settings"
+msgstr "MIDI beállítások"
+
+msgid "Sample rate:"
+msgstr "Mintavétel (Hz):"
+
+msgid "Delay (msec):"
+msgstr "Késés (ms):"
+
+msgid "Block size:"
+msgstr ""
+
+msgid "Use callbacks"
+msgstr "Callback-ek használata"
+
+#, fuzzy
+msgid "Input Devices"
+msgstr "1. bemeneti eszköz:"
+
+msgid "1:"
+msgstr ""
+
+msgid "Channels:"
+msgstr "Csatornák:"
+
+msgid "2:"
+msgstr ""
+
+msgid "3:"
+msgstr ""
+
+msgid "4:"
+msgstr ""
+
+#, fuzzy
+msgid "Output Devices"
+msgstr "1. kimeneti eszköz:"
+
+#, fuzzy
+msgid "(same as input device)..."
+msgstr "(ugyanaz mint a bemeneti eszköz) ..............      "
+
+msgid "Use multiple devices"
+msgstr "Több eszköz használata"
+
+msgid "Save All Settings"
+msgstr "Minden bellítást ment"
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr ""
+
+msgid "Canvas Properties"
+msgstr "Canvas tulajdonságai"
+
+msgid "Scale"
+msgstr "Méretarány"
+
+msgid "X units per pixel:"
+msgstr "X egység képpontonként:"
+
+msgid "Y units per pixel:"
+msgstr "Y egység képpontonként:"
+
+msgid "Appearance on parent patch"
+msgstr "Megjelenés a szülő patch-en"
+
+msgid "Graph-On-Parent"
+msgstr "Megjelenítés a szülőn (GOP)"
+
+msgid "Hide object name and arguments"
+msgstr "Elemnév és paraméterek elrejtése"
+
+msgid "Range and size"
+msgstr "Tartomány és méret"
+
+#, fuzzy
+msgid "X range: from"
+msgstr "X tartomány kezdete"
+
+msgid "to"
+msgstr "vége"
+
+msgid "Margin:"
+msgstr "Margó:"
+
+#, fuzzy
+msgid "Y range: from"
+msgstr "Y tartomány kezdete"
+
+#, fuzzy
+msgid "Data Properties"
+msgstr "Canvas tulajdonságai"
+
+#, tcl-format
+msgid "Found '%s' in %s"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't find '%s' in %s"
+msgstr ""
+
+msgid "Search in"
+msgstr "Keresés itt:"
+
+msgid "for:"
+msgstr "erre:"
+
+#, tcl-format
+msgid "Showed last '%s' in %s"
+msgstr ""
+
+#, tcl-format
+msgid "Showing '%d' out of %d items in %s"
+msgstr ""
+
+msgid "Find"
+msgstr "Keres"
+
+msgid "Pd window"
+msgstr "Pd ablak"
+
+msgid "Match whole word only"
+msgstr "Csak egész szavas egyezés"
+
+msgid "Close"
+msgstr "Bezár"
+
+#, tcl-format
+msgid "%s Font"
+msgstr "%s betűkészlet"
+
+msgid "Font"
+msgstr "Betű"
+
+msgid "Font Size"
+msgstr "Betűméret"
+
+msgid "Stretch"
+msgstr "Nyújtás"
+
+msgid "X and Y"
+msgstr "X és Y"
+
+msgid "X only"
+msgstr "csak X"
+
+msgid "Y only"
+msgstr "csak Y"
+
+msgid "Atom Box Properties"
+msgstr "Atom Box tulajdonságai"
+
+msgid "Width:"
+msgstr "Szélesség:"
+
+msgid "Limits"
+msgstr "Korlátok"
+
+msgid "Lower:"
+msgstr "Alsó:"
+
+msgid "Upper:"
+msgstr "Felső:"
+
+msgid "Label"
+msgstr "Címke"
+
+msgid "Left   "
+msgstr "Bal"
+
+msgid "Right"
+msgstr "Jobb"
+
+msgid "Top"
+msgstr "Fent"
+
+msgid "Bottom"
+msgstr "Lent"
+
+msgid "Messages"
+msgstr "Üzenetek"
+
+msgid "Send symbol:"
+msgstr "Küldött symbol:"
+
+msgid "Receive symbol:"
+msgstr "Fogadott symbol:"
+
+msgid "Background color"
+msgstr "Háttérszín"
+
+msgid "Foreground color"
+msgstr "Szín"
+
+msgid "Label color"
+msgstr "Címkeszín"
+
+msgid "Init"
+msgstr "Kezdőérték"
+
+msgid "No init"
+msgstr "Nincs kezdőérték"
+
+msgid "Jump on click"
+msgstr "Kattintásra ugorjon"
+
+msgid "Steady on click"
+msgstr "Kattintásra várjon"
+
+msgid "Bang"
+msgstr "Bang"
+
+#, fuzzy
+msgid "Flash Time (msec)"
+msgstr "Késés (ms):"
+
+msgid "Intrrpt:"
+msgstr ""
+
+msgid "Hold:"
+msgstr ""
+
+msgid "Toggle"
+msgstr "Toggle"
+
+msgid "Non Zero Value"
+msgstr ""
+
+msgid "Value:"
+msgstr ""
+
+msgid "Number2"
+msgstr "Number2"
+
+msgid "Width (digits):"
+msgstr ""
+
+#, fuzzy
+msgid "Height:"
+msgstr "Jobb"
+
+msgid "Output Range"
+msgstr ""
+
+msgid "Log height:"
+msgstr ""
+
+msgid "Vslider"
+msgstr "Vslider"
+
+msgid "Hslider"
+msgstr "Hslider"
+
+msgid "Vradio"
+msgstr "Vradio"
+
+msgid "Num cells:"
+msgstr ""
+
+msgid "Hradio"
+msgstr "Hradio"
+
+msgid "VU Meter"
+msgstr "VU meter"
+
+msgid "Canvas"
+msgstr "Canvas"
+
+msgid "Visible Rectangle (pix)"
+msgstr ""
+
+#, tcl-format
+msgid "%s Properties"
+msgstr "%s tulajdonságai"
+
+msgid "Parameters"
+msgstr ""
+
+#, fuzzy
+msgid "X offset:"
+msgstr "X offszet"
+
+#, fuzzy
+msgid "Y offset:"
+msgstr "Y offszet"
+
+msgid "Colors"
+msgstr "Színek"
+
+msgid "Background"
+msgstr "Háttér"
+
+msgid "Front"
+msgstr "Előtér"
+
+msgid "Compose color"
+msgstr "Színkeverés"
+
+msgid "Test label"
+msgstr "Teszt címke"
+
+#, fuzzy
+msgid "Send a Pd message"
+msgstr "Üzenet küldése..."
+
+msgid "(use arrow keys for history)"
+msgstr ""
+
+msgid "MIDI Settings"
+msgstr "MIDI beállítások"
+
+msgid "5:"
+msgstr ""
+
+msgid "6:"
+msgstr ""
+
+msgid "7:"
+msgstr ""
+
+msgid "8:"
+msgstr ""
+
+msgid "9:"
+msgstr ""
+
+msgid "ALSA MIDI Settings"
+msgstr "ALSA MIDI beállítások"
+
+msgid "In Ports:"
+msgstr "Bejövő portok:"
+
+msgid "Out Ports:"
+msgstr "Kimenő portok:"
+
+msgid "Pd search path for objects, help, fonts, and other files"
+msgstr ""
+
+msgid "Use standard extensions"
+msgstr ""
+
+msgid "Verbose"
+msgstr ""
+
+msgid "Add new library"
+msgstr ""
+
+msgid "Edit library"
+msgstr ""
+
+msgid "Pd libraries to load on startup"
+msgstr ""
+
+msgid "Startup flags:"
+msgstr ""
+
+msgid "Defeat real-time scheduling"
+msgstr ""
+
+#, fuzzy
+msgid "Help Browser"
+msgstr "Beépített böngésző..."
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr ""
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr ""
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr ""
+
+msgid "Show all"
+msgstr ""
+
+#, fuzzy
+msgid "Search"
+msgstr "Keresés itt:"
+
+msgid "Find externals"
+msgstr ""
+
+msgid "Only install externals uploaded by people you trust."
+msgstr ""
+
+msgid "About Pd"
+msgstr "A Pd-ről"
+
+msgid "file edit put find media window help"
+msgstr ""
+
+msgid "Save"
+msgstr "Ment"
+
+msgid "Save As..."
+msgstr "Ment új néven..."
+
+msgid "Print..."
+msgstr "Nyomtat..."
+
+msgid "Duplicate"
+msgstr "Duplikál"
+
+#, fuzzy
+msgid "Zoom In"
+msgstr "Nagyító"
+
+#, fuzzy
+msgid "Zoom Out"
+msgstr "Nagyító"
+
+msgid "Tidy Up"
+msgstr "Elrendez"
+
+msgid "Edit Mode"
+msgstr "Szerkesztő üzemmód"
+
+msgid "Undo"
+msgstr "Mégsem!"
+
+msgid "Redo"
+msgstr "Mégis!"
+
+msgid "List of objects..."
+msgstr ""
+
+msgid "New"
+msgstr "Új"
+
+msgid "Open"
+msgstr "Megnyit"
+
+#, fuzzy
+msgid "Message..."
+msgstr "Üzenet"
+
+msgid "Cut"
+msgstr "Kivág"
+
+msgid "Select All"
+msgstr "Mindent kijelöl"
+
+msgid "Clear Console"
+msgstr "Konzolt ürít"
+
+msgid "Preferences"
+msgstr "Beállítások"
+
+msgid "Object"
+msgstr "Object"
+
+msgid "Message"
+msgstr "Üzenet"
+
+msgid "Number"
+msgstr "Number"
+
+msgid "Symbol"
+msgstr "Symbol"
+
+msgid "Comment"
+msgstr "Comment"
+
+msgid "Graph"
+msgstr "Graph"
+
+msgid "Find..."
+msgstr "Keres..."
+
+msgid "Find Again"
+msgstr "Újra keres"
+
+msgid "Find Last Error"
+msgstr "Legutóbbi hiba helye"
+
+msgid "DSP On"
+msgstr "DSP be"
+
+msgid "DSP Off"
+msgstr "DSP ki"
+
+msgid "Test Audio and MIDI..."
+msgstr "Hang és MIDI tesztelése..."
+
+msgid "Load Meter"
+msgstr "Terhelésmérő"
+
+msgid "Audio Settings..."
+msgstr "Hang beállítások..."
+
+msgid "MIDI Settings..."
+msgstr "MIDI beállítások..."
+
+msgid "Minimize"
+msgstr "Kicsinyít"
+
+msgid "Zoom"
+msgstr "Nagyító"
+
+msgid "Bring All to Front"
+msgstr "Mindent előtérbe hoz"
+
+#, fuzzy
+msgid "Next Window"
+msgstr "Szülő ablak"
+
+#, fuzzy
+msgid "Previous Window"
+msgstr "Szülő ablak"
+
+msgid "Parent Window"
+msgstr "Szülő ablak"
+
+msgid "HTML Manual..."
+msgstr "HTML kézikönyv..."
+
+msgid "Browser..."
+msgstr "Beépített böngésző..."
+
+msgid "puredata.info"
+msgstr ""
+
+msgid "Report a bug"
+msgstr ""
+
+msgid "Clear Menu"
+msgstr "Menüt ürít"
+
+msgid "Path..."
+msgstr ""
+
+msgid "Startup..."
+msgstr ""
+
+#, fuzzy
+msgid "Audio..."
+msgstr "Hang beállítások..."
+
+#, fuzzy
+msgid "MIDI..."
+msgstr "MIDI beállítások..."
+
+msgid "Zoom new windows"
+msgstr ""
+
+#, fuzzy
+msgid "Save all preferences"
+msgstr "Beállítások"
+
+#, fuzzy
+msgid "Save to ..."
+msgstr "Ment új néven..."
+
+msgid "Load from ..."
+msgstr ""
+
+msgid "Forget all..."
+msgstr ""
+
+msgid "Open Recent"
+msgstr "Legutóbbi fájlok"
+
+msgid "Quit"
+msgstr "Kilép"
+
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+msgid "Help"
+msgstr "Súgó"
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr ""
+
+msgid "Tcl:"
+msgstr ""
+
+msgid "Pd"
+msgstr ""
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "Audio off"
+msgstr ""
+
+msgid "Audio I/O error"
+msgstr ""
+
+msgid "Log:"
+msgstr ""
+
+msgid "fatal"
+msgstr ""
+
+msgid "error"
+msgstr ""
+
+msgid "normal"
+msgstr ""
+
+msgid "debug"
+msgstr ""
+
+msgid "all"
+msgstr ""
+
+msgid "New..."
+msgstr ""
+
+#, fuzzy
+msgid "Edit..."
+msgstr "Szerkeszt"
+
+#, fuzzy
+msgid "Delete"
+msgstr "Array-t töröl"
+
+#, tcl-format
+msgid "Ignoring '%s': doesn't look like a Pd-file"
+msgstr ""
 
 #~ msgid "Filters"
 #~ msgstr "Szűrők"
 
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Max patch fájlok (.pat)"
-
-#~ msgid "Signal"
-#~ msgstr "Jel"
-
-#~ msgid "really quit?"
-#~ msgstr "tényleg kilép?"
-
-#~ msgid "Toggle Console"
-#~ msgstr "Konzol ki/be"
-
-#~ msgid "Preferences..."
-#~ msgstr "Beállítások..."
-
-#~ msgid "Max Text Files"
-#~ msgstr "Max szövegfájlok"
-
-#~ msgid "Math"
-#~ msgstr "Számítások"
-
-#~ msgid "Associated Files"
-#~ msgstr "Kapcsolódó fájlok"
-
 #~ msgid "Input device 3:"
 #~ msgstr "3. bemeneti eszköz:"
 
-#~ msgid "Output device 2:"
-#~ msgstr "2. kimeneti eszköz:"
+#~ msgid "Sampling"
+#~ msgstr "Mintavételezés"
 
 #~ msgid "Max Patch Files"
 #~ msgstr "Max patch fájlok"
 
+#~ msgid "Untitled"
+#~ msgstr "Névtelen"
+
+#~ msgid "Max Text Files (.mxt)"
+#~ msgstr "Max szövegfájlok (.mxt)"
+
+#~ msgid "Put"
+#~ msgstr "Új"
+
+#~ msgid "Pd Files"
+#~ msgstr "Pd fájlok"
+
+#~ msgid "GUI"
+#~ msgstr "Kezelőfelület"
+
+#~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
+#~ msgstr "HIBA: a 'pd' nem jelentkezett, a 'pd-gui' kilép!"
+
+#~ msgid "Font Properties"
+#~ msgstr "Betű tulajdonságai"
+
+#~ msgid "File"
+#~ msgstr "Fájl"
+
+#~ msgid "Output device 3:"
+#~ msgstr "3. kimeneti eszköz:"
+
+#~ msgid "Input device 2:"
+#~ msgstr "2. bemeneti eszköz:"
+
+#~ msgid "Max Text Files"
+#~ msgstr "Max szövegfájlok"
+
+#~ msgid "Signal"
+#~ msgstr "Jel"
+
+#~ msgid "Others"
+#~ msgstr "Egyéb"
+
+#~ msgid "really quit?"
+#~ msgstr "tényleg kilép?"
+
+#~ msgid "Patch Font"
+#~ msgstr "Patch betűkészlet"
+
+#~ msgid "Close this window??"
+#~ msgstr "Bezárja ezt az ablakot?"
+
+#~ msgid "Toggle Console"
+#~ msgstr "Konzol ki/be"
+
+#~ msgid "Generators"
+#~ msgstr "Generátorok"
+
+#~ msgid "Media"
+#~ msgstr "Média"
+
+#~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
+#~ msgstr "FIGYELEM: nem található %s betűkészlet %sx%s (%s) méretben!"
+
+#~ msgid "Math"
+#~ msgstr "Számítások"
+
+#~ msgid "Output device 2:"
+#~ msgstr "2. kimeneti eszköz:"
+
+#~ msgid "Associated Files"
+#~ msgstr "Kapcsolódó fájlok"
+
+#~ msgid "Preferences..."
+#~ msgstr "Beállítások..."
+
 #~ msgid "Window"
 #~ msgstr "Ablak"
-
-#~ msgid "Text Editor"
-#~ msgstr "Szövegszerkesztő"
 
 #~ msgid "WARNING: Font family '%s' not found, using default (%s)"
 #~ msgstr ""
 #~ "FIGYELEM: Nem található '%s' betűcsalád, az alapbeállítás (%s) érvényes"
 
-#~ msgid "Generators"
-#~ msgstr "Generátorok"
+#~ msgid "I/O"
+#~ msgstr "I/O"
 
-#~ msgid "File"
-#~ msgstr "Fájl"
+#~ msgid "Max Patch Files (.pat)"
+#~ msgstr "Max patch fájlok (.pat)"
 
-#~ msgid "Pd Files"
-#~ msgstr "Pd fájlok"
+#~ msgid "Input device 4:"
+#~ msgstr "4. bemeneti eszköz:"
 
-#~ msgid "Sampling"
-#~ msgstr "Mintavételezés"
+#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
+#~ msgstr ""
+#~ "FIGYELEM: Nem található '%s' betűvastagság, az alapbeállítás (%s) érvényes"
 
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "Max szövegfájlok (.mxt)"
+#~ msgid "Discard changes to this window??"
+#~ msgstr "Elveti az ablak változtatásait?"
 
-#~ msgid "Media"
-#~ msgstr "Média"
+#~ msgid "Text Editor"
+#~ msgstr "Szövegszerkesztő"
 
-#~ msgid "Input device 2:"
-#~ msgstr "2. bemeneti eszköz:"
+#~ msgid "Use multiple ALSA devices"
+#~ msgstr "Több ALSA eszköz használata"
+
+#~ msgid "Output device 4:"
+#~ msgstr "4. kimeneti eszköz:"
