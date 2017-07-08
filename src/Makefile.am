@@ -320,10 +320,10 @@ endif
 
 .PHONY: convenience-links
 
-# create a bin folder & symlinks to the binaries in order to
-# replicate the src/makefile.* build result
 all-local: convenience-links
 
+# create a bin folder & symlinks to the binaries in order to
+# replicate the src/makefile.* build result
 convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(MKDIR_P) $(top_builddir)/bin
 	rm -rf $(top_builddir)/bin/pd*
@@ -338,6 +338,7 @@ clean-local: clean-pdlib
 
 # link to $(libdir)/pd/bin so the tcl scripts can
 # launch the core if the gui is started first
+#
 # We have to make the dir just in case as it may not exist yet &
 # we remove any existing symlink if doing a repeated install.
 install-exec-hook:
@@ -347,12 +348,12 @@ install-exec-hook:
 
 # remove the $(libdir)/pd/bin link
 # &
-# remove the leftover $(inludedir)/pd dir, fail silently on any non-empty dirs
+# remove the leftover $(includedir)/pd dir, fail silently on any non-empty dirs
+#
 # The "|| true" ensures that if the dir is *not* empty, then rmdir does not throw
 # an error and stop make.
 uninstall-hook:
 	rm -f $(DESTDIR)$(libpdbindir)/pd
-
 	if test -d $(DESTDIR)$(pkgincludedir) ; then \
 	    rmdir $(DESTDIR)$(pkgincludedir) 2>/dev/null || true ; \
 	fi
