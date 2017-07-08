@@ -119,7 +119,7 @@ po: $(POFILES)
 # the .po files depend on template.pot, suppress line location changes to
 # avoid unnecessary updates
 $(POFILES): %.po: $(TEMPLATE)
-	$(MSGMERGE) --sort-by-file --no-location --quiet --update $@ $(TEMPLATE)
+	$(MSGMERGE) --no-location --quiet --update $@ $(TEMPLATE)
 	touch $@
 	rm -f $@~
 
@@ -128,7 +128,7 @@ $(POFILES): %.po: $(TEMPLATE)
 msg: $(MSGFILES)
 
 # each .msg file depends on updates to the corresponding .po file
-$(MSGFILES): %.msg: $(POFILES)
+$(MSGFILES): %.msg: %.po
 	$(MSGFMT) --check --tcl --locale=$* -d . $<
 
 etags: TAGS
