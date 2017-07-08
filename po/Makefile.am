@@ -50,66 +50,85 @@ TCLFILES = \
     pd_guiprefs.tcl \
     pd_deken.tcl
 
-FILES = $(addprefix ../tcl/, $(TCLFILES)) iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl
+LOCAL_TCLFILES = \
+    iemgui_dynamic_strings.tcl \
+    pd_dynamic_strings.tcl
+
+# note: adding $(top_srcdir) prefix for out of tree builds
+# where $(top_srcdir) and $(top_builddir) are not the same
+#
+# updating template.pot & the .po files are not considered per-build artifacts
+# but part of the source, the per build files are the generated .msg files
+
+FILES = $(addprefix $(top_srcdir)/tcl/, $(TCLFILES)) \
+        $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
 # these are the supported languages
 ALL_LINGUAS = af az be bg de el en_ca eu fr gu he hi hu it pa pt_br pt_pt sq sv vi
-POFILES = $(ALL_LINGUAS:=.po)
+POFILES = $(addprefix $(top_srcdir)/po/, $(ALL_LINGUAS:=.po))
 MSGFILES = $(ALL_LINGUAS:=.msg)
 
-TEMPLATE = template.pot
+TEMPLATE = $(top_srcdir)/po/template.pot
 
 libpdpodir = $(pkglibdir)/po
 libpdpo_DATA = $(MSGFILES)
 dist_libpdpo_DATA =
 
-EXTRA_DIST = $(POFILES) \
-    iemgui_dynamic_strings.tcl pd_dynamic_strings.tcl \
-    template.pot
+EXTRA_DIST = $(POFILES) $(TEMPLATE) \
+             $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
 #########################################
 ##### Targets #####
 
-all-local: $(MSGFILES)
+.PHONY: locations
+
+all-local: template po msg
 
 clean-local:
-	-rm -f -- $(MSGFILES)
-	-rm -f -- $(POFILES:=~)
+	rm -f $(MSGFILES)
 
 # refresh template.pot from the source code
 template: $(TEMPLATE)
 
+# ignore string file locations and remove header "POT-Creation-Date" to suppress
+# unnecessary changes, we really only want to update the po files when a
+# translation string changes in a tcl file
 $(TEMPLATE): $(FILES)
 	touch $(TEMPLATE)
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
-		--sort-by-file --output=$(TEMPLATE) \
+		--sort-by-file --no-location --output=$(TEMPLATE) \
 		--package-name="Pure Data" --package-version=$(VERSION) \
 		--copyright-holder='This file is put in the public domain' \
 		--foreign-user \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
+	sed -i.bak -E '/POT-Creation-Date/d' $(TEMPLATE)
+	rm -f $(TEMPLATE).bak
+
+# print the locations for translation strings in the .tcl source files
+locations:
+	$(XGETTEXT) \
+		--from-code=UTF-8 --language=Tcl --keyword=_ \
+		--sort-by-file --foreign-user --omit-header --output=- \
+		$(FILES)
 
 # refresh .po files from the template
 po: $(POFILES)
 
-# I guess officially, the .po file should depend on the template.pot, but its
-# mostly annoying since it wants to update the template.pot and .po files any
-# time a .tcl file changes.
-
-# copy po file for out of tree builds, make sure to update timestamp,
-# & remove any leftover .po~ temp files
-#
-# the preceding "-" tells make to ignore any errors on that line and
-# the "||:" silences make errors if the command failed but was ignored
+# the .po files depend on template.pot, suppress line location changes to
+# avoid unnecessary updates
 $(POFILES): %.po: $(TEMPLATE)
-	-cp $(srcdir)/$@ . 2>>/dev/null ||:
-	$(MSGMERGE) --sort-by-file --quiet --update $@ $(TEMPLATE)
-	-touch $@
-	-rm -f $@~
+	$(MSGMERGE) --sort-by-file --no-location --quiet --update $@ $(TEMPLATE)
+	touch $@
+	rm -f $@~
 
-# generate .msg files from the .po files
-%.msg: %.po
+# generate .msg files from the .po files,
+# these are installed and loaded by the GUI at runtime
+msg: $(MSGFILES)
+
+# each .msg file depends on updates to the corresponding .po file
+$(MSGFILES): %.msg: $(POFILES)
 	$(MSGFMT) --check --tcl --locale=$* -d . $<
 
 etags: TAGS

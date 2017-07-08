@@ -52,9 +52,13 @@ DIST_SUBDIRS = asio doc extra mac man po portmidi portaudio src tcl
 
 .PHONY: app
 
-# build localizations
+# optionaly build localizations
+if MSGFMT
 locales:
 	make -C po all
+else
+locales:
+endif
 
 # forward target to mac/Makefile
 app:

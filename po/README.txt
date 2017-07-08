@@ -7,6 +7,8 @@ This directory contains translation files for the Pure Data GUI:
 
 Localizations are built using GNU gettext: https://www.gnu.org/software/gettext
 
+## Overview
+
 Pd GUI strings are written in English and denoted in Tcl using the "_" prefix:
 
     [_ "Audio Settings"]
@@ -36,13 +38,40 @@ added to the ALL_LINGUAS language list in po/Makefile.am.
 When building Pd, these .po translation files are used to generate .msg files
 which are then loaded by the Pd GUI at runtime depending on the current locale.
 
-If the .tcl files have changed, the make process regenerates the .pot template
+If the Tcl files have changed, the make process regenerates the .pot template
 file and merges any changes into the .po files. Strings which have changed are
 marked as "fuzzy" and should be reviewed updated and by a translator.
 
-Note: As the GUI is separate from the Pd core, strings which are sent from the
+## Developer Info
+
+This is system is largely automated using make, however there are times when it
+is useful to do things manually. The applicable make targets are:
+
+* template: re-builds the template if one of the Tcl files has changed
+* po: updates the .po files if the template has been changed
+* msg: generates the .msg files if the .po files have changed
+
+You can manually trigger a template refresh by updating the timestamp of one
+of the Tcl files:
+
+    cd po
+    touch ../tcl/pd-gui.tcl
+    make template
+
+If the template file changed, you can manually trigger the .po file refresh:
+
+    make po
+
+To see the location of translation strings in the Tcl source files, run the
+following in this directory:
+
+    make locations
+
+## On "Dynamic" Strings
+
+As the GUI is separate from the Pd core, strings which are sent from the
 core to the GUI are translated "on the fly" when they are received. These are
 given to gettext via the dummy Tcl files in this directory to make sure they are
 added to the .pot & .po files since the Pd core .c source files are not indexed.
 This means that if a "dynamic" string sent from the core is changed at some
-point, it needs to be manually updated here. 
+point, it needs to be manually updated here.
