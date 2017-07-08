@@ -74,7 +74,8 @@ libpdpodir = $(pkglibdir)/po
 libpdpo_DATA = $(MSGFILES)
 dist_libpdpo_DATA =
 
-EXTRA_DIST = $(POFILES) $(TEMPLATE) \
+# files that are included but not built
+EXTRA_DIST = $(POFILES) $(TEMPLATE) README.txt \
              $(addprefix $(top_srcdir)/po/, $(LOCAL_TCLFILES))
 
 #########################################
