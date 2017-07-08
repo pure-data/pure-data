@@ -51,6 +51,26 @@ dist_libpdtcl_DATA = \
 #########################################
 ##### Targets #####
 
+.PHONY: convenience-links
+
+all-local: convenience-links
+
+# create symlinks to the tcl files for out of tree builds:
+# test ! path1 -ef path2 checks if top_srcdir & top_builddir are different
+#
+# this allows running locally from $(top_builddir) to work
+convenience-links:
+	if test ! $(top_srcdir) -ef $(top_builddir) ; then \
+	    rm -f $(top_builddir)/tcl/*.tcl ; \
+	    $(LN_S) $(top_srcdir)/tcl/*.tcl $(top_builddir)/tcl/ ; \
+	fi
+
+# remove convenience links for out of tree builds
+clean-local:
+	if test ! $(top_srcdir) -ef $(top_builddir) ; then \
+	    rm -f $(top_builddir)/tcl/*.tcl ; \
+	fi
+
 # generate Emacs tags
 etags: TAGS
 	etags --append --language=none --regex="/proc[ \t]+\([^ \t]+\)/\1/" *.tcl
