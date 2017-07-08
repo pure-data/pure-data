@@ -54,12 +54,12 @@ is useful to do things manually. The applicable make targets are:
 You can manually trigger a template refresh by updating the timestamp of one
 of the Tcl files:
 
-    cd po
     touch ../tcl/pd-gui.tcl
     make template
 
-If the template file changed, you can manually trigger the .po file refresh:
+The .po file refresh can be triggered by updating the template timestamp:
 
+    touch template.pot
     make po
 
 To see the location of translation strings in the Tcl source files, run the
