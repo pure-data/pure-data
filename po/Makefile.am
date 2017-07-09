@@ -104,8 +104,8 @@ $(TEMPLATE): $(FILES)
 		--foreign-user \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
-	sed -i.bak -E '/#:/d' $(TEMPLATE)
-	sed -i.bak -E '/POT-Creation-Date/d' $(TEMPLATE)
+	sed -i.bak -E '/^#:/d' $(TEMPLATE)
+	sed -i.bak -E '/^"POT-Creation-Date/d' $(TEMPLATE)
 	rm -f $(TEMPLATE).bak
 
 # print the locations for translation strings in the .tcl source files
