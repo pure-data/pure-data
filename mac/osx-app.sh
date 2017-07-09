@@ -16,11 +16,17 @@ set -e
 verbose=
 universal=
 included_wish=true
-EXTERNAL_EXT=pd_darwin
+EXTERNAL_EXT=d_fat
 TK=
 SYS_TK=Current
 WISH=
 PD_VERSION=
+
+# source dir, relative to this script
+SRC=..
+
+# build dir, relative to working directory
+BUILD=..
 
 # Help message
 #----------------------------------------------------------
@@ -48,6 +54,8 @@ Options:
 
   --universal         \"universal\" multi-arch build when using -t,--tk:
                       i386 & x86_64 (& ppc if 10.6 SDK found)
+
+  --builddir          set pd build directory path, defaults to working directory
 
 Arguments:
 
@@ -110,6 +118,14 @@ while [ "$1" != "" ] ; do
         --universal)
             universal=--universal
             ;;
+        --builddir)
+            if [ $# == 0 ] ; then
+                echo "--builddir options requires a DIR argument"
+                exit 1
+            fi
+            shift 1
+            BUILD=${1%/} # remove trailing slash
+            ;;
         -v|--verbose)
             verbose=-v
             ;;
@@ -134,6 +150,11 @@ fi
 # Go
 #----------------------------------------------------------
 
+# make sure build directory is an absolute path
+if [[ "$BUILD" != /* ]] ; then
+    BUILD=$(pwd)/$BUILD
+fi
+
 # change to the dir of this script
 cd $(dirname $0)
 
@@ -141,8 +162,7 @@ cd $(dirname $0)
 # aka "pd configure 0.47.1" -> "0.47.1"
 PD_VERSION=$(../configure --version | head -n 1 | cut -d " " -f 3)
 
-# pd source and app bundle destination paths
-SRC=..
+# pd app bundle destination path
 DEST=$APP/Contents/Resources
 
 # remove old app if found
@@ -151,7 +171,7 @@ if [ -d $APP ] ; then
 fi
 
 # check if pd is already built
-if [ ! -e "$SRC/bin/pd" ] ; then
+if [ ! -e "$BUILD/bin/pd" ] ; then
     echo "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
 fi
@@ -248,24 +268,30 @@ plutil -replace CFBundleGetInfoString -string "$PLIST_VERSION" $APP/Contents/Inf
 
 # install binaries
 mkdir -p $DEST/bin
-cp -R $verbose $SRC/src/pd          $DEST/bin/
-cp -R $verbose $SRC/src/pdsend      $DEST/bin/
-cp -R $verbose $SRC/src/pdreceive   $DEST/bin/
-cp -R $verbose $SRC/src/pd-watchdog $DEST/bin/
+cp -R $verbose $BUILD/src/pd          $DEST/bin/
+cp -R $verbose $BUILD/src/pdsend      $DEST/bin/
+cp -R $verbose $BUILD/src/pdreceive   $DEST/bin/
+cp -R $verbose $BUILD/src/pd-watchdog $DEST/bin/
 
 # install resources
-cp -R $verbose $SRC/doc      $DEST/
-cp -R $verbose $SRC/extra    $DEST/
-cp -R $verbose $SRC/tcl      $DEST/
+mkdir -p $DEST/po
+cp -R $verbose $SRC/doc         $DEST/
+cp -R $verbose $SRC/extra       $DEST/
+cp -R $verbose $SRC/tcl         $DEST/
+rm -f $DEST/tcl/pd.ico $DEST/tcl/pd-gui.in
+if [ ! $BUILD -ef $SRC ] ; then # are src and build dirs not the same?
+    # compiled externals are in the build dir
+    cp -R $verbose $BUILD/extra $DEST/
+fi
 
 # install licenses
 cp $verbose $SRC/README.txt  $DEST/
 cp $verbose $SRC/LICENSE.txt $DEST/
 
 # install translations if they were built
-if [ -e $SRC/po/af.msg ] ; then
+if [ -e $BUILD/po/af.msg ] ; then
     mkdir -p $DEST/po
-    cp $verbose $SRC/po/*.msg $DEST/po/
+    cp $verbose $BUILD/po/*.msg $DEST/po/
 else
     echo "No localizations found. Skipping po dir..."
 fi
@@ -276,15 +302,16 @@ cp $verbose $SRC/src/*.h $DEST/include/
 
 # clean extra folders
 cd $DEST/extra
+rm -f makefile.subdir
 find * -prune -type d | while read ext; do
     ext_lib=$ext.$EXTERNAL_EXT
     if [ -e $ext/.libs/$ext_lib ] ; then
 
         # remove any symlinks to the compiled external
-        rm -f $ext/$ext_lib
+        rm -f $ext/*.$EXTERNAL_EXT
 
         # mv compiled external into main folder
-        mv $ext/.libs/$ext_lib $ext/
+        mv $ext/.libs/*.$EXTERNAL_EXT $ext/
 
         # remove libtool build folders & unneeded build files
         rm -rf $ext/.libs
