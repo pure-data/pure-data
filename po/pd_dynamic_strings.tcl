@@ -30,4 +30,4 @@ puts [_ "Redo typing"]
 
 # These are strings built into Tk that msgcat should know about.
 
-pus [_ "Show Hidden Files and Directories"]
+puts [_ "Show &Hidden Files and Directories"]
