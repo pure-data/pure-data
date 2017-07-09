@@ -91,19 +91,20 @@ clean-local:
 # refresh template.pot from the source code
 template: $(TEMPLATE)
 
-# ignore string file locations and remove header "POT-Creation-Date" to suppress
-# unnecessary changes, we really only want to update the po files when a
+# remove string file locations and header "POT-Creation-Date" to suppress
+# unnecessary changes, we really only want to update the .po files when a
 # translation string changes in a tcl file
 $(TEMPLATE): $(FILES)
 	touch $(TEMPLATE)
 	$(XGETTEXT) \
 		--from-code=UTF-8 --language=Tcl --keyword=_ \
-		--sort-by-file --no-location --output=$(TEMPLATE) \
+		--sort-by-file --output=$(TEMPLATE) \
 		--package-name="Pure Data" --package-version=$(VERSION) \
 		--copyright-holder='This file is put in the public domain' \
 		--foreign-user \
 		--msgid-bugs-address=pd-dev@iem.at \
 		$(FILES)
+	sed -i.bak -E '/#:/d' $(TEMPLATE)
 	sed -i.bak -E '/POT-Creation-Date/d' $(TEMPLATE)
 	rm -f $(TEMPLATE).bak
 

@@ -20,10 +20,14 @@ string ids and translation stubs with associated metadata:
     msgid "Audio Settings"
     msgstr ""
 
-To create a new translation, copy & rename the .pot template file using the
-appropriate ISO 639 2 or 3 letter language code (ie. German is "de.po"). Note
-that some languages also have specific country distinctions, ie. Brazilian
-Portuguese and Portuguese are named pt_br.po pt_pt.po.
+To create a new translation, either copy & rename the .pot template file using
+the appropriate ISO 639 2 or 3 letter language code (ie. German is "de.po") or
+use the gettext msginit utility to initialize a new translation:
+
+    msginit --locale=de --input=template.pot
+
+Note that some languages also have specific country distinctions, ie. Brazilian
+Portuguese and Portuguese are named "pt_br.po" & "pt_pt.po", respectively.  
 
 Next, fill out the msgstr portion for each msgid with it's translation:
 
