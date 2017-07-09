@@ -6,7 +6,7 @@ namespace eval ::helpbrowser:: {
     variable helplist
     variable reference_count
     variable reference_paths
-    variable doctypes "*.{pd,pat,mxb,mxt,help,txt,htm,html,pdf}"
+    variable doctypes "*.{pd,pat,mxb,mxt,help,txt,htm,html,pdf,c}"
 
     namespace export open_helpbrowser
 }
@@ -136,7 +136,7 @@ proc ::helpbrowser::root_navigate {window x y} {
     }
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-        make_liblistbox $filename
+        focus [make_liblistbox $filename]
     }
 }
 
@@ -269,7 +269,7 @@ proc ::helpbrowser::dir_navigate {dir count window x y} {
     }
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
-        make_doclistbox $dir_to_open $count
+        focus [make_doclistbox $dir_to_open $count]
     }
 }
 
