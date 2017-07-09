@@ -227,7 +227,7 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {menu_send $::focused_window numbox}
     $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
         -command {menu_send $::focused_window vslider}
-    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+G" \
+    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+H" \
         -command {menu_send $::focused_window hslider}
     $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
         -command {menu_send $::focused_window vradio}
