@@ -146,7 +146,29 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Αρχείο"
+
+#, fuzzy
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+msgid "Put"
+msgstr "Προσθήκη"
+
+msgid "Find"
+msgstr "Εύρεση"
+
+msgid "Media"
+msgstr "Μέσα"
+
+msgid "Window"
+msgstr "Παράθυρο"
+
+msgid "Help"
+msgstr "Βοήθεια"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -229,28 +251,14 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "Χρήση επανακλήσεων"
 
-#, fuzzy
 msgid "Input Devices"
-msgstr "Συσκευή εισόδου 1:"
-
-msgid "1:"
-msgstr ""
+msgstr "Συσκευή εισόδου"
 
 msgid "Channels:"
 msgstr "Κανάλια:"
 
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
-
-#, fuzzy
 msgid "Output Devices"
-msgstr "Συσκευή εξόδου 1:"
+msgstr "Συσκευή εξόδου"
 
 #, fuzzy
 msgid "(same as input device)..."
@@ -328,9 +336,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Εύρεση"
 
 msgid "Pd window"
 msgstr "Παράθυρο Pd"
@@ -528,21 +533,6 @@ msgstr ""
 
 msgid "MIDI Settings"
 msgstr "Ρυθμίσεις MIDI"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 msgid "ALSA MIDI Settings"
 msgstr "Ρυθμίσεις ALSA MIDI"
@@ -787,9 +777,6 @@ msgstr "Έξοδος"
 msgid "Properties"
 msgstr "Ιδιότητες"
 
-msgid "Help"
-msgstr "Βοήθεια"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -864,9 +851,6 @@ msgstr ""
 #~ msgstr ""
 #~ "ΠΡΟΣΟΧΗ:  Το βάρος γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής (%s)"
 
-#~ msgid "Put"
-#~ msgstr "Προσθήκη"
-
 #~ msgid "Generators"
 #~ msgstr "Γεννήτριες"
 
@@ -890,9 +874,6 @@ msgstr ""
 #~ msgstr ""
 #~ "ΠΡΟΣΟΧΗ:  Η οικογένεια γραμματοσειράς '%s' δεν βρέθηκε, χρήση προεπιλογής "
 #~ "(%s)"
-
-#~ msgid "Media"
-#~ msgstr "Μέσα"
 
 #~ msgid "Font Properties"
 #~ msgstr "Ιδιότητες Γραμματοσειράς"
@@ -930,9 +911,6 @@ msgstr ""
 #~ msgid "Close this window??"
 #~ msgstr "Κλείσιμο αυτού του παραθύρου;;"
 
-#~ msgid "File"
-#~ msgstr "Αρχείο"
-
 #~ msgid "Pd Files"
 #~ msgstr "Αρχεία Pd"
 
@@ -944,9 +922,6 @@ msgstr ""
 
 #~ msgid "Text Editor"
 #~ msgstr "Επεξεργαστής Κειμένου"
-
-#~ msgid "Window"
-#~ msgstr "Παράθυρο"
 
 #~ msgid "Others"
 #~ msgstr "Άλλα"

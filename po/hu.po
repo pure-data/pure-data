@@ -151,7 +151,29 @@ msgstr "Mégsem illeszt be"
 msgid "Redo typing"
 msgstr "Mégsem ír"
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Fájl"
+
+#, fuzzy
+msgid "Edit"
+msgstr "Szerkeszt"
+
+msgid "Put"
+msgstr "Új"
+
+msgid "Find"
+msgstr "Keres"
+
+msgid "Media"
+msgstr "Média"
+
+msgid "Window"
+msgstr "Ablak"
+
+msgid "Help"
+msgstr "Súgó"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -235,26 +257,14 @@ msgstr "Callback-ek használata"
 
 #, fuzzy
 msgid "Input Devices"
-msgstr "1. bemeneti eszköz:"
-
-msgid "1:"
-msgstr ""
+msgstr "Bemeneti eszköz:"
 
 msgid "Channels:"
 msgstr "Csatornák:"
 
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
-
 #, fuzzy
 msgid "Output Devices"
-msgstr "1. kimeneti eszköz:"
+msgstr "Kimeneti eszköz:"
 
 #, fuzzy
 msgid "(same as input device)..."
@@ -332,9 +342,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Keres"
 
 msgid "Pd window"
 msgstr "Pd ablak"
@@ -528,21 +535,6 @@ msgstr ""
 
 msgid "MIDI Settings"
 msgstr "MIDI beállítások"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 msgid "ALSA MIDI Settings"
 msgstr "ALSA MIDI beállítások"
@@ -786,9 +778,6 @@ msgstr "Kilép"
 msgid "Properties"
 msgstr "Tulajdonságok"
 
-msgid "Help"
-msgstr "Súgó"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -858,9 +847,6 @@ msgstr ""
 #~ msgid "Max Text Files (.mxt)"
 #~ msgstr "Max szövegfájlok (.mxt)"
 
-#~ msgid "Put"
-#~ msgstr "Új"
-
 #~ msgid "Pd Files"
 #~ msgstr "Pd fájlok"
 
@@ -872,9 +858,6 @@ msgstr ""
 
 #~ msgid "Font Properties"
 #~ msgstr "Betű tulajdonságai"
-
-#~ msgid "File"
-#~ msgstr "Fájl"
 
 #~ msgid "Output device 3:"
 #~ msgstr "3. kimeneti eszköz:"
@@ -906,9 +889,6 @@ msgstr ""
 #~ msgid "Generators"
 #~ msgstr "Generátorok"
 
-#~ msgid "Media"
-#~ msgstr "Média"
-
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
 #~ msgstr "FIGYELEM: nem található %s betűkészlet %sx%s (%s) méretben!"
 
@@ -923,9 +903,6 @@ msgstr ""
 
 #~ msgid "Preferences..."
 #~ msgstr "Beállítások..."
-
-#~ msgid "Window"
-#~ msgstr "Ablak"
 
 #~ msgid "WARNING: Font family '%s' not found, using default (%s)"
 #~ msgstr ""

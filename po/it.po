@@ -152,7 +152,29 @@ msgstr "Annulla incolla"
 msgid "Redo typing"
 msgstr "Annulla inserimento"
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "File"
+
+#, fuzzy
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Put"
+msgstr "Inserisci"
+
+msgid "Find"
+msgstr "Trova"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Window"
+msgstr "Finestra"
+
+msgid "Help"
+msgstr "Aiuto"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -234,28 +256,14 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "Usa callback"
 
-#, fuzzy
 msgid "Input Devices"
-msgstr "Dispositivo di ingresso 1:"
-
-msgid "1:"
-msgstr ""
+msgstr "Dispositivo di ingresso"
 
 msgid "Channels:"
 msgstr "Canali:"
 
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
-
-#, fuzzy
 msgid "Output Devices"
-msgstr "Dispositivo di uscita 1:"
+msgstr "Dispositivo di uscita"
 
 #, fuzzy
 msgid "(same as input device)..."
@@ -333,9 +341,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Trova"
 
 msgid "Pd window"
 msgstr "Finestra Pd"
@@ -529,21 +534,6 @@ msgstr ""
 
 msgid "MIDI Settings"
 msgstr "Settaggi MIDI"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 msgid "ALSA MIDI Settings"
 msgstr "Settaggi ALSA MIDI"
@@ -784,9 +774,6 @@ msgstr "Esci"
 msgid "Properties"
 msgstr "Proprietà"
 
-msgid "Help"
-msgstr "Aiuto"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -903,20 +890,11 @@ msgstr ""
 #~ msgid "I/O"
 #~ msgstr "Input/Output"
 
-#~ msgid "Put"
-#~ msgstr "Inserisci"
-
 #~ msgid "Math"
 #~ msgstr "Matematica"
 
 #~ msgid "Input device 2:"
 #~ msgstr "Dispositivo di ingresso 2:"
-
-#~ msgid "Window"
-#~ msgstr "Finestra"
-
-#~ msgid "File"
-#~ msgstr "File"
 
 #~ msgid "Input device 4:"
 #~ msgstr "Dispositivo di ingresso 4:"
@@ -926,9 +904,6 @@ msgstr ""
 
 #~ msgid "Filters"
 #~ msgstr "Filtri"
-
-#~ msgid "Media"
-#~ msgstr "Media"
 
 #~ msgid "Pd Files"
 #~ msgstr "File Pd"

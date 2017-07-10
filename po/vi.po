@@ -146,7 +146,31 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Tập tin"
+
+#, fuzzy
+msgid "Edit"
+msgstr "_Hiệu chỉnh"
+
+msgid "Put"
+msgstr ""
+
+msgid "Find"
+msgstr "Tìm"
+
+#, fuzzy
+msgid "Media"
+msgstr "Maxêđôni"
+
+#, fuzzy
+msgid "Window"
+msgstr "_Cửa sổ"
+
+msgid "Help"
+msgstr "Trợ giúp"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -239,21 +263,9 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-msgid "1:"
-msgstr ""
-
 #, fuzzy
 msgid "Channels:"
 msgstr "Thôi"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -334,9 +346,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Tìm"
 
 #, fuzzy
 msgid "Pd window"
@@ -548,21 +557,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
 msgstr ""
 
 msgid "ALSA MIDI Settings"
@@ -824,9 +818,6 @@ msgstr "Thoát"
 msgid "Properties"
 msgstr ""
 
-msgid "Help"
-msgstr "Trợ giúp"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -879,23 +870,12 @@ msgstr "Xóa bỏ"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#~ msgid "File"
-#~ msgstr "Tập tin"
-
-#, fuzzy
-#~ msgid "Window"
-#~ msgstr "_Cửa sổ"
-
 #~ msgid "Preferences..."
 #~ msgstr "Sở thích..."
 
 #, fuzzy
 #~ msgid "Close this window??"
 #~ msgstr "Đóng thanh/cửa sổ này"
-
-#, fuzzy
-#~ msgid "Media"
-#~ msgstr "Maxêđôni"
 
 #, fuzzy
 #~ msgid "Pd Files"

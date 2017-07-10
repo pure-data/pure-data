@@ -144,7 +144,34 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+#, fuzzy
+msgid "File"
+msgstr "Lêer"
+
+#, fuzzy
+msgid "Edit"
+msgstr "/Laai"
+
+msgid "Put"
+msgstr ""
+
+#, fuzzy
+msgid "Find"
+msgstr "Soek:"
+
+#, fuzzy
+msgid "Media"
+msgstr "Name=Makedoniese"
+
+#, fuzzy
+msgid "Window"
+msgstr "<venster %d>"
+
+#, fuzzy
+msgid "Help"
+msgstr "hulp"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -240,21 +267,9 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-msgid "1:"
-msgstr ""
-
 #, fuzzy
 msgid "Channels:"
 msgstr "Kanselleer"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -335,10 +350,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-#, fuzzy
-msgid "Find"
-msgstr "Soek:"
 
 #, fuzzy
 msgid "Pd window"
@@ -550,21 +561,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
 msgstr ""
 
 msgid "ALSA MIDI Settings"
@@ -831,10 +827,6 @@ msgstr "Verlaat"
 msgid "Properties"
 msgstr ""
 
-#, fuzzy
-msgid "Help"
-msgstr "hulp"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -892,20 +884,8 @@ msgstr ""
 #~ msgstr "Kleure"
 
 #, fuzzy
-#~ msgid "Window"
-#~ msgstr "<venster %d>"
-
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "Lêer"
-
-#, fuzzy
 #~ msgid "Close this window??"
 #~ msgstr "Twm: Tab Vensterbestuurder"
-
-#, fuzzy
-#~ msgid "Media"
-#~ msgstr "Name=Makedoniese"
 
 #, fuzzy
 #~ msgid "Pd Files"

@@ -163,7 +163,28 @@ msgstr "Einfügen widerrufen"
 msgid "Redo typing"
 msgstr "Eingabe widerrufen"
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Datei"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Put"
+msgstr "Einfügen"
+
+msgid "Find"
+msgstr "Finde"
+
+msgid "Media"
+msgstr "Medien"
+
+msgid "Window"
+msgstr "Fenster"
+
+msgid "Help"
+msgstr "Hilfe"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -229,9 +250,8 @@ msgstr "OK"
 msgid "Audio Settings"
 msgstr "Audioeinstellungen"
 
-#, fuzzy
 msgid "Settings"
-msgstr "MIDI Einstellungen"
+msgstr "Einstellungen"
 
 msgid "Sample rate:"
 msgstr "Samplingrate:"
@@ -245,28 +265,14 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "Rückfragen verwenden"
 
-#, fuzzy
 msgid "Input Devices"
-msgstr "Eingabegerät 1:"
-
-msgid "1:"
-msgstr ""
+msgstr "Eingabegerät"
 
 msgid "Channels:"
 msgstr "Kanäle:"
 
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
-
-#, fuzzy
 msgid "Output Devices"
-msgstr "Ausgabegerät 1:"
+msgstr "Ausgabegerät"
 
 #, fuzzy
 msgid "(same as input device)..."
@@ -344,9 +350,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Finde"
 
 msgid "Pd window"
 msgstr "Pd Fenster"
@@ -541,21 +544,6 @@ msgstr ""
 
 msgid "MIDI Settings"
 msgstr "MIDI Einstellungen"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 msgid "ALSA MIDI Settings"
 msgstr "ALSA MIDI Einstellungen"
@@ -799,9 +787,6 @@ msgstr "Beenden"
 msgid "Properties"
 msgstr "Einstellungen"
 
-msgid "Help"
-msgstr "Hilfe"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -880,9 +865,6 @@ msgstr ""
 #~ msgid "Untitled"
 #~ msgstr "Unbenannt"
 
-#~ msgid "Put"
-#~ msgstr "Einfügen"
-
 #~ msgid "Associated Files"
 #~ msgstr "Zugehörige Dateien"
 
@@ -900,9 +882,6 @@ msgstr ""
 #~ msgid "Input device 4:"
 #~ msgstr "Eingabegerät 4:"
 
-#~ msgid "Window"
-#~ msgstr "Fenster"
-
 #~ msgid "Toggle Console"
 #~ msgstr "Konsole Ein/Aus"
 
@@ -913,9 +892,6 @@ msgstr ""
 
 #~ msgid "Max Text Files (.mxt)"
 #~ msgstr "Max Textdateien (.mxt)"
-
-#~ msgid "Media"
-#~ msgstr "Medien"
 
 #~ msgid "Font Properties"
 #~ msgstr "Zeichensatz-Einstellungen"
@@ -949,9 +925,6 @@ msgstr ""
 
 #~ msgid "Filters"
 #~ msgstr "Filter"
-
-#~ msgid "File"
-#~ msgstr "Datei"
 
 #~ msgid "Max Patch Files (.pat)"
 #~ msgstr "Max Patch Dateien (.pat)"

@@ -147,7 +147,29 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Ficheiro"
+
+#, fuzzy
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Put"
+msgstr "Put"
+
+msgid "Find"
+msgstr "Localizar"
+
+msgid "Media"
+msgstr ""
+
+msgid "Window"
+msgstr "Janela"
+
+msgid "Help"
+msgstr "Ajuda"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -229,28 +251,14 @@ msgstr ""
 msgid "Use callbacks"
 msgstr "Usar callbacks"
 
-#, fuzzy
 msgid "Input Devices"
-msgstr "Dispositivo de entrada 1:"
-
-msgid "1:"
-msgstr ""
+msgstr "Dispositivo de entrada"
 
 msgid "Channels:"
 msgstr "Canais:"
 
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
-
-#, fuzzy
 msgid "Output Devices"
-msgstr "Dispositivo de saída 1:"
+msgstr "Dispositivo de saída"
 
 #, fuzzy
 msgid "(same as input device)..."
@@ -328,9 +336,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Localizar"
 
 msgid "Pd window"
 msgstr "Janela Pd"
@@ -524,21 +529,6 @@ msgstr ""
 
 msgid "MIDI Settings"
 msgstr "Configuração MIDI"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 msgid "ALSA MIDI Settings"
 msgstr "Configuração MIDI ALSA"
@@ -782,9 +772,6 @@ msgstr "Sair"
 msgid "Properties"
 msgstr "Propriedades"
 
-msgid "Help"
-msgstr "Ajuda"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -902,9 +889,6 @@ msgstr ""
 #~ msgid "Max Patch Files (.pat)"
 #~ msgstr "Ficheiros Max-Patches (.pat)"
 
-#~ msgid "Put"
-#~ msgstr "Put"
-
 #~ msgid "Generators"
 #~ msgstr "Geradores"
 
@@ -914,17 +898,11 @@ msgstr ""
 #~ msgid "I/O"
 #~ msgstr "Entrada/Saída"
 
-#~ msgid "File"
-#~ msgstr "Ficheiro"
-
 #~ msgid "Input device 4:"
 #~ msgstr "Dispositivo de entrada 4:"
 
 #~ msgid "Untitled"
 #~ msgstr "Sem título"
-
-#~ msgid "Window"
-#~ msgstr "Janela"
 
 #~ msgid "Max Text Files (.mxt)"
 #~ msgstr "Ficheiros Max-Texto (.mxt)"

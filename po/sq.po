@@ -145,7 +145,31 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Kartelë"
+
+#, fuzzy
+msgid "Edit"
+msgstr "_Përpuno"
+
+msgid "Put"
+msgstr ""
+
+msgid "Find"
+msgstr "Gjej"
+
+#, fuzzy
+msgid "Media"
+msgstr "Maqedonia"
+
+#, fuzzy
+msgid "Window"
+msgstr "_Dritare"
+
+msgid "Help"
+msgstr "Ndihmë"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -239,21 +263,9 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-msgid "1:"
-msgstr ""
-
 #, fuzzy
 msgid "Channels:"
 msgstr "Anulo"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -334,9 +346,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Gjej"
 
 #, fuzzy
 msgid "Pd window"
@@ -548,21 +557,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
 msgstr ""
 
 msgid "ALSA MIDI Settings"
@@ -824,9 +818,6 @@ msgstr "Lër"
 msgid "Properties"
 msgstr ""
 
-msgid "Help"
-msgstr "Ndihmë"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -879,23 +870,12 @@ msgstr "Fshij"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#~ msgid "File"
-#~ msgstr "Kartelë"
-
-#, fuzzy
-#~ msgid "Window"
-#~ msgstr "_Dritare"
-
 #~ msgid "Preferences..."
 #~ msgstr "Parapëlqime..."
 
 #, fuzzy
 #~ msgid "Close this window??"
 #~ msgstr "Mbyll këtë skedë/dritare"
-
-#, fuzzy
-#~ msgid "Media"
-#~ msgstr "Maqedonia"
 
 #, fuzzy
 #~ msgid "Pd Files"

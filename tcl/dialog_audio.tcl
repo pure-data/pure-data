@@ -180,7 +180,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.inputs.in1f -side top -fill x
 
     checkbutton $mytoplevel.inputs.in1f.x0 -variable audio_inenable1 \
-        -text [_ "1:"] -anchor e
+        -text "1:" -anchor e
     button $mytoplevel.inputs.in1f.x1 -text [lindex $audio_indevlist $audio_indev1] -width 20 \
         -command [list audio_popup $mytoplevel $mytoplevel.inputs.in1f.x1 audio_indev1 $audio_indevlist]
     label $mytoplevel.inputs.in1f.l2 -text [_ "Channels:"]
@@ -194,7 +194,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.inputs.in2f -side top
 
         checkbutton $mytoplevel.inputs.in2f.x0 -variable audio_inenable2 \
-            -text [_ "2:"] -anchor e
+            -text "2:" -anchor e
         button $mytoplevel.inputs.in2f.x1 -text [lindex $audio_indevlist $audio_indev2] -width 20 \
             -command [list audio_popup $mytoplevel $mytoplevel.inputs.in2f.x1 audio_indev2 \
                 $audio_indevlist]
@@ -210,7 +210,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.inputs.in3f -side top
 
         checkbutton $mytoplevel.inputs.in3f.x0 -variable audio_inenable3 \
-            -text [_ "3:"] -anchor e
+            -text "3:" -anchor e
         button $mytoplevel.inputs.in3f.x1 -text [lindex $audio_indevlist $audio_indev3] -width 20 \
             -command [list audio_popup $mytoplevel $mytoplevel.inputs.in3f.x1 audio_indev3 \
                 $audio_indevlist]
@@ -226,7 +226,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.inputs.in4f -side top
 
         checkbutton $mytoplevel.inputs.in4f.x0 -variable audio_inenable4 \
-            -text [_ "4:"] -anchor e
+            -text "4:" -anchor e
         button $mytoplevel.inputs.in4f.x1 -text [lindex $audio_indevlist $audio_indev4] -width 20 \
             -command [list audio_popup $mytoplevel $mytoplevel.inputs.in4f.x1 audio_indev4 \
                 $audio_indevlist]
@@ -245,7 +245,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.outputs.out1f -side top -fill x
 
     checkbutton $mytoplevel.outputs.out1f.x0 -variable audio_outenable1 \
-        -text [_ "1:"] -anchor e
+        -text "1:" -anchor e
     if {$multi == 0} {
         label $mytoplevel.outputs.out1f.l1 \
             -text [_ "(same as input device)..."]
@@ -270,7 +270,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.outputs.out2f -side top
 
         checkbutton $mytoplevel.outputs.out2f.x0 -variable audio_outenable2 \
-            -text [_ "2:"] -anchor e
+            -text "2:" -anchor e
         button $mytoplevel.outputs.out2f.x1 -text [lindex $audio_outdevlist $audio_outdev2] -width 20 \
             -command \
             [list audio_popup $mytoplevel $mytoplevel.outputs.out2f.x1 audio_outdev2 $audio_outdevlist]
@@ -286,7 +286,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.outputs.out3f -side top
 
         checkbutton $mytoplevel.outputs.out3f.x0 -variable audio_outenable3 \
-            -text [_ "3:"] -anchor e
+            -text "3:" -anchor e
         button $mytoplevel.outputs.out3f.x1 -text [lindex $audio_outdevlist $audio_outdev3] -width 20 \
             -command \
             [list audio_popup $mytoplevel $mytoplevel.outputs.out3f.x1 audio_outdev3 $audio_outdevlist]
@@ -302,7 +302,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.outputs.out4f -side top
 
         checkbutton $mytoplevel.outputs.out4f.x0 -variable audio_outenable4 \
-            -text [_ "4:"] -anchor e
+            -text "4:" -anchor e
         button $mytoplevel.outputs.out4f.x1 -text [lindex $audio_outdevlist $audio_outdev4] -width 20 \
             -command \
             [list audio_popup $mytoplevel $mytoplevel.outputs.out4f.x1 audio_outdev4 $audio_outdevlist]

@@ -146,8 +146,29 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
+msgid "File"
+msgstr "Fichier"
+
+msgid "Edit"
+msgstr "Édition"
+
+msgid "Put"
+msgstr "Ajouter"
+
+msgid "Find"
+msgstr "Rechercher"
+
+msgid "Media"
+msgstr "Média"
+
+msgid "Window"
+msgstr "Fenêtre"
+
+msgid "Help"
+msgstr "Aide"
+
 #, fuzzy
-msgid "Show Hidden Files and Directories"
+msgid "Show &Hidden Files and Directories"
 msgstr "Affic&her les fichiers et dossiers cachés"
 
 msgid "Copy"
@@ -232,20 +253,8 @@ msgstr ""
 msgid "Input Devices"
 msgstr "Périphérique d'entrée"
 
-msgid "1:"
-msgstr ""
-
 msgid "Channels:"
 msgstr "Nombre de canaux:"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr "Périphérique de sortie"
@@ -325,9 +334,6 @@ msgstr "Mise en évidence du dernier '%s' dans %s"
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr "Mise en évidence du '%d'e exemplaire sur %d de '%s'"
-
-msgid "Find"
-msgstr "Rechercher"
 
 msgid "Pd window"
 msgstr "Fenêtre Pd"
@@ -521,21 +527,6 @@ msgstr "(Utiliser les flèches haut et bas pour accéder à l'historique)"
 #, fuzzy
 msgid "MIDI Settings"
 msgstr "Réglage MIDI"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 #, fuzzy
 msgid "ALSA MIDI Settings"
@@ -778,9 +769,6 @@ msgstr "Quitter"
 msgid "Properties"
 msgstr "Propriétés"
 
-msgid "Help"
-msgstr "Aide"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -831,23 +819,11 @@ msgstr "Supprimer"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "'%s' ne semble par être un fichier Pd"
 
-#~ msgid "Edit"
-#~ msgstr "Édition"
-
 #~ msgid "Patch Font"
 #~ msgstr "Police du patch"
 
-#~ msgid "Put"
-#~ msgstr "Ajouter"
-
 #~ msgid "Paths"
 #~ msgstr "Chemins..."
-
-#~ msgid "File"
-#~ msgstr "Fichier"
-
-#~ msgid "Media"
-#~ msgstr "Média"
 
 #~ msgid "Preferences..."
 #~ msgstr "Préférences..."
@@ -860,6 +836,3 @@ msgstr "'%s' ne semble par être un fichier Pd"
 
 #~ msgid "Send Message..."
 #~ msgstr "Envoyer Message..."
-
-#~ msgid "Window"
-#~ msgstr "Fenêtre"

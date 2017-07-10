@@ -146,7 +146,31 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Файл"
+
+#, fuzzy
+msgid "Edit"
+msgstr "_Редактиране"
+
+msgid "Put"
+msgstr ""
+
+msgid "Find"
+msgstr "Търсене"
+
+#, fuzzy
+msgid "Media"
+msgstr "Македония"
+
+#, fuzzy
+msgid "Window"
+msgstr "Прозорец"
+
+msgid "Help"
+msgstr "Помощ"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -240,21 +264,9 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-msgid "1:"
-msgstr ""
-
 #, fuzzy
 msgid "Channels:"
 msgstr "Отмяна"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -335,9 +347,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Търсене"
 
 #, fuzzy
 msgid "Pd window"
@@ -549,21 +558,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
 msgstr ""
 
 msgid "ALSA MIDI Settings"
@@ -825,9 +819,6 @@ msgstr "Изход"
 msgid "Properties"
 msgstr ""
 
-msgid "Help"
-msgstr "Помощ"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -880,23 +871,12 @@ msgstr "Изтриване"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#~ msgid "File"
-#~ msgstr "Файл"
-
-#, fuzzy
-#~ msgid "Window"
-#~ msgstr "Прозорец"
-
 #~ msgid "Preferences..."
 #~ msgstr "Настройки"
 
 #, fuzzy
 #~ msgid "Close this window??"
 #~ msgstr "Затваряне на този таб/прозорец"
-
-#, fuzzy
-#~ msgid "Media"
-#~ msgstr "Македония"
 
 #, fuzzy
 #~ msgid "Pd Files"

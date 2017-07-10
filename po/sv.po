@@ -149,7 +149,29 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Fil"
+
+#, fuzzy
+msgid "Edit"
+msgstr "Redigera"
+
+msgid "Put"
+msgstr "Placera"
+
+msgid "Find"
+msgstr "Sök"
+
+msgid "Media"
+msgstr "Media"
+
+msgid "Window"
+msgstr "Fönster"
+
+msgid "Help"
+msgstr "Hjälp"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -238,21 +260,9 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-msgid "1:"
-msgstr ""
-
 #, fuzzy
 msgid "Channels:"
 msgstr "Ångra"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -337,9 +347,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Sök"
 
 msgid "Pd window"
 msgstr "Huvudfönster"
@@ -536,21 +543,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
 msgstr ""
 
 msgid "ALSA MIDI Settings"
@@ -797,9 +789,6 @@ msgstr "Avsluta"
 msgid "Properties"
 msgstr "Egenskaper"
 
-msgid "Help"
-msgstr "Hjälp"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -852,14 +841,8 @@ msgstr "Radera array"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#~ msgid "Media"
-#~ msgstr "Media"
-
 #~ msgid "Patch Font"
 #~ msgstr "Patchtypsnitt"
-
-#~ msgid "Put"
-#~ msgstr "Placera"
 
 #, fuzzy
 #~ msgid "Toggle Console"
@@ -872,9 +855,6 @@ msgstr ""
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Ignorera ändringar i detta fönster?"
 
-#~ msgid "File"
-#~ msgstr "Fil"
-
 #, fuzzy
 #~ msgid "Font Properties"
 #~ msgstr "Egenskaper"
@@ -885,9 +865,6 @@ msgstr ""
 
 #~ msgid "really quit?"
 #~ msgstr "Vill du avsluta?"
-
-#~ msgid "Window"
-#~ msgstr "Fönster"
 
 #, fuzzy
 #~ msgid "Filters"

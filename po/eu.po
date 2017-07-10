@@ -151,7 +151,31 @@ msgstr "Itsatsi desegin"
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Fitxategia"
+
+#, fuzzy
+msgid "Edit"
+msgstr "Editatu"
+
+msgid "Put"
+msgstr "Jarri"
+
+msgid "Find"
+msgstr "Aurikitu"
+
+#, fuzzy
+msgid "Media"
+msgstr "Komunikabidea"
+
+#, fuzzy
+msgid "Window"
+msgstr "Leihoa"
+
+msgid "Help"
+msgstr "Laguntza"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -241,29 +265,14 @@ msgstr ""
 msgid "Use callbacks"
 msgstr ""
 
-#, fuzzy
 msgid "Input Devices"
-msgstr "Sartze tresna 1:"
+msgstr "Sartze tresna"
 
-msgid "1:"
-msgstr ""
-
-#, fuzzy
 msgid "Channels:"
 msgstr "Kanalak:"
 
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
-
-#, fuzzy
 msgid "Output Devices"
-msgstr "Irtendako tresna 1:"
+msgstr "Irtendako tresna"
 
 #, fuzzy
 msgid "(same as input device)..."
@@ -342,9 +351,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Aurikitu"
 
 #, fuzzy
 msgid "Pd window"
@@ -552,21 +558,6 @@ msgstr ""
 
 msgid "MIDI Settings"
 msgstr "MIDI-ren Ezarpenak"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 msgid "ALSA MIDI Settings"
 msgstr "ALSA MIDI-ren Esarpenak"
@@ -824,9 +815,6 @@ msgstr "Irten"
 msgid "Properties"
 msgstr "Propietateak"
 
-msgid "Help"
-msgstr "Laguntza"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -878,9 +866,6 @@ msgstr "Array ezabatu"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#~ msgid "File"
-#~ msgstr "Fitxategia"
-
 #~ msgid "WARNING: Font family '%s' not found, using default (%s)"
 #~ msgstr "ADI: Letraren familia '%s' aurkiturik ez, (%s) lehenetsi erabiltzen"
 
@@ -904,10 +889,6 @@ msgstr ""
 
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Leiho honetaren aldaketak baztertu??"
-
-#, fuzzy
-#~ msgid "Media"
-#~ msgstr "Komunikabidea"
 
 #~ msgid "really quit?"
 #~ msgstr "Benetan irten?"
@@ -940,9 +921,6 @@ msgstr ""
 
 #~ msgid "Input device 3:"
 #~ msgstr "Sartze tresna 3:"
-
-#~ msgid "Put"
-#~ msgstr "Jarri"
 
 #~ msgid "Max Patch Files"
 #~ msgstr "Max Patch Fitxategiak"

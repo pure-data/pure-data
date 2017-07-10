@@ -146,7 +146,31 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "फाइल"
+
+#, fuzzy
+msgid "Edit"
+msgstr "संपादन (_E)"
+
+msgid "Put"
+msgstr ""
+
+msgid "Find"
+msgstr "ढूंढें"
+
+#, fuzzy
+msgid "Media"
+msgstr "मेसीडोनिया"
+
+#, fuzzy
+msgid "Window"
+msgstr "विंडो (_W)"
+
+msgid "Help"
+msgstr "मदद"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -239,21 +263,9 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-msgid "1:"
-msgstr ""
-
 #, fuzzy
 msgid "Channels:"
 msgstr "रद्द"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -334,9 +346,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "ढूंढें"
 
 #, fuzzy
 msgid "Pd window"
@@ -547,21 +556,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
 msgstr ""
 
 msgid "ALSA MIDI Settings"
@@ -823,9 +817,6 @@ msgstr "बाहर"
 msgid "Properties"
 msgstr ""
 
-msgid "Help"
-msgstr "मदद"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -878,23 +869,12 @@ msgstr "मिटाओ"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#~ msgid "File"
-#~ msgstr "फाइल"
-
-#, fuzzy
-#~ msgid "Window"
-#~ msgstr "विंडो (_W)"
-
 #~ msgid "Preferences..."
 #~ msgstr "प्राथमिकताएं..."
 
 #, fuzzy
 #~ msgid "Close this window??"
 #~ msgstr "इस tab/window बंद करें"
-
-#, fuzzy
-#~ msgid "Media"
-#~ msgstr "मेसीडोनिया"
 
 #, fuzzy
 #~ msgid "Pd Files"

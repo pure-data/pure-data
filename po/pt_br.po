@@ -159,7 +159,29 @@ msgstr "Refazer colar"
 msgid "Redo typing"
 msgstr "Refazer digitação"
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "Arquivo"
+
+#, fuzzy
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Put"
+msgstr "Inserir"
+
+msgid "Find"
+msgstr "Procurar"
+
+msgid "Media"
+msgstr "Mídia"
+
+msgid "Window"
+msgstr "Janela"
+
+msgid "Help"
+msgstr "Ajuda"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -243,28 +265,14 @@ msgstr "tamanho:"
 msgid "Use callbacks"
 msgstr "Usar callbacks"
 
-#, fuzzy
 msgid "Input Devices"
-msgstr "Dispositivo de entrada 1:"
-
-msgid "1:"
-msgstr ""
+msgstr "Dispositivo de entrada"
 
 msgid "Channels:"
 msgstr "Canais:"
 
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
-
-#, fuzzy
 msgid "Output Devices"
-msgstr "Dispositivo de saída 1:"
+msgstr "Dispositivo de saída"
 
 #, fuzzy
 msgid "(same as input device)..."
@@ -342,9 +350,6 @@ msgstr "Não foi possível encontrar '%s' em %s"
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "Procurar"
 
 msgid "Pd window"
 msgstr "Janela do PD"
@@ -548,21 +553,6 @@ msgstr "(use as setas do teclado para histórico)"
 
 msgid "MIDI Settings"
 msgstr "Configurações de MIDI"
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
-msgstr ""
 
 msgid "ALSA MIDI Settings"
 msgstr "Configurações de ALSA MIDI"
@@ -804,9 +794,6 @@ msgstr "Sair"
 msgid "Properties"
 msgstr "Propriedades"
 
-msgid "Help"
-msgstr "Ajuda"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr "(Tcl) FALTANDO FECHA COLCHETES ']': "
 
@@ -906,12 +893,6 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgid "really quit?"
 #~ msgstr "deseja realmente sair?"
 
-#~ msgid "File"
-#~ msgstr "Arquivo"
-
-#~ msgid "Put"
-#~ msgstr "Inserir"
-
 #~ msgid "Input device 4:"
 #~ msgstr "Dispositivo de entrada 4:"
 
@@ -944,9 +925,6 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 
 #~ msgid "Max Text Files (.mxt)"
 #~ msgstr "Arquivos de Texto Max (.mxt)"
-
-#~ msgid "Media"
-#~ msgstr "Mídia"
 
 #~ msgid "WARNING: Font family '%s' not found, using default (%s)"
 #~ msgstr "AVISO: Fonte '%s' não encontrada, usando a padrão (%s)"
@@ -988,9 +966,6 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 
 #~ msgid "Filters"
 #~ msgstr "Filtros"
-
-#~ msgid "Window"
-#~ msgstr "Janela"
 
 #~ msgid "Associated Files"
 #~ msgstr "Arquivos Associados"

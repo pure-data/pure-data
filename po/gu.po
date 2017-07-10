@@ -148,7 +148,31 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
-msgid "Show Hidden Files and Directories"
+msgid "File"
+msgstr "ફાઇલ"
+
+#, fuzzy
+msgid "Edit"
+msgstr "ફેરફાર કરો (_E)"
+
+msgid "Put"
+msgstr ""
+
+msgid "Find"
+msgstr "શોધો"
+
+#, fuzzy
+msgid "Media"
+msgstr "મેકેડોનિયા"
+
+#, fuzzy
+msgid "Window"
+msgstr "વિન્ડો (_W)"
+
+msgid "Help"
+msgstr "મદદ"
+
+msgid "Show &Hidden Files and Directories"
 msgstr ""
 
 msgid "Copy"
@@ -241,21 +265,9 @@ msgstr ""
 msgid "Input Devices"
 msgstr ""
 
-msgid "1:"
-msgstr ""
-
 #, fuzzy
 msgid "Channels:"
 msgstr "રદ કરો"
-
-msgid "2:"
-msgstr ""
-
-msgid "3:"
-msgstr ""
-
-msgid "4:"
-msgstr ""
 
 msgid "Output Devices"
 msgstr ""
@@ -336,9 +348,6 @@ msgstr ""
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
 msgstr ""
-
-msgid "Find"
-msgstr "શોધો"
 
 #, fuzzy
 msgid "Pd window"
@@ -550,21 +559,6 @@ msgid "(use arrow keys for history)"
 msgstr ""
 
 msgid "MIDI Settings"
-msgstr ""
-
-msgid "5:"
-msgstr ""
-
-msgid "6:"
-msgstr ""
-
-msgid "7:"
-msgstr ""
-
-msgid "8:"
-msgstr ""
-
-msgid "9:"
 msgstr ""
 
 msgid "ALSA MIDI Settings"
@@ -826,9 +820,6 @@ msgstr "બહાર નીકળો"
 msgid "Properties"
 msgstr ""
 
-msgid "Help"
-msgstr "મદદ"
-
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -881,23 +872,12 @@ msgstr "દૂર કરો"
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 
-#~ msgid "File"
-#~ msgstr "ફાઇલ"
-
-#, fuzzy
-#~ msgid "Window"
-#~ msgstr "વિન્ડો (_W)"
-
 #~ msgid "Preferences..."
 #~ msgstr "પસંદગીઓ..."
 
 #, fuzzy
 #~ msgid "Close this window??"
 #~ msgstr "આ ટેબ/વિન્ડો બંધ કરો"
-
-#, fuzzy
-#~ msgid "Media"
-#~ msgstr "મેકેડોનિયા"
 
 #, fuzzy
 #~ msgid "Pd Files"
