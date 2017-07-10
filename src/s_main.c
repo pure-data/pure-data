@@ -326,7 +326,7 @@ int sys_main(int argc, char **argv)
         _fmode = _O_BINARY;
     }
 # endif /* _MSC_VER */
-#endif  /* WIN32 */
+#endif  /* _WIN32 */
 #ifndef _WIN32
     /* long ago Pd used setuid to promote itself to real-time priority.
     Just in case anyone's installation script still makes it setuid, we
@@ -336,7 +336,7 @@ int sys_main(int argc, char **argv)
         fprintf(stderr, "warning: canceling setuid privelege\n");
         setuid(getuid());
     }
-#endif  /* WIN32 */
+#endif  /* _WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)    /* prescan for prefs override */
