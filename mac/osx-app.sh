@@ -26,7 +26,7 @@ PD_VERSION=
 SRC=..
 
 # build dir, relative to working directory
-BUILD=..
+BUILD=$(pwd)
 
 # Help message
 #----------------------------------------------------------
@@ -125,6 +125,7 @@ while [ "$1" != "" ] ; do
             fi
             shift 1
             BUILD=${1%/} # remove trailing slash
+            echo "Build dir: $BUILD"
             ;;
         -v|--verbose)
             verbose=-v
@@ -151,8 +152,8 @@ fi
 #----------------------------------------------------------
 
 # make sure build directory is an absolute path
-if [[ "$BUILD" != /* ]] ; then
-    BUILD=$(pwd)/$BUILD
+if [[ "${BUILD:0:1}" != "/" ]] ; then
+   BUILD=$(pwd)/$BUILD
 fi
 
 # change to the dir of this script
@@ -171,7 +172,7 @@ if [ -d $APP ] ; then
 fi
 
 # check if pd is already built
-if [ ! -e "$BUILD/bin/pd" ] ; then
+if [ ! -e "$BUILD/src/pd" ] ; then
     echo "Looks like pd hasn't been built yet. Maybe run make first?"
     exit 1
 fi
@@ -190,7 +191,7 @@ if [ $included_wish == true ] ; then
 elif [ "$WISH" == "" ] ; then
     if [ "$TK" != "" ] ; then
         echo "Using custom $TK Wish.app"
-        tcltk-wish.sh $universal $TK
+        ./tcltk-wish.sh $universal $TK
         WISH=Wish-${TK}.app
     elif [ "$SYS_TK" != "" ] ; then
         echo "Using system $SYS_TK Wish.app"
