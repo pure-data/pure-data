@@ -12,7 +12,9 @@
 #include <string.h>
 #include "m_pd.h"
 #include "s_stuff.h"
+#ifdef __APPLE__
 #include <jack/weakjack.h>
+#endif
 #include <jack/jack.h>
 #include <regex.h>
 
