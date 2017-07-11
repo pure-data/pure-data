@@ -1383,6 +1383,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     {
                         gobj_getrect(sel->sel_what, x, &x1, &y1, &x2, &y2);
                         sel->sel_width = x2 - x1;
+                        sel->sel_height= y2 - y1;
                     }
                     x->gl_editor->e_onmotion = MA_RESIZE;
                     x->gl_editor->e_xwas = xpos;
@@ -1881,23 +1882,19 @@ static void canvas_motion_resize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
 {
     t_selection *sel;
     int x1, y1, x2, y2;
-    t_float width_wanted;
-    t_float font_width = (t_float)glist_fontwidth(x);
-    t_float width_prev = x->gl_editor->e_xnew - x->gl_editor->e_xwas;
-    t_float height_prev = x->gl_editor->e_ynew - x->gl_editor->e_ywas;
+    t_float width_wanted, height_wanted;
     t_float width_diff = xpos - x->gl_editor->e_xwas;
     t_float height_diff = ypos - x->gl_editor->e_ywas;
-    x->gl_editor->e_xnew = xpos;
-    x->gl_editor->e_ynew = ypos;
     for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
     {
         t_object *ob = pd_checkobject(&sel->sel_what->g_pd);
         if(ob)
         {
-            if ((ob->te_pd->c_wb == &text_widgetbehavior) || (pd_checkglist(&ob->te_pd) && !((t_canvas *)ob)->gl_isgraph))
+            if ((ob->te_pd->c_wb == &text_widgetbehavior) ||
+                (pd_checkglist(&ob->te_pd) && !((t_canvas *)ob)->gl_isgraph))
             {
                 gobj_vis(sel->sel_what, x, 0);
-                width_wanted = (sel->sel_width + width_diff) / font_width;
+                width_wanted = (sel->sel_width + width_diff) / (t_float)glist_fontwidth(x);
                 ob->te_width = (int)((width_wanted > 1) ? width_wanted : 1);
                 canvas_fixlinesfor(x, ob);
                 gobj_vis(sel->sel_what, x, 1);
@@ -1906,8 +1903,10 @@ static void canvas_motion_resize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
             else if (ob->ob_pd == canvas_class)
             {
                 gobj_vis(sel->sel_what, x, 0);
-                ((t_canvas *)ob)->gl_pixwidth += width_diff - width_prev;
-                ((t_canvas *)ob)->gl_pixheight += height_diff - height_prev;
+                width_wanted = sel->sel_width + width_diff;
+                height_wanted = sel->sel_height + height_diff;
+                ((t_canvas *)ob)->gl_pixwidth = (width_wanted > 4) ? width_wanted : 4;
+                ((t_canvas *)ob)->gl_pixheight = (height_wanted > 6) ? height_wanted : 6;
                 canvas_fixlinesfor(x, ob);
                 gobj_vis(sel->sel_what, x, 1);
                 gobj_select(sel->sel_what, x, 1);
