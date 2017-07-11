@@ -1368,9 +1368,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         {
             int noutlet;
                 /* resize?  only for "true" text boxes or canvases*/
-            if (ob && !x->gl_editor->e_selection &&
-                (ob->te_pd->c_wb == &text_widgetbehavior ||
-                    pd_checkglist(&ob->te_pd)) &&
+            if (ob && (ob->te_pd->c_wb == &text_widgetbehavior || pd_checkglist(&ob->te_pd)) &&
                         xpos >= x2-4 && ypos < y2-4)
             {
                 if (doit)
