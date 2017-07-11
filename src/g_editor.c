@@ -2388,25 +2388,63 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         {
             int noutlet;
                 /* resize?  only for "true" text boxes or canvases*/
-            if (ob && !x->gl_editor->e_selection &&
+            if (ob &&
                 (ob->te_pd->c_wb == &text_widgetbehavior ||
                     pd_checkglist(&ob->te_pd)) &&
                         xpos >= x2-4 && ypos < y2-4)
             {
                 if (doit)
                 {
+                    t_selection *sel = NULL;
+                    t_selection *saved = NULL;
+                    int x1, y1, x2, y2;
+                    canvas_undo_add(x, UNDO_SEQUENCE_START, "resize", 0);
                     if (!glist_isselected(x, y))
                     {
-                        glist_noselect(x);
                         glist_select(x, y);
                     }
+                    
+                    while (x->gl_editor->e_selection)
+                    {
+                        t_selection *newsel = (t_selection *)getbytes(sizeof(*sel));
+                        if(newsel)
+                        {
+                            newsel->sel_next = saved;
+                            newsel->sel_what = x->gl_editor->e_selection->sel_what;
+                            saved = newsel;
+                        }
+                        glist_deselect(x, x->gl_editor->e_selection->sel_what);
+                    }
+                    
+                    for (sel = saved; sel; sel = sel->sel_next)
+                    {
+                        glist_select(x, sel->sel_what);
+                        canvas_undo_add(x, UNDO_APPLY, "resize",
+                            canvas_undo_set_apply(x, glist_getindex(x, sel->sel_what)));
+                        glist_deselect(x, sel->sel_what);
+                    }
+                    
+                    while (saved)
+                    {
+                        t_selection *next = saved->sel_next;
+                        glist_select(x, saved->sel_what);
+                        freebytes(saved, sizeof(*saved));
+                        saved = next;
+                    }
+                    
+                    for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+                    {
+                        gobj_getrect(sel->sel_what, x, &x1, &y1, &x2, &y2);
+                        sel->sel_width = x2 - x1;
+                        sel->sel_height= y2 - y1;
+                    }
+                    
                     x->gl_editor->e_onmotion = MA_RESIZE;
-                    x->gl_editor->e_xwas = x1;
-                    x->gl_editor->e_ywas = y1;
+                    x->gl_editor->e_xwas = xpos;
+                    x->gl_editor->e_ywas = ypos;
                     x->gl_editor->e_xnew = xpos;
                     x->gl_editor->e_ynew = ypos;
-                    canvas_undo_add(x, UNDO_APPLY, "resize",
-                        canvas_undo_set_apply(x, glist_getindex(x, y)));
+                    canvas_undo_add(x, UNDO_SEQUENCE_END, "resize", 0);
                 }
                 else canvas_setcursor(x, CURSOR_EDITMODE_RESIZE);
             }
@@ -3168,6 +3206,47 @@ static void delay_move(t_canvas *x)
     x->gl_editor->e_ywas += incy * x->gl_zoom;
 }
 
+static void canvas_doresize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
+{
+    t_selection *sel;
+    int x1, y1, x2, y2;
+    t_float width_wanted, height_wanted;
+    t_float width_diff = xpos - x->gl_editor->e_xwas;
+    t_float height_diff = ypos - x->gl_editor->e_ywas;
+    for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+    {
+        t_object *ob = pd_checkobject(&sel->sel_what->g_pd);
+        if(ob)
+        {
+            if ((ob->te_pd->c_wb == &text_widgetbehavior) ||
+                (pd_checkglist(&ob->te_pd) && !((t_canvas *)ob)->gl_isgraph))
+            {
+                gobj_vis(sel->sel_what, x, 0);
+                width_wanted = (sel->sel_width + width_diff) / (t_float)glist_fontwidth(x);
+                ob->te_width = (int)((width_wanted > 1) ? width_wanted : 1);
+                canvas_fixlinesfor(x, ob);
+                gobj_vis(sel->sel_what, x, 1);
+                gobj_select(sel->sel_what, x, 1);
+            }
+            else if (ob->ob_pd == canvas_class)
+            {
+                gobj_vis(sel->sel_what, x, 0);
+                width_wanted = sel->sel_width + width_diff;
+                height_wanted = sel->sel_height + height_diff;
+                ((t_canvas *)ob)->gl_pixwidth = (width_wanted > 4) ? width_wanted : 4;
+                ((t_canvas *)ob)->gl_pixheight = (height_wanted > 6) ? height_wanted : 6;
+                canvas_fixlinesfor(x, ob);
+                gobj_vis(sel->sel_what, x, 1);
+                gobj_select(sel->sel_what, x, 1);
+            }
+            else
+            {
+                post("not resizable");
+            }
+        }
+    }
+}
+
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 {
@@ -3217,38 +3296,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     }
     else if (x->gl_editor->e_onmotion == MA_RESIZE)
     {
-        int x11=0, y11=0, x12=0, y12=0;
-        t_gobj *y1;
-        if ((y1 = canvas_findhitbox(x,
-            x->gl_editor->e_xwas, x->gl_editor->e_ywas,
-                &x11, &y11, &x12, &y12)))
-        {
-            int wantwidth = xpos - x11;
-            t_object *ob = pd_checkobject(&y1->g_pd);
-            if (ob && ((ob->te_pd->c_wb == &text_widgetbehavior) ||
-                    (pd_checkglist(&ob->te_pd) &&
-                     !((t_canvas *)ob)->gl_isgraph)))
-            {
-                wantwidth = wantwidth / glist_fontwidth(x);
-                if (wantwidth < 1)
-                    wantwidth = 1;
-                ob->te_width = wantwidth;
-                gobj_vis(y1, x, 0);
-                canvas_fixlinesfor(x, ob);
-                gobj_vis(y1, x, 1);
-            }
-            else if (ob && ob->ob_pd == canvas_class)
-            {
-                gobj_vis(y1, x, 0);
-                ((t_canvas *)ob)->gl_pixwidth += xpos - x->gl_editor->e_xnew;
-                ((t_canvas *)ob)->gl_pixheight += ypos - x->gl_editor->e_ynew;
-                x->gl_editor->e_xnew = xpos;
-                x->gl_editor->e_ynew = ypos;
-                canvas_fixlinesfor(x, ob);
-                gobj_vis(y1, x, 1);
-            }
-            else post("not resizable");
-        }
+        canvas_doresize(x, xpos, ypos);
     }
     else canvas_doclick(x, xpos, ypos, 0, mod, 0);
 
