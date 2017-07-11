@@ -10,6 +10,8 @@ DELETE = del
 VCSDK = "C:/Program Files/Microsoft SDKs/Windows/v6.0A"
 VC9 = "C:/Program Files/Microsoft Visual Studio 9.0/VC"
 
+WISH = "wish85.exe"
+
 EXTRA_LIBPATH=
 EXTRA_INCLUDES=
 ## the following adds the search paths for compiler/linker
@@ -68,6 +70,7 @@ AFLAGS = /D__i386__
 CFLAGS = /nologo \
 	/W3 /Ox $(AFLAGS) \
 	/DMSW /DNT /DWIN32 /DWINDOWS /D_WINDOWS \
+	/DWISH="$(WISH)" \
 	/DPD /DPD_INTERNAL \
 	/DUSEAPI_MMIO /DUSEAPI_PORTAUDIO \
 	/DPA_LITTLE_ENDIAN /DPA19 \

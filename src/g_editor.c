@@ -1896,7 +1896,7 @@ static void canvas_motion_resize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
         t_object *ob = pd_checkobject(&sel->sel_what->g_pd);
         if(ob)
         {
-            if (ob->te_pd->c_wb == &text_widgetbehavior || (pd_checkglist(&ob->te_pd) && !((t_canvas *)ob)->gl_isgraph))
+            if ((ob->te_pd->c_wb == &text_widgetbehavior) || (pd_checkglist(&ob->te_pd) && !((t_canvas *)ob)->gl_isgraph))
             {
                 gobj_vis(sel->sel_what, x, 0);
                 width_wanted = (sel->sel_width + width_diff) / font_width;

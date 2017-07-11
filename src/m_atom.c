@@ -23,7 +23,6 @@ t_int atom_getint(t_atom *a)
 
 t_symbol *atom_getsymbol(t_atom *a)  /* LATER think about this more carefully */
 {
-    char buf[30];
     if (a->a_type == A_SYMBOL) return (a->a_w.w_symbol);
     else return (&s_float);
 }

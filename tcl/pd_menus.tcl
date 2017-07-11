@@ -90,6 +90,7 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.file entryconfigure [_ "Close"] -state normal
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
+    $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state normal
     $menubar.edit entryconfigure [_ "Zoom Out"] -state normal
