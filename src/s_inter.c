@@ -61,8 +61,12 @@ typedef int socklen_t;
 #define PDGUIDIR "tcl/"
 #endif
 
-#ifndef WISHAPP
-#define WISHAPP "wish85.exe"
+#ifndef WISH
+# if defined _WIN32
+#  define WISH "wish85.exe"
+# else
+#  define WISH "wish"
+# endif
 #endif
 
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
@@ -927,6 +931,7 @@ static int sys_do_startgui(const char *libdir)
     int msgsock;
     char buf[15];
     int len = sizeof(server);
+    const int maxtry = 20;
     int ntry = 0, portno = FIRSTPORTNUM;
     int xsock = -1, dumbo = -1;
 #ifdef _WIN32
@@ -1022,7 +1027,6 @@ static int sys_do_startgui(const char *libdir)
 
         /* assign server port number */
         server.sin_port =  htons((unsigned short)portno);
-
         /* name the socket */
         while (bind(xsock, (struct sockaddr *)&server, sizeof(server)) < 0)
         {
@@ -1031,17 +1035,26 @@ static int sys_do_startgui(const char *libdir)
 #else
             int err = errno;
 #endif
-            if ((ntry++ > 20) || (err != EADDRINUSE))
+            if ((ntry++ > maxtry) || (err != EADDRINUSE))
             {
                 perror("bind");
                 fprintf(stderr,
                     "Pd was unable to find a port number to bind to\n");
+                sys_closesocket(xsock);
                 return (1);
-            }
-            portno++;
+            } else if (ntry > maxtry) {
+                    /* last try: let the system pick a random port for us */
+                portno = 0;
+            } else
+                portno++;
             server.sin_port = htons((unsigned short)(portno));
         }
-
+        if (!portno) {
+                /* if the system chose a port for us, we need to know which */
+            socklen_t serversize=sizeof(server);
+            if(!getsockname(xsock, (struct sockaddr *)&server, &serversize))
+                portno = ntohs(server.sin_port);
+        }
         if (sys_verbose) fprintf(stderr, "port %d\n", portno);
 
 
@@ -1104,7 +1117,7 @@ static int sys_do_startgui(const char *libdir)
             if necessary we put that in here too. */
             sprintf(cmdbuf,
   "TCL_LIBRARY=\"%s/lib/tcl/library\" TK_LIBRARY=\"%s/lib/tk/library\"%s \
-  wish \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
+  " WISH " \"%s/" PDGUIDIR "/pd-gui.tcl\" %d\n",
                  libdir, libdir, (getenv("HOME") ? "" : " HOME=/tmp"),
                     libdir, portno);
 #endif /* __APPLE__ */
@@ -1161,10 +1174,10 @@ static int sys_do_startgui(const char *libdir)
         sprintf(portbuf, "%d", portno);
 
         strcpy(wishbuf, libdir);
-        strcat(wishbuf, "/" PDBINDIR WISHAPP);
+        strcat(wishbuf, "/" PDBINDIR WISH);
         sys_bashfilename(wishbuf, wishbuf);
 
-        spawnret = _spawnl(P_NOWAIT, wishbuf, WISHAPP, scriptbuf, portbuf, 0);
+        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, 0);
         if (spawnret < 0)
         {
             perror("spawnl");

@@ -309,13 +309,11 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
     int srate;
     jack_status_t status;
 
-#ifdef __APPLE__
     if (!jack_client_open)
     {
-        error("Can't open Jack (it seems not to be installed on this Mac)");
+        error("Can't open Jack (it seems not to be installed)");
         return 1;
     }
-#endif
 
     jack_dio_error = 0;
 

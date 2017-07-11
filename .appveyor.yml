@@ -1,0 +1,49 @@
+## AppVeyor configuration for Pure Data
+#
+# this automatically builds Pd for W32 using VisualStudio,
+# whenever a new commit is pushed to github...
+#   https://ci.appveyor.com/project/umlaeute/pure-data
+
+environment:
+  matrix:
+  - platform: x86
+    AFLAGS: "/D__i386__"
+  - platform: x64
+    AFLAGS: "/D__x86_64__  /DPD_LONGINTTYPE=\\\"long long\\\""
+
+matrix:
+  allow_failures:
+    - platform: x64
+
+shallow_clone: true
+
+install:
+  - echo init
+  - mkdir bin
+
+# the version included with the Pd binaries,
+# is actually ftp://sourceware.org/pub/pthreads-win32/pthreads-dll-2002-03-02
+  - curl ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.zip -o pthreads.zip
+  - 7z x -opthreads pthreads.zip  Pre-built.2/dll Pre-built.2/lib Pre-built.2/include
+  - set pthreaddir="%APPVEYOR_BUILD_FOLDER%\\pthreads\\Pre-built.2"
+  - cd "%pthreaddir%\\include" && copy "*.h" "%APPVEYOR_BUILD_FOLDER%\\src\\"
+  - cd "%pthreaddir%\\dll\\%platform%" && copy "pthreadVC2.dll" "%APPVEYOR_BUILD_FOLDER%\\bin\\pthreadVC2.dll"
+  - cd "%pthreaddir%\\lib\\%platform%" && copy "pthreadVC2.lib" "%APPVEYOR_BUILD_FOLDER%\\bin\\pthreadVC.lib"
+  - cd "%APPVEYOR_BUILD_FOLDER%"
+
+build_script:
+  - echo build_script
+  - call "%ProgramFiles%\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /%platform%
+  - call "%VS120COMNTOOLS%\..\..\VC\vcvarsall.bat" %platform%
+  - cd src
+  - nmake /f makefile.msvc AFLAGS="%AFLAGS%"
+
+test_script:
+  - ..\bin\pd.com -version
+
+deploy: off
+
+artifacts:
+  - path: 'bin'
+    name: Pure Data (bin %platform%)
+    type: zip

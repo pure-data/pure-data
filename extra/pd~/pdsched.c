@@ -156,5 +156,6 @@ int pd_extern_sched(char *flags)
             else pd_list(whom, 0, n-1, ap+1);
         }
     }
+    binbuf_free(b);
     return (0);
 }
