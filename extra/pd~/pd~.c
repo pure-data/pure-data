@@ -146,8 +146,8 @@ static void pd_tilde_close(t_pd_tilde *x)
 
 static void pd_tilde_readmessages(t_pd_tilde *x)
 {
-    binbuf_clear(x->x_binbuf);
     t_atom at;
+    binbuf_clear(x->x_binbuf);
     if (x->x_binary)
     {
         int nonempty = 0;
@@ -394,17 +394,12 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     binbuf_clear(x->x_binbuf);
     pd_tilde_readmessages(x);
     return;
+#ifndef _WIN32
 fail3:
     close(pipe2[0]);
     close(pipe2[1]);
     if (x->x_childpid > 0)
-#ifdef _WIN32
-    {
-        int termstat;
-        _cwait(&termstat, x->x_childpid, WAIT_CHILD);
-    }
-#else
-        waitpid(x->x_childpid, 0, 0);
+    waitpid(x->x_childpid, 0, 0);
 #endif
 fail2:
     close(pipe1[0]);
