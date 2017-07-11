@@ -1878,7 +1878,7 @@ static void delay_move(t_canvas *x)
     x->gl_editor->e_ywas = x->gl_editor->e_ynew;
 }
 
-static void canvas_motion_resize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
+static void canvas_doresize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
 {
     t_selection *sel;
     int x1, y1, x2, y2;
@@ -1962,7 +1962,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     }
     else if (x->gl_editor->e_onmotion == MA_RESIZE)
     {
-        canvas_motion_resize(x, xpos, ypos);
+        canvas_doresize(x, xpos, ypos);
     }
     else canvas_doclick(x, xpos, ypos, 0, mod, 0);
 
