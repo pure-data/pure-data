@@ -26,7 +26,8 @@ PD_VERSION=
 SRC=..
 
 # build dir, relative to working directory
-BUILD=$(pwd)
+custom_builddir=false
+BUILD=..
 
 # Help message
 #----------------------------------------------------------
@@ -55,7 +56,7 @@ Options:
   --universal         \"universal\" multi-arch build when using -t,--tk:
                       i386 & x86_64 (& ppc if 10.6 SDK found)
 
-  --builddir          set pd build directory path, defaults to working directory
+  --builddir          set pd build directory path
 
 Arguments:
 
@@ -125,7 +126,7 @@ while [ "$1" != "" ] ; do
             fi
             shift 1
             BUILD=${1%/} # remove trailing slash
-            echo "Build dir: $BUILD"
+            custom_builddir=true
             ;;
         -v|--verbose)
             verbose=-v
@@ -151,9 +152,11 @@ fi
 # Go
 #----------------------------------------------------------
 
-# make sure build directory is an absolute path
-if [[ "${BUILD:0:1}" != "/" ]] ; then
-   BUILD=$(pwd)/$BUILD
+# make sure custom build directory is an absolute path
+if [[ $custom_builddir == true ]] ; then
+    if [[ "${BUILD:0:1}" != "/" ]] ; then
+       BUILD=$(pwd)/$BUILD
+    fi
 fi
 
 # change to the dir of this script
