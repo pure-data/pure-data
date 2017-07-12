@@ -55,12 +55,12 @@ Examples:
     # and universal archs
     tcltk-wish.sh --universal 8.6.5
 
-    # build Wish-8.6.6-git.app with embedded Tcl/Tl 8.6.6
-    # from git using the core_8_6_6 tags
-    tcltk-wish.sh --git 8.6.6-git core_8_6_6
-
     # build Wish-master-git.app with the latest master branch from git
     tcltk-wish.sh --git master-git 
+
+    # build Wish-8.6.6-git.app with embedded Tcl/Tl 8.6.6
+    # from git using the core_8_6_6 tag in the master branch
+    tcltk-wish.sh --git 8.6.6-git -b master core_8_6_6
 "
 }
 
