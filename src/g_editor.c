@@ -2363,27 +2363,6 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         ob = pd_checkobject(&y->g_pd);
         if (rightclick)
             canvas_rightclick(x, xpos, ypos, y);
-        else if (shiftmod)
-        {
-            if (doit)
-            {
-                t_rtext *rt;
-                if (ob && (rt = x->gl_editor->e_textedfor) &&
-                    rt == glist_findrtext(x, ob))
-                {
-                    rtext_mouse(rt, xpos - x1, ypos - y1, RTEXT_SHIFT);
-                    x->gl_editor->e_onmotion = MA_DRAGTEXT;
-                    x->gl_editor->e_xwas = x1;
-                    x->gl_editor->e_ywas = y1;
-                }
-                else
-                {
-                    if (glist_isselected(x, y))
-                        glist_deselect(x, y);
-                    else glist_select(x, y);
-                }
-            }
-        }
         else
         {
             int noutlet;
@@ -2447,6 +2426,27 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     canvas_undo_add(x, UNDO_SEQUENCE_END, "resize", 0);
                 }
                 else canvas_setcursor(x, CURSOR_EDITMODE_RESIZE);
+            }
+            else if (shiftmod)
+            {
+                if (doit)
+                {
+                    t_rtext *rt;
+                    if (ob && (rt = x->gl_editor->e_textedfor) &&
+                        rt == glist_findrtext(x, ob))
+                    {
+                        rtext_mouse(rt, xpos - x1, ypos - y1, RTEXT_SHIFT);
+                        x->gl_editor->e_onmotion = MA_DRAGTEXT;
+                        x->gl_editor->e_xwas = x1;
+                        x->gl_editor->e_ywas = y1;
+                    }
+                    else
+                    {
+                        if (glist_isselected(x, y))
+                            glist_deselect(x, y);
+                        else glist_select(x, y);
+                    }
+                }
             }
                 /* look for an outlet */
             else if (ob && (noutlet = obj_noutlets(ob)) &&
@@ -3206,12 +3206,13 @@ static void delay_move(t_canvas *x)
     x->gl_editor->e_ywas += incy * x->gl_zoom;
 }
 
-static void canvas_doresize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
+static void canvas_doresize(t_canvas *x, t_floatarg xpos, t_floatarg ypos, int mod)
 {
     t_selection *sel;
     int x1, y1, x2, y2;
     t_float width_wanted, height_wanted;
-    t_float width_diff = xpos - x->gl_editor->e_xwas;
+    int shiftmod = (mod & SHIFTMOD);
+    t_float width_diff  = xpos - x->gl_editor->e_xwas;
     t_float height_diff = ypos - x->gl_editor->e_ywas;
     for (sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
     {
@@ -3231,8 +3232,16 @@ static void canvas_doresize(t_canvas *x, t_floatarg xpos, t_floatarg ypos)
             else if (ob->ob_pd == canvas_class)
             {
                 gobj_vis(sel->sel_what, x, 0);
-                width_wanted = sel->sel_width + width_diff;
-                height_wanted = sel->sel_height + height_diff;
+                if (shiftmod)
+                {
+                    width_wanted = sel->sel_width + width_diff;
+                    height_wanted = sel->sel_height + width_diff;
+                }
+                else
+                {
+                    width_wanted = sel->sel_width + width_diff;
+                    height_wanted = sel->sel_height + height_diff;
+                }
                 ((t_canvas *)ob)->gl_pixwidth = (width_wanted > 4) ? width_wanted : 4;
                 ((t_canvas *)ob)->gl_pixheight = (height_wanted > 6) ? height_wanted : 6;
                 canvas_fixlinesfor(x, ob);
@@ -3296,7 +3305,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     }
     else if (x->gl_editor->e_onmotion == MA_RESIZE)
     {
-        canvas_doresize(x, xpos, ypos);
+        canvas_doresize(x, xpos, ypos, mod);
     }
     else canvas_doclick(x, xpos, ypos, 0, mod, 0);
 
