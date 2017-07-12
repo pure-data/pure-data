@@ -336,10 +336,10 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     # restart with longform set. 
     if {$longform == 0} {
         frame $id.longbutton
-        pack $id.longbutton -side top
+        pack $id.longbutton -side top -fill x -pady 2m
         button $id.longbutton.b -text [_ "Use multiple devices"] \
             -command  {pdsend "pd midi-properties 1"}
-        pack $id.longbutton.b
+        pack $id.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
 
     # buttons
@@ -347,15 +347,15 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     pack $id.buttonframe -side top -fill x -pady 2m
     button $id.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_midi::cancel $id"
-    pack $id.buttonframe.cancel -side left -expand 1
+    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15
     if {$::windowingsystem ne "aqua"} {
         button $id.buttonframe.apply -text [_ "Apply"] \
             -command "::dialog_midi::apply $id"
-        pack $id.buttonframe.apply -side left -expand 1
+        pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15
     }
     button $id.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_midi::ok $id" -default active
-    pack $id.buttonframe.ok -side left -expand 1
+    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15
 
     # set focus
     focus $id.buttonframe.ok
@@ -447,9 +447,9 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
         -command "::dialog_midi::apply $id"
     button $id.buttonframe.ok -text [_ "OK"]\
         -command "::dialog_midi::ok $id" -default active
-    pack $id.buttonframe.cancel -side left -expand 1
-    pack $id.buttonframe.apply -side left -expand 1
-    pack $id.buttonframe.ok -side left -expand 1
+    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15
+    pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15
+    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15
 
     # wait a little for creation, then raise so it's on top
     after 100 raise "$id"

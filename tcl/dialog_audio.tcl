@@ -151,7 +151,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     frame $mytoplevel.settings.srd
     pack $mytoplevel.settings.srd -side top -fill x
     label $mytoplevel.settings.srd.sr_label -text [_ "Sample rate:"]
-    entry $mytoplevel.settings.srd.sr_entry -textvariable audio_sr -width 7
+    entry $mytoplevel.settings.srd.sr_entry -textvariable audio_sr -width 8
     label $mytoplevel.settings.srd.d_label -text [_ "Delay (msec):"]
     entry $mytoplevel.settings.srd.d_entry -textvariable audio_advance -width 4
     pack $mytoplevel.settings.srd.sr_label $mytoplevel.settings.srd.sr_entry -side left
@@ -164,7 +164,8 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set bsmenu \
         [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize $blocksizes]
 
-    pack $mytoplevel.settings.bsc.bs_label $mytoplevel.settings.bsc.bs_popup -side left
+    pack $mytoplevel.settings.bsc.bs_label -side left -padx {0 10}
+    pack $mytoplevel.settings.bsc.bs_popup -side left
     if {$audio_callback >= 0} {
         checkbutton $mytoplevel.settings.bsc.c_button -variable audio_callback \
             -text [_ "Use callbacks"] -anchor e
@@ -325,7 +326,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     # save all settings button
     button $mytoplevel.saveall -text [_ "Save All Settings"] \
         -command "::dialog_audio::apply $mytoplevel; pdsend \"pd save-preferences\""
-    pack $mytoplevel.saveall -side top -expand 1 -pady 5
+    pack $mytoplevel.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons
     frame $mytoplevel.buttonframe

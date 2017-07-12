@@ -533,6 +533,7 @@ proc pdtk_pd_startup {major minor bugfix test
     set oldtclversion 0
     set ::audio_apilist $audio_apis
     set ::midi_apilist $midi_apis
+    ::pdwindow::verbose 0 "Tk [info patchlevel]\n"
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
