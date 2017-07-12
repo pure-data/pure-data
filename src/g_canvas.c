@@ -1633,16 +1633,23 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (!x->gl_list)
         return;
-    for (g = x->gl_list; (g2 = g->g_next); g = g2)
-        ;
-    if ((ob = pd_checkobject(&g->g_pd)))
+    if(x->gl_loading)
+    {
+        for (g = x->gl_list; (g2 = g->g_next); g = g2)
+            ;
+        if ((ob = pd_checkobject(&g->g_pd)))
+        {
+            ob->te_width = atom_getfloatarg(0, argc, argv);
+            if (glist_isvisible(x))
+            {
+                gobj_vis(g, x, 0);
+                gobj_vis(g, x, 1);
+            }
+        }
+    }
+    else if ((ob = pd_checkobject((t_pd *)x)))
     {
         ob->te_width = atom_getfloatarg(0, argc, argv);
-        if (glist_isvisible(x))
-        {
-            gobj_vis(g, x, 0);
-            gobj_vis(g, x, 1);
-        }
     }
 }
 
