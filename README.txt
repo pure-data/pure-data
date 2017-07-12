@@ -55,7 +55,7 @@ WARRANTIES, see LICENSE.txt included in the Pd distribution.
 Thanks to Harry Castle, Krzysztof Czaja, Mark Danks, Christian Feldbauer,
 Guenter Geiger, Kerry Hagan, Trevor Johnson, Fernando Lopez-Lezcano, Adam
 Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi, Winfried Ritsch,
-Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, David
-Zicarelli, Iohannes Zmoelnig, Dan Wilcox, and probably many others for
+Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, Dan
+Wilcox, David Zicarelli, IOhannes m zmoelnig, and probably many others for
 contributions of code, documentation, ideas, and expertise. This work has
 received support from Intel, Keith Mcmillen Instruments, and UCSD.
