@@ -1,64 +1,255 @@
-Quick compilation instructions for GNU/Linux, Mac OS X, or Windows if you have
-installed MinGW or Cygwin: make sure "automake" is installed as well as the usual C
-compiler chain. Then in this directory, run the following commands:
+# Installing Pure Data
 
-    $ ./autogen.sh
-    $ ./configure
-    $ make
+This README file contains info for installing Pure Data from source.
 
-If you need jack support, add the corresponding flag to "configure":
+Pd is built on the commandline using traditional Unix-style tools. The source
+distribution comes with two build systems:
 
-    $ ./configure --enable-jack
+* autotools: easy to use, many compilation options, recommended for most users
+* makefile: smaller & simpler, used for Pd binary downloads
 
-See the ./configure help print for other options such as a multi architecture
-(universal) build, etc:
+## Requirements
 
-    $ ./configure --help
+Core build requirements:
 
-Pd can now be run out of the bin directory via:
+* Unix command shell: bash, dash, etc
+* C compiler chain: gcc/clang & make
+* Tcl/Tk: Tk wish shell
 
-    $ cd bin
-    $ ./pd
+Optional features:
 
-To install Pd on Linux:
+* autotools: autconf, automake, & libtool (if building with the autotools)
+* gettext: build localizations in the po directory
+* JACK: audio server support
+* FFTW: use the optimized FFTW Fast Fourier Transform library
 
-    $ sudo make install
+## Autotools Build (recommended)
 
-or
+Building Pd using the GNU autotools involves the following steps:
 
-    $ make install DESTDIR=~/pd-xxx prefix=/
+1. configure: detect & set library and platform options
+2. make: compile Pd, associated tools, and resource files (ie. translations)
+3. install: install the Pd binaries and resources onto your system
 
-On Max OS X, you build a .app bundle via:
+Overview:
 
-    $ make app
+    cd path/to/pd
+    ./autogen.sh
+    ./configure
+    make
 
-Alternatively, and often more simply, you can use the fallback makefiles in
-"src" for GNU/Linux, Mac OS X, or Microsoft Visual C. On Linux, for example, cd
-to src and type "make -f makefile.gnu". You can then run directly out of the
-pd/bin directory without even having to do the "install" step.
+Start by opening a commandline shell and navigating to the Pd source directory:
 
-Special instructions for Microsoft Visual C: cd to src and type "make -f
-makefile.msvc". Then cd to the various subdirs of extra and type "make pd_nt" in
-each.
+    cd path/to/pd
 
-Various dependencies:
+First generate the configure script and various build files by running:
 
-- In Linux and Mac you need Tcl/Tk
-    (apparently always present for Mac and usually there for Linux).
+    ./autogen.sh
 
-- On Linux you may also need:
-    
-    - the ALSA "dev" package:
-        $ yum install alsa-lib-devel
-    or
-        $ sudo apt-get install libasound2-dev
+Next configure Pd with the default options for your platform:
 
-    - the JACK "dev" package:
-        $ yum install jack-audio-connection-kit-devel
-    or
-        $ sudo apt-get install libjack-dev
-    or
-        $ sudo apt-get install libjack-jackd2-dev)
-    
-    - libtool (if using the "autogen" method):
-        $ sudo apt-get install libtool
+    ./configure
+
+You can verify the configuration options that the configure step script prints:
+
+    pd 0.47.1 is now configured
+
+    Platform:             Mac OSX
+    Debug build:          no
+    Universal build:      no
+    Localizations:        no
+    Source directory:     .
+    Installation prefix:  /usr/local
+
+    ...
+
+    audio APIs:           PortAudio
+    midi APIs:            PortMidi
+
+If you want to change these options, you can specify/override the configure
+script settings on the commandline:
+
+    # change install prefix to /usr
+    ./configure --prefix /usr
+
+    # build Pd with the JACK audio server backend
+    ./configure --enable-jack 
+
+    # build Pd using a system installed PortAudio
+    ./configure --without-local-portaudio
+
+The full list of available configuration options can printed by running: 
+
+    ./configure --help
+
+Now that Pd is configured, build by running:
+
+    make
+
+Building should take a minute or two. If compilation was successful, you can
+run Pd from the build folder without installing it:
+
+    cd bin
+    ./pd
+
+To install to your system using the configuration prefix (default /usr/local):
+
+    sudo make install
+
+You can also to a custom location via:
+
+    make install DESTDIR=~/pd-xxx prefix=/
+
+Once installed, you should now be able to run Pd from the commandline:
+
+    pd
+
+If want to uninstall, make sure Pd is configured and then run:
+
+    sudo make uninstall
+
+### Linux & BSD
+
+Platform Requirements:
+
+* ALSA: Linux sound library (recommended)
+* OSS: historical precursor to ALSA, generally not used
+* JACK: JACK audio server (optional)
+
+Install the core build requirements using your distribution's package manager.
+For Debian, you can install the compiler chain, autotools, & gettext with:
+
+    sudo apt-get install build-essentials automake autoconf libtool gettext
+
+For libraries, you will need to install the "development" versions which include
+the source code header files. In Debian, the ALSA development package is called
+"libasound2-dev":
+
+    sudo apt-get install libasound2-dev
+
+Similarly, optional development libraries can be also be installed to for
+additional features. Install the JACK development files on Debian:
+
+    sudo apt-get install libjack-jackd2-dev
+
+Most distributions come with Tcl/Tk installed, so you should be able to run Pd
+after it's built.
+
+### macOS
+
+macOS is built on top of a BSD system and the bash commandline can be accessed
+with the Terminal application in the /Applications/Utility folder.
+
+The clang compiler and associated tools are provided by Apple. If you are
+running macOS 10.9+, you *do not* need to install the full Xcode application and
+can install the Commandline Tools Package only by running the following:
+
+    xcode-select --install
+
+If you are running macOS 10.6, 10.7, or 10.8, you will need to install Xcode
+from the Mac App Store or downloaded from http://developer.apple.com
+
+Tcl/Tk is already included macOS.
+
+If you are using a git clone of the Pd source or want to build with additional
+features, you can use one of the open source package managers for macOS:
+
+* homebrew: https://brew.sh (recommended)
+* macports: https://www.macports.org
+
+Follow the package manager setup instructions and then install the software you
+need. For example, to install the autotools & gettext using Homebrew:
+
+    brew install automake autoconf libtool pkg-config gettext
+
+The JACK audio server is supported by Pd on macOS. By default, Pd can use the
+Jack OS X runtime framework from http://www.jackosx.com if it is installed on
+the system. Optionally, Pd can also be built with Jack installed via Homebrew or
+Macports, however the runtime framework support must be disabled:
+
+    brew install jack
+    ./configure --without-jack-framework
+
+You should now be ready to build Pd. Once Pd is built, there are two options for
+installing it:
+
+* build a standalone macOS application (recommended)
+* install to your system as a commandline program
+
+To build the Pd macOS application, simply run:
+
+    make app
+
+This builds Pd-#.#.#.app in the Pd source folder which can be then be
+double-clicked and/or copied to your Applications folder. For more info &
+options regarding the Pd .app bundle, see mac/README.txt
+
+If you want to have both the Pd application *and* use Pd from the commandline,
+add command aliases to the binaries inside the .app to your ~/.bash_profile:
+
+# pd commandline
+WHICHPD="Pd-0.47-1"
+alias pd="/Applications/$WHICHPD.app/Contents/Resources/bin/pd"
+alias pdsend="/Applications/$WHICHPD.app/Contents/Resources/bin/pdsend"
+alias pdreceive="/Applications/$WHICHPD.app/Contents/Resources/bin/pdreceive"
+
+Next, reload the profile by either opening a new Terminal window or running:
+
+    source ~/.bash_profile
+
+If you install Pd to your system with "make install", the Tk 8.5.9
+currently included with the system is buggy and should *not* be used. It is
+recommended to install a newer version, either via Homebrew or from the
+ActiveState Tcl/Tk downloads. To see which version the Pd GUI is using: set the
+log level to 3 & look for the Tk version log line in the Pd window.
+
+### Windows
+
+*Windows-specific info goes here*
+
+## Makefile Build
+
+Alternatively, and often more simply, to the autotools build, you can use the
+fallback makefiles in the src directory:
+
+* src/makefile.gnu: GNU/Linux
+* src/makefile.mac: macOS
+* src/makefile.msvc: Windows with Microsoft Visual C
+* src/makefile.mingw: Windows with MinGW GCC
+
+On Linux, for example, run the GNU-specific makefile in the src directory:
+
+    cd src
+    make -f makefile.gnu
+
+You can then run directly out of the bin directory without installing:
+
+    cd ../bin
+    ./pd
+
+For Microsoft Visual C, first build Pd with the MS VC makefile and then build
+each external in the extra directory:
+
+    cd src
+    make -f makefile.msvc
+    cd ../extra/bob~
+    make pd_nt
+    cd ../bonk~ && make pd_nt
+    cd ../choice && make pd_nt
+    cd ../fiddle~ && make pd_nt
+    ...
+
+## Reporting Bugs
+
+Let us know if you run into any bugs or issues with building or installing Pd:
+
+* send an email: http://lists.puredata.info/listinfo
+* post to the Pd forum: https://forum.pdpatchrepo.info
+* open an issue on GitHub: https://github.com/pure-data/pure-data (new)
+* open a ticket on SourceForge: https://sourceforge.net/projects/pure-data (old)
+
+Please include information involved with your problem such as:
+
+* information about your system: OS version, libraries installed, etc
+* configure or make output including error lines
+* steps you took: configuration options, etc
