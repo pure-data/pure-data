@@ -34,7 +34,7 @@ or as a "zip" file.
 If you have questions about Pd or if you wish to be notified of releases,
 you can browse and/or join the Pd mailing list:
 
-    http://lists.puredata.info/listinfo
+    https://lists.puredata.info/listinfo
 
 Many extensions to Pd are available, for instance to add video and 3D graphics.
 The easiest way to get these is to use the "Find externals" command in Pd's Help

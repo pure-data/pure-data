@@ -132,6 +132,10 @@ additional features. Install the JACK development files on Debian:
 
     sudo apt-get install libjack-jackd2-dev
 
+In case you are using jackd1 instead of jackd2, use:
+
+    sudo apt-get install libjack-dev
+
 Most distributions come with Tcl/Tk installed, so you should be able to run Pd
 after it's built.
 
@@ -243,10 +247,11 @@ each external in the extra directory:
 
 Let us know if you run into any bugs or issues with building or installing Pd:
 
-* send an email: http://lists.puredata.info/listinfo
+* send an email: https://lists.puredata.info/listinfo
 * post to the Pd forum: https://forum.pdpatchrepo.info
-* open an issue on GitHub: https://github.com/pure-data/pure-data (new)
-* open a ticket on SourceForge: https://sourceforge.net/projects/pure-data (old)
+* create a bugreport on: https://bugs.puredata.info
+  * open an issue on GitHub: https://github.com/pure-data/pure-data (new)
+  * open a ticket on SourceForge: https://sourceforge.net/projects/pure-data (old)
 
 Please include information involved with your problem such as:
 
