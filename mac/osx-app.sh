@@ -29,6 +29,9 @@ SRC=..
 custom_builddir=false
 BUILD=..
 
+# the app Get Info string
+GETINFO="Pure Data: a free real-time computer music system"
+
 # Help message
 #----------------------------------------------------------
 help() {
@@ -264,11 +267,14 @@ rm $APP/Contents/Resources/Wish.icns
 cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
 
-# update version identifiers in Info.plist, sanitizes version by removing - & test
+# set version identifiers & contextual strings in Info.plist,
+# version strings can only use 0-9 and periods, so replace "-" & "test" with "."
+PLIST_BUDDY=/usr/libexec/PlistBuddy
 PLIST_VERSION=${PD_VERSION/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
-plutil -replace CFBundleVersion -string $PLIST_VERSION $APP/Contents/Info.plist
-plutil -replace CFBundleShortVersionString -string $PLIST_VERSION $APP/Contents/Info.plist
-plutil -replace CFBundleGetInfoString -string "$PLIST_VERSION" $APP/Contents/Info.plist
+$PLIST_BUDDY -c "Set:CFBundleVersion \"$PLIST_VERSION\"" $APP/Contents/Info.plist
+$PLIST_BUDDY -c "Add:CFBundleShortVersionString string \"$PLIST_VERSION\"" $APP/Contents/Info.plist
+$PLIST_BUDDY -c "Add:CFBundleGetInfoString string \"$GETINFO\"" $APP/Contents/Info.plist
+$PLIST_BUDDY -c "Add:CFBundleSpokenName string \"Pure Data\"" $APP/Contents/Info.plist
 
 # install binaries
 mkdir -p $DEST/bin
