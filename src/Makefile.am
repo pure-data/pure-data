@@ -114,6 +114,7 @@ EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
     s_audio_audiounit.c s_audio_esd.c
 
+# add WISH define if it's set
 WISH=@WISH@
 WISHDEFINE=$(if $(WISH),-DWISH='"$(WISH)"')
 pd_CFLAGS += $(WISHDEFINE)

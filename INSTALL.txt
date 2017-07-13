@@ -168,6 +168,7 @@ Follow the package manager set up instructions and then install the software you
 need. For example, to install the autotools & gettext using Homebrew:
 
     brew install automake autoconf libtool pkg-config gettext
+    brew link --force gettext
 
 The JACK audio server is supported by Pd on macOS. By default, Pd can use the
 Jack OS X runtime framework from http://www.jackosx.com if it is installed on
@@ -207,8 +208,22 @@ Next, reload the profile by either opening a new Terminal window or running:
 If you install Pd to your system with "make install", the Tk 8.5.9
 currently included with the system is buggy and should *not* be used. It is
 recommended to install a newer version, either via Homebrew or from the
-ActiveState Tcl/Tk downloads. To see which version the Pd GUI is using: set the
-log level to 3 & look for the Tk version log line in the Pd window.
+ActiveState Tcl/Tk downloads.
+
+To see which version the Pd GUI is using: set the log level to 3 & look for the
+Tk version log line in the Pd window.
+
+Another option is to set the Tk Wish command Pd uses to launch the GUI. At
+start, Pd does a quick search in the "usual places" for Wish and chooses the
+first path that exists. Currently, macOS also ships with Tcl/Tk 8.4 which works
+fine and this wish can be invoked by Pd using the full path "/usr/bin/wish8.4".
+You can configure Pd to use this search path first with:
+
+    ./configure --with-wish=/usr/bin/wish8.4
+
+To see Pd's path search info, run Pd with the -verbose flag:
+
+    pd -verbose
 
 ### Windows
 
