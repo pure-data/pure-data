@@ -17,7 +17,7 @@ More extensive FLOSS documentation is available on:
     http://fr.flossmanuals.net/PureData (Francais)
 
 Information of all sorts (guides, development, meetings, etc):
-    http://puredata.org
+    http://puredata.info
 
 The Pd mailing list archive lives in:
     http://iem.at/mailinglists/pd-list
