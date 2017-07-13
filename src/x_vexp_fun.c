@@ -47,10 +47,6 @@
  *                              - deleted avg(), Avg() as they can be simple expressions
  *                              - deleted store as this can be achieved by the '=' operator
  *  July 2017 --sdy
- *		- The following functions are now available in Window
- *		  as well:
- *		  asinh(), ex_asinh(), acosh(), atanh(), isnan(), cbrt(), round(), trunc(),
- *		  erf(), erfc(), expm1(), log1p(), finite(), nearbyint(), copysign(),
  *
  *		- ex_if() is reworked to only evaluate either the left or the right arg
  */

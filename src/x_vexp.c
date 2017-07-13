@@ -31,10 +31,6 @@
  *              - priority of ',' and '=' was switched ot fix the bug of using store "=" in
  *                functions with multiple arguments, which caused an error during execution.
  *              - The number of inlet and outlets (MAX_VARS) is now set at 100
- *              - The following functions are now available in Window
- *                as well:
- *                asinh(), ex_asinh(), acosh(), atanh(), isnan(), cbrt(), round(), trunc(),
- *                erf(), erfc(), expm1(), log1p(), finite(), nearbyint(), copysign(),
  */
 
 /*
