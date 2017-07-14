@@ -20,12 +20,12 @@
 the network via netsend (in UDP mode). Incoming messages are output
 as FUDI messages \, byte by byte., f 61;
 #X obj 439 250 fudiformat -u;
-#X text 281 193 the '-u' creation argument switches to "UDP" mode \,
+#X obj 127 475 oscformat;
+#X text 281 193 The '-u' creation argument switches to "UDP" mode \,
 omitting the packet separator. This saves some two bytes \, but only
 works when sending single FUDI messages over UDP. It doesn't work with
 TCP/IP (however \, you can use the default format even with UDP transport).
 ;
-#X obj 127 475 oscformat;
 #X connect 1 0 14 0;
 #X connect 2 0 9 0;
 #X connect 4 0 5 0;

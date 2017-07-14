@@ -27,3 +27,19 @@ puts [_ "Redo duplicate"]
 puts [_ "Redo motion"]
 puts [_ "Redo paste"]
 puts [_ "Redo typing"]
+
+# These are strings which, for some reason or another, are used in the Pd GUI
+# Tcl, but xgettext doesn't find them.
+
+# Menu Titles
+puts [_ "File"]
+puts [_ "Edit"]
+puts [_ "Put"]
+puts [_ "Find"]
+puts [_ "Media"]
+puts [_ "Window"]
+puts [_ "Help"]
+
+# These are strings built into Tk that msgcat should know about.
+
+puts [_ "Show &Hidden Files and Directories"]

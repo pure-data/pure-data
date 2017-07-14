@@ -21,6 +21,10 @@ local_portmidi=yes
 jack_framework=no
 locales=yes
 
+# wish command info, the actual value is set using the WISH define
+# "wish" mirrors the default WISH define in s_inter.c
+wish="wish"
+
 # list of detected apis
 audio_backends=""
 midi_backends=""
@@ -48,11 +52,15 @@ case $host in
         EXTERNAL_CFLAGS="-fPIC"
         EXTERNAL_EXTENSION=d_fat
 
+        # a set of search paths are used on macOS in s_inter.c
+        wish="default search paths"
+
         # required for dlopen & weak linking for older OSX version support
         CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
     else
         platform=iOS
         locales=no
+        wish="not used"
     fi
 
     # homebrew paths
@@ -102,6 +110,9 @@ case $host in
     portaudio=yes
     portmidi=yes
 
+    # this mirrors the default windows WISH define in s_inter.c
+    wish="wish85.exe
+
     # ASIO doesn't build yet with the autotools setup. We need to figure out how
     # to make the final linking phase use g++
     asio=yes
@@ -122,6 +133,9 @@ case $host in
     portaudio=yes
     portmidi=yes
 
+    # this mirrors the default windows WISH define in s_inter.c
+    wish="wish85.exe
+
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
@@ -140,7 +154,6 @@ AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
 AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
 AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
-
 
 #########################################
 ##### Check for programs, libs, & headers #####
@@ -395,8 +408,9 @@ if test x$fftw = xyes; then
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 
+##### Wish #####
 AC_ARG_WITH([wish],
-    [AS_HELP_STRING([--with-wish=WISH], [which wish-application to use for Pd-GUI])],
+    [AS_HELP_STRING([--with-wish=WISH], [which Tk Wish application to use for the Pd GUI])],
     [WISH=$withval])
 AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
     [AC_MSG_NOTICE([--with-wish requires an application, ignoring '${WISH}'])
@@ -464,8 +478,12 @@ AS_IF([test "x$midi_backends" = "x"],[
     midi_backends="NONE!"
 ])
 
-wish="${WISH}"
-AS_IF([test "x$wish" = "x"], [wish="(DEFAULT)"])
+##### Wish #####
+# add contextual info when adding a custom WISH path on macOS,
+# other platforms use a single path so it's enough to print $wish as it is
+AS_IF([test ! "x${WISH}" = "x" -a x"$MACOSX" = x"yes"],[
+    wish="prepending ${WISH} to search paths"
+])
 
 #########################################
 ##### Output files #####
@@ -521,10 +539,8 @@ AC_MSG_NOTICE([
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
 
-    wish(tcl/tk):         $wish
-
     fftw:                 $fftw
-
+    wish(tcl/tk):         $wish
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
 ])

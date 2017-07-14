@@ -34,23 +34,22 @@ set ::pd_guiprefs::configdir ""
 #
 # new
 #   plist
-#    (as is)
+#    org.puredata.pd.pd-gui <key> <value>
+#    domain: org.puredata.pd-gui
 #   registry
 #    HKEY_CURRENT_USER\Software\Pure-Data\org.puredata <key>:<value>
-#    domain: org.puredata
+#    domain: org.puredata.pd-gui
 #   file
-#    linux: ~/.config/pd/org.puredata/<key>.conf
+#    Linux: ~/.config/pd/org.puredata/<key>.conf
 #       - env(XDG_CONFIG_HOME)=~/.config/
 #       - env(PD_CONFIG_DIR)=~/.config/pd/
-#       - domain=org.puredata
+#       - domain=org.puredata.pd-gui
 #    OSX  : ~/Library/Preferences/Pd/org.puredata/<key>.conf
 #       - env(PD_CONFIG_DIR)=~/Library/Preferences/Pd/
-#       - domain=org.puredata
+#       - domain=org.puredata.pd-gui
 #    W32  : %AppData%\Pd\.config\org.puredata\<key>.conf
 #       - env(PD_CONFIG_DIR)=%AppData%\Pd\.config
-#       - domain=org.puredata
-#
-#  maybe the domain should be 'org.puredata.pd.pd-gui' (Pd-extended used this)
+#       - domain=org.puredata.pd-gui
 #
 #################################################################
 
@@ -84,7 +83,6 @@ proc ::pd_guiprefs::init {} {
     switch -- $backend {
         "plist" {
             # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
-            set ::pd_guiprefs::domain org.puredata
             set ::recentfiles_key "NSRecentDocuments"
             set ::total_recentfiles 10
             # osx special case for arrays
@@ -110,7 +108,7 @@ proc ::pd_guiprefs::init {} {
             # if $arr is true, we write an array
             #
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-                # FIXME empty and write again so we don't loose the order
+                # FIXME empty and write again so we don't lose the order
                 if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
                     ::pdwindow::error "write_config $akey: $errorMsg\n"
                 }

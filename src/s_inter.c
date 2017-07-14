@@ -64,7 +64,10 @@ typedef int socklen_t;
 #ifndef WISH
 # if defined _WIN32
 #  define WISH "wish85.exe"
-# else
+# elif defined __APPLE__
+   // leave undefined to use dummy search path, otherwise
+   // this should be a full path to wish on mac
+#else
 #  define WISH "wish"
 # endif
 #endif
@@ -1070,7 +1073,8 @@ static int sys_do_startgui(const char *libdir)
             char *homedir = getenv("HOME");
             char embed_glob[FILENAME_MAX];
             char home_filename[FILENAME_MAX];
-            char *wish_paths[10] = {
+            char *wish_paths[11] = {
+ "(custom wish not defined)",
  "(did not find a home directory)",
  "/Applications/Utilities/Wish.app/Contents/MacOS/Wish",
  "/Applications/Utilities/Wish Shell.app/Contents/MacOS/Wish Shell",
@@ -1097,10 +1101,13 @@ static int sys_do_startgui(const char *libdir)
                 sprintf(cmdbuf, "\"%s\" %d\n", glob_buffer.gl_pathv[0], portno);
             else
             {
+                #ifdef WISH
+                    wish_paths[0] = WISH;
+                #endif
                 sprintf(home_filename,
                         "%s/Applications/Wish.app/Contents/MacOS/Wish",homedir);
-                wish_paths[0] = home_filename;
-                for(i=0; i<10; i++)
+                wish_paths[1] = home_filename;
+                for(i=0; i<11; i++)
                 {
                     if (sys_verbose)
                         fprintf(stderr, "Trying Wish at \"%s\"\n",
