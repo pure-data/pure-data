@@ -154,4 +154,7 @@ proc ::dialog_font::create_dialog {gfxstub} {
         # since we show the active focus, disable the highlight outline
         .font.buttonframe.ok config -highlightthickness 0
     }
+
+    # wait a little for creation, then raise so it's on top
+    after 100 raise .font
 }

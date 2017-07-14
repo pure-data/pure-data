@@ -236,11 +236,9 @@ set ::undo_action "no"
 set ::redo_action "no"
 set ::undo_toplevel "."
 
-
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
 }
-
 
 #------------------------------------------------------------------------------#
 # coding style
@@ -317,7 +315,7 @@ proc init_for_platform {} {
             # frame's upper left corner. http://wiki.tcl.tk/11502
             set ::windowframex 3
             set ::windowframey 53
-			# TODO add wm iconphoto/iconbitmap here if it makes sense
+            # TODO add wm iconphoto/iconbitmap here if it makes sense
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "left_ptr"
             set ::cursor_runmode_clickme "arrow"
@@ -535,6 +533,7 @@ proc pdtk_pd_startup {major minor bugfix test
     set oldtclversion 0
     set ::audio_apilist $audio_apis
     set ::midi_apilist $midi_apis
+    ::pdwindow::verbose 0 "Tk [info patchlevel]\n"
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
@@ -573,9 +572,9 @@ proc pdtk_check {mytoplevel message reply_to_pd default} {
 proc pdtk_plugin_dispatch { args } {
     set receiver [ lindex $args 0 ]
     if [ info exists ::pd_connect::plugin_dispatch_receivers($receiver) ] {
-	   foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
+       foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
                $callback [ lrange $args 1 end ]
-	   }
+       }
     }
 }
 
@@ -751,7 +750,6 @@ proc load_startup_plugins {} {
 # ------------------------------------------------------------------------------
 # main
 proc main {argc argv} {
-    # TODO Tcl/Tk 8.3 doesn't have [tk windowingsystem]
     set ::windowingsystem [tk windowingsystem]
     set ::platform $::tcl_platform(os)
     if { $::tcl_platform(platform) eq "windows"} {

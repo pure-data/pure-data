@@ -1,4 +1,4 @@
-#N canvas 1233 66 646 598 12;
+#N canvas 600 66 646 598 12;
 #X obj 202 395 r foo;
 #X obj 202 423 print foo;
 #X obj 87 174 adc~;
