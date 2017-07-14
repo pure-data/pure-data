@@ -68,7 +68,7 @@
 #X floatatom 502 269 4 55 440;
 #X floatatom 537 291 6 440 3520;
 #X obj 486 314 pack 0 0;
-#X text 269 469 linear / logarithmical;
+#X text 269 469 linear / logarithmic;
 #X msg 47 158 \; goo4_rcv color \$1 \$2 \$3;
 #X msg 37 281 \; goo4_rcv label_pos \$1 \$2;
 #X msg 57 396 \; goo4_rcv label_font \$1 \$2;

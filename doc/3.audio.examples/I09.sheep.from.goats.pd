@@ -68,7 +68,7 @@
 #X text 362 148 normalize the amplitudes;
 #X text 439 253 add neighboring amplitude to this one;
 #X text 437 269 and take squared magnitude of result -;
-#X text 437 286 do this for both the left neightbor and;
+#X text 437 286 do this for both the left neighbor and;
 #X text 436 303 the right one;
 #X text 94 82 forward real Hann-windowed FT;
 #X text 284 658 I had trouble with the DC bin - this zeros it.;

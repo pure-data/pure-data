@@ -70,7 +70,7 @@
 #X restore 459 488 pd test;
 #X text 10 392 (Pd also provides a suite of user-friendly filters.
 This and other raw filters are provided for situations which the user-friendly
-ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
 for an introduction to the necessary theory.);
 #X obj 52 7 cpole~;
 #X text 114 7 complex one-pole (recursive) filter \, raw;

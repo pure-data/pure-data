@@ -77,7 +77,7 @@ with an adc~ if you want to go live.;
 #X text 125 128 get sample rate at load time;
 #X text 185 152 divide 1024 by sample rate to give time in seconds
 \; multiply by 1000 to convert to milliseconds.;
-#X text 168 197 read from the delay line at the calculater delay;
+#X text 168 197 read from the delay line at the calculated delay;
 #X text 317 268 1024-sample delay;
 #X connect 1 0 3 0;
 #X connect 2 0 6 0;

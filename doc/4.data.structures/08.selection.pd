@@ -57,7 +57,7 @@ a pointer to any selected object of type struct8.;
 #X obj 53 417 set template8 q;
 #X obj 215 259 get template8 x y w h q;
 #X text 46 68 To try it \, unlock the subpatch (data8) and select something.
-The 5 paramters should show up under the "get" object in this window
+The 5 parameters should show up under the "get" object in this window
 \, and you should be able to change them with the "set" object.;
 #X text 332 405 updated for Pd version 0.39;
 #X text 47 136 The blue "selection" rectangle ought to notice when

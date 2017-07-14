@@ -14,10 +14,10 @@
 #X obj 42 211 +~ 1;
 #X text 63 1 PULSE SPECTRUM MEASUREMENT;
 #X text 14 357 Here is a measured amplitude spectrum for the pulse
-train. Nutice that \, other than a smallish spillover \, the energy
+train. Notice that \, other than a smallish spillover \, the energy
 sits in one "lobe" whose changing width justifies our calling the squeeze
 factor the "bandwidth.";
-#X text 16 428 The spectrum is in units of amplitude. THe sidelobes
+#X text 16 428 The spectrum is in units of amplitude. The sidelobes
 \, although they look small \, are actually only about 34 dB down.
 You can design more complicated pulse trains \, little Blackman window
 functions \, which control the sidelobes much better.;

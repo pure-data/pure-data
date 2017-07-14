@@ -148,7 +148,7 @@ one in the "hip~" object.;
 #X text 112 296 zero for no filtering;
 #X msg 74 319 3;
 #X text 109 320 3 (or so) to remove DC;
-#X text 114 343 higher freqencies affect;
+#X text 114 343 higher frequencies affect;
 #X text 154 359 the audible part of;
 #X text 154 375 the signal as well.;
 #X obj 26 245 osc~ 220;

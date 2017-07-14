@@ -18,18 +18,17 @@
 </P>
 
 <P> The following are basic instructions on how to get Pd installed and running
-on your machine.  More details are maintined online on the
+on your machine.  More details are maintained online on the
 <A href=http://www.pure-data.info/>pure-data.info</A> site.
 
-<P>Pd runs under Microsoft Windows, Linux, and MacOS (10.2 or later).   How to
+<P>Pd runs under Microsoft Windows, Linux, and macOS.   How to
 get Pd up and running depends on your operating system, but the overall strategy
 is the same. You must first get and install it, and then untangle whatever
 problems arise in handling audio and MIDI input and output, and finally get Pd
 to meet its real-time obligations reliably.
 
-<P>  Installation instructions are platform-specfic; the following three
-sections
-will describe what to do for various operating systems you might have.
+<P>  Installation instructions are platform-specific; the following three
+sections will describe what to do for various operating systems you might have.
 In case of trouble also consult the Pd mailing list archive on
     <A href="http://iem.at/mailinglists/pd-list/">
     http://iem.at/mailinglists/pd-list/</A>
@@ -50,7 +49,7 @@ To test audio and MIDI, start Pd and select "test Audio and MIDI" from the
 TONE" control at top left turns this on and off.  Normally, all the output
 channels are turned on so that when you turn the tone on (to a soft -40 dB or a
 louder -20 dB) you should get output on the first eight of your output channels.
-(If you have fewer than 8 output channnels open, the extra
+(If you have fewer than 8 output channels open, the extra
 channels aren't played; and if you have more, this particular patch won't
 use them.)
 
@@ -69,7 +68,7 @@ at right; then the DC component is filtered out before metering.
 
 <P>  To test the quality of audio input and output, turn on "monitor" 
 (also at right) which causes the inputs to be played to the outputs at
-unit gain.  You should hear a faithful, non-distored copy of whatever is
+unit gain.  You should hear a faithful, non-distorted copy of whatever is
 sent through the patch.
 
 <P> It is easy to get two copies of Pd running by accident; on most machines
@@ -113,8 +112,7 @@ start or stop Pd's audio computation.
 <P> If there is a choice of
 audio API to make, the Media menu will display them.  (On Linux, they are
 OSS, ALSA, and Portaudio; on Windows, you get MMIO and ASIO).  On Mac the only
-one is portaudio. More information
-about the APIs appears in the sections below.
+one is Portaudio. More information about the APIs appears in the sections below.
 
 <P> Selecting an API (even if it's the one already in use), or, alternatively,
 selecting "Audio Settings..." from Preferences, opens
@@ -131,9 +129,9 @@ audio input will be delayed if it is copied through Pd straight to the
 output.  Naturally you would like this to be as small as possible, but,
 depending on OS, API, and even the specific choice of audio hardware, there
 will be a limit to how small you can make this.  You can typically get
-10 msec on linux (and lower still if you use special tricks), 30 msec on Mac
-OSX, and 60 msec on Windows (but note that there might be ways that a 
-patient Windows user can reduce this).
+10 msec on Linux (and lower still if you use special tricks), 30 msec on MacOS,
+and 60 msec on Windows (but note that there might be ways that a  patient
+Windows user can reduce this).
 
 <P> Next you get a choice of input and output device.  If you want to open
 more than one, hit "use multiple devices" and you'll be allowed up to 4
@@ -179,7 +177,7 @@ will depend on your audio hardware.
 <P>
 MIDI timing is very poor if you are using simultaneous audio input and output;
 if you suppress either audio input or output things will improve somewhat under
-NT; you can apparently get the jitter down to ~40 msec.  On W95 performance is
+Window; you can apparently get the jitter down to ~40 msec.  On W95 performance is
 simply terrible.  W98, with either audio input or output suppressed, offers
 fairly good MIDI timing (~5 msec jitter).  The "first edition" used to crash
 occasionally; this might be fixed in the "second edition".
@@ -209,7 +207,7 @@ your situation.  (If not, you can read the Pd mailing list archives for
 recent problems; if you have found a new problem you're welcome to post it 
 to the list.)
 
-<P> Pd is available via the package systems for some linux distributions, 
+<P> Pd is available via the package systems for some Linux distributions, 
 but not always in the most recent version possible.  It's relatively easy to
 compile your own copy of Pd and that is the approach described here.
 
@@ -224,9 +222,8 @@ yum or apt-get.
 
 <P> There are two parallel compilation setups now available.  The old one is
 described here; as of 0.43 I still use that but I plan to discontinue this for
-0.44 and start using only the new one (by Hans).  The following description
-applies to the old one.  Look in the INSTALL.txt file to see how to use the
-new one.
+0.44 and start using only the new one.  The following description applies to the
+old one.  Look in the INSTALL.txt file to see how to use the new one.
 
 <P> 
 Download Pd, perhaps from
@@ -239,10 +236,11 @@ the directory containing the file, and type the command,
     tar xzf pd-linux-033.tar.gz
 </PRE>
 <P>which creates a directory named "pd".  I do this from my home directory.
-Next, compile it.  "CD" to pd and read the INSTALL.txt, or else just cd
+Next, compile it.  "cd" to pd and read the INSTALL.txt, or else just cd
 to "pd/src" and type
 
 <P>
+<BR> ./autogen.sh
 <BR> ./configure
 <BR> make
 </P>
@@ -299,7 +297,7 @@ audio latency your audio system can handle.
 
 <P>
 Installing and testing audio and MIDI drivers in Linux can take
-days or weeks.  There apears to be no single place where you can get detailed
+days or weeks.  There appears to be no single place where you can get detailed
 information on Linux audio.
 
 <P>
@@ -322,7 +320,7 @@ items.
 <PRE>
     pd -alsaadd loupgarou
 </PRE>
-instructs Pd to offer the 'loupgarou' audio device in the Audio Settings panel.
+This instructs Pd to offer the 'loupgarou' audio device in the Audio Settings panel.
 
 <H4> Experiences with particular soudcards </H4>
 
@@ -365,53 +363,58 @@ the inputs are RIAA equalized or flat.  To run this device you'll need to
 compile and install an ALSA snapshot from at least September 2011.  This won't
 start showing up in Linux distros for at least some months.
 
-<P> THe Alsa devel list is reporting progress on the M-audio Ultra series,
+<P> The Alsa developer list is reporting progress on the M-audio Ultra series,
 which goes up to 6 in and out (analog) with 2 more as SP/DIF.  Things work
 OK for input or output separately but "full duplex" (in and out simultaneously)
 has sync problems.
 
-<H3> <A name="s1.3"> 3.4. Installing Pd in Macintosh OSX </A> </H3>
+<H3> <A name="s1.3"> 3.4. Installing Pd in macOS</A> </H3>
 
-<P>Pd version 0.35 and up support Macintosh OSX.  You need the OSX Jaguar
-distribution (10.2) or later.  Recent versions of Pd require 10.4 or up.
+<P>Pd version 0.35 and up support macOS.
+Recent versions of Pd require 10.6 or up.
 
 <P> To install Pd you can always download  the sources and compile them
-yourself, or (easier)  just download the Mac binary from the download page:
+yourself, or (easier) just download the Mac binary from the download page:
 
 <A href="http://msp.ucsd.edu/software.html">
-http://msp.ucsd.edu/software.html</A>.
+http://msp.ucsd.edu/software.html</A>
 
-This is in the form of a compressed Tar archive; just click on it and the Max
-will extract the Pd application.  Open this and you should be running.
+or from the Pure Data community site:
+
+<A href="https://puredata.info">
+https://puredata.info</A>
+
+This is in the form of a compressed tar.gz archive; just double click on it to
+extract the Pd application.  Open this and you should be running.
 
 <P> You might get various warnings about Pd trying to open an internet port.
 This is normal although some system administrators will prevent you from
 doing this (in which case you can't run Pd on that machine).
 
-<P> The package by Hans-Christoph Steiner, on
-
-<A href="http://at.or.at/hans/pd/installers.html">
-http://at.or.at/hans/pd/installers.html</A>,
-
-has many updates and extensions
-which are not included in the original Pd distribution.  Download this and
-follow the (simple) instructions found there. 
-</P>
-
-<H4> To install on OSX from source: </H4>
+<H4> To install on macOS from source: </H4>
 
 <P> 
 Whether you've downloaded the source or the "package" you can   
 always compile Pd for yourself, whether to make your own improvements, or   
 possibly so that you can get the newest version before it shows up compiled for
-Mac OS X.      
+macOS.
 
 <P> To be able to compile Pd, you must have Tcl/Tk installed in the standard
-places.  I think this is true for all reasoably recent releases of OSX.
+places. I think this is true for all reasonably recent releases of macOS.
 
-<P> Then, just as for linux, just unload pd-whatever.tar.gz into a directory
-such as ~/pd-0.36-0, cd to pd-0.36-0/src, type "./configure"
-and "make".  Then type ~/pd-0.36-0/bin/pd to a shell and enjoy!
+<P> Overview: Just as for Linux, extract pd-#.#.#.tar.gz into a directory
+such as ~/pd-0.47-1, cd to ~/pd-0.47-1, run:
+
+<P>
+<BR> ./autogen.sh
+<BR> ./configure
+<BR> make
+</P>
+
+<P> Then type ~/pd-0.47-1/bin/pd to a shell and enjoy!
+
+<P> Detailed build instructions can be found in the INSTALL.txt included with
+the Pd source distribution. 
 
 <P> If you wish you can put a line such as,
 
@@ -431,9 +434,9 @@ any existing shells unless you specially type
 <P> Follow the general directions above for testing audio and/or MIDI
 as needed.
 
-<P> To get MIDI working, you have to do the Mac OSX magic to get a USB
+<P> To get MIDI working, you have to do the macOS magic to get a USB
 MIDI interface installed.  I've seen this done with Midisport devices and
-I think you just download the OSX driver and follow directions.
+I think you just download the macOS driver and follow directions.
 
 <H3> <A name=s4> 3.6. Preferences and startup options </A> </H3>
 
@@ -471,7 +474,7 @@ single binary object (an ``extern") is left for Pd to load automatically;
 startup library loading is appropriate for collections of many objects
 specified by a single binary library.
 
-<P> The ``defeat real-time scheduling" contol, if enabled, makes Pd run without
+<P> The ``defeat real-time scheduling" control, if enabled, makes Pd run without
 its usual effort to become a real-time process (whatever this means in the
 operating system you are using.)  In Unix, Pd must usually be setuid to allow
 real-time scheduling at all.
@@ -493,7 +496,7 @@ settings as well.
 it is also run from a command line which you can edit using the ``properties"
 dialog for the shortcut.  In any operating system, Pd can be called from a
 script (called a <I> batch file </I> on Windows or a <I> shell script </I>
-on OSX or unix).  The command line is just a line of text, which should be
+on macOS or Unix).  The command line is just a line of text, which should be
 of the form:
 
 <PRE>
@@ -605,7 +608,7 @@ default (except for MMIO for which it's 256), and may be 64, 128, or 256.
 
 <P> In Linux, if you
 ask for "pd -midioutdev 1" for instance, you get /dev/midi0 or /dev/midi00
-(or even /dev/midi).  "-midioutdev 45" would be /dev/midi44.  In NT, device
+(or even /dev/midi).  "-midioutdev 45" would be /dev/midi44.  In Windows, device
 number 0 is the "MIDI mapper", which is the default MIDI device you selected
 from the control panel; counting from one, the device numbers are card
 numbers as listed by "pd -listdev."
@@ -621,7 +624,7 @@ or less.
 <P>Pd has a search path feature; you specify the path on the command line
 using the "-path" option.  Paths may contain any number of files.  If you
 specify several files in a single "-path" option they're separated by colons
-in unix or semicolons in NT.  
+in Unix or semicolons in Windows.  
 
 <P> You can see and edit the path while Pd is running using the "path..."
 item in the "File" menu:
@@ -657,7 +660,7 @@ the patch before searching down the path.  Pd does not automatically look
 in the <I> current directory </I> however; to enable that, include ``." in
 the path.  The ``extra" directory, if enabled, is searched last.
 
-<P> Filenames in Pd are always separated by (unix-style) forward slashes, even
+<P> Filenames in Pd are always separated by (Unix-style) forward slashes, even
 if you're on Windows (which uses backslashes).  This is so that patches can be
 ported more easily between operating systems.  On the other hand, if you
 specify a filename on the command line (as in "pd -path c:\pdlib") the file

@@ -5,7 +5,7 @@
 #X floatatom 303 88 0 0 0 0 - - -;
 #X obj 303 139 print;
 #X msg 303 113 blah \$1;
-#X text 36 163 This may sound inconsistant \, but it's not--object
+#X text 36 163 This may sound inconsistent \, but it's not--object
 and message boxes are both actually messages \, but in the case of
 the Object box the message is passed at creation time \, and for the
 Message box \, at message time.;

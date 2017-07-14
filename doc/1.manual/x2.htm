@@ -153,9 +153,9 @@ such as the frequency of an oscillator.
 <P> The connections in the patch (the lines between the boxes) are also of two
 types: control and signal.  The type of connection depends on the outlet it
 comes from.  Signal connections are represented by thicker lines than control
-connections; in the patch above, the two bottom conections are signal and the
+connections; in the patch above, the two bottom connections are signal and the
 others are control.  In general, a control connection may be made to a signal
-inlet; if numbers are sent over it they are automatially converted to
+inlet; if numbers are sent over it they are automatically converted to
 signals.  Signal connections may not be made to control inlets; some sort
 of explicit conversion must be specified.
 
@@ -257,7 +257,7 @@ can see the new boxes.  You can drag them together to a new place on the  screen
 
 <P>You can cut and paste between windows within Pd but cut/paste isn't
 integrated with the OS in any way.  Cut/copy/paste for activated text in boxes
-isn't implemented yet, although in Linux and Irix at least you can "X-paste"
+isn't implemented yet, although in Linux at least you can "X-paste"
 into and out of "text" dialogs (created with the "edit text" menu item.)
 
 <H3> <A name=s2.5> 2.2.5. changing the text </A> </H3>
@@ -619,7 +619,7 @@ are inlet~ and outlet~.
 objects, the signal doesn't get there until the next cycle of DSP computation,
 one block later; so your signal will be delayed by one block (1.45 msec by
 default.)  Delread~ and delwrite~ have this same restriction, but here the 1.45
-msec figure gives the minimum attainable delay.  For nonrecursive algorithms, a
+msec figure gives the minimum attainable delay.  For non-recursive algorithms, a
 simple flanger for example, you might wish to ensure that your delread~ is
 sorted after your delwrite~.  The only way to ensure this is to create the
 delread~ after you created the delwrite~; if things get out of whack, just

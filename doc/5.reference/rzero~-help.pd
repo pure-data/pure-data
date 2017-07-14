@@ -70,7 +70,7 @@ the filter coefficient. The filter is always stable.;
 #X text 68 250 y[n] = x[n] - a[n] * x[n-1];
 #X text 7 330 (Pd also provides a suite of user-friendly filters. This
 and other raw filters are provided for situations which the user-friendly
-ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
 for an introduction to the necessary theory.);
 #X text 14 230 The action of rzero~ is:;
 #X connect 0 0 29 1;

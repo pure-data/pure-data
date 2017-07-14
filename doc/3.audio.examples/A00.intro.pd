@@ -6,5 +6,5 @@ one shows the time-domain audio processing features. (The first one
 showed how to use Pd to do "control" computations \, and the third
 is about frequency-domain techniques.);
 #X text 33 125 These patches are accompanied by an ONLINE BOOK:;
-#X text 100 158 http://www.crca.ucsd.edu/~msp/techniques.htm;
+#X text 100 158 http://msp.ucsd.edu/techniques.htm;
 #X text 37 189 which develops the underlying theory.;

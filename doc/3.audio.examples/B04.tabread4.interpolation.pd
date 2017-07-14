@@ -33,8 +33,8 @@ xlabel -1.2 0 1 2 3 4 5 6 7 8 9 10 \; pd dsp 1;
 #X text 18 409 This patch demonstrates 4-point interpolation in tabread4~.
 The 11-point table \, waveform13 \, contains a transition from from
 1 to -1 \, which is "smoothed" as seen in wave-out13. There's no such
-transition at the wraparoind point--the interpolation always happens
-between 4 consccutive samples of the table \, disregarding wraparound.
+transition at the wrap around point--the interpolation always happens
+between 4 consecutive samples of the table \, disregarding wraparound.
 ;
 #X connect 2 0 12 0;
 #X connect 8 0 11 0;
