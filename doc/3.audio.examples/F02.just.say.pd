@@ -124,7 +124,7 @@ important message from Nancy Reagan. If \, anywhere \, at any time
 ;
 #X text 334 313 Now that I'm sure you've heard this important message
 \, we can return to the essentially frivolous occupation of making
-turn-of-the-millenium western art music.;
+turn-of-the-millennium western art music.;
 #X obj 126 165 *~ 6;
 #X text 561 384 updated for Pd version 0.34;
 #X text 156 305 <-- output;

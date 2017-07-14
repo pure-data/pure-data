@@ -21,7 +21,7 @@
 #X text 45 632 abbreviation:;
 #X obj 169 633 sel;
 #X text 20 37 In its simplest form shown below \, Select checks its
-input agains the constant "6". If they match \, the first outlet gives
+input against the constant "6". If they match \, the first outlet gives
 "bang" and otherwise the input is copied to the second outlet. If Select
 is used with a single argument \, a second inlet allows you to change
 the test value.;

@@ -14,7 +14,7 @@
 #X text 155 175 <-- reinitialize internal state;
 #X msg 544 28 \; pd dsp 1;
 #X text 13 73 The left inlet is the incoming audio signal \, the middle
-control input sets center frequency and the rigth input sets "Q".;
+control input sets center frequency and the right input sets "Q".;
 #X text 183 200 <-- center frequency;
 #X obj 113 243 bp~ 100 10;
 #X text 212 247 Arguments initialize center frequency and Q.;

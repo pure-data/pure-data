@@ -31,7 +31,7 @@ Pitch is "60" for Middle C \, 61 for C sharp \, 72 for the next C up
 floating-point messages to set its frequency. Without arguments \,
 its frequency is controlled by connecting an audio signal to its input.
 ;
-#X text 14 496 Mtof and ftom work fine for microtones (non-integral
+#X text 14 496 mtof and ftom work fine for microtones (non-integral
 "MIDI pitch" ) and don't have MIDI's range restriction-- for example
 \, MIDI -36 is about 1 Hz.;
 #X text 15 553 Note also the "set" messages going to the number boxes

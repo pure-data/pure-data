@@ -17,7 +17,7 @@
 the leading item in a data-holding message is a symbol. In this case
 \, to disambiguate it from the other sort \, the printed form of the
 message has a selector \, "list" or "symbol" prepended to it. Underneath
-\, there is always a selector in fromt of data messages \, but it is
+\, there is always a selector in front of data messages \, but it is
 implied if the first data item is a number.;
 #X msg 411 465 list 44100 x.wav;
 #X msg 424 490 44100 x.wav;
@@ -302,7 +302,7 @@ the list.;
 #X text 13 69 This example is a slight modification of example 1 showing
 how to build up lists with more than one item per iteration. We regard
 pairs of numbers as specifying a delay time and a pitch. Unlike the
-previous example \, the delay here is interpreted as teh delay until
+previous example \, the delay here is interpreted as the delay until
 the next event \, not the delay since the previous one. This is done
 by taking the "pitch" output before the delay object (previously the
 "output" was taken from the delay object's output.);

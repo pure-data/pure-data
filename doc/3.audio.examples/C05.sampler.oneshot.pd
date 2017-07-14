@@ -25,7 +25,7 @@
 #X text 349 140 at the first sample and go;
 #X text 348 161 forever (until the next trigger);
 #X text 18 486 To start a note \, first we have to mute the output
-in case ther's already something playing---otherwise we'll get a click.
+in case there's already something playing---otherwise we'll get a click.
 The "cutoff" line~ then takes 5 msec to get to zero. After that amount
 of delay \, we reset the phase to sample number 1 and set it in motion.
 We want the line~ output to increase by 1 each sample of output \,

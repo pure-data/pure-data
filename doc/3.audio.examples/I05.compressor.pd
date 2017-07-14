@@ -23,7 +23,7 @@
 #X obj 109 466 tabreceive~ \$0-hann;
 #X text 31 5 As in the previous patch \, this works by multiplying
 each channel of the Fourier analysis by a real number computed from
-the magnitude. If the magnutude is "m" \, the correction factor is
+the magnitude. If the magnitude is "m" \, the correction factor is
 1/m \, but only to an upper limit controlled by the "squelch" parameter.
 ;
 #X text 211 174 squared magnitude;

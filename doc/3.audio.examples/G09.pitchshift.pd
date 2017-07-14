@@ -83,7 +83,7 @@
 #X connect 17 0 18 0;
 #X restore 264 11 pd test-input;
 #X text 425 153 This is a classic rotating-tape-head style pitch shifter
-using the vd~ variable delay object. Ther are two moving tape heads
+using the vd~ variable delay object. There are two moving tape heads
 \, each of which is loudest at the middle of its trajectory \, and
 enveloped out at the moment it has to jump back (or forward) to start
 another scratch. Most of the brain work is in computing how fast the

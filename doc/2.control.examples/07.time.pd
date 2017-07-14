@@ -28,7 +28,7 @@ between the arrival of 'bang' messages to its left and right inlets:
 #X text 159 40 The delay object schedules an event for a future time
 expressed in milliseconds. Unlike in Max \, time values need not be
 integers. If a delay has been scheduled and you "bang" it again \,
-it is rescheduled (the previously scheduled output is cancelled.);
+it is rescheduled (the previously scheduled output is canceled.);
 #X connect 2 0 4 0;
 #X connect 3 0 4 0;
 #X connect 4 0 1 0;

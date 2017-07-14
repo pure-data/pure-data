@@ -51,7 +51,7 @@ subpatch (open it to see how).;
 #X obj 153 449 output~;
 #X obj 153 387 vline~;
 #X text 371 487 updated for Pd version 0.37-1;
-#X text 61 124 Here we use this principle to make a harpisichord-like
+#X text 61 124 Here we use this principle to make a harpsichord-like
 sound by sending pulses into a recirculating delay line (which imitates
 the travel of the wave up and down the harpsichord string.) This is
 related to Karplus-Strong synthesis \, but the idea is probably much

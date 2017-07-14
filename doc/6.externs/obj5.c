@@ -9,7 +9,7 @@ typedef struct obj5
 } t_obj5;
 
     /* the "rats" method is called with the selector (just "rats" again)
-    and an array of the typed areguments, which are each either a number
+    and an array of the typed arguments, which are each either a number
     or a symbol.  We just print them out. */
 void obj5_rats(t_obj5 *x, t_symbol *selector, int argcount, t_atom *argvec)
 {

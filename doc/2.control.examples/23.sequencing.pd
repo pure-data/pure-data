@@ -1,7 +1,7 @@
 #N canvas 47 52 758 482 12;
 #X text 465 442 updated for Pd version 0.26;
 #X text 35 28 You can use "qlist" or "textfile" objects for sequencing.
-Qlist is simpler to use than the (more versatile) textfile.;
+qlist is simpler to use than the (more versatile) textfile.;
 #X obj 345 144 r receive1;
 #X obj 441 146 r receive2;
 #X msg 205 88 clear \, add receive1 1 \, add 1000 receive1 0 \, add
@@ -16,7 +16,7 @@ it contains:;
 #X text 155 279 receive2 2;
 #X text 153 299 1000 receive2 0;
 #X text 155 317 receive1 3;
-#X text 16 391 If you have more than 5 lines or so wou will probably
+#X text 16 391 If you have more than 5 lines or so you will probably
 want to store them as a separate file and have qlist read it. You can
 also write files \, set tempo \, and single step... see the help patch
 for details.;

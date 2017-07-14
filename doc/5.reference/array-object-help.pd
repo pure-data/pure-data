@@ -97,7 +97,7 @@ it as shown in these examples:;
 #X text 56 21 The array objects can also reference arrays within structures
 via pointers. The "-s" flag takes two arguments \, specifying the data
 structure and the field within it that will contain the array. By default
-the array should be a simple floating point array (use hte template
+the array should be a simple floating point array (use the template
 "float" for the array elements) but you can override that using "-f"
 as shown further down.;
 #X obj 115 549 pointer;
@@ -298,7 +298,7 @@ of the array are dropped.;
 -1 -1;
 #X floatatom 383 484 5 0 0 0 - - -, f 5;
 #X floatatom 420 507 5 0 0 0 - - -, f 5;
-#X text 303 358 "array random" makes a pseudo-random numbver from 0
+#X text 303 358 "array random" makes a pseudo-random number from 0
 to 1 and outputs its quantile (which will therefore have probabilities
 proportional to the table's values.);
 #X text 394 430 bang to generate a random value;

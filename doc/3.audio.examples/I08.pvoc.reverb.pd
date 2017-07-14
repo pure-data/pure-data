@@ -47,7 +47,7 @@
 #X text 135 199 1 if new signal;
 #X text 55 73 new;
 #X text 203 70 old;
-#X text 51 12 Choose whether to replace the "lod" signal with the "new"
+#X text 51 12 Choose whether to replace the "old" signal with the "new"
 one. The "new" one must be stronger than the old one and also must
 be stronger than its two neighboring channels;
 #X text 267 283 1 if we're louder than neighbor;

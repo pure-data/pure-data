@@ -1,8 +1,8 @@
 EXTERNAL OBJECTS in Pd.
 
 Here are the sources for three simple external objects in Pd.
-To compile, type "make pd_linux", "nmake pd_nt", "make pd_irix5" or "make
-pd_irix6".
+To compile, type "make pd_linux", "make pd_linux32", "nmake pd_nt", or
+"make pd_darwin"
 
 The objects "foo1" and "foo2" are intended as very simple control objects, and
 "dspobj" is a tilde object.

@@ -100,7 +100,7 @@ a comma \, or 2 if the line number was out of range.;
 #X text 32 20 "text get" reads the nth line from the named text and
 outputs it \, or optionally reads one or more specific fields (atoms)
 from the line.;
-#X text 101 115 spedcify line number (0 for first line);
+#X text 101 115 specify line number (0 for first line);
 #X floatatom 80 140 5 0 5 0 - - -, f 5;
 #X floatatom 114 163 5 0 5 0 - - -, f 5;
 #X text 162 162 specify number of fields (1 by default \, but ignored
@@ -358,7 +358,7 @@ line that won't match numbers \;;
 #X text 102 99 doesn't match first field of any line so -1;
 #X text 113 210 fails on second field so no match;
 #X text 211 314 ... then optional search fields. Each is a field number
-(starting from 0) optionally preceeded by ">". ">=" \, "<" \, "<="
+(starting from 0) optionally preceded by ">". ">=" \, "<" \, "<="
 \, or "near".;
 #X text 98 150 if two lines match only the first is output (but see
 below for finding best matches).;

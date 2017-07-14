@@ -51,7 +51,7 @@ are initialized to default values.;
 #X text 67 250 set template and field name;
 #X text 20 154 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiancy and clarity.;
+\, at some possible cost in efficiency and clarity.;
 #X msg 33 272 set help-setsize-template array1;
 #X connect 6 0 10 1;
 #X connect 7 0 6 0;

@@ -48,7 +48,7 @@ one \; indices out of range are quietly replaced by the nearest endpoint.
 #X text 89 299 set template and field name;
 #X text 35 195 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiancy and clarity.;
+\, at some possible cost in efficiency and clarity.;
 #X connect 10 0 13 1;
 #X connect 11 0 10 0;
 #X connect 12 0 13 0;
