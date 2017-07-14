@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 156 256 637 594 12;
+#N canvas 64 151 637 594 12;
 #X obj 141 517 list;
 #X obj 18 6 text;
 #X text 35 516 see also:;
@@ -229,7 +229,7 @@ of range);
 #X connect 9 0 2 1;
 #X restore 392 335 pd size;
 #X obj 280 264 text set;
-#N canvas 651 225 834 537 set 0;
+#N canvas 115 242 740 538 set 0;
 #X floatatom 107 197 5 0 0 0 - - -, f 5;
 #X msg 107 163 0;
 #X msg 180 165 2;
@@ -239,7 +239,7 @@ of range);
 #X msg 53 84 12 23 34 45 56 56;
 #X obj 48 505 text define -k text-help-3;
 #A set 12 23 34 45 56 56 \; x y z w \; 1 2 3 \; 12 23 34 45 56 56 \;
-;
+12 23 34 45 56 56 \; 12 23 34 45 56 56 \; 12 23 34 45 56 56 \;;
 #X obj 55 293 text set text-help-3;
 #X floatatom 159 219 5 0 0 0 - - -, f 5;
 #X text 211 85 list to write into the text;
@@ -247,10 +247,6 @@ of range);
 #X text 240 295 arguments: name of the text object or "-s struct-name"
 ;
 #X text 240 320 next optional arg to set inlet 1 (line number);
-#X text 66 407 if inlet 2 is supplied to specify a starting field \,
-the line is not resized - instead \, as many items are replaced as
-were in the list at left. Otherwise \, the line is resized to the size
-of the list.;
 #X msg 212 260 symbol text-help-get;
 #X text 385 260 find another text by name or pointer;
 #X text 206 218 field number - if 0 or positive \, replace text starting
@@ -263,6 +259,12 @@ new line is added.;
 #X text 241 348 next optional arg to set inlet 2 (field number \, defaults
 to whole line), f 47;
 #X msg 223 165 1e+15;
+#X text 83 391 If inlet 2 is unset or set to a negative number \, the
+entire line is replaced \, but if it is set to 0 or more to specify
+a starting field \, the line is not resized - instead \, as many items
+are replaced as were already in the list. In this case \, an out-of-range
+line number will not cause a new line to be added - instead \, the
+last existing line is modified.;
 #X connect 0 0 8 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -271,8 +273,8 @@ to whole line), f 47;
 #X connect 5 0 8 0;
 #X connect 6 0 8 0;
 #X connect 9 0 8 2;
-#X connect 15 0 8 3;
-#X connect 21 0 0 0;
+#X connect 14 0 8 3;
+#X connect 20 0 0 0;
 #X restore 392 263 pd set;
 #X text 391 176 (click for details), f 11;
 #X text 60 216 create \, store \, and/or edit;
