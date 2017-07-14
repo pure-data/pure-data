@@ -55,6 +55,8 @@ static int sys_dontstartgui;
 int sys_hipriority = -1;    /* -1 = not specified; 0 = no; 1 = yes */
 int sys_guisetportnumber;   /* if started from the GUI, this is the port # */
 int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
+int sys_defeatrt;       /* flag to cancel real-time */
+t_symbol *sys_flags;    /* more command-line flags */
 
 char *sys_guicmd;
 t_symbol *sys_libdir;
