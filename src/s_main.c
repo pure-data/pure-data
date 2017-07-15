@@ -47,6 +47,7 @@ void sys_addhelppath(char *p);
 #ifdef USEAPI_ALSA
 void alsa_adddev(char *name);
 #endif
+int sys_oktoloadfiles(int done);
 
 int sys_debuglevel;
 int sys_verbose;
@@ -258,9 +259,13 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 #endif
     }
         /* load dynamic libraries specified with "-lib" args */
-    for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
-        if (!sys_load_lib(0, nl->nl_string))
-            post("%s: can't load library", nl->nl_string);
+    if (sys_oktoloadfiles(0))
+    {
+        for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
+            if (!sys_load_lib(0, nl->nl_string))
+                post("%s: can't load library", nl->nl_string);
+        sys_oktoloadfiles(1);
+    }
         /* open patches specifies with "-open" args */
     for  (nl = sys_openlist; nl; nl = nl->nl_next)
         openit(cwd, nl->nl_string);

@@ -610,6 +610,7 @@ void sys_savepreferences(const char *filename)
         /* misc */
     sprintf(buf1, "%d", sys_zoom_open);
     sys_putpreference("zoom", buf1);
+    sys_putpreference("loading", "no");
 
     sys_donesavepreferences();
 }
@@ -663,4 +664,34 @@ void glob_forgetpreferences(t_pd *dummy)
         RegCloseKey(hkey);
     }
 #endif /* _WIN32 */
+}
+
+int sys_oktoloadfiles(int done)
+{
+#if defined(_WIN32) || defined(__APPLE__)
+    if (done)
+    {
+        sys_putpreference("loading", "no");
+        return (1);
+    }
+    else
+    {
+        char prefbuf[MAXPDSTRING];
+        if (sys_getpreference("loading", prefbuf, MAXPDSTRING) &&
+            strcmp(prefbuf, "no"))
+        {
+            post(
+    "skipping loading preferences... Pd seems to have crashed on startup.");
+            post("(re-save preferences to reinstate them.)");
+            return (0);
+        }
+        else
+        {
+            sys_putpreference("loading", "yes");
+            return (1);
+        }
+    }
+#else
+    return (1);
+#endif
 }
