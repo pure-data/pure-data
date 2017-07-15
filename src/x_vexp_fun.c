@@ -48,7 +48,7 @@
  *                              - deleted store as this can be achieved by the '=' operator
  *  July 2017 --sdy
  *
- *		- ex_if() is reworked to only evaluate either the left or the right arg
+ *              - ex_if() is reworked to only evaluate either the left or the right arg
  */
 
 
@@ -115,7 +115,7 @@ static void ex_fmod(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *o
 static void ex_ceil(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_floor(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 struct ex_ex * ex_if(t_expr *expr, struct ex_ex *argv, struct ex_ex *optr,
-				     struct ex_ex *args, int idx);
+                                     struct ex_ex *args, int idx);
 static void ex_ldexp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_imodf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_modf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
@@ -997,14 +997,14 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
         t_float *cp;              /* condition pointer */
         t_float leftvalue, rightvalue;
         int j;
-		int condtrue = 0;
+                int condtrue = 0;
 
-		// evaluate the condition
-		eptr = ex_eval(e, eptr, argv, idx);
+                // evaluate the condition
+                eptr = ex_eval(e, eptr, argv, idx);
         cond = argv++;
-		// only either the left or right will be evaluated depending
-		// on the truth value of the condition
-		// However, if the condition is a vector, both args will be evaluated
+                // only either the left or right will be evaluated depending
+                // on the truth value of the condition
+                // However, if the condition is a vector, both args will be evaluated
 
         switch (cond->ex_type) {
         case ET_VEC:
@@ -1018,20 +1018,20 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                         optr->ex_type = ET_VEC;
                         optr->ex_vec = (t_float *)
                                   fts_malloc(sizeof (t_float) * e->exp_vsize);
-						if (!optr->ex_vec) {
-							post("expr:if: no mem");
-							/* pass over the left and right args */
-							return(cond->ex_end->ex_end);
-						}
+                                                if (!optr->ex_vec) {
+                                                        post("expr:if: no mem");
+                                                        /* pass over the left and right args */
+                                                        return(cond->ex_end->ex_end);
+                                                }
                 }
-				/*
-				 * if the condition is a vector
-				 * the left and the right args both will get processed
-				 */
-				eptr = ex_eval(e, eptr, argv, idx);
-				left = argv++;
-				eptr = ex_eval(e, eptr, argv, idx);
-				right = argv;
+                                /*
+                                 * if the condition is a vector
+                                 * the left and the right args both will get processed
+                                 */
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                left = argv++;
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                right = argv;
                 op = optr->ex_vec;
                 j = e->exp_vsize;
                 cp = cond->ex_vec;
@@ -1165,15 +1165,15 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                 }
         case ET_INT:
                 if (cond->ex_int)
-					condtrue = 1;
-				else
-					condtrue = 0;
+                                        condtrue = 1;
+                                else
+                                        condtrue = 0;
                 break;
         case ET_FLT:
                 if (cond->ex_flt)
-					condtrue = 1;
-				else
-					condtrue = 0;
+                                        condtrue = 1;
+                                else
+                                        condtrue = 0;
                 break;
         case ET_SYM:
         default:
@@ -1182,16 +1182,16 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                                       __LINE__, cond->ex_type);
                 return (eptr);
         }
-		if (condtrue) {
-				eptr = ex_eval(e, eptr, argv, idx);
-				res = argv++;
-				eptr = eptr->ex_end; /* no right processing */
+                if (condtrue) {
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                res = argv++;
+                                eptr = eptr->ex_end; /* no right processing */
 
-		} else {
-				eptr = eptr->ex_end; /* no left rocessing */
-				eptr = ex_eval(e, eptr, argv, idx);
-				res = argv++;
-		}
+                } else {
+                                eptr = eptr->ex_end; /* no left rocessing */
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                res = argv++;
+                }
         switch(res->ex_type) {
         case ET_INT:
                 if (optr->ex_type == ET_VEC) {
@@ -1220,10 +1220,10 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                         optr->ex_type = ET_VEC;
                         optr->ex_vec = (t_float *)
                                   fts_malloc(sizeof (t_float) * e->exp_vsize);
-						if (!optr->ex_vec) {
-							post("expr:if: no mem");
+                                                if (!optr->ex_vec) {
+                                                        post("expr:if: no mem");
                             return (eptr);
-						}
+                                                }
                 }
                 memcpy(optr->ex_vec, res->ex_vec, e->exp_vsize*sizeof(t_float));
                 return (eptr);

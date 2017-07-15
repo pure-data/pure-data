@@ -984,18 +984,18 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
         switch (rval->ex_type) {
         case ET_INT:
                 wvec[indx].w_float = rval->ex_int;
-				break;
+                                break;
         case ET_FLT:
                 wvec[indx].w_float = rval->ex_flt;
-				break;
+                                break;
         default:
                 pd_error(expr, "expr:bad right value type '%ld'", rval->ex_type);
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
                 return (1);
         }
-		garray_redraw(garray);
-		return(0);
+                garray_redraw(garray);
+                return(0);
 
 #else /* MSP */
         /*
