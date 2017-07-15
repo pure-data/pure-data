@@ -1,16 +1,60 @@
-#N canvas 9 21 600 496 12;
-#X msg 204 32 hello world;
-#X obj 204 105 print;
-#X floatatom 321 32 0 0 0;
-#X text 215 48 message;
-#X text 319 49 atom;
-#X text 201 123 object;
-#X text 53 150 There are four types of text objects in Pd: message \, atom \, object \, and comment.;
-#X text 54 187 Messages respond to mouse clicks by sending their contents to one or more destinations. The usual destination is the "outlet" at the lower left corner of the box.;
-#X text 55 239 Click the message box and watch the terminal window Pd was started in. You should see the "hello world" message appear.;
-#X text 55 278 Atoms respond to "Dragging" up and down with the mouse \, by changing their contents and sending the result out their outlets. You can also type at an atom after clicking on it \; hit "enter" to output the number or click anywhere else to cancel.;
-#X text 52 359 Objects \, like "print" above \, may have all sorts of functions depending on what's typed into them. The "print" object simply prints out every message it receives.;
-#X text 53 415 To get help on an object \, right-click it. You should see a "help window" for the object.;
-#X text 354 470 updated for release 0.33;
+#N canvas 309 23 1280 687 12;
+#X msg 202 152 hello world;
+#X obj 202 225 print;
+#X floatatom 319 152 0 0 0 0 - - -;
+#X text 213 168 message;
+#X text 317 169 atom;
+#X text 199 243 object;
+#X text 71 326 There are four types of text objects in Pd: message
+\, atom \, object \, and comment.;
+#X text 72 363 Messages respond to mouse clicks by sending their contents
+to one or more destinations. The usual destination is the "outlet"
+at the lower left corner of the box.;
+#X text 73 415 Click the message box and watch the terminal window
+Pd was started in. You should see the "hello world" message appear.
+;
+#X text 73 454 Atoms respond to "Dragging" up and down with the mouse
+\, by changing their contents and sending the result out their outlets.
+You can also type at an atom after clicking on it \; hit "enter" to
+output the number or click anywhere else to cancel.;
+#X text 70 535 Objects \, like "print" above \, may have all sorts
+of functions depending on what's typed into them. The "print" object
+simply prints out every message it receives.;
+#X text 71 591 To get help on an object \, right-click it. You should
+see a "help window" for the object.;
+#X text 372 646 updated for release 0.33;
+#X obj 204 123 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 875 210 450 300 pulseGen1 0;
+#X obj 198 -36 loadbang;
+#X msg 200 16 1;
+#X obj 201 56 metro 1250;
+#X obj 262 19 random 1250;
+#X obj 200 89 t b;
+#X obj 186 135 outlet;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 4 0;
+#X connect 2 0 3 0;
+#X connect 3 0 2 1;
+#X connect 4 0 5 0;
+#X restore 206 83 pd pulseGen1;
+#N canvas 875 210 450 300 pulseGen2 0;
+#X obj 198 -36 loadbang;
+#X msg 200 16 1;
+#X obj 201 56 metro 1250;
+#X obj 262 19 random 1250;
+#X obj 194 182 outlet;
+#X obj 202 97 random 322;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 2 0 5 0;
+#X connect 3 0 2 1;
+#X connect 5 0 4 0;
+#X restore 314 92 pd pulseGen2;
 #X connect 0 0 1 0;
 #X connect 2 0 1 0;
+#X connect 13 0 0 0;
+#X connect 14 0 13 0;
+#X connect 15 0 2 0;
