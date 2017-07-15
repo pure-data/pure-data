@@ -59,7 +59,7 @@ and periods of silence. (There are fancier attack detectors out there
 #X text 185 724 reset the timer;
 #X text 202 846 RMS isn't low enough.;
 #X text 120 744 If we're not in rest \, and the RMS is low \,;
-#X text 143 761 check elapsed time sinse RMS last wasn't low.;
+#X text 143 761 check elapsed time since RMS last wasn't low.;
 #X text 122 802 If more than 1 second \, report a rest.;
 #X text 170 828 If we're at rest \, pop out of it when;
 #X text 11 201 Both detectors are state machines with two states \,

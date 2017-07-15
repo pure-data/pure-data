@@ -48,7 +48,7 @@ the frequency (from the "mtof") is a message \, a "*" box suffices
 to operate on it \, but the oscillator's output \, being an audio signal
 \, needs "*~" instead. The control marked "overtones ON/OFF" is a toggle
 switch. Click to turn it on and off. Of the overtones are "off" you
-hear only a sinusoid from the forst oscillator. If on \, you hear all
+hear only a sinusoid from the first oscillator. If on \, you hear all
 four.;
 #X connect 0 0 1 0;
 #X connect 1 0 6 0;

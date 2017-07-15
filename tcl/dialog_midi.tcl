@@ -130,7 +130,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     frame $id.inputs.in1f
     pack $id.inputs.in1f -side top
 
-    label $id.inputs.in1f.l1 -text [_ "1:"]
+    label $id.inputs.in1f.l1 -text "1:"
     button $id.inputs.in1f.x1 -text [lindex $midi_indevlist $midi_indev1] -width 20 \
         -command [list midi_popup $id $id.inputs.in1f.x1 midi_indev1 $midi_indevlist]
     pack $id.inputs.in1f.l1 $id.inputs.in1f.x1 -side left
@@ -140,7 +140,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in2f
         pack $id.inputs.in2f -side top
 
-        label $id.inputs.in2f.l1 -text [_ "2:"]
+        label $id.inputs.in2f.l1 -text "2:"
         button $id.inputs.in2f.x1 -text [lindex $midi_indevlist $midi_indev2] -width 20 \
             -command [list midi_popup $id $id.inputs.in2f.x1 midi_indev2 \
                 $midi_indevlist]
@@ -152,7 +152,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in3f
         pack $id.inputs.in3f -side top
 
-        label $id.inputs.in3f.l1 -text [_ "3:"]
+        label $id.inputs.in3f.l1 -text "3:"
         button $id.inputs.in3f.x1 -text [lindex $midi_indevlist $midi_indev3] -width 20 \
             -command [list midi_popup $id $id.inputs.in3f.x1 midi_indev3 \
                 $midi_indevlist]
@@ -164,7 +164,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in4f
         pack $id.inputs.in4f -side top
 
-        label $id.inputs.in4f.l1 -text [_ "4:"]
+        label $id.inputs.in4f.l1 -text "4:"
         button $id.inputs.in4f.x1 -text [lindex $midi_indevlist $midi_indev4] -width 20 \
             -command [list midi_popup $id $id.inputs.in4f.x1 midi_indev4 \
                 $midi_indevlist]
@@ -176,7 +176,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in5f
         pack $id.inputs.in5f -side top
 
-        label $id.inputs.in5f.l1 -text [_ "5:"]
+        label $id.inputs.in5f.l1 -text "5:"
         button $id.inputs.in5f.x1 -text [lindex $midi_indevlist $midi_indev5] -width 20 \
             -command [list midi_popup $id $id.inputs.in5f.x1 midi_indev5 \
                 $midi_indevlist]
@@ -188,7 +188,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in6f
         pack $id.inputs.in6f -side top
 
-        label $id.inputs.in6f.l1 -text [_ "6:"]
+        label $id.inputs.in6f.l1 -text "6:"
         button $id.inputs.in6f.x1 -text [lindex $midi_indevlist $midi_indev6] -width 20 \
             -command [list midi_popup $id $id.inputs.in6f.x1 midi_indev6 \
                 $midi_indevlist]
@@ -200,7 +200,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in7f
         pack $id.inputs.in7f -side top
 
-        label $id.inputs.in7f.l1 -text [_ "7:"]
+        label $id.inputs.in7f.l1 -text "7:"
         button $id.inputs.in7f.x1 -text [lindex $midi_indevlist $midi_indev7] -width 20 \
             -command [list midi_popup $id $id.inputs.in7f.x1 midi_indev7 \
                 $midi_indevlist]
@@ -212,7 +212,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in8f
         pack $id.inputs.in8f -side top
 
-        label $id.inputs.in8f.l1 -text [_ "8:"]
+        label $id.inputs.in8f.l1 -text "8:"
         button $id.inputs.in8f.x1 -text [lindex $midi_indevlist $midi_indev8] -width 20 \
             -command [list midi_popup $id $id.inputs.in8f.x1 midi_indev8 \
                 $midi_indevlist]
@@ -224,7 +224,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         frame $id.inputs.in9f
         pack $id.inputs.in9f -side top
 
-        label $id.inputs.in9f.l1 -text [_ "9:"]
+        label $id.inputs.in9f.l1 -text "9:"
         button $id.inputs.in9f.x1 -text [lindex $midi_indevlist $midi_indev9] -width 20 \
             -command [list midi_popup $id $id.inputs.in9f.x1 midi_indev9 \
                 $midi_indevlist]
@@ -238,7 +238,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     # output device 1
     frame $id.outputs.out1f
     pack $id.outputs.out1f -side top
-    label $id.outputs.out1f.l1 -text [_ "1:"]
+    label $id.outputs.out1f.l1 -text "1:"
     button $id.outputs.out1f.x1 -text [lindex $midi_outdevlist $midi_outdev1] -width 20 \
         -command [list midi_popup $id $id.outputs.out1f.x1 midi_outdev1 \
             $midi_outdevlist]
@@ -248,7 +248,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 2} {
         frame $id.outputs.out2f
         pack $id.outputs.out2f -side top
-        label $id.outputs.out2f.l1 -text [_ "2:"]
+        label $id.outputs.out2f.l1 -text "2:"
         button $id.outputs.out2f.x1 -text [lindex $midi_outdevlist $midi_outdev2] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out2f.x1 midi_outdev2 $midi_outdevlist]
@@ -259,7 +259,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 3} {
         frame $id.outputs.out3f
         pack $id.outputs.out3f -side top
-        label $id.outputs.out3f.l1 -text [_ "3:"]
+        label $id.outputs.out3f.l1 -text "3:"
         button $id.outputs.out3f.x1 -text [lindex $midi_outdevlist $midi_outdev3] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out3f.x1 midi_outdev3 $midi_outdevlist]
@@ -270,7 +270,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 4} {
         frame $id.outputs.out4f
         pack $id.outputs.out4f -side top
-        label $id.outputs.out4f.l1 -text [_ "4:"]
+        label $id.outputs.out4f.l1 -text "4:"
         button $id.outputs.out4f.x1 -text [lindex $midi_outdevlist $midi_outdev4] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out4f.x1 midi_outdev4 $midi_outdevlist]
@@ -281,7 +281,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 5} {
         frame $id.outputs.out5f
         pack $id.outputs.out5f -side top
-        label $id.outputs.out5f.l1 -text [_ "5:"]
+        label $id.outputs.out5f.l1 -text "5:"
         button $id.outputs.out5f.x1 -text [lindex $midi_outdevlist $midi_outdev5] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out5f.x1 midi_outdev5 $midi_outdevlist]
@@ -292,7 +292,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 6} {
         frame $id.outputs.out6f
         pack $id.outputs.out6f -side top
-        label $id.outputs.out6f.l1 -text [_ "6:"]
+        label $id.outputs.out6f.l1 -text "6:"
         button $id.outputs.out6f.x1 -text [lindex $midi_outdevlist $midi_outdev6] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out6f.x1 midi_outdev6 $midi_outdevlist]
@@ -303,7 +303,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 7} {
         frame $id.outputs.out7f
         pack $id.outputs.out7f -side top
-        label $id.outputs.out7f.l1 -text [_ "7:"]
+        label $id.outputs.out7f.l1 -text "7:"
         button $id.outputs.out7f.x1 -text [lindex $midi_outdevlist $midi_outdev7] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out7f.x1 midi_outdev7 $midi_outdevlist]
@@ -314,7 +314,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 8} {
         frame $id.outputs.out8f
         pack $id.outputs.out8f -side top
-        label $id.outputs.out8f.l1 -text [_ "8:"]
+        label $id.outputs.out8f.l1 -text "8:"
         button $id.outputs.out8f.x1 -text [lindex $midi_outdevlist $midi_outdev8] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out8f.x1 midi_outdev8 $midi_outdevlist]
@@ -325,7 +325,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform && [llength $midi_outdevlist] > 9} {
         frame $id.outputs.out9f
         pack $id.outputs.out9f -side top
-        label $id.outputs.out9f.l1 -text [_ "9:"]
+        label $id.outputs.out9f.l1 -text "9:"
         button $id.outputs.out9f.x1 -text [lindex $midi_outdevlist $midi_outdev9] -width 20 \
             -command \
             [list midi_popup $id $id.outputs.out9f.x1 midi_outdev9 $midi_outdevlist]
@@ -336,10 +336,10 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     # restart with longform set. 
     if {$longform == 0} {
         frame $id.longbutton
-        pack $id.longbutton -side top
+        pack $id.longbutton -side top -fill x -pady 2m
         button $id.longbutton.b -text [_ "Use multiple devices"] \
             -command  {pdsend "pd midi-properties 1"}
-        pack $id.longbutton.b
+        pack $id.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
 
     # buttons
@@ -347,15 +347,15 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     pack $id.buttonframe -side top -fill x -pady 2m
     button $id.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_midi::cancel $id"
-    pack $id.buttonframe.cancel -side left -expand 1
+    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15
     if {$::windowingsystem ne "aqua"} {
         button $id.buttonframe.apply -text [_ "Apply"] \
             -command "::dialog_midi::apply $id"
-        pack $id.buttonframe.apply -side left -expand 1
+        pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15
     }
     button $id.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_midi::ok $id" -default active
-    pack $id.buttonframe.ok -side left -expand 1
+    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15
 
     # set focus
     focus $id.buttonframe.ok
@@ -385,6 +385,9 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         $id.buttonframe.ok config -highlightthickness 0
         $id.buttonframe.cancel config -highlightthickness 0
     }
+
+    # wait a little for creation, then raise so it's on top
+    after 100 raise "$id"
 }
 
 proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
@@ -444,9 +447,12 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
         -command "::dialog_midi::apply $id"
     button $id.buttonframe.ok -text [_ "OK"]\
         -command "::dialog_midi::ok $id" -default active
-    pack $id.buttonframe.cancel -side left -expand 1
-    pack $id.buttonframe.apply -side left -expand 1
-    pack $id.buttonframe.ok -side left -expand 1
+    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15
+    pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15
+    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15
+
+    # wait a little for creation, then raise so it's on top
+    after 100 raise "$id"
 }
 
 # for focus handling on OSX

@@ -15,20 +15,20 @@ satisfy 0 > n >= -vector size.;
 #X text 558 179 $x#[n]: the sample from inlet # indexed by n where
 n has to satisfy 0 => n >= -vector size \, ($x# is a shorthand for
 $x#[0] \, specifying the current sample);
-#X text 64 146 expr~ is used for expression evaluaion of signal data
+#X text 64 146 expr~ is used for expression evaluation of signal data
 on the vector by vector basis;
-#X text 64 131 expr is used for expression evaluaion of control data
+#X text 64 131 expr is used for expression evaluation of control data
 ;
-#X text 67 39 For a more detailed documentaion refer to http://www.crca.ucsd.edu/~yadegari/expr.html
+#X text 67 39 For a more detailed documentation refer to http://yadegari.org/expr.html
 ;
 #X text 64 254 The syntax is very close to how expressions are written
 in C. Variables are specified as follows where the '#' stands for the
 inlet number:;
 #X text 64 304 $i#: integer input variable;
-#X text 63 179 fexpr~ is used for expression evaluaion on sample level
+#X text 63 179 fexpr~ is used for expression evaluation on sample level
 data \; i.e. \, filter design. Warning: fexpr~ is very cpu intensive.
 ;
-#X text 67 85 you can define multiple expressoins in the same object.
+#X text 67 85 you can define multiple expressions in the same object.
 semicolon is used to separates the expressions.;
 #X text 643 303 $y -> $y1[-1];
 #X text 558 272 Shorthands: $x -> $x1[0];

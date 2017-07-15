@@ -45,7 +45,7 @@
 #X floatatom 41 262 5 0 0 0 - - -;
 #X text 24 556 Synthesis techniques vary in their tendency to make
 foldover. For higher pitched sounds you'll want to try out relatively
-folvover-resistant ones.;
+foldover-resistant ones.;
 #X obj 33 342 output~;
 #X obj 201 281 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;

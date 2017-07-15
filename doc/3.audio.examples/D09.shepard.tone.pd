@@ -56,7 +56,7 @@ their frequencies sweep upward or downward in parallel \, and their
 amplitudes fade in and out so that each one is quiet when it wraps
 around from one end to the other. The overall "phase" computed here
 is added to each voice's relative phase (its creation argument). The
-"incr" parameter controlls how fast the phase changes \, "dropoff"
+"incr" parameter controls how fast the phase changes \, "dropoff"
 the slope at which the amplitudes fall off at the ends \, "pitch" the
 center pitch of the cluster \, "interval" the number of (tenths of
 halftones) between successive voices \, and "rev" and "revtime" the

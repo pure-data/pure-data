@@ -55,6 +55,8 @@ static int sys_dontstartgui;
 int sys_hipriority = -1;    /* -1 = not specified; 0 = no; 1 = yes */
 int sys_guisetportnumber;   /* if started from the GUI, this is the port # */
 int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
+int sys_defeatrt;       /* flag to cancel real-time */
+t_symbol *sys_flags;    /* more command-line flags */
 
 char *sys_guicmd;
 t_symbol *sys_libdir;
@@ -224,6 +226,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
     t_namelist *nl;
     unsigned int i;
+    int did_fontwarning = 0;
     int j;
     sys_oldtclversion = atom_getfloatarg(1, argc, argv);
     if (argc != 2 + 3 * NZOOM * NFONT)
@@ -231,12 +234,23 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     for (j = 0; j < NZOOM; j++)
         for (i = 0; i < NFONT; i++)
     {
-        sys_gotfonts[j][i].fi_pointsize =
-            atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
-        sys_gotfonts[j][i].fi_width =
-            atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
-        sys_gotfonts[j][i].fi_height =
-            atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+        int size   = atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
+        int width  = atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
+        int height = atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+        if (!(size && width && height))
+        {
+            size   = (j+1)*sys_fontspec[i].fi_pointsize;
+            width  = (j+1)*sys_fontspec[i].fi_width;
+            height = (j+1)*sys_fontspec[i].fi_height;
+            if (!did_fontwarning)
+            {
+                error("Ignoring invalid font-metrics from GUI!");
+                did_fontwarning = 1;
+            }
+        }
+        sys_gotfonts[j][i].fi_pointsize = size;
+        sys_gotfonts[j][i].fi_width = width;
+        sys_gotfonts[j][i].fi_height = height;
 #if 0
             fprintf(stderr, "font (%d %d %d)\n",
                 sys_gotfonts[j][i].fi_pointsize, sys_gotfonts[j][i].fi_width,
@@ -314,7 +328,7 @@ int sys_main(int argc, char **argv)
         _fmode = _O_BINARY;
     }
 # endif /* _MSC_VER */
-#endif  /* WIN32 */
+#endif  /* _WIN32 */
 #ifndef _WIN32
     /* long ago Pd used setuid to promote itself to real-time priority.
     Just in case anyone's installation script still makes it setuid, we
@@ -324,7 +338,7 @@ int sys_main(int argc, char **argv)
         fprintf(stderr, "warning: canceling setuid privelege\n");
         setuid(getuid());
     }
-#endif  /* WIN32 */
+#endif  /* _WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)    /* prescan for prefs override */

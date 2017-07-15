@@ -10,13 +10,9 @@
 #X text 51 156 numbers and symbols;
 #X obj 57 286 print packet;
 #X text 416 152 packets from network;
-#X text 521 176 slisten on port 5000;
 #X text 558 231 UDP packets \, binary output, f 13;
 #X text 80 11 fudiparse - parse FUDI packets into Pd messages, f 67
 ;
-#X text 45 40 fudiparse take incoming lists of numbers \, interpreting
-them as the bytes in a FUDI message (as received when sending Pd-messages
-via [netreceive -b]).;
 #X obj 57 206 fudiformat;
 #X obj 222 206 fudiformat -u;
 #X text 220 159 without packet separator;
@@ -25,15 +21,19 @@ via [netreceive -b]).;
 #X obj 224 373 oscparse;
 #X obj 222 226 t a a;
 #X obj 57 226 t a a;
+#X text 45 40 fudiparse takes incoming lists of numbers \, interpreting
+them as the bytes in a FUDI message (as received when sending Pd-messages
+via [netreceive -b]).;
+#X text 521 176 listen on port 5000;
 #X connect 0 0 2 0;
 #X connect 3 0 0 0;
 #X connect 4 0 3 0;
 #X connect 5 0 3 0;
-#X connect 7 0 15 0;
-#X connect 15 0 22 0;
-#X connect 16 0 21 0;
-#X connect 18 0 16 0;
-#X connect 21 0 0 0;
-#X connect 21 1 9 0;
-#X connect 22 0 0 0;
-#X connect 22 1 9 0;
+#X connect 7 0 13 0;
+#X connect 13 0 20 0;
+#X connect 14 0 19 0;
+#X connect 16 0 14 0;
+#X connect 19 0 0 0;
+#X connect 19 1 9 0;
+#X connect 20 0 0 0;
+#X connect 20 1 9 0;

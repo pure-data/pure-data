@@ -173,7 +173,7 @@ modulation index \, which wasn't necessary in the previous patch.;
 #X text 407 82 (the index is;
 #X text 435 704 updated for Pd version 0.37;
 #X text 21 588 The "modulation" index \, which in true FM is in units
-of Hertz \, is dimensionless for phase moduation. "Good" values tend
+of Hertz \, is dimensionless for phase modulation. "Good" values tend
 to be between 0 and 1... in this patch the index is in hundredths.
 ;
 #X connect 0 0 5 1;

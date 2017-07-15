@@ -77,7 +77,7 @@ IN PD;
 #X text 44 269 Pd's default block size is 64 samples. The inlet~ and
 outlet~ objects reblock signals to adjust for differences between parent
 and subpatch \, but only power-of-two adjustments are possible. So
-for "normal" audio computations \, all blocaks should also be power-of-two
+for "normal" audio computations \, all blocks should also be power-of-two
 in size. HOWEVER \, if you have no inlet~ or outlet~ you may specify
 any other block size. This is intended for later use in video processing.
 ;
@@ -89,7 +89,7 @@ or window functions \, or also for video processing.;
 #N canvas 0 22 581 315 block-interations 0;
 #X text 32 11 You can use the switch~ object to single-step dsp in
 a subpatch. This might be useful for block operations that don't want
-to be synced to the sample clock: loading a wondiw function in a table
+to be synced to the sample clock: loading a window function in a table
 \, or copying one table to another:;
 #X obj 136 193 noise~;
 #X obj 136 225 tabwrite~ zzzz;

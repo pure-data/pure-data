@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 156 256 637 594 12;
+#N canvas 64 151 637 594 12;
 #X obj 141 517 list;
 #X obj 18 6 text;
 #X text 35 516 see also:;
@@ -100,7 +100,7 @@ a comma \, or 2 if the line number was out of range.;
 #X text 32 20 "text get" reads the nth line from the named text and
 outputs it \, or optionally reads one or more specific fields (atoms)
 from the line.;
-#X text 101 115 spedcify line number (0 for first line);
+#X text 101 115 specify line number (0 for first line);
 #X floatatom 80 140 5 0 5 0 - - -, f 5;
 #X floatatom 114 163 5 0 5 0 - - -, f 5;
 #X text 162 162 specify number of fields (1 by default \, but ignored
@@ -229,7 +229,7 @@ of range);
 #X connect 9 0 2 1;
 #X restore 392 335 pd size;
 #X obj 280 264 text set;
-#N canvas 386 222 834 545 set 1;
+#N canvas 115 242 740 538 set 0;
 #X floatatom 107 197 5 0 0 0 - - -, f 5;
 #X msg 107 163 0;
 #X msg 180 165 2;
@@ -237,12 +237,13 @@ of range);
 #X msg 62 111 list x y z w;
 #X msg 68 137 1 2 3;
 #X msg 53 84 12 23 34 45 56 56;
-#X obj 48 515 text define -k text-help-3;
+#X obj 48 505 text define -k text-help-3;
 #A set 12 23 34 45 56 56 \; x y z w \; 1 2 3 \; 12 23 34 45 56 56 \;
-;
+12 23 34 45 56 56 \; 12 23 34 45 56 56 \; 12 23 34 45 56 56 \;;
 #X obj 55 293 text set text-help-3;
 #X floatatom 159 219 5 0 0 0 - - -, f 5;
 #X text 211 85 list to write into the text;
+#X text 165 197 line number - use a large number to append a line;
 #X text 240 295 arguments: name of the text object or "-s struct-name"
 ;
 #X text 240 320 next optional arg to set inlet 1 (line number);
@@ -251,21 +252,19 @@ of range);
 #X text 206 218 field number - if 0 or positive \, replace text starting
 at this field \, or if negative (or not supplied) \, replace whole
 line., f 62;
-#X text 288 516 <-- click here to see text;
+#X text 288 506 <-- click here to see text;
 #X text 46 9 "text set" replaces the nth line with the incoming list.
 If the number n is greater than the number of lines in the text the
 new line is added.;
 #X text 241 348 next optional arg to set inlet 2 (field number \, defaults
 to whole line), f 47;
-#X msg 223 165 2e+09;
-#X text 165 197 line number - use a large number to append a line (max.
-2e+09), f 62;
-#X text 66 407 if inlet 2 is supplied to specify a starting field (field
-number != -1) \, the line is not resized - instead \, as many items
-are replaced as were in the list at left. Otherwise (field number ==
--1) \, the line is resized to the size of the list. Also if inlet 2
-is supplied to specify a starting field (field number != -1) \, new
-line can't be appended.;
+#X msg 223 165 1e+15;
+#X text 83 391 If inlet 2 is unset or set to a negative number \, the
+entire line is replaced \, but if it is set to 0 or more to specify
+a starting field \, the line is not resized - instead \, as many items
+are replaced as were already in the list. In this case \, an out-of-range
+line number will not cause a new line to be added - instead \, the
+last existing line is modified.;
 #X connect 0 0 8 1;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
@@ -274,8 +273,8 @@ line can't be appended.;
 #X connect 5 0 8 0;
 #X connect 6 0 8 0;
 #X connect 9 0 8 2;
-#X connect 13 0 8 3;
-#X connect 19 0 0 0;
+#X connect 14 0 8 3;
+#X connect 20 0 0 0;
 #X restore 392 263 pd set;
 #X text 391 176 (click for details), f 11;
 #X text 60 216 create \, store \, and/or edit;
@@ -361,7 +360,7 @@ line that won't match numbers \;;
 #X text 102 99 doesn't match first field of any line so -1;
 #X text 113 210 fails on second field so no match;
 #X text 211 314 ... then optional search fields. Each is a field number
-(starting from 0) optionally preceeded by ">". ">=" \, "<" \, "<="
+(starting from 0) optionally preceded by ">". ">=" \, "<" \, "<="
 \, or "near".;
 #X text 98 150 if two lines match only the first is output (but see
 below for finding best matches).;

@@ -37,7 +37,7 @@ proc ::pd_menus::create_menubar {} {
     }
     menu $menubar
     if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
-    set menulist "file edit put find media window help"
+    set menulist [_ "file edit put find media window help"]
     foreach mymenu $menulist {    
         if {$mymenu eq "find"} {
             set underlined 3
@@ -63,9 +63,10 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.file entryconfigure [_ "Close"] -state disabled
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
+    $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
+    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode .pdwindow 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -90,9 +91,10 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.file entryconfigure [_ "Close"] -state normal
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
+    $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state normal
     $menubar.edit entryconfigure [_ "Zoom Out"] -state normal
+    $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
     $menubar.edit entryconfigure [_ "Edit Mode"] -state normal
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
     # Put menu
@@ -122,9 +124,9 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     # Edit menu
     $menubar.edit entryconfigure [_ "Font"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
+    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode $mytoplevel 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -178,17 +180,10 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {menu_send $::focused_window selectall}
     $mymenu add  separator
-    if {$::windowingsystem eq "aqua"} {
-#        $mymenu add command -label [_ "Text Editor"] \
-#            -command {menu_texteditor}
-        $mymenu add command -label [_ "Font"]   -accelerator "$accelerator+T" \
-            -command {menu_font_dialog}
-    } else {
-#        $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T"\
-#            -command {menu_texteditor}
-        $mymenu add command -label [_ "Font"] \
-            -command {menu_font_dialog}
-    }
+#   $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T" \
+#       -command {menu_texteditor}
+    $mymenu add command -label [_ "Font"]       -accelerator "$accelerator+T" \
+        -command {menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
         -command {menu_send_float $::focused_window zoom 2}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
@@ -233,7 +228,7 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {menu_send $::focused_window numbox}
     $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
         -command {menu_send $::focused_window vslider}
-    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+G" \
+    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+H" \
         -command {menu_send $::focused_window hslider}
     $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
         -command {menu_send $::focused_window vradio}
@@ -312,10 +307,10 @@ proc ::pd_menus::build_window_menu {mymenu} {
                 -command {menu_bringalltofront}
         }
     } else {
-		$mymenu add command -label [_ "Next Window"] \
+        $mymenu add command -label [_ "Next Window"] \
             -command {menu_raisenextwindow} \
             -accelerator [_ "$accelerator+Page Down"]
-		$mymenu add command -label [_ "Previous Window"] \
+        $mymenu add command -label [_ "Previous Window"] \
             -command {menu_raisepreviouswindow} \
             -accelerator [_ "$accelerator+Page Up"]
     }

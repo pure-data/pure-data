@@ -27,7 +27,7 @@ object starts altering the signal nonlinearly \, and the result is
 no longer as if the two sinusoids had been processed separately. Instead
 \, they "intermodulate" \, finding a common subharmonic if one exists.
 At 300 and 225 Hz \, the subharmonic is at 75 \, two octaves below
-the upper tone and a twelveth below the lower one. Change the frequency
+the upper tone and a twelfth below the lower one. Change the frequency
 of the second tone and you will hear a variety of effects.;
 #X obj 42 103 osc~;
 #X connect 0 0 7 0;

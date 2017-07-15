@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 #include <portaudio.h>
 
 #ifdef _MSC_VER
@@ -476,7 +477,7 @@ int pa_send_dacs(void)
 #ifndef FAKEBLOCKING
     double timebefore;
 #endif /* FAKEBLOCKING */
-    if (!STUFF->st_inchannels && !STUFF->st_outchannels || !pa_stream)
+    if ((!STUFF->st_inchannels && !STUFF->st_outchannels) || !pa_stream)
         return (SENDDACS_NO);
     conversionbuf = (float *)alloca((STUFF->st_inchannels > STUFF->st_outchannels?
         STUFF->st_inchannels:STUFF->st_outchannels) * DEFDACBLKSIZE * sizeof(float));

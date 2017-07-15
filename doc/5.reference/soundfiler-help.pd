@@ -36,9 +36,8 @@ and unsupplied channels are zeroed out.);
 #X text 575 123 -raw <headersize> <channels> <bytespersample> <endianness>
 ;
 #X text 594 141 This causes all header information to be ignored. Endianness
-is "l" ("little") for Intel machines or "b" ("big") for Macintoshes
-and SGIs. You can give "n" (natural) to take the byte order your machine
-prefers.;
+is "l" ("little") for Intel machines or "b" ("big") for PPC Macintoshes. You can
+give "n" (natural) to take the byte order your machine prefers.;
 #X text 575 86 -resize;
 #X text 575 104 -maxsize <maximum number of samples we can resize to>
 ;

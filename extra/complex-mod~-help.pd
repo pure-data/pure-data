@@ -10,7 +10,7 @@
 #X obj 106 138 cos~;
 #X obj 106 114 -~ 0.25;
 #X floatatom 145 152;
-#X text 93 351 The complex modulator takes two signals in which it considers to be the real and imaginary part of a complex-valued signal. It then does a complex multiplication by a sinusoud to shift all frequencies up or down by any frequency shift in Hz. See also hilbert~.;
+#X text 93 351 The complex modulator takes two signals in which it considers to be the real and imaginary part of a complex-valued signal. It then does a complex multiplication by a sinusoid to shift all frequencies up or down by any frequency shift in Hz. See also hilbert~.;
 #X obj 69 298 tabwrite~ mod-output;
 #X text 149 204 right outlet;
 #X text 151 220 gives the other;

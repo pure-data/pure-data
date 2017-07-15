@@ -22,7 +22,7 @@ is then given numeric values to create three items.;
 #X msg 421 309 traverse pd-data4 \, bang;
 #X text 57 165 The outlet of "append" is a pointer to the newly created
 scalar. You can pass that on to other append objects if you want to
-build heterogenous lists.;
+build heterogeneous lists.;
 #X text 363 375 Updated for Pd version 0.32;
 #X text 57 121 The "append" object is given the argument "template4"
 to specify what kind of data structure to append. The other arguments

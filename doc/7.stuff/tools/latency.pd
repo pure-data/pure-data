@@ -257,7 +257,7 @@
 ;
 #X text 67 343 To use this patch \, connect your audio output back
 to the audio input (any input and output channel from 1 to 8 \, but
-the input channel should agree wih the "inchannel" control at top).
+the input channel should agree with the "inchannel" control at top).
 Then adjust gain so that "RMS amplitude in" is about 65 (anywhere from
 60 to 70 will do.) The latency is measured once per second. If there
 are interruptions in the audio the button above should flash (whether

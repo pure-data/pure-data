@@ -33,8 +33,6 @@
 #define snprintf sprintf_s
 #endif
 
-int sys_defeatrt;
-t_symbol *sys_flags;
 void sys_doflags( void);
 
 static PERTHREAD char *sys_prefbuf;
