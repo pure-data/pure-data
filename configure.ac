@@ -31,7 +31,7 @@ midi_backends=""
 
 # debug/release defaults
 DEBUG_CFLAGS="-O0"
-RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer"
+RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer -O3"
 
 #########################################
 ##### OS Detection #####
