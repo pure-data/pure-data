@@ -256,7 +256,6 @@ $(OBJ_DIR):
 
 makefile.dependencies:
 	$(CC) $(CPPFLAGS) -M $(SRC) > makefile.dependencies
-        -mkdir ../obj ../bin
 
 uninstall:
 	rm -f -r $(DESTDIR)$(libpddir)
