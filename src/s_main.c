@@ -171,20 +171,22 @@ int sys_hostfontsize(int fontsize, int zoom)
     return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_pointsize);
 }
 
-int sys_zoomfontwidth(int fontsize, int zoom, int worstcase)
+int sys_zoomfontwidth(int fontsize, int zoomarg, int worstcase)
 {
-    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
     if (worstcase)
-        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_width);
-    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width);
+        ret = zoom * sys_fontspec[sys_findfont(fontsize)].fi_width;
+    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width;
+    return (ret < 1 ? 1 : ret);
 }
 
-int sys_zoomfontheight(int fontsize, int zoom, int worstcase)
+int sys_zoomfontheight(int fontsize, int zoomarg, int worstcase)
 {
-    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
     if (worstcase)
-        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
-    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height);
+        ret = (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
+    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height;
+    return (ret < 1 ? 1 : ret);
 }
 
 int sys_fontwidth(int fontsize) /* old version for extern compatibility */
