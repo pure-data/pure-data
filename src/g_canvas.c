@@ -1631,10 +1631,10 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         post("** ignoring width or font settings from future Pd version **");
         warned = 1;
     }
-    if (!x->gl_list)
-        return;
     if(x->gl_loading)
     {
+        if (!x->gl_list)
+            return;
         for (g = x->gl_list; (g2 = g->g_next); g = g2)
             ;
         if ((ob = pd_checkobject(&g->g_pd)))
