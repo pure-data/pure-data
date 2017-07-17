@@ -51,9 +51,12 @@ Examples:
     # build Wish-8.5.19.app with embedded Tcl/Tk 8.5.19
     tcltk-wish.sh 8.5.19
 
-    # build Wish-8.6.5.app with embedded Tcl/Tk 8.6.5
+    # build 32bit Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
+    tcltk-wish.sh --arch i386 8.6.6
+
+    # build Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
     # and universal archs
-    tcltk-wish.sh --universal 8.6.5
+    tcltk-wish.sh --universal 8.6.6
 
     # build Wish-master-git.app with the latest master branch from git
     tcltk-wish.sh --git master-git 

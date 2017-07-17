@@ -10,11 +10,17 @@ it is built for the 'vanilla' releases on msp.ucsd.edu.
 * tcltk-wish.sh: downloads and builds a Tcl/Tk Wish.app for macOS
 
 These scripts complement the autotools build system described in INSTALL.txt and
-are meant to be run after Pd is configured and built. Both osx-app.sh &
-tcltck-wish.sh have extensive help output using the --help commandline option:
+are meant to be run after Pd is configured and built. The following usage, for 
+example, downloads and builds a 32bit Tk 8.6.6 Wish.app which is used to create
+a macOS Pd-0.47.1.app:
+
+    mac/tcltk-wish.sh --arch i386 8.6.6
+    mac/osx-app.sh --wish Wish-8.6.6.app 0.47.1
+
+Both osx-app.sh & tcltck-wish.sh have extensive help output using the --help
+commandline option:
 
     mac/osx-app.sh --help
-    ...
     mac/tcltk-wish.sh --help
 
 In a nutshell, a monolithic macOS "application" is simply a directory structure
@@ -65,20 +71,41 @@ it to your system, you can build Tcl/Tk as embedded frameworks inside of the Pd
 .app bundle. This has the advantage of portability to other systems.
 
 The tcltk-wish.sh script automates building a Wish.app with embedded Tcl/Tk,
-either from the release distributions or from a git clone. You can also specify
-which architectures to build: 32 bit, 64 bit, or both. Once your custom Wish.app
-is built, you can use it as the .app source for osx-app.sh with the -w option:
+either from the release distributions or from a git clone:
 
     # build Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
     mac/tcltk-wish.sh 8.6.6
 
-    # build Pd with the custom donor Wish
+    # build Wish-master-git.app from the latest Tcl/Tk master branch from git
+    tcltk-wish.sh --git master-git
+
+You can also specify which architectures to build (32 bit, 64 bit, or both):
+
+    # build 32bit Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
+    tcltk-wish.sh --arch i386 8.6.6
+
+    # build universal (32 & 64 bit)
+    tcltk-wish.sh --universal 8.6.6
+
+Once your custom Wish.app is built, you can use it as the .app source for
+osx-app.sh with the -w option:
+
+    # build Pd with a custom Tcl/Tk 8.6.6 Wish
     mac/osx-app.sh -w Wish-8.6.6.app
 
 Downloading and building Tcl/Tk takes some time. If you are doing lots of builds
 of Pd and/or are experimenting with different versions of Tcl/Tk, building the
 embedded Wish.apps you need with tcltk-wish.sh can save you some time as they
 can be reused when (re)making the Pd .app bundle.
+
+Usually, it's best to use stable releases of Tcl/Tk. However, there are times
+when building from the current development version is useful. For instance, 
+if there is a bug in the Tcl/Tk sources and the generated Wish.app crashes on
+your system, you can then see if there is a fix for this in the Tcl/Tk
+development version on GitHub. If so, then you can test by using the
+tcltk-wish.app --git commandline option. Oftentimes, these kinds of issues will
+appear with a newer version of macOS before thhey have been fixed by the open
+source community.
 
 ## Supplementary Build Scripts
 
