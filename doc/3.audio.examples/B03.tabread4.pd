@@ -110,7 +110,7 @@ is 128 samples long.);
 you need direct control of the phase \, for instance if you to advance
 nonlinearly through the table. In the case shown here \, the "squeeze"
 factor makes the phase grow to a value at least \, and possibly much
-graeater than \, 129 (to which tabread4~ then limits it). So the resulting
+greater than \, 129 (to which tabread4~ then limits it). So the resulting
 waveform is compressed in time.;
 #X obj 250 128 +~ 128;
 #X text 554 624 updated for Pd version 0.37;

@@ -17,6 +17,9 @@ namespace eval ::dialog_find:: {
     variable window_changed 0
     variable find_history {}
     variable history_position 0
+    # keep track if we are currently searching
+    variable is_searching 0
+    variable is_searching_id 0
 
     namespace export pdtk_showfindresult
 }
@@ -42,12 +45,16 @@ proc ::dialog_find::ok {mytoplevel} {
     variable previous_findstring
     variable window_changed
     variable find_history
+    variable is_searching
+    variable is_searching_id
 
     set findstring [.find.entry get]
     if {$findstring eq ""} {
         if {$::windowingsystem eq "aqua"} {bell}
         return
     }
+    # start seaching
+    set $is_searching 1
     if {$find_in_window eq ".pdwindow"} {
         if {$::tcl_version < 8.5} {
             # TODO implement in 8.4 style, without -all
@@ -62,7 +69,17 @@ proc ::dialog_find::ok {mytoplevel} {
             }
             .pdwindow.text see [lindex $matches 0]
             lappend find_history $findstring
+            .find.searchin configure -text \
+                [format [_ "Found '%s' in %s"] \
+                [get_search_string] [lookup_windowname $find_in_window] ]
+        } else {
+            if {$::windowingsystem eq "aqua"} {bell}
+            .find.searchin configure -text \
+                [format [_ "Couldn't find '%s' in %s"] \
+                [get_search_string] [lookup_windowname $find_in_window] ]
         }
+        # done searching
+        set $is_searching 0
     } else {
         if {$findstring eq $previous_findstring \
                 && $wholeword_button == $previous_wholeword_button \
@@ -76,15 +93,16 @@ proc ::dialog_find::ok {mytoplevel} {
             lappend find_history $findstring
         }
         set window_changed 0
+        # cancel previous search timeout
+        after cancel $is_searching_id
+        # just in case there is no response from pd,
+        # reset is_searching after a timeout of 5s
+        set is_searching_id [after 5000 set is_searching 0]
     }
-    if {$::windowingsystem eq "aqua"} {
-        # (Mac OS X) hide panel after success, but keep it if unsuccessful by
-        # having the couldnotfind proc reopen it
-        cancel $mytoplevel
-    } else {
+    if {$::windowingsystem ne "aqua"} {
         # (GNOME/Windows) find panel should retain focus after a find
         # (yes, a bit of a kludge)
-        after 100 "raise .find; focus .find.entry"
+        after 100 "raise .find; ::dialog_find::focus_find"
     }
 }
 
@@ -93,9 +111,24 @@ proc ::dialog_find::cancel {mytoplevel} {
     wm withdraw .find
 }
 
+# focus on the entry in the find dialog
+proc ::dialog_find::focus_find {} {
+    variable find_in_window
+    # if the current search window doesn't exist (ie. was closed), set Pd window
+    if {[winfo exists $find_in_window] eq 0} {
+        set_window_to_search .pdwindow
+    }
+    focus .find.entry
+    .find.entry selection range 0 end
+}
+
+# set which window to run the search in, does not update if search is in progress
 proc ::dialog_find::set_window_to_search {mytoplevel} {
     variable find_in_window
     variable window_changed
+    variable is_searching
+    # don't change window if a search is in progress
+    if {$is_searching == 1} {return}
     if {$find_in_window eq $mytoplevel} {
         set window_changed 0
     } else {
@@ -106,36 +139,42 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
         if {$find_in_window eq ".find"} {
             set find_in_window [winfo toplevel [lindex [wm stackorder .] end-1]]
         }
-            # this has funny side effects in tcl 8.4 ???
-        if {$::tcl_version >= 8.5} {
-            wm transient .find $find_in_window
-        }
+        # this has funny side effects in tcl 8.4 ???
+        # update: seems to work fine in 8.4 on macOS...
+        # if {$::tcl_version >= 8.5} {
+             wm transient .find $find_in_window
+        # }
         .find.searchin configure -text \
             [concat [_ "Search in"] [lookup_windowname $find_in_window] \
                 [_ "for:"] ]
-            
     }
 }
 
 proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
+    variable is_searching
+    variable is_searching_id
+    # done searching
+    set $is_searching 0
+    # cancel previous search timeout
+    after cancel $is_searching_id
     if {$success eq 0} {
-        if {$::windowingsystem eq "aqua"} {bell}
         if {$total eq 0} {
-            .find.searchin configure -text \
+            if {$::windowingsystem eq "aqua"} {bell}
+            set infostring \
                 [format [_ "Couldn't find '%s' in %s"] \
-                [.find.entry get] [lookup_windowname $mytoplevel] ]
+                [get_search_string] [lookup_windowname $mytoplevel] ]
         } else {
-            .find.searchin configure -text \
+            set infostring \
                 [format [_ "Showed last '%s' in %s"] \
-                [.find.entry get] [lookup_windowname $mytoplevel] ]
+                [get_search_string] [lookup_windowname $mytoplevel] ]
         }
     } else {
-        .find.searchin configure -text \
+        set infostring \
         [format [_ "Showing '%d' out of %d items in %s"] \
-            $which $total \
-            [.find.entry get] [lookup_windowname $mytoplevel] ]
+            $which $total [get_search_string] [lookup_windowname $mytoplevel] ]
     }
-    if {$::windowingsystem eq "aqua"} {open_find_dialog $mytoplevel}
+    ::pdwindow::debug "$infostring\n"
+    .find.searchin configure -text "$infostring"
 }
 
 # the find panel is opened from the menu and key bindings
@@ -143,11 +182,12 @@ proc ::dialog_find::open_find_dialog {mytoplevel} {
     if {[winfo exists .find]} {
         wm deiconify .find
         raise .find
+        focus .find
         ::dialog_find::set_window_to_search $mytoplevel
     } else {
         create_dialog $mytoplevel
     }
-    .find.entry selection range 0 end
+    focus_find
 }
 
 proc ::dialog_find::create_dialog {mytoplevel} {
@@ -164,8 +204,14 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     # the currently focused patch
     bind .find <$::modifier-Key-s> \
         {menu_send $::focused_window menusave; break}
-    bind .find <$::modifier-Shift-Key-S> \
-        {menu_send $::focused_window menusaveas; break}
+    # TK Cocoa requires lowercase with Shift modifier
+    if {$::bind_shiftcaps == 1 } {
+        bind .find <$::modifier-Shift-Key-S> \
+            {menu_send $::focused_window menusaveas; break}
+    } else {
+        bind .find <$::modifier-Shift-Key-s> \
+            {menu_send $::focused_window menusaveas; break}
+    }
     bind .find <$::modifier-Key-p> \
         {menu_print $::focused_window; break}
     
@@ -182,7 +228,7 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     
     checkbutton .find.wholeword -variable ::dialog_find::wholeword_button \
         -text [_ "Match whole word only"] -anchor w
-    pack .find.wholeword -side top -padx 30 -pady 3 -fill x
+    pack .find.wholeword -side left -padx 10 -pady 3
     
     frame .find.buttonframe -background yellow
     pack .find.buttonframe -side right -pady 3
@@ -205,5 +251,15 @@ proc ::dialog_find::create_dialog {mytoplevel} {
         .find.button configure -takefocus 0
     }
     ::dialog_find::set_window_to_search $mytoplevel
-    focus .find.entry
+    ::dialog_find::focus_find 
+}
+
+# returns the current search string, shortens & appends "..." if too long
+proc ::dialog_find::get_search_string {} {
+    if {[winfo exists .find] eq 0} {return ""}
+    if {[string length [.find.entry get]] > 20} {
+        return [format "%s..." [string range [.find.entry get] 0 20]]
+    } else {
+        return [.find.entry get]
+    }
 }

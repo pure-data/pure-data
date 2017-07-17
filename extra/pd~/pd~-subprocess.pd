@@ -1,4 +1,4 @@
-#N canvas 1233 66 646 598 12;
+#N canvas 600 66 646 598 12;
 #X obj 202 395 r foo;
 #X obj 202 423 print foo;
 #X obj 87 174 adc~;
@@ -29,7 +29,7 @@ is a separate instance of Pd) can be called from a Max or Pd super-process.
 ;
 #X text 63 73 Audio inlets and outlets on the Pd~ object (in the super-process)
 talk to adc~ and dac~ objects here - so \, for instance \, the first
-adc~ here is the first inlet of the pd~ object \, and the first chanel
+adc~ here is the first inlet of the pd~ object \, and the first channel
 of dac~ goes to the second outlet of pd~ (because the first one is
 for messages \, as shown further below.);
 #X text 58 283 Any message sent to a stdout object in this sub-process

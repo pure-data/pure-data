@@ -22,7 +22,7 @@ or off.;
 #X text 166 329 - tempo (float) and time unit (symbol) as in "tempo"
 message, f 31;
 #X msg 51 220 tempo 2 msec;
-#X text 165 219 set tempo in units of miliseconds (msec for short)
+#X text 165 219 set tempo in units of milliseconds (msec for short)
 \, seconds (sec) \, minutes (min) or samples (samp)., f 51;
 #X text 79 472 see also:;
 #X obj 173 470 timer;

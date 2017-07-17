@@ -57,7 +57,7 @@ void pd_error(void *object, char *fmt, ...);
  * is 10.
  */
 
-#define MAX_VARS        9
+#define MAX_VARS        100
 #define MINODES         10 /* was 200 */
 
 /* terminal defines */
@@ -70,8 +70,8 @@ void pd_error(void *object, char *fmt, ...);
  */
 
 #define OP_SEMI         ((long)(1<<16|1))               /* ; */
-#define OP_STORE        ((long)(2<<16|28))             /* = */
-#define OP_COMMA        ((long)(3<<16|2))               /* , */
+#define OP_COMMA        ((long)(2<<16|2))               /* , */
+#define OP_STORE        ((long)(3<<16|28))             /* = */
 #define OP_LOR          ((long)(4<<16|3))               /* || */
 #define OP_LAND         ((long)(5<<16|4))               /* && */
 #define OP_OR           ((long)(6<<16|5))               /* | */
@@ -100,8 +100,6 @@ void pd_error(void *object, char *fmt, ...);
 #define HI_PRE          ((long)(100<<16))       /* infinite precedence */
 #define PRE_MASK        ((long)0xffff0000)      /* precedence level mask */
 
-struct ex_ex;
-
 #define name_ok(c)      (((c)=='_') || ((c)>='a' && (c)<='z') || \
                         ((c)>='A' && (c)<='Z') || ((c) >= '0' && (c) <= '9'))
 #define unary_op(x)     ((x) == OP_NOT || (x) == OP_NEG || (x) == OP_UMINUS)
@@ -120,6 +118,7 @@ struct ex_ex {
 #define ex_op           ex_cont.op
 #define ex_ptr          ex_cont.ptr
         long ex_type;           /* type of the node */
+                struct ex_ex *ex_end;   /* the node after the end of this expression */
 };
 #define exNULL  ((struct ex_ex *)0)
 

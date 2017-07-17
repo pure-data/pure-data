@@ -8,14 +8,14 @@ sent to their destinations.;
 #X msg 120 265 pitch \$1 \, velocity \$2;
 #X msg 49 378 123 \; my-receiver-name 858 \; another-receiver -45;
 #X text 34 81 Clicking on a message also sends it \, so you can use
-messsage boxes for push buttins. For instance \, click here while watching
+message boxes for push buttons. For instance \, click here while watching
 the printout window:;
 #X msg 122 139 walk the dog;
 #X obj 122 168 print;
 #X text 239 139 <--- message;
 #X text 223 165 <--- object (different border);
 #X text 14 197 You can separate multiple messages by commas. Also \,
-you can use "$1" \, "$2" \, etc. to make variable messages:;
+you can use "\$1" \, "\$2" \, etc. to make variable messages:;
 #X text 14 323 Finally \, if you separate messages by a semicolon instead
 of a comma \, the following message(s) are re-routed to named objects
 such as "receives":;

@@ -34,6 +34,8 @@ proc ::pd_menucommands::menu_open {} {
     }
 }
 
+# TODO set the current font family & size via the -fontmap option:
+# http://wiki.tcl.tk/41871
 proc ::pd_menucommands::menu_print {mytoplevel} {
     set filename [tk_getSaveFile -initialfile pd.ps \
                       -defaultextension .ps \
@@ -112,6 +114,7 @@ proc ::pd_menucommands::menu_find_dialog {} {
 proc ::pd_menucommands::menu_font_dialog {} {
     if {[winfo exists .font]} {
         raise .font
+        focus .font
     } elseif {$::focused_window eq ".pdwindow"} {
         pdtk_canvas_dofont .pdwindow [lindex [.pdwindow.text cget -font] 1]
     } else {
@@ -122,6 +125,7 @@ proc ::pd_menucommands::menu_font_dialog {} {
 proc ::pd_menucommands::menu_path_dialog {} {
     if {[winfo exists .path]} {
         raise .path
+        focus .path
     } else {
         pdsend "pd start-path-dialog"
     }
@@ -130,6 +134,7 @@ proc ::pd_menucommands::menu_path_dialog {} {
 proc ::pd_menucommands::menu_startup_dialog {} {
     if {[winfo exists .startup]} {
         raise .startup
+        focus .startup
     } else {
         pdsend "pd start-startup-dialog"
     }
@@ -155,24 +160,28 @@ proc ::pd_menucommands::menu_maximize {window} {
 }
 
 proc ::pd_menucommands::menu_raise_pdwindow {} {
+    # explicitly raise/lower & focus relative to the current window stack for Tk Cocoa
     if {$::focused_window eq ".pdwindow" && [winfo viewable .pdwindow]} {
-        lower .pdwindow
+        lower .pdwindow [lindex [wm stackorder .] 0]
+        focus [lindex [wm stackorder .] end]
     } else {
         wm deiconify .pdwindow
-        raise .pdwindow
+        raise .pdwindow [lindex [wm stackorder .] end]
+        focus .pdwindow
     }
 }
 
 # used for cycling thru windows of an app
 proc ::pd_menucommands::menu_raisepreviouswindow {} {
-    lower [lindex [wm stackorder .] end] [lindex [wm stackorder .] 0]
-    focus [lindex [wm stackorder .] end]
+    set mytoplevel [lindex [wm stackorder .] end]
+    lower $mytoplevel [lindex [wm stackorder .] 0]
+    focus $mytoplevel
 }
 
 # used for cycling thru windows of an app the other direction
 proc ::pd_menucommands::menu_raisenextwindow {} {
     set mytoplevel [lindex [wm stackorder .] 0]
-    raise $mytoplevel
+    raise $mytoplevel [lindex [wm stackorder .] end]
     focus $mytoplevel
 }
 
@@ -202,17 +211,18 @@ proc ::pd_menucommands::menu_aboutpd {} {
     if {[winfo exists .aboutpd]} {
         wm deiconify .aboutpd
         raise .aboutpd
+        focus .aboutpd
     } else {
         toplevel .aboutpd -class TextWindow
         wm title .aboutpd [_ "About Pd"]
         wm group .aboutpd .
         .aboutpd configure -menu $::dialog_menubar
-        text .aboutpd.text -relief flat -borderwidth 0 \
+        text .aboutpd.text -relief flat -borderwidth 0 -highlightthickness 0 \
             -yscrollcommand ".aboutpd.scroll set" -background white
         scrollbar .aboutpd.scroll -command ".aboutpd.text yview"
         pack .aboutpd.scroll -side right -fill y
         pack .aboutpd.text -side left -fill both -expand 1
-        bind .aboutpd <$::modifier-Key-w>   "wm withdraw .aboutpd"
+        bind .aboutpd <$::modifier-Key-w> "destroy .aboutpd"
         
         set textfile [open $filename]
         while {![eof $textfile]} {
@@ -260,6 +270,12 @@ proc ::pd_menucommands::menu_openfile {filename} {
             }
         }
     }
+}
+
+# ------------------------------------------------------------------------------
+# open the help-intro.pd patch which provides a list of core objects
+proc ::pd_menucommands::menu_objectlist {} {
+    pdsend "pd help-intro"
 }
 
 # ------------------------------------------------------------------------------

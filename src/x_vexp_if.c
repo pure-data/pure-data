@@ -13,7 +13,8 @@
  * --sdy
  *
  *
- *  version 0.50 - March 2015
+ *  version 0.50 - March 2016
+ *  version 0.55 - July 2017
  */
 
 #include <stdio.h>
@@ -22,7 +23,7 @@
 
 #include "x_vexp.h"
 
-static char *exp_version = "0.50";
+static char *exp_version = "0.55";
 
 extern struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
                                                 struct ex_ex *optr, int n);
@@ -863,6 +864,8 @@ ex_getsym(char *p, fts_symbol_t *s)
 const char *
 ex_symname(fts_symbol_t s)
 {
+        if (!s)
+            return (0);
         return (fts_symbol_name(s));
 }
 
@@ -892,7 +895,7 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
         {
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
-                pd_error(expr, "no such table '%s'", s->s_name);
+                pd_error(expr, "no such table '%s'", ex_symname(s));
                 return (1);
         }
         optr->ex_type = ET_FLT;
@@ -981,16 +984,19 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
         switch (rval->ex_type) {
         case ET_INT:
                 wvec[indx].w_float = rval->ex_int;
-                return(0);
+                                break;
         case ET_FLT:
                 wvec[indx].w_float = rval->ex_flt;
-                return(0);
+                                break;
         default:
                 pd_error(expr, "expr:bad right value type '%ld'", rval->ex_type);
                 optr->ex_type = ET_FLT;
                 optr->ex_flt = 0;
                 return (1);
         }
+                garray_redraw(garray);
+                return(0);
+
 #else /* MSP */
         /*
          * table lookup not done for MSP yet

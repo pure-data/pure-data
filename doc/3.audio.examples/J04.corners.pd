@@ -58,7 +58,7 @@ to 0.5) by the formula: y=x*x/2 - 1/12. This is normalized so that
 the corner has a slope change of minus one unit per cycle \, and adjusted
 to remove any DC component.;
 #X text 12 593 In general \, the segments of the result will be curved
-\, but if the three magnitudes sum algebraicly to zero \, the segments
+\, but if the three magnitudes sum algebraically to zero \, the segments
 will be linear.;
 #X text 371 67 0.25;
 #X text 362 184 -0.25;

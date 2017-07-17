@@ -933,10 +933,18 @@ void alsa_getdevs(char *indevlist, int *nindevs,
             snd_ctl_card_info_malloc(&info);
             snd_ctl_card_info(ctl, info);
             desc = snd_ctl_card_info_get_name(info);
-            sprintf(indevlist + 2*ndev * devdescsize, "%s (hardware)", desc);
-            sprintf(indevlist + (2*ndev + 1) * devdescsize, "%s (plug-in)", desc);
-            sprintf(outdevlist + 2*ndev * devdescsize, "%s (hardware)", desc);
-            sprintf(outdevlist + (2*ndev + 1) * devdescsize, "%s (plug-in)", desc);
+            snprintf(indevlist + 2*ndev * devdescsize, devdescsize,
+                "%s (hardware)", desc);
+            snprintf(indevlist + (2*ndev + 1) * devdescsize, devdescsize,
+                "%s (plug-in)", desc);
+            snprintf(outdevlist + 2*ndev * devdescsize, devdescsize,
+                "%s (hardware)", desc);
+            snprintf(outdevlist + (2*ndev + 1) * devdescsize, devdescsize,
+                "%s (plug-in)", desc);
+            indevlist[(2*ndev+1) * devdescsize - 1] =
+                indevlist[(2*ndev+2) * devdescsize - 1] =
+                    outdevlist[(2*ndev+1) * devdescsize - 1] =
+                        outdevlist[(2*ndev+2) * devdescsize - 1] = 0;
             snd_ctl_card_info_free(info);
         }
         else
@@ -958,6 +966,8 @@ void alsa_getdevs(char *indevlist, int *nindevs,
             alsa_names[i]);
         snprintf(outdevlist + j * devdescsize, devdescsize, "%s",
             alsa_names[i]);
+        indevlist[(i+1) * devdescsize - 1] =
+            outdevlist[(i+1) * devdescsize - 1] = 0;
     }
     *nindevs = *noutdevs = j;
 }

@@ -22,6 +22,7 @@ m4/config
 makefile.dependencies
 dist
 tags
+tcl/pd-gui
 
 # build
 *.o
@@ -44,6 +45,7 @@ pd-0.*
 
 # gettext
 po/*.msg
+po/*.po~
 
 # emacs tags
 TAGS

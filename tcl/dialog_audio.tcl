@@ -70,7 +70,10 @@ proc audio_popup {name buttonname varname devlist} {
             -command [list audio_popup_action \
                           $buttonname $varname $devlist $x] 
     }
-    tk_popup $name.popup [winfo pointerx $name] [winfo pointery $name] 0
+    # open popup over source button
+    set x [expr [winfo rootx $buttonname] + ( [winfo width $buttonname] / 2 )]
+    set y [expr [winfo rooty $buttonname] + ( [winfo height $buttonname] / 2 )]
+    tk_popup $name.popup $x $y 0
 }
 
 # start a dialog window to select audio devices and settings.  "multi"
@@ -148,7 +151,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     frame $mytoplevel.settings.srd
     pack $mytoplevel.settings.srd -side top -fill x
     label $mytoplevel.settings.srd.sr_label -text [_ "Sample rate:"]
-    entry $mytoplevel.settings.srd.sr_entry -textvariable audio_sr -width 7
+    entry $mytoplevel.settings.srd.sr_entry -textvariable audio_sr -width 8
     label $mytoplevel.settings.srd.d_label -text [_ "Delay (msec):"]
     entry $mytoplevel.settings.srd.d_entry -textvariable audio_advance -width 4
     pack $mytoplevel.settings.srd.sr_label $mytoplevel.settings.srd.sr_entry -side left
@@ -157,9 +160,12 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     frame $mytoplevel.settings.bsc
     pack $mytoplevel.settings.bsc -side top -fill x
     label $mytoplevel.settings.bsc.bs_label -text [_ "Block size:"]
-    tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize 64 128 256 512 1024 2048
+    set blocksizes {64 128 256 512 1024 2048}
+    set bsmenu \
+        [eval tk_optionMenu $mytoplevel.settings.bsc.bs_popup audio_blocksize $blocksizes]
 
-    pack $mytoplevel.settings.bsc.bs_label $mytoplevel.settings.bsc.bs_popup -side left
+    pack $mytoplevel.settings.bsc.bs_label -side left -padx {0 10}
+    pack $mytoplevel.settings.bsc.bs_popup -side left
     if {$audio_callback >= 0} {
         checkbutton $mytoplevel.settings.bsc.c_button -variable audio_callback \
             -text [_ "Use callbacks"] -anchor e
@@ -175,7 +181,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.inputs.in1f -side top -fill x
 
     checkbutton $mytoplevel.inputs.in1f.x0 -variable audio_inenable1 \
-        -text [_ "1:"] -anchor e
+        -text "1:" -anchor e
     button $mytoplevel.inputs.in1f.x1 -text [lindex $audio_indevlist $audio_indev1] -width 20 \
         -command [list audio_popup $mytoplevel $mytoplevel.inputs.in1f.x1 audio_indev1 $audio_indevlist]
     label $mytoplevel.inputs.in1f.l2 -text [_ "Channels:"]
@@ -189,7 +195,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.inputs.in2f -side top
 
         checkbutton $mytoplevel.inputs.in2f.x0 -variable audio_inenable2 \
-            -text [_ "2:"] -anchor e
+            -text "2:" -anchor e
         button $mytoplevel.inputs.in2f.x1 -text [lindex $audio_indevlist $audio_indev2] -width 20 \
             -command [list audio_popup $mytoplevel $mytoplevel.inputs.in2f.x1 audio_indev2 \
                 $audio_indevlist]
@@ -205,7 +211,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.inputs.in3f -side top
 
         checkbutton $mytoplevel.inputs.in3f.x0 -variable audio_inenable3 \
-            -text [_ "3:"] -anchor e
+            -text "3:" -anchor e
         button $mytoplevel.inputs.in3f.x1 -text [lindex $audio_indevlist $audio_indev3] -width 20 \
             -command [list audio_popup $mytoplevel $mytoplevel.inputs.in3f.x1 audio_indev3 \
                 $audio_indevlist]
@@ -221,7 +227,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.inputs.in4f -side top
 
         checkbutton $mytoplevel.inputs.in4f.x0 -variable audio_inenable4 \
-            -text [_ "4:"] -anchor e
+            -text "4:" -anchor e
         button $mytoplevel.inputs.in4f.x1 -text [lindex $audio_indevlist $audio_indev4] -width 20 \
             -command [list audio_popup $mytoplevel $mytoplevel.inputs.in4f.x1 audio_indev4 \
                 $audio_indevlist]
@@ -240,7 +246,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.outputs.out1f -side top -fill x
 
     checkbutton $mytoplevel.outputs.out1f.x0 -variable audio_outenable1 \
-        -text [_ "1:"] -anchor e
+        -text "1:" -anchor e
     if {$multi == 0} {
         label $mytoplevel.outputs.out1f.l1 \
             -text [_ "(same as input device)..."]
@@ -265,7 +271,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.outputs.out2f -side top
 
         checkbutton $mytoplevel.outputs.out2f.x0 -variable audio_outenable2 \
-            -text [_ "2:"] -anchor e
+            -text "2:" -anchor e
         button $mytoplevel.outputs.out2f.x1 -text [lindex $audio_outdevlist $audio_outdev2] -width 20 \
             -command \
             [list audio_popup $mytoplevel $mytoplevel.outputs.out2f.x1 audio_outdev2 $audio_outdevlist]
@@ -281,7 +287,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.outputs.out3f -side top
 
         checkbutton $mytoplevel.outputs.out3f.x0 -variable audio_outenable3 \
-            -text [_ "3:"] -anchor e
+            -text "3:" -anchor e
         button $mytoplevel.outputs.out3f.x1 -text [lindex $audio_outdevlist $audio_outdev3] -width 20 \
             -command \
             [list audio_popup $mytoplevel $mytoplevel.outputs.out3f.x1 audio_outdev3 $audio_outdevlist]
@@ -297,7 +303,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.outputs.out4f -side top
 
         checkbutton $mytoplevel.outputs.out4f.x0 -variable audio_outenable4 \
-            -text [_ "4:"] -anchor e
+            -text "4:" -anchor e
         button $mytoplevel.outputs.out4f.x1 -text [lindex $audio_outdevlist $audio_outdev4] -width 20 \
             -command \
             [list audio_popup $mytoplevel $mytoplevel.outputs.out4f.x1 audio_outdev4 $audio_outdevlist]
@@ -319,8 +325,8 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
 
     # save all settings button
     button $mytoplevel.saveall -text [_ "Save All Settings"] \
-        -command "::dialog_audio::ok $mytoplevel; pdsend \"pd save-preferences\""
-    pack $mytoplevel.saveall -side top -expand 1 -pady 5
+        -command "::dialog_audio::apply $mytoplevel; pdsend \"pd save-preferences\""
+    pack $mytoplevel.saveall -side top -expand 1 -ipadx 10 -pady 5
 
     # buttons
     frame $mytoplevel.buttonframe
@@ -358,44 +364,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.buttonframe.cancel config -takefocus 0
 
-        # can't see focus for buttons, so disable it
-        $mytoplevel.settings.bsc.bs_popup config -takefocus 0
-        if {[winfo exists $mytoplevel.settings.bsc.c_button]} {
-            $mytoplevel.settings.bsc.c_button config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in1f.x1]} {
-            $mytoplevel.inputs.in1f.x1 config -takefocus 0
-            $mytoplevel.inputs.in1f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in2f.x1]} {
-            $mytoplevel.inputs.in2f.x1 config -takefocus 0
-            $mytoplevel.inputs.in2f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in3f.x1]} {
-            $mytoplevel.inputs.in3f.x1 config -takefocus 0
-            $mytoplevel.inputs.in3f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.inputs.in4f.x1]} {
-            $mytoplevel.inputs.in4f.x1 config -takefocus 0
-            $mytoplevel.inputs.in4f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out1f.x1]} {
-            $mytoplevel.outputs.out1f.x1 config -takefocus 0
-            $mytoplevel.outputs.out1f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out2f.x1]} {
-            $mytoplevel.outputs.out2f.x1 config -takefocus 0
-            $mytoplevel.outputs.out2f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out3f.x1]} {
-            $mytoplevel.outputs.out3f.x1 config -takefocus 0
-            $mytoplevel.outputs.out3f.x0 config -takefocus 0
-        }
-        if {[winfo exists $mytoplevel.outputs.out4f.x1]} {
-            $mytoplevel.outputs.out4f.x1 config -takefocus 0
-            $mytoplevel.outputs.out4f.x0 config -takefocus 0
-        }
-
         # show active focus on save settings button
         bind $mytoplevel.saveall <KeyPress-Return> "$mytoplevel.saveall invoke"
         bind $mytoplevel.saveall <FocusIn> "::dialog_audio::unbind_return $mytoplevel; $mytoplevel.saveall config -default active"
@@ -405,7 +373,15 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.buttonframe.ok config -default normal
         bind $mytoplevel.buttonframe.ok <FocusIn> "$mytoplevel.buttonframe.ok config -default active"
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
+    
+        # since we show the active focus, disable the highlight outline
+        $mytoplevel.saveall config -highlightthickness 0
+        $mytoplevel.buttonframe.ok config -highlightthickness 0
+        $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
+
+    # wait a little for creation, then raise so it's on top
+    after 100 raise "$mytoplevel"
 }
 
 # for focus handling on OSX

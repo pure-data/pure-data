@@ -1560,7 +1560,13 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
     return (co.fd);
 }
 
-int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
+/*
+ * Iterate over all search-paths for <x> calling <fun> with the user-supplied
+ * <data>.  The function is called with two arguments: a pathname to try to
+ * open, and <data>.
+ */
+int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+    void *user_data)
 {
     t_canvas *y = 0;
     t_namelist *nl = 0;
@@ -1571,11 +1577,8 @@ int canvas_path_iterate(t_canvas*x, t_canvas_path_iterator fun, void *user_data)
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
-        t_canvas *x2 = x;
         char *dir;
-        while (x2 && x2->gl_owner)
-            x2 = x2->gl_owner;
-        dir = (x2 ? canvas_getdir(x2)->s_name : ".");
+        dir = canvas_getdir(y)->s_name;
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {
             char realname[MAXPDSTRING];

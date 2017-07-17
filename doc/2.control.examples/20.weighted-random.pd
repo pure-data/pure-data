@@ -10,7 +10,7 @@ probability for each one \, you can do as shown:;
 #X obj 169 174 bng 20 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X floatatom 205 148 3 0 100;
-#X text 250 148 <-- change probablilty;
+#X text 250 148 <-- change probability;
 #X obj 103 149 moses 80;
 #X text 152 93 <-- click to test;
 #X text 61 219 This outputs a number at left 80% of the time \, otherwise

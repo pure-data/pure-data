@@ -13,24 +13,8 @@ find . \( -name ".[azA-Z]*" \! -name ".git" \
     -o -name "core" -o -name "*.cache" -o -name "*.orig" \) \
     -ok rm -r {} \;
 
-cd src
-sh ../linux/detab-src.sh
-cd ../tcl
-sh ../linux/detab-src.sh
-cd ../extra
-sh ../linux/detab-src.sh
-cd ../linux
-./make-tmp-copy pd-$1
-cd ..
-TMPPD=/tmp/pd-$1
-mkdir $TMPPD/obj $TMPPD/bin
-cd $TMPPD/src
-make -f makefile.gnu distclean
-rm -rf autom4te.cache
-rm -f *.pd
-cd /tmp
-tar czf pd-$1.src.tar.gz pd-$1
-rm -rf $TMPPD
-mv -i pd-$1.src.tar.gz $ROOTDIR/dist/ && \
+git status
+git archive --prefix=pd-$1/ HEAD | gzip > /tmp/pd-$1.src.tar.gz
+mv -i /tmp/pd-$1.src.tar.gz $ROOTDIR/dist/ && \
 ls -l $ROOTDIR/dist/pd-$1.src.tar.gz
 

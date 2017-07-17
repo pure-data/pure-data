@@ -21,7 +21,7 @@
 #X text 91 286 delayed output;
 #X obj 116 435 delay;
 #X obj 167 435 timer;
-#X text 51 42 The Pipe object stores a sequence of messages and outputs them after a specified delay time in miliseconds. You can change the delay time as you wish. The outputs are sorted automatically.;
+#X text 51 42 The Pipe object stores a sequence of messages and outputs them after a specified delay time in milliseconds. You can change the delay time as you wish. The outputs are sorted automatically.;
 #X text 140 254 creation argument initializes delay time;
 #X text 163 228 set delay time;
 #X text 487 449 updated for Pd version 0.33;

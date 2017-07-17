@@ -1925,9 +1925,9 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
             int wantwidth = xpos - x11;
             t_gotfn sizefn;
             t_object *ob = pd_checkobject(&y1->g_pd);
-            if ((ob && ob->te_pd->c_wb == &text_widgetbehavior) ||
+            if (ob && ((ob->te_pd->c_wb == &text_widgetbehavior) ||
                     (pd_checkglist(&ob->te_pd) &&
-                        !((t_canvas *)ob)->gl_isgraph))
+                     !((t_canvas *)ob)->gl_isgraph)))
             {
                 wantwidth = wantwidth / glist_fontwidth(x);
                 if (wantwidth < 1)
@@ -2956,5 +2956,16 @@ void g_editor_newpdinstance( void)
 
 void g_editor_freepdinstance( void)
 {
+    if (EDITOR->copy_binbuf)
+        binbuf_free(EDITOR->copy_binbuf);
+    if (EDITOR->canvas_undo_buf)
+    {
+        if (!EDITOR->canvas_undo_fn)
+            bug("g_editor_freepdinstance");
+        else (*EDITOR->canvas_undo_fn)
+            (EDITOR->canvas_undo_canvas, EDITOR->canvas_undo_buf, UNDO_FREE);
+    }
+    if (EDITOR->canvas_findbuf)
+        binbuf_free(EDITOR->canvas_findbuf);
     freebytes(EDITOR, sizeof(*EDITOR));
 }

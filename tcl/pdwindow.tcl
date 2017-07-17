@@ -167,7 +167,7 @@ proc ::pdwindow::save_logbuffer_to_file {} {
 
 #--compute audio/DSP checkbutton-----------------------------------------------#
 
-# set the checkbox on the "Compute Audio" menuitem and checkbox
+# set the checkbox on the "DSP" menuitems and checkbox
 proc ::pdwindow::pdtk_pd_dsp {value} {
     # TODO canvas_startdsp/stopdsp should really send 1 or 0, not "ON" or "OFF"
     if {$value eq "ON"} {
@@ -187,7 +187,7 @@ proc ::pdwindow::pdtk_pd_dio {red} {
 }
 
 proc ::pdwindow::pdtk_pd_audio {state} {
-    .pdwindow.header.ioframe.iostate configure -text [concat audio $state]
+    .pdwindow.header.ioframe.iostate configure -text [concat Audio $state]
 }
 
 #--bindings specific to the Pd window------------------------------------------#
@@ -205,8 +205,11 @@ proc ::pdwindow::pdwindow_bindings {} {
 
     # these don't do anything in the Pd window, so alert the user, then break
     # so no more bindings run
-    bind .pdwindow <$::modifier-Key-s> "bell; break"
-    bind .pdwindow <$::modifier-Key-p> "bell; break"
+    bind .pdwindow <$::modifier-Key-s> {bell; break}
+    bind .pdwindow <$::modifier-Key-p> {bell; break}
+    # and the CapsLock case...
+    bind .pdwindow <$::modifier-Key-S> {bell; break}
+    bind .pdwindow <$::modifier-Key-P> {bell; break}
 
     # ways of hiding/closing the Pd window
     if {$::windowingsystem eq "aqua"} {
@@ -323,7 +326,6 @@ proc ::pdwindow::create_window {} {
         wm minsize .pdwindow 400 51
     }
     wm geometry .pdwindow =500x400+20+50
-    .pdwindow configure -menu .menubar
 
     frame .pdwindow.header -borderwidth 1 -relief flat -background lightgray
     pack .pdwindow.header -side top -fill x -ipady 5
@@ -342,14 +344,14 @@ proc ::pdwindow::create_window {} {
 
 # I/O state label (shows I/O on/off/in-only/out-only)
     label .pdwindow.header.ioframe.iostate \
-        -text [_ "audio I/O off"] -borderwidth 0 \
+        -text [_ "Audio off"] -borderwidth 1 \
         -background lightgray -foreground black \
         -takefocus 0 \
         -font {$::font_family -14}
 
 # DIO error label
     label .pdwindow.header.ioframe.dio \
-        -text [_ "audio I/O error"] -borderwidth 0 \
+        -text [_ "Audio I/O error"] -borderwidth 1 \
         -background lightgray -foreground lightgray \
         -takefocus 0 \
         -font {$::font_family -14}
@@ -380,7 +382,7 @@ proc ::pdwindow::create_window {} {
     pack .pdwindow.header.logmenu -side left
     frame .pdwindow.tcl -borderwidth 0
     pack .pdwindow.tcl -side bottom -fill x
-# TODO this should use the pd_font_$size created in pd-gui.tcl    
+    # TODO this should use the pd_font_$size created in pd-gui.tcl
     text .pdwindow.text -relief raised -bd 2 -font {$::font_family -12} \
         -highlightthickness 0 -borderwidth 1 -relief flat \
         -yscrollcommand ".pdwindow.scroll set" -width 60 \
@@ -417,5 +419,21 @@ proc ::pdwindow::create_window {} {
     # wait until .pdwindow.tcl.entry is visible before opening files so that
     # the loading logic can grab it and put up the busy cursor
     tkwait visibility .pdwindow.text
-#    create_tcl_entry
+    #    create_tcl_entry
+
+    # on X11 measure the size of the window decoration, so we can open windows at the correct position
+    if {$::windowingsystem eq "x11"} {
+        regexp -- {([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+)} [wm geometry .pdwindow] -> \
+            _ _ _left _top
+        set ::windowframex [expr {[winfo rootx .pdwindow] - $_left}]
+        set ::windowframey [expr {[winfo rooty .pdwindow] - $_top}]
+    }
+}
+
+#--configure the window menu---------------------------------------------------#
+
+# this needs to happen *after* the main menu is created, otherwise the default Wish
+# menu is not replaced by the custom Apple menu on OSX
+proc ::pdwindow::configure_menubar {} {
+    .pdwindow configure -menu .menubar
 }

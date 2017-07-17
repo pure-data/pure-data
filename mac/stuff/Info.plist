@@ -22,7 +22,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Pd</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.puredata</string>
+	<string>org.puredata.pd</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -33,5 +33,7 @@
 	<string>pd.icns</string>
 	<key>CFBundleVersion</key>
 	<string>0.38</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
 </dict>
 </plist>

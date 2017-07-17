@@ -5,7 +5,7 @@
 #X text 31 11 openpanel -- query you for a filename;
 #X text 48 278 see also:;
 #X obj 136 279 savepanel;
-#X text 28 44 When Openpanel gets a "bang" an "Open file" browser appears
+#X text 28 44 When openpanel gets a "bang" an "Open file" browser appears
 on the screen. If you select a file \, its name appears on the outlet.
 ;
 #X text 285 289 updated for Pd version 0.40.;

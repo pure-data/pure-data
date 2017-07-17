@@ -18,7 +18,7 @@ proc open_file {filename} {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
     }
 }
-    
+
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
 

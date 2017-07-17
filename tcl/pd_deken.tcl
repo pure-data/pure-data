@@ -344,7 +344,7 @@ proc ::deken::create_dialog {mytoplevel} {
 
     frame $mytoplevel.warning
     pack $mytoplevel.warning -side top -fill x
-    label $mytoplevel.warning.label -text "Only install externals uploaded by people you trust."
+    label $mytoplevel.warning.label -text [_ "Only install externals uploaded by people you trust."]
     pack $mytoplevel.warning.label -side left -padx 6
 
     frame $mytoplevel.status
@@ -442,7 +442,7 @@ proc ::deken::clicked_link {URL filename} {
         return
     }
     switch -- [tk_messageBox -message \
-                   "Install to directory $installdir?" \
+                   [_ "Install to directory $installdir?"] \
                    -type yesnocancel -default "yes" \
                    -icon question] {
                        no {set installdir ""

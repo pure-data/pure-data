@@ -1,3 +1,4 @@
+#pragma once
 /* Copyright (c) 1997-1999 Miller Puckette.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
@@ -16,7 +17,7 @@ typedef struct _namelist    /* element in a linked list of stored strings */
 } t_namelist;
 
 t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup);
-t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
+EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
 void namelist_free(t_namelist *listwas);
 char *namelist_get(t_namelist *namelist, int n);
 void sys_setextrapath(const char *p);
@@ -32,8 +33,8 @@ t_symbol *sys_decodedialog(t_symbol *s);
 
 /* s_file.c */
 
-void sys_loadpreferences( void);
-void sys_savepreferences( void);
+void sys_loadpreferences(const char *filename, int startingup);
+void sys_savepreferences(const char *filename);
 extern int sys_defeatrt;
 extern t_symbol *sys_flags;
 
@@ -41,7 +42,7 @@ extern t_symbol *sys_flags;
 extern int sys_debuglevel;
 extern int sys_verbose;
 extern int sys_noloadbang;
-extern int sys_nogui;
+EXTERN int sys_havegui( void);
 extern char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);
@@ -66,7 +67,7 @@ EXTERN void sys_register_loader(loader_t loader);
 extern int sys_hipriority;      /* real-time flag, true if priority boosted */
 extern int sys_schedadvance;
 extern int sys_sleepgrain;
-    int sys_advance_samples;    /* scheduler advance in samples */
+extern int sys_advance_samples;    /* scheduler advance in samples */
 EXTERN void sys_set_audio_settings(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
@@ -261,7 +262,6 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     int indeviceno, int outdeviceno, t_audiocallback callback);
 void pa_close_audio(void);
 int pa_send_dacs(void);
-void sys_reportidle(void);
 void pa_listdevs(void);
 void pa_getdevs(char *indevlist, int *nindevs,
     char *outdevlist, int *noutdevs, int *canmulti,
@@ -378,10 +378,8 @@ EXTERN int* get_sys_schedadvance(void ) ;
 EXTERN void sys_clearhist(void );
 EXTERN void sys_initmidiqueue(void );
 EXTERN int sys_addhist(int phase);
-EXTERN void sys_setmiditimediff(double inbuftime, double outbuftime);
 EXTERN void sched_tick( void);
 EXTERN void sys_pollmidiqueue(void );
-EXTERN int sys_pollgui(void );
 EXTERN void sys_setchsr(int chin, int chout, int sr);
 
 EXTERN void inmidi_realtimein(int portno, int cmd);

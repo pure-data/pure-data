@@ -90,7 +90,7 @@
 #X restore 452 547 pd test;
 #X text 13 423 (Pd also provides a suite of user-friendly filters.
 This and other raw filters are provided for situations which the user-friendly
-ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
 for an introduction to the necessary theory.);
 #X text 121 127 <-- signal to filter (real part);
 #X text 132 207 <-- signal to filter (imaginary part);

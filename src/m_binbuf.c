@@ -562,7 +562,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av, int tonew)
         }
         else
         {
-            strcat(buf2, str);
+            strncat(buf2, str, MAXPDSTRING-1);
             goto done;
         }
     }

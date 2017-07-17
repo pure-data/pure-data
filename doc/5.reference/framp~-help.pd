@@ -28,7 +28,7 @@ of SR/N.;
 #X text 599 339 updated for Pd version 0.47;
 #X text 329 202 The estimation is done according to the hop-1 trick
 described in Puckette&Brown \, Accuracy of Frequency Estimates Using
-the Phase Vocoder \, using a Hann window. A more sophisticated versioan
+the Phase Vocoder \, using a Hann window. A more sophisticated version
 of this technique is used in the sigmund~ object.;
 #X obj 103 259 bng 20 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;

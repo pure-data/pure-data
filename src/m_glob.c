@@ -36,7 +36,9 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_ping(t_pd *dummy);
 void glob_plugindispatch(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_watchdog(t_pd *dummy);
-void glob_savepreferences(t_pd *dummy);
+void glob_loadpreferences(t_pd *dummy, t_symbol *s);
+void glob_savepreferences(t_pd *dummy, t_symbol *s);
+void glob_forgetpreferences(t_pd *dummy);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -171,8 +173,12 @@ void glob_init(void)
     class_addmethod(glob_pdobject, (t_method)glob_startup_dialog,
         gensym("startup-dialog"), A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_ping, gensym("ping"), 0);
+    class_addmethod(glob_pdobject, (t_method)glob_loadpreferences,
+        gensym("load-preferences"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_savepreferences,
-        gensym("save-preferences"), 0);
+        gensym("save-preferences"), A_DEFSYM, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_forgetpreferences,
+        gensym("forget-preferences"), A_DEFSYM, 0);
     class_addmethod(glob_pdobject, (t_method)glob_zoom_open,
         gensym("zoom-open"), A_FLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_version,
