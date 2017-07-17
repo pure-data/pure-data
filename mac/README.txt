@@ -104,7 +104,7 @@ if there is a bug in the Tcl/Tk sources and the generated Wish.app crashes on
 your system, you can then see if there is a fix for this in the Tcl/Tk
 development version on GitHub. If so, then you can test by using the
 tcltk-wish.app --git commandline option. Oftentimes, these kinds of issues will
-appear with a newer version of macOS before thhey have been fixed by the open
+appear with a newer version of macOS before they have been fixed by the open
 source community.
 
 ## Supplementary Build Scripts
