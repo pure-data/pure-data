@@ -115,7 +115,7 @@ double* get_sys_time() { return &pd_this->pd_systime; }
 t_float* get_sys_dacsr() { return &STUFF->st_dacsr; }
 int* get_sys_sleepgrain() { return &sys_sleepgrain; }
 int* get_sys_schedadvance() { return &sys_schedadvance; }
-
+t_namelist *sys_searchpath;  /* so old versions of GEM might compile */
 typedef struct _fontinfo
 {
     int fi_pointsize;
