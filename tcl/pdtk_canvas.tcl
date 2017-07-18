@@ -34,6 +34,7 @@ namespace eval ::pdtk_canvas:: {
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
+    ::pdwindow::configure_window_offset
     set screenwidth [lindex [wm maxsize .] 0]
     set screenheight [lindex [wm maxsize .] 1]
 
