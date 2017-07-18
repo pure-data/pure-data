@@ -66,7 +66,7 @@ CODECFLAGS = -g -O3 -ffast-math -funroll-loops -fomit-frame-pointer
 MORECFLAGS =
 
 # "standard" flags for linker
-LDFLAGS = -Wl,-export-dynamic
+LDFLAGS = -Wl,-export-dynamic -Wno-address
 
 # and another variable you can override to add more (like "-g").
 MORELDFLAGS =
