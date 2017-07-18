@@ -40,7 +40,7 @@ proc ::pdwindow::set_layout {} {
 
 # grab focus on part of the Pd window when Pd is busy
 proc ::pdwindow::busygrab {} {
-    # set the mouse cursor to look busy and grab focus so it stays that way    
+    # set the mouse cursor to look busy and grab focus so it stays that way
     .pdwindow.text configure -cursor watch
     grab set .pdwindow.text
 }
@@ -107,7 +107,7 @@ proc ::pdwindow::logpost {object_id level message} {
     variable lastlevel $level
 
     buffer_message $object_id $level $message
-    if {[llength [info commands .pdwindow.text.internal]] && 
+    if {[llength [info commands .pdwindow.text.internal]] &&
         ($level <= $::loglevel || $maxloglevel == $::loglevel)} {
         # cancel any pending move of the scrollbar, and schedule it
         # after writing a line. This way the scrollbar is only moved once
@@ -183,7 +183,7 @@ proc ::pdwindow::pdtk_pd_dio {red} {
     } else {
         .pdwindow.header.ioframe.dio configure -foreground lightgray
     }
-        
+
 }
 
 proc ::pdwindow::pdtk_pd_audio {state} {
@@ -232,7 +232,7 @@ proc ::pdwindow::eval_tclentry {} {
     if {$tclentry eq ""} {return} ;# no need to do anything if empty
     if {[catch {uplevel #0 $tclentry} errorname]} {
         global errorInfo
-        switch -regexp -- $errorname { 
+        switch -regexp -- $errorname {
             "missing close-brace" {
                 ::pdwindow::error [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo]\n
             } "missing close-bracket" {
@@ -407,7 +407,7 @@ proc ::pdwindow::create_window {} {
             "default" { return [eval ::.pdwindow.text.internal $args] }
         }
     }
-    
+
     # print whatever is in the queue after the event loop finishes
     after idle [list after 0 ::pdwindow::filter_buffer_to_text]
 
