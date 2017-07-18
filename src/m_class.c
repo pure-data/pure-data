@@ -669,7 +669,6 @@ void class_set_extern_dir(t_symbol *s)
 
 char *class_gethelpdir(t_class *c)
 {
-    post("externdir %x, name %s", c->c_externdir, c->c_externdir->s_name);
     return (c->c_externdir->s_name);
 }
 
