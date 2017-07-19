@@ -276,7 +276,7 @@ msgstr "Dispositivo de saída"
 
 #, fuzzy
 msgid "(same as input device)..."
-msgstr "(mesmo que o dispositivo de entrada) ..............      "
+msgstr "(mesmo que o dispositivo de entrada)..."
 
 msgid "Use multiple devices"
 msgstr "Usar múltiplos dispositivos"
@@ -465,9 +465,8 @@ msgid "Non Zero Value"
 msgstr ""
 
 # iemgui
-#, fuzzy
 msgid "Value:"
-msgstr "valor:"
+msgstr "Valor:"
 
 msgid "Number2"
 msgstr "Número2"
@@ -476,17 +475,15 @@ msgid "Width (digits):"
 msgstr ""
 
 # iemgui
-#, fuzzy
 msgid "Height:"
-msgstr "altura:"
+msgstr "Altura:"
 
 msgid "Output Range"
 msgstr ""
 
 # iemgui
-#, fuzzy
 msgid "Log height:"
-msgstr "altura-do-log:"
+msgstr "Altura-do-log:"
 
 msgid "Vslider"
 msgstr "Slider Vertical"
@@ -510,9 +507,8 @@ msgid "Canvas"
 msgstr "Tela"
 
 # iemgui
-#, fuzzy
 msgid "Visible Rectangle (pix)"
-msgstr "-----retângulo_visível(pix)(pix):------"
+msgstr "Retângulo Visível (pix)"
 
 #, tcl-format
 msgid "%s Properties"
