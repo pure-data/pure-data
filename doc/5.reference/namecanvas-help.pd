@@ -6,7 +6,7 @@
 #X text 24 140 This is sometimes the only way to send a message to
 a canvas when making graph-on-parent abstractions \, but its use in
 making self-editing patches is dangerous since if you use it to edit
-the namecanvas itsef away you can cause Pd to crash. Instead \, you
+the namecanvas itself away you can cause Pd to crash. Instead \, you
 can just say:;
 #X msg 28 55 \; bonzo msg 280 50 hi there;
 #X msg 28 227 \; pd-namecanvas-help.pd msg 280 80 this is safer but

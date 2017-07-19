@@ -20,7 +20,7 @@
 #X text 40 7 READSF~ - read a soundfile;
 #X msg 26 189 open ../sound/bell.aiff;
 #X text 185 296 optional arguments: number of channels \; buffer size
-per channnel in bytes.;
+per channel in bytes.;
 #X text 548 341 when the soundfile is done.;
 #X text 547 327 last outlet gives a "bang";
 #X text 359 186 Open takes a filename \, an onset in sample frames
