@@ -546,6 +546,7 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdwindow::create_window
     ::pdwindow::configure_menubar
     ::pd_menus::configure_for_pdwindow
+    ::pdwindow::create_window_finalize
     ::pdtk_canvas::create_popup
     load_startup_plugins
     open_filestoopen
