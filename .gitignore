@@ -5,6 +5,7 @@ src/pd
 src/pd-watchdog
 src/pdreceive
 src/pdsend
+*.app
 
 # autotools
 autom4te.cache
