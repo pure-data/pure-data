@@ -77,6 +77,11 @@ proc ::helpbrowser::make_rootlistbox {} {
     foreach item [lsort $helplist] {
         $current_listbox insert end $item
     }
+
+    if {[$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+    }
+
     bind $current_listbox <Button-1> \
         "::helpbrowser::root_navigate %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
@@ -187,6 +192,11 @@ proc ::helpbrowser::make_liblistbox {dir} {
                                          *.txt]]  {
         $current_listbox insert end [file tail $item]
     }
+
+    # select first entry
+    if {[$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+    }
     
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate $dir 2 %W %x %y"
@@ -197,7 +207,7 @@ proc ::helpbrowser::make_liblistbox {dir} {
     bind $current_listbox <Key-Right> \
         "::helpbrowser::dir_right $dir 2 %W"
     bind $current_listbox <Key-Left> \
-        "::helpbrowser::dir_left 0"
+        "::helpbrowser::dir_left 0 %W"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
 
@@ -225,6 +235,12 @@ proc ::helpbrowser::make_doclistbox {dir count} {
         $current_listbox insert end [file tail $item]
     }
     incr count
+
+    # select first entry
+    if {[$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+    }
+
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} $count %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
@@ -232,7 +248,7 @@ proc ::helpbrowser::make_doclistbox {dir count} {
     bind $current_listbox <Key-Right> \
         "::helpbrowser::dir_right {$dir} $count %W"
     bind $current_listbox <Key-Left> \
-        "::helpbrowser::dir_left [expr $count - 2]"
+        "::helpbrowser::dir_left [expr $count - 2] %W"
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_return {$dir} $count %W"
     bind $current_listbox <FocusIn> \
@@ -241,8 +257,9 @@ proc ::helpbrowser::make_doclistbox {dir count} {
     return $current_listbox
 }
 
-# navigate one column to the left
-proc ::helpbrowser::dir_left {count} {
+# clear current selection & navigate one column to the left
+proc ::helpbrowser::dir_left {count window} {
+    $window selection clear 0 end
     focus .helpbrowser.frame.root$count
 }
 
