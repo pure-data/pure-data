@@ -15,31 +15,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "-------dimensions(digits)(pix):-------"
-msgstr ""
+msgstr "-------dimensions(digits)(pix):-------"
 
 msgid "--------dimensions(pix)(pix):--------"
-msgstr ""
+msgstr "--------dimensions(pix)(pix):--------"
 
 msgid "----------dimensions(pix):-----------"
-msgstr ""
+msgstr "----------dimensions(pix):-----------"
 
 msgid "--------flash-time(ms)(ms):---------"
-msgstr ""
+msgstr "-------durée_du_flash(ms)(ms):------"
 
 msgid "-----------output-range:-----------"
-msgstr ""
+msgstr "---------échele_de_sortie:---------"
 
 msgid "------selectable_dimensions(pix):------"
-msgstr ""
+msgstr "-------dimensions_a_choisir(pix):------"
 
 msgid "------visible_rectangle(pix)(pix):------"
-msgstr ""
+msgstr "------rectangle_visible(pix)(pix):------"
 
-#, fuzzy
 msgid "bottom:"
 msgstr "Bas:"
 
-#, fuzzy
 msgid "height:"
 msgstr "Hauteur de l'objet (px):"
 
@@ -50,101 +48,93 @@ msgid "intrrpt:"
 msgstr ""
 
 msgid "left:"
-msgstr ""
+msgstr "gauche"
 
 msgid "lin"
-msgstr ""
+msgstr "lin"
 
 msgid "log"
-msgstr ""
+msgstr "log"
 
-#, fuzzy
 msgid "log-height:"
 msgstr "Hauteur de log:"
 
 msgid "max:"
-msgstr ""
+msgstr "max"
 
 msgid "min:"
-msgstr ""
+msgstr "min"
 
-#, fuzzy
 msgid "right:"
-msgstr "Hauteur de l'objet (px):"
+msgstr "droite:"
 
-#, fuzzy
 msgid "size:"
 msgstr "Taille:"
 
 msgid "top:"
-msgstr ""
+msgstr "haut:"
 
 msgid "value:"
-msgstr ""
+msgstr "valeur:"
 
-#, fuzzy
 msgid "width:"
-msgstr "Largeur:"
+msgstr "largeur:"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr ""
+msgstr "Sauver les modifications de '%s'?"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr ""
+msgstr "Abandonner les modifications de '%s'"
 
 msgid "Undo clear"
-msgstr ""
+msgstr "Annuler l'effacement"
 
 msgid "Undo connect"
-msgstr ""
+msgstr "Annuler la connexion"
 
-#, fuzzy
 msgid "Undo cut"
-msgstr "Défaire"
+msgstr "Annuler la suppression"
 
 msgid "Undo disconnect"
-msgstr ""
+msgstr "Annuler la déconnexion"
 
-#, fuzzy
 msgid "Undo duplicate"
-msgstr "Dupliquer"
+msgstr "Annuler la duplication"
 
 msgid "Undo motion"
-msgstr ""
+msgstr "Annuler le déplacement"
 
 msgid "Undo paste"
-msgstr ""
+msgstr "Annuler la copie"
 
 msgid "Undo typing"
-msgstr ""
+msgstr "Annuler la frappe"
 
 msgid "Redo clear"
-msgstr ""
+msgstr "Refaire l'effacement"
 
 msgid "Redo connect"
-msgstr ""
+msgstr "Refaire la connexion"
 
-#, fuzzy
 msgid "Redo cut"
-msgstr "Refaire"
+msgstr "Refaire la suppression"
 
 msgid "Redo disconnect"
-msgstr ""
+msgstr "Refaire la déconnexion"
 
-#, fuzzy
 msgid "Redo duplicate"
-msgstr "Dupliquer"
+msgstr "Refaire la duplication"
 
 msgid "Redo motion"
-msgstr ""
+msgstr "Refaire le deplacement"
 
 msgid "Redo paste"
-msgstr ""
+msgstr "Refaire la copie"
 
 msgid "Redo typing"
-msgstr ""
+msgstr "Refaire la frappe"
 
 msgid "File"
 msgstr "Fichier"
@@ -167,7 +157,6 @@ msgstr "Fenêtre"
 msgid "Help"
 msgstr "Aide"
 
-#, fuzzy
 msgid "Show &Hidden Files and Directories"
 msgstr "Affic&her les fichiers et dossiers cachés"
 
@@ -214,7 +203,7 @@ msgid "Last graph"
 msgstr "Graphique précédent"
 
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 msgid "Open List View..."
 msgstr "Ouvrir en liste..."
@@ -231,12 +220,11 @@ msgstr "Appliquer"
 msgid "OK"
 msgstr "OK"
 
-#, fuzzy
 msgid "Audio Settings"
-msgstr "Réglage audio"
+msgstr "Paramètres audio"
 
 msgid "Settings"
-msgstr "Réglages"
+msgstr "Paramètres"
 
 msgid "Sample rate:"
 msgstr "Fréquence d'échantillonnage:"
@@ -248,7 +236,7 @@ msgid "Block size:"
 msgstr "Échantillons par bloc:"
 
 msgid "Use callbacks"
-msgstr ""
+msgstr "Utiliser des callbacks"
 
 msgid "Input Devices"
 msgstr "Périphérique d'entrée"
@@ -260,7 +248,7 @@ msgid "Output Devices"
 msgstr "Périphérique de sortie"
 
 msgid "(same as input device)..."
-msgstr ""
+msgstr "(même que le périphérique d'entrée)..."
 
 msgid "Use multiple devices"
 msgstr "Utiliser plusieurs périphériques simultanément"
@@ -269,7 +257,7 @@ msgid "Save All Settings"
 msgstr "Sauver tous les réglages"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
+msgstr "ATTENTION: unknown graphme flags received in pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriétés du Canvas"
@@ -295,7 +283,6 @@ msgstr "Cacher le nom et les arguments de l'objet"
 msgid "Range and size"
 msgstr "Taille et échelle"
 
-#, fuzzy
 msgid "X range: from"
 msgstr "Échelle X, de"
 
@@ -305,17 +292,15 @@ msgstr "à"
 msgid "Margin:"
 msgstr "Marges:"
 
-#, fuzzy
 msgid "Y range: from"
 msgstr "Échelle Y, de"
 
-#, fuzzy
 msgid "Data Properties"
 msgstr "Propriétés du Canvas"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Found '%s' in %s"
-msgstr "'%s' non trouvé dans %s"
+msgstr "'%s' trouvé dans %s"
 
 #, tcl-format
 msgid "Couldn't find '%s' in %s"
@@ -333,7 +318,7 @@ msgstr "Mise en évidence du dernier '%s' dans %s"
 
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
-msgstr "Mise en évidence du '%d'e exemplaire sur %d de '%s'"
+msgstr "Mise en évidence de l'exemplaire %d sur %d de '%s'"
 
 msgid "Pd window"
 msgstr "Fenêtre Pd"
@@ -344,7 +329,7 @@ msgstr "Mot entier seulement"
 msgid "Close"
 msgstr "Fermer"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%s Font"
 msgstr "Police de %s"
 
@@ -429,9 +414,8 @@ msgstr "Glissant"
 msgid "Bang"
 msgstr "Bang"
 
-#, fuzzy
 msgid "Flash Time (msec)"
-msgstr "Délai (ms):"
+msgstr "Temps du flash (ms):"
 
 msgid "Intrrpt:"
 msgstr ""
@@ -452,7 +436,7 @@ msgid "Number2"
 msgstr "Nombre2"
 
 msgid "Width (digits):"
-msgstr "Nombre de chiffre à afficher:"
+msgstr "Largeur (digits)"
 
 msgid "Height:"
 msgstr "Hauteur de l'objet (px):"
@@ -460,7 +444,6 @@ msgstr "Hauteur de l'objet (px):"
 msgid "Output Range"
 msgstr "Plage de valeurs"
 
-#, fuzzy
 msgid "Log height:"
 msgstr "Hauteur du log:"
 
@@ -474,7 +457,7 @@ msgid "Vradio"
 msgstr "Sélecteur vertical"
 
 msgid "Num cells:"
-msgstr ""
+msgstr "Nombre de cases"
 
 msgid "Hradio"
 msgstr "Sélecteur horizontal"
@@ -495,11 +478,9 @@ msgstr "Propriétés de l'objet %s"
 msgid "Parameters"
 msgstr "Paramètres"
 
-#, fuzzy
 msgid "X offset:"
 msgstr "Offset en X:"
 
-#, fuzzy
 msgid "Y offset:"
 msgstr "Offset en Y:"
 
@@ -522,15 +503,13 @@ msgid "Send a Pd message"
 msgstr "Envoyer un message à Pd"
 
 msgid "(use arrow keys for history)"
-msgstr "(Utiliser les flèches haut et bas pour accéder à l'historique)"
+msgstr "(Utiliser les flèches pour accéder à l'historique)"
 
-#, fuzzy
 msgid "MIDI Settings"
-msgstr "Réglage MIDI"
+msgstr "Paramettres MIDI"
 
-#, fuzzy
 msgid "ALSA MIDI Settings"
-msgstr "Réglage MIDI"
+msgstr "Paramettres MIDI (ALSA)"
 
 msgid "In Ports:"
 msgstr "Ports d'entrée:"
@@ -562,23 +541,21 @@ msgstr "Options au démarrage:"
 msgid "Defeat real-time scheduling"
 msgstr "Refuser la priorité temps-réel"
 
-#, fuzzy
 msgid "Help Browser"
 msgstr "Navigateur d'aide"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
+msgstr "(Tcl) CARACTERE MANQUANT '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) COMMANDE INVALIDE: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) ERREUR: "
 
 msgid "Show all"
-msgstr ""
+msgstr "Montrer tout"
 
-#, fuzzy
 msgid "Search"
 msgstr "Rechercher dans"
 
@@ -586,7 +563,7 @@ msgid "Find externals"
 msgstr "Trouver des objets supplémentaires"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr ""
+msgstr "Installer uniquement des objets provenant de sources de confiance"
 
 msgid "About Pd"
 msgstr "À propos de Pd"
@@ -607,7 +584,6 @@ msgstr "Dupliquer"
 msgid "Zoom In"
 msgstr "Zoomer"
 
-#, fuzzy
 msgid "Zoom Out"
 msgstr "Dézoomer"
 
@@ -722,7 +698,6 @@ msgstr ""
 msgid "Report a bug"
 msgstr "Signaler un problème"
 
-#, fuzzy
 msgid "Clear Menu"
 msgstr "Effacer la console"
 
