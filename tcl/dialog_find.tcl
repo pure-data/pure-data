@@ -145,8 +145,7 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
              wm transient .find $find_in_window
         # }
         .find.searchin configure -text \
-            [concat [_ "Search in"] [lookup_windowname $find_in_window] \
-                [_ "for:"] ]
+            [format [_ "Search in %s for:"] [lookup_windowname $find_in_window] ]
     }
 }
 
@@ -216,7 +215,7 @@ proc ::dialog_find::create_dialog {mytoplevel} {
         {menu_print $::focused_window; break}
     
     label .find.searchin -text \
-        [concat [_ "Search in"] [_ "Pd window"] [_ "for:"] ]
+            [format [_ "Search in %s for:"] [_ "Pd window"] ]
     pack .find.searchin -side top -fill x -pady 1
 
     entry .find.entry -width 54 -font 18 -relief sunken \
