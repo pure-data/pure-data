@@ -277,7 +277,7 @@ by sending Pd a compatibility message as below:;
 #X connect 9 0 10 0;
 #X connect 10 0 6 0;
 #X restore 290 391 pd old-behavior;
-#X text 29 352 COMPATIBILIY NOTE: as of Pd 0.46 \, sending numbers
+#X text 29 352 COMPATIBILITY NOTE: as of Pd 0.46 \, sending numbers
 through a toggle no longer resets the "value" field. You can get the
 old behavior back this way:;
 #X connect 5 0 7 0;

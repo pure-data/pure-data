@@ -53,7 +53,7 @@ appear as \$2 and onward (or \$1 and onward with "-x" option)., f
 71;
 #X text 30 734 note: for backward compatibility \, you can also invoke
 this as "clone 16 clone-subpatch" (for instance) \, swapping the abstraction
-name and the mumber of voices.;
+name and the number of voices.;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 5 1;

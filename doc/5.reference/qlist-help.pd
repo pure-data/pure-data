@@ -57,7 +57,7 @@ after the last message.;
 in this directory.;
 #X obj 71 13 qlist;
 #X text 132 15 - text-based sequencer;
-#X text 668 158 single-step forward SUPRESSING MESSAGE-SENDING;
+#X text 668 158 single-step forward SUPPRESSING MESSAGE-SENDING;
 #X msg 591 161 next 1;
 #X text 921 558 updated for Pd version 0.35;
 #X msg 593 29 print;
