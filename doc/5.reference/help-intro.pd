@@ -1,4 +1,4 @@
-#N canvas 519 22 579 803 12;
+#N canvas 518 52 579 803 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -21,7 +21,7 @@
 #X obj 24 366 unpack;
 #X text 124 366 - get elements of compound messages;
 #X obj 24 390 trigger;
-#X text 124 390 - sequence and convert messagess;
+#X text 124 390 - sequence and convert messages;
 #X obj 24 414 spigot;
 #X text 124 414 - interruptible message connection;
 #X obj 24 438 moses;
@@ -85,11 +85,11 @@
 #X obj 82 1179 ctlin;
 #X obj 133 1179 pgmin;
 #X obj 183 1179 bendin;
-#X obj 242 1179 touchin;
-#X obj 307 1179 polytouchin;
-#X obj 24 1203 midiin;
-#X obj 85 1203 sysexin;
-#X text 329 1203 - MIDI input;
+#X obj 22 1204 touchin;
+#X obj 90 1204 polytouchin;
+#X obj 244 1179 midiin;
+#X obj 305 1179 sysexin;
+#X text 366 1195 - MIDI input;
 #X obj 22 1235 noteout;
 #X obj 90 1235 ctlout;
 #X obj 150 1235 pgmout;
@@ -360,12 +360,8 @@ its "help window".;
 #X obj 180 932 <<;
 #X obj 211 932 >>;
 #X obj 26 2126 sqrt~;
-#X text 17 1152 ------------------- MIDI and OSC------------------------
-;
 #X obj 22 1339 oscparse;
-#X obj 21 1363 oscformat;
-#X text 113 1340 - OSC messages to Pd lists;
-#X text 113 1363 - Pd lists to OSC messages;
+#X obj 96 1339 oscformat;
 #X text 18 4157 -------- "EXTRA" (patches and externs in pd/extra)
 ---------;
 #X obj 26 4186 sigmund~;
@@ -392,7 +388,7 @@ its "help window".;
 #X text 123 4396 - Moog resonant filter model;
 #X text 118 3746 - make copies of a subpatch;
 #X obj 26 3746 clone;
-#X obj 157 1204 midirealtimein;
+#X obj 187 1204 midirealtimein;
 #X obj 24 3599 delread4~;
 #X text 154 3600 - read with a time-varying delay time;
 #X obj 118 3600 vd~;
@@ -407,3 +403,9 @@ its "help window".;
 #X obj 79 2002 fexpr~;
 #X text 145 2003 - C-style expressions;
 #X text 123 854 - C-style expressions;
+#X text 26 1149 ---------I/O via MIDI \, OSC \, and FUDI --------------------
+;
+#X text 180 1339 - OSC messages to and from Pd lists;
+#X obj 21 1365 fudiparse;
+#X obj 100 1365 fudiformat;
+#X text 196 1367 - FUDI messages to and from Pd lists;
