@@ -11,10 +11,12 @@ namespace eval ::pd_guiprefs:: {
     namespace export init
     namespace export write_recentfiles
     namespace export update_recentfiles
+    namespace export write_loglevel
 }
 
 # FIXME should these be globals ?
 set ::recentfiles_key ""
+set ::loglevel_key "loglevel"
 set ::pd_guiprefs::domain ""
 set ::pd_guiprefs::configdir ""
 
@@ -197,6 +199,9 @@ proc ::pd_guiprefs::init {} {
     set ::recentfiles_list ""
     catch {set ::recentfiles_list [get_config $::pd_guiprefs::domain \
                                        $::recentfiles_key $arr]}
+    set ::loglevel 2
+    catch {set ::loglevel [get_config $::pd_guiprefs::domain \
+                                       $::loglevel_key $arr]}
 }
 
 # ------------------------------------------------------------------------------
@@ -362,4 +367,15 @@ proc ::pd_guiprefs::update_recentfiles {afile} {
     set ::recentfiles_list [linsert $::recentfiles_list 0 $afile]
     set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
     ::pd_menus::update_recentfiles_menu
+}
+
+#################################################################
+# log level
+#################################################################
+
+# ------------------------------------------------------------------------------
+# write log level
+#
+proc ::pd_guiprefs::write_loglevel {} {
+    write_config $::loglevel $::pd_guiprefs::domain $::loglevel_key true
 }

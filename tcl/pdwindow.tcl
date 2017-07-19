@@ -163,7 +163,11 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     puts $f $logbuffer
     close $f
 }
-
+# this has 'args' to satisfy trace, but its not used
+proc ::pdwindow::loglevel_updated {args} {
+    ::pdwindow::filter_buffer_to_text $args
+    ::pd_guiprefs::write_loglevel
+}
 
 #--compute audio/DSP checkbutton-----------------------------------------------#
 
@@ -375,7 +379,7 @@ proc ::pdwindow::create_window {} {
     foreach i $loglevels {
         $logmenu entryconfigure $i -label [lindex $logmenuitems $i]
     }
-    trace add variable ::loglevel write ::pdwindow::filter_buffer_to_text
+    trace add variable ::loglevel write ::pdwindow::loglevel_updated
 
     # TODO figure out how to make the menu traversable with the keyboard
     #.pdwindow.header.logmenu configure -takefocus 1
