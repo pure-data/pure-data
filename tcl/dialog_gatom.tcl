@@ -132,7 +132,7 @@ proc ::dialog_gatom::create_dialog {mytoplevel} {
     pack $mytoplevel.gatomlabel.name.entry -side left
     frame $mytoplevel.gatomlabel.radio
     pack $mytoplevel.gatomlabel.radio -side top
-    radiobutton $mytoplevel.gatomlabel.radio.left -value 0 -text [_ "Left   "] \
+    radiobutton $mytoplevel.gatomlabel.radio.left -value 0 -text [_ "Left"] \
         -variable gatomlabel_radio($mytoplevel) -justify left -takefocus 0
     radiobutton $mytoplevel.gatomlabel.radio.right -value 1 -text [_ "Right"] \
         -variable gatomlabel_radio($mytoplevel) -justify left -takefocus 0

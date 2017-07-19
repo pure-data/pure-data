@@ -334,11 +334,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Sök i"
-
-msgid "for:"
-msgstr "efter:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -401,7 +399,8 @@ msgstr "Övre"
 msgid "Label"
 msgstr "Text"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Vänster"
 
 msgid "Right"
@@ -557,7 +556,7 @@ msgstr ""
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -837,6 +836,9 @@ msgstr "Radera array"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#~ msgid "for:"
+#~ msgstr "efter:"
 
 #~ msgid "Patch Font"
 #~ msgstr "Patchtypsnitt"

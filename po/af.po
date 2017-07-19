@@ -335,13 +335,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-#, fuzzy
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Volgrote teks soektog..."
-
-#, fuzzy
-msgid "for:"
-msgstr "Poort:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -407,7 +403,7 @@ msgid "Label"
 msgstr ""
 
 #, fuzzy
-msgid "Left   "
+msgid "Left"
 msgstr "Links"
 
 msgid "Right"
@@ -575,7 +571,7 @@ msgstr ""
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -875,6 +871,10 @@ msgstr "Uitwis"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "for:"
+#~ msgstr "Poort:"
 
 #, fuzzy
 #~ msgid "Text Editor"

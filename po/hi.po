@@ -331,13 +331,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-#, fuzzy
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "पाठ खोजें..."
-
-#, fuzzy
-msgid "for:"
-msgstr "पोर्टः"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -402,7 +398,7 @@ msgid "Label"
 msgstr ""
 
 #, fuzzy
-msgid "Left   "
+msgid "Left"
 msgstr "बायाँ"
 
 msgid "Right"
@@ -570,7 +566,7 @@ msgstr ""
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -865,6 +861,10 @@ msgstr "मिटाओ"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "for:"
+#~ msgstr "पोर्टः"
 
 #~ msgid "Preferences..."
 #~ msgstr "प्राथमिकताएं..."

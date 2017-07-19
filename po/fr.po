@@ -306,11 +306,9 @@ msgstr "'%s' trouvé dans %s"
 msgid "Couldn't find '%s' in %s"
 msgstr "'%s' non trouvé dans %s"
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Rechercher dans"
-
-msgid "for:"
-msgstr ":"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -369,7 +367,8 @@ msgstr "Supérieur:"
 msgid "Label"
 msgstr "Label"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Gauche"
 
 msgid "Right"
@@ -520,7 +519,8 @@ msgstr "Ports de sortie:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Chemins pour la recherche d'objets, aides, fontes et autres"
 
-msgid "Use standard extensions"
+#, fuzzy
+msgid "Use standard paths"
 msgstr "Utiliser les extensions standard"
 
 msgid "Verbose"
@@ -790,6 +790,9 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "'%s' ne semble par être un fichier Pd"
+
+#~ msgid "for:"
+#~ msgstr ":"
 
 #~ msgid "Patch Font"
 #~ msgstr "Police du patch"

@@ -328,11 +328,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Cerca in"
-
-msgid "for:"
-msgstr "per:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -391,7 +389,8 @@ msgstr "Superiore:"
 msgid "Label"
 msgstr "Etichetta"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Sinistra   "
 
 msgid "Right"
@@ -547,7 +546,7 @@ msgstr "Porte Uscita:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -821,6 +820,9 @@ msgstr "Cancella array"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#~ msgid "for:"
+#~ msgstr "per:"
 
 #~ msgid "Signal"
 #~ msgstr "Segnali"

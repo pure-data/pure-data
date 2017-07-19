@@ -329,11 +329,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Keresés itt:"
-
-msgid "for:"
-msgstr "erre:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -392,7 +390,8 @@ msgstr "Felső:"
 msgid "Label"
 msgstr "Címke"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Bal"
 
 msgid "Right"
@@ -548,7 +547,7 @@ msgstr "Kimenő portok:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -825,6 +824,9 @@ msgstr "Array-t töröl"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#~ msgid "for:"
+#~ msgstr "erre:"
 
 #~ msgid "Filters"
 #~ msgstr "Szűrők"

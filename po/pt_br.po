@@ -276,7 +276,7 @@ msgstr "Dispositivo de saída"
 
 #, fuzzy
 msgid "(same as input device)..."
-msgstr "(mesmo que o dispositivo de entrada) ..............      "
+msgstr "(mesmo que o dispositivo de entrada)..."
 
 msgid "Use multiple devices"
 msgstr "Usar múltiplos dispositivos"
@@ -337,11 +337,9 @@ msgstr "Não foi possível encontrar '%s' em %s"
 msgid "Couldn't find '%s' in %s"
 msgstr "Não foi possível encontrar '%s' em %s"
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Procurar em"
-
-msgid "for:"
-msgstr "por:"
 
 #, fuzzy, tcl-format
 msgid "Showed last '%s' in %s"
@@ -400,7 +398,8 @@ msgstr "Maior:"
 msgid "Label"
 msgstr "Etiqueta"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Esquerda   "
 
 msgid "Right"
@@ -466,9 +465,8 @@ msgid "Non Zero Value"
 msgstr ""
 
 # iemgui
-#, fuzzy
 msgid "Value:"
-msgstr "valor:"
+msgstr "Valor:"
 
 msgid "Number2"
 msgstr "Número2"
@@ -477,17 +475,15 @@ msgid "Width (digits):"
 msgstr ""
 
 # iemgui
-#, fuzzy
 msgid "Height:"
-msgstr "altura:"
+msgstr "Altura:"
 
 msgid "Output Range"
 msgstr ""
 
 # iemgui
-#, fuzzy
 msgid "Log height:"
-msgstr "altura-do-log:"
+msgstr "Altura-do-log:"
 
 msgid "Vslider"
 msgstr "Slider Vertical"
@@ -511,9 +507,8 @@ msgid "Canvas"
 msgstr "Tela"
 
 # iemgui
-#, fuzzy
 msgid "Visible Rectangle (pix)"
-msgstr "-----retângulo_visível(pix)(pix):------"
+msgstr "Retângulo Visível (pix)"
 
 #, tcl-format
 msgid "%s Properties"
@@ -567,7 +562,8 @@ msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
-msgid "Use standard extensions"
+#, fuzzy
+msgid "Use standard paths"
 msgstr "Usar extensões padrões"
 
 msgid "Verbose"
@@ -841,6 +837,9 @@ msgstr "Excluir vetor"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
+
+#~ msgid "for:"
+#~ msgstr "por:"
 
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Descartar mudanças feitas nessa janela??"
