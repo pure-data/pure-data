@@ -623,9 +623,6 @@ msgstr ""
 msgid "About Pd"
 msgstr "_Относно"
 
-msgid "file edit put find media window help"
-msgstr ""
-
 msgid "Save"
 msgstr "Запазване"
 

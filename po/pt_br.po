@@ -616,9 +616,6 @@ msgstr ""
 msgid "About Pd"
 msgstr "Sobre PD"
 
-msgid "file edit put find media window help"
-msgstr ""
-
 msgid "Save"
 msgstr "Salvar"
 

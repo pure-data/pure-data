@@ -622,9 +622,6 @@ msgstr ""
 msgid "About Pd"
 msgstr "_Haqqında"
 
-msgid "file edit put find media window help"
-msgstr ""
-
 msgid "Save"
 msgstr "Qeyd Et"
 

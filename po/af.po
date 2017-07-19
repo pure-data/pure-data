@@ -626,9 +626,6 @@ msgstr ""
 msgid "About Pd"
 msgstr "Aangaande"
 
-msgid "file edit put find media window help"
-msgstr ""
-
 #, fuzzy
 msgid "Save"
 msgstr "Stoor"

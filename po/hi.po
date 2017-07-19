@@ -621,9 +621,6 @@ msgstr ""
 msgid "About Pd"
 msgstr "के बारे में (_A)"
 
-msgid "file edit put find media window help"
-msgstr ""
-
 msgid "Save"
 msgstr "सहेजें"
 

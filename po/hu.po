@@ -598,9 +598,6 @@ msgstr ""
 msgid "About Pd"
 msgstr "A Pd-ről"
 
-msgid "file edit put find media window help"
-msgstr ""
-
 msgid "Save"
 msgstr "Ment"
 

@@ -37,7 +37,7 @@ proc ::pd_menus::create_menubar {} {
     }
     menu $menubar
     if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
-    set menulist [_ "file edit put find media window help"]
+    set menulist "file edit put find media window help"
     foreach mymenu $menulist {    
         if {$mymenu eq "find"} {
             set underlined 3

@@ -607,9 +607,6 @@ msgstr ""
 msgid "About Pd"
 msgstr "Om Pd"
 
-msgid "file edit put find media window help"
-msgstr ""
-
 msgid "Save"
 msgstr "Spara"
 
