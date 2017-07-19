@@ -53,7 +53,7 @@ proc ::helpbrowser::check_destroy {level} {
     #        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
 
     if { [catch { eval destroy $winlist } errorMessage] } {
-        ::pdwindow::error "helpbrowser: error destroying listbox\n"]
+        ::pdwindow::error "helpbrowser: error destroying listbox\n"
     }
 }
 
@@ -66,7 +66,7 @@ proc ::helpbrowser::make_rootlistbox {} {
     set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
                              -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 23 -exportselection 0 -bd 0]
+                             -height 20 -width 24 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
     # first show the directories (for easier navigation)
@@ -169,7 +169,7 @@ proc ::helpbrowser::make_liblistbox {dir} {
     set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
                              -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 23 -exportselection 0 -bd 0]
+                             -height 20 -width 24 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
@@ -213,7 +213,7 @@ proc ::helpbrowser::make_doclistbox {dir count} {
                              -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
                              -highlightcolor white -selectborderwidth 0 \
-                             -height 20 -width 23 -exportselection 0 -bd 0]
+                             -height 20 -width 24 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
         -side left -fill both -expand 1
     
@@ -236,7 +236,7 @@ proc ::helpbrowser::make_doclistbox {dir count} {
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_return {$dir} $count %W"
     bind $current_listbox <FocusIn> \
-        "[list ::helpbrowser::scroll_destroy %W [expr $count + 1]]"
+        "::helpbrowser::scroll_destroy %W [expr $count + 1]"
 
     return $current_listbox
 }
