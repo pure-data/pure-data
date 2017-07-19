@@ -4,24 +4,7 @@ This directory contains support files for building a Pure Data macOS application
 bundle and supplementary build scripts for compiling Pd on Macintosh systems, as
 it is built for the 'vanilla' releases on msp.ucsd.edu.
 
-## App Bundle Helpers
-
-* osx-app.sh: creates a Pd .app bundle for macOS using a Tk Wish.app wrapper
-* tcltk-wish.sh: downloads and builds a Tcl/Tk Wish.app for macOS
-
-These scripts complement the autotools build system described in INSTALL.txt and
-are meant to be run after Pd is configured and built. The following usage, for 
-example, downloads and builds a 32bit Tk 8.6.6 Wish.app which is used to create
-a macOS Pd-0.47.1.app:
-
-    mac/tcltk-wish.sh --arch i386 8.6.6
-    mac/osx-app.sh --wish Wish-8.6.6.app 0.47.1
-
-Both osx-app.sh & tcltck-wish.sh have extensive help output using the --help
-commandline option:
-
-    mac/osx-app.sh --help
-    mac/tcltk-wish.sh --help
+## Pd macOS app
 
 In a nutshell, a monolithic macOS "application" is simply a directory structure
 treated as a single object by the OS. Inside this bundle are the compiled
@@ -47,8 +30,28 @@ The Pure Data GUI utilizes the Tk windowing shell aka "Wish" at runtime.
 Creating a Pure Data .app involves using a precompiled Wish.app as a wrapper
 by copying the Pd binaries and resources inside of it.
 
-The osx-app.sh script automates this task and is used in the "make app" makefile
-target. This default action can be invoked manually after Pd is built:
+## App Bundle Helpers
+
+* osx-app.sh: creates a Pd .app bundle for macOS using a Tk Wish.app wrapper
+* tcltk-wish.sh: downloads and builds a Tcl/Tk Wish.app for macOS
+
+These scripts complement the autotools build system described in INSTALL.txt and
+are meant to be run after Pd is configured and built. The following usage, for
+example, downloads and builds a 32bit Tk 8.6.6 Wish.app which is used to create
+a macOS Pd-0.47.1.app:
+
+    mac/tcltk-wish.sh --arch i386 8.6.6
+    mac/osx-app.sh --wish Wish-8.6.6.app 0.47.1
+
+Both osx-app.sh & tcltck-wish.sh have extensive help output using the --help
+commandline option:
+
+    mac/osx-app.sh --help
+    mac/tcltk-wish.sh --help
+
+The osx-app.sh script automates building the Pd .app bundle and is used in the
+"make app" makefile target. This default action can be invoked manually after
+Pd is built:
 
     mac/osxapp.sh 0.47.1
 
@@ -132,3 +135,29 @@ Note: The "wish-shell.tgz" is an archive of this app I found on my mac:
 
 A smarter version of the scripts ought to be able to find that file
 automatically on your system so I wouldn't have to include it here.
+
+## Preferences
+
+The Pure Data preferences are saved in the macOS "defaults" preference system
+using the following domains:
+
+* org.puredata.pd: core settings (audio devices, search paths, etc)
+* org.puredata.pd.pd-gui: GUI settings (recent files, last opened location, etc)
+
+The files themsleves live in your user home folder and use the .plist extension:
+
+    ~/Library/Preferences/org.puredata.pd.plist
+    ~/Library/Preferences/org.puredata.pd.pd-gui.plist
+
+These files use the Apple Property List XML format and shouldn't be edited
+directly. You can look inside, edit, and/or delete these using the "defaults"
+commandline utility in Terminal:
+
+    # print the contents of the core settings
+    defaults read org.puredata.pd
+
+    # delete the current GUI settings
+    defaults delete org.puredata.pd.pd-gui
+
+    # set the startup flag in the core settings
+    defaults write org.puredata.pd -array-add flags '-lib Gem'
