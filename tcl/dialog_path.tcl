@@ -40,7 +40,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         [_ "Pd search path for objects, help, fonts, and other files"] \
         400 300 1
     ::pd_bindings::dialog_bindings $mytoplevel "path"
-    
+
     frame $mytoplevel.extraframe
     pack $mytoplevel.extraframe -side bottom -fill x -pady 2m
     checkbutton $mytoplevel.extraframe.extra -text [_ "Use standard paths"] \
@@ -64,7 +64,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -default normal
         bind $mytoplevel.nb.buttonframe.ok <FocusIn> "$mytoplevel.nb.buttonframe.ok config -default active"
         bind $mytoplevel.nb.buttonframe.ok <FocusOut> "$mytoplevel.nb.buttonframe.ok config -default normal"
-    
+
         # since we show the active focus, disable the highlight outline
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
