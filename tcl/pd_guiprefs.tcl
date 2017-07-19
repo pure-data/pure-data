@@ -112,14 +112,17 @@ proc ::pd_guiprefs::init {} {
                 if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
                     ::pdwindow::error "write_config $akey: $errorMsg\n"
                 }
+                # invoke /bin/sh -c to pass command as a string, this ensures
+                # the shell interprets the single quotes around the value so the
+                # quotes don't end up being saved as part of the string itself
                 if {$arr} {
                     foreach filepath $data {
                         set escaped [escape_for_plist $filepath]
-                        exec defaults write $adomain $akey -array-add $escaped
+                        exec /bin/sh -c "defaults write $adomain $akey $escaped"
                     }
                 } else {
                     set escaped [escape_for_plist $data]
-                    exec defaults write $adomain $akey $escaped
+                    exec /bin/sh -c "defaults write $adomain $akey $escaped"
                 }
 
                 # Disable window state saving by default for 10.7+ as there is a chance

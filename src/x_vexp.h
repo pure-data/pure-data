@@ -118,7 +118,7 @@ struct ex_ex {
 #define ex_op           ex_cont.op
 #define ex_ptr          ex_cont.ptr
         long ex_type;           /* type of the node */
-		struct ex_ex *ex_end;	/* the node after the end of this expression */
+                struct ex_ex *ex_end;   /* the node after the end of this expression */
 };
 #define exNULL  ((struct ex_ex *)0)
 

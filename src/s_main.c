@@ -47,6 +47,7 @@ void sys_addhelppath(char *p);
 #ifdef USEAPI_ALSA
 void alsa_adddev(char *name);
 #endif
+int sys_oktoloadfiles(int done);
 
 int sys_debuglevel;
 int sys_verbose;
@@ -114,7 +115,7 @@ double* get_sys_time() { return &pd_this->pd_systime; }
 t_float* get_sys_dacsr() { return &STUFF->st_dacsr; }
 int* get_sys_sleepgrain() { return &sys_sleepgrain; }
 int* get_sys_schedadvance() { return &sys_schedadvance; }
-
+t_namelist *sys_searchpath;  /* so old versions of GEM might compile */
 typedef struct _fontinfo
 {
     int fi_pointsize;
@@ -170,20 +171,22 @@ int sys_hostfontsize(int fontsize, int zoom)
     return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_pointsize);
 }
 
-int sys_zoomfontwidth(int fontsize, int zoom, int worstcase)
+int sys_zoomfontwidth(int fontsize, int zoomarg, int worstcase)
 {
-    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
     if (worstcase)
-        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_width);
-    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width);
+        ret = zoom * sys_fontspec[sys_findfont(fontsize)].fi_width;
+    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width;
+    return (ret < 1 ? 1 : ret);
 }
 
-int sys_zoomfontheight(int fontsize, int zoom, int worstcase)
+int sys_zoomfontheight(int fontsize, int zoomarg, int worstcase)
 {
-    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
     if (worstcase)
-        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
-    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height);
+        ret = (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
+    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height;
+    return (ret < 1 ? 1 : ret);
 }
 
 int sys_fontwidth(int fontsize) /* old version for extern compatibility */
@@ -258,9 +261,13 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 #endif
     }
         /* load dynamic libraries specified with "-lib" args */
-    for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
-        if (!sys_load_lib(0, nl->nl_string))
-            post("%s: can't load library", nl->nl_string);
+    if (sys_oktoloadfiles(0))
+    {
+        for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
+            if (!sys_load_lib(0, nl->nl_string))
+                post("%s: can't load library", nl->nl_string);
+        sys_oktoloadfiles(1);
+    }
         /* open patches specifies with "-open" args */
     for  (nl = sys_openlist; nl; nl = nl->nl_next)
         openit(cwd, nl->nl_string);
