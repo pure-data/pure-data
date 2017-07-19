@@ -432,8 +432,8 @@ AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
 
 ##### ALSA #####
 AM_CONDITIONAL(ALSA, test x$alsa = xyes)
-AS_IF([test x$alsa = xyes], [audio_backends="alsa ${audio_backends}"])
-AS_IF([test x$alsa = xyes], [midi_backends="alsa ${midi_backends}"])
+AS_IF([test x$alsa = xyes], [audio_backends="ALSA ${audio_backends}"])
+AS_IF([test x$alsa = xyes], [midi_backends="ALSA ${midi_backends}"])
 
 ##### JACK #####
 AM_CONDITIONAL(JACK, test x$jack = xyes)
@@ -442,8 +442,8 @@ AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 
 ##### MMIO #####
 AM_CONDITIONAL(MMIO, test x$mmio = xyes)
-AS_IF([test x$mmio = xyes], [audio_backends="mmio ${audio_backends}"])
-AS_IF([test x$mmio = xyes], [midi_backends="mmio ${midi_backends}"])
+AS_IF([test x$mmio = xyes], [audio_backends="MMIO ${audio_backends}"])
+AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
