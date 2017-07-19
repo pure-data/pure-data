@@ -620,10 +620,10 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {[eval concat $$var_iemgui_loadbang] == 0} {
         button $mytoplevel.para.lb -text [_ "No init"] \
-            -command "::dialog_iemgui::lb $mytoplevel" -width 7 }
+            -command "::dialog_iemgui::lb $mytoplevel"  }
     if {[eval concat $$var_iemgui_loadbang] == 1} {
         button $mytoplevel.para.lb -text [_ "Init"] \
-            -command "::dialog_iemgui::lb $mytoplevel" -width 7 }
+            -command "::dialog_iemgui::lb $mytoplevel"  }
     frame $mytoplevel.para.num
     label $mytoplevel.para.num.lab -text [_ $num_label]
     entry $mytoplevel.para.num.ent -textvariable $var_iemgui_num -width 4
