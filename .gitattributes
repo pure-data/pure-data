@@ -2,3 +2,4 @@
 # source-package generated via 'git archive'
 .git*      	export-ignore
 /.*		export-ignore
+/debian/	export-ignore
