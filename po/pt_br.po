@@ -337,11 +337,9 @@ msgstr "Não foi possível encontrar '%s' em %s"
 msgid "Couldn't find '%s' in %s"
 msgstr "Não foi possível encontrar '%s' em %s"
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Procurar em"
-
-msgid "for:"
-msgstr "por:"
 
 #, fuzzy, tcl-format
 msgid "Showed last '%s' in %s"
@@ -400,7 +398,8 @@ msgstr "Maior:"
 msgid "Label"
 msgstr "Etiqueta"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Esquerda   "
 
 msgid "Right"
@@ -567,7 +566,8 @@ msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
-msgid "Use standard extensions"
+#, fuzzy
+msgid "Use standard paths"
 msgstr "Usar extensões padrões"
 
 msgid "Verbose"
@@ -841,6 +841,9 @@ msgstr "Excluir vetor"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
+
+#~ msgid "for:"
+#~ msgstr "por:"
 
 #~ msgid "Discard changes to this window??"
 #~ msgstr "Descartar mudanças feitas nessa janela??"
