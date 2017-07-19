@@ -53,7 +53,7 @@ proc ::helpbrowser::check_destroy {level} {
     #        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
 
     if { [catch { eval destroy $winlist } errorMessage] } {
-        ::pdwindow::error "make_doclistbox: error destroying\n"
+        ::pdwindow::error "helpbrowser: error destroying listbox\n"]
     }
 }
 
@@ -62,13 +62,10 @@ proc ::helpbrowser::make_rootlistbox {} {
     variable libdirlist
     variable helplist
 
-    # temporarily hide window so we don't see the refresh
-    wm withdraw .helpbrowser
-
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root0]" -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor "#D6E5FC" -selectborderwidth 0 \
+                             -highlightcolor white -selectborderwidth 0 \
                              -height 20 -width 23 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
@@ -81,21 +78,18 @@ proc ::helpbrowser::make_rootlistbox {} {
         $current_listbox insert end $item
     }
     bind $current_listbox <Button-1> \
-        [list ::helpbrowser::root_navigate %W %x %y]
-    bind $current_listbox <Key-Return> \
-        [list ::helpbrowser::root_right %W]
+        "::helpbrowser::root_navigate %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
-        [list ::helpbrowser::root_doubleclick %W %x %y]
-    bind $current_listbox <$::modifier-Key-o> \
-        [list ::helpbrowser::root_doubleclick %W %x %y]
+        "::helpbrowser::root_doubleclick %W %x %y"
+    bind $current_listbox <Key-Return> \
+        "::helpbrowser::root_return %W"
     bind $current_listbox <Key-Right> \
-        [list ::helpbrowser::root_right %W]
+        "::helpbrowser::root_right %W"
+    bind $current_listbox <$::modifier-Key-o> \
+        "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
-        [list ::helpbrowser::scroll_destroy %W 2]
+        "::helpbrowser::scroll_destroy %W 2"
     focus $current_listbox
-
-    # bring window back
-    wm deiconify .helpbrowser
 }
 
 # destroy a column
@@ -106,13 +100,16 @@ proc ::helpbrowser::scroll_destroy {window level} {
 
 # try to open a file or dir
 proc ::helpbrowser::open_path {dir filename} {
+    if {[file exists [file join $dir $filename]] eq 0} {
+        return
+    }
     ::pdwindow::verbose 0 "menu_doc_open $dir $filename\n"
     if { [catch {menu_doc_open $dir $filename} fid] } {
         ::pdwindow::error "Could not open $dir/$filename\n"
     }
 }
 
-# navigate from one column to the right or open current file
+# navigate from one column to the right
 proc ::helpbrowser::root_right {window} {
     variable reference_paths
     if {[set item [$window get active]] eq {}} {
@@ -121,7 +118,17 @@ proc ::helpbrowser::root_right {window} {
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
         focus [make_liblistbox $filename]
-    } elseif {[file isfile $filename]} {
+    }
+}
+
+# open current file
+proc ::helpbrowser::root_return {window} {
+    variable reference_paths
+    if {[set item [$window get active]] eq {}} {
+        return
+    }
+    set filename $reference_paths($item)
+    if {[file isfile $filename]} {
         set dir [file dirname $reference_paths($item)]
         set filename [file tail $reference_paths($item)]
         open_path $dir $filename
@@ -131,6 +138,7 @@ proc ::helpbrowser::root_right {window} {
 # navigate into a library/directory from the root
 proc ::helpbrowser::root_navigate {window x y} {
     variable reference_paths
+    ::pdwindow::debug "root_navigate\n"
     if {[set item [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
@@ -143,6 +151,7 @@ proc ::helpbrowser::root_navigate {window x y} {
 # double-click action to open the file or folder
 proc ::helpbrowser::root_doubleclick {window x y} {
     variable reference_paths
+    ::pdwindow::debug "root_doubleclick"
     if {[set item [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
@@ -155,14 +164,11 @@ proc ::helpbrowser::root_doubleclick {window x y} {
 proc ::helpbrowser::make_liblistbox {dir} {
     variable doctypes
 
-    # temporarily hide window so we don't see the refresh
-    wm withdraw .helpbrowser
-
     check_destroy 1
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root1]" -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor "#D6E5FC" -selectborderwidth 0 \
+                             -highlightcolor white -selectborderwidth 0 \
                              -height 20 -width 23 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command [list $current_listbox yview]] \
         -side left -fill both -expand 1
@@ -183,20 +189,17 @@ proc ::helpbrowser::make_liblistbox {dir} {
     }
     
     bind $current_listbox <Button-1> \
-        [list ::helpbrowser::dir_navigate $dir 2 %W %x %y]
+        "::helpbrowser::dir_navigate $dir 2 %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
-        [list ::helpbrowser::dir_doubleclick $dir 2 %W %x %y]
+        "::helpbrowser::dir_doubleclick $dir 2 %W %x %y"
     bind $current_listbox <Key-Return> \
-        [list ::helpbrowser::dir_right $dir 2 %W]
+        "::helpbrowser::dir_right $dir 2 %W"
     bind $current_listbox <Key-Right> \
-        [list ::helpbrowser::dir_right $dir 2 %W]
+        "::helpbrowser::dir_right $dir 2 %W"
     bind $current_listbox <Key-Left> \
-        [list ::helpbrowser::dir_left 0]
+        "::helpbrowser::dir_left 0"
     bind $current_listbox <FocusIn> \
-        [list ::helpbrowser::scroll_destroy %W 3]
-
-    # bring window back
-    wm deiconify .helpbrowser
+        "::helpbrowser::scroll_destroy %W 3"
 
     return $current_listbox
 }
@@ -204,15 +207,12 @@ proc ::helpbrowser::make_liblistbox {dir} {
 proc ::helpbrowser::make_doclistbox {dir count} {
     variable doctypes
 
-    # temporarily hide window so we don't see the refresh
-    wm withdraw .helpbrowser
-
     check_destroy $count
     # exportselection 0 looks good, but selection gets easily out-of-sync
     set current_listbox [listbox "[set b .helpbrowser.frame.root$count]" \
                              -yscrollcommand "$b-scroll set" \
                              -highlightbackground white -highlightthickness 5 \
-                             -highlightcolor "#D6E5FC" -selectborderwidth 0 \
+                             -highlightcolor white -selectborderwidth 0 \
                              -height 20 -width 23 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
         -side left -fill both -expand 1
@@ -227,19 +227,16 @@ proc ::helpbrowser::make_doclistbox {dir count} {
     incr count
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} $count %W %x %y"
+    bind $current_listbox <Double-ButtonRelease-1> \
+        "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
     bind $current_listbox <Key-Right> \
         "::helpbrowser::dir_right {$dir} $count %W"
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left [expr $count - 2]"
-    bind $current_listbox <Double-ButtonRelease-1> \
-        "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
     bind $current_listbox <Key-Return> \
-        "::helpbrowser::dir_right {$dir} $count %W"
+        "::helpbrowser::dir_return {$dir} $count %W"
     bind $current_listbox <FocusIn> \
         "[list ::helpbrowser::scroll_destroy %W [expr $count + 1]]"
-
-    # bring window back
-    wm deiconify .helpbrowser
 
     return $current_listbox
 }
@@ -249,7 +246,7 @@ proc ::helpbrowser::dir_left {count} {
     focus .helpbrowser.frame.root$count
 }
 
-# navigate one column to the right or open current file
+# navigate one column to the right
 proc ::helpbrowser::dir_right {dir count window} {
     if {[set newdir [$window get active]] eq {}} {
         return
@@ -257,7 +254,16 @@ proc ::helpbrowser::dir_right {dir count window} {
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
         focus [make_doclistbox $dir_to_open $count]
-    } elseif {[file isfile $dir_to_open]} {
+    }
+}
+
+# open current file
+proc ::helpbrowser::dir_return {dir count window} {
+    if {[set newdir [$window get active]] eq {}} {
+        return
+    }
+    set dir_to_open [file join $dir $newdir]
+    if {[file isfile $dir_to_open]} {
         open_path $dir $newdir
     }
 }
