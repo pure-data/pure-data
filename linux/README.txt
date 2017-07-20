@@ -16,7 +16,7 @@ release checklist
       rm -rf po
       cp -pr ~/build/po/ po/
       cd mac
-      ./osx-app.sh -s 8.4 test
+      ./osx-app.sh  --wish  /Users/msp/build/Wish-8.5.19.app  test
         ... same for 32-bit except: ./configure --enable-universal=i386
         ... compile on windows:
       cd msw
