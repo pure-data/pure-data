@@ -531,7 +531,7 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {pdsend "pd audio-properties"}
     $mymenu add command -label [_ "MIDI..."] \
         -command {pdsend "pd midi-properties"}
-    $mymenu add check -label [_ "Zoom new windows"] \
+    $mymenu add check -label [_ "Zoom New Windows"] \
         -variable ::zoom_open \
         -command {pdsend "pd zoom-open $zoom_open"}
     $mymenu add  separator
