@@ -488,7 +488,6 @@ int sys_fclose(FILE *stream)
     return fclose(stream);
 }
 
-
     /* Open a help file using the help search path.  We expect the ".pd"
     suffix here, even though we have to tear it back off for one of the
     search attempts. */
@@ -524,95 +523,7 @@ gotone:
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
 
-
-/* Startup file reading for linux and __APPLE__.  As of 0.38 this will be
-deprecated in favor of the "settings" mechanism */
-
 int sys_argparse(int argc, char **argv);
-
-#ifndef _WIN32
-
-#define STARTUPNAME ".pdrc"
-#define NUMARGS 1000
-
-int sys_rcfile(void)
-{
-    FILE* file;
-    int i;
-    int k;
-    int rcargc;
-    char* rcargv[NUMARGS];
-    char* buffer;
-    char  fname[MAXPDSTRING], buf[1000], *home = getenv("HOME");
-    int retval = 1; /* that's what we will return at the end; for now, let's think it'll be an error */
-
-    /* initialize rc-arg-array so we can safely clean up at the end */
-    for (i = 1; i < NUMARGS-1; i++)
-      rcargv[i]=0;
-
-
-    /* parse a startup file */
-
-    *fname = '\0';
-
-    strncat(fname, home? home : ".", MAXPDSTRING-10);
-    strcat(fname, "/");
-
-    strcat(fname, STARTUPNAME);
-
-    if (!(file = fopen(fname, "r")))
-        return 1;
-
-    post("reading startup file: %s", fname);
-
-    rcargv[0] = ".";    /* this no longer matters to sys_argparse() */
-
-    for (i = 1; i < NUMARGS-1; i++)
-    {
-        if (fscanf(file, "%998s", buf) < 0)
-            break;
-        buf[999] = 0;
-        if (!(rcargv[i] = malloc(strlen(buf) + 1)))
-            goto cleanup;
-        strcpy(rcargv[i], buf);
-    }
-    if (i >= NUMARGS-1)
-        fprintf(stderr, "startup file too long; extra args dropped\n");
-    rcargv[i] = 0;
-
-    rcargc = i;
-
-    /* parse the options */
-
-    if (sys_verbose)
-    {
-        if (rcargc)
-        {
-            post("startup args from RC file:");
-            for (i = 1; i < rcargc; i++)
-                post("%s", rcargv[i]);
-        }
-        else post("no RC file arguments found");
-    }
-    if (sys_argparse(rcargc-1, rcargv+1))
-    {
-        error("error parsing RC arguments");
-        goto cleanup;
-    }
-
-    retval=0; /* we made it without an error */
-
-
- cleanup: /* prevent memleak */
-    fclose(file);
-
-    for (i = 1; i < NUMARGS-1; i++)
-      if(rcargv[i])free(rcargv[i]);
-
-    return(retval);
-}
-#endif /* _WIN32 */
-
 void sys_doflags( void)
 {
     int i, beginstring = 0, state = 0, len;

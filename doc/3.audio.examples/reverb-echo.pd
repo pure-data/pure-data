@@ -12,7 +12,7 @@
 #X text 27 267 This network makes two copies of the (stereo) input
 \, one in phase \, the other out of phase and delayed. The total frequency
 response is flat. The total signal power out is exactly twice that
-of the input \, no matter what freqiencies the input contains. This
+of the input \, no matter what frequencies the input contains. This
 is used to increase echo density \, by stacking several of these units
 with different delay times. Each stage doubles the echo density.;
 #X connect 0 0 4 0;

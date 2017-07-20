@@ -21,7 +21,7 @@
 #X obj 24 366 unpack;
 #X text 124 366 - get elements of compound messages;
 #X obj 24 390 trigger;
-#X text 124 390 - sequence and convert messagess;
+#X text 124 390 - sequence and convert messages;
 #X obj 24 414 spigot;
 #X text 124 414 - interruptible message connection;
 #X obj 24 438 moses;

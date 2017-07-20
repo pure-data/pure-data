@@ -19,7 +19,7 @@
 #X obj 91 376 print;
 #X obj 205 132 osc~ 5000;
 #X text 25 37 pique takes unwindowed FFT analyses as input (they should be stored in arrays) and outputs a list of peaks \, giving their peak number \, frequency \, amplitude \, and phase (as a cosine/sine pair.);
-#X text 13 289 message argumnets: number of FFT points \, fft real part \, fft imaginary part \, maximum number of peaks to report.;
+#X text 13 289 message arguments: number of FFT points \, fft real part \, fft imaginary part \, maximum number of peaks to report.;
 #X text 578 387 updated for Pd 0.31.;
 #X connect 2 0 6 0;
 #X connect 2 1 7 0;

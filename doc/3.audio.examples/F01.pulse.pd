@@ -48,7 +48,7 @@
 #X text 88 337 add one (range now from 0 to 2);
 #X text 96 360 ...and now from 0 to 1;
 #X text 20 531 This patch computes a pulse train \, with an "index"
-control that essentually squeezes the pulses. If "bandwidth" is zero
+control that essentially squeezes the pulses. If "bandwidth" is zero
 you get a pure cosine wave \, and for larger values of the bandwidth
 \, the cosine wave is squeezed to fill smaller portions of the waveform.
 ;

@@ -46,6 +46,9 @@
  *                              - fixed sum("table"), and Sum("table", x, y)
  *                              - deleted avg(), Avg() as they can be simple expressions
  *                              - deleted store as this can be achieved by the '=' operator
+ *  July 2017 --sdy
+ *
+ *              - ex_if() is reworked to only evaluate either the left or the right arg
  */
 
 
@@ -76,6 +79,9 @@
 
 
 #include "x_vexp.h"
+
+struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
+                                                struct ex_ex *optr, int i);
 
 /* forward declarations */
 
@@ -108,7 +114,8 @@ static void ex_abs(t_expr *expr, long int argc, struct ex_ex *argv, struct ex_ex
 static void ex_fmod(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_ceil(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_floor(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
-static void ex_if(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
+struct ex_ex * ex_if(t_expr *expr, struct ex_ex *argv, struct ex_ex *optr,
+                                     struct ex_ex *args, int idx);
 static void ex_ldexp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_imodf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_modf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
@@ -162,27 +169,27 @@ t_ex_func ex_funcs[] = {
         {"fact",        ex_fact,        1},
         {"random",      ex_random,      2},     /* random number */
         {"abs",         ex_abs,         1},
-        {"if",          ex_if,          3},
+        {"if",          (void (*))ex_if,          3},
         {"ldexp",       ex_ldexp,       2},
         {"imodf",       ex_imodf,       1},
         {"modf",        ex_modf,        1},
 #ifndef _WIN32
+        {"asinh",       ex_asinh,       1},
+        {"acosh",       ex_acosh,       1},
+        {"atanh",       ex_atanh,       1},     /* hyperbolic atan */
+        {"isnan",       ex_isnan,       1},
         {"cbrt",        ex_cbrt,        1},
+        {"round",       ex_round,       1},
+        {"trunc",       ex_trunc,       1},
         {"erf",         ex_erf,         1},
         {"erfc",        ex_erfc,        1},
         {"expm1",       ex_expm1,       1},
         {"log1p",       ex_log1p,       1},
-        {"isinf",       ex_isinf,       1},
         {"finite",      ex_finite,      1},
-        {"isnan",       ex_isnan,       1},
-        {"copysign",    ex_copysign,    2},
-        {"remainder",   ex_remainder,           2},
-        {"asinh",       ex_asinh,       1},
-        {"acosh",       ex_acosh,       1},
-        {"atanh",       ex_atanh,       1},     /* hyperbolic atan */
-        {"round",       ex_round,       1},
-        {"trunc",       ex_trunc,       1},
         {"nearbyint",   ex_nearbyint,   1},
+        {"copysign",    ex_copysign,    2},
+        {"isinf",       ex_isinf,       1},
+        {"remainder",   ex_remainder,           2},
 #endif
 #ifdef PD
         {"size",        ex_size,        1},
@@ -979,10 +986,10 @@ ex_abs(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 }
 
 /*
- *ex_if -- floating point modulo
+ * ex_if -- if function
  */
-static void
-ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
+struct ex_ex *
+ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int idx)
 {
         struct ex_ex *left, *right, *cond, *res;
         t_float *op; /* output pointer */
@@ -990,10 +997,14 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         t_float *cp;              /* condition pointer */
         t_float leftvalue, rightvalue;
         int j;
+                int condtrue = 0;
 
+                // evaluate the condition
+                eptr = ex_eval(e, eptr, argv, idx);
         cond = argv++;
-        left = argv++;
-        right = argv;
+                // only either the left or right will be evaluated depending
+                // on the truth value of the condition
+                // However, if the condition is a vector, both args will be evaluated
 
         switch (cond->ex_type) {
         case ET_VEC:
@@ -1002,12 +1013,25 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                         if (optr->ex_type == ET_VI) {
                                 /* SDY remove this test */
                                 post("expr~: Int. error %d", __LINE__);
-                                return;
+                                return (eptr);
                         }
-                                optr->ex_type = ET_VEC;
-                                optr->ex_vec = (t_float *)
+                        optr->ex_type = ET_VEC;
+                        optr->ex_vec = (t_float *)
                                   fts_malloc(sizeof (t_float) * e->exp_vsize);
+                                                if (!optr->ex_vec) {
+                                                        post("expr:if: no mem");
+                                                        /* pass over the left and right args */
+                                                        return(cond->ex_end->ex_end);
+                                                }
                 }
+                                /*
+                                 * if the condition is a vector
+                                 * the left and the right args both will get processed
+                                 */
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                left = argv++;
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                right = argv;
                 op = optr->ex_vec;
                 j = e->exp_vsize;
                 cp = cond->ex_vec;
@@ -1023,7 +1047,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                         else
                                                 *op++ = rightvalue;
                                 }
-                        return;
+                        return (eptr);
                         case ET_FLT:
                                 rightvalue = right->ex_flt;
                                 while (j--) {
@@ -1032,7 +1056,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                         else
                                                 *op++ = rightvalue;
                                 }
-                                return;
+                                return (eptr);
                         case ET_VEC:
                         case ET_VI:
                                 rp = right->ex_vec;
@@ -1043,13 +1067,13 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                                 *op++ = *rp;
                                         rp++;
                                 }
-                                return;
+                                return (eptr);
                         case ET_SYM:
                         default:
                                 post_error((fts_object_t *) e,
                               "expr: FUNC_EVAL(%d): bad right type %ld\n",
                                                       __LINE__, right->ex_type);
-                                return;
+                                return (eptr);
                         }
                 case ET_FLT:
                         leftvalue = left->ex_flt;
@@ -1062,7 +1086,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                         else
                                                 *op++ = rightvalue;
                                 }
-                                return;
+                                return (eptr);
                         case ET_FLT:
                                 rightvalue = right->ex_flt;
                                 while (j--) {
@@ -1071,7 +1095,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                         else
                                                 *op++ = rightvalue;
                                 }
-                                return;
+                                return (eptr);
                         case ET_VEC:
                         case ET_VI:
                                 rp = right->ex_vec;
@@ -1082,13 +1106,13 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                                 *op++ = *rp;
                                         rp++;
                                 }
-                                return;
+                                return (eptr);
                         case ET_SYM:
                         default:
                                 post_error((fts_object_t *) e,
                               "expr: FUNC_EVAL(%d): bad right type %ld\n",
                                                       __LINE__, right->ex_type);
-                                return;
+                                return (eptr);
                         }
                 case ET_VEC:
                 case ET_VI:
@@ -1103,7 +1127,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                                 *op++ = rightvalue;
                                         lp++;
                                 }
-                                return;
+                                return (eptr);
                         case ET_FLT:
                                 rightvalue = right->ex_flt;
                                 while (j--) {
@@ -1113,7 +1137,7 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                                 *op++ = rightvalue;
                                         lp++;
                                 }
-                                return;
+                                return (eptr);
                         case ET_VEC:
                         case ET_VI:
                                 rp = right->ex_vec;
@@ -1124,77 +1148,91 @@ ex_if(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                                                 *op++ = *rp;
                                         lp++; rp++;
                                 }
-                                return;
+                                return (eptr);
                         case ET_SYM:
                         default:
                                 post_error((fts_object_t *) e,
                               "expr: FUNC_EVAL(%d): bad right type %ld\n",
                                                       __LINE__, right->ex_type);
-                                return;
+                                return (eptr);
                         }
                 case ET_SYM:
                 default:
                         post_error((fts_object_t *) e,
                       "expr: FUNC_EVAL(%d): bad left type %ld\n",
                                               __LINE__, left->ex_type);
-                        return;
+                        return (eptr);
                 }
         case ET_INT:
                 if (cond->ex_int)
-                        res = left;
-                else
-                        res = right;
+                                        condtrue = 1;
+                                else
+                                        condtrue = 0;
                 break;
         case ET_FLT:
                 if (cond->ex_flt)
-                        res = left;
-                else
-                        res = right;
+                                        condtrue = 1;
+                                else
+                                        condtrue = 0;
                 break;
         case ET_SYM:
         default:
                 post_error((fts_object_t *) e,
               "expr: FUNC_EVAL(%d): bad condition type %ld\n",
                                       __LINE__, cond->ex_type);
-                return;
+                return (eptr);
         }
+                if (condtrue) {
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                res = argv++;
+                                eptr = eptr->ex_end; /* no right processing */
+
+                } else {
+                                eptr = eptr->ex_end; /* no left rocessing */
+                                eptr = ex_eval(e, eptr, argv, idx);
+                                res = argv++;
+                }
         switch(res->ex_type) {
         case ET_INT:
                 if (optr->ex_type == ET_VEC) {
                         ex_mkvector(optr->ex_vec, (t_float)res->ex_int,
                                                                 e->exp_vsize);
-                        return;
+                        return (eptr);
                 }
                 *optr = *res;
-                return;
+                return (eptr);
         case ET_FLT:
                 if (optr->ex_type == ET_VEC) {
                         ex_mkvector(optr->ex_vec, (t_float)res->ex_flt,
                                                                 e->exp_vsize);
-                        return;
+                        return (eptr);
                 }
                 *optr = *res;
-                return;
+                return (eptr);
         case ET_VEC:
         case ET_VI:
                 if (optr->ex_type != ET_VEC) {
                         if (optr->ex_type == ET_VI) {
                                 /* SDY remove this test */
                                 post("expr~: Int. error %d", __LINE__);
-                                return;
+                                return (eptr);
                         }
-                                optr->ex_type = ET_VEC;
-                                optr->ex_vec = (t_float *)
+                        optr->ex_type = ET_VEC;
+                        optr->ex_vec = (t_float *)
                                   fts_malloc(sizeof (t_float) * e->exp_vsize);
+                                                if (!optr->ex_vec) {
+                                                        post("expr:if: no mem");
+                            return (eptr);
+                                                }
                 }
                 memcpy(optr->ex_vec, res->ex_vec, e->exp_vsize*sizeof(t_float));
-                return;
+                return (eptr);
         case ET_SYM:
         default:
                 post_error((fts_object_t *) e,
               "expr: FUNC_EVAL(%d): bad res type %ld\n",
                                       __LINE__, res->ex_type);
-                return;
+                return (eptr);
         }
 
 }

@@ -39,7 +39,7 @@ opposites \, either in the incoming lists or in the stored ones.;
 #X text 498 34 add vectors;
 #X text 94 84 debugging printout;
 #X text 69 104 tweak the numbers and hit "bang" to input a list;
-#X text 151 197 creation argument to avoid repeated outout;
+#X text 151 197 creation argument to avoid repeated output;
 #X text 108 219 output is the index of best match \, counting from
 zero;
 #X connect 0 0 10 0;

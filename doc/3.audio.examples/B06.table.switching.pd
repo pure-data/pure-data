@@ -107,13 +107,13 @@
 #X text 20 51 During a performance you're unlikely to want to draw
 or recalculate wavetables on the fly \, because you don't want to give
 Pd computationally intensive atomic tasks that could make Pd miss a
-DAC deadline. Instead \, use "set" mesages to switch tabosc~ or tabread4~
+DAC deadline. Instead \, use "set" messages to switch tabosc~ or tabread4~
 between pre-prepared tables. Indeed \, you will eventually want to
 save screen space by throwing all your wavetables in a subpatch somewhere.
 ;
 #X obj 161 401 table waveshape15c 131;
 #X text 41 362 There's also a "text object" hook so that you can have
-arrays with parametrizable names and sizes:;
+arrays with parameterizable names and sizes:;
 #X text 31 431 You would use this if you want to include one or more
 arrays in an abstraction. In this invocation you can't save the state
 of the array--instead \, juts read it in from a file or calculate it

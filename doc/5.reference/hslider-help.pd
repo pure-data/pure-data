@@ -12,7 +12,7 @@
 -1;
 #X obj 41 107 hsl 101 15 25 75 0 1 foo1_snd foo1_rcv empty 8 -8 0 10
 -225280 -1109 -1 6200 1;
-#X text 174 11 gui-horicontal-slider:;
+#X text 174 11 gui-horizontal-slider:;
 #X floatatom 47 62 7 0 0 0 - - -, f 7;
 #X floatatom 116 150 9 0 0 0 - - -, f 9;
 #X obj 110 308 r goo2_snd;
@@ -112,7 +112,7 @@
 #X msg 486 339 \; goo2_rcv range \$1 \$2;
 #X msg 363 465 \; goo2_rcv log;
 #X msg 269 466 \; goo2_rcv lin;
-#X text 269 448 linear / logarithmical;
+#X text 269 448 linear / logarithmic;
 #X obj 275 133 f;
 #X msg 250 112 bang;
 #X floatatom 291 111 3 15 73 0 - - -, f 3;
@@ -304,8 +304,8 @@ If you want to get the behavior in an up-to-date patch \, you can use
 #X connect 8 0 9 0;
 #X connect 9 0 1 0;
 #X restore 260 446 pd old-behavior;
-#X text 40 403 COMPATIBILIY NOTE: as of Pd 0.46 \, you can pass through
-numbers ouside the object's range. You can get the old behavior back
+#X text 40 403 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
+numbers outside the object's range. You can get the old behavior back
 this way:, f 48;
 #X text 219 480 updated for Pd version 0.46;
 #X connect 1 0 6 0;

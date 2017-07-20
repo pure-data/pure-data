@@ -11,7 +11,7 @@ package require pd_menucommands
 # use {} quotes so that $::focused_window is interpreted when the menu item
 # is called, not when the command is mapped to the menu item.  This is the
 # opposite of the 'bind' commands in pd_bindings.tcl
-    
+
 namespace eval ::pd_menus:: {
     variable accelerator
     variable menubar ".menubar"
@@ -26,7 +26,7 @@ namespace eval ::pd_menus:: {
 }
 
 # ------------------------------------------------------------------------------
-# 
+#
 proc ::pd_menus::create_menubar {} {
     variable accelerator
     variable menubar
@@ -38,7 +38,7 @@ proc ::pd_menus::create_menubar {} {
     menu $menubar
     if {$::windowingsystem eq "aqua"} {create_apple_menu $menubar}
     set menulist "file edit put find media window help"
-    foreach mymenu $menulist {    
+    foreach mymenu $menulist {
         if {$mymenu eq "find"} {
             set underlined 3
         } {
@@ -63,9 +63,10 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.file entryconfigure [_ "Close"] -state disabled
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
+    $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
+    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode .pdwindow 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -90,16 +91,17 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.file entryconfigure [_ "Close"] -state normal
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
+    $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state normal
     $menubar.edit entryconfigure [_ "Zoom Out"] -state normal
+    $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
     $menubar.edit entryconfigure [_ "Edit Mode"] -state normal
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
     # Put menu
     for {set i 0} {$i <= [$menubar.put index end]} {incr i} {
         # catch errors that happen when trying to disable separators
         if {[$menubar.put type $i] ne "separator"} {
-            $menubar.put entryconfigure $i -state normal 
+            $menubar.put entryconfigure $i -state normal
         }
     }
     update_undo_on_menu $mytoplevel
@@ -122,9 +124,9 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     # Edit menu
     $menubar.edit entryconfigure [_ "Font"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
-    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
+    $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode $mytoplevel 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -163,9 +165,9 @@ proc ::pd_menus::build_file_menu {mymenu} {
 proc ::pd_menus::build_edit_menu {mymenu} {
     variable accelerator
     $mymenu add command -label [_ "Undo"]       -accelerator "$accelerator+Z" \
-        -command {menu_undo $::focused_window}
+        -command {menu_undo}
     $mymenu add command -label [_ "Redo"]       -accelerator "Shift+$accelerator+Z" \
-        -command {menu_redo $::focused_window}
+        -command {menu_redo}
     $mymenu add  separator
     $mymenu add command -label [_ "Cut"]        -accelerator "$accelerator+X" \
         -command {menu_send $::focused_window cut}
@@ -178,17 +180,10 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {menu_send $::focused_window selectall}
     $mymenu add  separator
-    if {$::windowingsystem eq "aqua"} {
-#        $mymenu add command -label [_ "Text Editor"] \
-#            -command {menu_texteditor}
-        $mymenu add command -label [_ "Font"]   -accelerator "$accelerator+T" \
-            -command {menu_font_dialog}
-    } else {
-#        $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T"\
-#            -command {menu_texteditor}
-        $mymenu add command -label [_ "Font"] \
-            -command {menu_font_dialog}
-    }
+#   $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T" \
+#       -command {menu_texteditor}
+    $mymenu add command -label [_ "Font"]       -accelerator "$accelerator+T" \
+        -command {menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
         -command {menu_send_float $::focused_window zoom 2}
     $mymenu add command -label [_ "Zoom Out"]   -accelerator "$accelerator+-" \
@@ -215,7 +210,7 @@ proc ::pd_menus::build_put_menu {mymenu} {
     # sticking to the mouse cursor. The iemguis alway do that when created
     # from the menu, as defined in canvas_iemguis()
     $mymenu add command -label [_ "Object"]   -accelerator "$accelerator+1" \
-        -command {menu_send_float $::focused_window obj 0} 
+        -command {menu_send_float $::focused_window obj 0}
     $mymenu add command -label [_ "Message"]  -accelerator "$accelerator+2" \
         -command {menu_send_float $::focused_window msg 0}
     $mymenu add command -label [_ "Number"]   -accelerator "$accelerator+3" \
@@ -233,7 +228,7 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {menu_send $::focused_window numbox}
     $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
         -command {menu_send $::focused_window vslider}
-    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+G" \
+    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+H" \
         -command {menu_send $::focused_window hslider}
     $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
         -command {menu_send $::focused_window vradio}
@@ -257,7 +252,7 @@ proc ::pd_menus::build_find_menu {mymenu} {
     $mymenu add command -label [_ "Find Again"] -accelerator "$accelerator+G" \
         -command {menu_send $::focused_window findagain}
     $mymenu add command -label [_ "Find Last Error"] \
-        -command {pdsend {pd finderror}} 
+        -command {pdsend {pd finderror}}
 }
 
 proc ::pd_menus::build_media_menu {mymenu} {
@@ -269,9 +264,9 @@ proc ::pd_menus::build_media_menu {mymenu} {
 
     $mymenu add  separator
     $mymenu add command -label [_ "Test Audio and MIDI..."] \
-        -command {menu_doc_open doc/7.stuff/tools testtone.pd} 
+        -command {menu_doc_open doc/7.stuff/tools testtone.pd}
     $mymenu add command -label [_ "Load Meter"] \
-        -command {menu_doc_open doc/7.stuff/tools load-meter.pd} 
+        -command {menu_doc_open doc/7.stuff/tools load-meter.pd}
 
     set audio_apilist_length [llength $::audio_apilist]
     if {$audio_apilist_length > 0} {$mymenu add separator}
@@ -281,7 +276,7 @@ proc ::pd_menus::build_media_menu {mymenu} {
             -value [lindex [lindex $::audio_apilist $x] 1]\
             -command {pdsend "pd audio-setapi $::pd_whichapi"}
     }
-    
+
     set midi_apilist_length [llength $::midi_apilist]
     if {$midi_apilist_length > 0} {$mymenu add separator}
     for {set x 0} {$x<$midi_apilist_length} {incr x} {
@@ -312,10 +307,10 @@ proc ::pd_menus::build_window_menu {mymenu} {
                 -command {menu_bringalltofront}
         }
     } else {
-		$mymenu add command -label [_ "Next Window"] \
+        $mymenu add command -label [_ "Next Window"] \
             -command {menu_raisenextwindow} \
             -accelerator [_ "$accelerator+Page Down"]
-		$mymenu add command -label [_ "Previous Window"] \
+        $mymenu add command -label [_ "Previous Window"] \
             -command {menu_raisepreviouswindow} \
             -accelerator [_ "$accelerator+Page Up"]
     }
@@ -329,19 +324,19 @@ proc ::pd_menus::build_window_menu {mymenu} {
 
 proc ::pd_menus::build_help_menu {mymenu} {
     if {$::windowingsystem ne "aqua"} {
-        $mymenu add command -label [_ "About Pd"] -command {menu_aboutpd} 
+        $mymenu add command -label [_ "About Pd"] -command {menu_aboutpd}
     }
     $mymenu add command -label [_ "HTML Manual..."] \
         -command {menu_doc_open doc/1.manual index.htm}
     $mymenu add command -label [_ "Browser..."] \
-        -command {menu_helpbrowser} 
+        -command {menu_helpbrowser}
     $mymenu add command -label [_ "List of objects..."] \
-        -command {menu_objectlist} 
+        -command {menu_objectlist}
     $mymenu add  separator
     $mymenu add command -label [_ "puredata.info"] \
-        -command {menu_openfile {http://puredata.info}} 
+        -command {menu_openfile {http://puredata.info}}
     $mymenu add command -label [_ "Report a bug"] -command {menu_openfile \
-        {http://sourceforge.net/tracker/?func=add&group_id=55736&atid=478070}} 
+        {http://sourceforge.net/tracker/?func=add&group_id=55736&atid=478070}}
 }
 
 #------------------------------------------------------------------------------#
@@ -486,8 +481,8 @@ proc ::pd_menus::add_list_to_menu {mymenu window parentlist} {
 # update the list of windows on the Window menu. This expects run on the
 # Window menu, and to insert below the last separator
 proc ::pd_menus::update_window_menu {} {
-    
-    # TK 8.5+ Cocoa on Mac handles the window list for us 
+
+    # TK 8.5+ Cocoa on Mac handles the window list for us
     if {$::windowingsystem eq "aqua" && $::tcl_version >= 8.5} {
         return 0
     }
@@ -510,6 +505,21 @@ proc ::pd_menus::update_window_menu {} {
 
 # ------------------------------------------------------------------------------
 # submenu for Preferences, now used on all platforms
+proc ::pd_menus::savepreferences {} {
+    set filename [tk_getSaveFile -initialdir $::fileopendir]
+    if {$filename ne ""} {pdsend "pd save-preferences $filename"}
+}
+
+proc ::pd_menus::loadpreferences {} {
+    set filename [tk_getOpenFile -initialdir $::fileopendir]
+    if {$filename ne ""} {pdsend "pd load-preferences $filename"}
+}
+
+proc ::pd_menus::forgetpreferences {} {
+    pdtk_check .pdwindow \
+        {Delete all preferences? (takes effect when Pd is restarted)} \
+        {pd forget-preferences} yes
+}
 
 proc ::pd_menus::create_preferences_menu {mymenu} {
     menu $mymenu
@@ -517,16 +527,22 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {pdsend "pd start-path-dialog"}
     $mymenu add command -label [_ "Startup..."] \
         -command {pdsend "pd start-startup-dialog"}
-    $mymenu add command -label [_ "Audio Settings..."] \
+    $mymenu add command -label [_ "Audio..."] \
         -command {pdsend "pd audio-properties"}
-    $mymenu add command -label [_ "MIDI Settings..."] \
+    $mymenu add command -label [_ "MIDI..."] \
         -command {pdsend "pd midi-properties"}
     $mymenu add check -label [_ "Zoom new windows"] \
         -variable ::zoom_open \
         -command {pdsend "pd zoom-open $zoom_open"}
     $mymenu add  separator
-    $mymenu add command -label [_ "Save All Settings"] \
+    $mymenu add command -label [_ "Save all preferences"] \
         -command {pdsend "pd save-preferences"}
+    $mymenu add command -label [_ "Save to ..."] \
+        -command {::pd_menus::savepreferences}
+    $mymenu add command -label [_ "Load from ..."] \
+        -command {::pd_menus::loadpreferences}
+    $mymenu add command -label [_ "Forget all..."] \
+        -command {::pd_menus::forgetpreferences}
 }
 
 # ------------------------------------------------------------------------------
@@ -573,7 +589,7 @@ proc ::pd_menus::build_window_menu_aqua {mymenu} {
 }
 
 # the "Help" does not have cross-platform differences
- 
+
 # ------------------------------------------------------------------------------
 # menu building functions for UNIX/X11
 

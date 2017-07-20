@@ -31,7 +31,7 @@ documentation \, and these objects:;
 according to an index \, applying four-point polynomial interpolation.
 Indices should range from 1 to (size-2) so that the 4-point interpolation
 is meaningful. You can shift-drag the number box to see the effect
-of interpolation.Indices outside of the range are replaced by the nearest
+of interpolation. Indices outside of the range are replaced by the nearest
 index in range (from 1 to 8 in this example).;
 #X connect 2 0 20 0;
 #X connect 8 0 20 0;

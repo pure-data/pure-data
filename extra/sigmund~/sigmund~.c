@@ -65,7 +65,7 @@ typedef struct peak
 /********************** service routines **************************/
 
 /* these three are dapted from elsewhere in Pd but included here for
-cmolpeteness */
+   completeness */
 static int sigmund_ilog2(int n)
 {
     int ret = -1;
@@ -924,7 +924,14 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
 
 static void sigmund_hop(t_sigmund *x, t_floatarg f)
 {
-    x->x_hop = f;
+    int hop = f;
+    if (hop < 0)
+    {
+        error("sigmund~: ignoring negative hopsize %d", hop);
+        return;
+    }
+    x->x_hop = hop;
+    if (0 == hop) return;
         /* check parameter ranges */
     if (x->x_hop != (1 << sigmund_ilog2(x->x_hop)))
         post("sigmund~: adjusting analysis size to %d points",

@@ -4,13 +4,28 @@ release checklist
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
-    test compilation on linux/msw/mac
-    git commit
-    ./make-release 0.35-0  or 0.35-test11, etc
-    ... compile on windows/Mac 
+    test compilation on linux/msw/mac as follows:
+    cd linux; ./make-release 0.35-0  or 0.35-test11, etc
+        ... compile on MAC:
+        ... first build POs on linux because I can't install gettext on mac:
+      ./autogen.sk; ./cofigure; make; rsync <flags> po/ <mac>:build/po/
+        ... scp source tarball to Mac and unpack. CD to, Pd-<> and:
+      ./autogen.sh
+      ./configure
+      make
+      rm -rf po
+      cp -pr ~/build/po/ po/
+      cd mac
+      ./osx-app.sh  --wish  /Users/msp/build/Wish-8.5.19.app  test
+        ... same for 32-bit except: ./configure --enable-universal=i386
+        ... compile on windows:
+      cd msw
+      ./send-msw.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
     git push --mirror
+    git push github
+        ... (I don't use 'mirror' here because afraid of deleting PR branches)
     copy from ~/pd/dist to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
         ~/bis/lib/public_html/Pd_documentation/

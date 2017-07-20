@@ -28,7 +28,7 @@ abstraction \, "osc-voice" \, shows an effective way to make patches
 react to qlists but also to mousing.;
 #X text 234 391 this is where qlist comments go:;
 #X obj 16 380 output~;
-#X text 394 423 updatged for Pd version 0.39;
+#X text 394 423 updated for Pd version 0.39;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;

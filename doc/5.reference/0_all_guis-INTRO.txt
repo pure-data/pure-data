@@ -32,9 +32,9 @@ PROPERTIES-DIALOG-WINDOW:
 "new&old" or "new-only" = the hdial- and vdial-object changes its state in 2 ways:
             "new&old"-mode: output sends previous state off, current state on;
             "new-only"-mode: output sends only current state on.
-"lin" or "log" = sliders and numberboxes can have linear or logarithmical scaling.
-"number:" = number of buttons of hdials and vdials.
-"log-height:" = is the graphical height of the numberbox in logarithmical mode.
+"lin" or "log" = sliders and numberboxes can have linear or logarithmic scaling.
+"number:" = number of buttons of hradios and vradios.
+"log-height:" = is the graphical height of the numberbox in logarithmic mode.
 "steady on click" or "jump on click" = the 2 slider-objects
                 react to mouse-click in 2 ways:
             "steady on click"-mode: slider-knob stays in position,
@@ -55,9 +55,9 @@ PROPERTIES-DIALOG-WINDOW:
             to background- front- and label-color. 
             the 2 fields with "testlabel" and "o=||=o" will show you the 3 colors.
             "compose color" opens a tcl/tk color-dialog.
-"Cancel" quits the properties-dialog without sending down the last changings in dialogbox.
-"Apply"  sends down the changings.
-"OK"     sends down the changings and quits the dialogbox.
+"Cancel" quits the properties-dialog without sending the last changes in dialogbox.
+"Apply"  sends the changes.
+"OK"     sends the changes and quits the dialogbox.
 
 
 THE DOLLAR-THING:
@@ -105,7 +105,7 @@ all gui-objects (bng, hsl, vsl, nbx, tgl, hdl, vdl, cnv and vu)
                 - 256*GREEN-value (0 .. 255)
                         - BLUE-value (0 .. 255) - 1.
 "number 10" = change number of dial-buttons.
-"log_height 128" = graphical dimension for logarithmical behavior
+"log_height 128" = graphical dimension for logarithmic behavior
             of numberbox.
 "steady 1" change slider-knob-behaviour on mouse-click.
 "single_change" change dial-behaviour
@@ -125,7 +125,7 @@ all gui-objects (bng, hsl, vsl, nbx, tgl, hdl, vdl, cnv and vu)
             of gui-objects, except bng and cnv;
             no output will result.
 "lin" = change scale-mode of slider to linear.
-"log" = change scale-mode of slider to logarithmical.
+"log" = change scale-mode of slider to logarithmic.
 "get_pos" = if my_canvas has a receive-name and a send-name
             and you send the message "get_pos" to it,
             you receive the current x- and y-coordinates.

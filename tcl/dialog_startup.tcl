@@ -63,8 +63,7 @@ proc ::dialog_startup::edit { current_library } {
 proc ::dialog_startup::commit { new_startup } {
     variable defeatrt_button
     set ::startup_libraries $new_startup
-
-    pdsend "pd startup-dialog $defeatrt_button [pdtk_encodedialog $::startup_flags] $::startup_libraries"
+    pdsend "pd startup-dialog $defeatrt_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
@@ -89,18 +88,19 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     frame $mytoplevel.flags
-    pack $mytoplevel.flags -side top -anchor e -fill x -padx 2m 
+    pack $mytoplevel.flags -side top -anchor e -expand 1 -fill x -padx 2m
     label $mytoplevel.flags.entryname -text [_ "Startup flags:"]
-    entry $mytoplevel.flags.entry -textvariable ::startup_flags -width 36
-    pack $mytoplevel.flags.entry $mytoplevel.flags.entryname -side right
+    entry $mytoplevel.flags.entry -textvariable ::startup_flags
+    pack $mytoplevel.flags.entry -side right -expand 1 -fill x
+    pack $mytoplevel.flags.entryname -side right
 
     frame $mytoplevel.defeatrtframe
-    pack $mytoplevel.defeatrtframe -side top -fill x -padx 2m -pady 2m
+    pack $mytoplevel.defeatrtframe -side top -anchor e -fill x -padx 2m -pady 5
     if {$::windowingsystem ne "win32"} {
         checkbutton $mytoplevel.defeatrtframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::dialog_startup::defeatrt_button
-        pack $mytoplevel.defeatrtframe.defeatrt -side left -expand 1
+        pack $mytoplevel.defeatrtframe.defeatrt
     }
 
     # focus handling on OSX

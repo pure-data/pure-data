@@ -25,11 +25,13 @@
 #define snprintf sprintf_s
 #endif
 
-
 #define stringify(s) str(s)
 #define str(s) #s
 
-char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) " (" stringify(PD_TEST_VERSION) ")";
+char *pd_version = "Pd-" stringify(PD_MAJOR_VERSION) "." \
+stringify(PD_MINOR_VERSION) "." stringify(PD_BUGFIX_VERSION) "\
+ (" stringify(PD_TEST_VERSION) ")";
+
 char pd_compiletime[] = __TIME__;
 char pd_compiledate[] = __DATE__;
 
@@ -39,21 +41,23 @@ void sys_findprogdir(char *progname);
 void sys_setsignalhandlers( void);
 int sys_startgui(const char *guipath);
 void sys_setrealtime(const char *guipath);
-int sys_rcfile(void);
 int m_mainloop(void);
 int m_batchmain(void);
 void sys_addhelppath(char *p);
 #ifdef USEAPI_ALSA
 void alsa_adddev(char *name);
 #endif
+int sys_oktoloadfiles(int done);
 
 int sys_debuglevel;
 int sys_verbose;
 int sys_noloadbang;
 static int sys_dontstartgui;
-int sys_hipriority = -1;    /* -1 = don't care; 0 = no; 1 = yes */
+int sys_hipriority = -1;    /* -1 = not specified; 0 = no; 1 = yes */
 int sys_guisetportnumber;   /* if started from the GUI, this is the port # */
 int sys_nosleep = 0;  /* skip all "sleep" calls and spin instead */
+int sys_defeatrt;       /* flag to cancel real-time */
+t_symbol *sys_flags;    /* more command-line flags */
 
 char *sys_guicmd;
 t_symbol *sys_libdir;
@@ -113,7 +117,7 @@ double* get_sys_time() { return &pd_this->pd_systime; }
 t_float* get_sys_dacsr() { return &STUFF->st_dacsr; }
 int* get_sys_sleepgrain() { return &sys_sleepgrain; }
 int* get_sys_schedadvance() { return &sys_schedadvance; }
-
+t_namelist *sys_searchpath;  /* so old versions of GEM might compile */
 typedef struct _fontinfo
 {
     int fi_pointsize;
@@ -169,20 +173,22 @@ int sys_hostfontsize(int fontsize, int zoom)
     return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_pointsize);
 }
 
-int sys_zoomfontwidth(int fontsize, int zoom, int worstcase)
+int sys_zoomfontwidth(int fontsize, int zoomarg, int worstcase)
 {
-    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
     if (worstcase)
-        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_width);
-    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width);
+        ret = zoom * sys_fontspec[sys_findfont(fontsize)].fi_width;
+    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_width;
+    return (ret < 1 ? 1 : ret);
 }
 
-int sys_zoomfontheight(int fontsize, int zoom, int worstcase)
+int sys_zoomfontheight(int fontsize, int zoomarg, int worstcase)
 {
-    zoom = (zoom < 1 ? 1 : (zoom > NZOOM ? NZOOM : zoom));
+    int zoom = (zoomarg < 1 ? 1 : (zoomarg > NZOOM ? NZOOM : zoomarg)), ret;
     if (worstcase)
-        return (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
-    else return (sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height);
+        ret = (zoom * sys_fontspec[sys_findfont(fontsize)].fi_height);
+    else ret = sys_gotfonts[zoom-1][sys_findfont(fontsize)].fi_height;
+    return (ret < 1 ? 1 : ret);
 }
 
 int sys_fontwidth(int fontsize) /* old version for extern compatibility */
@@ -225,6 +231,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
     t_namelist *nl;
     unsigned int i;
+    int did_fontwarning = 0;
     int j;
     sys_oldtclversion = atom_getfloatarg(1, argc, argv);
     if (argc != 2 + 3 * NZOOM * NFONT)
@@ -232,12 +239,23 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     for (j = 0; j < NZOOM; j++)
         for (i = 0; i < NFONT; i++)
     {
-        sys_gotfonts[j][i].fi_pointsize =
-            atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
-        sys_gotfonts[j][i].fi_width =
-            atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
-        sys_gotfonts[j][i].fi_height =
-            atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+        int size   = atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
+        int width  = atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
+        int height = atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+        if (!(size && width && height))
+        {
+            size   = (j+1)*sys_fontspec[i].fi_pointsize;
+            width  = (j+1)*sys_fontspec[i].fi_width;
+            height = (j+1)*sys_fontspec[i].fi_height;
+            if (!did_fontwarning)
+            {
+                error("Ignoring invalid font-metrics from GUI!");
+                did_fontwarning = 1;
+            }
+        }
+        sys_gotfonts[j][i].fi_pointsize = size;
+        sys_gotfonts[j][i].fi_width = width;
+        sys_gotfonts[j][i].fi_height = height;
 #if 0
             fprintf(stderr, "font (%d %d %d)\n",
                 sys_gotfonts[j][i].fi_pointsize, sys_gotfonts[j][i].fi_width,
@@ -245,9 +263,13 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 #endif
     }
         /* load dynamic libraries specified with "-lib" args */
-    for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
-        if (!sys_load_lib(0, nl->nl_string))
-            post("%s: can't load library", nl->nl_string);
+    if (sys_oktoloadfiles(0))
+    {
+        for  (nl = STUFF->st_externlist; nl; nl = nl->nl_next)
+            if (!sys_load_lib(0, nl->nl_string))
+                post("%s: can't load library", nl->nl_string);
+        sys_oktoloadfiles(1);
+    }
         /* open patches specifies with "-open" args */
     for  (nl = sys_openlist; nl; nl = nl->nl_next)
         openit(cwd, nl->nl_string);
@@ -298,6 +320,7 @@ static void sys_afterargparse(void);
 int sys_main(int argc, char **argv)
 {
     int i, noprefs;
+    char *prefsfile = "";
     sys_externalschedlib = 0;
     sys_extraflags = 0;
 #ifdef PD_DEBUG
@@ -314,7 +337,7 @@ int sys_main(int argc, char **argv)
         _fmode = _O_BINARY;
     }
 # endif /* _MSC_VER */
-#endif  /* WIN32 */
+#endif  /* _WIN32 */
 #ifndef _WIN32
     /* long ago Pd used setuid to promote itself to real-time priority.
     Just in case anyone's installation script still makes it setuid, we
@@ -324,19 +347,19 @@ int sys_main(int argc, char **argv)
         fprintf(stderr, "warning: canceling setuid privelege\n");
         setuid(getuid());
     }
-#endif  /* WIN32 */
+#endif  /* _WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
-    for (i = noprefs = 0; i < argc; i++)        /* prescan args for noprefs */
+    for (i = noprefs = 0; i < argc; i++)    /* prescan for prefs override */
+    {
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
-    if (!noprefs)
-        sys_loadpreferences();                  /* load default settings */
-#ifndef _WIN32
-    if (!noprefs)
-        sys_rcfile();                           /* parse the startup file */
-#endif
-    if (sys_argparse(argc-1, argv+1))           /* parse cmd line */
+        else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
+            prefsfile = argv[i+1];
+    }
+    if (!noprefs)       /* load preferences before parsing args to allow ... */
+        sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
+    if (sys_argparse(argc-1, argv+1))           /* parse cmd line args */
         return (1);
     sys_afterargparse();                    /* post-argparse settings */
     if (sys_verbose || sys_version) fprintf(stderr, "%s compiled %s %s\n",
@@ -464,7 +487,7 @@ static char *(usagemessage[]) = {
 "-loadbang        -- do not suppress all loadbangs (true by default)\n",
 "-noloadbang      -- suppress all loadbangs\n",
 "-stderr          -- send printout to standard error instead of GUI\n",
-"-nostderr        -- send printout to GUI instead of standard error (true by default)\n",
+"-nostderr        -- send printout to GUI (true by default)\n",
 "-gui             -- start GUI (true by default)\n",
 "-nogui           -- suppress starting the GUI\n",
 "-guiport <n>     -- connect to pre-existing GUI over port <n>\n",
@@ -472,6 +495,7 @@ static char *(usagemessage[]) = {
 "-send \"msg...\"   -- send a message at startup, after patches are loaded\n",
 "-prefs           -- load preferences on startup (true by default)\n",
 "-noprefs         -- suppress loading preferences on startup\n",
+"-prefsfile <file>  -- load preferences from a file\n",
 #ifdef HAVE_UNISTD_H
 "-rt or -realtime -- use real-time priority\n",
 "-nrt             -- don't use real-time priority\n",
@@ -482,8 +506,8 @@ static char *(usagemessage[]) = {
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
 "-nobatch         -- run interactively (true by default)\n",
-"-autopatch       -- enable auto-connecting new from selected objects (true by default)\n",
-"-noautopatch     -- defeat auto-patching new from selected objects\n",
+"-autopatch       -- enable auto-patching to new objects (true by default)\n",
+"-noautopatch     -- defeat auto-patching\n",
 "-compatibility <f> -- set back-compatibility to version <f>\n",
 };
 
@@ -1303,13 +1327,15 @@ int sys_argparse(int argc, char **argv)
         }
         else if (!strcmp(*argv, "-noprefs")) /* did this earlier */
             argc--, argv++;
+        else if (!strcmp(*argv, "-prefsfile") && argc > 1) /* this too */
+            argc -= 2, argv +=2;
         else
         {
             unsigned int i;
         usage:
             for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
                 fprintf(stderr, "%s", usagemessage[i]);
-            return (1);
+            return (0);
         }
     }
     if (sys_batch)

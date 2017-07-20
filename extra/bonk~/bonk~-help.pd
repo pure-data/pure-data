@@ -105,8 +105,7 @@ for "attacks" defined as sharp changes in the spectral envelope of
 the incoming sound. Optionally \, and less reliably \, you can have
 Bonk check the attack against a collection of stored templates to try
 to guess which of two or more instruments was hit. Bonk is described
-theoretically in the 1998 ICMC proceedings \, reprinted on crca.ucsd.edu/~msp
-.;
+theoretically in the 1998 ICMC proceedings \, reprinted on msp.ucsd.edu.;
 #N canvas 2 52 699 717 creation-arguments 0;
 #X text 228 14 creation arguments for bonk~;
 #X text 70 272 -npts 256;

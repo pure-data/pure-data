@@ -113,7 +113,6 @@ proc ::pd_bindings::global_bindings {} {
             bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
             bind all <$::modifier-Key-M>       {menu_minimize %W}
             bind all <$::modifier-Key-T>       {menu_font_dialog}
-            bind all <$::modifier-Shift-Key-k> {menu_message_dialog}
 
             bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         }
@@ -138,8 +137,8 @@ proc ::pd_bindings::global_bindings {} {
         bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
         bind all <$::modifier-Shift-Key-G> {menu_send %W graph}
         bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
-        bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
-        bind all <$::modifier-Shift-Key-K> {menu_message_dialog}
+        bind all <$::modifier-Shift-Key-H> {menu_send %W hslider}
+        bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
         bind all <$::modifier-Shift-Key-L> {menu_clear_console}
         bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
         bind all <$::modifier-Shift-Key-Q> {pdsend "pd quit"}
@@ -158,8 +157,8 @@ proc ::pd_bindings::global_bindings {} {
         bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
         bind all <$::modifier-Shift-Key-g> {menu_send %W graph}
         bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
-        bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
-        bind all <$::modifier-Shift-Key-k> {menu_message_dialog}
+        bind all <$::modifier-Shift-Key-h> {menu_send %W hslider}
+        bind all <$::modifier-Shift-Key-m> {menu_message_dialog}
         bind all <$::modifier-Shift-Key-l> {menu_clear_console}
         bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
         bind all <$::modifier-Shift-Key-q> {pdsend "pd quit"}
@@ -178,6 +177,8 @@ proc ::pd_bindings::global_bindings {} {
     bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1}
 }
 
+# bindings for .pdwindow are found in ::pdwindow::pdwindow_bindings in pdwindow.tcl
+
 # this is for the dialogs: find, font, sendmessage, gatom properties, array
 # properties, iemgui properties, canvas properties, data structures
 # properties, Audio setup, and MIDI setup
@@ -193,15 +194,18 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
     bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
     bind $mytoplevel <$::modifier-Key-p>       {bell; break}
+    bind $mytoplevel <$::modifier-Key-t>       {bell; break}
     # and the CapsLock case...
     bind $mytoplevel <$::modifier-Key-W> "dialog_${dialogname}::cancel $mytoplevel"
     bind $mytoplevel <$::modifier-Key-S>       {bell; break}
     bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
     bind $mytoplevel <$::modifier-Key-P>       {bell; break}
+    bind $mytoplevel <$::modifier-Key-T>       {bell; break}
 
     wm protocol $mytoplevel WM_DELETE_WINDOW "dialog_${dialogname}::cancel $mytoplevel"
 }
 
+# this is for canvas windows
 proc ::pd_bindings::patch_bindings {mytoplevel} {
     variable modifier
     set tkcanvas [tkcanvas_name $mytoplevel]
@@ -297,7 +301,7 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
     } else {
         ::pd_menus::configure_for_canvas $mytoplevel
     }
-    if {[winfo exists .font]} {wm transient .font $::focused_window}
+    if {[winfo exists .font]} {wm transient .font $mytoplevel}
     # if we regain focus from another app, make sure to editmode cursor is right
     if {$::editmode($mytoplevel)} {
         $mytoplevel configure -cursor hand2
@@ -354,6 +358,7 @@ proc ::pd_bindings::dialog_configure {mytoplevel} {
 proc ::pd_bindings::dialog_focusin {mytoplevel} {
     set ::focused_window $mytoplevel
     ::pd_menus::configure_for_dialog $mytoplevel
+    if {$mytoplevel eq ".find"} {::dialog_find::focus_find}
 }
 
 #------------------------------------------------------------------------------#
@@ -380,7 +385,7 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
     # some pop-up panels also bind to keys like the enter, but then disappear,
     # so ignore their events.  The inputbox in the Startup dialog does this.
     if {! [winfo exists $window]} {return}
-    #$window might be a toplevel or canvas, [winfo toplevel] does the right thing
+    # $window might be a toplevel or canvas, [winfo toplevel] does the right thing
     set mytoplevel [winfo toplevel $window]
     if {[winfo class $mytoplevel] eq "PatchWindow"} {
         pdsend "$mytoplevel key $state $key $shift"

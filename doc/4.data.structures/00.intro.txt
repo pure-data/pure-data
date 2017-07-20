@@ -31,7 +31,7 @@ curves:   	 curve <outline-color> <line-width> <x, y> ...
 filled curves:   fcurve <fill-color> <outline-color> <line-width> <x, y> ...
 
 Each argument can either be a number or a symbol.  If a symbol, it's the
-name of a field (which must be a "float) which specifies the vaiue.
+name of a field (which must be a "float) which specifies the value.
 So for instance in the "1.scalar.pd" example, in the template "template1",
 the object "fpolygon 244 q 5 0 0 20 z 40 0" draws a filled polygon whose
 interior color is 244 (red 2, green 4, blue 4) but whose outline color
