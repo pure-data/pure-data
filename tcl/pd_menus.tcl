@@ -541,7 +541,7 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {::pd_menus::savepreferences}
     $mymenu add command -label [_ "Load from..."] \
         -command {::pd_menus::loadpreferences}
-    $mymenu add command -label [_ "Forget all..."] \
+    $mymenu add command -label [_ "Forget All..."] \
         -command {::pd_menus::forgetpreferences}
 }
 

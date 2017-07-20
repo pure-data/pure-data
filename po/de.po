@@ -776,7 +776,8 @@ msgstr "Speichern als..."
 msgid "Load from..."
 msgstr "Laden von..."
 
-msgid "Forget all..."
+#, fuzzy
+msgid "Forget All..."
 msgstr "Zurücksetzen..."
 
 msgid "Open Recent"

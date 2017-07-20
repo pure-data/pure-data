@@ -789,7 +789,8 @@ msgstr "Salvar em..."
 msgid "Load from..."
 msgstr "Carregar de..."
 
-msgid "Forget all..."
+#, fuzzy
+msgid "Forget All..."
 msgstr "Deletar preferências..."
 
 msgid "Open Recent"

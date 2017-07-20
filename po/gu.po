@@ -831,7 +831,7 @@ msgstr "આ રીતે સંગ્રહ કરો"
 msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"

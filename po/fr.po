@@ -758,7 +758,8 @@ msgstr "Sauvegarder sous..."
 msgid "Load from..."
 msgstr "Charger à partir de..."
 
-msgid "Forget all..."
+#, fuzzy
+msgid "Forget All..."
 msgstr "Oublie tout ..."
 
 msgid "Open Recent"

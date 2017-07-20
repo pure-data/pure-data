@@ -829,7 +829,7 @@ msgstr "Fərqli Qeyd Et"
 msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"
