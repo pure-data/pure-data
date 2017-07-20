@@ -517,7 +517,7 @@ proc ::pd_menus::loadpreferences {} {
 
 proc ::pd_menus::forgetpreferences {} {
     pdtk_check .pdwindow \
-        {Delete all preferences? (takes effect when Pd is restarted)} \
+        [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
         {pd forget-preferences} yes
 }
 
