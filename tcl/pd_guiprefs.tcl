@@ -199,9 +199,10 @@ proc ::pd_guiprefs::init {} {
     set ::recentfiles_list ""
     catch {set ::recentfiles_list [get_config $::pd_guiprefs::domain \
                                        $::recentfiles_key $arr]}
-    set ::loglevel 2
     catch {set ::loglevel [get_config $::pd_guiprefs::domain \
                                        $::loglevel_key $arr]}
+    # reset default if value was not found
+    if {$::loglevel == ""} {set ::loglevel 2}
 }
 
 # ------------------------------------------------------------------------------
