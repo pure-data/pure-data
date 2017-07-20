@@ -301,7 +301,7 @@ msgstr ""
 msgid "(same as input device)..."
 msgstr ""
 
-msgid "Use multiple devices"
+msgid "Use Multiple Devices"
 msgstr ""
 
 msgid "Save All Settings"
@@ -826,7 +826,7 @@ msgid "Zoom new windows"
 msgstr ""
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Voorkeure..."
 
 #, fuzzy

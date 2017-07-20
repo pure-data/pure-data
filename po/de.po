@@ -287,7 +287,8 @@ msgstr "Ausgabegerät"
 msgid "(same as input device)..."
 msgstr "(wie Eingabegerät) .............."
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Mehrere Geräte verwenden"
 
 msgid "Save All Settings"
@@ -762,7 +763,8 @@ msgstr "MIDI Einstellungen..."
 msgid "Zoom new windows"
 msgstr "Neue Fenster vergrößern"
 
-msgid "Save all preferences"
+#, fuzzy
+msgid "Save All Preferences"
 msgstr "Voreinstellungen speichern"
 
 #, fuzzy

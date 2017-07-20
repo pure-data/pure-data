@@ -289,7 +289,8 @@ msgstr "Συσκευή εξόδου"
 msgid "(same as input device)..."
 msgstr "(ομοίως με συσκευή εισόδου) .............."
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Χρήση πολλαπλών συσκευών"
 
 msgid "Save All Settings"
@@ -781,7 +782,7 @@ msgid "Zoom new windows"
 msgstr ""
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Προτιμήσεις"
 
 #, fuzzy

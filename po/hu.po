@@ -295,7 +295,8 @@ msgstr "Kimeneti eszköz:"
 msgid "(same as input device)..."
 msgstr "(ugyanaz mint a bemeneti eszköz) ..............      "
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Több eszköz használata"
 
 msgid "Save All Settings"
@@ -782,7 +783,7 @@ msgid "Zoom new windows"
 msgstr ""
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Beállítások"
 
 #, fuzzy

@@ -303,7 +303,8 @@ msgstr "Irtendako tresna"
 msgid "(same as input device)..."
 msgstr "(sartze tresna bezala) ..............       "
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Anitz tresna erabili"
 
 msgid "Save All Settings"
@@ -817,7 +818,7 @@ msgid "Zoom new windows"
 msgstr ""
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Hobespenak"
 
 #, fuzzy

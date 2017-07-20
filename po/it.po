@@ -294,7 +294,8 @@ msgstr "Dispositivo di uscita"
 msgid "(same as input device)..."
 msgstr "(lo stesso del dispositivo di ingresso)..........."
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Usa dispositivi multipli"
 
 msgid "Save All Settings"
@@ -778,7 +779,7 @@ msgid "Zoom new windows"
 msgstr ""
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Preferenze"
 
 #, fuzzy
