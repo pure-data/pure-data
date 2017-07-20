@@ -337,7 +337,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     if {$longform == 0} {
         frame $id.longbutton
         pack $id.longbutton -side top -fill x -pady 2m
-        button $id.longbutton.b -text [_ "Use multiple devices"] \
+        button $id.longbutton.b -text [_ "Use Multiple Devices"] \
             -command  {pdsend "pd midi-properties 1"}
         pack $id.longbutton.b -expand 1 -ipadx 10 -pady 5
     }

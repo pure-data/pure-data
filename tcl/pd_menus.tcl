@@ -535,7 +535,7 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -variable ::zoom_open \
         -command {pdsend "pd zoom-open $zoom_open"}
     $mymenu add  separator
-    $mymenu add command -label [_ "Save all preferences"] \
+    $mymenu add command -label [_ "Save All Preferences"] \
         -command {pdsend "pd save-preferences"}
     $mymenu add command -label [_ "Save to..."] \
         -command {::pd_menus::savepreferences}
