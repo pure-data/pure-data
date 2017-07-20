@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
 "PO-Revision-Date: 2010-01-23 03:45-0200\n"
-"Last-Translator: Alexandre Porres <porres@gmail.com>\n"
+"Last-Translator: Alexandre Torres Porres <porres@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -160,34 +160,32 @@ msgid "Redo typing"
 msgstr "Refazer digitação"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "nenhuma configuração do Pd para limpar"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr ".pdsettings file removido"
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "impossível deletar .pdsettings file"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "falha ao apagar configurações do Pd"
 
-#, fuzzy
 msgid "erased Pd settings"
-msgstr "Salvar Configurações"
+msgstr "configurações do Pd apagadas"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "Nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
-msgstr ""
+msgstr "pulando carregar preferências... Pd parece ter travado na inicialização."
 
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "re-salvar preferências para reinstancia-las"
 
 msgid "File"
 msgstr "Arquivo"
 
-#, fuzzy
 msgid "Edit"
 msgstr "Editar"
 
@@ -300,7 +298,6 @@ msgstr "Dispositivos de saída"
 msgid "(same as input device)..."
 msgstr "(mesmo que o dispositivo de entrada)..."
 
-#, fuzzy
 msgid "Use Multiple Devices"
 msgstr "Usar múltiplos dispositivos"
 
@@ -363,7 +360,7 @@ msgstr "Procurar em %s por:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr "Mostrado últimp '%1$s' em %2$s"
+msgstr "Mostrado último '%1$s' em %2$s"
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
@@ -573,8 +570,7 @@ msgid "Out Ports:"
 msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, fonts, and other files"
-msgstr ""
-"Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
+msgstr "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -611,26 +607,26 @@ msgstr "(Tcl) ERRO NÃO TRATADO:"
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
-msgstr ""
+msgstr "[deken]: versão instalada [%1$s] > %2$s...pulando!"
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
-msgstr ""
+msgstr "[deken]: versão instalada [%1$s] < %2$s...sobrescrevendo!"
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-msgstr ""
+msgstr "[deken]: versão instalada [%1$s] == %2$s...pulando!"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr ""
+msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
+msgstr "[deken] Platforma detectada: %s"
 
 msgid "Install libraries to directory:"
-msgstr ""
+msgstr "Instalar bibliotecas no diretório:"
 
 msgid "Show all"
 msgstr "Mostrar todos"
@@ -639,7 +635,7 @@ msgid "Search"
 msgstr "Procurar"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr ""
+msgstr "Para receber uma lista com todos os externals disponíveis, tente uma busca vazia."
 
 msgid "Find externals"
 msgstr "Procurar por externals"
@@ -647,26 +643,25 @@ msgstr "Procurar por externals"
 msgid "Only install externals uploaded by people you trust."
 msgstr "Instale apenas externals de quem você confia."
 
-#, fuzzy
 msgid "Searching for externals..."
-msgstr "Procurar por externals"
+msgstr "Procurando por externals"
 
 #, tcl-format
 msgid "[deken]: online? %s"
-msgstr ""
+msgstr "[deken]: online? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr ""
+msgstr "Incapaz de realizar busca. Você está online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr ""
+msgstr "Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
 
 msgid "Please select a (writable) installation directory!"
-msgstr ""
+msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
 
 #, tcl-format
 msgid "Install to %s ?"
-msgstr ""
+msgstr "Instalar em %s ?"
 
 #, tcl-format
 msgid ""
@@ -674,51 +669,53 @@ msgid ""
 "%1$s\n"
 "Into %2$s..."
 msgstr ""
+"Começando download de:\n"
+"%1$s\n"
+"Em %2$s..."
 
-#, fuzzy
 msgid "aborting."
-msgstr "Roteamento"
+msgstr "abortando."
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
+msgstr "%1$s descompactado em %2$s com sucesso."
 
 msgid "Unable to extract package automatically."
-msgstr ""
+msgstr "Incapaz de extrair o pacote automaticamente."
 
 msgid "Please perform the following steps manually:"
-msgstr ""
+msgstr "Por favor realize os seguintes passos manualmente:"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. Descompactar %s."
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. Copiar o conteúdo para %s."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
-msgstr ""
+msgstr "Incapaz de baixar de %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to remove stray file %s"
-msgstr ""
+msgstr "Inzapaz de remover arquivo %s"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to %s"
-msgstr ""
+msgstr "Incapaz de renomear o arquivo baixado para %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "searching for '%s'"
-msgstr "Descartar as mudanças feitas em '%s'?"
+msgstr "procurando por '%s'"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr "Mostrado últimp '%1$s' em %2$s"
+msgstr "Enviado por '%1$s' em %2$s"
 
 msgid "About Pd"
-msgstr "Sobre Pd"
+msgstr "Sobre o Pd"
 
 msgid "Save"
 msgstr "Salvar"
@@ -802,16 +799,16 @@ msgid "Find Last Error"
 msgstr "Procurar Último Erro"
 
 msgid "DSP On"
-msgstr "DSP Ligado"
+msgstr "Áudio Ligado"
 
 msgid "DSP Off"
-msgstr "DSP Desligado"
+msgstr "Áudio Desligado"
 
 msgid "Test Audio and MIDI..."
 msgstr "Testar Áudio e MIDI..."
 
 msgid "Load Meter"
-msgstr "Medidor de Carga de CPU"
+msgstr "Medidor de CPU"
 
 msgid "Audio Settings..."
 msgstr "Configurações de Áudio..."
@@ -826,7 +823,7 @@ msgid "Zoom"
 msgstr "Ampliar"
 
 msgid "Bring All to Front"
-msgstr "Trazer Tudo para Frente"
+msgstr "Trazer Todas para Frente"
 
 msgid "Next Window"
 msgstr "Próxima Janela"
@@ -856,6 +853,8 @@ msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
+"Deletar todas as preferêcnias?\n"
+"(faz efeito quando o Pd é reiniciado)"
 
 msgid "Path..."
 msgstr "Caminho de busca..."
@@ -869,23 +868,18 @@ msgstr "Configurações de Áudio..."
 msgid "MIDI..."
 msgstr "Configurações de MIDI..."
 
-#, fuzzy
 msgid "Zoom New Windows"
 msgstr "Ampliar novas janelas"
 
-#, fuzzy
 msgid "Save All Preferences"
-msgstr "Salvar preferências"
+msgstr "Salvar Preferências"
 
-#, fuzzy
 msgid "Save to..."
 msgstr "Salvar em..."
 
-#, fuzzy
 msgid "Load from..."
 msgstr "Carregar de..."
 
-#, fuzzy
 msgid "Forget All..."
 msgstr "Deletar preferências..."
 
@@ -898,9 +892,8 @@ msgstr "Sair"
 msgid "Properties"
 msgstr "Propriedades"
 
-#, fuzzy
 msgid "Audio on"
-msgstr "Audio desligado"
+msgstr "Audio ligado"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr "(Tcl) FALTANDO FECHA COLCHETES ']': "
@@ -912,10 +905,10 @@ msgid "Pd"
 msgstr "Pd"
 
 msgid "DSP"
-msgstr "DSP"
+msgstr "Áudio"
 
 msgid "Audio off"
-msgstr "Audio desligado"
+msgstr "Áudio desligado"
 
 msgid "Audio I/O error"
 msgstr "Erro de entrada/saída de áudio"
@@ -965,6 +958,9 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 
 #~ msgid "Input device 2:"
 #~ msgstr "Dispositivo de entrada 2:"
+
+#~ msgid "Routing"
+#~ msgstr "Roteamento"
 
 #~ msgid "Send (Ctrl s)"
 #~ msgstr "Enviar (Ctrl s)"
@@ -1051,8 +1047,7 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Dispositivo de saída 2:"
 
 #~ msgid "WARNING: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr ""
-#~ "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
 #~ msgstr "ERRO: 'pd' nunca apareceu, 'pd-gui' fechando!"
@@ -1064,8 +1059,7 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Enviar Mensagem..."
 
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr ""
-#~ "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "Pd Files"
 #~ msgstr "Arquivos Pd"
