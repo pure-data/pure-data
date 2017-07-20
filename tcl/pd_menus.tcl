@@ -370,10 +370,9 @@ proc ::pd_menus::update_recentfiles_menu {{write true}} {
 }
 
 proc ::pd_menus::clear_recentfiles_menu {} {
+    # empty recentfiles in preferences (write empty array)
     set ::recentfiles_list {}
     ::pd_menus::update_recentfiles_menu
-    # empty recentfiles in preferences (write empty array)
-    ::pd_guiprefs::write_recentfiles
 }
 
 proc ::pd_menus::update_openrecent_menu_aqua {mymenu {write}} {
