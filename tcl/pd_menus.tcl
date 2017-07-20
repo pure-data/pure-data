@@ -505,12 +505,17 @@ proc ::pd_menus::update_window_menu {} {
 # ------------------------------------------------------------------------------
 # submenu for Preferences, now used on all platforms
 proc ::pd_menus::savepreferences {} {
-    set filename [tk_getSaveFile -initialdir $::fileopendir]
+    set filename [tk_getSaveFile \
+                  -initialdir $::fileopendir \
+                  -defaultextension .pdsettings \
+                  -initialfile Untitled.pdsettings]
     if {$filename ne ""} {pdsend "pd save-preferences $filename"}
 }
 
 proc ::pd_menus::loadpreferences {} {
-    set filename [tk_getOpenFile -initialdir $::fileopendir]
+    set filename [tk_getOpenFile \
+                  -initialdir $::fileopendir \
+                  -defaultextension .pdsettings]
     if {$filename ne ""} {pdsend "pd load-preferences $filename"}
 }
 
