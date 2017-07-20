@@ -773,11 +773,13 @@ msgstr "Ampliar novas janelas"
 msgid "Save all preferences"
 msgstr "Salvar preferências"
 
-msgid "Save to ..."
+#, fuzzy
+msgid "Save to..."
 msgstr "Salvar em..."
 
-msgid "Load from ..."
-msgstr "Carregar de ..."
+#, fuzzy
+msgid "Load from..."
+msgstr "Carregar de..."
 
 msgid "Forget all..."
 msgstr "Deletar preferências..."

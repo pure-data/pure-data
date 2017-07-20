@@ -760,10 +760,12 @@ msgstr "Neue Fenster vergrößern"
 msgid "Save all preferences"
 msgstr "Voreinstellungen speichern"
 
-msgid "Save to ..."
+#, fuzzy
+msgid "Save to..."
 msgstr "Speichern als..."
 
-msgid "Load from ..."
+#, fuzzy
+msgid "Load from..."
 msgstr "Laden von..."
 
 msgid "Forget all..."

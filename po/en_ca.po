@@ -741,10 +741,10 @@ msgstr ""
 msgid "Save all preferences"
 msgstr ""
 
-msgid "Save to ..."
+msgid "Save to..."
 msgstr ""
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

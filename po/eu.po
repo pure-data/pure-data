@@ -816,10 +816,10 @@ msgid "Save all preferences"
 msgstr "Hobespenak"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Gorde Honela..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

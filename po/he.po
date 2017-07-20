@@ -800,10 +800,10 @@ msgid "Save all preferences"
 msgstr "איקס-צ'אט: הגדרות"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "עריכת אירועי טקסט.."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

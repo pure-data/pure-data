@@ -825,10 +825,10 @@ msgid "Save all preferences"
 msgstr "Voorkeure..."
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Stoor As"
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

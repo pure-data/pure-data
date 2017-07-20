@@ -742,11 +742,13 @@ msgstr "Zoomer les nouvelles fenêtres"
 msgid "Save all preferences"
 msgstr "Sauver toutes les préférences"
 
-msgid "Save to ..."
+#, fuzzy
+msgid "Save to..."
 msgstr "Sauvegarder sous..."
 
-msgid "Load from ..."
-msgstr "Charger à partir de ..."
+#, fuzzy
+msgid "Load from..."
+msgstr "Charger à partir de..."
 
 msgid "Forget all..."
 msgstr "Oublie tout ..."

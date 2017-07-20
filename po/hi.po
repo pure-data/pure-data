@@ -816,10 +816,10 @@ msgid "Save all preferences"
 msgstr "प्राथमिकताएं..."
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "इस रूप में सहेजें"
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

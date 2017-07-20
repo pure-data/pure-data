@@ -818,10 +818,10 @@ msgid "Save all preferences"
 msgstr "Настройки"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Записване като..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

@@ -819,10 +819,10 @@ msgid "Save all preferences"
 msgstr "પસંદગીઓ..."
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "આ રીતે સંગ્રહ કરો"
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

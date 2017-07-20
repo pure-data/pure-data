@@ -817,10 +817,10 @@ msgid "Save all preferences"
 msgstr "Sở thích..."
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Lưu là"
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

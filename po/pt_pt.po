@@ -775,10 +775,10 @@ msgid "Save all preferences"
 msgstr "Preferências"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Guardar como..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

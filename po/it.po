@@ -777,10 +777,10 @@ msgid "Save all preferences"
 msgstr "Preferenze"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Salva con nome..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."

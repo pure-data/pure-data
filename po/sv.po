@@ -791,10 +791,10 @@ msgid "Save all preferences"
 msgstr "Inställningar"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Spara som..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
 msgid "Forget all..."
