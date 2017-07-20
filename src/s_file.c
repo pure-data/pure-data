@@ -649,7 +649,7 @@ void glob_forgetpreferences(t_pd *dummy)
         "defaults delete org.puredata.pd 2> /dev/null\n");
     if (system(cmdbuf) && warn)
         post("failed to erase Pd settings");
-    else post("erased Pd settings");
+    else if(warn) post("erased Pd settings");
 #endif /* __APPLE__ */
 #ifdef _WIN32
     HKEY hkey;
