@@ -802,6 +802,10 @@ msgstr "Sair"
 msgid "Properties"
 msgstr "Propriedades"
 
+#, fuzzy
+msgid "Audio on"
+msgstr "Audio desligado"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr "(Tcl) FALTANDO FECHA COLCHETES ']': "
 

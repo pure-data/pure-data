@@ -789,6 +789,10 @@ msgstr "Beenden"
 msgid "Properties"
 msgstr "Einstellungen"
 
+#, fuzzy
+msgid "Audio on"
+msgstr "Audio aus"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 

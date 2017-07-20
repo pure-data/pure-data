@@ -841,6 +841,10 @@ msgstr "Irten"
 msgid "Properties"
 msgstr "Propietateak"
 
+#, fuzzy
+msgid "Audio on"
+msgstr "Audioaren ezarpenak"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 

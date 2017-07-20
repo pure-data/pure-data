@@ -805,6 +805,10 @@ msgstr "Έξοδος"
 msgid "Properties"
 msgstr "Ιδιότητες"
 
+#, fuzzy
+msgid "Audio on"
+msgstr "Ρυθμίσεις Ήχου"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 

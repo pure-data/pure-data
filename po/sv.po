@@ -815,6 +815,9 @@ msgstr "Avsluta"
 msgid "Properties"
 msgstr "Egenskaper"
 
+msgid "Audio on"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 

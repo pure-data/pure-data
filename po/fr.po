@@ -771,6 +771,10 @@ msgstr "Quitter"
 msgid "Properties"
 msgstr "Propriétés"
 
+#, fuzzy
+msgid "Audio on"
+msgstr "Audio OFF"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -835,9 +839,6 @@ msgstr "'%s' ne semble par être un fichier Pd"
 
 #~ msgid "Text Editor"
 #~ msgstr "Éditeur de texte..."
-
-#~ msgid "Audio OFF"
-#~ msgstr "Audio OFF"
 
 #~ msgid "Send Message..."
 #~ msgstr "Envoyer Message..."

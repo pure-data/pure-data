@@ -806,6 +806,10 @@ msgstr "Kilép"
 msgid "Properties"
 msgstr "Tulajdonságok"
 
+#, fuzzy
+msgid "Audio on"
+msgstr "Hang beállítások"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 

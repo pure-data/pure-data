@@ -802,6 +802,10 @@ msgstr "Esci"
 msgid "Properties"
 msgstr "Proprietà"
 
+#, fuzzy
+msgid "Audio on"
+msgstr "Settaggi Audio"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 

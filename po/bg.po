@@ -842,6 +842,9 @@ msgstr "Изход"
 msgid "Properties"
 msgstr ""
 
+msgid "Audio on"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
