@@ -320,7 +320,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         pack $mytoplevel.longbutton -side top
         button $mytoplevel.longbutton.b -text [_ "Use multiple devices"] \
             -command  {pdsend "pd audio-properties 1"}
-        pack $mytoplevel.longbutton.b
+        pack $mytoplevel.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
 
     # save all settings button
@@ -364,6 +364,13 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         # remove cancel button from focus list since it's not activated on Return
         $mytoplevel.buttonframe.cancel config -takefocus 0
 
+        # show active focus on multiple device button
+        if {[winfo exists $mytoplevel.longbutton.b]} {
+            bind $mytoplevel.longbutton.b <KeyPress-Return> "$mytoplevel.longbutton.b invoke"
+            bind $mytoplevel.longbutton.b <FocusIn> "::dialog_audio::unbind_return $mytoplevel; $mytoplevel.longbutton.b config -default active"
+            bind $mytoplevel.longbutton.b <FocusOut> "::dialog_audio::rebind_return $mytoplevel; $mytoplevel.longbutton.b config -default normal"
+        }
+
         # show active focus on save settings button
         bind $mytoplevel.saveall <KeyPress-Return> "$mytoplevel.saveall invoke"
         bind $mytoplevel.saveall <FocusIn> "::dialog_audio::unbind_return $mytoplevel; $mytoplevel.saveall config -default active"
@@ -375,6 +382,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         bind $mytoplevel.buttonframe.ok <FocusOut> "$mytoplevel.buttonframe.ok config -default normal"
     
         # since we show the active focus, disable the highlight outline
+        if {[winfo exists $mytoplevel.longbutton.b]} {
+            $mytoplevel.longbutton.b config -highlightthickness 0
+        }
         $mytoplevel.saveall config -highlightthickness 0
         $mytoplevel.buttonframe.ok config -highlightthickness 0
         $mytoplevel.buttonframe.cancel config -highlightthickness 0

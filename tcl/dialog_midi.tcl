@@ -342,9 +342,14 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         pack $id.longbutton.b -expand 1 -ipadx 10 -pady 5
     }
 
+    # save all settings button
+    button $id.saveall -text [_ "Save All Settings"] \
+        -command "::dialog_midi::apply $id; pdsend \"pd save-preferences\""
+    pack $id.saveall -side top -expand 1 -ipadx 10 -pady 5
+
     # buttons
     frame $id.buttonframe
-    pack $id.buttonframe -side top -fill x -pady 2m
+    pack $id.buttonframe -side top -after $id.saveall -fill x -pady 2m
     button $id.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_midi::cancel $id"
     pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15
@@ -369,12 +374,17 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         # show active focus on multiple device button
         if {[winfo exists $id.longbutton.b]} {
             bind $id.longbutton.b <KeyPress-Return> "$id.longbutton.b invoke"
-            bind $id.longbutton.b <FocusIn> "::dialog_audio::unbind_return $id; $id.longbutton.b config -default active"
-            bind $id.longbutton.b <FocusOut> "::dialog_audio::rebind_return $id; $id.longbutton.b config -default normal"
+            bind $id.longbutton.b <FocusIn> "::dialog_midi::unbind_return $id; $id.longbutton.b config -default active"
+            bind $id.longbutton.b <FocusOut> "::dialog_midi::rebind_return $id; $id.longbutton.b config -default normal"
         }
 
+        # show active focus on save settings button
+        bind $id.saveall <KeyPress-Return> "$id.saveall invoke"
+        bind $id.saveall <FocusIn> "::dialog_midi::unbind_return $id; $id.saveall config -default active"
+        bind $id.saveall <FocusOut> "::dialog_midi::rebind_return $id; $id.saveall config -default normal"
+
         # show active focus on the ok button as it *is* activated on Return
-        #$id.buttonframe.ok config -default normal
+        $id.buttonframe.ok config -default normal
         bind $id.buttonframe.ok <FocusIn> "$id.buttonframe.ok config -default active"
         bind $id.buttonframe.ok <FocusOut> "$id.buttonframe.ok config -default normal"
     
@@ -382,6 +392,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         if {[winfo exists $id.longbutton.b]} {
             $id.longbutton.b config -highlightthickness 0
         }
+        $id.saveall config -highlightthickness 0
         $id.buttonframe.ok config -highlightthickness 0
         $id.buttonframe.cancel config -highlightthickness 0
     }
@@ -438,9 +449,14 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
         pack $id.in1f.l2 $id.in1f.x2 -side left
     }
 
+    # save all settings button
+    button $id.saveall -text [_ "Save All Settings"] \
+        -command "::dialog_midi::apply $id; pdsend \"pd save-preferences\""
+    pack $id.saveall -side top -expand 1 -ipadx 10 -pady 5
+
     # buttons
     frame $id.buttonframe
-    pack $id.buttonframe -side top -fill x -pady 2m
+    pack $id.buttonframe -side top -after $id.saveall -fill x -pady 2m
     button $id.buttonframe.cancel -text [_ "Cancel"]\
         -command "::dialog_midi::cancel $id"
     button $id.buttonframe.apply -text [_ "Apply"]\
