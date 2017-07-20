@@ -724,6 +724,11 @@ msgstr "Signaler un problème"
 msgid "Clear Menu"
 msgstr "Effacer la console"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr "Chemin..."
 

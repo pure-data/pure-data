@@ -798,6 +798,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Изчистване на списъка"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 

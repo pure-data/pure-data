@@ -799,6 +799,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "યાદી સાફ કરો"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 

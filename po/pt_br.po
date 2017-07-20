@@ -755,6 +755,11 @@ msgstr "Reportar um bug"
 msgid "Clear Menu"
 msgstr "Limpar Menu"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr "Caminho de busca..."
 

@@ -805,6 +805,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Maak lys skoon"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 

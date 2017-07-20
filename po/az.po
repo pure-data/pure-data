@@ -797,6 +797,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Siyahını təmizlə"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 

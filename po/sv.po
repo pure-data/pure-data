@@ -771,6 +771,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Rensa konsoll"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 

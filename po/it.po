@@ -755,6 +755,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Pulisci menu"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 

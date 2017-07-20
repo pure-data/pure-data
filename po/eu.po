@@ -794,6 +794,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Menua Garbitu"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 

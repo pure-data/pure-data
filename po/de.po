@@ -742,6 +742,11 @@ msgstr "Fehlerbericht erstellen"
 msgid "Clear Menu"
 msgstr "Menü löschen"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr "Suchpfade..."
 
