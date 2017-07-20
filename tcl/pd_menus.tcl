@@ -517,7 +517,7 @@ proc ::pd_menus::loadpreferences {} {
 
 proc ::pd_menus::forgetpreferences {} {
     pdtk_check .pdwindow \
-        {Delete all preferences? (takes effect when Pd is restarted)} \
+        [_ "Delete all preferences?\n(takes effect when Pd is restarted)"] \
         {pd forget-preferences} yes
 }
 
@@ -531,17 +531,17 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {pdsend "pd audio-properties"}
     $mymenu add command -label [_ "MIDI..."] \
         -command {pdsend "pd midi-properties"}
-    $mymenu add check -label [_ "Zoom new windows"] \
+    $mymenu add check -label [_ "Zoom New Windows"] \
         -variable ::zoom_open \
         -command {pdsend "pd zoom-open $zoom_open"}
     $mymenu add  separator
-    $mymenu add command -label [_ "Save all preferences"] \
+    $mymenu add command -label [_ "Save All Preferences"] \
         -command {pdsend "pd save-preferences"}
-    $mymenu add command -label [_ "Save to ..."] \
+    $mymenu add command -label [_ "Save to..."] \
         -command {::pd_menus::savepreferences}
-    $mymenu add command -label [_ "Load from ..."] \
+    $mymenu add command -label [_ "Load from..."] \
         -command {::pd_menus::loadpreferences}
-    $mymenu add command -label [_ "Forget all..."] \
+    $mymenu add command -label [_ "Forget All..."] \
         -command {::pd_menus::forgetpreferences}
 }
 

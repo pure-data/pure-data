@@ -611,7 +611,7 @@ void sys_set_searchpath( void)
     sys_gui("set ::tmp_path {}\n");
     for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::STUFF->st_searchpath $::tmp_path\n");
+    sys_gui("set ::sys_searchpath $::tmp_path\n");
 }
 
     /* send the hard-coded search path to pd-gui */

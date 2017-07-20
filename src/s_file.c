@@ -634,33 +634,33 @@ void glob_forgetpreferences(t_pd *dummy)
 {
 #if !defined(_WIN32) && !defined(__APPLE__)
     if (system("cat ~/.pdsettings >& /dev/null\n"))
-        post("found no Pd settings to clear.");
+        post("no Pd settings to clear");
     else if (!system("rm ~/.pdsettings\n"))
-        post("removed .pdsettings file.");
-    else post("couldn't delete .pdsettings file.");
+        post("removed .pdsettings file");
+    else post("couldn't delete .pdsettings file");
 #endif  /* !defined(_WIN32) && !defined(__APPLE__) */
 #ifdef __APPLE__
     char cmdbuf[MAXPDSTRING];
     int warn = 1;
     if (!sys_getpreference("audioapi", cmdbuf, MAXPDSTRING))
-        post("found no Pd settings to clear."), warn = 0;
+        post("no Pd settings to clear"), warn = 0;
             /* do it anyhow, why not... */
     snprintf(cmdbuf, MAXPDSTRING,
         "defaults delete org.puredata.pd 2> /dev/null\n");
     if (system(cmdbuf) && warn)
-        post("failed to erase Pd settings.");
-    else post("erased Pd settings.");
+        post("failed to erase Pd settings");
+    else if(warn) post("erased Pd settings");
 #endif /* __APPLE__ */
 #ifdef _WIN32
     HKEY hkey;
     if (RegOpenKeyEx(HKEY_CURRENT_USER,
         "Software", 0,  KEY_QUERY_VALUE, &hkey) != ERROR_SUCCESS)
-            post("found no Pd settings to erase.");
+            post("no Pd settings to erase");
     else
     {
         if (RegDeleteKey(hkey, "Pure-Data") != ERROR_SUCCESS)
-            post("found no Pd settings to erase.");
-        else post("erased Pd settings.");
+            post("no Pd settings to erase");
+        else post("erased Pd settings");
         RegCloseKey(hkey);
     }
 #endif /* _WIN32 */
@@ -682,7 +682,7 @@ int sys_oktoloadfiles(int done)
         {
             post(
     "skipping loading preferences... Pd seems to have crashed on startup.");
-            post("(re-save preferences to reinstate them.)");
+            post("(re-save preferences to reinstate them)");
             return (0);
         }
         else

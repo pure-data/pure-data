@@ -146,6 +146,31 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Αποθήκευση όλων των ρυθμίσεων"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "Αρχείο"
 
@@ -264,7 +289,8 @@ msgstr "Συσκευή εξόδου"
 msgid "(same as input device)..."
 msgstr "(ομοίως με συσκευή εισόδου) .............."
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Χρήση πολλαπλών συσκευών"
 
 msgid "Save All Settings"
@@ -323,11 +349,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Αναζήτηση σε"
-
-msgid "for:"
-msgstr "για:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -386,7 +410,8 @@ msgstr "Ανώτερο:"
 msgid "Label"
 msgstr "Ετικέτα"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Αριστερά"
 
 msgid "Right"
@@ -546,7 +571,7 @@ msgstr "Θύρες Εξόδου:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -734,6 +759,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Καθαρισμός Μενού"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 
@@ -748,21 +778,22 @@ msgstr "Ρυθμίσεις Ήχου..."
 msgid "MIDI..."
 msgstr "Ρυθμίσεις MIDI..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Γονεϊκό Παράθυρο"
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Προτιμήσεις"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Αποθήκευση Ως..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"
@@ -824,6 +855,9 @@ msgstr "Διαγραφή πίνακα"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#~ msgid "for:"
+#~ msgstr "για:"
 
 #~ msgid "Output device 3:"
 #~ msgstr "Συσκευή εξόδου 3:"

@@ -1258,7 +1258,6 @@ void sys_setrealtime(const char *libdir)
     if (sys_hipriority)
     {
         struct stat statbuf;
-        int pipe9[2], watchpid;
         if (stat(cmdbuf, &statbuf) < 0)
         {
             fprintf(stderr,
@@ -1266,6 +1265,10 @@ void sys_setrealtime(const char *libdir)
                 cmdbuf);
             sys_hipriority = 0;
         }
+    }
+    if (sys_hipriority)
+    {
+        int pipe9[2], watchpid;
             /* To prevent lockup, we fork off a watchdog process with
             higher real-time priority than ours.  The GUI has to send
             a stream of ping messages to the watchdog THROUGH the Pd

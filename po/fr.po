@@ -27,7 +27,7 @@ msgid "--------flash-time(ms)(ms):---------"
 msgstr "-------durée_du_flash(ms)(ms):------"
 
 msgid "-----------output-range:-----------"
-msgstr "---------échele_de_sortie:---------"
+msgstr "---------échelle_de_sortie:--------"
 
 msgid "------selectable_dimensions(pix):------"
 msgstr "-------dimensions_a_choisir(pix):------"
@@ -36,10 +36,10 @@ msgid "------visible_rectangle(pix)(pix):------"
 msgstr "------rectangle_visible(pix)(pix):------"
 
 msgid "bottom:"
-msgstr "Bas:"
+msgstr "bas:"
 
 msgid "height:"
-msgstr "Hauteur de l'objet (px):"
+msgstr "hauteur:"
 
 msgid "hold:"
 msgstr ""
@@ -48,7 +48,7 @@ msgid "intrrpt:"
 msgstr ""
 
 msgid "left:"
-msgstr "gauche"
+msgstr "gauche:"
 
 msgid "lin"
 msgstr "lin"
@@ -60,10 +60,10 @@ msgid "log-height:"
 msgstr "Hauteur de log:"
 
 msgid "max:"
-msgstr "max"
+msgstr "max:"
 
 msgid "min:"
-msgstr "min"
+msgstr "min:"
 
 msgid "right:"
 msgstr "droite:"
@@ -128,13 +128,38 @@ msgid "Redo duplicate"
 msgstr "Refaire la duplication"
 
 msgid "Redo motion"
-msgstr "Refaire le deplacement"
+msgstr "Refaire le déplacement"
 
 msgid "Redo paste"
 msgstr "Refaire la copie"
 
 msgid "Redo typing"
 msgstr "Refaire la frappe"
+
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Sauver tous les réglages"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
 
 msgid "File"
 msgstr "Fichier"
@@ -250,7 +275,8 @@ msgstr "Périphérique de sortie"
 msgid "(same as input device)..."
 msgstr "(même que le périphérique d'entrée)..."
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Utiliser plusieurs périphériques simultanément"
 
 msgid "Save All Settings"
@@ -306,11 +332,9 @@ msgstr "'%s' trouvé dans %s"
 msgid "Couldn't find '%s' in %s"
 msgstr "'%s' non trouvé dans %s"
 
-msgid "Search in"
-msgstr "Rechercher dans"
-
-msgid "for:"
-msgstr ":"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
+msgstr "Rechercher en %s pour:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -369,7 +393,8 @@ msgstr "Supérieur:"
 msgid "Label"
 msgstr "Label"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Gauche"
 
 msgid "Right"
@@ -415,7 +440,7 @@ msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr "Temps du flash (ms):"
+msgstr "Durée du flash (ms)"
 
 msgid "Intrrpt:"
 msgstr ""
@@ -436,7 +461,7 @@ msgid "Number2"
 msgstr "Nombre2"
 
 msgid "Width (digits):"
-msgstr "Largeur (digits)"
+msgstr "Largeur (digits):"
 
 msgid "Height:"
 msgstr "Hauteur de l'objet (px):"
@@ -457,7 +482,7 @@ msgid "Vradio"
 msgstr "Sélecteur vertical"
 
 msgid "Num cells:"
-msgstr "Nombre de cases"
+msgstr "Nombre de cases:"
 
 msgid "Hradio"
 msgstr "Sélecteur horizontal"
@@ -520,7 +545,7 @@ msgstr "Ports de sortie:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Chemins pour la recherche d'objets, aides, fontes et autres"
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr "Utiliser les extensions standard"
 
 msgid "Verbose"
@@ -545,7 +570,7 @@ msgid "Help Browser"
 msgstr "Navigateur d'aide"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr "(Tcl) CARACTERE MANQUANT '}': "
+msgstr "(Tcl) CARACTÈRE MANQUANT '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
 msgstr "(Tcl) COMMANDE INVALIDE: "
@@ -580,7 +605,6 @@ msgstr "Imprimer..."
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#, fuzzy
 msgid "Zoom In"
 msgstr "Zoomer"
 
@@ -663,10 +687,10 @@ msgid "Load Meter"
 msgstr "CPU-mètre"
 
 msgid "Audio Settings..."
-msgstr "Réglage audio..."
+msgstr "Réglages audio..."
 
 msgid "MIDI Settings..."
-msgstr "Réglage MIDI..."
+msgstr "Réglages MIDI..."
 
 msgid "Minimize"
 msgstr "Minimiser"
@@ -701,36 +725,42 @@ msgstr "Signaler un problème"
 msgid "Clear Menu"
 msgstr "Effacer la console"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr "Chemin..."
 
 msgid "Startup..."
 msgstr "Option de démarrage..."
 
-#, fuzzy
 msgid "Audio..."
-msgstr "Réglage audio..."
+msgstr "Réglages audio..."
+
+msgid "MIDI..."
+msgstr "Réglages MIDI..."
 
 #, fuzzy
-msgid "MIDI..."
-msgstr "Réglage MIDI..."
-
-msgid "Zoom new windows"
+msgid "Zoom New Windows"
 msgstr "Zoomer les nouvelles fenêtres"
 
 #, fuzzy
-msgid "Save all preferences"
-msgstr "Préférences"
+msgid "Save All Preferences"
+msgstr "Sauver toutes les préférences"
 
 #, fuzzy
-msgid "Save to ..."
-msgstr "Sauvegarder Sous..."
+msgid "Save to..."
+msgstr "Sauvegarder sous..."
 
-msgid "Load from ..."
-msgstr ""
+#, fuzzy
+msgid "Load from..."
+msgstr "Charger à partir de..."
 
-msgid "Forget all..."
-msgstr ""
+#, fuzzy
+msgid "Forget All..."
+msgstr "Tout oublier..."
 
 msgid "Open Recent"
 msgstr "Ouvrir un élément récent"
@@ -790,6 +820,9 @@ msgstr "Supprimer"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "'%s' ne semble par être un fichier Pd"
+
+#~ msgid "for:"
+#~ msgstr ":"
 
 #~ msgid "Patch Font"
 #~ msgstr "Police du patch"

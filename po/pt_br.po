@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
 "PO-Revision-Date: 2010-01-23 03:45-0200\n"
-"Last-Translator: Vilson Vieira <vilson@void.cc>\n"
+"Last-Translator: Alexandre Porres <porres@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -16,32 +16,32 @@ msgstr ""
 
 # iemgui
 msgid "-------dimensions(digits)(pix):-------"
-msgstr "------dimensões(dígitos)(pix):-------"
+msgstr "------dimensões(dígitos)(pix):--------"
 
 # iemgui
 msgid "--------dimensions(pix)(pix):--------"
-msgstr "--------dimensões(pix)(pix):--------"
+msgstr "--------dimensões(pix)(pix):---------"
 
 # iemgui
 msgid "----------dimensions(pix):-----------"
-msgstr "----------dimensões(pix):-----------"
+msgstr "----------dimensões(pix):------------"
 
 # iemgui
 msgid "--------flash-time(ms)(ms):---------"
-msgstr "-----tempo-de-flash(ms)(ms):-------"
+msgstr "-----tempo-de-piscagem(ms)(ms):------"
 
 # iemgui
 msgid "-----------output-range:-----------"
-msgstr "---------registro-de-saída:---------"
+msgstr "---------limite-de-saída:----------"
 
 # iemgui
 # iemgui
 msgid "------selectable_dimensions(pix):------"
-msgstr "----dimensões_selecionáveis(pix):-----"
+msgstr "----dimensões_selecionáveis(pix):------"
 
 # iemgui
 msgid "------visible_rectangle(pix)(pix):------"
-msgstr "-----retângulo_visível(pix)(pix):------"
+msgstr "-----retângulo_visível(pix)(pix):-------"
 
 # iemgui
 msgid "bottom:"
@@ -77,11 +77,11 @@ msgstr "altura-do-log:"
 
 # iemgui
 msgid "max:"
-msgstr "máx:"
+msgstr "máximo:"
 
 # iemgui
 msgid "min:"
-msgstr "min:"
+msgstr "mínimo:"
 
 # iemgui
 msgid "right:"
@@ -109,7 +109,7 @@ msgstr "Você deseja salvar as alterações feitas em '%s'?"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr "Descartar as mudanças em '%s'?"
+msgstr "Descartar as mudanças feitas em '%s'?"
 
 msgid "Undo clear"
 msgstr "Desfazer limpar"
@@ -159,6 +159,31 @@ msgstr "Refazer colar"
 msgid "Redo typing"
 msgstr "Refazer digitação"
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Salvar Configurações"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "Arquivo"
 
@@ -182,7 +207,7 @@ msgid "Help"
 msgstr "Ajuda"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Mostrar diretórios e arquivos escondidos"
 
 msgid "Copy"
 msgstr "Copiar"
@@ -227,7 +252,7 @@ msgid "Last graph"
 msgstr "Último gráfico"
 
 msgid "Options"
-msgstr ""
+msgstr "Opções"
 
 msgid "Open List View..."
 msgstr "Abrir Visualização em Lista..."
@@ -247,43 +272,40 @@ msgstr "OK"
 msgid "Audio Settings"
 msgstr "Configurações de Áudio"
 
-#, fuzzy
 msgid "Settings"
-msgstr "Configurações de MIDI"
+msgstr "Configurações"
 
 msgid "Sample rate:"
 msgstr "Taxa de amostragem:"
 
 msgid "Delay (msec):"
-msgstr "Delay (ms):"
+msgstr "Latência (ms):"
 
 # iemgui
-#, fuzzy
 msgid "Block size:"
-msgstr "tamanho:"
+msgstr "Tamanho do bloco:"
 
 msgid "Use callbacks"
 msgstr "Usar callbacks"
 
 msgid "Input Devices"
-msgstr "Dispositivo de entrada"
+msgstr "Dispositivos de entrada"
 
 msgid "Channels:"
 msgstr "Canais:"
 
 msgid "Output Devices"
-msgstr "Dispositivo de saída"
+msgstr "Dispositivos de saída"
+
+msgid "(same as input device)..."
+msgstr "(mesmo que o dispositivo de entrada)..."
 
 #, fuzzy
-msgid "(same as input device)..."
-msgstr "(mesmo que o dispositivo de entrada) ..............      "
-
-msgid "Use multiple devices"
+msgid "Use Multiple Devices"
 msgstr "Usar múltiplos dispositivos"
 
-#, fuzzy
 msgid "Save All Settings"
-msgstr "Salvar todas as configurações"
+msgstr "Salvar Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "AVISO: flags graphme desconhecidas recebidas em pdtk_canvas_dialog"
@@ -295,10 +317,10 @@ msgid "Scale"
 msgstr "Escala"
 
 msgid "X units per pixel:"
-msgstr "Unidades X por pixel:"
+msgstr "X Unidades por pixel:"
 
 msgid "Y units per pixel:"
-msgstr "Unidades Y por pixel:"
+msgstr "Y Unidades por pixel:"
 
 msgid "Appearance on parent patch"
 msgstr "Aparência no patch pai"
@@ -307,14 +329,13 @@ msgid "Graph-On-Parent"
 msgstr "Desenhar-No-Pai"
 
 msgid "Hide object name and arguments"
-msgstr "Esconder nome e argumentos do objeto"
+msgstr "Esconder nome e argumentos"
 
 msgid "Range and size"
-msgstr "Registro de valores e tamanho"
+msgstr "Amplitude e tamanho"
 
-#, fuzzy
 msgid "X range: from"
-msgstr "Registro de X, de"
+msgstr "Amplitude de X, de"
 
 msgid "to"
 msgstr "a"
@@ -322,40 +343,37 @@ msgstr "a"
 msgid "Margin:"
 msgstr "Margem:"
 
-#, fuzzy
 msgid "Y range: from"
-msgstr "Registro de Y, de"
+msgstr "Amplitude de Y, de"
 
 msgid "Data Properties"
 msgstr "Propriedades dos Dados"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Found '%s' in %s"
-msgstr "Não foi possível encontrar '%s' em %s"
+msgstr "Encontrado '%s' em %s"
 
 #, tcl-format
 msgid "Couldn't find '%s' in %s"
 msgstr "Não foi possível encontrar '%s' em %s"
 
-msgid "Search in"
-msgstr "Procurar em"
+#, tcl-format
+msgid "Search in %s for:"
+msgstr "Procurar em %s por:"
 
-msgid "for:"
-msgstr "por:"
-
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Showed last '%s' in %s"
-msgstr "Não foi possível encontrar '%s' em %s"
+msgstr "Mostrado últimp '%s' em %s"
 
 #, tcl-format
 msgid "Showing '%d' out of %d items in %s"
-msgstr ""
+msgstr "Mostrando '%d' de %d ítens em %s"
 
 msgid "Pd window"
 msgstr "Janela do PD"
 
 msgid "Match whole word only"
-msgstr "Casar somente palavra inteira"
+msgstr "Procurar apenas pela palavra inteira"
 
 msgid "Close"
 msgstr "Fechar"
@@ -368,7 +386,7 @@ msgid "Font"
 msgstr "Fonte"
 
 msgid "Font Size"
-msgstr "Tamanho da Fonte"
+msgstr "Tamanho de Fonte"
 
 msgid "Stretch"
 msgstr "Esticar"
@@ -392,25 +410,25 @@ msgid "Limits"
 msgstr "Limites"
 
 msgid "Lower:"
-msgstr "Menor:"
+msgstr "Mínimo:"
 
 msgid "Upper:"
-msgstr "Maior:"
+msgstr "Máximo:"
 
 msgid "Label"
-msgstr "Etiqueta"
+msgstr "Rótulo"
 
-msgid "Left   "
-msgstr "Esquerda   "
+msgid "Left"
+msgstr "Esquerda"
 
 msgid "Right"
 msgstr "Direita"
 
 msgid "Top"
-msgstr "Topo"
+msgstr "Acima"
 
 msgid "Bottom"
-msgstr "Fundo"
+msgstr "Abaixo"
 
 msgid "Messages"
 msgstr "Mensagens"
@@ -422,16 +440,16 @@ msgid "Receive symbol:"
 msgstr "Símbolo de 'receive':"
 
 msgid "Background color"
-msgstr "Cor de plano de fundo"
+msgstr "Cor de fundo"
 
 msgid "Foreground color"
-msgstr "Cor de plano de frente"
+msgstr "Cor de frente"
 
 msgid "Label color"
-msgstr "Cor da etiqueta"
+msgstr "Cor do rótulo"
 
 msgid "Init"
-msgstr "Inicialização"
+msgstr "Com Inicialização"
 
 msgid "No init"
 msgstr "Sem inicialização"
@@ -445,49 +463,43 @@ msgstr "Fixo ao clicar"
 msgid "Bang"
 msgstr "Bang"
 
-#, fuzzy
 msgid "Flash Time (msec)"
-msgstr "Delay (ms):"
+msgstr "Tempo de piscagem (ms)"
 
 # iemgui
-#, fuzzy
 msgid "Intrrpt:"
-msgstr "interromper:"
+msgstr "Interromper:"
 
 # iemgui
-#, fuzzy
 msgid "Hold:"
-msgstr "segurar:"
+msgstr "Segurar:"
 
 msgid "Toggle"
 msgstr "Toggle"
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Valor Ligado (Não Zero)"
 
 # iemgui
-#, fuzzy
 msgid "Value:"
-msgstr "valor:"
+msgstr "Valor:"
 
 msgid "Number2"
 msgstr "Número2"
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Largura (dígitos):"
 
 # iemgui
-#, fuzzy
 msgid "Height:"
-msgstr "altura:"
+msgstr "Altura:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Limite de Saída"
 
 # iemgui
-#, fuzzy
 msgid "Log height:"
-msgstr "altura-do-log:"
+msgstr "Altura-do-log:"
 
 msgid "Vslider"
 msgstr "Slider Vertical"
@@ -499,7 +511,7 @@ msgid "Vradio"
 msgstr "Seleção Vertical"
 
 msgid "Num cells:"
-msgstr ""
+msgstr "Número de Células:"
 
 msgid "Hradio"
 msgstr "Seleção Horizontal"
@@ -511,30 +523,27 @@ msgid "Canvas"
 msgstr "Tela"
 
 # iemgui
-#, fuzzy
 msgid "Visible Rectangle (pix)"
-msgstr "-----retângulo_visível(pix)(pix):------"
+msgstr "Retângulo Visível (pix)"
 
 #, tcl-format
 msgid "%s Properties"
 msgstr "Propriedades de %s"
 
 msgid "Parameters"
-msgstr ""
+msgstr "Parâmetros"
 
-#, fuzzy
 msgid "X offset:"
-msgstr "Deslocamento X"
+msgstr "Deslocamento X:"
 
-#, fuzzy
 msgid "Y offset:"
-msgstr "Deslocamento Y"
+msgstr "Deslocamento Y:"
 
 msgid "Colors"
 msgstr "Cores"
 
 msgid "Background"
-msgstr "Plano de fundo"
+msgstr "Fundo"
 
 msgid "Front"
 msgstr "Frente"
@@ -543,13 +552,13 @@ msgid "Compose color"
 msgstr "Compor cor"
 
 msgid "Test label"
-msgstr "Etiqueta de teste"
+msgstr "Rótulo teste"
 
 msgid "Send a Pd message"
-msgstr "Enviar uma mensagem PD"
+msgstr "Enviar uma mensagem Pd"
 
 msgid "(use arrow keys for history)"
-msgstr "(use as setas do teclado para histórico)"
+msgstr "(use setas para histórico)"
 
 msgid "MIDI Settings"
 msgstr "Configurações de MIDI"
@@ -567,11 +576,11 @@ msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
-msgid "Use standard extensions"
-msgstr "Usar extensões padrões"
+msgid "Use standard paths"
+msgstr "Usar caminhos padrões"
 
 msgid "Verbose"
-msgstr "Informativo"
+msgstr "Verbose"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -580,7 +589,7 @@ msgid "Edit library"
 msgstr "Editar biblioteca"
 
 msgid "Pd libraries to load on startup"
-msgstr "Bibliotecas PD para carregar na inicialização"
+msgstr "Bibliotecas para carregar na inicialização"
 
 msgid "Startup flags:"
 msgstr "Flags de inicialização:"
@@ -601,20 +610,19 @@ msgid "(Tcl) UNHANDLED ERROR: "
 msgstr "(Tcl) ERRO NÃO TRATADO:"
 
 msgid "Show all"
-msgstr ""
+msgstr "Mostrar todos"
 
-#, fuzzy
 msgid "Search"
-msgstr "Procurar em"
+msgstr "Procurar"
 
 msgid "Find externals"
-msgstr ""
+msgstr "Procurar por externals"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr ""
+msgstr "Instale apenas externals de quem você confia."
 
 msgid "About Pd"
-msgstr "Sobre PD"
+msgstr "Sobre Pd"
 
 msgid "Save"
 msgstr "Salvar"
@@ -628,13 +636,11 @@ msgstr "Imprimir..."
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#, fuzzy
 msgid "Zoom In"
-msgstr "Ampliar"
+msgstr "Ampliar Zoom"
 
-#, fuzzy
 msgid "Zoom Out"
-msgstr "Ampliar"
+msgstr "Reduzir Zoom"
 
 msgid "Tidy Up"
 msgstr "Organizar"
@@ -649,7 +655,7 @@ msgid "Redo"
 msgstr "Refazer"
 
 msgid "List of objects..."
-msgstr ""
+msgstr "Lista de objetos..."
 
 msgid "New"
 msgstr "Novo"
@@ -714,7 +720,6 @@ msgstr "Medidor de Carga de CPU"
 msgid "Audio Settings..."
 msgstr "Configurações de Áudio..."
 
-#, fuzzy
 msgid "MIDI Settings..."
 msgstr "Configurações de MIDI..."
 
@@ -737,7 +742,7 @@ msgid "Parent Window"
 msgstr "Janela Mãe"
 
 msgid "HTML Manual..."
-msgstr "Manual HTML..."
+msgstr "Manual em HTML..."
 
 msgid "Browser..."
 msgstr "Navegador..."
@@ -751,36 +756,42 @@ msgstr "Reportar um bug"
 msgid "Clear Menu"
 msgstr "Limpar Menu"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
-msgstr "Caminho..."
+msgstr "Caminho de busca..."
 
 msgid "Startup..."
 msgstr "Inicialização..."
 
-#, fuzzy
 msgid "Audio..."
 msgstr "Configurações de Áudio..."
 
-#, fuzzy
 msgid "MIDI..."
 msgstr "Configurações de MIDI..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Ampliar novas janelas"
 
 #, fuzzy
-msgid "Save all preferences"
-msgstr "Salvar todas as configurações"
+msgid "Save All Preferences"
+msgstr "Salvar preferências"
 
 #, fuzzy
-msgid "Save to ..."
-msgstr "Salvar Como..."
+msgid "Save to..."
+msgstr "Salvar em..."
 
-msgid "Load from ..."
-msgstr ""
+#, fuzzy
+msgid "Load from..."
+msgstr "Carregar de..."
 
-msgid "Forget all..."
-msgstr ""
+#, fuzzy
+msgid "Forget All..."
+msgstr "Deletar preferências..."
 
 msgid "Open Recent"
 msgstr "Abrir Recente"
@@ -798,52 +809,53 @@ msgid "Tcl:"
 msgstr "Tcl:"
 
 msgid "Pd"
-msgstr ""
+msgstr "Pd"
 
 msgid "DSP"
 msgstr "DSP"
 
 msgid "Audio off"
-msgstr ""
+msgstr "Audio desligado"
 
 msgid "Audio I/O error"
-msgstr ""
+msgstr "Erro de entrada/saída de áudio"
 
 msgid "Log:"
-msgstr ""
+msgstr "Log:"
 
 msgid "fatal"
-msgstr ""
+msgstr "fatal"
 
 msgid "error"
-msgstr ""
+msgstr "erro"
 
 msgid "normal"
-msgstr ""
+msgstr "normal"
 
 msgid "debug"
-msgstr ""
+msgstr "debugar"
 
 msgid "all"
-msgstr ""
+msgstr "todos"
 
 msgid "New..."
-msgstr ""
+msgstr "Novo..."
 
-#, fuzzy
 msgid "Edit..."
-msgstr "Editar"
+msgstr "Editar..."
 
-#, fuzzy
 msgid "Delete"
-msgstr "Excluir vetor"
+msgstr "Deletar"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 
+#~ msgid "for:"
+#~ msgstr "por:"
+
 #~ msgid "Discard changes to this window??"
-#~ msgstr "Descartar mudanças feitas nessa janela??"
+#~ msgstr "Descartar mudanças feitas na janela??"
 
 #~ msgid "Max Text Files"
 #~ msgstr "Arquivos de Texto Max"
@@ -882,10 +894,10 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Preferências..."
 
 #~ msgid "Close this window??"
-#~ msgstr "Fechar esta janela??"
+#~ msgstr "Fechar janela??"
 
 #~ msgid "Font Properties"
-#~ msgstr "Propriedades da Fonte"
+#~ msgstr "Propriedades de Fonte"
 
 #~ msgid "really quit?"
 #~ msgstr "deseja realmente sair?"
@@ -906,7 +918,7 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Arquivos de Patch Max"
 
 #~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr "AVISO: Tamanho de fonte '%s' não encontrado, usando o padrão (%s)"
+#~ msgstr "AVISO: Peso de fonte '%s' não encontrado, usando o padrão (%s)"
 
 #~ msgid "Text Editor"
 #~ msgstr "Editor de Texto"
@@ -946,10 +958,10 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
-#~ msgstr "ERRO: 'pd' não apareceu, 'pd-gui' saindo!"
+#~ msgstr "ERRO: 'pd' nunca apareceu, 'pd-gui' fechando!"
 
 #~ msgid "I/O"
-#~ msgstr "E/S"
+#~ msgstr "Entrada/Saída"
 
 #~ msgid "Send Message..."
 #~ msgstr "Enviar Mensagem..."
@@ -959,7 +971,7 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "Pd Files"
-#~ msgstr "Arquivos PD"
+#~ msgstr "Arquivos Pd"
 
 #~ msgid "Filters"
 #~ msgstr "Filtros"

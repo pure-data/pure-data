@@ -151,6 +151,31 @@ msgstr "Itsatsi desegin"
 msgid "Redo typing"
 msgstr ""
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Ezarpen gustiak gorde"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "Fitxategia"
 
@@ -278,7 +303,8 @@ msgstr "Irtendako tresna"
 msgid "(same as input device)..."
 msgstr "(sartze tresna bezala) ..............       "
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Anitz tresna erabili"
 
 msgid "Save All Settings"
@@ -337,12 +363,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-#, fuzzy
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Bilatu"
-
-msgid "for:"
-msgstr ""
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -407,7 +430,7 @@ msgid "Label"
 msgstr "Etiketa"
 
 #, fuzzy
-msgid "Left   "
+msgid "Left"
 msgstr "Ezkerra   "
 
 msgid "Right"
@@ -571,7 +594,7 @@ msgstr "Aterako Portuetan:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -772,6 +795,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Menua Garbitu"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 
@@ -786,21 +814,22 @@ msgstr "Audioaren Ezarpenak"
 msgid "MIDI..."
 msgstr "MIDI Ezarpenak"
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Leihoa"
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Hobespenak"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Gorde Honela..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"

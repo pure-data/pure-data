@@ -142,6 +142,30 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+msgid "erased Pd settings"
+msgstr ""
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr ""
 
@@ -266,7 +290,7 @@ msgstr ""
 msgid "(same as input device)..."
 msgstr ""
 
-msgid "Use multiple devices"
+msgid "Use Multiple Devices"
 msgstr ""
 
 msgid "Save All Settings"
@@ -322,13 +346,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-#, fuzzy
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "חפש בבאפר.."
-
-#, fuzzy
-msgid "for:"
-msgstr "גופן:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -394,7 +414,7 @@ msgid "Label"
 msgstr "פאנל"
 
 #, fuzzy
-msgid "Left   "
+msgid "Left"
 msgstr "שמאל"
 
 msgid "Right"
@@ -559,7 +579,7 @@ msgstr ""
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -760,6 +780,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "תפריט משתמש"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 
@@ -772,21 +797,22 @@ msgstr ""
 msgid "MIDI..."
 msgstr ""
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "חלון ראשי"
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "איקס-צ'אט: הגדרות"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "עריכת אירועי טקסט.."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"
@@ -846,6 +872,10 @@ msgstr ""
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "for:"
+#~ msgstr "גופן:"
 
 #, fuzzy
 #~ msgid "Signal"

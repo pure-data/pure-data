@@ -152,6 +152,31 @@ msgstr "Annulla incolla"
 msgid "Redo typing"
 msgstr "Annulla inserimento"
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Salva tutti i settaggi"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "File"
 
@@ -269,7 +294,8 @@ msgstr "Dispositivo di uscita"
 msgid "(same as input device)..."
 msgstr "(lo stesso del dispositivo di ingresso)..........."
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Usa dispositivi multipli"
 
 msgid "Save All Settings"
@@ -328,11 +354,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Cerca in"
-
-msgid "for:"
-msgstr "per:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -391,7 +415,8 @@ msgstr "Superiore:"
 msgid "Label"
 msgstr "Etichetta"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Sinistra   "
 
 msgid "Right"
@@ -547,7 +572,7 @@ msgstr "Porte Uscita:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -731,6 +756,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Pulisci menu"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 
@@ -745,21 +775,22 @@ msgstr "Settaggi audio..."
 msgid "MIDI..."
 msgstr "Settaggi MIDI..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Finestra parent"
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Preferenze"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Salva con nome..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"
@@ -821,6 +852,9 @@ msgstr "Cancella array"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#~ msgid "for:"
+#~ msgstr "per:"
 
 #~ msgid "Signal"
 #~ msgstr "Segnali"

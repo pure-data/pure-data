@@ -151,6 +151,31 @@ msgstr "Mégsem illeszt be"
 msgid "Redo typing"
 msgstr "Mégsem ír"
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Minden bellítást ment"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "Fájl"
 
@@ -270,7 +295,8 @@ msgstr "Kimeneti eszköz:"
 msgid "(same as input device)..."
 msgstr "(ugyanaz mint a bemeneti eszköz) ..............      "
 
-msgid "Use multiple devices"
+#, fuzzy
+msgid "Use Multiple Devices"
 msgstr "Több eszköz használata"
 
 msgid "Save All Settings"
@@ -329,11 +355,9 @@ msgstr ""
 msgid "Couldn't find '%s' in %s"
 msgstr ""
 
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "Keresés itt:"
-
-msgid "for:"
-msgstr "erre:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -392,7 +416,8 @@ msgstr "Felső:"
 msgid "Label"
 msgstr "Címke"
 
-msgid "Left   "
+#, fuzzy
+msgid "Left"
 msgstr "Bal"
 
 msgid "Right"
@@ -548,7 +573,7 @@ msgstr "Kimenő portok:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -735,6 +760,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "Menüt ürít"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 
@@ -749,21 +779,22 @@ msgstr "Hang beállítások..."
 msgid "MIDI..."
 msgstr "MIDI beállítások..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Szülő ablak"
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "Beállítások"
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "Ment új néven..."
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"
@@ -825,6 +856,9 @@ msgstr "Array-t töröl"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#~ msgid "for:"
+#~ msgstr "erre:"
 
 #~ msgid "Filters"
 #~ msgstr "Szűrők"
