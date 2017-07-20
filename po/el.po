@@ -146,6 +146,31 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Αποθήκευση όλων των ρυθμίσεων"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "Αρχείο"
 

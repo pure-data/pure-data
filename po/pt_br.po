@@ -159,6 +159,31 @@ msgstr "Refazer colar"
 msgid "Redo typing"
 msgstr "Refazer digitação"
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+#, fuzzy
+msgid "erased Pd settings"
+msgstr "Salvar Configurações"
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "Arquivo"
 
@@ -547,7 +572,8 @@ msgid "Out Ports:"
 msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, fonts, and other files"
-msgstr "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
+msgstr ""
+"Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -917,7 +943,8 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Dispositivo de saída 2:"
 
 #~ msgid "WARNING: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr ""
+#~ "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
 #~ msgstr "ERRO: 'pd' nunca apareceu, 'pd-gui' fechando!"
@@ -929,7 +956,8 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Enviar Mensagem..."
 
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr ""
+#~ "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "Pd Files"
 #~ msgstr "Arquivos Pd"
