@@ -760,7 +760,7 @@ msgstr "Charger à partir de..."
 
 #, fuzzy
 msgid "Forget All..."
-msgstr "Oublie tout ..."
+msgstr "Tout oublier..."
 
 msgid "Open Recent"
 msgstr "Ouvrir un élément récent"
