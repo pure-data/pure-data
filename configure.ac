@@ -492,6 +492,7 @@ AS_IF([test ! "x${WISH}" = "x" -a x"$MACOSX" = x"yes"],[
 AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
+                font/Makefile
                 mac/Makefile
                 man/Makefile
                 portaudio/Makefile
