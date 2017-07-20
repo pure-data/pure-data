@@ -904,6 +904,9 @@ msgstr "Ιδιότητες"
 msgid "Audio on"
 msgstr "Ρυθμίσεις Ήχου"
 
+msgid "Audio off"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -914,9 +917,6 @@ msgid "Pd"
 msgstr ""
 
 msgid "DSP"
-msgstr ""
-
-msgid "Audio off"
 msgstr ""
 
 msgid "Audio I/O error"

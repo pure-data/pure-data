@@ -894,6 +894,9 @@ msgstr "Einstellungen"
 msgid "Audio on"
 msgstr "Audio aus"
 
+msgid "Audio off"
+msgstr "Audio aus"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -905,9 +908,6 @@ msgstr ""
 
 msgid "DSP"
 msgstr ""
-
-msgid "Audio off"
-msgstr "Audio aus"
 
 msgid "Audio I/O error"
 msgstr "Audio E/A-Fehler"

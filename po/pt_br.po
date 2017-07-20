@@ -178,7 +178,8 @@ msgid "no Pd settings to erase"
 msgstr "Nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
-msgstr "pulando carregar preferências... Pd parece ter travado na inicialização."
+msgstr ""
+"pulando carregar preferências... Pd parece ter travado na inicialização."
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "re-salvar preferências para reinstancia-las"
@@ -570,7 +571,8 @@ msgid "Out Ports:"
 msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, fonts, and other files"
-msgstr "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
+msgstr ""
+"Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -635,7 +637,9 @@ msgid "Search"
 msgstr "Procurar"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr "Para receber uma lista com todos os externals disponíveis, tente uma busca vazia."
+msgstr ""
+"Para receber uma lista com todos os externals disponíveis, tente uma busca "
+"vazia."
 
 msgid "Find externals"
 msgstr "Procurar por externals"
@@ -654,7 +658,8 @@ msgid "Unable to perform search. Are you online?"
 msgstr "Incapaz de realizar busca. Você está online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr "Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
+msgstr ""
+"Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
@@ -895,6 +900,9 @@ msgstr "Propriedades"
 msgid "Audio on"
 msgstr "Audio ligado"
 
+msgid "Audio off"
+msgstr "Áudio desligado"
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr "(Tcl) FALTANDO FECHA COLCHETES ']': "
 
@@ -906,9 +914,6 @@ msgstr "Pd"
 
 msgid "DSP"
 msgstr "Áudio"
-
-msgid "Audio off"
-msgstr "Áudio desligado"
 
 msgid "Audio I/O error"
 msgstr "Erro de entrada/saída de áudio"
@@ -1047,7 +1052,8 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Dispositivo de saída 2:"
 
 #~ msgid "WARNING: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr ""
+#~ "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
 #~ msgstr "ERRO: 'pd' nunca apareceu, 'pd-gui' fechando!"
@@ -1059,7 +1065,8 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Enviar Mensagem..."
 
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr ""
+#~ "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "Pd Files"
 #~ msgstr "Arquivos Pd"

@@ -870,6 +870,9 @@ msgstr "Propriétés"
 msgid "Audio on"
 msgstr "Audio OFF"
 
+msgid "Audio off"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -880,9 +883,6 @@ msgid "Pd"
 msgstr ""
 
 msgid "DSP"
-msgstr ""
-
-msgid "Audio off"
 msgstr ""
 
 #, fuzzy

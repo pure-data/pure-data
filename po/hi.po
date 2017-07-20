@@ -937,6 +937,9 @@ msgstr ""
 msgid "Audio on"
 msgstr ""
 
+msgid "Audio off"
+msgstr ""
+
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
 msgstr ""
 
@@ -949,9 +952,6 @@ msgstr ""
 #, fuzzy
 msgid "DSP"
 msgstr "बंद"
-
-msgid "Audio off"
-msgstr ""
 
 msgid "Audio I/O error"
 msgstr ""
