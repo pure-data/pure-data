@@ -27,7 +27,7 @@ msgid "--------flash-time(ms)(ms):---------"
 msgstr "-------durée_du_flash(ms)(ms):------"
 
 msgid "-----------output-range:-----------"
-msgstr "---------échele_de_sortie:---------"
+msgstr "---------échelle_de_sortie:--------"
 
 msgid "------selectable_dimensions(pix):------"
 msgstr "-------dimensions_a_choisir(pix):------"
@@ -36,10 +36,10 @@ msgid "------visible_rectangle(pix)(pix):------"
 msgstr "------rectangle_visible(pix)(pix):------"
 
 msgid "bottom:"
-msgstr "Bas:"
+msgstr "bas:"
 
 msgid "height:"
-msgstr "Hauteur de l'objet (px):"
+msgstr "hauteur:"
 
 msgid "hold:"
 msgstr ""
@@ -48,7 +48,7 @@ msgid "intrrpt:"
 msgstr ""
 
 msgid "left:"
-msgstr "gauche"
+msgstr "gauche:"
 
 msgid "lin"
 msgstr "lin"
@@ -60,10 +60,10 @@ msgid "log-height:"
 msgstr "Hauteur de log:"
 
 msgid "max:"
-msgstr "max"
+msgstr "max:"
 
 msgid "min:"
-msgstr "min"
+msgstr "min:"
 
 msgid "right:"
 msgstr "droite:"
@@ -128,7 +128,7 @@ msgid "Redo duplicate"
 msgstr "Refaire la duplication"
 
 msgid "Redo motion"
-msgstr "Refaire le deplacement"
+msgstr "Refaire le déplacement"
 
 msgid "Redo paste"
 msgstr "Refaire la copie"
@@ -308,7 +308,7 @@ msgstr "'%s' non trouvé dans %s"
 
 #, fuzzy, tcl-format
 msgid "Search in %s for:"
-msgstr "Rechercher dans"
+msgstr "Rechercher en %s pour:"
 
 #, tcl-format
 msgid "Showed last '%s' in %s"
@@ -414,7 +414,7 @@ msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr "Temps du flash (ms):"
+msgstr "Durée du flash (ms)"
 
 msgid "Intrrpt:"
 msgstr ""
@@ -435,7 +435,7 @@ msgid "Number2"
 msgstr "Nombre2"
 
 msgid "Width (digits):"
-msgstr "Largeur (digits)"
+msgstr "Largeur (digits):"
 
 msgid "Height:"
 msgstr "Hauteur de l'objet (px):"
@@ -456,7 +456,7 @@ msgid "Vradio"
 msgstr "Sélecteur vertical"
 
 msgid "Num cells:"
-msgstr "Nombre de cases"
+msgstr "Nombre de cases:"
 
 msgid "Hradio"
 msgstr "Sélecteur horizontal"
@@ -519,7 +519,6 @@ msgstr "Ports de sortie:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Chemins pour la recherche d'objets, aides, fontes et autres"
 
-#, fuzzy
 msgid "Use standard paths"
 msgstr "Utiliser les extensions standard"
 
@@ -545,7 +544,7 @@ msgid "Help Browser"
 msgstr "Navigateur d'aide"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr "(Tcl) CARACTERE MANQUANT '}': "
+msgstr "(Tcl) CARACTÈRE MANQUANT '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
 msgstr "(Tcl) COMMANDE INVALIDE: "
@@ -580,7 +579,6 @@ msgstr "Imprimer..."
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#, fuzzy
 msgid "Zoom In"
 msgstr "Zoomer"
 
@@ -663,10 +661,10 @@ msgid "Load Meter"
 msgstr "CPU-mètre"
 
 msgid "Audio Settings..."
-msgstr "Réglage audio..."
+msgstr "Réglages audio..."
 
 msgid "MIDI Settings..."
-msgstr "Réglage MIDI..."
+msgstr "Réglages MIDI..."
 
 msgid "Minimize"
 msgstr "Minimiser"
@@ -707,30 +705,26 @@ msgstr "Chemin..."
 msgid "Startup..."
 msgstr "Option de démarrage..."
 
-#, fuzzy
 msgid "Audio..."
-msgstr "Réglage audio..."
+msgstr "Réglages audio..."
 
-#, fuzzy
 msgid "MIDI..."
-msgstr "Réglage MIDI..."
+msgstr "Réglages MIDI..."
 
 msgid "Zoom new windows"
 msgstr "Zoomer les nouvelles fenêtres"
 
-#, fuzzy
 msgid "Save all preferences"
-msgstr "Préférences"
+msgstr "Sauver toutes les préférences"
 
-#, fuzzy
 msgid "Save to ..."
-msgstr "Sauvegarder Sous..."
+msgstr "Sauvegarder sous..."
 
 msgid "Load from ..."
-msgstr ""
+msgstr "Charger à partir de ..."
 
 msgid "Forget all..."
-msgstr ""
+msgstr "Oublie tout ..."
 
 msgid "Open Recent"
 msgstr "Ouvrir un élément récent"

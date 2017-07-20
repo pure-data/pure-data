@@ -438,7 +438,7 @@ msgid "Bang"
 msgstr "Bang"
 
 msgid "Flash Time (msec)"
-msgstr "Tempo de piscagem (ms):"
+msgstr "Tempo de piscagem (ms)"
 
 # iemgui
 msgid "Intrrpt:"
@@ -462,7 +462,7 @@ msgid "Number2"
 msgstr "Número2"
 
 msgid "Width (digits):"
-msgstr "Largura (dígitos)"
+msgstr "Largura (dígitos):"
 
 # iemgui
 msgid "Height:"
@@ -485,7 +485,7 @@ msgid "Vradio"
 msgstr "Seleção Vertical"
 
 msgid "Num cells:"
-msgstr "Número de Células"
+msgstr "Número de Células:"
 
 msgid "Hradio"
 msgstr "Seleção Horizontal"
@@ -784,7 +784,7 @@ msgid "Audio I/O error"
 msgstr "Erro de entrada/saída de áudio"
 
 msgid "Log:"
-msgstr "Log"
+msgstr "Log:"
 
 msgid "fatal"
 msgstr "fatal"
