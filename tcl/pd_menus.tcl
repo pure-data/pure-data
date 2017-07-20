@@ -537,9 +537,9 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
     $mymenu add  separator
     $mymenu add command -label [_ "Save all preferences"] \
         -command {pdsend "pd save-preferences"}
-    $mymenu add command -label [_ "Save to ..."] \
+    $mymenu add command -label [_ "Save to..."] \
         -command {::pd_menus::savepreferences}
-    $mymenu add command -label [_ "Load from ..."] \
+    $mymenu add command -label [_ "Load from..."] \
         -command {::pd_menus::loadpreferences}
     $mymenu add command -label [_ "Forget all..."] \
         -command {::pd_menus::forgetpreferences}
