@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.48\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2017-07-19 17:58+0200\n"
+"PO-Revision-Date: 2017-07-20 17:50+0200\n"
 "Last-Translator: IOhannes m zmölnig <zmoelnig@iem.at>\n"
 "Language-Team: Deutsch <LL@li.org>\n"
 "Language: de\n"
@@ -160,15 +160,16 @@ msgstr ""
 msgid "failed to erase Pd settings"
 msgstr ""
 
-#, fuzzy
 msgid "erased Pd settings"
-msgstr "Einstellungen speichern"
+msgstr "gelöschte Einstellungen"
 
 msgid "no Pd settings to erase"
 msgstr ""
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
+"überspringe das Laden der Einstellungen...Pd ist scheinbar beim letzten "
+"Start abgestürzt."
 
 msgid "(re-save preferences to reinstate them)"
 msgstr ""
@@ -340,24 +341,24 @@ msgid "Data Properties"
 msgstr "Arbeitsflächen-Eigenschaften"
 
 #, tcl-format
-msgid "Found '%s' in %s"
-msgstr "'%s' in %s gefunden"
+msgid "Found '%1$s' in %2$s"
+msgstr "'%1$s' in %2$s gefunden"
 
 #, tcl-format
-msgid "Couldn't find '%s' in %s"
-msgstr "Konnte '%s' nicht in %s finden"
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr "Konnte '%1$s' nicht in %2$s finden"
 
 #, tcl-format
 msgid "Search in %s for:"
 msgstr "Suche in '%s' nach:"
 
 #, tcl-format
-msgid "Showed last '%s' in %s"
-msgstr "Zeige letztes Vorkommen von '%s' in %s"
+msgid "Showed last '%1$s' in %2$s"
+msgstr "Zeige letztes Vorkommen von '%1$s' in %2$s"
 
 #, tcl-format
-msgid "Showing '%d' out of %d items in %s"
-msgstr "Zeige %d/%d Ergebnissen für '%s'"
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr "Zeige %1$d/%2$d Ergebnissen für '%3$s'"
 
 msgid "Pd window"
 msgstr "Pd Fenster"
@@ -408,7 +409,6 @@ msgstr "Oberer:"
 msgid "Label"
 msgstr "Aufschrift"
 
-#, fuzzy
 msgid "Left"
 msgstr "Links"
 
@@ -596,17 +596,118 @@ msgstr ""
 msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
+#, tcl-format
+msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
+msgstr ""
+"[deken]: die bereits installierte Version [%1$s] ist größer als %2$s..."
+"überspringe!"
+
+#, tcl-format
+msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
+msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s"
+
+#, tcl-format
+msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
+msgstr ""
+"[deken] die installierte Version ist bereits am neuesten Stand [%1$s == %2$s]"
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr "[deken] Pd Paketmanager vom Pfad %s geladen."
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr "[deken] Plattform gefunden: %s"
+
+msgid "Install libraries to directory:"
+msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
+
 msgid "Show all"
 msgstr "Alle anzeigen"
 
 msgid "Search"
 msgstr "Suche"
 
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+"Um eine Liste aller verfügbaren Externals zu erhalten, starten Sie eine "
+"leere Suche."
+
 msgid "Find externals"
 msgstr "zusätzliche Objekte im Internet finden"
 
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installieren Sie nur Bibliotheken von Menschen, denen Sie vertrauen."
+
+msgid "Searching for externals..."
+msgstr "zusätzliche Objekte im Internet finden..."
+
+#, tcl-format
+msgid "[deken]: online? %s"
+msgstr ""
+
+msgid "Unable to perform search. Are you online?"
+msgstr "Die Suche schlug fehl. Sind Sie online?"
+
+msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
+msgstr ""
+"Konnte keine passenden Pakete finden.\n"
+"Tipp: Suchen Sie nach dem vollen Namen, z.B. 'freeverb'"
+
+msgid "Please select a (writable) installation directory!"
+msgstr "Bitte wählen Sie ein (schreibbares) Verzeichnis aus!"
+
+#, tcl-format
+msgid "Install to %s ?"
+msgstr "Nach %s installieren?"
+
+#, tcl-format
+msgid ""
+"Commencing downloading of:\n"
+"%1$s\n"
+"Into %2$s..."
+msgstr "Lade %1$s nach %2$s herunter..."
+
+msgid "aborting."
+msgstr "Abbruch."
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "Erfolgreich %1$s nach %2$s entpackt."
+
+msgid "Unable to extract package automatically."
+msgstr "Konnte Paket nicht automatisch entpacken."
+
+msgid "Please perform the following steps manually:"
+msgstr "Bitte führen Sie die folgenden Schritte manuell aus:"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. Entpacken von %s."
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. Kopieren Sie den Inhalt nach %s."
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr "Konnte keine Inhalte von %1$s herunterladen [%2$s]."
+
+#, tcl-format
+msgid "Unable to remove stray file %s"
+msgstr "Konnte Datei %s nicht entfernen."
+
+#, tcl-format
+msgid "Unable to rename downloaded file to %s"
+msgstr "Konnte heruntergeladene Datei %s nicht umbenennen."
+
+#, tcl-format
+msgid "searching for '%s'"
+msgstr "Such nach '%s'"
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr "von %1$s am %2$s hochgeladen"
 
 msgid "About Pd"
 msgstr "Über Pd"
@@ -747,6 +848,8 @@ msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
+"Alle Einstellungen löschen?\n"
+"(Benötigt Neustart von Pd)"
 
 msgid "Path..."
 msgstr "Suchpfade..."
@@ -768,11 +871,9 @@ msgstr "Neue Fenster vergrößern"
 msgid "Save All Preferences"
 msgstr "Voreinstellungen speichern"
 
-#, fuzzy
 msgid "Save to..."
 msgstr "Speichern als..."
 
-#, fuzzy
 msgid "Load from..."
 msgstr "Laden von..."
 
@@ -935,6 +1036,3 @@ msgstr "Überspringe '%s': kein Pd-File"
 
 #~ msgid "Max Patch Files (.pat)"
 #~ msgstr "Max Patch Dateien (.pat)"
-
-#~ msgid "Routing"
-#~ msgstr "Signalverlauf"
