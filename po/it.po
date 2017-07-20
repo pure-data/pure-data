@@ -775,8 +775,9 @@ msgstr "Settaggi audio..."
 msgid "MIDI..."
 msgstr "Settaggi MIDI..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Finestra parent"
 
 #, fuzzy
 msgid "Save All Preferences"

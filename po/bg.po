@@ -815,8 +815,9 @@ msgstr ""
 msgid "MIDI..."
 msgstr ""
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Прозореца за изпращане на файлове"
 
 #, fuzzy
 msgid "Save All Preferences"

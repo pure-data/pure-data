@@ -742,7 +742,8 @@ msgstr "Réglages audio..."
 msgid "MIDI..."
 msgstr "Réglages MIDI..."
 
-msgid "Zoom new windows"
+#, fuzzy
+msgid "Zoom New Windows"
 msgstr "Zoomer les nouvelles fenêtres"
 
 #, fuzzy

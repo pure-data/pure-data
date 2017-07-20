@@ -814,8 +814,9 @@ msgstr ""
 msgid "MIDI..."
 msgstr ""
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Cửa sô Gởi"
 
 #, fuzzy
 msgid "Save All Preferences"

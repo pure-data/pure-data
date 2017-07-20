@@ -740,7 +740,7 @@ msgstr ""
 msgid "MIDI..."
 msgstr ""
 
-msgid "Zoom new windows"
+msgid "Zoom New Windows"
 msgstr ""
 
 msgid "Save All Preferences"

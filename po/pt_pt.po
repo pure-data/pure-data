@@ -773,8 +773,9 @@ msgstr "Configuração audio..."
 msgid "MIDI..."
 msgstr "Configuração MIDI..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Janela superior"
 
 #, fuzzy
 msgid "Save All Preferences"

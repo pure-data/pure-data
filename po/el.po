@@ -778,8 +778,9 @@ msgstr "Ρυθμίσεις Ήχου..."
 msgid "MIDI..."
 msgstr "Ρυθμίσεις MIDI..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Γονεϊκό Παράθυρο"
 
 #, fuzzy
 msgid "Save All Preferences"

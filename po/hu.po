@@ -779,8 +779,9 @@ msgstr "Hang beállítások..."
 msgid "MIDI..."
 msgstr "MIDI beállítások..."
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Szülő ablak"
 
 #, fuzzy
 msgid "Save All Preferences"

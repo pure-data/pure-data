@@ -814,8 +814,9 @@ msgstr "Audioaren Ezarpenak"
 msgid "MIDI..."
 msgstr "MIDI Ezarpenak"
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "Leihoa"
 
 #, fuzzy
 msgid "Save All Preferences"
