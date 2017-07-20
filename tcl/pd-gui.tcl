@@ -331,7 +331,11 @@ proc init_for_platform {} {
             # from the commandline incorporates the special mac event handling
             package require apple_events
             set ::modifier "Mod1"
-            if {$::tcl_version >= 8.5} {
+            if {$::tcl_version < 8.5} {
+                # old default font for Tk 8.4 on macOS
+                # since font detection requires 8.5+
+                set ::font_family "Monaco"
+            } else {
                 # Tk Cocoa wants lower case keys when binding with shift
                 set ::bind_shiftcaps 0
             }
@@ -459,7 +463,7 @@ proc get_font_for_size {fsize} {
 # always do a good job of choosing in respect to Pd's needs.  So this chooses
 # from a list of fonts that are known to work well with Pd.
 proc find_default_font {} {
-    set testfonts {"DejaVu Sans Mono" "Bitstream Vera Sans Mono" \
+    set testfonts {"DejaVu Sans Mono" "Monaco" "Bitstream Vera Sans Mono" \
         "Inconsolata" "Courier 10 Pitch" "Andale Mono" "Droid Sans Mono"}
     foreach family $testfonts {
         if {[lsearch -exact -nocase [font families] $family] > -1} {
