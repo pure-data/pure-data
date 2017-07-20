@@ -317,7 +317,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     # restart with longform set. 
     if {$longform == 0 && $multi > 1} {
         frame $mytoplevel.longbutton
-        pack $mytoplevel.longbutton -side top
+        pack $mytoplevel.longbutton -side top -fill x
         button $mytoplevel.longbutton.b -text [_ "Use Multiple Devices"] \
             -command  {pdsend "pd audio-properties 1"}
         pack $mytoplevel.longbutton.b -expand 1 -ipadx 10 -pady 5
