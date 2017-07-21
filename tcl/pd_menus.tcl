@@ -370,10 +370,9 @@ proc ::pd_menus::update_recentfiles_menu {{write true}} {
 }
 
 proc ::pd_menus::clear_recentfiles_menu {} {
+    # empty recentfiles in preferences (write empty array)
     set ::recentfiles_list {}
     ::pd_menus::update_recentfiles_menu
-    # empty recentfiles in preferences (write empty array)
-    ::pd_guiprefs::write_recentfiles
 }
 
 proc ::pd_menus::update_openrecent_menu_aqua {mymenu {write}} {
@@ -506,12 +505,17 @@ proc ::pd_menus::update_window_menu {} {
 # ------------------------------------------------------------------------------
 # submenu for Preferences, now used on all platforms
 proc ::pd_menus::savepreferences {} {
-    set filename [tk_getSaveFile -initialdir $::fileopendir]
+    set filename [tk_getSaveFile \
+                  -initialdir $::fileopendir \
+                  -defaultextension .pdsettings \
+                  -initialfile Untitled.pdsettings]
     if {$filename ne ""} {pdsend "pd save-preferences $filename"}
 }
 
 proc ::pd_menus::loadpreferences {} {
-    set filename [tk_getOpenFile -initialdir $::fileopendir]
+    set filename [tk_getOpenFile \
+                  -initialdir $::fileopendir \
+                  -defaultextension .pdsettings]
     if {$filename ne ""} {pdsend "pd load-preferences $filename"}
 }
 
