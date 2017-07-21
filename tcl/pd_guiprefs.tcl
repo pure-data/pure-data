@@ -120,17 +120,18 @@ proc ::pd_guiprefs::init {} {
                 if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
                     ::pdwindow::error "write_config $akey: $errorMsg\n"
                 }
-                # invoke /bin/sh -c to pass command as a string, this ensures
+                # invoke /bin/sh -c to pass command as a string. This ensures
                 # the shell interprets the single quotes around the value so the
-                # quotes don't end up being saved as part of the string itself
+                # quotes don't end up being saved as part of the string itself.
+                # Also use the -r for a restricted shell to be safe.
                 if {$arr} {
                     foreach filepath $data {
                         set escaped [escape_for_plist $filepath]
-                        exec /bin/sh -c "defaults write $adomain $akey -array-add $escaped"
+                        exec /bin/sh -rc "defaults write $adomain $akey -array-add $escaped"
                     }
                 } else {
                     set escaped [escape_for_plist $data]
-                    exec /bin/sh -c "defaults write $adomain $akey $escaped"
+                    exec /bin/sh -rc "defaults write $adomain $akey $escaped"
                 }
                 return
             }
