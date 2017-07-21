@@ -187,11 +187,20 @@ proc ::pdwindow::pdtk_pd_dio {red} {
     } else {
         .pdwindow.header.ioframe.dio configure -foreground lightgray
     }
-
 }
 
 proc ::pdwindow::pdtk_pd_audio {state} {
-    .pdwindow.header.ioframe.iostate configure -text [concat Audio $state]
+    # set strings so these can be translated
+    # state values are "on" or "off"
+    if {$state eq "on"} {
+        set labeltext [_ "Audio on"]
+    } elseif {$state eq "off"} {
+        set labeltext [_ "Audio off"]
+    } else {
+        # fallback in case the $state values change in the future
+        set labeltext [concat Audio $state]
+    }
+    .pdwindow.header.ioframe.iostate configure -text $labeltext
 }
 
 #--bindings specific to the Pd window------------------------------------------#

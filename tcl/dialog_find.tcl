@@ -70,12 +70,12 @@ proc ::dialog_find::ok {mytoplevel} {
             .pdwindow.text see [lindex $matches 0]
             lappend find_history $findstring
             .find.searchin configure -text \
-                [format [_ "Found '%s' in %s"] \
+                [format [_ "Found '%1\$s' in %2\$s"] \
                 [get_search_string] [lookup_windowname $find_in_window] ]
         } else {
             if {$::windowingsystem eq "aqua"} {bell}
             .find.searchin configure -text \
-                [format [_ "Couldn't find '%s' in %s"] \
+                [format [_ "Couldn't find '%1\$s' in %2\$s"] \
                 [get_search_string] [lookup_windowname $find_in_window] ]
         }
         # done searching
@@ -160,16 +160,16 @@ proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
         if {$total eq 0} {
             if {$::windowingsystem eq "aqua"} {bell}
             set infostring \
-                [format [_ "Couldn't find '%s' in %s"] \
+                [format [_ "Couldn't find '%1\$s' in %2\$s"] \
                 [get_search_string] [lookup_windowname $mytoplevel] ]
         } else {
             set infostring \
-                [format [_ "Showed last '%s' in %s"] \
+                [format [_ "Showed last '%1\$s' in %2\$s"] \
                 [get_search_string] [lookup_windowname $mytoplevel] ]
         }
     } else {
         set infostring \
-        [format [_ "Showing '%d' out of %d items in %s"] \
+        [format [_ "Showing '%1\$d' out of %2\$d items in %3\$s"] \
             $which $total [get_search_string] [lookup_windowname $mytoplevel] ]
     }
     ::pdwindow::debug "$infostring\n"
