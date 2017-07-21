@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.48\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2017-07-20 17:50+0200\n"
+"PO-Revision-Date: 2017-07-21 13:43+0200\n"
 "Last-Translator: IOhannes m zmölnig <zmoelnig@iem.at>\n"
 "Language-Team: Deutsch <LL@li.org>\n"
 "Language: de\n"
@@ -149,22 +149,22 @@ msgid "Redo typing"
 msgstr "Wiederholen: Eingabe"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "Keine Pd Einstellungen zum Zurücksetzen"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr "Datei \".pdsettings\" entfernt"
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "die Datei \".pdsettings\" konnte nicht gelöscht werden"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "Löschen der Pd Einstellungen schlug fehl"
 
 msgid "erased Pd settings"
 msgstr "gelöschte Einstellungen"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "keine Pd Einstellungen zum Löschen"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
@@ -172,7 +172,7 @@ msgstr ""
 "Start abgestürzt."
 
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "(speichern Sie die Einstellungen um sie wiederherzustellen)"
 
 msgid "File"
 msgstr "Datei"
@@ -288,7 +288,6 @@ msgstr "Ausgabegerät"
 msgid "(same as input device)..."
 msgstr "(wie Eingabegerät) .............."
 
-#, fuzzy
 msgid "Use Multiple Devices"
 msgstr "Mehrere Geräte verwenden"
 
@@ -752,7 +751,7 @@ msgid "Open"
 msgstr "Öffnen"
 
 msgid "Message..."
-msgstr "Pd-Nachricht verschicken..."
+msgstr "Pd-Nachricht senden..."
 
 msgid "Cut"
 msgstr "Ausschneiden"
@@ -863,13 +862,11 @@ msgstr "Audioeinstellungen..."
 msgid "MIDI..."
 msgstr "MIDI Einstellungen..."
 
-#, fuzzy
 msgid "Zoom New Windows"
 msgstr "Neue Fenster vergrößern"
 
-#, fuzzy
 msgid "Save All Preferences"
-msgstr "Voreinstellungen speichern"
+msgstr "Alle Einstellungen speichern"
 
 msgid "Save to..."
 msgstr "Speichern als..."
@@ -890,9 +887,8 @@ msgstr "Beenden"
 msgid "Properties"
 msgstr "Einstellungen"
 
-#, fuzzy
 msgid "Audio on"
-msgstr "Audio aus"
+msgstr "Audio an"
 
 msgid "Audio off"
 msgstr "Audio aus"
