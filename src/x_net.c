@@ -335,7 +335,6 @@ static int netsend_dosend(t_netsend *x, int sockfd,
             bp += res;
         }
     }
-    done:
     if (!x->x_bin)
     {
         t_freebytes(buf, length);
