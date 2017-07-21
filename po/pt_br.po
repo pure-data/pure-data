@@ -45,7 +45,7 @@ msgstr "-----retângulo_visível(pix)(pix):-------"
 
 # iemgui
 msgid "bottom:"
-msgstr "fundo:"
+msgstr "abaixo:"
 
 # iemgui
 msgid "height:"
@@ -65,11 +65,11 @@ msgstr "esquerda:"
 
 # iemgui
 msgid "lin"
-msgstr "lin"
+msgstr "linear"
 
 # iemgui
 msgid "log"
-msgstr "log"
+msgstr "logarítmico"
 
 # iemgui
 msgid "log-height:"
@@ -306,7 +306,7 @@ msgid "Save All Settings"
 msgstr "Salvar Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "AVISO: flags graphme desconhecidas recebidas em pdtk_canvas_dialog"
+msgstr "AVISO: 'flags graphme' desconhecidas recebidas em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -315,16 +315,16 @@ msgid "Scale"
 msgstr "Escala"
 
 msgid "X units per pixel:"
-msgstr "X Unidades por pixel:"
+msgstr "X unidades por pixel:"
 
 msgid "Y units per pixel:"
-msgstr "Y Unidades por pixel:"
+msgstr "Y unidades por pixel:"
 
 msgid "Appearance on parent patch"
 msgstr "Aparência no patch pai"
 
 msgid "Graph-On-Parent"
-msgstr "Desenhar-No-Pai"
+msgstr "Mostrar Gráfico no Patch Pai"
 
 msgid "Hide object name and arguments"
 msgstr "Esconder nome e argumentos"
@@ -333,7 +333,7 @@ msgid "Range and size"
 msgstr "Amplitude e tamanho"
 
 msgid "X range: from"
-msgstr "Amplitude de X, de"
+msgstr "Amplitude de X: de"
 
 msgid "to"
 msgstr "a"
@@ -342,7 +342,7 @@ msgid "Margin:"
 msgstr "Margem:"
 
 msgid "Y range: from"
-msgstr "Amplitude de Y, de"
+msgstr "Amplitude de Y: de"
 
 msgid "Data Properties"
 msgstr "Propriedades dos Dados"
@@ -384,7 +384,7 @@ msgid "Font"
 msgstr "Fonte"
 
 msgid "Font Size"
-msgstr "Tamanho de Fonte"
+msgstr "Tamanho da Fonte"
 
 msgid "Stretch"
 msgstr "Esticar"
@@ -399,7 +399,7 @@ msgid "Y only"
 msgstr "Somente Y"
 
 msgid "Atom Box Properties"
-msgstr "Propriedades de Caixa de Átomos"
+msgstr "Propriedades da Caixa de Átomos"
 
 msgid "Width:"
 msgstr "Largura:"
@@ -473,7 +473,7 @@ msgid "Hold:"
 msgstr "Segurar:"
 
 msgid "Toggle"
-msgstr "Toggle"
+msgstr "Interruptor"
 
 msgid "Non Zero Value"
 msgstr "Valor Ligado (Não Zero)"
@@ -500,19 +500,19 @@ msgid "Log height:"
 msgstr "Altura-do-log:"
 
 msgid "Vslider"
-msgstr "Slider Vertical"
+msgstr "Controle Deslizante Vertical"
 
 msgid "Hslider"
-msgstr "Slider Horizontal"
+msgstr "Controle Deslizante Horizontal"
 
 msgid "Vradio"
-msgstr "Seleção Vertical"
+msgstr "Botão Seletor Vertical"
 
 msgid "Num cells:"
 msgstr "Número de Células:"
 
 msgid "Hradio"
-msgstr "Seleção Horizontal"
+msgstr "Botão Seletor Horizontal"
 
 msgid "VU Meter"
 msgstr "Medidor de VU"
@@ -526,16 +526,16 @@ msgstr "Retângulo Visível (pix)"
 
 #, tcl-format
 msgid "%s Properties"
-msgstr "Propriedades de %s"
+msgstr "Propriedades: %s"
 
 msgid "Parameters"
 msgstr "Parâmetros"
 
 msgid "X offset:"
-msgstr "Deslocamento X:"
+msgstr "Deslocamento (X):"
 
 msgid "Y offset:"
-msgstr "Deslocamento Y:"
+msgstr "Deslocamento (Y):"
 
 msgid "Colors"
 msgstr "Cores"
@@ -553,7 +553,7 @@ msgid "Test label"
 msgstr "Rótulo teste"
 
 msgid "Send a Pd message"
-msgstr "Enviar uma mensagem Pd"
+msgstr "Enviar mensagens"
 
 msgid "(use arrow keys for history)"
 msgstr "(use setas para histórico)"
@@ -571,8 +571,7 @@ msgid "Out Ports:"
 msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, fonts, and other files"
-msgstr ""
-"Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
+msgstr "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -596,7 +595,7 @@ msgid "Defeat real-time scheduling"
 msgstr "Anular agendamento em tempo real"
 
 msgid "Help Browser"
-msgstr "Navegador da Ajuda"
+msgstr "Navegador de Ajuda"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
 msgstr "(Tcl) FALTANDO FECHA CHAVES '}': "
@@ -637,15 +636,13 @@ msgid "Search"
 msgstr "Procurar"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr ""
-"Para receber uma lista com todos os externals disponíveis, tente uma busca "
-"vazia."
+msgstr "Para receber uma lista com todos os externals disponíveis, tente uma busca vazia."
 
 msgid "Find externals"
 msgstr "Procurar por externals"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr "Instale apenas externals de quem você confia."
+msgstr "Instale apenas externals enviados por quem você confia."
 
 msgid "Searching for externals..."
 msgstr "Procurando por externals"
@@ -658,8 +655,7 @@ msgid "Unable to perform search. Are you online?"
 msgstr "Incapaz de realizar busca. Você está online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr ""
-"Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
+msgstr "Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
@@ -674,7 +670,7 @@ msgid ""
 "%1$s\n"
 "Into %2$s..."
 msgstr ""
-"Começando download de:\n"
+"Começando a baixar de:\n"
 "%1$s\n"
 "Em %2$s..."
 
@@ -804,10 +800,10 @@ msgid "Find Last Error"
 msgstr "Procurar Último Erro"
 
 msgid "DSP On"
-msgstr "Áudio Ligado"
+msgstr "DSP Ligado"
 
 msgid "DSP Off"
-msgstr "Áudio Desligado"
+msgstr "DSP Desligado"
 
 msgid "Test Audio and MIDI..."
 msgstr "Testar Áudio e MIDI..."
@@ -825,7 +821,7 @@ msgid "Minimize"
 msgstr "Minimizar"
 
 msgid "Zoom"
-msgstr "Ampliar"
+msgstr "Zoom"
 
 msgid "Bring All to Front"
 msgstr "Trazer Todas para Frente"
@@ -849,7 +845,7 @@ msgid "puredata.info"
 msgstr "puredata.info"
 
 msgid "Report a bug"
-msgstr "Reportar um bug"
+msgstr "Reportar falha/bug"
 
 msgid "Clear Menu"
 msgstr "Limpar Menu"
@@ -874,10 +870,10 @@ msgid "MIDI..."
 msgstr "Configurações de MIDI..."
 
 msgid "Zoom New Windows"
-msgstr "Ampliar novas janelas"
+msgstr "Amplciar Zoom em Novas Janelas"
 
 msgid "Save All Preferences"
-msgstr "Salvar Preferências"
+msgstr "Salvar Todas as Preferências"
 
 msgid "Save to..."
 msgstr "Salvar em..."
@@ -913,7 +909,7 @@ msgid "Pd"
 msgstr "Pd"
 
 msgid "DSP"
-msgstr "Áudio"
+msgstr "DSP"
 
 msgid "Audio I/O error"
 msgstr "Erro de entrada/saída de áudio"
@@ -947,13 +943,13 @@ msgstr "Deletar"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
+msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
 
 #~ msgid "for:"
 #~ msgstr "por:"
 
 #~ msgid "Discard changes to this window??"
-#~ msgstr "Descartar mudanças feitas na janela??"
+#~ msgstr "Descartar mudanças feitas nesta janela??"
 
 #~ msgid "Max Text Files"
 #~ msgstr "Arquivos de Texto Max"
@@ -992,10 +988,10 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Preferências..."
 
 #~ msgid "Close this window??"
-#~ msgstr "Fechar janela??"
+#~ msgstr "Fechar esta janela??"
 
 #~ msgid "Font Properties"
-#~ msgstr "Propriedades de Fonte"
+#~ msgstr "Propriedades da Fonte"
 
 #~ msgid "really quit?"
 #~ msgstr "deseja realmente sair?"
@@ -1034,7 +1030,7 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Arquivos de Texto Max (.mxt)"
 
 #~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr "AVISO: Fonte '%s' não encontrada, usando a padrão (%s)"
+#~ msgstr "AVISO: Família de fonte '%s' não encontrada, usando a padrão (%s)"
 
 #~ msgid "Math"
 #~ msgstr "Matemática"
@@ -1052,8 +1048,7 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Dispositivo de saída 2:"
 
 #~ msgid "WARNING: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr ""
-#~ "AVISO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr "AVISO: %s Falha ao procurar tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
 #~ msgstr "ERRO: 'pd' nunca apareceu, 'pd-gui' fechando!"
@@ -1065,11 +1060,10 @@ msgstr "Ignorando '%s': não parece ser um arquivo PD válido"
 #~ msgstr "Enviar Mensagem..."
 
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr ""
-#~ "ERRO: %s Falha ao procurar o tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr "ERRO: %s Falha ao procurar tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "Pd Files"
-#~ msgstr "Arquivos Pd"
+#~ msgstr "Arquivos de Pd"
 
 #~ msgid "Filters"
 #~ msgstr "Filtros"
