@@ -42,10 +42,10 @@ EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 
 # subdirs that are built,
 # mac before src due to uninstall target order kludge (see mac/Makfile.am)
-SUBDIRS = $(EXTRA_SUBDIRS) mac src man doc tcl extra
+SUBDIRS = $(EXTRA_SUBDIRS) mac src man doc tcl extra font
 
 # subdirs that are always included in the dist, etc.
-DIST_SUBDIRS = asio doc extra mac man po portmidi portaudio src tcl
+DIST_SUBDIRS = asio doc extra font mac man po portmidi portaudio src tcl
 
 #########################################
 ##### Targets #####
