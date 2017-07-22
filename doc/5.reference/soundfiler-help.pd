@@ -1,4 +1,4 @@
-#N canvas 84 44 1102 576 12;
+#N canvas 87 38 1102 576 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array1 77971 float 0;
 #X coords 0 1 77970 -1 300 100 1;
@@ -6,11 +6,11 @@
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array2 155944 float 0;
 #X coords 0 1 155943 -1 300 100 1;
-#X restore 318 458 graph;
-#X obj 11 313 soundfiler;
-#X msg 25 241 write -aiff /tmp/foo1 array2;
-#X msg 8 152 read ../sound/bell.aiff array2;
-#X msg 17 199 read -raw 128 2 2 b ../sound/bell.aiff array1 array2
+#X restore 324 458 graph;
+#X obj 11 315 soundfiler;
+#X msg 25 243 write -aiff /tmp/foo1 array2;
+#X msg 8 154 read ../sound/bell.aiff array2;
+#X msg 17 201 read -raw 128 2 2 b ../sound/bell.aiff array1 array2
 ;
 #X text 8 8 SOUNDFILER - read and write soundfiles to arrays;
 #X text 548 11 When reading you can leave soundfiler to figure out
@@ -18,15 +18,15 @@ which of the three known soundfile formats the file belongs to or override
 all header information using the "-raw" flag.;
 #X text 558 70 Flags for reading:;
 #X text 574 88 -skip <sample frames to skip in file>;
-#X floatatom 11 337 0 0 0 0 - - -;
-#X msg 15 175 read -resize ../sound/bell.aiff array2;
-#X msg 25 288 write -nextstep -bytes 4 /tmp/foo3 array1 array2;
-#X msg 24 265 write -wave -nframes 10000 /tmp/foo2 array2;
-#X text 287 150 read a file;
-#X text 362 173 ...optionally resize;
-#X text 225 217 ...or even overriding everything;
-#X text 291 240 write a file;
-#X text 360 311 write stereo;
+#X floatatom 11 339 0 0 0 0 - - -;
+#X msg 15 177 read -resize ../sound/bell.aiff array2;
+#X msg 25 290 write -nextstep -bytes 4 /tmp/foo3 array1 array2;
+#X msg 24 267 write -wave -nframes 10000 /tmp/foo2 array2;
+#X text 287 152 read a file;
+#X text 362 175 ...optionally resize;
+#X text 225 219 ...or even overriding everything;
+#X text 291 242 write a file;
+#X text 360 313 write stereo;
 #X text 9 31 The soundfiler object reads and writes floating point
 arrays to binary soundfiles which may contain 2 or 3 byte fixed point
 or 4 byte floating point samples in wave \, aiff \, or next formats
@@ -49,19 +49,19 @@ You can give "n" (natural) to take the byte order your machine prefers.
 #X text 576 316 -nframes <maximum number to write>;
 #X text 577 360 -normalize;
 #X text 576 338 -bytes <2 \, 3 \, or 4>;
-#X text 557 408 The number of channels is limited to 64;
+#X text 557 411 The number of channels is limited to 64;
 #X obj 738 470 tabwrite~;
 #X obj 738 494 tabread4~;
 #X obj 843 448 tabplay~;
 #X obj 843 495 writesf~;
 #X obj 843 472 readsf~;
 #X text 576 380 -rate <sample rate>;
-#X obj 88 338 print;
+#X obj 88 340 print;
 #X text 738 446 See also:;
 #X text 721 539 updated for Pd version 0.48;
-#X text 12 368 Left outlet outputs the number of samples.;
-#X text 12 394 Right outlet outputs info as a list: samplerate \, headersize
-\, channels \, bytespersample \, & endianness ("b" or "l").;
+#X text 12 370 Left outlet outputs the number of samples.;
+#X text 12 396 Right outlet outputs info as a list: samplerate \, headersize
+\, num channels \, bytespersample \, & endianness ("b" or "l").;
 #X connect 2 0 10 0;
 #X connect 2 1 38 0;
 #X connect 3 0 2 0;

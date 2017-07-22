@@ -810,8 +810,8 @@ usage:
 }
 
 static int create_soundfile(t_canvas *canvas, const char *filename,
-    int filetype, int nframes, int bytespersamp,
-    int bigendian, int nchannels, int swap, t_float samplerate)
+    int filetype, int nframes, int bytespersamp, int bigendian, int nchannels,
+    int swap, t_float samplerate, int *p_headersize)
 {
     char filenamebuf[MAXPDSTRING], buf2[MAXPDSTRING];
     char headerbuf[WRITEHDRSIZE];
@@ -895,6 +895,8 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
         close (fd);
         return (-1);
     }
+    if (p_headersize)
+        *p_headersize = headersize;
     return (fd);
 }
 
@@ -1198,6 +1200,26 @@ typedef struct _soundfiler
     t_canvas *x_canvas;
 } t_soundfiler;
 
+typedef struct _soundfile_info
+{
+    int samplerate;
+    int channels;
+    int bytespersample;
+    int headersize;
+    int bigendian;
+} t_soundfile_info;
+
+static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
+{
+    t_atom info_list[5];
+    SETFLOAT((t_atom *)info_list, (t_float)info->samplerate);
+    SETFLOAT((t_atom *)info_list+1, (t_float)(info->headersize < 0 ? 0 : info->headersize));
+    SETFLOAT((t_atom *)info_list+2, (t_float)info->channels);
+    SETFLOAT((t_atom *)info_list+3, (t_float)info->bytespersample);
+    SETSYMBOL((t_atom *)info_list+4, gensym((info->bigendian ? "b" : "l")));
+    outlet_list(out, &s_list, 5, (t_atom *)info_list);
+}
+
 static t_soundfiler *soundfiler_new(void)
 {
     t_soundfiler *x = (t_soundfiler *)pd_new(soundfiler_class);
@@ -1221,8 +1243,14 @@ static t_soundfiler *soundfiler_new(void)
 static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    int headersize = -1, channels = 0, bytespersamp = 0, samprate = 0,
-        bigendian = 0, resize = 0, i, j;
+    t_soundfile_info info = (t_soundfile_info) {
+        .samplerate = 0,
+        .channels = 0,
+        .headersize = -1,
+        .bytespersample = 0,
+        .bigendian = 0
+    };
+    int resize = 0, i, j;
     long skipframes = 0, finalsize = 0, itemsleft,
         maxsize = DEFMAXSIZE, itemsread = 0, bytelimit  = 0x7fffffff;
     int fd = -1;
@@ -1247,24 +1275,24 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         {
             if (argc < 5 ||
                 argv[1].a_type != A_FLOAT ||
-                ((headersize = argv[1].a_w.w_float) < 0) ||
+                ((info.headersize = argv[1].a_w.w_float) < 0) ||
                 argv[2].a_type != A_FLOAT ||
-                ((channels = argv[2].a_w.w_float) < 1) ||
-                (channels > MAXSFCHANS) ||
+                ((info.channels = argv[2].a_w.w_float) < 1) ||
+                (info.channels > MAXSFCHANS) ||
                 argv[3].a_type != A_FLOAT ||
-                ((bytespersamp = argv[3].a_w.w_float) < 2) ||
-                    (bytespersamp > 4) ||
+                ((info.bytespersample = argv[3].a_w.w_float) < 2) ||
+                    (info.bytespersample > 4) ||
                 argv[4].a_type != A_SYMBOL ||
                     ((endianness = argv[4].a_w.w_symbol->s_name[0]) != 'b'
                     && endianness != 'l' && endianness != 'n'))
                         goto usage;
             if (endianness == 'b')
-                bigendian = 1;
+                info.bigendian = 1;
             else if (endianness == 'l')
-                bigendian = 0;
+                info.bigendian = 0;
             else
-                bigendian = garray_ambigendian();
-            samprate = sys_getsr();
+                info.bigendian = garray_ambigendian();
+            info.samplerate = sys_getsr();
             argc -= 5; argv += 5;
         }
         else if (!strcmp(flag, "resize"))
@@ -1310,8 +1338,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         finalsize = vecsize;
     }
     fd = open_soundfile_via_canvas(x->x_canvas, filename,
-        headersize, &bytespersamp, &bigendian, &channels, &bytelimit, &samprate,
-            skipframes);
+        info.headersize, &info.bytespersample, &info.bigendian, &info.channels,
+        &bytelimit, &info.samplerate, skipframes);
 
     if (fd < 0)
     {
@@ -1333,14 +1361,14 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             goto done;
         }
         lseek(fd, poswas, SEEK_SET);
-        framesinfile = (eofis - poswas) / (channels * bytespersamp);
+        framesinfile = (eofis - poswas) / (info.channels * info.bytespersample);
         if (framesinfile > maxsize)
         {
             pd_error(x, "soundfiler_read: truncated to %ld elements", maxsize);
             framesinfile = maxsize;
         }
-        if (framesinfile > bytelimit / (channels * bytespersamp))
-            framesinfile = bytelimit / (channels * bytespersamp);
+        if (framesinfile > bytelimit / (info.channels * info.bytespersample))
+            framesinfile = bytelimit / (info.channels * info.bytespersample);
         finalsize = framesinfile;
         for (i = 0; i < argc; i++)
         {
@@ -1359,19 +1387,19 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
     }
     if (!finalsize) finalsize = 0x7fffffff;
-    if (finalsize > bytelimit / (channels * bytespersamp))
-        finalsize = bytelimit / (channels * bytespersamp);
+    if (finalsize > bytelimit / (info.channels * info.bytespersample))
+        finalsize = bytelimit / (info.channels * info.bytespersample);
     fp = fdopen(fd, "rb");
-    bufframes = SAMPBUFSIZE / (channels * bytespersamp);
+    bufframes = SAMPBUFSIZE / (info.channels * info.bytespersample);
 
     for (itemsread = 0; itemsread < finalsize; )
     {
         int thisread = finalsize - itemsread;
         thisread = (thisread > bufframes ? bufframes : thisread);
-        nitems = fread(sampbuf, channels * bytespersamp, thisread, fp);
+        nitems = fread(sampbuf, info.channels * info.bytespersample, thisread, fp);
         if (nitems <= 0) break;
-        soundfile_xferin_words(channels, argc, vecs, itemsread,
-            (unsigned char *)sampbuf, nitems, bytespersamp, bigendian);
+        soundfile_xferin_words(info.channels, argc, vecs, itemsread,
+            (unsigned char *)sampbuf, nitems, info.bytespersample, info.bigendian);
         itemsread += nitems;
     }
         /* zero out remaining elements of vectors */
@@ -1384,7 +1412,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 vecs[i][j].w_float = 0;
     }
         /* zero out vectors in excess of number of channels */
-    for (i = channels; i < argc; i++)
+    for (i = info.channels; i < argc; i++)
     {
         int vecsize;
         t_word *foo;
@@ -1406,23 +1434,16 @@ done:
     if (fd >= 0)
         close (fd);
     outlet_float(x->x_obj.ob_outlet, (t_float)itemsread);
-    t_atom info[5];
-    SETFLOAT((t_atom *)info, (t_float)samprate);
-    SETFLOAT((t_atom *)info+1, (t_float)(headersize < 0 ? 0 : headersize));
-    SETFLOAT((t_atom *)info+2, (t_float)channels);
-    SETFLOAT((t_atom *)info+3, (t_float)bytespersamp);
-    SETSYMBOL((t_atom *)info+4, gensym((bigendian ? "b" : "l")));
-    outlet_list(x->x_out2, &s_list, 5, (t_atom *)info);
+    outlet_soundfile_info(x->x_out2, &info);
 }
 
     /* this is broken out from soundfiler_write below so garray_write can
     call it too... not done yet though. */
 
 long soundfiler_dowrite(void *obj, t_canvas *canvas,
-    int argc, t_atom *argv)
+    int argc, t_atom *argv, t_soundfile_info *info)
 {
-    int headersize, bytespersamp, bigendian,
-        endianness, swap, filetype, normalize, i, j, nchannels;
+    int endianness, swap, filetype, normalize, i, j;
     long onset, nframes, itemsleft,
         maxsize = DEFMAXSIZE, itemswritten = 0;
     t_garray *garrays[MAXSFCHANS];
@@ -1435,15 +1456,16 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     t_symbol *filesym;
 
     if (soundfiler_writeargparse(obj, &argc, &argv, &filesym, &filetype,
-        &bytespersamp, &swap, &bigendian, &normalize, &onset, &nframes,
-            &samplerate))
+        &info->bytespersample, &swap, &info->bigendian, &normalize, &onset,
+        &nframes, &samplerate))
                 goto usage;
-    nchannels = argc;
-    if (nchannels < 1 || nchannels > MAXSFCHANS)
+    info->channels = argc;
+    if (info->channels < 1 || info->channels > MAXSFCHANS)
         goto usage;
     if (samplerate < 0)
         samplerate = sys_getsr();
-    for (i = 0; i < nchannels; i++)
+    info->samplerate = (int)samplerate;
+    for (i = 0; i < info->channels; i++)
     {
         int vecsize;
         if (argv[i].a_type != A_SYMBOL)
@@ -1465,7 +1487,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
         pd_error(obj, "soundfiler_write: no samples at onset %ld", onset);
         goto fail;
     }
-    for (i = 0; i < nchannels; i++) /* find biggest sample for normalizing */
+    for (i = 0; i < info->channels; i++) /* find biggest sample for normalizing */
     {
         for (j = onset; j < nframes + onset; j++)
         {
@@ -1476,15 +1498,15 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
         }
     }
     if ((fd = create_soundfile(canvas, filesym->s_name, filetype,
-        nframes, bytespersamp, bigendian, nchannels,
-            swap, samplerate)) < 0)
+        nframes, info->bytespersample, info->bigendian, info->channels,
+            swap, info->samplerate, &info->headersize)) < 0)
     {
         post("%s: %s\n", filesym->s_name, strerror(errno));
         goto fail;
     }
     if (!normalize)
     {
-        if ((bytespersamp != 4) && (biggest > 1))
+        if ((info->bytespersample != 4) && (biggest > 1))
         {
             post("%s: reducing max amplitude %f to 1",
                 filesym->s_name, biggest);
@@ -1496,20 +1518,20 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
         normfactor = (biggest > 0 ? 32767./(32768. * biggest) : 1);
     else normfactor = 1;
 
-    bufframes = SAMPBUFSIZE / (nchannels * bytespersamp);
+    bufframes = SAMPBUFSIZE / (info->channels * info->bytespersample);
 
     for (itemswritten = 0; itemswritten < nframes; )
     {
         int thiswrite = nframes - itemswritten, nitems, nbytes;
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
         soundfile_xferout_words(argc, vectors, (unsigned char *)sampbuf,
-            thiswrite, onset, bytespersamp, bigendian, normfactor);
-        nbytes = write(fd, sampbuf, nchannels * bytespersamp * thiswrite);
-        if (nbytes < nchannels * bytespersamp * thiswrite)
+            thiswrite, onset, info->bytespersample, info->bigendian, normfactor);
+        nbytes = write(fd, sampbuf, info->channels * info->bytespersample * thiswrite);
+        if (nbytes < info->channels * info->bytespersample * thiswrite)
         {
             post("%s: %s", filesym->s_name, strerror(errno));
             if (nbytes > 0)
-                itemswritten += nbytes / (nchannels * bytespersamp);
+                itemswritten += nbytes / (info->channels * info->bytespersample);
             break;
         }
         itemswritten += thiswrite;
@@ -1518,7 +1540,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     if (fd >= 0)
     {
         soundfile_finishwrite(obj, filesym->s_name, fd,
-            filetype, nframes, itemswritten, nchannels * bytespersamp, swap);
+            filetype, nframes, itemswritten, info->channels * info->bytespersample, swap);
         close (fd);
     }
     return ((float)itemswritten);
@@ -1536,9 +1558,17 @@ fail:
 static void soundfiler_write(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
+    t_soundfile_info info = (t_soundfile_info) {
+        .samplerate = 0,
+        .channels = 0,
+        .bytespersample = 0,
+        .headersize = 0,
+        .bigendian = 0
+    };
     long bozo = soundfiler_dowrite(x, x->x_canvas,
-        argc, argv);
+        argc, argv, &info);
     outlet_float(x->x_obj.ob_outlet, (t_float)bozo);
+    outlet_soundfile_info(x->x_out2, &info);
 }
 
 static void soundfiler_setup(void)
@@ -2303,7 +2333,7 @@ static void *writesf_child_main(void *zz)
             pthread_mutex_unlock(&x->x_mutex);
             fd = create_soundfile(canvas, filename, filetype, 0,
                     bytespersample, bigendian, sfchannels,
-                        garray_ambigendian() != bigendian, samplerate);
+                        garray_ambigendian() != bigendian, samplerate, 0);
             pthread_mutex_lock(&x->x_mutex);
 #ifdef DEBUG_SOUNDFILE
             pute("5\n");
