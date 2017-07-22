@@ -1264,6 +1264,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 bigendian = 0;
             else
                 bigendian = garray_ambigendian();
+            samprate = sys_getsr();
             argc -= 5; argv += 5;
         }
         else if (!strcmp(flag, "resize"))
