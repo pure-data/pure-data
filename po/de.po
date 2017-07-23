@@ -935,6 +935,10 @@ msgstr "Bearbeiten..."
 msgid "Delete"
 msgstr "Löschen"
 
+#, fuzzy, tcl-format
+msgid "Ignoring '%s': doesn't exist"
+msgstr "Überspringe '%s': kein Pd-File"
+
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "Überspringe '%s': kein Pd-File"
