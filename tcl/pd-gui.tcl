@@ -135,22 +135,22 @@ set font_weight "normal"
 # sizes of chars for each of the Pd fixed font sizes:
 # width(pixels)  height(pixels)
 set font_metrics {
-    6 10
-    7 13
-    9 16
-    10 21
-    15 25
-    25 45
+    5 11
+    6 13
+    7 16
+    10 19
+    14 29
+    22 44
 }
 
 # sizes as above for zoomed-in view
 set font_zoom2_metrics {
-    12 20
-    14 26
-    18 32
-    20 42
-    30 50
-    50 90
+    10 22
+    12 26
+    14 32
+    20 38
+    28 58
+    44 88
 }
 set font_measured {}
 set font_zoom2_measured {}
@@ -507,13 +507,13 @@ proc fit_font_into_metrics {} {
             ( $width > [lindex $::font_metrics 0] || \
             $height > [lindex $::font_metrics 1] )} {
                 # puts [concat SINGLE $fsize]
-                lappend ::font_measured $lastsize $lastwidth  $lastheight
+                lappend ::font_measured $lastsize $lastwidth $lastheight
                 set ::font_metrics [lrange $::font_metrics 2 end]
         }
         if {$width > [lindex $::font_zoom2_metrics 0] || \
             $height > [lindex $::font_zoom2_metrics 1]} {
                 # puts [concat DOUBLE $fsize]
-                lappend ::font_zoom2_measured $lastsize $lastwidth  $lastheight
+                lappend ::font_zoom2_measured $lastsize $lastwidth $lastheight
                 set ::font_zoom2_metrics [lrange $::font_zoom2_metrics 2 end]
         }
         set lastsize $fsize
@@ -522,6 +522,10 @@ proc fit_font_into_metrics {} {
     }
     ::pdwindow::verbose 0 "Measured font metrics:\n"
     foreach {size width height} $::font_measured {
+        ::pdwindow::verbose 0 "$size $width $height\n"
+    }
+    ::pdwindow::verbose 0 "Measured zoom2 font metrics:\n"
+    foreach {size width height} $::font_zoom2_measured {
         ::pdwindow::verbose 0 "$size $width $height\n"
     }
 }

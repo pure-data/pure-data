@@ -284,9 +284,11 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_messagelist = 0;
 }
 
+// font char metric triples: pointsize width(pixels) height(pixels)
 static int defaultfontshit[] = {
-9, 5, 10, 11, 7, 13, 14, 8, 16, 17, 10, 20, 22, 13, 25, 39, 23, 45,
-17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
+ 8,  5, 11, 10,  6, 13, 12,  7, 16, 16, 10, 19, 24, 14, 29, 36, 22, 44,
+16, 10, 22, 20, 12, 26, 24, 14, 32, 32, 20, 38, 48, 28, 58, 72, 44, 88
+}; // normal & zoomed (2x)
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 static void sys_fakefromgui(void)
