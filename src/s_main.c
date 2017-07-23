@@ -72,7 +72,11 @@ int sys_midiindevlist[MAXMIDIINDEV] = {1};
 int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
 char sys_font[100] = "DejaVu Sans Mono";
+#if __APPLE__
 char sys_fontweight[10] = "normal";
+#else
+char sys_fontweight[10] = "bold";
+#endif
 static int sys_main_srate;
 static int sys_main_advance;
 static int sys_main_callback;
