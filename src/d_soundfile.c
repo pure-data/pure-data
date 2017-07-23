@@ -1240,14 +1240,7 @@ static t_soundfiler *soundfiler_new(void)
 static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    t_soundfile_info info = (t_soundfile_info) {
-        .samplerate = 0,
-        .channels = 0,
-        .bytespersample = 0,
-        .headersize = -1,
-        .bigendian = 0,
-        .bytelimit = 0x7fffffff
-    };
+    t_soundfile_info info;
     int resize = 0, i, j;
     long skipframes = 0, finalsize = 0, itemsleft,
         maxsize = DEFMAXSIZE, itemsread = 0;
@@ -1258,6 +1251,12 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     char sampbuf[SAMPBUFSIZE];
     int bufframes, nitems;
     FILE *fp;
+    info.samplerate = 0,
+    info.channels = 0,
+    info.bytespersample = 0,
+    info.headersize = -1,
+    info.bigendian = 0,
+    info.bytelimit = 0x7fffffff;
     while (argc > 0 && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -1555,15 +1554,15 @@ fail:
 static void soundfiler_write(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    t_soundfile_info info = (t_soundfile_info) {
-        .samplerate = 0,
-        .channels = 0,
-        .bytespersample = 0,
-        .headersize = -1,
-        .bigendian = 0,
-        .bytelimit = 0x7fffffff
-    };
-    long bozo = soundfiler_dowrite(x, x->x_canvas, argc, argv, &info);
+    t_soundfile_info info;
+    long bozo;
+    info.samplerate = 0,
+    info.channels = 0,
+    info.bytespersample = 0,
+    info.headersize = -1,
+    info.bigendian = 0,
+    info.bytelimit = 0x7fffffff;
+    bozo = soundfiler_dowrite(x, x->x_canvas, argc, argv, &info);
     outlet_float(x->x_obj.ob_outlet, (t_float)bozo);
     outlet_soundfile_info(x->x_out2, &info);
 }
@@ -1720,21 +1719,20 @@ static void *readsf_child_main(void *zz)
                 /* copy file stuff out of the data structure so we can
                 relinquish the mutex while we're in open_soundfile(). */
             t_soundfile_info info;
+            long onsetframes = x->x_onsetframes;
+            char *filename = x->x_filename;
+            char *dirname = canvas_getdir(x->x_canvas)->s_name;
             info.samplerate = x->x_samplerate;
             info.channels = x->x_sfchannels;
             info.headersize = x->x_skipheaderbytes;
             info.bytespersample = x->x_bytespersample;
             info.bigendian = x->x_bigendian;
             info.bytelimit = 0x7fffffff;
-            long onsetframes = x->x_onsetframes;
-
-            char *filename = x->x_filename;
-            char *dirname = canvas_getdir(x->x_canvas)->s_name;
-                /* alter the request code so that an ensuing "open" will get
-                noticed. */
 #ifdef DEBUG_SOUNDFILE
             pute("4\n");
 #endif
+                /* alter the request code so that an ensuing "open" will get
+                noticed. */
             x->x_requestcode = REQUEST_BUSY;
             x->x_fileerror = 0;
 
