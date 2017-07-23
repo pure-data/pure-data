@@ -502,7 +502,7 @@ proc fit_font_into_metrics {} {
 
     for {set fsize 6} {$fsize < 120 && [llength $::font_zoom2_metrics] > 1} \
             {incr fsize} {
-        set foo [list $::font_family -$fsize bold]
+        set foo [list $::font_family -$fsize $::font_weight]
         set height [font metrics $foo -linespace]
         set width [font measure $foo M]
         # puts stderr [concat $fsize $width $height]
@@ -522,6 +522,10 @@ proc fit_font_into_metrics {} {
         set lastsize $fsize
         set lastwidth $width
         set lastheight $height
+    }
+    ::pdwindow::verbose 0 "Measured font metrics:\n"
+    foreach {size width height} $::font_measured {
+        ::pdwindow::verbose 0 "$size $width $height\n"
     }
 }
 
