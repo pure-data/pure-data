@@ -463,7 +463,7 @@ proc get_font_for_size {fsize} {
 # always do a good job of choosing in respect to Pd's needs.  So this chooses
 # from a list of fonts that are known to work well with Pd.
 proc find_default_font {} {
-    set testfonts {"DejaVu Sans Mono" "Monaco" "Bitstream Vera Sans Mono" \
+    set testfonts {"DejaVu Sans Mono" "Bitstream Vera Sans Mono" "Monaco" \
         "Inconsolata" "Courier 10 Pitch" "Andale Mono" "Droid Sans Mono"}
     foreach family $testfonts {
         if {[lsearch -exact -nocase [font families] $family] > -1} {
