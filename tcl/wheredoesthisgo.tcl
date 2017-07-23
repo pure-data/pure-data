@@ -6,15 +6,18 @@ package provide wheredoesthisgo 0.1
 proc open_file {filename} {
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
-    if {
-        [file exists $filename]
-        && [regexp -nocase -- "\.(pd|pat|mxt)$" $filename]
-    } then {
+    if { ! [file exists $filename]} {
+        ::pdwindow::post [format [_ "Ignoring '%s': doesn't exist"] $filename]
+        # remove from recent files
+        ::pd_guiprefs::update_recentfiles $filename true
+        return
+    }
+    if {[regexp -nocase -- "\.(pd|pat|mxt)$" $filename]} {
         ::pdtk_canvas::started_loading_file [format "%s/%s" $basename $filename]
         pdsend "pd open [enquote_path $basename] [enquote_path $directory]"
         # now this is done in pd_guiprefs
         ::pd_guiprefs::update_recentfiles $filename
-    } {
+    } else {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
     }
 }

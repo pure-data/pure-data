@@ -967,6 +967,10 @@ msgid "Delete"
 msgstr ""
 
 #, tcl-format
+msgid "Ignoring '%s': doesn't exist"
+msgstr ""
+
+#, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
 

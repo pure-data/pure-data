@@ -905,6 +905,10 @@ msgstr "Éditer..."
 msgid "Delete"
 msgstr "Supprimer"
 
+#, fuzzy, tcl-format
+msgid "Ignoring '%s': doesn't exist"
+msgstr "'%s' ne semble par être un fichier Pd"
+
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "'%s' ne semble par être un fichier Pd"
