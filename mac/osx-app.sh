@@ -266,6 +266,7 @@ cp stuff/Info.plist $APP/Contents/
 rm $APP/Contents/Resources/Wish.icns
 cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
+cp -R ../font $APP/Contents/Resources/
 
 # set version identifiers & contextual strings in Info.plist,
 # version strings can only use 0-9 and periods, so replace "-" & "test" with "."

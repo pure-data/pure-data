@@ -35,5 +35,7 @@
 	<string>0.38</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>ATSApplicationFontsPath</key>
+	<string>font</string>
 </dict>
 </plist>
