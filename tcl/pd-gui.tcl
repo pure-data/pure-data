@@ -471,7 +471,7 @@ proc find_default_font {} {
             break
         }
     }
-    ::pdwindow::verbose 0 "Default font: $::font_family\n"
+    ::pdwindow::verbose 0 "Detected font: $::font_family\n"
 }
 
 proc set_base_font {family weight} {

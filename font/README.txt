@@ -3,7 +3,10 @@
 This directory contains font files for use with the Pure Data GUI.
 
 The default font for Pd is DejaVu Sans Mono (DVSM) and it is included with Pd
-based on the platform:
+based on the platform.
+
+You can see which font Pd is using by looking for the font information prints
+when the log level is set to "4 all."
 
 ## Linux
 
