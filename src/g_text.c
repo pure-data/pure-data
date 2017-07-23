@@ -1012,7 +1012,7 @@ static void text_getrect(t_gobj *z, t_glist *glist,
         int fontwidth = glist_fontwidth(glist),
             fontheight = glist_fontheight(glist);
         width = (x->te_width > 0 ? x->te_width : 6) * fontwidth + 2;
-        height = fontheight + 1; /* borrowed from TMARGIN, etc, in g_rtext.c */
+        height = fontheight + 3; /* borrowed from TMARGIN, etc, in g_rtext.c */
     }
         /* if we're invisible we don't know our size so we just lie about
         it.  This is called on invisible boxes to establish order of inlets
@@ -1219,11 +1219,7 @@ static const t_widgetbehavior gatom_widgetbehavior =
 
 /* -------------------- the "text" class  ------------ */
 
-#ifdef __APPLE__
-#define EXTRAPIX 1
-#else
-#define EXTRAPIX 0
-#endif
+#define EXTRAPIX 2
 
     /* draw inlets and outlets for a text object or for a graph. */
 void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
@@ -1271,7 +1267,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     char *tag, int width2, int height2, int firsttime)
 {
     t_object *ob;
-    int x1, y1, x2, y2, width, height;
+    int x1, y1, x2, y2, width, height, msg_draw_const, atom_draw_const;
     text_getrect(&x->te_g, glist, &x1, &y1, &x2, &y2);
     width = x2 - x1;
     height = y2 - y1;
@@ -1296,33 +1292,36 @@ void text_drawborder(t_text *x, t_glist *glist,
     }
     else if (x->te_type == T_MESSAGE)
     {
+        msg_draw_const = ((y2-y1)/4);
+        if (msg_draw_const > 10) msg_draw_const = 10; /* looks bad if too big */
         if (firsttime)
             sys_vgui(".x%lx.c create line\
  %d %d %d %d %d %d %d %d %d %d %d %d %d %d -width %d -tags [list %sR msg]\n",
                 glist_getcanvas(glist),
-                x1, y1,  x2+4, y1,  x2, y1+4,  x2, y2-4,  x2+4, y2,
+                x1, y1,  x2+msg_draw_const, y1,  x2, y1+msg_draw_const,  x2, y2-msg_draw_const,  x2+msg_draw_const, y2,
                 x1, y2,  x1, y1,
                     glist->gl_zoom, tag);
         else
             sys_vgui(".x%lx.c coords %sR\
  %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
                 glist_getcanvas(glist), tag,
-                x1, y1,  x2+4, y1,  x2, y1+4,  x2, y2-4,  x2+4, y2,
+                x1, y1,  x2+msg_draw_const, y1,  x2, y1+msg_draw_const,  x2, y2-msg_draw_const,  x2+msg_draw_const, y2,
                 x1, y2,  x1, y1);
     }
     else if (x->te_type == T_ATOM)
     {
+        atom_draw_const = ((y2-y1)/3);
         if (firsttime)
             sys_vgui(".x%lx.c create line\
  %d %d %d %d %d %d %d %d %d %d %d %d -width %d -tags [list %sR atom]\n",
                 glist_getcanvas(glist),
-                x1, y1,  x2-4, y1,  x2, y1+4,  x2, y2,  x1, y2,  x1, y1,
+                x1, y1,  x2-atom_draw_const, y1,  x2, y1+atom_draw_const, x2, y2,  x1, y2,  x1, y1,
                     glist->gl_zoom, tag);
         else
             sys_vgui(".x%lx.c coords %sR\
  %d %d %d %d %d %d %d %d %d %d %d %d\n",
                 glist_getcanvas(glist), tag,
-                x1, y1,  x2-4, y1,  x2, y1+4,  x2, y2,  x1, y2,  x1, y1);
+                x1, y1,  x2-atom_draw_const, y1,  x2, y1+atom_draw_const,  x2, y2,  x1, y2,  x1, y1);
     }
         /* for comments, just draw a bar on RHS if unlocked; when a visible
         canvas is unlocked we have to call this anew on all comments, and when
@@ -1342,6 +1341,8 @@ void text_drawborder(t_text *x, t_glist *glist,
 
     if ((ob = pd_checkobject(&x->te_pd)))
         glist_drawiofor(glist, ob, firsttime, tag, x1, y1, x2, y2);
+    if (firsttime) /* raise cords over everything else */
+        sys_vgui(".x%lx.c raise cord\n", glist_getcanvas(glist));
 }
 
 void glist_eraseiofor(t_glist *glist, t_object *ob, char *tag)

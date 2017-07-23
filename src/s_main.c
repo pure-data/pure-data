@@ -122,8 +122,8 @@ typedef struct _fontinfo
     in the six fonts.  */
 
 static t_fontinfo sys_fontspec[] = {
-    {8, 6, 10}, {10, 7, 13}, {12, 9, 16},
-    {16, 10, 21}, {24, 15, 25}, {36, 25, 45}};
+    {8, 5, 11}, {10, 6, 13}, {12, 7, 16},
+    {16, 10, 19}, {24, 14, 29}, {36, 22, 44}};
 #define NFONT (sizeof(sys_fontspec)/sizeof(*sys_fontspec))
 #define NZOOM 2
 static t_fontinfo sys_gotfonts[NZOOM][NFONT];
