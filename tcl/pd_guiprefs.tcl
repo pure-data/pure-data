@@ -365,13 +365,15 @@ proc ::pd_guiprefs::write_recentfiles {} {
 # ------------------------------------------------------------------------------
 # this is called when opening a document (wheredoesthisshouldgo.tcl)
 #
-proc ::pd_guiprefs::update_recentfiles {afile} {
+proc ::pd_guiprefs::update_recentfiles {afile {remove false}} {
     # remove duplicates first
     set index [lsearch -exact $::recentfiles_list $afile]
     set ::recentfiles_list [lreplace $::recentfiles_list $index $index]
-    # insert new one in the beginning and crop the list
-    set ::recentfiles_list [linsert $::recentfiles_list 0 $afile]
-    set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
+    if {! $remove} {
+        # insert new one in the beginning and crop the list
+        set ::recentfiles_list [linsert $::recentfiles_list 0 $afile]
+        set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
+    }
     ::pd_menus::update_recentfiles_menu
 }
 
