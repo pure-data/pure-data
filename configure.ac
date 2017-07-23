@@ -111,7 +111,7 @@ case $host in
     portmidi=yes
 
     # this mirrors the default windows WISH define in s_inter.c
-    wish="wish85.exe
+    wish="wish85.exe"
 
     # ASIO doesn't build yet with the autotools setup. We need to figure out how
     # to make the final linking phase use g++
@@ -134,7 +134,7 @@ case $host in
     portmidi=yes
 
     # this mirrors the default windows WISH define in s_inter.c
-    wish="wish85.exe
+    wish="wish85.exe"
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS=
@@ -481,8 +481,12 @@ AS_IF([test "x$midi_backends" = "x"],[
 ##### Wish #####
 # add contextual info when adding a custom WISH path on macOS,
 # other platforms use a single path so it's enough to print $wish as it is
-AS_IF([test ! "x${WISH}" = "x" -a x"$MACOSX" = x"yes"],[
-    wish="prepending ${WISH} to search paths"
+AS_IF([test ! "x${WISH}" = "x"],[
+    AS_IF([test x"$MACOSX" = x"yes"], [
+        wish="prepending ${WISH} to search paths"
+    ],[
+        wish="${WISH}"
+    ])
 ])
 
 #########################################
