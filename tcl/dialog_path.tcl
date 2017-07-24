@@ -38,10 +38,12 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
-        450 340 1
+        450 300 1
     ::pd_bindings::dialog_bindings $mytoplevel "path"
 
+    # add deken path widgets if deken is available, increase window height to make room
     if {[namespace exists ::deken]} {
+        wm geometry $mytoplevel "=450x340"
         frame $mytoplevel.installpath
         pack $mytoplevel.installpath -side top -anchor e -expand 1 -fill x -padx 2m
         label $mytoplevel.installpath.entryname -text [_ "Install externals to:"]
