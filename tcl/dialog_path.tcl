@@ -38,8 +38,21 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
-        400 300 1
+        450 340 1
     ::pd_bindings::dialog_bindings $mytoplevel "path"
+
+    if {[namespace exists ::deken]} {
+        frame $mytoplevel.installpath
+        pack $mytoplevel.installpath -side top -anchor e -expand 1 -fill x -padx 2m
+        label $mytoplevel.installpath.entryname -text [_ "Install externals to:"]
+        entry $mytoplevel.installpath.entry -textvariable ::deken::installpath \
+            -state readonly -readonlybackground [lindex [$mytoplevel configure -background] end]
+        button $mytoplevel.installpath.browse -text [_ "Browse"] \
+            -command "::dialog_path::browse_installpath %W"
+        pack $mytoplevel.installpath.browse -side right -fill x -ipadx 10
+        pack $mytoplevel.installpath.entry -side right -expand 1 -fill x
+        pack $mytoplevel.installpath.entryname -side right
+    }
 
     frame $mytoplevel.extraframe
     pack $mytoplevel.extraframe -side bottom -fill x -pady 2m
@@ -69,6 +82,21 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
+}
+
+# browse for a new deken installpath, this assumes deken is available
+proc ::dialog_path::browse_installpath {mytoplevel} {
+    if { ! [file isdirectory $::deken::installpath]} {
+        set path $::env(HOME)
+    } else {
+        set path $::deken::installpath
+    }
+    set newpath [tk_chooseDirectory -initialdir $path -title [_ "Install externals to directory:"]]
+    if {$newpath ne ""} {
+        ::deken::set_installpath $newpath
+        return 1
+    }
+    return 0
 }
 
 # for focus handling on OSX
