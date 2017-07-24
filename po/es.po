@@ -545,11 +545,21 @@ msgstr "Puertos de Salida:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Ruta de búsqueda de Pd para objetos, ayuda, fuentes, y otros archivos"
 
+msgid "Install externals to:"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
 msgid "Use standard paths"
 msgstr "Usar rutas estándar"
 
 msgid "Verbose"
 msgstr "Verbosa"
+
+#, fuzzy
+msgid "Install externals to directory:"
+msgstr "Instalar librerías en directorio:"
 
 msgid "Add new library"
 msgstr "Añadir nueva librería"
@@ -598,9 +608,6 @@ msgstr ""
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Plataforma detectada: %s"
-
-msgid "Install libraries to directory:"
-msgstr "Instalar librerías en directorio:"
 
 msgid "Show all"
 msgstr "Ver todo"

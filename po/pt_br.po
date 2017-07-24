@@ -574,11 +574,20 @@ msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
+msgid "Install externals to:"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
 
 msgid "Verbose"
 msgstr "Verbose"
+
+msgid "Install externals to directory:"
+msgstr "Instalar bibliotecas no diretório:"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -626,9 +635,6 @@ msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Platforma detectada: %s"
-
-msgid "Install libraries to directory:"
-msgstr "Instalar bibliotecas no diretório:"
 
 msgid "Show all"
 msgstr "Mostrar todos"
