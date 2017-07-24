@@ -199,13 +199,13 @@ proc ::helpbrowser::make_liblistbox {dir} {
     }
     
     bind $current_listbox <Button-1> \
-        "::helpbrowser::dir_navigate $dir 2 %W %x %y"
+        "::helpbrowser::dir_navigate {$dir} 2 %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
-        "::helpbrowser::dir_doubleclick $dir 2 %W %x %y"
+        "::helpbrowser::dir_doubleclick {$dir} 2 %W %x %y"
     bind $current_listbox <Key-Return> \
-        "::helpbrowser::dir_right $dir 2 %W"
+        "::helpbrowser::dir_return {$dir} 2 %W"
     bind $current_listbox <Key-Right> \
-        "::helpbrowser::dir_right $dir 2 %W"
+        "::helpbrowser::dir_right {$dir} 2 %W"
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left 0 %W"
     bind $current_listbox <FocusIn> \
