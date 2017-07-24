@@ -43,7 +43,8 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # add deken path widgets if deken is available, increase window height to make room
     if {[namespace exists ::deken]} {
-        wm geometry $mytoplevel "=450x340"
+        wm geometry $mytoplevel "450x340"
+        wm minsize $mytoplevel 450 340
         frame $mytoplevel.installpath
         pack $mytoplevel.installpath -side top -anchor e -expand 1 -fill x -padx 2m
         label $mytoplevel.installpath.entryname -text [_ "Install externals to:"]
