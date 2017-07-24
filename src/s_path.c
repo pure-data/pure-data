@@ -249,6 +249,7 @@ void sys_setextrapath(const char *p)
 
 #ifdef __APPLE__
     sys_expandpath("~/Library/Pd", pathbuf, MAXPDSTRING);
+    sys_expandpath("~/Documents/Pd", pathbuf, MAXPDSTRING);
     STUFF->st_staticpath = namelist_append(0, pathbuf, 0);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, "/Library/Pd", 0);
 #endif
