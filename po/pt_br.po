@@ -306,7 +306,7 @@ msgid "Save All Settings"
 msgstr "Salvar Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "AVISO: 'flags graphme' desconhecidas recebidas em pdtk_canvas_dialog"
+msgstr "AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -532,10 +532,10 @@ msgid "Parameters"
 msgstr "Parâmetros"
 
 msgid "X offset:"
-msgstr "Deslocamento (X):"
+msgstr "Deslocamento em X:"
 
 msgid "Y offset:"
-msgstr "Deslocamento (Y):"
+msgstr "Deslocamento em Y:"
 
 msgid "Colors"
 msgstr "Cores"
@@ -578,7 +578,7 @@ msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
 
 msgid "Verbose"
-msgstr "Verbose"
+msgstr "Detalhado"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -590,7 +590,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Bibliotecas para carregar na inicialização"
 
 msgid "Startup flags:"
-msgstr "Flags de inicialização:"
+msgstr "Marcadores de inicialização:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Anular agendamento em tempo real"
@@ -849,7 +849,7 @@ msgid "puredata.info"
 msgstr "puredata.info"
 
 msgid "Report a bug"
-msgstr "Reportar falha/bug"
+msgstr "Reportar falha (bug)"
 
 msgid "Clear Menu"
 msgstr "Limpar Menu"
