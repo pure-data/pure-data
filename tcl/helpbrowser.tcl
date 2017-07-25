@@ -401,7 +401,7 @@ proc ::helpbrowser::add_entry {reflist entry} {
 }
 
 proc ::helpbrowser::build_references {} {
-    variable libdirlist {" Pure Data/" "---- libraries: -----"}
+    variable libdirlist {" Pure Data/"   "-------- Libraries --------"}
     variable helplist {}
     variable reference_count
     variable reference_paths
@@ -409,25 +409,35 @@ proc ::helpbrowser::build_references {} {
     array set reference_count {}
     array set reference_paths [list \
                                    " Pure Data/" $::sys_libdir/doc \
-                                   "---- libraries: -----" "" \
+                                   "-------- Libraries --------" "" \
                                   ]
-    foreach pathdir $::sys_staticpath {
+    foreach pathdir [concat $::sys_staticpath $::sys_searchpath] {
         if { ! [file isdirectory $pathdir]} {continue}
 
         # Fix the directory name, this ensures the directory name is in the
         # native format for the platform and contains a final directory seperator
         set dir [string trimright [file join [file normalize $pathdir] { }]]
 
-        ## don't find libdirs anymore: supported libs should be in search path
-        # Directory comes from sys_staticpath (aka hardcoded)
-        # Then add an entry for each subdir of this directory in Help browser's root column :
+        ## find the libdirs
 
-        foreach filename [glob -nocomplain -type d -path $dir "*"] {
-            add_entry libdirlist $filename
-        }
-        ## find the stray help patches
-        foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
-            add_entry helplist $filename
+        if { [lsearch $::sys_searchpath $pathdir] ne -1} {
+            # Directory comes from sys_searchpath (aka preferences & -path)
+            # Then add an entry for this directory in Help browser's root column :
+            add_entry libdirlist $dir
+        } else {
+            # Directory comes from sys_staticpath (aka hardcoded)
+            # Then add an entry for each subdir of this directory in Help browser's root column :
+            foreach filename [glob -nocomplain -type d -path $dir "*"] {
+                add_entry libdirlist $filename
+            }
+
+            # don't add core object references to root column
+            if {[string match "*doc/5.reference" $pathdir]} {continue}
+
+            ## find the stray help patches
+            foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
+                add_entry helplist $filename
+            }
         }
     }
 }
