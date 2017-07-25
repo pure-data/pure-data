@@ -434,7 +434,7 @@ proc ::deken::clicked_link {URL filename} {
     ### if ::deken::installpath is set, use the first writable item
     ### if not, get a writable item from one of the searchpaths
     ### if this still doesn't help, ask the user
-    set installdir ::deken::find_installpath
+    set installdir [::deken::find_installpath]
     if { "$installdir" == "" } {
         ## ask the user (and remember the decision)
         ::deken::prompt_installdir
