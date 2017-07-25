@@ -95,7 +95,6 @@ set ::deken::backends [list]
 proc ::deken::register {fun} {
     set ::deken::backends [linsert $::deken::backends 0 $fun]
 }
-
 proc ::deken::gettmpdir {} {
     proc _iswdir {d} { expr [file isdirectory $d] * [file writable $d] }
     set tmpdir ""
@@ -180,6 +179,28 @@ proc ::deken::get_writable_dir {paths} {
     return
 }
 
+# find an install path, either from prefs or on the system
+# returns an empty string if nothing was found
+proc ::deken::find_installpath {} {
+    set installpath ""
+    if { [ info exists ::deken::installpath ] } {
+        ## any previous choice?
+        set installpath [ ::deken::get_writable_dir [list $::deken::installpath ] ]
+    }
+    if { "$installpath" == "" } {
+        ## search the default paths
+        set installpath [ ::deken::get_writable_dir $::sys_staticpath ]
+    }
+    if { "$installpath" == "" } {
+        # let's use the first of $::sys_staticpath, if it does not exist yet
+        set userdir [lindex $::sys_staticpath 0]
+        if { [file exists ${userdir} ] } {} {
+            set installpath $userdir
+        }
+    }
+    return $installpath
+}
+
 # list-reverter (compat for tcl<8.5)
 if {[info command lreverse] == ""} {
     proc lreverse list {
@@ -228,6 +249,9 @@ set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
 set ::deken::architecture_substitutes(armv7l) [list "armv7" "armv6l" "armv6" "arm"]
 set ::deken::architecture_substitutes(PowerPC) [list "ppc"]
 set ::deken::architecture_substitutes(ppc) [list "PowerPC"]
+
+# try to set install path when plugin is loaded
+set ::deken::installpath [::deken::find_installpath]
 
 proc ::deken::status {msg} {
     #variable mytoplevelref
@@ -410,22 +434,7 @@ proc ::deken::clicked_link {URL filename} {
     ### if ::deken::installpath is set, use the first writable item
     ### if not, get a writable item from one of the searchpaths
     ### if this still doesn't help, ask the user
-    set installdir ""
-    if { [ info exists ::deken::installpath ] } {
-        ## any previous choice?
-        set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ]
-    }
-    if { "$installdir" == "" } {
-        ## search the default paths
-        set installdir [ ::deken::get_writable_dir $::sys_staticpath ]
-    }
-    if { "$installdir" == "" } {
-        # let's use the first of $::sys_staticpath, if it does not exist yet
-        set userdir [lindex $::sys_staticpath 0]
-        if { [file exists ${userdir} ] } {} {
-            set installdir $userdir
-        }
-    }
+    set installdir ::deken::find_installpath
     if { "$installdir" == "" } {
         ## ask the user (and remember the decision)
         ::deken::prompt_installdir
