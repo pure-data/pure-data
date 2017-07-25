@@ -28,11 +28,19 @@ proc ::helpbrowser::open_helpbrowser {} {
             .helpbrowser configure -menu $::dialog_menubar
         }
 
+        # FIXME wrap frame in a canvas with a horz scrollbar,
+        # currently we simply add cols to the left but only need 4 levels so far
         wm resizable .helpbrowser 0 1
         frame .helpbrowser.frame
         pack .helpbrowser.frame -side top -fill both -expand 1
         build_references
-        make_rootlistbox
+        make_rootlistbox false
+
+        # use the following instead to bring key focus to listbox at start,
+        # this is left out for now to mimic macOS Finder behavior that requires
+        # clicking or pressing the up or tab keys to focus key input & also keeps
+        # the selection highlight from appearing before interaction
+        #make_rootlistbox true
     }
 }
 
@@ -58,7 +66,8 @@ proc ::helpbrowser::check_destroy {level} {
 }
 
 # make the root listbox of the help browser using the pre-built lists
-proc ::helpbrowser::make_rootlistbox {} {
+# set select to true to focus and select first item
+proc ::helpbrowser::make_rootlistbox {{select true}} {
     variable libdirlist
     variable helplist
 
@@ -78,10 +87,6 @@ proc ::helpbrowser::make_rootlistbox {} {
         $current_listbox insert end $item
     }
 
-    if {[$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-    }
-
     bind $current_listbox <Button-1> \
         "::helpbrowser::root_navigate %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
@@ -89,12 +94,21 @@ proc ::helpbrowser::make_rootlistbox {} {
     bind $current_listbox <Key-Return> \
         "::helpbrowser::root_return %W"
     bind $current_listbox <Key-Right> \
-        "::helpbrowser::root_right %W"
+        "::helpbrowser::root_navigate_key %W true"
+    bind $current_listbox <KeyRelease-Up> \
+        "::helpbrowser::root_navigate_key %W false"
+    bind $current_listbox <KeyRelease-Down> \
+        "::helpbrowser::root_navigate_key %W false"
     bind $current_listbox <$::modifier-Key-o> \
         "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 2"
-    focus $current_listbox
+
+    # select first entry
+    if {$select && [$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+        focus $current_listbox
+    }
 }
 
 # destroy a column
@@ -114,15 +128,17 @@ proc ::helpbrowser::open_path {dir filename} {
     }
 }
 
-# navigate from one column to the right
-proc ::helpbrowser::root_right {window} {
+# navigate from one column to the right or update the second columns content
+# set move to false if the cursor should stay in the current column
+proc ::helpbrowser::root_navigate_key {window {move true}} {
     variable reference_paths
     if {[set item [$window get active]] eq {}} {
         return
     }
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-        focus [make_liblistbox $filename]
+        set lbox [make_liblistbox $filename $move]
+        if {$move} {focus $lbox}
     }
 }
 
@@ -143,20 +159,19 @@ proc ::helpbrowser::root_return {window} {
 # navigate into a library/directory from the root
 proc ::helpbrowser::root_navigate {window x y} {
     variable reference_paths
-    ::pdwindow::debug "root_navigate\n"
     if {[set item [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-        focus [make_liblistbox $filename]
+        # FIXME the lbox var is not used, but seems to fix an error
+        set lbox [make_liblistbox $filename false]
     }
 }
 
 # double-click action to open the file or folder
 proc ::helpbrowser::root_doubleclick {window x y} {
     variable reference_paths
-    ::pdwindow::debug "root_doubleclick"
     if {[set item [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
@@ -166,7 +181,7 @@ proc ::helpbrowser::root_doubleclick {window x y} {
 }
 
 # make the listbox to show the first level contents of a libdir
-proc ::helpbrowser::make_liblistbox {dir} {
+proc ::helpbrowser::make_liblistbox {dir {select true}} {
     variable doctypes
 
     check_destroy 1
@@ -192,11 +207,6 @@ proc ::helpbrowser::make_liblistbox {dir} {
                                          *.txt]]  {
         $current_listbox insert end [file tail $item]
     }
-
-    # select first entry
-    if {[$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-    }
     
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} 2 %W %x %y"
@@ -205,16 +215,26 @@ proc ::helpbrowser::make_liblistbox {dir} {
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_return {$dir} 2 %W"
     bind $current_listbox <Key-Right> \
-        "::helpbrowser::dir_right {$dir} 2 %W"
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W"
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left 0 %W"
+    bind $current_listbox <KeyRelease-Up> \
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
+    bind $current_listbox <KeyRelease-Down> \
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
+
+    # select first entry
+    if {$select && [$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+    }
 
     return $current_listbox
 }
 
-proc ::helpbrowser::make_doclistbox {dir count} {
+# set select to true to select first item
+proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     variable doctypes
 
     check_destroy $count
@@ -236,23 +256,27 @@ proc ::helpbrowser::make_doclistbox {dir count} {
     }
     incr count
 
-    # select first entry
-    if {[$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-    }
-
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} $count %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
         "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
-    bind $current_listbox <Key-Right> \
-        "::helpbrowser::dir_right {$dir} $count %W"
-    bind $current_listbox <Key-Left> \
-        "::helpbrowser::dir_left [expr $count - 2] %W"
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_return {$dir} $count %W"
+    bind $current_listbox <Key-Right> \
+        "::helpbrowser::dir_navigate_key {$dir} $count %W"
+    bind $current_listbox <Key-Left> \
+        "::helpbrowser::dir_left [expr $count - 2] %W"
+    bind $current_listbox <KeyRelease-Up> \
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
+    bind $current_listbox <KeyRelease-Down> \
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W [expr $count + 1]"
+
+    # select first entry
+    if {$select && [$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+    }
 
     return $current_listbox
 }
@@ -263,14 +287,16 @@ proc ::helpbrowser::dir_left {count window} {
     focus .helpbrowser.frame.root$count
 }
 
-# navigate one column to the right
-proc ::helpbrowser::dir_right {dir count window} {
+# navigate from one column to the right or update the second columns content
+# set move to false if the cursor should stay in the current column
+proc ::helpbrowser::dir_navigate_key {dir count window {move true}} {
     if {[set newdir [$window get active]] eq {}} {
         return
     }
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
-        focus [make_doclistbox $dir_to_open $count]
+        set lbox [make_doclistbox $dir_to_open $count $move]
+        if {$move} {focus $lbox}
     }
 }
 
@@ -292,7 +318,8 @@ proc ::helpbrowser::dir_navigate {dir count window x y} {
     }
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
-        focus [make_doclistbox $dir_to_open $count]
+        # FIXME the lbox var is not used, but seems to fix an error
+        set lbox [make_doclistbox $dir_to_open $count false]
     }
 }
 
