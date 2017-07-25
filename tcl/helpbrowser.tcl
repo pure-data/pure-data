@@ -34,13 +34,9 @@ proc ::helpbrowser::open_helpbrowser {} {
         frame .helpbrowser.frame
         pack .helpbrowser.frame -side top -fill both -expand 1
         build_references
-        make_rootlistbox false
+        make_rootlistbox
 
-        # use the following instead to bring key focus to listbox at start,
-        # this is left out for now to mimic macOS Finder behavior that requires
-        # clicking or pressing the up or tab keys to focus key input & also keeps
-        # the selection highlight from appearing before interaction
-        #make_rootlistbox true
+        # hit Tab after browser opens to focus on first listbox
     }
 }
 
@@ -102,13 +98,7 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     bind $current_listbox <$::modifier-Key-o> \
         "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
-        "::helpbrowser::scroll_destroy %W 2"
-
-    # select first entry
-    if {$select && [$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-        focus $current_listbox
-    }
+        "::helpbrowser::root_focusin %W 2"
 }
 
 # destroy a column
@@ -180,7 +170,18 @@ proc ::helpbrowser::root_doubleclick {window x y} {
     open_path $dir $filename
 }
 
+# try closing child col & mark selection on first window focus
+proc ::helpbrowser::root_focusin {window count} {
+    ::helpbrowser::scroll_destroy $window $count
+    if {[$window size] != "0" && [$window curselection] == ""} {
+        $window selection set 0
+        root_navigate_key $window false
+        focus $window
+    }
+}
+
 # make the listbox to show the first level contents of a libdir
+# set select to true to select first item & create child col
 proc ::helpbrowser::make_liblistbox {dir {select true}} {
     variable doctypes
 
@@ -225,15 +226,16 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
 
-    # select first entry
+    # select first entry & update next col
     if {$select && [$current_listbox size] != "0"} {
         $current_listbox selection set 0
+        dir_navigate_key "$dir" 2 $current_listbox false
     }
 
     return $current_listbox
 }
 
-# set select to true to select first item
+# set select to true to select first item & create child col
 proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     variable doctypes
 
@@ -273,9 +275,10 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W [expr $count + 1]"
 
-    # select first entry
+    # select first entry & update next col
     if {$select && [$current_listbox size] != "0"} {
         $current_listbox selection set 0
+        dir_navigate_key "$dir" $count $current_listbox false
     }
 
     return $current_listbox
