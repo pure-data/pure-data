@@ -32,7 +32,7 @@ proc ::helpbrowser::open_helpbrowser {} {
         # set the maximum number of child columns to create
         set ::helpbrowser::maxcols 3
 
-        # FIXME wrap frame in a canvas with a horz scrollbar,
+        # TODO wrap frame in a canvas with a horz scrollbar,
         # currently we simply add cols to the left until we reach max cols
         wm resizable .helpbrowser 0 1
         frame .helpbrowser.frame
@@ -381,7 +381,7 @@ proc ::helpbrowser::add_entry {reflist entry} {
     variable reference_count
     set entryname [file tail $entry]
     # if we are checking libdirs, then check to see if there is already a
-    # libdir with that name that has been discovered in the path.  If so, dump
+    # libdir with that name that has been discovered in the path. If so, dump
     # a warning. The trailing slash on $entryname is added below when
     # $entryname is a dir
     if {$reflist eq "libdirlist" && [lsearch -exact $libdirlist $entryname/] > -1} {
@@ -410,41 +410,39 @@ proc ::helpbrowser::build_references {} {
     array set reference_paths [list " Pure Data/" $::sys_libdir/doc \
                                     "-------- Libraries --------" "" ]
 
-    # remove any exact duplicates from the user search paths
-    set searchpaths {}
-    foreach pathdir $::sys_searchpath {
-        lappend searchpaths [file normalize $pathdir]
-    }
-    set searchpaths [lsort -unique $searchpaths]
-
-    foreach pathdir [concat $::sys_staticpath $searchpaths] {
+    # sys_staticpath (aka hardcoded)
+    foreach pathdir $::sys_staticpath {
         if { ! [file isdirectory $pathdir]} {continue}
 
         # Fix the directory name, this ensures the directory name is in the
-        # native format for the platform and contains a final directory seperator
+        # native format for the platform and contains a final directory separator
         set dir [string trimright [file join [file normalize $pathdir] { }]]
 
-        ## find the libdirs
-
-        if { [lsearch $::sys_searchpath $pathdir] ne -1} {
-            # Directory comes from sys_searchpath (aka preferences)
-            # Then add an entry for this directory in Help browser's root column :
-            add_entry libdirlist $dir
-        } else {
-            # Directory comes from sys_staticpath (aka hardcoded)
-            # Then add an entry for each subdir of this directory in Help browser's root column :
-            foreach filename [glob -nocomplain -type d -path $dir "*"] {
-                add_entry libdirlist $filename
-            }
-
-            # don't add core object references to root column
-            if {[string match "*doc/5.reference" $pathdir]} {continue}
-
-            ## find the stray help patches
-            foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
-                add_entry helplist $filename
-            }
+        # entry for each subdir of this directory in Help browser's root column
+        foreach filename [glob -nocomplain -type d -path $dir "*"] {
+            add_entry libdirlist $filename
         }
+
+        # don't add core object references to root column
+        if {[string match "*doc/5.reference" $pathdir]} {continue}
+
+        ## find stray help patches
+        foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
+            add_entry helplist $filename
+        }
+    }
+
+    # sys_searchpath (aka preferences)
+    # remove any exact duplicates from the user search paths and
+    # add an entry for seach directory in Help browser's root column
+    set searchpaths {}
+    foreach pathdir $::sys_searchpath {
+        lappend searchpaths [string trimright [file join [file normalize $pathdir] { }]]
+    }
+    set searchpaths [lsort -unique $searchpaths]
+    foreach pathdir $searchpaths {
+        if { ! [file isdirectory $pathdir]} {continue}
+        add_entry libdirlist $pathdir
     }
 }
 
