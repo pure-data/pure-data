@@ -172,6 +172,7 @@ proc ::helpbrowser::root_doubleclick {window x y} {
     set dir [file dirname $reference_paths($item)]
     set filename [file tail $reference_paths($item)]
     open_path $dir $filename
+    focus $window
 }
 
 # try closing child col & mark selection on first window focus
@@ -345,6 +346,7 @@ proc ::helpbrowser::dir_doubleclick {dir count window x y} {
         return
     }
     open_path $dir $filename
+    focus $window
 }
 
 #------------------------------------------------------------------------------#
