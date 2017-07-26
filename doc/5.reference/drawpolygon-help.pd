@@ -23,7 +23,7 @@ object as a whole.;
 #X text 36 201 - line width;
 #X text 36 222 - two or more (x \, y) pairs giving coordinates.;
 #X text 25 485 This object defines the fields for this template. You
-can see teh fields' values by right-clicking on the object in the "data"
+can see the fields' values by right-clicking on the object in the "data"
 window and selecting "properties.";
 #X obj 13 441 struct help-drawpolygon-template float x float y float
 cat float dog float weasel;

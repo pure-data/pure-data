@@ -3,11 +3,13 @@
 
 # files that are included but not built
 EXTRA_DIST = \
+    README.txt \
     osx-app.sh \
     tcltk-wish.sh \
     stuff/Info.plist \
     stuff/pd-file.icns \
-    stuff/pd.icns
+    stuff/pd.icns \
+    stuff/wish-shell.tgz
 
 #########################################
 ##### Targets #####

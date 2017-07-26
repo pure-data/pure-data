@@ -511,7 +511,6 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     # Override incoming values for known iem guis.
     set iemgui_type [_ $mainheader] 
     set iemgui_range_header [_ $rng_header]
-    set lilo_width 5
     switch -- $mainheader {
         "|bang|" {
             set iemgui_type [_ "Bang"]
@@ -557,9 +556,7 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         "|vu|" {
             set iemgui_type [_ "VU Meter"]
             set wdt_label [_ "Width:"]
-            set hgt_label [_ "Height:"]
-            # VU needs more room to display "no_scale"
-            set lilo_width 8 }
+            set hgt_label [_ "Height:"] }
         "|cnv|" {
             set iemgui_type [_ "Canvas"]
             set wdt_label [_ "Size:"]
@@ -613,17 +610,17 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
     labelframe $mytoplevel.para -borderwidth 1 -padx 5 -pady 5 -text [_ "Parameters"]
     pack $mytoplevel.para -side top -fill x -pady 5
     if {[eval concat $$var_iemgui_lin0_log1] == 0} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo0]] -width $lilo_width \
+        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo0]] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {[eval concat $$var_iemgui_lin0_log1] == 1} {
-        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo1]] -width $lilo_width \
+        button $mytoplevel.para.lilo -text [_ [eval concat $$var_iemgui_lilo1]] \
             -command "::dialog_iemgui::lilo $mytoplevel" }
     if {[eval concat $$var_iemgui_loadbang] == 0} {
         button $mytoplevel.para.lb -text [_ "No init"] \
-            -command "::dialog_iemgui::lb $mytoplevel" -width 7 }
+            -command "::dialog_iemgui::lb $mytoplevel"  }
     if {[eval concat $$var_iemgui_loadbang] == 1} {
         button $mytoplevel.para.lb -text [_ "Init"] \
-            -command "::dialog_iemgui::lb $mytoplevel" -width 7 }
+            -command "::dialog_iemgui::lb $mytoplevel"  }
     frame $mytoplevel.para.num
     label $mytoplevel.para.num.lab -text [_ $num_label]
     entry $mytoplevel.para.num.ent -textvariable $var_iemgui_num -width 4

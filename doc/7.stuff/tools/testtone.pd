@@ -542,7 +542,7 @@ input-monitor-gain, f 5;
 #X obj 42 150 metro 1000;
 #X obj 42 123 tgl 20 0 empty empty empty 20 8 0 8 -262144 -1 -1 0 1
 ;
-#X text 24 30 this window has various wierd debugging stuff...;
+#X text 24 30 this window has various weird debugging stuff...;
 #X text 22 74 see if Pd's time;
 #X text 22 93 measurement works:;
 #X obj 227 127 adc~;

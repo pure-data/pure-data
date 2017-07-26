@@ -22,9 +22,6 @@ void namelist_free(t_namelist *listwas);
 char *namelist_get(t_namelist *namelist, int n);
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
-extern t_namelist *sys_externlist;
-extern t_namelist *sys_searchpath;
-extern t_namelist *sys_helppath;
 int sys_open_absolute(const char *name, const char* ext,
     char *dirresult, char **nameresult, unsigned int size, int bin, int *fdp);
 int sys_trytoopenone(const char *dir, const char *name, const char* ext,

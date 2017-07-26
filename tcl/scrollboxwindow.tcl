@@ -20,7 +20,7 @@ proc ::scrollboxwindow::get_listdata {mytoplevel} {
 }
 
 proc ::scrollboxwindow::do_apply {mytoplevel commit_method listdata} {
-    $commit_method [pdtk_encode $listdata]
+    $commit_method $listdata
     pdsend "pd save-preferences"
 }
 

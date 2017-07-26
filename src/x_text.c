@@ -47,12 +47,14 @@ typedef struct _textbuf
     t_binbuf *b_binbuf;
     t_canvas *b_canvas;
     t_guiconnect *b_guiconnect;
+    t_symbol *b_sym;
 } t_textbuf;
 
-static void textbuf_init(t_textbuf *x)
+static void textbuf_init(t_textbuf *x, t_symbol *sym)
 {
     x->b_binbuf = binbuf_new();
     x->b_canvas = canvas_getcurrent();
+    x->b_sym = sym;
 }
 
 static void textbuf_senditup(t_textbuf *x)
@@ -86,8 +88,8 @@ static void textbuf_open(t_textbuf *x)
     else
     {
         char buf[40];
-        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s: %s} %d\n",
-            x, 600, 340, "myname", "text",
+        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s} %d\n",
+            x, 600, 340, x->b_sym->s_name,
                  sys_hostfontsize(glist_getfont(x->b_canvas),
                     glist_getzoom(x->b_canvas)));
         sprintf(buf, ".x%lx", (unsigned long)x);
@@ -271,7 +273,8 @@ static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
         post("warning: text define ignoring extra argument: ");
         postatom(argc, argv); endpost();
     }
-    textbuf_init(&x->x_textbuf);
+    textbuf_init(&x->x_textbuf, *x->x_bindsym->s_name ? x->x_bindsym :
+        gensym("text"));
         /* set up a scalar and a pointer to it that we can output */
     x->x_scalar = scalar_new(canvas_getcurrent(), gensym("pd-text"));
     binbuf_free(x->x_scalar->sc_vec[2].w_binbuf);
@@ -1659,7 +1662,7 @@ static t_class *qlist_class;
 static void *qlist_new( void)
 {
     t_qlist *x = (t_qlist *)pd_new(qlist_class);
-    textbuf_init(&x->x_textbuf);
+    textbuf_init(&x->x_textbuf, gensym("qlist"));
     x->x_clock = clock_new(x, (t_method)qlist_tick);
     outlet_new(&x->x_ob, &s_list);
     x->x_bangout = outlet_new(&x->x_ob, &s_bang);
@@ -1887,7 +1890,7 @@ static t_class *textfile_class;
 static void *textfile_new( void)
 {
     t_qlist *x = (t_qlist *)pd_new(textfile_class);
-    textbuf_init(&x->x_textbuf);
+    textbuf_init(&x->x_textbuf, gensym("textfile"));
     outlet_new(&x->x_ob, &s_list);
     x->x_bangout = outlet_new(&x->x_ob, &s_bang);
     x->x_onset = 0x7fffffff;

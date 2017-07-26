@@ -1,59 +1,55 @@
-# Italian translation for Pure Data
-# This file is put in the public domain
+# Spanish translations for Pure Data package.
+# This file is put in the public domain.
+# Federico Camara Halac <camarafede@gmail.com>, 2017.
 #
-# Lorenzo Sutton (lorenzosu) <lsutton@libero.it>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.43\n"
+"Project-Id-Version: Pure Data 0.48.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2009-10-27 21:07+0100\n"
-"Last-Translator: Lorenzo Sutton (lorenzosu) <lsutton@libero.it>\n"
-"Language-Team: American English <>\n"
-"Language: it\n"
+"PO-Revision-Date: 2017-07-20 21:14-0400\n"
+"Last-Translator: Federico Camara Halac <camarafede@gmail.com>\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "-------dimensions(digits)(pix):-------"
-msgstr ""
+msgstr "-------dimensiones(dígitos)(pix):-------"
 
 msgid "--------dimensions(pix)(pix):--------"
-msgstr ""
+msgstr "--------dimensiones(pix)(pix):--------"
 
 msgid "----------dimensions(pix):-----------"
-msgstr ""
+msgstr "----------dimensiones(pix):-----------"
 
 msgid "--------flash-time(ms)(ms):---------"
-msgstr ""
+msgstr "--------intermitencia(ms)(ms):---------"
 
 msgid "-----------output-range:-----------"
-msgstr ""
+msgstr "-----------rango-de-salida:-----------"
 
 msgid "------selectable_dimensions(pix):------"
-msgstr ""
+msgstr "-----dimensiones_seleccionables(pix):-----"
 
 msgid "------visible_rectangle(pix)(pix):------"
-msgstr ""
+msgstr "------rectángulo_visible(pix)(pix):------"
 
-#, fuzzy
 msgid "bottom:"
-msgstr "Sotto"
+msgstr "Abajo"
 
-#, fuzzy
 msgid "height:"
-msgstr "Destra"
+msgstr "Altura:"
 
 msgid "hold:"
-msgstr ""
+msgstr "Hold:"
 
 msgid "intrrpt:"
-msgstr ""
+msgstr "Intrrpt:"
 
 msgid "left:"
-msgstr ""
+msgstr "Izquierda:"
 
 msgid "lin"
 msgstr ""
@@ -62,331 +58,314 @@ msgid "log"
 msgstr ""
 
 msgid "log-height:"
-msgstr ""
+msgstr "Altura Log:"
 
 msgid "max:"
-msgstr ""
+msgstr "Máx.:"
 
 msgid "min:"
-msgstr ""
+msgstr "Min.:"
 
-#, fuzzy
 msgid "right:"
-msgstr "Destra"
+msgstr "Derecha:"
 
-#, fuzzy
 msgid "size:"
-msgstr "Dimensione:"
+msgstr "Tamaño:"
 
 msgid "top:"
-msgstr ""
+msgstr "Arriba"
 
 msgid "value:"
-msgstr ""
+msgstr "Valor:"
 
-#, fuzzy
 msgid "width:"
-msgstr "Larghezza:"
+msgstr "Ancho:"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Salvare le modifiche apportate a '%s'?"
+msgstr "¿Desea guardar los cambios realizados en '%s'?"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
-msgstr "Cestinare le modifiche apportate a '%s'?"
+msgstr "¿Rechazar cambios en '%s'?"
 
 msgid "Undo clear"
-msgstr "Annulla pulisci"
+msgstr "Deshacer borrar"
 
 msgid "Undo connect"
-msgstr "Annulla connetti"
+msgstr "Deshacer conectar"
 
 msgid "Undo cut"
-msgstr "Annulla taglia"
+msgstr "Deshacer cortar"
 
 msgid "Undo disconnect"
-msgstr "Annulla disconnetti"
+msgstr "Deshacer desconectar"
 
 msgid "Undo duplicate"
-msgstr "Annulla duplica"
+msgstr "Deshacer duplicar"
 
 msgid "Undo motion"
-msgstr "Annulla spostamento "
+msgstr "Deshacer mover"
 
 msgid "Undo paste"
-msgstr "Annulla incolla"
+msgstr "Deshacer pegar"
 
 msgid "Undo typing"
-msgstr "Annulla inserimento"
+msgstr "Deshacer escritura"
 
-#, fuzzy
 msgid "Redo clear"
-msgstr "Annulla pulisci"
+msgstr "Rehacer borrar"
 
-#, fuzzy
 msgid "Redo connect"
-msgstr "Annulla connetti"
+msgstr "Rehacer conectar"
 
-#, fuzzy
 msgid "Redo cut"
-msgstr "Annulla taglia"
+msgstr "Rehacer cortar"
 
-#, fuzzy
 msgid "Redo disconnect"
-msgstr "Annulla disconnetti"
+msgstr "Rehacer desconectar"
 
-#, fuzzy
 msgid "Redo duplicate"
-msgstr "Annulla duplica"
+msgstr "Rehacer duplicar"
 
-#, fuzzy
 msgid "Redo motion"
-msgstr "Annulla spostamento "
+msgstr "Rehacer mover"
 
-#, fuzzy
 msgid "Redo paste"
-msgstr "Annulla incolla"
+msgstr "Rehacer pegar"
 
-#, fuzzy
 msgid "Redo typing"
-msgstr "Annulla inserimento"
+msgstr "Rehacer escritura"
 
 msgid "no Pd settings to clear"
-msgstr ""
+msgstr "No hay configuraciones para borrar"
 
 msgid "removed .pdsettings file"
-msgstr ""
+msgstr "Archivo .pdsettings eliminado"
 
 msgid "couldn't delete .pdsettings file"
-msgstr ""
+msgstr "No pude borrar el archivo .pdsettings"
 
 msgid "failed to erase Pd settings"
-msgstr ""
+msgstr "Falla al borrar el archivo de configuraciones"
 
-#, fuzzy
 msgid "erased Pd settings"
-msgstr "Salva tutti i settaggi"
+msgstr "Configuraciones de Pd eliminadas"
 
 msgid "no Pd settings to erase"
-msgstr ""
+msgstr "No hay configuraciones para borrar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
+"salteando el cargado de preferencias... Pd parece haber crasheado al inicio."
 
 msgid "(re-save preferences to reinstate them)"
-msgstr ""
+msgstr "(click en Guardar Preferencias para reestablecerlas)"
 
 msgid "File"
-msgstr "File"
+msgstr "Archivo"
 
-#, fuzzy
 msgid "Edit"
-msgstr "Modifica"
+msgstr "Editar"
 
 msgid "Put"
-msgstr "Inserisci"
+msgstr "Poner"
 
 msgid "Find"
-msgstr "Trova"
+msgstr "Buscar"
 
 msgid "Media"
-msgstr "Media"
+msgstr "Medios"
 
 msgid "Window"
-msgstr "Finestra"
+msgstr "Ventana"
 
 msgid "Help"
-msgstr "Aiuto"
+msgstr "Ayuda"
 
 msgid "Show &Hidden Files and Directories"
-msgstr ""
+msgstr "Mostrar Archivos y Carpetas &Ocultos"
 
 msgid "Copy"
-msgstr "Copia"
+msgstr "Copiar"
 
 msgid "Paste"
-msgstr "Incolla"
+msgstr "Pegar"
 
 msgid "Array Properties"
-msgstr "Proprietà Array"
+msgstr "Propiedades del Array"
 
 msgid "Array"
-msgstr "Array"
+msgstr ""
 
 msgid "Name:"
-msgstr "Nome:"
+msgstr "Nombre:"
 
 msgid "Size:"
-msgstr "Dimensione:"
+msgstr "Tamaño:"
 
 msgid "Save contents"
-msgstr "Salva contenuto"
+msgstr "Guardar contenidos"
 
 msgid "Draw as:"
-msgstr "Disegna come:"
+msgstr "Trazar como:"
 
 msgid "Polygon"
-msgstr "Poligono"
+msgstr "Polígono"
 
 msgid "Points"
-msgstr "Punti"
+msgstr "Puntos"
 
 msgid "Bezier curve"
-msgstr "Curva bezier"
+msgstr "Curva Bezier"
 
 msgid "Put array into:"
-msgstr "Matty l'array in:"
+msgstr "Poner array en:"
 
 msgid "New graph"
-msgstr "Nuovo grafico"
+msgstr "Nuevo gráfico"
 
 msgid "Last graph"
-msgstr "Ultimo grafico"
+msgstr "Último gráfico"
 
 msgid "Options"
-msgstr ""
+msgstr "Opciones"
 
 msgid "Open List View..."
-msgstr "Apri visualizzazione lista..."
+msgstr "Ver Lista "
 
 msgid "Delete array"
-msgstr "Cancella array"
+msgstr "Eliminar array"
 
 msgid "Cancel"
-msgstr "Annulla"
+msgstr "Cancelar"
 
 msgid "Apply"
-msgstr "Applica"
+msgstr "Aplicar"
 
 msgid "OK"
-msgstr "OK"
+msgstr "Aceptar"
 
 msgid "Audio Settings"
-msgstr "Settaggi Audio"
+msgstr "Configuración de audio"
 
-#, fuzzy
 msgid "Settings"
-msgstr "Settaggi MIDI"
+msgstr "Configuración"
 
 msgid "Sample rate:"
-msgstr "Frequenza di campionamento"
+msgstr "Velocidad de Sampleo:"
 
 msgid "Delay (msec):"
-msgstr "Ritardo (msec):"
+msgstr "Retardo (msec):"
 
 msgid "Block size:"
-msgstr ""
+msgstr "Tamaño de Bloque:"
 
 msgid "Use callbacks"
-msgstr "Usa callback"
+msgstr "Usar callbacks"
 
 msgid "Input Devices"
-msgstr "Dispositivo di ingresso"
+msgstr "Dispositivos de Entrada"
 
 msgid "Channels:"
-msgstr "Canali:"
+msgstr "Canales:"
 
 msgid "Output Devices"
-msgstr "Dispositivo di uscita"
+msgstr "Dispositivos de Salida"
 
-#, fuzzy
 msgid "(same as input device)..."
-msgstr "(lo stesso del dispositivo di ingresso)..........."
+msgstr "(igual que dispositivos de entrada)..."
 
-#, fuzzy
 msgid "Use Multiple Devices"
-msgstr "Usa dispositivi multipli"
+msgstr "Usar múltiples dispositivos"
 
 msgid "Save All Settings"
-msgstr "Salva tutti i settaggi"
+msgstr "Guardar Configuraciones"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
+"ADVERTENCIA: banderas graphme desconocidas recibidas en pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
-msgstr "Proprietà Canvas"
+msgstr "Propiedades de Canvas"
 
 msgid "Scale"
-msgstr "Scala"
+msgstr "Escala"
 
 msgid "X units per pixel:"
-msgstr "X unità per pixel"
+msgstr "Unidades de X por píxel:"
 
 msgid "Y units per pixel:"
-msgstr "Y unità per pixel:"
+msgstr "Unidades de Y por píxel:"
 
 msgid "Appearance on parent patch"
-msgstr "Aspetto sulla parent patch"
+msgstr "Apariencia en parche contenedor"
 
 msgid "Graph-On-Parent"
-msgstr "Mostra sulla patent"
+msgstr "Graficar-En-Contenedor (GOP)"
 
 msgid "Hide object name and arguments"
-msgstr "Nascondi il nome oggetto e gli argomenti"
+msgstr "Ocultar nombre y argumentos del objeto"
 
 msgid "Range and size"
-msgstr "Intervallo e dimensioni"
+msgstr "Rango y Tamaño"
 
-#, fuzzy
 msgid "X range: from"
-msgstr "Intervallo X, da"
+msgstr "Rango X: de"
 
 msgid "to"
 msgstr "a"
 
 msgid "Margin:"
-msgstr "Margine:"
+msgstr "Margen:"
 
-#, fuzzy
 msgid "Y range: from"
-msgstr "Intervallo Y, da"
+msgstr "Rango Y: de"
 
-#, fuzzy
 msgid "Data Properties"
-msgstr "Proprietà Canvas"
+msgstr "Propiedades de Data"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
-msgstr ""
+msgstr "Encontrado '%1$ss' en %2$s"
 
 #, tcl-format
 msgid "Couldn't find '%1$s' in %2$s"
-msgstr ""
+msgstr "No he encontrado '%1$s' en %2$s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Search in %s for:"
-msgstr "Cerca in"
+msgstr "Buscar en %s para:"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
-msgstr ""
+msgstr "Último '%1$s' en %2$s ha sido mostrado."
 
 #, tcl-format
 msgid "Showing '%1$d' out of %2$d items in %3$s"
-msgstr ""
+msgstr "Mostrando '%1$d' de %2$d ítems en %3$s"
 
 msgid "Pd window"
-msgstr "Finestra Pd"
+msgstr "Ventana de Pd "
 
 msgid "Match whole word only"
-msgstr "Solo parole intere"
+msgstr "Comparar solo con palabra completa"
 
 msgid "Close"
-msgstr "Chiudi"
+msgstr "Cerrar"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "%s Font"
-msgstr "Carattere"
+msgstr "%s Fuente"
 
 msgid "Font"
-msgstr "Carattere"
+msgstr "Fuente"
 
 msgid "Font Size"
-msgstr "Dimensione carattere:"
+msgstr "Tamaño Fuente"
 
 msgid "Stretch"
-msgstr "Allarga/riduci:"
+msgstr "Compensar"
 
 msgid "X and Y"
 msgstr "X e Y"
@@ -398,53 +377,52 @@ msgid "Y only"
 msgstr "Solo Y"
 
 msgid "Atom Box Properties"
-msgstr "Proprietà Atom Box"
+msgstr "Propiedades de Caja Atom"
 
 msgid "Width:"
-msgstr "Larghezza:"
+msgstr "Ancho:"
 
 msgid "Limits"
-msgstr "Limiti"
+msgstr "Límites"
 
 msgid "Lower:"
-msgstr "Inferiore:"
+msgstr "Inferior:"
 
 msgid "Upper:"
-msgstr "Superiore:"
+msgstr "Superior:"
 
 msgid "Label"
-msgstr "Etichetta"
+msgstr "Etiqueta"
 
-#, fuzzy
 msgid "Left"
-msgstr "Sinistra   "
+msgstr "Izquierda"
 
 msgid "Right"
-msgstr "Destra"
+msgstr "Derecha"
 
 msgid "Top"
-msgstr "Sopra"
+msgstr "Arriba"
 
 msgid "Bottom"
-msgstr "Sotto"
+msgstr "Abajo"
 
 msgid "Messages"
-msgstr "Messaggi"
+msgstr "Mensajes"
 
 msgid "Send symbol:"
-msgstr "Invia simbolo:"
+msgstr "Símbolo send:"
 
 msgid "Receive symbol:"
-msgstr "Ricevi simbolo:"
+msgstr "Símbolo receive:"
 
 msgid "Background color"
-msgstr "Colore sfondo"
+msgstr "Color de Fondo"
 
 msgid "Foreground color"
-msgstr "Colore primo piano"
+msgstr "Color de Frente"
 
 msgid "Label color"
-msgstr "Colore etichetta"
+msgstr "Color de Etiqueta"
 
 msgid "Init"
 msgstr ""
@@ -453,17 +431,16 @@ msgid "No init"
 msgstr ""
 
 msgid "Jump on click"
-msgstr "Click imposta il valore"
+msgstr "Saltar a Valor"
 
 msgid "Steady on click"
-msgstr "Click incrementa/decrementa"
+msgstr "No saltar (Steady)"
 
 msgid "Bang"
-msgstr "Bang"
+msgstr ""
 
-#, fuzzy
 msgid "Flash Time (msec)"
-msgstr "Ritardo (msec):"
+msgstr "Intermitencia (flashtime)"
 
 msgid "Intrrpt:"
 msgstr ""
@@ -472,197 +449,198 @@ msgid "Hold:"
 msgstr ""
 
 msgid "Toggle"
-msgstr "Toggle"
+msgstr ""
 
 msgid "Non Zero Value"
-msgstr ""
+msgstr "Valor No-Zero"
 
 msgid "Value:"
-msgstr ""
+msgstr "Valor:"
 
 msgid "Number2"
-msgstr "Numero2"
+msgstr ""
 
 msgid "Width (digits):"
-msgstr ""
+msgstr "Ancho (dígitos):"
 
-#, fuzzy
 msgid "Height:"
-msgstr "Destra"
+msgstr "Altura:"
 
 msgid "Output Range"
-msgstr ""
+msgstr "Rango de Salida"
 
 msgid "Log height:"
-msgstr ""
+msgstr "Altura Log:"
 
 msgid "Vslider"
-msgstr "Slider verticale"
+msgstr ""
 
 msgid "Hslider"
-msgstr "Slider orizzontale"
+msgstr ""
 
 msgid "Vradio"
-msgstr "Radio verticale"
+msgstr ""
 
 msgid "Num cells:"
-msgstr ""
+msgstr "Número de Celdas:"
 
 msgid "Hradio"
-msgstr "Radio orizzontale"
+msgstr ""
 
 msgid "VU Meter"
-msgstr "Indicatore VU"
+msgstr ""
 
 msgid "Canvas"
-msgstr "Tavolozza"
+msgstr ""
 
 msgid "Visible Rectangle (pix)"
-msgstr ""
+msgstr "Rectángulo Visible (pix)"
 
 #, tcl-format
 msgid "%s Properties"
-msgstr "%s Proprietà"
+msgstr "%s Propiedades"
 
 msgid "Parameters"
-msgstr ""
+msgstr "Parámetros"
 
-#, fuzzy
 msgid "X offset:"
-msgstr "Spostamento X"
+msgstr "Compensar X:"
 
-#, fuzzy
 msgid "Y offset:"
-msgstr "Spostamento Y"
+msgstr "Compensar Y:"
 
 msgid "Colors"
-msgstr "Colori"
+msgstr "Colores"
 
 msgid "Background"
-msgstr "Colore sfondo"
+msgstr "Fondo"
 
 msgid "Front"
-msgstr "Primo piano"
+msgstr "Frente"
 
 msgid "Compose color"
-msgstr "Crea colore"
+msgstr "Componer color"
 
 msgid "Test label"
-msgstr "Test etichetta"
+msgstr "Etiqueta prueba"
 
-#, fuzzy
 msgid "Send a Pd message"
-msgstr "Invia un Messaggio..."
+msgstr "Enviar un mensaje Pd"
 
 msgid "(use arrow keys for history)"
-msgstr ""
+msgstr "(usar flechas para historial)"
 
 msgid "MIDI Settings"
-msgstr "Settaggi MIDI"
+msgstr "Configuración MIDI"
 
 msgid "ALSA MIDI Settings"
-msgstr "Settaggi ALSA MIDI"
+msgstr "Configuración ALSA MIDI"
 
 msgid "In Ports:"
-msgstr "Porte Ingresso:"
+msgstr "Puertos de Entrada:"
 
 msgid "Out Ports:"
-msgstr "Porte Uscita:"
+msgstr "Puertos de Salida:"
 
 msgid "Pd search path for objects, help, fonts, and other files"
-msgstr ""
+msgstr "Ruta de búsqueda de Pd para objetos, ayuda, fuentes, y otros archivos"
 
 msgid "Use standard paths"
-msgstr ""
+msgstr "Usar rutas estándar"
 
 msgid "Verbose"
-msgstr ""
+msgstr "Verbosa"
 
 msgid "Add new library"
-msgstr ""
+msgstr "Añadir nueva librería"
 
 msgid "Edit library"
-msgstr ""
+msgstr "Editar librería"
 
 msgid "Pd libraries to load on startup"
-msgstr ""
+msgstr "Librerías de Pd para cargar en inicio"
 
 msgid "Startup flags:"
-msgstr ""
+msgstr "Banderas de Inicio:"
 
 msgid "Defeat real-time scheduling"
-msgstr ""
+msgstr "Rechazar prioridad en tiempo-real"
 
 msgid "Help Browser"
-msgstr ""
+msgstr "Navegador de Ayuda"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr ""
+msgstr "(Tcl) FALTA LLAVE DE CIERRE '}': "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr ""
+msgstr "(Tcl) NOMBRE DE COMANDO INVÁLIDO: "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr ""
+msgstr "(Tcl) ERROR SIN TRATAR: "
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
-msgstr ""
+msgstr "[deken]: version instalada [%1$s] > %2$s...salteando!"
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
-msgstr ""
+msgstr "[deken]: version instalada [%1$s] < %2$s...sobreescribiendo!"
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-msgstr ""
+msgstr "[deken]: version instalada [%1$s] == %2$s...salteando!"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
+"[deken] deken-plugin.tcl (Búsqueda de externals para Pd) cargado de %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
+msgstr "[deken] Plataforma detectada: %s"
 
 msgid "Install libraries to directory:"
-msgstr ""
+msgstr "Instalar librerías en directorio:"
 
 msgid "Show all"
-msgstr ""
+msgstr "Ver todo"
 
-#, fuzzy
 msgid "Search"
-msgstr "Cerca in"
+msgstr "Buscar"
 
 msgid "To get a list of all available externals, try an empty search."
 msgstr ""
+"Para ver una lista de todos los externos disponibles, prueba una búsqueda "
+"vacía."
 
 msgid "Find externals"
-msgstr ""
+msgstr "Buscar Externos"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr ""
+msgstr "Solo instalar externos subidos por gente de confianza."
 
 msgid "Searching for externals..."
-msgstr ""
+msgstr "Buscando externos..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
-msgstr ""
+msgstr "[deken]: ¿En línea? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr ""
+msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
 msgstr ""
+"No se han encontrado externos con ese nombre. Prueba usando el nombre "
+"completo, por ejemplo: 'freeverb'."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
+"Por favor, selecciona un directorio de instalacion con permisos de escritura!"
 
 #, tcl-format
 msgid "Install to %s ?"
-msgstr ""
+msgstr "¿Desea Instalar en %s ?"
 
 #, tcl-format
 msgid ""
@@ -670,241 +648,237 @@ msgid ""
 "%1$s\n"
 "Into %2$s..."
 msgstr ""
+"Comenzando descarga de:\n"
+"%1$s\n"
+"En %2$s..."
 
 msgid "aborting."
-msgstr ""
+msgstr "Abortando."
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
+msgstr "Se ha extraído con éxito %1$s en %2$s."
 
 msgid "Unable to extract package automatically."
-msgstr ""
+msgstr "No se ha podido extraer el paquete automáticamente."
 
 msgid "Please perform the following steps manually:"
-msgstr ""
+msgstr "Por favor, siga estos pasos manualmente:"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. Extraer %s."
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. Copiar los contenidos en %s."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
-msgstr ""
+msgstr "No se ha podido descargar de %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to remove stray file %s"
-msgstr ""
+msgstr "No se ha podido remover el archivo suelto %s"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to %s"
-msgstr ""
+msgstr "No se ha podido renombrar el archivo descargado a %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "searching for '%s'"
-msgstr "Cestinare le modifiche apportate a '%s'?"
+msgstr "Buscando '%s'"
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr ""
+msgstr "Subido por %1$s @ %2$s"
 
 msgid "About Pd"
-msgstr "Informazioni su Pd..."
+msgstr "Sobre Pd"
 
 msgid "Save"
-msgstr "Salva"
+msgstr "Guardar"
 
 msgid "Save As..."
-msgstr "Salva con nome..."
+msgstr "Guardar Como..."
 
 msgid "Print..."
-msgstr "Stampa..."
+msgstr "Imprimir..."
 
 msgid "Duplicate"
-msgstr "Duplica"
+msgstr "Duplicar"
 
 msgid "Zoom In"
-msgstr ""
+msgstr "Acercar"
 
 msgid "Zoom Out"
-msgstr ""
+msgstr "Alejar"
 
 msgid "Tidy Up"
-msgstr "Allinea elementi"
+msgstr "Ordenar"
 
 msgid "Edit Mode"
-msgstr "Modalità modifica"
+msgstr "Modo Edición"
 
 msgid "Undo"
-msgstr "Annulla"
+msgstr "Deshacer"
 
 msgid "Redo"
-msgstr "Ripristina"
+msgstr "Rehacer"
 
 msgid "List of objects..."
-msgstr ""
+msgstr "Lista de objetos..."
 
 msgid "New"
-msgstr "Nuovo File"
+msgstr "Nuevo"
 
 msgid "Open"
-msgstr "Apri File..."
+msgstr "Abrir"
 
-#, fuzzy
 msgid "Message..."
-msgstr "Messaggio"
+msgstr "Mensaje..."
 
 msgid "Cut"
-msgstr "Taglia"
+msgstr "Cortar"
 
 msgid "Select All"
-msgstr "Seleziona tutto"
+msgstr "Seleccionar Todo"
 
 msgid "Clear Console"
-msgstr "Pulisci console"
+msgstr "Limpiar Consola"
 
 msgid "Preferences"
-msgstr "Preferenze"
+msgstr "Preferencias"
 
 msgid "Object"
-msgstr "Oggetto"
+msgstr "Objeto"
 
 msgid "Message"
-msgstr "Messaggio"
+msgstr "Mensaje"
 
 msgid "Number"
-msgstr "Numero"
+msgstr "Número"
 
 msgid "Symbol"
-msgstr "Simbolo"
+msgstr "Símbolo"
 
 msgid "Comment"
-msgstr "Commento"
+msgstr "Comentario"
 
 msgid "Graph"
-msgstr "Grafico"
+msgstr "Gráfico"
 
 msgid "Find..."
-msgstr "Trova"
+msgstr "Buscar..."
 
 msgid "Find Again"
-msgstr "Cerca Ancora"
+msgstr "Buscar de Nuevo"
 
 msgid "Find Last Error"
-msgstr "Trova l'ultimo errore"
+msgstr "Buscar Último Error"
 
 msgid "DSP On"
-msgstr ""
+msgstr "Encender DSP"
 
 msgid "DSP Off"
-msgstr ""
+msgstr "Apagar DSP"
 
 msgid "Test Audio and MIDI..."
-msgstr "Test Audio e MIDI"
+msgstr "Prueba de Audio y MIDI..."
 
 msgid "Load Meter"
-msgstr "Misura carico cpu"
+msgstr "Carga de CPU"
 
 msgid "Audio Settings..."
-msgstr "Settaggi audio..."
+msgstr "Configuración de Audio"
 
 msgid "MIDI Settings..."
-msgstr "Settaggi MIDI..."
+msgstr "Configuración MIDI"
 
 msgid "Minimize"
-msgstr "Minimizza"
+msgstr "Minimizar"
 
 msgid "Zoom"
-msgstr ""
+msgstr "Maximizar"
 
 msgid "Bring All to Front"
-msgstr "Porta tutto in primo piano"
+msgstr "Traer Todo al Frente"
 
-#, fuzzy
 msgid "Next Window"
-msgstr "Finestra parent"
+msgstr "Ventana Siguiente"
 
-#, fuzzy
 msgid "Previous Window"
-msgstr "Finestra parent"
+msgstr "Ventana Previa"
 
 msgid "Parent Window"
-msgstr "Finestra parent"
+msgstr "Ventana Contenedora"
 
 msgid "HTML Manual..."
-msgstr "Manuale HTML..."
+msgstr "Manual HTML..."
 
 msgid "Browser..."
-msgstr ""
+msgstr "Navegador..."
 
 msgid "puredata.info"
 msgstr ""
 
 msgid "Report a bug"
-msgstr ""
+msgstr "Reportar un error"
 
 msgid "Clear Menu"
-msgstr "Pulisci menu"
+msgstr "Borrar Menu"
 
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
+"¿Desea eliminar todas las preferencias?\n"
+"(efectivizará cuando Pd reinicie)"
 
 msgid "Path..."
-msgstr ""
+msgstr "Ruta..."
 
 msgid "Startup..."
+msgstr "Inicio..."
+
+msgid "Audio..."
 msgstr ""
 
-#, fuzzy
-msgid "Audio..."
-msgstr "Settaggi audio..."
-
-#, fuzzy
 msgid "MIDI..."
-msgstr "Settaggi MIDI..."
+msgstr ""
 
-#, fuzzy
 msgid "Zoom New Windows"
-msgstr "Finestra parent"
+msgstr "Agrandar nuevas ventanas"
 
-#, fuzzy
 msgid "Save All Preferences"
-msgstr "Preferenze"
+msgstr "Guardar Preferencias"
 
-#, fuzzy
 msgid "Save to..."
-msgstr "Salva con nome..."
+msgstr "Guardar como..."
 
 msgid "Load from..."
-msgstr ""
+msgstr "Cargar..."
 
 msgid "Forget All..."
-msgstr ""
+msgstr "Olvidar..."
 
 msgid "Open Recent"
-msgstr "Apri recenti"
+msgstr "Abrir Recientes"
 
 msgid "Quit"
-msgstr "Esci"
+msgstr "Salir"
 
 msgid "Properties"
-msgstr "Proprietà"
+msgstr "Propiedades"
 
-#, fuzzy
 msgid "Audio on"
-msgstr "Settaggi Audio"
+msgstr "Audio Encendido"
 
 msgid "Audio off"
-msgstr ""
+msgstr "Audio apagado"
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
-msgstr ""
+msgstr "(Tcl) FALTA CORCHETE DE CIERRE ']': "
 
 msgid "Tcl:"
 msgstr ""
@@ -916,7 +890,7 @@ msgid "DSP"
 msgstr ""
 
 msgid "Audio I/O error"
-msgstr ""
+msgstr "Error E/S de Audio"
 
 msgid "Log:"
 msgstr ""
@@ -934,18 +908,16 @@ msgid "debug"
 msgstr ""
 
 msgid "all"
-msgstr ""
+msgstr "todo"
 
 msgid "New..."
-msgstr ""
+msgstr "Nuevo..."
 
-#, fuzzy
 msgid "Edit..."
-msgstr "Modifica"
+msgstr "Editar..."
 
-#, fuzzy
 msgid "Delete"
-msgstr "Cancella array"
+msgstr "Eliminar"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't exist"
@@ -954,104 +926,3 @@ msgstr ""
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
-
-#~ msgid "for:"
-#~ msgstr "per:"
-
-#~ msgid "Signal"
-#~ msgstr "Segnali"
-
-#~ msgid "WARNING: Font weight '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ATTENZIONE: Peso '%s' del font non trovato, uso quello di default (%s)"
-
-#~ msgid "Close this window??"
-#~ msgstr "Chiudere questa finestra??"
-
-#~ msgid "Input device 3:"
-#~ msgstr "Dispositivo di ingresso 3:"
-
-#~ msgid "Associated Files"
-#~ msgstr "File associati"
-
-#~ msgid "Output device 4:"
-#~ msgstr "Dispositivo di uscita 4:"
-
-#~ msgid "Generators"
-#~ msgstr "Generatori"
-
-#~ msgid "WARNING: Font family '%s' not found, using default (%s)"
-#~ msgstr ""
-#~ "ATTENZIONE: Famiglia di font '%s\" non trovata, uso quella di default (%s)"
-
-#~ msgid "Preferences..."
-#~ msgstr "Preferenze..."
-
-#~ msgid "Output device 2:"
-#~ msgstr "Dispositivo di uscita 2:"
-
-#~ msgid "Max Patch Files (.pat)"
-#~ msgstr "Patch Max (.pat)"
-
-#~ msgid "Sampling"
-#~ msgstr "Campionamento"
-
-#~ msgid "Others"
-#~ msgstr "Altri"
-
-#~ msgid "Text Editor"
-#~ msgstr "Editor di Testo..."
-
-#~ msgid "really quit?"
-#~ msgstr "Uscire veramente?"
-
-#, fuzzy
-#~ msgid "Font Properties"
-#~ msgstr "Proprietà"
-
-#~ msgid "Max Patch Files"
-#~ msgstr "Patch Max"
-
-#~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr ""
-#~ "ERRORE: %s impossibile trovare la dimensione del font (%s) che entra in "
-#~ "%sx%s!"
-
-#~ msgid "Toggle Console"
-#~ msgstr "Mostra/Nascondi console"
-
-#~ msgid "I/O"
-#~ msgstr "Input/Output"
-
-#~ msgid "Math"
-#~ msgstr "Matematica"
-
-#~ msgid "Input device 2:"
-#~ msgstr "Dispositivo di ingresso 2:"
-
-#~ msgid "Input device 4:"
-#~ msgstr "Dispositivo di ingresso 4:"
-
-#~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
-#~ msgstr "ERRORE: 'pd' non è mai partito, chiudo 'pd-gui'!"
-
-#~ msgid "Filters"
-#~ msgstr "Filtri"
-
-#~ msgid "Pd Files"
-#~ msgstr "File Pd"
-
-#~ msgid "Max Text Files (.mxt)"
-#~ msgstr "File di testo Max (.mxt)"
-
-#~ msgid "Max Text Files"
-#~ msgstr "File di testo Max"
-
-#~ msgid "Output device 3:"
-#~ msgstr "Dispositivo di uscita 3:"
-
-#~ msgid "Discard changes to this window??"
-#~ msgstr "Cestinare le modifiche apportate in questa finestra?"
-
-#~ msgid "Use multiple ALSA devices"
-#~ msgstr "Usa dispositivi ALSA multipli"

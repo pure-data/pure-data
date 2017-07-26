@@ -52,7 +52,10 @@ This also works when opening a macOS .app bundle:
 
 If the Tcl files have changed, the make process regenerates the .pot template
 file and merges any changes into the .po files. Strings which have changed are
-marked as "fuzzy" and should be reviewed updated and by a translator.
+marked as "fuzzy" and should be reviewed updated and by a translator. Once the 
+update is approved, the "fuzzy" keyword and/or comment can be removed. Also,
+any strings which do not require translation can be left with an empty msgstr
+which tells gettext to use the default, non translated string.
 
 ## Developer Info
 

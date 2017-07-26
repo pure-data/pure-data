@@ -146,6 +146,30 @@ msgstr ""
 msgid "Redo typing"
 msgstr ""
 
+msgid "no Pd settings to clear"
+msgstr ""
+
+msgid "removed .pdsettings file"
+msgstr ""
+
+msgid "couldn't delete .pdsettings file"
+msgstr ""
+
+msgid "failed to erase Pd settings"
+msgstr ""
+
+msgid "erased Pd settings"
+msgstr ""
+
+msgid "no Pd settings to erase"
+msgstr ""
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+
+msgid "(re-save preferences to reinstate them)"
+msgstr ""
+
 msgid "File"
 msgstr "फाइल"
 
@@ -273,7 +297,7 @@ msgstr ""
 msgid "(same as input device)..."
 msgstr ""
 
-msgid "Use multiple devices"
+msgid "Use Multiple Devices"
 msgstr ""
 
 msgid "Save All Settings"
@@ -324,27 +348,23 @@ msgid "Data Properties"
 msgstr ""
 
 #, tcl-format
-msgid "Found '%s' in %s"
+msgid "Found '%1$s' in %2$s"
 msgstr ""
 
 #, tcl-format
-msgid "Couldn't find '%s' in %s"
+msgid "Couldn't find '%1$s' in %2$s"
 msgstr ""
 
-#, fuzzy
-msgid "Search in"
+#, fuzzy, tcl-format
+msgid "Search in %s for:"
 msgstr "पाठ खोजें..."
 
-#, fuzzy
-msgid "for:"
-msgstr "पोर्टः"
-
 #, tcl-format
-msgid "Showed last '%s' in %s"
+msgid "Showed last '%1$s' in %2$s"
 msgstr ""
 
 #, tcl-format
-msgid "Showing '%d' out of %d items in %s"
+msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr ""
 
 #, fuzzy
@@ -402,7 +422,7 @@ msgid "Label"
 msgstr ""
 
 #, fuzzy
-msgid "Left   "
+msgid "Left"
 msgstr "बायाँ"
 
 msgid "Right"
@@ -570,7 +590,7 @@ msgstr ""
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Use standard extensions"
+msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
@@ -604,6 +624,29 @@ msgstr ""
 msgid "(Tcl) UNHANDLED ERROR: "
 msgstr ""
 
+#, tcl-format
+msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
+msgstr ""
+
+#, tcl-format
+msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr ""
+
+msgid "Install libraries to directory:"
+msgstr ""
+
 msgid "Show all"
 msgstr ""
 
@@ -611,18 +654,86 @@ msgstr ""
 msgid "Search"
 msgstr "पाठ खोजें..."
 
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+
 msgid "Find externals"
 msgstr ""
 
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
+msgid "Searching for externals..."
+msgstr ""
+
+#, tcl-format
+msgid "[deken]: online? %s"
+msgstr ""
+
+msgid "Unable to perform search. Are you online?"
+msgstr ""
+
+msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
+msgstr ""
+
+msgid "Please select a (writable) installation directory!"
+msgstr ""
+
+#, tcl-format
+msgid "Install to %s ?"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Commencing downloading of:\n"
+"%1$s\n"
+"Into %2$s..."
+msgstr ""
+
+msgid "aborting."
+msgstr ""
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
+msgstr ""
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr ""
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr ""
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to remove stray file %s"
+msgstr ""
+
+#, tcl-format
+msgid "Unable to rename downloaded file to %s"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "searching for '%s'"
+msgstr "पाठ खोजें..."
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr ""
+
 #, fuzzy
 msgid "About Pd"
 msgstr "के बारे में (_A)"
-
-msgid "file edit put find media window help"
-msgstr ""
 
 msgid "Save"
 msgstr "सहेजें"
@@ -779,6 +890,11 @@ msgstr ""
 msgid "Clear Menu"
 msgstr "सूची साफ करें"
 
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+
 msgid "Path..."
 msgstr ""
 
@@ -791,21 +907,22 @@ msgstr ""
 msgid "MIDI..."
 msgstr ""
 
-msgid "Zoom new windows"
-msgstr ""
+#, fuzzy
+msgid "Zoom New Windows"
+msgstr "भेजें विंडो"
 
 #, fuzzy
-msgid "Save all preferences"
+msgid "Save All Preferences"
 msgstr "प्राथमिकताएं..."
 
 #, fuzzy
-msgid "Save to ..."
+msgid "Save to..."
 msgstr "इस रूप में सहेजें"
 
-msgid "Load from ..."
+msgid "Load from..."
 msgstr ""
 
-msgid "Forget all..."
+msgid "Forget All..."
 msgstr ""
 
 msgid "Open Recent"
@@ -815,6 +932,12 @@ msgid "Quit"
 msgstr "बाहर"
 
 msgid "Properties"
+msgstr ""
+
+msgid "Audio on"
+msgstr ""
+
+msgid "Audio off"
 msgstr ""
 
 msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
@@ -829,9 +952,6 @@ msgstr ""
 #, fuzzy
 msgid "DSP"
 msgstr "बंद"
-
-msgid "Audio off"
-msgstr ""
 
 msgid "Audio I/O error"
 msgstr ""
@@ -866,8 +986,16 @@ msgid "Delete"
 msgstr "मिटाओ"
 
 #, tcl-format
+msgid "Ignoring '%s': doesn't exist"
+msgstr ""
+
+#, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr ""
+
+#, fuzzy
+#~ msgid "for:"
+#~ msgstr "पोर्टः"
 
 #~ msgid "Preferences..."
 #~ msgstr "प्राथमिकताएं..."

@@ -40,7 +40,7 @@ proc ::pdwindow::set_layout {} {
 
 # grab focus on part of the Pd window when Pd is busy
 proc ::pdwindow::busygrab {} {
-    # set the mouse cursor to look busy and grab focus so it stays that way    
+    # set the mouse cursor to look busy and grab focus so it stays that way
     .pdwindow.text configure -cursor watch
     grab set .pdwindow.text
 }
@@ -107,7 +107,7 @@ proc ::pdwindow::logpost {object_id level message} {
     variable lastlevel $level
 
     buffer_message $object_id $level $message
-    if {[llength [info commands .pdwindow.text.internal]] && 
+    if {[llength [info commands .pdwindow.text.internal]] &&
         ($level <= $::loglevel || $maxloglevel == $::loglevel)} {
         # cancel any pending move of the scrollbar, and schedule it
         # after writing a line. This way the scrollbar is only moved once
@@ -163,7 +163,11 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     puts $f $logbuffer
     close $f
 }
-
+# this has 'args' to satisfy trace, but its not used
+proc ::pdwindow::loglevel_updated {args} {
+    ::pdwindow::filter_buffer_to_text $args
+    ::pd_guiprefs::write_loglevel
+}
 
 #--compute audio/DSP checkbutton-----------------------------------------------#
 
@@ -183,11 +187,20 @@ proc ::pdwindow::pdtk_pd_dio {red} {
     } else {
         .pdwindow.header.ioframe.dio configure -foreground lightgray
     }
-        
 }
 
 proc ::pdwindow::pdtk_pd_audio {state} {
-    .pdwindow.header.ioframe.iostate configure -text [concat Audio $state]
+    # set strings so these can be translated
+    # state values are "on" or "off"
+    if {$state eq "on"} {
+        set labeltext [_ "Audio on"]
+    } elseif {$state eq "off"} {
+        set labeltext [_ "Audio off"]
+    } else {
+        # fallback in case the $state values change in the future
+        set labeltext [concat Audio $state]
+    }
+    .pdwindow.header.ioframe.iostate configure -text $labeltext
 }
 
 #--bindings specific to the Pd window------------------------------------------#
@@ -232,7 +245,7 @@ proc ::pdwindow::eval_tclentry {} {
     if {$tclentry eq ""} {return} ;# no need to do anything if empty
     if {[catch {uplevel #0 $tclentry} errorname]} {
         global errorInfo
-        switch -regexp -- $errorname { 
+        switch -regexp -- $errorname {
             "missing close-brace" {
                 ::pdwindow::error [concat [_ "(Tcl) MISSING CLOSE-BRACE '\}': "] $errorInfo]\n
             } "missing close-bracket" {
@@ -375,7 +388,7 @@ proc ::pdwindow::create_window {} {
     foreach i $loglevels {
         $logmenu entryconfigure $i -label [lindex $logmenuitems $i]
     }
-    trace add variable ::loglevel write ::pdwindow::filter_buffer_to_text
+    trace add variable ::loglevel write ::pdwindow::loglevel_updated
 
     # TODO figure out how to make the menu traversable with the keyboard
     #.pdwindow.header.logmenu configure -takefocus 1
@@ -407,7 +420,7 @@ proc ::pdwindow::create_window {} {
             "default" { return [eval ::.pdwindow.text.internal $args] }
         }
     }
-    
+
     # print whatever is in the queue after the event loop finishes
     after idle [list after 0 ::pdwindow::filter_buffer_to_text]
 
@@ -415,22 +428,41 @@ proc ::pdwindow::create_window {} {
 
     # set some layout variables
     ::pdwindow::set_layout
-
-    # wait until .pdwindow.tcl.entry is visible before opening files so that
-    # the loading logic can grab it and put up the busy cursor
-    tkwait visibility .pdwindow.text
-    #    create_tcl_entry
-
-    # on X11 measure the size of the window decoration, so we can open windows at the correct position
-    if {$::windowingsystem eq "x11"} {
-        regexp -- {([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+)} [wm geometry .pdwindow] -> \
-            _ _ _left _top
-        set ::windowframex [expr {[winfo rootx .pdwindow] - $_left}]
-        set ::windowframey [expr {[winfo rooty .pdwindow] - $_top}]
-    }
 }
 
 #--configure the window menu---------------------------------------------------#
+proc ::pdwindow::create_window_finalize {} {
+    # wait until .pdwindow.tcl.entry is visible before opening files so that
+    # the loading logic can grab it and put up the busy cursor
+
+    # this ought to be called after all elements of the window (including the
+    # menubar!) have been created!
+    if {![winfo viewable .pdwindow.text]} { tkwait visibility .pdwindow.text }
+}
+
+proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {
+    # on X11 measure the size of the window decoration, so we can open windows at the correct position
+    if {$::windowingsystem eq "x11"} {
+        if {[winfo viewable $winid]} {
+            # wait for possible race-conditions at startup...
+            if {[winfo viewable .pdwindow] && ![winfo viewable .pdwindow.text]} {
+                tkwait visibility .pdwindow.text
+            }
+
+            regexp -- {([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+)} [wm geometry $winid] -> \
+                _ _ _left _top
+            set ::windowframex [expr {[winfo rootx $winid] - $_left}]
+            set ::windowframey [expr {[winfo rooty $winid] - $_top}]
+
+            #puts "======================="
+            #puts "[wm geometry $winid]"
+            #puts "winfo [winfo rootx $winid] [winfo rooty $winid]"
+            #puts "windowframe: $winid $::windowframex $::windowframey"
+            #puts "======================="
+        }
+    }
+}
+
 
 # this needs to happen *after* the main menu is created, otherwise the default Wish
 # menu is not replaced by the custom Apple menu on OSX

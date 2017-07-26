@@ -465,14 +465,13 @@ static void list_store_prepend(t_list_store *x, t_symbol *s,
     x->x_alist.l_n += argc;
 }
 
-static void list_store_range(t_list_store *x, t_symbol *s,
-    float f1, float f2)
+static void list_store_get(t_list_store *x, float f1, float f2)
 {
     t_atom *outv;
     int onset = f1, outc = f2;
     if (onset < 0 || outc < 0)
     {
-        pd_error(x, "list_store_range: negative range (%d %d)", onset, outc);
+        pd_error(x, "list_store_get: negative range (%d %d)", onset, outc);
         return;
     }
     if (onset + outc > x->x_alist.l_n)
@@ -512,8 +511,8 @@ static void list_store_setup(void)
         gensym("append"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_prepend,
         gensym("prepend"), A_GIMME, 0);
-    class_addmethod(list_store_class, (t_method)list_store_range,
-        gensym("range"), A_FLOAT, A_FLOAT, 0);
+    class_addmethod(list_store_class, (t_method)list_store_get,
+        gensym("get"), A_FLOAT, A_FLOAT, 0);
     class_sethelpsymbol(list_store_class, &s_list);
 }
 

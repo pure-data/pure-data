@@ -111,7 +111,7 @@ case $host in
     portmidi=yes
 
     # this mirrors the default windows WISH define in s_inter.c
-    wish="wish85.exe
+    wish="wish85.exe"
 
     # ASIO doesn't build yet with the autotools setup. We need to figure out how
     # to make the final linking phase use g++
@@ -134,7 +134,7 @@ case $host in
     portmidi=yes
 
     # this mirrors the default windows WISH define in s_inter.c
-    wish="wish85.exe
+    wish="wish85.exe"
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS=
@@ -432,8 +432,8 @@ AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
 
 ##### ALSA #####
 AM_CONDITIONAL(ALSA, test x$alsa = xyes)
-AS_IF([test x$alsa = xyes], [audio_backends="alsa ${audio_backends}"])
-AS_IF([test x$alsa = xyes], [midi_backends="alsa ${midi_backends}"])
+AS_IF([test x$alsa = xyes], [audio_backends="ALSA ${audio_backends}"])
+AS_IF([test x$alsa = xyes], [midi_backends="ALSA ${midi_backends}"])
 
 ##### JACK #####
 AM_CONDITIONAL(JACK, test x$jack = xyes)
@@ -442,8 +442,8 @@ AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 
 ##### MMIO #####
 AM_CONDITIONAL(MMIO, test x$mmio = xyes)
-AS_IF([test x$mmio = xyes], [audio_backends="mmio ${audio_backends}"])
-AS_IF([test x$mmio = xyes], [midi_backends="mmio ${midi_backends}"])
+AS_IF([test x$mmio = xyes], [audio_backends="MMIO ${audio_backends}"])
+AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
@@ -481,8 +481,12 @@ AS_IF([test "x$midi_backends" = "x"],[
 ##### Wish #####
 # add contextual info when adding a custom WISH path on macOS,
 # other platforms use a single path so it's enough to print $wish as it is
-AS_IF([test ! "x${WISH}" = "x" -a x"$MACOSX" = x"yes"],[
-    wish="prepending ${WISH} to search paths"
+AS_IF([test ! "x${WISH}" = "x"],[
+    AS_IF([test x"$MACOSX" = x"yes"], [
+        wish="prepending ${WISH} to search paths"
+    ],[
+        wish="${WISH}"
+    ])
 ])
 
 #########################################
@@ -492,6 +496,7 @@ AS_IF([test ! "x${WISH}" = "x" -a x"$MACOSX" = x"yes"],[
 AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
+                font/Makefile
                 mac/Makefile
                 man/Makefile
                 portaudio/Makefile

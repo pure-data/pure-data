@@ -66,7 +66,7 @@
 #X obj 42 123 tgl 20 0 empty empty empty 20 8 0 8 -262144 -1 -1 0 1
 ;
 #X msg 264 142 \; pd restart-audio;
-#X text 24 30 this window has various wierd debugging stuff...;
+#X text 24 30 this window has various weird debugging stuff...;
 #X text 218 97 ALSA gets twisted after a few;
 #X text 216 118 hours sometimes... use this to fix:;
 #X text 22 74 see if Pd's time;

@@ -46,7 +46,7 @@ triangle are numeric values which can control \, or be controlled by
 #X text 37 124 When the data window is locked (not in edit mode) you
 can drag the apex of either triangle up or down to change the altitude
 (you should see the cursor change with dragging is meaningful.) In
-edit (unlocked) mode \, you can move teh entire triangles around \,
+edit (unlocked) mode \, you can move the entire triangles around \,
 or cut \, copy \, and paste them.;
 #X text 47 325 subpatches:;
 #X text 37 281 Data is not persistent. If you save a Pd patch and reopen

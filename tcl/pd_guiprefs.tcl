@@ -11,12 +11,15 @@ namespace eval ::pd_guiprefs:: {
     namespace export init
     namespace export write_recentfiles
     namespace export update_recentfiles
+    namespace export write_loglevel
 }
 
 # FIXME should these be globals ?
 set ::recentfiles_key ""
+set ::loglevel_key "loglevel"
 set ::pd_guiprefs::domain ""
 set ::pd_guiprefs::configdir ""
+set ::recentfiles_is_array false
 
 #################################################################
 # perferences storage locations
@@ -53,7 +56,6 @@ set ::pd_guiprefs::configdir ""
 #
 #################################################################
 
-
 #################################################################
 # global procedures
 #################################################################
@@ -61,7 +63,6 @@ set ::pd_guiprefs::configdir ""
 # init preferences
 #
 proc ::pd_guiprefs::init {} {
-    set arr 0
     set ::pd_guiprefs::domain org.puredata.pd.pd-gui
 
     switch -- $::platform {
@@ -86,7 +87,7 @@ proc ::pd_guiprefs::init {} {
             set ::recentfiles_key "NSRecentDocuments"
             set ::total_recentfiles 10
             # osx special case for arrays
-            set arr 1
+            set ::recentfiles_is_array true
 
             # ------------------------------------------------------------------------------
             # osx: read a plist file
@@ -97,9 +98,16 @@ proc ::pd_guiprefs::init {} {
                         set conf [plist_array_to_tcl_list $conf]
                     }
                 } else {
-                    # initialize NSRecentDocuments with an empty array
-                    exec defaults write $adomain $akey -array
-                    set conf {}
+                    # value not found, so set empty value
+                    if {$arr} {
+                        # initialize w/ empty array for NSRecentDocuments, etc
+                        exec defaults write $adomain $akey -array
+                        set conf {}
+                    } else {
+                        # not an array
+                        exec defaults write $adomain $akey ""
+                        set ""
+                    }
                 }
                 return $conf
             }
@@ -112,27 +120,28 @@ proc ::pd_guiprefs::init {} {
                 if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
                     ::pdwindow::error "write_config $akey: $errorMsg\n"
                 }
-                # invoke /bin/sh -c to pass command as a string, this ensures
+                # invoke /bin/sh -c to pass command as a string. This ensures
                 # the shell interprets the single quotes around the value so the
-                # quotes don't end up being saved as part of the string itself
+                # quotes don't end up being saved as part of the string itself.
+                # Also use the -r for a restricted shell to be safe.
                 if {$arr} {
                     foreach filepath $data {
                         set escaped [escape_for_plist $filepath]
-                        exec /bin/sh -c "defaults write $adomain $akey $escaped"
+                        exec /bin/sh -rc "defaults write $adomain $akey -array-add $escaped"
                     }
                 } else {
                     set escaped [escape_for_plist $data]
-                    exec /bin/sh -c "defaults write $adomain $akey $escaped"
+                    exec /bin/sh -rc "defaults write $adomain $akey $escaped"
                 }
-
-                # Disable window state saving by default for 10.7+ as there is a chance
-                # pd will hang on start due to conflicting patch resources until the state
-                # is purged. State saving will still work, it just has to be explicitly
-                # asked for by holding the Option/Alt button when quitting via the File
-                # menu or with the Cmd+Q key binding.
-                exec defaults write $adomain NSQuitAlwaysKeepsWindows -bool false
                 return
             }
+
+            # Disable window state saving by default for 10.7+ as there is a chance
+            # pd will hang on start due to conflicting patch resources until the state
+            # is purged. State saving will still work, it just has to be explicitly
+            # asked for by holding the Option/Alt button when quitting via the File
+            # menu or with the Cmd+Q key binding.
+            exec defaults write $::pd_guiprefs::domain NSQuitAlwaysKeepsWindows -bool false
         }
         "registry" {
             # windows uses registry
@@ -194,9 +203,12 @@ proc ::pd_guiprefs::init {} {
 
     }
     # assign gui preferences
-    set ::recentfiles_list ""
+    set ::recentfiles_list {}
     catch {set ::recentfiles_list [get_config $::pd_guiprefs::domain \
-                                       $::recentfiles_key $arr]}
+                                       $::recentfiles_key $::recentfiles_is_array]}
+    catch {set ::loglevel [get_config $::pd_guiprefs::domain $::loglevel_key]}
+    # reset default if value was not found
+    if {$::loglevel == ""} {set ::loglevel 2}
 }
 
 # ------------------------------------------------------------------------------
@@ -338,28 +350,40 @@ proc ::pd_guiprefs::escape_for_plist {str} {
     return '[regsub -all -- {'} $str {\\'}]'
 }
 
-
 #################################################################
 # recent files
 #################################################################
-
 
 # ------------------------------------------------------------------------------
 # write recent files
 #
 proc ::pd_guiprefs::write_recentfiles {} {
-    write_config $::recentfiles_list $::pd_guiprefs::domain $::recentfiles_key true
+    write_config $::recentfiles_list $::pd_guiprefs::domain $::recentfiles_key \
+                 $::recentfiles_is_array
 }
 
 # ------------------------------------------------------------------------------
 # this is called when opening a document (wheredoesthisshouldgo.tcl)
 #
-proc ::pd_guiprefs::update_recentfiles {afile} {
+proc ::pd_guiprefs::update_recentfiles {afile {remove false}} {
     # remove duplicates first
     set index [lsearch -exact $::recentfiles_list $afile]
     set ::recentfiles_list [lreplace $::recentfiles_list $index $index]
-    # insert new one in the beginning and crop the list
-    set ::recentfiles_list [linsert $::recentfiles_list 0 $afile]
-    set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
+    if {! $remove} {
+        # insert new one in the beginning and crop the list
+        set ::recentfiles_list [linsert $::recentfiles_list 0 $afile]
+        set ::recentfiles_list [lrange $::recentfiles_list 0 $::total_recentfiles]
+    }
     ::pd_menus::update_recentfiles_menu
+}
+
+#################################################################
+# log level
+#################################################################
+
+# ------------------------------------------------------------------------------
+# write log level
+#
+proc ::pd_guiprefs::write_loglevel {} {
+    write_config $::loglevel $::pd_guiprefs::domain $::loglevel_key
 }
