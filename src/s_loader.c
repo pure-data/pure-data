@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #define stat _stat
 #endif
 

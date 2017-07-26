@@ -11,7 +11,7 @@
 #include "s_stuff.h"
 
 #ifdef _MSC_VER
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 t_printhook sys_printhook;
