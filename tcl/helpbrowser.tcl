@@ -401,17 +401,23 @@ proc ::helpbrowser::add_entry {reflist entry} {
 }
 
 proc ::helpbrowser::build_references {} {
-    variable libdirlist {" Pure Data/"   "-------- Libraries --------"}
+    variable libdirlist {" Pure Data/" "-------- Libraries --------"}
     variable helplist {}
     variable reference_count
     variable reference_paths
 
     array set reference_count {}
-    array set reference_paths [list \
-                                   " Pure Data/" $::sys_libdir/doc \
-                                   "-------- Libraries --------" "" \
-                                  ]
-    foreach pathdir [concat $::sys_staticpath $::sys_searchpath] {
+    array set reference_paths [list " Pure Data/" $::sys_libdir/doc \
+                                    "-------- Libraries --------" "" ]
+
+    # remove any exact duplicates from the user search paths
+    set searchpaths {}
+    foreach pathdir $::sys_searchpath {
+        lappend searchpaths [file normalize $pathdir]
+    }
+    set searchpaths [lsort -unique $searchpaths]
+
+    foreach pathdir [concat $::sys_staticpath $searchpaths] {
         if { ! [file isdirectory $pathdir]} {continue}
 
         # Fix the directory name, this ensures the directory name is in the
@@ -421,7 +427,7 @@ proc ::helpbrowser::build_references {} {
         ## find the libdirs
 
         if { [lsearch $::sys_searchpath $pathdir] ne -1} {
-            # Directory comes from sys_searchpath (aka preferences & -path)
+            # Directory comes from sys_searchpath (aka preferences)
             # Then add an entry for this directory in Help browser's root column :
             add_entry libdirlist $dir
         } else {
