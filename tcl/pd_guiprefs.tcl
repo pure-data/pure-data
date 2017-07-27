@@ -83,14 +83,14 @@ proc ::pd_guiprefs::init {} {
 
     switch -- $backend {
         "plist" {
-            # osx has a "Open Recent" menu with 10 recent files (others have 5 inlined)
+            # macOS has a "Open Recent" menu with 10 recent files (others have 5 inlined)
             set ::recentfiles_key "NSRecentDocuments"
             set ::total_recentfiles 10
-            # osx special case for arrays
+            # store recent files as an array, not a string
             set ::recentfiles_is_array true
 
             # ------------------------------------------------------------------------------
-            # osx: read a plist file
+            # macOS: read a plist file
             #
             proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
                 if {![catch {exec defaults read $adomain $akey} conf]} {
@@ -112,7 +112,7 @@ proc ::pd_guiprefs::init {} {
                 return $conf
             }
             # ------------------------------------------------------------------------------
-            # osx: write configs to plist file
+            # macOS: write configs to plist file using the 'defaults' command
             # if $arr is true, we write an array
             #
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
@@ -122,15 +122,19 @@ proc ::pd_guiprefs::init {} {
                         puts "write_config $akey: $errorMsg\n"
                     }
                     foreach item $data {
-                        set escaped [escape_for_defaults $item]
-                        eval exec defaults write $adomain $akey -array-add $escaped
+                        set escaped [escape_for_plist $item]
+                        if {[catch {eval exec defaults write $adomain $akey -array-add $escaped} errorMsg]} {
+                            puts "write_config $akey: $errorMsg\n"
+                        }
                     }
                 } else {
                     if {[catch {exec defaults write $adomain $akey ""} errorMsg]} {
                         puts "write_config $akey: $errorMsg\n"
                     }
                     set escaped [escape_for_plist $data]
-                    exec defaults write $adomain $akey $escaped
+                    if {[catch {exec defaults write $adomain $akey $escaped} errorMsg]} {
+                        puts "write_config $akey: $errorMsg\n"
+                    }
                 }
                 return
             }
@@ -197,7 +201,7 @@ proc ::pd_guiprefs::init {} {
             }
         }
         default {
-            ::pdwindow::error "Unknown configuration backend '$backend'.\n"
+            ::pdwindow::error "Unknown gui preferences backend '$backend'.\n"
         }
 
     }
@@ -330,7 +334,7 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
 #        "/path1/hello.pd",
 #        "/path2/world.pd",
 #        "/foo/bar/baz.pd"
-#     );
+#     )
 #
 # becomes: "/path1/hello.pd /path2/world.pd /foo/bar/baz.pd"
 #
@@ -366,7 +370,7 @@ proc ::pd_guiprefs::defaults_array_to_tcl_list {arr} {
 #
 # at this point, we hope people don't have too many exotic filenames...
 #
-proc ::pd_guiprefs::escape_for_defaults {str} {
+proc ::pd_guiprefs::escape_for_plist {str} {
     set quote 0
     set result $str
     regsub -all -- { } $result {\\ } result
