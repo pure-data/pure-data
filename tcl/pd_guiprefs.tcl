@@ -116,22 +116,21 @@ proc ::pd_guiprefs::init {} {
             # if $arr is true, we write an array
             #
             proc ::pd_guiprefs::write_config {data {adomain} {akey} {arr false}} {
-                # FIXME empty and write again so we don't lose the order
-                if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
-                    ::pdwindow::error "write_config $akey: $errorMsg\n"
-                }
-                # invoke /bin/sh -c to pass command as a string. This ensures
-                # the shell interprets the single quotes around the value so the
-                # quotes don't end up being saved as part of the string itself.
-                # Also use the -r for a restricted shell to be safe.
                 if {$arr} {
-                    foreach filepath $data {
-                        set escaped [escape_for_plist $filepath]
-                        exec /bin/sh -rc "defaults write $adomain $akey -array-add $escaped"
+                    # FIXME empty and write again so we don't lose the order
+                    if {[catch {exec defaults write $adomain $akey -array} errorMsg]} {
+                        puts "write_config $akey: $errorMsg\n"
+                    }
+                    foreach item $data {
+                        set escaped [escape_for_defaults $item]
+                        eval exec defaults write $adomain $akey -array-add $escaped
                     }
                 } else {
+                    if {[catch {exec defaults write $adomain $akey ""} errorMsg]} {
+                        puts "write_config $akey: $errorMsg\n"
+                    }
                     set escaped [escape_for_plist $data]
-                    exec /bin/sh -rc "defaults write $adomain $akey $escaped"
+                    exec defaults write $adomain $akey $escaped
                 }
                 return
             }
@@ -316,7 +315,6 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
         set fullconfigdir [file join ${::pd_guiprefs::configdir} ${domain}]
         if {[file isdirectory $fullconfigdir] != 1} {
             file mkdir $fullconfigdir
-            #::pdwindow::debug "$::pd_guiprefs::domain was created in $confdir.\n"
         }
     }]} {
         ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created in $confdir.\n"
@@ -325,9 +323,18 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
 }
 
 # ------------------------------------------------------------------------------
-# osx: handles arrays in plist files (thanks hc)
+# convert array returned by macOS 'defaults' command into a tcl list (thanks hc)
 #
-proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
+# ie. defaults output of
+#     (
+#        "/path1/hello.pd",
+#        "/path2/world.pd",
+#        "/foo/bar/baz.pd"
+#     );
+#
+# becomes: "/path1/hello.pd /path2/world.pd /foo/bar/baz.pd"
+#
+proc ::pd_guiprefs::defaults_array_to_tcl_list {arr} {
     set result {}
     set filelist $arr
     regsub -all -- {("?),\s+("?)} $filelist {\1 \2} filelist
@@ -336,18 +343,45 @@ proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
     regsub -all -- {\)$} $filelist {} filelist
     regsub -line -- {^'(.*)'$} $filelist {\1} filelist
     regsub -all -- {\\\\U} $filelist {\\u} filelist
-
     foreach file $filelist {
         set filename [regsub -- {,$} $file {}]
+        # trim any enclosing single quotes that
+        # might have been saved previously
+        set filename [string trim $file ']
         lappend result $filename
     }
     return $result
 }
 
-# the Mac OS X 'defaults' command uses single quotes to quote things,
-# so they need to be escaped
-proc ::pd_guiprefs::escape_for_plist {str} {
-    return '[regsub -all -- {'} $str {\\'}]'
+# escape tcl characters & quote with single quotes for macOS 'defaults' command
+#
+# strings that don't need major quoting pass through & don't need to be quoted
+# while others strangely do (found via trial and error), this is ensures the
+# single quotes do not pass through and are saved with the string
+#
+# TODO:
+#   * " are not escaped
+#   * \ seem to be swallowed
+#   * mixing ' & parens doesn't work
+#
+# at this point, we hope people don't have too many exotic filenames...
+#
+proc ::pd_guiprefs::escape_for_defaults {str} {
+    set quote 0
+    set result $str
+    regsub -all -- { } $result {\\ } result
+    set quote [expr [regsub -all -- {'} $result {\\'} result] || $quote]
+    set quote [expr [regsub -all -- {\(} $result {\\(} result] || $quote]
+    set quote [expr [regsub -all -- {\)} $result {\\)} result] || $quote]
+    set quote [expr [regsub -all -- {\[} $result {\\[} result] || $quote]
+    set quote [expr [regsub -all -- {\]} $result {\\]} result] || $quote]
+    set quote [expr [regsub -all -- {\{} $result {\\\{} result] || $quote]
+    set quote [expr [regsub -all -- {\}} $result {\\\}} result] || $quote]
+    if {$quote} {
+        return '$result'
+    } else {
+        return $result
+    }
 }
 
 #################################################################
