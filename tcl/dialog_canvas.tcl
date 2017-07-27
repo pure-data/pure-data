@@ -28,7 +28,7 @@ proc ::dialog_canvas::apply {mytoplevel} {
             [$mytoplevel.range.x.size_entry get] \
             [$mytoplevel.range.y.size_entry get] \
             [$mytoplevel.range.x.margin_entry get] \
-            [$mytoplevel.range.y.margin_entry get]"
+            [$mytoplevel.range.y.margin_entry get] 1"
 }
 
 proc ::dialog_canvas::cancel {mytoplevel} {

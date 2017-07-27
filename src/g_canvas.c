@@ -15,7 +15,7 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_all_guis.h"
 
 #ifdef _MSC_VER
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
     /* LATER consider adding font size to this struct (see glist_getfont()) */

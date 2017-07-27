@@ -30,7 +30,7 @@
 #include <portaudio.h>
 
 #ifdef _MSC_VER
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 #ifndef _WIN32          /* for the "dup2" workaround -- do we still need it? */

@@ -155,7 +155,9 @@ msgid "no Pd settings to erase"
 msgstr "pas de paramètres a effacer"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
-msgstr "Pd semble ne pas avoir démarré correctement, les préférences n'ont pas été chargés"
+msgstr ""
+"Pd semble ne pas avoir démarré correctement, les préférences n'ont pas été "
+"chargés"
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(sauver a nouveau les préférences pour les charger)"
@@ -542,11 +544,20 @@ msgstr "Ports de sortie:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Chemins pour la recherche d'objets, aides, fontes et autres"
 
+msgid "Install externals to:"
+msgstr ""
+
+msgid "Browse"
+msgstr "Naviguer"
+
 msgid "Use standard paths"
 msgstr "Utiliser les extensions standard"
 
 msgid "Verbose"
 msgstr "Verbeux"
+
+msgid "Install externals to directory:"
+msgstr ""
 
 msgid "Add new library"
 msgstr "Ajouter une bibliothèque"
@@ -593,9 +604,6 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
-
-msgid "Install libraries to directory:"
 msgstr ""
 
 msgid "Show all"

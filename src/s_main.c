@@ -22,7 +22,7 @@
 #include <winbase.h>
 #endif
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 #define stringify(s) str(s)

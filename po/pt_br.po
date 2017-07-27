@@ -306,7 +306,7 @@ msgid "Save All Settings"
 msgstr "Salvar Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "AVISO: 'flags graphme' desconhecidas recebidas em pdtk_canvas_dialog"
+msgstr "AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -532,10 +532,10 @@ msgid "Parameters"
 msgstr "Parâmetros"
 
 msgid "X offset:"
-msgstr "Deslocamento (X):"
+msgstr "Deslocamento em X:"
 
 msgid "Y offset:"
-msgstr "Deslocamento (Y):"
+msgstr "Deslocamento em Y:"
 
 msgid "Colors"
 msgstr "Cores"
@@ -574,11 +574,20 @@ msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
+msgid "Install externals to:"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
 
 msgid "Verbose"
-msgstr "Verbose"
+msgstr "Detalhado"
+
+msgid "Install externals to directory:"
+msgstr "Instalar bibliotecas no diretório:"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -590,7 +599,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Bibliotecas para carregar na inicialização"
 
 msgid "Startup flags:"
-msgstr "Flags de inicialização:"
+msgstr "Marcadores de inicialização:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Anular agendamento em tempo real"
@@ -626,9 +635,6 @@ msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Platforma detectada: %s"
-
-msgid "Install libraries to directory:"
-msgstr "Instalar bibliotecas no diretório:"
 
 msgid "Show all"
 msgstr "Mostrar todos"
@@ -849,7 +855,7 @@ msgid "puredata.info"
 msgstr "puredata.info"
 
 msgid "Report a bug"
-msgstr "Reportar falha/bug"
+msgstr "Reportar falha (bug)"
 
 msgid "Clear Menu"
 msgstr "Limpar Menu"
@@ -898,7 +904,7 @@ msgid "Properties"
 msgstr "Propriedades"
 
 msgid "Audio on"
-msgstr "Audio ligado"
+msgstr "Áudio ligado"
 
 msgid "Audio off"
 msgstr "Áudio desligado"
