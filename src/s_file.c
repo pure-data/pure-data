@@ -498,7 +498,7 @@ void sys_savepreferences(const char *filename)
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
 
-    if (*filename)
+    if (filename && *filename)
         sys_initsavepreferences_file(filename);
     else sys_initsavepreferences();
         /* audio settings */
