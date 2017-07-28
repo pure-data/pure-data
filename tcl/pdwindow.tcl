@@ -160,7 +160,9 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION.$::PD_TEST_VERSION on $::windowingsystem"
     puts $f "Tcl/Tk [info patchlevel]"
     puts $f "------------------------------------------------------------------------------"
-    puts $f $logbuffer
+    foreach {object_id level message} $logbuffer {
+        puts $f $message
+    }
     close $f
 }
 # this has 'args' to satisfy trace, but its not used
