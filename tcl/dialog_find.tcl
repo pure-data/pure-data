@@ -108,7 +108,14 @@ proc ::dialog_find::ok {mytoplevel} {
 
 # mytoplevel isn't used here, but is kept for compatibility with other dialog cancel procs
 proc ::dialog_find::cancel {mytoplevel} {
+    variable find_in_window
     wm withdraw .find
+    # focus on target window or next available
+    if {[winfo exists $find_in_window] && [winfo viewable $find_in_window]} {
+        focus $find_in_window
+    } else {
+        focus [lindex [wm stackorder .] end]
+    }
 }
 
 # focus on the entry in the find dialog
