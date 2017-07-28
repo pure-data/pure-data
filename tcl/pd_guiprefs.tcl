@@ -202,13 +202,14 @@ proc ::pd_guiprefs::init {} {
         }
 
     }
-    # assign gui preferences
-    set ::recentfiles_list {}
-    catch {set ::recentfiles_list [get_config $::pd_guiprefs::domain \
-                                       $::recentfiles_key $::recentfiles_is_array]}
-    catch {set ::loglevel [get_config $::pd_guiprefs::domain $::loglevel_key]}
-    # reset default if value was not found
-    if {$::loglevel == ""} {set ::loglevel 2}
+    # init gui preferences
+    set ::recentfiles_list [::pd_guiprefs::init_config $::pd_guiprefs::domain \
+                                                       $::recentfiles_key \
+                                                       $::recentfiles_list \
+                                                       $::recentfiles_is_array]
+    set ::loglevel [::pd_guiprefs::init_config $::pd_guiprefs::domain \
+                                               $::loglevel_key \
+                                               $::loglevel]
 }
 
 # ------------------------------------------------------------------------------
@@ -321,6 +322,16 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
         ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created in $confdir.\n"
     }
     return $domain
+}
+
+# ------------------------------------------------------------------------------
+# convenience proc to init prefs value, returns default if not found
+#
+proc ::pd_guiprefs::init_config {adomain akey {default ""} {arr false}} {
+    set conf ""
+    catch {set conf [get_config $adomain $akey $arr]}
+    if {$conf eq ""} {set conf $default}
+    return $conf
 }
 
 # ------------------------------------------------------------------------------
