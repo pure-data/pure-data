@@ -117,7 +117,15 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     # the ones that make sense in the Find dialog panel and it's canvas
     # File menu
     $menubar.file entryconfigure [_ "Close"] -state disabled
-    if {$mytoplevel ne ".find" && $mytoplevel ne ".pdwindow"} {
+    if {$mytoplevel eq ".find"} {
+        # these bindings are passed through Find to it's target search window
+        $menubar.file entryconfigure [_ "Save As..."] -state disabled
+        if {$mytoplevel ne ".pdwindow"} {
+            # these don't do anything in the pdwindow
+            $menubar.file entryconfigure [_ "Save"] -state disabled
+            $menubar.file entryconfigure [_ "Print..."] -state disabled
+        }
+    } else {
         $menubar.file entryconfigure [_ "Save"] -state disabled
         $menubar.file entryconfigure [_ "Save As..."] -state disabled
         $menubar.file entryconfigure [_ "Print..."] -state disabled

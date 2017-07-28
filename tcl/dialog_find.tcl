@@ -243,18 +243,20 @@ proc ::dialog_find::create_dialog {mytoplevel} {
 proc ::dialog_find::update_bindings {} {
     variable find_in_window
     # sending these commands to the Find Dialog Panel should forward them to
-    # the currently focused patch
-     ::pdwindow::post "updating find dialog bindings\n"
-    if {$find_in_window ne ".pdwindow" && [winfo exists $find_in_window]} {
-        ::pdwindow::post "... setting\n"
+    # the currently focused patch or the pdwindow
+    if {[winfo exists $find_in_window]} {
         # the "; break" part stops executing other binds
-        bind .find <$::modifier-Key-s> \
-            "menu_send $find_in_window menusave; break"
         bind .find <$::modifier-Shift-Key-s> \
             "menu_send $find_in_window menusaveas; break"
         bind .find <$::modifier-Shift-Key-S> \
             "menu_send $find_in_window menusaveas; break"
-        bind .find <$::modifier-Key-p> "menu_print $find_in_window; break"
+        if {$find_in_window ne ".pdwindow"} {
+            # these don't do anything in the pdwindow
+            bind .find <$::modifier-Key-s> \
+                "menu_send $find_in_window menusave; break"
+            bind .find <$::modifier-Key-p> \
+                "menu_print $find_in_window; break"
+        }
     } else {
         # disable
         bind .find <$::modifier-Key-s>       {bell; break}
