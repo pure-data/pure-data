@@ -40,10 +40,20 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
     set initialfile "[file rootname [lookup_windowname $mytoplevel]].ps"
     set filename [tk_getSaveFile -initialfile $initialfile \
                       -defaultextension .ps \
-                      -filetypes { {{postscript} {.ps}} }]
+                      -filetypes { {{Postscript} {.ps}} }]
     if {$filename ne ""} {
         set tkcanvas [tkcanvas_name $mytoplevel]
-        $tkcanvas postscript -file $filename
+        if {$::font_family eq "DejaVu Sans Mono"} {
+            # FIXME hack to fix incorrect PS font naming,
+            # this could be removed in the future
+            set ps [$tkcanvas postscript]
+            regsub -all "DejavuSansMono" $ps "DejaVuSansMono" ps
+            set f [open $filename w]
+            puts $f $ps
+            close $f
+        } else {
+            $tkcanvas postscript -file $filename
+        }
     }
 }
 
