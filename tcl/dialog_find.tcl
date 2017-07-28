@@ -242,6 +242,11 @@ proc ::dialog_find::create_dialog {mytoplevel} {
 # update the passthrough key bindings based on the current target search window
 proc ::dialog_find::update_bindings {} {
     variable find_in_window
+    # disable first
+    bind .find <$::modifier-Key-s>       {bell; break}
+    bind .find <$::modifier-Shift-Key-s> {bell; break}
+    bind .find <$::modifier-Shift-Key-S> {bell; break}
+    bind .find <$::modifier-Key-p>       {bell; break}
     # sending these commands to the Find Dialog Panel should forward them to
     # the currently focused patch or the pdwindow
     if {[winfo exists $find_in_window]} {
@@ -257,12 +262,6 @@ proc ::dialog_find::update_bindings {} {
             bind .find <$::modifier-Key-p> \
                 "menu_print $find_in_window; break"
         }
-    } else {
-        # disable
-        bind .find <$::modifier-Key-s>       {bell; break}
-        bind .find <$::modifier-Shift-Key-s> {bell; break}
-        bind .find <$::modifier-Shift-Key-S> {bell; break}
-        bind .find <$::modifier-Key-p>       {bell; break}
     }
 }
 
