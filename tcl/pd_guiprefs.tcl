@@ -14,12 +14,14 @@ namespace eval ::pd_guiprefs:: {
     namespace export write_loglevel
 }
 
-# FIXME should these be globals ?
-set ::recentfiles_key ""
-set ::loglevel_key "loglevel"
+# preference keys
+set ::pd_guiprefs::recentfiles_key ""
+set ::pd_guiprefs::loglevel_key "loglevel"
+
+# platform specific
 set ::pd_guiprefs::domain ""
 set ::pd_guiprefs::configdir ""
-set ::recentfiles_is_array false
+set ::pd_guiprefs::recentfiles_is_array false
 
 #################################################################
 # perferences storage locations
@@ -84,10 +86,10 @@ proc ::pd_guiprefs::init {} {
     switch -- $backend {
         "plist" {
             # macOS has a "Open Recent" menu with 10 recent files (others have 5 inlined)
-            set ::recentfiles_key "NSRecentDocuments"
+            set ::pd_guiprefs::recentfiles_key "NSRecentDocuments"
             set ::total_recentfiles 10
             # store recent files as an array, not a string
-            set ::recentfiles_is_array true
+            set ::pd_guiprefs::recentfiles_is_array true
 
             # ------------------------------------------------------------------------------
             # macOS: read a plist file using the 'defaults' command
@@ -146,7 +148,7 @@ proc ::pd_guiprefs::init {} {
         "registry" {
             # windows uses registry
             set ::pd_guiprefs::registrypath "HKEY_CURRENT_USER\\Software\\Pure-Data"
-            set ::recentfiles_key "RecentDocs"
+            set ::pd_guiprefs::recentfiles_key "RecentDocs"
 
             # ------------------------------------------------------------------------------
             # w32: read in the registry
@@ -180,7 +182,7 @@ proc ::pd_guiprefs::init {} {
             }
         }
         "file" {
-            set ::recentfiles_key "recentfiles"
+            set ::pd_guiprefs::recentfiles_key "recentfiles"
             prepare_configdir ${::pd_guiprefs::domain}
 
             # ------------------------------------------------------------------------------
@@ -204,11 +206,11 @@ proc ::pd_guiprefs::init {} {
     }
     # init gui preferences
     set ::recentfiles_list [::pd_guiprefs::init_config $::pd_guiprefs::domain \
-                                                       $::recentfiles_key \
+                                                       $::pd_guiprefs::recentfiles_key \
                                                        $::recentfiles_list \
-                                                       $::recentfiles_is_array]
+                                                       $::pd_guiprefs::recentfiles_is_array]
     set ::loglevel [::pd_guiprefs::init_config $::pd_guiprefs::domain \
-                                               $::loglevel_key \
+                                               $::pd_guiprefs::loglevel_key \
                                                $::loglevel]
 }
 
@@ -404,8 +406,9 @@ proc ::pd_guiprefs::escape_for_plist {str} {
 # write recent files
 #
 proc ::pd_guiprefs::write_recentfiles {} {
-    write_config $::recentfiles_list $::pd_guiprefs::domain $::recentfiles_key \
-                 $::recentfiles_is_array
+    write_config $::recentfiles_list $::pd_guiprefs::domain \
+                 $::pd_guiprefs::recentfiles_key \
+                 $::pd_guiprefs::recentfiles_is_array
 }
 
 # ------------------------------------------------------------------------------
@@ -431,5 +434,5 @@ proc ::pd_guiprefs::update_recentfiles {afile {remove false}} {
 # write log level
 #
 proc ::pd_guiprefs::write_loglevel {} {
-    write_config $::loglevel $::pd_guiprefs::domain $::loglevel_key
+    write_config $::loglevel $::pd_guiprefs::domain $::pd_guiprefs::loglevel_key
 }
