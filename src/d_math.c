@@ -264,9 +264,26 @@ static t_int *sigwrap_perform(t_int *w)
     return (w + 4);
 }
 
+     /* old buggy version that sometimes output 1 instead of 0 */
+static t_int *sigwrap_old_perform(t_int *w)
+{
+    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
+    t_int n = *(t_int *)(w+3);
+    while (n--)
+    {
+        t_sample f = *in++;
+        int k = f;
+        if (f > 0) *out++ = f-k;
+        else *out++ = f - (k-1);
+    }
+    return (w + 4);
+}
+
 static void sigwrap_dsp(t_sigwrap *x, t_signal **sp)
 {
-    dsp_add(sigwrap_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add((pd_compatibilitylevel < 48 ?
+        sigwrap_old_perform : sigwrap_perform),
+            3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
 }
 
 void sigwrap_setup(void)

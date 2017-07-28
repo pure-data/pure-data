@@ -591,10 +591,19 @@ msgstr ""
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
+msgid "Install externals to:"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
 msgid "Use standard paths"
 msgstr ""
 
 msgid "Verbose"
+msgstr ""
+
+msgid "Install externals to directory:"
 msgstr ""
 
 msgid "Add new library"
@@ -643,9 +652,6 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
-
-msgid "Install libraries to directory:"
 msgstr ""
 
 msgid "Show all"

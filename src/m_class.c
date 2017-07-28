@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 static t_symbol *class_loadsym;     /* name under which an extern is invoked */
