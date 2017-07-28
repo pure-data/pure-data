@@ -139,11 +139,6 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
         if {$find_in_window eq ".find"} {
             set find_in_window [winfo toplevel [lindex [wm stackorder .] end-1]]
         }
-        # this has funny side effects in tcl 8.4 ???
-        # update: seems to work fine in 8.4 on macOS...
-        # if {$::tcl_version >= 8.5} {
-             wm transient .find $find_in_window
-        # }
         .find.searchin configure -text \
             [format [_ "Search in %s for:"] [lookup_windowname $find_in_window] ]
     }
