@@ -91,7 +91,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-T> {menu_send %W toggle}
     bind all <$::modifier-Shift-Key-U> {menu_send %W vumeter}
     bind all <$::modifier-Shift-Key-V> {menu_send %W vslider}
-    bind all <$::modifier-Shift-Key-W> {menu_send_float %W menuclose 1}
+    bind all <$::modifier-Shift-Key-W> {::pd_bindings::window_close %W 1}
     bind all <$::modifier-Shift-Key-Z> {menu_redo}
     # lowercase bindings, for the CapsLock case
     bind all <$::modifier-Shift-Key-a> {menu_send %W menuarray}
@@ -110,7 +110,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-t> {menu_send %W toggle}
     bind all <$::modifier-Shift-Key-u> {menu_send %W vumeter}
     bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
-    bind all <$::modifier-Shift-Key-w> {menu_send_float %W menuclose 1}
+    bind all <$::modifier-Shift-Key-w> {::pd_bindings::window_close %W 1}
     bind all <$::modifier-Shift-Key-z> {menu_redo}
 
     # OS-specific bindings
@@ -127,7 +127,7 @@ proc ::pd_bindings::global_bindings {} {
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown
-        # these can conflict with Cmd+comma & Cmd+period bindings in Tk Cococa
+        # these can conflict with CMD+comma & CMD+period bindings in Tk Cococa
         bind all <$::modifier-greater>     {menu_raisenextwindow}
         bind all <$::modifier-less>        {menu_raisepreviouswindow}
     }
@@ -227,15 +227,15 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     # "right clicks" are defined differently on each platform
     switch -- $::windowingsystem { 
         "aqua" {
-            bind $tkcanvas <ButtonPress-2>        "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-2>    "pdtk_canvas_rightclick %W %x %y %b"
             # on Mac OS X, make a rightclick with Ctrl-click for 1 button mice
             bind $tkcanvas <Control-Button-1> "pdtk_canvas_rightclick %W %x %y %b"
         } "x11" {
-            bind $tkcanvas <ButtonPress-3>     "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
             # on X11, button 2 "pastes" from the X windows clipboard
-            bind $tkcanvas <ButtonPress-2>   "pdtk_canvas_clickpaste %W %x %y %b"
+            bind $tkcanvas <ButtonPress-2>    "pdtk_canvas_clickpaste %W %x %y %b"
         } "win32" {
-            bind $tkcanvas <ButtonPress-3>   "pdtk_canvas_rightclick %W %x %y %b"
+            bind $tkcanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
         }
     }
 
@@ -270,14 +270,17 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
 
 # global window close event, patch windows are closed by pd
 # while other window types are closed via their own bindings
-proc ::pd_bindings::window_close {mytoplevel} {
+# force argument:
+#   0: request to close, verifying whether clean or dirty
+#   1: request to close, no verification
+proc ::pd_bindings::window_close {mytoplevel {force 0}} {
     # catch any non-existent windows
     # ie. the helpbrowser after it's been
     # closed by it's own binding
-    if {![winfo exists $mytoplevel]} {
+    if {$force eq 0 && ![winfo exists $mytoplevel]} {
         return
     }
-    menu_send_float $mytoplevel menuclose 0
+    menu_send_float $mytoplevel menuclose $force
 }
 
 # "map" event tells us when the canvas becomes visible, and "unmap",
