@@ -75,7 +75,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-B> {menu_send %W bng}
     bind all <$::modifier-Shift-Key-C> {menu_send %W mycnv}
     bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
-    bind all <$::modifier-Shift-Key-H> {menu_send %W hslider}
+    bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
     bind all <$::modifier-Shift-Key-L> {menu_clear_console}
     bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
@@ -90,7 +90,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-b> {menu_send %W bng}
     bind all <$::modifier-Shift-Key-c> {menu_send %W mycnv}
     bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
-    bind all <$::modifier-Shift-Key-h> {menu_send %W hslider}
+    bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
     bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
     bind all <$::modifier-Shift-Key-l> {menu_clear_console}
     bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
@@ -135,7 +135,7 @@ proc ::pd_bindings::global_bindings {} {
         bind all <$::modifier-Shift-Key-D> {menu_send %W vradio}
         bind all <$::modifier-Shift-Key-G> {menu_send %W graph}
         bind all <$::modifier-Shift-Key-I> {menu_send %W hradio}
-        bind all <$::modifier-Shift-Key-H> {menu_send %W hslider}
+        bind all <$::modifier-Shift-Key-J> {menu_send %W hslider}
         bind all <$::modifier-Shift-Key-M> {menu_message_dialog}
         bind all <$::modifier-Shift-Key-L> {menu_clear_console}
         bind all <$::modifier-Shift-Key-N> {menu_send %W numbox}
@@ -155,7 +155,7 @@ proc ::pd_bindings::global_bindings {} {
         bind all <$::modifier-Shift-Key-d> {menu_send %W vradio}
         bind all <$::modifier-Shift-Key-g> {menu_send %W graph}
         bind all <$::modifier-Shift-Key-i> {menu_send %W hradio}
-        bind all <$::modifier-Shift-Key-h> {menu_send %W hslider}
+        bind all <$::modifier-Shift-Key-j> {menu_send %W hslider}
         bind all <$::modifier-Shift-Key-m> {menu_message_dialog}
         bind all <$::modifier-Shift-Key-l> {menu_clear_console}
         bind all <$::modifier-Shift-Key-n> {menu_send %W numbox}
