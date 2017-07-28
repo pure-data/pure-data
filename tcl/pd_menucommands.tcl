@@ -42,7 +42,7 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
                       -filetypes { {{postscript} {.ps}} }]
     if {$filename ne ""} {
         set tkcanvas [tkcanvas_name $mytoplevel]
-        $tkcanvas postscript -file $filename 
+        $tkcanvas postscript -file $filename
     }
 }
 
@@ -142,10 +142,6 @@ proc ::pd_menucommands::menu_startup_dialog {} {
 
 proc ::pd_menucommands::menu_helpbrowser {} {
     ::helpbrowser::open_helpbrowser
-}
-
-proc ::pd_menucommands::menu_texteditor {} {
-    ::pdwindow::error "the text editor is not implemented"
 }
 
 # ------------------------------------------------------------------------------

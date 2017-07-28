@@ -103,7 +103,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-z> {menu_redo}
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
-        # Cmd-m = Minimize and Cmd-t = Font on Mac OS X for all apps
+        # Cmd-m = Minimize and Cmd-t = Font on macOS for all apps
         bind all <$::modifier-Key-t>         {menu_font_dialog}
         if {$::tcl_version < 8.5} {
             # TK 8.5+ Cocoa handles quit, minimize, & raise next window for us
@@ -118,9 +118,7 @@ proc ::pd_bindings::global_bindings {} {
         }
     } else {
         bind all <$::modifier-Key-q>       {pdsend "pd verifyquit"}
-        #bind all <$::modifier-Key-t>       {menu_texteditor}
         bind all <$::modifier-Key-M>       {menu_message_dialog}
-        #bind all <$::modifier-Key-T>       {menu_texteditor}
 
         bind all <$::modifier-Next>        {menu_raisenextwindow}    ;# PgUp
         bind all <$::modifier-Prior>       {menu_raisepreviouswindow};# PageDown

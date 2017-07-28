@@ -180,8 +180,6 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {menu_send $::focused_window selectall}
     $mymenu add  separator
-#   $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T" \
-#       -command {menu_texteditor}
     $mymenu add command -label [_ "Font"]       -accelerator "$accelerator+T" \
         -command {menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
