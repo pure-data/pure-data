@@ -220,9 +220,6 @@ proc ::pdwindow::pdwindow_bindings {} {
     # so no more bindings run
     bind .pdwindow <$::modifier-Key-s> {bell; break}
     bind .pdwindow <$::modifier-Key-p> {bell; break}
-    # and the CapsLock case...
-    bind .pdwindow <$::modifier-Key-S> {bell; break}
-    bind .pdwindow <$::modifier-Key-P> {bell; break}
 
     # ways of hiding/closing the Pd window
     if {$::windowingsystem eq "aqua"} {

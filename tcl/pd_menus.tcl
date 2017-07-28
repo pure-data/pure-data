@@ -57,10 +57,11 @@ proc ::pd_menus::configure_for_pdwindow {} {
     variable menubar
     # these are meaningless for the Pd window, so disable them
     # File menu
+    $menubar.file entryconfigure [_ "Close"] -state disabled
     $menubar.file entryconfigure [_ "Save"] -state disabled
     $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state disabled
-    $menubar.file entryconfigure [_ "Close"] -state disabled
+
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Font"] -state normal
@@ -85,10 +86,10 @@ proc ::pd_menus::configure_for_pdwindow {} {
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
     variable menubar
     # File menu
+    $menubar.file entryconfigure [_ "Close"] -state normal
     $menubar.file entryconfigure [_ "Save"] -state normal
     $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state normal
-    $menubar.file entryconfigure [_ "Close"] -state normal
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
     $menubar.edit entryconfigure [_ "Font"] -state normal
@@ -113,14 +114,15 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
     variable menubar
     # these are meaningless for the dialog panels, so disable them except for
-    # the ones that make sense in the Find dialog panel
+    # the ones that make sense in the Find dialog panel and it's canvas
     # File menu
-    if {$mytoplevel ne ".find"} {
+    $menubar.file entryconfigure [_ "Close"] -state disabled
+    if {$mytoplevel ne ".find" && $mytoplevel ne ".pdwindow"} {
         $menubar.file entryconfigure [_ "Save"] -state disabled
         $menubar.file entryconfigure [_ "Save As..."] -state disabled
         $menubar.file entryconfigure [_ "Print..."] -state disabled
     }
-    $menubar.file entryconfigure [_ "Close"] -state disabled
+
     # Edit menu
     $menubar.edit entryconfigure [_ "Font"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
@@ -305,6 +307,8 @@ proc ::pd_menus::build_window_menu {mymenu} {
                 -command {menu_bringalltofront}
         }
     } else {
+        $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
+                -command {menu_minimize $::focused_window}
         $mymenu add command -label [_ "Next Window"] \
             -command {menu_raisenextwindow} \
             -accelerator [_ "$accelerator+Page Down"]

@@ -147,6 +147,7 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
         .find.searchin configure -text \
             [format [_ "Search in %s for:"] [lookup_windowname $find_in_window] ]
     }
+    update_bindings
 }
 
 proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
@@ -180,12 +181,12 @@ proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
 proc ::dialog_find::open_find_dialog {mytoplevel} {
     if {[winfo exists .find]} {
         wm deiconify .find
-        raise .find
-        focus .find
         ::dialog_find::set_window_to_search $mytoplevel
     } else {
         create_dialog $mytoplevel
     }
+    raise .find
+    focus .find
     focus_find
 }
 
@@ -199,20 +200,6 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     .find configure -menu $::dialog_menubar
     .find configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings .find "find"
-    # sending these commands to the Find Dialog Panel should forward them to
-    # the currently focused patch
-    bind .find <$::modifier-Key-s> \
-        {menu_send $::focused_window menusave; break}
-    # TK Cocoa requires lowercase with Shift modifier
-    if {$::bind_shiftcaps == 1 } {
-        bind .find <$::modifier-Shift-Key-S> \
-            {menu_send $::focused_window menusaveas; break}
-    } else {
-        bind .find <$::modifier-Shift-Key-s> \
-            {menu_send $::focused_window menusaveas; break}
-    }
-    bind .find <$::modifier-Key-p> \
-        {menu_print $::focused_window; break}
     
     label .find.searchin -text \
             [format [_ "Search in %s for:"] [_ "Pd window"] ]
@@ -250,7 +237,31 @@ proc ::dialog_find::create_dialog {mytoplevel} {
         .find.button configure -takefocus 0
     }
     ::dialog_find::set_window_to_search $mytoplevel
-    ::dialog_find::focus_find 
+}
+
+# update the passthrough key bindings based on the current target search window
+proc ::dialog_find::update_bindings {} {
+    variable find_in_window
+    # sending these commands to the Find Dialog Panel should forward them to
+    # the currently focused patch
+     ::pdwindow::post "updating find dialog bindings\n"
+    if {$find_in_window ne ".pdwindow" && [winfo exists $find_in_window]} {
+        ::pdwindow::post "... setting\n"
+        # the "; break" part stops executing other binds
+        bind .find <$::modifier-Key-s> \
+            "menu_send $find_in_window menusave; break"
+        bind .find <$::modifier-Shift-Key-s> \
+            "menu_send $find_in_window menusaveas; break"
+        bind .find <$::modifier-Shift-Key-S> \
+            "menu_send $find_in_window menusaveas; break"
+        bind .find <$::modifier-Key-p> "menu_print $find_in_window; break"
+    } else {
+        # disable
+        bind .find <$::modifier-Key-s>       {bell; break}
+        bind .find <$::modifier-Shift-Key-s> {bell; break}
+        bind .find <$::modifier-Shift-Key-S> {bell; break}
+        bind .find <$::modifier-Key-p>       {bell; break}
+    }
 }
 
 # returns the current search string, shortens & appends "..." if too long

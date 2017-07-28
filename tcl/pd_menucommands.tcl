@@ -37,7 +37,8 @@ proc ::pd_menucommands::menu_open {} {
 # TODO set the current font family & size via the -fontmap option:
 # http://wiki.tcl.tk/41871
 proc ::pd_menucommands::menu_print {mytoplevel} {
-    set filename [tk_getSaveFile -initialfile pd.ps \
+    set initialfile "[file rootname [lookup_windowname $mytoplevel]].ps"
+    set filename [tk_getSaveFile -initialfile $initialfile \
                       -defaultextension .ps \
                       -filetypes { {{postscript} {.ps}} }]
     if {$filename ne ""} {
