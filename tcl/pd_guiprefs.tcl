@@ -128,9 +128,6 @@ proc ::pd_guiprefs::init {} {
                         }
                     }
                 } else {
-                    if {[catch {exec defaults write $adomain $akey ""} errorMsg]} {
-                        puts "write_config $akey: $errorMsg\n"
-                    }
                     set escaped [escape_for_plist $data]
                     if {[catch {exec defaults write $adomain $akey $escaped} errorMsg]} {
                         puts "write_config $akey: $errorMsg\n"
