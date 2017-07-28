@@ -90,7 +90,7 @@ proc ::pd_guiprefs::init {} {
             set ::recentfiles_is_array true
 
             # ------------------------------------------------------------------------------
-            # macOS: read a plist file
+            # macOS: read a plist file using the 'defaults' command
             #
             proc ::pd_guiprefs::get_config {adomain {akey} {arr false}} {
                 if {![catch {exec defaults read $adomain $akey} conf]} {
@@ -106,7 +106,7 @@ proc ::pd_guiprefs::init {} {
                     } else {
                         # not an array
                         exec defaults write $adomain $akey ""
-                        set ""
+                        set conf ""
                     }
                 }
                 return $conf
@@ -335,7 +335,7 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
 #
 # becomes: "/path1/hello.pd /path2/world.pd /foo/bar/baz.pd"
 #
-proc ::pd_guiprefs::defaults_array_to_tcl_list {arr} {
+proc ::pd_guiprefs::plist_array_to_tcl_list {arr} {
     set result {}
     set filelist $arr
     regsub -all -- {("?),\s+("?)} $filelist {\1 \2} filelist
@@ -360,7 +360,7 @@ proc ::pd_guiprefs::defaults_array_to_tcl_list {arr} {
 # while others strangely do (found via trial and error), this is ensures the
 # single quotes do not pass through and are saved with the string
 #
-# TODO:
+# FIXME:
 #   * " are not escaped
 #   * \ seem to be swallowed
 #   * mixing ' & parens doesn't work
