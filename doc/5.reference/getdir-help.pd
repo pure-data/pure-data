@@ -1,0 +1,25 @@
+#N canvas 0 26 425 433 10;
+#X obj 177 95 getdir;
+#X msg 177 57 bang;
+#X obj 177 133 print;
+#X text 18 165 You can also get the path of the parent patch \, if
+this patch is an object embedded in another patch. You use the argument
+to set how many levels up to go:;
+#X msg 99 222 bang;
+#X obj 99 298 print;
+#X obj 99 260 getdir 1;
+#X msg 294 223 bang;
+#X obj 294 299 print;
+#X obj 294 261 getdir 2;
+#X text 17 21 getdir - get the directory that this patch is operating
+in:;
+#X text 18 331 If there is no parent at that level \, it returns the
+directory as if there was no argument \, i.e. level 0;
+#X text 24 387 By Guenter Geiger 2005;
+#X text 275 388 added to Pd 0.48;
+#X connect 0 0 2 0;
+#X connect 1 0 0 0;
+#X connect 4 0 6 0;
+#X connect 6 0 5 0;
+#X connect 7 0 9 0;
+#X connect 9 0 8 0;
