@@ -57,10 +57,11 @@ proc ::pd_menus::configure_for_pdwindow {} {
     variable menubar
     # these are meaningless for the Pd window, so disable them
     # File menu
+    $menubar.file entryconfigure [_ "Close"] -state disabled
     $menubar.file entryconfigure [_ "Save"] -state disabled
     $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state disabled
-    $menubar.file entryconfigure [_ "Close"] -state disabled
+
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Font"] -state normal
@@ -85,10 +86,10 @@ proc ::pd_menus::configure_for_pdwindow {} {
 proc ::pd_menus::configure_for_canvas {mytoplevel} {
     variable menubar
     # File menu
+    $menubar.file entryconfigure [_ "Close"] -state normal
     $menubar.file entryconfigure [_ "Save"] -state normal
     $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state normal
-    $menubar.file entryconfigure [_ "Close"] -state normal
     # Edit menu
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
     $menubar.edit entryconfigure [_ "Font"] -state normal
@@ -113,14 +114,23 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
 proc ::pd_menus::configure_for_dialog {mytoplevel} {
     variable menubar
     # these are meaningless for the dialog panels, so disable them except for
-    # the ones that make sense in the Find dialog panel
+    # the ones that make sense in the Find dialog panel and it's canvas
     # File menu
-    if {$mytoplevel ne ".find"} {
+    $menubar.file entryconfigure [_ "Close"] -state disabled
+    if {$mytoplevel eq ".find"} {
+        # these bindings are passed through Find to it's target search window
+        $menubar.file entryconfigure [_ "Save As..."] -state disabled
+        if {$mytoplevel ne ".pdwindow"} {
+            # these don't do anything in the pdwindow
+            $menubar.file entryconfigure [_ "Save"] -state disabled
+            $menubar.file entryconfigure [_ "Print..."] -state disabled
+        }
+    } else {
         $menubar.file entryconfigure [_ "Save"] -state disabled
         $menubar.file entryconfigure [_ "Save As..."] -state disabled
         $menubar.file entryconfigure [_ "Print..."] -state disabled
     }
-    $menubar.file entryconfigure [_ "Close"] -state disabled
+
     # Edit menu
     $menubar.edit entryconfigure [_ "Font"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
@@ -153,7 +163,7 @@ proc ::pd_menus::build_file_menu {mymenu} {
     $mymenu entryconfigure [_ "Save"]       -command {menu_send $::focused_window menusave}
     $mymenu entryconfigure [_ "Save As..."] -command {menu_send $::focused_window menusaveas}
     #$mymenu entryconfigure [_ "Revert*"]    -command {menu_revert $::focused_window}
-    $mymenu entryconfigure [_ "Close"]      -command {menu_send_float $::focused_window menuclose 0}
+    $mymenu entryconfigure [_ "Close"]      -command {::pd_bindings::window_close $::focused_window}
     $mymenu entryconfigure [_ "Message..."] -command {menu_message_dialog}
     $mymenu entryconfigure [_ "Print..."]   -command {menu_print $::focused_window}
     # update recent files
@@ -180,8 +190,6 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {menu_send $::focused_window selectall}
     $mymenu add  separator
-#   $mymenu add command -label [_ "Text Editor"] -accelerator "$accelerator+T" \
-#       -command {menu_texteditor}
     $mymenu add command -label [_ "Font"]       -accelerator "$accelerator+T" \
         -command {menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
@@ -228,7 +236,7 @@ proc ::pd_menus::build_put_menu {mymenu} {
         -command {menu_send $::focused_window numbox}
     $mymenu add command -label [_ "Vslider"]  -accelerator "Shift+$accelerator+V" \
         -command {menu_send $::focused_window vslider}
-    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+H" \
+    $mymenu add command -label [_ "Hslider"]  -accelerator "Shift+$accelerator+J" \
         -command {menu_send $::focused_window hslider}
     $mymenu add command -label [_ "Vradio"]   -accelerator "Shift+$accelerator+D" \
         -command {menu_send $::focused_window vradio}
@@ -307,6 +315,8 @@ proc ::pd_menus::build_window_menu {mymenu} {
                 -command {menu_bringalltofront}
         }
     } else {
+        $mymenu add command -label [_ "Minimize"] -accelerator "$accelerator+M" \
+                -command {menu_minimize $::focused_window}
         $mymenu add command -label [_ "Next Window"] \
             -command {menu_raisenextwindow} \
             -accelerator [_ "$accelerator+Page Down"]

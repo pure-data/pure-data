@@ -46,7 +46,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         wm geometry $mytoplevel "450x340"
         wm minsize $mytoplevel 450 340
         frame $mytoplevel.installpath
-        pack $mytoplevel.installpath -side top -anchor e -expand 1 -fill x -padx 2m
+        pack $mytoplevel.installpath -side top -anchor e -expand 1 -fill x -padx {2m 4m}
         label $mytoplevel.installpath.entryname -text [_ "Install externals to:"]
         entry $mytoplevel.installpath.entry -textvariable ::deken::installpath \
             -state readonly -readonlybackground [lindex [$mytoplevel configure -background] end]
