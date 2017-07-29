@@ -65,14 +65,14 @@ but by default are omni:;
 #X obj 445 510 polytouchout;
 #X floatatom 484 485 0 0 0 0 - - -;
 #X floatatom 525 485 0 0 0 0 - - -;
-#X obj 629 119 midiin;
-#X floatatom 629 150 0 0 0 0 - - -;
-#X floatatom 660 150 0 0 0 0 - - -;
-#X floatatom 631 358 0 0 0 0 - - -;
-#X floatatom 662 359 0 0 0 0 - - -;
-#X text 615 69 output the port number instead;
-#X text 616 88 of the channel:;
-#X obj 633 327 sysexin;
+#X obj 624 137 midiin;
+#X floatatom 624 168 0 0 0 0 - - -;
+#X floatatom 655 168 0 0 0 0 - - -;
+#X floatatom 624 354 0 0 0 0 - - -;
+#X floatatom 655 355 0 0 0 0 - - -;
+#X text 615 70 output the port number instead;
+#X text 616 89 of the channel:;
+#X obj 624 323 sysexin;
 #X obj 688 487 midiout;
 #X text 592 424 use this to output raw MIDI;
 #X text 589 444 (the second inlet is the port;
@@ -82,20 +82,16 @@ but by default are omni:;
 as creation argument \, and ctlin takes a control number and a channel.
 You get inlets to change them in any case. If you specify no channel
 \, it's channel 1;
-#X floatatom 628 229 0 0 0 0 - - -;
-#X floatatom 714 229 0 0 0 0 - - -;
-#X obj 628 200 midirealtimein;
-#X text 614 50 These four are always omni and;
-#X floatatom 630 292 0 0 0 0 - - -;
-#X floatatom 681 293 0 0 0 0 - - -;
-#X obj 630 262 midiclkin;
-#X text 713 122 all midi \, byte by byte \, except real-time messages
+#X floatatom 620 261 0 0 0 0 - - -;
+#X floatatom 706 261 0 0 0 0 - - -;
+#X obj 620 232 midirealtimein;
+#X text 709 128 all midi \, byte by byte \, except real-time messages
 below, f 18;
-#X text 755 200 all real-time messages, f 10;
-#X text 749 266 "clock" messages, f 8;
-#X text 709 330 like midiin \, but only gives incoming system exclusive
+#X text 755 232 all real-time messages, f 10;
+#X text 705 321 like midiin \, but only gives incoming system exclusive
 messages, f 21;
-#X text 642 536 updated for Pd release 0.47;
+#X text 614 51 These three are always omni and;
+#X text 642 536 updated for Pd release 0.48;
 #X connect 0 0 54 0;
 #X connect 1 0 9 0;
 #X connect 2 0 8 0;
@@ -136,5 +132,3 @@ messages, f 21;
 #X connect 77 0 7 0;
 #X connect 81 0 79 0;
 #X connect 81 1 80 0;
-#X connect 85 0 83 0;
-#X connect 85 1 84 0;
