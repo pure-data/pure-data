@@ -237,6 +237,9 @@ if { "" != "$::current_plugin_loadpath" } {
     ::pdwindow::post "\n"
     ::pdwindow::post [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
     ::pdwindow::post "\n"
+} else {
+    ::pdwindow::verbose 0 [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
+    ::pdwindow::verbose 0 "\n"
 }
 
 # architectures that can be substituted for eachother
@@ -353,7 +356,7 @@ proc ::deken::create_dialog {mytoplevel} {
     bind $mytoplevel.searchbit.entry <KeyRelease> "::deken::update_searchbutton $mytoplevel"
     focus $mytoplevel.searchbit.entry
     button $mytoplevel.searchbit.button -text [_ "Show all"] -default active -command "::deken::initiate_search $mytoplevel"
-    pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
+    pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3 -ipadx 10
 
     frame $mytoplevel.warning
     pack $mytoplevel.warning -side top -fill x
@@ -435,6 +438,7 @@ proc ::deken::clicked_link {URL filename} {
     ### if not, get a writable item from one of the searchpaths
     ### if this still doesn't help, ask the user
     set installdir [::deken::find_installpath]
+    set extname [lindex [split $filename "-"] 0]
     if { "$installdir" == "" } {
         ## ask the user (and remember the decision)
         ::deken::prompt_installdir
@@ -442,9 +446,11 @@ proc ::deken::clicked_link {URL filename} {
     }
     while {1} {
         if { "$installdir" == "" } {
-            set _args {-message [_ "Please select a (writable) installation directory!"] -type retrycancel -default retry -icon warning}
+            set msg  [_ "Please select a (writable) installation directory!"]
+            set _args "-message $msg -type retrycancel -default retry -icon warning"
         } {
-            set _args "-message \"[format [_ "Install to %s ?" ] $installdir]\" -type yesnocancel -default yes -icon question"
+            set msg [_ "Install %s to %s?" ]
+            set _args "-message \"[format $msg $extname $installdir]\" -type yesnocancel -default yes -icon question"
         }
         switch -- [eval tk_messageBox ${_args}] {
             cancel return
@@ -473,7 +479,6 @@ proc ::deken::clicked_link {URL filename} {
     ::deken::clearpost
     ::deken::post [format [_ "Commencing downloading of:\n%1\$s\nInto %2\$s..."] $URL $installdir] ]
     set fullpkgfile [::deken::download_file $URL $fullpkgfile]
-
     if { "$fullpkgfile" eq "" } {
         ::deken::post [_ "aborting."] info
         return
@@ -512,6 +517,24 @@ proc ::deken::clicked_link {URL filename} {
         ::deken::post [format [_ "2. Copy the contents into %s." ] $installdir]
         ::deken::post ""
         pd_menucommands::menu_openfile $installdir
+    }
+
+    # add to the search paths?
+    set extpath [file join $::deken::installpath $extname]
+    if {![file exists $extpath]} {
+        ::deken::post [_ "Unable to add %s to search paths"] $extname
+        return
+    }
+    set msg [_ "Add %s to the Pd search paths?" ]
+    set _args "-message \"[format $msg $extname]\" -type yesno -default yes -icon question"
+    switch -- [eval tk_messageBox ${_args}] {
+        yes {
+            add_to_searchpaths [file join $::deken::installpath $extname]
+            ::deken::post [format [_ "Added %s to search paths"] $extname]
+        }
+        no {
+            return
+        }
     }
 }
 
@@ -626,6 +649,7 @@ set mymenu .menubar.help
 if { [catch {
     $mymenu entryconfigure [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
 } _ ] } {
+    $mymenu add separator
     $mymenu add command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
 }
 # bind all <$::modifier-Key-s> {::deken::open_helpbrowser .helpbrowser2}

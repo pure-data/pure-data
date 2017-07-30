@@ -162,6 +162,10 @@ set sys_guidir {}
 set sys_searchpath {}
 # hard-coded search patch for objects, help, plugins, etc.
 set sys_staticpath {}
+# optional user documents path for patches & external downloads,
+# if empty, the user is prompted about creating this
+# if set to "DISABLED", the docs path functionality is disabled
+set docspath {}
 # the path to the folder where the current plugin is being loaded from
 set current_plugin_loadpath {}
 # a list of plugins that were loaded
@@ -526,6 +530,149 @@ proc fit_font_into_metrics {} {
 }
 
 # ------------------------------------------------------------------------------
+# optional documents directory
+
+# check the Pd documents directory path & prompt user to create if it's empty,
+# otherwise ignore all of this if the user cancelled it
+proc setup_docspath {} {
+    set docsdir $::docspath
+    if { "$docsdir" eq "DISABLED" } {
+        # respect prev decision
+        return
+    } elseif { "$docsdir" eq "" } {
+        # sanity check, Pd might be running on a non-writable install
+        if {![file exists $::env(HOME)] || ![file writable $::env(HOME)]} {
+            return
+        }
+        # default location: Documents dir if it exists, otherwise use home
+        set docsdir_default [file join $::env(HOME) "Documents"]
+        if {![file exists $docsdir_default]} {
+            set docsdir_default $::env(HOME)
+        }
+        if {![file writable $docsdir_default]} {return} ;#sanity check
+        set docsdir_default [file join $docsdir_default "Pd"]
+        # prompt
+        set msg [_ "Welcome to Pure Data!\n\nDo you want Pd to create a documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
+        set _args "-message \"[format $msg $docsdir_default]\" -type yesnocancel -default yes -icon question -parent .pdwindow"
+        switch -- [eval tk_messageBox ${_args}] {
+            yes {
+                set docsdir $docsdir_default
+                # set the new docs path
+                if {![create_docspath $docsdir]} {
+                    # didn't work
+                    ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docsdir]
+                    return
+                }
+            }
+            no {
+                # bug off
+                set docsdir "DISABLED"
+            }
+            cancel {
+                # defer
+                return
+            }
+        }
+        set_docspath $docsdir
+        focus .pdwindow
+    } else {
+        # check saved setting
+        set fullpath [file normalize "$docsdir"]
+        if {![file exists $fullpath]} {
+            set msg [_ "Pd documents directory cannot be found:\n\n%s\n\nChoose a new location?" ]
+            set _args "-message \"[format $msg $::docspath]\" -type yesno -default yes -icon warning"
+            switch -- [eval tk_messageBox ${_args}] {
+                yes {
+                    # set the new docs path
+                    set newpath [tk_chooseDirectory -initialdir $::env(HOME) -title [_ "Choose Pd documents directory:"]]
+                    if {$newpath ne ""} {
+                        if {[create_docspath $docsdir]} {
+                            # set the new docs path
+                            set_docspath $docsdir
+                        } else {
+                            # didn't work
+                            ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docsdir]
+                            return
+                        }
+                    }
+                }
+                no {
+                    # defer
+                    return
+                }
+            }
+            focus .pdwindow
+        }
+    }
+    ::pdwindow::verbose 0 "Pd documents directory: $::docspath\n"
+}
+
+# try to find a default docs path, returns an empty string if not possible
+proc get_default_docspath {} {
+     # sanity check, Pd might be running on a non-writable install
+    if {![file exists $::env(HOME)] || ![file writable $::env(HOME)]} {
+        return ""
+    }
+    # default location: Documents dir if it exists, otherwise use home
+    set path [file join $::env(HOME) "Documents"]
+    if {![file exists $path]} {
+        set path $::env(HOME)
+    }
+    if {[file writable $path]} {
+        return  [file join $path "Pd"]
+    }
+    return ""
+}
+
+# create the Pd documents directory path and it's "externals" subdir,
+# does nothing if paths already exist
+proc create_docspath {path} {
+    if {"$path" eq "" || "$path" eq "DISABLED"} {return 0}
+    set path [file join [file normalize "$path"] "externals"]
+    if {[file mkdir "$path" ] eq ""} {
+        return 1
+    }
+    return 0
+}
+
+# set the Pd documents directory path, adds "externals" subdir to search paths
+proc set_docspath {path} {
+    set ::docspath $path
+    ::pd_guiprefs::write_docspath
+    if {"$path" ne "" && "$path" ne "DISABLED"} {
+        set externalspath [file join "$path" "externals"]
+        # set deken to use it
+        if {[namespace exists ::deken]} {
+            set ::deken::installpath ""
+            :::deken::set_installpath $externalspath
+        }
+        add_to_searchpaths $externalspath
+    }
+}
+
+# get an initial dialog directory, prefer docspath if set otherwise home
+proc get_initial_dialog_dir {} {
+    if {$::docspath eq "" || $docspath eq "DISABLED"} {
+        return $::env(HOME)
+    }
+    return $::docspath
+}
+
+# adds to the sys_searchpath user search paths direclty
+proc add_to_searchpaths {path {save true}} {
+    # try not to add duplicates
+    foreach searchpath $::sys_searchpath {
+        set dir [string trimright $searchpath [file separator]]
+        if {"$dir" eq "$path"} {
+            return
+        }
+    }
+    # tell pd about the new path
+    if {$save} {set save 1} else {set save 0}
+    pdsend "pd add-to-path ${path} $save"
+}
+
+# ------------------------------------------------------------------------------
 # procs called directly by pd
 
 proc pdtk_pd_startup {major minor bugfix test
@@ -554,6 +701,7 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdtk_canvas::create_popup
     load_startup_plugins
     open_filestoopen
+    after 1000 {setup_docspath}
     set ::done_init 1
 }
 
