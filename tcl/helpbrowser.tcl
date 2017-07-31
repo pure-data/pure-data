@@ -213,7 +213,7 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
                                          *.txt]]  {
         $current_listbox insert end [file tail $item]
     }
-    
+
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} 2 %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
@@ -253,7 +253,7 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
                              -height 20 -width 24 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
         -side left -fill both -expand 1
-    
+
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
         $current_listbox insert end "[file tail $item]/"
     }
@@ -439,10 +439,9 @@ proc ::helpbrowser::build_references {} {
     # add an entry for seach directory in Help browser's root column
     set searchpaths {}
     foreach pathdir $::sys_searchpath {
-        # trim separator so we don't append an extra one before list -unique
+        # trim separator
         set trimmed [string trimright [file normalize $pathdir] [file separator]]
-        # add the separator (again)
-        lappend searchpaths [file join $trimmed { }]
+        lappend searchpaths $trimmed
     }
     set searchpaths [lsort -unique $searchpaths]
     foreach pathdir $searchpaths {
