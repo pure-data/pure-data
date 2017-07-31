@@ -555,7 +555,7 @@ proc ::deken::clicked_link {URL filename} {
         return
     }
     set msg [_ "Add %s to the Pd search paths?" ]
-    set _args "-message \"[format $msg $extname]\" -type yesno -default yes -icon question"
+    set _args "-message \"[format $msg $extname]\" -type yesno -default yes -icon question -parent .externals_searchui"
     switch -- [eval tk_messageBox ${_args}] {
         yes {
             add_to_searchpaths [file join $installdir $extname]
