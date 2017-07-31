@@ -439,9 +439,8 @@ proc ::helpbrowser::build_references {} {
     # add an entry for seach directory in Help browser's root column
     set searchpaths {}
     foreach pathdir $::sys_searchpath {
-        # trim separator
-        set trimmed [string trimright [file normalize $pathdir] [file separator]]
-        lappend searchpaths $trimmed
+        set dir [string trimright [file join [file normalize $pathdir] { }]]
+        lappend searchpaths $dir
     }
     set searchpaths [lsort -unique $searchpaths]
     foreach pathdir $searchpaths {
@@ -449,4 +448,3 @@ proc ::helpbrowser::build_references {} {
         add_entry libdirlist $pathdir
     }
 }
-
