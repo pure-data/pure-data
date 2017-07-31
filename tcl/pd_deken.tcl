@@ -296,7 +296,7 @@ proc ::deken::highlightable_posttag {tag} {
 }
 proc ::deken::prompt_installdir {} {
     set installdir [tk_chooseDirectory -title [_ "Install externals to directory:"] \
-                                       -initialdir $::env(HOME)]
+                                       -initialdir $::env(HOME) -parent .externals_searchui]
     if { "$installdir" != "" } {
         ::deken::set_installpath $installdir
         return 1
@@ -448,10 +448,10 @@ proc ::deken::clicked_link {URL filename} {
     while {1} {
         if { "$installdir" == "" } {
             set msg  [_ "Please select a (writable) installation directory!"]
-            set _args "-message $msg -type retrycancel -default retry -icon warning"
+            set _args "-message $msg -type retrycancel -default retry -icon warning -parent .externals_searchui"
         } {
             set msg [_ "Install %s to %s?" ]
-            set _args "-message \"[format $msg $extname $installdir]\" -type yesnocancel -default yes -icon question"
+            set _args "-message \"[format $msg $extname $installdir]\" -type yesnocancel -default yes -icon question -parent .externals_searchui"
         }
         switch -- [eval tk_messageBox ${_args}] {
             cancel return
