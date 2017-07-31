@@ -121,20 +121,16 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
 # browse for a new Pd user docs path
 proc ::dialog_path::browse_docspath {mytoplevel} {
-    if {![file isdirectory $::docspath]} {
-        set path $::env(HOME)
-    } else {
-        set path $::docspath
-    }
     # set the new docs path
-    set newpath [tk_chooseDirectory -initialdir $::env(HOME) -title [_ "Choose Pd documents directory:"]]
+    set newpath [tk_chooseDirectory -initialdir [get_dialog_initialdir true] \
+         -title [_ "Choose Pd documents directory:"]]
     if {$newpath ne ""} {
-        if {[create_docspath $newdir]} {
-            set_docspath $docsdir
+        if {[create_docspath $newpath]} {
+            set_docspath $newpath
             return 1
         } else {
             # didn't work
-            ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docsdir]
+            ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $newpath]
         }
     }
     return 0
@@ -150,7 +146,7 @@ proc ::dialog_path::disable_docspath {mytoplevel} {
 # reset to the default Pd user docs path
 proc ::dialog_path::reset_docspath {mytoplevel} {
     set path [get_default_docspath]
-    if {$path != "" && [create_docspath $path]} {
+    if {[create_docspath $path]} {
         set_docspath $path
         return 1
     }
@@ -160,7 +156,7 @@ proc ::dialog_path::reset_docspath {mytoplevel} {
 # browse for a new deken installpath, this assumes deken is available
 proc ::dialog_path::browse_installpath {mytoplevel} {
     if {![file isdirectory $::deken::installpath]} {
-        set path $::env(HOME)
+        set path [get_dialog_initialdir]
     } else {
         set path $::deken::installpath
     }

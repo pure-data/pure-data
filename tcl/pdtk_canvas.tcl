@@ -100,7 +100,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
 
     ::pd_bindings::patch_bindings $mytoplevel
 
-    # give focus to the canvas so it gets the events rather than the window 	 
+    # give focus to the canvas so it gets the events rather than the window
     focus $tkcanvas
 
     # let the scrollbar logic determine if it should make things scrollable
@@ -125,7 +125,7 @@ proc pdtk_canvas_raise {mytoplevel} {
 }
 
 proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
-    if { ! [file isdirectory $initialdir]} {set initialdir $::env(HOME)}
+    if { ! [file isdirectory $initialdir]} {set initialdir [get_dialog_initialdir]}
     set filename [tk_getSaveFile -initialfile $initialfile -initialdir $initialdir \
                       -defaultextension .pd -filetypes $::filetypes]
     if {$filename eq ""} return; # they clicked cancel
@@ -319,7 +319,7 @@ proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
         set ::pdtk_canvas::::getscroll_tokens($tkcanvas) \
             [after idle ::pdtk_canvas::pdtk_canvas_getscroll $tkcanvas]
         return
-    }     
+    }
     if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
         unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
     }
@@ -391,7 +391,7 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
     if {$::windowingsystem eq "aqua"} {
         wm attributes $mytoplevel -modified $dirty
         if {[file exists "$path/$name"]} {
-            # for some reason -titlepath can still fail so just catch it 
+            # for some reason -titlepath can still fail so just catch it
             if [catch {wm attributes $mytoplevel -titlepath "$path/$name"}] {
                 wm title $mytoplevel "$path/$name"
             }
@@ -399,6 +399,6 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
         wm title $mytoplevel "$name$arguments"
     } else {
         if {$dirty} {set dirtychar "*"} else {set dirtychar " "}
-        wm title $mytoplevel "$name$dirtychar$arguments - $path" 
+        wm title $mytoplevel "$name$dirtychar$arguments - $path"
     }
 }

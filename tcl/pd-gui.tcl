@@ -120,6 +120,9 @@ set TCL_BUGFIX_VERSION 0
 # for testing which platform we are running on ("aqua", "win32", or "x11")
 set windowingsystem ""
 
+# did the gui start first?
+set gui_started_first 0
+
 # args about how much and where to log
 set loglevel 2
 set stderr 0
@@ -162,7 +165,7 @@ set sys_guidir {}
 set sys_searchpath {}
 # hard-coded search patch for objects, help, plugins, etc.
 set sys_staticpath {}
-# optional user documents path for patches & external downloads,
+# optional user documents path for patches & external downloads
 # if empty, the user is prompted about creating this
 # if set to "DISABLED", the docs path functionality is disabled
 set docspath {}
@@ -531,6 +534,13 @@ proc fit_font_into_metrics {} {
 
 # ------------------------------------------------------------------------------
 # optional documents directory
+#
+# this feature provides a beginner-friendly location for patches & externals and
+# is created by a dialog when first running Pd
+#
+# a subfolder for externals is automatically added to the user search paths and
+# file dialogs will open in the docs path by default
+#
 
 # check the Pd documents directory path & prompt user to create if it's empty,
 # otherwise ignore all of this if the user cancelled it
@@ -584,7 +594,8 @@ proc setup_docspath {} {
             switch -- [eval tk_messageBox ${_args}] {
                 yes {
                     # set the new docs path
-                    set newpath [tk_chooseDirectory -initialdir $::env(HOME) -title [_ "Choose Pd documents directory:"]]
+                    set newpath [tk_chooseDirectory -title [_ "Choose Pd documents directory:"] \
+                                                    -initialdir $::env(HOME)]
                     if {$newpath ne ""} {
                         if {[create_docspath $docsdir]} {
                             # set the new docs path
@@ -603,6 +614,11 @@ proc setup_docspath {} {
             }
             focus .pdwindow
         }
+    }
+    # open dialogs in docs dir?
+    if {$::gui_started_first && "$::docspath" ne "DISABLED"} {
+        set ::filenewdir [get_dialog_initialdir]
+        set ::fileopendir [get_dialog_initialdir]
     }
     ::pdwindow::verbose 0 "Pd documents directory: $::docspath\n"
 }
@@ -648,28 +664,6 @@ proc set_docspath {path} {
         }
         add_to_searchpaths $externalspath
     }
-}
-
-# get an initial dialog directory, prefer docspath if set otherwise home
-proc get_initial_dialog_dir {} {
-    if {$::docspath eq "" || $docspath eq "DISABLED"} {
-        return $::env(HOME)
-    }
-    return $::docspath
-}
-
-# adds to the sys_searchpath user search paths direclty
-proc add_to_searchpaths {path {save true}} {
-    # try not to add duplicates
-    foreach searchpath $::sys_searchpath {
-        set dir [string trimright $searchpath [file separator]]
-        if {"$dir" eq "$path"} {
-            return
-        }
-    }
-    # tell pd about the new path
-    if {$save} {set save 1} else {set save 0}
-    pdsend "pd add-to-path ${path} $save"
 }
 
 # ------------------------------------------------------------------------------
@@ -930,6 +924,7 @@ proc main {argc argv} {
             set ::filenewdir $::env(HOME)
             set ::fileopendir $::env(HOME)
         }
+        set ::gui_started_first 1
     }
     ::pdwindow::verbose 0 "------------------ done with main ----------------------\n"
 }

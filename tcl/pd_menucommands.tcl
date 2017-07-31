@@ -12,7 +12,7 @@ namespace eval ::pd_menucommands:: {
 
 proc ::pd_menucommands::menu_new {} {
     variable untitled_number
-    if { ! [file isdirectory $::filenewdir]} {set ::filenewdir $::env(HOME)}
+    if { ! [file isdirectory $::filenewdir]} {set ::filenewdir [get_dialog_initialdir]}
     # to localize "Untitled" there will need to be changes in g_canvas.c and
     # g_readwrite.c, where it tests for the string "Untitled"
     set untitled_name "Untitled"
@@ -21,13 +21,13 @@ proc ::pd_menucommands::menu_new {} {
 }
 
 proc ::pd_menucommands::menu_open {} {
-    if { ! [file isdirectory $::fileopendir]} {set ::fileopendir $::env(HOME)}
+    if { ! [file isdirectory $::fileopendir]} {set ::fileopendir [get_dialog_initialdir]}
     set files [tk_getOpenFile -defaultextension .pd \
                        -multiple true \
                        -filetypes $::filetypes \
                        -initialdir $::fileopendir]
     if {$files ne ""} {
-        foreach filename $files { 
+        foreach filename $files {
             open_file $filename
         }
         set ::fileopendir [file dirname $filename]
@@ -42,7 +42,7 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
                       -filetypes { {{postscript} {.ps}} }]
     if {$filename ne ""} {
         set tkcanvas [tkcanvas_name $mytoplevel]
-        $tkcanvas postscript -file $filename 
+        $tkcanvas postscript -file $filename
     }
 }
 
@@ -223,7 +223,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         pack .aboutpd.scroll -side right -fill y
         pack .aboutpd.text -side left -fill both -expand 1
         bind .aboutpd <$::modifier-Key-w> "destroy .aboutpd"
-        
+
         set textfile [open $filename]
         while {![eof $textfile]} {
             set bigstring [read $textfile 1000]
