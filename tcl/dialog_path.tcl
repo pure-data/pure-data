@@ -38,13 +38,13 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
-        450 450 1
+        450 440 1
     ::pd_bindings::dialog_bindings $mytoplevel "path"
     set readonly_color [lindex [$mytoplevel configure -background] end]
 
     # path options
     frame $mytoplevel.extraframe
-    pack $mytoplevel.extraframe -side top -fill x
+    pack $mytoplevel.extraframe -side top -anchor s -fill x
     checkbutton $mytoplevel.extraframe.extra -text [_ "Use standard paths"] \
         -variable use_standard_paths_button -anchor w
     checkbutton $mytoplevel.extraframe.verbose -text [_ "Verbose"] \
@@ -55,7 +55,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     # docs path
     labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
         -borderwidth 1 -padx 5 -pady 5
-    pack $mytoplevel.docspath -side top -expand 1 -fill x -padx {2m 4m} -pady 2m
+    pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
 
     frame $mytoplevel.docspath.path
     pack $mytoplevel.docspath.path -fill x
@@ -77,11 +77,11 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # add deken path widgets if deken is available, increase window height to make room
     if {[namespace exists ::deken]} {
-        wm geometry $mytoplevel "450x490"
-        wm minsize $mytoplevel 450 490
+        wm geometry $mytoplevel "450x480"
+        wm minsize $mytoplevel 450 480
         labelframe $mytoplevel.installpath -text [_ "Externals Install Directory"] \
             -borderwidth 1 -padx 5 -pady 5
-        pack $mytoplevel.installpath -expand 1 -fill x -padx {2m 4m} -pady 2m
+        pack $mytoplevel.installpath -fill x -anchor s -padx {2m 4m} -pady 2m
 
         frame $mytoplevel.installpath.path
         pack $mytoplevel.installpath.path -fill x
