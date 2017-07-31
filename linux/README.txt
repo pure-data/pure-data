@@ -4,11 +4,12 @@ release checklist
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
+    git commit -a
     test compilation on linux/msw/mac as follows:
     cd linux; ./make-release 0.35-0  or 0.35-test11, etc
         ... compile on MAC:
         ... first build POs on linux because I can't install gettext on mac:
-      ./autogen.sk; ./configure; make; rsync <flags> po/ <mac>:build/po/
+      ./autogen.sh; ./configure; make; rsync -avzl po/ <mac>:build/po/
         ... scp source tarball to Mac and unpack. CD to, Pd-<> and:
       ./autogen.sh
       ./configure

@@ -41,6 +41,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         450 450 1
     ::pd_bindings::dialog_bindings $mytoplevel "path"
     set readonly_color [lindex [$mytoplevel configure -background] end]
+
     # path options
     frame $mytoplevel.extraframe
     pack $mytoplevel.extraframe -side top -fill x

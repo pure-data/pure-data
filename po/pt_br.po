@@ -575,10 +575,10 @@ msgstr ""
 "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Install externals to:"
-msgstr ""
+msgstr "Instalar externals em:"
 
 msgid "Browse"
-msgstr ""
+msgstr "Navegar"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
@@ -664,7 +664,7 @@ msgid "Unable to perform search. Are you online?"
 msgstr "Incapaz de realizar busca. Você está online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr ""
+msgstr "" 
 "Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
 
 msgid "Please select a (writable) installation directory!"

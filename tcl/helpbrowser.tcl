@@ -7,6 +7,7 @@ namespace eval ::helpbrowser:: {
     variable reference_count
     variable reference_paths
     variable doctypes "*.{pd,pat,mxb,mxt,help,txt,htm,html,pdf,c}"
+    variable maxcols
 
     namespace export open_helpbrowser
 }
@@ -28,11 +29,18 @@ proc ::helpbrowser::open_helpbrowser {} {
             .helpbrowser configure -menu $::dialog_menubar
         }
 
+        # set the maximum number of child columns to create
+        set ::helpbrowser::maxcols 3
+
+        # TODO wrap frame in a canvas with a horz scrollbar,
+        # currently we simply add cols to the left until we reach max cols
         wm resizable .helpbrowser 0 1
         frame .helpbrowser.frame
         pack .helpbrowser.frame -side top -fill both -expand 1
         build_references
         make_rootlistbox
+
+        # hit Tab after browser opens to focus on first listbox
     }
 }
 
@@ -58,7 +66,8 @@ proc ::helpbrowser::check_destroy {level} {
 }
 
 # make the root listbox of the help browser using the pre-built lists
-proc ::helpbrowser::make_rootlistbox {} {
+# set select to true to focus and select first item
+proc ::helpbrowser::make_rootlistbox {{select true}} {
     variable libdirlist
     variable helplist
 
@@ -78,10 +87,6 @@ proc ::helpbrowser::make_rootlistbox {} {
         $current_listbox insert end $item
     }
 
-    if {[$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-    }
-
     bind $current_listbox <Button-1> \
         "::helpbrowser::root_navigate %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
@@ -89,12 +94,15 @@ proc ::helpbrowser::make_rootlistbox {} {
     bind $current_listbox <Key-Return> \
         "::helpbrowser::root_return %W"
     bind $current_listbox <Key-Right> \
-        "::helpbrowser::root_right %W"
+        "::helpbrowser::root_navigate_key %W true"
+    bind $current_listbox <KeyRelease-Up> \
+        "::helpbrowser::root_navigate_key %W false"
+    bind $current_listbox <KeyRelease-Down> \
+        "::helpbrowser::root_navigate_key %W false"
     bind $current_listbox <$::modifier-Key-o> \
         "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
-        "::helpbrowser::scroll_destroy %W 2"
-    focus $current_listbox
+        "::helpbrowser::root_focusin %W 2"
 }
 
 # destroy a column
@@ -114,15 +122,17 @@ proc ::helpbrowser::open_path {dir filename} {
     }
 }
 
-# navigate from one column to the right
-proc ::helpbrowser::root_right {window} {
+# navigate from one column to the right or update the second columns content
+# set move to false if the cursor should stay in the current column
+proc ::helpbrowser::root_navigate_key {window {move true}} {
     variable reference_paths
     if {[set item [$window get active]] eq {}} {
         return
     }
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-        focus [make_liblistbox $filename]
+        set lbox [make_liblistbox $filename $move]
+        if {$move} {focus $lbox}
     }
 }
 
@@ -143,30 +153,41 @@ proc ::helpbrowser::root_return {window} {
 # navigate into a library/directory from the root
 proc ::helpbrowser::root_navigate {window x y} {
     variable reference_paths
-    ::pdwindow::debug "root_navigate\n"
     if {[set item [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-        focus [make_liblistbox $filename]
+        # FIXME the lbox var is not used, but seems to fix an error
+        set lbox [make_liblistbox $filename false]
     }
 }
 
 # double-click action to open the file or folder
 proc ::helpbrowser::root_doubleclick {window x y} {
     variable reference_paths
-    ::pdwindow::debug "root_doubleclick"
     if {[set item [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
     set dir [file dirname $reference_paths($item)]
     set filename [file tail $reference_paths($item)]
     open_path $dir $filename
+    focus $window
+}
+
+# try closing child col & mark selection on first window focus
+proc ::helpbrowser::root_focusin {window count} {
+    ::helpbrowser::scroll_destroy $window $count
+    if {[$window size] != "0" && [$window curselection] == ""} {
+        $window selection set 0
+        root_navigate_key $window false
+        focus $window
+    }
 }
 
 # make the listbox to show the first level contents of a libdir
-proc ::helpbrowser::make_liblistbox {dir} {
+# set select to true to select first item & create child col
+proc ::helpbrowser::make_liblistbox {dir {select true}} {
     variable doctypes
 
     check_destroy 1
@@ -192,11 +213,6 @@ proc ::helpbrowser::make_liblistbox {dir} {
                                          *.txt]]  {
         $current_listbox insert end [file tail $item]
     }
-
-    # select first entry
-    if {[$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-    }
     
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} 2 %W %x %y"
@@ -205,16 +221,27 @@ proc ::helpbrowser::make_liblistbox {dir} {
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_return {$dir} 2 %W"
     bind $current_listbox <Key-Right> \
-        "::helpbrowser::dir_right {$dir} 2 %W"
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W"
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left 0 %W"
+    bind $current_listbox <KeyRelease-Up> \
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
+    bind $current_listbox <KeyRelease-Down> \
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
+
+    # select first entry & update next col
+    if {$select && [$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+        dir_navigate_key "$dir" 2 $current_listbox false
+    }
 
     return $current_listbox
 }
 
-proc ::helpbrowser::make_doclistbox {dir count} {
+# set select to true to select first item & create child col
+proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     variable doctypes
 
     check_destroy $count
@@ -236,23 +263,28 @@ proc ::helpbrowser::make_doclistbox {dir count} {
     }
     incr count
 
-    # select first entry
-    if {[$current_listbox size] != "0"} {
-        $current_listbox selection set 0
-    }
-
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} $count %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
         "::helpbrowser::dir_doubleclick {$dir} $count %W %x %y"
-    bind $current_listbox <Key-Right> \
-        "::helpbrowser::dir_right {$dir} $count %W"
-    bind $current_listbox <Key-Left> \
-        "::helpbrowser::dir_left [expr $count - 2] %W"
     bind $current_listbox <Key-Return> \
         "::helpbrowser::dir_return {$dir} $count %W"
+    bind $current_listbox <Key-Right> \
+        "::helpbrowser::dir_navigate_key {$dir} $count %W"
+    bind $current_listbox <Key-Left> \
+        "::helpbrowser::dir_left [expr $count - 2] %W"
+    bind $current_listbox <KeyRelease-Up> \
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
+    bind $current_listbox <KeyRelease-Down> \
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W [expr $count + 1]"
+
+    # select first entry & update next col
+    if {$select && [$current_listbox size] != "0"} {
+        $current_listbox selection set 0
+        dir_navigate_key "$dir" $count $current_listbox false
+    }
 
     return $current_listbox
 }
@@ -263,36 +295,48 @@ proc ::helpbrowser::dir_left {count window} {
     focus .helpbrowser.frame.root$count
 }
 
-# navigate one column to the right
-proc ::helpbrowser::dir_right {dir count window} {
+# navigate from one column to the right or update the second columns content
+# set move to false if the cursor should stay in the current column
+proc ::helpbrowser::dir_navigate_key {dir count window {move true}} {
+    variable maxcols
     if {[set newdir [$window get active]] eq {}} {
         return
     }
+    if {$count > $maxcols} {return}
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
-        focus [make_doclistbox $dir_to_open $count]
+        set lbox [make_doclistbox $dir_to_open $count $move]
+        if {$move} {focus $lbox}
     }
 }
 
-# open current file
+# open current file, open directories too if we're on the last col
 proc ::helpbrowser::dir_return {dir count window} {
+    variable maxcols
     if {[set newdir [$window get active]] eq {}} {
         return
     }
     set dir_to_open [file join $dir $newdir]
-    if {[file isfile $dir_to_open]} {
+    if {$count <= $maxcols} {
+        if {[file isfile $dir_to_open]} {
+            open_path $dir $newdir
+        }
+    } else {
         open_path $dir $newdir
     }
 }
 
 # navigate into an actual directory
 proc ::helpbrowser::dir_navigate {dir count window x y} {
+    variable maxcols
     if {[set newdir [$window get [$window index "@$x,$y"]]] eq {}} {
         return
     }
+    if {$count > $maxcols} {return}
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
-        focus [make_doclistbox $dir_to_open $count]
+        # FIXME the lbox var is not used, but seems to fix an error
+        set lbox [make_doclistbox $dir_to_open $count false]
     }
 }
 
@@ -302,6 +346,7 @@ proc ::helpbrowser::dir_doubleclick {dir count window x y} {
         return
     }
     open_path $dir $filename
+    focus $window
 }
 
 #------------------------------------------------------------------------------#
@@ -338,7 +383,7 @@ proc ::helpbrowser::add_entry {reflist entry} {
     variable reference_count
     set entryname [file tail $entry]
     # if we are checking libdirs, then check to see if there is already a
-    # libdir with that name that has been discovered in the path.  If so, dump
+    # libdir with that name that has been discovered in the path. If so, dump
     # a warning. The trailing slash on $entryname is added below when
     # $entryname is a dir
     if {$reflist eq "libdirlist" && [lsearch -exact $libdirlist $entryname/] > -1} {
@@ -358,34 +403,51 @@ proc ::helpbrowser::add_entry {reflist entry} {
 }
 
 proc ::helpbrowser::build_references {} {
-    variable libdirlist {" Pure Data/" "---- libraries: -----"}
+    variable libdirlist {" Pure Data/" "-------- Libraries --------"}
     variable helplist {}
     variable reference_count
     variable reference_paths
 
     array set reference_count {}
-    array set reference_paths [list \
-                                   " Pure Data/" $::sys_libdir/doc \
-                                   "---- libraries: -----" "" \
-                                  ]
+    array set reference_paths [list " Pure Data/" $::sys_libdir/doc \
+                                    "-------- Libraries --------" "" ]
+
+    # sys_staticpath (aka hardcoded)
     foreach pathdir $::sys_staticpath {
         if { ! [file isdirectory $pathdir]} {continue}
 
         # Fix the directory name, this ensures the directory name is in the
-        # native format for the platform and contains a final directory seperator
+        # native format for the platform and contains a final directory separator
         set dir [string trimright [file join [file normalize $pathdir] { }]]
 
-        ## don't find libdirs anymore: supported libs should be in search path
-        # Directory comes from sys_staticpath (aka hardcoded)
-        # Then add an entry for each subdir of this directory in Help browser's root column :
-
+        # entry for each subdir of this directory in Help browser's root column
         foreach filename [glob -nocomplain -type d -path $dir "*"] {
             add_entry libdirlist $filename
         }
-        ## find the stray help patches
+
+        # don't add core object references to root column
+        if {[string match "*doc/5.reference" $pathdir]} {continue}
+
+        ## find stray help patches
         foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
             add_entry helplist $filename
         }
+    }
+
+    # sys_searchpath (aka preferences)
+    # remove any exact duplicates from the user search paths and
+    # add an entry for seach directory in Help browser's root column
+    set searchpaths {}
+    foreach pathdir $::sys_searchpath {
+        # trim separator so we don't append an extra one before list -unique
+        set trimmed [string trimright [file normalize $pathdir] [file separator]]
+        # add the separator (again)
+        lappend searchpaths [file join $trimmed { }]
+    }
+    set searchpaths [lsort -unique $searchpaths]
+    foreach pathdir $searchpaths {
+        if { ! [file isdirectory $pathdir]} {continue}
+        add_entry libdirlist $pathdir
     }
 }
 
