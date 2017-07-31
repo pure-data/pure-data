@@ -553,7 +553,11 @@ proc setup_docspath {} {
         if {![file exists $docsdir_default]} {
             set docsdir_default $::env(HOME)
         }
-        if {![file writable $docsdir_default]} {return} ;#sanity check
+        if {![file writable $docsdir_default]} {
+            # sanity check
+            set docsdir "DISABLED"
+            return
+        }
         set docsdir_default [file join $docsdir_default "Pd"]
         # prompt
         set msg [_ "Welcome to Pure Data!\n\nDo you want Pd to create a documents directory for patches and external libraries?\n\nLocation: %s\n\nYou can change or disable this later in the Path preferences." ]
