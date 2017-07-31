@@ -666,6 +666,32 @@ proc set_docspath {path} {
     }
 }
 
+# returns 1 if the docspath is set & not disabled
+proc docspath_is_valid {} {
+    if {"$::docspath" eq "" || "$::docspath" eq "DISABLED"} {
+        return 0
+    }
+    return 1
+}
+
+# get the externals subdir within the current docs path,
+# returns an empty string if docs path is not valid
+proc get_docspath_externalspath {} {
+    if {[docspath_is_valid]} {
+        return [file join $::docspath "externals"]
+    }
+    return ""
+}
+
+# returns 1 if the docspath externals subdir exists
+proc docspath_externalspath_is_valid {} {
+    set path [get_docspath_externalspath]
+    if {"$path" ne "" && [file writable [file normalize "$path"]]} {
+        return 1
+    }
+    return 0
+}
+
 # ------------------------------------------------------------------------------
 # procs called directly by pd
 
