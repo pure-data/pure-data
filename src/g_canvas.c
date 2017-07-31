@@ -1609,6 +1609,13 @@ int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
             return count+1;
         count++;
     }
+    /* and the temp paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+    {
+        if (!fun(nl->nl_string, user_data))
+            return count+1;
+        count++;
+    }
     /* and the default paths */
     if (sys_usestdpath)
         for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)

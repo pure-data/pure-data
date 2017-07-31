@@ -379,7 +379,11 @@ static int do_open_via_path(const char *dir, const char *name,
         if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
-
+        /* next go through the temp paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
         /* next look in built-in paths like "extra" */
     if (sys_usestdpath)
         for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)

@@ -985,8 +985,8 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, argv[1]);
+            STUFF->st_temppath =
+                namelist_append_files(STUFF->st_temppath, argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nostdpath"))
