@@ -137,7 +137,7 @@ proc ::pd_docspath::get_defaultpath {} {
         set path $::env(HOME)
     }
     if {[file writable $path]} {
-        return  [file join $path "Pd"]
+        return [file join $path "Pd"]
     }
     return ""
 }
