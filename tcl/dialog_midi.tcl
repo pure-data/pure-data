@@ -359,18 +359,18 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
 
     # buttons
     frame $id.buttonframe
-    pack $id.buttonframe -side top -after $id.saveall -fill x -pady 2m
+    pack $id.buttonframe -side top -after $id.saveall -pady 2m
     button $id.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_midi::cancel $id"
-    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15
+    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
     if {$::windowingsystem ne "aqua"} {
         button $id.buttonframe.apply -text [_ "Apply"] \
             -command "::dialog_midi::apply $id"
-        pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15
+        pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
     }
     button $id.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_midi::ok $id" -default active
-    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15
+    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
     # set focus
     focus $id.buttonframe.ok
@@ -406,6 +406,10 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         $id.buttonframe.ok config -highlightthickness 0
         $id.buttonframe.cancel config -highlightthickness 0
     }
+
+    # set min size based on widget sizing
+    update
+    wm minsize $id [winfo width $id] [winfo height $id]
 
     # wait a little for creation, then raise so it's on top
     after 100 raise "$id"
@@ -469,16 +473,20 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
 
     # buttons
     frame $id.buttonframe
-    pack $id.buttonframe -side top -after $id.saveall -fill x -pady 2m
+    pack $id.buttonframe -side top -after $id.saveall -pady 2m
     button $id.buttonframe.cancel -text [_ "Cancel"]\
         -command "::dialog_midi::cancel $id"
     button $id.buttonframe.apply -text [_ "Apply"]\
         -command "::dialog_midi::apply $id"
     button $id.buttonframe.ok -text [_ "OK"]\
         -command "::dialog_midi::ok $id" -default active
-    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15
-    pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15
-    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15
+    pack $id.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
+    pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
+    pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
+
+    # set min size based on widget sizing
+    update
+    wm minsize $id [winfo width $id] [winfo height $id]
 
     # wait a little for creation, then raise so it's on top
     after 100 raise "$id"

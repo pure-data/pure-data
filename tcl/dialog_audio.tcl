@@ -340,18 +340,18 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
 
     # buttons
     frame $mytoplevel.buttonframe
-    pack $mytoplevel.buttonframe -side top -after $mytoplevel.saveall -fill x -pady 2m
+    pack $mytoplevel.buttonframe -side top -after $mytoplevel.saveall -pady 2m
     button $mytoplevel.buttonframe.cancel -text [_ "Cancel"] \
         -command "::dialog_audio::cancel $mytoplevel"
-    pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15
+    pack $mytoplevel.buttonframe.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
     if {$::windowingsystem ne "aqua"} {
         button $mytoplevel.buttonframe.apply -text [_ "Apply"] \
             -command "::dialog_audio::apply $mytoplevel"
-        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15
+        pack $mytoplevel.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
     }
     button $mytoplevel.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_audio::ok $mytoplevel" -default active
-    pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15
+    pack $mytoplevel.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
     # set focus
     $mytoplevel.settings.srd.sr_entry select from 0
@@ -399,6 +399,10 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.buttonframe.ok config -highlightthickness 0
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
+
+    # set min size based on widget sizing
+    update
+    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
 
     # wait a little for creation, then raise so it's on top
     after 100 raise "$mytoplevel"
