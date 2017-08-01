@@ -55,7 +55,7 @@ proc pdtk_savepanel {target localdir} {
 # ------------------------------------------------------------------------------
 # path helpers
 
-# adds to the sys_searchpath user search paths directlty
+# adds to the sys_searchpath user search paths directly
 proc add_to_searchpaths {path {save true}} {
     # try not to add duplicates
     foreach searchpath $::sys_searchpath {

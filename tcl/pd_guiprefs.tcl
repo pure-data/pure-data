@@ -17,7 +17,6 @@ namespace eval ::pd_guiprefs:: {
 # preference keys
 set ::pd_guiprefs::recentfiles_key ""
 set ::pd_guiprefs::loglevel_key "loglevel"
-set ::pd_guiprefs::docspath_key "docspath"
 
 # platform specific
 set ::pd_guiprefs::domain ""
