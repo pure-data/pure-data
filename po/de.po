@@ -562,11 +562,20 @@ msgstr ""
 "Verzeichnisse, in denen Pd nach Objekten, Hilfe, Schriftarten und ähnlichem "
 "sucht"
 
+msgid "Install externals to:"
+msgstr "Bibliotheken installieren Verzeichnis:"
+
+msgid "Browse"
+msgstr ""
+
 msgid "Use standard paths"
 msgstr "Standardpfade durchsuchen"
 
 msgid "Verbose"
 msgstr "Ausführliche Meldungen"
+
+msgid "Install externals to directory:"
+msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
 
 msgid "Add new library"
 msgstr "Neue Bibliothek hinzufügen"
@@ -617,9 +626,6 @@ msgstr "[deken] Pd Paketmanager vom Pfad %s geladen."
 #, tcl-format
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Plattform gefunden: %s"
-
-msgid "Install libraries to directory:"
-msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
 
 msgid "Show all"
 msgstr "Alle anzeigen"
@@ -934,6 +940,10 @@ msgstr "Bearbeiten..."
 
 msgid "Delete"
 msgstr "Löschen"
+
+#, fuzzy, tcl-format
+msgid "Ignoring '%s': doesn't exist"
+msgstr "Überspringe '%s': kein Pd-File"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"

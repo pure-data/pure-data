@@ -20,7 +20,7 @@
 #include <stdarg.h>
 
 #ifdef _MSC_VER
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 struct _binbuf

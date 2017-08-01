@@ -22,7 +22,7 @@
 #include <winbase.h>
 #endif
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 #define stringify(s) str(s)
@@ -72,7 +72,11 @@ int sys_midiindevlist[MAXMIDIINDEV] = {1};
 int sys_midioutdevlist[MAXMIDIOUTDEV] = {1};
 
 char sys_font[100] = "DejaVu Sans Mono";
+#if __APPLE__
 char sys_fontweight[10] = "normal";
+#else
+char sys_fontweight[10] = "bold";
+#endif
 static int sys_main_srate;
 static int sys_main_advance;
 static int sys_main_callback;

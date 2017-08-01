@@ -11,7 +11,7 @@
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 struct _instanceeditor
@@ -1116,7 +1116,7 @@ static void canvas_donecanvasdialog(t_glist *x,
 
 
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
-    int graphme, redraw = 0;
+    int graphme, redraw = 0, fromgui;
 
     xperpix = atom_getfloatarg(0, argc, argv);
     yperpix = atom_getfloatarg(1, argc, argv);
@@ -1129,8 +1129,14 @@ static void canvas_donecanvasdialog(t_glist *x,
     ypix = atom_getfloatarg(8, argc, argv);
     xmargin = atom_getfloatarg(9, argc, argv);
     ymargin = atom_getfloatarg(10, argc, argv);
-        /* hack - graphme is 0 for no, 1 for yes, and 3 for yes-and-hide-text*/
-    if (!(graphme & 1))
+    fromgui = atom_getfloatarg(11, argc, argv);
+        /* hack - if graphme is 2 (meaning, not GOP but hide the text anyhow),
+        perhaps we're happier with 0.  This is only checked if this is really
+        being called, as intended, from the GUI.  For compatibility with old
+        patches that reverse-engineered donecanvasdialog to modify patch
+        parameters, we leave the buggy behavior in wieh there's no "fromgui"
+        argument supplied. */
+    if (fromgui && (!(graphme & 1)))
         graphme = 0;
     x->gl_pixwidth = xpix;
     x->gl_pixheight = ypix;

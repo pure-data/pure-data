@@ -433,9 +433,23 @@ static void list_store_list(t_list_store *x, t_symbol *s,
     ATOMS_FREEA(outv, outc);
 }
 
+/* function to restore gpointers after the list has moved in memory */
+static void list_store_restore_gpointers(t_list_store *x, int offset, int count)
+{
+    t_listelem *vec = x->x_alist.l_vec + offset;
+    while (count--)
+    {
+        if (vec->l_a.a_type == A_POINTER)
+            vec->l_a.a_w.w_gpointer = &vec->l_p;
+        vec++;
+    }
+}
+
 static void list_store_append(t_list_store *x, t_symbol *s,
     int argc, t_atom *argv)
 {
+    t_listelem *oldptr = x->x_alist.l_vec;
+
     if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
         (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
         (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
@@ -444,6 +458,11 @@ static void list_store_append(t_list_store *x, t_symbol *s,
         error("list: out of memory");
         return;
     }
+
+        /* fix gpointers if resizebytes() has moved the alist in memory */
+    if (x->x_alist.l_vec != oldptr && x->x_alist.l_npointer)
+        list_store_restore_gpointers(x, 0, x->x_alist.l_n);
+
     alist_copyin(&x->x_alist, s, argc, argv, x->x_alist.l_n);
     x->x_alist.l_n += argc;
 }
@@ -452,15 +471,21 @@ static void list_store_prepend(t_list_store *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
-        (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
-        (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
+    (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
+    (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
     {
         x->x_alist.l_n = 0;
         error("list: out of memory");
         return;
     }
+
     memmove(x->x_alist.l_vec + argc, x->x_alist.l_vec,
         x->x_alist.l_n * sizeof(*x->x_alist.l_vec));
+
+        /* we always have to fix gpointers because of memmove() */
+    if (x->x_alist.l_npointer)
+        list_store_restore_gpointers(x, argc, x->x_alist.l_n);
+
     alist_copyin(&x->x_alist, s, argc, argv, 0);
     x->x_alist.l_n += argc;
 }
@@ -484,7 +509,7 @@ static void list_store_get(t_list_store *x, float f1, float f2)
     {
         t_alist y;
         alist_clone(&x->x_alist, &y, onset, outc);
-        alist_toatoms(&y, outv, onset, outc);
+        alist_toatoms(&y, outv, 0, outc);
         outlet_list(x->x_out1, &s_list, outc, outv);
         alist_clear(&y);
     }

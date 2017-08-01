@@ -375,6 +375,7 @@ void sys_set_priority(int mode)
     }
 #endif
 
+#if !defined(USEAPI_JACK)
     if (mode != MODE_NRT)
     {
             /* tb: force memlock to physical memory { */
@@ -387,6 +388,7 @@ void sys_set_priority(int mode)
             fprintf(stderr, "memory locking enabled.\n");
     }
     else munlockall();
+#endif
 }
 
 #endif /* __linux__ */

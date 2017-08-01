@@ -199,9 +199,6 @@ set popup_xcanvas 0
 set popup_ycanvas 0
 # modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
 set modifier ""
-# most backends require uppercase letters when binding with the shift key,
-# but some (ie. TK Cocoa) need lowercase
-set bind_shiftcaps 1
 # current state of the Edit Mode menu item
 set editmode_button 0
 
@@ -335,9 +332,6 @@ proc init_for_platform {} {
                 # old default font for Tk 8.4 on macOS
                 # since font detection requires 8.5+
                 set ::font_family "Monaco"
-            } else {
-                # Tk Cocoa wants lower case keys when binding with shift
-                set ::bind_shiftcaps 0
             }
             option add *DialogWindow*background "#E8E8E8" startupFile
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
@@ -463,7 +457,7 @@ proc get_font_for_size {fsize} {
 # always do a good job of choosing in respect to Pd's needs.  So this chooses
 # from a list of fonts that are known to work well with Pd.
 proc find_default_font {} {
-    set testfonts {"DejaVu Sans Mono" "Monaco" "Bitstream Vera Sans Mono" \
+    set testfonts {"DejaVu Sans Mono" "Bitstream Vera Sans Mono" "Monaco" \
         "Inconsolata" "Courier 10 Pitch" "Andale Mono" "Droid Sans Mono"}
     foreach family $testfonts {
         if {[lsearch -exact -nocase [font families] $family] > -1} {
@@ -471,7 +465,7 @@ proc find_default_font {} {
             break
         }
     }
-    ::pdwindow::verbose 0 "Default font: $::font_family\n"
+    ::pdwindow::verbose 0 "Detected font: $::font_family\n"
 }
 
 proc set_base_font {family weight} {
