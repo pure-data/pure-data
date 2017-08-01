@@ -156,7 +156,7 @@ Set objShell = Nothing
 set ::deken::_vbsunzip ""
 
 proc ::deken::get_tmpfilename {{path ""}} {
-    for {set i 0} {True} {incr i} {
+    for {set i 0} {true} {incr i} {
         set tmpfile [file join ${path} dekentmp.${i}]
         if {![file exists $tmpfile]} {
             return $tmpfile
