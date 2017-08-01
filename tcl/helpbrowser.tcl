@@ -40,7 +40,9 @@ proc ::helpbrowser::open_helpbrowser {} {
         build_references
         make_rootlistbox
 
-        # hit Tab after browser opens to focus on first listbox
+        # hit up, down, or Tab after browser opens to focus on first listbox
+        bind .helpbrowser <Key-Up> "focus .helpbrowser.frame.root0"
+        bind .helpbrowser <Key-Down> "focus .helpbrowser.frame.root0"
     }
 }
 
