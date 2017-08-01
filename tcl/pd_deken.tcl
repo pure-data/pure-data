@@ -181,9 +181,9 @@ proc ::deken::get_writable_dir {paths} {
 
 # find an install path, either from prefs or on the system
 # returns an empty string if nothing was found
-proc ::deken::find_installpath {} {
+proc ::deken::find_installpath {{ignoreprefs false}} {
     set installpath ""
-    if { [ info exists ::deken::installpath ] } {
+    if { [ info exists ::deken::installpath ] && !$ignoreprefs } {
         ## any previous choice?
         set installpath [ ::deken::get_writable_dir [list $::deken::installpath ] ]
     }
@@ -441,9 +441,9 @@ proc ::deken::clicked_link {URL filename} {
     set installdir [::deken::find_installpath]
     set extname [lindex [split $filename "-"] 0]
     if { "$installdir" == "" } {
-        if {[namespace exists ::pd_docspath] && [::pd_docspath::externalspath_is_valid]} {
+        if {[namespace exists ::pd_docspath] && [::pd_docspath::externals_path_is_valid]} {
             # if the docspath is set, try the externals subdir
-            set installdir [::pd_docspath::get_externalspath]
+            set installdir [::pd_docspath::get_externals_path]
         } else {
             # ask the user (and remember the decision)
             ::deken::prompt_installdir
@@ -478,7 +478,7 @@ proc ::deken::clicked_link {URL filename} {
                         # if docs path is set & the install path is valid,
                         # saying "no" is temporary to ensure the docs path
                         # hierarchy remains, use the Path dialog to override
-                        if {[namespace exists ::pd_docspath] && [::pd_docspath::is_valid] && \
+                        if {[namespace exists ::pd_docspath] && [::pd_docspath::path_is_valid] && \
                             [file writable [file normalize $prevpath]] } {
                             set keepprevpath 0
                         }

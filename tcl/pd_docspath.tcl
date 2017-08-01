@@ -20,12 +20,14 @@ package require wheredoesthisgo
 namespace eval ::pd_docspath:: {
     variable docspath
     namespace export init
-    namespace export get_defaultpath
-    namespace export createpath
-    namespace export setpath
-    namespace export is_valid
-    namespace export get_externalspath
-    namespace export externalspath_is_valid
+    namespace export get_default_path
+    namespace export get_disabled_path
+    namespace export create_path
+    namespace export set_path
+    namespace export path_is_valid
+    namespace export get_default_externals_path
+    namespace export get_externals_path
+    namespace export externals_path_is_valid
 }
 
 # if empty, the user is prompted about creating this
@@ -66,7 +68,7 @@ proc ::pd_docspath::init {} {
             yes {
                 set docsdir $docsdir_default
                 # set the new docs path
-                if {![::pd_docspath::createpath $docsdir]} {
+                if {![::pd_docspath::create_path $docsdir]} {
                     # didn't work
                     ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docsdir]
                     return
@@ -81,7 +83,7 @@ proc ::pd_docspath::init {} {
                 return
             }
         }
-        ::pd_docspath::setpath $docsdir
+        ::pd_docspath::set_path $docsdir
         focus .pdwindow
     } else {
         # check saved setting
@@ -95,9 +97,9 @@ proc ::pd_docspath::init {} {
                     set newpath [tk_chooseDirectory -title [_ "Choose Pd documents directory:"] \
                                                     -initialdir $::env(HOME)]
                     if {$newpath ne ""} {
-                        if {[::pd_docspath::createpath $docsdir]} {
+                        if {[::pd_docspath::create_path $docsdir]} {
                             # set the new docs path
-                            ::pd_docspath::setpath $docsdir
+                            ::pd_docspath::set_path $docsdir
                         } else {
                             # didn't work
                             ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docsdir]
@@ -114,7 +116,7 @@ proc ::pd_docspath::init {} {
         }
     }
     # open dialogs in docs dir if GUI was started first
-    if {[::pd_docspath::is_valid]} {
+    if {[::pd_docspath::path_is_valid]} {
         if {"$::filenewdir" eq "$::env(HOME)"} {
             set ::filenewdir $::pd_docspath::docspath
         }
@@ -126,7 +128,7 @@ proc ::pd_docspath::init {} {
 }
 
 # try to find a default docs path, returns an empty string if not possible
-proc ::pd_docspath::get_defaultpath {} {
+proc ::pd_docspath::get_default_path {} {
      # sanity check, Pd might be running on a non-writable install
     if {![file exists $::env(HOME)] || ![file writable $::env(HOME)]} {
         return ""
@@ -142,10 +144,15 @@ proc ::pd_docspath::get_defaultpath {} {
     return ""
 }
 
+# get the default disabled path value
+proc ::pd_docspath::get_disabled_path {} {
+    return "DISABLED"
+}
+
 # create the Pd documents directory path and it's "externals" subdir,
 # does nothing if paths already exist
-proc ::pd_docspath::createpath {path} {
-    if {"$path" eq "" || "$path" eq "DISABLED"} {return 0}
+proc ::pd_docspath::create_path {path} {
+    #if {"$path" eq "" || "$path" eq "DISABLED"} {return 0}
     set path [file join [file normalize "$path"] "externals"]
     if {[file mkdir "$path" ] eq ""} {
         return 1
@@ -154,13 +161,13 @@ proc ::pd_docspath::createpath {path} {
 }
 
 # set the Pd documents directory path, adds "externals" subdir to search paths
-proc ::pd_docspath::setpath {path} {
+proc ::pd_docspath::set_path {path {setdekenpath true}} {
     set ::pd_docspath::docspath $path
     ::pd_guiprefs::write docspath "$path"
     if {"$path" ne "" && "$path" ne "DISABLED"} {
         set externalspath [file join "$path" "externals"]
         # set deken to use it
-        if {[namespace exists ::deken]} {
+        if {[namespace exists ::deken] && $setdekenpath} {
             set ::deken::installpath ""
             :::deken::set_installpath $externalspath
         }
@@ -168,26 +175,8 @@ proc ::pd_docspath::setpath {path} {
     }
 }
 
-# reset the Pd documents directory path to the default location on this system
-# returns 1 on success
-proc ::pd_docspath::reset {} {
-    set path [::pd_docspath::get_defaultpath]
-    if {[::pd_docspath::createpath $path]} {
-        ::pd_docspath::setpath $path
-        return 1
-    }
-    return 0
-}
-
-# disable the Pd documents directory feature
-proc ::pd_docspath::disable {} {
-    # specific "no docs path please" keyword
-    ::pd_docspath::setpath "DISABLED"
-    return 1
-}
-
 # returns 1 if the docspath is set, not disabled, & a directory
-proc ::pd_docspath::is_valid {} {
+proc ::pd_docspath::path_is_valid {} {
     if {"$::pd_docspath::docspath" eq "" ||
         "$::pd_docspath::docspath" eq "DISABLED" ||
         ![file isdirectory "$::pd_docspath::docspath"]} {
@@ -196,18 +185,22 @@ proc ::pd_docspath::is_valid {} {
     return 1
 }
 
-# get the externals subdir within the current docs path,
+# get the externals subdir within the current docs path or a given path,
 # returns an empty string if docs path is not valid
-proc ::pd_docspath::get_externalspath {} {
-    if {[::pd_docspath::is_valid]} {
-        return [file join $::pd_docspath::docspath "externals"]
+proc ::pd_docspath::get_externals_path {{path ""}} {
+    if {"$path" eq ""} {
+        if {[::pd_docspath::path_is_valid]} {
+            return [file join $::pd_docspath::docspath "externals"]
+        } else {
+            return ""
+        }
     }
-    return ""
+    return [file join $path "externals"]
 }
 
 # returns 1 if the docspath externals subdir exists
-proc ::pd_docspath::externalspath_is_valid {} {
-    set path [::pd_docspath::get_externalspath]
+proc ::pd_docspath::externals_path_is_valid {} {
+    set path [::pd_docspath::get_externals_path]
     if {"$path" ne "" && [file writable [file normalize "$path"]]} {
         return 1
     }
