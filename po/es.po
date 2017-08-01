@@ -545,17 +545,34 @@ msgstr "Puertos de Salida:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Ruta de búsqueda de Pd para objetos, ayuda, fuentes, y otros archivos"
 
-msgid "Install externals to:"
-msgstr ""
-
-msgid "Browse"
-msgstr ""
-
 msgid "Use standard paths"
 msgstr "Usar rutas estándar"
 
 msgid "Verbose"
 msgstr "Verbosa"
+
+msgid "Pd Documents Directory"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+#, fuzzy
+msgid "Externals Install Directory"
+msgstr "Instalar librerías en directorio:"
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s"
+msgstr ""
 
 #, fuzzy
 msgid "Install externals to directory:"
@@ -645,8 +662,8 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 "Por favor, selecciona un directorio de instalacion con permisos de escritura!"
 
-#, tcl-format
-msgid "Install to %s ?"
+#, fuzzy, tcl-format
+msgid "Install %s to %s?"
 msgstr "¿Desea Instalar en %s ?"
 
 #, tcl-format
@@ -681,6 +698,18 @@ msgid "2. Copy the contents into %s."
 msgstr "2. Copiar los contenidos en %s."
 
 #, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+#, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
 msgstr "No se ha podido descargar de %1$s [%2$s]"
 
@@ -699,6 +728,27 @@ msgstr "Buscando '%s'"
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Subido por %1$s @ %2$s"
+
+#, tcl-format
+msgid ""
+"Welcome to Pure Data!\n"
+"\n"
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
 
 msgid "About Pd"
 msgstr "Sobre Pd"

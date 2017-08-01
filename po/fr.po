@@ -544,17 +544,33 @@ msgstr "Ports de sortie:"
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Chemins pour la recherche d'objets, aides, fontes et autres"
 
-msgid "Install externals to:"
-msgstr ""
-
-msgid "Browse"
-msgstr "Naviguer"
-
 msgid "Use standard paths"
 msgstr "Utiliser les extensions standard"
 
 msgid "Verbose"
 msgstr "Verbeux"
+
+msgid "Pd Documents Directory"
+msgstr ""
+
+msgid "Browse"
+msgstr "Naviguer"
+
+msgid "Reset"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Externals Install Directory"
+msgstr ""
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s"
+msgstr ""
 
 msgid "Install externals to directory:"
 msgstr ""
@@ -638,7 +654,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install to %s ?"
+msgid "Install %s to %s?"
 msgstr ""
 
 #, tcl-format
@@ -670,6 +686,18 @@ msgid "2. Copy the contents into %s."
 msgstr ""
 
 #, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+#, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
 msgstr ""
 
@@ -688,6 +716,27 @@ msgstr "recherche de '%s'"
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Mise en évidence du dernier '%1$s' dans %2$s"
+
+#, tcl-format
+msgid ""
+"Welcome to Pure Data!\n"
+"\n"
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
 
 msgid "About Pd"
 msgstr "À propos de Pd"

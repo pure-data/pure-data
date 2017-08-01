@@ -592,16 +592,32 @@ msgstr ""
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 
-msgid "Install externals to:"
+msgid "Use standard paths"
+msgstr ""
+
+msgid "Verbose"
+msgstr ""
+
+msgid "Pd Documents Directory"
 msgstr ""
 
 msgid "Browse"
 msgstr ""
 
-msgid "Use standard paths"
+msgid "Reset"
 msgstr ""
 
-msgid "Verbose"
+msgid "Disable"
+msgstr ""
+
+msgid "Externals Install Directory"
+msgstr ""
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s"
 msgstr ""
 
 msgid "Install externals to directory:"
@@ -688,7 +704,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install to %s ?"
+msgid "Install %s to %s?"
 msgstr ""
 
 #, tcl-format
@@ -720,6 +736,18 @@ msgid "2. Copy the contents into %s."
 msgstr ""
 
 #, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+#, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
 msgstr ""
 
@@ -737,6 +765,27 @@ msgstr "ਪਾਠ ਖੋਜ..."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Welcome to Pure Data!\n"
+"\n"
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
 msgstr ""
 
 #, fuzzy

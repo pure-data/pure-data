@@ -306,7 +306,8 @@ msgid "Save All Settings"
 msgstr "Salvar Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
+msgstr ""
+"AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -574,17 +575,34 @@ msgid "Pd search path for objects, help, fonts, and other files"
 msgstr ""
 "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
-msgid "Install externals to:"
-msgstr "Instalar externals em:"
-
-msgid "Browse"
-msgstr "Navegar"
-
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
 
 msgid "Verbose"
 msgstr "Detalhado"
+
+msgid "Pd Documents Directory"
+msgstr ""
+
+msgid "Browse"
+msgstr "Navegar"
+
+msgid "Reset"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+#, fuzzy
+msgid "Externals Install Directory"
+msgstr "Instalar bibliotecas no diretório:"
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s"
+msgstr ""
 
 msgid "Install externals to directory:"
 msgstr "Instalar bibliotecas no diretório:"
@@ -664,14 +682,14 @@ msgid "Unable to perform search. Are you online?"
 msgstr "Incapaz de realizar busca. Você está online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr "" 
+msgstr ""
 "Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
 
-#, tcl-format
-msgid "Install to %s ?"
+#, fuzzy, tcl-format
+msgid "Install %s to %s?"
 msgstr "Instalar em %s ?"
 
 #, tcl-format
@@ -706,6 +724,18 @@ msgid "2. Copy the contents into %s."
 msgstr "2. Copiar o conteúdo para %s."
 
 #, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+#, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
 msgstr "Incapaz de baixar de %1$s [%2$s]"
 
@@ -724,6 +754,27 @@ msgstr "procurando por '%s'"
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Enviado por '%1$s' em %2$s"
+
+#, tcl-format
+msgid ""
+"Welcome to Pure Data!\n"
+"\n"
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
 
 msgid "About Pd"
 msgstr "Sobre o Pd"
@@ -958,6 +1009,9 @@ msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
+
+#~ msgid "Install externals to:"
+#~ msgstr "Instalar externals em:"
 
 #~ msgid "for:"
 #~ msgstr "por:"
