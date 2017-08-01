@@ -38,7 +38,8 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
-        450 440 1
+        450 300 1
+    wm geometry $mytoplevel ""
     ::pd_bindings::dialog_bindings $mytoplevel "path"
     set readonly_color [lindex [$mytoplevel configure -background] end]
 
@@ -52,33 +53,33 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     pack $mytoplevel.extraframe.extra -side left -expand 1
     pack $mytoplevel.extraframe.verbose -side right -expand 1
 
-    # docs path
-    labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
-        -borderwidth 1 -padx 5 -pady 5
-    pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
+    # modify the docs path if pd_docspath is loaded
+    if {[namespace exists ::pd_docspath]} {
+        labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
+            -borderwidth 1 -padx 5 -pady 5
+        pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
 
-    frame $mytoplevel.docspath.path
-    pack $mytoplevel.docspath.path -fill x
-    entry $mytoplevel.docspath.path.entry -textvariable ::docspath \
-        -takefocus 0 -state readonly -readonlybackground $readonly_color
-    button $mytoplevel.docspath.path.browse -text [_ "Browse"] \
-        -command "::dialog_path::browse_docspath %W"
-    pack $mytoplevel.docspath.path.browse -side right -fill x -ipadx 8
-    pack $mytoplevel.docspath.path.entry -side right -expand 1 -fill x
+        frame $mytoplevel.docspath.path
+        pack $mytoplevel.docspath.path -fill x
+        entry $mytoplevel.docspath.path.entry -textvariable ::pd_docspath::docspath \
+            -takefocus 0 -state readonly -readonlybackground $readonly_color
+        button $mytoplevel.docspath.path.browse -text [_ "Browse"] \
+            -command "::dialog_path::browse_docspath %W"
+        pack $mytoplevel.docspath.path.browse -side right -fill x -ipadx 8
+        pack $mytoplevel.docspath.path.entry -side right -expand 1 -fill x
 
-    frame $mytoplevel.docspath.buttons
-    pack $mytoplevel.docspath.buttons -fill x
-    button $mytoplevel.docspath.buttons.reset -text [_ "Reset"] \
-        -command "::dialog_path::reset_docspath %W"
-    button $mytoplevel.docspath.buttons.disable -text [_ "Disable"] \
-        -command "::dialog_path::disable_docspath %W"
-    pack $mytoplevel.docspath.buttons.reset -side left -ipadx 8
-    pack $mytoplevel.docspath.buttons.disable -side left -ipadx 8
+        frame $mytoplevel.docspath.buttons
+        pack $mytoplevel.docspath.buttons -fill x
+        button $mytoplevel.docspath.buttons.reset -text [_ "Reset"] \
+            -command "::dialog_path::reset_docspath %W"
+        button $mytoplevel.docspath.buttons.disable -text [_ "Disable"] \
+            -command "::dialog_path::disable_docspath %W"
+        pack $mytoplevel.docspath.buttons.reset -side left -ipadx 8
+        pack $mytoplevel.docspath.buttons.disable -side left -ipadx 8
+    }
 
     # add deken path widgets if deken is available, increase window height to make room
     if {[namespace exists ::deken]} {
-        wm geometry $mytoplevel "450x480"
-        wm minsize $mytoplevel 450 480
         labelframe $mytoplevel.installpath -text [_ "Externals Install Directory"] \
             -borderwidth 1 -padx 5 -pady 5
         pack $mytoplevel.installpath -fill x -anchor s -padx {2m 4m} -pady 2m
@@ -118,16 +119,20 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
+
+    # re-adjust height based on optional sections
+    update
+    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
 }
 
 # browse for a new Pd user docs path
 proc ::dialog_path::browse_docspath {mytoplevel} {
     # set the new docs path
-    set newpath [tk_chooseDirectory -initialdir [get_dialog_initialdir true] \
-         -title [_ "Choose Pd documents directory:"]]
+    set newpath [tk_chooseDirectory -initialdir $::fileopendir \
+                                    -title [_ "Choose Pd documents directory:"]]
     if {$newpath ne ""} {
-        if {[create_docspath $newpath]} {
-            set_docspath $newpath
+        if {[::pd_docspath::createpath $newpath]} {
+            ::pd_docspath::setpath $newpath
             return 1
         } else {
             # didn't work
@@ -139,29 +144,24 @@ proc ::dialog_path::browse_docspath {mytoplevel} {
 
 # ignore the Pd user docs path
 proc ::dialog_path::disable_docspath {mytoplevel} {
-    # specific "no docs path please" keyword
-    set_docspath "DISABLED"
+    ::pd_docspath::disable
     return 1
 }
 
 # reset to the default Pd user docs path
 proc ::dialog_path::reset_docspath {mytoplevel} {
-    set path [get_default_docspath]
-    if {[create_docspath $path]} {
-        set_docspath $path
-        return 1
-    }
-    return 0
+    return [::pd_docspath::reset]
 }
 
 # browse for a new deken installpath, this assumes deken is available
 proc ::dialog_path::browse_installpath {mytoplevel} {
     if {![file isdirectory $::deken::installpath]} {
-        set path [get_dialog_initialdir]
+        set initialdir $::fileopendir
     } else {
-        set path $::deken::installpath
+        set initialdir $::deken::installpath
     }
-    set newpath [tk_chooseDirectory -initialdir $path -title [_ "Install externals to directory:"]]
+    set newpath [tk_chooseDirectory -initialdir $initialdir \
+                                    -title [_ "Install externals to directory:"]]
     if {$newpath ne ""} {
         ::deken::set_installpath $newpath
         return 1

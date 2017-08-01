@@ -213,9 +213,6 @@ proc ::pd_guiprefs::init {} {
     set ::loglevel [::pd_guiprefs::init_config $::pd_guiprefs::domain \
                                                $::pd_guiprefs::loglevel_key \
                                                $::loglevel]
-    set ::docspath [::pd_guiprefs::init_config $::pd_guiprefs::domain \
-                                               $::pd_guiprefs::docspath_key \
-                                               $::docspath]
 }
 
 # ------------------------------------------------------------------------------
@@ -335,7 +332,7 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
 #
 proc ::pd_guiprefs::init_config {adomain akey {default ""} {arr false}} {
     set conf ""
-    catch {set conf [get_config $adomain $akey $arr]}
+    catch {set conf [::pd_guiprefs::get_config $adomain $akey $arr]}
     if {$conf eq ""} {set conf $default}
     return $conf
 }
@@ -439,15 +436,4 @@ proc ::pd_guiprefs::update_recentfiles {afile {remove false}} {
 #
 proc ::pd_guiprefs::write_loglevel {} {
     write_config $::loglevel $::pd_guiprefs::domain $::pd_guiprefs::loglevel_key
-}
-
-#################################################################
-# documents path
-#################################################################
-
-# ------------------------------------------------------------------------------
-# write docs path
-#
-proc ::pd_guiprefs::write_docspath {} {
-    write_config $::docspath $::pd_guiprefs::domain $::pd_guiprefs::docspath_key
 }

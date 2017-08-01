@@ -28,7 +28,7 @@ proc open_file {filename} {
 proc pdtk_openpanel {target localdir} {
     if {! [file isdirectory $localdir]} {
         if { ! [file isdirectory $::fileopendir]} {
-            set ::fileopendir [get_dialog_initialdir]
+            set ::fileopendir $::env(HOME)
         }
         set localdir $::fileopendir
     }
@@ -42,7 +42,7 @@ proc pdtk_openpanel {target localdir} {
 proc pdtk_savepanel {target localdir} {
     if {! [file isdirectory $localdir]} {
         if { ! [file isdirectory $::filenewdir]} {
-            set ::filenewdir [get_dialog_initialdir]
+            set ::filenewdir $::env(HOME)
         }
         set localdir $::filenewdir
     }
@@ -55,16 +55,7 @@ proc pdtk_savepanel {target localdir} {
 # ------------------------------------------------------------------------------
 # path helpers
 
-# get an initial dialog directory
-# prefer docspath if set & available, otherwise home
-proc get_dialog_initialdir {{ignoredocspath false}} {
-    if {$ignoredocspath || ($::docspath eq "" || $::docspath eq "DISABLED") || ![file exists $::docspath]} {
-        return $::env(HOME)
-    }
-    return $::docspath
-}
-
-# adds to the sys_searchpath user search paths direclty
+# adds to the sys_searchpath user search paths directlty
 proc add_to_searchpaths {path {save true}} {
     # try not to add duplicates
     foreach searchpath $::sys_searchpath {

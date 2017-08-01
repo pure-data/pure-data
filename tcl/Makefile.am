@@ -46,6 +46,7 @@ dist_libpdtcl_DATA = \
     scrollbox.tcl \
     pd_guiprefs.tcl \
     pd_deken.tcl \
+    pd_docspath.tcl \
     pd.ico
 
 #########################################

@@ -48,7 +48,8 @@ TCLFILES = \
     pdtk_text.tcl \
     scrollbox.tcl \
     pd_guiprefs.tcl \
-    pd_deken.tcl
+    pd_deken.tcl \
+    pd_docspath.tcl
 
 LOCAL_TCLFILES = \
     iemgui_dynamic_strings.tcl \

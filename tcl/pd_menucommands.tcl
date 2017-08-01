@@ -12,7 +12,7 @@ namespace eval ::pd_menucommands:: {
 
 proc ::pd_menucommands::menu_new {} {
     variable untitled_number
-    if { ! [file isdirectory $::filenewdir]} {set ::filenewdir [get_dialog_initialdir]}
+    if { ! [file isdirectory $::filenewdir]} {set ::filenewdir $::env(HOME)}
     # to localize "Untitled" there will need to be changes in g_canvas.c and
     # g_readwrite.c, where it tests for the string "Untitled"
     set untitled_name "Untitled"
@@ -21,7 +21,7 @@ proc ::pd_menucommands::menu_new {} {
 }
 
 proc ::pd_menucommands::menu_open {} {
-    if { ! [file isdirectory $::fileopendir]} {set ::fileopendir [get_dialog_initialdir]}
+    if { ! [file isdirectory $::fileopendir]} {set ::fileopendir $::env(HOME)}
     set files [tk_getOpenFile -defaultextension .pd \
                        -multiple true \
                        -filetypes $::filetypes \
