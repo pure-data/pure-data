@@ -64,18 +64,21 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         entry $mytoplevel.docspath.path.entry -textvariable ::pd_docspath::docspath \
             -takefocus 0 -state readonly -readonlybackground $readonly_color
         button $mytoplevel.docspath.path.browse -text [_ "Browse"] \
-            -command "::dialog_path::browse_docspath %W"
+            -command "::dialog_path::browse_docspath $mytoplevel"
         pack $mytoplevel.docspath.path.browse -side right -fill x -ipadx 8
         pack $mytoplevel.docspath.path.entry -side right -expand 1 -fill x
 
         frame $mytoplevel.docspath.buttons
         pack $mytoplevel.docspath.buttons -fill x
         button $mytoplevel.docspath.buttons.reset -text [_ "Reset"] \
-            -command "::dialog_path::reset_docspath %W"
+            -command "::dialog_path::reset_docspath $mytoplevel"
         button $mytoplevel.docspath.buttons.disable -text [_ "Disable"] \
-            -command "::dialog_path::disable_docspath %W"
+            -command "::dialog_path::disable_docspath $mytoplevel"
         pack $mytoplevel.docspath.buttons.reset -side left -ipadx 8
         pack $mytoplevel.docspath.buttons.disable -side left -ipadx 8
+
+        # scroll to right for long paths
+        $mytoplevel.docspath.path.entry xview moveto 1
     }
 
     # add deken path widgets if deken is available, increase window height to make room
@@ -89,15 +92,18 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         entry $mytoplevel.installpath.path.entry -textvariable ::deken::installpath \
             -takefocus 0 -state readonly -readonlybackground $readonly_color
         button $mytoplevel.installpath.path.browse -text [_ "Browse"] \
-            -command "::dialog_path::browse_installpath %W"
+            -command "::dialog_path::browse_installpath $mytoplevel"
         pack $mytoplevel.installpath.path.browse -side right -fill x -ipadx 8
         pack $mytoplevel.installpath.path.entry -side right -expand 1 -fill x
 
         frame $mytoplevel.installpath.buttons
         pack $mytoplevel.installpath.buttons -fill x
         button $mytoplevel.installpath.buttons.reset -text [_ "Reset"] \
-            -command "::dialog_path::reset_installpath %W"
+            -command "::dialog_path::reset_installpath $mytoplevel"
         pack $mytoplevel.installpath.buttons.reset -side left -ipadx 8
+
+        # scroll to right for long paths
+        $mytoplevel.installpath.path.entry xview moveto 1
     }
 
     # focus handling on OSX
@@ -133,6 +139,7 @@ proc ::dialog_path::browse_docspath {mytoplevel} {
     if {$newpath ne ""} {
         if {[::pd_docspath::createpath $newpath]} {
             ::pd_docspath::setpath $newpath
+            $mytoplevel.docspath.path.entry xview moveto 1
             return 1
         } else {
             # didn't work
@@ -150,7 +157,9 @@ proc ::dialog_path::disable_docspath {mytoplevel} {
 
 # reset to the default Pd user docs path
 proc ::dialog_path::reset_docspath {mytoplevel} {
-    return [::pd_docspath::reset]
+    set ret [::pd_docspath::reset]
+    $mytoplevel.docspath.path.entry xview moveto 1
+    return ret
 }
 
 # browse for a new deken installpath, this assumes deken is available
@@ -164,6 +173,7 @@ proc ::dialog_path::browse_installpath {mytoplevel} {
                                     -title [_ "Install externals to directory:"]]
     if {$newpath ne ""} {
         ::deken::set_installpath $newpath
+        $mytoplevel.installpath.path.entry xview moveto 1
         return 1
     }
     return 0
@@ -173,6 +183,7 @@ proc ::dialog_path::browse_installpath {mytoplevel} {
 proc ::dialog_path::reset_installpath {mytoplevel} {
     set ::deken::installpath ""
     ::deken::set_installpath [::deken::find_installpath]
+    $mytoplevel.installpath.path.entry xview moveto 1
 }
 
 # for focus handling on OSX
