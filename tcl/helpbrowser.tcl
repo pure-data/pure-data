@@ -41,8 +41,8 @@ proc ::helpbrowser::open_helpbrowser {} {
         make_rootlistbox
 
         # hit up, down, or Tab after browser opens to focus on first listbox
-        bind .helpbrowser <Key-Up> "focus .helpbrowser.frame.root0"
-        bind .helpbrowser <Key-Down> "focus .helpbrowser.frame.root0"
+        bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.frame.root0"
+        bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.frame.root0"
     }
 }
 
@@ -98,9 +98,9 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     bind $current_listbox <Key-Right> \
         "::helpbrowser::root_navigate_key %W true"
     bind $current_listbox <KeyRelease-Up> \
-        "::helpbrowser::root_navigate_key %W false"
+        "::helpbrowser::root_navigate_key %W false; break"
     bind $current_listbox <KeyRelease-Down> \
-        "::helpbrowser::root_navigate_key %W false"
+        "::helpbrowser::root_navigate_key %W false; break"
     bind $current_listbox <$::modifier-Key-o> \
         "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
@@ -227,9 +227,9 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left 0 %W"
     bind $current_listbox <KeyRelease-Up> \
-        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false; break"
     bind $current_listbox <KeyRelease-Down> \
-        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false; break"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
 
@@ -276,9 +276,9 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left [expr $count - 2] %W"
     bind $current_listbox <KeyRelease-Up> \
-        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false; break"
     bind $current_listbox <KeyRelease-Down> \
-        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false; break"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W [expr $count + 1]"
 
