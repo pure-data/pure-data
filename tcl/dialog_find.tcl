@@ -27,7 +27,7 @@ namespace eval ::dialog_find:: {
 proc ::dialog_find::get_history {direction} {
     variable find_history
     variable history_position
-    
+
     incr history_position $direction
     if {$history_position < 0} {set history_position 0}
     if {$history_position > [llength $find_history]} {
@@ -202,7 +202,7 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     .find configure -menu $::dialog_menubar
     .find configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings .find "find"
-    
+
     label .find.searchin -text \
             [format [_ "Search in %s for:"] [_ "Pd window"] ]
     pack .find.searchin -side top -fill x -pady 1
@@ -213,25 +213,25 @@ proc ::dialog_find::create_dialog {mytoplevel} {
 
     bind .find.entry <Up> "::dialog_find::get_history 1"
     bind .find.entry <Down> "::dialog_find::get_history -1"
-    
+
     checkbutton .find.wholeword -variable ::dialog_find::wholeword_button \
         -text [_ "Match whole word only"] -anchor w
     pack .find.wholeword -side left -padx 10 -pady 3
-    
+
     frame .find.buttonframe -background yellow
     pack .find.buttonframe -side right -pady 3
     if {$::windowingsystem eq "win32"} {
-        button .find.cancel -text [_ "Cancel"] -default normal -width 9 \
+        button .find.cancel -text [_ "Cancel"] -default normal \
             -command "::dialog_find::cancel $mytoplevel"
-        pack .find.cancel -side right -padx 6 -pady 3
+        pack .find.cancel -side right -padx 6 -pady 3 -ipadx 10
     }
-    button .find.button -text [_ "Find"] -default active -width 9 \
+    button .find.button -text [_ "Find"] -default active \
         -command "::dialog_find::ok $mytoplevel"
-    pack .find.button -side right -padx 6 -pady 3
+    pack .find.button -side right -padx 6 -pady 3 -ipadx 15
     if {$::windowingsystem eq "x11"} {
-        button .find.close -text [_ "Close"] -default normal -width 9 \
+        button .find.close -text [_ "Close"] -default normal \
             -command "::dialog_find::cancel $mytoplevel"
-        pack .find.close -side right -padx 6 -pady 3
+        pack .find.close -side right -padx 6 -pady 3 -ipadx 10
     }
     # on Mac OS X, the buttons shouldn't get Tab/keyboard focus
     if {$::windowingsystem eq "aqua"} {

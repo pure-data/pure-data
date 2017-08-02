@@ -17,7 +17,7 @@ namespace eval ::dialog_message:: {
 proc ::dialog_message::get_history {direction} {
     variable message_history
     variable history_position
-    
+
     incr history_position $direction
     if {$history_position < 0} {set history_position 0}
     if {$history_position > [llength $message_history]} {
@@ -69,12 +69,11 @@ proc ::dialog_message::create_dialog {mytoplevel} {
     # not all Tcl/Tk versions or platforms support -topmost, so catch the error
     catch {wm attributes $id -topmost 1}
 
-    # TODO this should use something like 'dialogfont' for the font
     frame .message.f
     pack .message.f -side top -fill x -expand 1
-    entry .message.f.entry -width 54 -font {Helvetica 18} -relief sunken \
+    entry .message.f.entry -width 54 -font {$::font_family 18} -relief sunken \
         -highlightthickness 1 -highlightcolor blue
-    label .message.f.semicolon -text ";" -font {Helvetica 24}
+    label .message.f.semicolon -text ";" -font {$::font_family 24}
     pack .message.f.semicolon -side left
     pack .message.f.entry -side left -padx 10 -fill x -expand 1
     focus .message.f.entry

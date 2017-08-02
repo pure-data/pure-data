@@ -146,7 +146,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     $mytoplevel configure -menu $::dialog_menubar
     $mytoplevel configure -padx 0 -pady 0
     ::pd_bindings::dialog_bindings $mytoplevel "canvas"
-    
+
     labelframe $mytoplevel.scale -text [_ "Scale"] -borderwidth 1
     pack $mytoplevel.scale -side top -fill x
     frame $mytoplevel.scale.x -pady 2 -borderwidth 1
@@ -165,11 +165,11 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
     checkbutton $mytoplevel.parent.graphme -text [_ "Graph-On-Parent"] \
         -anchor w -variable graphme_button($mytoplevel) \
         -command [concat ::dialog_canvas::checkcommand $mytoplevel]
-    pack $mytoplevel.parent.graphme -side top -fill x -padx 40
+    pack $mytoplevel.parent.graphme -side top -anchor w -padx 40
     checkbutton $mytoplevel.parent.hidetext -text [_ "Hide object name and arguments"] \
         -anchor w -variable hidetext_button($mytoplevel) \
         -command [concat ::dialog_canvas::checkcommand $mytoplevel]
-    pack $mytoplevel.parent.hidetext -side top -fill x -padx 40
+    pack $mytoplevel.parent.hidetext -side top -anchor w -padx 40
 
     labelframe $mytoplevel.range -text [_ "Range and size"] -borderwidth 1
     pack $mytoplevel.range -side top -fill x
@@ -205,18 +205,18 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         -side left
 
     frame $mytoplevel.buttons
-    pack $mytoplevel.buttons -side bottom -fill x -expand 1 -pady 2m
+    pack $mytoplevel.buttons -side bottom -pady 2m
     button $mytoplevel.buttons.cancel -text [_ "Cancel"] \
         -command "::dialog_canvas::cancel $mytoplevel"
-    pack $mytoplevel.buttons.cancel -side left -expand 1 -fill x -padx 10
+    pack $mytoplevel.buttons.cancel -side left -expand 1 -fill x -padx 15 -ipadx 10
     if {$::windowingsystem ne "aqua"} {
         button $mytoplevel.buttons.apply -text [_ "Apply"] \
             -command "::dialog_canvas::apply $mytoplevel"
-        pack $mytoplevel.buttons.apply -side left -expand 1 -fill x -padx 10
+        pack $mytoplevel.buttons.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
     }
     button $mytoplevel.buttons.ok -text [_ "OK"] \
         -command "::dialog_canvas::ok $mytoplevel" -default active
-    pack $mytoplevel.buttons.ok -side left -expand 1 -fill x -padx 10
+    pack $mytoplevel.buttons.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
     # live checkbutton & entry Return updates on OSX
     if {$::windowingsystem eq "aqua"} {
@@ -256,7 +256,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         $mytoplevel.buttons.ok config -default normal
         bind $mytoplevel.buttons.ok <FocusIn> "$mytoplevel.buttons.ok config -default active"
         bind $mytoplevel.buttons.ok <FocusOut> "$mytoplevel.buttons.ok config -default normal"
-    
+
         # since we show the active focus, disable the highlight outline
         $mytoplevel.buttons.ok config -highlightthickness 0
         $mytoplevel.buttons.cancel config -highlightthickness 0
