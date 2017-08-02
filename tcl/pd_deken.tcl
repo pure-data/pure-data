@@ -237,6 +237,9 @@ if { "" != "$::current_plugin_loadpath" } {
     ::pdwindow::post "\n"
     ::pdwindow::post [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
     ::pdwindow::post "\n"
+} else {
+    ::pdwindow::verbose 0 [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
+    ::pdwindow::verbose 0 "\n"
 }
 
 # architectures that can be substituted for eachother
