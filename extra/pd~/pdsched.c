@@ -14,6 +14,10 @@ outputs audio and messages. */
 #include "s_stuff.h"
 #include "m_imp.h"
 #include <stdio.h>
+#ifdef _WIN32
+#include <io.h>
+#include <fcntl.h>
+#endif
 
 #include "binarymsg.c"
 
@@ -98,6 +102,11 @@ int pd_extern_sched(char *flags)
         pd_ambinary_class = class_new(gensym("pd~"), 0, 0, sizeof(t_pd),
             CLASS_PD, 0);
         pd_bind(&pd_ambinary_class, gensym("#pd_binary_stdio"));
+            /* On Windows, set stdin and out to "binary" mode */
+#ifdef _WIN32
+        setmode(fileno(stdout),O_BINARY);
+        setmode(fileno(stdin),O_BINARY);
+#endif
     }
     else
     {

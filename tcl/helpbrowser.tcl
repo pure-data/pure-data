@@ -40,7 +40,9 @@ proc ::helpbrowser::open_helpbrowser {} {
         build_references
         make_rootlistbox
 
-        # hit Tab after browser opens to focus on first listbox
+        # hit up, down, or Tab after browser opens to focus on first listbox
+        bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.frame.root0"
+        bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.frame.root0"
     }
 }
 
@@ -96,9 +98,9 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
     bind $current_listbox <Key-Right> \
         "::helpbrowser::root_navigate_key %W true"
     bind $current_listbox <KeyRelease-Up> \
-        "::helpbrowser::root_navigate_key %W false"
+        "::helpbrowser::root_navigate_key %W false; break"
     bind $current_listbox <KeyRelease-Down> \
-        "::helpbrowser::root_navigate_key %W false"
+        "::helpbrowser::root_navigate_key %W false; break"
     bind $current_listbox <$::modifier-Key-o> \
         "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
@@ -213,7 +215,7 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
                                          *.txt]]  {
         $current_listbox insert end [file tail $item]
     }
-    
+
     bind $current_listbox <Button-1> \
         "::helpbrowser::dir_navigate {$dir} 2 %W %x %y"
     bind $current_listbox <Double-ButtonRelease-1> \
@@ -225,9 +227,9 @@ proc ::helpbrowser::make_liblistbox {dir {select true}} {
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left 0 %W"
     bind $current_listbox <KeyRelease-Up> \
-        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false; break"
     bind $current_listbox <KeyRelease-Down> \
-        "::helpbrowser::dir_navigate_key {$dir} 2 %W false"
+        "::helpbrowser::dir_navigate_key {$dir} 2 %W false; break"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W 3"
 
@@ -253,7 +255,7 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
                              -height 20 -width 24 -exportselection 0 -bd 0]
     pack $current_listbox [scrollbar "$b-scroll" -command "$current_listbox yview"] \
         -side left -fill both -expand 1
-    
+
     foreach item [lsort -dictionary [glob -directory $dir -nocomplain -types {d} -- *]] {
         $current_listbox insert end "[file tail $item]/"
     }
@@ -274,9 +276,9 @@ proc ::helpbrowser::make_doclistbox {dir count {select true}} {
     bind $current_listbox <Key-Left> \
         "::helpbrowser::dir_left [expr $count - 2] %W"
     bind $current_listbox <KeyRelease-Up> \
-        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false; break"
     bind $current_listbox <KeyRelease-Down> \
-        "::helpbrowser::dir_navigate_key {$dir} $count %W false"
+        "::helpbrowser::dir_navigate_key {$dir} $count %W false; break"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::scroll_destroy %W [expr $count + 1]"
 
@@ -439,10 +441,8 @@ proc ::helpbrowser::build_references {} {
     # add an entry for seach directory in Help browser's root column
     set searchpaths {}
     foreach pathdir $::sys_searchpath {
-        # trim separator so we don't append an extra one before list -unique
-        set trimmed [string trimright [file normalize $pathdir] [file separator]]
-        # add the separator (again)
-        lappend searchpaths [file join $trimmed { }]
+        set dir [string trimright [file join [file normalize $pathdir] { }]]
+        lappend searchpaths $dir
     }
     set searchpaths [lsort -unique $searchpaths]
     foreach pathdir $searchpaths {
@@ -450,4 +450,3 @@ proc ::helpbrowser::build_references {} {
         add_entry libdirlist $pathdir
     }
 }
-
