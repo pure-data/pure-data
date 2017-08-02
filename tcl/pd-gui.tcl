@@ -233,6 +233,9 @@ set ::undo_action "no"
 set ::redo_action "no"
 set ::undo_toplevel "."
 
+# color scheme
+set ::canvas_fill "white"
+
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
 }
