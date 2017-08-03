@@ -152,7 +152,7 @@ proc ::pd_docspath::get_disabled_path {} {
 # create the Pd documents directory path and it's "externals" subdir,
 # does nothing if paths already exist
 proc ::pd_docspath::create_path {path} {
-    #if {"$path" eq "" || "$path" eq "DISABLED"} {return 0}
+    if {"$path" eq "" || "$path" eq "DISABLED"} {return 0}
     set path [file join [file normalize "$path"] "externals"]
     if {[file mkdir "$path" ] eq ""} {
         return 1

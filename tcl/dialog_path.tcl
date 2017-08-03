@@ -244,7 +244,7 @@ proc ::dialog_path::commit {new_path} {
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
     if {[namespace exists ::pd_docspath]} {
-        if {[::pd_docspath::create_path $docspath]} {
+        if {$docspath eq [::pd_docspath::get_disabled_path] || [::pd_docspath::create_path $docspath]} {
             ::pd_docspath::set_path $docspath false
         } else {
             # didn't work
