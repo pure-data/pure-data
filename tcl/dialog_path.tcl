@@ -27,7 +27,7 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
     global installpath
     set use_standard_paths_button $extrapath
     set verbose_button $verbose
-    if {[namespace exists ::pd_docspath]} {set docspath $::pd_docspath::docspath}
+    if {[namespace exists ::pd_docsdir]} {set docspath $::pd_docsdir::docspath}
     if {[namespace exists ::deken]} {set installpath $::deken::installpath}
     if {[winfo exists $mytoplevel]} {
         # this doesn't seem to be called...
@@ -60,8 +60,8 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     pack $mytoplevel.extraframe.extra -side left -expand 1
     pack $mytoplevel.extraframe.verbose -side right -expand 1
 
-    # modify the docs path if pd_docspath is loaded
-    if {[namespace exists ::pd_docspath]} {
+    # add docsdir path widgets if pd_docsdir is loaded
+    if {[namespace exists ::pd_docsdir]} {
         labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
             -borderwidth 1 -padx 5 -pady 5
         pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
@@ -88,7 +88,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.docspath.path.entry xview moveto 1
     }
 
-    # add deken path widgets if deken is available, increase window height to make room
+    # add deken path widgets if deken is loaded
     if {[namespace exists ::deken]} {
         labelframe $mytoplevel.installpath -text [_ "Externals Install Directory"] \
             -borderwidth 1 -padx 5 -pady 5
@@ -150,7 +150,7 @@ proc ::dialog_path::browse_docspath {mytoplevel} {
                                     -title [_ "Choose Pd documents directory:"]]
     if {$newpath ne ""} {
         set docspath $newpath
-        set installpath [::pd_docspath::get_externals_path "$docspath"]
+        set installpath [::pd_docsdir::get_externals_path "$docspath"]
         $mytoplevel.docspath.path.entry xview moveto 1
         return 1
     }
@@ -160,7 +160,7 @@ proc ::dialog_path::browse_docspath {mytoplevel} {
 # ignore the Pd user docs path
 proc ::dialog_path::disable_docspath {mytoplevel} {
     global docspath
-    set docspath [::pd_docspath::get_disabled_path]
+    set docspath [::pd_docsdir::get_disabled_path]
     return 1
 }
 
@@ -168,8 +168,8 @@ proc ::dialog_path::disable_docspath {mytoplevel} {
 proc ::dialog_path::reset_docspath {mytoplevel} {
     global docspath
     global installpath
-    set docspath [::pd_docspath::get_default_path]
-    set installpath [::pd_docspath::get_externals_path "$docspath"]
+    set docspath [::pd_docsdir::get_default_path]
+    set installpath [::pd_docsdir::get_externals_path "$docspath"]
     $mytoplevel.docspath.path.entry xview moveto 1
     return 1
 }
@@ -243,9 +243,9 @@ proc ::dialog_path::commit {new_path} {
     global installpath
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
-    if {[namespace exists ::pd_docspath]} {
-        if {$docspath eq [::pd_docspath::get_disabled_path] || [::pd_docspath::create_path $docspath]} {
-            ::pd_docspath::set_path $docspath false
+    if {[namespace exists ::pd_docsdir]} {
+        if {$docspath eq [::pd_docsdir::get_disabled_path] || [::pd_docsdir::create_path $docspath]} {
+            ::pd_docsdir::set_path $docspath false
         } else {
             # didn't work
             ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docspath]
