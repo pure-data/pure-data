@@ -597,15 +597,19 @@ msgstr ""
 msgid "Externals Install Directory"
 msgstr "Instalar bibliotecas no diretório:"
 
-msgid "Choose Pd documents directory:"
-msgstr ""
+#, fuzzy
+msgid "Clear"
+msgstr "Limpar Menu"
 
-#, tcl-format
-msgid "Couldn't create Pd documents directory: %s"
+msgid "Choose Pd documents directory:"
 msgstr ""
 
 msgid "Install externals to directory:"
 msgstr "Instalar bibliotecas no diretório:"
+
+#, fuzzy
+msgid "Add a new path"
+msgstr "Adicionar nova biblioteca"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -774,6 +778,10 @@ msgid ""
 "%s\n"
 "\n"
 "Choose a new location?"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s\n"
 msgstr ""
 
 msgid "About Pd"
