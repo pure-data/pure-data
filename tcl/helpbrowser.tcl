@@ -410,6 +410,7 @@ proc ::helpbrowser::build_references {} {
     variable reference_count
     variable reference_paths
 
+    set searchpaths {}
     array set reference_count {}
     array set reference_paths [list " Pure Data/" $::sys_libdir/doc \
                                     "-------- Libraries --------" "" ]
@@ -418,33 +419,34 @@ proc ::helpbrowser::build_references {} {
     foreach pathdir $::sys_staticpath {
         if { ! [file isdirectory $pathdir]} {continue}
 
-        # Fix the directory name, this ensures the directory name is in the
-        # native format for the platform and contains a final directory separator
+        # fix the directory name, this ensures the directory name is in the
+        # native format for the platform and contains a final dir separator
         set dir [string trimright [file join [file normalize $pathdir] { }]]
 
-        # entry for each subdir of this directory in Help browser's root column
+        # add an entry for each subdir of this directory in the root column
         foreach filename [glob -nocomplain -type d -path $dir "*"] {
-            add_entry libdirlist $filename
+            lappend searchpaths $filename
         }
 
         # don't add core object references to root column
         if {[string match "*doc/5.reference" $pathdir]} {continue}
 
-        ## find stray help patches
+        # find stray help patches
         foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
             add_entry helplist $filename
         }
     }
 
     # sys_searchpath (aka preferences)
-    # remove any exact duplicates from the user search paths and
-    # add an entry for seach directory in Help browser's root column
-    set searchpaths {}
     foreach pathdir $::sys_searchpath {
-        set dir [string trimright [file join [file normalize $pathdir] { }]]
+        set dir [string trimright [file normalize $pathdir]]
         lappend searchpaths $dir
     }
+
+    # remove any *exact* duplicates between user search paths and system paths
     set searchpaths [lsort -unique $searchpaths]
+
+    # now add all search path entries to the Help browser's root column
     foreach pathdir $searchpaths {
         if { ! [file isdirectory $pathdir]} {continue}
         add_entry libdirlist $pathdir
