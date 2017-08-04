@@ -122,6 +122,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     ::pd_bindings::dialog_bindings $id "midi"
     # not all Tcl/Tk versions or platforms support -topmost, so catch the error
     catch {wm attributes $id -topmost 1}
+    ::pdwindow::position_over_pdwindow $id
 
     # input devices
     labelframe $id.inputs -text [_ "Input Devices"] -padx 5 -pady 5 -borderwidth 1
@@ -453,6 +454,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     $id configure -padx 10 -pady 5
     if {$::windowingsystem eq "aqua"} {$id configure -menu .menubar}
     ::pd_bindings::dialog_bindings $id "midi"
+    ::pdwindow::position_over_pdwindow $id
 
     frame $id.in1f
     pack $id.in1f -side top

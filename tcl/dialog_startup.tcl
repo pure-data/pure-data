@@ -5,18 +5,18 @@ package require scrollboxwindow
 
 namespace eval dialog_startup {
     variable defeatrt_flag 0
-    
+
     namespace export pdtk_startup_dialog
 }
 
 ########## pdtk_startup_dialog -- dialog window for startup options #########
 # Create a simple modal window with an entry widget
-# for editing/adding a startup command 
+# for editing/adding a startup command
 # (the next-best-thing to in-place editing)
 proc ::dialog_startup::chooseCommand { prompt initialValue } {
     global cmd
     set cmd $initialValue
-    
+
     toplevel .inputbox -class DialogWindow
     wm title .inputbox $prompt
     wm group .inputbox .
@@ -29,7 +29,7 @@ proc ::dialog_startup::chooseCommand { prompt initialValue } {
     button .inputbox.button -text [_ "OK"] -command { destroy .inputbox } \
         -width [::msgcat::mcmax [_ "OK"]]
 
-    entry .inputbox.entry -width 50 -textvariable cmd 
+    entry .inputbox.entry -width 50 -textvariable cmd
     pack .inputbox.button -side right
     bind .inputbox.entry <KeyPress-Return> { destroy .inputbox }
     bind .inputbox.entry <KeyPress-Escape> { destroy .inputbox }
@@ -70,7 +70,7 @@ proc ::dialog_startup::commit { new_startup } {
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     variable defeatrt_button $defeatrt
     if {$flags ne ""} {variable ::startup_flags $flags}
-    
+
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -86,6 +86,7 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         [_ "Pd libraries to load on startup"] \
         450 320 0
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
+    ::pdwindow::position_over_pdwindow $mytoplevel
 
     frame $mytoplevel.flags
     pack $mytoplevel.flags -side top -anchor e -expand 1 -fill x -padx 2m

@@ -430,6 +430,7 @@ proc ::pdwindow::create_window {} {
 }
 
 #--configure the window menu---------------------------------------------------#
+
 proc ::pdwindow::create_window_finalize {} {
     # wait until .pdwindow.tcl.entry is visible before opening files so that
     # the loading logic can grab it and put up the busy cursor
@@ -467,4 +468,13 @@ proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {
 # menu is not replaced by the custom Apple menu on OSX
 proc ::pdwindow::configure_menubar {} {
     .pdwindow configure -menu .menubar
+}
+
+#--dialog helpers--------------------------------------------------------------#
+
+# position a window over the pdwindow
+proc ::pdwindow::position_over_pdwindow {mytoplevel} {
+    set winx [expr [winfo x .pdwindow] + 20]
+    set winy [expr [winfo y .pdwindow] + 20]
+    wm geometry $mytoplevel "+${winx}+${winy}"
 }
