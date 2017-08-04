@@ -469,12 +469,3 @@ proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {
 proc ::pdwindow::configure_menubar {} {
     .pdwindow configure -menu .menubar
 }
-
-#--dialog helpers--------------------------------------------------------------#
-
-# position a window over the pdwindow
-proc ::pdwindow::position_over_pdwindow {mytoplevel} {
-    set winx [expr [winfo x .pdwindow] + 20]
-    set winy [expr [winfo y .pdwindow] + 20]
-    wm geometry $mytoplevel "+${winx}+${winy}"
-}

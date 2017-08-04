@@ -86,7 +86,6 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         [_ "Pd libraries to load on startup"] \
         450 320 0
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
-    ::pdwindow::position_over_pdwindow $mytoplevel
 
     frame $mytoplevel.flags
     pack $mytoplevel.flags -side top -anchor e -expand 1 -fill x -padx 2m
@@ -129,6 +128,8 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
+
+    position_over_window $mytoplevel .pdwindow
 }
 
 # for focus handling on OSX

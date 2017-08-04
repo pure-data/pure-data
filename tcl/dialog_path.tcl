@@ -40,7 +40,6 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         [_ "Pd search path for objects, help, fonts, and other files"] \
         450 300 1
     ::pd_bindings::dialog_bindings $mytoplevel "path"
-    ::pdwindow::position_over_pdwindow $mytoplevel
 
     # add deken path widgets if deken is available, increase window height to make room
     if {[namespace exists ::deken]} {
@@ -86,6 +85,8 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
+
+    position_over_window $mytoplevel .pdwindow
 }
 
 # browse for a new deken installpath, this assumes deken is available

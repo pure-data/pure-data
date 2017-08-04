@@ -363,6 +363,8 @@ proc ::dialog_array::create_dialog {mytoplevel newone} {
         $mytoplevel.buttonframe.ok config -highlightthickness 0
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
+
+    position_over_window "$mytoplevel" "$::focused_window"
 }
 
 # for live widget updates on OSX

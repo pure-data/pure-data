@@ -840,6 +840,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.cao.ok config -highlightthickness 0
         $mytoplevel.cao.cancel config -highlightthickness 0
     }
+
+    position_over_window $mytoplevel $::focused_window
 }
 
 # for live widget updates on OSX
