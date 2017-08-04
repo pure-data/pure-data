@@ -772,6 +772,10 @@ msgstr ""
 msgid "Couldn't create Pd documents directory: %s\n"
 msgstr ""
 
+#, fuzzy, tcl-format
+msgid "Couldn't create \"externals\" directory in: %s\n"
+msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
+
 msgid "About Pd"
 msgstr "Über Pd"
 

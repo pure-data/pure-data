@@ -743,6 +743,10 @@ msgstr ""
 msgid "Couldn't create Pd documents directory: %s\n"
 msgstr ""
 
+#, tcl-format
+msgid "Couldn't create \"externals\" directory in: %s\n"
+msgstr ""
+
 msgid "About Pd"
 msgstr ""
 
