@@ -61,7 +61,6 @@ proc ::helpbrowser::check_destroy {level} {
     # check for [file readable]?
     # requires Tcl 8.5 but probably deals with special chars better:
     #        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
-
     if {[catch { eval destroy $winlist } errorMessage]} {
         ::pdwindow::error "helpbrowser: error destroying listbox\n"
     }
@@ -182,8 +181,7 @@ proc ::helpbrowser::root_navigate {window x y} {
     }
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-        # FIXME the lbox var is not used, but seems to fix an error
-        set lbox [make_liblistbox $filename false]
+        make_liblistbox $filename false
     }
 }
 
@@ -359,8 +357,7 @@ proc ::helpbrowser::dir_navigate {dir count window x y} {
     if {$count > $maxcols} {return}
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
-        # FIXME the lbox var is not used, but seems to fix an error
-        set lbox [make_doclistbox $dir_to_open $count false]
+        make_doclistbox $dir_to_open $count false
     }
 }
 
