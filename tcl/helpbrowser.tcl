@@ -10,12 +10,13 @@ namespace eval ::helpbrowser:: {
     variable maxcols
 
     namespace export open_helpbrowser
+    namespace export refresh
 }
 
 ################## help browser and support functions #########################
 
 proc ::helpbrowser::open_helpbrowser {} {
-    if { [winfo exists .helpbrowser.frame] } {
+    if {[winfo exists .helpbrowser.frame]} {
         wm deiconify .helpbrowser
         raise .helpbrowser
     } else {
@@ -35,10 +36,7 @@ proc ::helpbrowser::open_helpbrowser {} {
         # TODO wrap frame in a canvas with a horz scrollbar,
         # currently we simply add cols to the left until we reach max cols
         wm resizable .helpbrowser 0 1
-        frame .helpbrowser.frame
-        pack .helpbrowser.frame -side top -fill both -expand 1
-        build_references
-        make_rootlistbox
+        ::helpbrowser::make_frame .helpbrowser
 
         # hit up, down, or Tab after browser opens to focus on first listbox
         bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.frame.root0"
@@ -48,7 +46,6 @@ proc ::helpbrowser::open_helpbrowser {} {
 
 # check for deleting old listboxes
 proc ::helpbrowser::check_destroy {level} {
-
     set winlist list
     set winlevel 0
     foreach child [winfo children .helpbrowser.frame] {
@@ -62,9 +59,17 @@ proc ::helpbrowser::check_destroy {level} {
     # requires Tcl 8.5 but probably deals with special chars better:
     #        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
 
-    if { [catch { eval destroy $winlist } errorMessage] } {
+    if {[catch { eval destroy $winlist } errorMessage]} {
         ::pdwindow::error "helpbrowser: error destroying listbox\n"
     }
+}
+
+# create the base frame and root listbox, build path references
+proc ::helpbrowser::make_frame {mytoplevel} {
+    frame $mytoplevel.frame
+    pack $mytoplevel.frame -side top -fill both -expand 1
+    build_references
+    make_rootlistbox
 }
 
 # make the root listbox of the help browser using the pre-built lists
@@ -105,6 +110,20 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
         "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::root_focusin %W 2"
+}
+
+# ask browser to refresh it's contents
+proc ::helpbrowser::refresh {} {
+    variable refresh
+    if {[winfo exists .helpbrowser]} {
+        # refresh in place
+        destroy .helpbrowser.frame
+        ::helpbrowser::make_frame .helpbrowser
+        if {[winfo viewable .helpbrowser]} {
+            focus .helpbrowser
+        }
+    }
+    # otherwise naturally refreshes on next open
 }
 
 # destroy a column
