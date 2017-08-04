@@ -70,7 +70,6 @@ proc ::pd_docsdir::init {} {
                 # set the new docs path
                 if {![::pd_docsdir::create_path $docspath]} {
                     # didn't work
-                    ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docspath]
                     return
                 }
             }
@@ -102,7 +101,6 @@ proc ::pd_docsdir::init {} {
                             ::pd_docsdir::set_path $docspath
                         } else {
                             # didn't work
-                            ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docspath]
                             return
                         }
                     }
@@ -150,13 +148,16 @@ proc ::pd_docsdir::get_disabled_path {} {
 }
 
 # create the Pd documents directory path and it's "externals" subdir,
-# does nothing if paths already exist
-proc ::pd_docsdir::create_path {path} {
+# set externalsdir to false to create the given path only
+# returns true if the path already exists
+proc ::pd_docsdir::create_path {path {externalspath true}} {
     if {"$path" eq "" || "$path" eq "DISABLED"} {return 0}
-    set path [file join [file normalize "$path"] "externals"]
-    if {[file mkdir "$path" ] eq ""} {
+    set newpath [file normalize "$path"]
+    if {$externalspath} {set newpath [file join $newpath "externals"]}
+    if {[file mkdir "$newpath" ] eq ""} {
         return 1
     }
+    ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s\n"] $path]
     return 0
 }
 

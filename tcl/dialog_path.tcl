@@ -145,7 +145,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 proc ::dialog_path::browse_docspath {mytoplevel} {
     global docspath
     global installpath
-    # set the new docs path
+    # set the new docs dir
     set newpath [tk_chooseDirectory -initialdir $::env(HOME) \
                                     -title [_ "Choose Pd documents directory:"]]
     if {$newpath ne ""} {
@@ -244,11 +244,15 @@ proc ::dialog_path::commit {new_path} {
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
     if {[namespace exists ::pd_docsdir]} {
-        if {$docspath eq [::pd_docsdir::get_disabled_path] || [::pd_docsdir::create_path $docspath]} {
+        # only try creating the installpath if it matches the docsdir externals subdir
+        set create_ext_path false
+        set fullinstallpath [file normalize $installpath]
+        set fullextpath [file normalize [::pd_docsdir::get_externals_path $docspath]]
+        if {$fullinstallpath eq $fullextpath]} {set create_ext_path true}
+        # set/create docs path
+        if {$docspath eq [::pd_docsdir::get_disabled_path] ||
+            [::pd_docsdir::create_path $docspath $create_ext_path]} {
             ::pd_docsdir::set_path $docspath false
-        } else {
-            # didn't work
-            ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s"] $docspath]
         }
     }
     if {[namespace exists ::deken]} {
