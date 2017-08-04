@@ -408,7 +408,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     }
 
     # set min size based on widget sizing & pos over pdwindow
-    wm minsize $id [winfo width $id] [winfo height $id]
+    wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
     position_over_window $id .pdwindow
 
     # wait a little for creation, then raise so it's on top
@@ -485,7 +485,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
     # set min size based on widget sizing & pos over pdwindow
-    wm minsize $id [winfo width $id] [winfo height $id]
+    wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
     position_over_window $id .pdwindow
 
     # wait a little for creation, then raise so it's on top

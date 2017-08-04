@@ -400,7 +400,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     }
 
     # set min size based on widget sizing & pos over pdwindow
-    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
+    wm minsize $mytoplevel [winfo reqwidth $mytoplevel] [winfo reqheight $mytoplevel]
     position_over_window $mytoplevel .pdwindow
 
     # wait a little for creation, then raise so it's on top
