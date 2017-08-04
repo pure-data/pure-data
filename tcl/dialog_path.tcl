@@ -136,6 +136,9 @@ proc ::dialog_path::edit { currentpath } {
 proc ::dialog_path::commit { new_path } {
     global use_standard_paths_button
     global verbose_button
+    set changed false
+    if {"$new_path" ne "$::sys_searchpath"} {set changed true}
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
+    if {$changed} {::helpbrowser::refresh}
 }
