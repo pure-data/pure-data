@@ -88,6 +88,14 @@ proc ::pd_docsdir::init {{reset false}} {
             }
         }
         ::pd_docsdir::set_path $docspath
+        if {[::pd_docsdir::create_externals_path]} {
+            ::pd_docsdir::add_externals_path
+            if {[namespace exists ::deken]} {
+                # clear first so set_installpath doesn't pick up prev value from guiprefs
+                set ::deken::installpath ""
+                :::deken::set_installpath [::pd_docsdir::get_externals_path]
+            }
+        }
         focus .pdwindow
     } else {
         # check saved setting
@@ -101,10 +109,7 @@ proc ::pd_docsdir::init {{reset false}} {
                     set newpath [tk_chooseDirectory -title [_ "Choose Pd documents directory:"] \
                                                     -initialdir $::env(HOME)]
                     if {$newpath ne ""} {
-                        if {[::pd_docsdir::create_path $docspath]} {
-                            # set the new docs path
-                            ::pd_docsdir::set_path $docspath
-                        } else {
+                        if{![::pd_docsdir::update_path $newpath]} {
                             # didn't work
                             return
                         }
@@ -152,33 +157,44 @@ proc ::pd_docsdir::get_disabled_path {} {
     return "DISABLED"
 }
 
+# update the Pd documents directory path & externals path, creates if needed
+# higher level complement to create_path & path_set
+# checks ::deken::installpath value
+# returns 1 if the update was successful
+# returns 2 if the externals subdir was added to the path
+proc ::pd_docsdir::update_path {path} {
+    if {"$path" eq "" || "$path" eq "DISABLED"} {
+        ::pd_docsdir::set_path "$path"
+    } else {
+        if {![::pd_docsdir::create_path "$path"]} {return 0}
+        ::pd_docsdir::set_path "$path"
+        # only try creating the externals path if it is the deken installpath,
+        # this keeps the installpath from changing arbitrarily
+        if {![namespace exists ::deken] || [::pd_docsdir::is_externals_path_deken_installpath]} {
+            if {[::pd_docsdir::create_externals_path]} {
+                ::pd_docsdir::add_externals_path
+            }
+        }
+    }
+    return 1
+}
+
 # create the Pd documents directory path and it's "externals" subdir,
 # set externalsdir to false to create the given path only
 # returns true if the path already exists
-proc ::pd_docsdir::create_path {path {externalspath true}} {
+proc ::pd_docsdir::create_path {path} {
     if {"$path" eq "" || "$path" eq "DISABLED"} {return 0}
-    set newpath [file normalize "$path"]
-    if {$externalspath} {set newpath [file join $newpath "externals"]}
-    if {[file mkdir "$newpath" ] eq ""} {
+    if {[file mkdir [file normalize "$path"]] eq ""} {
         return 1
     }
     ::pdwindow::error [format [_ "Couldn't create Pd documents directory: %s\n"] $path]
     return 0
 }
 
-# set the Pd documents directory path, adds "externals" subdir to search paths
-proc ::pd_docsdir::set_path {path {setdekenpath true}} {
+# set the Pd documents directory path
+proc ::pd_docsdir::set_path {path} {
     set ::pd_docsdir::docspath $path
     ::pd_guiprefs::write docspath "$path"
-    if {"$path" ne "" && "$path" ne "DISABLED"} {
-        set externalspath [file join "$path" "externals"]
-        # set deken to use it
-        if {[namespace exists ::deken] && $setdekenpath} {
-            set ::deken::installpath ""
-            :::deken::set_installpath $externalspath
-        }
-        add_to_searchpaths $externalspath
-    }
 }
 
 # returns 1 if the docspath is set, not disabled, & a directory
@@ -191,6 +207,24 @@ proc ::pd_docsdir::path_is_valid {} {
     return 1
 }
 
+# create the externals subdir within the current docs path or a given path,
+# returns 1 on success
+proc ::pd_docsdir::create_externals_path {{path ""}} {
+    if {"$path" eq ""} {
+        if {"$::pd_docsdir::docspath" eq "" ||
+            "$::pd_docsdir::docspath" eq "DISABLED"} {
+            return 0
+        }
+        set path $::pd_docsdir::docspath
+    }
+    set newpath [file join [file normalize "$path"] "externals"]
+    if {[file mkdir "$newpath" ] eq ""} {
+        return 1
+    }
+    ::pdwindow::error [format [_ "Couldn't create \"externals\" directory in: %s\n"] $path]
+    return 0
+}
+
 # get the externals subdir within the current docs path or a given path,
 # returns an empty string if docs path is not valid
 proc ::pd_docsdir::get_externals_path {{path ""}} {
@@ -201,13 +235,32 @@ proc ::pd_docsdir::get_externals_path {{path ""}} {
             return ""
         }
     }
-    return [file join $path "externals"]
+    return [file join "$path" "externals"]
 }
 
 # returns 1 if the docspath externals subdir exists
 proc ::pd_docsdir::externals_path_is_valid {} {
     set path [::pd_docsdir::get_externals_path]
     if {"$path" ne "" && [file writable [file normalize "$path"]]} {
+        return 1
+    }
+    return 0
+}
+
+# add the externals subdir within the current docs path or a given path to the
+# the user search paths
+proc ::pd_docsdir::add_externals_path {{path ""}} {
+    set externalspath [::pd_docsdir::get_externals_path $path]
+    if {$externalspath ne ""} {
+        add_to_searchpaths $externalspath
+    }
+}
+
+# is the deken installpath the externals subdir within the current docs path?
+proc ::pd_docsdir::is_externals_path_deken_installpath {} {
+    if {![namespace exists ::deken]} {return 0}
+    if {[file normalize $::deken::installpath] eq
+        [file normalize [::pd_docsdir::get_externals_path]]} {
         return 1
     }
     return 0

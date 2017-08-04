@@ -241,22 +241,21 @@ proc ::dialog_path::commit {new_path} {
     global verbose_button
     global docspath
     global installpath
+
+    # save buttons and search paths
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
-    if {[namespace exists ::pd_docsdir]} {
-        # only try creating the installpath if it matches the docsdir externals subdir
-        set create_ext_path false
-        set fullinstallpath [file normalize $installpath]
-        set fullextpath [file normalize [::pd_docsdir::get_externals_path $docspath]]
-        if {$fullinstallpath eq $fullextpath} {set create_ext_path true}
-        # set/create docs path
-        if {$docspath eq [::pd_docsdir::get_disabled_path] ||
-            [::pd_docsdir::create_path $docspath $create_ext_path]} {
-            ::pd_docsdir::set_path $docspath false
-        }
-    }
+
+    # save installpath
     if {[namespace exists ::deken]} {
+        # clear first so set_installpath doesn't pick up prev value from guiprefs
         set ::deken::installpath ""
         ::deken::set_installpath $installpath
+    }
+
+    # save docspath
+    if {[namespace exists ::pd_docsdir]} {
+        # run this after since it checks ::deken::installpath value
+        [::pd_docsdir::update_path $docspath]
     }
 }
