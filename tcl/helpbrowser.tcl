@@ -34,7 +34,7 @@ proc ::helpbrowser::open_helpbrowser {} {
         }
 
         # set the maximum number of child columns to create
-        set ::helpbrowser::maxcols 3
+        set ::helpbrowser::maxcols 5
 
         # TODO wrap frame in a canvas with a horz scrollbar,
         # currently we simply add cols to the left until we reach max cols
@@ -427,7 +427,7 @@ proc ::helpbrowser::add_entry {reflist entry} {
 }
 
 proc ::helpbrowser::build_references {} {
-    variable libdirlist {" Pure Data/" "-------- Libraries --------"}
+    variable libdirlist {" Pure Data/" "-------- Externals --------"}
     variable helplist {}
     variable reference_count
     variable reference_paths
@@ -435,7 +435,7 @@ proc ::helpbrowser::build_references {} {
     set searchpaths {}
     array set reference_count {}
     array set reference_paths [list " Pure Data/" $::sys_libdir/doc \
-                                    "-------- Libraries --------" "" ]
+                                    "-------- Externals --------" "" ]
 
     # sys_staticpath (aka hardcoded)
     foreach pathdir $::sys_staticpath {
