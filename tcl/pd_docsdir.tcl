@@ -39,8 +39,13 @@ after 1000 {::pd_docsdir::init}
 
 # check the Pd documents directory path & prompt user to create if it's empty,
 # otherwise ignore all of this if the user cancelled it
-proc ::pd_docsdir::init {} {
-    set ::pd_docsdir::docspath [::pd_guiprefs::read docspath]
+# set reset to true to force the welcome prompt
+proc ::pd_docsdir::init {{reset false}} {
+    if {$reset} {
+        set ::pd_docsdir::docspath ""
+    } else {
+        set ::pd_docsdir::docspath [::pd_guiprefs::read docspath]
+    }
     set docspath $::pd_docsdir::docspath
     if { "$docspath" eq "DISABLED" } {
         # respect prev decision
@@ -89,7 +94,7 @@ proc ::pd_docsdir::init {} {
         set fullpath [file normalize "$docspath"]
         if {![file exists $fullpath]} {
             set msg [_ "Pd documents directory cannot be found:\n\n%s\n\nChoose a new location?" ]
-            set _args "-message \"[format $msg $::pd_docsdir::docspath]\" -type yesno -default yes -icon warning"
+            set _args "-message \"[format $msg $::pd_docsdir::docspath]\" -type yesno -default yes -icon warning -parent .pdwindow"
             switch -- [eval tk_messageBox ${_args}] {
                 yes {
                     # set the new docs path

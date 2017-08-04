@@ -248,7 +248,7 @@ proc ::dialog_path::commit {new_path} {
         set create_ext_path false
         set fullinstallpath [file normalize $installpath]
         set fullextpath [file normalize [::pd_docsdir::get_externals_path $docspath]]
-        if {$fullinstallpath eq $fullextpath]} {set create_ext_path true}
+        if {$fullinstallpath eq $fullextpath} {set create_ext_path true}
         # set/create docs path
         if {$docspath eq [::pd_docsdir::get_disabled_path] ||
             [::pd_docsdir::create_path $docspath $create_ext_path]} {
