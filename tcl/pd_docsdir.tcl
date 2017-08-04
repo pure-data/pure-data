@@ -161,7 +161,6 @@ proc ::pd_docsdir::get_disabled_path {} {
 # higher level complement to create_path & path_set
 # checks ::deken::installpath value
 # returns 1 if the update was successful
-# returns 2 if the externals subdir was added to the path
 proc ::pd_docsdir::update_path {path} {
     if {"$path" eq "" || "$path" eq "DISABLED"} {
         ::pd_docsdir::set_path "$path"

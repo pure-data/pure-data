@@ -256,6 +256,6 @@ proc ::dialog_path::commit {new_path} {
     # save docspath
     if {[namespace exists ::pd_docsdir]} {
         # run this after since it checks ::deken::installpath value
-        [::pd_docsdir::update_path $docspath]
+        ::pd_docsdir::update_path $docspath
     }
 }
