@@ -3,8 +3,7 @@
 # Federico Camara Halac <camarafede@gmail.com>, 2017.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Pure Data 0.48.0\n"
+msgstr "Project-Id-Version: Pure Data 0.48.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "PO-Revision-Date: 2017-07-20 21:14-0400\n"
 "Last-Translator: Federico Camara Halac <camarafede@gmail.com>\n"
@@ -52,10 +51,10 @@ msgid "left:"
 msgstr "Izquierda:"
 
 msgid "lin"
-msgstr ""
+msgstr "Lin"
 
 msgid "log"
-msgstr ""
+msgstr "Log"
 
 msgid "log-height:"
 msgstr "Altura Log:"
@@ -156,8 +155,7 @@ msgid "no Pd settings to erase"
 msgstr "No hay configuraciones para borrar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
-msgstr ""
-"salteando el cargado de preferencias... Pd parece haber crasheado al inicio."
+msgstr "Altura Log:skipping loading preferences... Pd seems to have crashed on startup."
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(click en Guardar Preferencias para reestablecerlas)"
@@ -232,7 +230,7 @@ msgid "Options"
 msgstr "Opciones"
 
 msgid "Open List View..."
-msgstr "Ver Lista "
+msgstr "Ver Lista"
 
 msgid "Delete array"
 msgstr "Eliminar array"
@@ -283,8 +281,7 @@ msgid "Save All Settings"
 msgstr "Guardar Configuraciones"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr ""
-"ADVERTENCIA: banderas graphme desconocidas recibidas en pdtk_canvas_dialog"
+msgstr "ADVERTENCIA: banderas graphme desconocidas recibidas en pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propiedades de Canvas"
@@ -346,7 +343,7 @@ msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr "Mostrando '%1$d' de %2$d ítems en %3$s"
 
 msgid "Pd window"
-msgstr "Ventana de Pd "
+msgstr "Ventana de Pd"
 
 msgid "Match whole word only"
 msgstr "Comparar solo con palabra completa"
@@ -428,7 +425,7 @@ msgid "Init"
 msgstr ""
 
 msgid "No init"
-msgstr ""
+msgstr "Sin init"
 
 msgid "Jump on click"
 msgstr "Saltar a Valor"
@@ -552,35 +549,31 @@ msgid "Verbose"
 msgstr "Verbosa"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Directorio de documentos de Pd"
 
 msgid "Browse"
-msgstr ""
+msgstr "Explorar"
 
 msgid "Reset"
-msgstr ""
+msgstr "Resetear"
 
 msgid "Disable"
-msgstr ""
+msgstr "Desactivar"
 
-#, fuzzy
 msgid "Externals Install Directory"
-msgstr "Instalar librerías en directorio:"
+msgstr "Directorio de instalacion de externos"
 
-#, fuzzy
 msgid "Clear"
-msgstr "Borrar Menu"
+msgstr "Borrar"
 
 msgid "Choose Pd documents directory:"
-msgstr ""
+msgstr "Elejir directorio de documentos de Pd"
 
-#, fuzzy
 msgid "Install externals to directory:"
-msgstr "Instalar librerías en directorio:"
+msgstr "Instalar externos en el directorio:"
 
-#, fuzzy
 msgid "Add a new path"
-msgstr "Añadir nueva librería"
+msgstr "Agregar una nueva ruta"
 
 msgid "Add new library"
 msgstr "Añadir nueva librería"
@@ -623,8 +616,7 @@ msgstr "[deken]: version instalada [%1$s] == %2$s...salteando!"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr ""
-"[deken] deken-plugin.tcl (Búsqueda de externals para Pd) cargado de %s."
+msgstr "[deken] deken-plugin.tcl (Búsqueda de externals para Pd) cargado de %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
@@ -637,9 +629,7 @@ msgid "Search"
 msgstr "Buscar"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr ""
-"Para ver una lista de todos los externos disponibles, prueba una búsqueda "
-"vacía."
+msgstr "Para ver una lista de todos los externos disponibles, prueba una búsqueda vacía."
 
 msgid "Find externals"
 msgstr "Buscar Externos"
@@ -652,31 +642,27 @@ msgstr "Buscando externos..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
-msgstr "[deken]: ¿En línea? %s"
+msgstr "[deken]: ¿Está usted online? %s"
 
 msgid "Unable to perform search. Are you online?"
 msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr ""
-"No se han encontrado externos con ese nombre. Prueba usando el nombre "
-"completo, por ejemplo: 'freeverb'."
+msgstr "No se han encontrado externos con ese nombre. Prueba usando el nombre completo, por ejemplo: 'freeverb'."
 
 msgid "Please select a (writable) installation directory!"
-msgstr ""
-"Por favor, selecciona un directorio de instalacion con permisos de escritura!"
+msgstr "Por favor, seleccione un directorio de instalación con permisos de escritura!"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Install %s to %s?"
-msgstr "¿Desea Instalar en %s ?"
+msgstr "¿Instalar %s en %s?"
 
 #, tcl-format
 msgid ""
 "Commencing downloading of:\n"
 "%1$s\n"
 "Into %2$s..."
-msgstr ""
-"Comenzando descarga de:\n"
+msgstr "Comenzando descarga de:\n"
 "%1$s\n"
 "En %2$s..."
 
@@ -703,15 +689,15 @@ msgstr "2. Copiar los contenidos en %s."
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
-msgstr ""
+msgstr "No se ha podido agregar %s a las rutas de búsqueda"
 
 #, tcl-format
 msgid "Add %s to the Pd search paths?"
-msgstr ""
+msgstr "¿Agregar %s a las rutas de búsqueda de Pd?"
 
 #, tcl-format
 msgid "Added %s to search paths"
-msgstr ""
+msgstr "Se ha agregado %s a las rutas de búsqueda."
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
@@ -743,7 +729,13 @@ msgid ""
 "Location: %s\n"
 "\n"
 "You can change or disable this later in the Path preferences."
-msgstr ""
+msgstr "Bienvenido a Pure Data!\n"
+"\n"
+"¿Desea que Pd genere un directorio para parches y librerias de externos?\n"
+"\n"
+"Ubicacion: %s\n"
+"\n"
+"Puede cambiar o desactivar esta funcion luego desde las configuraciones de Ruta."
 
 #, tcl-format
 msgid ""
@@ -752,15 +744,19 @@ msgid ""
 "%s\n"
 "\n"
 "Choose a new location?"
-msgstr ""
+msgstr "No se ha podido encontrar el directorio de documentos de Pd:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
 
 #, tcl-format
 msgid "Couldn't create Pd documents directory: %s\n"
-msgstr ""
+msgstr "No se ha podido crear el directorio de documentos de Pd: %s\n"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Couldn't create \"externals\" directory in: %s\n"
-msgstr "Instalar librerías en directorio:"
+msgstr "No se ha podido crear el directorio \"externals\" en: %s\n"
 
 msgid "About Pd"
 msgstr "Sobre Pd"
@@ -900,9 +896,8 @@ msgstr "Borrar Menu"
 msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
-msgstr ""
-"¿Desea eliminar todas las preferencias?\n"
-"(efectivizará cuando Pd reinicie)"
+msgstr "¿Desea eliminar todas las preferencias?\n"
+"Tomara efecto cuando Pd reinicie."
 
 msgid "Path..."
 msgstr "Ruta..."
@@ -965,19 +960,19 @@ msgid "Log:"
 msgstr ""
 
 msgid "fatal"
-msgstr ""
+msgstr "Fatal"
 
 msgid "error"
-msgstr ""
+msgstr "Error"
 
 msgid "normal"
-msgstr ""
+msgstr "Normal"
 
 msgid "debug"
-msgstr ""
+msgstr "Depurar"
 
 msgid "all"
-msgstr "todo"
+msgstr "Todo"
 
 msgid "New..."
 msgstr "Nuevo..."
@@ -990,8 +985,8 @@ msgstr "Eliminar"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't exist"
-msgstr ""
+msgstr "Ignorando '%s': archivo no existente."
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr ""
+msgstr "Ignorando '%s': no parece ser un fichero de Pd."
