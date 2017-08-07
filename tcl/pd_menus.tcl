@@ -333,12 +333,13 @@ proc ::pd_menus::build_window_menu {mymenu} {
 }
 
 proc ::pd_menus::build_help_menu {mymenu} {
+    variable accelerator
     if {$::windowingsystem ne "aqua"} {
         $mymenu add command -label [_ "About Pd"] -command {menu_aboutpd}
     }
     $mymenu add command -label [_ "HTML Manual..."] \
         -command {menu_doc_open doc/1.manual index.htm}
-    $mymenu add command -label [_ "Browser..."] \
+    $mymenu add command -label [_ "Browser..."] -accelerator "$accelerator+B" \
         -command {menu_helpbrowser}
     $mymenu add command -label [_ "List of objects..."] \
         -command {menu_objectlist}
