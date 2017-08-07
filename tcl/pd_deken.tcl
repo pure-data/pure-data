@@ -440,6 +440,10 @@ proc ::deken::clicked_link {URL filename} {
     ### if this still doesn't help, ask the user
     set installdir [::deken::find_installpath]
     set extname [lindex [split $filename "-"] 0]
+    puts stderr [concat installdir $installdir docspath $::pd_docsdir::docspath]
+    if {$::pd_docsdir::docspath == ""} {
+        ::pd_docsdir::init
+    }
     if { "$installdir" == "" } {
         if {[namespace exists ::pd_docsdir] && [::pd_docsdir::externals_path_is_valid]} {
             # if the docspath is set, try the externals subdir
