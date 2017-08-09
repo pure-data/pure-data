@@ -761,8 +761,6 @@ msgstr "Enviado por '%1$s' em %2$s"
 
 #, tcl-format
 msgid ""
-"Welcome to Pure Data!\n"
-"\n"
 "Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
 "\n"
