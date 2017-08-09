@@ -248,7 +248,6 @@ proc ::dialog_path::commit {new_path} {
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
     if {$changed} {::helpbrowser::refresh}
-    pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
 
     # save installpath
     if {[namespace exists ::deken]} {
