@@ -753,8 +753,6 @@ msgstr ""
 
 #, tcl-format
 msgid ""
-"Welcome to Pure Data!\n"
-"\n"
 "Do you want Pd to create a documents directory for patches and external "
 "libraries?\n"
 "\n"
