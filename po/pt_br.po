@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2010-01-23 03:45-0200\n"
-"Last-Translator: Alexandre Torres Porres <porres@gmail.com>\n"
+"PO-Revision-Date: 2017-08-10 03:45-0200\n"
+"Last-Translator: Alexandre Torres Porres\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -163,10 +163,10 @@ msgid "no Pd settings to clear"
 msgstr "nenhuma configuração do Pd para limpar"
 
 msgid "removed .pdsettings file"
-msgstr ".pdsettings file removido"
+msgstr "arquivo .pdsettings removido"
 
 msgid "couldn't delete .pdsettings file"
-msgstr "impossível deletar .pdsettings file"
+msgstr "impossível deletar arquivo .pdsettings"
 
 msgid "failed to erase Pd settings"
 msgstr "falha ao apagar configurações do Pd"
@@ -179,10 +179,10 @@ msgstr "Nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
-"pulando carregar preferências... Pd parece ter travado na inicialização."
+"pulando carregar preferências... o Pd parece ter travado na inicialização."
 
 msgid "(re-save preferences to reinstate them)"
-msgstr "re-salvar preferências para reinstancia-las"
+msgstr "(re-salvar preferências para reinstancia-las)"
 
 msgid "File"
 msgstr "Arquivo"
@@ -206,7 +206,7 @@ msgid "Help"
 msgstr "Ajuda"
 
 msgid "Show &Hidden Files and Directories"
-msgstr "Mostrar diretórios e arquivos escondidos"
+msgstr "Mostrar Diretórios e Arquivos &Escondidos"
 
 msgid "Copy"
 msgstr "Copiar"
@@ -254,7 +254,7 @@ msgid "Options"
 msgstr "Opções"
 
 msgid "Open List View..."
-msgstr "Abrir Visualização em Lista..."
+msgstr "Abrir Visualização da Lista..."
 
 msgid "Delete array"
 msgstr "Excluir vetor"
@@ -288,22 +288,22 @@ msgid "Use callbacks"
 msgstr "Usar callbacks"
 
 msgid "Input Devices"
-msgstr "Dispositivos de entrada"
+msgstr "Dispositivos de Entrada"
 
 msgid "Channels:"
 msgstr "Canais:"
 
 msgid "Output Devices"
-msgstr "Dispositivos de saída"
+msgstr "Dispositivos de Saída"
 
 msgid "(same as input device)..."
 msgstr "(mesmo que o dispositivo de entrada)..."
 
 msgid "Use Multiple Devices"
-msgstr "Usar múltiplos dispositivos"
+msgstr "Usar Múltiplos Dispositivos"
 
 msgid "Save All Settings"
-msgstr "Salvar Configurações"
+msgstr "Salvar Todas as Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
@@ -369,7 +369,7 @@ msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr "Mostrando '%1$d' de %2$d ítens em %3$s"
 
 msgid "Pd window"
-msgstr "Janela do PD"
+msgstr "Janela do Pd"
 
 msgid "Match whole word only"
 msgstr "Procurar apenas pela palavra inteira"
@@ -510,7 +510,7 @@ msgid "Vradio"
 msgstr "Botão Seletor Vertical"
 
 msgid "Num cells:"
-msgstr "Número de Células:"
+msgstr "Número de células:"
 
 msgid "Hradio"
 msgstr "Botão Seletor Horizontal"
@@ -527,16 +527,16 @@ msgstr "Retângulo Visível (pix)"
 
 #, tcl-format
 msgid "%s Properties"
-msgstr "Propriedades: %s"
+msgstr "Propriedades de %s"
 
 msgid "Parameters"
 msgstr "Parâmetros"
 
 msgid "X offset:"
-msgstr "Deslocamento em X:"
+msgstr "Deslocamento eixo X:"
 
 msgid "Y offset:"
-msgstr "Deslocamento em Y:"
+msgstr "Deslocamento eixo Y:"
 
 msgid "Colors"
 msgstr "Cores"
@@ -603,10 +603,10 @@ msgid "Choose Pd documents directory:"
 msgstr "Escolher diretório dos documentos Pd:"
 
 msgid "Install externals to directory:"
-msgstr "Instalar bibliotecas no diretório:"
+msgstr "Instalar externals no diretório:"
 
 msgid "Add a new path"
-msgstr "Adicionar nova biblioteca"
+msgstr "Adicionar um novo caminho"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -615,7 +615,7 @@ msgid "Edit library"
 msgstr "Editar biblioteca"
 
 msgid "Pd libraries to load on startup"
-msgstr "Bibliotecas para carregar na inicialização"
+msgstr "Bibliotecas de Pd para carregar na inicialização"
 
 msgid "Startup flags:"
 msgstr "Marcadores de inicialização:"
@@ -690,7 +690,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
 
 msgid "Install %s to %s?"
-msgstr "Instalar %s em %s ?"
+msgstr "Instalar %s em %s?"
 
 #, tcl-format
 msgid ""
@@ -698,7 +698,7 @@ msgid ""
 "%1$s\n"
 "Into %2$s..."
 msgstr ""
-"Começando a baixar de:\n"
+"Começando a baixar:\n"
 "%1$s\n"
 "Em %2$s..."
 
@@ -947,7 +947,7 @@ msgid "MIDI..."
 msgstr "Configurações de MIDI..."
 
 msgid "Zoom New Windows"
-msgstr "Amplciar Zoom em Novas Janelas"
+msgstr "Amplicar Zoom em Novas Janelas"
 
 msgid "Save All Preferences"
 msgstr "Salvar Todas as Preferências"
@@ -959,7 +959,7 @@ msgid "Load from..."
 msgstr "Carregar de..."
 
 msgid "Forget All..."
-msgstr "Deletar preferências..."
+msgstr "Esquecer Todas..."
 
 msgid "Open Recent"
 msgstr "Abrir Recente"
@@ -989,7 +989,7 @@ msgid "DSP"
 msgstr "DSP"
 
 msgid "Audio I/O error"
-msgstr "Erro de entrada/saída de áudio"
+msgstr "Erro de Entrada/Saída de áudio"
 
 msgid "Log:"
 msgstr "Log:"
@@ -1023,7 +1023,7 @@ msgstr "Ignorando '%s': não existe"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
+msgstr "Ignorando '%s': não parece ser um arquivo de Pd válido"
 
 #~ msgid "Install externals to:"
 #~ msgstr "Instalar externals em:"
