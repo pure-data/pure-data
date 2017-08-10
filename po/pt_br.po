@@ -582,32 +582,29 @@ msgid "Verbose"
 msgstr "Detalhado"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Diretório dos Documentos Pd"
 
 msgid "Browse"
 msgstr "Navegar"
 
 msgid "Reset"
-msgstr ""
+msgstr "Resetar"
 
 msgid "Disable"
-msgstr ""
+msgstr "Desabilitar"
 
-#, fuzzy
 msgid "Externals Install Directory"
-msgstr "Instalar bibliotecas no diretório:"
+msgstr "Instalar externals no diretório:"
 
-#, fuzzy
 msgid "Clear"
-msgstr "Limpar Menu"
+msgstr "Limpar"
 
 msgid "Choose Pd documents directory:"
-msgstr ""
+msgstr "Escolher diretório dos documentos Pd:"
 
 msgid "Install externals to directory:"
 msgstr "Instalar bibliotecas no diretório:"
 
-#, fuzzy
 msgid "Add a new path"
 msgstr "Adicionar nova biblioteca"
 
@@ -692,9 +689,8 @@ msgstr ""
 msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
 
-#, fuzzy, tcl-format
 msgid "Install %s to %s?"
-msgstr "Instalar em %s ?"
+msgstr "Instalar %s em %s ?"
 
 #, tcl-format
 msgid ""
@@ -729,15 +725,15 @@ msgstr "2. Copiar o conteúdo para %s."
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
-msgstr ""
+msgstr "Incapaz de adicionar %s aos caminhos de busca"
 
 #, tcl-format
 msgid "Add %s to the Pd search paths?"
-msgstr ""
+msgstr "Adicionar %s aos caminhos de busca do Pd?"
 
 #, tcl-format
 msgid "Added %s to search paths"
-msgstr ""
+msgstr "%s adicionado aos caminhos de busca"
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
@@ -745,7 +741,7 @@ msgstr "Incapaz de baixar de %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to remove stray file %s"
-msgstr "Inzapaz de remover arquivo %s"
+msgstr "Incapaz de remover arquivo %s"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to %s"
@@ -768,6 +764,12 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"Você quer criar um diretório de documentos para patches e bibliotecas de "
+"externals?\n"
+"\n"
+"Localização: %s\n"
+"\n"
+"Você pode mudar ou desabilitar posteriormente em Preferências/Caminho de busca."
 
 #, tcl-format
 msgid ""
@@ -777,14 +779,18 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
+"Diretórios de documentos Pd não pôde ser encontrado:\n"
+"\n"
+"%s\n"
+"\n"
+"Escolher uma nova localização?"
 
 #, tcl-format
 msgid "Couldn't create Pd documents directory: %s\n"
-msgstr ""
+msgstr "Impossível criar diretório de documentos Pd: %s\n"
 
-#, fuzzy, tcl-format
 msgid "Couldn't create \"externals\" directory in: %s\n"
-msgstr "Instalar bibliotecas no diretório:"
+msgstr "Impossível criar diretório \"externals\" em: %s\n"
 
 msgid "About Pd"
 msgstr "Sobre o Pd"
@@ -1012,9 +1018,8 @@ msgstr "Editar..."
 msgid "Delete"
 msgstr "Deletar"
 
-#, fuzzy, tcl-format
 msgid "Ignoring '%s': doesn't exist"
-msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
+msgstr "Ignorando '%s': não existe"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
