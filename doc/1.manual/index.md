@@ -13,7 +13,7 @@ The latest version of this page can be found at:
 Introduction
 ============
 
-[back to table of contents](#TOC)
+[back to table of contents][TOC]
 
 This is the HTML documentation for the Pd computer program. Pd is free and can
 be downloaded from the internet; go to <http://msp.ucsd.edu/software.html> to
@@ -50,15 +50,13 @@ To get started writing your own C extensions, refer to chapter 4 of this manual.
 
 ## Other Resources
 
-There is a very extensive Pd community web site,
-[pure-data.info](http://www.pure-data.info/), which aims to be the central
-resource for Pd, from documentation and downloads; to forums, member pages, and
-a patch exchange.
+There is a very extensive Pd community web site, [puredata.info], which aims to
+be the central resource for Pd, from documentation and downloads; to forums,
+member pages, and a patch exchange.
 
-More documentation is available on the Pd FLOSS site:
-[en.flossmanuals.net/PureData/](http://en.flossmanuals.net/PureData/) (English)
-and [fr.flossmanuals.net/PureData/](http://fr.flossmanuals.net/PureData/)
-(French).
+More documentation is available on the Pd FLOSS
+site: <http://en.flossmanuals.net/PureData/> (English)
+and <http://fr.flossmanuals.net/PureData> (French).
 
 Most of the interesting news related to Pd shows up on the Pd mailing list,
 maintained by IOhannes Zmoelnig. To subscribe or browse the archives visit:
@@ -73,20 +71,20 @@ GEM, based on OpenGL, written by Mark Danks, adapted to Linux by Guenter Geiger,
 and now maintained by Iohannes Zmoelnig. You can get it from:
 <http://gem.iem.at/>, or by installing Pd Extended.
 
-Here are some [more external links](http://msp.ucsd.edu/external-links.htm).
+Here are some more [external links].
 
 ----
 
 Theory of Operation
 ===================
 
-[back to table of contents](#TOC)
+[back to table of contents][TOC]
 
 The purpose of this chapter is to describe Pd's design and how it is supposed to
 work. Practical details about how to obtain, install, and run Pd are described
-in the [next chapter](x3.html). Links to more extensive guidaes (and to more
-theoretical information about computer music) can be found in the [previous
-chapter](x1.html).
+in the [next chapter][Getting Pd to Run]. Links to more extensive guidaes (and
+to more theoretical information about computer music) can be found in
+the [previous chapter][Introduction].
 
 ## Overview
 
@@ -124,7 +122,7 @@ find out about them. If you never see red, you're probably not seeing the
 truth.) Click the "DIO errors" button to see a list of recent errors. This
 indicator should turn red whenever the computation runs late (so that the DAC
 FIFOs fill and/or the ADC FIFOs empty) or if audio input and output are not
-running at the same rate. See [audio and MIDI support](x3.html#s2).
+running at the same rate. See [audio and MIDI] support.
 
 The bottom part of the Pd window is an area for printout from objects in
 patches, and/or for messages from Pd itself.
@@ -231,14 +229,14 @@ so on. Whereas the appearance of an object or message box is static when a patch
 is running, a number box's contents (the text) changes to reflect the current
 value held by the box. You can also use a number box as a control by clicking
 and dragging up and down, or by typing values in it. (There are also shift- and
-alt-click actions; see [getting help](x2.html#s2.7) to find out how to look this
-up).
+alt-click actions; see [Popup Menu for Properties, Open, and Help] to find out
+how to look this up.)
 
 You can also create a "symbol" box which is like a number box but deals in
 symbols like "cat." You can type your own strings in (followed by "enter") or
 use it to display strings which arrive as messages to its inlet.
 
-### patches and files
+### Patches and Files
 
 When you save a patch to a file, Pd doesn't save the entire state of all the
 objects in the patch, but only what you see: the objects' creation arguments and
@@ -681,7 +679,7 @@ closed, Pd suspends sending the GUI update messages for it; but not so for
 miniaturized windows as of version 0.32. You should really close them when you
 aren't using them.
 
-### determinism
+### Determinism
 
 All message cascades that are scheduled (via "delay" and its relatives) to
 happen before a given audio tick will happen as scheduled regardless of whether
@@ -702,12 +700,12 @@ nondeterministic results.)
 If two message cascades are scheduled for the same logical time, they are
 carried out in the order they were scheduled.
 
-## semantics
+## Semantics
 
 This section describes how objects in Pd are created, how they store data and
 how object and other boxes pass messages among themselves.
 
-### creation of objects
+### Creation of Objects
 
 The text in a box has a different function depending on whether it is a message,
 atom (number/symbol), or object box. In message boxes the text specifies the
@@ -728,7 +726,7 @@ Thus in "makenote 64 250" the selector "makenote" determines the class of object
 to create and the creation arguments 64 and 250 become the initial velocity and
 duration.
 
-### persistence of data
+### Persistence of Data
 
 Among the design principles of Pd is that patches should be printable, in the
 sense that the appearance of a patch should fully determine its functionality.
@@ -749,7 +747,7 @@ It is probably bad style to specify creation arguments ala "makenote 64 250" if
 you are going to override them later; this is confusing to anyone who tries to
 understand the patch.
 
-### message passing
+### Message Passing
 
 Messages in Pd consist of a selector (a symbol) and zero or more arguments
 (which may be symbols or numbers). To pass a message to an object, Pd first
@@ -775,7 +773,7 @@ Each other class (like "float") in Pd has its own protocol for responding to
 messages it is sent, and may take "float" and "bang" messages, or others in
 addition or instead of them.
 
-### inlets and lists
+### Inlets and Lists
 
 The leftmost connection point at the top of most objects represents the object
 itself. Any other dark rectangle is a separate object called an "inlet" although
@@ -789,7 +787,7 @@ the "list" message by distributing the arguments of the message to their inlets,
 except for the first argument which is passed as a "float" or "symbol" message
 to the object proper.
 
-### dollar signs
+### Dollar Signs
 
 In message or object boxes, message arguments starting with a dollar sign and a
 number (like "\$1" or "\$3-bazoo") are variables which are substituted with
@@ -823,7 +821,7 @@ have an abstraction "a1" that invokes an abstraction "a2" twice, as "a2
 cat" and "a1 dog". Inside the four "a2" copioes, \$1 will evaluate to
 "dog-food", "cat-food", "dog-ears", and "cat-ears".
 
-## subpatches
+## Subpatches
 
 Pd offers two mechanisms for making subpatches, called "one-off subpatches" and
 "abstractions." In either case the subpatch appears as an object box in a patch.
@@ -847,7 +845,7 @@ messages and audio in a subpatch inlet or outlet; they must be one or the other
 exclusively. Inlets and outlets appear on the invoking box in the same
 left-to-right order as they appear in the subpatch.
 
-### abstractions
+### Abstractions
 
 To make an abstraction, save a patch with a name such as "abstraction1.pd" and
 then invoke it as "abstraction1" in an object box:
@@ -886,7 +884,7 @@ a different time in an object box than in a message box. In an object box, the
 "\$" argument is expanded at creation time, and in a message box, at message
 time.
 
-### Graph-on-parent subpatches
+### Graph-on-parent Subpatches
 
 If you open the "properties" dialog for a subpatch or an abstraction, you can
 check the "graph on parent" box to have the controls of the subpatch/abstraction
@@ -912,7 +910,7 @@ When the sub-patch is closed, all controls in it appear on the object instead;
 so the number box in the sub-patch in the example above is the same one as you
 see in the box. Only controls are made visible in this way
 
-## numeric arrays
+## Numeric Arrays
 
 Linear arrays of numbers recur throughout the computer musician's bag of tricks,
 beginning with the wavetable oscillator. The wavetable oscillator later was
@@ -1007,7 +1005,7 @@ pixels.
 Many other operations are defined for arrays; see the related patches in the
 tutorial (starting at 2.control/15.array.pd) for more possibilities.
 
-## Data structures
+## Data Structures
 
 (Note: this section is adapted from an article submitted to ICMC 2002.)
 
@@ -1160,7 +1158,7 @@ More general patches can easily be constructed which access heterogeneous lists
 of objects (having different templates). In this way, an arbitrarily rich
 personal "score language" can be developed and sequenced.
 
-### Accessing and changing data
+### Accessing and Changing Data
 
 In general, accessing or changing data is done via "pointers" to "scalars".
 Numbers and symbols within scalars are accessed using the "get" object and
@@ -1264,11 +1262,10 @@ handling primitives and the graphical presentation and editing functions.
 Getting Pd to Run
 =================
 
-[back to table of contents](#TOC)
+[back to table of contents][TOC]
 
 The following are basic instructions on how to get Pd installed and running on
-your machine. More details are maintained online on the
-[pure-data.info](http://www.pure-data.info/) site.
+your machine. More details are maintained online on the [pure-data.info] site.
 
 Pd runs under Microsoft Windows, Linux, and macOS. How to get Pd up and running
 depends on your operating system, but the overall strategy is the same. You must
@@ -1372,7 +1369,7 @@ Next you get a choice of input and output device. If you want to open more than
 one, hit "use multiple devices" and you'll be allowed up to 4 in and 4 out. Each
 audio device is 2 channels by default, but you may specify more if your hardware
 supports it. Other parameters may be tweaked using the command line; see under
-[preferences and startup options](#s4).
+[preferences and startup options].
 
 #### MIDI {-}
 
@@ -1462,15 +1459,17 @@ which creates a directory named "pd". I do this from my home directory. Next,
 compile it. "cd" to pd and read the INSTALL.txt, or else just cd to "pd/src" and
 type
 
-    ./autogen.sh\
-    ./configure\
+    ./autogen.sh
+    ./configure
     make
 
 You can pass flags to "configure" to customize your compilation:
 
-    To enable debugging (and losing code optimization) add "--enable-debug".
-    To use Portaudio, add "--enable-portaudio".
-    To put Pd in /usr/bin instead of /usr/local/bin, add "--prefix=/bin".
+To enable debugging (and losing code optimization) add "--enable-debug".
+
+To use Portaudio, add "--enable-portaudio".
+
+To put Pd in /usr/bin instead of /usr/local/bin, add "--prefix=/bin".
 
 Alsa and Jack support should auto-configure, but "--enable-alsa" od
 "--enable-jack" will force their inclusion.
@@ -1480,7 +1479,7 @@ After "make", just type "\~/pd/bin/pd" to run pd.
 Alternatively, as superuser, you can run "make install" after "make depend" and
 then anyone on your system can just type "pd" to run it.
 
-#### Testing audio and MIDI {-}
+#### Testing Audio and MIDI {-}
 
 Next try audio. We want to know whether audio output works, whether audio input
 works, and whether they work simultaneously. First run "aumix" (or any newer
@@ -1508,7 +1507,7 @@ complaint, and if the audio test patch does what you want, you might wish to
 experiment with the "-audiobuffer" flag to see what values of audio latency your
 audio system can handle.
 
-#### Audio hardware in Linux {-}
+#### Audio Hardware in Linux {-}
 
 Installing and testing audio and MIDI drivers in Linux can take days or weeks.
 There appears to be no single place where you can get detailed information on
@@ -1532,7 +1531,7 @@ You can add ALSA devices by name on the Pd command line:
 This instructs Pd to offer the 'loupgarou' audio device in the Audio Settings
 panel.
 
-#### Experiences with particular soudcards {-}
+#### Experiences with Particular Soudcards {-}
 
 Here are some of my own experiences with sound cards so far. See also the Pd
 mailing list archives.
@@ -1591,7 +1590,7 @@ You might get various warnings about Pd trying to open an internet port. This is
 normal although some system administrators will prevent you from doing this (in
 which case you can't run Pd on that machine).
 
-#### To install on macOS from source {-}
+#### To Install on macOS from Source {-}
 
 Whether you've downloaded the source or the "package" you can always compile Pd
 for yourself, whether to make your own improvements, or possibly so that you can
@@ -1603,8 +1602,8 @@ I think this is true for all reasonably recent releases of macOS.
 Overview: Just as for Linux, extract pd-\#.\#.\#.tar.gz into a directory such as
 \~/pd-0.47-1, cd to \~/pd-0.47-1, run:
 
-    ./autogen.sh\
-    ./configure\
+    ./autogen.sh
+    ./configure
     make
 
 Then type \~/pd-0.47-1/bin/pd to a shell and enjoy!
@@ -1630,19 +1629,18 @@ To get MIDI working, you have to do the macOS magic to get a USB MIDI interface
 installed. I've seen this done with Midisport devices and I think you just
 download the macOS driver and follow directions.
 
-## Preferences and startup options
+## Preferences and Startup Options
 
 Pd's behavior may be customized to instruct it where to find files, which audio
 devices to open, what font size to use, and so on. Most of these may also be
 changed using the various dialogs you can open from Pd's menus. Others take
 effect only when Pd starts up; some of these appear on the "startup" dialog
 and some of them, too cranky to put in a GUI, must be typed as *command line
-arguments* .
+arguments*.
 
-In addition to the Audio and MIDI settings (see [Audio and MIDI](#s1.0)), you
-can customize font size (from the "edit" menu), directories to search for
-files (see [How Pd searches for files](#s5)), and additional startup parameters
-described below.
+In addition to the Audio and MIDI settings (see [Audio and MIDI]), you can
+customize font size (from the "edit" menu), directories to search for files (see
+[How Pd Searches for Files]), and additional startup parameters described below.
 
 All of these settings may be saved automatically between Pd sessions. It is also
 possible to specify settings directly via the *command line* . (A third
@@ -1676,7 +1674,7 @@ and typing "-rt -sleepgrain 1" does both.
 You may save the current settings for future Pd sessions with the "save all
 settings" button; this saves not only the path but all other settings as well.
 
-Command line arguments
+### Command Line Arguments
 
 Pd may be run as a "command line" program from your "terminal emulator,"
 "shell," or "MSDOS prompt." In Windows, if Pd is started using a "shortcut" it
@@ -1851,7 +1849,7 @@ work as of version 0.38.
 Writing Pd Objects in C
 =======================
 
-[back to table of contents](#TOC)
+[back to table of contents][TOC]
 
 You can write your own objects that you and others can use in their Pd
 applications. You can write them in C or (if you're smart and brave) in C++ or
@@ -1876,7 +1874,7 @@ take.
 
 In the "externs" subdirectory of the documentation you can find simple examples
 of "externs" with their source code and test patches; there are many other on
-the web (see [section 1.2](x1.html#s2)).
+the web (see [Other Resources]).
 
 Iohannes Zmoelnig has written an excellent guide to writing externs at
 <http://pdstatic.iem.at/externals-HOWTO/> .
@@ -1886,13 +1884,13 @@ Iohannes Zmoelnig has written an excellent guide to writing externs at
 Current Status
 ==============
 
-[back to table of contents](#TOC)
+[back to table of contents][TOC]
 
 This section tracks changes in Pd's current implementation.
 
 ## Release Notes
 
------------------- 0.48-0 ------------------------------
+### 0.48-0 {-}
 
 It's possible to save and recall "settings" to files, and/or to erase system
 settings. On Pcs, the settings are now stored in the "user" resource area
@@ -1949,7 +1947,7 @@ system is much improved, especially for Macintosh computers. One visible effect
 is that language support is finally working in the compiled versions on
 msp.ucsd.edu.
 
------------------- 0.47-1 ------------------------------
+### 0.47-1 {-}
 
 Improvements to deken plug-in ("find externals" menu item). Now unzipping works
 automatically in windows.
@@ -1963,7 +1961,7 @@ fixed a bug in initbang (didn't work in subpatches)
 
 restored a function needed by GUI externs such as 'knob'
 
------------------- 0.47-0 ------------------------------
+### 0.47-0 {-}
 
 The "deken" plug-in is integrated into the Pd help menu - you can download and
 install Pd libraries using the "Find Externals" menu command.
@@ -2002,7 +2000,7 @@ Miller now officially Does Not Know How This Works (DNKHTW).
 
 Many bug fixes.
 
------------------- 0.46-7 ------------------------------
+### 0.46-7 {-}
 
 Fixed non-working declare -stdpath on windows
 
@@ -2012,14 +2010,14 @@ Fixed jack audio back-ed not to auto-start the daemon
 
 Various compilation and architecture fixes
 
------------------- 0.46-6 ------------------------------
+### 0.46-6 {-}
 
 fixed bug selecting and saving/restoring MIDI output devices.
 
 new bob\~ object (Moog filter emulation) in extra. (This was intended for 0.47
 but it was easiest to leave it in place for this bug-fix release).
 
------------------- 0.46-5 ------------------------------
+### 0.46-5 {-}
 
 fixed crasher bug (cutting all text in an object then cutting again to delete
 the object sometimes crashed Pd)
@@ -2030,11 +2028,11 @@ patched Makefile.am for correct list of objects (fixes broken make install)
 
 fixed configure.ac to use fftw3
 
------------------- 0.46-4 ------------------------------
+### 0.46-4 {-}
 
 fixed crasher bug in 0.364-3
 
------------------- 0.46-3 ------------------------------
+### 0.46-3 {-}
 
 changed priority settings to agree with new restrictions on linux -- apparently
 non-root processes can't set to any of the top 5 or so priority levels.
@@ -2048,7 +2046,7 @@ updated Makefile.am to reflect new and corrected help file names
 
 took out bogus object in rev3\~
 
------------------- 0.46-2 ------------------------------
+### 0.46-2 {-}
 
 fixed bug calculating widths of pre-version-0.39 GOPs
 
@@ -2065,7 +2063,7 @@ fixed debian compile bug.
 
 fixed "array" object to allow a size of 1.
 
------------------- 0.46-1 ------------------------------
+### 0.46-1 {-}
 
 Bug fix in oscparse (truncated some messages)
 
@@ -2073,7 +2071,7 @@ Fixed ALSA (on linux) to open devices with fewer channels than requested
 
 Other small bug fixes.
 
------------------- 0.46-0 ------------------------------
+### 0.46-0 {-}
 
 The biggest change in 0.46 was to make possible loading multiple Pd instances
 into a single address space. The instances share symbols (there are no
@@ -2112,16 +2110,16 @@ Made stdlib and stdpath flags and declarations follow standard search paths
 
 Dozens of small bug fixes.
 
------------------- 0.45-3 ---------------------------
+### 0.45-3 {-}
 
 fixed a bug pasting text into Pd and an audio problem in Mac OSX (non-default
 sample rates with built-in hardware needed huge buffering)
 
------------------- 0.45-1,2 ---------------------------
+### 0.45-1,2 {-}
 
 fixed bug in which backspace to dialog windows got sent to the last edited patch
 
------------------- 0.45 ---------------------------
+### 0.45 {-}
 
 multi-purpose "array" and "text" objects. "Array" is a more general replacement
 for the "table", "tabread" and "tabwrite" objects. "text" is sort of like Max's
@@ -2173,7 +2171,7 @@ The soundfiler now writes correct sample rate to AIFF files (was previously
 hard-coded to 44100). Still no way to detect the sample rate of a file when
 reading it.
 
------------------- 0.44-3 ---------------------------
+### 0.44-3 {-}
 
 Fix hip\~ AC gain once more (still didn't have it right).
 
@@ -2182,16 +2180,16 @@ linux-specific fixes).
 
 "open recent" fixed for linux
 
------------------- 0.44-2 ---------------------------
+### 0.44-2 {-}
 
 Fix underflow problem for Raspberry Pi (no effect on other platforms)
 
------------------- 0.44-1 ---------------------------
+### 0.44-1 {-}
 
 Fixed default API settings to prefer MMIO over ASIO for MS Windows and anything
 over jack (so that first-time users are most likely to get audio out).
 
------------------- 0.44 ---------------------------
+### 0.44 {-}
 
 many, many changes (hopefully improvements) in audio and MIDI I/O and in
 scheduling.
@@ -2211,14 +2209,14 @@ inlet\~ and outlet\~, if configured to do upsampling, now use sample/hold
 instead of zero padding by default; arguably this is a bug fix as the DC gain
 isn't one for zero padding. Also undoable by setting compatibility to 0.43.
 
------------------- 0.43.2-3 ---------------------------
+### 0.43.2-3 {-}
 
 bug fixes, notably allowing an increase in incoming MIDI bandwidth.
 
 added an "f" message to canvases which might in the future be used to specify
 formatting info (width; font size) box by box.
 
------------------- 0.43.1 ---------------------------
+### 0.43.1 {-}
 
 bug fix: in "perf mode" (having sent pd the "perf" message to prevent undesired
 patch closure) Pd crashed (oops!) when one asked for the patch to close after
@@ -2244,12 +2242,12 @@ miscellaneous cleanups.
 STILL BUGGY: when you change the contents of a graph-on-parent subpatch the old
 stuff often doesn't get erased correctly.
 
------------------- 0.43 ---------------------------
+### 0.43 {-}
 
 Completely new TCL front end, thanks to Hans-Christophe Steiner, Iohannes
 Zmoelnig, and others.
 
------------------- 0.42-5 ---------------------------
+### 0.42-5 {-}
 
 broken abs\~ and log\~ fixed
 
@@ -2261,7 +2259,7 @@ lrshift\~ bug fix
 
 32 channel limit removed for portaudio (ASIO/Windows and Mac)
 
------------------- 0.42-4 ---------------------------
+### 0.42-4 {-}
 
 added -noautopatch startup argument to defeat auto-connecting to new objects
 (some folks like it and others hate it)
@@ -2274,7 +2272,7 @@ re-fixed seteuid(0 problem
 
 fixed crash on "find \$1" (still not useful though)
 
------------------- 0.42.1-3 ---------------------------
+### 0.42.1-3 {-}
 
 Bug fix on Windows(cancelling window close deactivated window).
 
@@ -2282,7 +2280,7 @@ Bug fix running Pd from command line in MacOS.
 
 "Select all" fixed to select none if everything already selected.
 
------------------- 0.42 ---------------------------
+### 0.42 {-}
 
 The 'struct' object can now be used to catch a small but growing variety of
 events (mouse clicks on data, selection/deselection).
@@ -2339,22 +2337,22 @@ reloading data structures with huge arrays).
 
 various fixes to
 
------------------- 0.41-3,4 ---------------------------
+### 0.41-3,4 {-}
 
 2 fixes for PC: no bonk\~, and the audio device selection dialogs didn't show
 all the devices.
 
------------------- 0.41-2 ----------------------------
+### 0.41-2 {-}
 
 More bug fixes: large netsends dropping messages, and crash bug when turning DSP
 on and off repeatedly in MS windows
 
------------------- 0.41-1 ----------------------------
+### 0.41-1 {-}
 
 Fixed a startup problem for Mac OSX 10.5.1 (other platforms should not be
 affected)
 
------------------- 0.41 ----------------------------
+### 0.41 {-}
 
 Pd may be compiled in 64 bit address spaces; this is well tested on linux and at
 least seems to work on Microsoft and MacOS. On linux, in fact, if you compile Pd
@@ -2401,7 +2399,7 @@ String overflow protection here and there.
 
 migrated to ".net" compiler ("VC 2005", a free download).
 
------------------- 0.40-1 --------------------------
+### 0.40-1 {-}
 
 Fixed "declare" which wasn't working properly yet in 0.40-0, and made more
 objects (notably "soundfiler") respect "declared" paths. Path entries are
@@ -2413,7 +2411,7 @@ Bug fix opening "html" help from windows.
 
 Changed MACOSX to \_\_APPLE\_\_ in 4 places.
 
------------------- 0.40 -----------------------------
+### 0.40 {-}
 
 A new object, "declare", allows patches to control where Pd looks for resources
 such as abstractions and libraries.
@@ -2463,15 +2461,15 @@ rescue things if Pd's settings somehow crash Pd on startup.
 tabwrite\~ takes a "start" message to allow writing into the middle of the
 table.
 
------------------- 0.39.2 --------------------------
+### 0.39.2 {-}
 
 Bug fixes: memory leak in OSX version; problem printing numbers as symbols.
 
------------------- 0.39.1 --------------------------
+### 0.39.1 {-}
 
 Bug fixes: compatibility problems with older version of TK
 
------------------- 0.39.0 --------------------------
+### 0.39.0 {-}
 
 At the source level, "regular" arrays and arrays within data structures are now
 the same thing. This will mean that, in the future, features introduced to one
@@ -2554,10 +2552,11 @@ sample rate to reflect the overlap.
 
 Fixed a thread-safety problem in sys\_microsleep().
 
------------------- 0.38.1 -------------------------- Fixed two bugs that crashed
+### 0.38.1 {-}
+
 Pd when deleting number boxes in certain situations.
 
------------------- 0.38.0 --------------------------
+### 0.38.0 {-}
 
 The big change is queued graphics updates, which apply (so far) to tables and
 number/symbol boxes. The IEM GUIS aren't enqueued yet. This along with a better
@@ -2607,13 +2606,13 @@ emagic can now be used 2-in. 6-out, for example.
 
 atan2 had its inlets switched to conform to standard usage
 
------------------- 0.37.3 --------------------------
+### 0.37.3 {-}
 
 Oops- added \_\_i386\_\_ macro to windows makefile so it would test for
 underflows correctly. This affects only Microsoft Windows; the other two
 platforms are fine as 0.37.2. Thanks to Thomas Musil...
 
------------------- 0.37.2 --------------------------
+### 0.37.2 {-}
 
 fixed a bug in soundfile reading (soundfiles now default to wav better.)
 
@@ -2629,7 +2628,7 @@ added a "set" message to the line object
 aliased spaces to underscores in GUI labels so that at least they won't destroy
 the object.
 
------------------- 0.37.1 --------------------------
+### 0.37.1 {-}
 
 fixed the apple key on OSX so it does key accelerators
 
@@ -2650,7 +2649,7 @@ on some platforms, audio open failures are handled more gracefully.
 added a "changelog" file in the source directory to document source-level
 changes.
 
------------------- 0.37 --------------------------
+### 0.37 {-}
 
 Pd is finally fixed so that it can open and close audio and MIDI devices
 on-the-fly (previously it opened them once at startup and hogged them until Pd
@@ -2704,7 +2703,7 @@ get them.
 (developers) Better flag handling in the IEM GUIs (g\_toggle.c, etc) should
 compile with fewer warnings and be more portable.
 
------------------- 0.37-test 1 --------------------------
+### 0.37-test 1 {-}
 
 The MacOSX version now prioritizes itself effectively (thanks to gert@test.at
 (v93r)) via Adam Lindsay). Adam also made a proper MacOSX "package" for Pd.
@@ -2735,7 +2734,7 @@ When you save any patch, Pd looks for all invocations of that patch as an
 abstraction and reloads them. This unfortunately has the side effect of making
 all the containing windows visible, but it's better than nothing.
 
------------------- 0.36-1 -------------------------------
+### 0.36-1 {-}
 
 "print" now queries you for a file to save the postscript to.
 
@@ -2748,7 +2747,7 @@ than before.
 
 bug fix: vradio, hradio "send symbol" feature didn't work
 
------------------- 0.36 -------------------------------
+### 0.36 {-}
 
 There's now an "undo" for most editing operations. Undoing is only available in
 the window that was most recently edited. (One gotcha remains, that "stretching"
@@ -2784,7 +2783,7 @@ Compiled "pdsend" and "pdreceive" for Windows.
 
 "PD\_VERSION" macro added to m\_pd.h
 
------------------- 0.35 -------------------------------
+### 0.35 {-}
 
 An experimental new feature called graph-on-parent allows subpatches and
 abstractions to show GUI features; so, for instance, you can make an oscillator
@@ -2885,7 +2884,7 @@ The "-listdev" flag now works on Mac and MSW/ASIO.
 
 Help file updates for env\~, route, and pointer
 
------------------- 0.34.3 -------------------------------
+### 0.34.3 {-}
 
 fixed a bug in "udp" netreceive that crashed pd
 
@@ -2899,25 +2898,23 @@ bug fixes from "the joy of global variables" thread in Pd list
 
 made a help window for "table".
 
------------------- 0.34.2 -------------------------------
+### 0.34.2 {-}
 
 fixed ".pdrc" bug
 
 added an experimental "pd restart-audio" feature for (new) Alsa
 
------------------- 0.34.1 -------------------------------
+### 0.34.1 {-}
 
 Bug fixes:
 
-1\. Closing a window with objects selected crashed Pd.
-
-2\. "find" when it opened a window to show the found object crashed Pd.
-
-3\. (Linux only) Oversized .pdrc files crashed pd...
+1. Closing a window with objects selected crashed Pd.
+2. "find" when it opened a window to show the found object crashed Pd.
+3. (Linux only) Oversized .pdrc files crashed pd...
 
 Also, I updated Thomas Musil's IEM GUI objects and their help files.
 
------------------- 0.34 -------------------------------
+### 0.34 {-}
 
 NEW FEATURES:
 
@@ -2953,7 +2950,7 @@ to the wrong location. Fixed.
 
 Reading of "wav" and nextstep soundfiles now handles the headers better.
 
------------------- 0.33 -------------------------------
+### 0.33 {-}
 
 AUDIO AND MIDI:
 
@@ -3029,7 +3026,7 @@ BUG FIXES:
 
 new arrays in 0.32p6 got ill-fitting graphs -- fixed.
 
------------------- 0.32 PATCH 6 -------------------
+### 0.32 PATCH 6 {-}
 
 Got array and graph dialogs to behave better when there are more than one.
 
@@ -3039,7 +3036,7 @@ made Pd search the "extra" directory without having to specify it in "path."
 
 bug fix in exporting patches to Max
 
------------------- 0.32 PATCH 5 -------------------
+### 0.32 PATCH 5 {-}
 
 Reversed the order of these release notes so that the newest appear first.
 
@@ -3058,10 +3055,9 @@ Bug fix: doing "save as" on an instantiated abstraction no longer sets the
 window title.
 
 in linux, a couple of status messages on opening /dev/dsp only appear now if Pd
-is run "-verbose".\
-\
+is run "-verbose".
 
------------------- 0.32 PATCH 2, 3, 4 -------------------
+### 0.32 PATCH 2, 3, 4 {-}
 
 Hassled more with font size differences between NT and Linux, and updated many
 help files. Minor bug fixes here and there.
@@ -3075,10 +3071,10 @@ SELECTED object.
 
 improvements to throw\~ (it now sums) and receive\~ fixed to be settable.
 
-bug fix in which RME driver always thought sample rate was 44100.\
-\
+bug fix in which RME driver always thought sample rate was 44100.
 
------------------- 0.32 PATCH 1 -------------------
+
+### 0.32 PATCH 1 {-}
 
 bug fixes (bugs flagged by mik): vcf\~ help window crashed; writesf\~ only wrote
 1 channel soundfiles; "table" object didn't open when clicked on;
@@ -3088,9 +3084,9 @@ new object: tabosc4\~ -- finally, a real wavetable oscillator for Pd.
 much work on "data" editing; go to 7.stuff/data-structures, open patches 5 and
 7, and try clicking on things. Alt clicks delete or add points; regular clicks
 drag values around. The cursor changes to show you what will happen if you
-click.\
-\
-------------------- 0.32 -----------------
+click.
+
+### 0.32 {-}
 
 **New objects:**
 
@@ -3169,9 +3165,9 @@ New help windows for the "data" classes (pointer, append, template, etc.) and
 for send/receive which somehow I had neglected.
 
 When you hit "copy" with nothing selected, the copy buffer used to be cleared.
-This is fixed to do nothing.\
-\
-------------------- 0.31 -----------------
+This is fixed to do nothing.
+
+### 0.31 {-}
 
 ALSA support in Linux has been completely overhauled. It now works with Midiman
 (up to 10 in/12 out!) and es1370. There are problems with SBLive under ALSA but
@@ -3214,9 +3210,9 @@ New graphs now reliably avoid using already-taken "graph%d" names.
 The old bug which showed up as ".xxxxxxxxx: no such object" is fixed.
 
 The FFT examples have been reworked and the "pique" and "shift" objects are
-moved to "extra".\
-\
-------------------- 0.30 -----------------
+moved to "extra".
+
+### 0.30 {-}
 
 in Linux, you can get Pd to promote itself to "real time" priority. A "watchdog"
 process protects you from having Pd lock your machine up. You must request real
@@ -3246,9 +3242,9 @@ You can invoke an external object by pathname, as in "../../extra/loop\~".
 
 hip\~, etc. should no longer get stuck when they get a NAN on input.
 
-a bug was fixed in expanding symbols such as "\$1-foo".\
-\
-------------------- 0.29 -----------------
+a bug was fixed in expanding symbols such as "\$1-foo".
+
+### 0.29 {-}
 
 readsf\~ - a MAX/FTS style soundfile player, which reads multichannel soundfiles
 in wave, aiff, or next formats. The files must be 16 or 24 bit fixed point or 32
@@ -3304,9 +3300,9 @@ I wonder how many NT users have crashed Pd trying to type in filenames with
 backslashes...
 
 samphold\_set and tabwrite\_stop methods added. There turned out to be no help
-window for samphold\~ so one was supplied.\
-\
-------------------- 0.28 -----------------
+window for samphold\~ so one was supplied.
+
+### 0.28 {-}
 
 Version 0.28 has a primitive in-box text editor... about time!
 
@@ -3335,9 +3331,9 @@ BUG FIX: In Linux, starting Pd up sometimes changed the audio mixer setting.
 
 BUG FIX: sending "floats" to inlets expecting lists now works correctly.
 
-BUG FIX: "route" on symbols now deals better with symbols, floats and lists.\
-\
-------------------- 0.27 -----------------
+BUG FIX: "route" on symbols now deals better with symbols, floats and lists.
+
+### 0.27 {-}
 
 The main new feature is the "find" menu stuff. You can search for boxes
 containing specified atoms, including semicolons or commas. Most errors are now
@@ -3357,9 +3353,9 @@ option, the GETIOSPACE calls are cancelled.
 
 Under NT, for some audio drivers the 0.26 release gave a constant stream of
 "resync" events. I don't know what causes this but I added a "-noresync" option
-which simply never resyncs at all.\
-\
-------------------- 0.26 -----------------
+which simply never resyncs at all.
+
+### 0.26 {-}
 
 phasor\~ and osc\~ can be configured to take floating point messages to set
 their frequencies, as an alternative to having an input signal to do the same.
@@ -3412,9 +3408,9 @@ The Pd commend line can take multiple "open" arguments.
 The file search path feature was fixed and generalized.
 
 Alt-clicking a table gives you a dialog to set its x and y range and pixel
-size.\
-\
-------------------- 0.25 -----------------
+size.
+
+### 0.25 {-}
 
 Lots of minor, under-the-hood improvements and bug fixes...
 
@@ -3436,30 +3432,32 @@ In NT, command-line backslashes are converted to forward slashes.
 
 There's a load measurement tool in the "help" menu.
 
-The SGI version contains an n32 binary (look at the "bin" directory).\
-\
-------------------- 0.24 ---------------
+The SGI version contains an n32 binary (look at the "bin" directory).
 
-new objects:\
-- bang - convert any message to a "bang"\
-- qlist - message sequencer\
-- textfile - file to message converter\
-- makefilename - format a name with a variable field\
-- openpanel - "Open" dialog\
+### 0.24 {-}
+
+new objects:
+
+- bang - convert any message to a "bang"
+- qlist - message sequencer
+- textfile - file to message converter
+- makefilename - format a name with a variable field
+- openpanel - "Open" dialog
 - savepanel - "Save as" dialog
 
-Bug fixes:\
-- Fixed a bug in "const" message to arrays\
-- "exp" was broken on NT, now fixed\
-- phase vocoder example improved\
-- "read" message to arrays now zero out unread samples\
-- bug fix in "key" object\
-- bug fix in ifft\~ (thanks to Peter Lunden)\
+Bug fixes:
+
+- Fixed a bug in "const" message to arrays
+- "exp" was broken on NT, now fixed
+- phase vocoder example improved
+- "read" message to arrays now zero out unread samples
+- bug fix in "key" object
+- bug fix in ifft\~ (thanks to Peter Lunden)
 - "print" object fixed to distinguish between lists starting with symbols and
-other messages\
-- polygon, curve, fpolygon, fcurve renamed to fix name clash with Gem\
-- improved "new object" placement on screen\
-- fixed help dialog to remember previous directory (thanks to Harry Castle)\
+  other messages
+- polygon, curve, fpolygon, fcurve renamed to fix name clash with Gem
+- improved "new object" placement on screen
+- fixed help dialog to remember previous directory (thanks to Harry Castle)
 - heterogeneous lists
 
 Arrays can be written to and read from text files or from 16-bit binary files.
@@ -3477,59 +3475,63 @@ Select and Route were extended to work Zack-style with symbols.
 "random" takes seeds now (see the "help" window)
 
 Some more work on graphical lists; you can see the current state in
-../7.stuff/data-structures. It's still nascent. ------------------- 0.23
--------------------
+../7.stuff/data-structures. It's still nascent.
+
+### 0.23 {-}
 
 A first cut at the "pure data" feature is now included. See section 6 of the
 documentation for a quick introduction to it; see also patches 12 and 14 in the
 FFT examples.
 
-The documentation has been reorganized. The most interesting new features are:\
-- some new "tutorial" patches\
-- 15 "fft" examples\
+The documentation has been reorganized. The most interesting new features are:
+
+- some new "tutorial" patches
+- 15 "fft" examples
 - improved help navigation
 
-more bug fixes:\
-- titles on abstractions no longer saved inside file\
-- left-to-right sorting of inlets/outlets now seems to work\
-- nt audio setup got confused when driver couldn't do full duplex\
-- opening window with audio on is now fixed\
-- deleting inlets/outlets deletes connections first (used to crash)\
-- 1e20 parsed correctly now\
-- osc1\~ fixed and optimized\
-- resizing arrays with DSP on used to crash; now fixed\
-- pasting now adds to the end of the list (used to add to beginning)\
-- clicking now selects the most recent object when two or more overlap\
+more bug fixes:
+
+- titles on abstractions no longer saved inside file
+- left-to-right sorting of inlets/outlets now seems to work
+- nt audio setup got confused when driver couldn't do full duplex
+- opening window with audio on is now fixed
+- deleting inlets/outlets deletes connections first (used to crash)
+- 1e20 parsed correctly now
+- osc1\~ fixed and optimized
+- resizing arrays with DSP on used to crash; now fixed
+- pasting now adds to the end of the list (used to add to beginning)
+- clicking now selects the most recent object when two or more overlap
 - Pd's "open" and "help" dialogs now maintain separate paths
 
 The phasor\~ object's "float" method has been REMOVED -- use the right-hand
 inlet to set the internal phase. This is so that I can later fix all tilde
-objects to convert messages to signals automatically at all signal inputs.\
-\
-------------------- 0.22 -------------------\
-bug fixes\
-- parsing 1e+006 gave symbol (now float)\
-- "." parsed as number, should be symbol\
-- change GUI polling loop to TK event dispatch (unix only)\
-- improved "tidy up" feature\
-- size check added to text boxes (used to crash; still not correct.)\
-- occasional bug sending text with CRs to tk\
-- binop startup bug\
-- key accelerators for creators wrong\
-- ftom range to 1500\
-- bug in pack, unpack\
-- windows restore bigger than saved\
-\
-Nt-specific bug fixes:\
-- getsockopt for netreceive fails. Just omitted it for NT.\
-- put tcl dlls in tcl bin, not pd bin\
---- archive tcl subsystem for easier version updates\
---- fix README accordingly\
-- deal with bell sound\
-- turn on optimization\
-- looked for audio timeout bug but couldn't find it.\
-\
-------------------- 0.21 -------------------
+objects to convert messages to signals automatically at all signal inputs.
+
+### 0.22 {-}
+
+bug fixes
+- parsing 1e+006 gave symbol (now float)
+- "." parsed as number, should be symbol
+- change GUI polling loop to TK event dispatch (unix only)
+- improved "tidy up" feature
+- size check added to text boxes (used to crash; still not correct.)
+- occasional bug sending text with CRs to tk
+- binop startup bug
+- key accelerators for creators wrong
+- ftom range to 1500
+- bug in pack, unpack
+- windows restore bigger than saved
+
+Nt-specific bug fixes:
+- getsockopt for netreceive fails. Just omitted it for NT.
+- put tcl dlls in tcl bin, not pd bin
+- archive tcl subsystem for easier version updates
+- fix README accordingly
+- deal with bell sound
+- turn on optimization
+- looked for audio timeout bug but couldn't find it.
+
+### 0.21 {-}
 
 bug fixes:
 
@@ -3541,40 +3543,51 @@ deselect all when locking. When you lock a patch the selection is cleared.
 unlock when pasting. .. and if you paste into a pastch, it's unlocked.
 
 lost keyboard events. Version 0.20 lost keyboard events and forgot window size
-changes. This should now be fixed.\
-subpatches came up in wrong font size\
-dirty flag on window title bar fixed\
-improvement to netreceive suggested by Mark Danks\
-style notes fleshed out as suggested by Larry Troxler\
+changes. This should now be fixed.
+
+subpatches came up in wrong font size
+
+dirty flag on window title bar fixed
+
+improvement to netreceive suggested by Mark Danks
+
+style notes fleshed out as suggested by Larry Troxler
+
 fixed Bill Kleinsasser's bug (short and long array in same graph)
 
-new features:\
-phase setting for phasor\~\
-fft objects. Also, block\~, for specifying block sizes and overlaps for FFTs.\
-canvas\_makefilename() (used, e.g., by array\_read and write)\
-"stuff" directory with examples of real Pd applications.\
-\
-------------------- 0.20 -------------------
+new features:
+
+phase setting for phasor\~
+
+fft objects. Also, block\~, for specifying block sizes and overlaps for FFTs.
+
+canvas\_makefilename() (used, e.g., by array\_read and write)
+
+"stuff" directory with examples of real Pd applications.
+
+### 0.20 {-}
 
 In NT, the 0.19 release turned out not to contain all the files needed to make
 TCL run. This problem should now be fixed.
 
-Also, the array\_write routine was fixed.\
-\
-------------------- 0.19 -------------------\
-notable new objects:\
-- vcf\~, a bandpass filter with a signal input for center frequency.\
-- delread, delwrite, vd, as in ISPW Max.\
-- various math and midi stuff\
+Also, the array\_write routine was fixed.
+
+### 0.19 {-}
+
+notable new objects:
+
+- vcf\~, a bandpass filter with a signal input for center frequency.
+- delread, delwrite, vd, as in ISPW Max.
+- various math and midi stuff
 - catch\~, throw\~, send\~, receive\~ for nonlocal signal connections
 
 - an experimental facility for array of floats is included. You can make a new
-array (from the "put" menu) which will be given a name such as "array1". You can
-then send it "read &lt;file&gt;", "write &lt;file&gt;", "resize &lt;N&gt;", and
-"print" messages. File reading and writing is in ascii. "resize" changes the
-size of the array, and "print" prints its vital signs. You can then use
-"tabread4\~" to do a 4-point interpolating table lookup, and tabwrite\~ to write
-audio samples into the table.
+  array (from the "put" menu) which will be given a name such as "array1". You
+  can then send it "read &lt;file&gt;", "write &lt;file&gt;", "resize
+  &lt;N&gt;", and "print" messages. File reading and writing is in ascii.
+  "resize" changes the size of the array, and "print" prints its vital signs.
+  You can then use "tabread4\~" to do a 4-point interpolating table lookup, and
+  tabwrite\~ to write audio samples into the table.
 
 Numbers now default to floating point, although certain objects like "spigot"
 and "metro" still convert their boolean inputs to integers so that 0.5 is
@@ -3623,92 +3636,123 @@ bendout touchout polytouchout
 SIGNAL: dac\~ adc\~ sig\~ line\~ snapshot\~ +\~ -\~ \*\~ /\~ phasor\~ cos\~
 vcf\~ noise\~ env\~ hip\~ lop\~ bp\~ biquad\~ samphold\~ clip\~ rsqrt\~ sqrt\~
 wrap\~ print\~ scope\~ tabwrite\~ tabread4\~ send\~ receive\~ catch\~ throw\~
-delwrite\~ delread\~ vd\~\
-\
-------------------- 0.18 -------------------\
+delwrite\~ delread\~ vd\~
+
+### 0.18 {-}
 Release notes now describe the three platforms Pd runs on: IRIX and NT
 (maintained at UCSD) and LINUX, maintained by Guenter Geiger.
 
 menu "close" on a dirty document now checks if you really want to close without
 saving (although "quit" will still exit Pd without verification.)
 
-Got rid of "dll" error printout when loading abstractions\
-\
-------------------- 0.12 - 0.17 -------------------\
-got Pd running under NT, although driver problems remain. Gem is also
-distributed for both platforms.\
-\
-------------------- 0.11 -------------------\
-Here's a list of all the objects in this release:\
-general: print int float send receive select pack unpack trigger spigot\
-time handling: delay metro line timer\
-arithmetic: + + - - \* \* / / == == != != &gt; &gt; &lt; &lt; &gt;= &gt;= &lt;=
-&lt;= & && | || %\
-midi: notein noteout makenote stripnote\
-other: random get\
-signals: dac\~ adc\~ sig\~ line\~ snapshot\~ +\~ \*\~\
-signal oscillators: phasor\~ cos\~\
-signal filters: env\~ hip\~\
-signal debugging : print\~ scope\~\
-\
-"spigot" replaces "gate" but has the inputs reversed.\
-\
-------------------- 0.10 -------------------\
-Many bug fixes. This was the first pre-release to be put on the FTP site.\
-\
-------------------- 0.09 -------------------\
-set up the "Help" menu\
-Bug in DSP sorting fixed\
-"Notein" and "noteout" objects\
-Comments from the Put menu say "comment" (they were invisible before)\
-The scheduler deals better when sound I/O malfunctions\
-\
-------------------- 0.08 -------------------\
-metro bug\
-scrollbars\
-scheduler bug\
-text box wraparound at 80 chars.\
-fixed boxes to reconnect on retype\
-\
-------------------- 0.07 -------------------\
-- made an adc\~ object\
-\
-------------------- 0.06 -------------------\
-- fixed two bugs in DSP sorting\
-- added DSP on/off gui\
-- added lock/unlock and changed the cursor behavior\
-- fixed -font flag to set font pointsize\
-\
-------------------- 0.05 -------------------
+Got rid of "dll" error printout when loading abstractions
 
-- added scope\~, which is just a stopgap until real sound editing comes up.\
-- improved the open panel slightly.\
-- added atoms (int only).\
-- reworked text editing to reside in Pd, not Pd-gui.\
-- included a dbx-debuggable Pd in the distribution. I haven't yet figured out
-how to get dbx to work with externs though.\
-\
-------------------- 0.04 -------------------
+### 0.12 - 0.17 {-}
+
+got Pd running under NT, although driver problems remain. Gem is also
+distributed for both platforms.
+
+### 0.11 {-}
+
+Here's a list of all the objects in this release:
+
+general: print int float send receive select pack unpack trigger spigot
+
+time handling: delay metro line timer
+
+arithmetic: + + - - \* \* / / == == != != &gt; &gt; &lt; &lt; &gt;= &gt;= &lt;=
+&lt;= & && | || %
+
+midi: notein noteout makenote stripnote
+
+other: random get
+
+signals: dac\~ adc\~ sig\~ line\~ snapshot\~ +\~ \*\~
+
+signal oscillators: phasor\~ cos\~
+
+signal filters: env\~ hip\~
+
+signal debugging : print\~ scope\~
+
+"spigot" replaces "gate" but has the inputs reversed.
+
+### 0.10 {-}
+
+Many bug fixes. This was the first pre-release to be put on the FTP site.
+
+### 0.09 {-}
+
+set up the "Help" menu
+
+Bug in DSP sorting fixed
+
+"Notein" and "noteout" objects
+
+Comments from the Put menu say "comment" (they were invisible before)
+
+The scheduler deals better when sound I/O malfunctions
+
+### 0.08 {-}
+
+metro bug
+
+scrollbars
+
+scheduler bug
+
+text box wraparound at 80 chars.
+
+fixed boxes to reconnect on retype
+
+### 0.07 {-}
+
+made an adc\~ object
+
+### 0.06 {-}
+
+fixed two bugs in DSP sorting
+
+added DSP on/off gui
+
+added lock/unlock and changed the cursor behavior
+
+fixed -font flag to set font pointsize
+
+### 0.05 {-}
+
+added scope\~, which is just a stopgap until real sound editing comes up.
+
+improved the open panel slightly.
+
+added atoms (int only).
+
+reworked text editing to reside in Pd, not Pd-gui.
+
+included a dbx-debuggable Pd in the distribution. I haven't yet figured out
+how to get dbx to work with externs though.
+
+### 0.04 {-}
 
 fixed "cut" which crashed 0.03 if DSP was running. added clip\~, print\~,
-line\~, snapshot\~.\
-\
-------------------- 0.03 -------------------
+line\~, snapshot\~.
+
+### 0.03 {-}
 
 "pd dsp 1", "pd dsp 0" messages added. If you edit a patch with DSP on, PD
 resorts the DSP network as needed. Unconnected and multiple signal inlets are
-allowed.\
-\
-------------------- 0.02 -------------------
+allowed.
+
+### 0.02 {-}
 
 A DSP network mechanism has been added. DSP objects are: sig\~, +\~, \*\~,
 phasor\~, cos\~.
 
 Loading of externs is provided (although there is no search path mechanism so
 the extern has to be in the patch's current directory.) Look in pd/externs for
-an example.\
-\
-------------------- 0.01. -------------------
+an example.
+
+### 0.01 {-}
 
 This first release serves mostly to test the "release" mechanism. A Pd "canvas"
 object is provided which does both graphing and patch editing. The editing
@@ -3724,11 +3768,9 @@ The following max-like objects are included: print; +, \*, -, /, ==, !=, &gt;,
 &lt;, &gt;=, &lt;=, &, |, &&, ||, %; int, float, pack, unpack, trigger; delay,
 metro, timer; send, receive.
 
------------------------------------------
-
 ## Known Bugs
 
-These are now tracked on the [Pd Sourceforge project page](https://sourceforge.net/projects/pure-data/).
+These are now tracked on the [Pd Sourceforge] project page.
 
 ## Differences From Max/MSP
 
@@ -3756,7 +3798,7 @@ because the instantiations are different from the abstraction itself in that
 "\#1", etc., are replaced by the instantiation arguments. In Pd, these arguments
 appear as "\$1", etc, and are translated at a slightly later stage of the
 instantiation process so that you still see them as "\$" variables in the
-instantiation. [(see Section 2.7. abstractions)](x2.html#s7.1)
+instantiation. (see [Abstractions].)
 
 In Pd, to make current all instantiations of the abstraction, either delete and
 recreate them or close and open the patch; this is done automatically in
@@ -3802,3 +3844,6 @@ copies a "table" into a "buffer\~".
 The "bpatcher" feature in Max has a correlate, "graph on parent" subpatches, in
 Pd; however, Pd's version is quite different from Max's.
 
+[external links]: http://msp.ucsd.edu/external-links.htm
+[pd sourceforge]: https://sourceforge.net/projects/pure-data/
+[puredata.info]: http://puredata.info
