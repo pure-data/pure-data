@@ -338,7 +338,7 @@ proc ::pd_menus::build_help_menu {mymenu} {
         $mymenu add command -label [_ "About Pd"] -command {menu_aboutpd}
     }
     $mymenu add command -label [_ "HTML Manual..."] \
-        -command {menu_doc_open doc/1.manual index.htm}
+        -command {menu_doc_open doc/1.manual index.html}
     $mymenu add command -label [_ "Browser..."] -accelerator "$accelerator+B" \
         -command {menu_helpbrowser}
     $mymenu add command -label [_ "List of objects..."] \
