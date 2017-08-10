@@ -21,7 +21,8 @@ release checklist
       mv Pd-0.48-0test6.app ../../
         ... same for 32-bit except:
             ./configure --enable-universal=i386
-            ... and name it 0.48-0test6-32bit
+            ./osx-app.sh  --wish  /Users/msp/b32/Wish-8.5.19.app 0.48-0test7-i386
+        ... for PPC, build-ppc.sh
         ... compile on windows:
       cd msw
       ./send-msw.sh <version>
