@@ -122,7 +122,7 @@ find out about them. If you never see red, you're probably not seeing the
 truth.) Click the "DIO errors" button to see a list of recent errors. This
 indicator should turn red whenever the computation runs late (so that the DAC
 FIFOs fill and/or the ADC FIFOs empty) or if audio input and output are not
-running at the same rate. See [audio and MIDI] support.
+running at the same rate. See [Audio and MIDI] support.
 
 The bottom part of the Pd window is an area for printout from objects in
 patches, and/or for messages from Pd itself.
@@ -1369,14 +1369,14 @@ Next you get a choice of input and output device. If you want to open more than
 one, hit "use multiple devices" and you'll be allowed up to 4 in and 4 out. Each
 audio device is 2 channels by default, but you may specify more if your hardware
 supports it. Other parameters may be tweaked using the command line; see under
-[preferences and startup options].
+[Preferences and Startup Options].
 
 #### MIDI {-}
 
-[The "channel message" midi objects in Pd such as notein or pgmout will take
+The "channel message" midi objects in Pd such as notein or pgmout will take
 channels 1-16 to mean the first open MIDI port, 17-32 the second one, and so on.
 The midiin, sysexin, midiout objects give you a separate inlet to specify which
-of the open MIDI port numbers you want.]{}
+of the open MIDI port numbers you want.
 
 System exclusive MIDI message input and output are theoretically supported but
 does not work uniformly across all operating systems..
@@ -3798,7 +3798,7 @@ because the instantiations are different from the abstraction itself in that
 "\#1", etc., are replaced by the instantiation arguments. In Pd, these arguments
 appear as "\$1", etc, and are translated at a slightly later stage of the
 instantiation process so that you still see them as "\$" variables in the
-instantiation. (see [Abstractions].)
+instantiation. (See [Abstractions].)
 
 In Pd, to make current all instantiations of the abstraction, either delete and
 recreate them or close and open the patch; this is done automatically in
