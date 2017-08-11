@@ -88,7 +88,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig9.1.jpg \
      ./1.manual/fig9.2.jpg \
      ./1.manual/fig9.3.jpg \
-     ./1.manual/index.html \
+     ./1.manual/index.htm \
      ./1.manual/pdmanual.css \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
