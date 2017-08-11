@@ -59,8 +59,8 @@ be the central resource for Pd, from documentation and downloads; to forums,
 member pages, and a patch exchange.
 
 More documentation is available on the Pd FLOSS
-site: <http://en.flossmanuals.net/PureData/> (English)
-and <http://fr.flossmanuals.net/PureData> (French).
+site: <http://en.flossmanuals.net/pure-data/> (English)
+and <http://fr.flossmanuals.net/puredata> (French).
 
 Most of the interesting news related to Pd shows up on the Pd mailing list,
 maintained by IOhannes Zmoelnig. To subscribe or browse the archives visit:
