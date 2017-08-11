@@ -1392,11 +1392,11 @@ does not work uniformly across all operating systems..
 ## Installing Pd in Microsoft Windows
 
 Pd should work under any version of Windows since 95. You can download as a
-self-extracting archive (a ".exe" file). Run this and select a destination
-directory when prompted, such as "\\pd" or "Program Files\\pd".
+self-extracting archive (an ".exe" file). Run this and select a destination
+directory when prompted, such as `\pd` or `Program Files\pd`.
 
-If for example you put Pd in `C:Program Files\pd`, the executable program will
-be `C:Program Files\pd\bin\pd`. You can simply adjust your path to include
+If for example you put Pd in `C:\Program Files\pd`, the executable program will
+be `C:\Program Files\pd\bin\pd`. You can simply adjust your path to include
 `C:\pd\bin` and then invoke `pd` in a command prompt window. You can also make a
 shortcut to the executable program (left-click on it and drag to the desktop,
 for example.)
@@ -1693,8 +1693,8 @@ command line is just a line of text, which should be of the form:
 
     pd [options] [patches to open]
 
-although you may have to specify a path (such as `~/pd/bin/pd` or `C:\\Program
-Files\\pd\\bin\\pd`) so your command interpreter can find Pd. Possible options
+although you may have to specify a path (such as `~/pd/bin/pd` or `C:\Program
+Files\pd\bin\pd`) so your command interpreter can find Pd. Possible options
 include:
 
     audio configuration flags:
@@ -1869,7 +1869,7 @@ FORTRAN.
 
 Whenever you type the name of an object (into an `object` text box) that Pd
 doesn't yet know about, Pd looks for a relocatable object file, named, for
-instance, `profile.pd\_irix5`. Pd looks first in the directory containing the
+instance, `profile.pd_irix5`. Pd looks first in the directory containing the
 patch, then in directories in its "path." Pd will then add whatever object is
 defined there to its "class list," which is the set of all Pd classes you can
 use. If all this works, Pd then attempts again to create the object you asked
