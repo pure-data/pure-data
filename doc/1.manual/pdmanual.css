@@ -10,7 +10,6 @@ h1 {
 
 pre, code {
   font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Menlo", "Courier", monospace;
-  font-size: 0.8em;
 }
 
 pre {
@@ -21,6 +20,7 @@ pre {
 code {
   padding: 1pt;
   background-color: #f0f0f0;
+  font-size: 0.8em;
 }
 
 .figure {
