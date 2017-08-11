@@ -1,6 +1,8 @@
 ---
 title: Pd Documentation
 lang: en-US
+colorlinks: true
+secnumdepth: 3
 ---
 
 This is the HTML documentation for Pd, a patchable environment for audio
