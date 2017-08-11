@@ -175,7 +175,9 @@
 <hr />
 
 <h1 id="introduction"><span class="header-section-number">1</span> Introduction</h1>
-<p><a href="#TOC">back to table of contents</a></p>
+<p>
+<a href="#TOC">back to table of contents</a>
+</p>
 <p>This is the HTML documentation for the Pd computer program. Pd is free and can be downloaded from the internet; go to <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a> to get it.</p>
 <h2 id="guide-to-the-documentation"><span class="header-section-number">1.1</span> Guide to the Documentation</h2>
 <p>Pd’s documentation consists of:</p>
@@ -205,7 +207,9 @@
 <hr />
 
 <h1 id="theory-of-operation"><span class="header-section-number">2</span> Theory of Operation</h1>
-<p><a href="#TOC">back to table of contents</a></p>
+<p>
+<a href="#TOC">back to table of contents</a>
+</p>
 <p>The purpose of this chapter is to describe Pd’s design and how it is supposed to work. Practical details about how to obtain, install, and run Pd are described in <a href="#getting-pd-to-run">Getting Pd to Run</a>. Links to more extensive guides (and to more theoretical information about computer music) can be found in the <a href="#introduction">Introduction</a>.</p>
 <h2 id="overview"><span class="header-section-number">2.1</span> Overview</h2>
 <p>Pd is a real-time graphical programming environment for audio and graphical processing. It resembles the Max/MSP system but is much simpler and more portable; also Pd has two features not (yet) showing up in Max/MSP: first, via Mark Dank’s GEM package, Pd can be used for simultaneous computer animation and computer audio. Second, an experimental facility is provided for defining and accessing data structures.</p>
@@ -551,8 +555,10 @@
 <hr />
 
 <h1 id="getting-pd-to-run"><span class="header-section-number">3</span> Getting Pd to Run</h1>
-<p><a href="#TOC">back to table of contents</a></p>
 <p>The following are basic instructions on how to get Pd installed and running on your machine. More details are maintained online on the [pure-data.info] site.</p>
+<p>
+<a href="#TOC">back to table of contents</a>
+</p>
 <p>Pd runs under Microsoft Windows, Linux, and macOS. How to get Pd up and running depends on your operating system, but the overall strategy is the same. You must first get and install it, and then untangle whatever problems arise in handling audio and MIDI input and output, and finally get Pd to meet its real-time obligations reliably.</p>
 <p>Installation instructions are platform-specific; the following three sections will describe what to do for various operating systems you might have. In case of trouble also consult the Pd mailing list archive on <a href="http://iem.at/mailinglists/pd-list/" class="uri">http://iem.at/mailinglists/pd-list/</a>, which often has late-breaking news about configuration problems and solutions. The rest of this section describes how to get audio and MIDI to work.</p>
 <h2 id="audio-and-midi"><span class="header-section-number">3.1</span> Audio and MIDI</h2>
@@ -764,7 +770,9 @@ general flags:
 <hr />
 
 <h1 id="writing-pd-objects-in-c"><span class="header-section-number">4</span> Writing Pd Objects in C</h1>
-<p><a href="#TOC">back to table of contents</a></p>
+<p>
+<a href="#TOC">back to table of contents</a>
+</p>
 <p>You can write your own objects that you and others can use in their Pd applications. You can write them in C or (if you’re smart and brave) in C++ or FORTRAN.</p>
 <h4 id="how-externs-are-loaded" class="unnumbered">How Externs Are Loaded</h4>
 <p>Whenever you type the name of an object (into an <code>object</code> text box) that Pd doesn’t yet know about, Pd looks for a relocatable object file, named, for instance, <code>profile.pd\_irix5</code>. Pd looks first in the directory containing the patch, then in directories in its “path.” Pd will then add whatever object is defined there to its “class list,” which is the set of all Pd classes you can use. If all this works, Pd then attempts again to create the object you asked for, this time perhaps successfully. There is no difference between an object defined this way and an object built into Pd.</p>
@@ -774,7 +782,9 @@ general flags:
 <hr />
 
 <h1 id="current-status"><span class="header-section-number">5</span> Current Status</h1>
-<p><a href="#TOC">back to table of contents</a></p>
+<p>
+<a href="#TOC">back to table of contents</a>
+</p>
 <p>This section tracks changes in Pd’s current implementation.</p>
 <h2 id="release-notes"><span class="header-section-number">5.1</span> Release Notes</h2>
 <h3 id="section" class="unnumbered">0.48-0</h3>

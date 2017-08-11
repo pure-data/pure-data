@@ -17,7 +17,7 @@ The latest version of this page can be found at:
 Introduction
 ============
 
-[back to table of contents](#TOC)
+<p>[back to table of contents](#TOC)</p>
 
 This is the HTML documentation for the Pd computer program. Pd is free and can
 be downloaded from the internet; go to <http://msp.ucsd.edu/software.html> to
@@ -84,7 +84,7 @@ Here are some more [external links].
 Theory of Operation
 ===================
 
-[back to table of contents](#TOC)
+<p>[back to table of contents](#TOC)</p>
 
 The purpose of this chapter is to describe Pd's design and how it is supposed to
 work. Practical details about how to obtain, install, and run Pd are described
@@ -1270,7 +1270,7 @@ handling primitives and the graphical presentation and editing functions.
 Getting Pd to Run
 =================
 
-[back to table of contents](#TOC)
+<p>[back to table of contents](#TOC)</p>
 
 The following are basic instructions on how to get Pd installed and running on
 your machine. More details are maintained online on the [pure-data.info] site.
@@ -1859,7 +1859,7 @@ work as of version 0.38.
 Writing Pd Objects in C
 =======================
 
-[back to table of contents](#TOC)
+<p>[back to table of contents](#TOC)</p>
 
 You can write your own objects that you and others can use in their Pd
 applications. You can write them in C or (if you're smart and brave) in C++ or
@@ -1896,7 +1896,7 @@ Iohannes Zmoelnig has written an excellent guide to writing externs at
 Current Status
 ==============
 
-[back to table of contents](#TOC)
+<p>[back to table of contents](#TOC)</p>
 
 This section tracks changes in Pd's current implementation.
 
