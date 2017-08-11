@@ -12,6 +12,11 @@ Reference documentation for Pd lives in:
 or online:
     http://msp.ucsd.edu/Pd_documentation/
 
+When updating reference documentation, please edit the file:
+    PD_BASEDIR/doc/1.manual/pdmanual.md
+and regenerate using Pandoc:
+    http://pandoc.org
+
 More extensive FLOSS documentation is available on:
     http://en.flossmanuals.net/PureData (English)
     http://fr.flossmanuals.net/PureData (Francais)
