@@ -12,6 +12,8 @@ The latest version of this page can be found at:
 
 ----
 
+\newpage
+
 Introduction
 ============
 
@@ -76,6 +78,8 @@ and now maintained by Iohannes Zmoelnig. You can get it from:
 Here are some more [external links].
 
 ----
+
+\newpage
 
 Theory of Operation
 ===================
@@ -1261,6 +1265,8 @@ handling primitives and the graphical presentation and editing functions.
 
 ----
 
+\newpage
+
 Getting Pd to Run
 =================
 
@@ -1848,6 +1854,8 @@ work as of version 0.38.
 
 ----
 
+\newpage
+
 Writing Pd Objects in C
 =======================
 
@@ -1882,6 +1890,8 @@ Iohannes Zmoelnig has written an excellent guide to writing externs at
 <http://pdstatic.iem.at/externals-HOWTO/> .
 
 ----
+
+\newpage
 
 Current Status
 ==============
@@ -3845,6 +3855,8 @@ copies a "table" into a "buffer\~".
 
 The "bpatcher" feature in Max has a correlate, "graph on parent" subpatches, in
 Pd; however, Pd's version is quite different from Max's.
+
+----
 
 [external links]: http://msp.ucsd.edu/external-links.htm
 [pd sourceforge]: https://sourceforge.net/projects/pure-data/
