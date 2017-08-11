@@ -1,9 +1,33 @@
 body {
-  width: 600px;
-  margin-left: 40px;
-  margin-bottom: 100px;
+  width: 38em;
+  margin-left: 4em;
+  margin-bottom: 4em;
 }
 
 h1 {
   text-align: center;
+}
+
+pre, code {
+  font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Menlo", "Courier", monospace;
+  font-size: 0.8em;
+}
+
+pre {
+  padding: 1em;
+  background-color: #f0f0f0;
+}
+
+code {
+  padding: 1pt;
+  background-color: #f0f0f0;
+}
+
+.figure {
+  text-align: center;
+}
+
+.caption {
+  font-style: italic;
+  font-size: 0.9em;
 }
