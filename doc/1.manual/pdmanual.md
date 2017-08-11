@@ -1284,7 +1284,7 @@ obligations reliably.
 Installation instructions are platform-specific; the following three sections
 will describe what to do for various operating systems you might have. In case
 of trouble also consult the Pd mailing list archive on
-<http://iem.at/mailinglists/pd-list/> , which often has late-breaking news about
+<http://iem.at/mailinglists/pd-list/>, which often has late-breaking news about
 configuration problems and solutions. The rest of this section describes how to
 get audio and MIDI to work.
 
@@ -1457,7 +1457,7 @@ described here; as of 0.43 I still use that but I plan to discontinue this for
 0.44 and start using only the new one. The following description applies to the
 old one. Look in the INSTALL.txt file to see how to use the new one.
 
-Download Pd, perhaps from <http://msp.ucsd.edu/software.html> , to file such as
+Download Pd, perhaps from <http://msp.ucsd.edu/software.html>, to file such as
 `pd-linux-033.tar.gz`. Open a "shell" window, cd to the directory containing the
 file, and type the command,
 
@@ -1887,7 +1887,7 @@ of externs with their source code and test patches; there are many other on
 the web (see [Other Resources]).
 
 Iohannes Zmoelnig has written an excellent guide to writing externs at
-<http://pdstatic.iem.at/externals-HOWTO/> .
+<http://pdstatic.iem.at/externals-HOWTO/>.
 
 ----
 

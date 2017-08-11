@@ -554,7 +554,7 @@
 <p><a href="#TOC">back to table of contents</a></p>
 <p>The following are basic instructions on how to get Pd installed and running on your machine. More details are maintained online on the [pure-data.info] site.</p>
 <p>Pd runs under Microsoft Windows, Linux, and macOS. How to get Pd up and running depends on your operating system, but the overall strategy is the same. You must first get and install it, and then untangle whatever problems arise in handling audio and MIDI input and output, and finally get Pd to meet its real-time obligations reliably.</p>
-<p>Installation instructions are platform-specific; the following three sections will describe what to do for various operating systems you might have. In case of trouble also consult the Pd mailing list archive on <a href="http://iem.at/mailinglists/pd-list/" class="uri">http://iem.at/mailinglists/pd-list/</a> , which often has late-breaking news about configuration problems and solutions. The rest of this section describes how to get audio and MIDI to work.</p>
+<p>Installation instructions are platform-specific; the following three sections will describe what to do for various operating systems you might have. In case of trouble also consult the Pd mailing list archive on <a href="http://iem.at/mailinglists/pd-list/" class="uri">http://iem.at/mailinglists/pd-list/</a>, which often has late-breaking news about configuration problems and solutions. The rest of this section describes how to get audio and MIDI to work.</p>
 <h2 id="audio-and-midi"><span class="header-section-number">3.1</span> Audio and MIDI</h2>
 <p>To test audio and MIDI, start Pd and select “test Audio and MIDI” from the “Media” menu. You should see a window like this:</p>
 <div class="figure">
@@ -598,7 +598,7 @@
 <h4 id="getting-pd-as-a-.tar.gz" class="unnumbered">Getting Pd as a .tar.gz</h4>
 <p>Before you start, you might want to check that you have the resources Pd needs. The main things you need are the C compiler, X windows (including the X development package for Pd to link against), TK, and the ALSA “devel” headers. It should be enough to load <code>tcl-devel</code>, <code>tk-devel</code>, and <code>alsa-devel</code> packages using yum or apt-get.</p>
 <p>There are two parallel compilation setups now available. The old one is described here; as of 0.43 I still use that but I plan to discontinue this for 0.44 and start using only the new one. The following description applies to the old one. Look in the INSTALL.txt file to see how to use the new one.</p>
-<p>Download Pd, perhaps from <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a> , to file such as <code>pd-linux-033.tar.gz</code>. Open a “shell” window, cd to the directory containing the file, and type the command,</p>
+<p>Download Pd, perhaps from <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a>, to file such as <code>pd-linux-033.tar.gz</code>. Open a “shell” window, cd to the directory containing the file, and type the command,</p>
 <pre><code>tar xzf pd-linux-033.tar.gz</code></pre>
 <p>which creates a directory named “pd”. I do this from my home directory. Next, compile it. <code>cd</code> to pd and read the INSTALL.txt, or else just cd to “pd/src” and type</p>
 <pre><code>./autogen.sh
@@ -770,7 +770,7 @@ general flags:
 <p>Whenever you type the name of an object (into an <code>object</code> text box) that Pd doesn’t yet know about, Pd looks for a relocatable object file, named, for instance, <code>profile.pd\_irix5</code>. Pd looks first in the directory containing the patch, then in directories in its “path.” Pd will then add whatever object is defined there to its “class list,” which is the set of all Pd classes you can use. If all this works, Pd then attempts again to create the object you asked for, this time perhaps successfully. There is no difference between an object defined this way and an object built into Pd.</p>
 <p>Once you load a new object into Pd, it’s there for the duration of your Pd session. If you load another Pd document which supplies a different version of some Pd object, the object won’t be updated. IF you’re working on a new object and decide to change it, you have to exit and re-enter Pd to get the change to take.</p>
 <p>In the <code>externs</code> subdirectory of the documentation you can find simple examples of externs with their source code and test patches; there are many other on the web (see <a href="#other-resources">Other Resources</a>).</p>
-<p>Iohannes Zmoelnig has written an excellent guide to writing externs at <a href="http://pdstatic.iem.at/externals-HOWTO/" class="uri">http://pdstatic.iem.at/externals-HOWTO/</a> .</p>
+<p>Iohannes Zmoelnig has written an excellent guide to writing externs at <a href="http://pdstatic.iem.at/externals-HOWTO/" class="uri">http://pdstatic.iem.at/externals-HOWTO/</a>.</p>
 <hr />
 
 <h1 id="current-status"><span class="header-section-number">5</span> Current Status</h1>
