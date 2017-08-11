@@ -1273,7 +1273,7 @@ Getting Pd to Run
 <p>[back to table of contents](#TOC)</p>
 
 The following are basic instructions on how to get Pd installed and running on
-your machine. More details are maintained online on the [pure-data.info] site.
+your machine. More details are maintained online on the [puredata.info] site.
 
 Pd runs under Microsoft Windows, Linux, and macOS. How to get Pd up and running
 depends on your operating system, but the overall strategy is the same. You must
