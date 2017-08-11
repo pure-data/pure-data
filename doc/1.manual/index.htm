@@ -175,6 +175,7 @@
 </ul>
 </nav>
 <p>This is the HTML documentation for Pd, a patchable environment for audio analysis, synthesis, and processing, with a rich set of multimedia capabilities. The latest version of this page can be found at: <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a>.</p>
+<hr />
 
 <h1 id="introduction"><span class="header-section-number">1</span> Introduction</h1>
 <p><a href="#TOC">back to table of contents</a></p>
@@ -204,6 +205,7 @@
 <p>Most of the interesting news related to Pd shows up on the Pd mailing list, maintained by IOhannes Zmoelnig. To subscribe or browse the archives visit: <a href="http://iem.at/mailinglists/pd-list/" class="uri">http://iem.at/mailinglists/pd-list/</a>. This is the best source of recent information regarding installation problems and bugs. It is perfectly reasonable to post “beginner” questions on this list; alternatively you can contact msp@ucsd.edu for help.</p>
 <p>Many extensions to Pd are announced on the mailing list. In particular, for people interested in graphics, there is a 3D graphics rendering package, named GEM, based on OpenGL, written by Mark Danks, adapted to Linux by Guenter Geiger, and now maintained by Iohannes Zmoelnig. You can get it from: <a href="http://gem.iem.at/" class="uri">http://gem.iem.at/</a>, or by installing Pd Extended.</p>
 <p>Here are some more <a href="http://msp.ucsd.edu/external-links.htm">external links</a>.</p>
+<hr />
 
 <h1 id="theory-of-operation"><span class="header-section-number">2</span> Theory of Operation</h1>
 <p><a href="#TOC">back to table of contents</a></p>
@@ -519,6 +521,7 @@
 <p>When examples get more complicated and/or dense than the one shown here, it becomes difficult to see and select specific features of a data collection; more work is needed to facilitate this. There should be some facility for turning drawing instructions on and off, or perhaps for switching between versions of a template, depending on the user’s desired view. There should also be a callback facility in the template for when an object is edited with the mouse, so that the user can bind actions to mouse clicks.</p>
 <p>More generally, the collection of traversal objects that Pd provides is adequate to support a variety of modes of data collection and use, such as analysis and sequencing. But the patches required to traverse the data collections are not always simple. It would be desirable to find a more straightforward mechanism than that provided by the “pointer”, “get” and “set” objects.</p>
 <p>The “data” facility, although part of the original plan for Pd, has only recently been implemented in its current form, and as (hopefully) the user base grows there will surely be occasions for many further extensions of the data handling primitives and the graphical presentation and editing functions.</p>
+<hr />
 
 <h1 id="getting-pd-to-run"><span class="header-section-number">3</span> Getting Pd to Run</h1>
 <p><a href="#TOC">back to table of contents</a></p>
@@ -727,6 +730,7 @@ general flags:
 <p>Filenames in Pd are always separated by (Unix-style) forward slashes, even if you’re on Windows (which uses backslashes). This is so that patches can be ported more easily between operating systems. On the other hand, if you specify a filename on the command line (as in “pd -path c:\pdlib”) the file separator should agree with the operating system.</p>
 <p>If a filename specified in a patch has any “/” characters in it, the “path” is not used; thus, “../sounds/sample1.wav” causes Pd only to look relative to the directory containing the patch. You may also invoke externs that way.</p>
 <p>As of version 0.35, there may be spaces in the path to Pd itself; also, the “openpanel” and “savepanel” objects can handle spaces. Spaces in the path should work as of version 0.38.</p>
+<hr />
 
 <h1 id="writing-pd-objects-in-c"><span class="header-section-number">4</span> Writing Pd Objects in C</h1>
 <p><a href="#TOC">back to table of contents</a></p>
@@ -736,6 +740,7 @@ general flags:
 <p>Once you load a new object into Pd, it’s there for the duration of your Pd session. If you load another Pd document which supplies a different version of some Pd object, the object won’t be updated. IF you’re working on a new object and decide to change it, you have to exit and re-enter Pd to get the change to take.</p>
 <p>In the “externs” subdirectory of the documentation you can find simple examples of “externs” with their source code and test patches; there are many other on the web (see <a href="#other-resources">Other Resources</a>).</p>
 <p>Iohannes Zmoelnig has written an excellent guide to writing externs at <a href="http://pdstatic.iem.at/externals-HOWTO/" class="uri">http://pdstatic.iem.at/externals-HOWTO/</a> .</p>
+<hr />
 
 <h1 id="current-status"><span class="header-section-number">5</span> Current Status</h1>
 <p><a href="#TOC">back to table of contents</a></p>
@@ -1438,5 +1443,6 @@ general flags:
 <p>In Pd there’s no “preset” object (I now think it’s basically a bad idea) and you have to use explicit sends and receives to restore values to number boxes. Then just make a “message” box to re-send the values you want.</p>
 <p>In Macintosh land, instead of getting tabosc4~ and arrays, you get cycle~ and buffer~. The only gotcha is that you probably can’t draw in buffer~ with the mouse as you can with arrays, but at least it’s possible to make a patch that copies a “table” into a “buffer~”.</p>
 <p>The “bpatcher” feature in Max has a correlate, “graph on parent” subpatches, in Pd; however, Pd’s version is quite different from Max’s.</p>
+<hr />
 </body>
 </html>
