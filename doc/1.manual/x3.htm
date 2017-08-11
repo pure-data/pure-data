@@ -444,12 +444,12 @@ I think you just download the macOS driver and follow directions.
 audio devices to open, what font size to use, and so on.  Most of
 these may also be changed using the various dialogs you can open from Pd's
 menus.  Others take effect only when Pd starts up; some of these appear
-on the ``startup" dialog and some of them, too cranky to put in a GUI, must
+on the "startup" dialog and some of them, too cranky to put in a GUI, must
 be typed as <I> command line arguments </I>.
 
 <P> In addition to the Audio and MIDI settings (see 
 <A href="#s1.0"> Audio and MIDI </A>), you can customize font size (from the
-``edit" menu), directories to search for files (see 
+"edit" menu), directories to search for files (see 
 <A href="#s5"> How Pd searches for files </A>), and additional startup
 parameters described below.
 
@@ -461,39 +461,39 @@ section.  Command line settings, if given, each override the corresponding
 setting that was saved from Pd.
 
 <P>  The startup settings (i.e., those that take effect only when Pd is started)
-are controlled using the ``startup..." dialog from the File menu.  The
+are controlled using the "startup..." dialog from the File menu.  The
 dialog appears as follows:
 
 <CENTER><P>
     <IMG src="fig11.3.png" ALT="startup dialog">
 </P></CENTER>
 
-The slots at top each specify a binary ``library" for Pd to load on startup.
+The slots at top each specify a binary "library" for Pd to load on startup.
 These may be for Gem, pdp, zexy, iemlib, cyclone, and so on.  Typically, a
-single binary object (an ``extern") is left for Pd to load automatically;
+single binary object (an "extern") is left for Pd to load automatically;
 startup library loading is appropriate for collections of many objects
 specified by a single binary library.
 
-<P> The ``defeat real-time scheduling" control, if enabled, makes Pd run without
+<P> The "defeat real-time scheduling" control, if enabled, makes Pd run without
 its usual effort to become a real-time process (whatever this means in the
 operating system you are using.)  In Unix, Pd must usually be setuid to allow
 real-time scheduling at all.
 
-<P> The ``startup flags" allow you to add to Pd's command line on startup. This
-is specified as described below, except that the initial word, ``pd", is
-understood.  For example, putting ``-rt" in this field sets real-time
-scheduling; ``-sleepgrain 1" sets the sleep grain to 1 (see under MIDI below),
+<P> The "startup flags" allow you to add to Pd's command line on startup. This
+is specified as described below, except that the initial word, "pd", is
+understood.  For example, putting "-rt" in this field sets real-time
+scheduling; "-sleepgrain 1" sets the sleep grain to 1 (see under MIDI below),
 and typing "-rt -sleepgrain 1" does both.
 
 <P> You may save the current settings for future Pd sessions with the
-``save all settings" button; this saves not only the path but all other
+"save all settings" button; this saves not only the path but all other
 settings as well.
 
 <H6> Command line arguments </A> </H3>
 
 <P>Pd may be run as a "command line" program from your "terminal emulator,"
 "shell," or "MSDOS prompt."  In Windows, if Pd is started using a "shortcut"
-it is also run from a command line which you can edit using the ``properties"
+it is also run from a command line which you can edit using the "properties"
 dialog for the shortcut.  In any operating system, Pd can be called from a
 script (called a <I> batch file </I> on Windows or a <I> shell script </I>
 on macOS or Unix).  The command line is just a line of text, which should be
@@ -639,13 +639,13 @@ construct the patch.  When Pd searches for an abstraction or an
 "extern" it uses the path to try to find the necessary file.  The "read"
 messages to qlists and arrays (aka tables) do this too.
 
-<P> If ``use standard extensions" is enabled, the usual ``extras" directory
-is also searched.  This contains standard external objects like ``expr" and
-``fiddle", and perhaps much more depending on the distribution of Pd
+<P> If "use standard extensions" is enabled, the usual "extras" directory
+is also searched.  This contains standard external objects like "expr" and
+"fiddle", and perhaps much more depending on the distribution of Pd
 you're using.
 
 <P> You may save the current settings for future Pd sessions with the
-``save all settings" button; this saves not only the path but all other
+"save all settings" button; this saves not only the path but all other
 settings as well.
 
 <P> Path entries may be relative to the patch directory; for instance,
@@ -658,7 +658,7 @@ that you want to distribute or carry around together.
 <P> Regardless of path, Pd should look first in the directory containing
 the patch before searching down the path.  Pd does not automatically look
 in the <I> current directory </I> however; to enable that, include "." in
-the path.  The ``extra" directory, if enabled, is searched last.
+the path.  The "extra" directory, if enabled, is searched last.
 
 <P> Filenames in Pd are always separated by (Unix-style) forward slashes, even
 if you're on Windows (which uses backslashes).  This is so that patches can be
