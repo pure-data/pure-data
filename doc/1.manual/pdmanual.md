@@ -1910,11 +1910,11 @@ settings. On Pcs, the settings are now stored in the "user" resource area
 couldn't save their settings.)
 
 On the first startup, Pd queries the user as to whether to create a directory
-such as \~/Doculemnts/Pd and set path to point there. Many updates were also
+such as ~/Doculemnts/Pd and set path to point there. Many updates were also
 made to the "path" dialog and deken to better integrate downloading stuff and
 path maintanance.
 
-The expr family (expr, expr\~, fexpr\~) got an update from Shahrokh Yadegari,
+The expr family (expr, expr~, fexpr~) got an update from Shahrokh Yadegari,
 and the help file was reorganized and updated by Alexandre Porres. Many more
 math functions are supported, and the parser was updated so that expressions
 using "if" skip evaluating the argument that isn't used. In an older improvement
@@ -1931,7 +1931,7 @@ changed.
 
 New "text insert" object.
 
-"delwrite\~" now has a "clear" message.
+"delwrite~" now has a "clear" message.
 
 "declare -path" inside abstractions was changed so that, if the declaration
 isn't an absolute filename, it's relative to the abstraction's directory, not to
@@ -1949,7 +1949,7 @@ on this.
 The Pd API allows starting and/or shutting down the GUI dynamically while Pd is
 running.
 
-Another internal change: the pd\~ object now communicates with sub-processes in
+Another internal change: the pd~ object now communicates with sub-processes in
 binary by default. This increases the numerical accuracy of signal passing (it
 should be exact now) and makes the passing back and forth of audio signals much
 more efficient.
@@ -1987,7 +1987,7 @@ somewhat dodgily handled (font sizes of labels aren't managed well).
 Controllable font sizes for menus and dialogs: setting the "pd window" font size
 also sets font sizes for menus/dialogs.
 
-The expr, expr\~, and fexpr\~ objects are included in Pd proper, not loaded as
+The expr, expr~, and fexpr~ objects are included in Pd proper, not loaded as
 externs as before. This reflects their new license (lgpl) and should allow them
 to be used in IOS apps via libpd. Shahrokh Yadegari has updated the source and
 made manifold improvements in the objects. Notably, they now allow access to
@@ -2026,7 +2026,7 @@ Various compilation and architecture fixes
 
 fixed bug selecting and saving/restoring MIDI output devices.
 
-new bob\~ object (Moog filter emulation) in extra. (This was intended for 0.47
+new bob~ object (Moog filter emulation) in extra. (This was intended for 0.47
 but it was easiest to leave it in place for this bug-fix release).
 
 ### 0.46-5 {-}
@@ -2056,7 +2056,7 @@ new "set" messages and wildcard '-' template names for "set", "get", "elem",
 
 updated Makefile.am to reflect new and corrected help file names
 
-took out bogus object in rev3\~
+took out bogus object in rev3~
 
 ### 0.46-2 {-}
 
@@ -2115,7 +2115,7 @@ Netsend/netreceive can send messages bidirectionally if using TCP protocol.
 Added some startup flags (mostly from Iohannes) - -nostderr, etc. Also added a
 flag (-noautopatch) to suppress autoconnect.
 
-improved the sound of rev2\~ and rev3\~ reverberators
+improved the sound of rev2~ and rev3~ reverberators
 
 Made stdlib and stdpath flags and declarations follow standard search paths
 (Iohannes again).
@@ -2144,7 +2144,7 @@ the speed of an ensemble of delay loops while keeping them in sync.
 
 binary netsend/netreceive (so you should no longer need an extern for OSC).
 
-pd\~ (multiprocessing) works on windows and is less likely to deadlock although
+pd~ (multiprocessing) works on windows and is less likely to deadlock although
 not yet perfect.
 
 Objects/messages/comments have settable box widths. By default they're auto, but
@@ -2185,7 +2185,7 @@ reading it.
 
 ### 0.44-3 {-}
 
-Fix hip\~ AC gain once more (still didn't have it right).
+Fix hip~ AC gain once more (still didn't have it right).
 
 Small improvements in MIDI handling (midiin and sysexin device numbering; two
 linux-specific fixes).
@@ -2213,11 +2213,11 @@ way to build Pd is now to invoke automake.
 better handling of reading and writing files with non-ASCII filenames in
 Microsoft Windows.
 
-fixed a bug in hip\~ (incorrect gain; noticeably different when the cutoff
+fixed a bug in hip~ (incorrect gain; noticeably different when the cutoff
 frequency is set about 5K or higher.) To get the old behavior you can set Pd to
-be 0.43 compatible; see the hip\~ help window for details.
+be 0.43 compatible; see the hip~ help window for details.
 
-inlet\~ and outlet\~, if configured to do upsampling, now use sample/hold
+inlet~ and outlet~, if configured to do upsampling, now use sample/hold
 instead of zero padding by default; arguably this is a bug fix as the DC gain
 isn't one for zero padding. Also undoable by setting compatibility to 0.43.
 
@@ -2234,7 +2234,7 @@ bug fix: in "perf mode" (having sent pd the "perf" message to prevent undesired
 patch closure) Pd crashed (oops!) when one asked for the patch to close after
 all.
 
-Improvements to Mac version of bonk\~ -- "learn" parameter handled correctly and
+Improvements to Mac version of bonk~ -- "learn" parameter handled correctly and
 compilation fixes.
 
 Default font size is the same on all platforms.
@@ -2245,7 +2245,7 @@ Bug fixes reading and writing AIFF files, particularly 24 bit ones
 
 X Pasting text into boxes now works in linux.
 
-fixed bug that hung Pd when closing more than one pd\~ subpatch out of order.
+fixed bug that hung Pd when closing more than one pd~ subpatch out of order.
 
 fixed segfault if DSP loop found and main patch had signal inlets/outlets
 
@@ -2261,13 +2261,13 @@ Zmoelnig, and others.
 
 ### 0.42-5 {-}
 
-broken abs\~ and log\~ fixed
+broken abs~ and log~ fixed
 
-pd\~ -ninsig 0 hang fixed
+pd~ -ninsig 0 hang fixed
 
 testtone updated and 16ch version added
 
-lrshift\~ bug fix
+lrshift~ bug fix
 
 32 channel limit removed for portaudio (ASIO/Windows and Mac)
 
@@ -2297,8 +2297,8 @@ Bug fix running Pd from command line in MacOS.
 The 'struct' object can now be used to catch a small but growing variety of
 events (mouse clicks on data, selection/deselection).
 
-The 'tabread4\~' object was fixed to allow message-time onset into the table.
-This makes it possible (at last) to use tabread4\~ effectively with large (&gt;
+The 'tabread4~' object was fixed to allow message-time onset into the table.
+This makes it possible (at last) to use tabread4~ effectively with large (&gt;
 1 second) samples. New help files 3.audio.examples/B15 and B16 show how to use
 it. It's not pretty but it's at least possible.
 
@@ -2307,7 +2307,7 @@ floating-point audio. I didn't test this; doubtless there will still be some
 problems. (This isn't the same thing as running in '64 bit mode' which already
 works fine and is the default when compiled on a 64-bit linux machine.)
 
-New objects in extra, 'pd\~', and 'stdout', allow running a separate Pd instance
+New objects in extra, 'pd~', and 'stdout', allow running a separate Pd instance
 in a sub-process. Theoretically this should make it possible to use
 multiprocessors efficiently in {d. It's still somewhat experimental; it might
 not work well to pass large numbers of messages and/or signals back and forth.
@@ -2317,8 +2317,8 @@ also specify -nosound. With these flags Pd runs as quickly as it can without
 waiting for real time. It's up to the patch to arrange to exit at the
 appropriate time via a 'pd quit' message.
 
-Large and sweeping improvements have been made to bonk\~ and sigmund\~. The new
-bonk\~ features are documented in its help window; sigmund\~ works better but
+Large and sweeping improvements have been made to bonk~ and sigmund~. The new
+bonk~ features are documented in its help window; sigmund~ works better but
 has the same old features.
 
 Closing and quitting Pd now act more politely, querying the user only if there
@@ -2333,7 +2333,7 @@ The process of reloading multiple copies of a modified abstraction was sped up.
 The 'find' dialog permits searching for substrings. This is useful for strings
 containing "\$" arguments, where it's unclear what 'find' does or should do.
 
-New pow\~, log\~, exp\~, abs\~, and 'wrap' objects.
+New pow~, log~, exp~, abs~, and 'wrap' objects.
 
 The 'print' object takes "-n" flag to suppress "print:" in output
 
@@ -2351,7 +2351,7 @@ various fixes to
 
 ### 0.41-3,4 {-}
 
-2 fixes for PC: no bonk\~, and the audio device selection dialogs didn't show
+2 fixes for PC: no bonk~, and the audio device selection dialogs didn't show
 all the devices.
 
 ### 0.41-2 {-}
@@ -2402,7 +2402,7 @@ impossible to resize them.)
 fixed "startup" dialogs to allow unlimited "path" and "lib" entries
 
 started, but didn't finish, the process of getting Pd to compile with t\_float
-as 64 bits. This would slow Pd down but improve tabread4\~'s accuracy.
+as 64 bits. This would slow Pd down but improve tabread4~'s accuracy.
 
 made IEM Guis respect "-font" flag and friends. New startup flags: "-font-face"
 (badly named); "-font-size" synonym of "-font". (Large patch from HC).
@@ -2432,7 +2432,7 @@ Symbols can now be built using multiple dollar sign variables, as in
 "\$1-\$2.\$3". Meanwhile, naming subpatches as in "pd \$1-foo" now seems to work
 correctly.
 
-The switch\~ object takes a "bang" message to compute one block of DSP on
+The switch~ object takes a "bang" message to compute one block of DSP on
 demand. Also, block sizes are no longer required to be powers of two (although
 reblocking only works between powers of two.)
 
@@ -2470,7 +2470,7 @@ before).
 A -noprefs flag defeats loading startup preferences. This gives you a way to
 rescue things if Pd's settings somehow crash Pd on startup.
 
-tabwrite\~ takes a "start" message to allow writing into the middle of the
+tabwrite~ takes a "start" message to allow writing into the middle of the
 table.
 
 ### 0.39.2 {-}
@@ -2538,10 +2538,10 @@ Bug fixes:
 sending lists to arrays now correctly interprets the first number of the list as
 the starting index (following values are then stored sequentially in the array.)
 
-The rfft\~ object's imaginary part had the wrong sign. Also, the Nyquist bin is
+The rfft~ object's imaginary part had the wrong sign. Also, the Nyquist bin is
 now supplied correctly.
 
-Fixed problems writing aiff files using the writesf\~ and soundfiler objects.
+Fixed problems writing aiff files using the writesf~ and soundfiler objects.
 Writesf, if sent an "open" while a file was previously being written, closes the
 previous file first.
 
@@ -2557,7 +2557,7 @@ of them yet.
 Mouse motion over arrays no longer is quite so CPU-consuming (but is still
 somewhat so.)
 
-samplerate\~ now reflects up/downsampling.
+samplerate~ now reflects up/downsampling.
 
 Tilde objects in blocked, overlapped subpatches no longer adjust their internal
 sample rate to reflect the overlap.
@@ -2588,7 +2588,7 @@ appropriate repository (.pdsettings on linux; registry on MS windows;
 The "gui" TK script can now start Pd up (previously Pd had to be started first.)
 This is needed for Pd to work as an "App" on Mac.
 
-new filter objects: cpole\~, fpole\~, etc... these will get used in the upcoming
+new filter objects: cpole~, fpole~, etc... these will get used in the upcoming
 Techniques chapter 8.
 
 Objects whose creation failed get a distinctive outline; if they are already
@@ -2649,7 +2649,7 @@ fixed bug in -inchannels/-outchannels arg parsing
 major editions to the IEM GUIs to fix bugs in how "\$" variables are handled.
 The code still isn't pretty but hopefully at least works now.
 
-bug fix in vd\~ for very small delays
+bug fix in vd~ for very small delays
 
 fixed MSW version not to make windows grow by 2 pixels on save/restore
 
@@ -2674,13 +2674,13 @@ A "vline" object acts like "line" but to sub-sample accuracy. See the audio
 example, C04.control.to.signal.pd (and/or chapter 3 of [Theory and Techniques of
 Electronic Music](http://msp.ucsd.edu/techniques.htm).
 
-The block\~/switch\~ object now takes a "set" message to dynamically change
+The block~/switch~ object now takes a "set" message to dynamically change
 block size, etc.
 
 The makefilename object takes a "set" message to set the "pattern". You can use
 this to kludge multiple substitutions (as shown in the help file).
 
-The writesf\~ object got an update and a better help window. It now should be
+The writesf~ object got an update and a better help window. It now should be
 able to write 32bit floating-point WAV soundfiles. The file's sample rate is now
 set "correctly".
 
@@ -2691,7 +2691,7 @@ Jack support should work for Mac OSX (it appears as a separate API). Linux is
 offering experimental portaudio V19 support (but Mac and Window/ASIO are still
 based on PA V18.)
 
-The fiddle\~ object (in extra) has an "npoints" method to set the analysis
+The fiddle~ object (in extra) has an "npoints" method to set the analysis
 window size dynamically.
 
 (windows) Pd is now distributed as a self-extracting archive.
@@ -2720,7 +2720,7 @@ compile with fewer warnings and be more portable.
 The MacOSX version now prioritizes itself effectively (thanks to gert@test.at
 (v93r)) via Adam Lindsay). Adam also made a proper MacOSX "package" for Pd.
 
-A bug was fixed in readsf\~/writesf\~ (things were coming out in the wrong
+A bug was fixed in readsf~/writesf~ (things were coming out in the wrong
 number of channels.)
 
 A problem compiling Pd with TK8.4 (the latest version) was fixed.
@@ -2731,7 +2731,7 @@ OSX.
 For externs, the binary may now be included in a subdirectory of the same name
 (e.g., "choice/choice.pd\_linux" and "choice\\choice.dll"). So now you can pack
 multiple binaries for the same extern, along with the source, in one convenient
-place. (Note that "expr\~" is an exception, since it goes by three different
+place. (Note that "expr~" is an exception, since it goes by three different
 names, so this trick fails for that example.)
 
 "Help" files renamed "help-xxx.pd", so that help files are now possible for
@@ -2753,8 +2753,8 @@ all the containing windows visible, but it's better than nothing.
 "expr" brought up to date (0.4) -- a bug was fixed involving expressions like
 "max(\$f1, 100)" which had erroneously output an integer.
 
-a bug fix in the 4-point interpolation formula, which affects tabosc4\~,
-tabread4\~, tabread4, and vd\~. These should have significantly lower distortion
+a bug fix in the 4-point interpolation formula, which affects tabosc4~,
+tabread4~, tabread4, and vd~. These should have significantly lower distortion
 than before.
 
 bug fix: vradio, hradio "send symbol" feature didn't work
@@ -2807,7 +2807,7 @@ variable still can't have spaces. (You can address path directories using
 relative pathnames as in "../sound" (or ..\\sound on Windows), even if there are
 spaces further "up" the path to the patch. See 3.7, "dealing with files."
 
-The soundfile reading routine (used in readsf\~ and soundfiler) is much better
+The soundfile reading routine (used in readsf~ and soundfiler) is much better
 at opening wav files with different header sizes and odd chunks. You can now
 read floating-point "wav" files -- although you can't write them yet.
 
@@ -2829,12 +2829,12 @@ The testtone patch works for up to 6 channels of audio input and output.
 Lots of improvements got made to audio I/O in general. In NT you may specify
 "-asio" to use ASIO drivers; see HTML documentation section 3.2. You may specify
 lists of audio input and output devices. In Linux, Pd will now attempt to open
-each /dev/dsp\* only once, even if it's requested for reading and writing.
+each /dev/dsp* only once, even if it's requested for reading and writing.
 
 The "extra" directory is now searched after the directories in the search path,
-not before (so now you can override objects like "fiddle\~").
+not before (so now you can override objects like "fiddle~").
 
-A bug in paf\~ is fixed.
+A bug in paf~ is fixed.
 
 In Linux, the ".pdrc" is now read before the command line arguments, so that
 command line arguments override the .pdrc (it was backwards before.)
@@ -2850,7 +2850,7 @@ cards in 32bit mode inappropriately.)
 In Linux, MIDI is now opened "-NODELAY" ... this makes the OSS Creative driver
 take MIDI input correctly which it didn't before.
 
-In MS windows, you can now use "readsf\~/writesf\~" for spooling sounds to and
+In MS windows, you can now use "readsf~/writesf~" for spooling sounds to and
 from disk.
 
 MS Windows bug fixes: -nosound was ignored, and now works. Also, clicking to
@@ -2894,13 +2894,13 @@ All the "sound" command-line flags now have "audio" equivalents.
 
 The "-listdev" flag now works on Mac and MSW/ASIO.
 
-Help file updates for env\~, route, and pointer
+Help file updates for env~, route, and pointer
 
 ### 0.34.3 {-}
 
 fixed a bug in "udp" netreceive that crashed pd
 
-fixed a bug in tabosc4\~ that caused gritty sound
+fixed a bug in tabosc4~ that caused gritty sound
 
 changed "specfile" for RPM releases (thanks Fernando)
 
@@ -3001,7 +3001,7 @@ documentation accordingly.
 
 NEW FEATURES:
 
-I've put in Shahrokh's new expr, expr\~, and fexpr\~ objects. The latter allows
+I've put in Shahrokh's new expr, expr~, and fexpr~ objects. The latter allows
 you to make expressions referring to prior input and output samples in case
 you're interested in writing your own recursive filters, oscillators, or chaotic
 sound generators...
@@ -3009,12 +3009,12 @@ sound generators...
 In support of expr, you can now use commas in "object" boxes; they just become
 symbols.
 
-sqrt\~ is fixed so that it apparently has 24-bit accurate mantissas. It turned
+sqrt~ is fixed so that it apparently has 24-bit accurate mantissas. It turned
 out to be easier to just make it accurate than to confront the question of how a
 reduced-accuracy version should be named.
 
-The bizarre framp\~ object which does phase vocoder analysis got a help window.
-The phase vocoder example doesn't use framp\~ and I had forgotten what it did
+The bizarre framp~ object which does phase vocoder analysis got a help window.
+The phase vocoder example doesn't use framp~ and I had forgotten what it did
 until Guenter dug it back up.
 
 (Linux only) I finally got around to incorporating Guenter's autoconf stuff, and
@@ -3042,7 +3042,7 @@ new arrays in 0.32p6 got ill-fitting graphs -- fixed.
 
 Got array and graph dialogs to behave better when there are more than one.
 
-put in mtof\~, etc.
+put in mtof~, etc.
 
 made Pd search the "extra" directory without having to specify it in "path."
 
@@ -3081,17 +3081,17 @@ Improved underflow protection in some DSP objects.
 pointer now has a "vnext" traversal method which goes forward to the next
 SELECTED object.
 
-improvements to throw\~ (it now sums) and receive\~ fixed to be settable.
+improvements to throw~ (it now sums) and receive~ fixed to be settable.
 
 bug fix in which RME driver always thought sample rate was 44100.
 
 
 ### 0.32 PATCH 1 {-}
 
-bug fixes (bugs flagged by mik): vcf\~ help window crashed; writesf\~ only wrote
+bug fixes (bugs flagged by mik): vcf~ help window crashed; writesf~ only wrote
 1 channel soundfiles; "table" object didn't open when clicked on;
 
-new object: tabosc4\~ -- finally, a real wavetable oscillator for Pd.
+new object: tabosc4~ -- finally, a real wavetable oscillator for Pd.
 
 much work on "data" editing; go to 7.stuff/data-structures, open patches 5 and
 7, and try clicking on things. Alt clicks delete or add points; regular clicks
@@ -3105,7 +3105,7 @@ click.
 midiin, sysexin, midiout. (I don't think MIDI sysex is working in Windows yet
 though.)
 
-threshold\~ as in Jmax, triggers from audio level.
+threshold~ as in Jmax, triggers from audio level.
 
 value as in Max and Jmax.
 
@@ -3132,7 +3132,7 @@ soundfile name on the command line.
 
 **bug fixes.**
 
-A readsf\~ problem got fixed.
+A readsf~ problem got fixed.
 
 hitting the tab key used to cause Pd windows to relinquish the keyboard.
 
@@ -3152,7 +3152,7 @@ fixed in notein and (for SGI) bendin.
 You can "select all" from the Edit menu.
 
 standalone programs "pd-send" and "pd-receive" are provided that can send
-messages to Pd or receive messages from Pd via the netsend\~ and netreceive\~
+messages to Pd or receive messages from Pd via the netsend~ and netreceive~
 objects. This should allow you to interface a wide variety of other programs
 with Pd either on the same machine or over the network. Also you should be able
 to hack the code into your own programs to make them interoperate with Pd and/or
@@ -3238,9 +3238,9 @@ Protection was added against message loops.
 loadbang was fixed so that loadbangs in abstractions go off before loadbangs in
 the owner patch. Within each patch, loadbangs go off first in subpatches.
 
-new object: tabplay\~, a non-interpolating sample reader.
+new object: tabplay~, a non-interpolating sample reader.
 
-new objects (in "extra" library): loop\~; rev1\~.
+new objects (in "extra" library): loop~; rev1~.
 
 The "toys" library was renamed "extra" and incorporated in the Pd release.
 
@@ -3250,15 +3250,15 @@ to hang under some conditions.)
 the "field" object was replaced by "template"; see "data.structures" examples in
 7.stuff. Data lists can be read from and written to files now.
 
-You can invoke an external object by pathname, as in "../../extra/loop\~".
+You can invoke an external object by pathname, as in "../../extra/loop~".
 
-hip\~, etc. should no longer get stuck when they get a NAN on input.
+hip~, etc. should no longer get stuck when they get a NAN on input.
 
 a bug was fixed in expanding symbols such as "\$1-foo".
 
 ### 0.29 {-}
 
-readsf\~ - a MAX/FTS style soundfile player, which reads multichannel soundfiles
+readsf~ - a MAX/FTS style soundfile player, which reads multichannel soundfiles
 in wave, aiff, or next formats. The files must be 16 or 24 bit fixed point or 32
 bit floating point (only nextstep headers understand the latter.) You can also
 override the header. A "skip" flag lets you read starting anywhere in the file.
@@ -3272,7 +3272,7 @@ automatically resized; in any event the object obligingly outputs the number of
 samples actually read. When writing you can specify a sub-segment of the arrays,
 and/or request that the soundfile's maximum amplitude be normalized to one.
 
-tabplay\~ - a non-interpolating sample player
+tabplay~ - a non-interpolating sample player
 
 Garry Kling reports having compiled Pd for "yellowdog" linux on Macintosh
 computers. One "fix" has been made to s\_linux.c to facilitate this. I don't
@@ -3280,10 +3280,10 @@ have access to a Mac running linux at the moment so I can't verify whether any
 particular release of mine actually works there.
 
 Signal objects now automatically convert scalars to vectors, so that you can
-just run a number box into a signal input. One caveat is that the binops "+\~",
-"-\~", "\*\~", "/\~", "max\~", "min\~" run slightly faster if you give them an
+just run a number box into a signal input. One caveat is that the binops `+~`,
+`-~`, `*~`, `/~`, `max~`, `min~` run slightly faster if you give them an
 argument to tell them that their right inlet will be scalar; so the construction
-"+\~ 0" is still meaningful. This will get fixed at some later date...
+`+~ 0` is still meaningful. This will get fixed at some later date...
 
 Font sizes work in what I hope will be a more machine-portable way. On any
 machine, the point sizes 8, 10, 12, 14, 16, 24 are DEFINED to be the largest
@@ -3312,7 +3312,7 @@ I wonder how many NT users have crashed Pd trying to type in filenames with
 backslashes...
 
 samphold\_set and tabwrite\_stop methods added. There turned out to be no help
-window for samphold\~ so one was supplied.
+window for samphold~ so one was supplied.
 
 ### 0.28 {-}
 
@@ -3351,7 +3351,7 @@ The main new feature is the "find" menu stuff. You can search for boxes
 containing specified atoms, including semicolons or commas. Most errors are now
 trackable, allowing you to "find last error". Look in the "Find" menu.
 
-New objects written: change, max, max\~, min, min\~, and swap.
+New objects written: change, max, max~, min, min~, and swap.
 
 I looked in 0.INTRO.txt in 5.reference, and found that the objects bag, cputime,
 realtime, pipe, symbol, poly, and bang were missing.
@@ -3369,19 +3369,19 @@ which simply never resyncs at all.
 
 ### 0.26 {-}
 
-phasor\~ and osc\~ can be configured to take floating point messages to set
+phasor~ and osc~ can be configured to take floating point messages to set
 their frequencies, as an alternative to having an input signal to do the same.
-Also, +\~, etc, can take floating point arguments (and messages) to add or
-multiply scalars. The +\~, etc, loops were unrolled to make them run faster.
+Also, +~, etc, can take floating point arguments (and messages) to add or
+multiply scalars. The +~, etc, loops were unrolled to make them run faster.
 
-A switch\~ object is provided to let you switch subpatches on and off. The
-inlet\~ and outlet\~ objects were re-written to avoid adding any overhead when
+A switch~ object is provided to let you switch subpatches on and off. The
+inlet~ and outlet~ objects were re-written to avoid adding any overhead when
 moving signals in or out of sub patches.
 
 In Linux at least, the audio latency is much reduced. It's possible to poll for
 audio I/O lateness errors by sending "pd audiostatus".
 
-When reading a sample using tabread4\~, you can switch between sample tables
+When reading a sample using tabread4~, you can switch between sample tables
 using the "set" message.
 
 A new "textfile" object is like qlist but more flexible.
@@ -3392,15 +3392,15 @@ A dsp\_addv function was added to allow variable-length DSP calls (for writers
 of tilde externs.)
 
 It's possible for a tilde extern to have a name ending in "tilde" now. Name the
-setup routine "foo\_tilde" for "foo\~", etc.
+setup routine "foo\_tilde" for "foo~", etc.
 
-The dac\~ object was fixed to clip its output when out of range (before it
+The dac~ object was fixed to clip its output when out of range (before it
 wrapped around.)
 
 A first line of protection was added against getting numerical underflow in
 delay feedback loops. Before, when a reverberator tailed out there was a sudden
 jump in CPU usage because the numerical underflows would trap to the kernel.
-Now, if any delwrite\~ is given a value less than 1e-20 or so, it records a true
+Now, if any delwrite~ is given a value less than 1e-20 or so, it records a true
 zero to avoid this.
 
 Signal division checks for divide by zero.
@@ -3464,7 +3464,7 @@ Bug fixes:
 - phase vocoder example improved
 - "read" message to arrays now zero out unread samples
 - bug fix in "key" object
-- bug fix in ifft\~ (thanks to Peter Lunden)
+- bug fix in ifft~ (thanks to Peter Lunden)
 - "print" object fixed to distinguish between lists starting with symbols and
   other messages
 - polygon, curve, fpolygon, fcurve renamed to fix name clash with Gem
@@ -3509,13 +3509,13 @@ more bug fixes:
 - opening window with audio on is now fixed
 - deleting inlets/outlets deletes connections first (used to crash)
 - 1e20 parsed correctly now
-- osc1\~ fixed and optimized
+- osc1~ fixed and optimized
 - resizing arrays with DSP on used to crash; now fixed
 - pasting now adds to the end of the list (used to add to beginning)
 - clicking now selects the most recent object when two or more overlap
 - Pd's "open" and "help" dialogs now maintain separate paths
 
-The phasor\~ object's "float" method has been REMOVED -- use the right-hand
+The phasor~ object's "float" method has been REMOVED -- use the right-hand
 inlet to set the internal phase. This is so that I can later fix all tilde
 objects to convert messages to signals automatically at all signal inputs.
 
@@ -3569,9 +3569,9 @@ fixed Bill Kleinsasser's bug (short and long array in same graph)
 
 new features:
 
-phase setting for phasor\~
+phase setting for phasor~
 
-fft objects. Also, block\~, for specifying block sizes and overlaps for FFTs.
+fft objects. Also, block~, for specifying block sizes and overlaps for FFTs.
 
 canvas\_makefilename() (used, e.g., by array\_read and write)
 
@@ -3588,18 +3588,18 @@ Also, the array\_write routine was fixed.
 
 notable new objects:
 
-- vcf\~, a bandpass filter with a signal input for center frequency.
+- vcf~, a bandpass filter with a signal input for center frequency.
 - delread, delwrite, vd, as in ISPW Max.
 - various math and midi stuff
-- catch\~, throw\~, send\~, receive\~ for nonlocal signal connections
+- catch~, throw~, send~, receive~ for nonlocal signal connections
 
 - an experimental facility for array of floats is included. You can make a new
   array (from the "put" menu) which will be given a name such as "array1". You
   can then send it "read &lt;file&gt;", "write &lt;file&gt;", "resize
   &lt;N&gt;", and "print" messages. File reading and writing is in ascii.
   "resize" changes the size of the array, and "print" prints its vital signs.
-  You can then use "tabread4\~" to do a 4-point interpolating table lookup, and
-  tabwrite\~ to write audio samples into the table.
+  You can then use "tabread4~" to do a 4-point interpolating table lookup, and
+  tabwrite~ to write audio samples into the table.
 
 Numbers now default to floating point, although certain objects like "spigot"
 and "metro" still convert their boolean inputs to integers so that 0.5 is
@@ -3623,7 +3623,7 @@ still a problem deleting inlets/outlets which have connections.
 The size and screen location of Pd documents is saved correctly.
 
 Tilde objects now work in "subpages" although there is no way to send signals
-through their inlets and outlets; use throw\~/catch\~ or send\~/receive\~.
+through their inlets and outlets; use throw~/catch~ or send~/receive~.
 
 On NT, the default is to open both audio output and input (this used not to
 work.) The situation is still shaky; audio seems to hang up sporadically on my
@@ -3639,16 +3639,16 @@ GENERAL: field inlet outlet print int float send receive select route pack
 unpack trigger spigot moses delay metro line timer makenote stripnote random
 loadbang serial get netsend netreceive
 
-MATH: + - \* / == != &gt; &lt; &gt;= &lt;= & && | || % mod div sin cos tan atan
+MATH: + - * / == != &gt; &lt; &gt;= &lt;= & && | || % mod div sin cos tan atan
 atan2 sqrt log exp abs mtof ftom powtodb rmstodb dbtopow dbtorms
 
 MIDI: notein ctlin pgmin bendin touchin polytouchin noteout ctlout pgmout
 bendout touchout polytouchout
 
-SIGNAL: dac\~ adc\~ sig\~ line\~ snapshot\~ +\~ -\~ \*\~ /\~ phasor\~ cos\~
-vcf\~ noise\~ env\~ hip\~ lop\~ bp\~ biquad\~ samphold\~ clip\~ rsqrt\~ sqrt\~
-wrap\~ print\~ scope\~ tabwrite\~ tabread4\~ send\~ receive\~ catch\~ throw\~
-delwrite\~ delread\~ vd\~
+SIGNAL: dac~ adc~ sig~ line~ snapshot~ +~ -~ *~ /~ phasor~ cos~
+vcf~ noise~ env~ hip~ lop~ bp~ biquad~ samphold~ clip~ rsqrt~ sqrt~
+wrap~ print~ scope~ tabwrite~ tabread4~ send~ receive~ catch~ throw~
+delwrite~ delread~ vd~
 
 ### 0.18 {-}
 Release notes now describe the three platforms Pd runs on: IRIX and NT
@@ -3672,20 +3672,20 @@ general: print int float send receive select pack unpack trigger spigot
 
 time handling: delay metro line timer
 
-arithmetic: + + - - \* \* / / == == != != &gt; &gt; &lt; &lt; &gt;= &gt;= &lt;=
+arithmetic: + + - - * * / / == == != != &gt; &gt; &lt; &lt; &gt;= &gt;= &lt;=
 &lt;= & && | || %
 
 midi: notein noteout makenote stripnote
 
 other: random get
 
-signals: dac\~ adc\~ sig\~ line\~ snapshot\~ +\~ \*\~
+signals: dac~ adc~ sig~ line~ snapshot~ +~ *~
 
-signal oscillators: phasor\~ cos\~
+signal oscillators: phasor~ cos~
 
-signal filters: env\~ hip\~
+signal filters: env~ hip~
 
-signal debugging : print\~ scope\~
+signal debugging : print~ scope~
 
 "spigot" replaces "gate" but has the inputs reversed.
 
@@ -3719,7 +3719,7 @@ fixed boxes to reconnect on retype
 
 ### 0.07 {-}
 
-made an adc\~ object
+made an adc~ object
 
 ### 0.06 {-}
 
@@ -3733,7 +3733,7 @@ fixed -font flag to set font pointsize
 
 ### 0.05 {-}
 
-added scope\~, which is just a stopgap until real sound editing comes up.
+added scope~, which is just a stopgap until real sound editing comes up.
 
 improved the open panel slightly.
 
@@ -3746,8 +3746,8 @@ how to get dbx to work with externs though.
 
 ### 0.04 {-}
 
-fixed "cut" which crashed 0.03 if DSP was running. added clip\~, print\~,
-line\~, snapshot\~.
+fixed "cut" which crashed 0.03 if DSP was running. added clip~, print~,
+line~, snapshot~.
 
 ### 0.03 {-}
 
@@ -3757,8 +3757,8 @@ allowed.
 
 ### 0.02 {-}
 
-A DSP network mechanism has been added. DSP objects are: sig\~, +\~, \*\~,
-phasor\~, cos\~.
+A DSP network mechanism has been added. DSP objects are: sig~, +~, *~, phasor~,
+cos~.
 
 Loading of externs is provided (although there is no search path mechanism so
 the extern has to be in the patch's current directory.) Look in pd/externs for
@@ -3776,7 +3776,7 @@ objects; they can be dragged and connected as in Max; to break a connection,
 just click on it (the cursor becomes a turkey to indicate this.) Cut, paste, and
 duplicate seem to work, and a "Pd" class offers subwindows.
 
-The following max-like objects are included: print; +, \*, -, /, ==, !=, &gt;,
+The following max-like objects are included: print; +, *, -, /, ==, !=, &gt;,
 &lt;, &gt;=, &lt;=, &, |, &&, ||, %; int, float, pack, unpack, trigger; delay,
 metro, timer; send, receive.
 
@@ -3848,10 +3848,10 @@ In Pd there's no "preset" object (I now think it's basically a bad idea) and you
 have to use explicit sends and receives to restore values to number boxes. Then
 just make a "message" box to re-send the values you want.
 
-In Macintosh land, instead of getting tabosc4\~ and arrays, you get cycle\~ and
-buffer\~. The only gotcha is that you probably can't draw in buffer\~ with the
+In Macintosh land, instead of getting tabosc4~ and arrays, you get cycle~ and
+buffer~. The only gotcha is that you probably can't draw in buffer~ with the
 mouse as you can with arrays, but at least it's possible to make a patch that
-copies a "table" into a "buffer\~".
+copies a "table" into a "buffer~".
 
 The "bpatcher" feature in Max has a correlate, "graph on parent" subpatches, in
 Pd; however, Pd's version is quite different from Max's.
