@@ -1,21 +1,18 @@
-<!DOCTYPE html>
-<html lang="en-US">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-  <meta charset="utf-8">
-  <meta name="generator" content="pandoc">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
   <title>Pd Documentation</title>
   <style type="text/css">code{white-space: pre;}</style>
-  <link rel="stylesheet" href="pdmanual.css">
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <link rel="stylesheet" href="pdmanual.css" type="text/css" />
 </head>
 <body>
-<header>
+<div id="header">
 <h1 class="title">Pd Documentation</h1>
-</header>
-<nav id="TOC">
+</div>
+<div id="TOC">
 <ul>
 <li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a><ul>
 <li><a href="#guide-to-the-documentation"><span class="toc-section-number">1.1</span> Guide to the Documentation</a></li>
@@ -173,7 +170,7 @@
 <li><a href="#differences-from-maxmsp"><span class="toc-section-number">5.3</span> Differences From Max/MSP</a></li>
 </ul></li>
 </ul>
-</nav>
+</div>
 <p>This is the HTML documentation for Pd, a patchable environment for audio analysis, synthesis, and processing, with a rich set of multimedia capabilities. The latest version of this page can be found at: <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a>.</p>
 <hr />
 
@@ -189,7 +186,7 @@
 <li>sample C code</li>
 </ul>
 <p>This manual has five sections:</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>this overview</li>
 <li><a href="#theory-of-operation">a theory of operations, explaining how Pd works</a></li>
 <li><a href="#getting-pd-to-run">instructions on installing Pd and getting it to run</a></li>
@@ -209,47 +206,52 @@
 
 <h1 id="theory-of-operation"><span class="header-section-number">2</span> Theory of Operation</h1>
 <p><a href="#TOC">back to table of contents</a></p>
-<p>The purpose of this chapter is to describe Pd’s design and how it is supposed to work. Practical details about how to obtain, install, and run Pd are described in the <a href="#getting-pd-to-run">next chapter</a>. Links to more extensive guidaes (and to more theoretical information about computer music) can be found in the <a href="#introduction">previous chapter</a>.</p>
+<p>The purpose of this chapter is to describe Pd’s design and how it is supposed to work. Practical details about how to obtain, install, and run Pd are described in <a href="#getting-pd-to-run">Getting Pd to Run</a>. Links to more extensive guides (and to more theoretical information about computer music) can be found in the <a href="#introduction">Introduction</a>.</p>
 <h2 id="overview"><span class="header-section-number">2.1</span> Overview</h2>
 <p>Pd is a real-time graphical programming environment for audio and graphical processing. It resembles the Max/MSP system but is much simpler and more portable; also Pd has two features not (yet) showing up in Max/MSP: first, via Mark Dank’s GEM package, Pd can be used for simultaneous computer animation and computer audio. Second, an experimental facility is provided for defining and accessing data structures.</p>
 <h3 id="the-main-window-canvases-and-printout"><span class="header-section-number">2.1.1</span> The Main Window, Canvases, and Printout</h3>
 <p>When Pd is running, you’ll see a main “Pd” window, and possibly one or more “canvases” or “patches”. The main Pd window looks like this:</p>
-<figure>
-<img src="fig1.1.png" alt="pd window" /><figcaption>pd window</figcaption>
-</figure>
+<div class="figure">
+<img src="fig1.1.png" alt="pd window" />
+<p class="caption">pd window</p>
+</div>
 <p>There are peak level and clip indicators for audio input and output; these report peak levels over all input and all output channels. Note that DC shows up as an input level; many cards have DC levels which show up in the 50s. To see an RMS audio level, select “test audio and MIDI” from the Media menu. The main window display is intended only to help you avoid clipping on input and output. You can turn the peak meters on and off using the control at lower left.</p>
 <p>At lower right is a control to turn audio processing on and off globally. Turning audio off stops the computation and relinquishes any audio devices Pd is using. The “Media” menu is also provided, with accelerators “Control-.” to turn audio computation off and “Control-/” to turn it on. When audio is on, Pd is computing audio samples in real time according to whatever patches you have open (whether they are visible or not).</p>
 <p>The DIO (Digital I/O) error indicator flashes if there is a synchronization error for audio input or output. (But note that on some platforms Pd doesn’t find out about them. If you never see red, you’re probably not seeing the truth.) Click the “DIO errors” button to see a list of recent errors. This indicator should turn red whenever the computation runs late (so that the DAC FIFOs fill and/or the ADC FIFOs empty) or if audio input and output are not running at the same rate. See <a href="#audio-and-midi">Audio and MIDI</a> support.</p>
 <p>The bottom part of the Pd window is an area for printout from objects in patches, and/or for messages from Pd itself.</p>
 <p>Pd documents are called “patches” or “canvases.” Each open document has one main window and any number of sub-windows. The sub-windows can be opened and closed but are always running whether you can see them or not. Here is a simple Pd patch:</p>
-<figure>
-<img src="fig1.2.jpg" alt="hello world patch" /><figcaption>hello world patch</figcaption>
-</figure>
+<div class="figure">
+<img src="fig1.2.jpg" alt="hello world patch" />
+<p class="caption">hello world patch</p>
+</div>
 <p>There are four <em>text boxes</em> in this patch: a number box (showing zero), an object box showing “print,” and two comments. The number box and the object box are connected, the number box’s output to the print box’s input. Boxes may have zero or more inputs and/or outputs, with the inputs on top and the outputs on bottom.</p>
 <p>Pd’s printout appears on the main “Pd” window, unless you redirect it elsewhere.</p>
 <h3 id="object-boxes"><span class="header-section-number">2.1.2</span> Object Boxes</h3>
-<p>Pd patches can have four types of boxes: <em>object, message, GUI,</em> and <em>comment</em> .</p>
-<p>You make <em>objects</em> by typing text into object boxes. The text is divided into <em>atoms</em> separated by white space. The first atom specifies what type of object Pd will make, and the other atoms, called <em>creation arguments</em> , tell Pd how to initialize the object. If you type for example,</p>
-<figure>
-<img src="fig1.3.jpg" alt="object" /><figcaption>object</figcaption>
-</figure>
+<p>Pd patches can have four types of boxes: <em>object, message, GUI,</em> and <em>comment</em>.</p>
+<p>You make <em>objects</em> by typing text into object boxes. The text is divided into <em>atoms</em> separated by white space. The first atom specifies what type of object Pd will make, and the other atoms, called <em>creation arguments</em>, tell Pd how to initialize the object. If you type for example,</p>
+<div class="figure">
+<img src="fig1.3.jpg" alt="object" />
+<p class="caption">object</p>
+</div>
 <p>the “+” specifies the <em>class</em> of the object. In this case the object will be the kind that carries out addition, and the “13” initializes the amount to add.</p>
 <p>Atoms are either numbers or <em>symbols</em> like “+”. Anything that is not a valid number is considered a symbol. Valid numbers may or may not have a decimal point (for instance, 12, 15.6, -.456), or may be written in exponential notation (such as “4.5e6”, which means “4.5 multiplied by 10 six times, i.e., 4500000). Negative exponentials divide by 10 (so that 1.23e-5 comes to 0.0000123).</p>
 <p>Non-valid numbers which are read as symbols include things like “+5” and “0..6” as well as words and names such as “Zack” or “cat”. The symbols “gore”, “Gore”, and “GORE” are all distinct.</p>
 <p>The text you type into an object box determines how many and what kinds of inlets and outlets the object will have. Some classes (like “+” always have a fixed arrangement of inlets and outlets, and in the case of other classes, the inlets and outlets will depend on the creation arguments.</p>
 <p>Here for example is a simple MIDI synthesizer:</p>
-<figure>
-<img src="fig1.4.png" alt="simple MIDI synthesizer" /><figcaption>simple MIDI synthesizer</figcaption>
-</figure>
-<p>This patch mixes <em>control</em> objects (notein, stripnote, and ftom) with <em>tilde</em> objects osc~, *~, and dac~. The control objects carry out their function sporadically, as a result of one or more type of <em>event</em> . In this case, incoming MIDI note messages set off the control computation. The result of the computation is, when the note happens to be a “note on” (and not a “note off”, to compute the frequency in cycles per second and pass it on to the oscillator (“osc~”).</p>
-<p>The second half of the patch, the osc~, *~, and dac~ objects, compute audio samples, in the same way as an analog synthesizer works. The osc~ object is acting as the interface between the two regimes, in that it takes control messages to set its frequency but talks to “*~” using an audio signal. Audio signals aren’t sporadic; they are continuous streams of numbers. As a result tilde objects act under very different rules from control objects. The audio portion of the patch is always running, whether MIDI messages arrive or not. On the other hand, the function of control computations is to insert calculations between the audio computation which may change audio computation parameters such as the frequency of an oscillator.</p>
+<div class="figure">
+<img src="fig1.4.png" alt="simple MIDI synthesizer" />
+<p class="caption">simple MIDI synthesizer</p>
+</div>
+<p>This patch mixes <em>control</em> objects (<code>notein</code>, <code>stripnote</code>, and <code>ftom</code>) with <em>tilde</em> objects <code>osc~</code>, <code>*~</code>, and <code>dac~</code>. The control objects carry out their function sporadically, as a result of one or more type of <em>event</em> . In this case, incoming MIDI note messages set off the control computation. The result of the computation is, when the note happens to be a “note on” (and not a “note off”), to compute the frequency in cycles per second and pass it on to the oscillator (<code>osc~</code>).</p>
+<p>The second half of the patch, the <code>osc~</code>, <code>*~</code>, and <code>dac~</code> objects, compute audio samples, in the same way as an analog synthesizer works. The <code>osc~</code> object is acting as the interface between the two regimes, in that it takes control messages to set its frequency but talks to <code>*~</code> using an audio signal. Audio signals aren’t sporadic; they are continuous streams of numbers. As a result tilde objects act under very different rules from control objects. The audio portion of the patch is always running, whether MIDI messages arrive or not. On the other hand, the function of control computations is to insert calculations between the audio computation which may change audio computation parameters such as the frequency of an oscillator.</p>
 <p>The connections in the patch (the lines between the boxes) are also of two types: control and signal. The type of connection depends on the outlet it comes from. Signal connections are represented by thicker lines than control connections; in the patch above, the two bottom connections are signal and the others are control. In general, a control connection may be made to a signal inlet; if numbers are sent over it they are automatically converted to signals. Signal connections may not be made to control inlets; some sort of explicit conversion must be specified.</p>
 <h3 id="message-and-gui-boxes"><span class="header-section-number">2.1.3</span> Message and GUI Boxes</h3>
 <p>The border of a box tells you how its text is interpreted and how the box functions. Object boxes (as in the previous example) use the text to create objects when you load a patch or type text onto a new one. If you retype the text in an object box, the old one is discarded and a new one is created, using the new creation arguments. The contents of an object box describe a message which is sent to Pd to create the object.</p>
 <p><em>Message</em> boxes interpret the text as a message to send whenever the box is activated (by an incoming message or with the mouse.) The message may be sent many times while the patch is running (as opposed to object boxes whose message is used once to create the object). Instead of going straight to Pd, the message box’s message (or messages) go either to the box’s outlet or to other specified receiving objects. In the example below, the message box, when clicked, sends the message “21” to an object box which adds 13 to it.</p>
-<figure>
-<img src="fig1.5.jpg" alt="[message( –&gt; [object] -&gt; [number]" /><figcaption>[message( –&gt; [object] -&gt; [number]</figcaption>
-</figure>
+<div class="figure">
+<img src="fig1.5.jpg" alt="[message( –&gt; [object] -&gt; [number]" />
+<p class="caption">[message( –&gt; [object] -&gt; [number]</p>
+</div>
 <p>The third box shown is a <em>GUI</em> (“graphical user interface”) box. GUI boxes come in many forms including number boxes (as in this example), toggles, sliders, and so on. Whereas the appearance of an object or message box is static when a patch is running, a number box’s contents (the text) changes to reflect the current value held by the box. You can also use a number box as a control by clicking and dragging up and down, or by typing values in it. (There are also shift- and alt-click actions; see <a href="#popup-menu-for-properties-open-and-help">Popup Menu for Properties, Open, and Help</a> to find out how to look this up.)</p>
 <p>You can also create a “symbol” box which is like a number box but deals in symbols like “cat.” You can type your own strings in (followed by “enter”) or use it to display strings which arrive as messages to its inlet.</p>
 <h3 id="patches-and-files"><span class="header-section-number">2.1.4</span> Patches and Files</h3>
@@ -278,124 +280,134 @@
 <p>To make a connection between two boxes, click on any outlet of the first one, drag toward an inlet of the second one, and release. You can release the mouse button anywhere within the target object and the connection will be made to the nearest inlet.</p>
 <p>Connections are broken by selecting them and using “cut” or the backspace or delete key.</p>
 <h3 id="popup-menu-for-properties-open-and-help"><span class="header-section-number">2.2.7</span> Popup Menu for Properties, Open, and Help</h3>
-<p>All the “clicking” mentioned above is done with the left mouse button. The right button, instead, gives a popup menu offering “properties,” “open,” and “help”. (For Macintosh users who may only have one button on their mouse, double-clicking is mapped to right-click.)</p>
+<p>All the “clicking” mentioned above is done with the left mouse button. The right button, instead, gives a popup menu offering “properties,” “open,” and “help”. (For Mac users who may only have one button on their mouse, double-clicking is mapped to right-click.)</p>
 <p>Selecting “help” on an object gets a Pd patch that demonstrates how to use it. “Help” for the canvas as a whole (right-clicking outside any object) gives a list of all built-in objects.</p>
 <p>The “open” menu item is only enabled if you right-click on a subpatch (see below) and causes Pd to open it. Ordinary subpatches may also be opened by clicking on them, but for “graph-on-parent” ones, this is the only way to do it.</p>
 <p>The “properties” dialog allows you to change certain settings of GUI objects, or of the patch itself (by clicking outside any box.)</p>
 <h3 id="miscellaneous"><span class="header-section-number">2.2.8</span> Miscellaneous</h3>
-<p>Control-q “quits” Pd, but asks you to comfirm the quit. To quit without having to confirm, use command-shift-Q.</p>
+<p>Control-Q “quits” Pd, but asks you to comfirm the quit. To quit without having to confirm, use command-shift-Q.</p>
 <h2 id="messages"><span class="header-section-number">2.3</span> Messages</h2>
 <p>In Pd, objects intercommunicate by sending messages and/or audio signals. Pd messages are sporadic, like MIDI messages or music N “Note cards.”</p>
 <h3 id="anatomy-of-a-message"><span class="header-section-number">2.3.1</span> Anatomy of a Message</h3>
-<p>Messages contain a selector followed by any number of arguments. The selector is a symbol, which appears in the patch as a non-numeric string with no white space, semicolons, or commas. The arguments may be symbols or numbers. Numbers in Pd are kept in 32-bit floating point, so that they can represent integers exactly between -8388608 and 8388608. (In Max, there are separate data types for integers and floating point numbers; Pd uses only float.)</p>
-<p>When a message is passed to something (which is often an inlet of a box but could be anything that can receive a message), the selector of the message is checked against the receiver. If the receiver recognizes messages of that selector, it carries out some corresponding action. For instance, here is a “float” object:</p>
-<figure>
-<img src="fig3.1.jpg" alt="float object" /><figcaption>float object</figcaption>
-</figure>
-<p>The two rectangles at the top are usually both called “inlets” but the one at the left directs incoming messages to the “float” object itself, whereas the one at the right directs messages to an auxiliary “inlet” object. The float object proper (represented by the left-hand inlet) accepts messages with selector “float” and “bang”. The right-hand inlet takes only the message selector “float”. These two selectors, along with “symbol” and “list”, are usually used to denote an object’s main action, whatever it may be, so that objects can be interconnected with maximum flexibility.</p>
+<p>Messages contain a <em>selector</em> followed by any number of arguments. The selector is a symbol, which appears in the patch as a non-numeric string with no white space, semicolons, or commas. The arguments may be symbols or numbers. Numbers in Pd are kept in 32-bit floating point, so that they can represent integers exactly between -8388608 and 8388608. (In Max, there are separate data types for integers and floating point numbers; Pd uses only float.)</p>
+<p>When a message is passed to something (which is often an inlet of a box but could be anything that can receive a message), the selector of the message is checked against the receiver. If the receiver recognizes messages of that selector, it carries out some corresponding action. For instance, here is a <code>float</code> object:</p>
+<div class="figure">
+<img src="fig3.1.jpg" alt="float object" />
+<p class="caption">float object</p>
+</div>
+<p>The two rectangles at the top are usually both called “inlets” but the one at the left directs incoming messages to the <code>float</code> object itself, whereas the one at the right directs messages to an auxiliary “inlet” object. The <code>float</code> object proper (represented by the left-hand inlet) accepts messages with selector “float” and “bang”. The right-hand inlet takes only the message selector “float”. These two selectors, along with “symbol” and “list”, are usually used to denote an object’s main action, whatever it may be, so that objects can be interconnected with maximum flexibility.</p>
 <p>It is possible to type messages which start with a number, which cannot be used as a selector. A single number is always given the “float” selector automatically, and a message with a number followed by other arguments is given the selector “list”.</p>
 <h3 id="depth-first-message-passing"><span class="header-section-number">2.3.2</span> Depth First Message Passing</h3>
-<p>In Pd whenever a message is initiated, the receiver may then send out further messages in turn, and the receivers of those messages can send yet others. So each message sets off a tree of consequent messages. This tree is executed in depth first fashion. For instance in the patch below:</p>
-<figure>
-<img src="fig3.2.jpg" alt="depth first message passing" /><figcaption>depth first message passing</figcaption>
-</figure>
+<p>In Pd, whenever a message is initiated, the receiver may then send out further messages in turn, and the receivers of those messages can send yet others. So each message sets off a tree of consequent messages. This tree is executed in <em>depth first fashion</em>. For instance in the patch below:</p>
+<div class="figure">
+<img src="fig3.2.jpg" alt="depth first message passing" />
+<p class="caption">depth first message passing</p>
+</div>
 <p>the order of arrival of messages is either A-B-C-D or A-C-D-B. The “C” message is not done until the “D” one is also, and the “A” is not done until all four are. It is indeterminate which of “B” or “C” is done first; this depends on what order you made the connections in (in Max, it’s automatically sorted right to left).</p>
 <p>Message-passing can give rise to infinite loops of the sort shown here:</p>
-<figure>
-<img src="fig3.3.jpg" alt="infinite message passing loop" /><figcaption>infinite message passing loop</figcaption>
-</figure>
-<p>Here the left-hand “+” can’t finish processing until the right-hand one has been sent the result “2”, which can’t finish processing that until the left-hand one has been sent “3”, and so on. Pd will print an error message reporting a “stack overflow” if this happens.</p>
-<p>However, it is legal to make a loop if there is a “delay” object somewhere in it. When the “delay” receives a message it schedules a message for the future (even if the time delay is 0) and is then “finished;” Pd’s internal scheduler will wake the delay back up later.</p>
+<div class="figure">
+<img src="fig3.3.jpg" alt="infinite message passing loop" />
+<p class="caption">infinite message passing loop</p>
+</div>
+<p>Here the left-hand <code>+</code> can’t finish processing until the right-hand one has been sent the result “2”, which can’t finish processing that until the left-hand one has been sent “3”, and so on. Pd will print an error message reporting a “stack overflow” if this happens.</p>
+<p>However, it is legal to make a loop if there is a <code>delay</code> object somewhere in it. When the <code>delay</code> receives a message it schedules a message for the future (even if the time delay is 0) and is then “finished;” Pd’s internal scheduler will wake the delay back up later.</p>
 <h3 id="hot-and-cold-inlets-and-right-to-left-outlet-order"><span class="header-section-number">2.3.3</span> Hot and Cold Inlets and Right to Left Outlet Order</h3>
-<p>With few exceptions (notably “timer”), objects treat their leftmost inlet as “hot” in the sense that messages to left inlets can result in output messages. So the following is a legal (and reasonable) loop construct:</p>
-<figure>
-<img src="fig3.4.jpg" alt="hot and cold inlets" /><figcaption>hot and cold inlets</figcaption>
-</figure>
-<p>Here the “f” is an abbreviation for “float”. Note that the “+ 1” output is connected to the right-hand inlet of “f”. This “cold” inlet merely stores the value for the next time the “f” is sent the “bang” message.</p>
-<p>It is frequently desirable to send messages to two or more inlets of an object to specify its action. For instance, you can use “+” to add two numbers; but to do it correctly you must make sure the right hand inlet gets its value first. Otherwise, when the left hand side value comes in, “+” will carry out the addition (since the left hand inlet is the “hot” one) and will add this value to whatever was previously sitting in the right hand inlet.</p>
-<p>Problems can arise when a single outlet is connected (either directly or through arbitrarily long chains of message passing) to different inlets of a single object. In this case it is indeterminate which order the two inlets will receive their messages. Suppose for example you wish to use “+” to double a number. The following is incorrect:</p>
-<figure>
-<img src="fig3.5.jpg" alt="incorrect inlet connection" /><figcaption>incorrect inlet connection</figcaption>
-</figure>
-<p>Here, I connected the left inlet before connecting the right hand one (although this is not evident in the appearance of the patch.) The “+” thus adds the new input (at left) to the previous input (at right).</p>
-<p>The “trigger” object, abbreviated “t”, can be used to split out connections from a single outlet in a determinate order. By convention, all objects in Pd, when sending messages out more than one outlet, do so from right to left. If you connect these to inlets of a second object without crossing wires, the second object will get its leftmost inlet last, which is usually what you want. Here is how to use “trigger” to disambiguate the previous example:</p>
-<figure>
-<img src="fig3.6.jpg" alt="trigger to disambiguate" /><figcaption>trigger to disambiguate</figcaption>
-</figure>
-<p>“Cold” (non-leftmost) inlets are almost universally used to store single values (either numbers or symbols.) With the exception of “line” and “line~”, these values are “sticky,” i.e., once you set the value it is good until the next time you set it. (The “line” exception is for sanity’s sake.)</p>
+<p>With few exceptions (notably <code>timer</code>), objects treat their leftmost inlet as “hot” in the sense that messages to left inlets can result in output messages. So the following is a legal (and reasonable) loop construct:</p>
+<div class="figure">
+<img src="fig3.4.jpg" alt="hot and cold inlets" />
+<p class="caption">hot and cold inlets</p>
+</div>
+<p>Here the <code>f</code> is an abbreviation for <code>float</code>. Note that the <code>+ 1</code> output is connected to the right-hand inlet of <code>f</code>. This “cold” inlet merely stores the value for the next time the <code>f</code> is sent the “bang” message.</p>
+<p>It is frequently desirable to send messages to two or more inlets of an object to specify its action. For instance, you can use <code>+</code> to add two numbers; but to do it correctly you must make sure the right hand inlet gets its value first. Otherwise, when the left hand side value comes in, <code>+</code> will carry out the addition (since the left hand inlet is the “hot” one) and will add this value to whatever was previously sitting in the right hand inlet.</p>
+<p>Problems can arise when a single outlet is connected (either directly or through arbitrarily long chains of message passing) to different inlets of a single object. In this case it is indeterminate which order the two inlets will receive their messages. Suppose for example you wish to use <code>+</code> to double a number. The following is incorrect:</p>
+<div class="figure">
+<img src="fig3.5.jpg" alt="incorrect inlet connection" />
+<p class="caption">incorrect inlet connection</p>
+</div>
+<p>Here, I connected the left inlet before connecting the right hand one (although this is not evident in the appearance of the patch.) The <code>+</code> thus adds the new input (at left) to the previous input (at right).</p>
+<p>The <code>trigger</code> object, abbreviated <code>t</code>, can be used to split out connections from a single outlet in a determinate order. By convention, all objects in Pd, when sending messages out more than one outlet, do so from right to left. If you connect these to inlets of a second object without crossing wires, the second object will get its leftmost inlet last, which is usually what you want. Here is how to use <code>trigger</code> to disambiguate the previous example:</p>
+<div class="figure">
+<img src="fig3.6.jpg" alt="trigger to disambiguate" />
+<p class="caption">trigger to disambiguate</p>
+</div>
+<p>“Cold” (non-leftmost) inlets are almost universally used to store single values (either numbers or symbols.) With the exception of <code>line</code> and <code>line~</code>, these values are “sticky,” i.e., once you set the value it is good until the next time you set it. (The <code>line</code> exception is for sanity’s sake.)</p>
 <p>One more question sometimes comes up in execution order, which is the order in which two messages are sent to a single “cold” inlet. In this situation, since the messages are merged, the last value to be received is the value that is used in the computation.</p>
 <h3 id="message-boxes"><span class="header-section-number">2.3.4</span> Message Boxes</h3>
 <p>Message boxes are text boxes in which you type a message. When the message box is activated, either by clicking on it or sending something to its inlet, the message or messages are sent, either to the message box’s outlet or elsewhere as specified.</p>
-<figure>
-<img src="fig3.7.jpg" alt="message boxes" /><figcaption>message boxes</figcaption>
-</figure>
+<div class="figure">
+<img src="fig3.7.jpg" alt="message boxes" />
+<p class="caption">message boxes</p>
+</div>
 <p>The first of the message boxes above contains the single number 1.5; this message has an implicit selector of “float.” The second is a list with three numbers in it, and in the third, the selector is “my” and the two arguments are the number 5 and the symbol “toes.”</p>
 <p>Multiple messages may be separated by commas as shown:</p>
-<figure>
-<img src="fig3.8.jpg" alt="multiple messages in one box" /><figcaption>multiple messages in one box</figcaption>
-</figure>
-<p>Here the three messages are the numbers 1, 2, and 3, and they are sent in sequence (with no intervening time between them, as with the “trigger” object, and having depth-first consequences so that whatever chain of actions depending on “1” takes place before anything depending on “2” and so on.)</p>
-<p>Semicolons may also separate messages. A message following a semicolon must specify a symbol giving a destination (in other words, semicolons are like commas except that they clear the “current destination” so that the next message specifies a new one). The “current destination” is at first the message box’s own outlet. In the example below, the leading semicolon immediately redirects messages from the outlet to an object named “fred” (which is here a receive object), and likewise the next message is sent to “sue.”</p>
-<figure>
-<img src="fig3.9.jpg" alt="semicolons to send messages" /><figcaption>semicolons to send messages</figcaption>
-</figure>
-<p>Certain other objects (Pd windows, for example, and arrays) have Pd names and can be sent messages this way. Also, the special object “pd” is defined to which you may send messages to start and stop DSP.</p>
+<div class="figure">
+<img src="fig3.8.jpg" alt="multiple messages in one box" />
+<p class="caption">multiple messages in one box</p>
+</div>
+<p>Here the three messages are the numbers 1, 2, and 3, and they are sent in sequence (with no intervening time between them, as with the <code>trigger</code> object, and having depth-first consequences so that whatever chain of actions depending on “1” takes place before anything depending on “2” and so on.)</p>
+<p>Semicolons may also separate messages. A message following a semicolon must specify a symbol giving a destination (in other words, semicolons are like commas except that they clear the “current destination” so that the next message specifies a new one). The “current destination” is at first the message box’s own outlet. In the example below, the leading semicolon immediately redirects messages from the outlet to an object named <code>fred</code> (which is here a <code>receive</code> object), and likewise the next message is sent to <code>sue</code>.</p>
+<div class="figure">
+<img src="fig3.9.jpg" alt="semicolons to send messages" />
+<p class="caption">semicolons to send messages</p>
+</div>
+<p>Certain other objects (Pd windows, for example, and arrays) have Pd names and can be sent messages this way. Also, the special object <code>pd</code> is defined to which you may send messages to start and stop DSP.</p>
 <p>You can put variables in message boxes as shown below:</p>
-<figure>
-<img src="fig3.10.jpg" alt="variables in message boxes" /><figcaption>variables in message boxes</figcaption>
-</figure>
+<div class="figure">
+<img src="fig3.10.jpg" alt="variables in message boxes" />
+<p class="caption">variables in message boxes</p>
+</div>
 <p>Here, “$1”, etc., refer to the arguments of the arriving message (and aren’t defined if you send a “bang” message or if you click on the message box to activate it.) Dollar sign variables are either numbers or symbols depending on the incoming message; if symbols, you may even use them to specify variable message selectors or destinations.</p>
 <h2 id="audio-signals"><span class="header-section-number">2.4</span> Audio Signals</h2>
 <p>Using Pd you can build audio patches which can synthesize musical sounds, analyze incoming sounds, process incoming sounds to produce transformed audio outputs, or integrate audio processing with other media. This section describes how Pd treats audio signals.</p>
 <h3 id="sample-rate-and-format"><span class="header-section-number">2.4.1</span> Sample Rate and Format</h3>
 <p>Pd’s audio signals are internally kept as 32-bit floating point numbers, so you have all the dynamic range you could want. However, depending on your hardware, audio I/O is usually limited to 16 or 24 bits. Inputs all appear between the values of -1 and 1; and output values will be clipped to that range. Pd assumes a sample rate of 44100 unless you override this ( in Pd’s command line or in the “audio setup” dialog).</p>
-<p>Pd can read or write samples to files either in 16-bit or 24-bit fixed point or in 32-bit floating point, in WAV, AIFF, or AU format, via the soundfiler, readsf, and writesf objects.</p>
+<p>Pd can read or write samples to files either in 16-bit or 24-bit fixed point or in 32-bit floating point, in WAV, AIFF, or AU format, via the <code>soundfiler</code>, <code>readsf</code>, and <code>writesf</code> objects.</p>
 <h3 id="tilde-objects-and-audio-connections"><span class="header-section-number">2.4.2</span> Tilde Objects and Audio Connections</h3>
-<p>Audio computations in Pd are carried out by “tilde objects” such as “osc~” whose names conventionally end in a tilde character to warn you what they are. Tilde objects can intercommunicate via audio connections. When audio computation is turned on, or when you change the audio network while audio is on, Pd sorts all the tilde objects into a linear order for running; then this linear list is run down in blocks of 64 samples each; at 44100 Hz. this means the audio network runs every 1.45 milliseconds.</p>
+<p>Audio computations in Pd are carried out by “tilde objects” such as <code>osc~</code> whose names conventionally end in a tilde character to warn you what they are. Tilde objects can intercommunicate via audio connections. When audio computation is turned on, or when you change the audio network while audio is on, Pd sorts all the tilde objects into a linear order for running; then this linear list is run down in blocks of 64 samples each; at 44100 Hz. this means the audio network runs every 1.45 milliseconds.</p>
 <p>Inlets or outlets are configured in Pd either for messages or audio; it’s an error to connect an audio outlet to a non-audio inlet or vice versa; usually these errors are detected at “sort time” when audio is started or the network changed with audio running. An object’s leftmost inlet may accept both audio and messages; any other inlet is either one or the other.</p>
 <p>The audio network, that is, the tilde objects and their interconnections, must be acyclic. If there are loops, you will see the error message at “sort time.” When errors are reported at sort time there is no easy way to find the source of the error. You can build algorithms with feedback using nonlocal signal connections.</p>
-<p>Your subpatches can have audio inlets and outlets via the inlet~ and outlet~ objects.</p>
+<p>Your subpatches can have audio inlets and outlets via the <code>inlet~</code> and <code>outlet~</code> objects.</p>
 <h3 id="converting-audio-to-and-from-messages"><span class="header-section-number">2.4.3</span> Converting Audio to and from Messages</h3>
-<p>If you want to use a control value as a signal, you can use the sig~ object to convert it. The +~, -~, *~, /~, osc~, and phasor~ objects can be configured to take control or signal inputs.</p>
-<p>The other direction, signal to control, requires that you specify at what moments you want the signal sampled. This is handled by the snapshot~ object, but you can also sample a signal with tabwrite~ and then get access it via tabread or tabread4 (note the missing tildes!). There are also analysis objects, the simplest of which is “env~”, the envelope follower.</p>
+<p>If you want to use a control value as a signal, you can use the sig~ object to convert it. The <code>+~</code>, <code>-~</code>, <code>*~</code>, <code>/~</code>, <code>osc~</code>, and <code>phasor~</code> objects can be configured to take control or signal inputs.</p>
+<p>The other direction, signal-to-control, requires that you specify at what moments you want the signal sampled. This is handled by the <code>snapshot~</code> object, but you can also sample a signal with <code>tabwrite~</code> and then get access it via <code>tabread</code> or <code>tabread4</code> (note the missing tildes!). There are also analysis objects, the simplest of which is <code>env~</code>, the envelope follower.</p>
 <h3 id="switching-and-blocking"><span class="header-section-number">2.4.4</span> Switching and Blocking</h3>
-<p>You can use the switch~ or block~ objects to turn portions of your audio computation on and off and to control the block size of computation. There may be only one switch~ or block~ object in any window; it acts on the entire window and all of its subwindows, which may still have their own nested switch~/block~ objects. Switch~ and block~ take a block size and an overlap factor as arguments; so for instance, “block~ 1024 4” specifies 1024 sample blocks, overlapped by a factor of 4 relative to the parent window. Switch~ carries a small computational overhead in addition to whatever overhead is associated with changing the block size.</p>
-<p>Larger block sizes than 64 should result in small increases in run-time efficiency. Also, the fft~ and related objects operate on blocks so that setting the block size also sets the number of FFT channels. You may wish to use block sizes smaller than 64 to gain finer resolutions of message/audio interaction, or to reduce “block delay” in feedback algorithms. At the (untested) extreme, setting the block size to one allows you to write your own recursive filters.</p>
-<p>You can use switch~ to budget your DSP computations; for instance you might want to be able to switch between two synthesis algorithms. To do this, put each algorithm in its own subpatch (which can have sub-sub patches in turn, for a voice bank for instance), and switch each one off as you switch the other one on. Beware of clicks; if you have a line~ controlling output level, give it time to ramp to zero before you switch it off or it will be stuck at a nonzero value for the next time it comes back on.</p>
-<p>When a subpatch is switched off its audio outputs generate zeros; this costs a fairly small overhead; a cheaper way to get outputs is to use throw~ inside the switched module and catch~ outside it.</p>
+<p>You can use the <code>switch~</code> or <code>block~</code> objects to turn portions of your audio computation on and off and to control the block size of computation. There may be only one <code>switch~</code> or <code>block~</code> object in any window; it acts on the entire window and all of its subwindows, which may still have their own nested <code>switch~</code>/<code>block~</code> objects. <code>switch~</code> and <code>block~</code> take a block size and an overlap factor as arguments; so for instance, <code>block~ 1024 4</code> specifies 1024 sample blocks, overlapped by a factor of 4 relative to the parent window. <code>switch~</code> carries a small computational overhead in addition to whatever overhead is associated with changing the block size.</p>
+<p>Larger block sizes than 64 should result in small increases in run-time efficiency. Also, the <code>fft~</code> and related objects operate on blocks so that setting the block size also sets the number of FFT channels. You may wish to use block sizes smaller than 64 to gain finer resolutions of message/audio interaction, or to reduce “block delay” in feedback algorithms. At the (untested) extreme, setting the block size to one allows you to write your own recursive filters.</p>
+<p>You can use <code>switch~</code> to budget your DSP computations; for instance you might want to be able to switch between two synthesis algorithms. To do this, put each algorithm in its own subpatch (which can have sub-sub patches in turn, for a voice bank for instance), and switch each one off as you switch the other one on. Beware of clicks; if you have a <code>line~</code> controlling output level, give it time to ramp to zero before you switch it off or it will be stuck at a nonzero value for the next time it comes back on.</p>
+<p>When a subpatch is switched off its audio outputs generate zeros; this costs a fairly small overhead; a cheaper way to get outputs is to use <code>throw~</code> inside the switched module and <code>catch~</code> outside it.</p>
 <h3 id="nonlocal-signal-connections"><span class="header-section-number">2.4.5</span> Nonlocal Signal Connections</h3>
-<p>You may wish to pass signals non-locally, either to get from one window to another, or to feed a signal back to your algorithm’s input. This can be done using throw~/catch~, send~/receive~, or delwrite~/delread~ pairs. Throw~ and catch~ implement a summing bus; throw~ adds into the bus and catch~ reads out the accumulated signal and zeros the bus for the next time around. There can be many throw~ objects associated with a single catch~, but a throw~ can’t talk to more than one catch~. You can reset the destination of a throw~ if you want to.</p>
-<p>Send~ just saves a signal which may then be receive~d any number of times; but a receive~ can only pick up one send~ at a time (but you can switch between send~s if you want.)</p>
-<p>Don’t try to throw~ and catch~ or send~ and receive~ between windows with different block sizes. The only re-blocking mechanisms which are well tested are inlet~ and outlet~.</p>
-<p>When you send a signal to a point that is earlier in the sorted list of tilde objects, the signal doesn’t get there until the next cycle of DSP computation, one block later; so your signal will be delayed by one block (1.45 msec by default.) Delread~ and delwrite~ have this same restriction, but here the 1.45 msec figure gives the minimum attainable delay. For non-recursive algorithms, a simple flanger for example, you might wish to ensure that your delread~ is sorted after your delwrite~. The only way to ensure this is to create the delread~ after you created the delwrite~; if things get out of whack, just delete and re-create the delread~.</p>
+<p>You may wish to pass signals non-locally, either to get from one window to another, or to feed a signal back to your algorithm’s input. This can be done using <code>throw~</code>/<code>catch~</code>, <code>send~</code>/<code>receive~</code>, or <code>delwrite~</code>/<code>delread~</code> pairs. <code>throw~</code> and <code>catch~</code> implement a summing bus; <code>throw~</code> adds into the bus and <code>catch~</code> reads out the accumulated signal and zeros the bus for the next time around. There can be many <code>throw~</code> objects associated with a single <code>catch~</code>, but a <code>throw~</code> can’t talk to more than one <code>catch~</code>. You can reset the destination of a <code>throw~</code> if you want to.</p>
+<p><code>send~</code> just saves a signal which may then be <code>receive~</code>d any number of times; but a <code>receive~</code> can only pick up one <code>send~</code> at a time (but you can switch between <code>send~</code>s if you want.)</p>
+<p>Don’t try to <code>throw~</code> and <code>catch~</code> or <code>send~</code> and <code>receive~</code> between windows with different block sizes. The only re-blocking mechanisms which are well tested are <code>inlet~</code> and <code>outlet~</code>.</p>
+<p>When you send a signal to a point that is earlier in the sorted list of tilde objects, the signal doesn’t get there until the next cycle of DSP computation, one block later; so your signal will be delayed by one block (1.45 msec by default.) <code>delread~</code> and <code>delwrite~</code> have this same restriction, but here the 1.45 msec figure gives the minimum attainable delay. For non-recursive algorithms, a simple flanger for example, you might wish to ensure that your <code>delread~</code> is sorted after your <code>delwrite~</code>. The only way to ensure this is to create the <code>delread~</code> after you created the <code>delwrite~</code>; if things get out of whack, just delete and re-create the <code>delread~</code>.</p>
 <h2 id="scheduling"><span class="header-section-number">2.5</span> Scheduling</h2>
 <p>Pd uses 64-bit floating point numbers to represent time, providing sample accuracy and essentially never overflowing. Time appears to the user in milliseconds.</p>
 <h3 id="audio-and-messages"><span class="header-section-number">2.5.1</span> Audio and Messages</h3>
-<p>Audio and message processing are interleaved in Pd. Audio processing is scheduled every 64 samples at Pd’s sample rate; at 44100 Hz. this gives a period of 1.45 milliseconds. You may turn DSP computation on and off by sending the “pd” object the messages “dsp 1” and “dsp 0.”</p>
+<p>Audio and message processing are interleaved in Pd. Audio processing is scheduled every 64 samples at Pd’s sample rate; at 44100 Hz. this gives a period of 1.45 milliseconds. You may turn DSP computation on and off by sending the <code>pd</code> object the messages “dsp 1” and “dsp 0.”</p>
 <p>In the intervals between, delays might time out or external conditions might arise (incoming MIDI, mouse clicks, or whatnot). These may cause a cascade of depth-first message passing; each such message cascade is completely run out before the next message or DSP tick is computed. Messages are never passed to objects during a DSP tick; the ticks are atomic and parameter changes sent to different objects in any given message cascade take effect simultaneously.</p>
 <p>In the middle of a message cascade you may schedule another one at a delay of zero. This delayed cascade happens after the present cascade has finished, but at the same logical time.</p>
 <h3 id="computation-load"><span class="header-section-number">2.5.2</span> Computation Load</h3>
-<p>The Pd scheduler maintains a (user-specified) lead on its computations; that is, it tries to keep ahead of real time by a small amount in order to be able to absorb unpredictable, momentary increases in computation time. This is specified using the “audiobuffer” or “frags” command line flags (see <a href="#getting-pd-to-run">Getting Pd to Run</a>).</p>
-<p>If Pd gets late with respect to real time, gaps (either occasional or frequent) will appear in both the input and output audio streams. On the other hand, disk streaming objects will work correctly, so that you may use Pd as a batch program with soundfile input and/or output. The “-nogui” and “-send” startup flags are provided to aid in doing this.</p>
+<p>The Pd scheduler maintains a (user-specified) lead on its computations; that is, it tries to keep ahead of real time by a small amount in order to be able to absorb unpredictable, momentary increases in computation time. This is specified using the <code>-audiobuffer</code> or <code>-frags</code> command line flags (see <a href="#getting-pd-to-run">Getting Pd to Run</a>).</p>
+<p>If Pd gets late with respect to real time, gaps (either occasional or frequent) will appear in both the input and output audio streams. On the other hand, disk streaming objects will work correctly, so that you may use Pd as a batch program with soundfile input and/or output. The <code>-nogui</code> and <code>-send</code> startup flags are provided to aid in doing this.</p>
 <p>Pd’s “realtime” computations compete for CPU time with its own GUI, which runs as a separate process. A flow control mechanism will be provided someday to prevent this from causing trouble, but it is in any case wise to avoid having too much drawing going on while Pd is trying to make sound. If a sub-window is closed, Pd suspends sending the GUI update messages for it; but not so for miniaturized windows as of version 0.32. You should really close them when you aren’t using them.</p>
 <h3 id="determinism"><span class="header-section-number">2.5.3</span> Determinism</h3>
-<p>All message cascades that are scheduled (via “delay” and its relatives) to happen before a given audio tick will happen as scheduled regardless of whether Pd as a whole is running on time; in other words, calculation is never reordered for any real-time considerations. This is done in order to make Pd’s operation deterministic.</p>
-<p>If a message cascade is started by an external event, a time tag is given it. These time tags are guaranteed to be consistent with the times at which timeouts are scheduled and DSP ticks are computed; i.e., time never decreases. (However, either Pd or a hardware driver may lie about the physical time an input arrives; this depends on the operating system.) “Timer” objects which measure time intervals measure them in terms of the logical time stamps of the message cascades, so that timing a “delay” object always gives exactly the theoretical value. (There is, however, a “realtime” object that measures real time, with nondeterministic results.)</p>
+<p>All message cascades that are scheduled (via <code>delay</code> and its relatives) to happen before a given audio tick will happen as scheduled regardless of whether Pd as a whole is running on time; in other words, calculation is never reordered for any real-time considerations. This is done in order to make Pd’s operation deterministic.</p>
+<p>If a message cascade is started by an external event, a time tag is given it. These time tags are guaranteed to be consistent with the times at which timeouts are scheduled and DSP ticks are computed; i.e., time never decreases. (However, either Pd or a hardware driver may lie about the physical time an input arrives; this depends on the operating system.) <code>timer</code> objects, which measure time intervals, measure them in terms of the logical time stamps of the message cascades, so that timing a <code>delay</code> object always gives exactly the theoretical value. (There is, however, a <code>realtime</code> object that measures real time, with nondeterministic results.)</p>
 <p>If two message cascades are scheduled for the same logical time, they are carried out in the order they were scheduled.</p>
 <h2 id="semantics"><span class="header-section-number">2.6</span> Semantics</h2>
 <p>This section describes how objects in Pd are created, how they store data and how object and other boxes pass messages among themselves.</p>
 <h3 id="creation-of-objects"><span class="header-section-number">2.6.1</span> Creation of Objects</h3>
 <p>The text in a box has a different function depending on whether it is a message, atom (number/symbol), or object box. In message boxes the text specifies the message or messages it will send as output. In atom boxes the text changes at run time to show the state of the box, which is either a number or a symbol.</p>
 <p>In an object box, as in a message box, the text specifies a message; but here the message is to be passed to Pd itself, once, and the message’s effect is to create the object in question. When you open a file, all the objects created are created using their text as “creation messages.” If you type a new message into an object box (or change it), the old object is destroyed and the message is used to create the new one.</p>
-<p>The selector of the message (the first word in the message) is a selector which Pd interprets to mean which type of object to create. Any message arguments (called “creation arguments”) are used to parameterize the object being created. Thus in “makenote 64 250” the selector “makenote” determines the class of object to create and the creation arguments 64 and 250 become the initial velocity and duration.</p>
+<p>The selector of the message (the first word in the message) is a selector that Pd interprets to mean which type of object to create. Any message arguments (called “creation arguments”) are used to parameterize the object being created. Thus in <code>makenote 64 250</code> the selector “makenote” determines the class of object to create and the creation arguments “64” and “250” become the initial velocity and duration.</p>
 <h3 id="persistence-of-data"><span class="header-section-number">2.6.2</span> Persistence of Data</h3>
 <p>Among the design principles of Pd is that patches should be printable, in the sense that the appearance of a patch should fully determine its functionality. For this reason, if messages received by an object change its action, since the changes aren’t reflected in the object’s appearance, they are not saved as part of the file which specifies the patch and will be forgotten when the patch is reloaded. In the same way, if you delete and then recreate an object the original object’s state is not retained but is instead reinitialized (possibly as specified by creation arguments.)</p>
-<p>An exception is made for subpatches whose “state” is the configuration of the subpatch; as a special case, this configuration is restored when the patch is read from a file. Also, if you rename the subpatch, for instance typing “pd jane” instead of “pd spot,” the contents of the patch are preserved and only the text in the object box and the window title of the subpatch are changed.</p>
-<p>It is probably bad style to specify creation arguments ala “makenote 64 250” if you are going to override them later; this is confusing to anyone who tries to understand the patch.</p>
+<p>An exception is made for subpatches whose “state” is the configuration of the subpatch; as a special case, this configuration is restored when the patch is read from a file. Also, if you rename the subpatch, for instance typing <code>pd jane</code> instead of <code>pd spot</code>, the contents of the patch are preserved and only the text in the object box and the window title of the subpatch are changed.</p>
+<p>It is probably bad style to specify creation arguments, e.g. <code>makenote 64 250</code>, if you are going to override them later; this is confusing to anyone who tries to understand the patch.</p>
 <h3 id="message-passing"><span class="header-section-number">2.6.3</span> Message Passing</h3>
-<p>Messages in Pd consist of a selector (a symbol) and zero or more arguments (which may be symbols or numbers). To pass a message to an object, Pd first checks the selector against the class of the object. Message boxes all are of one class and they all take the same incoming messages and dispense them according to their state, that is, the text typed into the box. The same holds for atom boxes (number or symbol) except that their state may change (it consists of the number or symbol showing).</p>
+<p>Messages in Pd consist of a selector (a symbol) and zero or more arguments (which may be symbols or numbers). To pass a message to an object, Pd first checks the selector against the class of the object. All message boxes are of one class and they all take the same incoming messages and dispense them according to their state, that is, the text typed into the box. The same holds for atom boxes (number or symbol) except that their state may change (it consists of the number or symbol showing).</p>
 <p>Object boxes may have many different classes. The class is usually determined by the selector of the creation message, i.e., the first atom of the creation message which is usually a symbol.</p>
-<p>Each class comes with a fixed collection of messages it may be sent. For example, the “float” or “f” object takes “bang” and “float.” These messages are sent to “float” objects (objects whose class is float) via the leftmost, hot inlet. (The right inlet is a separate, auxiliary object.) Objects of class “float” respond to the message “bang” by outputting their current value, that is, by sending a “float” message to their outlet. They respond to “float” messages by setting their value and then outputting it.</p>
+<p>Each class comes with a fixed collection of messages it may be sent. For example, the <code>float</code> or <code>f</code> object takes “bang” and “float.” These messages are sent to <code>float</code> objects (objects whose class is float) via the leftmost, hot inlet. (The right inlet is a separate, auxiliary object.) Objects of class <code>float</code> respond to the message “bang” by outputting their current value, that is, by sending a “float” message to their outlet. They respond to “float” messages by setting their value and then outputting it.</p>
 <p>Each other class (like “float”) in Pd has its own protocol for responding to messages it is sent, and may take “float” and “bang” messages, or others in addition or instead of them.</p>
 <h3 id="inlets-and-lists"><span class="header-section-number">2.6.4</span> Inlets and Lists</h3>
 <p>The leftmost connection point at the top of most objects represents the object itself. Any other dark rectangle is a separate object called an “inlet” although in Pd there are 4 individual inlet classes. The class of the inlet determines which messages it will take: symbol, float, or other; and the inlet forwards the message either to the object proper or to some proxy, usually one that the object creates for the occasion.</p>
@@ -404,122 +416,137 @@
 <p>In message or object boxes, message arguments starting with a dollar sign and a number (like “$1” or “$3-bazoo”) are variables which are substituted with values supplied as part of the environment the message is passed in. In the case of message boxes, the environment consists of the arguments of the “list” message (possibly extrapolated from “bang,” “float,” or other) that the message box is responding to. Thus, if a message box gets “23 skidoo” and if it contains the text, “$2 until $1,” out comes the message, “skidoo until 23.”</p>
 <p>Object boxes contain text which forms a message to be sent to Pd to create and initialize the object. Here, $1, etc., are taken from the context in which the patch was loaded. When the patch is a new document or opened from a file the “$” variables are undefined. But if the patch is an abstraction (see the next section) they are taken from the abstractions’ creation arguments.</p>
 <p>Constructions such as “$1-x” are expanded by string concatenation. This is the mechanism for making local variables. In particular, $0 in an abstraction is a counter which is guaranteed to be unique to that abstraction, so sends and receives with names like “$0-bear” can be used as local send/receive pairs.</p>
-<p>Note that the expansion of variables such as $0 and $1 only works at the beginning of the symbol; so, for instance, “rats-$1” will not be expanded. Occasionally you may want to have double or triple substitutions; this can be done one stage at a time by nesting abstractions (with each subpatch adding its own $-variable to the beginning of a symbol and passing that on as argument to a further abstraction.)</p>
+<p>Note that the expansion of variables such as $0 and $1 only works at the beginning of the symbol; so, for instance, “rats-$1” will not be expanded. Occasionally you may want to have double or triple substitutions; this can be done one stage at a time by nesting abstractions (with each subpatch adding its own $-variable to the beginning of a symbol and passing that on as argument to a further abstraction).</p>
 <p>For example, if you want to get dog-food, dog-ears, and cat-food, for example, have an abstraction “a1” that invokes an abstraction “a2” twice, as “a2 $1-food” and “a2 $1-ears”, and then in a third patch call a1 twice, as “a1 cat” and “a1 dog”. Inside the four “a2” copioes, $1 will evaluate to “dog-food”, “cat-food”, “dog-ears”, and “cat-ears”.</p>
 <h2 id="subpatches"><span class="header-section-number">2.7</span> Subpatches</h2>
 <p>Pd offers two mechanisms for making subpatches, called “one-off subpatches” and “abstractions.” In either case the subpatch appears as an object box in a patch. If you type “pd” or “pd my-name” into an object box, this creates a one-off subpatch. For instance, in this fragment:</p>
-<figure>
-<img src="fig7.1.jpg" alt="subpatch" /><figcaption>subpatch</figcaption>
-</figure>
-<p>the box in the middle, if clicked on, opens the sub-patch shown here:</p>
-<figure>
-<img src="fig7.2.jpg" alt="open subpatch window" /><figcaption>open subpatch window</figcaption>
-</figure>
+<div class="figure">
+<img src="fig7.1.jpg" alt="subpatch" />
+<p class="caption">subpatch</p>
+</div>
+<p>the box in the middle, if clicked on, opens the subpatch shown here:</p>
+<div class="figure">
+<img src="fig7.2.jpg" alt="open subpatch window" />
+<p class="caption">open subpatch window</p>
+</div>
 <p>The contents of the subpatch are saved as part of the parent patch, in one file. If you make several copies of a subpatch you may change them individually.</p>
-<p>The objects, “inlet,”, “inlet~,” “outlet,” and “outlet~,”, when put in a subpatch, create inlets and outlets for the object box containing the subpatch. This works equally for one-off subpatches and abstractions. The inlet~ and outlet~ versions create inlets and outlets for audio signals. You can’t mix messages and audio in a subpatch inlet or outlet; they must be one or the other exclusively. Inlets and outlets appear on the invoking box in the same left-to-right order as they appear in the subpatch.</p>
+<p>The objects <code>inlet</code>, <code>inlet~</code>, <code>outlet</code>, and <code>outlet~</code>, when put in a subpatch, create inlets and outlets for the object box containing the subpatch. This works equally for one-off subpatches and abstractions. The <code>inlet~</code> and <code>outlet~</code> versions create inlets and outlets for audio signals. You can’t mix messages and audio in a subpatch inlet or outlet; they must be one or the other exclusively. Inlets and outlets appear on the invoking box in the same left-to-right order as they appear in the subpatch.</p>
 <h3 id="abstractions"><span class="header-section-number">2.7.1</span> Abstractions</h3>
 <p>To make an abstraction, save a patch with a name such as “abstraction1.pd” and then invoke it as “abstraction1” in an object box:</p>
-<figure>
-<img src="fig7.3.jpg" alt="abstraction" /><figcaption>abstraction</figcaption>
-</figure>
+<div class="figure">
+<img src="fig7.3.jpg" alt="abstraction" />
+<p class="caption">abstraction</p>
+</div>
 <p>Here we’re invoking a separate file, “abstraction1.pd”, which holds the patch shown here (the border is the same as for the subpatch above):</p>
-<figure>
-<img src="fig7.4.jpg" alt="abstraction example" /><figcaption>abstraction example</figcaption>
-</figure>
-<p>You may create many instances of “abstraction1” or invoke it from several different patches; and changing the contents of “abstraction1” will affect all invocations of it as they are created. An analogy from the “c” programming language is that one-off subpatches are like bracketed blocks of code and abstractions are like subroutines.</p>
-<p>Abstractions are instantiated by typing the name of a patch (minus the “.pd” extension) into an object box. You may also type arguments; for instance if you have a file “my-abstraction.pd” you may type “my-abstraction 5” to set the variable $1 to 5. This is defined only for object boxes (not for messages) in the abstraction. (For message boxes, “$1”, etc, have a different meaning as described above.) If you want to send a message with a $1 in the sense of a creation argument of an abstraction, you must generate it with an object box such as “float $1”, “symbol $1”, or perhaps “pack $1 $2”, which may then be sent to a message box.</p>
-<p>The corresponding feature in Max (both Opcode and Ircam) was the “#1” construct. In a Max abstraction, “#1”, etc., are replaced by the creation argument. This has the disadvantage that you can’t edit the abstraction as instantiated in the patch since the “#” variables are substituted. In Pd the “$” variables in object boxes are spelled literally as “$” variables so that it’s meaningful to edit them from within their calling patch. On the Pd side, however, there is the disadvantage that it’s confusing to have “$” expanded at a different time in an object box than in a message box. In an object box, the “$” argument is expanded at creation time, and in a message box, at message time.</p>
+<div class="figure">
+<img src="fig7.4.jpg" alt="abstraction example" />
+<p class="caption">abstraction example</p>
+</div>
+<p>You may create many instances of <code>abstraction1</code> or invoke it from several different patches; and changing the contents of <code>abstraction1</code> will affect all invocations of it as they are created. An analogy from the C programming language is that one-off subpatches are like bracketed blocks of code and abstractions are like subroutines.</p>
+<p>Abstractions are instantiated by typing the name of a patch (minus the “.pd” extension) into an object box. You may also type arguments; for instance if you have a file “my-abstraction.pd” you may type “my-abstraction 5” to set the variable $1 to 5. This is defined only for object boxes (not for messages) in the abstraction. (For message boxes, “$1”, etc, have a different meaning as described above.) If you want to send a message with a $1 in the sense of a creation argument of an abstraction, you must generate it with an object box such as <code>float $1</code>, <code>symbol $1</code>, or perhaps <code>pack $1 $2</code>, which may then be sent to a message box.</p>
+<p>The corresponding feature in Max (both Opcode and Ircam) was the “#1” construct. In a Max abstraction, “#1”, etc., are replaced by the creation argument. This has the disadvantage that you can’t edit the abstraction as instantiated in the patch since the “#” variables are substituted. In Pd the “<span class="math inline">$&quot; variables in object boxes are spelled literally as &quot;$</span>” variables so that it’s meaningful to edit them from within their calling patch. On the Pd side, however, there is the disadvantage that it’s confusing to have “<span class="math inline">$&quot; expanded at a different time in an object box than in a message box. In an object box, the &quot;$</span>” argument is expanded at creation time, and in a message box, at message time.</p>
 <h3 id="graph-on-parent-subpatches"><span class="header-section-number">2.7.2</span> Graph-on-parent Subpatches</h3>
-<p>If you open the “properties” dialog for a subpatch or an abstraction, you can check the “graph on parent” box to have the controls of the subpatch/abstraction appear on the parent. For instance, here is an invocation of “abstraction2”:</p>
-<figure>
-<img src="fig7.5.jpg" alt="graph-on-parent abstraction" /><figcaption>graph-on-parent abstraction</figcaption>
-</figure>
+<p>If you open the “properties” dialog for a subpatch or an abstraction, you can check the “graph on parent” box to have the controls of the subpatch/abstraction appear on the parent. For instance, here is an invocation of <code>abstraction2</code>:</p>
+<div class="figure">
+<img src="fig7.5.jpg" alt="graph-on-parent abstraction" />
+<p class="caption">graph-on-parent abstraction</p>
+</div>
 <p>where the patch “abstraction2.pd” contains:</p>
-<figure>
-<img src="fig7.6.jpg" alt="inside graph-on-parent abstraction" /><figcaption>inside graph-on-parent abstraction</figcaption>
-</figure>
-<p>Here, the number box in the abstraction shows up on the box that invoked the abstraction. The “graph on parent” flag is set in the abstraction (and is saved as part of the abstraction); to set it, open the “properties” dialog for the “abstraction2” canvas by right-clicking on any white space in the patch.</p>
-<p>To open the subpatch, right click on the object and select “open”. (On Macintoshes without a 2-button mouse, you can double-click in edit mode instead.) It doesn’t work just to click on the object in run mode since clicks are sent to visible controls and/or arrays.</p>
-<p>When the sub-patch is closed, all controls in it appear on the object instead; so the number box in the sub-patch in the example above is the same one as you see in the box. Only controls are made visible in this way</p>
+<div class="figure">
+<img src="fig7.6.jpg" alt="inside graph-on-parent abstraction" />
+<p class="caption">inside graph-on-parent abstraction</p>
+</div>
+<p>Here, the number box in the abstraction shows up on the box that invoked the abstraction. The “graph on parent” flag is set in the abstraction (and is saved as part of the abstraction); to set it, open the “properties” dialog for the <code>abstraction2</code> canvas by right-clicking on any white space in the patch.</p>
+<p>To open the subpatch, right click on the object and select “open”. (On Macs without a 2-button mouse, you can double-click in edit mode instead.) It doesn’t work just to click on the object in run mode since clicks are sent to visible controls and/or arrays.</p>
+<p>When the subpatch is closed, all controls in it appear on the object instead; so the number box in the subpatch in the example above is the same one as you see in the box. Only controls are made visible in this way.</p>
 <h2 id="numeric-arrays"><span class="header-section-number">2.8</span> Numeric Arrays</h2>
 <p>Linear arrays of numbers recur throughout the computer musician’s bag of tricks, beginning with the wavetable oscillator. The wavetable oscillator later was reinvented as the looping sampler. Also, table lookup is used for nonlinear distortion of audio signals. In the domain of control, arrays of numbers can specify control mappings, probability densities, voicing data, and much more.</p>
-<p>Arrays in Pd should be allocated (and possible read in from a file) before beginning to make sound, since memory allocation and disk operations may take long enough to cause audio buffer overruns or underruns. Pd provides two ways to define new arrays, as “graphs” and “tables”. In either case the array has a pre-defined name and size (i.e., number of points). Elements of the array are stored as floating-point numbers, 4 bytes apiece</p>
+<p>Arrays in Pd should be allocated (and possible read in from a file) before beginning to make sound, since memory allocation and disk operations may take long enough to cause audio buffer overruns or underruns. Pd provides two ways to define new arrays, as “graphs” and “tables”. In either case the array has a predefined name and size (i.e., number of points). Elements of the array are stored as floating-point numbers, 4 bytes apiece</p>
 <p>If you use an array to store a one-second sound at 44.1 kHz you will need 176 kilobytes, or a one-minute sound, 10.6 megabytes. To store a sound with two or more channels, use a separate array for each channel.</p>
-<p>Arrays are also useful as transfer functions, for example for nonlinear distortion of an audio signal, or to map a control onto a synthesis parameter. In situations like this one typically uses much shorter arrays, of no more than a few hundred elements. They are also useful for storing measured spectra derived from the fft~ objects, and probably for many other uses.</p>
+<p>Arrays are also useful as transfer functions, for example for nonlinear distortion of an audio signal, or to map a control onto a synthesis parameter. In situations like this one typically uses much shorter arrays, of no more than a few hundred elements. They are also useful for storing measured spectra derived from the <code>fft~</code> objects, and probably for many other uses.</p>
 <p>Arrays usually appear within subpatches created to house them, whether in “graph on parent” form (so that you see them within a rectangle drawn on the containing patch), or as a regular subpatch (which you see as a text box.) In the “graph on parent” form, an array appears as shown:</p>
-<figure>
-<img src="fig8.1.jpg" alt="array" /><figcaption>array</figcaption>
-</figure>
-<p>Arrays are indexed from 0 to N-1 where N is the number of points in the array. You can read an array value using the tabread object:</p>
-<figure>
-<img src="fig8.2.jpg" alt="array indexing" /><figcaption>array indexing</figcaption>
-</figure>
-<p>Here we see that the third point of the array (index 2) has the value 0.4. To write into the array you can use the tabwrite object:</p>
-<figure>
-<img src="fig8.3.jpg" alt="setting an value in an array" /><figcaption>setting an value in an array</figcaption>
-</figure>
+<div class="figure">
+<img src="fig8.1.jpg" alt="array" />
+<p class="caption">array</p>
+</div>
+<p>Arrays are indexed from 0 to N-1 where N is the number of points in the array. You can read an array value using the <code>tabread</code> object:</p>
+<div class="figure">
+<img src="fig8.2.jpg" alt="array indexing" />
+<p class="caption">array indexing</p>
+</div>
+<p>Here we see that the third point of the array (index 2) has the value 0.4. To write into the array you can use the <code>tabwrite</code> object:</p>
+<div class="figure">
+<img src="fig8.3.jpg" alt="setting an value in an array" />
+<p class="caption">setting an value in an array</p>
+</div>
 <p>In this example, sending the message sets the third element to 0.5. (You may also send the two numbers to the two inlets separately.)</p>
-<p>The two previous examples showed control operations to read and write from and to arrays. These may also be done using audio signals. For example, the patch below creates a 440 Hz. tone with “array1” as a waveform:</p>
-<figure>
-<img src="fig8.4.jpg" alt="setting an array with a waveform" /><figcaption>setting an array with a waveform</figcaption>
-</figure>
-<p>Here phasor~’s outputs a sawtooth wave, repeating 440 times per second, whose output range is from 0 to 1. The multiplier and adder adjust the range from 1 to 11, and then the values are used as indices for tabread4~, which is a 4-point interpolating table lookup module. (Much more detail is available in the audio example patches in the “pure documentation” series.)</p>
+<p>The two previous examples showed control operations to read and write from and to arrays. These may also be done using audio signals. For example, the patch below creates a 440 Hz. tone with <code>array1</code> as a waveform:</p>
+<div class="figure">
+<img src="fig8.4.jpg" alt="setting an array with a waveform" />
+<p class="caption">setting an array with a waveform</p>
+</div>
+<p>Here <code>phasor~</code> outputs a sawtooth wave, repeating 440 times per second, whose output range is from 0 to 1. The multiplier and adder adjust the range from 1 to 11, and then the values are used as indices for <code>tabread4~</code>, which is a 4-point interpolating table lookup module. (Much more detail is available in the audio example patches in the “pure documentation” series.)</p>
 <p>To create a new array, select “array” from the “put” menu. Up will come a dialog window to set initial properties of the array. By default, a new graph is created to hold the array, but it may also be housed in the most recently created graph instead. Other properties may be specified there and/or changed later using the “properties” dialog.</p>
 <p>If you select “properties” on an array in a graph, you two dialogs, one for the array and one for the graph. The array dialog looks like this:</p>
-<figure>
-<img src="fig8.5.jpg" alt="array properties window" /><figcaption>array properties window</figcaption>
-</figure>
+<div class="figure">
+<img src="fig8.5.jpg" alt="array properties window" />
+<p class="caption">array properties window</p>
+</div>
 <p>You may use this to change the name and size, in addition to another property, “save contents”. If “save contents” is selected, the array’s values are stored in the containing patch; otherwise they’re initialized to zero each time the patch is reloaded. If you intend to use arrays to store sounds, you will probably not wish to store them in the patch but as separate soundfiles. This will be more efficient, and you may also then use a sound editor to modify them outside Pd.</p>
 <p>If you check “delete me” and then “OK”, the array will be deleted. This is an odd interface for deleting an object, and is only provided because Pd lacks a mechanism for selecting arrays (so that “cut” could serve).</p>
 <p>The graph dialog (which also pops up) is shown here:</p>
-<figure>
-<img src="fig8.6.jpg" alt="graph properties" /><figcaption>graph properties</figcaption>
-</figure>
+<div class="figure">
+<img src="fig8.6.jpg" alt="graph properties" />
+<p class="caption">graph properties</p>
+</div>
 <p>The X bounds initially range from 0 to the number of points in the table minus one (this is a good choice for arrays, although graphs holding other kinds of objects might require other X bounds.) The Y bounds should be chosen to reflect the natural range of the table, so that stored sounds would naturally range from -1 to 1, but a sequence of frequency values might range from 0 to 20,000. Finally, you choose the screen size of the graph, width and height, in screen pixels.</p>
 <p>Many other operations are defined for arrays; see the related patches in the tutorial (starting at 2.control/15.array.pd) for more possibilities.</p>
 <h2 id="data-structures"><span class="header-section-number">2.9</span> Data Structures</h2>
 <p>(Note: this section is adapted from an article submitted to ICMC 2002.)</p>
 <p>The original idea in developing Pd was to make a real-time computer music performance environment like Max, but somehow to include also a facility for making computer music scores with user-specifiable graphical representations. This idea has important precedents in Eric Lindemann’s Animal and Bill Buxton’s SSSP. An even earlier class of precedents lies in the rich variety of paper scores for electronic music before it became practical to offer a computer-based score editor. In this context, scores by Stockhausen ( <em>Kontakte</em> and <em>Studie II</em>) and Yuasa (<em>Toward the Midnight Sun</em>) come most prominently to mind, but also Xenakis’s <em>Mycenae-alpha</em>, which, although it was realized using a computer, was scored on paper and only afterward laboriously transcribed into the computer.</p>
 <p>Pd is designed to to offer an extremely unstructured environment for describing data structures and their graphical appearance. The underlying idea is to allow the user to display any kind of data he or she wants to, associating it in any way with the display. To accomplish this Pd introduces a graphical data structure, somewhat like a data structure out of the C programming language, but with a facility for attaching shapes and colors to the data, so that the user can visualize and/or edit it. The data itself can be edited from scratch or can be imported from files, generated algorithmically, or derived from analyses of incoming sounds or other data streams. Here is one simple example of a very short musical sketch realized using Pd:</p>
-<figure>
-<img src="fig9.1.jpg" alt="graphical score" /><figcaption>graphical score</figcaption>
-</figure>
+<div class="figure">
+<img src="fig9.1.jpg" alt="graphical score" />
+<p class="caption">graphical score</p>
+</div>
 <p>The example, which only lasts a few seconds, is a polyphonic collection of time-varying noise bands. The graphical “score” consists of six objects, each having a small grab point at left, a black shape to show dynamic, and a colored shape to show changing frequency and bandwidth. The horizontal axis represents time and the vertical axis, frequency (although, as explained later, this behavior isn’t built into pd). The dynamic and frequency shapes aren’t constrained to be connected or even to be proximate, but since they pertain to the same sound their horizontal positions line up. In this example the last (furthest-right) object is percussive (as seen by the black shape) and has a fixed frequency and bandwidth, whereas the large, articulated shape in the center has a complicated trajectory in both frequency and dynamic. The color of the frequency trace determines the voice number used to realize it.</p>
-<p>Each object is thus composed of a combination of scalar values (color; aggregate position in X and Y coordinates) and array values (time/value pairs for the black traces and time/frequency/bandwidth triples for the colored ones.) This is all specified by the user using Pd’s “template” mechanism.</p>
+<p>Each object is thus composed of a combination of scalar values (color; aggregate position in X and Y coordinates) and array values (time/value pairs for the black traces and time/frequency/bandwidth triples for the colored ones). This is all specified by the user using Pd’s “template” mechanism.</p>
 <p>Here is the template associated with the graphical objects shown above:</p>
-<figure>
-<img src="fig9.2.jpg" alt="template for graphical score" /><figcaption>template for graphical score</figcaption>
-</figure>
-<p>Templates consist of a data structure definition (the “struct” object) and zero or more drawing instructions (“filledpolygon” and “plot”). The “struct” object gives the template the name, “template-toplevel.” The data structure is defined to contain three floating point numbers named “x”, “y”, and “voiceno,” and two arrays, one named “pitch” whose elements belong to another template named “template-pitch,” and similarly for the array “amp.”</p>
-<p>In general, data structures are built from four data types: scalar floats and symbols, arrays (whose elements share another, specified template) and lists (whose elements may have a variety of templates). The contents of a Pd window themselves form a list. Pd’s correlate of Max’s “table” object is implemented as a top-level array whose elements are scalars containing a single floating-point number.</p>
+<div class="figure">
+<img src="fig9.2.jpg" alt="template for graphical score" />
+<p class="caption">template for graphical score</p>
+</div>
+<p>Templates consist of a data structure definition (the <code>struct</code> object) and zero or more drawing instructions (“filledpolygon” and “plot”). The <code>struct</code> object gives the template the name, “template-toplevel.” The data structure is defined to contain three floating point numbers named “x”, “y”, and “voiceno,” and two arrays, one named “pitch” whose elements belong to another template named “template-pitch,” and similarly for the array “amp.”</p>
+<p>In general, data structures are built from four data types: scalar floats and symbols, arrays (whose elements share another, specified template) and lists (whose elements may have a variety of templates). The contents of a Pd window themselves form a list. Pd’s correlate of Max’s <code>table</code> object is implemented as a top-level array whose elements are scalars containing a single floating-point number.</p>
 <p>Data structures in Pd may nest arbitrarily deeply using the array and list types. For example, a collection of sinusoidal tracks from an analysis engine could be implemented as an array of arrays of (pitch, amplitude) pairs; this appears as example 12 in Pd’s FFT object online tutorial.</p>
-<p>After the “struct” object in the template shown above, the remaining three objects are <em>drawing instructions</em> , first for a rectangle (“filledpolygon”), and then for two arrays. The various graphical attributes that are specified for drawing instructions may be numerical constants or data structure field names; in the latter case the value varies depending on the data. For instance, the second creation argument to “plot” is the color. The first “plot” plots the “amp” field and the color is given as 0, or black. The second one plots “pitch” using the color “voiceno”. In this way the color of the second trace is attached to the “voiceno” slot in the data structure, so that color will vary according to its “voiceno” slot.</p>
+<p>After the <code>struct</code> object in the template shown above, the remaining three objects are <em>drawing instructions</em> , first for a rectangle (“filledpolygon”), and then for two arrays. The various graphical attributes that are specified for drawing instructions may be numerical constants or data structure field names; in the latter case the value varies depending on the data. For instance, the second creation argument to “plot” is the color. The first “plot” plots the “amp” field and the color is given as 0, or black. The second one plots “pitch” using the color “voiceno”. In this way the color of the second trace is attached to the “voiceno” slot in the data structure, so that color will vary according to its “voiceno” slot.</p>
 <h3 id="traversal"><span class="header-section-number">2.9.1</span> Traversal</h3>
 <p>Pd objects are provided to traverse lists and arrays, and to address elements of data structures for getting and setting. Here is a patch showing how these facilities could be used, for example, to sequence the graphical score shown above:</p>
-<figure>
-<img src="fig9.3.jpg" alt="traversal example patch" /><figcaption>traversal example patch</figcaption>
-</figure>
-<p>Pd has no built-in sequencer, nor even any notion that “x” values should be used as a time axis. (However, a “sort” function is provided, which reorders a list from left to right, on the assumption that users might often want to use Pd data collections as x-ordered sequences.) Recording sequences of events into lists, and/or playing the lists back as sequences, are functionalities that the user is expected to supply on top of Pd’s offerings, which, it is hoped, would allow those functionalities within a much larger range of possibilities, to include random re-orderings of events, score following, self-modifying scores, reactive improvisation, and perhaps much more.</p>
-<p>Traversal of data is made possible by adding a new type of atom, “pointer”, to the two previously defined types that make up messages, to wit, numbers and symbols. Unlike numbers and symbols, pointers have no printed form and thus can’t be uttered in message boxes. Traversal objects such as “pointer” and “get” (among several others) can generate or use pointers. The pointer data type is also integrated into pipe-fitting objects such as “pack”, “unpack”, and “route”.</p>
-<p>In the patch shown above, the topmost “pointer” object holds a pointer to the next object to “play” (by sending it to one of the “voice” abstractions at bottom.) The pointer object takes a “traverse” message to set it to the head of the list (named “pd-data”), and “next” messages to move to (and output) the next datum in the list (i.e., the next in the list of six objects in the score). Another “pointer” object is also used, further down, as a storage cell for pointers just as “float” is for numbers.</p>
-<p>The center of any sequencer is always the “delay” object, which must be fed the time difference between each event (including the non-event of hitting “start”) and the next. As we extract each of the six objects in the score, we must wait the delay for playing that object, and then send its pointer to one of the “voice” abstractions to play it. However, we have to inspect the object itself to know the delay before playing it. So, in the loop, we peel off the first remaining object to play and inspect the time difference between it and the previous one, using this value to set the delay, but also storing the pointer in the lower “pointer” and “pack” objects.</p>
-<p>The time difference needed to set the delay object is obtained using the “get template-toplevel x” object. (This is converted to incremental time (“-”), corrected for tempo, and fed to the delay.) Pd provides the “get” and “set” objects for reading and writing values from data structures. The two “get” objects shown here obtain the “x” and “voiceno” fields of the current object. The template name (template-toplevel) is supplied to the “get” objects so that they can look up the offset of the necessary field(s) in advance, for greater run-time efficiency.</p>
-<p>Once the delay has expired, the object’s pointer is recalled (the lower “pointer” object), and the voice number is recalled. This is packed with the pointer itself and routed, so that the pointer goes to the appropriate voice. The voice number is shown as the color of the frequency trace in “999” units (first digit red, second green, third blue) and the “route” is arbitrarily set up to select among the six primary and secondary colors plus black.</p>
-<p>The details of extracting the pitch and dynamic breakpoints from the arrays defined in the template are managed in the “voice” abstraction. The “voice” abstraction receives a pointer to a given object and manages the sequencing of the arrays; so it contains two sequencers itself. The nesting of the overall structure of the sequencer patch mirrors the nesting of the original data structures. Finally, the voice abstraction puts its audio output on a summing bus.</p>
+<div class="figure">
+<img src="fig9.3.jpg" alt="traversal example patch" />
+<p class="caption">traversal example patch</p>
+</div>
+<p>Pd has no built-in sequencer, nor even any notion that “x” values should be used as a time axis. (However, a “sort” function is provided, which reorders a list from left to right, on the assumption that users might often want to use Pd data collections as x-ordered sequences.) Recording sequences of events into lists, and/or playing the lists back as sequences, are functionalities that the user is expected to supply on top of Pd’s offerings, which, it is hoped, would allow those functionalities within a much larger range of possibilities, to include random reorderings of events, score following, self-modifying scores, reactive improvisation, and perhaps much more.</p>
+<p>Traversal of data is made possible by adding a new type of atom, “pointer”, to the two previously defined types that make up messages, to wit, numbers and symbols. Unlike numbers and symbols, pointers have no printed form and thus can’t be uttered in message boxes. Traversal objects such as <code>pointer</code> and <code>get</code> (among several others) can generate or use pointers. The pointer data type is also integrated into pipe-fitting objects such as <code>pack</code>, <code>unpack</code>, and <code>route</code>.</p>
+<p>In the patch shown above, the topmost <code>pointer</code> object holds a pointer to the next object to “play” (by sending it to one of the “voice” abstractions at bottom). The pointer object takes a “traverse” message to set it to the head of the list (named “pd-data”), and “next” messages to move to (and output) the next datum in the list (i.e., the next in the list of six objects in the score). Another <code>pointer</code> object is also used, further down, as a storage cell for pointers just as <code>float</code> is for numbers.</p>
+<p>The center of any sequencer is always the <code>delay</code> object, which must be fed the time difference between each event (including the non-event of hitting “start”) and the next. As we extract each of the six objects in the score, we must wait the delay for playing that object, and then send its pointer to one of the “voice” abstractions to play it. However, we have to inspect the object itself to know the delay before playing it. So, in the loop, we peel off the first remaining object to play and inspect the time difference between it and the previous one, using this value to set the delay, but also storing the pointer in the lower <code>pointer</code> and <code>pack</code> objects.</p>
+<p>The time difference needed to set the delay object is obtained using the <code>get template-toplevel x</code> object. (This is converted to incremental time (<code>-</code>), corrected for tempo, and fed to the delay.) Pd provides the <code>get</code> and <code>set</code> objects for reading and writing values from data structures. The two <code>get</code> objects shown here obtain the “x” and “voiceno” fields of the current object. The template name (template-toplevel) is supplied to the <code>get</code> objects so that they can look up the offset of the necessary field(s) in advance, for greater runtime efficiency.</p>
+<p>Once the delay has expired, the object’s pointer is recalled (the lower <code>pointer</code> object), and the voice number is recalled. This is packed with the pointer itself and routed, so that the pointer goes to the appropriate voice. The voice number is shown as the color of the frequency trace in “999” units (first digit red, second green, third blue) and the <code>route</code> is arbitrarily set up to select among the six primary and secondary colors plus black.</p>
+<p>The details of extracting the pitch and dynamic breakpoints from the arrays defined in the template are managed in the <code>voice</code> abstraction. The <code>voice</code> abstraction receives a pointer to a given object and manages the sequencing of the arrays; so it contains two sequencers itself. The nesting of the overall structure of the sequencer patch mirrors the nesting of the original data structures. Finally, the voice abstraction puts its audio output on a summing bus.</p>
 <p>More general patches can easily be constructed which access heterogeneous lists of objects (having different templates). In this way, an arbitrarily rich personal “score language” can be developed and sequenced.</p>
 <h3 id="accessing-and-changing-data"><span class="header-section-number">2.9.2</span> Accessing and Changing Data</h3>
-<p>In general, accessing or changing data is done via “pointers” to “scalars”. Numbers and symbols within scalars are accessed using the “get” object and changed, in the same way, using “set”. Since lists and arrays are composed of scalars, every actual number or symbol in a data heap will be a number or symbol element of some scalar. To access them, it suffices to have objects to chase down elements of lists and arrays (given either a global name or a pointer to the containing scalar).</p>
-<p>Lists are traversed in the way shown above; to get to a sublist of a scalar, the “get” object will provide a pointer, in the same way as it provides “float” or “symbol” elements of scalars. For arrays, an “element” object is provided which, given a scalar, a field name and a number, chases down the numbered, scalar, element of the named array field.</p>
-<p>To alter “float” or “symbol” elements of scalars is straightforward using the “set” object, but arrays and lists can’t be set by assignment; there is no suitable data type available within messages. Lists could possibly be “settable” by passing pointers to other lists, but permitting this would have required either automatically doing deep copies of data structures to carry out the assignments, or else implementing a garbage collecting memory management system, either of which would be difficult to realize within real-time computation time constraints. Instead, all the data hanging from a scalar is considered as belonging to that scalar, and is left in memory until the scalar is deleted; the data may be changed atom by atom, but primitives are not provided which would imply unpredictable execution times.</p>
-<p>The “getsize” and “setsize” objects are provided to access or change the number of elements in the array. For lists, an “append” object appends a new scalar for a given template to a list, after the element pointed to. (To insert a scalar at the beginning of a list, the pointer can be set to the “head” of the list, a formal location before the first list item.) Deletion is less flexible; the only operation is to delete an entire list. (There’s no reason not to provide finer-grain deletion mechanisms except that it’s not clear how to protect against stale pointers efficiently, except by voiding the entire collection of pointers into a list.)</p>
+<p>In general, accessing or changing data is done via “pointers” to “scalars”. Numbers and symbols within scalars are accessed using the <code>get</code> object and changed, in the same way, using <code>set</code>. Since lists and arrays are composed of scalars, every actual number or symbol in a data heap will be a number or symbol element of some scalar. To access them, it suffices to have objects to chase down elements of lists and arrays (given either a global name or a pointer to the containing scalar).</p>
+<p>Lists are traversed in the way shown above; to get to a sublist of a scalar, the <code>get</code> object will provide a pointer, in the same way as it provides “float” or “symbol” elements of scalars. For arrays, an <code>element</code> object is provided which, given a scalar, a field name and a number, chases down the numbered, scalar, element of the named array field.</p>
+<p>To alter “float” or “symbol” elements of scalars is straightforward using the <code>set</code> object, but arrays and lists can’t be set by assignment; there is no suitable data type available within messages. Lists could possibly be “settable” by passing pointers to other lists, but permitting this would have required either automatically doing deep copies of data structures to carry out the assignments, or else implementing a garbage collecting memory management system, either of which would be difficult to realize within real-time computation time constraints. Instead, all the data hanging from a scalar is considered as belonging to that scalar, and is left in memory until the scalar is deleted; the data may be changed atom by atom, but primitives are not provided which would imply unpredictable execution times.</p>
+<p>The <code>getsize</code> and <code>setsize</code> objects are provided to access or change the number of elements in the array. For lists, an <code>append</code> object appends a new scalar for a given template to a list, after the element pointed to. (To insert a scalar at the beginning of a list, the pointer can be set to the “head” of the list, a formal location before the first list item.) Deletion is less flexible; the only operation is to delete an entire list. (There’s no reason not to provide finer-grain deletion mechanisms except that it’s not clear how to protect against stale pointers efficiently, except by voiding the entire collection of pointers into a list.)</p>
 <h3 id="editing"><span class="header-section-number">2.9.3</span> Editing</h3>
 <p>The graphical score shown above can be edited by dragging breakpoints, or by adding and deleting them, using mouse clicks. Also, entire objects or collections of them may be copied, pasted, and dragged around the screen. Alternatively, there is an editable (or computer generate-able or parse-able) text representation for the data, which may be seen or changed in a dialog window or read and written to external text files.</p>
 <p>Since the graphical presentation of data objects is determined by drawing instructions, the drawing instructions are interpreted backwards to alter data as a result of mouse operations. If a given graphical dimension is controlled by a variable, that variable is then controlled by dragging along that dimension; if the dimension is constant, it can’t be altered by dragging.</p>
-<p>Tricky situations can arise when the user changes the contents of templates. A change in drawing instructions can be accommodated by simply tracking down and redrawing all data objects using the template. However, changing the “struct” object itself make for less straightforward situations. The user might wish to reorder fields, delete them, add new ones, or rename them. When a “struct” object changes, Pd automatically conforms the data from the old structure to the new one. Fields with the same name as previously are maintained (reordering them as necessary); and if a field disappears but another of the same type appears, the new one(s) are taken to be renamings of the old one(s) in order of appearance. New fields which cannot be matched in this way with previously existing ones are assumed to be new and are initialized.</p>
-<p>It can happen that two “struct” objects compete to define the same data structure, or that the user reads in data from a file which expects a different version of the structure, or alternatively, that the “struct” object for existing data objects disappears. For this reason, Pd maintains a private representation of the last active version of a “struct” until all similarly named “structs,” as well as all data using that “struct”, have disappeared. If the user introduces a new version of the “struct” and only later deletes the “current” one, the data is only conformed to the new version once the old one is deleted. In this way we avoid getting into situations where data is left hanging without its structure definition, or where data ends up belonging to two or more structures of the same name. The worst that can happen is that data may lose their drawing instructions, in which case Pd supplies a simple default shape.</p>
+<p>Tricky situations can arise when the user changes the contents of templates. A change in drawing instructions can be accommodated by simply tracking down and redrawing all data objects using the template. However, changing the <code>struct</code> object itself make for less straightforward situations. The user might wish to reorder fields, delete them, add new ones, or rename them. When a <code>struct</code> object changes, Pd automatically conforms the data from the old structure to the new one. Fields with the same name as previously are maintained (reordering them as necessary); and if a field disappears but another of the same type appears, the new one(s) are taken to be renamings of the old one(s) in order of appearance. New fields which cannot be matched in this way with previously existing ones are assumed to be new and are initialized.</p>
+<p>It can happen that two <code>struct</code> objects compete to define the same data structure, or that the user reads in data from a file which expects a different version of the structure, or alternatively, that the <code>struct</code> object for existing data objects disappears. For this reason, Pd maintains a private representation of the last active version of a <code>struct</code> until all similarly named <code>struct</code> objects as well as all data using that <code>struct</code>, have disappeared. If the user introduces a new version of the “struct” and only later deletes the “current” one, the data is only conformed to the new version once the old one is deleted. In this way we avoid getting into situations where data is left hanging without its structure definition, or where data ends up belonging to two or more structures of the same name. The worst that can happen is that data may lose their drawing instructions, in which case Pd supplies a simple default shape.</p>
 <h3 id="limitations"><span class="header-section-number">2.9.4</span> Limitations</h3>
 <p>When examples get more complicated and/or dense than the one shown here, it becomes difficult to see and select specific features of a data collection; more work is needed to facilitate this. There should be some facility for turning drawing instructions on and off, or perhaps for switching between versions of a template, depending on the user’s desired view. There should also be a callback facility in the template for when an object is edited with the mouse, so that the user can bind actions to mouse clicks.</p>
-<p>More generally, the collection of traversal objects that Pd provides is adequate to support a variety of modes of data collection and use, such as analysis and sequencing. But the patches required to traverse the data collections are not always simple. It would be desirable to find a more straightforward mechanism than that provided by the “pointer”, “get” and “set” objects.</p>
+<p>More generally, the collection of traversal objects that Pd provides is adequate to support a variety of modes of data collection and use, such as analysis and sequencing. But the patches required to traverse the data collections are not always simple. It would be desirable to find a more straightforward mechanism than that provided by the <code>pointer</code>, <code>get</code> and <code>set</code> objects.</p>
 <p>The “data” facility, although part of the original plan for Pd, has only recently been implemented in its current form, and as (hopefully) the user base grows there will surely be occasions for many further extensions of the data handling primitives and the graphical presentation and editing functions.</p>
 <hr />
 
@@ -530,9 +557,10 @@
 <p>Installation instructions are platform-specific; the following three sections will describe what to do for various operating systems you might have. In case of trouble also consult the Pd mailing list archive on <a href="http://iem.at/mailinglists/pd-list/" class="uri">http://iem.at/mailinglists/pd-list/</a> , which often has late-breaking news about configuration problems and solutions. The rest of this section describes how to get audio and MIDI to work.</p>
 <h2 id="audio-and-midi"><span class="header-section-number">3.1</span> Audio and MIDI</h2>
 <p>To test audio and MIDI, start Pd and select “test Audio and MIDI” from the “Media” menu. You should see a window like this:</p>
-<figure>
-<img src="fig11.1.png" alt="test tone patch" /><figcaption>test tone patch</figcaption>
-</figure>
+<div class="figure">
+<img src="fig11.1.png" alt="test tone patch" />
+<p class="caption">test tone patch</p>
+</div>
 <p>First, try to get Pd to play a sine wave over your speakers. The “TEST TONE” control at top left turns this on and off. Normally, all the output channels are turned on so that when you turn the tone on (to a soft -40 dB or a louder -20 dB) you should get output on the first eight of your output channels. (If you have fewer than 8 output channels open, the extra channels aren’t played; and if you have more, this particular patch won’t use them.)</p>
 <p>If there’s anything wrong, the most likely outcome is that you will hear nothing at all. This could be for any of at least three reasons: Pd might have failed to open the audio device; the audio card’s output volume might be set to zero; or your audio system might not be set to amplify the computer output.</p>
 <p>The number boxes labeled “AUDIO INPUT” show the levels of incoming audio, in dB, with 100 being maximum. (Incoming signals may clip at RMS levels below 100; for instance, a sinusoid clips at about 97 dB.) Any DC present in the input (such as you get with cheap audio hardware) will show up as level unless you turn on the “input hipass” toggle at right; then the DC component is filtered out before metering.</p>
@@ -544,60 +572,61 @@
 <p>In addition to the “test audio and MIDI” patch, the “Media” menu contains items for controlling audio and MIDI settings. The first two items, “Audio on” and “Audio off”, open or close the audio devices and start or stop Pd’s audio computation.</p>
 <p>If there is a choice of audio API to make, the Media menu will display them. (On Linux, they are OSS, ALSA, and Portaudio; on Windows, you get MMIO and ASIO). On Mac the only one is Portaudio. More information about the APIs appears in the sections below.</p>
 <p>Selecting an API (even if it’s the one already in use), or, alternatively, selecting “Audio Settings…” from Preferences, opens a dialog panel like this:</p>
-<figure>
-<img src="fig11.2.png" alt="audio settings dialog" /><figcaption>audio settings dialog</figcaption>
-</figure>
+<div class="figure">
+<img src="fig11.2.png" alt="audio settings dialog" />
+<p class="caption">audio settings dialog</p>
+</div>
 <p>The exact choices you get depend on the operating system and API. The sample rate controls both audio output and input. The audio throughput delay is the nominal amount of time, in milliseconds, that a sound coming into the audio input will be delayed if it is copied through Pd straight to the output. Naturally you would like this to be as small as possible, but, depending on OS, API, and even the specific choice of audio hardware, there will be a limit to how small you can make this. You can typically get 10 msec on Linux (and lower still if you use special tricks), 30 msec on MacOS, and 60 msec on Windows (but note that there might be ways that a patient Windows user can reduce this).</p>
 <p>Next you get a choice of input and output device. If you want to open more than one, hit “use multiple devices” and you’ll be allowed up to 4 in and 4 out. Each audio device is 2 channels by default, but you may specify more if your hardware supports it. Other parameters may be tweaked using the command line; see under <a href="#preferences-and-startup-options">Preferences and Startup Options</a>.</p>
 <h4 id="midi" class="unnumbered">MIDI</h4>
-<p>The “channel message” midi objects in Pd such as notein or pgmout will take channels 1-16 to mean the first open MIDI port, 17-32 the second one, and so on. The midiin, sysexin, midiout objects give you a separate inlet to specify which of the open MIDI port numbers you want.</p>
+<p>The “channel message” midi objects in Pd such as <code>notein</code> or <code>pgmout</code> will take channels 1-16 to mean the first open MIDI port, 17-32 the second one, and so on. The <code>midiin</code>, <code>sysexin</code>, <code>midiout</code> objects give you a separate inlet to specify which of the open MIDI port numbers you want.</p>
 <p>System exclusive MIDI message input and output are theoretically supported but does not work uniformly across all operating systems..</p>
 <h2 id="installing-pd-in-microsoft-windows"><span class="header-section-number">3.2</span> Installing Pd in Microsoft Windows</h2>
 <p>Pd should work under any version of Windows since 95. You can download as a self-extracting archive (a “.exe” file). Run this and select a destination directory when prompted, such as “\pd” or “Program Files\pd”.</p>
-<p>If for example you put Pd in “C:Program Files\pd”, the executable program will be “C:Program Files\pd\bin\pd”. You can simply adjust your path to include C:\pd\bin and then invoke “pd” in a command prompt window. You can also make a shortcut to the executable program (left-click on it and drag to the desktop, for example.)</p>
+<p>If for example you put Pd in <code>C:Program Files\pd</code>, the executable program will be <code>C:Program Files\pd\bin\pd</code>. You can simply adjust your path to include <code>C:\pd\bin</code> and then invoke <code>pd</code> in a command prompt window. You can also make a shortcut to the executable program (left-click on it and drag to the desktop, for example.)</p>
 <p>Pd requires “TCP/IP networking” to be turned on. This doesn’t mean you have to be on a real network, but simply that Pd actually consists of two programs that make a “network link” (locally) to intercommunicate.</p>
 <h4 id="audio-in-microsoft-windows" class="unnumbered">Audio in Microsoft Windows</h4>
 <p>Pd offers both the ASIO and MMIO APIs in Windows. Which of these works better will depend on your audio hardware.</p>
 <p>MIDI timing is very poor if you are using simultaneous audio input and output; if you suppress either audio input or output things will improve somewhat under Window; you can apparently get the jitter down to ~40 msec. On W95 performance is simply terrible. W98, with either audio input or output suppressed, offers fairly good MIDI timing (~5 msec jitter). The “first edition” used to crash occasionally; this might be fixed in the “second edition”.</p>
 <h4 id="asio" class="unnumbered">ASIO</h4>
-<p>As of version 0.35 Pd supports ASIO. Invoke Pd as “pd -asio” and, if needed, specify “-sounddev” (etc.) flags to specify which device (see “the Pd command line” below.) You can also specify a “-blocksize” different from the default (256 samples) and “-audiobuf” in milliseconds. Pd will round this down to a power of two buffers, each of “-blocksize” in sample frames.</p>
-<p>TIP: Often your machine will allow you to use ASIO with built-in PC audio hardware. Sometimes it is necessary to set a ridiculously high block size for this to work (on my machine I have to set it to 4096 – about 1/10 of a second!)</p>
+<p>As of version 0.35 Pd supports ASIO. Invoke Pd as <code>pd -asio</code> and, if needed, specify <code>-sounddev</code> (etc.) flags to specify which device (see <a href="#command-line-arguments">Command Line Arguments</a> below.) You can also specify a <code>-blocksize</code> different from the default (256 samples) and <code>-audiobuf</code> in milliseconds. Pd will round this down to a power of two buffers, each of <code>-blocksize</code> in sample frames.</p>
+<p>Tip: Often your machine will allow you to use ASIO with built-in PC audio hardware. Sometimes it is necessary to set a ridiculously high block size for this to work (on my machine I have to set it to 4096 – about 1/10 of a second!)</p>
 <p>Using MMIO I’ve been able to get very low latencies (6 msec) using M-audio PCI converters (Delta 44).</p>
 <h2 id="installing-pd-in-linux"><span class="header-section-number">3.3</span> Installing Pd in Linux</h2>
 <p>What to do depends on which flavor of Linux you are running (e.g., Debian or Red Hat). The instructions here should work for Pd 0.33 and up regardless of your situation. (If not, you can read the Pd mailing list archives for recent problems; if you have found a new problem you’re welcome to post it to the list.)</p>
 <p>Pd is available via the package systems for some Linux distributions, but not always in the most recent version possible. It’s relatively easy to compile your own copy of Pd and that is the approach described here.</p>
 <h4 id="getting-pd-as-a-.tar.gz" class="unnumbered">Getting Pd as a .tar.gz</h4>
-<p>Before you start, you might want to check that you have the resources Pd needs. The main things you need are the C compiler, X windows (including the X development package for Pd to link against), TK, and the ALSA “devel” headers. It should be enough to load “tcl-devel”, “tk-devel”, and “alsa-devel” packages using yum or apt-get.</p>
+<p>Before you start, you might want to check that you have the resources Pd needs. The main things you need are the C compiler, X windows (including the X development package for Pd to link against), TK, and the ALSA “devel” headers. It should be enough to load <code>tcl-devel</code>, <code>tk-devel</code>, and <code>alsa-devel</code> packages using yum or apt-get.</p>
 <p>There are two parallel compilation setups now available. The old one is described here; as of 0.43 I still use that but I plan to discontinue this for 0.44 and start using only the new one. The following description applies to the old one. Look in the INSTALL.txt file to see how to use the new one.</p>
-<p>Download Pd, perhaps from <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a> , to file such as “pd-linux-033.tar.gz”. Open a “shell” window, cd to the directory containing the file, and type the command,</p>
+<p>Download Pd, perhaps from <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a> , to file such as <code>pd-linux-033.tar.gz</code>. Open a “shell” window, cd to the directory containing the file, and type the command,</p>
 <pre><code>tar xzf pd-linux-033.tar.gz</code></pre>
-<p>which creates a directory named “pd”. I do this from my home directory. Next, compile it. “cd” to pd and read the INSTALL.txt, or else just cd to “pd/src” and type</p>
+<p>which creates a directory named “pd”. I do this from my home directory. Next, compile it. <code>cd</code> to pd and read the INSTALL.txt, or else just cd to “pd/src” and type</p>
 <pre><code>./autogen.sh
 ./configure
 make</code></pre>
-<p>You can pass flags to “configure” to customize your compilation:</p>
-<p>To enable debugging (and losing code optimization) add “–enable-debug”.</p>
-<p>To use Portaudio, add “–enable-portaudio”.</p>
-<p>To put Pd in /usr/bin instead of /usr/local/bin, add “–prefix=/bin”.</p>
-<p>Alsa and Jack support should auto-configure, but “–enable-alsa” od “–enable-jack” will force their inclusion.</p>
-<p>After “make”, just type “~/pd/bin/pd” to run pd.</p>
-<p>Alternatively, as superuser, you can run “make install” after “make depend” and then anyone on your system can just type “pd” to run it.</p>
+<p>You can pass flags to <code>configure</code> to customize your compilation:</p>
+<p>To enable debugging (and losing code optimization) add <code>--enable-debug</code>.</p>
+<p>To use Portaudio, add <code>--enable-portaudio</code>.</p>
+<p>To put Pd in <code>/usr/bin</code> instead of <code>/usr/local/bin</code>, add <code>--prefix=/bin</code>.</p>
+<p>ALSA and Jack support should auto-configure, but <code>--enable-alsa</code> or <code>--enable-jack</code> will force their inclusion.</p>
+<p>After <code>make</code>, just type <code>~/pd/bin/pd</code> to run Pd.</p>
+<p>Alternatively, as superuser, you can run <code>make install</code> after <code>make depend</code> and then anyone on your system can just type <code>pd</code> to run it.</p>
 <h4 id="testing-audio-and-midi" class="unnumbered">Testing Audio and MIDI</h4>
-<p>Next try audio. We want to know whether audio output works, whether audio input works, and whether they work simultaneously. First run “aumix” (or any newer audio mixer app) to check audio input and output gains and learn which input (mic; line; etc.) is “recording”. Then test audio output by running</p>
+<p>Next try audio. We want to know whether audio output works, whether audio input works, and whether they work simultaneously. First run <code>aumix</code> (or any newer audio mixer app) to check audio input and output gains and learn which input (mic; line; etc.) is “recording”. Then test audio output by running</p>
 <pre><code>pd -noadc</code></pre>
 <p>and selecting “test audio and MIDI” from the “Media” menu. You should see a patch. Turn on the test tone and listen. Do the usual where’s-the-signal business.</p>
 <p>Then quit Pd and test audio input via</p>
 <pre><code>pd -nodac</code></pre>
 <p>Re-open the test patch and hit “meter”; look at the levels. 100 dB is a hard clip; arrange gains so that the input signal tops out around 80 or 90, but no higher.</p>
-<p>Now see if your audio driver can do full duplex by typing “pd” with no flags. If you see error messages involving /dev/dsp or /dev/dsp2, you’re probably not able to run audio in and out at the same time. If on the other hand there’s no complaint, and if the audio test patch does what you want, you might wish to experiment with the “-audiobuffer” flag to see what values of audio latency your audio system can handle.</p>
+<p>Now see if your audio driver can do full duplex by typing <code>pd</code> with no flags. If you see error messages involving <code>/dev/dsp</code> or <code>/dev/dsp2</code>, you’re probably not able to run audio in and out at the same time. If on the other hand there’s no complaint, and if the audio test patch does what you want, you might wish to experiment with the <code>-audiobuffer</code> flag to see what values of audio latency your audio system can handle.</p>
 <h4 id="audio-hardware-in-linux" class="unnumbered">Audio Hardware in Linux</h4>
 <p>Installing and testing audio and MIDI drivers in Linux can take days or weeks. There appears to be no single place where you can get detailed information on Linux audio.</p>
-<p>There are two widely-used driver sets, called “OSS” and “ALSA”. ALSA is included in the standard Linux kernel since 2.4 or so. However, for some audio cards you can find newer versions than are included in the kernel releases. You can get ALSA from <a href="http://www.alsa-project.org/" class="uri">http://www.alsa-project.org/</a> .</p>
+<p>There are two widely-used driver sets, called “OSS” and “ALSA”. ALSA is included in the standard Linux kernel since 2.4 or so. However, for some audio cards you can find newer versions than are included in the kernel releases. You can get ALSA from <a href="http://www.alsa-project.org/" class="uri">http://www.alsa-project.org/</a>.</p>
 <p>ALSA is able to emulate OSS, so that you can usually run Pd using the “OSS” driver settings even if it’s actually ALSA that’s running.</p>
-<p>By default, Pd uses ALSA. You can ask Pd to use ALSA’s OSS emulation by adding the “-oss” flag to the command line or fooling with the “media” menu items.</p>
+<p>By default, Pd uses ALSA. You can ask Pd to use ALSA’s OSS emulation by adding the <code>-oss</code> flag to the command line or fooling with the “media” menu items.</p>
 <p>You can add ALSA devices by name on the Pd command line:</p>
 <pre><code>pd -alsaadd loupgarou</code></pre>
-<p>This instructs Pd to offer the ‘loupgarou’ audio device in the Audio Settings panel.</p>
+<p>This instructs Pd to offer the “loupgarou” audio device in the Audio Settings panel.</p>
 <h4 id="experiences-with-particular-soudcards" class="unnumbered">Experiences with Particular Soudcards</h4>
 <p>Here are some of my own experiences with sound cards so far. See also the Pd mailing list archives.</p>
 <h5 id="rme-9652-hammerfall" class="unnumbered">RME 9652 (Hammerfall)</h5>
@@ -613,20 +642,20 @@ make</code></pre>
 <p>The Alsa developer list is reporting progress on the M-audio Ultra series, which goes up to 6 in and out (analog) with 2 more as SP/DIF. Things work OK for input or output separately but “full duplex” (in and out simultaneously) has sync problems.</p>
 <h2 id="installing-pd-in-macos"><span class="header-section-number">3.4</span> Installing Pd in macOS</h2>
 <p>Pd version 0.35 and up support macOS. Recent versions of Pd require 10.6 or up.</p>
-<p>To install Pd you can always download the sources and compile them yourself, or (easier) just download the Mac binary from the download page: <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a> or from the Pure Data community site: <a href="https://puredata.info" class="uri">https://puredata.info</a> This is in the form of a compressed tar.gz archive; just double click on it to extract the Pd application. Open this and you should be running.</p>
+<p>To install Pd you can always download the sources and compile them yourself, or (easier) just download the Mac binary from the download page: <a href="http://msp.ucsd.edu/software.html" class="uri">http://msp.ucsd.edu/software.html</a> or from <a href="http://puredata.info">puredata.info</a>. This is in the form of a compressed tar.gz archive; just double click on it to extract the Pd application. Open this and you should be running.</p>
 <p>You might get various warnings about Pd trying to open an internet port. This is normal although some system administrators will prevent you from doing this (in which case you can’t run Pd on that machine).</p>
 <h4 id="to-install-on-macos-from-source" class="unnumbered">To Install on macOS from Source</h4>
 <p>Whether you’ve downloaded the source or the “package” you can always compile Pd for yourself, whether to make your own improvements, or possibly so that you can get the newest version before it shows up compiled for macOS.</p>
 <p>To be able to compile Pd, you must have Tcl/Tk installed in the standard places. I think this is true for all reasonably recent releases of macOS.</p>
-<p>Overview: Just as for Linux, extract pd-#.#.#.tar.gz into a directory such as ~/pd-0.47-1, cd to ~/pd-0.47-1, run:</p>
+<p>Overview: Just as for Linux, extract <code>pd-#.#.#.tar.gz</code> into a directory such as <code>~/pd-0.47-1</code>, cd to <code>~/pd-0.47-1</code>, run:</p>
 <pre><code>./autogen.sh
 ./configure
 make</code></pre>
-<p>Then type ~/pd-0.47-1/bin/pd to a shell and enjoy!</p>
+<p>Then type <code>~/pd-0.47-1/bin/pd</code> to a shell and enjoy!</p>
 <p>Detailed build instructions can be found in the INSTALL.txt included with the Pd source distribution.</p>
 <p>If you wish you can put a line such as,</p>
 <pre><code>alias pd ~/pd/bin/pd</code></pre>
-<p>in the file, ~/.tcshrc, so that you can later just type “pd” to a shell. (The shell only reads the ~/.tcshrc file on startup, so this won’t take effect in any existing shells unless you specially type</p>
+<p>in the file, <code>~/.tcshrc</code>, so that you can later just type <code>pd</code> to a shell. (The shell only reads the <code>~/.tcshrc</code> file on startup, so this won’t take effect in any existing shells unless you specially type</p>
 <pre><code>source ~/.tcshrc</code></pre>
 <p>to them.)</p>
 <p>Follow the general directions above for testing audio and/or MIDI as needed.</p>
@@ -636,9 +665,10 @@ make</code></pre>
 <p>In addition to the Audio and MIDI settings (see <a href="#audio-and-midi">Audio and MIDI</a>), you can customize font size (from the “edit” menu), directories to search for files (see <a href="#how-pd-searches-for-files">How Pd Searches for Files</a>), and additional startup parameters described below.</p>
 <p>All of these settings may be saved automatically between Pd sessions. It is also possible to specify settings directly via the <em>command line</em> . (A third mechanism, using configuration files, is deprecated and isn’t described here.) The Pd command line is described in the next section. Command line settings, if given, each override the corresponding setting that was saved from Pd.</p>
 <p>The startup settings (i.e., those that take effect only when Pd is started) are controlled using the “startup…” dialog from the File menu. The dialog appears as follows:</p>
-<figure>
-<img src="fig11.3.png" alt="startup dialog" /><figcaption>startup dialog</figcaption>
-</figure>
+<div class="figure">
+<img src="fig11.3.png" alt="startup dialog" />
+<p class="caption">startup dialog</p>
+</div>
 <p>The slots at top each specify a binary “library” for Pd to load on startup. These may be for Gem, pdp, zexy, iemlib, cyclone, and so on. Typically, a single binary object (an “extern”) is left for Pd to load automatically; startup library loading is appropriate for collections of many objects specified by a single binary library.</p>
 <p>The “defeat real-time scheduling” control, if enabled, makes Pd run without its usual effort to become a real-time process (whatever this means in the operating system you are using.) In Unix, Pd must usually be setuid to allow real-time scheduling at all.</p>
 <p>The “startup flags” allow you to add to Pd’s command line on startup. This is specified as described below, except that the initial word, “pd”, is understood. For example, putting “-rt” in this field sets real-time scheduling; “-sleepgrain 1” sets the sleep grain to 1 (see under MIDI below), and typing “-rt -sleepgrain 1” does both.</p>
@@ -646,7 +676,7 @@ make</code></pre>
 <h3 id="command-line-arguments"><span class="header-section-number">3.5.1</span> Command Line Arguments</h3>
 <p>Pd may be run as a “command line” program from your “terminal emulator,” “shell,” or “MSDOS prompt.” In Windows, if Pd is started using a “shortcut” it is also run from a command line which you can edit using the “properties” dialog for the shortcut. In any operating system, Pd can be called from a script (called a <em>batch file</em> on Windows or a <em>shell script</em> on macOS or Unix). The command line is just a line of text, which should be of the form:</p>
 <pre><code>pd [options] [patches to open]</code></pre>
-<p>although you may have to specify a path (such as “~/pd/bin/pd” or “C:\program files\pd\bin\pd”) so your command interpreter can find Pd. Possible options include:</p>
+<p>although you may have to specify a path (such as <code>~/pd/bin/pd</code> or <code>C:\\Program Files\\pd\\bin\\pd</code>) so your command interpreter can find Pd. Possible options include:</p>
 <pre><code>audio configuration flags:
 -r &lt;n&gt;           -- specify sample rate
 -audioindev ...  -- sound in device list; e.g., &quot;2,1&quot; for second and first
@@ -706,39 +736,40 @@ general flags:
 -nosleep         -- never relinquish CPU (only for multiprocessors!)</code></pre>
 <p>Here are some details on some of the audio, MIDI, and scheduler options (but see also the next section on file management.)</p>
 <h4 id="multiple-devices" class="unnumbered">Multiple Devices</h4>
-<p>You can specify multiple MIDI input and output devices. For example, “pd -midiindev 3 -midioutdev 4,2” asks for the third MIDI input device and the fourth and second MIDI output device.</p>
-<p>Audio device selection is similar, except that you can also specify channels by device: “-audioindev 1,3 -inchannels 2,8” will try to open device 1 (2 channels) and device 3 (8 channels.)</p>
+<p>You can specify multiple MIDI input and output devices. For example, <code>pd -midiindev 3 -midioutdev 4,2</code> asks for the third MIDI input device and the fourth and second MIDI output device.</p>
+<p>Audio device selection is similar, except that you can also specify channels by device: <code>-audioindev 1,3 -inchannels 2,8</code> will try to open device 1 (2 channels) and device 3 (8 channels.)</p>
 <h4 id="sample-rate" class="unnumbered">Sample Rate</h4>
 <p>The sample rate controls Pd’s logical sample rate which need not be that of the audio input and output devices. If Pd’s sample rate is wrong, time will flow at the wrong rate and synthetic sounds will be transposed. If the output and input devices are running at different rates, Pd will constantly drop frames to re-sync them, which will sound bad. You can disable input or output if this is a problem.</p>
 <h4 id="audio-buffer-size-and-block-size" class="unnumbered">Audio Buffer Size and Block Size</h4>
 <p>You can specify an audio buffer size in milliseconds, typically between 10 and 300, depending on how responsive your OS and drivers are. If this is set too low there will be audio I/O errors (“data late”). The higher the value is, on the other hand, the more throughput delay you will hear from the audio and/or control inputs (MIDI, GUI) and the audio coming out.</p>
 <p>You can also specify the audio block size in sample frames. This is 64 by default (except for MMIO for which it’s 256), and may be 64, 128, or 256.</p>
 <h4 id="midi-and-sleepgrain" class="unnumbered">MIDI and Sleepgrain</h4>
-<p>In Linux, if you ask for “pd -midioutdev 1” for instance, you get /dev/midi0 or /dev/midi00 (or even /dev/midi). “-midioutdev 45” would be /dev/midi44. In Windows, device number 0 is the “MIDI mapper”, which is the default MIDI device you selected from the control panel; counting from one, the device numbers are card numbers as listed by “pd -listdev.”</p>
-<p>The “sleepgrain” controls how long (in milliseconds) Pd sleeps between periods of computation. This is normally the audio buffer divided by 4, but no less than 0.1 and no more than 5. On most OSes, ingoing and outgoing MIDI is quantized to this value, so if you care about MIDI timing, reduce this to 1 or less.</p>
+<p>In Linux, if you ask for <code>pd -midioutdev 1</code> for instance, you get <code>/dev/midi0</code> or <code>/dev/midi00</code> (or even <code>/dev/midi</code>). <code>-midioutdev 45</code> would be <code>/dev/midi44</code>. In Windows, device number 0 is the “MIDI mapper”, which is the default MIDI device you selected from the control panel; counting from one, the device numbers are card numbers as listed by <code>pd -listdev.</code></p>
+<p>The <code>-sleepgrain</code> controls how long (in milliseconds) Pd sleeps between periods of computation. This is normally the audio buffer divided by 4, but no less than 0.1 and no more than 5. On most OSes, ingoing and outgoing MIDI is quantized to this value, so if you care about MIDI timing, reduce this to 1 or less.</p>
 <h2 id="how-pd-searches-for-files"><span class="header-section-number">3.6</span> How Pd Searches for Files</h2>
-<p>Pd has a search path feature; you specify the path on the command line using the “-path” option. Paths may contain any number of files. If you specify several files in a single “-path” option they’re separated by colons in Unix or semicolons in Windows.</p>
+<p>Pd has a search path feature; you specify the path on the command line using the <code>-path</code> option. Paths may contain any number of files. If you specify several files in a single “-path” option they’re separated by colons in Unix or semicolons in Windows.</p>
 <p>You can see and edit the path while Pd is running using the “path…” item in the “File” menu:</p>
-<figure>
-<img src="fig11.4.png" alt="startup dialog" /><figcaption>startup dialog</figcaption>
-</figure>
+<div class="figure">
+<img src="fig11.4.png" alt="startup dialog" />
+<p class="caption">startup dialog</p>
+</div>
 <p>The path must be correctly set before you load a patch or it may fail to find abstractions, etc., that are needed to construct the patch. When Pd searches for an abstraction or an “extern” it uses the path to try to find the necessary file. The “read” messages to qlists and arrays (aka tables) do this too.</p>
-<p>If “use standard extensions” is enabled, the usual “extras” directory is also searched. This contains standard external objects like “expr” and “fiddle”, and perhaps much more depending on the distribution of Pd you’re using.</p>
+<p>If “use standard extensions” is enabled, the usual “extras” directory is also searched. This contains standard external objects like <code>expr</code> and <code>fiddle</code>, and perhaps much more depending on the distribution of Pd you’re using.</p>
 <p>You may save the current settings for future Pd sessions with the “save all settings” button; this saves not only the path but all other settings as well.</p>
-<p>Path entries may be relative to the patch directory; for instance, if your path has an item, “../sound”, and your patch is in “my stuff/all mine”, then Pd will look in “my stuff/sound”. Spaces should be OK in the path to the patch, but not in the path entry (../sound) itself. This is useful if you have a patch and supporting files (even a supporting snapshot of pd) that you want to distribute or carry around together.</p>
+<p>Path entries may be relative to the patch directory; for instance, if your path has an item, <code>../sound</code>, and your patch is in <code>my stuff/all mine</code>, then Pd will look in <code>my stuff/sound</code>. Spaces should be OK in the path to the patch, but not in the path entry (<code>../sound</code>) itself. This is useful if you have a patch and supporting files (even a supporting snapshot of pd) that you want to distribute or carry around together.</p>
 <p>Regardless of path, Pd should look first in the directory containing the patch before searching down the path. Pd does not automatically look in the <em>current directory</em> however; to enable that, include “.” in the path. The “extra” directory, if enabled, is searched last.</p>
-<p>Filenames in Pd are always separated by (Unix-style) forward slashes, even if you’re on Windows (which uses backslashes). This is so that patches can be ported more easily between operating systems. On the other hand, if you specify a filename on the command line (as in “pd -path c:\pdlib”) the file separator should agree with the operating system.</p>
-<p>If a filename specified in a patch has any “/” characters in it, the “path” is not used; thus, “../sounds/sample1.wav” causes Pd only to look relative to the directory containing the patch. You may also invoke externs that way.</p>
-<p>As of version 0.35, there may be spaces in the path to Pd itself; also, the “openpanel” and “savepanel” objects can handle spaces. Spaces in the path should work as of version 0.38.</p>
+<p>Filenames in Pd are always separated by (Unix-style) forward slashes, even if you’re on Windows (which uses backslashes). This is so that patches can be ported more easily between operating systems. On the other hand, if you specify a filename on the command line (as in <code>pd -path c:\pdlib</code>) the file separator should agree with the operating system.</p>
+<p>If a filename specified in a patch has any “/” characters in it, the “path” is not used; thus, <code>../sounds/sample1.wav</code> causes Pd only to look relative to the directory containing the patch. You may also invoke externs that way.</p>
+<p>As of version 0.35, there may be spaces in the path to Pd itself; also, the <code>openpanel</code> and <code>savepanel</code> objects can handle spaces. Spaces in the path should work as of version 0.38.</p>
 <hr />
 
 <h1 id="writing-pd-objects-in-c"><span class="header-section-number">4</span> Writing Pd Objects in C</h1>
 <p><a href="#TOC">back to table of contents</a></p>
 <p>You can write your own objects that you and others can use in their Pd applications. You can write them in C or (if you’re smart and brave) in C++ or FORTRAN.</p>
 <h4 id="how-externs-are-loaded" class="unnumbered">How Externs Are Loaded</h4>
-<p>Whenever you type the name of an object (into an “object” text box) that Pd doesn’t yet know about, Pd looks for a relocatable object file, named, for instance, “profile.pd_irix5”. Pd looks first in the directory containing the patch, then in directories in its “path.” Pd will then add whatever object is defined there to its “class list,” which is the set of all Pd classes you can use. If all this works, Pd then attempts again to create the object you asked for, this time perhaps successfully. There is no difference between an object defined this way and an object built into Pd.</p>
+<p>Whenever you type the name of an object (into an <code>object</code> text box) that Pd doesn’t yet know about, Pd looks for a relocatable object file, named, for instance, <code>profile.pd\_irix5</code>. Pd looks first in the directory containing the patch, then in directories in its “path.” Pd will then add whatever object is defined there to its “class list,” which is the set of all Pd classes you can use. If all this works, Pd then attempts again to create the object you asked for, this time perhaps successfully. There is no difference between an object defined this way and an object built into Pd.</p>
 <p>Once you load a new object into Pd, it’s there for the duration of your Pd session. If you load another Pd document which supplies a different version of some Pd object, the object won’t be updated. IF you’re working on a new object and decide to change it, you have to exit and re-enter Pd to get the change to take.</p>
-<p>In the “externs” subdirectory of the documentation you can find simple examples of “externs” with their source code and test patches; there are many other on the web (see <a href="#other-resources">Other Resources</a>).</p>
+<p>In the <code>externs</code> subdirectory of the documentation you can find simple examples of externs with their source code and test patches; there are many other on the web (see <a href="#other-resources">Other Resources</a>).</p>
 <p>Iohannes Zmoelnig has written an excellent guide to writing externs at <a href="http://pdstatic.iem.at/externals-HOWTO/" class="uri">http://pdstatic.iem.at/externals-HOWTO/</a> .</p>
 <hr />
 
@@ -1092,7 +1123,7 @@ general flags:
 <p>added an experimental “pd restart-audio” feature for (new) Alsa</p>
 <h3 id="section-45" class="unnumbered">0.34.1</h3>
 <p>Bug fixes:</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Closing a window with objects selected crashed Pd.</li>
 <li>“find” when it opened a window to show the found object crashed Pd.</li>
 <li>(Linux only) Oversized .pdrc files crashed pd…</li>
@@ -1245,7 +1276,7 @@ general flags:
 <p>Under NT, for some audio drivers the 0.26 release gave a constant stream of “resync” events. I don’t know what causes this but I added a “-noresync” option which simply never resyncs at all.</p>
 <h3 id="section-54" class="unnumbered">0.26</h3>
 <p>phasor~ and osc~ can be configured to take floating point messages to set their frequencies, as an alternative to having an input signal to do the same. Also, +~, etc, can take floating point arguments (and messages) to add or multiply scalars. The +~, etc, loops were unrolled to make them run faster.</p>
-<p>A switch~ object is provided to let you switch sub-patches on and off. The inlet~ and outlet~ objects were re-written to avoid adding any overhead when moving signals in or out of sub patches.</p>
+<p>A switch~ object is provided to let you switch subpatches on and off. The inlet~ and outlet~ objects were re-written to avoid adding any overhead when moving signals in or out of sub patches.</p>
 <p>In Linux at least, the audio latency is much reduced. It’s possible to poll for audio I/O lateness errors by sending “pd audiostatus”.</p>
 <p>When reading a sample using tabread4~, you can switch between sample tables using the “set” message.</p>
 <p>A new “textfile” object is like qlist but more flexible.</p>
