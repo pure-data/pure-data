@@ -545,8 +545,8 @@ proc ::deken::clicked_link {URL filename} {
         pd_menucommands::menu_openfile $installdir
     }
 
-    # add to the search paths?
-    if {[info proc add_to_searchpaths] eq ""} {return}
+    # add to the search paths? bail if the version of pd doesn't support it
+    if {[uplevel 1 info procs add_to_searchpaths] eq ""} {return}
     set extpath [file join $installdir $extname]
     if {![file exists $extpath]} {
         ::deken::post [_ "Unable to add %s to search paths"] $extname
@@ -558,8 +558,8 @@ proc ::deken::clicked_link {URL filename} {
         yes {
             add_to_searchpaths [file join $installdir $extname]
             ::deken::post [format [_ "Added %s to search paths"] $extname]
-            # if this version of pd support its, try refreshing the helpbrowser
-            if {[info proc ::helpbrowser::refresh] ne ""} {
+            # if this version of pd supports it, try refreshing the helpbrowser
+            if {[uplevel 1 info procs ::helpbrowser::refresh] ne ""} {
                 ::helpbrowser::refresh
             }
         }
