@@ -767,7 +767,9 @@ static void canvas_menusaveas(t_canvas *x, float fdestroy)
 {
     t_canvas *x2 = canvas_getrootfor(x);
     sys_vgui("pdtk_canvas_saveas .x%lx {%s} {%s} %d\n", x2,
-        x2->gl_name->s_name, canvas_getdir(x2)->s_name, (fdestroy != 0));
+        (strncmp(x2->gl_name->s_name, "Untitled", 8) ? x2->gl_name->s_name :
+            "title"),
+                canvas_getdir(x2)->s_name, (fdestroy != 0));
 }
 
 static void canvas_menusave(t_canvas *x, float fdestroy)
