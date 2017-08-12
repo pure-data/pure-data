@@ -475,7 +475,7 @@ proc ::deken::clicked_link {URL filename} {
                         # if docsdir is set & the install path is valid,
                         # saying "no" is temporary to ensure the docsdir
                         # hierarchy remains, use the Path dialog to override
-                        if {[namespace exists ::pd_docsdir] && [::pd_docsdir::path_is_valid] && \
+                        if {[namespace exists ::pd_docsdir] && [::pd_docsdir::path_is_valid] &&
                             [file writable [file normalize $prevpath]] } {
                             set keepprevpath 0
                         }
@@ -546,6 +546,7 @@ proc ::deken::clicked_link {URL filename} {
     }
 
     # add to the search paths?
+    if {[info proc add_to_searchpaths] eq ""} {return}
     set extpath [file join $installdir $extname]
     if {![file exists $extpath]} {
         ::deken::post [_ "Unable to add %s to search paths"] $extname
