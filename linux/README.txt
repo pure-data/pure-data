@@ -8,24 +8,15 @@ release checklist
     test compilation on linux/msw/mac as follows:
     cd linux; ./make-release 0.35-0  or 0.35-test11, etc
         ... compile on MAC:
-        ... first build POs on linux because I can't install gettext on mac:
-      ./autogen.sh; ./configure; make; rsync -avzl po/ <mac>:build/po/
-        ... scp source tarball to Mac and unpack. CD to, Pd-<> and:
-      ./autogen.sh
-      ./configure
-      make
-      rm -rf po
-      cp -pr ~/build/po/ po/
-      cd mac
-      ./osx-app.sh  --wish  /Users/msp/build/Wish-8.5.19.app 0.48-0test6
-      mv Pd-0.48-0test6.app ../../
-        ... same for 32-bit except:
-            ./configure --enable-universal=i386
-            ./osx-app.sh --wish /Users/msp/b32/Wish-8.5.19.app 0.48-0test7-i386
-        ... for PPC, build-ppc.sh
+            first build POs on linux because I can't install gettext on mac:
+            ./autogen.sh; ./configure; make; rsync -avzl po/ <mac>:build/po/
+            scp source tarball to Mac and unpack in ~/build.
+            in ~/build: build-autotools and build-ppc
+            in ~/b32: build-i386
+            scp tarballs back to linux
         ... compile on windows:
-      cd msw
-      ./send-msw.sh <version>
+            cd msw
+            ./send-msw.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
     git push --mirror
