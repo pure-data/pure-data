@@ -67,6 +67,9 @@ proc add_to_searchpaths {path {save true}} {
     # tell pd about the new path
     if {$save} {set save 1} else {set save 0}
     pdsend "pd add-to-path [pdtk_encodedialog ${path}] $save"
+    # append to search paths as this won't be
+    # updated from the pd core until a restart
+    lappend ::sys_searchpath "$path"
 }
 
 # ------------------------------------------------------------------------------

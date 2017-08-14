@@ -235,12 +235,9 @@ if { "Windows" eq "$::deken::platform(os)" } {
 if { "" != "$::current_plugin_loadpath" } {
     ::pdwindow::post [format [_ "\[deken\] deken-plugin.tcl (Pd externals search) loaded from %s." ]  $::current_plugin_loadpath ]
     ::pdwindow::post "\n"
-    ::pdwindow::post [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
-    ::pdwindow::post "\n"
-} else {
-    ::pdwindow::verbose 0 [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
-    ::pdwindow::verbose 0 "\n"
 }
+::pdwindow::verbose 0 [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
+::pdwindow::verbose 0 "\n"
 
 # architectures that can be substituted for eachother
 array set ::deken::architecture_substitutes {}
@@ -296,7 +293,7 @@ proc ::deken::highlightable_posttag {tag} {
 }
 proc ::deken::prompt_installdir {} {
     set installdir [tk_chooseDirectory -title [_ "Install externals to directory:"] \
-                                       -initialdir $::env(HOME) -parent .externals_searchui]
+                                       -initialdir $::fileopendir -parent .externals_searchui]
     if { "$installdir" != "" } {
         ::deken::set_installpath $installdir
         return 1
@@ -478,7 +475,7 @@ proc ::deken::clicked_link {URL filename} {
                         # if docsdir is set & the install path is valid,
                         # saying "no" is temporary to ensure the docsdir
                         # hierarchy remains, use the Path dialog to override
-                        if {[namespace exists ::pd_docsdir] && [::pd_docsdir::path_is_valid] && \
+                        if {[namespace exists ::pd_docsdir] && [::pd_docsdir::path_is_valid] &&
                             [file writable [file normalize $prevpath]] } {
                             set keepprevpath 0
                         }
@@ -548,7 +545,8 @@ proc ::deken::clicked_link {URL filename} {
         pd_menucommands::menu_openfile $installdir
     }
 
-    # add to the search paths?
+    # add to the search paths? bail if the version of pd doesn't support it
+    if {[uplevel 1 info procs add_to_searchpaths] eq ""} {return}
     set extpath [file join $installdir $extname]
     if {![file exists $extpath]} {
         ::deken::post [_ "Unable to add %s to search paths"] $extname
@@ -560,6 +558,10 @@ proc ::deken::clicked_link {URL filename} {
         yes {
             add_to_searchpaths [file join $installdir $extname]
             ::deken::post [format [_ "Added %s to search paths"] $extname]
+            # if this version of pd supports it, try refreshing the helpbrowser
+            if {[uplevel 1 info procs ::helpbrowser::refresh] ne ""} {
+                ::helpbrowser::refresh
+            }
         }
         no {
             return
@@ -645,10 +647,8 @@ proc ::deken::architecture_match {archs} {
     # check each architecture in our list against the current one
     foreach arch $archs {
         if { [ regexp -- {(.*)-(.*)-(.*)} $arch _ os machine bits ] } {
-            if { "${os}" eq "$::deken::platform(os)" &&
-                 "${bits}" eq "$::deken::platform(bits)"
-             } {
-                ## so OS and word size match
+            if { "${os}" eq "$::deken::platform(os)" } {
+                ## so OS matches
                 ## check whether the CPU matches as well
                 if { "${machine}" eq "$::deken::platform(machine)" } {return 1}
                 ## not exactly; see whether it is in the list of compat CPUs

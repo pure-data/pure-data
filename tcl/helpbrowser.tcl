@@ -24,9 +24,6 @@ proc ::helpbrowser::open_helpbrowser {} {
         wm group .helpbrowser .
         wm transient .helpbrowser
         wm title .helpbrowser [_ "Help Browser"]
-
-        bind .helpbrowser <$::modifier-Shift-Key-r> "::helpbrowser::refresh"
-        bind .helpbrowser <$::modifier-Shift-Key-R> "::helpbrowser::refresh"
         bind .helpbrowser <$::modifier-Key-w> "wm withdraw .helpbrowser"
 
         if {$::windowingsystem eq "aqua"} {
