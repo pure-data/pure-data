@@ -1,7 +1,9 @@
+html, body { -webkit-text-size-adjust: none; }
+
 body {
-  width: 38em;
-  margin-left: 4em;
-  margin-bottom: 4em;
+  max-width: 38em;
+  margin: auto;
+  padding: 1em;
 }
 
 h1 {
@@ -19,12 +21,19 @@ pre {
 
 code {
   padding: 1pt;
-  background-color: #f0f0f0;
   font-size: 0.8em;
+}
+
+hr {
+  margin-bottom: 4em;
 }
 
 .figure {
   text-align: center;
+}
+
+.figure img {
+  max-width: 80%;
 }
 
 .caption {
