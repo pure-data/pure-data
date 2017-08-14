@@ -1917,9 +1917,7 @@ path maintanance.
 The expr family (expr, expr~, fexpr~) got an update from Shahrokh Yadegari,
 and the help file was reorganized and updated by Alexandre Porres. Many more
 math functions are supported, and the parser was updated so that expressions
-using "if" skip evaluating the argument that isn't used. In an older improvement
-that wasn't reported here, expr can read and write variables stored in "v"
-objects.
+using "if" skip evaluating the argument that isn't used.
 
 New "fudiparse", "fudiformat" objects.
 
