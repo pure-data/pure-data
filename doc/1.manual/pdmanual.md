@@ -569,7 +569,7 @@ objects.
 
 ### Converting Audio to and from Messages
 
-If you want to use a control value as a signal, you can use the sig~ object to
+If you want to use a control value as a signal, you can use the `sig~` object to
 convert it. The `+~`, `-~`, `*~`, `/~`, `osc~`, and `phasor~` objects can be
 configured to take control or signal inputs.
 
@@ -633,7 +633,7 @@ different block sizes. The only re-blocking mechanisms which are well tested are
 When you send a signal to a point that is earlier in the sorted list of tilde
 objects, the signal doesn't get there until the next cycle of DSP computation,
 one block later; so your signal will be delayed by one block (1.45 msec by
-default.) `delread~` and `delwrite~` have this same restriction, but here the 1.45
+default). `delread~` and `delwrite~` have this same restriction, but here the 1.45
 msec figure gives the minimum attainable delay. For non-recursive algorithms, a
 simple flanger for example, you might wish to ensure that your `delread~` is
 sorted after your `delwrite~`. The only way to ensure this is to create the
