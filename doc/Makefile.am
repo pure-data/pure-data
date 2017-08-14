@@ -9,6 +9,11 @@ libpddir = $(pkglibdir)/doc
 
 # about text file, needed to write version string into
 ABOUT_FILE=1.manual/1.introduction.txt
+# manual variables
+MANUAL_DIR=$(top_srcdir)/doc/1.manual
+MANUAL_SRC=pdmanual.md
+MANUAL_HTML=index.htm
+MANUAL_PDF=pdmanual.pdf
 
 # location to pd header
 M_PD=$(top_srcdir)/src/m_pd.h
@@ -40,6 +45,13 @@ install-data-hook:
 	    > $(DESTDIR)$(libpddir)/$(ABOUT_FILE) ; \
 	fi
 	rm $(DESTDIR)$(libpddir)/$(ABOUT_FILE).tmp
+
+# build the manual from MANUAL_SRC
+manual: $(MANUAL_DIR)/$(MANUAL_SRC)
+	cd $(MANUAL_DIR) && pandoc $(MANUAL_SRC) -r markdown-subscript-strikeout -s -S -N --toc -c pdmanual.css -o $(MANUAL_HTML)
+
+pdfmanual: $(MANUAL_DIR)/$(MANUAL_SRC)
+	cd $(MANUAL_DIR) && pandoc $(MANUAL_SRC) -r markdown-subscript-strikeout-tex_math_dollars-markdown_in_html_blocks -s -S -N --toc -o $(MANUAL_PDF)
 
 #########################################
 ##### Files, Binaries, & Libs #####
@@ -90,6 +102,7 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig9.3.jpg \
      ./1.manual/index.htm \
      ./1.manual/pdmanual.css \
+     ./1.manual/pdmanual.md \
      ./2.control.examples/00.INTRO.txt \
      ./2.control.examples/01.PART1.hello.pd \
      ./2.control.examples/02.editing.pd \
