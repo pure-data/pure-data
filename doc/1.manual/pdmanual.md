@@ -1844,8 +1844,8 @@ ported more easily between operating systems. On the other hand, if you specify
 a filename on the command line (as in `pd -path c:\pdlib`) the file separator
 should agree with the operating system.
 
-If a filename specified in a patch has any "/" characters in it, the "path" is
-not used; thus, `../sounds/sample1.wav` causes Pd only to look relative to the
+A filename specified in a patch with any "/" characters in it (such as
+"../sounds/sample1.wav") causes Pd to look both in the path and relative to the
 directory containing the patch. You may also invoke externs that way.
 
 As of version 0.35, there may be spaces in the path to Pd itself; also, the
