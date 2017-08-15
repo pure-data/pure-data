@@ -48,7 +48,7 @@ Options:
   -v,--verbose        verbose copy prints
 
   -w,--wish APP       use a specific Wish.app
-  
+
   -s,--system-tk VER  use a version of the Tk Wish.app installed on the system,
                       searches in /Library first then /System/Library second,
                       naming is \"8.4\", \"8.5\", \"Current\", etc
@@ -71,7 +71,7 @@ Examples:
     # create Pd.app with included Tk 8.4 Wish,
     # version string set automatically
     osx-app.sh
-    
+
     # create Pd-0.47-0.app with included Tk 8.4 Wish,
     # uses specified version string
     osx-app.sh 0.47-0
@@ -82,7 +82,7 @@ Examples:
     # create Pd-0.47-0.app by downloading & building Tk 8.5.19
     osx-app.sh --tk 8.5.19 0.47-0
 
-    # same as above, but with a \"universal\" multi-arch build 
+    # same as above, but with a \"universal\" multi-arch build
     osx-app.sh --tk 8.5.19 --universal 0.47-0
 
     # use Wish-8.6.5.app manually built with tcltk-wish.sh
@@ -183,7 +183,7 @@ if [ ! -e "$BUILD/src/pd" ] ; then
     exit 1
 fi
 
-if [ "$verbose" != "" ] ; then 
+if [ "$verbose" != "" ] ; then
     echo "==== Creating $APP"
 fi
 
@@ -216,7 +216,7 @@ elif [ "$WISH" == "" ] ; then
 
 # make a local copy if using a given Wish.app
 else
-    
+
     # get absolute path in original location
     cd - > /dev/null # quiet
     WISH=$(cd "$(dirname "$WISH")"; pwd)/$(basename "$WISH")
@@ -308,7 +308,7 @@ else
 fi
 
 # install headers
-mkdir -p $DEST/include
+mkdir -p $DEST/src
 cp $verbose $SRC/src/*.h $DEST/include/
 
 # clean extra folders
@@ -344,6 +344,6 @@ cd - > /dev/null # quiet
 # finish up
 touch $APP
 
-if [ "$verbose" != "" ] ; then 
+if [ "$verbose" != "" ] ; then
     echo  "==== Finished $APP"
 fi
