@@ -241,7 +241,8 @@ void sys_setextrapath(const char *p)
 #ifdef __gnu_linux__
     sys_expandpath("~/.local/lib/pd/extra/", pathbuf, MAXPDSTRING);
     STUFF->st_staticpath = namelist_append(0, pathbuf, 0);
-    sys_expandpath("~/pd-externals", pathbuf, MAXPDSTRING);
+#endif
+/*    sys_expandpath("~/pd-externals", pathbuf, MAXPDSTRING);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, pathbuf, 0);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath,
         "/usr/local/lib/pd-externals", 0);
