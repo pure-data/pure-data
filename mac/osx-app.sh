@@ -309,7 +309,7 @@ fi
 
 # install headers
 mkdir -p $DEST/src
-cp $verbose $SRC/src/*.h $DEST/include/
+cp $verbose $SRC/src/*.h $DEST/src/
 
 # clean extra folders
 cd $DEST/extra
