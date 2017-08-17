@@ -38,6 +38,7 @@ typedef struct _netsend
     int x_sockfd;
     int x_protocol;
     int x_bin;
+    t_socketreceiver *x_receiver;
 } t_netsend;
 
 static t_class *netreceive_class;
@@ -49,6 +50,7 @@ typedef struct _netreceive
     int x_sockfd;
     int *x_connections;
     int x_old;
+    t_socketreceiver **x_receivers;
 } t_netreceive;
 
 static void netreceive_notify(t_netreceive *x, int fd);
@@ -84,6 +86,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
         postatom(argc, argv); endpost();
     }
     x->x_sockfd = -1;
+    x->x_receiver = NULL;
     x->x_msgout = outlet_new(&x->x_obj, &s_anything);
     return (x);
 }
@@ -264,6 +267,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
               socketreceiver_new((void *)x, 0, netsend_doit,
                                  x->x_protocol == SOCK_DGRAM);
             sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
+            x->x_receiver = y;
+            post("netsend[%p]connect: %p", x, x->x_receiver);
           }
       }
     outlet_float(x->x_obj.ob_outlet, 1);
@@ -276,6 +281,10 @@ static void netsend_disconnect(t_netsend *x)
         sys_rmpollfn(x->x_sockfd);
         sys_closesocket(x->x_sockfd);
         x->x_sockfd = -1;
+        post("netsend[%p]disconnect: %p", x, x->x_receiver);
+        if(x->x_receiver)
+            socketreceiver_free(x->x_receiver);
+        x->x_receiver=NULL;
         outlet_float(x->x_obj.ob_outlet, 0);
     }
 }
@@ -376,6 +385,7 @@ static void netsend_setup(void)
 static void netreceive_notify(t_netreceive *x, int fd)
 {
     int i;
+    post("netreceive_notify[%p] %d", x, fd);
     for (i = 0; i < x->x_nconnections; i++)
     {
         if (x->x_connections[i] == fd)
@@ -385,6 +395,16 @@ static void netreceive_notify(t_netreceive *x, int fd)
             x->x_connections = (int *)t_resizebytes(x->x_connections,
                 x->x_nconnections * sizeof(int),
                     (x->x_nconnections-1) * sizeof(int));
+            memmove(x->x_receivers+i, x->x_receivers+(i+1),
+                sizeof(t_socketreceiver*) * (x->x_nconnections - (i+1)));
+
+            post("netreceive[%p]notify[%d]: %p", x, fd, x->x_receivers[i]);
+            if(x->x_receivers[i])
+                socketreceiver_free(x->x_receivers[i]);
+            x->x_receivers[i]=NULL;
+            x->x_receivers = (t_socketreceiver **)t_resizebytes(x->x_receivers,
+                x->x_nconnections * sizeof(t_socketreceiver*),
+                    (x->x_nconnections-1) * sizeof(t_socketreceiver*));
             x->x_nconnections--;
         }
     }
@@ -402,6 +422,9 @@ static void netreceive_connectpoll(t_netreceive *x)
         x->x_connections = (int *)t_resizebytes(x->x_connections,
             x->x_nconnections * sizeof(int), nconnections * sizeof(int));
         x->x_connections[x->x_nconnections] = fd;
+        x->x_receivers = (t_socketreceiver **)t_resizebytes(x->x_receivers,
+            x->x_nconnections * sizeof(t_socketreceiver*), nconnections * sizeof(t_socketreceiver*));
+        x->x_receivers[x->x_nconnections] = NULL;
         if (x->x_ns.x_bin)
             sys_addpollfn(fd, (t_fdpollfn)netsend_readbin, x);
         else
@@ -410,6 +433,8 @@ static void netreceive_connectpoll(t_netreceive *x)
             (t_socketnotifier)netreceive_notify,
                 (x->x_ns.x_msgout ? netsend_doit : 0), 0);
             sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
+            x->x_receivers[x->x_nconnections] = y;
+            post("netreceive[%p]connectpoll[%d]: %p", x, x->x_nconnections, y);
         }
         outlet_float(x->x_ns.x_connectout, (x->x_nconnections = nconnections));
     }
@@ -422,9 +447,16 @@ static void netreceive_closeall(t_netreceive *x)
     {
         sys_rmpollfn(x->x_connections[i]);
         sys_closesocket(x->x_connections[i]);
+        post("netreceive[%p]closeall[%d]: %p", x, i, x->x_receivers[i]);
+        if(x->x_receivers[i]) {
+            socketreceiver_free(x->x_receivers[i]);
+            x->x_receivers[i]=NULL;
+        }
     }
     x->x_connections = (int *)t_resizebytes(x->x_connections,
         x->x_nconnections * sizeof(int), 0);
+    x->x_receivers = (t_socketreceiver**)t_resizebytes(x->x_receivers,
+                x->x_nconnections * sizeof(t_socketreceiver*), 0);
     x->x_nconnections = 0;
     if (x->x_ns.x_sockfd >= 0)
     {
@@ -432,6 +464,9 @@ static void netreceive_closeall(t_netreceive *x)
         sys_closesocket(x->x_ns.x_sockfd);
     }
     x->x_ns.x_sockfd = -1;
+    if(x->x_ns.x_receiver)
+        socketreceiver_free(x->x_ns.x_receiver);
+    x->x_ns.x_receiver=NULL;
 }
 
 static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
@@ -501,6 +536,9 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
                     (x->x_ns.x_msgout ? netsend_doit : 0), 1);
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
+            x->x_ns.x_receiver = y;
+            post("netreceive[%p]listen: %p", x, x->x_ns.x_receiver);
+
         }
     }
     else        /* streaming protocol */
@@ -541,6 +579,7 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     x->x_ns.x_bin = 0;
     x->x_nconnections = 0;
     x->x_connections = (int *)t_getbytes(0);
+    x->x_receivers = (t_socketreceiver **)t_getbytes(0);
     x->x_ns.x_sockfd = -1;
     if (argc && argv->a_type == A_FLOAT)
     {
