@@ -394,7 +394,6 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
 # receive information for setting the info in the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
-    ::pdwindow::post "$path/$name\n"
     set name [::pdtk_canvas::cleanname "$name"]
     set ::windowname($mytoplevel) $name ;# TODO add path to this
     if {$::windowingsystem eq "aqua"} {
