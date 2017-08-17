@@ -443,7 +443,7 @@ AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 ##### MMIO #####
 AM_CONDITIONAL(MMIO, test x$mmio = xyes)
 AS_IF([test x$mmio = xyes], [audio_backends="MMIO ${audio_backends}"])
-AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
+dnl AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
