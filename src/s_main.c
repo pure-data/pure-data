@@ -341,7 +341,7 @@ int sys_main(int argc, char **argv)
     complain to stderr and lose setuid here. */
     if (getuid() != geteuid())
     {
-        fprintf(stderr, "warning: canceling setuid privelege\n");
+        fprintf(stderr, "warning: canceling setuid privilege\n");
         setuid(getuid());
     }
 #endif  /* _WIN32 */
