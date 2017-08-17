@@ -1332,7 +1332,7 @@ int sys_argparse(int argc, char **argv)
         usage:
             for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
                 fprintf(stderr, "%s", usagemessage[i]);
-            return (0);
+            return (1);
         }
     }
     if (sys_batch)
