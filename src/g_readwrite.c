@@ -774,7 +774,7 @@ static void canvas_menusave(t_canvas *x, float fdestroy)
 {
     t_canvas *x2 = canvas_getrootfor(x);
     char *name = x2->gl_name->s_name;
-    if (*name && strncmp(name, "Untitled", 8)
+    if (*name && UNTITLED_STRNCMP(name)
             && (strlen(name) < 4 || strcmp(name + strlen(name)-4, ".pat")
                 || strcmp(name + strlen(name)-4, ".mxt")))
     {

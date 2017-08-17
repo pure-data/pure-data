@@ -553,6 +553,9 @@ typedef int (*t_canvas_path_iterator)(const char *path, void *user_data);
 EXTERN int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
     void *user_data);
 
+/* check string for untitled canvas filename prefix */
+#define UNTITLED_STRNCMP(s) strncmp(s, "PDUNTITLED", 10)
+
 /* ---- functions on canvasses as objects  --------------------- */
 
 EXTERN void canvas_fattenforscalars(t_canvas *x,
