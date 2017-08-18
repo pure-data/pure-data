@@ -1426,7 +1426,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     fd = -1;
     goto done;
 usage:
-    pd_error(x, "usage: read [flags] filename tablename...");
+    pd_error(x, "usage: read [flags] filename [tablename]...");
     post("flags: -skip <n> -resize -maxsize <n> ...");
     post("-raw <headerbytes> <channels> <bytespersamp> <endian (b, l, or n)>.");
 done:
