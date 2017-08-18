@@ -1335,7 +1335,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 &vecs[i]))
             error("%s: bad template for tabwrite",
                 argv[i].a_w.w_symbol->s_name);
-        if (finalsize && finalsize != vecsize && !headeronly && !resize)
+        if (finalsize && finalsize != vecsize && !resize)
         {
             post("soundfiler_read: arrays have different lengths; resizing...");
             resize = 1;
