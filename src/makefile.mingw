@@ -226,7 +226,7 @@ testbin: $(PDEXEC) $(PDDLL) $(PDCOM)
 	echo "Copying files to $(BIN_DIR)"
 	install -d $(BIN_DIR)
 	install -p $(PDDLL) $(BIN_DIR)
-	install -p pd.ico $(BIN_DIR)
+	install -p ../tcl/pd.ico $(BIN_DIR)
 	install -p $(PDCOM) $(BIN_DIR)
 	install -p $(PDEXEC) $(BIN_DIR)
 
@@ -242,7 +242,7 @@ install:  all
 	install -p $(PDEXEC) $(DESTDIR)$(bindir)/$(PDEXEC)
 	install -p $(PDCOM) $(DESTDIR)$(bindir)/$(PDCOM)
 	install -p pd.dll $(DESTDIR)$(bindir)/pd.dll
-	install -p pd.ico $(DESTDIR)$(bindir)/pd.ico
+	install -p ../tcl/pd.ico $(DESTDIR)$(bindir)/pd.ico
 	install -p $(PDSEND) $(DESTDIR)$(bindir)/$(PDSEND)
 	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/$(PDRECEIVE)
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
