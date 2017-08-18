@@ -47,6 +47,7 @@ dist_libpdtcl_DATA = \
     pd_guiprefs.tcl \
     pd_deken.tcl \
     pd_docsdir.tcl \
+    pd.gif \
     pd.ico
 
 #########################################

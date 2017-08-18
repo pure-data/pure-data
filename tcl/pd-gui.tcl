@@ -312,7 +312,15 @@ proc init_for_platform {} {
             # frame's upper left corner. http://wiki.tcl.tk/11502
             set ::windowframex 3
             set ::windowframey 53
-            # TODO add wm iconphoto/iconbitmap here if it makes sense
+            # trying loading icon in the GUI directory
+            if {$::tcl_version >= 8.5} {
+                set icon [file join $::sys_guidir pd.gif]
+                if {[file readable $icon]} { 
+                    catch {
+                        wm iconphoto . -default [image create photo -file "$icon"]
+                    }
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "left_ptr"
             set ::cursor_runmode_clickme "arrow"
