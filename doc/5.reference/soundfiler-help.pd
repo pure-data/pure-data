@@ -1,4 +1,4 @@
-#N canvas 113 23 1102 617 12;
+#N canvas 635 156 1102 617 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array1 77971 float 0;
 #X coords 0 1 77970 -1 300 100 1;
@@ -41,33 +41,33 @@ You can give "n" (natural) to take the byte order your machine prefers.
 #X text 575 106 -resize;
 #X text 575 124 -maxsize <maximum number of samples we can resize to>
 ;
-#X text 560 289 Flags for writing:;
-#X text 575 310 -wave \, -nextstep \, -aiff;
-#X text 576 329 -big \, -little (nextstep only!);
-#X text 575 351 -skip <number of sample frames to skip in array>;
-#X text 576 373 -nframes <maximum number to write>;
-#X text 577 417 -normalize;
-#X text 576 395 -bytes <2 \, 3 \, or 4>;
-#X text 557 464 The number of channels is limited to 64;
-#X obj 738 520 tabwrite~;
-#X obj 738 544 tabread4~;
-#X obj 843 498 tabplay~;
-#X obj 843 545 writesf~;
-#X obj 843 522 readsf~;
-#X text 576 437 -rate <sample rate>;
+#X text 560 313 Flags for writing:;
+#X text 575 334 -wave \, -nextstep \, -aiff;
+#X text 576 353 -big \, -little (nextstep only!);
+#X text 575 375 -skip <number of sample frames to skip in array>;
+#X text 576 397 -nframes <maximum number to write>;
+#X text 577 441 -normalize;
+#X text 576 419 -bytes <2 \, 3 \, or 4>;
+#X text 667 485 The number of channels is limited to 64;
+#X obj 738 536 tabwrite~;
+#X obj 738 560 tabread4~;
+#X obj 843 514 tabplay~;
+#X obj 843 561 writesf~;
+#X obj 843 538 readsf~;
+#X text 576 461 -rate <sample rate>;
 #X obj 88 390 print;
-#X text 738 496 See also:;
-#X text 721 589 updated for Pd version 0.48;
-#X text 12 420 Left outlet outputs the number of samples.;
+#X text 738 512 See also:;
 #X text 12 446 Right outlet outputs info as a list: samplerate \, headersize
 \, num channels \, bytespersample \, & endianness ("b" or "l").;
 #X text 577 229 -info;
 #X text 267 244 ...read header info only;
 #X msg 8 154 read ../sound/bell.aiff array2;
 #X msg 23 244 read -info ../sound/bell.aiff;
-#X text 594 247 This reads the header info without loading samples.
-You can use this in conjunction with -resize and tablenames as well.
-;
+#X text 721 589 updated for Pd version 0.48-1;
+#X text 593 247 This reads the header info without loading samples.
+The number of samples returned is truncated to the table size if a
+tablename is given without the -resize flag.;
+#X text 12 420 Left outlet outputs the number of samples.;
 #X connect 2 0 9 0;
 #X connect 2 1 37 0;
 #X connect 3 0 2 0;
@@ -75,5 +75,5 @@ You can use this in conjunction with -resize and tablenames as well.
 #X connect 10 0 2 0;
 #X connect 11 0 2 0;
 #X connect 12 0 2 0;
-#X connect 44 0 2 0;
-#X connect 45 0 2 0;
+#X connect 42 0 2 0;
+#X connect 43 0 2 0;
