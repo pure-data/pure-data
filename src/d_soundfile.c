@@ -1311,8 +1311,12 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         else goto usage;
     }
-    if (argc < 2 || argc > MAXSFCHANS + 1 || argv[0].a_type != A_SYMBOL)
-        goto usage;
+    if (argc < 1 ||                           /* no filename or tables */
+        (headeronly && resize && argc < 2) || /* -info -resize without tables */
+        (!headeronly && argc < 2) ||          /* no -info without tables */
+        argc > MAXSFCHANS + 1 ||              /* too many tables */
+        argv[0].a_type != A_SYMBOL)           /* bad filename */
+            goto usage;
     filename = argv[0].a_w.w_symbol->s_name;
     argc--; argv++;
 
@@ -1331,7 +1335,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
                 &vecs[i]))
             error("%s: bad template for tabwrite",
                 argv[i].a_w.w_symbol->s_name);
-        if (finalsize && finalsize != vecsize && !resize)
+        if (finalsize && finalsize != vecsize && !headeronly && !resize)
         {
             post("soundfiler_read: arrays have different lengths; resizing...");
             resize = 1;
@@ -1426,7 +1430,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     fd = -1;
     goto done;
 usage:
-    pd_error(x, "usage: read [flags] filename [tablename]...");
+    pd_error(x, "usage: read [flags] filename tablename...");
     post("flags: -skip <n> -resize -maxsize <n> ...");
     post("-raw <headerbytes> <channels> <bytespersamp> <endian (b, l, or n)>.");
 done:
