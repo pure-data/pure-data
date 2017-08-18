@@ -1312,7 +1312,10 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         else goto usage;
     }
-    if (argc < 2 || argc > MAXSFCHANS + 1 || argv[0].a_type != A_SYMBOL)
+    if ((headeronly && argc < 1) ||
+        (!headeronly && argc < 2) ||
+        argc > MAXSFCHANS + 1 ||
+        argv[0].a_type != A_SYMBOL)
         goto usage;
     filename = argv[0].a_w.w_symbol->s_name;
     argc--; argv++;
@@ -1439,7 +1442,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     fd = -1;
     goto done;
 usage:
-    pd_error(x, "usage: read [flags] filename tablename...");
+    pd_error(x, "usage: read [flags] filename [tablename]...");
     post("flags: -skip <n> -resize -maxsize <n> -info ...");
     post("-raw <headerbytes> <channels> <bytespersamp> <endian (b, l, or n)>.");
 done:

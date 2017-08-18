@@ -23,7 +23,7 @@ all header information using the "-raw" flag.;
 #X msg 24 317 write -wave -nframes 10000 /tmp/foo2 array2;
 #X text 286 154 read a file;
 #X text 333 177 ...optionally resize;
-#X text 226 221 ...or even overriding everything;
+#X text 226 223 ...or even overriding everything;
 #X text 274 293 write a file;
 #X text 364 364 write stereo;
 #X text 9 31 The soundfiler object reads and writes floating point
@@ -62,11 +62,12 @@ You can give "n" (natural) to take the byte order your machine prefers.
 #X text 12 446 Right outlet outputs info as a list: samplerate \, headersize
 \, num channels \, bytespersample \, & endianness ("b" or "l").;
 #X text 577 229 -info;
-#X text 594 247 This reads the header info without loading samples.
-You can use this in conjunction with -resize as well.;
-#X msg 23 241 read -info ../sound/bell.aiff array2;
-#X text 333 241 ...read header info only;
+#X text 267 244 ...read header info only;
 #X msg 8 154 read ../sound/bell.aiff array2;
+#X msg 23 244 read -info ../sound/bell.aiff;
+#X text 594 247 This reads the header info without loading samples.
+You can use this in conjunction with -resize and tablenames as well.
+;
 #X connect 2 0 9 0;
 #X connect 2 1 37 0;
 #X connect 3 0 2 0;
@@ -75,4 +76,4 @@ You can use this in conjunction with -resize as well.;
 #X connect 11 0 2 0;
 #X connect 12 0 2 0;
 #X connect 44 0 2 0;
-#X connect 46 0 2 0;
+#X connect 45 0 2 0;
