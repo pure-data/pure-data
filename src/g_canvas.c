@@ -1441,9 +1441,50 @@ static int check_exists(const char*path)
 }
 #endif
 
+static void canvas_path(t_canvasenvironment *e, char *path)
+{
+    t_namelist *nl;
+    char strbuf[MAXPDSTRING];
+    if (sys_isabsolutepath(path))
+    {
+        e->ce_path = namelist_append(e->ce_path, path, 0);
+        return;
+    }
+
+    /* check whether the given subdir is in one of the user search paths */
+    for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        strbuf[MAXPDSTRING-1]=0;
+        if (check_exists(strbuf))
+        {
+            e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+            return;
+        }
+    }
+}
+static void canvas_lib(t_canvasenvironment *e, char *lib)
+{
+    t_namelist *nl;
+    char strbuf[MAXPDSTRING];
+    if (sys_isabsolutepath(lib))
+    {
+        sys_load_lib(0, lib);
+        return;
+    }
+
+    /* check whether the given library is located in one of the user search paths */
+    for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
+        strbuf[MAXPDSTRING-1]=0;
+        if (sys_load_lib(0, strbuf))
+            return;
+    }
+}
 static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
 {
-    t_namelist*nl;
+    t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(stdpath))
     {
@@ -1476,7 +1517,7 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
 }
 static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
 {
-    t_namelist*nl;
+    t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(stdlib))
     {
@@ -1518,8 +1559,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
         if ((argc > i+1) && !strcmp(flag, "-path"))
         {
-            e->ce_path = namelist_append(e->ce_path,
-                atom_getsymbolarg(i+1, argc, argv)->s_name, 0);
+            canvas_path(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
             i++;
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
@@ -1529,7 +1569,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-lib"))
         {
-            sys_load_lib(x, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_lib(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
             i++;
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
