@@ -1469,9 +1469,9 @@ static void canvas_path(t_canvasenvironment *e, char *path)
 
         /* check if path is a subdir of the canvas-path */
     canvas_completepath(path, strbuf, MAXPDSTRING, x);
-    if (check_exists(path))
+    if (check_exists(strbuf))
     {
-        e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+        e->ce_path = namelist_append(e->ce_path, path, 0);
         return;
     }
 
