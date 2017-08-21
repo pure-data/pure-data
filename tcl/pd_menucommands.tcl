@@ -151,6 +151,10 @@ proc ::pd_menucommands::menu_startup_dialog {} {
     }
 }
 
+proc ::pd_menucommands::menu_manual {} {
+    ::pd_menucommands::menu_doc_open doc/1.manual index.htm
+}
+
 proc ::pd_menucommands::menu_helpbrowser {} {
     ::helpbrowser::open_helpbrowser
 }
