@@ -268,7 +268,6 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                                  x->x_protocol == SOCK_DGRAM);
             sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receiver = y;
-            post("netsend[%p]connect: %p", x, x->x_receiver);
           }
       }
     outlet_float(x->x_obj.ob_outlet, 1);
@@ -281,7 +280,6 @@ static void netsend_disconnect(t_netsend *x)
         sys_rmpollfn(x->x_sockfd);
         sys_closesocket(x->x_sockfd);
         x->x_sockfd = -1;
-        post("netsend[%p]disconnect: %p", x, x->x_receiver);
         if(x->x_receiver)
             socketreceiver_free(x->x_receiver);
         x->x_receiver=NULL;
@@ -385,7 +383,6 @@ static void netsend_setup(void)
 static void netreceive_notify(t_netreceive *x, int fd)
 {
     int i;
-    post("netreceive_notify[%p] %d", x, fd);
     for (i = 0; i < x->x_nconnections; i++)
     {
         if (x->x_connections[i] == fd)
@@ -398,7 +395,6 @@ static void netreceive_notify(t_netreceive *x, int fd)
             memmove(x->x_receivers+i, x->x_receivers+(i+1),
                 sizeof(t_socketreceiver*) * (x->x_nconnections - (i+1)));
 
-            post("netreceive[%p]notify[%d]: %p", x, fd, x->x_receivers[i]);
             if(x->x_receivers[i])
                 socketreceiver_free(x->x_receivers[i]);
             x->x_receivers[i]=NULL;
@@ -434,7 +430,6 @@ static void netreceive_connectpoll(t_netreceive *x)
                 (x->x_ns.x_msgout ? netsend_doit : 0), 0);
             sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receivers[x->x_nconnections] = y;
-            post("netreceive[%p]connectpoll[%d]: %p", x, x->x_nconnections, y);
         }
         outlet_float(x->x_ns.x_connectout, (x->x_nconnections = nconnections));
     }
@@ -447,7 +442,6 @@ static void netreceive_closeall(t_netreceive *x)
     {
         sys_rmpollfn(x->x_connections[i]);
         sys_closesocket(x->x_connections[i]);
-        post("netreceive[%p]closeall[%d]: %p", x, i, x->x_receivers[i]);
         if(x->x_receivers[i]) {
             socketreceiver_free(x->x_receivers[i]);
             x->x_receivers[i]=NULL;
@@ -537,7 +531,6 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
             x->x_ns.x_receiver = y;
-            post("netreceive[%p]listen: %p", x, x->x_ns.x_receiver);
 
         }
     }
