@@ -42,13 +42,20 @@ added to the ALL_LINGUAS language list in po/Makefile.am.
 When building Pd, these .po translation files are used to generate .msg files
 which are then loaded by the Pd GUI at runtime depending on the current locale.
 You can manually set the locale when running Pd from the commandline with the
-LANG environment variable, in this case the German (de):
+LANG environment variable, in this case German (de):
 
     LANG=de.UTF-8 pd
 
 This also works when opening a macOS .app bundle:
 
     LANG=de.UTF-8 open Pd.0.47.1.app
+
+On Windows, you can also set LANG on the commandline or set it within a .bat
+wrapper file to launch Pd. Place the following in a file called "pd-lang.bat"
+in the Pd bin directory and double click to run:
+
+    SET LANG="de.UTF-8"
+    start "" "pd.exe"
 
 If the Tcl files have changed, the make process regenerates the .pot template
 file and merges any changes into the .po files. Strings which have changed are

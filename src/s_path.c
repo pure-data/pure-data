@@ -653,6 +653,21 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+    /* add one item to search path (intended for use by Deken plugin).
+    if "saveit" is set, also save all settings.  */
+void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
+{
+    int i;
+    t_symbol *s = sys_decodedialog(path);
+    if (*s->s_name)
+    {
+        STUFF->st_searchpath =
+            namelist_append_files(STUFF->st_searchpath, s->s_name);
+        if (saveit != 0)
+            sys_savepreferences(0);
+    }
+}
+
     /* set the global list vars for startup libraries and flags */
 void sys_set_startup( void)
 {

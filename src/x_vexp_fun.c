@@ -119,7 +119,7 @@ struct ex_ex * ex_if(t_expr *expr, struct ex_ex *argv, struct ex_ex *optr,
 static void ex_ldexp(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_imodf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_modf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
-#ifndef _WIN32
+#if !defined(_MSC_VER) || (_MSC_VER >= 17000)
 static void ex_cbrt(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_erf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_erfc(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
@@ -173,7 +173,7 @@ t_ex_func ex_funcs[] = {
         {"ldexp",       ex_ldexp,       2},
         {"imodf",       ex_imodf,       1},
         {"modf",        ex_modf,        1},
-#ifndef _WIN32
+#if !defined(_MSC_VER) || (_MSC_VER >= 17000)
         {"asinh",       ex_asinh,       1},
         {"acosh",       ex_acosh,       1},
         {"atanh",       ex_atanh,       1},     /* hyperbolic atan */
@@ -868,7 +868,7 @@ ex_tanh(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 }
 
 
-#ifndef _WIN32
+#if !defined(_MSC_VER) || (_MSC_VER >= 17000)
 static void
 ex_asinh(t_expr *e, long argc, struct ex_ex *argv, struct ex_ex *optr)
 {
@@ -1269,7 +1269,7 @@ FUNC_DEF_UNARY(ex_modf, fracmodf, (double), 1);
  */
 FUNC_DEF(ex_ldexp, ldexp, (double), (int), 1);
 
-#ifndef _WIN32
+#if !defined(_MSC_VER) || (_MSC_VER >= 17000)
 /*
  * ex_cbrt - cube root
  */

@@ -57,6 +57,7 @@ proc ::scrollbox::delete_item { mytoplevel } {
     foreach idx $cursel {
         $mytoplevel.listbox.box delete $idx
     }
+    $mytoplevel.listbox.box selection set active
 }
 
 # Double-clicking on the listbox should edit the current item,

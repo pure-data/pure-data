@@ -123,6 +123,8 @@ static void stdout_anything(t_stdout *x, t_symbol *s, int argc, t_atom *argv)
                 pd_tilde_putsymbol(argv->a_w.w_symbol, stdout);
         }
         putc(A_SEMI, stdout);
+        if (x->x_flush)
+            fflush(stdout);
         return;
     }
     msgbuf[0] = 0;

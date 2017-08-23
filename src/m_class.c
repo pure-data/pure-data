@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 static t_symbol *class_loadsym;     /* name under which an extern is invoked */
@@ -218,7 +218,19 @@ EXTERN void pdinstance_free(t_pdinstance *x)
         while ((s = x->pd_symhash[i]))
         {
             x->pd_symhash[i] = s->s_next;
-            freebytes(s, sizeof(*s));
+            if(s != &x->pd_s_pointer &&
+               s != &x->pd_s_float &&
+               s != &x->pd_s_symbol &&
+               s != &x->pd_s_bang &&
+               s != &x->pd_s_list &&
+               s != &x->pd_s_anything &&
+               s != &x->pd_s_signal &&
+               s != &x->pd_s__N &&
+               s != &x->pd_s__X &&
+               s != &x->pd_s_x &&
+               s != &x->pd_s_y &&
+               s != &x->pd_s_)
+                freebytes(s, sizeof(*s));
         }
     }
     freebytes(x->pd_symhash, SYMTABHASHSIZE * sizeof (*x->pd_symhash));

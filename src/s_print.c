@@ -11,7 +11,7 @@
 #include "s_stuff.h"
 
 #ifdef _MSC_VER
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 t_printhook sys_printhook;
@@ -313,5 +313,4 @@ void sys_ouch(void)
 {
     if (*errobject) error("%s: %s", errobject, errstring);
     else error("%s", errstring);
-    sys_gui("bell\n");
 }

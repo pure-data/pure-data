@@ -30,7 +30,7 @@
 #include <io.h>
 #endif
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
-#define snprintf sprintf_s
+#define snprintf _snprintf
 #endif
 
 void sys_doflags( void);
@@ -498,7 +498,7 @@ void sys_savepreferences(const char *filename)
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
 
-    if (*filename)
+    if (filename && *filename)
         sys_initsavepreferences_file(filename);
     else sys_initsavepreferences();
         /* audio settings */

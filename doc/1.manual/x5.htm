@@ -27,10 +27,15 @@ settings.  On Pcs, the settings are now stored in the "user" resource area
 (before, it was per-machine, and users who weren't administrators apparently
 couldn't save their settings.)
 
-<P> The expr family (expr, expr~, fexpr~) got an update from Shahrokh Yadegari.
-I'm not sure when this first came about, but expr now can access "variable"
-objects as variables inside expressions.  Expressions using "if" skip evaluating
-the argument that isn't used.
+<P> On the first startup, Pd queries the user as to whether to create a
+directory such as ~/Doculemnts/Pd and set path to point there.  Many updates
+were also made to the "path" dialog and deken to better integrate downloading
+stuff and path maintanance.
+
+<P> The expr family (expr, expr~, fexpr~) got an update from Shahrokh Yadegari,
+and the help file was reorganized and updated by Alexandre Porres.  Many more
+math functions are supported, and the parser was updated so that expressions
+using "if" skip evaluating the argument that isn't used.
 
 <P> New "fudiparse", "fudiformat" objects.
 

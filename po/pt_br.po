@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2010-01-23 03:45-0200\n"
-"Last-Translator: Alexandre Torres Porres <porres@gmail.com>\n"
+"PO-Revision-Date: 2017-08-10 03:45-0200\n"
+"Last-Translator: Alexandre Torres Porres\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -163,10 +163,10 @@ msgid "no Pd settings to clear"
 msgstr "nenhuma configuração do Pd para limpar"
 
 msgid "removed .pdsettings file"
-msgstr ".pdsettings file removido"
+msgstr "arquivo .pdsettings removido"
 
 msgid "couldn't delete .pdsettings file"
-msgstr "impossível deletar .pdsettings file"
+msgstr "impossível deletar arquivo .pdsettings"
 
 msgid "failed to erase Pd settings"
 msgstr "falha ao apagar configurações do Pd"
@@ -179,10 +179,10 @@ msgstr "Nenhuma configuração do Pd para apagar"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
-"pulando carregar preferências... Pd parece ter travado na inicialização."
+"pulando carregar preferências... o Pd parece ter travado na inicialização."
 
 msgid "(re-save preferences to reinstate them)"
-msgstr "re-salvar preferências para reinstancia-las"
+msgstr "(re-salvar preferências para reinstancia-las)"
 
 msgid "File"
 msgstr "Arquivo"
@@ -206,7 +206,7 @@ msgid "Help"
 msgstr "Ajuda"
 
 msgid "Show &Hidden Files and Directories"
-msgstr "Mostrar diretórios e arquivos escondidos"
+msgstr "Mostrar Diretórios e Arquivos &Escondidos"
 
 msgid "Copy"
 msgstr "Copiar"
@@ -254,7 +254,7 @@ msgid "Options"
 msgstr "Opções"
 
 msgid "Open List View..."
-msgstr "Abrir Visualização em Lista..."
+msgstr "Abrir Visualização da Lista..."
 
 msgid "Delete array"
 msgstr "Excluir vetor"
@@ -288,25 +288,26 @@ msgid "Use callbacks"
 msgstr "Usar callbacks"
 
 msgid "Input Devices"
-msgstr "Dispositivos de entrada"
+msgstr "Dispositivos de Entrada"
 
 msgid "Channels:"
 msgstr "Canais:"
 
 msgid "Output Devices"
-msgstr "Dispositivos de saída"
+msgstr "Dispositivos de Saída"
 
 msgid "(same as input device)..."
 msgstr "(mesmo que o dispositivo de entrada)..."
 
 msgid "Use Multiple Devices"
-msgstr "Usar múltiplos dispositivos"
+msgstr "Usar Múltiplos Dispositivos"
 
 msgid "Save All Settings"
-msgstr "Salvar Configurações"
+msgstr "Salvar Todas as Configurações"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
-msgstr "AVISO: 'flags graphme' desconhecidas recebidas em pdtk_canvas_dialog"
+msgstr ""
+"AVISO: marcadores 'graphme' desconhecidos recebidos em pdtk_canvas_dialog"
 
 msgid "Canvas Properties"
 msgstr "Propriedades da Tela"
@@ -368,7 +369,7 @@ msgid "Showing '%1$d' out of %2$d items in %3$s"
 msgstr "Mostrando '%1$d' de %2$d ítens em %3$s"
 
 msgid "Pd window"
-msgstr "Janela do PD"
+msgstr "Janela do Pd"
 
 msgid "Match whole word only"
 msgstr "Procurar apenas pela palavra inteira"
@@ -509,7 +510,7 @@ msgid "Vradio"
 msgstr "Botão Seletor Vertical"
 
 msgid "Num cells:"
-msgstr "Número de Células:"
+msgstr "Número de células:"
 
 msgid "Hradio"
 msgstr "Botão Seletor Horizontal"
@@ -526,16 +527,16 @@ msgstr "Retângulo Visível (pix)"
 
 #, tcl-format
 msgid "%s Properties"
-msgstr "Propriedades: %s"
+msgstr "Propriedades de %s"
 
 msgid "Parameters"
 msgstr "Parâmetros"
 
 msgid "X offset:"
-msgstr "Deslocamento (X):"
+msgstr "Deslocamento eixo X:"
 
 msgid "Y offset:"
-msgstr "Deslocamento (Y):"
+msgstr "Deslocamento eixo Y:"
 
 msgid "Colors"
 msgstr "Cores"
@@ -571,13 +572,41 @@ msgid "Out Ports:"
 msgstr "Portas de Saída:"
 
 msgid "Pd search path for objects, help, fonts, and other files"
-msgstr "Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
+msgstr ""
+"Caminho de busca do PD para objetos, arquivos de ajuda, fontes e outros"
 
 msgid "Use standard paths"
 msgstr "Usar caminhos padrões"
 
 msgid "Verbose"
-msgstr "Verbose"
+msgstr "Detalhado"
+
+msgid "Pd Documents Directory"
+msgstr "Diretório dos Documentos Pd"
+
+msgid "Browse"
+msgstr "Navegar"
+
+msgid "Reset"
+msgstr "Resetar"
+
+msgid "Disable"
+msgstr "Desabilitar"
+
+msgid "Externals Install Directory"
+msgstr "Instalar externals no diretório:"
+
+msgid "Clear"
+msgstr "Limpar"
+
+msgid "Choose Pd documents directory:"
+msgstr "Escolher diretório dos documentos Pd:"
+
+msgid "Install externals to directory:"
+msgstr "Instalar externals no diretório:"
+
+msgid "Add a new path"
+msgstr "Adicionar um novo caminho"
 
 msgid "Add new library"
 msgstr "Adicionar nova biblioteca"
@@ -586,10 +615,10 @@ msgid "Edit library"
 msgstr "Editar biblioteca"
 
 msgid "Pd libraries to load on startup"
-msgstr "Bibliotecas para carregar na inicialização"
+msgstr "Bibliotecas de Pd para carregar na inicialização"
 
 msgid "Startup flags:"
-msgstr "Flags de inicialização:"
+msgstr "Marcadores de inicialização:"
 
 msgid "Defeat real-time scheduling"
 msgstr "Anular agendamento em tempo real"
@@ -626,9 +655,6 @@ msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Platforma detectada: %s"
 
-msgid "Install libraries to directory:"
-msgstr "Instalar bibliotecas no diretório:"
-
 msgid "Show all"
 msgstr "Mostrar todos"
 
@@ -636,7 +662,9 @@ msgid "Search"
 msgstr "Procurar"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr "Para receber uma lista com todos os externals disponíveis, tente uma busca vazia."
+msgstr ""
+"Para receber uma lista com todos os externals disponíveis, tente uma busca "
+"vazia."
 
 msgid "Find externals"
 msgstr "Procurar por externals"
@@ -655,14 +683,14 @@ msgid "Unable to perform search. Are you online?"
 msgstr "Incapaz de realizar busca. Você está online?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr "Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
+msgstr ""
+"Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
 
-#, tcl-format
-msgid "Install to %s ?"
-msgstr "Instalar em %s ?"
+msgid "Install %s to %s?"
+msgstr "Instalar %s em %s?"
 
 #, tcl-format
 msgid ""
@@ -670,7 +698,7 @@ msgid ""
 "%1$s\n"
 "Into %2$s..."
 msgstr ""
-"Começando a baixar de:\n"
+"Começando a baixar:\n"
 "%1$s\n"
 "Em %2$s..."
 
@@ -696,12 +724,24 @@ msgid "2. Copy the contents into %s."
 msgstr "2. Copiar o conteúdo para %s."
 
 #, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr "Incapaz de adicionar %s aos caminhos de busca"
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr "Adicionar %s aos caminhos de busca do Pd?"
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr "%s adicionado aos caminhos de busca"
+
+#, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
 msgstr "Incapaz de baixar de %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to remove stray file %s"
-msgstr "Inzapaz de remover arquivo %s"
+msgstr "Incapaz de remover arquivo %s"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to %s"
@@ -714,6 +754,43 @@ msgstr "procurando por '%s'"
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Enviado por '%1$s' em %2$s"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Você quer criar um diretório de documentos para patches e bibliotecas de "
+"externals?\n"
+"\n"
+"Localização: %s\n"
+"\n"
+"Você pode mudar ou desabilitar posteriormente em Preferências/Caminho de busca."
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+"Diretórios de documentos Pd não pôde ser encontrado:\n"
+"\n"
+"%s\n"
+"\n"
+"Escolher uma nova localização?"
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s\n"
+msgstr "Impossível criar diretório de documentos Pd: %s\n"
+
+msgid "Couldn't create \"externals\" directory in: %s\n"
+msgstr "Impossível criar diretório \"externals\" em: %s\n"
 
 msgid "About Pd"
 msgstr "Sobre o Pd"
@@ -845,7 +922,7 @@ msgid "puredata.info"
 msgstr "puredata.info"
 
 msgid "Report a bug"
-msgstr "Reportar falha/bug"
+msgstr "Reportar falha (bug)"
 
 msgid "Clear Menu"
 msgstr "Limpar Menu"
@@ -870,7 +947,7 @@ msgid "MIDI..."
 msgstr "Configurações de MIDI..."
 
 msgid "Zoom New Windows"
-msgstr "Amplciar Zoom em Novas Janelas"
+msgstr "Amplicar Zoom em Novas Janelas"
 
 msgid "Save All Preferences"
 msgstr "Salvar Todas as Preferências"
@@ -882,7 +959,7 @@ msgid "Load from..."
 msgstr "Carregar de..."
 
 msgid "Forget All..."
-msgstr "Deletar preferências..."
+msgstr "Esquecer Todas..."
 
 msgid "Open Recent"
 msgstr "Abrir Recente"
@@ -894,7 +971,7 @@ msgid "Properties"
 msgstr "Propriedades"
 
 msgid "Audio on"
-msgstr "Audio ligado"
+msgstr "Áudio ligado"
 
 msgid "Audio off"
 msgstr "Áudio desligado"
@@ -912,7 +989,7 @@ msgid "DSP"
 msgstr "DSP"
 
 msgid "Audio I/O error"
-msgstr "Erro de entrada/saída de áudio"
+msgstr "Erro de Entrada/Saída de áudio"
 
 msgid "Log:"
 msgstr "Log:"
@@ -941,9 +1018,15 @@ msgstr "Editar..."
 msgid "Delete"
 msgstr "Deletar"
 
+msgid "Ignoring '%s': doesn't exist"
+msgstr "Ignorando '%s': não existe"
+
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
+msgstr "Ignorando '%s': não parece ser um arquivo de Pd válido"
+
+#~ msgid "Install externals to:"
+#~ msgstr "Instalar externals em:"
 
 #~ msgid "for:"
 #~ msgstr "por:"
@@ -1048,7 +1131,8 @@ msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
 #~ msgstr "Dispositivo de saída 2:"
 
 #~ msgid "WARNING: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "AVISO: %s Falha ao procurar tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr ""
+#~ "AVISO: %s Falha ao procurar tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "ERROR: 'pd' never showed up, 'pd-gui' quitting!"
 #~ msgstr "ERRO: 'pd' nunca apareceu, 'pd-gui' fechando!"
@@ -1060,7 +1144,8 @@ msgstr "Ignorando '%s': não parece ser um arquivo de PD válido"
 #~ msgstr "Enviar Mensagem..."
 
 #~ msgid "ERROR: %s failed to find font size (%s) that fits into %sx%s!"
-#~ msgstr "ERRO: %s Falha ao procurar tamanho de fonte (%s) que caiba em %sx%s!"
+#~ msgstr ""
+#~ "ERRO: %s Falha ao procurar tamanho de fonte (%s) que caiba em %sx%s!"
 
 #~ msgid "Pd Files"
 #~ msgstr "Arquivos de Pd"

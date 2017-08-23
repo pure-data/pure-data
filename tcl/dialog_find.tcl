@@ -27,7 +27,7 @@ namespace eval ::dialog_find:: {
 proc ::dialog_find::get_history {direction} {
     variable find_history
     variable history_position
-    
+
     incr history_position $direction
     if {$history_position < 0} {set history_position 0}
     if {$history_position > [llength $find_history]} {
@@ -108,7 +108,14 @@ proc ::dialog_find::ok {mytoplevel} {
 
 # mytoplevel isn't used here, but is kept for compatibility with other dialog cancel procs
 proc ::dialog_find::cancel {mytoplevel} {
+    variable find_in_window
     wm withdraw .find
+    # focus on target window or next available
+    if {[winfo exists $find_in_window] && [winfo viewable $find_in_window]} {
+        focus $find_in_window
+    } else {
+        focus [lindex [wm stackorder .] end]
+    }
 }
 
 # focus on the entry in the find dialog
@@ -139,14 +146,10 @@ proc ::dialog_find::set_window_to_search {mytoplevel} {
         if {$find_in_window eq ".find"} {
             set find_in_window [winfo toplevel [lindex [wm stackorder .] end-1]]
         }
-        # this has funny side effects in tcl 8.4 ???
-        # update: seems to work fine in 8.4 on macOS...
-        # if {$::tcl_version >= 8.5} {
-             wm transient .find $find_in_window
-        # }
         .find.searchin configure -text \
             [format [_ "Search in %s for:"] [lookup_windowname $find_in_window] ]
     }
+    update_bindings
 }
 
 proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
@@ -180,12 +183,12 @@ proc ::dialog_find::pdtk_showfindresult {mytoplevel success which total} {
 proc ::dialog_find::open_find_dialog {mytoplevel} {
     if {[winfo exists .find]} {
         wm deiconify .find
-        raise .find
-        focus .find
         ::dialog_find::set_window_to_search $mytoplevel
     } else {
         create_dialog $mytoplevel
     }
+    raise .find
+    focus .find
     focus_find
 }
 
@@ -199,21 +202,7 @@ proc ::dialog_find::create_dialog {mytoplevel} {
     .find configure -menu $::dialog_menubar
     .find configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings .find "find"
-    # sending these commands to the Find Dialog Panel should forward them to
-    # the currently focused patch
-    bind .find <$::modifier-Key-s> \
-        {menu_send $::focused_window menusave; break}
-    # TK Cocoa requires lowercase with Shift modifier
-    if {$::bind_shiftcaps == 1 } {
-        bind .find <$::modifier-Shift-Key-S> \
-            {menu_send $::focused_window menusaveas; break}
-    } else {
-        bind .find <$::modifier-Shift-Key-s> \
-            {menu_send $::focused_window menusaveas; break}
-    }
-    bind .find <$::modifier-Key-p> \
-        {menu_print $::focused_window; break}
-    
+
     label .find.searchin -text \
             [format [_ "Search in %s for:"] [_ "Pd window"] ]
     pack .find.searchin -side top -fill x -pady 1
@@ -224,25 +213,25 @@ proc ::dialog_find::create_dialog {mytoplevel} {
 
     bind .find.entry <Up> "::dialog_find::get_history 1"
     bind .find.entry <Down> "::dialog_find::get_history -1"
-    
+
     checkbutton .find.wholeword -variable ::dialog_find::wholeword_button \
         -text [_ "Match whole word only"] -anchor w
     pack .find.wholeword -side left -padx 10 -pady 3
-    
+
     frame .find.buttonframe -background yellow
     pack .find.buttonframe -side right -pady 3
     if {$::windowingsystem eq "win32"} {
-        button .find.cancel -text [_ "Cancel"] -default normal -width 9 \
+        button .find.cancel -text [_ "Cancel"] -default normal \
             -command "::dialog_find::cancel $mytoplevel"
-        pack .find.cancel -side right -padx 6 -pady 3
+        pack .find.cancel -side right -padx 6 -pady 3 -ipadx 10
     }
-    button .find.button -text [_ "Find"] -default active -width 9 \
+    button .find.button -text [_ "Find"] -default active \
         -command "::dialog_find::ok $mytoplevel"
-    pack .find.button -side right -padx 6 -pady 3
+    pack .find.button -side right -padx 6 -pady 3 -ipadx 15
     if {$::windowingsystem eq "x11"} {
-        button .find.close -text [_ "Close"] -default normal -width 9 \
+        button .find.close -text [_ "Close"] -default normal \
             -command "::dialog_find::cancel $mytoplevel"
-        pack .find.close -side right -padx 6 -pady 3
+        pack .find.close -side right -padx 6 -pady 3 -ipadx 10
     }
     # on Mac OS X, the buttons shouldn't get Tab/keyboard focus
     if {$::windowingsystem eq "aqua"} {
@@ -250,7 +239,32 @@ proc ::dialog_find::create_dialog {mytoplevel} {
         .find.button configure -takefocus 0
     }
     ::dialog_find::set_window_to_search $mytoplevel
-    ::dialog_find::focus_find 
+}
+
+# update the passthrough key bindings based on the current target search window
+proc ::dialog_find::update_bindings {} {
+    variable find_in_window
+    # disable first
+    bind .find <$::modifier-Key-s>       {bell; break}
+    bind .find <$::modifier-Shift-Key-s> {bell; break}
+    bind .find <$::modifier-Shift-Key-S> {bell; break}
+    bind .find <$::modifier-Key-p>       {bell; break}
+    # sending these commands to the Find Dialog Panel should forward them to
+    # the currently focused patch or the pdwindow
+    if {[winfo exists $find_in_window]} {
+        # the "; break" part stops executing other binds
+        bind .find <$::modifier-Shift-Key-s> \
+            "menu_send $find_in_window menusaveas; break"
+        bind .find <$::modifier-Shift-Key-S> \
+            "menu_send $find_in_window menusaveas; break"
+        if {$find_in_window ne ".pdwindow"} {
+            # these don't do anything in the pdwindow
+            bind .find <$::modifier-Key-s> \
+                "menu_send $find_in_window menusave; break"
+            bind .find <$::modifier-Key-p> \
+                "menu_print $find_in_window; break"
+        }
+    }
 }
 
 # returns the current search string, shortens & appends "..." if too long

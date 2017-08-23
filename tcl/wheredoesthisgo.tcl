@@ -6,15 +6,18 @@ package provide wheredoesthisgo 0.1
 proc open_file {filename} {
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
-    if {
-        [file exists $filename]
-        && [regexp -nocase -- "\.(pd|pat|mxt)$" $filename]
-    } then {
+    if { ! [file exists $filename]} {
+        ::pdwindow::post [format [_ "Ignoring '%s': doesn't exist"] $filename]
+        # remove from recent files
+        ::pd_guiprefs::update_recentfiles $filename true
+        return
+    }
+    if {[regexp -nocase -- "\.(pd|pat|mxt)$" $filename]} {
         ::pdtk_canvas::started_loading_file [format "%s/%s" $basename $filename]
         pdsend "pd open [enquote_path $basename] [enquote_path $directory]"
         # now this is done in pd_guiprefs
         ::pd_guiprefs::update_recentfiles $filename
-    } {
+    } else {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
     }
 }
@@ -47,6 +50,26 @@ proc pdtk_savepanel {target localdir} {
     if {$filename ne ""} {
         pdsend "$target callback [enquote_path $filename]"
     }
+}
+
+# ------------------------------------------------------------------------------
+# path helpers
+
+# adds to the sys_searchpath user search paths directly
+proc add_to_searchpaths {path {save true}} {
+    # try not to add duplicates
+    foreach searchpath $::sys_searchpath {
+        set dir [string trimright $searchpath [file separator]]
+        if {"$dir" eq "$path"} {
+            return
+        }
+    }
+    # tell pd about the new path
+    if {$save} {set save 1} else {set save 0}
+    pdsend "pd add-to-path [pdtk_encodedialog ${path}] $save"
+    # append to search paths as this won't be
+    # updated from the pd core until a restart
+    lappend ::sys_searchpath "$path"
 }
 
 # ------------------------------------------------------------------------------
