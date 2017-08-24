@@ -294,6 +294,7 @@ void inmidi_pitchbend(int portno, int channel, int value);
 void inmidi_aftertouch(int portno, int channel, int value);
 void inmidi_polyaftertouch(int portno, int channel, int pitch, int value);
 void inmidi_clk(double timing);
+void inmidi_songpos(int portno, int value);
 
 static void sys_dispatchnextmidiin(void)
 {
@@ -406,7 +407,10 @@ static void sys_dispatchnextmidiin(void)
                     break;
                 case MIDI_SONGPOS:
                     if (gotbyte1)
+                    {
+                        inmidi_songpos(portno, ((byte << 7) + byte1));
                         parserp->mp_gotbyte1 = 0, parser->mp_status = 0;
+                    }
                     else parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
                     break;
                 case MIDI_SONGSELECT:

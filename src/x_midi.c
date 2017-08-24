@@ -26,6 +26,7 @@ struct _instancemidi
     t_symbol *m_polytouchin_sym;
     t_symbol *m_midiclkin_sym;
     t_symbol *m_midirealtimein_sym;
+    t_symbol *m_songposin_sym;
 };
 
 /* ----------------------- midiin and sysexin ------------------------- */
@@ -507,6 +508,60 @@ void inmidi_polyaftertouch(int portno, int channel, int pitch, int value)
     }
 }
 
+/* ----------------------- songposin ------------------------- */
+
+static t_class *songposin_class;
+
+typedef struct _songposin
+{
+    t_object x_obj;
+    t_outlet *x_outlet1;
+    t_outlet *x_outlet2;
+} t_songposin;
+
+static void *songposin_new()
+{
+    t_songposin *x = (t_songposin *)pd_new(songposin_class);
+    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songposin_sym);
+    return (x);
+}
+
+static void songposin_list(t_songposin *x, t_symbol *s, int argc,
+    t_atom *argv)
+{
+    t_float portno = atom_getfloatarg(0, argc, argv);
+    t_float value = atom_getfloatarg(1, argc, argv);
+    outlet_float(x->x_outlet2, portno);
+    outlet_float(x->x_outlet1, value);
+}
+
+static void songposin_free(t_songposin *x)
+{
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songposin_sym);
+}
+
+static void songposin_setup(void)
+{
+    songposin_class = class_new(gensym("songposin"),
+        (t_newmethod)songposin_new, (t_method)songposin_free,
+        sizeof(t_songposin), CLASS_NOINLET, A_DEFFLOAT, 0);
+    class_addlist(songposin_class, songposin_list);
+    class_sethelpsymbol(songposin_class, gensym("midi"));
+}
+
+void inmidi_songpos(int portno, int value)
+{
+    if (pd_this->pd_midi->m_songposin_sym->s_thing)
+    {
+        t_atom at[2];
+        SETFLOAT(at, portno);
+        SETFLOAT(at+1, value);
+        pd_list(pd_this->pd_midi->m_songposin_sym->s_thing, &s_list, 2, at);
+    }
+}
+
 /*----------------------- midiclkin--(midi F8 message )---------------------*/
 
 static t_class *midiclkin_class;
@@ -552,7 +607,6 @@ static void midiclkin_setup(void)
 
 void inmidi_clk(double timing)
 {
-
     static t_float prev = 0;
     static t_float count = 0;
     t_float cur,diff;
@@ -576,7 +630,7 @@ void inmidi_clk(double timing)
     }
 }
 
-/*----------midirealtimein (midi FA,FB,FC,FF message )-----------------*/
+/*----------midirealtimein (midi F8,FA,FB,FC,FE,FF message )-----------------*/
 
 static t_class *midirealtimein_class;
 
@@ -587,7 +641,7 @@ typedef struct _midirealtimein
     t_outlet *x_outlet2;
 } t_midirealtimein;
 
-static void *midirealtimein_new( void)
+static void *midirealtimein_new(void)
 {
     t_midirealtimein *x = (t_midirealtimein *)pd_new(midirealtimein_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -617,16 +671,16 @@ static void midirealtimein_setup(void)
         (t_newmethod)midirealtimein_new, (t_method)midirealtimein_free,
             sizeof(t_midirealtimein), CLASS_NOINLET, A_DEFFLOAT, 0);
     class_addlist(midirealtimein_class, midirealtimein_list);
-        class_sethelpsymbol(midirealtimein_class, gensym("midi"));
+    class_sethelpsymbol(midirealtimein_class, gensym("midi"));
 }
 
-void inmidi_realtimein(int portno, int SysMsg)
+void inmidi_realtimein(int portno, int byte)
 {
     if (pd_this->pd_midi->m_midirealtimein_sym->s_thing)
     {
         t_atom at[2];
         SETFLOAT(at, portno);
-        SETFLOAT(at+1, SysMsg);
+        SETFLOAT(at+1, byte);
         pd_list(pd_this->pd_midi->m_midirealtimein_sym->s_thing, &s_list, 2, at);
     }
 }
@@ -1274,6 +1328,7 @@ void x_midi_setup(void)
     bendin_setup();
     touchin_setup();
     polytouchin_setup();
+    songposin_setup();
     midiclkin_setup();
     midiout_setup();
     noteout_setup();
@@ -1301,6 +1356,7 @@ void x_midi_newpdinstance( void)
     pd_this->pd_midi->m_polytouchin_sym = gensym("#polytouchin");
     pd_this->pd_midi->m_midiclkin_sym = gensym("#midiclkin");
     pd_this->pd_midi->m_midirealtimein_sym = gensym("#midirealtimein");
+    pd_this->pd_midi->m_songposin_sym = gensym("#songposin");
 }
 
 void x_midi_freepdinstance( void)
