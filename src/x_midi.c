@@ -13,6 +13,8 @@ void outmidi_aftertouch(int portno, int channel, int value);
 void outmidi_polyaftertouch(int portno, int channel, int pitch, int value);
 void outmidi_mclk(int portno);
 void outmidi_byte(int portno, int value);
+void outmidi_songpos(int portno, int value);
+void outmidi_song(int portno, int value);
 
 struct _instancemidi
 {
@@ -27,6 +29,7 @@ struct _instancemidi
     t_symbol *m_midiclkin_sym;
     t_symbol *m_midirealtimein_sym;
     t_symbol *m_songposin_sym;
+    t_symbol *m_songin_sym;
 };
 
 /* ----------------------- midiin and sysexin ------------------------- */
@@ -562,6 +565,60 @@ void inmidi_songpos(int portno, int value)
     }
 }
 
+/* ----------------------- songin ------------------------- */
+
+static t_class *songin_class;
+
+typedef struct _songin
+{
+    t_object x_obj;
+    t_outlet *x_outlet1;
+    t_outlet *x_outlet2;
+} t_songin;
+
+static void *songin_new()
+{
+    t_songin *x = (t_songin *)pd_new(songin_class);
+    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songin_sym);
+    return (x);
+}
+
+static void songin_list(t_songin *x, t_symbol *s, int argc,
+    t_atom *argv)
+{
+    t_float portno = atom_getfloatarg(0, argc, argv);
+    t_float value = atom_getfloatarg(1, argc, argv);
+    outlet_float(x->x_outlet2, portno);
+    outlet_float(x->x_outlet1, value);
+}
+
+static void songin_free(t_songin *x)
+{
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songin_sym);
+}
+
+static void songin_setup(void)
+{
+    songin_class = class_new(gensym("songin"),
+        (t_newmethod)songin_new, (t_method)songin_free,
+        sizeof(t_songin), CLASS_NOINLET, A_DEFFLOAT, 0);
+    class_addlist(songin_class, songin_list);
+    class_sethelpsymbol(songin_class, gensym("midi"));
+}
+
+void inmidi_song(int portno, int value)
+{
+    if (pd_this->pd_midi->m_songin_sym->s_thing)
+    {
+        t_atom at[2];
+        SETFLOAT(at, portno);
+        SETFLOAT(at+1, value);
+        pd_list(pd_this->pd_midi->m_songin_sym->s_thing, &s_list, 2, at);
+    }
+}
+
 /*----------------------- midiclkin--(midi F8 message )---------------------*/
 
 static t_class *midiclkin_class;
@@ -861,7 +918,7 @@ static void *bendout_new(t_floatarg channel)
 static void bendout_float(t_bendout *x, t_float f)
 {
     int binchan = x->x_channel - 1;
-    int n = (int)f +  8192;
+    int n = (int)f + 8192;
     if (binchan < 0)
         binchan = 0;
     outmidi_pitchbend((binchan >> 4), (binchan & 15), n);
@@ -947,6 +1004,73 @@ static void polytouchout_setup(void)
         sizeof(t_polytouchout), 0, A_DEFFLOAT, 0);
     class_addfloat(polytouchout_class, polytouchout_float);
     class_sethelpsymbol(polytouchout_class, gensym("midi"));
+}
+
+/* -------------------------- songposout -------------------------- */
+
+static t_class *songposout_class;
+
+typedef struct _songposout
+{
+    t_object x_obj;
+    t_float x_portno;
+} t_songposout;
+
+static void *songposout_new(t_floatarg portno)
+{
+    t_songposout *x = (t_songposout *)pd_new(songposout_class);
+    if (portno <= 0) portno = 1;
+    x->x_portno = portno;
+    floatinlet_new(&x->x_obj, &x->x_portno);
+    return (x);
+}
+
+static void songposout_float(t_songposout *x, t_floatarg f)
+{
+    outmidi_songpos(x->x_portno-1, f);
+}
+
+static void songposout_setup(void)
+{
+    songposout_class = class_new(gensym("songposout"), (t_newmethod)songposout_new, 0,
+        sizeof(t_songposout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addfloat(songposout_class, songposout_float);
+    class_sethelpsymbol(songposout_class, gensym("midi"));
+}
+
+/* -------------------------- songout -------------------------- */
+
+static t_class *songout_class;
+
+typedef struct _songout
+{
+    t_object x_obj;
+    t_float x_portno;
+} t_songout;
+
+static void *songout_new(t_floatarg portno)
+{
+    t_songout *x = (t_songout *)pd_new(songout_class);
+    if (portno <= 0) portno = 1;
+    x->x_portno = portno;
+    floatinlet_new(&x->x_obj, &x->x_portno);
+    return (x);
+}
+
+static void songout_float(t_songout *x, t_floatarg f)
+{
+    int n = f - 1;
+    if (n < 0) n = 0;
+    else if (n > 127) n = 127;
+    outmidi_song(x->x_portno - 1, n);
+}
+
+static void songout_setup(void)
+{
+    songout_class = class_new(gensym("songout"), (t_newmethod)songout_new, 0,
+        sizeof(t_songout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addfloat(songout_class, songout_float);
+    class_sethelpsymbol(songout_class, gensym("midi"));
 }
 
 /* -------------------------- makenote -------------------------- */
@@ -1329,6 +1453,7 @@ void x_midi_setup(void)
     touchin_setup();
     polytouchin_setup();
     songposin_setup();
+    songin_setup();
     midiclkin_setup();
     midiout_setup();
     noteout_setup();
@@ -1337,6 +1462,8 @@ void x_midi_setup(void)
     bendout_setup();
     touchout_setup();
     polytouchout_setup();
+    songposout_setup();
+    songout_setup();
     makenote_setup();
     stripnote_setup();
     poly_setup();
@@ -1357,6 +1484,7 @@ void x_midi_newpdinstance( void)
     pd_this->pd_midi->m_midiclkin_sym = gensym("#midiclkin");
     pd_this->pd_midi->m_midirealtimein_sym = gensym("#midirealtimein");
     pd_this->pd_midi->m_songposin_sym = gensym("#songposin");
+    pd_this->pd_midi->m_songin_sym = gensym("#songin");
 }
 
 void x_midi_freepdinstance( void)

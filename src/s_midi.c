@@ -258,7 +258,7 @@ void outmidi_polyaftertouch(int portno, int channel, int pitch, int value)
 
 void outmidi_mclk(int portno)
 {
-   sys_queuemidimess(portno, 1, 0xf8, 0,0);
+   sys_queuemidimess(portno, 1, MIDI_CLOCK, 0, 0);
 }
 
 void outmidi_byte(int portno, int value)
@@ -273,6 +273,21 @@ void outmidi_byte(int portno, int value)
     {
       sys_putmidibyte(portno, value);
     }
+}
+
+void outmidi_songpos(int portno, int value)
+{
+    if (value < 0) value = 0;
+    else if (value > 16383) value = 16383;
+    sys_queuemidimess(portno, 0, MIDI_SONGPOS,
+        (value & 127), ((value>>7) & 127));
+}
+
+void outmidi_song(int portno, int value)
+{
+    if (value < 0) value = 0;
+    else if (value > 127) value = 127;
+    sys_queuemidimess(portno, 0, MIDI_SONGSELECT, value, 0);
 }
 
 /* ------------------------- MIDI input queue handling ------------------ */
@@ -295,6 +310,7 @@ void inmidi_aftertouch(int portno, int channel, int value);
 void inmidi_polyaftertouch(int portno, int channel, int pitch, int value);
 void inmidi_clk(double timing);
 void inmidi_songpos(int portno, int value);
+void inmidi_song(int portno, int value);
 
 static void sys_dispatchnextmidiin(void)
 {
@@ -414,6 +430,7 @@ static void sys_dispatchnextmidiin(void)
                     else parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
                     break;
                 case MIDI_SONGSELECT:
+                    inmidi_song(portno, byte);
                     parserp->mp_status = 0;
                     break;
             }
