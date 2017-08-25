@@ -1241,44 +1241,74 @@ static void until_setup(void)
 
 static t_class *makefilename_class;
 
+typedef enum {
+    NONE = 0,
+    INT,
+    FLOAT,
+    STRING,
+    POINTER,
+} t_printtype;
+
 typedef struct _makefilename
 {
     t_object x_obj;
     t_symbol *x_format;
-    t_atomtype x_accept;
-    int x_intconvert;
+    t_printtype x_accept;
 } t_makefilename;
 
-static void makefilename_scanformat(t_makefilename *x)
-{
+static const char* _formatscan(const char*str, t_printtype*typ) {
     int num=0, infmt=0;
-    char *str,*chr;
-    if (!x->x_format) return;
-    x->x_accept = A_NULL;
-    for (str=x->x_format->s_name; *str; str++) {
+    for (; *str; str++) {
         if (!infmt && *str=='%') {
             infmt=1;
             continue;
         }
         if (infmt) {
+            if (*str=='%') {
+                infmt=0;
+                continue;
+            }
             if (strchr("-.#0123456789",*str)!=0)
                 continue;
             if (*str=='s') {
-                x->x_accept = A_SYMBOL;
-                x->x_intconvert = 0;
-                break;
+                *typ = STRING;
+                return str;
             }
             if (strchr("fgGeE",*str)!=0) {
-                x->x_accept = A_FLOAT;
-                x->x_intconvert = 0;
-                break;
+                *typ = FLOAT;
+                return str;
             }
             if (strchr("xXdiouc",*str)!=0) {
-                x->x_accept = A_FLOAT;
-                x->x_intconvert = 1;
-                break;
+                *typ = INT;
+                return str;
             }
-            infmt=0;
+           if (strchr("p",*str)!=0) {
+                *typ = POINTER;
+                return str;
+            }
+        }
+    }
+    *typ = NONE;
+    return str;
+}
+
+static void makefilename_scanformat(t_makefilename *x)
+{
+    int num=0, infmt=0;
+    const char *str;
+    char *chr;
+    t_printtype typ;
+    if (!x->x_format) return;
+    str = x->x_format->s_name;
+    str = _formatscan(str, &typ);
+    x->x_accept = typ;
+    if (str && (NONE != typ)) {
+            /* try again, to see if there's another format specifier (which we forbid) */
+        str = _formatscan(str, &typ);
+        if (NONE != typ) {
+            pd_error(x, "makefilename: invalid format string '%s' (too many format specifiers)", x->x_format);
+            x->x_format = 0;
+            return;
         }
     }
 }
@@ -1290,8 +1320,7 @@ static void *makefilename_new(t_symbol *s)
         s = gensym("file.%d");
     outlet_new(&x->x_obj, &s_symbol);
     x->x_format = s;
-    x->x_accept = A_NULL;
-    x->x_intconvert = 0;
+    x->x_accept = NONE;
     makefilename_scanformat(x);
     return (x);
 }
@@ -1299,30 +1328,82 @@ static void *makefilename_new(t_symbol *s)
 static void makefilename_float(t_makefilename *x, t_floatarg f)
 {
     char buf[MAXPDSTRING];
-    if (x->x_accept == A_FLOAT) {
-        if (x->x_intconvert)
-            sprintf(buf, x->x_format->s_name, (int)f);
-        else sprintf(buf, x->x_format->s_name, f);
+    if(!x->x_format) {
+        pd_error(x, "makefilename: no format specifier given");
+        return;
     }
-    else
-    {
+    switch(x->x_accept) {
+    case NONE:
+        sprintf(buf, x->x_format->s_name);
+        break;
+    case INT: case POINTER:
+        sprintf(buf, x->x_format->s_name, (int)f);
+        break;
+    case FLOAT:
+        sprintf(buf, x->x_format->s_name, f);
+        break;
+    case STRING: {
         char buf2[MAXPDSTRING];
         sprintf(buf2, "%g", f);
         sprintf(buf, x->x_format->s_name, buf2);
+        break;
+    }
+    default:
+        sprintf(buf, "%s", x->x_format->s_name);
     }
     if (buf[0]!=0)
-    outlet_symbol(x->x_obj.ob_outlet, gensym(buf));
+        outlet_symbol(x->x_obj.ob_outlet, gensym(buf));
 }
 
 static void makefilename_symbol(t_makefilename *x, t_symbol *s)
 {
     char buf[MAXPDSTRING];
-    if (x->x_accept == A_SYMBOL)
-    sprintf(buf, x->x_format->s_name, s->s_name);
-    else
+    if(!x->x_format) {
+        pd_error(x, "makefilename: no format specifier given");
+        return;
+    }
+    switch(x->x_accept) {
+    case STRING: case POINTER:
+        sprintf(buf, x->x_format->s_name, s->s_name);
+        break;
+    case INT:
         sprintf(buf, x->x_format->s_name, 0);
+        break;
+    case FLOAT:
+        sprintf(buf, x->x_format->s_name, 0.);
+        break;
+    case NONE:
+        sprintf(buf, x->x_format->s_name);
+        break;
+    default:
+        sprintf(buf, "%s", x->x_format->s_name);
+    }
     if (buf[0]!=0)
-    outlet_symbol(x->x_obj.ob_outlet, gensym(buf));
+        outlet_symbol(x->x_obj.ob_outlet, gensym(buf));
+}
+
+static void makefilename_bang(t_makefilename *x)
+{
+    char buf[MAXPDSTRING];
+    if(!x->x_format) {
+        pd_error(x, "makefilename: no format specifier given");
+        return;
+    }
+    switch(x->x_accept) {
+    case INT:
+        sprintf(buf, x->x_format->s_name, 0);
+        break;
+    case FLOAT:
+        sprintf(buf, x->x_format->s_name, 0.);
+        break;
+    case NONE:
+        sprintf(buf, x->x_format->s_name);
+        break;
+    default:
+        sprintf(buf, "%s", x->x_format->s_name);
+    }
+    if (buf[0]!=0)
+        outlet_symbol(x->x_obj.ob_outlet, gensym(buf));
 }
 
 static void makefilename_set(t_makefilename *x, t_symbol *s)
@@ -1338,6 +1419,7 @@ static void makefilename_setup(void)
         sizeof(t_makefilename), 0, A_DEFSYM, 0);
     class_addfloat(makefilename_class, makefilename_float);
     class_addsymbol(makefilename_class, makefilename_symbol);
+    class_addbang(makefilename_class, makefilename_bang);
     class_addmethod(makefilename_class, (t_method)makefilename_set,
         gensym("set"), A_SYMBOL, 0);
 }
