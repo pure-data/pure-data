@@ -44,7 +44,7 @@ typedef struct _midiin
     t_outlet *x_outlet2;
 } t_midiin;
 
-static void *midiin_new( void)
+static void *midiin_new(void)
 {
     t_midiin *x = (t_midiin *)pd_new(midiin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -64,7 +64,7 @@ static void midiin_free(t_midiin *x)
     pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midiin_sym);
 }
 
-static void *sysexin_new( void)
+static void *sysexin_new(void)
 {
     t_midiin *x = (t_midiin *)pd_new(sysexin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -523,7 +523,7 @@ typedef struct _songposin
     t_outlet *x_outlet2;
 } t_songposin;
 
-static void *songposin_new()
+static void *songposin_new(void)
 {
     t_songposin *x = (t_songposin *)pd_new(songposin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -577,7 +577,7 @@ typedef struct _songin
     t_outlet *x_outlet2;
 } t_songin;
 
-static void *songin_new()
+static void *songin_new(void)
 {
     t_songin *x = (t_songin *)pd_new(songin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -635,7 +635,7 @@ typedef struct _timecodein
     t_outlet *x_outlet6;
 } t_timecodein;
 
-static void *timecodein_new()
+static void *timecodein_new(void)
 {
     t_timecodein *x = (t_timecodein *)pd_new(timecodein_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -774,7 +774,7 @@ void inmidi_clk(double timing)
 
         if (count == 3)
         {  /* 24 count per quoter note */
-             SETFLOAT(at, 1 );
+             SETFLOAT(at, 1);
              count = 0;
         }
         else SETFLOAT(at, 0);
@@ -1289,7 +1289,7 @@ typedef struct _stripnote
     t_outlet *x_velout;
 } t_stripnote;
 
-static void *stripnote_new(void )
+static void *stripnote_new(void)
 {
     t_stripnote *x = (t_stripnote *)pd_new(stripnote_class);
     floatinlet_new(&x->x_obj, &x->x_velo);
@@ -1464,7 +1464,7 @@ typedef struct _bag
     t_bagelem *x_first;
 } t_bag;
 
-static void *bag_new(void )
+static void *bag_new(void)
 {
     t_bag *x = (t_bag *)pd_new(bag_class);
     x->x_velo = 0;
@@ -1570,7 +1570,7 @@ void x_midi_setup(void)
     bag_setup();
 }
 
-void x_midi_newpdinstance( void)
+void x_midi_newpdinstance(void)
 {
     pd_this->pd_midi = getbytes(sizeof(t_instancemidi));
     pd_this->pd_midi->m_midiin_sym = gensym("#midiin");
@@ -1588,7 +1588,7 @@ void x_midi_newpdinstance( void)
     pd_this->pd_midi->m_timecodein_sym = gensym("#timecodein");
 }
 
-void x_midi_freepdinstance( void)
+void x_midi_freepdinstance(void)
 {
     freebytes(pd_this->pd_midi, sizeof(t_instancemidi));
 }
