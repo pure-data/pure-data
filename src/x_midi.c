@@ -30,6 +30,7 @@ struct _instancemidi
     t_symbol *m_midirealtimein_sym;
     t_symbol *m_songposin_sym;
     t_symbol *m_songin_sym;
+    t_symbol *m_timecodein_sym;
 };
 
 /* ----------------------- midiin and sysexin ------------------------- */
@@ -619,10 +620,107 @@ void inmidi_song(int portno, int value)
     }
 }
 
-/*----------------------- midiclkin--(midi F8 message )---------------------*/
+/* ----------------------- timecodein ------------------------- */
+
+static t_class *timecodein_class;
+
+typedef struct _timecodein
+{
+    t_object x_obj;
+    t_outlet *x_outlet1;
+    t_outlet *x_outlet2;
+    t_outlet *x_outlet3;
+    t_outlet *x_outlet4;
+    t_outlet *x_outlet5;
+    t_outlet *x_outlet6;
+} t_timecodein;
+
+static void *timecodein_new()
+{
+    t_timecodein *x = (t_timecodein *)pd_new(timecodein_class);
+    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet3 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet4 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet5 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet6 = outlet_new(&x->x_obj, &s_float);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_timecodein_sym);
+    return (x);
+}
+
+static void timecodein_list(t_timecodein *x, t_symbol *s, int argc,
+    t_atom *argv)
+{
+    t_float portno = atom_getfloatarg(0, argc, argv);
+    t_float hour = atom_getfloatarg(1, argc, argv);
+    t_float minute = atom_getfloatarg(2, argc, argv);
+    t_float second = atom_getfloatarg(3, argc, argv);
+    t_float frame = atom_getfloatarg(4, argc, argv);
+    t_float fps = atom_getfloatarg(5, argc, argv);
+    outlet_float(x->x_outlet6, portno);
+    outlet_float(x->x_outlet1, hour);
+    outlet_float(x->x_outlet2, minute);
+    outlet_float(x->x_outlet3, second);
+    outlet_float(x->x_outlet4, frame);
+    outlet_float(x->x_outlet5, fps);
+}
+
+static void timecodein_free(t_timecodein *x)
+{
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_timecodein_sym);
+}
+
+static void timecodein_setup(void)
+{
+    timecodein_class = class_new(gensym("timecodein"),
+        (t_newmethod)timecodein_new, (t_method)timecodein_free,
+        sizeof(t_timecodein), CLASS_NOINLET, A_DEFFLOAT, 0);
+    class_addlist(timecodein_class, timecodein_list);
+    class_sethelpsymbol(timecodein_class, gensym("midi"));
+}
+
+void inmidi_timecode(int portno, int hour, int minute,
+    int second, int frame, int fps)
+{
+    if (pd_this->pd_midi->m_timecodein_sym->s_thing)
+    {
+        static int warned = 0;
+        float f = 30;
+        switch(fps)
+        {
+            case 0x0: f = 24; break;
+            case 0x1: f = 25; break;
+            case 0x2: f = 29.97; break;
+            default:
+                /* catch any non-standard values */
+                if(warned != fps)
+                {
+                    bug("unknown midi timecode fps value 0x%X, " \
+                        "using 30 fps", fps);
+                    warned = fps;
+                }
+            case 0x3: break;
+        }
+        /* MIDI spec says to add 2 frames since it takes 7 more MTC messages
+           to piece together the whole MTC Quarter Frame, thus the frame value
+           is always 1 MTC message (and thus 2 frames) behind */
+        frame += 2;
+        if (frame >= f) frame = frame - fps; /* catch frame boundary */
+        t_atom at[6];
+        SETFLOAT(at, portno);
+        SETFLOAT(at+1, hour);
+        SETFLOAT(at+2, minute);
+        SETFLOAT(at+3, second);
+        SETFLOAT(at+4, frame);
+        SETFLOAT(at+5, f); /* fps */
+        pd_list(pd_this->pd_midi->m_timecodein_sym->s_thing, &s_list, 6, at);
+        //post("%02d:%02d:%02d:%02d %.2f fps", hour, minute, second, frame, f);
+    }
+}
+
+/*----------------------- midiclkin (midi F8 message) ---------------------*/
 
 static t_class *midiclkin_class;
-
 
 typedef struct _midiclkin
 {
@@ -687,7 +785,7 @@ void inmidi_clk(double timing)
     }
 }
 
-/*----------midirealtimein (midi F8,FA,FB,FC,FE,FF message )-----------------*/
+/*---------- midirealtimein (midi F8,FA,FB,FC,FE,FF message) -----------------*/
 
 static t_class *midirealtimein_class;
 
@@ -1032,7 +1130,8 @@ static void songposout_float(t_songposout *x, t_floatarg f)
 
 static void songposout_setup(void)
 {
-    songposout_class = class_new(gensym("songposout"), (t_newmethod)songposout_new, 0,
+    songposout_class = class_new(gensym("songposout"),
+        (t_newmethod)songposout_new, 0,
         sizeof(t_songposout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addfloat(songposout_class, songposout_float);
     class_sethelpsymbol(songposout_class, gensym("midi"));
@@ -1454,6 +1553,7 @@ void x_midi_setup(void)
     polytouchin_setup();
     songposin_setup();
     songin_setup();
+    timecodein_setup();
     midiclkin_setup();
     midiout_setup();
     noteout_setup();
@@ -1485,6 +1585,7 @@ void x_midi_newpdinstance( void)
     pd_this->pd_midi->m_midirealtimein_sym = gensym("#midirealtimein");
     pd_this->pd_midi->m_songposin_sym = gensym("#songposin");
     pd_this->pd_midi->m_songin_sym = gensym("#songin");
+    pd_this->pd_midi->m_timecodein_sym = gensym("#timecodein");
 }
 
 void x_midi_freepdinstance( void)

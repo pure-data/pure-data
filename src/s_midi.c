@@ -296,6 +296,8 @@ typedef struct midiparser
     int mp_status;   /* current status byte */
     int mp_gotbyte1; /* do we have a second data byte? */
     int mp_byte1;    /* second data byte */
+    int mp_qfcount;  /* # of bytes received in 8 byte MTC Quarter Frame */
+    int mp_qf[5];    /* MTC Quarter Frame bytes: h, m, s, frames, fps */
 } t_midiparser;
 
     /* functions in x_midi.c */
@@ -311,6 +313,8 @@ void inmidi_polyaftertouch(int portno, int channel, int pitch, int value);
 void inmidi_clk(double timing);
 void inmidi_songpos(int portno, int value);
 void inmidi_song(int portno, int value);
+void inmidi_timecode(int portno, int frame, int second,
+    int minute, int hour, int fps);
 
 static void sys_dispatchnextmidiin(void)
 {
@@ -364,7 +368,7 @@ static void sys_dispatchnextmidiin(void)
         else if(parser->mp_status < MIDI_NOTEOFF)
         {
             /* running status w/out prev status byte or other invalid message */
-            bug("dropping unexpected midi byte %02X", byte);
+            bug("dropping unexpected midi byte 0x%02X", byte);
         }
         else
         {
@@ -419,8 +423,82 @@ static void sys_dispatchnextmidiin(void)
                     /* We'll need another status byte before letting MIDI in
                        again (no running status across "system" messages). */
                 case MIDI_TIMECODE:
+                {
+                    /* MTC Quarter Frame h:m:s:f fps
+                       MTC values are built from 8 separate 2 byte messages
+                       note: this is not an MTC Full Frame message which is
+                             done via sysex & can be handled within a patch */
+                    int type = byte & 0xF0;  /* high nibble */
+                    int value = byte & 0x0F; /* low nibble */
+                    switch(type)
+                    {
+                        case 0x00:
+                            /* frame low nibble */
+                            parserp->mp_qf[3] =
+                                ((parserp->mp_qf[3] & 0xF0) | value);
+                            parserp->mp_qfcount++;
+                            break;
+                        case 0x10:
+                            /* frame high nibble */
+                            parserp->mp_qf[3] =
+                                ((parserp->mp_qf[3] & 0x0F) | (value << 4));
+                            parserp->mp_qfcount++;
+                            break;
+                        case 0x20:
+                            /* second low nibble */
+                            parserp->mp_qf[2] =
+                                ((parserp->mp_qf[2] & 0xF0) | value);
+                            parserp->mp_qfcount++;
+                            break;
+                        case 0x30:
+                            /* second high nibble */
+                            parserp->mp_qf[2] =
+                                ((parserp->mp_qf[2] & 0x0F) | (value << 4));
+                            parserp->mp_qfcount++;
+                            break;
+                        case 0x40:
+                            /* minute low nibble */
+                            parserp->mp_qf[1] =
+                                ((parserp->mp_qf[1] & 0xF0) | value);
+                            parserp->mp_qfcount++;
+                            break;
+                        case 0x50:
+                            /* minute high nibble */
+                            parserp->mp_qf[1] =
+                                ((parserp->mp_qf[1] & 0x0F) | (value << 4));
+                            parserp->mp_qfcount++;
+                            break;
+                        case 0x60:
+                            /* hour low nibble */
+                            parserp->mp_qf[0] =
+                                ((parserp->mp_qf[0] & 0xF0) | value);
+                            parserp->mp_qfcount++;
+                            break;
+                        case 0x70:
+                            /* hour high bit */
+                            parserp->mp_qf[0] =
+                                ((parserp->mp_qf[0] & 0x0F) | (value & 1) << 4);
+                            /* fps value: 2 middle bits */
+                            parserp->mp_qf[4] = (value & 0x06) >> 1;
+                            parserp->mp_qfcount++;
+                            break;
+                        default:
+                            bug("dropping unknown midi timecode " \
+                                "byte 0x%02X", byte);
+                            parserp->mp_qfcount++;
+                            break;
+                    }
+                    if(parserp->mp_qfcount >= 8)
+                    {
+                        /* assume we received a full message  */
+                        inmidi_timecode(portno, parserp->mp_qf[0],
+                            parserp->mp_qf[1], parserp->mp_qf[2],
+                            parserp->mp_qf[3], parserp->mp_qf[4]);
+                        parserp->mp_qfcount = 0;
+                    }
                     parser->mp_status = 0;
                     break;
+                }
                 case MIDI_SONGPOS:
                     if (gotbyte1)
                     {
