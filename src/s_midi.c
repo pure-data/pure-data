@@ -293,32 +293,32 @@ void outmidi_song(int portno, int value)
 void outmidi_timecode(int portno, int hour, int minute,
     int second, int frame, int fps)
 {
-    /* these values are 4 bit */
+    /* 6 bit */
     if (minute < 0) minute = 0;
-    else if (minute > 255) minute = 255;
+    else if (minute > 59) minute = 59;
     if (second < 0) second = 0;
-    else if (second > 255) second = 255;
-    if (frame < 0) frame = 0;
-    else if (frame > 255) frame = 255;
-    /* these are not */
+    else if (second > 59) second = 59;
+    /* 5 bit */
     if (hour < 0) hour = 0;
-    else if (hour > 511) hour = 511;
-    /* valid fps values are 0x0-0x3 */
+    else if (hour > 23) hour = 23;
+    if (frame < 0) frame = 0;
+    else if (frame > 29) frame = 29;
+    /* 2 bit */
     if (fps < 0) fps = 0;
     else if (fps > 3) fps = 3;
     //post("%02d:%02d:%02d:%02d %02d fps", hour, minute, second, frame, fps);
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
         0x00 | (frame & 0x0F), 0);             /* low nibble */
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
-        0x10 | ((frame & 0xF0) >> 4), 0);      /* high nibble */
+        0x10 | ((frame & 0x10) >> 4), 0);      /* high nibble */
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
         0x20 | (second & 0x0F), 0);            /* low nibble */
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
-        0x30 | ((second & 0xF0) >> 4), 0);     /* high nibble */
+        0x30 | ((second & 0x30) >> 4), 0);     /* high nibble */
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
         0x40 | (minute & 0x0F), 0);            /* low nibble */
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
-        0x50 | ((minute & 0xF0) >> 4), 0);     /* high nibble */
+        0x50 | ((minute & 0x30) >> 4), 0);     /* high nibble */
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
         0x60 | (hour & 0x0F), 0);              /* low nibble */
     sys_queuemidimess(portno, 0, MIDI_TIMECODE,
