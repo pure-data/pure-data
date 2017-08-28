@@ -1306,7 +1306,7 @@ static void makefilename_scanformat(t_makefilename *x)
             /* try again, to see if there's another format specifier (which we forbid) */
         str = _formatscan(str, &typ);
         if (NONE != typ) {
-            pd_error(x, "makefilename: invalid format string '%s' (too many format specifiers)", x->x_format);
+            pd_error(x, "makefilename: invalid format string '%s' (too many format specifiers)", x->x_format->s_name);
             x->x_format = 0;
             return;
         }
