@@ -9,7 +9,7 @@ release checklist
     cd linux; ./make-release 0.35-0  or 0.35-test11, etc
         ... compile on MAC:
             first build POs on linux because I can't install gettext on mac:
-            ./autogen.sh; ./configure; make; rsync -avzl po/ <mac>:build/po/
+            ./autogen.sh; ./configure --enable-jack; make; rsync -avzl po/ <mac>:build/po/
             scp source tarball to Mac and unpack in ~/build.
             in ~/build: build-autotools and build-ppc
             in ~/b32: build-i386
