@@ -2,9 +2,11 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-/* MIDI. */
+/* MIDI */
 
 #include "m_pd.h"
+#include <math.h>
+
 void outmidi_noteon(int portno, int channel, int pitch, int velo);
 void outmidi_controlchange(int portno, int channel, int ctlno, int value);
 void outmidi_programchange(int portno, int channel, int value);
@@ -15,6 +17,8 @@ void outmidi_mclk(int portno);
 void outmidi_byte(int portno, int value);
 void outmidi_songpos(int portno, int value);
 void outmidi_song(int portno, int value);
+void outmidi_timecode(int portno, int hour, int minute,
+    int second, int frame, int fps);
 
 struct _instancemidi
 {
@@ -684,26 +688,27 @@ void inmidi_timecode(int portno, int hour, int minute,
 {
     if (pd_this->pd_midi->m_timecodein_sym->s_thing)
     {
+        /* convert binary fps to float value */
         static int warned = 0;
-        float f = 30;
+        float f;
         switch(fps)
         {
-            case 0x0: f = 24; break;
             case 0x1: f = 25; break;
             case 0x2: f = 29.97; break;
+            case 0x3: f = 30; break;
             default:
                 /* catch any non-standard values */
                 if(warned != fps)
                 {
-                    bug("unknown midi timecode fps value 0x%X, " \
-                        "using 30 fps", fps);
+                    error("unknown midi timecode fps value 0x%X, " \
+                        "using 24 fps", fps);
                     warned = fps;
                 }
-            case 0x3: break;
+            case 0x0: f = 24; break;
         }
         /* MIDI spec says to add 2 frames since it takes 7 more MTC messages
            to piece together the whole MTC Quarter Frame, thus the frame value
-           is always 1 MTC message (and thus 2 frames) behind */
+           is always 1 MTC message (and 2 frames) behind */
         frame += 2;
         if (frame >= f) frame = frame - fps; /* catch frame boundary */
         t_atom at[6];
@@ -1172,6 +1177,67 @@ static void songout_setup(void)
     class_sethelpsymbol(songout_class, gensym("midi"));
 }
 
+/* -------------------------- timecodeout -------------------------- */
+
+static t_class *timecodeout_class;
+
+typedef struct _timecodeout
+{
+    t_object x_obj;
+    t_float x_portno;
+    t_float x_hour;
+    t_float x_minute;
+    t_float x_second;
+    t_float x_frame;
+    t_float x_fps;
+} t_timecodeout;
+
+static void *timecodeout_new(t_floatarg portno)
+{
+    t_timecodeout *x = (t_timecodeout *)pd_new(timecodeout_class);
+    if (portno <= 0) portno = 1;
+    x->x_portno = portno;
+    x->x_hour = 0;
+    x->x_minute = 0;
+    x->x_second = 0;
+    x->x_frame = 0;
+    x->x_fps = 24;
+    floatinlet_new(&x->x_obj, &x->x_minute);
+    floatinlet_new(&x->x_obj, &x->x_second);
+    floatinlet_new(&x->x_obj, &x->x_frame);
+    floatinlet_new(&x->x_obj, &x->x_fps);
+    floatinlet_new(&x->x_obj, &x->x_portno);
+    return (x);
+}
+
+static void timecodeout_bang(t_timecodeout *x)
+{
+    /* convert fps to binary value */
+    int binfps;
+    int fps = (int)floorf(x->x_fps); /* round down to catch 29.97 */
+    if (fps < 25) x->x_fps = 24, binfps = 0x0;
+    else if(fps >= 25 && fps < 29) x->x_fps = 25, binfps = 0x1;
+    else if(fps >= 29 && fps < 30) x->x_fps = 29.97, binfps = 0x2;
+    else x->x_fps = 30, binfps = 0x3;
+    outmidi_timecode(x->x_portno - 1, x->x_hour, x->x_minute,
+        x->x_second, x->x_frame, binfps);
+}
+
+static void timecodeout_float(t_timecodeout *x, t_floatarg f)
+{
+    x->x_hour = f;
+    timecodeout_bang(x);
+}
+
+static void timecodeout_setup(void)
+{
+    timecodeout_class = class_new(gensym("timecodeout"), (t_newmethod)timecodeout_new, 0,
+        sizeof(t_timecodeout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addbang(timecodeout_class, timecodeout_bang);
+    class_addfloat(timecodeout_class, timecodeout_float);
+    class_sethelpsymbol(timecodeout_class, gensym("midi"));
+}
+
 /* -------------------------- makenote -------------------------- */
 
 static t_class *makenote_class;
@@ -1564,6 +1630,7 @@ void x_midi_setup(void)
     polytouchout_setup();
     songposout_setup();
     songout_setup();
+    timecodeout_setup();
     makenote_setup();
     stripnote_setup();
     poly_setup();

@@ -290,6 +290,42 @@ void outmidi_song(int portno, int value)
     sys_queuemidimess(portno, 0, MIDI_SONGSELECT, value, 0);
 }
 
+void outmidi_timecode(int portno, int hour, int minute,
+    int second, int frame, int fps)
+{
+    /* these values are 4 bit */
+    if (minute < 0) minute = 0;
+    else if (minute > 255) minute = 255;
+    if (second < 0) second = 0;
+    else if (second > 255) second = 255;
+    if (frame < 0) frame = 0;
+    else if (frame > 255) frame = 255;
+    /* these are not */
+    if (hour < 0) hour = 0;
+    else if (hour > 511) hour = 511;
+    /* valid fps values are 0x0-0x3 */
+    if (fps < 0) fps = 0;
+    else if (fps > 3) fps = 3;
+    //post("%02d:%02d:%02d:%02d %02d fps", hour, minute, second, frame, fps);
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x00 | (frame & 0x0F), 0);             /* low nibble */
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x10 | ((frame & 0xF0) >> 4), 0);      /* high nibble */
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x20 | (second & 0x0F), 0);            /* low nibble */
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x30 | ((second & 0xF0) >> 4), 0);     /* high nibble */
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x40 | (minute & 0x0F), 0);            /* low nibble */
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x50 | ((minute & 0xF0) >> 4), 0);     /* high nibble */
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x60 | (hour & 0x0F), 0);              /* low nibble */
+    sys_queuemidimess(portno, 0, MIDI_TIMECODE,
+        0x70 | ((hour & 0x10) >> 4)            /* high hour bit to lsb */
+             | (fps << 1), 0);                 /* fps to middle 2 bits */
+}
+
 /* ------------------------- MIDI input queue handling ------------------ */
 typedef struct midiparser
 {
@@ -368,7 +404,7 @@ static void sys_dispatchnextmidiin(void)
         else if(parser->mp_status < MIDI_NOTEOFF)
         {
             /* running status w/out prev status byte or other invalid message */
-            bug("dropping unexpected midi byte 0x%02X", byte);
+            error("dropping unexpected midi byte 0x%02X", byte);
         }
         else
         {
@@ -483,7 +519,7 @@ static void sys_dispatchnextmidiin(void)
                             parserp->mp_qfcount++;
                             break;
                         default:
-                            bug("dropping unknown midi timecode " \
+                            error("dropping unknown midi timecode " \
                                 "byte 0x%02X", byte);
                             parserp->mp_qfcount++;
                             break;
