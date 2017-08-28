@@ -2,9 +2,11 @@
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
-/* MIDI. */
+/* MIDI */
 
 #include "m_pd.h"
+#include <math.h>
+
 void outmidi_noteon(int portno, int channel, int pitch, int velo);
 void outmidi_controlchange(int portno, int channel, int ctlno, int value);
 void outmidi_programchange(int portno, int channel, int value);
@@ -13,6 +15,10 @@ void outmidi_aftertouch(int portno, int channel, int value);
 void outmidi_polyaftertouch(int portno, int channel, int pitch, int value);
 void outmidi_mclk(int portno);
 void outmidi_byte(int portno, int value);
+void outmidi_songpos(int portno, int value);
+void outmidi_song(int portno, int value);
+void outmidi_timecode(int portno, int hour, int minute,
+    int second, int frame, int fps);
 
 struct _instancemidi
 {
@@ -26,6 +32,9 @@ struct _instancemidi
     t_symbol *m_polytouchin_sym;
     t_symbol *m_midiclkin_sym;
     t_symbol *m_midirealtimein_sym;
+    t_symbol *m_songposin_sym;
+    t_symbol *m_songin_sym;
+    t_symbol *m_timecodein_sym;
 };
 
 /* ----------------------- midiin and sysexin ------------------------- */
@@ -39,7 +48,7 @@ typedef struct _midiin
     t_outlet *x_outlet2;
 } t_midiin;
 
-static void *midiin_new( void)
+static void *midiin_new(void)
 {
     t_midiin *x = (t_midiin *)pd_new(midiin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -59,7 +68,7 @@ static void midiin_free(t_midiin *x)
     pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midiin_sym);
 }
 
-static void *sysexin_new( void)
+static void *sysexin_new(void)
 {
     t_midiin *x = (t_midiin *)pd_new(sysexin_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -507,10 +516,216 @@ void inmidi_polyaftertouch(int portno, int channel, int pitch, int value)
     }
 }
 
-/*----------------------- midiclkin--(midi F8 message )---------------------*/
+/* ----------------------- songposin ------------------------- */
+
+static t_class *songposin_class;
+
+typedef struct _songposin
+{
+    t_object x_obj;
+    t_outlet *x_outlet1;
+    t_outlet *x_outlet2;
+} t_songposin;
+
+static void *songposin_new(void)
+{
+    t_songposin *x = (t_songposin *)pd_new(songposin_class);
+    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songposin_sym);
+    return (x);
+}
+
+static void songposin_list(t_songposin *x, t_symbol *s, int argc,
+    t_atom *argv)
+{
+    t_float portno = atom_getfloatarg(0, argc, argv);
+    t_float value = atom_getfloatarg(1, argc, argv);
+    outlet_float(x->x_outlet2, portno);
+    outlet_float(x->x_outlet1, value);
+}
+
+static void songposin_free(t_songposin *x)
+{
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songposin_sym);
+}
+
+static void songposin_setup(void)
+{
+    songposin_class = class_new(gensym("songposin"),
+        (t_newmethod)songposin_new, (t_method)songposin_free,
+        sizeof(t_songposin), CLASS_NOINLET, A_DEFFLOAT, 0);
+    class_addlist(songposin_class, songposin_list);
+    class_sethelpsymbol(songposin_class, gensym("midi"));
+}
+
+void inmidi_songpos(int portno, int value)
+{
+    if (pd_this->pd_midi->m_songposin_sym->s_thing)
+    {
+        t_atom at[2];
+        SETFLOAT(at, portno);
+        SETFLOAT(at+1, value);
+        pd_list(pd_this->pd_midi->m_songposin_sym->s_thing, &s_list, 2, at);
+    }
+}
+
+/* ----------------------- songin ------------------------- */
+
+static t_class *songin_class;
+
+typedef struct _songin
+{
+    t_object x_obj;
+    t_outlet *x_outlet1;
+    t_outlet *x_outlet2;
+} t_songin;
+
+static void *songin_new(void)
+{
+    t_songin *x = (t_songin *)pd_new(songin_class);
+    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songin_sym);
+    return (x);
+}
+
+static void songin_list(t_songin *x, t_symbol *s, int argc,
+    t_atom *argv)
+{
+    t_float portno = atom_getfloatarg(0, argc, argv);
+    t_float value = atom_getfloatarg(1, argc, argv);
+    outlet_float(x->x_outlet2, portno);
+    outlet_float(x->x_outlet1, value);
+}
+
+static void songin_free(t_songin *x)
+{
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_songin_sym);
+}
+
+static void songin_setup(void)
+{
+    songin_class = class_new(gensym("songin"),
+        (t_newmethod)songin_new, (t_method)songin_free,
+        sizeof(t_songin), CLASS_NOINLET, A_DEFFLOAT, 0);
+    class_addlist(songin_class, songin_list);
+    class_sethelpsymbol(songin_class, gensym("midi"));
+}
+
+void inmidi_song(int portno, int value)
+{
+    if (pd_this->pd_midi->m_songin_sym->s_thing)
+    {
+        t_atom at[2];
+        SETFLOAT(at, portno);
+        SETFLOAT(at+1, value);
+        pd_list(pd_this->pd_midi->m_songin_sym->s_thing, &s_list, 2, at);
+    }
+}
+
+/* ----------------------- timecodein ------------------------- */
+
+static t_class *timecodein_class;
+
+typedef struct _timecodein
+{
+    t_object x_obj;
+    t_outlet *x_outlet1;
+    t_outlet *x_outlet2;
+    t_outlet *x_outlet3;
+    t_outlet *x_outlet4;
+    t_outlet *x_outlet5;
+    t_outlet *x_outlet6;
+} t_timecodein;
+
+static void *timecodein_new(void)
+{
+    t_timecodein *x = (t_timecodein *)pd_new(timecodein_class);
+    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet3 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet4 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet5 = outlet_new(&x->x_obj, &s_float);
+    x->x_outlet6 = outlet_new(&x->x_obj, &s_float);
+    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_timecodein_sym);
+    return (x);
+}
+
+static void timecodein_list(t_timecodein *x, t_symbol *s, int argc,
+    t_atom *argv)
+{
+    t_float portno = atom_getfloatarg(0, argc, argv);
+    t_float hour = atom_getfloatarg(1, argc, argv);
+    t_float minute = atom_getfloatarg(2, argc, argv);
+    t_float second = atom_getfloatarg(3, argc, argv);
+    t_float frame = atom_getfloatarg(4, argc, argv);
+    t_float fps = atom_getfloatarg(5, argc, argv);
+    outlet_float(x->x_outlet6, portno);
+    outlet_float(x->x_outlet1, hour);
+    outlet_float(x->x_outlet2, minute);
+    outlet_float(x->x_outlet3, second);
+    outlet_float(x->x_outlet4, frame);
+    outlet_float(x->x_outlet5, fps);
+}
+
+static void timecodein_free(t_timecodein *x)
+{
+    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_timecodein_sym);
+}
+
+static void timecodein_setup(void)
+{
+    timecodein_class = class_new(gensym("timecodein"),
+        (t_newmethod)timecodein_new, (t_method)timecodein_free,
+        sizeof(t_timecodein), CLASS_NOINLET, A_DEFFLOAT, 0);
+    class_addlist(timecodein_class, timecodein_list);
+    class_sethelpsymbol(timecodein_class, gensym("midi"));
+}
+
+void inmidi_timecode(int portno, int hour, int minute,
+    int second, int frame, int fps)
+{
+    if (pd_this->pd_midi->m_timecodein_sym->s_thing)
+    {
+        /* convert binary fps to float value */
+        static int warned = 0;
+        float f;
+        switch(fps)
+        {
+            case 0x1: f = 25; break;
+            case 0x2: f = 29.97; break;
+            case 0x3: f = 30; break;
+            default:
+                /* catch any non-standard values */
+                if(warned != fps)
+                {
+                    error("unknown midi timecode fps value 0x%X, " \
+                        "using 24 fps", fps);
+                    warned = fps;
+                }
+            case 0x0: f = 24; break;
+        }
+        /* MIDI spec says to add 2 frames since it takes 7 more MTC messages
+           to piece together the whole MTC Quarter Frame, thus the frame value
+           is always 1 MTC message (and 2 frames) behind */
+        frame += 2;
+        if (frame >= f) frame = frame - fps; /* catch frame boundary */
+        t_atom at[6];
+        SETFLOAT(at, portno);
+        SETFLOAT(at+1, hour);
+        SETFLOAT(at+2, minute);
+        SETFLOAT(at+3, second);
+        SETFLOAT(at+4, frame);
+        SETFLOAT(at+5, f); /* fps */
+        pd_list(pd_this->pd_midi->m_timecodein_sym->s_thing, &s_list, 6, at);
+        //post("%02d:%02d:%02d:%02d %.2f fps", hour, minute, second, frame, f);
+    }
+}
+
+/*----------------------- midiclkin (midi F8 message) ---------------------*/
 
 static t_class *midiclkin_class;
-
 
 typedef struct _midiclkin
 {
@@ -552,7 +767,6 @@ static void midiclkin_setup(void)
 
 void inmidi_clk(double timing)
 {
-
     static t_float prev = 0;
     static t_float count = 0;
     t_float cur,diff;
@@ -565,7 +779,7 @@ void inmidi_clk(double timing)
 
         if (count == 3)
         {  /* 24 count per quoter note */
-             SETFLOAT(at, 1 );
+             SETFLOAT(at, 1);
              count = 0;
         }
         else SETFLOAT(at, 0);
@@ -576,7 +790,7 @@ void inmidi_clk(double timing)
     }
 }
 
-/*----------midirealtimein (midi FA,FB,FC,FF message )-----------------*/
+/*---------- midirealtimein (midi F8,FA,FB,FC,FE,FF message) -----------------*/
 
 static t_class *midirealtimein_class;
 
@@ -587,7 +801,7 @@ typedef struct _midirealtimein
     t_outlet *x_outlet2;
 } t_midirealtimein;
 
-static void *midirealtimein_new( void)
+static void *midirealtimein_new(void)
 {
     t_midirealtimein *x = (t_midirealtimein *)pd_new(midirealtimein_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
@@ -617,16 +831,16 @@ static void midirealtimein_setup(void)
         (t_newmethod)midirealtimein_new, (t_method)midirealtimein_free,
             sizeof(t_midirealtimein), CLASS_NOINLET, A_DEFFLOAT, 0);
     class_addlist(midirealtimein_class, midirealtimein_list);
-        class_sethelpsymbol(midirealtimein_class, gensym("midi"));
+    class_sethelpsymbol(midirealtimein_class, gensym("midi"));
 }
 
-void inmidi_realtimein(int portno, int SysMsg)
+void inmidi_realtimein(int portno, int byte)
 {
     if (pd_this->pd_midi->m_midirealtimein_sym->s_thing)
     {
         t_atom at[2];
         SETFLOAT(at, portno);
-        SETFLOAT(at+1, SysMsg);
+        SETFLOAT(at+1, byte);
         pd_list(pd_this->pd_midi->m_midirealtimein_sym->s_thing, &s_list, 2, at);
     }
 }
@@ -807,7 +1021,7 @@ static void *bendout_new(t_floatarg channel)
 static void bendout_float(t_bendout *x, t_float f)
 {
     int binchan = x->x_channel - 1;
-    int n = (int)f +  8192;
+    int n = (int)f + 8192;
     if (binchan < 0)
         binchan = 0;
     outmidi_pitchbend((binchan >> 4), (binchan & 15), n);
@@ -893,6 +1107,135 @@ static void polytouchout_setup(void)
         sizeof(t_polytouchout), 0, A_DEFFLOAT, 0);
     class_addfloat(polytouchout_class, polytouchout_float);
     class_sethelpsymbol(polytouchout_class, gensym("midi"));
+}
+
+/* -------------------------- songposout -------------------------- */
+
+static t_class *songposout_class;
+
+typedef struct _songposout
+{
+    t_object x_obj;
+    t_float x_portno;
+} t_songposout;
+
+static void *songposout_new(t_floatarg portno)
+{
+    t_songposout *x = (t_songposout *)pd_new(songposout_class);
+    if (portno <= 0) portno = 1;
+    x->x_portno = portno;
+    floatinlet_new(&x->x_obj, &x->x_portno);
+    return (x);
+}
+
+static void songposout_float(t_songposout *x, t_floatarg f)
+{
+    outmidi_songpos(x->x_portno-1, f);
+}
+
+static void songposout_setup(void)
+{
+    songposout_class = class_new(gensym("songposout"),
+        (t_newmethod)songposout_new, 0,
+        sizeof(t_songposout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addfloat(songposout_class, songposout_float);
+    class_sethelpsymbol(songposout_class, gensym("midi"));
+}
+
+/* -------------------------- songout -------------------------- */
+
+static t_class *songout_class;
+
+typedef struct _songout
+{
+    t_object x_obj;
+    t_float x_portno;
+} t_songout;
+
+static void *songout_new(t_floatarg portno)
+{
+    t_songout *x = (t_songout *)pd_new(songout_class);
+    if (portno <= 0) portno = 1;
+    x->x_portno = portno;
+    floatinlet_new(&x->x_obj, &x->x_portno);
+    return (x);
+}
+
+static void songout_float(t_songout *x, t_floatarg f)
+{
+    int n = f - 1;
+    if (n < 0) n = 0;
+    else if (n > 127) n = 127;
+    outmidi_song(x->x_portno - 1, n);
+}
+
+static void songout_setup(void)
+{
+    songout_class = class_new(gensym("songout"), (t_newmethod)songout_new, 0,
+        sizeof(t_songout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addfloat(songout_class, songout_float);
+    class_sethelpsymbol(songout_class, gensym("midi"));
+}
+
+/* -------------------------- timecodeout -------------------------- */
+
+static t_class *timecodeout_class;
+
+typedef struct _timecodeout
+{
+    t_object x_obj;
+    t_float x_portno;
+    t_float x_hour;
+    t_float x_minute;
+    t_float x_second;
+    t_float x_frame;
+    t_float x_fps;
+} t_timecodeout;
+
+static void *timecodeout_new(t_floatarg portno)
+{
+    t_timecodeout *x = (t_timecodeout *)pd_new(timecodeout_class);
+    if (portno <= 0) portno = 1;
+    x->x_portno = portno;
+    x->x_hour = 0;
+    x->x_minute = 0;
+    x->x_second = 0;
+    x->x_frame = 0;
+    x->x_fps = 24;
+    floatinlet_new(&x->x_obj, &x->x_minute);
+    floatinlet_new(&x->x_obj, &x->x_second);
+    floatinlet_new(&x->x_obj, &x->x_frame);
+    floatinlet_new(&x->x_obj, &x->x_fps);
+    floatinlet_new(&x->x_obj, &x->x_portno);
+    return (x);
+}
+
+static void timecodeout_bang(t_timecodeout *x)
+{
+    /* convert fps to binary value */
+    int binfps;
+    int fps = (int)floorf(x->x_fps); /* round down to catch 29.97 */
+    if (fps < 25) x->x_fps = 24, binfps = 0x0;
+    else if(fps >= 25 && fps < 29) x->x_fps = 25, binfps = 0x1;
+    else if(fps >= 29 && fps < 30) x->x_fps = 29.97, binfps = 0x2;
+    else x->x_fps = 30, binfps = 0x3;
+    outmidi_timecode(x->x_portno - 1, x->x_hour, x->x_minute,
+        x->x_second, x->x_frame, binfps);
+}
+
+static void timecodeout_float(t_timecodeout *x, t_floatarg f)
+{
+    x->x_hour = f;
+    timecodeout_bang(x);
+}
+
+static void timecodeout_setup(void)
+{
+    timecodeout_class = class_new(gensym("timecodeout"), (t_newmethod)timecodeout_new, 0,
+        sizeof(t_timecodeout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+    class_addbang(timecodeout_class, timecodeout_bang);
+    class_addfloat(timecodeout_class, timecodeout_float);
+    class_sethelpsymbol(timecodeout_class, gensym("midi"));
 }
 
 /* -------------------------- makenote -------------------------- */
@@ -1012,7 +1355,7 @@ typedef struct _stripnote
     t_outlet *x_velout;
 } t_stripnote;
 
-static void *stripnote_new(void )
+static void *stripnote_new(void)
 {
     t_stripnote *x = (t_stripnote *)pd_new(stripnote_class);
     floatinlet_new(&x->x_obj, &x->x_velo);
@@ -1187,7 +1530,7 @@ typedef struct _bag
     t_bagelem *x_first;
 } t_bag;
 
-static void *bag_new(void )
+static void *bag_new(void)
 {
     t_bag *x = (t_bag *)pd_new(bag_class);
     x->x_velo = 0;
@@ -1274,6 +1617,9 @@ void x_midi_setup(void)
     bendin_setup();
     touchin_setup();
     polytouchin_setup();
+    songposin_setup();
+    songin_setup();
+    timecodein_setup();
     midiclkin_setup();
     midiout_setup();
     noteout_setup();
@@ -1282,13 +1628,16 @@ void x_midi_setup(void)
     bendout_setup();
     touchout_setup();
     polytouchout_setup();
+    songposout_setup();
+    songout_setup();
+    timecodeout_setup();
     makenote_setup();
     stripnote_setup();
     poly_setup();
     bag_setup();
 }
 
-void x_midi_newpdinstance( void)
+void x_midi_newpdinstance(void)
 {
     pd_this->pd_midi = getbytes(sizeof(t_instancemidi));
     pd_this->pd_midi->m_midiin_sym = gensym("#midiin");
@@ -1301,9 +1650,12 @@ void x_midi_newpdinstance( void)
     pd_this->pd_midi->m_polytouchin_sym = gensym("#polytouchin");
     pd_this->pd_midi->m_midiclkin_sym = gensym("#midiclkin");
     pd_this->pd_midi->m_midirealtimein_sym = gensym("#midirealtimein");
+    pd_this->pd_midi->m_songposin_sym = gensym("#songposin");
+    pd_this->pd_midi->m_songin_sym = gensym("#songin");
+    pd_this->pd_midi->m_timecodein_sym = gensym("#timecodein");
 }
 
-void x_midi_freepdinstance( void)
+void x_midi_freepdinstance(void)
 {
     freebytes(pd_this->pd_midi, sizeof(t_instancemidi));
 }

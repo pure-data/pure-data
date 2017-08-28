@@ -70,6 +70,7 @@
 #define VERBOSE_ON 1
 #define VERBOSE if (VERBOSE_ON)
 
+#define MIDI_CLOCK      0xf8
 #define MIDI_SYSEX      0xf0
 #define MIDI_EOX        0xf7
 #define MIDI_STATUS_MASK 0x80
@@ -199,9 +200,16 @@ process_packet(MIDIPacket *packet, PmEvent *event,
 		/* since there's no more data, we're done */
 		return;
 	    }
-	    m->last_msg_length = cur_message_length;
-	    m->last_command = cur_packet_data[0];
-	    switch (cur_message_length) {
+        if (cur_packet_data[0] < MIDI_SYSEX) {
+            /* channel messages allow running status */
+            m->last_command = cur_packet_data[0];
+            m->last_msg_length = cur_message_length;
+        } else if(cur_packet_data[0] < MIDI_CLOCK) {
+            /* system messages clear running status */
+            m->last_command = 0;
+            m->last_msg_length = 0;
+        }
+        switch (cur_message_length) {
 	    case 1:
 	        event->message = Pm_Message(cur_packet_data[0], 0, 0);
 		break; 
@@ -220,8 +228,8 @@ process_packet(MIDIPacket *packet, PmEvent *event,
 	        return; /* give up on packet if continued after assert */
 	    }
 	    pm_read_short(midi, event);
-	    remaining_length -= m->last_msg_length;
-	    cur_packet_data += m->last_msg_length;
+	    remaining_length -= cur_message_length;
+	    cur_packet_data += cur_message_length;
 	} else if (m->last_msg_length > remaining_length + 1) {
 	    /* we have running status, but not enough data */
 #ifdef DEBUG
