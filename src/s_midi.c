@@ -84,7 +84,7 @@ static double sys_newdactimeminusrealtime = -1e20;
 static double sys_newadctimeminusrealtime = -1e20;
 static double sys_whenupdate;
 
-void sys_initmidiqueue( void)
+void sys_initmidiqueue(void)
 {
     sys_midiinittime = clock_getlogicaltime();
     sys_dactimeminusrealtime = sys_adctimeminusrealtime = 0;
@@ -118,17 +118,17 @@ void sys_setmiditimediff(double inbuftime, double outbuftime)
     /* return the logical time of the DAC sample we believe is currently
     going out, based on how much "system time" has elapsed since the
     last time sys_setmiditimediff got called. */
-static double sys_getmidioutrealtime( void)
+static double sys_getmidioutrealtime(void)
 {
     return (sys_getrealtime() + sys_dactimeminusrealtime);
 }
 
-static double sys_getmidiinrealtime( void)
+static double sys_getmidiinrealtime(void)
 {
     return (sys_getrealtime() + sys_adctimeminusrealtime);
 }
 
-static void sys_putnext( void)
+static void sys_putnext(void)
 {
     int portno = midi_outqueue[midi_outtail].q_portno;
 #ifdef USEAPI_ALSA
@@ -154,7 +154,7 @@ static void sys_putnext( void)
 
 /*  #define TEST_DEJITTER */
 
-void sys_pollmidioutqueue( void)
+void sys_pollmidioutqueue(void)
 {
 #ifdef TEST_DEJITTER
     static int db = 0;
@@ -418,7 +418,7 @@ static void sys_dispatchnextmidiin(void)
     midi_intail = (midi_intail + 1 == MIDIQSIZE ? 0 : midi_intail + 1);
 }
 
-void sys_pollmidiinqueue( void)
+void sys_pollmidiinqueue(void)
 {
 #ifdef TEST_DEJITTER
     static int db = 0;
@@ -459,8 +459,6 @@ void sys_pollmidiinqueue( void)
     /* this should be called from the system dependent MIDI code when a byte
     comes in, as a result of our calling sys_poll_midi.  We stick it on a
     timetag queue and dispatch it at the appropriate logical time. */
-
-
 void sys_midibytein(int portno, int byte)
 {
     static int warned = 0;
@@ -486,7 +484,7 @@ void sys_midibytein(int portno, int byte)
     sys_pollmidiinqueue();
 }
 
-void sys_pollmidiqueue( void)
+void sys_pollmidiqueue(void)
 {
 #if 0
     static double lasttime;
@@ -514,10 +512,10 @@ void sys_pollmidiqueue( void)
 
 
 #ifdef USEAPI_ALSA
-void midi_alsa_init( void);
+void midi_alsa_init(void);
 #endif
 #ifdef USEAPI_OSS
-void midi_oss_init( void);
+void midi_oss_init(void);
 #endif
 
     /* last requested parameters */
@@ -613,7 +611,7 @@ void sys_open_midi(int nmidiindev, int *midiindev,
 }
 
     /* open midi using whatever parameters were last used */
-void sys_reopen_midi( void)
+void sys_reopen_midi(void)
 {
     int nmidiindev, midiindev[MAXMIDIINDEV];
     int nmidioutdev, midioutdev[MAXMIDIOUTDEV];
@@ -621,7 +619,7 @@ void sys_reopen_midi( void)
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 1);
 }
 
-void sys_listmididevs(void )
+void sys_listmididevs(void)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
     int nindevs = 0, noutdevs = 0, i;
@@ -839,7 +837,6 @@ void sys_get_midi_devs(char *indevlist, int *nindevs,
 
 /* convert a device name to a (1-based) device number.  (Output device if
 'output' parameter is true, otherwise input device).  Negative on failure. */
-
 int sys_mididevnametonumber(int output, const char *name)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
@@ -882,9 +879,7 @@ int sys_mididevnametonumber(int output, const char *name)
 }
 
 /* convert a (1-based) device number to a device name.  (Output device if
-'output' parameter is true, otherwise input device).  Empty string on failure.
-*/
-
+'output' parameter is true, otherwise input device). Empty string on failure. */
 void sys_mididevnumbertoname(int output, int devno, char *name, int namesize)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
