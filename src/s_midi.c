@@ -347,7 +347,7 @@ static void sys_dispatchnextmidiin(void)
         else if(parser->mp_status < MIDI_NOTEOFF)
         {
             /* running status w/out prev status byte or other invalid message */
-            bug("dropping unexpected midi byte %02X", byte);
+            error("dropping unexpected midi byte %02X", byte);
         }
         else
         {
