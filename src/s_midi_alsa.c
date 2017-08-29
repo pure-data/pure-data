@@ -141,7 +141,7 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
             case MIDI_NOTEON:
                 snd_seq_ev_set_noteon(&ev, channel, b, c);
                 break;
-            case MIDI_NOTOFF:
+            case MIDI_NOTEOFF:
                 snd_seq_ev_set_noteoff(&ev, channel, b, c);
                 break;
             case MIDI_POLYAFTERTOUCH:
