@@ -163,21 +163,21 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
             case MIDI_TIMECODE:
                 ev.type = SND_SEQ_EVENT_QFRAME;
                 snd_seq_event_set_fixed(&ev);
-                ev.data.raw32[0] = a & 0xff; /* status */
-                ev.data.raw32[1] = b & 0x7F; /* data */
+                ev.data.raw32.d[0] = (a & 0xff); /* status */
+                ev.data.raw32.d[1] = b & 0x7F; /* data */
                 break;
             case MIDI_SONGPOS:
                 ev.type = SND_SEQ_EVENT_SONGPOS;
                 snd_seq_event_set_fixed(&ev);
-                ev.data.raw32[0] = a & 0xff; /* status */
-                ev.data.raw32[1] = b & 0x7f; /* data */
-                ev.data.raw32[1] = c & 0x7f; /* data */
+                ev.data.raw32.d[0] = a & 0xff; /* status */
+                ev.data.raw32.d[1] = b & 0x7f; /* data */
+                ev.data.raw32.d[1] = c & 0x7f; /* data */
                 break;
             case MIDI_SONGSELECT:
                 ev.type = SND_SEQ_EVENT_SONGSEL;
                 snd_seq_event_set_fixed(&ev);
-                ev.data.raw32[0] = a & 0xff; /* status */
-                ev.data.raw32[1] = b & 0x7f; /* data */
+                ev.data.raw32.d[0] = a & 0xff; /* status */
+                ev.data.raw32.d[1] = b & 0x7f; /* data */
                 break;
             default:
                 bug("couldn't put alsa midi message");
