@@ -11,7 +11,6 @@ void outmidi_programchange(int portno, int channel, int value);
 void outmidi_pitchbend(int portno, int channel, int value);
 void outmidi_aftertouch(int portno, int channel, int value);
 void outmidi_polyaftertouch(int portno, int channel, int pitch, int value);
-void outmidi_mclk(int portno);
 void outmidi_byte(int portno, int value);
 
 struct _instancemidi
@@ -24,7 +23,6 @@ struct _instancemidi
     t_symbol *m_bendin_sym;
     t_symbol *m_touchin_sym;
     t_symbol *m_polytouchin_sym;
-    t_symbol *m_midiclkin_sym;
     t_symbol *m_midirealtimein_sym;
 };
 
@@ -507,76 +505,7 @@ void inmidi_polyaftertouch(int portno, int channel, int pitch, int value)
     }
 }
 
-/*----------------------- midiclkin--(midi F8 message)---------------------*/
-
-static t_class *midiclkin_class;
-
-
-typedef struct _midiclkin
-{
-    t_object x_obj;
-    t_outlet *x_outlet1;
-    t_outlet *x_outlet2;
-} t_midiclkin;
-
-static void *midiclkin_new(t_floatarg f)
-{
-    t_midiclkin *x = (t_midiclkin *)pd_new(midiclkin_class);
-    x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
-    x->x_outlet2 = outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midiclkin_sym);
-    return (x);
-}
-
-static void midiclkin_list(t_midiclkin *x, t_symbol *s, int argc, t_atom *argv)
-{
-    t_float value = atom_getfloatarg(0, argc, argv);
-    t_float count = atom_getfloatarg(1, argc, argv);
-    outlet_float(x->x_outlet2, count);
-    outlet_float(x->x_outlet1, value);
-}
-
-static void midiclkin_free(t_midiclkin *x)
-{
-    pd_unbind(&x->x_obj.ob_pd, pd_this->pd_midi->m_midiclkin_sym);
-}
-
-static void midiclkin_setup(void)
-{
-    midiclkin_class = class_new(gensym("midiclkin"),
-        (t_newmethod)midiclkin_new, (t_method)midiclkin_free,
-            sizeof(t_midiclkin), CLASS_NOINLET, A_DEFFLOAT, 0);
-    class_addlist(midiclkin_class, midiclkin_list);
-        class_sethelpsymbol(midiclkin_class, gensym("midi"));
-}
-
-void inmidi_clk(double timing)
-{
-
-    static t_float prev = 0;
-    static t_float count = 0;
-    t_float cur,diff;
-
-    if (pd_this->pd_midi->m_midiclkin_sym->s_thing)
-    {
-        t_atom at[2];
-        diff =timing - prev;
-        count++;
-
-        if (count == 3)
-        {  /* 24 count per quoter note */
-             SETFLOAT(at, 1);
-             count = 0;
-        }
-        else SETFLOAT(at, 0);
-
-        SETFLOAT(at+1, diff);
-        pd_list(pd_this->pd_midi->m_midiclkin_sym->s_thing, &s_list, 2, at);
-        prev = timing;
-    }
-}
-
-/*----------midirealtimein (midi FA,FB,FC,FF message)-----------------*/
+/*----------midirealtimein (midi F8,FA,FB,FC,FE,FF message)-----------------*/
 
 static t_class *midirealtimein_class;
 
@@ -1274,7 +1203,6 @@ void x_midi_setup(void)
     bendin_setup();
     touchin_setup();
     polytouchin_setup();
-    midiclkin_setup();
     midiout_setup();
     noteout_setup();
     ctlout_setup();
@@ -1299,7 +1227,6 @@ void x_midi_newpdinstance(void)
     pd_this->pd_midi->m_bendin_sym = gensym("#bendin");
     pd_this->pd_midi->m_touchin_sym = gensym("#touchin");
     pd_this->pd_midi->m_polytouchin_sym = gensym("#polytouchin");
-    pd_this->pd_midi->m_midiclkin_sym = gensym("#midiclkin");
     pd_this->pd_midi->m_midirealtimein_sym = gensym("#midirealtimein");
 }
 

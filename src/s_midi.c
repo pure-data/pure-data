@@ -256,11 +256,6 @@ void outmidi_polyaftertouch(int portno, int channel, int pitch, int value)
         pitch, value);
 }
 
-void outmidi_mclk(int portno)
-{
-   sys_queuemidimess(portno, 1, 0xf8, 0,0);
-}
-
 void outmidi_byte(int portno, int value)
 {
 #ifdef USEAPI_ALSA
@@ -293,7 +288,6 @@ void inmidi_programchange(int portno, int channel, int value);
 void inmidi_pitchbend(int portno, int channel, int value);
 void inmidi_aftertouch(int portno, int channel, int value);
 void inmidi_polyaftertouch(int portno, int channel, int pitch, int value);
-void inmidi_clk(double timing);
 
 static void sys_dispatchnextmidiin(void)
 {
@@ -311,8 +305,6 @@ static void sys_dispatchnextmidiin(void)
     {
         /* realtime message */
         inmidi_realtimein(portno, byte);
-        if (byte == MIDI_CLOCK)
-            inmidi_clk(sys_getmidiinrealtime());
     }
     else
     {
