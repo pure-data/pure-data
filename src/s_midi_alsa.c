@@ -28,6 +28,7 @@
 #define MIDI_AFTERTOUCH     0xd0
 #define MIDI_PITCHBEND      0xe0
 /* system common messages */
+#define MIDI_SYSEX          0xf0
 #define MIDI_TIMECODE       0xf1
 #define MIDI_SONGPOS        0xf2
 #define MIDI_SONGSELECT     0xf3
@@ -162,20 +163,20 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
                 break;
             case MIDI_TIMECODE:
                 ev.type = SND_SEQ_EVENT_QFRAME;
-                snd_seq_event_set_fixed(&ev);
+                snd_seq_ev_set_fixed(&ev);
                 ev.data.raw8.d[0] = a & 0xff; /* status */
                 ev.data.raw8.d[1] = b & 0x7f; /* data */
                 break;
             case MIDI_SONGPOS:
                 ev.type = SND_SEQ_EVENT_SONGPOS;
-                snd_seq_event_set_fixed(&ev);
+                snd_seq_ev_set_fixed(&ev);
                 ev.data.raw8.d[0] = a & 0xff; /* status */
                 ev.data.raw8.d[1] = b & 0x7f; /* data */
                 ev.data.raw8.d[2] = c & 0x7f; /* data */
                 break;
             case MIDI_SONGSELECT:
                 ev.type = SND_SEQ_EVENT_SONGSEL;
-                snd_seq_event_set_fixed(&ev);
+                snd_seq_ev_set_fixed(&ev);
                 ev.data.raw8.d[0] = a & 0xff; /* status */
                 ev.data.raw8.d[1] = b & 0x7f; /* data */
                 break;
