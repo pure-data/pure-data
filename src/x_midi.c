@@ -586,11 +586,21 @@ static void midiout_float(t_midiout *x, t_floatarg f)
     outmidi_byte(x->x_portno - 1, f);
 }
 
+static void midiout_list(t_midiout *x, t_symbol *s, int ac, t_atom *av)
+{
+    for (int i = 0; i < ac; ++i)
+    {
+        if(av[i].a_type == A_FLOAT)
+            outmidi_byte(x->x_portno - 1, av[i].a_w.w_float);
+    }
+}
+
 static void midiout_setup(void)
 {
     midiout_class = class_new(gensym("midiout"), (t_newmethod)midiout_new, 0,
         sizeof(t_midiout), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addfloat(midiout_class, midiout_float);
+    class_addlist(midiout_class, midiout_list);
     class_sethelpsymbol(midiout_class, gensym("midi"));
 }
 
