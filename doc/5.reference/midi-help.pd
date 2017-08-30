@@ -17,7 +17,7 @@
 #X obj 149 108 notein 1;
 #X text 149 87 channel 1;
 #X text 194 17 MIDI I/O objects;
-#X text 85 54 notes;
+#X text 85 46 notes;
 #X text 334 46 control change;
 #X text 264 87 everything;
 #X floatatom 309 136 0 0 0 0 - - -;
@@ -78,20 +78,20 @@
 #X floatatom 714 230 0 0 0 0 - - -;
 #X obj 628 201 midirealtimein;
 #X text 614 50 These four are always omni and;
-#X text 713 122 all midi \, byte by byte \, except real-time messages
-below, f 18;
 #X text 755 201 all real-time messages, f 10;
 #X text 709 273 like midiin \, but only gives incoming system exclusive
 messages, f 21;
 #X text 619 424 Use this to output raw MIDI.;
 #X text 616 444 (The second inlet is the port;
+#X text 49 167 These can also take an optional channel number as argument
+but by default are omni:;
+#X text 642 536 updated for Pd release 0.48-1;
 #X text 67 303 Outputs work similarly. They all take an optional channel
 as creation argument \, and ctlin takes a control number and a channel.
 You get inlets to change them in any case. If you specify no channel
 \, it's channel 1;
-#X text 49 167 These can also take an optional channel number as argument
-but by default are omni:;
-#X text 642 536 updated for Pd release 0.48-1;
+#X text 713 122 all midi \, byte by byte \, except sysex and real-time
+messages below, f 18;
 #X connect 0 0 53 0;
 #X connect 1 0 9 0;
 #X connect 2 0 8 0;

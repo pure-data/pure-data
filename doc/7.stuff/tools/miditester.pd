@@ -129,7 +129,10 @@
 #X obj 38 55 t b b;
 #X obj 116 406 print sent channel;
 #X msg 116 118 noteon 64 65 \, noteon 66 0 \, polytouch 67 68 \, control
-69 70 \, program 71 \, touch 72 \, bend 73 \, noteon 64 0;
+69 70 \, program 71 \, touch 72 \, bend -8119 \, noteon 64 0;
+#X text 141 57 pd pitchbend range is -8192 to 8192;
+#X text 141 75 so -8119 will show up as two bytes: 73 0 or 0x49 0x00
+;
 #X connect 0 0 10 0;
 #X connect 3 0 5 0;
 #X connect 3 1 2 0;
