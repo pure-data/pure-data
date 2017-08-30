@@ -134,13 +134,8 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
     snd_seq_ev_clear(&ev);
     if (portno >= 0 && portno < alsa_nmidiout)
     {
-        if (a < MIDI_TIMECODE)
-        {
-            /* channel voice message */
-            status = a & 0xf0;
-            channel = a & 0x0f;
-        }
-        else status = a & 0xff;
+        status = (status >= MIDI_SYSEX) ? status : (status & 0xf0);
+        channel = a & 0x0f;
         switch (status)
         {
             case MIDI_NOTEON:
