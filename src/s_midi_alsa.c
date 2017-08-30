@@ -129,14 +129,13 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
 
 void sys_alsa_putmidimess(int portno, int a, int b, int c)
 {
-    int status;
-    int channel;
-    snd_seq_event_t ev;
-    snd_seq_ev_clear(&ev);
     if (portno >= 0 && portno < alsa_nmidiout)
     {
+        snd_seq_event_t ev;
+        snd_seq_ev_clear(&ev);
+        int status = a & 0xf0;
+        int channel = a & 0x0f;
         status = (status >= MIDI_SYSEX) ? status : (status & 0xf0);
-        channel = a & 0x0f;
         switch (status)
         {
             case MIDI_NOTEON:
