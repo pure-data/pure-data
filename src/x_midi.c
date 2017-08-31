@@ -588,7 +588,8 @@ static void midiout_float(t_midiout *x, t_floatarg f)
 
 static void midiout_list(t_midiout *x, t_symbol *s, int ac, t_atom *av)
 {
-    for (int i = 0; i < ac; ++i)
+    int i;
+    for (i = 0; i < ac; ++i)
     {
         if(av[i].a_type == A_FLOAT)
             outmidi_byte(x->x_portno - 1, av[i].a_w.w_float);
