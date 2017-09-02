@@ -1447,7 +1447,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, char *path)
         /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
-        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
