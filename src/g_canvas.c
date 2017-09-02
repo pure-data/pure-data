@@ -1432,10 +1432,22 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, char *path)
         return;
     }
 
-    /* check whether the given subdir is in one of the user search-paths */
+        /* check whether the given subdir is in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        strbuf[MAXPDSTRING-1]=0;
+        if (check_exists(strbuf))
+        {
+            e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+            return;
+        }
+    }
+
+        /* check whether the given subdir is in one of the standard-paths */
+    for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, stdpath);
         strbuf[MAXPDSTRING-1]=0;
         if (check_exists(strbuf))
         {
@@ -1466,7 +1478,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, char *lib)
     if (sys_load_lib(x, lib))
         return;
 
-    /* check whether the given library is located in one of the user search-paths */
+    /* check whether the given lib is located in one of the user search-paths */
     for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
@@ -1485,11 +1497,11 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         return;
     }
 
-    /* strip    "extra/"-prefix */
+        /* strip "extra/"-prefix */
     if (!strncmp("extra/", stdpath, 6))
         stdpath+=6;
 
-        /* prefix full pd-path (including extra) */
+    /* prefix full pd-path (including extra) */
     canvas_completepath(stdpath, strbuf, MAXPDSTRING, 0);
     if (check_exists(strbuf))
     {
@@ -1528,7 +1540,7 @@ static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
     if (sys_load_lib(0, strbuf))
         return;
 
-    /* check whether the given library is located in one of the standard-paths */
+    /* check whether the given lib is located in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
