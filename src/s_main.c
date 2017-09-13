@@ -246,7 +246,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
             height = (j+1)*sys_fontspec[i].fi_height;
             if (!did_fontwarning)
             {
-                error("Ignoring invalid font-metrics from GUI!");
+                verbose(1, "ignoring invalid font-metrics from GUI");
                 did_fontwarning = 1;
             }
         }
