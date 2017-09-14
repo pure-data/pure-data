@@ -28,5 +28,5 @@ loaded. Or \, if you have files installed in the directory extra/stillmore
 #X text 340 546 updated for Pd version 0.47;
 #X text 41 395 WARNING: as of version 0.47 \, "declare -path" and "declare
 -stdpath" inside abstractions take effect only within those abstractions.
-If pd's compatibility version is set to 0.46 or earlier the old (buggy)
+If Pd's compatibility version is set to 0.46 or earlier the old (buggy)
 behavior takes effect.;
