@@ -27,7 +27,7 @@ the (real-valued) gain-and-normalization-factor;
 #X obj 15 399 rifft~;
 #X text 89 396 Real-valued inverse Fourier transform. This uses only
 the first N/@ points of its inputs \, supplying the rest by symmetry
-(so it's OK that rfft~ obly puts out those N/2 points.) There's only
+(so it's OK that rfft~ only puts out those N/2 points.) There's only
 one outlet because the output is real-valued.;
 #X obj 16 566 outlet~;
 #X text 88 499 Multiply by the Hann window function again \, necessary
