@@ -562,20 +562,41 @@ msgstr ""
 "Verzeichnisse, in denen Pd nach Objekten, Hilfe, Schriftarten und ähnlichem "
 "sucht"
 
-msgid "Install externals to:"
-msgstr "Bibliotheken installieren Verzeichnis:"
-
-msgid "Browse"
-msgstr ""
-
 msgid "Use standard paths"
 msgstr "Standardpfade durchsuchen"
 
 msgid "Verbose"
 msgstr "Ausführliche Meldungen"
 
+msgid "Pd Documents Directory"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+#, fuzzy
+msgid "Externals Install Directory"
+msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
+
+#, fuzzy
+msgid "Clear"
+msgstr "Menü löschen"
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
 msgid "Install externals to directory:"
 msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
+
+#, fuzzy
+msgid "Add a new path"
+msgstr "Neue Bibliothek hinzufügen"
 
 msgid "Add new library"
 msgstr "Neue Bibliothek hinzufügen"
@@ -662,8 +683,8 @@ msgstr ""
 msgid "Please select a (writable) installation directory!"
 msgstr "Bitte wählen Sie ein (schreibbares) Verzeichnis aus!"
 
-#, tcl-format
-msgid "Install to %s ?"
+#, fuzzy, tcl-format
+msgid "Install %s to %s?"
 msgstr "Nach %s installieren?"
 
 #, tcl-format
@@ -695,6 +716,18 @@ msgid "2. Copy the contents into %s."
 msgstr "2. Kopieren Sie den Inhalt nach %s."
 
 #, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+#, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
 msgstr "Konnte keine Inhalte von %1$s herunterladen [%2$s]."
 
@@ -713,6 +746,33 @@ msgstr "Such nach '%s'"
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "von %1$s am %2$s hochgeladen"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s\n"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Couldn't create \"externals\" directory in: %s\n"
+msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
 
 msgid "About Pd"
 msgstr "Über Pd"
@@ -948,6 +1008,9 @@ msgstr "Überspringe '%s': kein Pd-File"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "Überspringe '%s': kein Pd-File"
+
+#~ msgid "Install externals to:"
+#~ msgstr "Bibliotheken installieren Verzeichnis:"
 
 #~ msgid "for:"
 #~ msgstr "für:"

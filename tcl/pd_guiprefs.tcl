@@ -331,7 +331,7 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
 #
 proc ::pd_guiprefs::init_config {adomain akey {default ""} {arr false}} {
     set conf ""
-    catch {set conf [get_config $adomain $akey $arr]}
+    catch {set conf [::pd_guiprefs::get_config $adomain $akey $arr]}
     if {$conf eq ""} {set conf $default}
     return $conf
 }

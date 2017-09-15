@@ -207,8 +207,8 @@ semicolon can be used to define and separate different expressions.
 If so \, an outlet is created for each expression and they're evaluated
 from right to left (or bottom to up) order:;
 #X text 573 410 see also:;
-#X obj 676 511 block~;
-#X obj 739 511 value;
+#X obj 615 512 block~;
+#X obj 678 512 value;
 #N canvas 708 54 478 476 All_functions 0;
 #N canvas 497 97 374 326 Arithmetic-operators 0;
 #X obj 57 90 expr $f1 + 4;
@@ -1116,6 +1116,7 @@ offset filters audio at frequency of 1102.5 Hz, f 50;
 #X text 578 460 arithmetic operators:;
 #X text 617 485 audio operators:;
 #X text 598 208 (click on the subpatches to open them), f 13;
+#X obj 731 512 random;
 #X connect 4 0 17 0;
 #X connect 5 0 40 0;
 #X connect 6 0 40 0;
