@@ -632,7 +632,7 @@ void glob_start_path_dialog(t_pd *dummy)
      char buf[MAXPDSTRING];
 
     sys_set_searchpath();
-    sprintf(buf, "pdtk_path_dialog %%s %d %d\n", sys_usestdpath, sys_verbose);
+    sprintf(buf, "pdtk_path_dialog %%s %d\n", sys_usestdpath);
     gfxstub_new(&glob_pdobject, (void *)glob_start_path_dialog, buf);
 }
 
@@ -643,10 +643,9 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     namelist_free(STUFF->st_searchpath);
     STUFF->st_searchpath = 0;
     sys_usestdpath = atom_getintarg(0, argc, argv);
-    sys_verbose = atom_getintarg(1, argc, argv);
-    for (i = 0; i < argc-2; i++)
+    for (i = 0; i < argc-1; i++)
     {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
+        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+1, argc, argv));
         if (*s->s_name)
             STUFF->st_searchpath =
                 namelist_append_files(STUFF->st_searchpath, s->s_name);
@@ -687,7 +686,8 @@ void glob_start_startup_dialog(t_pd *dummy)
     char buf[MAXPDSTRING];
 
     sys_set_startup();
-    sprintf(buf, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
+    sprintf(buf, "pdtk_startup_dialog %%s %d %d \"%s\"\n", sys_defeatrt,
+        sys_verbose,
         (sys_flags? sys_flags->s_name : ""));
     gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
 }
@@ -699,10 +699,11 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
     sys_defeatrt = atom_getintarg(0, argc, argv);
-    sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
-    for (i = 0; i < argc-2; i++)
+    sys_verbose = atom_getintarg(1, argc, argv);
+    sys_flags = sys_decodedialog(atom_getsymbolarg(2, argc, argv));
+    for (i = 0; i < argc-3; i++)
     {
-        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
+        t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+3, argc, argv));
         if (*s->s_name)
             STUFF->st_externlist =
                 namelist_append_files(STUFF->st_externlist, s->s_name);

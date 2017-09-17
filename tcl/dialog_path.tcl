@@ -5,7 +5,6 @@ package require scrollboxwindow
 
 namespace eval ::dialog_path:: {
     variable use_standard_paths_button 1
-    variable verbose_button 0
     variable docspath ""
     variable installpath ""
     namespace export pdtk_path_dialog
@@ -22,13 +21,11 @@ proc ::dialog_path::ok {mytoplevel} {
 }
 
 # set up the panel with the info from pd
-proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
+proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath} {
     global use_standard_paths_button
-    global verbose_button
     global docspath
     global installpath
     set use_standard_paths_button $extrapath
-    set verbose_button $verbose
     if {[namespace exists ::pd_docsdir]} {set docspath $::pd_docsdir::docspath}
     if {[namespace exists ::deken]} {set installpath $::deken::installpath}
     if {[winfo exists $mytoplevel]} {
@@ -57,10 +54,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     pack $mytoplevel.extraframe -side top -anchor s -fill x
     checkbutton $mytoplevel.extraframe.extra -text [_ "Use standard paths"] \
         -variable use_standard_paths_button -anchor w
-    checkbutton $mytoplevel.extraframe.verbose -text [_ "Verbose"] \
-        -variable verbose_button -anchor w
     pack $mytoplevel.extraframe.extra -side left -expand 1
-    pack $mytoplevel.extraframe.verbose -side right -expand 1
 
     # add docsdir path widgets if pd_docsdir is loaded
     if {[namespace exists ::pd_docsdir]} {
@@ -240,7 +234,6 @@ proc ::dialog_path::edit {currentpath} {
 
 proc ::dialog_path::commit {new_path} {
     global use_standard_paths_button
-    global verbose_button
     global docspath
     global installpath
 
@@ -248,7 +241,7 @@ proc ::dialog_path::commit {new_path} {
     set changed false
     if {"$new_path" ne "$::sys_searchpath"} {set changed true}
     set ::sys_searchpath $new_path
-    pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
+    pdsend "pd path-dialog $use_standard_paths_button [pdtk_encode $::sys_searchpath]"
     if {$changed} {::helpbrowser::refresh}
 
     # save installpath
