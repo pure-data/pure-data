@@ -521,7 +521,7 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
             if (endp == str)
                 break;
             n++;
-            if (!endp)
+            if ('\0' == *endp)
                 break;
             str = endp + 1;
         }
