@@ -298,12 +298,12 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
     if(index < 0 || index >= argc)
         return 0;
     if(IS_A_FLOAT(argv,index))
-        return atom_getintarg(index, argc, argv);
+        return (int)atom_getintarg(index, argc, argv);
     if(IS_A_SYMBOL(argv,index))
     {
         t_symbol*s=atom_getsymbolarg(index, argc, argv);
         if ('#' == s->s_name[0])
-            return strtol(s->s_name+1, 0, 16);
+            return (int)strtol(s->s_name+1, 0, 16);
     }
     return 0;
 }
@@ -314,7 +314,7 @@ static int colfromatomload(t_atom*colatom)
         /* old-fashioned color arguement, either a number or symbol
         evaluating to an integer */
     if (colatom->a_type == A_FLOAT)
-        color = atom_getint(colatom);
+        color = (int)atom_getint(colatom);
     else if (colatom->a_type == A_SYMBOL &&
         (isdigit(colatom->a_w.w_symbol->s_name[0]) ||
             colatom->a_w.w_symbol->s_name[0] == '-'))
@@ -349,7 +349,7 @@ int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
         return 0;
     if(IS_A_FLOAT(argv,index))
         {
-            int col=atom_getintarg(index, argc, argv);
+            int col = (int)atom_getintarg(index, argc, argv);
             if(col >= 0)
             {
                 int idx = iemgui_modulo_color(col);

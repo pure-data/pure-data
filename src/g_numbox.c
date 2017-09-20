@@ -77,7 +77,7 @@ void my_numbox_ftoa(t_my_numbox *x)
     int bufsize, is_exp=0, i, idecimal;
 
     sprintf(x->x_buf, "%g", f);
-    bufsize = strlen(x->x_buf);
+    bufsize = (int)strlen(x->x_buf);
     if(bufsize >= 5)/* if it is in exponential mode */
     {
         i = bufsize - 4;
@@ -138,7 +138,7 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
             if(x->x_buf[0])
             {
                 char *cp=x->x_buf;
-                int sl = strlen(x->x_buf);
+                int sl = (int)strlen(x->x_buf);
 
                 x->x_buf[sl] = '>';
                 x->x_buf[sl+1] = 0;
@@ -721,8 +721,7 @@ static void my_numbox_key(void *z, t_floatarg fkey)
     }
     else if((c=='\b')||(c==127))
     {
-        int sl=strlen(x->x_buf)-1;
-
+        int sl = (int)strlen(x->x_buf)-1;
         if(sl < 0)
             sl = 0;
         x->x_buf[sl] = 0;
@@ -781,11 +780,11 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
         min = (double)atom_getfloatarg(2, argc, argv);
         max = (double)atom_getfloatarg(3, argc, argv);
         lilo = (int)atom_getintarg(4, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(5, argc, argv));
+        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(5, argc, argv));
         iemgui_new_getnames(&x->x_gui, 6, argv);
         ldx = (int)atom_getintarg(9, argc, argv);
         ldy = (int)atom_getintarg(10, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(11, argc, argv));
+        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(11, argc, argv));
         fs = (int)atom_getintarg(12, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+13, argv+14, argv+15);
         v = atom_getfloatarg(16, argc, argv);

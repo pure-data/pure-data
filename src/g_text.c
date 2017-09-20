@@ -188,8 +188,8 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     {
         t_binbuf *b = binbuf_new();
         binbuf_restore(b, argc-2, argv+2);
-        canvas_objtext(gl, atom_getintarg(0, argc, argv),
-            atom_getintarg(1, argc, argv), 0, 0, b);
+        canvas_objtext(gl, (int)atom_getintarg(0, argc, argv),
+            (int)atom_getintarg(1, argc, argv), 0, 0, b);
     }
         /* JMZ: don't go into interactive mode in a closed canvas */
     else if (!glist_isvisible(gl))
@@ -676,7 +676,7 @@ static void gatom_key(void *z, t_floatarg f)
 {
     t_gatom *x = (t_gatom *)z;
     int c = f;
-    int len = strlen(x->a_buf);
+    int len = (int)strlen(x->a_buf);
     t_atom at;
     char sbuf[ATOMBUFSIZE + 4];
     if (c == 0)
@@ -832,7 +832,7 @@ static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
     if (x->a_wherelabel == ATOM_LABELLEFT)
     {
         *xp = x1 - 3 -
-            strlen(canvas_realizedollar(x->a_glist, x->a_label)->s_name) *
+            (int)strlen(canvas_realizedollar(x->a_glist, x->a_label)->s_name) *
             glist_fontwidth(glist);
         *yp = y1 + 2;
     }

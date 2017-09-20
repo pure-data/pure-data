@@ -91,7 +91,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 static void netsend_readbin(t_netsend *x, int fd)
 {
     unsigned char inbuf[MAXPDSTRING];
-    int ret = recv(fd, inbuf, MAXPDSTRING, 0), i;
+    int ret = (int)recv(fd, inbuf, MAXPDSTRING, 0), i;
     if (!x->x_msgout)
     {
         bug("netsend_readbin");
@@ -308,7 +308,7 @@ static int netsend_dosend(t_netsend *x, int sockfd,
         static double lastwarntime;
         static double pleasewarn;
         double timebefore = sys_getrealtime();
-        int res = send(sockfd, bp, length-sent, 0);
+        int res = (int)send(sockfd, bp, length-sent, 0);
         double timeafter = sys_getrealtime();
         int late = (timeafter - timebefore > 0.005);
         if (late || pleasewarn)

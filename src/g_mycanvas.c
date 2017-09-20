@@ -310,13 +310,13 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
         x->x_gui.x_labelbindex = i+4;
         ldx = (int)atom_getintarg(i+4, argc, argv);
         ldy = (int)atom_getintarg(i+5, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(i+6, argc, argv));
+        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(i+6, argc, argv));
         fs = (int)atom_getintarg(i+7, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+i+8, 0, argv+i+9);
     }
     if((argc == 13)&&IS_A_FLOAT(argv,i+10))
     {
-        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(i+10, argc, argv));
+        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(i+10, argc, argv));
     }
     x->x_gui.x_draw = (t_iemfunptr)my_canvas_draw;
     x->x_gui.x_fsf.x_snd_able = 1;

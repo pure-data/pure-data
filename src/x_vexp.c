@@ -1501,7 +1501,7 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 rem_i =  arg.ex_flt - i;        /* remains of integer */
         } else if (arg.ex_type == ET_INT) {
                 fi = arg.ex_int;                /* float index */
-                i = arg.ex_int;
+                i = (int) arg.ex_int;           /* integer index */
                 rem_i = 0;
         } else {
                 post("eval_sigidx: bad res type (%d)", arg.ex_type);

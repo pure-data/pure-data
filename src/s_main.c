@@ -236,9 +236,9 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     for (j = 0; j < NZOOM; j++)
         for (i = 0; i < NFONT; i++)
     {
-        int size   = atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
-        int width  = atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
-        int height = atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+        int size   = (int)atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
+        int width  = (int)atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
+        int height = (int)atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
         if (!(size && width && height))
         {
             size   = (j+1)*sys_fontspec[i].fi_pointsize;
@@ -517,7 +517,7 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
         else
         {
             char *endp;
-            vecp[n] = strtol(str, &endp, 10);
+            vecp[n] = (int)strtol(str, &endp, 10);
             if (endp == str)
                 break;
             n++;

@@ -392,11 +392,11 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
        &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)&&IS_A_FLOAT(argv,12))
     {
         a = (int)atom_getintarg(0, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(1, argc, argv));
+        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(1, argc, argv));
         iemgui_new_getnames(&x->x_gui, 2, argv);
         ldx = (int)atom_getintarg(5, argc, argv);
         ldy = (int)atom_getintarg(6, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(7, argc, argv));
+        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(7, argc, argv));
         fs = (int)atom_getintarg(8, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+9, argv+10, argv+11);
         on = (t_float)atom_getfloatarg(12, argc, argv);

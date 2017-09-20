@@ -543,11 +543,11 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
         min = (double)atom_getfloatarg(2, argc, argv);
         max = (double)atom_getfloatarg(3, argc, argv);
         lilo = (int)atom_getintarg(4, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(5, argc, argv));
+        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(5, argc, argv));
         iemgui_new_getnames(&x->x_gui, 6, argv);
         ldx = (int)atom_getintarg(9, argc, argv);
         ldy = (int)atom_getintarg(10, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(11, argc, argv));
+        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(11, argc, argv));
         fs = (int)atom_getintarg(12, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+13, argv+14, argv+15);
         v = atom_getfloatarg(16, argc, argv);

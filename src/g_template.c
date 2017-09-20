@@ -786,7 +786,7 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
     }
     else
     {
-        int cpy = s1 - s->s_name, got;
+        int cpy = (int)(s1 - s->s_name), got;
         double v1, v2, screen1, screen2, quantum;
         if (cpy > MAXPDSTRING-5)
             cpy = MAXPDSTRING-5;
@@ -2454,7 +2454,7 @@ static void drawnumber_getbuf(t_drawnumber *x, t_word *data,
     {
         strncpy(buf, x->x_label->s_name, DRAWNUMBER_BUFSIZE);
         buf[DRAWNUMBER_BUFSIZE - 1] = 0;
-        nchars = strlen(buf);
+        nchars = (int)strlen(buf);
         if (type == DT_TEXT)
         {
             char *buf2;
@@ -2508,11 +2508,11 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
         startline = newline+1)
     {
         if (newline - startline > width)
-            width = newline - startline;
+            width = (int)(newline - startline);
         height++;
     }
     if (strlen(startline) > (unsigned)width)
-        width = strlen(startline);
+        width = (int)strlen(startline);
     *xp1 = xloc;
     *yp1 = yloc;
     *xp2 = xloc + fontwidth * width;

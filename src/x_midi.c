@@ -1092,9 +1092,9 @@ static void poly_float(t_poly *x, t_float f)
             serialon = serialoff = 0xffffffff; i < x->x_n; v++, i++)
         {
             if (v->v_used && v->v_serial < serialon)
-                    firston = v, serialon = v->v_serial, onindex = i;
+                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
             else if (!v->v_used && v->v_serial < serialoff)
-                    firstoff = v, serialoff = v->v_serial, offindex = i;
+                    firstoff = v, serialoff = (unsigned int)v->v_serial, offindex = i;
         }
         if (firstoff)
         {
@@ -1121,7 +1121,7 @@ static void poly_float(t_poly *x, t_float f)
         for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
             i < x->x_n; v++, i++)
                 if (v->v_used && v->v_pitch == f && v->v_serial < serialon)
-                    firston = v, serialon = v->v_serial, onindex = i;
+                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
         if (firston)
         {
             firston->v_used = 0;

@@ -458,11 +458,11 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
         a = (int)atom_getintarg(0, argc, argv);
         fthold = (int)atom_getintarg(1, argc, argv);
         ftbreak = (int)atom_getintarg(2, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(3, argc, argv));
+        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(3, argc, argv));
         iemgui_new_getnames(&x->x_gui, 4, argv);
         ldx = (int)atom_getintarg(7, argc, argv);
         ldy = (int)atom_getintarg(8, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(9, argc, argv));
+        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(9, argc, argv));
         fs = (int)atom_getintarg(10, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+11, argv+12, argv+13);
     }
