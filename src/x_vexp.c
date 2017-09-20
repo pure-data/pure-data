@@ -18,8 +18,9 @@
  *              --sdy
  *
  * Oct 2015
- *                              $x[-1] was not equal $x1[-1], not accessing the previous block
- *                              (bug fix by Dan Ellis)
+ *              $x[-1] was not equal $x1[-1], not accessing the previous block
+ *              (bug fix by Dan Ellis)
+ *
  *  July 2017 --sdy
  *      - Version 0.55
  *
@@ -444,24 +445,23 @@ ex_match(struct ex_ex *eptr, long int op)
                                 ret = ex_match(eptr + 1, OP_RB);
                                 if (!ret)
                                         return (ret);
-                                                                /*
-                                                                 * this is a special case handling
-                                                                 * for $1, $2 processing in Pd
-                                                                 *
-                                                                 * Pure data translates $#[x] (e.g. $1[x]) to 0[x]
-                                                                 * for abstracting patches so that later
-                                                                 * in the instantiation of the abstraction
-                                                                 * the $# is replaced with the proper argument
-                                                                 * of the abstraction
-                                                                 * so we change 0[x] to a special table pointing to null
-                                                                 * and catch errors in execution time
-                                                                 */
-                                                                if (!firstone && (eptr - 1)->ex_type == ET_INT &&
-                                                                                                                ((eptr - 1)->ex_int == 0)) {
-                                                                        (eptr - 1)->ex_type = ET_TBL;
-                                                                        (eptr - 1)->ex_ptr = (char *)0;
-                                                                }
-
+                                /*
+                                 * this is a special case handling
+                                 * for $1, $2 processing in Pd
+                                 *
+                                 * Pure data translates $#[x] (e.g. $1[x]) to 0[x]
+                                 * for abstracting patches so that later
+                                 * in the instantiation of the abstraction
+                                 * the $# is replaced with the proper argument
+                                 * of the abstraction
+                                 * so we change 0[x] to a special table pointing to null
+                                 * and catch errors in execution time
+                                 */
+                                if (!firstone && (eptr - 1)->ex_type == ET_INT &&
+                                    ((eptr - 1)->ex_int == 0)) {
+                                        (eptr - 1)->ex_type = ET_TBL;
+                                        (eptr - 1)->ex_ptr = (char *)0;
+                                }
                                 eptr->ex_type = ET_LB;
                                 eptr->ex_ptr = (char *) ret;
                                 eptr = ret;
