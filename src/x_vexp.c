@@ -960,7 +960,7 @@ ex_dzdetect(struct expr *expr)
 {
         char *etype;
 
-        if (!expr->exp_error & EE_DZ) {
+        if ((!expr->exp_error) & EE_DZ) {
                 if (IS_EXPR(expr))
                         etype = "expr";
                 else if (IS_EXPR_TILDE(expr))
