@@ -642,8 +642,8 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_searchpath);
     STUFF->st_searchpath = 0;
-    sys_usestdpath = (int)atom_getintarg(0, argc, argv);
-    sys_verbose = (int)atom_getintarg(1, argc, argv);
+    sys_usestdpath = atom_getintarg(0, argc, argv);
+    sys_verbose = atom_getintarg(1, argc, argv);
     for (i = 0; i < argc-2; i++)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
@@ -698,7 +698,7 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
-    sys_defeatrt = (int)atom_getintarg(0, argc, argv);
+    sys_defeatrt = atom_getintarg(0, argc, argv);
     sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
     for (i = 0; i < argc-2; i++)
     {

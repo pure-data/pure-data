@@ -558,7 +558,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     {
         if (argc > 1)       /* 2 or more args: treat as "list" */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_list)
                 {
@@ -572,7 +572,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else if (argc == 0)         /* no args: treat as "bang" */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_bang)
                 {
@@ -583,7 +583,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else if (argv[0].a_type == A_FLOAT)     /* one float arg */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_float)
                 {
@@ -594,7 +594,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_symbol)
                 {

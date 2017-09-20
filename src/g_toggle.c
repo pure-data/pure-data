@@ -262,7 +262,7 @@ static void toggle_bang(t_toggle *x)
 static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
-    int a = (int)atom_getintarg(0, argc, argv);
+    int a = atom_getintarg(0, argc, argv);
     t_float nonzero = (t_float)atom_getfloatarg(2, argc, argv);
     int sr_flags;
 
@@ -327,7 +327,7 @@ static void toggle_loadbang(t_toggle *x, t_floatarg action)
 
 static void toggle_size(t_toggle *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getintarg(0, ac, av));
+    x->x_gui.x_w = iemgui_clip_size(atom_getintarg(0, ac, av));
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
@@ -391,13 +391,13 @@ static void *toggle_new(t_symbol *s, int argc, t_atom *argv)
        &&IS_A_FLOAT(argv,5)&&IS_A_FLOAT(argv,6)
        &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)&&IS_A_FLOAT(argv,12))
     {
-        a = (int)atom_getintarg(0, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(1, argc, argv));
+        a = atom_getintarg(0, argc, argv);
+        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(1, argc, argv));
         iemgui_new_getnames(&x->x_gui, 2, argv);
-        ldx = (int)atom_getintarg(5, argc, argv);
-        ldy = (int)atom_getintarg(6, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(7, argc, argv));
-        fs = (int)atom_getintarg(8, argc, argv);
+        ldx = atom_getintarg(5, argc, argv);
+        ldy = atom_getintarg(6, argc, argv);
+        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(7, argc, argv));
+        fs = atom_getintarg(8, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+9, argv+10, argv+11);
         on = (t_float)atom_getfloatarg(12, argc, argv);
     }

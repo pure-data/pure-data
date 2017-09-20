@@ -188,8 +188,8 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     {
         t_binbuf *b = binbuf_new();
         binbuf_restore(b, argc-2, argv+2);
-        canvas_objtext(gl, (int)atom_getintarg(0, argc, argv),
-            (int)atom_getintarg(1, argc, argv), 0, 0, b);
+        canvas_objtext(gl, atom_getintarg(0, argc, argv),
+            atom_getintarg(1, argc, argv), 0, 0, b);
     }
         /* JMZ: don't go into interactive mode in a closed canvas */
     else if (!glist_isvisible(gl))

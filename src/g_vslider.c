@@ -329,12 +329,12 @@ static void vslider_bang(t_vslider *x)
 static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
-    int w = (int)atom_getintarg(0, argc, argv);
-    int h = (int)atom_getintarg(1, argc, argv);
+    int w = atom_getintarg(0, argc, argv);
+    int h = atom_getintarg(1, argc, argv);
     double min = (double)atom_getfloatarg(2, argc, argv);
     double max = (double)atom_getfloatarg(3, argc, argv);
-    int lilo = (int)atom_getintarg(4, argc, argv);
-    int steady = (int)atom_getintarg(17, argc, argv);
+    int lilo = atom_getintarg(4, argc, argv);
+    int steady = atom_getintarg(17, argc, argv);
     int sr_flags;
 
     if(lilo != 0) lilo = 1;
@@ -455,9 +455,9 @@ static void vslider_float(t_vslider *x, t_floatarg f)
 
 static void vslider_size(t_vslider *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getintarg(0, ac, av));
+    x->x_gui.x_w = iemgui_clip_size(atom_getintarg(0, ac, av));
     if(ac > 1)
-        vslider_check_height(x, (int)atom_getintarg(1, ac, av));
+        vslider_check_height(x, atom_getintarg(1, ac, av));
     iemgui_size((void *)x, &x->x_gui);
 }
 
@@ -548,23 +548,23 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
        &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10)
        &&IS_A_FLOAT(argv,11)&&IS_A_FLOAT(argv,12)&&IS_A_FLOAT(argv,16))
     {
-        w = (int)atom_getintarg(0, argc, argv);
-        h = (int)atom_getintarg(1, argc, argv);
+        w = atom_getintarg(0, argc, argv);
+        h = atom_getintarg(1, argc, argv);
         min = (double)atom_getfloatarg(2, argc, argv);
         max = (double)atom_getfloatarg(3, argc, argv);
-        lilo = (int)atom_getintarg(4, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(5, argc, argv));
+        lilo = atom_getintarg(4, argc, argv);
+        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(5, argc, argv));
         iemgui_new_getnames(&x->x_gui, 6, argv);
-        ldx = (int)atom_getintarg(9, argc, argv);
-        ldy = (int)atom_getintarg(10, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(11, argc, argv));
-        fs = (int)atom_getintarg(12, argc, argv);
+        ldx = atom_getintarg(9, argc, argv);
+        ldy = atom_getintarg(10, argc, argv);
+        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(11, argc, argv));
+        fs = atom_getintarg(12, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+13, argv+14, argv+15);
         v = atom_getfloatarg(16, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 6, 0);
     if((argc == 18)&&IS_A_FLOAT(argv,17))
-        steady = (int)atom_getintarg(17, argc, argv);
+        steady = atom_getintarg(17, argc, argv);
     x->x_gui.x_draw = (t_iemfunptr)vslider_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
     x->x_gui.x_fsf.x_rcv_able = 1;

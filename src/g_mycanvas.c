@@ -190,9 +190,9 @@ static void my_canvas_get_pos(t_my_canvas *x)
 static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
-    int a = (int)atom_getintarg(0, argc, argv);
-    int w = (int)atom_getintarg(2, argc, argv);
-    int h = (int)atom_getintarg(3, argc, argv);
+    int a = atom_getintarg(0, argc, argv);
+    int w = atom_getintarg(2, argc, argv);
+    int h = atom_getintarg(3, argc, argv);
     int sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
 
     x->x_gui.x_isa.x_loadinit = 0;
@@ -212,7 +212,7 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
 
 static void my_canvas_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 {
-    int i = (int)atom_getintarg(0, ac, av);
+    int i = atom_getintarg(0, ac, av);
 
     if(i < 1)
         i = 1;
@@ -231,13 +231,13 @@ static void my_canvas_vis_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 {
     int i;
 
-    i = (int)atom_getintarg(0, ac, av);
+    i = atom_getintarg(0, ac, av);
     if(i < 1)
         i = 1;
     x->x_vis_w = i;
     if(ac > 1)
     {
-        i = (int)atom_getintarg(1, ac, av);
+        i = atom_getintarg(1, ac, av);
         if(i < 1)
             i = 1;
     }
@@ -282,9 +282,9 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     if(((argc >= 10)&&(argc <= 13))
        &&IS_A_FLOAT(argv,0)&&IS_A_FLOAT(argv,1)&&IS_A_FLOAT(argv,2))
     {
-        a = (int)atom_getintarg(0, argc, argv);
-        w = (int)atom_getintarg(1, argc, argv);
-        h = (int)atom_getintarg(2, argc, argv);
+        a = atom_getintarg(0, argc, argv);
+        w = atom_getintarg(1, argc, argv);
+        h = atom_getintarg(2, argc, argv);
     }
     if((argc >= 12)&&(IS_A_SYMBOL(argv,3)||IS_A_FLOAT(argv,3))&&(IS_A_SYMBOL(argv,4)||IS_A_FLOAT(argv,4)))
     {
@@ -308,15 +308,15 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
             the slot x_labelbindex) and initialize it specially here. */
         iemgui_new_dogetname(&x->x_gui, i+3, argv);
         x->x_gui.x_labelbindex = i+4;
-        ldx = (int)atom_getintarg(i+4, argc, argv);
-        ldy = (int)atom_getintarg(i+5, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, (int)atom_getintarg(i+6, argc, argv));
-        fs = (int)atom_getintarg(i+7, argc, argv);
+        ldx = atom_getintarg(i+4, argc, argv);
+        ldy = atom_getintarg(i+5, argc, argv);
+        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(i+6, argc, argv));
+        fs = atom_getintarg(i+7, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+i+8, 0, argv+i+9);
     }
     if((argc == 13)&&IS_A_FLOAT(argv,i+10))
     {
-        iem_inttosymargs(&x->x_gui.x_isa, (int)atom_getintarg(i+10, argc, argv));
+        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(i+10, argc, argv));
     }
     x->x_gui.x_draw = (t_iemfunptr)my_canvas_draw;
     x->x_gui.x_fsf.x_snd_able = 1;
