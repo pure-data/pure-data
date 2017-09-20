@@ -398,10 +398,10 @@ typedef struct _sel2
 static void sel2_float(t_sel2 *x, t_float f)
 {
     t_selectelement *e;
-    t_int nelement;
+    int nelement;
     if (x->x_type == A_FLOAT)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
             outlet_bang(e->e_outlet);
@@ -414,10 +414,10 @@ static void sel2_float(t_sel2 *x, t_float f)
 static void sel2_symbol(t_sel2 *x, t_symbol *s)
 {
     t_selectelement *e;
-    t_int nelement;
+    int nelement;
     if (x->x_type == A_SYMBOL)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == s)
         {
             outlet_bang(e->e_outlet);
@@ -517,10 +517,10 @@ typedef struct _route
 static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
 {
     t_routeelement *e;
-    t_int nelement;
+    int nelement;
     if (x->x_type == A_SYMBOL)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == sel)
         {
             if (argc > 0 && argv[0].a_type == A_SYMBOL)
@@ -536,7 +536,7 @@ static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
 static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
 {
     t_routeelement *e;
-    t_int nelement;
+    int nelement;
     if (x->x_type == A_FLOAT)
     {
         t_float f;
@@ -544,7 +544,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         if (argv->a_type != A_FLOAT)
             goto rejected;
         f = atom_getfloat(argv);
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
             if (argc > 1 && argv[1].a_type == A_SYMBOL)

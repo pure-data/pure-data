@@ -887,8 +887,8 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
 {
 #ifdef PD
         t_garray *garray;
-		int size;
-		long indx;
+        int size;
+        long indx;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
@@ -948,8 +948,8 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
 {
 #ifdef PD
         t_garray *garray;
-		int size;
-		long indx;
+        int size;
+        long indx;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||

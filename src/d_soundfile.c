@@ -262,7 +262,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
 {
     int format, nchannels, bigendian, bytespersamp, samprate, swap;
     int headersize = 0;
-    long  sysrtn, bytelimit = 0x7fffffff;
+    long sysrtn, bytelimit = 0x7fffffff;
     errno = 0;
     if (p_info->headersize >= 0) /* header detection overridden */
     {
@@ -577,8 +577,8 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
     long itemsread, unsigned char *buf, long nitems, int bytespersamp,
     int bigendian)
 {
-	int i;
-	long j;
+    int i;
+    long j;
     unsigned char *sp, *sp2;
     t_word *wp;
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
@@ -1250,8 +1250,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     t_garray *garrays[MAXSFCHANS];
     t_word *vecs[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
-	int bufframes;
-	long nitems;
+    int bufframes;
+    long nitems;
     FILE *fp;
     info.samplerate = 0,
     info.channels = 0,
@@ -2405,7 +2405,7 @@ static void *writesf_child_main(void *zz)
                 fifotail = x->x_fifotail;
                 fd = x->x_fd;
                 pthread_mutex_unlock(&x->x_mutex);
-                sysrtn = (int)write(fd, buf + fifotail, writebytes);
+                sysrtn = write(fd, buf + fifotail, writebytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY &&
                     x->x_requestcode != REQUEST_CLOSE)

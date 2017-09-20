@@ -708,7 +708,7 @@ static t_int *tabsend_perform(t_int *w)
 {
     t_tabsend *x = (t_tabsend *)(w[1]);
     t_sample *in = (t_sample *)(w[2]);
-    t_int n = w[3];
+    int n = (int)w[3];
     t_word *dest = x->x_vec;
     int i = x->x_graphcount;
     if (!x->x_vec) goto bad;
@@ -792,7 +792,7 @@ static t_int *tabreceive_perform(t_int *w)
 {
     t_tabreceive *x = (t_tabreceive *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
-    t_int n = w[3];
+    int n = (int)w[3];
     t_word *from = x->x_vec;
     if (from)
     {

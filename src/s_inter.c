@@ -752,7 +752,7 @@ static int sys_flushtogui(void)
     int writesize = pd_this->pd_inter->i_guihead - pd_this->pd_inter->i_guitail,
         nwrote = 0;
     if (writesize > 0)
-        nwrote =(int) send(pd_this->pd_inter->i_guisock,
+        nwrote = (int)send(pd_this->pd_inter->i_guisock,
             pd_this->pd_inter->i_guibuf + pd_this->pd_inter->i_guitail,
                 writesize, 0);
 

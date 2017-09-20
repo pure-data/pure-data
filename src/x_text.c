@@ -71,7 +71,7 @@ static void textbuf_senditup(t_textbuf *x)
         if (!j) j = txt + ntxt;
         sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
             x, j-txt-i, txt+i);
-        i = (int) ((j-txt)+1);
+        i = (int)((j-txt)+1);
     }
     sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
     t_freebytes(txt, ntxt);
