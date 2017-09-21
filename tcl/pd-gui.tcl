@@ -114,9 +114,8 @@ set PD_BUGFIX_VERSION 0
 set PD_TEST_VERSION ""
 set done_init 0
 
-set TCL_MAJOR_VERSION 0
-set TCL_MINOR_VERSION 0
-set TCL_BUGFIX_VERSION 0
+# this complements tcl_version by providing the patchlevel version aka #.#.patch
+set TCL_PATCHLEVEL 0
 
 # for testing which platform we are running on ("aqua", "win32", or "x11")
 set windowingsystem ""
@@ -758,6 +757,7 @@ proc main {argc argv} {
     if { $::tcl_platform(platform) eq "windows"} {
        set ::platform W32
     }
+    scan [info patchlevel] "%d.%d.%d" - - ::TCL_PATCHLEVEL
 
     tk appname pd-gui
     load_locale

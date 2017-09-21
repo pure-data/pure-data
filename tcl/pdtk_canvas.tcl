@@ -40,20 +40,27 @@ proc pdtk_canvas_place_window {width height geometry} {
 
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
-    # fit the geometry onto screen
-    set x [ expr $x % $screenwidth - $::windowframex]
-    set y [ expr $y % $screenheight - $::windowframey]
-    if {$x < 0} {set x 0}
-    if {$y < 0} {set y 0}
-    if {$width > $screenwidth} {
-        set width $screenwidth
-        set x 0
+
+    # fit the geometry onto screen for Tk 8.4,
+    # newer versions of Tk can handle multiple monitors so allow negative pos,
+    # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+
+    if {$::tcl_version < 8.5 || \
+        ($::windowingsystem eq "aqua" && $::tcl_version == 8.5 && $::TCL_PATCHLEVEL < 13)} {
+        set x [ expr $x % $screenwidth - $::windowframex]
+        set y [ expr $y % $screenheight - $::windowframey]
+        if {$x < 0} {set x 0}
+        if {$y < 0} {set y 0}
+        if {$width > $screenwidth} {
+            set width $screenwidth
+            set x 0
+        }
+        if {$height > $screenheight} {
+            # 30 for window framing
+            set height [expr $screenheight - $::menubarsize - 30]
+            set y $::menubarsize
+        }
     }
-    if {$height > $screenheight} {
-        set height [expr $screenheight - $::menubarsize - 30] ;# 30 for window framing
-        set y $::menubarsize
-    }
-    return [list $width $height ${width}x$height+$x+$y]
+    return [list $width $height ${width}x${height}+${x}+${y}]
 }
 
 
