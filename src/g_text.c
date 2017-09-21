@@ -1008,11 +1008,10 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 
     if (x->te_type == T_ATOM && x->te_width > 0)
     {
-        int font = glist_getfont(glist);
-        int fontwidth = glist_fontwidth(glist),
-            fontheight = glist_fontheight(glist);
+        int fontwidth = glist_fontwidth(glist);
+        t_rtext *y = glist_findrtext(glist, x);
         width = (x->te_width > 0 ? x->te_width : 6) * fontwidth + 2;
-        height = fontheight + 3; /* borrowed from TMARGIN, etc, in g_rtext.c */
+        height = rtext_height(y);
     }
         /* if we're invisible we don't know our size so we just lie about
         it.  This is called on invisible boxes to establish order of inlets
@@ -1227,39 +1226,40 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
 {
     int n = obj_noutlets(ob), nplus = (n == 1 ? 1 : n-1), i;
     int width = x2 - x1;
+    int iow = IOWIDTH * glist->gl_zoom, ioh = IOHEIGHT * glist->gl_zoom;
     for (i = 0; i < n; i++)
     {
-        int onset = x1 + (width - IOWIDTH) * i / nplus;
+        int onset = x1 + (width - iow) * i / nplus;
         if (firsttime)
             sys_vgui(".x%lx.c create rectangle %d %d %d %d \
 -tags [list %so%d outlet] -fill black\n",
                 glist_getcanvas(glist),
-                onset, y2 + 1 - 2*glist->gl_zoom,
-                onset + IOWIDTH, y2,
+                onset, y2 - ioh,
+                onset + iow, y2,
                 tag, i);
         else
             sys_vgui(".x%lx.c coords %so%d %d %d %d %d\n",
                 glist_getcanvas(glist), tag, i,
-                onset, y2 + 1 - 2*glist->gl_zoom,
-                onset + IOWIDTH, y2);
+                onset, y2 - ioh,
+                onset + iow, y2);
     }
     n = obj_ninlets(ob);
     nplus = (n == 1 ? 1 : n-1);
     for (i = 0; i < n; i++)
     {
-        int onset = x1 + (width - IOWIDTH) * i / nplus;
+        int onset = x1 + (width - iow) * i / nplus;
         if (firsttime)
             sys_vgui(".x%lx.c create rectangle %d %d %d %d \
 -tags [list %si%d inlet] -fill black\n",
                 glist_getcanvas(glist),
                 onset, y1,
-                onset + IOWIDTH, y1 + glist->gl_zoom + EXTRAPIX,
+                onset + iow, y1 + ioh,
                 tag, i);
         else
             sys_vgui(".x%lx.c coords %si%d %d %d %d %d\n",
                 glist_getcanvas(glist), tag, i,
                 onset, y1,
-                onset + IOWIDTH, y1 + glist->gl_zoom + EXTRAPIX);
+                onset + iow, y1 + ioh);
     }
 }
 

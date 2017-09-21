@@ -36,15 +36,20 @@ glist has its own window, even if miniaturized.
 /* NOTE: this file describes Pd implementation details which may change
 in future releases.  The public (stable) API is in m_pd.h. */
 
+#ifndef G_CANVAS_H
+#define G_CANVAS_H
+
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 extern "C" {
 #endif
 
 /* --------------------- geometry ---------------------------- */
-#define IOWIDTH 7       /* width of an inlet/outlet in pixels */
+#define IOWIDTH  7       /* width of an inlet/outlet in pixels */
+#define IOHEIGHT 2       /* height of an inlet/outlet in pixels */
 #define IOMIDDLE ((IOWIDTH-1)/2)
 #define GLIST_DEFGRAPHWIDTH 200
 #define GLIST_DEFGRAPHHEIGHT 140
+
 /* ----------------------- data ------------------------------- */
 
 typedef struct _updateheader
@@ -655,3 +660,5 @@ extern t_class *clone_class;
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }
 #endif
+
+#endif // G_CANVAS_H
