@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "-------dimensions(digits)(pix):-------"
-msgstr "-------dimensions(chiffres)(pix):-------"
+msgstr "------dimensions(chiffres)(pix):------"
 
 msgid "--------dimensions(pix)(pix):--------"
 msgstr "--------dimensions(pix)(pix):--------"
@@ -30,7 +30,7 @@ msgid "-----------output-range:-----------"
 msgstr "---------échelle_de_sortie:--------"
 
 msgid "------selectable_dimensions(pix):------"
-msgstr "-------dimensions_sélectionnable(pix):------"
+msgstr "----dimensions_sélectionnable(pix):----"
 
 msgid "------visible_rectangle(pix)(pix):------"
 msgstr "------rectangle_visible(pix)(pix):------"
