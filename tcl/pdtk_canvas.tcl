@@ -34,7 +34,7 @@ if {$::tcl_version < 8.5 || \
              [tk windowingsystem] eq "aqua" && \
              [lindex [split [info patchlevel] "."] 2] < 13) } {
     # fit the geometry onto screen for Tk 8.4,
-    #  also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
+    # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
     # newer versions of Tk can handle multiple monitors so allow negative pos
     proc pdtk_canvas_wrap_window {x y w h} {
         set width [lindex [wm maxsize .] 0]
@@ -71,7 +71,8 @@ proc pdtk_canvas_place_window {width height geometry} {
 
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
-    set xywh [pdtk_canvas_wrap_window [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
+    set xywh [pdtk_canvas_wrap_window \
+        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
     set x [lindex $xywh 0]
     set y [lindex $xywh 1]
     set w [lindex $xywh 2]
