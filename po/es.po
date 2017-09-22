@@ -726,6 +726,10 @@ msgstr "No se ha podido renombrar el archivo descargado a %s"
 msgid "searching for '%s'"
 msgstr "Buscando '%s'"
 
+#, fuzzy
+msgid "Unable to perform search."
+msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Subido por %1$s @ %2$s"

@@ -33,7 +33,7 @@ array3 help-plot-array3-template;
 assign a variable to make this visible/invisible.;
 #X text 51 101 - optional "-vs [constant or variable]" to set visibility
 of scalars along the path of the plot.;
-#X text 47 199 - optional word "curve" to specify bezier;
+#X text 47 199 - optional word "curve" to specify Bézier curve;
 #X text 47 132 - optional "-x [variable]" flag to use different x variable
 ;
 #X text 48 153 - optional "-y [variable]" flag to use different y variable

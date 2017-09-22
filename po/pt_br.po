@@ -752,6 +752,10 @@ msgstr "Incapaz de renomear o arquivo baixado para %s"
 msgid "searching for '%s'"
 msgstr "procurando por '%s'"
 
+#, fuzzy
+msgid "Unable to perform search."
+msgstr "Incapaz de realizar busca. Você está online?"
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Enviado por '%1$s' em %2$s"
