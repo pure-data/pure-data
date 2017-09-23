@@ -487,7 +487,7 @@ proc set_base_font {family weight} {
             [_ "WARNING: Font weight '%s' not found, using default (%s)\n"] \
                 $weight $::font_weight]
     }
-    ::pdwindow::verbose 0 "Base font: $::font_family $::font_weight\n"
+    ::pdwindow::verbose 0 "Using font: $::font_family $::font_weight\n"
 }
 
 # create all the base fonts (i.e. pd_font_8 thru pd_font_36) so that they fit
@@ -520,14 +520,14 @@ proc fit_font_into_metrics {} {
         set lastwidth $width
         set lastheight $height
     }
-    ::pdwindow::verbose 0 "Measured font metrics:\n"
-    foreach {size width height} $::font_measured {
-        ::pdwindow::verbose 0 "$size $width $height\n"
-    }
-    ::pdwindow::verbose 0 "Measured zoom2 font metrics:\n"
-    foreach {size width height} $::font_zoom2_measured {
-        ::pdwindow::verbose 0 "$size $width $height\n"
-    }
+    # ::pdwindow::verbose 0 "Measured font metrics:\n"
+    # foreach {size width height} $::font_measured {
+    #     ::pdwindow::verbose 0 "$size $width $height\n"
+    # }
+    # ::pdwindow::verbose 0 "Measured zoom2 font metrics:\n"
+    # foreach {size width height} $::font_zoom2_measured {
+    #     ::pdwindow::verbose 0 "$size $width $height\n"
+    # }
 }
 
 # ------------------------------------------------------------------------------
