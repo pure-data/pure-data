@@ -17,8 +17,8 @@
 
 #define LMARGIN 2
 #define RMARGIN 2
-#define TMARGIN 4
-#define BMARGIN 2
+#define TMARGIN 3
+#define BMARGIN 3
 
 #define SEND_FIRST 1
 #define SEND_UPDATE 2
