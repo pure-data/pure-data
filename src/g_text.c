@@ -1010,7 +1010,7 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     {
         int fontwidth = glist_fontwidth(glist);
         t_rtext *y = glist_findrtext(glist, x);
-        width = (x->te_width > 0 ? x->te_width : 6) * fontwidth + 2;
+        width = ((x->te_width > 0 ? x->te_width : 6) * fontwidth) + 4;
         height = rtext_height(y);
     }
         /* if we're invisible we don't know our size so we just lie about
