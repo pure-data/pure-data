@@ -28,6 +28,8 @@
 # include <stdlib.h> /* BSDs for example */
 #endif
 
+void socketreceiver_free(t_socketreceiver *x);
+
 static t_class *netsend_class;
 
 typedef struct _netsend
