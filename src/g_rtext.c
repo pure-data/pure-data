@@ -15,17 +15,10 @@
 #include "g_canvas.h"
 #include "s_utf8.h"
 
-
 #define LMARGIN 2
 #define RMARGIN 2
-/* for some reason, it draws text 1 pixel lower on Mac OS X */
-#ifdef __APPLE__
-#define TMARGIN 3
-#define BMARGIN 1
-#else
 #define TMARGIN 4
-#define BMARGIN 0
-#endif
+#define BMARGIN 2
 
 #define SEND_FIRST 1
 #define SEND_UPDATE 2
