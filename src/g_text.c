@@ -1008,10 +1008,10 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 
     if (x->te_type == T_ATOM && x->te_width > 0)
     {
-        int fontwidth = glist_fontwidth(glist);
-        t_rtext *y = glist_findrtext(glist, x);
-        width = ((x->te_width > 0 ? x->te_width : 6) * fontwidth) + 4;
-        height = rtext_height(y);
+        int fontwidth = glist_fontwidth(glist),
+            fontheight = glist_fontheight(glist);
+        width = (x->te_width > 0 ? x->te_width : 6) * fontwidth + 2;
+        height = fontheight + 5; /* borrowed from TMARGIN, etc, in g_rtext.c */
     }
         /* if we're invisible we don't know our size so we just lie about
         it.  This is called on invisible boxes to establish order of inlets
@@ -1292,7 +1292,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     else if (x->te_type == T_MESSAGE)
     {
         msg_draw_const = ((y2-y1)/4);
-        if (msg_draw_const > 10) msg_draw_const = 10; /* looks bad if too big */
+        if (msg_draw_const > 10*glist->gl_zoom) msg_draw_const = 10*glist->gl_zoom; /* looks bad if too big */
         if (firsttime)
             sys_vgui(".x%lx.c create line\
  %d %d %d %d %d %d %d %d %d %d %d %d %d %d -width %d -tags [list %sR msg]\n",
@@ -1309,7 +1309,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     }
     else if (x->te_type == T_ATOM)
     {
-        atom_draw_const = ((y2-y1)/3);
+        atom_draw_const = ((y2-y1)/4);
         if (firsttime)
             sys_vgui(".x%lx.c create line\
  %d %d %d %d %d %d %d %d %d %d %d %d -width %d -tags [list %sR atom]\n",
