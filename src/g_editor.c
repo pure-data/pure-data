@@ -1590,14 +1590,16 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             }
             if (doit)
             {
+                int iow = IOWIDTH * x->gl_zoom;
+                int iom = IOMIDDLE * x->gl_zoom;
                 oc = obj_connect(ob1, closest1, ob2, closest2);
                 lx1 = x11 + (noutlet1 > 1 ?
-                        ((x12-x11-IOWIDTH) * closest1)/(noutlet1-1) : 0)
-                             + IOMIDDLE;
+                        ((x12-x11-iow) * closest1)/(noutlet1-1) : 0)
+                             + iom;
                 ly1 = y12;
                 lx2 = x21 + (ninlet2 > 1 ?
-                        ((x22-x21-IOWIDTH) * closest2)/(ninlet2-1) : 0)
-                            + IOMIDDLE;
+                        ((x22-x21-iow) * closest2)/(ninlet2-1) : 0)
+                            + iom;
                 ly2 = y21;
                 sys_vgui(
    ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
@@ -2640,7 +2642,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
         sys_vgui(
     ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
             glist_getcanvas(x), 0, 0, 0, 0,
-            (obj_issignaloutlet(objsrc, outno) ? 2 : 1),oc);
+            (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom, oc);
         canvas_fixlinesfor(x, objsrc);
     }
     return;
