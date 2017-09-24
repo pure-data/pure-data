@@ -76,8 +76,8 @@ static void vslider_draw_new(t_vslider *x, t_glist *glist)
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
              canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             ypos+x->x_gui.x_ldy * IEMGUI_ZOOM(x),
-             strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"",
+             ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
+             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              x->x_gui.x_lcol, x);
     sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxKNOB\n",
@@ -92,7 +92,7 @@ static void vslider_draw_move(t_vslider *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IOHEIGHT * IEMGUI_ZOOM(x);
     int tmargin = TMARGIN * IEMGUI_ZOOM(x), bmargin = BMARGIN * IEMGUI_ZOOM(x);
-    int r = ypos + x->x_gui.x_h - ((x->x_val/IEMGUI_ZOOM(x) + 50)/100);
+    int r = ypos + x->x_gui.x_h - ((x->x_val+ 50)/100);
     t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
@@ -136,8 +136,8 @@ static void vslider_draw_config(t_vslider* x, t_glist* glist)
 
     sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s} -fill #%06x -text {%s} \n",
              canvas, x, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
-             x->x_gui.x_fsf.x_selected?IEM_GUI_COLOR_SELECTED:x->x_gui.x_lcol,
-             strcmp(x->x_gui.x_lab->s_name, "empty")?x->x_gui.x_lab->s_name:"");
+             (x->x_gui.x_fsf.x_selected ? IEM_GUI_COLOR_SELECTED : x->x_gui.x_lcol),
+             (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""));
     sys_vgui(".x%lx.c itemconfigure %lxKNOB -fill #%06x\n", canvas,
              x, x->x_gui.x_fcol);
     sys_vgui(".x%lx.c itemconfigure %lxBASE -fill #%06x\n", canvas,
@@ -268,23 +268,23 @@ void vslider_check_minmax(t_vslider *x, double min, double max)
 {
     if(x->x_lin0_log1)
     {
-        if((min == 0.0)&&(max == 0.0))
+        if((min == 0.0) && (max == 0.0))
             max = 1.0;
         if(max > 0.0)
         {
             if(min <= 0.0)
-                min = 0.01*max;
+                min = 0.01 * max;
         }
         else
         {
             if(min > 0.0)
-                max = 0.01*min;
+                max = 0.01 * min;
         }
     }
     x->x_min = min;
     x->x_max = max;
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max/x->x_min)/(double)(x->x_gui.x_h - 1);
+        x->x_k = log(x->x_max / x->x_min)/(double)(x->x_gui.x_h - 1);
     else
         x->x_k = (x->x_max - x->x_min)/(double)(x->x_gui.x_h - 1);
 }
@@ -320,10 +320,10 @@ static t_float vslider_getfval(t_vslider *x)
 {
     t_float fval;
     int zoomval = (x->x_gui.x_fsf.x_finemoved || IEMGUI_ZOOM(x) == 1) ?
-        x->x_val : (x->x_val/(100*IEMGUI_ZOOM(x)))* 100;
+        x->x_val : (x->x_val / (100*IEMGUI_ZOOM(x))) * 100;
     if (x->x_lin0_log1)
-        fval = x->x_min*exp(x->x_k*(double)(zoomval)*0.01);
-    else fval = (double)(zoomval)*0.01*x->x_k + x->x_min;
+        fval = x->x_min * exp(x->x_k * (double)(zoomval) * 0.01);
+    else fval = (double)(zoomval) * 0.01 * x->x_k + x->x_min;
     if ((fval < 1.0e-10) && (fval > -1.0e-10))
         fval = 0.0;
     return (fval);
@@ -375,19 +375,19 @@ static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy)
     if(x->x_gui.x_fsf.x_finemoved)
         x->x_pos -= (int)dy;
     else
-        x->x_pos -= 100*(int)dy;
+        x->x_pos -= 100 * (int)dy;
     x->x_val = x->x_pos;
     if(x->x_val > (100*x->x_gui.x_h - 100))
     {
         x->x_val = 100*x->x_gui.x_h - 100;
         x->x_pos += 50;
-        x->x_pos -= x->x_pos%100;
+        x->x_pos -= x->x_pos % 100;
     }
     if(x->x_val < 0)
     {
         x->x_val = 0;
         x->x_pos -= 50;
-        x->x_pos -= x->x_pos%100;
+        x->x_pos -= x->x_pos % 100;
     }
     x->x_fval = vslider_getfval(x);
     if (old != x->x_val)
@@ -520,12 +520,12 @@ static void vslider_lin(t_vslider *x)
 
 static void vslider_init(t_vslider *x, t_floatarg f)
 {
-    x->x_gui.x_isa.x_loadinit = (f==0.0)?0:1;
+    x->x_gui.x_isa.x_loadinit = (f == 0.0) ? 0 : 1;
 }
 
 static void vslider_steady(t_vslider *x, t_floatarg f)
 {
-    x->x_steady = (f==0.0)?0:1;
+    x->x_steady = (f == 0.0) ? 0 : 1;
 }
 
 static void vslider_zoom(t_vslider *x, t_floatarg f)
