@@ -521,6 +521,7 @@ static void hslider_zoom(t_hslider *x, t_floatarg f)
 {
     /* scale current pixel value */
     x->x_val = (IEMGUI_ZOOM(x) == 2 ? (x->x_val)/2 : (x->x_val)*2);
+    x->x_pos = x->x_val;
     iemgui_zoom(&x->x_gui, f);
 }
 
