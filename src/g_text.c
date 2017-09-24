@@ -1010,8 +1010,8 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     {
         int fontwidth = glist_fontwidth(glist),
             fontheight = glist_fontheight(glist);
-        width = (x->te_width > 0 ? x->te_width : 6) * fontwidth + 2;
-        height = fontheight + 5; /* borrowed from TMARGIN, etc, in g_rtext.c */
+        width = (x->te_width > 0 ? x->te_width : 6) * fontwidth + 2*glist->gl_zoom;
+        height = fontheight + 5; /* borrowed from TMARGIN & BMARGIN in g_rtext.c */
     }
         /* if we're invisible we don't know our size so we just lie about
         it.  This is called on invisible boxes to establish order of inlets
