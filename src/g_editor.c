@@ -1396,15 +1396,17 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (ob && (noutlet = obj_noutlets(ob)) &&
-                ypos >= y2 - 1 - 3*x->gl_zoom)
+                ypos >= y2 - (IOHEIGHT*x->gl_zoom) + x->gl_zoom)
             {
                 int width = x2 - x1;
+                int iow = IOWIDTH * x->gl_zoom;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
                 int closest = ((xpos-x1) * (nout1) + width/2)/width;
                 int hotspot = x1 +
-                    (width - IOWIDTH) * closest / (nout1);
+                    (width - iow) * closest / (nout1);
                 if (closest < noutlet &&
-                    xpos >= (hotspot-1) && xpos <= hotspot + (IOWIDTH+1))
+                    xpos >= (hotspot - x->gl_zoom) &&
+                    xpos <= hotspot + (iow + x->gl_zoom))
                 {
                     if (doit)
                     {
