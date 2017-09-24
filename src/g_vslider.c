@@ -319,8 +319,8 @@ static void vslider_properties(t_gobj *z, t_glist *owner)
 static t_float vslider_getfval(t_vslider *x)
 {
     t_float fval;
-    int zoomval = (x->x_gui.x_fsf.x_finemoved || IEMGUI_ZOOM(x) == 1) ?
-        x->x_val : (x->x_val / (100*IEMGUI_ZOOM(x))) * 100;
+    int zoomval = (x->x_gui.x_fsf.x_finemoved) ?
+        x->x_val/IEMGUI_ZOOM(x) : (x->x_val / (100*IEMGUI_ZOOM(x))) * 100;
     if (x->x_lin0_log1)
         fval = x->x_min * exp(x->x_k * (double)(zoomval) * 0.01);
     else fval = (double)(zoomval) * 0.01 * x->x_k + x->x_min;
