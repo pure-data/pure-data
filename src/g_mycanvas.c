@@ -182,8 +182,8 @@ static void my_canvas_get_pos(t_my_canvas *x)
 {
     if(x->x_gui.x_fsf.x_snd_able && x->x_gui.x_snd->s_thing)
     {
-        x->x_at[0].a_w.w_float = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist);
-        x->x_at[1].a_w.w_float = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist);
+        x->x_at[0].a_w.w_float = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
+        x->x_at[1].a_w.w_float = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist)/IEMGUI_ZOOM(x);
         pd_list(x->x_gui.x_snd->s_thing, &s_list, 2, x->x_at);
     }
 }
@@ -217,8 +217,8 @@ static void my_canvas_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
 
     if(i < 1)
         i = 1;
-    x->x_gui.x_w = i;
-    x->x_gui.x_h = i;
+    x->x_gui.x_w = i*IEMGUI_ZOOM(x);
+    x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
 

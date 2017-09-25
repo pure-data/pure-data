@@ -259,9 +259,9 @@ void vslider_check_height(t_vslider *x, int h)
         x->x_val = x->x_pos;
     }
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max/x->x_min)/(double)(x->x_gui.x_h - 1);
+        x->x_k = log(x->x_max / x->x_min) / (double)(x->x_gui.x_h/IEMGUI_ZOOM(x) - 1);
     else
-        x->x_k = (x->x_max - x->x_min)/(double)(x->x_gui.x_h - 1);
+        x->x_k = (x->x_max - x->x_min) / (double)(x->x_gui.x_h/IEMGUI_ZOOM(x) - 1);
 }
 
 void vslider_check_minmax(t_vslider *x, double min, double max)
@@ -284,9 +284,9 @@ void vslider_check_minmax(t_vslider *x, double min, double max)
     x->x_min = min;
     x->x_max = max;
     if(x->x_lin0_log1)
-        x->x_k = log(x->x_max / x->x_min)/(double)(x->x_gui.x_h - 1);
+        x->x_k = log(x->x_max/x->x_min) / (double)(x->x_gui.x_h/IEMGUI_ZOOM(x) - 1);
     else
-        x->x_k = (x->x_max - x->x_min)/(double)(x->x_gui.x_h - 1);
+        x->x_k = (x->x_max - x->x_min) / (double)(x->x_gui.x_h/IEMGUI_ZOOM(x) - 1);
 }
 
 static void vslider_properties(t_gobj *z, t_glist *owner)
@@ -321,6 +321,7 @@ static t_float vslider_getfval(t_vslider *x)
     t_float fval;
     int zoomval = (x->x_gui.x_fsf.x_finemoved) ?
         x->x_val/IEMGUI_ZOOM(x) : (x->x_val / (100*IEMGUI_ZOOM(x))) * 100;
+
     if (x->x_lin0_log1)
         fval = x->x_min * exp(x->x_k * (double)(zoomval) * 0.01);
     else fval = (double)(zoomval) * 0.01 * x->x_k + x->x_min;
@@ -344,7 +345,7 @@ static void vslider_bang(t_vslider *x)
 static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
-    int w = (int)atom_getintarg(0, argc, argv) * IEMGUI_ZOOM(x);
+    int w = (int)atom_getintarg(0, argc, argv);
     int h = (int)atom_getintarg(1, argc, argv) * IEMGUI_ZOOM(x);
     double min = (double)atom_getfloatarg(2, argc, argv);
     double max = (double)atom_getfloatarg(3, argc, argv);
@@ -359,7 +360,7 @@ static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
     else
         x->x_steady = 0;
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
-    x->x_gui.x_w = iemgui_clip_size(w);
+    x->x_gui.x_w = iemgui_clip_size(w) * IEMGUI_ZOOM(x);
     vslider_check_height(x, h);
     vslider_check_minmax(x, min, max);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
@@ -452,10 +453,10 @@ static void vslider_set(t_vslider *x, t_floatarg f)
             f = x->x_min;
     }
     if(x->x_lin0_log1)
-        g = log(f/x->x_min)/x->x_k;
+        g = log(f/x->x_min) / x->x_k;
     else
         g = (f - x->x_min) / x->x_k;
-    x->x_val = IEMGUI_ZOOM(x)*(int)(100.0*g + 0.49999);
+    x->x_val = IEMGUI_ZOOM(x) * (int)(100.0*g + 0.49999);
     x->x_pos = x->x_val;
     if(x->x_val != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);
@@ -470,9 +471,9 @@ static void vslider_float(t_vslider *x, t_floatarg f)
 
 static void vslider_size(t_vslider *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getintarg(0, ac, av));
+    x->x_gui.x_w = iemgui_clip_size((int)atom_getintarg(0, ac, av))*IEMGUI_ZOOM(x);
     if(ac > 1)
-        vslider_check_height(x, (int)atom_getintarg(1, ac, av));
+        vslider_check_height(x, (int)atom_getintarg(1, ac, av)*IEMGUI_ZOOM(x));
     iemgui_size((void *)x, &x->x_gui);
 }
 
@@ -485,7 +486,7 @@ static void vslider_pos(t_vslider *x, t_symbol *s, int ac, t_atom *av)
 static void vslider_range(t_vslider *x, t_symbol *s, int ac, t_atom *av)
 {
     vslider_check_minmax(x, (double)atom_getfloatarg(0, ac, av),
-                         (double)atom_getfloatarg(1, ac, av));
+                            (double)atom_getfloatarg(1, ac, av));
 }
 
 static void vslider_color(t_vslider *x, t_symbol *s, int ac, t_atom *av)
@@ -515,7 +516,7 @@ static void vslider_log(t_vslider *x)
 static void vslider_lin(t_vslider *x)
 {
     x->x_lin0_log1 = 0;
-    x->x_k = (x->x_max - x->x_min)/(double)(x->x_gui.x_h - 1);
+    x->x_k = (x->x_max - x->x_min) / (double)(x->x_gui.x_h/IEMGUI_ZOOM(x) - 1);
 }
 
 static void vslider_init(t_vslider *x, t_floatarg f)
