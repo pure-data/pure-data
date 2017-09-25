@@ -22,6 +22,8 @@
 #define ATOM_RMARGIN 2
 #define ATOM_BMARGIN 3 /* 1 pixel smaller than object TMARGIN+BMARGIN */
 
+#define MESSAGE_CLICK_WIDTH 5
+
 t_class *text_class;
 static t_class *message_class;
 static t_class *gatom_class;
@@ -430,9 +432,10 @@ static void message_click(t_message *x,
     message_float(x, 0);
     if (glist_isvisible(x->m_glist))
     {
+        /* not zooming click width for now as it gets too fat */
         t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-        sys_vgui(".x%lx.c itemconfigure %sR -width 5\n",
-            glist_getcanvas(x->m_glist), rtext_gettag(y));
+        sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+            glist_getcanvas(x->m_glist), rtext_gettag(y), MESSAGE_CLICK_WIDTH);
         clock_delay(x->m_clock, 120);
     }
 }
@@ -442,8 +445,9 @@ static void message_tick(t_message *x)
     if (glist_isvisible(x->m_glist))
     {
         t_rtext *y = glist_findrtext(x->m_glist, &x->m_text);
-        sys_vgui(".x%lx.c itemconfigure %sR -width 1\n",
-            glist_getcanvas(x->m_glist), rtext_gettag(y));
+        sys_vgui(".x%lx.c itemconfigure %sR -width %d\n",
+            glist_getcanvas(x->m_glist), rtext_gettag(y),
+            glist_getzoom(x->m_glist));
     }
 }
 
