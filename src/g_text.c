@@ -18,6 +18,10 @@
 
 #include "s_utf8.h"
 
+/* borrowed from RMARGIN and BMARGIN in g_rtext.c */
+#define ATOM_RMARGIN 2
+#define ATOM_BMARGIN 3 /* 1 pixel smaller than object TMARGIN+BMARGIN */
+
 t_class *text_class;
 static t_class *message_class;
 static t_class *gatom_class;
@@ -1008,10 +1012,16 @@ static void text_getrect(t_gobj *z, t_glist *glist,
 
     if (x->te_type == T_ATOM && x->te_width > 0)
     {
-        int fontwidth = glist_fontwidth(glist),
-            fontheight = glist_fontheight(glist);
-        width = (x->te_width > 0 ? x->te_width : 6) * fontwidth + 2*glist->gl_zoom;
-        height = fontheight + 5; /* borrowed from TMARGIN & BMARGIN in g_rtext.c */
+        width = (x->te_width > 0 ? x->te_width : 6) * glist_fontwidth(glist);
+        height = glist_fontheight(glist);
+        if (glist_getzoom(glist) > 1)
+        {
+            /* zoom margins */
+            width += ATOM_RMARGIN * glist_getzoom(glist);
+            height += ATOM_BMARGIN * glist_getzoom(glist);
+        }
+        else
+            width += ATOM_RMARGIN; height += ATOM_BMARGIN;
     }
         /* if we're invisible we don't know our size so we just lie about
         it.  This is called on invisible boxes to establish order of inlets

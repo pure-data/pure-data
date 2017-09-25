@@ -17,8 +17,8 @@
 
 #define LMARGIN 2
 #define RMARGIN 2
-#define TMARGIN 3
-#define BMARGIN 3
+#define TMARGIN 2
+#define BMARGIN 2
 
 #define SEND_FIRST 1
 #define SEND_UPDATE 2
@@ -281,8 +281,16 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         }
     }
     else ncolumns = widthspec_c;
-    pixwide = ncolumns * fontwidth + (LMARGIN + RMARGIN);
-    pixhigh = nlines * fontheight + (TMARGIN + BMARGIN);
+    pixwide = ncolumns * fontwidth;
+    pixhigh = nlines * fontheight;
+    if (glist_getzoom(x->x_glist) > 1)
+    {
+        /* zoom margins */
+        pixwide += (LMARGIN + RMARGIN) * glist_getzoom(x->x_glist);
+        pixhigh += (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist);
+    }
+    else
+        pixwide += LMARGIN + RMARGIN; pixhigh += TMARGIN + BMARGIN;
 
     if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {
@@ -300,9 +308,16 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     }
     if (action == SEND_FIRST)
     {
+        int lmargin = LMARGIN, tmargin = TMARGIN;
+        if (glist_getzoom(x->x_glist) > 1)
+        {
+            /* zoom margins */
+            lmargin *= glist_getzoom(x->x_glist);
+            tmargin *= glist_getzoom(x->x_glist);
+        }
         sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%.*s} %d %s\n",
             canvas, x->x_tag, rtext_gettype(x)->s_name,
-            dispx + LMARGIN, dispy + TMARGIN,
+            dispx + lmargin, dispy + tmargin,
             outchars_b, tempbuf,
             sys_hostfontsize(font, glist_getzoom(x->x_glist)),
             (glist_isselected(x->x_glist,
