@@ -1,39 +1,42 @@
+html, body { -webkit-text-size-adjust: none; }
 
-HTML { 
-	background:  #ffffff; 
-	color: 	     #000000;
-	font-family: Times, Times New Roman, serif;
-	font-size:   10pt;
-} 
-BODY { 
-	width: 	    6.5in; 
-	margin-left: 0.5in
-} 
-H1 {
-	font-size:   36pt;
-	text-align:  center;
+body {
+  max-width: 38em;
+  margin: auto;
+  padding: 1em;
 }
-H2 {
-	font-size:   10pt;
-	text-align:  center;
+
+h1 {
+  text-align: center;
 }
-H3 {
-	font-size:   12pt;
-	text-align:  left;
+
+pre, code {
+  font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Menlo", "Courier", monospace;
 }
-H4 {
-	font-size:   10pt;
-	text-align:  left;
+
+pre {
+  padding: 1em;
+  background-color: #f0f0f0;
 }
-H5 {
-	font-size:   8pt;
-	text-align:  left;
+
+code {
+  padding: 1pt;
+  font-size: 0.8em;
 }
-H6 {
-	font-size:   8pt;
-	text-align:  left;
+
+hr {
+  margin-bottom: 4em;
 }
-PRE { 
-   font-size:   8pt;
-	text-align:  left;
+
+.figure {
+  text-align: center;
+}
+
+.figure img {
+  max-width: 80%;
+}
+
+.caption {
+  font-style: italic;
+  font-size: 0.9em;
 }
