@@ -140,7 +140,6 @@ void bng_draw_io(t_bng* x, t_glist* glist, int old_snd_rcv_flags)
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IOHEIGHT * IEMGUI_ZOOM(x);
-    int inset = IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
