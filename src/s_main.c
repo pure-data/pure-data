@@ -246,7 +246,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
             height = (j+1)*sys_fontspec[i].fi_height;
             if (!did_fontwarning)
             {
-                error("Ignoring invalid font-metrics from GUI!");
+                verbose(1, "ignoring invalid font-metrics from GUI");
                 did_fontwarning = 1;
             }
         }
@@ -289,6 +289,7 @@ static int defaultfontshit[] = {
 17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
+static t_clock *sys_fakefromguiclk;
 static void sys_fakefromgui(void)
 {
         /* fake the GUI's message giving cwd and font sizes in case
@@ -309,6 +310,7 @@ static void sys_fakefromgui(void)
         SETFLOAT(zz+i+1, defaultfontshit[i]);
     SETFLOAT(zz+NDEFAULTFONT+1,0);
     glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
+    clock_free(sys_fakefromguiclk);
 }
 
 static void sys_afterargparse(void);
@@ -365,7 +367,8 @@ int sys_main(int argc, char **argv)
         return (0);
     sys_setsignalhandlers();
     if (sys_dontstartgui)
-        sys_fakefromgui();
+        clock_set((sys_fakefromguiclk =
+            clock_new(0, (t_method)sys_fakefromgui)), 0);
     else if (sys_startgui(sys_libdir->s_name)) /* start the gui */
         return (1);
     if (sys_hipriority)

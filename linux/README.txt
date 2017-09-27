@@ -19,8 +19,8 @@ release checklist
             ./send-msw.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
-    git push --mirror
-    git push github
+    git push origin --tags
+    git push sourceforge --mirror
         ... (I don't use 'mirror' here because afraid of deleting PR branches)
     copy from ~/pd/dist to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
