@@ -199,7 +199,7 @@ phase \, and sample number in one message;
 the parameters one by one.;
 #X obj 34 511 output~;
 #X text 13 596 This patch take the same principle as the earlier "one-shot
-sampler" \, but allows you to parametrize sample playback. Since we
+sampler" \, but allows you to parameterize sample playback. Since we
 must wait 5 msec before starting the playback \, we store all the parameters
 in "f" objects \, and recall them to construct the new note. Transposition
 is done by altering the amount to play back in the (artificial) ten

@@ -343,7 +343,7 @@ int sys_main(int argc, char **argv)
     complain to stderr and lose setuid here. */
     if (getuid() != geteuid())
     {
-        fprintf(stderr, "warning: canceling setuid privelege\n");
+        fprintf(stderr, "warning: canceling setuid privilege\n");
         setuid(getuid());
     }
 #endif  /* _WIN32 */
@@ -524,7 +524,7 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
             if (endp == str)
                 break;
             n++;
-            if (!endp)
+            if ('\0' == *endp)
                 break;
             str = endp + 1;
         }
@@ -1335,7 +1335,7 @@ int sys_argparse(int argc, char **argv)
         usage:
             for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
                 fprintf(stderr, "%s", usagemessage[i]);
-            return (0);
+            return (1);
         }
     }
     if (sys_batch)

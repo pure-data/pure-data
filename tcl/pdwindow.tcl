@@ -448,7 +448,7 @@ proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {
                 tkwait visibility .pdwindow.text
             }
 
-            regexp -- {([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+)} [wm geometry $winid] -> \
+            regexp -- {([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)} [wm geometry $winid] -> \
                 _ _ _left _top
             set ::windowframex [expr {[winfo rootx $winid] - $_left}]
             set ::windowframey [expr {[winfo rooty $winid] - $_top}]

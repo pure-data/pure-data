@@ -39,7 +39,7 @@ array. The template and field name are specified as creation arguments.
 #X text 396 463 updated for Pd version 0.47;
 #X text 24 147 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
-\, at some possible cost in efficiancy and clarity.;
+\, at some possible cost in efficiency and clarity.;
 #X msg 34 293 set help-getsize-template array1;
 #X connect 6 0 11 0;
 #X connect 7 0 6 0;
