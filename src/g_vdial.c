@@ -754,7 +754,7 @@ void g_vradio_setup(void)
         gensym("single_change"), 0);
     class_addmethod(vradio_old_class, (t_method)vradio_double_change,
         gensym("double_change"), 0);
-    class_addmethod(vradio_class, (t_method)iemgui_zoom,
+    class_addmethod(vradio_old_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
     class_setwidget(vradio_old_class, &vradio_widgetbehavior);
     class_sethelpsymbol(vradio_old_class, gensym("vradio"));
