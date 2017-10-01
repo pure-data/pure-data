@@ -1280,7 +1280,7 @@ void text_drawborder(t_text *x, t_glist *glist,
     char *tag, int width2, int height2, int firsttime)
 {
     t_object *ob;
-    int x1, y1, x2, y2, width, height, msg_draw_const, atom_draw_const;
+    int x1, y1, x2, y2, width, height, corner;
     text_getrect(&x->te_g, glist, &x1, &y1, &x2, &y2);
     width = x2 - x1;
     height = y2 - y1;
@@ -1305,36 +1305,36 @@ void text_drawborder(t_text *x, t_glist *glist,
     }
     else if (x->te_type == T_MESSAGE)
     {
-        msg_draw_const = ((y2-y1)/4);
-        if (msg_draw_const > 10*glist->gl_zoom) msg_draw_const = 10*glist->gl_zoom; /* looks bad if too big */
+        corner = ((y2-y1)/4);
+        if (corner > 10*glist->gl_zoom) corner = 10*glist->gl_zoom; /* looks bad if too big */
         if (firsttime)
             sys_vgui(".x%lx.c create line\
  %d %d %d %d %d %d %d %d %d %d %d %d %d %d -width %d -tags [list %sR msg]\n",
                 glist_getcanvas(glist),
-                x1, y1,  x2+msg_draw_const, y1,  x2, y1+msg_draw_const,  x2, y2-msg_draw_const,  x2+msg_draw_const, y2,
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,
                 x1, y2,  x1, y1,
                     glist->gl_zoom, tag);
         else
             sys_vgui(".x%lx.c coords %sR\
  %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
                 glist_getcanvas(glist), tag,
-                x1, y1,  x2+msg_draw_const, y1,  x2, y1+msg_draw_const,  x2, y2-msg_draw_const,  x2+msg_draw_const, y2,
+                x1, y1,  x2+corner, y1,  x2, y1+corner,  x2, y2-corner,  x2+corner, y2,
                 x1, y2,  x1, y1);
     }
     else if (x->te_type == T_ATOM)
     {
-        atom_draw_const = ((y2-y1)/4);
+        corner = ((y2-y1)/4);
         if (firsttime)
             sys_vgui(".x%lx.c create line\
  %d %d %d %d %d %d %d %d %d %d %d %d -width %d -tags [list %sR atom]\n",
                 glist_getcanvas(glist),
-                x1, y1,  x2-atom_draw_const, y1,  x2, y1+atom_draw_const, x2, y2,  x1, y2,  x1, y1,
+                x1, y1,  x2-corner, y1,  x2, y1+corner, x2, y2,  x1, y2,  x1, y1,
                     glist->gl_zoom, tag);
         else
             sys_vgui(".x%lx.c coords %sR\
  %d %d %d %d %d %d %d %d %d %d %d %d\n",
                 glist_getcanvas(glist), tag,
-                x1, y1,  x2-atom_draw_const, y1,  x2, y1+atom_draw_const,  x2, y2,  x1, y2,  x1, y1);
+                x1, y1,  x2-corner, y1,  x2, y1+corner,  x2, y2,  x1, y2,  x1, y1);
     }
         /* for comments, just draw a bar on RHS if unlocked; when a visible
         canvas is unlocked we have to call this anew on all comments, and when
