@@ -159,9 +159,8 @@ static void vslider_draw_io(t_vslider* x, t_glist* glist, int old_snd_rcv_flags)
              xpos, ypos + x->x_gui.x_h + bmargin + IEMGUI_ZOOM(x) - ioh,
              xpos + iow, ypos + x->x_gui.x_h + bmargin,
              x, 0);
-        /* keep label and knob above outlet */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d ; .x%lx.c raise %lxKNOB %lxOUT%d\n",
-            canvas, x, x, 0, canvas, x, x, 0);
+        /* keep knob above outlet */
+        sys_vgui(".x%lx.c raise %lxKNOB %lxOUT%d\n", canvas, x, x, 0);
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
@@ -173,8 +172,7 @@ static void vslider_draw_io(t_vslider* x, t_glist* glist, int old_snd_rcv_flags)
              xpos + iow, ypos - tmargin - IEMGUI_ZOOM(x) + ioh,
              x, 0);
         /* keep label and knob above inlet */
-        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d ; .x%lx.c raise %lxKNOB %lxIN%d\n",
-            canvas, x, x, 0, canvas, x, x, 0);
+        sys_vgui(".x%lx.c raise %lxKNOB %lxIN%d\n", canvas, x, x, 0);
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
