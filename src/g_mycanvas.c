@@ -146,7 +146,7 @@ static void my_canvas_save(t_gobj *z, t_binbuf *b)
     iemgui_save(&x->x_gui, srl, bflcol);
     binbuf_addv(b, "ssiisiiisssiiiissi", gensym("#X"),gensym("obj"),
                 (int)x->x_gui.x_obj.te_xpix, (int)x->x_gui.x_obj.te_ypix,
-                gensym("cnv"), x->x_gui.x_w, x->x_vis_w, x->x_vis_h,
+                gensym("cnv"), x->x_gui.x_w/IEMGUI_ZOOM(x), x->x_vis_w, x->x_vis_h,
                 srl[0], srl[1], srl[2], x->x_gui.x_ldx, x->x_gui.x_ldy,
                 iem_fstyletoint(&x->x_gui.x_fsf), x->x_gui.x_fontsize,
                 bflcol[0], bflcol[2], iem_symargstoint(&x->x_gui.x_isa));
@@ -168,7 +168,7 @@ static void my_canvas_properties(t_gobj *z, t_glist *owner)
             %s %d %d \
             %d %d \
             #%06x none #%06x\n",
-            x->x_gui.x_w, 1,
+            x->x_gui.x_w/IEMGUI_ZOOM(x), 1,
             x->x_vis_w, x->x_vis_h, 0,/*no_schedule*/
             -1, -1, -1, -1,/*no linlog, no init, no multi*/
             srl[0]->s_name, srl[1]->s_name,
@@ -199,7 +199,7 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
     x->x_gui.x_isa.x_loadinit = 0;
     if(a < 1)
         a = 1;
-    x->x_gui.x_w = a;
+    x->x_gui.x_w = a * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
     if(w < 1)
         w = 1;

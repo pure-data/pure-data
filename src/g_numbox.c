@@ -833,13 +833,13 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
         h = IEM_GUI_MINSIZE;
     x->x_gui.x_h = h;
     x->x_buf[0] = 0;
-    my_numbox_calc_fontwidth(x);
     my_numbox_check_minmax(x, min, max);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     x->x_clock_reset = clock_new(x, (t_method)my_numbox_tick_reset);
     x->x_clock_wait = clock_new(x, (t_method)my_numbox_tick_wait);
     x->x_gui.x_fsf.x_change = 0;
     iemgui_newzoom(&x->x_gui);
+    my_numbox_calc_fontwidth(x);
     outlet_new(&x->x_gui.x_obj, &s_float);
     return (x);
 }
