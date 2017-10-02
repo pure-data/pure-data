@@ -5,7 +5,6 @@
 /* g_7_guis.c written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 /* thanks to Miller Puckette, Guenther Geiger and Krzystof Czaja */
 
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -630,36 +629,52 @@ static void hslider_free(t_hslider *x)
 void g_hslider_setup(void)
 {
     hslider_class = class_new(gensym("hsl"), (t_newmethod)hslider_new,
-                              (t_method)hslider_free, sizeof(t_hslider), 0, A_GIMME, 0);
+        (t_method)hslider_free, sizeof(t_hslider), 0, A_GIMME, 0);
 #ifndef GGEE_HSLIDER_COMPATIBLE
     class_addcreator((t_newmethod)hslider_new, gensym("hslider"), A_GIMME, 0);
 #endif
-    class_addbang(hslider_class,hslider_bang);
-    class_addfloat(hslider_class,hslider_float);
-    class_addmethod(hslider_class, (t_method)hslider_click, gensym("click"),
-                    A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    class_addmethod(hslider_class, (t_method)hslider_motion, gensym("motion"),
-                    A_FLOAT, A_FLOAT, 0);
-    class_addmethod(hslider_class, (t_method)hslider_dialog, gensym("dialog"), A_GIMME, 0);
+    class_addbang(hslider_class, hslider_bang);
+    class_addfloat(hslider_class, hslider_float);
+    class_addmethod(hslider_class, (t_method)hslider_click,
+        gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+    class_addmethod(hslider_class, (t_method)hslider_motion,
+        gensym("motion"), A_FLOAT, A_FLOAT, 0);
+    class_addmethod(hslider_class, (t_method)hslider_dialog,
+        gensym("dialog"), A_GIMME, 0);
     class_addmethod(hslider_class, (t_method)hslider_loadbang,
         gensym("loadbang"), A_DEFFLOAT, 0);
-    class_addmethod(hslider_class, (t_method)hslider_set, gensym("set"), A_FLOAT, 0);
-    class_addmethod(hslider_class, (t_method)hslider_size, gensym("size"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_delta, gensym("delta"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_pos, gensym("pos"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_range, gensym("range"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_color, gensym("color"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_send, gensym("send"), A_DEFSYM, 0);
-    class_addmethod(hslider_class, (t_method)hslider_receive, gensym("receive"), A_DEFSYM, 0);
-    class_addmethod(hslider_class, (t_method)hslider_label, gensym("label"), A_DEFSYM, 0);
-    class_addmethod(hslider_class, (t_method)hslider_label_pos, gensym("label_pos"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_label_font, gensym("label_font"), A_GIMME, 0);
-    class_addmethod(hslider_class, (t_method)hslider_log, gensym("log"), 0);
-    class_addmethod(hslider_class, (t_method)hslider_lin, gensym("lin"), 0);
-    class_addmethod(hslider_class, (t_method)hslider_init, gensym("init"), A_FLOAT, 0);
-    class_addmethod(hslider_class, (t_method)hslider_steady, gensym("steady"), A_FLOAT, 0);
-    class_addmethod(hslider_class, (t_method)hslider_zoom, gensym("zoom"),
-        A_CANT, 0);
+    class_addmethod(hslider_class, (t_method)hslider_set,
+        gensym("set"), A_FLOAT, 0);
+    class_addmethod(hslider_class, (t_method)hslider_size,
+        gensym("size"), A_GIMME, 0);
+    class_addmethod(hslider_class, (t_method)hslider_delta,
+        gensym("delta"), A_GIMME, 0);
+    class_addmethod(hslider_class, (t_method)hslider_pos,
+        gensym("pos"), A_GIMME, 0);
+    class_addmethod(hslider_class, (t_method)hslider_range,
+        gensym("range"), A_GIMME, 0);
+    class_addmethod(hslider_class, (t_method)hslider_color,
+        gensym("color"), A_GIMME, 0);
+    class_addmethod(hslider_class, (t_method)hslider_send,
+        gensym("send"), A_DEFSYM, 0);
+    class_addmethod(hslider_class, (t_method)hslider_receive,
+        gensym("receive"), A_DEFSYM, 0);
+    class_addmethod(hslider_class, (t_method)hslider_label,
+        gensym("label"), A_DEFSYM, 0);
+    class_addmethod(hslider_class, (t_method)hslider_label_pos,
+        gensym("label_pos"), A_GIMME, 0);
+    class_addmethod(hslider_class, (t_method)hslider_label_font,
+        gensym("label_font"), A_GIMME, 0);
+    class_addmethod(hslider_class, (t_method)hslider_log,
+        gensym("log"), 0);
+    class_addmethod(hslider_class, (t_method)hslider_lin,
+        gensym("lin"), 0);
+    class_addmethod(hslider_class, (t_method)hslider_init,
+        gensym("init"), A_FLOAT, 0);
+    class_addmethod(hslider_class, (t_method)hslider_steady,
+        gensym("steady"), A_FLOAT, 0);
+    class_addmethod(hslider_class, (t_method)hslider_zoom,
+        gensym("zoom"), A_CANT, 0);
     hslider_widgetbehavior.w_getrectfn =    hslider_getrect;
     hslider_widgetbehavior.w_displacefn =   iemgui_displace;
     hslider_widgetbehavior.w_selectfn =     iemgui_select;

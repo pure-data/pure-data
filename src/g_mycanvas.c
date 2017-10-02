@@ -5,7 +5,6 @@
 /* g_7_guis.c written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 /* thanks to Miller Puckette, Guenther Geiger and Krzystof Czaja */
 
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -365,22 +364,34 @@ static void my_canvas_ff(t_my_canvas *x)
 void g_mycanvas_setup(void)
 {
     my_canvas_class = class_new(gensym("cnv"), (t_newmethod)my_canvas_new,
-                                (t_method)my_canvas_ff, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
+        (t_method)my_canvas_ff, sizeof(t_my_canvas), CLASS_NOINLET, A_GIMME, 0);
     class_addcreator((t_newmethod)my_canvas_new, gensym("my_canvas"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_dialog, gensym("dialog"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_size, gensym("size"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_delta, gensym("delta"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_pos, gensym("pos"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_vis_size, gensym("vis_size"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_color, gensym("color"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_send, gensym("send"), A_DEFSYM, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_receive, gensym("receive"), A_DEFSYM, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_label, gensym("label"), A_DEFSYM, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_label_pos, gensym("label_pos"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_label_font, gensym("label_font"), A_GIMME, 0);
-    class_addmethod(my_canvas_class, (t_method)my_canvas_get_pos, gensym("get_pos"), 0);
-    class_addmethod(my_canvas_class, (t_method)iemgui_zoom, gensym("zoom"),
-        A_CANT, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_dialog,
+        gensym("dialog"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_size,
+        gensym("size"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_delta,
+        gensym("delta"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_pos,
+        gensym("pos"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_vis_size,
+        gensym("vis_size"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_color,
+        gensym("color"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_send,
+        gensym("send"), A_DEFSYM, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_receive,
+        gensym("receive"), A_DEFSYM, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_label,
+        gensym("label"), A_DEFSYM, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_label_pos,
+        gensym("label_pos"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_label_font,
+        gensym("label_font"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_get_pos,
+        gensym("get_pos"), 0);
+    class_addmethod(my_canvas_class, (t_method)iemgui_zoom,
+        gensym("zoom"), A_CANT, 0);
     my_canvas_widgetbehavior.w_getrectfn  = my_canvas_getrect;
     my_canvas_widgetbehavior.w_displacefn = iemgui_displace;
     my_canvas_widgetbehavior.w_selectfn   = iemgui_select;

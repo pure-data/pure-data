@@ -5,7 +5,6 @@
 /* g_7_guis.c written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 /* thanks to Miller Puckette, Guenther Geiger and Krzystof Czaja */
 
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -420,7 +419,7 @@ static void bng_label_font(t_bng *x, t_symbol *s, int ac, t_atom *av)
 
 static void bng_init(t_bng *x, t_floatarg f)
 {
-    x->x_gui.x_isa.x_loadinit = (f==0.0)?0:1;
+    x->x_gui.x_isa.x_loadinit = (f == 0.0) ? 0 : 1;
 }
 
 static void bng_tick_hld(t_bng *x)
@@ -522,32 +521,43 @@ static void bng_ff(t_bng *x)
 void g_bang_setup(void)
 {
     bng_class = class_new(gensym("bng"), (t_newmethod)bng_new,
-                          (t_method)bng_ff, sizeof(t_bng), 0, A_GIMME, 0);
+        (t_method)bng_ff, sizeof(t_bng), 0, A_GIMME, 0);
     class_addbang(bng_class, bng_bang);
     class_addfloat(bng_class, bng_float);
     class_addsymbol(bng_class, bng_symbol);
     class_addpointer(bng_class, bng_pointer);
     class_addlist(bng_class, bng_list);
     class_addanything(bng_class, bng_anything);
-    class_addmethod(bng_class, (t_method)bng_click, gensym("click"),
-                    A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    class_addmethod(bng_class, (t_method)bng_dialog, gensym("dialog"),
-                    A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_loadbang, gensym("loadbang"),
-        A_DEFFLOAT, 0);
-    class_addmethod(bng_class, (t_method)bng_size, gensym("size"), A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_delta, gensym("delta"), A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_pos, gensym("pos"), A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_flashtime, gensym("flashtime"), A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_color, gensym("color"), A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_send, gensym("send"), A_DEFSYM, 0);
-    class_addmethod(bng_class, (t_method)bng_receive, gensym("receive"), A_DEFSYM, 0);
-    class_addmethod(bng_class, (t_method)bng_label, gensym("label"), A_DEFSYM, 0);
-    class_addmethod(bng_class, (t_method)bng_label_pos, gensym("label_pos"), A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_label_font, gensym("label_font"), A_GIMME, 0);
-    class_addmethod(bng_class, (t_method)bng_init, gensym("init"), A_FLOAT, 0);
-    class_addmethod(bng_class, (t_method)iemgui_zoom, gensym("zoom"),
-        A_CANT, 0);
+    class_addmethod(bng_class, (t_method)bng_click,
+        gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
+    class_addmethod(bng_class, (t_method)bng_dialog,
+        gensym("dialog"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_loadbang,
+        gensym("loadbang"), A_DEFFLOAT, 0);
+    class_addmethod(bng_class, (t_method)bng_size,
+        gensym("size"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_delta,
+        gensym("delta"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_pos,
+        gensym("pos"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_flashtime,
+        gensym("flashtime"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_color,
+        gensym("color"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_send,
+        gensym("send"), A_DEFSYM, 0);
+    class_addmethod(bng_class, (t_method)bng_receive,
+        gensym("receive"), A_DEFSYM, 0);
+    class_addmethod(bng_class, (t_method)bng_label,
+        gensym("label"), A_DEFSYM, 0);
+    class_addmethod(bng_class, (t_method)bng_label_pos,
+        gensym("label_pos"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_label_font,
+        gensym("label_font"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_init,
+        gensym("init"), A_FLOAT, 0);
+    class_addmethod(bng_class, (t_method)iemgui_zoom,
+        gensym("zoom"), A_CANT, 0);
     bng_widgetbehavior.w_getrectfn = bng_getrect;
     bng_widgetbehavior.w_displacefn = iemgui_displace;
     bng_widgetbehavior.w_selectfn = iemgui_select;

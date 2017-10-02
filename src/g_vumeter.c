@@ -727,8 +727,8 @@ static void vu_free(t_vu *x)
 
 void g_vumeter_setup(void)
 {
-    vu_class = class_new(gensym("vu"), (t_newmethod)vu_new, (t_method)vu_free,
-                         sizeof(t_vu), 0, A_GIMME, 0);
+    vu_class = class_new(gensym("vu"), (t_newmethod)vu_new,
+        (t_method)vu_free, sizeof(t_vu), 0, A_GIMME, 0);
     class_addbang(vu_class,vu_bang);
     class_addfloat(vu_class,vu_float);
     class_addmethod(vu_class, (t_method)vu_ft1,

@@ -857,10 +857,9 @@ void g_numbox_setup(void)
 {
     my_numbox_class = class_new(gensym("nbx"), (t_newmethod)my_numbox_new,
         (t_method)my_numbox_free, sizeof(t_my_numbox), 0, A_GIMME, 0);
-    class_addcreator((t_newmethod)my_numbox_new, gensym("my_numbox"),
-        A_GIMME, 0);
-    class_addbang(my_numbox_class,my_numbox_bang);
-    class_addfloat(my_numbox_class,my_numbox_float);
+    class_addcreator((t_newmethod)my_numbox_new, gensym("my_numbox"), A_GIMME, 0);
+    class_addbang(my_numbox_class, my_numbox_bang);
+    class_addfloat(my_numbox_class, my_numbox_float);
     class_addlist(my_numbox_class, my_numbox_list);
     class_addmethod(my_numbox_class, (t_method)my_numbox_click,
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
