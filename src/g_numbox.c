@@ -180,7 +180,8 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
-    sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d -width %d -outline #%06x -fill #%06x -tags %lxBASE1\n",
+    sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d "
+             "-width %d -outline #%06x -fill #%06x -joinstyle miter -tags %lxBASE1\n",
              canvas,
              xpos, ypos,
              xpos + w - corner, ypos,
