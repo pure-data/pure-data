@@ -290,7 +290,10 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
         pixhigh += (TMARGIN + BMARGIN) * glist_getzoom(x->x_glist);
     }
     else
-        pixwide += LMARGIN + RMARGIN; pixhigh += TMARGIN + BMARGIN;
+    {
+        pixwide += LMARGIN + RMARGIN;
+        pixhigh += TMARGIN + BMARGIN;
+    }
 
     if (action && x->x_text->te_width && x->x_text->te_type != T_ATOM)
     {

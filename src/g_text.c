@@ -1025,7 +1025,10 @@ static void text_getrect(t_gobj *z, t_glist *glist,
             height += ATOM_BMARGIN * glist_getzoom(glist);
         }
         else
-            width += ATOM_RMARGIN; height += ATOM_BMARGIN;
+        {
+            width += ATOM_RMARGIN;
+            height += ATOM_BMARGIN;
+        }
     }
         /* if we're invisible we don't know our size so we just lie about
         it.  This is called on invisible boxes to establish order of inlets
@@ -1483,5 +1486,3 @@ void g_text_setup(void)
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
 }
-
-
