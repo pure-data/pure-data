@@ -55,7 +55,7 @@ void hradio_draw_new(t_hradio *x, t_glist *glist)
     int yy21 = yy11 + s4, yy22 = yy12 - s4;
     int xx11b = text_xpix(&x->x_gui.x_obj, glist), xx11 = xx11b, xx21 = xx11b + s4;
     int xx22 = xx11b + dx - s4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     for(i = 0; i < n; i++)
@@ -99,7 +99,7 @@ void hradio_draw_move(t_hradio *x, t_glist *glist)
     int yy21 = yy11 + s4, yy22 = yy12 - s4;
     int xx11b = text_xpix(&x->x_gui.x_obj, glist), xx11 = xx11b, xx21 = xx11b + s4;
     int xx22 = xx11b + dx - s4;
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     xx11 = xx11b;
@@ -170,7 +170,7 @@ void hradio_draw_io(t_hradio* x, t_glist* glist, int old_snd_rcv_flags)
 {
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
-    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IOHEIGHT * IEMGUI_ZOOM(x);
+    int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     t_canvas *canvas = glist_getcanvas(glist);
 
     if((old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && !x->x_gui.x_fsf.x_snd_able)
