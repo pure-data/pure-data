@@ -20,7 +20,7 @@
 
 /* borrowed from RMARGIN and BMARGIN in g_rtext.c */
 #define ATOM_RMARGIN 2
-#define ATOM_BMARGIN 3 /* 1 pixel smaller than object TMARGIN+BMARGIN */
+#define ATOM_BMARGIN 4 /* 1 pixel smaller than object TMARGIN+BMARGIN */
 
 #define MESSAGE_CLICK_WIDTH 5
 
