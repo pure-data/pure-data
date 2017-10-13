@@ -63,13 +63,13 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
     sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxX1\n",
              canvas,
              xpos + crossw + IEMGUI_ZOOM(x), ypos + crossw + IEMGUI_ZOOM(x),
-             xpos + x->x_gui.x_w - crossw, ypos + x->x_gui.x_h - crossw, crossw,
-             (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol, x);
+             xpos + x->x_gui.x_w - crossw - IEMGUI_ZOOM(x), ypos + x->x_gui.x_h - crossw - IEMGUI_ZOOM(x),
+             crossw, (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol, x);
     sys_vgui(".x%lx.c create line %d %d %d %d -width %d -fill #%06x -tags %lxX2\n",
              canvas,
              xpos + crossw + IEMGUI_ZOOM(x), ypos + x->x_gui.x_h - crossw - IEMGUI_ZOOM(x),
-             xpos + x->x_gui.x_w - crossw, ypos + crossw, crossw,
-             (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol, x);
+             xpos + x->x_gui.x_w - crossw - IEMGUI_ZOOM(x), ypos + crossw + IEMGUI_ZOOM(x),
+             crossw, (x->x_on != 0.0) ? x->x_gui.x_fcol : x->x_gui.x_bcol, x);
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
              canvas,
