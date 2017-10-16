@@ -43,7 +43,7 @@ PRE {
 HTML { 
 	background:  #ffffff; 
 	color: 	     #000000;
-	font-size:   12.7pt; /* this is because there are many <p> missing. We can change this value to 7pt to easy detect missing <p> */
+	font-size:   12.7pt; /* this is because there were many <p> missing. We can change this value to 7pt to easily detect missing <p> */
 	line-height: 1.6;
 } 
 BODY { 
@@ -121,3 +121,25 @@ IMG {
     display: block;
     margin: 0 auto;
 }
+
+
+/* responsive css for small "devices" */
+
+@media screen and (max-device-width: 700px) {
+    body {
+    padding: 10px;    
+	width: 	    auto; 
+	margin-left: 6px;		
+    }
+}
+
+/* responsive css for small "browser window" */
+
+@media screen and (max-width: 701px) {
+    body {
+    padding: 10px;    
+	width: 	    auto; 
+	margin-left: 6px;		
+    }
+}
+	
