@@ -237,7 +237,7 @@ rises from zero to one.;
 the table (which would be clipped appropriately). Anyway \, the polynomials
 increase rapidly in value outside the interval from -1 to 1 that we
 are using here.;
-#X text 106 491 When you get tired of Chebychef polynomials you can
+#X text 106 491 When you get tired of Chebychev polynomials you can
 draw your own functions by hand and/or try other formulas.;
 #X connect 1 0 6 0;
 #X connect 2 0 1 0;

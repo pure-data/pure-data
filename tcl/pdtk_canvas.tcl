@@ -29,31 +29,55 @@ namespace eval ::pdtk_canvas:: {
 #winfo rooty . returns contentsTop
 #winfo rootx . returns contentsLeftEdge
 
+if {$::tcl_version < 8.5 || \
+        ($::tcl_version == 8.5 && \
+             [tk windowingsystem] eq "aqua" && \
+             [lindex [split [info patchlevel] "."] 2] < 13) } {
+    # fit the geometry onto screen for Tk 8.4,
+    # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
+    # newer versions of Tk can handle multiple monitors so allow negative pos
+    proc pdtk_canvas_wrap_window {x y w h} {
+        set width [lindex [wm maxsize .] 0]
+        set height [lindex [wm maxsize .] 1]
+
+        if {$w > $width} {
+            set w $width
+            set x 0
+        }
+        if {$h > $height} {
+            # 30 for window framing
+            set h [expr $height - $::menubarsize - $::windowframey]
+            set y $::menubarsize
+        }
+
+        set x [ expr $x % $width]
+        set y [ expr $y % $height]
+        if {$x < 0} {set x 0}
+        if {$y < 0} {set y 0}
+
+        return [list ${x} ${y} ${w} ${h}]
+    }
+} {
+    proc pdtk_canvas_wrap_window {x y w h} {
+        return [list ${x} ${y} ${w} ${h}]
+    }
+}
 
 # this proc is split out on its own to make it easy to override. This makes it
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
     ::pdwindow::configure_window_offset
-    set screenwidth [lindex [wm maxsize .] 0]
-    set screenheight [lindex [wm maxsize .] 1]
 
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
-    # fit the geometry onto screen
-    set x [ expr $x % $screenwidth - $::windowframex]
-    set y [ expr $y % $screenheight - $::windowframey]
-    if {$x < 0} {set x 0}
-    if {$y < 0} {set y 0}
-    if {$width > $screenwidth} {
-        set width $screenwidth
-        set x 0
-    }
-    if {$height > $screenheight} {
-        set height [expr $screenheight - $::menubarsize - 30] ;# 30 for window framing
-        set y $::menubarsize
-    }
-    return [list $width $height ${width}x$height+$x+$y]
+    set xywh [pdtk_canvas_wrap_window \
+        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
+    set x [lindex $xywh 0]
+    set y [lindex $xywh 1]
+    set w [lindex $xywh 2]
+    set h [lindex $xywh 3]
+    return [list ${w} ${h} ${w}x${h}+${x}+${y}]
 }
 
 
