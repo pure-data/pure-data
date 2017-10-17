@@ -290,7 +290,7 @@
 #X msg 29 179 stop the transformation;
 #X text 193 9 (old-fashioned) VOCODER;
 #X text 28 31 This takes in two soundfiles and uses the first to "vocode"
-the second. THe resulting sound is as long as the shorter of the two
+the second. The resulting sound is as long as the shorter of the two
 inputs.;
 #X msg 29 116 read the analysis sound from file;
 #X msg 29 137 AND read the sound to be processed from file;

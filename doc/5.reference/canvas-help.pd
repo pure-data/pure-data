@@ -24,7 +24,7 @@ item.;
 #X obj 56 42 inlet;
 #X obj 50 139 outlet;
 #X text 120 36 this is the subpatch. Use "inlet" and "outlet" objects
-to creat inlets/outlets on the parent., f 34;
+to create inlets/outlets on the parent., f 34;
 #X restore 38 113 pd foo;
 #X text 118 115 <- optional argument to name the subpatch;
 #X text 27 75 "Pd" created a subpatch. Click on the object to open

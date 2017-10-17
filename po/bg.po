@@ -598,6 +598,34 @@ msgstr ""
 msgid "Verbose"
 msgstr ""
 
+msgid "Pd Documents Directory"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Externals Install Directory"
+msgstr ""
+
+#, fuzzy
+msgid "Clear"
+msgstr "Изчистване на списъка"
+
+msgid "Choose Pd documents directory:"
+msgstr ""
+
+msgid "Install externals to directory:"
+msgstr ""
+
+msgid "Add a new path"
+msgstr ""
+
 msgid "Add new library"
 msgstr ""
 
@@ -646,9 +674,6 @@ msgstr ""
 msgid "[deken] Platform detected: %s"
 msgstr ""
 
-msgid "Install libraries to directory:"
-msgstr ""
-
 msgid "Show all"
 msgstr ""
 
@@ -682,7 +707,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install to %s ?"
+msgid "Install %s to %s?"
 msgstr ""
 
 #, tcl-format
@@ -714,6 +739,18 @@ msgid "2. Copy the contents into %s."
 msgstr ""
 
 #, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr ""
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr ""
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr ""
+
+#, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
 msgstr ""
 
@@ -729,8 +766,38 @@ msgstr ""
 msgid "searching for '%s'"
 msgstr "Търсене из текста..."
 
+msgid "Unable to perform search."
+msgstr ""
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s\n"
+msgstr ""
+
+#, tcl-format
+msgid "Couldn't create \"externals\" directory in: %s\n"
 msgstr ""
 
 #, fuzzy

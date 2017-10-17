@@ -324,8 +324,11 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
 
 static void scalar_doredraw(t_gobj *client, t_glist *glist)
 {
-    scalar_vis(client, glist, 0);
-    scalar_vis(client, glist, 1);
+    if (glist_isvisible(glist))
+    {
+        scalar_vis(client, glist, 0);
+        scalar_vis(client, glist, 1);
+    }
 }
 
 void scalar_redraw(t_scalar *x, t_glist *glist)

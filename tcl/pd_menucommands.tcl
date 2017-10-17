@@ -27,7 +27,7 @@ proc ::pd_menucommands::menu_open {} {
                        -filetypes $::filetypes \
                        -initialdir $::fileopendir]
     if {$files ne ""} {
-        foreach filename $files { 
+        foreach filename $files {
             open_file $filename
         }
         set ::fileopendir [file dirname $filename]
@@ -37,12 +37,23 @@ proc ::pd_menucommands::menu_open {} {
 # TODO set the current font family & size via the -fontmap option:
 # http://wiki.tcl.tk/41871
 proc ::pd_menucommands::menu_print {mytoplevel} {
-    set filename [tk_getSaveFile -initialfile pd.ps \
+    set initialfile "[file rootname [lookup_windowname $mytoplevel]].ps"
+    set filename [tk_getSaveFile -initialfile $initialfile \
                       -defaultextension .ps \
-                      -filetypes { {{postscript} {.ps}} }]
+                      -filetypes { {{Postscript} {.ps}} }]
     if {$filename ne ""} {
         set tkcanvas [tkcanvas_name $mytoplevel]
-        $tkcanvas postscript -file $filename 
+        if {$::font_family eq "DejaVu Sans Mono"} {
+            # FIXME hack to fix incorrect PS font naming,
+            # this could be removed in the future
+            set ps [$tkcanvas postscript]
+            regsub -all "DejavuSansMono" $ps "DejaVuSansMono" ps
+            set f [open $filename w]
+            puts $f $ps
+            close $f
+        } else {
+            $tkcanvas postscript -file $filename
+        }
     }
 }
 
@@ -144,10 +155,6 @@ proc ::pd_menucommands::menu_helpbrowser {} {
     ::helpbrowser::open_helpbrowser
 }
 
-proc ::pd_menucommands::menu_texteditor {} {
-    ::pdwindow::error "the text editor is not implemented"
-}
-
 # ------------------------------------------------------------------------------
 # window management functions
 
@@ -223,7 +230,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         pack .aboutpd.scroll -side right -fill y
         pack .aboutpd.text -side left -fill both -expand 1
         bind .aboutpd <$::modifier-Key-w> "destroy .aboutpd"
-        
+
         set textfile [open $filename]
         while {![eof $textfile]} {
             set bigstring [read $textfile 1000]
