@@ -53,9 +53,9 @@ package require opt_parser
 package require pdtk_canvas
 package require pdtk_text
 package require pdtk_textwindow
+package require pd_guiprefs
 # TODO eliminate this kludge:
 package require wheredoesthisgo
-package require pd_guiprefs
 
 #------------------------------------------------------------------------------#
 # import functions into the global namespace
@@ -64,6 +64,7 @@ package require pd_guiprefs
 namespace import ::pd_guiprefs::init
 namespace import ::pd_guiprefs::update_recentfiles
 namespace import ::pd_guiprefs::write_recentfiles
+
 # make global since they are used throughout
 namespace import ::pd_menucommands::*
 
@@ -112,10 +113,6 @@ set PD_MINOR_VERSION 0
 set PD_BUGFIX_VERSION 0
 set PD_TEST_VERSION ""
 set done_init 0
-
-set TCL_MAJOR_VERSION 0
-set TCL_MINOR_VERSION 0
-set TCL_BUGFIX_VERSION 0
 
 # for testing which platform we are running on ("aqua", "win32", or "x11")
 set windowingsystem ""
@@ -173,7 +170,6 @@ set startup_libraries {}
 # start dirs for new files and open panels
 set filenewdir [pwd]
 set fileopendir [pwd]
-
 
 # lists of audio/midi devices and APIs for prefs dialogs
 set audio_apilist {}
@@ -375,6 +371,9 @@ proc init_for_platform {} {
             option add *DialogWindow*font menufont startupFile
             option add *PdWindow*font menufont startupFile
             option add *ErrorDialog*font menufont startupFile
+            # initial dir is home
+            set ::filenewdir $::env(HOME)
+            set ::fileopendir $::env(HOME)
             # set file types that open/save recognize
             set ::filetypes \
                 [list \
@@ -733,6 +732,7 @@ proc load_plugin_script {filename} {
 proc load_startup_plugins {} {
     # load built-in plugins
     load_plugin_script [file join $::sys_guidir pd_deken.tcl]
+    load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
 
     # load other installed plugins
     foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
@@ -771,11 +771,9 @@ proc main {argc argv} {
         set ::port [::pd_connect::create_socket]
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
         exec -- $pd_exec -guiport $::port &
-        if {$::windowingsystem eq "aqua"} {
-            # on Aqua, if 'pd-gui' first, then initial dir is home
-            set ::filenewdir $::env(HOME)
-            set ::fileopendir $::env(HOME)
-        }
+        # if 'pd-gui' first, then initial dir is home
+        set ::filenewdir $::env(HOME)
+        set ::fileopendir $::env(HOME)
     }
     ::pdwindow::verbose 0 "------------------ done with main ----------------------\n"
 }

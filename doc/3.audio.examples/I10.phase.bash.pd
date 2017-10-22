@@ -381,7 +381,7 @@ of recorded sounds.;
 #X text 164 265 part of loc;
 #X text 295 224 integer part of loc;
 #X text 328 247 middle of block;
-#X text 310 290 cvt to samples;
+#X text 310 290 convert to samples;
 #X text 522 265 run two copies 180 degrees out of phase;
 #X text 29 589 window shaped;
 #X text 27 604 by raised cos;

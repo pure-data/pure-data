@@ -1,10 +1,13 @@
 
 package provide dialog_path 0.1
 
+package require scrollboxwindow
+
 namespace eval ::dialog_path:: {
     variable use_standard_paths_button 1
     variable verbose_button 0
-
+    variable docspath ""
+    variable installpath ""
     namespace export pdtk_path_dialog
 }
 
@@ -22,8 +25,12 @@ proc ::dialog_path::ok {mytoplevel} {
 proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
     global use_standard_paths_button
     global verbose_button
+    global docspath
+    global installpath
     set use_standard_paths_button $extrapath
     set verbose_button $verbose
+    if {[namespace exists ::pd_docsdir]} {set docspath $::pd_docsdir::docspath}
+    if {[namespace exists ::deken]} {set installpath $::deken::installpath}
     if {[winfo exists $mytoplevel]} {
         # this doesn't seem to be called...
         wm deiconify $mytoplevel
@@ -35,36 +42,81 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
 }
 
 proc ::dialog_path::create_dialog {mytoplevel} {
-    scrollboxwindow::make $mytoplevel $::sys_searchpath \
+    global docspath
+    global installpath
+    ::scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
         450 300 1
+    wm geometry $mytoplevel ""
     ::pd_bindings::dialog_bindings $mytoplevel "path"
+    set readonly_color [lindex [$mytoplevel configure -background] end]
 
-    # add deken path widgets if deken is available, increase window height to make room
-    if {[namespace exists ::deken]} {
-        wm geometry $mytoplevel "450x340"
-        wm minsize $mytoplevel 450 340
-        frame $mytoplevel.installpath
-        pack $mytoplevel.installpath -side top -anchor e -expand 1 -fill x -padx {2m 4m}
-        label $mytoplevel.installpath.entryname -text [_ "Install externals to:"]
-        entry $mytoplevel.installpath.entry -textvariable ::deken::installpath \
-            -state readonly -readonlybackground [lindex [$mytoplevel configure -background] end]
-        button $mytoplevel.installpath.browse -text [_ "Browse"] \
-            -command "::dialog_path::browse_installpath %W"
-        pack $mytoplevel.installpath.browse -side right -fill x -ipadx 10
-        pack $mytoplevel.installpath.entry -side right -expand 1 -fill x
-        pack $mytoplevel.installpath.entryname -side right
-    }
-
+    # path options
     frame $mytoplevel.extraframe
-    pack $mytoplevel.extraframe -side bottom -fill x -pady 2m
+    pack $mytoplevel.extraframe -side top -anchor s -fill x
     checkbutton $mytoplevel.extraframe.extra -text [_ "Use standard paths"] \
         -variable use_standard_paths_button -anchor w
     checkbutton $mytoplevel.extraframe.verbose -text [_ "Verbose"] \
         -variable verbose_button -anchor w
     pack $mytoplevel.extraframe.extra -side left -expand 1
     pack $mytoplevel.extraframe.verbose -side right -expand 1
+
+    # add docsdir path widgets if pd_docsdir is loaded
+    if {[namespace exists ::pd_docsdir]} {
+        labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
+            -borderwidth 1 -padx 5 -pady 5
+        pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
+
+        frame $mytoplevel.docspath.path
+        pack $mytoplevel.docspath.path -fill x
+        entry $mytoplevel.docspath.path.entry -textvariable docspath \
+            -takefocus 0 -state readonly -readonlybackground $readonly_color
+        button $mytoplevel.docspath.path.browse -text [_ "Browse"] \
+            -command "::dialog_path::browse_docspath $mytoplevel"
+        pack $mytoplevel.docspath.path.browse -side right -fill x -ipadx 8
+        pack $mytoplevel.docspath.path.entry -side right -expand 1 -fill x
+
+        frame $mytoplevel.docspath.buttons
+        pack $mytoplevel.docspath.buttons -fill x
+        button $mytoplevel.docspath.buttons.reset -text [_ "Reset"] \
+            -command "::dialog_path::reset_docspath $mytoplevel"
+        button $mytoplevel.docspath.buttons.disable -text [_ "Disable"] \
+            -command "::dialog_path::disable_docspath $mytoplevel"
+        pack $mytoplevel.docspath.buttons.reset -side left -ipadx 8
+        pack $mytoplevel.docspath.buttons.disable -side left -ipadx 8
+
+        # scroll to right for long paths
+        $mytoplevel.docspath.path.entry xview moveto 1
+    }
+
+    # add deken path widgets if deken is loaded
+    if {[namespace exists ::deken]} {
+        labelframe $mytoplevel.installpath -text [_ "Externals Install Directory"] \
+            -borderwidth 1 -padx 5 -pady 5
+        pack $mytoplevel.installpath -fill x -anchor s -padx {2m 4m} -pady 2m
+
+        frame $mytoplevel.installpath.path
+        pack $mytoplevel.installpath.path -fill x
+        entry $mytoplevel.installpath.path.entry -textvariable installpath \
+            -takefocus 0 -state readonly -readonlybackground $readonly_color
+        button $mytoplevel.installpath.path.browse -text [_ "Browse"] \
+            -command "::dialog_path::browse_installpath $mytoplevel"
+        pack $mytoplevel.installpath.path.browse -side right -fill x -ipadx 8
+        pack $mytoplevel.installpath.path.entry -side right -expand 1 -fill x
+
+        frame $mytoplevel.installpath.buttons
+        pack $mytoplevel.installpath.buttons -fill x
+        button $mytoplevel.installpath.buttons.reset -text [_ "Reset"] \
+            -command "::dialog_path::reset_installpath $mytoplevel"
+        button $mytoplevel.installpath.buttons.clear -text [_ "Clear"] \
+            -command "::dialog_path::clear_installpath $mytoplevel"
+        pack $mytoplevel.installpath.buttons.reset -side left -ipadx 8
+        pack $mytoplevel.installpath.buttons.clear -side left -ipadx 8
+
+        # scroll to right for long paths
+        $mytoplevel.installpath.path.entry xview moveto 1
+    }
 
     # focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
@@ -86,22 +138,75 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
 
+    # re-adjust height based on optional sections
+    update
+    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
+
     position_over_window $mytoplevel .pdwindow
+}
+
+# browse for a new Pd user docs path
+proc ::dialog_path::browse_docspath {mytoplevel} {
+    global docspath
+    global installpath
+    # set the new docs dir
+    set newpath [tk_chooseDirectory -initialdir $::env(HOME) \
+                                    -title [_ "Choose Pd documents directory:"]]
+    if {$newpath ne ""} {
+        set docspath $newpath
+        set installpath [::pd_docsdir::get_externals_path "$docspath"]
+        $mytoplevel.docspath.path.entry xview moveto 1
+        return 1
+    }
+    return 0
+}
+
+# ignore the Pd user docs path
+proc ::dialog_path::disable_docspath {mytoplevel} {
+    global docspath
+    set docspath [::pd_docsdir::get_disabled_path]
+    return 1
+}
+
+# reset to the default Pd user docs path
+proc ::dialog_path::reset_docspath {mytoplevel} {
+    global docspath
+    global installpath
+    set docspath [::pd_docsdir::get_default_path]
+    set installpath [::pd_docsdir::get_externals_path "$docspath"]
+    $mytoplevel.docspath.path.entry xview moveto 1
+    return 1
 }
 
 # browse for a new deken installpath, this assumes deken is available
 proc ::dialog_path::browse_installpath {mytoplevel} {
-    if { ! [file isdirectory $::deken::installpath]} {
-        set path $::env(HOME)
+    global installpath
+    if {![file isdirectory $installpath]} {
+        set initialdir $::env(HOME)
     } else {
-        set path $::deken::installpath
+        set initialdir $installpath
     }
-    set newpath [tk_chooseDirectory -initialdir $path -title [_ "Install externals to directory:"]]
+    set newpath [tk_chooseDirectory -initialdir $initialdir \
+                                    -title [_ "Install externals to directory:"]]
     if {$newpath ne ""} {
-        ::deken::set_installpath $newpath
+        set installpath $newpath
+        $mytoplevel.installpath.path.entry xview moveto 1
         return 1
     }
     return 0
+}
+
+# reset to default deken installpath
+proc ::dialog_path::reset_installpath {mytoplevel} {
+    global installpath
+    set installpath [::deken::find_installpath true]
+    $mytoplevel.installpath.path.entry xview moveto 1
+}
+
+# clear the deken installpath
+proc ::dialog_path::clear_installpath {mytoplevel} {
+    global installpath
+    set installpath ""
 }
 
 # for focus handling on OSX
@@ -120,24 +225,44 @@ proc ::dialog_path::unbind_return {mytoplevel} {
 }
 
 ############ pdtk_path_dialog -- dialog window for search path #########
-proc ::dialog_path::choosePath { currentpath title } {
+proc ::dialog_path::choosePath {currentpath title} {
     if {$currentpath == ""} {
-        set currentpath "~"
+        set currentpath $::env(HOME)
     }
     return [tk_chooseDirectory -initialdir $currentpath -title $title]
 }
 
 proc ::dialog_path::add {} {
-    return [::dialog_path::choosePath "" {Add a new path}]
+    return [::dialog_path::choosePath "" [_ "Add a new path"]]
 }
 
-proc ::dialog_path::edit { currentpath } {
+proc ::dialog_path::edit {currentpath} {
     return [::dialog_path::choosePath $currentpath "Edit existing path \[$currentpath\]"]
 }
 
-proc ::dialog_path::commit { new_path } {
+proc ::dialog_path::commit {new_path} {
     global use_standard_paths_button
     global verbose_button
+    global docspath
+    global installpath
+
+    # save buttons and search paths
+    set changed false
+    if {"$new_path" ne "$::sys_searchpath"} {set changed true}
     set ::sys_searchpath $new_path
     pdsend "pd path-dialog $use_standard_paths_button $verbose_button [pdtk_encode $::sys_searchpath]"
+    if {$changed} {::helpbrowser::refresh}
+
+    # save installpath
+    if {[namespace exists ::deken]} {
+        # clear first so set_installpath doesn't pick up prev value from guiprefs
+        set ::deken::installpath ""
+        ::deken::set_installpath $installpath
+    }
+
+    # save docspath
+    if {[namespace exists ::pd_docsdir]} {
+        # run this after since it checks ::deken::installpath value
+        ::pd_docsdir::update_path $docspath
+    }
 }

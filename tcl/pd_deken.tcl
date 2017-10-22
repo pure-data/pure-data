@@ -59,7 +59,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.2.3] } {
+if { [::deken::versioncheck 0.2.4] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -181,9 +181,9 @@ proc ::deken::get_writable_dir {paths} {
 
 # find an install path, either from prefs or on the system
 # returns an empty string if nothing was found
-proc ::deken::find_installpath {} {
+proc ::deken::find_installpath {{ignoreprefs false}} {
     set installpath ""
-    if { [ info exists ::deken::installpath ] } {
+    if { [ info exists ::deken::installpath ] && !$ignoreprefs } {
         ## any previous choice?
         set installpath [ ::deken::get_writable_dir [list $::deken::installpath ] ]
     }
@@ -235,17 +235,14 @@ if { "Windows" eq "$::deken::platform(os)" } {
 if { "" != "$::current_plugin_loadpath" } {
     ::pdwindow::post [format [_ "\[deken\] deken-plugin.tcl (Pd externals search) loaded from %s." ]  $::current_plugin_loadpath ]
     ::pdwindow::post "\n"
-    ::pdwindow::post [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
-    ::pdwindow::post "\n"
-} else {
-    ::pdwindow::verbose 0 [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
-    ::pdwindow::verbose 0 "\n"
 }
+::pdwindow::verbose 0 [format [_ "\[deken\] Platform detected: %s" ] $::deken::platform(os)-$::deken::platform(machine)-$::deken::platform(bits)bit ]
+::pdwindow::verbose 0 "\n"
 
 # architectures that can be substituted for eachother
 array set ::deken::architecture_substitutes {}
-set ::deken::architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
-set ::deken::architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
+set ::deken::architecture_substitutes(x86_64) [list "amd64" ]
+set ::deken::architecture_substitutes(amd64) [list "x86_64" ]
 set ::deken::architecture_substitutes(i686) [list "i586" "i386"]
 set ::deken::architecture_substitutes(i586) [list "i386"]
 set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
@@ -256,7 +253,7 @@ set ::deken::architecture_substitutes(ppc) [list "PowerPC"]
 # try to set install path when plugin is loaded
 set ::deken::installpath [::deken::find_installpath]
 
-proc ::deken::status {msg} {
+proc ::deken::status {{msg ""}} {
     #variable mytoplevelref
     #$mytoplevelref.results insert end "$msg\n"
     #$mytoplevelref.status.label -text "$msg"
@@ -295,7 +292,8 @@ proc ::deken::highlightable_posttag {tag} {
     $mytoplevelref.results tag raise highlight
 }
 proc ::deken::prompt_installdir {} {
-    set installdir [tk_chooseDirectory -title [_ "Install externals to directory:"] ]
+    set installdir [tk_chooseDirectory -title [_ "Install externals to directory:"] \
+                                       -initialdir $::fileopendir -parent .externals_searchui]
     if { "$installdir" != "" } {
         ::deken::set_installpath $installdir
         return 1
@@ -356,7 +354,7 @@ proc ::deken::create_dialog {mytoplevel} {
     bind $mytoplevel.searchbit.entry <KeyRelease> "::deken::update_searchbutton $mytoplevel"
     focus $mytoplevel.searchbit.entry
     button $mytoplevel.searchbit.button -text [_ "Show all"] -default active -command "::deken::initiate_search $mytoplevel"
-    pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3
+    pack $mytoplevel.searchbit.button -side right -padx 6 -pady 3 -ipadx 10
 
     frame $mytoplevel.warning
     pack $mytoplevel.warning -side top -fill x
@@ -438,28 +436,59 @@ proc ::deken::clicked_link {URL filename} {
     ### if not, get a writable item from one of the searchpaths
     ### if this still doesn't help, ask the user
     set installdir [::deken::find_installpath]
+    set extname [lindex [split $filename "-"] 0]
     if { "$installdir" == "" } {
-        ## ask the user (and remember the decision)
-        ::deken::prompt_installdir
-        set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ]
+        if {[namespace exists ::pd_docsdir] && [::pd_docsdir::externals_path_is_valid]} {
+            # if the docspath is set, try the externals subdir
+            set installdir [::pd_docsdir::get_externals_path]
+        } else {
+            # ask the user (and remember the decision)
+            ::deken::prompt_installdir
+            set installdir [ ::deken::get_writable_dir [list $::deken::installpath ] ]
+        }
     }
     while {1} {
         if { "$installdir" == "" } {
-            set _args {-message [_ "Please select a (writable) installation directory!"] -type retrycancel -default retry -icon warning}
-        } {
-            set _args "-message \"[format [_ "Install to %s ?" ] $installdir]\" -type yesnocancel -default yes -icon question"
-        }
-        switch -- [eval tk_messageBox ${_args}] {
-            cancel return
-            yes { }
-            default {
-                if {[::deken::prompt_installdir]} {
-                    set installdir $::deken::installpath
-                } {
-                    continue
+            set msg  [_ "Please select a (writable) installation directory!"]
+            set _args "-message $msg -type retrycancel -default retry -icon warning -parent .externals_searchui"
+            switch -- [eval tk_messageBox ${_args}] {
+                cancel {return}
+                retry {
+                    if {[::deken::prompt_installdir]} {
+                        set installdir $::deken::installpath
+                    } else {
+                        continue
+                    }
+                }
+            }
+        } else {
+            set msg [_ "Install %s to %s?" ]
+            set _args "-message \"[format $msg $extname $installdir]\" -type yesnocancel -default yes -icon question -parent .externals_searchui"
+            switch -- [eval tk_messageBox ${_args}] {
+                cancel {return}
+                yes { }
+                no {
+                    set prevpath $::deken::installpath
+                    if {[::deken::prompt_installdir]} {
+                        set keepprevpath 1
+                        set installdir $::deken::installpath
+                        # if docsdir is set & the install path is valid,
+                        # saying "no" is temporary to ensure the docsdir
+                        # hierarchy remains, use the Path dialog to override
+                        if {[namespace exists ::pd_docsdir] && [::pd_docsdir::path_is_valid] &&
+                            [file writable [file normalize $prevpath]] } {
+                            set keepprevpath 0
+                        }
+                        if {$keepprevpath} {
+                            set ::deken::installpath $prevpath
+                        }
+                    } else {
+                        continue
+                    }
                 }
             }
         }
+
         if { "$installdir" != "" } {
             # try creating the installdir...just in case
             if { [ catch { file mkdir $installdir } ] } {}
@@ -476,7 +505,6 @@ proc ::deken::clicked_link {URL filename} {
     ::deken::clearpost
     ::deken::post [format [_ "Commencing downloading of:\n%1\$s\nInto %2\$s..."] $URL $installdir] ]
     set fullpkgfile [::deken::download_file $URL $fullpkgfile]
-
     if { "$fullpkgfile" eq "" } {
         ::deken::post [_ "aborting."] info
         return
@@ -515,6 +543,29 @@ proc ::deken::clicked_link {URL filename} {
         ::deken::post [format [_ "2. Copy the contents into %s." ] $installdir]
         ::deken::post ""
         pd_menucommands::menu_openfile $installdir
+    }
+
+    # add to the search paths? bail if the version of pd doesn't support it
+    if {[uplevel 1 info procs add_to_searchpaths] eq ""} {return}
+    set extpath [file join $installdir $extname]
+    if {![file exists $extpath]} {
+        ::deken::post [_ "Unable to add %s to search paths"] $extname
+        return
+    }
+    set msg [_ "Add %s to the Pd search paths?" ]
+    set _args "-message \"[format $msg $extname]\" -type yesno -default yes -icon question -parent .externals_searchui"
+    switch -- [eval tk_messageBox ${_args}] {
+        yes {
+            add_to_searchpaths [file join $installdir $extname]
+            ::deken::post [format [_ "Added %s to search paths"] $extname]
+            # if this version of pd supports it, try refreshing the helpbrowser
+            if {[uplevel 1 info procs ::helpbrowser::refresh] ne ""} {
+                ::helpbrowser::refresh
+            }
+        }
+        no {
+            return
+        }
     }
 }
 
@@ -596,10 +647,8 @@ proc ::deken::architecture_match {archs} {
     # check each architecture in our list against the current one
     foreach arch $archs {
         if { [ regexp -- {(.*)-(.*)-(.*)} $arch _ os machine bits ] } {
-            if { "${os}" eq "$::deken::platform(os)" &&
-                 "${bits}" eq "$::deken::platform(bits)"
-             } {
-                ## so OS and word size match
+            if { "${os}" eq "$::deken::platform(os)" } {
+                ## so OS matches
                 ## check whether the CPU matches as well
                 if { "${machine}" eq "$::deken::platform(machine)" } {return 1}
                 ## not exactly; see whether it is in the list of compat CPUs
@@ -629,6 +678,7 @@ set mymenu .menubar.help
 if { [catch {
     $mymenu entryconfigure [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
 } _ ] } {
+    $mymenu add separator
     $mymenu add command -label [_ "Find externals"] -command {::deken::open_searchui .externals_searchui}
 }
 # bind all <$::modifier-Key-s> {::deken::open_helpbrowser .helpbrowser2}
@@ -692,6 +742,13 @@ proc ::deken::search::puredata.info {term} {
     ::http::config -accept text/tab-separated-values
     set token [::http::geturl "${dekenserver}?name=${term}"]
     ::http::config -accept $httpaccept
+    set ncode [::http::ncode $token]
+    if {[expr $ncode != 200 ]} {
+        set err [::http::code $token]
+        ::pdwindow::debug [format "\[deken\]: %s %s" [_ "Unable to perform search." ] ${err} ]
+        ::pdwindow::debug "\n"
+        return {}
+    }
     set contents [::http::data $token]
     set splitCont [split $contents "\n"]
     # loop through the resulting tab-delimited table

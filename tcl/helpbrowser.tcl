@@ -10,12 +10,13 @@ namespace eval ::helpbrowser:: {
     variable maxcols
 
     namespace export open_helpbrowser
+    namespace export refresh
 }
 
 ################## help browser and support functions #########################
 
 proc ::helpbrowser::open_helpbrowser {} {
-    if { [winfo exists .helpbrowser.frame] } {
+    if {[winfo exists .helpbrowser.frame]} {
         wm deiconify .helpbrowser
         raise .helpbrowser
     } else {
@@ -30,15 +31,12 @@ proc ::helpbrowser::open_helpbrowser {} {
         }
 
         # set the maximum number of child columns to create
-        set ::helpbrowser::maxcols 3
+        set ::helpbrowser::maxcols 5
 
         # TODO wrap frame in a canvas with a horz scrollbar,
         # currently we simply add cols to the left until we reach max cols
         wm resizable .helpbrowser 0 1
-        frame .helpbrowser.frame
-        pack .helpbrowser.frame -side top -fill both -expand 1
-        build_references
-        make_rootlistbox
+        ::helpbrowser::make_frame .helpbrowser
 
         # hit up, down, or Tab after browser opens to focus on first listbox
         bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.frame.root0"
@@ -50,7 +48,6 @@ proc ::helpbrowser::open_helpbrowser {} {
 
 # check for deleting old listboxes
 proc ::helpbrowser::check_destroy {level} {
-
     set winlist list
     set winlevel 0
     foreach child [winfo children .helpbrowser.frame] {
@@ -63,10 +60,17 @@ proc ::helpbrowser::check_destroy {level} {
     # check for [file readable]?
     # requires Tcl 8.5 but probably deals with special chars better:
     #        destroy {*}[lrange [winfo children .helpbrowser.frame] [expr {2 * $count}] end]
-
-    if { [catch { eval destroy $winlist } errorMessage] } {
+    if {[catch { eval destroy $winlist } errorMessage]} {
         ::pdwindow::error "helpbrowser: error destroying listbox\n"
     }
+}
+
+# create the base frame and root listbox, build path references
+proc ::helpbrowser::make_frame {mytoplevel} {
+    frame $mytoplevel.frame
+    pack $mytoplevel.frame -side top -fill both -expand 1
+    build_references
+    make_rootlistbox
 }
 
 # make the root listbox of the help browser using the pre-built lists
@@ -107,6 +111,20 @@ proc ::helpbrowser::make_rootlistbox {{select true}} {
         "::helpbrowser::root_doubleclick %W %x %y"
     bind $current_listbox <FocusIn> \
         "::helpbrowser::root_focusin %W 2"
+}
+
+# ask browser to refresh it's contents
+proc ::helpbrowser::refresh {} {
+    variable refresh
+    if {[winfo exists .helpbrowser]} {
+        # refresh in place
+        destroy .helpbrowser.frame
+        ::helpbrowser::make_frame .helpbrowser
+        if {[winfo viewable .helpbrowser]} {
+            focus .helpbrowser
+        }
+    }
+    # otherwise naturally refreshes on next open
 }
 
 # destroy a column
@@ -162,8 +180,7 @@ proc ::helpbrowser::root_navigate {window x y} {
     }
     set filename $reference_paths($item)
     if {[file isdirectory $filename]} {
-        # FIXME the lbox var is not used, but seems to fix an error
-        set lbox [make_liblistbox $filename false]
+        make_liblistbox $filename false
     }
 }
 
@@ -339,8 +356,7 @@ proc ::helpbrowser::dir_navigate {dir count window x y} {
     if {$count > $maxcols} {return}
     set dir_to_open [file join $dir $newdir]
     if {[file isdirectory $dir_to_open]} {
-        # FIXME the lbox var is not used, but seems to fix an error
-        set lbox [make_doclistbox $dir_to_open $count false]
+        make_doclistbox $dir_to_open $count false
     }
 }
 
@@ -407,46 +423,48 @@ proc ::helpbrowser::add_entry {reflist entry} {
 }
 
 proc ::helpbrowser::build_references {} {
-    variable libdirlist {" Pure Data/" "-------- Libraries --------"}
+    variable libdirlist {" Pure Data/" "-------- Externals --------"}
     variable helplist {}
     variable reference_count
     variable reference_paths
 
+    set searchpaths {}
     array set reference_count {}
     array set reference_paths [list " Pure Data/" $::sys_libdir/doc \
-                                    "-------- Libraries --------" "" ]
+                                    "-------- Externals --------" "" ]
 
     # sys_staticpath (aka hardcoded)
     foreach pathdir $::sys_staticpath {
         if { ! [file isdirectory $pathdir]} {continue}
 
-        # Fix the directory name, this ensures the directory name is in the
-        # native format for the platform and contains a final directory separator
+        # fix the directory name, this ensures the directory name is in the
+        # native format for the platform and contains a final dir separator
         set dir [string trimright [file join [file normalize $pathdir] { }]]
 
-        # entry for each subdir of this directory in Help browser's root column
+        # add an entry for each subdir of this directory in the root column
         foreach filename [glob -nocomplain -type d -path $dir "*"] {
-            add_entry libdirlist $filename
+            lappend searchpaths $filename
         }
 
         # don't add core object references to root column
         if {[string match "*doc/5.reference" $pathdir]} {continue}
 
-        ## find stray help patches
+        # find stray help patches
         foreach filename [glob -nocomplain -type f -path $dir "*-help.pd"] {
             add_entry helplist $filename
         }
     }
 
     # sys_searchpath (aka preferences)
-    # remove any exact duplicates from the user search paths and
-    # add an entry for seach directory in Help browser's root column
-    set searchpaths {}
     foreach pathdir $::sys_searchpath {
-        set dir [string trimright [file join [file normalize $pathdir] { }]]
+        set dir [string trimright [file normalize $pathdir]]
         lappend searchpaths $dir
     }
+
+    # remove any *exact* duplicates between user search paths and system paths
     set searchpaths [lsort -unique $searchpaths]
+
+    # now add all search path entries to the Help browser's root column
     foreach pathdir $searchpaths {
         if { ! [file isdirectory $pathdir]} {continue}
         add_entry libdirlist $pathdir
