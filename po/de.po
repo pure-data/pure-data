@@ -743,6 +743,10 @@ msgstr "Konnte heruntergeladene Datei %s nicht umbenennen."
 msgid "searching for '%s'"
 msgstr "Such nach '%s'"
 
+#, fuzzy
+msgid "Unable to perform search."
+msgstr "Die Suche schlug fehl. Sind Sie online?"
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "von %1$s am %2$s hochgeladen"

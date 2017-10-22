@@ -7,7 +7,7 @@
 #X obj 29 241 symbol foo;
 #X obj 55 12 symbol;
 #X text 111 14 - STORE A SYMBOL (I.E. \, STRING);
-#X text 21 37 The symbol object stores a symbol \, pd's data type for
+#X text 21 37 The symbol object stores a symbol \, Pd's data type for
 handling fixed strings (often filenames or the names of other objects
 in pd).;
 #X msg 44 131 symbol bar;

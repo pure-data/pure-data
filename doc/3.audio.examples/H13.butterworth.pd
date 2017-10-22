@@ -56,7 +56,7 @@ and the zeros are at -1 (the Nyquist). Leaving the poles fixed and
 moving the zeros then gives shelving filters. In this example \, the
 actual filtering is relegated to an abstraction (butterworth3~) which
 takes frequencies corresponding to the pole and zero placement.;
-#X text 24 147 The butterworth3~ abstraction computes filter coeffients
+#X text 24 147 The butterworth3~ abstraction computes filter coefficients
 using control messages \, and so it is not suitable for continuously
 time-varying Butterworth filters. For that \, it is often appropriate
 to use time-saving approximations \, but precisely which approximations

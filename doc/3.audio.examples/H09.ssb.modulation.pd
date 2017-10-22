@@ -70,7 +70,7 @@
 #X obj 21 495 output~;
 #X text 352 547 updated for Pd version 0.39;
 #X obj 188 347 phasor~;
-#X text 123 438 <-- complex multipier;
+#X text 123 438 <-- complex multiplier;
 #X text 122 455 (calculates real part);
 #X text 309 371 to form the real and;
 #X text 309 387 imaginary part of a;

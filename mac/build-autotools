@@ -23,7 +23,7 @@ fi
 tar xzf pd-$1.src.tar.gz
 cd pd-$1
 ./autogen.sh
-./configure
+./configure --enable-jack
 
 if make
 then

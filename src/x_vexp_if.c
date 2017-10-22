@@ -1099,7 +1099,7 @@ ex_sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
 
 /*
- * ex_Sum -- calculate the sum of table with the given boundries
+ * ex_Sum -- calculate the sum of table with the given boundaries
  */
 
 void
@@ -1132,7 +1132,7 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 n1 = argv->ex_flt;
                         break;
                 default:
-                        post("expr: Sum: boundries have to be fix values\n");
+                        post("expr: Sum: boundaries have to be fix values\n");
                         optr->ex_type = ET_INT;
                         optr->ex_int = 0;
                         return;
@@ -1148,7 +1148,7 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 n2 = argv->ex_flt;
                         break;
                 default:
-                        post("expr: Sum: boundries have to be fix values\n");
+                        post("expr: Sum: boundaries have to be fix values\n");
                         optr->ex_type = ET_INT;
                         optr->ex_int = 0;
                         return;
@@ -1201,7 +1201,7 @@ ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
 
 /*
- * ex_Avg -- calculate the avarage of table with the given boundries
+ * ex_Avg -- calculate the avarage of table with the given boundaries
  */
 
 void
@@ -1233,7 +1233,7 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
         if (argv->ex_type != ET_INT || argv[1].ex_type != ET_INT)
         {
-                post("expr: Avg: boundries have to be fix values\n");
+                post("expr: Avg: boundaries have to be fix values\n");
                 optr->ex_type = ET_INT;
                 optr->ex_int = 0;
                 return;

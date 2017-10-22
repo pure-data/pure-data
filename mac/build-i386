@@ -23,7 +23,7 @@ fi
 tar xzf ../build/pd-$1.src.tar.gz
 cd pd-$1
 ./autogen.sh
-./configure --enable-universal=i386
+./configure --enable-universal=i386 --enable-jack
 
 if make
 then
