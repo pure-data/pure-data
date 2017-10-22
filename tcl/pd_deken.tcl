@@ -59,7 +59,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.2.3] } {
+if { [::deken::versioncheck 0.2.4] } {
 
 namespace eval ::deken:: {
     namespace export open_searchui
@@ -241,8 +241,8 @@ if { "" != "$::current_plugin_loadpath" } {
 
 # architectures that can be substituted for eachother
 array set ::deken::architecture_substitutes {}
-set ::deken::architecture_substitutes(x86_64) [list "amd64" "i386" "i586" "i686"]
-set ::deken::architecture_substitutes(amd64) [list "x86_64" "i386" "i586" "i686"]
+set ::deken::architecture_substitutes(x86_64) [list "amd64" ]
+set ::deken::architecture_substitutes(amd64) [list "x86_64" ]
 set ::deken::architecture_substitutes(i686) [list "i586" "i386"]
 set ::deken::architecture_substitutes(i586) [list "i386"]
 set ::deken::architecture_substitutes(armv6l) [list "armv6" "arm"]
@@ -253,7 +253,7 @@ set ::deken::architecture_substitutes(ppc) [list "PowerPC"]
 # try to set install path when plugin is loaded
 set ::deken::installpath [::deken::find_installpath]
 
-proc ::deken::status {msg} {
+proc ::deken::status {{msg ""}} {
     #variable mytoplevelref
     #$mytoplevelref.results insert end "$msg\n"
     #$mytoplevelref.status.label -text "$msg"
@@ -742,6 +742,13 @@ proc ::deken::search::puredata.info {term} {
     ::http::config -accept text/tab-separated-values
     set token [::http::geturl "${dekenserver}?name=${term}"]
     ::http::config -accept $httpaccept
+    set ncode [::http::ncode $token]
+    if {[expr $ncode != 200 ]} {
+        set err [::http::code $token]
+        ::pdwindow::debug [format "\[deken\]: %s %s" [_ "Unable to perform search." ] ${err} ]
+        ::pdwindow::debug "\n"
+        return {}
+    }
     set contents [::http::data $token]
     set splitCont [split $contents "\n"]
     # loop through the resulting tab-delimited table

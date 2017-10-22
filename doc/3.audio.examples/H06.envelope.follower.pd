@@ -5,9 +5,9 @@
 #X text 161 3 ENVELOPE FOLLOWER;
 #X text 21 24 An envelope follower measures the mean square power of
 an signal as it changes over time. (You can convert mean square power
-to RMS ampitude or to decibels if you wish.) The term "mean square"
+to RMS amplitude or to decibels if you wish.) The term "mean square"
 means simply that the signal should be squared \, and then averaged.
-The averageing is done using a low-pass filter such as lop~.;
+The averaging is done using a low-pass filter such as lop~.;
 #X obj 62 466 lop~;
 #X floatatom 93 444 3 0 100 0 - #0-lop -, f 3;
 #X obj 61 356 +~;

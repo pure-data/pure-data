@@ -689,6 +689,7 @@ msgstr ""
 msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
 
+#, tcl-format
 msgid "Install %s to %s?"
 msgstr "Instalar %s em %s?"
 
@@ -751,6 +752,10 @@ msgstr "Incapaz de renomear o arquivo baixado para %s"
 msgid "searching for '%s'"
 msgstr "procurando por '%s'"
 
+#, fuzzy
+msgid "Unable to perform search."
+msgstr "Incapaz de realizar busca. Você está online?"
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Enviado por '%1$s' em %2$s"
@@ -769,7 +774,8 @@ msgstr ""
 "\n"
 "Localização: %s\n"
 "\n"
-"Você pode mudar ou desabilitar posteriormente em Preferências/Caminho de busca."
+"Você pode mudar ou desabilitar posteriormente em Preferências/Caminho de "
+"busca."
 
 #, tcl-format
 msgid ""
@@ -789,6 +795,7 @@ msgstr ""
 msgid "Couldn't create Pd documents directory: %s\n"
 msgstr "Impossível criar diretório de documentos Pd: %s\n"
 
+#, tcl-format
 msgid "Couldn't create \"externals\" directory in: %s\n"
 msgstr "Impossível criar diretório \"externals\" em: %s\n"
 
@@ -1018,6 +1025,7 @@ msgstr "Editar..."
 msgid "Delete"
 msgstr "Deletar"
 
+#, tcl-format
 msgid "Ignoring '%s': doesn't exist"
 msgstr "Ignorando '%s': não existe"
 

@@ -1,6 +1,6 @@
 #N canvas 66 7 617 909 12;
 #X text 164 5 ENVELOPE FOLLOWERS;
-#X text 10 25 The env~ object reports ths RMS signal level over the
+#X text 10 25 The env~ object reports the RMS signal level over the
 last 256 samples (by default) or any other power of 2 that's at least
 twice the block size. The analysis is done in an overlapped fashion
 so that results appear every N/2 points if N is the analysis window
