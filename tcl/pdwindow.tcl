@@ -444,11 +444,11 @@ proc ::pdwindow::configure_window_offset {{winid .pdwindow}} {
     if {$::windowingsystem eq "x11"} {
         if {[winfo viewable $winid]} {
             # wait for possible race-conditions at startup...
-            if {[winfo viewable .pdwindow] && ![winfo viewable .pdwindow.text]} {
-                tkwait visibility .pdwindow.text
+            if {[winfo viewable .pdwindow] && ![winfo viewable .pdwindow.header.pad1]} {
+                tkwait visibility .pdwindow.header.pad1
             }
 
-            regexp -- {([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+)} [wm geometry $winid] -> \
+            regexp -- {([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)} [wm geometry $winid] -> \
                 _ _ _left _top
             set ::windowframex [expr {[winfo rootx $winid] - $_left}]
             set ::windowframey [expr {[winfo rooty $winid] - $_top}]

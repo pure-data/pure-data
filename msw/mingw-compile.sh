@@ -23,8 +23,11 @@ for i in  bonk~ choice fiddle~ loop~ lrshift~ pique sigmund~ stdout pd~\
 do
   echo extern ----------------- $i -----------------
   cd $i
-  if make MSCC="wine cl" MSLN="wine link" COPY=echo pd_nt
-    then echo -n ; else exit 1; fi
+  if make \
+    MSCC="wine 'c:\Program Files\Microsoft Visual Studio 9.0\VC\bin\cl'" \
+    MSLN="wine 'c:\Program Files\Microsoft Visual Studio 9.0\VC\bin\link'" \
+    COPY=echo pd_nt
+        then echo -n ; else exit 1; fi
    cd ..
 done
 

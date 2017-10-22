@@ -754,6 +754,9 @@ msgstr ""
 msgid "searching for '%s'"
 msgstr "Förkasta ändringar i '%s'?"
 
+msgid "Unable to perform search."
+msgstr ""
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""

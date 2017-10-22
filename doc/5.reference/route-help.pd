@@ -55,7 +55,7 @@ are all considered special cases of lists.;
 #X obj 81 588 print w1;
 #X obj 150 589 print w2;
 #X text 210 547 With zero or one argument \, route sprouts an inlet
-to set the arument (which may be float or symbol).;
+to set the argument (which may be float or symbol).;
 #X connect 4 0 0 0;
 #X connect 4 1 1 0;
 #X connect 4 2 2 0;

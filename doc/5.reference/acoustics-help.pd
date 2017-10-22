@@ -22,7 +22,7 @@
 #X obj 278 390 powtodb;
 #X text 23 245 Finally \, dbtopow and powtodb convert decibels to and
 from power units \, equal to the square of the "RMS" amplitude.;
-#X text 304 448 updated for pd version 0.40.;
+#X text 304 448 updated for Pd version 0.40.;
 #X text 21 53 The mtof object transposes a midi value into a frequency
 in Hertz \, so that "69" goes to "440". You can specify microtonal
 pitches as in "69.5" (a quarter tone higher than 69). Ftom does the

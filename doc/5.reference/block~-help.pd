@@ -66,7 +66,7 @@ dac~ or adc~ is reblocked back to the default block size and sample
 rate.;
 #X text 33 209 Patches using send~/receive~ or throw~/catch~ to intercommunicate
 must have the same blocking -- and if their parents are blocked bigger
-than they are \, there might be wierdness.;
+than they are \, there might be weirdness.;
 #X text 31 128 If using send~ or delwrite~ from a switched-off patch
 \, the output of corresponding receive~ and delread~ objects in other
 \, running patches will cycle old input (and sound like garbage). Throw~

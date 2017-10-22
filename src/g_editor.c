@@ -57,6 +57,7 @@ void gobj_getrect(t_gobj *x, t_glist *glist, int *x1, int *y1,
 {
     if (x->g_pd->c_wb && x->g_pd->c_wb->w_getrectfn)
         (*x->g_pd->c_wb->w_getrectfn)(x, glist, x1, y1, x2, y2);
+    else *x1 = *y1 = 0, *x2 = *y2 = 10;
 }
 
 void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
