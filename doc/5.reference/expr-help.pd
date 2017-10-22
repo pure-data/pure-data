@@ -406,7 +406,7 @@ inside quotes., f 51;
 #X floatatom 295 380 5 0 0 0 - - -, f 5;
 #X text 64 187 Sums a range of indexes, f 8;
 #X text 158 189 Sums all indexes, f 8;
-#X text 249 189 Givesarray size, f 5;
+#X text 249 189 Gives array size, f 5;
 #X text 114 26 There are 3 functions that operate on arrays: Sum \,
 sum and size., f 45;
 #X connect 0 0 10 0;
@@ -720,7 +720,7 @@ store the result of any operation into a variable or table index.;
 [expr] \, [expr~] and [fexpr~] \, even though the given examples are
 only presented with [expr]., f 52;
 #X text 28 71 These are organized in different groups. Click on the
-subpatches below to cheach each group:, f 52;
+subpatches below to check each group:, f 52;
 #X restore 840 434 pd All_functions \; and operators;
 #N canvas 327 126 1037 555 [expr] 0;
 #X obj 50 105 expr 1;
