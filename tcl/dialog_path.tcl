@@ -1,6 +1,8 @@
 
 package provide dialog_path 0.1
 
+package require scrollboxwindow
+
 namespace eval ::dialog_path:: {
     variable use_standard_paths_button 1
     variable verbose_button 0
@@ -42,7 +44,7 @@ proc ::dialog_path::pdtk_path_dialog {mytoplevel extrapath verbose} {
 proc ::dialog_path::create_dialog {mytoplevel} {
     global docspath
     global installpath
-    scrollboxwindow::make $mytoplevel $::sys_searchpath \
+    ::scrollboxwindow::make $mytoplevel $::sys_searchpath \
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
         450 300 1

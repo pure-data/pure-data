@@ -222,6 +222,7 @@ pd_CFLAGS += -DUSEAPI_DUMMY
 pd_SOURCES += s_audio_dummy.c
 endif
 if MIDI_DUMMY
+pd_CFLAGS += -DUSEAPI_MIDIDUMMY
 pd_SOURCES += s_midi_dummy.c
 endif
 
