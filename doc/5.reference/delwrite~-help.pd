@@ -13,7 +13,7 @@
 #X obj 194 247 delread4~;
 #X msg 55 164 clear;
 #X text 19 50 Delwrite~ allocates memory for a delay line and writes
-an audio signal into it. Delread~ objects by hte same name read from
+an audio signal into it. Delread~ objects by the same name read from
 the delay line.;
 #X text 105 164 set all samples of delay line to zero.;
 #X connect 6 0 1 0;

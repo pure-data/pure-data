@@ -768,6 +768,9 @@ msgstr ""
 msgid "searching for '%s'"
 msgstr "'%s'-ren aldaketak utzi"
 
+msgid "Unable to perform search."
+msgstr ""
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""
