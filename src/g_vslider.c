@@ -87,7 +87,7 @@ static void vslider_draw_move(t_vslider *x, t_glist *glist)
 {
     int xpos=text_xpix(&x->x_gui.x_obj, glist);
     int ypos=text_ypix(&x->x_gui.x_obj, glist);
-    int r = ypos + x->x_gui.x_h - (x->x_val + 50)/100;
+    int r = ypos + x->x_gui.x_h - IEMGUI_ZOOM(x)*((x->x_val + 50)/100);
     int zoomlabel =
         1 + (IEMGUI_ZOOM(x)-1) * (x->x_gui.x_ldx >= 0 && x->x_gui.x_ldy >= 0);
     t_canvas *canvas=glist_getcanvas(glist);
@@ -304,9 +304,11 @@ static void vslider_properties(t_gobj *z, t_glist *owner)
 static t_float vslider_getfval(t_vslider *x)
 {
     t_float fval;
+    int zoomval = (x->x_gui.x_fsf.x_finemoved || IEMGUI_ZOOM(x) == 1) ?
+        x->x_val : (x->x_val/(100*IEMGUI_ZOOM(x)))* 100;
     if (x->x_lin0_log1)
-        fval = x->x_min*exp(x->x_k*(double)(x->x_val)*0.01);
-    else fval = (double)(x->x_val)*0.01*x->x_k + x->x_min;
+        fval = x->x_min*exp(x->x_k*(double)(zoomval)*0.01);
+    else fval = (double)(zoomval)*0.01*x->x_k + x->x_min;
     if ((fval < 1.0e-10) && (fval > -1.0e-10))
         fval = 0.0;
     return (fval);
@@ -438,7 +440,7 @@ static void vslider_set(t_vslider *x, t_floatarg f)
         g = log(f/x->x_min)/x->x_k;
     else
         g = (f - x->x_min) / x->x_k;
-    x->x_val = (int)(100.0*g + 0.49999);
+    x->x_val = IEMGUI_ZOOM(x)*(int)(100.0*g + 0.49999);
     x->x_pos = x->x_val;
     if(x->x_val != old)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_UPDATE);

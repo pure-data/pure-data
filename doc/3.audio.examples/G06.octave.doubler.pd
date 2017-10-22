@@ -79,7 +79,7 @@ all odd harmonics using a variable-delay comb filter tuned one octave
 above the incoming sound. We use two taps into the delay line. The
 fixed one (delread~) adjusts for the delayed output of fiddle~. The
 variable one (vd~) adds to this an additional delay equal to 1/2 the
-measured period of the incoming sound. THese two are added. Odd harmonics
+measured period of the incoming sound. These two are added. Odd harmonics
 are 180 degrees out of phase at the two taps and cancel. Even harmonics
 get through - so the sound goes up an octave \, without denaturing
 the timbre as a speed-up would.;

@@ -18,7 +18,7 @@
 #X obj 57 576 print packet;
 #X text 234 445 a blob;
 #X text 416 442 packets from network;
-#X text 521 466 slisten on port 5000;
+#X text 521 466 listen on port 5000;
 #X text 558 521 UDP packets \, binary output, f 13;
 #X text 45 41 oscparse take incoming lists of numbers \, interpreting
 them as the bytes in an OSC message. The output is a list containing
