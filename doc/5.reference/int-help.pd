@@ -17,7 +17,7 @@
 #X text 19 42 The int object stores a number \, initialized by its
 creation argument \, which may be reset using its inlet and output
 by sending it the "bang" message. The output is truncated to an integer
-ala Max.;
+à la Max.;
 #X obj 500 209 r int-help;
 #X floatatom 500 234 5 0 0 0 - - -, f 5;
 #X text 171 209 send value to a "receive" like this -->;

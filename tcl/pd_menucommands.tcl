@@ -27,7 +27,7 @@ proc ::pd_menucommands::menu_open {} {
                        -filetypes $::filetypes \
                        -initialdir $::fileopendir]
     if {$files ne ""} {
-        foreach filename $files { 
+        foreach filename $files {
             open_file $filename
         }
         set ::fileopendir [file dirname $filename]
@@ -230,7 +230,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         pack .aboutpd.scroll -side right -fill y
         pack .aboutpd.text -side left -fill both -expand 1
         bind .aboutpd <$::modifier-Key-w> "destroy .aboutpd"
-        
+
         set textfile [open $filename]
         while {![eof $textfile]} {
             set bigstring [read $textfile 1000]

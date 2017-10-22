@@ -207,8 +207,8 @@ semicolon can be used to define and separate different expressions.
 If so \, an outlet is created for each expression and they're evaluated
 from right to left (or bottom to up) order:;
 #X text 573 410 see also:;
-#X obj 676 511 block~;
-#X obj 739 511 value;
+#X obj 615 512 block~;
+#X obj 678 512 value;
 #N canvas 708 54 478 476 All_functions 0;
 #N canvas 497 97 374 326 Arithmetic-operators 0;
 #X obj 57 90 expr $f1 + 4;
@@ -406,7 +406,7 @@ inside quotes., f 51;
 #X floatatom 295 380 5 0 0 0 - - -, f 5;
 #X text 64 187 Sums a range of indexes, f 8;
 #X text 158 189 Sums all indexes, f 8;
-#X text 249 189 Givesarray size, f 5;
+#X text 249 189 Gives array size, f 5;
 #X text 114 26 There are 3 functions that operate on arrays: Sum \,
 sum and size., f 45;
 #X connect 0 0 10 0;
@@ -720,7 +720,7 @@ store the result of any operation into a variable or table index.;
 [expr] \, [expr~] and [fexpr~] \, even though the given examples are
 only presented with [expr]., f 52;
 #X text 28 71 These are organized in different groups. Click on the
-subpatches below to cheach each group:, f 52;
+subpatches below to check each group:, f 52;
 #X restore 840 434 pd All_functions \; and operators;
 #N canvas 327 126 1037 555 [expr] 0;
 #X obj 50 105 expr 1;
@@ -1116,6 +1116,7 @@ offset filters audio at frequency of 1102.5 Hz, f 50;
 #X text 578 460 arithmetic operators:;
 #X text 617 485 audio operators:;
 #X text 598 208 (click on the subpatches to open them), f 13;
+#X obj 731 512 random;
 #X connect 4 0 17 0;
 #X connect 5 0 40 0;
 #X connect 6 0 40 0;

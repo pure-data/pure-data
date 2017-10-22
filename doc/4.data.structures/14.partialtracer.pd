@@ -2646,8 +2646,8 @@ above.;
 #X text 26 308 parameters;
 #X text 13 24 This patch derives sinusoidal "tracks" from a sampled
 sound using sigmund~ and the data structure facilities. The number
-of tracks may range from 1 to 50 You can edit the tracks (but note
-that the resynthezier is limited to 50-voice polyphony.);
+of tracks may range from 1 to 50. You can edit the tracks (but note
+that the resynthesizer is limited to 50-voice polyphony.);
 #X obj 628 170 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X msg 618 353 \; location 0 \; clear-all bang;

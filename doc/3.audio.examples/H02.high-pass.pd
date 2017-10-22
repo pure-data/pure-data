@@ -128,7 +128,7 @@
 #X restore 369 323 graph;
 #X text 393 465 --- 0.02 sec ---;
 #X text 24 31 Many synthesis algorithms and transformations can have
-outputs with a zero-freqency component (commonly called DC for "direct
+outputs with a zero-frequency component (commonly called DC for "direct
 current"). These are inaudible and sometimes cause distortion in audio
 output devices \, or when converting to fixed-point soundfile formats.
 It is often desirable to filter an audio signal to remove its DC component.

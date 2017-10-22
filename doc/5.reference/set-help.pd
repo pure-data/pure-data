@@ -43,7 +43,7 @@ object the "-symbol" argument. (Unfortunately \, you can't mix symbols
 and numbers in the same "set" object.), f 56;
 #X text 14 34 "Set" takes a pointer to a scalar in its rightmost inlet
 \; the remaining inlets set numeric fields. Symbols are handled specially
-\, as shown below. Arrays are accessed using the "elemen" object \,
+\, as shown below. Arrays are accessed using the "element" object \,
 and lists using "text" objects. Only the leftmost inlet is "hot".;
 #X text 341 688 updated for Pd version 0.47;
 #X text 39 443 You can use the template "-" as a wild card (this may

@@ -27,12 +27,15 @@ settings.  On Pcs, the settings are now stored in the "user" resource area
 (before, it was per-machine, and users who weren't administrators apparently
 couldn't save their settings.)
 
+<P> On the first startup, Pd queries the user as to whether to create a
+directory such as ~/Documents/Pd and set path to point there.  Many updates
+were also made to the "path" dialog and deken to better integrate downloading
+stuff and path maintenance.
+
 <P> The expr family (expr, expr~, fexpr~) got an update from Shahrokh Yadegari,
 and the help file was reorganized and updated by Alexandre Porres.  Many more
 math functions are supported, and the parser was updated so that expressions
-using "if" skip evaluating the argument that isn't used.  In an older
-improvement that wasn't reported here, expr can read and write variables
-stored in "v" objects.
+using "if" skip evaluating the argument that isn't used.
 
 <P> New "fudiparse", "fudiformat" objects.
 
@@ -46,12 +49,18 @@ is changed.
 
 <P> "delwrite~" now has a "clear" message.
 
+<P> "soundfiler" now has a right outlet which outputs a list with the
+sample rate, header size, number of channels, byte depth, and endianness.
+
 <P> "declare -path" inside abstractions was changed so that, if the declaration
 isn't an absolute filename, it's relative to the abstraction's directory, not to
 the owning patch's directory.  This might be considered an incompatible change; but
 since the situation with paths declared inside abstractions has always been so
 confused, I think nobody will have got away without editing patches that relied
 on it as things changed in the past.
+
+<P> "float" now understands symbol messages that look like floats.  The help
+files for "float", "value" and "send" were updated to reflect this.
 
 <P> But the biggest changes are under the hood.  Pd now can manage more
 than one running instance, so that it is possible to make plug-ins of various
@@ -67,7 +76,7 @@ in binary by default.  This increases the numerical accuracy of signal passing
 (it should be exact now) and makes the passing back and forth of audio signals
 much more efficient.
 
-<P> Thanks to much effort by Dan Wilcox and Iohannes Zmoelnig, the
+<P> Thanks to much effort by Dan Wilcox and IOhannes Zmoelnig, the
 compile-and-build system is much improved, especially for Macintosh computers.
 One visible effect is that language support is finally working in the
 compiled versions on msp.ucsd.edu.
@@ -110,7 +119,7 @@ access to variables in Pd defined via the "value" object.
 <P> Backward messaging to netsend now works in UDP as well as TCP.
 
 <P> Dialogs now work more Apple-ishly (changes taking place without the need
-to hit an "apply" button in many cases).  Thanks to danomatica.
+to hit an "apply" button in many cases).  Thanks to Dan Wilcox.
 
 <P> API support for "initbang" and "closebang" objects (from IEM library
 I think, but anyhow you can now get them in Pd Vanilla via deken (help
@@ -119,7 +128,7 @@ menu "Find externals").
 <P> "Declare" object path settings now take effect immediately when you edit
 the declare object.
 
-<P> (Iohannes) Abstractions, externs, and stuff written in other languages
+<P> (IOhannes) Abstractions, externs, and stuff written in other languages
 (python, Lua, etc) are now loaded logically, that is, if you have one patch
 that loads an external named X, you can still load abstractions named X in
 other patches.  Miller now officially Does Not Know How This Works (DNKHTW).
@@ -227,13 +236,13 @@ Pd's command line with new flags such as "-audioadddev".
 
 <P> Netsend/netreceive can send messages bidirectionally if using TCP protocol.
 
-<P> Added some startup flags (mostly from Iohannes) - -nostderr, etc.  Also
+<P> Added some startup flags (mostly from IOhannes) - -nostderr, etc.  Also
 added a flag (-noautopatch) to suppress autoconnect.
 
 <P> improved the sound of rev2~ and rev3~ reverberators
 
 <P> Made stdlib and stdpath flags and declarations follow standard search
-paths (Iohannes again).
+paths (IOhannes again).
 
 <P> Dozens of small bug fixes.
 
@@ -286,7 +295,7 @@ get to the dialog panel before audio ever starts (for instance, on Mac,
 to prevent Pd from hanging when someone walks in the building with an apple TV --
 gee, thanks, Apple!)
 
-<P> Took a patch from Iohannes Zmoelnig to make Pd source conform to strict
+<P> Took a patch from IOhannes Zmoelnig to make Pd source conform to strict
 aliasing rules.  The vanilla release is still compiled with -fno-strict-aliasing
 but this will be dropped after more testing.
 
@@ -298,9 +307,6 @@ binaries by compiling with  -arch i386 -arch x86_64).
 <P> The soundfiler now writes correct sample rate to AIFF files (was previously
 hard-coded to 44100).  Still no way to detect the sample rate of a file when
 reading it.
-
-
-
 
 <P> ------------------ 0.44-3 ---------------------------
 
@@ -373,10 +379,11 @@ compilation fixes.
 
 <P> STILL BUGGY: when you change the contents of a graph-on-parent subpatch the
 old stuff often doesn't get erased correctly.
+
 <P> ------------------ 0.43 ---------------------------
 
 <P> Completely new TCL front end, thanks to Hans-Christophe Steiner,
-Iohannes Zmoelnig, and others.
+IOhannes Zmoelnig, and others.
 
 <P> ------------------ 0.42-5 ---------------------------
 
@@ -405,7 +412,7 @@ new objects (some folks like it and others hate it)
 
 <P> ------------------ 0.42.1-3 ---------------------------
 
-<P> Bug fix on Windows(cancelling window close deactivated window).
+<P> Bug fix on Windows(canceling window close deactivated window).
 
 <P> Bug fix running Pd from command line in MacOS.
 
@@ -421,7 +428,7 @@ This makes it possible (at last) to use tabread4~ effectively with large (> 1
 second) samples.  New help files 3.audio.examples/B15 and B16 show how to
 use it.  It's not pretty but it's at least possible.
 
-<P> Took patches from Iohannes Zmoelnig to make Pd work when compiled to use
+<P> Took patches from IOhannes Zmoelnig to make Pd work when compiled to use
 64-bit floating-point audio.  I didn't test this; doubtless there will still be
 some problems.  (This isn't the same thing as running in '64 bit mode' which
 already works fine and is the default when compiled on a 64-bit linux machine.)

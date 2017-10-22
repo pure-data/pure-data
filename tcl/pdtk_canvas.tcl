@@ -29,31 +29,55 @@ namespace eval ::pdtk_canvas:: {
 #winfo rooty . returns contentsTop
 #winfo rootx . returns contentsLeftEdge
 
+if {$::tcl_version < 8.5 || \
+        ($::tcl_version == 8.5 && \
+             [tk windowingsystem] eq "aqua" && \
+             [lindex [split [info patchlevel] "."] 2] < 13) } {
+    # fit the geometry onto screen for Tk 8.4,
+    # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
+    # newer versions of Tk can handle multiple monitors so allow negative pos
+    proc pdtk_canvas_wrap_window {x y w h} {
+        set width [lindex [wm maxsize .] 0]
+        set height [lindex [wm maxsize .] 1]
+
+        if {$w > $width} {
+            set w $width
+            set x 0
+        }
+        if {$h > $height} {
+            # 30 for window framing
+            set h [expr $height - $::menubarsize - $::windowframey]
+            set y $::menubarsize
+        }
+
+        set x [ expr $x % $width]
+        set y [ expr $y % $height]
+        if {$x < 0} {set x 0}
+        if {$y < 0} {set y 0}
+
+        return [list ${x} ${y} ${w} ${h}]
+    }
+} {
+    proc pdtk_canvas_wrap_window {x y w h} {
+        return [list ${x} ${y} ${w} ${h}]
+    }
+}
 
 # this proc is split out on its own to make it easy to override. This makes it
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
     ::pdwindow::configure_window_offset
-    set screenwidth [lindex [wm maxsize .] 0]
-    set screenheight [lindex [wm maxsize .] 1]
 
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
-    # fit the geometry onto screen
-    set x [ expr $x % $screenwidth - $::windowframex]
-    set y [ expr $y % $screenheight - $::windowframey]
-    if {$x < 0} {set x 0}
-    if {$y < 0} {set y 0}
-    if {$width > $screenwidth} {
-        set width $screenwidth
-        set x 0
-    }
-    if {$height > $screenheight} {
-        set height [expr $screenheight - $::menubarsize - 30] ;# 30 for window framing
-        set y $::menubarsize
-    }
-    return [list $width $height ${width}x$height+$x+$y]
+    set xywh [pdtk_canvas_wrap_window \
+        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
+    set x [lindex $xywh 0]
+    set y [lindex $xywh 1]
+    set w [lindex $xywh 2]
+    set h [lindex $xywh 3]
+    return [list ${w} ${h} ${w}x${h}+${x}+${y}]
 }
 
 
@@ -100,7 +124,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
 
     ::pd_bindings::patch_bindings $mytoplevel
 
-    # give focus to the canvas so it gets the events rather than the window 	 
+    # give focus to the canvas so it gets the events rather than the window
     focus $tkcanvas
 
     # let the scrollbar logic determine if it should make things scrollable
@@ -125,8 +149,8 @@ proc pdtk_canvas_raise {mytoplevel} {
 }
 
 proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
-    if { ! [file isdirectory $initialdir]} {set initialdir $::env(HOME)}
-    set filename [tk_getSaveFile -initialfile $initialfile -initialdir $initialdir \
+    if { ! [file isdirectory $initialdir]} {set initialdir $::filenewdir}
+    set filename [tk_getSaveFile -initialdir $initialdir \
                       -defaultextension .pd -filetypes $::filetypes]
     if {$filename eq ""} return; # they clicked cancel
 
@@ -319,7 +343,7 @@ proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
         set ::pdtk_canvas::::getscroll_tokens($tkcanvas) \
             [after idle ::pdtk_canvas::pdtk_canvas_getscroll $tkcanvas]
         return
-    }     
+    }
     if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
         unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
     }
@@ -391,7 +415,7 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
     if {$::windowingsystem eq "aqua"} {
         wm attributes $mytoplevel -modified $dirty
         if {[file exists "$path/$name"]} {
-            # for some reason -titlepath can still fail so just catch it 
+            # for some reason -titlepath can still fail so just catch it
             if [catch {wm attributes $mytoplevel -titlepath "$path/$name"}] {
                 wm title $mytoplevel "$path/$name"
             }
@@ -399,6 +423,6 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
         wm title $mytoplevel "$name$arguments"
     } else {
         if {$dirty} {set dirtychar "*"} else {set dirtychar " "}
-        wm title $mytoplevel "$name$dirtychar$arguments - $path" 
+        wm title $mytoplevel "$name$dirtychar$arguments - $path"
     }
 }
