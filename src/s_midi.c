@@ -72,7 +72,19 @@ int midi_inhead, midi_intail;
 static double sys_midiinittime;
 #define API_DEFAULTMIDI 0
 
-int sys_midiapi = API_DEFAULTMIDI;
+#if (defined USEAPI_ALSA) && (defined USEAPI_MIDIDUMMY)
+        /* if the only available MIDI-backend is ALSA, choose that */
+# define FORCEAPI_ALSA
+#endif
+
+
+int sys_midiapi =
+#ifdef FORCEAPI_ALSA
+    API_ALSA
+#else
+    API_DEFAULTMIDI
+#endif
+    ;
 
     /* this is our current estimate for at what "system" real time the
     current logical time's output should occur. */
@@ -639,8 +651,21 @@ void sys_listmididevs(void)
 
 void sys_set_midi_api(int which)
 {
-     sys_midiapi = which;
-     if (sys_verbose)
+    switch (which) {
+#ifdef USEAPI_ALSA
+    case(API_ALSA): break;
+#endif
+#ifndef FORCEAPI_ALSA
+    case(API_DEFAULTMIDI): break;
+#endif
+    default:
+        if (sys_verbose)
+            post("Ignoring unknown MIDI-API %d", which);
+        return;
+    }
+
+    sys_midiapi = which;
+    if (sys_verbose)
         post("sys_midiapi %d", sys_midiapi);
 }
 

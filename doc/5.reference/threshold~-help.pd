@@ -24,7 +24,7 @@ before triggering again.;
 #X msg 113 164 set 0 2000 1 2000;
 #X msg 113 187 set 10 100 0 100;
 #X text 257 163 "set" to change the parameters;
-#X text 250 223 zero or nonszero in inlet to set the state to "high"
+#X text 250 223 zero or nonzero in inlet to set the state to "high"
 or "low". There is no debounce period after this.;
 #X connect 4 0 5 0;
 #X connect 5 0 9 0;

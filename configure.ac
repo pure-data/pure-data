@@ -443,7 +443,7 @@ AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 ##### MMIO #####
 AM_CONDITIONAL(MMIO, test x$mmio = xyes)
 AS_IF([test x$mmio = xyes], [audio_backends="MMIO ${audio_backends}"])
-AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
+dnl AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
@@ -472,7 +472,13 @@ AS_IF([test "x$audio_backends" = "x"],[
     AC_MSG_WARN([No audio API specified or detected])
     audio_backends="NONE!"
 ])
-AM_CONDITIONAL(MIDI_DUMMY, test "x$midi_backends" = "x")
+# we need the dummy MIDI backend, if there is no other backend providing the
+# standard MIDI-functions (OSS and PortMidi provide them; ALSA not)
+needs_midi_dummy="yes"
+AS_IF([echo "${midi_backends}" | grep -wi OSS >/dev/null],[needs_midi_dummy="no"])
+AS_IF([echo "${midi_backends}" | grep -wi PortMidi >/dev/null],[needs_midi_dummy="no"])
+
+AM_CONDITIONAL(MIDI_DUMMY, test "x${needs_midi_dummy}" = "xyes")
 AS_IF([test "x$midi_backends" = "x"],[
     AC_MSG_WARN([No MIDI API specified or detected])
     midi_backends="NONE!"

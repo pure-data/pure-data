@@ -25,7 +25,7 @@ select a width of 0 \, the number box will grow as needed to hold the
 number--BUT BEWARE \, THIS IS EXPENSIVE IN CPU TIME. In a production
 patch \, you'll want to set a specific width.;
 #X floatatom 547 439 1 0 0;
-#X text 41 438 A width of one gives a clickable toggle switch ala Max:
+#X text 41 438 A width of one gives a clickable toggle switch à la Max:
 ;
 #X connect 2 0 3 0;
 #X connect 4 0 5 0;

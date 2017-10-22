@@ -50,7 +50,7 @@
 #X obj 620 215 t b;
 #X text 583 184 clear filters;
 #X text 582 198 to start;
-#X text 578 452 cbeck if any table;
+#X text 578 452 check if any table;
 #X text 577 467 is specified for phase;
 #X text 577 483 (don't compute it if;
 #X text 578 498 not.);
