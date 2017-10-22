@@ -1135,7 +1135,7 @@ static void canvas_donecanvasdialog(t_glist *x,
         perhaps we're happier with 0.  This is only checked if this is really
         being called, as intended, from the GUI.  For compatibility with old
         patches that reverse-engineered donecanvasdialog to modify patch
-        parameters, we leave the buggy behavior in wieh there's no "fromgui"
+        parameters, we leave the buggy behavior in when there's no "fromgui"
         argument supplied. */
     if (fromgui && (!(graphme & 1)))
         graphme = 0;

@@ -233,7 +233,7 @@ typedef struct _text        /* patchable object - graphical, with text */
 
 #define T_TEXT 0        /* just a textual comment */
 #define T_OBJECT 1      /* a MAX style patchable object */
-#define T_MESSAGE 2     /* a MAX stype message */
+#define T_MESSAGE 2     /* a MAX type message */
 #define T_ATOM 3        /* a cell to display a number or symbol */
 
 #define te_pd te_g.g_pd
@@ -275,7 +275,7 @@ EXTERN t_gotfn zgetfn(t_pd *x, t_symbol *s);
 EXTERN void nullfn(void);
 EXTERN void pd_vmess(t_pd *x, t_symbol *s, char *fmt, ...);
 
-/* the following macrose are for sending non-type-checkable mesages, i.e.,
+/* the following macros are for sending non-type-checkable messages, i.e.,
 using function lookup but circumventing type checking on arguments.  Only
 use for internal messaging protected by A_CANT so that the message can't
 be generated at patch level. */
