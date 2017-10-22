@@ -365,10 +365,6 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     }
     else x->gl_env = 0;
 
-    if (yloc < GLIST_DEFCANVASYLOC)
-        yloc = GLIST_DEFCANVASYLOC;
-    if (xloc < 0)
-        xloc = 0;
     x->gl_x1 = 0;
     x->gl_y1 = 0;
     x->gl_x2 = 1;

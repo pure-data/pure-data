@@ -730,7 +730,7 @@ set 1 \;;
 #X obj 608 144 tgl 20 0 tone-ch116 tone-ch16 16 5 -8 0 12 -262144 -1
 -1 1 1;
 #X text 235 25 16 channel test tone patch;
-#X text 316 77 AUTIO INPUT (RMS dB);
+#X text 316 77 AUDIO INPUT (RMS dB);
 #X text 337 175 AUDIO OUTPUT ON/OFF;
 #X text 40 120 OFF;
 #X text 101 88 noise;
