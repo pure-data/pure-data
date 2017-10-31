@@ -1597,6 +1597,8 @@ static void vcommon_float(t_vcommon *x, t_float f)
 static void *value_new(t_symbol *s)
 {
     t_value *x = (t_value *)pd_new(value_class);
+    if (!*s->s_name)
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("symbol2"));
     x->x_sym = s;
     x->x_floatstar = value_get(s);
     outlet_new(&x->x_obj, &s_float);
@@ -1613,7 +1615,8 @@ static void value_float(t_value *x, t_float f)
     *x->x_floatstar = f;
 }
 
-static void value_set(t_value *x, t_symbol *s)
+/* set method */
+static void value_symbol2(t_value *x, t_symbol *s)
 {
     value_release(x->x_sym);
     x->x_sym = s;
@@ -1633,7 +1636,7 @@ static void value_setup(void)
     class_addcreator((t_newmethod)value_new, gensym("v"), A_DEFSYM, 0);
     class_addbang(value_class, value_bang);
     class_addfloat(value_class, value_float);
-    class_addmethod(value_class, (t_method)value_set, gensym("set"),
+    class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
         A_DEFSYM, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
