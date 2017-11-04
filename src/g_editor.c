@@ -1040,7 +1040,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
 }
 
     /* set a canvas up as a graph-on-parent.  Set reasonable defaults for
-    any missing paramters and redraw things if necessary. */
+    any missing parameters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
     if (!flag && glist_isgraph(x))
@@ -1093,15 +1093,15 @@ void canvas_properties(t_gobj*z, t_glist*unused)
                 0., 0.,
                 glist_isgraph(x) ,//1,
                 x->gl_x1, x->gl_y1, x->gl_x2, x->gl_y2,
-                (int)x->gl_pixwidth, (int)x->gl_pixheight,
-                (int)x->gl_xmargin, (int)x->gl_ymargin);
+                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
+                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
     else sprintf(graphbuf,
             "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
                 glist_dpixtodx(x, 1), -glist_dpixtody(x, 1),
                 0,
                 0., -1., 1., 1.,
-                (int)x->gl_pixwidth, (int)x->gl_pixheight,
-                (int)x->gl_xmargin, (int)x->gl_ymargin);
+                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
+                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
     gfxstub_new(&x->gl_pd, x, graphbuf);
         /* if any arrays are in the graph, put out their dialogs too */
     for (y = x->gl_list; y; y = y->g_next)
@@ -1139,10 +1139,10 @@ static void canvas_donecanvasdialog(t_glist *x,
         argument supplied. */
     if (fromgui && (!(graphme & 1)))
         graphme = 0;
-    x->gl_pixwidth = xpix;
-    x->gl_pixheight = ypix;
-    x->gl_xmargin = xmargin;
-    x->gl_ymargin = ymargin;
+    x->gl_pixwidth = xpix * x->gl_zoom;
+    x->gl_pixheight = ypix * x->gl_zoom;
+    x->gl_xmargin = xmargin * x->gl_zoom;
+    x->gl_ymargin = ymargin * x->gl_zoom;
 
     yperpix = -yperpix;
     if (xperpix == 0)
