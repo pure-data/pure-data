@@ -709,7 +709,7 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             sys_vgui(".x%lx.c create polygon %d %d %d %d %d %d %d %d %d %d "
                 "-width %d -fill #c0c0c0 -joinstyle miter -tags [list %s graph]\n",
                 glist_getcanvas(x->gl_owner),
-                x1, y1, x1, y2, x2, y2, x2, y1, x1, y1, x->gl_zoom, tag);
+                x1, y1, x1, y2, x2, y2, x2, y1, x1, y1, glist_getzoom(x), tag);
         }
         else
         {
