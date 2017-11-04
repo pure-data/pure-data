@@ -49,6 +49,7 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b);
 static void canvas_paste(t_canvas *x);
 static void canvas_clearline(t_canvas *x);
 static t_glist *glist_finddirty(t_glist *x);
+static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 
 /* ---------------- generic widget behavior ------------------------- */
 
@@ -1032,7 +1033,13 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 gobj_vis(&x->gl_gobj, gl2, 0);
             x->gl_havewindow = 0;
             if (glist_isvisible(gl2) && !gl2->gl_isdeleting)
+            {
+                 /* make sure zoom level matches parent, ie. after an open
+                   subpatch's zoom level was changed before being closed */
+                if(x->gl_zoom != gl2->gl_zoom)
+                    canvas_zoom(x, gl2->gl_zoom);
                 gobj_vis(&x->gl_gobj, gl2, 1);
+            }
         }
         else x->gl_havewindow = 0;
         canvas_updatewindowlist();
