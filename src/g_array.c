@@ -575,7 +575,7 @@ static void garray_free(t_garray *x)
     t_pd *x2;
         sys_unqueuegui(&x->x_gobj);
     /* jsarlo { */
-        if (x->x_listviewing)
+    if (x->x_listviewing)
     {
         garray_arrayviewlist_close(x);
     }
@@ -1192,6 +1192,9 @@ void garray_resize(t_garray *x, t_floatarg f)
     garray_resize_long(x, f);
 }
 
+/* ignore zoom for now */
+void garray_zoom(t_garray *x, t_floatarg f) {}
+
 static void garray_print(t_garray *x)
 {
     t_array *array = garray_getarray(x);
@@ -1225,6 +1228,8 @@ void g_array_setup(void)
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
         A_FLOAT, A_NULL);
+    class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
+        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_print, gensym("print"),
         A_NULL);
     class_addmethod(garray_class, (t_method)garray_sinesum, gensym("sinesum"),
@@ -1245,5 +1250,3 @@ void g_array_setup(void)
 /* } jsarlo */
     class_setsavefn(garray_class, garray_save);
 }
-
-
