@@ -1185,6 +1185,7 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
+            width *= glist_getzoom(glist);
             numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
                 outline);
@@ -1710,6 +1711,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     return;
     nelem = array->a_n;
     elem = (char *)array->a_vec;
+    linewidth *= glist_getzoom(glist);
 
     if (tovis)
     {
@@ -1750,8 +1752,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    sys_vgui(".x%lx.c create rectangle %d %d %d %d \
--fill black -width 0  -tags [list plot%lx array]\n",
+                    sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+                        "-fill black -width 0 -tags [list plot%lx array]\n",
                         glist_getcanvas(glist),
                         ixpix, (int)glist_ytopixels(glist,
                             basey + fielddesc_cvttocoord(yfielddesc, minyval)),
@@ -1850,8 +1852,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                                 fielddesc_cvttocoord(wfielddesc, wval)));
                 }
             ouch:
-                sys_vgui(" -width 1 -fill %s -outline %s\\\n",
-                    outline, outline);
+                sys_vgui(" -width %d -fill %s -outline %s\\\n",
+                    glist_getzoom(glist), outline, outline);
                 if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
                 sys_vgui("-tags [list plot%lx array]\n", data);
