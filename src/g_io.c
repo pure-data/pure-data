@@ -33,9 +33,12 @@ typedef struct _vinlet
     t_float *x_fill;
     t_float *x_read;
     int x_hop;
+    int x_connected;
   /* if not reblocking, the next slot communicates the parent's inlet
      signal from the prolog to the DSP routine: */
     t_signal *x_directsignal;
+    t_outlet * x_connectedoutlet;
+    t_outlet * x_anyoutlet;
 
   t_resample x_updown;
 } t_vinlet;
@@ -47,38 +50,47 @@ static void *vinlet_new(t_symbol *s)
     x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, 0);
     x->x_bufsize = 0;
     x->x_buf = 0;
+    x->x_connected = 0;
+    //x->x_connectedoutlet = 0;
+    //x->x_anyoutlet = 0;
     outlet_new(&x->x_obj, 0);
     return (x);
 }
 
+static t_outlet * vinlet_outlet(t_vinlet *x) {
+    if (x->x_anyoutlet)
+        return x->x_anyoutlet;
+    return x->x_obj.ob_outlet;
+}
+
 static void vinlet_bang(t_vinlet *x)
 {
-    outlet_bang(x->x_obj.ob_outlet);
+    outlet_bang(vinlet_outlet(x));
 }
 
 static void vinlet_pointer(t_vinlet *x, t_gpointer *gp)
 {
-    outlet_pointer(x->x_obj.ob_outlet, gp);
+    outlet_pointer(vinlet_outlet(x), gp);
 }
 
 static void vinlet_float(t_vinlet *x, t_float f)
 {
-    outlet_float(x->x_obj.ob_outlet, f);
+    outlet_float(vinlet_outlet(x), f);
 }
 
 static void vinlet_symbol(t_vinlet *x, t_symbol *s)
 {
-    outlet_symbol(x->x_obj.ob_outlet, s);
+    outlet_symbol(vinlet_outlet(x), s);
 }
 
 static void vinlet_list(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    outlet_list(x->x_obj.ob_outlet, s, argc, argv);
+    outlet_list(vinlet_outlet(x), s, argc, argv);
 }
 
 static void vinlet_anything(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+    outlet_anything(vinlet_outlet(x), s, argc, argv);
 }
 
 static void vinlet_free(t_vinlet *x)
@@ -129,6 +141,9 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
         dsp_add(vinlet_perform, 3, x, outsig->s_vec, outsig->s_vecsize);
         x->x_read = x->x_buf;
     }
+    x->x_connected ^= 1;
+    if (x->x_connectedoutlet)
+      outlet_float(x->x_connectedoutlet, x->x_connected);
 }
 
     /* prolog code: loads buffer from parent patch */
@@ -247,6 +262,9 @@ static void *vinlet_newsig(t_symbol *s)
     x->x_bufsize = 0;
     x->x_directsignal = 0;
     outlet_new(&x->x_obj, &s_signal);
+    x->x_anyoutlet = outlet_new(&x->x_obj, &s_anything);
+    x->x_connectedoutlet = outlet_new(&x->x_obj, &s_float);
+    x->x_connected = 0;
 
     resample_init(&x->x_updown);
 
