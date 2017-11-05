@@ -2107,10 +2107,10 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
             REZOOM(obj->te_xpix, zoom);
             REZOOM(obj->te_ypix, zoom);
                 /* pass zoom message on to all objects, except canvases
-                that aren't new-style GOPs */
+                that aren't GOP */
             if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
                 (!(pd_class(&obj->te_pd) == canvas_class) ||
-                (((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect)))
+                (((t_glist *)obj)->gl_isgraph)))
                     (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
         }
         x->gl_zoom = zoom;
