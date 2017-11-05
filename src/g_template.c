@@ -1185,7 +1185,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
-            width *= glist_getzoom(glist);
+            if (glist->gl_isgraph)
+                width *= glist_getzoom(glist);
             numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
                 outline);
@@ -1711,7 +1712,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     return;
     nelem = array->a_n;
     elem = (char *)array->a_vec;
-    linewidth *= glist_getzoom(glist);
+
+    if (glist->gl_isgraph)
+        linewidth *= glist_getzoom(glist);
 
     if (tovis)
     {
@@ -1853,7 +1856,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
             ouch:
                 sys_vgui(" -width %d -fill %s -outline %s\\\n",
-                    glist_getzoom(glist), outline, outline);
+                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                    outline, outline);
                 if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
                 sys_vgui("-tags [list plot%lx array]\n", data);
@@ -2566,7 +2570,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
+            sys_hostfontsize(glist_getfont(glist), 1),
                 sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
