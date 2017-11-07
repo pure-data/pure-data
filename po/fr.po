@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.47-1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2017-06-25 14:57+0200\n"
-"Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret\n"
+"PO-Revision-Date: 2017-09-17 14:00+0200\n"
+"Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / Baptiste Chatel\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "-------dimensions(digits)(pix):-------"
-msgstr "-------dimensions(digits)(pix):-------"
+msgstr "------dimensions(chiffres)(pix):------"
 
 msgid "--------dimensions(pix)(pix):--------"
 msgstr "--------dimensions(pix)(pix):--------"
@@ -30,25 +30,25 @@ msgid "-----------output-range:-----------"
 msgstr "---------échelle_de_sortie:--------"
 
 msgid "------selectable_dimensions(pix):------"
-msgstr "-------dimensions_a_choisir(pix):------"
+msgstr "----dimensions_sélectionnable(pix):----"
 
 msgid "------visible_rectangle(pix)(pix):------"
 msgstr "------rectangle_visible(pix)(pix):------"
 
 msgid "bottom:"
-msgstr "bas:"
+msgstr "bas :"
 
 msgid "height:"
-msgstr "hauteur:"
+msgstr "hauteur :"
 
 msgid "hold:"
-msgstr ""
+msgstr "maintient :"
 
 msgid "intrrpt:"
-msgstr ""
+msgstr "intrrpt :"
 
 msgid "left:"
-msgstr "gauche:"
+msgstr "gauche :"
 
 msgid "lin"
 msgstr "lin"
@@ -57,28 +57,28 @@ msgid "log"
 msgstr "log"
 
 msgid "log-height:"
-msgstr "Hauteur de log:"
+msgstr "Hauteur de log :"
 
 msgid "max:"
-msgstr "max:"
+msgstr "max :"
 
 msgid "min:"
-msgstr "min:"
+msgstr "min :"
 
 msgid "right:"
 msgstr "droite:"
 
 msgid "size:"
-msgstr "Taille:"
+msgstr "taille :"
 
 msgid "top:"
-msgstr "haut:"
+msgstr "haut :"
 
 msgid "value:"
-msgstr "valeur:"
+msgstr "valeur :"
 
 msgid "width:"
-msgstr "largeur:"
+msgstr "largeur :"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
@@ -143,21 +143,19 @@ msgid "removed .pdsettings file"
 msgstr "le fichier .pdsettings a été supprimé"
 
 msgid "couldn't delete .pdsettings file"
-msgstr "le fichier .pdsettings n'a pas pu etre supprimé"
+msgstr "le fichier .pdsettings n'a pas pu être supprimé"
 
 msgid "failed to erase Pd settings"
 msgstr "échec de la suppression des préférences"
 
 msgid "erased Pd settings"
-msgstr "préférences effacés"
+msgstr "préférences effacées"
 
 msgid "no Pd settings to erase"
 msgstr "pas de paramètres a effacer"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
-msgstr ""
-"Pd semble ne pas avoir démarré correctement, les préférences n'ont pas été "
-"chargés"
+msgstr "Pd semble ne pas avoir démarré correctement, les préférences n'ont pas été chargées."
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(sauver a nouveau les préférences pour les charger)"
@@ -199,16 +197,16 @@ msgid "Array"
 msgstr "Tableau"
 
 msgid "Name:"
-msgstr "Nom:"
+msgstr "Nom :"
 
 msgid "Size:"
-msgstr "Taille:"
+msgstr "Taille :"
 
 msgid "Save contents"
 msgstr "Sauver le contenu"
 
 msgid "Draw as:"
-msgstr "Dessiner en:"
+msgstr "Dessiner en :"
 
 msgid "Polygon"
 msgstr "Polygone"
@@ -220,7 +218,7 @@ msgid "Bezier curve"
 msgstr "Courbe de Bézier"
 
 msgid "Put array into:"
-msgstr "Placer le tableau dans:"
+msgstr "Placer le tableau dans :"
 
 msgid "New graph"
 msgstr "Nouveau graphique"
@@ -253,13 +251,13 @@ msgid "Settings"
 msgstr "Paramètres"
 
 msgid "Sample rate:"
-msgstr "Fréquence d'échantillonnage:"
+msgstr "Fréquence d'échantillonnage :"
 
 msgid "Delay (msec):"
-msgstr "Délai (ms):"
+msgstr "Délai(ms) :"
 
 msgid "Block size:"
-msgstr "Échantillons par bloc:"
+msgstr "Échantillons par bloc :"
 
 msgid "Use callbacks"
 msgstr "Utiliser des callbacks"
@@ -268,7 +266,7 @@ msgid "Input Devices"
 msgstr "Périphérique d'entrée"
 
 msgid "Channels:"
-msgstr "Nombre de canaux:"
+msgstr "Nombre de canaux :"
 
 msgid "Output Devices"
 msgstr "Périphérique de sortie"
@@ -292,10 +290,10 @@ msgid "Scale"
 msgstr "Échelle"
 
 msgid "X units per pixel:"
-msgstr "X unités par pixel:"
+msgstr "X unités par pixel :"
 
 msgid "Y units per pixel:"
-msgstr "Y unités par pixel:"
+msgstr "Y unités par pixel :"
 
 msgid "Appearance on parent patch"
 msgstr "Aspect dans le patch parent"
@@ -310,19 +308,19 @@ msgid "Range and size"
 msgstr "Taille et échelle"
 
 msgid "X range: from"
-msgstr "Échelle X: de"
+msgstr "Échelle X : de"
 
 msgid "to"
 msgstr "à"
 
 msgid "Margin:"
-msgstr "Marges:"
+msgstr "Marges :"
 
 msgid "Y range: from"
-msgstr "Échelle Y: de"
+msgstr "Échelle Y : de"
 
 msgid "Data Properties"
-msgstr "Propriétés du Canvas"
+msgstr "Propriétés de la donnée"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -334,7 +332,7 @@ msgstr "'%1$s' non trouvé dans %2$s"
 
 #, tcl-format
 msgid "Search in %s for:"
-msgstr "Rechercher dans %s pour:"
+msgstr "Rechercher dans %s :"
 
 #, tcl-format
 msgid "Showed last '%1$s' in %2$s"
@@ -379,16 +377,16 @@ msgid "Atom Box Properties"
 msgstr "Propriétés du nombre"
 
 msgid "Width:"
-msgstr "Largeur:"
+msgstr "Largeur :"
 
 msgid "Limits"
 msgstr "Limites"
 
 msgid "Lower:"
-msgstr "Inférieur:"
+msgstr "Inférieur :"
 
 msgid "Upper:"
-msgstr "Supérieur:"
+msgstr "Supérieur :"
 
 msgid "Label"
 msgstr "Label"
@@ -409,13 +407,13 @@ msgid "Messages"
 msgstr "Messages"
 
 msgid "Send symbol:"
-msgstr "Envoyer au symbole:"
+msgstr "Envoyer au symbole :"
 
 msgid "Receive symbol:"
-msgstr "Reçoit du symbole:"
+msgstr "Reçoit du symbole :"
 
 msgid "Background color"
-msgstr "Couleur du fond"
+msgstr "Couleur de l'arrière plan"
 
 msgid "Foreground color"
 msgstr "Couleur du premier plan"
@@ -442,10 +440,10 @@ msgid "Flash Time (msec)"
 msgstr "Durée du flash (ms)"
 
 msgid "Intrrpt:"
-msgstr ""
+msgstr "Intrrpt :"
 
 msgid "Hold:"
-msgstr "Maintient:"
+msgstr "Maintient :"
 
 msgid "Toggle"
 msgstr "Interrupteur"
@@ -454,22 +452,22 @@ msgid "Non Zero Value"
 msgstr "Valeur si coché"
 
 msgid "Value:"
-msgstr "Valeur:"
+msgstr "Valeur :"
 
 msgid "Number2"
 msgstr "Nombre2"
 
 msgid "Width (digits):"
-msgstr "Largeur (digits):"
+msgstr "Largeur (chiffres) :"
 
 msgid "Height:"
-msgstr "Hauteur de l'objet (px):"
+msgstr "Hauteur :"
 
 msgid "Output Range"
 msgstr "Plage de valeurs"
 
 msgid "Log height:"
-msgstr "Hauteur du log:"
+msgstr "Hauteur du log :"
 
 msgid "Vslider"
 msgstr "Slider vertical"
@@ -481,7 +479,7 @@ msgid "Vradio"
 msgstr "Sélecteur vertical"
 
 msgid "Num cells:"
-msgstr "Nombre de cases:"
+msgstr "Nombre de cases :"
 
 msgid "Hradio"
 msgstr "Sélecteur horizontal"
@@ -503,13 +501,13 @@ msgid "Parameters"
 msgstr "Paramètres"
 
 msgid "X offset:"
-msgstr "Offset en X:"
+msgstr "Offset en X :"
 
 msgid "Y offset:"
-msgstr "Offset en Y:"
+msgstr "Offset en Y :"
 
 msgid "Colors"
-msgstr "Couleur"
+msgstr "Couleurs"
 
 msgid "Background"
 msgstr "Arrière plan"
@@ -536,48 +534,46 @@ msgid "ALSA MIDI Settings"
 msgstr "Paramètres MIDI (ALSA)"
 
 msgid "In Ports:"
-msgstr "Ports d'entrée:"
+msgstr "Ports d'entrée :"
 
 msgid "Out Ports:"
-msgstr "Ports de sortie:"
+msgstr "Ports de sortie :"
 
 msgid "Pd search path for objects, help, fonts, and other files"
 msgstr "Chemins pour la recherche d'objets, aides, fontes et autres"
 
 msgid "Use standard paths"
-msgstr "Utiliser les extensions standard"
+msgstr "Utiliser les chemins standards"
 
 msgid "Verbose"
 msgstr "Verbeux"
 
 msgid "Pd Documents Directory"
-msgstr ""
+msgstr "Dossier des Documents"
 
 msgid "Browse"
-msgstr "Naviguer"
+msgstr "Choisir"
 
 msgid "Reset"
 msgstr ""
 
 msgid "Disable"
-msgstr ""
+msgstr "Désactiver"
 
 msgid "Externals Install Directory"
-msgstr ""
+msgstr "Dossier d'installation des Externals"
 
-#, fuzzy
 msgid "Clear"
-msgstr "Effacer la console"
+msgstr "Effacer"
 
 msgid "Choose Pd documents directory:"
-msgstr ""
+msgstr "Choisir le dossier des documents Pd :"
 
 msgid "Install externals to directory:"
-msgstr ""
+msgstr "Installer les externals dans le dossier :"
 
-#, fuzzy
 msgid "Add a new path"
-msgstr "Ajouter une bibliothèque"
+msgstr "Ajouter un chemin"
 
 msgid "Add new library"
 msgstr "Ajouter une bibliothèque"
@@ -589,7 +585,7 @@ msgid "Pd libraries to load on startup"
 msgstr "Bibliothèques à charger au démarrage"
 
 msgid "Startup flags:"
-msgstr "Options au démarrage:"
+msgstr "Options au démarrage :"
 
 msgid "Defeat real-time scheduling"
 msgstr "Refuser la priorité temps-réel"
@@ -598,131 +594,133 @@ msgid "Help Browser"
 msgstr "Navigateur d'aide"
 
 msgid "(Tcl) MISSING CLOSE-BRACE '}': "
-msgstr "(Tcl) CARACTÈRE MANQUANT '}': "
+msgstr "(Tcl) CARACTÈRE MANQUANT '}' : "
 
 msgid "(Tcl) INVALID COMMAND NAME: "
-msgstr "(Tcl) COMMANDE INVALIDE: "
+msgstr "(Tcl) COMMANDE INVALIDE : "
 
 msgid "(Tcl) UNHANDLED ERROR: "
-msgstr "(Tcl) ERREUR: "
+msgstr "(Tcl) ERREUR : "
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
-msgstr ""
+msgstr "[deken]: version installée [%1$s] > %2$s...ignorer !"
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
-msgstr ""
+msgstr "[deken]: version installée [%1$s] < %2$s...remplacer !"
 
 #, tcl-format
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
-msgstr ""
+msgstr "[deken]: version installée [%1$s] == %2$s...ignorer !"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
-msgstr ""
+msgstr "[deken] deken-plugin.tcl (recherche d'externals) chargé depuis %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr ""
+msgstr "[deken] Platforme detectée : %s"
 
 msgid "Show all"
 msgstr "Montrer tout"
 
 msgid "Search"
-msgstr "Rechercher dans"
+msgstr "Rechercher"
 
 msgid "To get a list of all available externals, try an empty search."
-msgstr ""
+msgstr "Pour obtenir la liste de tous les externals disponibles, faites une recherche vide."
 
 msgid "Find externals"
-msgstr "Trouver des objets supplémentaires"
+msgstr "Installer des objets supplémentaires"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr "Installer uniquement des objets provenant de sources de confiance"
+msgstr "Installer uniquement des objets provenant de sources de confiance."
 
 msgid "Searching for externals..."
-msgstr "Trouver des objets supplémentaires"
+msgstr "Installer des objets supplémentaires..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
-msgstr ""
+msgstr "[deken]: connecté ? %s"
 
 msgid "Unable to perform search. Are you online?"
-msgstr ""
+msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"
 
 msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr ""
+msgstr "Aucun external correspondant. Réessayez avec le nom complet, par exemple 'freeverb'."
 
 msgid "Please select a (writable) installation directory!"
-msgstr ""
+msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
 
 #, tcl-format
 msgid "Install %s to %s?"
-msgstr ""
+msgstr "Installer %s dans %s ?"
 
 #, tcl-format
 msgid ""
 "Commencing downloading of:\n"
 "%1$s\n"
 "Into %2$s..."
-msgstr ""
+msgstr "Début du téléchargement de :\n"
+"%1$s\n"
+"Dans %2$s..."
 
 msgid "aborting."
-msgstr ""
+msgstr "abandon."
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
+msgstr "%1$s décompressé avec succès dans %2$s."
 
 msgid "Unable to extract package automatically."
-msgstr ""
+msgstr "Impossible de décompresser l'archive automatiquement."
 
 msgid "Please perform the following steps manually:"
-msgstr ""
+msgstr "Effectuez manuellement les étapes suivantes :"
 
 #, tcl-format
 msgid "1. Unzip %s."
-msgstr ""
+msgstr "1. Décompresser %s"
 
 #, tcl-format
 msgid "2. Copy the contents into %s."
-msgstr ""
+msgstr "2. Copier le dossier obtenu dans %s."
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
-msgstr ""
+msgstr "Impossible d'ajouter %s aux chemins de recherche"
 
 #, tcl-format
 msgid "Add %s to the Pd search paths?"
-msgstr ""
+msgstr "Ajouter %s aux chemins de recherche ?"
 
 #, tcl-format
 msgid "Added %s to search paths"
-msgstr ""
+msgstr "%s a été ajouté aux chemins de recherche"
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
-msgstr ""
+msgstr "Impossible de télécharger %1$s [%2$s]"
 
 #, tcl-format
 msgid "Unable to remove stray file %s"
-msgstr ""
+msgstr "Impossible d'effacer le ficher temporaire %s"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to %s"
-msgstr ""
+msgstr "Impossible de donner au fichier téléchargé le nom %s"
 
 #, tcl-format
 msgid "searching for '%s'"
 msgstr "recherche de '%s'"
 
 msgid "Unable to perform search."
-msgstr ""
+msgstr "Recherche impossible."
 
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
-msgstr "Mise en évidence du dernier '%1$s' dans %2$s"
+msgstr "Mis en ligne par '%1$s' le : %2$s"
 
 #, tcl-format
 msgid ""
@@ -733,6 +731,11 @@ msgid ""
 "\n"
 "You can change or disable this later in the Path preferences."
 msgstr ""
+"Voulez-vous créer un dossier Documents pour les patchs et les externals?\n"
+"\n"
+"Emplacement : %s\n"
+"\n"
+"Vous pourrez changer ou désactiver cet emplacement plus tard, dans les préférences de Chemins."
 
 #, tcl-format
 msgid ""
@@ -742,14 +745,19 @@ msgid ""
 "\n"
 "Choose a new location?"
 msgstr ""
+"Le dossier Documents n'existe pas :\n"
+"\n"
+"%s\n"
+"\n"
+"Choisir un nouvel emplacement ?"
 
 #, tcl-format
 msgid "Couldn't create Pd documents directory: %s\n"
-msgstr ""
+msgstr "Impossible de créer le dossier Documents : %s\n"
 
 #, tcl-format
 msgid "Couldn't create \"externals\" directory in: %s\n"
-msgstr ""
+msgstr "Le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
 msgid "About Pd"
 msgstr "À propos de Pd"
@@ -800,7 +808,7 @@ msgid "Cut"
 msgstr "Couper"
 
 msgid "Select All"
-msgstr "Sélectionner tout"
+msgstr "Tout sélectionner"
 
 msgid "Clear Console"
 msgstr "Effacer la console"
@@ -890,6 +898,8 @@ msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
+"Effacer toutes les préférences ?\n"
+"(prendra effet au prochain redémarrage)"
 
 msgid "Path..."
 msgstr "Chemin..."
@@ -933,7 +943,7 @@ msgstr "Audio ON"
 msgid "Audio off"
 msgstr "Audio OFF"
 
-msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgid "(Tcl) CARACTÈRE MANQUANT ']' : "
 msgstr ""
 
 msgid "Tcl:"
@@ -975,9 +985,9 @@ msgstr "Éditer..."
 msgid "Delete"
 msgstr "Supprimer"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Ignoring '%s': doesn't exist"
-msgstr "'%s' ne semble par être un fichier Pd"
+msgstr "'%s' n'existe pas"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
