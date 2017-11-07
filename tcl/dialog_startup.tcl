@@ -5,6 +5,7 @@ package require scrollboxwindow
 
 namespace eval dialog_startup {
     variable defeatrt_flag 0
+    variable verbose_flag 0
 
     namespace export pdtk_startup_dialog
 }
@@ -62,13 +63,15 @@ proc ::dialog_startup::edit { current_library } {
 
 proc ::dialog_startup::commit { new_startup } {
     variable defeatrt_button
+    variable verbose_button
     set ::startup_libraries $new_startup
-    pdsend "pd startup-dialog $defeatrt_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
+    pdsend "pd startup-dialog $defeatrt_button $verbose_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
-proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
+proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt verbose flags} {
     variable defeatrt_button $defeatrt
+    variable verbose_button $verbose
     if {$flags ne ""} {variable ::startup_flags $flags}
 
     if {[winfo exists $mytoplevel]} {
@@ -95,13 +98,19 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     pack $mytoplevel.flags.entry -side right -expand 1 -fill x
     pack $mytoplevel.flags.entryname -side right
 
+    frame $mytoplevel.checksframe
+    pack $mytoplevel.checksframe -side top -anchor s -fill x -padx 2m -pady 5
+
+    checkbutton $mytoplevel.checksframe.verbose -anchor w \
+            -text [_ "Verbose"] \
+            -variable ::dialog_startup::verbose_button
+    pack $mytoplevel.checksframe.verbose -side left -expand 1
+
     if {$::windowingsystem ne "win32"} {
-        frame $mytoplevel.defeatrtframe
-        pack $mytoplevel.defeatrtframe -side top -anchor s -fill x -padx 2m -pady 5
-        checkbutton $mytoplevel.defeatrtframe.defeatrt -anchor w \
+        checkbutton $mytoplevel.checksframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::dialog_startup::defeatrt_button
-        pack $mytoplevel.defeatrtframe.defeatrt
+        pack $mytoplevel.checksframe.defeatrt -side right -expand 1
     }
 
     # focus handling on OSX
