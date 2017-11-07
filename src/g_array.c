@@ -1193,7 +1193,9 @@ void garray_resize(t_garray *x, t_floatarg f)
 }
 
 /* ignore zoom for now */
-void garray_zoom(t_garray *x, t_floatarg f) {}
+static void garray_zoom(t_garray *x, t_floatarg f)
+{
+}
 
 static void garray_print(t_garray *x)
 {
