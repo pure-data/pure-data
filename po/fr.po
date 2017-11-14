@@ -377,7 +377,7 @@ msgid "Y only"
 msgstr "seulement Y"
 
 msgid "Atom Box Properties"
-msgstr "Propriétés du nombre"
+msgstr "Propriétés de la boîte Nombre/Symbol"
 
 msgid "Width:"
 msgstr "Largeur :"
