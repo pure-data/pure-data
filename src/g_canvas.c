@@ -1631,6 +1631,8 @@ static void canvas_f(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         post("** ignoring width or font settings from future Pd version **");
         warned = 1;
     }
+    /* If the patch is loading the width corresponds to one of its objects
+    otherwise the width corresponds to the patch itself */
     if(x->gl_loading)
     {
         if (!x->gl_list)
