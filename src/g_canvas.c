@@ -1362,7 +1362,7 @@ void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
     }
 }
 
-static void canvas_completepath(char *from, char *to, int bufsize)
+static void canvas_completepath(const char *from, char *to, int bufsize)
 {
     if (sys_isabsolutepath(from))
     {
@@ -1398,7 +1398,7 @@ static int check_exists(const char*path)
 }
 #endif
 
-static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
+static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
 {
     t_namelist*nl;
     char strbuf[MAXPDSTRING];
@@ -1431,7 +1431,7 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         }
     }
 }
-static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
+static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
 {
     t_namelist*nl;
     char strbuf[MAXPDSTRING];
