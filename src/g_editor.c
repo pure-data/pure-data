@@ -37,7 +37,7 @@ struct _instanceeditor
     unsigned int canvas_cursorwas;
 };
 
-void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
+void glist_readfrombinbuf(t_glist *x, t_binbuf *b, const char *filename,
     int selectem);
 
 /* ------------------ forward declarations --------------- */

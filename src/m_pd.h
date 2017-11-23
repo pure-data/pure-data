@@ -339,8 +339,8 @@ EXTERN void binbuf_text(t_binbuf *x, const char *text, size_t size);
 EXTERN void binbuf_gettext(t_binbuf *x, char **bufp, int *lengthp);
 EXTERN void binbuf_clear(t_binbuf *x);
 EXTERN void binbuf_add(t_binbuf *x, int argc, t_atom *argv);
-EXTERN void binbuf_addv(t_binbuf *x, char *fmt, ...);
 EXTERN void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y);
+EXTERN void binbuf_addv(t_binbuf *x, const char *fmt, ...);
 EXTERN void binbuf_addsemi(t_binbuf *x);
 EXTERN void binbuf_restore(t_binbuf *x, int argc, t_atom *argv);
 EXTERN void binbuf_print(t_binbuf *x);
@@ -348,13 +348,13 @@ EXTERN int binbuf_getnatom(t_binbuf *x);
 EXTERN t_atom *binbuf_getvec(t_binbuf *x);
 EXTERN int binbuf_resize(t_binbuf *x, int newsize);
 EXTERN void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv);
-EXTERN int binbuf_read(t_binbuf *b, char *filename, char *dirname,
+EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
-EXTERN int binbuf_read_via_canvas(t_binbuf *b, char *filename, t_canvas *canvas,
+EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, t_canvas *canvas,
     int crflag);
-EXTERN int binbuf_read_via_path(t_binbuf *b, char *filename, char *dirname,
+EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
-EXTERN int binbuf_write(t_binbuf *x, char *filename, char *dir,
+EXTERN int binbuf_write(t_binbuf *x, const char *filename, const char *dir,
     int crflag);
 EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
 EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av,
@@ -428,7 +428,7 @@ EXTERN void canvas_setargs(int argc, t_atom *argv);
 EXTERN void canvas_getargs(int *argcp, t_atom **argvp);
 EXTERN t_symbol *canvas_getcurrentdir(void);
 EXTERN t_glist *canvas_getcurrent(void);
-EXTERN void canvas_makefilename(t_glist *c, char *file,
+EXTERN void canvas_makefilename(t_glist *c, const char *file,
     char *result,int resultsize);
 EXTERN t_symbol *canvas_getdir(t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
@@ -478,9 +478,9 @@ EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
 EXTERN void class_setwidget(t_class *c, const t_widgetbehavior *w);
 EXTERN void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *w);
 EXTERN const t_parentwidgetbehavior *class_parentwidget(t_class *c);
-EXTERN char *class_getname(t_class *c);
-EXTERN char *class_gethelpname(t_class *c);
-EXTERN char *class_gethelpdir(t_class *c);
+EXTERN const char *class_getname(const t_class *c);
+EXTERN const char *class_gethelpname(const t_class *c);
+EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
 EXTERN int class_isdrawcommand(t_class *c);
 EXTERN void class_domainsignalin(t_class *c, int onset);

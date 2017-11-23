@@ -622,12 +622,12 @@ void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *pw)
     c->c_pwb = pw;
 }
 
-char *class_getname(t_class *c)
+const char *class_getname(const t_class *c)
 {
     return (c->c_name->s_name);
 }
 
-char *class_gethelpname(t_class *c)
+const char *class_gethelpname(const t_class *c)
 {
     return (c->c_helpname->s_name);
 }
@@ -679,7 +679,7 @@ void class_set_extern_dir(t_symbol *s)
     class_extern_dir = s;
 }
 
-char *class_gethelpdir(t_class *c)
+const char *class_gethelpdir(const t_class *c)
 {
     return (c->c_externdir->s_name);
 }

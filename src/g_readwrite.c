@@ -167,7 +167,7 @@ int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     return (1);
 }
 
-void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename, int selectem)
+void glist_readfrombinbuf(t_glist *x, t_binbuf *b, const char *filename, int selectem)
 {
     t_canvas *canvas = glist_getcanvas(x);
     int cr = 0, natoms, nline, message, nextmsg = 0, i, j, nitems;

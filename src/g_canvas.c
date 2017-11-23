@@ -183,7 +183,7 @@ t_symbol *canvas_getdir(t_canvas *x)
     return (e->ce_dir);
 }
 
-void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
+void canvas_makefilename(t_canvas *x, const char *file, char *result, int resultsize)
 {
     const char *dir = canvas_getenv(x)->ce_dir->s_name;
     if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)

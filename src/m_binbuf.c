@@ -262,7 +262,7 @@ void binbuf_add(t_binbuf *x, int argc, t_atom *argv)
 }
 
 #define MAXADDMESSV 100
-void binbuf_addv(t_binbuf *x, char *fmt, ...)
+void binbuf_addv(t_binbuf *x, const char *fmt, ...)
 {
     va_list ap;
     t_atom arg[MAXADDMESSV], *at =arg;
@@ -793,7 +793,7 @@ broken:
          ATOMS_FREEA(mstack, maxnargs);
 }
 
-int binbuf_read(t_binbuf *b, char *filename, char *dirname, int crflag)
+int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crflag)
 {
     long length;
     int fd;
@@ -849,7 +849,7 @@ int binbuf_read(t_binbuf *b, char *filename, char *dirname, int crflag)
 }
 
     /* read a binbuf from a file, via the search patch of a canvas */
-int binbuf_read_via_canvas(t_binbuf *b, char *filename, t_canvas *canvas,
+int binbuf_read_via_canvas(t_binbuf *b, const char *filename, t_canvas *canvas,
     int crflag)
 {
     int filedesc;
@@ -867,7 +867,7 @@ int binbuf_read_via_canvas(t_binbuf *b, char *filename, t_canvas *canvas,
 }
 
     /* old version */
-int binbuf_read_via_path(t_binbuf *b, char *filename, char *dirname,
+int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     int crflag)
 {
     int filedesc;
@@ -889,7 +889,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd);
 
     /* write a binbuf to a text file.  If "crflag" is set we suppress
     semicolons. */
-int binbuf_write(t_binbuf *x, char *filename, char *dir, int crflag)
+int binbuf_write(t_binbuf *x, const char *filename, const char *dir, int crflag)
 {
     FILE *f = 0;
     char sbuf[WBUFSIZE], fbuf[MAXPDSTRING], *bp = sbuf, *ep = sbuf + WBUFSIZE;
