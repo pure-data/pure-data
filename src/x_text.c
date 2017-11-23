@@ -1055,7 +1055,7 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            char *s = argv[i].a_w.w_symbol->s_name;
+            const char *s = argv[i].a_w.w_symbol->s_name;
             if (nextop >= 0)
                 pd_error(x,
                     "text search: extra operation argument ignored: %s", s);
@@ -1603,7 +1603,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
         pd_this->pd_newest = text_define_new(s, argc, argv);
     else
     {
-        char *str = argv[0].a_w.w_symbol->s_name;
+        const char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "d") || !strcmp(str, "define"))
             pd_this->pd_newest = text_define_new(s, argc-1, argv+1);
         else if (!strcmp(str, "get"))

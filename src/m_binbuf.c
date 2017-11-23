@@ -267,7 +267,7 @@ void binbuf_addv(t_binbuf *x, char *fmt, ...)
     va_list ap;
     t_atom arg[MAXADDMESSV], *at =arg;
     int nargs = 0;
-    char *fp = fmt;
+    const char *fp = fmt;
 
     va_start(ap, fmt);
     while (1)
@@ -306,7 +306,8 @@ void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
     binbuf_add(z, y->b_n, y->b_vec);
     for (i = 0, ap = z->b_vec; i < z->b_n; i++, ap++)
     {
-        char tbuf[MAXPDSTRING], *s;
+        char tbuf[MAXPDSTRING];
+        const char *s;
         switch (ap->a_type)
         {
         case A_FLOAT:
@@ -371,7 +372,7 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
     {
         if (argv->a_type == A_SYMBOL)
         {
-            char *str = argv->a_w.w_symbol->s_name, *str2;
+            const char *str = argv->a_w.w_symbol->s_name, *str2;
             if (!strcmp(str, ";")) SETSEMI(ap);
             else if (!strcmp(str, ",")) SETCOMMA(ap);
             else if ((str2 = strchr(str, '$')) && str2[1] >= '0'
@@ -397,7 +398,8 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
             }
             else if (strchr(argv->a_w.w_symbol->s_name, '\\'))
             {
-                char buf[MAXPDSTRING], *sp1, *sp2;
+                char buf[MAXPDSTRING], *sp1;
+                const char *sp2;
                 int slashed = 0;
                 for (sp1 = buf, sp2 = argv->a_w.w_symbol->s_name;
                     *sp2 && sp1 < buf + (MAXPDSTRING-1);
@@ -476,11 +478,11 @@ int canvas_getdollarzero( void);
  * buf="10"
  * return value = 1; (s+1=="-bla")
  */
-int binbuf_expanddollsym(char*s, char*buf,t_atom dollar0, int ac, t_atom *av, int tonew)
+int binbuf_expanddollsym(const char *s, char *buf, t_atom dollar0, int ac, t_atom *av, int tonew)
 {
   int argno=atol(s);
   int arglen=0;
-  char*cs=s;
+  const char*cs=s;
   char c=*cs;
   *buf=0;
 
@@ -513,7 +515,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av, int tonew)
 {
     char buf[MAXPDSTRING];
     char buf2[MAXPDSTRING];
-    char*str=s->s_name;
+    const char*str=s->s_name;
     char*substr;
     int next=0, i=MAXPDSTRING;
     t_atom dollarnull;
@@ -998,7 +1000,7 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
     for (nextindex = 0; nextindex < n; )
     {
         int endmess, natom;
-        char *first, *second, *third;
+        const char *first, *second, *third;
         for (endmess = nextindex; endmess < n && vec[endmess].a_type != A_SEMI;
             endmess++)
                 ;

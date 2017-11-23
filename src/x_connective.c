@@ -1252,7 +1252,7 @@ typedef struct _makefilename
 static void makefilename_scanformat(t_makefilename *x)
 {
     int num=0, infmt=0;
-    char *str,*chr;
+    const char *str;
     if (!x->x_format) return;
     x->x_accept = A_NULL;
     for (str=x->x_format->s_name; *str; str++) {

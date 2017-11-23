@@ -159,7 +159,7 @@ void canvas_getargs(int *argcp, t_atom **argvp)
 t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s)
 {
     t_symbol *ret;
-    char *name = s->s_name;
+    const char *name = s->s_name;
     if (strchr(name, '$'))
     {
         t_canvasenvironment *env = canvas_getenv(x);
@@ -185,7 +185,7 @@ t_symbol *canvas_getdir(t_canvas *x)
 
 void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
 {
-    char *dir = canvas_getenv(x)->ce_dir->s_name;
+    const char *dir = canvas_getenv(x)->ce_dir->s_name;
     if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)
     {
         strncpy(result, file, resultsize);
@@ -430,7 +430,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     static int gcount = 0;  /* it's OK if two threads get the same value */
     int zz;
     int menu = 0;
-    char *str;
+    const char *str;
     t_glist *x = (t_glist *)pd_new(canvas_class);
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
@@ -1472,7 +1472,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 #endif
     for (i = 0; i < argc; i++)
     {
-        char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
+        const char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
         if ((argc > i+1) && !strcmp(flag, "-path"))
         {
             e->ce_path = namelist_append(e->ce_path,
@@ -1577,7 +1577,7 @@ int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
-        char *dir;
+        const char *dir;
         dir = canvas_getdir(y)->s_name;
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {

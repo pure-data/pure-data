@@ -426,7 +426,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
                 /* if we're loading an extern it might have been invoked by a
                 longer file name; in this case, make this an admissible name
                 too. */
-            char *loadstring = class_loadsym->s_name,
+            const char *loadstring = class_loadsym->s_name,
                 l1 = strlen(s->s_name), l2 = strlen(loadstring);
             if (l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
                 class_addmethod(pd_objectmaker, (t_method)newmethod,
@@ -748,7 +748,8 @@ t_symbol *gensym(const char *s)
 
 static t_symbol *addfileextent(t_symbol *s)
 {
-    char namebuf[MAXPDSTRING], *str = s->s_name;
+    char namebuf[MAXPDSTRING];
+    const char *str = s->s_name;
     int ln = strlen(str);
     if (!strcmp(str + ln - 3, ".pd")) return (s);
     strcpy(namebuf, str);

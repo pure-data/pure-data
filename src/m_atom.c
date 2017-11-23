@@ -82,7 +82,7 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
         break;
     case A_SYMBOL:
     {
-        char *sp;
+        const char *sp;
         unsigned int len;
         int quote;
         for (sp = a->a_w.w_symbol->s_name, len = 0, quote = 0; *sp; sp++, len++)

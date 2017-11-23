@@ -1223,7 +1223,7 @@ static void canvas_done_popup(t_canvas *x, t_float which,
             }
             else    /* help */
             {
-                char *dir;
+                const char *dir;
                 if (pd_class(&y->g_pd) == canvas_class &&
                     canvas_isabstraction((t_canvas *)y))
                 {

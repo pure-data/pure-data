@@ -573,7 +573,8 @@ void sys_doflags( void)
     dollars, and semis down here. */
 t_symbol *sys_decodedialog(t_symbol *s)
 {
-    char buf[MAXPDSTRING], *sp = s->s_name;
+    char buf[MAXPDSTRING];
+    const char *sp = s->s_name;
     int i;
     if (*sp != '+')
         bug("sys_decodedialog: %s", sp);

@@ -17,12 +17,12 @@
 void parsetimeunits(void *x, t_float amount, t_symbol *unitname,
     t_float *unit, int *samps)
 {
-    char *s = unitname->s_name;
+    const char *s = unitname->s_name;
     if (amount <= 0)
         amount = 1;
     if (s[0] == 'p' && s[1] == 'e' && s[2] == 'r')  /* starts with 'per' */
     {
-        char *s2 = s+3;
+        const char *s2 = s+3;
         if (!strcmp(s2, "millisecond") || !strcmp(s2, "msec"))  /* msec */
             *samps = 0, *unit = 1./amount;
         else if (!strncmp(s2, "sec", 3))        /* seconds */
