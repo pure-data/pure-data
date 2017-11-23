@@ -202,12 +202,12 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
 #define EXTENT ""
 #endif
 
-static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
-    char *patchdir, int argc, t_atom *argv, int ninsig, int noutsig,
+static void pd_tilde_donew(t_pd_tilde *x, const char *pddir, const char *schedlibdir,
+    const char *patchdir_c, int argc, t_atom *argv, int ninsig, int noutsig,
     int fifo, t_float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
-    char pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING], tmpbuf[MAXPDSTRING];
+    char pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING], tmpbuf[MAXPDSTRING], patchdir[MAXPDSTRING];
     char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
         sampleratestr[40];
     struct stat statbuf;
@@ -222,6 +222,7 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     sprintf(noutsigstr, "%d", noutsig);
     sprintf(sampleratestr, "%f", (float)samplerate);
     snprintf(tmpbuf, MAXPDSTRING, "%s/bin/pd" EXTENT, pddir);
+    snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
     sys_bashfilename(tmpbuf, pdexecbuf);
     if (stat(pdexecbuf, &statbuf) < 0)
     {
@@ -561,7 +562,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
 {
     t_symbol *sel = ((argc > 0 && argv->a_type == A_SYMBOL) ?
         argv->a_w.w_symbol : gensym("?")), *schedlibdir;
-    char *patchdir;
+    const char *patchdir;
     if (sel == gensym("start"))
     {
         char pdargstring[MAXPDSTRING];
@@ -578,7 +579,8 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
         schedlibdir = x->x_schedlibdir;
         if (schedlibdir == gensym(".") && x->x_pddir != gensym("."))
         {
-            char *pds = x->x_pddir->s_name, scheddirstring[MAXPDSTRING];
+            const char *pds = x->x_pddir->s_name;
+            char scheddirstring[MAXPDSTRING];
             int l = strlen(pds);
             if (l >= 4 && (!strcmp(pds+l-3, "bin") || !strcmp(pds+l-4, "bin/")))
                 snprintf(scheddirstring, MAXPDSTRING, "%s/../extra/pd~", pds);
@@ -866,7 +868,7 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
     {
         while (ac > 0 && av[0].a_type == A_SYM)
         {
-            char *flag = av[0].a_w.w_sym->s_name;
+            const char *flag = av[0].a_w.w_sym->s_name;
             if (!strcmp(flag, "-sr") && ac > 1)
             {
                 sr = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :
