@@ -424,7 +424,7 @@ EXTERN t_object *pd_checkobject(t_pd *x);
 
 EXTERN void glob_setfilename(void *dummy, t_symbol *name, t_symbol *dir);
 
-EXTERN void canvas_setargs(int argc, t_atom *argv);
+EXTERN void canvas_setargs(int argc, const t_atom *argv);
 EXTERN void canvas_getargs(int *argcp, t_atom **argvp);
 EXTERN t_symbol *canvas_getcurrentdir(void);
 EXTERN t_glist *canvas_getcurrent(void);
@@ -513,7 +513,7 @@ EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
-EXTERN void postatom(int argc, t_atom *argv);
+EXTERN void postatom(int argc, const t_atom *argv);
 EXTERN void endpost(void);
 EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);

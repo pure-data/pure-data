@@ -158,7 +158,7 @@ void poststring(const char *s)
     dopost(s);
 }
 
-void postatom(int argc, t_atom *argv)
+void postatom(int argc, const t_atom *argv)
 {
     int i;
     for (i = 0; i < argc; i++)

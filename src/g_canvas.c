@@ -91,7 +91,7 @@ static void canvas_takeofflist(t_canvas *x)
 }
 
 
-void canvas_setargs(int argc, t_atom *argv)
+void canvas_setargs(int argc, const t_atom *argv)
 {
         /* if there's an old one lying around free it here.  This
         happens if an abstraction is loaded but never gets as far
