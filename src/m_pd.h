@@ -319,15 +319,15 @@ EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
 #define SETDOLLSYM(atom, s) ((atom)->a_type = A_DOLLSYM, \
     (atom)->a_w.w_symbol= (s))
 
-EXTERN t_float atom_getfloat(t_atom *a);
-EXTERN t_int atom_getint(t_atom *a);
-EXTERN t_symbol *atom_getsymbol(t_atom *a);
-EXTERN t_symbol *atom_gensym(t_atom *a);
-EXTERN t_float atom_getfloatarg(int which, int argc, t_atom *argv);
-EXTERN t_int atom_getintarg(int which, int argc, t_atom *argv);
-EXTERN t_symbol *atom_getsymbolarg(int which, int argc, t_atom *argv);
+EXTERN t_float atom_getfloat(const t_atom *a);
+EXTERN t_int atom_getint(const t_atom *a);
+EXTERN t_symbol *atom_getsymbol(const t_atom *a);
+EXTERN t_symbol *atom_gensym(const t_atom *a);
+EXTERN t_float atom_getfloatarg(int which, int argc, const t_atom *argv);
+EXTERN t_int atom_getintarg(int which, int argc, const t_atom *argv);
+EXTERN t_symbol *atom_getsymbolarg(int which, int argc, const t_atom *argv);
 
-EXTERN void atom_string(t_atom *a, char *buf, unsigned int bufsize);
+EXTERN void atom_string(const t_atom *a, char *buf, unsigned int bufsize);
 
 /* ------------------  binbufs --------------- */
 
@@ -338,16 +338,16 @@ EXTERN t_binbuf *binbuf_duplicate(const t_binbuf *y);
 EXTERN void binbuf_text(t_binbuf *x, const char *text, size_t size);
 EXTERN void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp);
 EXTERN void binbuf_clear(t_binbuf *x);
-EXTERN void binbuf_add(t_binbuf *x, int argc, t_atom *argv);
+EXTERN void binbuf_add(t_binbuf *x, int argc, const t_atom *argv);
 EXTERN void binbuf_addv(t_binbuf *x, const char *fmt, ...);
 EXTERN void binbuf_addbinbuf(t_binbuf *x, const t_binbuf *y);
 EXTERN void binbuf_addsemi(t_binbuf *x);
-EXTERN void binbuf_restore(t_binbuf *x, int argc, t_atom *argv);
+EXTERN void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv);
 EXTERN void binbuf_print(const t_binbuf *x);
 EXTERN int binbuf_getnatom(const t_binbuf *x);
 EXTERN t_atom *binbuf_getvec(const t_binbuf *x);
 EXTERN int binbuf_resize(t_binbuf *x, int newsize);
-EXTERN void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, t_atom *argv);
+EXTERN void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv);
 EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
 EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
@@ -357,7 +357,7 @@ EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *d
 EXTERN int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
     int crflag);
 EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
-EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av,
+EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     int tonew);
 
 /* ------------------  clocks --------------- */

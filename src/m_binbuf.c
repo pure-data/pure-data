@@ -207,7 +207,7 @@ void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp)
     char *buf = getbytes(0), *newbuf;
     int length = 0;
     char string[MAXPDSTRING];
-    t_atom *ap;
+    const t_atom *ap;
     int indx;
 
     for (ap = x->b_vec, indx = x->b_n; indx--; ap++)
@@ -239,7 +239,7 @@ void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp)
 /* LATER improve the out-of-space behavior below.  Also fix this so that
 writing to file doesn't buffer everything together. */
 
-void binbuf_add(t_binbuf *x, int argc, t_atom *argv)
+void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 {
     int newsize = x->b_n + argc, i;
     t_atom *ap;
@@ -355,7 +355,7 @@ void binbuf_addsemi(t_binbuf *x)
 /* Supply atoms to a binbuf from a message, making the opposite changes
 from binbuf_addbinbuf.  The symbol ";" goes to a semicolon, etc. */
 
-void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
+void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 {
     int newsize = x->b_n + argc, i;
     t_atom *ap;
@@ -478,7 +478,7 @@ int canvas_getdollarzero( void);
  * buf="10"
  * return value = 1; (s+1=="-bla")
  */
-int binbuf_expanddollsym(const char *s, char *buf, t_atom dollar0, int ac, t_atom *av, int tonew)
+int binbuf_expanddollsym(const char *s, char *buf, t_atom dollar0, int ac, const t_atom *av, int tonew)
 {
   int argno=atol(s);
   int arglen=0;
@@ -511,7 +511,7 @@ int binbuf_expanddollsym(const char *s, char *buf, t_atom dollar0, int ac, t_ato
 
 /* LATER remove the dependence on the current canvas for $0; should be another
 argument. */
-t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av, int tonew)
+t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew)
 {
     char buf[MAXPDSTRING];
     char buf2[MAXPDSTRING];
@@ -598,10 +598,10 @@ done:
 #define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
 #endif
 
-void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, t_atom *argv)
+void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
 {
     t_atom smallstack[SMALLMSG], *mstack, *msp;
-    t_atom *at = x->b_vec;
+    const t_atom *at = x->b_vec;
     int ac = x->b_n;
     int nargs, maxnargs = 0;
     if (ac <= SMALLMSG)
@@ -1527,7 +1527,8 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 void binbuf_savetext(const t_binbuf *bfrom, t_binbuf *bto)
 {
     int k, n = binbuf_getnatom(bfrom);
-    t_atom *ap = binbuf_getvec(bfrom), at;
+    const t_atom *ap = binbuf_getvec(bfrom);
+    t_atom at;
     for (k = 0; k < n; k++)
     {
         if (ap[k].a_type == A_FLOAT ||

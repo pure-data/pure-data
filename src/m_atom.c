@@ -10,24 +10,24 @@
         atoms.  There's no "pointer" version since there's nothing
         safe to return if there's an error. */
 
-t_float atom_getfloat(t_atom *a)
+t_float atom_getfloat(const t_atom *a)
 {
     if (a->a_type == A_FLOAT) return (a->a_w.w_float);
     else return (0);
 }
 
-t_int atom_getint(t_atom *a)
+t_int atom_getint(const t_atom *a)
 {
     return (atom_getfloat(a));
 }
 
-t_symbol *atom_getsymbol(t_atom *a)  /* LATER think about this more carefully */
+t_symbol *atom_getsymbol(const t_atom *a)  /* LATER think about this more carefully */
 {
     if (a->a_type == A_SYMBOL) return (a->a_w.w_symbol);
     else return (&s_float);
 }
 
-t_symbol *atom_gensym(t_atom *a)  /* this works  better for graph labels */
+t_symbol *atom_gensym(const t_atom *a)  /* this works  better for graph labels */
 {
     char buf[30];
     if (a->a_type == A_SYMBOL) return (a->a_w.w_symbol);
@@ -37,7 +37,7 @@ t_symbol *atom_gensym(t_atom *a)  /* this works  better for graph labels */
     return (gensym(buf));
 }
 
-t_float atom_getfloatarg(int which, int argc, t_atom *argv)
+t_float atom_getfloatarg(int which, int argc, const t_atom *argv)
 {
     if (argc <= which) return (0);
     argv += which;
@@ -45,12 +45,12 @@ t_float atom_getfloatarg(int which, int argc, t_atom *argv)
     else return (0);
 }
 
-t_int atom_getintarg(int which, int argc, t_atom *argv)
+t_int atom_getintarg(int which, int argc, const t_atom *argv)
 {
     return (atom_getfloatarg(which, argc, argv));
 }
 
-t_symbol *atom_getsymbolarg(int which, int argc, t_atom *argv)
+t_symbol *atom_getsymbolarg(int which, int argc, const t_atom *argv)
 {
     if (argc <= which) return (&s_);
     argv += which;
@@ -64,7 +64,7 @@ t_symbol *atom_getsymbolarg(int which, int argc, t_atom *argv)
 * the '$' only gets quoted at the beginning of the string.
 */
 
-void atom_string(t_atom *a, char *buf, unsigned int bufsize)
+void atom_string(const t_atom *a, char *buf, unsigned int bufsize)
 {
     char tbuf[30];
     switch(a->a_type)
