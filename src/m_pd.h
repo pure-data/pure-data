@@ -270,8 +270,8 @@ EXTERN t_pd pd_canvasmaker;     /* factory for creating canvases */
 EXTERN void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN void pd_forwardmess(t_pd *x, int argc, t_atom *argv);
 EXTERN t_symbol *gensym(const char *s);
-EXTERN t_gotfn getfn(t_pd *x, t_symbol *s);
-EXTERN t_gotfn zgetfn(t_pd *x, t_symbol *s);
+EXTERN t_gotfn getfn(const t_pd *x, t_symbol *s);
+EXTERN t_gotfn zgetfn(const t_pd *x, t_symbol *s);
 EXTERN void nullfn(void);
 EXTERN void pd_vmess(t_pd *x, t_symbol *s, char *fmt, ...);
 
@@ -380,7 +380,7 @@ EXTERN t_pd *pd_new(t_class *cls);
 EXTERN void pd_free(t_pd *x);
 EXTERN void pd_bind(t_pd *x, t_symbol *s);
 EXTERN void pd_unbind(t_pd *x, t_symbol *s);
-EXTERN t_pd *pd_findbyclass(t_symbol *s, t_class *c);
+EXTERN t_pd *pd_findbyclass(t_symbol *s, const t_class *c);
 EXTERN void pd_pushsym(t_pd *x);
 EXTERN void pd_popsym(t_pd *x);
 EXTERN t_symbol *pd_getfilename(void);
@@ -482,7 +482,7 @@ EXTERN const char *class_getname(const t_class *c);
 EXTERN const char *class_gethelpname(const t_class *c);
 EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
-EXTERN int class_isdrawcommand(t_class *c);
+EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_domainsignalin(t_class *c, int onset);
 EXTERN void class_set_extern_dir(t_symbol *s);
 #define CLASS_MAINSIGNALIN(c, type, field) \
@@ -491,13 +491,13 @@ EXTERN void class_set_extern_dir(t_symbol *s);
          /* prototype for functions to save Pd's to a binbuf */
 typedef void (*t_savefn)(t_gobj *x, t_binbuf *b);
 EXTERN void class_setsavefn(t_class *c, t_savefn f);
-EXTERN t_savefn class_getsavefn(t_class *c);
 EXTERN void obj_saveformat(t_object *x, t_binbuf *bb); /* add format to bb */
+EXTERN t_savefn class_getsavefn(const t_class *c);
 
         /* prototype for functions to open properties dialogs */
 typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
 EXTERN void class_setpropertiesfn(t_class *c, t_propertiesfn f);
-EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
+EXTERN t_propertiesfn class_getpropertiesfn(const t_class *c);
 
 #ifndef PD_CLASS_DEF
 #define class_addbang(x, y) class_addbang((x), (t_method)(y))

@@ -647,7 +647,7 @@ void class_setdrawcommand(t_class *c)
     c->c_drawcommand = 1;
 }
 
-int class_isdrawcommand(t_class *c)
+int class_isdrawcommand(const t_class *c)
 {
     return (c->c_drawcommand);
 }
@@ -694,7 +694,7 @@ void class_setsavefn(t_class *c, t_savefn f)
     c->c_savefn = f;
 }
 
-t_savefn class_getsavefn(t_class *c)
+t_savefn class_getsavefn(const t_class *c)
 {
     return (c->c_savefn);
 }
@@ -704,7 +704,7 @@ void class_setpropertiesfn(t_class *c, t_propertiesfn f)
     c->c_propertiesfn = f;
 }
 
-t_propertiesfn class_getpropertiesfn(t_class *c)
+t_propertiesfn class_getpropertiesfn(const t_class *c)
 {
     return (c->c_propertiesfn);
 }
@@ -1045,9 +1045,9 @@ void pd_forwardmess(t_pd *x, int argc, t_atom *argv)
 
 void nullfn(void) {}
 
-t_gotfn getfn(t_pd *x, t_symbol *s)
+t_gotfn getfn(const t_pd *x, t_symbol *s)
 {
-    t_class *c = *x;
+    const t_class *c = *x;
     t_methodentry *m, *mlist;
     int i;
 
@@ -1062,9 +1062,9 @@ t_gotfn getfn(t_pd *x, t_symbol *s)
     return((t_gotfn)nullfn);
 }
 
-t_gotfn zgetfn(t_pd *x, t_symbol *s)
+t_gotfn zgetfn(const t_pd *x, t_symbol *s)
 {
-    t_class *c = *x;
+    const t_class *c = *x;
     t_methodentry *m, *mlist;
     int i;
 
