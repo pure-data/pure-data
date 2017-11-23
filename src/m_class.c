@@ -714,6 +714,7 @@ t_propertiesfn class_getpropertiesfn(t_class *c)
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance)
 {
+    char *sym = 0;
     t_symbol **sym1, *sym2;
     unsigned int hash = 5381;
     int length = 0;
@@ -733,10 +734,11 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     if (oldsym)
         sym2 = oldsym;
     else sym2 = (t_symbol *)t_getbytes(sizeof(*sym2));
-    sym2->s_name = t_getbytes(length+1);
+    sym = t_getbytes(length+1);
     sym2->s_next = 0;
     sym2->s_thing = 0;
-    strcpy(sym2->s_name, s);
+    strcpy(sym, s);
+    sym2->s_name = sym;
     *sym1 = sym2;
     return (sym2);
 }

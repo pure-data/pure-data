@@ -109,7 +109,7 @@ typedef PD_FLOATTYPE t_floatarg;    /* float type for function calls */
 
 typedef struct _symbol
 {
-    char *s_name;
+    const char *s_name;
     struct _class **s_thing;
     struct _symbol *s_next;
 } t_symbol;
