@@ -579,7 +579,7 @@ void sys_savepreferences(const char *filename)
 
     for (i = 0; 1; i++)
     {
-        char *pathelem = namelist_get(STUFF->st_searchpath, i);
+        const char *pathelem = namelist_get(STUFF->st_searchpath, i);
         if (!pathelem)
             break;
         sprintf(buf1, "path%d", i+1);
@@ -595,7 +595,7 @@ void sys_savepreferences(const char *filename)
         /* startup */
     for (i = 0; 1; i++)
     {
-        char *pathelem = namelist_get(STUFF->st_externlist, i);
+        const char *pathelem = namelist_get(STUFF->st_externlist, i);
         if (!pathelem)
             break;
         sprintf(buf1, "loadlib%d", i+1);

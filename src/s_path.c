@@ -222,10 +222,10 @@ void namelist_free(t_namelist *listwas)
     }
 }
 
-char *namelist_get(t_namelist *namelist, int n)
+const char *namelist_get(const t_namelist *namelist, int n)
 {
     int i;
-    t_namelist *nl;
+    const t_namelist *nl;
     for (i = 0, nl = namelist; i < n && nl; i++, nl = nl->nl_next)
         ;
     return (nl ? nl->nl_string : 0);
