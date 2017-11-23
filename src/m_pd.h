@@ -350,7 +350,7 @@ EXTERN int binbuf_resize(t_binbuf *x, int newsize);
 EXTERN void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv);
 EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
-EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, t_canvas *canvas,
+EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
     int crflag);
 EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
@@ -428,9 +428,9 @@ EXTERN void canvas_setargs(int argc, t_atom *argv);
 EXTERN void canvas_getargs(int *argcp, t_atom **argvp);
 EXTERN t_symbol *canvas_getcurrentdir(void);
 EXTERN t_glist *canvas_getcurrent(void);
-EXTERN void canvas_makefilename(t_glist *c, const char *file,
+EXTERN void canvas_makefilename(const t_glist *c, const char *file,
     char *result,int resultsize);
-EXTERN t_symbol *canvas_getdir(t_glist *x);
+EXTERN t_symbol *canvas_getdir(const t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
 EXTERN char sys_fontweight[]; /* default font weight set in s_main.c */
 EXTERN int sys_hostfontsize(int fontsize, int zoom);
@@ -439,7 +439,7 @@ EXTERN int sys_zoomfontheight(int fontsize, int zoom, int worstcase);
 EXTERN int sys_fontwidth(int fontsize);
 EXTERN int sys_fontheight(int fontsize);
 EXTERN void canvas_dataproperties(t_glist *x, t_scalar *sc, t_binbuf *b);
-EXTERN int canvas_open(t_canvas *x, const char *name, const char *ext,
+EXTERN int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin);
 
 /* ---------------- widget behaviors ---------------------- */

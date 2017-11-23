@@ -509,11 +509,11 @@ EXTERN void canvas_resortoutlets(t_canvas *x);
 EXTERN void canvas_free(t_canvas *x);
 EXTERN void canvas_updatewindowlist( void);
 EXTERN void canvas_editmode(t_canvas *x, t_floatarg state);
-EXTERN int canvas_isabstraction(t_canvas *x);
-EXTERN int canvas_istable(t_canvas *x);
-EXTERN int canvas_showtext(t_canvas *x);
+EXTERN int canvas_isabstraction(const t_canvas *x);
+EXTERN int canvas_istable(const t_canvas *x);
+EXTERN int canvas_showtext(const t_canvas *x);
 EXTERN void canvas_vis(t_canvas *x, t_floatarg f);
-EXTERN t_canvasenvironment *canvas_getenv(t_canvas *x);
+EXTERN t_canvasenvironment *canvas_getenv(const t_canvas *x);
 EXTERN void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir);
 EXTERN void canvas_loadbang(t_canvas *x);
 EXTERN int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
@@ -550,7 +550,7 @@ EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy)
 
 EXTERN t_glist *pd_checkglist(t_pd *x);
 typedef int (*t_canvas_path_iterator)(const char *path, void *user_data);
-EXTERN int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+EXTERN int canvas_path_iterate(const t_canvas *x, t_canvas_path_iterator fun,
     void *user_data);
 
 /* ---- functions on canvasses as objects  --------------------- */

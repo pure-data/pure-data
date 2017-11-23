@@ -130,7 +130,7 @@ void canvas_unsetcurrent(t_canvas *x)
     pd_popsym(&x->gl_pd);
 }
 
-t_canvasenvironment *canvas_getenv(t_canvas *x)
+t_canvasenvironment *canvas_getenv(const t_canvas *x)
 {
     if (!x) bug("canvas_getenv");
     while (!x->gl_env)
@@ -177,13 +177,13 @@ t_symbol *canvas_getcurrentdir(void)
     return (e->ce_dir);
 }
 
-t_symbol *canvas_getdir(t_canvas *x)
+t_symbol *canvas_getdir(const t_canvas *x)
 {
     t_canvasenvironment *e = canvas_getenv(x);
     return (e->ce_dir);
 }
 
-void canvas_makefilename(t_canvas *x, const char *file, char *result, int resultsize)
+void canvas_makefilename(const t_canvas *x, const char *file, char *result, int resultsize)
 {
     const char *dir = canvas_getenv(x)->ce_dir->s_name;
     if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)
@@ -1056,7 +1056,7 @@ static void canvas_rename_method(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 
     /* return true if the "canvas" object is an abstraction (so we don't
     save its contents, for example.)  */
-int canvas_isabstraction(t_canvas *x)
+int canvas_isabstraction(const t_canvas *x)
 {
     return (x->gl_env != 0);
 }
@@ -1064,7 +1064,7 @@ int canvas_isabstraction(t_canvas *x)
     /* return true if the "canvas" object should be treated as a text
     object.  This is true for abstractions but also for "table"s... */
 /* JMZ: add a flag to gop-abstractions to hide the title */
-int canvas_showtext(t_canvas *x)
+int canvas_showtext(const t_canvas *x)
 {
     t_atom *argv = (x->gl_obj.te_binbuf? binbuf_getvec(x->gl_obj.te_binbuf):0);
     int argc = (x->gl_obj.te_binbuf? binbuf_getnatom(x->gl_obj.te_binbuf) : 0);
@@ -1533,7 +1533,7 @@ static int canvas_open_iter(const char *path, t_canvasopen *co)
     attempted, otherwise ASCII (this only matters on Microsoft.)
     If "x" is zero, the file is sought in the directory "." or in the
     global path.*/
-int canvas_open(t_canvas *x, const char *name, const char *ext,
+int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
     t_namelist *nl, thislist;
@@ -1565,10 +1565,10 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
  * <data>.  The function is called with two arguments: a pathname to try to
  * open, and <data>.
  */
-int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+int canvas_path_iterate(const t_canvas *x, t_canvas_path_iterator fun,
     void *user_data)
 {
-    t_canvas *y = 0;
+    const t_canvas *y = 0;
     t_namelist *nl = 0;
     int count = 0;
     if (!fun)
