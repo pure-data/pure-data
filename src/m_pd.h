@@ -518,7 +518,7 @@ EXTERN void endpost(void);
 EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
-EXTERN void pd_error(void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
 EXTERN void sys_logerror(const char *object, const char *s);

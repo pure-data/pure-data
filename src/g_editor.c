@@ -2217,12 +2217,12 @@ static void canvas_find_parent(t_canvas *x)
         canvas_vis(glist_getcanvas(x->gl_owner), 1);
 }
 
-static int glist_dofinderror(t_glist *gl, void *error_object)
+static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if ((void *)g == error_object)
+        if ((const void *)g == error_object)
         {
             /* got it... now show it. */
             glist_noselect(gl);
@@ -2240,7 +2240,7 @@ static int glist_dofinderror(t_glist *gl, void *error_object)
     return (0);
 }
 
-void canvas_finderror(void *error_object)
+void canvas_finderror(const void *error_object)
 {
     t_canvas *x;
         /* find all root canvases */
