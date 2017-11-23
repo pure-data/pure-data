@@ -429,7 +429,7 @@ EXTERN void canvas_getargs(int *argcp, t_atom **argvp);
 EXTERN t_symbol *canvas_getcurrentdir(void);
 EXTERN t_glist *canvas_getcurrent(void);
 EXTERN void canvas_makefilename(const t_glist *c, const char *file,
-    char *result,int resultsize);
+    char *result, int resultsize);
 EXTERN t_symbol *canvas_getdir(const t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
 EXTERN char sys_fontweight[]; /* default font weight set in s_main.c */
