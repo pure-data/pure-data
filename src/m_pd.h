@@ -301,7 +301,7 @@ EXTERN t_pd *pd_newest(void);
 /* --------------- memory management -------------------- */
 EXTERN void *getbytes(size_t nbytes);
 EXTERN void *getzbytes(size_t nbytes);
-EXTERN void *copybytes(void *src, size_t nbytes);
+EXTERN void *copybytes(const void *src, size_t nbytes);
 EXTERN void freebytes(void *x, size_t nbytes);
 EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
 
