@@ -737,7 +737,7 @@ int outlet_getsignalindex(t_outlet *x)
     return (n);
 }
 
-void obj_saveformat(t_object *x, t_binbuf *bb)
+void obj_saveformat(const t_object *x, t_binbuf *bb)
 {
     if (x->te_width)
         binbuf_addv(bb, "ssf;", &s__X, gensym("f"), (float)x->te_width);

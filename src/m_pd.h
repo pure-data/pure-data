@@ -491,8 +491,8 @@ EXTERN void class_set_extern_dir(t_symbol *s);
          /* prototype for functions to save Pd's to a binbuf */
 typedef void (*t_savefn)(t_gobj *x, t_binbuf *b);
 EXTERN void class_setsavefn(t_class *c, t_savefn f);
-EXTERN void obj_saveformat(t_object *x, t_binbuf *bb); /* add format to bb */
 EXTERN t_savefn class_getsavefn(const t_class *c);
+EXTERN void obj_saveformat(const t_object *x, t_binbuf *bb); /* add format to bb */
 
         /* prototype for functions to open properties dialogs */
 typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
