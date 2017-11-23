@@ -100,7 +100,7 @@ the template subpatch.);
 #X text 12 413 work as before \, but on;
 #X text 12 433 array elements...;
 #X text 433 424 Updated for Pd version 0.35;
-#X text 17 395 normal "set" amd "get";
+#X text 17 395 normal "set" and "get";
 #X connect 0 0 18 0;
 #X connect 1 0 16 0;
 #X connect 2 0 0 0;

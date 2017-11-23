@@ -917,7 +917,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                 ap++;
                 break;
             case A_FLOAT:
-                if (!argc) goto badarg;
+                if (!argc) goto badarg;  /* falls through */
             case A_DEFFLOAT:
                 if (!argc) *dp = 0;
                 else
@@ -931,7 +931,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
                 dp++;
                 break;
             case A_SYMBOL:
-                if (!argc) goto badarg;
+                if (!argc) goto badarg;  /* falls through */
             case A_DEFSYM:
                 if (!argc) *ap = (t_int)(&s_);
                 else

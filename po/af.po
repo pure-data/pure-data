@@ -769,6 +769,9 @@ msgstr ""
 msgid "searching for '%s'"
 msgstr "Volgrote teks soektog..."
 
+msgid "Unable to perform search."
+msgstr ""
+
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr ""

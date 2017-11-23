@@ -410,7 +410,7 @@ struct _instancestuff
     int st_outchannels;
     t_sample *st_soundout;
     t_sample *st_soundin;
-    double st_time_per_dsp_tick;
+    double st_time_per_dsp_tick;    /* obsolete - included for GEM?? */
 };
 
 #define STUFF (pd_this->pd_stuff)
