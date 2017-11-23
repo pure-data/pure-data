@@ -43,7 +43,7 @@ void binbuf_free(t_binbuf *x)
     t_freebytes(x,  sizeof(*x));
 }
 
-t_binbuf *binbuf_duplicate(t_binbuf *y)
+t_binbuf *binbuf_duplicate(const t_binbuf *y)
 {
     t_binbuf *x = (t_binbuf *)t_getbytes(sizeof(*x));
     x->b_n = y->b_n;
@@ -202,7 +202,7 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
 }
 
     /* convert a binbuf to text; no null termination. */
-void binbuf_gettext(t_binbuf *x, char **bufp, int *lengthp)
+void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp)
 {
     char *buf = getbytes(0), *newbuf;
     int length = 0;
@@ -298,7 +298,7 @@ done:
 symbols ";", "'",; and inside symbols, characters ';', ',' and '$' get
 escaped.  LATER also figure out about escaping white space */
 
-void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
+void binbuf_addbinbuf(t_binbuf *x, const t_binbuf *y)
 {
     t_binbuf *z = binbuf_new();
     int i, fixit;
@@ -422,7 +422,7 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
     x->b_n = newsize;
 }
 
-void binbuf_print(t_binbuf *x)
+void binbuf_print(const t_binbuf *x)
 {
     int i, startedpost = 0, newline = 1;
     for (i = 0; i < x->b_n; i++)
@@ -441,12 +441,12 @@ void binbuf_print(t_binbuf *x)
     if (startedpost) endpost();
 }
 
-int binbuf_getnatom(t_binbuf *x)
+int binbuf_getnatom(const t_binbuf *x)
 {
     return (x->b_n);
 }
 
-t_atom *binbuf_getvec(t_binbuf *x)
+t_atom *binbuf_getvec(const t_binbuf *x)
 {
     return (x->b_vec);
 }
@@ -598,7 +598,7 @@ done:
 #define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
 #endif
 
-void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
+void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, t_atom *argv)
 {
     t_atom smallstack[SMALLMSG], *mstack, *msp;
     t_atom *at = x->b_vec;
@@ -885,16 +885,18 @@ int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
 }
 
 #define WBUFSIZE 4096
-static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd);
+static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd);
 
     /* write a binbuf to a text file.  If "crflag" is set we suppress
     semicolons. */
-int binbuf_write(t_binbuf *x, const char *filename, const char *dir, int crflag)
+int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int crflag)
 {
     FILE *f = 0;
     char sbuf[WBUFSIZE], fbuf[MAXPDSTRING], *bp = sbuf, *ep = sbuf + WBUFSIZE;
     t_atom *ap;
-    int indx, deleteit = 0;
+    t_binbuf *y = 0;
+    const t_binbuf *z = x;
+    int indx;
     int ncolumn = 0;
 
     if (*dir)
@@ -906,8 +908,8 @@ int binbuf_write(t_binbuf *x, const char *filename, const char *dir, int crflag)
     if (!strcmp(filename + strlen(filename) - 4, ".pat") ||
         !strcmp(filename + strlen(filename) - 4, ".mxt"))
     {
-        x = binbuf_convert(x, 0);
-        deleteit = 1;
+        y = binbuf_convert(x, 0);
+        x = y;
     }
 
     if (!(f = sys_fopen(fbuf, "w")))
@@ -916,7 +918,7 @@ int binbuf_write(t_binbuf *x, const char *filename, const char *dir, int crflag)
         sys_unixerror(fbuf);
         goto fail;
     }
-    for (ap = x->b_vec, indx = x->b_n; indx--; ap++)
+    for (ap = z->b_vec, indx = z->b_n; indx--; ap++)
     {
         int length;
             /* estimate how many characters will be needed.  Printing out
@@ -965,13 +967,13 @@ int binbuf_write(t_binbuf *x, const char *filename, const char *dir, int crflag)
         goto fail;
     }
 
-    if (deleteit)
-        binbuf_free(x);
+    if (y)
+        binbuf_free(y);
     fclose(f);
     return (0);
 fail:
-    if (deleteit)
-        binbuf_free(x);
+    if (y)
+        binbuf_free(y);
     if (f)
         fclose(f);
     return (1);
@@ -987,7 +989,7 @@ from Pd to Max hasn't been tested for patches with subpatches yet!  */
 #define ISSYMBOL(a, b) ((a)->a_type == A_SYMBOL && \
     !strcmp((a)->a_w.w_symbol->s_name, (b)))
 
-static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
+static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
 {
     t_binbuf *newb = binbuf_new();
     t_atom *vec = oldb->b_vec;
@@ -1522,7 +1524,7 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 }
 
     /* save a text object to a binbuf for a file or copy buf */
-void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto)
+void binbuf_savetext(const t_binbuf *bfrom, t_binbuf *bto)
 {
     int k, n = binbuf_getnatom(bfrom);
     t_atom *ap = binbuf_getvec(bfrom), at;

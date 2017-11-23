@@ -333,28 +333,28 @@ EXTERN void atom_string(t_atom *a, char *buf, unsigned int bufsize);
 
 EXTERN t_binbuf *binbuf_new(void);
 EXTERN void binbuf_free(t_binbuf *x);
-EXTERN t_binbuf *binbuf_duplicate(t_binbuf *y);
+EXTERN t_binbuf *binbuf_duplicate(const t_binbuf *y);
 
 EXTERN void binbuf_text(t_binbuf *x, const char *text, size_t size);
-EXTERN void binbuf_gettext(t_binbuf *x, char **bufp, int *lengthp);
+EXTERN void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp);
 EXTERN void binbuf_clear(t_binbuf *x);
 EXTERN void binbuf_add(t_binbuf *x, int argc, t_atom *argv);
-EXTERN void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y);
 EXTERN void binbuf_addv(t_binbuf *x, const char *fmt, ...);
+EXTERN void binbuf_addbinbuf(t_binbuf *x, const t_binbuf *y);
 EXTERN void binbuf_addsemi(t_binbuf *x);
 EXTERN void binbuf_restore(t_binbuf *x, int argc, t_atom *argv);
-EXTERN void binbuf_print(t_binbuf *x);
-EXTERN int binbuf_getnatom(t_binbuf *x);
-EXTERN t_atom *binbuf_getvec(t_binbuf *x);
+EXTERN void binbuf_print(const t_binbuf *x);
+EXTERN int binbuf_getnatom(const t_binbuf *x);
+EXTERN t_atom *binbuf_getvec(const t_binbuf *x);
 EXTERN int binbuf_resize(t_binbuf *x, int newsize);
-EXTERN void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv);
+EXTERN void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, t_atom *argv);
 EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
 EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
     int crflag);
 EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
-EXTERN int binbuf_write(t_binbuf *x, const char *filename, const char *dir,
+EXTERN int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
     int crflag);
 EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
 EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av,
