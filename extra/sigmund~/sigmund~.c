@@ -897,7 +897,7 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
     if (npts < NPOINTS_MIN)
         post("sigmund~: minimum points %d", NPOINTS_MIN),
             npts = NPOINTS_MIN;
-    if (npts < NPOINTS_MAX)
+    if (npts > NPOINTS_MAX)
         post("sigmund~: maximum points %d", NPOINTS_MAX),
             npts = NPOINTS_MAX;
 
