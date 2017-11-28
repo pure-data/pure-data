@@ -153,6 +153,9 @@ static void pdinstance_renumber(void)
         pd_instances[i]->pd_instanceno = i;
 }
 
+extern void text_template_init(void);
+extern void garray_init(void);
+
 EXTERN t_pdinstance *pdinstance_new(void)
 {
     t_pdinstance *x = (t_pdinstance *)getbytes(sizeof(t_pdinstance));
@@ -182,7 +185,8 @@ EXTERN t_pdinstance *pdinstance_new(void)
     pd_ninstances++;
     pdinstance_renumber();
     pd_bind(&glob_pdobject, gensym("pd"));
-
+    text_template_init();
+    garray_init();
     pd_globalunlock();
     sys_unlock();
     return (x);

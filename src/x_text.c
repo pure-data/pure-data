@@ -1949,7 +1949,7 @@ field named 't'.  I don't know how to make this not break
 pre-0.45 patches using templates named 'text'... perhaps this is a minor
 enough incompatibility that I'll just get away with it. */
 
-static void text_template_init( void)
+void text_template_init( void)
 {
     t_binbuf *b;
     if (text_templatecanvas)
