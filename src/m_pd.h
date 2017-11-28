@@ -320,11 +320,11 @@ EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
     (atom)->a_w.w_symbol= (s))
 
 EXTERN t_float atom_getfloat(t_atom *a);
-EXTERN t_int atom_getint(t_atom *a);
+EXTERN int atom_getint(t_atom *a);
 EXTERN t_symbol *atom_getsymbol(t_atom *a);
 EXTERN t_symbol *atom_gensym(t_atom *a);
 EXTERN t_float atom_getfloatarg(int which, int argc, t_atom *argv);
-EXTERN t_int atom_getintarg(int which, int argc, t_atom *argv);
+EXTERN int atom_getintarg(int which, int argc, t_atom *argv);
 EXTERN t_symbol *atom_getsymbolarg(int which, int argc, t_atom *argv);
 
 EXTERN void atom_string(t_atom *a, char *buf, unsigned int bufsize);
@@ -650,6 +650,7 @@ EXTERN t_float q8_rsqrt(t_float);
 EXTERN t_float qsqrt(t_float);  /* old names kept for extern compatibility */
 EXTERN t_float qrsqrt(t_float);
 #endif
+
 /* --------------------- data --------------------------------- */
 
     /* graphical arrays */

@@ -1089,7 +1089,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < noutdevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(outdevlist + i * DEVDESCSIZE))
                 comp = strlen(outdevlist + i * DEVDESCSIZE);
             if (!strncmp(name, outdevlist + i * DEVDESCSIZE, comp))
@@ -1100,7 +1100,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < nindevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(indevlist + i * DEVDESCSIZE))
                 comp = strlen(indevlist + i * DEVDESCSIZE);
             if (!strncmp(name, indevlist + i * DEVDESCSIZE, comp))

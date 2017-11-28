@@ -401,7 +401,7 @@ static void sel2_float(t_sel2 *x, t_float f)
     int nelement;
     if (x->x_type == A_FLOAT)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
             outlet_bang(e->e_outlet);
@@ -417,7 +417,7 @@ static void sel2_symbol(t_sel2 *x, t_symbol *s)
     int nelement;
     if (x->x_type == A_SYMBOL)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == s)
         {
             outlet_bang(e->e_outlet);
@@ -520,7 +520,7 @@ static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     int nelement;
     if (x->x_type == A_SYMBOL)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == sel)
         {
             if (argc > 0 && argv[0].a_type == A_SYMBOL)
@@ -544,7 +544,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         if (argv->a_type != A_FLOAT)
             goto rejected;
         f = atom_getfloat(argv);
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
             if (argc > 1 && argv[1].a_type == A_SYMBOL)
@@ -558,7 +558,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     {
         if (argc > 1)       /* 2 or more args: treat as "list" */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_list)
                 {
@@ -572,7 +572,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else if (argc == 0)         /* no args: treat as "bang" */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_bang)
                 {
@@ -583,7 +583,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else if (argv[0].a_type == A_FLOAT)     /* one float arg */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_float)
                 {
@@ -594,7 +594,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_symbol)
                 {
@@ -732,10 +732,10 @@ static void *pack_new(t_symbol *s, int argc, t_atom *argv)
 
 static void pack_bang(t_pack *x)
 {
-    int i, reentered = 0, size = x->x_n * sizeof (t_atom);
+    int i, reentered = 0, size = (int)(x->x_n * sizeof(t_atom));
     t_gpointer *gp;
     t_atom *outvec;
-    for (i = x->x_nptr, gp = x->x_gpointer; i--; gp++)
+    for (i = (int)x->x_nptr, gp = x->x_gpointer; i--; gp++)
         if (!gpointer_check(gp, 1))
     {
         pd_error(x, "pack: stale pointer");
@@ -757,7 +757,7 @@ static void pack_bang(t_pack *x)
         x->x_outvec = 0;
     }
     memcpy(outvec, x->x_vec, size);
-    outlet_list(x->x_obj.ob_outlet, &s_list, x->x_n, outvec);
+    outlet_list(x->x_obj.ob_outlet, &s_list, (int)x->x_n, outvec);
     if (reentered)
         t_freebytes(outvec, size);
     else x->x_outvec = outvec;
@@ -815,7 +815,7 @@ static void pack_free(t_pack *x)
 {
     t_gpointer *gp;
     int i;
-    for (gp = x->x_gpointer, i = x->x_nptr; i--; gp++)
+    for (gp = x->x_gpointer, i = (int)x->x_nptr; i--; gp++)
         gpointer_unset(gp);
     freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
     freebytes(x->x_outvec, x->x_n * sizeof(*x->x_outvec));
@@ -904,7 +904,7 @@ static void unpack_list(t_unpack *x, t_symbol *s, int argc, t_atom *argv)
     t_atom *ap;
     t_unpackout *u;
     int i;
-    if (argc > x->x_n) argc = x->x_n;
+    if (argc > x->x_n) argc = (int)x->x_n;
     for (i = argc, u = x->x_vec + i, ap = argv + i; u--, ap--, i--;)
     {
         t_atomtype type = u->u_type;
@@ -1015,7 +1015,7 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
     int i;
-    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
+    for (i = (int)x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_FLOAT)
             outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
@@ -1038,7 +1038,7 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
     int i;
-    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
+    for (i = (int)x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_BANG)
             outlet_bang(u->u_outlet);

@@ -335,7 +335,7 @@ int sys_open_absolute(const char *name, const char* ext,
         int dirlen;
         if (!z)
             return (0);
-        dirlen = z - name;
+        dirlen = (int)(z - name);
         if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
@@ -531,7 +531,7 @@ void sys_doflags( void)
     char *rcargv[MAXPDSTRING];
     if (!sys_flags)
         sys_flags = &s_;
-    len = strlen(sys_flags->s_name);
+    len = (int)strlen(sys_flags->s_name);
     if (len > MAXPDSTRING)
     {
         error("flags: %s: too long", sys_flags->s_name);

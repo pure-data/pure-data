@@ -47,7 +47,7 @@ static void dac_dsp(t_dac *x, t_signal **sp)
     t_signal **sp2;
     for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
     {
-        int ch = *ip - 1;
+        int ch = (int)(*ip - 1);
         if ((*sp2)->s_n != DEFDACBLKSIZE)
             error("dac~: bad vector size");
         else if (ch >= 0 && ch < sys_get_outchannels())
@@ -162,7 +162,7 @@ static void adc_dsp(t_adc *x, t_signal **sp)
     t_signal **sp2;
     for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
     {
-        int ch = *ip - 1;
+        int ch = (int)(*ip - 1);
         if ((*sp2)->s_n != DEFDACBLKSIZE)
             error("adc~: bad vector size");
         else if (ch >= 0 && ch < sys_get_inchannels())

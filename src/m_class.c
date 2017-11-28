@@ -749,7 +749,7 @@ t_symbol *gensym(const char *s)
 static t_symbol *addfileextent(t_symbol *s)
 {
     char namebuf[MAXPDSTRING], *str = s->s_name;
-    int ln = strlen(str);
+    int ln = (int)strlen(str);
     if (!strcmp(str + ln - 3, ".pd")) return (s);
     strcpy(namebuf, str);
     strcpy(namebuf+ln, ".pd");

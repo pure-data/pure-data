@@ -522,7 +522,7 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
         else
         {
             char *endp;
-            vecp[n] = strtol(str, &endp, 10);
+            vecp[n] = (int)strtol(str, &endp, 10);
             if (endp == str)
                 break;
             n++;

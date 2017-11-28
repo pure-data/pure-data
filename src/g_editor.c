@@ -990,7 +990,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 (unsigned long)c);
             while (c->gl_owner) {
                 c = c->gl_owner;
-                cbuflen = strlen(cbuf);
+                cbuflen = (int)strlen(cbuf);
                 snprintf(cbuf + cbuflen,
                          MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
                          " .x%lx", (unsigned long)c);

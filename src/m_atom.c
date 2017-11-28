@@ -16,7 +16,7 @@ t_float atom_getfloat(t_atom *a)
     else return (0);
 }
 
-t_int atom_getint(t_atom *a)
+int atom_getint(t_atom *a)
 {
     return (atom_getfloat(a));
 }
@@ -45,7 +45,7 @@ t_float atom_getfloatarg(int which, int argc, t_atom *argv)
     else return (0);
 }
 
-t_int atom_getintarg(int which, int argc, t_atom *argv)
+int atom_getintarg(int which, int argc, t_atom *argv)
 {
     return (atom_getfloatarg(which, argc, argv));
 }

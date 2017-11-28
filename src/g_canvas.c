@@ -196,7 +196,7 @@ void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
         int nleft;
         strncpy(result, dir, resultsize);
         result[resultsize-1] = 0;
-        nleft = resultsize - strlen(result) - 1;
+        nleft = resultsize - (int)strlen(result) - 1;
         if (nleft <= 0) return;
         strcat(result, "/");
         strncat(result, file, nleft);
