@@ -1,0 +1,118 @@
+#N canvas 72 23 799 373 12;
+#X symbolatom 228 68 10 0 0 0 - - -, f 10;
+#X obj 37 184 osc~;
+#X obj 526 88 hsl 128 15 0 127 0 0 empty empty hslider 2 -8 0 10 -204786
+-258113 -1 0 0;
+#X obj 37 222 dac~;
+#X floatatom 523 116 5 0 0 0 - - -, f 5;
+#X obj 375 86 vsl 15 128 0 127 0 0 empty empty vslider 17 2 0 10 -261234
+-4034 -1 0 0;
+#X floatatom 375 230 5 0 0 0 - - -, f 5;
+#X floatatom 375 57 5 0 0 0 - - -, f 5;
+#X floatatom 523 48 5 0 0 0 - - -, f 5;
+#X text 360 14 This is a very long comment which should wrap right
+here. (Did it work?);
+#X msg 31 255 \; this is a tall \; message box \; with \; many \; items
+\; inside;
+#X floatatom 37 147 5 0 0 0 - - -, f 5;
+#X obj 25 69 route 1 2 3 4;
+#X obj 25 104 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 47 104 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 69 104 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 91 104 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 191 68 5 0 0 0 - - -, f 5;
+#X msg 300 68 hello;
+#X obj 136 146 cnv 15 100 60 empty empty cnv 0 5 0 14 -233017 -66577
+0;
+#X obj 161 159 cnv 15 50 30 empty empty cnv 12 15 0 14 -260097 -66577
+0;
+#X obj 283 271 bng 30 250 50 0 empty empty bang 32 15 0 10 -203904
+-260097 -1;
+#X floatatom 283 315 5 0 0 0 - - -, f 5;
+#X floatatom 283 195 5 0 0 0 - - -, f 5;
+#X floatatom 283 119 1 0 0 0 - - -, f 1;
+#X obj 283 151 tgl 30 0 empty empty toggle 32 15 0 10 -232576 -258113
+-1 0 1;
+#X obj 25 48 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 581 287 nbx 5 18 -1e+37 1e+37 0 0 empty empty number 8 -8 0
+10 -204800 -260097 -99865 0 256;
+#X floatatom 581 249 5 0 0 0 - - -, f 5;
+#X floatatom 581 319 5 0 0 0 - - -, f 5;
+#X obj 138 106 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X obj 523 186 hradio 15 1 0 8 empty empty hradio 8 -8 0 10 -262130
+-13330 -1 5;
+#X floatatom 523 150 5 0 0 0 - - -, f 5;
+#X floatatom 523 219 5 0 0 0 - - -, f 5;
+#X floatatom 451 57 5 0 0 0 - - -, f 5;
+#X floatatom 451 231 5 0 0 0 - - -, f 5;
+#X obj 451 92 vradio 15 1 0 8 empty empty vradio 8 -8 0 10 -261682
+-128992 -1 0;
+#X obj 686 115 vu 20 160 empty vu_meter -1 -10 0 12 -191407 -13381
+1 0;
+#X floatatom 685 46 5 0 0 0 - - -, f 5;
+#X floatatom 700 72 5 0 0 0 - - -, f 5;
+#X floatatom 700 293 5 0 0 0 - - -, f 5;
+#X floatatom 685 317 5 0 0 0 - - -, f 5;
+#X text 17 14 layout and object sizing test patch;
+#X msg 283 239 bang;
+#N canvas 0 23 450 300 gop 0;
+#X floatatom 141 118 5 0 0 0 - - -, f 5;
+#X symbolatom 107 139 10 0 0 0 - - -, f 10;
+#X obj 107 117 bng 18 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 62 40 loadbang;
+#X msg 62 70 set foobar;
+#X connect 3 0 4 0;
+#X connect 4 0 1 0;
+#X coords 0 -1 1 1 85 60 1 100 100;
+#X restore 165 277 pd gop;
+#X obj 138 68 pointer;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array1 100 float 3;
+#A 0 0 0 0.0285714 0.0571416 0.0857118 0.0857118 0.114282 0.128567
+0.142852 0.171422 0.199992 0.228563 0.228563 0.257133 0.285703 0.285703
+0.285703 0.285703 0.285703 0.285703 0.285703 0.257133 0.171422 0.142852
+0.0571416 1.2517e-06 -0.0571391 -0.114279 -0.14285 -0.19999 -0.25713
+-0.271415 -0.285701 -0.314271 -0.342841 -0.342841 -0.342841 -0.371411
+-0.371411 -0.399981 -0.399981 -0.399981 -0.399981 -0.399981 -0.399981
+-0.399981 -0.371411 -0.342841 -0.285701 -0.25713 -0.22856 -0.17142
+-0.14285 -0.114279 -0.0857093 -0.0571391 1.2517e-06 0.0285714 0.0285714
+0.0571416 0.0857118 0.114282 0.114282 0.142852 0.142852 0.171422 0.171422
+0.171422 0.171422 0.171422 0.171422 0.171422 0.171422 0.142852 0.114282
+0.0571416 0.0285714 1.2517e-06 -0.0571391 -0.0857093 -0.114279 -0.114279
+-0.14285 -0.14285 -0.14285 -0.14285 -0.14285 -0.14285 -0.14285 -0.14285
+-0.114279 -0.0857093 -0.0857093 -0.0571391 -0.0285689 1.2517e-06 0.0285714
+0.0571416 0.0571416 0;
+#X coords 0 1 100 -1 100 70 1 0 0;
+#X restore 375 276 graph;
+#X connect 1 0 3 0;
+#X connect 2 0 4 0;
+#X connect 5 0 6 0;
+#X connect 7 0 5 0;
+#X connect 8 0 2 0;
+#X connect 11 0 1 0;
+#X connect 12 0 13 0;
+#X connect 12 1 14 0;
+#X connect 12 2 15 0;
+#X connect 12 3 16 0;
+#X connect 21 0 22 0;
+#X connect 24 0 25 0;
+#X connect 25 0 23 0;
+#X connect 26 0 12 0;
+#X connect 27 0 29 0;
+#X connect 28 0 27 0;
+#X connect 31 0 33 0;
+#X connect 32 0 31 0;
+#X connect 34 0 36 0;
+#X connect 36 0 35 0;
+#X connect 37 0 41 0;
+#X connect 37 1 40 0;
+#X connect 38 0 37 0;
+#X connect 39 0 37 1;
+#X connect 43 0 21 0;

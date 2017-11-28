@@ -453,17 +453,19 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
+    int zoom = glist_getzoom(iemgui->x_glist);
     iemgui->x_ldx = (int)atom_getintarg(0, ac, av);
     iemgui->x_ldy = (int)atom_getintarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
         sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
                  glist_getcanvas(iemgui->x_glist), x,
-                 text_xpix((t_object *)x,iemgui->x_glist)+iemgui->x_ldx,
-                 text_ypix((t_object *)x,iemgui->x_glist)+iemgui->x_ldy);
+                 text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
+                 text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
 }
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
+    int zoom = glist_getzoom(iemgui->x_glist);
     int f = (int)atom_getintarg(0, ac, av);
 
     if(f == 1) strcpy(iemgui->x_font, "helvetica");
@@ -481,7 +483,7 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
     if(glist_isvisible(iemgui->x_glist))
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s}\n",
                  glist_getcanvas(iemgui->x_glist), x, iemgui->x_font,
-                 iemgui->x_fontsize, sys_fontweight);
+                 iemgui->x_fontsize*zoom, sys_fontweight);
 }
 
 void iemgui_size(void *x, t_iemgui *iemgui)
@@ -495,8 +497,9 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    iemgui->x_obj.te_xpix += (int)atom_getintarg(0, ac, av);
-    iemgui->x_obj.te_ypix += (int)atom_getintarg(1, ac, av);
+    int zoom = glist_getzoom(iemgui->x_glist);
+    iemgui->x_obj.te_xpix += (int)atom_getintarg(0, ac, av)*zoom;
+    iemgui->x_obj.te_ypix += (int)atom_getintarg(1, ac, av)*zoom;
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -506,8 +509,9 @@ void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 
 void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    iemgui->x_obj.te_xpix = (int)atom_getintarg(0, ac, av);
-    iemgui->x_obj.te_ypix = (int)atom_getintarg(1, ac, av);
+    int zoom = glist_getzoom(iemgui->x_glist);
+    iemgui->x_obj.te_xpix = (int)atom_getintarg(0, ac, av)*zoom;
+    iemgui->x_obj.te_ypix = (int)atom_getintarg(1, ac, av)*zoom;
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);

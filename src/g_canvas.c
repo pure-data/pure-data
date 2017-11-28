@@ -273,15 +273,17 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
     {
         int inplus = (t->tr_nin == 1 ? 1 : t->tr_nin - 1);
         int outplus = (t->tr_nout == 1 ? 1 : t->tr_nout - 1);
+        int iow = IOWIDTH * t->tr_x->gl_zoom;
+        int iom = IOMIDDLE * t->tr_x->gl_zoom;
         gobj_getrect(&t->tr_ob2->ob_g, t->tr_x,
             &t->tr_x21, &t->tr_y21, &t->tr_x22, &t->tr_y22);
         t->tr_lx1 = t->tr_x11 +
-            ((t->tr_x12 - t->tr_x11 - IOWIDTH) * t->tr_outno) /
-                outplus + IOMIDDLE;
+            ((t->tr_x12 - t->tr_x11 - iow) * t->tr_outno) /
+                outplus + iom;
         t->tr_ly1 = t->tr_y12;
         t->tr_lx2 = t->tr_x21 +
-            ((t->tr_x22 - t->tr_x21 - IOWIDTH) * t->tr_inno)/inplus +
-                IOMIDDLE;
+            ((t->tr_x22 - t->tr_x21 - iow) * t->tr_inno)/inplus +
+                iom;
         t->tr_ly2 = t->tr_y21;
     }
     else
@@ -612,14 +614,14 @@ void canvas_dirty(t_canvas *x, t_floatarg n)
 void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
-        sys_vgui(".x%lx.c create line\
-            %d %d %d %d %d %d %d %d %d %d -fill #ff8080 -tags GOP\n",
+        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
+            "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
             glist_getcanvas(x),
             x->gl_xmargin, x->gl_ymargin,
             x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin,
             x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin + x->gl_pixheight,
             x->gl_xmargin, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin);
+            x->gl_xmargin, x->gl_ymargin, glist_getzoom(x));
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 
