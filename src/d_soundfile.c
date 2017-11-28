@@ -371,7 +371,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else if (format == 32)
                         bytespersamp = 4;
                     else goto badheader;
-                    samprate = swap2(buf.b_fmt.f_samplespersec, swap);
+                    samprate = swap4(buf.b_fmt.f_samplespersec, swap);
                 }
                 seekout = lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
