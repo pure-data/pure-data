@@ -50,6 +50,9 @@ typedef int socklen_t;
 #include <stdlib.h>
 #endif
 
+#define stringify(s) str(s)
+#define str(s) #s
+
 #define DEBUG_MESSUP 1      /* messages up from pd to pd-gui */
 #define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
 
@@ -927,6 +930,58 @@ void glob_watchdog(t_pd *dummy)
 }
 #endif
 
+static void sys_init_deken()
+{
+    const char*os =
+#if defined __linux__
+        "Linux"
+#elif defined __APPLE__
+        "Darwin"
+#elif defined __FreeBSD__
+        "FreeBSD"
+#elif defined __NetBSD__
+        "NetBSD"
+#elif defined __OpenBSD__
+        "OpenBSD"
+#elif defined _WIN32
+        "Windows"
+#else
+# if defined(__GNUC__)
+#  warning unknown OS
+# endif
+        0
+#endif
+        ;
+    const char*machine =
+#if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
+        "amd64"
+#elif defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86)
+        "i386"
+#elif defined(__ppc__)
+        "ppc"
+#elif defined (__ARM_ARCH)
+        "armv" stringify(__ARM_ARCH)
+# if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__)
+#  if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+        "l"
+#  endif
+# endif
+#else
+# if defined(__GNUC__)
+#  warning unknown architecture
+# endif
+        0
+#endif
+        ;
+
+        /* only send the arch info, if we are sure about it... */
+    if (os && machine)
+        sys_vgui("::deken::set_platform %s %s %d %d\n",
+                 os, machine,
+                 8 * sizeof(char*),
+                 8 * sizeof(t_float));
+}
+
 #define FIRSTPORTNUM 5400
 
 static int sys_do_startgui(const char *libdir)
@@ -1237,6 +1292,7 @@ static int sys_do_startgui(const char *libdir)
              apibuf, apibuf2, sys_font, sys_fontweight);
     sys_vgui("set pd_whichapi %d\n", sys_audioapi);
 
+    sys_init_deken();
     return (0);
 }
 
