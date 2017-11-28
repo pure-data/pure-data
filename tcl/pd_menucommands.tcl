@@ -238,7 +238,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         set textfile [open $filename]
         while {![eof $textfile]} {
             set bigstring [read $textfile 1000]
-            regsub -all PD_BASEDIR $bigstring $::sys_guidir bigstring2
+            regsub -all PD_BASEDIR $bigstring $::sys_libdir bigstring2
             regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
             .aboutpd.text insert end $bigstring3
         }
