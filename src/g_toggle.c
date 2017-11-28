@@ -48,12 +48,12 @@ void toggle_draw_new(t_toggle *x, t_glist *glist)
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
     int crossw = 1, w = x->x_gui.x_w / IEMGUI_ZOOM(x);
+    t_canvas *canvas = glist_getcanvas(glist);
     if(w >= 30)
         crossw = 2;
     if(w >= 60)
         crossw = 3;
     crossw *= IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c create rectangle %d %d %d %d -width %d -fill #%06x -tags %lxBASE\n",
              canvas, xpos, ypos,
@@ -96,13 +96,13 @@ void toggle_draw_move(t_toggle *x, t_glist *glist)
     int xpos = text_xpix(&x->x_gui.x_obj, glist);
     int ypos = text_ypix(&x->x_gui.x_obj, glist);
     int iow = IOWIDTH * IEMGUI_ZOOM(x), ioh = IEM_GUI_IOHEIGHT * IEMGUI_ZOOM(x);
+    t_canvas *canvas = glist_getcanvas(glist);
     int crossw = 1, w = x->x_gui.x_w / IEMGUI_ZOOM(x);
     if(w >= 30)
         crossw = 2;
     if(w >= 60)
         crossw = 3;
     crossw *= IEMGUI_ZOOM(x);
-    t_canvas *canvas = glist_getcanvas(glist);
 
     sys_vgui(".x%lx.c coords %lxBASE %d %d %d %d\n",
              canvas, x, xpos, ypos,

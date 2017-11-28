@@ -355,12 +355,14 @@ static void sys_dispatchnextmidiin(void)
         }
         else
         {
+            int status, chan, byte1, gotbyte1;
             /* data byte */
             inmidi_byte(portno, byte);
-            int status = (parserp->mp_status >= MIDI_SYSEX ?
-                            parserp->mp_status : (parserp->mp_status & 0xf0));
-            int chan = (parserp->mp_status & 0xf0);
-            int byte1 = parserp->mp_byte1, gotbyte1 = parserp->mp_gotbyte1;
+            status = (parserp->mp_status >= MIDI_SYSEX ?
+                parserp->mp_status : (parserp->mp_status & 0xf0));
+            chan = (parserp->mp_status & 0xf0);
+            byte1 = parserp->mp_byte1;
+            gotbyte1 = parserp->mp_gotbyte1;
             switch (status)
             {
                 case MIDI_NOTEOFF:
