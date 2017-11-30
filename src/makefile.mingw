@@ -3,56 +3,77 @@
 # make -f makefile.mingw CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-c++ \
 #  WINDRES=i686-w64-mingw32-windres
 
-# Miller's Windows build uses Microsoft Visual C and makefile.msvc:
-# http://lists.puredata.info/pipermail/pd-dev/2004-10/002981.html
+# prerequisites:
+# download the ASIO SDK from 
+# https://www.steinberg.net/en/company/developers.html
+# and unpack it to /asio
+
+# usage:
+# 1) cd to /src
+# 2) make -f makefile.mingw
+# 3) make -f makefile.mingw externs
+# 4) make -f makefile.mingw install prefix=/some/path/Pd
+# 5) make -f makefile.mingw clean
+
+# makefiles for externals use pdlibbuilder.
+# 'install' will also unpack and copy all necessary 
+# ressources from /msw/pdprototype.tgz
+
+# the makefile will also build an import library called pd.lib 
+# which can be used to build externals with MSVC
+
 
 CC = gcc
 CXX = g++
 WINDRES = windres
 
-cvs_root_dir = ../..
-pd_src = $(cvs_root_dir)/pd
+pd_src = $(realpath ..)
 DLL_DIR = $(pd_src)/src
 
-BIN_DIR = ../bin
+BIN_DIR = $(pd_src)/bin
 
 VPATH = $(pd_src)/src
 
 prefix = /usr/local/pd
-exec_prefix = $(prefix)
 includedir = $(prefix)/include
-libdir = $(exec_prefix)/lib
-mandir = $(prefix)/man
-bindir = $(exec_prefix)/bin
+libdir = $(prefix)/lib
+bindir = $(prefix)/bin
+docdir = $(prefix)/doc
+extradir = $(prefix)/extra
+tcldir = $(prefix)/tcl
+podir = $(prefix)/po
 
 GFLAGS = -DINSTALL_PREFIX=\"$(prefix)\"
 
-# varibles to match packages/Makefile.buildlayout so that they can be easily
-# overridden when building Pd-extended builds. <hans@at.or.at>
-libpddir = $(prefix)
-pddocdir = $(libpddir)/doc
-libpdbindir = $(libpddir)/bin
+EXECDIR=$(pd_src)/bin
 
-EXECDIR=../bin
+# create /bin directory if it doesn't exist
+$(shell mkdir -p $(EXECDIR))
+
 PDEXEC = $(EXECDIR)/pd.exe
 PDDLL = $(EXECDIR)/pd.dll
 PDCOM = $(EXECDIR)/pd.com
 PDRECEIVE = $(EXECDIR)/pdreceive.exe
 PDSEND = $(EXECDIR)/pdsend.exe
+PDEXTERNS = bob~ bonk~ choice fiddle~ loop~ lrshift~ pd~ pique \
+    sigmund~ stdout
 
 DLLWRAP= dllwrap
 
 MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer
 
 PADIR = $(pd_src)/portaudio/portaudio
-ASIODIR = $(pd_src)/lib/ASIOSDK2.3
+ASIODIR = $(pd_src)/asio/ASIOSDK2.3
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
 INCLUDE = -I$(pd_src)/src 
 GINCLUDE = -I/usr/local/include $(INCLUDE)
 
-LDFLAGS = 
+# this sets the LARGE_ADDRESS_AWARE bit in the executable
+# to get more RAM (close to 4GB instead of ~2GB):
+LDFLAGS = -Wl,--large-address-aware
+
 LIBS = -lm -lwsock32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
@@ -97,9 +118,7 @@ ASIOSRC = $(PADIR)/src/hostapi/asio/iasiothiscallresolver.cpp \
           $(ASIODIR)/host/asiodrivers.cpp \
           $(ASIODIR)/host/pc/asiolist.cpp
 
-#VSRC =  s_audio_vst.c
-
-PMDIR = ../portmidi/portmidi
+PMDIR = $(pd_src)/portmidi/portmidi
 PMINCLUDE = -I$(PMDIR)/pm_common -I$(PMDIR)/pm_win -I$(PMDIR)/porttime \
     -DNEWBUFFER
 PMSRC =  s_midi_pm.c \
@@ -136,7 +155,6 @@ OBJ = $(SRC:.c=.o)
 SROBJ = $(SRSRC:.c=.o) 
 PAOBJ = $(PASRC:.c=.o)
 ASIOOBJ = $(ASIOSRC:.cpp=.o)
-#VOBJ = $(VSRC:.c=.o)
 OBJC = $(OBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
 
 
@@ -159,15 +177,12 @@ endif
 #  ------------------ targets ------------------------------------
 #
 
-.PHONY: all install clean testbin
+.PHONY: all externs install clean
 
 all: $(PDDLL) $(PDEXEC) $(PDSEND) $(PDRECEIVE) $(PDCOM)
 
 $(OBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
-
-$(GOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(GINCLUDE) -c -o $*.o $*.c 
 
 $(SROBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
@@ -181,9 +196,6 @@ $(ASIOOBJ) : %.o : %.cpp
 $(PMOBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(PMINCLUDE) -c -o $*.o $*.c 
 
-$(VOBJ) : %.o : %.c
-	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
-
 $(PDSEND): u_pdsend.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o $(LIBS)
 	$(STRIP) $(PDSEND)
@@ -192,90 +204,108 @@ $(PDRECEIVE): u_pdreceive.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o $(LIBS)
 	$(STRIP) $(PDRECEIVE)
 
-$(PDEXEC): s_entry.o pd.res
-	$(CXX) $(LDFLAGS) -mwindows -o $(PDEXEC) s_entry.o pd.res $(LIBS) pd.a
+$(PDEXEC): s_entry.o pd.res pd.lib
+	$(CXX) $(LDFLAGS) -mwindows -o $(PDEXEC) s_entry.o pd.res $(LIBS) pd.lib
 	$(STRIP) -s $(PDEXEC)
 
-$(PDCOM): s_entry.o
-	$(CXX) $(LDFLAGS) -o $(PDCOM) s_entry.o $(LIBS) pd.a
+$(PDCOM): s_entry.o pd.lib
+	$(CXX) $(LDFLAGS) -o $(PDCOM) s_entry.o $(LIBS) pd.lib
 	$(STRIP) -s $(PDCOM)
 
 $(PDDLL): $(OBJC)
 	$(CXX) -shared $(LDFLAGS) -o $(PDDLL) $(OBJC) $(LIBS) \
-		-Wl,--export-all-symbols -Wl,--out-implib=pd.a; 
+		-Wl,--export-all-symbols -Wl,--output-def,pd.def,--out-implib,pd.lib; 
 	$(STRIP) $(PDDLL)
 
+pd.lib: $(PDDLL)
+	
 pd.res: pd.rc
 	$(WINDRES) pd.rc -O coff -o pd.res
 
-../bin/pdstatic.exe: $(OBJC)
+$(pd_src)/bin/pdstatic.exe: $(OBJC)
 	$(CXX) -static \
-            $(LDFLAGS) -o ../bin/pdstatic.exe $(OBJC) \
+            $(LDFLAGS) -o $(pd_src)/bin/pdstatic.exe $(OBJC) \
             $(LIBS) -lole32 -static-libgcc -static-libstdc++
 	$(STRIP) -s ../bin/pdstatic.exe
 
-#vstschedlib.dll: $(VOBJ)
-#	$(DLLWRAP) --export-all-symbols --output-def vst.def \
-#	--output-lib=vst.a --dllname=vstschedlib.dll s_audio_vst.o pd.a $(LIBS)
-
-externs: 
-	make -C ../extra all
-
-# kludge to put stuff into the pd/bin dir for testing
-testbin: $(PDEXEC) $(PDDLL) $(PDCOM)
-	echo "Copying files to $(BIN_DIR)"
-	install -d $(BIN_DIR)
-	install -p $(PDDLL) $(BIN_DIR)
-	install -p pd.ico $(BIN_DIR)
-	install -p $(PDCOM) $(BIN_DIR)
-	install -p $(PDEXEC) $(BIN_DIR)
-
-ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
-install:  all
-# locales
-#	make libpddir=$(libpddir) -C ../po install
-# install extra stuff
-#	make libpddir=$(libpddir) -C ../extra install
-# the real install
-	install -d $(DESTDIR)$(bindir)
-	install -p ../tcl/*.tcl $(DESTDIR)$(bindir)/
-	install -p $(PDEXEC) $(DESTDIR)$(bindir)/$(PDEXEC)
-	install -p $(PDCOM) $(DESTDIR)$(bindir)/$(PDCOM)
-	install -p pd.dll $(DESTDIR)$(bindir)/pd.dll
-	install -p pd.ico $(DESTDIR)$(bindir)/pd.ico
-	install -p $(PDSEND) $(DESTDIR)$(bindir)/$(PDSEND)
-	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/$(PDRECEIVE)
-	for dir in $(shell ls -1 ../doc | grep -v CVS); do \
-		echo "installing $$dir"; \
-		install -d $(DESTDIR)$(pddocdir)/$$dir ; \
-		install -p ../doc/$$dir/*.* $(DESTDIR)$(pddocdir)/$$dir ; \
+externs:
+	for x in $(PDEXTERNS) ; do \
+		make -f makefile.mingw -C $(pd_src)/extra/$$x ; \
 	done
-	for dir in $(shell ls -1 ../doc/7.stuff | grep -v CVS); do \
+
+ABOUT_FILE=$(DESTDIR)$(docdir)/1.manual/1.introduction.txt
+install:  all
+	install -d $(DESTDIR)$(prefix)
+	install -p $(pd_src)/*.txt $(DESTDIR)$(prefix)
+# /bin
+	install -d $(DESTDIR)$(bindir)
+	install -p $(PDEXEC) $(DESTDIR)$(bindir)/
+	install -p $(PDCOM) $(DESTDIR)$(bindir)/
+	install -p $(PDDLL) $(DESTDIR)$(bindir)/
+	install -p $(PDSEND) $(DESTDIR)$(bindir)/
+	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/
+	install -p $(DLL_DIR)/pd.lib $(DESTDIR)$(bindir)/
+	install -p $(DLL_DIR)/pd.def $(DESTDIR)$(bindir)/
+	tar -xzf $(pd_src)/msw/pdprototype.tgz -C $(pd_src)/msw
+	cp -r $(pd_src)/msw/pd/bin/* $(DESTDIR)$(bindir)/
+# /include
+	install -d $(DESTDIR)$(includedir)
+	install -p m_pd.h $(DESTDIR)$(includedir)/m_pd.h
+	install -p s_stuff.h $(DESTDIR)$(includedir)/s_stuff.h
+# /tcl
+	install -d $(DESTDIR)$(tcldir)
+	install -p $(pd_src)/tcl/*.* $(DESTDIR)$(tcldir)/
+# /lib
+	install -d $(DESTDIR)$(libdir)
+	cp -r $(pd_src)/msw/pd/lib/* $(DESTDIR)$(libdir)
+# /po
+	install -d $(DESTDIR)$(podir)
+	cp -r $(pd_src)/po/* $(DESTDIR)$(podir)
+# /doc
+	install -d $(DESTDIR)$(docdir)
+	for dir in $(shell ls -F $(pd_src)/doc | grep /); do \
+		echo "installing $$dir"; \
+		install -d $(DESTDIR)$(docdir)/$$dir ; \
+		install -p $(pd_src)/doc/$$dir/* $(DESTDIR)$(docdir)/$$dir ; \
+	done
+	for dir in $(shell ls -F $(pd_src)/doc/7.stuff | grep /); do \
 		echo "installing 7.stuff/$$dir"; \
-		install -d $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
-		install -p ../doc/7.stuff/$$dir/*.* $(DESTDIR)$(pddocdir)/7.stuff/$$dir ; \
+		install -d $(DESTDIR)$(docdir)/7.stuff/$$dir ; \
+		install -p $(pd_src)/doc/7.stuff/$$dir/* $(DESTDIR)$(docdir)/7.stuff/$$dir ; \
 	done
 	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
 	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
 		> $(ABOUT_FILE)
 	rm $(ABOUT_FILE).tmp
-	install -d $(DESTDIR)$(libpddir)/extra
-#	install -p $(pd_src)/extra/*/*.dll $(DESTDIR)$(libpddir)/extra
-	install -p $(pd_src)/extra/*.pd $(DESTDIR)$(libpddir)/extra
-	install -d $(DESTDIR)$(pddocdir)/5.reference
-	install -p ../extra/*/*.pd $(DESTDIR)$(pddocdir)/5.reference
-	install -p ../extra/*-help.pd $(DESTDIR)$(pddocdir)/5.reference
-	install -d $(DESTDIR)$(includedir)
-	install -p m_pd.h $(DESTDIR)$(includedir)/m_pd.h
-	install -p s_stuff.h $(DESTDIR)$(includedir)/s_stuff.h
+# /extra
+	install -d $(DESTDIR)$(extradir)
+	install -p $(pd_src)/extra/*.txt $(DESTDIR)$(extradir)/
+	# externals:
+	for dir in $(PDEXTERNS) ; do \
+		install -d $(DESTDIR)$(extradir)/$$dir ; \
+		install -p $(pd_src)/extra/$$dir/*.dll $(DESTDIR)$(extradir)/$$dir/ ; \
+		install -p $(pd_src)/extra/$$dir/*.pd $(DESTDIR)$(extradir)/$$dir/ ; \
+		# some externals have text files \
+		for txt in $(pd_src)/extra/$$dir/*.txt ; do \
+			[ -f "$$txt" ] || break ; \
+			install -p $$txt $(DESTDIR)$(extradir)/$$dir/ ; \
+		done ; \
+	done
+	# abstractions:
+	install -p $(pd_src)/extra/*.pd $(DESTDIR)$(extradir)
+	# help files:
+	install -p $(pd_src)/extra/*-help.pd $(DESTDIR)$(docdir)/5.reference
+	install -p $(pd_src)/extra/*/*-help.pd $(DESTDIR)$(docdir)/5.reference
+# cleanup
+	rm -r $(pd_src)/msw/pd
 	@echo "Pd install succeeded."
 
 
 clean:
 	-rm -f -- $(BIN_DIR)/*.*
-	-rm -f -- *.o *.a *.def
+	-rm -f -- *.o *.a *.def *.exp *.lib *.res
 	-rm -f -- pd*.exe pd*.dll $(PDCOM)
-	-rm -f -- $(OBJ) $(GOBJ) $(SROBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
+	-rm -f -- $(OBJ) $(SROBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
 	-rm -f -- $(pd_src)/extra/*/*.dll $(pd_src)/extra/*/*.o
 	-rm -f makefile.dependencies
 
@@ -291,13 +321,8 @@ makefile.dependencies: $(SRC) $(PASRC) $(HEADERS)
 	$(CC) $(INCLUDE) $(INCPA) $(CFLAGS) -M $(SRC) $(PASRC) $(HEADERS) \
 		> makefile.dependencies
 
-uninstall:
-	-rm $(prefix)/bin/pd*.exe
-	-rm $(prefix)/bin/pd*.com
-	-rm $(prefix)/bin/pd*.dll
-	-rm $(prefix)/bin/*.tcl
-
-
+		
+		
 test_locations:
 	@echo "PD_VERSION: $(PD_VERSION)"
 	@echo "PACKAGE_VERSION: $(PACKAGE_VERSION)"
