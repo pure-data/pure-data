@@ -60,7 +60,7 @@ PDEXTERNS = bob~ bonk~ choice fiddle~ loop~ lrshift~ pd~ pique \
 
 DLLWRAP= dllwrap
 
-MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer
+MORECFLAGS = 
 
 PADIR = $(pd_src)/portaudio/portaudio
 ASIODIR = $(pd_src)/asio/ASIOSDK2.3
@@ -77,17 +77,13 @@ LDFLAGS = -Wl,--large-address-aware
 LIBS = -lm -lwsock32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
-OPT_CFLAGS = 
+OPT_CFLAGS = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
-# Some old code in asio/ASIOSDK2/common/combase.h needs to be ignored,
-# we do this by setting the WINVER macro to min Windows XP aka 5.1.
-# Also, for SetDllDirectory() s_loader.c, we need a minium of Windows
-# XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
-# next minor version of Windows, 5.2.
-ARCH_CFLAGS = -DPD -DPD_INTERNAL -DPA_USE_ASIO -DPA_USE_WMME -DWINVER=0x0502 \
-     -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -mms-bitfields -DWISH='"wish85.exe"'
+
+ARCH_CFLAGS = -DPD -DPD_INTERNAL -DPA_USE_ASIO -DPA_USE_WMME \
+     -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -mms-bitfields -DWISH='"wish85.exe"' 
 
 CFLAGS += $(ARCH_CFLAGS) $(WARN_CFLAGS) $(OPT_CFLAGS) $(MORECFLAGS)
 
