@@ -553,7 +553,7 @@ endif
 
 # paths for 32-bit executables on 64-bit Windows aren't yet defined here (TODO)
 ifeq ($(system), Windows)
-  pkglibdir := ./build
+  pkglibdir := 
   pdbinpath := $(realpath ..)/../bin
   pdincludepath := $(realpath ..)/../src
   ifndef pdbinpath

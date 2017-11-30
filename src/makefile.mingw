@@ -282,14 +282,7 @@ install:  all
 	install -p $(pd_src)/extra/*.txt $(DESTDIR)$(extradir)/
 	# externals:
 	for dir in $(PDEXTERNS) ; do \
-		install -d $(DESTDIR)$(extradir)/$$dir ; \
-		install -p $(pd_src)/extra/$$dir/*.dll $(DESTDIR)$(extradir)/$$dir/ ; \
-		install -p $(pd_src)/extra/$$dir/*.pd $(DESTDIR)$(extradir)/$$dir/ ; \
-		# some externals have text files \
-		for txt in $(pd_src)/extra/$$dir/*.txt ; do \
-			[ -f "$$txt" ] || break ; \
-			install -p $$txt $(DESTDIR)$(extradir)/$$dir/ ; \
-		done ; \
+		make -f makefile.mingw -C $(pd_src)/extra/$$dir install installpath=$$(realpath $(DESTDIR)$(extradir)/$$dir) ; \
 	done
 	# abstractions:
 	install -p $(pd_src)/extra/*.pd $(DESTDIR)$(extradir)
@@ -306,7 +299,11 @@ clean:
 	-rm -f -- *.o *.a *.def *.exp *.lib *.res
 	-rm -f -- pd*.exe pd*.dll $(PDCOM)
 	-rm -f -- $(OBJ) $(SROBJ) $(PAOBJ) $(ASIOOBJ) $(PMOBJ)
-	-rm -f -- $(pd_src)/extra/*/*.dll $(pd_src)/extra/*/*.o
+#	-rm -f -- $(pd_src)/extra/*/*.dll $(pd_src)/extra/*/*.o
+	# externals:
+	for dir in $(PDEXTERNS) ; do \
+		make -f makefile.mingw -C $(pd_src)/extra/$$dir clean ; \
+	done
 	-rm -f makefile.dependencies
 
 distclean: clean
