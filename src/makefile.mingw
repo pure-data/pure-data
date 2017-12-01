@@ -82,8 +82,17 @@ OPT_CFLAGS = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
 
-ARCH_CFLAGS = -DPD -DPD_INTERNAL -DPA_USE_ASIO -DPA_USE_WMME \
-     -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO -mms-bitfields -DWISH='"wish85.exe"' 
+# Some old code in asio/ASIOSDK2/common/combase.h needs to be ignored,
+# we do this by setting the WINVER macro to min Windows XP aka 5.1.
+# Also, for SetDllDirectory() s_loader.c, we need a minium of Windows
+# XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
+# next minor version of Windows, 5.2.
+# Usually, _WIN32_WINNT is derived from WINVER, but in case it has already 
+# been defined and you manually define WINVER, some MinGW versions might
+# throw an error. That's why we define both macros.
+ARCH_CFLAGS = -DPD -DPD_INTERNAL -DWINVER=0x0502 -D_WIN32_WINNT=0x0502 \
+      -DPA_USE_ASIO -DPA_USE_WMME -DUSEAPI_MMIO -DUSEAPI_PORTAUDIO \
+	  -mms-bitfields -DWISH='"wish85.exe"' 
 
 CFLAGS += $(ARCH_CFLAGS) $(WARN_CFLAGS) $(OPT_CFLAGS) $(MORECFLAGS)
 
@@ -278,7 +287,7 @@ install:  all
 	install -p $(pd_src)/extra/*.txt $(DESTDIR)$(extradir)/
 	# externals:
 	for dir in $(PDEXTERNS) ; do \
-		make -f makefile.mingw -C $(pd_src)/extra/$$dir install installpath=$$(realpath $(DESTDIR)$(extradir)/$$dir) ; \
+		make -f makefile.mingw -C $(pd_src)/extra/$$dir install installpath=$$(readlink -f $(DESTDIR)$(extradir)/$$dir) ; \
 	done
 	# abstractions:
 	install -p $(pd_src)/extra/*.pd $(DESTDIR)$(extradir)
