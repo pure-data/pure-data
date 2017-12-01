@@ -12,7 +12,7 @@
 # 1) cd to /src
 # 2) make -f makefile.mingw
 # 3) make -f makefile.mingw externs
-# 4) make -f makefile.mingw install prefix=/some/path/Pd
+# 4) make -f makefile.mingw install installpath=/some/path/Pd
 # 5) make -f makefile.mingw clean
 
 # makefiles for externals use pdlibbuilder.
@@ -35,13 +35,17 @@ BIN_DIR = $(pd_src)/bin
 VPATH = $(pd_src)/src
 
 prefix = /usr/local/pd
-includedir = $(prefix)/include
-libdir = $(prefix)/lib
-bindir = $(prefix)/bin
-docdir = $(prefix)/doc
-extradir = $(prefix)/extra
-tcldir = $(prefix)/tcl
-podir = $(prefix)/po
+installpath = $(DESTDIR)$(prefix)
+# making sure installation paths are absolute
+realinstallpath = $(abspath $(installpath))
+
+includedir = $(realinstallpath)/include
+libdir = $(realinstallpath)/lib
+bindir = $(realinstallpath)/bin
+docdir = $(realinstallpath)/doc
+extradir = $(realinstallpath)/extra
+tcldir = $(realinstallpath)/tcl
+podir = $(realinstallpath)/po
 
 GFLAGS = -DINSTALL_PREFIX=\"$(prefix)\"
 
@@ -238,62 +242,67 @@ externs:
 		make -f makefile.mingw -C $(pd_src)/extra/$$x ; \
 	done
 
-ABOUT_FILE=$(DESTDIR)$(docdir)/1.manual/1.introduction.txt
+ABOUT_FILE=$(docdir)/1.manual/1.introduction.txt
 install:  all
-	install -d $(DESTDIR)$(prefix)
-	install -p $(pd_src)/*.txt $(DESTDIR)$(prefix)
+	@echo "pd_src $(pd_src)"
+	@echo "DESTDIR: $(DESTDIR)"
+	@echo "prefix: $(prefix)"
+	@echo "installpath: $(installpath)"
+	@echo "installing to $(realinstallpath)"
+	install -d $(realinstallpath)
+	install -p $(pd_src)/*.txt $(realinstallpath)
 # /bin
-	install -d $(DESTDIR)$(bindir)
-	install -p $(PDEXEC) $(DESTDIR)$(bindir)/
-	install -p $(PDCOM) $(DESTDIR)$(bindir)/
-	install -p $(PDDLL) $(DESTDIR)$(bindir)/
-	install -p $(PDSEND) $(DESTDIR)$(bindir)/
-	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/
-	install -p $(DLL_DIR)/pd.lib $(DESTDIR)$(bindir)/
-	install -p $(DLL_DIR)/pd.def $(DESTDIR)$(bindir)/
+	install -d $(bindir)
+	install -p $(PDEXEC) $(bindir)/
+	install -p $(PDCOM) $(bindir)/
+	install -p $(PDDLL) $(bindir)/
+	install -p $(PDSEND) $(bindir)/
+	install -p $(PDRECEIVE) $(bindir)/
+	install -p $(DLL_DIR)/pd.lib $(bindir)/
+	install -p $(DLL_DIR)/pd.def $(bindir)/
 	tar -xzf $(pd_src)/msw/pdprototype.tgz -C $(pd_src)/msw
-	cp -r $(pd_src)/msw/pd/bin/* $(DESTDIR)$(bindir)/
+	cp -r $(pd_src)/msw/pd/bin/* $(bindir)/
 # /include
-	install -d $(DESTDIR)$(includedir)
-	install -p m_pd.h $(DESTDIR)$(includedir)/m_pd.h
-	install -p s_stuff.h $(DESTDIR)$(includedir)/s_stuff.h
+	install -d $(includedir)
+	install -p m_pd.h $(includedir)/m_pd.h
+	install -p s_stuff.h $(includedir)/s_stuff.h
 # /tcl
-	install -d $(DESTDIR)$(tcldir)
-	install -p $(pd_src)/tcl/*.* $(DESTDIR)$(tcldir)/
+	install -d $(tcldir)
+	install -p $(pd_src)/tcl/*.* $(tcldir)/
 # /lib
-	install -d $(DESTDIR)$(libdir)
-	cp -r $(pd_src)/msw/pd/lib/* $(DESTDIR)$(libdir)
+	install -d $(libdir)
+	cp -r $(pd_src)/msw/pd/lib/* $(libdir)
 # /po
-	install -d $(DESTDIR)$(podir)
-	cp -r $(pd_src)/po/* $(DESTDIR)$(podir)
+	install -d $(podir)
+	cp -r $(pd_src)/po/* $(podir)
 # /doc
-	install -d $(DESTDIR)$(docdir)
+	install -d $(docdir)
 	for dir in $(shell ls -F $(pd_src)/doc | grep /); do \
 		echo "installing $$dir"; \
-		install -d $(DESTDIR)$(docdir)/$$dir ; \
-		install -p $(pd_src)/doc/$$dir/* $(DESTDIR)$(docdir)/$$dir ; \
+		install -d $(docdir)/$$dir ; \
+		install -p $(pd_src)/doc/$$dir/* $(docdir)/$$dir ; \
 	done
 	for dir in $(shell ls -F $(pd_src)/doc/7.stuff | grep /); do \
 		echo "installing 7.stuff/$$dir"; \
-		install -d $(DESTDIR)$(docdir)/7.stuff/$$dir ; \
-		install -p $(pd_src)/doc/7.stuff/$$dir/* $(DESTDIR)$(docdir)/7.stuff/$$dir ; \
+		install -d $(docdir)/7.stuff/$$dir ; \
+		install -p $(pd_src)/doc/7.stuff/$$dir/* $(docdir)/7.stuff/$$dir ; \
 	done
 	mv $(ABOUT_FILE) $(ABOUT_FILE).tmp
 	cat $(ABOUT_FILE).tmp | sed 's|PD_VERSION|Pd version $(PD_VERSION)|' \
 		> $(ABOUT_FILE)
 	rm $(ABOUT_FILE).tmp
 # /extra
-	install -d $(DESTDIR)$(extradir)
-	install -p $(pd_src)/extra/*.txt $(DESTDIR)$(extradir)/
+	install -d $(extradir)
+	install -p $(pd_src)/extra/*.txt $(extradir)/
 	# externals:
 	for dir in $(PDEXTERNS) ; do \
-		make -f makefile.mingw -C $(pd_src)/extra/$$dir install installpath=$$(readlink -f $(DESTDIR)$(extradir)/$$dir) ; \
+		make -f makefile.mingw -C $(pd_src)/extra/$$dir install installpath=$(extradir)/$$dir ; \
 	done
 	# abstractions:
-	install -p $(pd_src)/extra/*.pd $(DESTDIR)$(extradir)
+	install -p $(pd_src)/extra/*.pd $(extradir)
 	# help files:
-	install -p $(pd_src)/extra/*-help.pd $(DESTDIR)$(docdir)/5.reference
-	install -p $(pd_src)/extra/*/*-help.pd $(DESTDIR)$(docdir)/5.reference
+	install -p $(pd_src)/extra/*-help.pd $(docdir)/5.reference
+	install -p $(pd_src)/extra/*/*-help.pd $(docdir)/5.reference
 # cleanup
 	rm -r $(pd_src)/msw/pd
 	@echo "Pd install succeeded."
