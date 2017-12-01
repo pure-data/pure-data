@@ -7,6 +7,8 @@
 # download the ASIO SDK from 
 # https://www.steinberg.net/en/company/developers.html
 # and unpack it to /asio
+# make sure the ASIO files end up in /asio/ASIOSDK 
+# (remove the version number from the folder name)
 
 # usage:
 # 1) cd to /src
@@ -67,7 +69,7 @@ DLLWRAP= dllwrap
 MORECFLAGS = 
 
 PADIR = $(pd_src)/portaudio/portaudio
-ASIODIR = $(pd_src)/asio/ASIOSDK2.3
+ASIODIR = $(pd_src)/asio/ASIOSDK
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)

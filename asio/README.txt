@@ -6,6 +6,6 @@ redistribute their source files.
 
 - Download the ASIO SDK https://www.steinberg.net/en/company/developers.html
 - Uncompress asiosdk2.3.zip into /asio
-- the ASIO source files should end up in /asio/ASIOSDK2.3
+- make sure the ASIO files end up in /asio/ASIOSDK (remove the version number from the folder name)
 
 
