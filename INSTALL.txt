@@ -228,7 +228,7 @@ To build the Pd macOS application, simply run:
 
     make app
 
-This builds Pd-#.#.#.app in the Pd source direcotry which can be then be
+This builds Pd-#.#.#.app in the Pd source directory which can be then be
 double-clicked and/or copied to /Applications. For more info &
 options regarding the Pd .app bundle, see mac/README.txt
 
@@ -264,6 +264,12 @@ You can configure Pd to use this search path first with:
 To see Pd's path search info, run Pd with the -verbose flag:
 
     pd -verbose
+
+Note: Pd installed to your system or run from the build/bin directory will not
+use the default font and will be missing the various macOS GUI hints (such as
+retina rendering) which are specified by the Info.plist file inside the .app
+bundle. Again, it is recommended to build a .app and use the aforementioned
+aliases to provide the pd command.
 
 ### Windows
 
