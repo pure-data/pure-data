@@ -9,7 +9,7 @@ AM_CFLAGS = -DNEWBUFFER
 AM_CPPFLAGS += \
     -I$(top_srcdir)/portaudio/portaudio/include \
     -I$(top_srcdir)/portaudio/portaudio/src/common
-
+	
 #########################################
 ##### Files, Binaries, & Libs #####
 
@@ -62,6 +62,9 @@ libportaudio_la_SOURCES += \
     portaudio/src/hostapi/wmme/pa_win_wmme.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
+AM_CPPFLAGS += \
+    -I$(top_srcdir)/asio/ASIOSDK2/common -I$(top_srcdir)/asio/ASIOSDK2/host \
+	-I$(top_srcdir)/asio/ASIOSDK2/host/pc
 libportaudio_la_SOURCES += \
     portaudio/src/hostapi/asio/iasiothiscallresolver.cpp \
     portaudio/src/hostapi/asio/pa_asio.cpp

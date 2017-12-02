@@ -20,10 +20,8 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 # pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
 
-pdsend_SOURCES = u_pdsend.c
-pdreceive_SOURCES = u_pdreceive.c
-pd_watchdog_SOURCES = s_watchdog.c
-pd_SOURCES = \
+lib_LTLIBRARIES = pd.la
+pd_la_SOURCES = \
     d_arithmetic.c \
     d_array.c \
     d_ctl.c \
@@ -97,8 +95,19 @@ pd_SOURCES = \
     x_vexp_fun.c \
     x_vexp_if.c
 
-# declared for ASIO
+pd_la_CFLAGS = $(pd_CFLAGS)
+pd_la_LDFLAGS = -module -avoid-version -shared -no-undefined -shrext .dll -g -O2 -o pd.dll
+pd_la_LIBADD =
+
+
+pdsend_SOURCES = u_pdsend.c
+pdreceive_SOURCES = u_pdreceive.c
+pd_watchdog_SOURCES = s_watchdog.c
+pd_SOURCES = s_entry.c
+
+# declared for ASIO to force linking with g++
 nodist_EXTRA_pd_SOURCES =
+nodist_EXTRA_pd_la_SOURCES =
 
 # pd-watchdog and "local" pd symlink location for tcl scripts
 libpdbindir = $(pkglibdir)/bin
@@ -160,22 +169,22 @@ endif
 
 ##### Windows MultiMedia (File) I/O #####
 if MMIO
-pd_CFLAGS += -DUSEAPI_MMIO
-pd_SOURCES += s_audio_mmio.c
+pd_la_CFLAGS += -DUSEAPI_MMIO
+pd_la_SOURCES += s_audio_mmio.c
 endif
 
 ##### PortAudio #####
 if PORTAUDIO
-pd_CFLAGS += -DUSEAPI_PORTAUDIO
-pd_SOURCES += s_audio_pa.c s_audio_paring.c
+pd_la_CFLAGS += -DUSEAPI_PORTAUDIO
+pd_la_SOURCES += s_audio_pa.c s_audio_paring.c
 
 if LOCAL_PORTAUDIO
 # link the included portaudio
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/include
-pd_LDADD += $(top_builddir)/portaudio/libportaudio.la
+pd_la_LIBADD += $(top_builddir)/portaudio/libportaudio.la
 else
 # link the system's portaudio
-pd_LDADD += -lportaudio
+pd_la_LIBADD += -lportaudio
 endif
 
 # need Carbon framework for PA on Mac
@@ -188,23 +197,24 @@ endif
 ##### ASIO #####
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
-pd_LDADD += $(top_builddir)/asio/libasio.la
+pd_la_LIBADD += $(top_builddir)/asio/libasio.la
 nodist_EXTRA_pd_SOURCES += dummy.cxx
+nodist_EXTRA_pd_la_SOURCES += dummy2.cxx
 endif
 
 ##### PortMidi #####
 if PORTMIDI
-pd_SOURCES += s_midi_pm.c
+pd_la_SOURCES += s_midi_pm.c
 
 if LOCAL_PORTMIDI
 # link the included portmidi
 AM_CPPFLAGS += \
     -I$(top_srcdir)/portmidi/portmidi/pm_common \
     -I$(top_srcdir)/portmidi/portmidi/porttime
-pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
+pd_la_LIBADD += $(top_builddir)/portmidi/libportmidi.la
 else
 # link the system's portmidi
-pd_LDADD += -lportmidi
+pd_la_LIBADD += -lportmidi
 endif
 
 # need Carbon framework for PM on Mac
@@ -218,19 +228,19 @@ endif
 # if no audio or midi api was detected/specified, fall back to dummy apis
 # ie. GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
 if AUDIO_DUMMY
-pd_CFLAGS += -DUSEAPI_DUMMY
-pd_SOURCES += s_audio_dummy.c
+pd_la_CFLAGS += -DUSEAPI_DUMMY
+pd_la_SOURCES += s_audio_dummy.c
 endif
 if MIDI_DUMMY
-pd_CFLAGS += -DUSEAPI_MIDIDUMMY
-pd_SOURCES += s_midi_dummy.c
+pd_la_CFLAGS += -DUSEAPI_MIDIDUMMY
+pd_la_SOURCES += s_midi_dummy.c
 endif
 
 ##### FFTW fft library #####
 if FFTW
-pd_SOURCES += d_fft_fftw.c
+pd_la_SOURCES += d_fft_fftw.c
 else
-pd_SOURCES += d_fft_fftsg.c
+pd_la_SOURCES += d_fft_fftsg.c
 endif
 
 #########################################
@@ -299,16 +309,41 @@ endif
 ##### Windows #####
 if WINDOWS
 # win32 sockets, multimedia, and all that
-LIBS += -lwsock32 -lwinmm -lole32
-# this is actually not yet fully working yet
-pd_LDFLAGS += -Wl,--output-def=pd.def \
-      -Wl,--out-implib=pd.lib
-bin_SCRIPTS = pd.lib pd.def
-noinst_SCRIPTS = libpd.a
+LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
+    -static-libgcc -static-libstdc++
 
-pd.lib pd.def: pd$(EXEEXT)
-libpd.a: pd.lib
-	$(LN_S) $^ $@
+# NOTE: -Wl,--out-implib=pd.lib is not needed because libtool will 
+# automatically generate an import library called pd.dll.a.
+pd_la_LDFLAGS += -Wl,--export-all-symbols -Wl,--output-def=pd.def
+
+	  
+# hide console
+pd_LDFLAGS += -mwindows
+# link with ressources and pd.dll import library
+pd_LDADD += pd.res .libs/pd.dll.a  
+
+# force to build pd library first
+.libs/pd.dll.a: pd.la
+
+pd.res: pd.rc
+	windres pd.rc -O coff -o pd.res
+
+# import libraries:
+bin_SCRIPTS = pd.lib pd.def
+noinst_SCRIPTS = libpd.dll.a
+
+pd.def: pd.la
+
+# the import library pd.lib can be created by simply renaming pd.dll.a 
+# successfully tested with MSVC!
+pd.lib: pd.la
+	cp .libs/pd.dll.a .libs/pd.lib
+
+# another import library, needed for extra externals (because of -lpd)
+libpd.dll.a: pd.la
+	cp .libs/pd.dll.a libpd.dll.a
+
+	
 clean-pdlib:
 	-rm -f pd.lib pd.def libpd.a
 endif
