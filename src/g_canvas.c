@@ -333,20 +333,20 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
 
     if (argc == 5)  /* toplevel: x, y, w, h, font */
     {
-        xloc = atom_getintarg(0, argc, argv);
-        yloc = atom_getintarg(1, argc, argv);
-        width = atom_getintarg(2, argc, argv);
-        height = atom_getintarg(3, argc, argv);
-        font = atom_getintarg(4, argc, argv);
+        xloc = atom_getfloatarg(0, argc, argv);
+        yloc = atom_getfloatarg(1, argc, argv);
+        width = atom_getfloatarg(2, argc, argv);
+        height = atom_getfloatarg(3, argc, argv);
+        font = atom_getfloatarg(4, argc, argv);
     }
     else if (argc == 6)  /* subwindow: x, y, w, h, name, vis */
     {
-        xloc = atom_getintarg(0, argc, argv);
-        yloc = atom_getintarg(1, argc, argv);
-        width = atom_getintarg(2, argc, argv);
-        height = atom_getintarg(3, argc, argv);
+        xloc = atom_getfloatarg(0, argc, argv);
+        yloc = atom_getfloatarg(1, argc, argv);
+        width = atom_getfloatarg(2, argc, argv);
+        height = atom_getfloatarg(3, argc, argv);
         s = atom_getsymbolarg(4, argc, argv);
-        vis = atom_getintarg(5, argc, argv);
+        vis = atom_getfloatarg(5, argc, argv);
     }
         /* (otherwise assume we're being created from the menu.) */
     if (THISGUI->i_newdirectory &&
@@ -407,15 +407,15 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     x->gl_y1 = atom_getfloatarg(1, argc, argv);
     x->gl_x2 = atom_getfloatarg(2, argc, argv);
     x->gl_y2 = atom_getfloatarg(3, argc, argv);
-    x->gl_pixwidth = atom_getintarg(4, argc, argv);
-    x->gl_pixheight = atom_getintarg(5, argc, argv);
+    x->gl_pixwidth = atom_getfloatarg(4, argc, argv);
+    x->gl_pixheight = atom_getfloatarg(5, argc, argv);
     if (argc <= 7)
-        canvas_setgraph(x, atom_getintarg(6, argc, argv), 1);
+        canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 1);
     else
     {
-        x->gl_xmargin = atom_getintarg(7, argc, argv);
-        x->gl_ymargin = atom_getintarg(8, argc, argv);
-        canvas_setgraph(x, atom_getintarg(6, argc, argv), 0);
+        x->gl_xmargin = atom_getfloatarg(7, argc, argv);
+        x->gl_ymargin = atom_getfloatarg(8, argc, argv);
+        canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 0);
     }
 }
 
@@ -1205,7 +1205,7 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
     int newstate;
     if (argc)
     {
-        newstate = atom_getintarg(0, argc, argv);
+        newstate = atom_getfloatarg(0, argc, argv);
         if (newstate && !THISGUI->i_dspstate)
         {
             sys_set_audio_state(1);

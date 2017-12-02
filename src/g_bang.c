@@ -329,9 +329,9 @@ static void bng_bang2(t_bng *x) /*wird immer gesendet, wenn moeglich*/
 static void bng_dialog(t_bng *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
-    int a = (int)atom_getintarg(0, argc, argv);
-    int fthold = (int)atom_getintarg(2, argc, argv);
-    int ftbreak = (int)atom_getintarg(3, argc, argv);
+    int a = (int)atom_getfloatarg(0, argc, argv);
+    int fthold = (int)atom_getfloatarg(2, argc, argv);
+    int ftbreak = (int)atom_getfloatarg(3, argc, argv);
     int sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
 
     x->x_gui.x_w = iemgui_clip_size(a) * IEMGUI_ZOOM(x);
@@ -382,7 +382,7 @@ static void bng_loadbang(t_bng *x, t_floatarg action)
 
 static void bng_size(t_bng *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getintarg(0, ac, av)) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av)) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
@@ -395,8 +395,8 @@ static void bng_pos(t_bng *x, t_symbol *s, int ac, t_atom *av)
 
 static void bng_flashtime(t_bng *x, t_symbol *s, int ac, t_atom *av)
 {
-    bng_check_minmax(x, (int)atom_getintarg(0, ac, av),
-                        (int)atom_getintarg(1, ac, av));
+    bng_check_minmax(x, (int)atom_getfloatarg(0, ac, av),
+                        (int)atom_getfloatarg(1, ac, av));
 }
 
 static void bng_color(t_bng *x, t_symbol *s, int ac, t_atom *av)
@@ -460,15 +460,15 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
        &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10))
     {
 
-        a = (int)atom_getintarg(0, argc, argv);
-        fthold = (int)atom_getintarg(1, argc, argv);
-        ftbreak = (int)atom_getintarg(2, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(3, argc, argv));
+        a = (int)atom_getfloatarg(0, argc, argv);
+        fthold = (int)atom_getfloatarg(1, argc, argv);
+        ftbreak = (int)atom_getfloatarg(2, argc, argv);
+        iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(3, argc, argv));
         iemgui_new_getnames(&x->x_gui, 4, argv);
-        ldx = (int)atom_getintarg(7, argc, argv);
-        ldy = (int)atom_getintarg(8, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(9, argc, argv));
-        fs = (int)atom_getintarg(10, argc, argv);
+        ldx = (int)atom_getfloatarg(7, argc, argv);
+        ldy = (int)atom_getfloatarg(8, argc, argv);
+        iem_inttofstyle(&x->x_gui.x_fsf, atom_getfloatarg(9, argc, argv));
+        fs = (int)atom_getfloatarg(10, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+11, argv+12, argv+13);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);

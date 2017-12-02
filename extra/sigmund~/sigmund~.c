@@ -1300,8 +1300,8 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
 static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *syminput = atom_getsymbolarg(0, argc, argv);
-    int npts = atom_getintarg(1, argc, argv);
-    int onset = atom_getintarg(2, argc, argv);
+    int npts = atom_getfloatarg(1, argc, argv);
+    int onset = atom_getfloatarg(2, argc, argv);
     t_float srate = atom_getfloatarg(3, argc, argv);
     int loud = atom_getfloatarg(4, argc, argv);
     int arraysize, totstorage, nfound, i;

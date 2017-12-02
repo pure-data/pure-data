@@ -194,8 +194,8 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     {
         t_binbuf *b = binbuf_new();
         binbuf_restore(b, argc-2, argv+2);
-        canvas_objtext(gl, atom_getintarg(0, argc, argv),
-            atom_getintarg(1, argc, argv), 0, 0, b);
+        canvas_objtext(gl, atom_getfloatarg(0, argc, argv),
+            atom_getfloatarg(1, argc, argv), 0, 0, b);
     }
         /* JMZ: don't go into interactive mode in a closed canvas */
     else if (!glist_isvisible(gl))
@@ -929,7 +929,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
     {
         x->a_text.te_xpix = atom_getfloatarg(0, argc, argv);
         x->a_text.te_ypix = atom_getfloatarg(1, argc, argv);
-        x->a_text.te_width = atom_getintarg(2, argc, argv);
+        x->a_text.te_width = atom_getfloatarg(2, argc, argv);
             /* sanity check because some very old patches have trash in this
             field... remove this in 2003 or so: */
         if (x->a_text.te_width < 0 || x->a_text.te_width > 500)

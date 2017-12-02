@@ -301,9 +301,9 @@ static void vradio_properties(t_gobj *z, t_glist *owner)
 static void vradio_dialog(t_vradio *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
-    int a = (int)atom_getintarg(0, argc, argv);
-    int chg = (int)atom_getintarg(4, argc, argv);
-    int num = (int)atom_getintarg(6, argc, argv);
+    int a = (int)atom_getfloatarg(0, argc, argv);
+    int chg = (int)atom_getfloatarg(4, argc, argv);
+    int num = (int)atom_getfloatarg(6, argc, argv);
     int sr_flags;
 
     if(chg != 0) chg = 1;
@@ -527,7 +527,7 @@ static void vradio_number(t_vradio *x, t_floatarg num)
 
 static void vradio_size(t_vradio *x, t_symbol *s, int ac, t_atom *av)
 {
-    x->x_gui.x_w = iemgui_clip_size((int)atom_getintarg(0, ac, av)) * IEMGUI_ZOOM(x);
+    x->x_gui.x_w = iemgui_clip_size((int)atom_getfloatarg(0, ac, av)) * IEMGUI_ZOOM(x);
     x->x_gui.x_h = x->x_gui.x_w;
     iemgui_size((void *)x, &x->x_gui);
 }
@@ -587,17 +587,17 @@ static void *vradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
        &&IS_A_FLOAT(argv,7)&&IS_A_FLOAT(argv,8)
        &&IS_A_FLOAT(argv,9)&&IS_A_FLOAT(argv,10)&&IS_A_FLOAT(argv,14))
     {
-        a = (int)atom_getintarg(0, argc, argv);
-        chg = (int)atom_getintarg(1, argc, argv);
-        iem_inttosymargs(&x->x_gui.x_isa, atom_getintarg(2, argc, argv));
-        num = (int)atom_getintarg(3, argc, argv);
+        a = (int)atom_getfloatarg(0, argc, argv);
+        chg = (int)atom_getfloatarg(1, argc, argv);
+        iem_inttosymargs(&x->x_gui.x_isa, atom_getfloatarg(2, argc, argv));
+        num = (int)atom_getfloatarg(3, argc, argv);
         iemgui_new_getnames(&x->x_gui, 4, argv);
-        ldx = (int)atom_getintarg(7, argc, argv);
-        ldy = (int)atom_getintarg(8, argc, argv);
-        iem_inttofstyle(&x->x_gui.x_fsf, atom_getintarg(9, argc, argv));
-        fs = (int)atom_getintarg(10, argc, argv);
+        ldx = (int)atom_getfloatarg(7, argc, argv);
+        ldy = (int)atom_getfloatarg(8, argc, argv);
+        iem_inttofstyle(&x->x_gui.x_fsf, atom_getfloatarg(9, argc, argv));
+        fs = (int)atom_getfloatarg(10, argc, argv);
         iemgui_all_loadcolors(&x->x_gui, argv+11, argv+12, argv+13);
-        fval = atom_getintarg(14, argc, argv);
+        fval = atom_getfloatarg(14, argc, argv);
     }
     else iemgui_new_getnames(&x->x_gui, 4, 0);
     x->x_gui.x_draw = (t_iemfunptr)vradio_draw;
