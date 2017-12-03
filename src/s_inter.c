@@ -50,6 +50,9 @@ typedef int socklen_t;
 #include <stdlib.h>
 #endif
 
+#define stringify(s) str(s)
+#define str(s) #s
+
 #define DEBUG_MESSUP 1      /* messages up from pd to pd-gui */
 #define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
 
@@ -508,7 +511,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
-    int ret = recv(fd, buf, INBUFSIZE, 0);
+    int ret = (int)recv(fd, buf, INBUFSIZE, 0);
     if (ret < 0)
     {
         sys_sockerror("recv");
@@ -565,7 +568,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
         }
         else
         {
-            ret = recv(fd, x->sr_inbuf + x->sr_inhead,
+            ret = (int)recv(fd, x->sr_inbuf + x->sr_inhead,
                 readto - x->sr_inhead, 0);
             if (ret <= 0)
             {
@@ -655,7 +658,7 @@ static void sys_trytogetmoreguibuf(int newsize)
         int written = 0;
         while (1)
         {
-            int res = send(pd_this->pd_inter->i_guisock,
+            int res = (int)send(pd_this->pd_inter->i_guisock,
                 pd_this->pd_inter->i_guibuf + pd_this->pd_inter->i_guitail +
                     written, bytestowrite, 0);
             if (res < 0)
@@ -747,12 +750,12 @@ void sys_gui(char *s)
     sys_vgui("%s", s);
 }
 
-static int sys_flushtogui( void)
+static int sys_flushtogui(void)
 {
     int writesize = pd_this->pd_inter->i_guihead - pd_this->pd_inter->i_guitail,
         nwrote = 0;
     if (writesize > 0)
-        nwrote = send(pd_this->pd_inter->i_guisock,
+        nwrote = (int)send(pd_this->pd_inter->i_guisock,
             pd_this->pd_inter->i_guibuf + pd_this->pd_inter->i_guitail,
                 writesize, 0);
 
@@ -926,6 +929,58 @@ void glob_watchdog(t_pd *dummy)
     }
 }
 #endif
+
+static void sys_init_deken()
+{
+    const char*os =
+#if defined __linux__
+        "Linux"
+#elif defined __APPLE__
+        "Darwin"
+#elif defined __FreeBSD__
+        "FreeBSD"
+#elif defined __NetBSD__
+        "NetBSD"
+#elif defined __OpenBSD__
+        "OpenBSD"
+#elif defined _WIN32
+        "Windows"
+#else
+# if defined(__GNUC__)
+#  warning unknown OS
+# endif
+        0
+#endif
+        ;
+    const char*machine =
+#if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
+        "amd64"
+#elif defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86)
+        "i386"
+#elif defined(__ppc__)
+        "ppc"
+#elif defined (__ARM_ARCH)
+        "armv" stringify(__ARM_ARCH)
+# if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__)
+#  if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+        "l"
+#  endif
+# endif
+#else
+# if defined(__GNUC__)
+#  warning unknown architecture
+# endif
+        0
+#endif
+        ;
+
+        /* only send the arch info, if we are sure about it... */
+    if (os && machine)
+        sys_vgui("::deken::set_platform %s %s %d %d\n",
+                 os, machine,
+                 8 * sizeof(char*),
+                 8 * sizeof(t_float));
+}
 
 #define FIRSTPORTNUM 5400
 
@@ -1237,6 +1292,7 @@ static int sys_do_startgui(const char *libdir)
              apibuf, apibuf2, sys_font, sys_fontweight);
     sys_vgui("set pd_whichapi %d\n", sys_audioapi);
 
+    sys_init_deken();
     return (0);
 }
 

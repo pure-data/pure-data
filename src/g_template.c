@@ -786,7 +786,7 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
     }
     else
     {
-        int cpy = s1 - s->s_name, got;
+        int cpy = (int)(s1 - s->s_name), got;
         double v1, v2, screen1, screen2, quantum;
         if (cpy > MAXPDSTRING-5)
             cpy = MAXPDSTRING-5;
@@ -1185,6 +1185,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                     basey + fielddesc_getcoord(f+1, template, data, 1));
             }
             if (width < 1) width = 1;
+            if (glist->gl_isgraph)
+                width *= glist_getzoom(glist);
             numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
                 outline);
@@ -1711,6 +1713,9 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     nelem = array->a_n;
     elem = (char *)array->a_vec;
 
+    if (glist->gl_isgraph)
+        linewidth *= glist_getzoom(glist);
+
     if (tovis)
     {
         if (style == PLOTSTYLE_POINTS)
@@ -1750,8 +1755,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     maxyval = yval;
                 if (i == nelem-1 || inextx != ixpix)
                 {
-                    sys_vgui(".x%lx.c create rectangle %d %d %d %d \
--fill black -width 0  -tags [list plot%lx array]\n",
+                    sys_vgui(".x%lx.c create rectangle %d %d %d %d "
+                        "-fill black -width 0 -tags [list plot%lx array]\n",
                         glist_getcanvas(glist),
                         ixpix, (int)glist_ytopixels(glist,
                             basey + fielddesc_cvttocoord(yfielddesc, minyval)),
@@ -1850,7 +1855,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                                 fielddesc_cvttocoord(wfielddesc, wval)));
                 }
             ouch:
-                sys_vgui(" -width 1 -fill %s -outline %s\\\n",
+                sys_vgui(" -width %d -fill %s -outline %s\\\n",
+                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
                     outline, outline);
                 if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
@@ -2454,7 +2460,7 @@ static void drawnumber_getbuf(t_drawnumber *x, t_word *data,
     {
         strncpy(buf, x->x_label->s_name, DRAWNUMBER_BUFSIZE);
         buf[DRAWNUMBER_BUFSIZE - 1] = 0;
-        nchars = strlen(buf);
+        nchars = (int)strlen(buf);
         if (type == DT_TEXT)
         {
             char *buf2;
@@ -2508,11 +2514,11 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
         startline = newline+1)
     {
         if (newline - startline > width)
-            width = newline - startline;
+            width = (int)(newline - startline);
         height++;
     }
     if (strlen(startline) > (unsigned)width)
-        width = strlen(startline);
+        width = (int)strlen(startline);
     *xp1 = xloc;
     *yp1 = yloc;
     *xp2 = xloc + fontwidth * width;
@@ -2564,7 +2570,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
+            sys_hostfontsize(glist_getfont(glist), 1),
                 sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }

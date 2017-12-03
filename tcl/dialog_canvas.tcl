@@ -261,6 +261,8 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
         $mytoplevel.buttons.ok config -highlightthickness 0
         $mytoplevel.buttons.cancel config -highlightthickness 0
     }
+
+    position_over_window $mytoplevel $::focused_window
  }
 
 # for live updates on OSX

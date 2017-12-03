@@ -700,7 +700,7 @@ void ugen_connect(t_dspcontext *dc, t_object *x1, int outno, t_object *x2,
                 class_getname(x2->ob_pd), outno, inno);
     for (u1 = dc->dc_ugenlist; u1 && u1->u_obj != x1; u1 = u1->u_next);
     for (u2 = dc->dc_ugenlist; u2 && u2->u_obj != x2; u2 = u2->u_next);
-    if (!u1 || !u2 || siginno < 0)
+    if (!u1 || !u2 || siginno < 0 || !u2->u_nin)
     {
         if (!u1)
             error("object with signal outlets but no DSP method?");

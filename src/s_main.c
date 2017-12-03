@@ -126,8 +126,8 @@ typedef struct _fontinfo
     in the six fonts.  */
 
 static t_fontinfo sys_fontspec[] = {
-    {8, 6, 10}, {10, 7, 13}, {12, 9, 16},
-    {16, 10, 21}, {24, 15, 25}, {36, 25, 45}};
+    {8, 5, 11}, {10, 6, 13}, {12, 7, 16},
+    {16, 10, 19}, {24, 14, 29}, {36, 22, 44}};
 #define NFONT (sizeof(sys_fontspec)/sizeof(*sys_fontspec))
 #define NZOOM 2
 static t_fontinfo sys_gotfonts[NZOOM][NFONT];
@@ -236,9 +236,9 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     for (j = 0; j < NZOOM; j++)
         for (i = 0; i < NFONT; i++)
     {
-        int size   = atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
-        int width  = atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
-        int height = atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+        int size   = atom_getfloatarg(3 * (i + j * NFONT) + 2, argc, argv);
+        int width  = atom_getfloatarg(3 * (i + j * NFONT) + 3, argc, argv);
+        int height = atom_getfloatarg(3 * (i + j * NFONT) + 4, argc, argv);
         if (!(size && width && height))
         {
             size   = (j+1)*sys_fontspec[i].fi_pointsize;
@@ -284,9 +284,11 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_messagelist = 0;
 }
 
+// font char metric triples: pointsize width(pixels) height(pixels)
 static int defaultfontshit[] = {
-9, 5, 10, 11, 7, 13, 14, 8, 16, 17, 10, 20, 22, 13, 25, 39, 23, 45,
-17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
+ 8,  5, 11, 10,  6, 13, 12,  7, 16, 16, 10, 19, 24, 14, 29, 36, 22, 44,
+16, 10, 22, 20, 12, 26, 24, 14, 32, 32, 20, 38, 48, 28, 58, 72, 44, 88
+}; // normal & zoomed (2x)
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 static t_clock *sys_fakefromguiclk;
@@ -520,7 +522,7 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
         else
         {
             char *endp;
-            vecp[n] = strtol(str, &endp, 10);
+            vecp[n] = (int)strtol(str, &endp, 10);
             if (endp == str)
                 break;
             n++;

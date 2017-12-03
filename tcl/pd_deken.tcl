@@ -253,6 +253,19 @@ set ::deken::architecture_substitutes(ppc) [list "PowerPC"]
 # try to set install path when plugin is loaded
 set ::deken::installpath [::deken::find_installpath]
 
+proc ::deken::set_platform {os machine bits floatwidth} {
+    if { $os != $::deken::platform(os) ||
+         $machine != $::deken::platform(machine) ||
+         $bits != $::deken::platform(bits)} {
+        set ::deken::platform(os) ${os}
+        set ::deken::platform(machine) ${machine}
+        set ::deken::platform(bits) ${bits}
+
+        ::pdwindow::verbose 1 [format [_ "\[deken\] Platform re-detected: %s" ] ${os}-${machine}-${bits}bit ]
+        ::pdwindow::verbose 1 "\n"
+    }
+}
+
 proc ::deken::status {{msg ""}} {
     #variable mytoplevelref
     #$mytoplevelref.results insert end "$msg\n"

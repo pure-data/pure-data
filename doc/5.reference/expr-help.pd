@@ -2,7 +2,6 @@
 #X obj 207 48 expr;
 #X obj 258 48 expr~;
 #X obj 317 48 fexpr~;
-#X text 853 519 updated for Pd 0.48;
 #X floatatom 786 121 5 0 0 0 - - -, f 5;
 #X floatatom 786 209 5 0 0 0 - - -, f 5;
 #X floatatom 836 209 5 0 0 0 - - -, f 5;
@@ -65,59 +64,85 @@ index:;
 #X restore 840 354 pd Arrays;
 #X text 593 184 Basic examples:;
 #X text 785 324 Further details:;
-#N canvas 298 28 1045 460 Value 0;
-#X floatatom 655 249 5 0 0 0 - - -, f 5;
-#X obj 655 175 until;
-#X msg 796 176 0;
-#X obj 796 212 v i;
-#X obj 655 213 expr i = i + 1;
-#X msg 655 105 10;
-#X obj 655 279 print;
-#X obj 281 68 loadbang;
-#X obj 241 181 value a;
-#X obj 281 154 value b;
-#X obj 324 128 value c;
-#X text 102 112 loading values into [value] objects =====>, f 14;
-#X obj 178 298 expr (a + b) / c;
-#X obj 178 271 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X floatatom 178 332 0 0 0 0 - - -;
-#X msg 241 102 5.2;
-#X msg 281 102 3.3;
-#X msg 324 102 2.1;
-#X text 527 34 It is also possible to assign values to variables inside
-the expr family of objects with the "=" syntax.;
-#X obj 655 136 trigger float bang;
-#X text 28 20 The expr family of objects can access variables set into
+#N canvas 315 55 1003 612 Value 0;
+#X floatatom 662 209 5 0 0 0 - - -, f 5;
+#X obj 662 144 until;
+#X msg 803 145 0;
+#X obj 803 175 v i;
+#X obj 662 176 expr i = i + 1;
+#X msg 662 79 10;
+#X obj 662 236 print;
+#X obj 279 65 loadbang;
+#X obj 239 178 value a;
+#X obj 279 151 value b;
+#X obj 322 125 value c;
+#X text 100 109 loading values into [value] objects =====>, f 14;
+#X obj 95 339 expr (a + b) / c;
+#X obj 95 312 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 95 373 0 0 0 0 - - -;
+#X text 525 18 It is also possible to assign values to variables inside
+the expr family of objects with the "=" syntax., f 54;
+#X obj 662 110 trigger float bang;
+#X text 26 17 The expr family of objects can access variables set into
 [value] objects.;
-#X obj 787 357 expr i * 2 \; i = i + 1;
-#X floatatom 787 403 5 0 0 0 - - -, f 5;
-#X floatatom 872 404 5 0 0 0 - - -, f 5;
-#X obj 787 332 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 796 302 expr i * 2 \; i = i + 1;
+#X floatatom 796 348 5 0 0 0 - - -, f 5;
+#X floatatom 881 349 5 0 0 0 - - -, f 5;
+#X obj 796 267 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X text 280 356 Since expressions are output from right to left order
-\, they are evaluated from bottom to top. This means you can update
-a variable and call it in the above expression \, check it ==>;
-#X text 30 232 All you have to do is just use the variable name into
-the expression:;
+#X text 37 235 All you have to do is just use the variable name into
+the expression:, f 27;
+#X obj 94 424 expr~ (a + b) / c;
+#X obj 94 455 print~;
+#X obj 66 423 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X msg 239 99 5;
+#X msg 279 99 3;
+#X msg 322 99 2.5;
+#X obj 95 535 print~;
+#X obj 67 503 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 95 504 fexpr~ (a + b) / c;
+#X text 366 299 Expressions are output from right to left order in
+[expr] \, since they're evaluated from bottom to top. This means you
+need to update a variable and call it in the above expression \, check
+it =============>, f 51;
+#X obj 799 473 v last;
+#X obj 673 504 fexpr~ last = $x1[-1] \; $x1[0] - last;
+#X obj 846 559 print~;
+#X obj 879 524 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 673 473 phasor~ 1000;
+#X text 365 396 You cannot assign variables values in [expr~] because
+it deals with signal vectors and not single values. On the other hand
+\, [fexpr~] can assign values to variables \, but you need to follow
+an inverse order \, from top to bottom., f 68;
 #X connect 0 0 6 0;
 #X connect 1 0 4 0;
 #X connect 2 0 3 0;
 #X connect 4 0 0 0;
-#X connect 5 0 19 0;
-#X connect 7 0 16 0;
-#X connect 7 0 17 0;
-#X connect 7 0 15 0;
+#X connect 5 0 16 0;
+#X connect 7 0 27 0;
+#X connect 7 0 28 0;
+#X connect 7 0 26 0;
 #X connect 12 0 14 0;
 #X connect 13 0 12 0;
-#X connect 15 0 8 0;
-#X connect 16 0 9 0;
-#X connect 17 0 10 0;
-#X connect 19 0 1 0;
-#X connect 19 1 2 0;
-#X connect 21 0 22 0;
-#X connect 21 1 23 0;
-#X connect 24 0 21 0;
+#X connect 16 0 1 0;
+#X connect 16 1 2 0;
+#X connect 18 0 19 0;
+#X connect 18 1 20 0;
+#X connect 21 0 18 0;
+#X connect 23 0 24 0;
+#X connect 25 0 24 0;
+#X connect 26 0 8 0;
+#X connect 27 0 9 0;
+#X connect 28 0 10 0;
+#X connect 30 0 29 0;
+#X connect 31 0 29 0;
+#X connect 34 1 35 0;
+#X connect 36 0 35 0;
+#X connect 37 0 34 0;
 #X restore 840 380 pd Value;
 #N canvas 212 108 1069 507 Dealing_with_"\$0" 0;
 #X obj 684 139 expr $s2[$f1];
@@ -804,15 +829,15 @@ integers), f 26;
 #X obj 286 630 tabsend~ a3;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array a2 64 float 1;
-#A 0 0.320225 0.259744 0.19726 0.134162 0.0718381 0.0116777 -0.0449844
--0.0968794 -0.142839 -0.181805 -0.21287 -0.23528 -0.248446 -0.251982
--0.245675 -0.229516 -0.203702 -0.168604 -0.124801 -0.0730297 -0.014192
-0.0506687 0.120387 0.193704 0.269284 0.345734 0.42167 0.495687 0.566438
-0.63264 0.693059 0.74664 0.79241 0.829561 0.857474 0.875668 0.883918
-0.882153 0.870483 0.849272 0.819 0.780379 0.734275 0.681646 0.623671
-0.561566 0.496648 0.430299 0.363891 0.298839 0.236501 0.178182 0.125116
-0.0784199 0.0390894 0.00796821 -0.0142663 -0.0271137 -0.0302628 -0.0235972
--0.0071979 0.0186594 0.0535072 0.0966986;
+#A 0 0.549619 0.479196 0.405279 0.329205 0.252375 0.176177 0.102005
+0.0312064 -0.0349443 -0.0952631 -0.148683 -0.194276 -0.231275 -0.25907
+-0.277256 -0.285601 -0.284077 -0.272865 -0.252315 -0.222986 -0.185602
+-0.141041 -0.0903414 -0.0346491 0.0247821 0.0866258 0.149502 0.212021
+0.272789 0.330447 0.383713 0.43136 0.472306 0.505582 0.53036 0.546023
+0.552088 0.548289 0.534562 0.510994 0.477932 0.435864 0.385466 0.3276
+0.263247 0.193545 0.11972 0.0430815 -0.0349982 -0.113123 -0.189895
+-0.263947 -0.333944 -0.398665 -0.456971 -0.507851 -0.550463 -0.584086
+-0.608223 -0.622544 -0.626894 -0.621354 -0.606167 -0.581794;
 #X coords 0 1 63 -1 200 140 1;
 #X restore 430 523 graph;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -1117,10 +1142,11 @@ offset filters audio at frequency of 1102.5 Hz, f 50;
 #X text 617 485 audio operators:;
 #X text 598 208 (click on the subpatches to open them), f 13;
 #X obj 731 512 random;
-#X connect 4 0 17 0;
-#X connect 5 0 40 0;
-#X connect 6 0 40 0;
-#X connect 17 0 5 0;
-#X connect 17 1 6 0;
-#X connect 17 2 18 0;
-#X connect 18 0 40 0;
+#X text 833 519 updated for Pd 0.48-1;
+#X connect 3 0 16 0;
+#X connect 4 0 39 0;
+#X connect 5 0 39 0;
+#X connect 16 0 4 0;
+#X connect 16 1 5 0;
+#X connect 16 2 17 0;
+#X connect 17 0 39 0;
