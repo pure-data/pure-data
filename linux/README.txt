@@ -19,6 +19,7 @@ release checklist
             ./send-msw.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
+    git push origin
     git push origin --tags
     git push sourceforge --mirror
         ... (I don't use 'mirror' here because afraid of deleting PR branches)
