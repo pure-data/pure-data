@@ -1,4 +1,4 @@
-#N canvas 111 115 1074 528 12;
+#N canvas 159 159 1074 528 12;
 #X floatatom 838 294 0 0 0 0 - - -;
 #X floatatom 812 427 0 0 0 0 - - -;
 #X floatatom 743 426 0 0 0 0 - - -;
@@ -7,18 +7,18 @@
 #X obj 812 453 bendout;
 #X floatatom 958 291 0 0 0 0 - - -;
 #X text 183 13 MIDI I/O objects;
-#X obj 135 398 pgmin;
-#X floatatom 167 425 0 0 0 0 - - -;
-#X floatatom 135 425 0 0 0 0 - - -;
-#X floatatom 71 426 0 0 0 0 - - -;
-#X floatatom 32 426 0 0 0 0 - - -;
-#X floatatom 262 425 0 0 0 0 - - -;
-#X floatatom 216 425 0 0 0 0 - - -;
-#X floatatom 352 446 0 0 0 0 - - -;
-#X floatatom 315 467 0 0 0 0 - - -;
-#X floatatom 389 423 0 0 0 0 - - -;
-#X text 129 358 program change, f 7;
-#X text 33 358 pitch bend, f 5;
+#X obj 135 408 pgmin;
+#X floatatom 167 435 0 0 0 0 - - -;
+#X floatatom 135 435 0 0 0 0 - - -;
+#X floatatom 71 436 0 0 0 0 - - -;
+#X floatatom 32 436 0 0 0 0 - - -;
+#X floatatom 262 435 0 0 0 0 - - -;
+#X floatatom 216 435 0 0 0 0 - - -;
+#X floatatom 352 456 0 0 0 0 - - -;
+#X floatatom 315 477 0 0 0 0 - - -;
+#X floatatom 389 433 0 0 0 0 - - -;
+#X text 129 368 program change, f 7;
+#X text 33 368 pitch bend, f 5;
 #X floatatom 680 276 0 0 0 0 - - -;
 #X floatatom 699 305 0 0 0 0 - - -;
 #X floatatom 719 333 0 0 0 0 - - -;
@@ -29,62 +29,58 @@
 #X obj 659 453 touchout;
 #X obj 538 452 polytouchout;
 #X floatatom 578 424 0 0 0 0 - - -;
-#X obj 563 68 midiin;
-#X floatatom 563 99 0 0 0 0 - - -;
-#X floatatom 602 99 0 0 0 0 - - -;
-#X floatatom 869 106 0 0 0 0 - - -;
-#X floatatom 915 107 0 0 0 0 - - -;
-#X obj 869 75 sysexin;
+#X obj 569 70 midiin;
+#X floatatom 569 101 0 0 0 0 - - -;
+#X floatatom 608 101 0 0 0 0 - - -;
+#X floatatom 897 108 0 0 0 0 - - -;
+#X floatatom 943 109 0 0 0 0 - - -;
+#X obj 897 77 sysexin;
 #X obj 956 479 midiout;
-#X floatatom 704 101 0 0 0 0 - - -;
-#X floatatom 799 101 0 0 0 0 - - -;
-#X obj 704 72 midirealtimein;
-#X text 711 130 all real-time messages, f 13;
+#X floatatom 732 103 0 0 0 0 - - -;
+#X floatatom 827 103 0 0 0 0 - - -;
+#X obj 732 74 midirealtimein;
+#X text 739 132 all real-time messages, f 13;
 #X text 31 495 updated for Pd release 0.48-1;
-#X obj 32 398 bendin;
-#X obj 216 398 touchin;
-#X obj 315 396 polytouchin;
-#X floatatom 51 199 0 0 0 0 - - -;
-#X obj 32 148 notein;
-#X floatatom 32 222 0 0 0 0 - - -;
-#X floatatom 71 174 0 0 0 0 - - -;
-#X text 66 222 note;
-#X text 81 200 velocity;
-#X text 101 176 channel;
-#X floatatom 300 207 0 0 0 0 - - -;
-#X floatatom 284 236 0 0 0 0 - - -;
-#X floatatom 316 174 0 0 0 0 - - -;
-#X obj 284 149 ctlin;
-#X text 315 239 value;
-#X text 331 200 controller number, f 10;
-#X text 349 175 channel;
-#X text 422 424 channel;
-#X text 384 446 note number;
-#X text 209 358 channel aftertouch, f 10;
-#X text 316 353 polyphonic aftertouch, f 10;
-#X text 346 469 aftertouch value;
-#X floatatom 268 309 0 0 0 0 - - -;
-#X text 299 312 value;
-#X obj 268 279 ctlin 7 4;
-#X text 93 147 (omni);
-#X floatatom 237 201 0 0 0 0 - - -;
-#X floatatom 184 202 0 0 0 0 - - -;
-#X obj 184 173 notein 1;
-#X text 174 148 (channel 1);
-#X text 333 148 (all controllers \, omni);
-#X floatatom 71 303 0 0 0 0 - - -;
-#X text 19 304 value;
-#X obj 71 277 ctlin 4;
-#X floatatom 117 303 0 0 0 0 - - -;
-#X text 542 18 These are always omni \, don't take arguments and output
-the port number instead of the channel:;
+#X obj 32 408 bendin;
+#X obj 216 408 touchin;
+#X obj 315 406 polytouchin;
+#X floatatom 51 209 0 0 0 0 - - -;
+#X obj 32 158 notein;
+#X floatatom 32 232 0 0 0 0 - - -;
+#X floatatom 71 184 0 0 0 0 - - -;
+#X text 66 232 note;
+#X text 81 210 velocity;
+#X text 101 186 channel;
+#X floatatom 300 217 0 0 0 0 - - -;
+#X floatatom 284 246 0 0 0 0 - - -;
+#X floatatom 316 184 0 0 0 0 - - -;
+#X obj 284 159 ctlin;
+#X text 315 249 value;
+#X text 331 210 controller number, f 10;
+#X text 349 185 channel;
+#X text 422 434 channel;
+#X text 384 456 note number;
+#X text 209 368 channel aftertouch, f 10;
+#X text 316 363 polyphonic aftertouch, f 10;
+#X text 346 479 aftertouch value;
+#X floatatom 268 319 0 0 0 0 - - -;
+#X text 299 322 value;
+#X obj 268 289 ctlin 7 4;
+#X text 93 157 (omni);
+#X floatatom 237 211 0 0 0 0 - - -;
+#X floatatom 184 212 0 0 0 0 - - -;
+#X obj 184 183 notein 1;
+#X text 174 158 (channel 1);
+#X text 333 158 (all controllers \, omni);
+#X floatatom 71 313 0 0 0 0 - - -;
+#X text 19 314 value;
+#X obj 71 287 ctlin 4;
+#X floatatom 117 313 0 0 0 0 - - -;
 #X text 540 203 Outputs are set to channel 1 by default \, but they
 also take a channel argument \, and ctlout takes control and channel
 arguments. Inlets are not supressed by arguments and change the parameters.
 , f 65;
-#X text 546 127 raw MIDI except real-time messages (byte by byte),
-f 19;
-#X text 861 130 system exclusive messages only, f 18;
+#X text 889 132 system exclusive messages only, f 18;
 #X floatatom 518 311 5 0 0 0 - - -, f 5;
 #X floatatom 564 311 5 0 0 0 - - -, f 5;
 #X floatatom 613 311 5 0 0 0 - - -, f 5;
@@ -93,14 +89,9 @@ f 19;
 #X text 623 287 ch;
 #X text 525 400 touch;
 #X text 580 400 note;
-#X text 42 44 Inputs are omni by default \, an optional argument sets
-the channel and removes the rightmost outlet (which ouputs the channel
-number). For [ctlin] \, a first optional argument sets controller number
-and supresses its outlet \, and a second argument sets the channel
-and supresses its outlet.;
-#X text 137 275 (controller 4);
-#X text 148 305 channel, f 10;
-#X text 355 280 (controller 7 \, channel 4), f 14;
+#X text 137 285 (controller 4);
+#X text 148 315 channel, f 10;
+#X text 355 290 (controller 7 \, channel 4), f 14;
 #X text 713 277 value;
 #X text 730 306 controller;
 #X text 752 334 channel;
@@ -109,7 +100,16 @@ and supresses its outlet.;
 #X text 954 346 (controller 7 \, channel 4), f 14;
 #X text 888 414 Raw MIDI (doesn't take arguments \, 2nd inlet sets
 port number):, f 22;
-#X connect 0 0 96 0;
+#X text 42 44 Inputs are omni by default \, an optional argument sets
+the channel and removes the rightmost outlet (which ouputs the channel
+number). For [ctlin] \, a first optional argument sets controller number
+and supresses its corresponding outlet \, and a second argument sets
+the channel and also supresses its corresponding outlet.;
+#X text 542 18 These three below are always omni \, don't take arguments
+and output the port number instead of the channel:;
+#X text 535 129 raw MIDI except sysex and real-time messages (byte
+by byte), f 22;
+#X connect 0 0 93 0;
 #X connect 1 0 5 0;
 #X connect 2 0 4 0;
 #X connect 6 0 24 0;
@@ -145,6 +145,6 @@ port number):, f 22;
 #X connect 70 1 68 0;
 #X connect 75 0 73 0;
 #X connect 75 1 76 0;
-#X connect 81 0 3 0;
-#X connect 82 0 3 1;
-#X connect 83 0 3 2;
+#X connect 79 0 3 0;
+#X connect 80 0 3 1;
+#X connect 81 0 3 2;
