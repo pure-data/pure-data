@@ -1430,8 +1430,8 @@ usage:
 done:
     if (fd >= 0)
         close (fd);
-    outlet_float(x->x_obj.ob_outlet, (t_float)itemsread);
     outlet_soundfile_info(x->x_out2, &info);
+    outlet_float(x->x_obj.ob_outlet, (t_float)itemsread);
 }
 
     /* this is broken out from soundfiler_write below so garray_write can
@@ -1565,8 +1565,8 @@ static void soundfiler_write(t_soundfiler *x, t_symbol *s,
     info.bigendian = 0,
     info.bytelimit = 0x7fffffff;
     bozo = soundfiler_dowrite(x, x->x_canvas, argc, argv, &info);
-    outlet_float(x->x_obj.ob_outlet, (t_float)bozo);
     outlet_soundfile_info(x->x_out2, &info);
+    outlet_float(x->x_obj.ob_outlet, (t_float)bozo);
 }
 
 static void soundfiler_setup(void)
