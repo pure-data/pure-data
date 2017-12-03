@@ -1952,8 +1952,6 @@ enough incompatibility that I'll just get away with it. */
 void text_template_init( void)
 {
     t_binbuf *b;
-    if (text_templatecanvas)
-        return;
     b = binbuf_new();
 
     glob_setfilename(0, gensym("_text_template"), gensym("."));

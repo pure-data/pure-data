@@ -136,8 +136,6 @@ and float-arrays. */
 void garray_init( void)
 {
     t_binbuf *b;
-    if (garray_arraytemplatecanvas)
-        return;
     b = binbuf_new();
 
     glob_setfilename(0, gensym("_float_template"), gensym("."));
