@@ -612,9 +612,9 @@ static void *vslider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fontsize = fs;
     x->x_gui.x_w = iemgui_clip_size(w);
     vslider_check_height(x, h);
-    vslider_check_minmax(x, min, max);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_newzoom(&x->x_gui);
+    vslider_check_minmax(x, min, max);
     outlet_new(&x->x_gui.x_obj, &s_float);
     x->x_fval = vslider_getfval(x);
     return (x);

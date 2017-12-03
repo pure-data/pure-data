@@ -611,9 +611,9 @@ static void *hslider_new(t_symbol *s, int argc, t_atom *argv)
     x->x_gui.x_fontsize = fs;
     x->x_gui.x_h = iemgui_clip_size(h);
     hslider_check_width(x, w);
-    hslider_check_minmax(x, min, max);
     iemgui_verify_snd_ne_rcv(&x->x_gui);
     iemgui_newzoom(&x->x_gui);
+    hslider_check_minmax(x, min, max);
     outlet_new(&x->x_gui.x_obj, &s_float);
     x->x_fval = hslider_getfval(x);
     return (x);
