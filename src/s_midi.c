@@ -362,7 +362,7 @@ static void sys_dispatchnextmidiin(void)
             inmidi_byte(portno, byte);
             status = (parserp->mp_status >= MIDI_SYSEX ?
                 parserp->mp_status : (parserp->mp_status & 0xf0));
-            chan = (parserp->mp_status & 0xf0);
+            chan = (parserp->mp_status & 0x0f);
             byte1 = parserp->mp_byte1;
             gotbyte1 = parserp->mp_gotbyte1;
             switch (status)
