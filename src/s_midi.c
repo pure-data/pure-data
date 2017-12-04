@@ -322,6 +322,7 @@ static void sys_dispatchnextmidiin(void)
     {
         if (byte & 0x80)
         {
+            post("status %d", byte);
             /* status byte */
             inmidi_byte(portno, byte);
             if (byte == MIDI_TUNEREQUEST || byte == MIDI_RESERVED1 ||
@@ -344,11 +345,12 @@ static void sys_dispatchnextmidiin(void)
             else
             {
                 /* channel message or system message not handled here */
+                post("store status %d", byte);
                 parserp->mp_status = byte;
             }
             parserp->mp_gotbyte1 = 0;
         }
-        else if(parser->mp_status < MIDI_NOTEOFF)
+        else if (parserp->mp_status < MIDI_NOTEOFF)
         {
             /* running status w/out prev status byte or other invalid message */
             error("dropping unexpected midi byte %02X", byte);
@@ -408,11 +410,11 @@ static void sys_dispatchnextmidiin(void)
                     /* We'll need another status byte before letting MIDI in
                        again (no running status across "system" messages). */
                 case MIDI_TIMECODE:
-                    parser->mp_status = 0;
+                    parserp->mp_status = 0;
                     break;
                 case MIDI_SONGPOS:
                     if (gotbyte1)
-                        parserp->mp_gotbyte1 = 0, parser->mp_status = 0;
+                        parserp->mp_gotbyte1 = 0, parserp->mp_status = 0;
                     else parserp->mp_byte1 = byte, parserp->mp_gotbyte1 = 1;
                     break;
                 case MIDI_SONGSELECT:
