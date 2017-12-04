@@ -156,6 +156,7 @@ fi
 
 # set any custom flags
 export CFLAGS
+echo "CFLAGS: $CFLAGS"
 
 # build Tcl and Tk
 # outputs into local "build" & "embedded" directories 
