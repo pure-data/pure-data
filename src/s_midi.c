@@ -322,7 +322,6 @@ static void sys_dispatchnextmidiin(void)
     {
         if (byte & 0x80)
         {
-            post("status %d", byte);
             /* status byte */
             inmidi_byte(portno, byte);
             if (byte == MIDI_TUNEREQUEST || byte == MIDI_RESERVED1 ||
@@ -345,7 +344,6 @@ static void sys_dispatchnextmidiin(void)
             else
             {
                 /* channel message or system message not handled here */
-                post("store status %d", byte);
                 parserp->mp_status = byte;
             }
             parserp->mp_gotbyte1 = 0;
