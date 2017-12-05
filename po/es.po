@@ -627,6 +627,10 @@ msgstr ""
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Plataforma detectada: %s"
 
+#, fuzzy, tcl-format
+msgid "[deken] Platform re-detected: %s"
+msgstr "[deken] Plataforma detectada: %s"
+
 msgid "Show all"
 msgstr "Ver todo"
 

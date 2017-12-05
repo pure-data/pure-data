@@ -655,6 +655,10 @@ msgstr "[deken] deken-plugin.tcl (busca de externals Pd) carregado de %s."
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Platforma detectada: %s"
 
+#, fuzzy, tcl-format
+msgid "[deken] Platform re-detected: %s"
+msgstr "[deken] Platforma detectada: %s"
+
 msgid "Show all"
 msgstr "Mostrar todos"
 
