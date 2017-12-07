@@ -362,6 +362,11 @@ proc init_for_platform {} {
             set ::cursor_editmode_resize "sb_h_double_arrow"
         }
         "win32" {
+            # Adding dejavu fonts on mswindows
+            package require twapi
+            twapi::AddFontResourceEx lib/DejaVuSansMono.ttf
+            twapi::AddFontResourceEx lib/DejaVuSansMono-Bold.ttf
+            #
             set ::modifier "Control"
             option add *PatchWindow*Canvas.background "white" startupFile
             # fix menu font size on Windows with tk scaling = 1
