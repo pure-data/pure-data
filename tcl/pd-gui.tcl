@@ -363,9 +363,9 @@ proc init_for_platform {} {
         }
         "win32" {
             # Adding dejavu fonts on mswindows
-            package require twapi
-            twapi::AddFontResourceEx lib/DejaVuSansMono.ttf
-            twapi::AddFontResourceEx lib/DejaVuSansMono-Bold.ttf
+            catch { package require twapi
+            twapi::AddFontResourceEx DejaVuSansMono.ttf
+            twapi::AddFontResourceEx DejaVuSansMono-Bold.ttf}
             #
             set ::modifier "Control"
             option add *PatchWindow*Canvas.background "white" startupFile
