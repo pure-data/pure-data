@@ -489,7 +489,8 @@ typedef struct _oscformat
 static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
 {
     char buf[MAXPDSTRING];
-    int i, newsize;
+    int i;
+    unsigned long newsize;
     *x->x_pathbuf = 0;
     buf[0] = '/';
     for (i = 0; i < argc; i++)
@@ -500,7 +501,7 @@ static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
         if ((newsize = strlen(buf) + strlen(x->x_pathbuf) + 1) > x->x_pathsize)
         {
             x->x_pathbuf = resizebytes(x->x_pathbuf, x->x_pathsize, newsize);
-            x->x_pathsize = newsize;
+            x->x_pathsize = (int)newsize;
         }
         strcat(x->x_pathbuf, buf);
     }
@@ -574,7 +575,7 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
         j++;
         ndata++;
     }
-    datastart = ROUNDUPTO4(strlen(x->x_pathbuf)+1) + ROUNDUPTO4(ndata + 2);
+    datastart = (int)(ROUNDUPTO4(strlen(x->x_pathbuf)+1) + ROUNDUPTO4(ndata + 2));
     msgsize = datastart + msgindex;
     msg = (t_atom *)alloca(msgsize * sizeof(t_atom));
     putstring(msg, &typeindex, x->x_pathbuf);

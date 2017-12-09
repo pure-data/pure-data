@@ -142,7 +142,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     $mytoplevel configure -menu $::dialog_menubar
     $mytoplevel configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $mytoplevel "audio"
-
     # not all Tcl/Tk versions or platforms support -topmost, so catch the error
     catch {wm attributes $mytoplevel -topmost 1}
 
@@ -400,9 +399,9 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
 
-    # set min size based on widget sizing
-    update
-    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
+    # set min size based on widget sizing & pos over pdwindow
+    wm minsize $mytoplevel [winfo reqwidth $mytoplevel] [winfo reqheight $mytoplevel]
+    position_over_window $mytoplevel .pdwindow
 
     # wait a little for creation, then raise so it's on top
     after 100 raise "$mytoplevel"

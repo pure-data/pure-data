@@ -133,6 +133,8 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     # set min size based on widget sizing
     update
     wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
+
+    position_over_window $mytoplevel .pdwindow
 }
 
 # for focus handling on OSX

@@ -198,7 +198,7 @@ t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv)
     else if (IS_A_FLOAT(argv, indx))
     {
         char str[80];
-        sprintf(str, "%d", (int)atom_getintarg(indx, 100000, argv));
+        sprintf(str, "%d", (int)atom_getfloatarg(indx, 100000, argv));
         return (gensym(str));
     }
     else return (gensym("empty"));
@@ -298,7 +298,7 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
     if(index < 0 || index >= argc)
         return 0;
     if(IS_A_FLOAT(argv,index))
-        return atom_getintarg(index, argc, argv);
+        return atom_getfloatarg(index, argc, argv);
     if(IS_A_SYMBOL(argv,index))
     {
         t_symbol*s=atom_getsymbolarg(index, argc, argv);
@@ -314,7 +314,7 @@ static int colfromatomload(t_atom*colatom)
         /* old-fashioned color arguement, either a number or symbol
         evaluating to an integer */
     if (colatom->a_type == A_FLOAT)
-        color = atom_getint(colatom);
+        color = atom_getfloat(colatom);
     else if (colatom->a_type == A_SYMBOL &&
         (isdigit(colatom->a_w.w_symbol->s_name[0]) ||
             colatom->a_w.w_symbol->s_name[0] == '-'))
@@ -349,7 +349,7 @@ int iemgui_compatible_colorarg(int index, int argc, t_atom* argv)
         return 0;
     if(IS_A_FLOAT(argv,index))
         {
-            int col=atom_getintarg(index, argc, argv);
+            int col=atom_getfloatarg(index, argc, argv);
             if(col >= 0)
             {
                 int idx = iemgui_modulo_color(col);
@@ -453,18 +453,20 @@ void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 
 void iemgui_label_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    iemgui->x_ldx = (int)atom_getintarg(0, ac, av);
-    iemgui->x_ldy = (int)atom_getintarg(1, ac, av);
+    int zoom = glist_getzoom(iemgui->x_glist);
+    iemgui->x_ldx = (int)atom_getfloatarg(0, ac, av);
+    iemgui->x_ldy = (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
         sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
                  glist_getcanvas(iemgui->x_glist), x,
-                 text_xpix((t_object *)x,iemgui->x_glist)+iemgui->x_ldx,
-                 text_ypix((t_object *)x,iemgui->x_glist)+iemgui->x_ldy);
+                 text_xpix((t_object *)x, iemgui->x_glist) + iemgui->x_ldx*zoom,
+                 text_ypix((t_object *)x, iemgui->x_glist) + iemgui->x_ldy*zoom);
 }
 
 void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    int f = (int)atom_getintarg(0, ac, av);
+    int zoom = glist_getzoom(iemgui->x_glist);
+    int f = (int)atom_getfloatarg(0, ac, av);
 
     if(f == 1) strcpy(iemgui->x_font, "helvetica");
     else if(f == 2) strcpy(iemgui->x_font, "times");
@@ -474,14 +476,14 @@ void iemgui_label_font(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *a
         strcpy(iemgui->x_font, sys_font);
     }
     iemgui->x_fsf.x_font_style = f;
-    f = (int)atom_getintarg(1, ac, av);
+    f = (int)atom_getfloatarg(1, ac, av);
     if(f < 4)
         f = 4;
     iemgui->x_fontsize = f;
     if(glist_isvisible(iemgui->x_glist))
         sys_vgui(".x%lx.c itemconfigure %lxLABEL -font {{%s} -%d %s}\n",
                  glist_getcanvas(iemgui->x_glist), x, iemgui->x_font,
-                 iemgui->x_fontsize, sys_fontweight);
+                 iemgui->x_fontsize*zoom, sys_fontweight);
 }
 
 void iemgui_size(void *x, t_iemgui *iemgui)
@@ -495,8 +497,9 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    iemgui->x_obj.te_xpix += (int)atom_getintarg(0, ac, av);
-    iemgui->x_obj.te_ypix += (int)atom_getintarg(1, ac, av);
+    int zoom = glist_getzoom(iemgui->x_glist);
+    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av)*zoom;
+    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av)*zoom;
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -506,8 +509,9 @@ void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 
 void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
-    iemgui->x_obj.te_xpix = (int)atom_getintarg(0, ac, av);
-    iemgui->x_obj.te_ypix = (int)atom_getintarg(1, ac, av);
+    int zoom = glist_getzoom(iemgui->x_glist);
+    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av)*zoom;
+    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av)*zoom;
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -612,11 +616,11 @@ void iemgui_properties(t_iemgui *iemgui, t_symbol **srl)
 int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
 {
     char str[144];
-    int init = (int)atom_getintarg(5, argc, argv);
-    int ldx = (int)atom_getintarg(10, argc, argv);
-    int ldy = (int)atom_getintarg(11, argc, argv);
-    int f = (int)atom_getintarg(12, argc, argv);
-    int fs = (int)atom_getintarg(13, argc, argv);
+    int init = (int)atom_getfloatarg(5, argc, argv);
+    int ldx = (int)atom_getfloatarg(10, argc, argv);
+    int ldy = (int)atom_getfloatarg(11, argc, argv);
+    int f = (int)atom_getfloatarg(12, argc, argv);
+    int fs = (int)atom_getfloatarg(13, argc, argv);
     int bcol = (int)iemgui_getcolorarg(14, argc, argv);
     int fcol = (int)iemgui_getcolorarg(15, argc, argv);
     int lcol = (int)iemgui_getcolorarg(16, argc, argv);
@@ -630,21 +634,21 @@ int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv)
         srl[0] = atom_getsymbolarg(7, argc, argv);
     else if(IS_A_FLOAT(argv,7))
     {
-        sprintf(str, "%d", (int)atom_getintarg(7, argc, argv));
+        sprintf(str, "%d", (int)atom_getfloatarg(7, argc, argv));
         srl[0] = gensym(str);
     }
     if(IS_A_SYMBOL(argv,8))
         srl[1] = atom_getsymbolarg(8, argc, argv);
     else if(IS_A_FLOAT(argv,8))
     {
-        sprintf(str, "%d", (int)atom_getintarg(8, argc, argv));
+        sprintf(str, "%d", (int)atom_getfloatarg(8, argc, argv));
         srl[1] = gensym(str);
     }
     if(IS_A_SYMBOL(argv,9))
         srl[2] = atom_getsymbolarg(9, argc, argv);
     else if(IS_A_FLOAT(argv,9))
     {
-        sprintf(str, "%d", (int)atom_getintarg(9, argc, argv));
+        sprintf(str, "%d", (int)atom_getfloatarg(9, argc, argv));
         srl[2] = gensym(str);
     }
     if(init != 0) init = 1;

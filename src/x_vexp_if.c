@@ -887,7 +887,8 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
 {
 #ifdef PD
         t_garray *garray;
-        int size, indx;
+        int size;
+        long indx;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
@@ -947,7 +948,8 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
 {
 #ifdef PD
         t_garray *garray;
-        int size, indx;
+        int size;
+        long indx;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
@@ -1110,7 +1112,7 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         int size;
         t_word *wvec;
         t_float sum;
-        int indx, n1, n2;
+        long indx, n1, n2;
 
         if (argv->ex_type != ET_SYM)
         {

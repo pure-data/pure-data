@@ -430,6 +430,7 @@ proc ::pdwindow::create_window {} {
 }
 
 #--configure the window menu---------------------------------------------------#
+
 proc ::pdwindow::create_window_finalize {} {
     # wait until .pdwindow.tcl.entry is visible before opening files so that
     # the loading logic can grab it and put up the busy cursor

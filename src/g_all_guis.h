@@ -3,7 +3,6 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 /* g_7_guis.h written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 
-
 #define IEM_GUI_COLNR_WHITE          0
 #define IEM_GUI_COLNR_ML_GREY        1
 #define IEM_GUI_COLNR_D_GREY         2
@@ -43,16 +42,16 @@
 #define IEM_GUI_MAX_COLOR            30
 
 #define IEM_GUI_DEFAULTSIZE 15
-#define IEM_GUI_MINSIZE 8
-#define IEM_GUI_MAXSIZE 1000
-#define IEM_SL_DEFAULTSIZE 128
-#define IEM_SL_MINSIZE 2
-#define IEM_FONT_MINSIZE 4
+#define IEM_GUI_MINSIZE     8
+#define IEM_GUI_MAXSIZE     1000
+#define IEM_SL_DEFAULTSIZE  128
+#define IEM_SL_MINSIZE      2
+#define IEM_FONT_MINSIZE    4
 
-#define IEM_BNG_DEFAULTHOLDFLASHTIME 250
+#define IEM_BNG_DEFAULTHOLDFLASHTIME  250
 #define IEM_BNG_DEFAULTBREAKFLASHTIME 50
-#define IEM_BNG_MINHOLDFLASHTIME 50
-#define IEM_BNG_MINBREAKFLASHTIME 10
+#define IEM_BNG_MINHOLDFLASHTIME      50
+#define IEM_BNG_MINBREAKFLASHTIME     10
 
 #define IEM_VU_DEFAULTSIZE 3
 #define IEM_VU_LARGESMALL  2
@@ -60,11 +59,11 @@
 #define IEM_VU_MAXSIZE     25
 #define IEM_VU_STEPS       40
 
-#define IEM_VU_MINDB    -99.9
-#define IEM_VU_MAXDB    12.0
-#define IEM_VU_OFFSET   100.0
+#define IEM_VU_MINDB  -99.9
+#define IEM_VU_MAXDB  12.0
+#define IEM_VU_OFFSET 100.0
 
-#define IEM_RADIO_MAX   128
+#define IEM_RADIO_MAX 128
 
 #define IEM_SYM_UNIQUE_SND  256
 #define IEM_SYM_UNIQUE_RCV  512
@@ -72,7 +71,7 @@
 #define IEM_SYM_UNIQUE_ALL  1792
 #define IEM_FONT_STYLE_ALL  255
 
-#define IEM_MAX_SYM_LEN      127
+#define IEM_MAX_SYM_LEN 127
 
 #define IEM_GUI_DRAW_MODE_UPDATE 0
 #define IEM_GUI_DRAW_MODE_MOVE   1
@@ -82,6 +81,7 @@
 #define IEM_GUI_DRAW_MODE_CONFIG 5
 #define IEM_GUI_DRAW_MODE_IO     6
 
+#define IEM_GUI_IOHEIGHT 2
 
 #define IS_A_POINTER(atom,index) ((atom+index)->a_type == A_POINTER)
 #define IS_A_FLOAT(atom,index) ((atom+index)->a_type == A_FLOAT)
