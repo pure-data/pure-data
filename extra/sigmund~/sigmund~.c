@@ -40,9 +40,9 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
-#include <malloc.h>
-#elif ! defined(_MSC_VER)
-#include <alloca.h>
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
 #include <stdlib.h>
 #ifdef _MSC_VER
@@ -1300,8 +1300,8 @@ static void *sigmund_new(t_symbol *s, int argc, t_atom *argv)
 static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *syminput = atom_getsymbolarg(0, argc, argv);
-    int npts = atom_getfloatarg(1, argc, argv);
-    int onset = atom_getfloatarg(2, argc, argv);
+    int npts = atom_getintarg(1, argc, argv);
+    int onset = atom_getintarg(2, argc, argv);
     t_float srate = atom_getfloatarg(3, argc, argv);
     int loud = atom_getfloatarg(4, argc, argv);
     int arraysize, totstorage, nfound, i;
