@@ -326,7 +326,7 @@ pd_LDADD += pd.res .libs/pd.dll.a
 .libs/pd.dll.a: pd.la
 
 pd.res: pd.rc
-	windres pd.rc -O coff -o pd.res
+	$(WINDRES) pd.rc -O coff -o pd.res
 
 # import libraries:
 bin_SCRIPTS = pd.lib pd.def
