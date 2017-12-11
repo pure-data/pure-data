@@ -341,7 +341,7 @@ pd.def: pd.la
 # the import library pd.lib can be created by simply renaming pd.dll.a
 # successfully tested with MSVC!
 pd.lib: pd.la
-	cp .libs/pd.dll.a .libs/pd.lib
+	cp .libs/pd.dll.a $@
 
 # another import library, needed for extra externals (because of -lpd)
 libpd.dll.a: pd.la
