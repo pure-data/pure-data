@@ -7,6 +7,10 @@ pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 pd_LDFLAGS =
 pd_LDADD =
 
+pd_la_CFLAGS =
+pd_la_LDFLAGS =
+pd_la_LIBADD =
+
 pdsend_CFLAGS =
 pdreceive_CFLAGS =
 pd_watchdog_CFLAGS =
@@ -95,11 +99,6 @@ pd_la_SOURCES = \
     x_vexp_fun.c \
     x_vexp_if.c
 
-pd_la_CFLAGS = $(pd_CFLAGS)
-pd_la_LDFLAGS = -module -avoid-version -shared -no-undefined -shrext .dll -g -O2 -o pd.dll
-pd_la_LIBADD =
-
-
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
@@ -133,9 +132,9 @@ pd_CFLAGS += $(WISHDEFINE)
 
 ##### Advanced Linux Sound Architecture #####
 if ALSA
-pd_CFLAGS += -DUSEAPI_ALSA
-pd_LDADD += @ALSA_LIBS@
-pd_SOURCES += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
+pd_la_CFLAGS += -DUSEAPI_ALSA
+pd_la_LIBADD += @ALSA_LIBS@
+pd_la_SOURCES += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 endif
 
 ##### OSX CoreAudio #####
@@ -148,23 +147,23 @@ endif
 ##### Jack Audio Connection Kit #####
 # TODO support Jack xrun
 if JACK
-pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
-pd_SOURCES += s_audio_jack.c
+pd_la_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
+pd_la_SOURCES += s_audio_jack.c
 
 if JACK_FRAMEWORK
 # link to Jackmp.framework on macOS
-pd_LDFLAGS += -weak_framework Jackmp
+pd_la_LDFLAGS += -weak_framework Jackmp
 else
 # link to Jack discovered by configure
-pd_LDADD += @JACK_LIBS@
+pd_la_LIBADD += @JACK_LIBS@
 endif
 
 endif
 
 ##### GNU/Linux Open Sound System #####
 if OSS
-pd_CFLAGS += -DUSEAPI_OSS
-pd_SOURCES += s_audio_oss.c s_midi_oss.c
+pd_la_CFLAGS += -DUSEAPI_OSS
+pd_la_SOURCES += s_audio_oss.c s_midi_oss.c
 endif
 
 ##### Windows MultiMedia (File) I/O #####
@@ -308,19 +307,24 @@ endif
 
 ##### Windows #####
 if WINDOWS
-# win32 sockets, multimedia, and all that
-LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
-    -static-libgcc -static-libstdc++
+# on w32 we want a pd.dll (for importing) where all the logic resides,
+#  pd.exe is only a wrapper
+# (on unices the executable contains all the logic)
+pd_la_CFLAGS += $(pd_CFLAGS)
+pd_la_LDFLAGS += -module -avoid-version -shared -no-undefined -shrext .dll
 
 # NOTE: -Wl,--out-implib=pd.lib is not needed because libtool will
 # automatically generate an import library called pd.dll.a.
 pd_la_LDFLAGS += -Wl,--export-all-symbols -Wl,--output-def=pd.def
 
-	  
 # hide console
 pd_LDFLAGS += -mwindows
 # link with ressources and pd.dll import library
 pd_LDADD += pd.res .libs/pd.dll.a  
+# win32 sockets, multimedia, and all that
+LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
+    -static-libgcc -static-libstdc++
+
 
 # force to build pd library first
 .libs/pd.dll.a: pd.la
@@ -346,6 +350,12 @@ libpd.dll.a: pd.la
 
 clean-pdlib:
 	-rm -f pd.lib pd.def libpd.a
+else
+# on non-Windows, we put everything into pd
+pd_CFLAGS += $(pd_la_CFLAGS)
+pd_LDADD += $(pd_la_LIBADD)
+pd_LDFLAGS += $(pd_la_LDFLAGS)
+pd_SOURCES += $(pd_la_SOURCES)
 endif
 
 ##### Windows MinGW #####
