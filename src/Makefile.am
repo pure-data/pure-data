@@ -1,4 +1,4 @@
-#########################################
+########################################
 ##### Defaults & Paths #####
 
 AUTOMAKE_OPTIONS = foreign
@@ -6,6 +6,10 @@ AUTOMAKE_OPTIONS = foreign
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 pd_LDFLAGS =
 pd_LDADD =
+
+pd_la_CFLAGS =
+pd_la_LDFLAGS =
+pd_la_LIBADD =
 
 pdsend_CFLAGS =
 pdreceive_CFLAGS =
@@ -20,7 +24,13 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 # pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
 
-lib_LTLIBRARIES = pd.la
+if WINDOWS
+# this is hack to trick libtool into installing pd.la (that is: pd.dll)
+# into .../bin
+pdladir = $(bindir)
+pdla_LTLIBRARIES = pd.la
+endif
+
 pd_la_SOURCES = \
     d_arithmetic.c \
     d_array.c \
@@ -69,7 +79,6 @@ pd_la_SOURCES = \
     m_pd.c \
     m_sched.c \
     s_audio.c \
-    s_entry.c \
     s_file.c \
     s_inter.c \
     s_loader.c \
@@ -94,11 +103,6 @@ pd_la_SOURCES = \
     x_vexp.c \
     x_vexp_fun.c \
     x_vexp_if.c
-
-pd_la_CFLAGS = $(pd_CFLAGS)
-pd_la_LDFLAGS = -module -avoid-version -shared -no-undefined -shrext .dll -g -O2 -o pd.dll
-pd_la_LIBADD =
-
 
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
@@ -133,9 +137,9 @@ pd_CFLAGS += $(WISHDEFINE)
 
 ##### Advanced Linux Sound Architecture #####
 if ALSA
-pd_CFLAGS += -DUSEAPI_ALSA
-pd_LDADD += @ALSA_LIBS@
-pd_SOURCES += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
+pd_la_CFLAGS += -DUSEAPI_ALSA
+pd_la_LIBADD += @ALSA_LIBS@
+pd_la_SOURCES += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 endif
 
 ##### OSX CoreAudio #####
@@ -148,23 +152,23 @@ endif
 ##### Jack Audio Connection Kit #####
 # TODO support Jack xrun
 if JACK
-pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
-pd_SOURCES += s_audio_jack.c
+pd_la_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
+pd_la_SOURCES += s_audio_jack.c
 
 if JACK_FRAMEWORK
 # link to Jackmp.framework on macOS
-pd_LDFLAGS += -weak_framework Jackmp
+pd_la_LDFLAGS += -weak_framework Jackmp
 else
 # link to Jack discovered by configure
-pd_LDADD += @JACK_LIBS@
+pd_la_LIBADD += @JACK_LIBS@
 endif
 
 endif
 
 ##### GNU/Linux Open Sound System #####
 if OSS
-pd_CFLAGS += -DUSEAPI_OSS
-pd_SOURCES += s_audio_oss.c s_midi_oss.c
+pd_la_CFLAGS += -DUSEAPI_OSS
+pd_la_SOURCES += s_audio_oss.c s_midi_oss.c
 endif
 
 ##### Windows MultiMedia (File) I/O #####
@@ -306,27 +310,41 @@ clean-pdlib:
 
 endif
 
+##### Windows MinGW #####
+if MINGW
+# To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
+# XP SP1. WINVER isnt' fine-grained enough for that, so we use the
+# next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
+pd_CFLAGS += -DWINVER=0x0502
+endif
+
 ##### Windows #####
 if WINDOWS
+# on w32 we want a pd.dll (for importing) where all the logic resides,
+#  pd.exe is only a wrapper
+# (on unices the executable contains all the logic)
+pd_la_CFLAGS += $(pd_CFLAGS)
+pd_la_LDFLAGS += -module -avoid-version -shared -no-undefined -shrext .dll
+
+# NOTE: -Wl,--out-implib=pd.lib is not needed because libtool will
+# automatically generate an import library called pd.dll.a.
+pd_la_LDFLAGS += -Wl,--export-all-symbols -Wl,--output-def=pd.def
+
+# hide console
+pd_LDFLAGS += -mwindows
+# link with ressources and pd.dll import library
+pd_LDADD += pd.res pd.la
+
 # win32 sockets, multimedia, and all that
 LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
-# NOTE: -Wl,--out-implib=pd.lib is not needed because libtool will 
-# automatically generate an import library called pd.dll.a.
-pd_la_LDFLAGS += -Wl,--export-all-symbols -Wl,--output-def=pd.def
-
-	  
-# hide console
-pd_LDFLAGS += -mwindows
-# link with ressources and pd.dll import library
-pd_LDADD += pd.res .libs/pd.dll.a  
 
 # force to build pd library first
 .libs/pd.dll.a: pd.la
 
 pd.res: pd.rc
-	windres pd.rc -O coff -o pd.res
+	$(WINDRES) $< -O coff -o $@
 
 # import libraries:
 bin_SCRIPTS = pd.lib pd.def
@@ -334,26 +352,24 @@ noinst_SCRIPTS = libpd.dll.a
 
 pd.def: pd.la
 
-# the import library pd.lib can be created by simply renaming pd.dll.a 
+# the import library pd.lib can be created by simply renaming pd.dll.a
 # successfully tested with MSVC!
 pd.lib: pd.la
-	cp .libs/pd.dll.a .libs/pd.lib
+	cp .libs/pd.dll.a $@
 
 # another import library, needed for extra externals (because of -lpd)
 libpd.dll.a: pd.la
 	cp .libs/pd.dll.a libpd.dll.a
 
-	
+
 clean-pdlib:
 	-rm -f pd.lib pd.def libpd.a
-endif
-
-##### Windows MinGW #####
-if MINGW
-# To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
-# XP SP1. WINVER isnt' fine-grained enough for that, so we use the
-# next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
-pd_CFLAGS += -DWINVER=0x0502
+else
+# on non-Windows, we put everything into pd
+pd_CFLAGS += $(pd_la_CFLAGS)
+pd_LDADD += $(pd_la_LIBADD)
+pd_LDFLAGS += $(pd_la_LDFLAGS)
+pd_SOURCES += $(pd_la_SOURCES)
 endif
 
 #########################################
