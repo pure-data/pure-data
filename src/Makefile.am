@@ -330,7 +330,7 @@ LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
 .libs/pd.dll.a: pd.la
 
 pd.res: pd.rc
-	$(WINDRES) pd.rc -O coff -o pd.res
+	$(WINDRES) $< -O coff -o $@
 
 # import libraries:
 bin_SCRIPTS = pd.lib pd.def
