@@ -319,7 +319,8 @@ pd_la_LDFLAGS += -Wl,--export-all-symbols -Wl,--output-def=pd.def
 # hide console
 pd_LDFLAGS += -mwindows
 # link with ressources and pd.dll import library
-pd_LDADD += pd.res .libs/pd.dll.a  
+pd_LDADD += pd.res pd.la
+
 # win32 sockets, multimedia, and all that
 LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
