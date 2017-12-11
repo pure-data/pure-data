@@ -40,9 +40,9 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
-#include <malloc.h>
-#elif ! defined(_MSC_VER)
-#include <alloca.h>
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
 #include <stdlib.h>
 #ifdef _MSC_VER
