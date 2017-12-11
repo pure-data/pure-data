@@ -172,6 +172,7 @@ AC_PROG_LN_S
 AC_PROG_MKDIR_P
 AC_PROG_GREP
 AC_PROG_SED
+AC_CHECK_TOOL([WINDRES], [windres], [:])
 
 # Checks for header files.
 AC_HEADER_STDC
