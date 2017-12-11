@@ -24,7 +24,13 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 # pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
 
-lib_LTLIBRARIES = pd.la
+if WINDOWS
+# this is hack to trick libtool into installing pd.la (that is: pd.dll)
+# into .../bin
+pdladir = $(bindir)
+pdla_LTLIBRARIES = pd.la
+endif
+
 pd_la_SOURCES = \
     d_arithmetic.c \
     d_array.c \
