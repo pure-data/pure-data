@@ -1,4 +1,4 @@
-#########################################
+########################################
 ##### Defaults & Paths #####
 
 AUTOMAKE_OPTIONS = foreign
@@ -312,7 +312,7 @@ if WINDOWS
 LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
-# NOTE: -Wl,--out-implib=pd.lib is not needed because libtool will 
+# NOTE: -Wl,--out-implib=pd.lib is not needed because libtool will
 # automatically generate an import library called pd.dll.a.
 pd_la_LDFLAGS += -Wl,--export-all-symbols -Wl,--output-def=pd.def
 
@@ -334,7 +334,7 @@ noinst_SCRIPTS = libpd.dll.a
 
 pd.def: pd.la
 
-# the import library pd.lib can be created by simply renaming pd.dll.a 
+# the import library pd.lib can be created by simply renaming pd.dll.a
 # successfully tested with MSVC!
 pd.lib: pd.la
 	cp .libs/pd.dll.a .libs/pd.lib
@@ -343,7 +343,7 @@ pd.lib: pd.la
 libpd.dll.a: pd.la
 	cp .libs/pd.dll.a libpd.dll.a
 
-	
+
 clean-pdlib:
 	-rm -f pd.lib pd.def libpd.a
 endif
