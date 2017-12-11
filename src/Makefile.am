@@ -310,6 +310,14 @@ clean-pdlib:
 
 endif
 
+##### Windows MinGW #####
+if MINGW
+# To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
+# XP SP1. WINVER isnt' fine-grained enough for that, so we use the
+# next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
+pd_CFLAGS += -DWINVER=0x0502
+endif
+
 ##### Windows #####
 if WINDOWS
 # on w32 we want a pd.dll (for importing) where all the logic resides,
@@ -362,14 +370,6 @@ pd_CFLAGS += $(pd_la_CFLAGS)
 pd_LDADD += $(pd_la_LIBADD)
 pd_LDFLAGS += $(pd_la_LDFLAGS)
 pd_SOURCES += $(pd_la_SOURCES)
-endif
-
-##### Windows MinGW #####
-if MINGW
-# To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
-# XP SP1. WINVER isnt' fine-grained enough for that, so we use the
-# next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
-pd_CFLAGS += -DWINVER=0x0502
 endif
 
 #########################################
