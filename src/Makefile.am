@@ -73,7 +73,6 @@ pd_la_SOURCES = \
     m_pd.c \
     m_sched.c \
     s_audio.c \
-    s_entry.c \
     s_file.c \
     s_inter.c \
     s_loader.c \
