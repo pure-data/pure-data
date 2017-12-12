@@ -315,7 +315,8 @@ if MINGW
 # To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
 # XP SP1. WINVER isnt' fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
-pd_CFLAGS += -DWINVER=0x0502
+# resp. -D_WIN32_WINNT=0x0502
+pd_CFLAGS += -DWINVER=0x0502 -D_WIN32_WINNT=0x0502
 endif
 
 ##### Windows #####
