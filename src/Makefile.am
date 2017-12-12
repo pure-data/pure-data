@@ -341,8 +341,6 @@ LIBS += -lm -lwsock32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
 
-# force to build pd library first
-.libs/pd.dll.a: pd.la
 
 pd.res: pd.rc
 	$(WINDRES) $< -O coff -o $@
