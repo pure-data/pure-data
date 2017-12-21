@@ -506,6 +506,7 @@ AC_CONFIG_FILES([Makefile
                 font/Makefile
                 mac/Makefile
                 man/Makefile
+				msw/Makefile
                 portaudio/Makefile
                 portmidi/Makefile
                 tcl/Makefile
