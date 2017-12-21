@@ -341,7 +341,7 @@ AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
     [asio=$enableval], [asio=no])
 if test x$asio = xyes ; then
-    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h], [asio=yes], [asio=no])
+    AC_CHECK_FILE([asio/ASIOSDK/common/asio.h], [asio=yes], [asio=no])
     if [ test x$windows = xyes ] && [ test x$asio = xno ] ; then
         AC_MSG_ERROR([ASIO SDK not found! You need to download it from: http://www.steinberg.net/en/company/developers.html])
     fi

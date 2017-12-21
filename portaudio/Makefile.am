@@ -62,6 +62,9 @@ libportaudio_la_SOURCES += \
     portaudio/src/hostapi/wmme/pa_win_wmme.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
+AM_CPPFLAGS += \
+    -I$(top_srcdir)/asio/ASIOSDK/common -I$(top_srcdir)/asio/ASIOSDK/host \
+	-I$(top_srcdir)/asio/ASIOSDK/host/pc
 libportaudio_la_SOURCES += \
     portaudio/src/hostapi/asio/iasiothiscallresolver.cpp \
     portaudio/src/hostapi/asio/pa_asio.cpp
