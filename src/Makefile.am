@@ -170,7 +170,13 @@ pd_SOURCES += s_audio_pa.c s_audio_paring.c
 if LOCAL_PORTAUDIO
 # link the included portaudio
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/include
-pd_LDADD += $(top_builddir)/portaudio/libportaudio.la
+
+if WINDOWS
+pd_core_LDADD += $(top_builddir)/portaudio/.libs/libportaudio.a
+else
+pd_core_LDADD += $(top_builddir)/portaudio/libportaudio.la
+endif
+
 else
 # link the system's portaudio
 pd_LDADD += -lportaudio
@@ -186,7 +192,8 @@ endif
 ##### ASIO #####
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
-pd_LDADD += $(top_builddir)/asio/libasio.la
+# always Windows
+pd_core_LDADD += $(top_builddir)/asio/.libs/libasio.a
 endif
 
 ##### PortMidi #####
@@ -198,7 +205,13 @@ if LOCAL_PORTMIDI
 AM_CPPFLAGS += \
     -I$(top_srcdir)/portmidi/portmidi/pm_common \
     -I$(top_srcdir)/portmidi/portmidi/porttime
-pd_LDADD += $(top_builddir)/portmidi/libportmidi.la
+
+if WINDOWS
+pd_core_LDADD += $(top_builddir)/portmidi/.libs/libportmidi.a
+else
+pd_core_LDADD += $(top_builddir)/portmidi/libportmidi.la
+endif	
+	
 else
 # link the system's portmidi
 pd_LDADD += -lportmidi
