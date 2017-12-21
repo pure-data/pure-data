@@ -309,7 +309,8 @@ endif
 ##### Windows #####
 if WINDOWS
 # win32 sockets, multimedia, and all that
-LIBS += -lwsock32 -lwinmm -lole32
+LIBS += -lwsock32 -lwinmm -lole32 -static-libgcc -static-libstdc++
+
 # this is actually not yet fully working yet
 pd_LDFLAGS += -Wl,--output-def=pd.def \
       -Wl,--out-implib=pd.lib
