@@ -78,7 +78,6 @@ pd_core_SOURCES = \
     m_pd.c \
     m_sched.c \
     s_audio.c \
-	s_entry.c \
     s_file.c \
     s_inter.c \
     s_loader.c \
@@ -354,8 +353,8 @@ pd.dll: $(pd_core_OBJECTS)
 # same as pd.exe but without -mwindows and ressources
 # NOTE: this is a bit ugly. I couldn't figure out how to get automake to build two programs 
 # with the same basename but different suffix.
-pd.com: s_entry.o pd.lib
-	$(CXX) $(LDFLAGS) -o pd.com s_entry.o $(LIBS) pd.lib
+pd.com: pd-s_entry.o pd.lib
+	$(CXX) $(LDFLAGS) -o pd.com pd-s_entry.o $(LIBS) pd.lib
 
 else
 # for other OS, join pd_... with pd_core...
