@@ -97,8 +97,6 @@ pd_SOURCES = \
     x_vexp_fun.c \
     x_vexp_if.c
 
-# declared for ASIO
-nodist_EXTRA_pd_SOURCES =
 
 # pd-watchdog and "local" pd symlink location for tcl scripts
 libpdbindir = $(pkglibdir)/bin
@@ -189,7 +187,6 @@ endif
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
 pd_LDADD += $(top_builddir)/asio/libasio.la
-nodist_EXTRA_pd_SOURCES += dummy.cxx
 endif
 
 ##### PortMidi #####
