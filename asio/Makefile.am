@@ -1,7 +1,7 @@
 # The ASIO sources are not free, so they are not included here.  You can get
 # them for free (as in beer) from Steinberg:
 
-# https://www.steinberg.net/it/company/developer.html
+# https://www.steinberg.net/en/company/developer.html
 
 # First, download the ASIO SDK (asiosdk2.3 or higher), then unzip it right into 
 # the /asio folder. You should have all of the ASIO files in pure-data/asio/ASIOSDK 
