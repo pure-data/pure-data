@@ -62,6 +62,10 @@ libportaudio_la_SOURCES += \
     portaudio/src/hostapi/wmme/pa_win_wmme.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
+if MINGW
+# hack for /asio/ASIOSDK/common/combase.h
+AM_CPPFLAGS += -DWINVER=0x0502 -D_WIN32_WINNT=0x0502
+endif
 AM_CPPFLAGS += \
     -I$(top_srcdir)/asio/ASIOSDK/common -I$(top_srcdir)/asio/ASIOSDK/host \
 	-I$(top_srcdir)/asio/ASIOSDK/host/pc

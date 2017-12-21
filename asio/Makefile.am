@@ -17,6 +17,10 @@
 AUTOMAKE_OPTIONS = foreign
 AM_CFLAGS = 
 AM_CPPFLAGS += -I./ASIOSDK/host -I./ASIOSDK/host/pc -I./ASIOSDK/common
+if MINGW
+# hack for /asio/ASIOSDK/common/combase.h
+AM_CPPFLAGS += -DWINVER=0x0502 -D_WIN32_WINNT=0x0502
+endif
 
 #########################################
 ##### Files, Binaries, & Libs #####
