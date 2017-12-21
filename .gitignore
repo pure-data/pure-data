@@ -1,11 +1,20 @@
 # binaries
 bin
+
 src/makefile
 src/pd
 src/pd-watchdog
 src/pdreceive
 src/pdsend
 *.app
+*.exe
+# windows build artifacts
+src/*.com
+src/*.def
+src/*.lib
+src/*.res
+src/*.a
+
 
 # autotools
 autom4te.cache
