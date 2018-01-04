@@ -332,17 +332,17 @@ pd_core_OBJECTS = $(pd_core_SOURCES:.c=.o)
 
 # the variables are taken from the automake Makefile
 $(pd_core_OBJECTS) : %.o : %.c
-	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pd_CFLAGS) $(CFLAGS) -c -o $*.o $*.c
+	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(pd_CFLAGS) $(CFLAGS) -c -o $@ $<
 
 pd.res: pd.rc
-	$(WINDRES) pd.rc -O coff -o pd.res
+	$(WINDRES) $< -O coff -o $@
 
 # import library for pd.dll. also works with MSVC!
 pd.lib: pd.dll
 
 # another import library (when linking with -lpd), the same as pd.lib. 
 libpd.a: pd.lib
-	cp pd.lib libpd.a
+	cp $< $@
 
 pd.def: pd.dll
 
