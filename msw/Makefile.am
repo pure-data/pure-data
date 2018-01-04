@@ -10,8 +10,8 @@ if WINDOWS
 
 # make a standalone distro on Windows
 install-windows:
-	make -C $(top_builddir) install prefix=$(prefix)/pd-$(VERSION)
-	$(top_srcdir)/msw/msw-install.sh $(DESTDIR)$(prefix)/pd-$(VERSION)
+	make -C $(top_builddir) install exec_prefix=/pd/
+	$(top_srcdir)/msw/msw-install.sh $(DESTDIR) $(VERSION)
 
 else
 
