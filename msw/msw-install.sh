@@ -30,6 +30,16 @@ rm -rf "${DESTDIR}/pd/lib/pd/bin"
 mv "${DESTDIR}"/pd/lib/pd/* "${DESTDIR}"/pd/
 rm -rf "${DESTDIR}"/pd/lib/
 
+# install sources
+mkdir -p "${DESTDIR}/pd/src"
+cp "${SCRIPTPATH}/../src"/*.c "${DESTDIR}/pd/src/"
+cp "${SCRIPTPATH}/../src"/*.h "${DESTDIR}/pd/src/"
+for d in "${DESTDIR}"/pd/extra/*/; do
+	s=${d%/}
+	s=${SCRIPTPATH}/../extra/${s##*/}
+	cp "${s}"/*.c "${d}"
+done
+
 # untar pdprototype.tgz
 tar -f ${SCRIPTPATH}/pdprototype.tgz -C "${DESTDIR}" -x
 cp "${SCRIPTPATH}/../LICENSE.txt" "${DESTDIR}/pd/"
@@ -40,6 +50,7 @@ find "${DESTDIR}" -type f -iname "*.exe" -exec chmod +x {} +
 find "${DESTDIR}" -type f -iname "*.com" -exec chmod +x {} +
 find "${DESTDIR}" -type f -name "*.la" -delete
 find "${DESTDIR}" -type f -name "*.dll.a" -delete
+find "${DESTDIR}/pd/bin" -type f -not -name "*.*" -delete
 
 # put into nice VERSION dir
 if [ "x${VERSION}" != "x" ]; then
