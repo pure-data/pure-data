@@ -11,7 +11,7 @@ if WINDOWS
 # make a standalone distro on Windows
 install-windows:
 	make -C $(top_builddir) install prefix=$(prefix)/pd-$(VERSION)
-	$(top_builddir)/msw/msw-install.sh $(DESTDIR)$(prefix)/pd-$(VERSION)
+	$(top_srcdir)/msw/msw-install.sh $(DESTDIR)$(prefix)/pd-$(VERSION)
 
 else
 
