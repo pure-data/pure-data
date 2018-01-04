@@ -32,6 +32,7 @@ rm -rf "${DESTDIR}"/pd/lib/
 
 # untar pdprototype.tgz
 tar -f ${SCRIPTPATH}/pdprototype.tgz -C "${DESTDIR}" -x
+cp "${SCRIPTPATH}/../LICENSE.txt" "${DESTDIR}/pd/"
 
 # clean up
 find "${DESTDIR}" -type f -exec chmod -x {} +
