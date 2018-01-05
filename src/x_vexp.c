@@ -32,6 +32,10 @@
  *              - priority of ',' and '=' was switched ot fix the bug of using store "=" in
  *                functions with multiple arguments, which caused an error during execution.
  *              - The number of inlet and outlets (MAX_VARS) is now set at 100
+ *
+ *       - Version 0.56
+ *              -fexpr~ now accepts a float in its first input
+ *              -Added avg() and Avg() back to the list of functions
  */
 
 /*
