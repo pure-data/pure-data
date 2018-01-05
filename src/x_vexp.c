@@ -564,7 +564,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                                 post("expr: syntax error: symbols allowed for functions only\n");
                                 ex_print(eptr);
                                 return (exNULL);
-                        }
+                        }   /* falls through */
                 case ET_INT:
                 case ET_FLT:
                 case ET_II:
@@ -1818,6 +1818,7 @@ retry:
                                 goto noinletnum;
                         }
                         post("$y works only for fexpr~");
+                                /* falls through */
                                 /*
                                  * allow $# for abstration argument substitution
                                  *  $1+1 is translated to 0+1 and in abstration substitution
@@ -2045,6 +2046,7 @@ ex_print(struct ex_ex *eptr)
                                 post("%s ", "$$");
                             break;
                         }
+                            /* falls through */
                 case ET_VAR:
                         post("%s ", ex_symname((fts_symbol_t )eptr->ex_ptr));
                         break;
