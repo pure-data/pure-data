@@ -27,7 +27,10 @@ done
 
 # move folders from /lib/pd into top level directory
 rm -rf "${DESTDIR}/pd/lib/pd/bin"
-mv "${DESTDIR}"/pd/lib/pd/* "${DESTDIR}"/pd/
+for d in "${DESTDIR}"/pd/lib/pd/*; do
+	rm -rf "${DESTDIR}"/pd/$(basename $d) # remove if already there (e.g. from a previous install with VERSION= )
+	mv $d "${DESTDIR}"/pd/
+done
 rm -rf "${DESTDIR}"/pd/lib/
 
 # install sources
