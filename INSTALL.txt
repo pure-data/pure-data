@@ -273,7 +273,26 @@ aliases to provide the pd command.
 
 ### Windows
 
-*Windows-specific info goes here*
+Pd on Windows is built with either MinGW or Cygwin.
+
+available audio APIs which can be enabled/disabled via ./configure are:
+* MMIO (slow!) 	--enable-mmio --disable-mmio
+* ASIO			--enable-asio --disable-asio
+* JACK			--enable-jack --disable-jack
+
+Note: because of license restrictions, Pd can't ship the necessary ASIO files. 
+If you want to use ASIO, have a look at /asio/README.txt for further instructions.
+
+The standard 'make install' won't work outside your Cygwin/Msys2 environment (if at all).
+There is, however, a special target called 'make install-windows' for a self-contained 
+Pd package which should run out of the box. After 'make', just do:
+
+make install-windows DESTDIR="/path/to/pd"
+
+"/path/to/pd" is the desired path where the Pd folder (e.g. "pd-0.48.1") will be created.
+You can override the default version suffix with the VERSION variable
+(or omit it altogether by setting it to an empty string).
+
 
 ## Makefile Build
 
