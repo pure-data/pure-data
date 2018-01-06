@@ -54,5 +54,6 @@ find "${DESTDIR}/pd/bin" -type f -not -name "*.*" -delete
 
 # put into nice VERSION dir
 if [ "x${VERSION}" != "x" ]; then
+ rm -rf "${DESTDIR}/pd-${VERSION}" # in case it has already been installed
  mv "${DESTDIR}"/pd "${DESTDIR}/pd-${VERSION}"
 fi
