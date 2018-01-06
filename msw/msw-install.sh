@@ -18,7 +18,7 @@ fi
 echo "installing to: $DESTDIR"
 
 # remove unneeded cruft
-rm -rf "${DESTDIR}"/usr/
+rm -rf "${DESTDIR}/pd/not-needed"
 
 # strip executables
 for i in pd.exe pd.com pd.dll; do
