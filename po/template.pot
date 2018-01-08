@@ -5,7 +5,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.48.0\n"
+"Project-Id-Version: Pure Data 0.48.1\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -621,6 +621,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Platform re-detected: %s"
 msgstr ""
 
 msgid "Show all"

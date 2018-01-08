@@ -648,6 +648,10 @@ msgstr "[deken] Pd Paketmanager vom Pfad %s geladen."
 msgid "[deken] Platform detected: %s"
 msgstr "[deken] Plattform gefunden: %s"
 
+#, fuzzy, tcl-format
+msgid "[deken] Platform re-detected: %s"
+msgstr "[deken] Plattform gefunden: %s"
+
 msgid "Show all"
 msgstr "Alle anzeigen"
 
