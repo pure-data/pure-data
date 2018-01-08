@@ -24,7 +24,7 @@ proc ::pd_connect::to_pd {port {host localhost}} {
     variable pd_socket
     ::pdwindow::debug "'pd-gui' connecting to 'pd' on localhost $port ...\n"
     if {[catch {set pd_socket [socket $host $port]}]} {
-        if {$filename ne "localhost" || [catch {set pd_socket [socket 127.0.0.1 $port]}]} {
+        if {$host ne "localhost" || [catch {set pd_socket [socket 127.0.0.1 $port]}]} {
             puts stderr "WARNING: connect to pd failed, retrying port $host:$port."
             after 1000 ::pd_connect::to_pd $port $host
             return

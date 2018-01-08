@@ -308,13 +308,16 @@ if [ -e $BUILD/po/af.msg ] ; then
     mkdir -p $DEST/po
     cp $verbose $BUILD/po/*.msg $DEST/po/
     # add locale entries to the plist based on available .msg files
-    LOCALES=$(find $BUILD/po -name "*.msg" -exec basename {} .msg \;)
-    $PLIST_BUDDY \
-        -c "Add:CFBundleLocalizations array \"$PLIST_VERSION\"" $INFO_PLIST
-    for locale in $LOCALES ; do
-        $PLIST_BUDDY \
-            -c "Add:CFBundleLocalizations: string \"$locale\"" $INFO_PLIST
-    done
+    # commented out for 0.48-1 because it seems to misbehave - open/save dialogs
+    # are opening in a random language (and meanwhile Pd doesn't yet respect
+    # current language setting - I don't know what's going on here.  -msp
+    # LOCALES=$(find $BUILD/po -name "*.msg" -exec basename {} .msg \;)
+    # $PLIST_BUDDY \
+    #     -c "Add:CFBundleLocalizations array \"$PLIST_VERSION\"" $INFO_PLIST
+    # for locale in $LOCALES ; do
+    #     $PLIST_BUDDY \
+    #         -c "Add:CFBundleLocalizations: string \"$locale\"" $INFO_PLIST
+    # done
 else
     echo "No localizations found. Skipping po dir..."
 fi
