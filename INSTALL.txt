@@ -293,6 +293,9 @@ make install-windows DESTDIR="/path/to/pd"
 You can override the default version suffix with the VERSION variable
 (or omit it altogether by setting it to an empty string).
 
+Note: make sure DESTDIR doesn't already contain a folder called 'pd' because it would get
+overridden in the installation process.
+
 
 ## Makefile Build
 
