@@ -144,7 +144,7 @@ cp -v ../LICENSE.txt $APP/
 # clean up
 find $APP -type f -exec chmod -x {} +
 find $APP -type f '(' -iname "*.exe" -o -iname "*.com" ')' -exec chmod +x {} +
-find $APP -type f -name "*.la" -o -name "*.dll.a" -o -name "*.am" -delete
+find $APP -type f '(' -name "*.la" -o -name "*.dll.a" -o -name "*.am" ')' -delete
 find $APP/bin -type f -not -name "*.*" -delete
 
 # finished
