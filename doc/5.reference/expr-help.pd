@@ -1,29 +1,28 @@
-#N canvas 101 92 974 565 12;
-#X obj 203 46 expr;
-#X obj 254 46 expr~;
-#X obj 313 46 fexpr~;
-#X floatatom 760 121 5 0 0 0 - - -, f 5;
-#X floatatom 760 209 5 0 0 0 - - -, f 5;
-#X floatatom 804 208 5 0 0 0 - - -, f 5;
-#X text 21 78 Online documentation: http://yadegari.org/expr/expr.html
+#N canvas 275 90 942 546 12;
+#X obj 184 40 expr;
+#X obj 235 40 expr~;
+#X obj 294 40 fexpr~;
+#X floatatom 735 115 5 0 0 0 - - -, f 5;
+#X floatatom 735 203 5 0 0 0 - - -, f 5;
+#X floatatom 779 202 5 0 0 0 - - -, f 5;
+#X text 16 72 Online documentation: http://yadegari.org/expr/expr.html
 , f 62;
-#X text 45 457 - $x#[n]: an input audio sample from inlet # indexed
+#X text 40 451 - $x#[n]: an input audio sample from inlet # indexed
 by 'n';
-#X text 45 476 - $y#[n]: an output audio sample from outlet # indexed
+#X text 40 470 - $y#[n]: an output audio sample from outlet # indexed
 by 'n', f 61;
-#X text 80 501 where 'n' for $x# has to satisfy: 0 => n >= -vector
+#X text 75 495 where 'n' for $x# has to satisfy: 0 => n >= -vector
 size;
-#X text 79 520 and 'n' for $y# has to satisfy: -1 => n >= -vector size
+#X text 74 514 and 'n' for $y# has to satisfy: -1 => n >= -vector size
 ;
-#X text 21 113 - [expr]: used for evaluation of control data expressions
+#X text 16 107 - [expr]: used for evaluation of control data expressions
 , f 62;
-#X text 45 399 - $v#: an audio signal vector/block, f 59;
-#X text 45 297 - $i#: an integer, f 59;
-#X text 45 316 - $f#: a float, f 59;
-#X text 45 335 - $s#: a symbol (used to define arrays), f 59;
-#X obj 760 147 expr $f1 + 1 \; $f1 - 1 \; $f1 * 2;
-#X floatatom 848 208 5 0 0 0 - - -, f 5;
-#X text 385 48 Version 0.55;
+#X text 40 393 - $v#: an audio signal vector/block, f 58;
+#X text 40 291 - $i#: an integer, f 58;
+#X text 40 310 - $f#: a float, f 58;
+#X text 40 329 - $s#: a symbol (used to define arrays), f 58;
+#X obj 735 141 expr $f1 + 1 \; $f1 - 1 \; $f1 * 2;
+#X floatatom 823 202 5 0 0 0 - - -, f 5;
 #N canvas 273 26 812 549 Arrays 0;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array array1 10 float 0;
@@ -62,9 +61,9 @@ size;
 #X connect 11 0 4 0;
 #X connect 13 0 15 0;
 #X connect 14 0 13 0;
-#X restore 803 352 pd Arrays;
-#X text 556 182 Basic examples:;
-#X text 748 322 Further details:;
+#X restore 778 346 pd Arrays;
+#X text 531 176 Basic examples:;
+#X text 723 316 Further details:;
 #N canvas 168 109 950 501 Dealing_with_"\$0" 0;
 #X obj 623 138 expr $s2[$f1];
 #X obj 711 107 symbol \$0-x;
@@ -131,30 +130,22 @@ see Pd window for error., f 40;
 #X connect 15 0 13 0;
 #X connect 15 0 14 0;
 #X connect 16 0 12 0;
-#X restore 803 406 pd Dealing_with_"\$0";
-#X text 21 16 Expression evaluation family of objects:, f 62;
-#X text 21 48 By Shahrokh Yadegari;
-#X text 21 197 - [fexpr~]: used for evaluation of signal expressions
+#X restore 778 400 pd Dealing_with_"\$0";
+#X text 16 10 Expression evaluation family of objects:, f 62;
+#X text 16 42 By Shahrokh Yadegari;
+#X text 16 191 - [fexpr~]: used for evaluation of signal expressions
 on sample level data (i.e. \, filter design) - very cpu intensive!
 , f 62;
-#X text 21 244 Input variables types for [expr] \, [expr~] and [fexpr~]
+#X text 16 238 Input variables types for [expr] \, [expr~] and [fexpr~]
 are: integers \, floats and symbols \, specified as follows where the
 '#' stands for the inlet number:, f 62;
-#X text 21 362 The [expr~] object has an exclusive input variable type
+#X text 16 356 The [expr~] object has an exclusive input variable type
 for signal vectors \, defined as:, f 62;
-#X text 21 428 The [fexpr~] object has exclusive variable types \,
+#X text 16 422 The [fexpr~] object has exclusive variable types \,
 defined as:, f 62;
-#X text 21 140 - [expr~]: used for evaluation of audio signal expression
-- on a vector by vector basis (vector/block size is defined by the
-[block~] or [switch~] objects)., f 62;
-#X text 514 14 These objects have several built in operators and functions.
-The syntax is quite similar to how expressions are written in C. A
-semicolon can be used to define and separate different expressions.
-If so \, an outlet is created for each expression and they're evaluated
-from right to left (or bottom to up) order:;
-#X text 533 408 see also:;
-#X obj 582 510 block~;
-#X obj 641 510 value;
+#X text 511 396 see also:;
+#X obj 554 498 block~;
+#X obj 609 498 value;
 #N canvas 708 54 478 476 All_functions 0;
 #N canvas 497 97 374 326 Arithmetic-operators 0;
 #X obj 57 90 expr $f1 + 4;
@@ -316,7 +307,7 @@ first argument to the second argument minus one., f 51;
 #X connect 5 0 6 0;
 #X connect 6 0 4 0;
 #X restore 147 257 pd Random-function;
-#N canvas 437 97 594 434 Table-functions 0;
+#N canvas 558 74 604 529 Table-functions 0;
 #X obj 63 73 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X floatatom 63 163 0 0 0 0 - - -;
@@ -327,40 +318,56 @@ first argument to the second argument minus one., f 51;
 #X text 20 136 size;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array table 100 float 1;
-#A 0 -0.714272 -0.678559 -0.642845 -0.607131 -0.571417 -0.52856 -0.485703
--0.428561 -0.371419 -0.314277 -0.257134 -0.228563 -0.114279 -0.0857077
--0.0571365 -0.0285654 5.72205e-06 0.0285769 0.0428624 0.057148 0.0857191
-0.11429 0.142861 0.171432 0.171432 0.200004 0.200004 0.200004 0.228575
-0.228575 0.228575 0.228575 0.228575 0.228575 0.228575 0.200004 0.0857191
-5.72205e-06 -0.228563 -0.885699 -0.885699 -0.885699 -0.885699 -0.857128
--0.842843 -0.828557 -0.771415 -0.73332 -0.695225 -0.65713 -0.599988
--0.542846 -0.485703 -0.419038 -0.352372 -0.257134 -0.171421 -0.114279
-5.72205e-06 0.0285769 0.142861 0.200004 0.228575 0.271431 0.314288
-0.342859 0.400002 0.428573 0.485715 0.485715 0.514286 0.514286 0.514286
-0.514286 0.514286 0.485715 0.457144 0.428573 0.428573 0.400002 0.342859
-0.328574 0.314288 0.285717 0.285717 0.257146 0.257146 0.257146 0.257146
-0.257146 0.257146 0.257146 0.285717 0.314288 0.342859 0.342859 0.342859
-0.342859 0.342859 0.342859;
-#X coords 0 1 99 -1 200 140 1 0 0;
-#X restore 344 94 graph;
-#X text 96 276 Note that the syntax requires that the table name is
-inside quotes., f 51;
-#X obj 295 347 expr size("$s1") \;;
+#A 0 0 1 2 3 4 5 6 7 8 9 18.5714 21.4285 28.5713 31.4284 34.9998 38.5712
+40.714 42.8569 46.4283 49.2854 50.3568 51.4282 53.5711 54.2853 54.9996
+55.7139 55.7139 55.7139 55.7139 55.7139 55.7139 55.7139 55.7139 55.5353
+55.3568 55.1782 54.9996 54.2853 53.5711 52.8568 52.1425 51.4282 49.9997
+48.5711 47.1426 45.714 44.0473 42.3807 40.714 39.0474 37.3807 35.7141
+32.857 31.4284 29.9999 28.5713 26.4285 26.4285 26.7856 27.1427 27.857
+28.5713 29.107 29.6427 30.1784 30.7141 31.607 32.4998 33.3927 34.2855
+34.9998 35.7141 36.6665 37.6188 38.5712 40.714 41.4283 42.1426 44.2854
+45.714 46.7854 47.8568 49.9997 51.4282 52.8568 55.7139 57.8567 59.9996
+62.8567 64.9995 66.4281 69.2852 72.1423 93 94 95 96 97 98 99;
+#X coords 0 100 99 0 200 140 1 0 0;
+#X restore 336 118 graph;
+#X obj 364 422 expr size("$s1") \;;
 #X obj 63 102 expr Sum("table" \, 3 \, 9) \; sum("table") \; size("table")
 ;
-#X msg 295 317 symbol table;
-#X floatatom 295 380 5 0 0 0 - - -, f 5;
+#X msg 364 392 symbol table;
+#X floatatom 364 455 5 0 0 0 - - -, f 5;
 #X text 64 187 Sums a range of indexes, f 8;
 #X text 146 189 Sums all indexes, f 8;
 #X text 225 189 Gives array size, f 5;
-#X text 114 26 There are 3 functions that operate on arrays: Sum \,
-sum and size., f 45;
-#X connect 0 0 10 0;
-#X connect 9 0 12 0;
-#X connect 10 0 1 0;
-#X connect 10 1 2 0;
-#X connect 10 2 3 0;
-#X connect 11 0 9 0;
+#X obj 47 269 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 47 344 0 0 0 0 - - -;
+#X floatatom 240 344 0 0 0 0 - - -;
+#X obj 47 396 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 47 469 0 0 0 0 - - -;
+#X floatatom 212 467 0 0 0 0 - - -;
+#X obj 47 299 expr avg("table") \; sum("table") / size("table");
+#X obj 47 424 expr Avg("table" \, 3 \, 9) \; Sum("table" \, 3 \, 9)
+/ 7;
+#X text 71 267 avg - Averages all indexes;
+#X text 71 394 Avg - averages a range of indexes;
+#X text 114 26 There are 5 functions that operate on arrays: Avg \,
+avg \, Sum \, sum and size., f 45;
+#X text 354 286 You can use a symbol type to specify the array name.
+Note that the syntax requires that the array name is inside quotes.
+, f 23;
+#X connect 0 0 9 0;
+#X connect 8 0 11 0;
+#X connect 9 0 1 0;
+#X connect 9 1 2 0;
+#X connect 9 2 3 0;
+#X connect 10 0 8 0;
+#X connect 15 0 21 0;
+#X connect 18 0 22 0;
+#X connect 21 0 16 0;
+#X connect 21 1 17 0;
+#X connect 22 0 19 0;
+#X connect 22 1 20 0;
 #X restore 147 326 pd Table-functions;
 #N canvas 576 55 618 571 Power-functions 0;
 #X floatatom 74 60 5 0 0 0 - - -, f 5;
@@ -667,7 +674,7 @@ store the result of any operation into a variable or table index.;
 only presented with [expr]., f 52;
 #X text 28 71 These are organized in different groups. Click on the
 subpatches below to check each group:, f 52;
-#X restore 803 432 pd All_functions \; and operators;
+#X restore 778 426 pd All_functions \; and operators;
 #N canvas 157 32 919 558 [expr] 0;
 #X obj 49 115 expr 1;
 #X floatatom 47 248 0 0 0 0 - - -;
@@ -735,7 +742,7 @@ an inlet defined as a float.;
 #X connect 27 1 26 0;
 #X connect 29 0 9 0;
 #X connect 29 1 30 0;
-#X restore 557 268 pd [expr] Examples;
+#X restore 532 262 pd [expr] Examples;
 #N canvas 301 61 867 691 [expr~] 0;
 #X floatatom 80 361 0 0 0 0 - - -;
 #X obj 80 468 dac~;
@@ -750,15 +757,15 @@ an inlet defined as a float.;
 #X obj 253 627 tabsend~ a3;
 #N canvas 0 50 450 300 (subpatch) 0;
 #X array a2 64 float 1;
-#A 0 0.227715 0.300522 0.368855 0.431521 0.487403 0.535557 0.575179
-0.605617 0.626441 0.637362 0.638324 0.629465 0.611076 0.583703 0.548005
-0.504849 0.455248 0.400306 0.341277 0.279466 0.216237 0.152993 0.0911182
-0.0319836 -0.0231007 -0.0729054 -0.11631 -0.152319 -0.180086 -0.198936
--0.208354 -0.208038 -0.197863 -0.177904 -0.148443 -0.109936 -0.0630344
--0.00854918 0.0525544 0.119179 0.190113 0.264059 0.339662 0.415514
-0.490235 0.562438 0.630785 0.694042 0.751022 0.800714 0.842227 0.874792
-0.897903 0.911163 0.914406 0.907675 0.891136 0.865251 0.830592 0.787918
-0.738169 0.68238 0.62176 0.557579;
+#A 0 0.490464 0.530591 0.561583 0.582984 0.594493 0.596061 0.587785
+0.569989 0.54319 0.508042 0.465416 0.416299 0.361806 0.303179 0.241715
+0.178785 0.115786 0.0541077 -0.00487759 -0.0598593 -0.109604 -0.152988
+-0.189004 -0.216807 -0.235703 -0.245178 -0.244921 -0.234794 -0.214872
+-0.185422 -0.146892 -0.0999281 -0.0453311 0.015938 0.0827861 0.154004
+0.228302 0.304323 0.38067 0.455957 0.528782 0.597829 0.661836 0.719613
+0.77016 0.812553 0.846064 0.870149 0.884382 0.888628 0.88288 0.867337
+0.842418 0.808683 0.766921 0.718048 0.663095 0.603268 0.539813 0.474079
+0.407456 0.341316 0.277072 0.216062;
 #X coords 0 1 63 -1 200 140 1;
 #X restore 395 520 graph;
 #N canvas 0 50 450 300 (subpatch) 0;
@@ -781,7 +788,7 @@ an inlet defined as a float.;
 #X text 320 29 audio off;
 #X obj 478 290 expr~ max(min($v1 \, $f2) \, -$f2);
 #X obj 685 145 vsl 20 100 0 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 1100 1;
+-1 -1 0 1;
 #X text 460 187 Move the slider to change the limiter threshold (from
 0-1)., f 29;
 #X text 64 29 make sure to turn on the audio for the [expr~] examples
@@ -822,8 +829,8 @@ inlet is promoted to a signal., f 54;
 #X connect 32 0 31 0;
 #X connect 33 0 16 1;
 #X connect 37 0 14 0;
-#X restore 549 296 pd [expr~] Examples;
-#N canvas 140 26 977 725 [fexpr~] 0;
+#X restore 525 290 pd [expr~] Examples;
+#N canvas 296 60 977 725 [fexpr~] 0;
 #X msg 339 45 \; pd dsp 0;
 #X msg 246 45 \; pd dsp 1;
 #X text 244 23 audio on;
@@ -979,12 +986,12 @@ and you need to bang on the top again to reload the default values.
 #X connect 34 2 37 0;
 #X connect 39 0 34 0;
 #X connect 42 0 34 0;
-#X restore 708 669 pd Difference equations (Lorenz);
+#X restore 714 669 pd Difference equations (Lorenz);
 #X text 25 262 'n' goes from 0 to -vector size (defined by the [block~]
 or [switch~] objects). As such \, $x#[0] specifies the current sample
 input \, and $y#[-1] the last sample output (which is the minimum 'n'
 value \, for $y#).;
-#X text 79 24 make sure to turn on the audio for the [fexpr~] examples
+#X text 79 25 make sure to turn on the audio for the [fexpr~] examples
 ====>, f 23;
 #X text 548 299 * [fexpr~] can be CPU expensive! By default \, [fexpr~]
 is on when it is loaded \, but you can save CPU and control when it
@@ -1025,12 +1032,12 @@ the sample input index from 0 to -10 (which filters the frequency of
 offset filters audio at frequency of 1102.5 Hz, f 50;
 #X msg 640 484 2205;
 #X obj 623 546 osc~ 2205;
-#X text 25 121 - The first inlet of [fexpr~] only accepts signals and
-needs to be '$x1' (cannot be '$f1' \, '$i1' or '$s1'). Other than that
-\, a float sent to a '$v#' inlet is promoted to a signal.;
 #X text 25 174 - [fexpr~] does not understand '$v#' variables from
 [expr~] \, it has its special input and output variables defined as:
 ;
+#X text 25 121 - The first inlet of [fexpr~] needs to be of type '$x1'
+(cannot be '$f1' \, '$i1' or '$s1'). A float sent to the first inlet
+is promoted to a signal.;
 #X connect 8 0 13 0;
 #X connect 9 0 13 0;
 #X connect 10 0 9 0;
@@ -1056,18 +1063,17 @@ needs to be '$x1' (cannot be '$f1' \, '$i1' or '$s1'). Other than that
 #X connect 38 0 26 0;
 #X connect 57 0 35 0;
 #X connect 58 0 33 0;
-#X restore 541 324 pd [fexpr~] Examples;
-#X obj 804 238 print expr;
-#X obj 714 458 +;
-#X obj 714 483 +~;
-#X obj 714 433 >;
-#X text 573 434 binary operators:;
-#X text 545 458 arithmetic operators:;
-#X text 580 483 audio operators:;
-#X text 561 206 (click on the subpatches to open them), f 13;
-#X obj 694 510 random;
-#X text 796 517 updated for Pd 0.48-1;
-#N canvas 175 30 885 622 [value] 0;
+#X restore 518 318 pd [fexpr~] Examples;
+#X obj 779 232 print expr;
+#X obj 677 446 +;
+#X obj 677 471 +~;
+#X obj 677 421 >;
+#X text 551 422 binary operators:;
+#X text 523 446 arithmetic operators:;
+#X text 558 471 audio operators:;
+#X text 536 200 (click on the subpatches to open them), f 13;
+#X obj 657 498 random;
+#N canvas 175 30 872 635 [value] 0;
 #X floatatom 596 202 5 0 0 0 - - -, f 5;
 #X obj 596 137 until;
 #X msg 719 138 0;
@@ -1095,34 +1101,35 @@ needs to be '$x1' (cannot be '$f1' \, '$i1' or '$s1'). Other than that
 the expression:, f 27;
 #X obj 90 422 expr~ (a + b) / c;
 #X obj 90 453 print~;
-#X obj 62 421 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X obj 62 422 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X msg 221 97 5;
 #X msg 261 97 3;
 #X msg 304 97 2.5;
 #X obj 91 533 print~;
-#X obj 63 501 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X obj 63 502 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 91 502 fexpr~ (a + b) / c;
 #X text 325 305 Expressions are output from right to left order in
 [expr] \, since they're evaluated from bottom to top. This means you
 need to update a variable and call it in the above expression \, check
 it =============>, f 51;
-#X obj 729 478 v last;
-#X obj 603 509 fexpr~ last = $x1[-1] \; $x1[0] - last;
-#X obj 754 564 print~;
-#X obj 788 529 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 729 493 v last;
+#X obj 603 524 fexpr~ last = $x1[-1] \; $x1[0] - last;
+#X obj 754 579 print~;
+#X obj 788 544 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 603 478 phasor~ 1000;
+#X obj 603 493 phasor~ 1000;
 #X text 100 98 loading values into [value] objects =======>, f 16
 ;
 #X text 471 14 It is also possible to assign values to variables inside
-the expr family of objects with "=" ("store function")., f 54;
+the expr family of objects with "=" ("store function")., f 51;
 #X text 325 401 You cannot assign variables values in [expr~] because
-it deals with signal vectors and not single values. On the other hand
-\, [fexpr~] can assign values to variables \, but they're evaluated
-in from top to bottom instead. This means you need to update a variable
-and call it in the below expression \, check it:, f 68;
+it deals with signal vectors (a whole block of samples) and not single
+values. On the other hand \, [fexpr~] can assign values to variables
+\, but they're evaluated in from top to bottom instead. This means
+you need to update a variable and call it in the below expression \,
+check it:, f 68;
 #X connect 0 0 6 0;
 #X connect 1 0 4 0;
 #X connect 2 0 3 0;
@@ -1148,11 +1155,21 @@ and call it in the below expression \, check it:, f 68;
 #X connect 32 1 33 0;
 #X connect 34 0 33 0;
 #X connect 35 0 32 0;
-#X restore 803 378 pd [value];
+#X restore 778 372 pd [value];
+#X text 771 506 updated for Pd 0.48-2;
+#X text 366 42 Version 0.56;
+#X text 16 134 - [expr~]: used for evaluation of audio signal expression
+- on a vector by vector basis \, where the vector/block size is defined
+by the [block~] or [switch~] objects., f 62;
+#X text 489 8 These objects have several built in operators and functions.
+The syntax is quite similar to how expressions are written in C. A
+semicolon can be used to create and separate different expressions.
+If so \, an outlet is created for each expression and they're evaluated
+from right to left (or bottom to up) order:;
 #X connect 3 0 16 0;
-#X connect 4 0 38 0;
-#X connect 5 0 38 0;
+#X connect 4 0 35 0;
+#X connect 5 0 35 0;
 #X connect 16 0 4 0;
 #X connect 16 1 5 0;
 #X connect 16 2 17 0;
-#X connect 17 0 38 0;
+#X connect 17 0 35 0;
