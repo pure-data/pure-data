@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
 # Creates standalone Windows application directory from pd build.
 #
@@ -57,7 +57,7 @@ while [ "$1" != "" ] ; do
             strip=false
             ;;
         --builddir)
-            if [ $# == 0 ] ; then
+            if [ $# = 0 ] ; then
                 echo "--builddir options requires a DIR argument"
                 exit 1
             fi
@@ -76,7 +76,7 @@ while [ "$1" != "" ] ; do
 done
 
 # check for version argument and set app path in the dir the script is run from
-if [ "$1" != "" ] ; then
+if [ "x$1" != "x" ] ; then
     APP=$(pwd)/pd-$1
 else
     # version not specified
@@ -87,8 +87,9 @@ fi
 #----------------------------------------------------------
 
 # make sure custom build directory is an absolute path
-if [[ $custom_builddir == true ]] ; then
-    if [[ "${BUILD:0:1}" != "/" ]] ; then
+if [ "x$custom_builddir" = "xtrue" ] ; then
+    if [ "x${BUILD#/}" = "x${BUILD}" ] ; then
+# BUILD isn't absolute as it doesn't start with '/'
        BUILD="$(pwd)/$BUILD"
     fi
 fi
@@ -122,7 +123,7 @@ done
 rm -rf $APP/lib/
 
 # install sources
-if [ "$sources" = true ] ; then
+if [ "x$sources" = xtrue ] ; then
 	mkdir -p $APP/src
 	cp -v ../src/*.c $APP/src/
 	cp -v ../src/*.h $APP/src/
