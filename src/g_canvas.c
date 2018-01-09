@@ -1371,7 +1371,7 @@ static void canvas_completepath(char *from, char *to, int bufsize)
     {
         to[0] = '\0';
     }
-    else
+    else if(sys_libdir)
     {   // if not absolute path, append Pd lib dir
         strncpy(to, sys_libdir->s_name, bufsize-10);
         to[bufsize-9] = '\0';
