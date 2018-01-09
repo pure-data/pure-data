@@ -2,6 +2,10 @@
 ##### Defaults & Paths #####
 
 AUTOMAKE_OPTIONS = foreign
+CLEANFILES=
+
+bin_SCRIPTS =
+noinst_SCRIPTS =
 
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 pd_LDFLAGS =
@@ -263,9 +267,6 @@ pd_LDFLAGS_core += -lpthread
 # force linking to dl, which should really be done with some autotools way
 pd_LDFLAGS_core += -ldl
 
-# dummy target for Windows build
-clean-pdlib:
-
 endif
 
 ##### GNU/Linux #####
@@ -280,9 +281,6 @@ pd_LDFLAGS_core += -export-dynamic
 
 # on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
 pd_LDFLAGS_core += $(LIBM)
-
-# dummy target for Windows build
-clean-pdlib:
 
 endif
 
@@ -299,9 +297,6 @@ pd_CFLAGS += -DMACOSX
 # for dynamic loading & threading
 LIBS += -ldl -lm -lpthread
 
-# dummy target for Windows build
-clean-pdlib:
-
 endif
 
 ##### Windows #####
@@ -310,11 +305,11 @@ if WINDOWS
 # win32 sockets, multimedia, and all that
 LIBS += -lwsock32 -lwinmm -lole32 -static-libgcc -static-libstdc++
 
-bin_SCRIPTS = pd.dll pd.lib pd.def pd.com
-noinst_SCRIPTS = libpd.a
-
-clean-pdlib:
-	-rm -f $(bin_SCRIPTS) $(noinst_SCRIPTS)
+bin_SCRIPTS += pd.dll pd.lib pd.def pd.com
+CLEANFILES += pd.dll pd.lib pd.def pd.com
+noinst_SCRIPTS += libpd.a
+CLEANFILES += libpd.a
+CLEANFILES += pd.res
 
 # hide the console
 pd_LDFLAGS += -mwindows
@@ -384,7 +379,7 @@ convenience-links: $(libpdbin_PROGRAMS) $(bin_PROGRAMS)
 	$(LN_S) $(top_srcdir)/tcl/pd-gui.in $(top_builddir)/bin/pd-gui
 	test -e $(top_builddir)/src/pd-watchdog$(EXEEXT) && $(LN_S) $(top_builddir)/src/pd-watchdog$(EXEEXT) $(top_builddir)/bin/pd-watchdog$(EXEEXT) || true
 
-clean-local: clean-pdlib
+clean-local:
 	rm -rf $(top_builddir)/bin
 
 # link to $(libdir)/pd/bin so the tcl scripts can
