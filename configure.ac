@@ -344,12 +344,10 @@ AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
     [asio=$enableval])
 test x$WINDOWS = xyes || asio=no
-if test x$asio = xyes ; then
-    AC_CHECK_FILE([asio/ASIOSDK/common/asio.h], [], [asio=no])
-    if test x$asio = xno ; then
-        AC_MSG_WARN([ASIO SDK not found! See asio/README.txt])
-    fi
-fi
+AS_IF([test x$asio = xyes],
+    test -f "${srcdir}"/asio/ASIOSDK/common/asio.h || asio=no
+    AS_IF([test x$asio = xno], AC_MSG_WARN([ASIO SDK not found! See asio/README.txt]))
+)
 
 ##### PortAudio #####
 AC_ARG_ENABLE([portaudio],
