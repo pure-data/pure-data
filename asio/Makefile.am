@@ -8,8 +8,7 @@
 # when you are done unzipping. (You'll probably have to remove the version number 
 # from the folder name.)
 
-# this is built as a "libtool convenience library"
-# http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
+# this is built as a static convenience library
 
 #########################################
 ##### Defaults & Paths #####
@@ -25,9 +24,9 @@ endif
 #########################################
 ##### Files, Binaries, & Libs #####
 
-noinst_LTLIBRARIES = libasio.la
+noinst_LIBRARIES = libasio.a
 
-nodist_libasio_la_SOURCES = \
+nodist_libasio_a_SOURCES = \
     ASIOSDK/common/asio.cpp \
     ASIOSDK/host/asiodrivers.cpp \
     ASIOSDK/host/pc/asiolist.cpp
