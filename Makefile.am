@@ -79,5 +79,5 @@ install-data-local:
 # an error and stop make.
 uninstall-hook:
 	if test -d $(DESTDIR)$(pkglibdir) ; then \
-	    find $(DESTDIR)$(pkglibdir) -type d -depth | xargs rmdir 2>/dev/null || true ; \
+	    find $(DESTDIR)$(pkglibdir) -depth -type d | xargs rmdir 2>/dev/null || true ; \
 	fi
