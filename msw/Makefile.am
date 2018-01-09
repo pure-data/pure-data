@@ -15,10 +15,16 @@ install-windows:
 	make -C $(top_builddir) install prefix=/pd/not-needed/ exec_prefix=/pd/
 	$(top_srcdir)/msw/msw-install.sh $(DESTDIR) $(VERSION)
 
+# build a standalone application directory on Windows
+app:
+	rm -rf $(top_builddir)/pd-$(VERSION)
+	$(SH) $(top_srcdir)/msw/msw-app.sh --builddir $(top_builddir) $(VERSION)
+	mv $(top_builddir)/msw/pd-$(VERSION) $(top_builddir)
+
 else
 
 # don't bother on other platforms
 install-windows:
-	echo "only supported when building on WINDOWS"
+	echo "only supported when building on Windows"
 
 endif

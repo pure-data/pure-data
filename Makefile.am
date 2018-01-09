@@ -60,9 +60,16 @@ else
 locales:
 endif
 
+if MACOSX
 # forward target to mac/Makefile
 app:
 	make -C mac app
+endif
+if WINDOWS
+# forward target to msw/Makefile
+app:
+	make -C msw app
+endif
 
 # forward target to msw/Makefile
 install-windows:

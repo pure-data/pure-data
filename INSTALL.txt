@@ -273,29 +273,74 @@ aliases to provide the pd command.
 
 ### Windows
 
-Pd on Windows is built with either MinGW or Cygwin.
+Pd on Windows is built with either MinGW or Cygwin which provide the open source
+build tools, namely gcc, autotools, etc.
 
-available audio APIs which can be enabled/disabled via ./configure are:
-* MMIO (slow!) 	--enable-mmio --disable-mmio
-* ASIO			--enable-asio --disable-asio
-* JACK			--enable-jack --disable-jack
+Currently, it is recommended to use Msys2 which provides both a Unix command
+shell and MinGW. Start by download the x86_64 Mysys2 installer from:
 
-Note: because of license restrictions, Pd can't ship the necessary ASIO files. 
-If you want to use ASIO, have a look at /asio/README.txt for further instructions.
+    http://www.msys2.org/
 
-The standard 'make install' won't work outside your Cygwin/Msys2 environment (if at all).
-There is, however, a special target called 'make install-windows' for a self-contained 
-Pd package which should run out of the box. After 'make', just do:
+Note: Msys2 development seems to change frequently, so some of the package names
+      may have changed after this document was written,
 
-make install-windows DESTDIR="/path/to/pd"
+1. Install to default location (C:\msys, C:\msys64, etc)
+2. Follow the setup/update info on the Msys2 webpage
+3. Run msys & update package database & core runtimes:
 
-"/path/to/pd" is the desired path where the Pd folder (e.g. "pd-0.48.1") will be created.
-You can override the default version suffix with the VERSION variable
-(or omit it altogether by setting it to an empty string).
+    pacman -Syu
 
-Note: make sure DESTDIR doesn't already contain a folder called 'pd' because it would get
-overridden in the installation process.
+4. Close the terminal window, reopen, & run the command again to update the
+   system.
 
+Note: The following instructions are for 64-bit. For 32-bit, change all instances of
+"x86_64" to "i686" in the package names.
+
+You can install the compiler chain, autotools, & gettext with Msys2 via:
+
+    pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
+              make pkgconfig autoconf automake libtool \
+              mingw-w64-x86_64-gettext 
+
+You can also install git if you want to clone the Pd sources from Github, etc:
+
+    pacman -S git
+
+and/or the nsis installer tool if you want to build the Pd Windows installer:
+
+  pacman -S mingw-w64-x86_64-nsis
+
+The following audio APIS are available on Windows and can be enabled/disabled
+via their configure flags:
+* MMIO: --enable-mmio or --disable-mmio (default enabled)
+* ASIO: --enable-asio or --disable-asio (default enabled, if found)
+* JACK: --enable-jack or --disable-jack
+
+For example, to build Pd without MMIO support:
+
+    ./configure --disable-mmio
+
+Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source
+files. If you want to build Pd with ASIO support, see asio/README.txt for
+further instructions.
+
+You should now be ready to build Pd. Once built, you can either:
+
+* build a Pd application directory for Windows (recommended)
+* build a Windows installer
+
+A Pd application directory is essentially a self-contained Pd package which
+should run out of the box. To build, simply use:
+
+    make app
+
+This will create a "pd-VERSION" directory (ie. pd-0.48.1) which can then be used
+by running pd.exe in the bin directory and placed wherever on your system.
+
+To build a .msi Windows installer for Pd, see msw/build-nsi.sh.
+
+Note: The standard "make install" won't work outside your Cygwin/Msys2 environment
+(if at all).
 
 ## Makefile Build
 
