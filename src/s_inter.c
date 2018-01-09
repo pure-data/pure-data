@@ -1291,6 +1291,7 @@ static int sys_do_startgui(const char *libdir)
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
              apibuf, apibuf2, sys_font, sys_fontweight);
     sys_vgui("set pd_whichapi %d\n", sys_audioapi);
+    sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
     sys_init_deken();
     return (0);
