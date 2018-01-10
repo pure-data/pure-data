@@ -52,7 +52,7 @@ po/*.po~
 TAGS
 
 # asio sdk
-ASIOSDK2
+ASIOSDK
 
 # pkgconfig
 pd.pc
