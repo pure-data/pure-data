@@ -12,6 +12,11 @@ set -e
 # include sources
 sources=false
 
+# strip binaries
+strip=true
+STRIP=${STRIP-strip}
+STRIPARGS=${STRIPARGS-"--strip-unneeded -R .note -R .comment"}
+
 # build dir, relative to working directory
 custom_builddir=false
 BUILD=..
@@ -148,6 +153,12 @@ find $APP -type f '(' -iname "*.exe" -o -iname "*.com" ')' -exec chmod +x {} +
 find $APP -type f '(' -iname "*.la" -o -iname "*.dll.a" -o -iname "*.am" ')' -delete
 find $APP/bin -type f -not -name "*.*" -delete
 
+# strip executables
+if [ "x$strip" = xtrue ] ; then
+	find "${APP}" -type f  \
+		'(' -iname "*.exe" -o -iname "*.com" -o -iname "*.dll" ')' \
+		-exec "${STRIP}" ${STRIPARGS} {} +
+fi
 # finished
 touch $APP
 echo  "==== Finished $(basename $APP)"
