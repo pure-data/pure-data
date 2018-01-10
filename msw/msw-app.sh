@@ -1,14 +1,15 @@
 #! /bin/sh
 #
-# Creates standalone Windows application directory from pd build.
+# Creates standalone Windows application directory from Pd build.
 #
-# Make sure pd has been configured and built
+# Make sure Pd has been configured and built
 # before running this.
 #
 
 # stop on error
 set -e
 
+# include sources
 sources=false
 
 # build dir, relative to working directory
@@ -28,9 +29,9 @@ Usage: msw-app.sh [OPTIONS] [VERSION]
 Options:
   -h,--help           display this help message
 
-  -s,--sources        include source files in addition to headers (default no)
-
-  --builddir          set pd build directory path
+  -s,--sources        include source files in addition to headers (default: ${sources})
+  -n,--no-strip       do not strip binaries (default: do strip)
+  --builddir <DIR>    set Pd build directory path (default: ${BUILD})
 
 Arguments:
 
@@ -41,7 +42,7 @@ Examples:
     # create pd directory
     msw-app.sh
 
-    # create pd-0.47-0.app, uses specified version string
+    # create pd-0.47-0, uses specified version string
     msw-app.sh 0.47-0
 
     # create pd directory with source files
