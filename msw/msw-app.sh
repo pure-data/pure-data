@@ -71,6 +71,9 @@ while [ "$1" != "" ] ; do
             BUILD=${1%/} # remove trailing slash
             custom_builddir=true
             ;;
+        -s|--sources)
+            sources=true
+            ;;
         -h|--help)
             help
             exit 0
