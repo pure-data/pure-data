@@ -377,7 +377,9 @@ For example, to build a 32 bit Pd:
 
 Similarily, to build a 64 bit Pd without ASIO support:
 
-    ./configure --host=x86_64-w64-mingw32 --disable-asio
+    ./configure --disable-asio --host=x86_64-w64-mingw32 CPPFLAGS=-DPD_LONGINTTYPE=__int64
+
+(Currently you need to override the PD_LONGINTTYPE for Windows 64bit builds).
 
 If all went well, you should now be ready to build Pd, as explained in the
 instructions above in the "Windows" section:
