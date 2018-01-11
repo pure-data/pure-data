@@ -276,25 +276,31 @@ aliases to provide the pd command.
 Pd on Windows is built with either MinGW or Cygwin which provide the required
 open source compiler chain & build environment.
 
-It is recommended to use Msys2 distribution which provides both a Unix command
-shell and MinGW. Currently, Pd is built as 32 bit for Windows so start by
-downloading the i686 Msys2 installer from:
+It is recommended to use the Msys2 distribution which provides both a Unix
+command shell and MinGW. Start by downloading the Msys2 installer for your
+system, either i686 for 32 bit Windows or x86_64 for 64 bit:
 
     http://www.msys2.org/
 
 Then install to the default location (C:\msys32 or C:\msys64) and follow the
 setup/update info on the Msys2 webpage.
 
-If you want to experiment with a 64 bit Windows build, download the x86_64
-installer instead. Note the differences in some of the package names where
-"i686" denotes 32 bit and "x86_64" 64 bit. Due to how MinGW is designed, you
-cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This also means the
-Pd configure --enable-universal build option has no effect in MinGW.
+Msys2 comes with several command shells, the most important being the
+"MSYS2 MinGW 32-bit" and "MSYS2 MinGW 64-bit" shells which are used to compile
+for 32 or 64 bit, respectively. Currently, Pd is built as 32 bit for Windows,
+so it is recommended to set up and use the MinGW 32-bit Msys2 shell. If you want
+to experiment with a 64 bit Windows, set up and use the MinGW 64-bit shell
+instead.
 
 Note: Msys2 development seems to change frequently, so some of the package names
       below may have changed after this document was written.
 
-Next open a Msys2 shell (either MSYS2 MinGW 32bit or MSYS MinGW 64bit) and
+Be aware of the differences in some of the Msys2 software package names, where
+"i686" denotes 32 bit and "x86_64" 64 bit. Due to how MinGW is designed, you
+cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This also means the
+Pd configure --enable-universal build option has no effect in MinGW.
+
+Open a Msys2 shell (either MSYS2 MinGW 32-bit or MSYS2 MinGW 64-bit) and
 install the compiler chain, autotools, & gettext via:
 
     # 32 bit
@@ -318,6 +324,12 @@ and/or the nsis installer tool if you want to build the Pd Windows installer:
 
     # 64 bit
     pacman -S mingw-w64-x86_64-nsis
+
+Note: You can also search for packages in Msys2 with:
+
+    pacman -S -s <searchterm>
+
+Once the packages are installed, you should now be ready to build Pd.
 
 The following audio APIS are available on Windows and can be enabled/disabled
 via their configure flags:
@@ -346,6 +358,14 @@ should run out of the box. To build, simply use:
 
 This will create a "pd-VERSION" directory (ie. pd-0.48.1) which can then be used
 by running pd.exe in the bin directory and placed wherever on your system.
+
+By default, the Tk 8.5.9
+currently included with the system is buggy and should *not* be used. It is
+recommended to install a newer version, either via Homebrew or from the
+ActiveState Tcl/Tk downloads.
+
+To see which version the Pd GUI is using: set the log level to 3 & look for the
+Tk version log line in the Pd window.
 
 To build a .msi Windows installer for Pd, see msw/build-nsi.sh.
 
