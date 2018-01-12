@@ -10,11 +10,14 @@ contents:
 
 externs:
 fiddle~ -- pitch tracker
+bob~ - moog analog resonant filter simulation
 bonk~ - percussion detector
 choose - find the "best fit" of incoming vector with stored profiles
-paf~ -- phase aligned formant generator
-loop~ -- sample looper
+paf~ - phase aligned formant generator
+loop~ - sample looper
 pique - fft-based peak finder
+pd~ - run a pd sub-process
+stdout - write messages to standard output
 lrshift~ - left or right shift an audio vector
 
 abstractions:
