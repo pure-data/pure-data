@@ -362,6 +362,40 @@ To build a .msi Windows installer for Pd, see msw/build-nsi.sh.
 Note: The standard "make install" requires Tcl/Tk and won't work outside your
 Cygwin/Msys2 environment (if at all).
 
+### Cross-compilation for Windows on Linux
+
+You can also build a Windows binary of Pd on a Linux system, using a
+cross-compilation toolchain.
+For Debian based systems (e.g. Ubuntu), you can install the tool chain with:
+
+    sudo apt-get install build-essentials automake autoconf libtool gettext
+    sudo apt-get install mingw-w64 mingw-w64-tools
+    sudo apt-get install nsis
+
+The "mingw-w64" package will install the cross compilation toolchains for both
+32bit (g++-mingw-w64-i686, binutils-mingw-w64-i686) and
+64bit (g++-mingw-w64-x86-64, binutils-mingw-w64-x86-64).
+The "nsis" package is purely optional, and only needed if you want to build the
+installer.
+
+You must tell configure that you want to cross-compile for a given architecture
+via the "--host" configure flag.
+
+For example, to build a 32 bit Pd:
+
+    ./configure --host=i686-w64-mingw32
+
+Similarily, to build a 64 bit Pd without ASIO support:
+
+    ./configure --disable-asio --host=x86_64-w64-mingw32 CPPFLAGS=-DPD_LONGINTTYPE=__int64
+
+(Currently you need to override the PD_LONGINTTYPE for Windows 64bit builds).
+
+If all went well, you should now be ready to build Pd, as explained in the
+instructions above in the "Windows" section:
+
+    make app
+
 ## Makefile Build
 
 Alternatively, and often more simply, to the autotools build, you can use the

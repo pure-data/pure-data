@@ -50,7 +50,7 @@ DIST_SUBDIRS = asio doc extra font mac man msw po portmidi portaudio src tcl
 #########################################
 ##### Targets #####
 
-.PHONY: app install-windows
+.PHONY: app
 
 # optionaly build localizations
 if MSGFMT
@@ -70,10 +70,6 @@ if WINDOWS
 app:
 	make -C msw app
 endif
-
-# forward target to msw/Makefile
-install-windows:
-	make -C msw install-windows
 
 # startup location for GUI plugins and/or patches,
 # leftover from Pd-extended & not currently used
