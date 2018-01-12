@@ -9,6 +9,10 @@
 # stop on error
 set -e
 
+TK=
+prototype_tk=true
+build_tk=false
+
 # include sources
 sources=false
 
@@ -34,8 +38,14 @@ Usage: msw-app.sh [OPTIONS] [VERSION]
 Options:
   -h,--help           display this help message
 
-  -s,--sources        include source files in addition to headers (default: ${sources})
+  -t,--tk VER or DIR  use a specific precompiled Tcl/Tk directory or download
+                      and build a specific version using tcltk-build.sh
+
+  -s,--sources        include source files in addition to headers
+                      (default: ${sources})
+
   -n,--no-strip       do not strip binaries (default: do strip)
+
   --builddir <DIR>    set Pd build directory path (default: ${BUILD})
 
 Arguments:
@@ -47,11 +57,17 @@ Examples:
     # create pd directory
     msw-app.sh
 
-    # create pd-0.47-0, uses specified version string
-    msw-app.sh 0.47-0
+    # create pd-0.48-1 directory, uses specified version string
+    msw-app.sh 0.48-1
 
     # create pd directory with source files
     msw-app.sh --sources
+
+    # create pd-0.48-1 directory, download and build Tcl/Tk 8.5.19
+    msw-app.sh --tk 8.5.19 0.48-1
+
+    # create pd-0.48-1 directory, use Tcl/Tk 8.5.19 built with tcltk-dir.sh
+    msw-app.sh --tk tcltk-8.5.19 0.48-1
 "
 }
 
@@ -59,12 +75,24 @@ Examples:
 #----------------------------------------------------------
 while [ "$1" != "" ] ; do
     case $1 in
+        -t|--tk)
+            if [ $# = 0 ] ; then
+                echo "-t,--tk option requires a VER or DIR argument"
+                exit 1
+            fi
+            shift 1
+            TK="$1"
+            prototype_tk=false
+            ;;
+        -s|--sources)
+            sources=false
+            ;;
         -n|--no-strip)
             strip=false
             ;;
         --builddir)
             if [ $# = 0 ] ; then
-                echo "--builddir options requires a DIR argument"
+                echo "--builddir option requires a DIR argument"
                 exit 1
             fi
             shift 1
@@ -98,20 +126,32 @@ fi
 # make sure custom build directory is an absolute path
 if [ "x$custom_builddir" = "xtrue" ] ; then
     if [ "x${BUILD#/}" = "x${BUILD}" ] ; then
-# BUILD isn't absolute as it doesn't start with '/'
-       BUILD="$(pwd)/$BUILD"
+        # BUILD isn't absolute as it doesn't start with '/'
+        BUILD="$(pwd)/$BUILD"
     fi
+fi
+
+# is $TK a version or a directory?
+if [ -d "$TK" ] ; then
+    # directory, make sure it's absolute
+    if [ "x${TK#/}" = "x${TK}" ] ; then
+        TK="$(pwd)/$TK"
+    fi
+else
+    # version, so it will be downloaded & built
+    build_tk=true
 fi
 
 # change to the dir of this script
 cd $(dirname $0)
 
+echo "==== Creating $(basename $APP)"
+
 # remove old app dir if found
 if [ -d $APP ] ; then
+    echo "removing existing directory"
     rm -rf $APP
 fi
-
-echo "==== Creating $(basename $APP)"
 
 # install to app directory
 make -C $BUILD install DESTDIR=$APP prefix=/
@@ -145,23 +185,49 @@ fi
 
 # untar pdprototype.tgz
 tar -xf pdprototype.tgz -C $APP/ --strip-components=1
+if [ "x$prototype_tk" = xfalse ] ; then
+
+    # remove bundled tcl & tk as we'll install our own,
+    # keep dlls needed by pd & externals
+    rm -rf $APP/bin/tcl* $APP/bin/tk* \
+           $APP/bin/wish*.exe $APP/bin/tclsh*.exe \
+           $APP/lib
+
+    # build, if needed
+    if [ "x$build_tk" = xtrue ] ; then
+         echo "Building tcltk-$TK"
+        ./tcltk-dir.sh $TK
+        TK=tcltk-${TK}
+    else
+        echo "Using $TK"
+    fi
+
+    # install tcl & tk
+    cp -R $TK/bin $APP/
+    cp -R $TK/lib $APP/
+fi
 
 # install info
 cp -v ../README.txt  $APP/
 cp -v ../LICENSE.txt $APP/
 
-# clean up
+# strip executables,
+# use temp files as stripping in place doesn't seem to work reliable on Windows
+if [ "x$strip" = xtrue ] ; then
+    find "${APP}" -type f '(' -iname "*.exe" -o -iname "*.com" -o -iname "*.dll" ')' \
+    | while read file ; do \
+        "${STRIP}" ${STRIPARGS} -o "$file.stripped" "$file" && \
+        mv "$file.stripped" "$file" && \
+        echo "stripped $file" ; \
+    done
+fi
+
+# set permissions and clean up
 find $APP -type f -exec chmod -x {} +
 find $APP -type f '(' -iname "*.exe" -o -iname "*.com" ')' -exec chmod +x {} +
 find $APP -type f '(' -iname "*.la" -o -iname "*.dll.a" -o -iname "*.am" ')' -delete
 find $APP/bin -type f -not -name "*.*" -delete
 
-# strip executables
-if [ "x$strip" = xtrue ] ; then
-	find "${APP}" -type f  \
-		'(' -iname "*.exe" -o -iname "*.com" -o -iname "*.dll" ')' \
-		-exec "${STRIP}" ${STRIPARGS} {} +
-fi
 # finished
 touch $APP
 echo  "==== Finished $(basename $APP)"

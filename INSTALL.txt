@@ -288,7 +288,8 @@ setup/update info on the Msys2 webpage.
 Msys2 provides both 32 and 64 MinGW and command shells. Currently, the Pd
 release is 32 bit for Windows, so it is recommended to set up and use the MinGW
 32 bit shell. If you want to build a 64 bit Pd, similarly use the MinGW 64 bit
-shell however this is currently considered *experimental*. Due to how MinGW is designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This
+shell however this is currently considered *experimental*. Due to how MinGW is
+designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This
 also means the Pd configure --enable-universal build option has no effect in
 MinGW.
 

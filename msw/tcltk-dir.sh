@@ -99,7 +99,7 @@ DEST=$(pwd)/tcltk-${TCLTK}
 # change to the dir of this script
 cd $(dirname $0)
 
-remove old dir if found
+# remove old dir if found
 if [ -d "$DEST" ] ; then
     rm -rf $DEST
 fi
@@ -155,7 +155,7 @@ make
 make install
 cd -
 
-finish up
+# finish up
 rm -rf ${tcldir} ${tkdir} ${tcldir}-src.tar.gz ${tkdir}-src.tar.gz
 
 echo  "==== Finished tcltk-$TCLTK"
