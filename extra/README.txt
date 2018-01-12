@@ -2,7 +2,6 @@ This is the README file for the "extras" library, consisting of Pd
 objects which are too specialized or otherwise non-canonical for
 inclusion into Pd proper.   These files are open source; see 
 LICENSE.txt in this distribution for details.
-Note however that "expr" is GPL (the rest is all BSD).
 
 This package should run in Pd under linux, MSW, or Mac OSX.
 You can additionally compile fiddle~. bonk~, and paf~ for Max/MSP.
@@ -15,7 +14,6 @@ bonk~ - percussion detector
 choose - find the "best fit" of incoming vector with stored profiles
 paf~ -- phase aligned formant generator
 loop~ -- sample looper
-expr -- arithmetic expression evaluation (Shahrokh Yadegari)
 pique - fft-based peak finder
 lrshift~ - left or right shift an audio vector
 
