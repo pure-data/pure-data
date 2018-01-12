@@ -23,7 +23,7 @@ Pd-0.47.1.app/Contents
     /doc      <- build in docs & help files
     /extra    <- core externals
     /font     <- included fonts
-    /include  <- Pd source header files
+    /src      <- Pd source header files
     /po       <- text translation files
     /tcl      <- Pd GUI scripts
 
