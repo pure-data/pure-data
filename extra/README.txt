@@ -4,7 +4,7 @@ inclusion into Pd proper.   These files are open source; see
 LICENSE.txt in this distribution for details.
 
 This package should run in Pd under linux, MSW, or Mac OSX.
-You can additionally compile fiddle~. bonk~, and paf~ for Max/MSP.
+You can additionally compile fiddle~, bonk~, and paf~ for Max/MSP.
 
 contents:
 
