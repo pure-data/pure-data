@@ -274,7 +274,7 @@ aliases to provide the pd command.
 ### Windows
 
 Pd on Windows can be built with either MinGW or Cygwin which provide the
-required open source compiler chain & build environment.
+required compiler chain & build environment.
 
 It is recommended to use the Msys2 distribution which provides both a Unix
 command shell and MinGW. Download the Msys2 "x86_64" 64 bit installer (or "i686"
