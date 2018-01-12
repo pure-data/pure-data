@@ -357,14 +357,6 @@ should run out of the box. To build, simply use:
 This will create a "pd-VERSION" directory (ie. pd-0.48.1) which can then be used
 by running pd.exe in the bin directory and placed wherever on your system.
 
-By default, the Tk 8.5.9
-currently included with the system is buggy and should *not* be used. It is
-recommended to install a newer version, either via Homebrew or from the
-ActiveState Tcl/Tk downloads.
-
-To see which version the Pd GUI is using: set the log level to 3 & look for the
-Tk version log line in the Pd window.
-
 To build a .msi Windows installer for Pd, see msw/build-nsi.sh.
 
 Note: The standard "make install" requires Tcl/Tk and won't work outside your
