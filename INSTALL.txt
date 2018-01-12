@@ -273,24 +273,22 @@ aliases to provide the pd command.
 
 ### Windows
 
-Pd on Windows is built with either MinGW or Cygwin which provide the required
-open source compiler chain & build environment.
+Pd on Windows can be built with either MinGW or Cygwin which provide the
+required open source compiler chain & build environment.
 
 It is recommended to use the Msys2 distribution which provides both a Unix
-command shell and MinGW. Start by downloading the Msys2 installer for your
-system, either i686 for 32 bit Windows or x86_64 for 64 bit:
+command shell and MinGW. Download the Msys2 "x86_64" 64 bit installer (or "i686"
+if you are using 32 bit Windows) from:
 
     http://www.msys2.org/
 
 Then install to the default location (C:\msys32 or C:\msys64) and follow the
 setup/update info on the Msys2 webpage.
 
-Msys2 comes with several command shells, the most important being the
-"MSYS2 MinGW 32-bit" and "MSYS2 MinGW 64-bit" shells which are used to compile
-for 32 or 64 bit, respectively. Currently, Pd is built as 32 bit for Windows,
-so it is recommended to set up and use the MinGW 32-bit Msys2 shell. If you want
-to experiment with a 64 bit Windows, set up and use the MinGW 64-bit shell
-instead.
+Msys2 provides both 32 and 64 bit command shells for MinGW. Currently, the Pd
+release is 32 bit for Windows, so it is recommended to set up and use the MinGW
+32 bit shell. If you want to build a 64 bit Pd, similarly use the MinGW 64 bit
+shell however this is currently considered *experimental*.
 
 Note: Msys2 development seems to change frequently, so some of the package names
       below may have changed after this document was written.
