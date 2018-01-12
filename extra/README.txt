@@ -25,7 +25,7 @@ hilbert~ - Hilbert transform for SSB modulation
 complex-mod~ - ring modulation for complex (real+imaginary) audio signals
 rev1~, etc. - reverberators
 
-These objects are part of the regular Pd distribution as of Pd version
-0.30.  Macintosh versions of fiddle~, bonk~, and paf~ are available
-from http://www.crca.ucsd.edu/~tapel
+The extra library is part of the regular Pd distribution as of Pd version
+0.30.
+
 - msp@ucsd.edu
