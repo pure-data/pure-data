@@ -274,7 +274,7 @@ aliases to provide the pd command.
 ### Windows
 
 Pd on Windows can be built with either MinGW or Cygwin which provide the
-required compiler chain & build environment.
+core build requirements: a compiler chain & shell environment.
 
 It is recommended to use the Msys2 distribution which provides both a Unix
 command shell and MinGW. Download the Msys2 "x86_64" 64 bit installer (or "i686"
@@ -298,8 +298,7 @@ Be aware of the differences in some of the Msys2 software package names, where
 cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This also means the
 Pd configure --enable-universal build option has no effect in MinGW.
 
-Open a Msys2 shell (either MSYS2 MinGW 32-bit or MSYS2 MinGW 64-bit) and
-install the compiler chain, autotools, & gettext via:
+Open a Msys2 shell and install the compiler chain, autotools, & gettext via:
 
     # 32 bit
     pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
@@ -366,7 +365,8 @@ Cygwin/Msys2 environment (if at all).
 
 You can also build a Windows binary of Pd on a Linux system, using a
 cross-compilation toolchain.
-For Debian based systems (e.g. Ubuntu), you can install the tool chain with:
+
+For Debian based systems (e.g. Ubuntu), you can install the toolchain with:
 
     sudo apt-get install build-essentials automake autoconf libtool gettext
     sudo apt-get install mingw-w64 mingw-w64-tools
@@ -375,6 +375,7 @@ For Debian based systems (e.g. Ubuntu), you can install the tool chain with:
 The "mingw-w64" package will install the cross compilation toolchains for both
 32bit (g++-mingw-w64-i686, binutils-mingw-w64-i686) and
 64bit (g++-mingw-w64-x86-64, binutils-mingw-w64-x86-64).
+
 The "nsis" package is purely optional, and only needed if you want to build the
 installer.
 
