@@ -149,7 +149,7 @@ echo "==== Creating $(basename $APP)"
 
 # remove old app dir if found
 if [ -d $APP ] ; then
-    echo "removing exiting directory"
+    echo "removing existing directory"
     rm -rf $APP
 fi
 
@@ -205,6 +205,9 @@ if [ "x$prototype_tk" = xfalse ] ; then
     # install tcl & tk
     cp -R $TK/bin $APP/
     cp -R $TK/lib $APP/
+
+    # remove some Tcl libraries Pd doesn't need
+    rm -rf $APP/lib/sqlite* $APP/lib/tdbc*
 fi
 
 # copy info and resources not handled via "make install"
