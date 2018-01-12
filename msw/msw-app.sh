@@ -149,7 +149,7 @@ echo "==== Creating $(basename $APP)"
 
 # remove old app dir if found
 if [ -d $APP ] ; then
-    echo "removing existing directory"
+    echo "removing exiting directory"
     rm -rf $APP
 fi
 
@@ -167,20 +167,20 @@ rm -rf $APP/src/pd
 # move folders from lib/pd into top level directory
 rm -rf $APP/lib/pd/bin
 for d in $APP/lib/pd/*; do
-	mv $d $APP/
+    mv $d $APP/
 done
 rm -rf $APP/lib/
 
 # install sources
 if [ "x$sources" = xtrue ] ; then
-	mkdir -p $APP/src
-	cp -v ../src/*.c $APP/src/
-	cp -v ../src/*.h $APP/src/
-	for d in $APP/extra/*/; do
-		s=${d%/}
-		s=../extra/${s##*/}
-		cp -v "${s}"/*.c "${d}"
-	done
+    mkdir -p $APP/src
+    cp -v ../src/*.c $APP/src/
+    cp -v ../src/*.h $APP/src/
+    for d in $APP/extra/*/; do
+        s=${d%/}
+        s=../extra/${s##*/}
+        cp -v "${s}"/*.c "${d}"
+    done
 fi
 
 # untar pdprototype.tgz

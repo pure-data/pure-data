@@ -131,16 +131,16 @@ fi
 
 
 if [ "x${FORCE64BIT}" = xtrue ] ; then
-  echo "Forcing 64 bit"
-  OPTIONS="$OPTIONS --enable-64bit"
-else
-  # try to detect 64 bit MinGW: uname -s -> MINGW64_NT-10.0
-  # don't use uname -m as that returns the *system* archtecture
-  # which may be different, ie. MinGW 32 running on 64 bit Windows  
-  if [ $(uname -s | grep 64) ] ; then
-    echo "Detected 64 bit"
+    echo "Forcing 64 bit"
     OPTIONS="$OPTIONS --enable-64bit"
-  fi
+else
+    # try to detect 64 bit MinGW: uname -s -> MINGW64_NT-10.0
+    # don't use uname -m as that returns the *system* archtecture
+    # which may be different, ie. MinGW 32 running on 64 bit Windows  
+    if [ $(uname -s | grep 64) ] ; then
+        echo "Detected 64 bit"
+        OPTIONS="$OPTIONS --enable-64bit"
+    fi
 fi
 
 # build Tcl and Tk
