@@ -285,20 +285,17 @@ if you are using 32 bit Windows) from:
 Then install to the default location (C:\msys32 or C:\msys64) and follow the
 setup/update info on the Msys2 webpage.
 
-Msys2 provides both 32 and 64 bit command shells for MinGW. Currently, the Pd
+Msys2 provides both 32 and 64 MinGW and command shells. Currently, the Pd
 release is 32 bit for Windows, so it is recommended to set up and use the MinGW
 32 bit shell. If you want to build a 64 bit Pd, similarly use the MinGW 64 bit
-shell however this is currently considered *experimental*.
+shell however this is currently considered *experimental*. Due to how MinGW is designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This
+also means the Pd configure --enable-universal build option has no effect in
+MinGW.
 
 Note: Msys2 development seems to change frequently, so some of the package names
       below may have changed after this document was written.
 
-Be aware of the differences in some of the Msys2 software package names, where
-"i686" denotes 32 bit and "x86_64" 64 bit. Due to how MinGW is designed, you
-cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This also means the
-Pd configure --enable-universal build option has no effect in MinGW.
-
-Open a Msys2 shell and install the compiler chain, autotools, & gettext via:
+Open an Msys2 shell and install the compiler chain, autotools, & gettext via:
 
     # 32 bit
     pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
@@ -354,7 +351,8 @@ should run out of the box. To build, simply use:
     make app
 
 This will create a "pd-VERSION" directory (ie. pd-0.48.1) which can then be used
-by running pd.exe in the bin directory and placed wherever on your system.
+by running pd.exe in the bin directory and placed wherever on your system. For
+more info & options regarding the Pd app directory, see msw/README.txt
 
 To build a .msi Windows installer for Pd, see msw/build-nsi.sh.
 
