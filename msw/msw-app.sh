@@ -207,9 +207,10 @@ if [ "x$prototype_tk" = xfalse ] ; then
     cp -R $TK/lib $APP/
 fi
 
-# install info
+# copy info and resources not handled via "make install"
 cp -v ../README.txt  $APP/
 cp -v ../LICENSE.txt $APP/
+cp -vR ../font $APP/
 
 # strip executables,
 # use temp files as stripping in place doesn't seem to work reliable on Windows
