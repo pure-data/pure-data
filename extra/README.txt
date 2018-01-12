@@ -1,4 +1,4 @@
-This is the README file for the "extras" library, consisting of Pd
+This is the README file for the "extra" library, consisting of Pd
 objects which are too specialized or otherwise non-canonical for
 inclusion into Pd proper.   These files are open source; see 
 LICENSE.txt in this distribution for details.
