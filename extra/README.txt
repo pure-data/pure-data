@@ -9,7 +9,8 @@ You can additionally compile fiddle~, bonk~, and paf~ for Max/MSP.
 contents:
 
 externs:
-fiddle~ -- pitch tracker
+fiddle~ - pitch tracker
+sigmund~ - sinusoidal analysis and pitch tracking
 bob~ - moog analog resonant filter simulation
 bonk~ - percussion detector
 choice - find the "best fit" of incoming list
