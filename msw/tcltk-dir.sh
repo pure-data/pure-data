@@ -19,14 +19,16 @@
 # stop on error
 set -e
 
-# default configure options
-OPTIONS="--enable-threads"
-
 # cloning with git?
 GIT=false
 
 # force 64 bit build?
 FORCE64BIT=false
+
+# configure options
+if [ "x${OPTIONS}" = "x" ] ; then
+    OPTIONS="--enable-threads"
+fi
 
 # Help message
 #----------------------------------------------------------
@@ -36,7 +38,9 @@ cat <<EOF
 Usage: $0 [OPTIONS] VERSION
 
   Downloads and builds a directory for Windows
-  with the chosen Tcl/Tk version
+  with the chosen Tcl/Tk version using:
+
+      configure ${OPTIONS}
 
 Options:
   -h,--help           display this help message
@@ -62,6 +66,9 @@ Examples:
     # build tcltk-8.6.6-git with Tcl/Tl 8.6.6
     # from git using the core_8_6_6 tag in the master branch
     $0 --git 8.6.6-git -b master core_8_6_6
+
+    # override default Tcl/Tk configure options
+    OPTIONS="--enable-foo --with-bar" $0 8.5.19
 
 EOF
 }
