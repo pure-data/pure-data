@@ -29,7 +29,7 @@ BUILD=..
 #----------------------------------------------------------
 help() {
 cat <<EOF
-Usage: msw-app.sh [OPTIONS] [VERSION]
+Usage: $0 [OPTIONS] [VERSION]
 
   Creates a Pd app directory for Windows.
 
@@ -55,19 +55,19 @@ Arguments:
 Examples:
 
     # create pd directory
-    msw-app.sh
+    $0
 
     # create pd-0.48-1 directory, uses specified version string
-    msw-app.sh 0.48-1
+    $0 0.48-1
 
     # create pd directory with source files
-    msw-app.sh --sources
+    $0 --sources
 
     # create pd-0.48-1 directory, download and build Tcl/Tk 8.5.19
-    msw-app.sh --tk 8.5.19 0.48-1
+    $0 --tk 8.5.19 0.48-1
 
     # create pd-0.48-1 directory, use Tcl/Tk 8.5.19 built with tcltk-dir.sh
-    msw-app.sh --tk tcltk-8.5.19 0.48-1
+    $0 --tk tcltk-8.5.19 0.48-1
 
 EOF
 }
