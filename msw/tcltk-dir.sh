@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 #
 # Downloads and builds a directory with the chosen Tcl/Tk version.
 #
@@ -31,7 +31,8 @@ FORCE64BIT=false
 # Help message
 #----------------------------------------------------------
 help() {
-echo -e "
+cat <<EOF
+
 Usage: tcltk-dir.sh [OPTIONS] VERSION
 
   Downloads and builds a directory for Windows
@@ -61,7 +62,8 @@ Examples:
     # build tcltk-8.6.6-git with Tcl/Tl 8.6.6
     # from git using the core_8_6_6 tag in the master branch
     tcltk-dir.sh --git 8.6.6-git -b master core_8_6_6
-"
+
+EOF
 }
 
 # Parse command line arguments
@@ -85,7 +87,7 @@ while [ "$1" != "" ] ; do
 done
 
 # check for required version argument
-if [ "$1" == "" ] ; then
+if [ "$1" = "" ] ; then
     echo "Usage: tcltk-dir.sh [OPTIONS] VERSION"
     exit 1
 fi
