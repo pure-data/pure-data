@@ -28,7 +28,7 @@ BUILD=..
 # Help message
 #----------------------------------------------------------
 help() {
-echo -e "
+cat <<EOF
 Usage: msw-app.sh [OPTIONS] [VERSION]
 
   Creates a Pd app directory for Windows.
@@ -68,7 +68,8 @@ Examples:
 
     # create pd-0.48-1 directory, use Tcl/Tk 8.5.19 built with tcltk-dir.sh
     msw-app.sh --tk tcltk-8.5.19 0.48-1
-"
+
+EOF
 }
 
 # Parse command line arguments
