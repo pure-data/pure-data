@@ -33,7 +33,7 @@ FORCE64BIT=false
 help() {
 cat <<EOF
 
-Usage: tcltk-dir.sh [OPTIONS] VERSION
+Usage: $0 [OPTIONS] VERSION
 
   Downloads and builds a directory for Windows
   with the chosen Tcl/Tk version
@@ -43,7 +43,7 @@ Options:
 
   --git               clone from tcl/tk git repos at https://github.com/tcltk,
                       any arguments after VERSION are passed to git
-                      
+
   --64bit             force building for 64 bit Windows, use this if 64 bit
                       auto detection does not work (default: ${FORCE64BIT})
 
@@ -54,14 +54,14 @@ Arguments:
 Examples:
 
     # build tcltk-8.5.19 directory with Tcl/Tk 8.5.19
-    tcltk-dir.sh 8.5.19
+    $0 8.5.19
 
     # build tcltk-master-git with the latest master branch from git
-    tcltk-dir.sh --git master-git 
+    $0 --git master-git
 
     # build tcltk-8.6.6-git with Tcl/Tl 8.6.6
     # from git using the core_8_6_6 tag in the master branch
-    tcltk-dir.sh --git 8.6.6-git -b master core_8_6_6
+    $0 --git 8.6.6-git -b master core_8_6_6
 
 EOF
 }
