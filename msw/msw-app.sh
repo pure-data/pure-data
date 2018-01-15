@@ -78,7 +78,7 @@ while [ "$1" != "" ] ; do
     case $1 in
         -t|--tk)
             if [ $# = 0 ] ; then
-                echo "-t,--tk option requires a VER or DIR argument"
+                echo "-t,--tk option requires a VER or DIR argument" 1>&2
                 exit 1
             fi
             shift 1
@@ -93,7 +93,7 @@ while [ "$1" != "" ] ; do
             ;;
         --builddir)
             if [ $# = 0 ] ; then
-                echo "--builddir option requires a DIR argument"
+                echo "--builddir option requires a DIR argument" 1>&2
                 exit 1
             fi
             shift 1

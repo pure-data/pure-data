@@ -88,7 +88,7 @@ done
 
 # check for required version argument
 if [ "$1" = "" ] ; then
-    echo "Usage: tcltk-dir.sh [OPTIONS] VERSION"
+    echo "Usage: tcltk-dir.sh [OPTIONS] VERSION" 1>&2
     exit 1
 fi
 TCLTK=$1
