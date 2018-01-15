@@ -145,7 +145,7 @@ using the following domains:
 * org.puredata.pd: core settings (audio devices, search paths, etc)
 * org.puredata.pd.pd-gui: GUI settings (recent files, last opened location, etc)
 
-The files themsleves live in your user home folder and use the .plist extension:
+The files themselves live in your user home folder and use the .plist extension:
 
     ~/Library/Preferences/org.puredata.pd.plist
     ~/Library/Preferences/org.puredata.pd.pd-gui.plist
