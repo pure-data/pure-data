@@ -2,8 +2,7 @@
 #
 # Creates standalone Windows application directory from Pd build.
 #
-# Make sure Pd has been configured and built
-# before running this.
+# Make sure Pd has been configured and built before running this.
 #
 
 # stop on error
@@ -12,6 +11,9 @@ set -e
 TK=
 prototype_tk=true
 build_tk=false
+
+# pthread dll name
+PTHREAD_DLL=libwinpthread-1.dll
 
 # include sources
 sources=false
@@ -86,7 +88,7 @@ while [ "$1" != "" ] ; do
             prototype_tk=false
             ;;
         -s|--sources)
-            sources=false
+            sources=true
             ;;
         -n|--no-strip)
             strip=false
@@ -99,9 +101,6 @@ while [ "$1" != "" ] ; do
             shift 1
             BUILD=${1%/} # remove trailing slash
             custom_builddir=true
-            ;;
-        -s|--sources)
-            sources=true
             ;;
         -h|--help)
             help
@@ -210,11 +209,14 @@ if [ "x$prototype_tk" = xfalse ] ; then
     # remove bundled Tcl packges Pd doesn't need
     rm -rf $APP/lib/itcl* $APP/lib/sqlite* $APP/lib/tdbc*
 
-    # install pthread from MinGW
-    if [ -v MINGW_PREFIX ] ; then
-        # MINGW_PREFIX should be either "/mingw32" or "/mingw64"
-        if [ -e $MINGW_PREFIX/bin/libwinpthread-1.dll ] ; then
-            cp -v $MINGW_PREFIX/bin/libwinpthread-1.dll $APP/bin
+    # install pthread from MinGW from:
+    # * Windows:             $MINGW_PREFIX/bin
+    # * Linux cross-compile: $MINGW_PREFIX/lib
+    if [ "x${MINGW_PREFIX}" != "x" ] ; then
+        if [ -e $MINGW_PREFIX/bin/$PTHREAD_DLL ] ; then
+            cp -v $MINGW_PREFIX/bin/$PTHREAD_DLL $APP/bin
+        elif [ -e $MINGW_PREFIX/lib/$PTHREAD_DLL ] ; then
+            cp -v $MINGW_PREFIX/lib/$PTHREAD_DLL $APP/bin
         fi
     fi
 fi
