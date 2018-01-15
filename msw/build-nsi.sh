@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # script to call makensis (NSIS installer generator, adapted for mingw32)
 # to make a Pd install/uninstall executable for MS windows.
@@ -8,7 +8,7 @@ cat > /dev/null << .
 
 *** The README adapted from Roman: ***
 
-The included build.sh is a bash script to create a proper Windows
+The included build.sh is a shell script to create a proper Windows
 installer (.exe) out of a Pure Data build tree.
 
 Features of the resulting installer:
