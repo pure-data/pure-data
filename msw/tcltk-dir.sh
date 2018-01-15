@@ -11,6 +11,7 @@
 # TODO:
 # * install layout does not *exactly* match pdprototype, does it need to?
 # * find a way to convert tcl & tk static .a libraries to VS .lib
+# * disable building bundled Tcl packages Pd doesn't need: iTcl, Sqlite, TDBC
 #
 # Dan Wilcox danomatika.com
 #
@@ -34,7 +35,7 @@ echo -e "
 Usage: tcltk-dir.sh [OPTIONS] VERSION
 
   Downloads and builds a directory for Windows
-  with the chosen Tcl/Tk version.
+  with the chosen Tcl/Tk version
 
 Options:
   -h,--help           display this help message
@@ -43,7 +44,7 @@ Options:
                       any arguments after VERSION are passed to git
                       
   --64bit             force building for 64 bit Windows, use this if 64 bit
-                      auto detection does not work
+                      auto detection does not work (default: ${FORCE64BIT})
 
 Arguments:
 
@@ -129,16 +130,14 @@ else
     tkdir=tk${TCLTK}
 fi
 
-
+# 64 bit support
 if [ "x${FORCE64BIT}" = xtrue ] ; then
-    echo "Forcing 64 bit"
+    echo "==== Forcing 64 bit"
     OPTIONS="$OPTIONS --enable-64bit"
 else
-    # try to detect 64 bit MinGW: uname -s -> MINGW64_NT-10.0
-    # don't use uname -m as that returns the *system* archtecture
-    # which may be different, ie. MinGW 32 running on 64 bit Windows  
-    if [ $(uname -s | grep 64) ] ; then
-        echo "Detected 64 bit"
+    # try to detect 64 bit MinGW using MSYSTEM env var
+    if [ "x${MSYSTEM}" = "xMINGW64" ] ; then
+        echo "==== Detected 64 bit"
         OPTIONS="$OPTIONS --enable-64bit"
     fi
 fi

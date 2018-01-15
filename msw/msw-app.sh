@@ -46,7 +46,7 @@ Options:
 
   -n,--no-strip       do not strip binaries (default: do strip)
 
-  --builddir <DIR>    set Pd build directory path (default: ${BUILD})
+  --builddir DIR      set Pd build directory path (default: ${BUILD})
 
 Arguments:
 
@@ -206,8 +206,16 @@ if [ "x$prototype_tk" = xfalse ] ; then
     cp -R $TK/bin $APP/
     cp -R $TK/lib $APP/
 
-    # remove some Tcl libraries Pd doesn't need
-    rm -rf $APP/lib/sqlite* $APP/lib/tdbc*
+    # remove bundled Tcl packges Pd doesn't need
+    rm -rf $APP/lib/itcl* $APP/lib/sqlite* $APP/lib/tdbc*
+
+    # install pthread from MinGW
+    if [ -v MINGW_PREFIX ] ; then
+        # MINGW_PREFIX should be either "/mingw32" or "/mingw64"
+        if [ -e $MINGW_PREFIX/bin/libwinpthread-1.dll ] ; then
+            cp -v $MINGW_PREFIX/bin/libwinpthread-1.dll $APP/bin
+        fi
+    fi
 fi
 
 # copy info and resources not handled via "make install"
