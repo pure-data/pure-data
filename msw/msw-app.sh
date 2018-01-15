@@ -77,11 +77,11 @@ EOF
 while [ "$1" != "" ] ; do
     case $1 in
         -t|--tk)
+            shift 1
             if [ $# = 0 ] ; then
                 echo "-t,--tk option requires a VER or DIR argument" 1>&2
                 exit 1
             fi
-            shift 1
             TK="$1"
             prototype_tk=false
             ;;
