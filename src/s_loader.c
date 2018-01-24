@@ -366,14 +366,14 @@ int sys_run_scheduler(const char *externalschedlibname,
     typedef int (*t_externalschedlibmain)(const char *);
     t_externalschedlibmain externalmainfunc;
     char filename[MAXPDSTRING];
-    struct stat statbuf;
     const char**dllextent;
     for(dllextent=sys_dllextent; *dllextent; dllextent++)
     {
+        struct stat statbuf;
         snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
             *dllextent);
         sys_bashfilename(filename, filename);
-        if(!stat)
+        if(!stat(filename, &statbuf))
             break;
     }
 
