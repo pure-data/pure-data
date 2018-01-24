@@ -37,7 +37,6 @@ objects.  The specific name is the letter b, l, d, or m for  BSD, linux,
 darwin, or microsoft, followed by a more specific string, either "fat" for
 a fat binary or an indication of the instruction set. */
 
-#if defined(__x86_64__)
 #if defined(__x86_64__) || defined(_M_X64)
 # define ARCHEXT "amd64"
 #elif defined(__i386__) || defined(_M_IX86)
