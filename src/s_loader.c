@@ -37,28 +37,32 @@ objects.  The specific name is the letter b, l, d, or m for  BSD, linux,
 darwin, or microsoft, followed by a more specific string, either "fat" for
 a fat binary or an indication of the instruction set. */
 
+static const char*sys_dllextent[] = {
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(__FreeBSD__)
-static char sys_dllextent2[] = ".pd_linux";
 # ifdef __x86_64__
-static char sys_dllextent[] = ".l_ia64"; // this should be .l_x86_64 or .l_amd64
+    ".l_ia64",     // this should be .l_x86_64 or .l_amd64
 # elif defined(__i386__) || defined(_M_IX86)
-static char sys_dllextent[] = ".l_i386";
+    ".l_i386",
 # elif defined(__arm__)
-static char sys_dllextent[] = ".l_arm";
+    ".l_arm",
 # else
-static char sys_dllextent[] = ".so";
+    ".so",
 # endif
+    ".pd_linux",
 #elif defined(__APPLE__)
 # ifndef MACOSX3
-static char sys_dllextent[] = ".d_fat", sys_dllextent2[] = ".pd_darwin";
+    ".d_fat",
 # else
-static char sys_dllextent[] = ".d_ppc", sys_dllextent2[] = ".pd_darwin";
+    ".d_ppc",
 # endif
+    ".pd_darwin",
 #elif defined(_WIN32) || defined(__CYGWIN__)
-static char sys_dllextent[] = ".m_i386", sys_dllextent2[] = ".dll";
+    ".m_i386",
+    ".dll",
 #else
-static char sys_dllextent[] = ".so", sys_dllextent2[] = ".so";
+    ".so",
 #endif
+    0};
 
     /* maintain list of loaded modules to avoid repeating loads */
 typedef struct _loadedlist
@@ -97,6 +101,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
 {
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
         *nameptr, altsymname[MAXPDSTRING];
+    const char**dllextent;
     const char *classname, *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;
@@ -146,25 +151,24 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     fprintf(stderr, "lib: %s\n", classname);
 #endif
         /* try looking in the path for (objectname).(sys_dllextent) ... */
-    if ((fd = sys_trytoopenone(path, objectname, sys_dllextent,
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
-            goto gotone;
-        /* same, with the more generic sys_dllextent2 */
-    if ((fd = sys_trytoopenone(path, objectname, sys_dllextent2,
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
-            goto gotone;
+    for(dllextent=sys_dllextent; *dllextent; dllextent++)
+    {
+        if ((fd = sys_trytoopenone(path, objectname, *dllextent,
+            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+                goto gotone;
+    }
         /* next try (objectname)/(classname).(sys_dllextent) ... */
     strncpy(filename, objectname, MAXPDSTRING);
     filename[MAXPDSTRING-2] = 0;
     strcat(filename, "/");
     strncat(filename, classname, MAXPDSTRING-strlen(filename));
     filename[MAXPDSTRING-1] = 0;
-    if ((fd = sys_trytoopenone(path, filename, sys_dllextent,
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
-            goto gotone;
-    if ((fd = sys_trytoopenone(path, filename, sys_dllextent2,
-        dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
-            goto gotone;
+    for(dllextent=sys_dllextent; *dllextent; dllextent++)
+    {
+        if ((fd = sys_trytoopenone(path, filename, *dllextent,
+            dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
+                goto gotone;
+    }
 #ifdef ANDROID
     /* Android libs have a 'lib' prefix, '.so' suffix and don't allow ~ */
     char libname[MAXPDSTRING] = "lib";
@@ -353,16 +357,16 @@ int sys_run_scheduler(const char *externalschedlibname,
     t_externalschedlibmain externalmainfunc;
     char filename[MAXPDSTRING];
     struct stat statbuf;
-    snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
-        sys_dllextent);
-    sys_bashfilename(filename, filename);
-        /* if first-choice file extent can't 'stat', go for second */
-    if (stat(filename, &statbuf) < 0)
+    const char**dllextent;
+    for(dllextent=sys_dllextent; *dllextent; dllextent++)
     {
         snprintf(filename, sizeof(filename), "%s%s", externalschedlibname,
-            sys_dllextent2);
+            *dllextent);
         sys_bashfilename(filename, filename);
+        if(!stat)
+            break;
     }
+
 #ifdef _WIN32
     {
         HINSTANCE ntdll = LoadLibrary(filename);
