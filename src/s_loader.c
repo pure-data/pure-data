@@ -37,27 +37,35 @@ objects.  The specific name is the letter b, l, d, or m for  BSD, linux,
 darwin, or microsoft, followed by a more specific string, either "fat" for
 a fat binary or an indication of the instruction set. */
 
+#if defined(__x86_64__)
+# define ARCHEXT "amd64"
+#elif defined(__i386__) || defined(_M_IX86)
+# define ARCHEXT "i386"
+#elif defined(__arm__)
+# define ARCHEXT "arm"
+#elif defined(__ppc__)
+# define ARCHEXT "ppc"
+#endif
+
+#ifdef ARCHEXT
+#define ARCHDLLEXT(prefix) prefix ARCHEXT ,
+#else
+#define ARCHDLLEXT(prefix)
+#endif
+
+
 static const char*sys_dllextent[] = {
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(__FreeBSD__)
-# ifdef __x86_64__
-    ".l_ia64",     // this should be .l_x86_64 or .l_amd64
-# elif defined(__i386__) || defined(_M_IX86)
-    ".l_i386",
-# elif defined(__arm__)
-    ".l_arm",
-# else
-    ".so",
-# endif
+    ARCHDLLEXT(".l_")
     ".pd_linux",
+    ".so",
 #elif defined(__APPLE__)
-# ifndef MACOSX3
     ".d_fat",
-# else
-    ".d_ppc",
-# endif
+    ARCHDLLEXT(".d_")
     ".pd_darwin",
+    ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
-    ".m_i386",
+    ARCHDLLEXT(".m_")
     ".dll",
 #else
     ".so",
