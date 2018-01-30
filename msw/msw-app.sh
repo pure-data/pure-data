@@ -192,6 +192,9 @@ if [ "x$prototype_tk" = xfalse ] ; then
     rm -rf $APP/bin/tcl* $APP/bin/tk* \
            $APP/bin/wish*.exe $APP/bin/tclsh*.exe \
            $APP/lib
+    
+    # remove headers which should be provided by MinGW
+    rm -f $APP/src/pthread.h
 
     # build, if needed
     if [ "x$build_tk" = xtrue ] ; then
