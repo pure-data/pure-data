@@ -52,6 +52,7 @@ void g_canvas_newpdinstance( void);
 void g_canvas_freepdinstance( void);
 void d_ugen_newpdinstance( void);
 void d_ugen_freepdinstance( void);
+void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv);
 
 void s_stuff_newpdinstance( void)
 {
@@ -256,6 +257,30 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 }
 
 #endif /* PDINSTANCE */
+
+/* this bootstraps the class management system (pd_objectmaker, pd_canvasmaker)
+ * it has been moved from the bottom of the file up here, before the class_new() undefine
+ */
+void mess_init(void)
+{
+    if (pd_objectmaker)
+        return;
+#ifdef PDINSTANCE
+    pd_this = &pd_maininstance;
+#endif
+    s_inter_newpdinstance();
+    sys_lock();
+    pd_globallock();
+    pdinstance_init(&pd_maininstance);
+    class_extern_dir = &s_;
+    pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    class_addanything(pd_objectmaker, (t_method)new_anything);
+    pd_globalunlock();
+    sys_unlock();
+}
 
 static void pd_defaultanything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -881,27 +906,6 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     }
     class_loadsym = 0;
     pd_globalunlock();
-}
-
-void mess_init(void)
-{
-    if (pd_objectmaker)
-        return;
-#ifdef PDINSTANCE
-    pd_this = &pd_maininstance;
-#endif
-    s_inter_newpdinstance();
-    sys_lock();
-    pd_globallock();
-    pdinstance_init(&pd_maininstance);
-    class_extern_dir = &s_;
-    pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
-        CLASS_DEFAULT, A_NULL);
-    pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
-        CLASS_DEFAULT, A_NULL);
-    class_addanything(pd_objectmaker, (t_method)new_anything);
-    pd_globalunlock();
-    sys_unlock();
 }
 
 /* This is externally available, but note that it might later disappear; the
