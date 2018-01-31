@@ -394,37 +394,19 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 extern void text_save(t_gobj *z, t_binbuf *b);
 
-t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
-    size_t size, int flags, t_atomtype type1, ...)
+t_class *class_do_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+                      size_t size, int flags, unsigned int typec, t_atomtype*typev)
 {
-    va_list ap;
-    t_atomtype vec[MAXPDARG+1], *vp = vec;
-    int count = 0, i;
+    int i;
     t_class *c;
     int typeflag = flags & CLASS_TYPEMASK;
     if (!typeflag) typeflag = CLASS_PATCHABLE;
-    *vp = type1;
-
-    va_start(ap, type1);
-    while (*vp)
-    {
-        if (count == MAXPDARG)
-        {
-            error("class %s: sorry: only %d args typechecked; use A_GIMME",
-                s->s_name, MAXPDARG);
-            break;
-        }
-        vp++;
-        count++;
-        *vp = va_arg(ap, t_atomtype);
-    }
-    va_end(ap);
 
     if (pd_objectmaker && newmethod)
     {
             /* add a "new" method by the name specified by the object */
         class_addmethod(pd_objectmaker, (t_method)newmethod, s,
-            vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
+            typev[0], typev[1], typev[2], typev[3], typev[4], typev[5]);
         if (class_loadsym)
         {
                 /* if we're loading an extern it might have been invoked by a
@@ -435,7 +417,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             if (l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
                 class_addmethod(pd_objectmaker, (t_method)newmethod,
                     class_loadsym,
-                    vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
+                    typev[0], typev[1], typev[2], typev[3], typev[4], typev[5]);
         }
     }
     c = (t_class *)t_getbytes(sizeof(*c));
@@ -474,6 +456,31 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     return (c);
 }
 
+t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+    va_list ap;
+    t_atomtype vec[MAXPDARG+1], *vp = vec;
+    unsigned int count = 0;
+     *vp = type1;
+
+    va_start(ap, type1);
+    while (*vp)
+    {
+        if (count == MAXPDARG)
+        {
+            error("class %s: sorry: only %d args typechecked; use A_GIMME",
+                s->s_name, MAXPDARG);
+            break;
+        }
+        vp++;
+        count++;
+        *vp = va_arg(ap, t_atomtype);
+    }
+    va_end(ap);
+
+    return class_do_new(s, newmethod, freemethod, size, flags, count, vec);
+}
     /* add a creation method, which is a function that returns a Pd object
     suitable for putting in an object box.  We presume you've got a class it
     can belong to, but this won't be used until the newmethod is actually
