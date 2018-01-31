@@ -23,6 +23,10 @@
 #define snprintf _snprintf
 #endif
 
+#ifdef class_new
+# undef class_new
+#endif
+
 static t_symbol *class_loadsym;     /* name under which an extern is invoked */
 static void pd_defaultfloat(t_pd *x, t_float f);
 static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv);
