@@ -986,14 +986,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 (int)(x->gl_screeny2 - x->gl_screeny1),
                 (int)(x->gl_screenx1), (int)(x->gl_screeny1),
                 x->gl_edit);
-            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
-                (unsigned long)c);
+            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%p",
+                (unsigned PD_LONGINTTYPE)c);
             while (c->gl_owner) {
                 c = c->gl_owner;
                 cbuflen = (int)strlen(cbuf);
                 snprintf(cbuf + cbuflen,
                          MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                         " .x%lx", (unsigned long)c);
+                         " .x%p", (unsigned PD_LONGINTTYPE)c);
             }
             strcat(cbuf, "\n");
             sys_gui(cbuf);
