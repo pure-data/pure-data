@@ -459,6 +459,7 @@ t_class *class_do_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)
 {
+#if PD_FLOATSIZE == 32
     va_list ap;
     t_atomtype vec[MAXPDARG+1], *vp = vec;
     unsigned int count = 0;
@@ -478,7 +479,15 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
         *vp = va_arg(ap, t_atomtype);
     }
     va_end(ap);
+    return class_do_new(s, newmethod, freemethod, size, flags, count, vec);
+#else
+    static int saidit = 0;
+    logpost(0, saidit, "refusing to load %dbit float external '%s' into %dbit Pd", 32, s->s_name, PD_FLOATSIZE);
+    saidit=3;
 
+    return 0;
+#endif
+}
     return class_do_new(s, newmethod, freemethod, size, flags, count, vec);
 }
     /* add a creation method, which is a function that returns a Pd object
