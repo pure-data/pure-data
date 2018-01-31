@@ -23,10 +23,6 @@
 #define snprintf _snprintf
 #endif
 
-#ifdef class_new
-# undef class_new
-#endif
-
 static t_symbol *class_loadsym;     /* name under which an extern is invoked */
 static void pd_defaultfloat(t_pd *x, t_float f);
 static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv);
@@ -460,6 +456,9 @@ t_class *class_do_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     return (c);
 }
 
+#ifdef class_new
+# undef class_new
+#endif
 t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     size_t size, int flags, t_atomtype type1, ...)
 {
