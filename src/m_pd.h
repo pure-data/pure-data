@@ -103,7 +103,6 @@ typedef unsigned __int64  uint64_t;
 #elif PD_FLOATSIZE == 64
 # define PD_FLOATTYPE double
 # define PD_FLOATUINTTYPE unsigned long
-# define class_new class_new64
 #else
 # error invalid FLOATSIZE: must be 32 or 64
 #endif
@@ -513,6 +512,10 @@ EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 #define class_addsymbol(x, y) class_addsymbol((x), (t_method)(y))
 #define class_addlist(x, y) class_addlist((x), (t_method)(y))
 #define class_addanything(x, y) class_addanything((x), (t_method)(y))
+#endif
+
+#if PD_FLOATSIZE == 64
+# define class_new class_new64
 #endif
 
 /* ------------   printing --------------------------------- */
