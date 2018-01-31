@@ -488,8 +488,41 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
     return 0;
 #endif
 }
+
+t_class *class_new64(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+#if PD_FLOATSIZE == 64
+    va_list ap;
+    t_atomtype vec[MAXPDARG+1], *vp = vec;
+    unsigned int count = 0;
+     *vp = type1;
+
+    va_start(ap, type1);
+    while (*vp)
+    {
+        if (count == MAXPDARG)
+        {
+            error("class %s: sorry: only %d args typechecked; use A_GIMME",
+                s->s_name, MAXPDARG);
+            break;
+        }
+        vp++;
+        count++;
+        *vp = va_arg(ap, t_atomtype);
+    }
+    va_end(ap);
     return class_do_new(s, newmethod, freemethod, size, flags, count, vec);
+#else
+    static int saidit = 0;
+    logpost(0, saidit, "refusing to load %dbit float external '%s' into %dbit Pd", 64, s->s_name, PD_FLOATSIZE);
+    saidit=3;
+
+    return 0;
+#endif
 }
+
+
     /* add a creation method, which is a function that returns a Pd object
     suitable for putting in an object box.  We presume you've got a class it
     can belong to, but this won't be used until the newmethod is actually
