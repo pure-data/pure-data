@@ -481,7 +481,6 @@ EXTERN void class_addanything(t_class *c, t_method fn);
 EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
 EXTERN void class_setwidget(t_class *c, const t_widgetbehavior *w);
 EXTERN void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *w);
-EXTERN const t_parentwidgetbehavior *class_parentwidget(t_class *c);
 EXTERN char *class_getname(t_class *c);
 EXTERN char *class_gethelpname(t_class *c);
 EXTERN char *class_gethelpdir(t_class *c);
