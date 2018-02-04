@@ -357,7 +357,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                 if (!strncmp(wavechunk->wc_id, "fmt ", 4))
                 {
                     long commblockonset = headersize + 8;
-                    seekout = lseek(fd, commblockonset, SEEK_SET);
+                    seekout = (long)lseek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
                     if (read(fd, buf.b_c, sizeof(t_fmt)) < (int) sizeof(t_fmt))
@@ -373,7 +373,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else goto badheader;
                     samprate = swap4(buf.b_fmt.f_samplespersec, swap);
                 }
-                seekout = lseek(fd, seekto, SEEK_SET);
+                seekout = (long)lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
                 if (read(fd, buf.b_c, sizeof(t_wavechunk)) <
@@ -420,7 +420,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                 {
                     long commblockonset = headersize + 8;
                     t_comm *commchunk;
-                    seekout = lseek(fd, commblockonset, SEEK_SET);
+                    seekout = (long)lseek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
                     if (read(fd, buf.b_c, sizeof(t_comm)) <
@@ -436,7 +436,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else goto badheader;
                     samprate = readaiffsamprate((char *)commchunk->c_samprate, swap);
                 }
-                seekout = lseek(fd, seekto, SEEK_SET);
+                seekout = (long)lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
                 if (read(fd, buf.b_c, sizeof(t_datachunk)) <
@@ -449,7 +449,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
         }
     }
         /* seek past header and any sample frames to skip */
-    sysrtn = lseek(fd,
+    sysrtn = (long)lseek(fd,
         ((off_t)nchannels) * bytespersamp * skipframes + headersize, 0);
     if (sysrtn != nchannels * bytespersamp * skipframes + headersize)
         return (-1);
@@ -1350,8 +1350,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             /* figure out what to resize to */
         long poswas, eofis, framesinfile;
 
-        poswas = lseek(fd, 0, SEEK_CUR);
-        eofis = lseek(fd, 0, SEEK_END);
+        poswas = (long)lseek(fd, 0, SEEK_CUR);
+        eofis = (long)lseek(fd, 0, SEEK_END);
         if (poswas < 0 || eofis < 0 || eofis < poswas)
         {
             pd_error(x, "soundfiler_read: lseek failed");
