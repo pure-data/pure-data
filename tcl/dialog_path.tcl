@@ -141,6 +141,8 @@ proc ::dialog_path::create_dialog {mytoplevel} {
     # re-adjust height based on optional sections
     update
     wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
+
+    position_over_window $mytoplevel .pdwindow
 }
 
 # browse for a new Pd user docs path

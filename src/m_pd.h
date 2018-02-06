@@ -10,7 +10,7 @@ extern "C" {
 
 #define PD_MAJOR_VERSION 0
 #define PD_MINOR_VERSION 48
-#define PD_BUGFIX_VERSION 0
+#define PD_BUGFIX_VERSION 1
 #define PD_TEST_VERSION ""
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
@@ -233,7 +233,7 @@ typedef struct _text        /* patchable object - graphical, with text */
 
 #define T_TEXT 0        /* just a textual comment */
 #define T_OBJECT 1      /* a MAX style patchable object */
-#define T_MESSAGE 2     /* a MAX stype message */
+#define T_MESSAGE 2     /* a MAX type message */
 #define T_ATOM 3        /* a cell to display a number or symbol */
 
 #define te_pd te_g.g_pd
@@ -275,7 +275,7 @@ EXTERN t_gotfn zgetfn(t_pd *x, t_symbol *s);
 EXTERN void nullfn(void);
 EXTERN void pd_vmess(t_pd *x, t_symbol *s, char *fmt, ...);
 
-/* the following macrose are for sending non-type-checkable mesages, i.e.,
+/* the following macros are for sending non-type-checkable messages, i.e.,
 using function lookup but circumventing type checking on arguments.  Only
 use for internal messaging protected by A_CANT so that the message can't
 be generated at patch level. */
@@ -650,6 +650,7 @@ EXTERN t_float q8_rsqrt(t_float);
 EXTERN t_float qsqrt(t_float);  /* old names kept for extern compatibility */
 EXTERN t_float qrsqrt(t_float);
 #endif
+
 /* --------------------- data --------------------------------- */
 
     /* graphical arrays */

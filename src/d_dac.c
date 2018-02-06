@@ -34,7 +34,7 @@ static void *dac_new(t_symbol *s, int argc, t_atom *argv)
     x->x_n = argc;
     x->x_vec = (t_int *)getbytes(argc * sizeof(*x->x_vec));
     for (i = 0; i < argc; i++)
-        x->x_vec[i] = atom_getintarg(i, argc, argv);
+        x->x_vec[i] = atom_getfloatarg(i, argc, argv);
     for (i = 1; i < argc; i++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
     x->x_f = 0;
@@ -47,7 +47,7 @@ static void dac_dsp(t_dac *x, t_signal **sp)
     t_signal **sp2;
     for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
     {
-        int ch = *ip - 1;
+        int ch = (int)(*ip - 1);
         if ((*sp2)->s_n != DEFDACBLKSIZE)
             error("dac~: bad vector size");
         else if (ch >= 0 && ch < sys_get_outchannels())
@@ -60,7 +60,7 @@ static void dac_set(t_dac *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
     for (i = 0; i < argc && i < x->x_n; i++)
-        x->x_vec[i] = atom_getintarg(i, argc, argv);
+        x->x_vec[i] = atom_getfloatarg(i, argc, argv);
     canvas_update_dsp();
 }
 
@@ -104,7 +104,7 @@ static void *adc_new(t_symbol *s, int argc, t_atom *argv)
     x->x_n = argc;
     x->x_vec = (t_int *)getbytes(argc * sizeof(*x->x_vec));
     for (i = 0; i < argc; i++)
-        x->x_vec[i] = atom_getintarg(i, argc, argv);
+        x->x_vec[i] = atom_getfloatarg(i, argc, argv);
     for (i = 0; i < argc; i++)
         outlet_new(&x->x_obj, &s_signal);
     return (x);
@@ -162,7 +162,7 @@ static void adc_dsp(t_adc *x, t_signal **sp)
     t_signal **sp2;
     for (i = x->x_n, ip = x->x_vec, sp2 = sp; i--; ip++, sp2++)
     {
-        int ch = *ip - 1;
+        int ch = (int)(*ip - 1);
         if ((*sp2)->s_n != DEFDACBLKSIZE)
             error("adc~: bad vector size");
         else if (ch >= 0 && ch < sys_get_inchannels())
@@ -176,7 +176,7 @@ static void adc_set(t_adc *x, t_symbol *s, int argc, t_atom *argv)
 {
     int i;
     for (i = 0; i < argc && i < x->x_n; i++)
-        x->x_vec[i] = atom_getintarg(i, argc, argv);
+        x->x_vec[i] = atom_getfloatarg(i, argc, argv);
     canvas_update_dsp();
 }
 

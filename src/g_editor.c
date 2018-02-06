@@ -49,6 +49,7 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b);
 static void canvas_paste(t_canvas *x);
 static void canvas_clearline(t_canvas *x);
 static t_glist *glist_finddirty(t_glist *x);
+static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 
 /* ---------------- generic widget behavior ------------------------- */
 
@@ -985,14 +986,14 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 (int)(x->gl_screeny2 - x->gl_screeny1),
                 (int)(x->gl_screenx1), (int)(x->gl_screeny1),
                 x->gl_edit);
-            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
-                (unsigned long)c);
+            snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%p",
+                (unsigned PD_LONGINTTYPE)c);
             while (c->gl_owner) {
                 c = c->gl_owner;
-                cbuflen = strlen(cbuf);
+                cbuflen = (int)strlen(cbuf);
                 snprintf(cbuf + cbuflen,
                          MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                         " .x%lx", (unsigned long)c);
+                         " .x%p", (unsigned PD_LONGINTTYPE)c);
             }
             strcat(cbuf, "\n");
             sys_gui(cbuf);
@@ -1032,7 +1033,13 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 gobj_vis(&x->gl_gobj, gl2, 0);
             x->gl_havewindow = 0;
             if (glist_isvisible(gl2) && !gl2->gl_isdeleting)
+            {
+                 /* make sure zoom level matches parent, ie. after an open
+                   subpatch's zoom level was changed before being closed */
+                if(x->gl_zoom != gl2->gl_zoom)
+                    canvas_zoom(x, gl2->gl_zoom);
                 gobj_vis(&x->gl_gobj, gl2, 1);
+            }
         }
         else x->gl_havewindow = 0;
         canvas_updatewindowlist();
@@ -1040,7 +1047,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
 }
 
     /* set a canvas up as a graph-on-parent.  Set reasonable defaults for
-    any missing paramters and redraw things if necessary. */
+    any missing parameters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
     if (!flag && glist_isgraph(x))
@@ -1093,15 +1100,15 @@ void canvas_properties(t_gobj*z, t_glist*unused)
                 0., 0.,
                 glist_isgraph(x) ,//1,
                 x->gl_x1, x->gl_y1, x->gl_x2, x->gl_y2,
-                (int)x->gl_pixwidth, (int)x->gl_pixheight,
-                (int)x->gl_xmargin, (int)x->gl_ymargin);
+                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
+                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
     else sprintf(graphbuf,
             "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
                 glist_dpixtodx(x, 1), -glist_dpixtody(x, 1),
                 0,
                 0., -1., 1., 1.,
-                (int)x->gl_pixwidth, (int)x->gl_pixheight,
-                (int)x->gl_xmargin, (int)x->gl_ymargin);
+                (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
+                (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
     gfxstub_new(&x->gl_pd, x, graphbuf);
         /* if any arrays are in the graph, put out their dialogs too */
     for (y = x->gl_list; y; y = y->g_next)
@@ -1135,14 +1142,14 @@ static void canvas_donecanvasdialog(t_glist *x,
         perhaps we're happier with 0.  This is only checked if this is really
         being called, as intended, from the GUI.  For compatibility with old
         patches that reverse-engineered donecanvasdialog to modify patch
-        parameters, we leave the buggy behavior in wieh there's no "fromgui"
+        parameters, we leave the buggy behavior in when there's no "fromgui"
         argument supplied. */
     if (fromgui && (!(graphme & 1)))
         graphme = 0;
-    x->gl_pixwidth = xpix;
-    x->gl_pixheight = ypix;
-    x->gl_xmargin = xmargin;
-    x->gl_ymargin = ymargin;
+    x->gl_pixwidth = xpix * x->gl_zoom;
+    x->gl_pixheight = ypix * x->gl_zoom;
+    x->gl_xmargin = xmargin * x->gl_zoom;
+    x->gl_ymargin = ymargin * x->gl_zoom;
 
     yperpix = -yperpix;
     if (xperpix == 0)
@@ -1397,15 +1404,17 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (ob && (noutlet = obj_noutlets(ob)) &&
-                ypos >= y2 - 1 - 3*x->gl_zoom)
+                ypos >= y2 - (IOHEIGHT*x->gl_zoom) + x->gl_zoom)
             {
                 int width = x2 - x1;
+                int iow = IOWIDTH * x->gl_zoom;
                 int nout1 = (noutlet > 1 ? noutlet - 1 : 1);
                 int closest = ((xpos-x1) * (nout1) + width/2)/width;
                 int hotspot = x1 +
-                    (width - IOWIDTH) * closest / (nout1);
+                    (width - iow) * closest / (nout1);
                 if (closest < noutlet &&
-                    xpos >= (hotspot-1) && xpos <= hotspot + (IOWIDTH+1))
+                    xpos >= (hotspot - x->gl_zoom) &&
+                    xpos <= hotspot + (iow + x->gl_zoom))
                 {
                     if (doit)
                     {
@@ -1589,14 +1598,16 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             }
             if (doit)
             {
+                int iow = IOWIDTH * x->gl_zoom;
+                int iom = IOMIDDLE * x->gl_zoom;
                 oc = obj_connect(ob1, closest1, ob2, closest2);
                 lx1 = x11 + (noutlet1 > 1 ?
-                        ((x12-x11-IOWIDTH) * closest1)/(noutlet1-1) : 0)
-                             + IOMIDDLE;
+                        ((x12-x11-iow) * closest1)/(noutlet1-1) : 0)
+                             + iom;
                 ly1 = y12;
                 lx2 = x21 + (ninlet2 > 1 ?
-                        ((x22-x21-IOWIDTH) * closest2)/(ninlet2-1) : 0)
-                            + IOMIDDLE;
+                        ((x22-x21-iow) * closest2)/(ninlet2-1) : 0)
+                            + iom;
                 ly2 = y21;
                 sys_vgui(
    ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
@@ -2096,10 +2107,10 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
             REZOOM(obj->te_xpix, zoom);
             REZOOM(obj->te_ypix, zoom);
                 /* pass zoom message on to all objects, except canvases
-                that aren't new-style GOPs */
+                that aren't GOP */
             if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
                 (!(pd_class(&obj->te_pd) == canvas_class) ||
-                (((t_glist *)obj)->gl_isgraph && ((t_glist *)obj)->gl_goprect)))
+                (((t_glist *)obj)->gl_isgraph)))
                     (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
         }
         x->gl_zoom = zoom;
@@ -2639,7 +2650,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
         sys_vgui(
     ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
             glist_getcanvas(x), 0, 0, 0, 0,
-            (obj_issignaloutlet(objsrc, outno) ? 2 : 1),oc);
+            (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom, oc);
         canvas_fixlinesfor(x, objsrc);
     }
     return;
@@ -2807,6 +2818,7 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
     if (glist_isvisible(x))
       sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
           glist_getcanvas(x), x->gl_edit);
+    canvas_reflecttitle(x);
 }
 
     /* called by canvas_font below */

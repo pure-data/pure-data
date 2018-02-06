@@ -64,7 +64,7 @@ proc midi_popup {name buttonname varname devlist} {
     if {$::windowingsystem eq "win32"} {
         $name.popup configure -font menuFont
     }
-#    puts stderr [concat $devlist ]
+    #puts stderr [concat $devlist ]
     for {set x 0} {$x<[llength $devlist]} {incr x} {
         $name.popup add command -label [lindex $devlist $x] \
             -command [list midi_popup_action \
@@ -407,9 +407,9 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
         $id.buttonframe.cancel config -highlightthickness 0
     }
 
-    # set min size based on widget sizing
-    update
-    wm minsize $id [winfo width $id] [winfo height $id]
+    # set min size based on widget sizing & pos over pdwindow
+    wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
+    position_over_window $id .pdwindow
 
     # wait a little for creation, then raise so it's on top
     after 100 raise "$id"
@@ -484,9 +484,9 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     pack $id.buttonframe.apply -side left -expand 1 -fill x -padx 15 -ipadx 10
     pack $id.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
 
-    # set min size based on widget sizing
-    update
-    wm minsize $id [winfo width $id] [winfo height $id]
+    # set min size based on widget sizing & pos over pdwindow
+    wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
+    position_over_window $id .pdwindow
 
     # wait a little for creation, then raise so it's on top
     after 100 raise "$id"

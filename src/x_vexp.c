@@ -18,8 +18,9 @@
  *              --sdy
  *
  * Oct 2015
- *                              $x[-1] was not equal $x1[-1], not accessing the previous block
- *                              (bug fix by Dan Ellis)
+ *              $x[-1] was not equal $x1[-1], not accessing the previous block
+ *              (bug fix by Dan Ellis)
+ *
  *  July 2017 --sdy
  *      - Version 0.55
  *
@@ -31,6 +32,10 @@
  *              - priority of ',' and '=' was switched ot fix the bug of using store "=" in
  *                functions with multiple arguments, which caused an error during execution.
  *              - The number of inlet and outlets (MAX_VARS) is now set at 100
+ *
+ *       - Version 0.56
+ *              -fexpr~ now accepts a float in its first input
+ *              -Added avg() and Avg() back to the list of functions
  */
 
 /*
@@ -444,24 +449,23 @@ ex_match(struct ex_ex *eptr, long int op)
                                 ret = ex_match(eptr + 1, OP_RB);
                                 if (!ret)
                                         return (ret);
-                                                                /*
-                                                                 * this is a special case handling
-                                                                 * for $1, $2 processing in Pd
-                                                                 *
-                                                                 * Pure data translates $#[x] (e.g. $1[x]) to 0[x]
-                                                                 * for abstracting patches so that later
-                                                                 * in the instantiation of the abstraction
-                                                                 * the $# is replaced with the proper argument
-                                                                 * of the abstraction
-                                                                 * so we change 0[x] to a special table pointing to null
-                                                                 * and catch errors in execution time
-                                                                 */
-                                                                if (!firstone && (eptr - 1)->ex_type == ET_INT &&
-                                                                                                                ((eptr - 1)->ex_int == 0)) {
-                                                                        (eptr - 1)->ex_type = ET_TBL;
-                                                                        (eptr - 1)->ex_ptr = (char *)0;
-                                                                }
-
+                                /*
+                                 * this is a special case handling
+                                 * for $1, $2 processing in Pd
+                                 *
+                                 * Pure data translates $#[x] (e.g. $1[x]) to 0[x]
+                                 * for abstracting patches so that later
+                                 * in the instantiation of the abstraction
+                                 * the $# is replaced with the proper argument
+                                 * of the abstraction
+                                 * so we change 0[x] to a special table pointing to null
+                                 * and catch errors in execution time
+                                 */
+                                if (!firstone && (eptr - 1)->ex_type == ET_INT &&
+                                    ((eptr - 1)->ex_int == 0)) {
+                                        (eptr - 1)->ex_type = ET_TBL;
+                                        (eptr - 1)->ex_ptr = (char *)0;
+                                }
                                 eptr->ex_type = ET_LB;
                                 eptr->ex_ptr = (char *) ret;
                                 eptr = ret;
@@ -560,7 +564,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                                 post("expr: syntax error: symbols allowed for functions only\n");
                                 ex_print(eptr);
                                 return (exNULL);
-                        }
+                        }   /* falls through */
                 case ET_INT:
                 case ET_FLT:
                 case ET_II:
@@ -960,7 +964,7 @@ ex_dzdetect(struct expr *expr)
 {
         char *etype;
 
-        if (!expr->exp_error & EE_DZ) {
+        if ((!expr->exp_error) & EE_DZ) {
                 if (IS_EXPR(expr))
                         etype = "expr";
                 else if (IS_EXPR_TILDE(expr))
@@ -1501,7 +1505,7 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 rem_i =  arg.ex_flt - i;        /* remains of integer */
         } else if (arg.ex_type == ET_INT) {
                 fi = arg.ex_int;                /* float index */
-                i = arg.ex_int;
+                i = (int) arg.ex_int;           /* integer index */
                 rem_i = 0;
         } else {
                 post("eval_sigidx: bad res type (%d)", arg.ex_type);
@@ -1814,6 +1818,7 @@ retry:
                                 goto noinletnum;
                         }
                         post("$y works only for fexpr~");
+                                /* falls through */
                                 /*
                                  * allow $# for abstration argument substitution
                                  *  $1+1 is translated to 0+1 and in abstration substitution
@@ -2041,6 +2046,7 @@ ex_print(struct ex_ex *eptr)
                                 post("%s ", "$$");
                             break;
                         }
+                            /* falls through */
                 case ET_VAR:
                         post("%s ", ex_symname((fts_symbol_t )eptr->ex_ptr));
                         break;

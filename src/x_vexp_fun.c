@@ -195,6 +195,8 @@ t_ex_func ex_funcs[] = {
         {"size",        ex_size,        1},
         {"sum",         ex_sum,         1},
         {"Sum",         ex_Sum,         3},
+        {"avg",         ex_avg,         1},
+        {"Avg",         ex_Avg,         3},
 #endif
 #ifdef notdef
 /* the following will be added once they are more popular in math libraries */
@@ -1165,15 +1167,15 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                 }
         case ET_INT:
                 if (cond->ex_int)
-                                        condtrue = 1;
-                                else
-                                        condtrue = 0;
+                        condtrue = 1;
+                else
+                        condtrue = 0;
                 break;
         case ET_FLT:
                 if (cond->ex_flt)
-                                        condtrue = 1;
-                                else
-                                        condtrue = 0;
+                        condtrue = 1;
+                else
+                        condtrue = 0;
                 break;
         case ET_SYM:
         default:
@@ -1183,14 +1185,14 @@ ex_if(t_expr *e, struct ex_ex *eptr, struct ex_ex *optr, struct ex_ex *argv, int
                 return (eptr);
         }
                 if (condtrue) {
-                                eptr = ex_eval(e, eptr, argv, idx);
-                                res = argv++;
-                                eptr = eptr->ex_end; /* no right processing */
+                        eptr = ex_eval(e, eptr, argv, idx);
+                        res = argv++;
+                        eptr = eptr->ex_end; /* no right processing */
 
                 } else {
-                                eptr = eptr->ex_end; /* no left rocessing */
-                                eptr = ex_eval(e, eptr, argv, idx);
-                                res = argv++;
+                        eptr = eptr->ex_end; /* no left rocessing */
+                        eptr = ex_eval(e, eptr, argv, idx);
+                        res = argv++;
                 }
         switch(res->ex_type) {
         case ET_INT:

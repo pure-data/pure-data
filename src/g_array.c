@@ -136,8 +136,6 @@ and float-arrays. */
 void garray_init( void)
 {
     t_binbuf *b;
-    if (garray_arraytemplatecanvas)
-        return;
     b = binbuf_new();
 
     glob_setfilename(0, gensym("_float_template"), gensym("."));
@@ -471,7 +469,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         if (size != a->a_n)
             garray_resize_long(x, size);
         else if (style != stylewas)
-            garray_fittograph(x, size, style);
+            garray_fittograph(x, (int)size, style);
         template_setfloat(scalartemplate, gensym("style"),
             x->x_scalar->sc_vec, (t_float)style, 0);
 
@@ -575,7 +573,7 @@ static void garray_free(t_garray *x)
     t_pd *x2;
         sys_unqueuegui(&x->x_gobj);
     /* jsarlo { */
-        if (x->x_listviewing)
+    if (x->x_listviewing)
     {
         garray_arrayviewlist_close(x);
     }
@@ -912,9 +910,9 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     }
     if (npoints == 0)
         npoints = 512;  /* dunno what a good default would be... */
-    if (npoints != (1 << ilog2(npoints)))
+    if (npoints != (1 << ilog2((int)npoints)))
         post("%s: rounnding to %d points", array->a_templatesym->s_name,
-            (npoints = (1<<ilog2(npoints))));
+            (npoints = (1<<ilog2((int)npoints))));
     garray_resize_long(x, npoints + 3);
     phaseincr = 2. * 3.14159 / npoints;
     for (i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
@@ -1178,10 +1176,10 @@ void garray_resize_long(t_garray *x, long n)
     t_glist *gl = x->x_glist;
     if (n < 1)
         n = 1;
-    garray_fittograph(x, n, template_getfloat(
+    garray_fittograph(x, (int)n, template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1));
-    array_resize_and_redraw(array, x->x_glist, n);
+    array_resize_and_redraw(array, x->x_glist, (int)n);
     if (x->x_usedindsp)
         canvas_update_dsp();
 }
@@ -1190,6 +1188,11 @@ void garray_resize_long(t_garray *x, long n)
 void garray_resize(t_garray *x, t_floatarg f)
 {
     garray_resize_long(x, f);
+}
+
+/* ignore zoom for now */
+static void garray_zoom(t_garray *x, t_floatarg f)
+{
 }
 
 static void garray_print(t_garray *x)
@@ -1225,6 +1228,8 @@ void g_array_setup(void)
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
         A_FLOAT, A_NULL);
+    class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
+        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_print, gensym("print"),
         A_NULL);
     class_addmethod(garray_class, (t_method)garray_sinesum, gensym("sinesum"),
@@ -1245,5 +1250,3 @@ void g_array_setup(void)
 /* } jsarlo */
     class_setsavefn(garray_class, garray_save);
 }
-
-

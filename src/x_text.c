@@ -71,7 +71,7 @@ static void textbuf_senditup(t_textbuf *x)
         if (!j) j = txt + ntxt;
         sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
             x, j-txt-i, txt+i);
-        i = (j-txt)+1;
+        i = (int)((j-txt)+1);
     }
     sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
     t_freebytes(txt, ntxt);
@@ -92,7 +92,7 @@ static void textbuf_open(t_textbuf *x)
             x, 600, 340, x->b_sym->s_name,
                  sys_hostfontsize(glist_getfont(x->b_canvas),
                     glist_getzoom(x->b_canvas)));
-        sprintf(buf, ".x%lx", (unsigned long)x);
+        sprintf(buf, ".x%p", (unsigned PD_LONGINTTYPE)x);
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
     }
@@ -1949,11 +1949,9 @@ field named 't'.  I don't know how to make this not break
 pre-0.45 patches using templates named 'text'... perhaps this is a minor
 enough incompatibility that I'll just get away with it. */
 
-static void text_template_init( void)
+void text_template_init( void)
 {
     t_binbuf *b;
-    if (text_templatecanvas)
-        return;
     b = binbuf_new();
 
     glob_setfilename(0, gensym("_text_template"), gensym("."));

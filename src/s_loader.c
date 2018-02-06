@@ -320,7 +320,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
         int dirlen;
         if (!z)
             return (0);
-        dirlen = z - classname;
+        dirlen = (int)(z - classname);
         if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, classname, dirlen);

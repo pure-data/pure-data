@@ -15,6 +15,7 @@
  *
  *  version 0.50 - March 2016
  *  version 0.55 - July 2017
+ *  version 0.56 - January 2018
  */
 
 #include <stdio.h>
@@ -810,6 +811,7 @@ expr_setup(void)
         fexpr_tilde_class = class_new(gensym("fexpr~"), (t_newmethod)expr_new,
             (t_method)expr_ff, sizeof(t_expr), 0, A_GIMME, 0);
         class_addmethod(fexpr_tilde_class, nullfn, gensym("signal"), 0);
+        CLASS_MAINSIGNALIN(fexpr_tilde_class, t_expr, exp_f);
         class_addmethod(fexpr_tilde_class,(t_method)expr_start,
                                                         gensym("start"), 0);
         class_addmethod(fexpr_tilde_class,(t_method)expr_stop,
@@ -887,7 +889,8 @@ max_ex_tab(struct expr *expr, fts_symbol_t s, struct ex_ex *arg,
 {
 #ifdef PD
         t_garray *garray;
-        int size, indx;
+        int size;
+        long indx;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
@@ -947,7 +950,8 @@ max_ex_tab_store(struct expr *expr, t_symbol *s, struct ex_ex *arg,
 {
 #ifdef PD
         t_garray *garray;
-        int size, indx;
+        int size;
+        long indx;
         t_word *wvec;
 
         if (!s || !(garray = (t_garray *)pd_findbyclass(s, garray_class)) ||
@@ -1110,7 +1114,7 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         int size;
         t_word *wvec;
         t_float sum;
-        int indx, n1, n2;
+        long indx, n1, n2;
 
         if (argv->ex_type != ET_SYM)
         {
@@ -1170,12 +1174,16 @@ ex_Sum(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 
 void
 ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
-{ /* SDY - look into this function */
-#if 0
-        fts_symbol_t s;
-        fts_integer_vector_t *tw = 0;
+{
+        t_symbol *s;
+        t_garray *garray;
+        int size;
+        t_word *wvec;
+        t_float sum;
+        int indx;
 
-        if (argv->ex_type != ET_SYM) {
+        if (argv->ex_type != ET_SYM)
+        {
                 post("expr: avg: need a table name\n");
                 optr->ex_type = ET_INT;
                 optr->ex_int = 0;
@@ -1183,20 +1191,14 @@ ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
         }
 
         s = (fts_symbol_t ) argv->ex_ptr;
-        tw = table_integer_vector_get_by_name(s);
 
-        if (tw) {
-                optr->ex_type = ET_INT;
-                if (! fts_integer_vector_get_size(tw))
-                        optr->ex_int = 0;
-                else
-                        optr->ex_int = fts_integer_vector_get_sum(tw) / fts_integer_vector_get_size(tw);
-        } else {
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                post("expr: avg: no such table %s\n", fts_symbol_name(s));
-        }
-#endif
+        ISTABLE(s, garray, size, wvec);
+
+        for (indx = 0, sum = 0; indx < size; indx++)
+                sum += wvec[indx].w_float;
+
+        optr->ex_type = ET_FLT;
+        optr->ex_flt = sum / size;
 }
 
 
@@ -1207,47 +1209,65 @@ ex_avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 void
 ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 {
-/* SDY - look into this function */
-#if 0
-        fts_symbol_t s;
-        fts_integer_vector_t *tw = 0;
+        t_symbol *s;
+        t_garray *garray;
+        int size;
+        t_word *wvec;
+        t_float sum;
+        long indx, n1, n2;
 
         if (argv->ex_type != ET_SYM)
         {
-                post("expr: Avg: need a table name\n");
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-        }
-
-        s = (fts_symbol_t ) (argv++)->ex_ptr;
-
-        tw = table_integer_vector_get_by_name(s);
-
-        if (! tw)
-        {
-                optr->ex_type = ET_INT;
-                optr->ex_int = 0;
-                post("expr: Avg: no such table %s\n", fts_symbol_name(s));
-                return;
-        }
-
-        if (argv->ex_type != ET_INT || argv[1].ex_type != ET_INT)
-        {
-                post("expr: Avg: boundaries have to be fix values\n");
+                post("expr: sum: need a table name\n");
                 optr->ex_type = ET_INT;
                 optr->ex_int = 0;
                 return;
         }
 
-        optr->ex_type = ET_INT;
+        s = (fts_symbol_t ) argv->ex_ptr;
 
-        if (argv[1].ex_int - argv->ex_int <= 0)
-                optr->ex_int = 0;
-        else
-                optr->ex_int = (fts_integer_vector_get_sub_sum(tw, argv->ex_int, argv[1].ex_int) /
-                    (argv[1].ex_int - argv->ex_int));
-#endif
+        ISTABLE(s, garray, size, wvec);
+
+                switch((++argv)->ex_type) {
+                case ET_INT:
+                n1 = argv->ex_int;
+                        break;
+                case ET_FLT:
+                n1 = argv->ex_flt;
+                        break;
+                default:
+                        post("expr: Avg: boundaries have to be fix values\n");
+                        optr->ex_type = ET_INT;
+                        optr->ex_int = 0;
+                        return;
+                }
+                if (n1 < 0)
+                        n1 = 0;
+
+                switch((++argv)->ex_type) {
+                case ET_INT:
+                n2 = argv->ex_int;
+                        break;
+                case ET_FLT:
+                n2 = argv->ex_flt;
+                        break;
+                default:
+                        post("expr: Avg: boundaries have to be fix values\n");
+                        optr->ex_type = ET_INT;
+                        optr->ex_int = 0;
+                        return;
+                }
+                if (n2 > size)
+                        n2 = size;
+
+        for (indx = n1, sum = 0; indx <= n2; indx++)
+                if (indx >= 0 && indx < size)
+                        sum += wvec[indx].w_float;
+
+        optr->ex_type = ET_FLT;
+        optr->ex_flt = sum / (n2 - n1 + 1);
 }
+
 /*
  * max_ex_store --- store a value in a variable or table
  */
