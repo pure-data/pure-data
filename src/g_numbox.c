@@ -77,7 +77,7 @@ void my_numbox_ftoa(t_my_numbox *x)
     int bufsize, is_exp = 0, i, idecimal;
 
     sprintf(x->x_buf, "%g", f);
-    bufsize = strlen(x->x_buf);
+    bufsize = (int)strlen(x->x_buf);
     if(bufsize >= 5)/* if it is in exponential mode */
     {
         i = bufsize - 4;
@@ -138,7 +138,7 @@ static void my_numbox_draw_update(t_gobj *client, t_glist *glist)
             if(x->x_buf[0])
             {
                 char *cp = x->x_buf;
-                int sl = strlen(x->x_buf);
+                int sl = (int)strlen(x->x_buf);
 
                 x->x_buf[sl] = '>';
                 x->x_buf[sl+1] = 0;
@@ -727,7 +727,7 @@ static void my_numbox_key(void *z, t_floatarg fkey)
     }
     else if((c == '\b') || (c == 127))
     {
-        int sl = strlen(x->x_buf) - 1;
+        int sl = (int)strlen(x->x_buf) - 1;
 
         if(sl < 0)
             sl = 0;
