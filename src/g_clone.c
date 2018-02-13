@@ -131,6 +131,7 @@ static void clone_in_all(t_in *x, t_symbol *s, int argc, t_atom *argv)
         x->i_owner->x_phase = i;
         clone_in_this(x, s, argc, argv);
     }
+    x->i_owner->x_phase = phasewas;
 }
 
 static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
