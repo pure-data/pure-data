@@ -168,14 +168,13 @@ static void clone_free(t_clone *x)
         {
             canvas_closebang(x->x_vec[i].c_gl);
             pd_free(&x->x_vec[i].c_gl->gl_pd);
+            t_freebytes(x->x_outvec[i],
+                x->x_nout * sizeof(*x->x_outvec[i]));
         }
         t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
         t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
         t_freebytes(x->x_invec, x->x_nin * sizeof(*x->x_invec));
-        for (i = 0; i < x->x_nout; i++)
-            t_freebytes(x->x_outvec[i],
-                x->x_nout * sizeof(*x->x_outvec[i]));
-        t_freebytes(x->x_outvec, x->x_nout * sizeof(*x->x_outvec));
+        t_freebytes(x->x_outvec, x->x_n * sizeof(*x->x_outvec));
     }
 }
 
