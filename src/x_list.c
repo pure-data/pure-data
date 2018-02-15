@@ -262,38 +262,6 @@ static void list_append_anything(t_list_append *x, t_symbol *s,
     ATOMS_FREEA(outv, outc);
 }
 
-static void list_append_append(t_list_append *x, t_symbol *s,
-    int argc, t_atom *argv)
-{
-    if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
-        (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
-        (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
-    {
-        x->x_alist.l_n = 0;
-        error("list: out of memory");
-        return;
-    }
-    alist_copyin(&x->x_alist, s, argc, argv, x->x_alist.l_n);
-    x->x_alist.l_n += argc;
-}
-
-static void list_append_prepend(t_list_append *x, t_symbol *s,
-    int argc, t_atom *argv)
-{
-    if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
-        (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
-        (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
-    {
-        x->x_alist.l_n = 0;
-        error("list: out of memory");
-        return;
-    }
-    memmove(x->x_alist.l_vec + argc, x->x_alist.l_vec,
-        x->x_alist.l_n * sizeof(*x->x_alist.l_vec));
-    alist_copyin(&x->x_alist, s, argc, argv, 0);
-    x->x_alist.l_n += argc;
-}
-
 static void list_append_free(t_list_append *x)
 {
     alist_clear(&x->x_alist);

@@ -628,48 +628,6 @@ void array_getcoordinate(t_glist *glist,
     *wp = wpix;
 }
 
-static void array_getrect(t_array *array, t_glist *glist,
-    int *xp1, int *yp1, int *xp2, int *yp2)
-{
-    t_float x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
-    t_canvas *elemtemplatecanvas;
-    t_template *elemtemplate;
-    int elemsize, yonset, wonset, xonset, i;
-
-    if (!array_getfields(array->a_templatesym, &elemtemplatecanvas,
-        &elemtemplate, &elemsize, 0, 0, 0, &xonset, &yonset, &wonset))
-    {
-        int incr;
-            /* if it has more than 2000 points, just check 300 of them. */
-        if (array->a_n < 2000)
-            incr = 1;
-        else incr = array->a_n / 300;
-        for (i = 0; i < array->a_n; i += incr)
-        {
-            t_float pxpix, pypix, pwpix, dx, dy;
-            array_getcoordinate(glist, (char *)(array->a_vec) +
-                i * elemsize,
-                xonset, yonset, wonset, i, 0, 0, 1,
-                0, 0, 0,
-                &pxpix, &pypix, &pwpix);
-            if (pwpix < 2)
-                pwpix = 2;
-            if (pxpix < x1)
-                x1 = pxpix;
-            if (pxpix > x2)
-                x2 = pxpix;
-            if (pypix - pwpix < y1)
-                y1 = pypix - pwpix;
-            if (pypix + pwpix > y2)
-                y2 = pypix + pwpix;
-        }
-    }
-    *xp1 = x1;
-    *yp1 = y1;
-    *xp2 = x2;
-    *yp2 = y2;
-}
-
 /* -------------------- widget behavior for garray ------------ */
 
 static void garray_getrect(t_gobj *z, t_glist *glist,

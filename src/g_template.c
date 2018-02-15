@@ -762,15 +762,6 @@ static void fielddesc_setfloat_const(t_fielddesc *fd, t_float f)
         fd->fd_quantum = 0;
 }
 
-static void fielddesc_setsymbol_const(t_fielddesc *fd, t_symbol *s)
-{
-    fd->fd_type = A_SYMBOL;
-    fd->fd_var = 0;
-    fd->fd_un.fd_symbol = s;
-    fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
-        fd->fd_quantum = 0;
-}
-
 static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 {
     char *s1, *s2, *s3, strbuf[MAXPDSTRING];
@@ -834,20 +825,6 @@ static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
         else if (argv->a_type == A_SYMBOL)
             fielddesc_setfloat_var(fd, argv->a_w.w_symbol);
         else fielddesc_setfloat_const(fd, argv->a_w.w_float);
-}
-
-static void fielddesc_setsymbolarg(t_fielddesc *fd, int argc, t_atom *argv)
-{
-        if (argc <= 0) fielddesc_setsymbol_const(fd, &s_);
-        else if (argv->a_type == A_SYMBOL)
-        {
-            fd->fd_type = A_SYMBOL;
-            fd->fd_var = 1;
-            fd->fd_un.fd_varsym = argv->a_w.w_symbol;
-            fd->fd_v1 = fd->fd_v2 = fd->fd_screen1 = fd->fd_screen2 =
-                fd->fd_quantum = 0;
-        }
-        else fielddesc_setsymbol_const(fd, &s_);
 }
 
 static void fielddesc_setarrayarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -919,23 +896,6 @@ t_float fielddesc_getcoord(t_fielddesc *f, t_template *template,
         if (loud)
             error("symbolic data field used as number");
         return (0);
-    }
-}
-
-static t_symbol *fielddesc_getsymbol(t_fielddesc *f, t_template *template,
-    t_word *wp, int loud)
-{
-    if (f->fd_type == A_SYMBOL)
-    {
-        if (f->fd_var)
-            return(template_getsymbol(template, f->fd_un.fd_varsym, wp, loud));
-        else return (f->fd_un.fd_symbol);
-    }
-    else
-    {
-        if (loud)
-            error("numeric data field used as symbol");
-        return (&s_);
     }
 }
 

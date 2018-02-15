@@ -985,47 +985,6 @@ static void graph_delete(t_gobj *z, t_glist *glist)
     canvas_deletelinesfor(glist, &x->gl_obj);
 }
 
-static void graph_motion(void *z, t_floatarg dx, t_floatarg dy)
-{
-    t_glist *x = (t_glist *)z;
-    t_float newxpix = THISGUI->i_graph_lastxpix + dx,
-        newypix = THISGUI->i_graph_lastypix + dy;
-    t_garray *a = (t_garray *)(x->gl_list);
-    int oldx = 0.5 + glist_pixelstox(x, THISGUI->i_graph_lastxpix);
-    int newx = 0.5 + glist_pixelstox(x, newxpix);
-    t_word *vec;
-    int nelem, i;
-    t_float oldy = glist_pixelstoy(x, THISGUI->i_graph_lastypix);
-    t_float newy = glist_pixelstoy(x, newypix);
-    THISGUI->i_graph_lastxpix = newxpix;
-    THISGUI->i_graph_lastypix = newypix;
-        /* verify that the array is OK */
-    if (!a || pd_class((t_pd *)a) != garray_class)
-        return;
-    if (!garray_getfloatwords(a, &nelem, &vec))
-        return;
-    if (oldx < 0) oldx = 0;
-    if (oldx >= nelem)
-        oldx = nelem - 1;
-    if (newx < 0) newx = 0;
-    if (newx >= nelem)
-        newx = nelem - 1;
-    if (oldx < newx - 1)
-    {
-        for (i = oldx + 1; i <= newx; i++)
-            vec[i].w_float = newy + (oldy - newy) *
-                ((t_float)(newx - i))/(t_float)(newx - oldx);
-    }
-    else if (oldx > newx + 1)
-    {
-        for (i = oldx - 1; i >= newx; i--)
-            vec[i].w_float = newy + (oldy - newy) *
-                ((t_float)(newx - i))/(t_float)(newx - oldx);
-    }
-    else vec[newx].w_float = newy;
-    garray_redraw(a);
-}
-
 static int graph_click(t_gobj *z, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {

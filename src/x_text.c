@@ -303,44 +303,6 @@ static void text_define_clear(t_text_define *x)
 t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
     const char *fname);
 
-    /* these are unused; they copy text from this object to and from a text
-        field in a scalar. */
-static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
-    t_symbol *s)
-{
-    t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
-        gp, s, "text_frompointer");
-    if (b)
-    {
-        t_gstub *gs = gp->gp_stub;
-        binbuf_clear(x->x_textbuf.b_binbuf);
-        binbuf_add(x->x_textbuf.b_binbuf, binbuf_getnatom(b), binbuf_getvec(b));
-    }
-}
-
-static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
-{
-    t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
-        gp, s, "text_topointer");
-    if (b)
-    {
-        t_gstub *gs = gp->gp_stub;
-        binbuf_clear(b);
-        binbuf_add(b, binbuf_getnatom(x->x_textbuf.b_binbuf),
-            binbuf_getvec(x->x_textbuf.b_binbuf));
-        if (gs->gs_which == GP_GLIST)
-            scalar_redraw(gp->gp_un.gp_scalar, gs->gs_un.gs_glist);
-        else
-        {
-            t_array *owner_array = gs->gs_un.gs_array;
-            while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
-                owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
-            scalar_redraw(owner_array->a_gp.gp_un.gp_scalar,
-                owner_array->a_gp.gp_stub->gs_un.gs_glist);
-        }
-    }
-}
-
     /* bang: output a pointer to a struct containing this text */
 void text_define_bang(t_text_define *x)
 {

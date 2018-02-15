@@ -534,16 +534,6 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
     *np = n;
 }
 
-static int sys_getmultidevchannels(int n, int *devlist)
-{
-    int sum = 0;
-    if (n<0)return(-1);
-    if (n==0)return 0;
-    while(n--)sum+=*devlist++;
-    return sum;
-}
-
-
     /* this routine tries to figure out where to find the auxilliary files
     Pd will need to run.  This is either done by looking at the command line
     invokation for Pd, or if that fails, by consulting the variable
@@ -1464,7 +1454,3 @@ static void sys_afterargparse(void)
     sys_open_midi(nmidiindev, midiindev, nmidioutdev, midioutdev, 0);
 }
 
-static void sys_addreferencepath(void)
-{
-    char sbuf[MAXPDSTRING];
-}

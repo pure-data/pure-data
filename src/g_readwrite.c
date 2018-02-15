@@ -392,8 +392,6 @@ void canvas_doaddtemplate(t_symbol *templatesym,
     *p_ntemplates = n+1;
 }
 
-static void glist_writelist(t_gobj *y, t_binbuf *b);
-
 void binbuf_savetext(t_binbuf *bfrom, t_binbuf *bto);
 
 void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
@@ -449,22 +447,7 @@ void canvas_writescalar(t_symbol *templatesym, t_word *w, t_binbuf *b,
     }
 }
 
-static void glist_writelist(t_gobj *y, t_binbuf *b)
-{
-    for (; y; y = y->g_next)
-    {
-        if (pd_class(&y->g_pd) == scalar_class)
-        {
-            canvas_writescalar(((t_scalar *)y)->sc_template,
-                ((t_scalar *)y)->sc_vec, b, 0);
-        }
-    }
-}
-
     /* ------------ routines to write out templates for data ------- */
-
-static void canvas_addtemplatesforlist(t_gobj *y,
-    int  *p_ntemplates, t_symbol ***p_templatevec);
 
 static void canvas_addtemplatesforscalar(t_symbol *templatesym,
     t_word *w, int *p_ntemplates, t_symbol ***p_templatevec)
@@ -488,19 +471,6 @@ static void canvas_addtemplatesforscalar(t_symbol *templatesym,
                 canvas_addtemplatesforscalar(arraytemplatesym,
                     (t_word *)(((char *)a->a_vec) + elemsize * j),
                         p_ntemplates, p_templatevec);
-        }
-    }
-}
-
-static void canvas_addtemplatesforlist(t_gobj *y,
-    int  *p_ntemplates, t_symbol ***p_templatevec)
-{
-    for (; y; y = y->g_next)
-    {
-        if (pd_class(&y->g_pd) == scalar_class)
-        {
-            canvas_addtemplatesforscalar(((t_scalar *)y)->sc_template,
-                ((t_scalar *)y)->sc_vec, p_ntemplates, p_templatevec);
         }
     }
 }
