@@ -306,7 +306,7 @@ static void sched_pollformeters( void)
         /* if there's no GUI but we're running in "realtime", here is
         where we arrange to ping the watchdog every 2 seconds. */
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
-    int sched_nextpingtime;
+    static int sched_nextpingtime;
     if (!sys_havegui() && sys_hipriority &&
         (sched_diddsp - sched_nextpingtime > 0))
     {
