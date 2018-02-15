@@ -464,7 +464,9 @@ static void m_pollingscheduler( void)
         int timeforward;
 
         sys_addhist(0);
+#if 0 /* see below */
     waitfortick:
+#endif  /* 0 */
         if (sched_useaudio != SCHED_AUDIO_NONE)
         {
             sys_unlock();
