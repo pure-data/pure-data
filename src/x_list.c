@@ -219,7 +219,7 @@ static void list_append_list(t_list_append *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc;
+    int outc = x->x_alist.l_n + argc;
     ATOMS_ALLOCA(outv, outc);
     atoms_copy(argc, argv, outv);
     if (x->x_alist.l_npointer)
@@ -242,7 +242,7 @@ static void list_append_anything(t_list_append *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc + 1;
+    int outc = x->x_alist.l_n + argc + 1;
     ATOMS_ALLOCA(outv, outc);
     SETSYMBOL(outv, s);
     atoms_copy(argc, argv, outv + 1);
@@ -297,7 +297,7 @@ static void list_prepend_list(t_list_prepend *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc;
+    int outc = x->x_alist.l_n + argc;
     ATOMS_ALLOCA(outv, outc);
     atoms_copy(argc, argv, outv + x->x_alist.l_n);
     if (x->x_alist.l_npointer)
@@ -320,7 +320,7 @@ static void list_prepend_anything(t_list_prepend *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc + 1;
+    int outc = x->x_alist.l_n + argc + 1;
     ATOMS_ALLOCA(outv, outc);
     SETSYMBOL(outv + x->x_alist.l_n, s);
     atoms_copy(argc, argv, outv + x->x_alist.l_n + 1);
@@ -382,7 +382,7 @@ static void list_store_list(t_list_store *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc;
+    int outc = x->x_alist.l_n + argc;
     ATOMS_ALLOCA(outv, outc);
     atoms_copy(argc, argv, outv);
     if (x->x_alist.l_npointer)

@@ -1294,9 +1294,7 @@ static const char* _formatscan(const char*str, t_printtype*typ) {
 
 static void makefilename_scanformat(t_makefilename *x)
 {
-    int num=0, infmt=0;
     const char *str;
-    char *chr;
     t_printtype typ;
     if (!x->x_format) return;
     str = x->x_format->s_name;
