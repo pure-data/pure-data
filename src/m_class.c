@@ -195,7 +195,6 @@ EXTERN t_pdinstance *pdinstance_new(void)
 EXTERN void pdinstance_free(t_pdinstance *x)
 {
     t_symbol *s;
-    t_canvas *canvas;
     int i, instanceno = x->pd_instanceno;
     t_class *c;
     pd_setinstance(x);
@@ -509,7 +508,6 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     t_atomtype arg1, ...)
 {
     va_list ap;
-    t_methodentry *m;
     t_atomtype argtype = arg1;
     int nargs, i;
 

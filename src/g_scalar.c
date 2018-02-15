@@ -84,7 +84,7 @@ void word_free(t_word *wp, t_template *template)
 
 static int template_cancreate(t_template *template)
 {
-    int i, type, nitems = template->t_n;
+    int i, nitems = template->t_n;
     t_dataslot *datatypes = template->t_vec;
     t_template *elemtemplate;
     for (i = 0; i < nitems; i++, datatypes++)
@@ -381,8 +381,6 @@ static void scalar_save(t_gobj *z, t_binbuf *b)
 {
     t_scalar *x = (t_scalar *)z;
     t_binbuf *b2 = binbuf_new();
-    t_atom a, *argv;
-    int i, argc;
     canvas_writescalar(x->sc_template, x->sc_vec, b2, 0);
     binbuf_addv(b, "ss", &s__X, gensym("scalar"));
     binbuf_addbinbuf(b, b2);
@@ -423,8 +421,6 @@ static const t_widgetbehavior scalar_widgetbehavior =
 
 static void scalar_free(t_scalar *x)
 {
-    int i;
-    t_dataslot *datatypes, *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
     sys_unqueuegui(x);

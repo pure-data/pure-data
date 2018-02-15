@@ -697,7 +697,7 @@ fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
 {
         t_symbol *sx;
         int vecno;
-        int i, nargs;
+        int i;
 
         /*
          *  if no arguement clear all input and output buffers

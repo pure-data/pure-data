@@ -96,7 +96,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     const char *path)
 {
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
-        *nameptr, altsymname[MAXPDSTRING];
+        *nameptr;
     const char *classname, *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;

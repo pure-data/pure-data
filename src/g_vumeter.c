@@ -480,7 +480,6 @@ static void vu_scale(t_vu *x, t_floatarg fscale)
     }
     if(!x->x_scale && scale)
     {
-        int w4 = x->x_gui.x_w/4;
         int end = text_xpix(&x->x_gui.x_obj, x->x_gui.x_glist) + x->x_gui.x_w + 4*IEMGUI_ZOOM(x);
         int k1 = (x->x_led_size+1)*IEMGUI_ZOOM(x), k2 = IEM_VU_STEPS+1, k3 = k1/2;
         int yyy, k4 = text_ypix(&x->x_gui.x_obj, x->x_gui.x_glist) - k3;
@@ -650,9 +649,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_vu *x = (t_vu *)pd_new(vu_class);
     int w = IEM_GUI_DEFAULTSIZE, h = IEM_VU_STEPS*IEM_VU_DEFAULTSIZE;
-    int ldx = -1, ldy = -8, f = 0, fs = 10, scale  =1;
-    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
-    char str[144];
+    int ldx = -1, ldy = -8, fs = 10, scale  =1;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);

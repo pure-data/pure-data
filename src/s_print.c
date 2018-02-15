@@ -114,13 +114,10 @@ void logpost(const void *object, const int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
-
     dologpost(object, level, buf);
 }
 
@@ -128,13 +125,10 @@ void post(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
     strcat(buf, "\n");
-
     dopost(buf);
 }
 
@@ -142,12 +136,9 @@ void startpost(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);
-
     dopost(buf);
 }
 
@@ -171,10 +162,8 @@ void postatom(int argc, t_atom *argv)
 
 void postfloat(t_float f)
 {
-    char buf[80];
     t_atom a;
     SETFLOAT(&a, f);
-
     postatom(1, &a);
 }
 
@@ -191,8 +180,6 @@ void error(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
 
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
@@ -206,8 +193,6 @@ void verbose(int level, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
     int loglevel=level+3;
 
     if(level>sys_verbose)return;
@@ -232,8 +217,6 @@ void pd_error(void *object, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
     static int saidit;
 
     va_start(ap, fmt);
@@ -284,8 +267,6 @@ void bug(const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;
-    t_int arg[8];
-    int i;
     va_start(ap, fmt);
     vsnprintf(buf, MAXPDSTRING-1, fmt, ap);
     va_end(ap);

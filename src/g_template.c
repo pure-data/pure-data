@@ -160,7 +160,6 @@ t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
 int template_find_field(t_template *x, t_symbol *name, int *p_onset,
     int *p_type, t_symbol **p_arraytype)
 {
-    t_template *t;
     int i, n;
     if (!x)
     {
@@ -281,7 +280,7 @@ elements might still be old ones.)
 static void template_conformwords(t_template *tfrom, t_template *tto,
     int *conformaction, t_word *wfrom, t_word *wto)
 {
-    int nfrom = tfrom->t_n, nto = tto->t_n, i;
+    int nto = tto->t_n, i;
     for (i = 0; i < nto; i++)
     {
         if (conformaction[i] >= 0)
@@ -301,7 +300,7 @@ static t_scalar *template_conformscalar(t_template *tfrom, t_template *tto,
 {
     t_scalar *x;
     t_gpointer gp;
-    int nto = tto->t_n, nfrom = tfrom->t_n, i;
+    int i;
     t_template *scalartemplate;
     /* post("conform scalar"); */
         /* possibly replace the scalar */

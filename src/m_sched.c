@@ -212,7 +212,7 @@ static int sys_histphase;
 
 int sys_addhist(int phase)
 {
-    int i, j, phasewas = sys_histphase;
+    int j, phasewas = sys_histphase;
     double newtime = sys_getrealtime();
     int msec = (newtime - sys_histtime) * 1000.;
     for (j = NBIN-1; j >= 0; j--)
@@ -251,7 +251,7 @@ static char *(oss_errornames[]) = {
 
 void glob_audiostatus(void)
 {
-    int dev, nresync, nresyncphase, i;
+    int nresync, nresyncphase, i;
     nresync = (oss_nresync >= NRESYNC ? NRESYNC : oss_nresync);
     nresyncphase = oss_resyncphase - 1;
     post("audio I/O error history:");
@@ -301,7 +301,7 @@ void glob_watchdog(t_pd *dummy);
 static void sched_pollformeters( void)
 {
     int inclip, outclip, indb, outdb;
-    static int sched_nextmeterpolltime, sched_nextpingtime;
+    static int sched_nextmeterpolltime;
 
         /* if there's no GUI but we're running in "realtime", here is
         where we arrange to ping the watchdog every 2 seconds. */
@@ -444,8 +444,6 @@ int (*sys_idlehook)(void);
 
 static void m_pollingscheduler( void)
 {
-    int idlecount = 0;
-
         /* delete this when I'm sure it's not needed for back compatibilty? */
     STUFF->st_time_per_dsp_tick = (TIMEUNITPERSECOND) *
         ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr;
