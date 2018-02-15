@@ -926,7 +926,6 @@ void canvas_loadbangsubpatches(t_canvas *x)
 
 void canvas_loadbang(t_canvas *x)
 {
-    t_gobj *y;
     canvas_loadbangabstractions(x);
     canvas_loadbangsubpatches(x);
 }
@@ -1036,7 +1035,6 @@ static void canvas_click(t_canvas *x,
 void canvas_fattensub(t_canvas *x,
     int *xp1, int *yp1, int *xp2, int *yp2)
 {
-    t_gobj *y;
     *xp2 += 50;     /* fake for now */
     *yp2 += 50;
 }
@@ -1251,7 +1249,6 @@ static void glist_redrawall(t_glist *gl, int action)
     int vis = glist_isvisible(gl);
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        t_class *cl;
         if (vis && g->g_pd == scalar_class)
         {
             if (action == 1)
@@ -1539,10 +1536,7 @@ static int canvas_open_iter(const char *path, t_canvasopen *co)
 int canvas_open(t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
-    t_namelist *nl, thislist;
     int fd = -1;
-    char listbuf[MAXPDSTRING];
-    t_canvas *y;
     t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */

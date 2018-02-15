@@ -1304,9 +1304,9 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     int onset = atom_getfloatarg(2, argc, argv);
     t_float srate = atom_getfloatarg(3, argc, argv);
     int loud = atom_getfloatarg(4, argc, argv);
-    int arraysize, totstorage, nfound, i;
+    int arraysize, i;
     t_garray *a;
-    t_float *arraypoints, pit;
+    t_float *arraypoints;
     t_word *wordarray = 0;
     if (argc < 5)
     {

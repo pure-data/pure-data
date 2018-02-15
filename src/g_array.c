@@ -22,9 +22,7 @@ scalars (g_scalar.c); their graphical behavior is defined accordingly. */
 t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
 {
     t_array *x = (t_array *)getbytes(sizeof (*x));
-    t_template *template;
-    t_gpointer *gp;
-    template = template_findbyname(templatesym);
+    t_template *template = template_findbyname(templatesym);
     x->a_templatesym = templatesym;
     x->a_n = 1;
     x->a_elemsize = sizeof(t_word) * template->t_n;
@@ -46,7 +44,6 @@ void garray_arrayviewlist_close(t_garray *x);
 void array_resize(t_array *x, int n)
 {
     int elemsize, oldn;
-    t_gpointer *gp;
     char *tmp;
     t_template *template = template_findbyname(x->a_templatesym);
     if (n < 1)
