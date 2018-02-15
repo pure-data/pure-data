@@ -77,18 +77,6 @@ expr_list(t_expr *x, t_symbol *s, int argc, const fts_atom_t *argv)
         expr_bang(x);
 }
 
-static void
-expr_flt(t_expr *x, t_float f, int in)
-{
-        if (in >= MAX_VARS)
-                return;
-
-        if (x->exp_var[in].ex_type == ET_FI)
-                x->exp_var[in].ex_flt = f;
-        else if (x->exp_var[in].ex_type == ET_II)
-                x->exp_var[in].ex_int = f;
-}
-
 static t_class *exprproxy_class;
 
 typedef struct _exprproxy {

@@ -129,7 +129,6 @@ static void ex_isinf(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *
 static void ex_finite(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_isnan(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_copysign(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
-static void ex_drem(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_remainder(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_round(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
 static void ex_trunc(t_expr *expr, long argc, struct ex_ex *argv, struct ex_ex *optr);
@@ -1316,12 +1315,6 @@ FUNC_DEF_UNARY(ex_isnan, isnan, (double), 0);
  * ex_copysign - copy sign of a number
  */
 FUNC_DEF(ex_copysign, copysign, (double), (double), 1);
-
-/*
- * drem() is now obsolute
- * ex_drem - floating-point remainder function
- */
-FUNC_DEF(ex_drem, remainder, (double), (double), 1);
 
 /*
  * ex_remainder - floating-point remainder function
