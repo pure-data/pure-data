@@ -143,7 +143,7 @@ void glist_delete(t_glist *x, t_gobj *y)
     /* remove every object from a glist.  Experimental. */
 void glist_clear(t_glist *x)
 {
-    t_gobj *y, *y2;
+    t_gobj *y;
     int dspstate = 0, suspended = 0;
     t_symbol *dspsym = gensym("dsp");
     while ((y = x->gl_list))
@@ -164,7 +164,6 @@ void glist_clear(t_glist *x)
 
 void glist_retext(t_glist *glist, t_text *y)
 {
-    t_canvas *c = glist_getcanvas(glist);
         /* check that we have built rtexts yet.  LATER need a better test. */
     if (glist->gl_editor && glist->gl_editor->e_rtext)
     {
@@ -725,7 +724,6 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_float f;
         t_gobj *g;
         t_symbol *arrayname;
-        t_garray *ga;
         char *ylabelanchor =
             (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
         char *xlabelanchor =
@@ -888,7 +886,6 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
     {
         int hadwindow;
         t_gobj *g;
-        t_text *ob;
         int x21, y21, x22, y22;
 
         graph_graphrect(z, glist, &x1, &y1, &x2, &y2);
@@ -983,47 +980,6 @@ static void graph_delete(t_gobj *z, t_glist *glist)
             as canvases with "real" inlets).  Connections to ordinary canvas
             in/outlets already got zapped when we cleared the contents above */
     canvas_deletelinesfor(glist, &x->gl_obj);
-}
-
-static void graph_motion(void *z, t_floatarg dx, t_floatarg dy)
-{
-    t_glist *x = (t_glist *)z;
-    t_float newxpix = THISGUI->i_graph_lastxpix + dx,
-        newypix = THISGUI->i_graph_lastypix + dy;
-    t_garray *a = (t_garray *)(x->gl_list);
-    int oldx = 0.5 + glist_pixelstox(x, THISGUI->i_graph_lastxpix);
-    int newx = 0.5 + glist_pixelstox(x, newxpix);
-    t_word *vec;
-    int nelem, i;
-    t_float oldy = glist_pixelstoy(x, THISGUI->i_graph_lastypix);
-    t_float newy = glist_pixelstoy(x, newypix);
-    THISGUI->i_graph_lastxpix = newxpix;
-    THISGUI->i_graph_lastypix = newypix;
-        /* verify that the array is OK */
-    if (!a || pd_class((t_pd *)a) != garray_class)
-        return;
-    if (!garray_getfloatwords(a, &nelem, &vec))
-        return;
-    if (oldx < 0) oldx = 0;
-    if (oldx >= nelem)
-        oldx = nelem - 1;
-    if (newx < 0) newx = 0;
-    if (newx >= nelem)
-        newx = nelem - 1;
-    if (oldx < newx - 1)
-    {
-        for (i = oldx + 1; i <= newx; i++)
-            vec[i].w_float = newy + (oldy - newy) *
-                ((t_float)(newx - i))/(t_float)(newx - oldx);
-    }
-    else if (oldx > newx + 1)
-    {
-        for (i = oldx - 1; i >= newx; i--)
-            vec[i].w_float = newy + (oldy - newy) *
-                ((t_float)(newx - i))/(t_float)(newx - oldx);
-    }
-    else vec[newx].w_float = newy;
-    garray_redraw(a);
 }
 
 static int graph_click(t_gobj *z, struct _glist *glist,

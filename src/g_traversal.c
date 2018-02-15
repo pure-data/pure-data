@@ -168,7 +168,6 @@ t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
     t_symbol *templatesym = gpointer_gettemplatesym(gp), *arraytype;
     t_template *template;
     int onset, type;
-    t_binbuf *b;
     t_gstub *gs = gp->gp_stub;
     t_word *vec;
     if (!templatesym)
@@ -330,10 +329,6 @@ static void ptrobj_next(t_ptrobj *x)
     /* send a message to the window containing the object pointed to */
 static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_scalar *sc;
-    t_symbol *templatesym;
-    int n;
-    t_typedout *to;
     t_glist *glist;
     t_pd *canvas;
     t_gstub *gs;
@@ -402,12 +397,7 @@ static void ptrobj_pointer(t_ptrobj *x, t_gpointer *gp)
 
 static void ptrobj_rewind(t_ptrobj *x)
 {
-    t_scalar *sc;
-    t_symbol *templatesym;
-    int n;
-    t_typedout *to;
     t_glist *glist;
-    t_pd *canvas;
     t_gstub *gs;
     if (!gpointer_check(&x->x_gp, 1))
     {
@@ -883,12 +873,11 @@ static void getsize_set(t_getsize *x, t_symbol *templatesym, t_symbol *fieldsym)
 
 static void getsize_pointer(t_getsize *x, t_gpointer *gp)
 {
-    int nitems, onset, type;
+    int onset, type;
     t_symbol *templatesym, *fieldsym = x->x_fieldsym, *elemtemplatesym;
     t_template *template;
     t_word *w;
     t_array *array;
-    int elemsize;
     t_gstub *gs = gp->gp_stub;
     if (!gpointer_check(gp, 0))
     {
@@ -975,7 +964,6 @@ static void setsize_float(t_setsize *x, t_float f)
     t_template *template;
     t_template *elemtemplate;
     t_word *w;
-    t_atom at;
     t_array *array;
     int elemsize;
     int newsize = f;

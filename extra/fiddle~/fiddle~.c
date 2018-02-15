@@ -1112,7 +1112,6 @@ fail:
 int sigfiddle_doinit(t_sigfiddle *x, long npoints, long npitch,
     long npeakanal, long npeakout)
 {
-    t_float *buf1, *buf2,  *buf3;
     t_peakout *buf4;
     int i;
 

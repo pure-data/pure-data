@@ -127,7 +127,6 @@ static void netsend_readbin(t_netsend *x, int fd)
 
 static void netsend_doit(void *z, t_binbuf *b)
 {
-    t_atom messbuf[1024];
     t_netsend *x = (t_netsend *)z;
     int msg, natom = binbuf_getnatom(b);
     t_atom *at = binbuf_getvec(b);
@@ -344,7 +343,7 @@ static int netsend_dosend(t_netsend *x, int sockfd,
             bp += res;
         }
     }
-    done:
+ 
     if (!x->x_bin)
     {
         t_freebytes(buf, length);

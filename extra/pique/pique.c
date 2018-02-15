@@ -83,7 +83,6 @@ static void pique_doit(int npts, t_word *fpreal, t_word *fpimag,
     t_float re1, re2 = 0, re3 = fpreal->w_float;
     t_float im1, im2 = 0, im3 = 0, powthresh, relativeerror;
     int count, peakcount = 0, n2 = (npts >> 1);
-    t_float *fp1, *fp2;
     t_word *wp1, *wp2;
     for (count = n2, wp1 = fpreal, wp2 = fpimag, powthresh = 0;
         count--; wp1++, wp2++)

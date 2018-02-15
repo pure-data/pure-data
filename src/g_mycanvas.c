@@ -189,11 +189,9 @@ static void my_canvas_get_pos(t_my_canvas *x)
 
 static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_symbol *srl[3];
     int a = atom_getfloatarg(0, argc, argv);
     int w = atom_getfloatarg(2, argc, argv);
     int h = atom_getfloatarg(3, argc, argv);
-    int sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
 
     x->x_gui.x_isa.x_loadinit = 0;
     if(a < 1)

@@ -23,8 +23,6 @@ typedef struct _tabwrite_tilde
     t_float x_f;
 } t_tabwrite_tilde;
 
-static void tabwrite_tilde_tick(t_tabwrite_tilde *x);
-
 static void *tabwrite_tilde_new(t_symbol *s)
 {
     t_tabwrite_tilde *x = (t_tabwrite_tilde *)pd_new(tabwrite_tilde_class);
@@ -575,9 +573,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     t_float fnpoints = x->x_fnpoints;
     int mask = fnpoints - 1;
     t_float conv = fnpoints * x->x_conv;
-    int maxindex;
     t_word *tab = x->x_vec, *addr;
-    int i;
     double dphase = fnpoints * x->x_phase + UNITBIT32;
 
     if (!tab) goto zero;
@@ -693,8 +689,6 @@ typedef struct _tabsend
     int x_npoints;
 } t_tabsend;
 
-static void tabsend_tick(t_tabsend *x);
-
 static void *tabsend_new(t_symbol *s)
 {
     t_tabsend *x = (t_tabsend *)pd_new(tabsend_class);
@@ -755,7 +749,6 @@ static void tabsend_set(t_tabsend *x, t_symbol *s)
 
 static void tabsend_dsp(t_tabsend *x, t_signal **sp)
 {
-    int i, vecsize;
     int n = sp[0]->s_n;
     int ticksper = sp[0]->s_sr/n;
     tabsend_set(x, x->x_arrayname);
@@ -988,7 +981,7 @@ typedef struct _tabwrite
 
 static void tabwrite_float(t_tabwrite *x, t_float f)
 {
-    int i, vecsize;
+    int vecsize;
     t_garray *a;
     t_word *vec;
 

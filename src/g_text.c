@@ -143,7 +143,7 @@ extern int sys_noautopatch;
 static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     int *indexp, int *totalp)
 {
-    int xpix, ypix, indx = 0, nobj = 0, n2, x1, x2, y1, y2;
+    int indx = 0, nobj = 0, n2, x1, x2, y1, y2;
     int connectme = (x->gl_editor->e_selection &&
         !x->gl_editor->e_selection->sel_next && !sys_noautopatch);
     if (connectme)
@@ -189,7 +189,6 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
 
 void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
 {
-    t_text *x;
     if (argc >= 2)
     {
         t_binbuf *b = binbuf_new();

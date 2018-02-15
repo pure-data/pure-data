@@ -59,33 +59,13 @@ static void calc_derivatives(FLOAT *dstate, FLOAT *state, t_params *params)
     dstate[3] = k * (satstate2 - clip(state[3], sat, satinv));
 }
 
-static void solver_euler(FLOAT *state, FLOAT *errorestimate, 
-    FLOAT stepsize, t_params *params)
-{
-    FLOAT cumerror = 0;
-    int i;
-    FLOAT derivatives[DIM];
-    calc_derivatives(derivatives, state, params);
-    *errorestimate = 0;
-    for (i = 0; i < DIM; i++)
-    {
-        state[i] += stepsize * derivatives[i];
-        *errorestimate += (derivatives[i] > params->p_derivativeswere[i] ?
-            derivatives[i] - params->p_derivativeswere[i] :
-            params->p_derivativeswere[i] - derivatives[i]);
-    }
-    for (i = 0; i < DIM; i++)
-        params->p_derivativeswere[i] = derivatives[i];
-}
-
 static void solver_rungekutte(FLOAT *state, FLOAT *errorestimate, 
     FLOAT stepsize, t_params *params)
 {
-    FLOAT cumerror = 0;
     int i;
     FLOAT deriv1[DIM], deriv2[DIM], deriv3[DIM], deriv4[DIM], tempstate[DIM];
-    FLOAT oldstate[DIM], backstate[DIM];
 #if CALCERROR
+    FLOAT oldstate[DIM], backstate[DIM];
     for (i = 0; i < DIM; i++)
         oldstate[i] = state[i];
 #endif
@@ -239,7 +219,6 @@ static void bob_dsp(t_bob *x, t_signal **sp)
 
 void bob_tilde_setup(void)
 {
-    int i;
     bob_class = class_new(gensym("bob~"),
         (t_newmethod)bob_new, 0, sizeof(t_bob), 0, 0);
     class_addmethod(bob_class, (t_method)bob_saturation, gensym("saturation"),

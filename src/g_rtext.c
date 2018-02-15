@@ -44,7 +44,6 @@ struct _rtext
 t_rtext *rtext_new(t_glist *glist, t_text *who)
 {
     t_rtext *x = (t_rtext *)getbytes(sizeof *x);
-    int w = 0, h = 0, indx;
     x->x_height = -1;
     x->x_text = who;
     x->x_glist = glist;
@@ -381,7 +380,6 @@ void rtext_retext(t_rtext *x)
             int wantreduce = bufsize - text->te_width;
             char *decimal = 0, *nextchar, *ebuf = x->x_buf + bufsize,
                 *s1, *s2;
-            int ndecimals;
             for (decimal = x->x_buf; decimal < ebuf; decimal++)
                 if (*decimal == '.')
                     break;
@@ -499,7 +497,6 @@ void rtext_activate(t_rtext *x, int state)
 void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
 {
     int w = 0, h = 0, indx, i, newsize, ndel;
-    char *s1, *s2;
     if (keynum)
     {
         int n = keynum;

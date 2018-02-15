@@ -260,7 +260,7 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
 
 int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
 {
-    int format, nchannels, bigendian, bytespersamp, samprate, swap;
+    int nchannels, bigendian, bytespersamp, samprate, swap;
     int headersize = 0;
     long sysrtn, bytelimit = 0x7fffffff;
     errno = 0;
@@ -2479,8 +2479,6 @@ static void *writesf_child_main(void *zz)
 }
 
 /******** the object proper runs in the calling (parent) thread ****/
-
-static void writesf_tick(t_writesf *x);
 
 static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 {

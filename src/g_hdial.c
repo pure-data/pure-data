@@ -569,11 +569,9 @@ static void hradio_single_change(t_hradio *x)
 static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
     t_hradio *x = (t_hradio *)pd_new(old ? hradio_old_class : hradio_class);
-    int a=IEM_GUI_DEFAULTSIZE, on = 0, f = 0;
+    int a=IEM_GUI_DEFAULTSIZE, on = 0;
     int ldx = 0, ldy = -8, chg = 1, num = 8;
     int fs = 10;
-    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
-    char str[144];
     float fval = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);

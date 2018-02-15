@@ -303,44 +303,6 @@ static void text_define_clear(t_text_define *x)
 t_binbuf *pointertobinbuf(t_pd *x, t_gpointer *gp, t_symbol *s,
     const char *fname);
 
-    /* these are unused; they copy text from this object to and from a text
-        field in a scalar. */
-static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
-    t_symbol *s)
-{
-    t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
-        gp, s, "text_frompointer");
-    if (b)
-    {
-        t_gstub *gs = gp->gp_stub;
-        binbuf_clear(x->x_textbuf.b_binbuf);
-        binbuf_add(x->x_textbuf.b_binbuf, binbuf_getnatom(b), binbuf_getvec(b));
-    }
-}
-
-static void text_define_topointer(t_text_define *x, t_gpointer *gp, t_symbol *s)
-{
-    t_binbuf *b = pointertobinbuf(&x->x_textbuf.b_ob.ob_pd,
-        gp, s, "text_topointer");
-    if (b)
-    {
-        t_gstub *gs = gp->gp_stub;
-        binbuf_clear(b);
-        binbuf_add(b, binbuf_getnatom(x->x_textbuf.b_binbuf),
-            binbuf_getvec(x->x_textbuf.b_binbuf));
-        if (gs->gs_which == GP_GLIST)
-            scalar_redraw(gp->gp_un.gp_scalar, gs->gs_un.gs_glist);
-        else
-        {
-            t_array *owner_array = gs->gs_un.gs_array;
-            while (owner_array->a_gp.gp_stub->gs_which == GP_ARRAY)
-                owner_array = owner_array->a_gp.gp_stub->gs_un.gs_array;
-            scalar_redraw(owner_array->a_gp.gp_un.gp_scalar,
-                owner_array->a_gp.gp_stub->gs_un.gs_glist);
-        }
-    }
-}
-
     /* bang: output a pointer to a struct containing this text */
 void text_define_bang(t_text_define *x)
 {
@@ -961,8 +923,6 @@ static void *text_tolist_new(t_symbol *s, int argc, t_atom *argv)
 static void text_tolist_bang(t_text_tolist *x)
 {
     t_binbuf *b = text_client_getbuf(x), *b2;
-    int n, i, cnt = 0;
-    t_atom *vec;
     if (!b)
        return;
     b2 = binbuf_new();
@@ -1083,10 +1043,9 @@ static void text_search_list(t_text_search *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int i, j, n, lineno, bestline = -1, beststart=-1, bestn, thisstart, thisn,
+    int i, n, lineno, bestline = -1, beststart=-1, bestn, thisstart,
         nkeys = x->x_nkeys, failed = 0;
     t_atom *vec;
-    t_key *kp = x->x_keyvec;
     if (!b)
        return;
     if (argc < nkeys)
@@ -1349,7 +1308,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 
 static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
 {
-    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
     int n, i, onset, nfield, wait, eatsemi = 1, gotcomma = 0;
     t_atom *vec, *outvec, *ap;
     if (!b)
@@ -1552,7 +1511,7 @@ static void text_sequence_step(t_text_sequence *x)
 
 static void text_sequence_line(t_text_sequence *x, t_floatarg f)
 {
-    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
     int n, start, end;
     t_atom *vec;
     if (!b)
@@ -1904,8 +1863,8 @@ static void *textfile_new( void)
 
 static void textfile_bang(t_qlist *x)
 {
-    int argc = binbuf_getnatom(x->x_binbuf),
-        count, onset = x->x_onset, onset2;
+    int argc = binbuf_getnatom(x->x_binbuf);
+    int onset = x->x_onset, onset2;
     t_atom *argv = binbuf_getvec(x->x_binbuf);
     t_atom *ap = argv + onset, *ap2;
     while (onset < argc &&
@@ -1938,7 +1897,6 @@ static void textfile_rewind(t_qlist *x)
 
 /* ---------------- global setup function -------------------- */
 
-static t_pd *text_templatecanvas;
 static char text_templatefile[] = "\
 canvas 0 0 458 153 10;\n\
 #X obj 43 31 struct text float x float y text t;\n\

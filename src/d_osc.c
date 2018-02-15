@@ -230,7 +230,7 @@ static void cos_setup(void)
 
 /* ------------------------ osc~ ----------------------------- */
 
-static t_class *osc_class, *scalarosc_class;
+static t_class *osc_class;
 
 typedef struct _osc
 {
