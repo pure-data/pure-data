@@ -2480,8 +2480,6 @@ static void *writesf_child_main(void *zz)
 
 /******** the object proper runs in the calling (parent) thread ****/
 
-static void writesf_tick(t_writesf *x);
-
 static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 {
     t_writesf *x;

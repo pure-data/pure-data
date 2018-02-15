@@ -23,8 +23,6 @@ typedef struct _tabwrite_tilde
     t_float x_f;
 } t_tabwrite_tilde;
 
-static void tabwrite_tilde_tick(t_tabwrite_tilde *x);
-
 static void *tabwrite_tilde_new(t_symbol *s)
 {
     t_tabwrite_tilde *x = (t_tabwrite_tilde *)pd_new(tabwrite_tilde_class);
@@ -692,8 +690,6 @@ typedef struct _tabsend
     t_float x_f;
     int x_npoints;
 } t_tabsend;
-
-static void tabsend_tick(t_tabsend *x);
 
 static void *tabsend_new(t_symbol *s)
 {
