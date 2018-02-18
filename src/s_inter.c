@@ -412,7 +412,7 @@ void sys_sockerror(char *s)
 #else
     int err = errno;
 #endif
-    post("%s: %s (%d)\n", s, strerror(err), err);
+    error("%s: %s (%d)\n", s, strerror(err), err);
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
