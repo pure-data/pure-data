@@ -32,11 +32,14 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #ifdef _WIN32
 #ifdef PD_INTERNAL
 #define EXTERN __declspec(dllexport) extern
+#define EXTERN_NOAPI extern
 #else
 #define EXTERN __declspec(dllimport) extern
+#define EXTERN_NOAPI extern
 #endif /* PD_INTERNAL */
 #else
 #define EXTERN extern
+#define EXTERN_NOAPI extern
 #endif /* _WIN32 */
 
     /* On most c compilers, you can just say "struct foo;" to declare a
@@ -844,13 +847,17 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
 #if defined(PDTHREADS) && defined(PDINSTANCE)
+#ifdef _MSC_VER
+#define PERTHREAD __declspec(thread)
+#else
 #define PERTHREAD __thread
+#endif /* _MSC_VER */
 #else
 #define PERTHREAD
 #endif
 
 #ifdef PDINSTANCE
-EXTERN PERTHREAD t_pdinstance *pd_this;
+EXTERN_NOAPI PERTHREAD t_pdinstance *pd_this;
 EXTERN t_pdinstance **pd_instances;
 EXTERN int pd_ninstances;
 #else
