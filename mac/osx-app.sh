@@ -98,11 +98,11 @@ Examples:
 while [ "$1" != "" ] ; do
     case $1 in
         -t|--tk)
+            shift 1
             if [ $# == 0 ] ; then
                 echo "-t,--tk option requires a VER argument"
                 exit 1
             fi
-            shift 1
             TK=$1
             included_wish=false
             ;;

@@ -1334,7 +1334,7 @@ static void makefilename_float(t_makefilename *x, t_floatarg f)
     }
     switch(x->x_accept) {
     case NONE:
-        sprintf(buf, x->x_format->s_name);
+        sprintf(buf, "%s",  x->x_format->s_name);
         break;
     case INT: case POINTER:
         sprintf(buf, x->x_format->s_name, (int)f);
@@ -1373,7 +1373,7 @@ static void makefilename_symbol(t_makefilename *x, t_symbol *s)
         sprintf(buf, x->x_format->s_name, 0.);
         break;
     case NONE:
-        sprintf(buf, x->x_format->s_name);
+        sprintf(buf, "%s", x->x_format->s_name);
         break;
     default:
         sprintf(buf, "%s", x->x_format->s_name);
@@ -1397,7 +1397,7 @@ static void makefilename_bang(t_makefilename *x)
         sprintf(buf, x->x_format->s_name, 0.);
         break;
     case NONE:
-        sprintf(buf, x->x_format->s_name);
+        sprintf(buf, "%s", x->x_format->s_name);
         break;
     default:
         sprintf(buf, "%s", x->x_format->s_name);

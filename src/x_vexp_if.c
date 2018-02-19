@@ -1257,8 +1257,8 @@ ex_Avg(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                         optr->ex_int = 0;
                         return;
                 }
-                if (n2 > size)
-                        n2 = size;
+                if (n2 >= size)
+                        n2 = size - 1;
 
         for (indx = n1, sum = 0; indx <= n2; indx++)
                 if (indx >= 0 && indx < size)

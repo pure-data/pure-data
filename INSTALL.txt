@@ -255,9 +255,9 @@ Tk version log line in the Pd window.
 
 Another option is to set the Tk Wish command Pd uses to launch the GUI. At
 start, Pd does a quick search in the "usual places" for Wish and chooses the
-first path that exists. Currently, macOS also ships with Tcl/Tk 8.4 which works
-fine and this wish can be invoked by Pd using the full path "/usr/bin/wish8.4".
-You can configure Pd to use this search path first with:
+first path that exists. Versions of macOS up to 10.12 also ship with Tcl/Tk 8.4
+which works fine and this wish can be invoked by Pd using the full path
+"/usr/bin/wish8.4". You can configure Pd to use this search path first with:
 
     ./configure --with-wish=/usr/bin/wish8.4
 
