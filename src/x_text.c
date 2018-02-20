@@ -397,6 +397,28 @@ typedef struct _text_client
     t_symbol *tc_field;
 } t_text_client;
 
+    /* returns 1 if first the argument equals one of the given strings.
+      "strv" is a NULL-terminated array of C strings.
+      currently, this is needed for [text search] and [text sequence] */
+static int text_client_test_firstarg(t_text_client *x, int argc, t_atom *argv,
+    const char **strv)
+{
+    if (!argc || argv->a_type != A_SYMBOL) return 0;
+
+    const char *name = argv->a_w.w_symbol->s_name;
+    const char **s = strv;
+    while (*s)
+    {
+        if (!strcmp(name, *s))
+        {
+            x->tc_sym = x->tc_struct = x->tc_field = 0;
+            gpointer_init(&x->tc_gp);
+            return 1;
+        }
+        s++;
+    }
+    return 0;
+}
     /* parse buffer-finding arguments */
 static void text_client_argparse(t_text_client *x, int *argcp, t_atom **argvp,
     char *name)
