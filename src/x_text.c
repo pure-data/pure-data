@@ -1034,6 +1034,10 @@ t_class *text_search_class;
 #define KB_LE 4
 #define KB_NEAR 5   /* anything matches but closer is better */
 
+static const char *_text_search_symbols[] = {
+    ">", ">=", "<", "<=", "near", NULL
+};
+
 typedef struct _key
 {
     int k_field;
@@ -1053,7 +1057,8 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     t_text_search *x = (t_text_search *)pd_new(text_search_class);
     int i, key, nkey, nextop;
     x->x_out1 = outlet_new(&x->x_obj, &s_list);
-    text_client_argparse(&x->x_tc, &argc, &argv, "text search");
+    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_search_symbols))
+        text_client_argparse(&x->x_tc, &argc, &argv, "text search");
     for (i = nkey = 0; i < argc; i++)
         if (argv[i].a_type == A_FLOAT)
             nkey++;
@@ -1273,6 +1278,10 @@ static void text_search_list(t_text_search *x,
 /* ---------------- text_sequence object - sequencer ----------- */
 t_class *text_sequence_class;
 
+static const char *_text_sequence_symbols[] = {
+    "-g", "-w", "-t", NULL
+};
+
 typedef struct _text_sequence
 {
     t_text_client x_tc;
@@ -1302,7 +1311,8 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_sequence *x = (t_text_sequence *)pd_new(text_sequence_class);
     int global = 0;
-    text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
+    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_sequence_symbols))
+        text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
     x->x_waitsym = 0;
     x->x_waitargc = 0;
     x->x_eaten = 0;
