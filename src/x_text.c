@@ -401,18 +401,22 @@ typedef struct _text_client
       "strv" is a NULL-terminated array of C strings.
       currently, this is needed for [text search] and [text sequence] */
 static int text_client_test_firstarg(t_text_client *x, int argc, t_atom *argv,
-    const char **strv)
+    const char **strv, const char *name)
 {
     if (!argc || argv->a_type != A_SYMBOL) return 0;
 
-    const char *name = argv->a_w.w_symbol->s_name;
+    const char *sym = argv->a_w.w_symbol->s_name;
     const char **s = strv;
     while (*s)
     {
-        if (!strcmp(name, *s))
+        if (!strcmp(sym, *s))
         {
             x->tc_sym = x->tc_struct = x->tc_field = 0;
             gpointer_init(&x->tc_gp);
+            #if 0
+            pd_error(x, "%s: '%s' as first creation argument. "
+                "please provide a dummy symbol instead", name, sym);
+            #endif
             return 1;
         }
         s++;
@@ -1057,7 +1061,7 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     t_text_search *x = (t_text_search *)pd_new(text_search_class);
     int i, key, nkey, nextop;
     x->x_out1 = outlet_new(&x->x_obj, &s_list);
-    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_search_symbols))
+    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_search_symbols, "text search"))
         text_client_argparse(&x->x_tc, &argc, &argv, "text search");
     for (i = nkey = 0; i < argc; i++)
         if (argv[i].a_type == A_FLOAT)
@@ -1311,7 +1315,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_sequence *x = (t_text_sequence *)pd_new(text_sequence_class);
     int global = 0;
-    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_sequence_symbols))
+    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_sequence_symbols, "text sequence"))
         text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
     x->x_waitsym = 0;
     x->x_waitargc = 0;
