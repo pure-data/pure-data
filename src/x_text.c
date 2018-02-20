@@ -1318,6 +1318,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_eaten = 0;
     x->x_loop = 0;
     x->x_lastto = 0;
+    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -1366,7 +1367,6 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_waitout = (global || x->x_waitsym || x->x_waitargc ?
         outlet_new(&x->x_obj, &s_list) : 0);
     x->x_endout = outlet_new(&x->x_obj, &s_bang);
-    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     if (global)
     {
         if (x->x_waitargc)
