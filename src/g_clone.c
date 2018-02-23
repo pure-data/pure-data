@@ -151,6 +151,7 @@ static void clone_setn(t_clone *, t_floatarg);
 static void clone_in_resize(t_in *x, t_floatarg f)
 {
     int i, oldn = x->i_owner->x_n;
+    int dspstate = canvas_suspend_dsp();
         /* We need to send closebangs to old instances. Currently,
         this is done in clone_freeinstance(), but later we would
         rather do it here, see comment in clone_loadbang() */
@@ -160,6 +161,7 @@ static void clone_in_resize(t_in *x, t_floatarg f)
         /* send loadbangs to new instances */
     for (i = oldn; i < x->i_owner->x_n; i++)
         canvas_loadbang(x->i_owner->x_vec[i].c_gl);
+    canvas_resume_dsp(dspstate);
 }
 
 static void clone_out_anything(t_outproxy *x, t_symbol *s, int argc, t_atom *argv)
@@ -227,12 +229,69 @@ static void clone_freeinstance(t_clone *x, int which)
         /* see comment in clone_loadbang() */
     canvas_closebang(c->c_gl);
     pd_free(&c->c_gl->gl_pd);
-    t_freebytes(c->c_vec, x->x_nout * sizeof(*c->c_vec));
+    freebytes(c->c_vec, x->x_nout * sizeof(*c->c_vec));
+}
+
+    /* Remake all cloned abstractions except for 'except'.
+    This function is used in glist_doreload() in g_editor.c.
+    It is always called with DSP switched off. */
+int clone_reload(t_pd *z, t_canvas *except)
+{
+    int i, j;
+    t_clone *x = (t_clone *)z;
+        /* check if inlets/outlets have changed. If so,
+        canvas_doreload() will remake the whole object. */
+    int nin = obj_ninlets(&except->gl_obj);
+    int nout = obj_noutlets(&except->gl_obj);
+    if (nin != x->x_nin || nout != x->x_nout)
+        return 0;
+    for (i = 0; i < nin; i++)
+        if (x->x_invec[i].i_signal
+            != obj_issignalinlet(&except->gl_obj, i))
+            return 0;
+    for (i = 0; i < nout; i++)
+        if (x->x_outvec[i].o_signal
+            != obj_issignaloutlet(&except->gl_obj, i))
+            return 0;
+
+    canvas_setcurrent(x->x_canvas);
+    for (i = 0; i < x->x_n; i++)
+    {
+        if (x->x_vec[i].c_gl != except)
+        {
+            t_canvas *c;
+            SETFLOAT(x->x_argv, x->x_startvoice + i);
+            if (!(c = clone_makeone(x->x_s, x->x_argc - x->x_suppressvoice,
+                x->x_argv + x->x_suppressvoice)))
+            {
+                pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
+                canvas_unsetcurrent(x->x_canvas);
+                return 0; /* abort reload */
+            }
+            clone_freeinstance(x, i);
+            clone_initinstance(x, i, c);
+            canvas_loadbang(c);
+        }
+        else
+        {
+                /* update outgoing connections, in case an outlet has
+                been deleted and re-added. */
+            for (j = 0; j < nout; j++)
+            {
+                t_outproxy *out = &x->x_vec[i].c_vec[j];
+                obj_disconnect(&except->gl_obj, j,
+                    (t_object *)(out), 0);
+                obj_connect(&except->gl_obj, j,
+                    (t_object *)(out), 0);
+            }
+        }
+    }
+    canvas_unsetcurrent(x->x_canvas);
+    return 1;
 }
 
 static void clone_setn(t_clone *x, t_floatarg f)
 {
-    int dspstate = canvas_suspend_dsp();
     int nwas = x->x_n, wantn = f, i, j;
     if (!nwas)
     {
@@ -253,7 +312,7 @@ static void clone_setn(t_clone *x, t_floatarg f)
             x->x_argv + x->x_suppressvoice)))
         {
             pd_error(x, "clone: couldn't create '%s'", x->x_s->s_name);
-            goto done;
+            return;
         }
         x->x_vec = (t_copy *)t_resizebytes(x->x_vec, i * sizeof(t_copy),
             (i+1) * sizeof(t_copy));
@@ -268,8 +327,6 @@ static void clone_setn(t_clone *x, t_floatarg f)
             wantn * sizeof(t_copy));
         x->x_n = wantn;
     }
-done:
-    canvas_resume_dsp(dspstate);
 }
 
 static void clone_click(t_clone *x, t_floatarg xpos, t_floatarg ypos,
