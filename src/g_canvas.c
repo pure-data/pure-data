@@ -900,14 +900,20 @@ void canvas_restore(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 static void canvas_loadbangabstractions(t_canvas *x)
 {
     t_gobj *y;
+    t_symbol *s = gensym("loadbang");
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
-    {
-        if (canvas_isabstraction((t_canvas *)y))
-            canvas_loadbang((t_canvas *)y);
-        else
-            canvas_loadbangabstractions((t_canvas *)y);
-    }
+        {
+            if (canvas_isabstraction((t_canvas *)y))
+                canvas_loadbang((t_canvas *)y);
+            else
+                canvas_loadbangabstractions((t_canvas *)y);
+        }
+        else if ((pd_class(&y->g_pd) == clone_class) &&
+            zgetfn(&y->g_pd, s))
+        {
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        }
 }
 
 void canvas_loadbangsubpatches(t_canvas *x)
@@ -916,14 +922,17 @@ void canvas_loadbangsubpatches(t_canvas *x)
     t_symbol *s = gensym("loadbang");
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
-    {
-        if (!canvas_isabstraction((t_canvas *)y))
-            canvas_loadbangsubpatches((t_canvas *)y);
-    }
+        {
+            if (!canvas_isabstraction((t_canvas *)y))
+                canvas_loadbangsubpatches((t_canvas *)y);
+        }
     for (y = x->gl_list; y; y = y->g_next)
         if ((pd_class(&y->g_pd) != canvas_class) &&
+            (pd_class(&y->g_pd) != clone_class) &&
             zgetfn(&y->g_pd, s))
-                pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        {
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        }
 }
 
 void canvas_loadbang(t_canvas *x)
