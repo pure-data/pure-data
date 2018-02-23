@@ -4,10 +4,6 @@
 #include <string.h>
 
 /* ---------- clone - maintain copies of a patch ----------------- */
-/* OOPS - have to add outlet vector to each copy to disambiguate */
-/* next: feed each instance its serial number */
-/* next next: DSP method */
-
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
@@ -54,9 +50,9 @@ typedef struct _clone
     int x_n;            /* number of copies */
     t_copy *x_vec;      /* the copies */
     int x_nin;
-    t_in *x_invec;
+    t_in *x_invec;      /* inlet proxies */
     int x_nout;
-    t_out **x_outvec;
+    t_out **x_outvec;   /* outlet proxies */
     t_symbol *x_s;      /* name of abstraction */
     int x_argc;         /* creation arguments for abstractions */
     t_atom *x_argv;
