@@ -744,6 +744,7 @@ else if (action == UNDO_FREE)
 }
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
+int clone_reload(t_pd *z, t_canvas *except);
 
     /* recursively check for abstractions to reload as result of a save.
     Don't reload the one we just saved ("except") though. */
@@ -762,12 +763,13 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
                     canvas_getdir((t_canvas *)g) == dir);
-            /* also remake it if it's a "clone" with that name */
+            /* check if it's a "clone" with that name */
         if (pd_class(&g->g_pd) == clone_class &&
             clone_match(&g->g_pd, name, dir))
         {
-                /* LATER try not to remake the one that equals "except" */
-            remakeit = 1;
+            /* try to reload "clone" object, otherwise remake it */
+            if (!clone_reload(&g->g_pd, (t_canvas *)except))
+                remakeit = 1;
         }
         if (remakeit)
         {
@@ -793,7 +795,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         {
             if (g != except && pd_class(&g->g_pd) == canvas_class)
                 glist_doreload((t_canvas *)g, name, dir, except);
-             g = g->g_next;
+            g = g->g_next;
         }
     }
     if (!hadwindow && gl->gl_editor)
