@@ -823,9 +823,11 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
     }
 }
 
-#define CLOSED 1
-#define BEZ 2
-#define NOMOUSE 4
+#define CLOSED 1 /* polygon */
+#define BEZ 2 /* bezier shape */
+#define NOMOUSE 4 /* disable all mouse interaction */
+#define NOGRAB 8 /* disable mouse grabbing in interactive mode */
+#define NOSELECT 16 /* disable mouse selection in edit mode  */
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -991,7 +993,7 @@ t_class *curve_class;
 typedef struct _curve
 {
     t_object x_obj;
-    int x_flags;            /* CLOSED and/or BEZ and/or NOMOUSE */
+    int x_flags;    /* CLOSED, BEZ, NOMOUSE, NOGRAB, NOSELECT */
     t_fielddesc x_fillcolor;
     t_fielddesc x_outlinecolor;
     t_fielddesc x_width;
@@ -1032,7 +1034,18 @@ static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
         }
         else if (!strcmp(flag, "-x"))
         {
+            /* disable all mouse interaction */
             flags |= NOMOUSE;
+        }
+        else if (!strcmp(flag, "-g"))
+        {
+            /* disable mouse grabbing in interactive mode */
+            flags |= NOGRAB;
+        }
+        else if (!strcmp(flag, "-s"))
+        {
+            /* disable mouse selection in edit mode */
+            flags |= NOSELECT;
         }
         else
         {
@@ -1088,7 +1101,8 @@ static void curve_getrect(t_gobj *z, t_glist *glist,
     t_fielddesc *f = x->x_vec;
     int x1 = 0x7fffffff, x2 = -0x7fffffff, y1 = 0x7fffffff, y2 = -0x7fffffff;
     if (!fielddesc_getfloat(&x->x_vis, template, data, 0) ||
-        (x->x_flags & NOMOUSE))
+        (x->x_flags & NOMOUSE) ||
+        (glist->gl_edit && x->x_flags & NOSELECT))
     {
         *xp1 = *yp1 = 0x7fffffff;
         *xp2 = *yp2 = -0x7fffffff;
@@ -1280,7 +1294,8 @@ static int curve_click(t_gobj *z, t_glist *glist,
     int bestn = -1;
     int besterror = 0x7fffffff;
     t_fielddesc *f;
-    if (!fielddesc_getfloat(&x->x_vis, template, data, 0))
+    if ((x->x_flags & NOGRAB) ||
+        !fielddesc_getfloat(&x->x_vis, template, data, 0))
         return (0);
     for (i = 0, f = x->x_vec; i < n; i++, f += 2)
     {
