@@ -163,7 +163,8 @@ static void clone_instance_init(t_clone *x, int i, t_canvas *c)
     x->x_vec[i].c_on = 0;
     t_out *outvec = x->x_outvec[i] =
         (t_out *)getbytes(x->x_nout * sizeof(*outvec));
-    for (int j = 0; j < x->x_nout; j++)
+    int j;
+    for (j = 0; j < x->x_nout; j++)
     {
         outvec[j].o_pd = clone_out_class;
         outvec[j].o_signal = obj_issignaloutlet(&c->gl_obj, j);
@@ -259,7 +260,8 @@ int clone_reload(t_pd *z, t_canvas *except)
         {
             /* update outgoing connections 
               (in case an outlet got deleted and re-added) */
-            for (int j = 0; j < x->x_nout; j++)
+            int j;
+            for (j = 0; j < x->x_nout; j++)
             {
                 t_out *outvec = x->x_outvec[i];
                 obj_disconnect(&except->gl_obj, j,
@@ -404,7 +406,8 @@ static void clone_free(t_clone *x)
 {
     if (x->x_vec)
     {
-        for (int i = 0; i < x->x_n; i++)
+        int i;
+        for (i = 0; i < x->x_n; i++)
             clone_instance_free(x, i);
         t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
         t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
