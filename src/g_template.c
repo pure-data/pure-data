@@ -1042,20 +1042,29 @@ static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
     else classname += 4;
     if (classname[0] == 'c') flags |= BEZ;
     fielddesc_setfloat_const(&x->x_vis, 1);
-    while (1)
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
-        if (!strcmp(firstarg->s_name, "-v") && argc > 1)
+        const char *flag = argv->a_w.w_symbol->s_name;
+        if (!strcmp(flag, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+        }
+        else if (!strcmp(flag, "-v") && argc > 1)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
-            argc -= 2; argv += 2;
-        }
-        else if (!strcmp(firstarg->s_name, "-x"))
-        {
-            flags |= NOMOUSE;
             argc -= 1; argv += 1;
         }
-        else break;
+        else if (!strcmp(flag, "-x"))
+        {
+            flags |= NOMOUSE;
+        }
+        else
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                flag);
+        }
+        argc--; argv++;
     }
     x->x_flags = flags;
     if ((flags & CLOSED) && argc)
