@@ -48,7 +48,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
         dialog_path::add dialog_path::edit dialog_path::commit \
         [_ "Pd search path for objects, help, fonts, and other files"] \
         450 300 1
-    wm geometry $mytoplevel ""
+    wm withdraw $mytoplevel
     ::pd_bindings::dialog_bindings $mytoplevel "path"
     set readonly_color [lindex [$mytoplevel configure -background] end]
 
@@ -140,9 +140,10 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # re-adjust height based on optional sections
     update
-    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
+    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo reqheight $mytoplevel]
 
     position_over_window $mytoplevel .pdwindow
+    raise $mytoplevel
 }
 
 # browse for a new Pd user docs path
