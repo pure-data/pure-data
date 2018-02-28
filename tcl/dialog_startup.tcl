@@ -86,7 +86,6 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         [_ "Pd libraries to load on startup"] \
         450 300 0
     wm withdraw $mytoplevel
-    #wm geometry $mytoplevel ""
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     frame $mytoplevel.flags
