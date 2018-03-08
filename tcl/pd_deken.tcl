@@ -95,7 +95,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.3.0] } {
+if { [::deken::versioncheck 0.3.1] } {
 
 ## FIXXXXME only initialize vars if not yet set
 set ::deken::installpath {}
@@ -201,7 +201,14 @@ Set objShell = Nothing
         return 0
     }
     ## try to call the script
-    if { [ catch { exec cscript $::deken::_vbsunzip "${zipfile}" .} stdout ] } {
+    ## (and windows requires the file to have a .zip extension!!!)
+    if { [ catch {
+	set zipfilezip ${zipfile}.zip
+	file rename ${zipfile} ${zipfilezip}
+	exec cscript $::deken::_vbsunzip "${zipfilezip}" .
+	file rename ${zipfilezip} ${zipfile}
+    } stdout ]
+     } {
         ::pdwindow::debug "\[deken\] VBS-unzip: $::deken::_vbsunzip\n$stdout\n"
         return 0
     }
@@ -252,7 +259,7 @@ proc ::deken::utilities::extract {installdir filename fullpkgfile} {
     } else {
         # Open both the fullpkgfile folder and the zipfile itself
         # NOTE: in tcl 8.6 it should be possible to use the zlib interface to actually do the unzip
-        ::pdwindow::error [_ "\[deken\]: Unable to extract package automatically." ] warn
+        ::pdwindow::error [_ "\[deken\]: Unable to extract package automatically." ]
         ::pdwindow::post [_ "Please perform the following steps manually:" ]
         ::pdwindow::post [format [_ "1. Unzip %s." ]  $fullpkgfile ]
         pd_menucommands::menu_openfile $fullpkgfile
