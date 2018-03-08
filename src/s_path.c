@@ -235,9 +235,9 @@ int sys_usestdpath = 1;
 
 void sys_setextrapath(const char *p)
 {
-    char pathbuf[MAXPDSTRING];
+//    char pathbuf[MAXPDSTRING];
     namelist_free(STUFF->st_staticpath);
-    /* add standard place for users to install stuff first */
+/* remove extra standard paths 
 #ifdef __gnu_linux__
     sys_expandpath("~/.local/lib/pd/extra/", pathbuf, MAXPDSTRING);
     STUFF->st_staticpath = namelist_append(0, pathbuf, 0);
@@ -259,7 +259,7 @@ void sys_setextrapath(const char *p)
     sys_expandpath("%CommonProgramFiles%/Pd", pathbuf, MAXPDSTRING);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, pathbuf, 0);
 #endif
-    /* add built-in "extra" path last so its checked last */
+*/
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, p, 0);
 }
 
