@@ -930,7 +930,7 @@ void glob_watchdog(t_pd *dummy)
 }
 #endif
 
-static void sys_init_deken()
+static void sys_init_deken( void)
 {
     const char*os =
 #if defined __linux__
