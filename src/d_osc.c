@@ -507,7 +507,7 @@ static void noise_setup(void)
     class_addmethod(noise_class, (t_method)noise_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addmethod(noise_class, (t_method)noise_float,
-        gensym("float"), A_FLOAT, 0);
+        gensym("seed"), A_FLOAT, 0);
 }
 
 /* ----------------------- global setup routine ---------------- */
