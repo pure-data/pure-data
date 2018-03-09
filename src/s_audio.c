@@ -822,17 +822,17 @@ void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int newaudioindev[4], newaudioinchan[4],
         newaudiooutdev[4], newaudiooutchan[4];
         /* the new values the dialog came back with: */
-    int newrate = atom_getintarg(16, argc, argv);
-    int newadvance = atom_getintarg(17, argc, argv);
-    int newcallback = atom_getintarg(18, argc, argv);
-    int newblocksize = atom_getintarg(19, argc, argv);
+    int newrate = atom_getfloatarg(16, argc, argv);
+    int newadvance = atom_getfloatarg(17, argc, argv);
+    int newcallback = atom_getfloatarg(18, argc, argv);
+    int newblocksize = atom_getfloatarg(19, argc, argv);
 
     for (i = 0; i < 4; i++)
     {
-        newaudioindev[i] = atom_getintarg(i, argc, argv);
-        newaudioinchan[i] = atom_getintarg(i+4, argc, argv);
-        newaudiooutdev[i] = atom_getintarg(i+8, argc, argv);
-        newaudiooutchan[i] = atom_getintarg(i+12, argc, argv);
+        newaudioindev[i] = atom_getfloatarg(i, argc, argv);
+        newaudioinchan[i] = atom_getfloatarg(i+4, argc, argv);
+        newaudiooutdev[i] = atom_getfloatarg(i+8, argc, argv);
+        newaudiooutchan[i] = atom_getfloatarg(i+12, argc, argv);
     }
 
     for (i = 0, nindev = 0; i < 4; i++)
@@ -1089,7 +1089,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < noutdevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(outdevlist + i * DEVDESCSIZE))
                 comp = strlen(outdevlist + i * DEVDESCSIZE);
             if (!strncmp(name, outdevlist + i * DEVDESCSIZE, comp))
@@ -1100,7 +1100,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < nindevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(indevlist + i * DEVDESCSIZE))
                 comp = strlen(indevlist + i * DEVDESCSIZE);
             if (!strncmp(name, indevlist + i * DEVDESCSIZE, comp))

@@ -45,7 +45,7 @@ DLLWRAP= dllwrap
 MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer
 
 PADIR = $(pd_src)/portaudio/portaudio
-ASIODIR = $(pd_src)/lib/ASIOSDK2.3
+ASIODIR = $(pd_src)/lib/ASIOSDK
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
@@ -60,7 +60,7 @@ OPT_CFLAGS =
 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
-# Some old code in asio/ASIOSDK2/common/combase.h needs to be ignored,
+# Some old code in asio/ASIOSDK/common/combase.h needs to be ignored,
 # we do this by setting the WINVER macro to min Windows XP aka 5.1.
 # Also, for SetDllDirectory() s_loader.c, we need a minium of Windows
 # XP SP1.  WINVER isnt' fine-grained enough for that, so we use the

@@ -71,7 +71,7 @@ static void textbuf_senditup(t_textbuf *x)
         if (!j) j = txt + ntxt;
         sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
             x, j-txt-i, txt+i);
-        i = (j-txt)+1;
+        i = (int)((j-txt)+1);
     }
     sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
     t_freebytes(txt, ntxt);
@@ -1949,11 +1949,9 @@ field named 't'.  I don't know how to make this not break
 pre-0.45 patches using templates named 'text'... perhaps this is a minor
 enough incompatibility that I'll just get away with it. */
 
-static void text_template_init( void)
+void text_template_init( void)
 {
     t_binbuf *b;
-    if (text_templatecanvas)
-        return;
     b = binbuf_new();
 
     glob_setfilename(0, gensym("_text_template"), gensym("."));

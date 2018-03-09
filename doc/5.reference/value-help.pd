@@ -1,48 +1,56 @@
-#N canvas 297 64 589 579 12;
+#N canvas 107 62 800 581 12;
 #X floatatom 24 55 5 0 0 0 - - -, f 5;
-#X text 24 498 abbreviation:;
+#X text 27 476 abbreviation:;
 #X text 79 10 -- nonlocal shared value (named variable);
 #X floatatom 24 130 5 0 0 0 - - -, f 5;
 #X msg 34 78 bang;
 #X obj 21 10 value;
 #X obj 24 105 value help-value1;
-#X obj 141 499 v;
-#X floatatom 180 55 5 0 0 0 - - -, f 5;
-#X floatatom 180 130 5 0 0 0 - - -, f 5;
-#X msg 190 78 bang;
-#X obj 180 105 value help-value1;
-#X floatatom 338 55 5 0 0 0 - - -, f 5;
-#X floatatom 338 130 5 0 0 0 - - -, f 5;
-#X msg 348 78 bang;
-#X obj 338 105 value help-value2;
+#X obj 144 477 v;
+#X floatatom 166 55 5 0 0 0 - - -, f 5;
+#X floatatom 166 130 5 0 0 0 - - -, f 5;
+#X msg 176 78 bang;
+#X obj 166 105 value help-value1;
+#X floatatom 316 55 5 0 0 0 - - -, f 5;
+#X floatatom 316 130 5 0 0 0 - - -, f 5;
+#X msg 326 78 bang;
+#X obj 316 105 value help-value2;
 #X text 30 169 "Value" stores a numeric value which is shared between
 all values with the same name (which need not be in the same Pd window.)
 ;
-#X text 392 54 numbers set the value;
-#X text 396 77 bang retrieves it;
-#X text 55 541 see also:;
-#X obj 142 540 expr;
-#X text 341 542 updated for Pd version 0.48;
-#X obj 349 303 value z;
-#X obj 428 292 expr z;
-#X floatatom 428 323 5 0 0 0 - - -, f 5;
-#X obj 428 260 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X text 370 54 numbers set the value;
+#X text 374 77 bang retrieves it;
+#X text 58 519 see also:;
+#X obj 145 518 expr;
+#X text 344 520 updated for Pd version 0.48;
+#X obj 312 267 value z;
+#X obj 391 256 expr z;
+#X floatatom 391 287 5 0 0 0 - - -, f 5;
+#X obj 391 224 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 349 274 5 0 0 0 - - -, f 5;
-#X obj 347 439 value y;
-#X obj 262 451 send y;
-#X floatatom 262 423 5 0 0 0 - - -, f 5;
-#X obj 347 412 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X floatatom 312 238 5 0 0 0 - - -, f 5;
+#X obj 365 379 value y;
+#X obj 280 391 send y;
+#X floatatom 280 363 5 0 0 0 - - -, f 5;
+#X obj 365 352 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 347 472 5 0 0 0 - - -, f 5;
-#X text 32 359 The [value] object can also receive float values sent
-via a [send] object or a message if it has a variable with the same
-name.;
-#X msg 430 431 \; y 5;
-#X obj 186 541 send;
-#X obj 232 541 float;
+#X floatatom 365 412 5 0 0 0 - - -, f 5;
+#X msg 448 371 \; y 5;
+#X obj 189 519 send;
+#X obj 235 519 float;
 #X text 31 225 The value may also be stored or recalled in expressions
-via the expr \, expr~ \, and fexpr~ objects.;
+via the expr \, expr~ \, and fexpr~ objects., f 34;
+#X floatatom 564 251 5 0 0 0 - - -, f 5;
+#X msg 564 139 bang;
+#X obj 564 225 value;
+#X msg 579 166 symbol help-value1;
+#X msg 580 192 symbol help-value2;
+#X text 559 50 if invoked without a creation argument \, the value
+object adds an inlet (at right) for setting the variable name with
+a "sytmbol" message:, f 30;
+#X text 32 359 The value object can also receive float values sent
+via a [send] object or a message if it has a variable with the same
+name., f 31;
 #X connect 0 0 6 0;
 #X connect 4 0 6 0;
 #X connect 6 0 3 0;
@@ -58,3 +66,7 @@ via the expr \, expr~ \, and fexpr~ objects.;
 #X connect 27 0 31 0;
 #X connect 29 0 28 0;
 #X connect 30 0 27 0;
+#X connect 37 0 38 0;
+#X connect 38 0 36 0;
+#X connect 39 0 38 1;
+#X connect 40 0 38 1;
