@@ -593,6 +593,11 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
+    if (x->gl_edit)
+    {
+        strncat(namebuf, " *edit*", MAXPDSTRING);
+        namebuf[MAXPDSTRING-1] = 0;
+    }
     sys_vgui("pdtk_canvas_reflecttitle .x%lx {%s} {%s} {%s} %d\n",
         x, canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf, x->gl_dirty);
 }
@@ -1366,7 +1371,7 @@ static void canvas_completepath(char *from, char *to, int bufsize)
     {
         to[0] = '\0';
     }
-    else
+    else if(sys_libdir)
     {   // if not absolute path, append Pd lib dir
         strncpy(to, sys_libdir->s_name, bufsize-10);
         to[bufsize-9] = '\0';

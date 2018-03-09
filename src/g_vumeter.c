@@ -331,6 +331,8 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
              xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
              xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
              x, 1);
+        /* keep above outlets */
+        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 1);
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && x->x_gui.x_fsf.x_snd_able)
     {
@@ -349,6 +351,8 @@ static void vu_draw_io(t_vu* x, t_glist* glist, int old_snd_rcv_flags)
              xpos + x->x_gui.x_w + hmargin - iow, ypos - vmargin,
              xpos + x->x_gui.x_w + hmargin, ypos - vmargin - IEMGUI_ZOOM(x) + ioh,
              x, 1);
+        /* keep above inlets */
+        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 1);
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && x->x_gui.x_fsf.x_rcv_able)
     {

@@ -811,7 +811,7 @@ int binbuf_read(t_binbuf *b, char *filename, char *dirname, int crflag)
         perror(namebuf);
         return (1);
     }
-    if ((length = lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
+    if ((length = (long)lseek(fd, 0, SEEK_END)) < 0 || lseek(fd, 0, SEEK_SET) < 0
         || !(buf = t_getbytes(length)))
     {
         fprintf(stderr, "lseek: ");

@@ -270,7 +270,7 @@ void glob_finderror(t_pd *dummy)
 void glob_findinstance(t_pd *dummy, t_symbol*s)
 {
     // revert s to (potential) pointer to object
-    long obj = 0;
+    PD_LONGINTTYPE obj = 0;
     if (sscanf(s->s_name, ".x%lx", &obj))
     {
         if (obj)
