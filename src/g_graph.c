@@ -287,10 +287,15 @@ void glist_sort(t_glist *x)
 
 /* --------------- inlets and outlets  ----------- */
 
+t_inlet *vsignalinlet_new(t_object *owner, t_pd *dest);
 
 t_inlet *canvas_addinlet(t_canvas *x, t_pd *who, t_symbol *s)
 {
-    t_inlet *ip = inlet_new(&x->gl_obj, who, s, 0);
+    t_inlet *ip;
+    if (s != &s_signal)
+        ip = inlet_new(&x->gl_obj, who, s, 0);
+    else
+        ip = vsignalinlet_new(&x->gl_obj, who);
     if (!x->gl_loading && x->gl_owner && glist_isvisible(x->gl_owner))
     {
         gobj_vis(&x->gl_gobj, x->gl_owner, 0);
