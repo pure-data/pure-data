@@ -344,6 +344,8 @@ static void clone_dsp(t_clone *x, t_signal **sp)
     }
 }
 
+t_inlet *vsignalinlet_new(t_object *owner, t_pd *dest);
+
 static void *clone_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_clone *x = (t_clone *)pd_new(clone_class);
@@ -403,7 +405,7 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             obj_issignalinlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_invec[i].i_n = i;
         if (x->x_invec[i].i_signal)
-            signalinlet_new(&x->x_obj, 0);
+            vsignalinlet_new(&x->x_obj, &x->x_invec[i].i_pd);
         else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
     }
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
