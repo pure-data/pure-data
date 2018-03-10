@@ -26,6 +26,7 @@ struct _inlet
     t_pd *i_dest;
     t_symbol *i_symfrom;
     union inletunion i_un;
+    unsigned char i_generic;
 };
 
 #define i_symto i_un.iu_symto
@@ -59,6 +60,7 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
         y->i_next = x;
     }
     else owner->ob_inlet = x;
+    x->i_generic = 0;
     return (x);
 }
 
@@ -66,6 +68,14 @@ t_inlet *signalinlet_new(t_object *owner, t_float f)
 {
     t_inlet *x = inlet_new(owner, &owner->ob_pd, &s_signal, &s_signal);
     x->i_un.iu_floatsignalvalue = f;
+    return (x);
+}
+
+t_inlet *vsignalinlet_new(t_object *owner, t_pd *dest)
+{
+    t_inlet *x = inlet_new(owner, dest, &s_signal, &s_signal);
+    x->i_un.iu_floatsignalvalue = 0;
+    x->i_generic = 1;
     return (x);
 }
 
@@ -82,7 +92,7 @@ static void inlet_bang(t_inlet *x)
 {
     if (x->i_symfrom == &s_bang)
         pd_vmess(x->i_dest, x->i_symto, "");
-    else if (!x->i_symfrom) pd_bang(x->i_dest);
+    else if (!x->i_symfrom || x->i_generic) pd_bang(x->i_dest);
     else if (x->i_symfrom == &s_list)
         inlet_list(x, &s_bang, 0, 0);
     else inlet_wrong(x, &s_bang);
@@ -92,7 +102,7 @@ static void inlet_pointer(t_inlet *x, t_gpointer *gp)
 {
     if (x->i_symfrom == &s_pointer)
         pd_vmess(x->i_dest, x->i_symto, "p", gp);
-    else if (!x->i_symfrom) pd_pointer(x->i_dest, gp);
+    else if (!x->i_symfrom || x->i_generic) pd_pointer(x->i_dest, gp);
     else if (x->i_symfrom == &s_list)
     {
         t_atom a;
@@ -108,7 +118,7 @@ static void inlet_float(t_inlet *x, t_float f)
         pd_vmess(x->i_dest, x->i_symto, "f", (t_floatarg)f);
     else if (x->i_symfrom == &s_signal)
         x->i_un.iu_floatsignalvalue = f;
-    else if (!x->i_symfrom)
+    else if (!x->i_symfrom || x->i_generic)
         pd_float(x->i_dest, f);
     else if (x->i_symfrom == &s_list)
     {
@@ -123,7 +133,7 @@ static void inlet_symbol(t_inlet *x, t_symbol *s)
 {
     if (x->i_symfrom == &s_symbol)
         pd_vmess(x->i_dest, x->i_symto, "s", s);
-    else if (!x->i_symfrom) pd_symbol(x->i_dest, s);
+    else if (!x->i_symfrom || x->i_generic) pd_symbol(x->i_dest, s);
     else if (x->i_symfrom == &s_list)
     {
         t_atom a;
@@ -139,7 +149,7 @@ static void inlet_list(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
     if (x->i_symfrom == &s_list || x->i_symfrom == &s_float
         || x->i_symfrom == &s_symbol || x->i_symfrom == &s_pointer)
             typedmess(x->i_dest, x->i_symto, argc, argv);
-    else if (!x->i_symfrom) pd_list(x->i_dest, s, argc, argv);
+    else if (!x->i_symfrom || x->i_generic) pd_list(x->i_dest, s, argc, argv);
     else if (!argc)
       inlet_bang(x);
     else if (argc==1 && argv->a_type == A_FLOAT)
@@ -153,7 +163,7 @@ static void inlet_anything(t_inlet *x, t_symbol *s, int argc, t_atom *argv)
 {
     if (x->i_symfrom == s)
         typedmess(x->i_dest, x->i_symto, argc, argv);
-    else if (!x->i_symfrom)
+    else if (!x->i_symfrom || x->i_generic)
         typedmess(x->i_dest, s, argc, argv);
     else inlet_wrong(x, s);
 }
