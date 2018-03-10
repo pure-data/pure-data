@@ -3,54 +3,64 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 309 129 694 542 12;
+#N canvas 67 110 694 542 12;
 #X obj 208 496 list;
 #X text 34 496 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 844 217 900 716 define 0;
-#X text 295 562 creation arguments:;
-#X text 325 597 optional name;
-#X text 322 164 read from a file;
-#X text 324 195 write to a file;
-#X text 32 20 "array define" maintains an array and can name it so
+#N canvas 149 25 900 732 define 0;
+#X text 295 518 creation arguments:;
+#X text 325 553 optional name;
+#X text 322 139 read from a file;
+#X text 324 170 write to a file;
+#X text 32 40 "array define" maintains an array and can name it so
 that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 324 614 optional size (100 by default);
-#X msg 35 138 const 0;
-#X text 325 138 set to a constant (0 \, for instance);
-#X msg 45 167 read array-object-help.txt;
-#X msg 45 194 write array-object-help.txt;
-#X obj 36 596 array define array-help-1;
-#X msg 45 224 resize 100;
-#X text 71 255 ... other messages are also forwarded to the array like
+#X text 324 570 optional size (100 by default);
+#X msg 35 113 const 0;
+#X text 325 113 set to a constant (0 \, for instance);
+#X msg 45 142 read array-object-help.txt;
+#X msg 45 169 write array-object-help.txt;
+#X obj 36 520 array define array-help-1;
+#X msg 45 199 resize 100;
+#X text 71 230 ... other messages are also forwarded to the array like
 those above - xticks \, etc \, and also lists to set values.;
 #X obj 154 412 r array-help-send;
-#X text 221 313 send a pointer to a named receive object;
 #X floatatom 154 460 5 0 0 0 - - -, f 5;
 #X obj 364 407 r array-help-send;
 #X floatatom 364 481 5 0 0 0 - - -, f 5;
-#X text 46 570 click to open or edit array:;
+#X text 46 495 click to open or edit array:;
 #X obj 364 431 t b p;
 #X obj 154 436 getsize float-array z;
 #X obj 364 456 array size -s float-array z;
 #X text 109 349 The pointer will be to a structure float-array and
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
-#X obj 38 659 array define -k array-help-2 10;
+#X obj 299 598 array define -k array-help-2 10;
 #A 0 -0.320006 0 0 0 0.973333 0 0 0 0 0;
-#X msg 49 313 send array-help-send;
-#X text 323 580 optional -k flag to keep contents;
+#X msg 64 314 send array-help-send;
+#X text 323 536 optional -k flag to keep contents;
+#X obj 53 269 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 75 265 bang to output a pointer to a scalar (struct) containing
+the text - see first outlet below, f 45;
+#X text 216 314 or send a pointer to a named receive object;
+#X obj 36 544 s array-help-send;
+#X text 33 569 The outlet is pointer to a "float-array" scalar containing
+the array \, which is output when the object is sent a "bang". Above
+is a machinery for printing out the size of the array., f 30;
 #X connect 6 0 10 0;
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
+#X connect 10 0 28 0;
 #X connect 11 0 10 0;
-#X connect 13 0 20 0;
-#X connect 16 0 19 0;
-#X connect 19 0 21 0;
-#X connect 19 1 21 1;
-#X connect 20 0 15 0;
-#X connect 21 0 17 0;
-#X connect 24 0 10 0;
+#X connect 13 0 19 0;
+#X connect 15 0 18 0;
+#X connect 18 0 20 0;
+#X connect 18 1 20 1;
+#X connect 19 0 14 0;
+#X connect 20 0 16 0;
+#X connect 23 0 10 0;
+#X connect 25 0 10 0;
 #X restore 486 212 pd define;
 #X obj 112 496 text;
 #X obj 90 236 array size;
