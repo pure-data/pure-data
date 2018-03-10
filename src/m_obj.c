@@ -26,6 +26,7 @@ struct _inlet
     t_pd *i_dest;
     t_symbol *i_symfrom;
     union inletunion i_un;
+    int i_nconnections;
     unsigned char i_generic;
 };
 
@@ -61,6 +62,7 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
     }
     else owner->ob_inlet = x;
     x->i_generic = 0;
+    x->i_nconnections = 0;
     return (x);
 }
 
@@ -77,6 +79,11 @@ t_inlet *vsignalinlet_new(t_object *owner, t_pd *dest)
     x->i_un.iu_floatsignalvalue = 0;
     x->i_generic = 1;
     return (x);
+}
+
+int inlet_nconnections(t_inlet *x)
+{
+    return x->i_nconnections;
 }
 
 static void inlet_wrong(t_inlet *x, t_symbol *s)
@@ -478,6 +485,7 @@ t_outconnect *obj_connect(t_object *source, int outno,
     }
     for (i = sink->ob_inlet; i && inno; i = i->i_next, inno--) ;
     if (!i) return (0);
+    i->i_nconnections++;
     to = &i->i_pd;
 doit:
     oc = (t_outconnect *)t_getbytes(sizeof(*oc));
@@ -492,7 +500,6 @@ doit:
     }
     else o->o_connections = oc;
     if (o->o_sym == &s_signal) canvas_update_dsp();
-
     return (oc);
 }
 
@@ -516,6 +523,9 @@ void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
     }
     for (i = sink->ob_inlet; i && inno; i = i->i_next, inno--) ;
     if (!i) return;
+    i->i_nconnections--;
+    if (i->i_nconnections < 0)
+        bug("obj_disconnect");
     to = &i->i_pd;
 doit:
     if (!(oc = o->o_connections)) return;
