@@ -473,7 +473,7 @@ void outlet_free(t_outlet *x)
 t_outconnect *obj_connect(t_object *source, int outno,
     t_object *sink, int inno)
 {
-    t_inlet *i;
+    t_inlet *i = 0;
     t_outlet *o;
     t_pd *to;
     t_outconnect *oc, *oc2;
@@ -507,15 +507,16 @@ doit:
     }
     else o->o_connections = oc;
     if (o->o_sym == &s_signal) {
+      if (i)
+        i->i_nconnections_signal++;
       canvas_update_dsp();
-      i->i_nconnections_signal++;
     }
     return (oc);
 }
 
 void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
 {
-    t_inlet *i;
+    t_inlet *i = 0;
     t_outlet *o;
     t_pd *to;
     t_outconnect *oc, *oc2;
@@ -558,9 +559,11 @@ doit:
 done:
     if (o->o_sym == &s_signal) {
       canvas_update_dsp();
-      i->i_nconnections_signal--;
-      if (i->i_nconnections_signal < 0)
-        bug("obj_disconnect");
+      if (i) {
+        i->i_nconnections_signal--;
+        if (i->i_nconnections_signal < 0)
+          bug("obj_disconnect");
+      }
     }
 }
 
