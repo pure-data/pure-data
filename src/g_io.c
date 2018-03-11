@@ -115,11 +115,11 @@ int vinlet_issignal(t_vinlet *x)
     return (x->x_buf != 0);
 }
 
-int inlet_nconnections(t_inlet *x);
+int inlet_nconnections_signal(t_inlet *x);
 
 void vinlet_status(t_vinlet *x)
 {
-    outlet_float(x->x_status, inlet_nconnections(x->x_inlet) != 0);
+    outlet_float(x->x_status, inlet_nconnections_signal(x->x_inlet));
 }
 
 t_int *vinlet_perform(t_int *w)
