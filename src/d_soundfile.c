@@ -260,9 +260,9 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
 
 int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
 {
-    int format, nchannels, bigendian, bytespersamp, samprate, swap, sysrtn;
+    int format, nchannels, bigendian, bytespersamp, samprate, swap;
     int headersize = 0;
-    long bytelimit = 0x7fffffff;
+    long sysrtn, bytelimit = 0x7fffffff;
     errno = 0;
     if (p_info->headersize >= 0) /* header detection overridden */
     {
@@ -284,7 +284,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
             t_datachunk b_datachunk;
             t_comm b_commchunk;
         } buf;
-        int bytesread = read(fd, buf.b_c, READHDRSIZE);
+        long bytesread = read(fd, buf.b_c, READHDRSIZE);
         int format;
         if (bytesread < 4)
             goto badheader;
@@ -371,7 +371,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else if (format == 32)
                         bytespersamp = 4;
                     else goto badheader;
-                    samprate = swap2(buf.b_fmt.f_samplespersec, swap);
+                    samprate = swap4(buf.b_fmt.f_samplespersec, swap);
                 }
                 seekout = lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
@@ -384,7 +384,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     wavechunk->wc_id[1],
                     wavechunk->wc_id[2],
                     wavechunk->wc_id[3], seekto); */
-                headersize = seekto;
+                headersize = (int)seekto;
             }
             bytelimit = swap4(wavechunk->wc_size, swap);
             headersize += 8;
@@ -442,7 +442,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                 if (read(fd, buf.b_c, sizeof(t_datachunk)) <
                     (int) sizeof(t_datachunk))
                         goto badheader;
-                headersize = seekto;
+                headersize = (int)seekto;
             }
             bytelimit = swap4(datachunk->dc_size, swap) - 8;
             headersize += sizeof(t_datachunk);
@@ -574,10 +574,11 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
 }
 
 static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
-    long itemsread, unsigned char *buf, int nitems, int bytespersamp,
+    long itemsread, unsigned char *buf, long nitems, int bytespersamp,
     int bigendian)
 {
-    int i, j;
+    int i;
+    long j;
     unsigned char *sp, *sp2;
     t_word *wp;
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
@@ -827,7 +828,7 @@ usage:
 
 /* p_headersize is a getter, set to NULL if not needed */
 static int create_soundfile(t_canvas *canvas, const char *filename,
-    int filetype, int nframes, int bytespersamp, int bigendian, int nchannels,
+    int filetype, long nframes, int bytespersamp, int bigendian, int nchannels,
     int swap, t_float samplerate, int *p_headersize)
 {
     char filenamebuf[MAXPDSTRING], buf2[MAXPDSTRING];
@@ -865,17 +866,17 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
             strcmp(filenamebuf + strlen(filenamebuf)-5, ".aiff"))
                 strcat(filenamebuf, ".aif");
         strncpy(aiffhdr->a_fileid, "FORM", 4);
-        aiffhdr->a_chunksize = swap4(datasize + sizeof(*aiffhdr) + 4, swap);
+        aiffhdr->a_chunksize = swap4((uint32_t)(datasize + sizeof(*aiffhdr) + 4), swap);
         strncpy(aiffhdr->a_aiffid, "AIFF", 4);
         strncpy(aiffhdr->a_fmtid, "COMM", 4);
         aiffhdr->a_fmtchunksize = swap4(18, swap);
         aiffhdr->a_nchannels = swap2(nchannels, swap);
-        longtmp = swap4(nframes, swap);
+        longtmp = swap4((uint32_t)nframes, swap);
         memcpy(&aiffhdr->a_nframeshi, &longtmp, 4);
         aiffhdr->a_bitspersamp = swap2(8 * bytespersamp, swap);
         makeaiffsamprate(samplerate, aiffhdr->a_samprate);
         strncpy(((char *)(&aiffhdr->a_samprate))+10, "SSND", 4);
-        longtmp = swap4(datasize + 8, swap);
+        longtmp = swap4((uint32_t)(datasize + 8), swap);
         memcpy(((char *)(&aiffhdr->a_samprate))+14, &longtmp, 4);
         memset(((char *)(&aiffhdr->a_samprate))+18, 0, 8);
         headersize = AIFFPLUS;
@@ -886,7 +887,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
         if (strcmp(filenamebuf + strlen(filenamebuf)-4, ".wav"))
             strcat(filenamebuf, ".wav");
         strncpy(wavehdr->w_fileid, "RIFF", 4);
-        wavehdr->w_chunksize = swap4(datasize + sizeof(*wavehdr) - 8, swap);
+        wavehdr->w_chunksize = swap4((uint32_t)(datasize + sizeof(*wavehdr) - 8), swap);
         strncpy(wavehdr->w_waveid, "WAVE", 4);
         strncpy(wavehdr->w_fmtid, "fmt ", 4);
         wavehdr->w_fmtchunksize = swap4(16, swap);
@@ -899,7 +900,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
         wavehdr->w_nblockalign = swap2(nchannels * bytespersamp, swap);
         wavehdr->w_nbitspersample = swap2(8 * bytespersamp, swap);
         strncpy(wavehdr->w_datachunkid, "data", 4);
-        wavehdr->w_datachunksize = swap4(datasize, swap);
+        wavehdr->w_datachunksize = swap4((uint32_t)datasize, swap);
         headersize = sizeof(t_wave);
     }
 
@@ -934,14 +935,14 @@ static void soundfile_finishwrite(void *obj, char *filename, int fd,
                 ((char *)(&((t_wave *)0)->w_chunksize)) - (char *)0,
                     SEEK_SET) == 0)
                         goto baddonewrite;
-            mofo = swap4(datasize + sizeof(t_wave) - 8, swap);
+            mofo = swap4((uint32_t)(datasize + sizeof(t_wave) - 8), swap);
             if (write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
             if (lseek(fd,
                 ((char *)(&((t_wave *)0)->w_datachunksize)) - (char *)0,
                     SEEK_SET) == 0)
                         goto baddonewrite;
-            mofo = swap4(datasize, swap);
+            mofo = swap4((uint32_t)datasize, swap);
             if (write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
         }
@@ -952,19 +953,19 @@ static void soundfile_finishwrite(void *obj, char *filename, int fd,
                 ((char *)(&((t_aiff *)0)->a_nframeshi)) - (char *)0,
                     SEEK_SET) == 0)
                         goto baddonewrite;
-            mofo = swap4(itemswritten, swap);
+            mofo = swap4((uint32_t)itemswritten, swap);
             if (write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
             if (lseek(fd,
                 ((char *)(&((t_aiff *)0)->a_chunksize)) - (char *)0,
                     SEEK_SET) == 0)
                         goto baddonewrite;
-            mofo = swap4(itemswritten*bytesperframe+AIFFHDRSIZE, swap);
+            mofo = swap4((uint32_t)(itemswritten*bytesperframe+AIFFHDRSIZE), swap);
             if (write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
             if (lseek(fd, (AIFFHDRSIZE+4), SEEK_SET) == 0)
                 goto baddonewrite;
-            mofo = swap4(itemswritten*bytesperframe, swap);
+            mofo = swap4((uint32_t)(itemswritten*bytesperframe), swap);
             if (write(fd, (char *)(&mofo), 4) < 4)
                 goto baddonewrite;
         }
@@ -1096,7 +1097,7 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
 }
 
 static void soundfile_xferout_words(int nchannels, t_word **vecs,
-    unsigned char *buf, int nitems, long onset, int bytespersamp,
+    unsigned char *buf, long nitems, long onset, int bytespersamp,
     int bigendian, t_sample normalfactor)
 {
     int i, j;
@@ -1241,15 +1242,16 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_soundfile_info info;
-    int resize = 0, i, j;
+    int resize = 0, i;
     long skipframes = 0, finalsize = 0, itemsleft,
-        maxsize = DEFMAXSIZE, itemsread = 0;
+        maxsize = DEFMAXSIZE, itemsread = 0, j;
     int fd = -1;
     char endianness, *filename;
     t_garray *garrays[MAXSFCHANS];
     t_word *vecs[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
-    int bufframes, nitems;
+    int bufframes;
+    long nitems;
     FILE *fp;
     info.samplerate = 0,
     info.channels = 0,
@@ -1389,7 +1391,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
 
     for (itemsread = 0; itemsread < finalsize; )
     {
-        int thisread = finalsize - itemsread;
+        long thisread = finalsize - itemsread;
         thisread = (thisread > bufframes ? bufframes : thisread);
         nitems = fread(sampbuf, info.channels * info.bytespersample, thisread, fp);
         if (nitems <= 0) break;
@@ -1428,8 +1430,8 @@ usage:
 done:
     if (fd >= 0)
         close (fd);
-    outlet_float(x->x_obj.ob_outlet, (t_float)itemsread);
     outlet_soundfile_info(x->x_out2, &info);
+    outlet_float(x->x_obj.ob_outlet, (t_float)itemsread);
 }
 
     /* this is broken out from soundfiler_write below so garray_write can
@@ -1438,9 +1440,9 @@ done:
 long soundfiler_dowrite(void *obj, t_canvas *canvas,
     int argc, t_atom *argv, t_soundfile_info *info)
 {
-    int endianness, swap, filetype, normalize, i, j;
+    int endianness, swap, filetype, normalize, i;
     long onset, nframes, itemsleft,
-        maxsize = DEFMAXSIZE, itemswritten = 0;
+        maxsize = DEFMAXSIZE, itemswritten = 0, j;
     t_garray *garrays[MAXSFCHANS];
     t_word *vectors[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
@@ -1518,7 +1520,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
 
     for (itemswritten = 0; itemswritten < nframes; )
     {
-        int thiswrite = nframes - itemswritten, nitems, nbytes;
+        long thiswrite = nframes - itemswritten, nitems, nbytes;
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
         soundfile_xferout_words(argc, vectors, (unsigned char *)sampbuf,
             thiswrite, onset, info->bytespersample, info->bigendian, normfactor);
@@ -1563,8 +1565,8 @@ static void soundfiler_write(t_soundfiler *x, t_symbol *s,
     info.bigendian = 0,
     info.bytelimit = 0x7fffffff;
     bozo = soundfiler_dowrite(x, x->x_canvas, argc, argv, &info);
-    outlet_float(x->x_obj.ob_outlet, (t_float)bozo);
     outlet_soundfile_info(x->x_out2, &info);
+    outlet_float(x->x_obj.ob_outlet, (t_float)bozo);
 }
 
 static void soundfiler_setup(void)
@@ -1714,7 +1716,7 @@ static void *readsf_child_main(void *zz)
         else if (x->x_requestcode == REQUEST_OPEN)
         {
             char boo[80];
-            int sysrtn, wantbytes;
+            long sysrtn, wantbytes;
 
                 /* copy file stuff out of the data structure so we can
                 relinquish the mutex while we're in open_soundfile(). */
@@ -2270,7 +2272,8 @@ static void *writesf_child_main(void *zz)
         else if (x->x_requestcode == REQUEST_OPEN)
         {
             char boo[80];
-            int fd, sysrtn, writebytes;
+            int fd, writebytes;
+            long sysrtn;
 
                 /* copy file stuff out of the data structure so we can
                 relinquish the mutex while we're in open_soundfile(). */

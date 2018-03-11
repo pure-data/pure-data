@@ -178,10 +178,10 @@ static void pique_doit(int npts, t_word *fpreal, t_word *fpimag,
 
 static void pique_list(t_pique *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int npts = atom_getintarg(0, argc, argv);
+    int npts = atom_getfloatarg(0, argc, argv);
     t_symbol *symreal = atom_getsymbolarg(1, argc, argv);
     t_symbol *symimag = atom_getsymbolarg(2, argc, argv);
-    int npeak = atom_getintarg(3, argc, argv);
+    int npeak = atom_getfloatarg(3, argc, argv);
     int n;
     t_garray *a;
     t_word *fpreal, *fpimag;

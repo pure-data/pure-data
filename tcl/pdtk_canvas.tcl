@@ -330,6 +330,13 @@ array set ::pdtk_canvas::::getscroll_tokens {}
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+    if {! [winfo exists $tkcanvas]} {
+        # catch closed canvas windows that might have left over tokens
+        if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
+            unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
+        }
+        return
+    }
     set mytoplevel [winfo toplevel $tkcanvas]
     set height [winfo height $tkcanvas]
     set width [winfo width $tkcanvas]

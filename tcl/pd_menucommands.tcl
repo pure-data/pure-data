@@ -151,6 +151,10 @@ proc ::pd_menucommands::menu_startup_dialog {} {
     }
 }
 
+proc ::pd_menucommands::menu_manual {} {
+    ::pd_menucommands::menu_doc_open doc/1.manual index.htm
+}
+
 proc ::pd_menucommands::menu_helpbrowser {} {
     ::helpbrowser::open_helpbrowser
 }
@@ -234,7 +238,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         set textfile [open $filename]
         while {![eof $textfile]} {
             set bigstring [read $textfile 1000]
-            regsub -all PD_BASEDIR $bigstring $::sys_guidir bigstring2
+            regsub -all PD_BASEDIR $bigstring $::sys_libdir bigstring2
             regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
             .aboutpd.text insert end $bigstring3
         }

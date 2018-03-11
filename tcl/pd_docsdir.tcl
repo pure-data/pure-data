@@ -31,7 +31,7 @@ namespace eval ::pd_docsdir:: {
 }
 
 # if empty, the user is prompted about creating this
-# if set to "DISABLED", the docs dit functionality is disabled
+# if set to "DISABLED", the docs dir functionality is disabled
 set ::pd_docsdir::docspath ""
 
 # self-init after loading

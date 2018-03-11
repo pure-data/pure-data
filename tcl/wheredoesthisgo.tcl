@@ -89,6 +89,21 @@ proc tkcanvas_name {mytoplevel} {
 }
 
 # ------------------------------------------------------------------------------
+# window helpers
+
+# position one window over another
+proc position_over_window {child parent} {
+    if {![winfo exists $parent]} {return}
+    # use internal tk::PlaceWindow http://wiki.tcl.tk/534
+    # so fallback if not available
+    if {[catch {tk::PlaceWindow $child widget $parent}]} {
+        set x [expr [winfo x $parent] + ([winfo width $parent] / 2) - ([winfo reqwidth $child] / 2)]
+        set y [expr [winfo y $parent] + ([winfo height $parent] / 2) - ([winfo reqheight $child] / 2)]
+        wm geometry $child "+${x}+${y}"
+    }
+}
+
+# ------------------------------------------------------------------------------
 # quoting functions
 
 # enquote a string for find, path, and startup dialog panels, to be decoded by
