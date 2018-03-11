@@ -27,6 +27,7 @@ struct _inlet
     t_symbol *i_symfrom;
     union inletunion i_un;
     int i_nconnections;
+    int i_nconnections_signal;
     unsigned char i_generic;
 };
 
@@ -63,6 +64,7 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
     else owner->ob_inlet = x;
     x->i_generic = 0;
     x->i_nconnections = 0;
+    x->i_nconnections_signal = 0;
     return (x);
 }
 
@@ -84,6 +86,11 @@ t_inlet *vsignalinlet_new(t_object *owner, t_pd *dest)
 int inlet_nconnections(t_inlet *x)
 {
     return x->i_nconnections;
+}
+
+int inlet_nconnections_signal(t_inlet *x)
+{
+    return x->i_nconnections_signal;
 }
 
 static void inlet_wrong(t_inlet *x, t_symbol *s)
@@ -499,7 +506,10 @@ doit:
         oc2->oc_next = oc;
     }
     else o->o_connections = oc;
-    if (o->o_sym == &s_signal) canvas_update_dsp();
+    if (o->o_sym == &s_signal) {
+      canvas_update_dsp();
+      i->i_nconnections_signal++;
+    }
     return (oc);
 }
 
@@ -546,7 +556,12 @@ doit:
         oc = oc2;
     }
 done:
-    if (o->o_sym == &s_signal) canvas_update_dsp();
+    if (o->o_sym == &s_signal) {
+      canvas_update_dsp();
+      i->i_nconnections_signal--;
+      if (i->i_nconnections_signal < 0)
+        bug("obj_disconnect");
+    }
 }
 
 /* ------ traversal routines for code that can't see our structures ------ */
