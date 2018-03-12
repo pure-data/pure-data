@@ -558,12 +558,12 @@ doit:
     }
 done:
     if (o->o_sym == &s_signal) {
-      canvas_update_dsp();
       if (i) {
         i->i_nconnections_signal--;
         if (i->i_nconnections_signal < 0)
           bug("obj_disconnect");
       }
+      canvas_update_dsp();
     }
 }
 
