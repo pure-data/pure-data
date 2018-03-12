@@ -38,6 +38,7 @@ typedef struct _in
     struct _clone *i_owner;
     int i_signal;
     int i_n;
+    t_inlet *i_inlet; //canvas inlet
 } t_in;
 
 typedef struct _out
@@ -75,6 +76,7 @@ int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
 }
 
 void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv);
+void obj_copyinlet_counts(t_object *x, int n, t_inlet * source);
 
 static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -308,6 +310,10 @@ static void clone_dsp(t_clone *x, t_signal **sp)
                 dsp_add_zero(sp[nin+i]->s_vec, sp[nin+i]->s_n);
             return;
         }
+
+        for (i = 0; i < x->x_nin; i++) {
+          obj_copyinlet_counts(&x->x_vec[j].c_gl->gl_obj, i, x->x_invec[i].i_inlet);
+        }
     }
     tempsigs = (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
         /* load input signals into signal vector to send subpatches */
@@ -405,8 +411,9 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             obj_issignalinlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_invec[i].i_n = i;
         if (x->x_invec[i].i_signal)
-            vsignalinlet_new(&x->x_obj, &x->x_invec[i].i_pd);
-        else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
+          x->x_invec[i].i_inlet = vsignalinlet_new(&x->x_obj, &x->x_invec[i].i_pd);
+        else 
+          x->x_invec[i].i_inlet = inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
     }
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
     x->x_outvec = (t_out **)getbytes(sizeof(*x->x_outvec));
