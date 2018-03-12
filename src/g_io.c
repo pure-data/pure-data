@@ -29,6 +29,7 @@ typedef struct _vinlet
     t_inlet *x_inlet;
     t_outlet * x_anyoutlet;
     t_outlet *x_status; /* status outlet */
+    int x_status_last;
     t_clock *x_clock;
     int x_bufsize;
     t_float *x_buf;         /* signal buffer; zero if not a signal */
@@ -50,9 +51,10 @@ static void *vinlet_new(t_symbol *s)
     x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, 0);
     x->x_bufsize = 0;
     x->x_buf = 0;
-    //x->x_anyoutlet = 0;
+    x->x_anyoutlet = 0;
     x->x_clock = 0;
     x->x_status = 0;
+    x->x_status_last = -1;
     outlet_new(&x->x_obj, 0);
     return (x);
 }
@@ -119,7 +121,12 @@ int inlet_nconnections_signal(t_inlet *x);
 
 void vinlet_status(t_vinlet *x)
 {
-    outlet_float(x->x_status, inlet_nconnections_signal(x->x_inlet));
+    int count = inlet_nconnections_signal(x->x_inlet);
+    if (count == x->x_status_last)
+      return;
+
+    x->x_status_last = count;
+    outlet_float(x->x_status, count);
 }
 
 t_int *vinlet_perform(t_int *w)
