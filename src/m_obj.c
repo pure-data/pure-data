@@ -792,3 +792,14 @@ void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv)
         typedmess(&i->i_pd, s, argc, argv);
     else bug("obj_sendinlet");
 }
+
+void obj_copyinlet_counts(t_object *x, int n, t_inlet * source) {
+    t_inlet *i;
+    for (i = x->ob_inlet; i && n; i = i->i_next, n--)
+        ;
+    if (i) {
+        i->i_nconnections = source->i_nconnections;
+        i->i_nconnections_signal = source->i_nconnections_signal;
+    }
+    else bug("obj_sendinlet");
+}
