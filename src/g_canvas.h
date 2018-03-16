@@ -44,8 +44,9 @@ extern "C" {
 #endif
 
 /* --------------------- geometry ---------------------------- */
-#define IOWIDTH  7       /* width of an inlet/outlet in pixels */
-#define IOHEIGHT 3       /* height of an inlet/outlet in pixels */
+#define IOWIDTH 7       /* width of an inlet/outlet in pixels */
+#define IHEIGHT 3       /* height of an inlet in pixels */
+#define OHEIGHT 3       /* height of an outlet in pixels */
 #define IOMIDDLE ((IOWIDTH-1)/2)
 #define GLIST_DEFGRAPHWIDTH 200
 #define GLIST_DEFGRAPHHEIGHT 140
