@@ -45,6 +45,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-e>      {menu_toggle_editmode}
     bind all <$::modifier-Key-f>      {menu_find_dialog}
     bind all <$::modifier-Key-g>      {menu_send %W findagain}
+    bind all <$::modifier-Key-k>      {menu_send %W connect_selection}
     bind all <$::modifier-Key-n>      {menu_new}
     bind all <$::modifier-Key-o>      {menu_open}
     bind all <$::modifier-Key-p>      {menu_print $::focused_window}
