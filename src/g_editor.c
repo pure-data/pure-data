@@ -2761,6 +2761,68 @@ static void canvas_tidy(t_canvas *x)
     canvas_dirty(x, 1);
 }
 
+    /* If we have two selected objects on the canvas, try to connect
+       the first outlet of the upper object to the first inlet with
+       a compatible type in the lower one. */
+static void canvas_connect_selection(t_canvas *x)
+{
+    t_gobj *y, *a, *b;
+    t_selection *sel;
+    t_object *objsrc, *objsink;
+    int ax1, ay1, ax2, ay2, bx1, by1, bx2, by2;
+
+    a = b = NULL;
+    sel = x->gl_editor ? x->gl_editor->e_selection : NULL;
+    for (; sel; sel = sel->sel_next)
+    {
+        if (!a)
+            gobj_getrect((a = sel->sel_what), x, &ax1, &ay1, &ax2, &ay2);
+        else if (!b)
+            gobj_getrect((b = sel->sel_what), x, &bx1, &by1, &bx2, &by2);
+        else
+            return;
+    }
+
+    if (!a || !b) return;
+
+    if (by1 < ay1) { y = a; a = b; b = y; }
+
+        /* check they're both patchable objects */
+    if (!(objsrc = pd_checkobject(&a->g_pd)) ||
+        !(objsink = pd_checkobject(&b->g_pd)))
+        return;
+
+    if (obj_noutlets(objsrc))
+    {
+        int out = 0, in;
+        int outsig = obj_issignaloutlet(objsrc, out);
+        int nin = obj_ninlets(objsink);
+
+        for (in = 0; in < nin; in++)
+            if (!(canvas_isconnected(x, objsrc, out, objsink, in)) &&
+                !(outsig && !obj_issignalinlet(objsink, in)))
+        {
+            t_outconnect *oc;
+
+            if (!(oc = obj_connect(objsrc, out, objsink, in))) return;
+
+            sys_vgui(
+                ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
+                glist_getcanvas(x), 0, 0, 0, 0,
+                (obj_issignaloutlet(objsrc, out) ? 2 : 1) * x->gl_zoom, oc);
+            canvas_fixlinesfor(x, objsrc);
+            canvas_dirty(x, 1);
+            canvas_setundo(x, canvas_undo_connect,
+                canvas_undo_set_connect(x,
+                    canvas_getindex(x, &objsrc->ob_g), out,
+                    canvas_getindex(x, &objsink->ob_g), in),
+                    "connect");
+
+            return;
+        }
+    }
+}
+
 static void canvas_texteditor(t_canvas *x)
 {
     t_rtext *foo;
@@ -2906,6 +2968,8 @@ void g_editor_setup(void)
         gensym("redo"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_tidy,
         gensym("tidy"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_connect_selection,
+        gensym("connect_selection"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_texteditor,
         gensym("texteditor"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_editmode,
