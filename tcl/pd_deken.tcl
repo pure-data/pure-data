@@ -95,7 +95,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.3.1] } {
+if { [::deken::versioncheck 0.4.0] } {
 
 ## FIXXXXME only initialize vars if not yet set
 set ::deken::installpath {}
@@ -337,8 +337,47 @@ if { [ catch { set ::deken::installpath [::pd_guiprefs::read dekenpath] } stdout
 
 set ::deken::backends [list]
 proc ::deken::register {fun} {
+    # register a searchfunction with deken.
+    # the searchfunction <fun> will be called with a <searchterm>,
+    # and must return a list of <result>.
+    # <searchterm> is a list of (whitespace separated) words.
+    # each word denotes a library or library-object to search for and may
+    # contain wildcards ("*").
+    # the <result> should be normalized via ::deken::search::normalize_result
+    # failing to do so, a <result> is a list <name> <cmd> <match> <comment> <status> <args...>
+    # - <title> non-empty name of the library (to be shown to the user as search-result)
+    # - <cmd>  the full command to run to install the library
+    # - <match> boolean value to indicate whether this entry matches the current architecture
+    # - <subtitle> additional text to be shown under the <name>
+    # - <status> additional text to be shown in the STATUS line if the mouse hovers over the result
+    # - <args>... additional args (ignored)
+    # the library <name> must be non-empty (and empty value is reserved for normalized results)
+
     set ::deken::backends [linsert $::deken::backends 0 $fun]
 }
+
+proc ::deken::normalize_result {title
+                                cmd
+                                {match 1}
+                                {subtitle ""}
+                                {statusline ""}
+                                {contextmenus {}}
+                                args} {
+    ## normalize a search-result
+    # the function parameters are guaranteed to be a stable API (with the exception or args)
+    # but the value returned by this function is an implementation detail
+    # <title> the primary line displayed for the search-result
+    # - <cmd>  the full command to run to install the library
+    # - <match> boolean value to indicate whether this entry matches the current architecture
+    # - <subtitle> additional text to be shown under the <name>
+    # - <statusline> additional text to be shown in the STATUS line if the mouse hovers over the result
+    # - <contextmenus> list of <menuitem> <menucmd> pairs to be shown via a right-click context-menu
+    # - <args> RESERVED FOR FUTURE USE (do not use!)
+
+    return [list "" $title $cmd $match $subtitle $statusline $contextmenus]
+}
+
+
 proc ::deken::gettmpdir {} {
     proc _iswdir {d} { expr [file isdirectory $d] * [file writable $d] }
     set tmpdir ""
@@ -521,9 +560,34 @@ proc ::deken::highlightable_posttag {tag} {
     # make sure that the 'highlight' tag is topmost
     $mytoplevelref.results tag raise highlight
 }
-proc ::deken::do_prompt_installdir {path} {
-   return [tk_chooseDirectory -title [_ "Install externals to directory:"] \
-               -initialdir ${path} -parent .externals_searchui]
+proc ::deken::bind_postmenu {mytoplevel tag menus} {
+    set cmd "::deken::result_contextmenu %W %x %y $menus"
+    if {$::windowingsystem eq "aqua"} {
+        $mytoplevel.results tag bind $tag <2> $cmd
+    } else {
+        $mytoplevel.results tag bind $tag <3> $cmd
+    }
+}
+proc ::deken::result_contextmenu {widget theX theY args} {
+    set m .dekenresults_contextMenu
+    if { [winfo exists $m] } {
+        destroy $m
+    }
+    menu $m
+    foreach {title cmd} $args {
+        $m add command -label $title -command $cmd
+    }
+    tk_popup $m [expr [winfo rootx $widget] + $theX] [expr [winfo rooty $widget] + $theY]
+}
+
+proc ::deken::do_prompt_installdir {path {mytoplevel .externals_searchui}} {
+    if {[winfo exists $mytoplevel]} {
+        return [tk_chooseDirectory -title [_ "Install externals to directory:"] \
+                    -initialdir ${path} -parent .externals_searchui]
+    } {
+        return [tk_chooseDirectory -title [_ "Install externals to directory:"] \
+                    -initialdir ${path}]
+    }
 }
 
 proc ::deken::prompt_installdir {} {
@@ -597,27 +661,35 @@ proc ::deken::create_dialog {mytoplevel} {
 
     frame $mytoplevel.status
     pack $mytoplevel.status -side bottom -fill x
-    label $mytoplevel.status.label -textvariable ::deken::statustext
-    pack $mytoplevel.status.label -side left -padx 6
     button $mytoplevel.status.preferences -text [_ "Preferences" ] -command "::deken::preferences::show"
     pack $mytoplevel.status.preferences -side right -padx 6 -pady 3 -ipadx 10
+    label $mytoplevel.status.label -textvariable ::deken::statustext
+    pack $mytoplevel.status.label -side left -padx 6
 
     text $mytoplevel.results -takefocus 0 -cursor hand2 -height 100 -yscrollcommand "$mytoplevel.results.ys set"
     scrollbar $mytoplevel.results.ys -orient vertical -command "$mytoplevel.results yview"
     pack $mytoplevel.results.ys -side right -fill y
     pack $mytoplevel.results -side top -padx 6 -pady 3 -fill both -expand true
 
+
+    frame $mytoplevel.progress
+    pack $mytoplevel.progress -side bottom -fill x
     if { [ catch {
-        ttk::progressbar $mytoplevel.progress -orient horizontal -length 640 -maximum 100 -mode determinate -variable ::deken::progressvar } stdout ] } {
+        ttk::progressbar $mytoplevel.progress.bar -orient horizontal -length 640 -maximum 100 -mode determinate -variable ::deken::progressvar } stdout ] } {
     } {
-        pack $mytoplevel.progress -side bottom
+        pack $mytoplevel.progress.bar -side bottom
         proc ::deken::progress {x} {
             set ::deken::progressvar $x
         }
     }
 }
 
-proc ::deken::preferences::create_pad {toplevel {padx 2} {pady 2} } {
+proc ::deken::preferences::create_pathpad {toplevel row {padx 2} {pady 2}} {
+    set pad [::deken::utilities::newwidget ${toplevel}.pad]
+    frame $pad -relief groove -borderwidth 2 -width 2 -height 2
+    grid ${pad} -sticky ew -row ${row} -column 0 -columnspan 3 -padx ${padx}  -pady ${pady}
+}
+proc ::deken::preferences::create_packpad {toplevel {padx 2} {pady 2} } {
     set mypad [::deken::utilities::newwidget ${toplevel}.pad]
 
     frame $mypad
@@ -632,57 +704,64 @@ proc ::deken::preferences::userpath_doit { } {
         set ::deken::preferences::userinstallpath "${installdir}"
     }
 }
-proc ::deken::preferences::path_doit {origin path {mkdir true}} {
-    ${origin}.doit configure -state normal
-    ${origin}.path configure -state disabled
+proc ::deken::preferences::path_doit {rdb ckb path {mkdir true}} {
+    # handler for the check/create button
+    # if the path does not exist, disable the radiobutton and suggest to Create it
+    # if the path exists, check whether it is writable
+    #  if it is writable, enable the radiobutton and disable the check/create button
+    #  if it is not writable, keep the radiobutton disabled and suggest to (Re)Check
+    ${ckb} configure -state normal
+    ${rdb} configure -state disabled
 
     if { [file exists ${path}] } { } {
-        ${origin}.doit configure -text "Create"
+        ${ckb} configure -text "Create"
         if { $mkdir } {
             catch { file mkdir $path }
         }
     }
 
     if { [file exists ${path}] } {
-        ${origin}.doit configure -text "Check"
+        ${ckb} configure -text "Check"
     }
 
     if { [::deken::utilities::is_writable_dir ${path} ] } {
-        ${origin}.doit configure -state disabled
-        ${origin}.path configure -state normal
+        ${ckb} configure -state disabled
+        ${rdb} configure -state normal
     }
 }
 
-proc ::deken::preferences::create_pathentries {toplevel var paths} {
-    set i 0
-
-    foreach path $paths {
-        # only add absolute paths to the pathentries
-        if { [file pathtype $path] != "absolute" } { continue }
-
-        set w [::deken::utilities::newwidget ${toplevel}.frame]
-
-        frame $w
-        pack $w -anchor w -fill x
-
-        radiobutton ${w}.path -value ${path} -text "${path}" -variable $var
-        pack ${w}.path -side left
-        frame ${w}.fill
-        pack ${w}.fill -side left -padx 12 -fill x -expand 1
-        button ${w}.doit -text "..." -command "::deken::preferences::path_doit ${w} ${path}"
-        ::deken::preferences::path_doit ${w} ${path} false
-        pack ${w}.doit -side right -fill y -anchor e -padx 5 -pady 0
-        if { [::deken::utilities::is_writable_dir ${path} ] } {
-            ${w}.doit configure -state disabled
-            ${w}.path configure -state normal
-        } else {
-            ${w}.doit configure -state normal
-            ${w}.path configure -state disabled
-        }
+proc ::deken::preferences::create_pathentry {toplevel row var path {generic false}} {
+    # only add absolute paths to the pathentries
+    if {! $generic} {
+        if { [file pathtype $path] != "absolute" } { return }
     }
+
+    set rdb [::deken::utilities::newwidget ${toplevel}.path]
+    set chk [::deken::utilities::newwidget ${toplevel}.doit]
+    set pad [::deken::utilities::newwidget ${toplevel}.pad]
+
+    radiobutton ${rdb} -value ${path} -text "${path}" -variable $var
+    frame ${pad}
+    button ${chk} -text "..." -command "::deken::preferences::path_doit ${rdb} ${chk} ${path}"
+
+    grid ${rdb} -sticky w    -row ${row} -column 2
+    grid ${pad} -sticky ""   -row ${row} -column 1 -padx 10
+    grid ${chk} -sticky nsew -row ${row} -column 0
+
+
+    if {! $generic} {
+        ::deken::preferences::path_doit ${rdb} ${chk} ${path} false
+    }
+    return [list ${rdb} ${chk}]
 }
 
 proc ::deken::preferences::create {mytoplevel} {
+    # urgh...we want to know when the window gets drawn,
+    # so we can query the size of the pathentries canvas
+    # in order to get the scrolling-region right!!!
+    # this seems to be so wrong...
+    bind $mytoplevel <Map> "::deken::preferences::mapped %W"
+
     set ::deken::preferences::installpath $::deken::installpath
     set ::deken::preferences::hideforeignarch $::deken::hideforeignarch
     if { $::deken::userplatform == "" } {
@@ -709,34 +788,65 @@ proc ::deken::preferences::create {mytoplevel} {
     #  - whether to delete directories before re-extracting
     #  - whether to filter-out non-matching architectures
     labelframe $mytoplevel.installdir -text [_ "Install externals to directory:" ] -padx 5 -pady 5 -borderwidth 1
-    pack $mytoplevel.installdir -side top -fill x
+    canvas $mytoplevel.installdir.cnv \
+        -confine true
+    scrollbar $mytoplevel.installdir.scrollv \
+        -command "$mytoplevel.installdir.cnv yview"
+    scrollbar $mytoplevel.installdir.scrollh \
+        -orient horizontal \
+        -command "$mytoplevel.installdir.cnv xview"
+    $mytoplevel.installdir.cnv configure \
+        -xscrollincrement 0 \
+        -xscrollcommand " $mytoplevel.installdir.scrollh set"
+    $mytoplevel.installdir.cnv configure \
+        -yscrollincrement 0 \
+        -yscrollcommand " $mytoplevel.installdir.scrollv set" \
 
+    pack $mytoplevel.installdir.cnv -side left -fill both -expand 1
+    pack $mytoplevel.installdir.scrollv -side right -fill y
+    pack $mytoplevel.installdir.scrollh -side bottom -fill x -before  $mytoplevel.installdir.cnv
+    pack $mytoplevel.installdir -fill both
+
+    set pathsframe [frame $mytoplevel.installdir.cnv.f]
+    set row 0
     ### dekenpath: directory-chooser
     # FIXME: should we ask user to add chosen directory to PATH?
-    set f ${mytoplevel}.installdir.user
-    labelframe ${f} -borderwidth 1
-    pack ${f} -anchor w -fill x
-
-    radiobutton ${f}.path \
+    set pathdoit [::deken::preferences::create_pathentry ${pathsframe} ${row} ::deken::preferences::installpath "USER" true]
+    incr row
+    [lindex $pathdoit 0] configure \
+        -foreground blue \
         -value "USER" \
         -textvariable ::deken::preferences::userinstallpath \
         -variable ::deken::preferences::installpath
-    pack ${f}.path -side left
-    frame ${f}.fill
-    pack ${f}.fill -side left -padx 12 -fill x -expand 1
-    button ${f}.doit -text "..." -command "::deken::preferences::userpath_doit"
-    pack ${f}.doit -side right -fill y -anchor e -padx 5 -pady 0
-    ::deken::preferences::create_pad $mytoplevel.installdir
+    [lindex $pathdoit 1] configure \
+        -text "..." \
+        -command "::deken::preferences::userpath_doit"
+    ::deken::preferences::create_pathpad ${pathsframe} ${row}
+    incr row
 
     ### dekenpath: default directories
     if {[namespace exists ::pd_docsdir] && [::pd_docsdir::externals_path_is_valid]} {
-        ::deken::preferences::create_pathentries $mytoplevel.installdir ::deken::preferences::installpath {[::pd_docsdir::get_externals_path]}
-        ::deken::preferences::create_pad $mytoplevel.installdir
+        foreach p [::pd_docsdir::get_externals_path] {
+            ::deken::preferences::create_pathentry ${pathsframe} ${row} ::deken::preferences::installpath $p
+            incr row
+        }
+        ::deken::preferences::create_pathpad ${pathsframe} ${row}
+        incr row
     }
-    ::deken::preferences::create_pathentries $mytoplevel.installdir ::deken::preferences::installpath $::sys_staticpath
+    foreach p $::sys_staticpath {
+        ::deken::preferences::create_pathentry ${pathsframe} ${row} ::deken::preferences::installpath $p
+        incr row
+    }
+    ::deken::preferences::create_pathpad ${pathsframe} ${row}
+    incr row
 
-    ::deken::preferences::create_pad $mytoplevel.installdir
-    ::deken::preferences::create_pathentries $mytoplevel.installdir ::deken::preferences::installpath $::sys_searchpath
+    foreach p $::sys_searchpath {
+        ::deken::preferences::create_pathentry ${pathsframe} ${row} ::deken::preferences::installpath $p
+        incr row
+    }
+
+    pack $pathsframe -fill x
+    $mytoplevel.installdir.cnv create window 0 0 -anchor nw -window $pathsframe
 
     ## installation options
     labelframe $mytoplevel.install -text [_ "Installation options:" ] -padx 5 -pady 5 -borderwidth 1
@@ -789,7 +899,7 @@ proc ::deken::preferences::create {mytoplevel} {
     pack $mytoplevel.platform.userarch.entry -side right -fill x
 
     # hide non-matching architecture?
-    ::deken::preferences::create_pad $mytoplevel.platform 2 10
+    ::deken::preferences::create_packpad $mytoplevel.platform 2 10
 
     checkbutton $mytoplevel.platform.hide_foreign -text [_ "Hide foreign architectures?"] \
         -variable ::deken::preferences::hideforeignarch
@@ -815,6 +925,18 @@ proc ::deken::preferences::create {mytoplevel} {
     button $mytoplevel.nb.buttonframe.ok -text [_ "OK"] \
         -command "::deken::preferences::ok $mytoplevel"
     pack $mytoplevel.nb.buttonframe.ok -side left -expand 1 -fill x -padx 15 -ipadx 10
+
+}
+
+proc ::deken::preferences::mapped {mytoplevel} {
+    set cnv $mytoplevel.installdir.cnv
+    catch {
+        #puts "bbox [$cnv bbox all]"
+        set bbox [$cnv bbox all]
+        if { "$bbox" != "" } {
+            $cnv configure -scrollregion $bbox
+        }
+    } stdout
 }
 
 proc ::deken::preferences::show {{mytoplevel .deken_preferences}} {
@@ -904,7 +1026,7 @@ proc ::deken::initiate_search {mytoplevel} {
 
 # display a single found entry
 proc ::deken::show_result {mytoplevel counter result showmatches} {
-    foreach {title cmd match comment status} $result {break}
+    foreach {title cmd match comment status contextmenus} $result {break}
 
     set tag ch$counter
     #if { [ ($match) ] } { set matchtag archmatch } { set matchtag noarchmatch }
@@ -915,6 +1037,9 @@ proc ::deken::show_result {mytoplevel counter result showmatches} {
         ::deken::highlightable_posttag $tag
         ::deken::bind_posttag $tag <Enter> "+::deken::status {$status}"
         ::deken::bind_posttag $tag <1> "$cmd"
+        if { "" ne $contextmenus } {
+            ::deken::bind_postmenu $mytoplevel $tag $contextmenus
+        }
     }
 }
 
@@ -1197,7 +1322,20 @@ proc ::deken::search_for {term} {
 
     set result [list]
     foreach searcher $::deken::backends {
-        set result [concat $result [ $searcher $term ] ]
+        if {[catch {
+            foreach r [ $searcher $term ] {
+                if { "" eq [lindex $r 0] } {
+                    # data is already normalized
+                } {
+                    # legacy data format
+                    foreach {title cmd match comment status} $r {break}
+                    set r [::deken::normalize_result $title $cmd $match $comment $status]
+                }
+                lappend result [lrange $r 1 end]
+            }
+        } stdout] } {
+            ::pdwindow::debug "\[deken\] $searcher: $stdout"
+        }
     }
     return $result
 }
@@ -1295,6 +1433,8 @@ proc ::deken::search::puredata.info {term} {
         return {}
     }
     set contents [::http::data $token]
+    ::http::cleanup $token
+
     set splitCont [split $contents "\n"]
     # loop through the resulting tab-delimited table
     foreach ele $splitCont {
@@ -1307,6 +1447,7 @@ proc ::deken::search::puredata.info {term} {
             set creator [ string trim [ lindex $sele 2 ]]
             set date    [regsub -all {[TZ]} [ string trim [ lindex $sele 3 ] ] { }]
             set decURL [urldecode $URL]
+            set saveURL [string map {"[" "%%5B" "]" "%%5D"} $URL]
             set filename [ file tail $URL ]
             set cmd [list ::deken::clicked_link $decURL $filename]
             set pkgverarch [ ::deken::parse_filename $filename ]
@@ -1317,12 +1458,23 @@ proc ::deken::search::puredata.info {term} {
             set comment [format [_ "Uploaded by %1\$s @ %2\$s" ] $creator $date ]
             set status $URL
             set sortname [lindex $pkgverarch 0]--[lindex $pkgverarch 1]--$date
-            set res [list $name $cmd $match $comment $status $filename]
+            set menus [list \
+                           [_ "Install package" ] $cmd \
+                           [_ "Copy URL" ] "clipboard clear; clipboard append $saveURL" \
+                           [_ "Open webpage" ] "pd_menucommands::menu_openfile [file dirname ${URL}]" \
+                          ]
+            set res [list $filename $name $cmd $match $comment $status $menus]
             lappend searchresults $res
         }
     }
-    ::http::cleanup $token
-    return [lsort -command ::deken::versioncompare -decreasing -index 5 $searchresults ]
+    set sortedresult []
+    foreach r [lsort -command ::deken::versioncompare -decreasing -index 0 $searchresults ] {
+        foreach {_ title cmd match comment status menus} $r {
+            lappend sortedresult [::deken::normalize_result $title $cmd $match $comment $status $menus]
+            break
+        }
+    }
+    return $sortedresult
 }
 
 ::deken::register ::deken::search::puredata.info
