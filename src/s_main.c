@@ -549,7 +549,7 @@ static int sys_getmultidevchannels(int n, int *devlist)
     INSTALL_PREFIX.  In MSW, we don't try to use INSTALL_PREFIX. */
 void sys_findprogdir(char *progname)
 {
-    char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING], *sp;
+    char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING];
     char *lastslash;
 #ifndef _WIN32
     struct stat statbuf;
@@ -634,7 +634,6 @@ static int sys_mmio = 0;
 
 int sys_argparse(int argc, char **argv)
 {
-    char sbuf[MAXPDSTRING];
     int i;
     while ((argc > 0) && **argv == '-')
     {
