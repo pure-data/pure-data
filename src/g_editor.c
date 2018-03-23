@@ -609,7 +609,6 @@ typedef struct _undo_cut
 void *canvas_undo_set_cut(t_canvas *x, int mode)
 {
     t_undo_cut *buf;
-    t_gobj *y;
     t_linetraverser t;
     t_outconnect *oc;
     int nnotsel= glist_selectionindex(x, 0, 0);
@@ -1819,7 +1818,6 @@ int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
     int *x1p, int *y1p, int *x2p, int *y2p)
 {
     int x1, y1, x2, y2;
-    t_text *ob;
     if (!gobj_shouldvis(y, x))
         return (0);
     gobj_getrect(y, x, &x1, &y1, &x2, &y2);
@@ -1914,8 +1912,6 @@ void canvas_create_editor(t_glist *x)
 
 void canvas_destroy_editor(t_glist *x)
 {
-    t_gobj *y;
-    t_object *ob;
     glist_noselect(x);
     if (x->gl_editor)
     {
@@ -1935,7 +1931,6 @@ void canvas_map(t_canvas *x, t_floatarg f);
        the window. */
 void canvas_vis(t_canvas *x, t_floatarg f)
 {
-    char buf[30];
     int flag = (f != 0);
     if (flag)
     {
@@ -2096,8 +2091,6 @@ void canvas_properties(t_gobj*z, t_glist*unused)
 static void canvas_donecanvasdialog(t_glist *x,
     t_symbol *s, int argc, t_atom *argv)
 {
-
-
     t_float xperpix, yperpix, x1, y1, x2, y2, xpix, ypix, xmargin, ymargin;
     int graphme, redraw = 0, fromgui;
 
@@ -2196,7 +2189,7 @@ static void canvas_donecanvasdialog(t_glist *x,
 static void canvas_done_popup(t_canvas *x, t_float which,
     t_float xpos, t_float ypos)
 {
-    char pathbuf[MAXPDSTRING], namebuf[MAXPDSTRING], *basenamep;
+    char namebuf[MAXPDSTRING], *basenamep;
     t_gobj *y;
     for (y = x->gl_list; y; y = y->g_next)
     {
@@ -3024,7 +3017,6 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         return;
     if (x && down)
     {
-        t_object *ob;
             /* cancel any dragging action */
         if (x->gl_editor->e_onmotion == MA_MOVE)
             x->gl_editor->e_onmotion = MA_NONE;
@@ -3162,7 +3154,6 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
                 &x11, &y11, &x12, &y12)))
         {
             int wantwidth = xpos - x11;
-            t_gotfn sizefn;
             t_object *ob = pd_checkobject(&y1->g_pd);
             if (ob && ((ob->te_pd->c_wb == &text_widgetbehavior) ||
                     (pd_checkglist(&ob->te_pd) &&
@@ -3799,7 +3790,7 @@ static int binbuf_getpos(t_binbuf*b, int *x0, int *y0, t_symbol**type)
 
 static void canvas_dopaste(t_canvas *x, t_binbuf *b)
 {
-    t_gobj *newgobj, *last, *g2;
+    t_gobj *g2;
     int dspstate = canvas_suspend_dsp(), nbox, count;
     t_symbol *asym = gensym("#A");
         /* save and clear bindings to symbols #A, #N, #X; restore when done */
@@ -4074,8 +4065,6 @@ static void canvas_selectall(t_canvas *x)
 static void canvas_reselect(t_canvas *x)
 {
     t_gobj *g, *gwas;
-    t_selection *sel;
-    t_object *ob;
         /* if someone is text editing, and if only one object is
            selected,  deselect everyone and reselect.  */
     if (x->gl_editor->e_textedfor)
@@ -4162,7 +4151,7 @@ bad:
     /* LATER might have to speed this up */
 static void canvas_tidy(t_canvas *x)
 {
-    t_gobj *y, *y2, *y3;
+    t_gobj *y, *y2;
     int ax1, ay1, ax2, ay2, bx1, by1, bx2, by2;
     int histogram[NHIST], *ip, i, besthist, bestdist;
         /* if nobody is selected, this means do it to all boxes;
