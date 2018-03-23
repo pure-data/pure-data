@@ -198,7 +198,7 @@ t_namelist *namelist_append_files(t_namelist *listwas, const char *s)
 {
     const char *npos;
     char temp[MAXPDSTRING];
-    t_namelist *nl = listwas, *rtn = listwas;
+    t_namelist *nl = listwas;
 
     npos = s;
     do
@@ -657,7 +657,6 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     if "saveit" is set, also save all settings.  */
 void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
 {
-    int i;
     t_symbol *s = sys_decodedialog(path);
     if (*s->s_name)
     {
