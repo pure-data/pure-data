@@ -127,7 +127,6 @@ static void netsend_readbin(t_netsend *x, int fd)
 
 static void netsend_doit(void *z, t_binbuf *b)
 {
-    t_atom messbuf[1024];
     t_netsend *x = (t_netsend *)z;
     int msg, natom = binbuf_getnatom(b);
     t_atom *at = binbuf_getvec(b);
@@ -165,7 +164,7 @@ static void netsend_doit(void *z, t_binbuf *b)
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *hostname;
-    int fportno, sportno, sockfd, portno, srcportno, intarg;
+    int fportno, sportno, sockfd, portno, intarg;
     struct sockaddr_in server = {0};
     struct sockaddr_in srcaddr = {0};
     struct hostent *hp;
@@ -182,7 +181,6 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     fportno = (int)argv[1].a_w.w_float;
     sportno = (argc>2)?(int)argv[2].a_w.w_float:0;
     portno = fportno;
-    srcportno = sportno;
     if (x->x_sockfd >= 0)
     {
         error("netsend_connect: already connected");
