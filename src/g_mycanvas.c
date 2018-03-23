@@ -270,7 +270,6 @@ static void *my_canvas_new(t_symbol *s, int argc, t_atom *argv)
     int a = IEM_GUI_DEFAULTSIZE, w = 100, h = 60;
     int ldx = 20, ldy = 12, f = 2, i = 0;
     int fs = 14;
-    char str[144];
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);
