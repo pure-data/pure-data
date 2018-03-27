@@ -322,38 +322,16 @@ proc pdtk_undomenu {mytoplevel undoaction redoaction} {
     }
 }
 
-# Keep track of pdtk_canvas_getscroll after tokens for 1x1 windows.
-# Uses tkcanvas ids as keys.
-array set ::pdtk_canvas::::getscroll_tokens {}
-
 # This proc configures the scrollbars whenever anything relevant has
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
-        # catch closed canvas windows that might have left over tokens
-        if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-            unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-        }
         return
     }
     set mytoplevel [winfo toplevel $tkcanvas]
     set height [winfo height $tkcanvas]
     set width [winfo width $tkcanvas]
-
-    # Workaround for when the window has size 1x1, in which case it
-    # probably hasn't been fully created yet. Wait a little and try again.
-    if {$width == 1 || $height == 1} {
-        if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-            after cancel ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-        }
-        set ::pdtk_canvas::::getscroll_tokens($tkcanvas) \
-            [after idle ::pdtk_canvas::pdtk_canvas_getscroll $tkcanvas]
-        return
-    }
-    if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-        unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-    }
 
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
