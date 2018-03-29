@@ -16,6 +16,7 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_all_guis.h"
 
 #ifdef _MSC_VER
+#include <io.h>
 #define snprintf _snprintf
 #endif
 
