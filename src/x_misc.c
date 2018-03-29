@@ -482,7 +482,7 @@ typedef struct _oscformat
 {
     t_object x_obj;
     char *x_pathbuf;
-    int x_pathsize;
+    size_t x_pathsize;
     t_symbol *x_format;
 } t_oscformat;
 
@@ -490,7 +490,7 @@ static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
 {
     char buf[MAXPDSTRING];
     int i;
-    unsigned long newsize;
+    size_t newsize;
     *x->x_pathbuf = 0;
     buf[0] = '/';
     for (i = 0; i < argc; i++)
@@ -501,7 +501,7 @@ static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
         if ((newsize = strlen(buf) + strlen(x->x_pathbuf) + 1) > x->x_pathsize)
         {
             x->x_pathbuf = resizebytes(x->x_pathbuf, x->x_pathsize, newsize);
-            x->x_pathsize = (int)newsize;
+            x->x_pathsize = newsize;
         }
         strcat(x->x_pathbuf, buf);
     }
