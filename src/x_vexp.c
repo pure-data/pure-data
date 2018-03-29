@@ -76,7 +76,7 @@
 #endif
 
 #ifdef _MSC_VER
-#define strtof _atoldbl
+#define strtof(a, b) _atoldbl(a, *b)
 #endif
 
 
