@@ -26,11 +26,6 @@ typedef double t_floatarg;
 and usable in other contexts.  The one external requirement is a real
 single-precision FFT, invoked as in the Mayer one: */
 
-#ifdef _MSC_VER /* this is only needed with Microsoft's compiler */
-__declspec(dllimport) extern
-#endif
-void mayer_realfft(int npoints, t_sample *buf);
-
 /* this routine is passed a buffer of npoints values, and returns the
 N/2+1 real parts of the DFT (frequency zero through Nyquist), followed
 by the N/2-1 imaginary points, in order of decreasing frequency.  Pd 0.41,
