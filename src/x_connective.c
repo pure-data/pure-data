@@ -95,7 +95,7 @@ static void pdfloat_float(t_pdfloat *x, t_float f)
 }
 
 #ifdef _MSC_VER
-#define strtof _atoldbl
+#define strtof(a,b) _atoldbl(a,*b)
 #endif
 
 static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
