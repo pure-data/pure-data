@@ -1,33 +1,32 @@
-#N canvas 70 162 648 546 12;
-#X msg 67 10 message boxes;
-#X text 34 33 Message boxes hold one or more message. Anytime the message
+#N canvas 141 36 453 655 12;
+#X msg 47 10 message boxes;
+#X text 14 37 Message boxes hold one or more message. Anytime the message
 box receives any message at all \, the messages in the box are all
 sent to their destinations.;
-#X obj 120 295 print;
-#X msg 120 235 60 64;
-#X msg 120 265 pitch \$1 \, velocity \$2;
-#X msg 49 378 123 \; my-receiver-name 858 \; another-receiver -45;
-#X text 34 81 Clicking on a message also sends it \, so you can use
+#X obj 120 299 print;
+#X msg 120 239 60 64;
+#X msg 120 269 pitch \$1 \, velocity \$2;
+#X msg 49 382 123 \; my-receiver-name 858 \; another-receiver -45;
+#X text 14 85 Clicking on a message also sends it \, so you can use
 message boxes for push buttons. For instance \, click here while watching
 the printout window:;
-#X msg 122 139 walk the dog;
-#X obj 122 168 print;
-#X text 239 139 <--- message;
-#X text 223 165 <--- object (different border);
-#X text 14 197 You can separate multiple messages by commas. Also \,
+#X msg 122 143 walk the dog;
+#X obj 122 172 print;
+#X text 224 143 <--- message;
+#X text 224 169 <--- object (different border);
+#X text 14 201 You can separate multiple messages by commas. Also \,
 you can use "\$1" \, "\$2" \, etc. to make variable messages:;
-#X text 14 323 Finally \, if you separate messages by a semicolon instead
+#X text 14 327 Finally \, if you separate messages by a semicolon instead
 of a comma \, the following message(s) are re-routed to named objects
 such as "receives":;
-#X obj 49 433 print;
-#X obj 253 378 receive my-receiver-name;
-#X floatatom 253 402 0 0 0 0 - - -;
-#X floatatom 252 449 0 0 0 0 - - -;
-#X obj 252 425 receive another-receiver;
-#X text 396 519 updated for Pd version 0.39;
-#X text 19 471 You can send messages to message boxes to change their
+#X obj 49 437 print;
+#X obj 253 382 receive my-receiver-name;
+#X floatatom 253 406 0 0 0 0 - - -;
+#X floatatom 252 453 0 0 0 0 - - -;
+#X obj 252 429 receive another-receiver;
+#X text 19 477 You can send messages to message boxes to change their
 content - open the subpatch below for details:;
-#N canvas 0 0 718 466 changing-messages 0;
+#N canvas 0 23 718 466 changing-messages 0;
 #X msg 55 380 dog bird monkey \; bird;
 #X msg 58 69 set dog;
 #X msg 75 143 add monkey;
@@ -58,10 +57,16 @@ semicolon;
 #X connect 12 0 0 0;
 #X connect 13 0 0 0;
 #X connect 14 0 0 0;
-#X restore 153 512 pd changing-messages;
+#X restore 153 518 pd changing-messages;
+#X text 225 621 updated for Pd version 0.49;
+#X obj 122 618 print;
+#X msg 122 590 \$0;
+#X text 22 550 As of Pd 0.49 \, the "\$0" is expanded to return the
+unique canvas identifier:;
 #X connect 3 0 4 0;
 #X connect 4 0 2 0;
 #X connect 5 0 13 0;
 #X connect 7 0 8 0;
 #X connect 14 0 15 0;
 #X connect 17 0 16 0;
+#X connect 22 0 21 0;
