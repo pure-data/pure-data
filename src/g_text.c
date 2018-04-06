@@ -367,6 +367,7 @@ typedef struct _message
     t_messresponder m_messresponder;
     t_glist *m_glist;
     t_clock *m_clock;
+    int m_dollarzero;
 } t_message;
 
 static t_class *messresponder_class;
@@ -398,28 +399,31 @@ static void messresponder_anything(t_messresponder *x,
     outlet_anything(x->mr_outlet, s, argc, argv);
 }
 
+void binbuf_doeval(t_binbuf *x, t_pd *target, int argc, t_atom *argv, int dollarzero);
+int glist_getdollarzero(t_glist *gl);
+
 static void message_bang(t_message *x)
 {
-    binbuf_eval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, 0, 0);
+    binbuf_doeval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, 0, 0, x->m_dollarzero);
 }
 
 static void message_float(t_message *x, t_float f)
 {
     t_atom at;
     SETFLOAT(&at, f);
-    binbuf_eval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, 1, &at);
+    binbuf_doeval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, 1, &at, x->m_dollarzero);
 }
 
 static void message_symbol(t_message *x, t_symbol *s)
 {
     t_atom at;
     SETSYMBOL(&at, s);
-    binbuf_eval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, 1, &at);
+    binbuf_doeval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, 1, &at, x->m_dollarzero);
 }
 
 static void message_list(t_message *x, t_symbol *s, int argc, t_atom *argv)
 {
-    binbuf_eval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, argc, argv);
+    binbuf_doeval(x->m_text.te_binbuf, &x->m_messresponder.mr_pd, argc, argv, x->m_dollarzero);
 }
 
 static void message_set(t_message *x, t_symbol *s, int argc, t_atom *argv)
@@ -528,6 +532,7 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
     x->m_text.te_binbuf = binbuf_new();
     x->m_glist = gl;
     x->m_clock = clock_new(x, (t_method)message_tick);
+    x->m_dollarzero = glist_getdollarzero(gl);
     if (argc > 1)
     {
         x->m_text.te_xpix = atom_getfloatarg(0, argc, argv);
