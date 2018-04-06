@@ -95,14 +95,14 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.4.0] } {
+if { [::deken::versioncheck 0.4.1] } {
 
 ## FIXXXXME only initialize vars if not yet set
 set ::deken::installpath {}
 set ::deken::userplatform {}
-set ::deken::hideforeignarch 0
+set ::deken::hideforeignarch 1
 set ::deken::show_readme 1
-set ::deken::remove_on_install 0
+set ::deken::remove_on_install 1
 set ::deken::add_to_path 0
 set ::deken::preferences::installpath {}
 set ::deken::preferences::userinstallpath {}
@@ -314,14 +314,14 @@ if { [ catch { set ::deken::installpath [::pd_guiprefs::read dekenpath] } stdout
     }
     # user requested platform (empty = DEFAULT)
     set ::deken::userplatform [::pd_guiprefs::read deken_platform]
-    set ::deken::hideforeignarch [::deken::utilities::bool [::pd_guiprefs::read deken_hide_foreign_archs] ]
+    set ::deken::hideforeignarch [::deken::utilities::bool [::pd_guiprefs::read deken_hide_foreign_archs] 1]
     proc ::deken::set_platform_options {platform hide} {
         set ::deken::userplatform $platform
         set ::deken::hideforeignarch [::deken::utilities::bool $hide ]
         ::pd_guiprefs::write deken_platform "$platform"
         ::pd_guiprefs::write deken_hide_foreign_archs $::deken::hideforeignarch
     }
-    set ::deken::remove_on_install [::deken::utilities::bool [::pd_guiprefs::read deken_remove_on_install] ]
+    set ::deken::remove_on_install [::deken::utilities::bool [::pd_guiprefs::read deken_remove_on_install] 1]
     set ::deken::show_readme [::deken::utilities::bool [::pd_guiprefs::read deken_show_readme] 1]
     set ::deken::add_to_path [::deken::utilities::tristate [::pd_guiprefs::read deken_add_to_path] ]
 
@@ -1460,16 +1460,18 @@ proc ::deken::search::puredata.info {term} {
             set sortname [lindex $pkgverarch 0]--[lindex $pkgverarch 1]--$date
             set menus [list \
                            [_ "Install package" ] $cmd \
-                           [_ "Copy URL" ] "clipboard clear; clipboard append $saveURL" \
                            [_ "Open webpage" ] "pd_menucommands::menu_openfile [file dirname ${URL}]" \
+                           [_ "Copy package URL" ] "clipboard clear; clipboard append $saveURL" \
+                           [_ "Copy SHA256 checksum URL" ] "clipboard clear; clipboard append ${saveURL}.sha256" \
+                           [_ "Copy OpenGPG signature URL" ] "clipboard clear; clipboard append ${saveURL}.asc" \
                           ]
-            set res [list $filename $name $cmd $match $comment $status $menus]
+            set res [list $sortname $filename $name $cmd $match $comment $status $menus]
             lappend searchresults $res
         }
     }
     set sortedresult []
     foreach r [lsort -command ::deken::versioncompare -decreasing -index 0 $searchresults ] {
-        foreach {_ title cmd match comment status menus} $r {
+        foreach {_ _ title cmd match comment status menus} $r {
             lappend sortedresult [::deken::normalize_result $title $cmd $match $comment $status $menus]
             break
         }
