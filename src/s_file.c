@@ -317,7 +317,8 @@ void sys_loadpreferences(const char *filename, int startingup)
         sys_initloadpreferences_file(filename);
     else sys_initloadpreferences();
         /* load audio preferences */
-    if (sys_getpreference("audioapi", prefbuf, MAXPDSTRING)
+    if (!sys_externalschedlib
+        && sys_getpreference("audioapi", prefbuf, MAXPDSTRING)
         && sscanf(prefbuf, "%d", &api) > 0)
             sys_set_audio_api(api);
             /* JMZ/MB: brackets for initializing */
