@@ -238,7 +238,8 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             }
         }
     }
-        /* check that the scheduler dynamic linkable exists w either sffix */
+
+        /* check that the scheduler dynamic linkable exists w either suffix */
     snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
         pd_tilde_dllextent);
     sys_bashfilename(tmpbuf, schedbuf);
