@@ -144,7 +144,7 @@ static void pd_tilde_close(t_pd_tilde *x)
     x->x_childpid = -1;
 }
 
-static void pd_tilde_readmessages(t_pd_tilde *x)
+static int pd_tilde_readmessages(t_pd_tilde *x)
 {
     t_atom at;
     binbuf_clear(x->x_binbuf);
@@ -153,7 +153,8 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
         int nonempty = 0;
         while (1)
         {
-            pd_tilde_getatom(&at, x->x_infd);
+            if (!pd_tilde_getatom(&at, x->x_infd))
+                return 0;
             if (!nonempty && at.a_type == A_SEMI)
                 break;
             nonempty = (at.a_type != A_SEMI);
@@ -171,7 +172,7 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
             while (isspace((c = getc(x->x_infd))) && c != EOF)
                 ;
             if (c == EOF)
-                return;
+                return 0;
             do
                 msgbuf[infill++] = c;
             while (!isspace((c = getc(x->x_infd))) && c != ';' && c != EOF) ;
@@ -192,6 +193,7 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
             binbuf_print(x->x_binbuf); */
     }
     clock_delay(x->x_clock, 0);
+    return 1;
 }
 
 #define FIXEDARG 13
