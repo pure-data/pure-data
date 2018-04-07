@@ -552,7 +552,13 @@ static t_int *pd_tilde_perform(t_int *w)
         for (; j < DEFDACBLKSIZE; j++)
             x->x_outsig[nsigs][j] = 0;
     }
-    pd_tilde_readmessages(x);
+    if (!pd_tilde_readmessages(x))
+    {
+        if (errno)
+            PDERROR "pd~: %s", strerror(errno));
+        else PDERROR "pd~: subprocess exited");
+        pd_tilde_close(x);
+    }
     return (w+3);
 zeroit:
     for (i = 0; i < x->x_noutsig; i++)
