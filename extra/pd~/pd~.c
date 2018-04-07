@@ -207,7 +207,8 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     int fifo, t_float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
-    char pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING], tmpbuf[MAXPDSTRING];
+    char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
+        tmpbuf[MAXPDSTRING];
     char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
         sampleratestr[40];
     struct stat statbuf;
@@ -261,6 +262,26 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
 "'%s' -schedlib '%s'/pdsched -path '%s' -inchannels %d -outchannels %d -r %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
         */
+    /* _spawnv wants the command without quotes */
+    strcpy(cmdbuf, pdexecbuf);
+    /* but in the argument vector paths must be quoted if they contain whitespace */
+    if (strchr(pdexecbuf, ' ') && *pdexecbuf != '"' && *pdexecbuf != '\'')
+    {
+        snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf);
+        strcpy(pdexecbuf, tmpbuf);
+    }
+    if (strchr(schedbuf, ' ') && *schedbuf != '"' && *schedbuf != '\'')
+    {
+        snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf);
+        strcpy(schedbuf, tmpbuf);
+    }
+    if (strchr(patchdir, ' ') && *patchdir != '"' && *patchdir != '\'')
+    {
+        /* don't overwrite original 'patchdir' string! */
+        char patchdirbuf[MAXPDSTRING];
+        snprintf(patchdirbuf, MAXPDSTRING, "\"%s\"", patchdir);
+        patchdir = patchdirbuf;
+    }
     execargv[0] = pdexecbuf;
     execargv[1] = "-schedlib";
     execargv[2] = schedbuf;
@@ -329,7 +350,7 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             _dup2(pipe1[0], 0);
         if (pipe2[1] != 1)
             _dup2(pipe2[1], 1);
-        pid = _spawnv(P_NOWAIT, execargv[0], execargv);
+        pid = _spawnv(P_NOWAIT, cmdbuf, execargv);
         if (pid < 0)
         {
             post("%s: couldn't start subprocess (%s)\n", execargv[0],
@@ -368,7 +389,7 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             close(pipe1[1]);
         if (pipe2[0] >= 2)
             close(pipe2[0]);
-        execv(execargv[0], execargv);
+        execv(cmdbuf, execargv);
         _exit(1);
     }
 #endif /* _WIN32 */
