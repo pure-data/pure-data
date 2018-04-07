@@ -350,7 +350,7 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             _dup2(pipe1[0], 0);
         if (pipe2[1] != 1)
             _dup2(pipe2[1], 1);
-        pid = _spawnv(P_NOWAIT, cmdbuf, execargv);
+        pid = _spawnv(P_NOWAIT, cmdbuf, (const char * const *)execargv);
         if (pid < 0)
         {
             post("%s: couldn't start subprocess (%s)\n", execargv[0],
