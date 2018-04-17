@@ -24,6 +24,7 @@ typedef int socklen_t;
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <pthread.h>
 
 #ifdef _MSC_VER
 #pragma warning (disable: 4305 4244)
@@ -54,7 +55,7 @@ void *pd_tilde_class;
 #include "m_pd.h"
 #include "s_stuff.h"
 static t_class *pd_tilde_class;
-#define PDERROR pd_error(x, 
+#define PDERROR pd_error(x,
 
 #endif
 
@@ -78,9 +79,110 @@ static char pd_tilde_dllextent[] = ".m_i386", pd_tilde_dllextent2[] = ".dll";
 #define FOOFOO
 #include "binarymsg.c"
 
+#define LOG(...) fprintf(stderr, __VA_ARGS__); fflush(stderr);
+
 /* ------------------------ pd_tilde~ ----------------------------- */
 
 #define MSGBUFSIZE 65536
+
+typedef struct _queue
+{
+    t_sample *q_buf;
+    int q_size;
+    int q_available;
+    int q_write;
+    int q_read;
+} t_queue;
+
+static void queue_clear(t_queue *x)
+{
+    if (x->q_buf)
+        freebytes(x->q_buf, sizeof(*x->q_buf) * x->q_size);
+    x->q_buf = NULL;
+    x->q_size = 0;
+    x->q_available = 0;
+    x->q_write = 0;
+    x->q_read = 0;
+}
+
+static void queue_init(t_queue *x)
+{
+    x->q_buf = NULL;
+    queue_clear(x);
+}
+
+static void queue_allocate(t_queue *x, int n)
+{
+    if (!n) return;
+    if (!(n & (n - 1)))
+    {
+        bug("queue_allocate: n must be power of 2");
+        return;
+    }
+    queue_clear(x);
+    x->q_buf = getbytes(sizeof(*x->q_buf) * n);
+    if (!x->q_buf)
+    {
+        error("pd~: couldn't allocate queue!\n");
+    }
+    else
+    {
+        LOG("allocated %d samples\n", n);
+        x->q_size = n;
+        x->q_available = 0;
+        x->q_write = 0;
+        x->q_read = 0;
+    }
+}
+
+static int queue_write_atoms(t_queue *x, int argc, t_atom *argv)
+{
+    /* check for overflow */
+    if ((x->q_available + argc) > x->q_size)
+    {
+        return 0;
+    }
+    else
+    {
+        t_sample *buf = x->q_buf;
+        int size = x->q_size;
+        int phase = x->q_write;
+        int n = argc;
+        while (n--)
+        {
+            buf[phase] = atom_getfloat(argv);
+            phase++; argv++;
+            phase %= size;
+        }
+        x->q_write = phase;
+        x->q_available += argc;
+        return argc;
+    }
+}
+
+static int queue_read(t_queue *x, int argc, t_sample *argv)
+{
+    if (argc > x->q_available)
+    {
+        return 0;
+    }
+    else
+    {
+        t_sample *buf = x->q_buf;
+        int size = x->q_size;
+        int phase = x->q_read;
+        int n = argc;
+        while (n--)
+        {
+            *argv++ = buf[phase];
+            phase++;
+            phase %= size;
+        }
+        x->q_read = phase;
+        x->q_available -= argc;
+        return argc;
+    }
+}
 
 typedef struct _pd_tilde
 {
@@ -98,6 +200,10 @@ typedef struct _pd_tilde
     FILE *x_infd;
     FILE *x_outfd;
     t_binbuf *x_binbuf;
+    t_queue x_queue;
+    pthread_t x_thread;
+    pthread_mutex_t x_mutex;
+    int x_shallclose;
     int x_childpid;
     int x_ninsig;
     int x_noutsig;
@@ -124,11 +230,16 @@ char *strcpy(char *s1, const char *s2);
 #endif
 
 static void pd_tilde_tick(t_pd_tilde *x);
+/* this function closes the subprocess, pipes and reading thread
+   and frees all buffers */
 static void pd_tilde_close(t_pd_tilde *x)
 {
 #ifdef _WIN32
     int termstat;
 #endif
+    pthread_mutex_lock(&x->x_mutex);
+    x->x_shallclose = 1;
+    pthread_mutex_unlock(&x->x_mutex);
     if (x->x_outfd)
         fclose(x->x_outfd);
     if (x->x_infd)
@@ -139,26 +250,104 @@ static void pd_tilde_close(t_pd_tilde *x)
 #else
         waitpid(x->x_childpid, 0, 0);
 #endif
-    binbuf_clear(x->x_binbuf);
     x->x_infd = x->x_outfd = 0;
     x->x_childpid = -1;
+    /* wait for thread to return */
+    pthread_join(x->x_thread, 0);
+    binbuf_clear(x->x_binbuf);
+    queue_clear(&x->x_queue);
+    LOG("did close!\n");
 }
 
-static int pd_tilde_readmessages(t_pd_tilde *x)
+static void * pd_tilde_readmessages(void *y)
 {
-    t_atom at;
-    binbuf_clear(x->x_binbuf);
+    LOG("thread launched!\n");
+
+    t_pd_tilde *x = (t_pd_tilde *)y;
+    t_atom *buf = getbytes(sizeof(*buf)*MSGBUFSIZE);
+    if (!buf)
+    {
+        error("couldn't allocate buffer for incoming messages!\n");
+        pthread_mutex_lock(&x->x_mutex);
+        x->x_shallclose = 1;
+        pthread_mutex_unlock(&x->x_mutex);
+        pthread_exit(NULL);
+    }
+    int count = 0;
+    int signal = 0;
+    int msgdone = 1;
+    const int nsamples = x->x_noutsig * DEFDACBLKSIZE;
     if (x->x_binary)
     {
-        int nonempty = 0;
         while (1)
         {
-            if (!pd_tilde_getatom(&at, x->x_infd))
-                return 0;
-            if (!nonempty && at.a_type == A_SEMI)
+            if (!pd_tilde_getatom(&buf[count], x->x_infd))
+            {
+                pthread_mutex_lock(&x->x_mutex);
+                if (!x->x_shallclose)
+                {
+                    /* probably closed from within */
+                    if (errno)
+                        PDERROR "pd~: %s", strerror(errno));
+                    else
+                        PDERROR "pd~: subprocess exited");
+                    x->x_shallclose = 1;
+                }
+                pthread_mutex_unlock(&x->x_mutex);
                 break;
-            nonempty = (at.a_type != A_SEMI);
-            binbuf_add(x->x_binbuf, 1, &at);
+            }
+
+            if (buf[count].a_type == A_SEMI) /* semicolons terminate messages. */
+            {
+                /* empty messages signify the start of a signal vector */
+                if (msgdone)
+                {
+                    /* but the signal itself might also be an empty message */
+                    signal = !signal;
+                }
+                else
+                {
+                    msgdone = 1;
+                    if (signal) /* end of signal */
+                    {
+                        /* fill missing samples from subprocess */
+                        if (count < nsamples)
+                        {
+                            int n = nsamples - count;
+                            t_atom *at = &buf[count];
+                            while (n--)
+                            {
+                                SETFLOAT(at, 0);
+                                at++;
+                            }
+                        }
+
+                        pthread_mutex_lock(&x->x_mutex);
+                        /* exclude semicolon */
+                        queue_write_atoms(&x->x_queue, nsamples, buf);
+                        pthread_mutex_unlock(&x->x_mutex);
+
+                        signal = 0;
+                    }
+                    else  /* end of message */
+                    {
+                        pthread_mutex_lock(&x->x_mutex);
+                        /* include semicolon */
+                        binbuf_add(x->x_binbuf, count+1, buf);
+                        pthread_mutex_unlock(&x->x_mutex);
+
+                        LOG("got message with %d atoms!\n", count);
+                    }
+                }
+                count = 0;
+            }
+            else
+            {
+                msgdone = 0;
+                count++;
+                /* leave room for terminating semicolon */
+                if (count > MSGBUFSIZE-2) count = MSGBUFSIZE-2;
+            }
         }
     }
     else    /* ASCII */
@@ -192,8 +381,9 @@ static int pd_tilde_readmessages(t_pd_tilde *x)
         /* if (binbuf_getnatom(x->x_binbuf) > 1)
             binbuf_print(x->x_binbuf); */
     }
-    clock_delay(x->x_clock, 0);
-    return 1;
+    LOG("thread finished!\n");
+    freebytes(buf, sizeof(*buf)*MSGBUFSIZE);
+    pthread_exit(NULL);
 }
 
 #define FIXEDARG 13
@@ -243,19 +433,19 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     }
 
         /* check that the scheduler dynamic linkable exists w either suffix */
-    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
+    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir,
         pd_tilde_dllextent);
     sys_bashfilename(tmpbuf, schedbuf);
     if (stat(schedbuf, &statbuf) < 0)
     {
-        snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
+        snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir,
             pd_tilde_dllextent2);
         sys_bashfilename(tmpbuf, schedbuf);
         if (stat(schedbuf, &statbuf) < 0)
         {
             PDERROR "pd~: can't stat %s", schedbuf);
             goto fail1;
-        }       
+        }
     }
         /* but the sub-process wants the scheduler name without the suffix */
     snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
@@ -326,18 +516,18 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     fprintf(stderr, "\n");
 #endif
 #ifdef _WIN32
-    if (_pipe(pipe1, 65536, O_BINARY | O_NOINHERIT) < 0)   
+    if (_pipe(pipe1, 65536, O_BINARY | O_NOINHERIT) < 0)
 #else
-    if (pipe(pipe1) < 0)   
+    if (pipe(pipe1) < 0)
 #endif
     {
         PDERROR "pd~: can't create pipe");
         goto fail1;
     }
 #ifdef _WIN32
-    if (_pipe(pipe2, 65536, O_BINARY | O_NOINHERIT) < 0)   
+    if (_pipe(pipe2, 65536, O_BINARY | O_NOINHERIT) < 0)
 #else
-    if (pipe(pipe2) < 0)   
+    if (pipe(pipe2) < 0)
 #endif
     {
         PDERROR "pd~: can't create pipe");
@@ -405,6 +595,15 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     x->x_outfd = fdopen(pipe1[1], "w");
     x->x_infd = fdopen(pipe2[0], "r");
     x->x_childpid = pid;
+    x->x_shallclose = 0;
+    binbuf_clear(x->x_binbuf);
+    if (fifo < 1) fifo = 1;
+    queue_allocate(&x->x_queue, fifo * DEFDACBLKSIZE * noutsig);
+    if (pthread_create(&x->x_thread, NULL, pd_tilde_readmessages, x))
+    {
+        PDERROR "pd~: couldn't create thread");
+        goto fail2;
+    }
     for (i = 0; i < fifo; i++)
         if (x->x_binary)
     {
@@ -412,11 +611,9 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         pd_tilde_putfloat(0, x->x_outfd);
         putc(A_SEMI, x->x_outfd);
     }
-    else fprintf(x->x_outfd, "%s", ";\n0;\n");
+    else fprintf(x->x_outfd, ";\n0;\n");
 
     fflush(x->x_outfd);
-    binbuf_clear(x->x_binbuf);
-    pd_tilde_readmessages(x);
     return;
 #ifndef _WIN32
 fail3:
@@ -431,29 +628,28 @@ fail2:
 fail1:
     x->x_infd = x->x_outfd = 0;
     x->x_childpid = -1;
+    queue_clear(&x->x_queue);
     return;
 }
 
 static t_int *pd_tilde_perform(t_int *w)
 {
     t_pd_tilde *x = (t_pd_tilde *)(w[1]);
-    int n = (int)(w[2]), i, j, nsigs, numbuffill = 0, c;
-    char numbuf[80];
+    int n = (int)(w[2]), i, j, nsigs;
+    t_sample dummy[DEFDACBLKSIZE];
     FILE *infd = x->x_infd;
     if (!infd)
         goto zeroit;
     if (x->x_binary)
     {
         putc(A_SEMI, x->x_outfd);
-        if (!x->x_ninsig)
+        if (!x->x_ninsig || n != DEFDACBLKSIZE)
             pd_tilde_putfloat(0, x->x_outfd);
         else for (i = 0; i < x->x_ninsig; i++)
         {
             t_sample *fp = x->x_insig[i];
-            for (j = 0; j < n; j++)
+            for (j = 0; j < DEFDACBLKSIZE; j++)
                 pd_tilde_putfloat(*fp++, x->x_outfd);
-            for (; j < DEFDACBLKSIZE; j++)
-                pd_tilde_putfloat(0, x->x_outfd);
         }
         putc(A_SEMI, x->x_outfd);
     }
@@ -473,97 +669,30 @@ static t_int *pd_tilde_perform(t_int *w)
         fprintf(x->x_outfd, ";\n");
     }
     fflush(x->x_outfd);
-    nsigs = j = 0;
-    if (x->x_binary)
+    clock_delay(x->x_clock, 0);
+    if (n != DEFDACBLKSIZE)
+        goto badvecsize;
+    pthread_mutex_lock(&x->x_mutex);
+    for (i = 0; i < x->x_noutsig; i++)
     {
-        while (1)
+        if (!queue_read(&x->x_queue, DEFDACBLKSIZE, x->x_outsig[i]))
         {
-            t_atom at;
-            if (!pd_tilde_getatom(&at, infd))
-            {
-                if (errno)
-                    PDERROR "pd~: %s", strerror(errno));
-                else PDERROR "pd~: subprocess exited");
-                pd_tilde_close(x);
-                goto zeroit;
-            }
-            if (at.a_type == A_SEMI)
-                break;
-            else if (at.a_type == A_FLOAT)
-            {
-                if (nsigs < x->x_noutsig)
-                    x->x_outsig[nsigs][j] = at.a_w.w_float;
-                if (++j >= DEFDACBLKSIZE)
-                    j = 0, nsigs++;
-            }
-            else PDERROR "pd~: subprocess returned malformed audio");
+            for (j = 0; j < DEFDACBLKSIZE; j++)
+                x->x_outsig[i][j] = 0;
         }
     }
-    else
-    {
-        while (1)
-        {
-            while (1)
-            {
-                c = getc(infd);
-                if (c == EOF)
-                {
-                    if (errno)
-                        PDERROR "pd~: %s", strerror(errno));
-                    else PDERROR "pd~: subprocess exited");
-                    pd_tilde_close(x);
-                    goto zeroit;
-                }
-                else if (!isspace(c) && c != ';')
-                {
-                    if (numbuffill < (80-1))
-                        numbuf[numbuffill++] = c;
-                }
-                else
-                {
-                    t_sample z;
-                    if (numbuffill)
-                    {
-                        numbuf[numbuffill] = 0;
-#if PD_FLOATSIZE == 32
-                        if (sscanf(numbuf, "%f", &z) < 1)
-#else
-                        if (sscanf(numbuf, "%lf", &z) < 1)
-#endif
-                            continue;
-                        if (nsigs < x->x_noutsig)
-                            x->x_outsig[nsigs][j] = z;
-                        if (++j >= DEFDACBLKSIZE)
-                            j = 0, nsigs++;
-                    }
-                    numbuffill = 0;
-                    break;
-                }
-            }
-            /* message terminated */
-            if (c == ';')
-                break;
-        }
-    }
-    if (nsigs < x->x_noutsig)
-        post("sigs %d, j %d", nsigs, j);
-    for (; nsigs < x->x_noutsig; nsigs++, j = 0)
-    {
-        for (; j < DEFDACBLKSIZE; j++)
-            x->x_outsig[nsigs][j] = 0;
-    }
-    if (!pd_tilde_readmessages(x))
-    {
-        if (errno)
-            PDERROR "pd~: %s", strerror(errno));
-        else PDERROR "pd~: subprocess exited");
-        pd_tilde_close(x);
-    }
+    pthread_mutex_unlock(&x->x_mutex);
     return (w+3);
+badvecsize:
+    pthread_mutex_lock(&x->x_mutex);
+    /* drain queue to avoid lock up */
+    for (i = 0; i < x->x_noutsig; i++)
+        queue_read(&x->x_queue, DEFDACBLKSIZE, dummy);
+    pthread_mutex_unlock(&x->x_mutex);
 zeroit:
     for (i = 0; i < x->x_noutsig; i++)
     {
-        for (j = 0; j < DEFDACBLKSIZE; j++)
+        for (j = 0; j < n; j++)
             x->x_outsig[i][j] = 0;
     }
     return (w+3);
@@ -571,9 +700,11 @@ zeroit:
 
 static void pd_tilde_dsp(t_pd_tilde *x, t_signal **sp)
 {
-    int i, n = (x->x_ninsig || x->x_noutsig ? sp[0]->s_n : 1);
+    int i, n = sp[0]->s_n;
     t_sample **g;
-        
+    if (n != DEFDACBLKSIZE)
+        error("pd~: bad vector size");
+
     for (i = 0, g = x->x_insig; i < x->x_ninsig; i++, g++)
         *g = (*(sp++))->s_vec;
         /* if there were no input signals Pd still provided us with one,
@@ -582,7 +713,7 @@ static void pd_tilde_dsp(t_pd_tilde *x, t_signal **sp)
         sp++;
     for (i = 0, g = x->x_outsig; i < x->x_noutsig; i++, g++)
         *g = (*(sp++))->s_vec;
-    
+
     dsp_add(pd_tilde_perform, 2, x, n);
 }
 
@@ -595,8 +726,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
     if (sel == gensym("start"))
     {
         char pdargstring[MAXPDSTRING];
-        if (x->x_infd)
-            pd_tilde_close(x);
+        pd_tilde_close(x);
         pdargstring[0] = 0;
         argc--; argv++;
 #ifdef PD
@@ -621,8 +751,9 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
     }
     else if (sel == gensym("stop"))
     {
-        if (x->x_infd)
-            pd_tilde_close(x);
+        pthread_mutex_lock(&x->x_mutex);
+        x->x_shallclose = 1;
+        pthread_mutex_unlock(&x->x_mutex);
     }
     else if (sel == gensym("pddir"))
     {
@@ -657,21 +788,36 @@ static void pd_tilde_tick(t_pd_tilde *x)
     int messstart = 0, i, n;
     t_atom *vec;
     /* binbuf_print(b); */
-    n = binbuf_getnatom(x->x_binbuf);
-    vec = binbuf_getvec(x->x_binbuf);
-    for (i = 0; i < n; i++)
+    pthread_mutex_lock(&x->x_mutex);
+    if (x->x_shallclose)
     {
-        if (vec[i].a_type == A_SEMI)
-        {
-            if (i > messstart && vec[messstart].a_type == A_SYMBOL)
-                outlet_anything(x->x_outlet1, vec[messstart].a_w.w_symbol,
-                    i-(messstart+1), vec+(messstart+1));
-            else if (i > messstart)
-                outlet_list(x->x_outlet1, 0, i-messstart, vec+messstart);
-            messstart = i+1;
-        }
+        pthread_mutex_unlock(&x->x_mutex);
+        pd_tilde_close(x);
+        return;
     }
-    binbuf_clear(x->x_binbuf);
+    else
+    {
+        n = binbuf_getnatom(x->x_binbuf);
+        vec = binbuf_getvec(x->x_binbuf);
+        for (i = 0; i < n; i++)
+        {
+            if (vec[i].a_type == A_SEMI)
+            {
+                if (i > messstart && vec[messstart].a_type == A_SYMBOL)
+                    outlet_anything(x->x_outlet1, vec[messstart].a_w.w_symbol,
+                        i-(messstart+1), vec+(messstart+1));
+                else if (i > messstart)
+                    outlet_list(x->x_outlet1, 0, i-messstart, vec+messstart);
+                messstart = i+1;
+            }
+        }
+        if (messstart < n)
+        {
+            LOG("%d atoms remaining\n", n-messstart);
+        }
+        binbuf_clear(x->x_binbuf);
+    }
+    pthread_mutex_unlock(&x->x_mutex);
 }
 
 static void pd_tilde_anything(t_pd_tilde *x, t_symbol *s,
@@ -777,6 +923,9 @@ static void *pd_tilde_new(t_symbol *s, int argc, t_atom *argv)
     x->x_childpid = -1;
     x->x_canvas = canvas_getcurrent();
     x->x_binbuf = binbuf_new();
+    queue_init(&x->x_queue);
+    pthread_mutex_init(&x->x_mutex, NULL);
+    x->x_shallclose = 0;
     x->x_binary = binary;
     for (j = 1, g = x->x_insig; j < ninsig; j++, g++)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
@@ -868,7 +1017,7 @@ static void pd_tilde_anything(t_pd_tilde *x, t_symbol *s,
 }
 
 int main()
-{       
+{
     t_class *c;
 
     c = class_new("pd_tilde~", (method)pd_tilde_new, (method)pd_tilde_free, sizeof(t_pd_tilde), (method)0L, A_GIMME, 0);
