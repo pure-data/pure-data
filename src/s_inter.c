@@ -487,9 +487,9 @@ static int socketreceiver_doread(t_socketreceiver *x)
     for (indx = intail; first || (indx != inhead);
         first = 0, (indx = (indx+1)&(INBUFSIZE-1)))
     {
-            /* if we hit a semi that isn't preceeded by a \, it's a message
+            /* if we hit a semi that isn't preceded by a \, it's a message
             boundary.  LATER we should deal with the possibility that the
-            preceeding \ might itself be escaped! */
+            preceding \ might itself be escaped! */
         char c = *bp++ = inbuf[indx];
         if (c == ';' && (!indx || inbuf[indx-1] != '\\'))
         {
@@ -1302,7 +1302,7 @@ void sys_setrealtime(const char *libdir)
     char cmdbuf[MAXPDSTRING];
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
         /*  promote this process's priority, if we can and want to.
-        If sys_hipriority not specfied (-1), we assume real-time was wanted.
+        If sys_hipriority not specified (-1), we assume real-time was wanted.
         Starting in Linux 2.6 one can permit real-time operation of Pd by]
         putting lines like:
                 @audio - rtprio 99

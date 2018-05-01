@@ -1648,7 +1648,7 @@ typedef struct _readsf
     int x_sigcountdown;     /* counter for signalling child for more data */
     int x_sigperiod;        /* number of ticks per signal */
     int x_filetype;         /* writesf~ only; type of file to create */
-    int x_itemswritten;     /* writesf~ only; items writen */
+    int x_itemswritten;     /* writesf~ only; items written */
     int x_swap;             /* writesf~ only; true if byte swapping */
     t_float x_f;              /* writesf~ only; scalar for signal inlet */
     pthread_mutex_t x_mutex;

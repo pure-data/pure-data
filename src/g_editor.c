@@ -2424,7 +2424,7 @@ static void canvas_doclear(t_canvas *x)
                 if (&y->g_pd == pd_this->pd_newest) glist_select(x, y);
         }
     }
-    while (1)   /* this is pretty wierd...  should rewrite it */
+    while (1)   /* this is pretty weird...  should rewrite it */
     {
         for (y = x->gl_list; y; y = y2)
         {

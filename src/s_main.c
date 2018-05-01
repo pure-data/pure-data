@@ -544,9 +544,9 @@ static int sys_getmultidevchannels(int n, int *devlist)
 }
 
 
-    /* this routine tries to figure out where to find the auxilliary files
+    /* this routine tries to figure out where to find the auxiliary files
     Pd will need to run.  This is either done by looking at the command line
-    invokation for Pd, or if that fails, by consulting the variable
+    invocation for Pd, or if that fails, by consulting the variable
     INSTALL_PREFIX.  In MSW, we don't try to use INSTALL_PREFIX. */
 void sys_findprogdir(char *progname)
 {
