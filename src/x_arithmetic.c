@@ -600,19 +600,33 @@ static void sqrt_float(t_object *x, t_float f)
     outlet_float(x->ob_outlet, r);
 }
 
-static t_class *log_class;      /* ----------- log --------------- */
+static t_class *log_class;    /* ----------- log --------------- */
 
-static void *log_new(void)
+typedef struct _log
 {
-    t_object *x = (t_object *)pd_new(log_class);
-    outlet_new(x, &s_float);
+    t_object x_ob;
+    t_float x_f;
+} t_log;
+
+static void *log_new(t_floatarg f)
+{
+    t_log *x = (t_log *)pd_new(log_class);
+    x->x_f = f;
+    floatinlet_new(&x->x_ob, &x->x_f);
+    outlet_new(&x->x_ob, &s_float);
     return (x);
 }
 
-static void log_float(t_object *x, t_float f)
+static void log_float(t_log *x, t_float f)
 {
-    t_float r = (f > 0 ? logf(f) : -1000);
-    outlet_float(x->ob_outlet, r);
+    t_float r;
+    if (f <= 0)
+        r = -1000;
+    else if (x->x_f <= 0)
+        r = log(f);
+    else
+        r = log(f)/log(x->x_f);
+    outlet_float(x->x_ob.ob_outlet, r);
 }
 
 static t_class *exp_class;      /* ----------- exp --------------- */
@@ -888,8 +902,8 @@ void x_arithmetic_setup(void)
     class_addfloat(sqrt_class, (t_method)sqrt_float);
     class_sethelpsymbol(sqrt_class, math_sym);
 
-    log_class = class_new(gensym("log"), log_new, 0,
-        sizeof(t_object), 0, 0);
+    log_class = class_new(gensym("log"), (t_newmethod)log_new, 0,
+        sizeof(t_log), 0, A_DEFFLOAT, 0);
     class_addfloat(log_class, (t_method)log_float);
     class_sethelpsymbol(log_class, math_sym);
 
