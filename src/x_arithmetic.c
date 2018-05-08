@@ -119,15 +119,16 @@ static void *binop1_pow_new(t_floatarg f)
 
 static void binop1_pow_bang(t_binop *x)
 {
-    outlet_float(x->x_obj.ob_outlet,
-        (x->x_f1 > 0 ? powf(x->x_f1, x->x_f2) : 0));
+    t_float r = (x->x_f1 == 0 && x->x_f2 < 0) ||
+        (x->x_f1 < 0 && (x->x_f2 - (int)x->x_f2) != 0) ?
+        0 : pow(x->x_f1, x->x_f2);
+    outlet_float(x->x_obj.ob_outlet, r);
 }
 
 static void binop1_pow_float(t_binop *x, t_float f)
 {
     x->x_f1 = f;
-    outlet_float(x->x_obj.ob_outlet,
-        (x->x_f1 > 0 ? powf(x->x_f1, x->x_f2) : 0));
+    binop1_pow_bang(x);
 }
 
 /* ------------------------ max -------------------------------- */
