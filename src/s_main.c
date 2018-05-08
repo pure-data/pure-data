@@ -351,12 +351,16 @@ int sys_main(int argc, char **argv)
 #endif  /* _WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
-    for (i = noprefs = 0; i < argc; i++)    /* prescan for prefs override */
+    for (i = noprefs = 0; i < argc; i++)    /* prescan ... */
     {
+        /* for prefs override */
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
         else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
             prefsfile = argv[i+1];
+        /* for external scheduler (to ignore audio api in sys_loadpreferences) */
+        else if (!strcmp(argv[i], "-schedlib") && i < argc-1)
+            sys_externalschedlib = 1;
     }
     if (!noprefs)       /* load preferences before parsing args to allow ... */
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
