@@ -584,6 +584,13 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         execv(cmdbuf, execargv);
         _exit(1);
     }
+    do {
+      unsigned int i;
+      for(i=FIXEDARG; execargv[i]; i++) {
+        free(execargv[i]);
+      }
+    } while(0);
+
 #endif /* _WIN32 */
         /* done with fork/exec or spawn; parent continues here */
     close(pipe1[0]);
