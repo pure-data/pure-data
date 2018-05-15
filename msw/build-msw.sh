@@ -15,7 +15,7 @@ if make \
     SRCASIO= ASIOLIB=/NODEFAULTLIB:ole32 PAAPI=-DPA_USE_WMME PAASIO=
  then echo -n ; else exit 1; fi
 cd ../extra
-for i in  bonk~ choice fiddle~ loop~ lrshift~ pique sigmund~ stdout pd~;
+for i in  bonk~ choice fiddle~ loop~ lrshift~ pique sigmund~ stdout paf~ pd~;
 do
   echo extern ----------------- $i -----------------
   cd $i
