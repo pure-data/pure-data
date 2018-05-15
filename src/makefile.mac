@@ -154,7 +154,8 @@ externs:
 	make -C ../extra/lrshift~ DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/pique    DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/sigmund~ DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/pd~      DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/paf~     DARWINARCH="$(EXTRAARCH)" d_fat
+    make -C ../extra/pd~      DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/stdout   DARWINARCH="$(EXTRAARCH)" d_fat
 	make -C ../extra/bob~     DARWINARCH="$(EXTRAARCH)" d_fat
 
