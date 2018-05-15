@@ -1,41 +1,33 @@
-#N canvas 199 104 579 474 12;
-#X msg 33 162 bang;
-#X floatatom 33 374 0 0 0 0 - - -;
-#X floatatom 45 188 0 0 0 0 - - -;
-#X floatatom 82 314 0 0 0 0 - - -;
-#X text 117 316 sets the value;
-#X text 80 345 creation argument initializes the value;
-#X floatatom 417 241 5 0 0 0 - - -, f 5;
-#X text 78 163 output the value;
-#X text 75 187 set and output the value;
-#X floatatom 298 290 5 0 0 0 - - -, f 5;
-#X obj 298 245 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
--1 -1;
-#X text 39 418 see also:;
-#X obj 163 418 value;
-#X obj 216 418 send;
-#X obj 92 23 int;
-#X text 134 23 - STORE AN INTEGER;
-#X text 68 57 The int object stores a number \, initialized by its
+#N canvas 312 78 599 357 12;
+#X msg 43 110 bang;
+#X floatatom 41 302 0 0 0 0 - - -;
+#X floatatom 55 134 0 0 0 0 - - -;
+#X floatatom 82 252 0 0 0 0 - - -;
+#X text 90 106 outputs the value;
+#X text 92 135 sets and outputs the value;
+#X text 93 274 creation argument initializes the value;
+#X obj 41 276 int 6;
+#X msg 55 157 9.6;
+#X text 88 157 non-integers get truncated;
+#X msg 53 182 -9.6;
+#X text 95 182 toward zero;
+#X text 116 254 set the value but no output;
+#X obj 60 11 int;
+#X text 108 12 - STORE AN INTEGER;
+#X text 19 42 The int object stores a number \, initialized by its
 creation argument \, which may be reset using its inlet and output
-by sending it the "bang" message. Sending a number sets a new value
-and outputs it. The output is truncated to an integer à la Max.;
-#X obj 33 344 int 6;
-#X msg 50 217 send int-help;
-#X obj 417 217 r int-help;
-#X text 331 417 updated for Pd version 0.48-2;
-#X msg 57 251 send i;
-#X obj 298 266 value i;
-#X obj 109 418 float;
-#X text 147 267 with the same name =>;
-#X text 105 251 <= or send to a variable;
-#X text 154 217 <= send to a "receive" \, like this ==>;
-#X connect 0 0 17 0;
-#X connect 2 0 17 0;
-#X connect 3 0 17 1;
-#X connect 10 0 22 0;
-#X connect 17 0 1 0;
-#X connect 18 0 17 0;
-#X connect 19 0 6 0;
-#X connect 21 0 17 0;
-#X connect 22 0 9 0;
+by sending it the "bang" message. The output is truncated to an integer
+à la Max.;
+#X obj 500 209 r int-help;
+#X floatatom 500 234 5 0 0 0 - - -, f 5;
+#X text 171 209 send value to a "receive" like this -->;
+#X text 332 323 updated for Pd version 0.45;
+#X msg 54 211 send int-help;
+#X connect 0 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 1;
+#X connect 7 0 1 0;
+#X connect 8 0 7 0;
+#X connect 10 0 7 0;
+#X connect 16 0 17 0;
+#X connect 20 0 7 0;
