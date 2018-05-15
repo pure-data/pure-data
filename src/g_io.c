@@ -16,6 +16,27 @@ life elsewhere. */
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>
+
+/* only because inlet_float() is not public... */
+union inletunion
+{
+    t_symbol *iu_symto;
+    t_gpointer *iu_pointerslot;
+    t_float *iu_floatslot;
+    t_symbol **iu_symslot;
+    t_float iu_floatsignalvalue;
+};
+
+struct _inlet
+{
+    t_pd i_pd;
+    struct _inlet *i_next;
+    t_object *i_owner;
+    t_pd *i_dest;
+    t_symbol *i_symfrom;
+    union inletunion i_un;
+};
+
 void signal_setborrowed(t_signal *sig, t_signal *sig2);
 void signal_makereusable(t_signal *sig);
 
@@ -238,7 +259,20 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
     }
 }
 
-static void *vinlet_newsig(t_symbol *s)
+/* static void *inlet2_new(t_floatarg f){
+    t_vinlet *x = (t_vinlet *)pd_new(vinlet_class);
+    x->x_canvas = canvas_getcurrent();
+    x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, &s_signal);
+    x->x_endbuf = x->x_buf = (t_float *)getbytes(0);
+    x->x_bufsize = 0;
+    x->x_directsignal = 0;
+    x->x_inlet->i_un.iu_floatsignalvalue = f;
+    floatinlet_new((t_object *)x, &x->x_inlet->i_un.iu_floatsignalvalue);
+    outlet_new(&x->x_obj, &s_signal);
+    return(x);
+} */
+
+static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
 {
     t_vinlet *x = (t_vinlet *)pd_new(vinlet_class);
     x->x_canvas = canvas_getcurrent();
@@ -246,7 +280,6 @@ static void *vinlet_newsig(t_symbol *s)
     x->x_endbuf = x->x_buf = (t_float *)getbytes(0);
     x->x_bufsize = 0;
     x->x_directsignal = 0;
-    outlet_new(&x->x_obj, &s_signal);
 
     resample_init(&x->x_updown);
 
@@ -256,14 +289,27 @@ static void *vinlet_newsig(t_symbol *s)
      *
      * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
      */
-    if (s == gensym("hold"))
-        x->x_updown.method=1;       /* up: sample and hold */
-    else if (s == gensym("lin") || s == gensym("linear"))
-        x->x_updown.method=2;       /* up: linear interpolation */
-    else if (s == gensym("pad"))
-        x->x_updown.method=0;       /* up: zero-padding */
-    else x->x_updown.method=3;      /* sample/hold unless version<0.44 */
-
+    t_float f = 0;
+    if(argv->a_type == A_FLOAT){
+        f = atom_getfloatarg(0, argc, argv);
+    }
+    else{
+        t_symbol *symarg = atom_getsymbolarg(0, argc, argv);
+        if (symarg == gensym("hold"))
+            x->x_updown.method=1;       /* up: sample and hold */
+        else if (symarg == gensym("lin") || s == gensym("linear"))
+            x->x_updown.method=2;       /* up: linear interpolation */
+        else if (symarg == gensym("pad"))
+            x->x_updown.method=0;       /* up: zero-padding */
+        else x->x_updown.method=3;      /* sample/hold unless version<0.44 */
+        if((argv+1)->a_type == A_FLOAT){
+            f = atom_getfloatarg(1, argc, argv);
+        }
+    }
+    x->x_inlet->i_un.iu_floatsignalvalue = f;
+    floatinlet_new((t_object *)x, &x->x_inlet->i_un.iu_floatsignalvalue);
+    outlet_new(&x->x_obj, &s_signal);
+    
     return (x);
 }
 
@@ -271,7 +317,7 @@ static void vinlet_setup(void)
 {
     vinlet_class = class_new(gensym("inlet"), (t_newmethod)vinlet_new,
         (t_method)vinlet_free, sizeof(t_vinlet), CLASS_NOINLET, A_DEFSYM, 0);
-    class_addcreator((t_newmethod)vinlet_newsig, gensym("inlet~"), A_DEFSYM, 0);
+    class_addcreator((t_newmethod)vinlet_newsig, gensym("inlet~"), A_GIMME, 0);
     class_addbang(vinlet_class, vinlet_bang);
     class_addpointer(vinlet_class, vinlet_pointer);
     class_addfloat(vinlet_class, vinlet_float);
