@@ -119,7 +119,10 @@ void vinlet_status(t_vinlet *x)
       return;
 
     x->x_status_last = count;
-    outlet_float(x->x_status, count);
+    t_atom a;
+    SETFLOAT(&a, count);
+    /* prefix in case we add more info later */
+    outlet_anything(x->x_status, gensym("signals"), 1, &a);
 }
 
 t_int *vinlet_perform(t_int *w)
