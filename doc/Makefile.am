@@ -51,7 +51,7 @@ empty=
 # these files go into libpddir defined above
 # to regenerate:
 # cd doc
-# find . -type f  | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+# find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
      ./1.manual/fig11.1.png \
@@ -478,7 +478,6 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/sizingtest.pd \
      ./7.stuff/tools/testtone16.pd \
      ./7.stuff/tools/testtone.pd \
-     ./Makefile.am \
      ./sound/bell.aiff \
      ./sound/voice2.wav \
      ./sound/voice.wav \

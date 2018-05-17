@@ -844,13 +844,17 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
 #if defined(PDTHREADS) && defined(PDINSTANCE)
+#ifdef _MSC_VER
+#define PERTHREAD __declspec(thread)
+#else
 #define PERTHREAD __thread
+#endif /* _MSC_VER */
 #else
 #define PERTHREAD
 #endif
 
 #ifdef PDINSTANCE
-EXTERN PERTHREAD t_pdinstance *pd_this;
+extern PERTHREAD t_pdinstance *pd_this;
 EXTERN t_pdinstance **pd_instances;
 EXTERN int pd_ninstances;
 #else
