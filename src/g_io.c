@@ -51,48 +51,41 @@ static void *vinlet_new(t_symbol *s)
     x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, 0);
     x->x_bufsize = 0;
     x->x_buf = 0;
-    x->x_anyoutlet = 0;
+    x->x_anyoutlet = outlet_new(&x->x_obj, 0);
     x->x_clock = 0;
     x->x_status = 0;
     x->x_status_last = -1;
-    outlet_new(&x->x_obj, 0);
     return (x);
-}
-
-static t_outlet * vinlet_outlet(t_vinlet *x) {
-    if (x->x_anyoutlet)
-        return x->x_anyoutlet;
-    return x->x_obj.ob_outlet;
 }
 
 static void vinlet_bang(t_vinlet *x)
 {
-    outlet_bang(vinlet_outlet(x));
+    outlet_bang(x->x_anyoutlet);
 }
 
 static void vinlet_pointer(t_vinlet *x, t_gpointer *gp)
 {
-    outlet_pointer(vinlet_outlet(x), gp);
+    outlet_pointer(x->x_anyoutlet, gp);
 }
 
 static void vinlet_float(t_vinlet *x, t_float f)
 {
-    outlet_float(vinlet_outlet(x), f);
+    outlet_float(x->x_anyoutlet, f);
 }
 
 static void vinlet_symbol(t_vinlet *x, t_symbol *s)
 {
-    outlet_symbol(vinlet_outlet(x), s);
+    outlet_symbol(x->x_anyoutlet, s);
 }
 
 static void vinlet_list(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    outlet_list(vinlet_outlet(x), s, argc, argv);
+    outlet_list(x->x_anyoutlet, s, argc, argv);
 }
 
 static void vinlet_anything(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    outlet_anything(vinlet_outlet(x), s, argc, argv);
+    outlet_anything(x->x_anyoutlet, s, argc, argv);
 }
 
 static void vinlet_free(t_vinlet *x)
