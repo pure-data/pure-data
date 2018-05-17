@@ -28,6 +28,7 @@ typedef struct _vinlet
     t_object x_obj;
     t_canvas *x_canvas;
     t_inlet *x_inlet;
+    t_outlet *x_outlet;
     int x_bufsize;
     t_float *x_buf;         /* signal buffer; zero if not a signal */
     t_float *x_endbuf;
@@ -48,38 +49,38 @@ static void *vinlet_new(t_symbol *s)
     x->x_inlet = canvas_addinlet(x->x_canvas, &x->x_obj.ob_pd, 0);
     x->x_bufsize = 0;
     x->x_buf = 0;
-    outlet_new(&x->x_obj, 0);
+    x->x_outlet = outlet_new(&x->x_obj, 0);
     return (x);
 }
 
 static void vinlet_bang(t_vinlet *x)
 {
-    outlet_bang(x->x_obj.ob_outlet);
+    outlet_bang(x->x_outlet);
 }
 
 static void vinlet_pointer(t_vinlet *x, t_gpointer *gp)
 {
-    outlet_pointer(x->x_obj.ob_outlet, gp);
+    outlet_pointer(x->x_outlet, gp);
 }
 
 static void vinlet_float(t_vinlet *x, t_float f)
 {
-    outlet_float(x->x_obj.ob_outlet, f);
+    outlet_float(x->x_outlet, f);
 }
 
 static void vinlet_symbol(t_vinlet *x, t_symbol *s)
 {
-    outlet_symbol(x->x_obj.ob_outlet, s);
+    outlet_symbol(x->x_outlet, s);
 }
 
 static void vinlet_list(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    outlet_list(x->x_obj.ob_outlet, s, argc, argv);
+    outlet_list(x->x_outlet, s, argc, argv);
 }
 
 static void vinlet_anything(t_vinlet *x, t_symbol *s, int argc, t_atom *argv)
 {
-    outlet_anything(x->x_obj.ob_outlet, s, argc, argv);
+    outlet_anything(x->x_outlet, s, argc, argv);
 }
 
 static void vinlet_free(t_vinlet *x)
@@ -295,6 +296,7 @@ static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
     *floatsignal = f;
     floatinlet_new((t_object *)x, floatsignal);
     outlet_new(&x->x_obj, &s_signal);
+    x->x_outlet = outlet_new(&x->x_obj, 0); /* message outlet */
     
     return (x);
 }
