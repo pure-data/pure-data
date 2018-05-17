@@ -290,21 +290,24 @@ static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
      * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
      */
     t_float f = 0;
-    if(argv->a_type == A_FLOAT){
-        f = atom_getfloatarg(0, argc, argv);
-    }
-    else{
-        t_symbol *symarg = atom_getsymbolarg(0, argc, argv);
-        if (symarg == gensym("hold"))
-            x->x_updown.method=1;       /* up: sample and hold */
-        else if (symarg == gensym("lin") || s == gensym("linear"))
-            x->x_updown.method=2;       /* up: linear interpolation */
-        else if (symarg == gensym("pad"))
-            x->x_updown.method=0;       /* up: zero-padding */
-        else x->x_updown.method=3;      /* sample/hold unless version<0.44 */
-        if((argv+1)->a_type == A_FLOAT){
-            f = atom_getfloatarg(1, argc, argv);
+    x->x_updown.method=3;      /* sample/hold unless version<0.44 */
+    if (argc)
+    {
+        if (argv->a_type == A_SYMBOL)
+        {
+            t_symbol *symarg = atom_getsymbol(argv);
+            if (symarg == gensym("hold"))
+                x->x_updown.method=1;       /* up: sample and hold */
+            else if (symarg == gensym("lin") || s == gensym("linear"))
+                x->x_updown.method=2;       /* up: linear interpolation */
+            else if (symarg == gensym("pad"))
+                x->x_updown.method=0;       /* up: zero-padding */
+
+            if (argc > 1)
+                f = atom_getfloat(argv+1);
         }
+        else
+            f = atom_getfloat(argv);
     }
     x->x_inlet->i_un.iu_floatsignalvalue = f;
     floatinlet_new((t_object *)x, &x->x_inlet->i_un.iu_floatsignalvalue);
