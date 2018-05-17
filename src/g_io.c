@@ -17,26 +17,6 @@ life elsewhere. */
 #include "g_canvas.h"
 #include <string.h>
 
-/* only because inlet_float() is not public... */
-union inletunion
-{
-    t_symbol *iu_symto;
-    t_gpointer *iu_pointerslot;
-    t_float *iu_floatslot;
-    t_symbol **iu_symslot;
-    t_float iu_floatsignalvalue;
-};
-
-struct _inlet
-{
-    t_pd i_pd;
-    struct _inlet *i_next;
-    t_object *i_owner;
-    t_pd *i_dest;
-    t_symbol *i_symfrom;
-    union inletunion i_un;
-};
-
 void signal_setborrowed(t_signal *sig, t_signal *sig2);
 void signal_makereusable(t_signal *sig);
 
@@ -272,6 +252,8 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
     return(x);
 } */
 
+t_float * inlet_floatsignalpointer(t_inlet *x);
+
 static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
 {
     t_vinlet *x = (t_vinlet *)pd_new(vinlet_class);
@@ -309,8 +291,9 @@ static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
         else
             f = atom_getfloat(argv);
     }
-    x->x_inlet->i_un.iu_floatsignalvalue = f;
-    floatinlet_new((t_object *)x, &x->x_inlet->i_un.iu_floatsignalvalue);
+    t_float *floatsignal = inlet_floatsignalpointer(x->x_inlet);
+    *floatsignal = f;
+    floatinlet_new((t_object *)x, floatsignal);
     outlet_new(&x->x_obj, &s_signal);
     
     return (x);
