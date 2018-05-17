@@ -136,6 +136,13 @@ static void clone_in_all(t_in *x, t_symbol *s, int argc, t_atom *argv)
     x->i_owner->x_phase = phasewas;
 }
 
+static void clone_in_float(t_in *x, t_floatarg f)
+{
+    t_atom a;
+    SETFLOAT(&a, f);
+    clone_in_all(x, &s_list, 1, &a);
+}
+
 static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
 {
     int n = fn - x->i_owner->x_startvoice;
@@ -466,6 +473,7 @@ void clone_setup(void)
     class_addmethod(clone_in_class, (t_method)clone_in_vis, gensym("vis"),
         A_FLOAT, A_FLOAT, 0);
     class_addlist(clone_in_class, (t_method)clone_in_list);
+    class_addfloat(clone_in_class, (t_method)clone_in_float);
 
     clone_out_class = class_new(gensym("clone-outlet"), 0, 0,
         sizeof(t_in), CLASS_PD, 0);

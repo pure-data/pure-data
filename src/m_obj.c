@@ -131,7 +131,11 @@ static void inlet_float(t_inlet *x, t_float f)
     if (x->i_symfrom == &s_float)
         pd_vmess(x->i_dest, x->i_symto, "f", (t_floatarg)f);
     else if (x->i_symfrom == &s_signal)
+    {
         x->i_un.iu_floatsignalvalue = f;
+        if (x->i_generic)
+            pd_float(x->i_dest, f);
+    }
     else if (!x->i_symfrom || x->i_generic)
         pd_float(x->i_dest, f);
     else if (x->i_symfrom == &s_list)
