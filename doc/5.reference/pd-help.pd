@@ -1,4 +1,4 @@
-#N canvas 241 181 652 514 12;
+#N canvas 2 52 1362 714 12;
 #N canvas 0 0 600 400 (subpatch) 0;
 #X restore 23 13 pd;
 #X text 57 14 - subpatch;
@@ -118,7 +118,7 @@ command line or by a message:;
 #X connect 13 1 2 0;
 #X connect 13 2 4 0;
 #X restore 20 370 pd up/downsampling;
-#N canvas 103 180 600 392 subpatch-with-inlets-and-outlets 0;
+#N canvas 2 52 1362 714 subpatch-with-inlets-and-outlets 0;
 #X obj 64 83 inlet;
 #X text 16 53 control inlet for receiving messages;
 #X floatatom 64 111 0 0 0 0 - - -;
@@ -132,6 +132,10 @@ command line or by a message:;
 #X obj 398 245 sig~ 34;
 #X text 392 32 same for;
 #X text 393 51 signals.;
+#X text 484 40 a signal inlet can receive messages on its 2nd outlet
+;
+#X text 491 63 and it gets a count of connections on its 3rd outlet
+;
 #X connect 0 0 2 0;
 #X connect 3 0 4 0;
 #X connect 6 0 7 0;
@@ -140,11 +144,39 @@ command line or by a message:;
 #X restore 50 279 pd subpatch-with-inlets-and-outlets;
 #X text 193 368 <- here are some ugly details on;
 #X text 219 386 up/downsampling for inlet~ and outlet~;
-#X text 390 435 updated for Pd version 0.44;
 #X text 183 470 (documents new default upsampling behavior for reblocked
 inlet~ and outlet~.);
+#X text 390 435 updated for Pd version 0.49?;
+#N canvas 2 52 1362 714 audioin 0;
+#X obj 177 83 inlet~;
+#X obj 177 308 outlet~;
+#X obj 196 279 outlet;
+#X obj 216 217 outlet;
+#X text 266 77 the 2nd outlet gets any messages passed to the inlet
+;
+#X text 266 96 the 3rd outlet gets a count of signals connected to
+the inlet;
+#X text 113 267 audio ->;
+#X text 206 247 <- messages;
+#X text 228 185 <- connectivity count;
+#X connect 0 0 1 0;
+#X connect 0 1 2 0;
+#X connect 0 2 3 0;
+#X restore 591 194 pd audioin;
+#X obj 585 128 sig~ 42;
+#X floatatom 658 228 5 0 0 0 - - -, f 5;
+#X msg 619 158 foo bar;
+#X obj 624 255 print;
+#X text 502 163 connect ->;
+#X text 704 225 <- count of connections;
+#X text 679 256 <- print messages that came in;
+#X text 584 89 an audio inlet has 2 additional outlets;
+#X text 677 195 <- click for more info;
 #X connect 14 0 24 1;
 #X connect 15 0 24 0;
 #X connect 22 0 13 0;
 #X connect 24 0 16 0;
 #X connect 24 1 13 0;
+#X connect 29 1 33 0;
+#X connect 29 2 31 0;
+#X connect 32 0 29 0;
