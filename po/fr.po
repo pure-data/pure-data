@@ -413,7 +413,7 @@ msgid "Send symbol:"
 msgstr "Envoyer au symbole :"
 
 msgid "Receive symbol:"
-msgstr "Reçoit du symbole :"
+msgstr "Recevoir du symbole :"
 
 msgid "Background color"
 msgstr "Couleur de l'arrière plan"
@@ -558,7 +558,7 @@ msgid "Browse"
 msgstr "Choisir"
 
 msgid "Reset"
-msgstr ""
+msgstr "Réinitialiser"
 
 msgid "Disable"
 msgstr "Désactiver"
@@ -623,7 +623,11 @@ msgstr "[deken] deken-plugin.tcl (recherche d'externals) chargé depuis %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr "[deken] Platforme detectée : %s"
+msgstr "[deken] Plateforme détectée : %s"
+
+#, fuzzy, tcl-format
+msgid "[deken] Platform re-detected: %s"
+msgstr "[deken] Plateforme redétectée : %s"
 
 msgid "Show all"
 msgstr "Montrer tout"
