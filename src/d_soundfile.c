@@ -1441,8 +1441,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     int argc, t_atom *argv, t_soundfile_info *info)
 {
     int endianness, swap, filetype, normalize, i;
-    long onset, nframes, itemsleft,
-        maxsize = DEFMAXSIZE, itemswritten = 0, j;
+    long onset, nframes, itemsleft, itemswritten = 0, j;
     t_garray *garrays[MAXSFCHANS];
     t_word *vectors[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
