@@ -23,6 +23,7 @@ objects use Posix-like threads.  */
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include <limits.h>
 
 #include "m_pd.h"
 
@@ -1205,7 +1206,6 @@ static void soundfile_xferout_words(int nchannels, t_word **vecs,
 }
 
 /* ------- soundfiler - reads and writes soundfiles to/from "garrays" ---- */
-#define DEFMAXSIZE 4000000      /* default maximum 16 MB per channel */
 #define SAMPBUFSIZE 1024
 
 
@@ -1244,7 +1244,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     t_soundfile_info info;
     int resize = 0, i;
     long skipframes = 0, finalsize = 0, itemsleft,
-        maxsize = DEFMAXSIZE, itemsread = 0, j;
+        maxsize = LONG_MAX, itemsread = 0, j;
     int fd = -1;
     char endianness, *filename;
     t_garray *garrays[MAXSFCHANS];
