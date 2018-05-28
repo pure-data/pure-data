@@ -2802,21 +2802,11 @@ static void canvas_connect_selection(t_canvas *x)
             if (!(canvas_isconnected(x, objsrc, out, objsink, in)) &&
                 !(outsig && !obj_issignalinlet(objsink, in)))
         {
-            t_outconnect *oc;
-
-            if (!(oc = obj_connect(objsrc, out, objsink, in))) return;
-
-            sys_vgui(
-                ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-                glist_getcanvas(x), 0, 0, 0, 0,
-                (obj_issignaloutlet(objsrc, out) ? 2 : 1) * x->gl_zoom, oc);
-            canvas_fixlinesfor(x, objsrc);
-            canvas_dirty(x, 1);
+            int srcindex = canvas_getindex(x, &objsrc->ob_g);
+            int sinkindex = canvas_getindex(x, &objsink->ob_g);
+            canvas_connect(x, (t_float)srcindex, (t_float)out, (t_float)sinkindex, (t_float)in);
             canvas_setundo(x, canvas_undo_connect,
-                canvas_undo_set_connect(x,
-                    canvas_getindex(x, &objsrc->ob_g), out,
-                    canvas_getindex(x, &objsink->ob_g), in),
-                    "connect");
+                           canvas_undo_set_connect(x, srcindex, out, sinkindex, in), "connect");
 
             return;
         }
