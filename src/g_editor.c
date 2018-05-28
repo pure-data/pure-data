@@ -2775,7 +2775,7 @@ static void canvas_tidy(t_canvas *x)
        a compatible type in the lower one. */
 static void canvas_connect_selection(t_canvas *x)
 {
-    t_gobj *y, *a, *b;
+    t_gobj *a, *b;
     t_selection *sel;
     t_object *objsrc, *objsink;
     int ax1, ay1, ax2, ay2, bx1, by1, bx2, by2;
@@ -2794,7 +2794,7 @@ static void canvas_connect_selection(t_canvas *x)
 
     if (!a || !b) return;
 
-    if (by1 < ay1) { y = a; a = b; b = y; }
+    if (by1 < ay1) { t_gobj *y = a; a = b; b = y; }
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&a->g_pd)) ||
