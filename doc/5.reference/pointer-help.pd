@@ -1,6 +1,6 @@
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
-#N canvas 459 64 698 764 12;
+#N canvas 459 99 698 764 12;
 #X text 19 635 see also:;
 #X obj 21 10 pointer;
 #X text 95 10 -- remember the location of a scalar in a list;
@@ -18,7 +18,7 @@
 #X obj 151 655 getsize;
 #X obj 219 656 setsize;
 #X obj 289 656 element;
-#N canvas 2 52 312 185 help-pointer-data 1;
+#N canvas 2 132 312 185 help-pointer-data 0;
 #X scalar template2 20 97 \;;
 #X scalar template1 80 17 90 \;;
 #X scalar template1 120 117 9 \;;
@@ -33,12 +33,10 @@
 to the class of the scalar being output:;
 #X msg 73 550 next;
 #X msg 59 527 traverse pd-help-pointer-data;
-#X obj 59 578 pointer help-pointer-template1 help-pointer-template2
-;
 #X obj 59 604 print template1;
-#X obj 197 604 print template2;
-#X obj 337 604 print other;
-#X obj 440 604 print bangout;
+#X obj 184 604 print template2;
+#X obj 309 604 print other;
+#X obj 434 604 print bangout;
 #X text 333 232 sets to the "head" of the list;
 #X text 29 34 "Pointer" is a storage object like "float" \, except
 that the thing stored is the location of a scalar somewhere. You can
@@ -68,17 +66,18 @@ the end \, a "bang" goes to out2.;
 #X text 149 314 output the next object (if arg is 0) or the next selected
 object (if arg is 1 -- but the window must be visible for the "selection"
 to make sense).;
+#X obj 59 578 pointer template1 template2, f 54;
 #X connect 12 0 16 0;
 #X connect 12 1 17 0;
 #X connect 13 0 12 0;
 #X connect 14 0 12 0;
 #X connect 15 0 12 0;
-#X connect 19 0 21 0;
-#X connect 20 0 21 0;
-#X connect 21 0 22 0;
-#X connect 21 1 23 0;
-#X connect 21 2 24 0;
-#X connect 21 3 25 0;
-#X connect 34 0 12 0;
-#X connect 36 0 12 0;
-#X connect 40 0 41 0;
+#X connect 19 0 42 0;
+#X connect 20 0 42 0;
+#X connect 33 0 12 0;
+#X connect 35 0 12 0;
+#X connect 39 0 40 0;
+#X connect 42 0 21 0;
+#X connect 42 1 22 0;
+#X connect 42 2 23 0;
+#X connect 42 3 24 0;
