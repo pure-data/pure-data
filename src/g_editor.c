@@ -2540,6 +2540,47 @@ static void canvas_duplicate(t_canvas *x)
 {
     if (!x->gl_editor)
         return;
+        /* if a connection is selected, we extend it to the right (if possible) */
+    if (x->gl_editor->e_selectedline)
+    {
+        int outindex = x->gl_editor->e_selectline_index1;
+        int inindex  = x->gl_editor->e_selectline_index2;
+        int outno = x->gl_editor->e_selectline_outno + 1;
+        int inno  = x->gl_editor->e_selectline_inno + 1;
+        t_gobj *outgobj = 0, *ingobj = 0;
+        t_object *outobj = 0, *inobj = 0;
+        int whoout = outindex;
+        int whoin = inindex;
+
+        for (outgobj = x->gl_list; whoout; outgobj = outgobj->g_next, whoout--)
+            if (!outgobj->g_next) return;
+        for (ingobj = x->gl_list; whoin; ingobj = ingobj->g_next, whoin--)
+            if (!ingobj->g_next) return;
+        outobj = (t_object*)outgobj;
+        inobj = (t_object*)ingobj;
+
+        while(canvas_isconnected(x, outobj, outno, inobj, inno))
+        {
+            outno++;
+            inno++;
+        }
+        if (!outobj || obj_noutlets(outobj) <= outno)
+            return;
+        if (!inobj  || obj_ninlets (inobj ) <= inno )
+            return;
+        if(obj_issignaloutlet(outobj, outno) && !obj_issignalinlet(inobj, inno))
+            return;
+
+        canvas_connect(x,
+                       (t_float)outindex, (t_float)outno,
+                       (t_float)inindex, (t_float)inno);
+        canvas_setundo(x, canvas_undo_connect,
+                       canvas_undo_set_connect(x, outindex, outno, inindex, inno), "connect");
+
+        x->gl_editor->e_selectline_outno = outno;
+        x->gl_editor->e_selectline_inno = inno;
+        return;
+    }
     if (x->gl_editor->e_onmotion == MA_NONE && x->gl_editor->e_selection)
     {
         t_selection *y;
