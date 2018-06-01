@@ -2794,20 +2794,18 @@ static void canvas_connect_selection(t_canvas *x)
 
     if (obj_noutlets(objsrc))
     {
-        int out = 0, in;
+        int out = 0, in=0;
         int outsig = obj_issignaloutlet(objsrc, out);
         int nin = obj_ninlets(objsink);
 
-        for (in = 0; in < nin; in++)
-            if (!(canvas_isconnected(x, objsrc, out, objsink, in)) &&
-                !(outsig && !obj_issignalinlet(objsink, in)))
+        if (!(canvas_isconnected(x, objsrc, out, objsink, in)) &&
+            !(outsig && !obj_issignalinlet(objsink, in)))
         {
             int srcindex = canvas_getindex(x, &objsrc->ob_g);
             int sinkindex = canvas_getindex(x, &objsink->ob_g);
             canvas_connect(x, (t_float)srcindex, (t_float)out, (t_float)sinkindex, (t_float)in);
             canvas_setundo(x, canvas_undo_connect,
                            canvas_undo_set_connect(x, srcindex, out, sinkindex, in), "connect");
-
             return;
         }
     }
