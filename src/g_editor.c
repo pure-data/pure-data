@@ -1551,6 +1551,8 @@ static void canvas_dodrawconnect(t_canvas *x,
     int iom = IOMIDDLE * x->gl_zoom;
     int x11=0, x12=0, x21=0, x22=0;
     int y11=0, y12=0, y21=0, y22=0;
+    if(!oc)
+        return;
     gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
     gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
 
