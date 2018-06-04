@@ -1670,6 +1670,22 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         }
                     }
                     break;
+                case 2: /* sink(s) selected */
+                    for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+                    {
+                        t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
+                        if (!selo || selo == ob2)
+                            continue;
+                        if (closest2 <= obj_ninlets(selo) /* selected source has enough inlets */
+                            && !canvas_isconnected(x, ob1, closest1, selo, closest2) /* and is not already connected */
+                            && ((obj_issignaloutlet(ob1, closest1) && /* and has a compatible inlet */
+                                 obj_issignalinlet(selo, closest2))))
+                        {
+                            t_outconnect *oc = obj_connect(ob1, closest1, selo, closest2);
+                            canvas_dodrawconnect(x, oc, ob1, closest1, selo, closest2);
+                        }
+                    }
+                    break;
                 default: break;
                 }
             }
