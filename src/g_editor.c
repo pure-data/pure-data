@@ -1639,6 +1639,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             }
             if (doit)
             {
+                t_selection *sel;
                 t_outconnect *oc = obj_connect(ob1, closest1, ob2, closest2);
                 canvas_dodrawconnect(x, oc, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
@@ -1647,6 +1648,28 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         canvas_getindex(x, &ob1->ob_g), closest1,
                         canvas_getindex(x, &ob2->ob_g), closest2),
                         "connect");
+                    /* now find out if the either ob1 xor ob2 are part of the selection,
+                     * and if so, connect the rest of the selection as well */
+                int selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
+                switch(selmode) {
+                case 1: /* source selected */
+                    for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+                    {
+                        t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
+                        if (!selo || selo == ob1)
+                            continue;
+                        if (closest1 <= obj_noutlets(selo) /* selected source has enough outlets */
+                            && !canvas_isconnected(x, selo, closest1, ob2, closest2) /* and is not already connected */
+                            && (!(obj_issignaloutlet(selo, closest1) && /* and has a compatible outlet */
+                                  !obj_issignalinlet(ob2, closest2))))
+                        {
+                            t_outconnect *oc = obj_connect(selo, closest1, ob2, closest2);
+                            canvas_dodrawconnect(x, oc, selo, closest1, ob2, closest2);
+                        }
+                    }
+                    break;
+                default: break;
+                }
             }
             else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
             return;
