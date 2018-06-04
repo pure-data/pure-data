@@ -116,8 +116,10 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
         if (y1 > y2)
             m = y1, y1 = y2, y2 = m;
         gobj_getrect(x, glist, &gx1, &gy1, &gx2, &gy2);
-        /* post("graph %d %d %d %d, %s %d %d %d %d",
-            x1, x2, y1, y2, class_gethelpname(x->g_pd), gx1, gx2, gy1, gy2); */
+#if 0
+        post("graph %d %d %d %d, %s %d %d %d %d",
+             x1, x2, y1, y2, class_gethelpname(x->g_pd), gx1, gx2, gy1, gy2);
+#endif
         if (gx1 < x1 || gx1 > x2 || gx2 < x1 || gx2 > x2 ||
             gy1 < y1 || gy1 > y2 || gy2 < y1 || gy2 > y2)
                 return (0);
@@ -396,7 +398,9 @@ static void canvas_undo(t_canvas *x)
         bug("canvas_undo 2");
     else
     {
-        /* post("undo"); */
+#if 0
+        post("undo");
+#endif
         (*EDITOR->canvas_undo_fn)(EDITOR->canvas_undo_canvas,
             EDITOR->canvas_undo_buf, UNDO_UNDO);
             /* enable redo in menu */
@@ -417,7 +421,9 @@ static void canvas_redo(t_canvas *x)
         bug("canvas_undo 2");
     else
     {
-        /* post("redo"); */
+#if 0
+        post("redo");
+#endif
         (*EDITOR->canvas_undo_fn)(EDITOR->canvas_undo_canvas,
             EDITOR->canvas_undo_buf, UNDO_REDO);
             /* enable undo in menu */
@@ -1322,7 +1328,9 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         x->gl_editor->e_grab = 0;
         x->gl_editor->e_onmotion = MA_NONE;
     }
-    /* post("click %d %d %d %d", xpos, ypos, which, mod); */
+#if 0
+    post("click %d %d %d %d", xpos, ypos, which, mod);
+#endif
 
     if (x->gl_editor->e_onmotion != MA_NONE)
         return;
@@ -1667,7 +1675,9 @@ void canvas_mouseup(t_canvas *x,
     t_floatarg fxpos, t_floatarg fypos, t_floatarg fwhich)
 {
     int xpos = fxpos, ypos = fypos, which = fwhich;
-    /* post("mouseup %d %d %d", xpos, ypos, which); */
+#if 0
+    post("mouseup %d %d %d", xpos, ypos, which);
+#endif
     if (!x->gl_editor)
     {
         bug("editor");
@@ -1894,7 +1904,9 @@ static void delay_move(t_canvas *x)
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 {
-    /* post("motion %d %d", xpos, ypos); */
+#if 0
+    post("motion %d %d", xpos, ypos); */
+#endif
     int mod = fmod;
     if (!x->gl_editor)
     {
