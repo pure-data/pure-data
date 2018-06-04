@@ -1542,6 +1542,38 @@ int canvas_isconnected (t_canvas *x, t_text *ob1, int n1,
     return (0);
 }
 
+static void canvas_dodrawconnect(t_canvas *x,
+                                 t_outconnect *oc,
+                                 t_object *src, int outno,
+                                 t_object *sink, int inno)
+{
+    int iow = IOWIDTH * x->gl_zoom;
+    int iom = IOMIDDLE * x->gl_zoom;
+    int x11=0, x12=0, x21=0, x22=0;
+    int y11=0, y12=0, y21=0, y22=0;
+    gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
+    gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
+
+    int noutlets1 = obj_noutlets(src);
+    int ninlets = obj_ninlets(sink);
+
+    int lx1 = x11 + (noutlets1 > 1 ?
+                     ((x12-x11-iow) * outno)/(noutlets1-1) : 0)
+        + iom;
+    int ly1 = y12;
+    int lx2 = x21 + (ninlets > 1 ?
+                     ((x22-x21-iow) * inno)/(ninlets-1) : 0)
+        + iom;
+    int ly2 = y21;
+    sys_vgui(
+        ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
+        glist_getcanvas(x),
+        lx1, ly1, lx2, ly2,
+        (obj_issignaloutlet(src, outno) ? 2 : 1) *
+        x->gl_zoom,
+        oc);
+}
+
 void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
 {
     int x11=0, y11=0, x12=0, y12=0;
@@ -1570,8 +1602,6 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
         {
             int width1 = x12 - x11, closest1, hotspot1;
             int width2 = x22 - x21, closest2, hotspot2;
-            int lx1, lx2, ly1, ly2;
-            t_outconnect *oc;
 
             if (noutlet1 > 1)
             {
@@ -1609,24 +1639,8 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             }
             if (doit)
             {
-                int iow = IOWIDTH * x->gl_zoom;
-                int iom = IOMIDDLE * x->gl_zoom;
-                oc = obj_connect(ob1, closest1, ob2, closest2);
-                lx1 = x11 + (noutlet1 > 1 ?
-                        ((x12-x11-iow) * closest1)/(noutlet1-1) : 0)
-                             + iom;
-                ly1 = y12;
-                lx2 = x21 + (ninlet2 > 1 ?
-                        ((x22-x21-iow) * closest2)/(ninlet2-1) : 0)
-                            + iom;
-                ly2 = y21;
-                sys_vgui(
-   ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-                    glist_getcanvas(x),
-                        lx1, ly1, lx2, ly2,
-                        (obj_issignaloutlet(ob1, closest1) ? 2 : 1) *
-                            x->gl_zoom,
-                        oc);
+                t_outconnect *oc = obj_connect(ob1, closest1, ob2, closest2);
+                canvas_dodrawconnect(x, oc, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
                 canvas_setundo(x, canvas_undo_connect,
                     canvas_undo_set_connect(x,
