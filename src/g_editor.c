@@ -1550,6 +1550,9 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
     t_gobj *y2;
     int xwas = x->gl_editor->e_xwas,
         ywas = x->gl_editor->e_ywas;
+#if 0
+    post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, which, doit);
+#endif
     if (doit) sys_vgui(".x%lx.c delete x\n", x);
     else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
             x, x->gl_editor->e_xwas,
