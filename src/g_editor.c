@@ -1877,6 +1877,18 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             canvas_displaceselection(x, shift ? -10 : -1, 0);
         else if (!strcmp(gotkeysym->s_name, "Right"))
             canvas_displaceselection(x, shift ? 10 : 1, 0);
+        else if ((MA_CONNECT == x->gl_editor->e_onmotion)
+            && (CURSOR_EDITMODE_CONNECT == EDITOR->canvas_cursorwas)
+            && (!strcmp(gotkeysym->s_name, "Shift")
+            || !strcmp(gotkeysym->s_name, "Shift_L")
+            || !strcmp(gotkeysym->s_name, "Shift_R")))
+        {
+                /* <Shift> while in connect-mode: create connection... */
+            canvas_doconnect(x, x->gl_editor->e_xnew, x->gl_editor->e_ynew, 1, 1);
+                /* ... and continue in connect-mode */
+            canvas_doclick(x, x->gl_editor->e_xwas, x->gl_editor->e_ywas, 0, 0, 1);
+
+        }
     }
         /* if control key goes up or down, and if we're in edit mode, change
         cursor to indicate how the click action changes */
@@ -1920,7 +1932,11 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 0);
     else if (x->gl_editor->e_onmotion == MA_CONNECT)
+    {
         canvas_doconnect(x, xpos, ypos, 0, 0);
+        x->gl_editor->e_xnew = xpos;
+        x->gl_editor->e_ynew = ypos;
+    }
     else if (x->gl_editor->e_onmotion == MA_PASSOUT)
     {
         if (!x->gl_editor->e_motionfn)
