@@ -1647,7 +1647,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                      * and if so, connect the rest of the selection as well */
                 int selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
                 switch(selmode) {
-                case 1: /* source selected */
+                case 1: /* source(s) selected */
                     for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
                     {
                         t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
