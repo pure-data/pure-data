@@ -95,7 +95,7 @@ proc ::deken::versioncheck {version} {
 }
 
 ## put the current version of this package here:
-if { [::deken::versioncheck 0.4.1] } {
+if { [::deken::versioncheck 0.5.0] } {
 
 ## FIXXXXME only initialize vars if not yet set
 set ::deken::installpath {}
@@ -1120,7 +1120,6 @@ proc ::deken::clicked_link {URL filename} {
 
     set extpath [file join $installdir $extname]
     set fullpkgfile [file join $installdir $filename]
-    ::deken::clearpost
     ::pdwindow::debug [format [_ "Commencing downloading of:\n%1\$s\nInto %2\$s..." ] $URL $installdir]
     set fullpkgfile [::deken::download_file $URL $fullpkgfile]
     if { "$fullpkgfile" eq "" } {
@@ -1252,7 +1251,8 @@ proc ::deken::parse_filename {filename} {
         foreach {o _} [lreplace [split $optionstring {[]}] 0 0] {
             if {![string first v ${o}]} {
                 set version [string range $o 1 end]
-            } { # ignoring unknown option... }
+            } { # ignoring unknown option...
+            }
         }
         foreach {a _} [lreplace [split $archstring "()"] 0 0] { lappend archs $a }
     } elseif { [ regexp {(.*)-externals\..*} $filename _ basename] } {
@@ -1263,7 +1263,7 @@ proc ::deken::parse_filename {filename} {
         set baselist [split $basename () ]
         # get pkgname + version
         set pkgver [lindex $baselist 0]
-        if { ! [ regexp "(.*)-(v.*)-" $pkgver _ pkgname version ] } {
+        if { ! [ regexp "(.*)-v(.*)-" $pkgver _ pkgname version ] } {
             set pkgname $pkgver
             set $version ""
         }
@@ -1276,7 +1276,7 @@ proc ::deken::parse_filename {filename} {
         }
         if { "x$archs$version" == "x" } {
             # try again as <pkgname>-v<version>
-            if { ! [ regexp "(.*)-(v.*)" $pkgver _ pkgname version ] } {
+            if { ! [ regexp "(.*)-v(.*)" $pkgver _ pkgname version ] } {
                 set pkgname $pkgver
                 set $version ""
             }
@@ -1297,10 +1297,15 @@ proc ::deken::architecture_match {archs} {
         ## FIXXME what if the user-supplied input isn't valid?
         regexp -- {(.*)-(.*)-(.*)} $::deken::userplatform _ OS MACHINE FLOATSIZE
     }
+    # strip the little-endian indicator from arm-archs, it's the default
+    regexp -- {(armv[0-9]*)[lL]} $MACHINE _ MACHINE
 
     # check each architecture in our list against the current one
     foreach arch $archs {
         if { [ regexp -- {(.*)-(.*)-(.*)} $arch _ os machine floatsize ] } {
+            # normalize arm-architectures by stripping away sub-architectures
+            # TODO: leave any big-endian indicator in place
+            regexp -- {(armv[0-9]*)[^0-9]*} $machine _ machine
             if { "${os}" eq "${OS}" && "${floatsize}" eq "${FLOATSIZE}" } {
                 ## so OS and floatsize match...
                 ## check whether the CPU matches as well
