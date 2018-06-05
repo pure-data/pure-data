@@ -963,9 +963,9 @@ static void sys_init_deken()
         "arm64"
 #elif defined (__ARM_ARCH)
         "armv" stringify(__ARM_ARCH)
-# if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__)
-#  if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-        "l"
+# if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
+#  if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+        "b"
 #  endif
 # endif
 #else
