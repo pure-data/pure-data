@@ -959,6 +959,8 @@ static void sys_init_deken()
         "i386"
 #elif defined(__ppc__)
         "ppc"
+#elif defined(__aarch64__)
+        "arm64"
 #elif defined (__ARM_ARCH)
         "armv" stringify(__ARM_ARCH)
 # if defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__)
