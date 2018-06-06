@@ -1575,8 +1575,8 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
         return 0;
     if (nin <= obj_ninlets(sink) /* sink has enough inlets */
         && !canvas_isconnected(x, src, nout, sink, nin) /* and is not already connected */
-        && ((obj_issignaloutlet(src, nout) && /* and has a compatible inlet */
-             obj_issignalinlet(sink, nin))))
+        && (!obj_issignaloutlet(src, nout) || /* and has a compatible inlet */
+             obj_issignalinlet(sink, nin)))
     {
         t_outconnect *oc = obj_connect(src, nout, sink, nin);
         canvas_dodrawconnect(x, oc, src, nout, sink, nin);
