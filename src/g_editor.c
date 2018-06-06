@@ -1670,6 +1670,80 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         for(i=closest1, j=closest2; (i < noutlet1) && (j < ninlet2); i++, j++ )
                             tryconnect(x, ob1, i, ob2, j);
                     }
+                    else
+                        /* if other objects are selected as well, connect those either as
+                         * sources or sinks, whichever allows for more connections
+                         */
+                    {
+                            /* get a left-right sorted list of all selected objects
+                             * (but the already connected ones)
+                             * count the possibles sinks and sources
+                             */
+                        int i;
+                        unsigned int sinks = 0, sources = 0;
+                        int msgout = !obj_issignaloutlet(ob1, closest1);
+                        int sigin = obj_issignalinlet(ob2, closest2);
+                        t_selection*sortedsel = 0;
+                        for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+                        {
+                            int possible = 0;
+                            t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
+                            t_selection*sob = 0;
+
+                            if (!ob || (ob1 == ob) || (ob2 == ob))
+                                continue;
+                            if((obj_noutlets(ob) > closest1) && (sigin || !obj_issignaloutlet(ob, closest1)))
+                            {
+                                possible = 1;
+                                sources++;
+                            }
+                            if((obj_ninlets(ob) > closest2) && (msgout || obj_issignalinlet(ob, closest2)))
+                            {
+                                possible = 1;
+                                sinks++;
+                            }
+                            if (!possible)
+                                continue;
+
+                                /* insert the object into the sortedsel list */
+                            if((sob = getbytes(sizeof(*sob)))) {
+                                t_selection*s, *slast=0;
+                                sob->sel_what = &ob->te_g;
+                                for(s=sortedsel; s; s=s->sel_next)
+                                {
+                                    t_object*o = pd_checkobject(&s->sel_what->g_pd);
+                                    if(!o) break;
+                                    if((ob->te_xpix < o->te_xpix) || ((ob->te_xpix == o->te_xpix) && (ob->te_ypix < o->te_ypix)))
+                                    {
+                                        sob->sel_next = s;
+                                        if(slast)
+                                            slast->sel_next = sob;
+                                        else
+                                            sortedsel = sob;
+                                        break;
+                                    }
+                                    slast=s;
+                                }
+                                if(slast)
+                                    slast->sel_next = sob;
+                                else
+                                    sortedsel = sob;
+                            }
+                        }
+
+                        if (sinks > sources)
+                            for(sel=sortedsel, i=closest1+1; (i<noutlet1) && sel; i++, sel=sel->sel_next)
+                            {
+                                t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
+                                tryconnect(x, ob1, i, ob, closest2);
+                            }
+                        else
+                            for(sel=sortedsel, i=closest2+1; (i<ninlet2) && sel; i++, sel=sel->sel_next)
+                            {
+                                t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
+                                tryconnect(x, ob, closest1, ob2, i);
+                            }
+                    }
                     break;
                 case 1: /* source(s) selected */
                     for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
