@@ -2923,7 +2923,6 @@ static void canvas_connect_selection(t_canvas *x)
     {
         int out = 0, in=0;
         int outsig = obj_issignaloutlet(objsrc, out);
-        int nin = obj_ninlets(objsink);
 
         if (!(canvas_isconnected(x, objsrc, out, objsink, in)) &&
             !(outsig && !obj_issignalinlet(objsink, in)))
