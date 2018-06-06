@@ -1701,6 +1701,15 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                             if (!ob || (ob1 == ob) || (ob2 == ob))
                                 continue;
 
+                            if (canconnect(x, ob1, closest1 + 1 + sinks, ob, closest2))
+                            {
+                                sinks += 1;
+                            }
+                            if (canconnect(x, ob, closest1, ob2, closest2 + 1 + sources))
+                            {
+                                sources += 1;
+                            }
+
                                 /* insert the object into the sortedsel list */
                             if((sob = getbytes(sizeof(*sob)))) {
                                 t_selection*s, *slast=0;
@@ -1725,19 +1734,6 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                                 else
                                     sortedsel = sob;
                             }
-                        }
-
-                        for(sel=sortedsel; ((closest1 + 1 + sinks) < noutlet1) && sel; sel=sel->sel_next)
-                        {
-                            sinks += canconnect(x,
-                                                ob1, closest1 + 1 + sinks,
-                                                pd_checkobject(&sel->sel_what->g_pd), closest2);
-                        }
-                        for(sel=sortedsel; ((closest2 + 1 + sources) < ninlet2) && sel; sel=sel->sel_next)
-                        {
-                            sources += canconnect(x,
-                                                  pd_checkobject(&sel->sel_what->g_pd), closest1,
-                                                  ob2, closest2 + 1 + sources);
                         }
 
                         mode = (sinks >= sources);
