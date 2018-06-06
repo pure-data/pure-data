@@ -1578,14 +1578,14 @@ static void canvas_dodrawconnect(t_canvas *x,
 
 static int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
 {
-    if (!src || !sink || sink == src)
+    if (!src || !sink || sink == src) /* do source and sink exist (and are not the same)?*/
         return 0;
-    if (nin <= obj_ninlets(sink) /* sink has enough inlets */
-        && !canvas_isconnected(x, src, nout, sink, nin) /* and is not already connected */
-        && (!obj_issignaloutlet(src, nout) || /* and has a compatible inlet */
-             obj_issignalinlet(sink, nin)))
-        return 1;
-    return 0;
+    if (nin >= obj_ninlets(sink) || (nout >= obj_noutlets(src))) /* do the requested iolets exist? */
+        return 0;
+    if (canvas_isconnected(x, src, nout, sink, nin)) /* are the objects already connected? */
+        return 0;
+    return (!obj_issignaloutlet(src, nout) || /* are the iolets compatible? */
+            obj_issignalinlet(sink, nin));
 }
 
 static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
