@@ -1658,8 +1658,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             if (doit)
             {
                 t_selection *sel;
-                t_outconnect *oc = obj_connect(ob1, closest1, ob2, closest2);
-                canvas_dodrawconnect(x, oc, ob1, closest1, ob2, closest2);
+                tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
                 canvas_setundo(x, canvas_undo_connect,
                     canvas_undo_set_connect(x,
@@ -1676,11 +1675,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                     {
                         int i, j;
                         for(i=closest1, j=closest2; (i < noutlet1) && (j < ninlet2); i++, j++ )
-                            if (!obj_issignaloutlet(ob1, i) || obj_issignalinlet(ob2, j))
-                            {
-                                t_outconnect *oc = obj_connect(ob1, i, ob2, j);
-                                canvas_dodrawconnect(x, oc, ob1, i, ob2, j);
-                            }
+                            tryconnect(x, ob1, i, ob2, j);
                     }
                     break;
                 case 1: /* source(s) selected */
@@ -1689,14 +1684,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
                         if (!selo || selo == ob1)
                             continue;
-                        if (closest1 <= obj_noutlets(selo) /* selected source has enough outlets */
-                            && !canvas_isconnected(x, selo, closest1, ob2, closest2) /* and is not already connected */
-                            && (!(obj_issignaloutlet(selo, closest1) && /* and has a compatible outlet */
-                                  !obj_issignalinlet(ob2, closest2))))
-                        {
-                            t_outconnect *oc = obj_connect(selo, closest1, ob2, closest2);
-                            canvas_dodrawconnect(x, oc, selo, closest1, ob2, closest2);
-                        }
+                        tryconnect(x, selo, closest1, ob2, closest2);
                     }
                     break;
                 case 2: /* sink(s) selected */
@@ -1705,14 +1693,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         t_object*selo = pd_checkobject(&sel->sel_what->g_pd);
                         if (!selo || selo == ob2)
                             continue;
-                        if (closest2 <= obj_ninlets(selo) /* selected source has enough inlets */
-                            && !canvas_isconnected(x, ob1, closest1, selo, closest2) /* and is not already connected */
-                            && ((obj_issignaloutlet(ob1, closest1) && /* and has a compatible inlet */
-                                 obj_issignalinlet(selo, closest2))))
-                        {
-                            t_outconnect *oc = obj_connect(ob1, closest1, selo, closest2);
-                            canvas_dodrawconnect(x, oc, ob1, closest1, selo, closest2);
-                        }
+                        tryconnect(x, ob1, closest1, selo, closest2);
                     }
                     break;
                 default: break;
