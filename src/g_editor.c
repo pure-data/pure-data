@@ -1542,40 +1542,6 @@ int canvas_isconnected (t_canvas *x, t_text *ob1, int n1,
     return (0);
 }
 
-static void canvas_dodrawconnect(t_canvas *x,
-                                 t_outconnect *oc,
-                                 t_object *src, int outno,
-                                 t_object *sink, int inno)
-{
-    int iow = IOWIDTH * x->gl_zoom;
-    int iom = IOMIDDLE * x->gl_zoom;
-    int x11=0, x12=0, x21=0, x22=0;
-    int y11=0, y12=0, y21=0, y22=0;
-    if(!oc)
-        return;
-    gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
-    gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
-
-    int noutlets1 = obj_noutlets(src);
-    int ninlets = obj_ninlets(sink);
-
-    int lx1 = x11 + (noutlets1 > 1 ?
-                     ((x12-x11-iow) * outno)/(noutlets1-1) : 0)
-        + iom;
-    int ly1 = y12;
-    int lx2 = x21 + (ninlets > 1 ?
-                     ((x22-x21-iow) * inno)/(ninlets-1) : 0)
-        + iom;
-    int ly2 = y21;
-    sys_vgui(
-        ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
-        glist_getcanvas(x),
-        lx1, ly1, lx2, ly2,
-        (obj_issignaloutlet(src, outno) ? 2 : 1) *
-        x->gl_zoom,
-        oc);
-}
-
 static int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
 {
     if (!src || !sink || sink == src) /* do source and sink exist (and are not the same)?*/
@@ -1593,7 +1559,34 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
     if(canconnect(x, src, nout, sink, nin))
     {
         t_outconnect *oc = obj_connect(src, nout, sink, nin);
-        canvas_dodrawconnect(x, oc, src, nout, sink, nin);
+        if(oc)
+        {
+            int iow = IOWIDTH * x->gl_zoom;
+            int iom = IOMIDDLE * x->gl_zoom;
+            int x11=0, x12=0, x21=0, x22=0;
+            int y11=0, y12=0, y21=0, y22=0;
+            gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
+            gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
+
+            int noutlets1 = obj_noutlets(src);
+            int ninlets = obj_ninlets(sink);
+
+            int lx1 = x11 + (noutlets1 > 1 ?
+                             ((x12-x11-iow) * nout)/(noutlets1-1) : 0)
+                + iom;
+            int ly1 = y12;
+            int lx2 = x21 + (ninlets > 1 ?
+                             ((x22-x21-iow) * nin)/(ninlets-1) : 0)
+                + iom;
+            int ly2 = y21;
+            sys_vgui(
+                ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
+                glist_getcanvas(x),
+                lx1, ly1, lx2, ly2,
+                (obj_issignaloutlet(src, nout) ? 2 : 1) *
+                x->gl_zoom,
+                oc);
+        }
         return 1;
     }
     return 0;
