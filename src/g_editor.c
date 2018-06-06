@@ -1735,11 +1735,11 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                                     sortedsel = sob;
                             }
                         }
+                            /* try to maximize connections */
+                        mode = (sinks > sources);
 
-                        mode = (sinks >= sources);
                         sinks = 0;
                         sources = 0;
-
                         if (mode)
                             for(sel=sortedsel; ((closest1 + 1 + sinks) < noutlet1) && sel; sel=sel->sel_next)
                             {
