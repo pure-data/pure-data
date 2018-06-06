@@ -1404,7 +1404,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (ob && (noutlet = obj_noutlets(ob)) &&
-                ypos >= y2 - (IOHEIGHT*x->gl_zoom) + x->gl_zoom)
+                ypos >= y2 - (OHEIGHT*x->gl_zoom) + x->gl_zoom)
             {
                 int width = x2 - x1;
                 int iow = IOWIDTH * x->gl_zoom;
