@@ -1576,7 +1576,7 @@ static void canvas_dodrawconnect(t_canvas *x,
         oc);
 }
 
-static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
+static int canconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
 {
     if (!src || !sink || sink == src)
         return 0;
@@ -1584,6 +1584,13 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
         && !canvas_isconnected(x, src, nout, sink, nin) /* and is not already connected */
         && (!obj_issignaloutlet(src, nout) || /* and has a compatible inlet */
              obj_issignalinlet(sink, nin)))
+        return 1;
+    return 0;
+}
+
+static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin)
+{
+    if(canconnect(x, src, nout, sink, nin))
     {
         t_outconnect *oc = obj_connect(src, nout, sink, nin);
         canvas_dodrawconnect(x, oc, src, nout, sink, nin);
