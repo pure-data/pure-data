@@ -1682,6 +1682,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         int mode = 0;
                         int i;
                         unsigned int sinks = 0, sources = 0;
+                        t_float ysinks = 0., ysources = 0.;
                         int msgout = !obj_issignaloutlet(ob1, closest1);
                         int sigin = obj_issignalinlet(ob2, closest2);
                         t_selection*sortedsel = 0;
@@ -1697,10 +1698,12 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                             if (canconnect(x, ob1, closest1 + 1 + sinks, ob, closest2))
                             {
                                 sinks += 1;
+                                ysinks += ob->te_ypix;
                             }
                             if (canconnect(x, ob, closest1, ob2, closest2 + 1 + sources))
                             {
                                 sources += 1;
+                                ysources += ob->te_ypix;
                             }
 
                                 /* insert the object into the sortedsel list */
@@ -1730,6 +1733,11 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                         }
                             /* try to maximize connections */
                         mode = (sinks > sources);
+
+                            /* maximizing failed, so prefer to connect from top to bottom */
+                        if (sinks && (sinks == sources)) {
+                            mode = ((ysinks - ob1->te_ypix) / sinks) > ((ysources - ob2->te_ypix) / sources) * -1.;
+                        }
 
                         sinks = 0;
                         sources = 0;
