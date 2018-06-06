@@ -2037,9 +2037,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             canvas_displaceselection(x, shift ? 10 : 1, 0);
         else if ((MA_CONNECT == x->gl_editor->e_onmotion)
             && (CURSOR_EDITMODE_CONNECT == EDITOR->canvas_cursorwas)
-            && (!strcmp(gotkeysym->s_name, "Shift")
-            || !strcmp(gotkeysym->s_name, "Shift_L")
-            || !strcmp(gotkeysym->s_name, "Shift_R")))
+                 && !strncmp(gotkeysym->s_name, "Shift", 5))
         {
                 /* <Shift> while in connect-mode: create connection... */
             canvas_doconnect(x, x->gl_editor->e_xnew, x->gl_editor->e_ynew, 1, 1);
