@@ -1654,6 +1654,19 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                      * and if so, connect the rest of the selection as well */
                 int selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
                 switch(selmode) {
+                case 3: /* both source and sink are selected */
+                        /* if only the source & sink are selected, keep connecting them */
+                    if(0 == x->gl_editor->e_selection->sel_next->sel_next)
+                    {
+                        int i, j;
+                        for(i=closest1, j=closest2; (i < noutlet1) && (j < ninlet2); i++, j++ )
+                            if (!obj_issignaloutlet(ob1, i) || obj_issignalinlet(ob2, j))
+                            {
+                                t_outconnect *oc = obj_connect(ob1, i, ob2, j);
+                                canvas_dodrawconnect(x, oc, ob1, i, ob2, j);
+                            }
+                    }
+                    break;
                 case 1: /* source(s) selected */
                     for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
                     {
