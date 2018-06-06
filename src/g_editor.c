@@ -1679,30 +1679,19 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                              * (but the already connected ones)
                              * count the possibles sinks and sources
                              */
+                        int mode = 0;
                         int i;
                         unsigned int sinks = 0, sources = 0;
                         int msgout = !obj_issignaloutlet(ob1, closest1);
                         int sigin = obj_issignalinlet(ob2, closest2);
                         t_selection*sortedsel = 0;
-                        for(sel = x->gl_editor->e_selection; sel; sel = sel->sel_next)
+                            /* sort the selected objects from left-right */
+                        for(sel = x->gl_editor->e_selection, i=1; sel; sel = sel->sel_next, i++)
                         {
-                            int possible = 0;
                             t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
                             t_selection*sob = 0;
-
+                                /* skip illegal objects and the reference source&sink */
                             if (!ob || (ob1 == ob) || (ob2 == ob))
-                                continue;
-                            if((obj_noutlets(ob) > closest1) && (sigin || !obj_issignaloutlet(ob, closest1)))
-                            {
-                                possible = 1;
-                                sources++;
-                            }
-                            if((obj_ninlets(ob) > closest2) && (msgout || obj_issignalinlet(ob, closest2)))
-                            {
-                                possible = 1;
-                                sinks++;
-                            }
-                            if (!possible)
                                 continue;
 
                                 /* insert the object into the sortedsel list */
@@ -1731,18 +1720,45 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                             }
                         }
 
-                        if (sinks > sources)
-                            for(sel=sortedsel, i=closest1+1; (i<noutlet1) && sel; i++, sel=sel->sel_next)
+                        for(sel=sortedsel; ((closest1 + 1 + sinks) < noutlet1) && sel; sel=sel->sel_next)
+                        {
+                            sinks += canconnect(x,
+                                                ob1, closest1 + 1 + sinks,
+                                                pd_checkobject(&sel->sel_what->g_pd), closest2);
+                        }
+                        for(sel=sortedsel; ((closest2 + 1 + sources) < ninlet2) && sel; sel=sel->sel_next)
+                        {
+                            sources += canconnect(x,
+                                                  pd_checkobject(&sel->sel_what->g_pd), closest1,
+                                                  ob2, closest2 + 1 + sources);
+                        }
+
+                        mode = (sinks >= sources);
+                        sinks = 0;
+                        sources = 0;
+
+                        if (mode)
+                            for(sel=sortedsel; ((closest1 + 1 + sinks) < noutlet1) && sel; sel=sel->sel_next)
                             {
-                                t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
-                                tryconnect(x, ob1, i, ob, closest2);
+                                sinks += tryconnect(x,
+                                                    ob1, closest1 + 1 + sinks,
+                                                    pd_checkobject(&sel->sel_what->g_pd), closest2);
                             }
                         else
-                            for(sel=sortedsel, i=closest2+1; (i<ninlet2) && sel; i++, sel=sel->sel_next)
+                            for(sel=sortedsel; ((closest2 + 1 + sources) < ninlet2) && sel; sel=sel->sel_next)
                             {
-                                t_object*ob = pd_checkobject(&sel->sel_what->g_pd);
-                                tryconnect(x, ob, closest1, ob2, i);
+                                sources += tryconnect(x,
+                                                      pd_checkobject(&sel->sel_what->g_pd), closest1,
+                                                      ob2, closest2 + 1 + sources);
                             }
+
+                            /* free the sorted list of selections */
+                        for(sel=sortedsel; sel; )
+                        {
+                            t_selection*s = sel->sel_next;
+                            freebytes(sel, sizeof(*sel));
+                            sel = s;
+                        }
                     }
                     break;
                 case 1: /* source(s) selected */
