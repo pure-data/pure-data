@@ -2067,7 +2067,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg fmod)
 {
 #if 0
-    post("motion %d %d", xpos, ypos); */
+    post("motion %g %g %g", xpos, ypos, fmod);
 #endif
     int mod = fmod;
     if (!x->gl_editor)
