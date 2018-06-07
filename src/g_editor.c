@@ -358,6 +358,11 @@ static t_gobj *glist_nth(t_glist *x, int n)
 
 /* ------------------- support for undo/redo  -------------------------- */
 
+void canvas_undo_set_name(const char*name)
+{
+    EDITOR->canvas_undo_name = name;
+}
+
 void canvas_setundo(t_canvas *x, t_undofn undofn, void *buf,
     const char *name)
 {
