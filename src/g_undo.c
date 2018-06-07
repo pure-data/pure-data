@@ -10,7 +10,7 @@
    by user vs. those (re)created by the undo/redo actions */
 
 int we_are_undoing = 0;
-extern const char *canvas_undo_name;
+void canvas_undo_set_name(const char*name);
 
 t_undo_action *canvas_undo_init(t_canvas *x)
 {
@@ -50,7 +50,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, int type, const char *name,
     a->type = type;
     a->data = (void *)data;
     a->name = (char *)name;
-    canvas_undo_name = name;
+    canvas_undo_set_name(name);
     if (glist_isvisible(x) && glist_istoplevel(x))
         sys_vgui("pdtk_undomenu .x%lx %s no\n", x, a->name);
 
@@ -65,7 +65,7 @@ void canvas_undo_undo(t_canvas *x)
         we_are_undoing = 1;
         canvas_editmode(x, 1);
         glist_noselect(x);
-        canvas_undo_name = XULAST(x)->name;
+        canvas_undo_set_name(XULAST(x)->name);
         switch(XULAST(x)->type)
         {
             case 1:    canvas_undo_connect(x, XULAST(x)->data, UNDO_UNDO); break;         //connect
@@ -108,7 +108,7 @@ void canvas_undo_redo(t_canvas *x)
         XULAST(x) = XULAST(x)->next;
         canvas_editmode(x, 1);
         glist_noselect(x);
-        canvas_undo_name = XULAST(x)->name;
+        canvas_undo_set_name(XULAST(x)->name);
         switch(XULAST(x)->type)
         {
             case 1:    canvas_undo_connect(x, XULAST(x)->data, UNDO_REDO); break;         //connect
