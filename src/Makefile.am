@@ -74,6 +74,7 @@ pd_SOURCES_core = \
     g_text.c \
     g_toggle.c \
     g_traversal.c \
+    g_undo.c \
     g_vdial.c \
     g_vslider.c \
     g_vumeter.c \
@@ -119,7 +120,7 @@ libpdbindir = $(pkglibdir)/bin
 pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h x_vexp.h
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h x_vexp.h
+noinst_HEADERS = g_all_guis.h g_undo.h s_audio_alsa.h s_audio_paring.h s_utf8.h x_vexp.h
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
