@@ -17,6 +17,7 @@
 #include <math.h>
 
 #include "s_utf8.h"
+#include "g_undo.h"
 
 /* borrowed from RMARGIN and BMARGIN in g_rtext.c */
 #define ATOM_RMARGIN 2
@@ -80,6 +81,9 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
             and objects though since there's no text in them at menu
             creation. */
             /* gobj_activate(&x->te_g, gl, 1); */
+        if (!we_are_undoing)
+            canvas_undo_add(glist_getcanvas(gl), 9, "create",
+                (void *)canvas_undo_set_create(glist_getcanvas(gl)));
         canvas_startmotion(glist_getcanvas(gl));
     }
 }
@@ -211,6 +215,9 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         if (connectme)
             canvas_connect(gl, indx, 0, nobj, 0);
         else canvas_startmotion(glist_getcanvas(gl));
+        if (!we_are_undoing)
+            canvas_undo_add(glist_getcanvas(gl), 9, "create",
+                (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
 }
 
@@ -230,6 +237,8 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     glist_getnextxy(gl, &xpix, &ypix);
     canvas_objtext(gl, xpix, ypix, 0, 1, b);
     canvas_startmotion(glist_getcanvas(gl));
+    canvas_undo_add(glist_getcanvas(gl), 9, "create",
+        (void *)canvas_undo_set_create(glist_getcanvas(gl)));
 }
 
 void canvas_bng(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
@@ -490,6 +499,8 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         if (connectme)
             canvas_connect(gl, indx, 0, nobj, 0);
         else canvas_startmotion(glist_getcanvas(gl));
+        canvas_undo_add(glist_getcanvas(gl), 9, "create",
+            (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
 }
 
@@ -968,6 +979,8 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         if (connectme)
             canvas_connect(gl, indx, 0, nobj, 0);
         else canvas_startmotion(glist_getcanvas(gl));
+        canvas_undo_add(glist_getcanvas(gl), 9, "create",
+            (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
 }
 
@@ -1383,6 +1396,8 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
 {
     if (x->te_type == T_OBJECT)
     {
+#warning pos
+        int pos = 0;
         t_binbuf *b = binbuf_new();
         int natom1, natom2, widthwas = x->te_width;
         t_atom *vec1, *vec2;
@@ -1397,6 +1412,10 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
              vec2[0].a_type == A_SYMBOL
             && !strcmp(vec2[0].a_w.w_symbol->s_name, "pd"))
         {
+            canvas_undo_add(glist_getcanvas(glist), 10, "recreate",
+                (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
+                &x->te_g, pos));
+
             typedmess(&x->te_pd, gensym("rename"), natom2-1, vec2+1);
             binbuf_free(x->te_binbuf);
             x->te_binbuf = b;
@@ -1404,6 +1423,9 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
         else  /* normally, just destroy the old one and make a new one. */
         {
             int xwas = x->te_xpix, ywas = x->te_ypix;
+            canvas_undo_add(glist_getcanvas(glist), 10, "recreate",
+                (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
+                &x->te_g, pos));
             glist_delete(glist, &x->te_g);
             canvas_objtext(glist, xwas, ywas, widthwas, 0, b);
             canvas_restoreconnections(glist_getcanvas(glist));
