@@ -14,6 +14,7 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_canvas.h"
 #include <string.h>
 #include "g_all_guis.h"
+#include "g_undo.h"
 
 #ifdef _MSC_VER
 #include <io.h>
@@ -28,6 +29,7 @@ struct _canvasenvironment
     t_atom *ce_argv;       /* array of "$" arguments */
     int ce_dollarzero;     /* value of "$0" */
     t_namelist *ce_path;   /* search path */
+    t_undo ce_undo;       /* undo-chain */
 };
 
 #define GLIST_DEFCANVASWIDTH 450
@@ -363,6 +365,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         env->ce_argv = THISGUI->i_newargv;
         env->ce_dollarzero = THISGUI->i_dollarzero++;
         env->ce_path = 0;
+        env->ce_undo.u_queue = canvas_undo_init(x);
         THISGUI->i_newdirectory = &s_;
         THISGUI->i_newargc = 0;
         THISGUI->i_newargv = 0;
@@ -504,6 +507,10 @@ void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
     t_float px2 = atom_getfloatarg(7, argc, argv);
     t_float py2 = atom_getfloatarg(8, argc, argv);
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
+
+    if (!we_are_undoing)
+        canvas_undo_add(glist_getcanvas(g), 9, "create",
+            (void *)canvas_undo_set_create(glist_getcanvas(g)));
 }
 
     /* return true if the glist should appear as a graph on parent;
@@ -764,6 +771,7 @@ void canvas_free(t_canvas *x)
     {
         freebytes(x->gl_env->ce_argv, x->gl_env->ce_argc * sizeof(t_atom));
         freebytes(x->gl_env, sizeof(*x->gl_env));
+        canvas_undo_free(x);
     }
     canvas_resume_dsp(dspstate);
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
@@ -1095,6 +1103,11 @@ t_canvas *canvas_getrootfor(t_canvas *x)
     if ((!x->gl_owner) || canvas_isabstraction(x))
         return (x);
     else return (canvas_getrootfor(x->gl_owner));
+}
+
+t_undo* canvas_undo_get(t_canvas *x)
+{
+    return &(canvas_getenv(x)->ce_undo);
 }
 
 /* ------------------------- DSP chain handling ------------------------- */
