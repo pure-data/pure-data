@@ -2608,16 +2608,11 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             if (doit)
             {
                 t_selection *sel;
-#warning create_undo?
-                int create_undo = 1;
                 tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
-                if (create_undo)
-                {
-                    canvas_undo_add(x, 1, "connect", canvas_undo_set_connect(x,
-                                                                             canvas_getindex(x, &ob1->ob_g), closest1,
-                                                                             canvas_getindex(x, &ob2->ob_g), closest2));
-                }
+                canvas_undo_add(x, 1, "connect", canvas_undo_set_connect(x,
+                    canvas_getindex(x, &ob1->ob_g), closest1,
+                    canvas_getindex(x, &ob2->ob_g), closest2));
                     /* now find out if the either ob1 xor ob2 are part of the selection,
                      * and if so, connect the rest of the selection as well */
                 int selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
