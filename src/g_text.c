@@ -35,6 +35,7 @@ static void text_getrect(t_gobj *z, t_glist *glist,
     int *xp1, int *yp1, int *xp2, int *yp2);
 
 void canvas_startmotion(t_canvas *x);
+int glist_getindex(t_glist *x, t_gobj *y);
 
 /* ----------------- the "text" object.  ------------------ */
 
@@ -1396,8 +1397,7 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
 {
     if (x->te_type == T_OBJECT)
     {
-#warning pos
-        int pos = 0;
+        int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
         t_binbuf *b = binbuf_new();
         int natom1, natom2, widthwas = x->te_width;
         t_atom *vec1, *vec2;
