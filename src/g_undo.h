@@ -45,14 +45,14 @@ typedef enum
     UNDO_CONNECT,      /* 1: OK */
     UNDO_DISCONNECT,   /* 2: OK */
     UNDO_CUT,          /* 3: OK */
-    UNDO_MOTION,       /* 4: only 1 step, then loops */
+    UNDO_MOTION,       /* 4: OK */
     UNDO_PASTE,        /* 5: OK */
-    UNDO_APPLY,        /* 6: how to test */
+    UNDO_APPLY,        /* 6: how to test? */
     UNDO_ARRANGE,      /* 7: FIXME: skipped */
-    UNDO_CANVAS_APPLY, /* 8: FIXME: skipped */
-    UNDO_CREATE,       /* ?? 9: OK */
+    UNDO_CANVAS_APPLY, /* 8: OK */
+    UNDO_CREATE,       /* 9: OK */
     UNDO_RECREATE,     /* 10: OK */
-    UNDO_FONT,         /* 11: FIXME: skipped */
+    UNDO_FONT,         /* 11: OK */
 
     UNDO_LAST
 } t_undo_type;
