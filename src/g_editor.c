@@ -1025,13 +1025,6 @@ void canvas_undo_apply(t_canvas *x, void *z, int action)
     }
 }
 
-//legacy wrapper
-void canvas_apply_setundo(t_canvas *x, t_gobj *y)
-{
-    canvas_undo_add(x, UNDO_APPLY, "apply",
-        canvas_undo_set_apply(x, glist_getindex(x,y)));
-}
-
 int canvas_apply_restore_original_position(t_canvas *x, int orig_pos)
 {
     t_gobj *y, *y_prev, *y_next;
@@ -2091,7 +2084,9 @@ static void canvas_donecanvasdialog(t_glist *x,
        individual objects */
     if (glist_getcanvas(x) != x && !canvas_isabstraction(x))
     {
-        canvas_apply_setundo(glist_getcanvas(x), (t_gobj *)x);
+            // JMZ: i don't know how to trigger this path
+        t_canvas*x2 = glist_getcanvas(x);
+        canvas_undo_add(x2, UNDO_APPLY, "apply", canvas_undo_set_apply(x2, glist_getindex(x2, &x->gl_gobj)));
     }
     else
     {
