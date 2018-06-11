@@ -13,43 +13,6 @@
 #define XULAST(x) (canvas_undo_get(x)->u_last)
 #define XUNDOING(x) (canvas_undo_get(x)->u_doing)
 
-static const char*undo_name(t_undo_type typ)
-{
-    static const char* names[] =
-    {
-        [UNDO_INIT] = "INIT",
-        [UNDO_CONNECT] = "CONNECT",
-        [UNDO_DISCONNECT] = "DISCONNECT",
-        [UNDO_CUT] = "CUT",
-        [UNDO_MOTION] = "MOTION",
-        [UNDO_PASTE] = "PASTE",
-        [UNDO_APPLY] = "APPLY",
-        [UNDO_ARRANGE] = "ARRANGE",
-        [UNDO_CANVAS_APPLY] = "CANVAS_APPLY",
-        [UNDO_CREATE] = "CREATE",
-        [UNDO_RECREATE] = "RECREATE",
-        [UNDO_FONT] = "FONT",
-    };
-    if ((typ >= UNDO_INIT) && (typ < UNDO_LAST))
-        return names[typ];
-    return "unknown";
-}
-
-static void _print_queue(t_undo_action*q, int dir)
-{
-    if(!q)return;
-    if(!dir && q->prev) _print_queue(q->prev, dir);
-    post(" %p[%d]: %s %d [%s] @ %p", q, dir, q->name, q->type, undo_name(q->type), q->x);
-    if(dir && q->next) _print_queue(q->next, dir);
-}
-static void undo_print_queue(t_undo_action*q)
-{
-    post("UNDO QUEUE: %p", q);
-    if(q->next)_print_queue(q->next, 1);
-    if(q->prev)_print_queue(q->prev, 0);
-    post("UNDO QUEUE.");
-}
-
 /* used for canvas_objtext to differentiate between objects being created
    by user vs. those (re)created by the undo/redo actions */
 
@@ -94,7 +57,6 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
     void *data)
 {
     t_undo_action *a = canvas_undo_init(x);
-    DEBUG_UNDO(post("%s(%p, %d [%s], %s, %p) : %p", __FUNCTION__, x, type, undo_name(type), name, data, a));
     a->type = type;
     a->data = (void *)data;
     a->name = (char *)name;
@@ -102,7 +64,6 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
     if (glist_isvisible(x) && glist_istoplevel(x))
         sys_vgui("pdtk_undomenu .x%lx %s no\n", x, a->name);
 
-//    DEBUG_UNDO(undo_print_queue(a));
     DEBUG_UNDO(post("%s: done!", __FUNCTION__));
     return(a);
 }
@@ -118,8 +79,6 @@ void canvas_undo_undo(t_canvas *x)
         canvas_editmode(x, 1);
         glist_noselect(x);
         canvas_undo_set_name(XULAST(x)->name);
-        DEBUG_UNDO(undo_print_queue(XUQUEUE(x)));
-        DEBUG_UNDO(undo_print_queue(XULAST(x)));
 
         switch(XULAST(x)->type)
         {
@@ -140,7 +99,6 @@ void canvas_undo_undo(t_canvas *x)
         XULAST(x) = XULAST(x)->prev;
         char *undo_action = XULAST(x)->name;
         char *redo_action = XULAST(x)->next->name;
-        DEBUG_UNDO(post("%s: undoing [%s] %s, %s", __FUNCTION__, undo_name(XULAST(x)->type), undo_action, redo_action));
 
         XUNDOING(x) = 0;
         /* here we call updating of all unpaired hubs and nodes since
