@@ -39,6 +39,8 @@ Types of undo data:
 10 - recreate
 */
 
+#include "m_pd.h"
+
 typedef enum
 {
     UNDO_INIT = 0,
