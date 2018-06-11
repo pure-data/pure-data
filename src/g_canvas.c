@@ -507,7 +507,7 @@ void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
 
     if (!we_are_undoing)
-        canvas_undo_add(glist_getcanvas(g), 9, "create",
+        canvas_undo_add(glist_getcanvas(g), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(g)));
 }
 

@@ -1027,7 +1027,7 @@ void canvas_undo_apply(t_canvas *x, void *z, int action)
 //legacy wrapper
 void canvas_apply_setundo(t_canvas *x, t_gobj *y)
 {
-    canvas_undo_add(x, 6, "apply",
+    canvas_undo_add(x, UNDO_APPLY, "apply",
         canvas_undo_set_apply(x, glist_getindex(x,y)));
 }
 
@@ -2105,7 +2105,7 @@ static void canvas_donecanvasdialog(t_glist *x,
     }
     else
     {
-        canvas_undo_add(x, 8, "apply", canvas_undo_set_canvas(x));
+        canvas_undo_add(x, UNDO_CANVAS_APPLY, "apply", canvas_undo_set_canvas(x));
     }
 
     x->gl_pixwidth = xpix * x->gl_zoom;
@@ -2363,7 +2363,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     x->gl_editor->e_ywas = y1;
                     x->gl_editor->e_xnew = xpos;
                     x->gl_editor->e_ynew = ypos;
-                    canvas_undo_add(x, 6, "resize",
+                    canvas_undo_add(x, UNDO_APPLY, "resize",
                         canvas_undo_set_apply(x, glist_getindex(x, y)));
                 }
                 else canvas_setcursor(x, CURSOR_EDITMODE_RESIZE);
@@ -2618,7 +2618,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                 t_selection *sel;
                 tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
-                canvas_undo_add(x, 1, "connect", canvas_undo_set_connect(x,
+                canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
                     canvas_getindex(x, &ob1->ob_g), closest1,
                     canvas_getindex(x, &ob2->ob_g), closest2));
                     /* now find out if the either ob1 xor ob2 are part of the selection,
@@ -2849,7 +2849,7 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
     int resortin = 0, resortout = 0;
     if (!EDITOR->canvas_undo_already_set_move)
     {
-        canvas_undo_add(x, 4, "motion", canvas_undo_set_move(x, 1));
+        canvas_undo_add(x, UNDO_MOTION, "motion", canvas_undo_set_move(x, 1));
         EDITOR->canvas_undo_already_set_move = 1;
     }
     for (y = x->gl_editor->e_selection; y; y = y->sel_next)
@@ -2986,7 +2986,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                 canvas_clearline(x);
             else if (x->gl_editor->e_selection)
             {
-                canvas_undo_add(x, 3, "clear",
+                canvas_undo_add(x, UNDO_CUT, "clear",
                     canvas_undo_set_cut(x, UCUT_CLEAR));
                 canvas_doclear(x);
             }
@@ -3523,7 +3523,7 @@ static void canvas_clearline(t_canvas *x)
              x->gl_editor->e_selectline_index2,
              x->gl_editor->e_selectline_inno);
         canvas_dirty(x, 1);
-        canvas_undo_add(x, 2, "disconnect", canvas_undo_set_disconnect(x,
+        canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
                 x->gl_editor->e_selectline_index1,
                 x->gl_editor->e_selectline_outno,
                 x->gl_editor->e_selectline_index2,
@@ -3543,7 +3543,7 @@ static void canvas_doclear(t_canvas *x)
              x->gl_editor->e_selectline_outno,
              x->gl_editor->e_selectline_index2,
              x->gl_editor->e_selectline_inno);
-        canvas_undo_add(x, 2, "disconnect", canvas_undo_set_disconnect(x,
+        canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
                 x->gl_editor->e_selectline_index1,
                 x->gl_editor->e_selectline_outno,
                 x->gl_editor->e_selectline_index2,
@@ -3609,7 +3609,7 @@ static void canvas_cut(t_canvas *x)
     else if (x->gl_editor && x->gl_editor->e_selection)
     {
     deleteobj:      /* delete one or more objects */
-        canvas_undo_add(x, 3, "cut", canvas_undo_set_cut(x, UCUT_CUT));
+        canvas_undo_add(x, UNDO_CUT, "cut", canvas_undo_set_cut(x, UCUT_CUT));
         canvas_copy(x);
         canvas_doclear(x);
         sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
@@ -3675,7 +3675,7 @@ static void canvas_paste(t_canvas *x)
     }
     else
     {
-        canvas_undo_add(x, 5, "paste",
+        canvas_undo_add(x, UNDO_PASTE, "paste",
             (void *)canvas_undo_set_paste(x, 0, 0, 0));
         canvas_dopaste(x, EDITOR->copy_binbuf);
     }
@@ -3731,7 +3731,7 @@ static void canvas_duplicate(t_canvas *x)
     {
         t_selection *y;
         canvas_copy(x);
-        canvas_undo_add(x, 5, "duplicate",
+        canvas_undo_add(x, UNDO_PASTE, "duplicate",
             (void *)canvas_undo_set_paste(x, 0, 1, 1));
         canvas_dopaste(x, EDITOR->copy_binbuf);
         for (y = x->gl_editor->e_selection; y; y = y->sel_next)
@@ -3856,7 +3856,7 @@ static void canvas_tidy(t_canvas *x)
         othewise just the selection */
     int all = (x->gl_editor ? (x->gl_editor->e_selection == 0) : 1);
 
-    canvas_undo_add(x, 4, "motion", canvas_undo_set_move(x, 1));
+    canvas_undo_add(x, UNDO_MOTION, "motion", canvas_undo_set_move(x, 1));
 
         /* tidy horizontally */
     for (y = x->gl_list; y; y = y->g_next)

@@ -87,7 +87,7 @@ EXTERN t_undo*canvas_undo_get(t_canvas*x);
 
 EXTERN t_undo_action *canvas_undo_init(t_canvas *x);
 EXTERN t_undo_action *canvas_undo_add(t_canvas *x,
-	int type, const char *name, void *data);
+	t_undo_type type, const char *name, void *data);
 EXTERN void canvas_undo_undo(t_canvas *x);
 EXTERN void canvas_undo_redo(t_canvas *x);
 EXTERN void canvas_undo_rebranch(t_canvas *x);

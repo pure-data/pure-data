@@ -88,7 +88,7 @@ t_undo_action *canvas_undo_init(t_canvas *x)
     return(a);
 }
 
-t_undo_action *canvas_undo_add(t_canvas *x, int type, const char *name,
+t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
     void *data)
 {
     t_undo_action *a = canvas_undo_init(x);

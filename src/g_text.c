@@ -83,7 +83,7 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
             creation. */
             /* gobj_activate(&x->te_g, gl, 1); */
         if (!we_are_undoing)
-            canvas_undo_add(glist_getcanvas(gl), 9, "create",
+            canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
                 (void *)canvas_undo_set_create(glist_getcanvas(gl)));
         canvas_startmotion(glist_getcanvas(gl));
     }
@@ -217,7 +217,7 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
             canvas_connect(gl, indx, 0, nobj, 0);
         else canvas_startmotion(glist_getcanvas(gl));
         if (!we_are_undoing)
-            canvas_undo_add(glist_getcanvas(gl), 9, "create",
+            canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
                 (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
 }
@@ -238,7 +238,7 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     glist_getnextxy(gl, &xpix, &ypix);
     canvas_objtext(gl, xpix, ypix, 0, 1, b);
     canvas_startmotion(glist_getcanvas(gl));
-    canvas_undo_add(glist_getcanvas(gl), 9, "create",
+    canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(gl)));
 }
 
@@ -500,7 +500,7 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         if (connectme)
             canvas_connect(gl, indx, 0, nobj, 0);
         else canvas_startmotion(glist_getcanvas(gl));
-        canvas_undo_add(glist_getcanvas(gl), 9, "create",
+        canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
 }
@@ -980,7 +980,7 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         if (connectme)
             canvas_connect(gl, indx, 0, nobj, 0);
         else canvas_startmotion(glist_getcanvas(gl));
-        canvas_undo_add(glist_getcanvas(gl), 9, "create",
+        canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }
 }
@@ -1412,7 +1412,7 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
              vec2[0].a_type == A_SYMBOL
             && !strcmp(vec2[0].a_w.w_symbol->s_name, "pd"))
         {
-            canvas_undo_add(glist_getcanvas(glist), 10, "recreate",
+            canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
                 (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
                 &x->te_g, pos));
 
@@ -1423,7 +1423,7 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
         else  /* normally, just destroy the old one and make a new one. */
         {
             int xwas = x->te_xpix, ywas = x->te_ypix;
-            canvas_undo_add(glist_getcanvas(glist), 10, "recreate",
+            canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
                 (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
                 &x->te_g, pos));
             glist_delete(glist, &x->te_g);
