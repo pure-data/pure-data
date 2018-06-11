@@ -2530,6 +2530,10 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                 (obj_issignaloutlet(src, nout) ? 2 : 1) *
                 x->gl_zoom,
                 oc);
+            canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
+                    canvas_getindex(x, &src->ob_g), nout,
+                    canvas_getindex(x, &sink->ob_g), nin));
+
         }
         return 1;
     }
@@ -3705,9 +3709,9 @@ static void canvas_duplicate(t_canvas *x)
         canvas_connect(x,
                        (t_float)outindex, (t_float)outno,
                        (t_float)inindex, (t_float)inno);
-            // JMZ: TODO
-        canvas_setundo(x, canvas_undo_connect,
-                       canvas_undo_set_connect(x, outindex, outno, inindex, inno), "connect");
+        canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
+                    outindex, outno,
+                    inindex, inno));
 
         x->gl_editor->e_selectline_outno = outno;
         x->gl_editor->e_selectline_inno = inno;
@@ -3975,8 +3979,9 @@ static void canvas_connect_selection(t_canvas *x)
             int srcindex = canvas_getindex(x, &objsrc->ob_g);
             int sinkindex = canvas_getindex(x, &objsink->ob_g);
             canvas_connect(x, (t_float)srcindex, (t_float)out, (t_float)sinkindex, (t_float)in);
-            canvas_setundo(x, canvas_undo_connect,
-                           canvas_undo_set_connect(x, srcindex, out, sinkindex, in), "connect");
+            canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
+                    srcindex, out,
+                    sinkindex, in));
             return;
         }
     }
