@@ -82,7 +82,7 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
             and objects though since there's no text in them at menu
             creation. */
             /* gobj_activate(&x->te_g, gl, 1); */
-        if (!we_are_undoing)
+        if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
             canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
                 (void *)canvas_undo_set_create(glist_getcanvas(gl)));
         canvas_startmotion(glist_getcanvas(gl));
@@ -216,7 +216,7 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         if (connectme)
             canvas_connect(gl, indx, 0, nobj, 0);
         else canvas_startmotion(glist_getcanvas(gl));
-        if (!we_are_undoing)
+        if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
             canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
                 (void *)canvas_undo_set_create(glist_getcanvas(gl)));
     }

@@ -514,8 +514,7 @@ void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
     t_float px2 = atom_getfloatarg(7, argc, argv);
     t_float py2 = atom_getfloatarg(8, argc, argv);
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
-
-    if (!we_are_undoing)
+    if (!canvas_undo_get(glist_getcanvas(g))->u_doing)
         canvas_undo_add(glist_getcanvas(g), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(g)));
 }

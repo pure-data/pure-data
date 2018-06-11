@@ -57,9 +57,6 @@ typedef enum
     UNDO_LAST
 } t_undo_type;
 
- // JMZ: FIXME
-EXTERN int we_are_undoing;
-
 struct _undo_action
 {
 	t_canvas *x;				/* canvas undo is associated with */
@@ -78,6 +75,7 @@ struct _undo
 {
     t_undo_action *u_queue;
     t_undo_action *u_last;
+    int            u_doing; /* currently undoing */
 };
 #define t_undo struct _undo
 
