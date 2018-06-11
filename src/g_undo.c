@@ -68,17 +68,17 @@ void canvas_undo_undo(t_canvas *x)
         canvas_undo_set_name(XULAST(x)->name);
         switch(XULAST(x)->type)
         {
-            case 1:    canvas_undo_connect(x, XULAST(x)->data, UNDO_UNDO); break;         //connect
-            case 2:    canvas_undo_disconnect(x, XULAST(x)->data, UNDO_UNDO); break;     //disconnect
-            case 3:    canvas_undo_cut(x, XULAST(x)->data, UNDO_UNDO); break;             //cut
-            case 4:    canvas_undo_move(x, XULAST(x)->data, UNDO_UNDO); break;            //move
-            case 5:    canvas_undo_paste(x, XULAST(x)->data, UNDO_UNDO); break;        //paste
-            case 6:    canvas_undo_apply(x, XULAST(x)->data, UNDO_UNDO); break;        //apply
-            case 7:    canvas_undo_arrange(x, XULAST(x)->data, UNDO_UNDO); break;        //arrange
-            case 8:    canvas_undo_canvas_apply(x, XULAST(x)->data, UNDO_UNDO); break;    //canvas apply
-            case 9:    canvas_undo_create(x, XULAST(x)->data, UNDO_UNDO); break;        //create
-            case 10:canvas_undo_recreate(x, XULAST(x)->data, UNDO_UNDO); break;        //recreate
-            case 11:canvas_undo_font(x, XULAST(x)->data, UNDO_UNDO); break;            //font
+            case UNDO_CONNECT:      canvas_undo_connect(x, XULAST(x)->data, UNDO_UNDO); break;      //connect
+            case UNDO_DISCONNECT:   canvas_undo_disconnect(x, XULAST(x)->data, UNDO_UNDO); break;   //disconnect
+            case UNDO_CUT:          canvas_undo_cut(x, XULAST(x)->data, UNDO_UNDO); break;          //cut
+            case UNDO_MOTION:       canvas_undo_move(x, XULAST(x)->data, UNDO_UNDO); break;         //move
+            case UNDO_PASTE:        canvas_undo_paste(x, XULAST(x)->data, UNDO_UNDO); break;        //paste
+            case UNDO_APPLY:        canvas_undo_apply(x, XULAST(x)->data, UNDO_UNDO); break;        //apply
+            case UNDO_ARRANGE:      canvas_undo_arrange(x, XULAST(x)->data, UNDO_UNDO); break;      //arrange
+            case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, XULAST(x)->data, UNDO_UNDO); break; //canvas apply
+            case UNDO_CREATE:       canvas_undo_create(x, XULAST(x)->data, UNDO_UNDO); break;       //create
+            case UNDO_RECREATE:     canvas_undo_recreate(x, XULAST(x)->data, UNDO_UNDO); break;     //recreate
+            case UNDO_FONT:         canvas_undo_font(x, XULAST(x)->data, UNDO_UNDO); break;         //font
             default:
                 error("canvas_undo_undo: unsupported undo command %d", XULAST(x)->type);
         }
@@ -111,17 +111,17 @@ void canvas_undo_redo(t_canvas *x)
         canvas_undo_set_name(XULAST(x)->name);
         switch(XULAST(x)->type)
         {
-            case 1:    canvas_undo_connect(x, XULAST(x)->data, UNDO_REDO); break;         //connect
-            case 2:    canvas_undo_disconnect(x, XULAST(x)->data, UNDO_REDO); break;     //disconnect
-            case 3:    canvas_undo_cut(x, XULAST(x)->data, UNDO_REDO); break;             //cut
-            case 4:    canvas_undo_move(x, XULAST(x)->data, UNDO_REDO); break;            //move
-            case 5:    canvas_undo_paste(x, XULAST(x)->data, UNDO_REDO); break;        //paste
-            case 6:    canvas_undo_apply(x, XULAST(x)->data, UNDO_REDO); break;        //apply
-            case 7:    canvas_undo_arrange(x, XULAST(x)->data, UNDO_REDO); break;        //arrange
-            case 8:    canvas_undo_canvas_apply(x, XULAST(x)->data, UNDO_REDO); break;    //canvas apply
-            case 9:    canvas_undo_create(x, XULAST(x)->data, UNDO_REDO); break;        //create
-            case 10:canvas_undo_recreate(x, XULAST(x)->data, UNDO_REDO); break;        //recreate
-            case 11:canvas_undo_font(x, XULAST(x)->data, UNDO_REDO); break;            //font
+            case UNDO_CONNECT:      canvas_undo_connect(x, XULAST(x)->data, UNDO_REDO); break;      //connect
+            case UNDO_DISCONNECT:   canvas_undo_disconnect(x, XULAST(x)->data, UNDO_REDO); break;   //disconnect
+            case UNDO_CUT:          canvas_undo_cut(x, XULAST(x)->data, UNDO_REDO); break;          //cut
+            case UNDO_MOTION:       canvas_undo_move(x, XULAST(x)->data, UNDO_REDO); break;         //move
+            case UNDO_PASTE:        canvas_undo_paste(x, XULAST(x)->data, UNDO_REDO); break;        //paste
+            case UNDO_APPLY:        canvas_undo_apply(x, XULAST(x)->data, UNDO_REDO); break;        //apply
+            case UNDO_ARRANGE:      canvas_undo_arrange(x, XULAST(x)->data, UNDO_REDO); break;      //arrange
+            case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, XULAST(x)->data, UNDO_REDO); break; //canvas apply
+            case UNDO_CREATE:       canvas_undo_create(x, XULAST(x)->data, UNDO_REDO); break;       //create
+            case UNDO_RECREATE:     canvas_undo_recreate(x, XULAST(x)->data, UNDO_REDO); break;     //recreate
+            case UNDO_FONT:         canvas_undo_font(x, XULAST(x)->data, UNDO_REDO); break;         //font
             default:
                 error("canvas_undo_redo: unsupported redo command %d", XULAST(x)->type);
         }
@@ -152,17 +152,17 @@ void canvas_undo_rebranch(t_canvas *x)
         {
             switch(a1->type)
             {
-                case 1:    canvas_undo_connect(x, a1->data, UNDO_FREE); break;         //connect
-                case 2:    canvas_undo_disconnect(x, a1->data, UNDO_FREE); break;         //disconnect
-                case 3:    canvas_undo_cut(x, a1->data, UNDO_FREE); break;             //cut
-                case 4:    canvas_undo_move(x, a1->data, UNDO_FREE); break;            //move
-                case 5:    canvas_undo_paste(x, a1->data, UNDO_FREE); break;            //paste
-                case 6:    canvas_undo_apply(x, a1->data, UNDO_FREE); break;            //apply
-                case 7:    canvas_undo_arrange(x, a1->data, UNDO_FREE); break;            //arrange
-                case 8:    canvas_undo_canvas_apply(x, a1->data, UNDO_FREE); break;    //canvas apply
-                case 9:    canvas_undo_create(x, a1->data, UNDO_FREE); break;            //create
-                case 10:canvas_undo_recreate(x, a1->data, UNDO_FREE); break;        //recreate
-                case 11:canvas_undo_font(x, a1->data, UNDO_FREE); break;            //font
+                case UNDO_CONNECT:      canvas_undo_connect(x, a1->data, UNDO_FREE); break;         //connect
+                case UNDO_DISCONNECT:   canvas_undo_disconnect(x, a1->data, UNDO_FREE); break;         //disconnect
+                case UNDO_CUT:          canvas_undo_cut(x, a1->data, UNDO_FREE); break;             //cut
+                case UNDO_MOTION:       canvas_undo_move(x, a1->data, UNDO_FREE); break;            //move
+                case UNDO_PASTE:        canvas_undo_paste(x, a1->data, UNDO_FREE); break;            //paste
+                case UNDO_APPLY:        canvas_undo_apply(x, a1->data, UNDO_FREE); break;            //apply
+                case UNDO_ARRANGE:      canvas_undo_arrange(x, a1->data, UNDO_FREE); break;            //arrange
+                case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, a1->data, UNDO_FREE); break;    //canvas apply
+                case UNDO_CREATE:       canvas_undo_create(x, a1->data, UNDO_FREE); break;            //create
+                case UNDO_RECREATE:     canvas_undo_recreate(x, a1->data, UNDO_FREE); break;        //recreate
+                case UNDO_FONT:         canvas_undo_font(x, a1->data, UNDO_FREE); break;            //font
                 default:
                     error("canvas_undo_rebranch: unsupported undo command %d", a1->type);
             }
@@ -197,18 +197,18 @@ void canvas_undo_free(t_canvas *x)
         {
             switch(a1->type)
             {
-                case 0: break;                                                        //init
-                case 1:    canvas_undo_connect(x, a1->data, UNDO_FREE); break;         //connect
-                case 2:    canvas_undo_disconnect(x, a1->data, UNDO_FREE); break;         //disconnect
-                case 3:    canvas_undo_cut(x, a1->data, UNDO_FREE); break;             //cut
-                case 4:    canvas_undo_move(x, a1->data, UNDO_FREE); break;            //move
-                case 5:    canvas_undo_paste(x, a1->data, UNDO_FREE); break;            //paste
-                case 6:    canvas_undo_apply(x, a1->data, UNDO_FREE); break;            //apply
-                case 7:    canvas_undo_arrange(x, a1->data, UNDO_FREE); break;            //arrange
-                case 8:    canvas_undo_canvas_apply(x, a1->data, UNDO_FREE); break;    //canvas apply
-                case 9:    canvas_undo_create(x, a1->data, UNDO_FREE); break;            //create
-                case 10:canvas_undo_recreate(x, a1->data, UNDO_FREE); break;        //recreate
-                case 11:canvas_undo_font(x, a1->data, UNDO_FREE); break;            //font
+                case UNDO_INIT: break;                                                           //init
+                case UNDO_CONNECT:      canvas_undo_connect(x, a1->data, UNDO_FREE); break;      //connect
+                case UNDO_DISCONNECT:   canvas_undo_disconnect(x, a1->data, UNDO_FREE); break;   //disconnect
+                case UNDO_CUT:          canvas_undo_cut(x, a1->data, UNDO_FREE); break;          //cut
+                case UNDO_MOTION:       canvas_undo_move(x, a1->data, UNDO_FREE); break;         //move
+                case UNDO_PASTE:        canvas_undo_paste(x, a1->data, UNDO_FREE); break;        //paste
+                case UNDO_APPLY:        canvas_undo_apply(x, a1->data, UNDO_FREE); break;        //apply
+                case UNDO_ARRANGE:      canvas_undo_arrange(x, a1->data, UNDO_FREE); break;      //arrange
+                case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, a1->data, UNDO_FREE); break; //canvas apply
+                case UNDO_CREATE:       canvas_undo_create(x, a1->data, UNDO_FREE); break;       //create
+                case UNDO_RECREATE:     canvas_undo_recreate(x, a1->data, UNDO_FREE); break;     //recreate
+                case UNDO_FONT:         canvas_undo_font(x, a1->data, UNDO_FREE); break;         //font
                 default:
                     error("canvas_undo_free: unsupported undo command %d", a1->type);
             }
