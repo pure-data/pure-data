@@ -741,19 +741,17 @@ void canvas_undo_cut(t_canvas *x, void *z, int action)
         }
     }
     else if (action == UNDO_FREE)
-    {
-        if (buf->u_objectbuf)
-            binbuf_free(buf->u_objectbuf);
-        if (buf->u_reconnectbuf)
-            binbuf_free(buf->u_reconnectbuf);
-        if (buf->u_redotextbuf)
-            binbuf_free(buf->u_redotextbuf);
-        if (buf != NULL)
+        if (buf)
         {
+            if (buf->u_objectbuf)
+                binbuf_free(buf->u_objectbuf);
+            if (buf->u_reconnectbuf)
+                binbuf_free(buf->u_reconnectbuf);
+            if (buf->u_redotextbuf)
+                binbuf_free(buf->u_redotextbuf);
             t_freebytes(buf, sizeof(*buf) +
                 sizeof(buf->p_a[0]) * (buf->n_obj-1));
         }
-    }
 }
 
 /* --------- 4. motion, including "tidy up" and stretching ----------- */
