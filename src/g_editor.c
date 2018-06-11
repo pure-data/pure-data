@@ -1634,16 +1634,21 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
 }
 
 /* ----------- 11. font -------------- */
-#if 0
+static void canvas_dofont(t_canvas *x, t_floatarg font, t_floatarg xresize, t_floatarg yresize);
+
 typedef struct _undo_font
 {
     int font;
+    t_float resize;
+    int which;
 } t_undo_font;
 
-void *canvas_undo_set_font(t_canvas *x, int font)
+void *canvas_undo_set_font(t_canvas *x, int font, t_float resize, int which)
 {
     t_undo_font *u_f = (t_undo_font *)getbytes(sizeof(*u_f));
     u_f->font = font;
+    u_f->resize = resize;
+    u_f->which = which;
     return (u_f);
 }
 
@@ -1655,6 +1660,8 @@ void canvas_undo_font(t_canvas *x, void *z, int action)
     {
         t_canvas *x2 = canvas_getrootfor(x);
         int tmp_font = x2->gl_font;
+#if 0
+            /* skipping open font editor fot now */
         t_int properties = gfxstub_haveproperties((void *)x2);
         if (properties)
         {
@@ -1665,19 +1672,16 @@ void canvas_undo_font(t_canvas *x, void *z, int action)
                 u_f->font);
         }
         else
+#else
+        if(1)
+#endif
         {
-            //sys_vgui("dofont_apply .x%lx %d 1\n", x2, u_f->font);
-            /* In pd.tk there is a global variable holding the last font
-               size. So our dataflow is:
-               1) Pd -> GUI dofont_apply as above
-               2) GUI looks up the previous font size
-               3) GUI -> Pd "canvasid font size old_size 100 no_undo"
-               4) Pd -> GUI redraw the canvas with the new font sizes
-
-               Can't figure out why we need to talk to the GUI in #1, so
-               I'm just calling the canvas "font" method directly... */
-            vmess(&x2->gl_pd, gensym("font"), "iiii",
-                u_f->font, tmp_font, 100, 1);
+            int whichresize = u_f->which;
+            float realsize = 100./u_f->resize;
+            t_float realresize, realresx = 1, realresy = 1;
+            if (whichresize != 3) realresx = realresize;
+            if (whichresize != 2) realresy = realresize;
+            canvas_dofont(x2, u_f->font, realresx, realresy);
         }
         u_f->font = tmp_font;
     }
@@ -1687,10 +1691,6 @@ void canvas_undo_font(t_canvas *x, void *z, int action)
             freebytes(u_f, sizeof(*u_f));
     }
 }
-#else
-void *canvas_undo_set_font(t_canvas *x, int font) { return 0; }
-void canvas_undo_font(t_canvas *x, void *z, int action) { }
-#endif
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
 
@@ -4071,6 +4071,7 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
 {
     t_float realresize, realresx = 1, realresy = 1;
     t_canvas *x2 = canvas_getrootfor(x);
+    int oldfont = x2->gl_font;
     if (!resize) realresize = 1;
     else
     {
@@ -4081,6 +4082,9 @@ static void canvas_font(t_canvas *x, t_floatarg font, t_floatarg resize,
     if (whichresize != 3) realresx = realresize;
     if (whichresize != 2) realresy = realresize;
     canvas_dofont(x2, font, realresx, realresy);
+    canvas_undo_add(x2, UNDO_FONT, "font",
+        canvas_undo_set_font(x2, oldfont, realresize, whichresize));
+
     sys_defaultfont = font;
 }
 
