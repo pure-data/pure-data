@@ -39,6 +39,23 @@ Types of undo data:
 10 - recreate
 */
 
+typedef enum
+{
+    UNDO_INIT = 0,
+    UNDO_CONNECT,      /* 1: OK */
+    UNDO_DISCONNECT,   /* 2: OK */
+    UNDO_CUT,          /* 3: OK */
+    UNDO_MOTION,       /* 4: only 1 step, then loops */
+    UNDO_PASTE,        /* 5: OK */
+    UNDO_APPLY,        /* 6: how to test */
+    UNDO_ARRANGE,      /* 7: FIXME: skipped */
+    UNDO_CANVAS_APPLY, /* 8: FIXME: skipped */
+    UNDO_CREATE,       /* ?? 9: OK */
+    UNDO_RECREATE,     /* 10: OK */
+    UNDO_FONT,         /* 11: FIXME: skipped */
+
+    UNDO_LAST
+} t_undo_type;
 
  // JMZ: FIXME
 EXTERN int we_are_undoing;
@@ -46,7 +63,7 @@ EXTERN int we_are_undoing;
 struct _undo_action
 {
 	t_canvas *x;				/* canvas undo is associated with */
-	int type;					/* defines what kind of data container it is */
+	t_undo_type type;			/* defines what kind of data container it is */
 	void *data;					/* each action will have a different data container */
 	char *name;					/* name of current action */
 	struct _undo_action *prev;	/* previous undo action */
