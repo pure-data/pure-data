@@ -57,7 +57,9 @@ void canvas_undo_set_name(const char*name);
 
 t_undo_action *canvas_undo_init(t_canvas *x)
 {
-    t_undo_action *a = (t_undo_action *)getbytes(sizeof(*a));
+    t_undo_action *a = 0;
+    if(!canvas_undo_get(x))return 0;
+    a = (t_undo_action *)getbytes(sizeof(*a));
     a->type = 0;
     a->x = x;
     a->next = NULL;
@@ -107,6 +109,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
 
 void canvas_undo_undo(t_canvas *x)
 {
+    if(!canvas_undo_get(x))return;
     int dspwas = canvas_suspend_dsp();
     DEBUG_UNDO(post("%s: %p != %p", __FUNCTION__, XUQUEUE(x), XULAST(x)));
     if (XUQUEUE(x) && XULAST(x) != XUQUEUE(x))
@@ -155,7 +158,9 @@ void canvas_undo_undo(t_canvas *x)
 
 void canvas_undo_redo(t_canvas *x)
 {
-    int dspwas = canvas_suspend_dsp();
+    int dspwas;
+    if(!canvas_undo_get(x))return;
+    dspwas = canvas_suspend_dsp();
     if (XUQUEUE(x) && XULAST(x)->next)
     {
         we_are_undoing = 1;
@@ -242,8 +247,10 @@ void canvas_undo_purge_abstraction_actions(t_canvas *x)
 
 void canvas_undo_free(t_canvas *x)
 {
-    int dspwas = canvas_suspend_dsp();
+    int dspwas;
     t_undo_action *a1, *a2;
+    if(!canvas_undo_get(x))return;
+    dspwas = canvas_suspend_dsp();
     if (XUQUEUE(x))
     {
         a1 = XUQUEUE(x);
