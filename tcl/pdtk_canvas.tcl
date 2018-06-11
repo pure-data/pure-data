@@ -89,6 +89,8 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     set width [lindex $l 0]
     set height [lindex $l 1]
     set geometry [lindex $l 2]
+    set ::undo_actions($mytoplevel) no
+    set ::redo_actions($mytoplevel) no
 
     # release the window grab here so that the new window will
     # properly get the Map and FocusIn events when its created
@@ -314,11 +316,10 @@ proc ::pdtk_canvas::pdtk_canvas_editmode {mytoplevel state} {
 
 # message from Pd to update the currently available undo/redo action
 proc pdtk_undomenu {mytoplevel undoaction redoaction} {
-    set ::undo_toplevel $mytoplevel
-    set ::undo_action $undoaction
-    set ::redo_action $redoaction
+    set ::undo_actions($mytoplevel) $undoaction
+    set ::redo_actions($mytoplevel) $redoaction
     if {$mytoplevel ne "nobody"} {
-        ::pd_menus::update_undo_on_menu $mytoplevel
+        ::pd_menus::update_undo_on_menu $mytoplevel $undoaction $redoaction
     }
 }
 
