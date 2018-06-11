@@ -771,8 +771,6 @@ typedef struct _undo_move
     int u_n;
 } t_undo_move;
 
-static int canvas_undo_already_set_move;
-
 void *canvas_undo_set_move(t_canvas *x, int selected)
 {
     int x1, y1, x2, y2, i, indx;

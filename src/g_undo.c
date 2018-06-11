@@ -11,6 +11,7 @@
 
 #define XUQUEUE(x) (canvas_undo_get(x)->u_queue)
 #define XULAST(x) (canvas_undo_get(x)->u_last)
+#define XUNDOING(x) (canvas_undo_get(x)->u_doing)
 
 static const char*undo_name(t_undo_type typ)
 {
@@ -52,7 +53,6 @@ static void undo_print_queue(t_undo_action*q)
 /* used for canvas_objtext to differentiate between objects being created
    by user vs. those (re)created by the undo/redo actions */
 
-int we_are_undoing = 0;
 void canvas_undo_set_name(const char*name);
 
 t_undo_action *canvas_undo_init(t_canvas *x)
@@ -114,7 +114,7 @@ void canvas_undo_undo(t_canvas *x)
     DEBUG_UNDO(post("%s: %p != %p", __FUNCTION__, XUQUEUE(x), XULAST(x)));
     if (XUQUEUE(x) && XULAST(x) != XUQUEUE(x))
     {
-        we_are_undoing = 1;
+        XUNDOING(x) = 1;
         canvas_editmode(x, 1);
         glist_noselect(x);
         canvas_undo_set_name(XULAST(x)->name);
@@ -142,7 +142,7 @@ void canvas_undo_undo(t_canvas *x)
         char *redo_action = XULAST(x)->next->name;
         DEBUG_UNDO(post("%s: undoing [%s] %s, %s", __FUNCTION__, undo_name(XULAST(x)->type), undo_action, redo_action));
 
-        we_are_undoing = 0;
+        XUNDOING(x) = 0;
         /* here we call updating of all unpaired hubs and nodes since
            their regular call will fail in case their position needed
            to be updated by undo/redo first to reflect the old one */
@@ -163,7 +163,7 @@ void canvas_undo_redo(t_canvas *x)
     dspwas = canvas_suspend_dsp();
     if (XUQUEUE(x) && XULAST(x)->next)
     {
-        we_are_undoing = 1;
+        XUNDOING(x) = 1;
         XULAST(x) = XULAST(x)->next;
         canvas_editmode(x, 1);
         glist_noselect(x);
@@ -186,7 +186,7 @@ void canvas_undo_redo(t_canvas *x)
         }
         char *undo_action = XULAST(x)->name;
         char *redo_action = (XULAST(x)->next ? XULAST(x)->next->name : "no");
-        we_are_undoing = 0;
+        XUNDOING(x) = 0;
         /* here we call updating of all unpaired hubs and nodes since their
            regular call will fail in case their position needed to be updated
            by undo/redo first to reflect the old one */
