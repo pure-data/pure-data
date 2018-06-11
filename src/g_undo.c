@@ -46,7 +46,7 @@ static void undo_print_queue(t_undo_action*q)
 {
     post("UNDO QUEUE: %p", q);
     if(q->next)_print_queue(q->next, 1);
-    if(q->prev)_print_queue(q->next, 0);
+    if(q->prev)_print_queue(q->prev, 0);
     post("UNDO QUEUE.");
 }
 
