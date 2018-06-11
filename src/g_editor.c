@@ -595,9 +595,9 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
     //instantiate num_obj and fill array of positions of selected objects
     if (mode == UCUT_CUT || mode == UCUT_CLEAR)
     {
-        int i = 0, j = 0;
         if (x->gl_list)
         {
+            int i = 0, j = 0;
             for (y = x->gl_list; y; y = y->g_next)
             {
                 if (glist_isselected(x, y))
@@ -806,21 +806,20 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
 void canvas_undo_move(t_canvas *x, void *z, int action)
 {
     t_undo_move *buf = z;
-    t_class *cl;
-    int resortin = 0, resortout = 0;
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
+        int resortin = 0, resortout = 0;
         int i;
-        int x1=0, y1=0, x2=0, y2=0, newx=0, newy=0;
-        t_gobj *y;
         for (i = 0; i < buf->u_n; i++)
         {
-            y = glist_nth(x, buf->u_vec[i].e_index);
-            newx = buf->u_vec[i].e_xpix;
-            newy = buf->u_vec[i].e_ypix;
+            int newx = buf->u_vec[i].e_xpix;
+            int newy = buf->u_vec[i].e_ypix;
+            t_gobj*y = glist_nth(x, buf->u_vec[i].e_index);
             if (y)
             {
+                int x1=0, y1=0, x2=0, y2=0;
                 int doing = EDITOR->canvas_undo_already_set_move;
+                t_class *cl = pd_class(&y->g_pd);
                 glist_noselect(x);
                 glist_select(x, y);
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
@@ -829,7 +828,6 @@ void canvas_undo_move(t_canvas *x, void *z, int action)
                 EDITOR->canvas_undo_already_set_move = doing;
                 buf->u_vec[i].e_xpix = x1;
                 buf->u_vec[i].e_ypix = y1;
-                cl = pd_class(&y->g_pd);
                 if (cl == vinlet_class) resortin = 1;
                 else if (cl == voutlet_class) resortout = 1;
             }
@@ -837,7 +835,7 @@ void canvas_undo_move(t_canvas *x, void *z, int action)
         glist_noselect(x);
         for (i = 0; i < buf->u_n; i++)
         {
-            y = glist_nth(x, buf->u_vec[i].e_index);
+            t_gobj* y = glist_nth(x, buf->u_vec[i].e_index);
             if (y) glist_select(x, y);
         }
         if (resortin) canvas_resortinlets(x);
@@ -1378,6 +1376,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_redraw(x->gl_owner);
         }
+#if 0
         //update scrollbars when GOP potentially exceeds window size
         t_canvas *canvas=(t_canvas *)glist_getcanvas(x);
 
@@ -1418,6 +1417,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             sys_vgui(".gfxstub%lx.yrange.entry4 insert 0 %d\n",
                 properties, x->gl_ymargin);
         }*/
+#endif
     }
 
     else if (action == UNDO_FREE)
@@ -1521,7 +1521,6 @@ void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    int issel1, issel2;
 
     t_undo_create *buf = (t_undo_create *)getbytes(sizeof(*buf));
     buf->u_index = pos;
@@ -1535,6 +1534,7 @@ void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
     linetraverser_start(&t, x);
     while (oc = linetraverser_next(&t))
     {
+        int issel1, issel2;
         issel1 = ( &t.tr_ob->ob_g == y ? 1 : 0);
         issel2 = ( &t.tr_ob2->ob_g == y ? 1 : 0);
         if (issel1 != issel2)
@@ -3973,8 +3973,6 @@ static void canvas_connect_selection(t_canvas *x)
     if (obj_noutlets(objsrc))
     {
         int out = 0, in=0;
-        int outsig = obj_issignaloutlet(objsrc, out);
-
         while(!tryconnect(x, objsrc, out, objsink, in))
         {
             if (!objsrc  || obj_noutlets(objsrc ) <= out)
