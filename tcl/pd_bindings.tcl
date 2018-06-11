@@ -310,6 +310,8 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
 proc ::pd_bindings::patch_destroy {window} {
     set mytoplevel [winfo toplevel $window]
     unset ::editmode($mytoplevel)
+    unset ::undo_actions($mytoplevel)
+    unset ::redo_actions($mytoplevel)
     unset ::editingtext($mytoplevel)
     unset ::loaded($mytoplevel)
     # unset my entries all of the window data tracking arrays
