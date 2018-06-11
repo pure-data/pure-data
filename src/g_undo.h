@@ -30,7 +30,7 @@ Types of undo data:
 1  - connect
 2  - disconnect
 3  - cut, clear & typing into objects
-4  - motion, inclding "tidy up" and stretching
+4  - motion, inculding "tidy up" and stretching
 5  - paste & duplicate
 6  - apply
 7  - arrange (to front/back)

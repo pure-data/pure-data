@@ -27,7 +27,7 @@ struct _canvasenvironment
     t_atom *ce_argv;       /* array of "$" arguments */
     int ce_dollarzero;     /* value of "$0" */
     t_namelist *ce_path;   /* search path */
-    t_undo ce_undo;       /* undo-chain */
+    t_undo ce_undo;        /* undo-chain */
 };
 
 #define GLIST_DEFCANVASWIDTH 450
