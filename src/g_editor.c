@@ -801,7 +801,7 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
             buf->u_vec[indx].e_ypix = y1;
         }
     }
-    canvas_undo_already_set_move = 1;
+    EDITOR->canvas_undo_already_set_move = 1;
     return (buf);
 }
 
@@ -822,10 +822,13 @@ void canvas_undo_move(t_canvas *x, void *z, int action)
             newy = buf->u_vec[i].e_ypix;
             if (y)
             {
+                int doing = EDITOR->canvas_undo_already_set_move;
                 glist_noselect(x);
                 glist_select(x, y);
                 gobj_getrect(y, x, &x1, &y1, &x2, &y2);
+                EDITOR->canvas_undo_already_set_move = 1;
                 canvas_displaceselection(x, newx-x1, newy - y1);
+                EDITOR->canvas_undo_already_set_move = doing;
                 buf->u_vec[i].e_xpix = x1;
                 buf->u_vec[i].e_ypix = y1;
                 cl = pd_class(&y->g_pd);
