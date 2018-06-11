@@ -355,7 +355,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         vis = atom_getfloatarg(5, argc, argv);
     }
 
-    private = (t_canvas_private *)getbytes(sizeof(*x->gl_privatedata));
+    private = getbytes(sizeof(*private));
     x->gl_privatedata = private;
     private->undo.u_queue = canvas_undo_init(x);
 
@@ -759,6 +759,7 @@ int glist_fontheight(t_glist *x)
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
+    t_canvas_private*private = x->gl_privatedata;
     int dspstate = canvas_suspend_dsp();
     canvas_noundo(x);
     if (canvas_whichfind == x)
@@ -778,7 +779,7 @@ void canvas_free(t_canvas *x)
         freebytes(x->gl_env, sizeof(*x->gl_env));
     }
     canvas_undo_free(x);
-    freebytes(x->gl_privatedata, sizeof(*x->gl_privatedata));
+    freebytes(private, sizeof(*private));
     canvas_resume_dsp(dspstate);
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
     freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
