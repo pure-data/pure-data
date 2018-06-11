@@ -150,7 +150,7 @@ EXTERN void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int old_pos);
 /* --------- 11. font (currently unused) ------------ */
 
 EXTERN void canvas_undo_font(t_canvas *x, void *z, int action);
-EXTERN void *canvas_undo_set_font(t_canvas *x, int font);
+EXTERN void *canvas_undo_set_font(t_canvas *x, int font, t_float realresize, int whichresize);
 
 /* ------------------------------- */
 
