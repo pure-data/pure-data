@@ -29,8 +29,12 @@ struct _canvasenvironment
     t_atom *ce_argv;       /* array of "$" arguments */
     int ce_dollarzero;     /* value of "$0" */
     t_namelist *ce_path;   /* search path */
-    t_undo ce_undo;        /* undo-chain */
 };
+struct _canvas_private
+{
+    t_undo undo;
+};
+#define t_canvas_private struct _canvas_private
 
 #define GLIST_DEFCANVASWIDTH 450
 #define GLIST_DEFCANVASHEIGHT 300
@@ -352,6 +356,10 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         s = atom_getsymbolarg(4, argc, argv);
         vis = atom_getfloatarg(5, argc, argv);
     }
+
+    x->gl_privatedata = (t_canvas_private *)getbytes(sizeof(*x->gl_privatedata));
+    x->gl_privatedata->undo.u_queue = canvas_undo_init(x);
+
         /* (otherwise assume we're being created from the menu.) */
     if (THISGUI->i_newdirectory &&
         THISGUI->i_newdirectory->s_name[0])
@@ -365,7 +373,6 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         env->ce_argv = THISGUI->i_newargv;
         env->ce_dollarzero = THISGUI->i_dollarzero++;
         env->ce_path = 0;
-        env->ce_undo.u_queue = canvas_undo_init(x);
         THISGUI->i_newdirectory = &s_;
         THISGUI->i_newargc = 0;
         THISGUI->i_newargv = 0;
@@ -771,8 +778,9 @@ void canvas_free(t_canvas *x)
     {
         freebytes(x->gl_env->ce_argv, x->gl_env->ce_argc * sizeof(t_atom));
         freebytes(x->gl_env, sizeof(*x->gl_env));
-        canvas_undo_free(x);
     }
+    canvas_undo_free(x);
+    freebytes(x->gl_privatedata, sizeof(*x->gl_privatedata));
     canvas_resume_dsp(dspstate);
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
     freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
@@ -1107,7 +1115,7 @@ t_canvas *canvas_getrootfor(t_canvas *x)
 
 t_undo* canvas_undo_get(t_canvas *x)
 {
-    return &(canvas_getenv(x)->ce_undo);
+    return &(x->gl_privatedata->undo);
 }
 
 /* ------------------------- DSP chain handling ------------------------- */

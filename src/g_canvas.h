@@ -76,6 +76,9 @@ EXTERN_STRUCT _guiconnect;
 EXTERN_STRUCT _tscalar;
 #define t_tscalar struct _tscalar
 
+        /* private data of a canvas (including canvasenvironment) */
+EXTERN_STRUCT _canvas_private;
+
 EXTERN_STRUCT _canvasenvironment;
 #define t_canvasenvironment struct _canvasenvironment
 
@@ -196,6 +199,7 @@ struct _glist
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
     int gl_zoom;                    /* zoom factor (integer zoom-in only) */
+    struct _canvas_private *gl_privatedata; /* private data */
 };
 
 #define gl_gobj gl_obj.te_g
