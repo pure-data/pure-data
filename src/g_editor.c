@@ -1920,6 +1920,8 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             char cbuf[MAXPDSTRING];
             int cbuflen;
             t_canvas *c = x;
+            t_undo *undo = canvas_undo_get(x);
+            t_undo_action *udo = undo ? undo->u_last : 0;
             canvas_create_editor(x);
             sys_vgui("pdtk_canvas_new .x%lx %d %d +%d+%d %d\n", x,
                 (int)(x->gl_screenx2 - x->gl_screenx1),
@@ -1940,6 +1942,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             canvas_reflecttitle(x);
             x->gl_havewindow = 1;
             canvas_updatewindowlist();
+            sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, udo?(udo->name):"no", (udo && udo->next)?(udo->next->name):"no");
         }
     }
     else    /* make invisible */
