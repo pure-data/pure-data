@@ -1252,7 +1252,6 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action) { }
 #endif
 
 /* --------- 8. apply on canvas ----------- */
-#if 0
 typedef struct _undo_canvas_properties
 {
     int gl_pixwidth;            /* width in pixels (on parent, if a graph) */
@@ -1304,8 +1303,6 @@ void *canvas_undo_set_canvas(t_canvas *x)
     return (buf);
 }
 
-extern int gfxstub_haveproperties(void *key);
-
 void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
 {
     t_undo_canvas_properties *buf = (t_undo_canvas_properties *)z;
@@ -1316,6 +1313,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
 
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
+#if 0
         //close properties window first
         t_int properties = gfxstub_haveproperties((void *)x);
         if (properties)
@@ -1323,6 +1321,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             //sys_vgui("destroy .gfxstub%lx\n", properties);
             gfxstub_deleteforkey(x);
         }
+#endif
 
         //store current canvas values into temporary data holder
         tmp.gl_pixwidth = x->gl_pixwidth;
@@ -1438,10 +1437,6 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             t_freebytes(buf, sizeof(*buf));
     }
 }
-#else
-void *canvas_undo_set_canvas(t_canvas *x) { return 0; }
-void canvas_undo_canvas_apply(t_canvas *x, void *z, int action) { }
-#endif
 /* --------- 9. create ----------- */
 
 typedef struct _undo_create
