@@ -1668,8 +1668,8 @@ void canvas_undo_font(t_canvas *x, void *z, int action)
 #endif
         {
             int whichresize = u_f->which;
-            float realsize = 100./u_f->resize;
-            t_float realresize, realresx = 1, realresy = 1;
+            t_float realresize = 100./u_f->resize;
+            t_float realresx = 1, realresy = 1;
             if (whichresize != 3) realresx = realresize;
             if (whichresize != 2) realresy = realresize;
             canvas_dofont(x2, u_f->font, realresx, realresy);
