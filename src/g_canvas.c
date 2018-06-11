@@ -30,11 +30,10 @@ struct _canvasenvironment
     int ce_dollarzero;     /* value of "$0" */
     t_namelist *ce_path;   /* search path */
 };
-struct _canvas_private
+typedef struct _canvas_private
 {
     t_undo undo;
-};
-#define t_canvas_private struct _canvas_private
+} t_canvas_private;
 
 #define GLIST_DEFCANVASWIDTH 450
 #define GLIST_DEFCANVASHEIGHT 300
@@ -333,6 +332,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = 0, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
+    t_canvas_private*private = 0;
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
@@ -357,8 +357,9 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         vis = atom_getfloatarg(5, argc, argv);
     }
 
-    x->gl_privatedata = (t_canvas_private *)getbytes(sizeof(*x->gl_privatedata));
-    x->gl_privatedata->undo.u_queue = canvas_undo_init(x);
+    private = (t_canvas_private *)getbytes(sizeof(*x->gl_privatedata));
+    x->gl_privatedata = private;
+    private->undo.u_queue = canvas_undo_init(x);
 
         /* (otherwise assume we're being created from the menu.) */
     if (THISGUI->i_newdirectory &&
@@ -1114,8 +1115,9 @@ t_canvas *canvas_getrootfor(t_canvas *x)
 
 t_undo* canvas_undo_get(t_canvas *x)
 {
-    if(x->gl_privatedata)
-        return &(x->gl_privatedata->undo);
+    t_canvas_private*private = x->gl_privatedata;
+    if(private)
+        return &(private->undo);
     return 0;
 }
 
