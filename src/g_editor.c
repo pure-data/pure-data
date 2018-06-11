@@ -3694,27 +3694,21 @@ static void canvas_duplicate(t_canvas *x)
         outobj = (t_object*)outgobj;
         inobj = (t_object*)ingobj;
 
-        while(canvas_isconnected(x, outobj, outno, inobj, inno))
+        while(!canconnect(x, outobj, outno, inobj, inno))
         {
+            if (!outobj || obj_noutlets(outobj) <= outno)
+                return;
+            if (!inobj  || obj_ninlets (inobj ) <= inno )
+                return;
             outno++;
             inno++;
         }
-        if (!outobj || obj_noutlets(outobj) <= outno)
-            return;
-        if (!inobj  || obj_ninlets (inobj ) <= inno )
-            return;
-        if(obj_issignaloutlet(outobj, outno) && !obj_issignalinlet(inobj, inno))
-            return;
 
-        canvas_connect(x,
-                       (t_float)outindex, (t_float)outno,
-                       (t_float)inindex, (t_float)inno);
-        canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
-                    outindex, outno,
-                    inindex, inno));
-
-        x->gl_editor->e_selectline_outno = outno;
-        x->gl_editor->e_selectline_inno = inno;
+        if(tryconnect(x, outobj, outno, inobj, inno))
+        {
+            x->gl_editor->e_selectline_outno = outno;
+            x->gl_editor->e_selectline_inno = inno;
+        }
         return;
     }
     if (x->gl_editor->e_onmotion == MA_NONE && x->gl_editor->e_selection)
@@ -3973,17 +3967,16 @@ static void canvas_connect_selection(t_canvas *x)
         int out = 0, in=0;
         int outsig = obj_issignaloutlet(objsrc, out);
 
-        if (!(canvas_isconnected(x, objsrc, out, objsink, in)) &&
-            !(outsig && !obj_issignalinlet(objsink, in)))
+        while(!tryconnect(x, objsrc, out, objsink, in))
         {
-            int srcindex = canvas_getindex(x, &objsrc->ob_g);
-            int sinkindex = canvas_getindex(x, &objsink->ob_g);
-            canvas_connect(x, (t_float)srcindex, (t_float)out, (t_float)sinkindex, (t_float)in);
-            canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
-                    srcindex, out,
-                    sinkindex, in));
-            return;
+            if (!objsrc  || obj_noutlets(objsrc ) <= out)
+                return;
+            if (!objsink || obj_ninlets (objsink) <= in )
+                return;
+            in++;
+            out++;
         }
+        return;
     }
 }
 
