@@ -1105,7 +1105,9 @@ t_canvas *canvas_getrootfor(t_canvas *x)
 
 t_undo* canvas_undo_get(t_canvas *x)
 {
-    return &(x->gl_privatedata->undo);
+    if(x->gl_privatedata)
+        return &(x->gl_privatedata->undo);
+    return 0;
 }
 
 /* ------------------------- DSP chain handling ------------------------- */
