@@ -902,13 +902,15 @@ void canvas_undo_paste(t_canvas *x, void *z, int action)
             glist_select(x, glist_nth(x, buf->u_sel_index));
         }
         canvas_dopaste(x, buf->u_objectbuf);
-#if 0
+
             /* if it was "duplicate" have to re-enact the displacement. */
         if (buf->u_offset)
         {
-            canvas_paste_xyoffset(x);
+            t_selection *y;
+            for (y = x->gl_editor->e_selection; y; y = y->sel_next)
+                gobj_displace(y->sel_what, x,
+                    10, 10);
         }
-#endif
     }
     else if (action == UNDO_FREE)
     {
