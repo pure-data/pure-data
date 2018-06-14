@@ -18,6 +18,17 @@
 
 void canvas_undo_set_name(const char*name);
 
+#define XUNODIRTY(x) (canvas_undo_get(x)->u_nodirty)
+void canvas_undo_nodirty(t_canvas *x)
+{
+    XUNODIRTY(x) = XULAST(x);
+}
+
+static int canvas_undo_isdirty(t_canvas *x)
+{
+    return (XULAST(x) != XUNODIRTY(x))?1:0;
+}
+
 t_undo_action *canvas_undo_init(t_canvas *x)
 {
     t_undo_action *a = 0;
@@ -33,6 +44,8 @@ t_undo_action *canvas_undo_init(t_canvas *x)
         //this is the first init
         XUQUEUE(x) = a;
         XULAST(x) = a;
+        canvas_undo_nodirty(x);
+
         a->prev = NULL;
         a->name = "no";
         if (glist_isvisible(x) && glist_istoplevel(x))
@@ -109,7 +122,7 @@ void canvas_undo_undo(t_canvas *x)
             if (glist_isvisible(x) && glist_istoplevel(x))
                 sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
         }
-        canvas_dirty(x, 1);
+        canvas_dirty(x, canvas_undo_isdirty(x));
     }
     canvas_resume_dsp(dspwas);
 }
@@ -153,7 +166,7 @@ void canvas_undo_redo(t_canvas *x)
             if (glist_isvisible(x) && glist_istoplevel(x))
                 sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
         }
-        canvas_dirty(x, 1);
+        canvas_dirty(x, canvas_undo_isdirty(x));
     }
     canvas_resume_dsp(dspwas);
 }
