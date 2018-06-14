@@ -617,17 +617,20 @@ void canvas_reflecttitle(t_canvas *x)
 }
 
     /* mark a glist dirty or clean */
-void canvas_dirty(t_canvas *x, t_floatarg n)
+void canvas_dirty(t_canvas *x, t_floatarg f)
 {
     t_canvas *x2 = canvas_getrootfor(x);
+    unsigned int n = f;
     if (THISGUI->i_reloadingabstraction)
         return;
-    if ((unsigned)n != x2->gl_dirty)
+    if (n != x2->gl_dirty)
     {
         x2->gl_dirty = n;
         if (x2->gl_havewindow)
             canvas_reflecttitle(x2);
     }
+    if(!n)
+        canvas_undo_nodirty(x);
 }
 
 void canvas_drawredrect(t_canvas *x, int doit)
