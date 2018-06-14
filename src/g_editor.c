@@ -1441,8 +1441,6 @@ void *canvas_undo_set_create(t_canvas *x)
 {
     t_gobj *y;
     t_linetraverser t;
-    t_outconnect *oc;
-    int issel1, issel2;
 
     t_undo_create *buf = (t_undo_create *)getbytes(sizeof(*buf));
     buf->u_index = glist_getindex(x, 0) - 1;
@@ -1451,6 +1449,7 @@ void *canvas_undo_set_create(t_canvas *x)
     buf->u_objectbuf = binbuf_new();
     if (x->gl_list)
     {
+        t_outconnect *oc;
         for (y = x->gl_list; y; y = y->g_next)
         {
             //if (glist_isselected(x, y)) {
@@ -1464,6 +1463,7 @@ void *canvas_undo_set_create(t_canvas *x)
         linetraverser_start(&t, x);
         while (oc = linetraverser_next(&t))
         {
+            int issel1, issel2;
             issel1 = ( &t.tr_ob->ob_g == y ? 1 : 0);
             issel2 = ( &t.tr_ob2->ob_g == y ? 1 : 0);
             if (issel1 != issel2)
