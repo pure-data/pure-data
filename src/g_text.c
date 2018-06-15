@@ -1444,7 +1444,15 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
             && !strcmp(vec2[0].a_w.w_symbol->s_name, "pd"))
                 canvas_updatewindowlist();
     }
-    else binbuf_text(x->te_binbuf, buf, bufsize);
+    else
+    {
+        int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
+        binbuf_text(x->te_binbuf, buf, bufsize);
+        canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
+           (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
+            &x->te_g, pos));
+
+    }
 }
 
     /* this gets called when a message gets sent to an object whose creation
