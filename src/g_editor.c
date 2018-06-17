@@ -528,8 +528,9 @@ void canvas_undo_disconnect(t_canvas *x, void *z, int action)
 #define UCUT_CUT 1          /* operation was a cut */
 #define UCUT_CLEAR 2        /* .. a clear */
 
-// following action is not needed any more LATER remove any signs of UCUT_TEXT
-// since recreate takes care of this in a more elegant way
+/* following action is not needed any more LATER remove any signs of UCUT_TEXT
+ * since recreate takes care of this in a more elegant way
+ */
 #define UCUT_TEXT 3         /* text typed into a box */
 
 typedef struct _undo_cut
@@ -590,7 +591,7 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
         buf->u_objectbuf = canvas_docopy(x);
     }
 
-    //instantiate num_obj and fill array of positions of selected objects
+        /* instantiate num_obj and fill array of positions of selected objects */
     if (mode == UCUT_CUT || mode == UCUT_CLEAR)
     {
         if (x->gl_list)
@@ -648,23 +649,23 @@ void canvas_undo_cut(t_canvas *x, void *z, int action)
         binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
         pd_unbind(&x->gl_pd, gensym("#X"));
 
-        //now reposition objects to their original locations
+            /* now reposition objects to their original locations */
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
         {
             int i = 0;
 
-            /* location of the first newly pasted object */
+                /* location of the first newly pasted object */
             int paste_pos = glist_getindex(x,0) - buf->n_obj;
             t_gobj *y_prev, *y, *y_next;
             for (i = 0; i < buf->n_obj; i++)
             {
-                //first check if we are in the same position already
+                    /* first check if we are in the same position already */
                 if (paste_pos+i != buf->p_a[i])
                 {
                     y_prev = glist_nth(x, paste_pos-1+i);
                     y = glist_nth(x, paste_pos+i);
                     y_next = glist_nth(x, paste_pos+1+i);
-                    //if the object is supposed to be first in the gl_list
+                        /* if the object is supposed to be first in the gl_list */
                     if (buf->p_a[i] == 0)
                     {
                         if (y_prev && y_next)
@@ -673,12 +674,12 @@ void canvas_undo_cut(t_canvas *x, void *z, int action)
                         }
                         else if (y_prev && !y_next)
                             y_prev->g_next = NULL;
-                        //now put the moved object at the beginning of the cue
+                            /* now put the moved object at the beginning of the cue */
                         y->g_next = glist_nth(x, 0);
                         x->gl_list = y;
-                        //LATER when objects are properly tagged lower y here
+                            /* LATER when objects are properly tagged lower y here */
                     }
-                    //if the object is supposed to be in the middle of gl_list
+                        /* if the object is supposed to be in the middle of gl_list */
                     else {
                         if (y_prev && y_next)
                         {
@@ -688,17 +689,17 @@ void canvas_undo_cut(t_canvas *x, void *z, int action)
                         {
                             y_prev->g_next = NULL;
                         }
-                        //now put the moved object in its right place
+                            /* now put the moved object in its right place */
                         y_prev = glist_nth(x, buf->p_a[i]-1);
                         y_next = glist_nth(x, buf->p_a[i]);
 
                         y_prev->g_next = y;
                         y->g_next = y_next;
-                        //LATER when objects are properly tagged lower y here
+                            /* LATER when objects are properly tagged lower y here */
                     }
                 }
             }
-            //LATER disable redrawing here
+                /* LATER disable redrawing here */
             canvas_redraw(x);
             if (x->gl_owner && glist_isvisible(x->gl_owner))
             {
@@ -711,9 +712,10 @@ void canvas_undo_cut(t_canvas *x, void *z, int action)
     {
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
         {
-            //we can't just blindly do clear here when the user may have
-            //unselected things between undo and redo, so first let's select
-            //the right stuff
+                /* we can't just blindly do clear here when the user may have
+                 * unselected things between undo and redo, so first let's select
+                 * the right stuff
+                 */
             glist_noselect(x);
             int i = 0;
             for (i = 0; i < buf->n_obj; i++)
@@ -857,11 +859,11 @@ void *canvas_undo_set_paste(t_canvas *x, int offset, int duplicate,
     int d_offset)
 {
     t_undo_paste *buf =  (t_undo_paste *)getbytes(sizeof(*buf));
-    buf->u_index = glist_getindex(x, 0) - offset; //do we need offset at all?
+    buf->u_index = glist_getindex(x, 0) - offset; /* do we need offset at all? */
     if (!duplicate && x->gl_editor->e_selection &&
         !x->gl_editor->e_selection->sel_next)
     {
-        //if only one object is selected which will warrant autopatching
+            /* if only one object is selected which will warrant autopatching */
         buf->u_sel_index = glist_getindex(x,
             x->gl_editor->e_selection->sel_what);
     }
@@ -888,8 +890,9 @@ void canvas_undo_paste(t_canvas *x, void *z, int action)
     else if (action == UNDO_REDO)
     {
         glist_noselect(x);
-        //if the pasted object is supposed to be autopatched
-        //then select the object it should be autopatched to
+            /* if the pasted object is supposed to be autopatched
+             * then select the object it should be autopatched to
+             */
         if (buf->u_sel_index > -1)
         {
             glist_select(x, glist_nth(x, buf->u_sel_index));
@@ -933,10 +936,11 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
     if (!x->gl_edit)
         canvas_editmode(x, 1);
 
-    // deselect all objects (if we are editing one while multiple are
-    // selected, upon undoing this will recreate other selected objects,
-    // effectively resulting in unwanted duplicates)
-    // LATER: consider allowing concurrent editing of multiple objects
+        /* deselect all objects (if we are editing one while multiple are
+         * selected, upon undoing this will recreate other selected objects,
+         * effectively resulting in unwanted duplicates)
+         * LATER: consider allowing concurrent editing of multiple objects
+         */
     glist_noselect(x);
 
     obj = glist_nth(x, n);
@@ -980,27 +984,27 @@ void canvas_undo_apply(t_canvas *x, void *z, int action)
     t_undo_apply *buf = z;
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
-        /* find current instance */
+            /* find current instance */
         glist_noselect(x);
         glist_select(x, glist_nth(x, buf->u_index));
 
-        /* copy it for the new undo/redo */
+            /* copy it for the new undo/redo */
         t_binbuf *tmp = canvas_docopy(x);
 
-        /* delete current instance */
+            /* delete current instance */
         canvas_doclear(x);
 
-        /* replace it with previous instance */
+            /* replace it with previous instance */
         canvas_dopaste(x, buf->u_objectbuf);
 
-        /* change previous instance with current one */
+            /* change previous instance with current one */
         buf->u_objectbuf = tmp;
 
-        /* connections should stay the same */
+            /* connections should stay the same */
         pd_bind(&x->gl_pd, gensym("#X"));
         binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
         pd_unbind(&x->gl_pd, gensym("#X"));
-        //now we need to reposition the object to its original place
+            /* now we need to reposition the object to its original place */
         if (canvas_apply_restore_original_position(x, buf->u_index))
             canvas_redraw(x);
     }
@@ -1017,21 +1021,21 @@ void canvas_undo_apply(t_canvas *x, void *z, int action)
 int canvas_apply_restore_original_position(t_canvas *x, int orig_pos)
 {
     t_gobj *y, *y_prev, *y_next;
-    //get the last object
+        /* get the last object */
     y = glist_nth(x, glist_getindex(x, 0) - 1);
     if (glist_getindex(x, y) != orig_pos)
     {
-        //first make the object prior to the pasted one the end of the list
+            /* first make the object prior to the pasted one the end of the list */
         y_prev = glist_nth(x, glist_getindex(x, 0) - 2);
         if (y_prev)
             y_prev->g_next = NULL;
-        //if the object is supposed to be first in the gl_list
+            /* if the object is supposed to be first in the gl_list */
         if (orig_pos == 0)
         {
             y->g_next = glist_nth(x, 0);
             x->gl_list = y;
         }
-        //if the object is supposed to be in the middle of the gl_list
+            /* if the object is supposed to be in the middle of the gl_list */
         else {
             y_prev = glist_nth(x, orig_pos-1);
             y_next = y_prev->g_next;
@@ -1053,7 +1057,7 @@ typedef struct _undo_arrange
 
 void *canvas_undo_set_arrange(t_canvas *x, t_gobj *obj, int newindex)
 {
-    // newindex tells us is the new index at the beginning (0) or the end (1)
+        /* newindex tells us is the new index at the beginning (0) or the end (1) */
 
     t_undo_arrange *buf;
     /* enable editor (in case it is disabled) and select the object
@@ -1061,17 +1065,17 @@ void *canvas_undo_set_arrange(t_canvas *x, t_gobj *obj, int newindex)
     if (!x->gl_edit)
         canvas_editmode(x, 1);
 
-    // select the object
+        /* select the object*/
     if (!glist_isselected(x, obj))
         glist_select(x, obj);
 
     buf = (t_undo_arrange *)getbytes(sizeof(*buf));
 
-    // set the u_newindex appropriately
+        /* set the u_newindex appropriately */
     if (newindex == 0) buf->u_newindex = 0;
     else buf->u_newindex = glist_getindex(x, 0) - 1;
 
-    /* store index of the currently selected object */
+        /* store index of the currently selected object */
     buf->u_previndex = glist_getindex(x, obj);
 
     return (buf);
@@ -1087,31 +1091,33 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
 
     if (which == 3) /* to front */
     {
-        //put the object at the end of the cue
+            /* put the object at the end of the cue */
         y_end->g_next = oldy;
         oldy->g_next = NULL;
 
-        // now fix links in the hole made in the list due to moving of the oldy
-        // (we know there is oldy_next as y_end != oldy in canvas_done_popup)
-        if (oldy_prev) //there is indeed more before the oldy position
+            /* now fix links in the hole made in the list due to moving of the oldy
+             * (we know there is oldy_next as y_end != oldy in canvas_done_popup)
+             */
+        if (oldy_prev) /* there is indeed more before the oldy position */
             oldy_prev->g_next = oldy_next;
         else x->gl_list = oldy_next;
 
-        // and finally redraw
+            /* and finally redraw */
         gui_vmess("gui_raise", "xs", x, "selected");
     }
     if (which == 4) /* to back */
     {
-        x->gl_list = oldy; //put it to the beginning of the cue
-        oldy->g_next = y_begin; //make it point to the old beginning
+        x->gl_list = oldy; /* put it to the beginning of the cue */
+        oldy->g_next = y_begin; /* make it point to the old beginning */
 
-        // now fix links in the hole made in the list due to moving of the oldy
-        // (we know there is oldy_prev as y_begin != oldy in canvas_done_popup)
-        if (oldy_next) //there is indeed more after oldy position
+            /* now fix links in the hole made in the list due to moving of the oldy
+             * (we know there is oldy_prev as y_begin != oldy in canvas_done_popup)
+             */
+        if (oldy_next) /* there is indeed more after oldy position */
             oldy_prev->g_next = oldy_next;
-        else oldy_prev->g_next = NULL; //oldy was the last in the cue
+        else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
 
-        // and finally redraw
+            /* and finally redraw */
         gui_vmess("gui_lower", "xs", x, "selected");
     }
     canvas_dirty(x, 1);
@@ -1127,7 +1133,7 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
 
     if (action == UNDO_UNDO)
     {
-        // this is our object
+            /* this is our object */
         y = glist_nth(x, buf->u_newindex);
 
         /* select object */
@@ -1136,9 +1142,9 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
 
         if (buf->u_newindex)
         {
-            // if it is the last object
+                /* if it is the last object */
 
-            // first previous object should point to nothing
+                /* first previous object should point to nothing */
             prev = glist_nth(x, buf->u_newindex - 1);
             prev->g_next = NULL;
 
@@ -1152,7 +1158,7 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
                 prev = glist_nth(x, buf->u_previndex - 1);
                 next = prev->g_next;
 
-                // now readjust pointers
+                    /* now readjust pointers */
                 prev->g_next = y;
                 y->g_next = next;
             }
@@ -1161,38 +1167,38 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
                 prev = NULL;
                 next = x->gl_list;
 
-                // now readjust pointers
+                    /* now readjust pointers */
                 y->g_next = next;
                 x->gl_list = y;
             }
 
-            // and finally redraw canvas
+                /* and finally redraw canvas */
             canvas_redraw(x);
         }
         else {
-            // if it is the first object
+                /* if it is the first object */
 
-            /* old index should be right after the object previndex
-               is pointing to as the object was moved to the end */
+                /* old index should be right after the object previndex
+                   is pointing to as the object was moved to the end */
             prev = glist_nth(x, buf->u_previndex);
 
-            // next may be NULL and that is ok
+                /* next may be NULL and that is ok */
             next = prev->g_next;
 
-            //first glist pointer needs to point to the second object
+                /* first glist pointer needs to point to the second object */
             x->gl_list = y->g_next;
 
-            //now readjust pointers
+                /* now readjust pointers */
             prev->g_next = y;
             y->g_next = next;
 
-            // and finally redraw canvas
+                /* and finally redraw canvas */
             canvas_redraw(x);
         }
     }
     else if (action == UNDO_REDO)
     {
-        // find our object
+            /* find our object */
         y = glist_nth(x, buf->u_previndex);
 
         /* select object */
@@ -1205,11 +1211,11 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
 
         t_gobj *oldy_prev=NULL, *oldy_next=NULL;
 
-        // if there is an object before ours (in other words our index is > 0)
+            /* if there is an object before ours (in other words our index is > 0) */
         if (glist_getindex(x,y))
             oldy_prev = glist_nth(x, buf->u_previndex - 1);
 
-        // if there is an object after ours
+            /* if there is an object after ours */
         if (y->g_next)
             oldy_next = y->g_next;
 
@@ -1289,7 +1295,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
 #if 0
-        //close properties window first
+            /* close properties window first */
         t_int properties = gfxstub_haveproperties((void *)x);
         if (properties)
         {
@@ -1298,7 +1304,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         }
 #endif
 
-        //store current canvas values into temporary data holder
+            /* store current canvas values into temporary data holder */
         tmp.gl_pixwidth = x->gl_pixwidth;
         tmp.gl_pixheight = x->gl_pixheight;
         tmp.gl_x1 = x->gl_x1;
@@ -1315,7 +1321,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         tmp.gl_isgraph = x->gl_isgraph;
         tmp.gl_hidetext = x->gl_hidetext;
 
-        //change canvas values with the ones from the undo buffer
+            /* change canvas values with the ones from the undo buffer */
         x->gl_pixwidth = buf->gl_pixwidth;
         x->gl_pixheight = buf->gl_pixheight;
         x->gl_x1 = buf->gl_x1;
@@ -1332,7 +1338,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         x->gl_isgraph = buf->gl_isgraph;
         x->gl_hidetext = buf->gl_hidetext;
 
-        //copy data values from the temporary data to the undo buffer
+            /* copy data values from the temporary data to the undo buffer */
         buf->gl_pixwidth = tmp.gl_pixwidth;
         buf->gl_pixheight = tmp.gl_pixheight;
         buf->gl_x1 = tmp.gl_x1;
@@ -1349,7 +1355,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         buf->gl_isgraph = tmp.gl_isgraph;
         buf->gl_hidetext = tmp.gl_hidetext;
 
-        //redraw
+            /* redraw */
         canvas_setgraph(x, x->gl_isgraph + 2*x->gl_hidetext, 0);
         canvas_dirty(x, 1);
 
@@ -1365,17 +1371,18 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             canvas_redraw(x->gl_owner);
         }
 #if 0
-        //update scrollbars when GOP potentially exceeds window size
+            /* update scrollbars when GOP potentially exceeds window size */
         t_canvas *canvas=(t_canvas *)glist_getcanvas(x);
 
-        //if gop is being disabled go one level up
+            /* if gop is being disabled go one level up */
         /*if (!x->gl_isgraph && x->gl_owner) {
             canvas=canvas->gl_owner;
             canvas_redraw(canvas);
         }*/
 
-        //if properties window is open,
-        //update the properties with the previous window properties
+        /* if properties window is open,
+         * update the properties with the previous window properties
+         * /
         /*t_int properties = gfxstub_haveproperties((void *)x);
         if (properties) {
             sys_vgui("pdtk_canvas_dialog_undo_update .gfxstub%lx %d %d\n",
@@ -1502,7 +1509,7 @@ void canvas_undo_create(t_canvas *x, void *z, int action)
 
 /* ------ 10. recreate (called from text_setto after text has changed) ------ */
 
-//recreate uses t_undo_create struct
+/* recreate uses t_undo_create struct */
 
 void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
 {
@@ -1511,9 +1518,7 @@ void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
 
     t_undo_create *buf = (t_undo_create *)getbytes(sizeof(*buf));
     buf->u_index = pos;
-    int nnotsel= glist_selectionindex(x, 0, 0) - 1; // - 1 is a critical
-                                                    // difference from
-                                                    // the create
+    int nnotsel= glist_selectionindex(x, 0, 0) - 1; /* - 1 is a critical difference from the create */
     buf->u_objectbuf = binbuf_new();
     gobj_save(y, buf->u_objectbuf);
 
@@ -1553,7 +1558,7 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
         t_symbol *asym = gensym("#A");
         t_pd *boundx = 0, *bounda = 0, *boundn = 0;
 
-        // first copy new state of the current object
+            /* first copy new state of the current object */
         t_undo_create *buf2 = (t_undo_create *)getbytes(sizeof(*buf));
         buf2->u_index = buf->u_index;
 
@@ -1562,12 +1567,12 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
 
         buf2->u_reconnectbuf = binbuf_duplicate(buf->u_reconnectbuf);
 
-        // now cut the existing object
+            /* now cut the existing object */
         glist_noselect(x);
         glist_select(x, y);
         canvas_doclear(x);
 
-        // then paste the old object
+            /* then paste the old object */
 
             /* save and clear bindings to symbols #A, #N, #X; restore when done */
         boundx = s__X.s_thing;
@@ -1585,27 +1590,28 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
         s__X.s_thing = boundx;
         s__N.s_thing = boundn;
 
-        // free the old data
+            /* free the old data */
         binbuf_free(buf->u_objectbuf);
         binbuf_free(buf->u_reconnectbuf);
         t_freebytes(buf, sizeof(*buf));
 
-        // re-adjust pointer
-        // (this should probably belong into g_undo.c, but since it is
-        // a unique case, we'll let it be for the time being)
+            /* re-adjust pointer
+             * (this should probably belong into g_undo.c, but since it is
+             * a unique case, we'll let it be for the time being)
+             */
         canvas_undo_get(x)->u_last->data = (void *)buf2;
         buf = buf2;
 
-        // reposition object to its original place
+            /* reposition object to its original place */
         if (action == UNDO_UNDO)
             if (canvas_apply_restore_original_position(x, buf->u_index))
                 canvas_redraw(x);
 
-        // send a loadbang
+            /* send a loadbang */
         if (pd_this->pd_newest && pd_class(pd_this->pd_newest) == canvas_class)
             canvas_loadbang((t_canvas *)pd_this->pd_newest);
 
-        // select
+            /* select */
         if (action == UNDO_REDO)
             y = glist_nth(x, glist_getindex(x, 0) - 1);
         else
@@ -2089,7 +2095,7 @@ static void canvas_donecanvasdialog(t_glist *x,
        individual objects */
     if (glist_getcanvas(x) != x && !canvas_isabstraction(x))
     {
-            // JMZ: i don't know how to trigger this path
+            /* JMZ: i don't know how to trigger this path */
         t_canvas*x2 = glist_getcanvas(x);
         canvas_undo_add(x2, UNDO_APPLY, "apply", canvas_undo_set_apply(x2, glist_getindex(x2, &x->gl_gobj)));
     }
@@ -3628,7 +3634,7 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     t_gobj *newgobj, *last, *g2;
     int dspstate = canvas_suspend_dsp(), nbox, count;
     t_symbol *asym = gensym("#A");
-        /* save and clear bindings to symbols #a, $N, $X; restore when done */
+        /* save and clear bindings to symbols #A, #N, #X; restore when done */
     t_pd *boundx = s__X.s_thing, *bounda = asym->s_thing,
         *boundn = s__N.s_thing;
     asym->s_thing = 0;
