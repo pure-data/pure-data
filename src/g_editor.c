@@ -576,7 +576,6 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
                 t.tr_inno);
         }
     }
-    //}
     if (mode == UCUT_TEXT)
     {
         buf->u_objectbuf = canvas_docopy(x);
@@ -678,11 +677,6 @@ void canvas_undo_cut(t_canvas *x, void *z, int action)
                         x->gl_list = y;
                         //LATER when objects are properly tagged lower y here
                     }
-                    //if the object is supposed to be at the current end
-                    //of gl_list-- can this ever happen???
-                    /*else if (!glist_nth(x,buf->p_a[i])) {
-
-                    }*/
                     //if the object is supposed to be in the middle of gl_list
                     else {
                         if (y_prev && y_next)
@@ -1005,11 +999,9 @@ void canvas_undo_apply(t_canvas *x, void *z, int action)
         pd_bind(&x->gl_pd, gensym("#X"));
         binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
         pd_unbind(&x->gl_pd, gensym("#X"));
-#if 1
         //now we need to reposition the object to its original place
         if (canvas_apply_restore_original_position(x, buf->u_index))
             canvas_redraw(x);
-#endif
     }
     else if (action == UNDO_FREE)
     {
@@ -1260,14 +1252,9 @@ typedef struct _undo_canvas_properties
                                    graph on parent */
 } t_undo_canvas_properties;
 
-//t_undo_canvas_properties global_buf;
-
 void *canvas_undo_set_canvas(t_canvas *x)
 {
     /* enable editor (in case it is disabled) */
-    //if (x->gl_havewindow && !x->gl_edit)
-    //    canvas_editmode(x, 1);
-
     t_undo_canvas_properties *buf =
         (t_undo_canvas_properties *)getbytes(sizeof(*buf));
 
@@ -1450,7 +1437,6 @@ void *canvas_undo_set_create(t_canvas *x)
         t_outconnect *oc;
         for (y = x->gl_list; y; y = y->g_next)
         {
-            //if (glist_isselected(x, y)) {
             if (!y->g_next)
             {
                 gobj_save(y, buf->u_objectbuf);
@@ -2046,7 +2032,7 @@ void canvas_properties(t_gobj*z, t_glist*unused)
         sprintf(graphbuf,
             "pdtk_canvas_dialog %%s %g %g %d %g %g %g %g %d %d %d %d\n",
                 0., 0.,
-                glist_isgraph(x) ,//1,
+                glist_isgraph(x) ,
                 x->gl_x1, x->gl_y1, x->gl_x2, x->gl_y2,
                 (int)x->gl_pixwidth/x->gl_zoom, (int)x->gl_pixheight/x->gl_zoom,
                 (int)x->gl_xmargin/x->gl_zoom, (int)x->gl_ymargin/x->gl_zoom);
