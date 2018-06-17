@@ -573,8 +573,8 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
                 (issel1 ? nnotsel : 0)
                     + glist_selectionindex(x, &t.tr_ob->ob_g, issel1),
                 t.tr_outno,
-                (issel2 ? nnotsel : 0) +
-                    glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
+                (issel2 ? nnotsel : 0)
+                    + glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
                 t.tr_inno);
         }
     }
@@ -776,13 +776,13 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
     {
         for (y = x->gl_list, i = indx = 0; y; y = y->g_next, indx++)
             if (glist_isselected(x, y))
-        {
-            gobj_getrect(y, x, &x1, &y1, &x2, &y2);
-            buf->u_vec[i].e_index = indx;
-            buf->u_vec[i].e_xpix = x1;
-            buf->u_vec[i].e_ypix = y1;
-            i++;
-        }
+            {
+                gobj_getrect(y, x, &x1, &y1, &x2, &y2);
+                buf->u_vec[i].e_index = indx;
+                buf->u_vec[i].e_xpix = x1;
+                buf->u_vec[i].e_ypix = y1;
+                i++;
+            }
     }
     else
     {
@@ -964,8 +964,8 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
                 (issel1 ? nnotsel : 0)
                     + glist_selectionindex(x, &t.tr_ob->ob_g, issel1),
                 t.tr_outno,
-                (issel2 ? nnotsel : 0) +
-                    glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
+                (issel2 ? nnotsel : 0)
+                    + glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
                 t.tr_inno);
         }
     }
@@ -1465,8 +1465,8 @@ void *canvas_undo_set_create(t_canvas *x)
                     (issel1 ? nnotsel : 0)
                         + glist_selectionindex(x, &t.tr_ob->ob_g, issel1),
                     t.tr_outno,
-                    (issel2 ? nnotsel : 0) +
-                        glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
+                    (issel2 ? nnotsel : 0)
+                        + glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
                     t.tr_inno);
             }
         }
@@ -1536,8 +1536,8 @@ void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
                 (issel1 ? nnotsel : 0)
                     + glist_selectionindex(x, &t.tr_ob->ob_g, issel1),
                 t.tr_outno,
-                (issel2 ? nnotsel : 0) +
-                    glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
+                (issel2 ? nnotsel : 0)
+                    + glist_selectionindex(x, &t.tr_ob2->ob_g, issel2),
                 t.tr_inno);
         }
     }
@@ -1735,7 +1735,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         {
             if (g != except && pd_class(&g->g_pd) == canvas_class)
                 glist_doreload((t_canvas *)g, name, dir, except);
-             g = g->g_next;
+            g = g->g_next;
         }
     }
     if (!hadwindow && gl->gl_editor)
@@ -1936,8 +1936,8 @@ void canvas_vis(t_canvas *x, t_floatarg f)
                 c = c->gl_owner;
                 cbuflen = (int)strlen(cbuf);
                 snprintf(cbuf + cbuflen,
-                         MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
-                         " .x%lx", (unsigned long)c);
+                    MAXPDSTRING - cbuflen - 2,/* leave 2 for "\n\0" */
+                    " .x%lx", (unsigned long)c);
             }
             strcat(cbuf, "\n");
             sys_gui(cbuf);
@@ -2366,7 +2366,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (ob && (noutlet = obj_noutlets(ob)) &&
-                ypos >= y2 - (IOHEIGHT*x->gl_zoom) + x->gl_zoom)
+                     ypos >= y2 - (IOHEIGHT*x->gl_zoom) + x->gl_zoom)
             {
                 int width = x2 - x1;
                 int iow = IOWIDTH * x->gl_zoom;
@@ -2385,9 +2385,9 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         x->gl_editor->e_xwas = xpos;
                         x->gl_editor->e_ywas = ypos;
                         sys_vgui(
-                          ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
-                                x, xpos, ypos, xpos, ypos,
-                                    (issignal ? 2 : 1) * x->gl_zoom);
+                            ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
+                            x, xpos, ypos, xpos, ypos,
+                            (issignal ? 2 : 1) * x->gl_zoom);
                     }
                     else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
                 }
@@ -2470,7 +2470,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     {
         if (!shiftmod) glist_noselect(x);
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags x\n",
-              x, xpos, ypos, xpos, ypos);
+            x, xpos, ypos, xpos, ypos);
         x->gl_editor->e_xwas = xpos;
         x->gl_editor->e_ywas = ypos;
         x->gl_editor->e_onmotion = MA_REGION;
@@ -2563,8 +2563,8 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
 #endif
     if (doit) sys_vgui(".x%lx.c delete x\n", x);
     else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
-            x, x->gl_editor->e_xwas,
-                x->gl_editor->e_ywas, xpos, ypos);
+                  x, x->gl_editor->e_xwas,
+                  x->gl_editor->e_ywas, xpos, ypos);
 
     if ((y1 = canvas_findhitbox(x, xwas, ywas, &x11, &y11, &x12, &y12))
         && (y2 = canvas_findhitbox(x, xpos, ypos, &x21, &y21, &x22, &y22)))
@@ -2785,8 +2785,8 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
         x->gl_editor->e_onmotion = MA_NONE;
     }
     else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
-            x, x->gl_editor->e_xwas,
-                x->gl_editor->e_ywas, xpos, ypos);
+                  x, x->gl_editor->e_xwas,
+                  x->gl_editor->e_ywas, xpos, ypos);
 }
 
 void canvas_mouseup(t_canvas *x,
@@ -2824,14 +2824,14 @@ void canvas_mouseup(t_canvas *x,
                    dirty sub-patch that would be discarded if we edit this. */
             if (pd_class(&g->g_pd) == canvas_class &&
                 canvas_isabstraction((t_glist *)g) &&
-                    (gl2 = glist_finddirty((t_glist *)g)))
+                (gl2 = glist_finddirty((t_glist *)g)))
             {
                 vmess(&gl2->gl_pd, gensym("menu-open"), "");
                 x->gl_editor->e_onmotion = MA_NONE;
                 sys_vgui(
-"pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
+                    "pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
                     canvas_getrootfor(gl2),
-                        canvas_getrootfor(gl2)->gl_name->s_name, gl2);
+                    canvas_getrootfor(gl2)->gl_name->s_name, gl2);
                 return;
             }
                 /* OK, activate it */
@@ -3022,8 +3022,8 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 static void delay_move(t_canvas *x)
 {
     canvas_displaceselection(x,
-       x->gl_editor->e_xnew - x->gl_editor->e_xwas,
-       x->gl_editor->e_ynew - x->gl_editor->e_ywas);
+        x->gl_editor->e_xnew - x->gl_editor->e_xwas,
+        x->gl_editor->e_ynew - x->gl_editor->e_ywas);
     x->gl_editor->e_xwas = x->gl_editor->e_xnew;
     x->gl_editor->e_ywas = x->gl_editor->e_ynew;
 }
@@ -3158,12 +3158,12 @@ void glob_verifyquit(void *dummy, t_floatarg f)
         /* find all root canvases */
     for (g = pd_getcanvaslist(); g; g = g->gl_next)
         if ((g2 = glist_finddirty(g)))
-    {
-        canvas_vis(g2, 1);
+        {
+            canvas_vis(g2, 1);
             sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 3;\n}\n",
                      canvas_getrootfor(g2), g2);
-        return;
-    }
+            return;
+        }
     if (f == 0 && sys_perf)
         sys_vgui("pdtk_check .pdwindow {really quit?} {pd quit} yes\n");
     else glob_quit(0);
@@ -3195,7 +3195,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         else if (sys_perf)
         {
             sys_vgui(
-   "pdtk_check .x%lx {Close this window?} {.x%lx menuclose 1;\n} yes\n",
+                "pdtk_check .x%lx {Close this window?} {.x%lx menuclose 1;\n} yes\n",
                 canvas_getrootfor(x), x);
         }
         else pd_free(&x->gl_pd);
@@ -3245,17 +3245,17 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
         t_object *obj;
         for (g = x->gl_list; g; g = g->g_next)
             if ((obj = pd_checkobject(&g->g_pd)))
-        {
-            t_gotfn zoommethod;
-            REZOOM(obj->te_xpix, zoom);
-            REZOOM(obj->te_ypix, zoom);
-                /* pass zoom message on to all objects, except canvases
-                that aren't GOP */
-            if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
-                (!(pd_class(&obj->te_pd) == canvas_class) ||
-                (((t_glist *)obj)->gl_isgraph)))
+            {
+                t_gotfn zoommethod;
+                REZOOM(obj->te_xpix, zoom);
+                REZOOM(obj->te_ypix, zoom);
+                    /* pass zoom message on to all objects, except canvases
+                       that aren't GOP */
+                if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
+                    (!(pd_class(&obj->te_pd) == canvas_class) ||
+                     (((t_glist *)obj)->gl_isgraph)))
                     (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
-        }
+            }
         x->gl_zoom = zoom;
         REZOOM(x->gl_xmargin, zoom);
         REZOOM(x->gl_ymargin, zoom);
@@ -3460,8 +3460,8 @@ void canvas_stowconnections(t_canvas *x)
         if (s1 != s2)
             binbuf_addv(x->gl_editor->e_connectbuf, "ssiiii;",
                 gensym("#X"), gensym("connect"),
-                    glist_getindex(x, &t.tr_ob->ob_g), t.tr_outno,
-                        glist_getindex(x, &t.tr_ob2->ob_g), t.tr_inno);
+                glist_getindex(x, &t.tr_ob->ob_g), t.tr_outno,
+                glist_getindex(x, &t.tr_ob2->ob_g), t.tr_inno);
     }
 }
 
@@ -3519,15 +3519,15 @@ static void canvas_clearline(t_canvas *x)
     if (x->gl_editor->e_selectedline)
     {
         canvas_disconnect(x, x->gl_editor->e_selectline_index1,
-             x->gl_editor->e_selectline_outno,
-             x->gl_editor->e_selectline_index2,
-             x->gl_editor->e_selectline_inno);
+            x->gl_editor->e_selectline_outno,
+            x->gl_editor->e_selectline_index2,
+            x->gl_editor->e_selectline_inno);
         canvas_dirty(x, 1);
         canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-                x->gl_editor->e_selectline_index1,
-                x->gl_editor->e_selectline_outno,
-                x->gl_editor->e_selectline_index2,
-                x->gl_editor->e_selectline_inno));
+            x->gl_editor->e_selectline_index1,
+            x->gl_editor->e_selectline_outno,
+            x->gl_editor->e_selectline_index2,
+            x->gl_editor->e_selectline_inno));
     }
 }
 
@@ -3540,14 +3540,14 @@ static void canvas_doclear(t_canvas *x)
     if (x->gl_editor->e_selectedline)
     {
         canvas_disconnect(x, x->gl_editor->e_selectline_index1,
-             x->gl_editor->e_selectline_outno,
-             x->gl_editor->e_selectline_index2,
-             x->gl_editor->e_selectline_inno);
+            x->gl_editor->e_selectline_outno,
+            x->gl_editor->e_selectline_index2,
+            x->gl_editor->e_selectline_inno);
         canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-                x->gl_editor->e_selectline_index1,
-                x->gl_editor->e_selectline_outno,
-                x->gl_editor->e_selectline_index2,
-                x->gl_editor->e_selectline_inno));
+            x->gl_editor->e_selectline_index1,
+            x->gl_editor->e_selectline_outno,
+            x->gl_editor->e_selectline_index2,
+            x->gl_editor->e_selectline_inno));
     }
         /* if text is selected, deselecting it might remake the
            object. So we deselect it and hunt for a "new" object on
@@ -3746,10 +3746,10 @@ static void canvas_selectall(t_canvas *x)
     if (!glist_selectionindex(x, 0, 0))
         glist_noselect(x);
     else for (y = x->gl_list; y; y = y->g_next)
-    {
-        if (!glist_isselected(x, y))
-            glist_select(x, y);
-    }
+         {
+             if (!glist_isselected(x, y))
+                 glist_select(x, y);
+         }
 }
 
 static void canvas_reselect(t_canvas *x)
@@ -3770,10 +3770,10 @@ static void canvas_reselect(t_canvas *x)
             glist_noselect(x);
             for (g = x->gl_list; g; g = g->g_next)
                 if (g == gwas)
-            {
-                glist_select(x, g);
-                return;
-            }
+                {
+                    glist_select(x, g);
+                    return;
+                }
                 /* "gwas" must have disappeared; just search to the last
                    object and select it */
             for (g = x->gl_list; g; g = g->g_next)
@@ -3782,9 +3782,9 @@ static void canvas_reselect(t_canvas *x)
         }
     }
     else if (x->gl_editor->e_selection &&
-        !x->gl_editor->e_selection->sel_next)
+             !x->gl_editor->e_selection->sel_next)
             /* otherwise activate first item in selection */
-            gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
+        gobj_activate(x->gl_editor->e_selection->sel_what, x, 1);
 }
 
 extern t_class *text_class;
@@ -3822,7 +3822,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
     if (glist_isvisible(x))
     {
         sys_vgui(
-    ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
+            ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
             glist_getcanvas(x), 0, 0, 0, 0,
             (obj_issignaloutlet(objsrc, outno) ? 2 : 1) * x->gl_zoom, oc);
         canvas_fixlinesfor(x, objsrc);
@@ -3855,48 +3855,48 @@ static void canvas_tidy(t_canvas *x)
         /* tidy horizontally */
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
-    {
-        gobj_getrect(y, x, &ax1, &ay1, &ax2, &ay2);
-
-        for (y2 = x->gl_list; y2; y2 = y2->g_next)
-            if (all || glist_isselected(x, y2))
         {
-            gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
-            if (by1 <= ay1 + YTOLERANCE && by1 >= ay1 - YTOLERANCE &&
-                bx1 < ax1)
-                    goto nothorizhead;
-        }
+            gobj_getrect(y, x, &ax1, &ay1, &ax2, &ay2);
 
-        for (y2 = x->gl_list; y2; y2 = y2->g_next)
-            if (all || glist_isselected(x, y2))
-        {
-            gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
-            if (by1 <= ay1 + YTOLERANCE && by1 >= ay1 - YTOLERANCE
-                && by1 != ay1)
-                    gobj_displace(y2, x, 0, ay1-by1);
+            for (y2 = x->gl_list; y2; y2 = y2->g_next)
+                if (all || glist_isselected(x, y2))
+                {
+                    gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
+                    if (by1 <= ay1 + YTOLERANCE && by1 >= ay1 - YTOLERANCE &&
+                        bx1 < ax1)
+                        goto nothorizhead;
+                }
+
+            for (y2 = x->gl_list; y2; y2 = y2->g_next)
+                if (all || glist_isselected(x, y2))
+                {
+                    gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
+                    if (by1 <= ay1 + YTOLERANCE && by1 >= ay1 - YTOLERANCE
+                        && by1 != ay1)
+                        gobj_displace(y2, x, 0, ay1-by1);
+                }
+        nothorizhead: ;
         }
-    nothorizhead: ;
-    }
         /* tidy vertically.  First guess the user's favorite vertical spacing */
     for (i = NHIST, ip = histogram; i--; ip++) *ip = 0;
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
-    {
-        gobj_getrect(y, x, &ax1, &ay1, &ax2, &ay2);
-        for (y2 = x->gl_list; y2; y2 = y2->g_next)
-            if (all || glist_isselected(x, y2))
         {
-            gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
-            if (bx1 <= ax1 + XTOLERANCE && bx1 >= ax1 - XTOLERANCE)
-            {
-                int distance = by1-ay2;
-                if (distance >= 0 && distance < NHIST)
-                    histogram[distance]++;
-            }
+            gobj_getrect(y, x, &ax1, &ay1, &ax2, &ay2);
+            for (y2 = x->gl_list; y2; y2 = y2->g_next)
+                if (all || glist_isselected(x, y2))
+                {
+                    gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
+                    if (bx1 <= ax1 + XTOLERANCE && bx1 >= ax1 - XTOLERANCE)
+                    {
+                        int distance = by1-ay2;
+                        if (distance >= 0 && distance < NHIST)
+                            histogram[distance]++;
+                    }
+                }
         }
-    }
     for (i = 2, besthist = 0, bestdist = 4, ip = histogram + 2;
-        i < (NHIST-2); i++, ip++)
+         i < (NHIST-2); i++, ip++)
     {
         int hit = ip[-2] + 2 * ip[-1] + 3 * ip[0] + 2* ip[1] + ip[2];
         if (hit > besthist)
@@ -3908,38 +3908,38 @@ static void canvas_tidy(t_canvas *x)
     post("best vertical distance %d", bestdist);
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
-    {
-        int keep = 1;
-        gobj_getrect(y, x, &ax1, &ay1, &ax2, &ay2);
-        for (y2 = x->gl_list; y2; y2 = y2->g_next)
-            if (all || glist_isselected(x, y2))
         {
-            gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
-            if (bx1 <= ax1 + XTOLERANCE && bx1 >= ax1 - XTOLERANCE &&
-                ay1 >= by2 - 10 && ay1 < by2 + NHIST)
-                    goto nothead;
-        }
-        while (keep)
-        {
-            keep = 0;
+            int keep = 1;
+            gobj_getrect(y, x, &ax1, &ay1, &ax2, &ay2);
             for (y2 = x->gl_list; y2; y2 = y2->g_next)
                 if (all || glist_isselected(x, y2))
-            {
-                gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
-                if (bx1 <= ax1 + XTOLERANCE && bx1 >= ax1 - XTOLERANCE &&
-                    by1 > ay1 && by1 < ay2 + NHIST)
                 {
-                    int vmove = ay2 + bestdist - by1;
-                    gobj_displace(y2, x, ax1-bx1, vmove);
-                    ay1 = by1 + vmove;
-                    ay2 = by2 + vmove;
-                    keep = 1;
-                    break;
+                    gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
+                    if (bx1 <= ax1 + XTOLERANCE && bx1 >= ax1 - XTOLERANCE &&
+                        ay1 >= by2 - 10 && ay1 < by2 + NHIST)
+                        goto nothead;
                 }
+            while (keep)
+            {
+                keep = 0;
+                for (y2 = x->gl_list; y2; y2 = y2->g_next)
+                    if (all || glist_isselected(x, y2))
+                    {
+                        gobj_getrect(y2, x, &bx1, &by1, &bx2, &by2);
+                        if (bx1 <= ax1 + XTOLERANCE && bx1 >= ax1 - XTOLERANCE &&
+                            by1 > ay1 && by1 < ay2 + NHIST)
+                        {
+                            int vmove = ay2 + bestdist - by1;
+                            gobj_displace(y2, x, ax1-bx1, vmove);
+                            ay1 = by1 + vmove;
+                            ay2 = by2 + vmove;
+                            keep = 1;
+                            break;
+                        }
+                    }
             }
+        nothead: ;
         }
-    nothead: ;
-    }
     canvas_dirty(x, 1);
 }
 
@@ -4020,11 +4020,11 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
         for (g = x->gl_list; g; g = g->g_next)
             if ((ob = pd_checkobject(&g->g_pd)) && ob->te_type == T_TEXT)
-        {
-            t_rtext *y = glist_findrtext(x, ob);
-            text_drawborder(ob, x,
-                rtext_gettag(y), rtext_width(y), rtext_height(y), 1);
-        }
+            {
+                t_rtext *y = glist_findrtext(x, ob);
+                text_drawborder(ob, x,
+                                rtext_gettag(y), rtext_width(y), rtext_height(y), 1);
+            }
     }
     else
     {
@@ -4036,8 +4036,8 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
         }
     }
     if (glist_isvisible(x))
-      sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
-          glist_getcanvas(x), x->gl_edit);
+        sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
+            glist_getcanvas(x), x->gl_edit);
     canvas_reflecttitle(x);
 }
 
@@ -4172,6 +4172,7 @@ void g_editor_setup(void)
 
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+
 /* -------------- copy buffer ------------------ */
     EDITOR->copy_binbuf = binbuf_new();
 }
