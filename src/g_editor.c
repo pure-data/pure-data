@@ -1,6 +1,6 @@
 /* Copyright (c) 1997-2001 Miller Puckette and others.
-* For information on usage and redistribution, and for a DISCLAIMER OF ALL
-* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+ * For information on usage and redistribution, and for a DISCLAIMER OF ALL
+ * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -71,9 +71,9 @@ void gobj_displace(t_gobj *x, t_glist *glist, int dx, int dy)
 }
 
     /* here we add an extra check whether we're mapped, because some
-    editing moves are carried out on invisible windows (notably, re-creating
-    abstractions when one is saved).  Should any other widget finctions also
-    be doing this?  */
+       editing moves are carried out on invisible windows (notably, re-creating
+       abstractions when one is saved).  Should any other widget finctions also
+       be doing this?  */
 void gobj_select(t_gobj *x, t_glist *glist, int state)
 {
     if (glist->gl_mapped && x->g_pd->c_wb && x->g_pd->c_wb->w_selectfn)
@@ -95,21 +95,21 @@ void gobj_delete(t_gobj *x, t_glist *glist)
 int gobj_shouldvis(t_gobj *x, struct _glist *glist)
 {
     t_object *ob;
-            /* if our parent is a graph, and if that graph itself isn't
-            visible, then we aren't either. */
+        /* if our parent is a graph, and if that graph itself isn't
+           visible, then we aren't either. */
     if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_owner
         && !gobj_shouldvis(&glist->gl_gobj, glist->gl_owner))
             return (0);
-            /* if we're graphing-on-parent and the object falls outside the
-            graph rectangle, don't draw it. */
+        /* if we're graphing-on-parent and the object falls outside the
+           graph rectangle, don't draw it. */
     if (!glist->gl_havewindow && glist->gl_isgraph && glist->gl_goprect &&
         glist->gl_owner)
     {
         int x1, y1, x2, y2, gx1, gy1, gx2, gy2, m;
             /* for some reason the bounds check on arrays and scalars
-            don't seem to apply here.  Perhaps this was in order to allow
-            arrays to reach outside their containers?  I no longer understand
-            this. */
+               don't seem to apply here.  Perhaps this was in order to allow
+               arrays to reach outside their containers?  I no longer understand
+               this. */
         if (pd_class(&x->g_pd) == scalar_class
             || pd_class(&x->g_pd) == garray_class)
                 return (1);
@@ -129,9 +129,9 @@ int gobj_shouldvis(t_gobj *x, struct _glist *glist)
     }
     if ((ob = pd_checkobject(&x->g_pd)))
     {
-        /* return true if the text box should be drawn.  We don't show text
-        boxes inside graphs---except comments, if we're doing the new
-        (goprect) style. */
+            /* return true if the text box should be drawn.  We don't show text
+               boxes inside graphs---except comments, if we're doing the new
+               (goprect) style. */
         return (glist->gl_havewindow ||
             (ob->te_pd != canvas_class &&
                 ob->te_pd->c_wb != &text_widgetbehavior) ||
@@ -214,7 +214,7 @@ void glist_select(t_glist *x, t_gobj *y)
 }
 
     /* recursively deselect everything in a gobj "g", if it happens to be
-    a glist, in preparation for deselecting g itself in glist_dselect() */
+       a glist, in preparation for deselecting g itself in glist_dselect() */
 static void glist_checkanddeselectall(t_glist *gl, t_gobj *g)
 {
     t_glist *gl2;
@@ -324,7 +324,7 @@ void glist_selectall(t_glist *x)
 }
 
     /* get the index of a gobj in a glist.  If y is zero, return the
-    total number of objects. */
+       total number of objects. */
 int glist_getindex(t_glist *x, t_gobj *y)
 {
     t_gobj *y2;
@@ -336,8 +336,8 @@ int glist_getindex(t_glist *x, t_gobj *y)
 }
 
     /* get the index of the object, among selected items, if "selected"
-    is set; otherwise, among unselected ones.  If y is zero, just
-    counts the selected or unselected objects. */
+       is set; otherwise, among unselected ones.  If y is zero, just
+       counts the selected or unselected objects. */
 int glist_selectionindex(t_glist *x, t_gobj *y, int selected)
 {
     t_gobj *y2;
@@ -371,7 +371,7 @@ void canvas_setundo(t_canvas *x, t_undofn undofn, void *buf,
 {
     int hadone = 0;
         /* blow away the old undo information.  In one special case the
-        old undo info is re-used; if so we shouldn't free it here. */
+           old undo info is re-used; if so we shouldn't free it here. */
     if (EDITOR->canvas_undo_fn && EDITOR->canvas_undo_buf && (buf != EDITOR->canvas_undo_buf))
     {
         (*EDITOR->canvas_undo_fn)(EDITOR->canvas_undo_canvas, EDITOR->canvas_undo_buf, UNDO_FREE);
@@ -390,7 +390,7 @@ void canvas_setundo(t_canvas *x, t_undofn undofn, void *buf,
 }
 
     /* clear undo if it happens to be for the canvas x.
-     (but if x is 0, clear it regardless of who owns it.) */
+       (but if x is 0, clear it regardless of who owns it.) */
 void canvas_noundo(t_canvas *x)
 {
     if (!x || (x == EDITOR->canvas_undo_canvas))
@@ -930,8 +930,8 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
     t_gobj *obj;
     t_linetraverser t;
     t_outconnect *oc;
-    /* enable editor (in case it is disabled) and select the object
-       we are working on */
+        /* enable editor (in case it is disabled) and select the object
+           we are working on */
     if (!x->gl_edit)
         canvas_editmode(x, 1);
 
@@ -945,11 +945,11 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
     obj = glist_nth(x, n);
     if (obj && !glist_isselected(x, obj))
         glist_select(x, obj);
-    /* get number of all items for the offset below */
+        /* get number of all items for the offset below */
     int nnotsel= glist_selectionindex(x, 0, 0);
     buf = (t_undo_apply *)getbytes(sizeof(*buf));
 
-    /* store connections into/out of the selection */
+        /* store connections into/out of the selection */
     buf->u_reconnectbuf = binbuf_new();
     linetraverser_start(&t, x);
     while (oc = linetraverser_next(&t))
@@ -968,10 +968,10 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
                 t.tr_inno);
         }
     }
-    /* copy object in its current state */
+        /* copy object in its current state */
     buf->u_objectbuf = canvas_docopy(x);
 
-    /* store index of the currently selected object */
+        /* store index of the currently selected object */
     buf->u_index = n;
 
     return (buf);
@@ -1059,8 +1059,8 @@ void *canvas_undo_set_arrange(t_canvas *x, t_gobj *obj, int newindex)
         /* newindex tells us is the new index at the beginning (0) or the end (1) */
 
     t_undo_arrange *buf;
-    /* enable editor (in case it is disabled) and select the object
-       we are working on */
+        /* enable editor (in case it is disabled) and select the object
+           we are working on */
     if (!x->gl_edit)
         canvas_editmode(x, 1);
 
@@ -1135,7 +1135,7 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
             /* this is our object */
         y = glist_nth(x, buf->u_newindex);
 
-        /* select object */
+            /* select object */
         glist_noselect(x);
         glist_select(x, y);
 
@@ -1147,11 +1147,11 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
             prev = glist_nth(x, buf->u_newindex - 1);
             prev->g_next = NULL;
 
-            /* now we reuse vars for the following:
-               old index should be right before the object previndex
-               is pointing to as the object was moved to the end */
+                /* now we reuse vars for the following:
+                   old index should be right before the object previndex
+                   is pointing to as the object was moved to the end */
 
-            /* old position is not first */
+                /* old position is not first */
             if (buf->u_previndex)
             {
                 prev = glist_nth(x, buf->u_previndex - 1);
@@ -1161,7 +1161,7 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
                 prev->g_next = y;
                 y->g_next = next;
             }
-            /* old position is first */
+                /* old position is first */
             else {
                 prev = NULL;
                 next = x->gl_list;
@@ -1200,7 +1200,7 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
             /* find our object */
         y = glist_nth(x, buf->u_previndex);
 
-        /* select object */
+            /* select object */
         glist_noselect(x);
         glist_select(x, y);
 
@@ -1260,7 +1260,7 @@ typedef struct _undo_canvas_properties
 
 void *canvas_undo_set_canvas(t_canvas *x)
 {
-    /* enable editor (in case it is disabled) */
+        /* enable editor (in case it is disabled) */
     t_undo_canvas_properties *buf =
         (t_undo_canvas_properties *)getbytes(sizeof(*buf));
 
@@ -1374,43 +1374,43 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         t_canvas *canvas=(t_canvas *)glist_getcanvas(x);
 
             /* if gop is being disabled go one level up */
-        /*if (!x->gl_isgraph && x->gl_owner) {
-            canvas=canvas->gl_owner;
-            canvas_redraw(canvas);
-        }*/
+            /*if (!x->gl_isgraph && x->gl_owner) {
+              canvas=canvas->gl_owner;
+              canvas_redraw(canvas);
+              }*/
 
-        /* if properties window is open,
-         * update the properties with the previous window properties
-         * /
-        /*t_int properties = gfxstub_haveproperties((void *)x);
-        if (properties) {
-            sys_vgui("pdtk_canvas_dialog_undo_update .gfxstub%lx %d %d\n",
-                properties, x->gl_isgraph, x->gl_hidetext);
-            sys_vgui(".gfxstub%lx.xscale.entry delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.xrange.entry1 insert 0 %d\n",
-                properties, x->gl_x1);
-            sys_vgui(".gfxstub%lx.yrange.entry1 delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.yrange.entry1 insert 0 %d\n",
-                properties, x->gl_y1);
-            sys_vgui(".gfxstub%lx.xrange.entry2 delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.xrange.entry2 insert 0 %d\n",
-                properties, x->gl_x2);
-            sys_vgui(".gfxstub%lx.yrange.entry2 delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.yrange.entry2 insert 0 %d\n",
-                properties, x->gl_y2);
-            sys_vgui(".gfxstub%lx.xrange.entry3 delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.xrange.entry3 insert 0 %d\n",
-                properties, x->gl_pixwidth);
-            sys_vgui(".gfxstub%lx.yrange.entry3 delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.yrange.entry3 insert 0 %d\n",
-                properties, x->gl_pixheight);
-            sys_vgui(".gfxstub%lx.xrange.entry4 delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.xrange.entry4 insert 0 %d\n",
-                properties, x->gl_xmargin);
-            sys_vgui(".gfxstub%lx.yrange.entry4 delete 0 end\n", properties);
-            sys_vgui(".gfxstub%lx.yrange.entry4 insert 0 %d\n",
-                properties, x->gl_ymargin);
-        }*/
+            /* if properties window is open,
+             * update the properties with the previous window properties
+             * /
+                 /*t_int properties = gfxstub_haveproperties((void *)x);
+                 if (properties) {
+                 sys_vgui("pdtk_canvas_dialog_undo_update .gfxstub%lx %d %d\n",
+                 properties, x->gl_isgraph, x->gl_hidetext);
+                 sys_vgui(".gfxstub%lx.xscale.entry delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.xrange.entry1 insert 0 %d\n",
+                 properties, x->gl_x1);
+                 sys_vgui(".gfxstub%lx.yrange.entry1 delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.yrange.entry1 insert 0 %d\n",
+                 properties, x->gl_y1);
+                 sys_vgui(".gfxstub%lx.xrange.entry2 delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.xrange.entry2 insert 0 %d\n",
+                 properties, x->gl_x2);
+                 sys_vgui(".gfxstub%lx.yrange.entry2 delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.yrange.entry2 insert 0 %d\n",
+                 properties, x->gl_y2);
+                 sys_vgui(".gfxstub%lx.xrange.entry3 delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.xrange.entry3 insert 0 %d\n",
+                 properties, x->gl_pixwidth);
+                 sys_vgui(".gfxstub%lx.yrange.entry3 delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.yrange.entry3 insert 0 %d\n",
+                 properties, x->gl_pixheight);
+                 sys_vgui(".gfxstub%lx.xrange.entry4 delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.xrange.entry4 insert 0 %d\n",
+                 properties, x->gl_xmargin);
+                 sys_vgui(".gfxstub%lx.yrange.entry4 delete 0 end\n", properties);
+                 sys_vgui(".gfxstub%lx.yrange.entry4 insert 0 %d\n",
+                 properties, x->gl_ymargin);
+                 }*/
 #endif
     }
 
@@ -1687,7 +1687,7 @@ void canvas_undo_font(t_canvas *x, void *z, int action)
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
 
     /* recursively check for abstractions to reload as result of a save.
-    Don't reload the one we just saved ("except") though. */
+       Don't reload the one we just saved ("except") though. */
     /*  LATER try to do the same trick for externs. */
 static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     t_gobj *except)
@@ -1698,7 +1698,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     for (g = gl->gl_list, i = 0; g && i < nobj; i++)
     {
             /* remake the object if it's an abstraction that appears to have
-            been loaded from the file we just saved */
+               been loaded from the file we just saved */
         int remakeit = (g != except && pd_class(&g->g_pd) == canvas_class &&
             canvas_isabstraction((t_canvas *)g) &&
                 ((t_canvas *)g)->gl_name == name &&
@@ -1713,9 +1713,9 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         if (remakeit)
         {
                 /* we're going to remake the object, so "g" will go stale.
-                Get its index here, and afterward restore g.  Also, the
-                replacement will be at the end of the list, so we don't
-                do g = g->g_next in this case. */
+                   Get its index here, and afterward restore g.  Also, the
+                   replacement will be at the end of the list, so we don't
+                   do g = g->g_next in this case. */
             int j = glist_getindex(gl, g);
             if (!gl->gl_editor)
                 canvas_vis(gl, 1);
@@ -1816,7 +1816,7 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
                 *x1p = x1, *y1p = y1, *x2p = x2, *y2p = y2, rval = y;
     }
         /* if there are at least two selected objects, we'd prefer
-        to find a selected one (never mind which) to the one we got. */
+           to find a selected one (never mind which) to the one we got. */
     if (x->gl_editor && x->gl_editor->e_selection &&
         x->gl_editor->e_selection->sel_next && !glist_isselected(x, y))
     {
@@ -1866,7 +1866,7 @@ static void editor_free(t_editor *x, t_glist *y)
 }
 
     /* recursively create or destroy all editors of a glist and its
-    sub-glists, as long as they aren't toplevels. */
+       sub-glists, as long as they aren't toplevels. */
 void canvas_create_editor(t_glist *x)
 {
     t_gobj *y;
@@ -1897,8 +1897,8 @@ void canvas_reflecttitle(t_canvas *x);
 void canvas_map(t_canvas *x, t_floatarg f);
 
     /* we call this when we want the window to become visible, mapped, and
-    in front of all windows; or with "f" zero, when we want to get rid of
-    the window. */
+       in front of all windows; or with "f" zero, when we want to get rid of
+       the window. */
 void canvas_vis(t_canvas *x, t_floatarg f)
 {
     int flag = (f != 0);
@@ -1949,10 +1949,10 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         if (!x->gl_havewindow)
         {
                 /* bug workaround -- a graph in a visible patch gets "invised"
-                when the patch is closed, and must lose the editor here.  It's
-                probably not the natural place to do this.  Other cases like
-                subpatches fall here too but don'd need the editor freed, so
-                we check if it exists. */
+                   when the patch is closed, and must lose the editor here.  It's
+                   probably not the natural place to do this.  Other cases like
+                   subpatches fall here too but don'd need the editor freed, so
+                   we check if it exists. */
             if (x->gl_editor)
                 canvas_destroy_editor(x);
             return;
@@ -1974,8 +1974,8 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             x->gl_havewindow = 0;
             if (glist_isvisible(gl2) && !gl2->gl_isdeleting)
             {
-                 /* make sure zoom level matches parent, ie. after an open
-                   subpatch's zoom level was changed before being closed */
+                    /* make sure zoom level matches parent, ie. after an open
+                       subpatch's zoom level was changed before being closed */
                 if(x->gl_zoom != gl2->gl_zoom)
                     canvas_zoom(x, gl2->gl_zoom);
                 gobj_vis(&x->gl_gobj, gl2, 1);
@@ -1987,7 +1987,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
 }
 
     /* set a canvas up as a graph-on-parent.  Set reasonable defaults for
-    any missing parameters and redraw things if necessary. */
+       any missing parameters and redraw things if necessary. */
 void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 {
     if (!flag && glist_isgraph(x))
@@ -2027,8 +2027,8 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect)
 void garray_properties(t_garray *x);
 
     /* tell GUI to create a properties dialog on the canvas.  We tell
-    the user the negative of the "pixel" y scale to make it appear to grow
-    naturally upward, whereas pixels grow downward. */
+       the user the negative of the "pixel" y scale to make it appear to grow
+       naturally upward, whereas pixels grow downward. */
 void canvas_properties(t_gobj*z, t_glist*unused)
 {
     t_glist *x = (t_glist*)z;
@@ -2057,7 +2057,7 @@ void canvas_properties(t_gobj*z, t_glist*unused)
 }
 
     /* called from the gui when "OK" is selected on the canvas properties
-        dialog.  Again we negate "y" scale. */
+       dialog.  Again we negate "y" scale. */
 static void canvas_donecanvasdialog(t_glist *x,
     t_symbol *s, int argc, t_atom *argv)
 {
@@ -2077,15 +2077,15 @@ static void canvas_donecanvasdialog(t_glist *x,
     ymargin = atom_getfloatarg(10, argc, argv);
     fromgui = atom_getfloatarg(11, argc, argv);
         /* hack - if graphme is 2 (meaning, not GOP but hide the text anyhow),
-        perhaps we're happier with 0.  This is only checked if this is really
-        being called, as intended, from the GUI.  For compatibility with old
-        patches that reverse-engineered donecanvasdialog to modify patch
-        parameters, we leave the buggy behavior in when there's no "fromgui"
-        argument supplied. */
+           perhaps we're happier with 0.  This is only checked if this is really
+           being called, as intended, from the GUI.  For compatibility with old
+           patches that reverse-engineered donecanvasdialog to modify patch
+           parameters, we leave the buggy behavior in when there's no "fromgui"
+           argument supplied. */
     if (fromgui && (!(graphme & 1)))
         graphme = 0;
         /* parent windows are treated differently than applies to
-       individual objects */
+           individual objects */
     if (glist_getcanvas(x) != x && !canvas_isabstraction(x))
     {
             /* JMZ: i don't know how to trigger this path */
@@ -2155,7 +2155,7 @@ static void canvas_donecanvasdialog(t_glist *x,
 }
 
     /* called from the gui when a popup menu comes back with "properties,"
-        "open," or "help." */
+       "open," or "help." */
 static void canvas_done_popup(t_canvas *x, t_float which,
     t_float xpos, t_float ypos)
 {
@@ -2193,7 +2193,7 @@ static void canvas_done_popup(t_canvas *x, t_float which,
                         return;
                     atom_string(av, namebuf, MAXPDSTRING);
 
-                    /* strip dir from name : */
+                        /* strip dir from name : */
                     basenamep = strrchr(namebuf, '/');
 #ifdef _WIN32
                     if (!basenamep)
@@ -2256,7 +2256,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
 
     EDITOR->canvas_undo_already_set_move = 0;
 
-            /* if keyboard was grabbed, notify grabber and cancel the grab */
+        /* if keyboard was grabbed, notify grabber and cancel the grab */
     if (doit && x->gl_editor->e_grab && x->gl_editor->e_keyfn)
     {
         (* x->gl_editor->e_keyfn) (x->gl_editor->e_grab, 0);
@@ -2419,12 +2419,12 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         return;
     }
         /* if right click doesn't hit any boxes, call rightclick
-            routine anyway */
+           routine anyway */
     if (rightclick)
         canvas_rightclick(x, xpos, ypos, 0);
 
         /* if not an editing action, and if we didn't hit a
-        box, set cursor and return */
+           box, set cursor and return */
     if (runmode || rightclick)
     {
         canvas_setcursor(x, CURSOR_RUNMODE_NOTHING);
@@ -2627,9 +2627,9 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                             tryconnect(x, ob1, i, ob2, j);
                     }
                     else
-                        /* if other objects are selected as well, connect those either as
-                         * sources or sinks, whichever allows for more connections
-                         */
+                            /* if other objects are selected as well, connect those either as
+                             * sources or sinks, whichever allows for more connections
+                             */
                     {
                             /* get a left-right sorted list of all selected objects
                              * (but the already connected ones)
@@ -2807,14 +2807,14 @@ void canvas_mouseup(t_canvas *x,
         x->gl_editor->e_onmotion == MA_RESIZE)
     {
             /* after motion or resizing, if there's only one text item
-                selected, activate the text */
+               selected, activate the text */
         if (x->gl_editor->e_selection &&
             !(x->gl_editor->e_selection->sel_next))
         {
             t_gobj *g = x->gl_editor->e_selection->sel_what;
             t_glist *gl2;
                 /* first though, check we aren't an abstraction with a
-                dirty sub-patch that would be discarded if we edit this. */
+                   dirty sub-patch that would be discarded if we edit this. */
             if (pd_class(&g->g_pd) == canvas_class &&
                 canvas_isabstraction((t_glist *)g) &&
                     (gl2 = glist_finddirty((t_glist *)g)))
@@ -2860,9 +2860,9 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
 }
 
     /* this routine is called whenever a key is pressed or released.  "x"
-    may be zero if there's no current canvas.  The first argument is true or
-    false for down/up; the second one is either a symbolic key name (e.g.,
-    "Right" or an Ascii key number.  The third is the shift key. */
+       may be zero if there's no current canvas.  The first argument is true or
+       false for down/up; the second one is either a symbolic key name (e.g.,
+       "Right" or an Ascii key number.  The third is the shift key. */
 void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 {
     int keynum, fflag;
@@ -2890,7 +2890,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         case 32: gotkeysym = gensym("Space"); break;
         case 127:gotkeysym = gensym("Delete"); break;
         default:
-        /*-- moo: assume keynum is a Unicode codepoint; encode as UTF-8 --*/
+                /*-- moo: assume keynum is a Unicode codepoint; encode as UTF-8 --*/
             u8_wc_toutf8_nul(buf, (UCS4)(av[1].a_w.w_float));
             gotkeysym = gensym(buf);
         }
@@ -2911,7 +2911,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         !strcmp(av[1].a_w.w_symbol->s_name, "Return"))
             keynum = '\n';
         /* alias Apple key numbers to symbols.  This is done unconditionally,
-        not just if we're on an Apple, just in case the GUI is remote. */
+           not just if we're on an Apple, just in case the GUI is remote. */
     if (keynum == 30 || keynum == 63232)
         keynum = 0, gotkeysym = gensym("Up");
     else if (keynum == 31 || keynum == 63233)
@@ -2953,7 +2953,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                 (* x->gl_editor->e_keyfn)
                     (x->gl_editor->e_grab, (t_float)keynum);
             /* if a text editor is open send the key on, as long as
-            it is either "real" (has a key number) or else is an arrow key. */
+               it is either "real" (has a key number) or else is an arrow key. */
         else if (x->gl_editor->e_textedfor && (keynum
             || !strcmp(gotkeysym->s_name, "Home")
             || !strcmp(gotkeysym->s_name, "End")
@@ -2985,7 +2985,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
                 canvas_doclear(x);
             }
         }
-                /* check for arrow keys */
+            /* check for arrow keys */
         else if (!strcmp(gotkeysym->s_name, "Up"))
             canvas_displaceselection(x, 0, shift ? -10 : -1);
         else if (!strcmp(gotkeysym->s_name, "Down"))
@@ -3006,7 +3006,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         }
     }
         /* if control key goes up or down, and if we're in edit mode, change
-        cursor to indicate how the click action changes */
+           cursor to indicate how the click action changes */
     if (x && keynum == 0 && x->gl_edit &&
         !strncmp(gotkeysym->s_name, "Control", 7))
             canvas_setcursor(x, down ?
@@ -3144,7 +3144,7 @@ static t_glist *glist_finddirty(t_glist *x)
 }
 
     /* quit, after calling glist_finddirty() on all toplevels and verifying
-    the user really wants to discard changes  */
+       the user really wants to discard changes  */
 void glob_verifyquit(void *dummy, t_floatarg f)
 {
     t_glist *g, *g2;
@@ -3163,11 +3163,11 @@ void glob_verifyquit(void *dummy, t_floatarg f)
 }
 
     /* close a window (or possibly quit Pd), checking for dirty flags.
-    The "force" parameter is interpreted as follows:
-        0 - request from GUI to close, verifying whether clean or dirty
-        1 - request from GUI to close, no verification
-        2 - verified - mark this one clean, then continue as in 1
-        3 - verified - mark this one clean, then verify-and-quit
+       The "force" parameter is interpreted as follows:
+       0 - request from GUI to close, verifying whether clean or dirty
+       1 - request from GUI to close, no verification
+       2 - verified - mark this one clean, then continue as in 1
+       3 - verified - mark this one clean, then verify-and-quit
     */
 void canvas_menuclose(t_canvas *x, t_floatarg fforce)
 {
@@ -3372,7 +3372,7 @@ static int glist_dofinderror(t_glist *gl, void *error_object)
     {
         if ((void *)g == error_object)
         {
-            /* got it... now show it. */
+                /* got it... now show it. */
             glist_noselect(gl);
             canvas_vis(glist_getcanvas(gl), 1);
             canvas_editmode(glist_getcanvas(gl), 1.);
@@ -3543,8 +3543,8 @@ static void canvas_doclear(t_canvas *x)
                 x->gl_editor->e_selectline_inno));
     }
         /* if text is selected, deselecting it might remake the
-        object. So we deselect it and hunt for a "new" object on
-        the glist to reselect. */
+           object. So we deselect it and hunt for a "new" object on
+           the glist to reselect. */
     if (x->gl_editor->e_textedfor)
     {
         t_gobj *selwas = x->gl_editor->e_selection->sel_what;
@@ -3590,8 +3590,8 @@ static void canvas_cut(t_canvas *x)
             !x->gl_editor->e_selection->sel_next)
         {
                 /* if the text is already empty, delete the box.  We
-                first clear 'textedfor' so that canvas_doclear later will
-                think the whole box was selected, not the text */
+                   first clear 'textedfor' so that canvas_doclear later will
+                   think the whole box was selected, not the text */
             x->gl_editor->e_textedfor = 0;
             goto deleteobj;
         }
@@ -3663,7 +3663,7 @@ static void canvas_paste(t_canvas *x)
         return;
     if (x->gl_editor->e_textedfor)
     {
-        /* simulate keystrokes as if the copy buffer were typed in. */
+            /* simulate keystrokes as if the copy buffer were typed in. */
         sys_vgui("pdtk_pastetext .x%lx\n", x);
     }
     else
@@ -3735,7 +3735,7 @@ static void canvas_selectall(t_canvas *x)
         return;
     if (!x->gl_edit)
         canvas_editmode(x, 1);
-            /* if everyone is already selected deselect everyone */
+        /* if everyone is already selected deselect everyone */
     if (!glist_selectionindex(x, 0, 0))
         glist_noselect(x);
     else for (y = x->gl_list; y; y = y->g_next)
@@ -3749,7 +3749,7 @@ static void canvas_reselect(t_canvas *x)
 {
     t_gobj *g, *gwas;
         /* if someone is text editing, and if only one object is
-        selected,  deselect everyone and reselect.  */
+           selected,  deselect everyone and reselect.  */
     if (x->gl_editor->e_textedfor)
     {
             /* only do this if exactly one item is selected. */
@@ -3766,7 +3766,7 @@ static void canvas_reselect(t_canvas *x)
                 return;
             }
                 /* "gwas" must have disappeared; just search to the last
-                object and select it */
+                   object and select it */
             for (g = x->gl_list; g; g = g->g_next)
                 if (!g->g_next)
                     glist_select(x, g);
@@ -3801,7 +3801,7 @@ void canvas_connect(t_canvas *x, t_floatarg fwhoout, t_floatarg foutno,
             goto bad;
 
         /* if object creation failed, make dummy inlets or outlets
-        as needed */
+           as needed */
     if (pd_class(&src->g_pd) == text_class && objsrc->te_type == T_OBJECT)
         while (outno >= obj_noutlets(objsrc))
             outlet_new(objsrc, 0);
@@ -3838,7 +3838,7 @@ static void canvas_tidy(t_canvas *x)
     int ax1, ay1, ax2, ay2, bx1, by1, bx2, by2;
     int histogram[NHIST], *ip, i, besthist, bestdist;
         /* if nobody is selected, this means do it to all boxes;
-        othewise just the selection */
+           othewise just the selection */
     int all = (x->gl_editor ? (x->gl_editor->e_selection == 0) : 1);
 
     canvas_undo_add(x, UNDO_MOTION, "motion", canvas_undo_set_move(x, 1));
