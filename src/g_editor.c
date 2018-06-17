@@ -1600,10 +1600,8 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
 
         // reposition object to its original place
         if (action == UNDO_UNDO)
-#if 1
             if (canvas_apply_restore_original_position(x, buf->u_index))
                 canvas_redraw(x);
-#endif
 
         // send a loadbang
         if (pd_this->pd_newest && pd_class(pd_this->pd_newest) == canvas_class)
