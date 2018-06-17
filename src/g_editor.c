@@ -1563,6 +1563,9 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
 
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
+        t_symbol *asym = gensym("#A");
+        t_pd *boundx = 0, *bounda = 0, *boundn = 0;
+
         // first copy new state of the current object
         t_undo_create *buf2 = (t_undo_create *)getbytes(sizeof(*buf));
         buf2->u_index = buf->u_index;
@@ -1578,12 +1581,22 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
         canvas_doclear(x);
 
         // then paste the old object
-        pd_bind(&x->gl_pd, gensym("#X"));
-           binbuf_eval(buf->u_objectbuf, 0, 0, 0);
-        pd_unbind(&x->gl_pd, gensym("#X"));
-        pd_bind(&x->gl_pd, gensym("#X"));
-           binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-        pd_unbind(&x->gl_pd, gensym("#X"));
+
+            /* save and clear bindings to symbols #A, #N, #X; restore when done */
+        boundx = s__X.s_thing;
+        bounda = asym->s_thing;
+        boundn = s__N.s_thing;
+        asym->s_thing = 0;
+        s__X.s_thing = &x->gl_pd;
+        s__N.s_thing = &pd_canvasmaker;
+
+          binbuf_eval(buf->u_objectbuf, 0, 0, 0);
+        s__X.s_thing = &x->gl_pd;
+          binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
+
+        asym->s_thing = bounda;
+        s__X.s_thing = boundx;
+        s__N.s_thing = boundn;
 
         // free the old data
         binbuf_free(buf->u_objectbuf);
