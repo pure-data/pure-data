@@ -765,7 +765,7 @@ typedef struct _undo_move
 
 void *canvas_undo_set_move(t_canvas *x, int selected)
 {
-    int x1, y1, x2, y2, i, indx;
+    int x1, y1, x2, y2, indx;
     t_gobj *y;
     t_undo_move *buf =  (t_undo_move *)getbytes(sizeof(*buf));
     buf->u_n = selected ? glist_selectionindex(x, 0, 1) : glist_getindex(x, 0);
@@ -773,6 +773,7 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
         (selected ? glist_selectionindex(x, 0, 1) : glist_getindex(x, 0)));
     if (selected)
     {
+        int i;
         for (y = x->gl_list, i = indx = 0; y; y = y->g_next, indx++)
             if (glist_isselected(x, y))
             {
