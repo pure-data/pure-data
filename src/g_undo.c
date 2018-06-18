@@ -19,14 +19,43 @@
 void canvas_undo_set_name(const char*name);
 
 #define XUNODIRTY(x) (canvas_undo_get(x)->u_nodirty)
-void canvas_undo_cleardirty(t_canvas *x)
+static void canvas_undo_docleardirty(t_canvas *x)
 {
     XUNODIRTY(x) = XULAST(x);
 }
+void canvas_undo_cleardirty(t_canvas *x)
+{
+        /* clear dirty flags of this canvas
+         * and all sub-canvases (but not abstractions/
+         */
+    t_gobj*y;
+    canvas_undo_docleardirty(x);
+    for(y=x->gl_list; y; y=y->g_next)
+    {
+        if (pd_class(&y->g_pd) == canvas_class && !canvas_isabstraction((t_canvas*)y))
+            canvas_undo_cleardirty((t_canvas*)y);
+    }
+}
+static int canvas_undo_doisdirty(t_canvas*x)
+{
+    t_gobj*y;
+    if(!x)return 0;
+    if (XULAST(x) != XUNODIRTY(x)) return 1;
 
+    for(y=x->gl_list; y; y=y->g_next)
+    {
+        if (pd_class(&y->g_pd) == canvas_class && !canvas_isabstraction((t_canvas*)y))
+        {
+            if(canvas_undo_doisdirty((t_canvas*)y))
+                return 1;
+        }
+    }
+    return 0;
+}
 static int canvas_undo_isdirty(t_canvas *x)
 {
-    return (XULAST(x) != XUNODIRTY(x))?1:0;
+    return (XULAST(x) != XUNODIRTY(x))
+        || canvas_undo_doisdirty(canvas_getrootfor(x));
 }
 
 t_undo_action *canvas_undo_init(t_canvas *x)
