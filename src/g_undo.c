@@ -21,7 +21,8 @@ void canvas_undo_set_name(const char*name);
 #define XUNODIRTY(x) (canvas_undo_get(x)->u_nodirty)
 static void canvas_undo_docleardirty(t_canvas *x)
 {
-    XUNODIRTY(x) = XULAST(x);
+    t_undo*udo = canvas_undo_get(x);
+    if (udo) udo->u_nodirty = udo->u_last;
 }
 void canvas_undo_cleardirty(t_canvas *x)
 {
@@ -31,37 +32,35 @@ void canvas_undo_cleardirty(t_canvas *x)
     t_gobj*y;
     canvas_undo_docleardirty(x);
     for(y=x->gl_list; y; y=y->g_next)
-    {
         if (pd_class(&y->g_pd) == canvas_class && !canvas_isabstraction((t_canvas*)y))
             canvas_undo_cleardirty((t_canvas*)y);
-    }
 }
+
 static int canvas_undo_doisdirty(t_canvas*x)
 {
+    t_undo*udo = x?canvas_undo_get(x):0;
     t_gobj*y;
-    if(!x)return 0;
-    if (XULAST(x) != XUNODIRTY(x)) return 1;
+    if (!udo) return 0;
+    if (udo->u_last != udo->u_nodirty) return 1;
 
     for(y=x->gl_list; y; y=y->g_next)
-    {
         if (pd_class(&y->g_pd) == canvas_class && !canvas_isabstraction((t_canvas*)y))
-        {
-            if(canvas_undo_doisdirty((t_canvas*)y))
+            if (canvas_undo_doisdirty((t_canvas*)y))
                 return 1;
-        }
-    }
     return 0;
 }
 static int canvas_undo_isdirty(t_canvas *x)
 {
-    return (XULAST(x) != XUNODIRTY(x))
-        || canvas_undo_doisdirty(canvas_getrootfor(x));
+    t_undo*udo = x?canvas_undo_get(x):0;
+    return (0 != udo)
+        && ((udo->u_last != udo->u_nodirty)
+            || canvas_undo_doisdirty(canvas_getrootfor(x)));
 }
 
 t_undo_action *canvas_undo_init(t_canvas *x)
 {
     t_undo_action *a = 0;
-    if(!canvas_undo_get(x))return 0;
+    if (!canvas_undo_get(x)) return 0;
     a = (t_undo_action *)getbytes(sizeof(*a));
     a->type = 0;
     a->x = x;
@@ -112,7 +111,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
 
 void canvas_undo_undo(t_canvas *x)
 {
-    if(!canvas_undo_get(x))return;
+    if (!canvas_undo_get(x)) return;
     int dspwas = canvas_suspend_dsp();
     DEBUG_UNDO(post("%s: %p != %p", __FUNCTION__, XUQUEUE(x), XULAST(x)));
     if (XUQUEUE(x) && XULAST(x) != XUQUEUE(x))
@@ -159,7 +158,7 @@ void canvas_undo_undo(t_canvas *x)
 void canvas_undo_redo(t_canvas *x)
 {
     int dspwas;
-    if(!canvas_undo_get(x))return;
+    if (!canvas_undo_get(x)) return;
     dspwas = canvas_suspend_dsp();
     if (XUQUEUE(x) && XULAST(x)->next)
     {
@@ -249,7 +248,7 @@ void canvas_undo_free(t_canvas *x)
 {
     int dspwas;
     t_undo_action *a1, *a2;
-    if(!canvas_undo_get(x))return;
+    if (!canvas_undo_get(x)) return;
     dspwas = canvas_suspend_dsp();
     if (XUQUEUE(x))
     {
