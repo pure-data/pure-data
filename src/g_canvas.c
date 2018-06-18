@@ -1119,7 +1119,7 @@ t_canvas *canvas_getrootfor(t_canvas *x)
 
 t_undo* canvas_undo_get(t_canvas *x)
 {
-    t_canvas_private*private = x->gl_privatedata;
+    t_canvas_private*private = x?(x->gl_privatedata):0;
     if(private)
         return &(private->undo);
     return 0;
