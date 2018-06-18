@@ -9,19 +9,14 @@
 # define DEBUG_UNDO(x) do { } while(0)
 #endif
 
-#define XUQUEUE(x) (canvas_undo_get(x)->u_queue)
-#define XULAST(x) (canvas_undo_get(x)->u_last)
-#define XUNDOING(x) (canvas_undo_get(x)->u_doing)
-
 /* used for canvas_objtext to differentiate between objects being created
    by user vs. those (re)created by the undo/redo actions */
 
 void canvas_undo_set_name(const char*name);
 
-#define XUNODIRTY(x) (canvas_undo_get(x)->u_nodirty)
 static void canvas_undo_docleardirty(t_canvas *x)
 {
-    t_undo*udo = canvas_undo_get(x);
+    t_undo *udo = canvas_undo_get(x);
     if (udo) udo->u_nodirty = udo->u_last;
 }
 void canvas_undo_cleardirty(t_canvas *x)
@@ -38,7 +33,7 @@ void canvas_undo_cleardirty(t_canvas *x)
 
 static int canvas_undo_doisdirty(t_canvas*x)
 {
-    t_undo*udo = x?canvas_undo_get(x):0;
+    t_undo *udo = x?canvas_undo_get(x):0;
     t_gobj*y;
     if (!udo) return 0;
     if (udo->u_last != udo->u_nodirty) return 1;
@@ -51,7 +46,7 @@ static int canvas_undo_doisdirty(t_canvas*x)
 }
 static int canvas_undo_isdirty(t_canvas *x)
 {
-    t_undo*udo = x?canvas_undo_get(x):0;
+    t_undo *udo = x?canvas_undo_get(x):0;
     return (0 != udo)
         && ((udo->u_last != udo->u_nodirty)
             || canvas_undo_doisdirty(canvas_getrootfor(x)));
@@ -60,18 +55,19 @@ static int canvas_undo_isdirty(t_canvas *x)
 t_undo_action *canvas_undo_init(t_canvas *x)
 {
     t_undo_action *a = 0;
-    if (!canvas_undo_get(x)) return 0;
+    t_undo *udo = canvas_undo_get(x);
+    if (!udo) return 0;
     a = (t_undo_action *)getbytes(sizeof(*a));
     a->type = 0;
     a->x = x;
     a->next = NULL;
 
-    if (!XUQUEUE(x))
+    if (!udo->u_queue)
     {
         DEBUG_UNDO(post("%s: first init", __FUNCTION__));
         //this is the first init
-        XUQUEUE(x) = a;
-        XULAST(x) = a;
+        udo->u_queue = a;
+        udo->u_last = a;
         canvas_undo_cleardirty(x);
 
         a->prev = NULL;
@@ -81,15 +77,15 @@ t_undo_action *canvas_undo_init(t_canvas *x)
     }
     else
     {
-        DEBUG_UNDO(post("%s: re-init %p", __FUNCTION__, XULAST(x)->next));
-        if (XULAST(x)->next)
+        DEBUG_UNDO(post("%s: re-init %p", __FUNCTION__, udo->u_last->next));
+        if (udo->u_last->next)
         {
             //we need to rebranch first then add the new action
             canvas_undo_rebranch(x);
         }
-        XULAST(x)->next = a;
-        a->prev = XULAST(x);
-        XULAST(x) = a;
+        udo->u_last->next = a;
+        a->prev = udo->u_last;
+        udo->u_last = a;
     }
     return(a);
 }
@@ -111,37 +107,38 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
 
 void canvas_undo_undo(t_canvas *x)
 {
-    if (!canvas_undo_get(x)) return;
+    t_undo *udo = canvas_undo_get(x);
+    if (!udo) return;
     int dspwas = canvas_suspend_dsp();
-    DEBUG_UNDO(post("%s: %p != %p", __FUNCTION__, XUQUEUE(x), XULAST(x)));
-    if (XUQUEUE(x) && XULAST(x) != XUQUEUE(x))
+    DEBUG_UNDO(post("%s: %p != %p", __FUNCTION__, udo->u_queue, udo->u_last));
+    if (udo->u_queue && udo->u_last != udo->u_queue)
     {
-        XUNDOING(x) = 1;
+        udo->u_doing = 1;
         canvas_editmode(x, 1);
         glist_noselect(x);
-        canvas_undo_set_name(XULAST(x)->name);
+        canvas_undo_set_name(udo->u_last->name);
 
-        switch(XULAST(x)->type)
+        switch(udo->u_last->type)
         {
-            case UNDO_CONNECT:      canvas_undo_connect(x, XULAST(x)->data, UNDO_UNDO); break;      //connect
-            case UNDO_DISCONNECT:   canvas_undo_disconnect(x, XULAST(x)->data, UNDO_UNDO); break;   //disconnect
-            case UNDO_CUT:          canvas_undo_cut(x, XULAST(x)->data, UNDO_UNDO); break;          //cut
-            case UNDO_MOTION:       canvas_undo_move(x, XULAST(x)->data, UNDO_UNDO); break;         //move
-            case UNDO_PASTE:        canvas_undo_paste(x, XULAST(x)->data, UNDO_UNDO); break;        //paste
-            case UNDO_APPLY:        canvas_undo_apply(x, XULAST(x)->data, UNDO_UNDO); break;        //apply
-            case UNDO_ARRANGE:      canvas_undo_arrange(x, XULAST(x)->data, UNDO_UNDO); break;      //arrange
-            case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, XULAST(x)->data, UNDO_UNDO); break; //canvas apply
-            case UNDO_CREATE:       canvas_undo_create(x, XULAST(x)->data, UNDO_UNDO); break;       //create
-            case UNDO_RECREATE:     canvas_undo_recreate(x, XULAST(x)->data, UNDO_UNDO); break;     //recreate
-            case UNDO_FONT:         canvas_undo_font(x, XULAST(x)->data, UNDO_UNDO); break;         //font
+            case UNDO_CONNECT:      canvas_undo_connect(x, udo->u_last->data, UNDO_UNDO); break;      //connect
+            case UNDO_DISCONNECT:   canvas_undo_disconnect(x, udo->u_last->data, UNDO_UNDO); break;   //disconnect
+            case UNDO_CUT:          canvas_undo_cut(x, udo->u_last->data, UNDO_UNDO); break;          //cut
+            case UNDO_MOTION:       canvas_undo_move(x, udo->u_last->data, UNDO_UNDO); break;         //move
+            case UNDO_PASTE:        canvas_undo_paste(x, udo->u_last->data, UNDO_UNDO); break;        //paste
+            case UNDO_APPLY:        canvas_undo_apply(x, udo->u_last->data, UNDO_UNDO); break;        //apply
+            case UNDO_ARRANGE:      canvas_undo_arrange(x, udo->u_last->data, UNDO_UNDO); break;      //arrange
+            case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, udo->u_last->data, UNDO_UNDO); break; //canvas apply
+            case UNDO_CREATE:       canvas_undo_create(x, udo->u_last->data, UNDO_UNDO); break;       //create
+            case UNDO_RECREATE:     canvas_undo_recreate(x, udo->u_last->data, UNDO_UNDO); break;     //recreate
+            case UNDO_FONT:         canvas_undo_font(x, udo->u_last->data, UNDO_UNDO); break;         //font
             default:
-                error("canvas_undo_undo: unsupported undo command %d", XULAST(x)->type);
+                error("canvas_undo_undo: unsupported undo command %d", udo->u_last->type);
         }
-        XULAST(x) = XULAST(x)->prev;
-        char *undo_action = XULAST(x)->name;
-        char *redo_action = XULAST(x)->next->name;
+        udo->u_last = udo->u_last->prev;
+        char *undo_action = udo->u_last->name;
+        char *redo_action = udo->u_last->next->name;
 
-        XUNDOING(x) = 0;
+        udo->u_doing = 0;
         /* here we call updating of all unpaired hubs and nodes since
            their regular call will fail in case their position needed
            to be updated by undo/redo first to reflect the old one */
@@ -158,34 +155,36 @@ void canvas_undo_undo(t_canvas *x)
 void canvas_undo_redo(t_canvas *x)
 {
     int dspwas;
-    if (!canvas_undo_get(x)) return;
+    t_undo *udo = canvas_undo_get(x);
+    if (!udo) return;
     dspwas = canvas_suspend_dsp();
-    if (XUQUEUE(x) && XULAST(x)->next)
+    if (udo->u_queue && udo->u_last->next)
     {
-        XUNDOING(x) = 1;
-        XULAST(x) = XULAST(x)->next;
+        char *undo_action, *redo_action;
+        udo->u_doing = 1;
+        udo->u_last = udo->u_last->next;
         canvas_editmode(x, 1);
         glist_noselect(x);
-        canvas_undo_set_name(XULAST(x)->name);
-        switch(XULAST(x)->type)
+        canvas_undo_set_name(udo->u_last->name);
+        switch(udo->u_last->type)
         {
-            case UNDO_CONNECT:      canvas_undo_connect(x, XULAST(x)->data, UNDO_REDO); break;      //connect
-            case UNDO_DISCONNECT:   canvas_undo_disconnect(x, XULAST(x)->data, UNDO_REDO); break;   //disconnect
-            case UNDO_CUT:          canvas_undo_cut(x, XULAST(x)->data, UNDO_REDO); break;          //cut
-            case UNDO_MOTION:       canvas_undo_move(x, XULAST(x)->data, UNDO_REDO); break;         //move
-            case UNDO_PASTE:        canvas_undo_paste(x, XULAST(x)->data, UNDO_REDO); break;        //paste
-            case UNDO_APPLY:        canvas_undo_apply(x, XULAST(x)->data, UNDO_REDO); break;        //apply
-            case UNDO_ARRANGE:      canvas_undo_arrange(x, XULAST(x)->data, UNDO_REDO); break;      //arrange
-            case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, XULAST(x)->data, UNDO_REDO); break; //canvas apply
-            case UNDO_CREATE:       canvas_undo_create(x, XULAST(x)->data, UNDO_REDO); break;       //create
-            case UNDO_RECREATE:     canvas_undo_recreate(x, XULAST(x)->data, UNDO_REDO); break;     //recreate
-            case UNDO_FONT:         canvas_undo_font(x, XULAST(x)->data, UNDO_REDO); break;         //font
+            case UNDO_CONNECT:      canvas_undo_connect(x, udo->u_last->data, UNDO_REDO); break;      //connect
+            case UNDO_DISCONNECT:   canvas_undo_disconnect(x, udo->u_last->data, UNDO_REDO); break;   //disconnect
+            case UNDO_CUT:          canvas_undo_cut(x, udo->u_last->data, UNDO_REDO); break;          //cut
+            case UNDO_MOTION:       canvas_undo_move(x, udo->u_last->data, UNDO_REDO); break;         //move
+            case UNDO_PASTE:        canvas_undo_paste(x, udo->u_last->data, UNDO_REDO); break;        //paste
+            case UNDO_APPLY:        canvas_undo_apply(x, udo->u_last->data, UNDO_REDO); break;        //apply
+            case UNDO_ARRANGE:      canvas_undo_arrange(x, udo->u_last->data, UNDO_REDO); break;      //arrange
+            case UNDO_CANVAS_APPLY: canvas_undo_canvas_apply(x, udo->u_last->data, UNDO_REDO); break; //canvas apply
+            case UNDO_CREATE:       canvas_undo_create(x, udo->u_last->data, UNDO_REDO); break;       //create
+            case UNDO_RECREATE:     canvas_undo_recreate(x, udo->u_last->data, UNDO_REDO); break;     //recreate
+            case UNDO_FONT:         canvas_undo_font(x, udo->u_last->data, UNDO_REDO); break;         //font
             default:
-                error("canvas_undo_redo: unsupported redo command %d", XULAST(x)->type);
+                error("canvas_undo_redo: unsupported redo command %d", udo->u_last->type);
         }
-        char *undo_action = XULAST(x)->name;
-        char *redo_action = (XULAST(x)->next ? XULAST(x)->next->name : "no");
-        XUNDOING(x) = 0;
+        undo_action = udo->u_last->name;
+        redo_action = (udo->u_last->next ? udo->u_last->next->name : "no");
+        udo->u_doing = 0;
         /* here we call updating of all unpaired hubs and nodes since their
            regular call will fail in case their position needed to be updated
            by undo/redo first to reflect the old one */
@@ -203,9 +202,11 @@ void canvas_undo_rebranch(t_canvas *x)
 {
     int dspwas = canvas_suspend_dsp();
     t_undo_action *a1, *a2;
-    if (XULAST(x)->next)
+    t_undo *udo = canvas_undo_get(x);
+    if (!udo) return;
+    if (udo->u_last->next)
     {
-        a1 = XULAST(x)->next;
+        a1 = udo->u_last->next;
         while(a1)
         {
             switch(a1->type)
@@ -248,11 +249,12 @@ void canvas_undo_free(t_canvas *x)
 {
     int dspwas;
     t_undo_action *a1, *a2;
-    if (!canvas_undo_get(x)) return;
+    t_undo *udo = canvas_undo_get(x);
+    if (!udo) return;
     dspwas = canvas_suspend_dsp();
-    if (XUQUEUE(x))
+    if (udo->u_queue)
     {
-        a1 = XUQUEUE(x);
+        a1 = udo->u_queue;
         while(a1)
         {
             switch(a1->type)
