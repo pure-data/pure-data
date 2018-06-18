@@ -85,7 +85,7 @@ struct _undo
 
 EXTERN t_undo*canvas_undo_get(t_canvas*x);
 
-EXTERN void canvas_undo_nodirty(t_canvas *x);
+EXTERN void canvas_undo_cleardirty(t_canvas *x);
 
 EXTERN t_undo_action *canvas_undo_init(t_canvas *x);
 EXTERN t_undo_action *canvas_undo_add(t_canvas *x,

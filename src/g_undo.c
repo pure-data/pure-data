@@ -19,7 +19,7 @@
 void canvas_undo_set_name(const char*name);
 
 #define XUNODIRTY(x) (canvas_undo_get(x)->u_nodirty)
-void canvas_undo_nodirty(t_canvas *x)
+void canvas_undo_cleardirty(t_canvas *x)
 {
     XUNODIRTY(x) = XULAST(x);
 }
@@ -44,7 +44,7 @@ t_undo_action *canvas_undo_init(t_canvas *x)
         //this is the first init
         XUQUEUE(x) = a;
         XULAST(x) = a;
-        canvas_undo_nodirty(x);
+        canvas_undo_cleardirty(x);
 
         a->prev = NULL;
         a->name = "no";
