@@ -632,7 +632,7 @@ void canvas_dirty(t_canvas *x, t_floatarg f)
             canvas_reflecttitle(x2);
     }
     if(!n)
-        canvas_undo_nodirty(x);
+        canvas_undo_cleardirty(x);
 }
 
 void canvas_drawredrect(t_canvas *x, int doit)
