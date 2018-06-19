@@ -77,7 +77,7 @@ struct _undo
 {
     t_undo_action *u_queue;
     t_undo_action *u_last;
-    t_undo_action *u_nodirty;
+    void *u_cleanstate; /* pointer to non-dirty state */
     int            u_doing; /* currently undoing */
 };
 #define t_undo struct _undo

@@ -17,7 +17,7 @@ void canvas_undo_set_name(const char*name);
 static void canvas_undo_docleardirty(t_canvas *x)
 {
     t_undo *udo = canvas_undo_get(x);
-    if (udo) udo->u_nodirty = udo->u_last;
+    if (udo) udo->u_cleanstate = udo->u_last;
 }
 void canvas_undo_cleardirty(t_canvas *x)
 {
@@ -36,7 +36,7 @@ static int canvas_undo_doisdirty(t_canvas*x)
     t_undo *udo = x?canvas_undo_get(x):0;
     t_gobj*y;
     if (!udo) return 0;
-    if (udo->u_last != udo->u_nodirty) return 1;
+    if (udo->u_last != udo->u_cleanstate) return 1;
 
     for(y=x->gl_list; y; y=y->g_next)
         if (pd_class(&y->g_pd) == canvas_class && !canvas_isabstraction((t_canvas*)y))
@@ -48,7 +48,7 @@ static int canvas_undo_isdirty(t_canvas *x)
 {
     t_undo *udo = x?canvas_undo_get(x):0;
     return (0 != udo)
-        && ((udo->u_last != udo->u_nodirty)
+        && ((udo->u_last != udo->u_cleanstate)
             || canvas_undo_doisdirty(canvas_getrootfor(x)));
 }
 
