@@ -1302,7 +1302,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         else if (!strcmp(flag, "maxsize"))
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
-                ((maxsize = argv[1].a_w.w_float) < 0))
+                ((maxsize = (argv[1].a_w.w_float > LONG_MAX ? 
+                LONG_MAX : argv[1].a_w.w_float)) < 0))
                     goto usage;
             resize = 1;     /* maxsize implies resize. */
             argc -= 2; argv += 2;
