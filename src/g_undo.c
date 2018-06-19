@@ -68,7 +68,14 @@ t_undo_action *canvas_undo_init(t_canvas *x)
         //this is the first init
         udo->u_queue = a;
         udo->u_last = a;
+
         canvas_undo_cleardirty(x);
+            /* invalidate clean-state for re-created subpatches
+             * since we do not know whether the re-created subpatch
+             * is clean or unclean (it's undo-queue got lost when
+             * it was deleted), we assume the worst */
+        if (!canvas_isabstraction(x))
+            udo->u_cleanstate = (void*)1;
 
         a->prev = NULL;
         a->name = "no";
