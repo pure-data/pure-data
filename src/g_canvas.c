@@ -355,10 +355,6 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         vis = atom_getfloatarg(5, argc, argv);
     }
 
-    private = getbytes(sizeof(*private));
-    x->gl_privatedata = private;
-    private->undo.u_queue = canvas_undo_init(x);
-
         /* (otherwise assume we're being created from the menu.) */
     if (THISGUI->i_newdirectory &&
         THISGUI->i_newdirectory->s_name[0])
@@ -377,6 +373,11 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         THISGUI->i_newargv = 0;
     }
     else x->gl_env = 0;
+
+        /* initialize private data, like the undo-queue */
+    private = getbytes(sizeof(*private));
+    x->gl_privatedata = private;
+    private->undo.u_queue = canvas_undo_init(x);
 
     x->gl_x1 = 0;
     x->gl_y1 = 0;
