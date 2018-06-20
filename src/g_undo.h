@@ -101,64 +101,64 @@ EXTERN void canvas_undo_free(t_canvas *x);
 
 EXTERN void *canvas_undo_set_connect(t_canvas *x,
     int index1, int outno, int index2, int inno);
-EXTERN void canvas_undo_connect(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_connect(t_canvas *x, void *z, int action);
 
 /* --------- 2. disconnect ------- */
 
 EXTERN void *canvas_undo_set_disconnect(t_canvas *x,
     int index1, int outno, int index2, int inno);
-EXTERN void canvas_undo_disconnect(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_disconnect(t_canvas *x, void *z, int action);
 
 /* --------- 3. cut -------------- */
 
 EXTERN void *canvas_undo_set_cut(t_canvas *x,
     int mode);
-EXTERN void canvas_undo_cut(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_cut(t_canvas *x, void *z, int action);
 
 /* --------- 4. move ------------- */
 
 EXTERN void *canvas_undo_set_move(t_canvas *x, int selected);
-EXTERN void canvas_undo_move(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_move(t_canvas *x, void *z, int action);
 
 /* --------- 5. paste ------------ */
 
 EXTERN void *canvas_undo_set_paste(t_canvas *x,
     int offset, int duplicate, int d_offset);
-EXTERN void canvas_undo_paste(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_paste(t_canvas *x, void *z, int action);
 
 /* --------- 6. apply ------------ */
 
 EXTERN void *canvas_undo_set_apply(t_canvas *x,
     int n);
-EXTERN void canvas_undo_apply(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_apply(t_canvas *x, void *z, int action);
 
 /* --------- 7. arrange (currently unused) ---------- */
 
 EXTERN void *canvas_undo_set_arrange(t_canvas *x,
     t_gobj *obj, int newindex);
-EXTERN void canvas_undo_arrange(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_arrange(t_canvas *x, void *z, int action);
 
 /* --------- 8. canvas apply (currently unused) ----- */
 
 EXTERN void *canvas_undo_set_canvas(t_canvas *x);
-EXTERN void canvas_undo_canvas_apply(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_canvas_apply(t_canvas *x, void *z, int action);
 
 /* --------- 9. create ----------- */
 
 EXTERN void *canvas_undo_set_create(t_canvas *x);
-EXTERN void canvas_undo_create(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_create(t_canvas *x, void *z, int action);
 
 /* --------- 10. recreate -------- */
 
 EXTERN void *canvas_undo_set_recreate(t_canvas *x,
     t_gobj *y, int old_pos);
-EXTERN void canvas_undo_recreate(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_recreate(t_canvas *x, void *z, int action);
 
 /* --------- 11. font (currently unused) ------------ */
 
 EXTERN void *canvas_undo_set_font(t_canvas *x,
     int font, t_float realresize, int whichresize);
-EXTERN void canvas_undo_font(t_canvas *x, void *z, int action);
+EXTERN int canvas_undo_font(t_canvas *x, void *z, int action);
 
 /* ------------------------------- */
 
