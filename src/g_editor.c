@@ -361,6 +361,24 @@ static t_gobj *glist_nth(t_glist *x, int n)
 
 /* ------------------- support for undo/redo  -------------------------- */
 
+static int canvas_undo_confirmdiscard(t_gobj *g)
+{
+    t_glist *gl2;
+
+    if (pd_class(&g->g_pd) == canvas_class &&
+        canvas_isabstraction((t_glist *)g) &&
+        (gl2 = glist_finddirty((t_glist *)g)))
+    {
+        vmess(&gl2->gl_pd, gensym("menu-open"), "");
+        sys_vgui(
+            "pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
+            canvas_getrootfor(gl2),
+            canvas_getrootfor(gl2)->gl_name->s_name, gl2);
+        return 1;
+    }
+    return 0;
+}
+
 void canvas_undo_set_name(const char*name)
 {
     EDITOR->canvas_undo_name = name;
@@ -887,6 +905,12 @@ int canvas_undo_paste(t_canvas *x, void *z, int action)
     if (action == UNDO_UNDO)
     {
         t_gobj *y;
+            /* check if the paste/duplicate we are undoing contains any
+             * dirty abstractions; and if so, bail out */
+        for (y = glist_nth(x, buf->u_index); y; y = y->g_next)
+            if (canvas_undo_confirmdiscard(y))
+                return 0;
+
         glist_noselect(x);
         for (y = glist_nth(x, buf->u_index); y; y = y->g_next)
             glist_select(x, y);
@@ -1562,6 +1586,12 @@ int canvas_undo_recreate(t_canvas *x, void *z, int action)
         y = glist_nth(x, glist_getindex(x, 0) - 1);
     else if (action == UNDO_REDO)
         y = glist_nth(x, buf->u_index);
+
+        /* check if we are undoing the creation of a dirty abstraction;
+         * if so, bail out */
+    if ((action == UNDO_UNDO)
+        && canvas_undo_confirmdiscard(y))
+            return 0;
 
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
