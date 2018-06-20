@@ -462,7 +462,7 @@ void *canvas_undo_set_connect(t_canvas *x,
     return (canvas_undo_set_disconnect(x, index1, outno, index2, inno));
 }
 
-void canvas_undo_connect(t_canvas *x, void *z, int action)
+int canvas_undo_connect(t_canvas *x, void *z, int action)
 {
     int myaction;
     if (action == UNDO_UNDO)
@@ -471,6 +471,7 @@ void canvas_undo_connect(t_canvas *x, void *z, int action)
         myaction = UNDO_UNDO;
     else myaction = action;
     canvas_undo_disconnect(x, z, myaction);
+    return 1;
 }
 
 /* ------- specific undo methods: 2. disconnect -------- */
@@ -506,7 +507,7 @@ void canvas_disconnect(t_canvas *x,
     }
 }
 
-void canvas_undo_disconnect(t_canvas *x, void *z, int action)
+int canvas_undo_disconnect(t_canvas *x, void *z, int action)
 {
     t_undo_connect *buf = z;
     if (action == UNDO_UNDO)
@@ -521,6 +522,7 @@ void canvas_undo_disconnect(t_canvas *x, void *z, int action)
     }
     else if (action == UNDO_FREE)
         t_freebytes(buf, sizeof(*buf));
+    return 1;
 }
 
 /* ---------- ... 3. cut, clear, and typing into objects: -------- */
@@ -612,7 +614,7 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
     return (buf);
 }
 
-void canvas_undo_cut(t_canvas *x, void *z, int action)
+int canvas_undo_cut(t_canvas *x, void *z, int action)
 {
     t_undo_cut *buf = z;
     int mode = buf->u_mode;
@@ -747,6 +749,7 @@ void canvas_undo_cut(t_canvas *x, void *z, int action)
             t_freebytes(buf, sizeof(*buf) +
                 sizeof(buf->p_a[0]) * (buf->n_obj-1));
         }
+    return 1;
 }
 
 /* --------- 4. motion, including "tidy up" and stretching ----------- */
@@ -799,7 +802,7 @@ void *canvas_undo_set_move(t_canvas *x, int selected)
     return (buf);
 }
 
-void canvas_undo_move(t_canvas *x, void *z, int action)
+int canvas_undo_move(t_canvas *x, void *z, int action)
 {
     t_undo_move *buf = z;
     if (action == UNDO_UNDO || action == UNDO_REDO)
@@ -842,6 +845,7 @@ void canvas_undo_move(t_canvas *x, void *z, int action)
         t_freebytes(buf->u_vec, buf->u_n * sizeof(*buf->u_vec));
         t_freebytes(buf, sizeof(*buf));
     }
+    return 1;
 }
 
 /* --------- 5. paste (also duplicate) ----------- */
@@ -877,7 +881,7 @@ void *canvas_undo_set_paste(t_canvas *x, int offset, int duplicate,
     return (buf);
 }
 
-void canvas_undo_paste(t_canvas *x, void *z, int action)
+int canvas_undo_paste(t_canvas *x, void *z, int action)
 {
     t_undo_paste *buf = z;
     if (action == UNDO_UNDO)
@@ -915,6 +919,7 @@ void canvas_undo_paste(t_canvas *x, void *z, int action)
             binbuf_free(buf->u_objectbuf);
         t_freebytes(buf, sizeof(*buf));
     }
+    return 1;
 }
 
 /* --------- 6. apply  ----------- */
@@ -980,7 +985,7 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
 }
 
 static int canvas_apply_restore_original_position(t_canvas *x, int orig_pos);
-void canvas_undo_apply(t_canvas *x, void *z, int action)
+int canvas_undo_apply(t_canvas *x, void *z, int action)
 {
     t_undo_apply *buf = z;
     if (action == UNDO_UNDO || action == UNDO_REDO)
@@ -1017,6 +1022,7 @@ void canvas_undo_apply(t_canvas *x, void *z, int action)
             binbuf_free(buf->u_reconnectbuf);
         t_freebytes(buf, sizeof(*buf));
     }
+    return 1;
 }
 
 int canvas_apply_restore_original_position(t_canvas *x, int orig_pos)
@@ -1124,7 +1130,7 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
     canvas_dirty(x, 1);
 }
 
-void canvas_undo_arrange(t_canvas *x, void *z, int action)
+int canvas_undo_arrange(t_canvas *x, void *z, int action)
 {
     t_undo_arrange *buf = z;
     t_gobj *y=NULL, *prev=NULL, *next=NULL;
@@ -1226,6 +1232,7 @@ void canvas_undo_arrange(t_canvas *x, void *z, int action)
     {
         t_freebytes(buf, sizeof(*buf));
     }
+    return 1;
 }
 
 void canvas_arrange_setundo(t_canvas *x, t_gobj *obj, int newindex)
@@ -1235,7 +1242,7 @@ void canvas_arrange_setundo(t_canvas *x, t_gobj *obj, int newindex)
 }
 #else
 void *canvas_undo_set_arrange(t_canvas *x, t_gobj *obj, int newindex) { return 0; }
-void canvas_undo_arrange(t_canvas *x, void *z, int action) { }
+int canvas_undo_arrange(t_canvas *x, void *z, int action) { return 1; }
 #endif
 
 /* --------- 8. apply on canvas ----------- */
@@ -1285,7 +1292,7 @@ void *canvas_undo_set_canvas(t_canvas *x)
     return (buf);
 }
 
-void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
+int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
 {
     t_undo_canvas_properties *buf = (t_undo_canvas_properties *)z;
     t_undo_canvas_properties tmp;
@@ -1421,6 +1428,7 @@ void canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         if (buf)
             t_freebytes(buf, sizeof(*buf));
     }
+    return 1;
 }
 /* --------- 9. create ----------- */
 
@@ -1475,7 +1483,7 @@ void *canvas_undo_set_create(t_canvas *x)
     return (buf);
 }
 
-void canvas_undo_create(t_canvas *x, void *z, int action)
+int canvas_undo_create(t_canvas *x, void *z, int action)
 {
     t_undo_create *buf = z;
     t_gobj *y;
@@ -1506,6 +1514,7 @@ void canvas_undo_create(t_canvas *x, void *z, int action)
         binbuf_free(buf->u_reconnectbuf);
         t_freebytes(buf, sizeof(*buf));
     }
+    return 1;
 }
 
 /* ------ 10. recreate (called from text_setto after text has changed) ------ */
@@ -1545,7 +1554,7 @@ void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
     return (buf);
 }
 
-void canvas_undo_recreate(t_canvas *x, void *z, int action)
+int canvas_undo_recreate(t_canvas *x, void *z, int action)
 {
     t_undo_create *buf = z;
     t_gobj *y = NULL;
@@ -1625,6 +1634,7 @@ void canvas_undo_recreate(t_canvas *x, void *z, int action)
         binbuf_free(buf->u_reconnectbuf);
         t_freebytes(buf, sizeof(*buf));
     }
+    return 1;
 }
 
 /* ----------- 11. font -------------- */
@@ -1646,7 +1656,7 @@ void *canvas_undo_set_font(t_canvas *x, int font, t_float resize, int which)
     return (u_f);
 }
 
-void canvas_undo_font(t_canvas *x, void *z, int action)
+int canvas_undo_font(t_canvas *x, void *z, int action)
 {
     t_undo_font *u_f = z;
 
@@ -1684,6 +1694,7 @@ void canvas_undo_font(t_canvas *x, void *z, int action)
         if (u_f)
             freebytes(u_f, sizeof(*u_f));
     }
+    return 1;
 }
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);

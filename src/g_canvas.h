@@ -536,7 +536,7 @@ EXTERN int canvas_setdeleting(t_canvas *x, int flag);
     "clone~" uses this to identify which copy NOT to reload */
 EXTERN t_glist *glist_reloadingabstraction;
 
-typedef void (*t_undofn)(t_canvas *canvas, void *buf,
+typedef int (*t_undofn)(t_canvas *canvas, void *buf,
     int action);        /* a function that does UNDO/REDO */
 #define UNDO_FREE 0                     /* free current undo/redo buffer */
 #define UNDO_UNDO 1                     /* undo */
