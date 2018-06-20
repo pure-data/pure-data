@@ -384,6 +384,7 @@ static void text_define_free(t_text_define *x)
         pd_unbind(&x->x_ob.ob_pd, x->x_bindsym);
     gpointer_unset(&x->x_gp);
     pd_free(&x->x_scalar->sc_gobj.g_pd);
+    x->x_canvas->gl_valid = ++glist_valid; /* invalidate pointers */
 }
 
 /* ---  text_client - common code for objects that refer to text buffers -- */
