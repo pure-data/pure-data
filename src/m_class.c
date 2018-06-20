@@ -778,6 +778,10 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
       error("maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
     }
+    if (s == &s_anything){
+      error("object name \"%s\" not allowed", s->s_name);
+      return;
+    }
     pd_this->pd_newest = 0;
     class_loadsym = s;
     pd_globallock();
