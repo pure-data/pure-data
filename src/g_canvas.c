@@ -1007,6 +1007,7 @@ void canvas_logerror(t_object *y)
 
 /* -------------------------- subcanvases ---------------------- */
 
+extern void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 static void *subcanvas_new(t_symbol *s)
 {
     t_atom a[6];
@@ -1019,6 +1020,46 @@ static void *subcanvas_new(t_symbol *s)
     SETSYMBOL(a+4, s);
     SETFLOAT(a+5, 1);
     x = canvas_new(0, 0, 6, a);
+
+        /* check if subpatch is supposed to be connected (on the 1st inlet) */
+    if(z && z->gl_editor && z->gl_editor->e_connectbuf)
+    {
+        t_atom*argv = binbuf_getvec(z->gl_editor->e_connectbuf);
+        int argc = binbuf_getnatom(z->gl_editor->e_connectbuf);
+        t_symbol *sob = 0;
+        if ((argc == 7)
+            && atom_getsymbolarg(0, argc, argv) == gensym("#X")
+            && atom_getsymbolarg(1, argc, argv) == gensym("connect"))
+        {
+            int index2 = canvas_getindex(z, &x->gl_gobj);
+            if (((int)atom_getfloat(argv+5) == 0)
+                && (int)atom_getfloat(argv+4) == index2)
+                {
+                    int index1 = (int)atom_getfloat(argv+2);
+                    int outno = (int)atom_getfloat(argv+3);
+                    t_gobj*outobj=z->gl_list;
+                        /* get handle to object */
+                    while(index1-->0 && outobj)
+                        outobj=outobj->g_next;
+                    if(outobj && pd_checkobject(&outobj->g_pd))
+                        if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd), outno))
+                            sob = gensym("inlet~");
+                        else
+                            sob = gensym("inlet");
+                }
+        }
+        if(sob)
+        {
+                /* JMZ: weirdo hardcoded numbers, taken from
+                 * glist_getnextxy(): 40
+                 * and canvas_howputnew(): -3
+                 */
+            SETFLOAT(a+0, 37);
+            SETFLOAT(a+1, 37);
+            SETSYMBOL(a+2, sob);
+            canvas_obj(x, gensym("obj"), 3, a);
+        }
+    }
     x->gl_owner = z;
     canvas_pop(x, 1);
     return (x);
