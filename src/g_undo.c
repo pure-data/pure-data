@@ -147,21 +147,23 @@ void canvas_undo_undo(t_canvas *x)
         glist_noselect(x);
         canvas_undo_set_name(udo->u_last->name);
 
-        canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__);
-        udo->u_last = udo->u_last->prev;
-        char *undo_action = udo->u_last->name;
-        char *redo_action = udo->u_last->next->name;
-
-        udo->u_doing = 0;
-        /* here we call updating of all unpaired hubs and nodes since
-           their regular call will fail in case their position needed
-           to be updated by undo/redo first to reflect the old one */
-        if (glist_isvisible(x) && glist_istoplevel(x))
+        if(canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__))
         {
+            udo->u_last = udo->u_last->prev;
+            char *undo_action = udo->u_last->name;
+            char *redo_action = udo->u_last->next->name;
+
+            udo->u_doing = 0;
+                /* here we call updating of all unpaired hubs and nodes since
+                   their regular call will fail in case their position needed
+                   to be updated by undo/redo first to reflect the old one */
             if (glist_isvisible(x) && glist_istoplevel(x))
-                sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
+            {
+                if (glist_isvisible(x) && glist_istoplevel(x))
+                    sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
+            }
+            canvas_dirty(x, canvas_undo_isdirty(x));
         }
-        canvas_dirty(x, canvas_undo_isdirty(x));
     }
     canvas_resume_dsp(dspwas);
 }
