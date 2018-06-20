@@ -129,6 +129,8 @@ void glist_delete(t_glist *x, t_gobj *y)
         g->g_next = y->g_next;
         break;
     }
+    if (y->g_pd == scalar_class)
+        x->gl_valid = ++glist_valid;
     pd_free(&y->g_pd);
     if (rtext)
         rtext_free(rtext);
@@ -137,7 +139,6 @@ void glist_delete(t_glist *x, t_gobj *y)
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
             glist_getcanvas(x)->gl_name)), 1);
     canvas_setdeleting(canvas, wasdeleting);
-    x->gl_valid = ++glist_valid;
 }
 
     /* remove every object from a glist.  Experimental. */
