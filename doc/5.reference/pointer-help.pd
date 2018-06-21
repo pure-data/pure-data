@@ -1,44 +1,44 @@
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
 #N canvas 778 0 698 764 12;
-#X text 19 673 see also:;
+#X text 19 717 see also:;
 #X obj 21 10 pointer;
 #X text 95 10 -- remember the location of a scalar in a list;
 #N canvas 164 72 425 146 help-pointer-template1 0;
 #X obj 18 81 filledpolygon z 0 1 0 0 20 0 20 30 0 30;
 #X obj 60 21 struct template1 float x float y float z;
-#X restore 326 480 pd help-pointer-template1;
+#X restore 326 524 pd help-pointer-template1;
 #N canvas 26 456 510 145 help-pointer-template2 0;
 #X obj 52 78 filledcurve 909 0 0 0 0 30 30 60 0 30 -30 0 0;
 #X obj 60 21 struct template2 float x float y;
-#X restore 326 503 pd help-pointer-template2;
-#X obj 22 693 get;
-#X obj 55 693 set;
-#X obj 90 693 append;
-#X obj 151 693 getsize;
-#X obj 219 694 setsize;
-#X obj 289 694 element;
-#N canvas 2 52 312 147 help-pointer-data 0;
+#X restore 326 547 pd help-pointer-template2;
+#X obj 22 737 get;
+#X obj 55 737 set;
+#X obj 90 737 append;
+#X obj 151 737 getsize;
+#X obj 219 738 setsize;
+#X obj 289 738 element;
+#N canvas 2 52 312 128 help-pointer-data 1;
 #X scalar template2 20 97 \;;
 #X scalar template1 80 17 90 \;;
 #X scalar template1 120 117 9 \;;
-#X restore 326 458 pd help-pointer-data;
-#X obj 53 454 pointer;
+#X restore 326 502 pd help-pointer-data;
+#X obj 53 498 pointer;
 #X msg 54 231 traverse pd-help-pointer-data;
-#X msg 67 255 bang;
+#X msg 63 255 bang;
 #X msg 69 281 next;
-#X obj 53 479 print out1;
-#X obj 166 465 print out2;
-#X text 15 527 Optional arguments to pointer allow you to select according
+#X obj 53 523 print out1;
+#X obj 166 509 print out2;
+#X text 15 571 Optional arguments to pointer allow you to select according
 to the class of the scalar being output:;
-#X msg 73 588 next;
-#X msg 59 565 traverse pd-help-pointer-data;
-#X obj 59 616 pointer help-pointer-template1 help-pointer-template2
+#X msg 73 632 next;
+#X msg 59 609 traverse pd-help-pointer-data;
+#X obj 59 660 pointer help-pointer-template1 help-pointer-template2
 ;
-#X obj 59 642 print template1;
-#X obj 197 642 print template2;
-#X obj 337 642 print other;
-#X obj 440 642 print bangout;
+#X obj 59 686 print template1;
+#X obj 197 686 print template2;
+#X obj 337 686 print other;
+#X obj 440 686 print bangout;
 #X text 333 232 sets to the "head" of the list;
 #X text 29 34 "Pointer" is a storage object like "float" \, except
 that the thing stored is the location of a scalar somewhere. You can
@@ -52,27 +52,30 @@ allows you to point to an empty list \, and also \, to "append" a scalar
 to the beginning of the list.;
 #X text 29 191 Pointers are "safe": if you delete a scalar pointers
 to it are marked invalid.;
-#X text 165 485 bang at end;
-#X text 166 501 of list;
-#X text 52 499 output;
-#X obj 354 694 struct;
+#X text 165 529 bang at end;
+#X text 166 545 of list;
+#X text 52 543 output;
+#X obj 354 738 struct;
 #X msg 71 313 vnext 1;
-#X text 453 703 updated for Pd version 0.45;
-#X msg 71 377 send pointer-help;
-#X text 109 256 output current value;
+#X text 453 747 updated for Pd version 0.45;
+#X msg 71 423 send pointer-help;
+#X text 105 256 output current value;
 #X text 119 274 move forward one item and output pointer \; if we reach
 the end \, a "bang" goes to out2.;
-#X text 219 376 send pointer to a named object ->;
-#X obj 466 372 r pointer-help;
-#X obj 466 398 print pointer-help;
+#X text 219 422 send pointer to a named object ->;
+#X obj 466 418 r pointer-help;
+#X obj 466 444 print pointer-help;
 #X text 149 314 output the next object (if arg is 0) or the next selected
 object (if arg is 1 -- but the window must be visible for the "selection"
 to make sense).;
-#X msg 75 423 send-window vis \$1;
-#X obj 75 403 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X msg 75 469 send-window vis \$1;
+#X obj 75 449 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X text 219 424 send a message to the canvas containing the scalar
+#X text 219 470 send a message to the canvas containing the scalar
 ;
+#X msg 77 362 delete;
+#X text 149 363 delete the current scalar and output the next one (or
+send a "bang" to out2 if it was the last one in the list), f 58;
 #X connect 12 0 16 0;
 #X connect 12 1 17 0;
 #X connect 13 0 12 0;
@@ -89,3 +92,4 @@ to make sense).;
 #X connect 40 0 41 0;
 #X connect 43 0 12 0;
 #X connect 44 0 43 0;
+#X connect 46 0 12 0;
