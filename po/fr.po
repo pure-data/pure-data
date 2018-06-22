@@ -623,11 +623,11 @@ msgstr "[deken] deken-plugin.tcl (recherche d'externals) chargé depuis %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr "[deken] Platforme détectée : %s"
+msgstr "[deken] Plateforme détectée : %s"
 
 #, tcl-format
 msgid "[deken] Platform re-detected: %s"
-msgstr "[deken] Platforme re-détectée : %s"
+msgstr "[deken] Plateforme re-détectée : %s"
 
 msgid "Show all"
 msgstr "Montrer tout"
