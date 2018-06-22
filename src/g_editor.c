@@ -371,7 +371,7 @@ static int canvas_undo_confirmdiscard(t_gobj *g)
     {
         vmess(&gl2->gl_pd, gensym("menu-open"), "");
         sys_vgui(
-            "pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
+            "pdtk_check .x%lx [format [_ \"Discard changes to '%%s'?\"] %s] {.x%lx dirty 0;\n} no\n",
             canvas_getrootfor(gl2),
             canvas_getrootfor(gl2)->gl_name->s_name, gl2);
         return 1;
@@ -2871,7 +2871,7 @@ void canvas_mouseup(t_canvas *x,
                 vmess(&gl2->gl_pd, gensym("menu-open"), "");
                 x->gl_editor->e_onmotion = MA_NONE;
                 sys_vgui(
-                    "pdtk_check .x%lx {Discard changes to '%s'?} {.x%lx dirty 0;\n} no\n",
+                    "pdtk_check .x%lx [format [_ \"Discard changes to '%%s'?\"] %s] {.x%lx dirty 0;\n} no\n",
                     canvas_getrootfor(gl2),
                     canvas_getrootfor(gl2)->gl_name->s_name, gl2);
                 return;
