@@ -51,6 +51,7 @@ src/*.a
 
 # distribution tarballs
 pd-0.*
+msw/0.*
 
 # gettext
 po/*.msg
