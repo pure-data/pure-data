@@ -1728,17 +1728,21 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
 }
 
 int clone_match(t_pd *z, t_symbol *name, t_symbol *dir);
+static void canvas_cut(t_canvas *x);
 
     /* recursively check for abstractions to reload as result of a save.
        Don't reload the one we just saved ("except") though. */
-    /*  LATER try to do the same trick for externs. */
+    /* LATER try to do the same trick for externs. */
 static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     t_gobj *except)
 {
     t_gobj *g;
-    int i, nobj = glist_getindex(gl, 0);  /* number of objects */
-    int hadwindow = (gl->gl_editor != 0);
-    for (g = gl->gl_list, i = 0; g && i < nobj; i++)
+    int hadwindow = gl->gl_havewindow;
+    int found = 0;
+        /* to optimize redrawing we select all objects that need to be updated
+           and redraw (cut+undo) them together. Then we look for sub-patches that may have
+           more of the same... */
+    for (g = gl->gl_list; g; g = g->g_next)
     {
             /* remake the object if it's an abstraction that appears to have
                been loaded from the file we just saved */
@@ -1755,32 +1759,44 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
         }
         if (remakeit)
         {
-                /* we're going to remake the object, so "g" will go stale.
-                   Get its index here, and afterward restore g.  Also, the
-                   replacement will be at the end of the list, so we don't
-                   do g = g->g_next in this case. */
-            int j = glist_getindex(gl, g);
-            if (!gl->gl_editor)
-                canvas_vis(gl, 1);
-            if (!gl->gl_editor)
-                bug("editor");
-            glist_noselect(gl);
+                /* Bugfix for cases where canvas_vis doesn't actually create a
+                   new editor. We need to fix canvas_vis so that the bug
+                   doesn't get triggered. But since we know this fixes a
+                   regression we'll keep this as a point in the history as we
+                   fix canvas_vis. Once that's done we can remove this call. */
+            canvas_create_editor(gl);
+
+            if (!gl->gl_havewindow)
+            {
+                canvas_vis(glist_getcanvas(gl), 1);
+            }
+            if (!found)
+            {
+                glist_noselect(gl);
+                found = 1;
+            }
             glist_select(gl, g);
-            canvas_setundo(gl, canvas_undo_cut,
-                canvas_undo_set_cut(gl, UCUT_CLEAR), "clear");
-            canvas_doclear(gl);
-            canvas_undo(gl);
-            glist_noselect(gl);
-            g = glist_nth(gl, j);
-        }
-        else
-        {
-            if (g != except && pd_class(&g->g_pd) == canvas_class)
-                glist_doreload((t_canvas *)g, name, dir, except);
-            g = g->g_next;
         }
     }
-    if (!hadwindow && gl->gl_editor)
+        /* cut all selected (matched) objects and undo, to reinstantiate them */
+    if (found)
+    {
+        canvas_cut(gl);
+        canvas_undo_undo(gl);
+        glist_noselect(gl);
+    }
+
+        /* now iterate over all the sub-patches... */
+    for (g = gl->gl_list; g; g = g->g_next)
+    {
+        if (g != except && pd_class(&g->g_pd) == canvas_class &&
+            (!canvas_isabstraction((t_canvas *)g) ||
+                 ((t_canvas *)g)->gl_name != name ||
+                 canvas_getdir((t_canvas *)g) != dir)
+           )
+                glist_doreload((t_canvas *)g, name, dir, except);
+    }
+    if (!hadwindow && gl->gl_havewindow)
         canvas_vis(glist_getcanvas(gl), 0);
 }
 
