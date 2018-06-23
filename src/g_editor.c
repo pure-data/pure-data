@@ -2727,7 +2727,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                                 for(s=sortedsel; s; s=s->sel_next)
                                 {
                                     t_object*o = pd_checkobject(&s->sel_what->g_pd);
-                                    if(!o) break;
+                                    if(!o) continue;
                                     if((ob->te_xpix < o->te_xpix) || ((ob->te_xpix == o->te_xpix) && (ob->te_ypix < o->te_ypix)))
                                     {
                                         sob->sel_next = s;
