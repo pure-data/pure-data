@@ -635,7 +635,7 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
 int canvas_undo_cut(t_canvas *x, void *z, int action)
 {
     t_undo_cut *buf = z;
-    int mode = buf->u_mode;
+    int mode = buf?(buf->u_mode):0;
     if (action == UNDO_UNDO)
     {
         if (mode == UCUT_CUT)
