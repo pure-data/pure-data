@@ -397,6 +397,32 @@ typedef struct _text_client
     t_symbol *tc_field;
 } t_text_client;
 
+    /* returns 1 if first the argument equals one of the given strings.
+      "strv" is a NULL-terminated array of C strings.
+      currently, this is needed for [text search] and [text sequence] */
+static int text_client_test_firstarg(t_text_client *x, int argc, t_atom *argv,
+    const char **strv, const char *name)
+{
+    if (!argc || argv->a_type != A_SYMBOL) return 0;
+
+    const char *sym = argv->a_w.w_symbol->s_name;
+    const char **s = strv;
+    while (*s)
+    {
+        if (!strcmp(sym, *s))
+        {
+            x->tc_sym = x->tc_struct = x->tc_field = 0;
+            gpointer_init(&x->tc_gp);
+            #if 0
+            pd_error(x, "%s: '%s' as first creation argument. "
+                "please provide a dummy symbol instead", name, sym);
+            #endif
+            return 1;
+        }
+        s++;
+    }
+    return 0;
+}
     /* parse buffer-finding arguments */
 static void text_client_argparse(t_text_client *x, int *argcp, t_atom **argvp,
     char *name)
@@ -405,28 +431,26 @@ static void text_client_argparse(t_text_client *x, int *argcp, t_atom **argvp,
     t_atom *argv = *argvp;
     x->tc_sym = x->tc_struct = x->tc_field = 0;
     gpointer_init(&x->tc_gp);
-    while (argc && argv->a_type == A_SYMBOL &&
-        *argv->a_w.w_symbol->s_name == '-')
+    /* first check for -s flag to reference a text buffer by pointer */
+    if (argc && argv->a_type == A_SYMBOL && !strcmp(argv->a_w.w_symbol->s_name, "-s"))
     {
-        if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
-            argc >= 3 && argv[1].a_type == A_SYMBOL && argv[2].a_type == A_SYMBOL)
+        if (argc >= 3 && argv[1].a_type == A_SYMBOL && argv[2].a_type == A_SYMBOL)
         {
             x->tc_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
             x->tc_field = argv[2].a_w.w_symbol;
-            argc -= 2; argv += 2;
+            argc -= 3; argv += 3;
         }
         else
         {
-            pd_error(x, "%s: unknown flag '%s'...", name,
-                argv->a_w.w_symbol->s_name);
+            pd_error(x, "%s: bad arguments for -s flag. usage:\n"
+                "-s struct-name field-name", name);
+            argc--; argv++;
         }
-        argc--; argv++;
     }
-    if (argc && argv->a_type == A_SYMBOL)
+    /* else check for a single symbol to reference a text buffer by name */
+    else if (argc && argv->a_type == A_SYMBOL)
     {
-        if (x->tc_struct)
-            pd_error(x, "%s: extra names after -s..", name);
-        else x->tc_sym = argv->a_w.w_symbol;
+        x->tc_sym = argv->a_w.w_symbol;
         argc--; argv++;
     }
     *argcp = argc;
@@ -1014,6 +1038,10 @@ t_class *text_search_class;
 #define KB_LE 4
 #define KB_NEAR 5   /* anything matches but closer is better */
 
+static const char *_text_search_symbols[] = {
+    ">", ">=", "<", "<=", "near", NULL
+};
+
 typedef struct _key
 {
     int k_field;
@@ -1033,7 +1061,8 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     t_text_search *x = (t_text_search *)pd_new(text_search_class);
     int i, key, nkey, nextop;
     x->x_out1 = outlet_new(&x->x_obj, &s_list);
-    text_client_argparse(&x->x_tc, &argc, &argv, "text search");
+    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_search_symbols, "text search"))
+        text_client_argparse(&x->x_tc, &argc, &argv, "text search");
     for (i = nkey = 0; i < argc; i++)
         if (argv[i].a_type == A_FLOAT)
             nkey++;
@@ -1253,6 +1282,10 @@ static void text_search_list(t_text_search *x,
 /* ---------------- text_sequence object - sequencer ----------- */
 t_class *text_sequence_class;
 
+static const char *_text_sequence_symbols[] = {
+    "-g", "-w", "-t", NULL
+};
+
 typedef struct _text_sequence
 {
     t_text_client x_tc;
@@ -1282,38 +1315,52 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_text_sequence *x = (t_text_sequence *)pd_new(text_sequence_class);
     int global = 0;
-    text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
+    if (!text_client_test_firstarg(&x->x_tc, argc, argv, _text_sequence_symbols, "text sequence"))
+        text_client_argparse(&x->x_tc, &argc, &argv, "text sequence");
     x->x_waitsym = 0;
     x->x_waitargc = 0;
     x->x_eaten = 0;
     x->x_loop = 0;
     x->x_lastto = 0;
+    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
-        if (!strcmp(argv->a_w.w_symbol->s_name, "-w") && argc >= 2)
-        {
-            if (argv[1].a_type == A_SYMBOL)
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-w"))
+            if (argc >= 2)
             {
-                x->x_waitsym = argv[1].a_w.w_symbol;
-                x->x_waitargc = 0;
+                if (argv[1].a_type == A_SYMBOL)
+                {
+                    x->x_waitsym = argv[1].a_w.w_symbol;
+                    x->x_waitargc = 0;
+                }
+                else
+                {
+                    x->x_waitsym = 0;
+                    if ((x->x_waitargc = argv[1].a_w.w_float) < 0)
+                        x->x_waitargc = 0;
+                }
+                argc -= 1; argv += 1;
             }
             else
             {
-                x->x_waitsym = 0;
-                if ((x->x_waitargc = argv[1].a_w.w_float) < 0)
-                    x->x_waitargc = 0;
+                pd_error(x,
+                    "text sequence: missing argument for flag '-w'...");
             }
-            argc -= 1; argv += 1;
-        }
         else if (!strcmp(argv->a_w.w_symbol->s_name, "-g"))
             global = 1;
-        else if (!strcmp(argv->a_w.w_symbol->s_name, "-t") && argc >= 3)
-        {
-            text_sequence_tempo(x, atom_getsymbolarg(2, argc, argv),
-                atom_getfloatarg(1, argc, argv));
-             argc -= 2; argv += 2;
-        }
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-t"))
+            if (argc >= 3)
+            {
+                text_sequence_tempo(x, atom_getsymbolarg(2, argc, argv),
+                    atom_getfloatarg(1, argc, argv));
+                argc -= 2; argv += 2;
+            }
+            else
+            {
+                pd_error(x,
+                    "text sequence: too few arguments for flag '-t'...");
+            }
         else
         {
             pd_error(x, "text sequence: unknown flag '%s'...",
@@ -1336,7 +1383,6 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_waitout = (global || x->x_waitsym || x->x_waitargc ?
         outlet_new(&x->x_obj, &s_list) : 0);
     x->x_endout = outlet_new(&x->x_obj, &s_bang);
-    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     if (global)
     {
         if (x->x_waitargc)
