@@ -463,6 +463,8 @@ static void netreceive_closeall(t_netreceive *x)
     if(x->x_ns.x_receiver)
         socketreceiver_free(x->x_ns.x_receiver);
     x->x_ns.x_receiver=NULL;
+    if (x->x_ns.x_connectout)
+        outlet_float(x->x_ns.x_connectout, x->x_nconnections);
 }
 
 static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
@@ -533,7 +535,6 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
             x->x_ns.x_receiver = y;
-
         }
     }
     else        /* streaming protocol */
@@ -615,6 +616,8 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     else x->x_ns.x_msgout = outlet_new(&x->x_ns.x_obj, &s_anything);
     if (x->x_ns.x_protocol == SOCK_STREAM)
         x->x_ns.x_connectout = outlet_new(&x->x_ns.x_obj, &s_float);
+    else
+        x->x_ns.x_connectout = 0;
         /* create a socket */
     if (portno > 0)
         netreceive_listen(x, portno);
