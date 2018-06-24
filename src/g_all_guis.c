@@ -28,7 +28,7 @@
 
 /*  #define GGEE_HSLIDER_COMPATIBLE  */
 
-/*------------------ global varaibles -------------------------*/
+/*------------------ global variables -------------------------*/
 
 int iemgui_color_hex[]=
 {
@@ -311,7 +311,7 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
 static int colfromatomload(t_atom*colatom)
 {
     int color;
-        /* old-fashioned color arguement, either a number or symbol
+        /* old-fashioned color argument, either a number or symbol
         evaluating to an integer */
     if (colatom->a_type == A_FLOAT)
         color = atom_getfloat(colatom);

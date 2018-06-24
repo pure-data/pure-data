@@ -30,7 +30,7 @@
 typedef void (*t_xxx)(void);
 
 /* naming convention for externs.  The names are kept distinct for those
-who wich to make "fat" externs compiled for many platforms.  Less specific
+who wish to make "fat" externs compiled for many platforms.  Less specific
 fallbacks are provided, primarily for back-compatibility; these suffice if
 you are building a package which will run with a single set of compiled
 objects.  The specific name is the letter b, l, d, or m for  BSD, linux,

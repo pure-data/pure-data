@@ -44,8 +44,9 @@ extern "C" {
 #endif
 
 /* --------------------- geometry ---------------------------- */
-#define IOWIDTH  7       /* width of an inlet/outlet in pixels */
-#define IOHEIGHT 3       /* height of an inlet/outlet in pixels */
+#define IOWIDTH 7       /* width of an inlet/outlet in pixels */
+#define IHEIGHT 3       /* height of an inlet in pixels */
+#define OHEIGHT 3       /* height of an outlet in pixels */
 #define IOMIDDLE ((IOWIDTH-1)/2)
 #define GLIST_DEFGRAPHWIDTH 200
 #define GLIST_DEFGRAPHHEIGHT 140
@@ -446,8 +447,6 @@ EXTERN void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize);
 EXTERN void text_drawborder(t_text *x, t_glist *glist, char *tag,
     int width, int height, int firsttime);
 EXTERN void text_eraseborder(t_text *x, t_glist *glist, char *tag);
-EXTERN int text_xcoord(t_text *x, t_glist *glist);
-EXTERN int text_ycoord(t_text *x, t_glist *glist);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
 extern const t_widgetbehavior text_widgetbehavior;

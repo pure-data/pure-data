@@ -31,6 +31,8 @@ proc ::dialog_font::apply {mytoplevel myfontsize} {
         if {[lsearch [font names] TkMenuFont] >= 0} {
             font configure TkMenuFont -size -$myfontsize
         }
+        .pdwindow.text.internal configure -font "-size -$myfontsize"
+
 # repeat a "pack" command so the font dialog can resize itself
         pack .font.buttonframe -side bottom -fill x -pady 2m
 
