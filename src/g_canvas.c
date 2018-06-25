@@ -13,6 +13,7 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_canvas.h"
 #include <string.h>
 #include "g_all_guis.h"
+#include "g_undo.h"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -27,6 +28,10 @@ struct _canvasenvironment
     int ce_dollarzero;     /* value of "$0" */
     t_namelist *ce_path;   /* search path */
 };
+typedef struct _canvas_private
+{
+    t_undo undo;
+} t_canvas_private;
 
 #define GLIST_DEFCANVASWIDTH 450
 #define GLIST_DEFCANVASHEIGHT 300
@@ -325,6 +330,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = 0, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
+    t_canvas_private*private = 0;
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
@@ -348,6 +354,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         s = atom_getsymbolarg(4, argc, argv);
         vis = atom_getfloatarg(5, argc, argv);
     }
+
         /* (otherwise assume we're being created from the menu.) */
     if (THISGUI->i_newdirectory &&
         THISGUI->i_newdirectory->s_name[0])
@@ -366,6 +373,11 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         THISGUI->i_newargv = 0;
     }
     else x->gl_env = 0;
+
+        /* initialize private data, like the undo-queue */
+    private = getbytes(sizeof(*private));
+    x->gl_privatedata = private;
+    private->undo.u_queue = canvas_undo_init(x);
 
     x->gl_x1 = 0;
     x->gl_y1 = 0;
@@ -502,6 +514,9 @@ void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
     t_float px2 = atom_getfloatarg(7, argc, argv);
     t_float py2 = atom_getfloatarg(8, argc, argv);
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
+    if (!canvas_undo_get(glist_getcanvas(g))->u_doing)
+        canvas_undo_add(glist_getcanvas(g), UNDO_CREATE, "create",
+            (void *)canvas_undo_set_create(glist_getcanvas(g)));
 }
 
     /* return true if the glist should appear as a graph on parent;
@@ -603,17 +618,20 @@ void canvas_reflecttitle(t_canvas *x)
 }
 
     /* mark a glist dirty or clean */
-void canvas_dirty(t_canvas *x, t_floatarg n)
+void canvas_dirty(t_canvas *x, t_floatarg f)
 {
     t_canvas *x2 = canvas_getrootfor(x);
+    unsigned int n = f;
     if (THISGUI->i_reloadingabstraction)
         return;
-    if ((unsigned)n != x2->gl_dirty)
+    if (n != x2->gl_dirty)
     {
         x2->gl_dirty = n;
         if (x2->gl_havewindow)
             canvas_reflecttitle(x2);
     }
+    if(!n)
+        canvas_undo_cleardirty(x);
 }
 
 void canvas_drawredrect(t_canvas *x, int doit)
@@ -745,6 +763,7 @@ int glist_fontheight(t_glist *x)
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
+    t_canvas_private*private = x->gl_privatedata;
     int dspstate = canvas_suspend_dsp();
     canvas_noundo(x);
     if (canvas_whichfind == x)
@@ -763,6 +782,8 @@ void canvas_free(t_canvas *x)
         freebytes(x->gl_env->ce_argv, x->gl_env->ce_argc * sizeof(t_atom));
         freebytes(x->gl_env, sizeof(*x->gl_env));
     }
+    canvas_undo_free(x);
+    freebytes(private, sizeof(*private));
     canvas_resume_dsp(dspstate);
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
     freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
@@ -1131,6 +1152,14 @@ t_canvas *canvas_getrootfor(t_canvas *x)
     if ((!x->gl_owner) || canvas_isabstraction(x))
         return (x);
     else return (canvas_getrootfor(x->gl_owner));
+}
+
+t_undo* canvas_undo_get(t_canvas *x)
+{
+    t_canvas_private*private = x?(x->gl_privatedata):0;
+    if(private)
+        return &(private->undo);
+    return 0;
 }
 
 /* ------------------------- DSP chain handling ------------------------- */

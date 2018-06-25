@@ -107,7 +107,7 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
             $menubar.put entryconfigure $i -state normal
         }
     }
-    update_undo_on_menu $mytoplevel
+    update_undo_on_menu $mytoplevel $::undo_actions($mytoplevel) $::redo_actions($mytoplevel)
     # Help menu
     # make sure "List of objects..." is enabled, it sometimes greys out on Mac
     $menubar.help entryconfigure [_ "List of objects..."] -state normal
@@ -362,17 +362,20 @@ proc ::pd_menus::build_help_menu {mymenu} {
 #------------------------------------------------------------------------------#
 # undo/redo menu items
 
-proc ::pd_menus::update_undo_on_menu {mytoplevel} {
+proc ::pd_menus::update_undo_on_menu {mytoplevel undo redo} {
     variable menubar
-    if {$mytoplevel eq $::undo_toplevel && $::undo_action ne "no"} {
+    if {$undo eq "no"} { set undo "" }
+    if {$redo eq "no"} { set redo "" }
+
+    if {$undo ne ""} {
         $menubar.edit entryconfigure 0 -state normal \
-            -label [_ "Undo $::undo_action"]
+            -label [_ "Undo $undo"]
     } else {
         $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
     }
-    if {$mytoplevel eq $::undo_toplevel && $::redo_action ne "no"} {
+    if {$redo ne ""} {
         $menubar.edit entryconfigure 1 -state normal \
-            -label [_ "Redo $::redo_action"]
+            -label [_ "Redo $redo"]
     } else {
         $menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
     }

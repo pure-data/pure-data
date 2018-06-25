@@ -195,6 +195,7 @@ struct _glist
     unsigned int gl_private:1;      /* private flag used in x_scalar.c */
     unsigned int gl_isclone:1;      /* exists as part of a clone object */
     int gl_zoom;                    /* zoom factor (integer zoom-in only) */
+    void *gl_privatedata;           /* private data */
 };
 
 #define gl_gobj gl_obj.te_g
@@ -535,7 +536,7 @@ EXTERN int canvas_setdeleting(t_canvas *x, int flag);
     "clone~" uses this to identify which copy NOT to reload */
 EXTERN t_glist *glist_reloadingabstraction;
 
-typedef void (*t_undofn)(t_canvas *canvas, void *buf,
+typedef int (*t_undofn)(t_canvas *canvas, void *buf,
     int action);        /* a function that does UNDO/REDO */
 #define UNDO_FREE 0                     /* free current undo/redo buffer */
 #define UNDO_UNDO 1                     /* undo */
