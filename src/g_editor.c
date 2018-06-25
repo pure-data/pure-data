@@ -1484,7 +1484,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         return;
     }
         /* having failed to find a box, we try lines now. */
-    if (!runmode && !altmod && !shiftmod)
+    if (!runmode && !altmod)
     {
         t_linetraverser t;
         t_outconnect *oc;
@@ -1493,6 +1493,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         linetraverser_start(&t, glist2);
         while ((oc = linetraverser_next(&t)))
         {
+            int outindex, inindex;
             t_float lx1 = t.tr_lx1, ly1 = t.tr_ly1,
                 lx2 = t.tr_lx2, ly2 = t.tr_ly2;
             t_float area = (lx2 - lx1) * (fy - ly1) -
@@ -1501,14 +1502,53 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             if (area * area >= 50 * dsquare) continue;
             if ((lx2-lx1) * (fx-lx1) + (ly2-ly1) * (fy-ly1) < 0) continue;
             if ((lx2-lx1) * (lx2-fx) + (ly2-ly1) * (ly2-fy) < 0) continue;
-            if (doit)
+            outindex = canvas_getindex(glist2, &t.tr_ob->ob_g);
+            inindex = canvas_getindex(glist2, &t.tr_ob2->ob_g);
+            if (shiftmod)
             {
-                glist_selectline(glist2, oc,
-                    canvas_getindex(glist2, &t.tr_ob->ob_g), t.tr_outno,
-                    canvas_getindex(glist2, &t.tr_ob2->ob_g), t.tr_inno);
+                    /* swap selected and hovered connection */
+                int soutindex = x->gl_editor->e_selectline_index1;
+                int sinindex = x->gl_editor->e_selectline_index2;
+                int soutno = x->gl_editor->e_selectline_outno;
+                int sinno = x->gl_editor->e_selectline_inno;
+                if(x->gl_editor->e_selectedline
+                   && ((outindex == soutindex)
+                       || (inindex == sinindex)))
+                {
+                            /* do not swap connection with itself */
+                    if (soutindex == outindex
+                        && sinindex == inindex
+                        && soutno == t.tr_outno
+                        && sinno == t.tr_inno)
+                        return;
+                    if(doit)
+                    {
+                        canvas_disconnect(x, soutindex, soutno, sinindex, sinno);
+                        canvas_disconnect(x, outindex, t.tr_outno, inindex, t.tr_inno);
+                        canvas_connect(x, outindex, t.tr_outno, sinindex, sinno);
+                        canvas_connect(x, soutindex, soutno, inindex, t.tr_inno);
+
+                        x->gl_editor->e_selectline_index1 = soutindex;
+                        x->gl_editor->e_selectline_outno = soutno;
+                        x->gl_editor->e_selectline_index2 = inindex;
+                        x->gl_editor->e_selectline_inno = t.tr_inno;
+                    }
+                    canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                    return;
+                }
             }
-            canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
-            return;
+            if (!shiftmod)
+            {
+                    /* !shiftmode: select a new connection */
+                if (doit)
+                {
+                    glist_selectline(glist2, oc,
+                        outindex, t.tr_outno,
+                        inindex, t.tr_inno);
+                }
+                canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                return;
+            }
         }
     }
     canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
