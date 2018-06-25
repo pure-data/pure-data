@@ -1629,8 +1629,8 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                 x->gl_zoom,
                 oc);
             canvas_dirty(x, 1);
+            return 1;
         }
-        return 1;
     }
     return 0;
 }
