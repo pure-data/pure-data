@@ -1532,6 +1532,8 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         x->gl_editor->e_selectline_outno = soutno;
                         x->gl_editor->e_selectline_index2 = inindex;
                         x->gl_editor->e_selectline_inno = t.tr_inno;
+
+                        canvas_dirty(x, 1);
                     }
                     canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
                     return;
@@ -1626,6 +1628,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
                 (obj_issignaloutlet(src, nout) ? 2 : 1) *
                 x->gl_zoom,
                 oc);
+            canvas_dirty(x, 1);
         }
         return 1;
     }
