@@ -1058,6 +1058,11 @@ static void *subcanvas_new(t_symbol *s)
             SETFLOAT(a+1, 37);
             SETSYMBOL(a+2, sob);
             canvas_obj(x, gensym("obj"), 3, a);
+
+                /* select the newly created inlet to continue autopatching */
+            canvas_create_editor(x);
+            glist_noselect(x);
+            glist_select(x, x->gl_list);
         }
     }
     x->gl_owner = z;
