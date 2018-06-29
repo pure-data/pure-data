@@ -286,8 +286,8 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 // font char metric triples: pointsize width(pixels) height(pixels)
 static int defaultfontshit[] = {
- 8,  5, 11, 10,  6, 13, 12,  7, 16, 16, 10, 19, 24, 14, 29, 36, 22, 44,
-16, 10, 22, 20, 12, 26, 24, 14, 32, 32, 20, 38, 48, 28, 58, 72, 44, 88
+ 8,  5,  11,  10, 6,  13,  12, 7,  16,  16, 10, 19,  24, 14, 29,  36, 22, 44,
+ 16, 10, 22,  20, 12, 26,  24, 14, 32,  32, 20, 38,  48, 28, 58,  72, 44, 88
 }; // normal & zoomed (2x)
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
@@ -305,12 +305,11 @@ static void sys_fakefromgui(void)
 #else
     if (!getcwd(buf, MAXPDSTRING))
         strcpy(buf, ".");
-
 #endif
     SETSYMBOL(zz, gensym(buf));
+    SETFLOAT(zz+1, 0);
     for (i = 0; i < (int)NDEFAULTFONT; i++)
-        SETFLOAT(zz+i+1, defaultfontshit[i]);
-    SETFLOAT(zz+NDEFAULTFONT+1,0);
+        SETFLOAT(zz+i+2, defaultfontshit[i]);
     glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
     clock_free(sys_fakefromguiclk);
 }
