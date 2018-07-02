@@ -38,6 +38,9 @@ struct _instanceeditor
     unsigned int canvas_cursorwas;
 };
 
+/* positional offset for duplicated items */
+#define PASTE_OFFSET 10
+
 void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
     int selectem);
 
@@ -934,7 +937,7 @@ int canvas_undo_paste(t_canvas *x, void *z, int action)
             t_selection *y;
             for (y = x->gl_editor->e_selection; y; y = y->sel_next)
                 gobj_displace(y->sel_what, x,
-                    10, 10);
+                    buf->u_offset, buf->u_offset);
         }
     }
     else if (action == UNDO_FREE)
@@ -3928,11 +3931,11 @@ static void canvas_duplicate(t_canvas *x)
         t_selection *y;
         canvas_copy(x);
         canvas_undo_add(x, UNDO_PASTE, "duplicate",
-            (void *)canvas_undo_set_paste(x, 0, 1, 1));
+            (void *)canvas_undo_set_paste(x, 0, 1, PASTE_OFFSET));
         canvas_dopaste(x, EDITOR->copy_binbuf);
         for (y = x->gl_editor->e_selection; y; y = y->sel_next)
             gobj_displace(y->sel_what, x,
-                10, 10);
+                PASTE_OFFSET, PASTE_OFFSET);
         canvas_dirty(x, 1);
     }
 }
