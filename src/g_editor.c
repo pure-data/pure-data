@@ -3737,6 +3737,100 @@ static void glist_donewloadbangs(t_glist *x)
     }
 }
 
+static int binbuf_nextmess(int argc, const t_atom *argv)
+{
+    int i=0;
+    while(argc--)
+    {
+        argv++;
+        i++;
+        if (A_SEMI == argv->a_type) {
+            return i+1;
+        }
+    }
+    return i;
+}
+static int binbuf_getpos(t_binbuf*b, int *x0, int *y0)
+{
+        /*
+         * checks how many objects the binbuf contains and where they are located
+         * for simplicity, we stop after the first object...
+         * "objects" are any patchable things
+         * returns: 0: no objects/...
+         *          1: single object in binbuf
+         *          2: more than one object in binbuf
+         * (x0,y0) are the coordinates of the first object
+         */
+    t_atom*argv = binbuf_getvec(b);
+    int argc = binbuf_getnatom(b);
+    const int argc0 = argc;
+    int count = 0;
+    t_symbol*s;
+        /* get the position of the first object in the argv binbuf */
+    if(argc > 2
+       && atom_getsymbol(argv+0) == &s__N
+       && atom_getsymbol(argv+1) == gensym("canvas"))
+    {
+        int ac = argc;
+        t_atom*ap = argv;
+        int stack = 0;
+        do {
+            int off = binbuf_nextmess(argc, argv);
+            if(!off)
+                break;
+            ac = argc;
+            ap = argv;
+            argc-=off;
+            argv+=off;
+            count+=off;
+            if(off >= 2)
+            {
+                if (atom_getsymbol(ap+1) == gensym("restore")
+                    && atom_getsymbol(ap) == &s__X)
+                    {
+                        stack--;
+                    }
+                if (atom_getsymbol(ap+1) == gensym("canvas")
+                    && atom_getsymbol(ap) == &s__N)
+                    {
+                        stack++;
+                    }
+            }
+            if(argc<0)
+                return 0;
+        } while (stack>0);
+        argc = ac;
+        argv = ap;
+    }
+    if(argc < 4 || atom_getsymbol(argv) != &s__X)
+        return 0;
+        /* #X obj|msg|text|floatatom|symbolatom <x> <y> ...
+         * TODO: subpatches #N canvas + #X restore <x> <y>
+         */
+    s = atom_getsymbol(argv+1);
+    if(gensym("restore") == s
+       || gensym("obj") == s
+       || gensym("msg") == s
+       || gensym("text") == s
+       || gensym("floatatom") == s
+       || gensym("symbolatom") == s)
+    {
+        if(x0)*x0=atom_getfloat(argv+2);
+        if(y0)*y0=atom_getfloat(argv+3);
+    } else
+        return 0;
+
+        /* no wind the binbuf to the next message */
+    while(argc--)
+    {
+        count++;
+        if (A_SEMI == argv->a_type)
+            break;
+        argv++;
+    }
+    return 1+(argc0 > count);
+}
+
 static void canvas_dopaste(t_canvas *x, t_binbuf *b)
 {
     t_gobj *newgobj, *last, *g2;
