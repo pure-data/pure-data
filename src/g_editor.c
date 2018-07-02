@@ -3880,9 +3880,37 @@ static void canvas_paste(t_canvas *x)
     }
     else
     {
+        int offset = 0;
+        int x0 = 0, y0 = 0;
+        int foundplace = 0;
+        binbuf_getpos(EDITOR->copy_binbuf, &x0, &y0);
+        do {
+                /* iterate over all existing objects
+                 * to see whether one occupies the space we want.
+                 * if so, move along
+                 */
+            t_gobj *y;
+            foundplace = 1;
+            for (y = x->gl_list; y; y = y->g_next) {
+                t_text *txt = (t_text *)y;
+                if((x0 + offset) == txt->te_xpix && (y0 + offset) == txt->te_ypix)
+                {
+                    foundplace = 0;
+                    offset += PASTE_OFFSET;
+                    break;
+                }
+            }
+        } while(!foundplace);
         canvas_undo_add(x, UNDO_PASTE, "paste",
-            (void *)canvas_undo_set_paste(x, 0, 0, 0));
+            (void *)canvas_undo_set_paste(x, 0, 0, offset));
         canvas_dopaste(x, EDITOR->copy_binbuf);
+        if(offset)
+        {
+            t_selection *y;
+            for (y = x->gl_editor->e_selection; y; y = y->sel_next)
+                gobj_displace(y->sel_what, x,
+                    offset, offset);
+        }
     }
 }
 
