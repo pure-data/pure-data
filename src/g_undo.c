@@ -100,7 +100,24 @@ t_undo_action *canvas_undo_init(t_canvas *x)
 t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
     void *data)
 {
-    t_undo_action *a = canvas_undo_init(x);
+    t_undo_action *a = 0;
+    t_undo * udo = canvas_undo_get(x);
+    if(UNDO_SEQUENCE_END == type
+       && udo && udo->u_last
+       && UNDO_SEQUENCE_START == udo->u_last->type)
+    {
+            /* empty undo sequence...get rid of it */
+        canvas_undo_undo(x);
+        canvas_undo_rebranch(x);
+        udo->u_last->next = 0;
+        canvas_undo_set_name(udo->u_last->name);
+        if (glist_isvisible(x) && glist_istoplevel(x))
+            sys_vgui("pdtk_undomenu .x%lx %s no\n", x, udo->u_last->name);
+        return 0;
+    }
+
+    a = canvas_undo_init(x);
+    if(!a)return a;
     a->type = type;
     a->data = (void *)data;
     a->name = (char *)name;
@@ -127,7 +144,10 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
     case UNDO_CREATE:       return canvas_undo_create(x, udo->data, action);       //create
     case UNDO_RECREATE:     return canvas_undo_recreate(x, udo->data, action);     //recreate
     case UNDO_FONT:         return canvas_undo_font(x, udo->data, action);         //font
-    case UNDO_INIT:         if (UNDO_FREE == action) return 1;                        //init
+            /* undo sequences are handled in canvas_undo_undo resp canvas_undo_redo */
+    case UNDO_SEQUENCE_START: return 1;                                            //start undo sequence
+    case UNDO_SEQUENCE_END: return 1;                                              //end undo sequence
+    case UNDO_INIT:         if (UNDO_FREE == action) return 1;                     //init
     default:
         error("%s: unsupported undo command %d", funname, udo->type);
     }
@@ -146,6 +166,11 @@ void canvas_undo_undo(t_canvas *x)
         canvas_editmode(x, 1);
         glist_noselect(x);
         canvas_undo_set_name(udo->u_last->name);
+
+        if(UNDO_SEQUENCE_END == udo->u_last->type)
+            while((udo->u_last = udo->u_last->prev)
+                  && (UNDO_SEQUENCE_START != udo->u_last->type))
+                canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__);
 
         if(canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__))
         {
@@ -182,6 +207,12 @@ void canvas_undo_redo(t_canvas *x)
         canvas_editmode(x, 1);
         glist_noselect(x);
         canvas_undo_set_name(udo->u_last->name);
+
+        if(UNDO_SEQUENCE_START == udo->u_last->type)
+            while((udo->u_last = udo->u_last->next)
+                  && (UNDO_SEQUENCE_END != udo->u_last->type))
+                canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);
+
         canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);
         undo_action = udo->u_last->name;
         redo_action = (udo->u_last->next ? udo->u_last->next->name : "no");
