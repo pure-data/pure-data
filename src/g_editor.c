@@ -364,6 +364,25 @@ static t_gobj *glist_nth(t_glist *x, int n)
 
 /* ------------------- support for undo/redo  -------------------------- */
 
+static void canvas_applybinbuf(t_canvas *x, t_binbuf *b)
+{
+    t_symbol*asym = gensym("#A");
+    t_pd *boundx = s__X.s_thing,
+        *bounda = asym->s_thing,
+        *boundn = s__N.s_thing;
+
+    asym->s_thing = 0;
+    s__X.s_thing = &x->gl_pd;
+    s__N.s_thing = &pd_canvasmaker;
+
+    binbuf_eval(b, 0, 0, 0);
+
+    asym->s_thing = bounda;
+    s__X.s_thing = boundx;
+    s__N.s_thing = boundn;
+}
+
+
 static int canvas_undo_confirmdiscard(t_gobj *g)
 {
     t_glist *gl2;
