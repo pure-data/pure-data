@@ -4196,7 +4196,10 @@ static void canvas_connect_selection(t_canvas *x)
             return;
     }
 
-    if(a && !b)
+    if(!a)
+        return;
+
+    if(!b)
     {
             /* only a single object is selected.
              * if a connection is selected, insert the object
@@ -4248,7 +4251,6 @@ static void canvas_connect_selection(t_canvas *x)
             /* need to return since we have touched 'b' */
         return;
     }
-    if (!a || !b) return;
 
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&a->g_pd)) ||
