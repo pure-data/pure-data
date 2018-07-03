@@ -4197,6 +4197,38 @@ static void canvas_connect_selection(t_canvas *x)
             return;
     }
 
+    if(a && !b)
+    {
+            /* only a single object is selected.
+             * if a connection is selected, insert the object
+             * if no connection is selected, disconnect the object
+             */
+        t_object*obj = pd_checkobject(&a->g_pd);
+        if(!obj)
+            return;
+        if(x->gl_editor->e_selectedline)
+        {
+            int didit = 0;
+            int objnum = glist_getindex(x, &obj->te_g);
+
+            b = glist_nth(x, x->gl_editor->e_selectline_index1);
+            objsrc = b?pd_checkobject(&b->g_pd):0;
+            b = glist_nth(x, x->gl_editor->e_selectline_index2);
+            objsink = b?pd_checkobject(&b->g_pd):0;
+
+            if(canconnect(x, objsrc, x->gl_editor->e_selectline_outno, obj, 0)
+               && canconnect(x, obj, 0, objsink, x->gl_editor->e_selectline_inno))
+            {
+                canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
+                tryconnect(x, objsrc, x->gl_editor->e_selectline_outno, obj, 0);
+                tryconnect(x, obj, 0, objsink, x->gl_editor->e_selectline_inno);
+                canvas_clearline(x);
+                canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
+            }
+        }
+            /* need to return since we have touched 'b' */
+        return;
+    }
     if (!a || !b) return;
 
     if (by1 < ay1) { t_gobj *y = a; a = b; b = y; }
