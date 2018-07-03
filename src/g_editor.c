@@ -4226,6 +4226,26 @@ static void canvas_connect_selection(t_canvas *x)
                 canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
             }
         }
+        else
+        {
+                /* disconnect the entire object */
+            t_linetraverser t;
+            t_outconnect *oc;
+            canvas_undo_add(x, UNDO_SEQUENCE_START, "disconnect", 0);
+            linetraverser_start(&t, x);
+            while ((oc = linetraverser_next(&t)))
+            {
+                if ((obj == t.tr_ob) || (obj == t.tr_ob2))
+                {
+                    int srcno = glist_getindex(x, &t.tr_ob->ob_g);
+                    int sinkno = glist_getindex(x, &t.tr_ob2->ob_g);
+                    canvas_disconnect(x, srcno, t.tr_outno, sinkno, t.tr_inno);
+                    canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
+                        srcno, t.tr_outno, sinkno, t.tr_inno));
+                }
+            }
+            canvas_undo_add(x, UNDO_SEQUENCE_END, "disconnect", 0);
+        }
             /* need to return since we have touched 'b' */
         return;
     }
