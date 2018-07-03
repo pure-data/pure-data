@@ -4183,16 +4183,15 @@ static void canvas_connect_selection(t_canvas *x)
     t_gobj *a, *b;
     t_selection *sel;
     t_object *objsrc, *objsink;
-    int ax1, ay1, ax2, ay2, bx1, by1, bx2, by2;
 
     a = b = NULL;
     sel = x->gl_editor ? x->gl_editor->e_selection : NULL;
     for (; sel; sel = sel->sel_next)
     {
         if (!a)
-            gobj_getrect((a = sel->sel_what), x, &ax1, &ay1, &ax2, &ay2);
+            a = sel->sel_what;
         else if (!b)
-            gobj_getrect((b = sel->sel_what), x, &bx1, &by1, &bx2, &by2);
+            b = sel->sel_what;
         else
             return;
     }
@@ -4251,12 +4250,17 @@ static void canvas_connect_selection(t_canvas *x)
     }
     if (!a || !b) return;
 
-    if (by1 < ay1) { t_gobj *y = a; a = b; b = y; }
-
         /* check they're both patchable objects */
     if (!(objsrc = pd_checkobject(&a->g_pd)) ||
         !(objsink = pd_checkobject(&b->g_pd)))
         return;
+
+    if(objsink->te_ypix < objsrc->te_ypix)
+    {
+        t_object*obj = objsink;
+        objsink = objsrc;
+        objsrc = obj;
+    }
 
     if (obj_noutlets(objsrc))
     {
