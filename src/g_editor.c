@@ -4285,6 +4285,115 @@ static void canvas_connect_selection(t_canvas *x)
         }
         return;
     }
+
+        /* exactly three objects are selected
+         * unconnect the middle object, and connect the source to the sink
+         */
+    if ((objsrc = pd_checkobject(&a->g_pd)) &&
+        (objsink = pd_checkobject(&b->g_pd)))
+    {
+        int ab=0, ac=0, bc=0, ba=0, ca=0, cb=0;
+        t_linetraverser t;
+        t_outconnect *oc;
+        t_object *obja = objsrc;
+        t_object *objb = objsink;
+        t_object *objc = pd_checkobject(&c->g_pd);
+        t_object *obj=0;
+        if(!objc)
+            return;
+        linetraverser_start(&t, x);
+        while ((oc = linetraverser_next(&t)))
+            if (t.tr_ob == obja)
+            {
+                if (t.tr_ob2 == objb)
+                    ab++;
+                if (t.tr_ob2 == objc)
+                    ac++;
+            }
+            else if (t.tr_ob == objb)
+            {
+                if (t.tr_ob2 == obja)
+                    ba++;
+                if (t.tr_ob2 == objc)
+                    bc++;
+            }
+            else if (t.tr_ob == objc)
+            {
+                if (t.tr_ob2 == objb)
+                    cb++;
+                if (t.tr_ob2 == obja)
+                    ca++;
+            }
+#define CONNCHAIN(x,y,z) \
+        else if ((1==x##y) && (1==y##z)) \
+            objsrc=obj##x,obj=obj##y,objsink=obj##z
+
+        if(2 != (ab+ac+bc+ba+ca+cb)) /* more than two connections between 3 objects */
+            return;
+        CONNCHAIN(a,b,c);
+        CONNCHAIN(a,c,b);
+        CONNCHAIN(b,c,a);
+        CONNCHAIN(b,a,c);
+        CONNCHAIN(c,b,a);
+        CONNCHAIN(c,a,b);
+        else return;
+            /* now find out whether the connections are of the same type (both signals or both messages)
+             * reuse (ab,ba) and (bc,cb) as (outno,inno) of the two connections
+             */
+        ab = ba = -1;
+        bc = cb = -1;
+        for(ab=0; ab<obj_noutlets(objsrc); ab++)
+        {
+            t_outlet*out = 0;
+            t_outconnect *oc = obj_starttraverseoutlet(objsrc, &out, ab);
+            while(oc)
+            {
+                t_object*o;
+                t_inlet*in;
+                oc = obj_nexttraverseoutlet(oc, &o, &in, &ba);
+                if(o == obj)
+                    break;
+                ba = -1;
+            }
+            if (ba>=0)
+                break;
+        }
+        for(bc=0; bc<obj_noutlets(obj); bc++)
+        {
+            t_outlet*out = 0;
+            t_outconnect *oc = obj_starttraverseoutlet(obj, &out, bc);
+            while(oc)
+            {
+                t_object*o;
+                t_inlet*in;
+                oc = obj_nexttraverseoutlet(oc, &o, &in, &cb);
+                if(o == objsink)
+                    break;
+                cb = -1;
+            }
+            if (cb>=0)
+                break;
+        }
+        if(obj_issignaloutlet(objsrc, ab) ^ obj_issignaloutlet(obj, bc))
+            return;
+        if(1)
+        {
+            int A = glist_getindex(x, &objsrc->te_g);
+            int B = glist_getindex(x, &obj->te_g);
+            int C = glist_getindex(x, &objsink->te_g);
+            canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
+            canvas_disconnect(x, A, ab, B, ba);
+            canvas_disconnect(x, B, bc, C, cb);
+            canvas_connect(x, A, ab, C, cb);
+            canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
+                A, ab, B, ba));
+            canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
+                B, bc, C, cb));
+            canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
+                A, ab, C, cb));
+            canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
+        }
+    }
 }
 
 static void canvas_texteditor(t_canvas *x)
