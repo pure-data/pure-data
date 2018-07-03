@@ -55,6 +55,8 @@ typedef enum
     UNDO_CREATE,       /* 9: OK */
     UNDO_RECREATE,     /* 10: OK */
     UNDO_FONT,         /* 11: OK */
+    UNDO_SEQUENCE_START, /* 12 start an atomic sequence of undo actions*/
+    UNDO_SEQUENCE_END,   /* 13 end an atomic sequence of undo actions */
 
     UNDO_LAST
 } t_undo_type;
