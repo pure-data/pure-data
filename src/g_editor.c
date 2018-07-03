@@ -687,9 +687,7 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
             }
             canvas_dopaste(x, buf->u_objectbuf);
         }
-        pd_bind(&x->gl_pd, gensym("#X"));
-        binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-        pd_unbind(&x->gl_pd, gensym("#X"));
+        canvas_applybinbuf(x, buf->u_reconnectbuf);
 
             /* now reposition objects to their original locations */
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
@@ -772,9 +770,7 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
             if (y1)
                 glist_delete(x, y1);
             canvas_dopaste(x, buf->u_redotextbuf);
-            pd_bind(&x->gl_pd, gensym("#X"));
-            binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-            pd_unbind(&x->gl_pd, gensym("#X"));
+            canvas_applybinbuf(x, buf->u_reconnectbuf);
         }
     }
     else if (action == UNDO_FREE)
@@ -1053,9 +1049,7 @@ int canvas_undo_apply(t_canvas *x, void *z, int action)
         buf->u_objectbuf = tmp;
 
             /* connections should stay the same */
-        pd_bind(&x->gl_pd, gensym("#X"));
-        binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-        pd_unbind(&x->gl_pd, gensym("#X"));
+        canvas_applybinbuf(x, buf->u_reconnectbuf);
             /* now we need to reposition the object to its original place */
         if (canvas_apply_restore_original_position(x, buf->u_index))
             canvas_redraw(x);
@@ -1543,12 +1537,8 @@ int canvas_undo_create(t_canvas *x, void *z, int action)
     }
     else if (action == UNDO_REDO)
     {
-        pd_bind(&x->gl_pd, gensym("#X"));
-           binbuf_eval(buf->u_objectbuf, 0, 0, 0);
-        pd_unbind(&x->gl_pd, gensym("#X"));
-        pd_bind(&x->gl_pd, gensym("#X"));
-           binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-        pd_unbind(&x->gl_pd, gensym("#X"));
+        canvas_applybinbuf(x, buf->u_objectbuf);
+        canvas_applybinbuf(x, buf->u_reconnectbuf);
         if (pd_this->pd_newest && pd_class(pd_this->pd_newest) == canvas_class)
             canvas_loadbang((t_canvas *)pd_this->pd_newest);
         y = glist_nth(x, buf->u_index);
@@ -1617,9 +1607,6 @@ int canvas_undo_recreate(t_canvas *x, void *z, int action)
 
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
-        t_symbol *asym = gensym("#A");
-        t_pd *boundx = 0, *bounda = 0, *boundn = 0;
-
             /* first copy new state of the current object */
         t_undo_create *buf2 = (t_undo_create *)getbytes(sizeof(*buf));
         buf2->u_index = buf->u_index;
@@ -1637,20 +1624,8 @@ int canvas_undo_recreate(t_canvas *x, void *z, int action)
             /* then paste the old object */
 
             /* save and clear bindings to symbols #A, #N, #X; restore when done */
-        boundx = s__X.s_thing;
-        bounda = asym->s_thing;
-        boundn = s__N.s_thing;
-        asym->s_thing = 0;
-        s__X.s_thing = &x->gl_pd;
-        s__N.s_thing = &pd_canvasmaker;
-
-          binbuf_eval(buf->u_objectbuf, 0, 0, 0);
-        s__X.s_thing = &x->gl_pd;
-          binbuf_eval(buf->u_reconnectbuf, 0, 0, 0);
-
-        asym->s_thing = bounda;
-        s__X.s_thing = boundx;
-        s__N.s_thing = boundn;
+        canvas_applybinbuf(x, buf->u_objectbuf);
+        canvas_applybinbuf(x, buf->u_reconnectbuf);
 
             /* free the old data */
         binbuf_free(buf->u_objectbuf);
