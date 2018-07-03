@@ -4180,11 +4180,11 @@ static void canvas_tidy(t_canvas *x)
        a compatible type in the lower one. */
 static void canvas_connect_selection(t_canvas *x)
 {
-    t_gobj *a, *b;
+    t_gobj *a, *b, *c;
     t_selection *sel;
     t_object *objsrc, *objsink;
 
-    a = b = NULL;
+    a = b = c = NULL;
     sel = x->gl_editor ? x->gl_editor->e_selection : NULL;
     for (; sel; sel = sel->sel_next)
     {
@@ -4192,6 +4192,8 @@ static void canvas_connect_selection(t_canvas *x)
             a = sel->sel_what;
         else if (!b)
             b = sel->sel_what;
+        else if (!c)
+            c = sel->sel_what;
         else
             return;
     }
@@ -4252,29 +4254,34 @@ static void canvas_connect_selection(t_canvas *x)
         return;
     }
 
-        /* check they're both patchable objects */
-    if (!(objsrc = pd_checkobject(&a->g_pd)) ||
-        !(objsink = pd_checkobject(&b->g_pd)))
-        return;
-
-    if(objsink->te_ypix < objsrc->te_ypix)
+    if(!c)
     {
-        t_object*obj = objsink;
-        objsink = objsrc;
-        objsrc = obj;
-    }
+            /* exactly two objects are selected
+             * connect them (top to bottom) if they are patchable
+             */
+        if (!(objsrc = pd_checkobject(&a->g_pd)) ||
+            !(objsink = pd_checkobject(&b->g_pd)))
+            return;
 
-    if (obj_noutlets(objsrc))
-    {
-        int out = 0, in=0;
-        while(!tryconnect(x, objsrc, out, objsink, in))
+        if(objsink->te_ypix < objsrc->te_ypix)
         {
-            if (!objsrc  || obj_noutlets(objsrc ) <= out)
-                return;
-            if (!objsink || obj_ninlets (objsink) <= in )
-                return;
-            in++;
-            out++;
+            t_object*obj = objsink;
+            objsink = objsrc;
+            objsrc = obj;
+        }
+
+        if (obj_noutlets(objsrc))
+        {
+            int out = 0, in=0;
+            while(!tryconnect(x, objsrc, out, objsink, in))
+            {
+                if (!objsrc  || obj_noutlets(objsrc ) <= out)
+                    return;
+                if (!objsink || obj_ninlets (objsink) <= in )
+                    return;
+                in++;
+                out++;
+            }
         }
         return;
     }
