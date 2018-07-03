@@ -2542,6 +2542,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         x->gl_editor->e_selectline_index2 = inindex;
                         x->gl_editor->e_selectline_inno = t.tr_inno;
 
+                        canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
                         canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
                             soutindex, soutno, sinindex, sinno));
                         canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
@@ -2550,6 +2551,8 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                             outindex, t.tr_outno, sinindex, sinno));
                         canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
                             soutindex, soutno, inindex, t.tr_inno));
+                        canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
+
                         canvas_dirty(x, 1);
                     }
                     canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
@@ -2721,6 +2724,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             if (doit)
             {
                 t_selection *sel;
+                canvas_undo_add(x, UNDO_SEQUENCE_START, "connect", 0);
                 tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
                 canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
@@ -2853,6 +2857,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                     break;
                 default: break;
                 }
+                canvas_undo_add(x, UNDO_SEQUENCE_END, "connect", 0);
             }
             else canvas_setcursor(x, CURSOR_EDITMODE_CONNECT);
             return;
