@@ -2548,26 +2548,17 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         return;
                     if(doit)
                     {
-                        canvas_disconnect(x, soutindex, soutno, sinindex, sinno);
-                        canvas_disconnect(x, outindex, t.tr_outno, inindex, t.tr_inno);
-                        canvas_connect(x, outindex, t.tr_outno, sinindex, sinno);
-                        canvas_connect(x, soutindex, soutno, inindex, t.tr_inno);
+                        canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
+                        canvas_disconnect_with_undo(x, soutindex, soutno, sinindex, sinno);
+                        canvas_disconnect_with_undo(x, outindex, t.tr_outno, inindex, t.tr_inno);
+                        canvas_connect_with_undo(x, outindex, t.tr_outno, sinindex, sinno);
+                        canvas_connect_with_undo(x, soutindex, soutno, inindex, t.tr_inno);
+                        canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
 
                         x->gl_editor->e_selectline_index1 = soutindex;
                         x->gl_editor->e_selectline_outno = soutno;
                         x->gl_editor->e_selectline_index2 = inindex;
                         x->gl_editor->e_selectline_inno = t.tr_inno;
-
-                        canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
-                        canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-                            soutindex, soutno, sinindex, sinno));
-                        canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-                            outindex, t.tr_outno, inindex, t.tr_inno));
-                        canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
-                            outindex, t.tr_outno, sinindex, sinno));
-                        canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
-                            soutindex, soutno, inindex, t.tr_inno));
-                        canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
 
                         canvas_dirty(x, 1);
                     }
@@ -3644,16 +3635,12 @@ static void canvas_clearline(t_canvas *x)
 {
     if (x->gl_editor->e_selectedline)
     {
-        canvas_disconnect(x, x->gl_editor->e_selectline_index1,
+        canvas_disconnect_with_undo(x,
+            x->gl_editor->e_selectline_index1,
             x->gl_editor->e_selectline_outno,
             x->gl_editor->e_selectline_index2,
             x->gl_editor->e_selectline_inno);
         canvas_dirty(x, 1);
-        canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-            x->gl_editor->e_selectline_index1,
-            x->gl_editor->e_selectline_outno,
-            x->gl_editor->e_selectline_index2,
-            x->gl_editor->e_selectline_inno));
     }
 }
 
@@ -3665,15 +3652,11 @@ static void canvas_doclear(t_canvas *x)
     dspstate = canvas_suspend_dsp();
     if (x->gl_editor->e_selectedline)
     {
-        canvas_disconnect(x, x->gl_editor->e_selectline_index1,
-            x->gl_editor->e_selectline_outno,
-            x->gl_editor->e_selectline_index2,
-            x->gl_editor->e_selectline_inno);
-        canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
+        canvas_disconnect_with_undo(x,
             x->gl_editor->e_selectline_index1,
             x->gl_editor->e_selectline_outno,
             x->gl_editor->e_selectline_index2,
-            x->gl_editor->e_selectline_inno));
+            x->gl_editor->e_selectline_inno);
     }
         /* if text is selected, deselecting it might remake the
            object. So we deselect it and hunt for a "new" object on
@@ -4259,9 +4242,7 @@ static void canvas_connect_selection(t_canvas *x)
                 {
                     int srcno = glist_getindex(x, &t.tr_ob->ob_g);
                     int sinkno = glist_getindex(x, &t.tr_ob2->ob_g);
-                    canvas_disconnect(x, srcno, t.tr_outno, sinkno, t.tr_inno);
-                    canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-                        srcno, t.tr_outno, sinkno, t.tr_inno));
+                    canvas_disconnect_with_undo(x, srcno, t.tr_outno, sinkno, t.tr_inno);
                 }
             }
             canvas_undo_add(x, UNDO_SEQUENCE_END, "disconnect", 0);
