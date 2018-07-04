@@ -1708,7 +1708,7 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
         t_canvas *x2 = canvas_getrootfor(x);
         int tmp_font = x2->gl_font;
 #if 0
-            /* skipping open font editor fot now */
+            /* skipping open font editor for now */
         t_int properties = gfxstub_haveproperties((void *)x2);
         if (properties)
         {
@@ -2734,7 +2734,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                 canvas_undo_add(x, UNDO_SEQUENCE_START, "connect", 0);
                 tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
-                    /* now find out if the either ob1 xor ob2 are part of the selection,
+                    /* now find out if either ob1 xor ob2 are part of the selection,
                      * and if so, connect the rest of the selection as well */
                 int selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
                 switch(selmode) {
