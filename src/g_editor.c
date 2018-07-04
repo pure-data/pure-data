@@ -4171,6 +4171,62 @@ static void canvas_tidy(t_canvas *x)
     canvas_dirty(x, 1);
 }
 
+/* returns the total number of connections between two objects
+ * outno/inno are set to the last connection indices
+ */
+static int canvas_getconns(t_object*objsrc, int *outno, t_object*objsink, int *inno)
+{
+    int count = 0;
+    int n;
+    for(n=0; n<obj_noutlets(objsrc); n++)
+    {
+        t_outlet*out = 0;
+        t_outconnect *oc = obj_starttraverseoutlet(objsrc, &out, n);
+        while(oc)
+        {
+            t_object*o;
+            t_inlet*in;
+            int which;
+            oc = obj_nexttraverseoutlet(oc, &o, &in, &which);
+            if(o == objsink)
+                *outno = n, *inno = which, count++;
+        }
+    }
+    return count;
+}
+static int canvas_try_bypassobj1(t_canvas* x,
+    t_object* obj0, int in0, int out0,
+    t_object* obj1, int in1, int out1,
+    t_object* obj2, int in2, int out2)
+{
+        /* tries to bypass 'obj1' so 'obj0->obj1->obj2' becomes
+         * 'obj0->obj2' (+ 'obj1'); only bypass if there's exactly one
+         * connection between both obj0->obj1 and obj1->obj2 and the two
+         * connections are of the same type
+         * skip connection, if it's already there
+         */
+        /* this is doing an awful lot of iterating over the same things again and again
+         * LATER speed this up */
+    int A, B, C;
+        /* check connections (obj0->obj1->obj2, but not obj2->obj0) */
+        /*
+           valid:   out0, in1, out1, in2
+           invalid: in0, out2
+        */
+    if(out0<0 || out1<0 || out2>=0 || in0>=0 || in1<0 || in2<0)
+        return 0;
+        /* check whether the connection types match */
+    if(obj_issignaloutlet(obj0, out0) ^ obj_issignaloutlet(obj1, out1))
+        return 0;
+    A = glist_getindex(x, &obj0->te_g);
+    B = glist_getindex(x, &obj1->te_g);
+    C = glist_getindex(x, &obj2->te_g);
+    canvas_disconnect_with_undo(x, A, out0, B, in1);
+    canvas_disconnect_with_undo(x, B, out1, C, in2);
+    if (!canvas_isconnected(x, obj0, out0, obj2, in2))
+        canvas_connect_with_undo(x, A, out0, C, in2);
+    return 1;
+}
     /* If we have two selected objects on the canvas, try to connect
        the first outlet of the upper object to the first inlet with
        a compatible type in the lower one. */
@@ -4286,107 +4342,37 @@ static void canvas_connect_selection(t_canvas *x)
     if ((objsrc = pd_checkobject(&a->g_pd)) &&
         (objsink = pd_checkobject(&b->g_pd)))
     {
-        int ab=0, ac=0, bc=0, ba=0, ca=0, cb=0;
-        t_linetraverser t;
-        t_outconnect *oc;
-        t_object *obja = objsrc;
-        t_object *objb = objsink;
-        t_object *objc = pd_checkobject(&c->g_pd);
-        t_object *obj=0;
-        if(!objc)
+        t_object *obj0 = objsrc, *obj2 = objsink;
+        t_object *obj1 = pd_checkobject(&c->g_pd);
+        int out01, out02, out10, out12, out20, out21;
+        int in01, in02, in10, in12, in20, in21;
+        post("3some");
+        if(!obj1
+           || (obj0 == obj1)
+           || (obj2 == obj1)
+           || (obj0 == obj2))
             return;
-        linetraverser_start(&t, x);
-        while ((oc = linetraverser_next(&t)))
-            if (t.tr_ob == obja)
-            {
-                if (t.tr_ob2 == objb)
-                    ab++;
-                if (t.tr_ob2 == objc)
-                    ac++;
-            }
-            else if (t.tr_ob == objb)
-            {
-                if (t.tr_ob2 == obja)
-                    ba++;
-                if (t.tr_ob2 == objc)
-                    bc++;
-            }
-            else if (t.tr_ob == objc)
-            {
-                if (t.tr_ob2 == objb)
-                    cb++;
-                if (t.tr_ob2 == obja)
-                    ca++;
-            }
-#define CONNCHAIN(x,y,z) \
-        else if ((1==x##y) && (1==y##z)) \
-            objsrc=obj##x,obj=obj##y,objsink=obj##z
+#define GETCONNS(a, b) \
+        if (1 != canvas_getconns(obj##a, &out##a##b, obj##b, &in##b##a)) \
+            out##a##b = in##b##a = -1
+        GETCONNS(0, 1);
+        GETCONNS(0, 2);
+        GETCONNS(1, 0);
+        GETCONNS(1, 2);
+        GETCONNS(2, 0);
+        GETCONNS(2, 1);
+#define TRYBYPASS(a, b, c)                        \
+        canvas_try_bypassobj1(x, obj##a, in##a##c, out##a##b, obj##b, in##b##a, out##b##c, obj##c, in##c##b, out##c##a)
 
-        if(2 != (ab+ac+bc+ba+ca+cb)) /* more than two connections between 3 objects */
-            return;
-        CONNCHAIN(a,b,c);
-        CONNCHAIN(a,c,b);
-        CONNCHAIN(b,c,a);
-        CONNCHAIN(b,a,c);
-        CONNCHAIN(c,b,a);
-        CONNCHAIN(c,a,b);
-        else return;
-            /* now find out whether the connections are of the same type (both signals or both messages)
-             * reuse (ab,ba) and (bc,cb) as (outno,inno) of the two connections
-             */
-        ab = ba = -1;
-        bc = cb = -1;
-        for(ab=0; ab<obj_noutlets(objsrc); ab++)
-        {
-            t_outlet*out = 0;
-            t_outconnect *oc = obj_starttraverseoutlet(objsrc, &out, ab);
-            while(oc)
-            {
-                t_object*o;
-                t_inlet*in;
-                oc = obj_nexttraverseoutlet(oc, &o, &in, &ba);
-                if(o == obj)
-                    break;
-                ba = -1;
-            }
-            if (ba>=0)
-                break;
-        }
-        for(bc=0; bc<obj_noutlets(obj); bc++)
-        {
-            t_outlet*out = 0;
-            t_outconnect *oc = obj_starttraverseoutlet(obj, &out, bc);
-            while(oc)
-            {
-                t_object*o;
-                t_inlet*in;
-                oc = obj_nexttraverseoutlet(oc, &o, &in, &cb);
-                if(o == objsink)
-                    break;
-                cb = -1;
-            }
-            if (cb>=0)
-                break;
-        }
-        if(obj_issignaloutlet(objsrc, ab) ^ obj_issignaloutlet(obj, bc))
-            return;
-        if(1)
-        {
-            int A = glist_getindex(x, &objsrc->te_g);
-            int B = glist_getindex(x, &obj->te_g);
-            int C = glist_getindex(x, &objsink->te_g);
-            canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
-            canvas_disconnect(x, A, ab, B, ba);
-            canvas_disconnect(x, B, bc, C, cb);
-            canvas_connect(x, A, ab, C, cb);
-            canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-                A, ab, B, ba));
-            canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
-                B, bc, C, cb));
-            canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
-                A, ab, C, cb));
-            canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
-        }
+        canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
+        0
+            || TRYBYPASS(0,1,2)
+            || TRYBYPASS(0,2,1)
+            || TRYBYPASS(1,0,2)
+            || TRYBYPASS(1,2,0)
+            || TRYBYPASS(2,0,1)
+            || TRYBYPASS(2,1,0);
+        canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
     }
 }
 
