@@ -169,8 +169,12 @@ void canvas_undo_undo(t_canvas *x)
 
         if(UNDO_SEQUENCE_END == udo->u_last->type)
             while((udo->u_last = udo->u_last->prev)
+                  && (UNDO_INIT != udo->u_last->type)
                   && (UNDO_SEQUENCE_START != udo->u_last->type))
-                canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__);
+                if(UNDO_SEQUENCE_END == udo->u_last->type)
+                    bug("undo sequence end");
+                else
+                    canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__);
 
         if(canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__))
         {
@@ -211,7 +215,12 @@ void canvas_undo_redo(t_canvas *x)
         if(UNDO_SEQUENCE_START == udo->u_last->type)
             while((udo->u_last = udo->u_last->next)
                   && (UNDO_SEQUENCE_END != udo->u_last->type))
-                canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);
+                if(UNDO_SEQUENCE_START == udo->u_last->type)
+                    bug("undo sequence start without end");
+                else
+                    canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);
+        else if(UNDO_SEQUENCE_END == udo->u_last->type)
+            bug("undo sequence end without start");
 
         canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);
         undo_action = udo->u_last->name;
