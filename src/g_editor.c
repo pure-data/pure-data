@@ -3593,6 +3593,7 @@ static void canvas_clearline(t_canvas *x)
             x->gl_editor->e_selectline_outno,
             x->gl_editor->e_selectline_index2,
             x->gl_editor->e_selectline_inno);
+        x->gl_editor->e_selectedline = 0;
         canvas_dirty(x, 1);
     }
 }
@@ -3610,6 +3611,7 @@ static void canvas_doclear(t_canvas *x)
             x->gl_editor->e_selectline_outno,
             x->gl_editor->e_selectline_index2,
             x->gl_editor->e_selectline_inno);
+        x->gl_editor->e_selectedline=0;
     }
         /* if text is selected, deselecting it might remake the
            object. So we deselect it and hunt for a "new" object on
