@@ -4,7 +4,7 @@
 #include "g_undo.h"
 
 #if 0
-# define DEBUG_UNDO(x) x
+# define DEBUG_UNDO(x) startpost("[%s:%d] ", __FILE__, __LINE__), x
 #else
 # define DEBUG_UNDO(x) do { } while(0)
 #endif
@@ -131,6 +131,8 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
 
 static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const char*funname)
 {
+    DEBUG_UNDO(post("%s: %s(%d) %d", __FUNCTION__, funname, action, udo->type));
+
     switch(udo->type)
     {
     case UNDO_CONNECT:      return canvas_undo_connect(x, udo->data, action);      //connect
