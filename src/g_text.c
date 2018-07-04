@@ -1395,9 +1395,9 @@ void text_eraseborder(t_text *x, t_glist *glist, char *tag)
     /* change text; if T_OBJECT, remake it.  */
 void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
 {
+    int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
     if (x->te_type == T_OBJECT)
     {
-        int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
         t_binbuf *b = binbuf_new();
         int natom1, natom2, widthwas = x->te_width;
         t_atom *vec1, *vec2;
@@ -1446,7 +1446,6 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
     }
     else
     {
-        int pos = glist_getindex(glist_getcanvas(glist), &x->te_g);;
         binbuf_text(x->te_binbuf, buf, bufsize);
         canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
            (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
