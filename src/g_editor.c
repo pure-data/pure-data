@@ -3648,7 +3648,7 @@ static void canvas_cut(t_canvas *x)
 {
     if (!x->gl_editor)  /* ignore if invisible */
         return;
-    if (x->gl_editor && x->gl_editor->e_selectedline)   /* delete line */
+    if (x->gl_editor->e_selectedline)   /* delete line */
         canvas_clearline(x);
     else if (x->gl_editor->e_textedfor) /* delete selected text in a box */
     {
@@ -3668,7 +3668,7 @@ static void canvas_cut(t_canvas *x)
         rtext_key(x->gl_editor->e_textedfor, 127, &s_);
         canvas_dirty(x, 1);
     }
-    else if (x->gl_editor && x->gl_editor->e_selection)
+    else if (x->gl_editor->e_selection)
     {
     deleteobj:      /* delete one or more objects */
         canvas_undo_add(x, UNDO_CUT, "cut", canvas_undo_set_cut(x, UCUT_CUT));
