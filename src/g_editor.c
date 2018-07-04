@@ -514,6 +514,14 @@ int canvas_undo_connect(t_canvas *x, void *z, int action)
     return 1;
 }
 
+static void canvas_connect_with_undo(t_canvas *x,
+    t_float index1, t_float outno, t_float index2, t_float inno)
+{
+    canvas_connect(x, index1, outno, index2, inno);
+    canvas_undo_add(x, UNDO_CONNECT, "connect", canvas_undo_set_connect(x,
+        index1, outno, index2, inno));
+}
+
 /* ------- specific undo methods: 2. disconnect -------- */
 
 void *canvas_undo_set_disconnect(t_canvas *x,
@@ -563,6 +571,14 @@ int canvas_undo_disconnect(t_canvas *x, void *z, int action)
     else if (action == UNDO_FREE)
         t_freebytes(buf, sizeof(*buf));
     return 1;
+}
+
+static void canvas_disconnect_with_undo(t_canvas *x,
+    t_float index1, t_float outno, t_float index2, t_float inno)
+{
+    canvas_disconnect(x, index1, outno, index2, inno);
+    canvas_undo_add(x, UNDO_DISCONNECT, "disconnect", canvas_undo_set_disconnect(x,
+        index1, outno, index2, inno));
 }
 
 /* ---------- ... 3. cut, clear, and typing into objects: -------- */
