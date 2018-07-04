@@ -1330,7 +1330,6 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
         t_int properties = gfxstub_haveproperties((void *)x);
         if (properties)
         {
-            //sys_vgui("destroy .gfxstub%lx\n", properties);
             gfxstub_deleteforkey(x);
         }
 #endif
@@ -1401,49 +1400,6 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
             canvas_redraw(x->gl_owner);
         }
-#if 0
-            /* update scrollbars when GOP potentially exceeds window size */
-        t_canvas *canvas=(t_canvas *)glist_getcanvas(x);
-
-            /* if gop is being disabled go one level up */
-            /*if (!x->gl_isgraph && x->gl_owner) {
-              canvas=canvas->gl_owner;
-              canvas_redraw(canvas);
-              }*/
-
-            /* if properties window is open,
-             * update the properties with the previous window properties
-             * /
-                 /*t_int properties = gfxstub_haveproperties((void *)x);
-                 if (properties) {
-                 sys_vgui("pdtk_canvas_dialog_undo_update .gfxstub%lx %d %d\n",
-                 properties, x->gl_isgraph, x->gl_hidetext);
-                 sys_vgui(".gfxstub%lx.xscale.entry delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.xrange.entry1 insert 0 %d\n",
-                 properties, x->gl_x1);
-                 sys_vgui(".gfxstub%lx.yrange.entry1 delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.yrange.entry1 insert 0 %d\n",
-                 properties, x->gl_y1);
-                 sys_vgui(".gfxstub%lx.xrange.entry2 delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.xrange.entry2 insert 0 %d\n",
-                 properties, x->gl_x2);
-                 sys_vgui(".gfxstub%lx.yrange.entry2 delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.yrange.entry2 insert 0 %d\n",
-                 properties, x->gl_y2);
-                 sys_vgui(".gfxstub%lx.xrange.entry3 delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.xrange.entry3 insert 0 %d\n",
-                 properties, x->gl_pixwidth);
-                 sys_vgui(".gfxstub%lx.yrange.entry3 delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.yrange.entry3 insert 0 %d\n",
-                 properties, x->gl_pixheight);
-                 sys_vgui(".gfxstub%lx.xrange.entry4 delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.xrange.entry4 insert 0 %d\n",
-                 properties, x->gl_xmargin);
-                 sys_vgui(".gfxstub%lx.yrange.entry4 delete 0 end\n", properties);
-                 sys_vgui(".gfxstub%lx.yrange.entry4 insert 0 %d\n",
-                 properties, x->gl_ymargin);
-                 }*/
-#endif
     }
 
     else if (action == UNDO_FREE)
