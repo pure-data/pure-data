@@ -1453,10 +1453,10 @@ void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize)
     }
     else
     {
-        binbuf_text(x->te_binbuf, buf, bufsize);
         canvas_undo_add(glist_getcanvas(glist), UNDO_RECREATE, "recreate",
            (void *)canvas_undo_set_recreate(glist_getcanvas(glist),
             &x->te_g, pos));
+        binbuf_text(x->te_binbuf, buf, bufsize);
 
     }
 }
