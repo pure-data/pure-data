@@ -107,7 +107,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
        && UNDO_SEQUENCE_START == udo->u_last->type)
     {
             /* empty undo sequence...get rid of it */
-        canvas_undo_undo(x);
+        udo->u_last = udo->u_last->prev;
         canvas_undo_rebranch(x);
         udo->u_last->next = 0;
         canvas_undo_set_name(udo->u_last->name);
