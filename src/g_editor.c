@@ -160,13 +160,14 @@ int gobj_click(t_gobj *x, struct _glist *glist,
 }
 
 /* ------------------------ managing the selection ----------------- */
-
+void glist_deselectline(t_glist *x);
 void glist_selectline(t_glist *x, t_outconnect *oc, int index1,
     int outno, int index2, int inno)
 {
     if (x->gl_editor)
     {
-        glist_noselect(x);
+        glist_deselectline(x);
+
         x->gl_editor->e_selectedline = 1;
         x->gl_editor->e_selectline_index1 = index1;
         x->gl_editor->e_selectline_outno = outno;
@@ -205,8 +206,6 @@ void glist_select(t_glist *x, t_gobj *y)
     if (x->gl_editor)
     {
         t_selection *sel = (t_selection *)getbytes(sizeof(*sel));
-        if (x->gl_editor->e_selectedline)
-            glist_deselectline(x);
             /* LATER #ifdef out the following check */
         if (glist_isselected(x, y)) bug("glist_select");
         sel->sel_next = x->gl_editor->e_selection;
@@ -3052,13 +3051,16 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             /* check for backspace or clear */
         else if (keynum == 8 || keynum == 127)
         {
+            if (x->gl_editor->e_selection)
+                canvas_undo_add(x, UNDO_SEQUENCE_START, "clear", 0);
             if (x->gl_editor->e_selectedline)
                 canvas_clearline(x);
-            else if (x->gl_editor->e_selection)
+            if (x->gl_editor->e_selection)
             {
                 canvas_undo_add(x, UNDO_CUT, "clear",
                     canvas_undo_set_cut(x, UCUT_CLEAR));
                 canvas_doclear(x);
+                canvas_undo_add(x, UNDO_SEQUENCE_END, "clear", 0);
             }
         }
             /* check for arrow keys */
@@ -3871,6 +3873,10 @@ static void canvas_duplicate(t_canvas *x)
 {
     if (!x->gl_editor)
         return;
+
+    if (x->gl_editor->e_selection && x->gl_editor->e_selectedline)
+        glist_deselectline(x);
+
         /* if a connection is selected, we extend it to the right (if possible) */
     if (x->gl_editor->e_selectedline)
     {
