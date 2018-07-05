@@ -102,6 +102,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
 {
     t_undo_action *a = 0;
     t_undo * udo = canvas_undo_get(x);
+    DEBUG_UNDO(post("%s: %d %s %p!", __FUNCTION__, type, name, data));
     if(UNDO_SEQUENCE_END == type
        && udo && udo->u_last
        && UNDO_SEQUENCE_START == udo->u_last->type)
@@ -131,7 +132,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
 
 static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const char*funname)
 {
-    DEBUG_UNDO(post("%s: %s(%d) %d", __FUNCTION__, funname, action, udo->type));
+    DEBUG_UNDO(post("%s: %s(%d) %d %p", __FUNCTION__, funname, action, udo->type, udo->data));
 
     switch(udo->type)
     {
