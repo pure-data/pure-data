@@ -244,6 +244,9 @@ void glist_deselect(t_glist *x, t_gobj *y)
                 if (x->gl_editor->e_textdirty)
                 {
                     z = fuddy;
+                    canvas_undo_add(x, UNDO_SEQUENCE_START, "typing", 0);
+                    canvas_undo_add(x, UNDO_ARRANGE, "arrange",
+                        canvas_undo_set_arrange(x, y, 1));
                     canvas_stowconnections(glist_getcanvas(x));
                     glist_checkanddeselectall(x, y);
                 }
@@ -281,6 +284,7 @@ void glist_deselect(t_glist *x, t_gobj *y)
             text_setto((t_text *)y, x, buf, bufsize);
             canvas_fixlinesfor(x, (t_text *)y);
             x->gl_editor->e_textedfor = 0;
+            canvas_undo_add(x, UNDO_SEQUENCE_END, "typing", 0);
         }
         if (fixdsp)
             canvas_resume_dsp(1);
