@@ -246,6 +246,9 @@ void glist_deselect(t_glist *x, t_gobj *y)
                 if (x->gl_editor->e_textdirty)
                 {
                     z = fuddy;
+                    canvas_undo_add(x, UNDO_SEQUENCE_START, "typing", 0);
+                    canvas_undo_add(x, UNDO_ARRANGE, "arrange",
+                        canvas_undo_set_arrange(x, y, 1));
                     canvas_stowconnections(glist_getcanvas(x));
                     glist_checkanddeselectall(x, y);
                 }
@@ -283,6 +286,7 @@ void glist_deselect(t_glist *x, t_gobj *y)
             text_setto((t_text *)y, x, buf, bufsize);
             canvas_fixlinesfor(x, (t_text *)y);
             x->gl_editor->e_textedfor = 0;
+            canvas_undo_add(x, UNDO_SEQUENCE_END, "typing", 0);
         }
         if (fixdsp)
             canvas_resume_dsp(1);
@@ -1110,7 +1114,6 @@ int canvas_apply_restore_original_position(t_canvas *x, int orig_pos)
 }
 
 /* --------- 7. arrange (to front/back)  ----------- */
-#if 0
 typedef struct _undo_arrange
 {
     int u_previndex;            /* old index */
@@ -1151,8 +1154,9 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
     t_gobj *y_begin = x->gl_list;
     t_gobj *y_end = glist_nth(x, glist_getindex(x,0) - 1);
 
-    if (which == 3) /* to front */
+    switch((int)which)
     {
+    case 3: /* to front */
             /* put the object at the end of the cue */
         y_end->g_next = oldy;
         oldy->g_next = NULL;
@@ -1164,11 +1168,13 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
             oldy_prev->g_next = oldy_next;
         else x->gl_list = oldy_next;
 
+#if 0
             /* and finally redraw */
         gui_vmess("gui_raise", "xs", x, "selected");
-    }
-    if (which == 4) /* to back */
-    {
+#endif
+        break;
+
+    case 4: /* to back */
         x->gl_list = oldy; /* put it to the beginning of the cue */
         oldy->g_next = y_begin; /* make it point to the old beginning */
 
@@ -1179,8 +1185,14 @@ static void canvas_doarrange(t_canvas *x, t_float which, t_gobj *oldy,
             oldy_prev->g_next = oldy_next;
         else oldy_prev->g_next = NULL; /* oldy was the last in the cue */
 
+#if 0
             /* and finally redraw */
         gui_vmess("gui_lower", "xs", x, "selected");
+#endif
+        break;
+    default:
+        bug("canvas_arrange");
+        return;
     }
     canvas_dirty(x, 1);
 }
@@ -1193,8 +1205,11 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
     if (!x->gl_edit)
         canvas_editmode(x, 1);
 
-    if (action == UNDO_UNDO)
+    switch(action)
     {
+
+    case UNDO_UNDO:
+        if(buf->u_newindex == buf->u_previndex) return 1;
             /* this is our object */
         y = glist_nth(x, buf->u_newindex);
 
@@ -1257,9 +1272,9 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
                 /* and finally redraw canvas */
             canvas_redraw(x);
         }
-    }
-    else if (action == UNDO_REDO)
-    {
+        break;
+    case UNDO_REDO:
+        if(buf->u_newindex == buf->u_previndex) return 1;
             /* find our object */
         y = glist_nth(x, buf->u_previndex);
 
@@ -1282,23 +1297,12 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
             oldy_next = y->g_next;
 
         canvas_doarrange(x, action, y, oldy_prev, oldy_next);
-    }
-    else if (action == UNDO_FREE)
-    {
+        break;
+    case UNDO_FREE:
         t_freebytes(buf, sizeof(*buf));
     }
     return 1;
 }
-
-void canvas_arrange_setundo(t_canvas *x, t_gobj *obj, int newindex)
-{
-    canvas_setundo(x, canvas_undo_arrange,
-        canvas_undo_set_arrange(x, obj, newindex), "arrange");
-}
-#else
-void *canvas_undo_set_arrange(t_canvas *x, t_gobj *obj, int newindex) { return 0; }
-int canvas_undo_arrange(t_canvas *x, void *z, int action) { return 1; }
-#endif
 
 /* --------- 8. apply on canvas ----------- */
 typedef struct _undo_canvas_properties
