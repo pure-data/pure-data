@@ -171,13 +171,32 @@ void canvas_undo_undo(t_canvas *x)
         canvas_undo_set_name(udo->u_last->name);
 
         if(UNDO_SEQUENCE_END == udo->u_last->type)
+        {
+            int sequence_depth = 1;
             while((udo->u_last = udo->u_last->prev)
-                  && (UNDO_INIT != udo->u_last->type)
-                  && (UNDO_SEQUENCE_START != udo->u_last->type))
-                if(UNDO_SEQUENCE_END == udo->u_last->type)
-                    bug("undo sequence end");
-                else
+                  && (UNDO_INIT != udo->u_last->type))
+            {
+                DEBUG_UNDO(post("%s:sequence[%d] %d", __FUNCTION__, sequence_depth, udo->u_last->type));
+                switch(udo->u_last->type)
+                {
+                case UNDO_SEQUENCE_START:
+                    sequence_depth--;
+                    break;
+                case UNDO_SEQUENCE_END:
+                    sequence_depth++;
+                    break;
+                default:
                     canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__);
+                }
+                if (sequence_depth < 1)
+                    break;
+            }
+            if (sequence_depth < 0)
+                bug("undo sequence missing end");
+            else if (sequence_depth > 0)
+                bug("undo sequence missing start");
+        }
+
         if(canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__))
         {
             udo->u_last = udo->u_last->prev;
@@ -215,14 +234,30 @@ void canvas_undo_redo(t_canvas *x)
         canvas_undo_set_name(udo->u_last->name);
 
         if(UNDO_SEQUENCE_START == udo->u_last->type)
-            while((udo->u_last = udo->u_last->next)
-                  && (UNDO_SEQUENCE_END != udo->u_last->type))
-                if(UNDO_SEQUENCE_START == udo->u_last->type)
-                    bug("undo sequence start without end");
-                else
+        {
+            int sequence_depth = 1;
+            while(udo->u_last->next && (udo->u_last = udo->u_last->next))
+            {
+                DEBUG_UNDO(post("%s:sequence[%d] %d", __FUNCTION__, sequence_depth, udo->u_last->type));
+                switch(udo->u_last->type)
+                {
+                case UNDO_SEQUENCE_END:
+                    sequence_depth--;
+                    break;
+                case UNDO_SEQUENCE_START:
+                    sequence_depth++;
+                    break;
+                default:
                     canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);
-        else if(UNDO_SEQUENCE_END == udo->u_last->type)
-            bug("undo sequence end without start");
+                }
+                if (sequence_depth < 1)
+                    break;
+            }
+            if (sequence_depth < 0)
+                bug("undo sequence end without start");
+            else if (sequence_depth > 0)
+                bug("undo sequence start without end");
+        }
 
         canvas_undo_doit(x, udo->u_last, UNDO_REDO, __FUNCTION__);
         undo_action = udo->u_last->name;
