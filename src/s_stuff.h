@@ -46,7 +46,6 @@ EXTERN int sys_nearestfontsize(int fontsize);
 
 extern int sys_defaultfont;
 EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
-extern t_symbol *sys_guidir;    /* directory holding pd_gui, u_pdsend, etc */
 
 /* s_loader.c */
 

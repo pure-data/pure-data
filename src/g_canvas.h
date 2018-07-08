@@ -440,7 +440,6 @@ EXTERN void canvas_create_editor(t_glist *x);
 EXTERN void canvas_destroy_editor(t_glist *x);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
-extern int glist_amreloadingabstractions; /* stop GUI changes while reloading */
 
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize);
@@ -527,12 +526,6 @@ EXTERN int canvas_setdeleting(t_canvas *x, int flag);
 #define LB_LOAD 0       /* "loadbang" actions - 0 for original meaning */
 #define LB_INIT 1       /* loaded but not yet connected to parent patch */
 #define LB_CLOSE 2      /* about to close */
-
-    /* Pointer to canvas that was saved necessitating a reload of abstractions
-    of that name.  We use as a flag to stop canvases from being marked "dirty"
-    if we have to touch them to reload; also suppress window list update.
-    "clone~" uses this to identify which copy NOT to reload */
-EXTERN t_glist *glist_reloadingabstraction;
 
 typedef void (*t_undofn)(t_canvas *canvas, void *buf,
     int action);        /* a function that does UNDO/REDO */
