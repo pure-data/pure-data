@@ -316,7 +316,6 @@ EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
 
 EXTERN int canvas_getdollarzero(void);
-EXTERN void canvas_getargs(int *argcp, t_atom **argvp);
 
 EXTERN void iem_inttosymargs(t_iem_init_symargs *symargp, int n);
 EXTERN int iem_symargstoint(t_iem_init_symargs *symargp);
