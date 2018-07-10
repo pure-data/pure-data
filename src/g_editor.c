@@ -3830,6 +3830,125 @@ static void canvas_dopaste(t_canvas *x, t_binbuf *b)
     s__N.s_thing = boundn;
 }
 
+static t_symbol*get_object_type(t_object *obj)
+{
+    t_symbol *s=0;
+    t_binbuf *bb=0;
+    if(!obj)
+        return 0;
+    switch(obj->te_type) {
+    case T_OBJECT:
+        return gensym("obj");
+    case T_MESSAGE:
+        return gensym("msg");
+    case T_TEXT:
+        return gensym("text");
+    default:
+            /* detecting the type of a gatom by using it's save function */
+        bb=binbuf_new();
+        gobj_save(&obj->te_g, bb);
+        binbuf_getpos(bb, 0, 0, &s);
+        binbuf_free(bb);
+        return s;
+    }
+    return 0;
+}
+
+static void canvas_paste_replace(t_canvas *x)
+{
+    int x0=0, y0=0;
+    t_symbol *typ0 = 0;
+    if (!x->gl_editor)
+        return;
+    if(x->gl_editor->e_selection && 1==binbuf_getpos(EDITOR->copy_binbuf, &x0, &y0, &typ0))
+    {
+        t_canvas *canvas = glist_getcanvas(x);
+        t_selection *mysel = 0, *y;
+        t_symbol *seltype = 0;
+
+            /* check whether all the selected objects have the same type */
+        for (y = x->gl_editor->e_selection; y; y = y->sel_next)
+        {
+            t_symbol *s=get_object_type(pd_checkobject(&y->sel_what->g_pd));
+            if (!s)
+                continue;
+            if(seltype && seltype != s)
+            {
+                seltype = 0;
+                break;
+            }
+            seltype = s;
+        }
+
+            /* we will do a lot of reslecting; so copy the selection */
+        for (y = x->gl_editor->e_selection; y; y = y->sel_next)
+        {
+            t_selection *sel = 0;
+            t_object *obj=pd_checkobject(&y->sel_what->g_pd);
+            if(!obj)
+               continue;
+                    /* if the selection mixes obj, msg,... we only want to
+                     * replace the same type;
+                     * if the selection is homogeneous (seltype==NULL), we also allow typechanges
+                     */
+            if (!seltype && get_object_type(obj) != typ0)
+                continue;
+            sel = (t_selection *)getbytes(sizeof(*sel));
+            sel->sel_what = y->sel_what;
+            sel->sel_next = mysel;
+            mysel = sel;
+        }
+
+        canvas_undo_add(x, UNDO_SEQUENCE_START, "paste/replace", 0);
+
+        for (y = mysel; y; y = y->sel_next)
+        {
+            t_object *o = (t_object *)(&y->sel_what->g_pd);
+            int dx = o->te_xpix - x0;
+            int dy = o->te_ypix - y0;
+            glist_noselect(x);
+            EDITOR->canvas_undo_already_set_move = 0;
+                /* save connections and move object to the end */
+                /* note: the undo sequence selects the object as a side-effect */
+            canvas_undo_add(x, UNDO_ARRANGE, "arrange",
+                canvas_undo_set_arrange(x, y->sel_what, 1));
+            canvas_stowconnections(canvas);
+                /* recreate object */
+                /* remove the old object */
+            canvas_undo_add(x, UNDO_CUT, "clear",
+                canvas_undo_set_cut(x, UCUT_CLEAR));
+            canvas_doclear(x);
+
+                /* create the new object (and loadbang if needed) */
+            canvas_applybinbuf(x, EDITOR->copy_binbuf);
+
+            glist_noselect(x);
+            glist_select(x, glist_nth(x, glist_getindex(x, 0) - 1));
+                /* displace object (includes UNDO) */
+            canvas_displaceselection(x, dx, dy);
+                /* restore connections */
+            canvas_restoreconnections(canvas);
+
+            canvas_undo_add(x, UNDO_CREATE, "create",
+                (void *)canvas_undo_set_create(x));
+
+            if (pd_this->pd_newest && pd_class(pd_this->pd_newest) == canvas_class)
+                canvas_loadbang((t_canvas *)pd_this->pd_newest);
+        }
+        canvas_undo_add(x, UNDO_SEQUENCE_END, "paste/replace", 0);
+
+            /* free the selection copy */
+        for (y = mysel; y; )
+        {
+            t_selection*next = y->sel_next;
+            freebytes(y, sizeof(*y));
+            y = next;
+        }
+
+    }
+}
+
+
 static void canvas_paste(t_canvas *x)
 {
     if (!x->gl_editor)
@@ -4519,6 +4638,8 @@ void g_editor_setup(void)
         gensym("copy"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_paste,
         gensym("paste"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_paste_replace,
+        gensym("paste-replace"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_duplicate,
         gensym("duplicate"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_selectall,

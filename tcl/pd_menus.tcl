@@ -63,6 +63,7 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.file entryconfigure [_ "Print..."] -state disabled
 
     # Edit menu
+    $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
@@ -92,6 +93,7 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state normal
     # Edit menu
+    $menubar.edit entryconfigure [_ "Paste Replace"] -state normal
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
     $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state normal
@@ -135,6 +137,7 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
 
     # Edit menu
     $menubar.edit entryconfigure [_ "Font"] -state disabled
+    $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
@@ -190,6 +193,8 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {menu_send $::focused_window paste}
     $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
         -command {menu_send $::focused_window duplicate}
+    $mymenu add command -label [_ "Paste Replace" ]  \
+        -command {menu_send $::focused_window paste-replace}
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {menu_send $::focused_window selectall}
     $mymenu add  separator
