@@ -3712,7 +3712,7 @@ static int binbuf_nextmess(int argc, const t_atom *argv)
     }
     return i;
 }
-static int binbuf_getpos(t_binbuf*b, int *x0, int *y0)
+static int binbuf_getpos(t_binbuf*b, int *x0, int *y0, t_symbol**type)
 {
         /*
          * checks how many objects the binbuf contains and where they are located
@@ -3722,6 +3722,7 @@ static int binbuf_getpos(t_binbuf*b, int *x0, int *y0)
          *          1: single object in binbuf
          *          2: more than one object in binbuf
          * (x0,y0) are the coordinates of the first object
+         * (type) is the type of the first object ("obj", "msg",...)
          */
     t_atom*argv = binbuf_getvec(b);
     int argc = binbuf_getnatom(b);
@@ -3779,6 +3780,7 @@ static int binbuf_getpos(t_binbuf*b, int *x0, int *y0)
     {
         if(x0)*x0=atom_getfloat(argv+2);
         if(y0)*y0=atom_getfloat(argv+3);
+        if(type)*type=s;
     } else
         return 0;
 
@@ -3842,7 +3844,7 @@ static void canvas_paste(t_canvas *x)
         int offset = 0;
         int x0 = 0, y0 = 0;
         int foundplace = 0;
-        binbuf_getpos(EDITOR->copy_binbuf, &x0, &y0);
+        binbuf_getpos(EDITOR->copy_binbuf, &x0, &y0, 0);
         do {
                 /* iterate over all existing objects
                  * to see whether one occupies the space we want.
