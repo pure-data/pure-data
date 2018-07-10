@@ -910,16 +910,16 @@ typedef struct _undo_paste
     int u_index;            /* index of first object pasted */
     int u_sel_index;        /* index of object selected at the time the other
                                object was pasted (for autopatching) */
-    int u_offset;           /* offset for duplicated items (since it differs
+    int u_offset;           /* xy-offset for duplicated items (since it differs
                                when duplicated into same or different canvas */
     t_binbuf *u_objectbuf;  /* here we store actual copied data */
 } t_undo_paste;
 
-void *canvas_undo_set_paste(t_canvas *x, int offset, int duplicate,
+void *canvas_undo_set_paste(t_canvas *x, int numpasted, int duplicate,
     int d_offset)
 {
     t_undo_paste *buf =  (t_undo_paste *)getbytes(sizeof(*buf));
-    buf->u_index = glist_getindex(x, 0) - offset; /* do we need offset at all? */
+    buf->u_index = glist_getindex(x, 0) - numpasted; /* do we need numpasted at all? */
     if (!duplicate && x->gl_editor->e_selection &&
         !x->gl_editor->e_selection->sel_next)
     {
@@ -4305,7 +4305,7 @@ static void canvas_connect_selection(t_canvas *x)
     }
 
         /* exactly three objects are selected
-         * unconnect the middle object, and connect the source to the sink
+         * if they are chained up, unconnect the middle object, and connect the source to the sink
          */
     if ((objsrc = pd_checkobject(&a->g_pd)) &&
         (objsink = pd_checkobject(&b->g_pd)))
