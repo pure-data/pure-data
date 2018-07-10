@@ -4195,6 +4195,35 @@ static int canvas_try_bypassobj1(t_canvas* x,
         canvas_connect_with_undo(x, A, out0, C, in2);
     return 1;
 }
+static int canvas_try_insert(t_canvas *x,
+    t_object* obj00, int in00, int out00,
+    t_object* obj11, int in11, int out11,
+    t_object* obj22, int in22, int out22)
+{
+    int A, B, C;
+        /* check connections (obj00->obj11, but not obj22) */
+    if(out00<0 || out22>=0 || out11>=0 || in00>=0 || in22>=0 || in11<0)
+        return 0;
+
+        /* check whether the connection types match */
+    A = obj_issignaloutlet(obj00, out00);
+    B = obj_issignalinlet(obj22, in11);
+    C = obj_issignaloutlet(obj22, out00);
+    if(!((A && B && C) || !(A || B || C)))
+        return 0;
+
+        /* then connect them */
+    A = glist_getindex(x, &obj00->te_g);
+    B = glist_getindex(x, &obj11->te_g);
+    C = glist_getindex(x, &obj22->te_g);
+
+    canvas_disconnect_with_undo(x, A, out00, B, in11);
+    if (!canvas_isconnected(x, obj00, out00, obj22, in11))
+        canvas_connect_with_undo(x, A, out00, C, in11);
+    if (!canvas_isconnected(x, obj22, out00, obj11, in11))
+        canvas_connect_with_undo(x, C, out00, B, in11);
+    return 1;
+}
     /* If we have two selected objects on the canvas, try to connect
        the first outlet of the upper object to the first inlet with
        a compatible type in the lower one. */
@@ -4306,6 +4335,7 @@ static void canvas_connect_selection(t_canvas *x)
 
         /* exactly three objects are selected
          * if they are chained up, unconnect the middle object, and connect the source to the sink
+         * if only two of them are connected, insert the third
          */
     if ((objsrc = pd_checkobject(&a->g_pd)) &&
         (objsink = pd_checkobject(&b->g_pd)))
@@ -4314,32 +4344,38 @@ static void canvas_connect_selection(t_canvas *x)
         t_object *obj1 = pd_checkobject(&c->g_pd);
         int out01, out02, out10, out12, out20, out21;
         int in01, in02, in10, in12, in20, in21;
-        post("3some");
         if(!obj1
            || (obj0 == obj1)
            || (obj2 == obj1)
            || (obj0 == obj2))
             return;
-#define GETCONNS(a, b) \
+#define GET1CONN(a, b) \
         if (1 != canvas_getconns(obj##a, &out##a##b, obj##b, &in##b##a)) \
             out##a##b = in##b##a = -1
-        GETCONNS(0, 1);
-        GETCONNS(0, 2);
-        GETCONNS(1, 0);
-        GETCONNS(1, 2);
-        GETCONNS(2, 0);
-        GETCONNS(2, 1);
-#define TRYBYPASS(a, b, c)                        \
-        canvas_try_bypassobj1(x, obj##a, in##a##c, out##a##b, obj##b, in##b##a, out##b##c, obj##c, in##c##b, out##c##a)
+        GET1CONN(0, 1);
+        GET1CONN(0, 2);
+        GET1CONN(1, 0);
+        GET1CONN(1, 2);
+        GET1CONN(2, 0);
+        GET1CONN(2, 1);
+#define TRYCONNCHANGE(fun, a, b, c)                                      \
+        canvas_try_##fun(x, obj##a, in##a##c, out##a##b, obj##b, in##b##a, out##b##c, obj##c, in##c##b, out##c##a)
 
         canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
         0
-            || TRYBYPASS(0,1,2)
-            || TRYBYPASS(0,2,1)
-            || TRYBYPASS(1,0,2)
-            || TRYBYPASS(1,2,0)
-            || TRYBYPASS(2,0,1)
-            || TRYBYPASS(2,1,0);
+            || TRYCONNCHANGE(bypassobj1, 0, 1, 2)
+            || TRYCONNCHANGE(bypassobj1, 0, 2, 1)
+            || TRYCONNCHANGE(bypassobj1, 1, 0, 2)
+            || TRYCONNCHANGE(bypassobj1, 1, 2, 0)
+            || TRYCONNCHANGE(bypassobj1, 2, 0, 1)
+            || TRYCONNCHANGE(bypassobj1, 2, 1, 0)
+            || TRYCONNCHANGE(insert,     0, 1, 2)
+            || TRYCONNCHANGE(insert,     0, 2, 1)
+            || TRYCONNCHANGE(insert,     1, 0, 2)
+            || TRYCONNCHANGE(insert,     1, 2, 0)
+            || TRYCONNCHANGE(insert,     2, 0, 1)
+            || TRYCONNCHANGE(insert,     2, 1, 0)
+            ;
         canvas_undo_add(x, UNDO_SEQUENCE_END, "reconnect", 0);
     }
 }
