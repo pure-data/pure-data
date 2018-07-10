@@ -4382,9 +4382,6 @@ static void canvas_connect_selection(t_canvas *x)
             return;
         if(x->gl_editor->e_selectedline)
         {
-            int didit = 0;
-            int objnum = glist_getindex(x, &obj->te_g);
-
             b = glist_nth(x, x->gl_editor->e_selectline_index1);
             objsrc = b?pd_checkobject(&b->g_pd):0;
             b = glist_nth(x, x->gl_editor->e_selectline_index2);
