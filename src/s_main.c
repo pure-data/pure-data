@@ -286,7 +286,7 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 
 // font char metric triples: pointsize width(pixels) height(pixels)
 static int defaultfontshit[] = {
- 8,  5,  11,  10, 6,  13,  12, 7,  16,  16, 10, 19,  24, 14, 29,  36, 22, 44,
+  8,  5, 11,  10,  6, 13,  12,  7, 16,  16, 10, 19,  24, 14, 29,  36, 22, 44,
  16, 10, 22,  20, 12, 26,  24, 14, 32,  32, 20, 38,  48, 28, 58,  72, 44, 88
 }; // normal & zoomed (2x)
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
