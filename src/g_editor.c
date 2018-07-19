@@ -2396,7 +2396,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
                 /* look for an outlet */
             else if (ob && (noutlet = obj_noutlets(ob)) &&
-                     ypos >= y2 - (IOHEIGHT*x->gl_zoom) + x->gl_zoom)
+                ypos >= y2 - (OHEIGHT*x->gl_zoom) + x->gl_zoom)
             {
                 int width = x2 - x1;
                 int iow = IOWIDTH * x->gl_zoom;
@@ -3036,6 +3036,8 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             /* if a text editor is open send the key on, as long as
                it is either "real" (has a key number) or else is an arrow key. */
         else if (x->gl_editor->e_textedfor && (keynum
+            || !strcmp(gotkeysym->s_name, "Home")
+            || !strcmp(gotkeysym->s_name, "End")
             || !strcmp(gotkeysym->s_name, "Up")
             || !strcmp(gotkeysym->s_name, "Down")
             || !strcmp(gotkeysym->s_name, "Left")
@@ -3633,7 +3635,7 @@ static void canvas_doclear(t_canvas *x)
                 if (&y->g_pd == pd_this->pd_newest) glist_select(x, y);
         }
     }
-    while (1)   /* this is pretty wierd...  should rewrite it */
+    while (1)   /* this is pretty weird...  should rewrite it */
     {
         for (y = x->gl_list; y; y = y2)
         {

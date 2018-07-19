@@ -1078,3 +1078,14 @@ t_gotfn zgetfn(t_pd *x, t_symbol *s)
         if (m->me_name == s) return(m->me_fun);
     return(0);
 }
+
+void c_extern(t_externclass *cls, t_newmethod newroutine,
+    t_method freeroutine, t_symbol *name, size_t size, int tiny, \
+    t_atomtype arg1, ...)
+{
+    bug("'c_extern' not implemented.");
+}
+void c_addmess(t_method fn, t_symbol *sel, t_atomtype arg1, ...)
+{
+    bug("'c_addmess' not implemented.");
+}

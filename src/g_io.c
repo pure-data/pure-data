@@ -252,7 +252,7 @@ static void *vinlet_newsig(t_symbol *s)
 
     /* this should be though over:
      * it might prove hard to provide consistency between labeled up- & downsampling methods
-     * maybe indeces would be better...
+     * maybe indices would be better...
      *
      * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
      */
@@ -559,7 +559,7 @@ static void *voutlet_newsig(t_symbol *s)
 
     /* this should be though over:
      * it might prove hard to provide consistency between labeled up- & downsampling methods
-     * maybe indeces would be better...
+     * maybe indices would be better...
      *
      * up till now we provide several upsampling methods and 1 single downsampling method (no filtering !)
      */

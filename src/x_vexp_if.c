@@ -201,7 +201,7 @@ expr_bang(t_expr *x)
         for (i = x->exp_nexpr - 1; i > -1 ; i--) {
                 if (!ex_eval(x, x->exp_stack[i], &x->exp_res[i], 0)) {
                         /*fprintf(stderr,"expr_bang(error evaluation)\n"); */
-                /*  SDY now that we have mutiple ones, on error we should
+                /*  SDY now that we have multiple ones, on error we should
                  * continue
                         return;
                  */
@@ -712,7 +712,7 @@ fexpr_tilde_clear(t_expr *x, t_symbol *s, int argc, t_atom *argv)
         int i, nargs;
 
         /*
-         *  if no arguement clear all input and output buffers
+         *  if no argument clear all input and output buffers
          */
         if (!argc) {
                 for (i = 0; i < x->exp_nexpr; i++)
@@ -801,7 +801,8 @@ expr_setup(void)
             (t_method)expr_ff, sizeof(t_expr), 0, A_GIMME, 0);
         class_addmethod(expr_tilde_class, nullfn, gensym("signal"), 0);
         CLASS_MAINSIGNALIN(expr_tilde_class, t_expr, exp_f);
-        class_addmethod(expr_tilde_class,(t_method)expr_dsp, gensym("dsp"), 0);
+        class_addmethod(expr_tilde_class,(t_method)expr_dsp, gensym("dsp"),
+                                                        A_CANT, 0);
         class_sethelpsymbol(expr_tilde_class, gensym("expr"));
         class_addmethod(expr_tilde_class,(t_method)expr_version,
                                                         gensym("version"), 0);
@@ -817,7 +818,8 @@ expr_setup(void)
         class_addmethod(fexpr_tilde_class,(t_method)expr_stop,
                                                         gensym("stop"), 0);
 
-        class_addmethod(fexpr_tilde_class,(t_method)expr_dsp,gensym("dsp"), 0);
+        class_addmethod(fexpr_tilde_class,(t_method)expr_dsp,gensym("dsp"),
+                                                        A_CANT, 0);
         class_addmethod(fexpr_tilde_class, (t_method)fexpr_tilde_set,
                         gensym("set"), A_GIMME, 0);
         class_addmethod(fexpr_tilde_class, (t_method)fexpr_tilde_clear,

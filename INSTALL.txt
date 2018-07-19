@@ -154,7 +154,7 @@ Platform requirements:
 Install the core build requirements using your distribution's package manager.
 For Debian, you can install the compiler chain, autotools, & gettext with:
 
-    sudo apt-get install build-essentials automake autoconf libtool gettext
+    sudo apt-get install build-essential automake autoconf libtool gettext
 
 For libraries, you will need to install the "development" versions which include
 the source code header files. In Debian, the ALSA development package is called
@@ -367,7 +367,7 @@ cross-compilation toolchain.
 
 For Debian based systems (e.g. Ubuntu), you can install the toolchain with:
 
-    sudo apt-get install build-essentials automake autoconf libtool gettext
+    sudo apt-get install build-essential automake autoconf libtool gettext
     sudo apt-get install mingw-w64 mingw-w64-tools
     sudo apt-get install nsis
 
