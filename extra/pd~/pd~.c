@@ -238,7 +238,8 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             }
         }
     }
-        /* check that the scheduler dynamic linkable exists w either sffix */
+
+        /* check that the scheduler dynamic linkable exists w either suffix */
     snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
         pd_tilde_dllextent);
     sys_bashfilename(tmpbuf, schedbuf);
@@ -764,7 +765,7 @@ void pd_tilde_setup(void)
     pd_tilde_class = class_new(gensym("pd~"), (t_newmethod)pd_tilde_new,
         (t_method)pd_tilde_free, sizeof(t_pd_tilde), 0, A_GIMME, 0);
     class_addmethod(pd_tilde_class, nullfn, gensym("signal"), 0);
-    class_addmethod(pd_tilde_class, (t_method)pd_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(pd_tilde_class, (t_method)pd_tilde_dsp, gensym("dsp"), A_CANT, 0);
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"), A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
     post("pd~ version 0.3");

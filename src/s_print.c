@@ -258,7 +258,7 @@ void pd_error(void *object, const char *fmt, ...)
 void glob_finderror(t_pd *dummy)
 {
     if (!error_object)
-        post("no findable error yet.");
+        post("no findable error yet");
     else
     {
         post("last trackable error:");

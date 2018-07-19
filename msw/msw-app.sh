@@ -211,16 +211,16 @@ if [ "x$prototype_tk" = xfalse ] ; then
 
     # remove bundled Tcl packges Pd doesn't need
     rm -rf $APP/lib/itcl* $APP/lib/sqlite* $APP/lib/tdbc*
+fi
 
-    # install pthread from MinGW from:
-    # * Windows:             $MINGW_PREFIX/bin
-    # * Linux cross-compile: $MINGW_PREFIX/lib
-    if [ "x${MINGW_PREFIX}" != "x" ] ; then
-        if [ -e $MINGW_PREFIX/bin/$PTHREAD_DLL ] ; then
-            cp -v $MINGW_PREFIX/bin/$PTHREAD_DLL $APP/bin
-        elif [ -e $MINGW_PREFIX/lib/$PTHREAD_DLL ] ; then
-            cp -v $MINGW_PREFIX/lib/$PTHREAD_DLL $APP/bin
-        fi
+# install pthread from MinGW from:
+# * Windows:             $MINGW_PREFIX/bin
+# * Linux cross-compile: $MINGW_PREFIX/lib
+if [ "x${MINGW_PREFIX}" != "x" ] ; then
+    if [ -e $MINGW_PREFIX/bin/$PTHREAD_DLL ] ; then
+        cp -v $MINGW_PREFIX/bin/$PTHREAD_DLL $APP/bin
+    elif [ -e $MINGW_PREFIX/lib/$PTHREAD_DLL ] ; then
+        cp -v $MINGW_PREFIX/lib/$PTHREAD_DLL $APP/bin
     fi
 fi
 
