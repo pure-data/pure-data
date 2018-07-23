@@ -429,7 +429,7 @@ int alsa_send_dacs(void)
     static double timenow;
     double timelast;
     t_sample *fp, *fp1, *fp2;
-    int i, j, k, err, iodev, result, ch, resync = 0;;
+    int i, j, k, err, iodev, result, ch, goterror = 0;
     int chansintogo, chansouttogo;
     unsigned int transfersize;
 
@@ -568,8 +568,12 @@ int alsa_send_dacs(void)
                 if (result < 0)
                     fprintf(stderr, "read reset error %d\n", result);
             }
-            else fprintf(stderr, "read other error %d\n", result);
-            resync = 1;
+            else
+            {
+                fprintf(stderr, "read error: %s (%d)\n",
+                    strerror(-result), result);
+                goterror = 1;
+            }
         }
 
         /* zero out the output buffer */
@@ -610,8 +614,12 @@ int alsa_send_dacs(void)
                 if (result < 0)
                     fprintf(stderr, "read reset error %d\n", result);
             }
-            else fprintf(stderr, "read other error %d\n", result);
-            resync = 1;
+            else
+            {
+                fprintf(stderr, "read error: %s (%d)\n",
+                    strerror(-result), result);
+                goterror = 1;
+            }
         }
         if (alsa_indev[iodev].a_sampwidth == 4)
         {
@@ -667,11 +675,17 @@ int alsa_send_dacs(void)
         if (!checkcountdown--)
         {
             checkcountdown = 10;
-            if (alsa_nindev + alsa_noutdev > 1)
+            if (alsa_nindev + alsa_noutdev > 1 && !goterror)
                 alsa_checkiosync();   /*  check I/O are in sync */
         }
     }
-    return SENDDACS_YES;
+        /* if there were errors we can't use this as a timing source.
+        LATER get it together to close A/D/A when this happens and
+        switch to software clock.  Choosing 5000 msec here so it will be
+        clear to user that we're not timing right. */
+    if (goterror)
+        sys_microsleep(5000);
+    return (SENDDACS_YES);
 }
 
 void alsa_printstate( void)
