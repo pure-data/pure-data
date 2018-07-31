@@ -25,6 +25,7 @@ standard output. */
 #include <netdb.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/select.h>
 #define SOCKET_ERROR -1
 #endif
 

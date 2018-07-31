@@ -21,6 +21,7 @@ typedef int socklen_t;
 #include <ctype.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <signal.h>
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -73,6 +74,15 @@ static char pd_tilde_dllextent[] = ".d_fat",
 #endif
 #if defined(_WIN32) || defined(__CYGWIN__)
 static char pd_tilde_dllextent[] = ".m_i386", pd_tilde_dllextent2[] = ".dll";
+#endif
+#if defined(__OPENBSD__)
+#ifdef __x86_64__
+static char pd_tilde_dllextent[] = ".o_amd64",
+    pd_tilde_dllextent2[] = ".pd_openbsd";
+#else
+static char pd_tilde_dllextent[] = ".o_i386",
+    pd_tilde_dllextent2[] = ".pd_openbsd";
+#endif
 #endif
 
 #define FOOFOO
