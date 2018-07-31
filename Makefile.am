@@ -55,7 +55,7 @@ DIST_SUBDIRS = asio doc extra font mac man msw po portmidi portaudio src tcl
 # optionaly build localizations
 if MSGFMT
 locales:
-	make -C po all
+	${MAKE} -C po all
 else
 locales:
 endif
@@ -63,12 +63,12 @@ endif
 if MACOSX
 # forward target to mac/Makefile
 app:
-	make -C mac app
+	${MAKE} -C mac app
 endif
 if WINDOWS
 # forward target to msw/Makefile
 app:
-	make -C msw app
+	${MAKE} -C msw app
 endif
 
 # startup location for GUI plugins and/or patches,
