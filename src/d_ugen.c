@@ -613,8 +613,8 @@ int ugen_getsortno(void)
     return (THIS->u_sortno);
 }
 
-#if 1
-void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
+#if 0
+void glob_ugen_printstate(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i, count;
     t_signal *sig;
