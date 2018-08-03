@@ -23,6 +23,7 @@ objects use Posix-like threads.  */
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include <limits.h>
 
 #include "m_pd.h"
 
