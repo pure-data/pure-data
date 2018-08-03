@@ -1836,6 +1836,8 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
             /* if a text editor is open send the key on, as long as
             it is either "real" (has a key number) or else is an arrow key. */
         else if (x->gl_editor->e_textedfor && (keynum
+            || !strcmp(gotkeysym->s_name, "Home")
+            || !strcmp(gotkeysym->s_name, "End")
             || !strcmp(gotkeysym->s_name, "Up")
             || !strcmp(gotkeysym->s_name, "Down")
             || !strcmp(gotkeysym->s_name, "Left")

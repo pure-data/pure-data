@@ -1243,7 +1243,7 @@ static int sys_do_startgui(const char *libdir)
         strcat(wishbuf, "/" PDBINDIR WISH);
         sys_bashfilename(wishbuf, wishbuf);
 
-        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, 0);
+        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, NULL);
         if (spawnret < 0)
         {
             perror("spawnl");
