@@ -77,7 +77,6 @@
 #include <math.h>
 #undef __STRICT_BSD__
 
-
 #include "x_vexp.h"
 
 struct ex_ex *ex_eval(struct expr *expr, struct ex_ex *eptr,
@@ -537,17 +536,6 @@ ex_toint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
 #define toint(x)        ((int)(x))
                 FUNC_EVAL_UNARY(left, toint, (int), optr, 0);
         }
-
-#ifdef _WIN32
-/* No rint in NT land ??? */
-double rint(double x);
-
-double
-rint(double x)
-{
-        return (floor(x + 0.5));
-}
-#endif
 
 /*
  * ex_rint -- rint() round to the nearest int according to the common
