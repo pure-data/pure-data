@@ -12,7 +12,7 @@ window.;
 patch.;
 #X text 46 531 see also:;
 #X obj 134 531 fft~;
-#X text 44 567 ... and the control.blocksize and up.downsampling audio
+#X text 44 567 ... and the control.blocksize and oversampling audio
 example patches.;
 #X text 194 459 <--- example usage in subpatch;
 #X text 43 92 Switch~ \, in addition \, allows you to switch DSP on
