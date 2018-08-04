@@ -329,6 +329,12 @@ int sys_main(int argc, char **argv)
     /* use Win32 "binary" mode by default since we don't want the
      * translation that Win32 does by default */
 #ifdef _WIN32
+    {
+        short version = MAKEWORD(2, 0);
+        WSADATA nobby;
+        if (WSAStartup(version, &nobby))
+            sys_sockerror("WSAstartup");
+    }
 # ifdef _MSC_VER /* MS Visual Studio */
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
