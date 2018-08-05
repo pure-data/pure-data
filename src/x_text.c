@@ -404,28 +404,22 @@ static void text_client_argparse(t_text_client *x, int *argcp, t_atom **argvp,
     t_atom *argv = *argvp;
     x->tc_sym = x->tc_struct = x->tc_field = 0;
     gpointer_init(&x->tc_gp);
-    while (argc && argv->a_type == A_SYMBOL &&
-        *argv->a_w.w_symbol->s_name == '-')
+    if (argc && argv->a_type == A_SYMBOL &&
+        !strcmp(argv->a_w.w_symbol->s_name, "-s"))
     {
-        if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
-            argc >= 3 && argv[1].a_type == A_SYMBOL && argv[2].a_type == A_SYMBOL)
+        if (argc < 3 || argv[1].a_type != A_SYMBOL ||
+            argv[2].a_type != A_SYMBOL)
+                pd_error(x, "%s: '-s' needs a struct and field name", name);
+        else
         {
             x->tc_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
             x->tc_field = argv[2].a_w.w_symbol;
-            argc -= 2; argv += 2;
+            argc -= 3; argv += 3;
         }
-        else
-        {
-            pd_error(x, "%s: unknown flag '%s'...", name,
-                argv->a_w.w_symbol->s_name);
-        }
-        argc--; argv++;
     }
-    if (argc && argv->a_type == A_SYMBOL)
+    else if (argc && argv->a_type == A_SYMBOL)
     {
-        if (x->tc_struct)
-            pd_error(x, "%s: extra names after -s..", name);
-        else x->tc_sym = argv->a_w.w_symbol;
+        x->tc_sym = argv->a_w.w_symbol;
         argc--; argv++;
     }
     *argcp = argc;
