@@ -207,8 +207,9 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
         {
             x->x_hop = period * re_parentvecsize;
 
-            x->x_fill = x->x_endbuf -
-              (x->x_hop - prologphase * re_parentvecsize);
+            x->x_fill = prologphase ?
+                x->x_endbuf - (x->x_hop - prologphase * re_parentvecsize) :
+                    x->x_endbuf;
 
             if (upsample * downsample == 1)
                     dsp_add(vinlet_doprolog, 3, x, insig->s_vec,
