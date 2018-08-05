@@ -193,7 +193,8 @@ static void textbuf_write(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
 static void textbuf_free(t_textbuf *x)
 {
     t_pd *x2;
-    binbuf_free(x->b_binbuf);
+    if (x->b_binbuf)
+        binbuf_free(x->b_binbuf);
     if (x->b_guiconnect)
     {
         sys_vgui("destroy .x%lx\n", x);
@@ -380,10 +381,12 @@ static void text_define_notify(t_text_define *x)
 
 static void text_define_free(t_text_define *x)
 {
+    x->x_binbuf = 0; /* prevent double deletion */
     textbuf_free(&x->x_textbuf);
     if (x->x_bindsym != &s_)
         pd_unbind(&x->x_ob.ob_pd, x->x_bindsym);
     gpointer_unset(&x->x_gp);
+    /* deleting the scalar will automatically free the binbuf */
     pd_free(&x->x_scalar->sc_gobj.g_pd);
     x->x_canvas->gl_valid = ++glist_valid; /* invalidate pointers */
 }
