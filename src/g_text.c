@@ -1158,6 +1158,7 @@ static int text_click(t_gobj *z, struct _glist *glist,
 void text_save(t_gobj *z, t_binbuf *b)
 {
     t_text *x = (t_text *)z;
+    int savedacanvas = 0;
     if (x->te_type == T_OBJECT)
     {
             /* if we have a "saveto" method, and if we don't happen to be
@@ -1170,6 +1171,7 @@ void text_save(t_gobj *z, t_binbuf *b)
             mess1(&x->te_pd, gensym("saveto"), b);
             binbuf_addv(b, "ssii", gensym("#X"), gensym("restore"),
                 (int)x->te_xpix, (int)x->te_ypix);
+            savedacanvas = 1;
         }
         else    /* otherwise just save the text */
         {
@@ -1206,7 +1208,11 @@ void text_save(t_gobj *z, t_binbuf *b)
         binbuf_addbinbuf(b, x->te_binbuf);
     }
     if (x->te_width)
-        binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+    {
+        if (savedacanvas)
+            binbuf_addv(b, ";ssi", gensym("#X"), gensym("f"), (int)x->te_width);
+        else binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+    }
     binbuf_addv(b, ";");
 }
 
