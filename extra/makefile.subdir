@@ -41,7 +41,7 @@ pd_linux: $(NAME).pd_linux
 LINUXCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer -fPIC \
     -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch \
-    -Wno-cast-function-type $(CFLAGS) $(MORECFLAGS)
+    $(CFLAGS) $(MORECFLAGS)
 
 LINUXINCLUDE =  -I../../src
 
