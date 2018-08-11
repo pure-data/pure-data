@@ -39,7 +39,7 @@
 static void alsa_checkiosync( void);
 static void alsa_numbertoname(int iodev, char *devname, int nchar);
 static int alsa_jittermax;
-#define ALSA_DEFJITTERMAX 3
+#define ALSA_DEFJITTERMAX 5
 
     /* don't assume we can turn all 31 bits when doing float-to-fix;
     otherwise some audio drivers (e.g. Midiman/ALSA) wrap around. */
@@ -691,7 +691,7 @@ int alsa_send_dacs(void)
 void alsa_printstate( void)
 {
     int i, result, iodev = 0;
-    snd_pcm_sframes_t indelay = 0, outdelay = 0;
+    snd_pcm_sframes_t indelay = 0, inavail = 0, outdelay = 0, outavail = 0;
     if (sys_audioapi != API_ALSA)
     {
         error("restart-audio: implemented for ALSA only.");
@@ -699,19 +699,21 @@ void alsa_printstate( void)
     }
     if (STUFF->st_inchannels)
     {
-        result = snd_pcm_delay(alsa_indev[iodev].a_handle, &indelay);
+        result = snd_pcm_avail_delay(alsa_indev[iodev].a_handle, &inavail,
+            &indelay);
         if (result < 0)
             post("snd_pcm_delay (in) returned %d", result);
-        post("in delay %d", indelay);
+        post("in delay %d available %d", indelay, inavail);
     }
     if (STUFF->st_outchannels)
     {
-        result = snd_pcm_delay(alsa_outdev[iodev].a_handle, &outdelay);
+        result = snd_pcm_avail_delay(alsa_outdev[iodev].a_handle, &outavail,
+            &outdelay);
         if (result < 0)
             post("snd_pcm_delay (out) returned %d", result);
-        post("out delay %d", outdelay);
+        post("out delay %d available %d", outdelay, outavail);
     }
-    post("sum %d (%d mod 64)", indelay + outdelay, (indelay+outdelay)%64);
+    post("sum delay %d available %d", indelay + outdelay, inavail + outavail);
 
     post("buf samples %d", alsa_buf_samps);
     post("");
@@ -755,13 +757,13 @@ static void alsa_checkiosync( void)
 {
     int i, result, giveup = 50, alreadylogged = 0, iodev = 0, err;
     snd_pcm_sframes_t minphase, maxphase, thisphase, outdelay;
-
     while (1)
     {
         if (giveup-- <= 0)
         {
             post("tried but couldn't sync A/D/A");
-            alsa_jittermax += 1;
+            if (alsa_jittermax < 6)
+                alsa_jittermax += 1;
             return;
         }
         minphase = 0x7fffffff;
@@ -789,10 +791,15 @@ static void alsa_checkiosync( void)
                     check_error(err, 0, "restart failed");
             }
             result = snd_pcm_delay(alsa_outdev[iodev].a_handle, &outdelay);
-                /* we don't check whether snd_pcm_delay() failed here because,
-                in a mysterious change in the API ca. 2017, "result" can
-                be negative the number of late samples instead if indicating
-                an error. */
+                /* In a mysterious change in the API ca. 2017, "result" can
+                be negative the number of late samples instead of indicating
+                an error.  In this case, reset and query again. */
+            if (result < 0)
+            {
+                snd_pcm_reset(alsa_outdev[iodev].a_handle);
+                result = snd_pcm_delay(alsa_outdev[iodev].a_handle,
+                    &outdelay);
+            }
             thisphase = alsa_buf_samps - outdelay;
             if (thisphase < minphase)
                 minphase = thisphase;
