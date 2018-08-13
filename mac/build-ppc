@@ -38,7 +38,8 @@ mv pd-$1/* .
 rmdir pd-$1
 cd src
 mkdir ../obj ../bin
-JACK=true make -f makefile.mac "ARCH=-arch ppc" "EXTRAARCH=-arch ppc"
+JACK=true make -f makefile.mac "ARCH=-arch ppc" "EXTRAARCH=-arch ppc" \
+    EXTERNTYPE=d_ppc
 cd ..
 ln -s tcl Scripts
 cd ../../..

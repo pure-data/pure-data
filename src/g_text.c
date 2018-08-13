@@ -1158,6 +1158,7 @@ static int text_click(t_gobj *z, struct _glist *glist,
 void text_save(t_gobj *z, t_binbuf *b)
 {
     t_text *x = (t_text *)z;
+    int savedacanvas = 0;
     if (x->te_type == T_OBJECT)
     {
             /* if we have a "saveto" method, and if we don't happen to be
@@ -1170,6 +1171,7 @@ void text_save(t_gobj *z, t_binbuf *b)
             mess1(&x->te_pd, gensym("saveto"), b);
             binbuf_addv(b, "ssii", gensym("#X"), gensym("restore"),
                 (int)x->te_xpix, (int)x->te_ypix);
+            savedacanvas = 1;
         }
         else    /* otherwise just save the text */
         {
@@ -1206,7 +1208,11 @@ void text_save(t_gobj *z, t_binbuf *b)
         binbuf_addbinbuf(b, x->te_binbuf);
     }
     if (x->te_width)
-        binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+    {
+        if (savedacanvas)
+            binbuf_addv(b, ";ssi", gensym("#X"), gensym("f"), (int)x->te_width);
+        else binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+    }
     binbuf_addv(b, ";");
 }
 
@@ -1241,7 +1247,8 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
 {
     int n = obj_noutlets(ob), nplus = (n == 1 ? 1 : n-1), i;
     int width = x2 - x1;
-    int iow = IOWIDTH * glist->gl_zoom, ioh = IOHEIGHT * glist->gl_zoom;
+    int iow = IOWIDTH * glist->gl_zoom;
+    int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
     /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
     for (i = 0; i < n; i++)
     {
@@ -1250,13 +1257,13 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
             sys_vgui(".x%lx.c create rectangle %d %d %d %d "
                 "-tags [list %so%d outlet] -fill black\n",
                 glist_getcanvas(glist),
-                onset, y2 - ioh + glist->gl_zoom,
+                onset, y2 - oh + glist->gl_zoom,
                 onset + iow, y2,
                 tag, i);
         else
             sys_vgui(".x%lx.c coords %so%d %d %d %d %d\n",
                 glist_getcanvas(glist), tag, i,
-                onset, y2 - ioh + glist->gl_zoom,
+                onset, y2 - oh + glist->gl_zoom,
                 onset + iow, y2);
     }
     n = obj_ninlets(ob);
@@ -1269,13 +1276,13 @@ void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
                 "-tags [list %si%d inlet] -fill black\n",
                 glist_getcanvas(glist),
                 onset, y1,
-                onset + iow, y1 + ioh - glist->gl_zoom,
+                onset + iow, y1 + ih - glist->gl_zoom,
                 tag, i);
         else
             sys_vgui(".x%lx.c coords %si%d %d %d %d %d\n",
                 glist_getcanvas(glist), tag, i,
                 onset, y1,
-                onset + iow, y1 + ioh - glist->gl_zoom);
+                onset + iow, y1 + ih - glist->gl_zoom);
     }
 }
 

@@ -57,7 +57,8 @@ CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes  -Wno-address\
-    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch
+    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch \
+    -Wno-cast-function-type
 
 # code generation flags (e.g., optimization).  
 CODECFLAGS = -g -O3 -ffast-math -funroll-loops -fomit-frame-pointer
@@ -192,6 +193,7 @@ ABOUT_FILE=$(DESTDIR)$(pddocdir)/1.manual/1.introduction.txt
 install:  all
 	install -d $(DESTDIR)$(libpdbindir)
 	install $(BIN_DIR)/pd-watchdog $(DESTDIR)$(libpdbindir)/pd-watchdog
+	install $(BINARYMODE) $(PDEXEC) $(DESTDIR)$(libpdbindir)/pd
 	install -d $(DESTDIR)$(bindir)
 	install $(BINARYMODE) $(PDEXEC) $(DESTDIR)$(bindir)/pd
 	install -m755 $(BIN_DIR)/pdsend $(DESTDIR)$(bindir)/pdsend

@@ -157,12 +157,12 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     set filename [tk_getSaveFile -initialfile "pdwindow.txt" -defaultextension .txt]
     if {$filename eq ""} return; # they clicked cancel
     set f [open $filename w]
-    puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION.$::PD_BUGFIX_VERSION.$::PD_TEST_VERSION on $::windowingsystem"
-    puts $f "Tcl/Tk [info patchlevel]"
-    puts $f "------------------------------------------------------------------------------"
+    puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
+    puts $f "--------------------------------------------------------------------------------"
     foreach {object_id level message} $logbuffer {
-        puts $f $message
+        puts $f [string trimright $message]
     }
+    ::pdwindow::post "saved console to: $filename\n"
     close $f
 }
 # this has 'args' to satisfy trace, but its not used

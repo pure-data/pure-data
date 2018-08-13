@@ -180,8 +180,11 @@ void hradio_draw_io(t_hradio* x, t_glist* glist, int old_snd_rcv_flags)
                  xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
                  xpos + iow, ypos + x->x_gui.x_h,
                  x, 0);
-        if(x->x_on == 0) /* keep button above outlet */
+        /* keep these above outlet */
+        if(x->x_on == 0) {
             sys_vgui(".x%lx.c raise %lxBUT%d %lxOUT%d\n", canvas, x, x->x_on, x, 0);
+            sys_vgui(".x%lx.c raise %lxLABEL %lxBUT%d\n", canvas, x, x, x->x_on);
+        }
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
@@ -192,8 +195,11 @@ void hradio_draw_io(t_hradio* x, t_glist* glist, int old_snd_rcv_flags)
                  xpos, ypos,
                  xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
                  x, 0);
-        if(x->x_on == 0) /* keep button above inlet */
+        /* keep these above inlet */
+        if(x->x_on == 0) {
             sys_vgui(".x%lx.c raise %lxBUT%d %lxIN%d\n", canvas, x, x->x_on, x, 0);
+            sys_vgui(".x%lx.c raise %lxLABEL %lxBUT%d\n", canvas, x, x, x->x_on);
+        }
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);
@@ -569,11 +575,9 @@ static void hradio_single_change(t_hradio *x)
 static void *hradio_donew(t_symbol *s, int argc, t_atom *argv, int old)
 {
     t_hradio *x = (t_hradio *)pd_new(old ? hradio_old_class : hradio_class);
-    int a=IEM_GUI_DEFAULTSIZE, on = 0, f = 0;
+    int a = IEM_GUI_DEFAULTSIZE, on = 0;
     int ldx = 0, ldy = -8, chg = 1, num = 8;
     int fs = 10;
-    int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME, fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
-    char str[144];
     float fval = 0;
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);

@@ -23,6 +23,7 @@ objects use Posix-like threads.  */
 #include <string.h>
 #include <errno.h>
 #include <math.h>
+#include <limits.h>
 
 #include "m_pd.h"
 
@@ -260,7 +261,7 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
 
 int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
 {
-    int format, nchannels, bigendian, bytespersamp, samprate, swap;
+    int nchannels, bigendian, bytespersamp, samprate, swap;
     int headersize = 0;
     long sysrtn, bytelimit = 0x7fffffff;
     errno = 0;
@@ -357,7 +358,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                 if (!strncmp(wavechunk->wc_id, "fmt ", 4))
                 {
                     long commblockonset = headersize + 8;
-                    seekout = lseek(fd, commblockonset, SEEK_SET);
+                    seekout = (long)lseek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
                     if (read(fd, buf.b_c, sizeof(t_fmt)) < (int) sizeof(t_fmt))
@@ -373,7 +374,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else goto badheader;
                     samprate = swap4(buf.b_fmt.f_samplespersec, swap);
                 }
-                seekout = lseek(fd, seekto, SEEK_SET);
+                seekout = (long)lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
                 if (read(fd, buf.b_c, sizeof(t_wavechunk)) <
@@ -420,7 +421,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                 {
                     long commblockonset = headersize + 8;
                     t_comm *commchunk;
-                    seekout = lseek(fd, commblockonset, SEEK_SET);
+                    seekout = (long)lseek(fd, commblockonset, SEEK_SET);
                     if (seekout != commblockonset)
                         goto badheader;
                     if (read(fd, buf.b_c, sizeof(t_comm)) <
@@ -436,7 +437,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
                     else goto badheader;
                     samprate = readaiffsamprate((char *)commchunk->c_samprate, swap);
                 }
-                seekout = lseek(fd, seekto, SEEK_SET);
+                seekout = (long)lseek(fd, seekto, SEEK_SET);
                 if (seekout != seekto)
                     goto badheader;
                 if (read(fd, buf.b_c, sizeof(t_datachunk)) <
@@ -449,7 +450,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *p_info, long skipframes)
         }
     }
         /* seek past header and any sample frames to skip */
-    sysrtn = lseek(fd,
+    sysrtn = (long)lseek(fd,
         ((off_t)nchannels) * bytespersamp * skipframes + headersize, 0);
     if (sysrtn != nchannels * bytespersamp * skipframes + headersize)
         return (-1);
@@ -1243,7 +1244,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
 {
     t_soundfile_info info;
     int resize = 0, i;
-    long skipframes = 0, finalsize = 0, itemsleft,
+    long skipframes = 0, finalsize = 0,
         maxsize = DEFMAXSIZE, itemsread = 0, j;
     int fd = -1;
     char endianness, *filename;
@@ -1302,7 +1303,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         else if (!strcmp(flag, "maxsize"))
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
-                ((maxsize = argv[1].a_w.w_float) < 0))
+                ((maxsize = (argv[1].a_w.w_float > LONG_MAX ?
+                LONG_MAX : argv[1].a_w.w_float)) < 0))
                     goto usage;
             resize = 1;     /* maxsize implies resize. */
             argc -= 2; argv += 2;
@@ -1350,8 +1352,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             /* figure out what to resize to */
         long poswas, eofis, framesinfile;
 
-        poswas = lseek(fd, 0, SEEK_CUR);
-        eofis = lseek(fd, 0, SEEK_END);
+        poswas = (long)lseek(fd, 0, SEEK_CUR);
+        eofis = (long)lseek(fd, 0, SEEK_END);
         if (poswas < 0 || eofis < 0 || eofis < poswas)
         {
             pd_error(x, "soundfiler_read: lseek failed");
@@ -1403,7 +1405,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
 
     for (i = 0; i < argc; i++)
     {
-        int nzero, vecsize;
+        int vecsize;
         if (garray_getfloatwords(garrays[i], &vecsize, &vecs[i]))
             for (j = itemsread; j < vecsize; j++)
                 vecs[i][j].w_float = 0;
@@ -1440,13 +1442,12 @@ done:
 long soundfiler_dowrite(void *obj, t_canvas *canvas,
     int argc, t_atom *argv, t_soundfile_info *info)
 {
-    int endianness, swap, filetype, normalize, i;
-    long onset, nframes, itemsleft,
-        maxsize = DEFMAXSIZE, itemswritten = 0, j;
+    int swap, filetype, normalize, i;
+    long onset, nframes, itemswritten = 0, j;
     t_garray *garrays[MAXSFCHANS];
     t_word *vectors[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
-    int bufframes, nitems;
+    int bufframes;
     int fd = -1;
     t_sample normfactor, biggest = 0;
     t_float samplerate;
@@ -1520,7 +1521,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
 
     for (itemswritten = 0; itemswritten < nframes; )
     {
-        long thiswrite = nframes - itemswritten, nitems, nbytes;
+        long thiswrite = nframes - itemswritten, nbytes;
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
         soundfile_xferout_words(argc, vectors, (unsigned char *)sampbuf,
             thiswrite, onset, info->bytespersample, info->bigendian, normfactor);
@@ -1648,7 +1649,7 @@ typedef struct _readsf
     int x_sigcountdown;     /* counter for signalling child for more data */
     int x_sigperiod;        /* number of ticks per signal */
     int x_filetype;         /* writesf~ only; type of file to create */
-    int x_itemswritten;     /* writesf~ only; items writen */
+    int x_itemswritten;     /* writesf~ only; items written */
     int x_swap;             /* writesf~ only; true if byte swapping */
     t_float x_f;              /* writesf~ only; scalar for signal inlet */
     pthread_mutex_t x_mutex;
@@ -2032,7 +2033,7 @@ static t_int *readsf_perform(t_int *w)
     t_sample *fp;
     if (x->x_state == STATE_STREAM)
     {
-        int wantbytes, nchannels, sfchannels = x->x_sfchannels;
+        int wantbytes, sfchannels = x->x_sfchannels;
         pthread_mutex_lock(&x->x_mutex);
         wantbytes = sfchannels * vecsize * bytespersample;
         while (
@@ -2277,9 +2278,6 @@ static void *writesf_child_main(void *zz)
 
                 /* copy file stuff out of the data structure so we can
                 relinquish the mutex while we're in open_soundfile(). */
-            long onsetframes = x->x_onsetframes;
-            long bytelimit = 0x7fffffff;
-            int skipheaderbytes = x->x_skipheaderbytes;
             int bytespersample = x->x_bytespersample;
             int sfchannels = x->x_sfchannels;
             int bigendian = x->x_bigendian;
@@ -2302,7 +2300,6 @@ static void *writesf_child_main(void *zz)
             if (x->x_fd >= 0)
             {
                 int bytesperframe = x->x_bytespersample * x->x_sfchannels;
-                int bigendian = x->x_bigendian;
                 char *filename = x->x_filename;
                 int fd = x->x_fd;
                 int filetype = x->x_filetype;
@@ -2443,7 +2440,6 @@ static void *writesf_child_main(void *zz)
             if (x->x_fd >= 0)
             {
                 int bytesperframe = x->x_bytespersample * x->x_sfchannels;
-                int bigendian = x->x_bigendian;
                 char *filename = x->x_filename;
                 int fd = x->x_fd;
                 int filetype = x->x_filetype;
@@ -2527,10 +2523,9 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
 static t_int *writesf_perform(t_int *w)
 {
     t_writesf *x = (t_writesf *)(w[1]);
-    int vecsize = x->x_vecsize, sfchannels = x->x_sfchannels, i, j,
+    int vecsize = x->x_vecsize, sfchannels = x->x_sfchannels,
         bytespersample = x->x_bytespersample,
         bigendian = x->x_bigendian;
-    t_sample *fp;
     if (x->x_state == STATE_STREAM)
     {
         int wantbytes, roominfifo;

@@ -44,8 +44,9 @@ extern "C" {
 #endif
 
 /* --------------------- geometry ---------------------------- */
-#define IOWIDTH  7       /* width of an inlet/outlet in pixels */
-#define IOHEIGHT 3       /* height of an inlet/outlet in pixels */
+#define IOWIDTH 7       /* width of an inlet/outlet in pixels */
+#define IHEIGHT 3       /* height of an inlet in pixels */
+#define OHEIGHT 3       /* height of an outlet in pixels */
 #define IOMIDDLE ((IOWIDTH-1)/2)
 #define GLIST_DEFGRAPHWIDTH 200
 #define GLIST_DEFGRAPHHEIGHT 140
@@ -385,11 +386,9 @@ EXTERN void gobj_vis(t_gobj *x, t_glist *glist, int flag);
 EXTERN int gobj_click(t_gobj *x, struct _glist *glist,
     int xpix, int ypix, int shift, int alt, int dbl, int doit);
 EXTERN void gobj_save(t_gobj *x, t_binbuf *b);
-EXTERN void gobj_properties(t_gobj *x, struct _glist *glist);
 EXTERN int gobj_shouldvis(t_gobj *x, struct _glist *glist);
 
 /* -------------------- functions on glists --------------------- */
-EXTERN t_glist *glist_new( void);
 EXTERN void glist_init(t_glist *x);
 EXTERN void glist_add(t_glist *x, t_gobj *g);
 
@@ -439,15 +438,12 @@ EXTERN void canvas_create_editor(t_glist *x);
 EXTERN void canvas_destroy_editor(t_glist *x);
 void canvas_deletelinesforio(t_canvas *x, t_text *text,
     t_inlet *inp, t_outlet *outp);
-extern int glist_amreloadingabstractions; /* stop GUI changes while reloading */
 
 /* -------------------- functions on texts ------------------------- */
 EXTERN void text_setto(t_text *x, t_glist *glist, char *buf, int bufsize);
 EXTERN void text_drawborder(t_text *x, t_glist *glist, char *tag,
     int width, int height, int firsttime);
 EXTERN void text_eraseborder(t_text *x, t_glist *glist, char *tag);
-EXTERN int text_xcoord(t_text *x, t_glist *glist);
-EXTERN int text_ycoord(t_text *x, t_glist *glist);
 EXTERN int text_xpix(t_text *x, t_glist *glist);
 EXTERN int text_ypix(t_text *x, t_glist *glist);
 extern const t_widgetbehavior text_widgetbehavior;
@@ -462,7 +458,6 @@ EXTERN t_rtext *rtext_new(t_glist *glist, t_text *who);
 EXTERN t_rtext *glist_findrtext(t_glist *gl, t_text *who);
 EXTERN void rtext_draw(t_rtext *x);
 EXTERN void rtext_erase(t_rtext *x);
-EXTERN t_rtext *rtext_remove(t_rtext *first, t_rtext *x);
 EXTERN int rtext_height(t_rtext *x);
 EXTERN void rtext_displace(t_rtext *x, int dx, int dy);
 EXTERN void rtext_select(t_rtext *x, int state);
@@ -481,7 +476,6 @@ EXTERN t_class *canvas_class;
 
 EXTERN t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv);
 EXTERN t_symbol *canvas_makebindsym(t_symbol *s);
-EXTERN void canvas_vistext(t_canvas *x, t_text *y);
 EXTERN void canvas_fixlinesfor(t_canvas *x, t_text *text);
 EXTERN void canvas_deletelinesfor(t_canvas *x, t_text *text);
 EXTERN void canvas_stowconnections(t_canvas *x);
@@ -496,18 +490,12 @@ EXTERN t_outlet *canvas_addoutlet(t_canvas *x, t_pd *who, t_symbol *sym);
 EXTERN void canvas_rmoutlet(t_canvas *x, t_outlet *op);
 EXTERN void canvas_redrawallfortemplate(t_template *tmpl, int action);
 EXTERN void canvas_redrawallfortemplatecanvas(t_canvas *x, int action);
-EXTERN void canvas_zapallfortemplate(t_canvas *tmpl);
-EXTERN void canvas_setusedastemplate(t_canvas *x);
 EXTERN void canvas_setcurrent(t_canvas *x);
 EXTERN void canvas_unsetcurrent(t_canvas *x);
 EXTERN t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s);
 EXTERN t_canvas *canvas_getrootfor(t_canvas *x);
 EXTERN void canvas_dirty(t_canvas *x, t_floatarg n);
-EXTERN int canvas_getfont(t_canvas *x);
 typedef int (*t_canvasapply)(t_canvas *x, t_int x1, t_int x2, t_int x3);
-
-EXTERN t_int *canvas_recurapply(t_canvas *x, t_canvasapply *fn,
-    t_int x1, t_int x2, t_int x3);
 
 EXTERN void canvas_resortinlets(t_canvas *x);
 EXTERN void canvas_resortoutlets(t_canvas *x);
@@ -528,12 +516,6 @@ EXTERN int canvas_setdeleting(t_canvas *x, int flag);
 #define LB_LOAD 0       /* "loadbang" actions - 0 for original meaning */
 #define LB_INIT 1       /* loaded but not yet connected to parent patch */
 #define LB_CLOSE 2      /* about to close */
-
-    /* Pointer to canvas that was saved necessitating a reload of abstractions
-    of that name.  We use as a flag to stop canvases from being marked "dirty"
-    if we have to touch them to reload; also suppress window list update.
-    "clone~" uses this to identify which copy NOT to reload */
-EXTERN t_glist *glist_reloadingabstraction;
 
 typedef void (*t_undofn)(t_canvas *canvas, void *buf,
     int action);        /* a function that does UNDO/REDO */
@@ -559,13 +541,6 @@ EXTERN int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
     void *user_data);
 
 /* ---- functions on canvasses as objects  --------------------- */
-
-EXTERN void canvas_fattenforscalars(t_canvas *x,
-    int *x1, int *y1, int *x2, int *y2);
-EXTERN void canvas_visforscalars(t_canvas *x, t_glist *glist, int vis);
-EXTERN int canvas_clicksub(t_canvas *x, int xpix, int ypix, int shift,
-    int alt, int dbl, int doit);
-EXTERN t_glist *canvas_getglistonsuper(void);
 
 EXTERN void linetraverser_start(t_linetraverser *t, t_canvas *x);
 EXTERN t_outconnect *linetraverser_next(t_linetraverser *t);

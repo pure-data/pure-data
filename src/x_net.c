@@ -127,7 +127,6 @@ static void netsend_readbin(t_netsend *x, int fd)
 
 static void netsend_doit(void *z, t_binbuf *b)
 {
-    t_atom messbuf[1024];
     t_netsend *x = (t_netsend *)z;
     int msg, natom = binbuf_getnatom(b);
     t_atom *at = binbuf_getvec(b);
@@ -165,7 +164,7 @@ static void netsend_doit(void *z, t_binbuf *b)
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *hostname;
-    int fportno, sportno, sockfd, portno, srcportno, intarg;
+    int fportno, sportno, sockfd, portno, intarg;
     struct sockaddr_in server = {0};
     struct sockaddr_in srcaddr = {0};
     struct hostent *hp;
@@ -182,7 +181,6 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     fportno = (int)argv[1].a_w.w_float;
     sportno = (argc>2)?(int)argv[2].a_w.w_float:0;
     portno = fportno;
-    srcportno = sportno;
     if (x->x_sockfd >= 0)
     {
         error("netsend_connect: already connected");
@@ -463,6 +461,8 @@ static void netreceive_closeall(t_netreceive *x)
     if(x->x_ns.x_receiver)
         socketreceiver_free(x->x_ns.x_receiver);
     x->x_ns.x_receiver=NULL;
+    if (x->x_ns.x_connectout)
+        outlet_float(x->x_ns.x_connectout, x->x_nconnections);
 }
 
 static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
@@ -533,7 +533,6 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
             x->x_ns.x_receiver = y;
-
         }
     }
     else        /* streaming protocol */
@@ -547,7 +546,6 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         else
         {
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)netreceive_connectpoll, x);
-            x->x_ns.x_connectout = outlet_new(&x->x_ns.x_obj, &s_float);
         }
     }
 }
@@ -614,6 +612,10 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
         x->x_ns.x_msgout = 0;
     }
     else x->x_ns.x_msgout = outlet_new(&x->x_ns.x_obj, &s_anything);
+    if (x->x_ns.x_protocol == SOCK_STREAM)
+        x->x_ns.x_connectout = outlet_new(&x->x_ns.x_obj, &s_float);
+    else
+        x->x_ns.x_connectout = 0;
         /* create a socket */
     if (portno > 0)
         netreceive_listen(x, portno);
