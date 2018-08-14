@@ -50,11 +50,12 @@ void *copybytes(void *src, size_t nbytes)
 void *resizebytes(void *old, size_t oldsize, size_t newsize)
 {
     void *ret;
-    if (newsize < 1) newsize = 1;
-    if (oldsize < 1) oldsize = 1;
-    ret = (void *)realloc((char *)old, newsize);
-    if (newsize > oldsize && ret)
-        memset(((char *)ret) + oldsize, 0, newsize - oldsize);
+    newsize += 1;
+    size_t allocSize = newsize;
+    if (newsize < 1) allocSize = 1;
+    ret = (void *)realloc((char *)old, allocSize);
+    if (allocSize > oldsize && ret)
+        memset(((char *)ret) + oldsize, 0, allocSize - oldsize);
 #ifdef LOUD
     fprintf(stderr, "resize %lx %d --> %lx %d\n", (int)old, oldsize, (int)ret, newsize);
 #endif /* LOUD */
