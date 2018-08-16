@@ -1329,6 +1329,9 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         int badleft = 0;
         int notable = 0;
 
+        arg.ex_type = ET_INT;
+        arg.ex_int = 0;
+
         switch (eptr->ex_type) {
         case ET_VAR:
                 var = (char *) eptr->ex_ptr;
