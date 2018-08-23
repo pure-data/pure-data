@@ -208,11 +208,15 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     {
         if (alsa_snd_bufsize < bufsizeforthis)
         {
-            if (!(alsa_snd_buf = realloc(alsa_snd_buf, bufsizeforthis)))
+            char *tmp_snd_buf = realloc(alsa_snd_buf, bufsizeforthis);
+            if (!tmp_snd_buf)
             {
+                free(alsa_snd_buf);
+                alsa_snd_buf=0;
                 post("out of memory");
                 return (-1);
             }
+            alsa_snd_buf = tmp_snd_buf;
             memset(alsa_snd_buf, 0, bufsizeforthis);
             alsa_snd_bufsize = bufsizeforthis;
         }
