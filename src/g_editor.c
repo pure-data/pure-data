@@ -620,6 +620,7 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
         if (x->gl_list)
         {
             int i = 0, j = 0;
+            t_gobj *y;
             for (y = x->gl_list; y; y = y->g_next)
             {
                 if (glist_isselected(x, y))
