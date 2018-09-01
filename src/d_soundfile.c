@@ -838,7 +838,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     t_aiff *aiffhdr = (t_aiff *)headerbuf;
     int fd, headersize = 0;
 
-    strncpy(filenamebuf, filename, MAXPDSTRING-10);
+    strncpy(filenamebuf, filename, MAXPDSTRING);
     filenamebuf[MAXPDSTRING-10] = 0;
 
     if (filetype == FORMAT_NEXT)

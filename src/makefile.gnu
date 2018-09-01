@@ -57,7 +57,8 @@ CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes  -Wno-address\
-    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch
+    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch \
+    -Wno-cast-function-type -Wno-stringop-truncation -Wno-format-truncation
 
 # code generation flags (e.g., optimization).  
 CODECFLAGS = -g -O3 -ffast-math -funroll-loops -fomit-frame-pointer

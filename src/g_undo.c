@@ -150,7 +150,7 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
             /* undo sequences are handled in canvas_undo_undo resp canvas_undo_redo */
     case UNDO_SEQUENCE_START: return 1;                                            //start undo sequence
     case UNDO_SEQUENCE_END: return 1;                                              //end undo sequence
-    case UNDO_INIT:         if (UNDO_FREE == action) return 1;                     //init
+    case UNDO_INIT:         if (UNDO_FREE == action) return 1;/* FALLS THROUGH */  //init
     default:
         error("%s: unsupported undo command %d", funname, udo->type);
     }
