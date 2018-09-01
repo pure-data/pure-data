@@ -1021,6 +1021,8 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
 void canvas_popabstraction(t_canvas *x)
 {
     pd_this->pd_newest = &x->gl_pd;
+    gensym("#A")->s_thing = 0;
+    pd_bind(pd_this->pd_newest, gensym("#A"));
     pd_popsym(&x->gl_pd);
     x->gl_loading = 0;
     canvas_resortinlets(x);

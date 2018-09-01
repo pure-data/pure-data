@@ -1169,10 +1169,10 @@ static int text_click(t_gobj *z, struct _glist *glist,
     else return (0);
 }
 
+void canvas_statesavers_doit(t_glist *x, t_binbuf *b);
 void text_save(t_gobj *z, t_binbuf *b)
 {
     t_text *x = (t_text *)z;
-    int savedacanvas = 0;
     if (x->te_type == T_OBJECT)
     {
             /* if we have a "saveto" method, and if we don't happen to be
@@ -1185,20 +1185,32 @@ void text_save(t_gobj *z, t_binbuf *b)
             mess1(&x->te_pd, gensym("saveto"), b);
             binbuf_addv(b, "ssii", gensym("#X"), gensym("restore"),
                 (int)x->te_xpix, (int)x->te_ypix);
-            savedacanvas = 1;
+            if (x->te_width)
+                binbuf_addv(b, "ssi;",
+                    gensym("#X"), gensym("f"), (int)x->te_width);
         }
         else    /* otherwise just save the text */
         {
             binbuf_addv(b, "ssii", gensym("#X"), gensym("obj"),
                 (int)x->te_xpix, (int)x->te_ypix);
+            binbuf_addbinbuf(b, x->te_binbuf);
+            if (x->te_width)
+                binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+            binbuf_addv(b, ";");
         }
-        binbuf_addbinbuf(b, x->te_binbuf);
+            /* if an abstraction, give it a chance to save state */
+        if (pd_class(&x->te_pd) == canvas_class &&
+            canvas_isabstraction((t_canvas *)x))
+                canvas_statesavers_doit((t_glist *)x, b);
     }
     else if (x->te_type == T_MESSAGE)
     {
         binbuf_addv(b, "ssii", gensym("#X"), gensym("msg"),
             (int)x->te_xpix, (int)x->te_ypix);
         binbuf_addbinbuf(b, x->te_binbuf);
+        if (x->te_width)
+            binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+        binbuf_addv(b, ";");
     }
     else if (x->te_type == T_ATOM)
     {
@@ -1208,7 +1220,7 @@ void text_save(t_gobj *z, t_binbuf *b)
         t_symbol *label = gatom_escapit(((t_gatom *)x)->a_label);
         t_symbol *symfrom = gatom_escapit(((t_gatom *)x)->a_symfrom);
         t_symbol *symto = gatom_escapit(((t_gatom *)x)->a_symto);
-        binbuf_addv(b, "ssiiifffsss", gensym("#X"), sel,
+        binbuf_addv(b, "ssiiifffsss;", gensym("#X"), sel,
             (int)x->te_xpix, (int)x->te_ypix, (int)x->te_width,
             (double)((t_gatom *)x)->a_draglo,
             (double)((t_gatom *)x)->a_draghi,
@@ -1220,14 +1232,10 @@ void text_save(t_gobj *z, t_binbuf *b)
         binbuf_addv(b, "ssii", gensym("#X"), gensym("text"),
             (int)x->te_xpix, (int)x->te_ypix);
         binbuf_addbinbuf(b, x->te_binbuf);
+        if (x->te_width)
+            binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
+        binbuf_addv(b, ";");
     }
-    if (x->te_width)
-    {
-        if (savedacanvas)
-            binbuf_addv(b, ";ssi", gensym("#X"), gensym("f"), (int)x->te_width);
-        else binbuf_addv(b, ",si", gensym("f"), (int)x->te_width);
-    }
-    binbuf_addv(b, ";");
 }
 
     /* this one is for everyone but "gatoms"; it's imposed in m_class.c */

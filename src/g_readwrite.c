@@ -17,6 +17,75 @@ file format as in the dialog window for data.
 #include "g_canvas.h"
 #include <string.h>
 
+/* object to assist in saving state by abstractions */
+static t_class *savestate_class;
+
+typedef struct _savestate
+{
+    t_object x_obj;
+    t_outlet *x_stateout;
+    t_outlet *x_bangout;
+    t_binbuf *x_savetobuf;
+} t_savestate;
+
+static void *savestate_new(void)
+{
+    t_savestate *x = (t_savestate *)pd_new(savestate_class);
+    x->x_stateout = outlet_new(&x->x_obj, &s_list);
+    x->x_bangout = outlet_new(&x->x_obj, &s_bang);
+    x->x_savetobuf = 0;
+    if (!canvas_getcurrent()->gl_loading)
+        post("warning: savestate is experimental - may change or disappear");
+    return (x);
+}
+
+    /* call this when the owning abstraction's parent patch is saved so we
+    can add state-restoring messages to binbuf */
+static void savestate_doit(t_savestate *x, t_binbuf *b)
+{
+    x->x_savetobuf = b;
+    outlet_bang(x->x_bangout);
+    x->x_savetobuf = 0;
+}
+
+    /* called by abstraction in response to savestate_doit(); lists received
+    here are added to the parent patch's save buffer after the line that will
+    create the abstraction, addressed to "#A" which will be this patch after
+    it is recreated by reopening the parent patch, pasting, or "undo". */
+static void savestate_list(t_savestate *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (x->x_savetobuf)
+    {
+        binbuf_addv(x->x_savetobuf, "ss", gensym("#A"), gensym("saved"));
+        binbuf_add(x->x_savetobuf, argc, argv);
+        binbuf_addv(x->x_savetobuf, ";");
+    }
+    else pd_error(x, "savestate: ignoring message sent when not saving parent");
+}
+
+static void savestate_setup(void)
+{
+    savestate_class = class_new(gensym("savestate"),
+        (t_newmethod)savestate_new, 0, sizeof(t_savestate), 0, 0);
+    class_addlist(savestate_class, savestate_list);
+}
+
+void canvas_statesavers_doit(t_glist *x, t_binbuf *b)
+{
+    t_gobj *g;
+    for (g = x->gl_list; g; g = g->g_next)
+        if (g->g_pd == savestate_class)
+            savestate_doit((t_savestate *)g, b);
+}
+
+void canvas_saved(t_glist *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_gobj *g;
+    for (g = x->gl_list; g; g = g->g_next)
+        if (g->g_pd == savestate_class)
+            outlet_list(((t_savestate *)g)->x_stateout, 0, argc, argv);
+}
+
 static t_class *declare_class;
 void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b);
 
@@ -779,6 +848,7 @@ static void canvas_menusave(t_canvas *x, float fdestroy)
 
 void g_readwrite_setup(void)
 {
+    savestate_setup();
     class_addmethod(canvas_class, (t_method)glist_write,
         gensym("write"), A_SYMBOL, A_DEFSYM, A_NULL);
     class_addmethod(canvas_class, (t_method)glist_read,
@@ -789,6 +859,8 @@ void g_readwrite_setup(void)
         gensym("savetofile"), A_SYMBOL, A_SYMBOL, A_DEFFLOAT, 0);
     class_addmethod(canvas_class, (t_method)canvas_saveto,
         gensym("saveto"), A_CANT, 0);
+    class_addmethod(canvas_class, (t_method)canvas_saved,
+        gensym("saved"), A_GIMME, 0);
 /* ------------------ from the menu ------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menusave,
         gensym("menusave"), A_DEFFLOAT, 0);
