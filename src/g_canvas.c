@@ -612,7 +612,7 @@ void canvas_reflecttitle(t_canvas *x)
     else namebuf[0] = 0;
     if (x->gl_edit)
     {
-        strncat(namebuf, " [edit]", MAXPDSTRING);
+        strncat(namebuf, " [edit]", MAXPDSTRING-strlen(namebuf)-1);
         namebuf[MAXPDSTRING-1] = 0;
     }
     sys_vgui("pdtk_canvas_reflecttitle .x%lx {%s} {%s} {%s} %d\n",

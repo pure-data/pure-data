@@ -2656,7 +2656,7 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
                              */
                         int mode = 0;
                         int i;
-                        unsigned int sinks = 0, sources = 0;
+                        int sinks = 0, sources = 0;
                         t_float ysinks = 0., ysources = 0.;
                         int msgout = !obj_issignaloutlet(ob1, closest1);
                         int sigin = obj_issignalinlet(ob2, closest2);
