@@ -1,4 +1,4 @@
-#N canvas 255 59 609 608 12;
+#N canvas 255 59 603 653 12;
 #X obj 53 73 savestate-example;
 #A saved 110 660;
 #X text 29 16 savestate - save and restore run-time state from within
@@ -10,8 +10,8 @@ used from within., f 46;
 #A saved 221 440;
 #X text 194 162 parameters for different copies of the abstraciton
 are saved and restored independently., f 32;
-#X text 393 559 updated for Pd version 0.49.;
-#X text 41 239 The savestate object is used inside abstractions to
+#X text 388 598 updated for Pd version 0.49.;
+#X text 45 236 The savestate object is used inside abstractions to
 save their state as they are used in a calling (parent) patch. When
 the parent patch (such as this one \, which calls the "savestate-example"
 abstraction) is saved \, the included savestate object sends a 'bang'
@@ -21,11 +21,13 @@ These lists are saved as part of the calling patch. If the calling
 patch is reopened later \, the lists are sent out the right outlet
 of the savestate object. The abstraction can then use them to restore
 its state.;
-#X text 42 411 The abstraction may itself be modified at will without
+#X text 42 431 The abstraction may itself be modified at will without
 disturbing the saved states of its copies in any calling patches \,
 as long as the usage of the saved and restored lists is kept compatible.
 ;
-#X text 43 474 Multiple savestate objects are not differentated - they
+#X text 41 498 Multiple savestate objects are not differentated - they
 all receive all lists sent to any one of them.;
-#X text 42 510 Hint: 'text' objects can be saved/restored using 'text
+#X text 42 536 Hint: 'text' objects can be saved/restored using 'text
 tolist' and 'text fromlist'.;
+#X text 43 408 Abstractions within 'clone' objects are not handled.
+;
