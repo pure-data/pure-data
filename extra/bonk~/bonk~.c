@@ -1351,7 +1351,7 @@ void bonk_tilde_setup(void)
     bonk_class = class_new(gensym("bonk~"), (t_newmethod)bonk_new,
         (t_method)bonk_free, sizeof(t_bonk), 0, A_GIMME, 0);
     class_addmethod(bonk_class, nullfn, gensym("signal"), 0);
-    class_addmethod(bonk_class, (t_method)bonk_dsp, gensym("dsp"), 0);
+    class_addmethod(bonk_class, (t_method)bonk_dsp, gensym("dsp"), A_CANT, 0);
     class_addbang(bonk_class, bonk_bang);
     class_addmethod(bonk_class, (t_method)bonk_learn,
         gensym("learn"), A_FLOAT, 0);

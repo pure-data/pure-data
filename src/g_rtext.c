@@ -532,7 +532,7 @@ void rtext_key(t_rtext *x, int keynum, t_symbol *keysym)
 be printable in whatever 8-bit character set we find ourselves. */
 
 /*-- moo:
-  ... but test with "<" rather than "!=" in order to accomodate unicode
+  ... but test with "<" rather than "!=" in order to accommodate unicode
   codepoints for n (which we get since Tk is sending the "%A" substitution
   for bind <Key>), effectively reducing the coverage of this clause to 7
   bits.  Case n>127 is covered by the next clause.
@@ -562,6 +562,24 @@ be printable in whatever 8-bit character set we find ourselves. */
         }
         x->x_selend = x->x_selstart;
         x->x_glist->gl_editor->e_textdirty = 1;
+    }
+    else if (!strcmp(keysym->s_name, "Home"))
+    {
+        if (x->x_selend == x->x_selstart)
+        {
+            x->x_selend = x->x_selstart = 0;
+        }
+        else
+            x->x_selstart = 0;
+    }
+    else if (!strcmp(keysym->s_name, "End"))
+    {
+        if (x->x_selend == x->x_selstart)
+        {
+            x->x_selend = x->x_selstart = x->x_bufsize;
+        }
+        else
+            x->x_selend = x->x_bufsize;
     }
     else if (!strcmp(keysym->s_name, "Right"))
     {
