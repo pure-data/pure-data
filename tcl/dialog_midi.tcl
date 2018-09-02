@@ -487,7 +487,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     # set min size based on widget sizing & pos over pdwindow
     wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
     position_over_window $id .pdwindow
-    rase "$id"
+    raise "$id"
 }
 
 # for focus handling on OSX
