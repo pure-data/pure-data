@@ -354,6 +354,16 @@ static void ptrobj_delete(t_ptrobj *x)
         pd_error(x, "ptrobj_delete: pointing to head");
         return;
     }
+    if (gp->gp_un.gp_scalar->sc_template == gensym("pd-text"))
+    {
+        pd_error(x, "ptrobj_delete: can't delete 'pd-text' scalar");
+        return;
+    }
+    if (gp->gp_un.gp_scalar->sc_template == gensym("pd-float-array"))
+    {
+        pd_error(x, "ptrobj_delete: can't delete 'pd-float-array' scalar");
+        return;
+    }
 
     old = &gp->gp_un.gp_scalar->sc_gobj;
     gobj = old->g_next;
