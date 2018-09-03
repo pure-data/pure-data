@@ -85,7 +85,7 @@ typedef unsigned __int64  uint64_t;
 #if !defined(PD_LONGINTTYPE)
 #if defined(_WIN32) && defined(__x86_64__)
 #define PD_LONGINTTYPE long long
-#else 
+#else
 #define PD_LONGINTTYPE long
 #endif
 #endif
