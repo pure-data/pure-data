@@ -629,7 +629,7 @@ proc ::pd_menus::build_file_menu_x11 {mymenu} {
     $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
+    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
     $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
@@ -676,7 +676,7 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
+    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
     $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
