@@ -654,7 +654,7 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
         {
             t_gobj *y1, *y2;
             glist_noselect(x);
-            for (y1 = x->gl_list; y2 = y1->g_next; y1 = y2)
+            for (y1 = x->gl_list; (y2 = y1->g_next); y1 = y2)
                 ;
             if (y1)
             {
@@ -749,7 +749,7 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
         else if (mode == UCUT_TEXT)
         {
             t_gobj *y1, *y2;
-            for (y1 = x->gl_list; y2 = y1->g_next; y1 = y2)
+            for (y1 = x->gl_list; (y2 = y1->g_next); y1 = y2)
                 ;
             if (y1)
                 glist_delete(x, y1);
@@ -987,7 +987,7 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
         /* store connections into/out of the selection */
     buf->u_reconnectbuf = binbuf_new();
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         int issel1 = glist_isselected(x, &t.tr_ob->ob_g);
         int issel2 = glist_isselected(x, &t.tr_ob2->ob_g);
@@ -1446,7 +1446,7 @@ void *canvas_undo_set_create(t_canvas *x)
         }
         buf->u_reconnectbuf = binbuf_new();
         linetraverser_start(&t, x);
-        while (oc = linetraverser_next(&t))
+        while ((oc = linetraverser_next(&t)))
         {
             int issel1, issel2;
             issel1 = ( &t.tr_ob->ob_g == y ? 1 : 0);
@@ -1518,7 +1518,7 @@ void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
 
     buf->u_reconnectbuf = binbuf_new();
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         int issel1, issel2;
         issel1 = ( &t.tr_ob->ob_g == y ? 1 : 0);
