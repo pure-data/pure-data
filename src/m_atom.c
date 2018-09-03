@@ -61,7 +61,7 @@ t_symbol *atom_getsymbolarg(int which, int argc, t_atom *argv)
 /* convert an atom into a string, in the reverse sense of binbuf_text (q.v.)
 * special attention is paid to symbols containing the special characters
 * ';', ',', '$', and '\'; these are quoted with a preceding '\', except that
-* the '$' only gets quoted at the beginning of the string.
+* the '$' only gets quoted if followed by a digit.
 */
 
 void atom_string(t_atom *a, char *buf, unsigned int bufsize)
