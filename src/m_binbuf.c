@@ -552,17 +552,17 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av, int tonew)
             return 0; /* JMZ: this should mimic the original behaviour */
         }
 
-        strncat(buf2, buf, MAXPDSTRING/2-1);
+        strncat(buf2, buf, MAXPDSTRING-strlen(buf)-1);
         str+=next;
         substr=strchr(str, '$');
         if(substr)
         {
-            strncat(buf2, str, (substr-str));
+            strncat(buf2, str, MAXPDSTRING-strlen(buf)-1);
             str=substr+1;
         }
         else
         {
-            strncat(buf2, str, MAXPDSTRING-1);
+            strncat(buf2, str, MAXPDSTRING-strlen(buf)-1);
             goto done;
         }
     }

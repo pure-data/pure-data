@@ -362,6 +362,7 @@ SDY the following coredumps why?
                                 break;
                         } else
                                 post("expr: internal error expr_new");
+                                /* falls through */
                 default:
                         pd_error(x, "expr: bad type (%lx) inlet = %d\n",
                                             eptr->ex_type, i + 1);
