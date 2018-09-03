@@ -30,7 +30,7 @@
 typedef void (*t_xxx)(void);
 
 /* naming convention for externs.  The names are kept distinct for those
-who wich to make "fat" externs compiled for many platforms.  Less specific
+who wish to make "fat" externs compiled for many platforms.  Less specific
 fallbacks are provided, primarily for back-compatibility; these suffice if
 you are building a package which will run with a single set of compiled
 objects.  The specific name is the letter b, l, d, or m for  BSD, linux,
@@ -96,7 +96,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     const char *path)
 {
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
-        *nameptr, altsymname[MAXPDSTRING];
+        *nameptr;
     const char *classname, *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;

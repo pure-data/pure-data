@@ -25,6 +25,7 @@ standard output. */
 #include <netdb.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/select.h>
 #define SOCKET_ERROR -1
 #endif
 
@@ -114,8 +115,15 @@ static void addport(int fd)
 {
     int nfd = nfdpoll;
     t_fdpoll *fp;
-    fdpoll = (t_fdpoll *)realloc(fdpoll,
+    t_fdpoll *fdtmp = (t_fdpoll *)realloc(fdpoll,
         (nfdpoll+1) * sizeof(t_fdpoll));
+    if (!fdtmp)
+    {
+        free(fdpoll);
+        fprintf(stderr, "out of memory!");
+        exit(1);
+    }
+    fdpoll = fdtmp;
     fp = fdpoll + nfdpoll;
     fp->fdp_fd = fd;
     nfdpoll++;

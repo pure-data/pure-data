@@ -73,7 +73,7 @@
 
    but since we can use only ins or only outs or both
    on each hardware we list them  in used_???device
-   for alsa seperated for inputs and outputs
+   for alsa separated for inputs and outputs
 
    due the need to link in and out-device on one card
    and do only one mmap prepare and start for in and out
@@ -173,7 +173,7 @@ static int set_swparams(snd_pcm_t *handle,
 static int alsamm_start(void);
 static int alsamm_stop(void);
 
-/* for debugging attach output of alsa mesages to stdout stream */
+/* for debugging attach output of alsa messages to stdout stream */
 snd_output_t* alsa_stdout;
 
 static void check_error(int err, const char *why)
@@ -232,7 +232,7 @@ int alsamm_open_audio(int rate, int blocksize)
   /*
      Weak failure prevention:
      first card found (out then in) is used as a reference for parameter,
-     so this  set the globals and other cards hopefully dont change them
+     so this  set the globals and other cards hopefully don't change them
   */
   alsamm_sr = rate;
 
@@ -466,7 +466,7 @@ static int set_hwparams(snd_pcm_t *handle, snd_pcm_hw_params_t *params,int *chs)
 #endif
 
   /* first check samplerate since channels numbers
-     are samplerate dependend (double speed) */
+     are samplerate dependent (double speed) */
   /* set the stream rate */
 
   rrate = alsamm_sr;
@@ -811,7 +811,7 @@ static int xrun_recovery(snd_pcm_t *handle, int err)
   return err;
 }
 
-/* note that snd_pcm_avail has to be called before using this funtion */
+/* note that snd_pcm_avail has to be called before using this function */
 
 static int alsamm_get_channels(snd_pcm_t *dev,
                                snd_pcm_uframes_t *avail,
@@ -924,8 +924,8 @@ static int alsamm_start()
     snd_pcm_uframes_t ioffset, iavail;
     t_alsa_dev *dev = &alsa_indev[devno];
 
-    /* if devices are synced then dont need to prepare
-       hopefully dma in aereas allready filled correct by the card */
+    /* if devices are synced then don't need to prepare
+       hopefully dma in areas already filled correct by the card */
 
     if(dev->a_synced == 0){
       if ((err = snd_pcm_prepare (dev->a_handle)) < 0) {
@@ -968,7 +968,7 @@ static int alsamm_start()
      post("start: init inchannels with avail=%d, offset=%d",iavail,ioffset);
 #endif
 
-    /* if devices are synced then dont need to start */
+    /* if devices are synced then don't need to start */
     /* start with autostart , but anyway start */
     if(dev->a_synced == 0){
       if ((err = snd_pcm_start (dev->a_handle)) < 0) {
@@ -1024,7 +1024,7 @@ static int alsamm_stop()
 
 
 
-/* ---------- ADC/DAC tranfer in  the main loop ------- */
+/* ---------- ADC/DAC transfer in  the main loop ------- */
 
 /* I see: (a guess as a documentation)
 
@@ -1035,13 +1035,13 @@ static int alsamm_stop()
 
 Problems to solve:
 
-   a) Since in ALSA MMAP, the MMAP reagion can change (dont ask me why)
+   a) Since in ALSA MMAP, the MMAP reagion can change (don't ask me why)
    we have to do it each cycle or we say on RME HAMMERFALL/HDSP/DSPMADI
    it never changes to it once. so maybe we can do it once in open
 
    b) we never know if inputs are synced and zero them if not,
    except we use the control interface to check for, but this is
-   a systemcall we cannot afford in RT Loops so we just dont
+   a systemcall we cannot afford in RT Loops so we just don't
    and if not it will click... users fault ;-)))
 
 */
@@ -1092,7 +1092,7 @@ int alsamm_send_dacs(void)
 
   /* here we should check if in and out samples are here.
      but, the point is if out samples available also in sample should,
-     so we dont make a precheck of insamples here and let outsample check be the
+     so we don't make a precheck of insamples here and let outsample check be the
      the first of the forst card.
   */
 
@@ -1129,7 +1129,7 @@ int alsamm_send_dacs(void)
     }
 
     /* check if we are late and have to (able to) catch up */
-    /* xruns will be ignored since you cant do anything since already happend */
+    /* xruns will be ignored since you cant do anything since already happened */
     state = snd_pcm_state(out);
     if (state == SND_PCM_STATE_XRUN) {
       err = xrun_recovery(out, -EPIPE);

@@ -447,7 +447,6 @@ static void *bng_new(t_symbol *s, int argc, t_atom *argv)
     int fs = 10;
     int ftbreak = IEM_BNG_DEFAULTBREAKFLASHTIME,
         fthold = IEM_BNG_DEFAULTHOLDFLASHTIME;
-    char str[144];
 
     iem_inttosymargs(&x->x_gui.x_isa, 0);
     iem_inttofstyle(&x->x_gui.x_fsf, 0);

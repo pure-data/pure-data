@@ -503,7 +503,7 @@ static void noise_float(t_noise *x, t_float f)
 static void noise_setup(void)
 {
     noise_class = class_new(gensym("noise~"), (t_newmethod)noise_new, 0,
-        sizeof(t_noise), 0, A_DEFFLOAT);
+        sizeof(t_noise), 0, A_DEFFLOAT, 0);
     class_addmethod(noise_class, (t_method)noise_dsp,
         gensym("dsp"), A_CANT, 0);
     class_addmethod(noise_class, (t_method)noise_float,

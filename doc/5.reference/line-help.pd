@@ -1,4 +1,4 @@
-#N canvas 747 154 700 651 12;
+#N canvas 430 148 700 651 12;
 #X floatatom 22 428 8 0 0 0 - - -, f 8;
 #X msg 32 231 0 1000;
 #X msg 47 253 39;
@@ -17,12 +17,8 @@
 #X msg 67 308 set 5;
 #X text 120 308 "set" to change value (and stop) without output;
 #X obj 185 601 vline~;
-#X floatatom 91 364 0 0 0 0 - - -;
-#X floatatom 91 340 0 0 0 0 - - -;
-#X text 126 340 first inlet sets next ramp time (cleared when ramp
-starts!);
-#X text 125 366 second inlet sets grain (not cleared \, acts as normal
-inlet);
+#X floatatom 89 365 0 0 0 0 - - -;
+#X floatatom 85 338 0 0 0 0 - - -;
 #X text 278 416 2 time grain in milliseconds (20 by default);
 #X msg 235 547 \; pd compatibility 0.47;
 #X text 54 470 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
@@ -35,11 +31,16 @@ to 0.47 or below in Pd's command line or by a message:, f 74;
 (slews) to the specified target over the time given \, updating its
 output at a "grain rate" given by the creation argument. If you don't
 specify a time \, line jumps immediately to the target. Note that the
-inlet does not remember old values (unlike every other inlet in Pd)
--- sending a float causes a jump in the output regardless of whatever
-time value was specified in some previous message. If the line object
-receives a message specifying some new target before reaching the previous
-one \, it takes off from its current value., f 70;
+middle inlet (that sets the time) does not remember old values (unlike
+every other inlet in Pd) -- sending a float causes a jump in the output
+regardless of whatever time value was specified in some previous message.
+If the line object receives a message specifying some new target before
+reaching the previous one \, it takes off from its current value.,
+f 70;
+#X text 117 338 middle inlet sets next ramp time (cleared when ramp
+starts!);
+#X text 125 366 right inlet sets grain (not cleared \, acts as normal
+inlet);
 #X connect 1 0 12 0;
 #X connect 2 0 12 0;
 #X connect 5 0 12 0;
