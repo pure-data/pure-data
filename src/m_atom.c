@@ -81,14 +81,16 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
         else  strcpy(buf, "+");
         break;
     case A_SYMBOL:
+    case A_DOLLSYM:
     {
         char *sp;
         unsigned int len;
         int quote;
         for (sp = a->a_w.w_symbol->s_name, len = 0, quote = 0; *sp; sp++, len++)
             if (*sp == ';' || *sp == ',' || *sp == '\\' ||
-                (*sp == '$' && sp[1] >= '0' && sp[1] <= '9'))
-                quote = 1;
+                (a->a_type == A_SYMBOL && *sp == '$' &&
+                    sp[1] >= '0' && sp[1] <= '9'))
+                        quote = 1;
         if (quote)
         {
             char *bp = buf, *ep = buf + (bufsize-2);
@@ -96,8 +98,9 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
             while (bp < ep && *sp)
             {
                 if (*sp == ';' || *sp == ',' || *sp == '\\' ||
-                    (*sp == '$' && sp[1] >= '0' && sp[1] <= '9'))
-                        *bp++ = '\\';
+                    (a->a_type == A_SYMBOL && *sp == '$' &&
+                        sp[1] >= '0' && sp[1] <= '9'))
+                            *bp++ = '\\';
                 *bp++ = *sp++;
             }
             if (*sp) *bp++ = '*';
@@ -117,10 +120,6 @@ void atom_string(t_atom *a, char *buf, unsigned int bufsize)
         break;
     case A_DOLLAR:
         sprintf(buf, "$%d", a->a_w.w_index);
-        break;
-    case A_DOLLSYM:
-        strncpy(buf, a->a_w.w_symbol->s_name, bufsize);
-        buf[bufsize-1] = 0;
         break;
     default:
         bug("atom_string");

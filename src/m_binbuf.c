@@ -327,7 +327,7 @@ void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
             break;
         case A_SYMBOL:
             for (s = ap->a_w.w_symbol->s_name, fixit = 0; *s; s++)
-                if (*s == ';' || *s == ',' || *s == '$')
+                if (*s == ';' || *s == ',' || *s == '$' || *s == '\\')
                     fixit = 1;
             if (fixit)
             {
@@ -374,45 +374,60 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
             char *str = argv->a_w.w_symbol->s_name, *str2;
             if (!strcmp(str, ";")) SETSEMI(ap);
             else if (!strcmp(str, ",")) SETCOMMA(ap);
-            else if ((str2 = strchr(str, '$')) && str2[1] >= '0'
-                && str2[1] <= '9')
+            else
             {
-                int dollsym = 0;
-                if (*str != '$')
-                    dollsym = 1;
-                else for (str2 = str + 1; *str2; str2++)
-                    if (*str2 < '0' || *str2 > '9')
+                char buf[MAXPDSTRING], *sp1, *sp2, *usestr;
+                int dollar = 0;
+                if (strchr(str, '\\'))
                 {
-                    dollsym = 1;
-                    break;
+                    int slashed = 0;
+                    for (sp1 = buf, sp2 = argv->a_w.w_symbol->s_name;
+                        *sp2 && sp1 < buf + (MAXPDSTRING-1);
+                            sp2++)
+                    {
+                        if (slashed)
+                            *sp1++ = *sp2, slashed = 0;
+                        else if (*sp2 == '\\')
+                            slashed = 1;
+                        else
+                        {
+                            if (*sp2 == '$' && sp2[1] >= 0 && sp2[1] <= '9')
+                                dollar = 1;
+                            *sp1++ = *sp2;
+                            slashed = 0;
+                        }
+                    }
+                    *sp1 = 0;
+                    usestr = buf;
                 }
-                if (dollsym)
-                    SETDOLLSYM(ap, gensym(str));
-                else
+                else usestr = str;
+                if (dollar || (usestr== str && (str2 = strchr(usestr, '$')) &&
+                    str2[1] >= '0' && str2[1] <= '9'))
                 {
-                    int dollar = 0;
-                    sscanf(argv->a_w.w_symbol->s_name + 1, "%d", &dollar);
-                    SETDOLLAR(ap, dollar);
+                    int dollsym = 0;
+                    if (*usestr != '$')
+                        dollsym = 1;
+                    else for (str2 = usestr + 1; *str2; str2++)
+                        if (*str2 < '0' || *str2 > '9')
+                    {
+                        dollsym = 1;
+                        break;
+                    }
+                    if (dollsym)
+                        SETDOLLSYM(ap, usestr == str ?
+                            argv->a_w.w_symbol : gensym(usestr));
+                    else
+                    {
+                        int dollar = 0;
+                        sscanf(usestr + 1, "%d", &dollar);
+                        SETDOLLAR(ap, dollar);
+                    }
                 }
+                else SETSYMBOL(ap, usestr == str ?
+                    argv->a_w.w_symbol : gensym(usestr));
+                /* fprintf(stderr, "arg %s -> binbuf %s type %d\n",
+                    argv->a_w.w_symbol->s_name, usestr, ap->a_type); */
             }
-            else if (strchr(argv->a_w.w_symbol->s_name, '\\'))
-            {
-                char buf[MAXPDSTRING], *sp1, *sp2;
-                int slashed = 0;
-                for (sp1 = buf, sp2 = argv->a_w.w_symbol->s_name;
-                    *sp2 && sp1 < buf + (MAXPDSTRING-1);
-                        sp2++)
-                {
-                    if (slashed)
-                        *sp1++ = *sp2;
-                    else if (*sp2 == '\\')
-                        slashed = 1;
-                    else *sp1++ = *sp2, slashed = 0;
-                }
-                *sp1 = 0;
-                SETSYMBOL(ap, gensym(buf));
-            }
-            else *ap = *argv;
             argv++;
         }
         else *ap = *(argv++);
