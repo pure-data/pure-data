@@ -349,14 +349,14 @@ static void ptrobj_delete(t_ptrobj *x)
         pd_error(x, "ptrobj_delete: stale pointer");
         return;
     }
-    gobj = old = &gp->gp_un.gp_scalar->sc_gobj;
-
-    if (!gobj)
+    if (!gp->gp_un.gp_scalar)
     {
         pd_error(x, "ptrobj_delete: pointing to head");
         return;
     }
-    gobj = gobj->g_next;
+
+    old = &gp->gp_un.gp_scalar->sc_gobj;
+    gobj = old->g_next;
     while (gobj && (pd_class(&gobj->g_pd) != scalar_class))
         gobj = gobj->g_next;
     glist_delete(glist, old);
