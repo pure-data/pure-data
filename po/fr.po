@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.48-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2018-06-22 10:00+0200\n"
+"PO-Revision-Date: 2018-09-04 10:00+0200\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
 "Baptiste Chatel / JP Cimalando\n"
 "Language-Team: \n"
@@ -617,17 +617,15 @@ msgstr "[deken]: version installée [%1$s] < %2$s...remplacer !"
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr "[deken]: version installée [%1$s] == %2$s...ignorer !"
 
-#, fuzzy
 msgid "[deken]: "
-msgstr "[deken]: connecté ? %s"
+msgstr "[deken] : "
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
 msgstr "%1$s décompressé avec succès dans %2$s."
 
-#, fuzzy
 msgid "[deken]: Unable to extract package automatically."
-msgstr "Impossible de décompresser l'archive automatiquement."
+msgstr "[deken] : Impossible de décompresser l'archive automatiquement."
 
 msgid "Please perform the following steps manually:"
 msgstr "Effectuez manuellement les étapes suivantes :"
@@ -640,13 +638,13 @@ msgstr "1. Décompresser %s"
 msgid "2. Copy the contents into %s."
 msgstr "2. Copier le dossier obtenu dans %s."
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "[deken] uninstalling '%s'"
-msgstr "[deken]: connecté ? %s"
+msgstr "[deken] désinstallation de %s"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
-msgstr ""
+msgstr "Impossible de désinstaller %1$s de %2$s !"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -681,60 +679,55 @@ msgid "Preferences"
 msgstr "Préférences"
 
 msgid "Installation options:"
-msgstr ""
+msgstr "Options d'installation :"
 
 msgid "Try to remove libraries before (re)installing them?"
-msgstr ""
+msgstr "Essayer de supprimer les bibliothèques avant de les (ré)installer ?"
 
 msgid "Show README of newly installed libraries (if present)?"
-msgstr ""
+msgstr "Afficher le README (si présent) des nouvelles bibliothèques ?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
-msgstr ""
+msgstr "Ajouter les nouvelles bibliothèques aux chemins de recherche de Pd ?"
 
 msgid "Platform settings:"
-msgstr ""
+msgstr "Réglages de plateforme :"
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr ""
+msgstr "Plateforme par défaut : %s"
 
 msgid "User-defined platform:"
-msgstr ""
+msgstr "Plateforme définie par l'utilisateur :"
 
 msgid "Hide foreign architectures?"
-msgstr ""
+msgstr "Cacher les autres architectures ?"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Deken %s Preferences"
-msgstr "Préférences"
+msgstr "Préférences de Deken %s"
 
-#, fuzzy
 msgid "[deken]: Start searching for externals..."
-msgstr "Installer des objets supplémentaires..."
+msgstr "[deken] : Recherche d'externals ..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
 msgstr "[deken]: connecté ? %s"
 
 msgid "Are you online?"
-msgstr ""
+msgstr "Êtes-vous connecté(e) ?"
 
 msgid "Unable to perform search."
 msgstr "Recherche impossible."
 
 msgid "[deken]: No matching externals found."
-msgstr ""
+msgstr "[deken] : Aucun external trouvé."
 
-#, fuzzy
 msgid "Try using the full name e.g. 'freeverb'."
-msgstr ""
-"Aucun external correspondant. Réessayez avec le nom complet, par exemple "
-"'freeverb'."
+msgstr "Essayez avec le nom complet, par exemple 'freeverb'."
 
-#, fuzzy
 msgid "No matching externals found."
-msgstr "Installer des objets supplémentaires..."
+msgstr "Aucun external correspondant."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
@@ -753,9 +746,8 @@ msgstr ""
 "%1$s\n"
 "Dans %2$s..."
 
-#, fuzzy
 msgid "aborting.\n"
-msgstr "abandon."
+msgstr "abandon.\n"
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
@@ -790,11 +782,10 @@ msgid "Uploaded by %1$s @ %2$s"
 msgstr "Mis en ligne par '%1$s' le : %2$s"
 
 msgid "Install package"
-msgstr ""
+msgstr "Installation du paquet"
 
-#, fuzzy
 msgid "Open webpage"
-msgstr "Ouvrir un élément récent"
+msgstr "Ouvrir une page web"
 
 msgid "_"
 msgstr ""
@@ -862,7 +853,7 @@ msgid "Tidy Up"
 msgstr "Aligner"
 
 msgid "Connect Selection"
-msgstr ""
+msgstr "Connecter la sélection"
 
 msgid "Edit Mode"
 msgstr "Mode d'édition"
