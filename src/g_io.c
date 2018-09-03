@@ -158,7 +158,7 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
     int myvecsize, int calcsize, int phase, int period, int frequency,
     int downsample, int upsample,  int reblock, int switched)
 {
-    t_signal *insig, *outsig;
+    t_signal *insig;
         /* no buffer means we're not a signal inlet */
     if (!x->x_buf)
         return;
@@ -207,8 +207,9 @@ void vinlet_dspprolog(struct _vinlet *x, t_signal **parentsigs,
         {
             x->x_hop = period * re_parentvecsize;
 
-            x->x_fill = x->x_endbuf -
-              (x->x_hop - prologphase * re_parentvecsize);
+            x->x_fill = prologphase ?
+                x->x_endbuf - (x->x_hop - prologphase * re_parentvecsize) :
+                    x->x_endbuf;
 
             if (upsample * downsample == 1)
                     dsp_add(vinlet_doprolog, 3, x, insig->s_vec,
@@ -474,7 +475,7 @@ void voutlet_dspepilog(struct _voutlet *x, t_signal **parentsigs,
     x->x_updown.upsample=upsample;
     if (reblock)
     {
-        t_signal *insig, *outsig;
+        t_signal *outsig;
         int parentvecsize, bufsize, oldbufsize;
         int re_parentvecsize;
         int bigperiod, epilogphase, blockphase;

@@ -996,19 +996,12 @@ static int sys_do_startgui(const char *libdir)
     const int maxtry = 20;
     int ntry = 0, portno = FIRSTPORTNUM;
     int xsock = -1, dumbo = -1;
-#ifdef _WIN32
-    short version = MAKEWORD(2, 0);
-    WSADATA nobby;
-#else
+#ifndef _WIN32
     int stdinpipe[2];
     pid_t childpid;
 #endif /* _WIN32 */
 
     sys_init_fdpoll();
-
-#ifdef _WIN32
-    if (WSAStartup(version, &nobby)) sys_sockerror("WSAstartup");
-#endif /* _WIN32 */
 
     if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
     {

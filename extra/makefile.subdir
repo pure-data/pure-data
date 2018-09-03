@@ -41,7 +41,7 @@ pd_linux: $(NAME).pd_linux
 LINUXCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer -fPIC \
     -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch \
-    $(CFLAGS) $(MORECFLAGS)
+    -Wno-cast-function-type $(CFLAGS) $(MORECFLAGS)
 
 LINUXINCLUDE =  -I../../src
 
@@ -66,7 +66,8 @@ DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
 	rm -f $*.o
 
 .c.d_fat:
-	$(CC) $(DARWINARCH) $(DARWINCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
+	$(CC) $(DARWINARCH) $(DARWINCFLAGS) $(LINUXINCLUDE) \
+             -Wno-cast-function-type -o $*.o -c $*.c
 	$(CC) $(DARWINARCH) -bundle -undefined suppress -flat_namespace \
 	    -o $*.d_fat $*.o 
 	rm -f $*.o

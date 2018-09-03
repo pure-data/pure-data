@@ -76,7 +76,7 @@
 #endif
 
 #ifdef _MSC_VER
-#define strtof _atoldbl
+#define strtof(a, b) _atoldbl(a, *b)
 #endif
 
 
@@ -1324,7 +1324,6 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         struct ex_ex arg;
         struct ex_ex rval;
         struct ex_ex *retp;
-        int isvalue;
         char *tbl = (char *) 0;
         char *var = (char *) 0;
         int badleft = 0;
@@ -1449,7 +1448,6 @@ eval_var(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the operation stack */
 /* the result pointer */
 {
-        struct ex_ex arg;
         char *var = (char *) 0;
         int novar = 0;
 
@@ -1491,10 +1489,9 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 {
         struct ex_ex arg;
         struct ex_ex *reteptr;
-        int i = 0, j = 0;
+        int i = 0;
         t_float fi = 0,         /* index in float */
               rem_i = 0;        /* remains of the float */
-        char *tbl;
 
         arg.ex_type = 0;
         arg.ex_int = 0;

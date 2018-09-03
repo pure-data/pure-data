@@ -10,12 +10,14 @@ to be different but are now unified except for some fossilized names.) */
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include "g_canvas.h"
 #include <string.h>
 #include "g_all_guis.h"
 #include "g_undo.h"
 
 #ifdef _MSC_VER
+#include <io.h>
 #define snprintf _snprintf
 #endif
 
@@ -919,14 +921,20 @@ void canvas_restore(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 static void canvas_loadbangabstractions(t_canvas *x)
 {
     t_gobj *y;
+    t_symbol *s = gensym("loadbang");
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
-    {
-        if (canvas_isabstraction((t_canvas *)y))
-            canvas_loadbang((t_canvas *)y);
-        else
-            canvas_loadbangabstractions((t_canvas *)y);
-    }
+        {
+            if (canvas_isabstraction((t_canvas *)y))
+                canvas_loadbang((t_canvas *)y);
+            else
+                canvas_loadbangabstractions((t_canvas *)y);
+        }
+        else if ((pd_class(&y->g_pd) == clone_class) &&
+            zgetfn(&y->g_pd, s))
+        {
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        }
 }
 
 void canvas_loadbangsubpatches(t_canvas *x)
@@ -935,19 +943,21 @@ void canvas_loadbangsubpatches(t_canvas *x)
     t_symbol *s = gensym("loadbang");
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
-    {
-        if (!canvas_isabstraction((t_canvas *)y))
-            canvas_loadbangsubpatches((t_canvas *)y);
-    }
+        {
+            if (!canvas_isabstraction((t_canvas *)y))
+                canvas_loadbangsubpatches((t_canvas *)y);
+        }
     for (y = x->gl_list; y; y = y->g_next)
         if ((pd_class(&y->g_pd) != canvas_class) &&
+            (pd_class(&y->g_pd) != clone_class) &&
             zgetfn(&y->g_pd, s))
-                pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        {
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        }
 }
 
 void canvas_loadbang(t_canvas *x)
 {
-    t_gobj *y;
     canvas_loadbangabstractions(x);
     canvas_loadbangsubpatches(x);
 }
@@ -1011,6 +1021,8 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
 void canvas_popabstraction(t_canvas *x)
 {
     pd_this->pd_newest = &x->gl_pd;
+    gensym("#A")->s_thing = 0;
+    pd_bind(pd_this->pd_newest, gensym("#A"));
     pd_popsym(&x->gl_pd);
     x->gl_loading = 0;
     canvas_resortinlets(x);
@@ -1326,7 +1338,6 @@ static void glist_redrawall(t_glist *gl, int action)
     int vis = glist_isvisible(gl);
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        t_class *cl;
         if (vis && g->g_pd == scalar_class)
         {
             if (action == 1)
@@ -1614,10 +1625,7 @@ static int canvas_open_iter(const char *path, t_canvasopen *co)
 int canvas_open(t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
-    t_namelist *nl, thislist;
     int fd = -1;
-    char listbuf[MAXPDSTRING];
-    t_canvas *y;
     t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */

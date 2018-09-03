@@ -146,17 +146,18 @@ $(BIN_DIR)/pdreceive: u_pdreceive.c $(BIN_DIR)
 $(PDEXEC): $(OBJ) $(BIN_DIR)
 	cd ../obj;  $(CC) $(LDFLAGS) $(DBG_CFLAGS) -o $(PDEXEC) $(OBJ) $(LIB)
 
+EXTERNTYPE=d_fat
 externs: 
-	make -C ../extra/bonk~    DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/choice   DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/fiddle~  DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/loop~    DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/lrshift~ DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/pique    DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/sigmund~ DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/pd~      DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/stdout   DARWINARCH="$(EXTRAARCH)" d_fat
-	make -C ../extra/bob~     DARWINARCH="$(EXTRAARCH)" d_fat
+	make -C ../extra/bonk~    DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/choice   DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/fiddle~  DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/loop~    DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/lrshift~ DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/pique    DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/sigmund~ DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/pd~      DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/stdout   DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
+	make -C ../extra/bob~     DARWINARCH="$(EXTRAARCH)" $(EXTERNTYPE)
 
 BINARYMODE=-m755
 

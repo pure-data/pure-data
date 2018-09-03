@@ -329,6 +329,12 @@ int sys_main(int argc, char **argv)
     /* use Win32 "binary" mode by default since we don't want the
      * translation that Win32 does by default */
 #ifdef _WIN32
+    {
+        short version = MAKEWORD(2, 0);
+        WSADATA nobby;
+        if (WSAStartup(version, &nobby))
+            sys_sockerror("WSAstartup");
+    }
 # ifdef _MSC_VER /* MS Visual Studio */
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
@@ -350,12 +356,16 @@ int sys_main(int argc, char **argv)
 #endif  /* _WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
-    for (i = noprefs = 0; i < argc; i++)    /* prescan for prefs override */
+    for (i = noprefs = 0; i < argc; i++)    /* prescan ... */
     {
+        /* for prefs override */
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
         else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
             prefsfile = argv[i+1];
+        /* for external scheduler (to ignore audio api in sys_loadpreferences) */
+        else if (!strcmp(argv[i], "-schedlib") && i < argc-1)
+            sys_externalschedlib = 1;
     }
     if (!noprefs)       /* load preferences before parsing args to allow ... */
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
@@ -549,7 +559,7 @@ static int sys_getmultidevchannels(int n, int *devlist)
     INSTALL_PREFIX.  In MSW, we don't try to use INSTALL_PREFIX. */
 void sys_findprogdir(char *progname)
 {
-    char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING], *sp;
+    char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING];
     char *lastslash;
 #ifndef _WIN32
     struct stat statbuf;
@@ -634,7 +644,6 @@ static int sys_mmio = 0;
 
 int sys_argparse(int argc, char **argv)
 {
-    char sbuf[MAXPDSTRING];
     int i;
     while ((argc > 0) && **argv == '-')
     {
