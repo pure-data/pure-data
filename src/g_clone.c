@@ -4,10 +4,6 @@
 #include <string.h>
 
 /* ---------- clone - maintain copies of a patch ----------------- */
-/* OOPS - have to add outlet vector to each copy to disambiguate */
-/* next: feed each instance its serial number */
-/* next next: DSP method */
-
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
@@ -54,9 +50,9 @@ typedef struct _clone
     int x_n;            /* number of copies */
     t_copy *x_vec;      /* the copies */
     int x_nin;
-    t_in *x_invec;
+    t_in *x_invec;      /* inlet proxies */
     int x_nout;
-    t_out **x_outvec;
+    t_out **x_outvec;   /* outlet proxies */
     t_symbol *x_s;      /* name of abstraction */
     int x_argc;         /* creation arguments for abstractions */
     t_atom *x_argv;
@@ -131,6 +127,7 @@ static void clone_in_all(t_in *x, t_symbol *s, int argc, t_atom *argv)
         x->i_owner->x_phase = i;
         clone_in_this(x, s, argc, argv);
     }
+    x->i_owner->x_phase = phasewas;
 }
 
 static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
@@ -145,7 +142,7 @@ static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
 
 static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_atom *outv, *ap;
+    t_atom *outv;
     int first =
         1 + (s != &s_list && s != &s_float && s != &s_symbol && s != &s_bang),
             outc = argc + first;
@@ -167,14 +164,13 @@ static void clone_free(t_clone *x)
         {
             canvas_closebang(x->x_vec[i].c_gl);
             pd_free(&x->x_vec[i].c_gl->gl_pd);
+            t_freebytes(x->x_outvec[i],
+                x->x_nout * sizeof(*x->x_outvec[i]));
         }
         t_freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
         t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
         t_freebytes(x->x_invec, x->x_nin * sizeof(*x->x_invec));
-        for (i = 0; i < x->x_nout; i++)
-            t_freebytes(x->x_outvec[i],
-                x->x_nout * sizeof(*x->x_outvec[i]));
-        t_freebytes(x->x_outvec, x->x_nout * sizeof(*x->x_outvec));
+        t_freebytes(x->x_outvec, x->x_n * sizeof(*x->x_outvec));
     }
 }
 

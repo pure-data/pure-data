@@ -112,6 +112,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     set midi_alsaout [llength $midi_outdevlist]
 
     toplevel $id -class DialogWindow
+    wm withdraw $id
     wm title $id [_ "MIDI Settings"]
     wm group $id .
     wm resizable $id 0 0
@@ -410,9 +411,7 @@ proc ::dialog_midi::pdtk_midi_dialog {id \
     # set min size based on widget sizing & pos over pdwindow
     wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
     position_over_window $id .pdwindow
-
-    # wait a little for creation, then raise so it's on top
-    after 100 raise "$id"
+    raise $id
 }
 
 proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
@@ -447,6 +446,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     set midi_alsaout [expr [llength $midi_outdevlist] - 1]
 
     toplevel $id -class DialogWindow
+    wm withdraw $id
     wm title $id [_ "ALSA MIDI Settings"]
     wm resizable $id 0 0
     wm transient $id
@@ -487,9 +487,7 @@ proc ::dialog_midi::pdtk_alsa_midi_dialog {id indev1 indev2 indev3 indev4 \
     # set min size based on widget sizing & pos over pdwindow
     wm minsize $id [winfo reqwidth $id] [winfo reqheight $id]
     position_over_window $id .pdwindow
-
-    # wait a little for creation, then raise so it's on top
-    after 100 raise "$id"
+    raise "$id"
 }
 
 # for focus handling on OSX
