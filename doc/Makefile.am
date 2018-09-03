@@ -305,7 +305,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/clip-help.pd \
      ./5.reference/clip~-help.pd \
      ./5.reference/clone-help.pd \
-     ./5.reference/clone-subpatch.pd \
+     ./5.reference/clone-abstraction.pd \
      ./5.reference/cos~-help.pd \
      ./5.reference/cpole~-help.pd \
      ./5.reference/cputime-help.pd \
