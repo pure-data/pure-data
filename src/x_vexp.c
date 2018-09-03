@@ -29,7 +29,7 @@
  *                the left or the right args depending on the truth value of the condition.
  *                However, if the condition is a vector, both the left and the right
  *                are evaluated regradless.
- *              - priority of ',' and '=' was switched ot fix the bug of using store "=" in
+ *              - priority of ',' and '=' was switched to fix the bug of using store "=" in
  *                functions with multiple arguments, which caused an error during execution.
  *              - The number of inlet and outlets (MAX_VARS) is now set at 100
  *
@@ -46,12 +46,12 @@
  * to a prefix stack ready to be evaluated.  The expression sysntax
  * is close to that of C.  There are a few operators that are not
  * supported and functions are also recognized.  Strings can be
- * passed to functions when they are quoted in '"'s. "[]" are implememted
+ * passed to functions when they are quoted in '"'s. "[]" are implemented
  * as an easy way of accessing the content of tables, and the syntax
  * table_name[index].
  * Variables (inlets) are specified with the following syntax: $x#,
  * where x is either i(integers), f(floats), and s(strings); and #
- * is a digit that coresponds to the inlet number.  The string variables
+ * is a digit that corresponds to the inlet number.  The string variables
  * can be used as strings when they are quoted and can also be used as
  * table names when they are followed by "[]".
  *
@@ -76,7 +76,7 @@
 #endif
 
 #ifdef _MSC_VER
-#define strtof _atoldbl
+#define strtof(a, b) _atoldbl(a, *b)
 #endif
 
 
@@ -430,7 +430,7 @@ ex_match(struct ex_ex *eptr, long int op)
                         /*
                          * Up to now we have marked the unary minuses as
                          * subrtacts.  Any minus that is the first one in
-                         * chain or is preceeded by anything except ')' and
+                         * chain or is preceded by anything except ')' and
                          * ']' is a unary minus.
                          */
                         if (eptr->ex_op == OP_SUB) {
@@ -736,7 +736,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
 }
 
 /*
- * this is the devide zero check for a a non devide operator
+ * this is the divide zero check for a non divide operator
  */
 #define DZC(ARG1,OPR,ARG2)      (ARG1 OPR ARG2)
 
@@ -1324,7 +1324,6 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         struct ex_ex arg;
         struct ex_ex rval;
         struct ex_ex *retp;
-        int isvalue;
         char *tbl = (char *) 0;
         char *var = (char *) 0;
         int badleft = 0;
@@ -1449,7 +1448,6 @@ eval_var(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the operation stack */
 /* the result pointer */
 {
-        struct ex_ex arg;
         char *var = (char *) 0;
         int novar = 0;
 
@@ -1491,10 +1489,9 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 {
         struct ex_ex arg;
         struct ex_ex *reteptr;
-        int i = 0, j = 0;
+        int i = 0;
         t_float fi = 0,         /* index in float */
               rem_i = 0;        /* remains of the float */
-        char *tbl;
 
         arg.ex_type = 0;
         arg.ex_int = 0;

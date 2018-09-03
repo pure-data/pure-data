@@ -69,7 +69,7 @@ static void print_setup(void)
     print_class = class_new(gensym("print~"), (t_newmethod)print_new, 0,
         sizeof(t_print), 0, A_DEFSYM, 0);
     CLASS_MAINSIGNALIN(print_class, t_print, x_f);
-    class_addmethod(print_class, (t_method)print_dsp, gensym("dsp"), 0);
+    class_addmethod(print_class, (t_method)print_dsp, gensym("dsp"), A_CANT, 0);
     class_addbang(print_class, print_bang);
     class_addfloat(print_class, print_float);
 }

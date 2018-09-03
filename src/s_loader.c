@@ -30,7 +30,7 @@
 typedef void (*t_xxx)(void);
 
 /* naming convention for externs.  The names are kept distinct for those
-who wich to make "fat" externs compiled for many platforms.  Less specific
+who wish to make "fat" externs compiled for many platforms.  Less specific
 fallbacks are provided, primarily for back-compatibility; these suffice if
 you are building a package which will run with a single set of compiled
 objects.  The specific name is the letter b, l, d, or m for  BSD, linux,
@@ -96,7 +96,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     const char *path)
 {
     char symname[MAXPDSTRING], filename[MAXPDSTRING], dirbuf[MAXPDSTRING],
-        *nameptr, altsymname[MAXPDSTRING];
+        *nameptr;
     const char *classname, *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;
@@ -210,7 +210,7 @@ gotone:
         ntdll = LoadLibrary(filename);
         if (!ntdll)
         {
-            verbose(1, "%s: couldn't load", filename);
+            error("%s: couldn't load", filename);
             class_set_extern_dir(&s_);
             return (0);
         }
@@ -223,7 +223,7 @@ gotone:
     dlobj = dlopen(filename, RTLD_NOW | RTLD_GLOBAL);
     if (!dlobj)
     {
-        verbose(1, "%s: %s", filename, dlerror());
+        error("%s: %s", filename, dlerror());
         class_set_extern_dir(&s_);
         return (0);
     }
@@ -237,7 +237,7 @@ gotone:
 
     if (!makeout)
     {
-        verbose(1, "load_object: Symbol \"%s\" not found", symname);
+        error("load_object: Symbol \"%s\" not found", symname);
         class_set_extern_dir(&s_);
         return 0;
     }
@@ -308,7 +308,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
 
     if (sys_onloadlist(classname))
     {
-        verbose(1, "%s: already loaded", classname);
+        error("%s: already loaded", classname);
         return (1);
     }
         /* if classname is absolute, try this first */

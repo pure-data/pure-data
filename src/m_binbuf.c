@@ -469,7 +469,7 @@ int canvas_getdollarzero( void);
  * the return value holds the length of the $arg (in most cases: 1)
  * buf holds the expanded $arg
  *
- * if some error occured, "-1" is returned
+ * if some error occurred, "-1" is returned
  *
  * e.g. "$1-bla" with list "10 20 30"
  * s="1-bla"
@@ -549,7 +549,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av, int tonew)
         */
         if(!tonew&&(0==next)&&(0==*buf))
         {
-            return 0; /* JMZ: this should mimick the original behaviour */
+            return 0; /* JMZ: this should mimic the original behaviour */
         }
 
         strncat(buf2, buf, MAXPDSTRING/2-1);
@@ -607,7 +607,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
     else
     {
 #if 1
-            /* count number of args in biggest message.  The wierd
+            /* count number of args in biggest message.  The weird
             treatment of "pd_objectmaker" is because when the message
             goes out to objectmaker, commas and semis are passed
             on as regular args (see below).  We're tacitly assuming here

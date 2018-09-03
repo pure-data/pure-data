@@ -3,19 +3,19 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 309 129 694 542 12;
+#N canvas 703 157 694 542 12;
 #X obj 208 496 list;
 #X text 34 496 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 844 217 900 716 define 0;
-#X text 295 562 creation arguments:;
-#X text 325 597 optional name;
+#N canvas 509 48 900 716 define 0;
+#X text 332 562 creation arguments:;
+#X text 362 633 optional name;
 #X text 322 164 read from a file;
 #X text 324 195 write to a file;
 #X text 32 20 "array define" maintains an array and can name it so
 that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 324 614 optional size (100 by default);
+#X text 361 650 optional size (100 by default);
 #X msg 35 138 const 0;
 #X text 325 138 set to a constant (0 \, for instance);
 #X msg 45 167 read array-object-help.txt;
@@ -36,10 +36,14 @@ those above - xticks \, etc \, and also lists to set values.;
 #X text 109 349 The pointer will be to a structure float-array and
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
-#X obj 38 659 array define -k array-help-2 10;
+#X obj 38 627 array define -k array-help-2 10;
 #A 0 -0.320006 0 0 0 0.973333 0 0 0 0 0;
 #X msg 49 313 send array-help-send;
-#X text 323 580 optional -k flag to keep contents;
+#X text 360 580 optional -k flag to keep contents;
+#X obj 39 660 array define -yrange -4 4 array-help-3 10;
+#X obj 39 689 array define -pix 800 400 array-help-4 16;
+#X text 361 597 optional "-yrange low high" to set the yrange;
+#X text 361 615 optional "-pix x y" to set the plot size;
 #X connect 6 0 10 0;
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
