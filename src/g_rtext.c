@@ -318,7 +318,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             lmargin *= glist_getzoom(x->x_glist);
             tmargin *= glist_getzoom(x->x_glist);
         }
-        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%.*s} %d %s\n",
+        sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%.*s } %d %s\n",
             canvas, x->x_tag, rtext_gettype(x)->s_name,
             dispx + lmargin, dispy + tmargin,
             outchars_b, tempbuf,
@@ -328,7 +328,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
     }
     else if (action == SEND_UPDATE)
     {
-        sys_vgui("pdtk_text_set .x%lx.c %s {%.*s}\n",
+        sys_vgui("pdtk_text_set .x%lx.c %s {%.*s }\n",
             canvas, x->x_tag, outchars_b, tempbuf);
         if (pixwide != x->x_drawnwidth || pixhigh != x->x_drawnheight)
             text_drawborder(x->x_text, x->x_glist, x->x_tag,
