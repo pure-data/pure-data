@@ -66,6 +66,10 @@ static const char*sys_dllextent[] = {
     ARCHDLLEXT(".d_")
     ".pd_darwin",
     ".so",
+#elif defined(__OPENBSD__)
+    ARCHDLLEXT(".o_")
+    ".pd_openbsd",
+    ".so",
 #elif defined(_WIN32) || defined(__CYGWIN__)
     ARCHDLLEXT(".m_")
     ".dll",
