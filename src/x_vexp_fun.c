@@ -14,7 +14,7 @@
  *      added floor and ceil for expr -- Orm Finnendahl
  *
  * July 2002 --sdy
- *      added the following math funtions:
+ *      added the following math functions:
  *              cbrt - cube root
  *              erf - error function
  *              erfc - complementary error function
@@ -42,7 +42,7 @@
  *                                binary ones (10 ~ 1)
  *                              - fixed ceil() and floor() which should have only one argument
  *                              - added copysign  (the previous one "copysig" which was
- *                                defined with one argument was kept for compatibilty)
+ *                                defined with one argument was kept for compatibility)
  *                              - fixed sum("table"), and Sum("table", x, y)
  *                              - deleted avg(), Avg() as they can be simple expressions
  *                              - deleted store as this can be achieved by the '=' operator
@@ -76,7 +76,6 @@
 #define __STRICT_BSD__
 #include <math.h>
 #undef __STRICT_BSD__
-
 
 #include "x_vexp.h"
 
@@ -538,12 +537,10 @@ ex_toint(t_expr *e, long int argc, struct ex_ex *argv, struct ex_ex *optr)
                 FUNC_EVAL_UNARY(left, toint, (int), optr, 0);
         }
 
-#ifdef _WIN32
-/* No rint in NT land ??? */
-double rint(double x);
-
-double
-rint(double x)
+#ifdef _MSC_VER
+/* rint is now advertised as part of the microsoft SDK but my MSVC still
+doesn't find it - so here it is again. */
+static double rint(double x)
 {
         return (floor(x + 0.5));
 }
@@ -1255,7 +1252,7 @@ FUNC_DEF_UNARY(ex_imodf, imodf, (double), 1);
 /*
  * ex_modf - extract signed  fractional value from floating-point number
  *
- *  using fracmodf because fmodf() is alrady defined in a .h file
+ *  using fracmodf because fmodf() is already defined in a .h file
  */
 static double
 fracmodf(double x)
@@ -1334,7 +1331,7 @@ FUNC_DEF(ex_remainder, remainder, (double), (double), 1);
 FUNC_DEF_UNARY(ex_round, round, (double), 1);
 
 /*
- * ex_trunc -  round to interger, towards zero
+ * ex_trunc -  round to integer, towards zero
  */
 FUNC_DEF_UNARY(ex_trunc, trunc, (double), 1);
 

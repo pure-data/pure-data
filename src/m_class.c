@@ -778,6 +778,10 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
       error("maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
     }
+    if (s == &s_anything){
+      error("object name \"%s\" not allowed", s->s_name);
+      return;
+    }
     pd_this->pd_newest = 0;
     class_loadsym = s;
     pd_globallock();
@@ -1077,4 +1081,15 @@ t_gotfn zgetfn(t_pd *x, t_symbol *s)
     for (i = c->c_nmethod, m = mlist; i--; m++)
         if (m->me_name == s) return(m->me_fun);
     return(0);
+}
+
+void c_extern(t_externclass *cls, t_newmethod newroutine,
+    t_method freeroutine, t_symbol *name, size_t size, int tiny, \
+    t_atomtype arg1, ...)
+{
+    bug("'c_extern' not implemented.");
+}
+void c_addmess(t_method fn, t_symbol *sel, t_atomtype arg1, ...)
+{
+    bug("'c_addmess' not implemented.");
 }

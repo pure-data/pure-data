@@ -44,7 +44,7 @@ static PERTHREAD FFTFLT *ooura_costab;
 static int ooura_init( int n)
 {
     n = (1 << ilog2(n));
-    if (n < 64)
+    if (n < 4)
         return (0);
     if (n > ooura_maxn)
     {

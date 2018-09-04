@@ -225,9 +225,11 @@ set canvas_minwidth 50
 set canvas_minheight 20
 
 # undo states
-set ::undo_action "no"
-set ::redo_action "no"
-set ::undo_toplevel "."
+array set undo_actions {}
+array set redo_actions {}
+# unused legacy undo states
+set undo_action no
+set redo_action no
 
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]

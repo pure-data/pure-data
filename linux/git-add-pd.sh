@@ -1,3 +1,4 @@
+#!/bin/sh
 (cd ~/pd/src; sh ../linux/detab-src.sh)
 
 cd ~/pd

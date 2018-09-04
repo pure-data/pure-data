@@ -327,7 +327,7 @@ void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y)
             break;
         case A_SYMBOL:
             for (s = ap->a_w.w_symbol->s_name, fixit = 0; *s; s++)
-                if (*s == ';' || *s == ',' || *s == '$')
+                if (*s == ';' || *s == ',' || *s == '$' || *s == '\\')
                     fixit = 1;
             if (fixit)
             {
@@ -374,45 +374,60 @@ void binbuf_restore(t_binbuf *x, int argc, t_atom *argv)
             char *str = argv->a_w.w_symbol->s_name, *str2;
             if (!strcmp(str, ";")) SETSEMI(ap);
             else if (!strcmp(str, ",")) SETCOMMA(ap);
-            else if ((str2 = strchr(str, '$')) && str2[1] >= '0'
-                && str2[1] <= '9')
+            else
             {
-                int dollsym = 0;
-                if (*str != '$')
-                    dollsym = 1;
-                else for (str2 = str + 1; *str2; str2++)
-                    if (*str2 < '0' || *str2 > '9')
+                char buf[MAXPDSTRING], *sp1, *sp2, *usestr;
+                int dollar = 0;
+                if (strchr(str, '\\'))
                 {
-                    dollsym = 1;
-                    break;
+                    int slashed = 0;
+                    for (sp1 = buf, sp2 = argv->a_w.w_symbol->s_name;
+                        *sp2 && sp1 < buf + (MAXPDSTRING-1);
+                            sp2++)
+                    {
+                        if (slashed)
+                            *sp1++ = *sp2, slashed = 0;
+                        else if (*sp2 == '\\')
+                            slashed = 1;
+                        else
+                        {
+                            if (*sp2 == '$' && sp2[1] >= 0 && sp2[1] <= '9')
+                                dollar = 1;
+                            *sp1++ = *sp2;
+                            slashed = 0;
+                        }
+                    }
+                    *sp1 = 0;
+                    usestr = buf;
                 }
-                if (dollsym)
-                    SETDOLLSYM(ap, gensym(str));
-                else
+                else usestr = str;
+                if (dollar || (usestr== str && (str2 = strchr(usestr, '$')) &&
+                    str2[1] >= '0' && str2[1] <= '9'))
                 {
-                    int dollar = 0;
-                    sscanf(argv->a_w.w_symbol->s_name + 1, "%d", &dollar);
-                    SETDOLLAR(ap, dollar);
+                    int dollsym = 0;
+                    if (*usestr != '$')
+                        dollsym = 1;
+                    else for (str2 = usestr + 1; *str2; str2++)
+                        if (*str2 < '0' || *str2 > '9')
+                    {
+                        dollsym = 1;
+                        break;
+                    }
+                    if (dollsym)
+                        SETDOLLSYM(ap, usestr == str ?
+                            argv->a_w.w_symbol : gensym(usestr));
+                    else
+                    {
+                        int dollar = 0;
+                        sscanf(usestr + 1, "%d", &dollar);
+                        SETDOLLAR(ap, dollar);
+                    }
                 }
+                else SETSYMBOL(ap, usestr == str ?
+                    argv->a_w.w_symbol : gensym(usestr));
+                /* fprintf(stderr, "arg %s -> binbuf %s type %d\n",
+                    argv->a_w.w_symbol->s_name, usestr, ap->a_type); */
             }
-            else if (strchr(argv->a_w.w_symbol->s_name, '\\'))
-            {
-                char buf[MAXPDSTRING], *sp1, *sp2;
-                int slashed = 0;
-                for (sp1 = buf, sp2 = argv->a_w.w_symbol->s_name;
-                    *sp2 && sp1 < buf + (MAXPDSTRING-1);
-                        sp2++)
-                {
-                    if (slashed)
-                        *sp1++ = *sp2;
-                    else if (*sp2 == '\\')
-                        slashed = 1;
-                    else *sp1++ = *sp2, slashed = 0;
-                }
-                *sp1 = 0;
-                SETSYMBOL(ap, gensym(buf));
-            }
-            else *ap = *argv;
             argv++;
         }
         else *ap = *(argv++);
@@ -469,7 +484,7 @@ int canvas_getdollarzero( void);
  * the return value holds the length of the $arg (in most cases: 1)
  * buf holds the expanded $arg
  *
- * if some error occured, "-1" is returned
+ * if some error occurred, "-1" is returned
  *
  * e.g. "$1-bla" with list "10 20 30"
  * s="1-bla"
@@ -549,20 +564,20 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av, int tonew)
         */
         if(!tonew&&(0==next)&&(0==*buf))
         {
-            return 0; /* JMZ: this should mimick the original behaviour */
+            return 0; /* JMZ: this should mimic the original behaviour */
         }
 
-        strncat(buf2, buf, MAXPDSTRING/2-1);
+        strncat(buf2, buf, MAXPDSTRING-strlen(buf)-1);
         str+=next;
         substr=strchr(str, '$');
         if(substr)
         {
-            strncat(buf2, str, (substr-str));
+            strncat(buf2, str, MAXPDSTRING-strlen(buf)-1);
             str=substr+1;
         }
         else
         {
-            strncat(buf2, str, MAXPDSTRING-1);
+            strncat(buf2, str, MAXPDSTRING-strlen(buf)-1);
             goto done;
         }
     }
@@ -607,7 +622,7 @@ void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv)
     else
     {
 #if 1
-            /* count number of args in biggest message.  The wierd
+            /* count number of args in biggest message.  The weird
             treatment of "pd_objectmaker" is because when the message
             goes out to objectmaker, commas and semis are passed
             on as regular args (see below).  We're tacitly assuming here
