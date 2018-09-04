@@ -640,11 +640,11 @@ msgstr "2. Copier le dossier obtenu dans %s."
 
 #, tcl-format
 msgid "[deken] uninstalling '%s'"
-msgstr "[deken] désinstallation de %s"
+msgstr "[deken] désinstallation de '%s'"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
-msgstr "Impossible de désinstaller %1$s de %2$s !"
+msgstr "Échec de la désinstallation de %1$s de %2$s !"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -678,6 +678,12 @@ msgstr "Installer uniquement des objets provenant de sources de confiance."
 msgid "Preferences"
 msgstr "Préférences"
 
+msgid "Create"
+msgstr "Créer"
+
+msgid "Check"
+msgstr "Vérifier"
+
 msgid "Installation options:"
 msgstr "Options d'installation :"
 
@@ -685,10 +691,10 @@ msgid "Try to remove libraries before (re)installing them?"
 msgstr "Essayer de supprimer les bibliothèques avant de les (ré)installer ?"
 
 msgid "Show README of newly installed libraries (if present)?"
-msgstr "Afficher le README (si présent) des nouvelles bibliothèques ?"
+msgstr "Afficher le README (si présent) des bibliothèques nouvellement installées ?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
-msgstr "Ajouter les nouvelles bibliothèques aux chemins de recherche de Pd ?"
+msgstr "Les bibliothèques nouvellement installées doivent-elles être ajoutées aux chemins de recherche de Pd ?"
 
 msgid "Platform settings:"
 msgstr "Réglages de plateforme :"
@@ -701,14 +707,14 @@ msgid "User-defined platform:"
 msgstr "Plateforme définie par l'utilisateur :"
 
 msgid "Hide foreign architectures?"
-msgstr "Cacher les autres architectures ?"
+msgstr "Cacher les architectures étrangères ?"
 
 #, tcl-format
 msgid "Deken %s Preferences"
 msgstr "Préférences de Deken %s"
 
 msgid "[deken]: Start searching for externals..."
-msgstr "[deken] : Recherche d'externals ..."
+msgstr "[deken] : Démarrage de la recherche d'externals..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
@@ -721,13 +727,13 @@ msgid "Unable to perform search."
 msgstr "Recherche impossible."
 
 msgid "[deken]: No matching externals found."
-msgstr "[deken] : Aucun external trouvé."
+msgstr "[deken] : Aucun external correspondant trouvé."
 
 msgid "Try using the full name e.g. 'freeverb'."
 msgstr "Essayez avec le nom complet, par exemple 'freeverb'."
 
 msgid "No matching externals found."
-msgstr "Aucun external correspondant."
+msgstr "Aucun external correspondant trouvé."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
