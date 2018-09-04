@@ -1,48 +1,58 @@
-#N canvas 297 64 589 579 12;
-#X floatatom 24 55 5 0 0 0 - - -, f 5;
-#X text 24 498 abbreviation:;
-#X text 79 10 -- nonlocal shared value (named variable);
-#X floatatom 24 130 5 0 0 0 - - -, f 5;
-#X msg 34 78 bang;
-#X obj 21 10 value;
-#X obj 24 105 value help-value1;
-#X obj 141 499 v;
-#X floatatom 180 55 5 0 0 0 - - -, f 5;
-#X floatatom 180 130 5 0 0 0 - - -, f 5;
-#X msg 190 78 bang;
-#X obj 180 105 value help-value1;
-#X floatatom 338 55 5 0 0 0 - - -, f 5;
-#X floatatom 338 130 5 0 0 0 - - -, f 5;
-#X msg 348 78 bang;
-#X obj 338 105 value help-value2;
-#X text 30 169 "Value" stores a numeric value which is shared between
+#N canvas 673 23 541 568 12;
+#X floatatom 21 59 5 0 0 0 - - -, f 5;
+#X text 383 15 abbreviation:;
+#X text 69 14 -- nonlocal shared value (named variable);
+#X floatatom 21 134 5 0 0 0 - - -, f 5;
+#X msg 31 82 bang;
+#X obj 18 14 value;
+#X obj 21 109 value help-value1;
+#X obj 493 14 v;
+#X floatatom 163 59 5 0 0 0 - - -, f 5;
+#X floatatom 163 134 5 0 0 0 - - -, f 5;
+#X msg 173 82 bang;
+#X obj 163 109 value help-value1;
+#X floatatom 313 59 5 0 0 0 - - -, f 5;
+#X floatatom 313 134 5 0 0 0 - - -, f 5;
+#X msg 323 82 bang;
+#X obj 313 109 value help-value2;
+#X text 27 173 "Value" stores a numeric value which is shared between
 all values with the same name (which need not be in the same Pd window.)
 ;
-#X text 392 54 numbers set the value;
-#X text 396 77 bang retrieves it;
-#X text 55 541 see also:;
-#X obj 142 540 expr;
-#X text 341 542 updated for Pd version 0.48;
-#X obj 349 303 value z;
-#X obj 428 292 expr z;
-#X floatatom 428 323 5 0 0 0 - - -, f 5;
-#X obj 428 260 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X text 367 58 numbers set the value;
+#X text 371 81 bang retrieves it;
+#X text 26 516 see also:;
+#X obj 102 516 expr;
+#X obj 309 266 value z;
+#X obj 388 255 expr z;
+#X floatatom 388 284 5 0 0 0 - - -, f 5;
+#X obj 388 228 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 349 274 5 0 0 0 - - -, f 5;
-#X obj 347 439 value y;
-#X obj 262 451 send y;
-#X floatatom 262 423 5 0 0 0 - - -, f 5;
-#X obj 347 412 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X floatatom 309 237 5 0 0 0 - - -, f 5;
+#X obj 359 341 value y;
+#X obj 278 354 send y;
+#X floatatom 278 326 5 0 0 0 - - -, f 5;
+#X obj 359 319 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 347 472 5 0 0 0 - - -, f 5;
-#X text 32 359 The [value] object can also receive float values sent
+#X floatatom 359 369 5 0 0 0 - - -, f 5;
+#X msg 437 334 \; y 5;
+#X obj 140 516 send;
+#X obj 179 516 float;
+#X text 28 235 The value may also be stored or recalled in expressions
+via the expr \, expr~ \, and fexpr~ objects., f 34;
+#X floatatom 286 479 5 0 0 0 - - -, f 5;
+#X obj 286 453 value;
+#X msg 318 418 symbol help-value1;
+#X msg 337 452 symbol help-value2;
+#X text 28 317 The value object can also receive float values sent
 via a [send] object or a message if it has a variable with the same
-name.;
-#X msg 430 431 \; y 5;
-#X obj 186 541 send;
-#X obj 232 541 float;
-#X text 31 225 The value may also be stored or recalled in expressions
-via the expr \, expr~ \, and fexpr~ objects.;
+name., f 31;
+#X text 29 411 if invoked without a creation argument \, the value
+object adds a right inlet for setting the variable name with a "symbol"
+message:, f 30;
+#X obj 286 418 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 296 527 updated for Pd version 0.48-1;
+#X obj 224 516 int;
 #X connect 0 0 6 0;
 #X connect 4 0 6 0;
 #X connect 6 0 3 0;
@@ -52,9 +62,13 @@ via the expr \, expr~ \, and fexpr~ objects.;
 #X connect 12 0 15 0;
 #X connect 14 0 15 0;
 #X connect 15 0 13 0;
-#X connect 23 0 24 0;
-#X connect 25 0 23 0;
-#X connect 26 0 22 0;
-#X connect 27 0 31 0;
-#X connect 29 0 28 0;
-#X connect 30 0 27 0;
+#X connect 22 0 23 0;
+#X connect 24 0 22 0;
+#X connect 25 0 21 0;
+#X connect 26 0 30 0;
+#X connect 28 0 27 0;
+#X connect 29 0 26 0;
+#X connect 36 0 35 0;
+#X connect 37 0 36 1;
+#X connect 38 0 36 1;
+#X connect 41 0 36 0;

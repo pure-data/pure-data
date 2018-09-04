@@ -1,44 +1,42 @@
 #N struct template2 float x float y;
 #N struct template1 float x float y float z;
-#N canvas 459 64 698 764 12;
-#X text 19 635 see also:;
+#N canvas 454 46 698 764 12;
+#X text 19 671 see also:;
 #X obj 21 10 pointer;
 #X text 95 10 -- remember the location of a scalar in a list;
 #N canvas 164 72 425 146 help-pointer-template1 0;
 #X obj 18 81 filledpolygon z 0 1 0 0 20 0 20 30 0 30;
 #X obj 60 21 struct template1 float x float y float z;
-#X restore 326 449 pd help-pointer-template1;
+#X restore 326 485 pd help-pointer-template1;
 #N canvas 26 456 510 145 help-pointer-template2 0;
 #X obj 52 78 filledcurve 909 0 0 0 0 30 30 60 0 30 -30 0 0;
 #X obj 60 21 struct template2 float x float y;
-#X restore 326 472 pd help-pointer-template2;
-#X obj 22 655 get;
-#X obj 55 655 set;
-#X obj 90 655 append;
-#X obj 151 655 getsize;
-#X obj 219 656 setsize;
-#X obj 289 656 element;
-#N canvas 2 52 312 185 help-pointer-data 1;
+#X restore 326 508 pd help-pointer-template2;
+#X obj 22 691 get;
+#X obj 55 691 set;
+#X obj 90 691 append;
+#X obj 151 691 getsize;
+#X obj 219 692 setsize;
+#X obj 289 692 element;
+#N canvas 2 132 312 185 help-pointer-data 0;
 #X scalar template2 20 97 \;;
 #X scalar template1 80 17 90 \;;
 #X scalar template1 120 117 9 \;;
-#X restore 326 427 pd help-pointer-data;
-#X obj 53 423 pointer;
+#X restore 326 463 pd help-pointer-data;
+#X obj 53 459 pointer;
 #X msg 54 231 traverse pd-help-pointer-data;
 #X msg 67 255 bang;
 #X msg 69 281 next;
-#X obj 53 448 print out1;
-#X obj 166 434 print out2;
-#X text 15 489 Optional arguments to pointer allow you to select according
+#X obj 53 484 print out1;
+#X obj 166 470 print out2;
+#X text 15 525 Optional arguments to pointer allow you to select according
 to the class of the scalar being output:;
-#X msg 73 550 next;
-#X msg 59 527 traverse pd-help-pointer-data;
-#X obj 59 578 pointer help-pointer-template1 help-pointer-template2
-;
-#X obj 59 604 print template1;
-#X obj 197 604 print template2;
-#X obj 337 604 print other;
-#X obj 440 604 print bangout;
+#X msg 73 586 next;
+#X msg 59 563 traverse pd-help-pointer-data;
+#X obj 59 640 print template1;
+#X obj 184 640 print template2;
+#X obj 309 640 print other;
+#X obj 434 640 print bangout;
 #X text 333 232 sets to the "head" of the list;
 #X text 29 34 "Pointer" is a storage object like "float" \, except
 that the thing stored is the location of a scalar somewhere. You can
@@ -52,33 +50,41 @@ allows you to point to an empty list \, and also \, to "append" a scalar
 to the beginning of the list.;
 #X text 29 191 Pointers are "safe": if you delete a scalar pointers
 to it are marked invalid.;
-#X text 165 454 bang at end;
-#X text 166 470 of list;
-#X text 52 468 output;
-#X obj 354 656 struct;
+#X text 165 490 bang at end;
+#X text 166 506 of list;
+#X text 52 504 output;
+#X obj 354 692 struct;
 #X msg 71 313 vnext 1;
-#X text 453 665 updated for Pd version 0.45;
 #X msg 71 377 send pointer-help;
 #X text 109 256 output current value;
 #X text 119 274 move forward one item and output pointer \; if we reach
 the end \, a "bang" goes to out2.;
 #X text 219 376 send pointer to a named object ->;
-#X obj 496 379 r pointer-help;
-#X obj 496 404 print pointer-help;
+#X obj 467 375 r pointer-help;
+#X obj 467 400 print pointer-help;
 #X text 149 314 output the next object (if arg is 0) or the next selected
 object (if arg is 1 -- but the window must be visible for the "selection"
 to make sense).;
+#X obj 59 614 pointer template1 template2, f 54;
+#X msg 77 426 send-window vis \$1;
+#X obj 77 404 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 453 701 updated for Pd version 0.48;
+#X text 219 427 send a message to the canvas containing the scalar
+;
 #X connect 12 0 16 0;
 #X connect 12 1 17 0;
 #X connect 13 0 12 0;
 #X connect 14 0 12 0;
 #X connect 15 0 12 0;
-#X connect 19 0 21 0;
-#X connect 20 0 21 0;
-#X connect 21 0 22 0;
-#X connect 21 1 23 0;
-#X connect 21 2 24 0;
-#X connect 21 3 25 0;
+#X connect 19 0 41 0;
+#X connect 20 0 41 0;
+#X connect 33 0 12 0;
 #X connect 34 0 12 0;
-#X connect 36 0 12 0;
-#X connect 40 0 41 0;
+#X connect 38 0 39 0;
+#X connect 41 0 21 0;
+#X connect 41 1 22 0;
+#X connect 41 2 23 0;
+#X connect 41 3 24 0;
+#X connect 42 0 12 0;
+#X connect 43 0 42 0;

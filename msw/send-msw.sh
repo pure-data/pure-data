@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #usage: ./send-mw.sh 0.38-0 or 0.38-0test4
 
 if test x$1 == x

@@ -57,7 +57,7 @@ proc ::tk::mac::Quit {args} {
 # is provided by default and cannot disabled or removed 
 proc ::tk::mac::ShowHelp {args} {
     ::pdwindow::verbose 1 "::tk::mac::ShowHelp $args ++++++++++++\n"
-    ::pd_menucommands::menu_helpbrowser
+    ::pd_menucommands::menu_manual
 }
 
 # these I gleaned by reading the source (tkMacOSXHLEvents.c)

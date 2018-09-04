@@ -80,11 +80,10 @@ int u8_utf8toucs2(uint16_t *dest, int sz, char *src, int srcsz)
         }
         ch = 0;
         switch (nb) {
-            /* these fall through deliberately */
-        case 3: ch += (unsigned char)*src++; ch <<= 6;
-        case 2: ch += (unsigned char)*src++; ch <<= 6;
-        case 1: ch += (unsigned char)*src++; ch <<= 6;
-        case 0: ch += (unsigned char)*src++;
+        case 3: ch += (unsigned char)*src++; ch <<= 6; /* falls through */
+        case 2: ch += (unsigned char)*src++; ch <<= 6; /* falls through */
+        case 1: ch += (unsigned char)*src++; ch <<= 6; /* falls through */
+        case 0: ch += (unsigned char)*src++; /* falls through */
         }
         ch -= offsetsFromUTF8[nb];
         dest[i++] = ch;
