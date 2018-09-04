@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 48
+#define PD_MINOR_VERSION 49
 #define PD_BUGFIX_VERSION 0
-#define PD_TEST_VERSION ""
+#define PD_TEST_VERSION "test0"
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -83,7 +83,11 @@ typedef unsigned __int64  uint64_t;
 
 /* signed and unsigned integer types the size of a pointer:  */
 #if !defined(PD_LONGINTTYPE)
+#if defined(_WIN32) && defined(__x86_64__)
+#define PD_LONGINTTYPE long long
+#else
 #define PD_LONGINTTYPE long
+#endif
 #endif
 
 #if !defined(PD_FLOATSIZE)
@@ -233,7 +237,7 @@ typedef struct _text        /* patchable object - graphical, with text */
 
 #define T_TEXT 0        /* just a textual comment */
 #define T_OBJECT 1      /* a MAX style patchable object */
-#define T_MESSAGE 2     /* a MAX stype message */
+#define T_MESSAGE 2     /* a MAX type message */
 #define T_ATOM 3        /* a cell to display a number or symbol */
 
 #define te_pd te_g.g_pd
@@ -275,7 +279,7 @@ EXTERN t_gotfn zgetfn(t_pd *x, t_symbol *s);
 EXTERN void nullfn(void);
 EXTERN void pd_vmess(t_pd *x, t_symbol *s, char *fmt, ...);
 
-/* the following macrose are for sending non-type-checkable mesages, i.e.,
+/* the following macros are for sending non-type-checkable messages, i.e.,
 using function lookup but circumventing type checking on arguments.  Only
 use for internal messaging protected by A_CANT so that the message can't
 be generated at patch level. */
@@ -383,8 +387,6 @@ EXTERN void pd_unbind(t_pd *x, t_symbol *s);
 EXTERN t_pd *pd_findbyclass(t_symbol *s, t_class *c);
 EXTERN void pd_pushsym(t_pd *x);
 EXTERN void pd_popsym(t_pd *x);
-EXTERN t_symbol *pd_getfilename(void);
-EXTERN t_symbol *pd_getdirname(void);
 EXTERN void pd_bang(t_pd *x);
 EXTERN void pd_pointer(t_pd *x, t_gpointer *gp);
 EXTERN void pd_float(t_pd *x, t_float f);
@@ -477,7 +479,6 @@ EXTERN void class_addanything(t_class *c, t_method fn);
 EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
 EXTERN void class_setwidget(t_class *c, const t_widgetbehavior *w);
 EXTERN void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *w);
-EXTERN const t_parentwidgetbehavior *class_parentwidget(t_class *c);
 EXTERN char *class_getname(t_class *c);
 EXTERN char *class_gethelpname(t_class *c);
 EXTERN char *class_gethelpdir(t_class *c);
@@ -527,7 +528,6 @@ EXTERN void sys_ouch(void);
 
 
 /* ------------  system interface routines ------------------- */
-EXTERN int sys_isreadablefile(const char *name);
 EXTERN int sys_isabsolutepath(const char *dir);
 EXTERN void sys_bashfilename(const char *from, char *to);
 EXTERN void sys_unbashfilename(const char *from, char *to);
@@ -650,6 +650,7 @@ EXTERN t_float q8_rsqrt(t_float);
 EXTERN t_float qsqrt(t_float);  /* old names kept for extern compatibility */
 EXTERN t_float qrsqrt(t_float);
 #endif
+
 /* --------------------- data --------------------------------- */
 
     /* graphical arrays */
@@ -843,13 +844,17 @@ EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */
 
 #if defined(PDTHREADS) && defined(PDINSTANCE)
+#ifdef _MSC_VER
+#define PERTHREAD __declspec(thread)
+#else
 #define PERTHREAD __thread
+#endif /* _MSC_VER */
 #else
 #define PERTHREAD
 #endif
 
 #ifdef PDINSTANCE
-EXTERN PERTHREAD t_pdinstance *pd_this;
+extern PERTHREAD t_pdinstance *pd_this;
 EXTERN t_pdinstance **pd_instances;
 EXTERN int pd_ninstances;
 #else

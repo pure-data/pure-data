@@ -46,7 +46,6 @@ EXTERN int sys_nearestfontsize(int fontsize);
 
 extern int sys_defaultfont;
 EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
-extern t_symbol *sys_guidir;    /* directory holding pd_gui, u_pdsend, etc */
 
 /* s_loader.c */
 
@@ -136,8 +135,6 @@ void sys_do_open_midi(int nmidiindev, int *midiindev,
 EXTERN void sys_alsa_putmidimess(int portno, int a, int b, int c);
 EXTERN void sys_alsa_putmidibyte(int portno, int a);
 EXTERN void sys_alsa_poll_midi(void);
-EXTERN void sys_alsa_setmiditimediff(double inbuftime, double outbuftime);
-EXTERN void sys_alsa_midibytein(int portno, int byte);
 EXTERN void sys_alsa_close_midi( void);
 
 

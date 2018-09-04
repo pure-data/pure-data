@@ -198,7 +198,7 @@ t_namelist *namelist_append_files(t_namelist *listwas, const char *s)
 {
     const char *npos;
     char temp[MAXPDSTRING];
-    t_namelist *nl = listwas, *rtn = listwas;
+    t_namelist *nl = listwas;
 
     npos = s;
     do
@@ -335,7 +335,7 @@ int sys_open_absolute(const char *name, const char* ext,
         int dirlen;
         if (!z)
             return (0);
-        dirlen = z - name;
+        dirlen = (int)(z - name);
         if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
@@ -535,7 +535,7 @@ void sys_doflags( void)
     char *rcargv[MAXPDSTRING];
     if (!sys_flags)
         sys_flags = &s_;
-    len = strlen(sys_flags->s_name);
+    len = (int)strlen(sys_flags->s_name);
     if (len > MAXPDSTRING)
     {
         error("flags: %s: too long", sys_flags->s_name);
@@ -646,8 +646,8 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_searchpath);
     STUFF->st_searchpath = 0;
-    sys_usestdpath = atom_getintarg(0, argc, argv);
-    sys_verbose = atom_getintarg(1, argc, argv);
+    sys_usestdpath = atom_getfloatarg(0, argc, argv);
+    sys_verbose = atom_getfloatarg(1, argc, argv);
     for (i = 0; i < argc-2; i++)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
@@ -661,7 +661,6 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     if "saveit" is set, also save all settings.  */
 void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
 {
-    int i;
     t_symbol *s = sys_decodedialog(path);
     if (*s->s_name)
     {
@@ -702,7 +701,7 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
-    sys_defeatrt = atom_getintarg(0, argc, argv);
+    sys_defeatrt = atom_getfloatarg(0, argc, argv);
     sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
     for (i = 0; i < argc-2; i++)
     {

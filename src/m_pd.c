@@ -288,6 +288,11 @@ void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     (*(*x)->c_listmethod)(x, &s_list, argc, argv);
 }
 
+void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
+{
+    (*(*x)->c_anymethod)(x, s, argc, argv);
+}
+
 void mess_init(void);
 void obj_init(void);
 void conf_init(void);

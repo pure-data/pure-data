@@ -12,43 +12,46 @@
 #X obj 280 217 text define;
 #X text 81 173 The text object's first argument sets its function:
 , f 30;
-#N canvas 636 127 684 718 define 0;
-#X msg 39 141 clear;
-#X msg 37 167 read text-object-help.txt;
-#X msg 40 196 write text-object-help.txt;
+#N canvas 551 61 684 718 define 0;
+#X msg 39 106 clear;
+#X msg 37 132 read text-object-help.txt;
+#X msg 40 161 write text-object-help.txt;
 #X text 32 20 "text define" maintains a text object and can name it
 so that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 61 376 click to open and edit text:;
-#X text 296 364 creation arguments:;
-#X text 324 382 optional -k flag to keep contents;
-#X text 326 399 optional name;
-#X text 77 263 (optionally you can read or write to/from a file interpreting
+#X text 61 385 click to open and edit text:;
+#X text 296 373 creation arguments:;
+#X text 324 391 optional -k flag to keep contents;
+#X text 326 408 optional name;
+#X text 77 228 (optionally you can read or write to/from a file interpreting
 carriage returns as separators \; this should allow reading some text
 file formats - like this:);
-#X text 274 165 read from a file;
-#X text 276 196 write to a file;
-#X text 277 139 clear;
-#X obj 48 228 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X text 274 130 read from a file;
+#X text 276 161 write to a file;
+#X text 277 104 clear;
+#X obj 48 193 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 38 447 t b p;
 #X obj 38 496 text get -s text t;
 #X msg 39 471 0;
 #X obj 38 546 print;
 #X obj 38 521 list trim;
-#X obj 38 400 text define -k text-help-1;
+#X obj 38 409 text define -k text-help-1;
 #A set this is a message \; this is another 1 ... \;;
-#X msg 149 326 write -c /tmp/test-cr.txt;
+#X msg 79 296 write -c /tmp/test-cr.txt;
 #X obj 327 473 print notify-outlet;
 #X text 34 571 First outlet is pointer to a "text" scalar containing
 the text \, which is output when the object is sent a "bang". For example
 \, here's machinery for printing out first line of text., f 30;
-#X text 69 222 bang to output a pointer to a scalar (struct) containing
+#X text 69 187 bang to output a pointer to a scalar (struct) containing
 the text - see first outlet below, f 45;
 #X text 320 494 Second outlet notifies you when text changes. As of
 Pd 0.48 this only outputs the message "updated" when text changes \,
 but this might be extended to offer more information in the future.
 , f 42;
+#X msg 79 336 click;
+#X msg 127 336 close;
+#X text 175 336 open and close text window;
 #X connect 0 0 18 0;
 #X connect 1 0 18 0;
 #X connect 2 0 18 0;
@@ -61,6 +64,8 @@ but this might be extended to offer more information in the future.
 #X connect 18 0 13 0;
 #X connect 18 1 20 0;
 #X connect 19 0 18 0;
+#X connect 24 0 18 0;
+#X connect 25 0 18 0;
 #X restore 392 217 pd define;
 #X obj 280 240 text get;
 #N canvas 885 156 859 566 get 0;
@@ -258,7 +263,7 @@ If the number n is greater than the number of lines in the text the
 new line is added.;
 #X text 241 348 next optional arg to set inlet 2 (field number \, defaults
 to whole line), f 47;
-#X msg 223 165 1e+15;
+#X msg 223 165 1e+015;
 #X text 83 391 If inlet 2 is unset or set to a negative number \, the
 entire line is replaced \, but if it is set to 0 or more to specify
 a starting field \, the line is not resized - instead \, as many items
@@ -360,8 +365,8 @@ line that won't match numbers \;;
 #X text 102 99 doesn't match first field of any line so -1;
 #X text 113 210 fails on second field so no match;
 #X text 211 314 ... then optional search fields. Each is a field number
-(starting from 0) optionally preceded by ">". ">=" \, "<" \, "<="
-\, or "near".;
+(starting from 0) optionally preceded by ">". ">=" \, "<" \, "<=" \,
+or "near".;
 #X text 98 150 if two lines match only the first is output (but see
 below for finding best matches).;
 #X msg 47 446 7 cat;
@@ -627,7 +632,7 @@ line 4 \\\;;
 #X obj 54 432 text fromlist text-help-insert;
 #X obj 52 288 text define -k text-help-insert;
 #A set line 0 \; line 1 \; line 2 \; line 3 \; line 4 \;;
-#X msg 165 142 1e+09;
+#X msg 165 142 1e+009;
 #X text 214 144 insert after end;
 #X msg 59 82 list x y z w;
 #X msg 65 108 1 2 3;

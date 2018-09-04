@@ -698,7 +698,7 @@ static void *list_fromsymbol_new( void)
 static void list_fromsymbol_symbol(t_list_fromsymbol *x, t_symbol *s)
 {
     t_atom *outv;
-    int n, outc = strlen(s->s_name);
+    int n, outc = (int)strlen(s->s_name);
     ATOMS_ALLOCA(outv, outc);
     for (n = 0; n < outc; n++)
         SETFLOAT(outv + n, (unsigned char)s->s_name[n]);
