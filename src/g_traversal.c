@@ -315,11 +315,11 @@ static void ptrobj_vnext(t_ptrobj *x, t_float f)
         {
             if (to->to_type == templatesym)
             {
-                outlet_pointer(to->to_outlet, &x->x_gp);
+                outlet_pointer(to->to_outlet, gp);
                 return;
             }
         }
-        outlet_pointer(x->x_otherout, &x->x_gp);
+        outlet_pointer(x->x_otherout, gp);
     }
     else
     {
@@ -399,11 +399,11 @@ static void ptrobj_delete(t_ptrobj *x)
         {
             if (to->to_type == templatesym)
             {
-                outlet_pointer(to->to_outlet, &x->x_gp);
+                outlet_pointer(to->to_outlet, gp);
                 return;
             }
         }
-        outlet_pointer(x->x_otherout, &x->x_gp);
+        outlet_pointer(x->x_otherout, gp);
     }
     else
     {
