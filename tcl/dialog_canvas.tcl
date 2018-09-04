@@ -149,7 +149,7 @@ proc ::dialog_canvas::create_dialog {mytoplevel} {
 
     labelframe $mytoplevel.scale -text [_ "Scale"] -borderwidth 1
     pack $mytoplevel.scale -side top -fill x
-    frame $mytoplevel.scale.x -pady 2 -borderwidth 1
+    frame $mytoplevel.scale.x -pady 2
     pack $mytoplevel.scale.x -side top
     label $mytoplevel.scale.x.label -text [_ "X units per pixel:"]
     entry $mytoplevel.scale.x.entry -width 10

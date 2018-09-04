@@ -26,11 +26,6 @@ typedef double t_floatarg;
 and usable in other contexts.  The one external requirement is a real
 single-precision FFT, invoked as in the Mayer one: */
 
-#ifdef _MSC_VER /* this is only needed with Microsoft's compiler */
-__declspec(dllimport) extern
-#endif
-void mayer_realfft(int npoints, t_sample *buf);
-
 /* this routine is passed a buffer of npoints values, and returns the
 N/2+1 real parts of the DFT (frequency zero through Nyquist), followed
 by the N/2-1 imaginary points, in order of decreasing frequency.  Pd 0.41,
@@ -40,9 +35,9 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
-#include <malloc.h>
-#elif ! defined(_MSC_VER)
-#include <alloca.h>
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
 #include <stdlib.h>
 #ifdef _MSC_VER
@@ -1375,7 +1370,7 @@ void sigmund_tilde_setup(void)
     sigmund_class = class_new(gensym("sigmund~"), (t_newmethod)sigmund_new,
         (t_method)sigmund_free, sizeof(t_sigmund), 0, A_GIMME, 0);
     class_addlist(sigmund_class, sigmund_list);
-    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"), 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"), A_CANT, 0);
     CLASS_MAINSIGNALIN(sigmund_class, t_sigmund, x_f);
     class_addmethod(sigmund_class, (t_method)sigmund_param1,
         gensym("param1"), A_FLOAT, 0);
