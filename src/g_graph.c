@@ -63,11 +63,17 @@ int canvas_setdeleting(t_canvas *x, int flag)
 
     /* JMZ: emit a closebang message */
 void rtext_freefortext(t_glist *gl, t_text *who);
+void glist_dodelete(t_glist *x, t_gobj *y, t_gobj *z);
 
     /* delete an object from a glist and free it */
 void glist_delete(t_glist *x, t_gobj *y)
 {
-    t_gobj *g;
+    glist_dodelete(x, y, 0);
+}
+
+    /* z is a hint where to start searching for the previous object */
+void glist_dodelete(t_glist *x, t_gobj *y, t_gobj *z)
+{
     t_object *ob;
     t_gotfn chkdsp = zgetfn(&y->g_pd, gensym("dsp"));
     t_canvas *canvas = glist_getcanvas(x);
@@ -123,11 +129,15 @@ void glist_delete(t_glist *x, t_gobj *y)
         !(rtext = glist_findrtext(x, ob)))
             rtext = rtext_new(x, ob);
     if (x->gl_list == y) x->gl_list = y->g_next;
-    else for (g = x->gl_list; g; g = g->g_next)
-        if (g->g_next == y)
+    else
     {
-        g->g_next = y->g_next;
-        break;
+        if (!z) z = x->gl_list;
+        for (; z; z = z->g_next)
+            if (z->g_next == y)
+            {
+                z->g_next = y->g_next;
+                break;
+            }
     }
     if (y->g_pd == scalar_class)
         x->gl_valid = ++glist_valid;
