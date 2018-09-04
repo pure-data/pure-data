@@ -1185,6 +1185,8 @@ void text_save(t_gobj *z, t_binbuf *b)
             mess1(&x->te_pd, gensym("saveto"), b);
             binbuf_addv(b, "ssii", gensym("#X"), gensym("restore"),
                 (int)x->te_xpix, (int)x->te_ypix);
+            binbuf_addbinbuf(b, x->te_binbuf);
+            binbuf_addv(b, ";");
             if (x->te_width)
                 binbuf_addv(b, "ssi;",
                     gensym("#X"), gensym("f"), (int)x->te_width);

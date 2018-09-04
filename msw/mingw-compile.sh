@@ -1,3 +1,4 @@
+#!/bin/sh
 rm -rf ../mingw-build
 mkdir ../mingw-build
 cd ../mingw-build
