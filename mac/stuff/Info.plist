@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ATSApplicationFontsPath</key>
+	<string>font</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>Pd</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -14,28 +18,60 @@
 			<key>CFBundleTypeIconFile</key>
 			<string>pd-file.icns</string>
 			<key>CFBundleTypeName</key>
-			<string>Pure Data Patch</string>
+			<string>Pure Data patch</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/plain</string>
+			</array>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>Pd</string>
+	<key>CFBundleGetInfoString</key>
+	<string>????</string>
+	<key>CFBundleIconFile</key>
+	<string>pd.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.puredata.pd.pd-gui</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Pd</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>????</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleIconFile</key>
-	<string>pd.icns</string>
+	<key>CFBundleSpokenName</key>
+	<string>Pure Data</string>
 	<key>CFBundleVersion</key>
-	<string>0.38</string>
+	<string>????</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
-	<key>ATSApplicationFontsPath</key>
-	<string>font</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Pure Data patch</string>
+			<key>UTTypeIconFile</key>
+			<string>pd-file.icns</string>
+			<key>UTTypeIdentifier</key>
+			<string>org.puredata.pd-patch</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pd</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

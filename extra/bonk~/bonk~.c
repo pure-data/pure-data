@@ -83,9 +83,11 @@ static t_class *bonk_class;
 #endif
 
 #ifdef _WIN32
-#include <malloc.h>
-#elif ! defined(_MSC_VER)
-#include <alloca.h>
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
+#else
+# include <stdlib.h> /* BSDs for example */
 #endif
 
 /* ------------------------ bonk~ ----------------------------- */
@@ -1349,7 +1351,7 @@ void bonk_tilde_setup(void)
     bonk_class = class_new(gensym("bonk~"), (t_newmethod)bonk_new,
         (t_method)bonk_free, sizeof(t_bonk), 0, A_GIMME, 0);
     class_addmethod(bonk_class, nullfn, gensym("signal"), 0);
-    class_addmethod(bonk_class, (t_method)bonk_dsp, gensym("dsp"), 0);
+    class_addmethod(bonk_class, (t_method)bonk_dsp, gensym("dsp"), A_CANT, 0);
     class_addbang(bonk_class, bonk_bang);
     class_addmethod(bonk_class, (t_method)bonk_learn,
         gensym("learn"), A_FLOAT, 0);

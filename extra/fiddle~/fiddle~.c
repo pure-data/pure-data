@@ -1141,8 +1141,8 @@ int sigfiddle_doinit(t_sigfiddle *x, long npoints, long npitch,
         buf4[i].po_freq = buf4[i].po_amp = 0;
     x->x_peakbuf = buf4;
 
-    x->x_npeakout = npeakout;
-    x->x_npeakanal = npeakanal;
+    x->x_npeakout = (int)npeakout;
+    x->x_npeakanal = (int)npeakanal;
     x->x_phase = 0;
     x->x_histphase = 0;
     x->x_sr = 44100;            /* this and the next are filled in later */
@@ -1157,7 +1157,7 @@ int sigfiddle_doinit(t_sigfiddle *x, long npoints, long npitch,
             x->x_hist[i].h_amps[j] = x->x_hist[i].h_pitches[j] = 0;
     }
     x->x_nprint = 0;
-    x->x_npitch = npitch;
+    x->x_npitch = (int)npitch;
     for (i = 0; i < HISTORY; i++) x->x_dbs[i] = 0;
     x->x_dbage = 0;
     x->x_peaked = 0;

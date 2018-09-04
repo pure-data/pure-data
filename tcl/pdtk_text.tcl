@@ -6,8 +6,8 @@ package provide pdtk_text 0.1
 
 # create a new text object (ie. obj, msg, comment)
 proc pdtk_text_new {tkcanvas tags x y text font_size color} {
-    $tkcanvas create text $x $y -tags $tags -text $text -fill $color \
-        -anchor nw -font [get_font_for_size $font_size]
+    $tkcanvas create text $x $y -tags $tags -text [string trimright $text] \
+         -fill $color -anchor nw -font [get_font_for_size $font_size]
     set mytag [lindex $tags 0]
     $tkcanvas bind $mytag <Home> "$tkcanvas icursor $mytag 0"
     $tkcanvas bind $mytag <End>  "$tkcanvas icursor $mytag end"
@@ -22,7 +22,7 @@ proc pdtk_text_new {tkcanvas tags x y text font_size color} {
 
 # change the text in an existing text box
 proc pdtk_text_set {tkcanvas tag text} {
-    $tkcanvas itemconfig $tag -text $text
+    $tkcanvas itemconfig $tag -text [string trimright $text]
 }
 
 # paste into an existing text box by literally "typing" the contents of the

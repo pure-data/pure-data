@@ -36,19 +36,18 @@ void rdft(int, int, FFTFLT *, int *, FFTFLT *);
 
 int ilog2(int n);
 
-static int ooura_maxn;
-static int *ooura_bitrev;
-static int ooura_bitrevsize;
-static FFTFLT *ooura_costab;
+static PERTHREAD int ooura_maxn;
+static PERTHREAD int *ooura_bitrev;
+static PERTHREAD int ooura_bitrevsize;
+static PERTHREAD FFTFLT *ooura_costab;
 
 static int ooura_init( int n)
 {
     n = (1 << ilog2(n));
-    if (n < 64)
+    if (n < 4)
         return (0);
     if (n > ooura_maxn)
     {
-        pd_globallock();
         if (n > ooura_maxn)    /* recheck in case it got set while we waited */
         {
             if (ooura_maxn)
@@ -63,7 +62,6 @@ static int ooura_init( int n)
             {
                 error("out of memory allocating FFT buffer");
                 ooura_maxn = 0;
-                pd_globalunlock();
                 return (0);
             }
             ooura_costab = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT)/2);
@@ -72,13 +70,11 @@ static int ooura_init( int n)
                 error("out of memory allocating FFT buffer");
                 t_freebytes(ooura_bitrev, ooura_bitrevsize);
                 ooura_maxn = 0;
-                pd_globalunlock();
                 return (0);
             }
             ooura_maxn = n;
             ooura_bitrev[0] = 0;
         }
-        pd_globalunlock();
     }
     return (1);
 }

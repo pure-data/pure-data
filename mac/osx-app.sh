@@ -29,6 +29,9 @@ SRC=..
 custom_builddir=false
 BUILD=..
 
+# PlistBuddy command for editing app bundle Info.plist from template
+PLIST_BUDDY=/usr/libexec/PlistBuddy
+
 # the app Get Info string
 GETINFO="Pure Data: a free real-time computer music system"
 
@@ -95,11 +98,11 @@ Examples:
 while [ "$1" != "" ] ; do
     case $1 in
         -t|--tk)
+            shift 1
             if [ $# == 0 ] ; then
                 echo "-t,--tk option requires a VER argument"
                 exit 1
             fi
-            shift 1
             TK=$1
             included_wish=false
             ;;
@@ -247,7 +250,8 @@ if [ -e $APP/Contents/version.plist ] ; then
     rm $APP/Contents/version.plist
 fi
 # older "Wish Shell.app" does not have a symlink but a real file
-if [ -f $APP/Contents/MacOS/Wish\ Shell ] && [ ! -L $APP/Contents/MacOS/Wish\ Shell ] ; then
+if [ -f $APP/Contents/MacOS/Wish\ Shell ] && \
+   [ ! -L $APP/Contents/MacOS/Wish\ Shell ] ; then
     mv $APP/Contents/MacOS/Wish\ Shell $APP/Contents/MacOS/Pd
     mv $APP/Contents/Resources/Wish\ Shell.rsrc $APP/Contents/Resources/Pd.rsrc
 else
@@ -268,14 +272,14 @@ cp stuff/pd.icns $APP/Contents/Resources/
 cp stuff/pd-file.icns $APP/Contents/Resources/
 cp -R ../font $APP/Contents/Resources/
 
+INFO_PLIST=$APP/Contents/Info.plist
+
 # set version identifiers & contextual strings in Info.plist,
 # version strings can only use 0-9 and periods, so replace "-" & "test" with "."
-PLIST_BUDDY=/usr/libexec/PlistBuddy
 PLIST_VERSION=${PD_VERSION/-/.}; PLIST_VERSION=${PLIST_VERSION/test/.}
-$PLIST_BUDDY -c "Set:CFBundleVersion \"$PLIST_VERSION\"" $APP/Contents/Info.plist
-$PLIST_BUDDY -c "Add:CFBundleShortVersionString string \"$PLIST_VERSION\"" $APP/Contents/Info.plist
-$PLIST_BUDDY -c "Add:CFBundleGetInfoString string \"$GETINFO\"" $APP/Contents/Info.plist
-$PLIST_BUDDY -c "Add:CFBundleSpokenName string \"Pure Data\"" $APP/Contents/Info.plist
+$PLIST_BUDDY -c "Set:CFBundleVersion \"$PLIST_VERSION\"" $INFO_PLIST
+$PLIST_BUDDY -c "Set:CFBundleShortVersionString \"$PLIST_VERSION\"" $INFO_PLIST
+$PLIST_BUDDY -c "Set:CFBundleGetInfoString \"$GETINFO\"" $INFO_PLIST
 
 # install binaries
 mkdir -p $DEST/bin
@@ -303,6 +307,17 @@ cp $verbose $SRC/LICENSE.txt $DEST/
 if [ -e $BUILD/po/af.msg ] ; then
     mkdir -p $DEST/po
     cp $verbose $BUILD/po/*.msg $DEST/po/
+    # add locale entries to the plist based on available .msg files
+    # commented out for 0.48-1 because it seems to misbehave - open/save dialogs
+    # are opening in a random language (and meanwhile Pd doesn't yet respect
+    # current language setting - I don't know what's going on here.  -msp
+    # LOCALES=$(find $BUILD/po -name "*.msg" -exec basename {} .msg \;)
+    # $PLIST_BUDDY \
+    #     -c "Add:CFBundleLocalizations array \"$PLIST_VERSION\"" $INFO_PLIST
+    # for locale in $LOCALES ; do
+    #     $PLIST_BUDDY \
+    #         -c "Add:CFBundleLocalizations: string \"$locale\"" $INFO_PLIST
+    # done
 else
     echo "No localizations found. Skipping po dir..."
 fi
