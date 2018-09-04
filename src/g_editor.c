@@ -935,6 +935,17 @@ void *canvas_undo_set_paste(t_canvas *x, int numpasted, int duplicate,
     buf->u_objectbuf = binbuf_duplicate(EDITOR->copy_binbuf);
     return (buf);
 }
+void *canvas_undo_set_pastebinbuf(t_canvas *x, t_binbuf *b,
+    int numpasted, int duplicate, int d_offset)
+{
+    t_binbuf*tmpbuf = EDITOR->copy_binbuf;
+    void*ret=0;
+    EDITOR->copy_binbuf = b;
+    ret = canvas_undo_set_paste(x, numpasted, duplicate, d_offset);
+    EDITOR->copy_binbuf = tmpbuf;
+    return ret;
+}
+
 
 int canvas_undo_paste(t_canvas *x, void *z, int action)
 {
@@ -4606,6 +4617,8 @@ static void glist_setlastxy(t_glist *gl, int xval, int yval)
 }
 
 
+void canvas_triggerize(t_glist*cnv);
+
 void g_editor_setup(void)
 {
 /* ------------------------ events ---------------------------------- */
@@ -4667,6 +4680,8 @@ void g_editor_setup(void)
         gensym("donecanvasdialog"), A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)glist_arraydialog,
         gensym("arraydialog"), A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_triggerize,
+        gensym("triggerize"), 0);
 
 /* -------------- connect method used in reading files ------------------ */
     class_addmethod(canvas_class, (t_method)canvas_connect,

@@ -51,7 +51,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-p>      {menu_print $::focused_window}
     bind all <$::modifier-Key-r>      {menu_raise_pdwindow}
     bind all <$::modifier-Key-s>      {menu_send %W menusave}
-    bind all <$::modifier-Key-t>      {menu_font_dialog}
+    bind all <$::modifier-Key-t>      {menu_send %W triggerize}
     bind all <$::modifier-Key-v>      {menu_send %W paste}
     bind all <$::modifier-Key-w>      {::pd_bindings::window_close %W}
     bind all <$::modifier-Key-x>      {menu_send %W cut}

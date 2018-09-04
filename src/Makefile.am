@@ -60,6 +60,7 @@ pd_SOURCES_core = \
     g_canvas.c \
     g_clone.c \
     g_editor.c \
+    g_editor_extras.c \
     g_graph.c \
     g_guiconnect.c \
     g_hdial.c \

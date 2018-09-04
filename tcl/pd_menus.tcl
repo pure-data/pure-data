@@ -70,6 +70,7 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
     $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
+    $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode .pdwindow 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -100,6 +101,7 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.edit entryconfigure [_ "Zoom Out"] -state normal
     $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
     $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state normal
+    $menubar.edit entryconfigure [_ "Triggerize"] -state normal
     $menubar.edit entryconfigure [_ "Edit Mode"] -state normal
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
     # Put menu
@@ -143,6 +145,7 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
     $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
     $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
+    $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode $mytoplevel 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -198,7 +201,7 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {menu_send $::focused_window selectall}
     $mymenu add  separator
-    $mymenu add command -label [_ "Font"]       -accelerator "$accelerator+T" \
+    $mymenu add command -label [_ "Font"] \
         -command {menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
         -command {menu_send_float $::focused_window zoom 2}
@@ -208,6 +211,8 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {menu_send $::focused_window tidy}
     $mymenu add command -label [_ "(Dis)Connect Selection"]    -accelerator "$accelerator+K" \
         -command {menu_send $::focused_window connect_selection}
+    $mymenu add command -label [_ "Triggerize"] -accelerator "$accelerator+T" \
+        -command {menu_send $::focused_window triggerize}
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {menu_clear_console}
     $mymenu add  separator
