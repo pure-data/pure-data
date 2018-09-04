@@ -14,17 +14,17 @@ right-clicking on it in Finder and choosing "Show Package Contents."
 
 The basic layout is:
 
-Pd-0.47.1.app/Contents
+Pd-0.47-1.app/Contents
   Info.plist  <- contextual info: version string, get info string, etc
   /Frameworks <- embedded Tcl/Tk frameworks (optional)
   /MacOS/Pd   <- renamed Wish bundle launcher
   /Resources
     /bin      <- pd binaries
-    /doc      <- build in docs & help files
+    /doc      <- built in docs & help files
     /extra    <- core externals
     /font     <- included fonts
-    /include  <- Pd source header files
     /po       <- text translation files
+    /src      <- Pd source header files
     /tcl      <- Pd GUI scripts
 
 The Pure Data GUI utilizes the Tk windowing shell aka "Wish" at runtime.
@@ -38,11 +38,11 @@ by copying the Pd binaries and resources inside of it.
 
 These scripts complement the autotools build system described in INSTALL.txt and
 are meant to be run after Pd is configured and built. The following usage, for
-example, downloads and builds a 32bit Tk 8.6.6 Wish.app which is used to create
-a macOS Pd-0.47.1.app:
+example, downloads and builds a 32 bit Tk 8.6.6 Wish.app which is used to create
+a macOS Pd-0.47-1.app:
 
     mac/tcltk-wish.sh --arch i386 8.6.6
-    mac/osx-app.sh --wish Wish-8.6.6.app 0.47.1
+    mac/osx-app.sh --wish Wish-8.6.6.app 0.47-1
 
 Both osx-app.sh & tcltck-wish.sh have extensive help output using the --help
 commandline option:
@@ -54,21 +54,21 @@ The osx-app.sh script automates building the Pd .app bundle and is used in the
 "make app" makefile target. This default action can be invoked manually after
 Pd is built:
 
-    mac/osxapp.sh 0.47.1
+    mac/osx-app.sh 0.47-1
 
-This builds a "Pd-0.47.1.app" using the included Wish. If you omit the version
+This builds a "Pd-0.47-1.app" using the included Wish. If you omit the version
 argument, a "Pd.app" is built. The version argument is only used as a suffix to
 the file name and contextual version info is pulled from configure script
 output.
 
 An older copy of Tk 8.4 Wish is included with the Pd source distribution and
-works across the majority of macOS versions. This is the default Wish.app when
-using osx-app.sh. If you want to use a different Wish.app (a newer version, a
-custom build, a system version), you can specify the donor via commandline
-options, for example:
+works across the majority of macOS versions up to 10.12. This is the default
+Wish.app when using osx-app.sh. If you want to use a different Wish.app (a newer
+version, a custom build, a system version), you can specify the donor via
+commandline options, for example:
 
-    # build Pd-0.47.1.app using Tk 8.6 installed to the system
-    mac/osx-app.sh --system-tk 8.6 0.47.1
+    # build Pd-0.47-1.app using Tk 8.6 installed to the system
+    mac/osx-app.sh --system-tk 8.6 0.47-1
 
 If you want Pd to use a newer version of Tcl/Tk, but do not want to install to
 it to your system, you can build Tcl/Tk as embedded frameworks inside of the Pd
@@ -81,18 +81,18 @@ either from the release distributions or from a git clone:
     mac/tcltk-wish.sh 8.6.6
 
     # build Wish-master-git.app from the latest Tcl/Tk master branch from git
-    tcltk-wish.sh --git master-git
+    mac/tcltk-wish.sh --git master-git
 
 You can also specify which architectures to build (32 bit, 64 bit, or both):
 
-    # build 32bit Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
-    tcltk-wish.sh --arch i386 8.6.6
+    # build 32 bit Wish-8.6.6.app with embedded Tcl/Tk 8.6.6
+    mac/tcltk-wish.sh --arch i386 8.6.6
 
     # build universal (32 & 64 bit)
-    tcltk-wish.sh --universal 8.6.6
+    mac/tcltk-wish.sh --universal 8.6.6
 
 Once your custom Wish.app is built, you can use it as the .app source for
-osx-app.sh with the -w option:
+osx-app.sh with the -w/--wish option:
 
     # build Pd with a custom Tcl/Tk 8.6.6 Wish
     mac/osx-app.sh -w Wish-8.6.6.app
@@ -107,7 +107,7 @@ when building from the current development version is useful. For instance,
 if there is a bug in the Tcl/Tk sources and the generated Wish.app crashes on
 your system, you can then see if there is a fix for this in the Tcl/Tk
 development version on GitHub. If so, then you can test by using the
-tcltk-wish.app --git commandline option. Oftentimes, these kinds of issues will
+tcltk-wish.sh --git commandline option. Oftentimes, these kinds of issues will
 appear with a newer version of macOS before they have been fixed by the open
 source community.
 
@@ -145,7 +145,7 @@ using the following domains:
 * org.puredata.pd: core settings (audio devices, search paths, etc)
 * org.puredata.pd.pd-gui: GUI settings (recent files, last opened location, etc)
 
-The files themsleves live in your user home folder and use the .plist extension:
+The files themselves live in your user home folder and use the .plist extension:
 
     ~/Library/Preferences/org.puredata.pd.plist
     ~/Library/Preferences/org.puredata.pd.pd-gui.plist

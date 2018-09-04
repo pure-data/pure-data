@@ -1,5 +1,4 @@
-# this is built as a "libtool convenience library"
-# http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
+# this is built as a static convenience library
 
 #########################################
 ##### Defaults & Paths #####
@@ -13,9 +12,9 @@ AM_CPPFLAGS += \
 #########################################
 ##### Files, Binaries, & Libs #####
 
-noinst_LTLIBRARIES = libportaudio.la
+noinst_LIBRARIES = libportaudio.a
 
-libportaudio_la_SOURCES = \
+libportaudio_a_SOURCES = \
     portaudio/src/common/pa_allocation.c \
     portaudio/src/common/pa_converters.c \
     portaudio/src/common/pa_cpuload.c \
@@ -29,7 +28,7 @@ libportaudio_la_SOURCES = \
 
 if LINUX
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/unix
-libportaudio_la_SOURCES += \
+libportaudio_a_SOURCES += \
     portaudio/src/os/unix/pa_unix_hostapis.c \
     portaudio/src/os/unix/pa_unix_util.c \
     portaudio/src/hostapi/alsa/pa_linux_alsa.c
@@ -38,7 +37,7 @@ endif
 if MACOSX
 AM_CFLAGS += -DPA_USE_COREAUDIO
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/mac_osx
-libportaudio_la_SOURCES += \
+libportaudio_a_SOURCES += \
     portaudio/src/os/unix/pa_unix_util.c \
     portaudio/src/os/mac_osx/pa_mac_hostapis.c \
     portaudio/src/hostapi/coreaudio/pa_mac_core.c \
@@ -54,7 +53,7 @@ endif
 if WINDOWS
 AM_CFLAGS += -DPA_USE_WMME
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/src/os/win
-libportaudio_la_SOURCES += \
+libportaudio_a_SOURCES += \
     portaudio/src/os/win/pa_win_coinitialize.c \
     portaudio/src/os/win/pa_win_hostapis.c \
     portaudio/src/os/win/pa_win_util.c \
@@ -62,7 +61,14 @@ libportaudio_la_SOURCES += \
     portaudio/src/hostapi/wmme/pa_win_wmme.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
-libportaudio_la_SOURCES += \
+if MINGW
+# hack for /asio/ASIOSDK/common/combase.h
+AM_CPPFLAGS += -DWINVER=0x0502 -D_WIN32_WINNT=0x0502
+endif
+AM_CPPFLAGS += \
+    -I$(top_srcdir)/asio/ASIOSDK/common -I$(top_srcdir)/asio/ASIOSDK/host \
+	-I$(top_srcdir)/asio/ASIOSDK/host/pc
+libportaudio_a_SOURCES += \
     portaudio/src/hostapi/asio/iasiothiscallresolver.cpp \
     portaudio/src/hostapi/asio/pa_asio.cpp
 endif

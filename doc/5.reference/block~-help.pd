@@ -12,7 +12,7 @@ window.;
 patch.;
 #X text 46 531 see also:;
 #X obj 134 531 fft~;
-#X text 44 567 ... and the control.blocksize and up.downsampling audio
+#X text 44 567 ... and the control.blocksize and oversampling audio
 example patches.;
 #X text 194 459 <--- example usage in subpatch;
 #X text 43 92 Switch~ \, in addition \, allows you to switch DSP on
@@ -59,7 +59,21 @@ the subwindow's audio DSP to run. Pd's global DSP must also be on.)
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
 #X restore 41 457 pd block-example;
-#N canvas 112 205 599 297 block-interations 0;
+#X text 44 269 Pd's default block size is 64 samples. The inlet~ and
+outlet~ objects reblock signals to adjust for differences between parent
+and subpatch \, but only power-of-two adjustments are possible. So
+for "normal" audio computations \, all blocks should also be power-of-two
+in size. HOWEVER \, if you have no inlet~ or outlet~ you may specify
+any other block size. This is intended for later use in video processing.
+;
+#X text 45 395 Switch~ takes a "bang" message that causes one block
+of DSP to be computed. This might be useful for pre-computing waveforms
+or window functions \, or also for video processing.;
+#X text 214 484 <-- BUG!! block~/switch~ and dac~/adc~ are incompatible
+;
+#X text 395 628 updated for Pd version 0.43;
+#X text 214 505 <-- weird 'bang' feature lets you single-step DSP;
+#N canvas 112 205 599 297 block-interactions 0;
 #X text 32 61 Dac~ and adc~ don't work correctly if reblocked \, nor
 if a parent window is reblocked \, even if the window containing the
 dac~ or adc~ is reblocked back to the default block size and sample
@@ -73,20 +87,8 @@ than they are \, there might be weirdness.;
 may be switched with impunity \, but not catch~.;
 #X text 32 11 INTERACTIONS BETWEEN BLOCK~/SWITCH~ AND OTHER OBJECTS
 IN PD;
-#X restore 40 482 pd block-interations;
-#X text 44 269 Pd's default block size is 64 samples. The inlet~ and
-outlet~ objects reblock signals to adjust for differences between parent
-and subpatch \, but only power-of-two adjustments are possible. So
-for "normal" audio computations \, all blocks should also be power-of-two
-in size. HOWEVER \, if you have no inlet~ or outlet~ you may specify
-any other block size. This is intended for later use in video processing.
-;
-#X text 45 395 Switch~ takes a "bang" message that causes one block
-of DSP to be computed. This might be useful for pre-computing waveforms
-or window functions \, or also for video processing.;
-#X text 214 484 <-- BUG!! block~/switch~ and dac~/adc~ are incompatible
-;
-#N canvas 0 22 581 315 block-interations 0;
+#X restore 40 482 pd block-interactions;
+#N canvas 0 22 581 315 block-interactions 0;
 #X text 32 11 You can use the switch~ object to single-step dsp in
 a subpatch. This might be useful for block operations that don't want
 to be synced to the sample clock: loading a window function in a table
@@ -105,6 +107,4 @@ to be synced to the sample clock: loading a window function in a table
 #X connect 1 0 2 0;
 #X connect 3 0 2 0;
 #X connect 3 0 5 0;
-#X restore 40 505 pd block-interations;
-#X text 395 628 updated for Pd version 0.43;
-#X text 214 505 <-- weird 'bang' feature lets you single-step DSP;
+#X restore 40 505 pd block-interactions;

@@ -154,7 +154,7 @@ Platform requirements:
 Install the core build requirements using your distribution's package manager.
 For Debian, you can install the compiler chain, autotools, & gettext with:
 
-    sudo apt-get install build-essentials automake autoconf libtool gettext
+    sudo apt-get install build-essential automake autoconf libtool gettext
 
 For libraries, you will need to install the "development" versions which include
 the source code header files. In Debian, the ALSA development package is called
@@ -228,7 +228,7 @@ To build the Pd macOS application, simply run:
 
     make app
 
-This builds Pd-#.#.#.app in the Pd source direcotry which can be then be
+This builds Pd-#.#.#.app in the Pd source directory which can be then be
 double-clicked and/or copied to /Applications. For more info &
 options regarding the Pd .app bundle, see mac/README.txt
 
@@ -255,9 +255,9 @@ Tk version log line in the Pd window.
 
 Another option is to set the Tk Wish command Pd uses to launch the GUI. At
 start, Pd does a quick search in the "usual places" for Wish and chooses the
-first path that exists. Currently, macOS also ships with Tcl/Tk 8.4 which works
-fine and this wish can be invoked by Pd using the full path "/usr/bin/wish8.4".
-You can configure Pd to use this search path first with:
+first path that exists. Versions of macOS up to 10.12 also ship with Tcl/Tk 8.4
+which works fine and this wish can be invoked by Pd using the full path
+"/usr/bin/wish8.4". You can configure Pd to use this search path first with:
 
     ./configure --with-wish=/usr/bin/wish8.4
 
@@ -265,9 +265,136 @@ To see Pd's path search info, run Pd with the -verbose flag:
 
     pd -verbose
 
+Note: Pd installed to your system or run from the build/bin directory will not
+use the default font and will be missing the various macOS GUI hints (such as
+retina rendering) which are specified by the Info.plist file inside the .app
+bundle. Again, it is recommended to build a .app and use the aforementioned
+aliases to provide the pd command.
+
 ### Windows
 
-*Windows-specific info goes here*
+Pd on Windows can be built with either MinGW or Cygwin which provide the
+core build requirements: a compiler chain & shell environment.
+
+It is recommended to use the Msys2 distribution which provides both a Unix
+command shell and MinGW. Download the Msys2 "x86_64" 64 bit installer (or "i686"
+if you are using 32 bit Windows) from:
+
+    http://www.msys2.org/
+
+Then install to the default location (C:\msys32 or C:\msys64) and follow the
+setup/update info on the Msys2 webpage.
+
+Msys2 provides both 32 and 64 MinGW and command shells. Currently, the Pd
+release is 32 bit for Windows, so it is recommended to set up and use the MinGW
+32 bit shell. If you want to build a 64 bit Pd, similarly use the MinGW 64 bit
+shell however this is currently considered *experimental*. Due to how MinGW is
+designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This
+also means the Pd configure --enable-universal build option has no effect in
+MinGW.
+
+Note: Msys2 development seems to change frequently, so some of the package names
+      below may have changed after this document was written.
+
+Open an Msys2 shell and install the compiler chain, autotools, & gettext via:
+
+    # 32 bit
+    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
+              make pkgconfig autoconf automake libtool \
+              mingw-w64-i686-gettext
+
+    # 64 bit
+    pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
+              make pkgconfig autoconf automake libtool \
+              mingw-w64-x86_64-gettext 
+
+Install git if you want to clone the Pd sources from Github, etc:
+
+    pacman -S git
+
+and/or the nsis installer tool if you want to build the Pd Windows installer:
+
+    # 32 bit
+    pacman -S mingw-w64-i686-nsis
+
+    # 64 bit
+    pacman -S mingw-w64-x86_64-nsis
+
+Note: You can also search for packages in Msys2 with:
+
+    pacman -S -s <searchterm>
+
+Once the packages are installed, you should now be ready to build Pd.
+
+The following audio APIS are available on Windows and can be enabled/disabled
+via their configure flags:
+
+* MMIO: --enable-mmio or --disable-mmio (default enabled)
+* ASIO: --enable-asio or --disable-asio (default enabled, if found)
+* JACK: --enable-jack or --disable-jack
+
+For example, to build Pd without MMIO support:
+
+    ./configure --disable-mmio
+
+Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source
+files. If you want to build Pd with ASIO support, see asio/README.txt for
+further instructions.
+
+You should now be ready to build Pd. Once built, you can either:
+
+* build a Pd application directory for Windows (recommended)
+* build a Windows installer
+
+A Pd application directory is essentially a self-contained Pd package which
+should run out of the box. To build, simply use:
+
+    make app
+
+This will create a "pd-VERSION" directory (ie. pd-0.48.1) which can then be used
+by running pd.exe in the bin directory and placed wherever on your system. For
+more info & options regarding the Pd app directory, see msw/README.txt
+
+To build a .msi Windows installer for Pd, see msw/build-nsi.sh.
+
+Note: The standard "make install" requires Tcl/Tk and won't work outside your
+Cygwin/Msys2 environment (if at all).
+
+### Cross-compilation for Windows on Linux
+
+You can also build a Windows binary of Pd on a Linux system, using a
+cross-compilation toolchain.
+
+For Debian based systems (e.g. Ubuntu), you can install the toolchain with:
+
+    sudo apt-get install build-essential automake autoconf libtool gettext
+    sudo apt-get install mingw-w64 mingw-w64-tools
+    sudo apt-get install nsis
+
+The "mingw-w64" package will install the cross compilation toolchains for both
+32bit (g++-mingw-w64-i686, binutils-mingw-w64-i686) and
+64bit (g++-mingw-w64-x86-64, binutils-mingw-w64-x86-64).
+
+The "nsis" package is purely optional, and only needed if you want to build the
+installer.
+
+You must tell configure that you want to cross-compile for a given architecture
+via the "--host" configure flag.
+
+For example, to build a 32 bit Pd:
+
+    ./configure --host=i686-w64-mingw32
+
+Similarily, to build a 64 bit Pd without ASIO support:
+
+    ./configure --disable-asio --host=x86_64-w64-mingw32 CPPFLAGS=-DPD_LONGINTTYPE=__int64
+
+(Currently you need to override the PD_LONGINTTYPE for Windows 64bit builds).
+
+If all went well, you should now be ready to build Pd, as explained in the
+instructions above in the "Windows" section:
+
+    make app
 
 ## Makefile Build
 

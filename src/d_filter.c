@@ -57,7 +57,7 @@ static t_int *sighip_perform(t_int *w)
     t_sample *in = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     t_hipctl *c = (t_hipctl *)(w[3]);
-    int n = (t_int)(w[4]);
+    int n = (int)w[4];
     int i;
     t_sample last = c->c_x;
     t_sample coef = c->c_coef;
@@ -88,7 +88,7 @@ static t_int *sighip_perform_old(t_int *w)
     t_sample *in = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     t_hipctl *c = (t_hipctl *)(w[3]);
-    int n = (t_int)(w[4]);
+    int n = (int)w[4];
     int i;
     t_sample last = c->c_x;
     t_sample coef = c->c_coef;
@@ -195,7 +195,7 @@ static t_int *siglop_perform(t_int *w)
     t_sample *in = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     t_lopctl *c = (t_lopctl *)(w[3]);
-    int n = (t_int)(w[4]);
+    int n = (int)w[4];
     int i;
     t_sample last = c->c_x;
     t_sample coef = c->c_coef;
@@ -320,7 +320,7 @@ static t_int *sigbp_perform(t_int *w)
     t_sample *in = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     t_bpctl *c = (t_bpctl *)(w[3]);
-    int n = (t_int)(w[4]);
+    int n = (int)w[4];
     int i;
     t_sample last = c->c_x1;
     t_sample prev = c->c_x2;
@@ -408,7 +408,7 @@ static t_int *sigbiquad_perform(t_int *w)
     t_sample *in = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
     t_biquadctl *c = (t_biquadctl *)(w[3]);
-    int n = (t_int)(w[4]);
+    int n = (int)w[4];
     int i;
     t_sample last = c->c_x1;
     t_sample prev = c->c_x2;
@@ -523,7 +523,7 @@ static t_int *sigsamphold_perform(t_int *w)
     t_sample *in2 = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
     t_sigsamphold *x = (t_sigsamphold *)(w[4]);
-    int n = (t_int)(w[5]);
+    int n = (int)w[5];
     int i;
     t_sample lastin = x->x_lastin;
     t_sample lastout = x->x_lastout;
@@ -599,7 +599,7 @@ static t_int *sigrpole_perform(t_int *w)
     t_sample *in2 = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
     t_sigrpole *x = (t_sigrpole *)(w[4]);
-    int n = (t_int)(w[5]);
+    int n = (int)w[5];
     int i;
     t_sample last = x->x_last;
     for (i = 0; i < n; i++)
@@ -672,7 +672,7 @@ static t_int *sigrzero_perform(t_int *w)
     t_sample *in2 = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
     t_sigrzero *x = (t_sigrzero *)(w[4]);
-    int n = (t_int)(w[5]);
+    int n = (int)w[5];
     int i;
     t_sample last = x->x_last;
     for (i = 0; i < n; i++)
@@ -744,7 +744,7 @@ static t_int *sigrzero_rev_perform(t_int *w)
     t_sample *in2 = (t_sample *)(w[2]);
     t_sample *out = (t_sample *)(w[3]);
     t_sigrzero_rev *x = (t_sigrzero_rev *)(w[4]);
-    int n = (t_int)(w[5]);
+    int n = (int)w[5];
     int i;
     t_sample last = x->x_last;
     for (i = 0; i < n; i++)
@@ -827,7 +827,7 @@ static t_int *sigcpole_perform(t_int *w)
     t_sample *outre = (t_sample *)(w[5]);
     t_sample *outim = (t_sample *)(w[6]);
     t_sigcpole *x = (t_sigcpole *)(w[7]);
-    int n = (t_int)(w[8]);
+    int n = (int)w[8];
     int i;
     t_sample lastre = x->x_lastre;
     t_sample lastim = x->x_lastim;
@@ -920,7 +920,7 @@ static t_int *sigczero_perform(t_int *w)
     t_sample *outre = (t_sample *)(w[5]);
     t_sample *outim = (t_sample *)(w[6]);
     t_sigczero *x = (t_sigczero *)(w[7]);
-    int n = (t_int)(w[8]);
+    int n = (int)w[8];
     int i;
     t_sample lastre = x->x_lastre;
     t_sample lastim = x->x_lastim;
@@ -1010,7 +1010,7 @@ static t_int *sigczero_rev_perform(t_int *w)
     t_sample *outre = (t_sample *)(w[5]);
     t_sample *outim = (t_sample *)(w[6]);
     t_sigczero_rev *x = (t_sigczero_rev *)(w[7]);
-    int n = (t_int)(w[8]);
+    int n = (int)w[8];
     int i;
     t_sample lastre = x->x_lastre;
     t_sample lastim = x->x_lastim;

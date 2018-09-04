@@ -3,6 +3,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+CLEANFILES=
+
 SUFFIXES = .tcl
 
 libpdtcldir = $(pkglibdir)/tcl
@@ -12,6 +14,7 @@ libpdtcldir = $(pkglibdir)/tcl
 
 # install gui launcher script to $(prefix)/bin
 dist_bin_SCRIPTS = pd-gui
+CLEANFILES += pd-gui
 
 dist_libpdtcl_SCRIPTS = pd-gui.tcl
 dist_libpdtcl_DATA = \
