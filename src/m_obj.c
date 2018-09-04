@@ -759,6 +759,13 @@ t_float *obj_findsignalscalar(t_object *x, int m)
 
 /* and these are only used in g_io.c... */
 
+t_float * inlet_floatsignalpointer(t_inlet *x)
+{
+    if (x->i_symfrom != &s_signal)
+        bug("inlet_floatsignalpointer");
+    return &x->i_un.iu_floatsignalvalue;
+}
+
 int inlet_getsignalindex(t_inlet *x)
 {
     int n = 0;
