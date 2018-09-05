@@ -154,7 +154,6 @@ static int triggerize_fanout_inplace(t_glist*x, t_object*obj)
     int posX=obj->te_xpix;
     int posY=obj->te_ypix;
     t_atom*argv=binbuf_getvec(obj->te_binbuf);
-    int    argc=binbuf_getnatom(obj->te_binbuf);
     int obj_nout=obj_noutlets(obj);
     int nout, newout;
     t_binbuf*b=0;
@@ -165,7 +164,7 @@ static int triggerize_fanout_inplace(t_glist*x, t_object*obj)
     b=binbuf_new();
     binbuf_addv(b, "ssii", gensym("#X"), gensym("obj"), posX, posY);
     binbuf_add(b, 1, argv);
-    argc--; argv++;
+    argv++;
     for(nout=0; nout<obj_nout; nout++)
     {
         t_outlet*out=0;
@@ -178,7 +177,7 @@ static int triggerize_fanout_inplace(t_glist*x, t_object*obj)
             conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
             binbuf_add(b, 1, argv);
         }
-        argv++; argc--;
+        argv++;
     }
     binbuf_addsemi(b);
     canvas_undo_add(x, UNDO_PASTE, "paste",
