@@ -20,7 +20,6 @@ t_class *scalar_define_class;
 static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_atom a[9];
-    t_glist *gl;
     t_canvas *x, *z = canvas_getcurrent();
     t_symbol *templatesym = &s_float, *asym = gensym("#A");
     t_template *template;

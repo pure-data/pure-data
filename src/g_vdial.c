@@ -109,9 +109,6 @@ void vradio_draw_move(t_vradio *x, t_glist *glist)
         yy21 += dy;
         yy22 += dy;
     }
-    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
-             canvas, x, xx11 + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
-             yy11b + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
     if(!x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c coords %lxOUT%d %d %d %d %d\n",
              canvas, x, 0,
@@ -122,6 +119,9 @@ void vradio_draw_move(t_vradio *x, t_glist *glist)
              canvas, x, 0,
              xx11, yy11b,
              xx11 + iow, yy11b - IEMGUI_ZOOM(x) + ioh);
+    sys_vgui(".x%lx.c coords %lxLABEL %d %d\n",
+             canvas, x, xx11 + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
+             yy11b + x->x_gui.x_ldy * IEMGUI_ZOOM(x));
 }
 
 void vradio_draw_erase(t_vradio* x, t_glist* glist)
@@ -174,8 +174,11 @@ void vradio_draw_io(t_vradio* x, t_glist* glist, int old_snd_rcv_flags)
                  xpos, ypos + x->x_gui.x_h + IEMGUI_ZOOM(x) - ioh,
                  xpos + iow, ypos + x->x_gui.x_h,
                  x, 0);
-        if(x->x_on == 0) /* keep button above outlet */
+        /* keep these above outlet */
+        if(x->x_on == 0) {
             sys_vgui(".x%lx.c raise %lxBUT%d %lxOUT%d\n", canvas, x, x->x_on, x, 0);
+            sys_vgui(".x%lx.c raise %lxLABEL %lxBUT%d\n", canvas, x, x, x->x_on);
+        }
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
@@ -186,8 +189,11 @@ void vradio_draw_io(t_vradio* x, t_glist* glist, int old_snd_rcv_flags)
                  xpos, ypos,
                  xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
                  x, 0);
-        if(x->x_on == 0) /* keep button above inlet */
+        /* keep these above inlet */
+        if(x->x_on == 0) {
             sys_vgui(".x%lx.c raise %lxBUT%d %lxIN%d\n", canvas, x, x->x_on, x, 0);
+            sys_vgui(".x%lx.c raise %lxLABEL %lxBUT%d\n", canvas, x, x, x->x_on);
+        }
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);

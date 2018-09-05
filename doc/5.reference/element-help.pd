@@ -26,7 +26,7 @@ help-element-array1-template;
 It looks up a field from the pointer \, which should be an array \,
 and outputs the element of the array specified by the number. There
 are no pointers to arrays themselves \, just to individual elements.
-The template and field mane are specified as creation arguments.;
+The template and field name are specified as creation arguments.;
 #X obj 336 300 pointer;
 #X msg 336 276 traverse pd-help-element-data \, next;
 #X floatatom 45 270 5 0 0 0 - - -, f 5;

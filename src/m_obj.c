@@ -298,10 +298,10 @@ void obj_init(void)
 
 /* --------------------------- outlets ------------------------------ */
 
-static int stackcount = 0; /* iteration counter */
+static PERTHREAD int stackcount = 0; /* iteration counter */
 #define STACKITER 1000 /* maximum iterations allowed */
 
-static int outlet_eventno;
+static PERTHREAD int outlet_eventno;
 
     /* set a stack limit (on each incoming event that can set off messages)
     for the outlet functions to check to prevent stack overflow from message

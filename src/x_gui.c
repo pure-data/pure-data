@@ -291,7 +291,6 @@ static void savepanel_setup(void)
 
 /* ---------------------- key and its relatives ------------------ */
 
-static t_symbol *key_sym, *keyup_sym, *keyname_sym;
 static t_class *key_class, *keyup_class, *keyname_class;
 
 typedef struct _key
@@ -303,7 +302,7 @@ static void *key_new( void)
 {
     t_key *x = (t_key *)pd_new(key_class);
     outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, key_sym);
+    pd_bind(&x->x_obj.ob_pd, gensym("#key"));
     return (x);
 }
 
@@ -314,7 +313,7 @@ static void key_float(t_key *x, t_floatarg f)
 
 static void key_free(t_key *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, key_sym);
+    pd_unbind(&x->x_obj.ob_pd, gensym("#key"));
 }
 
 typedef struct _keyup
@@ -326,7 +325,7 @@ static void *keyup_new( void)
 {
     t_keyup *x = (t_keyup *)pd_new(keyup_class);
     outlet_new(&x->x_obj, &s_float);
-    pd_bind(&x->x_obj.ob_pd, keyup_sym);
+    pd_bind(&x->x_obj.ob_pd, gensym("#keyup"));
     return (x);
 }
 
@@ -337,7 +336,7 @@ static void keyup_float(t_keyup *x, t_floatarg f)
 
 static void keyup_free(t_keyup *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, keyup_sym);
+    pd_unbind(&x->x_obj.ob_pd, gensym("#keyup"));
 }
 
 typedef struct _keyname
@@ -352,7 +351,7 @@ static void *keyname_new( void)
     t_keyname *x = (t_keyname *)pd_new(keyname_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_symbol);
-    pd_bind(&x->x_obj.ob_pd, keyname_sym);
+    pd_bind(&x->x_obj.ob_pd, gensym("#keyname"));
     return (x);
 }
 
@@ -364,7 +363,7 @@ static void keyname_list(t_keyname *x, t_symbol *s, int ac, t_atom *av)
 
 static void keyname_free(t_keyname *x)
 {
-    pd_unbind(&x->x_obj.ob_pd, keyname_sym);
+    pd_unbind(&x->x_obj.ob_pd, gensym("#keyname"));
 }
 
 static void key_setup(void)
@@ -373,20 +372,17 @@ static void key_setup(void)
         (t_newmethod)key_new, (t_method)key_free,
         sizeof(t_key), CLASS_NOINLET, 0);
     class_addfloat(key_class, key_float);
-    key_sym = gensym("#key");
 
     keyup_class = class_new(gensym("keyup"),
         (t_newmethod)keyup_new, (t_method)keyup_free,
         sizeof(t_keyup), CLASS_NOINLET, 0);
     class_addfloat(keyup_class, keyup_float);
-    keyup_sym = gensym("#keyup");
     class_sethelpsymbol(keyup_class, gensym("key"));
 
     keyname_class = class_new(gensym("keyname"),
         (t_newmethod)keyname_new, (t_method)keyname_free,
         sizeof(t_keyname), CLASS_NOINLET, 0);
     class_addlist(keyname_class, keyname_list);
-    keyname_sym = gensym("#keyname");
     class_sethelpsymbol(keyname_class, gensym("key"));
 }
 

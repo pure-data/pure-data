@@ -129,6 +129,8 @@ void glist_delete(t_glist *x, t_gobj *y)
         g->g_next = y->g_next;
         break;
     }
+    if (y->g_pd == scalar_class)
+        x->gl_valid = ++glist_valid;
     pd_free(&y->g_pd);
     if (rtext)
         rtext_free(rtext);
@@ -137,13 +139,12 @@ void glist_delete(t_glist *x, t_gobj *y)
         canvas_redrawallfortemplate(template_findbyname(canvas_makebindsym(
             glist_getcanvas(x)->gl_name)), 1);
     canvas_setdeleting(canvas, wasdeleting);
-    x->gl_valid = ++glist_valid;
 }
 
     /* remove every object from a glist.  Experimental. */
 void glist_clear(t_glist *x)
 {
-    t_gobj *y, *y2;
+    t_gobj *y;
     int dspstate = 0, suspended = 0;
     t_symbol *dspsym = gensym("dsp");
     while ((y = x->gl_list))
@@ -725,7 +726,6 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
         t_float f;
         t_gobj *g;
         t_symbol *arrayname;
-        t_garray *ga;
         char *ylabelanchor =
             (x->gl_ylabelx > 0.5*(x->gl_x1 + x->gl_x2) ? "w" : "e");
         char *xlabelanchor =
@@ -747,7 +747,8 @@ static void graph_vis(t_gobj *gr, t_glist *parent_glist, int vis)
             i -= glist_fontheight(x);
             sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor nw "
                 "-font {{%s} -%d %s} -tags [list %s label graph]\n",
-                (long)glist_getcanvas(x),  x1, i, arrayname->s_name, sys_font,
+                (long)glist_getcanvas(x),  x1, i,
+                arrayname->s_name, sys_font,
                 fs, sys_fontweight, tag);
         }
 
@@ -888,7 +889,6 @@ static void graph_getrect(t_gobj *z, t_glist *glist,
     {
         int hadwindow;
         t_gobj *g;
-        t_text *ob;
         int x21, y21, x22, y22;
 
         graph_graphrect(z, glist, &x1, &y1, &x2, &y2);

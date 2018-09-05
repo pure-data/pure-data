@@ -1,3 +1,4 @@
+#!/bin/sh
 cd /home/msp/pd/extra
 tar czf /tmp/z.tgz \
    pd~/pd~.c pd~/pd~-help.pd pd~/pd~-subprocess.pd \

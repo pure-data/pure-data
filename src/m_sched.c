@@ -446,7 +446,7 @@ static void m_pollingscheduler( void)
 {
     int idlecount = 0;
 
-        /* delete this when I'm sure it's not needed for back compatibilty? */
+        /* delete this when I'm sure it's not needed for back compatibility? */
     STUFF->st_time_per_dsp_tick = (TIMEUNITPERSECOND) *
         ((double)STUFF->st_schedblocksize) / STUFF->st_dacsr;
     sys_lock();

@@ -527,10 +527,8 @@ static int array_rangeop_getrange(t_array_rangeop *x,
 {
     t_glist *glist;
     t_array *a = array_client_getbuf(&x->x_tc, &glist);
-    char *elemp;
-    int stride, fieldonset, arrayonset, nitem, i, type;
+    int stride, fieldonset, arrayonset, nitem, type;
     t_symbol *arraytype;
-    double sum;
     t_template *template;
     if (!a)
         return (0);
@@ -714,8 +712,8 @@ static void array_random_seed(t_array_random *x, t_floatarg f)
 
 static void array_random_bang(t_array_random *x)
 {
-    char *itemp, *firstitem;
-    int stride, nitem, arrayonset, i;
+    char *firstitem;
+    int stride, nitem, arrayonset;
 
     if (!array_rangeop_getrange(&x->x_r, &firstitem, &nitem, &stride,
         &arrayonset))
