@@ -230,16 +230,18 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
         /* replace all fanouts with [trigger]s
          * if the fanning out object is already a trigger, just expand it */
     const t_symbol*s_trigger=gensym("trigger");
+        /* shift trigger object slightly, to make it easier selectable in case of overlaps: */
+    const int xoffset = -10;
+    const int yoffset = 5;
     int obj_nout=obj_noutlets(obj);
     int nout;
-    int posX=obj->te_xpix-10;
-    int posY;
+    int posX, posY;
     t_binbuf*b=binbuf_new();
     int didit=0;
 
     int _x; /* dummy variable */
     gobj_getrect(o2g(obj), x, &_x, &_x, &_x, &posY);
-    posY += 5 * x->gl_zoom;
+    posY += yoffset * x->gl_zoom;
 
         /* if the object is a [trigger], we just insert new outlets */
     if(s_trigger == obj->te_g.g_pd->c_name)
@@ -266,6 +268,19 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
         if(count>1)
         {
                 /* fan out: create a [t] object to resolve it */
+
+                /* need to get the coordinates of the fanning outlet */
+            t_linetraverser t;
+            linetraverser_start(&t, x);
+            while((conn = linetraverser_next(&t)))
+            {
+                if((obj == t.tr_ob) && nout == t.tr_outno)
+                {
+                    posX = t.tr_lx1 - (IOMIDDLE - xoffset) * t.tr_x->gl_zoom;
+                    break;
+                }
+            }
+
             int i;
             int obj_i = canvas_getindex(x, o2g(obj)), stub_i;
             t_object*stub=0;
