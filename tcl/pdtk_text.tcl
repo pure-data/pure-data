@@ -5,6 +5,10 @@ package provide pdtk_text 0.1
 # are used by 'pd' and therefore need to be in the global namespace.
 
 # create a new text object (ie. obj, msg, comment)
+# the initializing string ends in an extra space.  This is done in case
+# the last character should have been a backslash ('\') which would have
+# had the effect of escaping the closing brace.  We trim off the last
+# character in the string to compensate via [string range].
 proc pdtk_text_new {tkcanvas tags x y text font_size color} {
     $tkcanvas create text $x $y -tags $tags \
         -text [string range $text 0 end-1] \
