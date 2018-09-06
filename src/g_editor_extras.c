@@ -24,6 +24,7 @@ static t_object*g2o(t_gobj*gobj)
 }
 static t_gobj*glist_getlast(t_glist*cnv)
 {
+        /* get last object on <ncv> */
     t_gobj*result=NULL;
     for(result=cnv->gl_list; result->g_next;) result=result->g_next;
     return result;
@@ -66,6 +67,7 @@ static void dereconnect(t_glist*cnv, t_object*org, t_object*replace)
 }
 static void obj_delete_undo(t_glist*x, t_object *obj)
 {
+        /* delete an object with undo */
     t_gobj*gobj=o2g(obj);
     canvas_undo_add(x, UNDO_RECREATE, "recreate",
         (void *)canvas_undo_set_recreate(x, gobj,canvas_getindex(x, gobj)));
@@ -73,6 +75,7 @@ static void obj_delete_undo(t_glist*x, t_object *obj)
 }
 static t_object*triggerize_createobj(t_glist*x, t_binbuf*b)
 {
+        /* send a binbuf to a canvas */
     t_pd *boundx = s__X.s_thing, *boundn = s__N.s_thing;
     s__X.s_thing = &x->gl_pd;
     s__N.s_thing = &pd_canvasmaker;
@@ -131,6 +134,7 @@ static int has_fanout(t_object*obj)
 }
 static int only_triggers_selected(t_glist*cnv)
 {
+        /* check if all selected objects in <cnv> are triggers */
     const t_symbol*s_trigger=gensym("trigger");
     t_gobj*gobj = NULL;
 
@@ -223,6 +227,8 @@ static void triggerize_defanout(t_glist*x, int count, t_outconnect*conn,
 
 static int triggerize_fanout(t_glist*x, t_object*obj)
 {
+        /* replace all fanouts with [trigger]s
+         * if the fanning out object is already a trigger, just expand it */
     const t_symbol*s_trigger=gensym("trigger");
     int obj_nout=obj_noutlets(obj);
     int nout;
@@ -231,7 +237,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
     t_binbuf*b=binbuf_new();
     int didit=0;
 
-    int _x;
+    int _x; /* dummy variable */
     gobj_getrect(o2g(obj), x, &_x, &_x, &_x, &posY);
     posY += 5 * x->gl_zoom;
 
@@ -259,7 +265,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
         }
         if(count>1)
         {
-                /* fan out */
+                /* fan out: create a [t] object to resolve it */
             int i;
             int obj_i = canvas_getindex(x, o2g(obj)), stub_i;
             t_object*stub=0;
@@ -288,6 +294,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
 }
 static int triggerize_fanouts(t_glist*cnv)
 {
+        /* iterate over all selected objects and try to eliminate fanouts */
     t_gobj*gobj = NULL;
     int count=0;
     canvas_undo_add(cnv, UNDO_SEQUENCE_START, "triggerize", 0);
@@ -497,6 +504,7 @@ static int expand_trigger(t_glist*cnv, t_object*obj)
 typedef int (*t_fun_withobject)(t_glist*, t_object*);
 static int with_triggers(t_glist*cnv, t_fun_withobject fun)
 {
+        /* run <fun> on all selected [trigger] objects */
     const t_symbol*s_trigger=gensym("trigger");
     int count=0;
     t_gobj*gobj = NULL;
@@ -544,12 +552,12 @@ static int triggerize_triggers(t_glist*cnv)
 static void canvas_do_triggerize(t_glist*cnv)
 {
         /*
-         * selected msg-connection: insert [t a]
-         * selected sig-connection: insert [pd nop~]
-         * selected [trigger]s with fan-outs: remove them (by inserting new outlets of the correct type)
-         * selected objects with fan-outs: remove fan-outs
-         * selected [trigger]: remove unused outlets
-         * selected [trigger]: else, add left-most "a" outlet
+         * selected msg-connection: insert [t a] (->triggerize_line)
+         * selected sig-connection: insert [pd nop~] (->triggerize_line)
+         * selected [trigger]s with fan-outs: remove them (by inserting new outlets of the correct type) (->triggerize_fanouts)
+         * selected objects with fan-outs: remove fan-outs (->triggerize_fanouts)
+         * selected [trigger]: remove unused outlets (->triggerize_triggers)
+         * selected [trigger]: else, add left-most "a" outlet (->triggerize_triggers)
          */
 
     if(triggerize_line(cnv)
