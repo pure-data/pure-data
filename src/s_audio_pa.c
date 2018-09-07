@@ -467,6 +467,9 @@ void pa_close_audio( void)
 #endif
 }
 
+/* maximum number of sleeps before we stop polling and try to reopen the device */
+#define PA_MAXSLEEP 2000
+
 int pa_send_dacs(void)
 {
     t_sample *fp;
@@ -474,6 +477,7 @@ int pa_send_dacs(void)
     float *conversionbuf;
     int j, k;
     int rtnval =  SENDDACS_YES;
+    int locked = 0;
 #ifndef FAKEBLOCKING
     double timebefore;
 #endif /* FAKEBLOCKING */
@@ -485,6 +489,7 @@ int pa_send_dacs(void)
 #ifdef FAKEBLOCKING
     if (!STUFF->st_inchannels)    /* if no input channels sync on output */
     {
+        int counter = PA_MAXSLEEP;
 #ifdef THREADSIGNAL
         pthread_mutex_lock(&pa_mutex);
 #endif
@@ -492,6 +497,11 @@ int pa_send_dacs(void)
             (long)(STUFF->st_outchannels * DEFDACBLKSIZE * sizeof(float)))
         {
             rtnval = SENDDACS_SLEPT;
+            if (!--counter)
+            {
+                locked = 1;
+                break;
+            }
 #ifdef THREADSIGNAL
             pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
@@ -507,7 +517,7 @@ int pa_send_dacs(void)
 #endif
     }
         /* write output */
-    if (STUFF->st_outchannels)
+    if (STUFF->st_outchannels && !locked)
     {
         for (j = 0, fp = STUFF->st_soundout, fp2 = conversionbuf;
             j < STUFF->st_outchannels; j++, fp2++)
@@ -519,6 +529,7 @@ int pa_send_dacs(void)
     }
     if (STUFF->st_inchannels)    /* if there is input sync on it */
     {
+        int counter = PA_MAXSLEEP;
 #ifdef THREADSIGNAL
         pthread_mutex_lock(&pa_mutex);
 #endif
@@ -526,6 +537,11 @@ int pa_send_dacs(void)
             (long)(STUFF->st_inchannels * DEFDACBLKSIZE * sizeof(float)))
         {
             rtnval = SENDDACS_SLEPT;
+            if (!--counter)
+            {
+                locked = 1;
+                break;
+            }
 #ifdef THREADSIGNAL
             pthread_cond_wait(&pa_sem, &pa_mutex);
 #else
@@ -540,7 +556,7 @@ int pa_send_dacs(void)
         pthread_mutex_unlock(&pa_mutex);
 #endif
     }
-    if (STUFF->st_inchannels)
+    if (STUFF->st_inchannels && !locked)
     {
         sys_ringbuf_read(&pa_inring, conversionbuf,
             STUFF->st_inchannels*(DEFDACBLKSIZE*sizeof(float)), pa_inbuf);
@@ -589,7 +605,18 @@ int pa_send_dacs(void)
 
     memset(STUFF->st_soundout, 0,
         DEFDACBLKSIZE*sizeof(t_sample)*STUFF->st_outchannels);
-    return (rtnval);
+    if (locked)
+    {
+        sys_close_audio();
+        error("audio device not responsive, trying to reopen it");
+        sys_reopen_audio(); /* try to reopen it */
+        if (audio_isopen())
+            error("successfully reopened audio device");
+        else
+            error("audio device not responsive! check your hardware connection and reopen it from the menu");
+        return SENDDACS_NO;
+    } else
+        return (rtnval);
 }
 
     /* scanning for devices */
