@@ -892,7 +892,7 @@ static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
         {
             int x1, y1;
             gatom_getwherelabel(x, glist, &x1, &y1);
-            sys_vgui("pdtk_text_new .x%lx.c {%lx.l label text} %f %f {%s} %d %s\n",
+            sys_vgui("pdtk_text_new .x%lx.c {%lx.l label text} %f %f {%s } %d %s\n",
                 glist_getcanvas(glist), x,
                 (double)x1, (double)y1,
                 canvas_realizedollar(x->a_glist, x->a_label)->s_name,
