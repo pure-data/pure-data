@@ -468,7 +468,7 @@ void pa_close_audio( void)
 }
 
 /* maximum number of sleeps before we stop polling and try to reopen the device */
-#define PA_MAXSLEEP 2000
+#define PA_MAXSLEEP 1000
 
 int pa_send_dacs(void)
 {
@@ -607,13 +607,15 @@ int pa_send_dacs(void)
         DEFDACBLKSIZE*sizeof(t_sample)*STUFF->st_outchannels);
     if (locked)
     {
+        PaError err = Pa_IsStreamActive(&pa_stream);
+        error("audio device error: %s", Pa_GetErrorText(err));
         sys_close_audio();
-        error("audio device not responsive, trying to reopen it");
+        error("trying to reopen audio device");
         sys_reopen_audio(); /* try to reopen it */
         if (audio_isopen())
             error("successfully reopened audio device");
         else
-            error("audio device not responsive! check your hardware connection and reopen it from the menu");
+            error("audio device unresponsive! check your hardware connection and reopen it from the menu");
         return SENDDACS_NO;
     } else
         return (rtnval);
