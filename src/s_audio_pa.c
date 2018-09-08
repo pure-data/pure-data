@@ -404,6 +404,10 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
         free((char *)pa_outbuf), pa_outbuf = 0;
+#ifdef THREADSIGNAL
+    pthread_mutex_init(&pa_mutex, 0);
+    pthread_cond_init(&pa_sem, 0);
+#endif
 #endif
 
     if (! inchans && !outchans)
@@ -464,6 +468,10 @@ void pa_close_audio( void)
         free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
         free((char *)pa_outbuf), pa_outbuf = 0;
+#ifdef THREADSIGNAL
+    pthread_mutex_destroy(&pa_mutex);
+    pthread_cond_destroy(&pa_sem);
+#endif
 #endif
 }
 
