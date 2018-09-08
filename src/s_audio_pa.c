@@ -495,8 +495,8 @@ int pa_send_dacs(void)
     float *conversionbuf;
     int j, k;
     int rtnval =  SENDDACS_YES;
-#ifdef FAKEBLOCKING
     int locked = 0;
+#ifdef FAKEBLOCKING
 #ifdef THREADSIGNAL
     struct timespec ts;
     double timeout;
