@@ -608,7 +608,7 @@ int pa_send_dacs(void)
     if (locked)
     {
         PaError err = Pa_IsStreamActive(&pa_stream);
-        error("audio device error: %s", Pa_GetErrorText(err));
+        error("error %d: %s", err, Pa_GetErrorText(err));
         sys_close_audio();
         error("trying to reopen audio device");
         sys_reopen_audio(); /* try to reopen it */
