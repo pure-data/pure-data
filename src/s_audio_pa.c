@@ -627,12 +627,16 @@ int pa_send_dacs(void)
                 for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
                     k++, fp++, fp3 += STUFF->st_outchannels)
                         *fp3 = *fp;
-        Pa_WriteStream(pa_stream, conversionbuf, DEFDACBLKSIZE);
+        if (Pa_WriteStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
+            if (Pa_IsStreamActive(&pa_stream) < 0)
+                locked = 1;
     }
 
     if (STUFF->st_inchannels)
     {
-        Pa_ReadStream(pa_stream, conversionbuf, DEFDACBLKSIZE);
+        if (Pa_ReadStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
+            if (Pa_IsStreamActive(&pa_stream) < 0)
+                locked = 1;
         for (j = 0, fp = STUFF->st_soundin, fp2 = conversionbuf;
             j < STUFF->st_inchannels; j++, fp2++)
                 for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
