@@ -49,10 +49,6 @@
 #define FAKEBLOCKING
 #endif
 
-#if defined (FAKEBLOCKING) && defined(_WIN32)
-#include <windows.h>    /* for Sleep() */
-#endif
-
 /* define this to enable thread signaling instead of polling */
 /* #define THREADSIGNAL */
 
@@ -79,8 +75,25 @@ static PA_VOLATILE char *pa_inbuf;
 static PA_VOLATILE sys_ringbuf pa_inring;
 #ifdef THREADSIGNAL
 #include <pthread.h>
-pthread_mutex_t pa_mutex;
-pthread_cond_t pa_sem;
+#ifdef _WIN32
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
+#endif
+/* maximum time (in ms) to wait for the condition variable. */
+#ifndef THREADSIGNAL_TIMEOUT
+#define THREADSIGNAL_TIMEOUT 1000
+#endif
+static pthread_mutex_t pa_mutex;
+static pthread_cond_t pa_sem;
+#else /* THREADSIGNAL */
+#if defined (FAKEBLOCKING) && defined(_WIN32)
+#include <windows.h>    /* for Sleep() */
+#endif
+/* maximum number of ms sleeps before we stop polling and try to reopen the device */
+#ifndef MAX_NUM_POLLS
+#define MAX_NUM_POLLS 1000
+#endif
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
 
@@ -475,9 +488,6 @@ void pa_close_audio( void)
 #endif
 }
 
-/* maximum number of sleeps before we stop polling and try to reopen the device */
-#define PA_MAXSLEEP 1000
-
 int pa_send_dacs(void)
 {
     t_sample *fp;
@@ -485,8 +495,27 @@ int pa_send_dacs(void)
     float *conversionbuf;
     int j, k;
     int rtnval =  SENDDACS_YES;
+#ifdef FAKEBLOCKING
     int locked = 0;
-#ifndef FAKEBLOCKING
+#ifdef THREADSIGNAL
+    struct timespec ts;
+    double timeout;
+#ifdef _WIN32
+    struct __timeb64 tb;
+    _ftime64(&tb);
+    timeout = (double)tb.time + tb.millitm * 0.001;
+#else
+    struct timeval now;
+    gettimeofday(&now, 0);
+    timeout = (double)now.tv_sec + (1./1000000.) * now.tv_usec;
+#endif
+    timeout += THREADSIGNAL_TIMEOUT * 0.001;
+    ts.tv_sec = (long long)timeout;
+    ts.tv_nsec = (timeout - (double)ts.tv_sec) * 1e9;
+#else
+    int counter = MAX_NUM_POLLS;
+#endif /* THREADSIGNAL */
+#else
     double timebefore;
 #endif /* FAKEBLOCKING */
     if ((!STUFF->st_inchannels && !STUFF->st_outchannels) || !pa_stream)
@@ -497,7 +526,6 @@ int pa_send_dacs(void)
 #ifdef FAKEBLOCKING
     if (!STUFF->st_inchannels)    /* if no input channels sync on output */
     {
-        int counter = PA_MAXSLEEP;
 #ifdef THREADSIGNAL
         pthread_mutex_lock(&pa_mutex);
 #endif
@@ -505,14 +533,18 @@ int pa_send_dacs(void)
             (long)(STUFF->st_outchannels * DEFDACBLKSIZE * sizeof(float)))
         {
             rtnval = SENDDACS_SLEPT;
+#ifdef THREADSIGNAL
+            if (pthread_cond_timedwait(&pa_sem, &pa_mutex, &ts) == ETIMEDOUT)
+            {
+                locked = 1;
+                break;
+            }
+#else
             if (!--counter)
             {
                 locked = 1;
                 break;
             }
-#ifdef THREADSIGNAL
-            pthread_cond_wait(&pa_sem, &pa_mutex);
-#else
 #ifdef _WIN32
             Sleep(1);
 #else
@@ -537,7 +569,6 @@ int pa_send_dacs(void)
     }
     if (STUFF->st_inchannels)    /* if there is input sync on it */
     {
-        int counter = PA_MAXSLEEP;
 #ifdef THREADSIGNAL
         pthread_mutex_lock(&pa_mutex);
 #endif
@@ -545,14 +576,18 @@ int pa_send_dacs(void)
             (long)(STUFF->st_inchannels * DEFDACBLKSIZE * sizeof(float)))
         {
             rtnval = SENDDACS_SLEPT;
+#ifdef THREADSIGNAL
+            if (pthread_cond_timedwait(&pa_sem, &pa_mutex, &ts) == ETIMEDOUT)
+            {
+                locked = 1;
+                break;
+            }
+#else
             if (!--counter)
             {
                 locked = 1;
                 break;
             }
-#ifdef THREADSIGNAL
-            pthread_cond_wait(&pa_sem, &pa_mutex);
-#else
 #ifdef _WIN32
             Sleep(1);
 #else
