@@ -377,14 +377,6 @@ static void ptrobj_delete(t_ptrobj *x)
     gobj = old->g_next;
     while (gobj && (pd_class(&gobj->g_pd) != scalar_class))
         gobj = gobj->g_next;
-    /* if we don't have a previous scalar, try to get it */
-    if (!x->x_prev && old != glist->gl_list)
-    {
-        t_gobj *prev = glist->gl_list;
-        while (prev && prev->g_next != old && (pd_class(&prev->g_pd) == scalar_class))
-            prev = prev->g_next;
-        x->x_prev = prev;
-    }
     glist_dodelete(glist, old, x->x_prev);
     gp->gp_valid = glist->gl_valid;
     if (gobj)
