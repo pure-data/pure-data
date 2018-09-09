@@ -1450,7 +1450,7 @@ static int check_exists(const char*path)
 }
 #endif
 
-static void canvas_path(t_canvasenvironment *e, char *path)
+static void canvas_path(t_canvas *x, t_canvasenvironment *e, char *path)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
@@ -1461,7 +1461,7 @@ static void canvas_path(t_canvasenvironment *e, char *path)
     }
 
         /* explicit relative path, starts with ./ or ../ */
-    if (path[0] == '.' && (path[1] == '/' || path[1] == '.' && path[2] == '/')
+    if (path[0] == '.' && (path[1] == '/' || path[1] == '.' && path[2] == '/'))
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
         return;
@@ -1510,7 +1510,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, char *lib)
     }
 
         /* explicit relative path, starts with ./ or ../ */
-    if (lib[0] == '.' && (lib[1] == '/' || lib[1] == '.' && lib[2] == '/')
+    if (lib[0] == '.' && (lib[1] == '/' || lib[1] == '.' && lib[2] == '/'))
     {
         sys_load_lib(x, lib);
         return;
