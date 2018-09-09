@@ -59,9 +59,9 @@ typedef struct peak
 
 /********************** service routines **************************/
 
-/* these three are dapted from elsewhere in Pd but included here for
+/* these three are adapted from elsewhere in Pd but included here for
    completeness */
-static int sigmund_ilog2(int n)
+static unsigned int sigmund_ilog2(int n)
 {
     int ret = -1;
     while (n)
@@ -377,8 +377,12 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
     t_float fperbin = 0.5 * srate / npts;
     int npit = 48 * sigmund_ilog2(npts), i, j, k, nsalient;
     t_float bestbin, bestweight, sumamp, sumweight, sumfreq, freq;
-    t_float *weights =  (t_float *)alloca(sizeof(t_float) * npit);
+    t_float *weights =  0;
     t_peak *bigpeaks[PITCHNPEAK];
+    size_t weight_len = sizeof(t_float) * npit;
+    if(weight_len > 65536)
+      weight_len = 65536;
+    weights = (t_float *)alloca(weight_len);
     if (npeak < 1)
     {
         freq = 0;
@@ -785,6 +789,7 @@ whole file can be included in other, non-PD and non-Max projects.  */
 
 #define NPOINTS_DEF 1024
 #define NPOINTS_MIN 128
+#define NPOINTS_MAX 4194304
 
 #define HOP_DEF 512
 #define NPEAK_DEF 20
@@ -887,6 +892,10 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
     if (npts < NPOINTS_MIN)
         post("sigmund~: minimum points %d", NPOINTS_MIN),
             npts = NPOINTS_MIN;
+    if (npts > NPOINTS_MAX)
+        post("sigmund~: maximum points %d", NPOINTS_MAX),
+            npts = NPOINTS_MAX;
+
     if (npts != (1 << sigmund_ilog2(npts)))
         post("sigmund~: adjusting analysis size to %d points",
             (npts = (1 << sigmund_ilog2(npts))));

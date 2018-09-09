@@ -1029,7 +1029,7 @@ typedef struct _curve
 static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_curve *x = (t_curve *)pd_new(curve_class);
-    char *classname = classsym->s_name;
+    const char *classname = classsym->s_name;
     int flags = 0;
     int nxy, i;
     t_fielddesc *fd;
@@ -2412,7 +2412,7 @@ typedef struct _drawnumber
 static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_drawnumber *x = (t_drawnumber *)pd_new(drawnumber_class);
-    char *classname = classsym->s_name;
+    const char *classname = classsym->s_name;
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();

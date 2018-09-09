@@ -431,8 +431,8 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
                 /* if we're loading an extern it might have been invoked by a
                 longer file name; in this case, make this an admissible name
                 too. */
-            char *loadstring = class_loadsym->s_name,
-                l1 = strlen(s->s_name), l2 = strlen(loadstring);
+            const char *loadstring = class_loadsym->s_name;
+            size_t l1 = strlen(s->s_name), l2 = strlen(loadstring);
             if (l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
                 class_addmethod(pd_objectmaker, (t_method)newmethod,
                     class_loadsym,
@@ -627,12 +627,12 @@ void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *pw)
     c->c_pwb = pw;
 }
 
-char *class_getname(t_class *c)
+const char *class_getname(const t_class *c)
 {
     return (c->c_name->s_name);
 }
 
-char *class_gethelpname(t_class *c)
+const char *class_gethelpname(const t_class *c)
 {
     return (c->c_helpname->s_name);
 }
@@ -652,7 +652,7 @@ void class_setdrawcommand(t_class *c)
     c->c_drawcommand = 1;
 }
 
-int class_isdrawcommand(t_class *c)
+int class_isdrawcommand(const t_class *c)
 {
     return (c->c_drawcommand);
 }
@@ -684,7 +684,7 @@ void class_set_extern_dir(t_symbol *s)
     class_extern_dir = s;
 }
 
-char *class_gethelpdir(t_class *c)
+const char *class_gethelpdir(const t_class *c)
 {
     return (c->c_externdir->s_name);
 }
@@ -699,7 +699,7 @@ void class_setsavefn(t_class *c, t_savefn f)
     c->c_savefn = f;
 }
 
-t_savefn class_getsavefn(t_class *c)
+t_savefn class_getsavefn(const t_class *c)
 {
     return (c->c_savefn);
 }
@@ -709,7 +709,7 @@ void class_setpropertiesfn(t_class *c, t_propertiesfn f)
     c->c_propertiesfn = f;
 }
 
-t_propertiesfn class_getpropertiesfn(t_class *c)
+t_propertiesfn class_getpropertiesfn(const t_class *c)
 {
     return (c->c_propertiesfn);
 }
@@ -719,6 +719,7 @@ t_propertiesfn class_getpropertiesfn(t_class *c)
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance)
 {
+    char *sym = 0;
     t_symbol **sym1, *sym2;
     unsigned int hash = 5381;
     int length = 0;
@@ -738,10 +739,11 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     if (oldsym)
         sym2 = oldsym;
     else sym2 = (t_symbol *)t_getbytes(sizeof(*sym2));
-    sym2->s_name = t_getbytes(length+1);
+    sym = t_getbytes(length+1);
     sym2->s_next = 0;
     sym2->s_thing = 0;
-    strcpy(sym2->s_name, s);
+    strcpy(sym, s);
+    sym2->s_name = sym;
     *sym1 = sym2;
     return (sym2);
 }
@@ -753,7 +755,8 @@ t_symbol *gensym(const char *s)
 
 static t_symbol *addfileextent(t_symbol *s)
 {
-    char namebuf[MAXPDSTRING], *str = s->s_name;
+    char namebuf[MAXPDSTRING];
+    const char *str = s->s_name;
     int ln = (int)strlen(str);
     if (!strcmp(str + ln - 3, ".pd")) return (s);
     strcpy(namebuf, str);
@@ -1051,9 +1054,9 @@ void pd_forwardmess(t_pd *x, int argc, t_atom *argv)
 
 void nullfn(void) {}
 
-t_gotfn getfn(t_pd *x, t_symbol *s)
+t_gotfn getfn(const t_pd *x, t_symbol *s)
 {
-    t_class *c = *x;
+    const t_class *c = *x;
     t_methodentry *m, *mlist;
     int i;
 
@@ -1068,9 +1071,9 @@ t_gotfn getfn(t_pd *x, t_symbol *s)
     return((t_gotfn)nullfn);
 }
 
-t_gotfn zgetfn(t_pd *x, t_symbol *s)
+t_gotfn zgetfn(const t_pd *x, t_symbol *s)
 {
-    t_class *c = *x;
+    const t_class *c = *x;
     t_methodentry *m, *mlist;
     int i;
 

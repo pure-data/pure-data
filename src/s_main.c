@@ -225,7 +225,7 @@ open(), read(), etc, calls to be served somehow from the GUI too. */
 
 void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
+    const char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
     t_namelist *nl;
     unsigned int i;
     int did_fontwarning = 0;

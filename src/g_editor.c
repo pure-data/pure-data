@@ -38,7 +38,7 @@ struct _instanceeditor
     unsigned int canvas_cursorwas;
 };
 
-void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
+void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename,
     int selectem);
 
 /* ------------------ forward declarations --------------- */
@@ -2201,7 +2201,7 @@ static void canvas_done_popup(t_canvas *x, t_float which,
             }
             else    /* help */
             {
-                char *dir;
+                const char *dir;
                 if (pd_class(&y->g_pd) == canvas_class &&
                     canvas_isabstraction((t_canvas *)y))
                 {
@@ -3384,12 +3384,12 @@ static void canvas_find_parent(t_canvas *x)
         canvas_vis(glist_getcanvas(x->gl_owner), 1);
 }
 
-static int glist_dofinderror(t_glist *gl, void *error_object)
+static int glist_dofinderror(t_glist *gl, const void *error_object)
 {
     t_gobj *g;
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        if ((void *)g == error_object)
+        if ((const void *)g == error_object)
         {
                 /* got it... now show it. */
             glist_noselect(gl);
@@ -3407,7 +3407,7 @@ static int glist_dofinderror(t_glist *gl, void *error_object)
     return (0);
 }
 
-void canvas_finderror(void *error_object)
+void canvas_finderror(const void *error_object)
 {
     t_canvas *x;
         /* find all root canvases */

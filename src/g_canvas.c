@@ -98,7 +98,7 @@ static void canvas_takeofflist(t_canvas *x)
 }
 
 
-void canvas_setargs(int argc, t_atom *argv)
+void canvas_setargs(int argc, const t_atom *argv)
 {
         /* if there's an old one lying around free it here.  This
         happens if an abstraction is loaded but never gets as far
@@ -137,7 +137,7 @@ void canvas_unsetcurrent(t_canvas *x)
     pd_popsym(&x->gl_pd);
 }
 
-t_canvasenvironment *canvas_getenv(t_canvas *x)
+t_canvasenvironment *canvas_getenv(const t_canvas *x)
 {
     if (!x) bug("canvas_getenv");
     while (!x->gl_env)
@@ -166,7 +166,7 @@ void canvas_getargs(int *argcp, t_atom **argvp)
 t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s)
 {
     t_symbol *ret;
-    char *name = s->s_name;
+    const char *name = s->s_name;
     if (strchr(name, '$'))
     {
         t_canvasenvironment *env = canvas_getenv(x);
@@ -184,15 +184,15 @@ t_symbol *canvas_getcurrentdir(void)
     return (e->ce_dir);
 }
 
-t_symbol *canvas_getdir(t_canvas *x)
+t_symbol *canvas_getdir(const t_canvas *x)
 {
     t_canvasenvironment *e = canvas_getenv(x);
     return (e->ce_dir);
 }
 
-void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
+void canvas_makefilename(const t_canvas *x, const char *file, char *result, int resultsize)
 {
-    char *dir = canvas_getenv(x)->ce_dir->s_name;
+    const char *dir = canvas_getenv(x)->ce_dir->s_name;
     if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)
     {
         strncpy(result, file, resultsize);
@@ -442,7 +442,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     static int gcount = 0;  /* it's OK if two threads get the same value */
     int zz;
     int menu = 0;
-    char *str;
+    const char *str;
     t_glist *x = (t_glist *)pd_new(canvas_class);
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
@@ -1092,7 +1092,7 @@ static void canvas_rename_method(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 
     /* return true if the "canvas" object is an abstraction (so we don't
     save its contents, for example.)  */
-int canvas_isabstraction(t_canvas *x)
+int canvas_isabstraction(const t_canvas *x)
 {
     return (x->gl_env != 0);
 }
@@ -1100,7 +1100,7 @@ int canvas_isabstraction(t_canvas *x)
     /* return true if the "canvas" object should be treated as a text
     object.  This is true for abstractions but also for "table"s... */
 /* JMZ: add a flag to gop-abstractions to hide the title */
-int canvas_showtext(t_canvas *x)
+int canvas_showtext(const t_canvas *x)
 {
     t_atom *argv = (x->gl_obj.te_binbuf? binbuf_getvec(x->gl_obj.te_binbuf):0);
     int argc = (x->gl_obj.te_binbuf? binbuf_getnatom(x->gl_obj.te_binbuf) : 0);
@@ -1405,7 +1405,8 @@ void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
     }
 }
 
-static void canvas_completepath(char *from, char *to, int bufsize, t_canvas *x)
+static void canvas_completepath(const char *from, char *to, int bufsize,
+    t_canvas *x)
 {
     if (sys_isabsolutepath(from))
     {
@@ -1414,7 +1415,7 @@ static void canvas_completepath(char *from, char *to, int bufsize, t_canvas *x)
     else if (x)
     {
         /* append canvas dir */
-        char *dir = canvas_getdir(x)->s_name;
+        const char *dir = canvas_getdir(x)->s_name;
         int dirlen = strlen(dir);
         strncpy(to, dir, bufsize-dirlen);
         to[bufsize-dirlen-1] = '\0';
@@ -1450,7 +1451,7 @@ static int check_exists(const char*path)
 }
 #endif
 
-static void canvas_path(t_canvas *x, t_canvasenvironment *e, char *path)
+static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
@@ -1499,7 +1500,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, char *path)
         }
     }
 }
-static void canvas_lib(t_canvas *x, t_canvasenvironment *e, char *lib)
+static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
@@ -1530,7 +1531,8 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, char *lib)
             return;
     }
 }
-static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
+
+static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
@@ -1564,7 +1566,7 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         }
     }
 }
-static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
+static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
@@ -1605,7 +1607,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 #endif
     for (i = 0; i < argc; i++)
     {
-        char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
+        const char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
         if ((argc > i+1) && !strcmp(flag, "-path"))
         {
             canvas_path(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
@@ -1665,7 +1667,7 @@ static int canvas_open_iter(const char *path, t_canvasopen *co)
     attempted, otherwise ASCII (this only matters on Microsoft.)
     If "x" is zero, the file is sought in the directory "." or in the
     global path.*/
-int canvas_open(t_canvas *x, const char *name, const char *ext,
+int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
     int fd = -1;
@@ -1694,10 +1696,10 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
  * <data>.  The function is called with two arguments: a pathname to try to
  * open, and <data>.
  */
-int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+int canvas_path_iterate(const t_canvas *x, t_canvas_path_iterator fun,
     void *user_data)
 {
-    t_canvas *y = 0;
+    const t_canvas *y = 0;
     t_namelist *nl = 0;
     int count = 0;
     if (!fun)
@@ -1706,7 +1708,7 @@ int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
-        char *dir;
+        const char *dir;
         dir = canvas_getdir(y)->s_name;
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {

@@ -222,10 +222,10 @@ void namelist_free(t_namelist *listwas)
     }
 }
 
-char *namelist_get(t_namelist *namelist, int n)
+const char *namelist_get(const t_namelist *namelist, int n)
 {
     int i;
-    t_namelist *nl;
+    const t_namelist *nl;
     for (i = 0, nl = namelist; i < n && nl; i++, nl = nl->nl_next)
         ;
     return (nl ? nl->nl_string : 0);
@@ -577,7 +577,8 @@ void sys_doflags( void)
     dollars, and semis down here. */
 t_symbol *sys_decodedialog(t_symbol *s)
 {
-    char buf[MAXPDSTRING], *sp = s->s_name;
+    char buf[MAXPDSTRING];
+    const char *sp = s->s_name;
     int i;
     if (*sp != '+')
         bug("sys_decodedialog: %s", sp);

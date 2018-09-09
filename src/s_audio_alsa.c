@@ -895,15 +895,15 @@ static void alsa_checkiosync( void)
 }
 
 static int alsa_nnames = 0;
-static char **alsa_names = 0;
+static const char **alsa_names = 0;
 
 void alsa_adddev(char *name)
 {
     if (alsa_nnames)
-        alsa_names = (char **)t_resizebytes(alsa_names,
-            alsa_nnames * sizeof(char *),
-            (alsa_nnames+1) * sizeof(char *));
-    else alsa_names = (char **)t_getbytes(sizeof(char *));
+        alsa_names = (const char **)t_resizebytes(alsa_names,
+            alsa_nnames * sizeof(const char *),
+            (alsa_nnames+1) * sizeof(const char *));
+    else alsa_names = (const char **)t_getbytes(sizeof(const char *));
     alsa_names[alsa_nnames] = gensym(name)->s_name;
     alsa_nnames++;
 }
