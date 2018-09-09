@@ -299,7 +299,7 @@ static t_int *sigvd_perform(t_int *w)
         idelsamps = delsamps;
         frac = delsamps - (t_sample)idelsamps;
         bp = wp - idelsamps;
-        if (bp < vp + 4) bp += nsamps;
+        if (bp < vp + XTRASAMPS) bp += nsamps;
         d = bp[-3];
         c = bp[-2];
         b = bp[-1];
