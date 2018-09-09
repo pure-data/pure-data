@@ -52,6 +52,7 @@ void g_canvas_newpdinstance( void);
 void g_canvas_freepdinstance( void);
 void d_ugen_newpdinstance( void);
 void d_ugen_freepdinstance( void);
+void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv);
 
 void s_stuff_newpdinstance( void)
 {
@@ -258,6 +259,30 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 
 #endif /* PDINSTANCE */
 
+/* this bootstraps the class management system (pd_objectmaker, pd_canvasmaker)
+ * it has been moved from the bottom of the file up here, before the class_new() undefine
+ */
+void mess_init(void)
+{
+    if (pd_objectmaker)
+        return;
+#ifdef PDINSTANCE
+    pd_this = &pd_maininstance;
+#endif
+    s_inter_newpdinstance();
+    sys_lock();
+    pd_globallock();
+    pdinstance_init(&pd_maininstance);
+    class_extern_dir = &s_;
+    pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    class_addanything(pd_objectmaker, (t_method)new_anything);
+    pd_globalunlock();
+    sys_unlock();
+}
+
 static void pd_defaultanything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
     pd_error(x, "%s: no method for '%s'", (*x)->c_name->s_name, s->s_name);
@@ -395,37 +420,19 @@ static void pd_defaultlist(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 
 extern void text_save(t_gobj *z, t_binbuf *b);
 
-t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
-    size_t size, int flags, t_atomtype type1, ...)
+t_class *class_do_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+                      size_t size, int flags, unsigned int typec, t_atomtype*typev)
 {
-    va_list ap;
-    t_atomtype vec[MAXPDARG+1], *vp = vec;
-    int count = 0, i;
+    int i;
     t_class *c;
     int typeflag = flags & CLASS_TYPEMASK;
     if (!typeflag) typeflag = CLASS_PATCHABLE;
-    *vp = type1;
-
-    va_start(ap, type1);
-    while (*vp)
-    {
-        if (count == MAXPDARG)
-        {
-            error("class %s: sorry: only %d args typechecked; use A_GIMME",
-                s->s_name, MAXPDARG);
-            break;
-        }
-        vp++;
-        count++;
-        *vp = va_arg(ap, t_atomtype);
-    }
-    va_end(ap);
 
     if (pd_objectmaker && newmethod)
     {
             /* add a "new" method by the name specified by the object */
         class_addmethod(pd_objectmaker, (t_method)newmethod, s,
-            vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
+            typev[0], typev[1], typev[2], typev[3], typev[4], typev[5]);
         if (class_loadsym)
         {
                 /* if we're loading an extern it might have been invoked by a
@@ -436,7 +443,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             if (l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
                 class_addmethod(pd_objectmaker, (t_method)newmethod,
                     class_loadsym,
-                    vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
+                    typev[0], typev[1], typev[2], typev[3], typev[4], typev[5]);
         }
     }
     c = (t_class *)t_getbytes(sizeof(*c));
@@ -474,6 +481,76 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
 #endif
     return (c);
 }
+
+#ifdef class_new
+# undef class_new
+#endif
+t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+#if PD_FLOATSIZE == 32
+    va_list ap;
+    t_atomtype vec[MAXPDARG+1], *vp = vec;
+    unsigned int count = 0;
+     *vp = type1;
+
+    va_start(ap, type1);
+    while (*vp)
+    {
+        if (count == MAXPDARG)
+        {
+            error("class %s: sorry: only %d args typechecked; use A_GIMME",
+                s->s_name, MAXPDARG);
+            break;
+        }
+        vp++;
+        count++;
+        *vp = va_arg(ap, t_atomtype);
+    }
+    va_end(ap);
+    return class_do_new(s, newmethod, freemethod, size, flags, count, vec);
+#else
+    static int loglevel = 0;
+    logpost(0, loglevel, "refusing to load %d-bit float object '%s' into %d-bit float Pd", 32, s->s_name, PD_FLOATSIZE);
+    loglevel=3;
+
+    return 0;
+#endif
+}
+
+t_class *class_new64(t_symbol *s, t_newmethod newmethod, t_method freemethod,
+    size_t size, int flags, t_atomtype type1, ...)
+{
+#if PD_FLOATSIZE == 64
+    va_list ap;
+    t_atomtype vec[MAXPDARG+1], *vp = vec;
+    unsigned int count = 0;
+     *vp = type1;
+
+    va_start(ap, type1);
+    while (*vp)
+    {
+        if (count == MAXPDARG)
+        {
+            error("class %s: sorry: only %d args typechecked; use A_GIMME",
+                s->s_name, MAXPDARG);
+            break;
+        }
+        vp++;
+        count++;
+        *vp = va_arg(ap, t_atomtype);
+    }
+    va_end(ap);
+    return class_do_new(s, newmethod, freemethod, size, flags, count, vec);
+#else
+    static int loglevel = 0;
+    logpost(0, loglevel, "refusing to load %d-bit float object '%s' into %d-bit float Pd", 64, s->s_name, PD_FLOATSIZE);
+    loglevel=3;
+
+    return 0;
+#endif
+}
+
 
     /* add a creation method, which is a function that returns a Pd object
     suitable for putting in an object box.  We presume you've got a class it
@@ -513,7 +590,8 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     t_methodentry *m;
     t_atomtype argtype = arg1;
     int nargs, i;
-
+    if(!c)
+        return;
     va_start(ap, arg1);
         /* "signal" method specifies that we take audio signals but
         that we don't want automatic float to signal conversion.  This
@@ -589,56 +667,78 @@ done:
     /* Instead of these, see the "class_addfloat", etc.,  macros in m_pd.h */
 void class_addbang(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_bangmethod = (t_bangmethod)fn;
 }
 
 void class_addpointer(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_pointermethod = (t_pointermethod)fn;
 }
 
 void class_doaddfloat(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_floatmethod = (t_floatmethod)fn;
 }
 
 void class_addsymbol(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_symbolmethod = (t_symbolmethod)fn;
 }
 
 void class_addlist(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_listmethod = (t_listmethod)fn;
 }
 
 void class_addanything(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_anymethod = (t_anymethod)fn;
 }
 
 void class_setwidget(t_class *c, const t_widgetbehavior *w)
 {
+    if(!c)
+        return;
     c->c_wb = w;
 }
 
 void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *pw)
 {
+    if(!c)
+        return;
     c->c_pwb = pw;
 }
 
 const char *class_getname(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_name->s_name);
 }
 
 const char *class_gethelpname(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_helpname->s_name);
 }
 
 void class_sethelpsymbol(t_class *c, t_symbol *s)
 {
+    if(!c)
+        return;
     c->c_helpname = s;
 }
 
@@ -649,11 +749,15 @@ const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x)
 
 void class_setdrawcommand(t_class *c)
 {
+    if(!c)
+        return;
     c->c_drawcommand = 1;
 }
 
 int class_isdrawcommand(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_drawcommand);
 }
 
@@ -669,6 +773,8 @@ static void pd_floatforsignal(t_pd *x, t_float f)
 
 void class_domainsignalin(t_class *c, int onset)
 {
+    if(!c)
+        return;
     if (onset <= 0) onset = -1;
     else
     {
@@ -686,6 +792,8 @@ void class_set_extern_dir(t_symbol *s)
 
 const char *class_gethelpdir(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_externdir->s_name);
 }
 
@@ -696,21 +804,29 @@ static void class_nosavefn(t_gobj *z, t_binbuf *b)
 
 void class_setsavefn(t_class *c, t_savefn f)
 {
+    if(!c)
+        return;
     c->c_savefn = f;
 }
 
 t_savefn class_getsavefn(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_savefn);
 }
 
 void class_setpropertiesfn(t_class *c, t_propertiesfn f)
 {
+    if(!c)
+        return;
     c->c_propertiesfn = f;
 }
 
 t_propertiesfn class_getpropertiesfn(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_propertiesfn);
 }
 
@@ -798,27 +914,6 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     }
     class_loadsym = 0;
     pd_globalunlock();
-}
-
-void mess_init(void)
-{
-    if (pd_objectmaker)
-        return;
-#ifdef PDINSTANCE
-    pd_this = &pd_maininstance;
-#endif
-    s_inter_newpdinstance();
-    sys_lock();
-    pd_globallock();
-    pdinstance_init(&pd_maininstance);
-    class_extern_dir = &s_;
-    pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
-        CLASS_DEFAULT, A_NULL);
-    pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
-        CLASS_DEFAULT, A_NULL);
-    class_addanything(pd_objectmaker, (t_method)new_anything);
-    pd_globalunlock();
-    sys_unlock();
 }
 
 /* This is externally available, but note that it might later disappear; the

@@ -468,6 +468,9 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+EXTERN t_class *class_new64(t_symbol *name, t_newmethod newmethod,
+    t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+
 EXTERN void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...);
 EXTERN void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
@@ -509,6 +512,10 @@ EXTERN t_propertiesfn class_getpropertiesfn(const t_class *c);
 #define class_addsymbol(x, y) class_addsymbol((x), (t_method)(y))
 #define class_addlist(x, y) class_addlist((x), (t_method)(y))
 #define class_addanything(x, y) class_addanything((x), (t_method)(y))
+#endif
+
+#if PD_FLOATSIZE == 64
+# define class_new class_new64
 #endif
 
 /* ------------   printing --------------------------------- */
