@@ -326,7 +326,7 @@ EXTERN void pd_init_systems(void) {
 
 EXTERN void pd_term_systems(void) {
     sys_lock();
-    ooura_term();
+    /* ooura_term();  oops - this doesn't seem to have got merged from PR  */
     sys_unlock();
 }
 
