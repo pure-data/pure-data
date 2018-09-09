@@ -75,6 +75,8 @@ struct _instancetemplate
 
 /* ---------------- forward definitions ---------------- */
 
+static void template_addtolist(t_template *x);
+static void template_takeofflist(t_template *x);
 static void template_conformarray(t_template *tfrom, t_template *tto,
     int *conformaction, t_array *a);
 static void template_conformglist(t_template *tfrom, t_template *tto,
@@ -100,11 +102,33 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
 
 /* -- templates, the active ingredient in gtemplates defined below. ------- */
 
+    /* add a template to the list */
+static void template_addtolist(t_template *x)
+{
+    x->t_next = pd_this->pd_templatelist;
+    pd_this->pd_templatelist = x;
+}
+
+static void template_takeofflist(t_template *x)
+{
+        /* take it off the template list */
+    if (x == pd_this->pd_templatelist) pd_this->pd_templatelist = x->t_next;
+    else
+    {
+        t_template *z;
+        for (z = pd_this->pd_templatelist; z->t_next != x; z = z->t_next)
+            if (!z->t_next) return;
+        z->t_next = x->t_next;
+    }
+}
+
 t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
 {
     t_template *x = (t_template *)pd_new(template_class);
     x->t_n = 0;
     x->t_vec = (t_dataslot *)t_getbytes(0);
+    x->t_next = 0;
+    template_addtolist(x);
     while (argc > 0)
     {
         int newtype, oldn, newn;
@@ -570,6 +594,7 @@ void template_free(t_template *x)
     if (*x->t_sym->s_name)
         pd_unbind(&x->t_pdobj, x->t_sym);
     t_freebytes(x->t_vec, x->t_n * sizeof(*x->t_vec));
+    template_takeofflist(x);
 }
 
 static void template_setup(void)
@@ -1004,7 +1029,7 @@ typedef struct _curve
 static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_curve *x = (t_curve *)pd_new(curve_class);
-    char *classname = classsym->s_name;
+    const char *classname = classsym->s_name;
     int flags = 0;
     int nxy, i;
     t_fielddesc *fd;
@@ -2387,7 +2412,7 @@ typedef struct _drawnumber
 static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_drawnumber *x = (t_drawnumber *)pd_new(drawnumber_class);
-    char *classname = classsym->s_name;
+    const char *classname = classsym->s_name;
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();

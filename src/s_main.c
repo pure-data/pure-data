@@ -225,7 +225,7 @@ open(), read(), etc, calls to be served somehow from the GUI too. */
 
 void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
+    const char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
     t_namelist *nl;
     unsigned int i;
     int did_fontwarning = 0;
@@ -488,9 +488,9 @@ static char *(usagemessage[]) = {
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
 "-lib <file>      -- load object library(s)\n",
-"-font-size <n>     -- specify default font size in points\n",
-"-font-face <name>  -- specify default font\n",
-"-font-weight <name>-- specify default font weight (normal or bold)\n",
+"-font-size <n>      -- specify default font size in points\n",
+"-font-face <name>   -- specify default font\n",
+"-font-weight <name> -- specify default font weight (normal or bold)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
@@ -998,8 +998,8 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, argv[1]);
+            STUFF->st_temppath =
+                namelist_append_files(STUFF->st_temppath, argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nostdpath"))
@@ -1392,7 +1392,7 @@ static void sys_afterargparse(void)
     strncpy(sbuf, sys_libdir->s_name, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/doc/5.reference");
-    STUFF->st_staticpath = namelist_append_files(STUFF->st_staticpath, sbuf);
+    STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
         /* correct to make audio and MIDI device lists zero based.  On
         MMIO, however, "1" really means the second device (the first one
         is "mapper" which is was not included when the command args were

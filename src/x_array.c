@@ -85,7 +85,7 @@ static void *table_new(t_symbol *s, t_floatarg f)
 }
 
     /* return true if the "canvas" object is a "table". */
-int canvas_istable(t_canvas *x)
+int canvas_istable(const t_canvas *x)
 {
     t_atom *argv = (x->gl_obj.te_binbuf? binbuf_getvec(x->gl_obj.te_binbuf):0);
     int argc = (x->gl_obj.te_binbuf? binbuf_getnatom(x->gl_obj.te_binbuf) : 0);
@@ -817,7 +817,7 @@ static void *arrayobj_new(t_symbol *s, int argc, t_atom *argv)
         pd_this->pd_newest = array_define_new(s, argc, argv);
     else
     {
-        char *str = argv[0].a_w.w_symbol->s_name;
+        const char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "d") || !strcmp(str, "define"))
             pd_this->pd_newest = array_define_new(s, argc-1, argv+1);
         else if (!strcmp(str, "size"))
