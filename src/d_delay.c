@@ -225,6 +225,8 @@ static void sigdelread_dsp(t_sigdelread *x, t_signal **sp)
         sigdelread_float(x, x->x_deltime);
         dsp_add(sigdelread_perform, 4,
             sp[0]->s_vec, &delwriter->x_cspace, &x->x_delsamps, sp[0]->s_n);
+        if (sp[0]->s_n > delwriter->x_cspace.c_n)
+            error("delread~ %s: blocksize larger than delread~ buffer", x->x_sym->s_name);
     }
     else if (*x->x_sym->s_name)
         error("delread~: %s: no such delwrite~",x->x_sym->s_name);
@@ -325,6 +327,8 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
         dsp_add(sigvd_perform, 5,
             sp[0]->s_vec, sp[1]->s_vec,
                 &delwriter->x_cspace, x, sp[0]->s_n);
+        if (sp[0]->s_n > delwriter->x_cspace.c_n)
+            error("vd~ %s: blocksize larger than delread~ buffer", x->x_sym->s_name);
     }
     else if (*x->x_sym->s_name)
         error("vd~: %s: no such delwrite~",x->x_sym->s_name);
