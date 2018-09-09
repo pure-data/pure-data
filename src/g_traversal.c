@@ -227,6 +227,7 @@ typedef struct _ptrobj
 {
     t_object x_obj;
     t_gpointer x_gp;
+    t_gobj *x_prev; /* cache the previous scalar in the glist */
     t_typedout *x_typedout;
     int x_ntypedout;
     t_outlet *x_otherout;
@@ -239,6 +240,7 @@ static void *ptrobj_new(t_symbol *classname, int argc, t_atom *argv)
     t_typedout *to;
     int n;
     gpointer_init(&x->x_gp);
+    x->x_prev = 0;
     x->x_typedout = to = (t_typedout *)getbytes(argc * sizeof (*to));
     x->x_ntypedout = n = argc;
     for (; n--; to++)
@@ -248,14 +250,18 @@ static void *ptrobj_new(t_symbol *classname, int argc, t_atom *argv)
     }
     x->x_otherout = outlet_new(&x->x_obj, &s_pointer);
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
-    pointerinlet_new(&x->x_obj, &x->x_gp);
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_pointer, gensym("set"));
     return (x);
 }
 
 static void ptrobj_traverse(t_ptrobj *x, t_symbol *s)
 {
     t_glist *glist = (t_glist *)pd_findbyclass(s, canvas_class);
-    if (glist) gpointer_setglist(&x->x_gp, glist, 0);
+    if (glist)
+    {
+        gpointer_setglist(&x->x_gp, glist, 0);
+        x->x_prev = 0;
+    }
     else pd_error(x, "pointer: list '%s' not found", s->s_name);
 }
 
@@ -289,7 +295,7 @@ static void ptrobj_vnext(t_ptrobj *x, t_float f)
             "ptrobj_vnext: next-selected only works for a visible window");
         return;
     }
-    gobj = &gp->gp_un.gp_scalar->sc_gobj;
+    gobj = x->x_prev = &gp->gp_un.gp_scalar->sc_gobj;
 
     if (!gobj) gobj = glist->gl_list;
     else gobj = gobj->g_next;
@@ -309,11 +315,11 @@ static void ptrobj_vnext(t_ptrobj *x, t_float f)
         {
             if (to->to_type == templatesym)
             {
-                outlet_pointer(to->to_outlet, &x->x_gp);
+                outlet_pointer(to->to_outlet, gp);
                 return;
             }
         }
-        outlet_pointer(x->x_otherout, &x->x_gp);
+        outlet_pointer(x->x_otherout, gp);
     }
     else
     {
@@ -325,6 +331,85 @@ static void ptrobj_vnext(t_ptrobj *x, t_float f)
 static void ptrobj_next(t_ptrobj *x)
 {
     ptrobj_vnext(x, 0);
+}
+
+void glist_dodelete(t_glist *x, t_gobj *y, t_gobj *z);
+
+static void ptrobj_delete(t_ptrobj *x)
+{
+    t_gobj *gobj, *old;
+    t_gpointer *gp = &x->x_gp;
+    t_gstub *gs = gp->gp_stub;
+    t_glist *glist;
+    if (!gs)
+    {
+        pd_error(x, "ptrobj_delete: no current pointer");
+        return;
+    }
+    if (gs->gs_which != GP_GLIST)
+    {
+        pd_error(x, "ptrobj_delete: lists only, not arrays");
+        return;
+    }
+    glist = gs->gs_un.gs_glist;
+    if (glist->gl_valid != gp->gp_valid)
+    {
+        pd_error(x, "ptrobj_delete: stale pointer");
+        return;
+    }
+    if (!gp->gp_un.gp_scalar)
+    {
+        pd_error(x, "ptrobj_delete: pointing to head");
+        return;
+    }
+    if (gp->gp_un.gp_scalar->sc_template == gensym("pd-text"))
+    {
+        pd_error(x, "ptrobj_delete: can't delete 'pd-text' scalar");
+        return;
+    }
+    if (gp->gp_un.gp_scalar->sc_template == gensym("pd-float-array"))
+    {
+        pd_error(x, "ptrobj_delete: can't delete 'pd-float-array' scalar");
+        return;
+    }
+
+    old = &gp->gp_un.gp_scalar->sc_gobj;
+    gobj = old->g_next;
+    while (gobj && (pd_class(&gobj->g_pd) != scalar_class))
+        gobj = gobj->g_next;
+    /* if we don't have a previous scalar, try to get it */
+    if (!x->x_prev && old != glist->gl_list)
+    {
+        t_gobj *prev = glist->gl_list;
+        while (prev && prev->g_next != old && (pd_class(&prev->g_pd) == scalar_class))
+            prev = prev->g_next;
+        x->x_prev = prev;
+    }
+    glist_dodelete(glist, old, x->x_prev);
+    gp->gp_valid = glist->gl_valid;
+    if (gobj)
+    {
+        t_typedout *to;
+        int n;
+        t_scalar *sc = (t_scalar *)gobj;
+        t_symbol *templatesym = sc->sc_template;
+
+        gp->gp_un.gp_scalar = sc;
+        for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
+        {
+            if (to->to_type == templatesym)
+            {
+                outlet_pointer(to->to_outlet, gp);
+                return;
+            }
+        }
+        outlet_pointer(x->x_otherout, gp);
+    }
+    else
+    {
+        gpointer_unset(gp);
+        outlet_bang(x->x_bangout);
+    }
 }
 
     /* send a message to the window containing the object pointed to */
@@ -391,14 +476,18 @@ static void ptrobj_bang(t_ptrobj *x)
     outlet_pointer(x->x_otherout, &x->x_gp);
 }
 
-
-static void ptrobj_pointer(t_ptrobj *x, t_gpointer *gp)
+static void ptrobj_set(t_ptrobj *x, t_gpointer *gp)
 {
     gpointer_unset(&x->x_gp);
     gpointer_copy(gp, &x->x_gp);
-    ptrobj_bang(x);
+    x->x_prev = 0;
 }
 
+static void ptrobj_pointer(t_ptrobj *x, t_gpointer *gp)
+{
+    ptrobj_set(x, gp);
+    ptrobj_bang(x);
+}
 
 static void ptrobj_rewind(t_ptrobj *x)
 {
@@ -422,6 +511,7 @@ static void ptrobj_rewind(t_ptrobj *x)
     }
     glist = gs->gs_un.gs_glist;
     gpointer_setglist(&x->x_gp, glist, 0);
+    x->x_prev = 0;
     ptrobj_bang(x);
 }
 
@@ -442,10 +532,13 @@ static void ptrobj_setup(void)
         A_SYMBOL, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_vnext, gensym("vnext"),
         A_DEFFLOAT, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_delete, gensym("delete"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_sendwindow,
         gensym("send-window"), A_GIMME, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_rewind,
         gensym("rewind"), 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_set,
+        gensym("set"), A_POINTER, 0);
     class_addpointer(ptrobj_class, ptrobj_pointer);
     class_addbang(ptrobj_class, ptrobj_bang);
 }
