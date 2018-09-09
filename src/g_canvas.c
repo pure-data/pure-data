@@ -1460,8 +1460,8 @@ static void canvas_path(t_canvasenvironment *e, char *path)
         return;
     }
 
-        /* explicit relative-path */
-    if (path[0] == '.')
+        /* explicit relative path, starts with ./ or ../ */
+    if (path[0] == '.' && (path[1] == '/' || path[1] == '.' && path[2] == '/')
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
         return;
@@ -1493,13 +1493,16 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, char *lib)
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(lib))
     {
-        sys_load_lib(0, lib);
+        sys_load_lib(x, lib);
         return;
     }
 
-       /* explicit relative-path */
-    if (lib[0] == '.' && sys_load_lib(x, lib))
+        /* explicit relative path, starts with ./ or ../ */
+    if (lib[0] == '.' && (lib[1] == '/' || lib[1] == '.' && lib[2] == '/')
+    {
+        sys_load_lib(x, lib);
         return;
+    }
 
         /* prefix canvas-path */
     canvas_completepath(lib, strbuf, MAXPDSTRING, x);
@@ -1511,7 +1514,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, char *lib)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
         strbuf[MAXPDSTRING-1]=0;
-        if (sys_load_lib(0, strbuf))
+        if (sys_load_lib(x, strbuf))
             return;
     }
 }
