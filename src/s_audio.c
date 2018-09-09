@@ -435,11 +435,13 @@ void sys_reopen_audio( void)
     if (sys_audioapi == API_PORTAUDIO)
     {
         int blksize = (audio_blocksize ? audio_blocksize : 64);
+        int nbufs = sys_advance_samples / blksize;
+        if (nbufs < 1) nbufs = 1;
         if (sys_verbose)
-            fprintf(stderr, "blksize %d, advance %d\n", blksize, sys_advance_samples/blksize);
+            fprintf(stderr, "blksize %d, advance %d\n", blksize, nbufs);
         outcome = pa_open_audio((naudioindev > 0 ? chindev[0] : 0),
         (naudiooutdev > 0 ? choutdev[0] : 0), rate, STUFF->st_soundin,
-            STUFF->st_soundout, blksize, sys_advance_samples/blksize,
+            STUFF->st_soundout, blksize, nbufs,
              (naudioindev > 0 ? audioindev[0] : 0),
               (naudiooutdev > 0 ? audiooutdev[0] : 0),
                (callback ? sched_audio_callbackfn : 0));

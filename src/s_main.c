@@ -315,6 +315,7 @@ static void sys_fakefromgui(void)
 }
 
 static void sys_afterargparse(void);
+static void sys_printusage(void);
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, char **argv)
@@ -366,6 +367,11 @@ int sys_main(int argc, char **argv)
         /* for external scheduler (to ignore audio api in sys_loadpreferences) */
         else if (!strcmp(argv[i], "-schedlib") && i < argc-1)
             sys_externalschedlib = 1;
+        else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help"))
+        {
+            sys_printusage();
+            return (1);
+        }
     }
     if (!noprefs)       /* load preferences before parsing args to allow ... */
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
@@ -522,6 +528,13 @@ static char *(usagemessage[]) = {
 "-compatibility <f> -- set back-compatibility to version <f>\n",
 };
 
+static void sys_printusage(void)
+{
+    unsigned int i;
+    for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
+        fprintf(stderr, "%s", usagemessage[i]);
+}
+
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
 {
     int n = 0;
@@ -644,7 +657,6 @@ static int sys_mmio = 0;
 
 int sys_argparse(int argc, char **argv)
 {
-    int i;
     while ((argc > 0) && **argv == '-')
     {
         if (!strcmp(*argv, "-r") && argc > 1 &&
@@ -1341,10 +1353,8 @@ int sys_argparse(int argc, char **argv)
             argc -= 2, argv +=2;
         else
         {
-            unsigned int i;
         usage:
-            for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
-                fprintf(stderr, "%s", usagemessage[i]);
+            sys_printusage();
             return (1);
         }
     }
