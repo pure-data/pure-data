@@ -123,7 +123,7 @@ include_HEADERS = m_pd.h
 noinst_HEADERS = g_all_guis.h g_undo.h s_audio_alsa.h s_audio_paring.h s_utf8.h x_vexp.h
 
 # we want these in the dist tarball
-EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
+EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
     s_audio_audiounit.c s_audio_esd.c
 

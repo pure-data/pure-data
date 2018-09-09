@@ -49,8 +49,22 @@ dist_libpdtcl_DATA = \
     scrollbox.tcl \
     pd_guiprefs.tcl \
     pd_deken.tcl \
-    pd_docsdir.tcl \
-    pd.ico
+    pd_docsdir.tcl
+
+# we want these in the dist tarball
+EXTRA_DIST = pd.gif pd.ico
+
+# install icons based on the platform
+if HURD
+libpdtcl_DATA = pd.gif
+endif
+if LINUX
+libpdtcl_DATA = pd.gif
+endif
+if WINDOWS
+libpdtcl_DATA = pd.ico
+endif
+# MACOSX only loads icon within app bundle
 
 #########################################
 ##### Targets #####
