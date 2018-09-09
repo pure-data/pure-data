@@ -1243,9 +1243,9 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_soundfile_info info;
-    int resize = 0, i;
-    long skipframes = 0, finalsize = 0,
-        maxsize = DEFMAXSIZE, itemsread = 0, j;
+    int headeronly = 0, resize = 0, i, j;
+    long skipframes = 0, finalsize = 0, itemsleft,
+        maxsize = DEFMAXSIZE, itemsread = 0;
     int fd = -1;
     char endianness, *filename;
     t_garray *garrays[MAXSFCHANS];
@@ -1264,7 +1264,12 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         *argv->a_w.w_symbol->s_name == '-')
     {
         char *flag = argv->a_w.w_symbol->s_name + 1;
-        if (!strcmp(flag, "skip"))
+        if (!strcmp(flag, "info"))
+        {
+            headeronly = 1;
+            argc -= 1; argv += 1;
+        }
+        else if (!strcmp(flag, "skip"))
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
                 ((skipframes = argv[1].a_w.w_float) < 0))
@@ -1311,7 +1316,11 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         else goto usage;
     }
-    if (argc < 2 || argc > MAXSFCHANS + 1 || argv[0].a_type != A_SYMBOL)
+    if (argc < 1 ||                           /* no filename or tables */
+        (headeronly && resize && argc < 2) || /* -info -resize without tables */
+        (!headeronly && argc < 2) ||          /* no -info without tables */
+        argc > MAXSFCHANS + 1 ||              /* too many tables */
+        argv[0].a_type != A_SYMBOL)           /* bad filename */
         goto usage;
     filename = argv[0].a_w.w_symbol->s_name;
     argc--; argv++;
@@ -1388,6 +1397,18 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     if (!finalsize) finalsize = 0x7fffffff;
     if (finalsize > info.bytelimit / (info.channels * info.bytespersample))
         finalsize = info.bytelimit / (info.channels * info.bytespersample);
+
+         /* only read header info, estimate itemsread */
+    if (headeronly)
+    {
+        itemsread = finalsize;
+            /* do all graphics updates */
+        if (resize)
+            for (i = 0; i < argc; i++)
+                garray_redraw(garrays[i]);
+        goto done;
+    }
+
     fp = fdopen(fd, "rb");
     bufframes = SAMPBUFSIZE / (info.channels * info.bytespersample);
 
@@ -1427,7 +1448,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     goto done;
 usage:
     pd_error(x, "usage: read [flags] filename tablename...");
-    post("flags: -skip <n> -resize -maxsize <n> ...");
+    post("flags: -skip <n> -resize -maxsize <n> -info ...");
     post("-raw <headerbytes> <channels> <bytespersamp> <endian (b, l, or n)>.");
 done:
     if (fd >= 0)
