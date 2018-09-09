@@ -488,9 +488,9 @@ static char *(usagemessage[]) = {
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
 "-lib <file>      -- load object library(s)\n",
-"-font-size <n>     -- specify default font size in points\n",
-"-font-face <name>  -- specify default font\n",
-"-font-weight <name>-- specify default font weight (normal or bold)\n",
+"-font-size <n>      -- specify default font size in points\n",
+"-font-face <name>   -- specify default font\n",
+"-font-weight <name> -- specify default font weight (normal or bold)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
@@ -998,8 +998,8 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, argv[1]);
+            STUFF->st_temppath =
+                namelist_append_files(STUFF->st_temppath, argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nostdpath"))
