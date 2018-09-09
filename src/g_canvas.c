@@ -1878,3 +1878,39 @@ EXTERN int pd_getdspstate(void)
 {
     return (THISGUI->i_dspstate);
 }
+
+void pd_doloadbang(void);
+
+t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
+{
+    t_pd *x = 0;
+    t_glist *gl;
+    int dspstate;
+
+        /* don't reopen already-open document, just vis it */
+    for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+        if (name == gl->gl_name && gl->gl_env && gl->gl_env->ce_dir == dir)
+    {
+        canvas_vis(gl, 1);
+        return (&gl->gl_pd);
+    }
+        /* even though binbuf_evalfile appears to take care of dspstate,
+        we have to do it again here, because canvas_startdsp() assumes
+        that all toplevel canvases are visible.  LATER check if this
+        is still necessary -- probably not. */
+    dspstate = canvas_suspend_dsp();
+    t_pd *boundx = s__X.s_thing;
+        s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
+                                for the caller to grab it. */
+    binbuf_evalfile(name, dir);
+    while ((x != s__X.s_thing) && s__X.s_thing)
+    {
+        x = s__X.s_thing;
+        vmess(x, gensym("pop"), "i", 1);
+    }
+    if (!sys_noloadbang)
+        pd_doloadbang();
+    canvas_resume_dsp(dspstate);
+    s__X.s_thing = boundx;
+    return x;
+}

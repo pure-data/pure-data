@@ -1473,8 +1473,8 @@ static t_binbuf *binbuf_convert(t_binbuf *oldb, int maxtopd)
 #endif
     return (newb);
 }
-
 void pd_doloadbang(void);
+
 
 /* LATER make this evaluate the file on-the-fly. */
 /* LATER figure out how to log errors */
@@ -1510,31 +1510,6 @@ void binbuf_evalfile(t_symbol *name, t_symbol *dir)
     glob_setfilename(0, &s_, &s_);
     binbuf_free(b);
     canvas_resume_dsp(dspstate);
-}
-
-t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
-{
-    t_pd *x = 0;
-        /* even though binbuf_evalfile appears to take care of dspstate,
-        we have to do it again here, because canvas_startdsp() assumes
-        that all toplevel canvases are visible.  LATER check if this
-        is still necessary -- probably not. */
-
-    int dspstate = canvas_suspend_dsp();
-    t_pd *boundx = s__X.s_thing;
-        s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
-                                for the caller to grab it. */
-    binbuf_evalfile(name, dir);
-    while ((x != s__X.s_thing) && s__X.s_thing)
-    {
-        x = s__X.s_thing;
-        vmess(x, gensym("pop"), "i", 1);
-    }
-    if (!sys_noloadbang)
-        pd_doloadbang();
-    canvas_resume_dsp(dspstate);
-    s__X.s_thing = boundx;
-    return x;
 }
 
     /* save a text object to a binbuf for a file or copy buf */
