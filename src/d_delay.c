@@ -282,7 +282,7 @@ static t_int *sigvd_perform(t_int *w)
         t_sample delsamps = x->x_sr * *in++ - zerodel, frac;
         int idelsamps;
         t_sample a, b, c, d, cminusb;
-        if (!(delsamps >= 1.00001f))    /* too small or NAN */
+        if (delsamps < 1.00001f)    /* too small or NAN */
             delsamps = 1.00001f;
         if (delsamps > limit)           /* too big */
             delsamps = limit;
@@ -291,7 +291,7 @@ static t_int *sigvd_perform(t_int *w)
         idelsamps = delsamps;
         frac = delsamps - (t_sample)idelsamps;
         bp = wp - idelsamps;
-        if (bp < vp + 4) bp += nsamps;
+        if (bp < vp + XTRASAMPS) bp += nsamps;
         d = bp[-3];
         c = bp[-2];
         b = bp[-1];
