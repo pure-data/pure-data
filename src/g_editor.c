@@ -41,7 +41,6 @@ struct _instanceeditor
 /* positional offset for duplicated items */
 #define PASTE_OFFSET 10
 
-void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename,
 void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename,
     int selectem);
 
