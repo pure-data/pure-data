@@ -277,6 +277,12 @@ static t_int *sigvd_perform(t_int *w)
     t_sample fn = n-1;
     t_sample *vp = ctl->c_vec, *bp, *wp = vp + ctl->c_phase;
     t_sample zerodel = x->x_zerodel;
+    if (limit < 0) /* blocksize is larger than delread~ buffer size */
+    {
+        while (n--)
+            *out++ = 0;
+        return (w+6);
+    }
     while (n--)
     {
         t_sample delsamps = x->x_sr * *in++ - zerodel, frac;
