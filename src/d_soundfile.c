@@ -1312,8 +1312,6 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         else goto usage;
     }
     if (argc < 1 ||                           /* no filename or tables */
-        (headeronly && resize && argc < 2) || /* -info -resize without tables */
-        (!headeronly && argc < 2) ||          /* no -info without tables */
         argc > MAXSFCHANS + 1 ||              /* too many tables */
         argv[0].a_type != A_SYMBOL)           /* bad filename */
             goto usage;
