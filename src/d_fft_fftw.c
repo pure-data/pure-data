@@ -167,12 +167,12 @@ void mayer_term(void)
 }
 
 
-EXTERN void mayer_fht(float *fz, int n)
+EXTERN void mayer_fht(t_sample *fz, int n)
 {
     post("FHT: not yet implemented");
 }
 
-static void mayer_do_cfft(int n, float *fz1, float *fz2, int fwd)
+static void mayer_do_cfft(int n, t_sample *fz1, t_sample *fz2, int fwd)
 {
     int i;
     float *fz;
@@ -189,12 +189,12 @@ static void mayer_do_cfft(int n, float *fz1, float *fz2, int fwd)
         fz1[i] = fz[i*2], fz2[i] = fz[i*2+1];
 }
 
-EXTERN void mayer_fft(int n, float *fz1, float *fz2)
+EXTERN void mayer_fft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_do_cfft(n, fz1, fz2, 1);
 }
 
-EXTERN void mayer_ifft(int n, float *fz1, float *fz2)
+EXTERN void mayer_ifft(int n, t_sample *fz1, t_sample *fz2)
 {
     mayer_do_cfft(n, fz1, fz2, 0);
 }
@@ -205,7 +205,7 @@ EXTERN void mayer_ifft(int n, float *fz1, float *fz2)
     but it's probably the mayer_fft that should be corrected...
 */
 
-EXTERN void mayer_realfft(int n, float *fz)
+EXTERN void mayer_realfft(int n, t_sample *fz)
 {
     int i;
     rfftw_info *p = rfftw_getplan(n, 1);
@@ -221,7 +221,7 @@ EXTERN void mayer_realfft(int n, float *fz)
         fz[i] = -p->out[i];
 }
 
-EXTERN void mayer_realifft(int n, float *fz)
+EXTERN void mayer_realifft(int n, t_sample *fz)
 {
     int i;
     rfftw_info *p = rfftw_getplan(n, 0);
