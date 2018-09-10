@@ -853,6 +853,9 @@ msgstr "Guardar Como..."
 msgid "Print..."
 msgstr "Imprimir..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplicar"
 
@@ -865,7 +868,10 @@ msgstr "Alejar"
 msgid "Tidy Up"
 msgstr "Ordenar"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"

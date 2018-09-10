@@ -678,12 +678,6 @@ msgstr "Installer uniquement des objets provenant de sources de confiance."
 msgid "Preferences"
 msgstr "Préférences"
 
-msgid "Create"
-msgstr "Créer"
-
-msgid "Check"
-msgstr "Vérifier"
-
 msgid "Installation options:"
 msgstr "Options d'installation :"
 
@@ -691,10 +685,13 @@ msgid "Try to remove libraries before (re)installing them?"
 msgstr "Essayer de supprimer les bibliothèques avant de les (ré)installer ?"
 
 msgid "Show README of newly installed libraries (if present)?"
-msgstr "Afficher le README (si présent) des bibliothèques nouvellement installées ?"
+msgstr ""
+"Afficher le README (si présent) des bibliothèques nouvellement installées ?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
-msgstr "Les bibliothèques nouvellement installées doivent-elles être ajoutées aux chemins de recherche de Pd ?"
+msgstr ""
+"Les bibliothèques nouvellement installées doivent-elles être ajoutées aux "
+"chemins de recherche de Pd ?"
 
 msgid "Platform settings:"
 msgstr "Réglages de plateforme :"
@@ -846,6 +843,9 @@ msgstr "Enregistrer sous..."
 msgid "Print..."
 msgstr "Imprimer..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Dupliquer"
 
@@ -858,8 +858,12 @@ msgstr "Dézoomer"
 msgid "Tidy Up"
 msgstr "Aligner"
 
-msgid "Connect Selection"
+#, fuzzy
+msgid "(Dis)Connect Selection"
 msgstr "Connecter la sélection"
+
+msgid "Triggerize"
+msgstr ""
 
 msgid "Edit Mode"
 msgstr "Mode d'édition"
@@ -1067,6 +1071,12 @@ msgstr "'%s' n'existe pas"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "'%s' ne semble pas être un fichier Pd"
+
+#~ msgid "Create"
+#~ msgstr "Créer"
+
+#~ msgid "Check"
+#~ msgstr "Vérifier"
 
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"

@@ -854,6 +854,9 @@ msgstr "Salva con nome..."
 msgid "Print..."
 msgstr "Stampa..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplica"
 
@@ -866,7 +869,10 @@ msgstr ""
 msgid "Tidy Up"
 msgstr "Allinea elementi"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"

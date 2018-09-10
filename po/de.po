@@ -859,6 +859,9 @@ msgstr "Speichern als..."
 msgid "Print..."
 msgstr "Drucken"
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplizieren"
 
@@ -871,7 +874,10 @@ msgstr "Verkleinern"
 msgid "Tidy Up"
 msgstr "Aufräumen"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"
