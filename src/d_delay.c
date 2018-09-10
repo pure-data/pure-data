@@ -327,7 +327,8 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
         dsp_add(sigvd_perform, 5,
             sp[0]->s_vec, sp[1]->s_vec,
                 &delwriter->x_cspace, x, sp[0]->s_n);
-        if (sp[0]->s_n > delwriter->x_cspace.c_n)
+        /* check block size - but only if delwriter has been initialized */
+        if (delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
             pd_error(x, "vd~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
     }
     else if (*x->x_sym->s_name)
