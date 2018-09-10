@@ -1469,7 +1469,7 @@ static void canvas_completepath(const char *from, char *to, int bufsize,
         to[bufsize-dirlen-1] = '\0';
         strcat(to, "/");
     }
-     else
+    else
     {   /* append Pd lib dir */
         strncpy(to, sys_libdir->s_name, bufsize-10);
         to[bufsize-9] = '\0';
@@ -1509,8 +1509,8 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         return;
     }
 
-        /* explicit relative path, starts with ./ or ../ */
-    if (path[0] == '.' && (path[1] == '/' || path[1] == '.' && path[2] == '/'))
+        /* explicit relative-path */
+    if ((strncmp("./", path, 2) == 0) || (strncmp("../", path, 3) == 0))
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
         return;
@@ -1548,6 +1548,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
         }
     }
 }
+
 static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
 {
     t_namelist *nl;
@@ -1558,8 +1559,8 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
         return;
     }
 
-        /* explicit relative path, starts with ./ or ../ */
-    if (lib[0] == '.' && (lib[1] == '/' || lib[1] == '.' && lib[2] == '/'))
+       /* explicit relative-path */
+    if ((strncmp("./", lib, 2) == 0) || (strncmp("../", lib, 3) == 0))
     {
         sys_load_lib(x, lib);
         return;
@@ -1580,7 +1581,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
     }
 }
 
-static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
+static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
 {
     t_namelist *nl;
     char strbuf[MAXPDSTRING];
@@ -1614,6 +1615,7 @@ static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
         }
     }
 }
+
 static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
 {
     t_namelist *nl;
