@@ -1077,10 +1077,12 @@ static void *subcanvas_new(t_symbol *s)
                     while(index1-->0 && outobj)
                         outobj=outobj->g_next;
                     if(outobj && pd_checkobject(&outobj->g_pd))
+                    {
                         if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd), outno))
                             sob = gensym("inlet~");
                         else
                             sob = gensym("inlet");
+                    }
                 }
         }
         if(sob)
