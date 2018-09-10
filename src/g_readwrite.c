@@ -235,7 +235,7 @@ int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     return (1);
 }
 
-void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename, int selectem)
+void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename, int selectem)
 {
     t_canvas *canvas = glist_getcanvas(x);
     int natoms, nline, message, nextmsg = 0;
@@ -836,7 +836,7 @@ static void canvas_menusaveas(t_canvas *x, float fdestroy)
 static void canvas_menusave(t_canvas *x, float fdestroy)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    char *name = x2->gl_name->s_name;
+    const char *name = x2->gl_name->s_name;
     if (*name && UNTITLED_STRNCMP(name)
             && (strlen(name) < 4 || strcmp(name + strlen(name)-4, ".pat")
                 || strcmp(name + strlen(name)-4, ".mxt")))

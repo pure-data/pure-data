@@ -1511,9 +1511,21 @@ void s_inter_newpdinstance( void)
     pd_this->pd_inter->i_havegui = 0;
 }
 
+void s_inter_free(t_instanceinter *inter)
+{
+    if (inter->i_fdpoll) {
+        binbuf_free(inter->i_inbinbuf);
+        inter->i_inbinbuf = 0;
+        t_freebytes(inter->i_fdpoll, inter->i_nfdpoll * sizeof(t_fdpoll));
+        inter->i_fdpoll = 0;
+        inter->i_nfdpoll = 0;
+    }
+    freebytes(inter, sizeof(*inter));
+}
+
 void s_inter_freepdinstance( void)
 {
-    freebytes(pd_this->pd_inter, sizeof(*pd_this->pd_inter));
+    s_inter_free(pd_this->pd_inter);
 }
 
 #if PDTHREADS

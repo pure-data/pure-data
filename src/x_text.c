@@ -371,6 +371,19 @@ static void text_define_save(t_gobj *z, t_binbuf *bb)
     obj_saveformat(&x->x_ob, bb);
 }
 
+    /* send a pointer to the scalar that owns this text to
+    whomever is bound to the given symbol */
+static void text_define_send(t_text_define *x, t_symbol *s)
+{
+    if (!s->s_thing)
+        pd_error(x, "text_define_send: %s: no such object", s->s_name);
+    else
+    {
+        gpointer_setglist(&x->x_gp, x->x_canvas, x->x_scalar);
+        pd_pointer(s->s_thing, &x->x_gp);
+    }
+}
+
     /* notification from GUI that we've been updated */
 static void text_define_notify(t_text_define *x)
 {
@@ -1051,7 +1064,7 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            char *s = argv[i].a_w.w_symbol->s_name;
+            const char *s = argv[i].a_w.w_symbol->s_name;
             if (nextop >= 0)
                 pd_error(x,
                     "text search: extra operation argument ignored: %s", s);
@@ -1598,7 +1611,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
         pd_this->pd_newest = text_define_new(s, argc, argv);
     else
     {
-        char *str = argv[0].a_w.w_symbol->s_name;
+        const char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "d") || !strcmp(str, "define"))
             pd_this->pd_newest = text_define_new(s, argc-1, argv+1);
         else if (!strcmp(str, "get"))
@@ -1980,6 +1993,8 @@ void x_qlist_setup(void )
         gensym("write"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)textbuf_read,
         gensym("read"), A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)text_define_send,
+        gensym("send"), A_SYMBOL, 0);
     class_setsavefn(text_define_class, text_define_save);
     class_addbang(text_define_class, text_define_bang);
     class_sethelpsymbol(text_define_class, gensym("text-object"));

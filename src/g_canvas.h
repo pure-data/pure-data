@@ -223,6 +223,7 @@ typedef struct _template
     t_symbol *t_sym;            /* name */
     int t_n;                    /* number of dataslots (fields) */
     t_dataslot *t_vec;          /* array of dataslots */
+    struct _template *t_next;
 } t_template;
 
 struct _array
@@ -503,11 +504,11 @@ EXTERN void canvas_resortoutlets(t_canvas *x);
 EXTERN void canvas_free(t_canvas *x);
 EXTERN void canvas_updatewindowlist( void);
 EXTERN void canvas_editmode(t_canvas *x, t_floatarg state);
-EXTERN int canvas_isabstraction(t_canvas *x);
-EXTERN int canvas_istable(t_canvas *x);
-EXTERN int canvas_showtext(t_canvas *x);
+EXTERN int canvas_isabstraction(const t_canvas *x);
+EXTERN int canvas_istable(const t_canvas *x);
+EXTERN int canvas_showtext(const t_canvas *x);
 EXTERN void canvas_vis(t_canvas *x, t_floatarg f);
-EXTERN t_canvasenvironment *canvas_getenv(t_canvas *x);
+EXTERN t_canvasenvironment *canvas_getenv(const t_canvas *x);
 EXTERN void canvas_rename(t_canvas *x, t_symbol *s, t_symbol *dir);
 EXTERN void canvas_loadbang(t_canvas *x);
 EXTERN int canvas_hitbox(t_canvas *x, t_gobj *y, int xpos, int ypos,
@@ -529,7 +530,7 @@ EXTERN void canvas_noundo(t_canvas *x);
 EXTERN int canvas_getindex(t_canvas *x, t_gobj *y);
 
 EXTERN void canvas_connect(t_canvas *x,
-    t_floatarg fwhoout, t_floatarg foutno,t_floatarg fwhoin, t_floatarg finno);
+    t_floatarg fwhoout, t_floatarg foutno, t_floatarg fwhoin, t_floatarg finno);
 EXTERN void canvas_disconnect(t_canvas *x,
     t_float index1, t_float outno, t_float index2, t_float inno);
 EXTERN int canvas_isconnected (t_canvas *x,
@@ -538,7 +539,7 @@ EXTERN void canvas_selectinrect(t_canvas *x, int lox, int loy, int hix, int hiy)
 
 EXTERN t_glist *pd_checkglist(t_pd *x);
 typedef int (*t_canvas_path_iterator)(const char *path, void *user_data);
-EXTERN int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+EXTERN int canvas_path_iterate(const t_canvas *x, t_canvas_path_iterator fun,
     void *user_data);
 
 /* check string for untitled canvas filename prefix */
