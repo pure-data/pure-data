@@ -2029,7 +2029,7 @@ void pd_doloadbang(void);
 
 t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 {
-    t_pd *x = 0;
+    t_pd *x = 0, *boundx;
     t_glist *gl;
     int dspstate;
 
@@ -2045,7 +2045,7 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
         that all toplevel canvases are visible.  LATER check if this
         is still necessary -- probably not. */
     dspstate = canvas_suspend_dsp();
-    t_pd *boundx = s__X.s_thing;
+    boundx = s__X.s_thing;
         s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
                                 for the caller to grab it. */
     binbuf_evalfile(name, dir);
