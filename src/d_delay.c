@@ -225,7 +225,8 @@ static void sigdelread_dsp(t_sigdelread *x, t_signal **sp)
         sigdelread_float(x, x->x_deltime);
         dsp_add(sigdelread_perform, 4,
             sp[0]->s_vec, &delwriter->x_cspace, &x->x_delsamps, sp[0]->s_n);
-        if (sp[0]->s_n > delwriter->x_cspace.c_n)
+        /* check block size - but only if delwriter has been initialized */
+        if (delwriter->x_cspace.c_n > 0 && sp[0]->s_n > delwriter->x_cspace.c_n)
             pd_error(x, "delread~ %s: blocksize larger than delwrite~ buffer", x->x_sym->s_name);
     }
     else if (*x->x_sym->s_name)
