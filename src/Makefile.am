@@ -331,7 +331,7 @@ pd.res: pd.rc
 # import library for pd.dll. also works with MSVC!
 pd.lib: pd.dll
 
-# another import library (when linking with -lpd), the same as pd.lib. 
+# another import library (when linking with -lpd), the same as pd.lib.
 libpd.a: pd.lib
 	cp $< $@
 
