@@ -882,6 +882,9 @@ msgstr "Stoor As"
 msgid "Print..."
 msgstr "/Laai"
 
+msgid "Paste Replace"
+msgstr ""
+
 #, fuzzy
 msgid "Duplicate"
 msgstr "Datum"
@@ -897,7 +900,10 @@ msgstr "Onder"
 msgid "Tidy Up"
 msgstr ""
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 #, fuzzy

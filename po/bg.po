@@ -878,6 +878,9 @@ msgstr "Записване като..."
 msgid "Print..."
 msgstr "_Редактиране..."
 
+msgid "Paste Replace"
+msgstr ""
+
 #, fuzzy
 msgid "Duplicate"
 msgstr "Дата"
@@ -893,7 +896,10 @@ msgstr "Долу"
 msgid "Tidy Up"
 msgstr ""
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 #, fuzzy

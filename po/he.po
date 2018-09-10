@@ -864,6 +864,9 @@ msgstr "עריכת אירועי טקסט.."
 msgid "Print..."
 msgstr ""
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr ""
 
@@ -878,7 +881,10 @@ msgstr "תחתון"
 msgid "Tidy Up"
 msgstr ""
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 #, fuzzy

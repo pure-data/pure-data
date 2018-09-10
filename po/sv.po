@@ -863,6 +863,9 @@ msgstr "Spara som..."
 msgid "Print..."
 msgstr "Skriv ut..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplicera"
 
@@ -877,7 +880,10 @@ msgstr "Zooma"
 msgid "Tidy Up"
 msgstr "Städa upp"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"

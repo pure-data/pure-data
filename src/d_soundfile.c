@@ -1243,7 +1243,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_soundfile_info info;
-    int headeronly = 0, resize = 0, i;
+    int resize = 0, i;
     long skipframes = 0, finalsize = 0,
         maxsize = DEFMAXSIZE, itemsread = 0, j;
     int fd = -1;
@@ -1405,7 +1405,6 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         itemsread += nitems;
     }
         /* zero out remaining elements of vectors */
-
     for (i = 0; i < argc; i++)
     {
         int vecsize;

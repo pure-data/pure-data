@@ -856,6 +856,9 @@ msgstr "Ment új néven..."
 msgid "Print..."
 msgstr "Nyomtat..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplikál"
 
@@ -870,7 +873,10 @@ msgstr "Nagyító"
 msgid "Tidy Up"
 msgstr "Elrendez"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"
