@@ -1512,7 +1512,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
     }
 
         /* explicit relative path, starts with ./ or ../ */
-    if (path[0] == '.' && (path[1] == '/' || path[1] == '.' && path[2] == '/'))
+    if ((strncmp("./", path, 2) == 0) || (strncmp("../", path, 3) == 0))
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
         return;
@@ -1561,7 +1561,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
     }
 
         /* explicit relative path, starts with ./ or ../ */
-    if (lib[0] == '.' && (lib[1] == '/' || lib[1] == '.' && lib[2] == '/'))
+    if ((strncmp("./", lib, 2) == 0) || (strncmp("../", lib, 3) == 0))
     {
         sys_load_lib(x, lib);
         return;
