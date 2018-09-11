@@ -92,8 +92,12 @@ static pthread_cond_t pa_sem;
 #endif
 /* maximum number of ms sleeps before we stop polling and try to reopen the device */
 #ifndef MAX_NUM_POLLS
+#ifdef _WIN32
 #define MAX_NUM_POLLS 1000
-#endif
+#else
+#define MAX_NUM_POLLS 0x7fffffff /* polling limit doesn't work on non-Windows systems yet */
+#endif /* WIN32 */
+#endif /* MAX_NUM_POLLS */
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
 
