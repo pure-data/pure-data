@@ -6,13 +6,14 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.43\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2017-08-10 03:45-0200\n"
 "Last-Translator: Alexandre Torres Porres\n"
+"PO-Revision-Date: 2018-09-11 16:26+0200\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
 
 # iemgui
 msgid "-------dimensions(digits)(pix):-------"
@@ -647,17 +648,15 @@ msgstr "[deken]: versão instalada [%1$s] < %2$s...sobrescrevendo!"
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr "[deken]: versão instalada [%1$s] == %2$s...pulando!"
 
-#, fuzzy
 msgid "[deken]: "
-msgstr "[deken]: online? %s"
+msgstr "[deken]: "
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
 msgstr "%1$s descompactado em %2$s com sucesso."
 
-#, fuzzy
 msgid "[deken]: Unable to extract package automatically."
-msgstr "Incapaz de extrair o pacote automaticamente."
+msgstr "[deken]: Incapaz de extrair o pacote automaticamente."
 
 msgid "Please perform the following steps manually:"
 msgstr "Por favor realize os seguintes passos manualmente:"
@@ -670,9 +669,9 @@ msgstr "1. Descompactar %s."
 msgid "2. Copy the contents into %s."
 msgstr "2. Copiar o conteúdo para %s."
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "[deken] uninstalling '%s'"
-msgstr "[deken]: online? %s"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
@@ -736,43 +735,38 @@ msgstr ""
 msgid "Hide foreign architectures?"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Deken %s Preferences"
-msgstr "Preferências"
+msgstr "Deken %s Preferências"
 
-#, fuzzy
 msgid "[deken]: Start searching for externals..."
-msgstr "Procurando por externals"
+msgstr "[deken]: Procurando por externals"
 
 #, tcl-format
 msgid "[deken]: online? %s"
-msgstr "[deken]: online? %s"
+msgstr "[deken]: Você está online? %s"
 
 msgid "Are you online?"
-msgstr ""
+msgstr "Você está online?"
 
-#, fuzzy
 msgid "Unable to perform search."
-msgstr "Incapaz de realizar busca. Você está online?"
+msgstr "Incapaz de realizar busca."
 
 msgid "[deken]: No matching externals found."
-msgstr ""
+msgstr "[deken]: Nenhum external encontrado."
 
-#, fuzzy
 msgid "Try using the full name e.g. 'freeverb'."
-msgstr ""
-"Nenhum external encontrado. Tente usar o nome completo (como 'freeverb')."
+msgstr "Tente usar o nome completo (como 'freeverb')."
 
-#, fuzzy
 msgid "No matching externals found."
-msgstr "Procurando por externals"
+msgstr "Nenhum external encontrado."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Por favor escolha um diretório de instalação com permissão de escrita!"
 
 #, tcl-format
-msgid "Install %s to %s?"
-msgstr "Instalar %s em %s?"
+msgid "Install %1$s to %2$s?"
+msgstr "Instalar %1$s em %2$s?"
 
 #, tcl-format
 msgid ""
@@ -823,9 +817,8 @@ msgstr "Enviado por '%1$s' em %2$s"
 msgid "Install package"
 msgstr ""
 
-#, fuzzy
 msgid "Open webpage"
-msgstr "Abrir Recente"
+msgstr ""
 
 msgid "_"
 msgstr ""
