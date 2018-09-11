@@ -22,7 +22,7 @@ typedef struct _dac
 static void *dac_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_dac *x = (t_dac *)pd_new(dac_class);
-    t_atom defarg[2], *ap;
+    t_atom defarg[2];
     int i;
     if (!argc)
     {
@@ -92,7 +92,7 @@ typedef struct _adc
 static void *adc_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_adc *x = (t_adc *)pd_new(adc_class);
-    t_atom defarg[2], *ap;
+    t_atom defarg[2];
     int i;
     if (!argc)
     {

@@ -12,6 +12,10 @@ namespace eval ::pdtk_canvas:: {
     namespace export pdtk_canvas_menuclose
 }
 
+# store the filename associated with this window,
+# so we can use it during menuclose
+array set ::pdtk_canvas::::window_fullname {}
+
 # One thing that is tricky to understand is the difference between a Tk
 # 'canvas' and a 'canvas' in terms of Pd's implementation.  They are similar,
 # but not the same thing.  In Pd code, a 'canvas' is basically a patch, while
@@ -89,6 +93,8 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     set width [lindex $l 0]
     set height [lindex $l 1]
     set geometry [lindex $l 2]
+    set ::undo_actions($mytoplevel) no
+    set ::redo_actions($mytoplevel) no
 
     # release the window grab here so that the new window will
     # properly get the Map and FocusIn events when its created
@@ -179,7 +185,7 @@ proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
 ##### ask user Save? Discard? Cancel?, and if so, send a message on to Pd ######
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel
-    set filename [wm title $mytoplevel]
+    set filename [lindex [array get ::pdtk_canvas::::window_fullname $mytoplevel] 1]
     set message [format {Do you want to save the changes you made in "%s"?} $filename]
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
@@ -314,46 +320,23 @@ proc ::pdtk_canvas::pdtk_canvas_editmode {mytoplevel state} {
 
 # message from Pd to update the currently available undo/redo action
 proc pdtk_undomenu {mytoplevel undoaction redoaction} {
-    set ::undo_toplevel $mytoplevel
-    set ::undo_action $undoaction
-    set ::redo_action $redoaction
+    set ::undo_actions($mytoplevel) $undoaction
+    set ::redo_actions($mytoplevel) $redoaction
     if {$mytoplevel ne "nobody"} {
-        ::pd_menus::update_undo_on_menu $mytoplevel
+        ::pd_menus::update_undo_on_menu $mytoplevel $undoaction $redoaction
     }
 }
-
-# Keep track of pdtk_canvas_getscroll after tokens for 1x1 windows.
-# Uses tkcanvas ids as keys.
-array set ::pdtk_canvas::::getscroll_tokens {}
 
 # This proc configures the scrollbars whenever anything relevant has
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
     if {! [winfo exists $tkcanvas]} {
-        # catch closed canvas windows that might have left over tokens
-        if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-            unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-        }
         return
     }
     set mytoplevel [winfo toplevel $tkcanvas]
     set height [winfo height $tkcanvas]
     set width [winfo width $tkcanvas]
-
-    # Workaround for when the window has size 1x1, in which case it
-    # probably hasn't been fully created yet. Wait a little and try again.
-    if {$width == 1 || $height == 1} {
-        if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-            after cancel ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-        }
-        set ::pdtk_canvas::::getscroll_tokens($tkcanvas) \
-            [after idle ::pdtk_canvas::pdtk_canvas_getscroll $tkcanvas]
-        return
-    }
-    if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-        unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-    }
 
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
@@ -418,7 +401,8 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
 # receive information for setting the info the the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
-    set ::windowname($mytoplevel) $name ;# TODO add path to this
+    set ::windowname($mytoplevel) $name
+    set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
     if {$::windowingsystem eq "aqua"} {
         wm attributes $mytoplevel -modified $dirty
         if {[file exists "$path/$name"]} {

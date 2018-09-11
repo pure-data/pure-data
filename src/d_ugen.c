@@ -389,7 +389,7 @@ int ilog2(int n)
     /* call this when DSP is stopped to free all the signals */
 void signal_cleanup(void)
 {
-    t_signal **svec, *sig, *sig2;
+    t_signal *sig;
     int i;
     while ((sig = THIS->u_signals))
     {
@@ -456,9 +456,8 @@ void signal_makereusable(t_signal *sig)
 
 t_signal *signal_new(int n, t_float sr)
 {
-    int logn, n2, vecsize = 0;
+    int logn, vecsize = 0;
     t_signal *ret, **whichlist;
-    t_sample *fp;
     logn = ilog2(n);
     if (n)
     {
@@ -586,8 +585,6 @@ t_signal *signal_newfromcontext(int borrowed)
 
 void ugen_stop(void)
 {
-    t_signal *s;
-    int i;
     if (THIS->u_dspchain)
     {
         freebytes(THIS->u_dspchain,
@@ -613,8 +610,8 @@ int ugen_getsortno(void)
     return (THIS->u_sortno);
 }
 
-#if 1
-void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
+#if 0
+void glob_ugen_printstate(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i, count;
     t_signal *sig;
@@ -644,7 +641,6 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
     int ninlets, int noutlets)
 {
     t_dspcontext *dc = (t_dspcontext *)getbytes(sizeof(*dc));
-    int parent_vecsize, vecsize;
 
     if (THIS->u_loud) post("ugen_start_graph...");
 
@@ -749,7 +745,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
 {
     t_sigoutlet *uout;
     t_siginlet *uin;
-    t_sigoutconnect *oc, *oc2;
+    t_sigoutconnect *oc;
     t_class *class = pd_class(&u->u_obj->ob_pd);
     int i, n;
         /* suppress creating new signals for the outputs of signal
@@ -902,7 +898,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
 
 void ugen_done_graph(t_dspcontext *dc)
 {
-    t_ugenbox *u, *u2;
+    t_ugenbox *u;
     t_sigoutlet *uout;
     t_siginlet *uin;
     t_sigoutconnect *oc, *oc2;
@@ -1046,7 +1042,7 @@ void ugen_done_graph(t_dspcontext *dc)
     for (u = dc->dc_ugenlist; u; u = u->u_next)
     {
         t_pd *zz = &u->u_obj->ob_pd;
-        t_signal **insigs = dc->dc_iosigs, **outsigs = dc->dc_iosigs;
+        t_signal **outsigs = dc->dc_iosigs;
         if (outsigs) outsigs += dc->dc_ninlets;
 
         if (pd_class(zz) == vinlet_class)

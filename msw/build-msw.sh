@@ -1,3 +1,4 @@
+#!/bin/sh
 if [ ! -d ../drive_c/users/msp ]
   then echo ../drive_c/users/msp: no such directory; exit 1
   else echo -n

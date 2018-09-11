@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.48.1])
+AC_INIT([pd], [0.48.2])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -143,6 +143,14 @@ case $host in
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
     EXTERNAL_EXTENSION=dll
     ;;
+*openbsd*)
+    OPENBSD=yes
+    platform=OpenBSD
+    portaudio=yes
+    EXTERNAL_CFLAGS="-D__OPENBSD__"
+    EXTERNAL_LDFLAGS="-liberty"
+    EXTERNAL_EXTENSION=pd_openbsd
+    ;;
 *)
     platform=Unknown
     ;;
@@ -156,6 +164,7 @@ AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
 AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
 AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
+AM_CONDITIONAL(OPENBSD, test x$OPENBSD = xyes)
 
 #########################################
 ##### Check for programs, libs, & headers #####

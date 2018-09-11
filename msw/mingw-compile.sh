@@ -1,3 +1,4 @@
+#!/bin/sh
 rm -rf ../mingw-build
 mkdir ../mingw-build
 cd ../mingw-build
@@ -5,10 +6,10 @@ cd ../mingw-build
 unzip /tmp/pd.zip
 cd pd/lib
 tar xzf /home/msp/work/asio/asio2.3-sdk-src.tgz
-mv ASIO2.3 ASIO
+mv ASIOSDK2.3 ASIOSDK
 cd ../src
 rm semaphore.h pthread.h sched.h pthreadVC.lib pthreadVC.dll
-cp ~/pd/src/pd.rc ~/pd/src/pd.ico .
+cp ~/pd/src/pd.rc ~/pd/tcl/pd.ico .
 cp /usr/i686-w64-mingw32/sys-root/mingw/bin/pthreadGC2.dll ../bin
 
 if make -f makefile.mingw CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-c++ \

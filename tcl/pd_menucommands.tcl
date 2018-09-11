@@ -61,13 +61,13 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
 # functions called from Edit menu
 
 proc ::pd_menucommands::menu_undo {} {
-    if {$::focused_window eq $::undo_toplevel && $::undo_action ne "no"} {
+    if { $::focused_window ne ".pdwindow" } {
         pdsend "$::focused_window undo"
     }
 }
 
 proc ::pd_menucommands::menu_redo {} {
-    if {$::focused_window eq $::undo_toplevel && $::redo_action ne "no"} {
+    if { $::focused_window ne ".pdwindow" } {
         pdsend "$::focused_window redo"
     }
 }

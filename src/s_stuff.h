@@ -19,7 +19,7 @@ typedef struct _namelist    /* element in a linked list of stored strings */
 t_namelist *namelist_append(t_namelist *listwas, const char *s, int allowdup);
 EXTERN t_namelist *namelist_append_files(t_namelist *listwas, const char *s);
 void namelist_free(t_namelist *listwas);
-char *namelist_get(t_namelist *namelist, int n);
+const char *namelist_get(const t_namelist *namelist, int n);
 void sys_setextrapath(const char *p);
 extern int sys_usestdpath;
 int sys_open_absolute(const char *name, const char* ext,
@@ -46,7 +46,6 @@ EXTERN int sys_nearestfontsize(int fontsize);
 
 extern int sys_defaultfont;
 EXTERN t_symbol *sys_libdir;    /* library directory for auxilliary files */
-extern t_symbol *sys_guidir;    /* directory holding pd_gui, u_pdsend, etc */
 
 /* s_loader.c */
 
@@ -136,8 +135,6 @@ void sys_do_open_midi(int nmidiindev, int *midiindev,
 EXTERN void sys_alsa_putmidimess(int portno, int a, int b, int c);
 EXTERN void sys_alsa_putmidibyte(int portno, int a);
 EXTERN void sys_alsa_poll_midi(void);
-EXTERN void sys_alsa_setmiditimediff(double inbuftime, double outbuftime);
-EXTERN void sys_alsa_midibytein(int portno, int byte);
 EXTERN void sys_alsa_close_midi( void);
 
 
@@ -403,6 +400,7 @@ struct _instancestuff
     t_namelist *st_searchpath;
     t_namelist *st_staticpath;
     t_namelist *st_helppath;
+    t_namelist *st_temppath;    /* temp search paths ie. -path on commandline */
     int st_schedblocksize;      /* audio block size for scheduler */
     int st_blocksize;           /* audio I/O block size in sample frames */
     t_float st_dacsr;           /* I/O sample rate */

@@ -193,7 +193,8 @@ static void textbuf_write(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
 static void textbuf_free(t_textbuf *x)
 {
     t_pd *x2;
-    binbuf_free(x->b_binbuf);
+    if (x->b_binbuf)
+        binbuf_free(x->b_binbuf);
     if (x->b_guiconnect)
     {
         sys_vgui("destroy .x%lx\n", x);
@@ -212,7 +213,7 @@ static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
     {
         if (cnt == line)
         {
-            int j = i, outc, k;
+            int j = i;
             while (j < n && vec[j].a_type != A_SEMI &&
                 vec[j].a_type != A_COMMA)
                     j++;
@@ -312,7 +313,6 @@ static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
         gp, s, "text_frompointer");
     if (b)
     {
-        t_gstub *gs = gp->gp_stub;
         binbuf_clear(x->x_textbuf.b_binbuf);
         binbuf_add(x->x_textbuf.b_binbuf, binbuf_getnatom(b), binbuf_getvec(b));
     }
@@ -371,6 +371,19 @@ static void text_define_save(t_gobj *z, t_binbuf *bb)
     obj_saveformat(&x->x_ob, bb);
 }
 
+    /* send a pointer to the scalar that owns this text to
+    whomever is bound to the given symbol */
+static void text_define_send(t_text_define *x, t_symbol *s)
+{
+    if (!s->s_thing)
+        pd_error(x, "text_define_send: %s: no such object", s->s_name);
+    else
+    {
+        gpointer_setglist(&x->x_gp, x->x_canvas, x->x_scalar);
+        pd_pointer(s->s_thing, &x->x_gp);
+    }
+}
+
     /* notification from GUI that we've been updated */
 static void text_define_notify(t_text_define *x)
 {
@@ -380,10 +393,14 @@ static void text_define_notify(t_text_define *x)
 
 static void text_define_free(t_text_define *x)
 {
+    x->x_binbuf = 0; /* prevent double deletion */
     textbuf_free(&x->x_textbuf);
     if (x->x_bindsym != &s_)
         pd_unbind(&x->x_ob.ob_pd, x->x_bindsym);
     gpointer_unset(&x->x_gp);
+    /* deleting the scalar will automatically free the binbuf */
+    pd_free(&x->x_scalar->sc_gobj.g_pd);
+    x->x_canvas->gl_valid = ++glist_valid; /* invalidate pointers */
 }
 
 /* ---  text_client - common code for objects that refer to text buffers -- */
@@ -405,28 +422,22 @@ static void text_client_argparse(t_text_client *x, int *argcp, t_atom **argvp,
     t_atom *argv = *argvp;
     x->tc_sym = x->tc_struct = x->tc_field = 0;
     gpointer_init(&x->tc_gp);
-    while (argc && argv->a_type == A_SYMBOL &&
-        *argv->a_w.w_symbol->s_name == '-')
+    if (argc && argv->a_type == A_SYMBOL &&
+        !strcmp(argv->a_w.w_symbol->s_name, "-s"))
     {
-        if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
-            argc >= 3 && argv[1].a_type == A_SYMBOL && argv[2].a_type == A_SYMBOL)
+        if (argc < 3 || argv[1].a_type != A_SYMBOL ||
+            argv[2].a_type != A_SYMBOL)
+                pd_error(x, "%s: '-s' needs a struct and field name", name);
+        else
         {
             x->tc_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
             x->tc_field = argv[2].a_w.w_symbol;
-            argc -= 2; argv += 2;
+            argc -= 3; argv += 3;
         }
-        else
-        {
-            pd_error(x, "%s: unknown flag '%s'...", name,
-                argv->a_w.w_symbol->s_name);
-        }
-        argc--; argv++;
     }
-    if (argc && argv->a_type == A_SYMBOL)
+    else if (argc && argv->a_type == A_SYMBOL)
     {
-        if (x->tc_struct)
-            pd_error(x, "%s: extra names after -s..", name);
-        else x->tc_sym = argv->a_w.w_symbol;
+        x->tc_sym = argv->a_w.w_symbol;
         argc--; argv++;
     }
     *argcp = argc;
@@ -961,8 +972,6 @@ static void *text_tolist_new(t_symbol *s, int argc, t_atom *argv)
 static void text_tolist_bang(t_text_tolist *x)
 {
     t_binbuf *b = text_client_getbuf(x), *b2;
-    int n, i, cnt = 0;
-    t_atom *vec;
     if (!b)
        return;
     b2 = binbuf_new();
@@ -1055,7 +1064,7 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            char *s = argv[i].a_w.w_symbol->s_name;
+            const char *s = argv[i].a_w.w_symbol->s_name;
             if (nextop >= 0)
                 pd_error(x,
                     "text search: extra operation argument ignored: %s", s);
@@ -1083,10 +1092,9 @@ static void text_search_list(t_text_search *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int i, j, n, lineno, bestline = -1, beststart=-1, bestn, thisstart, thisn,
+    int i, n, lineno, bestline = -1, beststart=-1, bestn, thisstart,
         nkeys = x->x_nkeys, failed = 0;
     t_atom *vec;
-    t_key *kp = x->x_keyvec;
     if (!b)
        return;
     if (argc < nkeys)
@@ -1288,6 +1296,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_eaten = 0;
     x->x_loop = 0;
     x->x_lastto = 0;
+    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -1336,7 +1345,6 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_waitout = (global || x->x_waitsym || x->x_waitargc ?
         outlet_new(&x->x_obj, &s_list) : 0);
     x->x_endout = outlet_new(&x->x_obj, &s_bang);
-    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     if (global)
     {
         if (x->x_waitargc)
@@ -1349,7 +1357,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 
 static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
 {
-    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
     int n, i, onset, nfield, wait, eatsemi = 1, gotcomma = 0;
     t_atom *vec, *outvec, *ap;
     if (!b)
@@ -1552,7 +1560,7 @@ static void text_sequence_step(t_text_sequence *x)
 
 static void text_sequence_line(t_text_sequence *x, t_floatarg f)
 {
-    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
     int n, start, end;
     t_atom *vec;
     if (!b)
@@ -1603,7 +1611,7 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
         pd_this->pd_newest = text_define_new(s, argc, argv);
     else
     {
-        char *str = argv[0].a_w.w_symbol->s_name;
+        const char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "d") || !strcmp(str, "define"))
             pd_this->pd_newest = text_define_new(s, argc-1, argv+1);
         else if (!strcmp(str, "get"))
@@ -1905,7 +1913,7 @@ static void *textfile_new( void)
 static void textfile_bang(t_qlist *x)
 {
     int argc = binbuf_getnatom(x->x_binbuf),
-        count, onset = x->x_onset, onset2;
+        onset = x->x_onset, onset2;
     t_atom *argv = binbuf_getvec(x->x_binbuf);
     t_atom *ap = argv + onset, *ap2;
     while (onset < argc &&
@@ -1985,6 +1993,8 @@ void x_qlist_setup(void )
         gensym("write"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)textbuf_read,
         gensym("read"), A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)text_define_send,
+        gensym("send"), A_SYMBOL, 0);
     class_setsavefn(text_define_class, text_define_save);
     class_addbang(text_define_class, text_define_bang);
     class_sethelpsymbol(text_define_class, gensym("text-object"));

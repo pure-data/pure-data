@@ -81,7 +81,7 @@ version or directory via commandline options, for example:
 
     # create pd-0.48-1 directory, download and build Tcl/Tk 8.5.19
     msw/msw-app.sh --tk 8.5.19 0.48-1
-    
+
     # create pd-0.48-1 directory, use Tcl/Tk 8.5.19 built with tcltk-dir.sh
     msw/msw-app.sh --tk tcltk-8.5.19 0.48-1
 
@@ -98,7 +98,7 @@ release distributions or from a git clone:
     msw/tcltk-dir.sh 8.5.19
 
     # build tcltk-master-git with the latest master branch from git
-    msw/tcltk-dir.sh --git master-git 
+    msw/tcltk-dir.sh --git master-git
 
 Once your custom Tcl/Tk is built, you can use it as the Tk directory source for
 msw-app.sh with the -t/--tk option:
@@ -112,7 +112,7 @@ tcltk directories you need with tcltk-dir.sh can save you some time as they
 can be reused when (re)making the Pd app directory.
 
 Usually, it's best to use stable releases of Tcl/Tk. However, there are times
-when building from the current development version is useful. For instance, 
+when building from the current development version is useful. For instance,
 if there is a bug in the Tcl/Tk sources, you can then see if there is a fix for
 this in the Tcl/Tk development version on GitHub. If so, then you can test by
 using the tcltk-dir.sh --git commandline option.
