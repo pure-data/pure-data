@@ -157,7 +157,6 @@ static void audio_init( void)
 
 void sys_setchsr(int chin, int chout, int sr)
 {
-    int nblk;
     int inbytes = (chin ? chin : 2) *
                 (DEFDACBLKSIZE*sizeof(t_sample));
     int outbytes = (chout ? chout : 2) *
@@ -201,7 +200,7 @@ void sys_set_audio_settings(int naudioindev, int *audioindev, int nchindev,
     int *chindev, int naudiooutdev, int *audiooutdev, int nchoutdev,
     int *choutdev, int rate, int advance, int callback, int blocksize)
 {
-    int i, *ip;
+    int i;
     int defaultchannels = SYS_DEFAULTCH;
     int inchans, outchans, nrealindev, nrealoutdev;
     int realindev[MAXAUDIOINDEV], realoutdev[MAXAUDIOOUTDEV];
@@ -436,11 +435,13 @@ void sys_reopen_audio( void)
     if (sys_audioapi == API_PORTAUDIO)
     {
         int blksize = (audio_blocksize ? audio_blocksize : 64);
+        int nbufs = sys_advance_samples / blksize;
+        if (nbufs < 1) nbufs = 1;
         if (sys_verbose)
-            fprintf(stderr, "blksize %d, advance %d\n", blksize, sys_advance_samples/blksize);
+            fprintf(stderr, "blksize %d, advance %d\n", blksize, nbufs);
         outcome = pa_open_audio((naudioindev > 0 ? chindev[0] : 0),
         (naudiooutdev > 0 ? choutdev[0] : 0), rate, STUFF->st_soundin,
-            STUFF->st_soundout, blksize, sys_advance_samples/blksize,
+            STUFF->st_soundout, blksize, nbufs,
              (naudioindev > 0 ? audioindev[0] : 0),
               (naudiooutdev > 0 ? audiooutdev[0] : 0),
                (callback ? sched_audio_callbackfn : 0));
@@ -815,24 +816,21 @@ extern int pa_foo;
     /* new values from dialog window */
 void glob_audio_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int naudioindev, audioindev[MAXAUDIOINDEV], chindev[MAXAUDIOINDEV];
-    int naudiooutdev, audiooutdev[MAXAUDIOOUTDEV], choutdev[MAXAUDIOOUTDEV];
-    int rate, advance, audioon, i, nindev, noutdev;
-    int audioindev1, audioinchan1, audiooutdev1, audiooutchan1;
+    int i, nindev, noutdev;
     int newaudioindev[4], newaudioinchan[4],
         newaudiooutdev[4], newaudiooutchan[4];
         /* the new values the dialog came back with: */
-    int newrate = atom_getintarg(16, argc, argv);
-    int newadvance = atom_getintarg(17, argc, argv);
-    int newcallback = atom_getintarg(18, argc, argv);
-    int newblocksize = atom_getintarg(19, argc, argv);
+    int newrate = atom_getfloatarg(16, argc, argv);
+    int newadvance = atom_getfloatarg(17, argc, argv);
+    int newcallback = atom_getfloatarg(18, argc, argv);
+    int newblocksize = atom_getfloatarg(19, argc, argv);
 
     for (i = 0; i < 4; i++)
     {
-        newaudioindev[i] = atom_getintarg(i, argc, argv);
-        newaudioinchan[i] = atom_getintarg(i+4, argc, argv);
-        newaudiooutdev[i] = atom_getintarg(i+8, argc, argv);
-        newaudiooutchan[i] = atom_getintarg(i+12, argc, argv);
+        newaudioindev[i] = atom_getfloatarg(i, argc, argv);
+        newaudioinchan[i] = atom_getfloatarg(i+4, argc, argv);
+        newaudiooutdev[i] = atom_getfloatarg(i+8, argc, argv);
+        newaudiooutchan[i] = atom_getfloatarg(i+12, argc, argv);
     }
 
     for (i = 0, nindev = 0; i < 4; i++)
@@ -1089,7 +1087,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < noutdevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(outdevlist + i * DEVDESCSIZE))
                 comp = strlen(outdevlist + i * DEVDESCSIZE);
             if (!strncmp(name, outdevlist + i * DEVDESCSIZE, comp))
@@ -1100,7 +1098,7 @@ int sys_audiodevnametonumber(int output, const char *name)
     {
         for (i = 0; i < nindevs; i++)
         {
-            unsigned int comp = strlen(name);
+            unsigned long comp = strlen(name);
             if (comp > strlen(indevlist + i * DEVDESCSIZE))
                 comp = strlen(indevlist + i * DEVDESCSIZE);
             if (!strncmp(name, indevlist + i * DEVDESCSIZE, comp))
@@ -1117,7 +1115,7 @@ int sys_audiodevnametonumber(int output, const char *name)
 void sys_audiodevnumbertoname(int output, int devno, char *name, int namesize)
 {
     char indevlist[MAXNDEV*DEVDESCSIZE], outdevlist[MAXNDEV*DEVDESCSIZE];
-    int nindevs = 0, noutdevs = 0, i, canmulti, cancallback;
+    int nindevs = 0, noutdevs = 0, canmulti, cancallback;
     if (devno < 0)
     {
         *name = 0;

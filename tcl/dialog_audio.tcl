@@ -134,6 +134,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     set audio_blocksize $blocksize
 
     toplevel $mytoplevel -class DialogWindow
+    wm withdraw $mytoplevel
     wm title $mytoplevel [_ "Audio Settings"]
     wm group $mytoplevel .
     wm resizable $mytoplevel 0 0
@@ -142,7 +143,6 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     $mytoplevel configure -menu $::dialog_menubar
     $mytoplevel configure -padx 10 -pady 5
     ::pd_bindings::dialog_bindings $mytoplevel "audio"
-
     # not all Tcl/Tk versions or platforms support -topmost, so catch the error
     catch {wm attributes $mytoplevel -topmost 1}
 
@@ -170,7 +170,7 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
     pack $mytoplevel.settings.bsc.bs_popup -side left
     if {$audio_callback >= 0} {
         checkbutton $mytoplevel.settings.bsc.c_button -variable audio_callback \
-            -text [_ "Use callbacks"] -anchor e
+            -text [_ "Use callbacks"] -anchor w
         pack $mytoplevel.settings.bsc.c_button -side right
     }
 
@@ -400,12 +400,10 @@ proc ::dialog_audio::pdtk_audio_dialog {mytoplevel \
         $mytoplevel.buttonframe.cancel config -highlightthickness 0
     }
 
-    # set min size based on widget sizing
-    update
-    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
-
-    # wait a little for creation, then raise so it's on top
-    after 100 raise "$mytoplevel"
+    # set min size based on widget sizing & pos over pdwindow
+    wm minsize $mytoplevel [winfo reqwidth $mytoplevel] [winfo reqheight $mytoplevel]
+    position_over_window $mytoplevel .pdwindow
+    raise $mytoplevel
 }
 
 # for focus handling on OSX

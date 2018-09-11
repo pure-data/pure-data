@@ -95,7 +95,7 @@ static void pdfloat_float(t_pdfloat *x, t_float f)
 }
 
 #ifdef _MSC_VER
-#define strtof _atoldbl
+#define strtof(a,b) _atoldbl(a,*b)
 #endif
 
 static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
@@ -401,7 +401,7 @@ static void sel2_float(t_sel2 *x, t_float f)
     int nelement;
     if (x->x_type == A_FLOAT)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
             outlet_bang(e->e_outlet);
@@ -417,7 +417,7 @@ static void sel2_symbol(t_sel2 *x, t_symbol *s)
     int nelement;
     if (x->x_type == A_SYMBOL)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == s)
         {
             outlet_bang(e->e_outlet);
@@ -520,7 +520,7 @@ static void route_anything(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     int nelement;
     if (x->x_type == A_SYMBOL)
     {
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_symbol == sel)
         {
             if (argc > 0 && argv[0].a_type == A_SYMBOL)
@@ -544,7 +544,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         if (argv->a_type != A_FLOAT)
             goto rejected;
         f = atom_getfloat(argv);
-        for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+        for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             if (e->e_w.w_float == f)
         {
             if (argc > 1 && argv[1].a_type == A_SYMBOL)
@@ -558,7 +558,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
     {
         if (argc > 1)       /* 2 or more args: treat as "list" */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_list)
                 {
@@ -572,7 +572,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else if (argc == 0)         /* no args: treat as "bang" */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_bang)
                 {
@@ -583,7 +583,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else if (argv[0].a_type == A_FLOAT)     /* one float arg */
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_float)
                 {
@@ -594,7 +594,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
         }
         else
         {
-            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            for (nelement = (int)x->x_nelement, e = x->x_vec; nelement--; e++)
             {
                 if (e->e_w.w_symbol == &s_symbol)
                 {
@@ -732,10 +732,10 @@ static void *pack_new(t_symbol *s, int argc, t_atom *argv)
 
 static void pack_bang(t_pack *x)
 {
-    int i, reentered = 0, size = x->x_n * sizeof (t_atom);
+    int i, reentered = 0, size = (int)(x->x_n * sizeof(t_atom));
     t_gpointer *gp;
     t_atom *outvec;
-    for (i = x->x_nptr, gp = x->x_gpointer; i--; gp++)
+    for (i = (int)x->x_nptr, gp = x->x_gpointer; i--; gp++)
         if (!gpointer_check(gp, 1))
     {
         pd_error(x, "pack: stale pointer");
@@ -757,7 +757,7 @@ static void pack_bang(t_pack *x)
         x->x_outvec = 0;
     }
     memcpy(outvec, x->x_vec, size);
-    outlet_list(x->x_obj.ob_outlet, &s_list, x->x_n, outvec);
+    outlet_list(x->x_obj.ob_outlet, &s_list, (int)x->x_n, outvec);
     if (reentered)
         t_freebytes(outvec, size);
     else x->x_outvec = outvec;
@@ -815,7 +815,7 @@ static void pack_free(t_pack *x)
 {
     t_gpointer *gp;
     int i;
-    for (gp = x->x_gpointer, i = x->x_nptr; i--; gp++)
+    for (gp = x->x_gpointer, i = (int)x->x_nptr; i--; gp++)
         gpointer_unset(gp);
     freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
     freebytes(x->x_outvec, x->x_n * sizeof(*x->x_outvec));
@@ -904,7 +904,7 @@ static void unpack_list(t_unpack *x, t_symbol *s, int argc, t_atom *argv)
     t_atom *ap;
     t_unpackout *u;
     int i;
-    if (argc > x->x_n) argc = x->x_n;
+    if (argc > x->x_n) argc = (int)x->x_n;
     for (i = argc, u = x->x_vec + i, ap = argv + i; u--, ap--, i--;)
     {
         t_atomtype type = u->u_type;
@@ -1015,7 +1015,7 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
     int i;
-    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
+    for (i = (int)x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_FLOAT)
             outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
@@ -1038,7 +1038,7 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
     int i;
-    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
+    for (i = (int)x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_BANG)
             outlet_bang(u->u_outlet);
@@ -1257,7 +1257,7 @@ typedef struct _makefilename
 } t_makefilename;
 
 static const char* _formatscan(const char*str, t_printtype*typ) {
-    int num=0, infmt=0;
+    int infmt=0;
     for (; *str; str++) {
         if (!infmt && *str=='%') {
             infmt=1;
@@ -1294,9 +1294,7 @@ static const char* _formatscan(const char*str, t_printtype*typ) {
 
 static void makefilename_scanformat(t_makefilename *x)
 {
-    int num=0, infmt=0;
     const char *str;
-    char *chr;
     t_printtype typ;
     if (!x->x_format) return;
     str = x->x_format->s_name;
@@ -1334,7 +1332,7 @@ static void makefilename_float(t_makefilename *x, t_floatarg f)
     }
     switch(x->x_accept) {
     case NONE:
-        sprintf(buf, x->x_format->s_name);
+        sprintf(buf, "%s",  x->x_format->s_name);
         break;
     case INT: case POINTER:
         sprintf(buf, x->x_format->s_name, (int)f);
@@ -1373,7 +1371,7 @@ static void makefilename_symbol(t_makefilename *x, t_symbol *s)
         sprintf(buf, x->x_format->s_name, 0.);
         break;
     case NONE:
-        sprintf(buf, x->x_format->s_name);
+        sprintf(buf, "%s", x->x_format->s_name);
         break;
     default:
         sprintf(buf, "%s", x->x_format->s_name);
@@ -1397,7 +1395,7 @@ static void makefilename_bang(t_makefilename *x)
         sprintf(buf, x->x_format->s_name, 0.);
         break;
     case NONE:
-        sprintf(buf, x->x_format->s_name);
+        sprintf(buf, "%s", x->x_format->s_name);
         break;
     default:
         sprintf(buf, "%s", x->x_format->s_name);
@@ -1567,8 +1565,7 @@ void value_release(t_symbol *s)
  * value_getfloat -- obtain the float value of a "value" object
  *                  return 0 on success, 1 otherwise
  */
-int
-value_getfloat(t_symbol *s, t_float *f)
+int value_getfloat(t_symbol *s, t_float *f)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
@@ -1581,8 +1578,7 @@ value_getfloat(t_symbol *s, t_float *f)
  * value_setfloat -- set the float value of a "value" object
  *                  return 0 on success, 1 otherwise
  */
-int
-value_setfloat(t_symbol *s, t_float f)
+int value_setfloat(t_symbol *s, t_float f)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
@@ -1599,6 +1595,8 @@ static void vcommon_float(t_vcommon *x, t_float f)
 static void *value_new(t_symbol *s)
 {
     t_value *x = (t_value *)pd_new(value_class);
+    if (!*s->s_name)
+        inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("symbol2"));
     x->x_sym = s;
     x->x_floatstar = value_get(s);
     outlet_new(&x->x_obj, &s_float);
@@ -1615,6 +1613,14 @@ static void value_float(t_value *x, t_float f)
     *x->x_floatstar = f;
 }
 
+/* set method */
+static void value_symbol2(t_value *x, t_symbol *s)
+{
+    value_release(x->x_sym);
+    x->x_sym = s;
+    x->x_floatstar = value_get(s);
+}
+
 static void value_ff(t_value *x)
 {
     value_release(x->x_sym);
@@ -1628,6 +1634,8 @@ static void value_setup(void)
     class_addcreator((t_newmethod)value_new, gensym("v"), A_DEFSYM, 0);
     class_addbang(value_class, value_bang);
     class_addfloat(value_class, value_float);
+    class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
+        A_DEFSYM, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
     class_addfloat(vcommon_class, vcommon_float);

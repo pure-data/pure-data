@@ -262,7 +262,6 @@ static t_int *vline_tilde_perform(t_int *w)
     double f = x->x_value;
     double inc = x->x_inc;
     double msecpersamp = x->x_msecpersamp;
-    double samppermsec = x->x_samppermsec;
     double timenow, logicaltimenow = clock_gettimesince(x->x_referencetime);
     t_vseg *s = x->x_list;
     if (logicaltimenow != x->x_lastlogicaltime)
@@ -774,7 +773,7 @@ static t_int *threshold_tilde_perform(t_int *w)
 {
     t_sample *in1 = (t_sample *)(w[1]);
     t_threshold_tilde *x = (t_threshold_tilde *)(w[2]);
-    int n = (t_int)(w[3]);
+    int n = (int)w[3];
     if (x->x_deadwait > 0)
         x->x_deadwait -= x->x_msecpertick;
     else if (x->x_state)

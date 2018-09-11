@@ -183,7 +183,7 @@ void pd_unbind(t_pd *x, t_symbol *s)
     else pd_error(x, "%s: couldn't unbind", s->s_name);
 }
 
-t_pd *pd_findbyclass(t_symbol *s, t_class *c)
+t_pd *pd_findbyclass(t_symbol *s, const t_class *c)
 {
     t_pd *x = 0;
 
@@ -288,11 +288,17 @@ void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     (*(*x)->c_listmethod)(x, &s_list, argc, argv);
 }
 
+void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
+{
+    (*(*x)->c_anymethod)(x, s, argc, argv);
+}
+
 void mess_init(void);
 void obj_init(void);
 void conf_init(void);
 void glob_init(void);
 void garray_init(void);
+void ooura_term(void);
 
 void pd_init(void)
 {
@@ -305,12 +311,22 @@ void pd_init(void)
     pd_instances[0] = &pd_maininstance;
     pd_ninstances = 1;
 #endif
+    pd_init_systems();
+}
+
+EXTERN void pd_init_systems(void) {
     mess_init();
     sys_lock();
     obj_init();
     conf_init();
     glob_init();
     garray_init();
+    sys_unlock();
+}
+
+EXTERN void pd_term_systems(void) {
+    sys_lock();
+    /* ooura_term();  oops - this doesn't seem to have got merged from PR  */
     sys_unlock();
 }
 

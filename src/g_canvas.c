@@ -10,11 +10,14 @@ to be different but are now unified except for some fossilized names.) */
 #include "m_pd.h"
 #include "m_imp.h"
 #include "s_stuff.h"
+#include "s_utf8.h"
 #include "g_canvas.h"
 #include <string.h>
 #include "g_all_guis.h"
+#include "g_undo.h"
 
 #ifdef _MSC_VER
+#include <io.h>
 #define snprintf _snprintf
 #endif
 
@@ -27,6 +30,10 @@ struct _canvasenvironment
     int ce_dollarzero;     /* value of "$0" */
     t_namelist *ce_path;   /* search path */
 };
+typedef struct _canvas_private
+{
+    t_undo undo;
+} t_canvas_private;
 
 #define GLIST_DEFCANVASWIDTH 450
 #define GLIST_DEFCANVASHEIGHT 300
@@ -91,7 +98,7 @@ static void canvas_takeofflist(t_canvas *x)
 }
 
 
-void canvas_setargs(int argc, t_atom *argv)
+void canvas_setargs(int argc, const t_atom *argv)
 {
         /* if there's an old one lying around free it here.  This
         happens if an abstraction is loaded but never gets as far
@@ -130,7 +137,7 @@ void canvas_unsetcurrent(t_canvas *x)
     pd_popsym(&x->gl_pd);
 }
 
-t_canvasenvironment *canvas_getenv(t_canvas *x)
+t_canvasenvironment *canvas_getenv(const t_canvas *x)
 {
     if (!x) bug("canvas_getenv");
     while (!x->gl_env)
@@ -159,7 +166,7 @@ void canvas_getargs(int *argcp, t_atom **argvp)
 t_symbol *canvas_realizedollar(t_canvas *x, t_symbol *s)
 {
     t_symbol *ret;
-    char *name = s->s_name;
+    const char *name = s->s_name;
     if (strchr(name, '$'))
     {
         t_canvasenvironment *env = canvas_getenv(x);
@@ -177,15 +184,15 @@ t_symbol *canvas_getcurrentdir(void)
     return (e->ce_dir);
 }
 
-t_symbol *canvas_getdir(t_canvas *x)
+t_symbol *canvas_getdir(const t_canvas *x)
 {
     t_canvasenvironment *e = canvas_getenv(x);
     return (e->ce_dir);
 }
 
-void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
+void canvas_makefilename(const t_canvas *x, const char *file, char *result, int resultsize)
 {
-    char *dir = canvas_getenv(x)->ce_dir->s_name;
+    const char *dir = canvas_getenv(x)->ce_dir->s_name;
     if (file[0] == '/' || (file[0] && file[1] == ':') || !*dir)
     {
         strncpy(result, file, resultsize);
@@ -196,7 +203,7 @@ void canvas_makefilename(t_canvas *x, char *file, char *result, int resultsize)
         int nleft;
         strncpy(result, dir, resultsize);
         result[resultsize-1] = 0;
-        nleft = resultsize - strlen(result) - 1;
+        nleft = resultsize - (int)strlen(result) - 1;
         if (nleft <= 0) return;
         strcat(result, "/");
         strncat(result, file, nleft);
@@ -273,15 +280,17 @@ t_outconnect *linetraverser_next(t_linetraverser *t)
     {
         int inplus = (t->tr_nin == 1 ? 1 : t->tr_nin - 1);
         int outplus = (t->tr_nout == 1 ? 1 : t->tr_nout - 1);
+        int iow = IOWIDTH * t->tr_x->gl_zoom;
+        int iom = IOMIDDLE * t->tr_x->gl_zoom;
         gobj_getrect(&t->tr_ob2->ob_g, t->tr_x,
             &t->tr_x21, &t->tr_y21, &t->tr_x22, &t->tr_y22);
         t->tr_lx1 = t->tr_x11 +
-            ((t->tr_x12 - t->tr_x11 - IOWIDTH) * t->tr_outno) /
-                outplus + IOMIDDLE;
+            ((t->tr_x12 - t->tr_x11 - iow) * t->tr_outno) /
+                outplus + iom;
         t->tr_ly1 = t->tr_y12;
         t->tr_lx2 = t->tr_x21 +
-            ((t->tr_x22 - t->tr_x21 - IOWIDTH) * t->tr_inno)/inplus +
-                IOMIDDLE;
+            ((t->tr_x22 - t->tr_x21 - iow) * t->tr_inno)/inplus +
+                iom;
         t->tr_ly2 = t->tr_y21;
     }
     else
@@ -323,6 +332,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = 0, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
+    t_canvas_private*private = 0;
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
@@ -331,21 +341,22 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
 
     if (argc == 5)  /* toplevel: x, y, w, h, font */
     {
-        xloc = atom_getintarg(0, argc, argv);
-        yloc = atom_getintarg(1, argc, argv);
-        width = atom_getintarg(2, argc, argv);
-        height = atom_getintarg(3, argc, argv);
-        font = atom_getintarg(4, argc, argv);
+        xloc = atom_getfloatarg(0, argc, argv);
+        yloc = atom_getfloatarg(1, argc, argv);
+        width = atom_getfloatarg(2, argc, argv);
+        height = atom_getfloatarg(3, argc, argv);
+        font = atom_getfloatarg(4, argc, argv);
     }
     else if (argc == 6)  /* subwindow: x, y, w, h, name, vis */
     {
-        xloc = atom_getintarg(0, argc, argv);
-        yloc = atom_getintarg(1, argc, argv);
-        width = atom_getintarg(2, argc, argv);
-        height = atom_getintarg(3, argc, argv);
+        xloc = atom_getfloatarg(0, argc, argv);
+        yloc = atom_getfloatarg(1, argc, argv);
+        width = atom_getfloatarg(2, argc, argv);
+        height = atom_getfloatarg(3, argc, argv);
         s = atom_getsymbolarg(4, argc, argv);
-        vis = atom_getintarg(5, argc, argv);
+        vis = atom_getfloatarg(5, argc, argv);
     }
+
         /* (otherwise assume we're being created from the menu.) */
     if (THISGUI->i_newdirectory &&
         THISGUI->i_newdirectory->s_name[0])
@@ -364,6 +375,11 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
         THISGUI->i_newargv = 0;
     }
     else x->gl_env = 0;
+
+        /* initialize private data, like the undo-queue */
+    private = getbytes(sizeof(*private));
+    x->gl_privatedata = private;
+    private->undo.u_queue = canvas_undo_init(x);
 
     x->gl_x1 = 0;
     x->gl_y1 = 0;
@@ -405,15 +421,15 @@ static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     x->gl_y1 = atom_getfloatarg(1, argc, argv);
     x->gl_x2 = atom_getfloatarg(2, argc, argv);
     x->gl_y2 = atom_getfloatarg(3, argc, argv);
-    x->gl_pixwidth = atom_getintarg(4, argc, argv);
-    x->gl_pixheight = atom_getintarg(5, argc, argv);
+    x->gl_pixwidth = atom_getfloatarg(4, argc, argv);
+    x->gl_pixheight = atom_getfloatarg(5, argc, argv);
     if (argc <= 7)
-        canvas_setgraph(x, atom_getintarg(6, argc, argv), 1);
+        canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 1);
     else
     {
-        x->gl_xmargin = atom_getintarg(7, argc, argv);
-        x->gl_ymargin = atom_getintarg(8, argc, argv);
-        canvas_setgraph(x, atom_getintarg(6, argc, argv), 0);
+        x->gl_xmargin = atom_getfloatarg(7, argc, argv);
+        x->gl_ymargin = atom_getfloatarg(8, argc, argv);
+        canvas_setgraph(x, atom_getfloatarg(6, argc, argv), 0);
     }
 }
 
@@ -426,7 +442,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     static int gcount = 0;  /* it's OK if two threads get the same value */
     int zz;
     int menu = 0;
-    char *str;
+    const char *str;
     t_glist *x = (t_glist *)pd_new(canvas_class);
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
@@ -500,6 +516,9 @@ void glist_glist(t_glist *g, t_symbol *s, int argc, t_atom *argv)
     t_float px2 = atom_getfloatarg(7, argc, argv);
     t_float py2 = atom_getfloatarg(8, argc, argv);
     glist_addglist(g, sym, x1, y1, x2, y2, px1, py1, px2, py2);
+    if (!canvas_undo_get(glist_getcanvas(g))->u_doing)
+        canvas_undo_add(glist_getcanvas(g), UNDO_CREATE, "create",
+            (void *)canvas_undo_set_create(glist_getcanvas(g)));
 }
 
     /* return true if the glist should appear as a graph on parent;
@@ -591,35 +610,43 @@ void canvas_reflecttitle(t_canvas *x)
         strcat(namebuf, ")");
     }
     else namebuf[0] = 0;
+    if (x->gl_edit)
+    {
+        strncat(namebuf, " [edit]", MAXPDSTRING-strlen(namebuf)-1);
+        namebuf[MAXPDSTRING-1] = 0;
+    }
     sys_vgui("pdtk_canvas_reflecttitle .x%lx {%s} {%s} {%s} %d\n",
         x, canvas_getdir(x)->s_name, x->gl_name->s_name, namebuf, x->gl_dirty);
 }
 
     /* mark a glist dirty or clean */
-void canvas_dirty(t_canvas *x, t_floatarg n)
+void canvas_dirty(t_canvas *x, t_floatarg f)
 {
     t_canvas *x2 = canvas_getrootfor(x);
+    unsigned int n = f;
     if (THISGUI->i_reloadingabstraction)
         return;
-    if ((unsigned)n != x2->gl_dirty)
+    if (n != x2->gl_dirty)
     {
         x2->gl_dirty = n;
         if (x2->gl_havewindow)
             canvas_reflecttitle(x2);
     }
+    if(!n)
+        canvas_undo_cleardirty(x);
 }
 
 void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
-        sys_vgui(".x%lx.c create line\
-            %d %d %d %d %d %d %d %d %d %d -fill #ff8080 -tags GOP\n",
+        sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
+            "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
             glist_getcanvas(x),
             x->gl_xmargin, x->gl_ymargin,
             x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin,
             x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin + x->gl_pixheight,
             x->gl_xmargin, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin);
+            x->gl_xmargin, x->gl_ymargin, glist_getzoom(x));
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 
@@ -738,6 +765,7 @@ int glist_fontheight(t_glist *x)
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
+    t_canvas_private*private = x->gl_privatedata;
     int dspstate = canvas_suspend_dsp();
     canvas_noundo(x);
     if (canvas_whichfind == x)
@@ -756,6 +784,8 @@ void canvas_free(t_canvas *x)
         freebytes(x->gl_env->ce_argv, x->gl_env->ce_argc * sizeof(t_atom));
         freebytes(x->gl_env, sizeof(*x->gl_env));
     }
+    canvas_undo_free(x);
+    freebytes(private, sizeof(*private));
     canvas_resume_dsp(dspstate);
     freebytes(x->gl_xlabel, x->gl_nxlabels * sizeof(*(x->gl_xlabel)));
     freebytes(x->gl_ylabel, x->gl_nylabels * sizeof(*(x->gl_ylabel)));
@@ -771,13 +801,14 @@ static void canvas_drawlines(t_canvas *x)
 {
     t_linetraverser t;
     t_outconnect *oc;
+    int yoffset = x->gl_zoom; /* slight offset to hide thick line corners */
     {
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
             sys_vgui(
         ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                 glist_getcanvas(x),
-                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
+                t.tr_lx1, t.tr_ly1 - yoffset, t.tr_lx2, t.tr_ly2 + yoffset,
                 (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
                 oc);
     }
@@ -787,7 +818,8 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;
     t_outconnect *oc;
-
+    int yoffset = x->gl_zoom; /* slight offset to hide thick line corners */
+    
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
     {
@@ -795,7 +827,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         {
             sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
                 glist_getcanvas(x), oc,
-                    t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
+                t.tr_lx1, t.tr_ly1 - yoffset, t.tr_lx2, t.tr_ly2 + yoffset);
         }
     }
 }
@@ -891,14 +923,20 @@ void canvas_restore(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 static void canvas_loadbangabstractions(t_canvas *x)
 {
     t_gobj *y;
+    t_symbol *s = gensym("loadbang");
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
-    {
-        if (canvas_isabstraction((t_canvas *)y))
-            canvas_loadbang((t_canvas *)y);
-        else
-            canvas_loadbangabstractions((t_canvas *)y);
-    }
+        {
+            if (canvas_isabstraction((t_canvas *)y))
+                canvas_loadbang((t_canvas *)y);
+            else
+                canvas_loadbangabstractions((t_canvas *)y);
+        }
+        else if ((pd_class(&y->g_pd) == clone_class) &&
+            zgetfn(&y->g_pd, s))
+        {
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        }
 }
 
 void canvas_loadbangsubpatches(t_canvas *x)
@@ -907,19 +945,21 @@ void canvas_loadbangsubpatches(t_canvas *x)
     t_symbol *s = gensym("loadbang");
     for (y = x->gl_list; y; y = y->g_next)
         if (pd_class(&y->g_pd) == canvas_class)
-    {
-        if (!canvas_isabstraction((t_canvas *)y))
-            canvas_loadbangsubpatches((t_canvas *)y);
-    }
+        {
+            if (!canvas_isabstraction((t_canvas *)y))
+                canvas_loadbangsubpatches((t_canvas *)y);
+        }
     for (y = x->gl_list; y; y = y->g_next)
         if ((pd_class(&y->g_pd) != canvas_class) &&
+            (pd_class(&y->g_pd) != clone_class) &&
             zgetfn(&y->g_pd, s))
-                pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        {
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_LOAD);
+        }
 }
 
 void canvas_loadbang(t_canvas *x)
 {
-    t_gobj *y;
     canvas_loadbangabstractions(x);
     canvas_loadbangsubpatches(x);
 }
@@ -983,6 +1023,8 @@ static void canvas_relocate(t_canvas *x, t_symbol *canvasgeom,
 void canvas_popabstraction(t_canvas *x)
 {
     pd_this->pd_newest = &x->gl_pd;
+    gensym("#A")->s_thing = 0;
+    pd_bind(pd_this->pd_newest, gensym("#A"));
     pd_popsym(&x->gl_pd);
     x->gl_loading = 0;
     canvas_resortinlets(x);
@@ -1000,6 +1042,7 @@ void canvas_logerror(t_object *y)
 
 /* -------------------------- subcanvases ---------------------- */
 
+extern void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv);
 static void *subcanvas_new(t_symbol *s)
 {
     t_atom a[6];
@@ -1012,6 +1055,53 @@ static void *subcanvas_new(t_symbol *s)
     SETSYMBOL(a+4, s);
     SETFLOAT(a+5, 1);
     x = canvas_new(0, 0, 6, a);
+
+        /* check if subpatch is supposed to be connected (on the 1st inlet) */
+    if(z && z->gl_editor && z->gl_editor->e_connectbuf)
+    {
+        t_atom*argv = binbuf_getvec(z->gl_editor->e_connectbuf);
+        int argc = binbuf_getnatom(z->gl_editor->e_connectbuf);
+        t_symbol *sob = 0;
+        if ((argc == 7)
+            && atom_getsymbolarg(0, argc, argv) == gensym("#X")
+            && atom_getsymbolarg(1, argc, argv) == gensym("connect"))
+        {
+            int index2 = canvas_getindex(z, &x->gl_gobj);
+            if (((int)atom_getfloat(argv+5) == 0)
+                && (int)atom_getfloat(argv+4) == index2)
+                {
+                    int index1 = (int)atom_getfloat(argv+2);
+                    int outno = (int)atom_getfloat(argv+3);
+                    t_gobj*outobj=z->gl_list;
+                        /* get handle to object */
+                    while(index1-->0 && outobj)
+                        outobj=outobj->g_next;
+                    if(outobj && pd_checkobject(&outobj->g_pd))
+                    {
+                        if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd), outno))
+                            sob = gensym("inlet~");
+                        else
+                            sob = gensym("inlet");
+                    }
+                }
+        }
+        if(sob)
+        {
+                /* JMZ: weirdo hardcoded numbers, taken from
+                 * glist_getnextxy(): 40
+                 * and canvas_howputnew(): -3
+                 */
+            SETFLOAT(a+0, 37);
+            SETFLOAT(a+1, 37);
+            SETSYMBOL(a+2, sob);
+            canvas_obj(x, gensym("obj"), 3, a);
+
+                /* select the newly created inlet to continue autopatching */
+            canvas_create_editor(x);
+            glist_noselect(x);
+            glist_select(x, x->gl_list);
+        }
+    }
     x->gl_owner = z;
     canvas_pop(x, 1);
     return (x);
@@ -1052,7 +1142,7 @@ static void canvas_rename_method(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 
     /* return true if the "canvas" object is an abstraction (so we don't
     save its contents, for example.)  */
-int canvas_isabstraction(t_canvas *x)
+int canvas_isabstraction(const t_canvas *x)
 {
     return (x->gl_env != 0);
 }
@@ -1060,7 +1150,7 @@ int canvas_isabstraction(t_canvas *x)
     /* return true if the "canvas" object should be treated as a text
     object.  This is true for abstractions but also for "table"s... */
 /* JMZ: add a flag to gop-abstractions to hide the title */
-int canvas_showtext(t_canvas *x)
+int canvas_showtext(const t_canvas *x)
 {
     t_atom *argv = (x->gl_obj.te_binbuf? binbuf_getvec(x->gl_obj.te_binbuf):0);
     int argc = (x->gl_obj.te_binbuf? binbuf_getnatom(x->gl_obj.te_binbuf) : 0);
@@ -1078,6 +1168,14 @@ t_canvas *canvas_getrootfor(t_canvas *x)
     if ((!x->gl_owner) || canvas_isabstraction(x))
         return (x);
     else return (canvas_getrootfor(x->gl_owner));
+}
+
+t_undo* canvas_undo_get(t_canvas *x)
+{
+    t_canvas_private*private = x?(x->gl_privatedata):0;
+    if(private)
+        return &(private->undo);
+    return 0;
 }
 
 /* ------------------------- DSP chain handling ------------------------- */
@@ -1203,7 +1301,7 @@ void glob_dsp(void *dummy, t_symbol *s, int argc, t_atom *argv)
     int newstate;
     if (argc)
     {
-        newstate = atom_getintarg(0, argc, argv);
+        newstate = atom_getfloatarg(0, argc, argv);
         if (newstate && !THISGUI->i_dspstate)
         {
             sys_set_audio_state(1);
@@ -1244,7 +1342,6 @@ static void glist_redrawall(t_glist *gl, int action)
     int vis = glist_isvisible(gl);
     for (g = gl->gl_list; g; g = g->g_next)
     {
-        t_class *cl;
         if (vis && g->g_pd == scalar_class)
         {
             if (action == 1)
@@ -1358,14 +1455,24 @@ void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b)
     }
 }
 
-static void canvas_completepath(char *from, char *to, int bufsize)
+static void canvas_completepath(const char *from, char *to, int bufsize,
+    t_canvas *x)
 {
     if (sys_isabsolutepath(from))
     {
         to[0] = '\0';
     }
-    else
-    {   // if not absolute path, append Pd lib dir
+    else if (x)
+    {
+        /* append canvas dir */
+        const char *dir = canvas_getdir(x)->s_name;
+        int dirlen = strlen(dir);
+        strncpy(to, dir, bufsize-dirlen);
+        to[bufsize-dirlen-1] = '\0';
+        strcat(to, "/");
+    }
+     else
+    {   /* append Pd lib dir */
         strncpy(to, sys_libdir->s_name, bufsize-10);
         to[bufsize-9] = '\0';
         strcat(to, "/extra/");
@@ -1394,9 +1501,90 @@ static int check_exists(const char*path)
 }
 #endif
 
-static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
+static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
 {
-    t_namelist*nl;
+    t_namelist *nl;
+    char strbuf[MAXPDSTRING];
+    if (sys_isabsolutepath(path))
+    {
+        e->ce_path = namelist_append(e->ce_path, path, 0);
+        return;
+    }
+
+        /* explicit relative path, starts with ./ or ../ */
+    if ((strncmp("./", path, 2) == 0) || (strncmp("../", path, 3) == 0))
+    {
+        e->ce_path = namelist_append(e->ce_path, path, 0);
+        return;
+    }
+
+        /* check if path is a subdir of the canvas-path */
+    canvas_completepath(path, strbuf, MAXPDSTRING, x);
+    if (check_exists(strbuf))
+    {
+        e->ce_path = namelist_append(e->ce_path, path, 0);
+        return;
+    }
+
+        /* check whether the given subdir is in one of the user search-paths */
+    for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        strbuf[MAXPDSTRING-1]=0;
+        if (check_exists(strbuf))
+        {
+            e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+            return;
+        }
+    }
+
+        /* check whether the given subdir is in one of the standard-paths */
+    for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s/", nl->nl_string, path);
+        strbuf[MAXPDSTRING-1]=0;
+        if (check_exists(strbuf))
+        {
+            e->ce_path = namelist_append(e->ce_path, strbuf, 0);
+            return;
+        }
+    }
+}
+static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
+{
+    t_namelist *nl;
+    char strbuf[MAXPDSTRING];
+    if (sys_isabsolutepath(lib))
+    {
+        sys_load_lib(x, lib);
+        return;
+    }
+
+        /* explicit relative path, starts with ./ or ../ */
+    if ((strncmp("./", lib, 2) == 0) || (strncmp("../", lib, 3) == 0))
+    {
+        sys_load_lib(x, lib);
+        return;
+    }
+
+        /* prefix canvas-path */
+    canvas_completepath(lib, strbuf, MAXPDSTRING, x);
+    if (sys_load_lib(x, lib))
+        return;
+
+    /* check whether the given lib is located in one of the user search-paths */
+    for (nl=STUFF->st_searchpath; nl; nl=nl->nl_next)
+    {
+        snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, lib);
+        strbuf[MAXPDSTRING-1]=0;
+        if (sys_load_lib(x, strbuf))
+            return;
+    }
+}
+
+static void canvas_stdpath(t_canvasenvironment *e, const char *stdpath)
+{
+    t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(stdpath))
     {
@@ -1404,17 +1592,18 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         return;
     }
 
-    /* strip    "extra/"-prefix */
+        /* strip "extra/"-prefix */
     if (!strncmp("extra/", stdpath, 6))
         stdpath+=6;
 
-        /* prefix full pd-path (including extra) */
-    canvas_completepath(stdpath, strbuf, MAXPDSTRING);
+    /* prefix full pd-path (including extra) */
+    canvas_completepath(stdpath, strbuf, MAXPDSTRING, 0);
     if (check_exists(strbuf))
     {
         e->ce_path = namelist_append(e->ce_path, strbuf, 0);
         return;
     }
+
     /* check whether the given subdir is in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
@@ -1427,9 +1616,9 @@ static void canvas_stdpath(t_canvasenvironment *e, char *stdpath)
         }
     }
 }
-static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
+static void canvas_stdlib(t_canvasenvironment *e, const char *stdlib)
 {
-    t_namelist*nl;
+    t_namelist *nl;
     char strbuf[MAXPDSTRING];
     if (sys_isabsolutepath(stdlib))
     {
@@ -1442,11 +1631,11 @@ static void canvas_stdlib(t_canvasenvironment *e, char *stdlib)
         stdlib+=6;
 
         /* prefix full pd-path (including extra) */
-    canvas_completepath(stdlib, strbuf, MAXPDSTRING);
+    canvas_completepath(stdlib, strbuf, MAXPDSTRING, 0);
     if (sys_load_lib(0, strbuf))
         return;
 
-    /* check whether the given library is located in one of the standard-paths */
+    /* check whether the given lib is located in one of the standard-paths */
     for (nl=STUFF->st_staticpath; nl; nl=nl->nl_next)
     {
         snprintf(strbuf, MAXPDSTRING-1, "%s/%s", nl->nl_string, stdlib);
@@ -1468,11 +1657,10 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
 #endif
     for (i = 0; i < argc; i++)
     {
-        char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
+        const char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
         if ((argc > i+1) && !strcmp(flag, "-path"))
         {
-            e->ce_path = namelist_append(e->ce_path,
-                atom_getsymbolarg(i+1, argc, argv)->s_name, 0);
+            canvas_path(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
             i++;
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
@@ -1482,7 +1670,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
         }
         else if ((argc > i+1) && !strcmp(flag, "-lib"))
         {
-            sys_load_lib(x, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            canvas_lib(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
             i++;
         }
         else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
@@ -1529,13 +1717,10 @@ static int canvas_open_iter(const char *path, t_canvasopen *co)
     attempted, otherwise ASCII (this only matters on Microsoft.)
     If "x" is zero, the file is sought in the directory "." or in the
     global path.*/
-int canvas_open(t_canvas *x, const char *name, const char *ext,
+int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin)
 {
-    t_namelist *nl, thislist;
     int fd = -1;
-    char listbuf[MAXPDSTRING];
-    t_canvas *y;
     t_canvasopen co;
 
         /* first check if "name" is absolute (and if so, try to open) */
@@ -1561,10 +1746,10 @@ int canvas_open(t_canvas *x, const char *name, const char *ext,
  * <data>.  The function is called with two arguments: a pathname to try to
  * open, and <data>.
  */
-int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
+int canvas_path_iterate(const t_canvas *x, t_canvas_path_iterator fun,
     void *user_data)
 {
-    t_canvas *y = 0;
+    const t_canvas *y = 0;
     t_namelist *nl = 0;
     int count = 0;
     if (!fun)
@@ -1573,7 +1758,7 @@ int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
     for (y = x; y; y = y->gl_owner)
         if (y->gl_env)
     {
-        char *dir;
+        const char *dir;
         dir = canvas_getdir(y)->s_name;
         for (nl = y->gl_env->ce_path; nl; nl = nl->nl_next)
         {
@@ -1600,6 +1785,13 @@ int canvas_path_iterate(t_canvas *x, t_canvas_path_iterator fun,
 
     /* now iterate through the global paths */
     for (nl = STUFF->st_searchpath; nl; nl = nl->nl_next)
+    {
+        if (!fun(nl->nl_string, user_data))
+            return count+1;
+        count++;
+    }
+    /* and the temp paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
     {
         if (!fun(nl->nl_string, user_data))
             return count+1;
@@ -1833,4 +2025,40 @@ void g_canvas_freepdinstance( void)
 EXTERN int pd_getdspstate(void)
 {
     return (THISGUI->i_dspstate);
+}
+
+void pd_doloadbang(void);
+
+t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
+{
+    t_pd *x = 0, *boundx;
+    t_glist *gl;
+    int dspstate;
+
+        /* don't reopen already-open document, just vis it */
+    for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+        if (name == gl->gl_name && gl->gl_env && gl->gl_env->ce_dir == dir)
+    {
+        canvas_vis(gl, 1);
+        return (&gl->gl_pd);
+    }
+        /* even though binbuf_evalfile appears to take care of dspstate,
+        we have to do it again here, because canvas_startdsp() assumes
+        that all toplevel canvases are visible.  LATER check if this
+        is still necessary -- probably not. */
+    dspstate = canvas_suspend_dsp();
+    boundx = s__X.s_thing;
+        s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
+                                for the caller to grab it. */
+    binbuf_evalfile(name, dir);
+    while ((x != s__X.s_thing) && s__X.s_thing)
+    {
+        x = s__X.s_thing;
+        vmess(x, gensym("pop"), "i", 1);
+    }
+    if (!sys_noloadbang)
+        pd_doloadbang();
+    canvas_resume_dsp(dspstate);
+    s__X.s_thing = boundx;
+    return x;
 }

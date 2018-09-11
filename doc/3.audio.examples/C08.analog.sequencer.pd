@@ -3,7 +3,7 @@
 #X array 29-sequence 9 float 3;
 #A 0 110 550 385 495 165 385 495 275 615;
 #X coords 0 500 9 0 200 100 1;
-#X restore 621 42 graph;
+#X restore 618 42 graph;
 #X obj 27 426 *~;
 #X obj 27 454 hip~ 5;
 #N canvas 0 0 450 300 (subpatch) 0;
@@ -22,7 +22,7 @@
 0.111111 0.1 0.0888889 0.0777778 0.0666667 0.0555556 0.0444444 0.0333333
 0.0222222 0.0111111 0 -0.0111111;
 #X coords 0 1 102 0 200 100 1;
-#X restore 622 146 graph;
+#X restore 618 162 graph;
 #N canvas 0 0 450 300 (subpatch) 0;
 #X array 29-sample 259 float 1;
 #A 0 0.989177 1 0.989177 0.95694 0.903989 0.83147 0.740952 0.634394
@@ -61,7 +61,7 @@
 -0.19512 -0.0490981 0.0979867 0.24295 0.382655 0.514076 0.634369 0.74093
 0.831452 0.903976 0.956931 0.989172 1 0.989181;
 #X coords 0 1 258 -1 200 100 1;
-#X restore 619 281 graph;
+#X restore 618 281 graph;
 #X text 566 533 updated for Pd version 0.37;
 #X obj 26 218 tabread~ 29-sequence;
 #X obj 106 241 wrap~;

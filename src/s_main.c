@@ -126,8 +126,8 @@ typedef struct _fontinfo
     in the six fonts.  */
 
 static t_fontinfo sys_fontspec[] = {
-    {8, 6, 10}, {10, 7, 13}, {12, 9, 16},
-    {16, 10, 21}, {24, 15, 25}, {36, 25, 45}};
+    {8, 5, 11}, {10, 6, 13}, {12, 7, 16},
+    {16, 10, 19}, {24, 14, 29}, {36, 22, 44}};
 #define NFONT (sizeof(sys_fontspec)/sizeof(*sys_fontspec))
 #define NZOOM 2
 static t_fontinfo sys_gotfonts[NZOOM][NFONT];
@@ -225,7 +225,7 @@ open(), read(), etc, calls to be served somehow from the GUI too. */
 
 void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
+    const char *cwd = atom_getsymbolarg(0, argc, argv)->s_name;
     t_namelist *nl;
     unsigned int i;
     int did_fontwarning = 0;
@@ -236,9 +236,9 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     for (j = 0; j < NZOOM; j++)
         for (i = 0; i < NFONT; i++)
     {
-        int size   = atom_getintarg(3 * (i + j * NFONT) + 2, argc, argv);
-        int width  = atom_getintarg(3 * (i + j * NFONT) + 3, argc, argv);
-        int height = atom_getintarg(3 * (i + j * NFONT) + 4, argc, argv);
+        int size   = atom_getfloatarg(3 * (i + j * NFONT) + 2, argc, argv);
+        int width  = atom_getfloatarg(3 * (i + j * NFONT) + 3, argc, argv);
+        int height = atom_getfloatarg(3 * (i + j * NFONT) + 4, argc, argv);
         if (!(size && width && height))
         {
             size   = (j+1)*sys_fontspec[i].fi_pointsize;
@@ -284,9 +284,11 @@ void glob_initfromgui(void *dummy, t_symbol *s, int argc, t_atom *argv)
     sys_messagelist = 0;
 }
 
+// font char metric triples: pointsize width(pixels) height(pixels)
 static int defaultfontshit[] = {
-9, 5, 10, 11, 7, 13, 14, 8, 16, 17, 10, 20, 22, 13, 25, 39, 23, 45,
-17, 10, 20, 23, 14, 26, 27, 16, 31, 34, 20, 40, 43, 26, 50, 78, 47, 90};
+  8,  5, 11,  10,  6, 13,  12,  7, 16,  16, 10, 19,  24, 14, 29,  36, 22, 44,
+ 16, 10, 22,  20, 12, 26,  24, 14, 32,  32, 20, 38,  48, 28, 58,  72, 44, 88
+}; // normal & zoomed (2x)
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 static t_clock *sys_fakefromguiclk;
@@ -303,17 +305,17 @@ static void sys_fakefromgui(void)
 #else
     if (!getcwd(buf, MAXPDSTRING))
         strcpy(buf, ".");
-
 #endif
     SETSYMBOL(zz, gensym(buf));
+    SETFLOAT(zz+1, 0);
     for (i = 0; i < (int)NDEFAULTFONT; i++)
-        SETFLOAT(zz+i+1, defaultfontshit[i]);
-    SETFLOAT(zz+NDEFAULTFONT+1,0);
+        SETFLOAT(zz+i+2, defaultfontshit[i]);
     glob_initfromgui(0, 0, 2+NDEFAULTFONT, zz);
     clock_free(sys_fakefromguiclk);
 }
 
 static void sys_afterargparse(void);
+static void sys_printusage(void);
 
 /* this is called from main() in s_entry.c */
 int sys_main(int argc, char **argv)
@@ -328,6 +330,12 @@ int sys_main(int argc, char **argv)
     /* use Win32 "binary" mode by default since we don't want the
      * translation that Win32 does by default */
 #ifdef _WIN32
+    {
+        short version = MAKEWORD(2, 0);
+        WSADATA nobby;
+        if (WSAStartup(version, &nobby))
+            sys_sockerror("WSAstartup");
+    }
 # ifdef _MSC_VER /* MS Visual Studio */
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
@@ -349,12 +357,21 @@ int sys_main(int argc, char **argv)
 #endif  /* _WIN32 */
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
-    for (i = noprefs = 0; i < argc; i++)    /* prescan for prefs override */
+    for (i = noprefs = 0; i < argc; i++)    /* prescan ... */
     {
+        /* for prefs override */
         if (!strcmp(argv[i], "-noprefs"))
             noprefs = 1;
         else if (!strcmp(argv[i], "-prefsfile") && i < argc-1)
             prefsfile = argv[i+1];
+        /* for external scheduler (to ignore audio api in sys_loadpreferences) */
+        else if (!strcmp(argv[i], "-schedlib") && i < argc-1)
+            sys_externalschedlib = 1;
+        else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "-help"))
+        {
+            sys_printusage();
+            return (1);
+        }
     }
     if (!noprefs)       /* load preferences before parsing args to allow ... */
         sys_loadpreferences(prefsfile, 1);  /* args to override prefs */
@@ -477,9 +494,9 @@ static char *(usagemessage[]) = {
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
 "-lib <file>      -- load object library(s)\n",
-"-font-size <n>     -- specify default font size in points\n",
-"-font-face <name>  -- specify default font\n",
-"-font-weight <name>-- specify default font weight (normal or bold)\n",
+"-font-size <n>      -- specify default font size in points\n",
+"-font-face <name>   -- specify default font\n",
+"-font-weight <name> -- specify default font weight (normal or bold)\n",
 "-verbose         -- extra printout on startup and when searching for files\n",
 "-noverbose       -- no extra printout\n",
 "-version         -- don't run Pd; just print out which version it is \n",
@@ -511,6 +528,13 @@ static char *(usagemessage[]) = {
 "-compatibility <f> -- set back-compatibility to version <f>\n",
 };
 
+static void sys_printusage(void)
+{
+    unsigned int i;
+    for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
+        fprintf(stderr, "%s", usagemessage[i]);
+}
+
 static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
 {
     int n = 0;
@@ -520,7 +544,7 @@ static void sys_parsedevlist(int *np, int *vecp, int max, char *str)
         else
         {
             char *endp;
-            vecp[n] = strtol(str, &endp, 10);
+            vecp[n] = (int)strtol(str, &endp, 10);
             if (endp == str)
                 break;
             n++;
@@ -542,13 +566,13 @@ static int sys_getmultidevchannels(int n, int *devlist)
 }
 
 
-    /* this routine tries to figure out where to find the auxilliary files
+    /* this routine tries to figure out where to find the auxiliary files
     Pd will need to run.  This is either done by looking at the command line
-    invokation for Pd, or if that fails, by consulting the variable
+    invocation for Pd, or if that fails, by consulting the variable
     INSTALL_PREFIX.  In MSW, we don't try to use INSTALL_PREFIX. */
 void sys_findprogdir(char *progname)
 {
-    char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING], *sp;
+    char sbuf[MAXPDSTRING], sbuf2[MAXPDSTRING];
     char *lastslash;
 #ifndef _WIN32
     struct stat statbuf;
@@ -633,8 +657,6 @@ static int sys_mmio = 0;
 
 int sys_argparse(int argc, char **argv)
 {
-    char sbuf[MAXPDSTRING];
-    int i;
     while ((argc > 0) && **argv == '-')
     {
         if (!strcmp(*argv, "-r") && argc > 1 &&
@@ -988,8 +1010,8 @@ int sys_argparse(int argc, char **argv)
         {
             if (argc < 2)
                 goto usage;
-            STUFF->st_searchpath =
-                namelist_append_files(STUFF->st_searchpath, argv[1]);
+            STUFF->st_temppath =
+                namelist_append_files(STUFF->st_temppath, argv[1]);
             argc -= 2; argv += 2;
         }
         else if (!strcmp(*argv, "-nostdpath"))
@@ -1331,10 +1353,8 @@ int sys_argparse(int argc, char **argv)
             argc -= 2, argv +=2;
         else
         {
-            unsigned int i;
         usage:
-            for (i = 0; i < sizeof(usagemessage)/sizeof(*usagemessage); i++)
-                fprintf(stderr, "%s", usagemessage[i]);
+            sys_printusage();
             return (1);
         }
     }
@@ -1382,7 +1402,7 @@ static void sys_afterargparse(void)
     strncpy(sbuf, sys_libdir->s_name, MAXPDSTRING-30);
     sbuf[MAXPDSTRING-30] = 0;
     strcat(sbuf, "/doc/5.reference");
-    STUFF->st_staticpath = namelist_append_files(STUFF->st_staticpath, sbuf);
+    STUFF->st_helppath = namelist_append_files(STUFF->st_helppath, sbuf);
         /* correct to make audio and MIDI device lists zero based.  On
         MMIO, however, "1" really means the second device (the first one
         is "mapper" which is was not included when the command args were

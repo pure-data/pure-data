@@ -1,4 +1,4 @@
-#N canvas 19 47 645 526 12;
+#N canvas 19 47 635 576 12;
 #X obj 32 291 metro 500;
 #X obj 70 9 metro;
 #X floatatom 101 268 4 0 0 0 - - -, f 4;
@@ -7,9 +7,6 @@
 #X msg 49 172 0;
 #X msg 38 148 bang;
 #X msg 49 194 stop;
-#X text 99 181 zero or "stop" to stop.;
-#X text 150 268 right inlet sets the rate in msec per tick.;
-#X text 377 471 Updated for Pd version 0.45;
 #X text 121 8 - metronome;
 #X text 23 35 The metro object sends a series of bangs at regular time
 intervals. The right inlet takes the value in milliseconds between
@@ -22,25 +19,44 @@ or off.;
 #X text 166 329 - tempo (float) and time unit (symbol) as in "tempo"
 message, f 31;
 #X msg 51 220 tempo 2 msec;
-#X text 165 219 set tempo in units of milliseconds (msec for short)
-\, seconds (sec) \, minutes (min) or samples (samp)., f 51;
-#X text 79 472 see also:;
-#X obj 173 470 timer;
-#X text 41 373 for example \, a metronome at intervals of one beat
-at 120 beats per minute:, f 37;
-#X obj 360 395 metro 1 120 permin;
-#X obj 360 373 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X text 69 502 see also:;
+#X obj 163 500 timer;
+#X obj 330 460 metro 1 120 permin;
+#X obj 330 384 tgl 20 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 360 420 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 330 485 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 220 435 delay;
-#X text 50 428 for details on tempo setting \, see:, f 20;
-#X connect 0 0 13 0;
+#X obj 210 465 delay;
+#X text 347 531 Updated for Pd version 0.48;
+#X text 99 181 zero or "stop" to stop;
+#X obj 493 436 /;
+#X msg 493 411 1 \$1;
+#X msg 493 380 0.5;
+#X msg 529 380 1;
+#X msg 565 380 4;
+#X text 524 437 beat length;
+#X msg 369 409 tempo \$1 permin;
+#X floatatom 369 384 5 0 0 0 - - -, f 5;
+#X text 165 219 set tempo in units of milliseconds (msec for short)
+\, seconds (sec) \, minutes (min) or samples (samp), f 51;
+#X text 150 268 right inlet sets the rate in msec per tick or tempo
+unit length, f 64;
+#X text 40 458 for details on tempo setting \, see:, f 20;
+#X text 41 403 for example \, a metronome at intervals of one beat
+at 120 beats per minute:, f 37;
+#X connect 0 0 10 0;
 #X connect 2 0 0 1;
 #X connect 3 0 0 0;
 #X connect 5 0 0 0;
 #X connect 6 0 0 0;
 #X connect 7 0 0 0;
-#X connect 17 0 0 0;
-#X connect 22 0 24 0;
-#X connect 23 0 22 0;
+#X connect 14 0 0 0;
+#X connect 17 0 19 0;
+#X connect 18 0 17 0;
+#X connect 23 0 17 1;
+#X connect 24 0 23 0;
+#X connect 25 0 24 0;
+#X connect 26 0 24 0;
+#X connect 27 0 24 0;
+#X connect 29 0 17 0;
+#X connect 30 0 29 0;

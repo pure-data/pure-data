@@ -23,7 +23,6 @@ t_array *array_new(t_symbol *templatesym, t_gpointer *parent)
 {
     t_array *x = (t_array *)getbytes(sizeof (*x));
     t_template *template;
-    t_gpointer *gp;
     template = template_findbyname(templatesym);
     x->a_templatesym = templatesym;
     x->a_n = 1;
@@ -46,7 +45,6 @@ void garray_arrayviewlist_close(t_garray *x);
 void array_resize(t_array *x, int n)
 {
     int elemsize, oldn;
-    t_gpointer *gp;
     char *tmp;
     t_template *template = template_findbyname(x->a_templatesym);
     if (n < 1)
@@ -136,8 +134,6 @@ and float-arrays. */
 void garray_init( void)
 {
     t_binbuf *b;
-    if (garray_arraytemplatecanvas)
-        return;
     b = binbuf_new();
 
     glob_setfilename(0, gensym("_float_template"), gensym("."));
@@ -163,12 +159,7 @@ to save and create arrays this might get called more directly. */
 static t_garray *graph_scalar(t_glist *gl, t_symbol *s, t_symbol *templatesym,
     int saveit)
 {
-    int i, zz;
     t_garray *x;
-    t_pd *x2;
-    t_template *template;
-    char *str;
-    t_gpointer gp;
     if (!template_findbyname(templatesym))
         return (0);
     x = (t_garray *)pd_new(garray_class);
@@ -187,7 +178,7 @@ static t_garray *graph_scalar(t_glist *gl, t_symbol *s, t_symbol *templatesym,
     /* get a garray's "array" structure. */
 t_array *garray_getarray(t_garray *x)
 {
-    int nwords, zonset, ztype;
+    int zonset, ztype;
     t_symbol *zarraytype;
     t_scalar *sc = x->x_scalar;
     t_symbol *templatesym = sc->sc_template;
@@ -282,15 +273,12 @@ by a more coherent (and general) invocation. */
 t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
     t_floatarg fsize, t_floatarg fflags)
 {
-    int n = fsize, i, zz, nwords, zonset, ztype, saveit;
+    int n = fsize, zonset, ztype, saveit;
     t_symbol *zarraytype, *asym = gensym("#A");
     t_garray *x;
-    t_pd *x2;
     t_template *template, *ztemplate;
     t_symbol *templatesym;
-    char *str;
     int flags = fflags;
-    t_gpointer gp;
     int filestyle = ((flags & 6) >> 1);
     int style = (filestyle == 0 ? PLOTSTYLE_POLY :
         (filestyle == 1 ? PLOTSTYLE_POINTS : filestyle));
@@ -427,8 +415,6 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
     else
     {
         long size;
-        int styleonset, styletype;
-        t_symbol *stylearraytype;
         t_symbol *argname = iemgui_raute2dollar(name);
         t_array *a = garray_getarray(x);
         t_template *scalartemplate;
@@ -471,7 +457,7 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
         if (size != a->a_n)
             garray_resize_long(x, size);
         else if (style != stylewas)
-            garray_fittograph(x, size, style);
+            garray_fittograph(x, (int)size, style);
         template_setfloat(scalartemplate, gensym("style"),
             x->x_scalar->sc_vec, (t_float)style, 0);
 
@@ -484,10 +470,9 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
 /* jsarlo { */
 void garray_arrayviewlist_new(t_garray *x)
 {
-    int i, xonset=0, yonset=0, type=0, elemsize=0;
+    int i, yonset=0, elemsize=0;
     t_float yval;
     char cmdbuf[200];
-    t_symbol *arraytype;
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
 
     if (!a)
@@ -517,10 +502,8 @@ void garray_arrayviewlist_fillpage(t_garray *x,
                                    t_float page,
                                    t_float fTopItem)
 {
-    int i, xonset=0, yonset=0, type=0, elemsize=0, topItem;
+    int i, yonset=0, elemsize=0, topItem;
     t_float yval;
-    char cmdbuf[200];
-    t_symbol *arraytype;
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
 
     topItem = (int)fTopItem;
@@ -575,7 +558,7 @@ static void garray_free(t_garray *x)
     t_pd *x2;
         sys_unqueuegui(&x->x_gobj);
     /* jsarlo { */
-        if (x->x_listviewing)
+    if (x->x_listviewing)
     {
         garray_arrayviewlist_close(x);
     }
@@ -648,7 +631,7 @@ static void array_getrect(t_array *array, t_glist *glist,
         else incr = array->a_n / 300;
         for (i = 0; i < array->a_n; i += incr)
         {
-            t_float pxpix, pypix, pwpix, dx, dy;
+            t_float pxpix, pypix, pwpix;
             array_getcoordinate(glist, (char *)(array->a_vec) +
                 i * elemsize,
                 xonset, yonset, wonset, i, 0, 0, 1,
@@ -842,7 +825,7 @@ char *garray_vec(t_garray *x) /* get the contents */
 
 int garray_getfloatwords(t_garray *x, int *size, t_word **vec)
 {
-    int yonset, type, elemsize;
+    int yonset, elemsize;
     t_array *a = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!a)
     {
@@ -912,9 +895,9 @@ static void garray_dofo(t_garray *x, long npoints, t_float dcval,
     }
     if (npoints == 0)
         npoints = 512;  /* dunno what a good default would be... */
-    if (npoints != (1 << ilog2(npoints)))
+    if (npoints != (1 << ilog2((int)npoints)))
         post("%s: rounnding to %d points", array->a_templatesym->s_name,
-            (npoints = (1<<ilog2(npoints))));
+            (npoints = (1<<ilog2((int)npoints))));
     garray_resize_long(x, npoints + 3);
     phaseincr = 2. * 3.14159 / npoints;
     for (i = 0, phase = -phaseincr; i < array->a_n; i++, phase += phaseincr)
@@ -982,7 +965,7 @@ static void garray_cosinesum(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
 static void garray_normalize(t_garray *x, t_float f)
 {
-    int type, i;
+    int i;
     double maxv, renormer;
     int yonset, elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
@@ -1175,13 +1158,12 @@ int garray_ambigendian(void)
 void garray_resize_long(t_garray *x, long n)
 {
     t_array *array = garray_getarray(x);
-    t_glist *gl = x->x_glist;
     if (n < 1)
         n = 1;
-    garray_fittograph(x, n, template_getfloat(
+    garray_fittograph(x, (int)n, template_getfloat(
         template_findbyname(x->x_scalar->sc_template),
             gensym("style"), x->x_scalar->sc_vec, 1));
-    array_resize_and_redraw(array, x->x_glist, n);
+    array_resize_and_redraw(array, x->x_glist, (int)n);
     if (x->x_usedindsp)
         canvas_update_dsp();
 }
@@ -1190,6 +1172,11 @@ void garray_resize_long(t_garray *x, long n)
 void garray_resize(t_garray *x, t_floatarg f)
 {
     garray_resize_long(x, f);
+}
+
+/* ignore zoom for now */
+static void garray_zoom(t_garray *x, t_floatarg f)
+{
 }
 
 static void garray_print(t_garray *x)
@@ -1225,6 +1212,8 @@ void g_array_setup(void)
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
         A_FLOAT, A_NULL);
+    class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
+        A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_print, gensym("print"),
         A_NULL);
     class_addmethod(garray_class, (t_method)garray_sinesum, gensym("sinesum"),
@@ -1245,5 +1234,3 @@ void g_array_setup(void)
 /* } jsarlo */
     class_setsavefn(garray_class, garray_save);
 }
-
-

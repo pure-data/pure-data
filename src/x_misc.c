@@ -482,14 +482,15 @@ typedef struct _oscformat
 {
     t_object x_obj;
     char *x_pathbuf;
-    int x_pathsize;
+    size_t x_pathsize;
     t_symbol *x_format;
 } t_oscformat;
 
 static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
 {
     char buf[MAXPDSTRING];
-    int i, newsize;
+    int i;
+    size_t newsize;
     *x->x_pathbuf = 0;
     buf[0] = '/';
     for (i = 0; i < argc; i++)
@@ -508,7 +509,7 @@ static void oscformat_set(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
 
 static void oscformat_format(t_oscformat *x, t_symbol *s)
 {
-    char *sp;
+    const char *sp;
     for (sp = s->s_name; *sp; sp++)
     {
         if (*sp != 'f' && *sp != 'i' && *sp != 's' && *sp != 'b')
@@ -547,7 +548,8 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
 {
     int typeindex = 0, j, msgindex, msgsize, datastart, ndata;
     t_atom *msg;
-    char *sp, *formatp = x->x_format->s_name, typecode;
+    const char *sp, *formatp = x->x_format->s_name;
+    char typecode;
         /* pass 1: go through args to find overall message size */
     for (j = ndata = 0, sp = formatp, msgindex = 0; j < argc;)
     {
@@ -574,7 +576,7 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
         j++;
         ndata++;
     }
-    datastart = ROUNDUPTO4(strlen(x->x_pathbuf)+1) + ROUNDUPTO4(ndata + 2);
+    datastart = (int)(ROUNDUPTO4(strlen(x->x_pathbuf)+1) + ROUNDUPTO4(ndata + 2));
     msgsize = datastart + msgindex;
     msg = (t_atom *)alloca(msgsize * sizeof(t_atom));
     putstring(msg, &typeindex, x->x_pathbuf);

@@ -57,4 +57,6 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
     bind $mytoplevel.text <$::modifier-Key-d> "::dialog_data::ok $mytoplevel"
     bind $mytoplevel.text <$::modifier-Key-w> "::dialog_data::cancel $mytoplevel"
     focus $mytoplevel.text
+
+    position_over_window $mytoplevel $::focused_window
 }
