@@ -184,8 +184,8 @@ externs:
 	make -C ../extra/lrshift~  MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/pique     MORECFLAGS="$(MORECFLAGS)" 
 	make -C ../extra/sigmund~  MORECFLAGS="$(MORECFLAGS)" 
-    make -C ../extra/paf~      MORECFLAGS="$(MORECFLAGS)"
-    make -C ../extra/pd~       MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/paf~      MORECFLAGS="$(MORECFLAGS)"
+	make -C ../extra/pd~       MORECFLAGS="$(MORECFLAGS)"
 	make -C ../extra/stdout    MORECFLAGS="$(MORECFLAGS)"
 	make -C ../extra/bob~      MORECFLAGS="$(MORECFLAGS)" 
 
