@@ -76,6 +76,8 @@ void canvas_statesavers_doit(t_glist *x, t_binbuf *b)
     for (g = x->gl_list; g; g = g->g_next)
         if (g->g_pd == savestate_class)
             savestate_doit((t_savestate *)g, b);
+        else if (g->g_pd == canvas_class && !canvas_isabstraction((t_canvas *)g))
+            canvas_statesavers_doit((t_glist *)g, b);
 }
 
 void canvas_saved(t_glist *x, t_symbol *s, int argc, t_atom *argv)
@@ -84,6 +86,8 @@ void canvas_saved(t_glist *x, t_symbol *s, int argc, t_atom *argv)
     for (g = x->gl_list; g; g = g->g_next)
         if (g->g_pd == savestate_class)
             outlet_list(((t_savestate *)g)->x_stateout, 0, argc, argv);
+        else if (g->g_pd == canvas_class && !canvas_isabstraction((t_canvas *)g))
+            canvas_saved((t_glist *)g, s, argc, argv);
 }
 
 static t_class *declare_class;
