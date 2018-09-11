@@ -546,13 +546,16 @@ static void equal_free(t_equal *x)
 
 static void equal_pointer(t_equal *x, t_gpointer *gp)
 {
+    int result;
     if (!gpointer_check(&x->x_gp, 1))
     {
         pd_error(x, "equal: empty pointer");
         return;
     }
     /* we don't care for the actual type in the union because they are all pointers */
-    outlet_float(x->x_obj.ob_outlet, gp->gp_un.gp_scalar == x->x_gp.gp_un.gp_scalar);
+    result = (gp->gp_stub->gs_un.gs_glist == x->x_gp.gp_stub->gs_un.gs_glist) &&
+        (gp->gp_un.gp_scalar == x->x_gp.gp_un.gp_scalar);
+    outlet_float(x->x_obj.ob_outlet, result);
 }
 
 static void equal_setup(void)
