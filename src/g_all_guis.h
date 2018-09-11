@@ -3,7 +3,6 @@
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution. */
 /* g_7_guis.h written by Thomas Musil (c) IEM KUG Graz Austria 2000-2001 */
 
-
 #define IEM_GUI_COLNR_WHITE          0
 #define IEM_GUI_COLNR_ML_GREY        1
 #define IEM_GUI_COLNR_D_GREY         2
@@ -43,16 +42,16 @@
 #define IEM_GUI_MAX_COLOR            30
 
 #define IEM_GUI_DEFAULTSIZE 15
-#define IEM_GUI_MINSIZE 8
-#define IEM_GUI_MAXSIZE 1000
-#define IEM_SL_DEFAULTSIZE 128
-#define IEM_SL_MINSIZE 2
-#define IEM_FONT_MINSIZE 4
+#define IEM_GUI_MINSIZE     8
+#define IEM_GUI_MAXSIZE     1000
+#define IEM_SL_DEFAULTSIZE  128
+#define IEM_SL_MINSIZE      2
+#define IEM_FONT_MINSIZE    4
 
-#define IEM_BNG_DEFAULTHOLDFLASHTIME 250
+#define IEM_BNG_DEFAULTHOLDFLASHTIME  250
 #define IEM_BNG_DEFAULTBREAKFLASHTIME 50
-#define IEM_BNG_MINHOLDFLASHTIME 50
-#define IEM_BNG_MINBREAKFLASHTIME 10
+#define IEM_BNG_MINHOLDFLASHTIME      50
+#define IEM_BNG_MINBREAKFLASHTIME     10
 
 #define IEM_VU_DEFAULTSIZE 3
 #define IEM_VU_LARGESMALL  2
@@ -60,11 +59,11 @@
 #define IEM_VU_MAXSIZE     25
 #define IEM_VU_STEPS       40
 
-#define IEM_VU_MINDB    -99.9
-#define IEM_VU_MAXDB    12.0
-#define IEM_VU_OFFSET   100.0
+#define IEM_VU_MINDB  -99.9
+#define IEM_VU_MAXDB  12.0
+#define IEM_VU_OFFSET 100.0
 
-#define IEM_RADIO_MAX   128
+#define IEM_RADIO_MAX 128
 
 #define IEM_SYM_UNIQUE_SND  256
 #define IEM_SYM_UNIQUE_RCV  512
@@ -72,7 +71,7 @@
 #define IEM_SYM_UNIQUE_ALL  1792
 #define IEM_FONT_STYLE_ALL  255
 
-#define IEM_MAX_SYM_LEN      127
+#define IEM_MAX_SYM_LEN 127
 
 #define IEM_GUI_DRAW_MODE_UPDATE 0
 #define IEM_GUI_DRAW_MODE_MOVE   1
@@ -82,6 +81,7 @@
 #define IEM_GUI_DRAW_MODE_CONFIG 5
 #define IEM_GUI_DRAW_MODE_IO     6
 
+#define IEM_GUI_IOHEIGHT 2
 
 #define IS_A_POINTER(atom,index) ((atom+index)->a_type == A_POINTER)
 #define IS_A_FLOAT(atom,index) ((atom+index)->a_type == A_FLOAT)
@@ -277,18 +277,9 @@ extern char *iemgui_vu_scale_str[];
 
 EXTERN int iemgui_clip_size(int size);
 EXTERN int iemgui_clip_font(int size);
-EXTERN t_symbol *iemgui_unique2dollarzero(t_symbol *s, int unique_num, int and_unique_flag);
-EXTERN t_symbol *iemgui_sym2dollararg(t_symbol *s, int nth_arg, int tail_len);
-EXTERN t_symbol *iemgui_dollarzero2unique(t_symbol *s, int unique_num);
 EXTERN t_symbol *iemgui_dollararg2sym(t_symbol *s, int nth_arg, int tail_len, int pargc, t_atom *pargv);
-EXTERN int iemgui_is_dollarzero(t_symbol *s);
-EXTERN int iemgui_is_dollararg(t_symbol *s, int *tail_len);
-EXTERN void iemgui_fetch_unique(t_iemgui *iemgui);
-EXTERN void iemgui_fetch_parent_args(t_iemgui *iemgui, int *pargc, t_atom **pargv);
 EXTERN void iemgui_verify_snd_ne_rcv(t_iemgui *iemgui);
-EXTERN void iemgui_all_unique2dollarzero(t_iemgui *iemgui, t_symbol **srlsym);
 EXTERN void iemgui_all_sym2dollararg(t_iemgui *iemgui, t_symbol **srlsym);
-EXTERN void iemgui_all_dollarzero2unique(t_iemgui *iemgui, t_symbol **srlsym);
 EXTERN t_symbol *iemgui_new_dogetname(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_new_getnames(t_iemgui *iemgui, int indx, t_atom *argv);
 EXTERN void iemgui_all_dollararg2sym(t_iemgui *iemgui, t_symbol **srlsym);
@@ -304,7 +295,6 @@ EXTERN void iemgui_size(void *x, t_iemgui *iemgui);
 EXTERN void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av);
 EXTERN void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av);
 EXTERN void iemgui_color(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av);
-EXTERN int iemgui_list(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av);
 EXTERN void iemgui_displace(t_gobj *z, t_glist *glist, int dx, int dy);
 EXTERN void iemgui_select(t_gobj *z, t_glist *glist, int selected);
 EXTERN void iemgui_delete(t_gobj *z, t_glist *glist);
@@ -316,7 +306,6 @@ EXTERN void iemgui_properties(t_iemgui *iemgui, t_symbol **srl);
 EXTERN int iemgui_dialog(t_iemgui *iemgui, t_symbol **srl, int argc, t_atom *argv);
 
 EXTERN int canvas_getdollarzero(void);
-EXTERN void canvas_getargs(int *argcp, t_atom **argvp);
 
 EXTERN void iem_inttosymargs(t_iem_init_symargs *symargp, int n);
 EXTERN int iem_symargstoint(t_iem_init_symargs *symargp);

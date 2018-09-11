@@ -51,20 +51,20 @@ empty=
 # these files go into libpddir defined above
 # to regenerate:
 # cd doc
-# find . -type f  | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
+# find . -type f -not -path "./Makefile*" | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
 nobase_dist_libpd_DATA = \
      ./1.manual/1.introduction.txt \
-     ./1.manual/fig11.1.png \
-     ./1.manual/fig11.2.png \
-     ./1.manual/fig11.3.png \
-     ./1.manual/fig11.4.png \
      ./1.manual/fig1.1.png \
      ./1.manual/fig1.2.jpg \
      ./1.manual/fig1.3.jpg \
      ./1.manual/fig1.4.png \
      ./1.manual/fig1.5.jpg \
-     ./1.manual/fig3.10.jpg \
+     ./1.manual/fig11.1.png \
+     ./1.manual/fig11.2.png \
+     ./1.manual/fig11.3.png \
+     ./1.manual/fig11.4.png \
      ./1.manual/fig3.1.jpg \
+     ./1.manual/fig3.10.jpg \
      ./1.manual/fig3.2.jpg \
      ./1.manual/fig3.3.jpg \
      ./1.manual/fig3.4.jpg \
@@ -121,8 +121,8 @@ nobase_dist_libpd_DATA = \
      ./2.control.examples/22.random-walk.pd \
      ./2.control.examples/23.sequencing.pd \
      ./2.control.examples/24.loops.pd \
-     ./2.control.examples/dollarsign2.pd \
      ./2.control.examples/dollarsign.pd \
+     ./2.control.examples/dollarsign2.pd \
      ./2.control.examples/sendnumber.pd \
      ./3.audio.examples/A00.intro.pd \
      ./3.audio.examples/A00.intro.txt \
@@ -136,7 +136,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/A08.beating.pd \
      ./3.audio.examples/A09.frequency.mod.pd \
      ./3.audio.examples/A10.review.pd \
-     ./3.audio.examples/adsr.pd \
      ./3.audio.examples/B01.wavetables.pd \
      ./3.audio.examples/B02.two-wavetables.pd \
      ./3.audio.examples/B03.tabread4.pd \
@@ -153,8 +152,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/B14.sampler.rockafella.pd \
      ./3.audio.examples/B15.tabread4~-onset.pd \
      ./3.audio.examples/B16.long-varispeed.pd \
-     ./3.audio.examples/buttercoef3.pd \
-     ./3.audio.examples/butterworth3~.pd \
      ./3.audio.examples/C01.nyquist.pd \
      ./3.audio.examples/C02.sawtooth-foldover.pd \
      ./3.audio.examples/C03.zipper.noise.pd \
@@ -203,8 +200,6 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/F12.paf.pd \
      ./3.audio.examples/F13.paf.control.pd \
      ./3.audio.examples/F14.wave.packet.pd \
-     ./3.audio.examples/filter-graph1.pd \
-     ./3.audio.examples/filter-graph2.pd \
      ./3.audio.examples/G01.delay.pd \
      ./3.audio.examples/G02.delay.loop.pd \
      ./3.audio.examples/G03.delay.variable.pd \
@@ -249,15 +244,20 @@ nobase_dist_libpd_DATA = \
      ./3.audio.examples/J07.oversampling.pd \
      ./3.audio.examples/J08.classicsynth.pd \
      ./3.audio.examples/J09.bandlimited.pd \
+     ./3.audio.examples/adsr.pd \
+     ./3.audio.examples/buttercoef3.pd \
+     ./3.audio.examples/butterworth3~.pd \
+     ./3.audio.examples/filter-graph1.pd \
+     ./3.audio.examples/filter-graph2.pd \
      ./3.audio.examples/osc-voice.pd \
      ./3.audio.examples/output~.pd \
      ./3.audio.examples/partial.pd \
-     ./3.audio.examples/qlist2.txt \
      ./3.audio.examples/qlist-sampler.txt \
      ./3.audio.examples/qlist.txt \
+     ./3.audio.examples/qlist2.txt \
      ./3.audio.examples/reverb-echo.pd \
-     ./3.audio.examples/sampvoice2.pd \
      ./3.audio.examples/sampvoice.pd \
+     ./3.audio.examples/sampvoice2.pd \
      ./3.audio.examples/shepvoice.pd \
      ./3.audio.examples/sinevoice.pd \
      ./3.audio.examples/spectrum-partial.pd \
@@ -287,30 +287,30 @@ nobase_dist_libpd_DATA = \
      ./4.data.structures/z.txt \
      ./5.reference/0_all_guis-INTRO.txt \
      ./5.reference/abs~-help.pd \
-     ./5.reference/acoustics~-help.pd \
      ./5.reference/acoustics-help.pd \
+     ./5.reference/acoustics~-help.pd \
      ./5.reference/adc~_dac~-help.pd \
      ./5.reference/append-help.pd \
      ./5.reference/array-object-help.pd \
      ./5.reference/array-object-help.txt \
      ./5.reference/bag-help.pd \
-     ./5.reference/bang~-help.pd \
      ./5.reference/bang-help.pd \
+     ./5.reference/bang~-help.pd \
      ./5.reference/biquad~-help.pd \
      ./5.reference/block~-help.pd \
      ./5.reference/bng-help.pd \
      ./5.reference/bp~-help.pd \
      ./5.reference/canvas-help.pd \
      ./5.reference/change-help.pd \
-     ./5.reference/clip~-help.pd \
      ./5.reference/clip-help.pd \
+     ./5.reference/clip~-help.pd \
      ./5.reference/clone-help.pd \
      ./5.reference/clone-subpatch.pd \
      ./5.reference/cos~-help.pd \
      ./5.reference/cpole~-help.pd \
      ./5.reference/cputime-help.pd \
-     ./5.reference/czero~-help.pd \
      ./5.reference/czero_rev~-help.pd \
+     ./5.reference/czero~-help.pd \
      ./5.reference/declare-help.pd \
      ./5.reference/delay-help.pd \
      ./5.reference/delread4~-help.pd \
@@ -320,8 +320,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/drawtext-help.pd \
      ./5.reference/element-help.pd \
      ./5.reference/env~-help.pd \
-     ./5.reference/exp~-help.pd \
      ./5.reference/expr-help.pd \
+     ./5.reference/exp~-help.pd \
      ./5.reference/fft~-help.pd \
      ./5.reference/float-help.pd \
      ./5.reference/framp~-help.pd \
@@ -338,8 +338,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/hslider-help.pd \
      ./5.reference/int-help.pd \
      ./5.reference/key-help.pd \
-     ./5.reference/line~-help.pd \
      ./5.reference/line-help.pd \
+     ./5.reference/line~-help.pd \
      ./5.reference/list-help.pd \
      ./5.reference/loadbang-help.pd \
      ./5.reference/log~-help.pd \
@@ -360,8 +360,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/openpanel-help.pd \
      ./5.reference/operators-help.pd \
      ./5.reference/oscformat-help.pd \
-     ./5.reference/osc~-help.pd \
      ./5.reference/oscparse-help.pd \
+     ./5.reference/osc~-help.pd \
      ./5.reference/otherbinops-help.pd \
      ./5.reference/out1~.pd \
      ./5.reference/pack-help.pd \
@@ -372,8 +372,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/pointer-help.pd \
      ./5.reference/poly-help.pd \
      ./5.reference/pow~-help.pd \
-     ./5.reference/print~-help.pd \
      ./5.reference/print-help.pd \
+     ./5.reference/print~-help.pd \
      ./5.reference/qlist-help.pd \
      ./5.reference/qlist.txt \
      ./5.reference/random-help.pd \
@@ -383,15 +383,15 @@ nobase_dist_libpd_DATA = \
      ./5.reference/route-help.pd \
      ./5.reference/rpole~-help.pd \
      ./5.reference/rsqrt~-help.pd \
-     ./5.reference/rzero~-help.pd \
      ./5.reference/rzero_rev~-help.pd \
+     ./5.reference/rzero~-help.pd \
      ./5.reference/samphold~-help.pd \
      ./5.reference/samplerate~-help.pd \
      ./5.reference/savepanel-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
-     ./5.reference/send~-help.pd \
      ./5.reference/send-help.pd \
+     ./5.reference/send~-help.pd \
      ./5.reference/set-help.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
@@ -409,19 +409,19 @@ nobase_dist_libpd_DATA = \
      ./5.reference/table.txt \
      ./5.reference/tabosc4~-help.pd \
      ./5.reference/tabplay~-help.pd \
-     ./5.reference/tabread4~-help.pd \
-     ./5.reference/tabread4-help.pd \
-     ./5.reference/tabread~-help.pd \
      ./5.reference/tabread-help.pd \
+     ./5.reference/tabread4-help.pd \
+     ./5.reference/tabread4~-help.pd \
+     ./5.reference/tabread~-help.pd \
      ./5.reference/tabreceive~-help.pd \
      ./5.reference/tabsend~-help.pd \
-     ./5.reference/tabwrite~-help.pd \
      ./5.reference/tabwrite-help.pd \
-     ./5.reference/textfile-help.pd \
-     ./5.reference/textfile.txt \
+     ./5.reference/tabwrite~-help.pd \
      ./5.reference/text-help.pd \
      ./5.reference/text-object-help.pd \
      ./5.reference/text-object-help.txt \
+     ./5.reference/textfile-help.pd \
+     ./5.reference/textfile.txt \
      ./5.reference/threshold~-help.pd \
      ./5.reference/throw~-help.pd \
      ./5.reference/timer-help.pd \
@@ -462,22 +462,24 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/soundfile-tools/6.vocoder.pd \
      ./7.stuff/soundfile-tools/README.txt \
      ./7.stuff/synth/1.poly.synth.pd \
+     ./7.stuff/synth/README.txt \
      ./7.stuff/synth/gadsr.pd \
      ./7.stuff/synth/numset.pd \
+     ./7.stuff/synth/preset.pd \
      ./7.stuff/synth/preset1.txt \
      ./7.stuff/synth/preset2.txt \
      ./7.stuff/synth/preset3.txt \
      ./7.stuff/synth/preset4.txt \
-     ./7.stuff/synth/preset.pd \
-     ./7.stuff/synth/README.txt \
      ./7.stuff/synth/synthvoice.pd \
      ./7.stuff/synth/test-gadsr.pd \
      ./7.stuff/tools/latency.pd \
      ./7.stuff/tools/load-meter.pd \
-     ./7.stuff/tools/testtone16.pd \
+     ./7.stuff/tools/miditester.pd \
+     ./7.stuff/tools/sizingtest.pd \
      ./7.stuff/tools/testtone.pd \
+     ./7.stuff/tools/testtone16.pd \
      ./Makefile.am \
      ./sound/bell.aiff \
-     ./sound/voice2.wav \
      ./sound/voice.wav \
+     ./sound/voice2.wav \
      $(empty)

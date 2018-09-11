@@ -41,6 +41,8 @@ proc ::helpbrowser::open_helpbrowser {} {
         # hit up, down, or Tab after browser opens to focus on first listbox
         bind .helpbrowser <KeyRelease-Up> "focus .helpbrowser.frame.root0"
         bind .helpbrowser <KeyRelease-Down> "focus .helpbrowser.frame.root0"
+
+        position_over_window .helpbrowser .pdwindow
     }
 }
 

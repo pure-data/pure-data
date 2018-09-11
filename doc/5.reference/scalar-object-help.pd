@@ -1,10 +1,10 @@
 #N canvas 558 349 688 433 12;
 #X text 34 388 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 930 175 716 699 define 0;
+#N canvas 68 60 716 699 define 0;
 #X text 324 399 creation arguments:;
 #X text 217 152 send a pointer to a named receive object;
-#X floatatom 145 299 5 0 0 0 - - -, f 5;
+#X floatatom 145 299 5 0 0 0 - - -;
 #X text 46 408 click to open or edit array:;
 #X msg 31 116 read scalar-object-help.txt;
 #X text 258 117 read/write a file TBW;
@@ -23,10 +23,10 @@
 #X connect 3 0 5 2;
 #X connect 4 0 5 0;
 #X restore 471 57 pd scalar-help-template1;
-#X floatatom 404 244 3 0 500 0 - - -, f 3;
+#X floatatom 404 244 3 0 500 0 - - -;
 #X obj 506 244 r scalar-help-send;
 #X obj 405 282 set scalar-help-template1 x y;
-#X floatatom 458 244 3 0 500 0 - - -, f 3;
+#X floatatom 458 244 3 0 500 0 - - -;
 #X text 32 20 "scalar define" defines and maintains a scalar.;
 #X text 471 29 here's the template:;
 #X obj 145 324 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
@@ -35,6 +35,12 @@
 #X obj 27 435 scalar define -k scalar-help-template1;
 #A set scalar-help-template1 175 150 \;;
 #X text 360 435 optional -k flag to keep contents;
+#X obj 48 188 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X text 74 187 bang to output a pointer to the scalar, f 45;
+#X obj 27 505 get scalar-help-template1 x y;
+#X floatatom 27 529 5 0 0 0 - - -;
+#X floatatom 225 529 5 0 0 0 - - -;
 #X connect 2 0 17 0;
 #X connect 4 0 19 0;
 #X connect 6 0 9 0;
@@ -43,6 +49,10 @@
 #X connect 12 0 13 2;
 #X connect 14 0 13 1;
 #X connect 18 0 19 0;
+#X connect 19 0 23 0;
+#X connect 21 0 19 0;
+#X connect 23 0 24 0;
+#X connect 23 1 25 0;
 #X restore 486 212 pd define;
 #X obj 163 388 text;
 #X text 201 210 - create \, store \, and/or edit one;
@@ -57,4 +67,4 @@
 #X text 101 57 experimental - doesn't do much yet. This is included
 in 0.45 to check that its design will work coherently with the array
 and text objects.;
-#X text 444 398 updated for Pd version 0.45;
+#X text 444 398 updated for Pd version 0.49;

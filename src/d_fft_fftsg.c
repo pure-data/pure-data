@@ -36,19 +36,18 @@ void rdft(int, int, FFTFLT *, int *, FFTFLT *);
 
 int ilog2(int n);
 
-static int ooura_maxn;
-static int *ooura_bitrev;
-static int ooura_bitrevsize;
-static FFTFLT *ooura_costab;
+static PERTHREAD int ooura_maxn;
+static PERTHREAD int *ooura_bitrev;
+static PERTHREAD int ooura_bitrevsize;
+static PERTHREAD FFTFLT *ooura_costab;
 
 static int ooura_init( int n)
 {
     n = (1 << ilog2(n));
-    if (n < 64)
+    if (n < 4)
         return (0);
     if (n > ooura_maxn)
     {
-        pd_globallock();
         if (n > ooura_maxn)    /* recheck in case it got set while we waited */
         {
             if (ooura_maxn)
@@ -63,7 +62,6 @@ static int ooura_init( int n)
             {
                 error("out of memory allocating FFT buffer");
                 ooura_maxn = 0;
-                pd_globalunlock();
                 return (0);
             }
             ooura_costab = (FFTFLT *)t_getbytes(n * sizeof(FFTFLT)/2);
@@ -72,17 +70,43 @@ static int ooura_init( int n)
                 error("out of memory allocating FFT buffer");
                 t_freebytes(ooura_bitrev, ooura_bitrevsize);
                 ooura_maxn = 0;
-                pd_globalunlock();
                 return (0);
             }
             ooura_maxn = n;
             ooura_bitrev[0] = 0;
         }
-        pd_globalunlock();
     }
     return (1);
 }
 
+static void ooura_term() {
+  if (!ooura_maxn)
+    return;
+  t_freebytes(ooura_bitrev, ooura_bitrevsize);
+  t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT)/2);
+  ooura_maxn = 0;
+  ooura_bitrev = 0;
+  ooura_bitrevsize = 0;
+  ooura_costab = 0;
+}
+
+/* -------- initialization and cleanup -------- */
+static int mayer_refcount = 0;
+
+void mayer_init()
+{
+    if (mayer_refcount == 0)
+        /* nothing to do */;
+    mayer_refcount++;
+}
+
+void mayer_term()
+{
+    if (--mayer_refcount == 0)  /* clean up */
+        ooura_term();
+}
+
+/* -------- public routines -------- */
 EXTERN void mayer_fht(t_sample *fz, int n)
 {
     post("FHT: not yet implemented");

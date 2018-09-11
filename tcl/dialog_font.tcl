@@ -31,6 +31,8 @@ proc ::dialog_font::apply {mytoplevel myfontsize} {
         if {[lsearch [font names] TkMenuFont] >= 0} {
             font configure TkMenuFont -size -$myfontsize
         }
+        .pdwindow.text.internal configure -font "-size -$myfontsize"
+
 # repeat a "pack" command so the font dialog can resize itself
         pack .font.buttonframe -side bottom -fill x -pady 2m
 
@@ -99,7 +101,6 @@ proc ::dialog_font::create_dialog {gfxstub} {
     .font configure -padx 10 -pady 5
     wm group .font .
     wm title .font [_ "Font"]
-#    wm resizable .font 0 0
     wm transient .font $::focused_window
     ::pd_bindings::dialog_bindings .font "font"
     # replace standard bindings to work around the gfxstub stuff and use
@@ -150,10 +151,11 @@ proc ::dialog_font::create_dialog {gfxstub} {
 
     # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
-
         # since we show the active focus, disable the highlight outline
         .font.buttonframe.ok config -highlightthickness 0
     }
+
+    position_over_window .font $::focused_window
 
     # wait a little for creation, then raise so it's on top
     after 100 raise .font

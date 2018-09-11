@@ -1,51 +1,61 @@
-#N canvas 86 76 548 648 12;
-#X floatatom 288 319 0 0 0 0 - - -;
-#X floatatom 231 405 0 0 0 0 - - -;
-#X floatatom 231 318 0 0 0 0 - - -;
-#X floatatom 293 574 0 0 0 0 - - -;
-#X floatatom 293 513 0 0 0 0 - - -;
-#X floatatom 197 574 0 0 0 0 - - -;
-#X floatatom 197 513 0 0 0 0 - - -;
-#X floatatom 129 574 0 0 0 0 - - -;
-#X floatatom 129 513 0 0 0 0 - - -;
-#X floatatom 122 382 0 0 0 0 - - -;
-#X floatatom 122 321 0 0 0 0 - - -;
-#X floatatom 42 574 0 0 0 0 - - -;
-#X floatatom 42 513 0 0 0 0 - - -;
-#X floatatom 223 242 0 0 0 0 - - -;
-#X floatatom 140 238 0 0 0 0 - - -;
-#X obj 71 208 sin;
-#X floatatom 71 123 0 0 0 0 - - -;
-#X floatatom 71 236 0 0 0 0 - - -;
-#X obj 71 175 * 6.28319;
-#X obj 71 149 / 360;
-#X obj 140 210 cos;
-#X obj 223 214 tan;
-#X obj 42 544 sqrt;
-#X obj 122 352 atan;
-#X obj 129 544 log;
-#X obj 197 544 exp;
-#X obj 293 544 abs;
-#X obj 231 346 float;
-#X obj 288 346 t b f;
-#X obj 231 375 atan2;
-#X text 29 269 The arc tangent takes two forms. The atan2 version takes
-an (x \, y) pair and gives you an output between -pi and pi.;
-#X floatatom 393 574 0 0 0 0 - - -;
-#X floatatom 393 513 0 0 0 0 - - -;
-#X obj 393 544 wrap;
-#X text 39 433 also \, square root \, natural logarithm and exponential
-\, and absolute value. The "wrap" object wraps the input to a value
-between 0 and 1 (including negative numbers. For instance \, -0.2 maps
-to 0.8.);
-#X text 16 87 Unlike the signal version cos~ \, control-rate trig functions
-take inputs in radians:;
-#X text 311 612 updated for Pd version 0.46;
-#X text 11 612 see also:;
-#X obj 99 611 cos~;
-#X text 19 37 Pd offers the mathematical functions sin \, cos \, tan
-\, atan \, atan2 \, sqrt \, log \, exp \, abs \, and wrap.;
+#N canvas 569 23 552 702 12;
+#X floatatom 325 318 0 0 0 0 - - -;
+#X floatatom 268 402 0 0 0 0 - - -;
+#X floatatom 268 317 0 0 0 0 - - -;
+#X floatatom 108 613 0 0 0 0 - - -;
+#X floatatom 108 552 0 0 0 0 - - -;
+#X floatatom 251 613 0 0 0 0 - - -;
+#X floatatom 251 552 0 0 0 0 - - -;
+#X floatatom 325 613 0 0 0 0 - - -;
+#X floatatom 325 552 0 0 0 0 - - -;
+#X floatatom 159 388 0 0 0 0 - - -;
+#X floatatom 159 327 0 0 0 0 - - -;
+#X floatatom 174 613 0 0 0 0 - - -;
+#X floatatom 174 552 0 0 0 0 - - -;
+#X floatatom 293 220 0 0 0 0 - - -;
+#X floatatom 210 222 0 0 0 0 - - -;
+#X obj 141 192 sin;
+#X floatatom 210 107 0 0 0 0 - - -;
+#X floatatom 141 220 0 0 0 0 - - -;
+#X obj 210 159 * 6.28319;
+#X obj 210 133 / 360;
+#X obj 210 194 cos;
+#X obj 293 192 tan;
+#X obj 174 583 sqrt;
+#X obj 159 358 atan;
+#X obj 325 583 log;
+#X obj 251 583 exp;
+#X obj 108 583 abs;
+#X obj 268 345 float;
+#X obj 325 345 t b f;
+#X obj 268 374 atan2;
+#X text 29 265 The arc tangent takes two forms. The atan2 version takes
+an (x \, y) pair and gives you an output between -pi and pi., f 70
+;
+#X floatatom 35 613 0 0 0 0 - - -;
+#X floatatom 35 552 0 0 0 0 - - -;
+#X obj 35 583 wrap;
+#X text 398 187 see also:;
+#X obj 430 212 cos~;
 #X text 174 6 math function in Pd;
+#X floatatom 361 552 0 0 0 0 - - -;
+#X text 16 37 Pd offers the mathematical functions sin \, cos \, tan
+\, atan \, atan2 \, sqrt \, log \, exp \, abs \, and wrap. Unlike the
+signal version cos~ \, control-rate trig functions take inputs in radians:
+, f 72;
+#X text 431 535 see also:;
+#X obj 428 563 wrap~;
+#X obj 435 588 abs~;
+#X obj 453 613 sqrt~;
+#X obj 477 563 exp~;
+#X obj 478 588 log~;
+#X text 36 433 We also have wrap \, absolute value \, square root \,
+exponential and logarithms \, all of which have corresponding signal
+versions. The "wrap" object wraps the input to a value between 0 and
+1 \, including negative numbers (for instance \, -0.2 maps to 0.8.).
+As in the signal version log~ \, log takes a base value via an argument
+or the right inlet \, but it defaults to "e"., f 69;
+#X text 316 661 updated for Pd version 0.49;
 #X connect 0 0 28 0;
 #X connect 2 0 27 0;
 #X connect 4 0 26 0;
@@ -72,3 +82,4 @@ take inputs in radians:;
 #X connect 29 0 1 0;
 #X connect 32 0 33 0;
 #X connect 33 0 31 0;
+#X connect 37 0 24 1;
