@@ -3,12 +3,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.48-0\n"
+"Project-Id-Version: Pure Data 0.49-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2018-09-04 10:00+0200\n"
+"PO-Revision-Date: 2018-09-11 10:00+0200\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
-"Baptiste Chatel / JP Cimalando\n"
+"Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -791,7 +791,7 @@ msgid "Open webpage"
 msgstr "Ouvrir une page web"
 
 msgid "_"
-msgstr ""
+msgstr "_"
 
 #, tcl-format
 msgid ""
@@ -844,7 +844,7 @@ msgid "Print..."
 msgstr "Imprimer..."
 
 msgid "Paste Replace"
-msgstr ""
+msgstr "Coller Remplacer"
 
 msgid "Duplicate"
 msgstr "Dupliquer"
@@ -858,12 +858,11 @@ msgstr "Dézoomer"
 msgid "Tidy Up"
 msgstr "Aligner"
 
-#, fuzzy
 msgid "(Dis)Connect Selection"
-msgstr "Connecter la sélection"
+msgstr "(Dé)Connecter la sélection"
 
 msgid "Triggerize"
-msgstr ""
+msgstr "Triggeriser"
 
 msgid "Edit Mode"
 msgstr "Mode d'édition"
