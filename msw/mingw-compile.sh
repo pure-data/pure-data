@@ -20,7 +20,7 @@ if cp ../../../drive_c/users/msp/pd/bin/pd.lib ../bin/
         then echo -n ; else exit 1; fi
 
 cd ../extra
-for i in  bonk~ choice fiddle~ loop~ lrshift~ pique sigmund~ stdout pd~\
+for i in  bonk~ choice fiddle~ loop~ lrshift~ pique sigmund~ stdout paf~ pd~\
    bob~;
 do
   echo extern ----------------- $i -----------------

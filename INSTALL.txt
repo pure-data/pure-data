@@ -425,6 +425,7 @@ each external in the extra directory:
     make pd_nt
     cd ../bonk~ && make pd_nt
     cd ../choice && make pd_nt
+    cd ../paf~ && make pd_nt
     cd ../fiddle~ && make pd_nt
     ...
 

@@ -531,6 +531,7 @@ AC_CONFIG_FILES([Makefile
                 extra/fiddle~/GNUmakefile
                 extra/loop~/GNUmakefile
                 extra/lrshift~/GNUmakefile
+                extra/paf~/GNUmakefile
                 extra/pd~/GNUmakefile
                 extra/pique/GNUmakefile
                 extra/sigmund~/GNUmakefile
