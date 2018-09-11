@@ -3022,6 +3022,30 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         keynum = 0, gotkeysym = gensym("Prior");
     else if (keynum == 63277)
         keynum = 0, gotkeysym = gensym("Next");
+    else if (keynum == 63236)
+        keynum = 0, gotkeysym = gensym("F1");
+    else if (keynum == 63237)
+        keynum = 0, gotkeysym = gensym("F2");
+    else if (keynum == 63238)
+        keynum = 0, gotkeysym = gensym("F3");
+    else if (keynum == 63239)
+        keynum = 0, gotkeysym = gensym("F4");
+    else if (keynum == 63240)
+        keynum = 0, gotkeysym = gensym("F5");
+    else if (keynum == 63241)
+        keynum = 0, gotkeysym = gensym("F6");
+    else if (keynum == 63242)
+        keynum = 0, gotkeysym = gensym("F7");
+    else if (keynum == 63243)
+        keynum = 0, gotkeysym = gensym("F8");
+    else if (keynum == 63244)
+        keynum = 0, gotkeysym = gensym("F9");
+    else if (keynum == 63245)
+        keynum = 0, gotkeysym = gensym("F10");
+    else if (keynum == 63246)
+        keynum = 0, gotkeysym = gensym("F11");
+    else if (keynum == 63247)
+        keynum = 0, gotkeysym = gensym("F12");
     if (gensym("#key")->s_thing && down)
         pd_float(gensym("#key")->s_thing, (t_float)keynum);
     if (gensym("#keyup")->s_thing && !down)
