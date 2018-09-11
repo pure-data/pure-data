@@ -520,46 +520,46 @@ static void ptrobj_setup(void)
     class_addbang(ptrobj_class, ptrobj_bang);
 }
 
-/*----------------------- compare ------------------------- */
+/*----------------------- equal ------------------------- */
 
-static t_class *compare_class;
+static t_class *equal_class;
 
-typedef struct _compare
+typedef struct _equal
 {
     t_object x_obj;
     t_gpointer x_gp;
-} t_compare;
+} t_equal;
 
-static void *compare_new(t_symbol *classname, int argc, t_atom *argv)
+static void *equal_new(t_symbol *classname, int argc, t_atom *argv)
 {
-    t_compare *x = (t_compare *)pd_new(compare_class);
+    t_equal *x = (t_equal *)pd_new(equal_class);
     gpointer_init(&x->x_gp);
     pointerinlet_new(&x->x_obj, &x->x_gp);
     outlet_new(&x->x_obj, 0);
     return (x);
 }
 
-static void compare_free(t_compare *x)
+static void equal_free(t_equal *x)
 {
     gpointer_unset(&x->x_gp);
 }
 
-static void compare_pointer(t_compare *x, t_gpointer *gp)
+static void equal_pointer(t_equal *x, t_gpointer *gp)
 {
     if (!gpointer_check(&x->x_gp, 1))
     {
-        pd_error(x, "compare: empty pointer");
+        pd_error(x, "equal: empty pointer");
         return;
     }
     /* we don't care for the actual type in the union because they are all pointers */
     outlet_float(x->x_obj.ob_outlet, gp->gp_un.gp_scalar == x->x_gp.gp_un.gp_scalar);
 }
 
-static void compare_setup(void)
+static void equal_setup(void)
 {
-    compare_class = class_new(gensym("compare"), (t_newmethod)compare_new,
-        (t_method)compare_free, sizeof(t_compare), 0, 0);
-    class_addpointer(compare_class, (t_method)compare_pointer);
+    equal_class = class_new(gensym("equal"), (t_newmethod)equal_new,
+        (t_method)equal_free, sizeof(t_equal), 0, 0);
+    class_addpointer(equal_class, (t_method)equal_pointer);
 }
 
 
@@ -1382,7 +1382,7 @@ static void append_setup(void)
 void g_traversal_setup(void)
 {
     ptrobj_setup();
-    compare_setup();
+    equal_setup();
     get_setup();
     set_setup();
     elem_setup();
