@@ -48,7 +48,7 @@ Options:
   -d,--download       download source to tcl{$VERSION}/tk{$VERSION} paths,
                       do not build
 
-  -s,--source         (re)build from tcl{$VERSION}/tk{$VERSION} source paths,
+  -b,--build          (re)build from tcl{$VERSION}/tk{$VERSION} source paths,
                       do not download
 
   -l,--leave          leave source paths, do not delete after building
@@ -75,6 +75,13 @@ Examples:
     # build Wish-8.6.6-git.app with embedded Tcl/Tl 8.6.6
     # from git using the core_8_6_6 tag in the master branch
     tcltk-wish.sh --git 8.6.6-git -b master core_8_6_6
+
+    # download the tcl8.5.19 and tk8.5.19 source paths, do not build
+    tcltk-wish.sh --download 8.5.19
+
+    # build from existing tcl8.5.19 and tk8.5.19 source paths, do not download
+    # note: --leave ensures the source trees are not deleted after building
+    tcltk-wish.sh --build --leave 8.5.19
 "
 }
 
