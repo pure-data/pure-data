@@ -399,15 +399,17 @@ static void ptrobj_delete(t_ptrobj *x)
 static void ptrobj_equal(t_ptrobj *x, t_gpointer *gp)
 {
     t_symbol *templatesym;
-    int n, which;
+    int n, which, result;
     t_typedout *to;
     if (!gpointer_check(&x->x_gp, 1))
     {
         pd_error(x, "pointer_bang: empty pointer");
         return;
     }
-    /* we don't care for the actual union type because they are all pointers */
-    if (x->x_gp.gp_un.gp_scalar != gp->gp_un.gp_scalar)
+    /* we don't care for the actual type in the union because they are all pointers */
+    result = (gp->gp_stub->gs_un.gs_glist == x->x_gp.gp_stub->gs_un.gs_glist) &&
+        (gp->gp_un.gp_scalar == x->x_gp.gp_un.gp_scalar);
+    if (!result)
     {
         outlet_bang(x->x_bangout);
         return;
