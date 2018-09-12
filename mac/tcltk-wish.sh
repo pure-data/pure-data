@@ -206,7 +206,7 @@ if [[ $PATCHES == true ]] ; then
     set +e
     for p in $(find ./patches -type f -name "tcl${TCLTK}*.patch") ; do
         cd tcl${TCLTK}
-        (patch -p0 -N --dry-run --silent --input "../${p}" > /dev/null 2>&1)
+        (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
         if [[ $? == 0 ]] ; then
             echo "==== Applying $p"
             patch -p1 < "../${p}"
