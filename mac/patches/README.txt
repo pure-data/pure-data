@@ -2,9 +2,10 @@
 
 This directory contains custom patches for the Tcl/Tk source trees.
 
-As uses an older version of Tcl/Tk for backwards compatibility on macOS, small bugfixes from newer versions may need to be backported for the Pd GUI. This is handled in the mac/tcltk-wish.sh script by applying custom patches in this directory to either the Tcl and/or Tk source trees.
+As Pd uses an older version of Tcl/Tk for backwards compatibility on macOS, small bugfixes from newer versions may need to be backported for the Pd GUI. This is handled in the mac/tcltk-wish.sh script by applying custom patches in this directory to either the Tcl and/or Tk source trees.
 
-A simple filename match is used: applied based on their initial naming:
+A simple filename match is used:
+
 * tcl${VERSION}*.patch -> applied to tcl${VERSION} source tree
 * tk${VERSION}*.patch  -> applied to tk${VERSION} source tree
 
