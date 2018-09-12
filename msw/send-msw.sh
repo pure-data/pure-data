@@ -56,14 +56,14 @@ if  ./mingw-compile.sh
 # installer using nsis.  Thanks to Roman Haefeli.
 
 cd $MSWDIR
-rm -f /tmp/pd-$1.windows-installer.exe /tmp/pd-$1.msw.zip
+rm -f /tmp/pd-$1-i386.windows-installer.exe /tmp/pd-$1-i386.msw.zip
 
 rm -rf /tmp/zz
 mkdir /tmp/zz
-(cd /tmp/zz; unzip ../pd-out.zip)
-./build-nsi.sh  /tmp/zz/pd $1
+(cd /tmp/zz; unzip ../pd-out.zip; mv pd pd-$1-i386)
+./build-nsi.sh  /tmp/zz/pd-$1-i386 $1-i386
 
-mv /tmp/pd-out.zip /tmp/pd-$1.msw.zip
-ls -l /tmp/pd-$1.windows-installer.exe /tmp/pd-$1.msw.zip
+(cd /tmp/zz; zip -r /tmp/pd-$1-i386.msw.zip pd-$1-i386)
+ls -l /tmp/pd-$1-i386.windows-installer.exe /tmp/pd-$1-i386.msw.zip
 
 exit 0
