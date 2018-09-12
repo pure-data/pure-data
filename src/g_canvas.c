@@ -1658,33 +1658,25 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv)
     for (i = 0; i < argc; i++)
     {
         const char *flag = atom_getsymbolarg(i, argc, argv)->s_name;
-        if (!strcmp(flag, "-path"))
+        if ((argc > i+1) && !strcmp(flag, "-path"))
         {
-            if(argc > i+1) {
-                canvas_path(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
-                i++;
-            }
+            canvas_path(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            i++;
         }
-        else if (!strcmp(flag, "-stdpath"))
+        else if ((argc > i+1) && !strcmp(flag, "-stdpath"))
         {
-            if(argc > i+1) {
-                canvas_stdpath(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
-                i++;
-            }
+            canvas_stdpath(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            i++;
         }
-        else if (!strcmp(flag, "-lib"))
+        else if ((argc > i+1) && !strcmp(flag, "-lib"))
         {
-            if(argc > i+1) {
-                canvas_lib(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
-                i++;
-            }
+            canvas_lib(x, e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            i++;
         }
-        else if (!strcmp(flag, "-stdlib"))
+        else if ((argc > i+1) && !strcmp(flag, "-stdlib"))
         {
-            if(argc > i+1) {
-                canvas_stdlib(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
-                i++;
-            }
+            canvas_stdlib(e, atom_getsymbolarg(i+1, argc, argv)->s_name);
+            i++;
         }
         else {
             canvas_path(x, e, flag);
