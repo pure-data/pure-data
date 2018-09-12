@@ -402,6 +402,15 @@ proc init_for_platform {} {
             set ::windowframey 0
             # TODO use 'winico' package for full, hicolor icon support
             wm iconbitmap . -default [file join $::sys_guidir pd.ico]
+            # load local font
+            if {[file exists [file join "$::sys_libdir" "font"]]} {
+                catch {
+                    load [file join "$::sys_libdir" "bin/pdfontloader.dll"]
+                    set path [file join "$::sys_libdir" "font/DejaVuSansMono.ttf"]
+                    pdfontloader::load $path
+                    ::pdwindow::verbose 0 "pdfontloader loaded [file tail $path]\n"
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "right_ptr"
             set ::cursor_runmode_clickme "arrow"
