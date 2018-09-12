@@ -667,6 +667,12 @@ int pa_send_dacs(void)
             error("successfully reopened audio device");
         else
             error("audio device not responding - closing audio.");
+        #ifdef _WIN32
+            error("check your hardware connection and reopen the device from the menu");
+        #else
+            /* TODO: find out why we can't reopen a hotplugged device on OSX */
+            error("please restart Pd");
+        #endif
         return SENDDACS_NO;
     } else
         return (rtnval);
