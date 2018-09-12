@@ -667,7 +667,7 @@ int pa_send_dacs(void)
         if (audio_isopen())
             error("successfully reopened audio device");
         else
-            error("audio device unresponsive! check your hardware connection and reopen it from the menu");
+            error("audio device not responding - closing audio.");
         return SENDDACS_NO;
     } else
         return (rtnval);
