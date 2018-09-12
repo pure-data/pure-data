@@ -5,6 +5,14 @@
 #
 # Check available versions at https://sourceforge.net/projects/tcl/files/Tcl
 #
+# This script relies on the unpacked source paths using the following naming:
+# * tcl: tcl${VERSION}, ie. tcl8.5.19
+# * tk:   tk${VERSION}, ie. tk8.5.19
+#
+# Custom tcl/tk source patches needed by Pd are found in the mac/patches
+# directory and are applied based on their initial naming: for example,
+# "tcl8.5.19_somefix.patch" is applied to the tcl8.5.19 source path
+#
 # References:
 # * http://www.tcl.tk/software/tcltk
 # * tk distribution macosx/README
@@ -21,6 +29,7 @@ GIT=false
 DOWNLOAD=true
 BUILD=true
 LEAVE=false
+PATCHES=true
 
 # set deployment target to enable weak-linking for older macOS version support
 CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
@@ -32,7 +41,8 @@ echo -e "
 Usage: tcltk-wish.sh [OPTIONS] VERSION
 
   Downloads and builds a Wish-VERSION.app for macOS
-  with the chosen Tcl/Tk framework version
+  with the chosen Tcl/Tk framework version,
+  optionally applies custom patches as needed by Pd
 
 Options:
   -h,--help           display this help message
@@ -52,6 +62,8 @@ Options:
                       do not download
 
   -l,--leave          leave source paths, do not delete after building
+
+  --no-patches        do not apply any local patches to the tcl or tk sources
 
 Arguments:
 
@@ -117,6 +129,9 @@ while [ "$1" != "" ] ; do
             ;;
         -l|--leave)
             LEAVE=true
+            ;;
+        --no-patches)
+            PATCHES=false
             ;;
         *)
             break ;;
@@ -184,6 +199,32 @@ if [[ $BUILD == false ]] ; then
     echo  "==== Downloaded sources to $tcldir $tkdir"
     exit 0
 fi
+
+# apply patches, note: this probably can't handle filenames with spaces
+# temp disable exit on error since the exit value of patch --dry-run is used
+if [[ $PATCHES == true ]] ; then
+    set +e
+    for p in $(find ./patches -type f -name "tcl${TCLTK}*.patch") ; do
+        cd tcl${TCLTK}
+        (patch -p0 -N --dry-run --silent --input "../${p}" > /dev/null 2>&1)
+        if [[ $? == 0 ]] ; then
+            echo "==== Applying $p"
+            patch -p1 < "../${p}"
+        fi
+        cd ../
+    done
+    for p in $(find ./patches -type f -name "tk${TCLTK}*.patch") ; do
+        cd tk${TCLTK}
+        (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
+        if [[ $? == 0  ]] ; then
+            echo "==== Applying $p"
+            patch -p1 < "../${p}"
+        fi
+        cd ../
+    done
+    set -e
+fi
+
 echo "==== Building Tcl/Tk Wish-$TCLTK.app"
 
 # set a specific arch
