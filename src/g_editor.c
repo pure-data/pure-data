@@ -2502,21 +2502,36 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             inindex = canvas_getindex(glist2, &t.tr_ob2->ob_g);
             if (shiftmod)
             {
-                    /* swap selected and hovered connection */
+                    /* if no line is selected, just add this line to the selection */
+                if(!x->gl_editor->e_selectedline)
+                {
+                    if (doit)
+                    {
+                        glist_selectline(glist2, oc,
+                            outindex, t.tr_outno,
+                            inindex, t.tr_inno);
+                    }
+                    canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                    return;
+                }
                 int soutindex = x->gl_editor->e_selectline_index1;
                 int sinindex = x->gl_editor->e_selectline_index2;
                 int soutno = x->gl_editor->e_selectline_outno;
                 int sinno = x->gl_editor->e_selectline_inno;
-                if(x->gl_editor->e_selectedline
-                   && ((outindex == soutindex)
-                       || (inindex == sinindex)))
+                        /* if the hovered line is already selected, deselect it */
+                if ((outindex == soutindex) && (inindex == sinindex)
+                    && (soutno == t.tr_outno) && (sinno == t.tr_inno))
                 {
-                            /* do not swap connection with itself */
-                    if (soutindex == outindex
-                        && sinindex == inindex
-                        && soutno == t.tr_outno
-                        && sinno == t.tr_inno)
-                        return;
+                    if(doit)
+                        glist_deselectline(x);
+                    canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                    return;
+                }
+
+                    /* swap selected and hovered connection */
+                if ((!x->gl_editor->e_selection)
+                    && ((outindex == soutindex) || (inindex == sinindex)))
+                {
                     if(doit)
                     {
                         canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
@@ -2539,9 +2554,10 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
             if (!shiftmod)
             {
-                    /* !shiftmode: select a new connection */
+                    /* !shiftmode: clear selection before selecting line */
                 if (doit)
                 {
+                    glist_noselect(x);
                     glist_selectline(glist2, oc,
                         outindex, t.tr_outno,
                         inindex, t.tr_inno);
