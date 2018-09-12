@@ -50,6 +50,9 @@ typedef int socklen_t;
 #include <stdlib.h>
 #endif
 
+#define stringify(s) str(s)
+#define str(s) #s
+
 #define DEBUG_MESSUP 1      /* messages up from pd to pd-gui */
 #define DEBUG_MESSDOWN 2    /* messages down from pd-gui to pd */
 
@@ -409,7 +412,7 @@ void sys_sockerror(char *s)
 #else
     int err = errno;
 #endif
-    post("%s: %s (%d)\n", s, strerror(err), err);
+    error("%s: %s (%d)\n", s, strerror(err), err);
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
@@ -484,9 +487,9 @@ static int socketreceiver_doread(t_socketreceiver *x)
     for (indx = intail; first || (indx != inhead);
         first = 0, (indx = (indx+1)&(INBUFSIZE-1)))
     {
-            /* if we hit a semi that isn't preceeded by a \, it's a message
+            /* if we hit a semi that isn't preceded by a \, it's a message
             boundary.  LATER we should deal with the possibility that the
-            preceeding \ might itself be escaped! */
+            preceding \ might itself be escaped! */
         char c = *bp++ = inbuf[indx];
         if (c == ';' && (!indx || inbuf[indx-1] != '\\'))
         {
@@ -508,7 +511,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
-    int ret = recv(fd, buf, INBUFSIZE, 0);
+    int ret = (int)recv(fd, buf, INBUFSIZE, 0);
     if (ret < 0)
     {
         sys_sockerror("recv");
@@ -565,7 +568,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
         }
         else
         {
-            ret = recv(fd, x->sr_inbuf + x->sr_inhead,
+            ret = (int)recv(fd, x->sr_inbuf + x->sr_inhead,
                 readto - x->sr_inhead, 0);
             if (ret <= 0)
             {
@@ -655,7 +658,7 @@ static void sys_trytogetmoreguibuf(int newsize)
         int written = 0;
         while (1)
         {
-            int res = send(pd_this->pd_inter->i_guisock,
+            int res = (int)send(pd_this->pd_inter->i_guisock,
                 pd_this->pd_inter->i_guibuf + pd_this->pd_inter->i_guitail +
                     written, bytestowrite, 0);
             if (res < 0)
@@ -747,12 +750,12 @@ void sys_gui(char *s)
     sys_vgui("%s", s);
 }
 
-static int sys_flushtogui( void)
+static int sys_flushtogui(void)
 {
     int writesize = pd_this->pd_inter->i_guihead - pd_this->pd_inter->i_guitail,
         nwrote = 0;
     if (writesize > 0)
-        nwrote = send(pd_this->pd_inter->i_guisock,
+        nwrote = (int)send(pd_this->pd_inter->i_guisock,
             pd_this->pd_inter->i_guibuf + pd_this->pd_inter->i_guitail,
                 writesize, 0);
 
@@ -927,6 +930,60 @@ void glob_watchdog(t_pd *dummy)
 }
 #endif
 
+static void sys_init_deken( void)
+{
+    const char*os =
+#if defined __linux__
+        "Linux"
+#elif defined __APPLE__
+        "Darwin"
+#elif defined __FreeBSD__
+        "FreeBSD"
+#elif defined __NetBSD__
+        "NetBSD"
+#elif defined __OpenBSD__
+        "OpenBSD"
+#elif defined _WIN32
+        "Windows"
+#else
+# if defined(__GNUC__)
+#  warning unknown OS
+# endif
+        0
+#endif
+        ;
+    const char*machine =
+#if defined(__x86_64__) || defined(__amd64__) || defined(_M_X64) || defined(_M_AMD64)
+        "amd64"
+#elif defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(_M_IX86)
+        "i386"
+#elif defined(__ppc__)
+        "ppc"
+#elif defined(__aarch64__)
+        "arm64"
+#elif defined (__ARM_ARCH)
+        "armv" stringify(__ARM_ARCH)
+# if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
+#  if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+        "b"
+#  endif
+# endif
+#else
+# if defined(__GNUC__)
+#  warning unknown architecture
+# endif
+        0
+#endif
+        ;
+
+        /* only send the arch info, if we are sure about it... */
+    if (os && machine)
+        sys_vgui("::deken::set_platform %s %s %d %d\n",
+                 os, machine,
+                 8 * sizeof(char*),
+                 8 * sizeof(t_float));
+}
+
 #define FIRSTPORTNUM 5400
 
 static int sys_do_startgui(const char *libdir)
@@ -939,19 +996,12 @@ static int sys_do_startgui(const char *libdir)
     const int maxtry = 20;
     int ntry = 0, portno = FIRSTPORTNUM;
     int xsock = -1, dumbo = -1;
-#ifdef _WIN32
-    short version = MAKEWORD(2, 0);
-    WSADATA nobby;
-#else
+#ifndef _WIN32
     int stdinpipe[2];
     pid_t childpid;
 #endif /* _WIN32 */
 
     sys_init_fdpoll();
-
-#ifdef _WIN32
-    if (WSAStartup(version, &nobby)) sys_sockerror("WSAstartup");
-#endif /* _WIN32 */
 
     if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
     {
@@ -1103,19 +1153,26 @@ static int sys_do_startgui(const char *libdir)
                 sprintf(cmdbuf, "\"%s\" %d\n", glob_buffer.gl_pathv[0], portno);
             else
             {
+                int wish_paths_count = sizeof(wish_paths)/sizeof(*wish_paths);
                 #ifdef WISH
                     wish_paths[0] = WISH;
                 #endif
                 sprintf(home_filename,
                         "%s/Applications/Wish.app/Contents/MacOS/Wish",homedir);
                 wish_paths[1] = home_filename;
-                for(i=0; i<11; i++)
+                for(i=0; i<wish_paths_count; i++)
                 {
                     if (sys_verbose)
                         fprintf(stderr, "Trying Wish at \"%s\"\n",
                             wish_paths[i]);
                     if (stat(wish_paths[i], &statbuf) >= 0)
                         break;
+                }
+                if(i>=wish_paths_count)
+                {
+                    fprintf(stderr, "sys_startgui couldn't find tcl/tk\n");
+                    sys_closesocket(xsock);
+                    return (1);
                 }
                 sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
                         wish_paths[i], libdir, PDGUIDIR, portno);
@@ -1186,7 +1243,7 @@ static int sys_do_startgui(const char *libdir)
         strcat(wishbuf, "/" PDBINDIR WISH);
         sys_bashfilename(wishbuf, wishbuf);
 
-        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, 0);
+        spawnret = _spawnl(P_NOWAIT, wishbuf, WISH, scriptbuf, portbuf, NULL);
         if (spawnret < 0)
         {
             perror("spawnl");
@@ -1236,7 +1293,9 @@ static int sys_do_startgui(const char *libdir)
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
              apibuf, apibuf2, sys_font, sys_fontweight);
     sys_vgui("set pd_whichapi %d\n", sys_audioapi);
+    sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
+    sys_init_deken();
     return (0);
 }
 
@@ -1245,7 +1304,7 @@ void sys_setrealtime(const char *libdir)
     char cmdbuf[MAXPDSTRING];
 #if defined(__linux__) || defined(__FreeBSD_kernel__)
         /*  promote this process's priority, if we can and want to.
-        If sys_hipriority not specfied (-1), we assume real-time was wanted.
+        If sys_hipriority not specified (-1), we assume real-time was wanted.
         Starting in Linux 2.6 one can permit real-time operation of Pd by]
         putting lines like:
                 @audio - rtprio 99
@@ -1452,9 +1511,21 @@ void s_inter_newpdinstance( void)
     pd_this->pd_inter->i_havegui = 0;
 }
 
+void s_inter_free(t_instanceinter *inter)
+{
+    if (inter->i_fdpoll) {
+        binbuf_free(inter->i_inbinbuf);
+        inter->i_inbinbuf = 0;
+        t_freebytes(inter->i_fdpoll, inter->i_nfdpoll * sizeof(t_fdpoll));
+        inter->i_fdpoll = 0;
+        inter->i_nfdpoll = 0;
+    }
+    freebytes(inter, sizeof(*inter));
+}
+
 void s_inter_freepdinstance( void)
 {
-    freebytes(pd_this->pd_inter, sizeof(*pd_this->pd_inter));
+    s_inter_free(pd_this->pd_inter);
 }
 
 #if PDTHREADS

@@ -327,6 +327,75 @@ static void ptrobj_next(t_ptrobj *x)
     ptrobj_vnext(x, 0);
 }
 
+static void ptrobj_delete(t_ptrobj *x)
+{
+    t_gobj *gobj, *old;
+    t_gpointer *gp = &x->x_gp;
+    t_gstub *gs = gp->gp_stub;
+    t_glist *glist;
+    if (!gs)
+    {
+        pd_error(x, "ptrobj_delete: no current pointer");
+        return;
+    }
+    if (gs->gs_which != GP_GLIST)
+    {
+        pd_error(x, "ptrobj_delete: lists only, not arrays");
+        return;
+    }
+    glist = gs->gs_un.gs_glist;
+    if (glist->gl_valid != gp->gp_valid)
+    {
+        pd_error(x, "ptrobj_delete: stale pointer");
+        return;
+    }
+    if (!gp->gp_un.gp_scalar)
+    {
+        pd_error(x, "ptrobj_delete: pointing to head");
+        return;
+    }
+    if (gp->gp_un.gp_scalar->sc_template == gensym("pd-text"))
+    {
+        pd_error(x, "ptrobj_delete: can't delete 'pd-text' scalar");
+        return;
+    }
+    if (gp->gp_un.gp_scalar->sc_template == gensym("pd-float-array"))
+    {
+        pd_error(x, "ptrobj_delete: can't delete 'pd-float-array' scalar");
+        return;
+    }
+
+    old = &gp->gp_un.gp_scalar->sc_gobj;
+    gobj = old->g_next;
+    while (gobj && (pd_class(&gobj->g_pd) != scalar_class))
+        gobj = gobj->g_next;
+    glist_delete(glist, old);
+    gp->gp_valid = glist->gl_valid;
+    if (gobj)
+    {
+        t_typedout *to;
+        int n;
+        t_scalar *sc = (t_scalar *)gobj;
+        t_symbol *templatesym = sc->sc_template;
+
+        gp->gp_un.gp_scalar = sc;
+        for (n = x->x_ntypedout, to = x->x_typedout; n--; to++)
+        {
+            if (to->to_type == templatesym)
+            {
+                outlet_pointer(to->to_outlet, &x->x_gp);
+                return;
+            }
+        }
+        outlet_pointer(x->x_otherout, &x->x_gp);
+    }
+    else
+    {
+        gpointer_unset(gp);
+        outlet_bang(x->x_bangout);
+    }
+}
+
     /* send a message to the window containing the object pointed to */
 static void ptrobj_sendwindow(t_ptrobj *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -442,6 +511,7 @@ static void ptrobj_setup(void)
         A_SYMBOL, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_vnext, gensym("vnext"),
         A_DEFFLOAT, 0);
+    class_addmethod(ptrobj_class, (t_method)ptrobj_delete, gensym("delete"), 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_sendwindow,
         gensym("send-window"), A_GIMME, 0);
     class_addmethod(ptrobj_class, (t_method)ptrobj_rewind,

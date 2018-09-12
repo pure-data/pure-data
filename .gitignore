@@ -1,11 +1,11 @@
 # binaries
 bin
-src/makefile
 src/pd
 src/pd-watchdog
 src/pdreceive
 src/pdsend
 *.app
+*.exe
 
 # autotools
 autom4te.cache
@@ -27,6 +27,7 @@ tcl/pd-gui
 
 # build
 *.o
+lib*.a
 
 # libtool
 .deps
@@ -41,8 +42,16 @@ tcl/pd-gui
 *.d_fat_o
 *.dll
 
+# windows build artifacts
+src/*.com
+src/*.def
+src/*.lib
+src/*.res
+src/*.a
+
 # distribution tarballs
 pd-0.*
+msw/0.*
 
 # gettext
 po/*.msg
@@ -52,7 +61,7 @@ po/*.po~
 TAGS
 
 # asio sdk
-ASIOSDK2
+ASIOSDK
 
 # pkgconfig
 pd.pc
@@ -66,4 +75,3 @@ portaudio/portaudio/portaudio-2.0.pc
 
 # macOS
 .DS_Store
-

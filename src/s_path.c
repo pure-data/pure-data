@@ -198,7 +198,7 @@ t_namelist *namelist_append_files(t_namelist *listwas, const char *s)
 {
     const char *npos;
     char temp[MAXPDSTRING];
-    t_namelist *nl = listwas, *rtn = listwas;
+    t_namelist *nl = listwas;
 
     npos = s;
     do
@@ -222,10 +222,10 @@ void namelist_free(t_namelist *listwas)
     }
 }
 
-char *namelist_get(t_namelist *namelist, int n)
+const char *namelist_get(const t_namelist *namelist, int n)
 {
     int i;
-    t_namelist *nl;
+    const t_namelist *nl;
     for (i = 0, nl = namelist; i < n && nl; i++, nl = nl->nl_next)
         ;
     return (nl ? nl->nl_string : 0);
@@ -335,7 +335,7 @@ int sys_open_absolute(const char *name, const char* ext,
         int dirlen;
         if (!z)
             return (0);
-        dirlen = z - name;
+        dirlen = (int)(z - name);
         if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
@@ -379,7 +379,11 @@ static int do_open_via_path(const char *dir, const char *name,
         if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
-
+        /* next go through the temp paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
         /* next look in built-in paths like "extra" */
     if (sys_usestdpath)
         for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
@@ -531,7 +535,7 @@ void sys_doflags( void)
     char *rcargv[MAXPDSTRING];
     if (!sys_flags)
         sys_flags = &s_;
-    len = strlen(sys_flags->s_name);
+    len = (int)strlen(sys_flags->s_name);
     if (len > MAXPDSTRING)
     {
         error("flags: %s: too long", sys_flags->s_name);
@@ -573,7 +577,8 @@ void sys_doflags( void)
     dollars, and semis down here. */
 t_symbol *sys_decodedialog(t_symbol *s)
 {
-    char buf[MAXPDSTRING], *sp = s->s_name;
+    char buf[MAXPDSTRING];
+    const char *sp = s->s_name;
     int i;
     if (*sp != '+')
         bug("sys_decodedialog: %s", sp);
@@ -642,8 +647,8 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_searchpath);
     STUFF->st_searchpath = 0;
-    sys_usestdpath = atom_getintarg(0, argc, argv);
-    sys_verbose = atom_getintarg(1, argc, argv);
+    sys_usestdpath = atom_getfloatarg(0, argc, argv);
+    sys_verbose = atom_getfloatarg(1, argc, argv);
     for (i = 0; i < argc-2; i++)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
@@ -657,7 +662,6 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     if "saveit" is set, also save all settings.  */
 void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
 {
-    int i;
     t_symbol *s = sys_decodedialog(path);
     if (*s->s_name)
     {
@@ -698,7 +702,7 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
-    sys_defeatrt = atom_getintarg(0, argc, argv);
+    sys_defeatrt = atom_getfloatarg(0, argc, argv);
     sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
     for (i = 0; i < argc-2; i++)
     {

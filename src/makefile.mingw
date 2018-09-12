@@ -45,7 +45,7 @@ DLLWRAP= dllwrap
 MORECFLAGS = -O3 -funroll-loops -fomit-frame-pointer
 
 PADIR = $(pd_src)/portaudio/portaudio
-ASIODIR = $(pd_src)/lib/ASIOSDK2.3
+ASIODIR = $(pd_src)/lib/ASIOSDK
 ASIOINC = -I$(ASIODIR)/common -I$(ASIODIR)/host -I$(ASIODIR)/host/pc
 INCPA = -I$(PADIR)/include -I$(PADIR)/src/common -I$(PADIR)/src/os/win \
       $(ASIOINC)
@@ -60,7 +60,7 @@ OPT_CFLAGS =
 
 WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused \
     -Wno-unused-parameter -Wno-parentheses -Wno-switch
-# Some old code in asio/ASIOSDK2/common/combase.h needs to be ignored,
+# Some old code in asio/ASIOSDK/common/combase.h needs to be ignored,
 # we do this by setting the WINVER macro to min Windows XP aka 5.1.
 # Also, for SetDllDirectory() s_loader.c, we need a minium of Windows
 # XP SP1.  WINVER isnt' fine-grained enough for that, so we use the
@@ -112,13 +112,14 @@ PMSRC =  s_midi_pm.c \
 
 PMOBJ =  $(PMSRC:.c=.o)
 
-HEADERS = g_all_guis.h m_imp.h g_canvas.h m_pd.h s_stuff.h \
+HEADERS = g_all_guis.h m_imp.h g_canvas.h g_undo.h m_pd.h s_stuff.h \
     $(wildcard ../portaudio/common/*.h) s_audio_paring.h
 
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c g_clone.c \
     g_all_guis.c g_bang.c g_hdial.c g_hslider.c g_mycanvas.c g_numbox.c \
-    g_toggle.c g_vdial.c g_vslider.c g_vumeter.c \
+    g_toggle.c g_undo.c g_vdial.c g_vslider.c g_vumeter.c \
+    g_editor_extras.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
     s_main.c s_inter.c s_file.c s_print.c \
@@ -226,7 +227,7 @@ testbin: $(PDEXEC) $(PDDLL) $(PDCOM)
 	echo "Copying files to $(BIN_DIR)"
 	install -d $(BIN_DIR)
 	install -p $(PDDLL) $(BIN_DIR)
-	install -p pd.ico $(BIN_DIR)
+	install -p ../tcl/pd.ico $(BIN_DIR)
 	install -p $(PDCOM) $(BIN_DIR)
 	install -p $(PDEXEC) $(BIN_DIR)
 
@@ -242,7 +243,7 @@ install:  all
 	install -p $(PDEXEC) $(DESTDIR)$(bindir)/$(PDEXEC)
 	install -p $(PDCOM) $(DESTDIR)$(bindir)/$(PDCOM)
 	install -p pd.dll $(DESTDIR)$(bindir)/pd.dll
-	install -p pd.ico $(DESTDIR)$(bindir)/pd.ico
+	install -p ../tcl/pd.ico $(DESTDIR)$(bindir)/pd.ico
 	install -p $(PDSEND) $(DESTDIR)$(bindir)/$(PDSEND)
 	install -p $(PDRECEIVE) $(DESTDIR)$(bindir)/$(PDRECEIVE)
 	for dir in $(shell ls -1 ../doc | grep -v CVS); do \

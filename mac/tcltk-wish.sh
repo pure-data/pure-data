@@ -18,6 +18,9 @@ set -e
 UNIVERSAL=false
 ARCH=
 GIT=false
+DOWNLOAD=true
+BUILD=true
+LEAVE=false
 
 # set deployment target to enable weak-linking for older macOS version support
 CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
@@ -42,6 +45,14 @@ Options:
   --git               clone from tcl/tk git repos at https://github.com/tcltk,
                       any arguments after VERSION are passed to git
 
+  -d,--download       download source to tcl{$VERSION}/tk{$VERSION} paths,
+                      do not build
+
+  -b,--build          (re)build from tcl{$VERSION}/tk{$VERSION} source paths,
+                      do not download
+
+  -l,--leave          leave source paths, do not delete after building
+
 Arguments:
 
   VERSION             Tcl/Tk version (required)
@@ -64,6 +75,13 @@ Examples:
     # build Wish-8.6.6-git.app with embedded Tcl/Tl 8.6.6
     # from git using the core_8_6_6 tag in the master branch
     tcltk-wish.sh --git 8.6.6-git -b master core_8_6_6
+
+    # download the tcl8.5.19 and tk8.5.19 source paths, do not build
+    tcltk-wish.sh --download 8.5.19
+
+    # build from existing tcl8.5.19 and tk8.5.19 source paths, do not download
+    # note: --leave ensures the source trees are not deleted after building
+    tcltk-wish.sh --build --leave 8.5.19
 "
 }
 
@@ -88,6 +106,17 @@ while [ "$1" != "" ] ; do
             ;;
         --git)
             GIT=true
+            ;;
+        -d|--download)
+            DOWNLOAD=true
+            BUILD=false
+            ;;
+        -b|--build)
+            DOWNLOAD=false
+            BUILD=true
+            ;;
+        -l|--leave)
+            LEAVE=true
             ;;
         *)
             break ;;
@@ -116,29 +145,46 @@ if [ -d "$WISH" ] ; then
     rm -rf "$WISH"
 fi
 
-echo "==== Creating Tcl/Tk Wish-$TCLTK.app"
+tcldir=tcl${TCLTK}
+tkdir=tk${TCLTK}
 
-if [[ $GIT == true ]] ; then
+if [[ $DOWNLOAD == true ]] ; then
+    echo "==== Downloading Tcl/Tk $TCLTK"
 
-    # shallow clone sources, pass remaining args to git
-    git clone --depth 1 https://github.com/tcltk/tcl.git $@
-    git clone --depth 1 https://github.com/tcltk/tk.git $@
+    if [[ $GIT == true ]] ; then
 
-    tcldir=tcl
-    tkdir=tk
+        # shallow clone sources, pass remaining args to git
+        git clone --depth 1 https://github.com/tcltk/tcl.git tcl${TCLTK} $@
+        git clone --depth 1 https://github.com/tcltk/tk.git tk${TCLTK} $@
+    else
+
+        # download source packages
+        curl -LO http://prdownloads.sourceforge.net/tcl/tcl${TCLTK}-src.tar.gz
+        curl -LO http://prdownloads.sourceforge.net/tcl/tk${TCLTK}-src.tar.gz
+
+        # unpack
+        tar -xzf tcl${TCLTK}-src.tar.gz
+        tar -xzf tk${TCLTK}-src.tar.gz
+    fi
 else
+    echo  "==== Using sources in $tcldir $tkdir"
 
-    # download source packages
-    curl -LO http://prdownloads.sourceforge.net/tcl/tcl${TCLTK}-src.tar.gz
-    curl -LO http://prdownloads.sourceforge.net/tcl/tk${TCLTK}-src.tar.gz
-
-    # unpack
-    tar -xzf tcl${TCLTK}-src.tar.gz
-    tar -xzf tk${TCLTK}-src.tar.gz
-
-    tcldir=tcl${TCLTK}
-    tkdir=tk${TCLTK}
+    # check source directories
+    if [ ! -e "$tcldir" ] ; then
+        echo "$tcldir not found"
+        exit 1
+    fi
+    if [ ! -e "$tkdir" ] ; then
+        echo "$tkdir not found"
+        exit 1
+    fi
 fi
+
+if [[ $BUILD == false ]] ; then
+    echo  "==== Downloaded sources to $tcldir $tkdir"
+    exit 0
+fi
+echo "==== Building Tcl/Tk Wish-$TCLTK.app"
 
 # set a specific arch
 if [ "$ARCH" != "" ] ; then
@@ -168,7 +214,9 @@ make -C ${tkdir}/macosx  install-embedded INSTALL_ROOT=`pwd`/embedded
 mv embedded/Applications/Utilities/Wish.app $WISH
 
 # finish up
-rm -rf ${tcldir} ${tkdir} ${tcldir}-src.tar.gz ${tkdir}-src.tar.gz
-rm -rf build embedded
+if [[ $LEAVE == false ]] ; then
+    rm -rf ${tcldir} ${tkdir} ${tcldir}-src.tar.gz ${tkdir}-src.tar.gz
+    rm -rf build embedded
+fi
 
 echo  "==== Finished Tcl/Tk Wish-$TCLTK.app"

@@ -15,15 +15,12 @@ else
    exit 1
 fi
 
-if test -d Pd-$1.app
-then
-    rm -rf Pd-$1.app
-fi
+rm -rf pd-$1 Pd-$1.app
 
 tar xzf pd-$1.src.tar.gz
 cd pd-$1
 ./autogen.sh
-./configure
+./configure --enable-jack
 
 if make
 then

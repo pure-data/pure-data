@@ -15,15 +15,12 @@ else
    exit 1
 fi
 
-if test -d Pd-$1.app
-then
-    rm -rf Pd-$1.app
-fi
+rm -rf pd-$1 Pd-$1-i386.app
 
 tar xzf ../build/pd-$1.src.tar.gz
 cd pd-$1
 ./autogen.sh
-./configure --enable-universal=i386
+./configure --enable-universal=i386 --enable-jack
 
 if make
 then

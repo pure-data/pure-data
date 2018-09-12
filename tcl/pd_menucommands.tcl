@@ -61,13 +61,13 @@ proc ::pd_menucommands::menu_print {mytoplevel} {
 # functions called from Edit menu
 
 proc ::pd_menucommands::menu_undo {} {
-    if {$::focused_window eq $::undo_toplevel && $::undo_action ne "no"} {
+    if { $::focused_window ne ".pdwindow" } {
         pdsend "$::focused_window undo"
     }
 }
 
 proc ::pd_menucommands::menu_redo {} {
-    if {$::focused_window eq $::undo_toplevel && $::redo_action ne "no"} {
+    if { $::focused_window ne ".pdwindow" } {
         pdsend "$::focused_window redo"
     }
 }
@@ -149,6 +149,10 @@ proc ::pd_menucommands::menu_startup_dialog {} {
     } else {
         pdsend "pd start-startup-dialog"
     }
+}
+
+proc ::pd_menucommands::menu_manual {} {
+    ::pd_menucommands::menu_doc_open doc/1.manual index.htm
 }
 
 proc ::pd_menucommands::menu_helpbrowser {} {
@@ -234,7 +238,7 @@ proc ::pd_menucommands::menu_aboutpd {} {
         set textfile [open $filename]
         while {![eof $textfile]} {
             set bigstring [read $textfile 1000]
-            regsub -all PD_BASEDIR $bigstring $::sys_guidir bigstring2
+            regsub -all PD_BASEDIR $bigstring $::sys_libdir bigstring2
             regsub -all PD_VERSION $bigstring2 $versionstring bigstring3
             .aboutpd.text insert end $bigstring3
         }

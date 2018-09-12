@@ -84,7 +84,8 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     ::scrollboxwindow::make $mytoplevel $::startup_libraries \
         dialog_startup::add dialog_startup::edit dialog_startup::commit \
         [_ "Pd libraries to load on startup"] \
-        450 320 0
+        450 300 0
+    wm withdraw $mytoplevel
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     frame $mytoplevel.flags
@@ -94,9 +95,9 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     pack $mytoplevel.flags.entry -side right -expand 1 -fill x
     pack $mytoplevel.flags.entryname -side right
 
-    frame $mytoplevel.defeatrtframe
-    pack $mytoplevel.defeatrtframe -side top -anchor s -fill x -padx 2m -pady 5
     if {$::windowingsystem ne "win32"} {
+        frame $mytoplevel.defeatrtframe
+        pack $mytoplevel.defeatrtframe -side top -anchor s -fill x -padx 2m -pady 5
         checkbutton $mytoplevel.defeatrtframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::dialog_startup::defeatrt_button
@@ -128,6 +129,13 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
+
+    # set min size based on widget sizing
+    update
+    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo reqheight $mytoplevel]
+
+    position_over_window $mytoplevel .pdwindow
+    raise $mytoplevel
 }
 
 # for focus handling on OSX

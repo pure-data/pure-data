@@ -11,6 +11,15 @@ and also link in the fftw library.  You can only have one of these three
 linked in.  The configure script can be used to select which one.
 */
 
+/* ------------------ initialization and cleanup -------------------------- */
+void mayer_init( void);
+void mayer_term( void);
+
+static void fftclass_cleanup(t_class *c)
+{
+    mayer_term();
+}
+
 /* ---------------- utility functions for DSP chains ---------------------- */
 
     /* swap two arrays */
@@ -18,7 +27,7 @@ static t_int *sigfft_swap(t_int *w)
 {
     t_sample *in1 = (t_sample *)(w[1]);
     t_sample *in2 = (t_sample *)(w[2]);
-    int n = w[3];
+    int n = (int)w[3];
     for (;n--; in1++, in2++)
     {
         t_sample f = *in1;
@@ -36,7 +45,7 @@ static t_int *sigrfft_flip(t_int *w)
 {
     t_sample *in = (t_sample *)(w[1]);
     t_sample *out = (t_sample *)(w[2]);
-    int n = w[3];
+    int n = (int)w[3];
     while (n--)
         *(--out) = - *in++;
     return (w+4);
@@ -75,7 +84,7 @@ static t_int *sigfft_perform(t_int *w)
 {
     t_sample *in1 = (t_sample *)(w[1]);
     t_sample *in2 = (t_sample *)(w[2]);
-    int n = w[3];
+    int n = (int)w[3];
     mayer_fft(n, in1, in2);
     return (w+4);
 }
@@ -84,7 +93,7 @@ static t_int *sigifft_perform(t_int *w)
 {
     t_sample *in1 = (t_sample *)(w[1]);
     t_sample *in2 = (t_sample *)(w[2]);
-    int n = w[3];
+    int n = (int)w[3];
     mayer_ifft(n, in1, in2);
     return (w+4);
 }
@@ -128,6 +137,7 @@ static void sigfft_setup(void)
     CLASS_MAINSIGNALIN(sigfft_class, t_sigfft, x_f);
     class_addmethod(sigfft_class, (t_method)sigfft_dsp,
         gensym("dsp"), A_CANT, 0);
+    mayer_init();
 
     sigifft_class = class_new(gensym("ifft~"), sigifft_new, 0,
         sizeof(t_sigfft), 0, 0);
@@ -135,6 +145,7 @@ static void sigfft_setup(void)
     class_addmethod(sigifft_class, (t_method)sigifft_dsp,
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigifft_class, gensym("fft~"));
+    mayer_init();
 }
 
 /* ----------------------- rfft~ -------------------------------- */
@@ -159,7 +170,7 @@ static void *sigrfft_new(void)
 static t_int *sigrfft_perform(t_int *w)
 {
     t_sample *in = (t_sample *)(w[1]);
-    int n = w[2];
+    int n = (int)w[2];
     mayer_realfft(n, in);
     return (w+3);
 }
@@ -193,6 +204,7 @@ static void sigrfft_setup(void)
     class_addmethod(sigrfft_class, (t_method)sigrfft_dsp,
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigrfft_class, gensym("fft~"));
+    mayer_init();
 }
 
 /* ----------------------- rifft~ -------------------------------- */
@@ -217,7 +229,7 @@ static void *sigrifft_new(void)
 static t_int *sigrifft_perform(t_int *w)
 {
     t_sample *in = (t_sample *)(w[1]);
-    int n = w[2];
+    int n = (int)w[2];
     mayer_realifft(n, in);
     return (w+3);
 }
@@ -254,6 +266,7 @@ static void sigrifft_setup(void)
     class_addmethod(sigrifft_class, (t_method)sigrifft_dsp,
         gensym("dsp"), A_CANT, 0);
     class_sethelpsymbol(sigrifft_class, gensym("fft~"));
+    mayer_init();
 }
 
 /* ----------------------- framp~ -------------------------------- */
@@ -284,7 +297,7 @@ static t_int *sigframp_perform(t_int *w)
     t_sample *outamp = (t_sample *)(w[4]);
     t_sample lastreal = 0, currentreal = inreal[0], nextreal = inreal[1];
     t_sample lastimag = 0, currentimag = inimag[0], nextimag = inimag[1];
-    int n = w[5];
+    int n = (int)w[5];
     int m = n + 1;
     t_sample fbin = 1, oneovern2 = 1.f/((t_sample)n * (t_sample)n);
 
@@ -342,6 +355,7 @@ static void sigframp_setup(void)
     CLASS_MAINSIGNALIN(sigframp_class, t_sigframp, x_f);
     class_addmethod(sigframp_class, (t_method)sigframp_dsp,
         gensym("dsp"), A_CANT, 0);
+    mayer_init();
 }
 
 /* ------------------------ global setup routine ------------------------- */

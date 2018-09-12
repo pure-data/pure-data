@@ -12,7 +12,7 @@ window.;
 patch.;
 #X text 46 531 see also:;
 #X obj 134 531 fft~;
-#X text 44 567 ... and the control.blocksize and up.downsampling audio
+#X text 44 567 ... and the control.blocksize and oversampling audio
 example patches.;
 #X text 194 459 <--- example usage in subpatch;
 #X text 43 92 Switch~ \, in addition \, allows you to switch DSP on
@@ -59,21 +59,6 @@ the subwindow's audio DSP to run. Pd's global DSP must also be on.)
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
 #X restore 41 457 pd block-example;
-#N canvas 112 205 599 297 block-interations 0;
-#X text 32 61 Dac~ and adc~ don't work correctly if reblocked \, nor
-if a parent window is reblocked \, even if the window containing the
-dac~ or adc~ is reblocked back to the default block size and sample
-rate.;
-#X text 33 209 Patches using send~/receive~ or throw~/catch~ to intercommunicate
-must have the same blocking -- and if their parents are blocked bigger
-than they are \, there might be wierdness.;
-#X text 31 128 If using send~ or delwrite~ from a switched-off patch
-\, the output of corresponding receive~ and delread~ objects in other
-\, running patches will cycle old input (and sound like garbage). Throw~
-may be switched with impunity \, but not catch~.;
-#X text 32 11 INTERACTIONS BETWEEN BLOCK~/SWITCH~ AND OTHER OBJECTS
-IN PD;
-#X restore 40 482 pd block-interations;
 #X text 44 269 Pd's default block size is 64 samples. The inlet~ and
 outlet~ objects reblock signals to adjust for differences between parent
 and subpatch \, but only power-of-two adjustments are possible. So
@@ -86,7 +71,24 @@ of DSP to be computed. This might be useful for pre-computing waveforms
 or window functions \, or also for video processing.;
 #X text 214 484 <-- BUG!! block~/switch~ and dac~/adc~ are incompatible
 ;
-#N canvas 0 22 581 315 block-interations 0;
+#X text 395 628 updated for Pd version 0.43;
+#X text 214 505 <-- weird 'bang' feature lets you single-step DSP;
+#N canvas 112 205 599 297 block-interactions 0;
+#X text 32 61 Dac~ and adc~ don't work correctly if reblocked \, nor
+if a parent window is reblocked \, even if the window containing the
+dac~ or adc~ is reblocked back to the default block size and sample
+rate.;
+#X text 33 209 Patches using send~/receive~ or throw~/catch~ to intercommunicate
+must have the same blocking -- and if their parents are blocked bigger
+than they are \, there might be weirdness.;
+#X text 31 128 If using send~ or delwrite~ from a switched-off patch
+\, the output of corresponding receive~ and delread~ objects in other
+\, running patches will cycle old input (and sound like garbage). Throw~
+may be switched with impunity \, but not catch~.;
+#X text 32 11 INTERACTIONS BETWEEN BLOCK~/SWITCH~ AND OTHER OBJECTS
+IN PD;
+#X restore 40 482 pd block-interactions;
+#N canvas 0 22 581 315 block-interactions 0;
 #X text 32 11 You can use the switch~ object to single-step dsp in
 a subpatch. This might be useful for block operations that don't want
 to be synced to the sample clock: loading a window function in a table
@@ -105,6 +107,4 @@ to be synced to the sample clock: loading a window function in a table
 #X connect 1 0 2 0;
 #X connect 3 0 2 0;
 #X connect 3 0 5 0;
-#X restore 40 505 pd block-interations;
-#X text 395 628 updated for Pd version 0.43;
-#X text 214 505 <-- weird 'bang' feature lets you single-step DSP;
+#X restore 40 505 pd block-interactions;

@@ -633,13 +633,13 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         button $mytoplevel.para.stdy_jmp -command "::dialog_iemgui::stdy_jmp $mytoplevel" \
             -text [_ "Steady on click"] }
     if {[eval concat $$var_iemgui_lin0_log1] >= 0} {
-        pack $mytoplevel.para.lilo -side left -expand 1}
+        pack $mytoplevel.para.lilo -side left -expand 1 -ipadx 10}
     if {[eval concat $$var_iemgui_loadbang] >= 0} {
-        pack $mytoplevel.para.lb -side left -expand 1}
+        pack $mytoplevel.para.lb -side left -expand 1 -ipadx 10}
     if {[eval concat $$var_iemgui_num] > 0} {
-        pack $mytoplevel.para.num -side left -expand 1}
+        pack $mytoplevel.para.num -side left -expand 1 -ipadx 10}
     if {[eval concat $$var_iemgui_steady] >= 0} {
-        pack $mytoplevel.para.stdy_jmp -side left -expand 1}
+        pack $mytoplevel.para.stdy_jmp -side left -expand 1 -ipadx 10}
 
     # messages
     labelframe $mytoplevel.s_r -borderwidth 1 -padx 5 -pady 5 -text [_ "Messages"]
@@ -840,6 +840,8 @@ proc ::dialog_iemgui::pdtk_iemgui_dialog {mytoplevel mainheader dim_header \
         $mytoplevel.cao.ok config -highlightthickness 0
         $mytoplevel.cao.cancel config -highlightthickness 0
     }
+
+    position_over_window $mytoplevel $::focused_window
 }
 
 # for live widget updates on OSX
