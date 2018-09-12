@@ -756,7 +756,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
