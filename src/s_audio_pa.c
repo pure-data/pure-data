@@ -92,7 +92,8 @@ static pthread_cond_t pa_sem;
 #endif
 /* maximum number of ms sleeps before we stop polling and try to reopen the device */
 #ifndef MAX_NUM_POLLS
-#define MAX_NUM_POLLS 1000
+#define MAX_NUM_POLLS 1000 /* maximum number of unsuccessful polls before giving up */
+PaError PaUtil_ValidateStreamPointer(PaStream * stream);
 #endif
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
@@ -540,7 +541,9 @@ int pa_send_dacs(void)
                 break;
             }
 #else
-            if (!--counter)
+            if (PaUtil_ValidateStreamPointer(&pa_stream) < 0)
+                counter--;
+            if (!counter)
             {
                 locked = 1;
                 break;
@@ -583,7 +586,9 @@ int pa_send_dacs(void)
                 break;
             }
 #else
-            if (!--counter)
+            if (PaUtil_ValidateStreamPointer(&pa_stream) < 0)
+                counter--;
+            if (!counter)
             {
                 locked = 1;
                 break;
