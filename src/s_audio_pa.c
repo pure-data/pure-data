@@ -658,7 +658,6 @@ int pa_send_dacs(void)
         DEFDACBLKSIZE*sizeof(t_sample)*STUFF->st_outchannels);
     if (locked)
     {
-
         PaError err = Pa_IsStreamActive(&pa_stream);
         error("error %d: %s", err, Pa_GetErrorText(err));
         sys_close_audio();
