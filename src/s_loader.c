@@ -327,11 +327,8 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
     data.canvas = canvas;
     data.ok = 0;
 
-    if (sys_onloadlist(classname))
-    {
-        /*error("%s: already loaded", classname);*/
-        return (1);
-    }
+    if (sys_onloadlist(classname)) return (1); // if lib is already loaded, dismiss.
+
         /* if classname is absolute, try this first */
     if (sys_isabsolutepath(classname))
     {
