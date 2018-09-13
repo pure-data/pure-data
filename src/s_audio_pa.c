@@ -459,7 +459,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_nbuffers = nbuffers;
     if ( err != paNoError )
     {
-        post("error opening audio: %s", Pa_GetErrorText(err));
+        error("error opening audio: %s", Pa_GetErrorText(err));
         /* Pa_Terminate(); */
         return (1);
     }
@@ -661,12 +661,23 @@ int pa_send_dacs(void)
         PaError err = Pa_IsStreamActive(&pa_stream);
         error("error %d: %s", err, Pa_GetErrorText(err));
         sys_close_audio();
-        error("trying to reopen audio device");
-        sys_reopen_audio(); /* try to reopen it */
-        if (audio_isopen())
-            error("successfully reopened audio device");
-        else
-            error("audio device not responding - closing audio.");
+        #ifdef __APPLE__
+            /* TODO: the portaudio coreaudio implementation doesn't handle
+               re-connection, so suggest restarting */
+            error("audio device not responding - closing audio");
+            error("you may need to save and restart pd");
+        #else
+            /* portaudio seems to handle this better on windows and linux */
+            error("trying to reopen audio device");
+            sys_reopen_audio(); /* try to reopen it */
+            if (audio_isopen())
+                error("successfully reopened audio device");
+            else
+                error("audio device not responding - closing audio");
+            #ifdef _WIN32
+                error("reconnect and try reselecting the device in the settings");
+            #endif
+        #endif
         return SENDDACS_NO;
     } else
         return (rtnval);

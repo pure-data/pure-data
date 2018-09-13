@@ -13,12 +13,6 @@ to Pd in preparation for opening the patch from a file. Usage is "declare
 #X text 138 158 add to search path \, relative to Pd;
 #X text 42 551 BUG: The name "-stdpath" is confusing \, as it has a
 quite different effect from "-stdpath" on the pd command line.;
-#X text 40 293 For instance \, if you put abstractions and/or other
-supporting files in a subdirectory "more" \, you can put an object
-\, "declare -path more" to make sure Pd sees them when the patch is
-loaded. Or \, if you have files installed in the directory extra/stillmore
-(in the Pd installation) you can get it using "declare -stdpath stillmore".
-;
 #X text 40 395 WARNING: as of version 0.47 \, "declare -path" and "declare
 -stdpath" inside abstractions take effect only within those abstractions.
 If Pd's compatibility version is set to 0.46 or earlier the old (buggy)
@@ -36,3 +30,9 @@ will fall back to user search paths if the relative path to the patch
 does not exit. To avoid checking further \, use an explicit relative
 path by prepending "./" or "../" to the path or lib name.;
 #X text 138 193 load a library \, relative to Pd;
+#X text 40 293 For instance \, if you put abstractions and/or other
+supporting files in a subdirectory "more" \, you can put an object
+"declare -path more" to make sure Pd sees them when the patch is loaded.
+Or \, if you have files installed in the directory extra/stillmore
+(in the Pd installation) you can get it using "declare -stdpath stillmore".
+;

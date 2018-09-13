@@ -402,13 +402,16 @@ proc init_for_platform {} {
             set ::windowframey 0
             # TODO use 'winico' package for full, hicolor icon support
             wm iconbitmap . -default [file join $::sys_guidir pd.ico]
-            # load local font
+            # add local fonts to Tk's font list using pdfontloader
             if {[file exists [file join "$::sys_libdir" "font"]]} {
                 catch {
                     load [file join "$::sys_libdir" "bin/pdfontloader.dll"]
-                    set path [file join "$::sys_libdir" "font/DejaVuSansMono.ttf"]
-                    pdfontloader::load $path
-                    ::pdwindow::verbose 0 "pdfontloader loaded [file tail $path]\n"
+                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf"}
+                    foreach font $localfonts {
+                        set path [file join "$::sys_libdir" "font/$font"]
+                        pdfontloader::load $path
+                        ::pdwindow::verbose 0 "pdfontloader loaded [file tail $path]\n"
+                    }
                 }
             }
             # mouse cursors for all the different modes
