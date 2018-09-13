@@ -2265,6 +2265,12 @@ static OSStatus AudioIOProc( void *inRefCon,
       /* FEEDBACK: I'm not sure what to do when this call fails. There's nothing in the PA API to
        * do about failures in the callback system. */
       //assert( !err );
+      if( err == -50 )
+      {
+        /* error -50 is thrown if the device is unplugged */
+        callbackResult = paAbort;
+        goto error;
+      }
 
       PaUtil_SetInputFrameCount( &(stream->bufferProcessor), frames );
       PaUtil_SetInterleavedInputChannels( &(stream->bufferProcessor),
@@ -2465,6 +2471,13 @@ static OSStatus AudioIOProc( void *inRefCon,
       /* FEEDBACK: I'm not sure what to do when this call fails */
       ERR( err );
       //assert( !err );
+      if( err == -50 )
+      {
+        /* error -50 is thrown if the device is unplugged */
+        callbackResult = paAbort;
+        goto error;
+      }
+
       if( stream->inputSRConverter || stream->outputUnit )
       {
          /* If this is duplex or we use a converter, put the data
@@ -2547,6 +2560,7 @@ static OSStatus AudioIOProc( void *inRefCon,
       }
    }
 
+   error:
    switch( callbackResult )
    {
    case paContinue: break;
