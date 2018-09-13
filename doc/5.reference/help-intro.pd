@@ -1,4 +1,4 @@
-#N canvas 326 23 594 833 12;
+#N canvas 317 78 594 833 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -302,7 +302,7 @@
 #X obj 118 909 <;
 #X obj 149 909 >=;
 #X obj 180 909 <=;
-#X text 26 4410 ------------------------ OBSOLETE --------------------------
+#X text 22 4448 ------------------------ OBSOLETE --------------------------
 ;
 #X obj 54 886 -;
 #X obj 87 886 *;
@@ -352,7 +352,7 @@ Right-click (or control-click on a Macintosh) on any object to get
 its "help window".;
 #X msg 30 4473 scope~;
 #X msg 30 4525 template;
-#X text 129 4486 (use struct now);
+#X text 128 4525 (use struct now);
 #X obj 25 1713 textfile;
 #X obj 25 1737 text;
 #X obj 180 932 <<;
