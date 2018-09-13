@@ -104,7 +104,7 @@ static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
     char *str_end = NULL;
     f = strtof(s->s_name, &str_end);
     if (f == 0 && s->s_name == str_end)
-        pd_error(x, "Couldn't convert %s to float.", s->s_name);
+        pd_error(x, "couldn't convert %s to float", s->s_name);
     else outlet_float(x->x_obj.ob_outlet, x->x_f = f);
 }
 

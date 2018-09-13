@@ -125,7 +125,7 @@ static void pa_init(void)        /* Initialize PortAudio  */
 
         if ( err != paNoError )
         {
-            post("Error opening audio: %s", err, Pa_GetErrorText(err));
+            post("error opening audio: %s", err, Pa_GetErrorText(err));
             return;
         }
         initialized = 1;
@@ -459,7 +459,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_nbuffers = nbuffers;
     if ( err != paNoError )
     {
-        post("Error opening audio: %s", Pa_GetErrorText(err));
+        post("error opening audio: %s", Pa_GetErrorText(err));
         /* Pa_Terminate(); */
         return (1);
     }

@@ -119,7 +119,7 @@ typedef struct _multidev {
 int oss_reset(int fd) {
      int err;
      if ((err = ioctl(fd,SNDCTL_DSP_RESET)) < 0)
-          error("OSS: Could not reset");
+          error("OSS: could not reset");
      return err;
 }
 
@@ -178,7 +178,7 @@ void oss_configure(t_oss_dev *dev, int srate, int dac, int skipblocksize,
 
         param = orig = (nfragment<<16) + logfragsize;
         if (ioctl(fd,SNDCTL_DSP_SETFRAGMENT, &param) == -1)
-            error("OSS: Could not set or read fragment size\n");
+            error("OSS: could not set or read fragment size\n");
         if (param != orig)
         {
             nfragment = ((param >> 16) & 0xffff);
