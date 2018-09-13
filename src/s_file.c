@@ -682,7 +682,7 @@ int sys_oktoloadfiles(int done)
             strcmp(prefbuf, "no"))
         {
             post(
-    "skipping loading preferences... Pd seems to have crashed on startup.");
+    "skipping loading preferences... Pd seems to have crashed on startup");
             post("(re-save preferences to reinstate them)");
             return (0);
         }
