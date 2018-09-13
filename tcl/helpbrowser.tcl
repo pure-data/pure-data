@@ -140,7 +140,7 @@ proc ::helpbrowser::open_path {dir filename} {
     }
     ::pdwindow::verbose 0 "menu_doc_open $dir $filename\n"
     if { [catch {menu_doc_open $dir $filename} fid] } {
-        ::pdwindow::error "Could not open $dir/$filename\n"
+        ::pdwindow::error "couldn't open $dir/$filename\n"
     }
 }
 
@@ -409,7 +409,7 @@ proc ::helpbrowser::add_entry {reflist entry} {
     if {$reflist eq "libdirlist" && [lsearch -exact $libdirlist $entryname/] > -1} {
         ::pdwindow::error "WARNING: duplicate '$entryname' library found!\n"
         ::pdwindow::error "  '$reference_paths($entryname/)' is active\n"
-        ::pdwindow::error "  '$entry' is duplicate\n"
+        ::pdwindow::error "  '$entry' is a duplicate\n"
         incr reference_count($entryname)
         append entryname "/ ($reference_count($entryname))"
     } else {
