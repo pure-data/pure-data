@@ -2502,6 +2502,7 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             inindex = canvas_getindex(glist2, &t.tr_ob2->ob_g);
             if (shiftmod)
             {
+                int soutindex, sinindex, soutno, sinno;
                     /* if no line is selected, just add this line to the selection */
                 if(!x->gl_editor->e_selectedline)
                 {
@@ -2514,10 +2515,10 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
                     return;
                 }
-                int soutindex = x->gl_editor->e_selectline_index1;
-                int sinindex = x->gl_editor->e_selectline_index2;
-                int soutno = x->gl_editor->e_selectline_outno;
-                int sinno = x->gl_editor->e_selectline_inno;
+                soutindex = x->gl_editor->e_selectline_index1;
+                sinindex = x->gl_editor->e_selectline_index2;
+                soutno = x->gl_editor->e_selectline_outno;
+                sinno = x->gl_editor->e_selectline_inno;
                         /* if the hovered line is already selected, deselect it */
                 if ((outindex == soutindex) && (inindex == sinindex)
                     && (soutno == t.tr_outno) && (sinno == t.tr_inno))
