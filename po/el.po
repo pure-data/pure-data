@@ -760,7 +760,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
@@ -855,6 +855,9 @@ msgstr "Αποθήκευση Ως..."
 msgid "Print..."
 msgstr "Εκτύπωση..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Αντίγραφο"
 
@@ -869,7 +872,10 @@ msgstr "Εστίαση"
 msgid "Tidy Up"
 msgstr "Τακτοποίηση"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"

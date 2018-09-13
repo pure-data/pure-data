@@ -622,7 +622,7 @@ void *canvas_undo_set_cut(t_canvas *x, int mode)
         /* store connections into/out of the selection */
     buf->u_reconnectbuf = binbuf_new();
     linetraverser_start(&t, x);
-    while (oc = linetraverser_next(&t))
+    while ((oc = linetraverser_next(&t)))
     {
         int issel1 = glist_isselected(x, &t.tr_ob->ob_g);
         int issel2 = glist_isselected(x, &t.tr_ob2->ob_g);
@@ -771,12 +771,13 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
     {
         if (mode == UCUT_CUT || mode == UCUT_CLEAR)
         {
+            int i;
                 /* we can't just blindly do clear here when the user may have
                  * unselected things between undo and redo, so first let's select
                  * the right stuff
                  */
             glist_noselect(x);
-            int i = 0;
+            i = 0;
             for (i = 0; i < buf->n_obj; i++)
                 glist_select(x, glist_nth(x, buf->p_a[i]));
             canvas_doclear(x);
@@ -1009,6 +1010,7 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
     t_gobj *obj;
     t_linetraverser t;
     t_outconnect *oc;
+    int nnotsel;
         /* enable editor (in case it is disabled) and select the object
            we are working on */
     if (!x->gl_edit)
@@ -1025,7 +1027,7 @@ void *canvas_undo_set_apply(t_canvas *x, int n)
     if (obj && !glist_isselected(x, obj))
         glist_select(x, obj);
         /* get number of all items for the offset below */
-    int nnotsel= glist_selectionindex(x, 0, 0);
+    nnotsel= glist_selectionindex(x, 0, 0);
     buf = (t_undo_apply *)getbytes(sizeof(*buf));
 
         /* store connections into/out of the selection */
@@ -1063,11 +1065,12 @@ int canvas_undo_apply(t_canvas *x, void *z, int action)
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
             /* find current instance */
+        t_binbuf *tmp;
         glist_noselect(x);
         glist_select(x, glist_nth(x, buf->u_index));
 
             /* copy it for the new undo/redo */
-        t_binbuf *tmp = canvas_docopy(x);
+        tmp = canvas_docopy(x);
 
             /* delete current instance */
         canvas_doclear(x);
@@ -1285,6 +1288,10 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
         }
         break;
     case UNDO_REDO:
+    {
+        t_gobj *oldy_prev=NULL, *oldy_next=NULL;
+        int arrangeaction;
+
         if(buf->u_newindex == buf->u_previndex) return 1;
             /* find our object */
         y = glist_nth(x, buf->u_previndex);
@@ -1293,11 +1300,9 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
         glist_noselect(x);
         glist_select(x, y);
 
-        int action;
-        if (!buf->u_newindex) action = 4;
-        else action = 3;
+        if (!buf->u_newindex) arrangeaction = 4;
+        else arrangeaction = 3;
 
-        t_gobj *oldy_prev=NULL, *oldy_next=NULL;
 
             /* if there is an object before ours (in other words our index is > 0) */
         if (glist_getindex(x,y))
@@ -1307,7 +1312,8 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
         if (y->g_next)
             oldy_next = y->g_next;
 
-        canvas_doarrange(x, action, y, oldy_prev, oldy_next);
+        canvas_doarrange(x, arrangeaction, y, oldy_prev, oldy_next);
+    }
         break;
     case UNDO_FREE:
         t_freebytes(buf, sizeof(*buf));
@@ -1469,10 +1475,10 @@ void *canvas_undo_set_create(t_canvas *x)
 {
     t_gobj *y;
     t_linetraverser t;
-
+    int nnotsel;
     t_undo_create *buf = (t_undo_create *)getbytes(sizeof(*buf));
     buf->u_index = glist_getindex(x, 0) - 1;
-    int nnotsel= glist_selectionindex(x, 0, 0);
+    nnotsel= glist_selectionindex(x, 0, 0);
 
     buf->u_objectbuf = binbuf_new();
     if (x->gl_list)
@@ -1547,10 +1553,11 @@ void *canvas_undo_set_recreate(t_canvas *x, t_gobj *y, int pos)
 {
     t_linetraverser t;
     t_outconnect *oc;
+    int nnotsel;
 
     t_undo_create *buf = (t_undo_create *)getbytes(sizeof(*buf));
     buf->u_index = pos;
-    int nnotsel= glist_selectionindex(x, 0, 0) - 1; /* - 1 is a critical difference from the create */
+    nnotsel= glist_selectionindex(x, 0, 0) - 1; /* - 1 is a critical difference from the create */
     buf->u_objectbuf = binbuf_new();
     gobj_save(y, buf->u_objectbuf);
 
@@ -2495,21 +2502,36 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             inindex = canvas_getindex(glist2, &t.tr_ob2->ob_g);
             if (shiftmod)
             {
-                    /* swap selected and hovered connection */
+                    /* if no line is selected, just add this line to the selection */
+                if(!x->gl_editor->e_selectedline)
+                {
+                    if (doit)
+                    {
+                        glist_selectline(glist2, oc,
+                            outindex, t.tr_outno,
+                            inindex, t.tr_inno);
+                    }
+                    canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                    return;
+                }
                 int soutindex = x->gl_editor->e_selectline_index1;
                 int sinindex = x->gl_editor->e_selectline_index2;
                 int soutno = x->gl_editor->e_selectline_outno;
                 int sinno = x->gl_editor->e_selectline_inno;
-                if(x->gl_editor->e_selectedline
-                   && ((outindex == soutindex)
-                       || (inindex == sinindex)))
+                        /* if the hovered line is already selected, deselect it */
+                if ((outindex == soutindex) && (inindex == sinindex)
+                    && (soutno == t.tr_outno) && (sinno == t.tr_inno))
                 {
-                            /* do not swap connection with itself */
-                    if (soutindex == outindex
-                        && sinindex == inindex
-                        && soutno == t.tr_outno
-                        && sinno == t.tr_inno)
-                        return;
+                    if(doit)
+                        glist_deselectline(x);
+                    canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                    return;
+                }
+
+                    /* swap selected and hovered connection */
+                if ((!x->gl_editor->e_selection)
+                    && ((outindex == soutindex) || (inindex == sinindex)))
+                {
                     if(doit)
                     {
                         canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
@@ -2532,9 +2554,10 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
             if (!shiftmod)
             {
-                    /* !shiftmode: select a new connection */
+                    /* !shiftmode: clear selection before selecting line */
                 if (doit)
                 {
+                    glist_noselect(x);
                     glist_selectline(glist2, oc,
                         outindex, t.tr_outno,
                         inindex, t.tr_inno);
@@ -2598,20 +2621,21 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
             int iom = IOMIDDLE * x->gl_zoom;
             int x11=0, x12=0, x21=0, x22=0;
             int y11=0, y12=0, y21=0, y22=0;
+            int noutlets1, ninlets, lx1, ly1, lx2, ly2;
             gobj_getrect(&src->ob_g, x, &x11, &y11, &x12, &y12);
             gobj_getrect(&sink->ob_g, x, &x21, &y21, &x22, &y22);
 
-            int noutlets1 = obj_noutlets(src);
-            int ninlets = obj_ninlets(sink);
+            noutlets1 = obj_noutlets(src);
+            ninlets = obj_ninlets(sink);
 
-            int lx1 = x11 + (noutlets1 > 1 ?
+            lx1 = x11 + (noutlets1 > 1 ?
                              ((x12-x11-iow) * nout)/(noutlets1-1) : 0)
                 + iom;
-            int ly1 = y12;
-            int lx2 = x21 + (ninlets > 1 ?
+            ly1 = y12;
+            lx2 = x21 + (ninlets > 1 ?
                              ((x22-x21-iow) * nin)/(ninlets-1) : 0)
                 + iom;
-            int ly2 = y21;
+            ly2 = y21;
             sys_vgui(
                 ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                 glist_getcanvas(x),
@@ -2695,12 +2719,13 @@ void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
             if (doit)
             {
                 t_selection *sel;
+                int selmode;
                 canvas_undo_add(x, UNDO_SEQUENCE_START, "connect", 0);
                 tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
                     /* now find out if either ob1 xor ob2 are part of the selection,
                      * and if so, connect the rest of the selection as well */
-                int selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
+                selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
                 switch(selmode) {
                 case 3: /* both source and sink are selected */
                         /* if only the source & sink are selected, keep connecting them */
@@ -3013,6 +3038,30 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
         keynum = 0, gotkeysym = gensym("Prior");
     else if (keynum == 63277)
         keynum = 0, gotkeysym = gensym("Next");
+    else if (keynum == 63236)
+        keynum = 0, gotkeysym = gensym("F1");
+    else if (keynum == 63237)
+        keynum = 0, gotkeysym = gensym("F2");
+    else if (keynum == 63238)
+        keynum = 0, gotkeysym = gensym("F3");
+    else if (keynum == 63239)
+        keynum = 0, gotkeysym = gensym("F4");
+    else if (keynum == 63240)
+        keynum = 0, gotkeysym = gensym("F5");
+    else if (keynum == 63241)
+        keynum = 0, gotkeysym = gensym("F6");
+    else if (keynum == 63242)
+        keynum = 0, gotkeysym = gensym("F7");
+    else if (keynum == 63243)
+        keynum = 0, gotkeysym = gensym("F8");
+    else if (keynum == 63244)
+        keynum = 0, gotkeysym = gensym("F9");
+    else if (keynum == 63245)
+        keynum = 0, gotkeysym = gensym("F10");
+    else if (keynum == 63246)
+        keynum = 0, gotkeysym = gensym("F11");
+    else if (keynum == 63247)
+        keynum = 0, gotkeysym = gensym("F12");
     if (gensym("#key")->s_thing && down)
         pd_float(gensym("#key")->s_thing, (t_float)keynum);
     if (gensym("#keyup")->s_thing && !down)

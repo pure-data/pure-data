@@ -1077,10 +1077,12 @@ static void *subcanvas_new(t_symbol *s)
                     while(index1-->0 && outobj)
                         outobj=outobj->g_next;
                     if(outobj && pd_checkobject(&outobj->g_pd))
+                    {
                         if (obj_issignaloutlet(pd_checkobject(&outobj->g_pd), outno))
                             sob = gensym("inlet~");
                         else
                             sob = gensym("inlet");
+                    }
                 }
         }
         if(sob)
@@ -1510,7 +1512,7 @@ static void canvas_path(t_canvas *x, t_canvasenvironment *e, const char *path)
     }
 
         /* explicit relative path, starts with ./ or ../ */
-    if (path[0] == '.' && (path[1] == '/' || path[1] == '.' && path[2] == '/'))
+    if ((strncmp("./", path, 2) == 0) || (strncmp("../", path, 3) == 0))
     {
         e->ce_path = namelist_append(e->ce_path, path, 0);
         return;
@@ -1559,7 +1561,7 @@ static void canvas_lib(t_canvas *x, t_canvasenvironment *e, const char *lib)
     }
 
         /* explicit relative path, starts with ./ or ../ */
-    if (lib[0] == '.' && (lib[1] == '/' || lib[1] == '.' && lib[2] == '/'))
+    if ((strncmp("./", lib, 2) == 0) || (strncmp("../", lib, 3) == 0))
     {
         sys_load_lib(x, lib);
         return;
@@ -2029,7 +2031,7 @@ void pd_doloadbang(void);
 
 t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 {
-    t_pd *x = 0;
+    t_pd *x = 0, *boundx;
     t_glist *gl;
     int dspstate;
 
@@ -2045,7 +2047,7 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
         that all toplevel canvases are visible.  LATER check if this
         is still necessary -- probably not. */
     dspstate = canvas_suspend_dsp();
-    t_pd *boundx = s__X.s_thing;
+    boundx = s__X.s_thing;
         s__X.s_thing = 0;       /* don't save #X; we'll need to leave it bound
                                 for the caller to grab it. */
     binbuf_evalfile(name, dir);

@@ -1,33 +1,43 @@
-#N canvas 312 78 599 357 12;
-#X msg 43 110 bang;
-#X floatatom 41 302 0 0 0 0 - - -;
-#X floatatom 55 134 0 0 0 0 - - -;
-#X floatatom 82 252 0 0 0 0 - - -;
-#X text 90 106 outputs the value;
-#X text 92 135 sets and outputs the value;
-#X text 93 274 creation argument initializes the value;
-#X obj 41 276 int 6;
-#X msg 55 157 9.6;
-#X text 88 157 non-integers get truncated;
-#X msg 53 182 -9.6;
-#X text 95 182 toward zero;
-#X text 116 254 set the value but no output;
-#X obj 60 11 int;
-#X text 108 12 - STORE AN INTEGER;
-#X text 19 42 The int object stores a number \, initialized by its
+#N canvas 188 87 579 499 12;
+#X msg 51 148 bang;
+#X floatatom 73 394 0 0 0 0 - - -;
+#X floatatom 66 174 0 0 0 0 - - -;
+#X floatatom 105 334 0 0 0 0 - - -;
+#X text 140 336 sets the value;
+#X text 118 365 creation argument initializes the value;
+#X floatatom 455 275 5 0 0 0 - - -;
+#X text 96 149 output the value;
+#X text 96 173 set and output the value;
+#X floatatom 458 348 5 0 0 0 - - -;
+#X obj 458 303 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 39 438 see also:;
+#X obj 163 438 value;
+#X obj 216 438 send;
+#X obj 107 18 int;
+#X text 149 18 - STORE AN INTEGER;
+#X obj 73 364 int 6;
+#X msg 93 258 send int-help;
+#X obj 455 251 r int-help;
+#X obj 109 438 float;
+#X msg 76 203 9.6;
+#X msg 86 225 -9.6;
+#X text 126 213 <= non-integers get truncated torward zero;
+#X text 331 437 updated for Pd version 0.48;
+#X obj 458 324 value int-help;
+#X text 200 257 send to a named object such as a;
+#X text 320 273 receive or value:;
+#X text 75 52 The int object stores a number \, initialized by its
 creation argument \, which may be reset using its inlet and output
-by sending it the "bang" message. The output is truncated to an integer
-à la Max.;
-#X obj 500 209 r int-help;
-#X floatatom 500 234 5 0 0 0 - - -, f 5;
-#X text 171 209 send value to a "receive" like this -->;
-#X text 332 323 updated for Pd version 0.45;
-#X msg 54 211 send int-help;
-#X connect 0 0 7 0;
-#X connect 2 0 7 0;
-#X connect 3 0 7 1;
-#X connect 7 0 1 0;
-#X connect 8 0 7 0;
-#X connect 10 0 7 0;
-#X connect 16 0 17 0;
-#X connect 20 0 7 0;
+by sending it the "bang" message. Sending a number sets a new value
+and outputs it. The output is truncated to an integer a la Max.;
+#X connect 0 0 16 0;
+#X connect 2 0 16 0;
+#X connect 3 0 16 1;
+#X connect 10 0 24 0;
+#X connect 16 0 1 0;
+#X connect 17 0 16 0;
+#X connect 18 0 6 0;
+#X connect 20 0 16 0;
+#X connect 21 0 16 0;
+#X connect 24 0 9 0;

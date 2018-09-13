@@ -784,7 +784,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
@@ -881,6 +881,9 @@ msgstr "Gorde Honela..."
 msgid "Print..."
 msgstr "Inprimatu..."
 
+msgid "Paste Replace"
+msgstr ""
+
 #, fuzzy
 msgid "Duplicate"
 msgstr "Bikoiztu"
@@ -894,7 +897,10 @@ msgstr ""
 msgid "Tidy Up"
 msgstr "Txukuntzea"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 #, fuzzy

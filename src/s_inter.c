@@ -1419,7 +1419,7 @@ void sys_bail(int n)
         reentered = 1;
 #if !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__GNU__)
             /* sys_close_audio() hangs if you're in a signal? */
-        fprintf(stderr ,"gui socket %d - ", pd_this->pd_inter->i_guisock);
+        fprintf(stderr ,"gui socket %d - \n", pd_this->pd_inter->i_guisock);
         fprintf(stderr, "closing audio...\n");
         sys_close_audio();
         fprintf(stderr, "closing MIDI...\n");

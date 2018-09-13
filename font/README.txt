@@ -2,7 +2,7 @@
 
 This directory contains font files for use with the Pure Data GUI.
 
-The default font for Pd is DejaVu Sans Mono (DVSM) and it is included with Pd
+The default font for Pd is DejaVu Sans Mono (DVSM) and it is included with Pd,
 based on the platform.
 
 You can see which font Pd is using by looking for the font information prints
@@ -25,9 +25,9 @@ The default font weight on macOS is normal.
 
 ## Windows
 
-Currently DVSM needs to be installed to the system otherwise the fallback font
-is Courier. In the future DVSM will be included & loaded by Pd without requring
-a separate installation.
+As of Pd 0.49, DVSM is included within the Pd app directory and loaded by default.
+Previous version require it to be installed to the system manually. The fallback font
+when not found is Courier.
 
 The default font weight on Windows is bold.
 
