@@ -3,17 +3,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.48-0\n"
+"Project-Id-Version: Pure Data 0.49-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2018-09-04 10:00+0200\n"
+"PO-Revision-Date: 2018-09-11 16:22+0200\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
-"Baptiste Chatel / JP Cimalando\n"
+"Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "------dimensions(chiffres)(pix):------"
@@ -678,12 +679,6 @@ msgstr "Installer uniquement des objets provenant de sources de confiance."
 msgid "Preferences"
 msgstr "Préférences"
 
-msgid "Create"
-msgstr "Créer"
-
-msgid "Check"
-msgstr "Vérifier"
-
 msgid "Installation options:"
 msgstr "Options d'installation :"
 
@@ -691,10 +686,13 @@ msgid "Try to remove libraries before (re)installing them?"
 msgstr "Essayer de supprimer les bibliothèques avant de les (ré)installer ?"
 
 msgid "Show README of newly installed libraries (if present)?"
-msgstr "Afficher le README (si présent) des bibliothèques nouvellement installées ?"
+msgstr ""
+"Afficher le README (si présent) des bibliothèques nouvellement installées ?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
-msgstr "Les bibliothèques nouvellement installées doivent-elles être ajoutées aux chemins de recherche de Pd ?"
+msgstr ""
+"Les bibliothèques nouvellement installées doivent-elles être ajoutées aux "
+"chemins de recherche de Pd ?"
 
 msgid "Platform settings:"
 msgstr "Réglages de plateforme :"
@@ -739,8 +737,8 @@ msgid "Please select a (writable) installation directory!"
 msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
 
 #, tcl-format
-msgid "Install %s to %s?"
-msgstr "Installer %s dans %s ?"
+msgid "Install %1$s to %2$s?"
+msgstr "Installer %1$s dans %2$s ?"
 
 #, tcl-format
 msgid ""
@@ -794,7 +792,7 @@ msgid "Open webpage"
 msgstr "Ouvrir une page web"
 
 msgid "_"
-msgstr ""
+msgstr "_"
 
 #, tcl-format
 msgid ""
@@ -846,6 +844,9 @@ msgstr "Enregistrer sous..."
 msgid "Print..."
 msgstr "Imprimer..."
 
+msgid "Paste Replace"
+msgstr "Coller Remplacer"
+
 msgid "Duplicate"
 msgstr "Dupliquer"
 
@@ -858,8 +859,11 @@ msgstr "Dézoomer"
 msgid "Tidy Up"
 msgstr "Aligner"
 
-msgid "Connect Selection"
-msgstr "Connecter la sélection"
+msgid "(Dis)Connect Selection"
+msgstr "(Dé)Connecter la sélection"
+
+msgid "Triggerize"
+msgstr "Triggeriser"
 
 msgid "Edit Mode"
 msgstr "Mode d'édition"
@@ -1067,6 +1071,12 @@ msgstr "'%s' n'existe pas"
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "'%s' ne semble pas être un fichier Pd"
+
+#~ msgid "Create"
+#~ msgstr "Créer"
+
+#~ msgid "Check"
+#~ msgstr "Vérifier"
 
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"

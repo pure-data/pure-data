@@ -762,7 +762,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
@@ -856,6 +856,9 @@ msgstr "Ment új néven..."
 msgid "Print..."
 msgstr "Nyomtat..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplikál"
 
@@ -870,7 +873,10 @@ msgstr "Nagyító"
 msgid "Tidy Up"
 msgstr "Elrendez"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"

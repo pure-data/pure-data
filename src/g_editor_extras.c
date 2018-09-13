@@ -267,6 +267,8 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
         }
         if(count>1)
         {
+            int i, obj_i, stub_i;
+            t_object *stub;
                 /* fan out: create a [t] object to resolve it */
 
                 /* need to get the coordinates of the fanning outlet */
@@ -281,9 +283,8 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
                 }
             }
 
-            int i;
-            int obj_i = canvas_getindex(x, o2g(obj)), stub_i;
-            t_object*stub=0;
+            obj_i = canvas_getindex(x, o2g(obj));
+            stub=0;
             binbuf_clear(b);
             binbuf_addv(b, "ssiis", gensym("#X"), gensym("obj"), posX, posY, gensym("t"));
             for(i=0; i<count; i++)

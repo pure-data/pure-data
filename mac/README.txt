@@ -111,6 +111,8 @@ tcltk-wish.sh --git commandline option. Oftentimes, these kinds of issues will
 appear with a newer version of macOS before they have been fixed by the open
 source community.
 
+Additionally, Pd uses an older version of Tcl/Tk for backwards compatibility on macOS. As such, small bugfixes from newer versions may need to be backported for the Pd GUI. Currently, this is handled in the tcltk-wish.sh script by applying custom patches to either the Tcl and/or Tk source trees. To skip applying patches, use the tcltk-wish.sh --no-patches commandline option. See mac/patches/README.txt for more info.
+
 ## Supplementary Build Scripts
 
 * build-macosx: builds a 32 bit Pd .app bundle using src/makefile.mac

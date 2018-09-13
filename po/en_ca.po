@@ -729,7 +729,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
@@ -822,6 +822,9 @@ msgstr ""
 msgid "Print..."
 msgstr ""
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr ""
 
@@ -834,7 +837,10 @@ msgstr ""
 msgid "Tidy Up"
 msgstr ""
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"

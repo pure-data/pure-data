@@ -6,7 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.48.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"PO-Revision-Date: 2017-07-20 21:14-0400\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2018-09-11 16:22+0200\n"
 "Last-Translator: Federico Camara Halac <camarafede@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -14,6 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.1.1\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "-------dimensiones(dígitos)(pix):-------"
@@ -618,9 +620,8 @@ msgstr "[deken]: version instalada [%1$s] < %2$s...sobreescribiendo!"
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr "[deken]: version instalada [%1$s] == %2$s...salteando!"
 
-#, fuzzy
 msgid "[deken]: "
-msgstr "[deken]: ¿Está usted online? %s"
+msgstr "[deken]:"
 
 #, tcl-format
 msgid "Successfully unzipped %1$s into %2$s."
@@ -641,9 +642,9 @@ msgstr "1. Extraer %s."
 msgid "2. Copy the contents into %s."
 msgstr "2. Copiar los contenidos en %s."
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "[deken] uninstalling '%s'"
-msgstr "[deken]: ¿Está usted online? %s"
+msgstr ""
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
@@ -707,45 +708,39 @@ msgstr ""
 msgid "Hide foreign architectures?"
 msgstr ""
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "Deken %s Preferences"
-msgstr "Preferencias"
+msgstr "Deken %s Preferencias"
 
-#, fuzzy
 msgid "[deken]: Start searching for externals..."
-msgstr "Buscando externos..."
+msgstr "[deken]: Buscando externos..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
 msgstr "[deken]: ¿Está usted online? %s"
 
 msgid "Are you online?"
-msgstr ""
+msgstr "¿Está usted online?"
 
-#, fuzzy
 msgid "Unable to perform search."
-msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
+msgstr "La búsqueda no pudo ser realizada."
 
 msgid "[deken]: No matching externals found."
-msgstr ""
+msgstr "[deken]: No se han encontrado externos con ese nombre."
 
-#, fuzzy
 msgid "Try using the full name e.g. 'freeverb'."
-msgstr ""
-"No se han encontrado externos con ese nombre. Prueba usando el nombre "
-"completo, por ejemplo: 'freeverb'."
+msgstr "Prueba usando el nombre completo, por ejemplo: 'freeverb'."
 
-#, fuzzy
 msgid "No matching externals found."
-msgstr "Buscando externos..."
+msgstr "No se han encontrado externos con ese nombre."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
 "Por favor, seleccione un directorio de instalación con permisos de escritura!"
 
 #, tcl-format
-msgid "Install %s to %s?"
-msgstr "¿Instalar %s en %s?"
+msgid "Install %1$s to %2$s?"
+msgstr "¿Instalar %1$s en %2$s?"
 
 #, tcl-format
 msgid ""
@@ -796,9 +791,8 @@ msgstr "Subido por %1$s @ %2$s"
 msgid "Install package"
 msgstr ""
 
-#, fuzzy
 msgid "Open webpage"
-msgstr "Abrir Recientes"
+msgstr ""
 
 msgid "_"
 msgstr ""
@@ -853,6 +847,9 @@ msgstr "Guardar Como..."
 msgid "Print..."
 msgstr "Imprimir..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplicar"
 
@@ -865,7 +862,10 @@ msgstr "Alejar"
 msgid "Tidy Up"
 msgstr "Ordenar"
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"

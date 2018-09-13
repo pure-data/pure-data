@@ -782,7 +782,7 @@ msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
@@ -877,6 +877,9 @@ msgstr "ਇੰਞ ਸੰਭਾਲੋ..."
 msgid "Print..."
 msgstr "ਸੋਧ(_E)..."
 
+msgid "Paste Replace"
+msgstr ""
+
 #, fuzzy
 msgid "Duplicate"
 msgstr "ਮਿਤੀ"
@@ -892,7 +895,10 @@ msgstr "ਹੇਠਾਂ"
 msgid "Tidy Up"
 msgstr ""
 
-msgid "Connect Selection"
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 #, fuzzy
