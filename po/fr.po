@@ -824,13 +824,13 @@ msgstr ""
 "\n"
 "Choisir un nouvel emplacement ?"
 
-#, tcl-format
-msgid "Couldn't create Pd documents directory: %s\n"
-msgstr "Impossible de créer le dossier Documents : %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create Pd documents directory: %s\n"
+msgstr "impossible de créer le dossier Documents : %s\n"
 
-#, tcl-format
-msgid "Couldn't create \"externals\" directory in: %s\n"
-msgstr "Le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create \"externals\" directory in: %s\n"
+msgstr "le dossier \"externals\" n'a pas pu être créé dans : %s\n"
 
 msgid "About Pd"
 msgstr "À propos de Pd"
@@ -1064,12 +1064,12 @@ msgstr "Éditer..."
 msgid "Delete"
 msgstr "Supprimer"
 
-#, tcl-format
-msgid "Ignoring '%s': doesn't exist"
+#, fuzzy, tcl-format
+msgid "ignoring '%s': doesn't exist"
 msgstr "'%s' n'existe pas"
 
-#, tcl-format
-msgid "Ignoring '%s': doesn't look like a Pd-file"
+#, fuzzy, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' ne semble pas être un fichier Pd"
 
 #~ msgid "Create"

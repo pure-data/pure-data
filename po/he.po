@@ -843,11 +843,11 @@ msgid ""
 msgstr ""
 
 #, tcl-format
-msgid "Couldn't create Pd documents directory: %s\n"
+msgid "couldn't create Pd documents directory: %s\n"
 msgstr ""
 
 #, tcl-format
-msgid "Couldn't create \"externals\" directory in: %s\n"
+msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr ""
 
 #, fuzzy
@@ -1102,11 +1102,11 @@ msgid "Delete"
 msgstr ""
 
 #, tcl-format
-msgid "Ignoring '%s': doesn't exist"
+msgid "ignoring '%s': doesn't exist"
 msgstr ""
 
 #, tcl-format
-msgid "Ignoring '%s': doesn't look like a Pd-file"
+msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr ""
 
 #, fuzzy

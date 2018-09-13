@@ -841,12 +841,12 @@ msgstr ""
 "\n"
 "Wollen Sie einen neuen Speicherort wählen?"
 
-#, tcl-format
-msgid "Couldn't create Pd documents directory: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create Pd documents directory: %s\n"
 msgstr "Konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 
-#, tcl-format
-msgid "Couldn't create \"externals\" directory in: %s\n"
+#, fuzzy, tcl-format
+msgid "couldn't create \"externals\" directory in: %s\n"
 msgstr "Konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
 
 msgid "About Pd"
@@ -1082,12 +1082,12 @@ msgstr "Bearbeiten..."
 msgid "Delete"
 msgstr "Löschen"
 
-#, tcl-format
-msgid "Ignoring '%s': doesn't exist"
+#, fuzzy, tcl-format
+msgid "ignoring '%s': doesn't exist"
 msgstr "Überspringe '%s': existiert nicht"
 
-#, tcl-format
-msgid "Ignoring '%s': doesn't look like a Pd-file"
+#, fuzzy, tcl-format
+msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "Überspringe '%s': kein Pd-File"
 
 #~ msgid "Unable to perform search. Are you online?"
