@@ -675,7 +675,7 @@ int pa_send_dacs(void)
             else
                 error("audio device not responding - closing audio");
             #ifdef _WIN32
-                error("reconnect and try reselecting the device in the settings")
+                error("reconnect and try reselecting the device in the settings");
             #endif
         #endif
         return SENDDACS_NO;
