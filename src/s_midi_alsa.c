@@ -64,12 +64,12 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
 
     if (nmidiin > MAXMIDIINDEV )
     {
-        post("midi input ports reduced to maximum %d", MAXMIDIINDEV);
+        post("MIDI input ports reduced to maximum %d", MAXMIDIINDEV);
         nmidiin = MAXMIDIINDEV;
     }
     if (nmidiout > MAXMIDIOUTDEV)
     {
-        post("midi output ports reduced to maximum %d", MAXMIDIOUTDEV);
+        post("MIDI output ports reduced to maximum %d", MAXMIDIOUTDEV);
         nmidiout = MAXMIDIOUTDEV;
     }
 
@@ -114,7 +114,7 @@ void sys_alsa_do_open_midi(int nmidiin, int *midiinvec,
     client = snd_seq_client_info_get_client(alsainfo);
     snd_seq_set_client_info(midi_handle, alsainfo);
     snd_seq_client_info_free(alsainfo);
-    post("opened alsa client %d in:%d out:%d", client, nmidiin, nmidiout);
+    post("opened alsa MIDI client %d in:%d out:%d", client, nmidiin, nmidiout);
     sys_setalarm(0);
     snd_midi_event_new(ALSA_MAX_EVENT_SIZE, &midiev);
     alsa_nmidiout = nmidiout;
@@ -180,7 +180,7 @@ void sys_alsa_putmidimess(int portno, int a, int b, int c)
                 ev.data.raw8.d[1] = b & 0x7f; /* data */
                 break;
             default:
-                bug("couldn't put alsa midi message");
+                bug("couldn't put alsa MIDI message");
                 break;
         }
         snd_seq_ev_set_direct(&ev);
@@ -238,7 +238,7 @@ void sys_alsa_poll_midi(void)
        alsa_source = midievent->dest.port;
        for(i = 0; i < count; i++)
            sys_midibytein(alsa_source, (buf[i] & 0xff));
-       //post("received %d midi bytes\n", count);
+       //post("received %d MIDI bytes\n", count);
    }
 }
 

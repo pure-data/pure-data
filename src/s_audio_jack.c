@@ -341,8 +341,8 @@ jack_open_audio(int inchans, int outchans, int rate, t_audiocallback callback)
         jack_client = jack_client_open (desired_client_name, JackNoStartServer,
           &status, NULL);
         if (status & JackFailure) {
-            error("JACK: Failure.  Is JACK running?");
-            verbose(1, "JACK: Returned status is: %d", status);
+            error("JACK: couldn't connect to server, is JACK running?");
+            verbose(1, "JACK: returned status is: %d", status);
             jack_client=NULL;
             /* jack spits out enough messages already, do not warn */
             STUFF->st_inchannels = STUFF->st_outchannels = 0;
