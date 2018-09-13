@@ -27,6 +27,8 @@ more than one successive edit.  This feature was introduced by Ivica Ico
 Bukvic and ported to Pd vanilla by Johannes Zmoelnig.
 
 <P> Various editing shortcuts, also from Johannes.
+	
+<P> "Declare" -path & -lib flags now search user search paths
 
 <P> Search path handling made easier and more consistent between user
 preferences, "declare" objects and command line flags.  See help file for
@@ -40,13 +42,15 @@ save state information as part of the calling patch.
 <P> "Text", "array", and "scalar" objects have the same methods (bang and "send")
 for outputting pointers to themselves
 
-<P> "Declare" -path & -lib flags now search user search paths
-
 <P> Opening patches from menu, command line, or messages to "pd" first check
 of the file is already open and if so only bring the existing patch to front.
 
 <P> 4 million point default limit on resizing soundfile read to array changed
-to 2^31-1 (about 2 billion) samples
+to 2^31-1 (about 2 billion) samples, soundfiler can now only read and output a
+file's information if you don't give it an array name
+	
+<P> log has a base argument and new inlet like log~, pow and pow~ can deal with 
+negative numbers.
 
 <P> Changes to audio I/O handling to time out if device freezes (as when you
 unplug a USB device in MACOSX).
