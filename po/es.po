@@ -723,7 +723,7 @@ msgstr "La búsqueda no pudo ser realizada."
 
 #, fuzzy
 msgid "no matching externals found"
-msgstr "No se han encontrado externos con ese nombre."
+msgstr "no se han encontrado externos con ese nombre"
 
 #, fuzzy
 msgid "try using the full name e.g. 'freeverb'"
@@ -1076,10 +1076,6 @@ msgstr "Ignorando '%s': archivo no existente."
 #, fuzzy, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "Ignorando '%s': no parece ser un fichero de Pd."
-
-#, fuzzy
-#~ msgid "no matching externals found"
-#~ msgstr "no se han encontrado externos con ese nombre"
 
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"

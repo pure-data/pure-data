@@ -726,7 +726,7 @@ msgstr "Recherche impossible."
 
 #, fuzzy
 msgid "no matching externals found"
-msgstr "Aucun external correspondant trouvé."
+msgstr "aucun external correspondant trouvé"
 
 #, fuzzy
 msgid "try using the full name e.g. 'freeverb'"
@@ -1078,10 +1078,6 @@ msgstr "'%s' n'existe pas"
 #, fuzzy, tcl-format
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "'%s' ne semble pas être un fichier Pd"
-
-#, fuzzy
-#~ msgid "no matching externals found"
-#~ msgstr "aucun external correspondant trouvé"
 
 #~ msgid "Create"
 #~ msgstr "Créer"

@@ -1097,10 +1097,6 @@ msgstr "Überspringe '%s': existiert nicht"
 msgid "ignoring '%s': doesn't look like a Pd file"
 msgstr "Überspringe '%s': kein Pd-File"
 
-#, fuzzy
-#~ msgid "no matching externals found"
-#~ msgstr "konnte keine passenden Pakete finden"
-
 #~ msgid "Unable to perform search. Are you online?"
 #~ msgstr "Die Suche schlug fehl. Sind Sie online?"
 
