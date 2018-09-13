@@ -8,7 +8,7 @@ and select "open" in popup menu) to see how the savestate object is
 used from within., f 46;
 #X obj 53 158 savestate-example;
 #A saved 221 440;
-#X text 194 162 parameters for different copies of the abstraciton
+#X text 194 162 parameters for different copies of the abstraction
 are saved and restored independently., f 32;
 #X text 388 598 updated for Pd version 0.49.;
 #X text 45 236 The savestate object is used inside abstractions to
