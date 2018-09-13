@@ -671,7 +671,7 @@ int pa_send_dacs(void)
             error("check your hardware connection and reopen the device from the menu");
         #else
             /* TODO: find out why we can't reopen a hotplugged device on OSX */
-            error("please restart Pd");
+            error("you may need to save and restart Pd");
         #endif
         return SENDDACS_NO;
     } else
