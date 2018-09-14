@@ -1373,11 +1373,10 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
     t_undo_canvas_properties *buf = (t_undo_canvas_properties *)z;
     t_undo_canvas_properties tmp;
 
-    if (!x->gl_edit)
-        canvas_editmode(x, 1);
-
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
+        if (!x->gl_edit)
+            canvas_editmode(x, 1);
 #if 0
             /* close properties window first */
         t_int properties = gfxstub_haveproperties((void *)x);
@@ -1386,7 +1385,6 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             gfxstub_deleteforkey(x);
         }
 #endif
-
             /* store current canvas values into temporary data holder */
         tmp.gl_pixwidth = x->gl_pixwidth;
         tmp.gl_pixheight = x->gl_pixheight;
