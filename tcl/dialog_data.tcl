@@ -39,13 +39,13 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
     $mytoplevel configure -padx 0 -pady 0
 
     frame $mytoplevel.buttonframe
-    pack $mytoplevel.buttonframe -side bottom -fill x -pady 2m
+    pack $mytoplevel.buttonframe -side bottom -pady 2m
     button $mytoplevel.buttonframe.send -text [_ "Send ($modkeyname-S)"] \
         -command "::dialog_data::send $mytoplevel"
     button $mytoplevel.buttonframe.ok -text [_ "Done ($modkeyname-D)"] \
         -command "::dialog_data::ok $mytoplevel"
-    pack $mytoplevel.buttonframe.send -side left -expand 1
-    pack $mytoplevel.buttonframe.ok -side left -expand 1
+    pack $mytoplevel.buttonframe.send -side left -expand 1 -padx 15 -ipadx 10
+    pack $mytoplevel.buttonframe.ok -side left -expand 1 -padx 15 -ipadx 10
 
     text $mytoplevel.text -relief raised -highlightthickness 0 -bd 2 -height 40 -width 60 \
         -yscrollcommand "$mytoplevel.scroll set" -background white
@@ -57,4 +57,6 @@ proc ::dialog_data::pdtk_data_dialog {mytoplevel stuff} {
     bind $mytoplevel.text <$::modifier-Key-d> "::dialog_data::ok $mytoplevel"
     bind $mytoplevel.text <$::modifier-Key-w> "::dialog_data::cancel $mytoplevel"
     focus $mytoplevel.text
+
+    position_over_window $mytoplevel $::focused_window
 }

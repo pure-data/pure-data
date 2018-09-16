@@ -53,9 +53,9 @@ package require opt_parser
 package require pdtk_canvas
 package require pdtk_text
 package require pdtk_textwindow
+package require pd_guiprefs
 # TODO eliminate this kludge:
 package require wheredoesthisgo
-package require pd_guiprefs
 
 #------------------------------------------------------------------------------#
 # import functions into the global namespace
@@ -64,6 +64,7 @@ package require pd_guiprefs
 namespace import ::pd_guiprefs::init
 namespace import ::pd_guiprefs::update_recentfiles
 namespace import ::pd_guiprefs::write_recentfiles
+
 # make global since they are used throughout
 namespace import ::pd_menucommands::*
 
@@ -113,10 +114,6 @@ set PD_BUGFIX_VERSION 0
 set PD_TEST_VERSION ""
 set done_init 0
 
-set TCL_MAJOR_VERSION 0
-set TCL_MINOR_VERSION 0
-set TCL_BUGFIX_VERSION 0
-
 # for testing which platform we are running on ("aqua", "win32", or "x11")
 set windowingsystem ""
 
@@ -134,22 +131,22 @@ set font_weight "normal"
 # sizes of chars for each of the Pd fixed font sizes:
 # width(pixels)  height(pixels)
 set font_metrics {
-    6 10
-    7 13
-    9 16
-    10 21
-    15 25
-    25 45
+    5 11
+    6 13
+    7 16
+    10 19
+    14 29
+    22 44
 }
 
 # sizes as above for zoomed-in view
 set font_zoom2_metrics {
-    12 20
-    14 26
-    18 32
-    20 42
-    30 50
-    50 90
+    10 22
+    12 26
+    14 32
+    20 38
+    28 58
+    44 88
 }
 set font_measured {}
 set font_zoom2_measured {}
@@ -173,7 +170,6 @@ set startup_libraries {}
 # start dirs for new files and open panels
 set filenewdir [pwd]
 set fileopendir [pwd]
-
 
 # lists of audio/midi devices and APIs for prefs dialogs
 set audio_apilist {}
@@ -199,9 +195,6 @@ set popup_xcanvas 0
 set popup_ycanvas 0
 # modifier for key commands (Ctrl/Control on most platforms, Cmd/Mod1 on MacOSX)
 set modifier ""
-# most backends require uppercase letters when binding with the shift key,
-# but some (ie. TK Cocoa) need lowercase
-set bind_shiftcaps 1
 # current state of the Edit Mode menu item
 set editmode_button 0
 
@@ -232,15 +225,15 @@ set canvas_minwidth 50
 set canvas_minheight 20
 
 # undo states
-set ::undo_action "no"
-set ::redo_action "no"
-set ::undo_toplevel "."
-
+array set undo_actions {}
+array set redo_actions {}
+# unused legacy undo states
+set undo_action no
+set redo_action no
 
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
 }
-
 
 #------------------------------------------------------------------------------#
 # coding style
@@ -317,7 +310,15 @@ proc init_for_platform {} {
             # frame's upper left corner. http://wiki.tcl.tk/11502
             set ::windowframex 3
             set ::windowframey 53
-			# TODO add wm iconphoto/iconbitmap here if it makes sense
+            # trying loading icon in the GUI directory
+            if {$::tcl_version >= 8.5} {
+                set icon [file join $::sys_guidir pd.gif]
+                if {[file readable $icon]} { 
+                    catch {
+                        wm iconphoto . -default [image create photo -file "$icon"]
+                    }
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "left_ptr"
             set ::cursor_runmode_clickme "arrow"
@@ -333,9 +334,10 @@ proc init_for_platform {} {
             # from the commandline incorporates the special mac event handling
             package require apple_events
             set ::modifier "Mod1"
-            if {$::tcl_version >= 8.5} {
-                # Tk Cocoa wants lower case keys when binding with shift
-                set ::bind_shiftcaps 0
+            if {$::tcl_version < 8.5} {
+                # old default font for Tk 8.4 on macOS
+                # since font detection requires 8.5+
+                set ::font_family "Monaco"
             }
             option add *DialogWindow*background "#E8E8E8" startupFile
             option add *DialogWindow*Entry.highlightBackground "#E8E8E8" startupFile
@@ -379,6 +381,9 @@ proc init_for_platform {} {
             option add *DialogWindow*font menufont startupFile
             option add *PdWindow*font menufont startupFile
             option add *ErrorDialog*font menufont startupFile
+            # initial dir is home
+            set ::filenewdir $::env(HOME)
+            set ::fileopendir $::env(HOME)
             # set file types that open/save recognize
             set ::filetypes \
                 [list \
@@ -397,6 +402,18 @@ proc init_for_platform {} {
             set ::windowframey 0
             # TODO use 'winico' package for full, hicolor icon support
             wm iconbitmap . -default [file join $::sys_guidir pd.ico]
+            # add local fonts to Tk's font list using pdfontloader
+            if {[file exists [file join "$::sys_libdir" "font"]]} {
+                catch {
+                    load [file join "$::sys_libdir" "bin/pdfontloader.dll"]
+                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf"}
+                    foreach font $localfonts {
+                        set path [file join "$::sys_libdir" "font/$font"]
+                        pdfontloader::load $path
+                        ::pdwindow::verbose 0 "pdfontloader loaded [file tail $path]\n"
+                    }
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "right_ptr"
             set ::cursor_runmode_clickme "arrow"
@@ -461,7 +478,7 @@ proc get_font_for_size {fsize} {
 # always do a good job of choosing in respect to Pd's needs.  So this chooses
 # from a list of fonts that are known to work well with Pd.
 proc find_default_font {} {
-    set testfonts {"DejaVu Sans Mono" "Bitstream Vera Sans Mono" \
+    set testfonts {"DejaVu Sans Mono" "Bitstream Vera Sans Mono" "Monaco" \
         "Inconsolata" "Courier 10 Pitch" "Andale Mono" "Droid Sans Mono"}
     foreach family $testfonts {
         if {[lsearch -exact -nocase [font families] $family] > -1} {
@@ -469,7 +486,7 @@ proc find_default_font {} {
             break
         }
     }
-    ::pdwindow::verbose 0 "Default font: $::font_family\n"
+    ::pdwindow::verbose 0 "Detected font: $::font_family\n"
 }
 
 proc set_base_font {family weight} {
@@ -488,7 +505,7 @@ proc set_base_font {family weight} {
             [_ "WARNING: Font weight '%s' not found, using default (%s)\n"] \
                 $weight $::font_weight]
     }
-    ::pdwindow::verbose 0 "Base font: $::font_family $::font_weight\n"
+    ::pdwindow::verbose 0 "Using font: $::font_family $::font_weight\n"
 }
 
 # create all the base fonts (i.e. pd_font_8 thru pd_font_36) so that they fit
@@ -500,7 +517,7 @@ proc fit_font_into_metrics {} {
 
     for {set fsize 6} {$fsize < 120 && [llength $::font_zoom2_metrics] > 1} \
             {incr fsize} {
-        set foo [list $::font_family -$fsize bold]
+        set foo [list $::font_family -$fsize $::font_weight]
         set height [font metrics $foo -linespace]
         set width [font measure $foo M]
         # puts stderr [concat $fsize $width $height]
@@ -508,19 +525,27 @@ proc fit_font_into_metrics {} {
             ( $width > [lindex $::font_metrics 0] || \
             $height > [lindex $::font_metrics 1] )} {
                 # puts [concat SINGLE $fsize]
-                lappend ::font_measured $lastsize $lastwidth  $lastheight
+                lappend ::font_measured $lastsize $lastwidth $lastheight
                 set ::font_metrics [lrange $::font_metrics 2 end]
         }
         if {$width > [lindex $::font_zoom2_metrics 0] || \
             $height > [lindex $::font_zoom2_metrics 1]} {
                 # puts [concat DOUBLE $fsize]
-                lappend ::font_zoom2_measured $lastsize $lastwidth  $lastheight
+                lappend ::font_zoom2_measured $lastsize $lastwidth $lastheight
                 set ::font_zoom2_metrics [lrange $::font_zoom2_metrics 2 end]
         }
         set lastsize $fsize
         set lastwidth $width
         set lastheight $height
     }
+    # ::pdwindow::verbose 0 "Measured font metrics:\n"
+    # foreach {size width height} $::font_measured {
+    #     ::pdwindow::verbose 0 "$size $width $height\n"
+    # }
+    # ::pdwindow::verbose 0 "Measured zoom2 font metrics:\n"
+    # foreach {size width height} $::font_zoom2_measured {
+    #     ::pdwindow::verbose 0 "$size $width $height\n"
+    # }
 }
 
 # ------------------------------------------------------------------------------
@@ -535,6 +560,7 @@ proc pdtk_pd_startup {major minor bugfix test
     set oldtclversion 0
     set ::audio_apilist $audio_apis
     set ::midi_apilist $midi_apis
+    ::pdwindow::verbose 0 "Tk [info patchlevel]\n"
     if {$::tcl_version >= 8.5} {find_default_font}
     set_base_font $sys_font $sys_fontweight
     fit_font_into_metrics
@@ -547,6 +573,7 @@ proc pdtk_pd_startup {major minor bugfix test
     ::pdwindow::create_window
     ::pdwindow::configure_menubar
     ::pd_menus::configure_for_pdwindow
+    ::pdwindow::create_window_finalize
     ::pdtk_canvas::create_popup
     load_startup_plugins
     open_filestoopen
@@ -573,9 +600,9 @@ proc pdtk_check {mytoplevel message reply_to_pd default} {
 proc pdtk_plugin_dispatch { args } {
     set receiver [ lindex $args 0 ]
     if [ info exists ::pd_connect::plugin_dispatch_receivers($receiver) ] {
-	   foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
+       foreach callback $::pd_connect::plugin_dispatch_receivers($receiver) {
                $callback [ lrange $args 1 end ]
-	   }
+       }
     }
 }
 
@@ -735,6 +762,7 @@ proc load_plugin_script {filename} {
 proc load_startup_plugins {} {
     # load built-in plugins
     load_plugin_script [file join $::sys_guidir pd_deken.tcl]
+    load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
 
     # load other installed plugins
     foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
@@ -751,7 +779,6 @@ proc load_startup_plugins {} {
 # ------------------------------------------------------------------------------
 # main
 proc main {argc argv} {
-    # TODO Tcl/Tk 8.3 doesn't have [tk windowingsystem]
     set ::windowingsystem [tk windowingsystem]
     set ::platform $::tcl_platform(os)
     if { $::tcl_platform(platform) eq "windows"} {
@@ -774,11 +801,9 @@ proc main {argc argv} {
         set ::port [::pd_connect::create_socket]
         set pd_exec [file join [file dirname [info script]] ../bin/pd]
         exec -- $pd_exec -guiport $::port &
-        if {$::windowingsystem eq "aqua"} {
-            # on Aqua, if 'pd-gui' first, then initial dir is home
-            set ::filenewdir $::env(HOME)
-            set ::fileopendir $::env(HOME)
-        }
+        # if 'pd-gui' first, then initial dir is home
+        set ::filenewdir $::env(HOME)
+        set ::fileopendir $::env(HOME)
     }
     ::pdwindow::verbose 0 "------------------ done with main ----------------------\n"
 }

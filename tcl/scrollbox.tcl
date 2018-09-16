@@ -57,6 +57,7 @@ proc ::scrollbox::delete_item { mytoplevel } {
     foreach idx $cursel {
         $mytoplevel.listbox.box delete $idx
     }
+    $mytoplevel.listbox.box selection set active
 }
 
 # Double-clicking on the listbox should edit the current item,
@@ -92,7 +93,7 @@ proc ::scrollbox::dbl_click { mytoplevel edit_method add_method x y } {
 proc ::scrollbox::click { mytoplevel x y } {
     # record the index of the current element being
     # clicked on
-    variable ::lastIdx [$mytoplevel.listbox.box index @$x,$y]
+    variable lastIdx [$mytoplevel.listbox.box index @$x,$y]
 
     focus $mytoplevel.listbox.box
 }
@@ -103,21 +104,21 @@ proc ::scrollbox::release { mytoplevel x y } {
     variable lastIdx
     set curIdx [$mytoplevel.listbox.box index @$x,$y]
 
-    if { $curIdx != $::lastIdx } {
+    if { $curIdx != $lastIdx } {
         # clear any current selection
         $mytoplevel.listbox.box selection clear 0 end
 
-        set oldIdx $::lastIdx
+        set oldIdx $lastIdx
         set newIdx [expr {$curIdx+1}]
         set selIdx $curIdx
 
-        if { $curIdx < $::lastIdx } {
-            set oldIdx [expr {$::lastIdx + 1}]
+        if { $curIdx < $lastIdx } {
+            set oldIdx [expr {$lastIdx + 1}]
             set newIdx $curIdx
             set selIdx $newIdx
         }
 
-        $mytoplevel.listbox.box insert $newIdx [$mytoplevel.listbox.box get $::lastIdx]
+        $mytoplevel.listbox.box insert $newIdx [$mytoplevel.listbox.box get $lastIdx]
         $mytoplevel.listbox.box delete $oldIdx
         $mytoplevel.listbox.box activate $newIdx
         $mytoplevel.listbox.box selection set $selIdx
@@ -181,9 +182,9 @@ proc ::scrollbox::make { mytoplevel listdata add_method edit_method } {
     button $mytoplevel.actions.delete_path -text [_ "Delete" ] \
         -command "::scrollbox::delete_item $mytoplevel"
 
-    pack $mytoplevel.actions.delete_path -side right -pady 2m -padx 5
-    pack $mytoplevel.actions.edit_path -side right -pady 2m -padx 5
-    pack $mytoplevel.actions.add_path -side right -pady 2m -padx 5
+    pack $mytoplevel.actions.delete_path -side right -pady 2m -padx 5 -ipadx 10
+    pack $mytoplevel.actions.edit_path -side right -pady 2m -padx 5 -ipadx 10
+    pack $mytoplevel.actions.add_path -side right -pady 2m -padx 5 -ipadx 10
 
     $mytoplevel.listbox.box activate end
     $mytoplevel.listbox.box selection set end

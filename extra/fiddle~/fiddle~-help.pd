@@ -35,7 +35,7 @@
 an incoming sound \, both continuously and as a stream of discrete
 "note" events. Fiddle optionally outputs a list of detected sinusoidal
 peaks used to make the pitch determination. Fiddle is described theoretically
-in the 1998 ICMC proceedings \, reprinted on http://man104nfs.ucsd.edu/~mpuckett.
+in the 1998 ICMC proceedings \, reprinted on msp.ucsd.edu.
 ;
 #X text 12 179 Fiddle's creation arguments specify an analysis window
 size \, the maximum polyphony (i.e. \, the number of simultaneous "pitches"

@@ -137,7 +137,7 @@ static void *sigrsqrt_new(void)
 
 static t_int *sigrsqrt_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
     t_int n = *(t_int *)(w+3);
     while (n--)
     {
@@ -196,7 +196,7 @@ static void *sigsqrt_new(void)
 
 t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
     t_int n = *(t_int *)(w+3);
     while (n--)
     {
@@ -252,8 +252,23 @@ static void *sigwrap_new(void)
 
 static t_int *sigwrap_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
-    t_int n = *(t_int *)(w+3);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
+    while (n--)
+    {
+        t_sample f = *in++;
+        int k = f;
+        if (k <= f) *out++ = f-k;
+        else *out++ = f - (k-1);
+    }
+    return (w + 4);
+}
+
+     /* old buggy version that sometimes output 1 instead of 0 */
+static t_int *sigwrap_old_perform(t_int *w)
+{
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
     while (n--)
     {
         t_sample f = *in++;
@@ -266,7 +281,9 @@ static t_int *sigwrap_perform(t_int *w)
 
 static void sigwrap_dsp(t_sigwrap *x, t_signal **sp)
 {
-    dsp_add(sigwrap_perform, 3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+    dsp_add((pd_compatibilitylevel < 48 ?
+        sigwrap_old_perform : sigwrap_perform),
+            3, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
 }
 
 void sigwrap_setup(void)
@@ -298,8 +315,8 @@ static void *mtof_tilde_new(void)
 
 static t_int *mtof_tilde_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
-    t_int n = *(t_int *)(w+3);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
     for (; n--; in++, out++)
     {
         t_sample f = *in;
@@ -347,8 +364,8 @@ static void *ftom_tilde_new(void)
 
 static t_int *ftom_tilde_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
-    t_int n = *(t_int *)(w+3);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
     for (; n--; in++, out++)
     {
         t_sample f = *in;
@@ -391,8 +408,8 @@ static void *dbtorms_tilde_new(void)
 
 static t_int *dbtorms_tilde_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
-    t_int n = *(t_int *)(w+3);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
     for (; n--; in++, out++)
     {
         t_sample f = *in;
@@ -441,8 +458,8 @@ static void *rmstodb_tilde_new(void)
 
 static t_int *rmstodb_tilde_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
-    t_int n = *(t_int *)(w+3);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
     for (; n--; in++, out++)
     {
         t_sample f = *in;
@@ -490,8 +507,8 @@ static void *dbtopow_tilde_new(void)
 
 static t_int *dbtopow_tilde_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
-    t_int n = *(t_int *)(w+3);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
     for (; n--; in++, out++)
     {
         t_sample f = *in;
@@ -540,8 +557,8 @@ static void *powtodb_tilde_new(void)
 
 static t_int *powtodb_tilde_perform(t_int *w)
 {
-    t_sample *in = *(t_sample **)(w+1), *out = *(t_sample **)(w+2);
-    t_int n = *(t_int *)(w+3);
+    t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
+    t_int n = (t_int)w[3];
     for (; n--; in++, out++)
     {
         t_sample f = *in;
@@ -596,12 +613,10 @@ t_int *pow_tilde_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        float f = *in1++;
-        if (f > 0)
-            *out = pow(f, *in2);
-        else *out = 0;
-        out++;
-        in2++;
+        float f1 = *in1++, f2 = *in2++;
+        *out++ = (f1 == 0 && f2 < 0) ||
+            (f1 < 0 && (f2 - (int)f2) != 0) ?
+                0 : pow(f1, f2);
     }
     return (w+5);
 }

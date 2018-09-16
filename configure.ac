@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.47.1])
+AC_INIT([pd], [0.49.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -18,7 +18,14 @@ portaudio=no
 portmidi=no
 local_portaudio=yes
 local_portmidi=yes
+mmio=no
+asio=no
+jack_framework=no
 locales=yes
+
+# wish command info, the actual value is set using the WISH define
+# "wish" mirrors the default WISH define in s_inter.c
+wish="wish"
 
 # list of detected apis
 audio_backends=""
@@ -26,7 +33,138 @@ midi_backends=""
 
 # debug/release defaults
 DEBUG_CFLAGS="-O0"
-RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer"
+RELEASE_CFLAGS="-ffast-math -funroll-loops -fomit-frame-pointer -O3"
+
+#########################################
+##### OS Detection #####
+
+# you will need to install XCode on Mac OS X to use this:
+PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iOS SDK not available]))
+PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not available]))
+
+case $host in
+*darwin*)
+    if test "x${IPHONEOS}" = "xno"; then
+        MACOSX=yes
+        platform="Mac OSX"
+        coreaudio=yes
+        portaudio=yes
+        portmidi=yes
+        jack_framework=yes
+        EXTERNAL_CFLAGS="-fPIC"
+        EXTERNAL_EXTENSION=d_fat
+
+        # a set of search paths are used on macOS in s_inter.c
+        wish="default search paths"
+
+        # required for dlopen & weak linking for older OSX version support
+        CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
+    else
+        platform=iOS
+        locales=no
+        wish="not used"
+    fi
+
+    # homebrew paths
+    if test -e /usr/local ; then
+        AM_CPPFLAGS="-I/usr/local/include $INCLUDES"
+        LDFLAGS="-L/usr/local/lib $LDFLAGS"
+    fi
+
+    # fink paths
+    if test -e /sw ; then
+        AM_CPPFLAGS="-I/sw/include $INCLUDES"
+        LDFLAGS="-L/sw/lib $LDFLAGS"
+    fi
+
+    # macports paths
+    if test -e /opt/local ; then
+        AM_CPPFLAGS="-I/opt/local/include $INCLUDES"
+        LDFLAGS="-L/opt/local/lib $LDFLAGS"
+    fi
+
+    EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
+    ;;
+*linux*|*kfreebsd*gnu*)
+    # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
+    if test "x${ANDROID}" = "xno"; then
+        LINUX=yes
+        platform=Linux
+        portaudio=yes
+        EXTERNAL_CFLAGS="-fPIC"
+        EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
+        EXTERNAL_EXTENSION=pd_linux
+    else
+        platform=Android
+    fi
+    ;;
+*-*-gnu*)
+    HURD=yes
+    platform=Hurd
+    EXTERNAL_CFLAGS="-fPIC"
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
+    EXTERNAL_EXTENSION=pd_linux
+    ;;
+*mingw*)
+    WINDOWS=yes
+    MINGW=yes
+    platform=MinGW
+    mmio=yes
+    asio=yes
+    portaudio=yes
+    portmidi=yes
+
+    # this mirrors the default windows WISH define in s_inter.c
+    wish="wish85.exe"
+
+    # externals are dynamically linked to pd.dll in their individual automake files
+    EXTERNAL_CFLAGS="-mms-bitfields"
+    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined -lpd"
+    EXTERNAL_EXTENSION=dll
+
+    # workaround for rpl_malloc/rpl_realloc bug in autoconf when cross-compiling
+    ac_cv_func_malloc_0_nonnull=yes
+    ac_cv_func_realloc_0_nonnull=yes
+    ;;
+*cygwin*)
+    WINDOWS=yes
+    CYGWIN=yes
+    platform=Cygwin
+    mmio=yes
+    asio=yes
+    portaudio=yes
+    portmidi=yes
+
+    # this mirrors the default windows WISH define in s_inter.c
+    wish="wish85.exe"
+
+    # externals are dynamically linked to pd.dll in their individual automake files
+    EXTERNAL_CFLAGS=
+    EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
+    EXTERNAL_EXTENSION=dll
+    ;;
+*openbsd*)
+    OPENBSD=yes
+    platform=OpenBSD
+    portaudio=yes
+    EXTERNAL_CFLAGS="-D__OPENBSD__"
+    EXTERNAL_LDFLAGS="-liberty"
+    EXTERNAL_EXTENSION=pd_openbsd
+    ;;
+*)
+    platform=Unknown
+    ;;
+esac
+
+AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
+AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
+AM_CONDITIONAL(LINUX, test x$LINUX = xyes)
+AM_CONDITIONAL(HURD, test x$HURD = xyes)
+AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
+AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
+AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
+AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
+AM_CONDITIONAL(OPENBSD, test x$OPENBSD = xyes)
 
 #########################################
 ##### Check for programs, libs, & headers #####
@@ -45,6 +183,7 @@ AC_PROG_LN_S
 AC_PROG_MKDIR_P
 AC_PROG_GREP
 AC_PROG_SED
+AC_CHECK_TOOL([WINDRES], [windres], [:])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -124,111 +263,6 @@ AC_SUBST(EXTERNAL_LDFLAGS)
 AC_SUBST([ALSA_LIBS])
 AC_SUBST([JACK_LIBS])
 
-#########################################
-##### OS Detection #####
-
-# you will need to install XCode on Mac OS X to use this:
-PD_CHECK_IPHONE(IPHONEOS=yes, IPHONEOS=no, AC_MSG_ERROR([iOS SDK not available]))
-PD_CHECK_ANDROID(ANDROID=yes, ANDROID=no, AC_MSG_ERROR([Android SDK not available]))
-
-case $host in
-*darwin*)
-    if test "x${IPHONEOS}" = "xno"; then
-        MACOSX=yes
-        platform="Mac OSX"
-        coreaudio=yes
-        portaudio=yes
-        portmidi=yes
-        EXTERNAL_CFLAGS="-fPIC"
-        EXTERNAL_EXTENSION=d_fat
-
-        # required for dlopen & weak linking for older OSX version support
-        CFLAGS="-mmacosx-version-min=10.6 $CFLAGS"
-    else
-        platform=iOS
-        locales=no
-    fi
-
-    # homebrew paths
-    if test -e /usr/local ; then
-        AM_CPPFLAGS="-I/usr/local/include $INCLUDES"
-        LDFLAGS="-L/usr/local/lib $LDFLAGS"
-    fi
-
-    # fink paths
-    if test -e /sw ; then
-        AM_CPPFLAGS="-I/sw/include $INCLUDES"
-        LDFLAGS="-L/sw/lib $LDFLAGS"
-    fi
-
-    # macports paths
-    if test -e /opt/local ; then
-        AM_CPPFLAGS="-I/opt/local/include $INCLUDES"
-        LDFLAGS="-L/opt/local/lib $LDFLAGS"
-    fi
-
-    EXTERNAL_LDFLAGS="-bundle -undefined dynamic_lookup"
-    ;;
-*linux*|*kfreebsd*gnu*)
-    # GNU/kFreeBSD are for Debian, were they are treated very similar to linux
-    if test "x${ANDROID}" = "xno"; then
-        LINUX=yes
-        platform=Linux
-        portaudio=yes
-        EXTERNAL_CFLAGS="-fPIC"
-        EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
-        EXTERNAL_EXTENSION=pd_linux
-    else
-        platform=Android
-    fi
-    ;;
-*-*-gnu*)
-    HURD=yes
-    platform=Hurd
-    EXTERNAL_CFLAGS="-fPIC"
-    EXTERNAL_LDFLAGS="-Wl,--export-dynamic -fPIC"
-    EXTERNAL_EXTENSION=pd_linux
-    ;;
-*mingw*)
-    WINDOWS=yes
-    MINGW=yes
-    platform=Mingw
-    portaudio=yes
-
-    # ASIO doesn't build yet with the autotools setup. We need to figure out how
-    # to make the final linking phase use g++
-    asio=yes
-
-    # externals are dynamically linked to pd.dll in their individual automake files
-    EXTERNAL_CFLAGS="-mms-bitfields"
-    EXTERNAL_LDFLAGS="-s -Wl,--enable-auto-import -no-undefined -lpd"
-    EXTERNAL_EXTENSION=dll
-    ;;
-*cygwin*)
-    WINDOWS=yes
-    CYGWIN=yes
-    platform=Cygwin
-    portaudio=yes
-
-    # externals are dynamically linked to pd.dll in their individual automake files
-    EXTERNAL_CFLAGS=
-    EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
-    EXTERNAL_EXTENSION=dll
-    ;;
-*)
-    platform=Unknown
-    ;;
-esac
-
-AM_CONDITIONAL(ANDROID, test x$ANDROID = xyes)
-AM_CONDITIONAL(IPHONEOS, test x$IPHONEOS = xyes)
-AM_CONDITIONAL(LINUX, test x$LINUX = xyes)
-AM_CONDITIONAL(HURD, test x$HURD = xyes)
-AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
-AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
-AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
-AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
-
 # pass include paths down to all Makefiles
 AC_SUBST([AM_CPPFLAGS], [$AM_CPPFLAGS])
 
@@ -287,15 +321,22 @@ if test x$alsa = xyes ; then
     AC_CHECK_LIB([asound], [snd_pcm_info], [ALSA_LIBS="-lasound"], [alsa=no])
 fi
 
+##### JACK FRAMEWORK #####
+# on macOS, use the JackOSX.com Jackmp.framework not the jack lib by default
+# this is set in src/Makefile.am based on the JACK & JACK_FRAMEWORK vars
+AC_ARG_ENABLE([jack-framework],
+    [AS_HELP_STRING([--disable-jack-framework], [do not weak link to Jackmp.framework on macOS])],
+    [jack_framework=$enableval])
+test x$MACOSX = xyes || jack_framework=no
+if test x$jack_framework = xyes ; then
+    AC_MSG_NOTICE([Weak linking to Jackmp.framework])
+fi
+
 ##### JACK #####
-# shouldn't we use pkg-config?
-# TODO support jack xrun
 AC_ARG_ENABLE([jack],
     [AS_HELP_STRING([--enable-jack], [use JACK audio server])],
     [jack=$enableval], [jack=no])
-# on Mac OS X, use the JackOSX.com Jackmp.framework not the jack lib.
-# this is set in src/Makefile.am based on the JACK var
-if [ test x$MACOSX != xyes ] && [ test x$jack = xyes ] ; then
+if [ test x$jack_framework != xyes ] && [ test x$jack = xyes ] ; then
     AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
     AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
     AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes], [jack=no])
@@ -310,13 +351,12 @@ test x$WINDOWS = xyes || mmio=no
 ##### ASIO #####
 AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
-    [asio=$enableval], [asio=no])
-if test x$asio = xyes ; then
-    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h], [asio=yes], [asio=no])
-    if [ test x$windows = xyes ] && [ test x$asio = xno ] ; then
-        AC_MSG_ERROR([ASIO SDK not found! You need to download it from: http://www.steinberg.net/en/company/developers.html])
-    fi
-fi
+    [asio=$enableval])
+test x$WINDOWS = xyes || asio=no
+AS_IF([test x$asio = xyes],
+    test -f "${srcdir}"/asio/ASIOSDK/common/asio.h || asio=no
+    AS_IF([test x$asio = xno], AC_MSG_WARN([ASIO SDK not found! See asio/README.txt]))
+)
 
 ##### PortAudio #####
 AC_ARG_ENABLE([portaudio],
@@ -379,6 +419,15 @@ if test x$fftw = xyes; then
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 
+##### Wish #####
+AC_ARG_WITH([wish],
+    [AS_HELP_STRING([--with-wish=WISH], [which Tk Wish application to use for the Pd GUI])],
+    [WISH=$withval])
+AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
+    [AC_MSG_NOTICE([--with-wish requires an application, ignoring '${WISH}'])
+    WISH=""])
+AC_SUBST([WISH])
+
 ##### Configure Build From Options #####
 ## configure the build based on what we have found above
 
@@ -394,20 +443,22 @@ AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
 
 ##### ALSA #####
 AM_CONDITIONAL(ALSA, test x$alsa = xyes)
-AS_IF([test x$alsa = xyes], [audio_backends="alsa ${audio_backends}"])
-AS_IF([test x$alsa = xyes], [midi_backends="alsa ${midi_backends}"])
+AS_IF([test x$alsa = xyes], [audio_backends="ALSA ${audio_backends}"])
+AS_IF([test x$alsa = xyes], [midi_backends="ALSA ${midi_backends}"])
 
 ##### JACK #####
 AM_CONDITIONAL(JACK, test x$jack = xyes)
+AM_CONDITIONAL(JACK_FRAMEWORK, test x$jack_framework = xyes)
 AS_IF([test x$jack = xyes], [audio_backends="JACK ${audio_backends}"])
 
 ##### MMIO #####
 AM_CONDITIONAL(MMIO, test x$mmio = xyes)
-AS_IF([test x$mmio = xyes], [audio_backends="mmio ${audio_backends}"])
-AS_IF([test x$mmio = xyes], [midi_backends="mmio ${midi_backends}"])
+AS_IF([test x$mmio = xyes], [audio_backends="MMIO ${audio_backends}"])
+dnl AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
+AS_IF([test x$asio = xyes], [audio_backends="ASIO ${audio_backends}"])
 
 ##### CoreAudio #####
 # portaudio doesn't work with iPhone, so don't bother with CoreAudio
@@ -433,10 +484,27 @@ AS_IF([test "x$audio_backends" = "x"],[
     AC_MSG_WARN([No audio API specified or detected])
     audio_backends="NONE!"
 ])
-AM_CONDITIONAL(MIDI_DUMMY, test "x$midi_backends" = "x")
+# we need the dummy MIDI backend, if there is no other backend providing the
+# standard MIDI-functions (OSS and PortMidi provide them; ALSA not)
+needs_midi_dummy="yes"
+AS_IF([echo "${midi_backends}" | grep -wi OSS >/dev/null],[needs_midi_dummy="no"])
+AS_IF([echo "${midi_backends}" | grep -wi PortMidi >/dev/null],[needs_midi_dummy="no"])
+
+AM_CONDITIONAL(MIDI_DUMMY, test "x${needs_midi_dummy}" = "xyes")
 AS_IF([test "x$midi_backends" = "x"],[
     AC_MSG_WARN([No MIDI API specified or detected])
     midi_backends="NONE!"
+])
+
+##### Wish #####
+# add contextual info when adding a custom WISH path on macOS,
+# other platforms use a single path so it's enough to print $wish as it is
+AS_IF([test ! "x${WISH}" = "x"],[
+    AS_IF([test x"$MACOSX" = x"yes"], [
+        wish="prepending ${WISH} to search paths"
+    ],[
+        wish="${WISH}"
+    ])
 ])
 
 #########################################
@@ -446,8 +514,10 @@ AS_IF([test "x$midi_backends" = "x"],[
 AC_CONFIG_FILES([Makefile
                 asio/Makefile
                 doc/Makefile
+                font/Makefile
                 mac/Makefile
                 man/Makefile
+                msw/Makefile
                 portaudio/Makefile
                 portmidi/Makefile
                 tcl/Makefile
@@ -487,13 +557,14 @@ AC_MSG_NOTICE([
     CFLAGS:               $CFLAGS
     LDFLAGS:              $LDFLAGS
     INCLUDES:             $AM_CPPFLAGS
+    LIBS:                 $LIBS
 
     External extension:   $EXTERNAL_EXTENSION
     External CFLAGS:      $EXTERNAL_CFLAGS
     External LDFLAGS:     $EXTERNAL_LDFLAGS
 
     fftw:                 $fftw
-
+    wish(tcl/tk):         $wish
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
 ])

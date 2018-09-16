@@ -1,16 +1,29 @@
+
 release checklist
     update doc/Makefile.am list: cd pd/doc;
         find . -type f | sort | awk '{print "    ", $1, "\\"}'; echo '     $(empty)'
     version string in ../src/m_pd.h ../configure.ac ../src/pd.rc
     release notes ../doc/1.manual/x5.htm
     copyright date in ../README.txt
-    test compilation on linux/msw/mac
-    git commit
-    ./make-release 0.35-0  or 0.35-test11, etc
-    ... compile on windows/Mac 
+    git commit -a
+    test compilation on linux/msw/mac as follows:
+    cd linux; ./make-release 0.35-0  or 0.35-test11, etc
+        ... compile on MAC:
+            first build POs on linux because I can't install gettext on mac:
+            ./autogen.sh; ./configure --enable-jack; make; rsync -avzl po/ <mac>:msp/build/po/
+            scp source tarball to Mac and unpack in ~/build.
+            in ~/build: build-autotools and build-ppc
+            in ~/b32: build-i386
+            scp tarballs back to linux
+        ... compile on windows:
+            cd msw
+            ./send-msw.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
-    git push --mirror
+    git push origin
+    git push origin --tags
+        ... (I don't use 'mirror' here because afraid of deleting PR branches)
+    git push sourceforge --mirror
     copy from ~/pd/dist to ~/bis/lib/public_html/Software/
     rsync -avzl --delete ~/pd/doc/1.manual/ \
         ~/bis/lib/public_html/Pd_documentation/

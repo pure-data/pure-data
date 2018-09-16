@@ -324,8 +324,11 @@ static void scalar_vis(t_gobj *z, t_glist *owner, int vis)
 
 static void scalar_doredraw(t_gobj *client, t_glist *glist)
 {
-    scalar_vis(client, glist, 0);
-    scalar_vis(client, glist, 1);
+    if (glist_isvisible(glist))
+    {
+        scalar_vis(client, glist, 0);
+        scalar_vis(client, glist, 1);
+    }
 }
 
 void scalar_redraw(t_scalar *x, t_glist *glist)
@@ -424,6 +427,7 @@ static void scalar_free(t_scalar *x)
     t_dataslot *datatypes, *dt;
     t_symbol *templatesym = x->sc_template;
     t_template *template = template_findbyname(templatesym);
+    sys_unqueuegui(x);
     if (!template)
     {
         error("scalar: couldn't find template %s", templatesym->s_name);

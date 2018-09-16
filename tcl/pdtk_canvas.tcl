@@ -12,6 +12,10 @@ namespace eval ::pdtk_canvas:: {
     namespace export pdtk_canvas_menuclose
 }
 
+# store the filename associated with this window,
+# so we can use it during menuclose
+array set ::pdtk_canvas::::window_fullname {}
+
 # One thing that is tricky to understand is the difference between a Tk
 # 'canvas' and a 'canvas' in terms of Pd's implementation.  They are similar,
 # but not the same thing.  In Pd code, a 'canvas' is basically a patch, while
@@ -29,30 +33,55 @@ namespace eval ::pdtk_canvas:: {
 #winfo rooty . returns contentsTop
 #winfo rootx . returns contentsLeftEdge
 
+if {$::tcl_version < 8.5 || \
+        ($::tcl_version == 8.5 && \
+             [tk windowingsystem] eq "aqua" && \
+             [lindex [split [info patchlevel] "."] 2] < 13) } {
+    # fit the geometry onto screen for Tk 8.4,
+    # also check for Tk Cocoa backend on macOS which is only stable in 8.5.13+;
+    # newer versions of Tk can handle multiple monitors so allow negative pos
+    proc pdtk_canvas_wrap_window {x y w h} {
+        set width [lindex [wm maxsize .] 0]
+        set height [lindex [wm maxsize .] 1]
+
+        if {$w > $width} {
+            set w $width
+            set x 0
+        }
+        if {$h > $height} {
+            # 30 for window framing
+            set h [expr $height - $::menubarsize - $::windowframey]
+            set y $::menubarsize
+        }
+
+        set x [ expr $x % $width]
+        set y [ expr $y % $height]
+        if {$x < 0} {set x 0}
+        if {$y < 0} {set y 0}
+
+        return [list ${x} ${y} ${w} ${h}]
+    }
+} {
+    proc pdtk_canvas_wrap_window {x y w h} {
+        return [list ${x} ${y} ${w} ${h}]
+    }
+}
 
 # this proc is split out on its own to make it easy to override. This makes it
 # easy for people to customize these calculations based on their Window
 # Manager, desires, etc.
 proc pdtk_canvas_place_window {width height geometry} {
-    set screenwidth [lindex [wm maxsize .] 0]
-    set screenheight [lindex [wm maxsize .] 1]
+    ::pdwindow::configure_window_offset
 
     # read back the current geometry +posx+posy into variables
     scan $geometry {%[+]%d%[+]%d} - x - y
-    # fit the geometry onto screen
-    set x [ expr $x % $screenwidth - $::windowframex]
-    set y [ expr $y % $screenheight - $::windowframey]
-    if {$x < 0} {set x 0}
-    if {$y < 0} {set y 0}
-    if {$width > $screenwidth} {
-        set width $screenwidth
-        set x 0
-    }
-    if {$height > $screenheight} {
-        set height [expr $screenheight - $::menubarsize - 30] ;# 30 for window framing
-        set y $::menubarsize
-    }
-    return [list $width $height ${width}x$height+$x+$y]
+    set xywh [pdtk_canvas_wrap_window \
+        [expr $x - $::windowframex] [expr $y - $::windowframey] $width $height]
+    set x [lindex $xywh 0]
+    set y [lindex $xywh 1]
+    set w [lindex $xywh 2]
+    set h [lindex $xywh 3]
+    return [list ${w} ${h} ${w}x${h}+${x}+${y}]
 }
 
 
@@ -64,6 +93,8 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
     set width [lindex $l 0]
     set height [lindex $l 1]
     set geometry [lindex $l 2]
+    set ::undo_actions($mytoplevel) no
+    set ::redo_actions($mytoplevel) no
 
     # release the window grab here so that the new window will
     # properly get the Map and FocusIn events when its created
@@ -99,7 +130,7 @@ proc pdtk_canvas_new {mytoplevel width height geometry editable} {
 
     ::pd_bindings::patch_bindings $mytoplevel
 
-    # give focus to the canvas so it gets the events rather than the window 	 
+    # give focus to the canvas so it gets the events rather than the window
     focus $tkcanvas
 
     # let the scrollbar logic determine if it should make things scrollable
@@ -124,8 +155,8 @@ proc pdtk_canvas_raise {mytoplevel} {
 }
 
 proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
-    if { ! [file isdirectory $initialdir]} {set initialdir $::env(HOME)}
-    set filename [tk_getSaveFile -initialfile $initialfile -initialdir $initialdir \
+    if { ! [file isdirectory $initialdir]} {set initialdir $::filenewdir}
+    set filename [tk_getSaveFile -initialdir $initialdir \
                       -defaultextension .pd -filetypes $::filetypes]
     if {$filename eq ""} return; # they clicked cancel
 
@@ -154,7 +185,7 @@ proc pdtk_canvas_saveas {name initialfile initialdir destroyflag} {
 ##### ask user Save? Discard? Cancel?, and if so, send a message on to Pd ######
 proc ::pdtk_canvas::pdtk_canvas_menuclose {mytoplevel reply_to_pd} {
     raise $mytoplevel
-    set filename [wm title $mytoplevel]
+    set filename [lindex [array get ::pdtk_canvas::::window_fullname $mytoplevel] 1]
     set message [format {Do you want to save the changes you made in "%s"?} $filename]
     set answer [tk_messageBox -message $message -type yesnocancel -default "yes" \
                     -parent $mytoplevel -icon question]
@@ -289,39 +320,23 @@ proc ::pdtk_canvas::pdtk_canvas_editmode {mytoplevel state} {
 
 # message from Pd to update the currently available undo/redo action
 proc pdtk_undomenu {mytoplevel undoaction redoaction} {
-    set ::undo_toplevel $mytoplevel
-    set ::undo_action $undoaction
-    set ::redo_action $redoaction
+    set ::undo_actions($mytoplevel) $undoaction
+    set ::redo_actions($mytoplevel) $redoaction
     if {$mytoplevel ne "nobody"} {
-        ::pd_menus::update_undo_on_menu $mytoplevel
+        ::pd_menus::update_undo_on_menu $mytoplevel $undoaction $redoaction
     }
 }
-
-# Keep track of pdtk_canvas_getscroll after tokens for 1x1 windows.
-# Uses tkcanvas ids as keys.
-array set ::pdtk_canvas::::getscroll_tokens {}
 
 # This proc configures the scrollbars whenever anything relevant has
 # been updated.  It should always receive a tkcanvas, which is then
 # used to generate the mytoplevel, needed to address the scrollbars.
 proc ::pdtk_canvas::pdtk_canvas_getscroll {tkcanvas} {
+    if {! [winfo exists $tkcanvas]} {
+        return
+    }
     set mytoplevel [winfo toplevel $tkcanvas]
     set height [winfo height $tkcanvas]
     set width [winfo width $tkcanvas]
-
-    # Workaround for when the window has size 1x1, in which case it
-    # probably hasn't been fully created yet. Wait a little and try again.
-    if {$width == 1 || $height == 1} {
-        if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-            after cancel ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-        }
-        set ::pdtk_canvas::::getscroll_tokens($tkcanvas) \
-            [after idle ::pdtk_canvas::pdtk_canvas_getscroll $tkcanvas]
-        return
-    }     
-    if {[info exists ::pdtk_canvas::::getscroll_tokens($tkcanvas)]} {
-        unset ::pdtk_canvas::::getscroll_tokens($tkcanvas)
-    }
 
     set bbox [$tkcanvas bbox all]
     if {$bbox eq "" || [llength $bbox] != 4} {return}
@@ -386,11 +401,12 @@ proc ::pdtk_canvas::pdtk_canvas_setparents {mytoplevel args} {
 # receive information for setting the info the the title bar of the window
 proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
                                               path name arguments dirty} {
-    set ::windowname($mytoplevel) $name ;# TODO add path to this
+    set ::windowname($mytoplevel) $name
+    set ::pdtk_canvas::::window_fullname($mytoplevel) "$path/$name"
     if {$::windowingsystem eq "aqua"} {
         wm attributes $mytoplevel -modified $dirty
         if {[file exists "$path/$name"]} {
-            # for some reason -titlepath can still fail so just catch it 
+            # for some reason -titlepath can still fail so just catch it
             if [catch {wm attributes $mytoplevel -titlepath "$path/$name"}] {
                 wm title $mytoplevel "$path/$name"
             }
@@ -398,6 +414,6 @@ proc ::pdtk_canvas::pdtk_canvas_reflecttitle {mytoplevel \
         wm title $mytoplevel "$name$arguments"
     } else {
         if {$dirty} {set dirtychar "*"} else {set dirtychar " "}
-        wm title $mytoplevel "$name$dirtychar$arguments - $path" 
+        wm title $mytoplevel "$name$dirtychar$arguments - $path"
     }
 }

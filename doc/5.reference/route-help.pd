@@ -42,7 +42,7 @@ of arguments plus one.;
 #X obj 269 305 print y2;
 #X obj 347 305 print y3;
 #X text 76 344 To avoid confusion between \, say \, the number 5 and
-the list contining only the number 5 \, both messages match "float"
+the list containing only the number 5 \, both messages match "float"
 \, and ditto for symbols. An empty list matches "bang". In Pd these
 are all considered special cases of lists.;
 #X text 97 9 - route messages according to their first element;
@@ -55,7 +55,7 @@ are all considered special cases of lists.;
 #X obj 81 588 print w1;
 #X obj 150 589 print w2;
 #X text 210 547 With zero or one argument \, route sprouts an inlet
-to set the arument (which may be float or symbol).;
+to set the argument (which may be float or symbol).;
 #X connect 4 0 0 0;
 #X connect 4 1 1 0;
 #X connect 4 2 2 0;

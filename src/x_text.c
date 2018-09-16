@@ -47,12 +47,14 @@ typedef struct _textbuf
     t_binbuf *b_binbuf;
     t_canvas *b_canvas;
     t_guiconnect *b_guiconnect;
+    t_symbol *b_sym;
 } t_textbuf;
 
-static void textbuf_init(t_textbuf *x)
+static void textbuf_init(t_textbuf *x, t_symbol *sym)
 {
     x->b_binbuf = binbuf_new();
     x->b_canvas = canvas_getcurrent();
+    x->b_sym = sym;
 }
 
 static void textbuf_senditup(t_textbuf *x)
@@ -69,7 +71,7 @@ static void textbuf_senditup(t_textbuf *x)
         if (!j) j = txt + ntxt;
         sys_vgui("pdtk_textwindow_append .x%lx {%.*s\n}\n",
             x, j-txt-i, txt+i);
-        i = (j-txt)+1;
+        i = (int)((j-txt)+1);
     }
     sys_vgui("pdtk_textwindow_setdirty .x%lx 0\n", x);
     t_freebytes(txt, ntxt);
@@ -86,8 +88,8 @@ static void textbuf_open(t_textbuf *x)
     else
     {
         char buf[40];
-        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s: %s} %d\n",
-            x, 600, 340, "myname", "text",
+        sys_vgui("pdtk_textwindow_open .x%lx %dx%d {%s} %d\n",
+            x, 600, 340, x->b_sym->s_name,
                  sys_hostfontsize(glist_getfont(x->b_canvas),
                     glist_getzoom(x->b_canvas)));
         sprintf(buf, ".x%lx", (unsigned long)x);
@@ -112,7 +114,6 @@ static void textbuf_addline(t_textbuf *b, t_symbol *s, int argc, t_atom *argv)
     binbuf_restore(z, argc, argv);
     binbuf_add(b->b_binbuf, binbuf_getnatom(z), binbuf_getvec(z));
     binbuf_free(z);
-    textbuf_senditup(b);
 }
 
 static void textbuf_read(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
@@ -192,7 +193,8 @@ static void textbuf_write(t_textbuf *x, t_symbol *s, int argc, t_atom *argv)
 static void textbuf_free(t_textbuf *x)
 {
     t_pd *x2;
-    binbuf_free(x->b_binbuf);
+    if (x->b_binbuf)
+        binbuf_free(x->b_binbuf);
     if (x->b_guiconnect)
     {
         sys_vgui("destroy .x%lx\n", x);
@@ -211,7 +213,7 @@ static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
     {
         if (cnt == line)
         {
-            int j = i, outc, k;
+            int j = i;
             while (j < n && vec[j].a_type != A_SEMI &&
                 vec[j].a_type != A_COMMA)
                     j++;
@@ -231,6 +233,7 @@ typedef struct _text_define
 {
     t_textbuf x_textbuf;
     t_outlet *x_out;
+    t_outlet *x_notifyout;
     t_symbol *x_bindsym;
     t_scalar *x_scalar;     /* faux scalar (struct text-scalar) to point to */
     t_gpointer x_gp;        /* pointer to it */
@@ -271,12 +274,14 @@ static void *text_define_new(t_symbol *s, int argc, t_atom *argv)
         post("warning: text define ignoring extra argument: ");
         postatom(argc, argv); endpost();
     }
-    textbuf_init(&x->x_textbuf);
+    textbuf_init(&x->x_textbuf, *x->x_bindsym->s_name ? x->x_bindsym :
+        gensym("text"));
         /* set up a scalar and a pointer to it that we can output */
     x->x_scalar = scalar_new(canvas_getcurrent(), gensym("pd-text"));
     binbuf_free(x->x_scalar->sc_vec[2].w_binbuf);
     x->x_scalar->sc_vec[2].w_binbuf = x->x_binbuf;
     x->x_out = outlet_new(&x->x_ob, &s_pointer);
+    x->x_notifyout = outlet_new(&x->x_ob, 0);
     gpointer_init(&x->x_gp);
     x->x_canvas = canvas_getcurrent();
            /* bashily unbind #A -- this would create garbage if #A were
@@ -308,7 +313,6 @@ static void text_define_frompointer(t_text_define *x, t_gpointer *gp,
         gp, s, "text_frompointer");
     if (b)
     {
-        t_gstub *gs = gp->gp_stub;
         binbuf_clear(x->x_textbuf.b_binbuf);
         binbuf_add(x->x_textbuf.b_binbuf, binbuf_getnatom(b), binbuf_getvec(b));
     }
@@ -351,7 +355,6 @@ void text_define_set(t_text_define *x, t_symbol *s, int argc, t_atom *argv)
     textbuf_senditup(&x->x_textbuf);
 }
 
-
 static void text_define_save(t_gobj *z, t_binbuf *bb)
 {
     t_text_define *x = (t_text_define *)z;
@@ -368,12 +371,36 @@ static void text_define_save(t_gobj *z, t_binbuf *bb)
     obj_saveformat(&x->x_ob, bb);
 }
 
+    /* send a pointer to the scalar that owns this text to
+    whomever is bound to the given symbol */
+static void text_define_send(t_text_define *x, t_symbol *s)
+{
+    if (!s->s_thing)
+        pd_error(x, "text_define_send: %s: no such object", s->s_name);
+    else
+    {
+        gpointer_setglist(&x->x_gp, x->x_canvas, x->x_scalar);
+        pd_pointer(s->s_thing, &x->x_gp);
+    }
+}
+
+    /* notification from GUI that we've been updated */
+static void text_define_notify(t_text_define *x)
+{
+    outlet_anything(x->x_notifyout, gensym("updated"), 0, 0);
+    textbuf_senditup(&x->x_textbuf);
+}
+
 static void text_define_free(t_text_define *x)
 {
+    x->x_binbuf = 0; /* prevent double deletion */
     textbuf_free(&x->x_textbuf);
     if (x->x_bindsym != &s_)
         pd_unbind(&x->x_ob.ob_pd, x->x_bindsym);
     gpointer_unset(&x->x_gp);
+    /* deleting the scalar will automatically free the binbuf */
+    pd_free(&x->x_scalar->sc_gobj.g_pd);
+    x->x_canvas->gl_valid = ++glist_valid; /* invalidate pointers */
 }
 
 /* ---  text_client - common code for objects that refer to text buffers -- */
@@ -395,28 +422,22 @@ static void text_client_argparse(t_text_client *x, int *argcp, t_atom **argvp,
     t_atom *argv = *argvp;
     x->tc_sym = x->tc_struct = x->tc_field = 0;
     gpointer_init(&x->tc_gp);
-    while (argc && argv->a_type == A_SYMBOL &&
-        *argv->a_w.w_symbol->s_name == '-')
+    if (argc && argv->a_type == A_SYMBOL &&
+        !strcmp(argv->a_w.w_symbol->s_name, "-s"))
     {
-        if (!strcmp(argv->a_w.w_symbol->s_name, "-s") &&
-            argc >= 3 && argv[1].a_type == A_SYMBOL && argv[2].a_type == A_SYMBOL)
+        if (argc < 3 || argv[1].a_type != A_SYMBOL ||
+            argv[2].a_type != A_SYMBOL)
+                pd_error(x, "%s: '-s' needs a struct and field name", name);
+        else
         {
             x->tc_struct = canvas_makebindsym(argv[1].a_w.w_symbol);
             x->tc_field = argv[2].a_w.w_symbol;
-            argc -= 2; argv += 2;
+            argc -= 3; argv += 3;
         }
-        else
-        {
-            pd_error(x, "%s: unknown flag '%s'...", name,
-                argv->a_w.w_symbol->s_name);
-        }
-        argc--; argv++;
     }
-    if (argc && argv->a_type == A_SYMBOL)
+    else if (argc && argv->a_type == A_SYMBOL)
     {
-        if (x->tc_struct)
-            pd_error(x, "%s: extra names after -s..", name);
-        else x->tc_sym = argv->a_w.w_symbol;
+        x->tc_sym = argv->a_w.w_symbol;
         argc--; argv++;
     }
     *argcp = argc;
@@ -648,7 +669,7 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
             x->x_f1 = argv->a_w.w_float;
         else
         {
-            post("text set: can't understand field number");
+            post("text set: can't understand line number");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -659,7 +680,7 @@ static void *text_set_new(t_symbol *s, int argc, t_atom *argv)
             x->x_f2 = argv->a_w.w_float;
         else
         {
-            post("text set: can't understand field count");
+            post("text set: can't understand field number");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
@@ -679,7 +700,9 @@ static void text_set_list(t_text_set *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, lineno = x->x_f1, fieldno = x->x_f2, i;
+    int start, end, n, fieldno = x->x_f2, i,
+            /* check for overflow in this conversion: */
+        lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : (int)x->x_f1);
     t_atom *vec;
     if (!b)
        return;
@@ -748,6 +771,75 @@ static void text_set_list(t_text_set *x,
     text_client_senditup(&x->x_tc);
 }
 
+/* --------- text_insert object - insert a line ----------- */
+typedef struct _text_insert
+{
+    t_text_client x_tc;
+    t_float x_f1;           /* line number */
+} t_text_insert;
+
+t_class *text_insert_class;
+
+static void *text_insert_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_text_insert *x = (t_text_insert *)pd_new(text_insert_class);
+    floatinlet_new(&x->x_obj, &x->x_f1);
+    x->x_f1 = 0;
+    text_client_argparse(&x->x_tc, &argc, &argv, "text insert");
+    if (argc)
+    {
+        if (argv->a_type == A_FLOAT)
+            x->x_f1 = argv->a_w.w_float;
+        else
+        {
+            post("text insert: can't understand line number");
+            postatom(argc, argv); endpost();
+        }
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        post("warning: text insert ignoring extra argument: ");
+        postatom(argc, argv); endpost();
+    }
+    if (x->x_struct)
+        pointerinlet_new(&x->x_obj, &x->x_gp);
+    else symbolinlet_new(&x->x_obj, &x->x_tc.tc_sym);
+    return (x);
+}
+
+static void text_insert_list(t_text_insert *x,
+    t_symbol *s, int argc, t_atom *argv)
+{
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
+    int start, end, n, nwas, i,
+         lineno = (x->x_f1 > (double)0x7fffffff ? 0x7fffffff : x->x_f1);
+
+    t_atom *vec;
+    if (!b)
+       return;
+    if (lineno < 0)
+    {
+        pd_error(x, "text insert: line number (%d) < 0", lineno);
+        return;
+    }
+    nwas = binbuf_getnatom(b);
+    if (!text_nthline(nwas, binbuf_getvec(b), lineno, &start, &end))
+        start = nwas;
+    (void)binbuf_resize(b, (n = nwas + argc + 1));
+    vec = binbuf_getvec(b);
+    if (start < n)
+        memmove(&vec[start+(argc+1)], &vec[start], sizeof(*vec) * (nwas-start));
+    for (i = 0; i < argc; i++)
+    {
+        if (argv[i].a_type == A_POINTER)
+            SETSYMBOL(&vec[start+i], gensym("(pointer)"));
+        else vec[start+i] = argv[i];
+    }
+    SETSEMI(&vec[start+argc]);
+    text_client_senditup(&x->x_tc);
+}
+
 /* --------- text_delete object - delete nth line ----------- */
 typedef struct _text_delete
 {
@@ -774,7 +866,8 @@ static void *text_delete_new(t_symbol *s, int argc, t_atom *argv)
 static void text_delete_float(t_text_delete *x, t_floatarg f)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int start, end, n, lineno = f;
+    int start, end, n,
+         lineno = (f > (double)0x7fffffff ? 0x7fffffff : f);
     t_atom *vec;
     if (!b)
        return;
@@ -879,8 +972,6 @@ static void *text_tolist_new(t_symbol *s, int argc, t_atom *argv)
 static void text_tolist_bang(t_text_tolist *x)
 {
     t_binbuf *b = text_client_getbuf(x), *b2;
-    int n, i, cnt = 0;
-    t_atom *vec;
     if (!b)
        return;
     b2 = binbuf_new();
@@ -973,7 +1064,7 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
         }
         else
         {
-            char *s = argv[i].a_w.w_symbol->s_name;
+            const char *s = argv[i].a_w.w_symbol->s_name;
             if (nextop >= 0)
                 pd_error(x,
                     "text search: extra operation argument ignored: %s", s);
@@ -1001,10 +1092,9 @@ static void text_search_list(t_text_search *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = text_client_getbuf(&x->x_tc);
-    int i, j, n, lineno, bestline = -1, beststart=-1, bestn, thisstart, thisn,
+    int i, n, lineno, bestline = -1, beststart=-1, bestn, thisstart,
         nkeys = x->x_nkeys, failed = 0;
     t_atom *vec;
-    t_key *kp = x->x_keyvec;
     if (!b)
        return;
     if (argc < nkeys)
@@ -1206,6 +1296,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_eaten = 0;
     x->x_loop = 0;
     x->x_lastto = 0;
+    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -1254,7 +1345,6 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
     x->x_waitout = (global || x->x_waitsym || x->x_waitargc ?
         outlet_new(&x->x_obj, &s_list) : 0);
     x->x_endout = outlet_new(&x->x_obj, &s_bang);
-    x->x_clock = clock_new(x, (t_method)text_sequence_tick);
     if (global)
     {
         if (x->x_waitargc)
@@ -1267,7 +1357,7 @@ static void *text_sequence_new(t_symbol *s, int argc, t_atom *argv)
 
 static void text_sequence_doit(t_text_sequence *x, int argc, t_atom *argv)
 {
-    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
     int n, i, onset, nfield, wait, eatsemi = 1, gotcomma = 0;
     t_atom *vec, *outvec, *ap;
     if (!b)
@@ -1470,7 +1560,7 @@ static void text_sequence_step(t_text_sequence *x)
 
 static void text_sequence_line(t_text_sequence *x, t_floatarg f)
 {
-    t_binbuf *b = text_client_getbuf(&x->x_tc), *b2;
+    t_binbuf *b = text_client_getbuf(&x->x_tc);
     int n, start, end;
     t_atom *vec;
     if (!b)
@@ -1521,13 +1611,15 @@ static void *text_new(t_symbol *s, int argc, t_atom *argv)
         pd_this->pd_newest = text_define_new(s, argc, argv);
     else
     {
-        char *str = argv[0].a_w.w_symbol->s_name;
+        const char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "d") || !strcmp(str, "define"))
             pd_this->pd_newest = text_define_new(s, argc-1, argv+1);
         else if (!strcmp(str, "get"))
             pd_this->pd_newest = text_get_new(s, argc-1, argv+1);
         else if (!strcmp(str, "set"))
             pd_this->pd_newest = text_set_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "insert"))
+            pd_this->pd_newest = text_insert_new(s, argc-1, argv+1);
         else if (!strcmp(str, "delete"))
             pd_this->pd_newest = text_delete_new(s, argc-1, argv+1);
         else if (!strcmp(str, "size"))
@@ -1578,7 +1670,7 @@ static t_class *qlist_class;
 static void *qlist_new( void)
 {
     t_qlist *x = (t_qlist *)pd_new(qlist_class);
-    textbuf_init(&x->x_textbuf);
+    textbuf_init(&x->x_textbuf, gensym("qlist"));
     x->x_clock = clock_new(x, (t_method)qlist_tick);
     outlet_new(&x->x_ob, &s_list);
     x->x_bangout = outlet_new(&x->x_ob, &s_bang);
@@ -1806,7 +1898,7 @@ static t_class *textfile_class;
 static void *textfile_new( void)
 {
     t_qlist *x = (t_qlist *)pd_new(textfile_class);
-    textbuf_init(&x->x_textbuf);
+    textbuf_init(&x->x_textbuf, gensym("textfile"));
     outlet_new(&x->x_ob, &s_list);
     x->x_bangout = outlet_new(&x->x_ob, &s_bang);
     x->x_onset = 0x7fffffff;
@@ -1821,7 +1913,7 @@ static void *textfile_new( void)
 static void textfile_bang(t_qlist *x)
 {
     int argc = binbuf_getnatom(x->x_binbuf),
-        count, onset = x->x_onset, onset2;
+        onset = x->x_onset, onset2;
     t_atom *argv = binbuf_getvec(x->x_binbuf);
     t_atom *ap = argv + onset, *ap2;
     while (onset < argc &&
@@ -1865,11 +1957,9 @@ field named 't'.  I don't know how to make this not break
 pre-0.45 patches using templates named 'text'... perhaps this is a minor
 enough incompatibility that I'll just get away with it. */
 
-static void text_template_init( void)
+void text_template_init( void)
 {
     t_binbuf *b;
-    if (text_templatecanvas)
-        return;
     b = binbuf_new();
 
     glob_setfilename(0, gensym("_text_template"), gensym("."));
@@ -1893,6 +1983,8 @@ void x_qlist_setup(void )
         gensym("close"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)text_define_notify,
+        gensym("notify"), 0, 0);
     class_addmethod(text_define_class, (t_method)text_define_set,
         gensym("set"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)text_define_clear,
@@ -1901,6 +1993,8 @@ void x_qlist_setup(void )
         gensym("write"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)textbuf_read,
         gensym("read"), A_GIMME, 0);
+    class_addmethod(text_define_class, (t_method)text_define_send,
+        gensym("send"), A_SYMBOL, 0);
     class_setsavefn(text_define_class, text_define_save);
     class_addbang(text_define_class, text_define_bang);
     class_sethelpsymbol(text_define_class, gensym("text-object"));
@@ -1918,6 +2012,12 @@ void x_qlist_setup(void )
             sizeof(t_text_set), 0, A_GIMME, 0);
     class_addlist(text_set_class, text_set_list);
     class_sethelpsymbol(text_set_class, gensym("text-object"));
+
+    text_insert_class = class_new(gensym("text insert"),
+        (t_newmethod)text_insert_new, (t_method)text_client_free,
+            sizeof(t_text_insert), 0, A_GIMME, 0);
+    class_addlist(text_insert_class, text_insert_list);
+    class_sethelpsymbol(text_insert_class, gensym("text-object"));
 
     text_delete_class = class_new(gensym("text delete"),
         (t_newmethod)text_delete_new, (t_method)text_client_free,
@@ -1990,6 +2090,8 @@ void x_qlist_setup(void )
     class_addmethod(qlist_class, (t_method)textbuf_close, gensym("close"), 0);
     class_addmethod(qlist_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
+    class_addmethod(qlist_class, (t_method)textbuf_senditup,
+        gensym("notify"), 0, 0);
     class_addmethod(qlist_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);
     class_addmethod(qlist_class, (t_method)qlist_tempo,
@@ -2018,6 +2120,8 @@ void x_qlist_setup(void )
         0);
     class_addmethod(textfile_class, (t_method)textbuf_addline,
         gensym("addline"), A_GIMME, 0);
+    class_addmethod(textfile_class, (t_method)textbuf_senditup,
+        gensym("notify"), 0, 0);
     class_addmethod(textfile_class, (t_method)qlist_print, gensym("print"),
         A_DEFSYM, 0);
     class_addbang(textfile_class, textfile_bang);

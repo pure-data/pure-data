@@ -18,8 +18,24 @@
  *              --sdy
  *
  * Oct 2015
- *                              $x[-1] was not equal $x1[-1], not accessing the previous block
- *                              (bug fix by Dan Ellis)
+ *              $x[-1] was not equal $x1[-1], not accessing the previous block
+ *              (bug fix by Dan Ellis)
+ *
+ *  July 2017 --sdy
+ *      - Version 0.55
+ *
+ *      - The arrays now redraw after a store into one of their members
+ *              - ex_if() (the "if()" function is reworked to only evaluate either
+ *                the left or the right args depending on the truth value of the condition.
+ *                However, if the condition is a vector, both the left and the right
+ *                are evaluated regradless.
+ *              - priority of ',' and '=' was switched to fix the bug of using store "=" in
+ *                functions with multiple arguments, which caused an error during execution.
+ *              - The number of inlet and outlets (MAX_VARS) is now set at 100
+ *
+ *       - Version 0.56
+ *              -fexpr~ now accepts a float in its first input
+ *              -Added avg() and Avg() back to the list of functions
  */
 
 /*
@@ -30,12 +46,12 @@
  * to a prefix stack ready to be evaluated.  The expression sysntax
  * is close to that of C.  There are a few operators that are not
  * supported and functions are also recognized.  Strings can be
- * passed to functions when they are quoted in '"'s. "[]" are implememted
+ * passed to functions when they are quoted in '"'s. "[]" are implemented
  * as an easy way of accessing the content of tables, and the syntax
  * table_name[index].
  * Variables (inlets) are specified with the following syntax: $x#,
  * where x is either i(integers), f(floats), and s(strings); and #
- * is a digit that coresponds to the inlet number.  The string variables
+ * is a digit that corresponds to the inlet number.  The string variables
  * can be used as strings when they are quoted and can also be used as
  * table names when they are followed by "[]".
  *
@@ -60,7 +76,7 @@
 #endif
 
 #ifdef _MSC_VER
-#define strtof _atoldbl
+#define strtof(a, b) _atoldbl(a, *b)
 #endif
 
 
@@ -256,6 +272,12 @@ expr_donew(struct expr *expr, int ac, t_atom *av)
                 }
                 expr->exp_stack[expr->exp_nexpr] =
                   (struct ex_ex *)fts_malloc(max_node * sizeof (struct ex_ex));
+                                if (!expr->exp_stack[expr->exp_nexpr]) {
+                                        post_error( (fts_object_t *) expr,
+                                                "expr: malloc for expr nodes failed\n");
+                                        goto error;
+                                }
+                                expr->exp_stack[expr->exp_nexpr][max_node-1].ex_type=0;
                 expr->exp_nexpr++;
                 ret = ex_match(list, (long)0);
                 if (expr->exp_nexpr > MAX_VARS)
@@ -408,7 +430,7 @@ ex_match(struct ex_ex *eptr, long int op)
                         /*
                          * Up to now we have marked the unary minuses as
                          * subrtacts.  Any minus that is the first one in
-                         * chain or is preceeded by anything except ')' and
+                         * chain or is preceded by anything except ')' and
                          * ']' is a unary minus.
                          */
                         if (eptr->ex_op == OP_SUB) {
@@ -427,24 +449,23 @@ ex_match(struct ex_ex *eptr, long int op)
                                 ret = ex_match(eptr + 1, OP_RB);
                                 if (!ret)
                                         return (ret);
-                                                                /*
-                                                                 * this is a special case handling
-                                                                 * for $1, $2 processing in Pd
-                                                                 *
-                                                                 * Pure data translates $#[x] (e.g. $1[x]) to 0[x]
-                                                                 * for abstracting patches so that later
-                                                                 * in the instantiation of the abstraction
-                                                                 * the $# is replaced with the proper argument
-                                                                 * of the abstraction
-                                                                 * so we change 0[x] to a special table pointing to null
-                                                                 * and catch errors in execution time
-                                                                 */
-                                                                if (!firstone && (eptr - 1)->ex_type == ET_INT &&
-                                                                                                                ((eptr - 1)->ex_int == 0)) {
-                                                                        (eptr - 1)->ex_type = ET_TBL;
-                                                                        (eptr - 1)->ex_ptr = (char *)0;
-                                                                }
-
+                                /*
+                                 * this is a special case handling
+                                 * for $1, $2 processing in Pd
+                                 *
+                                 * Pure data translates $#[x] (e.g. $1[x]) to 0[x]
+                                 * for abstracting patches so that later
+                                 * in the instantiation of the abstraction
+                                 * the $# is replaced with the proper argument
+                                 * of the abstraction
+                                 * so we change 0[x] to a special table pointing to null
+                                 * and catch errors in execution time
+                                 */
+                                if (!firstone && (eptr - 1)->ex_type == ET_INT &&
+                                    ((eptr - 1)->ex_int == 0)) {
+                                        (eptr - 1)->ex_type = ET_TBL;
+                                        (eptr - 1)->ex_ptr = (char *)0;
+                                }
                                 eptr->ex_type = ET_LB;
                                 eptr->ex_ptr = (char *) ret;
                                 eptr = ret;
@@ -497,7 +518,7 @@ ex_match(struct ex_ex *eptr, long int op)
 }
 
 /*
- * ex_parse -- This function if called when we have already done some
+ * ex_parse -- This function is called when we have already done some
  *             parsing on the expression, and we have already matched
  *             our brackets and parenthesis.  The main job of this
  *             function is to convert the infix expression to the
@@ -519,6 +540,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
         struct ex_ex *eptr;
         struct ex_ex *lowpre = 0;       /* pointer to the lowest precedence */
         struct ex_ex savex;
+                struct ex_ex *tmpex;
         long pre = HI_PRE;
         long count;
 
@@ -542,7 +564,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                                 post("expr: syntax error: symbols allowed for functions only\n");
                                 ex_print(eptr);
                                 return (exNULL);
-                        }
+                        }   /* falls through */
                 case ET_INT:
                 case ET_FLT:
                 case ET_II:
@@ -552,7 +574,9 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                 case ET_VI:
                 case ET_VAR:
                         if (!count && !eptr[1].ex_type) {
-                                *optr++ = *eptr;
+                                *optr = *eptr;
+                                                                tmpex = optr;
+                                                                tmpex->ex_end = ++optr;
                                 return (optr);
                         }
                         break;
@@ -570,9 +594,10 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                             !((struct ex_ex *) eptr[1].ex_ptr)[1].ex_type) {
                                 savex = *((struct ex_ex *) eptr[1].ex_ptr);
                                 *((struct ex_ex *) eptr[1].ex_ptr) = nullex;
-                                *optr++ = *eptr;
-                                lowpre = ex_parse(x, &eptr[2], optr, (long *)0);
+                                *optr = *eptr;
+                                lowpre = ex_parse(x, &eptr[2], optr + 1, (long *)0);
                                 *((struct ex_ex *) eptr[1].ex_ptr) = savex;
+                                                                optr->ex_end = lowpre;
                                 return(lowpre);
                         }
                         eptr = (struct ex_ex *) eptr[1].ex_ptr;
@@ -613,8 +638,8 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                                 ac = 0;
                                 savex = *((struct ex_ex *) eptr[1].ex_ptr);
                                 *((struct ex_ex *) eptr[1].ex_ptr) = nullex;
-                                *optr++ = *eptr;
-                                lowpre = ex_parse(x, &eptr[2], optr, &ac);
+                                *optr = *eptr;
+                                lowpre = ex_parse(x, &eptr[2], optr + 1, &ac);
                                 if (!lowpre)
                                         return (exNULL);
                                 ac++;
@@ -626,6 +651,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                                         return (exNULL);
                                 }
                                 *((struct ex_ex *) eptr[1].ex_ptr) = savex;
+                                                                optr->ex_end = lowpre;
                                 return (lowpre);
                         }
                         eptr = (struct ex_ex *) eptr[1].ex_ptr;
@@ -644,6 +670,7 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                                 *((struct ex_ex *) eptr->ex_ptr) = nullex;
                                 lowpre = ex_parse(x, &eptr[1], optr, (long *)0);
                                 *((struct ex_ex *) eptr->ex_ptr) = savex;
+                                                                optr->ex_end = lowpre;
                                 return (lowpre);
                         }
                         eptr = (struct ex_ex *)eptr->ex_ptr;
@@ -675,16 +702,17 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
                         ex_print(iptr);
                         return (exNULL);
                 }
-                *optr++ = *lowpre;
-                eptr = ex_parse(x, &lowpre[1], optr, argc);
+                *optr = *lowpre;
+                eptr = ex_parse(x, &lowpre[1], optr + 1, argc);
+                                optr->ex_end = eptr;
                 return (eptr);
         }
-                /* this is the case of using unary operator as a binary opetator */
-                if (count == 3 && unary_op(lowpre->ex_op)) {
-                                post("expr: syntax error, missing operand before unary operator\n");
-                                ex_print(iptr);
-                                return (exNULL);
-                }
+        /* this is the case of using unary operator as a binary opetator */
+        if (count == 3 && unary_op(lowpre->ex_op)) {
+                post("expr: syntax error, missing operand before unary operator\n");
+                ex_print(iptr);
+                return (exNULL);
+        }
         if (lowpre == iptr) {
                 post("expr: syntax error: mission operand\n");
                 ex_print(iptr);
@@ -692,20 +720,23 @@ ex_parse(struct expr *x, struct ex_ex *iptr, struct ex_ex *optr, long int *argc)
         }
         savex = *lowpre;
         *lowpre = nullex;
-        if (savex.ex_op != OP_COMMA)
-                *optr++ = savex;
-        else
-                (*argc)++;
-        eptr = ex_parse(x, iptr, optr, argc);
+        if (savex.ex_op != OP_COMMA) {
+            *optr = savex;
+                eptr = ex_parse(x, iptr, optr + 1, argc);
+                } else {
+            (*argc)++;
+                eptr = ex_parse(x, iptr, optr, argc);
+                }
         if (eptr) {
                 eptr = ex_parse(x, &lowpre[1], eptr, argc);
                 *lowpre = savex;
         }
+                optr->ex_end = eptr;
         return (eptr);
 }
 
 /*
- * this is the devide zero check for a a non devide operator
+ * this is the divide zero check for a non divide operator
  */
 #define DZC(ARG1,OPR,ARG2)      (ARG1 OPR ARG2)
 
@@ -933,7 +964,7 @@ ex_dzdetect(struct expr *expr)
 {
         char *etype;
 
-        if (!expr->exp_error & EE_DZ) {
+        if ((!expr->exp_error) & EE_DZ) {
                 if (IS_EXPR(expr))
                         etype = "expr";
                 else if (IS_EXPR_TILDE(expr))
@@ -1226,6 +1257,9 @@ ex_eval(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 return (eptr);
 }
 
+extern struct ex_ex * ex_if(t_expr *expr,  struct ex_ex *eptr,
+                                struct ex_ex *optr,struct ex_ex *argv, int idx);
+
 /*
  * eval_func --  evaluate a function, call ex_eval() on all the arguments
  *               so that all of them are terminal nodes. The call the
@@ -1250,12 +1284,24 @@ eval_func(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 return (exNULL);
         }
 
-        for (i = 0; i < f->f_argc; i++) {
+                /*
+                 * We treat the "if" function differently to be able to evaluate
+                 * the args selectively based on the truth value of the "condition"
+                 */
+                if (f->f_func != (void (*)) ex_if) {
+                        for (i = 0; i < f->f_argc; i++) {
                 args[i].ex_type = 0;
                 args[i].ex_int = 0;
                 eptr = ex_eval(expr, eptr, &args[i], idx);
-        }
-        (*f->f_func)(expr, f->f_argc, args, optr);
+                        }
+                (*f->f_func)(expr, f->f_argc, args, optr);
+        } else {
+                        for (i = 0; i < f->f_argc; i++) {
+                args[i].ex_type = 0;
+                args[i].ex_int = 0;
+                        }
+                eptr = ex_if(expr, eptr, optr, args, idx);
+                }
         for (i = 0; i < f->f_argc; i++) {
                 if (args[i].ex_type == ET_VEC)
                         fts_free(args[i].ex_vec);
@@ -1278,11 +1324,13 @@ eval_store(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
         struct ex_ex arg;
         struct ex_ex rval;
         struct ex_ex *retp;
-        int isvalue;
         char *tbl = (char *) 0;
         char *var = (char *) 0;
         int badleft = 0;
         int notable = 0;
+
+        arg.ex_type = ET_INT;
+        arg.ex_int = 0;
 
         switch (eptr->ex_type) {
         case ET_VAR:
@@ -1403,7 +1451,6 @@ eval_var(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 /* the operation stack */
 /* the result pointer */
 {
-        struct ex_ex arg;
         char *var = (char *) 0;
         int novar = 0;
 
@@ -1445,10 +1492,9 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
 {
         struct ex_ex arg;
         struct ex_ex *reteptr;
-        int i = 0, j = 0;
+        int i = 0;
         t_float fi = 0,         /* index in float */
               rem_i = 0;        /* remains of the float */
-        char *tbl;
 
         arg.ex_type = 0;
         arg.ex_int = 0;
@@ -1459,7 +1505,7 @@ eval_sigidx(struct expr *expr, struct ex_ex *eptr, struct ex_ex *optr, int idx)
                 rem_i =  arg.ex_flt - i;        /* remains of integer */
         } else if (arg.ex_type == ET_INT) {
                 fi = arg.ex_int;                /* float index */
-                i = arg.ex_int;
+                i = (int) arg.ex_int;           /* integer index */
                 rem_i = 0;
         } else {
                 post("eval_sigidx: bad res type (%d)", arg.ex_type);
@@ -1772,6 +1818,7 @@ retry:
                                 goto noinletnum;
                         }
                         post("$y works only for fexpr~");
+                                /* falls through */
                                 /*
                                  * allow $# for abstration argument substitution
                                  *  $1+1 is translated to 0+1 and in abstration substitution
@@ -1957,99 +2004,6 @@ atoif(char *s, long int *value, long int *type)
         return (p);
 }
 
-
-
-#ifdef notdef
-/*
- * atoif -- ascii to float or integer (understands hex numbers also)
- */
-char *
-atoif(char *s, long int *value, long int *type)
-{
-        char *p;
-        long int_val = 0;
-        int flt = 0;
-        t_float pos = 0;
-        t_float flt_val = 0;
-        int base = 10;
-
-        p = s;
-        if (*p == '0' && (p[1] == 'x' || p[1] == 'X')) {
-                base = 16;
-                p += 2;
-        }
-        while (8) {
-                switch (*p) {
-                case '.':
-                        if (flt || base != 10) {
-                                post("expr: syntax error: %s\n", s);
-                                return ((char *) 0);
-                        }
-                        flt++;
-                        pos = 10;
-                        flt_val = int_val;
-                        break;
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                        if (flt) {
-                                flt_val += (*p - '0') / pos;
-                                pos *= 10;
-                        } else {
-                                int_val *= base;
-                                int_val += (*p - '0');
-                        }
-                        break;
-                case 'e':
-                                                if (base != 16) {
-                                                        if (
-                case 'a':
-                case 'b':
-                case 'c':
-                case 'd':
-                case 'f':
-                        if (base != 16 || flt) {
-                                post("expr: syntax error: %s\n", s);
-                                return ((char *) 0);
-                        }
-                        int_val *= base;
-                        int_val += (*p - 'a' + 10);
-                        break;
-                case 'E':
-                case 'A':
-                case 'B':
-                case 'C':
-                case 'D':
-                case 'F':
-                        if (base != 16 || flt) {
-                                post("expr: syntax error: %s\n", s);
-                                return ((char *) 0);
-                        }
-                        int_val *= base;
-                        int_val += (*p - 'A' + 10);
-                        break;
-                default:
-                        if (flt) {
-                                *type = ET_FLT;
-                                *((t_float *) value) = flt_val;
-                        } else {
-                                *type = ET_INT;
-                                *value = int_val;
-                        }
-                        return (p);
-                }
-                p++;
-        }
-}
-#endif
-
 /*
  * find_func -- returns a pointer to the found function structure
  *              otherwise it returns 0
@@ -2073,8 +2027,10 @@ find_func(char *s)
 void
 ex_print(struct ex_ex *eptr)
 {
+                struct ex_ex *extmp;
 
-        while (eptr->ex_type) {
+                extmp = eptr->ex_end;
+        while (eptr->ex_type && eptr != extmp) {
                 switch (eptr->ex_type) {
                 case ET_INT:
                         post("%ld ", eptr->ex_int);
@@ -2086,10 +2042,11 @@ ex_print(struct ex_ex *eptr)
                         post("%s ", eptr->ex_ptr);
                         break;
                 case ET_TBL:
-                                                if (!eptr->ex_ptr) { /* special case of $# processing */
+                        if (!eptr->ex_ptr) { /* special case of $# processing */
                                 post("%s ", "$$");
-                                                        break;
-                                                }
+                            break;
+                        }
+                            /* falls through */
                 case ET_VAR:
                         post("%s ", ex_symname((fts_symbol_t )eptr->ex_ptr));
                         break;

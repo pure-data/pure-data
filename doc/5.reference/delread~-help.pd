@@ -21,7 +21,7 @@ delay line.;
 #X obj 383 201 sig~;
 #X text 433 443 updated for Pd version 0.33;
 #X text 89 16 - read a signal from a delay line;
-#X text 21 133 Note: if the delaywrite~ runs after the delread~ the
+#X text 21 133 Note: if the delwrite~ runs after the delread~ the
 minimum delay is actually one DSP period \, not zero.;
 #X text 351 292 2nd argument: (initial) delay time in ms;
 #X obj 126 444 delwrite~;

@@ -27,3 +27,30 @@ puts [_ "Redo duplicate"]
 puts [_ "Redo motion"]
 puts [_ "Redo paste"]
 puts [_ "Redo typing"]
+
+# preferences feedback strings in s_file.c
+
+puts [_ "no Pd settings to clear"]
+puts [_ "removed .pdsettings file"]
+puts [_ "couldn't delete .pdsettings file"]
+puts [_ "failed to erase Pd settings"]
+puts [_ "erased Pd settings"]
+puts [_ "no Pd settings to erase"]
+puts [_ "skipping loading preferences... Pd seems to have crashed on startup."]
+puts [_ "(re-save preferences to reinstate them)"]
+
+# These are strings which, for some reason or another, are used in the Pd GUI
+# Tcl, but xgettext doesn't find them.
+
+# Menu Titles
+puts [_ "File"]
+puts [_ "Edit"]
+puts [_ "Put"]
+puts [_ "Find"]
+puts [_ "Media"]
+puts [_ "Window"]
+puts [_ "Help"]
+
+# These are strings built into Tk that msgcat should know about.
+
+puts [_ "Show &Hidden Files and Directories"]

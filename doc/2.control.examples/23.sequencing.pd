@@ -16,7 +16,7 @@ it contains:;
 #X text 155 279 receive2 2;
 #X text 153 299 1000 receive2 0;
 #X text 155 317 receive1 3;
-#X text 16 391 If you have more than 5 lines or so wou will probably
+#X text 16 391 If you have more than 5 lines or so you will probably
 want to store them as a separate file and have qlist read it. You can
 also write files \, set tempo \, and single step... see the help patch
 for details.;

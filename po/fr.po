@@ -3,266 +3,500 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.47-1\n"
+"Project-Id-Version: Pure Data 0.49-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"POT-Creation-Date: 2009-08-18 20:56-0400\n"
-"PO-Revision-Date: 2017-05-09 08:12+0200\n"
-"Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret\n"
-"Language: fr\n"
+"POT-Creation-Date: 2017-07-06 18:10+0200\n"
+"PO-Revision-Date: 2018-09-11 16:22+0200\n"
+"Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
+"Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
 
-#: ../src/dialog_array.tcl:117 ../src/pd_menus.tcl:100
-msgid "Copy"
-msgstr "Copier"
+msgid "-------dimensions(digits)(pix):-------"
+msgstr "------dimensions(chiffres)(pix):------"
 
-#: ../src/dialog_array.tcl:120 ../src/pd_menus.tcl:102
-msgid "Paste"
-msgstr "Coller"
+msgid "--------dimensions(pix)(pix):--------"
+msgstr "--------dimensions(pix)(pix):--------"
 
-#: ../src/dialog_array.tcl:266
-msgid "Array Properties"
-msgstr "Propriétés du tableau"
+msgid "----------dimensions(pix):-----------"
+msgstr "----------dimensions(pix):-----------"
 
-#: ../src/dialog_array.tcl:272
-msgid "Name:"
-msgstr "Nom:"
+msgid "--------flash-time(ms)(ms):---------"
+msgstr "-------durée_du_flash(ms)(ms):------"
 
-#: ../src/dialog_array.tcl:278 ../src/dialog_canvas.tcl:178
-#: ../src/dialog_canvas.tcl:193 ../src/dialog_iemgui.tcl:619
-msgid "Size:"
-msgstr "Taille:"
+msgid "-----------output-range:-----------"
+msgstr "---------échelle_de_sortie:--------"
 
-#: ../src/dialog_array.tcl:282
-msgid "Save contents"
-msgstr "Sauver le contenu"
+msgid "------selectable_dimensions(pix):------"
+msgstr "----dimensions_sélectionnable(pix):----"
 
-#: ../src/dialog_array.tcl:286
-msgid "Draw as:"
-msgstr "Dessiner en:"
+msgid "------visible_rectangle(pix)(pix):------"
+msgstr "------rectangle_visible(pix)(pix):------"
 
-#: ../src/dialog_array.tcl:289
-msgid "Points"
-msgstr "Points"
+msgid "bottom:"
+msgstr "bas :"
 
-#: ../src/dialog_array.tcl:291
-msgid "Polygon"
-msgstr "Polygone"
+msgid "height:"
+msgstr "hauteur :"
 
-#: ../src/dialog_array.tcl:293
-msgid "Bezier curve"
-msgstr "Courbe de Bézier"
+msgid "hold:"
+msgstr "maintient :"
 
-#: ../src/dialog_array.tcl:299
-msgid "Put array into:"
-msgstr "Placer le tableau dans:"
+msgid "intrrpt:"
+msgstr "intrrpt :"
 
-#: ../src/dialog_array.tcl:302
-msgid "New graph"
-msgstr "Nouveau graphique"
+msgid "left:"
+msgstr "gauche :"
 
-#: ../src/dialog_array.tcl:304
-msgid "Last graph"
-msgstr "Graphique précédent"
+msgid "lin"
+msgstr "lin"
 
-#: ../src/dialog_array.tcl:308
-msgid "Delete array"
-msgstr "Supprimer le tableau"
+msgid "log"
+msgstr "log"
 
-#: ../src/dialog_array.tcl:314
-msgid "Open List View..."
-msgstr "Ouvrir en liste..."
+msgid "log-height:"
+msgstr "Hauteur de log :"
 
-#: ../src/dialog_array.tcl:321 ../src/dialog_canvas.tcl:205
-#: ../src/dialog_font.tcl:51 ../src/dialog_gatom.tcl:161
-#: ../src/dialog_iemgui.tcl:742
-msgid "Cancel"
-msgstr "Annuler"
+msgid "max:"
+msgstr "max :"
 
-#: ../src/dialog_array.tcl:323 ../src/dialog_canvas.tcl:207
-#: ../src/dialog_gatom.tcl:164 ../src/dialog_iemgui.tcl:745
-msgid "Apply"
-msgstr "Appliquer"
+msgid "min:"
+msgstr "min :"
 
-#: ../src/dialog_array.tcl:325 ../src/dialog_canvas.tcl:209
-#: ../src/dialog_font.tcl:53 ../src/dialog_gatom.tcl:167
-#: ../src/dialog_iemgui.tcl:748
-msgid "OK"
-msgstr "OK"
+msgid "right:"
+msgstr "droite :"
 
-#: ../src/dialog_canvas.tcl:142
-msgid "Canvas Properties"
-msgstr "Propriétés du Canvas"
+msgid "size:"
+msgstr "taille :"
 
-#: ../src/dialog_canvas.tcl:146
-msgid "Scale"
-msgstr "Échelle"
+msgid "top:"
+msgstr "haut :"
 
-#: ../src/dialog_canvas.tcl:150
-msgid "X units per pixel:"
-msgstr "X unités par pixel:"
+msgid "value:"
+msgstr "valeur :"
 
-#: ../src/dialog_canvas.tcl:155
-msgid "Y units per pixel:"
-msgstr "Y unités par pixel:"
+msgid "width:"
+msgstr "largeur :"
 
-#: ../src/dialog_canvas.tcl:159
-msgid "Appearance on parent patch"
-msgstr "Aspect dans le patch parent"
+#, tcl-format
+msgid "Do you want to save the changes you made in '%s'?"
+msgstr "Enregistrer les modifications de '%s' ?"
 
-#: ../src/dialog_canvas.tcl:161
-msgid "Graph-On-Parent"
-msgstr "Graph-On-Parent (dessiner dans le patch parent)"
+#, tcl-format
+msgid "Discard changes to '%s'?"
+msgstr "Abandonner les modifications de '%s' ?"
 
-#: ../src/dialog_canvas.tcl:165
-msgid "Hide object name and arguments"
-msgstr "Cacher le nom et les arguments de l'objet"
+msgid "Undo clear"
+msgstr "Annuler l'effacement"
 
-#: ../src/dialog_canvas.tcl:170
-msgid "Range and size"
-msgstr "Taille et échelle"
+msgid "Undo connect"
+msgstr "Annuler la connexion"
 
-#: ../src/dialog_canvas.tcl:174
-msgid "X range, from"
-msgstr "Échelle X, de"
+msgid "Undo cut"
+msgstr "Annuler la suppression"
 
-#: ../src/dialog_canvas.tcl:176 ../src/dialog_canvas.tcl:191
-msgid "to"
-msgstr "à"
+msgid "Undo disconnect"
+msgstr "Annuler la déconnexion"
 
-#: ../src/dialog_canvas.tcl:180 ../src/dialog_canvas.tcl:195
-msgid "Margin:"
-msgstr "Marges:"
+msgid "Undo duplicate"
+msgstr "Annuler la duplication"
 
-#: ../src/dialog_canvas.tcl:189
-msgid "Y range, from"
-msgstr "Échelle Y, de"
+msgid "Undo motion"
+msgstr "Annuler le déplacement"
 
-#: ../src/dialog_find.tcl:63 ../src/dialog_find.tcl:80 ../src/pd_menus.tcl:45
+msgid "Undo paste"
+msgstr "Annuler la copie"
+
+msgid "Undo typing"
+msgstr "Annuler la frappe"
+
+msgid "Redo clear"
+msgstr "Refaire l'effacement"
+
+msgid "Redo connect"
+msgstr "Refaire la connexion"
+
+msgid "Redo cut"
+msgstr "Refaire la suppression"
+
+msgid "Redo disconnect"
+msgstr "Refaire la déconnexion"
+
+msgid "Redo duplicate"
+msgstr "Refaire la duplication"
+
+msgid "Redo motion"
+msgstr "Refaire le déplacement"
+
+msgid "Redo paste"
+msgstr "Refaire la copie"
+
+msgid "Redo typing"
+msgstr "Refaire la frappe"
+
+msgid "no Pd settings to clear"
+msgstr "aucune préférence à effacer"
+
+msgid "removed .pdsettings file"
+msgstr "le fichier .pdsettings a été supprimé"
+
+msgid "couldn't delete .pdsettings file"
+msgstr "le fichier .pdsettings n'a pas pu être supprimé"
+
+msgid "failed to erase Pd settings"
+msgstr "échec de la suppression des préférences"
+
+msgid "erased Pd settings"
+msgstr "préférences effacées"
+
+msgid "no Pd settings to erase"
+msgstr "pas de paramètres a effacer"
+
+msgid "skipping loading preferences... Pd seems to have crashed on startup."
+msgstr ""
+"Pd semble ne pas avoir démarré correctement, les préférences n'ont pas été "
+"chargées."
+
+msgid "(re-save preferences to reinstate them)"
+msgstr "(enregistrez à nouveau les préférences afin de les rétablir)"
+
+msgid "File"
+msgstr "Fichier"
+
+msgid "Edit"
+msgstr "Édition"
+
+msgid "Put"
+msgstr "Ajouter"
+
 msgid "Find"
 msgstr "Rechercher"
 
-#: ../src/dialog_find.tcl:70
-msgid "Search in"
-msgstr "Rechercher dans"
+msgid "Media"
+msgstr "Média"
 
-#: ../src/dialog_find.tcl:72
-msgid "for:"
-msgstr ":"
+msgid "Window"
+msgstr "Fenêtre"
 
-#: ../src/dialog_find.tcl:83 ../src/pd_menus.tcl:86 ../src/pd_menus.tcl:259
-#: ../src/pd_menus.tcl:295 ../src/pd_menus.tcl:332
+msgid "Help"
+msgstr "Aide"
+
+msgid "Show &Hidden Files and Directories"
+msgstr "Affic&her les fichiers et dossiers cachés"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Paste"
+msgstr "Coller"
+
+msgid "Array Properties"
+msgstr "Propriétés du tableau"
+
+msgid "Array"
+msgstr "Tableau"
+
+msgid "Name:"
+msgstr "Nom :"
+
+msgid "Size:"
+msgstr "Taille :"
+
+msgid "Save contents"
+msgstr "Enregistrer le contenu"
+
+msgid "Draw as:"
+msgstr "Dessiner en :"
+
+msgid "Polygon"
+msgstr "Polygone"
+
+msgid "Points"
+msgstr "Points"
+
+msgid "Bezier curve"
+msgstr "Courbe de Bézier"
+
+msgid "Put array into:"
+msgstr "Placer le tableau dans :"
+
+msgid "New graph"
+msgstr "Nouveau graphique"
+
+msgid "Last graph"
+msgstr "Graphique précédent"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Open List View..."
+msgstr "Ouvrir en liste..."
+
+msgid "Delete array"
+msgstr "Supprimer le tableau"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Apply"
+msgstr "Appliquer"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Audio Settings"
+msgstr "Paramètres audio"
+
+msgid "Settings"
+msgstr "Paramètres"
+
+msgid "Sample rate:"
+msgstr "Fréquence d'échantillonnage :"
+
+msgid "Delay (msec):"
+msgstr "Délai(ms) :"
+
+msgid "Block size:"
+msgstr "Échantillons par bloc :"
+
+msgid "Use callbacks"
+msgstr "Utiliser des callbacks"
+
+msgid "Input Devices"
+msgstr "Périphériques d'entrée"
+
+msgid "Channels:"
+msgstr "Nombre de canaux :"
+
+msgid "Output Devices"
+msgstr "Périphériques de sortie"
+
+msgid "(same as input device)..."
+msgstr "(même que le périphérique d'entrée)..."
+
+msgid "Use Multiple Devices"
+msgstr "Utiliser plusieurs périphériques"
+
+msgid "Save All Settings"
+msgstr "Enregistrer tous les réglages"
+
+msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
+msgstr "ATTENTION: unknown graphme flags received in pdtk_canvas_dialog"
+
+msgid "Canvas Properties"
+msgstr "Propriétés du Canvas"
+
+msgid "Scale"
+msgstr "Échelle"
+
+msgid "X units per pixel:"
+msgstr "Unités par pixel en X :"
+
+msgid "Y units per pixel:"
+msgstr "Unités par pixel en Y :"
+
+msgid "Appearance on parent patch"
+msgstr "Aspect dans le patch parent"
+
+msgid "Graph-On-Parent"
+msgstr "Graph-On-Parent (dessiner dans le patch parent)"
+
+msgid "Hide object name and arguments"
+msgstr "Cacher le nom et les arguments de l'objet"
+
+msgid "Range and size"
+msgstr "Intervalle et taille"
+
+msgid "X range: from"
+msgstr "Intervalle X : de"
+
+msgid "to"
+msgstr "à"
+
+msgid "Margin:"
+msgstr "Marges :"
+
+msgid "Y range: from"
+msgstr "Intervalle Y : de"
+
+msgid "Data Properties"
+msgstr "Propriétés de la donnée"
+
+#, tcl-format
+msgid "Found '%1$s' in %2$s"
+msgstr "'%1$s' trouvé dans %2$s"
+
+#, tcl-format
+msgid "Couldn't find '%1$s' in %2$s"
+msgstr "'%1$s' non trouvé dans %2$s"
+
+#, tcl-format
+msgid "Search in %s for:"
+msgstr "Rechercher dans %s :"
+
+#, tcl-format
+msgid "Showed last '%1$s' in %2$s"
+msgstr "Mise en évidence du dernier '%1$s' dans %2$s"
+
+#, tcl-format
+msgid "Showing '%1$d' out of %2$d items in %3$s"
+msgstr "Mise en évidence de l'exemplaire %1$d sur %2$d de '%3$s'"
+
+msgid "Pd window"
+msgstr "Fenêtre Pd"
+
+msgid "Match whole word only"
+msgstr "Mot entier seulement"
+
 msgid "Close"
 msgstr "Fermer"
 
-#: ../src/dialog_font.tcl:45
-msgid "Patch Font"
-msgstr "Police du patch"
+#, tcl-format
+msgid "%s Font"
+msgstr "Police de %s"
 
-#: ../src/dialog_font.tcl:61
+msgid "Font"
+msgstr "Police"
+
 msgid "Font Size"
 msgstr "Taille"
 
-#: ../src/dialog_font.tcl:89
 msgid "Stretch"
 msgstr "Étirer"
 
-#: ../src/dialog_font.tcl:96
 msgid "X and Y"
 msgstr "X et Y"
 
-#: ../src/dialog_font.tcl:98
 msgid "X only"
 msgstr "seulement X"
 
-#: ../src/dialog_font.tcl:100
 msgid "Y only"
 msgstr "seulement Y"
 
-#: ../src/dialog_gatom.tcl:93
 msgid "Atom Box Properties"
-msgstr "Propriétés du nombre"
+msgstr "Propriétés de la boîte Nombre/Symbole"
 
-#: ../src/dialog_gatom.tcl:99
 msgid "Width:"
-msgstr "Largeur:"
+msgstr "Largeur :"
 
-#: ../src/dialog_gatom.tcl:103
 msgid "Limits"
 msgstr "Limites"
 
-#: ../src/dialog_gatom.tcl:107
 msgid "Lower:"
-msgstr "Inférieur:"
+msgstr "Inférieur :"
 
-#: ../src/dialog_gatom.tcl:113
 msgid "Upper:"
-msgstr "Supérieur:"
+msgstr "Supérieur :"
 
-#: ../src/dialog_gatom.tcl:121 ../src/dialog_iemgui.tcl:600
-#: ../src/dialog_iemgui.tcl:652
 msgid "Label"
 msgstr "Label"
 
-#: ../src/dialog_gatom.tcl:129
-msgid "Left   "
+msgid "Left"
 msgstr "Gauche"
 
-#: ../src/dialog_gatom.tcl:131
 msgid "Right"
 msgstr "Droite"
 
-#: ../src/dialog_gatom.tcl:133
 msgid "Top"
 msgstr "Haut"
 
-#: ../src/dialog_gatom.tcl:135
 msgid "Bottom"
 msgstr "Bas"
 
-#: ../src/dialog_gatom.tcl:145 ../src/dialog_iemgui.tcl:574
 msgid "Messages"
 msgstr "Messages"
 
-#: ../src/dialog_gatom.tcl:149 ../src/dialog_iemgui.tcl:578
 msgid "Send symbol:"
-msgstr "Envoyer au symbole:"
+msgstr "Envoyer au symbole :"
 
-#: ../src/dialog_gatom.tcl:155 ../src/dialog_iemgui.tcl:585
 msgid "Receive symbol:"
-msgstr "Reçoit du symbole:"
+msgstr "Recevoir du symbole :"
 
-#: ../src/dialog_iemgui.tcl:197
 msgid "Background color"
-msgstr "Couleur du fond"
+msgstr "Couleur de l'arrière plan"
 
-#: ../src/dialog_iemgui.tcl:204
 msgid "Foreground color"
 msgstr "Couleur du premier plan"
 
-#: ../src/dialog_iemgui.tcl:211
 msgid "Label color"
 msgstr "Couleur du label"
 
-#: ../src/dialog_iemgui.tcl:272
 msgid "Init"
 msgstr "Initialisation"
 
-#: ../src/dialog_iemgui.tcl:275 ../src/dialog_iemgui.tcl:546
 msgid "No init"
 msgstr "Pas d'init."
 
-#: ../src/dialog_iemgui.tcl:287 ../src/dialog_iemgui.tcl:558
 msgid "Jump on click"
 msgstr "Instantané"
 
-#: ../src/dialog_iemgui.tcl:290 ../src/dialog_iemgui.tcl:561
 msgid "Steady on click"
 msgstr "Glissant"
 
-#: ../src/dialog_iemgui.tcl:498
+msgid "Bang"
+msgstr "Bang"
+
+msgid "Flash Time (msec)"
+msgstr "Durée du flash (ms)"
+
+msgid "Intrrpt:"
+msgstr "Intrrpt :"
+
+msgid "Hold:"
+msgstr "Maintient :"
+
+msgid "Toggle"
+msgstr "Interrupteur"
+
+msgid "Non Zero Value"
+msgstr "Valeur si coché"
+
+msgid "Value:"
+msgstr "Valeur :"
+
+msgid "Number2"
+msgstr "Nombre2"
+
+msgid "Width (digits):"
+msgstr "Largeur (chiffres) :"
+
+msgid "Height:"
+msgstr "Hauteur :"
+
+msgid "Output Range"
+msgstr "Plage de valeurs"
+
+msgid "Log height:"
+msgstr "Hauteur du log :"
+
+msgid "Vslider"
+msgstr "Slider vertical"
+
+msgid "Hslider"
+msgstr "Slider horizontal"
+
+msgid "Vradio"
+msgstr "Sélecteur vertical"
+
+msgid "Num cells:"
+msgstr "Nombre de cases :"
+
+msgid "Hradio"
+msgstr "Sélecteur horizontal"
+
+msgid "VU Meter"
+msgstr "VU-mètre"
+
+msgid "Canvas"
+msgstr "Canvas"
+
+msgid "Visible Rectangle (pix)"
+msgstr "Rectangle visible (pix)"
+
 #, tcl-format
 msgid "%s Properties"
 msgstr "Propriétés de l'objet %s"
@@ -270,366 +504,450 @@ msgstr "Propriétés de l'objet %s"
 msgid "Parameters"
 msgstr "Paramètres"
 
-msgid "Width (digits):"
-msgstr "Nombre de chiffre à afficher:"
+msgid "X offset:"
+msgstr "Offset en X :"
 
-msgid "Height:"
-msgstr "Hauteur de l'objet (px):"
+msgid "Y offset:"
+msgstr "Offset en Y :"
 
-msgid "Output Range"
-msgstr "Plage de valeurs"
-
-#: ../src/dialog_iemgui.tcl:550 ../src/pd_menus.tcl:83 ../src/pd_menus.tcl:260
-#: ../src/pd_menus.tcl:288 ../src/pd_menus.tcl:325
-msgid "Save"
-msgstr "Sauvegarder"
-
-#: ../src/dialog_iemgui.tcl:608
-msgid "X offset"
-msgstr "Offset en X"
-
-#: ../src/dialog_iemgui.tcl:611
-msgid "Y offset"
-msgstr "Offset en Y"
-
-#: ../src/dialog_iemgui.tcl:642
 msgid "Colors"
-msgstr "Couleur"
+msgstr "Couleurs"
 
-#: ../src/dialog_iemgui.tcl:648
 msgid "Background"
 msgstr "Arrière plan"
 
-#: ../src/dialog_iemgui.tcl:650
 msgid "Front"
 msgstr "Premier plan"
 
-#: ../src/dialog_iemgui.tcl:662
 msgid "Compose color"
 msgstr "Créer la couleur"
 
-#: ../src/dialog_iemgui.tcl:682
 msgid "Test label"
-msgstr ""
-
-#: ../src/pd-gui.tcl:280 ../src/pd-gui.tcl:283 ../src/pd_menus.tcl:212
-msgid "Pd window"
-msgstr "Fenêtre Pd"
-
-#: ../src/pd_menucommands.tcl:90
-msgid "Send Message..."
-msgstr "Envoyer Message..."
-
-#: ../src/pd_menucommands.tcl:94 ../src/pd_menus.tcl:87
-#: ../src/pd_menus.tcl:147 ../src/pd_menus.tcl:265 ../src/pd_menus.tcl:292
-#: ../src/pd_menus.tcl:329
-msgid "Message"
-msgstr "Message"
-
-#: ../src/pd_menucommands.tcl:108 ../src/pd_menucommands.tcl:111
-#: ../src/pd_menus.tcl:112 ../src/pd_menus.tcl:117
-msgid "Font"
-msgstr "Police"
-
-#: ../src/pd_menucommands.tcl:123 ../src/pd_menucommands.tcl:126
-#: ../src/pd_menus.tcl:138
-msgid "Preferences"
-msgstr "Préférences"
-
-#: ../src/pd_menus.tcl:45
-msgid "Edit"
-msgstr "Édition"
-
-#: ../src/pd_menus.tcl:45
-msgid "File"
-msgstr "Fichier"
-
-#: ../src/pd_menus.tcl:45 ../src/pdtk_canvas.tcl:48
-msgid "Help"
-msgstr "Aide"
-
-#: ../src/pd_menus.tcl:45
-msgid "Media"
-msgstr "Média"
-
-#: ../src/pd_menus.tcl:45
-msgid "Put"
-msgstr "Ajouter"
-
-#: ../src/pd_menus.tcl:45
-msgid "Window"
-msgstr "Fenêtre"
-
-#: ../src/pd_menus.tcl:81 ../src/pd_menus.tcl:255 ../src/pd_menus.tcl:285
-#: ../src/pd_menus.tcl:322
-msgid "New"
-msgstr "Nouveau"
-
-#: ../src/pd_menus.tcl:82 ../src/pd_menus.tcl:256 ../src/pd_menus.tcl:286
-#: ../src/pd_menus.tcl:323 ../src/pdtk_canvas.tcl:46
-msgid "Open"
-msgstr "Ouvrir"
-
-#: ../src/pd_menus.tcl:84 ../src/pd_menus.tcl:261 ../src/pd_menus.tcl:289
-#: ../src/pd_menus.tcl:326
-msgid "Save As..."
-msgstr "Sauvegarder Sous..."
-
-#: ../src/pd_menus.tcl:88 ../src/pd_menus.tcl:267 ../src/pd_menus.tcl:293
-#: ../src/pd_menus.tcl:330
-msgid "Print..."
-msgstr "Imprimer..."
-
-#: ../src/pd_menus.tcl:93
-msgid "Undo"
-msgstr "Défaire"
-
-#: ../src/pd_menus.tcl:95
-msgid "Redo"
-msgstr "Refaire"
-
-#: ../src/pd_menus.tcl:98
-msgid "Cut"
-msgstr "Couper"
-
-#: ../src/pd_menus.tcl:104
-msgid "Duplicate"
-msgstr "Dupliquer"
-
-#: ../src/pd_menus.tcl:106
-msgid "Select All"
-msgstr "Sélectionner tout"
-
-#: ../src/pd_menus.tcl:110 ../src/pd_menus.tcl:115
-msgid "Text Editor"
-msgstr "Éditeur de texte..."
-
-#: ../src/pd_menus.tcl:120
-msgid "Tidy Up"
-msgstr "Aligner"
-
-#: ../src/pd_menus.tcl:122
-msgid "Toggle Console"
-msgstr ""
-
-#: ../src/pd_menus.tcl:124
-msgid "Clear Console"
-msgstr "Effacer la console"
-
-#: ../src/pd_menus.tcl:128
-msgid "Edit Mode"
-msgstr "Mode d'édition"
-
-#: ../src/pd_menus.tcl:145
-msgid "Object"
-msgstr "Objet"
-
-#: ../src/pd_menus.tcl:149
-msgid "Number"
-msgstr "Nombre"
-
-#: ../src/pd_menus.tcl:151
-msgid "Symbol"
-msgstr "Symbole"
-
-#: ../src/pd_menus.tcl:153
-msgid "Comment"
-msgstr "Commentaire"
-
-#: ../src/pd_menus.tcl:156
-msgid "Bang"
-msgstr "Bang"
-
-#: ../src/pd_menus.tcl:158
-msgid "Toggle"
-msgstr "Interrupteur"
-
-#: ../src/pd_menus.tcl:160
-msgid "Number2"
-msgstr "Nombre2"
-
-#: ../src/pd_menus.tcl:162
-msgid "Vslider"
-msgstr "Slider vertical"
-
-#: ../src/pd_menus.tcl:164
-msgid "Hslider"
-msgstr "Slider horizontal"
-
-#: ../src/pd_menus.tcl:166
-msgid "Vradio"
-msgstr "Sélecteur vertical"
-
-#: ../src/pd_menus.tcl:168
-msgid "Hradio"
-msgstr "Sélecteur horizontal"
-
-#: ../src/pd_menus.tcl:170
-msgid "VU Meter"
-msgstr "VU-mètre"
-
-#: ../src/pd_menus.tcl:172
-msgid "Canvas"
-msgstr "Canvas"
-
-#: ../src/pd_menus.tcl:175
-msgid "Graph"
-msgstr "Graphique"
-
-#: ../src/pd_menus.tcl:176
-msgid "Array"
-msgstr "Tableau"
-
-#: ../src/pd_menus.tcl:181
-msgid "Find..."
-msgstr "Rechercher"
-
-#: ../src/pd_menus.tcl:183
-msgid "Find Again"
-msgstr "Rechercher encore"
-
-#: ../src/pd_menus.tcl:185
-msgid "Find Last Error"
-msgstr "Rechercher la dernière erreur"
-
-#: ../src/pd_menus.tcl:191
-msgid "DSP On"
-msgstr "DSP On"
-
-#: ../src/pd_menus.tcl:193
-msgid "DSP Off"
-msgstr "DSP off"
-
-#: ../src/pd_menus.tcl:196
-msgid "Test Audio and MIDI..."
-msgstr "Tester l'audio et le MIDI"
-
-#: ../src/pd_menus.tcl:198
-msgid "Load Meter"
-msgstr "CPU-mètre"
-
-#: ../src/pd_menus.tcl:205
-msgid "Minimize"
-msgstr "Minimiser"
-
-#: ../src/pd_menus.tcl:207
-msgid "Zoom"
-msgstr "Zoom"
-
-#: ../src/pd_menus.tcl:210
-msgid "Parent Window"
-msgstr "Fenêtre parente"
-
-#: ../src/pd_menus.tcl:216
-msgid "Bring All to Front"
-msgstr "Tout au premier plan"
-
-#: ../src/pd_menus.tcl:241
-msgid "About Pd"
-msgstr "À propos de Pd"
-
-#: ../src/pd_menus.tcl:248
-msgid "Preferences..."
-msgstr "Préférences..."
-
-#: ../src/pd_menus.tcl:257
-msgid "Open Recent"
-msgstr "Ouvrir un élément récent"
-
-#: ../src/pd_menus.tcl:296 ../src/pd_menus.tcl:333
-msgid "Quit"
-msgstr "Quitter"
-
-#: ../src/pdtk_canvas.tcl:44
-msgid "Properties"
-msgstr "Propriétés"
-
-#~ msgid "Audio OFF"
-#~ msgstr "Audio OFF"
-
-#~ msgid "Audio ON"
-#~ msgstr "Audio ON"
-
-#~ msgid "Paths"
-#~ msgstr "Chemins..."
-
-msgid "Browser..."
-msgstr "Navigateur d'aide"
-
-msgid "HTML Manual..."
-msgstr "Aide HTML"
-
-msgid "List of objects..."
-msgstr "Liste des objets"
-
-msgid "Find externals"
-msgstr "Trouver des objets supplémentaires"
-
-msgid "Report a bug"
-msgstr "Signaler un problème"
-
-msgid "Audio Settings..."
-msgstr "Réglage audio"
-
-msgid "MIDI Settings..."
-msgstr "Réglage MIDI"
-
-msgid "Input Devices"
-msgstr "Périphérique d'entrée"
-
-msgid "Output Devices"
-msgstr "Périphérique de sortie"
-
-msgid "Channels:"
-msgstr "Nombre de canaux:"
-
-msgid "Use multiple devices"
-msgstr "Utiliser plusieurs périphériques simultanément"
-
-msgid "Settings"
-msgstr "Réglages"
-
-msgid "Sample rate:"
-msgstr "Fréquence d'échantillonnage:"
-
-msgid "Delay (msec):"
-msgstr "Délai (ms):"
-
-msgid "Save All Settings"
-msgstr "Sauver tous les réglages"
-
-msgid "Block size:"
-msgstr "Échantillons par bloc:"
-
-msgid "Startup..."
-msgstr "Option de démarrage..."
-
-msgid "Path..."
-msgstr "Chemin..."
-
-msgid "Startup flags:"
-msgstr "Options:"
-
-msgid "New..."
-msgstr "Nouveau"
-
-msgid "Edit..."
-msgstr "Éditer"
-
-msgid "Delete"
-msgstr "Supprimer"
-
-msgid "Pd libraries to load on startup"
-msgstr "Bibliothèques à charger au démarrage"
+msgstr "Label de test"
 
 msgid "Send a Pd message"
 msgstr "Envoyer un message à Pd"
 
 msgid "(use arrow keys for history)"
-msgstr "Utiliser les flèches haut et bas pour accéder à l'historique"
+msgstr "(Utiliser les flèches pour accéder à l'historique)"
 
-msgid "Show &Hidden Files and Directories"
-msgstr "Affic&her les fichiers et dossiers cachés"
+msgid "MIDI Settings"
+msgstr "Paramètres MIDI"
+
+msgid "ALSA MIDI Settings"
+msgstr "Paramètres MIDI (ALSA)"
+
+msgid "In Ports:"
+msgstr "Ports d'entrée :"
+
+msgid "Out Ports:"
+msgstr "Ports de sortie :"
+
+msgid "Pd search path for objects, help, fonts, and other files"
+msgstr "Chemins pour la recherche d'objets, aides, fontes et autres"
+
+msgid "Use standard paths"
+msgstr "Utiliser les chemins standards"
+
+msgid "Verbose"
+msgstr "Verbeux"
+
+msgid "Pd Documents Directory"
+msgstr "Dossier des Documents"
+
+msgid "Browse"
+msgstr "Choisir"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "Disable"
+msgstr "Désactiver"
+
+msgid "Externals Install Directory"
+msgstr "Dossier d'installation des Externals"
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Choose Pd documents directory:"
+msgstr "Choisir le dossier des documents Pd :"
+
+msgid "Install externals to directory:"
+msgstr "Installer les externals dans le dossier :"
+
+msgid "Add a new path"
+msgstr "Ajouter un chemin"
+
+msgid "Add new library"
+msgstr "Ajouter une bibliothèque"
+
+msgid "Edit library"
+msgstr "Éditer la bibliothèque"
+
+msgid "Pd libraries to load on startup"
+msgstr "Bibliothèques à charger au démarrage"
+
+msgid "Startup flags:"
+msgstr "Options au démarrage :"
+
+msgid "Defeat real-time scheduling"
+msgstr "Refuser la priorité temps-réel"
+
+msgid "Help Browser"
+msgstr "Navigateur d'aide"
+
+msgid "(Tcl) MISSING CLOSE-BRACE '}': "
+msgstr "(Tcl) CARACTÈRE MANQUANT '}' : "
+
+msgid "(Tcl) INVALID COMMAND NAME: "
+msgstr "(Tcl) COMMANDE INVALIDE : "
+
+msgid "(Tcl) UNHANDLED ERROR: "
+msgstr "(Tcl) ERREUR : "
+
+#, tcl-format
+msgid "[deken]: installed version [%1$s] > %2$s...skipping!"
+msgstr "[deken]: version installée [%1$s] > %2$s...ignorer !"
+
+#, tcl-format
+msgid "[deken]: installed version [%1$s] < %2$s...overwriting!"
+msgstr "[deken]: version installée [%1$s] < %2$s...remplacer !"
+
+#, tcl-format
+msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
+msgstr "[deken]: version installée [%1$s] == %2$s...ignorer !"
+
+msgid "[deken]: "
+msgstr "[deken] : "
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "%1$s décompressé avec succès dans %2$s."
+
+msgid "[deken]: Unable to extract package automatically."
+msgstr "[deken] : Impossible de décompresser l'archive automatiquement."
+
+msgid "Please perform the following steps manually:"
+msgstr "Effectuez manuellement les étapes suivantes :"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. Décompresser %s"
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. Copier le dossier obtenu dans %s."
+
+#, tcl-format
+msgid "[deken] uninstalling '%s'"
+msgstr "[deken] désinstallation de '%s'"
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr "Échec de la désinstallation de %1$s de %2$s !"
+
+#, tcl-format
+msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
+msgstr "[deken] deken-plugin.tcl (recherche d'externals) chargé depuis %s."
+
+#, tcl-format
+msgid "[deken] Platform detected: %s"
+msgstr "[deken] Plateforme détectée : %s"
+
+#, tcl-format
+msgid "[deken] Platform re-detected: %s"
+msgstr "[deken] Plateforme re-détectée : %s"
+
+msgid "Show all"
+msgstr "Montrer tout"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "To get a list of all available externals, try an empty search."
+msgstr ""
+"Pour obtenir la liste de tous les externals disponibles, faites une "
+"recherche vide."
+
+msgid "Find externals"
+msgstr "Installer des objets supplémentaires"
+
+msgid "Only install externals uploaded by people you trust."
+msgstr "Installer uniquement des objets provenant de sources de confiance."
+
+msgid "Preferences"
+msgstr "Préférences"
+
+msgid "Installation options:"
+msgstr "Options d'installation :"
+
+msgid "Try to remove libraries before (re)installing them?"
+msgstr "Essayer de supprimer les bibliothèques avant de les (ré)installer ?"
+
+msgid "Show README of newly installed libraries (if present)?"
+msgstr ""
+"Afficher le README (si présent) des bibliothèques nouvellement installées ?"
+
+msgid "Should newly installed libraries be added to Pd's search path?"
+msgstr ""
+"Les bibliothèques nouvellement installées doivent-elles être ajoutées aux "
+"chemins de recherche de Pd ?"
+
+msgid "Platform settings:"
+msgstr "Réglages de plateforme :"
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr "Plateforme par défaut : %s"
+
+msgid "User-defined platform:"
+msgstr "Plateforme définie par l'utilisateur :"
+
+msgid "Hide foreign architectures?"
+msgstr "Cacher les architectures étrangères ?"
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr "Préférences de Deken %s"
+
+msgid "[deken]: Start searching for externals..."
+msgstr "[deken] : Démarrage de la recherche d'externals..."
+
+#, tcl-format
+msgid "[deken]: online? %s"
+msgstr "[deken]: connecté ? %s"
+
+msgid "Are you online?"
+msgstr "Êtes-vous connecté(e) ?"
+
+msgid "Unable to perform search."
+msgstr "Recherche impossible."
+
+msgid "[deken]: No matching externals found."
+msgstr "[deken] : Aucun external correspondant trouvé."
+
+msgid "Try using the full name e.g. 'freeverb'."
+msgstr "Essayez avec le nom complet, par exemple 'freeverb'."
+
+msgid "No matching externals found."
+msgstr "Aucun external correspondant trouvé."
+
+msgid "Please select a (writable) installation directory!"
+msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
+
+#, tcl-format
+msgid "Install %1$s to %2$s?"
+msgstr "Installer %1$s dans %2$s ?"
+
+#, tcl-format
+msgid ""
+"Commencing downloading of:\n"
+"%1$s\n"
+"Into %2$s..."
+msgstr ""
+"Début du téléchargement de :\n"
+"%1$s\n"
+"Dans %2$s..."
+
+msgid "aborting.\n"
+msgstr "abandon.\n"
+
+#, tcl-format
+msgid "Unable to add %s to search paths"
+msgstr "Impossible d'ajouter %s aux chemins de recherche"
+
+#, tcl-format
+msgid "Add %s to the Pd search paths?"
+msgstr "Ajouter %s aux chemins de recherche ?"
+
+#, tcl-format
+msgid "Added %s to search paths"
+msgstr "%s a été ajouté aux chemins de recherche"
+
+#, tcl-format
+msgid "Unable to download from %1$s [%2$s]"
+msgstr "Impossible de télécharger %1$s [%2$s]"
+
+#, tcl-format
+msgid "Unable to remove stray file %s"
+msgstr "Impossible d'effacer le ficher temporaire %s"
+
+#, tcl-format
+msgid "Unable to rename downloaded file to %s"
+msgstr "Impossible de donner au fichier téléchargé le nom %s"
+
+#, tcl-format
+msgid "searching for '%s'"
+msgstr "recherche de '%s'"
+
+#, tcl-format
+msgid "Uploaded by %1$s @ %2$s"
+msgstr "Mis en ligne par '%1$s' le : %2$s"
+
+msgid "Install package"
+msgstr "Installation du paquet"
+
+msgid "Open webpage"
+msgstr "Ouvrir une page web"
+
+msgid "_"
+msgstr "_"
+
+#, tcl-format
+msgid ""
+"Do you want Pd to create a documents directory for patches and external "
+"libraries?\n"
+"\n"
+"Location: %s\n"
+"\n"
+"You can change or disable this later in the Path preferences."
+msgstr ""
+"Voulez-vous créer un dossier Documents pour les patchs et les externals ?\n"
+"\n"
+"Emplacement : %s\n"
+"\n"
+"Vous pourrez changer ou désactiver cet emplacement plus tard, dans les "
+"préférences de Chemins."
+
+#, tcl-format
+msgid ""
+"Pd documents directory cannot be found:\n"
+"\n"
+"%s\n"
+"\n"
+"Choose a new location?"
+msgstr ""
+"Le dossier Documents n'existe pas :\n"
+"\n"
+"%s\n"
+"\n"
+"Choisir un nouvel emplacement ?"
+
+#, tcl-format
+msgid "Couldn't create Pd documents directory: %s\n"
+msgstr "Impossible de créer le dossier Documents : %s\n"
+
+#, tcl-format
+msgid "Couldn't create \"externals\" directory in: %s\n"
+msgstr "Le dossier \"externals\" n'a pas pu être créé dans : %s\n"
+
+msgid "About Pd"
+msgstr "À propos de Pd"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Save As..."
+msgstr "Enregistrer sous..."
+
+msgid "Print..."
+msgstr "Imprimer..."
+
+msgid "Paste Replace"
+msgstr "Coller Remplacer"
+
+msgid "Duplicate"
+msgstr "Dupliquer"
+
+msgid "Zoom In"
+msgstr "Zoomer"
+
+msgid "Zoom Out"
+msgstr "Dézoomer"
+
+msgid "Tidy Up"
+msgstr "Aligner"
+
+msgid "(Dis)Connect Selection"
+msgstr "(Dé)Connecter la sélection"
+
+msgid "Triggerize"
+msgstr "Triggeriser"
+
+msgid "Edit Mode"
+msgstr "Mode d'édition"
+
+msgid "Undo"
+msgstr "Défaire"
+
+msgid "Redo"
+msgstr "Refaire"
+
+msgid "List of objects..."
+msgstr "Liste des objets..."
+
+msgid "New"
+msgstr "Nouveau"
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Message..."
+msgstr "Message..."
+
+msgid "Cut"
+msgstr "Couper"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+msgid "Clear Console"
+msgstr "Effacer la console"
+
+msgid "Object"
+msgstr "Objet"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Number"
+msgstr "Nombre"
+
+msgid "Symbol"
+msgstr "Symbole"
+
+msgid "Comment"
+msgstr "Commentaire"
+
+msgid "Graph"
+msgstr "Graphique"
+
+msgid "Find..."
+msgstr "Rechercher..."
+
+msgid "Find Again"
+msgstr "Rechercher encore"
+
+msgid "Find Last Error"
+msgstr "Rechercher la dernière erreur"
+
+msgid "DSP On"
+msgstr "DSP ON"
+
+msgid "DSP Off"
+msgstr "DSP OFF"
+
+msgid "Test Audio and MIDI..."
+msgstr "Tester l'audio et le MIDI..."
+
+msgid "Load Meter"
+msgstr "CPU-mètre"
+
+msgid "Audio Settings..."
+msgstr "Paramètres audio..."
+
+msgid "MIDI Settings..."
+msgstr "Paramètres MIDI..."
+
+msgid "Minimize"
+msgstr "Minimiser"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Bring All to Front"
+msgstr "Tout au premier plan"
 
 msgid "Next Window"
 msgstr "Fenêtre suivante"
@@ -637,5 +955,146 @@ msgstr "Fenêtre suivante"
 msgid "Previous Window"
 msgstr "Fenêtre précédente"
 
-msgid "Zoom new windows"
+msgid "Parent Window"
+msgstr "Fenêtre parente"
+
+msgid "HTML Manual..."
+msgstr "Aide HTML..."
+
+msgid "Browser..."
+msgstr "Navigateur d'aide..."
+
+msgid "puredata.info"
+msgstr "puredata.info"
+
+msgid "Report a bug"
+msgstr "Signaler un problème"
+
+msgid "Clear Menu"
+msgstr "Effacer la console"
+
+msgid ""
+"Delete all preferences?\n"
+"(takes effect when Pd is restarted)"
+msgstr ""
+"Effacer toutes les préférences ?\n"
+"(prendra effet au prochain redémarrage)"
+
+msgid "Path..."
+msgstr "Chemins..."
+
+msgid "Startup..."
+msgstr "Options de démarrage..."
+
+msgid "Audio..."
+msgstr "Paramètres audio..."
+
+msgid "MIDI..."
+msgstr "Paramètres MIDI..."
+
+msgid "Zoom New Windows"
 msgstr "Zoomer les nouvelles fenêtres"
+
+msgid "Save All Preferences"
+msgstr "Enregistrer toutes les préférences"
+
+msgid "Save to..."
+msgstr "Enregistrer sous..."
+
+msgid "Load from..."
+msgstr "Charger à partir de..."
+
+msgid "Forget All..."
+msgstr "Tout oublier..."
+
+msgid "Open Recent"
+msgstr "Ouvrir un élément récent"
+
+msgid "Quit"
+msgstr "Quitter"
+
+msgid "Properties"
+msgstr "Propriétés"
+
+msgid "Audio on"
+msgstr "Audio ON"
+
+msgid "Audio off"
+msgstr "Audio OFF"
+
+msgid "(Tcl) MISSING CLOSE-BRACKET ']': "
+msgstr "(Tcl) CARACTÈRE MANQUANT ']' : "
+
+msgid "Tcl:"
+msgstr "Tcl:"
+
+msgid "Pd"
+msgstr "Pd"
+
+msgid "DSP"
+msgstr "DSP"
+
+msgid "Audio I/O error"
+msgstr "Erreur entrée/sortie audio"
+
+msgid "Log:"
+msgstr "Log:"
+
+msgid "fatal"
+msgstr "fatal"
+
+msgid "error"
+msgstr "erreur"
+
+msgid "normal"
+msgstr "normal"
+
+msgid "debug"
+msgstr "debug"
+
+msgid "all"
+msgstr "tout"
+
+msgid "New..."
+msgstr "Nouveau..."
+
+msgid "Edit..."
+msgstr "Éditer..."
+
+msgid "Delete"
+msgstr "Supprimer"
+
+#, tcl-format
+msgid "Ignoring '%s': doesn't exist"
+msgstr "'%s' n'existe pas"
+
+#, tcl-format
+msgid "Ignoring '%s': doesn't look like a Pd-file"
+msgstr "'%s' ne semble pas être un fichier Pd"
+
+#~ msgid "Create"
+#~ msgstr "Créer"
+
+#~ msgid "Check"
+#~ msgstr "Vérifier"
+
+#~ msgid "Unable to perform search. Are you online?"
+#~ msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"
+
+#~ msgid "for:"
+#~ msgstr ":"
+
+#~ msgid "Patch Font"
+#~ msgstr "Police du patch"
+
+#~ msgid "Paths"
+#~ msgstr "Chemins..."
+
+#~ msgid "Preferences..."
+#~ msgstr "Préférences..."
+
+#~ msgid "Text Editor"
+#~ msgstr "Éditeur de texte..."
+
+#~ msgid "Send Message..."
+#~ msgstr "Envoyer Message..."

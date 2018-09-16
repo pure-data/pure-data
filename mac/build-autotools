@@ -1,0 +1,40 @@
+#!/bin/sh
+#usage: ./build-autotools 0.38-0 or 0.38-0test4
+
+if test x$1 == x
+then
+   echo usage: ./build-autotools 0.38-0 or 0.38-0test4
+   exit 1
+fi
+
+if test -f pd-$1.src.tar.gz
+then
+   /bin/echo -n
+else
+   echo cant find file pd-$1.src.tar.gz
+   exit 1
+fi
+
+rm -rf pd-$1 Pd-$1.app
+
+tar xzf pd-$1.src.tar.gz
+cd pd-$1
+./autogen.sh
+./configure --enable-jack
+
+if make
+then
+    echo -n
+else
+   echo build failed
+   exit 1
+fi
+
+rm -rf po
+cp -pr ../po/ po/
+
+cd mac
+./osx-app.sh  --wish  /Users/msp/build/Wish-8.5.19.app $1
+mv Pd-$1.app ../../
+cd ../..
+tar czf pd-$1.mac.tar.gz Pd-$1.app

@@ -7,7 +7,7 @@ namespace eval ::dialog_font:: {
     variable whichstretch 1
     variable canvaswindow
     variable sizes {8 10 12 16 24 36}
-    
+
     namespace export pdtk_canvas_dofont
 }
 
@@ -31,6 +31,8 @@ proc ::dialog_font::apply {mytoplevel myfontsize} {
         if {[lsearch [font names] TkMenuFont] >= 0} {
             font configure TkMenuFont -size -$myfontsize
         }
+        .pdwindow.text.internal configure -font "-size -$myfontsize"
+
 # repeat a "pack" command so the font dialog can resize itself
         pack .font.buttonframe -side bottom -fill x -pady 2m
 
@@ -99,7 +101,6 @@ proc ::dialog_font::create_dialog {gfxstub} {
     .font configure -padx 10 -pady 5
     wm group .font .
     wm title .font [_ "Font"]
-#    wm resizable .font 0 0
     wm transient .font $::focused_window
     ::pd_bindings::dialog_bindings .font "font"
     # replace standard bindings to work around the gfxstub stuff and use
@@ -111,17 +112,17 @@ proc ::dialog_font::create_dialog {gfxstub} {
     wm protocol .font WM_DELETE_WINDOW "dialog_font::cancel $gfxstub"
     bind .font <Up> "::dialog_font::arrow_fontchange -1"
     bind .font <Down> "::dialog_font::arrow_fontchange 1"
-    
+
     frame .font.buttonframe
-    pack .font.buttonframe -side bottom -fill x -pady 2m
+    pack .font.buttonframe -side bottom -pady 2m
     button .font.buttonframe.ok -text [_ "OK"] \
         -command "::dialog_font::ok $gfxstub" -default active
-    pack .font.buttonframe.ok -side left -expand 1
-    
+    pack .font.buttonframe.ok -side left -expand 1 -fill x -ipadx 10
+
     labelframe .font.fontsize -text [_ "Font Size"] -padx 5 -pady 4 -borderwidth 1 \
         -width [::msgcat::mcmax "Font Size"] -labelanchor n
     pack .font.fontsize -side left -padx 5
-    
+
     # this is whacky Tcl at its finest, but I couldn't resist...
     foreach size $::dialog_font::sizes {
         radiobutton .font.fontsize.radio$size -value $size -text $size \
@@ -150,8 +151,12 @@ proc ::dialog_font::create_dialog {gfxstub} {
 
     # for focus handling on OSX
     if {$::windowingsystem eq "aqua"} {
-
         # since we show the active focus, disable the highlight outline
         .font.buttonframe.ok config -highlightthickness 0
     }
+
+    position_over_window .font $::focused_window
+
+    # wait a little for creation, then raise so it's on top
+    after 100 raise .font
 }

@@ -20,7 +20,6 @@ t_class *scalar_define_class;
 static void *scalar_define_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_atom a[9];
-    t_glist *gl;
     t_canvas *x, *z = canvas_getcurrent();
     t_symbol *templatesym = &s_float, *asym = gensym("#A");
     t_template *template;
@@ -91,6 +90,7 @@ noscalar:
 
         /* bash the class to "scalar define" -- see comment in x_array,c */
     x->gl_obj.ob_pd = scalar_define_class;
+    outlet_new(&x->gl_obj, &s_pointer);
     return (x);
 }
 
@@ -108,6 +108,19 @@ static void scalar_define_send(t_glist *x, t_symbol *s)
         gpointer_unset(&gp);
     }
     else bug("scalar_define_send");
+}
+
+static void scalar_define_bang(t_glist *x)
+{
+    if (x->gl_list && pd_class(&x->gl_list->g_pd) == scalar_class)
+    {
+        t_gpointer gp;
+        gpointer_init(&gp);
+        gpointer_setglist(&gp, x, (t_scalar *)&x->gl_list->g_pd);
+        outlet_pointer(x->gl_obj.ob_outlet, &gp);
+        gpointer_unset(&gp);
+    }
+    else bug("scalar_define_bang");
 }
 
     /* set to a list, used to restore from scalar_define_save()s below */
@@ -156,7 +169,7 @@ static void *scalarobj_new(t_symbol *s, int argc, t_atom *argv)
         pd_this->pd_newest = scalar_define_new(s, argc, argv);
     else
     {
-        char *str = argv[0].a_w.w_symbol->s_name;
+        const char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "d") || !strcmp(str, "define"))
             pd_this->pd_newest = scalar_define_new(s, argc-1, argv+1);
         else
@@ -179,6 +192,7 @@ void x_scalar_setup(void )
     canvas_add_for_class(scalar_define_class);
     class_addmethod(scalar_define_class, (t_method)scalar_define_send,
         gensym("send"), A_SYMBOL, 0);
+    class_addbang(scalar_define_class, (t_method)scalar_define_bang);
     class_addmethod(scalar_define_class, (t_method)scalar_define_set,
         gensym("set"), A_GIMME, 0);
     class_sethelpsymbol(scalar_define_class, gensym("scalar-object"));

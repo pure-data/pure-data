@@ -1,5 +1,5 @@
 current:
-	echo make pd_linux, pd_nt, pd_irix5, or pd_irix6
+	echo make pd_linux, pd_linux32, pd_nt, pd_darwin
 
 clean: ; rm -f *.pd_linux *.o
 
@@ -60,7 +60,7 @@ LINUXINCLUDE =  -I../../src
 	strip --strip-unneeded $*.l_ia64
 	rm $*.o
 
-# ----------------------- Mac OSX -----------------------
+# ----------------------- macOS -----------------------
 
 pd_darwin: obj1.pd_darwin obj2.pd_darwin \
      obj3.pd_darwin obj4.pd_darwin obj5.pd_darwin dspobj~.pd_darwin

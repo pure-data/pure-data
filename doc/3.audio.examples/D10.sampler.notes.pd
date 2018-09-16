@@ -96,7 +96,7 @@ sample2;
 straight to the line~ we unpack it in order to fool with the amplitude
 field.;
 #X text 109 363 convert amplitude to linear units.;
-#X text 104 392 take the fourth root. This because we want to raies
+#X text 104 392 take the fourth root. This because we want to raise
 the line~'s output to the 4th power afterward. This is an inexpensive
 way to give the rise and decay a more natural sounding evolution than
 just a straight line.;
@@ -149,7 +149,7 @@ just a straight line.;
 #X obj 318 312 pack 0 0 0 0 0;
 #X obj 257 62 t b b b;
 #X text 498 346 This starts the note \, sending to "receives" in the
-playback subptach. The new receive "envelope" is an amplitude control
+playback subpatch. The new receive "envelope" is an amplitude control
 in parallel with the cutoff control. The "sample-number" switches the
 tabread4~ between tables.;
 #X msg 156 44 \; pd dsp 1 \; cutoff 0 5;
@@ -199,7 +199,7 @@ phase \, and sample number in one message;
 the parameters one by one.;
 #X obj 34 511 output~;
 #X text 13 596 This patch take the same principle as the earlier "one-shot
-sampler" \, but allows you to parametrize sample playback. Since we
+sampler" \, but allows you to parameterize sample playback. Since we
 must wait 5 msec before starting the playback \, we store all the parameters
 in "f" objects \, and recall them to construct the new note. Transposition
 is done by altering the amount to play back in the (artificial) ten

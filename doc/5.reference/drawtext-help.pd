@@ -46,3 +46,4 @@ through "set" objects..;
 #X obj 22 130 struct;
 #X text 275 159 updated for Pd version 0.39;
 #X obj 107 8 drawsymbol;
+#X obj 107 40 drawtext;

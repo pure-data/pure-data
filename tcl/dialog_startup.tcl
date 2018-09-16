@@ -5,18 +5,18 @@ package require scrollboxwindow
 
 namespace eval dialog_startup {
     variable defeatrt_flag 0
-    
+
     namespace export pdtk_startup_dialog
 }
 
 ########## pdtk_startup_dialog -- dialog window for startup options #########
 # Create a simple modal window with an entry widget
-# for editing/adding a startup command 
+# for editing/adding a startup command
 # (the next-best-thing to in-place editing)
 proc ::dialog_startup::chooseCommand { prompt initialValue } {
     global cmd
     set cmd $initialValue
-    
+
     toplevel .inputbox -class DialogWindow
     wm title .inputbox $prompt
     wm group .inputbox .
@@ -29,7 +29,7 @@ proc ::dialog_startup::chooseCommand { prompt initialValue } {
     button .inputbox.button -text [_ "OK"] -command { destroy .inputbox } \
         -width [::msgcat::mcmax [_ "OK"]]
 
-    entry .inputbox.entry -width 50 -textvariable cmd 
+    entry .inputbox.entry -width 50 -textvariable cmd
     pack .inputbox.button -side right
     bind .inputbox.entry <KeyPress-Return> { destroy .inputbox }
     bind .inputbox.entry <KeyPress-Escape> { destroy .inputbox }
@@ -63,15 +63,14 @@ proc ::dialog_startup::edit { current_library } {
 proc ::dialog_startup::commit { new_startup } {
     variable defeatrt_button
     set ::startup_libraries $new_startup
-
-    pdsend "pd startup-dialog $defeatrt_button [pdtk_encodedialog $::startup_flags] $::startup_libraries"
+    pdsend "pd startup-dialog $defeatrt_button [pdtk_encodedialog $::startup_flags] [pdtk_encode $::startup_libraries]"
 }
 
 # set up the panel with the info from pd
 proc ::dialog_startup::pdtk_startup_dialog {mytoplevel defeatrt flags} {
     variable defeatrt_button $defeatrt
     if {$flags ne ""} {variable ::startup_flags $flags}
-    
+
     if {[winfo exists $mytoplevel]} {
         wm deiconify $mytoplevel
         raise $mytoplevel
@@ -85,22 +84,24 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
     ::scrollboxwindow::make $mytoplevel $::startup_libraries \
         dialog_startup::add dialog_startup::edit dialog_startup::commit \
         [_ "Pd libraries to load on startup"] \
-        450 320 0
+        450 300 0
+    wm withdraw $mytoplevel
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     frame $mytoplevel.flags
-    pack $mytoplevel.flags -side top -anchor e -fill x -padx 2m 
+    pack $mytoplevel.flags -side top -anchor s -fill x -padx 2m
     label $mytoplevel.flags.entryname -text [_ "Startup flags:"]
-    entry $mytoplevel.flags.entry -textvariable ::startup_flags -width 36
-    pack $mytoplevel.flags.entry $mytoplevel.flags.entryname -side right
+    entry $mytoplevel.flags.entry -textvariable ::startup_flags
+    pack $mytoplevel.flags.entry -side right -expand 1 -fill x
+    pack $mytoplevel.flags.entryname -side right
 
-    frame $mytoplevel.defeatrtframe
-    pack $mytoplevel.defeatrtframe -side top -fill x -padx 2m -pady 2m
     if {$::windowingsystem ne "win32"} {
+        frame $mytoplevel.defeatrtframe
+        pack $mytoplevel.defeatrtframe -side top -anchor s -fill x -padx 2m -pady 5
         checkbutton $mytoplevel.defeatrtframe.defeatrt -anchor w \
             -text [_ "Defeat real-time scheduling"] \
             -variable ::dialog_startup::defeatrt_button
-        pack $mytoplevel.defeatrtframe.defeatrt -side left -expand 1
+        pack $mytoplevel.defeatrtframe.defeatrt
     }
 
     # focus handling on OSX
@@ -128,6 +129,13 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         $mytoplevel.nb.buttonframe.ok config -highlightthickness 0
         $mytoplevel.nb.buttonframe.cancel config -highlightthickness 0
     }
+
+    # set min size based on widget sizing
+    update
+    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo reqheight $mytoplevel]
+
+    position_over_window $mytoplevel .pdwindow
+    raise $mytoplevel
 }
 
 # for focus handling on OSX

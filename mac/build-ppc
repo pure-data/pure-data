@@ -1,0 +1,49 @@
+#!/bin/sh
+#usage: ./build 0.38-0 or 0.38-0test4
+
+if test x$1 == x
+then
+   echo usage: ./build 0.38-0 or 0.38-0test4
+   exit 1
+fi
+
+if test -f pd-$1.src.tar.gz
+then
+   echo -n
+else
+   echo cant find file pd-$1.src.tar.gz
+   exit 1
+fi
+
+if test -d Pd-$1-ppc.app
+then
+    chmod -R 777 Pd-$1-ppc.app
+    rm -rf Pd-$1-ppc.app
+fi
+
+tar xzf stuff/wish-shell.tgz
+mv "Wish Shell.app" Pd-$1-ppc.app
+cd Pd-$1-ppc.app/Contents
+rm -f Info.plist
+cp -p  ../../stuff/Info.plist .
+cd MacOS
+mv "Wish Shell" Pd
+cd ..
+cd Resources
+rm -f Wish.icns
+cp -p ../../../stuff/pd.icns ../../../stuff/pd-file.icns .
+mv "Wish Shell.rsrc" Pd.rsrc
+tar xzf ../../../pd-$1.src.tar.gz
+mv pd-$1/* .
+rmdir pd-$1
+cd src
+mkdir ../obj ../bin
+JACK=true make -f makefile.mac "ARCH=-arch ppc" "EXTRAARCH=-arch ppc" \
+    EXTERNTYPE=d_ppc
+cd ..
+ln -s tcl Scripts
+cd ../../..
+pwd
+chmod -R u+w Pd-$1-ppc.app
+touch Pd-$1-ppc.app
+tar czf pd-$1-ppc.mac.tar.gz Pd-$1-ppc.app

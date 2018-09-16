@@ -305,8 +305,8 @@ If you want to get the behavior in an up-to-date patch \, you can use
 #X connect 8 0 9 0;
 #X connect 9 0 1 0;
 #X restore 296 449 pd old-behavior;
-#X text 76 406 COMPATIBILIY NOTE: as of Pd 0.46 \, you can pass through
-numbers ouside the object's range. You can get the old behavior back
+#X text 76 406 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
+numbers outside the object's range. You can get the old behavior back
 this way:, f 48;
 #X connect 1 0 6 0;
 #X connect 2 0 20 0;

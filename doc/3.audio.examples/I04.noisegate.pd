@@ -314,7 +314,7 @@ other values) and the patch will try to clean the background noise
 out of a signal.;
 #X text 67 149 For this demonstration \, you control the amplitudes
 of a looping sample and a filtered noise source. Normally you'd hit
-"calculate noise mask" with only hte noise turned on \, then turn both
+"calculate noise mask" with only the noise turned on \, then turn both
 the noise and the sampler on \, and also "masking" \, to see if the
 patch can clean the noise out of the signal. Open the "fft-analysis"
 window to see the algorithm \, or the "insample" window to change samples

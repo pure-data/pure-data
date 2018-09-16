@@ -80,6 +80,7 @@ proc pdtk_textwindow_send {name} {
                 pdsend [concat $name addline $lin]
             }
         }
+        pdsend [concat $name notify]
     }
     pdtk_textwindow_setdirty $name 0
 }

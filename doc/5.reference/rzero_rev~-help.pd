@@ -73,7 +73,7 @@ is that of "rzero" reversed in time.;
 #X text 6 313 The transfer function is H(Z) = -a + Z^-1.;
 #X text 5 332 (Pd also provides a suite of user-friendly filters. This
 and other raw filters are provided for situations which the user-friendly
-ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
 for an introduction to the necessary theory.);
 #X connect 0 0 29 1;
 #X connect 1 0 29 0;

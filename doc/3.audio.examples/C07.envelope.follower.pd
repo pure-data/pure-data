@@ -1,6 +1,6 @@
 #N canvas 66 7 617 909 12;
 #X text 164 5 ENVELOPE FOLLOWERS;
-#X text 10 25 The env~ object reports ths RMS signal level over the
+#X text 10 25 The env~ object reports the RMS signal level over the
 last 256 samples (by default) or any other power of 2 that's at least
 twice the block size. The analysis is done in an overlapped fashion
 so that results appear every N/2 points if N is the analysis window
@@ -59,7 +59,7 @@ and periods of silence. (There are fancier attack detectors out there
 #X text 185 724 reset the timer;
 #X text 202 846 RMS isn't low enough.;
 #X text 120 744 If we're not in rest \, and the RMS is low \,;
-#X text 143 761 check elapsed time sinse RMS last wasn't low.;
+#X text 143 761 check elapsed time since RMS last wasn't low.;
 #X text 122 802 If more than 1 second \, report a rest.;
 #X text 170 828 If we're at rest \, pop out of it when;
 #X text 11 201 Both detectors are state machines with two states \,

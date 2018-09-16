@@ -9,8 +9,11 @@ package require wheredoesthisgo
 # http://www.tkdocs.com/tutorial/menus.html
 # http://wiki.tcl.tk/12987
 
-set ::tk::mac::CGAntialiasLimit 0 ;# min line thickness to anti-alias (default: 3)
-set ::tk::mac::antialiasedtext  1 ;# enable anti-aliased text
+# The following lines caused spacing problems - non-integer font widths, with
+# no apparent way even to detect them (in TCL 8.5 at least).  Perhaps revisit
+# this later.
+# set ::tk::mac::CGAntialiasLimit 0 ;# min line thickness to anti-alias (default: 3)
+# set ::tk::mac::antialiasedtext  1 ;# enable anti-aliased text
 
 # kAEOpenDocuments
 proc ::tk::mac::OpenDocument {args} {
@@ -42,7 +45,7 @@ proc tkAboutDialog {} {
 # kAEShowPreferences
 proc ::tk::mac::ShowPreferences {args} {
     ::pdwindow::verbose 1 "::tk::mac::ShowPreferences $args ++++++++++++\n"
-    pdsend "pd start-path-dialog"
+    pdsend "pd audio-properties"
 }
 
 # kAEQuitApplication
@@ -54,7 +57,7 @@ proc ::tk::mac::Quit {args} {
 # is provided by default and cannot disabled or removed 
 proc ::tk::mac::ShowHelp {args} {
     ::pdwindow::verbose 1 "::tk::mac::ShowHelp $args ++++++++++++\n"
-    ::pd_menucommands::menu_helpbrowser
+    ::pd_menucommands::menu_manual
 }
 
 # these I gleaned by reading the source (tkMacOSXHLEvents.c)
@@ -68,4 +71,8 @@ proc ::tk::mac::OpenApplication {args} {
 
 proc ::tk::mac::ReopenApplication {args} {
     ::pdwindow::verbose 1 "::tk::mac::ReopenApplication $args ++++++++++\n"
+    # raise pdwindow if it's hidden and there are no other windows visible
+    if {[winfo exists .pdwindow] && ![winfo viewable .pdwindow] && [llength [wm stackorder .]] == 0} {
+        ::pd_menucommands::menu_raise_pdwindow
+    }
 }

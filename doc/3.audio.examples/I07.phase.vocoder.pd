@@ -464,7 +464,7 @@ and window-msec (analysis window size in seconds and msec).;
 #X connect 18 0 22 0;
 #X connect 19 0 18 0;
 #X connect 20 0 21 0;
-#X connect 20 0 19 0;
+#X connect 20 0 22 0;
 #X connect 21 0 23 0;
 #X connect 25 0 26 0;
 #X connect 26 0 27 0;
@@ -511,7 +511,7 @@ and window-msec (analysis window size in seconds and msec).;
 #X obj 345 407 s auto;
 #X text 23 35 This patch takes a sound \, analyzes windows in it both
 for channel magnitude and for phase precession in each channel (compared
-to another operlapping window). The real-time output recreates the
+to another overlapping window). The real-time output recreates the
 same magnitudes and phase precession \, although the phases themselves
 are in general different. You can control either the location or its
 motion (setting location stops motion \, while setting a non-zero motion

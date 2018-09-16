@@ -39,13 +39,13 @@ rightmost ones are sample-rate dependent), f 35;
 in milliseconds specified by its right inlet or its creation argument.
 Sending a bang to a delay which is already set will reschedule its
 output \, replacing any previous setting.;
-#X text 67 112 Delays are in millisconds by default \, but you can
+#X text 67 112 Delays are in milliseconds by default \, but you can
 set the time units in the creation arguments or with a "tempo" message.
 , f 63;
 #X text 142 366 If the tempo is changed while the delay is in progress
 \, the change only applies to the remaining fraction of the delay.
 ;
-#X text 150 232 Set tempo. Units can be miliseconds (msec for short)
+#X text 150 232 Set tempo. Units can be milliseconds (msec for short)
 \, seconds (sec) \, minutes (min) or samples (samp). In this example
 the unit is set to 1/2 millisecond so that '1000' gives a delay of
 500 msec (1/2 second). Equivalently you can say "tempo 2 permsec" or

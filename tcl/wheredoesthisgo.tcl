@@ -6,19 +6,22 @@ package provide wheredoesthisgo 0.1
 proc open_file {filename} {
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
-    if {
-        [file exists $filename]
-        && [regexp -nocase -- "\.(pd|pat|mxt)$" $filename]
-    } then {
+    if { ! [file exists $filename]} {
+        ::pdwindow::post [format [_ "Ignoring '%s': doesn't exist"] $filename]
+        # remove from recent files
+        ::pd_guiprefs::update_recentfiles $filename true
+        return
+    }
+    if {[regexp -nocase -- "\.(pd|pat|mxt)$" $filename]} {
         ::pdtk_canvas::started_loading_file [format "%s/%s" $basename $filename]
         pdsend "pd open [enquote_path $basename] [enquote_path $directory]"
         # now this is done in pd_guiprefs
         ::pd_guiprefs::update_recentfiles $filename
-    } {
+    } else {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
     }
 }
-    
+
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
 
@@ -50,6 +53,26 @@ proc pdtk_savepanel {target localdir} {
 }
 
 # ------------------------------------------------------------------------------
+# path helpers
+
+# adds to the sys_searchpath user search paths directly
+proc add_to_searchpaths {path {save true}} {
+    # try not to add duplicates
+    foreach searchpath $::sys_searchpath {
+        set dir [string trimright $searchpath [file separator]]
+        if {"$dir" eq "$path"} {
+            return
+        }
+    }
+    # tell pd about the new path
+    if {$save} {set save 1} else {set save 0}
+    pdsend "pd add-to-path [pdtk_encodedialog ${path}] $save"
+    # append to search paths as this won't be
+    # updated from the pd core until a restart
+    lappend ::sys_searchpath "$path"
+}
+
+# ------------------------------------------------------------------------------
 # window info (name, path, parents, children, etc.)
 
 proc lookup_windowname {mytoplevel} {
@@ -63,6 +86,21 @@ proc lookup_windowname {mytoplevel} {
 
 proc tkcanvas_name {mytoplevel} {
     return "$mytoplevel.c"
+}
+
+# ------------------------------------------------------------------------------
+# window helpers
+
+# position one window over another
+proc position_over_window {child parent} {
+    if {![winfo exists $parent]} {return}
+    # use internal tk::PlaceWindow http://wiki.tcl.tk/534
+    # so fallback if not available
+    if {[catch {tk::PlaceWindow $child widget $parent}]} {
+        set x [expr [winfo x $parent] + ([winfo width $parent] / 2) - ([winfo reqwidth $child] / 2)]
+        set y [expr [winfo y $parent] + ([winfo height $parent] / 2) - ([winfo reqheight $child] / 2)]
+        wm geometry $child "+${x}+${y}"
+    }
 }
 
 # ------------------------------------------------------------------------------

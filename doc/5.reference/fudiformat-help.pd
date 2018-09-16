@@ -1,0 +1,38 @@
+#N canvas 51 189 685 507 10;
+#X text 36 21 fudiformat - convert lists to FUDI packets, f 61;
+#X msg 72 127 1 2 3;
+#X obj 180 312 fudiparse;
+#X obj 72 311 print packet;
+#X msg 342 389 disconnect;
+#X obj 334 416 netsend -u -b;
+#X msg 343 365 connect localhost 5000;
+#X obj 335 315 list prepend send;
+#X obj 335 340 list trim;
+#X obj 180 337 print reassembled;
+#X text 437 389 don't send;
+#X text 530 364 send as UDP;
+#X text 54 454 see also:;
+#X obj 127 455 fudiparse;
+#X obj 72 278 fudiformat;
+#X msg 80 154 foo 4 5 weasel 6 7 rat;
+#X text 125 128 FUDI messages with numbers and symbols.;
+#X text 29 55 fudiformat makes FUDI messages suitable for sending over
+the network via netsend (in UDP mode). Incoming messages are output
+as FUDI messages \, byte by byte., f 61;
+#X obj 439 250 fudiformat -u;
+#X obj 127 475 oscformat;
+#X text 281 193 The '-u' creation argument switches to "UDP" mode \,
+omitting the packet separator. This saves some two bytes \, but only
+works when sending single FUDI messages over UDP. It doesn't work with
+TCP/IP (however \, you can use the default format even with UDP transport).
+;
+#X connect 1 0 14 0;
+#X connect 2 0 9 0;
+#X connect 4 0 5 0;
+#X connect 6 0 5 0;
+#X connect 7 0 8 0;
+#X connect 8 0 5 0;
+#X connect 14 0 3 0;
+#X connect 14 0 7 0;
+#X connect 14 0 2 0;
+#X connect 15 0 14 0;

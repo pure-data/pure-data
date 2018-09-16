@@ -29,7 +29,7 @@ right inlet:, f 34;
 #X floatatom 231 310 0 0 0 0 - - -;
 #X floatatom 140 309 0 0 0 0 - - -;
 #X floatatom 376 315 0 0 0 0 - - -;
-#X floatatom 65 141 0 0 0 0 - - -;
+#X floatatom 64 141 0 0 0 0 - - -;
 #X floatatom 136 142 0 0 0 0 - - -;
 #X obj 136 170 t b f;
 #X text 51 115 set left and right inputs here;
@@ -46,7 +46,7 @@ right inlet:, f 34;
 #X obj 332 287 max;
 #X obj 376 288 min;
 #X text 36 47 The arithmetic binary operators perform the 4 arithmetic
-funcitons (+ \, etc) \, raise a number to a power (pow) \, or output
+functions (+ \, etc) \, raise a number to a power (pow) \, or output
 the minimum or maximum of two numbers (min \, max).;
 #X connect 4 0 6 0;
 #X connect 6 0 5 0;

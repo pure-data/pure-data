@@ -1,0 +1,39 @@
+#N canvas 6 49 673 427 10;
+#X obj 171 286 fudiparse;
+#X text 52 373 see also:;
+#X obj 171 309 print parse-output;
+#X obj 419 231 netreceive -u -b;
+#X msg 419 176 listen 5000;
+#X msg 431 204 listen 0;
+#X text 520 203 stop listening;
+#X msg 57 181 1 2 3 foo 5;
+#X text 51 156 numbers and symbols;
+#X obj 57 286 print packet;
+#X text 416 152 packets from network;
+#X text 558 231 UDP packets \, binary output, f 13;
+#X text 80 11 fudiparse - parse FUDI packets into Pd messages, f 67
+;
+#X obj 57 206 fudiformat;
+#X obj 222 206 fudiformat -u;
+#X text 220 159 without packet separator;
+#X msg 222 181 flab -1 1.1;
+#X obj 140 373 fudiformat;
+#X obj 224 373 oscparse;
+#X obj 222 226 t a a;
+#X obj 57 226 t a a;
+#X text 45 40 fudiparse takes incoming lists of numbers \, interpreting
+them as the bytes in a FUDI message (as received when sending Pd-messages
+via [netreceive -b]).;
+#X text 521 176 listen on port 5000;
+#X connect 0 0 2 0;
+#X connect 3 0 0 0;
+#X connect 4 0 3 0;
+#X connect 5 0 3 0;
+#X connect 7 0 13 0;
+#X connect 13 0 20 0;
+#X connect 14 0 19 0;
+#X connect 16 0 14 0;
+#X connect 19 0 0 0;
+#X connect 19 1 9 0;
+#X connect 20 0 0 0;
+#X connect 20 1 9 0;

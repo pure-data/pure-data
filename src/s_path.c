@@ -198,7 +198,7 @@ t_namelist *namelist_append_files(t_namelist *listwas, const char *s)
 {
     const char *npos;
     char temp[MAXPDSTRING];
-    t_namelist *nl = listwas, *rtn = listwas;
+    t_namelist *nl = listwas;
 
     npos = s;
     do
@@ -222,10 +222,10 @@ void namelist_free(t_namelist *listwas)
     }
 }
 
-char *namelist_get(t_namelist *namelist, int n)
+const char *namelist_get(const t_namelist *namelist, int n)
 {
     int i;
-    t_namelist *nl;
+    const t_namelist *nl;
     for (i = 0, nl = namelist; i < n && nl; i++, nl = nl->nl_next)
         ;
     return (nl ? nl->nl_string : 0);
@@ -335,7 +335,7 @@ int sys_open_absolute(const char *name, const char* ext,
         int dirlen;
         if (!z)
             return (0);
-        dirlen = z - name;
+        dirlen = (int)(z - name);
         if (dirlen > MAXPDSTRING-1)
             dirlen = MAXPDSTRING-1;
         strncpy(dirbuf, name, dirlen);
@@ -379,7 +379,11 @@ static int do_open_via_path(const char *dir, const char *name,
         if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
             dirresult, nameresult, size, bin)) >= 0)
                 return (fd);
-
+        /* next go through the temp paths from the commandline */
+    for (nl = STUFF->st_temppath; nl; nl = nl->nl_next)
+        if ((fd = sys_trytoopenone(nl->nl_string, name, ext,
+            dirresult, nameresult, size, bin)) >= 0)
+                return (fd);
         /* next look in built-in paths like "extra" */
     if (sys_usestdpath)
         for (nl = STUFF->st_staticpath; nl; nl = nl->nl_next)
@@ -488,7 +492,6 @@ int sys_fclose(FILE *stream)
     return fclose(stream);
 }
 
-
     /* Open a help file using the help search path.  We expect the ".pd"
     suffix here, even though we have to tear it back off for one of the
     search attempts. */
@@ -524,95 +527,7 @@ gotone:
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
 
-
-/* Startup file reading for linux and __APPLE__.  As of 0.38 this will be
-deprecated in favor of the "settings" mechanism */
-
 int sys_argparse(int argc, char **argv);
-
-#ifndef _WIN32
-
-#define STARTUPNAME ".pdrc"
-#define NUMARGS 1000
-
-int sys_rcfile(void)
-{
-    FILE* file;
-    int i;
-    int k;
-    int rcargc;
-    char* rcargv[NUMARGS];
-    char* buffer;
-    char  fname[MAXPDSTRING], buf[1000], *home = getenv("HOME");
-    int retval = 1; /* that's what we will return at the end; for now, let's think it'll be an error */
-
-    /* initialize rc-arg-array so we can safely clean up at the end */
-    for (i = 1; i < NUMARGS-1; i++)
-      rcargv[i]=0;
-
-
-    /* parse a startup file */
-
-    *fname = '\0';
-
-    strncat(fname, home? home : ".", MAXPDSTRING-10);
-    strcat(fname, "/");
-
-    strcat(fname, STARTUPNAME);
-
-    if (!(file = fopen(fname, "r")))
-        return 1;
-
-    post("reading startup file: %s", fname);
-
-    rcargv[0] = ".";    /* this no longer matters to sys_argparse() */
-
-    for (i = 1; i < NUMARGS-1; i++)
-    {
-        if (fscanf(file, "%998s", buf) < 0)
-            break;
-        buf[999] = 0;
-        if (!(rcargv[i] = malloc(strlen(buf) + 1)))
-            goto cleanup;
-        strcpy(rcargv[i], buf);
-    }
-    if (i >= NUMARGS-1)
-        fprintf(stderr, "startup file too long; extra args dropped\n");
-    rcargv[i] = 0;
-
-    rcargc = i;
-
-    /* parse the options */
-
-    if (sys_verbose)
-    {
-        if (rcargc)
-        {
-            post("startup args from RC file:");
-            for (i = 1; i < rcargc; i++)
-                post("%s", rcargv[i]);
-        }
-        else post("no RC file arguments found");
-    }
-    if (sys_argparse(rcargc-1, rcargv+1))
-    {
-        error("error parsing RC arguments");
-        goto cleanup;
-    }
-
-    retval=0; /* we made it without an error */
-
-
- cleanup: /* prevent memleak */
-    fclose(file);
-
-    for (i = 1; i < NUMARGS-1; i++)
-      if(rcargv[i])free(rcargv[i]);
-
-    return(retval);
-}
-#endif /* _WIN32 */
-
 void sys_doflags( void)
 {
     int i, beginstring = 0, state = 0, len;
@@ -620,7 +535,7 @@ void sys_doflags( void)
     char *rcargv[MAXPDSTRING];
     if (!sys_flags)
         sys_flags = &s_;
-    len = strlen(sys_flags->s_name);
+    len = (int)strlen(sys_flags->s_name);
     if (len > MAXPDSTRING)
     {
         error("flags: %s: too long", sys_flags->s_name);
@@ -662,7 +577,8 @@ void sys_doflags( void)
     dollars, and semis down here. */
 t_symbol *sys_decodedialog(t_symbol *s)
 {
-    char buf[MAXPDSTRING], *sp = s->s_name;
+    char buf[MAXPDSTRING];
+    const char *sp = s->s_name;
     int i;
     if (*sp != '+')
         bug("sys_decodedialog: %s", sp);
@@ -700,7 +616,7 @@ void sys_set_searchpath( void)
     sys_gui("set ::tmp_path {}\n");
     for (nl = STUFF->st_searchpath, i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
-    sys_gui("set ::STUFF->st_searchpath $::tmp_path\n");
+    sys_gui("set ::sys_searchpath $::tmp_path\n");
 }
 
     /* send the hard-coded search path to pd-gui */
@@ -731,14 +647,28 @@ void glob_path_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_searchpath);
     STUFF->st_searchpath = 0;
-    sys_usestdpath = atom_getintarg(0, argc, argv);
-    sys_verbose = atom_getintarg(1, argc, argv);
+    sys_usestdpath = atom_getfloatarg(0, argc, argv);
+    sys_verbose = atom_getfloatarg(1, argc, argv);
     for (i = 0; i < argc-2; i++)
     {
         t_symbol *s = sys_decodedialog(atom_getsymbolarg(i+2, argc, argv));
         if (*s->s_name)
             STUFF->st_searchpath =
                 namelist_append_files(STUFF->st_searchpath, s->s_name);
+    }
+}
+
+    /* add one item to search path (intended for use by Deken plugin).
+    if "saveit" is set, also save all settings.  */
+void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
+{
+    t_symbol *s = sys_decodedialog(path);
+    if (*s->s_name)
+    {
+        STUFF->st_searchpath =
+            namelist_append_files(STUFF->st_searchpath, s->s_name);
+        if (saveit != 0)
+            sys_savepreferences(0);
     }
 }
 
@@ -772,7 +702,7 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
     int i;
     namelist_free(STUFF->st_externlist);
     STUFF->st_externlist = 0;
-    sys_defeatrt = atom_getintarg(0, argc, argv);
+    sys_defeatrt = atom_getfloatarg(0, argc, argv);
     sys_flags = sys_decodedialog(atom_getsymbolarg(1, argc, argv));
     for (i = 0; i < argc-2; i++)
     {

@@ -69,7 +69,7 @@ the filter coefficient. The filter is unstable if/when |a[n]|>1.;
 #X text 136 512 etc.: user-friendly filters;
 #X text 8 331 (Pd also provides a suite of user-friendly filters. This
 and other raw filters are provided for situations which the user-friendly
-ones can't handle. See Chapter 8 of http://crca.ucsd.edu/~msp/techniques
+ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
 for an introduction to the necessary theory.);
 #X text 73 252 y[n] = x[n] + a[n] * y[n-1];
 #X text 413 511 updated for Pd version 0.42;

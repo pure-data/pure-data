@@ -42,8 +42,8 @@
 #X obj 158 343 metro 193;
 #X text 4 476 If the amplitudes sum to zero (with negative ones to
 balance positive ones) \, the slope of each linear segment becomes
-zero. Otherrwise \, the segments have just enough slope to make up
-for the three jumps ane get to the same starting value after each cycle..
+zero. Otherwise \, the segments have just enough slope to make up
+for the three jumps and get to the same starting value after each cycle.
 ;
 #X text 4 408 Here we combine three sawtooth waves with controllable
 relative phases and amplitudes (in percent \, between -100 and 100.)
