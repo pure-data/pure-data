@@ -1102,6 +1102,34 @@ static OSStatus AudioDevicePropertyGenericListenerProc( AudioDeviceID inDevice, 
     return osErr;
 }
 
+/* this is called when a device unexpectedly disappears, ie. is unplugged while streaming */
+static OSStatus AudioDevicePropertyIsAliveListenerProc( AudioObjectID inDevice, UInt32 inNumberAddresses, const AudioObjectPropertyAddress inAddresses[], void* inClientData )
+{
+    OSStatus osErr = noErr;
+    PaMacCoreStream *stream = (PaMacCoreStream*)inClientData;
+    Boolean isInput = (inDevice == stream->inputDevice);
+
+    // Make sure the callback is operating on a stream that is still valid!
+    assert( stream->streamRepresentation.magic == PA_STREAM_MAGIC );
+
+    AudioObjectPropertyAddress currentAddress = inAddresses[0];
+    if( currentAddress.mSelector == kAudioDevicePropertyDeviceIsAlive )
+    {
+        UInt32 alive = 1;
+        osErr = QueryUInt32DeviceProperty( inDevice, isInput, kAudioDevicePropertyDeviceIsAlive, &alive );
+        if( osErr == noErr && alive == 0 )
+        {
+            // abort the stream so the audio unit(s) are cleaned up,
+            // inDevice may no longer be valid & retrieving kAudioDevicePropertyDeviceName
+            // doesn't seem to work here, too bad we can't print the device name
+            DBUG( ( "WARNING: Device no longer alive, aborting Stream.\n" ) );
+            AbortStream(stream);
+        }
+    }
+
+    return osErr;
+}
+
 /* ================================================================================= */
 /*
  * Setup listeners in case device properties change during the run. */
@@ -1126,6 +1154,15 @@ static OSStatus SetupDevicePropertyListeners( PaMacCoreStream *stream, AudioDevi
                                    AudioDevicePropertyGenericListenerProc, stream );
     AudioDeviceAddPropertyListener( deviceID, 0, isInput, kAudioDevicePropertySafetyOffset, 
                                    AudioDevicePropertyGenericListenerProc, stream );
+
+    // listener for detecting when a device is removed
+    const AudioObjectPropertyAddress aliveAddress = {
+      kAudioDevicePropertyDeviceIsAlive,
+      kAudioObjectPropertyScopeGlobal,
+      kAudioObjectPropertyElementMaster
+    };
+    AudioObjectAddPropertyListener( deviceID, &aliveAddress,
+                                  AudioDevicePropertyIsAliveListenerProc, stream);
     
     return osErr;
 }
@@ -1141,6 +1178,12 @@ static void CleanupDevicePropertyListeners( PaMacCoreStream *stream, AudioDevice
                                    AudioDevicePropertyGenericListenerProc );
     AudioDeviceRemovePropertyListener( deviceID, 0, isInput, kAudioDevicePropertySafetyOffset, 
                                    AudioDevicePropertyGenericListenerProc );
+    const AudioObjectPropertyAddress aliveAddress = {
+      kAudioDevicePropertyDeviceIsAlive,
+      kAudioObjectPropertyScopeGlobal,
+      kAudioObjectPropertyElementMaster
+    };
+    AudioObjectRemovePropertyListener( deviceID, &aliveAddress, AudioDevicePropertyIsAliveListenerProc, stream );
 }
 
 /* ================================================================================= */
@@ -2264,13 +2307,9 @@ static OSStatus AudioIOProc( void *inRefCon,
                     &stream->inputAudioBufferList );
       /* FEEDBACK: I'm not sure what to do when this call fails. There's nothing in the PA API to
        * do about failures in the callback system. */
+      /* UPDATE: commented assert so err == -50 on unexpected device unplug can
+         now be caught by DeviceIsAlive property listener */
       //assert( !err );
-      if( err == -50 )
-      {
-        /* error -50 is thrown if the device is unplugged */
-        callbackResult = paAbort;
-        goto error;
-      }
 
       PaUtil_SetInputFrameCount( &(stream->bufferProcessor), frames );
       PaUtil_SetInterleavedInputChannels( &(stream->bufferProcessor),
@@ -2470,13 +2509,9 @@ static OSStatus AudioIOProc( void *inRefCon,
       } while( err == -10874 && inNumberFrames > 1 );
       /* FEEDBACK: I'm not sure what to do when this call fails */
       ERR( err );
+      /* UPDATE: commented assert so err == -50 on unexpected device unplug can
+         now be caught by DeviceIsAlive property listener */
       //assert( !err );
-      if( err == -50 )
-      {
-        /* error -50 is thrown if the device is unplugged */
-        callbackResult = paAbort;
-        goto error;
-      }
 
       if( stream->inputSRConverter || stream->outputUnit )
       {
