@@ -144,6 +144,9 @@ proc ::pd_guiprefs::init {} {
             # asked for by holding the Option/Alt button when quitting via the File
             # menu or with the Cmd+Q key binding.
             exec defaults write $::pd_guiprefs::domain NSQuitAlwaysKeepsWindows -bool false
+
+            # Disable Character Accent Selector popup so key repeat works for all keys.
+            exec defaults write $::pd_guiprefs::domain ApplePressAndHoldEnabled -bool false
         }
         "registry" {
             # windows uses registry

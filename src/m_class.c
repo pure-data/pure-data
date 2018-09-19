@@ -52,12 +52,13 @@ void g_canvas_newpdinstance( void);
 void g_canvas_freepdinstance( void);
 void d_ugen_newpdinstance( void);
 void d_ugen_freepdinstance( void);
+void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv);
 
 void s_stuff_newpdinstance( void)
 {
     STUFF = getbytes(sizeof(*STUFF));
     STUFF->st_externlist = STUFF->st_searchpath =
-        STUFF->st_staticpath = STUFF->st_helppath = 0;
+        STUFF->st_staticpath = STUFF->st_helppath = STUFF->st_temppath = 0;
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
 }
 
@@ -71,7 +72,8 @@ static t_pdinstance *pdinstance_init(t_pdinstance *x)
     int i;
     x->pd_systime = 0;
     x->pd_clock_setlist = 0;
-     x->pd_canvaslist = 0;
+    x->pd_canvaslist = 0;
+    x->pd_templatelist = 0;
     x->pd_symhash = getbytes(SYMTABHASHSIZE * sizeof(*x->pd_symhash));
     for (i = 0; i < SYMTABHASHSIZE; i++)
         x->pd_symhash[i] = 0;
@@ -205,17 +207,17 @@ EXTERN void pdinstance_free(t_pdinstance *x)
     canvas_suspend_dsp();
     while (x->pd_canvaslist)
         pd_free((t_pd *)x->pd_canvaslist);
+    while (x->pd_templatelist)
+        pd_free((t_pd *)x->pd_templatelist);
     for (c = class_list; c; c = c->c_next)
     {
+        freebytes(c->c_methods[instanceno],
+            c->c_nmethod * sizeof(*c->c_methods));
+        for (i = instanceno; i < pd_ninstances-1; i++)
+            c->c_methods[i] = c->c_methods[i+1];
         c->c_methods = (t_methodentry **)t_resizebytes(c->c_methods,
             pd_ninstances * sizeof(*c->c_methods),
-            (pd_ninstances + 1) * sizeof(*c->c_methods));
-        c->c_methods[pd_ninstances] = t_getbytes(0);
-        for (i = 0; i < c->c_nmethod; i++)
-            class_addmethodtolist(c, &c->c_methods[pd_ninstances], i,
-                c->c_methods[0][i].me_fun,
-                dogensym(c->c_methods[0][i].me_name->s_name, 0, x),
-                    c->c_methods[0][i].me_arg, x);
+            (pd_ninstances - 1) * sizeof(*c->c_methods));
     }
     for (i =0; i < SYMTABHASHSIZE; i++)
     {
@@ -256,6 +258,30 @@ EXTERN void pdinstance_free(t_pdinstance *x)
 }
 
 #endif /* PDINSTANCE */
+
+/* this bootstraps the class management system (pd_objectmaker, pd_canvasmaker)
+ * it has been moved from the bottom of the file up here, before the class_new() undefine
+ */
+void mess_init(void)
+{
+    if (pd_objectmaker)
+        return;
+#ifdef PDINSTANCE
+    pd_this = &pd_maininstance;
+#endif
+    s_inter_newpdinstance();
+    sys_lock();
+    pd_globallock();
+    pdinstance_init(&pd_maininstance);
+    class_extern_dir = &s_;
+    pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
+        CLASS_DEFAULT, A_NULL);
+    class_addanything(pd_objectmaker, (t_method)new_anything);
+    pd_globalunlock();
+    sys_unlock();
+}
 
 static void pd_defaultanything(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -430,8 +456,8 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
                 /* if we're loading an extern it might have been invoked by a
                 longer file name; in this case, make this an admissible name
                 too. */
-            char *loadstring = class_loadsym->s_name,
-                l1 = strlen(s->s_name), l2 = strlen(loadstring);
+            const char *loadstring = class_loadsym->s_name;
+            size_t l1 = strlen(s->s_name), l2 = strlen(loadstring);
             if (l2 > l1 && !strcmp(s->s_name, loadstring + (l2 - l1)))
                 class_addmethod(pd_objectmaker, (t_method)newmethod,
                     class_loadsym,
@@ -512,7 +538,8 @@ void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
     t_methodentry *m;
     t_atomtype argtype = arg1;
     int nargs, i;
-
+    if(!c)
+        return;
     va_start(ap, arg1);
         /* "signal" method specifies that we take audio signals but
         that we don't want automatic float to signal conversion.  This
@@ -588,56 +615,78 @@ done:
     /* Instead of these, see the "class_addfloat", etc.,  macros in m_pd.h */
 void class_addbang(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_bangmethod = (t_bangmethod)fn;
 }
 
 void class_addpointer(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_pointermethod = (t_pointermethod)fn;
 }
 
 void class_doaddfloat(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_floatmethod = (t_floatmethod)fn;
 }
 
 void class_addsymbol(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_symbolmethod = (t_symbolmethod)fn;
 }
 
 void class_addlist(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_listmethod = (t_listmethod)fn;
 }
 
 void class_addanything(t_class *c, t_method fn)
 {
+    if(!c)
+        return;
     c->c_anymethod = (t_anymethod)fn;
 }
 
 void class_setwidget(t_class *c, const t_widgetbehavior *w)
 {
+    if(!c)
+        return;
     c->c_wb = w;
 }
 
 void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *pw)
 {
+    if(!c)
+        return;
     c->c_pwb = pw;
 }
 
-char *class_getname(t_class *c)
+const char *class_getname(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_name->s_name);
 }
 
-char *class_gethelpname(t_class *c)
+const char *class_gethelpname(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_helpname->s_name);
 }
 
 void class_sethelpsymbol(t_class *c, t_symbol *s)
 {
+    if(!c)
+        return;
     c->c_helpname = s;
 }
 
@@ -648,11 +697,15 @@ const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x)
 
 void class_setdrawcommand(t_class *c)
 {
+    if(!c)
+        return;
     c->c_drawcommand = 1;
 }
 
-int class_isdrawcommand(t_class *c)
+int class_isdrawcommand(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_drawcommand);
 }
 
@@ -668,6 +721,8 @@ static void pd_floatforsignal(t_pd *x, t_float f)
 
 void class_domainsignalin(t_class *c, int onset)
 {
+    if(!c)
+        return;
     if (onset <= 0) onset = -1;
     else
     {
@@ -683,8 +738,10 @@ void class_set_extern_dir(t_symbol *s)
     class_extern_dir = s;
 }
 
-char *class_gethelpdir(t_class *c)
+const char *class_gethelpdir(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_externdir->s_name);
 }
 
@@ -695,21 +752,29 @@ static void class_nosavefn(t_gobj *z, t_binbuf *b)
 
 void class_setsavefn(t_class *c, t_savefn f)
 {
+    if(!c)
+        return;
     c->c_savefn = f;
 }
 
-t_savefn class_getsavefn(t_class *c)
+t_savefn class_getsavefn(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_savefn);
 }
 
 void class_setpropertiesfn(t_class *c, t_propertiesfn f)
 {
+    if(!c)
+        return;
     c->c_propertiesfn = f;
 }
 
-t_propertiesfn class_getpropertiesfn(t_class *c)
+t_propertiesfn class_getpropertiesfn(const t_class *c)
 {
+    if(!c)
+        return 0;
     return (c->c_propertiesfn);
 }
 
@@ -718,6 +783,7 @@ t_propertiesfn class_getpropertiesfn(t_class *c)
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance)
 {
+    char *sym = 0;
     t_symbol **sym1, *sym2;
     unsigned int hash = 5381;
     int length = 0;
@@ -737,10 +803,11 @@ static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     if (oldsym)
         sym2 = oldsym;
     else sym2 = (t_symbol *)t_getbytes(sizeof(*sym2));
-    sym2->s_name = t_getbytes(length+1);
+    sym = t_getbytes(length+1);
     sym2->s_next = 0;
     sym2->s_thing = 0;
-    strcpy(sym2->s_name, s);
+    strcpy(sym, s);
+    sym2->s_name = sym;
     *sym1 = sym2;
     return (sym2);
 }
@@ -752,7 +819,8 @@ t_symbol *gensym(const char *s)
 
 static t_symbol *addfileextent(t_symbol *s)
 {
-    char namebuf[MAXPDSTRING], *str = s->s_name;
+    char namebuf[MAXPDSTRING];
+    const char *str = s->s_name;
     int ln = (int)strlen(str);
     if (!strcmp(str + ln - 3, ".pd")) return (s);
     strcpy(namebuf, str);
@@ -778,6 +846,10 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
       error("maximum object loading depth %d reached", MAXOBJDEPTH);
       return;
     }
+    if (s == &s_anything){
+      error("object name \"%s\" not allowed", s->s_name);
+      return;
+    }
     pd_this->pd_newest = 0;
     class_loadsym = s;
     pd_globallock();
@@ -790,27 +862,6 @@ void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv)
     }
     class_loadsym = 0;
     pd_globalunlock();
-}
-
-void mess_init(void)
-{
-    if (pd_objectmaker)
-        return;
-#ifdef PDINSTANCE
-    pd_this = &pd_maininstance;
-#endif
-    s_inter_newpdinstance();
-    sys_lock();
-    pd_globallock();
-    pdinstance_init(&pd_maininstance);
-    class_extern_dir = &s_;
-    pd_objectmaker = class_new(gensym("objectmaker"), 0, 0, sizeof(t_pd),
-        CLASS_DEFAULT, A_NULL);
-    pd_canvasmaker = class_new(gensym("canvasmaker"), 0, 0, sizeof(t_pd),
-        CLASS_DEFAULT, A_NULL);
-    class_addanything(pd_objectmaker, (t_method)new_anything);
-    pd_globalunlock();
-    sys_unlock();
 }
 
 /* This is externally available, but note that it might later disappear; the
@@ -1046,9 +1097,9 @@ void pd_forwardmess(t_pd *x, int argc, t_atom *argv)
 
 void nullfn(void) {}
 
-t_gotfn getfn(t_pd *x, t_symbol *s)
+t_gotfn getfn(const t_pd *x, t_symbol *s)
 {
-    t_class *c = *x;
+    const t_class *c = *x;
     t_methodentry *m, *mlist;
     int i;
 
@@ -1063,9 +1114,9 @@ t_gotfn getfn(t_pd *x, t_symbol *s)
     return((t_gotfn)nullfn);
 }
 
-t_gotfn zgetfn(t_pd *x, t_symbol *s)
+t_gotfn zgetfn(const t_pd *x, t_symbol *s)
 {
-    t_class *c = *x;
+    const t_class *c = *x;
     t_methodentry *m, *mlist;
     int i;
 
@@ -1077,4 +1128,15 @@ t_gotfn zgetfn(t_pd *x, t_symbol *s)
     for (i = c->c_nmethod, m = mlist; i--; m++)
         if (m->me_name == s) return(m->me_fun);
     return(0);
+}
+
+void c_extern(t_externclass *cls, t_newmethod newroutine,
+    t_method freeroutine, t_symbol *name, size_t size, int tiny, \
+    t_atomtype arg1, ...)
+{
+    bug("'c_extern' not implemented.");
+}
+void c_addmess(t_method fn, t_symbol *sel, t_atomtype arg1, ...)
+{
+    bug("'c_addmess' not implemented.");
 }

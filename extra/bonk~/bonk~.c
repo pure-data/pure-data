@@ -83,9 +83,11 @@ static t_class *bonk_class;
 #endif
 
 #ifdef _WIN32
-#include <malloc.h>
-#elif ! defined(_MSC_VER)
-#include <alloca.h>
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
+#else
+# include <stdlib.h> /* BSDs for example */
 #endif
 
 /* ------------------------ bonk~ ----------------------------- */
@@ -406,6 +408,7 @@ static void bonk_freefilterbank(t_filterbank *b)
         if (b->b_vec[i].k_stuff)
             freebytes(b->b_vec[i].k_stuff,
                 b->b_vec[i].k_filterpoints * sizeof(t_float));
+    freebytes(b->b_vec, b->b_nfilters * sizeof(*b->b_vec));
     freebytes(b, sizeof(*b));
 }
 
@@ -1231,10 +1234,11 @@ static void bonk_free(t_bonk *x)
 #endif
     for (i = 0, gp = x->x_insig; i < ninsig; i++, gp++)
         freebytes(gp->g_inbuf, x->x_npoints * sizeof(t_float));
+    freebytes(x->x_insig, ninsig * sizeof(*x->x_insig));
     clock_free(x->x_clock);
     if (!--(x->x_filterbank->b_refcount))
         bonk_freefilterbank(x->x_filterbank);
-    
+    freebytes(x->x_template, x->x_ntemplate * sizeof(x->x_template[0]));
 }
 
 /* -------------------------- Pd glue ------------------------- */
@@ -1349,7 +1353,7 @@ void bonk_tilde_setup(void)
     bonk_class = class_new(gensym("bonk~"), (t_newmethod)bonk_new,
         (t_method)bonk_free, sizeof(t_bonk), 0, A_GIMME, 0);
     class_addmethod(bonk_class, nullfn, gensym("signal"), 0);
-    class_addmethod(bonk_class, (t_method)bonk_dsp, gensym("dsp"), 0);
+    class_addmethod(bonk_class, (t_method)bonk_dsp, gensym("dsp"), A_CANT, 0);
     class_addbang(bonk_class, bonk_bang);
     class_addmethod(bonk_class, (t_method)bonk_learn,
         gensym("learn"), A_FLOAT, 0);

@@ -42,10 +42,10 @@ EXTRA_DIST = LICENSE.txt README.txt INSTALL.txt
 
 # subdirs that are built,
 # mac before src due to uninstall target order kludge (see mac/Makfile.am)
-SUBDIRS = $(EXTRA_SUBDIRS) mac src man doc tcl extra font
+SUBDIRS = $(EXTRA_SUBDIRS) mac msw src man doc tcl extra font
 
 # subdirs that are always included in the dist, etc.
-DIST_SUBDIRS = asio doc extra font mac man po portmidi portaudio src tcl
+DIST_SUBDIRS = asio doc extra font mac man msw po portmidi portaudio src tcl
 
 #########################################
 ##### Targets #####
@@ -55,14 +55,21 @@ DIST_SUBDIRS = asio doc extra font mac man po portmidi portaudio src tcl
 # optionaly build localizations
 if MSGFMT
 locales:
-	make -C po all
+	${MAKE} -C po all
 else
 locales:
 endif
 
+if MACOSX
 # forward target to mac/Makefile
 app:
-	make -C mac app
+	${MAKE} -C mac app
+endif
+if WINDOWS
+# forward target to msw/Makefile
+app:
+	${MAKE} -C msw app
+endif
 
 # startup location for GUI plugins and/or patches,
 # leftover from Pd-extended & not currently used
@@ -75,5 +82,5 @@ install-data-local:
 # an error and stop make.
 uninstall-hook:
 	if test -d $(DESTDIR)$(pkglibdir) ; then \
-	    find $(DESTDIR)$(pkglibdir) -type d -depth | xargs rmdir 2>/dev/null || true ; \
+	    find $(DESTDIR)$(pkglibdir) -depth -type d | xargs rmdir 2>/dev/null || true ; \
 	fi

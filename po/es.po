@@ -6,7 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pure Data 0.48.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
-"PO-Revision-Date: 2017-07-20 21:14-0400\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2018-09-11 16:22+0200\n"
 "Last-Translator: Federico Camara Halac <camarafede@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -14,6 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.1.1\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "-------dimensiones(dígitos)(pix):-------"
@@ -618,6 +620,36 @@ msgstr "[deken]: version instalada [%1$s] < %2$s...sobreescribiendo!"
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr "[deken]: version instalada [%1$s] == %2$s...salteando!"
 
+msgid "[deken]: "
+msgstr "[deken]:"
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "Se ha extraído con éxito %1$s en %2$s."
+
+#, fuzzy
+msgid "[deken]: Unable to extract package automatically."
+msgstr "No se ha podido extraer el paquete automáticamente."
+
+msgid "Please perform the following steps manually:"
+msgstr "Por favor, siga estos pasos manualmente:"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. Extraer %s."
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. Copiar los contenidos en %s."
+
+#, tcl-format
+msgid "[deken] uninstalling '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr ""
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
@@ -625,6 +657,10 @@ msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr "[deken] Plataforma detectada: %s"
+
+#, fuzzy, tcl-format
+msgid "[deken] Platform re-detected: %s"
 msgstr "[deken] Plataforma detectada: %s"
 
 msgid "Show all"
@@ -644,28 +680,67 @@ msgstr "Buscar Externos"
 msgid "Only install externals uploaded by people you trust."
 msgstr "Solo instalar externos subidos por gente de confianza."
 
-msgid "Searching for externals..."
-msgstr "Buscando externos..."
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "Installation options:"
+msgstr ""
+
+msgid "Try to remove libraries before (re)installing them?"
+msgstr ""
+
+msgid "Show README of newly installed libraries (if present)?"
+msgstr ""
+
+msgid "Should newly installed libraries be added to Pd's search path?"
+msgstr ""
+
+msgid "Platform settings:"
+msgstr ""
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr ""
+
+msgid "User-defined platform:"
+msgstr ""
+
+msgid "Hide foreign architectures?"
+msgstr ""
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr "Deken %s Preferencias"
+
+msgid "[deken]: Start searching for externals..."
+msgstr "[deken]: Buscando externos..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
 msgstr "[deken]: ¿Está usted online? %s"
 
-msgid "Unable to perform search. Are you online?"
-msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
+msgid "Are you online?"
+msgstr "¿Está usted online?"
 
-msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr ""
-"No se han encontrado externos con ese nombre. Prueba usando el nombre "
-"completo, por ejemplo: 'freeverb'."
+msgid "Unable to perform search."
+msgstr "La búsqueda no pudo ser realizada."
+
+msgid "[deken]: No matching externals found."
+msgstr "[deken]: No se han encontrado externos con ese nombre."
+
+msgid "Try using the full name e.g. 'freeverb'."
+msgstr "Prueba usando el nombre completo, por ejemplo: 'freeverb'."
+
+msgid "No matching externals found."
+msgstr "No se han encontrado externos con ese nombre."
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
 "Por favor, seleccione un directorio de instalación con permisos de escritura!"
 
 #, tcl-format
-msgid "Install %s to %s?"
-msgstr "¿Instalar %s en %s?"
+msgid "Install %1$s to %2$s?"
+msgstr "¿Instalar %1$s en %2$s?"
 
 #, tcl-format
 msgid ""
@@ -677,26 +752,9 @@ msgstr ""
 "%1$s\n"
 "En %2$s..."
 
-msgid "aborting."
+#, fuzzy
+msgid "aborting.\n"
 msgstr "Abortando."
-
-#, tcl-format
-msgid "Successfully unzipped %1$s into %2$s."
-msgstr "Se ha extraído con éxito %1$s en %2$s."
-
-msgid "Unable to extract package automatically."
-msgstr "No se ha podido extraer el paquete automáticamente."
-
-msgid "Please perform the following steps manually:"
-msgstr "Por favor, siga estos pasos manualmente:"
-
-#, tcl-format
-msgid "1. Unzip %s."
-msgstr "1. Extraer %s."
-
-#, tcl-format
-msgid "2. Copy the contents into %s."
-msgstr "2. Copiar los contenidos en %s."
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
@@ -726,13 +784,18 @@ msgstr "No se ha podido renombrar el archivo descargado a %s"
 msgid "searching for '%s'"
 msgstr "Buscando '%s'"
 
-#, fuzzy
-msgid "Unable to perform search."
-msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"
-
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Subido por %1$s @ %2$s"
+
+msgid "Install package"
+msgstr ""
+
+msgid "Open webpage"
+msgstr ""
+
+msgid "_"
+msgstr ""
 
 #, tcl-format
 msgid ""
@@ -784,6 +847,9 @@ msgstr "Guardar Como..."
 msgid "Print..."
 msgstr "Imprimir..."
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr "Duplicar"
 
@@ -795,6 +861,12 @@ msgstr "Alejar"
 
 msgid "Tidy Up"
 msgstr "Ordenar"
+
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
+msgstr ""
 
 msgid "Edit Mode"
 msgstr "Modo Edición"
@@ -825,9 +897,6 @@ msgstr "Seleccionar Todo"
 
 msgid "Clear Console"
 msgstr "Limpiar Consola"
-
-msgid "Preferences"
-msgstr "Preferencias"
 
 msgid "Object"
 msgstr "Objeto"
@@ -1005,3 +1074,6 @@ msgstr "Ignorando '%s': archivo no existente."
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
 msgstr "Ignorando '%s': no parece ser un fichero de Pd."
+
+#~ msgid "Unable to perform search. Are you online?"
+#~ msgstr "La búsqueda no pudo ser realizada. ¿Está usted online?"

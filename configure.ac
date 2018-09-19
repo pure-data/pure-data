@@ -2,7 +2,7 @@
 ##### Prelude #####
 
 AC_PREREQ(2.59)
-AC_INIT([pd], [0.48.1])
+AC_INIT([pd], [0.49.0])
 AC_CONFIG_SRCDIR(src/m_pd.c)
 AC_CONFIG_AUX_DIR([m4/config])
 AC_CONFIG_MACRO_DIR([m4/generated])
@@ -18,6 +18,8 @@ portaudio=no
 portmidi=no
 local_portaudio=yes
 local_portmidi=yes
+mmio=no
+asio=no
 jack_framework=no
 locales=yes
 
@@ -107,15 +109,13 @@ case $host in
     WINDOWS=yes
     MINGW=yes
     platform=MinGW
+    mmio=yes
+    asio=yes
     portaudio=yes
     portmidi=yes
 
     # this mirrors the default windows WISH define in s_inter.c
     wish="wish85.exe"
-
-    # ASIO doesn't build yet with the autotools setup. We need to figure out how
-    # to make the final linking phase use g++
-    asio=yes
 
     # externals are dynamically linked to pd.dll in their individual automake files
     EXTERNAL_CFLAGS="-mms-bitfields"
@@ -130,6 +130,8 @@ case $host in
     WINDOWS=yes
     CYGWIN=yes
     platform=Cygwin
+    mmio=yes
+    asio=yes
     portaudio=yes
     portmidi=yes
 
@@ -140,6 +142,14 @@ case $host in
     EXTERNAL_CFLAGS=
     EXTERNAL_LDFLAGS="-Wl,--export-dynamic"
     EXTERNAL_EXTENSION=dll
+    ;;
+*openbsd*)
+    OPENBSD=yes
+    platform=OpenBSD
+    portaudio=yes
+    EXTERNAL_CFLAGS="-D__OPENBSD__"
+    EXTERNAL_LDFLAGS="-liberty"
+    EXTERNAL_EXTENSION=pd_openbsd
     ;;
 *)
     platform=Unknown
@@ -154,6 +164,7 @@ AM_CONDITIONAL(MACOSX, test x$MACOSX = xyes)
 AM_CONDITIONAL(WINDOWS, test x$WINDOWS = xyes)
 AM_CONDITIONAL(CYGWIN, test x$CYGWIN = xyes)
 AM_CONDITIONAL(MINGW, test x$MINGW = xyes)
+AM_CONDITIONAL(OPENBSD, test x$OPENBSD = xyes)
 
 #########################################
 ##### Check for programs, libs, & headers #####
@@ -172,6 +183,7 @@ AC_PROG_LN_S
 AC_PROG_MKDIR_P
 AC_PROG_GREP
 AC_PROG_SED
+AC_CHECK_TOOL([WINDRES], [windres], [:])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -339,13 +351,12 @@ test x$WINDOWS = xyes || mmio=no
 ##### ASIO #####
 AC_ARG_ENABLE([asio],
     [AS_HELP_STRING([--enable-asio], [use ASIO audio driver])],
-    [asio=$enableval], [asio=no])
-if test x$asio = xyes ; then
-    AC_CHECK_FILE([asio/ASIOSDK2/common/asio.h], [asio=yes], [asio=no])
-    if [ test x$windows = xyes ] && [ test x$asio = xno ] ; then
-        AC_MSG_ERROR([ASIO SDK not found! You need to download it from: http://www.steinberg.net/en/company/developers.html])
-    fi
-fi
+    [asio=$enableval])
+test x$WINDOWS = xyes || asio=no
+AS_IF([test x$asio = xyes],
+    test -f "${srcdir}"/asio/ASIOSDK/common/asio.h || asio=no
+    AS_IF([test x$asio = xno], AC_MSG_WARN([ASIO SDK not found! See asio/README.txt]))
+)
 
 ##### PortAudio #####
 AC_ARG_ENABLE([portaudio],
@@ -447,6 +458,7 @@ dnl AS_IF([test x$mmio = xyes], [midi_backends="MMIO ${midi_backends}"])
 
 ##### ASIO #####
 AM_CONDITIONAL(ASIO, test x$asio = xyes)
+AS_IF([test x$asio = xyes], [audio_backends="ASIO ${audio_backends}"])
 
 ##### CoreAudio #####
 # portaudio doesn't work with iPhone, so don't bother with CoreAudio
@@ -505,6 +517,7 @@ AC_CONFIG_FILES([Makefile
                 font/Makefile
                 mac/Makefile
                 man/Makefile
+                msw/Makefile
                 portaudio/Makefile
                 portmidi/Makefile
                 tcl/Makefile

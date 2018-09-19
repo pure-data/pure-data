@@ -9,7 +9,7 @@ static void pd_tilde_putfloat(float f, FILE *fd)
 
 static void pd_tilde_putsymbol(t_symbol *s, FILE *fd)
 {
-    char *sp = s->s_name;
+    const char *sp = s->s_name;
     putc(A_SYMBOL, fd);
     do
         putc(*sp, fd);
