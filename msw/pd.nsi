@@ -154,7 +154,7 @@ Section Uninstall
   Delete "$INSTDIR\uninst.exe"
   Delete "$SMPROGRAMS\Pd-${ARCHI}bit\Uninstall.lnk"
   Delete "$SMPROGRAMS\Pd-${ARCHI}bit\Website.lnk"
-  Delete "$SMPROGRAMS\Pd-${ARCHI}bit\Pd-64bit.lnk"
+  Delete "$SMPROGRAMS\Pd-${ARCHI}bit\Pd-${ARCHI}.lnk"
   RMDir "$SMPROGRAMS\Pd-${ARCHI}bit"
   Delete "$DESKTOP\Pd-${ARCHI}bit.lnk"
 
