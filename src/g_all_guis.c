@@ -28,7 +28,7 @@
 
 /*  #define GGEE_HSLIDER_COMPATIBLE  */
 
-/*------------------ global varaibles -------------------------*/
+/*------------------ global variables -------------------------*/
 
 int iemgui_color_hex[]=
 {
@@ -153,7 +153,8 @@ int iemgui_modulo_color(int col)
 
 t_symbol *iemgui_dollar2raute(t_symbol *s)
 {
-    char buf[MAXPDSTRING+1], *s1, *s2;
+    const char *s1;
+    char buf[MAXPDSTRING+1], *s2;
     if (strlen(s->s_name) >= MAXPDSTRING)
         return (s);
     for (s1 = s->s_name, s2 = buf; ; s1++, s2++)
@@ -168,7 +169,8 @@ t_symbol *iemgui_dollar2raute(t_symbol *s)
 
 t_symbol *iemgui_raute2dollar(t_symbol *s)
 {
-    char buf[MAXPDSTRING+1], *s1, *s2;
+    const char *s1;
+    char buf[MAXPDSTRING+1], *s2;
     if (strlen(s->s_name) >= MAXPDSTRING)
         return (s);
     for (s1 = s->s_name, s2 = buf; ; s1++, s2++)
@@ -303,7 +305,7 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
     {
         t_symbol*s=atom_getsymbolarg(index, argc, argv);
         if ('#' == s->s_name[0])
-            return strtol(s->s_name+1, 0, 16);
+            return (int)strtol(s->s_name+1, 0, 16);
     }
     return 0;
 }
@@ -311,7 +313,7 @@ static int iemgui_getcolorarg(int index, int argc, t_atom*argv)
 static int colfromatomload(t_atom*colatom)
 {
     int color;
-        /* old-fashioned color arguement, either a number or symbol
+        /* old-fashioned color argument, either a number or symbol
         evaluating to an integer */
     if (colatom->a_type == A_FLOAT)
         color = atom_getfloat(colatom);
@@ -378,8 +380,7 @@ void iemgui_all_raute2dollar(t_symbol **srlsym)
 void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     t_symbol *snd;
-    int pargc, tail_len, nth_arg, sndable=1, oldsndrcvable=0;
-    t_atom *pargv;
+    int sndable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
         oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
@@ -398,8 +399,7 @@ void iemgui_send(void *x, t_iemgui *iemgui, t_symbol *s)
 void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     t_symbol *rcv;
-    int pargc, tail_len, nth_arg, rcvable=1, oldsndrcvable=0;
-    t_atom *pargv;
+    int rcvable=1, oldsndrcvable=0;
 
     if(iemgui->x_fsf.x_rcv_able)
         oldsndrcvable += IEM_GUI_OLD_RCV_FLAG;
@@ -433,8 +433,6 @@ void iemgui_receive(void *x, t_iemgui *iemgui, t_symbol *s)
 void iemgui_label(void *x, t_iemgui *iemgui, t_symbol *s)
 {
     t_symbol *old;
-    int pargc, tail_len, nth_arg;
-    t_atom *pargv;
 
         /* tb: fix for empty label { */
         if (s == gensym(""))

@@ -1,5 +1,4 @@
-# this is built as a "libtool convenience library"
-# http://sources.redhat.com/automake/automake.html#Libtool-Convenience-Libraries
+# this is built as a static convenience library
 
 #########################################
 ##### Defaults & Paths #####
@@ -13,16 +12,16 @@ AM_CPPFLAGS += \
 #########################################
 ##### Files, Binaries, & Libs #####
 
-noinst_LTLIBRARIES = libportmidi.la
+noinst_LIBRARIES = libportmidi.a
 
-libportmidi_la_SOURCES = \
+libportmidi_a_SOURCES = \
     portmidi/pm_common/pmutil.c \
     portmidi/pm_common/portmidi.c \
     portmidi/porttime/porttime.c
 
 if LINUX
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_linux
-libportmidi_la_SOURCES += \
+libportmidi_a_SOURCES += \
     portmidi/porttime/ptlinux.c \
     portmidi/pm_linux/pmlinux.c \
     portmidi/pm_linux/pmlinuxalsa.c
@@ -30,7 +29,7 @@ endif
 
 if MACOSX
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_mac
-libportmidi_la_SOURCES += \
+libportmidi_a_SOURCES += \
     portmidi/porttime/ptmacosx_cf.c \
     portmidi/pm_mac/pmmac.c \
     portmidi/pm_mac/pmmacosxcm.c \
@@ -40,7 +39,7 @@ endif
 
 if WINDOWS
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_win
-libportmidi_la_SOURCES += \
+libportmidi_a_SOURCES += \
     portmidi/porttime/ptwinmm.c \
     portmidi/pm_win/pmwin.c \
     portmidi/pm_win/pmwinmm.c

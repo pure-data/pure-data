@@ -45,12 +45,13 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Key-e>      {menu_toggle_editmode}
     bind all <$::modifier-Key-f>      {menu_find_dialog}
     bind all <$::modifier-Key-g>      {menu_send %W findagain}
+    bind all <$::modifier-Key-k>      {menu_send %W connect_selection}
     bind all <$::modifier-Key-n>      {menu_new}
     bind all <$::modifier-Key-o>      {menu_open}
     bind all <$::modifier-Key-p>      {menu_print $::focused_window}
     bind all <$::modifier-Key-r>      {menu_raise_pdwindow}
     bind all <$::modifier-Key-s>      {menu_send %W menusave}
-    bind all <$::modifier-Key-t>      {menu_font_dialog}
+    bind all <$::modifier-Key-t>      {menu_send %W triggerize}
     bind all <$::modifier-Key-v>      {menu_send %W paste}
     bind all <$::modifier-Key-w>      {::pd_bindings::window_close %W}
     bind all <$::modifier-Key-x>      {menu_send %W cut}
@@ -296,8 +297,10 @@ proc ::pd_bindings::patch_unmap {mytoplevel} {
 }
 
 proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
-    # check if the window is not fully created aka 1x1
-    if {$width == 1 || $height == 1} {return}
+    if {$width == 1 || $height == 1} {
+        # make sure the window is fully created
+        update idletasks
+    }
     pdtk_canvas_getscroll [tkcanvas_name $mytoplevel]
     # send the size/location of the window and canvas to 'pd' in the form of:
     #    left top right bottom
@@ -307,6 +310,8 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
 proc ::pd_bindings::patch_destroy {window} {
     set mytoplevel [winfo toplevel $window]
     unset ::editmode($mytoplevel)
+    unset ::undo_actions($mytoplevel)
+    unset ::redo_actions($mytoplevel)
     unset ::editingtext($mytoplevel)
     unset ::loaded($mytoplevel)
     # unset my entries all of the window data tracking arrays

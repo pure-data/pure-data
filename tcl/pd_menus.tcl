@@ -63,11 +63,14 @@ proc ::pd_menus::configure_for_pdwindow {} {
     $menubar.file entryconfigure [_ "Print..."] -state disabled
 
     # Edit menu
+    $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
     $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
+    $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
+    $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode .pdwindow 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -91,11 +94,14 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
     $menubar.file entryconfigure [_ "Save As..."] -state normal
     $menubar.file entryconfigure [_ "Print..."] -state normal
     # Edit menu
+    $menubar.edit entryconfigure [_ "Paste Replace"] -state normal
     $menubar.edit entryconfigure [_ "Duplicate"] -state normal
     $menubar.edit entryconfigure [_ "Font"] -state normal
     $menubar.edit entryconfigure [_ "Zoom In"] -state normal
     $menubar.edit entryconfigure [_ "Zoom Out"] -state normal
     $menubar.edit entryconfigure [_ "Tidy Up"] -state normal
+    $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state normal
+    $menubar.edit entryconfigure [_ "Triggerize"] -state normal
     $menubar.edit entryconfigure [_ "Edit Mode"] -state normal
     pdtk_canvas_editmode $mytoplevel $::editmode($mytoplevel)
     # Put menu
@@ -105,7 +111,7 @@ proc ::pd_menus::configure_for_canvas {mytoplevel} {
             $menubar.put entryconfigure $i -state normal
         }
     }
-    update_undo_on_menu $mytoplevel
+    update_undo_on_menu $mytoplevel $::undo_actions($mytoplevel) $::redo_actions($mytoplevel)
     # Help menu
     # make sure "List of objects..." is enabled, it sometimes greys out on Mac
     $menubar.help entryconfigure [_ "List of objects..."] -state normal
@@ -133,10 +139,13 @@ proc ::pd_menus::configure_for_dialog {mytoplevel} {
 
     # Edit menu
     $menubar.edit entryconfigure [_ "Font"] -state disabled
+    $menubar.edit entryconfigure [_ "Paste Replace"] -state disabled
     $menubar.edit entryconfigure [_ "Duplicate"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom In"] -state disabled
     $menubar.edit entryconfigure [_ "Zoom Out"] -state disabled
     $menubar.edit entryconfigure [_ "Tidy Up"] -state disabled
+    $menubar.edit entryconfigure [_ "(Dis)Connect Selection"] -state disabled
+    $menubar.edit entryconfigure [_ "Triggerize"] -state disabled
     $menubar.edit entryconfigure [_ "Edit Mode"] -state disabled
     pdtk_canvas_editmode $mytoplevel 0
     # Undo/Redo change names, they need to have the asterisk (*) after
@@ -187,10 +196,12 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {menu_send $::focused_window paste}
     $mymenu add command -label [_ "Duplicate"]  -accelerator "$accelerator+D" \
         -command {menu_send $::focused_window duplicate}
+    $mymenu add command -label [_ "Paste Replace" ]  \
+        -command {menu_send $::focused_window paste-replace}
     $mymenu add command -label [_ "Select All"] -accelerator "$accelerator+A" \
         -command {menu_send $::focused_window selectall}
     $mymenu add  separator
-    $mymenu add command -label [_ "Font"]       -accelerator "$accelerator+T" \
+    $mymenu add command -label [_ "Font"] \
         -command {menu_font_dialog}
     $mymenu add command -label [_ "Zoom In"]    -accelerator "$accelerator++" \
         -command {menu_send_float $::focused_window zoom 2}
@@ -198,6 +209,10 @@ proc ::pd_menus::build_edit_menu {mymenu} {
         -command {menu_send_float $::focused_window zoom 1}
     $mymenu add command -label [_ "Tidy Up"]    -accelerator "$accelerator+Shift+R" \
         -command {menu_send $::focused_window tidy}
+    $mymenu add command -label [_ "(Dis)Connect Selection"]    -accelerator "$accelerator+K" \
+        -command {menu_send $::focused_window connect_selection}
+    $mymenu add command -label [_ "Triggerize"] -accelerator "$accelerator+T" \
+        -command {menu_send $::focused_window triggerize}
     $mymenu add command -label [_ "Clear Console"] \
         -accelerator "Shift+$accelerator+L" -command {menu_clear_console}
     $mymenu add  separator
@@ -205,11 +220,6 @@ proc ::pd_menus::build_edit_menu {mymenu} {
     $mymenu add check -label [_ "Edit Mode"]    -accelerator "$accelerator+E" \
         -variable ::editmode_button \
         -command {menu_editmode $::editmode_button}
-    if {$::windowingsystem ne "aqua"} {
-        $mymenu add  separator
-        create_preferences_menu $mymenu.preferences
-        $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
-    }
 }
 
 proc ::pd_menus::build_put_menu {mymenu} {
@@ -357,17 +367,20 @@ proc ::pd_menus::build_help_menu {mymenu} {
 #------------------------------------------------------------------------------#
 # undo/redo menu items
 
-proc ::pd_menus::update_undo_on_menu {mytoplevel} {
+proc ::pd_menus::update_undo_on_menu {mytoplevel undo redo} {
     variable menubar
-    if {$mytoplevel eq $::undo_toplevel && $::undo_action ne "no"} {
+    if {$undo eq "no"} { set undo "" }
+    if {$redo eq "no"} { set redo "" }
+
+    if {$undo ne ""} {
         $menubar.edit entryconfigure 0 -state normal \
-            -label [_ "Undo $::undo_action"]
+            -label [_ "Undo $undo"]
     } else {
         $menubar.edit entryconfigure 0 -state disabled -label [_ "Undo"]
     }
-    if {$mytoplevel eq $::undo_toplevel && $::redo_action ne "no"} {
+    if {$redo ne ""} {
         $menubar.edit entryconfigure 1 -state normal \
-            -label [_ "Redo $::redo_action"]
+            -label [_ "Redo $redo"]
     } else {
         $menubar.edit entryconfigure 1 -state disabled -label [_ "Redo"]
     }
@@ -621,7 +634,7 @@ proc ::pd_menus::build_file_menu_x11 {mymenu} {
     $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
+    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
     $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"
@@ -668,7 +681,7 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add command -label [_ "Save As..."]  -accelerator "Shift+$accelerator+S"
     #    $mymenu add command -label "Revert"
     $mymenu add  separator
-    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+M"
+    $mymenu add command -label [_ "Message..."]  -accelerator "$accelerator+Shift+M"
     create_preferences_menu $mymenu.preferences
     $mymenu add cascade -label [_ "Preferences"] -menu $mymenu.preferences
     $mymenu add command -label [_ "Print..."]    -accelerator "$accelerator+P"

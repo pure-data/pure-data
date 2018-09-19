@@ -21,6 +21,7 @@ typedef int socklen_t;
 #include <ctype.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <signal.h>
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -58,22 +59,46 @@ static t_class *pd_tilde_class;
 
 #endif
 
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
-#ifdef __x86_64__
-static char pd_tilde_dllextent[] = ".l_ia64",
-    pd_tilde_dllextent2[] = ".pd_linux";
+#if defined(__x86_64__) || defined(_M_X64)
+# define ARCHEXT "amd64"
+#elif defined(__i386__) || defined(_M_IX86)
+# define ARCHEXT "i386"
+#elif defined(__arm__)
+# define ARCHEXT "arm"
+#elif defined(__aarch64__)
+# define ARCHEXT "arm64"
+#elif defined(__ppc__)
+# define ARCHEXT "ppc"
+#endif
+
+#ifdef ARCHEXT
+#define ARCHDLLEXT(prefix) prefix ARCHEXT ,
 #else
-static char pd_tilde_dllextent[] = ".l_i386",
-    pd_tilde_dllextent2[] = ".pd_linux";
+#define ARCHDLLEXT(prefix)
 #endif
+
+
+static const char*pd_tilde_dllextent[] = {
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(__FreeBSD__)
+    ARCHDLLEXT(".l_")
+    ".pd_linux",
+    ".so",
+#elif defined(__APPLE__)
+    ".d_fat",
+    ARCHDLLEXT(".d_")
+    ".pd_darwin",
+    ".so",
+#elif defined(__OPENBSD__)
+    ARCHDLLEXT(".o_")
+    ".pd_openbsd",
+    ".so",
+#elif defined(_WIN32) || defined(__CYGWIN__)
+    ARCHDLLEXT(".m_")
+    ".dll",
+#else
+    ".so",
 #endif
-#ifdef __APPLE__
-static char pd_tilde_dllextent[] = ".d_fat",
-    pd_tilde_dllextent2[] = ".pd_darwin";
-#endif
-#if defined(_WIN32) || defined(__CYGWIN__)
-static char pd_tilde_dllextent[] = ".m_i386", pd_tilde_dllextent2[] = ".dll";
-#endif
+    0};
 
 #define FOOFOO
 #include "binarymsg.c"
@@ -144,7 +169,7 @@ static void pd_tilde_close(t_pd_tilde *x)
     x->x_childpid = -1;
 }
 
-static void pd_tilde_readmessages(t_pd_tilde *x)
+static int pd_tilde_readmessages(t_pd_tilde *x)
 {
     t_atom at;
     binbuf_clear(x->x_binbuf);
@@ -153,7 +178,8 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
         int nonempty = 0;
         while (1)
         {
-            pd_tilde_getatom(&at, x->x_infd);
+            if (!pd_tilde_getatom(&at, x->x_infd))
+                return 0;
             if (!nonempty && at.a_type == A_SEMI)
                 break;
             nonempty = (at.a_type != A_SEMI);
@@ -171,7 +197,7 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
             while (isspace((c = getc(x->x_infd))) && c != EOF)
                 ;
             if (c == EOF)
-                return;
+                return 0;
             do
                 msgbuf[infill++] = c;
             while (!isspace((c = getc(x->x_infd))) && c != ';' && c != EOF) ;
@@ -192,6 +218,7 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
             binbuf_print(x->x_binbuf); */
     }
     clock_delay(x->x_clock, 0);
+    return 1;
 }
 
 #define FIXEDARG 13
@@ -202,14 +229,16 @@ static void pd_tilde_readmessages(t_pd_tilde *x)
 #define EXTENT ""
 #endif
 
-static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
-    char *patchdir, int argc, t_atom *argv, int ninsig, int noutsig,
+static void pd_tilde_donew(t_pd_tilde *x, const char *pddir, const char *schedlibdir,
+    const char *patchdir_c, int argc, t_atom *argv, int ninsig, int noutsig,
     int fifo, t_float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
-    char pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING], tmpbuf[MAXPDSTRING];
+    char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
+        tmpbuf[MAXPDSTRING], patchdir[MAXPDSTRING];
     char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
         sampleratestr[40];
+    const char**dllextent;
     struct stat statbuf;
     x->x_infd = x->x_outfd = 0;
     x->x_childpid = -1;
@@ -238,21 +267,19 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             }
         }
     }
-        /* check that the scheduler dynamic linkable exists w either sffix */
-    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
-        pd_tilde_dllextent);
-    sys_bashfilename(tmpbuf, schedbuf);
-    if (stat(schedbuf, &statbuf) < 0)
+
+        /* check that the scheduler dynamic linkable exists w either suffix */
+    for(dllextent=pd_tilde_dllextent; *dllextent; dllextent++)
     {
-        snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
-            pd_tilde_dllextent2);
-        sys_bashfilename(tmpbuf, schedbuf);
-        if (stat(schedbuf, &statbuf) < 0)
-        {
-            PDERROR "pd~: can't stat %s", schedbuf);
-            goto fail1;
-        }       
+      snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
+      sys_bashfilename(tmpbuf, schedbuf);
+      if (stat(schedbuf, &statbuf) >= 0)
+        goto gotone;
     }
+    PDERROR "pd~: can't stat %s", schedbuf);
+    goto fail1;
+
+gotone:
         /* but the sub-process wants the scheduler name without the suffix */
     snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
     sys_bashfilename(tmpbuf, schedbuf);
@@ -260,6 +287,24 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
 "'%s' -schedlib '%s'/pdsched -path '%s' -inchannels %d -outchannels %d -r %g %s\n",
         pdexecbuf, schedlibdir, patchdir, ninsig, noutsig, samplerate, pdargs);
         */
+    /* _spawnv wants the command without quotes */
+    strcpy(cmdbuf, pdexecbuf);
+    /* but in the argument vector paths must be quoted if they contain whitespace */
+    if (strchr(pdexecbuf, ' ') && *pdexecbuf != '"' && *pdexecbuf != '\'')
+    {
+        snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", pdexecbuf);
+        strcpy(pdexecbuf, tmpbuf);
+    }
+    if (strchr(schedbuf, ' ') && *schedbuf != '"' && *schedbuf != '\'')
+    {
+        snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf);
+        strcpy(schedbuf, tmpbuf);
+    }
+    if (strchr(patchdir_c, ' ') && *patchdir_c != '"' && *patchdir_c != '\'')
+        snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
+    else
+        snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
+
     execargv[0] = pdexecbuf;
     execargv[1] = "-schedlib";
     execargv[2] = schedbuf;
@@ -328,7 +373,7 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             _dup2(pipe1[0], 0);
         if (pipe2[1] != 1)
             _dup2(pipe2[1], 1);
-        pid = _spawnv(P_NOWAIT, execargv[0], execargv);
+        pid = _spawnv(P_NOWAIT, cmdbuf, (const char * const *)execargv);
         if (pid < 0)
         {
             post("%s: couldn't start subprocess (%s)\n", execargv[0],
@@ -367,9 +412,16 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
             close(pipe1[1]);
         if (pipe2[0] >= 2)
             close(pipe2[0]);
-        execv(execargv[0], execargv);
+        execv(cmdbuf, execargv);
         _exit(1);
     }
+    do {
+      unsigned int i;
+      for(i=FIXEDARG; execargv[i]; i++) {
+        free(execargv[i]);
+      }
+    } while(0);
+
 #endif /* _WIN32 */
         /* done with fork/exec or spawn; parent continues here */
     close(pipe1[0]);
@@ -528,7 +580,13 @@ static t_int *pd_tilde_perform(t_int *w)
         for (; j < DEFDACBLKSIZE; j++)
             x->x_outsig[nsigs][j] = 0;
     }
-    pd_tilde_readmessages(x);
+    if (!pd_tilde_readmessages(x))
+    {
+        if (errno)
+            PDERROR "pd~: %s", strerror(errno));
+        else PDERROR "pd~: subprocess exited");
+        pd_tilde_close(x);
+    }
     return (w+3);
 zeroit:
     for (i = 0; i < x->x_noutsig; i++)
@@ -561,7 +619,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
 {
     t_symbol *sel = ((argc > 0 && argv->a_type == A_SYMBOL) ?
         argv->a_w.w_symbol : gensym("?")), *schedlibdir;
-    char *patchdir;
+    const char *patchdir;
     if (sel == gensym("start"))
     {
         char pdargstring[MAXPDSTRING];
@@ -578,7 +636,8 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
         schedlibdir = x->x_schedlibdir;
         if (schedlibdir == gensym(".") && x->x_pddir != gensym("."))
         {
-            char *pds = x->x_pddir->s_name, scheddirstring[MAXPDSTRING];
+            const char *pds = x->x_pddir->s_name;
+            char scheddirstring[MAXPDSTRING];
             int l = strlen(pds);
             if (l >= 4 && (!strcmp(pds+l-3, "bin") || !strcmp(pds+l-4, "bin/")))
                 snprintf(scheddirstring, MAXPDSTRING, "%s/../extra/pd~", pds);
@@ -764,7 +823,7 @@ void pd_tilde_setup(void)
     pd_tilde_class = class_new(gensym("pd~"), (t_newmethod)pd_tilde_new,
         (t_method)pd_tilde_free, sizeof(t_pd_tilde), 0, A_GIMME, 0);
     class_addmethod(pd_tilde_class, nullfn, gensym("signal"), 0);
-    class_addmethod(pd_tilde_class, (t_method)pd_tilde_dsp, gensym("dsp"), 0);
+    class_addmethod(pd_tilde_class, (t_method)pd_tilde_dsp, gensym("dsp"), A_CANT, 0);
     class_addmethod(pd_tilde_class, (t_method)pd_tilde_pdtilde, gensym("pd~"), A_GIMME, 0);
     class_addanything(pd_tilde_class, pd_tilde_anything);
     post("pd~ version 0.3");
@@ -866,7 +925,7 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
     {
         while (ac > 0 && av[0].a_type == A_SYM)
         {
-            char *flag = av[0].a_w.w_sym->s_name;
+            const char *flag = av[0].a_w.w_sym->s_name;
             if (!strcmp(flag, "-sr") && ac > 1)
             {
                 sr = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :

@@ -85,7 +85,7 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
         dialog_startup::add dialog_startup::edit dialog_startup::commit \
         [_ "Pd libraries to load on startup"] \
         450 300 0
-    wm geometry $mytoplevel ""
+    wm withdraw $mytoplevel
     ::pd_bindings::dialog_bindings $mytoplevel "startup"
 
     frame $mytoplevel.flags
@@ -132,9 +132,10 @@ proc ::dialog_startup::create_dialog {mytoplevel} {
 
     # set min size based on widget sizing
     update
-    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo height $mytoplevel]
+    wm minsize $mytoplevel [winfo width $mytoplevel] [winfo reqheight $mytoplevel]
 
     position_over_window $mytoplevel .pdwindow
+    raise $mytoplevel
 }
 
 # for focus handling on OSX

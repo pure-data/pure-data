@@ -3,6 +3,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+CLEANFILES=
+
 SUFFIXES = .tcl
 
 libpdtcldir = $(pkglibdir)/tcl
@@ -12,6 +14,7 @@ libpdtcldir = $(pkglibdir)/tcl
 
 # install gui launcher script to $(prefix)/bin
 dist_bin_SCRIPTS = pd-gui
+CLEANFILES += pd-gui
 
 dist_libpdtcl_SCRIPTS = pd-gui.tcl
 dist_libpdtcl_DATA = \
@@ -46,8 +49,23 @@ dist_libpdtcl_DATA = \
     scrollbox.tcl \
     pd_guiprefs.tcl \
     pd_deken.tcl \
-    pd_docsdir.tcl \
-    pd.ico
+    pd_docsdir.tcl
+
+# we want these in the dist tarball
+EXTRA_DIST = pd.gif pd.ico pd.xpm
+
+# install icons based on the platform
+if HURD
+libpdtcl_DATA = pd.gif
+endif
+if LINUX
+# should this be gif or xpm?
+libpdtcl_DATA = pd.gif
+endif
+if WINDOWS
+libpdtcl_DATA = pd.ico
+endif
+# MACOSX only loads icon within app bundle
 
 #########################################
 ##### Targets #####

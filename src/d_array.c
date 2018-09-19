@@ -575,9 +575,7 @@ static t_int *tabosc4_tilde_perform(t_int *w)
     t_float fnpoints = x->x_fnpoints;
     int mask = fnpoints - 1;
     t_float conv = fnpoints * x->x_conv;
-    int maxindex;
     t_word *tab = x->x_vec, *addr;
-    int i;
     double dphase = fnpoints * x->x_phase + UNITBIT32;
 
     if (!tab) goto zero;
@@ -755,7 +753,6 @@ static void tabsend_set(t_tabsend *x, t_symbol *s)
 
 static void tabsend_dsp(t_tabsend *x, t_signal **sp)
 {
-    int i, vecsize;
     int n = sp[0]->s_n;
     int ticksper = sp[0]->s_sr/n;
     tabsend_set(x, x->x_arrayname);
@@ -988,7 +985,7 @@ typedef struct _tabwrite
 
 static void tabwrite_float(t_tabwrite *x, t_float f)
 {
-    int i, vecsize;
+    int vecsize;
     t_garray *a;
     t_word *vec;
 

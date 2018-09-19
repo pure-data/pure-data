@@ -225,9 +225,11 @@ set canvas_minwidth 50
 set canvas_minheight 20
 
 # undo states
-set ::undo_action "no"
-set ::redo_action "no"
-set ::undo_toplevel "."
+array set undo_actions {}
+array set redo_actions {}
+# unused legacy undo states
+set undo_action no
+set redo_action no
 
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
@@ -308,7 +310,15 @@ proc init_for_platform {} {
             # frame's upper left corner. http://wiki.tcl.tk/11502
             set ::windowframex 3
             set ::windowframey 53
-            # TODO add wm iconphoto/iconbitmap here if it makes sense
+            # trying loading icon in the GUI directory
+            if {$::tcl_version >= 8.5} {
+                set icon [file join $::sys_guidir pd.gif]
+                if {[file readable $icon]} { 
+                    catch {
+                        wm iconphoto . -default [image create photo -file "$icon"]
+                    }
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "left_ptr"
             set ::cursor_runmode_clickme "arrow"
@@ -392,6 +402,18 @@ proc init_for_platform {} {
             set ::windowframey 0
             # TODO use 'winico' package for full, hicolor icon support
             wm iconbitmap . -default [file join $::sys_guidir pd.ico]
+            # add local fonts to Tk's font list using pdfontloader
+            if {[file exists [file join "$::sys_libdir" "font"]]} {
+                catch {
+                    load [file join "$::sys_libdir" "bin/pdfontloader.dll"]
+                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf"}
+                    foreach font $localfonts {
+                        set path [file join "$::sys_libdir" "font/$font"]
+                        pdfontloader::load $path
+                        ::pdwindow::verbose 0 "pdfontloader loaded [file tail $path]\n"
+                    }
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "right_ptr"
             set ::cursor_runmode_clickme "arrow"

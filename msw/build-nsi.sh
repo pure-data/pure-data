@@ -68,7 +68,9 @@ Helper script to build a proper Windows installer out of a
 Pd build tree.
 
 Usage:
+
 $0 <path_to_pd_build> <version> <arch>
+
 EOF
   cleanup 1
 fi
@@ -149,7 +151,9 @@ case $nsis_exit in
 esac
 
 # run the build
+
 if makensis -DARCHI=${PDARCH} ${NSIFILE}
+
 then
   echo "Build successful"
 else

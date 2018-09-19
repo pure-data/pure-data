@@ -26,11 +26,6 @@ typedef double t_floatarg;
 and usable in other contexts.  The one external requirement is a real
 single-precision FFT, invoked as in the Mayer one: */
 
-#ifdef _MSC_VER /* this is only needed with Microsoft's compiler */
-__declspec(dllimport) extern
-#endif
-void mayer_realfft(int npoints, t_sample *buf);
-
 /* this routine is passed a buffer of npoints values, and returns the
 N/2+1 real parts of the DFT (frequency zero through Nyquist), followed
 by the N/2-1 imaginary points, in order of decreasing frequency.  Pd 0.41,
@@ -40,9 +35,9 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
-#include <malloc.h>
-#elif ! defined(_MSC_VER)
-#include <alloca.h>
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
 #include <stdlib.h>
 #ifdef _MSC_VER
@@ -64,9 +59,9 @@ typedef struct peak
 
 /********************** service routines **************************/
 
-/* these three are dapted from elsewhere in Pd but included here for
+/* these three are adapted from elsewhere in Pd but included here for
    completeness */
-static int sigmund_ilog2(int n)
+static unsigned int sigmund_ilog2(int n)
 {
     int ret = -1;
     while (n)
@@ -382,8 +377,12 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
     t_float fperbin = 0.5 * srate / npts;
     int npit = 48 * sigmund_ilog2(npts), i, j, k, nsalient;
     t_float bestbin, bestweight, sumamp, sumweight, sumfreq, freq;
-    t_float *weights =  (t_float *)alloca(sizeof(t_float) * npit);
+    t_float *weights =  0;
     t_peak *bigpeaks[PITCHNPEAK];
+    size_t weight_len = sizeof(t_float) * npit;
+    if(weight_len > 65536)
+      weight_len = 65536;
+    weights = (t_float *)alloca(weight_len);
     if (npeak < 1)
     {
         freq = 0;
@@ -790,6 +789,7 @@ whole file can be included in other, non-PD and non-Max projects.  */
 
 #define NPOINTS_DEF 1024
 #define NPOINTS_MIN 128
+#define NPOINTS_MAX 4194304
 
 #define HOP_DEF 512
 #define NPEAK_DEF 20
@@ -892,6 +892,10 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
     if (npts < NPOINTS_MIN)
         post("sigmund~: minimum points %d", NPOINTS_MIN),
             npts = NPOINTS_MIN;
+    if (npts > NPOINTS_MAX)
+        post("sigmund~: maximum points %d", NPOINTS_MAX),
+            npts = NPOINTS_MAX;
+
     if (npts != (1 << sigmund_ilog2(npts)))
         post("sigmund~: adjusting analysis size to %d points",
             (npts = (1 << sigmund_ilog2(npts))));
@@ -1076,6 +1080,7 @@ static void sigmund_free(t_sigmund *x)
     }
     if (x->x_trackv)
         freebytes(x->x_trackv, x->x_ntrack * sizeof(*x->x_trackv));
+    freebytes(x->x_varoutv, x->x_nvarout * sizeof(t_varout));
     clock_free(x->x_clock);
 }
 
@@ -1375,7 +1380,7 @@ void sigmund_tilde_setup(void)
     sigmund_class = class_new(gensym("sigmund~"), (t_newmethod)sigmund_new,
         (t_method)sigmund_free, sizeof(t_sigmund), 0, A_GIMME, 0);
     class_addlist(sigmund_class, sigmund_list);
-    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"), 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"), A_CANT, 0);
     CLASS_MAINSIGNALIN(sigmund_class, t_sigmund, x_f);
     class_addmethod(sigmund_class, (t_method)sigmund_param1,
         gensym("param1"), A_FLOAT, 0);

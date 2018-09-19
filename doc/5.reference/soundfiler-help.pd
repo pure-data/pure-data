@@ -1,12 +1,12 @@
-#N canvas 87 38 1102 576 12;
+#N canvas 322 75 1045 607 12;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array1 77971 float 0;
 #X coords 0 1 77970 -1 300 100 1;
-#X restore 15 458 graph;
+#X restore 14 483 graph;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array2 155944 float 0;
 #X coords 0 1 155943 -1 300 100 1;
-#X restore 324 458 graph;
+#X restore 323 483 graph;
 #X obj 11 315 soundfiler;
 #X msg 25 243 write -aiff /tmp/foo1 array2;
 #X msg 8 154 read ../sound/bell.aiff array2;
@@ -22,7 +22,6 @@ all header information using the "-raw" flag.;
 #X msg 15 177 read -resize ../sound/bell.aiff array2;
 #X msg 25 290 write -nextstep -bytes 4 /tmp/foo3 array1 array2;
 #X msg 24 267 write -wave -nframes 10000 /tmp/foo2 array2;
-#X text 287 152 read a file;
 #X text 362 175 ...optionally resize;
 #X text 225 219 ...or even overriding everything;
 #X text 291 242 write a file;
@@ -58,12 +57,15 @@ You can give "n" (natural) to take the byte order your machine prefers.
 #X text 576 380 -rate <sample rate>;
 #X obj 88 340 print;
 #X text 738 446 See also:;
-#X text 721 539 updated for Pd version 0.48;
 #X text 12 370 Left outlet outputs the number of samples.;
+#X text 251 154 read a file to zero or more arrays;
 #X text 12 396 Right outlet outputs info as a list: samplerate \, headersize
-\, num channels \, bytespersample \, & endianness ("b" or "l").;
+\, num channels \, bytespersample \, & endianness ("b" or "l"). If
+no array name is given \, no samples are read but the info is provided
+anyway.;
+#X text 721 539 updated for Pd version 0.49;
 #X connect 2 0 10 0;
-#X connect 2 1 38 0;
+#X connect 2 1 37 0;
 #X connect 3 0 2 0;
 #X connect 4 0 2 0;
 #X connect 5 0 2 0;

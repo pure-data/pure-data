@@ -3,17 +3,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.47-1\n"
+"Project-Id-Version: Pure Data 0.49-0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2017-11-07 23:00+0200\n"
+"PO-Revision-Date: 2018-09-11 16:22+0200\n"
 "Last-Translator: Cyrille Henry / Antoine Rousseau / Antoine Villeret / "
-"Baptiste Chatel\n"
+"Baptiste Chatel / JP Cimalando / Olivier Humbert\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
 
 msgid "-------dimensions(digits)(pix):-------"
 msgstr "------dimensions(chiffres)(pix):------"
@@ -83,7 +84,7 @@ msgstr "largeur :"
 
 #, tcl-format
 msgid "Do you want to save the changes you made in '%s'?"
-msgstr "Sauver les modifications de '%s' ?"
+msgstr "Enregistrer les modifications de '%s' ?"
 
 #, tcl-format
 msgid "Discard changes to '%s'?"
@@ -161,7 +162,7 @@ msgstr ""
 "chargées."
 
 msgid "(re-save preferences to reinstate them)"
-msgstr "(sauver a nouveau les préférences pour les charger)"
+msgstr "(enregistrez à nouveau les préférences afin de les rétablir)"
 
 msgid "File"
 msgstr "Fichier"
@@ -206,7 +207,7 @@ msgid "Size:"
 msgstr "Taille :"
 
 msgid "Save contents"
-msgstr "Sauver le contenu"
+msgstr "Enregistrer le contenu"
 
 msgid "Draw as:"
 msgstr "Dessiner en :"
@@ -266,13 +267,13 @@ msgid "Use callbacks"
 msgstr "Utiliser des callbacks"
 
 msgid "Input Devices"
-msgstr "Périphérique d'entrée"
+msgstr "Périphériques d'entrée"
 
 msgid "Channels:"
 msgstr "Nombre de canaux :"
 
 msgid "Output Devices"
-msgstr "Périphérique de sortie"
+msgstr "Périphériques de sortie"
 
 msgid "(same as input device)..."
 msgstr "(même que le périphérique d'entrée)..."
@@ -281,7 +282,7 @@ msgid "Use Multiple Devices"
 msgstr "Utiliser plusieurs périphériques"
 
 msgid "Save All Settings"
-msgstr "Sauver tous les réglages"
+msgstr "Enregistrer tous les réglages"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr "ATTENTION: unknown graphme flags received in pdtk_canvas_dialog"
@@ -293,10 +294,10 @@ msgid "Scale"
 msgstr "Échelle"
 
 msgid "X units per pixel:"
-msgstr "X unités par pixel :"
+msgstr "Unités par pixel en X :"
 
 msgid "Y units per pixel:"
-msgstr "Y unités par pixel :"
+msgstr "Unités par pixel en Y :"
 
 msgid "Appearance on parent patch"
 msgstr "Aspect dans le patch parent"
@@ -308,10 +309,10 @@ msgid "Hide object name and arguments"
 msgstr "Cacher le nom et les arguments de l'objet"
 
 msgid "Range and size"
-msgstr "Taille et échelle"
+msgstr "Intervalle et taille"
 
 msgid "X range: from"
-msgstr "Échelle X : de"
+msgstr "Intervalle X : de"
 
 msgid "to"
 msgstr "à"
@@ -320,7 +321,7 @@ msgid "Margin:"
 msgstr "Marges :"
 
 msgid "Y range: from"
-msgstr "Échelle Y : de"
+msgstr "Intervalle Y : de"
 
 msgid "Data Properties"
 msgstr "Propriétés de la donnée"
@@ -413,7 +414,7 @@ msgid "Send symbol:"
 msgstr "Envoyer au symbole :"
 
 msgid "Receive symbol:"
-msgstr "Reçoit du symbole :"
+msgstr "Recevoir du symbole :"
 
 msgid "Background color"
 msgstr "Couleur de l'arrière plan"
@@ -558,7 +559,7 @@ msgid "Browse"
 msgstr "Choisir"
 
 msgid "Reset"
-msgstr ""
+msgstr "Réinitialiser"
 
 msgid "Disable"
 msgstr "Désactiver"
@@ -617,13 +618,46 @@ msgstr "[deken]: version installée [%1$s] < %2$s...remplacer !"
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr "[deken]: version installée [%1$s] == %2$s...ignorer !"
 
+msgid "[deken]: "
+msgstr "[deken] : "
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr "%1$s décompressé avec succès dans %2$s."
+
+msgid "[deken]: Unable to extract package automatically."
+msgstr "[deken] : Impossible de décompresser l'archive automatiquement."
+
+msgid "Please perform the following steps manually:"
+msgstr "Effectuez manuellement les étapes suivantes :"
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr "1. Décompresser %s"
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr "2. Copier le dossier obtenu dans %s."
+
+#, tcl-format
+msgid "[deken] uninstalling '%s'"
+msgstr "[deken] désinstallation de '%s'"
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr "Échec de la désinstallation de %1$s de %2$s !"
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr "[deken] deken-plugin.tcl (recherche d'externals) chargé depuis %s."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr "[deken] Platforme detectée : %s"
+msgstr "[deken] Plateforme détectée : %s"
+
+#, tcl-format
+msgid "[deken] Platform re-detected: %s"
+msgstr "[deken] Plateforme re-détectée : %s"
 
 msgid "Show all"
 msgstr "Montrer tout"
@@ -642,27 +676,69 @@ msgstr "Installer des objets supplémentaires"
 msgid "Only install externals uploaded by people you trust."
 msgstr "Installer uniquement des objets provenant de sources de confiance."
 
-msgid "Searching for externals..."
-msgstr "Installer des objets supplémentaires..."
+msgid "Preferences"
+msgstr "Préférences"
+
+msgid "Installation options:"
+msgstr "Options d'installation :"
+
+msgid "Try to remove libraries before (re)installing them?"
+msgstr "Essayer de supprimer les bibliothèques avant de les (ré)installer ?"
+
+msgid "Show README of newly installed libraries (if present)?"
+msgstr ""
+"Afficher le README (si présent) des bibliothèques nouvellement installées ?"
+
+msgid "Should newly installed libraries be added to Pd's search path?"
+msgstr ""
+"Les bibliothèques nouvellement installées doivent-elles être ajoutées aux "
+"chemins de recherche de Pd ?"
+
+msgid "Platform settings:"
+msgstr "Réglages de plateforme :"
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr "Plateforme par défaut : %s"
+
+msgid "User-defined platform:"
+msgstr "Plateforme définie par l'utilisateur :"
+
+msgid "Hide foreign architectures?"
+msgstr "Cacher les architectures étrangères ?"
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr "Préférences de Deken %s"
+
+msgid "[deken]: Start searching for externals..."
+msgstr "[deken] : Démarrage de la recherche d'externals..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
 msgstr "[deken]: connecté ? %s"
 
-msgid "Unable to perform search. Are you online?"
-msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"
+msgid "Are you online?"
+msgstr "Êtes-vous connecté(e) ?"
 
-msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
-msgstr ""
-"Aucun external correspondant. Réessayez avec le nom complet, par exemple "
-"'freeverb'."
+msgid "Unable to perform search."
+msgstr "Recherche impossible."
+
+msgid "[deken]: No matching externals found."
+msgstr "[deken] : Aucun external correspondant trouvé."
+
+msgid "Try using the full name e.g. 'freeverb'."
+msgstr "Essayez avec le nom complet, par exemple 'freeverb'."
+
+msgid "No matching externals found."
+msgstr "Aucun external correspondant trouvé."
 
 msgid "Please select a (writable) installation directory!"
 msgstr "Choisissez un dossier (accessible en écriture) pour l'installation !"
 
 #, tcl-format
-msgid "Install %s to %s?"
-msgstr "Installer %s dans %s ?"
+msgid "Install %1$s to %2$s?"
+msgstr "Installer %1$s dans %2$s ?"
 
 #, tcl-format
 msgid ""
@@ -674,26 +750,8 @@ msgstr ""
 "%1$s\n"
 "Dans %2$s..."
 
-msgid "aborting."
-msgstr "abandon."
-
-#, tcl-format
-msgid "Successfully unzipped %1$s into %2$s."
-msgstr "%1$s décompressé avec succès dans %2$s."
-
-msgid "Unable to extract package automatically."
-msgstr "Impossible de décompresser l'archive automatiquement."
-
-msgid "Please perform the following steps manually:"
-msgstr "Effectuez manuellement les étapes suivantes :"
-
-#, tcl-format
-msgid "1. Unzip %s."
-msgstr "1. Décompresser %s"
-
-#, tcl-format
-msgid "2. Copy the contents into %s."
-msgstr "2. Copier le dossier obtenu dans %s."
+msgid "aborting.\n"
+msgstr "abandon.\n"
 
 #, tcl-format
 msgid "Unable to add %s to search paths"
@@ -723,12 +781,18 @@ msgstr "Impossible de donner au fichier téléchargé le nom %s"
 msgid "searching for '%s'"
 msgstr "recherche de '%s'"
 
-msgid "Unable to perform search."
-msgstr "Recherche impossible."
-
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
 msgstr "Mis en ligne par '%1$s' le : %2$s"
+
+msgid "Install package"
+msgstr "Installation du paquet"
+
+msgid "Open webpage"
+msgstr "Ouvrir une page web"
+
+msgid "_"
+msgstr "_"
 
 #, tcl-format
 msgid ""
@@ -772,13 +836,16 @@ msgid "About Pd"
 msgstr "À propos de Pd"
 
 msgid "Save"
-msgstr "Sauvegarder"
+msgstr "Enregistrer"
 
 msgid "Save As..."
-msgstr "Sauvegarder Sous..."
+msgstr "Enregistrer sous..."
 
 msgid "Print..."
 msgstr "Imprimer..."
+
+msgid "Paste Replace"
+msgstr "Coller Remplacer"
 
 msgid "Duplicate"
 msgstr "Dupliquer"
@@ -791,6 +858,12 @@ msgstr "Dézoomer"
 
 msgid "Tidy Up"
 msgstr "Aligner"
+
+msgid "(Dis)Connect Selection"
+msgstr "(Dé)Connecter la sélection"
+
+msgid "Triggerize"
+msgstr "Triggeriser"
 
 msgid "Edit Mode"
 msgstr "Mode d'édition"
@@ -821,9 +894,6 @@ msgstr "Tout sélectionner"
 
 msgid "Clear Console"
 msgstr "Effacer la console"
-
-msgid "Preferences"
-msgstr "Préférences"
 
 msgid "Object"
 msgstr "Objet"
@@ -926,10 +996,10 @@ msgid "Zoom New Windows"
 msgstr "Zoomer les nouvelles fenêtres"
 
 msgid "Save All Preferences"
-msgstr "Sauver toutes les préférences"
+msgstr "Enregistrer toutes les préférences"
 
 msgid "Save to..."
-msgstr "Sauvegarder sous..."
+msgstr "Enregistrer sous..."
 
 msgid "Load from..."
 msgstr "Charger à partir de..."
@@ -1000,7 +1070,16 @@ msgstr "'%s' n'existe pas"
 
 #, tcl-format
 msgid "Ignoring '%s': doesn't look like a Pd-file"
-msgstr "'%s' ne semble par être un fichier Pd"
+msgstr "'%s' ne semble pas être un fichier Pd"
+
+#~ msgid "Create"
+#~ msgstr "Créer"
+
+#~ msgid "Check"
+#~ msgstr "Vérifier"
+
+#~ msgid "Unable to perform search. Are you online?"
+#~ msgstr "La recherche n'a pu aboutir. Êtes-vous connecté ?"
 
 #~ msgid "for:"
 #~ msgstr ":"

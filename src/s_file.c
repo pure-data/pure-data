@@ -317,7 +317,8 @@ void sys_loadpreferences(const char *filename, int startingup)
         sys_initloadpreferences_file(filename);
     else sys_initloadpreferences();
         /* load audio preferences */
-    if (sys_getpreference("audioapi", prefbuf, MAXPDSTRING)
+    if (!sys_externalschedlib
+        && sys_getpreference("audioapi", prefbuf, MAXPDSTRING)
         && sscanf(prefbuf, "%d", &api) > 0)
             sys_set_audio_api(api);
             /* JMZ/MB: brackets for initializing */
@@ -579,7 +580,7 @@ void sys_savepreferences(const char *filename)
 
     for (i = 0; 1; i++)
     {
-        char *pathelem = namelist_get(STUFF->st_searchpath, i);
+        const char *pathelem = namelist_get(STUFF->st_searchpath, i);
         if (!pathelem)
             break;
         sprintf(buf1, "path%d", i+1);
@@ -595,7 +596,7 @@ void sys_savepreferences(const char *filename)
         /* startup */
     for (i = 0; 1; i++)
     {
-        char *pathelem = namelist_get(STUFF->st_externlist, i);
+        const char *pathelem = namelist_get(STUFF->st_externlist, i);
         if (!pathelem)
             break;
         sprintf(buf1, "loadlib%d", i+1);

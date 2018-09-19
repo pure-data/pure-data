@@ -963,7 +963,6 @@ static void *stripnote_new(void)
 
 static void stripnote_float(t_stripnote *x, t_float f)
 {
-    t_hang *hang;
     if (!x->x_velo) return;
     outlet_float(x->x_velout, x->x_velo);
     outlet_float(x->x_pitchout, f);
