@@ -6,7 +6,6 @@
 ;
 ;
 ;
-;
 
 
 
@@ -15,15 +14,12 @@
 ; the string PDVERSION should be filled in (e.g., to 0.46-7)
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "Pure Data"
+!define PRODUCT_NAME "Pure Data ${ARCHI}-bit"
 !define PRODUCT_VERSION "PDVERSION"
 !define PRODUCT_PUBLISHER "Miller Puckette"
 !define PRODUCT_WEB_SITE "http://www.puredata.info"
-;
-; removed as of 0.49 to prevent 32/64 installer clashing. No negative side effects were observed.
-;
-;			!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\pd.exe"
-;
+
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\pd.exe"
 
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -84,12 +80,9 @@ Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "/tmp/pd-${PRODUCT_VERSION}.windows-installer.exe"
 InstallDir "$PROGRAMFILES${ARCHI}\Pd"
 
-;
-; removed as of 0.49 to prevent 32/64 installer clashing. No negative side effects were observed.
-;
-;
-;			InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
-;
+
+InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" "${ARCHI}"
+
 
 ShowInstDetails show
 ShowUnInstDetails show
@@ -134,14 +127,10 @@ SectionGroupEnd
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
 
-;
-; removed as of 0.49 to prevent 32/64 installer clashing. No negative side effects were observed.
-;
-;
-;
-; 			WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\pd.exe"
-;
+  
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "${ARCHI}" "$INSTDIR\bin\pd.exe"
 
+  
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\pd.exe"
@@ -173,12 +162,10 @@ Section Uninstall
 
 ; file ext association
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
-;
-; removed as of 0.49 to prevent 32/64 installer clashing. No negative side effects were observed.
-;
-;
-;
-;  			DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  
+  
+  DeleteRegKey /ifempty HKLM "${PRODUCT_DIR_REGKEY}"
+
 
   DeleteRegKey HKCR ".pd"
   DeleteRegKey HKCR "PureData"
