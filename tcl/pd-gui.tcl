@@ -699,6 +699,11 @@ proc dde_open_handler {cmd} {
 }
 
 proc check_for_running_instances { } {
+    # if pd-gui gets called from pd ('pd-gui 5400') or is told otherwise
+    # to connect to a running instance of Pd (by providing [<host>:]<port>)
+    # then we don't want to connect to a running instance
+    if { $::port > 0 && $::host ne "" } { return }
+
     switch -- $::windowingsystem {
         "aqua" {
             # handled by ::tk::mac::OpenDocument in apple_events.tcl
@@ -707,10 +712,6 @@ proc check_for_running_instances { } {
             # TODO replace PUREDATA name with path so this code is a singleton
             # based on install location rather than this hard-coded name
             if {![singleton ${::pdgui::scriptname}_MANAGER ]} {
-                # if pd-gui gets called from pd ('pd-gui 5400') or is told otherwise
-                # to connect to a running instance of Pd (by providing [<host>:]<port>)
-                # then we don't want to connect to a running instance
-                if { $::port > 0 && $::host ne "" } { return }
                 selection handle -selection ${::pdgui::scriptname} . "send_args"
                 selection own -command others_lost -selection ${::pdgui::scriptname} .
                 after 5000 set ::singleton_state "timeout"
