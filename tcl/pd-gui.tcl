@@ -728,7 +728,14 @@ proc check_for_running_instances { } {
             set topic "Pure_Data_DDE_Open"
             # if no DDE service is running, start one and claim the name
             if { [dde services TclEval $topic] == {} } {
+                # registers the interpreter as a DDE server with the service name 'TclEval' and the topic name specified by 'topic'
                 dde servername -handler dde_open_handler $topic
+            } else {
+                # DDE is already running: use it to open the file with the running instance
+                # we only open a single file (assuming that this is called by double-clicking)
+                set filename [lindex ${::argv} 0]
+                dde eval $topic $filename
+                exit 0
             }
         }
     }
