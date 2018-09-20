@@ -725,7 +725,7 @@ proc check_for_running_instances { } {
         } "win32" {
             ## http://wiki.tcl.tk/8940
             package require dde ;# 1.4 or later needed for full unicode support
-            set topic "Pure_Data_DDE_Open"
+            set topic "Pure_Data_DDE_Open ${::pdgui::scriptname}"
             # if no DDE service is running, start one and claim the name
             if { [dde services TclEval $topic] == {} } {
                 # registers the interpreter as a DDE server with the service name 'TclEval' and the topic name specified by 'topic'
