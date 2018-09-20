@@ -616,13 +616,14 @@ proc parse_args {argc argv} {
     }
     set unflagged_files [opt_parser::get_options $argv]
     # if we have a single arg that is not a file, its a port or host:port combo
-    if {$argc == 1 && ! [file exists $argv]} {
-        if { [string is int $argv] && $argv > 0} {
+    if {$argc == 1 && ! [file exists [ lindex $argv 0 ]]} {
+           set arg1 [ lindex $argv 0 ]
+        if { [string is int $arg1] && $arg1 > 0} {
             # 'pd-gui' got the port number from 'pd'
             set ::host "localhost"
-            set ::port $argv
+            set ::port $arg1
         } else {
-            set hostport [split $argv ":"]
+            set hostport [split $arg1 ":"]
             set ::port [lindex $hostport 1]
             if { [string is int $::port] && $::port > 0} {
                 set ::host [lindex $hostport 0]
