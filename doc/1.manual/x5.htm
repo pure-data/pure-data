@@ -28,7 +28,7 @@ Bukvic and ported to Pd vanilla by Johannes Zmoelnig.
 
 <P> Various editing shortcuts, also from Johannes.
 	
-<P> "Declare" -path & -lib flags now search user search paths
+<P> "Declare" -path & -lib flags now search user search paths.
 
 <P> Search path handling made easier and more consistent between user
 preferences, "declare" objects and command line flags.  See help file for
@@ -37,7 +37,7 @@ the "declare" object.
 <P> A "savestate" object allows abstractions to be designed so that they can
 save state information as part of the calling patch.
 
-<P> "Pointer" object has a "delete" method
+<P> "Pointer" object has a "delete" method.
 
 <P> "Text", "array", and "scalar" objects have the same methods (bang and "send")
 for outputting pointers to themselves
@@ -45,12 +45,15 @@ for outputting pointers to themselves
 <P> Opening patches from menu, command line, or messages to "pd" first check
 of the file is already open and if so only bring the existing patch to front.
 
-<P> 4 million point default limit on resizing soundfile read to array changed
-to 2^31-1 (about 2 billion) samples, soundfiler can now only read and output a
-file's information if you don't give it an array name
-	
-<P> log has a base argument and new inlet like log~, pow and pow~ can deal with 
-negative numbers.
+<P> 4 million point default limit on resizing soundfile read to array changed to
+2^31-1 (about 2 billion) samples.  If invoked without an array name,  soundfiler
+still outputs the file's sample rate, etc., although it still reads the samples
+only to throw them away; so if you really just want the soundfile info, consider
+reading into an unused one-sample table instead.
+
+<P> The "log" object has an optional argument to specify the laogarythm's base,
+and a new inlet, to match "log~", and "pow" and "pow~" can now raise negative
+numbers to integer powers, like the C math library "pow()" function.
 
 <P> Changes to audio I/O handling to time out if device freezes (as when you
 unplug a USB device in MACOSX).
