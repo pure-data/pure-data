@@ -102,6 +102,16 @@ then
   cleanup 1
 fi
 
+# autodetect architecture if not given on the cmdline
+if [  "x$PDARCH" = "x" ]; then
+    file "$PDWINDIR/bin/pd.exe" | egrep "^PE32 .* 80386 " >/dev/null && PDARCH=32
+    file "$PDWINDIR/bin/pd.exe" | egrep "^PE32\+ .* x86-64 " >/dev/null && PDARCH=64
+fi
+if [  "x$PDARCH" = "x" ]; then
+    error "Unable to automatically determine <arch>."
+    cleanup 1
+fi
+
 #### WRITE INSTALL LIST #########################################
 find "$PDWINDIR" \
   -mindepth 0 \
