@@ -110,9 +110,10 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
   ; Set file ext associations
     WriteRegStr HKCR ".pd" "" "PureData"
     WriteRegStr HKCR "PureData" "" ""
+    WriteRegStr HKCR "PureData\DefaultIcon" "" "$INSTDIR\bin\pd.exe"
     WriteRegStr HKCR "PureData\shell" "" ""
     WriteRegStr HKCR "PureData\shell\open" "" ""
-    WriteRegStr HKCR "PureData\shell\open\command" "" "$INSTDIR\bin\pd.exe %1"
+    WriteRegStr HKCR "PureData\shell\open\command" "" '$INSTDIR\bin\wish85.exe "$INSTDIR\tcl\pd-gui.tcl" %1'
   ; Set file ext icon
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd" "" ""
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd\OpenWithList" "a" "pd.exe"
