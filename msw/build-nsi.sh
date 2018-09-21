@@ -53,6 +53,10 @@ UNINSTALLFILE="${OUTDIR}/uninstall_files_list.nsh"
 LICENSEFILE="${OUTDIR}/license_page.nsh"
 NSIFILE="${OUTDIR}/pd.nsi"
 
+error() {
+  echo "$@" 1>&2
+}
+
 cleanup() {
  if [ "x${OUTDIR}" != "x/tmp" ]; then
     rm -rf "${OUTDIR}"
@@ -60,17 +64,25 @@ cleanup() {
  exit $1
 }
 
-# show usage when invoked without args
-if [ "$#" -lt "2" ]
-then
+usage() {
   cat << EOF
 Helper script to build a proper Windows installer out of a
 Pd build tree.
 
 Usage:
-$0 <path_to_pd_build> <version> <arch>
+$0 <path_to_pd_build> <version> [<arch>]
+
+   <path_to_pd_build>   input directory (containing 'bin/pd.exe')
+   <version>            Pd-version to create installer for (e.g. '0.32-8')
+   <arch>               architecture of Pd ('32' or '64')
 EOF
   cleanup 1
+}
+
+# show usage when invoked without args
+if [ "$#" -lt "2" ]
+then
+    usage
 fi
 
 PDWINDIR=$(realpath "$1")
@@ -82,11 +94,11 @@ PDARCH=$3
 # Check validity of specified PDWINDIR
 if ! [ -d "$PDWINDIR" ]
 then
-  echo "'$PDWINDIR' is not a directory"
+  error "'$PDWINDIR' is not a directory"
   cleanup 1
 elif ! [ -f "$PDWINDIR/bin/pd.exe" ]
 then
-  echo "Could not find bin/pd.exe. Is this a Windows build?"
+  error "Could not find bin/pd.exe. Is this a Windows build?"
   cleanup 1
 fi
 
@@ -137,13 +149,13 @@ nsis_exit=$?
 case $nsis_exit in
   0) echo "Found NSIS version $nsis_version"
      ;;
-  1) echo "makensis returned error. What's the problem?"
+  1) error "makensis returned error. What's the problem?"
      cleanup 1
      ;;
-  2) echo "NSIS is not found.  install, e.g., mingw32-nsis."
+  2) error "NSIS is not found.  install, e.g., mingw32-nsis."
      cleanup 1
      ;;
-  *) echo "Unkown error"
+  *) error "Unkown error"
      cleanup 1
      ;;
 esac
@@ -153,7 +165,7 @@ if makensis -DARCHI=${PDARCH} ${NSIFILE}
 then
   echo "Build successful"
 else
-  echo "Some error occured during compilation of ${NSIFILE}"
+  error "Some error occured during compilation of ${NSIFILE}"
   exit 1
 fi
 cleanup 0
