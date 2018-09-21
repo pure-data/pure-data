@@ -8,6 +8,7 @@ proc open_file {filename} {
     set basename [file tail $filename]
     if { ! [file exists $filename]} {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::post "\n"
         # remove from recent files
         ::pd_guiprefs::update_recentfiles $filename true
         return
@@ -19,6 +20,7 @@ proc open_file {filename} {
         ::pd_guiprefs::update_recentfiles $filename
     } else {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
+        ::pdwindow::post "\n"
     }
 }
 
