@@ -4,6 +4,7 @@ package provide wheredoesthisgo 0.1
 # a place to temporarily store things until they find a home or go away
 
 proc open_file {filename} {
+    if {$filename == ""} { return }
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
     if { ! [file exists $filename]} {
