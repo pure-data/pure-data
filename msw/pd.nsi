@@ -14,7 +14,7 @@
 ; the string PDVERSION should be filled in (e.g., to 0.46-7)
 
 ; HM NIS Edit Wizard helper defines
-!define PRODUCT_NAME "Pure Data ${ARCHI}-bit"
+!define PRODUCT_NAME "Pure Data (${ARCHI}-bit)"
 !define PRODUCT_VERSION "PDVERSION"
 !define PRODUCT_PUBLISHER "Miller Puckette"
 !define PRODUCT_WEB_SITE "http://www.puredata.info"
@@ -96,14 +96,14 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
   Section "${COMPONENT_STARTMENU_TEXT}" StartMenu
     SetOutPath $INSTDIR
     WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-    CreateDirectory "$SMPROGRAMS\Pd-${ARCHI}bit"
-    CreateShortCut "$SMPROGRAMS\Pd-${ARCHI}bit\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-    CreateShortCut "$SMPROGRAMS\Pd-${ARCHI}bit\Uninstall.lnk" "$INSTDIR\uninst.exe"
-    CreateShortCut "$SMPROGRAMS\Pd-${ARCHI}bit\Pd-${ARCHI}bit.lnk" "$INSTDIR\bin\pd.exe"
+    CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
+    CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+    CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+    CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\pd.exe"
   SectionEnd
 
   Section "${COMPONENT_DESKTOPSHORTCUT_TEXT}" DesktopShortcut
-    CreateShortCut "$Desktop\Pd-${ARCHI}bit.lnk" "$INSTDIR\bin\pd.exe"
+    CreateShortCut "$Desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\pd.exe"
   SectionEnd
 
   Section "${COMPONENT_FILEASSOC_TEXT}" SetFileAssociations
@@ -152,11 +152,11 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$SMPROGRAMS\Pd-${ARCHI}bit\Uninstall.lnk"
-  Delete "$SMPROGRAMS\Pd-${ARCHI}bit\Website.lnk"
-  Delete "$SMPROGRAMS\Pd-${ARCHI}bit\Pd-${ARCHI}.lnk"
-  RMDir "$SMPROGRAMS\Pd-${ARCHI}bit"
-  Delete "$DESKTOP\Pd-${ARCHI}bit.lnk"
+  Delete "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk"
+  Delete "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk"
+  Delete "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk"
+  RMDir "$SMPROGRAMS\${PRODUCT_NAME}"
+  Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
 
   !include "/tmp/uninstall_files_list.nsh"
 
