@@ -619,6 +619,18 @@ void sys_set_searchpath( void)
     sys_gui("set ::sys_searchpath $::tmp_path\n");
 }
 
+    /* send the temp paths from the commandline to pd-gui */
+void sys_set_temppath(void)
+{
+    int i;
+    t_namelist *nl;
+
+    sys_gui("set ::tmp_path {}\n");
+    for (nl = STUFF->st_temppath, i = 0; nl; nl = nl->nl_next, i++)
+        sys_vgui("lappend ::tmp_path {%s}\n", nl->nl_string);
+    sys_gui("set ::sys_temppath $::tmp_path\n");
+}
+
     /* send the hard-coded search path to pd-gui */
 void sys_set_extrapath( void)
 {
