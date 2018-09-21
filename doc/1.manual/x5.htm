@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTYPE html>
 
 <HTML>
   <HEAD>
@@ -18,7 +18,7 @@
 
 <P>This section tracks changes in Pd's current implementation.</P>
 
-<H3> <A name="s2"> 5.1. release notes </A> </H3>
+<H3> <A id="s2"> 5.1. release notes </A> </H3>
 
 <P> ------------------ 0.49-0 ------------------------------
 
@@ -27,6 +27,8 @@ more than one successive edit.  This feature was introduced by Ivica Ico
 Bukvic and ported to Pd vanilla by Johannes Zmoelnig.
 
 <P> Various editing shortcuts, also from Johannes.
+	
+<P> "Declare" -path & -lib flags now search user search paths.
 
 <P> Search path handling made easier and more consistent between user
 preferences, "declare" objects and command line flags.  See help file for
@@ -35,18 +37,23 @@ the "declare" object.
 <P> A "savestate" object allows abstractions to be designed so that they can
 save state information as part of the calling patch.
 
-<P> "Pointer" object has a "delete" method
+<P> "Pointer" object has a "delete" method.
 
 <P> "Text", "array", and "scalar" objects have the same methods (bang and "send")
 for outputting pointers to themselves
 
-<P> "Declare" -path & -lib flags now search user search paths
-
 <P> Opening patches from menu, command line, or messages to "pd" first check
 of the file is already open and if so only bring the existing patch to front.
 
-<P> 4 million point default limit on resizing soundfile read to array changed
-to 2^31-1 (about 2 billion) samples
+<P> 4 million point default limit on resizing soundfile read to array changed to
+2^31-1 (about 2 billion) samples.  If invoked without an array name,  soundfiler
+still outputs the file's sample rate, etc., although it still reads the samples
+only to throw them away; so if you really just want the soundfile info, consider
+reading into an unused one-sample table instead.
+
+<P> The "log" object has an optional argument to specify the laogarythm's base,
+and a new inlet, to match "log~", and "pow" and "pow~" can now raise negative
+numbers to integer powers, like the C math library "pow()" function.
 
 <P> Changes to audio I/O handling to time out if device freezes (as when you
 unplug a USB device in MACOSX).
@@ -109,6 +116,7 @@ on it as things changed in the past.
 
 <P> "float" now understands symbol messages that look like floats.  The help
 files for "float", "value" and "send" were updated to reflect this.
+
 
 <P> But the biggest changes are under the hood.  Pd now can manage more
 than one running instance, so that it is possible to make plug-ins of various
@@ -356,6 +364,9 @@ binaries by compiling with  -arch i386 -arch x86_64).
 hard-coded to 44100).  Still no way to detect the sample rate of a file when
 reading it.
 
+
+
+
 <P> ------------------ 0.44-3 ---------------------------
 
 <P> Fix hip~ AC gain once more (still didn't have it right).
@@ -427,7 +438,6 @@ compilation fixes.
 
 <P> STILL BUGGY: when you change the contents of a graph-on-parent subpatch the
 old stuff often doesn't get erased correctly.
-
 <P> ------------------ 0.43 ---------------------------
 
 <P> Completely new TCL front end, thanks to Hans-Christophe Steiner,
@@ -460,7 +470,7 @@ new objects (some folks like it and others hate it)
 
 <P> ------------------ 0.42.1-3 ---------------------------
 
-<P> Bug fix on Windows(canceling window close deactivated window).
+<P> Bug fix on Windows(cancelling window close deactivated window).
 
 <P> Bug fix running Pd from command line in MacOS.
 
@@ -859,7 +869,7 @@ on the fly via a dialog in the "File" menu.
 <P> A "vline" object acts like "line" but to sub-sample accuracy.  See
 the audio example, C04.control.to.signal.pd (and/or chapter 3 of
 <A HREF="http://msp.ucsd.edu/techniques.htm"
-<I> Theory and Techniques of Electronic Music </I> ).
+<I> Theory and Techniques of Electronic Music </I> ).</a>
  
 <P> The block~/switch~ object now takes a "set" message to dynamically change
 block size, etc.
@@ -2075,13 +2085,13 @@ The following max-like objects are included:
     send, receive.
 <P> -----------------------------------------
 
-<H3> <A name="s2"> 5.2. known bugs </A> </H3>
+<H3> <A id="s2"> 5.2. known bugs </A> </H3>
 
 <P> These are now tracked on the
 <A href=https://sourceforge.net/projects/pure-data/>
 Pd Sourceforge project page</A>.
 
-<H3> <A name="s3"> 5.3. differences from Max/MSP </A> </H3>
+<H3> <A id="s3"> 5.3. differences from Max/MSP </A> </H3>
 
 <P> It wasn't anyone's intention to make Pd a Max/MSP clone, but on the
 other hand, if there's no reason for a feature to appear differently in

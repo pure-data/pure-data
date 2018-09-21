@@ -616,13 +616,14 @@ proc parse_args {argc argv} {
     }
     set unflagged_files [opt_parser::get_options $argv]
     # if we have a single arg that is not a file, its a port or host:port combo
-    if {$argc == 1 && ! [file exists $argv]} {
-        if { [string is int $argv] && $argv > 0} {
+    if {$argc == 1 && ! [file exists [ lindex $argv 0 ]]} {
+           set arg1 [ lindex $argv 0 ]
+        if { [string is int $arg1] && $arg1 > 0} {
             # 'pd-gui' got the port number from 'pd'
             set ::host "localhost"
-            set ::port $argv
+            set ::port $arg1
         } else {
-            set hostport [split $argv ":"]
+            set hostport [split $arg1 ":"]
             set ::port [lindex $hostport 1]
             if { [string is int $::port] && $::port > 0} {
                 set ::host [lindex $hostport 0]
@@ -699,6 +700,11 @@ proc dde_open_handler {cmd} {
 }
 
 proc check_for_running_instances { } {
+    # if pd-gui gets called from pd ('pd-gui 5400') or is told otherwise
+    # to connect to a running instance of Pd (by providing [<host>:]<port>)
+    # then we don't want to connect to a running instance
+    if { $::port > 0 && $::host ne "" } { return }
+
     switch -- $::windowingsystem {
         "aqua" {
             # handled by ::tk::mac::OpenDocument in apple_events.tcl
@@ -707,10 +713,6 @@ proc check_for_running_instances { } {
             # TODO replace PUREDATA name with path so this code is a singleton
             # based on install location rather than this hard-coded name
             if {![singleton ${::pdgui::scriptname}_MANAGER ]} {
-                # if pd-gui gets called from pd ('pd-gui 5400') or is told otherwise
-                # to connect to a running instance of Pd (by providing [<host>:]<port>)
-                # then we don't want to connect to a running instance
-                if { $::port > 0 && $::host ne "" } { return }
                 selection handle -selection ${::pdgui::scriptname} . "send_args"
                 selection own -command others_lost -selection ${::pdgui::scriptname} .
                 after 5000 set ::singleton_state "timeout"
@@ -723,10 +725,17 @@ proc check_for_running_instances { } {
         } "win32" {
             ## http://wiki.tcl.tk/8940
             package require dde ;# 1.4 or later needed for full unicode support
-            set topic "Pure_Data_DDE_Open"
+            set topic "Pure_Data_DDE_Open ${::pdgui::scriptname}"
             # if no DDE service is running, start one and claim the name
             if { [dde services TclEval $topic] == {} } {
+                # registers the interpreter as a DDE server with the service name 'TclEval' and the topic name specified by 'topic'
                 dde servername -handler dde_open_handler $topic
+            } else {
+                # DDE is already running: use it to open the file with the running instance
+                # we only open a single file (assuming that this is called by double-clicking)
+                set filename [lindex ${::argv} 0]
+                dde eval $topic $filename
+                exit 0
             }
         }
     }

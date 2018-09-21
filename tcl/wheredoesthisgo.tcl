@@ -4,10 +4,12 @@ package provide wheredoesthisgo 0.1
 # a place to temporarily store things until they find a home or go away
 
 proc open_file {filename} {
+    if {$filename == ""} { return }
     set directory [file normalize [file dirname $filename]]
     set basename [file tail $filename]
     if { ! [file exists $filename]} {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't exist"] $filename]
+        ::pdwindow::post "\n"
         # remove from recent files
         ::pd_guiprefs::update_recentfiles $filename true
         return
@@ -19,6 +21,7 @@ proc open_file {filename} {
         ::pd_guiprefs::update_recentfiles $filename
     } else {
         ::pdwindow::post [format [_ "Ignoring '%s': doesn't look like a Pd-file"] $filename]
+        ::pdwindow::post "\n"
     }
 }
 

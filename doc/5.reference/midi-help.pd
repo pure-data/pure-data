@@ -109,13 +109,13 @@ from -8192 to 8191 - this won't change.;
 , f 72;
 #X text 530 197 MIDI OUTPUTS: Outputs are set to channel 1 by default
 \, but they also take a channel argument \, but [ctlout] takes control
-and channel arguments. Inlets are not supressed by arguments and change
+and channel arguments. Inlets are not suppressed by arguments and change
 the parameters., f 65;
 #X text 32 41 MIDI INPUTS: Inputs are omni by default \, an optional
-argument sets the channel and removes the rightmost outlet (which ouputs
+argument sets the channel and removes the rightmost outlet (which outputs
 the channel number). For [ctlin] \, a first optional argument sets
-controller number and supresses its corresponding outlet \, and a second
-argument sets the channel and also supresses its corresponding outlet.
+controller number and suppresses its corresponding outlet \, and a second
+argument sets the channel and also suppresses its corresponding outlet.
 ;
 #X text 738 398 value;
 #X connect 0 0 79 0;
