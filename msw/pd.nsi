@@ -99,11 +99,11 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
     CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
     CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
     CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk" "$INSTDIR\uninst.exe"
-    CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\pd.exe"
+    CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\wish85.exe" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
   SectionEnd
 
   Section "${COMPONENT_DESKTOPSHORTCUT_TEXT}" DesktopShortcut
-    CreateShortCut "$Desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\pd.exe"
+    CreateShortCut "$Desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\wish85.exe" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
   SectionEnd
 
   Section "${COMPONENT_FILEASSOC_TEXT}" SetFileAssociations
