@@ -14,7 +14,9 @@ installer (.exe) out of a Pure Data build tree.
 Features of the resulting installer:
 
  * Install Pure Data to user selectable destination
-   (Default: "%Program Files%\Pd")
+   (Default 64bit OS 64bit APP: "%Program Files%\Pd")
+   (Default 64bit OS 32bit APP: "%Program Files (x86)%\Pd")
+   (Default 32bit OS 32bit APP: "%Program Files%\Pd")
 
  * Create Startmenu entries (optional)
 
@@ -35,7 +37,7 @@ How to build installer
 Run the script and specify the directory containing a windows build of
 Pure Data:
 
- ./build-msi.sh <path-to-pd-dir> <pd-version-number>
+ ./build-nsi.sh <path-to-pd-dir> <pd-version-number> <arch (32 or 64)>
 
 The scripts dynamically creates a list of all files to be included in the
 installer and then runs makensis. The result is an installer named
@@ -51,6 +53,10 @@ UNINSTALLFILE="${OUTDIR}/uninstall_files_list.nsh"
 LICENSEFILE="${OUTDIR}/license_page.nsh"
 NSIFILE="${OUTDIR}/pd.nsi"
 
+error() {
+  echo "$@" 1>&2
+}
+
 cleanup() {
  if [ "x${OUTDIR}" != "x/tmp" ]; then
     rm -rf "${OUTDIR}"
@@ -58,31 +64,55 @@ cleanup() {
  exit $1
 }
 
-# show usage when invoked without args
-if [ "$#" -lt "2" ]
-then
+usage() {
   cat << EOF
 Helper script to build a proper Windows installer out of a
 Pd build tree.
 
 Usage:
-$0 <path_to_pd_build> <version>
+$0 <path_to_pd_build> <version> [<arch>]
+
+   <path_to_pd_build>   input directory (containing 'bin/pd.exe')
+   <version>            Pd-version to create installer for (e.g. '0.32-8')
+   <arch>               architecture of Pd ('32' or '64')
 EOF
   cleanup 1
+}
+
+# show usage when invoked without args
+if [ "$#" -lt "2" ]
+then
+    usage
 fi
 
 PDWINDIR=$(realpath "$1")
 PDVERSION=$2
+PDARCH=$3
+
+
 
 # Check validity of specified PDWINDIR
 if ! [ -d "$PDWINDIR" ]
 then
-  echo "'$PDWINDIR' is not a directory"
+  error "'$PDWINDIR' is not a directory"
   cleanup 1
 elif ! [ -f "$PDWINDIR/bin/pd.exe" ]
 then
-  echo "Could not find bin/pd.exe. Is this a Windows build?"
+  error "Could not find bin/pd.exe. Is this a Windows build?"
   cleanup 1
+fi
+
+# autodetect architecture if not given on the cmdline
+if [  "x$PDARCH" = "x" ]; then
+    if file -b "$PDWINDIR/bin/pd.exe" | egrep "^PE32 .* 80386 " >/dev/null; then
+        PDARCH=32
+    elif file -b "$PDWINDIR/bin/pd.exe" | egrep "^PE32\+ .* x86-64 " >/dev/null; then
+        PDARCH=64
+    fi
+fi
+if [  "x$PDARCH" = "x" ]; then
+    error "Unable to automatically determine <arch>."
+    cleanup 1
 fi
 
 #### WRITE INSTALL LIST #########################################
@@ -132,23 +162,23 @@ nsis_exit=$?
 case $nsis_exit in
   0) echo "Found NSIS version $nsis_version"
      ;;
-  1) echo "makensis returned error. What's the problem?"
+  1) error "makensis returned error. What's the problem?"
      cleanup 1
      ;;
-  2) echo "NSIS is not found.  install, e.g., mingw32-nsis."
+  2) error "NSIS is not found.  install, e.g., mingw32-nsis."
      cleanup 1
      ;;
-  *) echo "Unkown error"
+  *) error "Unkown error"
      cleanup 1
      ;;
 esac
 
 # run the build
-if makensis "${NSIFILE}"
+if makensis -DARCHI=${PDARCH} ${NSIFILE}
 then
   echo "Build successful"
 else
-  echo "Some error occured during compilation of ${NSIFILE}"
+  error "Some error occured during compilation of ${NSIFILE}"
   exit 1
 fi
 cleanup 0

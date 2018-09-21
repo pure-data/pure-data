@@ -559,7 +559,15 @@ static void oscformat_list(t_oscformat *x, t_symbol *s, int argc, t_atom *argv)
             typecode = 's';
         else typecode = 'f';
         if (typecode == 's')
-            msgindex += ROUNDUPTO4(strlen(argv[j].a_w.w_symbol->s_name) + 1);
+        {
+            if (argv[j].a_type == A_SYMBOL)
+                msgindex += ROUNDUPTO4(strlen(argv[j].a_w.w_symbol->s_name) + 1);
+            else
+            {
+                pd_error(x, "oscformat: expected symbol for argument %d", j+1);
+                return;
+            }
+        }
         else if (typecode == 'b')
         {
             int blobsize = 0x7fffffff, blobindex;
