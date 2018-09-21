@@ -104,8 +104,12 @@ fi
 
 # autodetect architecture if not given on the cmdline
 if [  "x$PDARCH" = "x" ]; then
-    file "$PDWINDIR/bin/pd.exe" | egrep "^PE32 .* 80386 " >/dev/null && PDARCH=32
-    file "$PDWINDIR/bin/pd.exe" | egrep "^PE32\+ .* x86-64 " >/dev/null && PDARCH=64
+    error "autodetect od-arch for $PDWINDIR/bin/pd.exe"
+    if file -b "$PDWINDIR/bin/pd.exe" | egrep "^PE32 .* 80386 " >/dev/null; then
+        PDARCH=32
+    elif file -b "$PDWINDIR/bin/pd.exe" | egrep "^PE32\+ .* x86-64 " >/dev/null; then
+        PDARCH=64
+    fi
 fi
 if [  "x$PDARCH" = "x" ]; then
     error "Unable to automatically determine <arch>."
