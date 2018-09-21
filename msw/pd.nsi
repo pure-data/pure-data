@@ -94,7 +94,7 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
   SectionEnd
 
   Section "${COMPONENT_STARTMENU_TEXT}" StartMenu
-    SetOutPath $INSTDIR
+    SetOutPath "%USERPROFILE%"
     WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
     CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
     CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
