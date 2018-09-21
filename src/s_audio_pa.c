@@ -90,9 +90,9 @@ static pthread_cond_t pa_sem;
 #if defined (FAKEBLOCKING) && defined(_WIN32)
 #include <windows.h>    /* for Sleep() */
 #endif
-/* maximum number of ms sleeps before we stop polling and try to reopen the device */
+/* max number of unsuccessful polls before trying to reopen the device */
 #ifndef MAX_NUM_POLLS
-#define MAX_NUM_POLLS 1000 /* maximum number of unsuccessful polls before giving up */
+#define MAX_NUM_POLLS 1000
 #endif
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */

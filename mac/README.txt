@@ -164,3 +164,12 @@ commandline utility in Terminal:
 
     # set the startup flag in the core settings
     defaults write org.puredata.pd -array-add flags '-lib Gem'
+
+Some important per-application settings required by the GUI include:
+
+* NSRecentDocuments: string array, list of recently opened files
+* NSQuitAlwaysKeepsWindows: false, disables default 10.7+ window state saving
+* ApplePressAndHoldEnabled: false, disables character compose popup,
+                                   enables key repeat for all keys
+
+These are set in `tcl/pd_guiprefs.tcl`.

@@ -226,7 +226,7 @@ void midi_oss_init(void)
     struct stat statbuf;
     char namebuf[80];
          /* we only try to detect devices before trying to open them, because
-         when they're open, they migth not be possible to reopen here */
+         when they're open, they might not be possible to reopen here */
     static int initted = 0;
     if (initted)
         return;

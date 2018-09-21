@@ -12,7 +12,7 @@
     a form usable by clock_setunit)( and clock_gettimesincewithunits().
     This brute-force search through symbols really ought not to be done on
     the fly for incoming 'tempo' messages, hmm...  This isn't public because
-    its interface migth want to change - but it's used in x_text.c as well
+    its interface might want to change - but it's used in x_text.c as well
     as here. */
 void parsetimeunits(void *x, t_float amount, t_symbol *unitname,
     t_float *unit, int *samps)
