@@ -155,9 +155,11 @@ set font_zoom2_measured {}
 set sys_libdir {}
 # root path where the pd-gui.tcl GUI script is located
 set sys_guidir {}
-# user-specified search path for objects, help, fonts, etc.
+# user-specified search paths for objects, help, fonts, etc.
 set sys_searchpath {}
-# hard-coded search patch for objects, help, plugins, etc.
+# user-specified search paths from the commandline -path option
+set sys_temppath {}
+# hard-coded search patchs for objects, help, plugins, etc.
 set sys_staticpath {}
 # the path to the folder where the current plugin is being loaded from
 set current_plugin_loadpath {}
@@ -774,7 +776,7 @@ proc load_startup_plugins {} {
     load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
 
     # load other installed plugins
-    foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
+    foreach pathdir [concat $::sys_searchpath $::sys_temppath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
         foreach filename [glob -directory $dir -nocomplain -types {f} -- \
