@@ -307,10 +307,9 @@ static PERTHREAD int outlet_eventno;
 
 void glob_stackdepth(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
-    int depth;
     if (argc)
     {
-        depth = atom_getfloatarg(0, argc, argv);
+        int depth = atom_getfloatarg(0, argc, argv);
         if(depth > 0) stackdepth = depth;
         else post("warning: stackdepth must be greater than 0");
     }
