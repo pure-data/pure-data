@@ -1117,6 +1117,34 @@ static OSStatus AudioDevicePropertyGenericListenerProc( AudioDeviceID inDevice, 
     return osErr;
 }
 
+/* this is called when a device unexpectedly disappears, ie. is unplugged while streaming */
+static OSStatus AudioDevicePropertyIsAliveListenerProc( AudioObjectID inDevice, UInt32 inNumberAddresses, const AudioObjectPropertyAddress inAddresses[], void* inClientData )
+{
+    OSStatus osErr = noErr;
+    PaMacCoreStream *stream = (PaMacCoreStream*)inClientData;
+    Boolean isInput = (inDevice == stream->inputDevice);
+
+    // Make sure the callback is operating on a stream that is still valid!
+    assert( stream->streamRepresentation.magic == PA_STREAM_MAGIC );
+
+    AudioObjectPropertyAddress currentAddress = inAddresses[0];
+    if( currentAddress.mSelector == kAudioDevicePropertyDeviceIsAlive )
+    {
+        UInt32 alive = 1;
+        osErr = QueryUInt32DeviceProperty( inDevice, isInput, kAudioDevicePropertyDeviceIsAlive, &alive );
+        if( osErr == noErr && alive == 0 )
+        {
+            // abort the stream so the audio unit(s) are cleaned up,
+            // inDevice may no longer be valid & retrieving kAudioDevicePropertyDeviceName
+            // doesn't seem to work here, too bad we can't print the device name
+            DBUG( ( "WARNING: Device no longer alive, aborting Stream.\n" ) );
+            AbortStream(stream);
+        }
+    }
+
+    return osErr;
+}
+
 /* ================================================================================= */
 /*
  * Setup listeners in case device properties change during the run. */
@@ -1142,6 +1170,15 @@ static OSStatus SetupDevicePropertyListeners( PaMacCoreStream *stream, AudioDevi
     AudioDeviceAddPropertyListener( deviceID, 0, isInput, kAudioDevicePropertySafetyOffset, 
                                    AudioDevicePropertyGenericListenerProc, stream );
     
+    // listener for detecting when a device is removed
+    const AudioObjectPropertyAddress aliveAddress = {
+         kAudioDevicePropertyDeviceIsAlive,
+         kAudioObjectPropertyScopeGlobal,
+         kAudioObjectPropertyElementMaster
+     };
+     AudioObjectAddPropertyListener( deviceID, &aliveAddress,
+                                   AudioDevicePropertyIsAliveListenerProc, stream);
+
     return osErr;
 }
 
@@ -1156,6 +1193,13 @@ static void CleanupDevicePropertyListeners( PaMacCoreStream *stream, AudioDevice
                                    AudioDevicePropertyGenericListenerProc );
     AudioDeviceRemovePropertyListener( deviceID, 0, isInput, kAudioDevicePropertySafetyOffset, 
                                    AudioDevicePropertyGenericListenerProc );
+
+    const AudioObjectPropertyAddress aliveAddress = {
+        kAudioDevicePropertyDeviceIsAlive,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMaster
+    };
+    AudioObjectRemovePropertyListener( deviceID, &aliveAddress, AudioDevicePropertyIsAliveListenerProc, stream );
 }
 
 /* ================================================================================= */
@@ -2283,7 +2327,9 @@ static OSStatus AudioIOProc( void *inRefCon,
                     INPUT_ELEMENT,
                     inNumberFrames,
                     &stream->inputAudioBufferList );
-      if(err != noErr)
+      /* allow err == -50 on unexpected device unplug to be caught by
+         DeviceIsAlive property listener */
+      if(err != noErr && err != -50)
       {
         goto stop_stream;
       }
@@ -2377,7 +2423,9 @@ static OSStatus AudioIOProc( void *inRefCon,
                   }
                }
                ERR( err );
-               if(err != noErr)
+               /* allow err == -50 on unexpected device unplug to be caught by
+                  DeviceIsAlive property listener */
+               if(err != noErr && err != -50)
                {
                  goto stop_stream;
                }
@@ -2488,7 +2536,9 @@ static OSStatus AudioIOProc( void *inRefCon,
             inNumberFrames /= 2;
       } while( err == -10874 && inNumberFrames > 1 );
       ERR( err );
-      if(err != noErr)
+      /* allow err == -50 on unexpected device unplug to be caught by
+         DeviceIsAlive property listener */
+      if(err != noErr && err != -50)
       {
           goto stop_stream;
       }
@@ -2552,7 +2602,9 @@ static OSStatus AudioIOProc( void *inRefCon,
                           (void *)data );
             if( err != RING_BUFFER_EMPTY )
                ERR( err );
-            if( err != noErr && err != RING_BUFFER_EMPTY )
+            /* allow err == -50 on unexpected device unplug to be caught by
+               DeviceIsAlive property listener */
+            if( err != noErr && err != -50 && err != RING_BUFFER_EMPTY )
             {
                 goto stop_stream;
             }

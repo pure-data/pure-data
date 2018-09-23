@@ -44,16 +44,34 @@ fi
 cd $(dirname $0)
 
 # clone source
+echo "==== Downloading portaudio $VERSION"
 if [ -d $SRC ] ; then
 	rm -rf $SRC
 fi
 git clone https://git.assembla.com/portaudio.git $SRC
-if [ "$VERSION" -ne "" ] ; then
+if [[ "$VERSION" != "" ]] ; then
 	cd $SRC && git checkout $VERSION && cd -
 fi
 
 # set git revision
+echo "==== Set git revision"
 cd $SRC && ./update_gitrevision.sh && cd -
+
+# apply patches, note: this probably can't handle filenames with spaces
+# temp disable exit on error since the exit value of patch --dry-run is used
+echo "==== Applying any patches"
+set +e
+for p in $(find ./patches -type f -name "*.patch") ; do
+    cd $SRC
+    (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
+    if [[ $? == 0 ]] ; then
+        patch -p1 < "../${p}"
+    fi
+    cd ../
+done
+set -e
+
+echo "==== Copying"
 
 # remove stuff we don't need
 rm $SRC/include/pa_jack.h

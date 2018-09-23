@@ -27,3 +27,12 @@ As a second option, you can build Pd using a system-installed PortAudio via:
     make
 
 For more info on PortAudio, see http://portaudio.com
+
+There may be custom patches to apply to the PortAudio sources in the "patches"
+directory which are applied by the "update.sh" script automatically using:
+
+    patch -p1 < ../patches/some_unreleased_fix.patch
+
+To generate a patch file from a PortAudio git clone:
+
+    git diff > some_newfix.patch
