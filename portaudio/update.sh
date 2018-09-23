@@ -1,4 +1,4 @@
-##! /bin/bash
+#! /bin/bash
 #
 # this script automatically downloads and copies the portaudio library for Pd
 #
@@ -29,31 +29,35 @@ VERSION=""
 
 # copy .h & .c files from $SRC to $DEST, ignore missing file errors
 function copysrc {
-	mkdir -p $DEST/$1
-	cp -v $SRC/$1/*.h $DEST/$1 2>/dev/null || :
-	cp -v $SRC/$1/*.c $DEST/$1 2>/dev/null || :
+    mkdir -p $DEST/$1
+    cp -v $SRC/$1/*.h $DEST/$1 2>/dev/null || :
+    cp -v $SRC/$1/*.c $DEST/$1 2>/dev/null || :
 }
 
 ##### GO
 
 if [ $# -gt 0 ] ; then
-	VERSION="$1"
+    VERSION="$1"
 fi
 
 # move to this scripts dir
 cd $(dirname $0)
 
 # clone source
+echo "==== Downloading portaudio $VERSION"
 if [ -d $SRC ] ; then
-	rm -rf $SRC
+    rm -rf $SRC
 fi
 git clone https://git.assembla.com/portaudio.git $SRC
-if [ "$VERSION" -ne "" ] ; then
-	cd $SRC && git checkout $VERSION && cd -
+if [[ "$VERSION" != "" ]] ; then
+    cd $SRC && git checkout $VERSION && cd -
 fi
 
 # set git revision
+echo "==== Set git revision"
 cd $SRC && ./update_gitrevision.sh && cd -
+
+echo "==== Copying"
 
 # remove stuff we don't need
 rm $SRC/include/pa_jack.h
