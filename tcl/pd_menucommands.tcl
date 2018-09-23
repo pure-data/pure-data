@@ -259,7 +259,7 @@ proc ::pd_menucommands::menu_doc_open {dir basename} {
         set fullpath [file normalize [file join $dirname $basename]]
         set dirname [file dirname $fullpath]
         set basename [file tail $fullpath]
-        pdsend "pd open [enquote_path $basename] [enquote_path $dirname]"
+        pdsend "pd open [enquote_path $basename] [enquote_path $dirname] 1"
     } else {
         ::pd_menucommands::menu_openfile "$dirname/$basename"
     }
