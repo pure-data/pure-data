@@ -41,6 +41,7 @@ fi
 cd $(dirname $0)
 
 # checkout source
+echo "==== Downloading portmidi $VERSION"
 if [ -d $SRC ] ; then
 	rm -rf $SRC
 fi
@@ -48,6 +49,7 @@ svn checkout https://svn.code.sf.net/p/portmedia/code/portmidi/trunk${VERSION} $
 
 # apply patches, note: this probably can't handle filenames with spaces
 # temp disable exit on error since the exit value of patch --dry-run is used
+echo "==== Applying any patches"
 set +e
 for p in $(find ./patches -type f -name "*.patch") ; do
     cd $SRC
@@ -58,6 +60,8 @@ for p in $(find ./patches -type f -name "*.patch") ; do
     cd ../
 done
 set -e
+
+echo "==== Copying"
 
 # copy what we need, namely the main headers and relevant sources
 copysrc pm_common
