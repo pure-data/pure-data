@@ -50,16 +50,16 @@ svn checkout https://svn.code.sf.net/p/portmedia/code/portmidi/trunk${VERSION} $
 # apply patches, note: this probably can't handle filenames with spaces
 # temp disable exit on error since the exit value of patch --dry-run is used
 echo "==== Applying any patches"
-set +e
 for p in $(find ./patches -type f -name "*.patch") ; do
     cd $SRC
+    set +e
     (patch -p0 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
+    set -e
     if [[ $? == 0 ]] ; then
         patch -p0 < "../${p}"
     fi
     cd ../
 done
-set -e
 
 echo "==== Copying"
 

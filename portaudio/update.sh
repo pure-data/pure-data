@@ -60,16 +60,16 @@ cd $SRC && ./update_gitrevision.sh && cd -
 # apply patches, note: this probably can't handle filenames with spaces
 # temp disable exit on error since the exit value of patch --dry-run is used
 echo "==== Applying any patches"
-set +e
 for p in $(find ./patches -type f -name "*.patch") ; do
     cd $SRC
+    set +e
     (patch -p1 -N --silent --dry-run --input "../${p}" > /dev/null 2>&1)
+    set -e
     if [[ $? == 0 ]] ; then
         patch -p1 < "../${p}"
     fi
     cd ../
 done
-set -e
 
 echo "==== Copying"
 
