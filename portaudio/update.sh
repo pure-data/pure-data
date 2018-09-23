@@ -54,8 +54,10 @@ if [[ "$VERSION" != "" ]] ; then
 fi
 
 # set git revision
-echo "==== Set git revision"
-cd $SRC && ./update_gitrevision.sh && cd -
+if [ -f $SRC/update_gitrevision.sh ] ; then
+	echo "==== Set git revision"
+	cd $SRC && ./update_gitrevision.sh && cd -
+fi
 
 echo "==== Copying"
 
