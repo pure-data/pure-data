@@ -1,4 +1,4 @@
-#N canvas 317 78 594 833 12;
+#N canvas 317 45 594 833 12;
 #X declare;
 #X obj 24 150 bang;
 #X text 124 150 - output a bang message;
@@ -248,35 +248,35 @@
 #X text 123 3645 - add an outlet to a pd;
 #X obj 23 3670 inlet~;
 #X obj 83 3670 outlet~;
-#X obj 24 3798 struct;
-#X text 124 3798 - define a data structure;
-#X obj 24 3822 drawcurve;
-#X obj 112 3822 filledcurve;
-#X text 215 3822 - draw a curve;
-#X obj 24 3846 drawpolygon;
-#X obj 129 3846 filledpolygon;
-#X text 239 3846 - draw a polygon;
-#X obj 24 3897 plot;
-#X text 124 3897 - plot an array field;
-#X obj 24 3921 drawnumber;
-#X text 124 3921 - print a numeric value;
-#X obj 25 3985 pointer;
-#X text 125 3985 - point to an object belonging to a template;
-#X obj 25 4009 get;
-#X text 125 4009 - get numeric fields;
-#X obj 25 4033 set;
-#X text 125 4033 - change numeric fields;
-#X obj 25 4057 element;
-#X text 125 4057 - get an array element;
-#X obj 25 4081 getsize;
-#X text 125 4081 - get the size of an array;
-#X obj 25 4105 setsize;
-#X text 125 4105 - change the size of an array;
-#X obj 25 4129 append;
-#X text 125 4129 - add an element to a list;
-#X obj 25 4153 scalar;
-#X text 130 4475 (use tabwrite~ now);
-#X obj 30 4500 namecanvas;
+#X obj 24 3816 struct;
+#X text 124 3816 - define a data structure;
+#X obj 24 3840 drawcurve;
+#X obj 112 3840 filledcurve;
+#X text 215 3840 - draw a curve;
+#X obj 24 3864 drawpolygon;
+#X obj 129 3864 filledpolygon;
+#X text 239 3864 - draw a polygon;
+#X obj 24 3915 plot;
+#X text 124 3915 - plot an array field;
+#X obj 24 3939 drawnumber;
+#X text 124 3939 - print a numeric value;
+#X obj 25 4003 pointer;
+#X text 125 4003 - point to an object belonging to a template;
+#X obj 25 4027 get;
+#X text 125 4027 - get numeric fields;
+#X obj 25 4051 set;
+#X text 125 4051 - change numeric fields;
+#X obj 25 4075 element;
+#X text 125 4075 - get an array element;
+#X obj 25 4099 getsize;
+#X text 125 4099 - get the size of an array;
+#X obj 25 4123 setsize;
+#X text 125 4123 - change the size of an array;
+#X obj 25 4147 append;
+#X text 125 4147 - add an element to a list;
+#X obj 25 4171 scalar;
+#X text 130 4493 (use tabwrite~ now);
+#X obj 30 4518 namecanvas;
 #X obj 142 3439 czero_rev~;
 #X obj 26 2568 threshold~;
 #X text 126 2568 - detect signal thresholds;
@@ -288,9 +288,9 @@
 ;
 #X text 15 3573 ------------------------ SUBWINDOWS ------------------------
 ;
-#X text 18 3768 ---------------------- DATA TEMPLATES ----------------------
+#X text 18 3786 ---------------------- DATA TEMPLATES ----------------------
 ;
-#X text 18 3955 ---------------------- ACCESSING DATA ----------------------
+#X text 18 3973 ---------------------- ACCESSING DATA ----------------------
 ;
 #X text 17 2840 ------------ AUDIO OSCILLATORS AND TABLES -------------
 ;
@@ -302,7 +302,7 @@
 #X obj 118 909 <;
 #X obj 149 909 >=;
 #X obj 180 909 <=;
-#X text 22 4448 ------------------------ OBSOLETE --------------------------
+#X text 22 4466 ------------------------ OBSOLETE --------------------------
 ;
 #X obj 54 886 -;
 #X obj 87 886 *;
@@ -342,17 +342,17 @@
 #X text 128 1539 - general array creation and manipulation;
 #X text 17 1393 ----------------- ARRAYS/TABLES -------------------
 ;
-#X text 125 4152 - create a single scalar;
-#X text 129 4501 (potentially dangerous but no substitute exists yet)
+#X text 125 4170 - create a single scalar;
+#X text 129 4519 (potentially dangerous but no substitute exists yet)
 ;
 #X text 23 22 The following is a list of built-in objects in Pd. (Not
 included in this list are messages \, atoms \, graphs \, etc. which
 aren't typed into object boxes but come straight off the "add" menu.)
 Right-click (or control-click on a Macintosh) on any object to get
 its "help window".;
-#X msg 30 4473 scope~;
-#X msg 30 4525 template;
-#X text 128 4525 (use struct now);
+#X msg 30 4491 scope~;
+#X msg 30 4543 template;
+#X text 128 4543 (use struct now);
 #X obj 25 1713 textfile;
 #X obj 25 1737 text;
 #X obj 180 932 <<;
@@ -360,30 +360,30 @@ its "help window".;
 #X obj 26 2126 sqrt~;
 #X obj 22 1339 oscparse;
 #X obj 96 1339 oscformat;
-#X text 18 4184 -------- "EXTRA" (patches and externs in pd/extra)
+#X text 18 4202 -------- "EXTRA" (patches and externs in pd/extra)
 ---------;
-#X obj 26 4213 sigmund~;
-#X text 126 4213 - pitch tracker;
-#X obj 26 4238 bonk~;
-#X text 126 4238 - attack detector;
-#X obj 26 4263 choice;
-#X text 126 4263 - best match of list to templates;
-#X obj 26 4287 hilbert~;
-#X obj 104 4287 complex-mod~;
-#X text 218 4288 - phase quadrature / frequency shifting;
-#X obj 26 4316 loop~;
-#X text 122 4319 - phasor~ with S/H on its frequency input;
-#X obj 26 4341 lrshift~;
-#X text 122 4344 - left and right shift (useful with FFT objects);
-#X obj 27 4367 pd~;
-#X text 124 4365 - run another copy of Pd (for multiprocessing);
-#X obj 27 4394 rev1~;
-#X obj 79 4394 rev2~;
-#X obj 128 4394 rev3~;
-#X text 188 4394 - reverberators;
-#X obj 60 4367 stdout;
-#X obj 27 4421 bob~;
-#X text 123 4423 - Moog resonant filter model;
+#X obj 26 4231 sigmund~;
+#X text 126 4231 - pitch tracker;
+#X obj 26 4256 bonk~;
+#X text 126 4256 - attack detector;
+#X obj 26 4281 choice;
+#X text 126 4281 - best match of list to templates;
+#X obj 26 4305 hilbert~;
+#X obj 104 4305 complex-mod~;
+#X text 218 4306 - phase quadrature / frequency shifting;
+#X obj 26 4334 loop~;
+#X text 122 4337 - phasor~ with S/H on its frequency input;
+#X obj 26 4359 lrshift~;
+#X text 122 4362 - left and right shift (useful with FFT objects);
+#X obj 27 4385 pd~;
+#X text 124 4383 - run another copy of Pd (for multiprocessing);
+#X obj 27 4412 rev1~;
+#X obj 79 4412 rev2~;
+#X obj 128 4412 rev3~;
+#X text 188 4412 - reverberators;
+#X obj 60 4385 stdout;
+#X obj 27 4439 bob~;
+#X text 123 4441 - Moog resonant filter model;
 #X text 116 3697 - make copies of a subpatch;
 #X obj 24 3697 clone;
 #X obj 194 1204 midirealtimein;
@@ -410,6 +410,9 @@ its "help window".;
 #X msg 76 3722 switch;
 #X text 138 3720 - specify block size and overlap \, or \, if invoked
 as "switch" \, also switch subpatches on and off;
-#X obj 129 3871 drawsymbol;
-#X obj 24 3871 drawtext;
-#X text 224 3870 - draw text;
+#X obj 129 3889 drawsymbol;
+#X obj 24 3889 drawtext;
+#X text 224 3888 - draw text;
+#X obj 26 3757 savestate;
+#X text 103 3757 - save and restore run-time state from within an abstraction
+;
