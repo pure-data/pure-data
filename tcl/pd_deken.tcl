@@ -844,13 +844,6 @@ proc ::deken::preferences::create {mytoplevel} {
         ::deken::preferences::create_pathentry ${pathsframe} ${row} ::deken::preferences::installpath $p
         incr row
     }
-    ::deken::preferences::create_pathpad ${pathsframe} ${row}
-    incr row
-
-    foreach p $::sys_temppath {
-        ::deken::preferences::create_pathentry ${pathsframe} ${row} ::deken::preferences::installpath $p
-        incr row
-    }
 
     pack $pathsframe -fill x
     $mytoplevel.installdir.cnv create window 0 0 -anchor nw -window $pathsframe

@@ -2029,19 +2029,13 @@ EXTERN int pd_getdspstate(void)
 
 void pd_doloadbang(void);
 
+    /* evaluate a file, which is expected to create a patch, and perform
+    post-evaluation cleanup and loadbang */
 t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
 {
     t_pd *x = 0, *boundx;
-    t_glist *gl;
     int dspstate;
 
-        /* don't reopen already-open document, just vis it */
-    for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
-        if (name == gl->gl_name && gl->gl_env && gl->gl_env->ce_dir == dir)
-    {
-        canvas_vis(gl, 1);
-        return (&gl->gl_pd);
-    }
         /* even though binbuf_evalfile appears to take care of dspstate,
         we have to do it again here, because canvas_startdsp() assumes
         that all toplevel canvases are visible.  LATER check if this
@@ -2061,4 +2055,22 @@ t_pd *glob_evalfile(t_pd *ignore, t_symbol *name, t_symbol *dir)
     canvas_resume_dsp(dspstate);
     s__X.s_thing = boundx;
     return x;
+}
+
+    /* open a file as if from an open dialog from the GUI.  If the optional
+    argument "f" is nonzero, first check if the file is already open and if
+    so, just "vis" it.  This would be useful if you want merely to make sure a
+    patch is open, but don't want more than one copy. */
+void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f)
+{
+    t_glist *gl;
+    if (f != 0)
+        for (gl = pd_getcanvaslist(); gl; gl = gl->gl_next)
+            if (name == gl->gl_name && gl->gl_env && gl->gl_env->ce_dir == dir)
+    {
+            /* don't reopen already-open document, just vis it */
+        canvas_vis(gl, 1);
+        return;
+    }
+    glob_evalfile(ignore, name, dir);
 }
