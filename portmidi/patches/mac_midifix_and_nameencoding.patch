@@ -1,0 +1,99 @@
+Index: pm_mac/pmmacosxcm.c
+===================================================================
+--- pm_mac/pmmacosxcm.c	(revision 234)
++++ pm_mac/pmmacosxcm.c	(working copy)
+@@ -70,6 +70,7 @@
+ #define VERBOSE_ON 1
+ #define VERBOSE if (VERBOSE_ON)
+ 
++#define MIDI_CLOCK      0xf8
+ #define MIDI_SYSEX      0xf0
+ #define MIDI_EOX        0xf7
+ #define MIDI_STATUS_MASK 0x80
+@@ -199,9 +200,16 @@
+ 		/* since there's no more data, we're done */
+ 		return;
+ 	    }
+-	    m->last_msg_length = cur_message_length;
+-	    m->last_command = cur_packet_data[0];
+-	    switch (cur_message_length) {
++        if (cur_packet_data[0] < MIDI_SYSEX) {
++            /* channel messages allow running status */
++            m->last_command = cur_packet_data[0];
++            m->last_msg_length = cur_message_length;
++        } else if(cur_packet_data[0] < MIDI_CLOCK) {
++            /* system messages clear running status */
++            m->last_command = 0;
++            m->last_msg_length = 0;
++        }
++        switch (cur_message_length) {
+ 	    case 1:
+ 	        event->message = Pm_Message(cur_packet_data[0], 0, 0);
+ 		break; 
+@@ -220,8 +228,8 @@
+ 	        return; /* give up on packet if continued after assert */
+ 	    }
+ 	    pm_read_short(midi, event);
+-	    remaining_length -= m->last_msg_length;
+-	    cur_packet_data += m->last_msg_length;
++	    remaining_length -= cur_message_length;
++	    cur_packet_data += cur_message_length;
+ 	} else if (m->last_msg_length > remaining_length + 1) {
+ 	    /* we have running status, but not enough data */
+ #ifdef DEBUG
+@@ -836,49 +844,16 @@
+ 
+ char* cm_get_full_endpoint_name(MIDIEndpointRef endpoint)
+ {
+-#ifdef OLDCODE
+-    MIDIEntityRef entity;
+-    MIDIDeviceRef device;
+-
+-    CFStringRef endpointName = NULL;
+-    CFStringRef deviceName = NULL;
+-#endif
+-    CFStringRef fullName = NULL;
+-    CFStringEncoding defaultEncoding;
+     char* newName;
++    CFStringRef fullName = ConnectedEndpointName(endpoint);
+ 
+-    /* get the default string encoding */
+-    defaultEncoding = CFStringGetSystemEncoding();
+-
+-    fullName = ConnectedEndpointName(endpoint);
+-    
+-#ifdef OLDCODE
+-    /* get the entity and device info */
+-    MIDIEndpointGetEntity(endpoint, &entity);
+-    MIDIEntityGetDevice(entity, &device);
+-
+-    /* create the nicely formated name */
+-    MIDIObjectGetStringProperty(endpoint, kMIDIPropertyName, &endpointName);
+-    MIDIObjectGetStringProperty(device, kMIDIPropertyName, &deviceName);
+-    if (deviceName != NULL) {
+-        fullName = CFStringCreateWithFormat(NULL, NULL, CFSTR("%@: %@"),
+-                                            deviceName, endpointName);
+-    } else {
+-        fullName = endpointName;
+-    }
+-#endif    
+     /* copy the string into our buffer */
+-    newName = (char *) malloc(CFStringGetLength(fullName) + 1);
+-    CFStringGetCString(fullName, newName, CFStringGetLength(fullName) + 1,
+-                       defaultEncoding);
+-
+-    /* clean up */
+-#ifdef OLDCODE
+-    if (endpointName) CFRelease(endpointName);
+-    if (deviceName) CFRelease(deviceName);
+-#endif
+-    if (fullName) CFRelease(fullName);
++    CFIndex length = CFStringGetLength(fullName) + 1;
++    const CFIndex maxSize = CFStringGetMaximumSizeForEncoding(length, kCFStringEncodingUTF8) + 1;
++    newName = (char *) malloc(maxSize);
++    CFStringGetCString(fullName, newName, maxSize, kCFStringEncodingUTF8);
+ 
++    if (fullName) CFRelease(fullName);
+     return newName;
+ }
+ 
