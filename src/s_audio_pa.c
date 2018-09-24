@@ -92,7 +92,7 @@ static pthread_cond_t pa_sem;
 #endif
 /* max number of unsuccessful polls before trying to reopen the device */
 #ifndef MAX_NUM_POLLS
-#define MAX_NUM_POLLS 1000
+#define MAX_NUM_POLLS 2000
 #endif
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
