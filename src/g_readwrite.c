@@ -34,8 +34,6 @@ static void *savestate_new(void)
     x->x_stateout = outlet_new(&x->x_obj, &s_list);
     x->x_bangout = outlet_new(&x->x_obj, &s_bang);
     x->x_savetobuf = 0;
-    if (!canvas_getcurrent()->gl_loading)
-        post("warning: savestate is experimental - may change or disappear");
     return (x);
 }
 
