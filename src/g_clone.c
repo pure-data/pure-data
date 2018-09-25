@@ -181,7 +181,7 @@ static t_canvas *clone_makeone(t_symbol *s, int argc, t_atom *argv)
     typedmess(&pd_objectmaker, s, argc, argv);
     if (pd_this->pd_newest == 0)
     {
-        error("clone: can't create subpatch '%s'",
+        error("clone: can't create abstraction '%s'",
             s->s_name);
         return (0);
     }
