@@ -142,6 +142,7 @@ struct _instanceinter
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
 void sys_set_searchpath(void);
+void sys_set_temppath(void);
 void sys_set_extrapath(void);
 void sys_set_startup(void);
 void sys_stopgui( void);
@@ -1285,6 +1286,7 @@ static int sys_do_startgui(const char *libdir)
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
     sys_set_searchpath();     /* tell GUI about path and startup flags */
+    sys_set_temppath();
     sys_set_extrapath();
     sys_set_startup();
                        /* ... and about font, medio APIS, etc */
@@ -1419,7 +1421,7 @@ void sys_bail(int n)
         reentered = 1;
 #if !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__GNU__)
             /* sys_close_audio() hangs if you're in a signal? */
-        fprintf(stderr ,"gui socket %d - ", pd_this->pd_inter->i_guisock);
+        fprintf(stderr ,"gui socket %d - \n", pd_this->pd_inter->i_guisock);
         fprintf(stderr, "closing audio...\n");
         sys_close_audio();
         fprintf(stderr, "closing MIDI...\n");

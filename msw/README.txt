@@ -123,3 +123,9 @@ the --64bit option:
 
     # force 64 bit Tcl/Tk 8.6.8 build
     tcltk-dir.sh --64bit 8.6.8
+
+## pdfontloader
+
+Tk cannot load local font files by default on Windows. Pd accomplishes this through a tiny, custom Tcl extension, pdfontloader.dll. On initialization, the Pd GUI tries to load pdfontloader and, if successful, tries to load the included Pd font.
+
+Currently, pdfontloader.dll is pre-built and included within the pdprototype.tgz tarball. To build pdfontloader, see https://github.com/pure-data/pdfontloader source.

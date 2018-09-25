@@ -36,7 +36,7 @@
 #X text 33 266 %X;
 #X text 110 266 unsigned hexadecimal in CAPS;
 #X text 33 286 %p;
-#X text 110 286 unsigned hexadecimal in lowercase preceeded by "0x"
+#X text 110 286 unsigned hexadecimal in lowercase preceded by "0x"
 ;
 #X text 20 37 This is a listing of all possible printf patterns used
 in Pd's [makefilename]:;

@@ -671,11 +671,11 @@ msgstr "2. Copiar o conteúdo para %s."
 
 #, tcl-format
 msgid "[deken] uninstalling '%s'"
-msgstr ""
+msgstr "[deken] desinstalando '%s'"
 
 #, tcl-format
 msgid "Uninstalling %1$s from %2$s failed!"
-msgstr ""
+msgstr "Falha ao desinstalar %1$s de %2$s!"
 
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
@@ -687,7 +687,7 @@ msgstr "[deken] Platforma detectada: %s"
 
 #, fuzzy, tcl-format
 msgid "[deken] Platform re-detected: %s"
-msgstr "[deken] Platforma detectada: %s"
+msgstr "[deken] Platforma redetectada: %s"
 
 msgid "Show all"
 msgstr "Mostrar todos"
@@ -714,26 +714,26 @@ msgid "Installation options:"
 msgstr "Instalar externals em:"
 
 msgid "Try to remove libraries before (re)installing them?"
-msgstr ""
+msgstr "Tentar remover bibliotecas antes de reinstala-las?"
 
 msgid "Show README of newly installed libraries (if present)?"
-msgstr ""
+msgstr "Mostrar README de bibliotecas recém instaladas (se presente)?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
-msgstr ""
+msgstr "Bibliotecas recém instaladas devem ser adicionadas aos caminhos de busca do Pd?"
 
 msgid "Platform settings:"
-msgstr ""
+msgstr "Configurações de platforma"
 
 #, tcl-format
 msgid "Default platform: %s"
-msgstr ""
+msgstr "Plataforma padrão: %s"
 
 msgid "User-defined platform:"
-msgstr ""
+msgstr "platforma definida pelo usuário"
 
 msgid "Hide foreign architectures?"
-msgstr ""
+msgstr "Esconder arquiteturas estrangeiras?"
 
 #, tcl-format
 msgid "Deken %s Preferences"
@@ -815,10 +815,10 @@ msgid "Uploaded by %1$s @ %2$s"
 msgstr "Enviado por '%1$s' em %2$s"
 
 msgid "Install package"
-msgstr ""
+msgstr "Instalar pacote"
 
 msgid "Open webpage"
-msgstr ""
+msgstr "Abrir página da web"
 
 msgid "_"
 msgstr ""
@@ -875,7 +875,7 @@ msgid "Print..."
 msgstr "Imprimir..."
 
 msgid "Paste Replace"
-msgstr ""
+msgstr "Colar Substituir"
 
 msgid "Duplicate"
 msgstr "Duplicar"
@@ -890,7 +890,7 @@ msgid "Tidy Up"
 msgstr "Organizar"
 
 msgid "(Dis)Connect Selection"
-msgstr ""
+msgstr "(Des)Conectar Seleção"
 
 msgid "Triggerize"
 msgstr ""
@@ -1007,7 +1007,7 @@ msgid ""
 "Delete all preferences?\n"
 "(takes effect when Pd is restarted)"
 msgstr ""
-"Deletar todas as preferêcnias?\n"
+"Deletar todas as preferências?\n"
 "(faz efeito quando o Pd é reiniciado)"
 
 msgid "Path..."

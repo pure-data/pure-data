@@ -321,7 +321,7 @@ static void rtext_senditup(t_rtext *x, int action, int *widthp, int *heightp,
             /* we add an extra space to the string just in case the last
             character is an unescaped backslash ('\') which would have confused
             tcl/tk by escaping the close brace otherwise.  The GUI code
-            drops the last character in teh string. */
+            drops the last character in the string. */
         sys_vgui("pdtk_text_new .x%lx.c {%s %s text} %f %f {%.*s } %d %s\n",
             canvas, x->x_tag, rtext_gettype(x)->s_name,
             dispx + lmargin, dispy + tmargin,

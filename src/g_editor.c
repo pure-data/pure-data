@@ -1373,11 +1373,10 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
     t_undo_canvas_properties *buf = (t_undo_canvas_properties *)z;
     t_undo_canvas_properties tmp;
 
-    if (!x->gl_edit)
-        canvas_editmode(x, 1);
-
     if (action == UNDO_UNDO || action == UNDO_REDO)
     {
+        if (!x->gl_edit)
+            canvas_editmode(x, 1);
 #if 0
             /* close properties window first */
         t_int properties = gfxstub_haveproperties((void *)x);
@@ -1386,7 +1385,6 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             gfxstub_deleteforkey(x);
         }
 #endif
-
             /* store current canvas values into temporary data holder */
         tmp.gl_pixwidth = x->gl_pixwidth;
         tmp.gl_pixheight = x->gl_pixheight;
@@ -2502,21 +2500,37 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             inindex = canvas_getindex(glist2, &t.tr_ob2->ob_g);
             if (shiftmod)
             {
-                    /* swap selected and hovered connection */
-                int soutindex = x->gl_editor->e_selectline_index1;
-                int sinindex = x->gl_editor->e_selectline_index2;
-                int soutno = x->gl_editor->e_selectline_outno;
-                int sinno = x->gl_editor->e_selectline_inno;
-                if(x->gl_editor->e_selectedline
-                   && ((outindex == soutindex)
-                       || (inindex == sinindex)))
+                int soutindex, sinindex, soutno, sinno;
+                    /* if no line is selected, just add this line to the selection */
+                if(!x->gl_editor->e_selectedline)
                 {
-                            /* do not swap connection with itself */
-                    if (soutindex == outindex
-                        && sinindex == inindex
-                        && soutno == t.tr_outno
-                        && sinno == t.tr_inno)
-                        return;
+                    if (doit)
+                    {
+                        glist_selectline(glist2, oc,
+                            outindex, t.tr_outno,
+                            inindex, t.tr_inno);
+                    }
+                    canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                    return;
+                }
+                soutindex = x->gl_editor->e_selectline_index1;
+                sinindex = x->gl_editor->e_selectline_index2;
+                soutno = x->gl_editor->e_selectline_outno;
+                sinno = x->gl_editor->e_selectline_inno;
+                        /* if the hovered line is already selected, deselect it */
+                if ((outindex == soutindex) && (inindex == sinindex)
+                    && (soutno == t.tr_outno) && (sinno == t.tr_inno))
+                {
+                    if(doit)
+                        glist_deselectline(x);
+                    canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
+                    return;
+                }
+
+                    /* swap selected and hovered connection */
+                if ((!x->gl_editor->e_selection)
+                    && ((outindex == soutindex) || (inindex == sinindex)))
+                {
                     if(doit)
                     {
                         canvas_undo_add(x, UNDO_SEQUENCE_START, "reconnect", 0);
@@ -2539,9 +2553,10 @@ void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
             }
             if (!shiftmod)
             {
-                    /* !shiftmode: select a new connection */
+                    /* !shiftmode: clear selection before selecting line */
                 if (doit)
                 {
+                    glist_noselect(x);
                     glist_selectline(glist2, oc,
                         outindex, t.tr_outno,
                         inindex, t.tr_inno);

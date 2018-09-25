@@ -26,6 +26,7 @@ cp -a portaudio  /tmp/pd/portaudio
 cp -a portmidi /tmp/pd/portmidi
 cp -a doc/ INSTALL.txt LICENSE.txt /tmp/pd/
 cp -a extra/ /tmp/pd/extra
+cp -a font/ /tmp/pd/font
 cp -a ../bis/work/pd-versions/pd-autotools-build/po /tmp/pd/po
 
 cd /tmp/pd
