@@ -75,3 +75,6 @@ portaudio/portaudio/portaudio-2.0.pc
 
 # macOS
 .DS_Store
+
+# script build artifacts
+mac/build

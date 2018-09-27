@@ -60,6 +60,7 @@ pd_SOURCES_core = \
     g_canvas.c \
     g_clone.c \
     g_editor.c \
+    g_editor_extras.c \
     g_graph.c \
     g_guiconnect.c \
     g_hdial.c \
@@ -74,6 +75,7 @@ pd_SOURCES_core = \
     g_text.c \
     g_toggle.c \
     g_traversal.c \
+    g_undo.c \
     g_vdial.c \
     g_vslider.c \
     g_vumeter.c \
@@ -116,13 +118,13 @@ pd_SOURCES_core = \
 libpdbindir = $(pkglibdir)/bin
 
 # these install to ${includedir}/pd
-pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h s_stuff.h g_all_guis.h x_vexp.h
+pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h x_vexp.h
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
-noinst_HEADERS = g_all_guis.h s_audio_alsa.h s_audio_paring.h s_utf8.h x_vexp.h
+noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
 
 # we want these in the dist tarball
-EXTRA_DIST = CHANGELOG.txt notes.txt pd.ico pd.rc \
+EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
     makefile.gnu  makefile.mac  makefile.mingw  makefile.msvc \
     s_audio_audiounit.c s_audio_esd.c
 
@@ -329,7 +331,7 @@ pd.res: pd.rc
 # import library for pd.dll. also works with MSVC!
 pd.lib: pd.dll
 
-# another import library (when linking with -lpd), the same as pd.lib. 
+# another import library (when linking with -lpd), the same as pd.lib.
 libpd.a: pd.lib
 	cp $< $@
 

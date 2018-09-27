@@ -17,6 +17,77 @@ file format as in the dialog window for data.
 #include "g_canvas.h"
 #include <string.h>
 
+/* object to assist in saving state by abstractions */
+static t_class *savestate_class;
+
+typedef struct _savestate
+{
+    t_object x_obj;
+    t_outlet *x_stateout;
+    t_outlet *x_bangout;
+    t_binbuf *x_savetobuf;
+} t_savestate;
+
+static void *savestate_new(void)
+{
+    t_savestate *x = (t_savestate *)pd_new(savestate_class);
+    x->x_stateout = outlet_new(&x->x_obj, &s_list);
+    x->x_bangout = outlet_new(&x->x_obj, &s_bang);
+    x->x_savetobuf = 0;
+    return (x);
+}
+
+    /* call this when the owning abstraction's parent patch is saved so we
+    can add state-restoring messages to binbuf */
+static void savestate_doit(t_savestate *x, t_binbuf *b)
+{
+    x->x_savetobuf = b;
+    outlet_bang(x->x_bangout);
+    x->x_savetobuf = 0;
+}
+
+    /* called by abstraction in response to savestate_doit(); lists received
+    here are added to the parent patch's save buffer after the line that will
+    create the abstraction, addressed to "#A" which will be this patch after
+    it is recreated by reopening the parent patch, pasting, or "undo". */
+static void savestate_list(t_savestate *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (x->x_savetobuf)
+    {
+        binbuf_addv(x->x_savetobuf, "ss", gensym("#A"), gensym("saved"));
+        binbuf_add(x->x_savetobuf, argc, argv);
+        binbuf_addv(x->x_savetobuf, ";");
+    }
+    else pd_error(x, "savestate: ignoring message sent when not saving parent");
+}
+
+static void savestate_setup(void)
+{
+    savestate_class = class_new(gensym("savestate"),
+        (t_newmethod)savestate_new, 0, sizeof(t_savestate), 0, 0);
+    class_addlist(savestate_class, savestate_list);
+}
+
+void canvas_statesavers_doit(t_glist *x, t_binbuf *b)
+{
+    t_gobj *g;
+    for (g = x->gl_list; g; g = g->g_next)
+        if (g->g_pd == savestate_class)
+            savestate_doit((t_savestate *)g, b);
+        else if (g->g_pd == canvas_class && !canvas_isabstraction((t_canvas *)g))
+            canvas_statesavers_doit((t_glist *)g, b);
+}
+
+void canvas_saved(t_glist *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_gobj *g;
+    for (g = x->gl_list; g; g = g->g_next)
+        if (g->g_pd == savestate_class)
+            outlet_list(((t_savestate *)g)->x_stateout, 0, argc, argv);
+        else if (g->g_pd == canvas_class && !canvas_isabstraction((t_canvas *)g))
+            canvas_saved((t_glist *)g, s, argc, argv);
+}
+
 static t_class *declare_class;
 void canvas_savedeclarationsto(t_canvas *x, t_binbuf *b);
 
@@ -166,7 +237,7 @@ int canvas_readscalar(t_glist *x, int natoms, t_atom *vec,
     return (1);
 }
 
-void glist_readfrombinbuf(t_glist *x, t_binbuf *b, char *filename, int selectem)
+void glist_readfrombinbuf(t_glist *x, const t_binbuf *b, const char *filename, int selectem)
 {
     t_canvas *canvas = glist_getcanvas(x);
     int natoms, nline, message, nextmsg = 0;
@@ -767,7 +838,7 @@ static void canvas_menusaveas(t_canvas *x, float fdestroy)
 static void canvas_menusave(t_canvas *x, float fdestroy)
 {
     t_canvas *x2 = canvas_getrootfor(x);
-    char *name = x2->gl_name->s_name;
+    const char *name = x2->gl_name->s_name;
     if (*name && strncmp(name, "Untitled", 8)
             && (strlen(name) < 4 || strcmp(name + strlen(name)-4, ".pat")
                 || strcmp(name + strlen(name)-4, ".mxt")))
@@ -779,6 +850,7 @@ static void canvas_menusave(t_canvas *x, float fdestroy)
 
 void g_readwrite_setup(void)
 {
+    savestate_setup();
     class_addmethod(canvas_class, (t_method)glist_write,
         gensym("write"), A_SYMBOL, A_DEFSYM, A_NULL);
     class_addmethod(canvas_class, (t_method)glist_read,
@@ -789,6 +861,8 @@ void g_readwrite_setup(void)
         gensym("savetofile"), A_SYMBOL, A_SYMBOL, A_DEFFLOAT, 0);
     class_addmethod(canvas_class, (t_method)canvas_saveto,
         gensym("saveto"), A_CANT, 0);
+    class_addmethod(canvas_class, (t_method)canvas_saved,
+        gensym("saved"), A_GIMME, 0);
 /* ------------------ from the menu ------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menusave,
         gensym("menusave"), A_DEFFLOAT, 0);

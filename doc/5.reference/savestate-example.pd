@@ -1,0 +1,49 @@
+#N canvas 112 69 693 505 12;
+#X obj 36 158 osc~;
+#X floatatom 103 72 7 0 10000 1 frequency - -;
+#X obj 37 336 outlet~;
+#X floatatom 103 97 7 0 10000 1 bandwidth - -;
+#X obj 109 152 max 1;
+#X obj 109 178 t b f;
+#X obj 37 279 *~;
+#X obj 37 307 expr~ exp(-$v1*$v1);
+#X obj 36 125 * 0.5;
+#X obj 348 242 f;
+#X obj 348 271 pack;
+#X obj 288 145 savestate;
+#X obj 288 316 unpack;
+#X obj 103 207 / 1;
+#X text 63 19 this pulse generator is used by the savestate help file.
+;
+#X text 31 386 This is a waveshaping pulse generator using a Gaussian
+table lookup \, as described in Theory and Technique of electronic
+music \, chapter 6 The controls are "F" to set fundamental frequency
+\, and "BW" to set bandwidth \, both in cycles per second.;
+#X text 362 145 right outlet gets bang when parent patch is saved.
+In response we send 'savestate' one or more lists that will be stored
+as part of the parent patch, f 35;
+#X text 344 304 Left outlet returns the list or lists to the abstraction
+which can use them to restore its state when it is reloaded., f 38
+;
+#X text 389 237 In response \, we build and send a list of parameters
+we want to save, f 34;
+#X connect 0 0 6 0;
+#X connect 1 0 8 0;
+#X connect 1 0 9 1;
+#X connect 3 0 10 1;
+#X connect 3 0 13 0;
+#X connect 4 0 5 0;
+#X connect 5 0 13 0;
+#X connect 5 1 13 1;
+#X connect 6 0 7 0;
+#X connect 7 0 2 0;
+#X connect 8 0 0 0;
+#X connect 8 0 4 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 11 1 9 0;
+#X connect 12 0 1 0;
+#X connect 12 1 3 0;
+#X connect 13 0 6 1;
+#X coords 0 -1 1 1 125 70 1 100 50;

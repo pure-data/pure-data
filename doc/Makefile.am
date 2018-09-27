@@ -304,8 +304,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/change-help.pd \
      ./5.reference/clip-help.pd \
      ./5.reference/clip~-help.pd \
+     ./5.reference/clone-abstraction.pd \
      ./5.reference/clone-help.pd \
-     ./5.reference/clone-subpatch.pd \
      ./5.reference/cos~-help.pd \
      ./5.reference/cpole~-help.pd \
      ./5.reference/cputime-help.pd \
@@ -388,6 +388,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/samphold~-help.pd \
      ./5.reference/samplerate~-help.pd \
      ./5.reference/savepanel-help.pd \
+     ./5.reference/savestate-example.pd \
+     ./5.reference/savestate-help.pd \
      ./5.reference/scalar-object-help.pd \
      ./5.reference/select-help.pd \
      ./5.reference/send-help.pd \

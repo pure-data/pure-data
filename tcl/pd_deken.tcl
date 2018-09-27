@@ -1079,8 +1079,8 @@ proc ::deken::clicked_link {URL filename} {
                 }
             }
         } else {
-            set msg [_ "Install %s to %s?" ]
-            set _args "-message \"[format $msg $extname $installdir]\" -type yesnocancel -default yes -icon question -parent .externals_searchui"
+            set msg [format [_ "Install %1\$s to %2\$s?" ] $extname $installdir]
+            set _args "-message \"$msg\" -type yesnocancel -default yes -icon question -parent .externals_searchui"
             switch -- [eval tk_messageBox ${_args}] {
                 cancel {return}
                 yes { }

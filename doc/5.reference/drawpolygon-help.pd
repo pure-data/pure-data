@@ -9,33 +9,38 @@ dog float weasel;
 #X obj 126 11 filledpolygon;
 #X obj 127 33 filledcurve;
 #X text 225 10 -- draw shapes for data structures;
-#N canvas 177 100 580 549 help-drawpolygon-template 1;
+#N canvas 418 85 546 629 help-drawpolygon-template 1;
 #X obj 19 24 drawpolygon 0 2 0 0 0 weasel;
-#X obj 18 300 filledpolygon 900 dog 3 10 0 20 cat 30 0;
-#X text 30 322 filledpolygon and filledcurve take the same arguments
+#X obj 17 367 filledpolygon 900 dog 3 10 0 20 cat 30 0;
+#X text 29 389 filledpolygon and filledcurve take the same arguments
 \, except that a new first argument is added to specify interior color.
 Here the interior color is red (900) \, the outline color is controlled
 by the "dog" field \, and the three points describe a triangle of altitude
 "cat". The fields x and y automatically govern the placement of the
 object as a whole.;
-#X text 37 164 - RGB color (0=black \, 999=white \, 900=red \, 90=green
+#X text 37 228 - RGB color (0=black \, 999=white \, 900=red \, 90=green
 \, 9=blue \, 555=grey \, etc.);
-#X text 36 201 - line width;
-#X text 36 222 - two or more (x \, y) pairs giving coordinates.;
-#X text 25 485 This object defines the fields for this template. You
+#X text 35 268 - line width;
+#X text 35 289 - two or more (x \, y) pairs giving coordinates.;
+#X text 24 552 This object defines the fields for this template. You
 can see the fields' values by right-clicking on the object in the "data"
 window and selecting "properties.";
-#X obj 13 441 struct help-drawpolygon-template float x float y float
+#X obj 12 508 struct help-drawpolygon-template float x float y float
 cat float dog float weasel;
 #X text 26 44 drawpolygon and drawcurve take these arguments:;
 #X text 40 67 - optional "-n" flag to make invisible initially;
 #X text 38 88 - alternatively \, an optional "-v [variable]" flag to
 assign a variable to make this visible/invisible.;
-#X text 27 243 Any of these (except the flags) can be numbers or field
+#X text 26 310 Any of these (except the flags) can be numbers or field
 names \, like "weasel" here. The example above draws a vertical black
 line of height "weasel".;
-#X text 38 127 - optional "-x" flag to inhibit selecting the object
-when the shape is clicked on in "edit" mode;
+#X text 37 129 - optional "-xr" flag to disable mouse actions when
+in "run" mode, f 65;
+#X text 37 189 - optional "-x" flag to set both "-xr" and "-xe" \,
+disabling all mouse actions;
+#X text 36 152 - optional "-xe" flag to disable mouse actions when
+in "edit" mode (so don't stretch the bounding rectangle to include
+this item), f 66;
 #X restore 240 92 pd help-drawpolygon-template;
 #N canvas 11 270 384 178 help-drawpolygon-data 1;
 #X scalar help-drawpolygon-template 50 40 30 9 80 \;;

@@ -155,9 +155,11 @@ set font_zoom2_measured {}
 set sys_libdir {}
 # root path where the pd-gui.tcl GUI script is located
 set sys_guidir {}
-# user-specified search path for objects, help, fonts, etc.
+# user-specified search paths for objects, help, fonts, etc.
 set sys_searchpath {}
-# hard-coded search patch for objects, help, plugins, etc.
+# user-specified search paths from the commandline -path option
+set sys_temppath {}
+# hard-coded search patchs for objects, help, plugins, etc.
 set sys_staticpath {}
 # the path to the folder where the current plugin is being loaded from
 set current_plugin_loadpath {}
@@ -225,9 +227,11 @@ set canvas_minwidth 50
 set canvas_minheight 20
 
 # undo states
-set ::undo_action "no"
-set ::redo_action "no"
-set ::undo_toplevel "."
+array set undo_actions {}
+array set redo_actions {}
+# unused legacy undo states
+set undo_action no
+set redo_action no
 
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
@@ -308,7 +312,15 @@ proc init_for_platform {} {
             # frame's upper left corner. http://wiki.tcl.tk/11502
             set ::windowframex 3
             set ::windowframey 53
-            # TODO add wm iconphoto/iconbitmap here if it makes sense
+            # trying loading icon in the GUI directory
+            if {$::tcl_version >= 8.5} {
+                set icon [file join $::sys_guidir pd.gif]
+                if {[file readable $icon]} { 
+                    catch {
+                        wm iconphoto . -default [image create photo -file "$icon"]
+                    }
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "left_ptr"
             set ::cursor_runmode_clickme "arrow"
@@ -371,9 +383,6 @@ proc init_for_platform {} {
             option add *DialogWindow*font menufont startupFile
             option add *PdWindow*font menufont startupFile
             option add *ErrorDialog*font menufont startupFile
-            # initial dir is home
-            set ::filenewdir $::env(HOME)
-            set ::fileopendir $::env(HOME)
             # set file types that open/save recognize
             set ::filetypes \
                 [list \
@@ -392,6 +401,18 @@ proc init_for_platform {} {
             set ::windowframey 0
             # TODO use 'winico' package for full, hicolor icon support
             wm iconbitmap . -default [file join $::sys_guidir pd.ico]
+            # add local fonts to Tk's font list using pdfontloader
+            if {[file exists [file join "$::sys_libdir" "font"]]} {
+                catch {
+                    load [file join "$::sys_libdir" "bin/pdfontloader.dll"]
+                    set localfonts {"DejaVuSansMono.ttf" "DejaVuSansMono-Bold.ttf"}
+                    foreach font $localfonts {
+                        set path [file join "$::sys_libdir" "font/$font"]
+                        pdfontloader::load $path
+                        ::pdwindow::verbose 0 "pdfontloader loaded [file tail $path]\n"
+                    }
+                }
+            }
             # mouse cursors for all the different modes
             set ::cursor_runmode_nothing "right_ptr"
             set ::cursor_runmode_clickme "arrow"
@@ -594,13 +615,14 @@ proc parse_args {argc argv} {
     }
     set unflagged_files [opt_parser::get_options $argv]
     # if we have a single arg that is not a file, its a port or host:port combo
-    if {$argc == 1 && ! [file exists $argv]} {
-        if { [string is int $argv] && $argv > 0} {
+    if {$argc == 1 && ! [file exists [ lindex $argv 0 ]]} {
+           set arg1 [ lindex $argv 0 ]
+        if { [string is int $arg1] && $arg1 > 0} {
             # 'pd-gui' got the port number from 'pd'
             set ::host "localhost"
-            set ::port $argv
+            set ::port $arg1
         } else {
-            set hostport [split $argv ":"]
+            set hostport [split $arg1 ":"]
             set ::port [lindex $hostport 1]
             if { [string is int $::port] && $::port > 0} {
                 set ::host [lindex $hostport 0]
@@ -677,6 +699,11 @@ proc dde_open_handler {cmd} {
 }
 
 proc check_for_running_instances { } {
+    # if pd-gui gets called from pd ('pd-gui 5400') or is told otherwise
+    # to connect to a running instance of Pd (by providing [<host>:]<port>)
+    # then we don't want to connect to a running instance
+    if { $::port > 0 && $::host ne "" } { return }
+
     switch -- $::windowingsystem {
         "aqua" {
             # handled by ::tk::mac::OpenDocument in apple_events.tcl
@@ -685,10 +712,6 @@ proc check_for_running_instances { } {
             # TODO replace PUREDATA name with path so this code is a singleton
             # based on install location rather than this hard-coded name
             if {![singleton ${::pdgui::scriptname}_MANAGER ]} {
-                # if pd-gui gets called from pd ('pd-gui 5400') or is told otherwise
-                # to connect to a running instance of Pd (by providing [<host>:]<port>)
-                # then we don't want to connect to a running instance
-                if { $::port > 0 && $::host ne "" } { return }
                 selection handle -selection ${::pdgui::scriptname} . "send_args"
                 selection own -command others_lost -selection ${::pdgui::scriptname} .
                 after 5000 set ::singleton_state "timeout"
@@ -701,10 +724,17 @@ proc check_for_running_instances { } {
         } "win32" {
             ## http://wiki.tcl.tk/8940
             package require dde ;# 1.4 or later needed for full unicode support
-            set topic "Pure_Data_DDE_Open"
+            set topic "Pure_Data_DDE_Open ${::pdgui::scriptname}"
             # if no DDE service is running, start one and claim the name
             if { [dde services TclEval $topic] == {} } {
+                # registers the interpreter as a DDE server with the service name 'TclEval' and the topic name specified by 'topic'
                 dde servername -handler dde_open_handler $topic
+            } else {
+                # DDE is already running: use it to open the file with the running instance
+                # we only open a single file (assuming that this is called by double-clicking)
+                set filename [lindex ${::argv} 0]
+                dde eval $topic $filename
+                exit 0
             }
         }
     }
@@ -743,7 +773,7 @@ proc load_startup_plugins {} {
     load_plugin_script [file join $::sys_guidir pd_docsdir.tcl]
 
     # load other installed plugins
-    foreach pathdir [concat $::sys_searchpath $::sys_staticpath] {
+    foreach pathdir [concat $::sys_searchpath $::sys_temppath $::sys_staticpath] {
         set dir [file normalize $pathdir]
         if { ! [file isdirectory $dir]} {continue}
         foreach filename [glob -directory $dir -nocomplain -types {f} -- \

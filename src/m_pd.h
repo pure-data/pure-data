@@ -9,8 +9,8 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 48
-#define PD_BUGFIX_VERSION 2
+#define PD_MINOR_VERSION 49
+#define PD_BUGFIX_VERSION 0
 #define PD_TEST_VERSION ""
 extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 
@@ -113,7 +113,7 @@ typedef PD_FLOATTYPE t_floatarg;    /* float type for function calls */
 
 typedef struct _symbol
 {
-    char *s_name;
+    const char *s_name;
     struct _class **s_thing;
     struct _symbol *s_next;
 } t_symbol;
@@ -208,6 +208,8 @@ EXTERN_STRUCT _glist;
 #define t_glist struct _glist
 #define t_canvas struct _glist  /* LATER lose this */
 
+EXTERN_STRUCT _template;
+
 typedef t_class *t_pd;      /* pure datum: nothing but a class pointer */
 
 typedef struct _gobj        /* a graphical object */
@@ -274,8 +276,8 @@ EXTERN t_pd pd_canvasmaker;     /* factory for creating canvases */
 EXTERN void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN void pd_forwardmess(t_pd *x, int argc, t_atom *argv);
 EXTERN t_symbol *gensym(const char *s);
-EXTERN t_gotfn getfn(t_pd *x, t_symbol *s);
-EXTERN t_gotfn zgetfn(t_pd *x, t_symbol *s);
+EXTERN t_gotfn getfn(const t_pd *x, t_symbol *s);
+EXTERN t_gotfn zgetfn(const t_pd *x, t_symbol *s);
 EXTERN void nullfn(void);
 EXTERN void pd_vmess(t_pd *x, t_symbol *s, char *fmt, ...);
 
@@ -305,7 +307,7 @@ EXTERN t_pd *pd_newest(void);
 /* --------------- memory management -------------------- */
 EXTERN void *getbytes(size_t nbytes);
 EXTERN void *getzbytes(size_t nbytes);
-EXTERN void *copybytes(void *src, size_t nbytes);
+EXTERN void *copybytes(const void *src, size_t nbytes);
 EXTERN void freebytes(void *x, size_t nbytes);
 EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
 
@@ -323,45 +325,45 @@ EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
 #define SETDOLLSYM(atom, s) ((atom)->a_type = A_DOLLSYM, \
     (atom)->a_w.w_symbol= (s))
 
-EXTERN t_float atom_getfloat(t_atom *a);
-EXTERN t_int atom_getint(t_atom *a);
-EXTERN t_symbol *atom_getsymbol(t_atom *a);
-EXTERN t_symbol *atom_gensym(t_atom *a);
-EXTERN t_float atom_getfloatarg(int which, int argc, t_atom *argv);
-EXTERN t_int atom_getintarg(int which, int argc, t_atom *argv);
-EXTERN t_symbol *atom_getsymbolarg(int which, int argc, t_atom *argv);
+EXTERN t_float atom_getfloat(const t_atom *a);
+EXTERN t_int atom_getint(const t_atom *a);
+EXTERN t_symbol *atom_getsymbol(const t_atom *a);
+EXTERN t_symbol *atom_gensym(const t_atom *a);
+EXTERN t_float atom_getfloatarg(int which, int argc, const t_atom *argv);
+EXTERN t_int atom_getintarg(int which, int argc, const t_atom *argv);
+EXTERN t_symbol *atom_getsymbolarg(int which, int argc, const t_atom *argv);
 
-EXTERN void atom_string(t_atom *a, char *buf, unsigned int bufsize);
+EXTERN void atom_string(const t_atom *a, char *buf, unsigned int bufsize);
 
 /* ------------------  binbufs --------------- */
 
 EXTERN t_binbuf *binbuf_new(void);
 EXTERN void binbuf_free(t_binbuf *x);
-EXTERN t_binbuf *binbuf_duplicate(t_binbuf *y);
+EXTERN t_binbuf *binbuf_duplicate(const t_binbuf *y);
 
 EXTERN void binbuf_text(t_binbuf *x, const char *text, size_t size);
-EXTERN void binbuf_gettext(t_binbuf *x, char **bufp, int *lengthp);
+EXTERN void binbuf_gettext(const t_binbuf *x, char **bufp, int *lengthp);
 EXTERN void binbuf_clear(t_binbuf *x);
-EXTERN void binbuf_add(t_binbuf *x, int argc, t_atom *argv);
-EXTERN void binbuf_addv(t_binbuf *x, char *fmt, ...);
-EXTERN void binbuf_addbinbuf(t_binbuf *x, t_binbuf *y);
+EXTERN void binbuf_add(t_binbuf *x, int argc, const t_atom *argv);
+EXTERN void binbuf_addv(t_binbuf *x, const char *fmt, ...);
+EXTERN void binbuf_addbinbuf(t_binbuf *x, const t_binbuf *y);
 EXTERN void binbuf_addsemi(t_binbuf *x);
-EXTERN void binbuf_restore(t_binbuf *x, int argc, t_atom *argv);
-EXTERN void binbuf_print(t_binbuf *x);
-EXTERN int binbuf_getnatom(t_binbuf *x);
-EXTERN t_atom *binbuf_getvec(t_binbuf *x);
+EXTERN void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv);
+EXTERN void binbuf_print(const t_binbuf *x);
+EXTERN int binbuf_getnatom(const t_binbuf *x);
+EXTERN t_atom *binbuf_getvec(const t_binbuf *x);
 EXTERN int binbuf_resize(t_binbuf *x, int newsize);
-EXTERN void binbuf_eval(t_binbuf *x, t_pd *target, int argc, t_atom *argv);
-EXTERN int binbuf_read(t_binbuf *b, char *filename, char *dirname,
+EXTERN void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv);
+EXTERN int binbuf_read(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
-EXTERN int binbuf_read_via_canvas(t_binbuf *b, char *filename, t_canvas *canvas,
+EXTERN int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
     int crflag);
-EXTERN int binbuf_read_via_path(t_binbuf *b, char *filename, char *dirname,
+EXTERN int binbuf_read_via_path(t_binbuf *b, const char *filename, const char *dirname,
     int crflag);
-EXTERN int binbuf_write(t_binbuf *x, char *filename, char *dir,
+EXTERN int binbuf_write(const t_binbuf *x, const char *filename, const char *dir,
     int crflag);
 EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
-EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, t_atom *av,
+EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     int tonew);
 
 /* ------------------  clocks --------------- */
@@ -384,7 +386,7 @@ EXTERN t_pd *pd_new(t_class *cls);
 EXTERN void pd_free(t_pd *x);
 EXTERN void pd_bind(t_pd *x, t_symbol *s);
 EXTERN void pd_unbind(t_pd *x, t_symbol *s);
-EXTERN t_pd *pd_findbyclass(t_symbol *s, t_class *c);
+EXTERN t_pd *pd_findbyclass(t_symbol *s, const t_class *c);
 EXTERN void pd_pushsym(t_pd *x);
 EXTERN void pd_popsym(t_pd *x);
 EXTERN void pd_bang(t_pd *x);
@@ -426,13 +428,13 @@ EXTERN t_object *pd_checkobject(t_pd *x);
 
 EXTERN void glob_setfilename(void *dummy, t_symbol *name, t_symbol *dir);
 
-EXTERN void canvas_setargs(int argc, t_atom *argv);
+EXTERN void canvas_setargs(int argc, const t_atom *argv);
 EXTERN void canvas_getargs(int *argcp, t_atom **argvp);
 EXTERN t_symbol *canvas_getcurrentdir(void);
 EXTERN t_glist *canvas_getcurrent(void);
-EXTERN void canvas_makefilename(t_glist *c, char *file,
-    char *result,int resultsize);
-EXTERN t_symbol *canvas_getdir(t_glist *x);
+EXTERN void canvas_makefilename(const t_glist *c, const char *file,
+    char *result, int resultsize);
+EXTERN t_symbol *canvas_getdir(const t_glist *x);
 EXTERN char sys_font[]; /* default typeface set in s_main.c */
 EXTERN char sys_fontweight[]; /* default font weight set in s_main.c */
 EXTERN int sys_hostfontsize(int fontsize, int zoom);
@@ -441,7 +443,7 @@ EXTERN int sys_zoomfontheight(int fontsize, int zoom, int worstcase);
 EXTERN int sys_fontwidth(int fontsize);
 EXTERN int sys_fontheight(int fontsize);
 EXTERN void canvas_dataproperties(t_glist *x, t_scalar *sc, t_binbuf *b);
-EXTERN int canvas_open(t_canvas *x, const char *name, const char *ext,
+EXTERN int canvas_open(const t_canvas *x, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin);
 
 /* ---------------- widget behaviors ---------------------- */
@@ -466,6 +468,9 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+EXTERN t_class *class_new64(t_symbol *name, t_newmethod newmethod,
+    t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+
 EXTERN void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...);
 EXTERN void class_addmethod(t_class *c, t_method fn, t_symbol *sel,
@@ -479,11 +484,11 @@ EXTERN void class_addanything(t_class *c, t_method fn);
 EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
 EXTERN void class_setwidget(t_class *c, const t_widgetbehavior *w);
 EXTERN void class_setparentwidget(t_class *c, const t_parentwidgetbehavior *w);
-EXTERN char *class_getname(t_class *c);
-EXTERN char *class_gethelpname(t_class *c);
-EXTERN char *class_gethelpdir(t_class *c);
+EXTERN const char *class_getname(const t_class *c);
+EXTERN const char *class_gethelpname(const t_class *c);
+EXTERN const char *class_gethelpdir(const t_class *c);
 EXTERN void class_setdrawcommand(t_class *c);
-EXTERN int class_isdrawcommand(t_class *c);
+EXTERN int class_isdrawcommand(const t_class *c);
 EXTERN void class_domainsignalin(t_class *c, int onset);
 EXTERN void class_set_extern_dir(t_symbol *s);
 #define CLASS_MAINSIGNALIN(c, type, field) \
@@ -492,13 +497,13 @@ EXTERN void class_set_extern_dir(t_symbol *s);
          /* prototype for functions to save Pd's to a binbuf */
 typedef void (*t_savefn)(t_gobj *x, t_binbuf *b);
 EXTERN void class_setsavefn(t_class *c, t_savefn f);
-EXTERN t_savefn class_getsavefn(t_class *c);
-EXTERN void obj_saveformat(t_object *x, t_binbuf *bb); /* add format to bb */
+EXTERN t_savefn class_getsavefn(const t_class *c);
+EXTERN void obj_saveformat(const t_object *x, t_binbuf *bb); /* add format to bb */
 
         /* prototype for functions to open properties dialogs */
 typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
 EXTERN void class_setpropertiesfn(t_class *c, t_propertiesfn f);
-EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
+EXTERN t_propertiesfn class_getpropertiesfn(const t_class *c);
 
 #ifndef PD_CLASS_DEF
 #define class_addbang(x, y) class_addbang((x), (t_method)(y))
@@ -509,17 +514,21 @@ EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 #define class_addanything(x, y) class_addanything((x), (t_method)(y))
 #endif
 
+#if PD_FLOATSIZE == 64
+# define class_new class_new64
+#endif
+
 /* ------------   printing --------------------------------- */
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
-EXTERN void postatom(int argc, t_atom *argv);
+EXTERN void postatom(int argc, const t_atom *argv);
 EXTERN void endpost(void);
 EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
-EXTERN void pd_error(void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
 EXTERN void sys_logerror(const char *object, const char *s);
@@ -807,6 +816,7 @@ struct _pdinstance
     double pd_systime;          /* global time in Pd ticks */
     t_clock *pd_clock_setlist;  /* list of set clocks */
     t_canvas *pd_canvaslist;    /* list of all root canvases */
+    struct _template *pd_templatelist;  /* list of all templates */
     int pd_instanceno;          /* ordinal number of this instance */
     t_symbol **pd_symhash;      /* symbol table hash table */
     t_instancemidi *pd_midi;    /* private stuff for x_midi.c */

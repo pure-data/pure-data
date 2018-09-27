@@ -40,6 +40,7 @@ void glob_watchdog(t_pd *dummy);
 void glob_loadpreferences(t_pd *dummy, t_symbol *s);
 void glob_savepreferences(t_pd *dummy, t_symbol *s);
 void glob_forgetpreferences(t_pd *dummy);
+void glob_open(t_pd *ignore, t_symbol *name, t_symbol *dir, t_floatarg f);
 
 static void glob_helpintro(t_pd *dummy)
 {
@@ -138,8 +139,8 @@ void glob_init(void)
         A_GIMME, 0);
     class_addmethod(glob_pdobject, (t_method)glob_menunew, gensym("menunew"),
         A_SYMBOL, A_SYMBOL, 0);
-    class_addmethod(glob_pdobject, (t_method)glob_evalfile, gensym("open"),
-        A_SYMBOL, A_SYMBOL, 0);
+    class_addmethod(glob_pdobject, (t_method)glob_open, gensym("open"),
+        A_SYMBOL, A_SYMBOL, A_DEFFLOAT, 0);
     class_addmethod(glob_pdobject, (t_method)glob_quit, gensym("quit"), 0);
     class_addmethod(glob_pdobject, (t_method)glob_verifyquit,
         gensym("verifyquit"), A_DEFFLOAT, 0);

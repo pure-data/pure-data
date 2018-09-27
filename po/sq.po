@@ -665,12 +665,45 @@ msgstr ""
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 
+msgid "[deken]: "
+msgstr ""
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "[deken]: Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
+msgstr ""
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr ""
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] uninstalling '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr ""
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Platform re-detected: %s"
 msgstr ""
 
 msgid "Show all"
@@ -689,24 +722,66 @@ msgstr ""
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
-msgid "Searching for externals..."
+#, fuzzy
+msgid "Preferences"
+msgstr "Parapëlqime..."
+
+msgid "Installation options:"
+msgstr ""
+
+msgid "Try to remove libraries before (re)installing them?"
+msgstr ""
+
+msgid "Show README of newly installed libraries (if present)?"
+msgstr ""
+
+msgid "Should newly installed libraries be added to Pd's search path?"
+msgstr ""
+
+msgid "Platform settings:"
+msgstr ""
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr ""
+
+msgid "User-defined platform:"
+msgstr ""
+
+msgid "Hide foreign architectures?"
+msgstr ""
+
+#, fuzzy, tcl-format
+msgid "Deken %s Preferences"
+msgstr "Parapëlqime..."
+
+msgid "[deken]: Start searching for externals..."
 msgstr ""
 
 #, tcl-format
 msgid "[deken]: online? %s"
 msgstr ""
 
-msgid "Unable to perform search. Are you online?"
+msgid "Are you online?"
 msgstr ""
 
-msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
+msgid "Unable to perform search."
+msgstr ""
+
+msgid "[deken]: No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb'."
+msgstr ""
+
+msgid "No matching externals found."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
@@ -716,25 +791,7 @@ msgid ""
 "Into %2$s..."
 msgstr ""
 
-msgid "aborting."
-msgstr ""
-
-#, tcl-format
-msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
-
-msgid "Unable to extract package automatically."
-msgstr ""
-
-msgid "Please perform the following steps manually:"
-msgstr ""
-
-#, tcl-format
-msgid "1. Unzip %s."
-msgstr ""
-
-#, tcl-format
-msgid "2. Copy the contents into %s."
+msgid "aborting.\n"
 msgstr ""
 
 #, tcl-format
@@ -765,11 +822,17 @@ msgstr ""
 msgid "searching for '%s'"
 msgstr "Kërko Tekst..."
 
-msgid "Unable to perform search."
-msgstr ""
-
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
+msgstr ""
+
+msgid "Install package"
+msgstr ""
+
+msgid "Open webpage"
+msgstr ""
+
+msgid "_"
 msgstr ""
 
 #, tcl-format
@@ -814,6 +877,9 @@ msgstr "Ruaj Si"
 msgid "Print..."
 msgstr "_Përpuno..."
 
+msgid "Paste Replace"
+msgstr ""
+
 #, fuzzy
 msgid "Duplicate"
 msgstr "Datë"
@@ -827,6 +893,12 @@ msgid "Zoom Out"
 msgstr "Poshtë"
 
 msgid "Tidy Up"
+msgstr ""
+
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 #, fuzzy
@@ -864,10 +936,6 @@ msgstr "Fshij Tërë"
 #, fuzzy
 msgid "Clear Console"
 msgstr "Fshij listë"
-
-#, fuzzy
-msgid "Preferences"
-msgstr "Parapëlqime..."
 
 msgid "Object"
 msgstr ""

@@ -5,7 +5,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.48.0\n"
+"Project-Id-Version: Pure Data 0.49.0\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -615,12 +615,45 @@ msgstr ""
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr ""
 
+msgid "[deken]: "
+msgstr ""
+
+#, tcl-format
+msgid "Successfully unzipped %1$s into %2$s."
+msgstr ""
+
+msgid "[deken]: Unable to extract package automatically."
+msgstr ""
+
+msgid "Please perform the following steps manually:"
+msgstr ""
+
+#, tcl-format
+msgid "1. Unzip %s."
+msgstr ""
+
+#, tcl-format
+msgid "2. Copy the contents into %s."
+msgstr ""
+
+#, tcl-format
+msgid "[deken] uninstalling '%s'"
+msgstr ""
+
+#, tcl-format
+msgid "Uninstalling %1$s from %2$s failed!"
+msgstr ""
+
 #, tcl-format
 msgid "[deken] deken-plugin.tcl (Pd externals search) loaded from %s."
 msgstr ""
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
+msgstr ""
+
+#, tcl-format
+msgid "[deken] Platform re-detected: %s"
 msgstr ""
 
 msgid "Show all"
@@ -638,24 +671,65 @@ msgstr ""
 msgid "Only install externals uploaded by people you trust."
 msgstr ""
 
-msgid "Searching for externals..."
+msgid "Preferences"
+msgstr ""
+
+msgid "Installation options:"
+msgstr ""
+
+msgid "Try to remove libraries before (re)installing them?"
+msgstr ""
+
+msgid "Show README of newly installed libraries (if present)?"
+msgstr ""
+
+msgid "Should newly installed libraries be added to Pd's search path?"
+msgstr ""
+
+msgid "Platform settings:"
+msgstr ""
+
+#, tcl-format
+msgid "Default platform: %s"
+msgstr ""
+
+msgid "User-defined platform:"
+msgstr ""
+
+msgid "Hide foreign architectures?"
+msgstr ""
+
+#, tcl-format
+msgid "Deken %s Preferences"
+msgstr ""
+
+msgid "[deken]: Start searching for externals..."
 msgstr ""
 
 #, tcl-format
 msgid "[deken]: online? %s"
 msgstr ""
 
-msgid "Unable to perform search. Are you online?"
+msgid "Are you online?"
 msgstr ""
 
-msgid "No matching externals found. Try using the full name e.g. 'freeverb'."
+msgid "Unable to perform search."
+msgstr ""
+
+msgid "[deken]: No matching externals found."
+msgstr ""
+
+msgid "Try using the full name e.g. 'freeverb'."
+msgstr ""
+
+msgid "No matching externals found."
 msgstr ""
 
 msgid "Please select a (writable) installation directory!"
 msgstr ""
 
 #, tcl-format
-msgid "Install %s to %s?"
+msgid "Install %1$s to %2$s?"
 msgstr ""
 
 #, tcl-format
@@ -665,25 +739,7 @@ msgid ""
 "Into %2$s..."
 msgstr ""
 
-msgid "aborting."
-msgstr ""
-
-#, tcl-format
-msgid "Successfully unzipped %1$s into %2$s."
-msgstr ""
-
-msgid "Unable to extract package automatically."
-msgstr ""
-
-msgid "Please perform the following steps manually:"
-msgstr ""
-
-#, tcl-format
-msgid "1. Unzip %s."
-msgstr ""
-
-#, tcl-format
-msgid "2. Copy the contents into %s."
+msgid "aborting.\n"
 msgstr ""
 
 #, tcl-format
@@ -714,11 +770,17 @@ msgstr ""
 msgid "searching for '%s'"
 msgstr ""
 
-msgid "Unable to perform search."
-msgstr ""
-
 #, tcl-format
 msgid "Uploaded by %1$s @ %2$s"
+msgstr ""
+
+msgid "Install package"
+msgstr ""
+
+msgid "Open webpage"
+msgstr ""
+
+msgid "_"
 msgstr ""
 
 #, tcl-format
@@ -760,6 +822,9 @@ msgstr ""
 msgid "Print..."
 msgstr ""
 
+msgid "Paste Replace"
+msgstr ""
+
 msgid "Duplicate"
 msgstr ""
 
@@ -770,6 +835,12 @@ msgid "Zoom Out"
 msgstr ""
 
 msgid "Tidy Up"
+msgstr ""
+
+msgid "(Dis)Connect Selection"
+msgstr ""
+
+msgid "Triggerize"
 msgstr ""
 
 msgid "Edit Mode"
@@ -800,9 +871,6 @@ msgid "Select All"
 msgstr ""
 
 msgid "Clear Console"
-msgstr ""
-
-msgid "Preferences"
 msgstr ""
 
 msgid "Object"

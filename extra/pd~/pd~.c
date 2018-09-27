@@ -59,31 +59,46 @@ static t_class *pd_tilde_class;
 
 #endif
 
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
-#ifdef __x86_64__
-static char pd_tilde_dllextent[] = ".l_ia64",
-    pd_tilde_dllextent2[] = ".pd_linux";
+#if defined(__x86_64__) || defined(_M_X64)
+# define ARCHEXT "amd64"
+#elif defined(__i386__) || defined(_M_IX86)
+# define ARCHEXT "i386"
+#elif defined(__arm__)
+# define ARCHEXT "arm"
+#elif defined(__aarch64__)
+# define ARCHEXT "arm64"
+#elif defined(__ppc__)
+# define ARCHEXT "ppc"
+#endif
+
+#ifdef ARCHEXT
+#define ARCHDLLEXT(prefix) prefix ARCHEXT ,
 #else
-static char pd_tilde_dllextent[] = ".l_i386",
-    pd_tilde_dllextent2[] = ".pd_linux";
+#define ARCHDLLEXT(prefix)
 #endif
-#endif
-#ifdef __APPLE__
-static char pd_tilde_dllextent[] = ".d_fat",
-    pd_tilde_dllextent2[] = ".pd_darwin";
-#endif
-#if defined(_WIN32) || defined(__CYGWIN__)
-static char pd_tilde_dllextent[] = ".m_i386", pd_tilde_dllextent2[] = ".dll";
-#endif
-#if defined(__OPENBSD__)
-#ifdef __x86_64__
-static char pd_tilde_dllextent[] = ".o_amd64",
-    pd_tilde_dllextent2[] = ".pd_openbsd";
+
+
+static const char*pd_tilde_dllextent[] = {
+#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__) || defined(__FreeBSD__)
+    ARCHDLLEXT(".l_")
+    ".pd_linux",
+    ".so",
+#elif defined(__APPLE__)
+    ".d_fat",
+    ARCHDLLEXT(".d_")
+    ".pd_darwin",
+    ".so",
+#elif defined(__OPENBSD__)
+    ARCHDLLEXT(".o_")
+    ".pd_openbsd",
+    ".so",
+#elif defined(_WIN32) || defined(__CYGWIN__)
+    ARCHDLLEXT(".m_")
+    ".dll",
 #else
-static char pd_tilde_dllextent[] = ".o_i386",
-    pd_tilde_dllextent2[] = ".pd_openbsd";
+    ".so",
 #endif
-#endif
+    0};
 
 #define FOOFOO
 #include "binarymsg.c"
@@ -214,15 +229,16 @@ static int pd_tilde_readmessages(t_pd_tilde *x)
 #define EXTENT ""
 #endif
 
-static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
-    char *patchdir, int argc, t_atom *argv, int ninsig, int noutsig,
+static void pd_tilde_donew(t_pd_tilde *x, const char *pddir, const char *schedlibdir,
+    const char *patchdir_c, int argc, t_atom *argv, int ninsig, int noutsig,
     int fifo, t_float samplerate)
 {
     int i, pid, pipe1[2], pipe2[2];
     char cmdbuf[MAXPDSTRING], pdexecbuf[MAXPDSTRING], schedbuf[MAXPDSTRING],
-        tmpbuf[MAXPDSTRING];
+        tmpbuf[MAXPDSTRING], patchdir[MAXPDSTRING];
     char *execargv[FIXEDARG+MAXARG+1], ninsigstr[20], noutsigstr[20],
         sampleratestr[40];
+    const char**dllextent;
     struct stat statbuf;
     x->x_infd = x->x_outfd = 0;
     x->x_childpid = -1;
@@ -253,20 +269,17 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
     }
 
         /* check that the scheduler dynamic linkable exists w either suffix */
-    snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
-        pd_tilde_dllextent);
-    sys_bashfilename(tmpbuf, schedbuf);
-    if (stat(schedbuf, &statbuf) < 0)
+    for(dllextent=pd_tilde_dllextent; *dllextent; dllextent++)
     {
-        snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, 
-            pd_tilde_dllextent2);
-        sys_bashfilename(tmpbuf, schedbuf);
-        if (stat(schedbuf, &statbuf) < 0)
-        {
-            PDERROR "pd~: can't stat %s", schedbuf);
-            goto fail1;
-        }       
+      snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched%s", schedlibdir, *dllextent);
+      sys_bashfilename(tmpbuf, schedbuf);
+      if (stat(schedbuf, &statbuf) >= 0)
+        goto gotone;
     }
+    PDERROR "pd~: can't stat %s", schedbuf);
+    goto fail1;
+
+gotone:
         /* but the sub-process wants the scheduler name without the suffix */
     snprintf(tmpbuf, MAXPDSTRING, "%s/pdsched", schedlibdir);
     sys_bashfilename(tmpbuf, schedbuf);
@@ -287,13 +300,11 @@ static void pd_tilde_donew(t_pd_tilde *x, char *pddir, char *schedlibdir,
         snprintf(tmpbuf, MAXPDSTRING, "\"%s\"", schedbuf);
         strcpy(schedbuf, tmpbuf);
     }
-    if (strchr(patchdir, ' ') && *patchdir != '"' && *patchdir != '\'')
-    {
-        /* don't overwrite original 'patchdir' string! */
-        char patchdirbuf[MAXPDSTRING];
-        snprintf(patchdirbuf, MAXPDSTRING, "\"%s\"", patchdir);
-        patchdir = patchdirbuf;
-    }
+    if (strchr(patchdir_c, ' ') && *patchdir_c != '"' && *patchdir_c != '\'')
+        snprintf(patchdir, MAXPDSTRING, "\"%s\"", patchdir_c);
+    else
+        snprintf(patchdir, MAXPDSTRING, "%s", patchdir_c);
+
     execargv[0] = pdexecbuf;
     execargv[1] = "-schedlib";
     execargv[2] = schedbuf;
@@ -608,7 +619,7 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
 {
     t_symbol *sel = ((argc > 0 && argv->a_type == A_SYMBOL) ?
         argv->a_w.w_symbol : gensym("?")), *schedlibdir;
-    char *patchdir;
+    const char *patchdir;
     if (sel == gensym("start"))
     {
         char pdargstring[MAXPDSTRING];
@@ -625,7 +636,8 @@ static void pd_tilde_pdtilde(t_pd_tilde *x, t_symbol *s,
         schedlibdir = x->x_schedlibdir;
         if (schedlibdir == gensym(".") && x->x_pddir != gensym("."))
         {
-            char *pds = x->x_pddir->s_name, scheddirstring[MAXPDSTRING];
+            const char *pds = x->x_pddir->s_name;
+            char scheddirstring[MAXPDSTRING];
             int l = strlen(pds);
             if (l >= 4 && (!strcmp(pds+l-3, "bin") || !strcmp(pds+l-4, "bin/")))
                 snprintf(scheddirstring, MAXPDSTRING, "%s/../extra/pd~", pds);
@@ -913,7 +925,7 @@ static void *pd_tilde_new(t_symbol *s, long ac, t_atom *av)
     {
         while (ac > 0 && av[0].a_type == A_SYM)
         {
-            char *flag = av[0].a_w.w_sym->s_name;
+            const char *flag = av[0].a_w.w_sym->s_name;
             if (!strcmp(flag, "-sr") && ac > 1)
             {
                 sr = (av[1].a_type == A_FLOAT ? av[1].a_w.w_float :

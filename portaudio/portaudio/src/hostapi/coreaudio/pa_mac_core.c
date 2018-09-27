@@ -125,83 +125,78 @@ static bool ensureChannelNameSize( int size )
  */
 const char *PaMacCore_GetChannelName( int device, int channelIndex, bool input )
 {
-   struct PaUtilHostApiRepresentation *hostApi;
-   PaError err;
-   OSStatus error;
-   err = PaUtil_GetHostApiRepresentation( &hostApi, paCoreAudio );
-   assert(err == paNoError);
-   if( err != paNoError )
-      return NULL;
-   PaMacAUHAL *macCoreHostApi = (PaMacAUHAL*)hostApi;
-   AudioDeviceID hostApiDevice = macCoreHostApi->devIds[device];
-
-   UInt32 size = 0;
-
-   error = AudioDeviceGetPropertyInfo( hostApiDevice,
-                                       channelIndex + 1,
-                                       input,
-                                       kAudioDevicePropertyChannelName,
-                                       &size,
-                                       NULL );
-   if( error ) {
-      //try the CFString
-      CFStringRef name;
-      bool isDeviceName = false;
-      size = sizeof( name );
-      error = AudioDeviceGetProperty( hostApiDevice,
-                                      channelIndex + 1,
-                                      input,
-                                      kAudioDevicePropertyChannelNameCFString,
-                                      &size,
-                                      &name );
-      if( error ) { //as a last-ditch effort, get the device name. Later we'll append the channel number.
-         size = sizeof( name );
-         error = AudioDeviceGetProperty( hostApiDevice,
-                                      channelIndex + 1,
-                                      input,
-                                      kAudioDevicePropertyDeviceNameCFString,
-                                      &size,
-                                      &name );
-         if( error )
-            return NULL;
-         isDeviceName = true;
-      }
-      if( isDeviceName ) {
-         name = CFStringCreateWithFormat( NULL, NULL, CFSTR( "%@: %d"), name, channelIndex + 1 );
-      }
-
-      CFIndex length = CFStringGetLength(name);
-      while( ensureChannelNameSize( length * sizeof(UniChar) + 1 ) ) {
-         if( CFStringGetCString( name, channelName, channelNameSize, kCFStringEncodingUTF8 ) ) {
-            if( isDeviceName )
-               CFRelease( name );
-            return channelName;
-         }
-         if( length == 0 )
-            ++length;
-         length *= 2;
-      }
-      if( isDeviceName )
-         CFRelease( name );
-      return NULL;
-   }
-
-   //continue with C string:
-   if( !ensureChannelNameSize( size ) )
-      return NULL;
-
-   error = AudioDeviceGetProperty( hostApiDevice,
-                                   channelIndex + 1,
-                                   input,
-                                   kAudioDevicePropertyChannelName,
-                                   &size,
-                                   channelName );
-
-   if( error ) {
-      ERR( error );
-      return NULL;
-   }
-   return channelName;
+	struct PaUtilHostApiRepresentation *hostApi;
+	PaError err;
+	OSStatus error;
+	err = PaUtil_GetHostApiRepresentation( &hostApi, paCoreAudio );
+	assert(err == paNoError);
+	if( err != paNoError )
+		return NULL;
+	PaMacAUHAL *macCoreHostApi = (PaMacAUHAL*)hostApi;
+	AudioDeviceID hostApiDevice = macCoreHostApi->devIds[device];
+	CFStringRef nameRef;
+	
+	/* First try with CFString */
+	UInt32 size = sizeof(nameRef);
+	error = AudioDeviceGetProperty( hostApiDevice,
+								   channelIndex + 1,
+								   input,
+								   kAudioDevicePropertyChannelNameCFString,
+								   &size,
+								   &nameRef );
+	if( error )
+	{
+		/* try the C String */
+		size = 0;
+		error = AudioDeviceGetPropertyInfo( hostApiDevice,
+										   channelIndex + 1,
+										   input,
+										   kAudioDevicePropertyChannelName,
+										   &size,
+										   NULL);
+		if( !error )
+		{
+			if( !ensureChannelNameSize( size ) )
+				return NULL;
+			
+			error = AudioDeviceGetProperty( hostApiDevice,
+										   channelIndex + 1,
+										   input,
+										   kAudioDevicePropertyChannelName,
+										   &size,
+										   channelName );
+			
+			
+			if( !error )
+				return channelName;
+		}
+		
+		/* as a last-ditch effort, we use the device name and append the channel number. */
+		nameRef = CFStringCreateWithFormat( NULL, NULL, CFSTR( "%s: %d"), hostApi->deviceInfos[device]->name, channelIndex + 1 );
+		
+		
+		size = CFStringGetMaximumSizeForEncoding(CFStringGetLength(nameRef), kCFStringEncodingUTF8);;
+		if( !ensureChannelNameSize( size ) )
+		{
+			CFRelease( nameRef );
+			return NULL;
+		}
+		CFStringGetCString( nameRef, channelName, size+1, kCFStringEncodingUTF8 );
+		CFRelease( nameRef );
+	}
+	else
+	{
+		size = CFStringGetMaximumSizeForEncoding(CFStringGetLength(nameRef), kCFStringEncodingUTF8);;
+		if( !ensureChannelNameSize( size ) )
+		{
+			CFRelease( nameRef );
+			return NULL;
+		}
+		CFStringGetCString( nameRef, channelName, size+1, kCFStringEncodingUTF8 );
+		CFRelease( nameRef );
+	}
+	
+	return channelName;
 }
 
     
@@ -312,7 +307,7 @@ static PaError OpenAndSetupOneAudioUnit(
 
 /* for setting errors. */
 #define PA_AUHAL_SET_LAST_HOST_ERROR( errorCode, errorText ) \
-    PaUtil_SetLastHostErrorInfo( paInDevelopment, errorCode, errorText )
+    PaUtil_SetLastHostErrorInfo( paCoreAudio, errorCode, errorText )
 
 /*
  * Callback called when starting or stopping a stream.
@@ -657,6 +652,7 @@ static PaError InitializeDeviceInfo( PaMacAUHAL *auhalHostApi,
     Float64 sampleRate;
     char *name;
     PaError err = paNoError;
+	CFStringRef nameRef;
     UInt32 propSize;
 
     VVDBUG(("InitializeDeviceInfo(): macCoreDeviceId=%ld\n", macCoreDeviceId));
@@ -665,18 +661,37 @@ static PaError InitializeDeviceInfo( PaMacAUHAL *auhalHostApi,
 
     deviceInfo->structVersion = 2;
     deviceInfo->hostApi = hostApiIndex;
-
-    /* Get the device name.  Fail if we can't get it. */
-    err = ERR(AudioDeviceGetPropertyInfo(macCoreDeviceId, 0, 0, kAudioDevicePropertyDeviceName, &propSize, NULL));
+  
+    /* Get the device name using CFString */
+	propSize = sizeof(nameRef);
+    err = ERR(AudioDeviceGetProperty(macCoreDeviceId, 0, 0, kAudioDevicePropertyDeviceNameCFString, &propSize, &nameRef));
     if (err)
-        return err;
+    {
+		/* Get the device name using c string.  Fail if we can't get it. */
+		err = ERR(AudioDeviceGetPropertyInfo(macCoreDeviceId, 0, 0, kAudioDevicePropertyDeviceName, &propSize, NULL));
+		if (err)
+			return err;
 
-    name = PaUtil_GroupAllocateMemory(auhalHostApi->allocations,propSize);
-    if ( !name )
-        return paInsufficientMemory;
-    err = ERR(AudioDeviceGetProperty(macCoreDeviceId, 0, 0, kAudioDevicePropertyDeviceName, &propSize, name));
-    if (err)
-        return err;
+		name = PaUtil_GroupAllocateMemory(auhalHostApi->allocations,propSize+1);
+		if ( !name )
+			return paInsufficientMemory;
+		err = ERR(AudioDeviceGetProperty(macCoreDeviceId, 0, 0, kAudioDevicePropertyDeviceName, &propSize, name));
+		if (err)
+			return err;
+	}
+	else
+	{
+		/* valid CFString so we just allocate a c string big enough to contain the data */
+		propSize = CFStringGetMaximumSizeForEncoding(CFStringGetLength(nameRef), kCFStringEncodingUTF8);
+		name = PaUtil_GroupAllocateMemory(auhalHostApi->allocations, propSize+1);
+		if ( !name )
+		{
+			CFRelease(nameRef);
+			return paInsufficientMemory;
+		}
+		CFStringGetCString(nameRef, name, propSize+1, kCFStringEncodingUTF8);
+		CFRelease(nameRef);
+	}
     deviceInfo->name = name;
 
     /* Try to get the default sample rate.  Don't fail if we can't get this. */
@@ -1906,14 +1921,13 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
         
        /*
         * If input and output devs are different or we are doing SR conversion,
-        * we also need a
-        * ring buffer to store inpt data while waiting for output
-        * data.
+        * we also need a ring buffer to store input data while waiting for
+        * output data.
         */
        if( (stream->outputUnit && (stream->inputUnit != stream->outputUnit))
            || stream->inputSRConverter )
        {
-          /* May want the ringSize ot initial position in
+          /* May want the ringSize or initial position in
              ring buffer to depend somewhat on sample rate change */
 
           void *data;
@@ -1936,7 +1950,15 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
           }
 
           /* now we can initialize the ring buffer */
-          PaUtil_InitializeRingBuffer( &stream->inputRingBuffer, szfl*inputParameters->channelCount, ringSize, data ) ;
+          result = PaUtil_InitializeRingBuffer( &stream->inputRingBuffer, szfl*inputParameters->channelCount, ringSize, data );
+          if( result != 0 )
+          {
+              /* The only reason this should fail is if ringSize is not a power of 2, which we do not anticipate happening. */
+              result = paUnanticipatedHostError;
+              free(data);
+              goto error;
+          }
+
           /* advance the read point a little, so we are reading from the
              middle of the buffer */
           if( stream->outputUnit )
@@ -1958,12 +1980,11 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
                                          stream->outputFramesPerBuffer,
                                          sampleRate );
        result = initializeBlioRingBuffers( &stream->blio,
-              inputParameters?inputParameters->sampleFormat:0 ,
-              outputParameters?outputParameters->sampleFormat:0 ,
-              MAX(stream->inputFramesPerBuffer,stream->outputFramesPerBuffer),
+              inputParameters ? inputParameters->sampleFormat : 0,
+              outputParameters ? outputParameters->sampleFormat : 0,
               ringSize,
-              inputParameters?inputChannelCount:0 ,
-              outputParameters?outputChannelCount:0 ) ;
+              inputParameters ? inputChannelCount : 0,
+              outputParameters ? outputChannelCount : 0 ) ;
        if( result != paNoError )
           goto error;
         
@@ -2262,9 +2283,10 @@ static OSStatus AudioIOProc( void *inRefCon,
                     INPUT_ELEMENT,
                     inNumberFrames,
                     &stream->inputAudioBufferList );
-      /* FEEDBACK: I'm not sure what to do when this call fails. There's nothing in the PA API to
-       * do about failures in the callback system. */
-      assert( !err );
+      if(err != noErr)
+      {
+        goto stop_stream;
+      }
 
       PaUtil_SetInputFrameCount( &(stream->bufferProcessor), frames );
       PaUtil_SetInterleavedInputChannels( &(stream->bufferProcessor),
@@ -2344,7 +2366,7 @@ static OSStatus AudioIOProc( void *inRefCon,
                              &size,
                              (void *)&data );
                if( err == RING_BUFFER_EMPTY )
-               { /*the ring buffer callback underflowed */
+               { /* the ring buffer callback underflowed */
                   err = 0;
                   bzero( ((char *)data) + size, sizeof(data)-size );
                   /* The ring buffer can underflow normally when the stream is stopping.
@@ -2355,8 +2377,11 @@ static OSStatus AudioIOProc( void *inRefCon,
                   }
                }
                ERR( err );
-               assert( !err );
-               
+               if(err != noErr)
+               {
+                 goto stop_stream;
+               }
+
                PaUtil_SetInputFrameCount( &(stream->bufferProcessor), frames );
                PaUtil_SetInterleavedInputChannels( &(stream->bufferProcessor),
                                    0,
@@ -2462,9 +2487,12 @@ static OSStatus AudioIOProc( void *inRefCon,
          if( err == -10874 )
             inNumberFrames /= 2;
       } while( err == -10874 && inNumberFrames > 1 );
-      /* FEEDBACK: I'm not sure what to do when this call fails */
       ERR( err );
-      assert( !err );
+      if(err != noErr)
+      {
+          goto stop_stream;
+      }
+
       if( stream->inputSRConverter || stream->outputUnit )
       {
          /* If this is duplex or we use a converter, put the data
@@ -2507,11 +2535,11 @@ static OSStatus AudioIOProc( void *inRefCon,
           * chunks, and let the BufferProcessor deal with the rest.
           *
           */
-         /*This might be too big or small depending on SR conversion*/
+         /* This might be too big or small depending on SR conversion. */
          float data[ chan * inNumberFrames ];
          OSStatus err;
          do
-         { /*Run the buffer processor until we are out of data*/
+         { /* Run the buffer processor until we are out of data. */
             UInt32 size;
             long f;
 
@@ -2524,7 +2552,11 @@ static OSStatus AudioIOProc( void *inRefCon,
                           (void *)data );
             if( err != RING_BUFFER_EMPTY )
                ERR( err );
-            assert( err == 0 || err == RING_BUFFER_EMPTY );
+            if( err != noErr && err != RING_BUFFER_EMPTY )
+            {
+                goto stop_stream;
+            }
+
 
             f = size / ( chan * sizeof(float) );
             PaUtil_SetInputFrameCount( &(stream->bufferProcessor), f );
@@ -2547,23 +2579,23 @@ static OSStatus AudioIOProc( void *inRefCon,
       }
    }
 
-   switch( callbackResult )
-   {
-   case paContinue: break;
-   case paComplete:
-   case paAbort:
-      stream->state = CALLBACK_STOPPED ;
-      if( stream->outputUnit )
-         AudioOutputUnitStop(stream->outputUnit);
-      if( stream->inputUnit )
-         AudioOutputUnitStop(stream->inputUnit);
-      break;
-   }
+    // Should we return successfully or fall through to stopping the stream?
+    if( callbackResult == paContinue )
+    {
+        PaUtil_EndCpuLoadMeasurement( &stream->cpuLoadMeasurer, framesProcessed );
+        return noErr;
+    }
 
-   PaUtil_EndCpuLoadMeasurement( &stream->cpuLoadMeasurer, framesProcessed );
-   return noErr;
+stop_stream:
+    stream->state = CALLBACK_STOPPED ;
+    if( stream->outputUnit )
+        AudioOutputUnitStop(stream->outputUnit);
+    if( stream->inputUnit )
+        AudioOutputUnitStop(stream->inputUnit);
+
+    PaUtil_EndCpuLoadMeasurement( &stream->cpuLoadMeasurer, framesProcessed );
+    return noErr;
 }
-
 
 /*
     When CloseStream() is called, the multi-api layer ensures that
@@ -2692,18 +2724,10 @@ static ComponentResult BlockWhileAudioUnitIsRunning( AudioUnit audioUnit, AudioU
     return noErr;
 }
 
-static PaError StopStream( PaStream *s )
+static PaError FinishStoppingStream( PaMacCoreStream *stream )
 {
-    PaMacCoreStream *stream = (PaMacCoreStream*)s;
     OSStatus result = noErr;
     PaError paErr;
-    VVDBUG(("StopStream()\n"));
-
-    VDBUG( ("Waiting for BLIO.\n") );
-    waitUntilBlioWriteBufferIsFlushed( &stream->blio );
-    VDBUG( ( "Stopping stream.\n" ) );
-
-    stream->state = STOPPING;
 
 #define ERR_WRAP(mac_err) do { result = mac_err ; if ( result != noErr ) return ERR(result) ; } while(0)
     /* -- stop and reset -- */
@@ -2755,12 +2779,34 @@ static PaError StopStream( PaStream *s )
 #undef ERR_WRAP
 }
 
+/* Block until buffer is empty then stop the stream. */
+static PaError StopStream( PaStream *s )
+{
+    PaError paErr;
+    PaMacCoreStream *stream = (PaMacCoreStream*)s;
+    VVDBUG(("StopStream()\n"));
+
+    /* Tell WriteStream to stop filling the buffer. */
+    stream->state = STOPPING;
+
+    if( stream->userOutChan > 0 ) /* Does this stream do output? */
+    {
+        size_t maxHostFrames = MAX( stream->inputFramesPerBuffer, stream->outputFramesPerBuffer );
+        VDBUG( ("Waiting for write buffer to be drained.\n") );
+        paErr = waitUntilBlioWriteBufferIsEmpty( &stream->blio, stream->sampleRate,
+                                                maxHostFrames );
+        VDBUG( ( "waitUntilBlioWriteBufferIsEmpty returned %d\n", paErr ) );
+    }
+    return FinishStoppingStream( stream );
+}
+
+/* Immediately stop the stream. */
 static PaError AbortStream( PaStream *s )
 {
-    VVDBUG(("AbortStream()->StopStream()\n"));
-    VDBUG( ( "Aborting stream.\n" ) );
-    /* We have nothing faster than StopStream. */
-    return StopStream(s);
+    PaMacCoreStream *stream = (PaMacCoreStream*)s;
+    VDBUG( ( "AbortStream()\n" ) );
+    stream->state = STOPPING;
+    return FinishStoppingStream( stream );
 }
 
 

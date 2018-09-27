@@ -79,6 +79,34 @@ static int ooura_init( int n)
     return (1);
 }
 
+static void ooura_term() {
+  if (!ooura_maxn)
+    return;
+  t_freebytes(ooura_bitrev, ooura_bitrevsize);
+  t_freebytes(ooura_costab, ooura_maxn * sizeof(FFTFLT)/2);
+  ooura_maxn = 0;
+  ooura_bitrev = 0;
+  ooura_bitrevsize = 0;
+  ooura_costab = 0;
+}
+
+/* -------- initialization and cleanup -------- */
+static int mayer_refcount = 0;
+
+void mayer_init()
+{
+    if (mayer_refcount == 0)
+        /* nothing to do */;
+    mayer_refcount++;
+}
+
+void mayer_term()
+{
+    if (--mayer_refcount == 0)  /* clean up */
+        ooura_term();
+}
+
+/* -------- public routines -------- */
 EXTERN void mayer_fht(t_sample *fz, int n)
 {
     post("FHT: not yet implemented");

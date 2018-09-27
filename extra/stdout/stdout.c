@@ -76,7 +76,7 @@ static void stdout_binary(t_stdout *x, int argc, t_atom *argv)
         argc = BUFSIZE;
     for (i=0; i<argc; i++)
         ((unsigned char *)buf)[i] = atom_getfloatarg(i, argc, argv);
-    buf[i>BUFSIZE?BUFSIZE:i] = 0;
+    buf[i>=BUFSIZE?(BUFSIZE-1):i] = 0;
     fwrite(buf, 1, argc, stdout);
 
     if (x->x_flush || !argc)
@@ -91,7 +91,7 @@ static void pd_tilde_putfloat(float f, FILE *fd)
 
 static void pd_tilde_putsymbol(t_symbol *s, FILE *fd)
 {
-    char *sp = s->s_name;
+    const char *sp = s->s_name;
     putc(A_SYMBOL, fd);
     do
         putc(*sp, fd);

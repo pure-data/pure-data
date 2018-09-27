@@ -692,7 +692,7 @@ static int soundfiler_writeargparse(void *obj, int *p_argc, t_atom **p_argv,
     while (argc > 0 && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
-        char *flag = argv->a_w.w_symbol->s_name + 1;
+        const char *flag = argv->a_w.w_symbol->s_name + 1;
         if (!strcmp(flag, "skip"))
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
@@ -839,7 +839,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     t_aiff *aiffhdr = (t_aiff *)headerbuf;
     int fd, headersize = 0;
 
-    strncpy(filenamebuf, filename, MAXPDSTRING-10);
+    strncpy(filenamebuf, filename, MAXPDSTRING);
     filenamebuf[MAXPDSTRING-10] = 0;
 
     if (filetype == FORMAT_NEXT)
@@ -919,7 +919,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     return (fd);
 }
 
-static void soundfile_finishwrite(void *obj, char *filename, int fd,
+static void soundfile_finishwrite(void *obj, const char *filename, int fd,
     int filetype, long nframes, long itemswritten, int bytesperframe, int swap)
 {
     if (itemswritten < nframes)
@@ -1206,7 +1206,7 @@ static void soundfile_xferout_words(int nchannels, t_word **vecs,
 }
 
 /* ------- soundfiler - reads and writes soundfiles to/from "garrays" ---- */
-#define DEFMAXSIZE 4000000      /* default maximum 16 MB per channel */
+#define DEFMAXSIZE 0x7fffffff      /* default maximum size in sample frames */
 #define SAMPBUFSIZE 1024
 
 
@@ -1247,7 +1247,8 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     long skipframes = 0, finalsize = 0,
         maxsize = DEFMAXSIZE, itemsread = 0, j;
     int fd = -1;
-    char endianness, *filename;
+    char endianness;
+    const char *filename;
     t_garray *garrays[MAXSFCHANS];
     t_word *vecs[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
@@ -1263,7 +1264,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     while (argc > 0 && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
-        char *flag = argv->a_w.w_symbol->s_name + 1;
+        const char *flag = argv->a_w.w_symbol->s_name + 1;
         if (!strcmp(flag, "skip"))
         {
             if (argc < 2 || argv[1].a_type != A_FLOAT ||
@@ -1311,8 +1312,10 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         }
         else goto usage;
     }
-    if (argc < 2 || argc > MAXSFCHANS + 1 || argv[0].a_type != A_SYMBOL)
-        goto usage;
+    if (argc < 1 ||                           /* no filename or tables */
+        argc > MAXSFCHANS + 1 ||              /* too many tables */
+        argv[0].a_type != A_SYMBOL)           /* bad filename */
+            goto usage;
     filename = argv[0].a_w.w_symbol->s_name;
     argc--; argv++;
 
@@ -1402,7 +1405,6 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         itemsread += nitems;
     }
         /* zero out remaining elements of vectors */
-
     for (i = 0; i < argc; i++)
     {
         int vecsize;
@@ -1632,7 +1634,7 @@ typedef struct _readsf
     t_float x_insamplerate;   /* sample rate of input signal if known */
         /* parameters to communicate with subthread */
     int x_requestcode;      /* pending request from parent to I/O thread */
-    char *x_filename;       /* file to open (string is permanently allocated) */
+    const char *x_filename;       /* file to open (string is permanently allocated) */
     int x_fileerror;        /* slot for "errno" return */
     int x_skipheaderbytes;  /* size of header we'll skip */
     int x_bytespersample;   /* bytes per sample (2 or 3) */
@@ -1723,8 +1725,8 @@ static void *readsf_child_main(void *zz)
                 relinquish the mutex while we're in open_soundfile(). */
             t_soundfile_info info;
             long onsetframes = x->x_onsetframes;
-            char *filename = x->x_filename;
-            char *dirname = canvas_getdir(x->x_canvas)->s_name;
+            const char *filename = x->x_filename;
+            const char *dirname = canvas_getdir(x->x_canvas)->s_name;
             info.samplerate = x->x_samplerate;
             info.channels = x->x_sfchannels;
             info.headersize = x->x_skipheaderbytes;
@@ -2282,7 +2284,7 @@ static void *writesf_child_main(void *zz)
             int sfchannels = x->x_sfchannels;
             int bigendian = x->x_bigendian;
             int filetype = x->x_filetype;
-            char *filename = x->x_filename;
+            const char *filename = x->x_filename;
             t_canvas *canvas = x->x_canvas;
             t_float samplerate = x->x_samplerate;
 
@@ -2300,7 +2302,7 @@ static void *writesf_child_main(void *zz)
             if (x->x_fd >= 0)
             {
                 int bytesperframe = x->x_bytespersample * x->x_sfchannels;
-                char *filename = x->x_filename;
+                const char *filename = x->x_filename;
                 int fd = x->x_fd;
                 int filetype = x->x_filetype;
                 int itemswritten = x->x_itemswritten;
@@ -2440,7 +2442,7 @@ static void *writesf_child_main(void *zz)
             if (x->x_fd >= 0)
             {
                 int bytesperframe = x->x_bytespersample * x->x_sfchannels;
-                char *filename = x->x_filename;
+                const char *filename = x->x_filename;
                 int fd = x->x_fd;
                 int filetype = x->x_filetype;
                 int itemswritten = x->x_itemswritten;
