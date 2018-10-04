@@ -339,7 +339,9 @@ AC_ARG_ENABLE([jack],
 if [ test x$jack_framework != xyes ] && [ test x$jack = xyes ] ; then
     AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
     AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
-    AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes], [jack=no])
+    AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes],
+        [AC_MSG_WARN([jack development files not found, skipping jack
+    (install libjack-dev or libjack-jackd2-dev, then re-configure)]) ; jack=no])
 fi
 
 ##### MMIO #####
