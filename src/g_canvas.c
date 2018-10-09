@@ -1466,7 +1466,7 @@ static void canvas_completepath(const char *from, char *to, int bufsize,
     {
         /* append canvas dir */
         const char *dir = canvas_getdir(x)->s_name;
-        int dirlen = strlen(dir);
+        int dirlen = (int)strlen(dir);
         strncpy(to, dir, bufsize-dirlen);
         to[bufsize-dirlen-1] = '\0';
         strcat(to, "/");
