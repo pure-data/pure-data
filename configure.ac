@@ -576,3 +576,24 @@ AC_MSG_NOTICE([
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
 ])
+
+
+AS_IF([test x$enable_locales = xyes -a x$locales = xno ],
+ AC_MSG_WARN([localization requested but no GNU gettext with msgfmt found... disabled]))
+AS_IF([test x$enable_oss = xyes -a x$oss = xno ],
+ AC_MSG_WARN([OSS requested but no development files found... disabled]))
+AS_IF([test x$enable_alsa = xyes -a x$alsa = xno ],
+ AC_MSG_WARN([ALSA requested but no development files found... disabled (See INSTALL.txt)]))
+AS_IF([test x$enable_jack = xyes -a x$jack = xno ],
+ AC_MSG_WARN([JACK requested but no development files found... disabled (See INSTALL.txt)]))
+AS_IF([test x$enable_jack_framework = xyes -a x$jack_jack != xyes ],
+ AC_MSG_WARN([JACK-Framework requested but no development files found... disabled (See INSTALL.txt)]))
+AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
+ AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
+AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
+ AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
+
+# TODO portaudio
+
+AS_IF([test x$enable_fftw = xyes -a x$fftw = xno ],
+ AC_MSG_WARN([FFTW requested but no development files found... disabled]))
