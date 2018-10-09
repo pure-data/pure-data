@@ -369,7 +369,7 @@ AC_ARG_ENABLE([portaudio],
     [portaudio=$enableval])
 AC_ARG_WITH([local-portaudio],
     [AS_HELP_STRING([--without-local-portaudio],
-        [do not use the portaudio included with pd])],
+        [do not use the portaudio included with Pd])],
     [local_portaudio=$withval])
 if test x$portaudio = xyes ; then
     if test x$local_portaudio = xno ; then
@@ -381,7 +381,7 @@ if test x$portaudio = xyes ; then
         if test -d "$srcdir/portaudio" ; then
             AC_MSG_NOTICE([Using included PortAudio])
         else
-            AC_MSG_WARN([PortAudio not found in pd source directory])
+            AC_MSG_WARN([PortAudio not found in Pd source directory])
             portaudio=no
         fi
     fi
@@ -393,7 +393,7 @@ AC_ARG_ENABLE([portmidi],
     [portmidi=$enableval])
 AC_ARG_WITH([local-portmidi],
     [AS_HELP_STRING([--without-local-portmidi],
-        [do not use the portmidi included with pd])],
+        [do not use the portmidi included with Pd])],
     [local_portmidi=$withval])
 # don't allow portmidi if already using oss
 AS_IF([test x$oss = xyes -a x$portmidi != xno],
@@ -409,7 +409,7 @@ if test x$portmidi = xyes ; then
         if test -d "$srcdir/portmidi" ; then
             AC_MSG_NOTICE([Using included PortMidi])
         else
-            AC_MSG_WARN([PortMidi not found in pd source directory])
+            AC_MSG_WARN([PortMidi not found in Pd source directory])
             portmidi=no
         fi
     fi
