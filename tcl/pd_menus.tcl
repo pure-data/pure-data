@@ -575,6 +575,18 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
         -command {::pd_menus::loadpreferences}
     $mymenu add command -label [_ "Forget All..."] \
         -command {::pd_menus::forgetpreferences}
+		
+		
+switch -- $::windowingsystem {
+       
+	   "win32" {
+	
+    $mymenu add command -label [_ "Always open .pd files with this Pd"] \
+        -command { ::pd_menus::mswindows_file_association}
+					
+			} 
+
+		}
 }
 
 # ------------------------------------------------------------------------------
@@ -691,6 +703,28 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
     $mymenu add command -label [_ "Close"]       -accelerator "$accelerator+W"
     $mymenu add command -label [_ "Quit"]        -accelerator "$accelerator+Q" \
         -command {pdsend "pd verifyquit"}
+}
+
+proc ::pd_menus::mswindows_file_association {} {
+     
+		set wishN [file tail [info nameofexecutable]]
+		package require registry 
+		set detect2 $::sys_libdir
+		set dirrep [regsub -all "/" ${detect2} "\\"]
+		if {[catch {registry set HKEY_CLASSES_ROOT\\.pd "" "PureData"}  errmsg ]  } {
+		::pdwindow::error "${errmsg} \n"
+		::pdwindow::post "\"Administrator Permissions\" are required to set the file associations.\nSave your work and close Pd.\nThen right-click on Pd's icon and select \"Run as Administrator\".\nFinally try again \"Always open .pd files with this Pd.\".\n"
+		} else {
+		registry set HKEY_CLASSES_ROOT\\.pd "" "PureData"
+		registry set HKEY_CLASSES_ROOT\\PureData "" ""
+		registry set HKEY_CLASSES_ROOT\\PureData\\DefaultIcon "" "${dirrep}\\bin\\pd.exe"   
+		registry set HKEY_CLASSES_ROOT\\PureData\\shell "" ""    
+		registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open "" ""    
+		registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open\\command "" "${dirrep}\\bin\\${wishN} \"${dirrep}\\tcl\\pd-gui.tcl\" %1"
+		::pdwindow::post "Registry updated successfully to open .pd files with \"${dirrep}\\bin\\pd.exe\" \n "
+	}
+				
+
 }
 
 # the "Edit", "Put", and "Find" menus do not have cross-platform differences
