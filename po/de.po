@@ -271,7 +271,7 @@ msgid "Delay (msec):"
 msgstr "Verzögerung (msec):"
 
 msgid "Block size:"
-msgstr "Bocklänge:"
+msgstr "Blocklänge:"
 
 msgid "Use callbacks"
 msgstr "Rückfragen verwenden"
