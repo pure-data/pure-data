@@ -707,7 +707,7 @@ proc ::pd_menus::mswindows_file_association {} {
     set detect2 $::sys_libdir
     set dirrep [regsub -all "/" ${detect2} "\\"]
     if {[catch {registry set HKEY_CLASSES_ROOT\\.pd "" "PureData"}  errmsg ]  } {
-        ::pdwindow::error "${errmsg} \n"
+        ::pdwindow::error "${errmsg}\n"
         ::pdwindow::post "\"Administrator Permissions\" are required to set the file associations.\nSave your work and close Pd.\nThen right-click on Pd's icon and select \"Run as Administrator\".\nFinally try again \"Always open .pd files with this Pd.\".\n"
     } else {
         registry set HKEY_CLASSES_ROOT\\.pd "" "PureData"
@@ -716,7 +716,7 @@ proc ::pd_menus::mswindows_file_association {} {
         registry set HKEY_CLASSES_ROOT\\PureData\\shell "" ""
         registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open "" ""
         registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open\\command "" "${dirrep}\\bin\\${wishN} \"${dirrep}\\tcl\\pd-gui.tcl\" %1"
-        ::pdwindow::post "Registry updated successfully to open .pd files with \"${dirrep}\\bin\\pd.exe\" \n "
+        ::pdwindow::post "Registry updated successfully to open .pd files with \"${dirrep}\\bin\\pd.exe\"\n"
     }
 }
 
