@@ -579,7 +579,14 @@ proc ::pd_menus::create_preferences_menu {mymenu} {
 		
     switch -- $::windowingsystem {
         "win32" {
+            package require registry
+            if { [registry get HKEY_CLASSES_ROOT\\PureData\\shell\\open\\command ""] != [::pd_menus::mswindows_file_associationcmd] } {
+                set regstate normal
+            } {
+                set regstate disabled
+            }
             $mymenu add command -label [_ "Always open .pd files with this Pd"] \
+                -state $regstate \
                 -command { ::pd_menus::mswindows_file_association }
         }
     }
@@ -701,9 +708,13 @@ proc ::pd_menus::build_file_menu_win32 {mymenu} {
         -command {pdsend "pd verifyquit"}
 }
 
-proc ::pd_menus::mswindows_file_association {} {
+proc ::pd_menus::mswindows_file_associationcmd {} {
     set wish [regsub -all "/" [file normalize [info nameofexecutable]] "\\"]
     set script [regsub -all "/" ${::pdgui::scriptname} "\\"]
+    return "${wish} \"${script}\" %1"
+}
+
+proc ::pd_menus::mswindows_file_association {} {
     # file with icons: either ${::pdgui::pd_exec}.exe or ${script}/../pd.ico
     set icon ""
     foreach f [list ${::pdgui::pd_exec}.exe [file join [file dirname ${::pdgui::scriptname}] pd.ico ] ] {
@@ -724,7 +735,7 @@ proc ::pd_menus::mswindows_file_association {} {
         }
         registry set HKEY_CLASSES_ROOT\\PureData\\shell "" ""
         registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open "" ""
-        registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open\\command "" "${wish} \"${script}\" %1"
+        registry set HKEY_CLASSES_ROOT\\PureData\\shell\\open\\command "" [::pd_menus::mswindows_file_associationcmd]
         ::pdwindow::post "Registry updated successfully to open .pd files with \"${::pdgui::pd_exec}\"\n"
     }
 }
