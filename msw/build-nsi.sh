@@ -115,6 +115,10 @@ if [  "x$PDARCH" = "x" ]; then
     cleanup 1
 fi
 
+# autodetect TCL interpreter 
+
+PDWISH=$(find "$PDWINDIR" -name "wish**.exe" -printf "%f")
+
 #### WRITE INSTALL LIST #########################################
 find "$PDWINDIR" \
   -mindepth 0 \
@@ -174,7 +178,7 @@ case $nsis_exit in
 esac
 
 # run the build
-if makensis -DARCHI=${PDARCH} ${NSIFILE}
+if makensis -DARCHI=${PDARCH} -DWISHI=${PDWISH} ${NSIFILE}
 then
   echo "Build successful"
 else
