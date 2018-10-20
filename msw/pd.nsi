@@ -99,11 +99,11 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
     CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
     CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
     CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk" "$INSTDIR\uninst.exe"
-    CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\wish85.exe" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
+    CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\${WISHI}" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
   SectionEnd
 
   Section "${COMPONENT_DESKTOPSHORTCUT_TEXT}" DesktopShortcut
-    CreateShortCut "$Desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\wish85.exe" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
+    CreateShortCut "$Desktop\${PRODUCT_NAME}.lnk" "$INSTDIR\bin\${WISHI}" '"$INSTDIR\tcl\pd-gui.tcl"' "$INSTDIR\bin\pd.exe" 0
   SectionEnd
 
   Section "${COMPONENT_FILEASSOC_TEXT}" SetFileAssociations
@@ -113,7 +113,7 @@ SectionGroup /e "${COMPONENT_GROUP_TEXT}"
     WriteRegStr HKCR "PureData\DefaultIcon" "" "$INSTDIR\bin\pd.exe"
     WriteRegStr HKCR "PureData\shell" "" ""
     WriteRegStr HKCR "PureData\shell\open" "" ""
-    WriteRegStr HKCR "PureData\shell\open\command" "" '$INSTDIR\bin\wish85.exe "$INSTDIR\tcl\pd-gui.tcl" %1'
+    WriteRegStr HKCR "PureData\shell\open\command" "" '$INSTDIR\bin\${WISHI} "$INSTDIR\tcl\pd-gui.tcl" %1'
   ; Set file ext icon
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd" "" ""
     WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pd\OpenWithList" "a" "pd.exe"
