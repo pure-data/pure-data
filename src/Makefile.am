@@ -13,6 +13,8 @@ pd_LDADD =
 libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY
 libpd_la_LIBADD =
 libpd_la_LDFLAGS =
+libpdincludedir = $(includedir)/libpd
+libpdinclude_HEADERS =
 
 # there are pd_* and pd_*_core variables as we need different flags on Windows
 # for the DLL and the EXE, other OSes simply set pd_* = $(pd_*_core) later
@@ -156,6 +158,13 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h x
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
+
+if LIBPD
+libpdinclude_HEADERS += m_pd.h z_libpd.h
+if LIBPD_UTILS
+libpdinclude_HEADERS += z_print_util.h z_queued.h
+endif
+endif
 
 # we want these in the dist tarball
 EXTRA_DIST = CHANGELOG.txt notes.txt pd.rc \
