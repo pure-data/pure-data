@@ -17,6 +17,8 @@ pd_LDADD =
 # are library or binary variables since we only need them as placeholders
 pd_LDFLAGS_core =
 pd_LDADD_core =
+pd_LDFLAGS_standalone =
+pd_LDADD_standalone =
 
 pdsend_CFLAGS =
 pdreceive_CFLAGS =
@@ -89,11 +91,9 @@ pd_SOURCES_core = \
     m_pd.c \
     m_sched.c \
     s_audio.c \
-    s_file.c \
     s_inter.c \
     s_loader.c \
     s_main.c \
-    s_midi.c \
     s_path.c \
     s_print.c \
     s_utf8.c \
@@ -112,7 +112,13 @@ pd_SOURCES_core = \
     x_time.c \
     x_vexp.c \
     x_vexp_fun.c \
-    x_vexp_if.c
+    x_vexp_if.c \
+    $(empty)
+
+pd_SOURCES_standalone = \
+    s_file.c \
+    s_midi.c \
+    $(empty)
 
 # pd-watchdog and "local" pd symlink location for tcl scripts
 libpdbindir = $(pkglibdir)/bin
@@ -139,8 +145,8 @@ pd_CFLAGS += $(WISHDEFINE)
 ##### Advanced Linux Sound Architecture #####
 if ALSA
 pd_CFLAGS += -DUSEAPI_ALSA
-pd_LDADD_core += @ALSA_LIBS@
-pd_SOURCES_core += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
+pd_LDADD_standalone += @ALSA_LIBS@
+pd_SOURCES_standalone += s_audio_alsa.c s_audio_alsamm.c s_midi_alsa.c
 endif
 
 ##### OSX CoreAudio #####
@@ -154,14 +160,14 @@ endif
 # TODO support Jack xrun
 if JACK
 pd_CFLAGS += -DUSEAPI_JACK -DJACK_XRUN
-pd_SOURCES_core += s_audio_jack.c
+pd_SOURCES_standalone += s_audio_jack.c
 
 if JACK_FRAMEWORK
 # link to Jackmp.framework on macOS
-pd_LDFLAGS_core += -weak_framework Jackmp
+pd_LDFLAGS_standalone += -weak_framework Jackmp
 else
 # link to Jack discovered by configure
-pd_LDADD_core += @JACK_LIBS@
+pd_LDADD_standalone += @JACK_LIBS@
 endif
 
 endif
@@ -169,27 +175,27 @@ endif
 ##### GNU/Linux Open Sound System #####
 if OSS
 pd_CFLAGS += -DUSEAPI_OSS
-pd_SOURCES_core += s_audio_oss.c s_midi_oss.c
+pd_SOURCES_standalone += s_audio_oss.c s_midi_oss.c
 endif
 
 ##### Windows MultiMedia (File) I/O #####
 if MMIO
 pd_CFLAGS += -DUSEAPI_MMIO
-pd_SOURCES_core += s_audio_mmio.c
+pd_SOURCES_standalone += s_audio_mmio.c
 endif
 
 ##### PortAudio #####
 if PORTAUDIO
 pd_CFLAGS += -DUSEAPI_PORTAUDIO
-pd_SOURCES_core += s_audio_pa.c s_audio_paring.c
+pd_SOURCES_standalone += s_audio_pa.c s_audio_paring.c
 
 if LOCAL_PORTAUDIO
 # link the included portaudio which is built as a static lib
 AM_CPPFLAGS += -I$(top_srcdir)/portaudio/portaudio/include
-pd_LDADD_core += $(top_builddir)/portaudio/libportaudio.a
+pd_LDADD_standalone += $(top_builddir)/portaudio/libportaudio.a
 else
 # link the system's portaudio
-pd_LDADD_core += -lportaudio
+pd_LDADD_standalone += -lportaudio
 endif
 
 # need Carbon framework for PA on Mac
@@ -203,22 +209,22 @@ endif
 # ASIO needs to go after PORTAUDIO in order for it to link properly
 if ASIO
 # always Windows
-pd_LDADD_core += $(top_builddir)/asio/libasio.a
+pd_LDADD_standalone += $(top_builddir)/asio/libasio.a
 endif
 
 ##### PortMidi #####
 if PORTMIDI
-pd_SOURCES_core += s_midi_pm.c
+pd_SOURCES_standalone += s_midi_pm.c
 
 if LOCAL_PORTMIDI
 # link the included portmidi which is built as a static lib
 AM_CPPFLAGS += \
     -I$(top_srcdir)/portmidi/portmidi/pm_common \
     -I$(top_srcdir)/portmidi/portmidi/porttime
-pd_LDADD_core += $(top_builddir)/portmidi/libportmidi.a
+pd_LDADD_standalone += $(top_builddir)/portmidi/libportmidi.a
 else
 # link the system's portmidi
-pd_LDADD_core += -lportmidi
+pd_LDADD_standalone += -lportmidi
 endif
 
 # need Carbon framework for PM on Mac
@@ -233,11 +239,11 @@ endif
 # ie. GNU/HURD, IPHONEOS, ... have no MIDI (not even OSS)
 if AUDIO_DUMMY
 pd_CFLAGS += -DUSEAPI_DUMMY
-pd_SOURCES_core += s_audio_dummy.c
+pd_SOURCES_standalone += s_audio_dummy.c
 endif
 if MIDI_DUMMY
 pd_CFLAGS += -DUSEAPI_MIDIDUMMY
-pd_SOURCES_core += s_midi_dummy.c
+pd_SOURCES_standalone += s_midi_dummy.c
 endif
 
 ##### FFTW fft library #####
@@ -319,9 +325,10 @@ pd_LDFLAGS += -mwindows
 pd_LDADD += pd.res pd.lib
 
 pd_OBJECTS_core = $(pd_SOURCES_core:.c=.o)
+pd_OBJECTS_standalone = $(pd_SOURCES_standalone:.c=.o)
 
 # the variables are taken from the automake Makefile
-$(pd_OBJECTS_core) : %.o : %.c
+$(pd_OBJECTS_core) $(pd_OBJECTS_standalone) : %.o : %.c
 	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(pd_CFLAGS) $(CFLAGS) -c -o $@ $<
 
@@ -337,9 +344,13 @@ libpd.a: pd.lib
 
 pd.def: pd.dll
 
-pd.dll: $(pd_OBJECTS_core)
-	$(CXX) -shared $(pd_LDFLAGS_core) -o pd.dll \
-	$(pd_OBJECTS_core) $(pd_LDADD_core) $(LIBS) \
+pd.dll: $(pd_OBJECTS_core) $(pd_OBJECTS_standalone)
+	$(CXX) -shared \
+	$(pd_LDFLAGS_core) $(pd_LDFLAGS_standalone) \
+	-o pd.dll \
+	$(pd_OBJECTS_core) $(pd_OBJECTS_standalone) \
+	$(pd_LDADD_core) $(pd_LDADD_standalone) \
+	$(LIBS) \
 	-Wl,--export-all-symbols -Wl,--out-implib=pd.lib -Wl,--output-def=pd.def
 
 # same as pd.exe but without -mwindows and resources
@@ -350,9 +361,9 @@ pd.com: pd-s_entry.o pd.lib
 
 else
 # for other OS, join pd_* with pd_*_core
-pd_SOURCES += $(pd_SOURCES_core)
-pd_LDADD += $(pd_LDADD_core)
-pd_LDFLAGS += $(pd_LDFLAGS_core)
+pd_SOURCES += $(pd_SOURCES_core) $(pd_SOURCES_standalone)
+pd_LDADD += $(pd_LDADD_core) $(pd_LDADD_standalone)
+pd_LDFLAGS += $(pd_LDFLAGS_core) $(pd_LDFLAGS_standalone)
 endif
 
 ##### Windows MinGW #####
