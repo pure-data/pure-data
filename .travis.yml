@@ -45,7 +45,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall libtool; brew install libtool; fi
 ## basic autoconf setup
   - ./autogen.sh
-  - ./configure --enable-jack
+  - ./configure --enable-jack --enable-libpd --enable-libpd-utils
   ## check whether we want to use coverity.scan and haven't met the quota yet.
   ## if so, build and submit. (else we skip to the ordinary build)
   # (implement Coverity Scan with before_script instead of addons.coverity_scan
