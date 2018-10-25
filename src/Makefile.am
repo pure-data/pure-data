@@ -10,6 +10,9 @@ noinst_SCRIPTS =
 pd_CFLAGS = -DPD -DINSTALL_PREFIX=\"$(prefix)\" -DPD_INTERNAL
 pd_LDFLAGS =
 pd_LDADD =
+libpd_la_CPPFLAGS = -DPD -DPD_INTERNAL -DUSEAPI_DUMMY
+libpd_la_LIBADD =
+libpd_la_LDFLAGS =
 
 # there are pd_* and pd_*_core variables as we need different flags on Windows
 # for the DLL and the EXE, other OSes simply set pd_* = $(pd_*_core) later
@@ -23,6 +26,7 @@ pd_LDADD_standalone =
 pdsend_CFLAGS =
 pdreceive_CFLAGS =
 pd_watchdog_CFLAGS =
+
 LIBS = @LIBS@
 
 SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
@@ -33,9 +37,33 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 # pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
 
+if LIBPD
+lib_LTLIBRARIES = libpd.la
+endif
+
 pdsend_SOURCES = u_pdsend.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
+libpd_la_SOURCES = \
+    z_libpd.c \
+    z_hooks.c \
+    x_libpdreceive.c \
+    s_audio_dummy.c \
+    s_libpdmidi.c \
+    $(empty)
+
+if LIBPD_UTILS
+libpd_la_SOURCES += \
+    z_print_util.c \
+    z_queued.c \
+    z_ringbuffer.c \
+    $(empty)
+endif
+
+if LIBPD_NO_SETLOCALE
+    libpd_la_CPPFLAGS += -DLIBPD_NO_NUMERIC
+endif
+
 
 # on Windows, pd.exe contains only s_entry.c and links against pd.dll
 # (where all the logic resides), that's why we have to split the sources
@@ -268,12 +296,15 @@ pd_LDFLAGS_core += -export-dynamic
 
 # on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
 pd_LDFLAGS_core += $(LIBM)
+libpd_la_LIBADD += $(LIBM)
 
 # force linking to pthread, which should really be done with some autotools way
 pd_LDFLAGS_core += -lpthread
+libpd_la_LIBADD += -lpthread
 
 # force linking to dl, which should really be done with some autotools way
 pd_LDFLAGS_core += -ldl
+libpd_la_LIBADD += -ldl
 
 endif
 
@@ -289,6 +320,7 @@ pd_LDFLAGS_core += -export-dynamic
 
 # on Ubuntu/Karmic 9.10, it doesn't seem to find libm, so force it
 pd_LDFLAGS_core += $(LIBM)
+libpd_la_LIBADD += $(LIBM)
 
 endif
 
@@ -304,6 +336,7 @@ pd_CFLAGS += -DMACOSX
 
 # for dynamic loading & threading
 LIBS += -ldl -lm -lpthread
+libpd_la_LIBADD += -ldl -lm -lpthread
 
 endif
 
@@ -323,6 +356,9 @@ CLEANFILES += pd.res
 pd_LDFLAGS += -mwindows
 # link with ressources and pd.dll import library
 pd_LDADD += pd.res pd.lib
+
+libpd_la_LDFLAGS += -Wl,--export-all-symbols -static-libgcc
+libpd_la_LIBADD += -lws2_32 -lkernel32
 
 pd_OBJECTS_core = $(pd_SOURCES_core:.c=.o)
 pd_OBJECTS_standalone = $(pd_SOURCES_standalone:.c=.o)
@@ -365,6 +401,8 @@ pd_SOURCES += $(pd_SOURCES_core) $(pd_SOURCES_standalone)
 pd_LDADD += $(pd_LDADD_core) $(pd_LDADD_standalone)
 pd_LDFLAGS += $(pd_LDFLAGS_core) $(pd_LDFLAGS_standalone)
 endif
+
+libpd_la_SOURCES += $(pd_SOURCES_core)
 
 ##### Windows MinGW #####
 if MINGW
