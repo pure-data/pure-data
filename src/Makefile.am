@@ -158,6 +158,7 @@ pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h x
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
+noinst_HEADERS += z_hooks.h z_ringbuffer.h x_libpdreceive.h
 
 if LIBPD
 libpdinclude_HEADERS += m_pd.h z_libpd.h
