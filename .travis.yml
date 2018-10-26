@@ -19,6 +19,8 @@ env:
         ## which branches are submitted to coverity scan (all)
         - COVERITY_SCAN_BRANCH_PATTERN=".*"
         - COVERITY_SCAN_BUILD_COMMAND="make"
+        - CONFIGURE_FLAGS="--enable-jack --enable-libpd --enable-libpd-utils"
+
 
 ## build-matrix that builds on both gcc and clang.
 ## coverity.scan is only triggered in one of the nodes (namely gcc)
@@ -49,7 +51,7 @@ addons:
 before_script:
 ## basic autoconf setup
   - ./autogen.sh
-  - ./configure --enable-jack
+  - ./configure ${CONFIGURE_FLAGS}
   ## check whether we want to use coverity.scan and haven't met the quota yet.
   ## if so, build and submit. (else we skip to the ordinary build)
   # (implement Coverity Scan with before_script instead of addons.coverity_scan
@@ -60,4 +62,4 @@ before_script:
 
 script:
 ## the actual build
-- make distcheck
+- make distcheck DISTCHECK_CONFIGURE_FLAGS="${CONFIGURE_FLAGS}"
