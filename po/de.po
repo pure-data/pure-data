@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.48\n"
+"Project-Id-Version: Pure Data 0.49\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
 "PO-Revision-Date: 2018-09-11 16:15+0200\n"
@@ -168,7 +168,7 @@ msgstr "keine Pd Einstellungen zum Löschen"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
-"überspringe das Laden der Einstellungen...Pd ist scheinbar beim letzten "
+"überspringe das Laden der Einstellungen... Pd ist scheinbar beim letzten "
 "Start abgestürzt."
 
 msgid "(re-save preferences to reinstate them)"
@@ -493,13 +493,13 @@ msgid "Hslider"
 msgstr "Horizontaler Schieberegler"
 
 msgid "Vradio"
-msgstr "Vertikaler Radioknopf"
+msgstr "Vertikaler Radiobutton"
 
 msgid "Num cells:"
 msgstr "Anzahl der Zellen:"
 
 msgid "Hradio"
-msgstr "Horizontaler Radioknopf"
+msgstr "Horizontaler Radiobutton"
 
 msgid "VU Meter"
 msgstr "Aussteuerungsanzeige"
@@ -934,7 +934,7 @@ msgid "Find..."
 msgstr "Finde..."
 
 msgid "Find Again"
-msgstr "Finde nochmal"
+msgstr "Erneut finden"
 
 msgid "Find Last Error"
 msgstr "Letzten Fehler finden"
@@ -1001,7 +1001,7 @@ msgid "Path..."
 msgstr "Suchpfade..."
 
 msgid "Startup..."
-msgstr "Bibliotheken & Startprozess..."
+msgstr "Startoptionen..."
 
 msgid "Audio..."
 msgstr "Audioeinstellungen..."
