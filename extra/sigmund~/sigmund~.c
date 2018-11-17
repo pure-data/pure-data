@@ -251,7 +251,7 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
     int peakcount = 0;
     t_float *fp1, *fp2;
     t_float *rawreal, *rawimag, *maskbuf, *powbuf;
-    t_float *bigbuf = alloca(sizeof (t_float ) * (2*NEGBINS + 6*npts));
+    t_float *bigbuf = (t_float *)alloca(sizeof (t_float ) * (2*NEGBINS + 6*npts));
     int maxbin = hifreq/fperbin;
     if (maxbin > npts - NEGBINS)
         maxbin = npts - NEGBINS;
@@ -376,7 +376,7 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
 {
     t_float fperbin = 0.5 * srate / npts;
     int npit = 48 * sigmund_ilog2(npts), i, j, k, nsalient;
-    t_float bestbin, bestweight, sumamp, sumweight, sumfreq, freq;
+    t_float bestbin, bestweight, sumweight, sumfreq, freq;
     t_float *weights =  0;
     t_peak *bigpeaks[PITCHNPEAK];
     size_t weight_len = sizeof(t_float) * npit;
@@ -456,7 +456,7 @@ static void sigmund_getpitch(int npeak, t_peak *peakv, t_float *freqp,
             (weights[ibest+1] +  weights[ibest] + weights[ibest-1]);
     }
     freq = 2*fperbin * exp((LOG2/48.)*bestbin);
-    for (sumamp = sumweight = sumfreq = 0, i = 0; i < nsalient; i++)
+    for (sumweight = sumfreq = 0, i = 0; i < nsalient; i++)
     {
         t_peak *thispeak = bigpeaks[i];
         t_float thisloudness = thispeak->p_amp;
@@ -829,7 +829,7 @@ typedef struct _sigmund
     t_pxobject x_obj;
     void *obex;
     void *x_clock;
-    t_sample *x_inbuf2; /* extra input buffer to eat clock/DSP jitter */
+    t_float *x_inbuf2; /* extra input buffer to eat clock/DSP jitter */
 #endif /* MSP */
     t_varout *x_varoutv;
     int x_nvarout;
@@ -838,7 +838,7 @@ typedef struct _sigmund
     int x_npts;         /* number of points in analysis window */
     int x_npeak;        /* number of peaks to find */
     int x_loud;         /* debug level */
-    t_sample *x_inbuf;  /* input buffer */
+    t_float *x_inbuf;  /* input buffer */
     int x_infill;       /* number of points filled */
     int x_countdown;    /* countdown to start filling buffer */
     int x_hop;          /* samples between analyses */ 
@@ -905,19 +905,19 @@ static void sigmund_npts(t_sigmund *x, t_floatarg f)
     {
         if (x->x_inbuf)
         {
-            x->x_inbuf = (t_sample *)t_resizebytes(x->x_inbuf,
+            x->x_inbuf = (t_float *)t_resizebytes(x->x_inbuf,
                 sizeof(*x->x_inbuf) * nwas, sizeof(*x->x_inbuf) * npts);
 #ifdef MSP
-            x->x_inbuf2 = (t_sample *)t_resizebytes(x->x_inbuf2,
+            x->x_inbuf2 = (t_float *)t_resizebytes(x->x_inbuf2,
                 sizeof(*x->x_inbuf2) * nwas, sizeof(*x->x_inbuf2) * npts);
 #endif
         }
         else
         {
-            x->x_inbuf = (t_sample *)getbytes(sizeof(*x->x_inbuf) * npts);
+            x->x_inbuf = (t_float *)getbytes(sizeof(*x->x_inbuf) * npts);
             memset((char *)(x->x_inbuf), 0, sizeof(*x->x_inbuf) * npts);
 #ifdef MSP
-            x->x_inbuf2 = (t_sample *)getbytes(sizeof(*x->x_inbuf2) * npts);
+            x->x_inbuf2 = (t_float *)getbytes(sizeof(*x->x_inbuf2) * npts);
             memset((char *)(x->x_inbuf2), 0, sizeof(*x->x_inbuf2) * npts);
 #endif
         }
@@ -1309,9 +1309,9 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     int onset = atom_getfloatarg(2, argc, argv);
     t_float srate = atom_getfloatarg(3, argc, argv);
     int loud = atom_getfloatarg(4, argc, argv);
-    int arraysize, totstorage, nfound, i;
+    int arraysize, i;
     t_garray *a;
-    t_float *arraypoints, pit;
+    t_float *arraypoints;
     t_word *wordarray = 0;
     if (argc < 5)
     {
@@ -1319,7 +1319,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
          "sigmund: array-name, npts, array-onset, samplerate, loud");
         return;
     }
-    if (npts < 64 || npts != (1 << ilog2(npts))) 
+    if (npts < 64 || npts != (1 << sigmund_ilog2(npts)))
     {
         error("sigmund: bad npoints");
         return;
@@ -1329,7 +1329,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         error("sigmund: negative onset");
         return;
     }
-    arraypoints = alloca(sizeof(t_float)*npts);
+    arraypoints = (t_float *)alloca(sizeof(t_float)*npts);
     if (!(a = (t_garray *)pd_findbyclass(syminput, garray_class)) ||
         !garray_getfloatwords(a, &arraysize, &wordarray) ||
             arraysize < onset + npts)
@@ -1379,7 +1379,7 @@ void sigmund_tilde_setup(void)
 {
     sigmund_class = class_new(gensym("sigmund~"), (t_newmethod)sigmund_new,
         (t_method)sigmund_free, sizeof(t_sigmund), 0, A_GIMME, 0);
-    class_addlist(sigmund_class, sigmund_list);
+    class_addlist(sigmund_class, (t_method)sigmund_list);
     class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"), A_CANT, 0);
     CLASS_MAINSIGNALIN(sigmund_class, t_sigmund, x_f);
     class_addmethod(sigmund_class, (t_method)sigmund_param1,
