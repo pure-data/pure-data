@@ -4,17 +4,17 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Pure Data 0.49\n"
+"Project-Id-Version: Pure Data 0.48\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2018-09-11 16:15+0200\n"
-"Last-Translator: IOhannes m zmölnig <zmoelnig@iem.at>\n"
+"PO-Revision-Date: 2018-12-12 16:40+0100\n"
+"Last-Translator: Winfried Ritsch\n"
 "Language-Team: Deutsch <LL@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 1.8.11\n"
 
 # iemgui
 msgid "-------dimensions(digits)(pix):-------"
@@ -168,7 +168,7 @@ msgstr "keine Pd Einstellungen zum Löschen"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
-"überspringe das Laden der Einstellungen... Pd ist scheinbar beim letzten "
+"überspringe das Laden der Einstellungen...Pd ist scheinbar beim letzten "
 "Start abgestürzt."
 
 msgid "(re-save preferences to reinstate them)"
@@ -205,10 +205,10 @@ msgid "Paste"
 msgstr "Einfügen"
 
 msgid "Array Properties"
-msgstr "Kurveneigenschaften"
+msgstr "Array Eigenschaften"
 
 msgid "Array"
-msgstr "Kurve"
+msgstr "Array"
 
 msgid "Name:"
 msgstr "Name:"
@@ -223,7 +223,7 @@ msgid "Draw as:"
 msgstr "Zeichne als:"
 
 msgid "Polygon"
-msgstr "Polygonzug"
+msgstr "Polygon"
 
 msgid "Points"
 msgstr "Punkte"
@@ -232,10 +232,10 @@ msgid "Bezier curve"
 msgstr "Bézier-Kurve"
 
 msgid "Put array into:"
-msgstr "Kurve einfügen in:"
+msgstr "Array einfügen in:"
 
 msgid "New graph"
-msgstr "neues Feld"
+msgstr "neuer Graph"
 
 msgid "Last graph"
 msgstr "letztes Feld"
@@ -247,7 +247,7 @@ msgid "Open List View..."
 msgstr "Öffne Listenanzeige..."
 
 msgid "Delete array"
-msgstr "Kurve löschen"
+msgstr "Array löschen"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -274,7 +274,7 @@ msgid "Block size:"
 msgstr "Bocklänge:"
 
 msgid "Use callbacks"
-msgstr "Rückfragen verwenden"
+msgstr "Callbacks verwenden"
 
 msgid "Input Devices"
 msgstr "Eingabegerät"
@@ -292,14 +292,14 @@ msgid "Use Multiple Devices"
 msgstr "Mehrere Geräte verwenden"
 
 msgid "Save All Settings"
-msgstr "Einstellungen speichern"
+msgstr "Alle Einstellungen speichern"
 
 msgid "WARNING: unknown graphme flags received in pdtk_canvas_dialog"
 msgstr ""
 "WARNUNG: pdtk_canvas_dialog hat unbekannte graphme-Einstellungen detektiert"
 
 msgid "Canvas Properties"
-msgstr "Arbeitsflächen-Eigenschaften"
+msgstr "Canvas Eigenschaften"
 
 msgid "Scale"
 msgstr "Skalierung"
@@ -314,7 +314,7 @@ msgid "Appearance on parent patch"
 msgstr "Erscheinen auf dem übergeordneten Patch"
 
 msgid "Graph-On-Parent"
-msgstr "Auf dem übergeordneten Patch anzeigen"
+msgstr "Graph on Parent"
 
 msgid "Hide object name and arguments"
 msgstr "Objektname und Argumente verbergen"
@@ -334,9 +334,8 @@ msgstr "Abstand:"
 msgid "Y range: from"
 msgstr "Y-Spanne, von"
 
-#, fuzzy
 msgid "Data Properties"
-msgstr "Arbeitsflächen-Eigenschaften"
+msgstr "Canvas  Eigenschaften"
 
 #, tcl-format
 msgid "Found '%1$s' in %2$s"
@@ -420,7 +419,7 @@ msgid "Bottom"
 msgstr "Unten"
 
 msgid "Messages"
-msgstr "Nachrichten"
+msgstr "Messages"
 
 msgid "Send symbol:"
 msgstr "Sendesymbol:"
@@ -471,7 +470,7 @@ msgid "Value:"
 msgstr "Wert:"
 
 msgid "Number2"
-msgstr "Zahl2"
+msgstr "Number2"
 
 msgid "Width (digits):"
 msgstr "Breite (Stellen)"
@@ -487,25 +486,25 @@ msgid "Log height:"
 msgstr ""
 
 msgid "Vslider"
-msgstr "Vertikaler Schieberegler"
+msgstr "Vslider"
 
 msgid "Hslider"
-msgstr "Horizontaler Schieberegler"
+msgstr "Hslider"
 
 msgid "Vradio"
-msgstr "Vertikaler Radiobutton"
+msgstr "Vradio"
 
 msgid "Num cells:"
 msgstr "Anzahl der Zellen:"
 
 msgid "Hradio"
-msgstr "Horizontaler Radiobutton"
+msgstr "Hradio"
 
 msgid "VU Meter"
-msgstr "Aussteuerungsanzeige"
+msgstr "VU Meter"
 
 msgid "Canvas"
-msgstr "Arbeitsfläche"
+msgstr "Canvas"
 
 msgid "Visible Rectangle (pix)"
 msgstr "Sichtbares Rechteck (pix)"
@@ -539,7 +538,7 @@ msgid "Test label"
 msgstr "Test Beschriftung"
 
 msgid "Send a Pd message"
-msgstr "Pd-Nachricht senden..."
+msgstr "Pd Message senden..."
 
 msgid "(use arrow keys for history)"
 msgstr "(benutzen Sie die Pfeiltasten zum Blättern)"
@@ -590,7 +589,7 @@ msgid "Choose Pd documents directory:"
 msgstr "Wählen Sie ein Verzeichnis für Pd-Dokumente:"
 
 msgid "Install externals to directory:"
-msgstr "Bibliotheken in folgendes Verzeichnis installieren:"
+msgstr "Externals in folgendes Verzeichnis installieren:"
 
 msgid "Add a new path"
 msgstr "Neuen Pfad hinzufügen"
@@ -690,23 +689,26 @@ msgstr ""
 "leere Suche."
 
 msgid "Find externals"
-msgstr "Zusätzliche Objekte im Internet finden"
+msgstr "Finde Externals online"
 
 msgid "Only install externals uploaded by people you trust."
-msgstr "Installieren Sie nur Bibliotheken von Menschen, denen Sie vertrauen."
+msgstr ""
+"Installieren Sie nur Externals deren Entwickler und Entwicklerinnen Sie "
+"vertrauen."
 
 msgid "Preferences"
-msgstr "Voreinstellungen"
+msgstr "Einstellungen"
 
 msgid "Installation options:"
 msgstr "Installationsoptionen:"
 
 msgid "Try to remove libraries before (re)installing them?"
-msgstr "Sollen versucht werden, Pakete vor der (Neu)Installation zu entfernen?"
+msgstr ""
+"Sollte versucht werden, Externals vor der (Neu)Installation zu entfernen?"
 
 msgid "Show README of newly installed libraries (if present)?"
 msgstr ""
-"Soll evtl. vorhandene Dokumentation für neu installierte Pakete angezeigt "
+"Soll evtl. vorhandene Dokumentation für neu installierte Externals angezeigt "
 "werden?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
@@ -724,14 +726,14 @@ msgid "User-defined platform:"
 msgstr "Benutzerdefinierte Architektur:"
 
 msgid "Hide foreign architectures?"
-msgstr "Sollen inkompatible Pakete versteckt werden?"
+msgstr "Sollen inkompatible Externals versteckt werden?"
 
 #, tcl-format
 msgid "Deken %s Preferences"
 msgstr "Deken %s Einstellungen"
 
 msgid "[deken]: Start searching for externals..."
-msgstr "[deken]: Starte Paketsuche..."
+msgstr "[deken]: Starte Suche nach External ..."
 
 #, tcl-format
 msgid "[deken]: online? %s"
@@ -744,16 +746,16 @@ msgid "Unable to perform search."
 msgstr "Die Suche schlug fehl."
 
 msgid "[deken]: No matching externals found."
-msgstr "[deken]: Konnte keine passenden Pakete finden."
+msgstr "[deken]: Konnte keine passenden Externals finden."
 
 msgid "Try using the full name e.g. 'freeverb'."
 msgstr "Tipp: Suchen Sie nach dem vollen Namen, z.B. 'freeverb'"
 
 msgid "No matching externals found."
-msgstr "Keine passenden Pakete gefunden."
+msgstr "Keine passenden Externals gefunden."
 
 msgid "Please select a (writable) installation directory!"
-msgstr "Bitte wählen Sie ein (schreibbares) Verzeichnis aus!"
+msgstr "Bitte wählen Sie ein (beschreibbares) Verzeichnis aus!"
 
 #, tcl-format
 msgid "Install %1$s to %2$s?"
@@ -783,11 +785,11 @@ msgstr "%s zum Suchpfad hinzugefügt"
 
 #, tcl-format
 msgid "Unable to download from %1$s [%2$s]"
-msgstr "Konnte keine Inhalte von %1$s herunterladen [%2$s]."
+msgstr "Konnte nichts von %1$s herunterladen [%2$s]."
 
 #, tcl-format
 msgid "Unable to remove stray file %s"
-msgstr "Konnte Datei %s nicht entfernen"
+msgstr "Konnte verwaiste Datei %s nicht entfernen"
 
 #, tcl-format
 msgid "Unable to rename downloaded file to %s"
@@ -847,7 +849,7 @@ msgstr "Konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 
 #, tcl-format
 msgid "Couldn't create \"externals\" directory in: %s\n"
-msgstr "Konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
+msgstr "Konnte kein \"Externals\" Verzeichnis in '%s' erstellen.\n"
 
 msgid "About Pd"
 msgstr "Über Pd"
@@ -886,10 +888,10 @@ msgid "Edit Mode"
 msgstr "Editiermodus"
 
 msgid "Undo"
-msgstr "Widerrufen"
+msgstr "Rückgängig"
 
 msgid "Redo"
-msgstr "Wiederholen"
+msgstr "Wiederherstellen"
 
 msgid "List of objects..."
 msgstr "Liste aller Objekte..."
@@ -901,7 +903,7 @@ msgid "Open"
 msgstr "Öffnen"
 
 msgid "Message..."
-msgstr "Pd-Nachricht senden..."
+msgstr "Message..."
 
 msgid "Cut"
 msgstr "Ausschneiden"
@@ -916,10 +918,10 @@ msgid "Object"
 msgstr "Objekt"
 
 msgid "Message"
-msgstr "Nachrichtenbox"
+msgstr "Message"
 
 msgid "Number"
-msgstr "Zahl"
+msgstr "Number"
 
 msgid "Symbol"
 msgstr "Symbol"
@@ -928,7 +930,7 @@ msgid "Comment"
 msgstr "Kommentar"
 
 msgid "Graph"
-msgstr "Feld"
+msgstr "Graph"
 
 msgid "Find..."
 msgstr "Finde..."
@@ -1001,7 +1003,7 @@ msgid "Path..."
 msgstr "Suchpfade..."
 
 msgid "Startup..."
-msgstr "Startoptionen..."
+msgstr "Bibliotheken ..."
 
 msgid "Audio..."
 msgstr "Audioeinstellungen..."
@@ -1032,7 +1034,7 @@ msgid "Quit"
 msgstr "Beenden"
 
 msgid "Properties"
-msgstr "Einstellungen"
+msgstr "Eigenschaften"
 
 msgid "Audio on"
 msgstr "Audio an"
