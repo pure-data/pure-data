@@ -237,12 +237,11 @@ writing to file doesn't buffer everything together. */
 
 void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 {
-    int newsize = x->b_n + argc, i;
+    int previoussize = x->b_n;
+    int newsize = previoussize + argc, i;
     t_atom *ap;
-    if ((ap = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec),
-        newsize * sizeof(*x->b_vec))))
-            x->b_vec = ap;
-    else
+
+    if (!binbuf_resize(x, newsize))
     {
         error("binbuf_addmessage: out of space");
         return;
@@ -252,9 +251,8 @@ void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
     postatom(argc, argv);
     endpost();
 #endif
-    for (ap = x->b_vec + x->b_n, i = argc; i--; ap++)
+    for (ap = x->b_vec + previoussize, i = argc; i--; ap++)
         *ap = *(argv++);
-    x->b_n = newsize;
 }
 
 #define MAXADDMESSV 100
