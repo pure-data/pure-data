@@ -192,6 +192,7 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
                 nalloc * (2*sizeof(*x->b_vec)));
             nalloc = nalloc * 2;
             ap = x->b_vec + natom;
+            x->b_n = nalloc;
         }
         if (textp == etext) break;
     }
