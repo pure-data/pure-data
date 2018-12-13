@@ -42,7 +42,7 @@ void *copybytes(const void *src, size_t nbytes)
 {
     void *ret;
     ret = getbytes(nbytes);
-    if (nbytes)
+    if (nbytes && ret)
         memcpy(ret, src, nbytes);
     return (ret);
 }
