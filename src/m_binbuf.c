@@ -65,10 +65,9 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
     const char *textp = text, *etext = text+size;
     t_atom *ap;
     int nalloc = 16, natom = 0;
-    t_freebytes(x->b_vec, x->b_n * sizeof(*x->b_vec));
-    x->b_vec = t_getbytes(nalloc * sizeof(*x->b_vec));
+    binbuf_clear(x);
+    if (!binbuf_resize(x, nalloc)) return;
     ap = x->b_vec;
-    x->b_n = 0;
     while (1)
     {
         int type;
@@ -188,18 +187,14 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
         natom++;
         if (natom == nalloc)
         {
-            x->b_vec = t_resizebytes(x->b_vec, nalloc * sizeof(*x->b_vec),
-                nalloc * (2*sizeof(*x->b_vec)));
+            if (!binbuf_resize(x, nalloc*2)) break;
             nalloc = nalloc * 2;
             ap = x->b_vec + natom;
-            x->b_n = nalloc;
         }
         if (textp == etext) break;
     }
     /* reallocate the vector to exactly the right size */
-    x->b_vec = t_resizebytes(x->b_vec, nalloc * sizeof(*x->b_vec),
-        natom * sizeof(*x->b_vec));
-    x->b_n = natom;
+    binbuf_resize(x, natom);
 }
 
     /* convert a binbuf to text; no null termination. */
