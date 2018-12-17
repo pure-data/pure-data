@@ -422,7 +422,7 @@ EXTERN void outlet_anything(t_outlet *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN t_symbol *outlet_getsymbol(t_outlet *x);
 EXTERN void outlet_free(t_outlet *x);
 EXTERN t_object *pd_checkobject(t_pd *x);
-EXTERN t_float *obj_findsignalscalar(t_object *x, int m);
+EXTERN t_float *obj_findsignalscalar(const t_object *x, int m);
 
 
 /* -------------------- canvases -------------- */
