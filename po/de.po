@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: Pure Data 0.48\n"
 "Report-Msgid-Bugs-To: pd-dev@iem.at\n"
 "POT-Creation-Date: 2017-07-06 18:10+0200\n"
-"PO-Revision-Date: 2018-12-12 17:27+0100\n"
+"PO-Revision-Date: 2019-01-05 21:25+0100\n"
 "Last-Translator: Winfried Ritsch\n"
 "Language-Team: Deutsch <LL@li.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.2\n"
 
 # iemgui
 msgid "-------dimensions(digits)(pix):-------"
@@ -168,8 +168,8 @@ msgstr "keine Pd Einstellungen zum Löschen"
 
 msgid "skipping loading preferences... Pd seems to have crashed on startup."
 msgstr ""
-"überspringe das Laden der Einstellungen...Pd ist scheinbar beim letzten "
-"Start abgestürzt."
+"überspringe das Laden der Einstellungen...es scheint, als wäre Pd beim "
+"letzten Start abgestürzt."
 
 msgid "(re-save preferences to reinstate them)"
 msgstr "(speichern Sie die Einstellungen um sie wiederherzustellen)"
@@ -277,13 +277,13 @@ msgid "Use callbacks"
 msgstr "Callbacks"
 
 msgid "Input Devices"
-msgstr "Eingabegerät"
+msgstr "Eingabegeräte"
 
 msgid "Channels:"
 msgstr "Kanäle:"
 
 msgid "Output Devices"
-msgstr "Ausgabegerät"
+msgstr "Ausgabegeräte"
 
 msgid "(same as input device)..."
 msgstr "(wie Eingabegerät) .............."
@@ -404,7 +404,7 @@ msgid "Upper:"
 msgstr "Oberer:"
 
 msgid "Label"
-msgstr "Aufschrift"
+msgstr "Beschriftung"
 
 msgid "Left"
 msgstr "Links"
@@ -434,7 +434,7 @@ msgid "Foreground color"
 msgstr "Vordergrundfarbe"
 
 msgid "Label color"
-msgstr "Etikettenfarbe"
+msgstr "Beschriftungsfarbe"
 
 msgid "Init"
 msgstr "Init"
@@ -581,9 +581,8 @@ msgstr "Deaktivieren"
 msgid "Externals Install Directory"
 msgstr "Installationsverzeichnis für Bibliotheken"
 
-#, fuzzy
 msgid "Clear"
-msgstr "Menü löschen"
+msgstr "Löschen"
 
 msgid "Choose Pd documents directory:"
 msgstr "Wählen Sie ein Verzeichnis für Pd-Dokumente:"
@@ -634,7 +633,8 @@ msgstr "[deken]: überschreibe die installierte Version [%1$s] mit %2$s!"
 #, tcl-format
 msgid "[deken]: installed version [%1$s] == %2$s...skipping!"
 msgstr ""
-"[deken] die installierte Version ist bereits am neuesten Stand [%1$s == %2$s]"
+"[deken]: die installierte Version ist bereits am neuesten Stand [%1$s == "
+"%2$s]"
 
 msgid "[deken]: "
 msgstr ""
@@ -671,11 +671,11 @@ msgstr "[deken] Pd Paketmanager vom Pfad %s geladen."
 
 #, tcl-format
 msgid "[deken] Platform detected: %s"
-msgstr "[deken] Plattform gefunden: %s"
+msgstr "[deken] Architektur gefunden: %s"
 
-#, fuzzy, tcl-format
+#, tcl-format
 msgid "[deken] Platform re-detected: %s"
-msgstr "[deken] Plattform gefunden: %s"
+msgstr "[deken] Architektur aktualisiert: %s"
 
 msgid "Show all"
 msgstr "Alle anzeigen"
@@ -704,7 +704,7 @@ msgstr "Installationsoptionen:"
 
 msgid "Try to remove libraries before (re)installing them?"
 msgstr ""
-"Sollte versucht werden, Externals vor der (Neu)Installation zu entfernen?"
+"Soll versucht werden, Externals vor der (Neu)Installation zu entfernen?"
 
 msgid "Show README of newly installed libraries (if present)?"
 msgstr ""
@@ -712,11 +712,10 @@ msgstr ""
 "werden?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
-msgstr ""
-"Sollen neu installierte Bibliotheken zu Pds Suchpfad hinzugefügt werden?"
+msgstr "Sollen neu installierte Externals zu Pds Suchpfad hinzugefügt werden?"
 
 msgid "Platform settings:"
-msgstr "Architektureinstellungen:"
+msgstr "Kompatibilitätseinstellungen:"
 
 #, tcl-format
 msgid "Default platform: %s"
@@ -749,7 +748,7 @@ msgid "[deken]: No matching externals found."
 msgstr "[deken]: Konnte keine passenden Externals finden."
 
 msgid "Try using the full name e.g. 'freeverb'."
-msgstr "Tipp: Suchen Sie nach dem vollen Namen, z.B. 'freeverb'"
+msgstr "Tipp: Suchen Sie nach dem vollen Namen, z.B. 'freeverb'."
 
 msgid "No matching externals found."
 msgstr "Keine passenden Externals gefunden."
@@ -847,9 +846,10 @@ msgstr ""
 msgid "Couldn't create Pd documents directory: %s\n"
 msgstr "Konnte das Verzeichnis für Pd-Dokumente nicht erzeugen: %s\n"
 
+# "externals" is a literal (a folder name to be created)
 #, tcl-format
 msgid "Couldn't create \"externals\" directory in: %s\n"
-msgstr "Konnte kein \"Externals\" Verzeichnis in '%s' erstellen.\n"
+msgstr "Konnte kein \"externals\" Verzeichnis in '%s' erstellen.\n"
 
 msgid "About Pd"
 msgstr "Über Pd"
@@ -1018,14 +1018,13 @@ msgid "Save All Preferences"
 msgstr "Alle Einstellungen speichern"
 
 msgid "Save to..."
-msgstr "Speichern als..."
+msgstr "Einstellungen in Datei speichern..."
 
 msgid "Load from..."
-msgstr "Laden von..."
+msgstr "Einstellungen von Datei laden..."
 
-#, fuzzy
 msgid "Forget All..."
-msgstr "Zurücksetzen..."
+msgstr "Alle Einstellungen zurücksetzen..."
 
 msgid "Open Recent"
 msgstr "Letzte Dateien öffnen"
