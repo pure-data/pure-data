@@ -214,16 +214,31 @@ static void bang_bang(t_bang *x)
     outlet_bang(x->x_obj.ob_outlet);
 }
 
+static void bang_float(t_bang *x, t_float dummy)
+{
+    bang_bang(x);
+}
+
+static void bang_symbol(t_bang *x, t_symbol *dummy)
+{
+    bang_bang(x);
+}
+
+static void bang_gimme(t_bang *x, t_symbol *s, int argc, t_atom *argv)
+{
+    bang_bang(x);
+}
+
 void bang_setup(void)
 {
     bang_class = class_new(gensym("bang"), (t_newmethod)bang_new, 0,
         sizeof(t_bang), 0, 0);
     class_addcreator((t_newmethod)bang_new2, gensym("b"), 0);
     class_addbang(bang_class, bang_bang);
-    class_addfloat(bang_class, bang_bang);
-    class_addsymbol(bang_class, bang_bang);
-    class_addlist(bang_class, bang_bang);
-    class_addanything(bang_class, bang_bang);
+    class_addfloat(bang_class, bang_float);
+    class_addsymbol(bang_class, bang_symbol);
+    class_addlist(bang_class, bang_gimme);
+    class_addanything(bang_class, bang_gimme);
 }
 
 /* -------------------- send ------------------------------ */
