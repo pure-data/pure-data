@@ -275,7 +275,10 @@ void pd_bang(t_pd *x)
 
 void pd_float(t_pd *x, t_float f)
 {
-    (*(*x)->c_floatmethod)(x, f);
+    if (x == &pd_objectmaker)
+        ((t_floatmethodr)(*(*x)->c_floatmethod))(x, f);
+    else
+        (*(*x)->c_floatmethod)(x, f);
 }
 
 void pd_pointer(t_pd *x, t_gpointer *gp)
