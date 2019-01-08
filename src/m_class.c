@@ -971,28 +971,47 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
         structure. */
     if (s == &s_float)
     {
-        if (!argc) (*c->c_floatmethod)(x, 0.);
-        else if (argv->a_type == A_FLOAT)
-            (*c->c_floatmethod)(x, argv->a_w.w_float);
-        else goto badarg;
+        if (x == &pd_objectmaker)
+          if (!argc)
+              pd_this->pd_newest = pdfloat_new(x, 0.);
+          else if (argv->a_type == A_FLOAT)
+              pd_this->pd_newest = pdfloat_new(x, argv->a_w.w_float);
+          else goto badarg;
+        else
+          if (!argc) (*c->c_floatmethod)(x, 0.);
+          else if (argv->a_type == A_FLOAT)
+              (*c->c_floatmethod)(x, argv->a_w.w_float);
+          else goto badarg;
         return;
     }
     if (s == &s_bang)
     {
-        (*c->c_bangmethod)(x);
+        if (x == &pd_objectmaker)
+            pd_this->pd_newest = bang_new(x);
+        else
+            (*c->c_bangmethod)(x);
         return;
     }
     if (s == &s_list)
     {
-        (*c->c_listmethod)(x, s, argc, argv);
+        if (x == &pd_objectmaker)
+            pd_this->pd_newest = list_new(x, s, argc, argv);
+        else
+            (*c->c_listmethod)(x, s, argc, argv);
         return;
     }
     if (s == &s_symbol)
     {
         if (argc && argv->a_type == A_SYMBOL)
-            (*c->c_symbolmethod)(x, argv->a_w.w_symbol);
+           if (x == &pd_objectmaker)
+                pd_this->pd_newest = pdsymbol_new(x, argv->a_w.w_symbol);
+           else
+                (*c->c_symbolmethod)(x, argv->a_w.w_symbol);
         else
-            (*c->c_symbolmethod)(x, &s_);
+           if (x == &pd_objectmaker)
+                pd_this->pd_newest = pdsymbol_new(x, &s_);
+           else
+                (*c->c_symbolmethod)(x, &s_);
         return;
     }
         /* pd_objectmaker doesn't require
