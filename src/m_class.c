@@ -955,6 +955,11 @@ typedef t_pd *(*t_fun5)(t_int i1, t_int i2, t_int i3, t_int i4, t_int i5,
 typedef t_pd *(*t_fun6)(t_int i1, t_int i2, t_int i3, t_int i4, t_int i5, t_int i6,
     t_floatarg d1, t_floatarg d2, t_floatarg d3, t_floatarg d4, t_floatarg d5);
 
+void *bang_new(t_pd *dummy);
+void *pdfloat_new(t_pd *dummy, t_float f);
+void *pdsymbol_new(t_pd *dummy, t_symbol *s);
+void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv);
+
 void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_method *f;
