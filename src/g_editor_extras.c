@@ -314,11 +314,13 @@ static int triggerize_fanouts(t_glist*cnv)
     t_gobj*gobj = NULL;
     int count=0;
     canvas_undo_add(cnv, UNDO_SEQUENCE_START, "triggerize", 0);
-    for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next)
+    for(gobj=cnv->gl_list; gobj; )
     {
+        t_gobj*next=gobj->g_next;
         t_object*obj=g2o(gobj);
         if(obj && glist_isselected(cnv, gobj) && triggerize_fanout(cnv, obj))
             count++;
+        gobj = next;
     }
     canvas_undo_add(cnv, UNDO_SEQUENCE_END, "triggerize", 0);
     return count;
@@ -524,8 +526,9 @@ static int with_triggers(t_glist*cnv, t_fun_withobject fun)
     const t_symbol*s_trigger=gensym("trigger");
     int count=0;
     t_gobj*gobj = NULL;
-    for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next)
+    for(gobj=cnv->gl_list; gobj;)
     {
+        t_gobj*next=gobj->g_next;
         t_object*obj=g2o(gobj);
         if(obj && glist_isselected(cnv, gobj))
         {
@@ -533,6 +536,7 @@ static int with_triggers(t_glist*cnv, t_fun_withobject fun)
             if((s_trigger == c_name) && fun(cnv, obj))
                 count++;
         }
+        gobj=next;
     }
     return count;
 }
