@@ -236,7 +236,6 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
     int obj_nout=obj_noutlets(obj);
     int nout;
     int posX = 0, posY;
-    t_binbuf*b=binbuf_new();
     int didit=0;
 
     int _x; /* dummy variable */
@@ -273,6 +272,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
 
                 /* need to get the coordinates of the fanning outlet */
             t_linetraverser t;
+            t_binbuf*b=binbuf_new();
             linetraverser_start(&t, x);
             while((conn = linetraverser_next(&t)))
             {
@@ -295,6 +295,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
             canvas_undo_add(x, UNDO_PASTE, "paste",
                 canvas_undo_set_pastebinbuf(x, b, 0, 0, 0));
             stub=triggerize_createobj(x, b);
+            binbuf_free(b);
             stub_i = canvas_getindex(x, o2g(stub));
             conn=obj_starttraverseoutlet(obj, &out, nout);
             triggerize_defanout(x, count-1, conn, obj, stub, nout);
@@ -305,7 +306,6 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
         }
         didit++;
     }
-    binbuf_free(b);
     return didit;
 }
 static int triggerize_fanouts(t_glist*cnv)
