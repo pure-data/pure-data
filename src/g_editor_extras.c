@@ -329,13 +329,15 @@ static int triggerize_fanouts(t_glist*cnv)
 static int triggerize_line(t_glist*x)
 {
         /* triggerize a single selected line, by inserting a [t a] object
-         * (or it's signal equivalen) */
+         * (or it's signal equivalent) */
     t_editor*ed=x->gl_editor;
     int src_obj, src_out, dst_obj, dst_in, new_obj;
     t_gobj *src = 0, *dst = 0;
     t_binbuf*b=0;
     int posx=100, posy=100;
     t_object*stub=0;
+    int sigline = 0;
+    int dspstate = 0;
 
     if(!ed->e_selectedline)
         return 0;
@@ -361,9 +363,13 @@ static int triggerize_line(t_glist*x)
         }
     }
 
+    sigline = obj_issignaloutlet(g2o(src), src_out);
+    if(sigline)
+        dspstate = canvas_suspend_dsp();
+
     canvas_undo_add(x, UNDO_SEQUENCE_START, "{insert object}", 0);
     b=binbuf_new();
-    if(obj_issignaloutlet(g2o(src), src_out))
+    if(sigline)
     {
         binbuf_addv(b, "ssiiiisi;", gensym("#N"),
             gensym("canvas"), 200, 100, 190, 200, gensym("nop~"), 0);
@@ -402,6 +408,8 @@ static int triggerize_line(t_glist*x)
     glist_select(x, o2g(stub));
 
     canvas_undo_add(x, UNDO_SEQUENCE_END, "{insert object}", 0);
+    if(sigline)
+        canvas_resume_dsp(dspstate);
     return 1;
 bad:
     return 0;
@@ -587,20 +595,14 @@ static void canvas_do_triggerize(t_glist*cnv)
 }
 void canvas_triggerize(t_glist*cnv)
 {
-    int dspstate;
-
     if(!cnv || !cnv->gl_editor)
         return;
     if(!cnv->gl_editor->e_selection && !cnv->gl_editor->e_selectedline)
         return;
 
-        /* suspend system */
-    dspstate = canvas_suspend_dsp();
-
     canvas_do_triggerize(cnv);
 
-        /* restore state */
+        /* fix display of connections, objects,... */
     canvas_redraw(cnv);
     glist_redraw(cnv);
-    canvas_resume_dsp(dspstate);
 }
