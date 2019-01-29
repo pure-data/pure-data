@@ -577,7 +577,7 @@ static int triggerize_triggers(t_glist*cnv)
     return 0;
 }
 
-static void canvas_do_triggerize(t_glist*cnv)
+static int canvas_do_triggerize(t_glist*cnv)
 {
         /*
          * selected msg-connection: insert [t a] (->triggerize_line)
@@ -588,10 +588,9 @@ static void canvas_do_triggerize(t_glist*cnv)
          * selected [trigger]: else, add left-most "a" outlet (->triggerize_triggers)
          */
 
-    if(triggerize_line(cnv)
-       || triggerize_fanouts(cnv)
-       || triggerize_triggers(cnv))
-    canvas_dirty(cnv, 1);
+    return(triggerize_line(cnv)
+        || triggerize_fanouts(cnv)
+        || triggerize_triggers(cnv));
 }
 void canvas_triggerize(t_glist*cnv)
 {
