@@ -303,8 +303,8 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
             canvas_undo_add(x, UNDO_CONNECT, "connect",
                 canvas_undo_set_connect(x, obj_i, nout, stub_i, 0));
             glist_select(x, o2g(stub));
+            didit++;
         }
-        didit++;
     }
     return didit;
 }
