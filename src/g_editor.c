@@ -4218,7 +4218,7 @@ static void canvas_tidy(t_canvas *x)
            othewise just the selection */
     int all = (x->gl_editor ? (x->gl_editor->e_selection == 0) : 1);
 
-    canvas_undo_add(x, UNDO_MOTION, "motion", canvas_undo_set_move(x, 1));
+    canvas_undo_add(x, UNDO_MOTION, "{tidy up}", canvas_undo_set_move(x, !all));
 
         /* tidy horizontally */
     for (y = x->gl_list; y; y = y->g_next)
