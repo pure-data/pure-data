@@ -588,7 +588,11 @@ static void canvas_do_triggerize(t_glist*cnv)
 void canvas_triggerize(t_glist*cnv)
 {
     int dspstate;
-    if(NULL == cnv)return;
+
+    if(!cnv || !cnv->gl_editor)
+        return;
+    if(!cnv->gl_editor->e_selection && !cnv->gl_editor->e_selectedline)
+        return;
 
         /* suspend system */
     dspstate = canvas_suspend_dsp();
