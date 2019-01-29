@@ -598,10 +598,11 @@ void canvas_triggerize(t_glist*cnv)
         return;
     if(!cnv->gl_editor->e_selection && !cnv->gl_editor->e_selectedline)
         return;
-
-    canvas_do_triggerize(cnv);
-
-        /* fix display of connections, objects,... */
-    canvas_redraw(cnv);
-    glist_redraw(cnv);
+    int count = 0;
+    if(count = canvas_do_triggerize(cnv)) {
+        canvas_dirty(cnv, 1);
+            /* fix display of connections, objects,... */
+        canvas_redraw(cnv);
+        glist_redraw(cnv);
+    }
 }
