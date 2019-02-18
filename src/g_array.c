@@ -9,6 +9,8 @@
 #include "g_canvas.h"
 #include <math.h>
 
+#define DEFMAXSIZE 0x7fffffff 
+
 /* jsarlo { */
 #define ARRAYPAGESIZE 1000  /* this should match the page size in u_main.tk */
 /* } jsarlo */
@@ -1078,11 +1080,25 @@ static void garray_rename(t_garray *x, t_symbol *s)
     garray_redraw(x);
 }
 
-static void garray_read(t_garray *x, t_symbol *filename)
+static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int nelem, filedesc, i;
+    int nelem, aelem, filedesc, i, resize = 0;
+    char ch;
     FILE *fd;
     char buf[MAXPDSTRING], *bufptr;
+
+    t_symbol *filename;
+
+    if (argc==1) {
+        filename=argv->a_w.w_symbol;
+    } else if (argc==2) {
+        if (argv->a_type == A_SYMBOL && 
+            !strcmp(argv->a_w.w_symbol->s_name, "-resize")) {
+            resize=1;
+        } 
+        filename=argv[1].a_w.w_symbol;
+    } else return;
+
     int yonset, elemsize;
     t_array *array = garray_getarray_floatonly(x, &yonset, &elemsize);
     if (!array)
@@ -1090,13 +1106,30 @@ static void garray_read(t_garray *x, t_symbol *filename)
         error("%s: needs floating-point 'y' field", x->x_realname->s_name);
         return;
     }
-    nelem = array->a_n;
     if ((filedesc = canvas_open(glist_getcanvas(x->x_glist),
             filename->s_name, "", buf, &bufptr, MAXPDSTRING, 0)) < 0
                 || !(fd = fdopen(filedesc, "r")))
     {
         error("%s: can't open", filename->s_name);
         return;
+    }
+    aelem = array->a_n;
+
+    if (!resize) {
+        nelem = aelem;
+    } else {
+        while ((ch = fgetc(fd)) != EOF)
+        {
+           if (ch == '\n')
+             nelem++;
+        }
+        if (nelem > aelem || nelem < DEFMAXSIZE) {
+            garray_resize(x, nelem);
+            rewind(fd);
+        } else {
+            pd_error(x,"Can't resize to %d", nelem);
+            nelem=aelem;
+        }
     }
     for (i = 0; i < nelem; i++)
     {
@@ -1207,7 +1240,7 @@ void g_array_setup(void)
     class_addmethod(garray_class, (t_method)garray_rename, gensym("rename"),
         A_SYMBOL, 0);
     class_addmethod(garray_class, (t_method)garray_read, gensym("read"),
-        A_SYMBOL, A_NULL);
+        A_GIMME, A_NULL);
     class_addmethod(garray_class, (t_method)garray_write, gensym("write"),
         A_SYMBOL, A_NULL);
     class_addmethod(garray_class, (t_method)garray_resize, gensym("resize"),
