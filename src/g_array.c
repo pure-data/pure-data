@@ -1089,7 +1089,7 @@ static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 
     t_symbol *filename;
 
-    if (argc==1) {
+    if (argc==1 && argv->a_type == A_SYMBOL) {
         filename=argv->a_w.w_symbol;
     } else if (argc==2) {
         if (argv->a_type == A_SYMBOL && 
@@ -1125,11 +1125,11 @@ static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
            if (ch == '\n')
              nelem++;
         }
+        rewind(fd);
         if (nelem > aelem || nelem < DEFMAXSIZE) {
             garray_resize(x, nelem);
-            rewind(fd);
         } else {
-            pd_error(x,"Can't resize to %d", nelem);
+            pd_error(x,"Ignoring resize flag...");
             nelem=aelem;
         }
     }
