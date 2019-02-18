@@ -1120,16 +1120,16 @@ static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
         nelem = aelem;
     } else {
         nelem = 0;
-        while ((c = fgetc(fd)) != EOF || nelem < DEFMAXSIZE)
+        while ((c = fgetc(fd)) != EOF)
         {
            if (c == '\n')
              nelem++;
         }
         rewind(fd);
-        if (nelem > aelem) {
+        if (nelem != aelem && nelem < DEFMAXSIZE) {
             garray_resize(x, nelem);
         } else {
-            pd_error(x,"Ignoring resize flag...");
+            // pd_error(x,"Ignoring resize flag...");
             nelem=aelem;
         }
     }
