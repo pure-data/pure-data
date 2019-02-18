@@ -1120,6 +1120,7 @@ static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
     if (!resize) {
         nelem = aelem;
     } else {
+        nelem = 0;
         while ((ch = fgetc(fd)) != EOF)
         {
            if (ch == '\n')
