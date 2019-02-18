@@ -3,53 +3,56 @@
 #N struct array-help-struct2 float x float y array z element-struct2
 ;
 #N struct element-struct2 float x float y float w;
-#N canvas 703 157 694 542 12;
+#N canvas 586 157 694 542 12;
 #X obj 208 496 list;
 #X text 34 496 see also:;
 #X text 485 171 (click for details:), f 11;
-#N canvas 490 70 900 759 define 0;
+#N canvas 380 19 900 759 define 0;
 #X text 332 562 creation arguments:;
 #X text 362 633 optional name;
-#X text 322 164 read from a file;
+#X text 322 124 read from a file;
 #X text 324 195 write to a file;
 #X text 32 20 "array define" maintains an array and can name it so
 that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
 #X text 361 650 optional size (100 by default);
-#X msg 35 138 const 0;
-#X text 325 138 set to a constant (0 \, for instance);
-#X msg 43 169 read array-object-help.txt;
-#X msg 45 194 write array-object-help.txt;
+#X msg 35 98 const 0;
+#X text 325 98 set to a constant (0 \, for instance);
+#X msg 41 129 read array-object-help.txt;
+#X msg 52 191 write array-object-help.txt;
 #X obj 38 554 array define array-help-1;
-#X msg 46 226 resize 100;
-#X text 71 255 ... other messages are also forwarded to the array like
+#X msg 57 223 resize 100;
+#X text 87 265 ... other messages are also forwarded to the array like
 those above - xticks \, etc \, and also lists to set values.;
-#X obj 154 412 r array-help-send;
-#X floatatom 154 460 5 0 0 0 - - -;
-#X obj 364 407 r array-help-send;
-#X floatatom 364 481 5 0 0 0 - - -;
-#X text 46 495 click to open or edit array:;
-#X obj 364 431 t b p;
-#X obj 154 436 getsize float-array z;
-#X obj 364 456 array size -s float-array z;
-#X text 149 361 The pointer will be to a structure float-array and
+#X obj 174 422 r array-help-send;
+#X floatatom 174 470 5 0 0 0 - - -;
+#X obj 384 417 r array-help-send;
+#X floatatom 384 491 5 0 0 0 - - -;
+#X text 66 505 click to open or edit array:;
+#X obj 384 441 t b p;
+#X obj 174 446 getsize float-array z;
+#X obj 384 466 array size -s float-array z;
+#X text 169 371 The pointer will be to a structure float-array and
 the array itself will be the field named 'z' \, so that you can access
 it as shown in these examples:;
 #X obj 49 586 array define -k array-help-2 10;
 #A 0 -0.320006 0 0 0 0.973333 0 0 0 0 0;
-#X msg 57 335 send array-help-send;
+#X msg 77 345 send array-help-send;
 #X text 360 580 optional -k flag to keep contents;
 #X obj 50 617 array define -yrange -4 4 array-help-3 10;
 #X obj 50 648 array define -pix 800 400 array-help-4 16;
 #X text 361 597 optional "-yrange low high" to set the yrange;
 #X text 361 615 optional "-pix x y" to set the plot size;
-#X obj 51 305 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X obj 67 315 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X text 74 302 bang to output a pointer to the scalar containing the
+#X text 90 312 bang to output a pointer to the scalar containing the
 array;
 #X obj 38 685 getsize float-array z;
 #X floatatom 38 709 5 0 0 0 - - -;
-#X text 213 335 send pointer to a named receive object;
+#X text 233 345 send pointer to a named receive object;
+#X msg 47 157 read -resize array-object-help.txt;
+#X text 323 155 optional -resize flag to resize array based on input
+;
 #X connect 6 0 10 0;
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
@@ -64,6 +67,7 @@ array;
 #X connect 23 0 10 0;
 #X connect 29 0 10 0;
 #X connect 31 0 32 0;
+#X connect 34 0 10 0;
 #X restore 486 212 pd define;
 #X obj 112 496 text;
 #X obj 90 236 array size;
@@ -166,7 +170,7 @@ of a name., f 35;
 #X connect 18 0 11 0;
 #X connect 22 0 14 0;
 #X restore 87 456 pd array-and-data-structures;
-#N canvas 771 174 751 261 size 0;
+#N canvas 529 174 751 261 size 0;
 #X floatatom 26 95 5 1 100 0 - - -;
 #X obj 25 200 print;
 #X text 45 19 "array size" outputs the size (if sent a bang) or sets
