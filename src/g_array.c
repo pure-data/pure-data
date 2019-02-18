@@ -1096,7 +1096,9 @@ static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
             !strcmp(argv->a_w.w_symbol->s_name, "-resize")) {
             resize=1;
         } 
-        filename=argv[1].a_w.w_symbol;
+        if (argv[1].a_type == A_SYMBOL) {
+            filename=argv[1].a_w.w_symbol;
+        } else return;
     } else return;
 
     int yonset, elemsize;
