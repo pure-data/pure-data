@@ -1082,7 +1082,7 @@ static void garray_rename(t_garray *x, t_symbol *s)
 
 static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int nelem, aelem, filedesc, i, c, resize = 0;
+    int nelem, aelem, filedesc, i, resize = 0;
     FILE *fd;
     char buf[MAXPDSTRING], *bufptr;
 
@@ -1120,6 +1120,7 @@ static void garray_read(t_garray *x, t_symbol *s, int argc, t_atom *argv)
         nelem = aelem;
     } else {
         nelem = 0;
+        int c;
         while ((c = fgetc(fd)) != EOF)
         {
            if (c == '\n')
