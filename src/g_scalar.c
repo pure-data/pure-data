@@ -262,16 +262,16 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            dx * (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0));
+             dx * (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0))/ glist->gl_zoom ;
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            dy * (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0));
+            dy * (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0)) / glist->gl_zoom ;
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);
     SETFLOAT(&at[1], (t_float)dx);
     SETFLOAT(&at[2], (t_float)dy);
-    template_notify(template, gensym("displace"), 2, at);
+    template_notify(template, gensym("displace"), 3, at);  // '3' instead of '2'
     scalar_redraw(x, glist);
 }
 
@@ -348,7 +348,7 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     int hit = 0;
     t_canvas *templatecanvas = template_findcanvas(template);
     t_gobj *y;
-    t_atom at[2];
+    t_atom at[3];
     t_float basex = template_getfloat(template, gensym("x"), data, 0);
     t_float basey = template_getfloat(template, gensym("y"), data, 0);
     SETFLOAT(at, basex + xloc);
@@ -356,6 +356,19 @@ int scalar_doclick(t_word *data, t_template *template, t_scalar *sc,
     if (doit)
         template_notifyforscalar(template, owner,
             sc, gensym("click"), 2, at);
+
+// new message "clicked" to fix bug & preserve backward compatibility
+ 	 
+// before : 	click (gpointer) <y> 
+// now, added :	clicked (gpointer) <x> <y>
+
+    SETFLOAT(at + 1, basex + xloc);
+    SETFLOAT(at + 2, basey + yloc);
+    if (doit)
+        template_notifyforscalar(template, owner,
+            sc, gensym("clicked"), 3, at);
+
+
     for (y = templatecanvas->gl_list; y; y = y->g_next)
     {
         const t_parentwidgetbehavior *wb = pd_getparentwidget(&y->g_pd);

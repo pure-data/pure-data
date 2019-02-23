@@ -9,6 +9,7 @@
 #include "m_pd.h"
 #include "g_canvas.h"
 
+
 /*
 This file contains text objects you would put in a canvas to define a
 template.  Templates describe objects of type "array" (g_array.c) and
@@ -1132,12 +1133,18 @@ static void curve_getrect(t_gobj *z, t_glist *glist,
         *xp2 = *yp2 = -0x7fffffff;
         return;
     }
+
+    /* enable zooming */
+    int zooming=1;
+    if (glist_istoplevel(glist))
+	zooming = glist_getzoom(glist);
+
     for (i = 0, f = x->x_vec; i < n; i++, f += 2)
     {
-        int xloc = glist_xtopixels(glist,
-            basex + fielddesc_getcoord(f, template, data, 0));
-        int yloc = glist_ytopixels(glist,
-            basey + fielddesc_getcoord(f+1, template, data, 0));
+        int xloc = zooming * (glist_xtopixels(glist,
+            basex + fielddesc_getcoord(f, template, data, 0)));
+        int yloc = zooming * (glist_ytopixels(glist,
+            basey + fielddesc_getcoord(f+1, template, data, 0)));
         if (xloc < x1) x1 = xloc;
         if (xloc > x2) x2 = xloc;
         if (yloc < y1) y1 = yloc;
@@ -1224,16 +1231,24 @@ static void curve_vis(t_gobj *z, t_glist *glist,
                 out the TK message so that "error" printout won't be
                 interspersed with it.  Only show up to 100 points so we don't
                 have to allocate memory here. */
+
+	    /* enable zooming */
+            int zooming=1;
+	    if (glist_istoplevel(glist))
+		zooming = glist->gl_zoom;
+
             for (i = 0, f = x->x_vec; i < n; i++, f += 2)
             {
-                pix[2*i] = glist_xtopixels(glist,
-                    basex + fielddesc_getcoord(f, template, data, 1));
-                pix[2*i+1] = glist_ytopixels(glist,
-                    basey + fielddesc_getcoord(f+1, template, data, 1));
+                pix[2*i] = zooming * (glist_xtopixels(glist,
+                    basex + fielddesc_getcoord(f, template, data, 1)));
+                pix[2*i+1] = zooming * (glist_ytopixels(glist,
+                    basey + fielddesc_getcoord(f+1, template, data, 1)));
             }
             if (width < 1) width = 1;
             if (glist->gl_isgraph)
                 width *= glist_getzoom(glist);
+	    else
+		width *= zooming;
             numbertocolor(
                 fielddesc_getfloat(&x->x_outlinecolor, template, data, 1),
                 outline);
@@ -1269,7 +1284,8 @@ static void curve_vis(t_gobj *z, t_glist *glist,
 
 static void curve_motion(void *z, t_floatarg dx, t_floatarg dy)
 {
-    t_curve *x = (t_curve *)z;
+   
+	t_curve *x = (t_curve *)z;
     t_fielddesc *f = x->x_vec + TEMPLATE->curve_motion_field;
     t_atom at;
     if (!gpointer_check(&TEMPLATE->curve_motion_gpointer, 0))
@@ -1277,8 +1293,14 @@ static void curve_motion(void *z, t_floatarg dx, t_floatarg dy)
         post("curve_motion: scalar disappeared");
         return;
     }
-    TEMPLATE->curve_motion_xcumulative += dx;
-    TEMPLATE->curve_motion_ycumulative += dy;
+    
+	int zooming = 1;
+	if (glist_istoplevel(TEMPLATE->curve_motion_glist))
+		zooming = TEMPLATE->curve_motion_glist->gl_zoom;
+
+
+    TEMPLATE->curve_motion_xcumulative += dx/zooming;
+    TEMPLATE->curve_motion_ycumulative += dy/zooming;
     if (f->fd_var && (dx != 0))
     {
         fielddesc_setcoord(f, TEMPLATE->curve_motion_template,
@@ -1313,6 +1335,11 @@ static int curve_click(t_gobj *z, t_glist *glist,
     t_float basex, t_float basey,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
+    /* enable zooming */
+    int zooming=1;
+    if (glist_istoplevel(glist))
+	zooming = glist->gl_zoom;
+
     t_curve *x = (t_curve *)z;
     int i, n = x->x_npoints;
     int bestn = -1;
@@ -1327,7 +1354,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
             xloc = glist_xtopixels(glist, basex + xval);
         int yval = fielddesc_getcoord(f+1, template, data, 0),
             yloc = glist_ytopixels(glist, basey + yval);
-        int xerr = xloc - xpix, yerr = yloc - ypix;
+        int xerr = xloc - xpix / zooming, yerr = yloc - ypix / zooming;
         if (!f->fd_var && !(f+1)->fd_var)
             continue;
         if (xerr < 0)
@@ -1561,7 +1588,8 @@ int array_getfields(t_symbol *elemtemplatesym,
     t_fielddesc *xfielddesc, t_fielddesc *yfielddesc, t_fielddesc *wfielddesc,
     int *xonsetp, int *yonsetp, int *wonsetp)
 {
-    int arrayonset, elemsize, yonset, wonset, xonset, type;
+   
+ int arrayonset, elemsize, yonset, wonset, xonset, type;
     t_template *elemtemplate;
     t_symbol *dummy, *varname;
     t_canvas *elemtemplatecanvas = 0;
@@ -1696,11 +1724,16 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
             }
         }
     }
+    
+    /* enable zooming */
+    int zooming=1;
+    if (glist_istoplevel(glist))
+		zooming = glist->gl_zoom;
 
-    *xp1 = x1;
-    *yp1 = y1;
-    *xp2 = x2;
-    *yp2 = y2;
+    *xp1 = x1 * zooming;
+    *yp1 = y1 * zooming;
+    *xp2 = x2 * zooming;
+    *yp2 = y2 * zooming;
 }
 
 static void plot_displace(t_gobj *z, t_glist *glist,
@@ -1760,9 +1793,17 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     return;
     nelem = array->a_n;
     elem = (char *)array->a_vec;
+ 
 
-    if (glist->gl_isgraph)
-        linewidth *= glist_getzoom(glist);
+    /* enable zooming */
+    int zooming=1; 
+    /* check that template is not pd-float */
+    int isnot_pd_float = strcmp(elemtemplatesym->s_name,"pd-float");
+    if (glist_istoplevel(glist) && isnot_pd_float)
+	zooming = glist->gl_zoom;
+    else
+        if (glist->gl_isgraph)
+            linewidth *= glist_getzoom(glist);
 
     if (tovis)
     {
@@ -1806,7 +1847,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     sys_vgui(".x%lx.c create rectangle %d %d %d %d "
                         "-fill black -width 0 -tags [list plot%lx array]\n",
                         glist_getcanvas(glist),
-                        ixpix, (int)glist_ytopixels(glist,
+                         ixpix, (int)glist_ytopixels(glist,
                             basey + fielddesc_cvttocoord(yfielddesc, minyval)),
                         inextx, (int)(glist_ytopixels(glist,
                             basey + fielddesc_cvttocoord(yfielddesc, maxyval))
@@ -1821,12 +1862,14 @@ static void plot_vis(t_gobj *z, t_glist *glist,
         else
         {
             char outline[20];
+	
             int lastpixel = -1, ndrawn = 0;
             t_float yval = 0, wval = 0, xpix;
             int ixpix = 0;
                 /* draw the trace */
             numbertocolor(fielddesc_getfloat(&x->x_outlinecolor, template,
-                data, 1), outline);
+                 data, 1), outline);
+  
             if (wonset >= 0)
             {
                     /* found "w" field which controls linewidth.  The trace is
@@ -1851,8 +1894,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
+                        sys_vgui("%d %f \\\n", zooming * ixpix, (float) zooming 				* glist_ytopixels(glist,
                                 basey + fielddesc_cvttocoord(yfielddesc,
                                     yloc + yval) -
                                         fielddesc_cvttocoord(wfielddesc,wval)));
@@ -1880,7 +1922,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix, glist_ytopixels(glist,
+                        sys_vgui("%d %f \\\n", zooming * ixpix, (float) zooming * glist_ytopixels(glist,
                             basey + yloc + fielddesc_cvttocoord(yfielddesc,
                                 yval) +
                                     fielddesc_cvttocoord(wfielddesc, wval)));
@@ -1893,18 +1935,18 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     There should be at least two already. */
                 if (ndrawn < 4)
                 {
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
+                    sys_vgui("%d %f \\\n", zooming * (ixpix + 10), (float) zooming * glist_ytopixels(glist,
                         basey + yloc + fielddesc_cvttocoord(yfielddesc,
                             yval) +
                                 fielddesc_cvttocoord(wfielddesc, wval)));
-                    sys_vgui("%d %f \\\n", ixpix + 10, glist_ytopixels(glist,
+                    sys_vgui("%d %f \\\n", zooming * (ixpix + 10), (float) zooming * glist_ytopixels(glist,
                         basey + yloc + fielddesc_cvttocoord(yfielddesc,
                             yval) -
                                 fielddesc_cvttocoord(wfielddesc, wval)));
                 }
             ouch:
                 sys_vgui(" -width %d -fill %s -outline %s\\\n",
-                    (glist->gl_isgraph ? glist_getzoom(glist) : 1),
+                    (glist->gl_isgraph ? glist_getzoom(glist) : zooming),
                     outline, outline);
                 if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
@@ -1933,8 +1975,7 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                     ixpix = xpix + 0.5;
                     if (xonset >= 0 || ixpix != lastpixel)
                     {
-                        sys_vgui("%d %f \\\n", ixpix,
-                            glist_ytopixels(glist,
+                        sys_vgui("%d %f \\\n", zooming * ixpix, (float)zooming * glist_ytopixels(glist,
                                 basey + yloc + fielddesc_cvttocoord(yfielddesc,
                                     yval)));
                         ndrawn++;
@@ -1944,11 +1985,11 @@ static void plot_vis(t_gobj *z, t_glist *glist,
                 }
                     /* TK will complain if there aren't at least 2 points... */
                 if (ndrawn == 0) sys_vgui("0 0 0 0 \\\n");
-                else if (ndrawn == 1) sys_vgui("%d %f \\\n", ixpix + 10,
-                    glist_ytopixels(glist, basey + yloc +
+                else if (ndrawn == 1) sys_vgui("%d %f \\\n", zooming * (ixpix + 10),
+                  (float) zooming *  glist_ytopixels(glist, basey + yloc +
                         fielddesc_cvttocoord(yfielddesc, yval)));
 
-                sys_vgui("-width %f\\\n", linewidth);
+                sys_vgui("-width %f\\\n", linewidth * (float) zooming);
                 sys_vgui("-fill %s\\\n", outline);
                 if (style == PLOTSTYLE_BEZ) sys_vgui("-smooth 1\\\n");
 
@@ -2016,6 +2057,10 @@ static void plot_vis(t_gobj *z, t_glist *glist,
 
 static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
 {
+    int zooming = 1;
+    if (glist_istoplevel(TEMPLATE->array_motion_glist))
+		zooming = TEMPLATE->array_motion_glist->gl_zoom;
+    
     TEMPLATE->array_motion_xcumulative += dx * TEMPLATE->array_motion_xperpix;
     TEMPLATE->array_motion_ycumulative += dy * TEMPLATE->array_motion_yperpix;
     if (TEMPLATE->array_motion_xfield)
@@ -2032,7 +2077,7 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                 fielddesc_getcoord(TEMPLATE->array_motion_yfield,
                     TEMPLATE->array_motion_template, thisword, 1) : 0);
             fielddesc_setcoord(TEMPLATE->array_motion_xfield,
-                TEMPLATE->array_motion_template, thisword, xwas + dx, 1);
+                TEMPLATE->array_motion_template, thisword, xwas + dx / zooming , 1);
             if (TEMPLATE->array_motion_yfield)
             {
                 if (TEMPLATE->array_motion_fatten)
@@ -2040,7 +2085,7 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                     if (i == 0)
                     {
                         t_float newy = ywas +
-                            dy * TEMPLATE->array_motion_yperpix;
+                            dy * TEMPLATE->array_motion_yperpix / zooming;
                         if (newy < 0)
                             newy = 0;
                         fielddesc_setcoord(TEMPLATE->array_motion_yfield,
@@ -2051,7 +2096,7 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                 {
                     fielddesc_setcoord(TEMPLATE->array_motion_yfield,
                         TEMPLATE->array_motion_template, thisword,
-                            ywas + dy * TEMPLATE->array_motion_yperpix, 1);
+                            ywas + dy * TEMPLATE->array_motion_yperpix / zooming, 1);
                 }
             }
         }
@@ -2152,6 +2197,17 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
     t_fielddesc *xfield, t_fielddesc *yfield, t_fielddesc *wfield,
     int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
+
+    /* enable zooming */
+    int zooming=1; 
+    /* check that template is not pd-float */
+    int isnot_pd_float = strcmp(elemtemplatesym->s_name,"pd-float");
+    if (glist_istoplevel(glist) && isnot_pd_float)
+	zooming = glist->gl_zoom;   
+    
+    xpix /= zooming;
+    ypix /= zooming;
+ 
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i, callmotion = 0;
@@ -2168,8 +2224,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
         TEMPLATE->array_motion_scalar = sc;
         TEMPLATE->array_motion_array = ap;
         TEMPLATE->array_motion_template = elemtemplate;
-        TEMPLATE->array_motion_xperpix = glist_dpixtodx(glist, 1);
-        TEMPLATE->array_motion_yperpix = glist_dpixtody(glist, 1);
+        TEMPLATE->array_motion_xperpix = glist_dpixtodx(glist, 1) / zooming;
+        TEMPLATE->array_motion_yperpix = glist_dpixtody(glist, 1) / zooming;
             /* if we're a garray, the only one here, and if we appear to have
             only a 'y' field, click always succeeds and furthermore we'll
             call "motion" later. */
@@ -2195,7 +2251,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                 fielddesc_setcoord(yfield, elemtemplate,
                     (t_word *)(((char *)array->a_vec) + elemsize * xval),
                         glist_pixelstoy(glist, ypix), 1);
-                glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                glist_grab(glist, 0, array_motion, 0, xpix , ypix);
                 if (TEMPLATE->array_motion_scalar)
                     scalar_redraw(TEMPLATE->array_motion_scalar,
                         TEMPLATE->array_motion_glist);
@@ -2349,7 +2405,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             TEMPLATE->array_motion_yfield = 0;
                             TEMPLATE->array_motion_ycumulative = 0;
                         }
-                        glist_grab(glist, 0, array_motion, 0, xpix, ypix);
+                        glist_grab(glist, 0, array_motion, 0, xpix * zooming, ypix * zooming);
                     }
                     if (alt)
                     {
@@ -2358,7 +2414,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
                     else return (TEMPLATE->array_motion_fatten ?
-                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
+                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_ADDPOINT);//CLICKME
                 }
             }
         }
@@ -2549,10 +2605,18 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
         *xp2 = *yp2 = -0x7fffffff;
         return;
     }
-    xloc = glist_xtopixels(glist,
-        basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
-    yloc = glist_ytopixels(glist,
-        basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
+    if (glist_istoplevel(glist))
+    {
+	xloc = glist_getzoom(glist) * (glist_xtopixels(glist, basex + fielddesc_getcoord(&x->x_xloc, template, data, 0)));
+    	yloc = glist_getzoom(glist) * (glist_ytopixels(glist, basey + fielddesc_getcoord(&x->x_yloc, template, data, 0)));
+    }
+    else
+    {
+	xloc = glist_xtopixels(glist, basex + fielddesc_getcoord(&x->x_xloc, template, data, 0));
+    	yloc = glist_ytopixels(glist, basey + fielddesc_getcoord(&x->x_yloc, template, data, 0));
+    }
+ 
+
     fontwidth = glist_fontwidth(glist);
     fontheight = glist_fontheight(glist);
     drawnumber_getbuf(x, data, template, buf);
@@ -2567,10 +2631,10 @@ static void drawnumber_getrect(t_gobj *z, t_glist *glist,
     }
     if (strlen(startline) > (unsigned)width)
         width = (int)strlen(startline);
-    *xp1 = xloc;
-    *yp1 = yloc;
+    *xp1 = xloc ;
+    *yp1 = yloc  ;
     *xp2 = xloc + fontwidth * width;
-    *yp2 = yloc + fontheight * height;
+    *yp2 = yloc + fontheight * height ;
 }
 
 static void drawnumber_displace(t_gobj *z, t_glist *glist,
@@ -2584,7 +2648,7 @@ static void drawnumber_select(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
-    post("drawnumber_select %d", state);
+    //post("drawnumber_select %d", state);
     /* fill in later */
 }
 
@@ -2592,7 +2656,7 @@ static void drawnumber_activate(t_gobj *z, t_glist *glist,
     t_word *data, t_template *template, t_float basex, t_float basey,
     int state)
 {
-    post("drawnumber_activate %d", state);
+    //post("drawnumber_activate %d", state);
 }
 
 static void drawnumber_vis(t_gobj *z, t_glist *glist,
@@ -2615,10 +2679,16 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         numbertocolor(fielddesc_getfloat(&x->x_color, template, data, 1),
             colorstring);
         drawnumber_getbuf(x, data, template, buf);
-        sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
-                glist_getcanvas(glist), xloc, yloc, colorstring, buf);
+        if (!glist_istoplevel(glist))
+        	sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
+                glist_getcanvas(glist), xloc , yloc, colorstring, buf);
+	else
+        	sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
+                	glist_getcanvas(glist), xloc * glist_getzoom(glist) , yloc * glist_getzoom(glist), colorstring, buf);
+ 
+
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), 1),
+            sys_hostfontsize(glist_getfont(glist), 1) * glist->gl_zoom,
                 sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
