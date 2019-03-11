@@ -2283,7 +2283,7 @@ static void canvas_done_popup(t_canvas *x, t_float which,
 #define DCLICKINTERVAL 0.25
 
     /* mouse click */
-void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
+static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     int mod, int doit)
 {
     t_gobj *y;
@@ -2652,7 +2652,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
     return 0;
 }
 
-void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
+static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
 {
     int x11=0, y11=0, x12=0, y12=0;
     t_gobj *y1;
