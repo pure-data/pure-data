@@ -210,9 +210,9 @@ proc pdtk_canvas_mouse {tkcanvas x y b f} {
     pdsend "$mytoplevel mouse [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
 }
 
-proc pdtk_canvas_mouseup {tkcanvas x y b} {
+proc pdtk_canvas_mouseup {tkcanvas x y b {f 0}} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouseup [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b"
+    pdsend "$mytoplevel mouseup [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
 }
 
 proc pdtk_canvas_rightclick {tkcanvas x y b} {
@@ -223,7 +223,7 @@ proc pdtk_canvas_rightclick {tkcanvas x y b} {
 # on X11, button 2 pastes from X11 clipboard, so simulate normal paste actions
 proc pdtk_canvas_clickpaste {tkcanvas x y b} {
     pdtk_canvas_mouse $tkcanvas $x $y $b 0
-    pdtk_canvas_mouseup $tkcanvas $x $y $b
+    pdtk_canvas_mouseup $tkcanvas $x $y $b 0
     if { [catch {set pdtk_pastebuffer [selection get]}] } {
         # no selection... do nothing
     } else {

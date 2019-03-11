@@ -209,7 +209,22 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <$::modifier-$alt-Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 7"
 
-    bind $tkcanvas <ButtonRelease-1>          "pdtk_canvas_mouseup %W %x %y %b"
+    bind $tkcanvas <ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 0"
+    bind $tkcanvas <Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 1"
+    bind $tkcanvas <$::modifier-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 2"
+    bind $tkcanvas <$::modifier-Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 3"
+    bind $tkcanvas <$alt-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 4"
+    bind $tkcanvas <$alt-Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 5"
+    bind $tkcanvas <$::modifier-$alt-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 6"
+    bind $tkcanvas <$::modifier-$alt-Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 7"
 
     if {$::windowingsystem eq "x11"} {
         # from http://wiki.tcl.tk/3893
