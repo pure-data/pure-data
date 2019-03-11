@@ -2892,11 +2892,13 @@ static void canvas_doregion(t_canvas *x, int xpos, int ypos, int doit)
 }
 
 void canvas_mouseup(t_canvas *x,
-    t_floatarg fxpos, t_floatarg fypos, t_floatarg fwhich)
+    t_floatarg fxpos, t_floatarg fypos, t_floatarg fwhich,
+    t_floatarg fmod)
 {
     int xpos = fxpos, ypos = fypos, which = fwhich;
+    int mod = fmod;
 #if 0
-    post("mouseup %d %d %d", xpos, ypos, which);
+    post("mouseup %d %d %d %d", xpos, ypos, which, mod);
 #endif
     if (!x->gl_editor)
     {
@@ -4675,7 +4677,7 @@ void g_editor_setup(void)
     class_addmethod(canvas_class, (t_method)canvas_mouse, gensym("mouse"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_mouseup, gensym("mouseup"),
-        A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+        A_FLOAT, A_FLOAT, A_FLOAT, A_DEFFLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_key, gensym("key"),
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
@@ -4753,7 +4755,7 @@ void canvas_editor_for_class(t_class *c)
     class_addmethod(c, (t_method)canvas_key, gensym("key"),
         A_GIMME, A_NULL);
     class_addmethod(c, (t_method)canvas_motion, gensym("motion"),
-        A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+        A_FLOAT, A_FLOAT, A_FLOAT, A_DEFFLOAT, A_NULL);
 
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(c, (t_method)canvas_menuclose,
