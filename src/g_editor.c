@@ -2652,7 +2652,7 @@ static int tryconnect(t_canvas*x, t_object*src, int nout, t_object*sink, int nin
     return 0;
 }
 
-static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doit)
+static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 {
     int x11=0, y11=0, x12=0, y12=0;
     t_gobj *y1;
@@ -2661,7 +2661,7 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doi
     int xwas = x->gl_editor->e_xwas,
         ywas = x->gl_editor->e_ywas;
 #if 0
-    post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, which, doit);
+    post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
 #endif
     if (doit) sys_vgui(".x%lx.c delete x\n", x);
     else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
@@ -2718,13 +2718,14 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int which, int doi
             if (doit)
             {
                 t_selection *sel;
-                int selmode;
+                int selmode = 0;
                 canvas_undo_add(x, UNDO_SEQUENCE_START, "connect", 0);
                 tryconnect(x, ob1, closest1, ob2, closest2);
                 canvas_dirty(x, 1);
                     /* now find out if either ob1 xor ob2 are part of the selection,
                      * and if so, connect the rest of the selection as well */
-                selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
+                if(mod & SHIFTMOD) /* intelligent patching needs to be activated by modifier key */
+                    selmode = glist_isselected(x, &ob1->ob_g) + 2 * glist_isselected(x, &ob2->ob_g);
                 switch(selmode) {
                 case 3: /* both source and sink are selected */
                         /* if only the source & sink are selected, keep connecting them */
@@ -2911,7 +2912,7 @@ void canvas_mouseup(t_canvas *x,
     EDITOR->canvas_upy = ypos;
 
     if (x->gl_editor->e_onmotion == MA_CONNECT)
-        canvas_doconnect(x, xpos, ypos, which, 1);
+        canvas_doconnect(x, xpos, ypos, mod, 1);
     else if (x->gl_editor->e_onmotion == MA_REGION)
         canvas_doregion(x, xpos, ypos, 1);
     else if (x->gl_editor->e_onmotion == MA_MOVE ||
@@ -3186,7 +3187,7 @@ void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
         canvas_doregion(x, xpos, ypos, 0);
     else if (x->gl_editor->e_onmotion == MA_CONNECT)
     {
-        canvas_doconnect(x, xpos, ypos, 0, 0);
+        canvas_doconnect(x, xpos, ypos, mod, 0);
         x->gl_editor->e_xnew = xpos;
         x->gl_editor->e_ynew = ypos;
     }
