@@ -270,10 +270,10 @@ struct _instancecanvas
     t_float i_graph_lastxpix, i_graph_lastypix;
 };
 
-void g_editor_newpdinstance( void);
-void g_template_newpdinstance( void);
-void g_editor_freepdinstance( void);
-void g_template_freepdinstance( void);
+void g_editor_newpdinstance(void);
+void g_template_newpdinstance(void);
+void g_editor_freepdinstance(void);
+void g_template_freepdinstance(void);
 
 #define THISGUI (pd_this->pd_gui)
 #define EDITOR (pd_this->pd_gui->i_editor)
@@ -502,7 +502,7 @@ typedef int (*t_canvasapply)(t_canvas *x, t_int x1, t_int x2, t_int x3);
 EXTERN void canvas_resortinlets(t_canvas *x);
 EXTERN void canvas_resortoutlets(t_canvas *x);
 EXTERN void canvas_free(t_canvas *x);
-EXTERN void canvas_updatewindowlist( void);
+EXTERN void canvas_updatewindowlist(void);
 EXTERN void canvas_editmode(t_canvas *x, t_floatarg state);
 EXTERN int canvas_isabstraction(const t_canvas *x);
 EXTERN int canvas_istable(const t_canvas *x);

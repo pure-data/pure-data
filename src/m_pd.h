@@ -255,7 +255,7 @@ typedef struct _text t_object;
 #define ob_g te_g
 
 typedef void (*t_method)(void);
-typedef void *(*t_newmethod)( void);
+typedef void *(*t_newmethod)(void);
 
 /* in ARM 64 a varargs prototype generates a different function call sequence
 from a fixed one, so in that special case we make a more restrictive
@@ -848,7 +848,7 @@ EXTERN t_pdinstance pd_maininstance;
 
 /* m_pd.c */
 #ifdef PDINSTANCE
-EXTERN t_pdinstance *pdinstance_new( void);
+EXTERN t_pdinstance *pdinstance_new(void);
 EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */

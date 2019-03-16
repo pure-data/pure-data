@@ -475,7 +475,7 @@ int binbuf_resize(t_binbuf *x, int newsize)
     return (new != 0);
 }
 
-int canvas_getdollarzero( void);
+int canvas_getdollarzero(void);
 
 /* JMZ:
  * s points to the first character after the $

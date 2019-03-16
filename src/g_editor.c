@@ -4762,12 +4762,12 @@ void canvas_editor_for_class(t_class *c)
         gensym("findparent"), A_NULL);
 }
 
-void g_editor_newpdinstance( void)
+void g_editor_newpdinstance(void)
 {
     EDITOR = getbytes(sizeof(*EDITOR));
 }
 
-void g_editor_freepdinstance( void)
+void g_editor_freepdinstance(void)
 {
     if (EDITOR->copy_binbuf)
         binbuf_free(EDITOR->copy_binbuf);

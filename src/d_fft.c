@@ -12,8 +12,8 @@ linked in.  The configure script can be used to select which one.
 */
 
 /* ------------------ initialization and cleanup -------------------------- */
-void mayer_init( void);
-void mayer_term( void);
+void mayer_init(void);
+void mayer_term(void);
 
 static void fftclass_cleanup(t_class *c)
 {

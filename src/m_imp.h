@@ -86,8 +86,8 @@ EXTERN int obj_siginletindex(const t_object *x, int m);
 EXTERN int obj_sigoutletindex(const t_object *x, int m);
 
 /* s_inter.c */
-void pd_globallock( void);
-void pd_globalunlock( void);
+void pd_globallock(void);
+void pd_globalunlock(void);
 
 /* misc */
 #define SYMTABHASHSIZE 1024

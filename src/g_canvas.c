@@ -70,7 +70,7 @@ void canvas_declare(t_canvas *x, t_symbol *s, int argc, t_atom *argv);
 
 
     /* maintain the list of visible toplevels for the GUI's "windows" menu */
-void canvas_updatewindowlist( void)
+void canvas_updatewindowlist(void)
 {
             /* not if we're in a reload */
     if (!THISGUI->i_reloadingabstraction)
@@ -146,7 +146,7 @@ t_canvasenvironment *canvas_getenv(const t_canvas *x)
     return (x->gl_env);
 }
 
-int canvas_getdollarzero( void)
+int canvas_getdollarzero(void)
 {
     t_canvas *x = canvas_getcurrent();
     t_canvasenvironment *env = (x ? canvas_getenv(x) : 0);
@@ -2002,7 +2002,7 @@ void canvas_add_for_class(t_class *c)
     /* g_graph_setup_class(c); */
 }
 
-void g_canvas_newpdinstance( void)
+void g_canvas_newpdinstance(void)
 {
     THISGUI = getbytes(sizeof(*THISGUI));
     THISGUI->i_newfilename = THISGUI->i_newdirectory = &s_;
@@ -2015,7 +2015,7 @@ void g_canvas_newpdinstance( void)
     g_template_newpdinstance();
 }
 
-void g_canvas_freepdinstance( void)
+void g_canvas_freepdinstance(void)
 {
     g_editor_freepdinstance();
     g_template_freepdinstance();

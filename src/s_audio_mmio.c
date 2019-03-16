@@ -16,7 +16,7 @@
 /* ------------------------- audio -------------------------- */
 
 static void nt_close_midiin(void);
-static void nt_noresync( void);
+static void nt_noresync(void);
 
 static void postflags(void);
 
@@ -218,7 +218,7 @@ int mmio_do_open_audio(void)
     return (0);
 }
 
-void mmio_close_audio( void)
+void mmio_close_audio(void)
 {
     int errcode;
     int nda, nad;
@@ -395,7 +395,7 @@ reason the sync testing below gives false positives. */
 
 static int nt_resync_cancelled;
 
-static void nt_noresync( void)
+static void nt_noresync(void)
 {
     nt_resync_cancelled = 1;
 }

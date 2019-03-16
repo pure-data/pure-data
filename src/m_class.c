@@ -44,17 +44,17 @@ t_pdinstance pd_maininstance;
 
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance);
-void x_midi_newpdinstance( void);
-void x_midi_freepdinstance( void);
-void s_inter_newpdinstance( void);
-void s_inter_freepdinstance( void);
-void g_canvas_newpdinstance( void);
-void g_canvas_freepdinstance( void);
-void d_ugen_newpdinstance( void);
-void d_ugen_freepdinstance( void);
+void x_midi_newpdinstance(void);
+void x_midi_freepdinstance(void);
+void s_inter_newpdinstance(void);
+void s_inter_freepdinstance(void);
+void g_canvas_newpdinstance(void);
+void g_canvas_freepdinstance(void);
+void d_ugen_newpdinstance(void);
+void d_ugen_freepdinstance(void);
 void new_anything(void *dummy, t_symbol *s, int argc, t_atom *argv);
 
-void s_stuff_newpdinstance( void)
+void s_stuff_newpdinstance(void)
 {
     STUFF = getbytes(sizeof(*STUFF));
     STUFF->st_externlist = STUFF->st_searchpath =
@@ -62,7 +62,7 @@ void s_stuff_newpdinstance( void)
     STUFF->st_schedblocksize = STUFF->st_blocksize = DEFDACBLKSIZE;
 }
 
-void s_stuff_freepdinstance( void)
+void s_stuff_freepdinstance(void)
 {
     freebytes(STUFF, sizeof(*STUFF));
 }
