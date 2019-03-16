@@ -42,8 +42,11 @@ save state information as part of the calling patch.
 <P> "Text", "array", and "scalar" objects have the same methods (bang and "send")
 for outputting pointers to themselves
 
-<P> Opening patches from menu, command line, or messages to "pd" first check
-of the file is already open and if so only bring the existing patch to front.
+<P> An optional argument was added to the "pd open" message, to allow opening
+a file only if it is not currently open; to get this behavior send "pd open
+<file> <directory> 1".  It is still under discussion whether this would be the
+appropriate response when the user clicks on a patch to open it in the file
+browser.
 
 <P> 4 million point default limit on resizing soundfile read to array changed to
 2^31-1 (about 2 billion) samples.  If invoked without an array name,  soundfiler
