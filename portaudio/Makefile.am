@@ -56,7 +56,6 @@ libportaudio_a_SOURCES += \
     portaudio/src/os/win/pa_win_hostapis.c \
     portaudio/src/os/win/pa_win_util.c \
     portaudio/src/os/win/pa_win_waveformat.c \
-    portaudio/src/os/win/pa_x86_plain_converters.c \
     portaudio/src/hostapi/wmme/pa_win_wmme.c
 if ASIO
 AM_CFLAGS += -DPA_USE_ASIO
@@ -107,5 +106,4 @@ nobase_noinst_HEADERS = \
     portaudio/src/hostapi/coreaudio/pa_mac_core_utilities.h \
     portaudio/src/os/unix/pa_unix_util.h \
     portaudio/src/os/win/pa_win_coinitialize.h \
-    portaudio/src/os/win/pa_x86_plain_converters.h \
      $(empty)
