@@ -1,9 +1,23 @@
-EXTERNAL OBJECTS in Pd.
+Examples of external objects for Pd.
 
-Here are the sources for three simple external objects in Pd.
-To compile, type "make pd_linux", "make pd_linux32", "nmake pd_nt", or
-"make pd_darwin"
+Here are the sources for a few simple external objects in Pd, along with patches
+to test them.  There is a makefile included that should help compile them
+using the "make" (Mac or linux) or "nmake" (Windows) shell commands.
 
-The objects "foo1" and "foo2" are intended as very simple control objects, and
-"dspobj" is a tilde object.
+This relies on having installed a development environment for whatever computer
+is in use.  For Windows, this should be Microsoft Visual C (it's also possible
+to compile externs using mingw but this makefile doesn't support that).
 
+To compile, type "make pd_linux", "nmake pd_nt" (for windows), or
+"make pd_darwin" (for Mac OSX).
+
+If you have saved these files to a new location (other than the Pd distrubution
+itself), it will probably be necessary to customize the makefile by changing the
+definition of "PDNTINCLUDE" (windows) or "LINUXINCLUDE" (linux or Mac)
+to point back to the PD source directory.
+
+Mac users who haven't installed a 32-bit compilation chain will also have to
+edit the makefile to delete the phrase "-arch i386" in two places.
+
+Windows users will most likely have to update the makefile to point correctly to
+the current version of Microsoft Visual C.

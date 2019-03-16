@@ -54,8 +54,10 @@ if [[ "$VERSION" != "" ]] ; then
 fi
 
 # set git revision
-echo "==== Set git revision"
-cd $SRC && ./update_gitrevision.sh && cd -
+if [ -f $SRC/update_gitrevision.sh ] ; then
+	echo "==== Set git revision"
+	cd $SRC && ./update_gitrevision.sh && cd -
+fi
 
 echo "==== Copying"
 
@@ -66,6 +68,7 @@ rm $SRC/include/pa_win_wasapi.h
 rm $SRC/include/pa_win_wdmks.h
 rm $SRC/src/hostapi/coreaudio/pa_mac_core_old.c
 rm $SRC/src/os/win/pa_win_wdmks_utils.*
+rm $SRC/src/os/win/pa_x86_plain_converters.*
 
 # copy what we need, namely the main headers and relevant sources
 copysrc include

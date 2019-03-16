@@ -383,9 +383,6 @@ proc init_for_platform {} {
             option add *DialogWindow*font menufont startupFile
             option add *PdWindow*font menufont startupFile
             option add *ErrorDialog*font menufont startupFile
-            # initial dir is home
-            set ::filenewdir $::env(HOME)
-            set ::fileopendir $::env(HOME)
             # set file types that open/save recognize
             set ::filetypes \
                 [list \
