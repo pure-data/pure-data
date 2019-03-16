@@ -49,7 +49,7 @@ struct _instanceugen
 
 #define THIS (pd_this->pd_ugen)
 
-void d_ugen_newpdinstance( void)
+void d_ugen_newpdinstance(void)
 {
     THIS = getbytes(sizeof(*THIS));
     THIS->u_dspchain = 0;
@@ -57,7 +57,7 @@ void d_ugen_newpdinstance( void)
     THIS->u_signals = 0;
 }
 
-void d_ugen_freepdinstance( void)
+void d_ugen_freepdinstance(void)
 {
     freebytes(THIS, sizeof(*THIS));
 }

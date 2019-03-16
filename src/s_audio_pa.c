@@ -468,7 +468,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     return (0);
 }
 
-void pa_close_audio( void)
+void pa_close_audio(void)
 {
     if (pa_stream)
     {

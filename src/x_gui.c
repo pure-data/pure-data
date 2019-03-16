@@ -194,7 +194,7 @@ typedef struct _openpanel
     t_symbol *x_s;
 } t_openpanel;
 
-static void *openpanel_new( void)
+static void *openpanel_new(void)
 {
     char buf[50];
     t_openpanel *x = (t_openpanel *)pd_new(openpanel_class);
@@ -249,7 +249,7 @@ typedef struct _savepanel
     t_symbol *x_s;
 } t_savepanel;
 
-static void *savepanel_new( void)
+static void *savepanel_new(void)
 {
     char buf[50];
     t_savepanel *x = (t_savepanel *)pd_new(savepanel_class);
@@ -302,7 +302,7 @@ typedef struct _key
     t_object x_obj;
 } t_key;
 
-static void *key_new( void)
+static void *key_new(void)
 {
     t_key *x = (t_key *)pd_new(key_class);
     outlet_new(&x->x_obj, &s_float);
@@ -325,7 +325,7 @@ typedef struct _keyup
     t_object x_obj;
 } t_keyup;
 
-static void *keyup_new( void)
+static void *keyup_new(void)
 {
     t_keyup *x = (t_keyup *)pd_new(keyup_class);
     outlet_new(&x->x_obj, &s_float);
@@ -350,7 +350,7 @@ typedef struct _keyname
     t_outlet *x_outlet2;
 } t_keyname;
 
-static void *keyname_new( void)
+static void *keyname_new(void)
 {
     t_keyname *x = (t_keyname *)pd_new(keyname_class);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);

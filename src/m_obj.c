@@ -313,7 +313,7 @@ void outlet_setstacklim(void)
 }
 
     /* get a number unique to the (clock, MIDI, GUI, etc.) event we're on */
-int sched_geteventno( void)
+int sched_geteventno(void)
 {
     return (outlet_eventno);
 }

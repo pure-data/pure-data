@@ -1862,7 +1862,7 @@ static void qlist_tick(t_qlist *x);
 
 static t_class *qlist_class;
 
-static void *qlist_new( void)
+static void *qlist_new(void)
 {
     t_qlist *x = (t_qlist *)pd_new(qlist_class);
     textbuf_init(&x->x_textbuf, gensym("qlist"));
@@ -2090,7 +2090,7 @@ static void qlist_free(t_qlist *x)
 
 static t_class *textfile_class;
 
-static void *textfile_new( void)
+static void *textfile_new(void)
 {
     t_qlist *x = (t_qlist *)pd_new(textfile_class);
     textbuf_init(&x->x_textbuf, gensym("textfile"));
@@ -2152,7 +2152,7 @@ field named 't'.  I don't know how to make this not break
 pre-0.45 patches using templates named 'text'... perhaps this is a minor
 enough incompatibility that I'll just get away with it. */
 
-void text_template_init( void)
+void text_template_init(void)
 {
     t_binbuf *b;
     b = binbuf_new();
@@ -2166,7 +2166,7 @@ void text_template_init( void)
     binbuf_free(b);
 }
 
-void x_qlist_setup(void )
+void x_qlist_setup(void)
 {
     text_template_init();
     text_define_class = class_new(gensym("text define"),

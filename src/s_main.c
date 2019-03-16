@@ -38,7 +38,7 @@ char pd_compiledate[] = __DATE__;
 void pd_init(void);
 int sys_argparse(int argc, char **argv);
 void sys_findprogdir(char *progname);
-void sys_setsignalhandlers( void);
+void sys_setsignalhandlers(void);
 int sys_startgui(const char *guipath);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
