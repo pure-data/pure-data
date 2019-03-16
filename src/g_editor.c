@@ -4273,7 +4273,7 @@ static void canvas_tidy(t_canvas *x)
             bestdist = i;
         }
     }
-    post("best vertical distance %d", bestdist);
+    logpost(NULL, 3, "tidy: best vertical distance %d", bestdist);
     for (y = x->gl_list; y; y = y->g_next)
         if (all || glist_isselected(x, y))
         {
