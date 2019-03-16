@@ -1,5 +1,5 @@
 #N canvas 180 78 933 745 12;
-#X text 775 692 added for Pd 0.5;
+#X text 780 700 added for Pd 0.5;
 #X text 11 36 A recursive algorithm essentially computes a solution
 \, then passes the solution to itself \, looping inward (recursing)
 as many levels as required before reaching an end point. In contrast
@@ -54,7 +54,7 @@ of processing and avoid "stack overflow" errors., f 60;
 #X obj 519 364 s pd;
 #X obj 732 364 s pd;
 #X msg 732 338 stackdepth;
-#X text 472 232 You can change this value by passing a "stackdepth"
+#X text 473 229 You can change this value by passing a "stackdepth"
 message to pd:, f 60;
 #X text 474 34 Pd keeps track of the number of times an object has
 been called when processing the patch and will throw a "stack overflow"
@@ -2245,6 +2245,10 @@ error is dependant on the number of objects in the recursion loop.
 default stack depth of 1000 \, the highest index that can be computed
 without a "stack overflow" error is: 1000/5 = 200;
 #X text 11 13 Recursion using circular patch loops;
+#X text 477 636 Note: Setting the stack depth too high (ie. 2e9) may
+lead to hard crashes if Pd consumes too much process stack memory than
+the operating system allows. Use with caution!;
+#X text 474 11 Stack depth;
 #X connect 2 0 13 0;
 #X connect 3 0 28 0;
 #X connect 3 1 10 0;
