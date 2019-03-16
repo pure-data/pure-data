@@ -297,15 +297,13 @@ static t_class *key_class, *keyup_class, *keyname_class;
 typedef struct _key
 {
     t_object x_obj;
-    unsigned int x_ignore:1; /* ignore edit mode key events? */
-    t_canvas *x_canvas;
+    t_canvas *x_canvas; /* set if ignoring edit mode key events */
 } t_key;
 
 static void *key_new(t_floatarg ignore)
 {
     t_key *x = (t_key *)pd_new(key_class);
-    x->x_ignore = (unsigned int)ignore;
-    if (ignore) x->x_canvas = canvas_getcurrent();
+    x->x_canvas = (ignore == 1 ? canvas_getcurrent() : NULL);
     outlet_new(&x->x_obj, &s_float);
     pd_bind(&x->x_obj.ob_pd, gensym("#key"));
     return (x);
@@ -313,7 +311,7 @@ static void *key_new(t_floatarg ignore)
 
 static void key_float(t_key *x, t_floatarg f)
 {
-    if (x->x_ignore && x->x_canvas->gl_edit)
+    if (x->x_canvas && x->x_canvas->gl_edit)
         return;
     outlet_float(x->x_obj.ob_outlet, f);
 }
@@ -326,15 +324,13 @@ static void key_free(t_key *x)
 typedef struct _keyup
 {
     t_object x_obj;
-    unsigned int x_ignore:1; /* ignore edit mode key events? */
-    t_canvas *x_canvas;
+    t_canvas *x_canvas; /* set if ignoring edit mode key events */
 } t_keyup;
 
 static void *keyup_new(t_floatarg ignore)
 {
     t_keyup *x = (t_keyup *)pd_new(keyup_class);
-    x->x_ignore = (unsigned int)ignore;
-    if (ignore) x->x_canvas = canvas_getcurrent();
+    x->x_canvas = (ignore == 1 ? canvas_getcurrent() : NULL);
     outlet_new(&x->x_obj, &s_float);
     pd_bind(&x->x_obj.ob_pd, gensym("#keyup"));
     return (x);
@@ -342,7 +338,7 @@ static void *keyup_new(t_floatarg ignore)
 
 static void keyup_float(t_keyup *x, t_floatarg f)
 {
-    if (x->x_ignore && x->x_canvas->gl_edit)
+    if (x->x_canvas && x->x_canvas->gl_edit)
         return;
     outlet_float(x->x_obj.ob_outlet, f);
 }
@@ -355,8 +351,7 @@ static void keyup_free(t_keyup *x)
 typedef struct _keyname
 {
     t_object x_obj;
-    unsigned int x_ignore:1; /* ignore edit mode key events? */
-    t_canvas *x_canvas;
+    t_canvas *x_canvas; /* set if ignoring edit mode key events */
     t_outlet *x_outlet1;
     t_outlet *x_outlet2;
 } t_keyname;
@@ -364,8 +359,7 @@ typedef struct _keyname
 static void *keyname_new(t_floatarg ignore)
 {
     t_keyname *x = (t_keyname *)pd_new(keyname_class);
-    x->x_ignore = (unsigned int)ignore;
-    if (ignore) x->x_canvas = canvas_getcurrent();
+    x->x_canvas = (ignore == 1 ? canvas_getcurrent() : NULL);
     x->x_outlet1 = outlet_new(&x->x_obj, &s_float);
     x->x_outlet2 = outlet_new(&x->x_obj, &s_symbol);
     pd_bind(&x->x_obj.ob_pd, gensym("#keyname"));
@@ -374,7 +368,7 @@ static void *keyname_new(t_floatarg ignore)
 
 static void keyname_list(t_keyname *x, t_symbol *s, int ac, t_atom *av)
 {
-    if (x->x_ignore && x->x_canvas->gl_edit)
+    if (x->x_canvas && x->x_canvas->gl_edit)
         return;
     outlet_symbol(x->x_outlet2, atom_getsymbolarg(1, ac, av));
     outlet_float(x->x_outlet1, atom_getfloatarg(0, ac, av));
