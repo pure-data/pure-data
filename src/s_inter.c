@@ -11,6 +11,7 @@ that didn't really belong anywhere. */
 #include "g_canvas.h"   /* for GUI queueing stuff */
 #ifndef _WIN32
 #include <unistd.h>
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -101,6 +102,7 @@ struct _socketreceiver
     int sr_intail;
     void *sr_owner;
     int sr_udp;
+    char *sr_fromaddrstr; /* UDP only */
     t_socketnotifier sr_notifier;
     t_socketreceivefn sr_socketreceivefn;
 };
@@ -458,7 +460,7 @@ void sys_rmpollfn(int fd)
 }
 
 t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
-    t_socketreceivefn socketreceivefn, int udp)
+    t_socketreceivefn socketreceivefn, int udp, int udpfromaddr)
 {
     t_socketreceiver *x = (t_socketreceiver *)getbytes(sizeof(*x));
     x->sr_inhead = x->sr_intail = 0;
@@ -466,13 +468,20 @@ t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     x->sr_notifier = notifier;
     x->sr_socketreceivefn = socketreceivefn;
     x->sr_udp = udp;
-    if (!(x->sr_inbuf = malloc(INBUFSIZE))) bug("t_socketreceiver");;
+    x->sr_fromaddrstr = NULL;
+    if (udpfromaddr)
+    {
+        x->sr_fromaddrstr = malloc(INET6_ADDRSTRLEN);
+        x->sr_fromaddrstr[0] = '\0';
+    }
+    if (!(x->sr_inbuf = malloc(INBUFSIZE))) bug("t_socketreceiver");
     return (x);
 }
 
 void socketreceiver_free(t_socketreceiver *x)
 {
     free(x->sr_inbuf);
+    if (x->sr_fromaddrstr) free(x->sr_fromaddrstr);
     freebytes(x, sizeof(*x));
 }
 
@@ -512,7 +521,14 @@ static int socketreceiver_doread(t_socketreceiver *x)
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
-    int ret = (int)recv(fd, buf, INBUFSIZE, 0);
+    struct sockaddr_in fromaddr = {0};
+    socklen_t fromaddrlen = sizeof(struct sockaddr_in);
+    int ret = 0;
+    if(x->sr_fromaddrstr)
+        ret = (int)recvfrom(fd, buf, INBUFSIZE, 0, (struct sockaddr *)&fromaddr,
+            &fromaddrlen);
+    else
+        ret = (int)recv(fd, buf, INBUFSIZE, 0);
     if (ret < 0)
     {
         sys_sockerror("recv");
@@ -537,6 +553,18 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             char *semi = strchr(buf, ';');
             if (semi)
                 *semi = 0;
+            if (x->sr_fromaddrstr)
+            {
+                    /* set UDP from addr for each message */
+                x->sr_fromaddrstr[0] = '\0';
+                if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr, x->sr_fromaddrstr,
+                    INET6_ADDRSTRLEN))
+                {
+#if 0
+                    post("socketreceiver_getudp recvfrom %s", x->sr_fromaddrstr);
+#endif
+                }
+            }
             binbuf_text(pd_this->pd_inter->i_inbinbuf, buf, strlen(buf));
             outlet_setstacklim();
             if (x->sr_socketreceivefn)
@@ -611,6 +639,11 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
             }
         }
     }
+}
+
+char *socketreceiver_get_fromaddrstr(t_socketreceiver *x)
+{
+    return x->sr_fromaddrstr;
 }
 
 void sys_closesocket(int fd)
@@ -1273,7 +1306,7 @@ static int sys_do_startgui(const char *libdir)
         pd_this->pd_inter->i_guihead = pd_this->pd_inter->i_guitail = 0;
     }
 
-    pd_this->pd_inter->i_socketreceiver = socketreceiver_new(0, 0, 0, 0);
+    pd_this->pd_inter->i_socketreceiver = socketreceiver_new(0, 0, 0, 0, 0);
     sys_addpollfn(pd_this->pd_inter->i_guisock,
         (t_fdpollfn)socketreceiver_read,
             pd_this->pd_inter->i_socketreceiver);

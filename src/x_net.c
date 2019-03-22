@@ -12,6 +12,7 @@
 #ifdef _WIN32
 #include <winsock.h>
 #else
+#include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -37,6 +38,7 @@ typedef struct _netsend
     t_object x_obj;
     t_outlet *x_msgout;
     t_outlet *x_connectout;
+    t_outlet *x_fromout;
     int x_sockfd;
     int x_protocol;
     int x_bin;
@@ -96,12 +98,19 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 static void netsend_readbin(t_netsend *x, int fd)
 {
     unsigned char inbuf[MAXPDSTRING];
-    int ret = (int)recv(fd, inbuf, MAXPDSTRING, 0), i;
+    int ret = 0, i;
+    struct sockaddr_in fromaddr = {0};
+    socklen_t fromaddrlen = sizeof(struct sockaddr_in);
     if (!x->x_msgout)
     {
         bug("netsend_readbin");
         return;
     }
+    if (x->x_fromout)
+        ret = (int)recvfrom(fd, inbuf, MAXPDSTRING, 0,
+            (struct sockaddr *)&fromaddr, &fromaddrlen);
+    else
+        ret = (int)recv(fd, inbuf, MAXPDSTRING, 0);
     if (ret <= 0)
     {
         if (ret < 0)
@@ -110,9 +119,24 @@ static void netsend_readbin(t_netsend *x, int fd)
         sys_closesocket(fd);
         if (x->x_obj.ob_pd == netreceive_class)
             netreceive_notify((t_netreceive *)x, fd);
+        return;
     }
-    else if (x->x_protocol == SOCK_DGRAM)
+    if (x->x_protocol == SOCK_DGRAM)
     {
+            /* output from addr for each UDP message */
+        if (x->x_fromout)
+        {
+            char fromaddrstr[INET6_ADDRSTRLEN];
+            fromaddrstr[0] = '\0';
+            if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr, fromaddrstr,
+                INET6_ADDRSTRLEN))
+            {
+                outlet_symbol(x->x_fromout, gensym(fromaddrstr));
+#if 0
+                post("netsend_readbin recvfrom %s", fromaddrstr);
+#endif
+            }
+        }
         t_atom *ap = (t_atom *)alloca(ret * sizeof(t_atom));
         for (i = 0; i < ret; i++)
             SETFLOAT(ap+i, inbuf[i]);
@@ -130,6 +154,18 @@ static void netsend_doit(void *z, t_binbuf *b)
     t_netsend *x = (t_netsend *)z;
     int msg, natom = binbuf_getnatom(b);
     t_atom *at = binbuf_getvec(b);
+    if (x->x_fromout && x->x_receiver)
+    {
+            /* output from addr for each UDP message */
+        char *fromaddrstr = socketreceiver_get_fromaddrstr(x->x_receiver);
+        if(fromaddrstr)
+        {
+            outlet_symbol(x->x_fromout, gensym(fromaddrstr));
+#if 0
+        post("netsend_doit recvfrom %s", fromaddrstr);
+#endif
+        }
+    }
     for (msg = 0; msg < natom;)
     {
         int emsg;
@@ -159,7 +195,6 @@ static void netsend_doit(void *z, t_binbuf *b)
         msg = emsg + 1;
     }
 }
-
 
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -264,7 +299,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         {
             t_socketreceiver *y =
               socketreceiver_new((void *)x, 0, netsend_doit,
-                                 x->x_protocol == SOCK_DGRAM);
+                                 x->x_protocol == SOCK_DGRAM, 0);
             sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receiver = y;
         }
@@ -407,7 +442,14 @@ static void netreceive_notify(t_netreceive *x, int fd)
 
 static void netreceive_connectpoll(t_netreceive *x)
 {
-    int fd = accept(x->x_ns.x_sockfd, 0, 0);
+    struct sockaddr_in fromaddr = {0};
+    socklen_t fromaddrlen = sizeof(struct sockaddr_in);
+    int fd = 0;
+    if (x->x_ns.x_fromout)
+        fd = accept(x->x_ns.x_sockfd, (struct sockaddr *)&fromaddr,
+            &fromaddrlen);
+    else
+        fd = accept(x->x_ns.x_sockfd, 0, 0);
     if (fd < 0) post("netreceive: accept failed");
     else
     {
@@ -426,9 +468,23 @@ static void netreceive_connectpoll(t_netreceive *x)
         {
             t_socketreceiver *y = socketreceiver_new((void *)x,
             (t_socketnotifier)netreceive_notify,
-                (x->x_ns.x_msgout ? netsend_doit : 0), 0);
+                (x->x_ns.x_msgout ? netsend_doit : 0), 0, 0);
             sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receivers[x->x_nconnections] = y;
+        }
+        if (x->x_ns.x_fromout)
+        {
+                /* output form addr for new TCP connection */
+            char fromaddrstr[INET6_ADDRSTRLEN];
+            fromaddrstr[0] = '\0';
+            if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr, fromaddrstr,
+                INET6_ADDRSTRLEN))
+            {
+                outlet_symbol(x->x_ns.x_fromout, gensym(fromaddrstr));
+#if 0
+                post("netreceive_connectpoll accept %s", fromaddrstr);
+#endif
+            }
         }
         outlet_float(x->x_ns.x_connectout, (x->x_nconnections = nconnections));
     }
@@ -528,7 +584,8 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         {
             t_socketreceiver *y = socketreceiver_new((void *)x,
                 (t_socketnotifier)netreceive_notify,
-                    (x->x_ns.x_msgout ? netsend_doit : 0), 1);
+                    (x->x_ns.x_msgout ? netsend_doit : 0), 1,
+                    x->x_ns.x_fromout != NULL);
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
             x->x_ns.x_receiver = y;
@@ -550,7 +607,6 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
     }
 }
 
-
 static void netreceive_send(t_netreceive *x,
     t_symbol *s, int argc, t_atom *argv)
 {
@@ -567,6 +623,7 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_netreceive *x = (t_netreceive *)pd_new(netreceive_class);
     int portno = 0;
+    unsigned int from = 0;
     x->x_ns.x_protocol = SOCK_STREAM;
     x->x_old = 0;
     x->x_ns.x_bin = 0;
@@ -591,6 +648,8 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
                 x->x_ns.x_bin = 1;
             else if (!strcmp(argv->a_w.w_symbol->s_name, "-u"))
                 x->x_ns.x_protocol = SOCK_DGRAM;
+            else if (!strcmp(argv->a_w.w_symbol->s_name, "-f"))
+                from = 1;
             else
             {
                 pd_error(x, "netreceive: unknown flag ...");
@@ -616,6 +675,10 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
         x->x_ns.x_connectout = outlet_new(&x->x_ns.x_obj, &s_float);
     else
         x->x_ns.x_connectout = 0;
+    if (from)
+        x->x_ns.x_fromout = outlet_new(&x->x_ns.x_obj, &s_symbol);
+    else
+        x->x_ns.x_fromout = NULL;
         /* create a socket */
     if (portno > 0)
         netreceive_listen(x, portno);

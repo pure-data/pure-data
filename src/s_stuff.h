@@ -173,8 +173,10 @@ typedef void (*t_socketnotifier)(void *x, int n);
 typedef void (*t_socketreceivefn)(void *x, t_binbuf *b);
 
 EXTERN t_socketreceiver *socketreceiver_new(void *owner,
-    t_socketnotifier notifier, t_socketreceivefn socketreceivefn, int udp);
+    t_socketnotifier notifier, t_socketreceivefn socketreceivefn, int udp,
+    int udpfromaddr);
 EXTERN void socketreceiver_read(t_socketreceiver *x, int fd);
+EXTERN char *socketreceiver_get_fromaddrstr(t_socketreceiver *x); /* UDP only */
 EXTERN void sys_sockerror(char *s);
 EXTERN void sys_closesocket(int fd);
 
