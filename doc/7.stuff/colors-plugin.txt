@@ -1,0 +1,25 @@
+# this is an example of a color plugin for pure data (saved as a .tcl file)
+array set ::pd_colors {
+canvas_fill "#FF8800"
+gopbox_color "white"
+obj_txt_color "green"
+msg_txt_color "light blue"
+comment_color "white"
+select_color "yellow"
+dash_outline "blue"
+obj_box_outline "#0B8100"
+msg_box_outline "#0B8100"
+msg_box_fill "blue"
+obj_box_fill "#0B8100"
+signal_cord "#0B8100"
+msg_cord "#0B8100"
+msg_nlet "white"
+signal_nlet "#99c0ff"
+graph_outline "blue"
+selrect_color "light green"
+txt_hilight "black"
+}
+#random colors for everything
+#proc ::pdtk_canvas::get_color {type {window 0}} {
+#	return [format #%06x [expr {int(rand() * 0xFFFFFF)}]]
+#}

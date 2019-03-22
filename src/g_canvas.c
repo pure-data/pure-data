@@ -770,9 +770,10 @@ void canvas_drawredrect(t_canvas *x, int doit)
             y1 = x->gl_zoom * x->gl_ymargin,
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
-            "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
+            "-fill [::pdtk_canvas::get_color gopbox_color .x%lx] "
+            "-width %d -capstyle projecting -tags GOP\n",
             glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
-                x->gl_zoom);
+                glist_getcanvas(x), x->gl_zoom);
     }
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
@@ -933,15 +934,21 @@ static void canvas_drawlines(t_canvas *x)
 {
     t_linetraverser t;
     t_outconnect *oc;
+    int issignal;
+    int zoom = x->gl_zoom; /* slight offset to hide thick line corners */
     {
         linetraverser_start(&t, x);
-        while ((oc = linetraverser_next(&t)))
+        while ((oc = linetraverser_next(&t))) {
+        	issignal = (outlet_getsymbol(t.tr_outlet) == &s_signal);
             sys_vgui(
-        ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
+        		".x%lx.c create line %d %d %d %d -width %d -fill " 
+    			"[::pdtk_canvas::get_color %s .x%lx] -tags [list l%lx cord]\n",
                 glist_getcanvas(x),
                 t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
-                (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
-                oc);
+                (issignal ? 2:1) * zoom,
+                (issignal ? "signal_cord" : "msg_cord"),
+                glist_getcanvas(x), oc);
+        }
     }
 }
 

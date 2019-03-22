@@ -236,6 +236,28 @@ array set redo_actions {}
 set undo_action no
 set redo_action no
 
+# color scheme
+array set ::pd_colors {
+canvas_fill "white"
+gopbox_color "#FF8080"
+obj_txt_color "#000"
+msg_txt_color "#000"
+comment_color "#000"
+select_color "#00f"
+dash_outline "#f00"
+obj_box_outline "#ccc"
+msg_box_outline "#ccc"
+msg_box_fill ""
+obj_box_fill ""
+signal_cord "#558"
+msg_cord "#121"
+msg_nlet "#fff"
+graph_outline "#000"
+signal_nlet "#558"
+selrect_color "#000"
+txt_hilight "#37e744"
+}
+
 namespace eval ::pdgui:: {
     variable scriptname [ file normalize [ info script ] ]
 }
