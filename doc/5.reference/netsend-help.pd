@@ -1,4 +1,4 @@
-#N canvas 201 62 1121 607 12;
+#N canvas 235 59 1121 664 12;
 #X obj 38 376 netsend;
 #X msg 38 218 connect localhost 3000;
 #X msg 47 351 send foo \$1;
@@ -11,10 +11,10 @@
 #X floatatom 232 407 0 0 0 0 - - -;
 #X text 147 12 Netsend -- send Pd messages over a network;
 #X text 713 298 Close the connection;
-#X obj 175 568 netreceive;
-#X text 84 568 see also:;
-#X obj 561 528 netsend 1;
-#X text 646 527 (UDP);
+#X obj 175 608 netreceive;
+#X text 84 608 see also:;
+#X obj 561 568 netsend 1;
+#X text 646 567 (UDP);
 #X obj 232 376 netsend -u;
 #X text 772 375 creation arguments:;
 #X text 840 394 optional -u flag for UDP;
@@ -52,12 +52,11 @@ instead \, which appear in Pd as lists of numbers from 0 to 255 (You
 could use this to send OSC messages \, for example.), f 132;
 #X obj 84 407 print backward;
 #X obj 491 407 print backward;
-#X text 40 450 First outlet is nonzero if connection is open \, zero
+#X text 36 450 First outlet is nonzero if connection is open \, zero
 otherwise., f 62;
 #X obj 299 407 print backward;
 #X obj 705 407 print backward;
-#X text 900 568 updated for Pd version 0.47;
-#X text 40 472 Second outlet outputs messages sent back from netreceive
+#X text 36 472 Second outlet outputs messages sent back from netreceive
 object. In TCP mode this works for any established connection. In UDP
 you have to send at least one message forward through the connection
 for backward messages to find their way back., f 122;
@@ -67,9 +66,28 @@ for backward messages to find their way back., f 122;
 #X text 867 261 specifies port number for;
 #X text 80 195 TCP \, ASCII;
 #X text 282 195 UDP \, ASCII;
-#X text 40 520 An old (pre-0.45) calling convention is provided for
+#X text 39 560 An old (pre-0.45) calling convention is provided for
 compatibility \, a single float argument "0" or "1" for TCP or UDP
 respectively:, f 68;
+#X text 840 431 optional -k flag for UDP keep alive;
+#X text 900 608 updated for Pd version 0.50.;
+#N canvas 618 258 395 266 UDP 0;
+#X obj 43 192 netsend -u -k;
+#X floatatom 43 226 0 0 0 0 - - -;
+#X msg 43 73 connect localhost 3004;
+#X msg 65 112 disconnect;
+#X msg 79 146 send is a packet is never received ...;
+#X text 14 16 This netsend's connection will "keep alive" whether anyone
+receives the UDP message or not., f 51;
+#X connect 0 0 1 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X restore 798 523 pd UDP keep alive;
+#X text 37 515 By default \, the netsend connection is closed if no
+one receives a UDP message. As of 0.50+ \, the -k creation argument
+tells netsend to "keep it's connection alive" and ignore any connection
+refused errors:, f 105;
 #X connect 0 0 8 0;
 #X connect 0 1 40 0;
 #X connect 1 0 0 0;
@@ -94,4 +112,4 @@ respectively:, f 68;
 #X connect 35 0 23 0;
 #X connect 35 1 41 0;
 #X connect 36 0 32 0;
-#X connect 47 0 32 0;
+#X connect 46 0 32 0;

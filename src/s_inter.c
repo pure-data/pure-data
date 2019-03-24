@@ -105,6 +105,8 @@ struct _socketreceiver
     char *sr_fromaddrstr; /* UDP only */
     t_socketnotifier sr_notifier;
     t_socketreceivefn sr_socketreceivefn;
+    t_socketreceiveaddrfn sr_socketreceiveaddrfn; /* UDP only */
+    t_socketkeepalivefn sr_socketkeepalivefn; /* UDP only */
 };
 
 typedef struct _guiqueue
@@ -401,7 +403,7 @@ void sys_set_priority(int mode)
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
-void sys_sockerror(char *s)
+int sys_sockerrno()
 {
 #ifdef _WIN32
     int err = WSAGetLastError();
@@ -412,9 +414,15 @@ void sys_sockerror(char *s)
             "Warning: you might not have TCP/IP \"networking\" turned on\n");
         fprintf(stderr, "which is needed for Pd to talk to its GUI layer.\n");
     }
+    return err;
 #else
-    int err = errno;
+    return errno;
 #endif
+}
+
+void sys_sockerror(char *s)
+{
+    int err = sys_sockerrno();
     error("%s: %s (%d)\n", s, strerror(err), err);
 }
 
@@ -460,7 +468,7 @@ void sys_rmpollfn(int fd)
 }
 
 t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
-    t_socketreceivefn socketreceivefn, int udp, int udpfromaddr)
+    t_socketreceivefn socketreceivefn, int udp)
 {
     t_socketreceiver *x = (t_socketreceiver *)getbytes(sizeof(*x));
     x->sr_inhead = x->sr_intail = 0;
@@ -468,12 +476,9 @@ t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     x->sr_notifier = notifier;
     x->sr_socketreceivefn = socketreceivefn;
     x->sr_udp = udp;
+    x->sr_socketreceiveaddrfn = NULL;
+    x->sr_socketkeepalivefn = NULL;
     x->sr_fromaddrstr = NULL;
-    if (udpfromaddr)
-    {
-        x->sr_fromaddrstr = malloc(INET6_ADDRSTRLEN);
-        x->sr_fromaddrstr[0] = '\0';
-    }
     if (!(x->sr_inbuf = malloc(INBUFSIZE))) bug("t_socketreceiver");
     return (x);
 }
@@ -531,7 +536,17 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         ret = (int)recv(fd, buf, INBUFSIZE, 0);
     if (ret < 0)
     {
-        sys_sockerror("recv");
+            /* keep UDP socket alive, ask owner as this may have caught the
+               errno set by a different object */
+        if (sys_sockerrno() == ECONNREFUSED && x->sr_socketkeepalivefn &&
+            (*x->sr_socketkeepalivefn)(x->sr_owner))
+        {
+#if 0
+            post("socketreceiver_getudp: caught connect refused");
+#endif
+            return;
+        }
+        sys_sockerror("recv (udp)");
         sys_rmpollfn(fd);
         sys_closesocket(fd);
     }
@@ -553,16 +568,18 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             char *semi = strchr(buf, ';');
             if (semi)
                 *semi = 0;
-            if (x->sr_fromaddrstr)
+            if (x->sr_socketreceiveaddrfn)
             {
-                    /* set UDP from addr for each message */
+                    /* send UDP from addr for each message */
                 x->sr_fromaddrstr[0] = '\0';
-                if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr, x->sr_fromaddrstr,
-                    INET6_ADDRSTRLEN))
+                if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr,
+                    x->sr_fromaddrstr, INET6_ADDRSTRLEN))
                 {
 #if 0
                     post("socketreceiver_getudp recvfrom %s", x->sr_fromaddrstr);
 #endif
+                    (*x->sr_socketreceiveaddrfn)(x->sr_owner,
+                        (const char *)x->sr_fromaddrstr);
                 }
             }
             binbuf_text(pd_this->pd_inter->i_inbinbuf, buf, strlen(buf));
@@ -602,7 +619,7 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
             if (ret <= 0)
             {
                 if (ret < 0)
-                    sys_sockerror("recv");
+                    sys_sockerror("recv (tcp)");
                 if (x == pd_this->pd_inter->i_socketreceiver)
                 {
                     if (pd_this == &pd_maininstance)
@@ -641,9 +658,26 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
     }
 }
 
-char *socketreceiver_get_fromaddrstr(t_socketreceiver *x)
+    /* additional UDP-only callbacks: socket keep alive?, from addr string */
+void socketreceiver_set_udpfns(t_socketreceiver *x,
+    t_socketreceiveaddrfn socketreceiveaddrfn,
+    t_socketkeepalivefn socketkeepalivefn)
 {
-    return x->sr_fromaddrstr;
+    x->sr_socketreceiveaddrfn = socketreceiveaddrfn;
+    if (socketreceiveaddrfn)
+    {
+        if (!x->sr_fromaddrstr)
+        {
+            x->sr_fromaddrstr = malloc(INET6_ADDRSTRLEN);
+            x->sr_fromaddrstr[0] = '\0';
+        }
+    }
+    else if (x->sr_fromaddrstr)
+    {
+        free(x->sr_fromaddrstr);
+        x->sr_fromaddrstr = NULL;
+    }
+    x->sr_socketkeepalivefn = socketkeepalivefn;
 }
 
 void sys_closesocket(int fd)
@@ -1306,7 +1340,7 @@ static int sys_do_startgui(const char *libdir)
         pd_this->pd_inter->i_guihead = pd_this->pd_inter->i_guitail = 0;
     }
 
-    pd_this->pd_inter->i_socketreceiver = socketreceiver_new(0, 0, 0, 0, 0);
+    pd_this->pd_inter->i_socketreceiver = socketreceiver_new(0, 0, 0, 0);
     sys_addpollfn(pd_this->pd_inter->i_guisock,
         (t_fdpollfn)socketreceiver_read,
             pd_this->pd_inter->i_socketreceiver);

@@ -9,6 +9,7 @@
 
 #include <sys/types.h>
 #include <string.h>
+#include <errno.h>
 #ifdef _WIN32
 #include <winsock.h>
 #else
@@ -42,6 +43,7 @@ typedef struct _netsend
     int x_sockfd;
     int x_protocol;
     int x_bin;
+    int x_keepalive; /* UDP only */
     t_socketreceiver *x_receiver;
 } t_netsend;
 
@@ -65,6 +67,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     outlet_new(&x->x_obj, &s_float);
     x->x_protocol = SOCK_STREAM;
     x->x_bin = 0;
+    x->x_keepalive = 0;
     if (argc && argv->a_type == A_FLOAT)
     {
         x->x_protocol = (argv->a_w.w_float != 0 ? SOCK_DGRAM : SOCK_STREAM);
@@ -77,6 +80,11 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
             x->x_bin = 1;
         else if (!strcmp(argv->a_w.w_symbol->s_name, "-u"))
             x->x_protocol = SOCK_DGRAM;
+        else if (!strcmp(argv->a_w.w_symbol->s_name, "-k"))
+        {
+            if(x->x_protocol == SOCK_DGRAM)
+                x->x_keepalive = 1;
+        }
         else
         {
             pd_error(x, "netsend: unknown flag ...");
@@ -114,7 +122,17 @@ static void netsend_readbin(t_netsend *x, int fd)
     if (ret <= 0)
     {
         if (ret < 0)
-            sys_sockerror("recv");
+        {
+            /* keep UDP socket alive */
+            if (sys_sockerrno() == ECONNREFUSED && x->x_keepalive)
+            {
+#if 0
+                post("netsend_readbin: caught connect refused");
+#endif
+                return;
+            }
+            sys_sockerror("recv (bin)");
+        }
         sys_rmpollfn(fd);
         sys_closesocket(fd);
         if (x->x_obj.ob_pd == netreceive_class)
@@ -154,18 +172,6 @@ static void netsend_doit(void *z, t_binbuf *b)
     t_netsend *x = (t_netsend *)z;
     int msg, natom = binbuf_getnatom(b);
     t_atom *at = binbuf_getvec(b);
-    if (x->x_fromout && x->x_receiver)
-    {
-            /* output from addr for each UDP message */
-        char *fromaddrstr = socketreceiver_get_fromaddrstr(x->x_receiver);
-        if(fromaddrstr)
-        {
-            outlet_symbol(x->x_fromout, gensym(fromaddrstr));
-#if 0
-        post("netsend_doit recvfrom %s", fromaddrstr);
-#endif
-        }
-    }
     for (msg = 0; msg < natom;)
     {
         int emsg;
@@ -193,6 +199,26 @@ static void netsend_doit(void *z, t_binbuf *b)
         }
     nodice:
         msg = emsg + 1;
+    }
+}
+
+    /* return keep alive setting to socketreceiver */
+static int netsend_keepalive(void *z)
+{
+    t_netsend *x = (t_netsend *)z;
+    return x->x_keepalive;
+}
+
+    /* UDP from addr str provided by socketreiver */
+static void netsend_fromaddr(void *z, const char *fromaddrstr)
+{
+    t_netsend *x = (t_netsend *)z;
+    if(x->x_fromout && fromaddrstr)
+    {
+        outlet_symbol(x->x_fromout, gensym(fromaddrstr));
+#if 0
+        post("netsend_fromaddr %s", fromaddrstr);
+#endif
     }
 }
 
@@ -299,7 +325,10 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         {
             t_socketreceiver *y =
               socketreceiver_new((void *)x, 0, netsend_doit,
-                                 x->x_protocol == SOCK_DGRAM, 0);
+                                 x->x_protocol == SOCK_DGRAM);
+            if (x->x_protocol == SOCK_DGRAM)
+                socketreceiver_set_udpfns(y, NULL,
+                    (t_socketkeepalivefn)netsend_keepalive);
             sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receiver = y;
         }
@@ -366,6 +395,17 @@ static int netsend_dosend(t_netsend *x, int sockfd,
         }
         if (res <= 0)
         {
+            /* note: send errors may or may not be caught here as the errno may
+                     be caught by a socket receiver polling on the same thread
+            */
+            /* keep UDP socket alive */
+            if (sys_sockerrno() == ECONNREFUSED && x->x_keepalive)
+            {
+#if 0
+                post("netsend_dosend: caught connect refused");
+#endif
+                break;
+            }
             sys_sockerror("netsend");
             fail = 1;
             break;
@@ -468,7 +508,7 @@ static void netreceive_connectpoll(t_netreceive *x)
         {
             t_socketreceiver *y = socketreceiver_new((void *)x,
             (t_socketnotifier)netreceive_notify,
-                (x->x_ns.x_msgout ? netsend_doit : 0), 0, 0);
+                (x->x_ns.x_msgout ? netsend_doit : 0), 0);
             sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receivers[x->x_nconnections] = y;
         }
@@ -584,8 +624,11 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         {
             t_socketreceiver *y = socketreceiver_new((void *)x,
                 (t_socketnotifier)netreceive_notify,
-                    (x->x_ns.x_msgout ? netsend_doit : 0), 1,
-                    x->x_ns.x_fromout != NULL);
+                    (x->x_ns.x_msgout ? netsend_doit : 0), 1);
+            if (x->x_ns.x_protocol == SOCK_DGRAM)
+                socketreceiver_set_udpfns(y,
+                    (t_socketreceiveaddrfn)netsend_fromaddr,
+                    (t_socketkeepalivefn)netsend_keepalive);
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
             x->x_ns.x_receiver = y;
