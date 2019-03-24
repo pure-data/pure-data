@@ -423,7 +423,7 @@ int sys_sockerrno()
 void sys_sockerror(char *s)
 {
     int err = sys_sockerrno();
-    error("%s: %s (%d)\n", s, strerror(err), err);
+    error("%s: %s (%d)", s, strerror(err), err);
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
@@ -1140,7 +1140,7 @@ static int sys_do_startgui(const char *libdir)
         if (setsockopt(xsock, IPPROTO_TCP, TCP_NODELAY,
             &intarg, sizeof(intarg)) < 0)
 #ifndef _WIN32
-                post("setsockopt (TCP_NODELAY) failed\n")
+                post("setsockopt (TCP_NODELAY) failed")
 #endif
                     ;
 
@@ -1470,7 +1470,7 @@ void sys_setrealtime(const char *libdir)
 
         err = pthread_setschedparam(pthread_self(), policy, &param);
         if (err)
-            post("warning: high priority scheduling failed\n");
+            post("warning: high priority scheduling failed");
     }
 #endif /* __APPLE__ */
 }

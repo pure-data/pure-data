@@ -61,6 +61,8 @@ typedef struct _netreceive
 
 static void netreceive_notify(t_netreceive *x, int fd);
 
+/* ----------------------------- netsend ------------------------- */
+
 static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_netsend *x = (t_netsend *)pd_new(netsend_class);
@@ -167,7 +169,7 @@ static void netsend_readbin(t_netsend *x, int fd)
     }
 }
 
-static void netsend_doit(void *z, t_binbuf *b)
+static void netsend_read(void *z, t_binbuf *b)
 {
     t_netsend *x = (t_netsend *)z;
     int msg, natom = binbuf_getnatom(b);
@@ -258,12 +260,12 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         sys_sockerror("socket");
         return;
     }
-  /* connect socket using hostname provided in command line */
+    /* connect socket using hostname provided in command line */
     server.sin_family = AF_INET;
     hp = gethostbyname(hostname->s_name);
     if (hp == 0)
     {
-        post("bad host?\n");
+        post("bad host?");
         sys_closesocket(sockfd);
         return;
     }
@@ -271,7 +273,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     intarg = 0;
     if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
                  &intarg, sizeof(intarg)) < 0)
-    post("setsockopt (SO_RCVBUF) failed\n");
+    post("setsockopt (SO_RCVBUF) failed");
 #endif
     intarg = 1;
     if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
@@ -283,7 +285,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         intarg = 1;
         if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,
                        (char *)&intarg, sizeof(intarg)) < 0)
-            post("setsockopt (TCP_NODELAY) failed\n");
+            post("setsockopt (TCP_NODELAY) failed");
     }
     memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
 
@@ -324,7 +326,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         else
         {
             t_socketreceiver *y =
-              socketreceiver_new((void *)x, 0, netsend_doit,
+              socketreceiver_new((void *)x, 0, netsend_read,
                                  x->x_protocol == SOCK_DGRAM);
             if (x->x_protocol == SOCK_DGRAM)
                 socketreceiver_set_udpfns(y, NULL,
@@ -453,6 +455,7 @@ static void netsend_setup(void)
 }
 
 /* ----------------------------- netreceive ------------------------- */
+
 static void netreceive_notify(t_netreceive *x, int fd)
 {
     int i;
@@ -508,7 +511,7 @@ static void netreceive_connectpoll(t_netreceive *x)
         {
             t_socketreceiver *y = socketreceiver_new((void *)x,
             (t_socketnotifier)netreceive_notify,
-                (x->x_ns.x_msgout ? netsend_doit : 0), 0);
+                (x->x_ns.x_msgout ? netsend_read : 0), 0);
             sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receivers[x->x_nconnections] = y;
         }
@@ -582,13 +585,13 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
     intarg = 1;
     if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_REUSEADDR,
         (char *)&intarg, sizeof(intarg)) < 0)
-            post("netreceive: setsockopt (SO_REUSEADDR) failed\n");
+            post("netreceive: setsockopt (SO_REUSEADDR) failed");
 #endif
 #if 0
     intarg = 0;
     if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_RCVBUF,
         &intarg, sizeof(intarg)) < 0)
-            post("setsockopt (SO_RCVBUF) failed\n");
+            post("setsockopt (SO_RCVBUF) failed");
 #endif
     intarg = 1;
     if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_BROADCAST,
@@ -600,7 +603,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         intarg = 1;
         if (setsockopt(x->x_ns.x_sockfd, IPPROTO_TCP, TCP_NODELAY,
             (char *)&intarg, sizeof(intarg)) < 0)
-                post("setsockopt (TCP_NODELAY) failed\n");
+                post("setsockopt (TCP_NODELAY) failed");
     }
         /* assign server port number etc */
     server.sin_family = AF_INET;
@@ -616,7 +619,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         return;
     }
 
-    if (x->x_ns.x_protocol == SOCK_DGRAM)        /* datagram protocol */
+    if (x->x_ns.x_protocol == SOCK_DGRAM) /* datagram protocol */
     {
         if (x->x_ns.x_bin)
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)netsend_readbin, x);
@@ -624,7 +627,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         {
             t_socketreceiver *y = socketreceiver_new((void *)x,
                 (t_socketnotifier)netreceive_notify,
-                    (x->x_ns.x_msgout ? netsend_doit : 0), 1);
+                    (x->x_ns.x_msgout ? netsend_read : 0), 1);
             if (x->x_ns.x_protocol == SOCK_DGRAM)
                 socketreceiver_set_udpfns(y,
                     (t_socketreceiveaddrfn)netsend_fromaddr,
@@ -634,7 +637,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
             x->x_ns.x_receiver = y;
         }
     }
-    else        /* streaming protocol */
+    else /* streaming protocol */
     {
         if (listen(x->x_ns.x_sockfd, 5) < 0)
         {
