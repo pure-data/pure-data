@@ -142,6 +142,7 @@ struct _instanceinter
 extern int sys_guisetportnumber;
 extern int sys_addhist(int phase);
 void sys_set_searchpath(void);
+void sys_set_temppath(void);
 void sys_set_extrapath(void);
 void sys_set_startup(void);
 void sys_stopgui( void);
@@ -1153,19 +1154,26 @@ static int sys_do_startgui(const char *libdir)
                 sprintf(cmdbuf, "\"%s\" %d\n", glob_buffer.gl_pathv[0], portno);
             else
             {
+                int wish_paths_count = sizeof(wish_paths)/sizeof(*wish_paths);
                 #ifdef WISH
                     wish_paths[0] = WISH;
                 #endif
                 sprintf(home_filename,
                         "%s/Applications/Wish.app/Contents/MacOS/Wish",homedir);
                 wish_paths[1] = home_filename;
-                for(i=0; i<11; i++)
+                for(i=0; i<wish_paths_count; i++)
                 {
                     if (sys_verbose)
                         fprintf(stderr, "Trying Wish at \"%s\"\n",
                             wish_paths[i]);
                     if (stat(wish_paths[i], &statbuf) >= 0)
                         break;
+                }
+                if(i>=wish_paths_count)
+                {
+                    fprintf(stderr, "sys_startgui couldn't find tcl/tk\n");
+                    sys_closesocket(xsock);
+                    return (1);
                 }
                 sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
                         wish_paths[i], libdir, PDGUIDIR, portno);
@@ -1278,6 +1286,7 @@ static int sys_do_startgui(const char *libdir)
     sys_get_audio_apis(apibuf);
     sys_get_midi_apis(apibuf2);
     sys_set_searchpath();     /* tell GUI about path and startup flags */
+    sys_set_temppath();
     sys_set_extrapath();
     sys_set_startup();
                        /* ... and about font, medio APIS, etc */
@@ -1412,7 +1421,7 @@ void sys_bail(int n)
         reentered = 1;
 #if !defined(__linux__) && !defined(__FreeBSD_kernel__) && !defined(__GNU__)
             /* sys_close_audio() hangs if you're in a signal? */
-        fprintf(stderr ,"gui socket %d - ", pd_this->pd_inter->i_guisock);
+        fprintf(stderr ,"gui socket %d - \n", pd_this->pd_inter->i_guisock);
         fprintf(stderr, "closing audio...\n");
         sys_close_audio();
         fprintf(stderr, "closing MIDI...\n");
@@ -1504,9 +1513,21 @@ void s_inter_newpdinstance( void)
     pd_this->pd_inter->i_havegui = 0;
 }
 
+void s_inter_free(t_instanceinter *inter)
+{
+    if (inter->i_fdpoll) {
+        binbuf_free(inter->i_inbinbuf);
+        inter->i_inbinbuf = 0;
+        t_freebytes(inter->i_fdpoll, inter->i_nfdpoll * sizeof(t_fdpoll));
+        inter->i_fdpoll = 0;
+        inter->i_nfdpoll = 0;
+    }
+    freebytes(inter, sizeof(*inter));
+}
+
 void s_inter_freepdinstance( void)
 {
-    freebytes(pd_this->pd_inter, sizeof(*pd_this->pd_inter));
+    s_inter_free(pd_this->pd_inter);
 }
 
 #if PDTHREADS

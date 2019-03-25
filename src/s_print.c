@@ -158,7 +158,7 @@ void poststring(const char *s)
     dopost(s);
 }
 
-void postatom(int argc, t_atom *argv)
+void postatom(int argc, const t_atom *argv)
 {
     int i;
     for (i = 0; i < argc; i++)
@@ -224,11 +224,11 @@ void verbose(int level, const char *fmt, ...)
     offending or offended object around so the user can search for it
     later. */
 
-static void *error_object;
+static const void *error_object;
 static char error_string[256];
-void canvas_finderror(void *object);
+void canvas_finderror(const void *object);
 
-void pd_error(void *object, const char *fmt, ...)
+void pd_error(const void *object, const char *fmt, ...)
 {
     char buf[MAXPDSTRING];
     va_list ap;

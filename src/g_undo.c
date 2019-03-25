@@ -150,7 +150,7 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
             /* undo sequences are handled in canvas_undo_undo resp canvas_undo_redo */
     case UNDO_SEQUENCE_START: return 1;                                            //start undo sequence
     case UNDO_SEQUENCE_END: return 1;                                              //end undo sequence
-    case UNDO_INIT:         if (UNDO_FREE == action) return 1;                     //init
+    case UNDO_INIT:         if (UNDO_FREE == action) return 1;/* FALLS THROUGH */  //init
     default:
         error("%s: unsupported undo command %d", funname, udo->type);
     }
@@ -160,8 +160,10 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
 void canvas_undo_undo(t_canvas *x)
 {
     t_undo *udo = canvas_undo_get(x);
+    int dspwas;
+
     if (!udo) return;
-    int dspwas = canvas_suspend_dsp();
+    dspwas = canvas_suspend_dsp();
     DEBUG_UNDO(post("%s: %p != %p", __FUNCTION__, udo->u_queue, udo->u_last));
     if (udo->u_queue && udo->u_last != udo->u_queue)
     {
@@ -199,9 +201,10 @@ void canvas_undo_undo(t_canvas *x)
 
         if(canvas_undo_doit(x, udo->u_last, UNDO_UNDO, __FUNCTION__))
         {
+            char *undo_action, *redo_action;
             udo->u_last = udo->u_last->prev;
-            char *undo_action = udo->u_last->name;
-            char *redo_action = udo->u_last->next->name;
+            undo_action = udo->u_last->name;
+            redo_action = udo->u_last->next->name;
 
             udo->u_doing = 0;
                 /* here we call updating of all unpaired hubs and nodes since

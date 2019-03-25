@@ -208,11 +208,15 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     {
         if (alsa_snd_bufsize < bufsizeforthis)
         {
-            if (!(alsa_snd_buf = realloc(alsa_snd_buf, bufsizeforthis)))
+            char *tmp_snd_buf = realloc(alsa_snd_buf, bufsizeforthis);
+            if (!tmp_snd_buf)
             {
+                free(alsa_snd_buf);
+                alsa_snd_buf=0;
                 post("out of memory");
                 return (-1);
             }
+            alsa_snd_buf = tmp_snd_buf;
             memset(alsa_snd_buf, 0, bufsizeforthis);
             alsa_snd_bufsize = bufsizeforthis;
         }
@@ -891,15 +895,15 @@ static void alsa_checkiosync( void)
 }
 
 static int alsa_nnames = 0;
-static char **alsa_names = 0;
+static const char **alsa_names = 0;
 
 void alsa_adddev(char *name)
 {
     if (alsa_nnames)
-        alsa_names = (char **)t_resizebytes(alsa_names,
-            alsa_nnames * sizeof(char *),
-            (alsa_nnames+1) * sizeof(char *));
-    else alsa_names = (char **)t_getbytes(sizeof(char *));
+        alsa_names = (const char **)t_resizebytes(alsa_names,
+            alsa_nnames * sizeof(const char *),
+            (alsa_nnames+1) * sizeof(const char *));
+    else alsa_names = (const char **)t_getbytes(sizeof(const char *));
     alsa_names[alsa_nnames] = gensym(name)->s_name;
     alsa_nnames++;
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: pa_process.c 1913 2013-11-18 11:42:27Z gineera $
+ * $Id$
  * Portable Audio I/O Library
  * streamCallback <-> host buffer processing adapter
  *
@@ -744,7 +744,7 @@ static unsigned long NonAdaptingProcess( PaUtilBufferProcessor *bp,
                     destChannelStrideBytes = bp->bytesPerUserInputSample;
 
                     /* process host buffer directly, or use temp buffer if formats differ or host buffer non-interleaved,
-                     * or if the number of channels differs between the host (set in stride) and the user */
+                     * or if num channels differs between the host (set in stride) and the user (eg with some Alsa hw:) */
                     if( bp->userInputSampleFormatIsEqualToHost && bp->hostInputIsInterleaved
                         && bp->hostInputChannels[0][0].data && bp->inputChannelCount == hostInputChannels[0].stride )
                     {
@@ -834,8 +834,10 @@ static unsigned long NonAdaptingProcess( PaUtilBufferProcessor *bp,
             {
                 if( bp->userOutputIsInterleaved )
                 {
-                    /* process host buffer directly, or use temp buffer if formats differ or host buffer non-interleaved */
-                    if( bp->userOutputSampleFormatIsEqualToHost && bp->hostOutputIsInterleaved )
+                    /* process host buffer directly, or use temp buffer if formats differ or host buffer non-interleaved,
+                     * or if num channels differs between the host (set in stride) and the user (eg with some Alsa hw:) */
+                    if( bp->userOutputSampleFormatIsEqualToHost && bp->hostOutputIsInterleaved
+                          && bp->outputChannelCount == hostOutputChannels[0].stride )
                     {
                         userOutput = hostOutputChannels[0].data;
                         skipOutputConvert = 1;

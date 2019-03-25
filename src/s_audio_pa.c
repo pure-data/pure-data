@@ -49,10 +49,6 @@
 #define FAKEBLOCKING
 #endif
 
-#if defined (FAKEBLOCKING) && defined(_WIN32)
-#include <windows.h>    /* for Sleep() */
-#endif
-
 /* define this to enable thread signaling instead of polling */
 /* #define THREADSIGNAL */
 
@@ -79,8 +75,25 @@ static PA_VOLATILE char *pa_inbuf;
 static PA_VOLATILE sys_ringbuf pa_inring;
 #ifdef THREADSIGNAL
 #include <pthread.h>
-pthread_mutex_t pa_mutex;
-pthread_cond_t pa_sem;
+#ifdef _WIN32
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
+#endif
+/* maximum time (in ms) to wait for the condition variable. */
+#ifndef THREADSIGNAL_TIMEOUT
+#define THREADSIGNAL_TIMEOUT 1000
+#endif
+static pthread_mutex_t pa_mutex;
+static pthread_cond_t pa_sem;
+#else /* THREADSIGNAL */
+#if defined (FAKEBLOCKING) && defined(_WIN32)
+#include <windows.h>    /* for Sleep() */
+#endif
+/* max number of unsuccessful polls before trying to reopen the device */
+#ifndef MAX_NUM_POLLS
+#define MAX_NUM_POLLS 2000
+#endif
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
 
@@ -404,6 +417,10 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
         free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
         free((char *)pa_outbuf), pa_outbuf = 0;
+#ifdef THREADSIGNAL
+    pthread_mutex_init(&pa_mutex, 0);
+    pthread_cond_init(&pa_sem, 0);
+#endif
 #endif
 
     if (! inchans && !outchans)
@@ -442,7 +459,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     pa_nbuffers = nbuffers;
     if ( err != paNoError )
     {
-        post("Error opening audio: %s", Pa_GetErrorText(err));
+        error("error opening audio: %s", Pa_GetErrorText(err));
         /* Pa_Terminate(); */
         return (1);
     }
@@ -464,6 +481,10 @@ void pa_close_audio( void)
         free((char *)pa_inbuf), pa_inbuf = 0;
     if (pa_outbuf)
         free((char *)pa_outbuf), pa_outbuf = 0;
+#ifdef THREADSIGNAL
+    pthread_mutex_destroy(&pa_mutex);
+    pthread_cond_destroy(&pa_sem);
+#endif
 #endif
 }
 
@@ -474,7 +495,27 @@ int pa_send_dacs(void)
     float *conversionbuf;
     int j, k;
     int rtnval =  SENDDACS_YES;
-#ifndef FAKEBLOCKING
+    int locked = 0;
+#ifdef FAKEBLOCKING
+#ifdef THREADSIGNAL
+    struct timespec ts;
+    double timeout;
+#ifdef _WIN32
+    struct __timeb64 tb;
+    _ftime64(&tb);
+    timeout = (double)tb.time + tb.millitm * 0.001;
+#else
+    struct timeval now;
+    gettimeofday(&now, 0);
+    timeout = (double)now.tv_sec + (1./1000000.) * now.tv_usec;
+#endif
+    timeout += THREADSIGNAL_TIMEOUT * 0.001;
+    ts.tv_sec = (long long)timeout;
+    ts.tv_nsec = (timeout - (double)ts.tv_sec) * 1e9;
+#else
+    int counter = MAX_NUM_POLLS;
+#endif /* THREADSIGNAL */
+#else
     double timebefore;
 #endif /* FAKEBLOCKING */
     if ((!STUFF->st_inchannels && !STUFF->st_outchannels) || !pa_stream)
@@ -493,8 +534,19 @@ int pa_send_dacs(void)
         {
             rtnval = SENDDACS_SLEPT;
 #ifdef THREADSIGNAL
-            pthread_cond_wait(&pa_sem, &pa_mutex);
+            if (pthread_cond_timedwait(&pa_sem, &pa_mutex, &ts) == ETIMEDOUT)
+            {
+                locked = 1;
+                break;
+            }
 #else
+            if (Pa_IsStreamActive(&pa_stream) < 0)
+                counter--;
+            if (!counter)
+            {
+                locked = 1;
+                break;
+            }
 #ifdef _WIN32
             Sleep(1);
 #else
@@ -507,7 +559,7 @@ int pa_send_dacs(void)
 #endif
     }
         /* write output */
-    if (STUFF->st_outchannels)
+    if (STUFF->st_outchannels && !locked)
     {
         for (j = 0, fp = STUFF->st_soundout, fp2 = conversionbuf;
             j < STUFF->st_outchannels; j++, fp2++)
@@ -527,8 +579,19 @@ int pa_send_dacs(void)
         {
             rtnval = SENDDACS_SLEPT;
 #ifdef THREADSIGNAL
-            pthread_cond_wait(&pa_sem, &pa_mutex);
+            if (pthread_cond_timedwait(&pa_sem, &pa_mutex, &ts) == ETIMEDOUT)
+            {
+                locked = 1;
+                break;
+            }
 #else
+            if (Pa_IsStreamActive(&pa_stream) < 0)
+                counter--;
+            if (!counter)
+            {
+                locked = 1;
+                break;
+            }
 #ifdef _WIN32
             Sleep(1);
 #else
@@ -540,7 +603,7 @@ int pa_send_dacs(void)
         pthread_mutex_unlock(&pa_mutex);
 #endif
     }
-    if (STUFF->st_inchannels)
+    if (STUFF->st_inchannels && !locked)
     {
         sys_ringbuf_read(&pa_inring, conversionbuf,
             STUFF->st_inchannels*(DEFDACBLKSIZE*sizeof(float)), pa_inbuf);
@@ -568,12 +631,16 @@ int pa_send_dacs(void)
                 for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
                     k++, fp++, fp3 += STUFF->st_outchannels)
                         *fp3 = *fp;
-        Pa_WriteStream(pa_stream, conversionbuf, DEFDACBLKSIZE);
+        if (Pa_WriteStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
+            if (Pa_IsStreamActive(&pa_stream) < 0)
+                locked = 1;
     }
 
     if (STUFF->st_inchannels)
     {
-        Pa_ReadStream(pa_stream, conversionbuf, DEFDACBLKSIZE);
+        if (Pa_ReadStream(pa_stream, conversionbuf, DEFDACBLKSIZE) != paNoError)
+            if (Pa_IsStreamActive(&pa_stream) < 0)
+                locked = 1;
         for (j = 0, fp = STUFF->st_soundin, fp2 = conversionbuf;
             j < STUFF->st_inchannels; j++, fp2++)
                 for (k = 0, fp3 = fp2; k < DEFDACBLKSIZE;
@@ -589,7 +656,31 @@ int pa_send_dacs(void)
 
     memset(STUFF->st_soundout, 0,
         DEFDACBLKSIZE*sizeof(t_sample)*STUFF->st_outchannels);
-    return (rtnval);
+    if (locked)
+    {
+        PaError err = Pa_IsStreamActive(&pa_stream);
+        error("error %d: %s", err, Pa_GetErrorText(err));
+        sys_close_audio();
+        #ifdef __APPLE__
+            /* TODO: the portaudio coreaudio implementation doesn't handle
+               re-connection, so suggest restarting */
+            error("audio device not responding - closing audio");
+            error("you may need to save and restart pd");
+        #else
+            /* portaudio seems to handle this better on windows and linux */
+            error("trying to reopen audio device");
+            sys_reopen_audio(); /* try to reopen it */
+            if (audio_isopen())
+                error("successfully reopened audio device");
+            else
+                error("audio device not responding - closing audio");
+            #ifdef _WIN32
+                error("reconnect and try reselecting the device in the settings");
+            #endif
+        #endif
+        return SENDDACS_NO;
+    } else
+        return (rtnval);
 }
 
     /* scanning for devices */

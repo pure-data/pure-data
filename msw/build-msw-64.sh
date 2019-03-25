@@ -1,7 +1,7 @@
 #!/bin/sh
 #usage: ./build-msw-64.sh 0.38-0 or 0.38-0test4
 
-if test x$1 == x
+if test x$1 = x
 then
    echo usage: ./build-msw-64.sh 0.38-0 or 0.38-0test4
    exit 1
