@@ -1085,6 +1085,11 @@ int sys_audiodevnametonumber(int output, const char *name)
 
     if (output)
     {
+            /* try first for exact match */
+        for (i = 0; i < noutdevs; i++)
+            if (!strcmp(name, outdevlist + i * DEVDESCSIZE))
+                return (i);
+            /* failing that, a match up to end of shorter string */
         for (i = 0; i < noutdevs; i++)
         {
             unsigned long comp = strlen(name);
@@ -1096,6 +1101,9 @@ int sys_audiodevnametonumber(int output, const char *name)
     }
     else
     {
+        for (i = 0; i < nindevs; i++)
+            if (!strcmp(name, indevlist + i * DEVDESCSIZE))
+                return (i);
         for (i = 0; i < nindevs; i++)
         {
             unsigned long comp = strlen(name);
