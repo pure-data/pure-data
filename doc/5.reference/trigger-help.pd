@@ -1,4 +1,4 @@
-#N canvas 709 39 666 520 12;
+#N canvas 724 40 666 520 12;
 #X msg 28 149 2.5;
 #X msg 126 151 bang;
 #X msg 68 150 23 64;
@@ -23,16 +23,19 @@ is also a "pointer" argument type (see the pointer object.);
 #X text 464 122 "anythings" can only;
 #X text 461 142 be converted to bang:;
 #X msg 265 153 list a b c;
-#X text 402 442 updated for Pd version 0.50.;
-#X text 53 341 You can also use other creation arguments that are not
-message types. This way trigger outputs the creation argument (a float
-or a symbol) to the corresponding outlet without being affected by
-the input message., f 71;
-#X symbolatom 280 471 10 0 0 0 - - -;
-#X floatatom 215 470 5 0 0 0 - - -;
-#X obj 150 438 trigger float 10 pd;
-#X floatatom 150 470 5 0 0 0 - - -;
-#X floatatom 150 410 5 0 0 0 - - -;
+#X text 443 415 updated for Pd version 0.50.;
+#X symbolatom 370 468 10 0 0 0 - - -;
+#X floatatom 305 468 5 0 0 0 - - -;
+#X obj 240 440 trigger float 10 pd;
+#X floatatom 240 467 5 0 0 0 - - -;
+#X floatatom 240 414 5 0 0 0 - - -;
+#X obj 91 441 trigger 1 2;
+#X floatatom 91 468 5 0 0 0 - - -;
+#X floatatom 165 468 5 0 0 0 - - -;
+#X obj 91 414 loadbang;
+#X text 53 339 You can also use other creation arguments that are not
+message types. These are then treated as constant values (a float or
+a symbol) \, and can be useful to sequence messages., f 63;
 #X connect 0 0 18 0;
 #X connect 1 0 18 0;
 #X connect 2 0 18 0;
@@ -46,7 +49,10 @@ the input message., f 71;
 #X connect 18 3 7 0;
 #X connect 18 4 15 0;
 #X connect 21 0 18 0;
-#X connect 26 0 27 0;
-#X connect 26 1 25 0;
-#X connect 26 2 24 0;
-#X connect 28 0 26 0;
+#X connect 25 0 26 0;
+#X connect 25 1 24 0;
+#X connect 25 2 23 0;
+#X connect 27 0 25 0;
+#X connect 28 0 29 0;
+#X connect 28 1 30 0;
+#X connect 31 0 28 0;
