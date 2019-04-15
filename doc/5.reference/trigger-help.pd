@@ -10,9 +10,6 @@
 #X text 113 30 - sequence messages in right-to-left order;
 #X text 55 300 the above can be abbreviated as:;
 #X msg 183 150 symbol dog;
-#X text 38 62 The trigger object outputs its input from right to left
-\, converting to the types indicated by its creation arguments. There
-is also a "pointer" argument type (see the pointer object.);
 #X obj 288 300 t f b s l a;
 #X obj 407 243 print x5;
 #X obj 137 203 trigger float bang symbol list anything;
@@ -31,21 +28,25 @@ is also a "pointer" argument type (see the pointer object.);
 message types. These are then treated as constant values (a float or
 a symbol) \, and can be useful to sequence messages., f 63;
 #X msg 363 150 dog my cats;
-#X connect 0 0 14 0;
-#X connect 1 0 14 0;
-#X connect 2 0 14 0;
-#X connect 10 0 14 0;
-#X connect 14 0 3 0;
-#X connect 14 1 4 0;
-#X connect 14 2 5 0;
-#X connect 14 3 7 0;
-#X connect 14 4 13 0;
-#X connect 15 0 14 0;
-#X connect 19 0 20 0;
-#X connect 19 1 18 0;
-#X connect 19 2 17 0;
-#X connect 21 0 19 0;
-#X connect 22 0 23 0;
-#X connect 22 1 24 0;
-#X connect 25 0 22 0;
-#X connect 27 0 14 0;
+#X text 38 62 The trigger object outputs its input from right to left
+\, converting to the types indicated by its creation arguments. There
+is also a "pointer" argument type (see the pointer object.) - the default
+is [trigger bang bang].;
+#X connect 0 0 13 0;
+#X connect 1 0 13 0;
+#X connect 2 0 13 0;
+#X connect 10 0 13 0;
+#X connect 13 0 3 0;
+#X connect 13 1 4 0;
+#X connect 13 2 5 0;
+#X connect 13 3 7 0;
+#X connect 13 4 12 0;
+#X connect 14 0 13 0;
+#X connect 18 0 19 0;
+#X connect 18 1 17 0;
+#X connect 18 2 16 0;
+#X connect 20 0 18 0;
+#X connect 21 0 22 0;
+#X connect 21 1 23 0;
+#X connect 24 0 21 0;
+#X connect 26 0 13 0;
