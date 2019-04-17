@@ -801,14 +801,13 @@ static void canvas_drawlines(t_canvas *x)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    int yoffset = x->gl_zoom; /* slight offset to hide thick line corners */
     {
         linetraverser_start(&t, x);
         while ((oc = linetraverser_next(&t)))
             sys_vgui(
         ".x%lx.c create line %d %d %d %d -width %d -tags [list l%lx cord]\n",
                 glist_getcanvas(x),
-                t.tr_lx1, t.tr_ly1 - yoffset, t.tr_lx2, t.tr_ly2 + yoffset,
+                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2,
                 (outlet_getsymbol(t.tr_outlet) == &s_signal ? 2:1) * x->gl_zoom,
                 oc);
     }
@@ -818,7 +817,6 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    int yoffset = x->gl_zoom; /* slight offset to hide thick line corners */
     
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
@@ -827,7 +825,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
         {
             sys_vgui(".x%lx.c coords l%lx %d %d %d %d\n",
                 glist_getcanvas(x), oc,
-                t.tr_lx1, t.tr_ly1 - yoffset, t.tr_lx2, t.tr_ly2 + yoffset);
+                t.tr_lx1, t.tr_ly1, t.tr_lx2, t.tr_ly2);
         }
     }
 }
