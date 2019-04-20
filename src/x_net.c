@@ -12,9 +12,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #ifdef _WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <iphlpapi.h>
+#include <winsock.h>
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -30,6 +28,20 @@
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
+#endif
+
+/* Windows XP winsock doesn't provide inet_ntop */
+#ifdef _WIN32
+const char* inet_ntop(int af, const void* src, char* dst, int cnt) {
+    struct sockaddr_in srcaddr;
+    memset(&srcaddr, 0, sizeof(struct sockaddr_in));
+    memcpy(&(srcaddr.sin_addr), src, sizeof(srcaddr.sin_addr));
+    srcaddr.sin_family = af;
+    if(WSAAddressToString((struct sockaddr*) &srcaddr,
+        sizeof(struct sockaddr_in), 0, dst, (LPDWORD) &cnt) != 0)
+        return NULL;
+    return dst;
+}
 #endif
 
 void socketreceiver_free(t_socketreceiver *x);
