@@ -12,7 +12,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #ifdef _WIN32
-#include <winsock.h>
+#include <winsock2.h>
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -30,7 +30,6 @@
 # include <stdlib.h> /* BSDs for example */
 #endif
 
-/* Windows XP winsock doesn't provide inet_ntop */
 #ifdef _WIN32
 const char* inet_ntop(int af, const void* src, char* dst, int cnt) {
     struct sockaddr_in srcaddr;
