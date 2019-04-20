@@ -12,7 +12,9 @@
 #include <errno.h>
 #include <stdlib.h>
 #ifdef _WIN32
-#include <winsock.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <iphlpapi.h>
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>
