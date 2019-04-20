@@ -524,9 +524,9 @@ static int socketreceiver_doread(t_socketreceiver *x)
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
-    socklen_t fromaddrlen = (x->sr_fromaddr ? sizeof(struct sockaddr) : 0);
+    socklen_t fromaddrlen = sizeof(struct sockaddr);
     int ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
-        (struct sockaddr *)x->sr_fromaddr, &fromaddrlen);
+        (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
     if (ret < 0)
     {
         sys_sockerror("recv (udp)");
