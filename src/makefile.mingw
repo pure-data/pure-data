@@ -53,7 +53,7 @@ INCLUDE = -I$(pd_src)/src
 GINCLUDE = -I/usr/local/include $(INCLUDE)
 
 LDFLAGS = 
-LIBS = -lm -lwsock32 -lwinmm -lole32 -lpthread \
+LIBS = -lm -lws2_32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
 OPT_CFLAGS = 
