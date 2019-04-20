@@ -524,7 +524,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
-    socklen_t fromaddrlen = sizeof(struct sockaddr);
+    socklen_t fromaddrlen = (x->sr_fromaddr ? sizeof(struct sockaddr) : 0);
     int ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
         (struct sockaddr *)x->sr_fromaddr, &fromaddrlen);
     if (ret < 0)
