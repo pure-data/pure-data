@@ -304,8 +304,8 @@ endif
 ##### Windows #####
 if WINDOWS
 
-# win32 sockets, multimedia, and all that
-LIBS += -lwsock32 -lwinmm -lole32 -static-libgcc -static-libstdc++
+# win32 sockets 2, multimedia, and all that
+LIBS += -lws2_32 -lwinmm -lole32 -static-libgcc -static-libstdc++
 
 bin_SCRIPTS += pd.dll pd.lib pd.def pd.com
 CLEANFILES += pd.dll pd.lib pd.def pd.com
