@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #ifdef _WIN32
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -30,8 +31,9 @@
 # include <stdlib.h> /* BSDs for example */
 #endif
 
+/* Windows XP winsock doesn't provide inet_ntop */
 #ifdef _WIN32
-const char* inet_ntop(int af, const void* src, char* dst, int cnt) {
+const char* INET_NTOP(int af, const void* src, char* dst, int cnt) {
     struct sockaddr_in srcaddr;
     memset(&srcaddr, 0, sizeof(struct sockaddr_in));
     memcpy(&(srcaddr.sin_addr), src, sizeof(srcaddr.sin_addr));
@@ -41,6 +43,8 @@ const char* inet_ntop(int af, const void* src, char* dst, int cnt) {
         return NULL;
     return dst;
 }
+#else
+#define INET_NTOP inet_ntop
 #endif
 
 void socketreceiver_free(t_socketreceiver *x);
@@ -723,7 +727,7 @@ static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
     struct sockaddr_in *addr = (struct sockaddr_in *)sa;
     char addrstr[INET6_ADDRSTRLEN];
     addrstr[0] = '\0';
-    if(inet_ntop(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
+    if(INET_NTOP(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
         outlet_symbol(o, gensym(addrstr));
 }
 
