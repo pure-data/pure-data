@@ -171,18 +171,14 @@ EXTERN_STRUCT _socketreceiver;
 
 typedef void (*t_socketnotifier)(void *x, int n);
 typedef void (*t_socketreceivefn)(void *x, t_binbuf *b);
-    /* send UDP from addr str to owner */
-typedef void (*t_socketreceiveaddrfn)(void *x, const char *fromaddrstr);
-    /* query owner if UDP socket should stay open after connection refused */
-typedef int (*t_socketkeepalivefn)(void *x);
+    /* UDP recvfrom sockaddr, optional */
+typedef void (*t_socketfromaddrfn)(void *x, const void *fromaddr);
 
 EXTERN t_socketreceiver *socketreceiver_new(void *owner,
     t_socketnotifier notifier, t_socketreceivefn socketreceivefn, int udp);
 EXTERN void socketreceiver_read(t_socketreceiver *x, int fd);
-    /* set additional UDP-only callbacks */
-EXTERN void socketreceiver_set_udpfns(t_socketreceiver *x,
-    t_socketreceiveaddrfn socketreceiveaddrfn,
-    t_socketkeepalivefn socketkeepalivefn);
+EXTERN void socketreceiver_set_fromaddrfn(t_socketreceiver *x, /* UDP only */
+    t_socketfromaddrfn fromaddrfn);
 EXTERN int sys_sockerrno();
 EXTERN void sys_sockerror(char *s);
 EXTERN void sys_closesocket(int fd);

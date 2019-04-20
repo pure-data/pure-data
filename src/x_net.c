@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <errno.h>
+#include <stdlib.h>
 #ifdef _WIN32
 #include <winsock.h>
 #else
@@ -19,7 +20,6 @@
 #include <netinet/tcp.h>
 #include <netdb.h>
 #include <stdio.h>
-#define SOCKET_ERROR -1
 #endif
 
 #ifdef _WIN32
@@ -43,8 +43,8 @@ typedef struct _netsend
     int x_sockfd;
     int x_protocol;
     int x_bin;
-    int x_keepalive; /* UDP only */
     t_socketreceiver *x_receiver;
+    struct sockaddr_in x_server;
 } t_netsend;
 
 static t_class *netreceive_class;
@@ -60,6 +60,7 @@ typedef struct _netreceive
 } t_netreceive;
 
 static void netreceive_notify(t_netreceive *x, int fd);
+static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa);
 
 /* ----------------------------- netsend ------------------------- */
 
@@ -69,7 +70,6 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     outlet_new(&x->x_obj, &s_float);
     x->x_protocol = SOCK_STREAM;
     x->x_bin = 0;
-    x->x_keepalive = 0;
     if (argc && argv->a_type == A_FLOAT)
     {
         x->x_protocol = (argv->a_w.w_float != 0 ? SOCK_DGRAM : SOCK_STREAM);
@@ -82,11 +82,6 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
             x->x_bin = 1;
         else if (!strcmp(argv->a_w.w_symbol->s_name, "-u"))
             x->x_protocol = SOCK_DGRAM;
-        else if (!strcmp(argv->a_w.w_symbol->s_name, "-k"))
-        {
-            if(x->x_protocol == SOCK_DGRAM)
-                x->x_keepalive = 1;
-        }
         else
         {
             pd_error(x, "netsend: unknown flag ...");
@@ -102,6 +97,9 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     x->x_sockfd = -1;
     x->x_receiver = NULL;
     x->x_msgout = outlet_new(&x->x_obj, &s_anything);
+    x->x_connectout = NULL;
+    x->x_fromout = NULL;
+    memset(&x->x_server, 0, sizeof(struct sockaddr_in));
     return (x);
 }
 
@@ -116,7 +114,7 @@ static void netsend_readbin(t_netsend *x, int fd)
         bug("netsend_readbin");
         return;
     }
-    if (x->x_fromout)
+    if (x->x_protocol == SOCK_DGRAM)
         ret = (int)recvfrom(fd, inbuf, MAXPDSTRING, 0,
             (struct sockaddr *)&fromaddr, &fromaddrlen);
     else
@@ -124,17 +122,7 @@ static void netsend_readbin(t_netsend *x, int fd)
     if (ret <= 0)
     {
         if (ret < 0)
-        {
-            /* keep UDP socket alive */
-            if (sys_sockerrno() == ECONNREFUSED && x->x_keepalive)
-            {
-#if 0
-                post("netsend_readbin: caught connect refused");
-#endif
-                return;
-            }
             sys_sockerror("recv (bin)");
-        }
         sys_rmpollfn(fd);
         sys_closesocket(fd);
         if (x->x_obj.ob_pd == netreceive_class)
@@ -143,20 +131,8 @@ static void netsend_readbin(t_netsend *x, int fd)
     }
     if (x->x_protocol == SOCK_DGRAM)
     {
-            /* output from addr for each UDP message */
         if (x->x_fromout)
-        {
-            char fromaddrstr[INET6_ADDRSTRLEN];
-            fromaddrstr[0] = '\0';
-            if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr, fromaddrstr,
-                INET6_ADDRSTRLEN))
-            {
-                outlet_symbol(x->x_fromout, gensym(fromaddrstr));
-#if 0
-                post("netsend_readbin recvfrom %s", fromaddrstr);
-#endif
-            }
-        }
+            outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
         t_atom *ap = (t_atom *)alloca(ret * sizeof(t_atom));
         for (i = 0; i < ret; i++)
             SETFLOAT(ap+i, inbuf[i]);
@@ -204,40 +180,20 @@ static void netsend_read(void *z, t_binbuf *b)
     }
 }
 
-    /* return keep alive setting to socketreceiver */
-static int netsend_keepalive(void *z)
-{
-    t_netsend *x = (t_netsend *)z;
-    return x->x_keepalive;
-}
-
-    /* UDP from addr str provided by socketreiver */
-static void netsend_fromaddr(void *z, const char *fromaddrstr)
-{
-    t_netsend *x = (t_netsend *)z;
-    if(x->x_fromout && fromaddrstr)
-    {
-        outlet_symbol(x->x_fromout, gensym(fromaddrstr));
-#if 0
-        post("netsend_fromaddr %s", fromaddrstr);
-#endif
-    }
-}
-
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *hostname;
     int fportno, sportno, sockfd, portno, intarg;
-    struct sockaddr_in server = {0};
     struct sockaddr_in srcaddr = {0};
     struct hostent *hp;
+
     /* check argument types */
     if ((argc < 2) ||
         argv[0].a_type != A_SYMBOL ||
         argv[1].a_type != A_FLOAT ||
         ((argc > 2) && argv[2].a_type != A_FLOAT))
     {
-        error("netsend_connect: bad arguments");
+        error("netsend: bad connect arguments");
         return;
     }
     hostname = argv[0].a_w.w_symbol;
@@ -246,7 +202,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     portno = fportno;
     if (x->x_sockfd >= 0)
     {
-        error("netsend_connect: already connected");
+        error("netsend: already connected");
         return;
     }
 
@@ -260,25 +216,28 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         sys_sockerror("socket");
         return;
     }
+
     /* connect socket using hostname provided in command line */
-    server.sin_family = AF_INET;
+    x->x_server.sin_family = AF_INET;
     hp = gethostbyname(hostname->s_name);
     if (hp == 0)
     {
-        post("bad host?");
+        post("netsend: bad host?");
         sys_closesocket(sockfd);
         return;
     }
+    memcpy((char *)&x->x_server.sin_addr, (char *)hp->h_addr, hp->h_length);
+
+    /* assign client port number */
+    x->x_server.sin_port = htons((u_short)portno);
+
 #if 0
     intarg = 0;
     if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
                  &intarg, sizeof(intarg)) < 0)
     post("setsockopt (SO_RCVBUF) failed");
 #endif
-    intarg = 1;
-    if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
-                  (const void *)&intarg, sizeof(intarg)) < 0)
-    post("setting SO_BROADCAST");
+
     /* for stream (TCP) sockets, specify "nodelay" */
     if (x->x_protocol == SOCK_STREAM)
     {
@@ -287,11 +246,14 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                        (char *)&intarg, sizeof(intarg)) < 0)
             post("setsockopt (TCP_NODELAY) failed");
     }
-    memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
+    else { /* datagram (UDP) broadcasting */
+        intarg = 1;
+        if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
+                  (const void *)&intarg, sizeof(intarg)) < 0)
+            post("setsockopt (SO_BROADCAST) failed");
+    }
 
-    /* assign client port number */
-    server.sin_port = htons((u_short)portno);
-
+    /* bind optional src listening port */
     if (sportno != 0) {
         post("connecting to dest port %d, src port %d", portno, sportno);
         memset(&srcaddr, 0, sizeof(srcaddr));
@@ -309,17 +271,21 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     else {
         post("connecting to port %d", portno);
     }
-    /* try to connect.  LATER make a separate thread to do this
-       because it might block */
-    if (connect(sockfd, (struct sockaddr *) &server, sizeof (server)) < 0)
-    {
-        sys_sockerror("connecting stream socket");
-        sys_closesocket(sockfd);
-        return;
+
+    if(x->x_protocol == SOCK_STREAM) {
+        /* try to connect.  LATER make a separate thread to do this
+           because it might block */
+        if (connect(sockfd, (struct sockaddr *)&x->x_server,
+            sizeof(x->x_server)) < 0)
+        {
+            sys_sockerror("connecting stream socket");
+            sys_closesocket(sockfd);
+            return;
+        }
     }
 
     x->x_sockfd = sockfd;
-    if (x->x_msgout)    /* add polling function for return messages */
+    if (x->x_msgout) /* add polling function for return messages */
     {
         if (x->x_bin)
             sys_addpollfn(sockfd, (t_fdpollfn)netsend_readbin, x);
@@ -328,9 +294,6 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             t_socketreceiver *y =
               socketreceiver_new((void *)x, 0, netsend_read,
                                  x->x_protocol == SOCK_DGRAM);
-            if (x->x_protocol == SOCK_DGRAM)
-                socketreceiver_set_udpfns(y, NULL,
-                    (t_socketkeepalivefn)netsend_keepalive);
             sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receiver = y;
         }
@@ -348,6 +311,8 @@ static void netsend_disconnect(t_netsend *x)
         if(x->x_receiver)
             socketreceiver_free(x->x_receiver);
         x->x_receiver = NULL;
+        memset(&x->x_receiver, 0, sizeof(x->x_receiver));
+        memset(&x->x_server, 0, sizeof(struct sockaddr_in));
         outlet_float(x->x_obj.ob_outlet, 0);
     }
 }
@@ -380,7 +345,14 @@ static int netsend_dosend(t_netsend *x, int sockfd,
         static double lastwarntime;
         static double pleasewarn;
         double timebefore = sys_getrealtime();
-        int res = (int)send(sockfd, bp, length-sent, 0);
+
+        int res = 0;
+        if (x->x_protocol == SOCK_DGRAM)
+            res = (int)sendto(sockfd, bp, length-sent, 0,
+                (struct sockaddr *)&x->x_server, sizeof(struct sockaddr_in));
+        else
+            res = (int)send(sockfd, bp, length-sent, 0);
+
         double timeafter = sys_getrealtime();
         int late = (timeafter - timebefore > 0.005);
         if (late || pleasewarn)
@@ -397,18 +369,7 @@ static int netsend_dosend(t_netsend *x, int sockfd,
         }
         if (res <= 0)
         {
-            /* note: send errors may or may not be caught here as the errno may
-                     be caught by a socket receiver polling on the same thread
-            */
-            /* keep UDP socket alive */
-            if (sys_sockerrno() == ECONNREFUSED && x->x_keepalive)
-            {
-#if 0
-                post("netsend_dosend: caught connect refused");
-#endif
-                break;
-            }
-            sys_sockerror("netsend");
+            sys_sockerror("send");
             fail = 1;
             break;
         }
@@ -483,6 +444,14 @@ static void netreceive_notify(t_netreceive *x, int fd)
     outlet_float(x->x_ns.x_connectout, x->x_nconnections);
 }
 
+    /* socketreceiver UDP recvfrom sockaddr_in */
+static void netreceive_fromaddr(void *z, const void *fromaddr)
+{
+    t_netreceive *x = (t_netreceive *)z;
+    if(x->x_ns.x_fromout)
+        outlet_sockaddr(x->x_ns.x_fromout, (const struct sockaddr *)fromaddr);
+}
+
 static void netreceive_connectpoll(t_netreceive *x)
 {
     struct sockaddr_in fromaddr = {0};
@@ -517,17 +486,8 @@ static void netreceive_connectpoll(t_netreceive *x)
         }
         if (x->x_ns.x_fromout)
         {
-                /* output form addr for new TCP connection */
-            char fromaddrstr[INET6_ADDRSTRLEN];
-            fromaddrstr[0] = '\0';
-            if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr, fromaddrstr,
-                INET6_ADDRSTRLEN))
-            {
-                outlet_symbol(x->x_ns.x_fromout, gensym(fromaddrstr));
-#if 0
-                post("netreceive_connectpoll accept %s", fromaddrstr);
-#endif
-            }
+                /* output from addr for new TCP connection */
+            outlet_sockaddr(x->x_ns.x_fromout, (const void *)&fromaddr);
         }
         outlet_float(x->x_ns.x_connectout, (x->x_nconnections = nconnections));
     }
@@ -603,7 +563,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         intarg = 1;
         if (setsockopt(x->x_ns.x_sockfd, IPPROTO_TCP, TCP_NODELAY,
             (char *)&intarg, sizeof(intarg)) < 0)
-                post("setsockopt (TCP_NODELAY) failed");
+                post("netreceive: setsockopt (TCP_NODELAY) failed");
     }
         /* assign server port number etc */
     server.sin_family = AF_INET;
@@ -629,9 +589,11 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
                 (t_socketnotifier)netreceive_notify,
                     (x->x_ns.x_msgout ? netsend_read : 0), 1);
             if (x->x_ns.x_protocol == SOCK_DGRAM)
-                socketreceiver_set_udpfns(y,
-                    (t_socketreceiveaddrfn)netsend_fromaddr,
-                    (t_socketkeepalivefn)netsend_keepalive);
+            {
+                if (x->x_ns.x_fromout)
+                    socketreceiver_set_fromaddrfn(y,
+                        (t_socketfromaddrfn)netreceive_fromaddr);
+            }
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
             x->x_ns.x_receiver = y;
@@ -660,7 +622,7 @@ static void netreceive_send(t_netreceive *x,
     for (i = 0; i < x->x_nconnections; i++)
     {
         if (netsend_dosend(&x->x_ns, x->x_connections[i], s, argc, argv))
-            pd_error(x, "netreceive send message failed");
+            pd_error(x, "netreceive: send message failed");
                 /* should we now close the connection? */
     }
 }
@@ -741,6 +703,15 @@ static void netreceive_setup(void)
         gensym("listen"), A_FLOAT, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
+}
+
+static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
+{
+    struct sockaddr_in *addr = (struct sockaddr_in *)sa;
+    char addrstr[INET6_ADDRSTRLEN];
+    addrstr[0] = '\0';
+    if(inet_ntop(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
+        outlet_symbol(o, gensym(addrstr));
 }
 
 void x_net_setup(void)

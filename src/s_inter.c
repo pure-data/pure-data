@@ -102,11 +102,10 @@ struct _socketreceiver
     int sr_intail;
     void *sr_owner;
     int sr_udp;
-    char *sr_fromaddrstr; /* UDP only */
+    struct sockaddr *sr_fromaddr; /* optional, UDP only */
     t_socketnotifier sr_notifier;
     t_socketreceivefn sr_socketreceivefn;
-    t_socketreceiveaddrfn sr_socketreceiveaddrfn; /* UDP only */
-    t_socketkeepalivefn sr_socketkeepalivefn; /* UDP only */
+    t_socketfromaddrfn sr_fromaddrfn; /* optional, UDP only */
 };
 
 typedef struct _guiqueue
@@ -476,9 +475,8 @@ t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
     x->sr_notifier = notifier;
     x->sr_socketreceivefn = socketreceivefn;
     x->sr_udp = udp;
-    x->sr_socketreceiveaddrfn = NULL;
-    x->sr_socketkeepalivefn = NULL;
-    x->sr_fromaddrstr = NULL;
+    x->sr_fromaddr = NULL;
+    x->sr_fromaddrfn = NULL;
     if (!(x->sr_inbuf = malloc(INBUFSIZE))) bug("t_socketreceiver");
     return (x);
 }
@@ -486,7 +484,7 @@ t_socketreceiver *socketreceiver_new(void *owner, t_socketnotifier notifier,
 void socketreceiver_free(t_socketreceiver *x)
 {
     free(x->sr_inbuf);
-    if (x->sr_fromaddrstr) free(x->sr_fromaddrstr);
+    if (x->sr_fromaddr) free(x->sr_fromaddr);
     freebytes(x, sizeof(*x));
 }
 
@@ -526,26 +524,11 @@ static int socketreceiver_doread(t_socketreceiver *x)
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
-    struct sockaddr_in fromaddr = {0};
-    socklen_t fromaddrlen = sizeof(struct sockaddr_in);
-    int ret = 0;
-    if(x->sr_fromaddrstr)
-        ret = (int)recvfrom(fd, buf, INBUFSIZE, 0, (struct sockaddr *)&fromaddr,
-            &fromaddrlen);
-    else
-        ret = (int)recv(fd, buf, INBUFSIZE, 0);
+    socklen_t fromaddrlen = sizeof(struct sockaddr);
+    int ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
+        (struct sockaddr *)x->sr_fromaddr, &fromaddrlen);
     if (ret < 0)
     {
-            /* keep UDP socket alive, ask owner as this may have caught the
-               errno set by a different object */
-        if (sys_sockerrno() == ECONNREFUSED && x->sr_socketkeepalivefn &&
-            (*x->sr_socketkeepalivefn)(x->sr_owner))
-        {
-#if 0
-            post("socketreceiver_getudp: caught connect refused");
-#endif
-            return;
-        }
         sys_sockerror("recv (udp)");
         sys_rmpollfn(fd);
         sys_closesocket(fd);
@@ -568,20 +551,8 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             char *semi = strchr(buf, ';');
             if (semi)
                 *semi = 0;
-            if (x->sr_socketreceiveaddrfn)
-            {
-                    /* send UDP from addr for each message */
-                x->sr_fromaddrstr[0] = '\0';
-                if(inet_ntop(AF_INET, &fromaddr.sin_addr.s_addr,
-                    x->sr_fromaddrstr, INET6_ADDRSTRLEN))
-                {
-#if 0
-                    post("socketreceiver_getudp recvfrom %s", x->sr_fromaddrstr);
-#endif
-                    (*x->sr_socketreceiveaddrfn)(x->sr_owner,
-                        (const char *)x->sr_fromaddrstr);
-                }
-            }
+            if (x->sr_fromaddrfn)
+                (*x->sr_fromaddrfn)(x->sr_owner, (const void *)x->sr_fromaddr);
             binbuf_text(pd_this->pd_inter->i_inbinbuf, buf, strlen(buf));
             outlet_setstacklim();
             if (x->sr_socketreceivefn)
@@ -658,26 +629,20 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
     }
 }
 
-    /* additional UDP-only callbacks: socket keep alive?, from addr string */
-void socketreceiver_set_udpfns(t_socketreceiver *x,
-    t_socketreceiveaddrfn socketreceiveaddrfn,
-    t_socketkeepalivefn socketkeepalivefn)
+void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
+    t_socketfromaddrfn fromaddrfn)
 {
-    x->sr_socketreceiveaddrfn = socketreceiveaddrfn;
-    if (socketreceiveaddrfn)
+    x->sr_fromaddrfn = fromaddrfn;
+    if (fromaddrfn)
     {
-        if (!x->sr_fromaddrstr)
-        {
-            x->sr_fromaddrstr = malloc(INET6_ADDRSTRLEN);
-            x->sr_fromaddrstr[0] = '\0';
-        }
+        if (!x->sr_fromaddr)
+            x->sr_fromaddr = malloc(sizeof(struct sockaddr));
     }
-    else if (x->sr_fromaddrstr)
+    else if (x->sr_fromaddr)
     {
-        free(x->sr_fromaddrstr);
-        x->sr_fromaddrstr = NULL;
+        free(x->sr_fromaddr);
+        x->sr_fromaddr = NULL;
     }
-    x->sr_socketkeepalivefn = socketkeepalivefn;
 }
 
 void sys_closesocket(int fd)
