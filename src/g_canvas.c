@@ -319,6 +319,7 @@ void glist_init(t_glist *x)
     x->gl_valid = ++glist_valid;
     x->gl_xlabel = (t_symbol **)t_getbytes(0);
     x->gl_ylabel = (t_symbol **)t_getbytes(0);
+    x->gl_privatedata = getbytes(sizeof(t_canvas_private));
 }
 
     /* make a new glist.  It will either be a "root" canvas or else
@@ -332,7 +333,6 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     int vis = 0, width = GLIST_DEFCANVASWIDTH, height = GLIST_DEFCANVASHEIGHT;
     int xloc = 0, yloc = GLIST_DEFCANVASYLOC;
     int font = (owner ? owner->gl_font : sys_defaultfont);
-    t_canvas_private*private = 0;
     glist_init(x);
     x->gl_obj.te_type = T_OBJECT;
     if (!owner)
@@ -377,9 +377,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     else x->gl_env = 0;
 
         /* initialize private data, like the undo-queue */
-    private = getbytes(sizeof(*private));
-    x->gl_privatedata = private;
-    private->undo.u_queue = canvas_undo_init(x);
+    canvas_undo_init(x);
 
     x->gl_x1 = 0;
     x->gl_y1 = 0;
@@ -496,6 +494,9 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_isgraph = 1;
     x->gl_goprect = 0;
     x->gl_obj.te_binbuf = binbuf_new();
+        /* initialize private data, like the undo-queue */
+    canvas_undo_init(x);
+
     binbuf_addv(x->gl_obj.te_binbuf, "s", gensym("graph"));
     if (!menu)
         pd_pushsym(&x->gl_pd);
