@@ -523,6 +523,23 @@ static void list_store_get(t_list_store *x, t_float f1, t_float f2)
     ATOMS_FREEA(outv, outc);
 }
 
+static void list_store_set(t_list_store *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (argc > 1)
+    {
+        int n, max, onset = atom_getfloat(argv);
+        if (onset < 0 || onset >= x->x_alist.l_n)
+        {
+            pd_error(x, "list_store_set: index %d out of range", onset);
+            return;
+        }
+        argc--; argv++;
+        max = x->x_alist.l_n - onset;
+        n = (argc > max) ? max : argc;
+        alist_copyin(&x->x_alist, s, n, argv, onset);
+    }
+}
+
 static void list_store_free(t_list_store *x)
 {
     alist_clear(&x->x_alist);
@@ -540,6 +557,8 @@ static void list_store_setup(void)
         gensym("prepend"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_get,
         gensym("get"), A_FLOAT, A_FLOAT, 0);
+    class_addmethod(list_store_class, (t_method)list_store_set,
+        gensym("set"), A_GIMME, 0);
     class_sethelpsymbol(list_store_class, &s_list);
 }
 
