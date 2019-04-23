@@ -187,6 +187,18 @@ static void alist_clone(t_alist *x, t_alist *y, int onset, int count)
     }
 }
 
+    /* function to restore gpointers after the list has moved in memory */
+static void alist_restore_gpointers(t_alist *x, int offset, int count)
+{
+    t_listelem *vec = x->l_vec + offset;
+    while (count--)
+    {
+        if (vec->l_a.a_type == A_POINTER)
+            vec->l_a.a_w.w_gpointer = &vec->l_p;
+        vec++;
+    }
+}
+
 static void alist_setup(void)
 {
     alist_class = class_new(gensym("list inlet"),
@@ -219,7 +231,7 @@ static void list_append_list(t_list_append *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc;
+    int outc = x->x_alist.l_n + argc;
     ATOMS_ALLOCA(outv, outc);
     atoms_copy(argc, argv, outv);
     if (x->x_alist.l_npointer)
@@ -242,7 +254,7 @@ static void list_append_anything(t_list_append *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_atom *outv;
-    int n, outc = x->x_alist.l_n + argc + 1;
+    int outc = x->x_alist.l_n + argc + 1;
     ATOMS_ALLOCA(outv, outc);
     SETSYMBOL(outv, s);
     atoms_copy(argc, argv, outv + 1);
@@ -262,6 +274,7 @@ static void list_append_anything(t_list_append *x, t_symbol *s,
     ATOMS_FREEA(outv, outc);
 }
 
+#if 0
 static void list_append_append(t_list_append *x, t_symbol *s,
     int argc, t_atom *argv)
 {
@@ -293,6 +306,7 @@ static void list_append_prepend(t_list_append *x, t_symbol *s,
     alist_copyin(&x->x_alist, s, argc, argv, 0);
     x->x_alist.l_n += argc;
 }
+#endif
 
 static void list_append_free(t_list_append *x)
 {
@@ -433,18 +447,6 @@ static void list_store_list(t_list_store *x, t_symbol *s,
     ATOMS_FREEA(outv, outc);
 }
 
-/* function to restore gpointers after the list has moved in memory */
-static void list_store_restore_gpointers(t_list_store *x, int offset, int count)
-{
-    t_listelem *vec = x->x_alist.l_vec + offset;
-    while (count--)
-    {
-        if (vec->l_a.a_type == A_POINTER)
-            vec->l_a.a_w.w_gpointer = &vec->l_p;
-        vec++;
-    }
-}
-
 static void list_store_append(t_list_store *x, t_symbol *s,
     int argc, t_atom *argv)
 {
@@ -461,7 +463,7 @@ static void list_store_append(t_list_store *x, t_symbol *s,
 
         /* fix gpointers if resizebytes() has moved the alist in memory */
     if (x->x_alist.l_vec != oldptr && x->x_alist.l_npointer)
-        list_store_restore_gpointers(x, 0, x->x_alist.l_n);
+        alist_restore_gpointers(&x->x_alist, 0, x->x_alist.l_n);
 
     alist_copyin(&x->x_alist, s, argc, argv, x->x_alist.l_n);
     x->x_alist.l_n += argc;
@@ -484,7 +486,7 @@ static void list_store_prepend(t_list_store *x, t_symbol *s,
 
         /* we always have to fix gpointers because of memmove() */
     if (x->x_alist.l_npointer)
-        list_store_restore_gpointers(x, argc, x->x_alist.l_n);
+        alist_restore_gpointers(&x->x_alist, argc, x->x_alist.l_n);
 
     alist_copyin(&x->x_alist, s, argc, argv, 0);
     x->x_alist.l_n += argc;
