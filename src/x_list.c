@@ -587,12 +587,7 @@ static void list_store_get(t_list_store *x, float f1, float f2)
     int onset = f1, outc = f2;
     if (outc < 1)
         outc = 1; /* default */
-    if (onset < 0)
-    {
-        pd_error(x, "list_store_get: negative index %d", onset);
-        return;
-    }
-    if (onset + outc > x->x_alist.l_n)
+    if (onset < 0 || (onset + outc > x->x_alist.l_n))
     {
         outlet_bang(x->x_out2);
         return;
