@@ -447,11 +447,11 @@ static void list_store_list(t_list_store *x, t_symbol *s,
     ATOMS_FREEA(outv, outc);
 }
 
-static void list_store_append(t_list_store *x, t_symbol *s,
-    int argc, t_atom *argv)
+static void list_store_doinsert(t_list_store *x, t_symbol *s,
+    int argc, t_atom *argv, int index)
 {
     t_listelem *oldptr = x->x_alist.l_vec;
-
+        /* try to allocate more memory */
     if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
         (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
         (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
@@ -460,36 +460,49 @@ static void list_store_append(t_list_store *x, t_symbol *s,
         error("list: out of memory");
         return;
     }
-
-        /* fix gpointers if resizebytes() has moved the alist in memory */
+        /* fix gpointers in case resizebytes() has moved the alist in memory */
     if (x->x_alist.l_vec != oldptr && x->x_alist.l_npointer)
         alist_restore_gpointers(&x->x_alist, 0, x->x_alist.l_n);
-
-    alist_copyin(&x->x_alist, s, argc, argv, x->x_alist.l_n);
+        /* shift existing elements after 'index' to the right */
+    if (index < x->x_alist.l_n)
+    {
+        memmove(x->x_alist.l_vec + index + argc, x->x_alist.l_vec + index,
+            (x->x_alist.l_n - index) * sizeof(*x->x_alist.l_vec));
+            /* fix gpointers because of memmove() */
+        if (x->x_alist.l_npointer)
+            alist_restore_gpointers(&x->x_alist, index + argc, x->x_alist.l_n - index);
+    }
+        /* finally copy new elements */
+    alist_copyin(&x->x_alist, s, argc, argv, index);
     x->x_alist.l_n += argc;
+}
+
+static void list_store_insert(t_list_store *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    if (argc > 1)
+    {
+        int index = atom_getfloat(argv);
+        if (index < 0)
+        {
+            pd_error(x, "list_store_insert: index %d out of range", index);
+            return;
+        } else if (index > x->x_alist.l_n)
+            index = x->x_alist.l_n;
+        list_store_doinsert(x, s, --argc, ++argv, index);
+    }
+}
+
+static void list_store_append(t_list_store *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    list_store_doinsert(x, s, argc, argv, x->x_alist.l_n);
 }
 
 static void list_store_prepend(t_list_store *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
-    (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
-    (x->x_alist.l_n + argc) * sizeof(*x->x_alist.l_vec))))
-    {
-        x->x_alist.l_n = 0;
-        error("list: out of memory");
-        return;
-    }
-
-    memmove(x->x_alist.l_vec + argc, x->x_alist.l_vec,
-        x->x_alist.l_n * sizeof(*x->x_alist.l_vec));
-
-        /* we always have to fix gpointers because of memmove() */
-    if (x->x_alist.l_npointer)
-        alist_restore_gpointers(&x->x_alist, argc, x->x_alist.l_n);
-
-    alist_copyin(&x->x_alist, s, argc, argv, 0);
-    x->x_alist.l_n += argc;
+    list_store_doinsert(x, s, argc, argv, 0);
 }
 
 static void list_store_get(t_list_store *x, t_float f1, t_float f2)
@@ -555,6 +568,8 @@ static void list_store_setup(void)
         gensym("append"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_prepend,
         gensym("prepend"), A_GIMME, 0);
+    class_addmethod(list_store_class, (t_method)list_store_insert,
+        gensym("insert"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_get,
         gensym("get"), A_FLOAT, A_FLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_set,
