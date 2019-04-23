@@ -424,6 +424,32 @@ static void *list_store_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+static void list_store_send(t_list_store *x, t_symbol *s)
+{
+    t_atom *vec;
+    int n = x->x_alist.l_n;
+    if (!s->s_thing)
+    {
+        pd_error(x, "%s: no such object", s->s_name);
+        return;
+    }
+    ATOMS_ALLOCA(vec, n);
+    if (x->x_alist.l_npointer)
+    {
+        t_alist y;
+        alist_clone(&x->x_alist, &y, 0, n);
+        alist_toatoms(&y, vec, 0, n);
+        pd_list(s->s_thing, gensym("list"), n, vec);
+        alist_clear(&y);
+    }
+    else
+    {
+        alist_toatoms(&x->x_alist, vec, 0, n);
+        pd_list(s->s_thing, gensym("list"), n, vec);
+    }
+    ATOMS_FREEA(vec, n);
+}
+
 static void list_store_list(t_list_store *x, t_symbol *s,
     int argc, t_atom *argv)
 {
@@ -614,6 +640,8 @@ static void list_store_setup(void)
         (t_newmethod)list_store_new, (t_method)list_store_free,
         sizeof(t_list_store), 0, A_GIMME, 0);
     class_addlist(list_store_class, list_store_list);
+    class_addmethod(list_store_class, (t_method)list_store_send,
+        gensym("send"), A_SYMBOL, 0);
     class_addmethod(list_store_class, (t_method)list_store_append,
         gensym("append"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_prepend,
