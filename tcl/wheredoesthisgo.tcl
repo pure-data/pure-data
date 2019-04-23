@@ -28,17 +28,21 @@ proc open_file {filename} {
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
 
-proc pdtk_openpanel {target localdir} {
+proc pdtk_openpanel {target localdir mode} {
     if {! [file isdirectory $localdir]} {
         if { ! [file isdirectory $::fileopendir]} {
             set ::fileopendir $::env(HOME)
         }
         set localdir $::fileopendir
     }
-    set filename [tk_getOpenFile -initialdir $localdir]
-    if {$filename ne ""} {
-        set ::fileopendir [file dirname $filename]
-        pdsend "$target callback [enquote_path $filename]"
+    if {$mode == 1} {
+        set result [tk_chooseDirectory -initialdir $localdir]
+    } else {
+        set result [tk_getOpenFile -initialdir $localdir]
+    }
+    if {$result ne ""} {
+        set ::fileopendir [file dirname $result]
+        pdsend "$target callback [enquote_path $result]"
     }
 }
 

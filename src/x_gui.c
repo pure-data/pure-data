@@ -192,12 +192,14 @@ typedef struct _openpanel
 {
     t_object x_obj;
     t_symbol *x_s;
+    int x_mode;
 } t_openpanel;
 
-static void *openpanel_new(void)
+static void *openpanel_new(t_floatarg mode)
 {
     char buf[50];
     t_openpanel *x = (t_openpanel *)pd_new(openpanel_class);
+    x->x_mode = (int)mode;
     sprintf(buf, "d%lx", (t_int)x);
     x->x_s = gensym(buf);
     pd_bind(&x->x_obj.ob_pd, x->x_s);
@@ -208,7 +210,8 @@ static void *openpanel_new(void)
 static void openpanel_symbol(t_openpanel *x, t_symbol *s)
 {
     const char *path = (s && s->s_name) ? s->s_name : "\"\"";
-    sys_vgui("pdtk_openpanel {%s} {%s}\n", x->x_s->s_name, path);
+    sys_vgui("pdtk_openpanel {%s} {%s} %d\n",
+        x->x_s->s_name, path, x->x_mode);
 }
 
 static void openpanel_bang(t_openpanel *x)
@@ -231,7 +234,7 @@ static void openpanel_setup(void)
 {
     openpanel_class = class_new(gensym("openpanel"),
         (t_newmethod)openpanel_new, (t_method)openpanel_free,
-        sizeof(t_openpanel), 0, 0);
+        sizeof(t_openpanel), 0, A_DEFFLOAT, 0);
     class_addbang(openpanel_class, openpanel_bang);
     class_addsymbol(openpanel_class, openpanel_symbol);
     class_addmethod(openpanel_class, (t_method)openpanel_callback,
