@@ -450,6 +450,56 @@ static void list_store_send(t_list_store *x, t_symbol *s)
     ATOMS_FREEA(vec, n);
 }
 
+static void list_store_sendatom(t_list_store *x, int which)
+{
+    t_listelem *elem = &x->x_alist.l_vec[which];
+    switch (elem->l_a.a_type)
+    {
+        case A_FLOAT:
+            outlet_float(x->x_out1, elem->l_a.a_w.w_float);
+            break;
+        case A_SYMBOL:
+            outlet_symbol(x->x_out1, elem->l_a.a_w.w_symbol);
+            break;
+        case A_POINTER:
+        {
+            t_gpointer gp;
+            gpointer_copy(elem->l_a.a_w.w_gpointer, &gp);
+            outlet_pointer(x->x_out1, &gp);
+            gpointer_unset(&gp);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+static void list_store_iter(t_list_store *x, float f1, float f2, float f3)
+{
+    int i, onset = f1, count = f2, step = f3, n = x->x_alist.l_n;
+    if (onset < 0)
+        onset += n;
+    if (onset < 0 || onset >= n)
+    {
+        pd_error(x, "list_store_iter: index %d out of range", (int)f1);
+        return;
+    }
+    if (count < 1)
+        count = n; /* default count */
+    if (!step)
+        step = 1; /* default step size */
+    if (step > 0)
+    {
+        for (i = 0; i < count && onset < n; i++, onset += step)
+            list_store_sendatom(x, onset);
+    }
+    else
+    {
+        for (i = 0; i < count && onset >= 0; i++, onset += step)
+            list_store_sendatom(x, onset);
+    }
+}
+
 static void list_store_list(t_list_store *x, t_symbol *s,
     int argc, t_atom *argv)
 {
@@ -639,6 +689,8 @@ static void list_store_setup(void)
     class_addlist(list_store_class, list_store_list);
     class_addmethod(list_store_class, (t_method)list_store_send,
         gensym("send"), A_SYMBOL, 0);
+    class_addmethod(list_store_class, (t_method)list_store_iter,
+        gensym("iter"), A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_append,
         gensym("append"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_prepend,
