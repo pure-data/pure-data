@@ -505,7 +505,57 @@ static void list_store_prepend(t_list_store *x, t_symbol *s,
     list_store_doinsert(x, s, argc, argv, 0);
 }
 
-static void list_store_get(t_list_store *x, t_float f1, t_float f2)
+static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
+{
+    int i, max, index = (int)f1, n = (int)f2;
+    t_listelem *oldptr = x->x_alist.l_vec;
+    if (index < 0 || index >= x->x_alist.l_n)
+    {
+        pd_error(x, "list_store_delete: index %d out of range", index);
+        return;
+    }
+    max = x->x_alist.l_n - index;
+    if (n < 1)
+        return;
+    else if (n > max)
+        n = max;
+        /* unset pointers for elements which are to be deleted */
+    if (x->x_alist.l_npointer)
+    {
+        t_listelem *vec = x->x_alist.l_vec + index;
+        for (i = 0; i < n; i++)
+        {
+            if (vec[i].l_a.a_type == A_POINTER)
+            {
+                gpointer_unset(vec[i].l_a.a_w.w_gpointer);
+                x->x_alist.l_npointer--;
+            }
+        }
+    }
+        /* shift elements (after the deleted elements) to the left */
+    memmove(x->x_alist.l_vec + index, x->x_alist.l_vec + index + n,
+        (x->x_alist.l_n - index) * sizeof(*x->x_alist.l_vec));
+        /* shrink memory */
+    if (!(x->x_alist.l_vec = (t_listelem *)resizebytes(x->x_alist.l_vec,
+        (x->x_alist.l_n) * sizeof(*x->x_alist.l_vec),
+        (x->x_alist.l_n - n) * sizeof(*x->x_alist.l_vec))))
+    {
+        x->x_alist.l_n = 0;
+        error("list: out of memory");
+        return;
+    }
+    if (x->x_alist.l_npointer)
+    {
+            /* fix all gpointers in case resizebytes() has moved the alist in memory */
+        if (x->x_alist.l_vec != oldptr)
+            alist_restore_gpointers(&x->x_alist, 0, x->x_alist.l_n - n);
+        else /* only fix gpointers after index (because of of memmove()) */
+            alist_restore_gpointers(&x->x_alist, index, x->x_alist.l_n - index - n);
+    }
+    x->x_alist.l_n -= n;
+}
+
+static void list_store_get(t_list_store *x, float f1, float f2)
 {
     t_atom *outv;
     int onset = f1, outc = f2;
@@ -570,6 +620,8 @@ static void list_store_setup(void)
         gensym("prepend"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_insert,
         gensym("insert"), A_GIMME, 0);
+    class_addmethod(list_store_class, (t_method)list_store_delete,
+        gensym("delete"), A_FLOAT, A_FLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_get,
         gensym("get"), A_FLOAT, A_FLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_set,
