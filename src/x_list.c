@@ -542,7 +542,7 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     }
     max = x->x_alist.l_n - index;
     if (n < 1)
-        return;
+        n = 1; /* default */
     else if (n > max)
         n = max;
         /* unset pointers for elements which are to be deleted */
@@ -585,9 +585,11 @@ static void list_store_get(t_list_store *x, float f1, float f2)
 {
     t_atom *outv;
     int onset = f1, outc = f2;
-    if (onset < 0 || outc < 0)
+    if (outc < 1)
+        outc = 1; /* default */
+    if (onset < 0)
     {
-        pd_error(x, "list_store_get: negative range (%d %d)", onset, outc);
+        pd_error(x, "list_store_get: negative index %d", onset);
         return;
     }
     if (onset + outc > x->x_alist.l_n)
@@ -649,9 +651,9 @@ static void list_store_setup(void)
     class_addmethod(list_store_class, (t_method)list_store_insert,
         gensym("insert"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_delete,
-        gensym("delete"), A_FLOAT, A_FLOAT, 0);
+        gensym("delete"), A_FLOAT, A_DEFFLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_get,
-        gensym("get"), A_FLOAT, A_FLOAT, 0);
+        gensym("get"), A_FLOAT, A_DEFFLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_set,
         gensym("set"), A_GIMME, 0);
     class_sethelpsymbol(list_store_class, &s_list);
