@@ -424,6 +424,11 @@ static void *list_store_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+static void list_store_length(t_list_store *x)
+{
+    outlet_float(x->x_out2, x->x_alist.l_n);
+}
+
 static void list_store_send(t_list_store *x, t_symbol *s)
 {
     t_atom *vec;
@@ -720,6 +725,8 @@ static void list_store_setup(void)
         (t_newmethod)list_store_new, (t_method)list_store_free,
         sizeof(t_list_store), 0, A_GIMME, 0);
     class_addlist(list_store_class, list_store_list);
+    class_addmethod(list_store_class, (t_method)list_store_length,
+        gensym("length"), 0);
     class_addmethod(list_store_class, (t_method)list_store_send,
         gensym("send"), A_SYMBOL, 0);
     class_addmethod(list_store_class, (t_method)list_store_iter,
