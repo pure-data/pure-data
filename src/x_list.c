@@ -820,6 +820,122 @@ static void list_tosymbol_setup(void)
     class_sethelpsymbol(list_tosymbol_class, &s_list);
 }
 
+/* ------------- list foreach --------------------- */
+
+t_class *list_foreach_class;
+
+typedef struct _list_foreach
+{
+    t_object x_obj;
+    t_outlet *x_out1;
+    t_outlet *x_out2;
+    t_float x_step;
+} t_list_foreach;
+
+static void *list_foreach_new(t_floatarg f)
+{
+    t_list_foreach *x = (t_list_foreach *)pd_new(list_foreach_class);
+    x->x_out1 = outlet_new(&x->x_obj, 0);
+    x->x_out2 = outlet_new(&x->x_obj, &s_float);
+    x->x_step = f;
+    floatinlet_new(&x->x_obj, &x->x_step);
+    return (x);
+}
+
+static void list_foreach_do(t_list_foreach *x,
+    int argc, t_atom *argv, int step, int onset)
+{
+    int i;
+    if (step > 0) /* forward iteration */
+    {
+        if (step == 1)
+            for (i = 0; i < argc; i++)
+            {
+                outlet_float(x->x_out2, i + onset);
+                outlet_list(x->x_out1, &s_list, 1, &argv[i]);
+            }
+        else
+            for (i = 0; i < argc; i += step)
+            {
+                int n = (i + step) > argc ? argc - i : step;
+                outlet_float(x->x_out2, i + onset);
+                outlet_list(x->x_out1, &s_list, n, &argv[i]);
+            }
+    }
+    else /* backward iteration */
+    {
+        if (step == -1)
+            for (i = argc - 1; i >= 0; i--)
+            {
+                outlet_float(x->x_out2, i + onset);
+                outlet_list(x->x_out1, &s_list, 1, &argv[i]);
+            }
+        else
+            for (i = argc; i > 0; i += step)
+            {
+                int n, index = i + step;
+                if (index < 0)
+                    index = 0, n = i;
+                else
+                    n = -step;
+                outlet_float(x->x_out2, index + onset);
+                outlet_list(x->x_out1, &s_list, n, &argv[index]);
+            }
+    }
+}
+
+static void list_foreach_list(t_list_foreach *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+        /* step can be negative but mustn't be zero! default: 1 */
+    int step = (int)x->x_step ? (int)x->x_step : 1;
+    list_foreach_do(x, argc, argv, step, 0);
+}
+
+static void list_foreach_anything(t_list_foreach *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+        /* step can be negative but mustn't be zero! default: 1 */
+    int step = (int)x->x_step ? x->x_step : 1;
+        /* use some trickery to avoid unnecessary copy of the whole list */
+    t_atom *buf;
+    int n = abs(step);
+    if (n > argc + 1)
+        n = argc + 1;
+    if (step < 0)
+    {
+            /* when iterating backwards, the buffer must contain
+            the "remaining" elements - but only if there are any! */
+        int rem = (argc + 1) % -step;
+        if (rem && n > rem)
+            n = rem;
+    }
+    ALLOCA(t_atom, buf, n, LIST_NGETBYTE);
+    SETSYMBOL(buf, s);
+    atoms_copy(n - 1, argv, buf + 1);
+    if (step > 0)
+    {
+        list_foreach_do(x, n, buf, step, 0);
+        list_foreach_do(x, argc - (n - 1), argv + (n - 1), step, n);
+    }
+    else
+    {
+        list_foreach_do(x, argc - (n - 1), argv + (n - 1), step, n);
+        list_foreach_do(x, n, buf, step, 0);
+    }
+    FREEA(t_atom, buf, n, LIST_NGETBYTE);
+}
+
+static void list_foreach_setup(void)
+{
+    list_foreach_class = class_new(gensym("list foreach"),
+        (t_newmethod)list_foreach_new, 0,
+        sizeof(t_list_foreach), 0, A_DEFFLOAT, 0);
+    class_addlist(list_foreach_class, list_foreach_list);
+    class_addanything(list_foreach_class, list_foreach_anything);
+    class_sethelpsymbol(list_foreach_class, &s_list);
+}
+
 /* ------------- list ------------------- */
 
 static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
@@ -846,6 +962,8 @@ static void *list_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
             pd_this->pd_newest = list_tosymbol_new();
         else if (s2 == gensym("store"))
             pd_this->pd_newest = list_store_new(s, argc-1, argv+1);
+        else if (s2 == gensym("foreach"))
+            pd_this->pd_newest = list_foreach_new(atom_getfloatarg(1, argc, argv));
         else
         {
             pd_error(0, "list %s: unknown function", s2->s_name);
@@ -866,5 +984,6 @@ void x_list_setup(void)
     list_length_setup();
     list_fromsymbol_setup();
     list_tosymbol_setup();
+    list_foreach_setup();
     class_addcreator((t_newmethod)list_new, &s_list, A_GIMME, 0);
 }
