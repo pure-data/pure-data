@@ -988,25 +988,27 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_n = argc;
     x->x_vec = (t_triggerout *)getbytes(argc * sizeof(*x->x_vec));
-    for (i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++)
-    {
+    for(i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++){
         t_atomtype thistype = ap->a_type;
         char c;
-        if (thistype == TR_SYMBOL)
-        {
-            if (strlen(ap->a_w.w_symbol->s_name) == 1)
-                c = ap->a_w.w_symbol->s_name[0];
-            else if (strcmp(ap->a_w.w_symbol->s_name, "anything") == 0)
+        if (thistype == TR_SYMBOL){
+            if (strcmp(ap->a_w.w_symbol->s_name, "anything") == 0
+                || strcmp(ap->a_w.w_symbol->s_name, "a") == 0)
                 c = 'a';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "bang") == 0)
+            else if (strcmp(ap->a_w.w_symbol->s_name, "bang") == 0
+                     || strcmp(ap->a_w.w_symbol->s_name, "b") == 0)
                 c = 'b';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "float") == 0)
+            else if (strcmp(ap->a_w.w_symbol->s_name, "float") == 0
+                     || strcmp(ap->a_w.w_symbol->s_name, "f") == 0)
                 c = 'f';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "list") == 0)
+            else if (strcmp(ap->a_w.w_symbol->s_name, "list") == 0
+                     || strcmp(ap->a_w.w_symbol->s_name, "l") == 0)
                 c = 'l';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "pointer") == 0)
+            else if (strcmp(ap->a_w.w_symbol->s_name, "pointer") == 0
+                     || strcmp(ap->a_w.w_symbol->s_name, "p") == 0)
                 c = 'p';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "symbol") == 0)
+            else if (strcmp(ap->a_w.w_symbol->s_name, "symbol") == 0
+                     || strcmp(ap->a_w.w_symbol->s_name, "s") == 0)
                 c = 's';
             else c = 'S';
         }
@@ -1028,23 +1030,18 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
         else if (c == 'a')
             u->u_type = TR_ANYTHING,
             u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
-        else if (c == 'F')
-        {
-            //static float
+        else if (c == 'F'){ // static float
             u->u_float = ap->a_w.w_float;
             u->u_type = TR_STATIC_FLOAT;
             u->u_outlet = outlet_new(&x->x_obj, &s_float);
         }
-        else if (c == 'S')
-        {
-            //static symbol
+        else if (c == 'S'){ // static symbol
             u->u_sym = gensym(ap->a_w.w_symbol->s_name);
             u->u_type = TR_STATIC_SYMBOL;
             u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
         }
-        else
-        {
-            pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
+        else{
+            pd_error(x, "trigger2: %s: bad type", ap->a_w.w_symbol->s_name);
             u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
         }
     }
