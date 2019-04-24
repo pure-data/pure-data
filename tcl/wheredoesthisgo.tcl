@@ -28,7 +28,7 @@ proc open_file {filename} {
 # ------------------------------------------------------------------------------
 # procs for panels (openpanel, savepanel)
 
-proc pdtk_openpanel {target localdir mode} {
+proc pdtk_openpanel {target localdir {mode 0}} {
     if {! [file isdirectory $localdir]} {
         if { ! [file isdirectory $::fileopendir]} {
             set ::fileopendir $::env(HOME)
