@@ -445,8 +445,8 @@ items available \, a "bang" is sent to right outlet., f 54;
 #X text 135 225 prepend a list to the stored list;
 #X msg 17 194 append 1 2 3;
 #X text 137 198 append a list to the stored list;
-#N canvas 776 60 450 699 more 0;
-#X obj 15 580 outlet;
+#N canvas 895 74 508 699 more 0;
+#X obj 15 586 outlet;
 #X msg 15 18 set 1 5;
 #X text 85 18 set item 1 to value 5;
 #X msg 15 44 set 1 5 6 7;
@@ -458,28 +458,29 @@ items available \, a "bang" is sent to right outlet., f 54;
 #X text 97 140 delete item 1;
 #X msg 15 171 delete 1 3;
 #X text 98 170 delete 3 items \, starting from item 1;
-#X msg 15 417 iter;
-#X text 63 417 output all list items in sequence;
-#X msg 15 449 iter 2 4;
-#X msg 15 510 iter -2;
-#X text 90 448 iterate over 4 items starting from index 2;
-#X text 80 510 iterate over the last 2 items;
-#X msg 15 478 iter 0 -1 2;
-#X text 112 480 iterate over every second item;
-#X msg 15 540 iter -1 -1 -1;
-#X text 124 542 iterate over all items in reverse;
-#X text 26 296 optional arguments: start (0) \, count (0) \, step size
+#X msg 15 423 iter;
+#X text 63 423 output all list items in sequence;
+#X msg 15 455 iter 2 4;
+#X msg 15 516 iter -2;
+#X text 90 454 iterate over 4 items starting from index 2;
+#X text 80 516 iterate over the last 2 items;
+#X msg 15 484 iter 0 -1 2;
+#X text 112 486 iterate over every second item;
+#X msg 15 546 iter -1 -1 -1;
+#X text 124 548 iterate over all items in reverse;
+#X text 26 302 optional arguments: start (0) \, count (0) \, step size
 (1);
-#X text 26 336 a zero or negative count value will iterate till the
+#X text 26 342 a zero or negative count value will iterate till the
 index is out of range., f 41;
-#X text 27 317 negative start values are counted from the end.;
-#X text 26 372 the step size is the value by which the index is incremented.
+#X text 27 323 negative start values are counted from the end.;
+#X text 26 378 the step size is the value by which the index is incremented.
 it can also be negative.;
-#X text 25 271 iteration:;
+#X text 25 277 iteration:;
 #X msg 15 204 pop;
-#X text 54 203 output last item and remove it;
-#X msg 15 235 pop 3;
-#X text 67 236 pop the last 3 items;
+#X msg 15 244 pop 3;
+#X text 67 245 pop the last 3 items;
+#X text 65 203 output last item and remove it. if the list is empty
+\, a bang is sent to the right outlet., f 47;
 #X connect 1 0 0 0;
 #X connect 3 0 0 0;
 #X connect 6 0 0 0;
@@ -491,7 +492,7 @@ it can also be negative.;
 #X connect 18 0 0 0;
 #X connect 20 0 0 0;
 #X connect 27 0 0 0;
-#X connect 29 0 0 0;
+#X connect 28 0 0 0;
 #X restore 28 454 pd more messages;
 #X msg 17 261 send foo;
 #X text 88 261 send the stored list to a named receiver;
