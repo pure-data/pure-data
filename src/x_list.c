@@ -631,6 +631,39 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
     x->x_alist.l_n -= n;
 }
 
+static void list_store_pop(t_list_store *x, t_floatarg f)
+{
+    t_atom *outv;
+    int onset, n = f;
+    if (!x->x_alist.l_n)
+    {
+        outlet_bang(x->x_out2);
+        return;
+    }
+    if (n < 1)
+        n = 1;
+    else if (n > x->x_alist.l_n)
+        n = x->x_alist.l_n;
+    onset = x->x_alist.l_n - n;
+    ATOMS_ALLOCA(outv, n);
+    if (x->x_alist.l_npointer)
+    {
+        t_alist y;
+        alist_clone(&x->x_alist, &y, onset, n);
+        alist_toatoms(&y, outv, 0, n);
+        list_store_delete(x, onset, n);
+        outlet_list(x->x_out1, &s_list, n, outv);
+        alist_clear(&y);
+    }
+    else
+    {
+        alist_toatoms(&x->x_alist, outv, onset, n);
+        list_store_delete(x, onset, n);
+        outlet_list(x->x_out1, &s_list, n, outv);
+    }
+    ATOMS_FREEA(outv, n);
+}
+
 static void list_store_get(t_list_store *x, float f1, float f2)
 {
     t_atom *outv;
@@ -699,6 +732,8 @@ static void list_store_setup(void)
         gensym("insert"), A_GIMME, 0);
     class_addmethod(list_store_class, (t_method)list_store_delete,
         gensym("delete"), A_FLOAT, A_DEFFLOAT, 0);
+    class_addmethod(list_store_class, (t_method)list_store_pop,
+        gensym("pop"), A_DEFFLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_get,
         gensym("get"), A_FLOAT, A_DEFFLOAT, 0);
     class_addmethod(list_store_class, (t_method)list_store_set,
