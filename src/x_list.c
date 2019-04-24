@@ -481,27 +481,23 @@ static void list_store_sendatom(t_list_store *x, int which)
 
 static void list_store_iter(t_list_store *x, float f1, float f2, float f3)
 {
-    int i, onset = f1, count = f2, step = f3, n = x->x_alist.l_n;
+    int onset = f1, count = f2, step = f3;
     if (onset < 0)
-        onset += n;
-    if (onset < 0 || onset >= n)
+        onset += x->x_alist.l_n;
+    if (onset < 0 || onset >= x->x_alist.l_n)
     {
         pd_error(x, "list_store_iter: index %d out of range", (int)f1);
         return;
     }
     if (count < 1)
-        count = n; /* default count */
+        count = x->x_alist.l_n; /* default count */
     if (!step)
         step = 1; /* default step size */
-    if (step > 0)
+        /* check real bounds on every iteration in case the list has been modified */
+    while (count-- && (onset >= 0) && (onset < x->x_alist.l_n))
     {
-        for (i = 0; i < count && onset < n; i++, onset += step)
-            list_store_sendatom(x, onset);
-    }
-    else
-    {
-        for (i = 0; i < count && onset >= 0; i++, onset += step)
-            list_store_sendatom(x, onset);
+        list_store_sendatom(x, onset);
+        onset += step;
     }
 }
 
