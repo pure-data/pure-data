@@ -592,10 +592,11 @@ static void list_store_delete(t_list_store *x, t_floatarg f1, t_floatarg f2)
         return;
     }
     max = x->x_alist.l_n - index;
-    if (n < 1)
+    if (!n)
         n = 1; /* default */
-    else if (n > max)
-        n = max;
+    else if (n < 0 || n > max)
+        n = max; /* till the end of the list */
+
         /* unset pointers for elements which are to be deleted */
     if (x->x_alist.l_npointer)
     {
@@ -669,8 +670,10 @@ static void list_store_get(t_list_store *x, float f1, float f2)
 {
     t_atom *outv;
     int onset = f1, outc = f2;
-    if (outc < 1)
+    if (!outc)
         outc = 1; /* default */
+    else if (outc < 0)
+        outc = x->x_alist.l_n - onset; /* till the end of the list */
     if (onset < 0 || (onset + outc > x->x_alist.l_n))
     {
         outlet_bang(x->x_out2);
