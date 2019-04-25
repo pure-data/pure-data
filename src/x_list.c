@@ -426,7 +426,9 @@ static void *list_store_new(t_symbol *s, int argc, t_atom *argv)
 
 static void list_store_length(t_list_store *x)
 {
-    outlet_float(x->x_out2, x->x_alist.l_n);
+    t_atom a;
+    SETFLOAT(&a, x->x_alist.l_n);
+    outlet_anything(x->x_out2, gensym("length"), 1, &a);
 }
 
 static void list_store_send(t_list_store *x, t_symbol *s)

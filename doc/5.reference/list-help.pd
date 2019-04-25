@@ -428,7 +428,7 @@ a filename on a non-ASCII machine) to or from a symbol., f 63;
 #X text 270 457 right inlet can take non-list messages;
 #X text 34 45 lists in first inlet outputs the concatenation of incoming
 message with stored list:;
-#X obj 17 639 print store-left;
+#X obj 17 642 print store-left;
 #X obj 126 593 print store-right;
 #X text 67 164 bang is zero-element list - this output the stored list
 ;
@@ -500,7 +500,7 @@ it can also be negative.;
 #X text 88 261 send the stored list to a named receiver;
 #X obj 40 510 r foo;
 #X obj 40 534 print foo;
-#X text 141 641 output of "get" message on success;
+#X text 139 643 output of "get" message on success;
 #X text 27 456 more messages:;
 #X msg 17 296 length;
 #X text 84 298 send the length of the stored list to the second outlet
@@ -508,6 +508,7 @@ it can also be negative.;
 #X obj 17 566 list store 1 2 3;
 #X msg 17 422 get 2 -1;
 #X text 92 423 All list items starting at index 2;
+#X text 256 617 length <f>: the current list length;
 #X connect 0 0 41 0;
 #X connect 1 0 41 0;
 #X connect 2 0 41 0;
