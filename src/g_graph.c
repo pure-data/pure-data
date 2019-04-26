@@ -60,11 +60,8 @@ int canvas_setdeleting(t_canvas *x, int flag)
     return (ret);
 }
 
-    /* JMZ: emit a closebang message */
-void rtext_freefortext(t_glist *gl, t_text *who);
-
     /* delete an object from a glist and free it */
-void glist_delete(t_glist *x, t_gobj *y)
+void glist_dodelete(t_glist *x, t_gobj *y, int close)
 {
     t_gobj *g;
     t_object *ob;
@@ -74,8 +71,9 @@ void glist_delete(t_glist *x, t_gobj *y)
     int drawcommand = class_isdrawcommand(y->g_pd);
     int wasdeleting;
 
-    if (pd_class(&y->g_pd) == canvas_class) {
-            /* JMZ: send a closebang to the canvas */
+    if (close && pd_class(&y->g_pd) == canvas_class) {
+            /* JMZ: send a closebang to the canvas
+             * CHR: only if explicitly requested */
         canvas_closebang((t_canvas *)y);
     }
 
@@ -146,12 +144,20 @@ void glist_delete(t_glist *x, t_gobj *y)
     canvas_setdeleting(canvas, wasdeleting);
 }
 
+void glist_delete(t_glist *x, t_gobj *y)
+{
+    glist_dodelete(x, y, 1);
+}
+
     /* remove every object from a glist.  Experimental. */
 void glist_clear(t_glist *x)
 {
     t_gobj *y;
     int dspstate = 0, suspended = 0;
     t_symbol *dspsym = gensym("dsp");
+        /* CHR: to maintain the correct order, call closebang()
+         * at the top level and NOT in glist_dodelete() */
+    canvas_closebang(x);
     while ((y = x->gl_list))
     {
             /* to avoid unnecessary DSP resorting, we suspend DSP
@@ -162,7 +168,7 @@ void glist_clear(t_glist *x)
             suspended = 1;
         }
             /* here's the real deletion. */
-        glist_delete(x, y);
+        glist_dodelete(x, y, 0);
     }
     if (suspended)
         canvas_resume_dsp(dspstate);
