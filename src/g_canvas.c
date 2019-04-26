@@ -1078,7 +1078,7 @@ static void canvas_loadbangabstractions(t_canvas *x)
         }
 }
 
-void canvas_loadbangsubpatches(t_canvas *x)
+static void canvas_loadbangsubpatches(t_canvas *x)
 {
     t_gobj *y;
     t_symbol *s = gensym("loadbang");
