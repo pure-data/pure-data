@@ -897,6 +897,8 @@ int glist_fontheight(t_glist *x)
     return (sys_zoomfontheight(glist_getfont(x), glist_getzoom(x), 0));
 }
 
+void glist_dodelete(t_glist *x, t_gobj *y, int close);
+
 void canvas_free(t_canvas *x)
 {
     t_gobj *y;
@@ -907,7 +909,7 @@ void canvas_free(t_canvas *x)
         canvas_whichfind = 0;
     glist_noselect(x);
     while ((y = x->gl_list))
-        glist_delete(x, y);
+        glist_dodelete(x, y, 0);
     if (x == glist_getcanvas(x))
         canvas_vis(x, 0);
     if (x->gl_editor)
