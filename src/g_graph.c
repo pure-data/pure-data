@@ -1030,7 +1030,7 @@ static void graph_delete(t_gobj *z, t_glist *glist)
     t_glist *x = (t_glist *)z;
     t_gobj *y;
     while ((y = x->gl_list))
-        glist_delete(x, y);
+        glist_dodelete(x, y, 0);
     if (glist_isvisible(x))
         text_widgetbehavior.w_deletefn(z, glist);
             /* if we have connections to the actual 'canvas' object, zap
