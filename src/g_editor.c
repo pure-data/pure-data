@@ -3315,6 +3315,12 @@ void glob_verifyquit(void *dummy, t_floatarg f)
     else glob_quit(0);
 }
 
+static void canvas_doclose(t_canvas *x)
+{
+    canvas_closebang(x);
+    pd_free(&x->gl_pd);
+}
+
     /* close a window (or possibly quit Pd), checking for dirty flags.
        The "force" parameter is interpreted as follows:
        0 - request from GUI to close, verifying whether clean or dirty
@@ -3357,10 +3363,10 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                 gensym(buf), 2, backmsg,
                 "yes");
         }
-        else pd_free(&x->gl_pd);
+        else canvas_doclose(x);
     }
     else if (force == 1)
-        pd_free(&x->gl_pd);
+        canvas_doclose(x);
     else if (force == 2)
     {
         canvas_dirty(x, 0);
@@ -3377,7 +3383,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
                         canvas_getrootfor(g), gensym(buf), 2, backmsg);
             return;
         }
-        else pd_free(&x->gl_pd);
+        else canvas_doclose(x);
     }
     else if (force == 3)
     {
