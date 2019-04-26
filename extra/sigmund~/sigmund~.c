@@ -45,6 +45,24 @@ for example, defines this in the file d_fft_mayer.c or d_fft_fftsg.c. */
 #pragma warning( disable : 4305 )
 #endif
 
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+#define HAVE_ALLOCA 1
+#endif
+
+/* limit stack allocation to ~400kB (enough for 16384 points).
+ * usually the stack size is at least 1 MB */
+#define ALLOCA_MAXBYTES 400000
+
+#if HAVE_ALLOCA
+#define BUF_ALLOCA(n) ((n) < ALLOCA_MAXBYTES ?  \
+        alloca(n) : getbytes(n))
+#define BUF_FREEA(x, n) ( \
+    (((n) < ALLOCA_MAXBYTES) || (freebytes((x), (n)), 0)))
+#else
+#define BUF_ALLOCA(n) (getbytes(n))
+#define BUF_FREEA(x, n) (freebytes((x), (n)))
+#endif
+
 typedef struct peak
 {
     t_float p_freq;
@@ -247,11 +265,11 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
 {
     t_float oneovern = 1.0/ (t_float)npts;
     t_float fperbin = 0.5 * srate * oneovern, totalpower = 0;
-    int npts2 = 2*npts, i, bin;
+    int npts2 = 2*npts, i, bin, bufsize = sizeof (t_float ) * (2*NEGBINS + 6*npts);
     int peakcount = 0;
     t_float *fp1, *fp2;
     t_float *rawreal, *rawimag, *maskbuf, *powbuf;
-    t_float *bigbuf = alloca(sizeof (t_float ) * (2*NEGBINS + 6*npts));
+    t_float *bigbuf = BUF_ALLOCA(bufsize);
     int maxbin = hifreq/fperbin;
     if (maxbin > npts - NEGBINS)
         maxbin = npts - NEGBINS;
@@ -362,6 +380,7 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
         peakv[i].p_db = sigmund_powtodb(peakv[i].p_amp);
     }
     *nfound = peakcount;
+    BUF_FREEA(bigbuf, bufsize);
 }
 
 /*************** Routines for finding fundamental pitch *************/
@@ -1309,7 +1328,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
     int onset = atom_getfloatarg(2, argc, argv);
     t_float srate = atom_getfloatarg(3, argc, argv);
     int loud = atom_getfloatarg(4, argc, argv);
-    int arraysize, totstorage, nfound, i;
+    int arraysize, totstorage, nfound, i, bufsize;
     t_garray *a;
     t_float *arraypoints, pit;
     t_word *wordarray = 0;
@@ -1329,22 +1348,25 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         error("sigmund: negative onset");
         return;
     }
-    arraypoints = alloca(sizeof(t_float)*npts);
+    bufsize = sizeof(t_float)*npts;
+    arraypoints = BUF_ALLOCA(bufsize);
     if (!(a = (t_garray *)pd_findbyclass(syminput, garray_class)) ||
         !garray_getfloatwords(a, &arraysize, &wordarray) ||
             arraysize < onset + npts)
     {
         error("%s: array missing or too small", syminput->s_name);
-        return;
+        goto cleanup;
     }
     if (arraysize < npts)
     {
         error("sigmund~: too few points in array");
-        return;
+        goto cleanup;
     }
     for (i = 0; i < npts; i++)
         arraypoints[i] = wordarray[i+onset].w_float;
     sigmund_doit(x, npts, arraypoints, loud, srate);
+cleanup:
+    BUF_FREEA(arraypoints, bufsize);
 }
 
 static void sigmund_clear(t_sigmund *x)
