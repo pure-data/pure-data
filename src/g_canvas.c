@@ -1127,19 +1127,54 @@ void canvas_initbang(t_canvas *x)
 /* JMZ:
  * closebang is emitted before the canvas is destroyed
  * and BEFORE subpatches/abstractions in this canvas are destroyed
+ *
+ * CHR:
+ * but we want the same ordering as with loadbang (and initbang):
+ * 1) abstractions/clone (recursively)
+ * 2) subpatches (recursively)
+ * 3) remaining objects on the canvas
  */
-void canvas_closebang(t_canvas *x)
+
+static void canvas_closebangabstractions(t_canvas *x)
 {
     t_gobj *y;
     t_symbol *s = gensym("loadbang");
-
-    /* call the closebang()-method for objects that have one
-     * but NOT for subpatches/abstractions: these are called separately
-     * from g_graph:glist_delete()
-     */
     for (y = x->gl_list; y; y = y->g_next)
-        if ((pd_class(&y->g_pd) != canvas_class) && zgetfn(&y->g_pd, s))
+        if (pd_class(&y->g_pd) == canvas_class)
+        {
+            if (canvas_isabstraction((t_canvas *)y))
+                canvas_closebang((t_canvas *)y);
+            else
+                canvas_closebangabstractions((t_canvas *)y);
+        }
+        else if ((pd_class(&y->g_pd) == clone_class) &&
+            zgetfn(&y->g_pd, s))
+        {
             pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_CLOSE);
+        }
+}
+
+static void canvas_closebangsubpatches(t_canvas *x)
+{
+    t_gobj *y;
+    t_symbol *s = gensym("loadbang");
+    for (y = x->gl_list; y; y = y->g_next)
+        if (pd_class(&y->g_pd) == canvas_class
+            && !canvas_isabstraction((t_canvas *)y))
+                canvas_closebangsubpatches((t_canvas *)y);
+    for (y = x->gl_list; y; y = y->g_next)
+        if ((pd_class(&y->g_pd) != canvas_class) &&
+            (pd_class(&y->g_pd) != clone_class) &&
+            zgetfn(&y->g_pd, s))
+        {
+            pd_vmess(&y->g_pd, s, "f", (t_floatarg)LB_CLOSE);
+        }
+}
+
+void canvas_closebang(t_canvas *x)
+{
+    canvas_closebangabstractions(x);
+    canvas_closebangsubpatches(x);
 }
 
 /* no longer used by 'pd-gui', but kept here for backwards compatibility.  The
