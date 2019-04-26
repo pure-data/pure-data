@@ -269,7 +269,7 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
     int peakcount = 0;
     t_float *fp1, *fp2;
     t_float *rawreal, *rawimag, *maskbuf, *powbuf;
-    t_float *bigbuf = BUF_ALLOCA(bufsize);
+    t_float *bigbuf = (t_float *)BUF_ALLOCA(bufsize);
     int maxbin = hifreq/fperbin;
     if (maxbin > npts - NEGBINS)
         maxbin = npts - NEGBINS;
@@ -1349,7 +1349,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     bufsize = sizeof(t_float)*npts;
-    arraypoints = getbytes(bufsize);
+    arraypoints = (t_float *)getbytes(bufsize);
     if (!(a = (t_garray *)pd_findbyclass(syminput, garray_class)) ||
         !garray_getfloatwords(a, &arraysize, &wordarray) ||
             arraysize < onset + npts)
@@ -1427,7 +1427,7 @@ void sigmund_tilde_setup(void)
     class_addmethod(sigmund_class, (t_method)sigmund_minpower,
         gensym("minpower"), A_FLOAT, 0);
     class_addmethod(sigmund_class, (t_method)sigmund_print,
-        gensym("print"), 0);
+        gensym("print"), A_NULL);
     class_addmethod(sigmund_class, (t_method)sigmund_printnext,
         gensym("printnext"), A_FLOAT, 0);
     post("sigmund~ version 0.07");
