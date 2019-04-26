@@ -1349,7 +1349,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         return;
     }
     bufsize = sizeof(t_float)*npts;
-    arraypoints = BUF_ALLOCA(bufsize);
+    arraypoints = getbytes(bufsize);
     if (!(a = (t_garray *)pd_findbyclass(syminput, garray_class)) ||
         !garray_getfloatwords(a, &arraysize, &wordarray) ||
             arraysize < onset + npts)
@@ -1366,7 +1366,7 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         arraypoints[i] = wordarray[i+onset].w_float;
     sigmund_doit(x, npts, arraypoints, loud, srate);
 cleanup:
-    BUF_FREEA(arraypoints, bufsize);
+    freebytes(arraypoints, bufsize);
 }
 
 static void sigmund_clear(t_sigmund *x)
