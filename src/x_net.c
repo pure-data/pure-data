@@ -728,7 +728,12 @@ static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
     char addrstr[INET6_ADDRSTRLEN];
     addrstr[0] = '\0';
     if(INET_NTOP(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
-        outlet_symbol(o, gensym(addrstr));
+    {
+        t_atom ap;
+        ushort port = ntohs(addr->sin_port);
+        SETFLOAT(&ap, (float)port);
+        outlet_anything(o, gensym(addrstr), 1, &ap);
+    }
 }
 
 void x_net_setup(void)
