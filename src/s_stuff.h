@@ -171,13 +171,13 @@ EXTERN_STRUCT _socketreceiver;
 
 typedef void (*t_socketnotifier)(void *x, int n);
 typedef void (*t_socketreceivefn)(void *x, t_binbuf *b);
-    /* UDP recvfrom sockaddr, optional */
+    /* from sockaddr, optional */
 typedef void (*t_socketfromaddrfn)(void *x, const void *fromaddr);
 
 EXTERN t_socketreceiver *socketreceiver_new(void *owner,
     t_socketnotifier notifier, t_socketreceivefn socketreceivefn, int udp);
 EXTERN void socketreceiver_read(t_socketreceiver *x, int fd);
-EXTERN void socketreceiver_set_fromaddrfn(t_socketreceiver *x, /* UDP only */
+EXTERN void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
     t_socketfromaddrfn fromaddrfn);
 EXTERN int sys_sockerrno();
 EXTERN void sys_sockerror(char *s);

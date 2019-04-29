@@ -616,6 +616,14 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
                 if (x->sr_inhead >= INBUFSIZE) x->sr_inhead = 0;
                 while (socketreceiver_doread(x))
                 {
+                    if (x->sr_fromaddrfn)
+                    {
+                        struct sockaddr *fromaddr = x->sr_fromaddr;
+                        socklen_t fromaddrlen = sizeof(struct sockaddr);
+                        if(!getpeername(fd, fromaddr, &fromaddrlen))
+                            (*x->sr_fromaddrfn)(x->sr_owner,
+                                (const void *)x->sr_fromaddr);
+                    }
                     outlet_setstacklim();
                     if (x->sr_socketreceivefn)
                         (*x->sr_socketreceivefn)(x->sr_owner,

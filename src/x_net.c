@@ -157,6 +157,9 @@ static void netsend_readbin(t_netsend *x, int fd)
     }
     else
     {
+        if (x->x_fromout &&
+            !getpeername(fd, (struct sockaddr *)&fromaddr, &fromaddrlen))
+                outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
         for (i = 0; i < ret; i++)
             outlet_float(x->x_msgout, inbuf[i]);
     }
@@ -461,7 +464,7 @@ static void netreceive_notify(t_netreceive *x, int fd)
     outlet_float(x->x_ns.x_connectout, x->x_nconnections);
 }
 
-    /* socketreceiver UDP recvfrom sockaddr_in */
+    /* socketreceiver from sockaddr_in */
 static void netreceive_fromaddr(void *z, const void *fromaddr)
 {
     t_netreceive *x = (t_netreceive *)z;
@@ -471,14 +474,7 @@ static void netreceive_fromaddr(void *z, const void *fromaddr)
 
 static void netreceive_connectpoll(t_netreceive *x)
 {
-    struct sockaddr_in fromaddr = {0};
-    socklen_t fromaddrlen = sizeof(struct sockaddr_in);
-    int fd = 0;
-    if (x->x_ns.x_fromout)
-        fd = accept(x->x_ns.x_sockfd, (struct sockaddr *)&fromaddr,
-            &fromaddrlen);
-    else
-        fd = accept(x->x_ns.x_sockfd, 0, 0);
+    int fd = accept(x->x_ns.x_sockfd, 0, 0);
     if (fd < 0) post("netreceive: accept failed");
     else
     {
@@ -498,13 +494,11 @@ static void netreceive_connectpoll(t_netreceive *x)
             t_socketreceiver *y = socketreceiver_new((void *)x,
             (t_socketnotifier)netreceive_notify,
                 (x->x_ns.x_msgout ? netsend_read : 0), 0);
+            if (x->x_ns.x_fromout)
+                socketreceiver_set_fromaddrfn(y,
+                    (t_socketfromaddrfn)netreceive_fromaddr);
             sys_addpollfn(fd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receivers[x->x_nconnections] = y;
-        }
-        if (x->x_ns.x_fromout)
-        {
-                /* output from addr for new TCP connection */
-            outlet_sockaddr(x->x_ns.x_fromout, (const void *)&fromaddr);
         }
         outlet_float(x->x_ns.x_connectout, (x->x_nconnections = nconnections));
     }
@@ -605,12 +599,9 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
             t_socketreceiver *y = socketreceiver_new((void *)x,
                 (t_socketnotifier)netreceive_notify,
                     (x->x_ns.x_msgout ? netsend_read : 0), 1);
-            if (x->x_ns.x_protocol == SOCK_DGRAM)
-            {
-                if (x->x_ns.x_fromout)
-                    socketreceiver_set_fromaddrfn(y,
-                        (t_socketfromaddrfn)netreceive_fromaddr);
-            }
+            if (x->x_ns.x_fromout)
+                socketreceiver_set_fromaddrfn(y,
+                    (t_socketfromaddrfn)netreceive_fromaddr);
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_ns.x_connectout = 0;
             x->x_ns.x_receiver = y;
