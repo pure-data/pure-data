@@ -326,8 +326,12 @@ void sys_poll_midi(void)
                         break;
                 }
             }
-            else if (nmess != pmBufferOverflow)
-                break;
+            else
+            {
+                error("portmidi: %s", Pm_GetErrorText(nmess));
+                if (nmess != pmBufferOverflow)
+                    break;
+            }
         }
     }
     overload: ;
