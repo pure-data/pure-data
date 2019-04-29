@@ -273,11 +273,10 @@ void sys_poll_midi(void)
     PmEvent buffer;
     for (i = 0; i < mac_nmidiindev; i++)
     {
-        while(Pm_Poll(mac_midiindevlist[i]))
+        while((nmess = Pm_Read(mac_midiindevlist[i], &buffer, 1)))
         {
             if (!throttle--)
                 goto overload;
-            nmess = Pm_Read(mac_midiindevlist[i], &buffer, 1);
             if (nmess > 0)
             {
                 int status = Pm_MessageStatus(buffer.message);
@@ -328,7 +327,7 @@ void sys_poll_midi(void)
             }
             else
             {
-                error("portmidi: %s", Pm_GetErrorText(nmess));
+                error("%s", Pm_GetErrorText(nmess));
                 if (nmess != pmBufferOverflow)
                     break;
             }
