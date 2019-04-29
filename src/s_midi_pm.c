@@ -273,7 +273,7 @@ void sys_poll_midi(void)
     PmEvent buffer;
     for (i = 0; i < mac_nmidiindev; i++)
     {
-        if(Pm_Poll(mac_midiindevlist[i]))
+        while(Pm_Poll(mac_midiindevlist[i]))
         {
             if (!throttle--)
                 goto overload;
