@@ -1041,7 +1041,7 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
             u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
         }
         else{
-            pd_error(x, "trigger2: %s: bad type", ap->a_w.w_symbol->s_name);
+            pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
             u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
         }
     }
