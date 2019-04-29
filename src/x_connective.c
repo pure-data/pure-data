@@ -989,36 +989,34 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
     x->x_vec = (t_triggerout *)getbytes(argc * sizeof(*x->x_vec));
     for(i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++)
     {
-        t_atomtype thistype = ap->a_type;
-        char c;
-        if (thistype == TR_SYMBOL) c = ap->a_w.w_symbol->s_name[0];
-        else if (thistype == TR_FLOAT) c = 'F';
-        else c = 0;
-        if (c == 'p')
-            u->u_type = TR_POINTER,
-            u->u_outlet = outlet_new(&x->x_obj, &s_pointer);
-        else if (c == 'f')
-            u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
-        else if (c == 'b')
-            u->u_type = TR_BANG, u->u_outlet = outlet_new(&x->x_obj, &s_bang);
-        else if (c == 'l')
-            u->u_type = TR_LIST, u->u_outlet = outlet_new(&x->x_obj, &s_list);
-        else if (c == 's')
-            u->u_type = TR_SYMBOL,
-            u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
-        else if (c == 'a')
-            u->u_type = TR_ANYTHING,
-            u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
-        else if (c == 'F')
+        if (ap->a_type == TR_SYMBOL){
+            char c = ap->a_w.w_symbol->s_name[0];
+            if (c == 'p')
+                u->u_type = TR_POINTER,
+                u->u_outlet = outlet_new(&x->x_obj, &s_pointer);
+            else if (c == 'f')
+                u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
+            else if (c == 'b')
+                u->u_type = TR_BANG, u->u_outlet = outlet_new(&x->x_obj, &s_bang);
+            else if (c == 'l')
+                u->u_type = TR_LIST, u->u_outlet = outlet_new(&x->x_obj, &s_list);
+            else if (c == 's')
+                u->u_type = TR_SYMBOL,
+                u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
+            else if (c == 'a')
+                u->u_type = TR_ANYTHING,
+                u->u_outlet = outlet_new(&x->x_obj, &s_anything);
+            else
+            {
+                pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
+                u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
+            }
+        }
+        else
         { // static float
             u->u_float = ap->a_w.w_float;
             u->u_type = TR_STATIC_FLOAT;
             u->u_outlet = outlet_new(&x->x_obj, &s_float);
-        }
-        else
-        {
-            pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
-            u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
         }
     }
     return (x);
