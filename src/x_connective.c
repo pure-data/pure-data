@@ -953,7 +953,6 @@ static t_class *trigger_class;
 #define TR_ANYTHING 5
 
 #define TR_STATIC_FLOAT 6
-#define TR_STATIC_SYMBOL 7
 
 typedef struct triggerout
 {
@@ -979,7 +978,7 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
     t_atom defarg[2], *ap;
     t_triggerout *u;
     int i;
-    if (!argc)
+    if(!argc)
     {
         argv = defarg;
         argc = 2;
@@ -988,32 +987,12 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_n = argc;
     x->x_vec = (t_triggerout *)getbytes(argc * sizeof(*x->x_vec));
-    for(i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++){
+    for(i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++)
+    {
         t_atomtype thistype = ap->a_type;
         char c;
-        if (thistype == TR_SYMBOL){
-            if (strcmp(ap->a_w.w_symbol->s_name, "anything") == 0
-                || strcmp(ap->a_w.w_symbol->s_name, "a") == 0)
-                c = 'a';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "bang") == 0
-                     || strcmp(ap->a_w.w_symbol->s_name, "b") == 0)
-                c = 'b';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "float") == 0
-                     || strcmp(ap->a_w.w_symbol->s_name, "f") == 0)
-                c = 'f';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "list") == 0
-                     || strcmp(ap->a_w.w_symbol->s_name, "l") == 0)
-                c = 'l';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "pointer") == 0
-                     || strcmp(ap->a_w.w_symbol->s_name, "p") == 0)
-                c = 'p';
-            else if (strcmp(ap->a_w.w_symbol->s_name, "symbol") == 0
-                     || strcmp(ap->a_w.w_symbol->s_name, "s") == 0)
-                c = 's';
-            else c = 'S';
-        }
-        else if (thistype == TR_FLOAT)
-            c = 'F';
+        if (thistype == TR_SYMBOL) c = ap->a_w.w_symbol->s_name[0];
+        else if (thistype == TR_FLOAT) c = 'F';
         else c = 0;
         if (c == 'p')
             u->u_type = TR_POINTER,
@@ -1030,18 +1009,15 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
         else if (c == 'a')
             u->u_type = TR_ANYTHING,
             u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
-        else if (c == 'F'){ // static float
+        else if (c == 'F')
+        { // static float
             u->u_float = ap->a_w.w_float;
             u->u_type = TR_STATIC_FLOAT;
             u->u_outlet = outlet_new(&x->x_obj, &s_float);
         }
-        else if (c == 'S'){ // static symbol
-            u->u_sym = gensym(ap->a_w.w_symbol->s_name);
-            u->u_type = TR_STATIC_SYMBOL;
-            u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
-        }
-        else{
-            pd_error(x, "trigger2: %s: bad type", ap->a_w.w_symbol->s_name);
+        else
+        {
+            pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
             u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
         }
     }
@@ -1052,7 +1028,7 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
     int i;
-    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
+    for(i = x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_FLOAT)
             outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
@@ -1070,20 +1046,13 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
         }
         else if (u->u_type == TR_STATIC_FLOAT)
-        {
             outlet_float(u->u_outlet, u->u_float);
-        }
-        else if (u->u_type == TR_STATIC_SYMBOL)
-        {
-            outlet_symbol(u->u_outlet, u->u_sym);
-        }
         else outlet_list(u->u_outlet, &s_list, argc, argv);
     }
 }
 
 static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
-    //fprintf(stderr,"trigger_anything %s %d\n", s->s_name, argc);
     t_atom *av2 = NULL;
     t_triggerout *u;
     int i, j = 0;
@@ -1092,81 +1061,43 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
         if (u->u_type == TR_BANG)
             outlet_bang(u->u_outlet);
         else if (u->u_type == TR_ANYTHING)
-        {
-            //fprintf(stderr,"TR_ANYTHING\n");
             outlet_anything(u->u_outlet, s, argc, argv);
-        }
         else if (u->u_type == TR_STATIC_FLOAT)
-        {
             outlet_float(u->u_outlet, u->u_float);
-        }
-        else if (u->u_type == TR_STATIC_SYMBOL)
-        {
-            outlet_symbol(u->u_outlet, u->u_sym);
-        }
-        //else trigger_symbol(x, s);
         else
         {
             // copying trigger_list behavior except that here we keep
             // the outlet number and therefore avoid redundant printouts
             if (u->u_type == TR_FLOAT)
-            {
-                //fprintf(stderr,"trigger_anything -> TR_FLOAT %d\n", argc);
                 outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
-            }
             else if (u->u_type == TR_BANG)
-            {
-                //fprintf(stderr,"trigger_anything -> TR_BANG %d\n", argc);
                 outlet_bang(u->u_outlet);
-            }
             else if (u->u_type == TR_SYMBOL)
-            {
-                //fprintf(stderr,"trigger_anything -> TR_SYMBOL %d\n", argc);
                 outlet_symbol(u->u_outlet,
                               (s != NULL ? s : (argc ? atom_getsymbol(argv) : &s_symbol)));
-            }
             else if (u->u_type == TR_ANYTHING)
-            {
-                //fprintf(stderr,"trigger_anything -> TR_ANYTHING %d\n", argc);
                 outlet_anything(u->u_outlet, s, argc, argv);
-            }
             else if (u->u_type == TR_POINTER)
-            {
-                //fprintf(stderr,"trigger_anything -> TR_POINTER %d\n", argc);
                 if (!argc || argv->a_type != TR_POINTER)
                     pd_error(x, "unpack: bad pointer");
                 else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
-            }
-            else if (u->u_type == TR_STATIC_FLOAT)
-            {
-                //fprintf(stderr,"trigger_anything -> TR_STATIC_FLOAT %d\n", argc);
-                outlet_float(u->u_outlet, u->u_float);
-            }
-            else if (u->u_type == TR_STATIC_SYMBOL)
-            {
-                //fprintf(stderr,"trigger_anything -> TR_STATIC_SYMBOL %d\n", argc);
-                outlet_symbol(u->u_outlet, u->u_sym);
-            }
-            else
-            {
-                // Ico: don't have to worry about zero element case (AFAICT)
-                av2 = (t_atom *)getbytes((argc + 1) * sizeof(t_atom));
-                SETSYMBOL(av2, s);
-                if (argc == 0)
-                {
-                    //fprintf(stderr,"trigger_anything -> symbol %d\n", argc);
-                    outlet_list(u->u_outlet, &s_symbol, argc+1, av2);
-                }
+                else if (u->u_type == TR_STATIC_FLOAT)
+                    outlet_float(u->u_outlet, u->u_float);
                 else
-                {
-                    for (j = 0; j < argc; j++)
-                        av2[j + 1] = argv[j];
-                    //fprintf(stderr,"trigger_anything -> list %d\n", argc);
+                { // Ico: don't have to worry about zero element case (AFAICT)
+                    av2 = (t_atom *)getbytes((argc + 1) * sizeof(t_atom));
                     SETSYMBOL(av2, s);
-                    outlet_list(u->u_outlet, &s_list, argc+1, av2);
+                    if (argc == 0)
+                        outlet_list(u->u_outlet, &s_symbol, argc+1, av2);
+                    else
+                    {
+                        for (j = 0; j < argc; j++)
+                            av2[j + 1] = argv[j];
+                        SETSYMBOL(av2, s);
+                        outlet_list(u->u_outlet, &s_list, argc+1, av2);
+                    }
+                    freebytes(av2, (argc + 1) * sizeof(t_atom));
                 }
-                freebytes(av2, (argc + 1) * sizeof(t_atom));
-            }
         }
     }
 }

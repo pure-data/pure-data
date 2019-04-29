@@ -14,24 +14,28 @@
 #X obj 407 243 print x5;
 #X obj 137 203 trigger float bang symbol list anything;
 #X msg 276 150 list a b c;
-#X text 294 524 updated for Pd version 0.50.;
-#X symbolatom 369 471 10 0 0 0 - - -;
-#X floatatom 304 471 5 0 0 0 - - -;
-#X obj 239 443 trigger float 10 pd;
-#X floatatom 239 470 5 0 0 0 - - -;
-#X floatatom 239 417 5 0 0 0 - - -;
-#X obj 90 444 trigger 1 2;
-#X floatatom 90 471 5 0 0 0 - - -;
-#X floatatom 164 471 5 0 0 0 - - -;
-#X obj 90 417 loadbang;
-#X text 52 341 You can also use other creation arguments that are not
-message types. These are then treated as constant values (a float or
-a symbol) \, and can be useful to sequence messages., f 63;
+#X text 281 524 updated for Pd version 0.50.;
+#X floatatom 325 466 5 0 0 0 - - -;
+#X floatatom 275 465 5 0 0 0 - - -;
+#X floatatom 275 412 5 0 0 0 - - -;
+#X floatatom 96 461 5 0 0 0 - - -;
+#X floatatom 154 462 5 0 0 0 - - -;
 #X msg 363 150 dog my cats;
 #X text 38 62 The trigger object outputs its input from right to left
 \, converting to the types indicated by its creation arguments. There
 is also a "pointer" argument type (see the pointer object.) - the default
 is [trigger bang bang].;
+#X text 52 339 You can also use other creation arguments as flotas
+\, these are then treated as constant values and can be useful to sequence
+messages., f 63;
+#X obj 375 469 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 96 493 /;
+#X floatatom 96 524 5 0 0 0 - - -;
+#X obj 96 434 t 1 f;
+#X floatatom 96 408 5 0 0 0 - - -;
+#X obj 275 439 trigger float 2 bang 1;
+#X floatatom 426 466 5 0 0 0 - - -;
 #X connect 0 0 13 0;
 #X connect 1 0 13 0;
 #X connect 2 0 13 0;
@@ -42,11 +46,15 @@ is [trigger bang bang].;
 #X connect 13 3 7 0;
 #X connect 13 4 12 0;
 #X connect 14 0 13 0;
-#X connect 18 0 19 0;
-#X connect 18 1 17 0;
-#X connect 18 2 16 0;
-#X connect 20 0 18 0;
-#X connect 21 0 22 0;
-#X connect 21 1 23 0;
-#X connect 24 0 21 0;
-#X connect 26 0 13 0;
+#X connect 18 0 29 0;
+#X connect 19 0 25 0;
+#X connect 20 0 25 1;
+#X connect 21 0 13 0;
+#X connect 25 0 26 0;
+#X connect 27 0 19 0;
+#X connect 27 1 20 0;
+#X connect 28 0 27 0;
+#X connect 29 0 17 0;
+#X connect 29 1 16 0;
+#X connect 29 2 24 0;
+#X connect 29 3 30 0;
