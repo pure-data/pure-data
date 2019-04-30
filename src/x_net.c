@@ -588,8 +588,8 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
     server.sin_family = AF_INET;
     server.sin_port = htons((u_short)portno);
 
-        /* assign optional incoming or multicast hostname */
-    if (x->x_hostname)
+        /* assign optional UDP incoming or multicast hostname */
+    if (x->x_hostname && x->x_ns.x_protocol == SOCK_DGRAM)
     {
         hp = gethostbyname(x->x_hostname);
         if (hp == 0)
@@ -613,19 +613,19 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         return;
     }
 
-        /* join multicast group */
-    if (multicast)
-    {
-        struct ip_mreq mreq;
-        mreq.imr_multiaddr.s_addr = server.sin_addr.s_addr;
-        mreq.imr_interface.s_addr = INADDR_ANY;
-        if (setsockopt(x->x_ns.x_sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-            (char *)&mreq, sizeof(mreq)) < 0)
-            post("netreceive: setsockopt (IP_ADD_MEMBERSHIP) failed");
-    }
-
     if (x->x_ns.x_protocol == SOCK_DGRAM) /* datagram protocol */
     {
+            /* join multicast group */
+        if (multicast)
+        {
+            struct ip_mreq mreq;
+            mreq.imr_multiaddr.s_addr = server.sin_addr.s_addr;
+            mreq.imr_interface.s_addr = INADDR_ANY;
+            if (setsockopt(x->x_ns.x_sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+                (char *)&mreq, sizeof(mreq)) < 0)
+                post("netreceive: setsockopt (IP_ADD_MEMBERSHIP) failed");
+        }
+
         if (x->x_ns.x_bin)
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)netsend_readbin, x);
         else
@@ -713,8 +713,16 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
         portno = argv->a_w.w_float, argc--, argv++;
     if (argc && argv->a_type == A_SYMBOL)
     {
-        x->x_hostname = malloc(256);
-        atom_string(argv, x->x_hostname, 256);
+        if (x->x_ns.x_protocol == SOCK_DGRAM)
+        {
+            x->x_hostname = malloc(256);
+            atom_string(argv, x->x_hostname, 256);
+        }
+        else
+        {
+            pd_error(x, "netreceive: hostname argument ignored:");
+            postatom(argc, argv); endpost();
+        }
         argc--, argv++;
     }
     if (argc)
