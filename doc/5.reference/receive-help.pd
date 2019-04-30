@@ -19,8 +19,8 @@ windows too. Also \, you can use message boxes as shown:;
 #X obj 177 324 r;
 #X obj 21 10 receive;
 #X text 79 10 -- receive messages without patch cords;
-#X text 222 235 If invoked without an argument \, "send" creates an
-inlet to let you set the target via "symbol" messages:, f 38;
+#X text 222 235 If invoked without an argument \, "receive" creates an
+inlet to let you set the source via "symbol" messages:, f 38;
 #X text 52 380 updated for Pd version 0.50.;
 #X msg 322 295 symbol help-rcv1;
 #X msg 349 328 symbol help-rcv2;
