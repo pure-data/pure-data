@@ -338,6 +338,7 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
 # events out.
 proc ::pd_bindings::sendkey {window state key iso shift} {
     # TODO canvas_key on the C side should be refactored with this proc as well
+    if { $iso eq "" } { set iso $key }
     switch -- $key {
         "BackSpace" { set iso ""; set key 8    }
         "Tab"       { set iso ""; set key 9 }
@@ -349,7 +350,7 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
         "KP_Delete" { set iso ""; set key 127 }
         "KP_Enter" { set iso ""; set key 10 }
     }
-    if {$iso ne ""} {
+    if { [string length $iso] == 1 } {
         scan $iso %c key
     }
     # some pop-up panels also bind to keys like the enter, but then disappear,
