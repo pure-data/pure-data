@@ -1,6 +1,6 @@
 #N struct help-draw-data float x float y float cat float dog symbol
 weasel text boom;
-#N canvas 574 97 573 219 12;
+#N canvas 610 149 573 219 12;
 #X text 43 126 see also:;
 #X obj 46 18 drawnumber;
 #X obj 215 155 plot;
@@ -21,7 +21,7 @@ cut \, copy \, and paste the objects.);
 #X text 44 243 - an optional label ("cat=" for instance);
 #X text 44 191 - an (x \, y) pair giving relative coordinates \;;
 #X text 46 24 "0" in inlet makes invisible;
-#X obj 27 27 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1 1
+#X obj 27 27 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
 ;
 #X text 48 112 - optional "-n" flag to make invisible initially;
 #X text 46 133 - alternatively \, an optional "-v [variable]" flag
@@ -34,19 +34,20 @@ field names \, like "cat" and "dog" here.;
 #X obj 27 56 drawnumber cat 0 0 0 cat=;
 #X obj 262 57 drawnumber dog 0 -15 900 dog=;
 #X obj 91 459 drawsymbol weasel 0 -30 0 weasel=;
-#X text 29 394 Here we use the drawsymbol and drawtext to draw a symbol
-and a text. There's no way to edit symbols/text though - they can only
-be changed through "set" and "text" objects.;
 #X text 23 365 Keyboard entry is also supported \, just click and type.
 ;
 #X obj 91 486 drawtext boom 0 -45 0 boom=;
 #X obj 30 601 struct help-draw-data float x float y float cat float
 dog symbol weasel text boom;
+#X text 29 394 Here we use the drawsymbol and drawtext to draw a symbol
+and a text. There's no way to edit symbols/text though - they can only
+be changed through "set" and "text" objects \, respectively., f 63
+;
 #X connect 6 0 12 0;
 #X restore 328 79 pd help-draw-template;
-#N canvas 155 50 375 224 help-draw-data 1;
-#X scalar help-draw-data 72 111 628 651 weasel \; a b c \\\; \;;
-#X scalar help-draw-data 216 89 628 651 weasel \; a b c \\\; \;;
+#N canvas 128 115 455 265 help-draw-data 1;
+#X scalar help-draw-data 63 134 628 651 weasel \; a b c \\\; \;;
+#X scalar help-draw-data 255 95 628 651 weasel \; a b c \\\; \;;
 #X restore 328 106 pd help-draw-data;
 #X text 313 155 updated for Pd version 0.50.;
 #X text 140 22 -- currently \, all these objects are aliases of the
