@@ -916,10 +916,14 @@ ex_dofact(int i)
 {
         int ret = 0;
 
-        if (i)
+        if (i > 0)
                 ret = 1;
+    
+        else if (i < 0 )
+                return (0);
+    
         else
-                return (1);
+            return (1);
 
         do {
                 ret *= i;
