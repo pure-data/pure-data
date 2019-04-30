@@ -52,6 +52,27 @@ void gobj_save(t_gobj *x, t_binbuf *b)
 actually bind a collection object to the symbol, which forwards messages sent
 to the symbol. */
 
+/* this is a helper class for scheduling a bind/unbind request to the next tick.
+we need this when someone wants to bind/unbind while we're receiving a message
+to very same symbol */
+typedef struct _schedbind
+{
+    t_clock *s_clock;
+    t_pd *s_who;
+    t_symbol *s_sym;
+    int s_action; /* 1: bind, 0: unbind */
+} t_schedbind;
+
+static void schedbind_tick(t_schedbind *x)
+{
+    if (x->s_action)
+        pd_bind(x->s_who, x->s_sym);
+    else
+        pd_unbind(x->s_who, x->s_sym);
+    clock_free(x->s_clock);
+    freebytes(x, sizeof(*x));
+}
+
 static t_class *bindlist_class;
 
 typedef struct _bindelem
@@ -64,50 +85,63 @@ typedef struct _bindlist
 {
     t_pd b_pd;
     t_bindelem *b_list;
+    int b_rcv; /* currently receiving a message? */
 } t_bindlist;
 
 static void bindlist_bang(t_bindlist *x)
 {
     t_bindelem *e;
+    x->b_rcv = 1;
     for (e = x->b_list; e; e = e->e_next)
         pd_bang(e->e_who);
+    x->b_rcv = 0;
 }
 
 static void bindlist_float(t_bindlist *x, t_float f)
 {
     t_bindelem *e;
+    x->b_rcv = 1;
     for (e = x->b_list; e; e = e->e_next)
         pd_float(e->e_who, f);
+    x->b_rcv = 0;
 }
 
 static void bindlist_symbol(t_bindlist *x, t_symbol *s)
 {
     t_bindelem *e;
+    x->b_rcv = 1;
     for (e = x->b_list; e; e = e->e_next)
         pd_symbol(e->e_who, s);
+    x->b_rcv = 0;
 }
 
 static void bindlist_pointer(t_bindlist *x, t_gpointer *gp)
 {
     t_bindelem *e;
+    x->b_rcv = 1;
     for (e = x->b_list; e; e = e->e_next)
         pd_pointer(e->e_who, gp);
+    x->b_rcv = 0;
 }
 
 static void bindlist_list(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_bindelem *e;
+    x->b_rcv = 1;
     for (e = x->b_list; e; e = e->e_next)
         pd_list(e->e_who, s, argc, argv);
+    x->b_rcv = 0;
 }
 
 static void bindlist_anything(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_bindelem *e;
+    x->b_rcv = 1;
     for (e = x->b_list; e; e = e->e_next)
         pd_typedmess(e->e_who, s, argc, argv);
+    x->b_rcv = 0;
 }
 
 void m_pd_setup(void)
@@ -129,10 +163,25 @@ void pd_bind(t_pd *x, t_symbol *s)
         if (*s->s_thing == bindlist_class)
         {
             t_bindlist *b = (t_bindlist *)s->s_thing;
-            t_bindelem *e = (t_bindelem *)getbytes(sizeof(t_bindelem));
-            e->e_next = b->b_list;
-            e->e_who = x;
-            b->b_list = e;
+            if (!b->b_rcv)
+            {
+                t_bindelem *e = (t_bindelem *)getbytes(sizeof(t_bindelem));
+                e->e_next = b->b_list;
+                e->e_who = x;
+                b->b_list = e;
+                b->b_rcv = 0;
+            }
+            else
+            {
+                /* schedule the bind request for the next tick */
+                t_schedbind *sb = (t_schedbind *)getbytes(sizeof(*sb));
+                sb->s_who = x;
+                sb->s_sym = s;
+                sb->s_action = 1; /* bind */
+                sb->s_clock = clock_new(sb, (t_method)schedbind_tick);
+                clock_delay(sb->s_clock, 0);
+                post("warning: %s: trying to bind while receiving!", s->s_name);
+            }
         }
         else
         {
@@ -160,24 +209,38 @@ void pd_unbind(t_pd *x, t_symbol *s)
             straight to the remaining element. */
 
         t_bindlist *b = (t_bindlist *)s->s_thing;
-        t_bindelem *e, *e2;
-        if ((e = b->b_list)->e_who == x)
+        if (!b->b_rcv)
         {
-            b->b_list = e->e_next;
-            freebytes(e, sizeof(t_bindelem));
+            t_bindelem *e, *e2;
+            if ((e = b->b_list)->e_who == x)
+            {
+                b->b_list = e->e_next;
+                freebytes(e, sizeof(t_bindelem));
+            }
+            else for (e = b->b_list; (e2 = e->e_next); e = e2)
+                if (e2->e_who == x)
+            {
+                e->e_next = e2->e_next;
+                freebytes(e2, sizeof(t_bindelem));
+                break;
+            }
+            if (!b->b_list->e_next)
+            {
+                s->s_thing = b->b_list->e_who;
+                freebytes(b->b_list, sizeof(t_bindelem));
+                pd_free(&b->b_pd);
+            }
         }
-        else for (e = b->b_list; (e2 = e->e_next); e = e2)
-            if (e2->e_who == x)
+        else
         {
-            e->e_next = e2->e_next;
-            freebytes(e2, sizeof(t_bindelem));
-            break;
-        }
-        if (!b->b_list->e_next)
-        {
-            s->s_thing = b->b_list->e_who;
-            freebytes(b->b_list, sizeof(t_bindelem));
-            pd_free(&b->b_pd);
+            /* schedule the bind request for the next tick */
+            t_schedbind *sb = (t_schedbind *)getbytes(sizeof(*sb));
+            sb->s_who = x;
+            sb->s_sym = s;
+            sb->s_action = 0; /* unbind */
+            sb->s_clock = clock_new(sb, (t_method)schedbind_tick);
+            clock_delay(sb->s_clock, 0);
+            post("warning: %s: trying to unbind while receiving!", s->s_name);
         }
     }
     else pd_error(x, "%s: couldn't unbind", s->s_name);
