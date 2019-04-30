@@ -768,7 +768,7 @@ static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
     if (INET_NTOP(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
     {
         t_atom ap[2];
-        ushort port = ntohs(addr->sin_port);
+        unsigned short port = ntohs(addr->sin_port);
         SETSYMBOL(&ap[0], gensym(addrstr));
         SETFLOAT(&ap[1], (float)port);
         outlet_list(o, NULL, 2, ap);
