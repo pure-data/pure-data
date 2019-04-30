@@ -1986,6 +1986,8 @@ void x_qlist_setup(void )
         (t_method)text_define_free, sizeof(t_text_define), 0, A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)textbuf_open,
         gensym("click"), 0);
+    class_addmethod(text_define_class, (t_method)textbuf_open,
+        gensym("open"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_close,
         gensym("close"), 0);
     class_addmethod(text_define_class, (t_method)textbuf_addline,

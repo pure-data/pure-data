@@ -1,5 +1,5 @@
 #N struct text-help-struct float x float y text z;
-#N canvas 65 53 637 594 12;
+#N canvas 312 83 637 594 12;
 #X obj 141 517 list;
 #X obj 18 6 text;
 #X text 35 516 see also:;
@@ -19,10 +19,10 @@
 #X text 32 20 "text define" maintains a text object and can name it
 so that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 61 425 click to open and edit text:;
-#X text 296 413 creation arguments:;
-#X text 324 431 optional -k flag to keep contents;
-#X text 326 448 optional name;
+#X text 80 426 click to open and edit text:;
+#X text 311 413 creation arguments:;
+#X text 339 431 optional -k flag to keep contents;
+#X text 341 448 optional name;
 #X text 77 268 (optionally you can read or write to/from a file interpreting
 carriage returns as separators \; this should allow reading some text
 file formats - like this:);
@@ -49,12 +49,12 @@ the text - see first outlet below, f 45;
 Pd 0.48 this only outputs the message "updated" when text changes \,
 but this might be extended to offer more information in the future.
 , f 42;
-#X msg 79 376 click;
 #X msg 127 376 close;
 #X text 175 376 open and close text window;
 #X msg 59 235 send text-help-send;
 #X text 206 235 send pointer to a named receive object;
 #X obj 51 481 r text-help-send;
+#X msg 79 376 open;
 #X connect 0 0 18 0;
 #X connect 1 0 18 0;
 #X connect 2 0 18 0;
@@ -68,9 +68,9 @@ but this might be extended to offer more information in the future.
 #X connect 18 1 20 0;
 #X connect 19 0 18 0;
 #X connect 24 0 18 0;
-#X connect 25 0 18 0;
-#X connect 27 0 18 0;
-#X connect 29 0 13 0;
+#X connect 26 0 18 0;
+#X connect 28 0 13 0;
+#X connect 29 0 18 0;
 #X restore 392 217 pd define;
 #X obj 280 240 text get;
 #N canvas 885 156 859 566 get 0;
@@ -268,7 +268,7 @@ If the number n is greater than the number of lines in the text the
 new line is added.;
 #X text 241 348 next optional arg to set inlet 2 (field number \, defaults
 to whole line), f 47;
-#X msg 223 165 1e+015;
+#X msg 223 165 1e+15;
 #X text 83 391 If inlet 2 is unset or set to a negative number \, the
 entire line is replaced \, but if it is set to 0 or more to specify
 a starting field \, the line is not resized - instead \, as many items
@@ -637,7 +637,7 @@ line 4 \\\;;
 #X obj 54 432 text fromlist text-help-insert;
 #X obj 52 288 text define -k text-help-insert;
 #A set line 0 \; line 1 \; line 2 \; line 3 \; line 4 \;;
-#X msg 165 142 1e+009;
+#X msg 165 142 1e+09;
 #X text 214 144 insert after end;
 #X msg 59 82 list x y z w;
 #X msg 65 108 1 2 3;
