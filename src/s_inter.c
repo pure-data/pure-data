@@ -406,7 +406,7 @@ int sys_sockerrno()
 {
 #ifdef _WIN32
     int err = WSAGetLastError();
-    if (err == 10054) return;
+    if (err == 10054) return 0;
     else if (err == 10044)
     {
         fprintf(stderr,
@@ -529,9 +529,14 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
     if (ret < 0)
     {
-        sys_sockerror("recv (udp)");
-        sys_rmpollfn(fd);
-        sys_closesocket(fd);
+            /* only close the socket if there really was an error.
+            (sys_sockerrno() ignores some error codes) */
+        if (sys_sockerrno())
+        {
+            sys_sockerror("recv (udp)");
+            sys_rmpollfn(fd);
+            sys_closesocket(fd);
+        }
     }
     else if (ret > 0)
     {
