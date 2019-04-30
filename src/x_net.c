@@ -571,17 +571,21 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         &intarg, sizeof(intarg)) < 0)
             post("setsockopt (SO_RCVBUF) failed");
 #endif
-    intarg = 1;
-    if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_BROADCAST,
-        (const void *)&intarg, sizeof(intarg)) < 0)
-            post("netreceive: failed to set SO_BROADCAST");
-        /* Stream (TCP) sockets are set NODELAY */
     if (x->x_ns.x_protocol == SOCK_STREAM)
     {
+        /* Stream (TCP) sockets are set NODELAY */
         intarg = 1;
         if (setsockopt(x->x_ns.x_sockfd, IPPROTO_TCP, TCP_NODELAY,
             (char *)&intarg, sizeof(intarg)) < 0)
                 post("netreceive: setsockopt (TCP_NODELAY) failed");
+    }
+    else if (x->x_ns.x_protocol == SOCK_DGRAM)
+    {
+        /* enable UDP broadcasting */
+        intarg = 1;
+        if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_BROADCAST,
+            (const void *)&intarg, sizeof(intarg)) < 0)
+                post("netreceive: failed to set SO_BROADCAST");
     }
 
         /* assign server port number etc */
