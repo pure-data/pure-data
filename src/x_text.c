@@ -48,6 +48,8 @@ typedef struct _textbuf
     t_canvas *b_canvas;
     t_guiconnect *b_guiconnect;
     t_symbol *b_sym;
+    t_int b_vis;
+
 } t_textbuf;
 
 static void textbuf_init(t_textbuf *x, t_symbol *sym)
@@ -55,6 +57,7 @@ static void textbuf_init(t_textbuf *x, t_symbol *sym)
     x->b_binbuf = binbuf_new();
     x->b_canvas = canvas_getcurrent();
     x->b_sym = sym;
+    x->b_vis = 0;
 }
 
 static void textbuf_senditup(t_textbuf *x)
@@ -96,15 +99,19 @@ static void textbuf_open(t_textbuf *x)
         x->b_guiconnect = guiconnect_new(&x->b_ob.ob_pd, gensym(buf));
         textbuf_senditup(x);
     }
+    x->b_vis = 1;
 }
 
 static void textbuf_close(t_textbuf *x)
 {
-    sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
-    if (x->b_guiconnect)
-    {
-        guiconnect_notarget(x->b_guiconnect, 1000);
-        x->b_guiconnect = 0;
+    if(x->b_vis){
+        sys_vgui("pdtk_textwindow_doclose .x%lx\n", x);
+        if (x->b_guiconnect)
+        {
+            guiconnect_notarget(x->b_guiconnect, 1000);
+            x->b_guiconnect = 0;
+        }
+        x->b_vis = 0;
     }
 }
 
