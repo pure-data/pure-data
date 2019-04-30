@@ -344,8 +344,10 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
         "Return"    { set iso ""; set key 10 }
         "Escape"    { set iso ""; set key 27 }
         "Space"     { set iso ""; set key 32 }
+        "space"     { set iso ""; set key 32 }
         "Delete"    { set iso ""; set key 127 }
         "KP_Delete" { set iso ""; set key 127 }
+        "KP_Enter" { set iso ""; set key 10 }
     }
     if {$iso ne ""} {
         scan $iso %c key
