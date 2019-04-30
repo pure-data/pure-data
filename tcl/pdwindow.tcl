@@ -160,7 +160,7 @@ proc ::pdwindow::save_logbuffer_to_file {} {
     puts $f "Pd $::PD_MAJOR_VERSION.$::PD_MINOR_VERSION-$::PD_BUGFIX_VERSION$::PD_TEST_VERSION on $::tcl_platform(os) $::tcl_platform(machine)"
     puts $f "--------------------------------------------------------------------------------"
     foreach {object_id level message} $logbuffer {
-        puts $f [string trimright $message]
+        puts -nonewline $f $message
     }
     ::pdwindow::post "saved console to: $filename\n"
     close $f
