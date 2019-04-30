@@ -52,8 +52,10 @@ static void dopoll(void);
 int main(int argc, char **argv)
 {
     int portno;
+    char *hostname = NULL;
     struct sockaddr_in server = {0};
-    int nretry = 10;
+    struct hostent *hp = NULL;
+    int nretry = 10, multicast = 0;
 #ifdef _WIN32
     short version = MAKEWORD(2, 0);
     WSADATA nobby;
@@ -62,13 +64,21 @@ int main(int argc, char **argv)
         goto usage;
     if (argc >= 3)
     {
-        if (!strcmp(argv[2], "tcp"))
+        int index = (argc > 3 ? 3 : 2);
+        if (!strcmp(argv[index], "tcp"))
             protocol = SOCK_STREAM;
-        else if (!strcmp(argv[2], "udp"))
+        else if (!strcmp(argv[index], "udp"))
             protocol = SOCK_DGRAM;
         else goto usage;
+        if (index == 3)
+            hostname = argv[2];
     }
     else protocol = SOCK_STREAM;
+    if (hostname && protocol == SOCK_STREAM)
+    {
+        fprintf(stderr, "ignoring host: %s\n", hostname);
+        hostname = NULL;
+    }
 #ifdef _WIN32
     if (WSAStartup(version, &nobby)) sockerror("WSAstartup");
 #endif
@@ -80,7 +90,22 @@ int main(int argc, char **argv)
     }
     maxfd = sockfd + 1;
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
+
+    /* assign optional UDP incoming or multicast hostname */
+    if (hostname && protocol == SOCK_DGRAM)
+    {
+        hp = gethostbyname(hostname);
+        if (hp == 0)
+        {
+            fprintf(stderr, "bad host?\n");
+            exit(1);
+        }
+        memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
+        if ((0xE0000000 == (ntohl(server.sin_addr.s_addr) & 0xF0000000)))
+            multicast = 1;
+    }
+    else
+        server.sin_addr.s_addr = INADDR_ANY;
 
         /* assign client port number */
     server.sin_port = htons((unsigned short)portno);
@@ -92,7 +117,20 @@ int main(int argc, char **argv)
         x_closesocket(sockfd);
         return (0);
     }
-    if (protocol == SOCK_STREAM)
+    if (protocol == SOCK_DGRAM)
+    {
+        /* join multicast group */
+        if (multicast)
+        {
+            struct ip_mreq mreq;
+            mreq.imr_multiaddr.s_addr = server.sin_addr.s_addr;
+            mreq.imr_interface.s_addr = INADDR_ANY;
+            if (setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+                (char *)&mreq, sizeof(mreq)) < 0)
+                fprintf(stderr, "setsockopt (IP_ADD_MEMBERSHIP) failed\n");
+        }
+    }
+    else
     {
         if (listen(sockfd, 5) < 0)
         {
@@ -106,7 +144,7 @@ int main(int argc, char **argv)
         dopoll();
 
 usage:
-    fprintf(stderr, "usage: pdreceive <portnumber> [udp|tcp]\n");
+    fprintf(stderr, "usage: pdreceive <portnumber> [udphost] [udp|tcp]\n");
     fprintf(stderr, "(default is tcp)\n");
     exit(1);
 }
