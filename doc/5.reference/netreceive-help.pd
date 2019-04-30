@@ -1,20 +1,20 @@
-#N canvas 115 149 735 712 12;
+#N canvas 115 66 735 712 12;
 #X obj 61 359 netreceive 3000;
-#X floatatom 163 447 0 0 0 0 - - -;
-#X text 197 448 <--- number of open connections;
+#X floatatom 163 457 0 0 0 0 - - -;
+#X text 197 458 <--- number of open connections;
 #X text 85 12 Netreceive -- listen for incoming messages from network
 ;
 #X text 112 668 see also:;
 #X obj 198 669 netsend;
-#X obj 61 447 print tcp;
+#X obj 61 457 print tcp;
 #X obj 60 561 print udp;
 #X text 33 154 There are some possibilities for intercommunication
 with other programs... see the help for "netsend.", f 85;
 #X obj 60 533 netreceive -u 3001;
-#X text 195 355 creation arguments:;
-#X text 263 374 optional -u flag for UDP;
-#X text 263 392 optional -b flag for binary;
-#X text 263 428 optional port number;
+#X text 195 345 creation arguments:;
+#X text 263 364 optional -u flag for UDP;
+#X text 263 382 optional -b flag for binary;
+#X text 263 418 optional port number;
 #X obj 231 547 netreceive -b 3002;
 #X obj 231 575 print tcp-binary;
 #X obj 394 552 print udp-binary;
@@ -49,7 +49,9 @@ respectively:, f 67;
 #X obj 531 630 netreceive 3004 1;
 #X obj 394 524 netreceive -u -b -f 3003;
 #X obj 559 553 print from;
-#X text 263 410 optional -f flag for from address outlet (0.50+);
+#X text 263 400 optional -f flag for from address & port outlet (0.50+)
+;
+#X text 263 437 optional host name or multicast address (0.50+);
 #X connect 0 0 6 0;
 #X connect 0 1 1 0;
 #X connect 9 0 7 0;

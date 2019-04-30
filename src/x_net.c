@@ -38,7 +38,7 @@ const char* INET_NTOP(int af, const void* src, char* dst, int cnt) {
     memset(&srcaddr, 0, sizeof(struct sockaddr_in));
     memcpy(&(srcaddr.sin_addr), src, sizeof(srcaddr.sin_addr));
     srcaddr.sin_family = af;
-    if(WSAAddressToString((struct sockaddr*) &srcaddr,
+    if (WSAAddressToString((struct sockaddr*) &srcaddr,
         sizeof(struct sockaddr_in), 0, dst, (LPDWORD) &cnt) != 0)
         return NULL;
     return dst;
@@ -74,6 +74,7 @@ typedef struct _netreceive
     int *x_connections;
     int x_old;
     t_socketreceiver **x_receivers;
+    char *x_hostname; /* allowed or multicast hostname, NULL if not set */
 } t_netreceive;
 
 static void netreceive_notify(t_netreceive *x, int fd);
@@ -203,7 +204,7 @@ static void netsend_read(void *z, t_binbuf *b)
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *hostname;
-    int fportno, sportno, sockfd, portno, intarg;
+    int fportno, sportno, sockfd, portno, intarg, multicast = 0;
     struct sockaddr_in srcaddr = {0};
     struct hostent *hp;
 
@@ -248,6 +249,10 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
     memcpy((char *)&x->x_server.sin_addr, (char *)hp->h_addr, hp->h_length);
 
+    /* multicast? */
+    if (0xE0000000 == (ntohl(x->x_server.sin_addr.s_addr) & 0xF0000000))
+        multicast = 1;
+
     /* assign client port number */
     x->x_server.sin_port = htons((u_short)portno);
 
@@ -268,7 +273,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
     else { /* datagram (UDP) broadcasting */
         intarg = 1;
-        if(setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
+        if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
                   (const void *)&intarg, sizeof(intarg)) < 0)
             post("setsockopt (SO_BROADCAST) failed");
     }
@@ -288,11 +293,12 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             return;
         }
     }
-    else {
+    else if(hp && multicast)
+        post("connecting to port %d, multicast %s", portno, hostname->s_name);
+    else
         post("connecting to port %d", portno);
-    }
 
-    if(x->x_protocol == SOCK_STREAM) {
+    if (x->x_protocol == SOCK_STREAM) {
         /* try to connect.  LATER make a separate thread to do this
            because it might block */
         if (connect(sockfd, (struct sockaddr *)&x->x_server,
@@ -328,7 +334,7 @@ static void netsend_disconnect(t_netsend *x)
         sys_rmpollfn(x->x_sockfd);
         sys_closesocket(x->x_sockfd);
         x->x_sockfd = -1;
-        if(x->x_receiver)
+        if (x->x_receiver)
             socketreceiver_free(x->x_receiver);
         x->x_receiver = NULL;
         memset(&x->x_receiver, 0, sizeof(x->x_receiver));
@@ -452,7 +458,7 @@ static void netreceive_notify(t_netreceive *x, int fd)
             memmove(x->x_receivers+i, x->x_receivers+(i+1),
                 sizeof(t_socketreceiver*) * (x->x_nconnections - (i+1)));
 
-            if(x->x_receivers[i])
+            if (x->x_receivers[i])
                 socketreceiver_free(x->x_receivers[i]);
             x->x_receivers[i] = NULL;
             x->x_receivers = (t_socketreceiver **)t_resizebytes(x->x_receivers,
@@ -468,7 +474,7 @@ static void netreceive_notify(t_netreceive *x, int fd)
 static void netreceive_fromaddr(void *z, const void *fromaddr)
 {
     t_netreceive *x = (t_netreceive *)z;
-    if(x->x_ns.x_fromout)
+    if (x->x_ns.x_fromout)
         outlet_sockaddr(x->x_ns.x_fromout, (const struct sockaddr *)fromaddr);
 }
 
@@ -511,7 +517,7 @@ static void netreceive_closeall(t_netreceive *x)
     {
         sys_rmpollfn(x->x_connections[i]);
         sys_closesocket(x->x_connections[i]);
-        if(x->x_receivers[i]) {
+        if (x->x_receivers[i]) {
             socketreceiver_free(x->x_receivers[i]);
             x->x_receivers[i] = NULL;
         }
@@ -527,7 +533,7 @@ static void netreceive_closeall(t_netreceive *x)
         sys_closesocket(x->x_ns.x_sockfd);
     }
     x->x_ns.x_sockfd = -1;
-    if(x->x_ns.x_receiver)
+    if (x->x_ns.x_receiver)
         socketreceiver_free(x->x_ns.x_receiver);
     x->x_ns.x_receiver = NULL;
     if (x->x_ns.x_connectout)
@@ -536,8 +542,9 @@ static void netreceive_closeall(t_netreceive *x)
 
 static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
 {
-    int portno = fportno, intarg;
+    int portno = fportno, intarg, multicast = 0;
     struct sockaddr_in server = {0};
+    struct hostent *hp = NULL;
     netreceive_closeall(x);
     if (portno <= 0)
         return;
@@ -576,10 +583,26 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
             (char *)&intarg, sizeof(intarg)) < 0)
                 post("netreceive: setsockopt (TCP_NODELAY) failed");
     }
+
         /* assign server port number etc */
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons((u_short)portno);
+
+        /* assign optional incoming or multicast hostname */
+    if (x->x_hostname)
+    {
+        hp = gethostbyname(x->x_hostname);
+        if (hp == 0)
+        {
+            pd_error(x, "netreceive: bad host?\n");
+            return;
+        }
+        memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
+        if ((0xE0000000 == (ntohl(server.sin_addr.s_addr) & 0xF0000000)))
+            multicast = 1;
+    }
+    else
+        server.sin_addr.s_addr = INADDR_ANY;
 
         /* name the socket */
     if (bind(x->x_ns.x_sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
@@ -588,6 +611,17 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         sys_closesocket(x->x_ns.x_sockfd);
         x->x_ns.x_sockfd = -1;
         return;
+    }
+
+        /* join multicast group */
+    if (multicast)
+    {
+        struct ip_mreq mreq;
+        mreq.imr_multiaddr.s_addr = server.sin_addr.s_addr;
+        mreq.imr_interface.s_addr = INADDR_ANY;
+        if (setsockopt(x->x_ns.x_sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+            (char *)&mreq, sizeof(mreq)) < 0)
+            post("netreceive: setsockopt (IP_ADD_MEMBERSHIP) failed");
     }
 
     if (x->x_ns.x_protocol == SOCK_DGRAM) /* datagram protocol */
@@ -646,6 +680,7 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     x->x_nconnections = 0;
     x->x_connections = (int *)t_getbytes(0);
     x->x_receivers = (t_socketreceiver **)t_getbytes(0);
+    x->x_hostname = NULL;
     x->x_ns.x_sockfd = -1;
     if (argc && argv->a_type == A_FLOAT)
     {
@@ -676,6 +711,12 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     }
     if (argc && argv->a_type == A_FLOAT)
         portno = argv->a_w.w_float, argc--, argv++;
+    if (argc && argv->a_type == A_SYMBOL)
+    {
+        x->x_hostname = malloc(256);
+        atom_string(argv, x->x_hostname, 256);
+        argc--, argv++;
+    }
     if (argc)
     {
         pd_error(x, "netreceive: extra arguments ignored:");
@@ -702,10 +743,16 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+static void netreceive_free(t_netreceive *x)
+{
+    netreceive_closeall(x);
+    if (x->x_hostname) free(x->x_hostname);
+}
+
 static void netreceive_setup(void)
 {
     netreceive_class = class_new(gensym("netreceive"),
-        (t_newmethod)netreceive_new, (t_method)netreceive_closeall,
+        (t_newmethod)netreceive_new, (t_method)netreceive_free,
         sizeof(t_netreceive), 0, A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_listen,
         gensym("listen"), A_FLOAT, 0);
@@ -718,7 +765,7 @@ static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
     struct sockaddr_in *addr = (struct sockaddr_in *)sa;
     char addrstr[INET6_ADDRSTRLEN];
     addrstr[0] = '\0';
-    if(INET_NTOP(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
+    if (INET_NTOP(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
     {
         t_atom ap[2];
         ushort port = ntohs(addr->sin_port);
