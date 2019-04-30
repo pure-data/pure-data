@@ -1,4 +1,4 @@
-#N canvas 87 80 595 558 12;
+#N canvas 636 45 595 558 12;
 #X floatatom 30 200 0 0 0 0 - - -;
 #X obj 30 302 print;
 #X obj 30 275 makefilename dog%d.aif;
@@ -15,33 +15,39 @@
 #X text 220 277 <- creation argument is format;
 #X text 26 176 SUBSTITUTING A NUMBER;
 #X text 25 328 SUBSTITUTING A SYMBOL;
-#N canvas 105 144 550 361 all_possible_patterns 0;
-#X text 33 86 %c;
-#X text 110 86 character;
-#X text 33 106 %d or %i;
-#X text 110 106 signed decimal integer;
-#X text 33 126 %e;
-#X text 110 126 scientific notation using "e" character;
-#X text 33 146 %E;
-#X text 110 146 scientific notation using "e" character;
-#X text 33 166 %f;
-#X text 33 186 %o;
-#X text 110 186 signed octal;
-#X text 33 206 %s;
-#X text 110 206 symbol;
-#X text 33 226 %u;
-#X text 110 226 unsigned integer;
-#X text 33 246 %x;
-#X text 110 246 unsigned hexadecimal in lowercase;
-#X text 33 266 %X;
-#X text 110 266 unsigned hexadecimal in CAPS;
-#X text 33 286 %p;
-#X text 110 286 unsigned hexadecimal in lowercase preceded by "0x"
+#N canvas 327 140 602 393 all_possible_patterns 0;
+#X text 47 94 %c;
+#X text 124 94 character;
+#X text 47 114 %d or %i;
+#X text 124 114 signed decimal integer;
+#X text 47 134 %e;
+#X text 124 134 scientific notation using "e" character;
+#X text 47 154 %E;
+#X text 47 174 %f;
+#X text 47 234 %o;
+#X text 47 254 %s;
+#X text 124 254 symbol;
+#X text 47 274 %u;
+#X text 124 274 unsigned integer;
+#X text 47 294 %x;
+#X text 124 294 unsigned hexadecimal in lowercase;
+#X text 47 314 %X;
+#X text 124 314 unsigned hexadecimal in CAPS;
+#X text 47 334 %p;
+#X text 124 334 unsigned hexadecimal in lowercase preceded by "0x"
 ;
-#X text 20 37 This is a listing of all possible printf patterns used
+#X text 34 45 This is a listing of all possible printf patterns used
 in Pd's [makefilename]:;
-#X text 110 166 decimal floating point (currently broken);
-#X text 7 1 [makefilename] All Possible Patterns;
+#X text 21 9 [makefilename] All Possible Patterns;
+#X text 124 174 decimal floating point;
+#X text 124 234 unsigned octal;
+#X text 124 154 scientific notation using "E" character;
+#X text 47 194 %g;
+#X text 124 194 only uses scientific notation (with 'e') if shorter
+than float, f 62;
+#X text 47 214 %G;
+#X text 124 214 only uses scientific notation (with 'E') if shorter
+than float, f 62;
 #X restore 29 492 pd all_possible_patterns;
 #X text 25 526 updated for Pd version 0.48;
 #X text 26 47 The Makefilename object generates symbols according to
@@ -81,6 +87,12 @@ one variable.;
 #X connect 13 0 15 0;
 #X connect 15 0 16 0;
 #X restore 29 463 pd multiple_substitutions;
+#X floatatom 269 383 0 0 0 0 - - -;
+#X obj 269 485 print;
+#X obj 269 458 makefilename dog%d.aif;
+#X msg 284 433 set %d-zebra;
+#X obj 379 337 makesymbol;
+#X msg 284 409 set cat%E.wav;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X connect 3 0 6 0;
@@ -88,3 +100,7 @@ one variable.;
 #X connect 6 0 5 0;
 #X connect 9 0 2 0;
 #X connect 10 0 2 0;
+#X connect 20 0 22 0;
+#X connect 22 0 21 0;
+#X connect 23 0 22 0;
+#X connect 25 0 22 0;
