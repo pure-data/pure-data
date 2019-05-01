@@ -249,10 +249,6 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
     memcpy((char *)&x->x_server.sin_addr, (char *)hp->h_addr, hp->h_length);
 
-    /* multicast? */
-    if (0xE0000000 == (ntohl(x->x_server.sin_addr.s_addr) & 0xF0000000))
-        multicast = 1;
-
     /* assign client port number */
     x->x_server.sin_port = htons((u_short)portno);
 
@@ -276,6 +272,10 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
                   (const void *)&intarg, sizeof(intarg)) < 0)
             post("setsockopt (SO_BROADCAST) failed");
+
+        /* multicast? */
+        if (0xE0000000 == (ntohl(x->x_server.sin_addr.s_addr) & 0xF0000000))
+            multicast = 1;
     }
 
     /* bind optional src listening port */
