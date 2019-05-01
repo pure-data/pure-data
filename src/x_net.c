@@ -309,8 +309,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 
         /* set non-blocking */
 #ifdef _WIN32
-        unsigned long modearg = 1;
-        if (ioctlsocket(sockfd, FIONBIO, &modearg != NO_ERROR)
+        u_long modearg = 1;
+        if (ioctlsocket(sockfd, FIONBIO, &modearg) != NO_ERROR)
             post("ioctlsocket (FIONBIO 1) failed");
 #else
         int sockflags = fcntl(sockfd, F_GETFL, 0);
@@ -345,7 +345,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         /* set blocking again */
 #ifdef _WIN32
         modearg = 0;
-        if (ioctlsocket(sockfd, FIONBIO, &modearg != NO_ERROR)
+        if (ioctlsocket(sockfd, FIONBIO, &modearg) != NO_ERROR)
             post("ioctlsocket (FIONBIO 0) failed");
 #else
         if (fcntl(sockfd, F_SETFL, sockflags) < 0)
