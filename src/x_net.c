@@ -8,6 +8,7 @@
 #include "s_stuff.h"
 
 #include <sys/types.h>
+#include <sys/select.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -21,6 +22,7 @@
 #include <netinet/tcp.h>
 #include <netdb.h>
 #include <stdio.h>
+#include <fcntl.h>
 #endif
 
 #ifdef _WIN32
@@ -62,6 +64,7 @@ typedef struct _netsend
     int x_bin;
     t_socketreceiver *x_receiver;
     struct sockaddr_in x_server;
+    t_float x_timeout; /* TCP connect timeout in seconds */
 } t_netsend;
 
 static t_class *netreceive_class;
@@ -117,6 +120,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     x->x_msgout = outlet_new(&x->x_obj, &s_anything);
     x->x_connectout = NULL;
     x->x_fromout = NULL;
+    x->x_timeout = 10;
     memset(&x->x_server, 0, sizeof(struct sockaddr_in));
     return (x);
 }
@@ -298,16 +302,55 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     else
         post("connecting to port %d", portno);
 
-    if (x->x_protocol == SOCK_STREAM) {
-        /* try to connect.  LATER make a separate thread to do this
-           because it might block */
-        if (connect(sockfd, (struct sockaddr *)&x->x_server,
-            sizeof(x->x_server)) < 0)
+    if (x->x_protocol == SOCK_STREAM)
+    {
+        int status;
+        struct timeval timeout;
+
+        /* set non-blocking */
+#ifdef _WIN32
+        unsigned long modearg = 1;
+        if (ioctlsocket(sockfd, FIONBIO, &modearg != NO_ERROR)
+            post("ioctlsocket (FIONBIO 1) failed");
+#else
+        int sockflags = fcntl(sockfd, F_GETFL, 0);
+        if (fcntl(sockfd, F_SETFL, sockflags | O_NONBLOCK) < 0)
+            post("fcntl (O_NONBLOCK) failed");
+#endif
+
+        /* connect */
+        status = connect(sockfd, (struct sockaddr *)&x->x_server,
+            sizeof(x->x_server));
+        if (status < 0 && sys_sockerrno() != EINPROGRESS)
         {
             sys_sockerror("connecting stream socket");
             sys_closesocket(sockfd);
             return;
         }
+
+        /* block with select using timeout */
+        fd_set writefds;
+        FD_ZERO(&writefds);
+        FD_SET(sockfd, &writefds); /* socket is connected when writable */
+        timeout.tv_sec = (int)x->x_timeout;
+        timeout.tv_usec = (x->x_timeout - timeout.tv_sec) * 1000000;
+        status = select(sockfd+1, NULL, &writefds, NULL, &timeout);
+        if(status < 0 || !FD_ISSET(sockfd, &writefds))
+        {
+            error("connection timed out");
+            sys_closesocket(sockfd);
+            return;
+        }
+
+        /* set blocking again */
+#ifdef _WIN32
+        modearg = 0;
+        if (ioctlsocket(sockfd, FIONBIO, &modearg != NO_ERROR)
+            post("ioctlsocket (FIONBIO 0) failed");
+#else
+        if (fcntl(sockfd, F_SETFL, sockflags) < 0)
+            post("fcntl (O_BLOCK) failed");
+#endif
     }
 
     x->x_sockfd = sockfd;
@@ -423,6 +466,12 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
 }
 
+static void netsend_timeout(t_netsend *x, t_float timeout)
+{
+    if (timeout >= 0)
+        x->x_timeout = timeout;
+}
+
 static void netsend_free(t_netsend *x)
 {
     netsend_disconnect(x);
@@ -439,6 +488,8 @@ static void netsend_setup(void)
         gensym("disconnect"), 0);
     class_addmethod(netsend_class, (t_method)netsend_send,
         gensym("send"), A_GIMME, 0);
+    class_addmethod(netsend_class, (t_method)netsend_timeout,
+        gensym("timeout"), A_DEFFLOAT, 0);
 }
 
 /* ----------------------------- netreceive ------------------------- */

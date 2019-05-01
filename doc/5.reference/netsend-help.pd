@@ -1,4 +1,4 @@
-#N canvas 80 50 1119 634 12;
+#N canvas 80 50 1119 641 12;
 #X obj 38 376 netsend;
 #X msg 38 218 connect localhost 3000;
 #X msg 47 351 send foo \$1;
@@ -10,8 +10,8 @@
 #X floatatom 38 407 0 0 0 0 - - -;
 #X floatatom 232 407 0 0 0 0 - - -;
 #X text 713 298 Close the connection;
-#X obj 175 588 netreceive;
-#X text 84 588 see also:;
+#X obj 175 599 netreceive;
+#X text 84 599 see also:;
 #X obj 557 522 netsend 1;
 #X text 642 521 (UDP);
 #X obj 232 376 netsend -u;
@@ -62,7 +62,7 @@ for backward messages to find their way back., f 122;
 #X text 35 514 An old (pre-0.45) calling convention is provided for
 compatibility \, a single float argument "0" or "1" for TCP or UDP
 respectively:, f 68;
-#X text 900 588 updated for Pd version 0.50.;
+#X text 900 599 updated for Pd version 0.50.;
 #X text 35 36 The netsend object connects to another machine over the
 network for sending TCP ("stream") or UDP ("datagram") messages. An
 outlet reports whether the connection is open or not. A connection
@@ -70,8 +70,12 @@ request should specify the name or IP address of the other host and
 the port number. There should be a "netreceive" on the remote host
 with a matching port number., f 132;
 #X text 147 12 netsend -- send Pd messages over a network;
+#X msg 447 258 timeout 3;
+#X text 526 251 TCP connect timeout, f 11;
 #X text 35 554 As of 0.50+ \, netsend -u (UDP) is fully "connectionless"
-and no longer closes if no one receives a UDP message., f 111;
+and no longer closes if no one receives a UDP message. netsend (TCP)
+has a settable connect timeout which defaults to 10 seconds., f 124
+;
 #X connect 0 0 8 0;
 #X connect 0 1 38 0;
 #X connect 1 0 0 0;
@@ -97,3 +101,4 @@ and no longer closes if no one receives a UDP message., f 111;
 #X connect 34 1 39 0;
 #X connect 35 0 31 0;
 #X connect 44 0 31 0;
+#X connect 54 0 34 0;
