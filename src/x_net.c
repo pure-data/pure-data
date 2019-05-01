@@ -8,7 +8,6 @@
 #include "s_stuff.h"
 
 #include <sys/types.h>
-#include <sys/select.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -20,6 +19,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <sys/select.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <fcntl.h>
