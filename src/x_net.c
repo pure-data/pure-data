@@ -74,7 +74,7 @@ typedef struct _netreceive
     int *x_connections;
     int x_old;
     t_socketreceiver **x_receivers;
-    char *x_hostname; /* allowed or multicast hostname, NULL if not set */
+    t_symbol *x_hostname; /* allowed or multicast hostname, NULL if not set */
 } t_netreceive;
 
 static void netreceive_notify(t_netreceive *x, int fd);
@@ -595,7 +595,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         /* assign optional UDP incoming or multicast hostname */
     if (x->x_hostname && x->x_ns.x_protocol == SOCK_DGRAM)
     {
-        hp = gethostbyname(x->x_hostname);
+        hp = gethostbyname(x->x_hostname->s_name);
         if (hp == 0)
         {
             pd_error(x, "netreceive: bad host?\n");
@@ -718,10 +718,7 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     if (argc && argv->a_type == A_SYMBOL)
     {
         if (x->x_ns.x_protocol == SOCK_DGRAM)
-        {
-            x->x_hostname = malloc(256);
-            atom_string(argv, x->x_hostname, 256);
-        }
+            x->x_hostname = atom_getsymbol(argv);
         else
         {
             pd_error(x, "netreceive: hostname argument ignored:");
