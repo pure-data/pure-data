@@ -48,7 +48,7 @@ typedef struct _textbuf
     t_canvas *b_canvas;
     t_guiconnect *b_guiconnect;
     t_symbol *b_sym;
-    t_int b_vis;
+    int b_vis;
 
 } t_textbuf;
 
