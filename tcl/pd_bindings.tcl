@@ -340,15 +340,15 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
     # TODO canvas_key on the C side should be refactored with this proc as well
     if { $iso eq "" } { set iso $key }
     switch -- $key {
-        "BackSpace" { set iso ""; set key 8    }
-        "Tab"       { set iso ""; set key 9 }
-        "Return"    { set iso ""; set key 10 }
-        "Escape"    { set iso ""; set key 27 }
-        "Space"     { set iso ""; set key 32 }
-        "space"     { set iso ""; set key 32 }
+        "BackSpace" { set iso ""; set key   8 }
+        "Tab"       { set iso ""; set key   9 }
+        "Return"    { set iso ""; set key  10 }
+        "Escape"    { set iso ""; set key  27 }
+        "Space"     { set iso ""; set key  32 }
+        "space"     { set iso ""; set key  32 }
         "Delete"    { set iso ""; set key 127 }
         "KP_Delete" { set iso ""; set key 127 }
-        "KP_Enter" { set iso ""; set key 10 }
+        "KP_Enter"  { set iso ""; set key  10 }
     }
     if { [string length $iso] == 1 } {
         scan $iso %c key
