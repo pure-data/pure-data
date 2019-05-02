@@ -852,6 +852,52 @@ static void fudiformat_setup(void) {
   class_addanything(fudiformat_class, fudiformat_any);
 }
 
+/* -------------------------- canvas ------------------------------ */
+
+// A new object to give us info on the canvas
+
+static t_class *canvasinfo_class;
+
+typedef struct canvasinfo {
+    t_object x_ob;
+    t_symbol *x_dir;
+    //    t_canvas * x_canvas;
+    t_outlet* x_outlet;
+    int x_level;
+} t_canvasinfo;
+
+static void *canvasinfo_new(t_floatarg f) {
+    t_canvasinfo *x = (t_canvasinfo *)pd_new(canvasinfo_class);
+    t_canvas *canvas = canvas_getcurrent();
+    x->x_outlet =  outlet_new(&x->x_ob, &s_);
+    int depth = f < 0 ? 0 : (int)f;
+    while(!canvas->gl_env)
+        canvas = canvas->gl_owner;
+    while(depth--){
+        if(canvas->gl_owner){
+            canvas = canvas->gl_owner;
+            while(!canvas->gl_env)
+                canvas = canvas->gl_owner;
+        }
+    }
+    //    x->x_canvas =  canvas;
+    x->x_dir = canvas_getdir(canvas);
+    return (void *)x;
+}
+
+static void canvasinfo_bang(t_canvasinfo *x)
+{
+    outlet_symbol(x->x_outlet, x->x_dir);
+}
+
+void canvas_setup(void)
+{
+    canvasinfo_class = class_new(gensym("canvas"), (t_newmethod)canvasinfo_new, 0,
+                                 sizeof(t_canvasinfo), 0, A_DEFFLOAT,0);
+    class_addbang(canvasinfo_class, canvasinfo_bang);
+}
+
+/* ---------------------------------------------------------------- */
 
 
 void x_misc_setup(void)
@@ -865,4 +911,5 @@ void x_misc_setup(void)
     oscformat_setup();
     fudiparse_setup();
     fudiformat_setup();
+    canvas_setup();
 }
