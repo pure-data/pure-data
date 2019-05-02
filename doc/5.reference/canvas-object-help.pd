@@ -1,0 +1,33 @@
+#N canvas 671 70 551 370 12;
+#X text 408 169 (click for details:), f 11;
+#X text 62 180 The first argument sets its function:;
+#X obj 51 28 canvas;
+#X text 98 28 - get canvas information;
+#X text 65 76 In Pd a canvas is the patch's window. This is an experimental
+object to gquery different information on canvases. For now \, only
+a functio to get the canvas directory is available.;
+#X obj 59 209 canvas dir;
+#X text 148 207 - access canvas' directory;
+#N canvas 590 86 712 352 dir 0;
+#X obj 63 162 canvas dir;
+#X obj 63 130 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 86 199 print directory;
+#X obj 63 234 openpanel;
+#X text 47 46 "canvas dir" sends the canvas directory.;
+#X text 235 251 If you do not specify a float as the first argument
+\, the default level is "0" (which is the current patch's directory).
+, f 62;
+#X text 234 117 If used inside an abstraction \, an optional argument
+sets the depth level and can query the parent patch's directory \,
+or granparent's and so on. This way \, "1" gets the directory of the
+parent's patch \, "2" the grandparent's and so on. The depth gets clipped
+to the maximum level., f 62;
+#X text 234 199 Note that "canvas dir" can be inside any layers of
+subpatches inside an abstraction or a patch to get the patch's directory
+\, it doesn't matter., f 62;
+#X connect 0 0 2 0;
+#X connect 0 0 3 0;
+#X connect 1 0 0 0;
+#X restore 409 210 pd dir;
+#X text 272 312 updated for Pd version 0.50.;

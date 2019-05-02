@@ -301,6 +301,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/bng-help.pd \
      ./5.reference/bp~-help.pd \
      ./5.reference/canvas-help.pd \
+     ./5.reference/canvas-object-help.pd \
      ./5.reference/change-help.pd \
      ./5.reference/clip-help.pd \
      ./5.reference/clip~-help.pd \

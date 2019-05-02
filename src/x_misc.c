@@ -854,23 +854,34 @@ static void fudiformat_setup(void) {
 
 /* -------------------------- canvas ------------------------------ */
 
-// A new object to give us info on the canvas
+// different information on canvases
 
-static t_class *canvasinfo_class;
+/* ----------  canvas dir : get the directory of a canvas --------- */
 
-typedef struct canvasinfo {
-    t_object x_ob;
+static t_class *canvasdir_class;
+
+typedef struct canvasdir
+{
+    t_object x_obj;
     t_symbol *x_dir;
-    //    t_canvas * x_canvas;
     t_outlet* x_outlet;
-    int x_level;
-} t_canvasinfo;
+} t_canvasdir;
 
-static void *canvasinfo_new(t_floatarg f) {
-    t_canvasinfo *x = (t_canvasinfo *)pd_new(canvasinfo_class);
+static void canvasdir_bang(t_canvasdir *x)
+{
+    outlet_symbol(x->x_outlet, x->x_dir);
+}
+
+static void *canvasdir_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_canvasdir *x = (t_canvasdir *)pd_new(canvasdir_class);
     t_canvas *canvas = canvas_getcurrent();
-    x->x_outlet =  outlet_new(&x->x_ob, &s_);
-    int depth = f < 0 ? 0 : (int)f;
+    x->x_outlet =  outlet_new(&x->x_obj, &s_);
+    int depth = 0;
+    if(argc && argv->a_type == A_FLOAT){
+        float f = argv->a_w.w_float;
+        depth = f < 0 ? 0 : (int)f;
+    }
     while(!canvas->gl_env)
         canvas = canvas->gl_owner;
     while(depth--){
@@ -880,25 +891,48 @@ static void *canvasinfo_new(t_floatarg f) {
                 canvas = canvas->gl_owner;
         }
     }
-    //    x->x_canvas =  canvas;
     x->x_dir = canvas_getdir(canvas);
     return (void *)x;
 }
 
-static void canvasinfo_bang(t_canvasinfo *x)
+/* ---------------------------------------------------------------- */
+
+/* overall creator - dispatch to "canvas dir" etc */
+static void *canvasobj_new(t_symbol *s, int argc, t_atom *argv)
 {
-    outlet_symbol(x->x_outlet, x->x_dir);
+    if (!argc)
+        pd_this->pd_newest = canvasdir_new(s, argc, argv);
+    else if (argv->a_type == A_FLOAT)
+    {
+        error("canvas: no function given");
+        pd_this->pd_newest = 0;
+    }
+    else
+    {
+        const char *str = argv[0].a_w.w_symbol->s_name;
+        if (!strcmp(str, "dir"))
+            pd_this->pd_newest = canvasdir_new(s, argc-1, argv+1);
+        else
+        {
+            error("canvas %s: unknown function", str);
+            pd_this->pd_newest = 0;
+        }
+    }
+    return (pd_this->pd_newest);
 }
+
+/* ---------------- global setup function -------------------- */
 
 void canvas_setup(void)
 {
-    canvasinfo_class = class_new(gensym("canvas"), (t_newmethod)canvasinfo_new, 0,
-                                 sizeof(t_canvasinfo), 0, A_DEFFLOAT,0);
-    class_addbang(canvasinfo_class, canvasinfo_bang);
+    canvasdir_class = class_new(gensym("canvas dir"),
+                                (t_newmethod)canvasdir_new, 0, sizeof(t_canvasdir), 0, A_DEFFLOAT,0);
+    class_addbang(canvasdir_class, canvasdir_bang);
+    class_addcreator((t_newmethod)canvasobj_new, gensym("canvas"), A_GIMME, 0);
+    class_sethelpsymbol(canvasdir_class, gensym("canvas-object"));
 }
 
 /* ---------------------------------------------------------------- */
-
 
 void x_misc_setup(void)
 {
