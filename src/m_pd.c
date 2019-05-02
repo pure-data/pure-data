@@ -60,54 +60,130 @@ typedef struct _bindelem
     struct _bindelem *e_next;
 } t_bindelem;
 
+/* CHR: the purpose of the b_current field is to safely unbind symbols
+while receiving from them. If we try to unbind the current element,
+pd_unbind() detects this and points b_current to the next valid element.
+In case this next element also gets unbound, b_current points to the
+element after that and so on...
+We have to save/restore b_current everytime to make the methods reentrant.
+Also, t_bindlist has to be reference counted to avoid segfaults. */
+
 typedef struct _bindlist
 {
     t_pd b_pd;
     t_bindelem *b_list;
+    t_bindelem *b_current;
+    int b_ref;
 } t_bindlist;
+
+static void bindlist_unref(t_bindlist *x)
+{
+    if (--x->b_ref == 0)
+    {
+        freebytes(x->b_list, sizeof(t_bindelem));
+        pd_free(&x->b_pd);
+    }
+}
+
+static t_bindelem * bindlist_next(t_bindlist *x, t_bindelem *e)
+{
+    /* check if current element has been unbound */
+    if (e != x->b_current)
+        return x->b_current; /* points to the next element */
+    else
+        return e->e_next;
+}
 
 static void bindlist_bang(t_bindlist *x)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
+    t_bindelem *e = x->b_list, *old;
+    x->b_ref++;
+    while (e)
+    {
+        old = x->b_current;
+        x->b_current = e;
         pd_bang(e->e_who);
+        e = bindlist_next(x, e);
+        x->b_current = old;
+    }
+    bindlist_unref(x);
 }
 
 static void bindlist_float(t_bindlist *x, t_float f)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
+    t_bindelem *e = x->b_list, *old;
+    x->b_ref++;
+    while (e)
+    {
+        old = x->b_current;
+        x->b_current = e;
         pd_float(e->e_who, f);
+        e = bindlist_next(x, e);
+        x->b_current = old;
+    }
+    bindlist_unref(x);
 }
 
 static void bindlist_symbol(t_bindlist *x, t_symbol *s)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
+    t_bindelem *e = x->b_list, *old;
+    x->b_ref++;
+    while (e)
+    {
+        old = x->b_current;
+        x->b_current = e;
         pd_symbol(e->e_who, s);
+        e = bindlist_next(x, e);
+        x->b_current = old;
+    }
+    bindlist_unref(x);
 }
 
 static void bindlist_pointer(t_bindlist *x, t_gpointer *gp)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
+    t_bindelem *e = x->b_list, *old;
+    x->b_ref++;
+    while (e)
+    {
+        old = x->b_current;
+        x->b_current = e;
         pd_pointer(e->e_who, gp);
+        e = bindlist_next(x, e);
+        x->b_current = old;
+    }
+    bindlist_unref(x);
 }
 
 static void bindlist_list(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
+    t_bindelem *e = x->b_list, *old;
+    x->b_ref++;
+    while (e)
+    {
+        old = x->b_current;
+        x->b_current = e;
         pd_list(e->e_who, s, argc, argv);
+        e = bindlist_next(x, e);
+        x->b_current = old;
+    }
+    bindlist_unref(x);
 }
 
 static void bindlist_anything(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    t_bindelem *e;
-    for (e = x->b_list; e; e = e->e_next)
-        pd_typedmess(e->e_who, s, argc, argv);
+    t_bindelem *e = x->b_list, *old;
+    x->b_ref++;
+    while (e)
+    {
+        old = x->b_current;
+        x->b_current = e;
+        pd_anything(e->e_who, s, argc, argv);
+        e = bindlist_next(x, e);
+        x->b_current = old;
+    }
+    bindlist_unref(x);
 }
 
 void m_pd_setup(void)
@@ -140,6 +216,8 @@ void pd_bind(t_pd *x, t_symbol *s)
             t_bindelem *e1 = (t_bindelem *)getbytes(sizeof(t_bindelem));
             t_bindelem *e2 = (t_bindelem *)getbytes(sizeof(t_bindelem));
             b->b_list = e1;
+            b->b_current = 0;
+            b->b_ref = 1;
             e1->e_who = x;
             e1->e_next = e2;
             e2->e_who = s->s_thing;
@@ -163,12 +241,16 @@ void pd_unbind(t_pd *x, t_symbol *s)
         t_bindelem *e, *e2;
         if ((e = b->b_list)->e_who == x)
         {
+            if (e == b->b_current)
+                b->b_current = e->e_next;
             b->b_list = e->e_next;
             freebytes(e, sizeof(t_bindelem));
         }
         else for (e = b->b_list; (e2 = e->e_next); e = e2)
             if (e2->e_who == x)
         {
+            if (e2 == b->b_current)
+                b->b_current = e2->e_next;
             e->e_next = e2->e_next;
             freebytes(e2, sizeof(t_bindelem));
             break;
@@ -176,8 +258,11 @@ void pd_unbind(t_pd *x, t_symbol *s)
         if (!b->b_list->e_next)
         {
             s->s_thing = b->b_list->e_who;
-            freebytes(b->b_list, sizeof(t_bindelem));
-            pd_free(&b->b_pd);
+            if (--b->b_ref == 0)
+            {
+                freebytes(b->b_list, sizeof(t_bindelem));
+                pd_free(&b->b_pd);
+            }
         }
     }
     else pd_error(x, "%s: couldn't unbind", s->s_name);
