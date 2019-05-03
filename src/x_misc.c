@@ -1033,6 +1033,7 @@ void canvas_setup(void)
                                    (t_newmethod)canvas_mouse_new,
                                    (t_method)canvas_mouse_free, sizeof(t_canvas_mouse),
                                    CLASS_NOINLET, A_GIMME, 0);
+    class_sethelpsymbol(canvas_mouse_class, gensym("canvas-object"));
     canvas_mouse_proxy_class = class_new(0, 0, 0,
                                          sizeof(t_canvas_mouse_proxy),
                                          CLASS_NOINLET | CLASS_PD, 0);
