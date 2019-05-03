@@ -1,13 +1,10 @@
-#N canvas 671 70 551 370 12;
-#X text 408 169 (click for details:), f 11;
-#X text 62 180 The first argument sets its function:;
+#N canvas 554 67 551 370 12;
+#X text 418 169 (click for details:), f 11;
+#X text 42 180 The first argument sets its function:;
 #X obj 51 28 canvas;
 #X text 98 28 - get canvas information;
-#X text 65 76 In Pd a canvas is the patch's window. This is an experimental
-object to gquery different information on canvases. For now \, only
-a functio to get the canvas directory is available.;
-#X obj 59 209 canvas dir;
-#X text 148 207 - access canvas' directory;
+#X obj 39 209 canvas dir;
+#X text 128 207 - access canvas' directory;
 #N canvas 590 86 712 352 dir 0;
 #X obj 63 162 canvas dir;
 #X obj 63 130 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -29,5 +26,51 @@ subpatches inside an abstraction or a patch to get the patch's directory
 #X connect 0 0 2 0;
 #X connect 0 0 3 0;
 #X connect 1 0 0 0;
-#X restore 409 210 pd dir;
-#X text 272 312 updated for Pd version 0.50.;
+#X restore 419 210 pd dir;
+#X text 281 311 updated for Pd version 0.50.;
+#X obj 39 236 canvas mouse;
+#X text 128 236 - access canvas' mouse interaction;
+#N canvas 466 155 799 364 mouse 0;
+#X text 300 264 If you do not specify a float as the first argument
+\, the default level is "0" (which is the current patch's directory).
+, f 62;
+#X text 65 47 "canvas dir" sends mouse interaction with canvas.;
+#X obj 82 116 canvas mouse;
+#X obj 163 143 unpack;
+#X floatatom 163 171 5 0 0 0 - - -;
+#X floatatom 204 171 5 0 0 0 - - -;
+#X obj 82 162 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 149 170 x;
+#X text 244 171 y;
+#X text 43 162 click;
+#X obj 173 245 unpack;
+#X floatatom 173 273 5 0 0 0 - - -;
+#X floatatom 214 273 5 0 0 0 - - -;
+#X obj 78 264 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 159 272 x;
+#X text 254 273 y;
+#X text 39 264 click;
+#X obj 78 218 canvas mouse 1;
+#X text 299 100 The canvas mouse object gets mouse click and mouse
+coordinates when your mouse is interacting with the canvas window.
+An optional argument sets the depth level and can query the parent
+patch's directory \, or granparent's and so on. This way \, "1" gets
+the directory of the parent's patch \, "2" the grandparent's and so
+on. The depth gets clipped to the maximum level., f 62;
+#X text 299 212 To the left \, the object gets information when interacting
+with this window \, but the object below only outputs information when
+we interact with the parent patch., f 62;
+#X connect 2 0 6 0;
+#X connect 2 1 3 0;
+#X connect 3 0 4 0;
+#X connect 3 1 5 0;
+#X connect 10 0 11 0;
+#X connect 10 1 12 0;
+#X connect 17 0 13 0;
+#X connect 17 1 10 0;
+#X restore 419 236 pd mouse;
+#X text 46 82 In Pd a canvas is the patch's window. This is an experimental
+object to query different information on canvases. For now \, only
+two functions are available \, but more are on the way., f 61;

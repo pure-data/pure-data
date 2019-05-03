@@ -858,34 +858,37 @@ static void fudiformat_setup(void) {
 
 /* ----------  canvas dir : get the directory of a canvas --------- */
 
-static t_class *canvasdir_class;
+static t_class *canvas_dir_class;
 
-typedef struct canvasdir
+typedef struct canvas_dir
 {
     t_object x_obj;
     t_symbol *x_dir;
     t_outlet* x_outlet;
-} t_canvasdir;
+} t_canvas_dir;
 
-static void canvasdir_bang(t_canvasdir *x)
+static void canvas_dir_bang(t_canvas_dir *x)
 {
     outlet_symbol(x->x_outlet, x->x_dir);
 }
 
-static void *canvasdir_new(t_symbol *s, int argc, t_atom *argv)
+static void *canvas_dir_new(t_symbol *s, int argc, t_atom *argv)
 {
-    t_canvasdir *x = (t_canvasdir *)pd_new(canvasdir_class);
+    t_canvas_dir *x = (t_canvas_dir *)pd_new(canvas_dir_class);
     t_canvas *canvas = canvas_getcurrent();
     x->x_outlet =  outlet_new(&x->x_obj, &s_);
     int depth = 0;
-    if(argc && argv->a_type == A_FLOAT){
+    if(argc && argv->a_type == A_FLOAT)
+    {
         float f = argv->a_w.w_float;
         depth = f < 0 ? 0 : (int)f;
     }
     while(!canvas->gl_env)
         canvas = canvas->gl_owner;
-    while(depth--){
-        if(canvas->gl_owner){
+    while(depth--)
+    {
+        if(canvas->gl_owner)
+        {
             canvas = canvas->gl_owner;
             while(!canvas->gl_env)
                 canvas = canvas->gl_owner;
@@ -895,13 +898,106 @@ static void *canvasdir_new(t_symbol *s, int argc, t_atom *argv)
     return (void *)x;
 }
 
+/* ---  canvas mouse : get mouse interaction with of a canvas --- */
+
+static t_class *canvas_mouse_class, *canvas_mouse_proxy_class;
+
+typedef struct _canvas_mouse_proxy
+{
+    t_object    p_obj;
+    t_symbol   *p_sym;
+    t_clock    *p_clock;
+    struct      _canvas_mouse *p_parent;
+} t_canvas_mouse_proxy;
+
+typedef struct _canvas_mouse
+{
+    t_object                x_obj;
+    t_canvas_mouse_proxy   *x_proxy;
+    t_outlet*               x_outlet_coords;
+} t_canvas_mouse;
+
+static void canvas_mouse_proxy_any(t_canvas_mouse_proxy *p, t_symbol*s, int ac, t_atom *av)
+{
+    if(p->p_parent)
+    {
+        if(s == gensym("motion"))
+        {
+            outlet_list(p->p_parent->x_outlet_coords, &s_list, 2, av);
+        }
+        else if(s == gensym("mouse"))
+        {
+            int click = (int)((av+2)->a_w.w_float);
+            if(click == 1)
+            {
+                outlet_list(p->p_parent->x_outlet_coords, &s_list, 2, av);
+                outlet_float(p->p_parent->x_obj.ob_outlet, click);
+            }
+        }
+        else if(s == gensym("mouseup"))
+        {
+            int release = (int)((av+2)->a_w.w_float);
+            if(release == 1)
+                outlet_float(p->p_parent->x_obj.ob_outlet, 0);
+        };
+    }
+}
+
+static void canvas_mouse_proxy_free(t_canvas_mouse_proxy *p)
+{
+    pd_unbind(&p->p_obj.ob_pd, p->p_sym);
+    clock_free(p->p_clock);
+    pd_free(&p->p_obj.ob_pd);
+}
+
+static t_canvas_mouse_proxy * canvas_mouse_proxy_new(t_canvas_mouse *x, t_symbol*s)
+{
+    t_canvas_mouse_proxy *p = (t_canvas_mouse_proxy*)pd_new(canvas_mouse_proxy_class);
+    p->p_parent = x;
+    pd_bind(&p->p_obj.ob_pd, p->p_sym = s);
+    p->p_clock = clock_new(p, (t_method)canvas_mouse_proxy_free);
+    return p;
+}
+
+static void canvas_mouse_free(t_canvas_mouse *x)
+{
+    x->x_proxy->p_parent = NULL;
+    clock_delay(x->x_proxy->p_clock, 0);
+}
+
+static void *canvas_mouse_new(t_symbol *s, int argc, t_atom *argv)
+{
+    t_canvas_mouse *x = (t_canvas_mouse *)pd_new(canvas_mouse_class);
+    t_glist *glist = (t_glist *)canvas_getcurrent();
+    t_canvas *canvas = (t_canvas*)glist_getcanvas(glist);
+    int depth = 0;
+    if(argc && argv->a_type == A_FLOAT)
+    {
+        float f = argv->a_w.w_float;
+        depth = f < 0 ? 0 : (int)f;
+    }
+    while(depth--)
+    {
+        if(canvas->gl_owner)
+            canvas = canvas->gl_owner;
+    }
+    char buf[MAXPDSTRING];
+    snprintf(buf, MAXPDSTRING-1, ".x%lx", (t_int)canvas);
+    buf[MAXPDSTRING-1] = 0;
+    x->x_proxy = canvas_mouse_proxy_new(x, gensym(buf));
+    outlet_new(&x->x_obj, 0);
+    x->x_outlet_coords =  outlet_new(&x->x_obj, &s_);
+    return(x);
+}
+
+
 /* ---------------------------------------------------------------- */
 
 /* overall creator - dispatch to "canvas dir" etc */
 static void *canvasobj_new(t_symbol *s, int argc, t_atom *argv)
 {
     if (!argc)
-        pd_this->pd_newest = canvasdir_new(s, argc, argv);
+        pd_this->pd_newest = canvas_dir_new(s, argc, argv);
     else if (argv->a_type == A_FLOAT)
     {
         error("canvas: no function given");
@@ -911,7 +1007,9 @@ static void *canvasobj_new(t_symbol *s, int argc, t_atom *argv)
     {
         const char *str = argv[0].a_w.w_symbol->s_name;
         if (!strcmp(str, "dir"))
-            pd_this->pd_newest = canvasdir_new(s, argc-1, argv+1);
+            pd_this->pd_newest = canvas_dir_new(s, argc-1, argv+1);
+        else if (!strcmp(str, "mouse"))
+            pd_this->pd_newest = canvas_mouse_new(s, argc-1, argv+1);
         else
         {
             error("canvas %s: unknown function", str);
@@ -925,11 +1023,20 @@ static void *canvasobj_new(t_symbol *s, int argc, t_atom *argv)
 
 void canvas_setup(void)
 {
-    canvasdir_class = class_new(gensym("canvas dir"),
-                                (t_newmethod)canvasdir_new, 0, sizeof(t_canvasdir), 0, A_DEFFLOAT,0);
-    class_addbang(canvasdir_class, canvasdir_bang);
+    canvas_dir_class = class_new(gensym("canvas dir"),
+                                 (t_newmethod)canvas_dir_new, 0, sizeof(t_canvas_dir), 0, A_GIMME,0);
+    class_addbang(canvas_dir_class, canvas_dir_bang);
     class_addcreator((t_newmethod)canvasobj_new, gensym("canvas"), A_GIMME, 0);
-    class_sethelpsymbol(canvasdir_class, gensym("canvas-object"));
+    class_sethelpsymbol(canvas_dir_class, gensym("canvas-object"));
+    
+    canvas_mouse_class = class_new(gensym("canvas mouse"),
+                                   (t_newmethod)canvas_mouse_new,
+                                   (t_method)canvas_mouse_free, sizeof(t_canvas_mouse),
+                                   CLASS_NOINLET, A_GIMME, 0);
+    canvas_mouse_proxy_class = class_new(0, 0, 0,
+                                         sizeof(t_canvas_mouse_proxy),
+                                         CLASS_NOINLET | CLASS_PD, 0);
+    class_addanything(canvas_mouse_proxy_class, canvas_mouse_proxy_any);
 }
 
 /* ---------------------------------------------------------------- */
