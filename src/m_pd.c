@@ -83,13 +83,15 @@ static PERTHREAD t_bindelem **bindstack = 0;
 static PERTHREAD int bs_size = 0;
 static PERTHREAD int bs_head = 0;
 
+#define DEFBINDSTACKSIZE 64
+
 /* push the next element on the stack */
 static void bs_push(t_bindelem *e)
 {
     if (!bindstack)
     {
-        bindstack = getbytes(sizeof(t_bindelem *) * 64);
-        bs_size = 16;
+        bindstack = getbytes(sizeof(t_bindelem *) * DEFBINDSTACKSIZE);
+        bs_size = DEFBINDSTACKSIZE;
     }
     bs_head++;
     if (bs_head >= bs_size)
