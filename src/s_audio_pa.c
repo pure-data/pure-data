@@ -673,10 +673,10 @@ int pa_send_dacs(void)
             if (audio_isopen())
                 error("successfully reopened audio device");
             else
+            {
                 error("audio device not responding - closing audio");
-            #ifdef _WIN32
-                error("reconnect and try reselecting the device in the settings");
-            #endif
+                error("reconnect and reselect it in the settings (or toggle DSP)");
+            }
         #endif
         return SENDDACS_NO;
     } else
