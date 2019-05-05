@@ -982,7 +982,7 @@ static void *canvas_mouse_new(t_symbol *s, int argc, t_atom *argv)
             canvas = canvas->gl_owner;
     }
     char buf[MAXPDSTRING];
-    snprintf(buf, MAXPDSTRING-1, ".x%lx", (t_int)canvas);
+    snprintf(buf, MAXPDSTRING-1, ".x%lx", (unsigned long)canvas);
     buf[MAXPDSTRING-1] = 0;
     x->x_proxy = canvas_mouse_proxy_new(x, gensym(buf));
     outlet_new(&x->x_obj, 0);
