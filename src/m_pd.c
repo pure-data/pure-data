@@ -123,8 +123,8 @@ static t_bindelem * bs_pop()
     }
 }
 
-/* if "e" is about to be unbound, check and update the bind stack */
-static void bs_check(t_bindelem *e)
+/* "e" is about to be unbound - check and update the bind element stack */
+static void bs_update(t_bindelem *e)
 {
     int i;
     for (i = bs_head; i > 0; i--)
@@ -290,14 +290,14 @@ void pd_unbind(t_pd *x, t_symbol *s)
         t_bindelem *e, *e2;
         if ((e = b->b_list)->e_who == x)
         {
-            bs_check(e);
+            bs_update(e);
             b->b_list = e->e_next;
             freebytes(e, sizeof(t_bindelem));
         }
         else for (e = b->b_list; (e2 = e->e_next); e = e2)
             if (e2->e_who == x)
         {
-            bs_check(e2);
+            bs_update(e2);
             e->e_next = e2->e_next;
             freebytes(e2, sizeof(t_bindelem));
             break;
