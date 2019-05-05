@@ -77,16 +77,21 @@ from a symbol, it tries to locate the bind element in the stack
 and - if necessary - sets it to the next valid value.
 This means we can iterate over the bind list even recursively
 while removing elements (not that it's a good idea to do so).
-Also, t_bindlist has to be reference counted to avoid segfaults. */
+Also, t_bindlist has to be reference counted to avoid segfaults.
+Together with the reference count, we also adjust the stackcount
+in m_obj.c to avoid stack overflows. */
+
+#define DEFBINDSTACKSIZE 64
 
 static PERTHREAD t_bindelem **bindstack = 0;
 static PERTHREAD int bs_size = 0;
 static PERTHREAD int bs_head = 0;
 
-#define DEFBINDSTACKSIZE 64
+int stackcount_increase(void);
+void stackcount_release(void);
 
 /* push the next element on the stack */
-static void bs_push(t_bindelem *e)
+static int bs_push(t_bindelem *e)
 {
     if (!bindstack)
     {
@@ -102,6 +107,7 @@ static void bs_push(t_bindelem *e)
                                 sizeof(t_bindelem *) * bs_size);
     }
     bindstack[bs_head] = e->e_next;
+    return 1;
 }
 
 /* get the next valid element from the stack */
@@ -126,11 +132,20 @@ static void bs_check(t_bindelem *e)
             bindstack[i] = e->e_next;
 }
 
-static void bindlist_ref(t_bindlist *x)
+/* increment reference count and stack counter; returns 0 on a stack overflow */
+static int bindlist_ref(t_bindlist *x)
 {
     x->b_ref++;
+    if (stackcount_increase())
+        return 1;
+    else
+    {
+        pd_error(&x->b_pd, "stack overflow");
+        return 0;
+    }
 }
 
+/* decrement reference count and stack counter */
 static void bindlist_unref(t_bindlist *x)
 {
     if (--x->b_ref == 0)
@@ -138,13 +153,14 @@ static void bindlist_unref(t_bindlist *x)
         freebytes(x->b_list, sizeof(t_bindelem));
         pd_free(&x->b_pd);
     }
+    stackcount_release();
 }
 
 static void bindlist_bang(t_bindlist *x)
 {
     t_bindelem *e = x->b_list;
-    bindlist_ref(x);
-    while (e)
+    if (bindlist_ref(x))
+        while (e)
     {
         bs_push(e);
         pd_bang(e->e_who);
@@ -156,8 +172,8 @@ static void bindlist_bang(t_bindlist *x)
 static void bindlist_float(t_bindlist *x, t_float f)
 {
     t_bindelem *e = x->b_list;
-    bindlist_ref(x);
-    while (e)
+    if (bindlist_ref(x))
+        while (e)
     {
         bs_push(e);
         pd_float(e->e_who, f);
@@ -169,8 +185,8 @@ static void bindlist_float(t_bindlist *x, t_float f)
 static void bindlist_symbol(t_bindlist *x, t_symbol *s)
 {
     t_bindelem *e = x->b_list;
-    bindlist_ref(x);
-    while (e)
+    if (bindlist_ref(x))
+        while (e)
     {
         bs_push(e);
         pd_symbol(e->e_who, s);
@@ -182,8 +198,8 @@ static void bindlist_symbol(t_bindlist *x, t_symbol *s)
 static void bindlist_pointer(t_bindlist *x, t_gpointer *gp)
 {
     t_bindelem *e = x->b_list;
-    bindlist_ref(x);
-    while (e)
+    if (bindlist_ref(x))
+        while (e)
     {
         bs_push(e);
         pd_pointer(e->e_who, gp);
@@ -196,8 +212,8 @@ static void bindlist_list(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_bindelem *e = x->b_list;
-    bindlist_ref(x);
-    while (e)
+    if (bindlist_ref(x))
+        while (e)
     {
         bs_push(e);
         pd_list(e->e_who, s, argc, argv);
@@ -210,8 +226,8 @@ static void bindlist_anything(t_bindlist *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_bindelem *e = x->b_list;
-    bindlist_ref(x);
-    while (e)
+    if (bindlist_ref(x))
+        while (e)
     {
         bs_push(e);
         pd_anything(e->e_who, s, argc, argv);
