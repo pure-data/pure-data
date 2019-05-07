@@ -1,10 +1,10 @@
-#N canvas 554 67 551 370 12;
+#N canvas 464 138 552 408 12;
 #X text 418 169 (click for details:), f 11;
 #X text 42 180 The first argument sets its function:;
 #X obj 51 28 canvas;
 #X text 98 28 - get canvas information;
 #X obj 39 209 canvas dir;
-#X text 128 207 - access canvas' directory;
+#X text 133 208 - access canvas' directory;
 #N canvas 590 86 712 352 dir 0;
 #X obj 63 162 canvas dir;
 #X obj 63 130 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
@@ -26,10 +26,10 @@ subpatches inside an abstraction or a patch to get the patch's directory
 #X connect 0 0 2 0;
 #X connect 0 0 3 0;
 #X connect 1 0 0 0;
-#X restore 419 210 pd dir;
-#X text 281 311 updated for Pd version 0.50.;
+#X restore 419 209 pd dir;
+#X text 283 346 updated for Pd version 0.50.;
 #X obj 39 236 canvas mouse;
-#X text 128 236 - access canvas' mouse interaction;
+#X text 133 235 - access canvas' mouse interaction;
 #N canvas 466 155 799 364 mouse 0;
 #X text 300 264 If you do not specify a float as the first argument
 \, the default level is "0" (which is the current patch's directory).
@@ -74,3 +74,38 @@ we interact with the parent patch., f 62;
 #X text 46 82 In Pd a canvas is the patch's window. This is an experimental
 object to query different information on canvases. For now \, only
 two functions are available \, but more are on the way., f 61;
+#N canvas 689 91 575 531 args 0;
+#X text 43 19 "canvas arg" sends and sets the arguments of an abstraction.
+;
+#X obj 133 185 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 133 251 print;
+#X text 154 182 <= get arguments;
+#X obj 258 359 print;
+#X obj 229 275 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 258 274 list a b x;
+#X msg 279 303 1 2 3;
+#X obj 133 216 canvas-abstraction 100 foo \$0-x \\\$0 \$1 \$2-x;
+#X obj 258 328 canvas-abstraction a b x;
+#X text 46 50 This object is useful for the management of variable
+number of arguments in abstractions. When it receives a bang \, it
+outputs the loaded arguments. Below we have an abstraction that contains
+canvas args as a simple example on how this works. Note how "\$0" gets
+expanded unless you escape with a backlash \, same with "\$1" \, "\$2"
+and so on (but these are automatically escaped if they're part of a
+symbol as in "\$2-x")., f 64;
+#X text 77 411 Above we have the same abstraction where we can set
+new arguments with a message (float \, symbol or list). A bang will
+output the new argument list. The argument list will show if you close
+and reopen this subpatch. If you save the patch \, the new list is
+saved with the patch.;
+#X connect 1 0 8 0;
+#X connect 5 0 9 0;
+#X connect 6 0 9 0;
+#X connect 7 0 9 0;
+#X connect 8 0 2 0;
+#X connect 9 0 4 0;
+#X restore 419 263 pd args;
+#X obj 39 263 canvas args;
+#X text 133 262 - access canvas' arguments;
