@@ -1025,7 +1025,7 @@ static void canvas_args_list(t_canvas_args *x, t_symbol *s, int argc, t_atom *ar
     binbuf_add(b, 1, name);
     binbuf_add(b, argc, argv);
     if(x->x_argc)
-        freebytes(x->x_argv, x->x_argc * sizeof(*sizeof(*(x->x_argv)));
+        freebytes(x->x_argv, x->x_argc * sizeof(x->x_argv));
     x->x_argc = argc;
     x->x_argv = getbytes(argc * sizeof(*(x->x_argv)));
     copy_atoms(argv, x->x_argv, argc);
@@ -1039,8 +1039,8 @@ static void canvas_args_bang(t_canvas_args *x)
 
 static void canvas_args_free(t_canvas_args *x)
 {
-    if (x->x_argc)
-        freebytes(x->x_argv, x->x_argc * sizeof(*sizeof(*(x->x_argv)));
+    if(x->x_argc)
+        freebytes(x->x_argv, x->x_argc * sizeof(x->x_argv));
 }
 
 static void *canvas_args_new(void)
