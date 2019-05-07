@@ -1076,16 +1076,16 @@ static void *canvasobj_new(t_symbol *s, int argc, t_atom *argv)
     }
     else
     {
-        const char *str = argv[0].a_w.w_symbol->s_name;
-        if (!strcmp(str, "dir"))
+        t_symbol *arg = argv[0].a_w.w_symbol;
+        if (arg == gensym("dir"))
             pd_this->pd_newest = canvas_dir_new(s, argc-1, argv+1);
-        else if (!strcmp(str, "mouse"))
+        else if (arg == gensym("mouse"))
             pd_this->pd_newest = canvas_mouse_new(s, argc-1, argv+1);
-        else if (!strcmp(str, "args"))
+        else if (arg == gensym("args"))
             pd_this->pd_newest = canvas_args_new();
         else
         {
-            error("canvas %s: unknown function", str);
+            error("canvas %s: unknown function", arg->s_name);
             pd_this->pd_newest = 0;
         }
     }
