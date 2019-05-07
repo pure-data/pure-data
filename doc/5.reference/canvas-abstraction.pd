@@ -1,9 +1,9 @@
 #N canvas 674 311 553 300 12;
-#X obj 218 115 inlet;
-#X obj 218 235 outlet;
-#X text 66 29 This is the abstraction for the canvas object help patch.
-It serves an example on how it sends the arguments of an abstraction.
-, f 57;
-#X obj 218 172 canvas args;
-#X connect 0 0 3 0;
-#X connect 3 0 1 0;
+#X obj 266 108 inlet;
+#X obj 266 228 outlet;
+#X obj 266 165 canvas args;
+#X text 66 31 This is the abstraction for the canvas object help patch.
+It serves an example on how it sends and sets the arguments of an abstraction.
+;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
