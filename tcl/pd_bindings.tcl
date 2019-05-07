@@ -354,16 +354,13 @@ proc ::pd_bindings::sendkey {window state key iso shift} {
         default     { if [catch {
             if { "" ne "${iso}" } {
                 if { "" eq "${::pd_bindings::key2iso}" } {
-                    puts "creating dict"
                     set ::pd_bindings::key2iso [dict create]
                 }
                 # store the key2iso mapping
-                #puts "!!store: $key <- $iso"
                 dict set ::pd_bindings::key2iso $key $iso
             } {
                 # (try to) restore the key2iso mapping
                 set iso [dict get $::pd_bindings::key2iso $key]
-                #puts "restore: $key -> $iso"
             }
         } stderr] {
             #puts "oops: $stderr"
