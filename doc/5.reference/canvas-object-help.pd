@@ -74,32 +74,34 @@ we interact with the parent patch., f 62;
 #X text 46 82 In Pd a canvas is the patch's window. This is an experimental
 object to query different information on canvases. For now \, only
 two functions are available \, but more are on the way., f 61;
-#N canvas 689 91 575 531 args 0;
-#X obj 125 189 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#N canvas 689 91 579 607 args 0;
+#X obj 129 196 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 125 255 print;
-#X text 146 186 <= get arguments;
-#X obj 267 357 print;
-#X obj 238 273 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 129 262 print;
+#X text 150 193 <= get arguments;
+#X obj 271 364 print;
+#X obj 242 280 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 267 272 list a b x;
-#X msg 288 301 1 2 3;
-#X obj 125 220 canvas-abstraction 100 foo \$0-x \\\$0 \$1 \$2-x;
-#X obj 267 326 canvas-abstraction a b x;
-#X text 77 411 Above we have the same abstraction where we can set
+#X msg 271 279 list a b x;
+#X msg 292 308 1 2 3;
+#X obj 129 227 canvas-abstraction 100 foo \$0-x \\\$0 \$1 \$2-x;
+#X obj 271 333 canvas-abstraction a b x;
+#X text 81 418 Above we have the same abstraction where we can set
 new arguments with a message (float \, symbol or list). A bang will
 output the new argument list. The argument list will show if you close
 and reopen this subpatch. If you save the patch \, the new list is
 saved with the patch.;
-#X text 43 19 "canvas arg" egts and sets the arguments of an abstraction.
+#X text 47 26 "canvas arg" egts and sets the arguments of an abstraction.
 ;
-#X text 46 46 This is useful for managing a variable number of arguments.
+#X text 50 53 This is useful for managing a variable number of arguments.
 When it receives a bang \, canvas args outputs the loaded arguments.
 Below there's an abstraction with canvas args as a simple example on
 how this works. Note how dollar signs (such as "\$0" \, "\$1" or "\$2-x")
 get expanded unless you escape them with a backlash ("\$2-x" may appear
 as an unexpanded symbol \, but it actually gets expanded if this abstraction
 is called inside another that contains arguments)., f 65;
+#X text 80 507 Note that canvas args can be anywhere inside an abstraction
+\, like deep buried inside many layers of subpatches.;
 #X connect 0 0 7 0;
 #X connect 4 0 8 0;
 #X connect 5 0 8 0;
