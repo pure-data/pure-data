@@ -700,6 +700,16 @@ static int garray_click(t_gobj *z, t_glist *glist,
 
 #define ARRAYWRITECHUNKSIZE 1000
 
+void garray_savesizeto(t_garray *x, t_binbuf *b)
+{
+    if (x->x_saveit)
+    {
+        t_array *array = garray_getarray(x);
+        binbuf_addv(b, "ssi", gensym("#A"), gensym("resize"), array->a_n);
+        binbuf_addsemi(b);
+    }
+}
+
 void garray_savecontentsto(t_garray *x, t_binbuf *b)
 {
     if (x->x_saveit)

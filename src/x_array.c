@@ -179,6 +179,7 @@ static void *array_define_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+void garray_savesizeto(t_garray *x, t_binbuf *b);
 void garray_savecontentsto(t_garray *x, t_binbuf *b);
 
 void array_define_save(t_gobj *z, t_binbuf *bb)
@@ -192,6 +193,7 @@ void array_define_save(t_gobj *z, t_binbuf *bb)
 
     if (gl)
     {
+        garray_savesizeto((t_garray *)gl->gl_list, bb);
         garray_savecontentsto((t_garray *)gl->gl_list, bb);
         obj_saveformat(&x->gl_obj, bb);
     }
