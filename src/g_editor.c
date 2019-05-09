@@ -2131,18 +2131,9 @@ static void canvas_donecanvasdialog(t_glist *x,
            argument supplied. */
     if (fromgui && (!(graphme & 1)))
         graphme = 0;
-        /* parent windows are treated differently than applies to
-           individual objects */
-    if (glist_getcanvas(x) != x && !canvas_isabstraction(x))
-    {
-            /* JMZ: i don't know how to trigger this path */
-        t_canvas*x2 = glist_getcanvas(x);
-        canvas_undo_add(x2, UNDO_APPLY, "apply", canvas_undo_set_apply(x2, glist_getindex(x2, &x->gl_gobj)));
-    }
-    else
-    {
-        canvas_undo_add(x, UNDO_CANVAS_APPLY, "apply", canvas_undo_set_canvas(x));
-    }
+        /* parent windows are treated the same as
+           applies to individual objects */
+    canvas_undo_add(x, UNDO_CANVAS_APPLY, "apply", canvas_undo_set_canvas(x));
 
     x->gl_pixwidth = xpix * x->gl_zoom;
     x->gl_pixheight = ypix * x->gl_zoom;
