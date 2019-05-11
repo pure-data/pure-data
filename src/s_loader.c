@@ -348,7 +348,7 @@ int sys_load_lib(t_canvas *canvas, const char *classname)
         sys_loadlib_iter(dirbuf, &data);
     }
     data.classname = classname;
-    if(!data.ok)
+    if(!data.ok && !sys_isabsolutepath(classname)) /* don't iterate if classname is absolute */
         canvas_path_iterate(canvas, (t_canvas_path_iterator)sys_loadlib_iter,
             &data);
 
