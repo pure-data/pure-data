@@ -56,10 +56,13 @@ static void my_numbox_tick_wait(t_my_numbox *x)
 
 void my_numbox_clip(t_my_numbox *x)
 {
-    if(x->x_val < x->x_min)
-        x->x_val = x->x_min;
-    if(x->x_val > x->x_max)
-        x->x_val = x->x_max;
+    if (x->x_min != 0 || x->x_max != 0)
+    {
+        if(x->x_val < x->x_min)
+            x->x_val = x->x_min;
+        if(x->x_val > x->x_max)
+            x->x_val = x->x_max;
+    }
 }
 
 void my_numbox_calc_fontwidth(t_my_numbox *x)
@@ -444,15 +447,18 @@ int my_numbox_check_minmax(t_my_numbox *x, double min, double max)
     }
     x->x_min = min;
     x->x_max = max;
-    if(x->x_val < x->x_min)
+    if(x->x_min != 0 || x->x_max != 0)
     {
-        x->x_val = x->x_min;
-        ret = 1;
-    }
-    if(x->x_val > x->x_max)
-    {
-        x->x_val = x->x_max;
-        ret = 1;
+        if(x->x_val < x->x_min)
+        {
+            x->x_val = x->x_min;
+            ret = 1;
+        }
+        if(x->x_val > x->x_max)
+        {
+            x->x_val = x->x_max;
+            ret = 1;
+        }
     }
     if(x->x_lin0_log1)
         x->x_k = exp(log(x->x_max/x->x_min) / (double)(x->x_log_height));
@@ -784,7 +790,7 @@ static void *my_numbox_new(t_symbol *s, int argc, t_atom *argv)
     int lilo = 0, ldx = 0, ldy = -8;
     int fs = 10;
     int log_height = 256;
-    double min = -1.0e+37, max = 1.0e+37, v = 0.0;
+    double min = 0, max = 0, v = 0.0;
 
     x->x_gui.x_bcol = 0xFCFCFC;
     x->x_gui.x_fcol = 0x00;
