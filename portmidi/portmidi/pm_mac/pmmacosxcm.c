@@ -63,9 +63,7 @@
 
      Note that this distorts accurate timestamps somewhat.
  */
-#ifndef LIMIT_RATE
 #define LIMIT_RATE 1
-#endif
 
 #define SYSEX_BUFFER_SIZE 128
 
