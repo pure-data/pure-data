@@ -64,7 +64,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                 if (devno == midiinvec[i])
                 {
                     err = Pm_OpenInput(&mac_midiindevlist[mac_nmidiindev],
-                        j, NULL, 100, NULL, NULL);
+                        j, NULL, 1024, NULL, NULL);
                     if (err)
                         post("could not open midi input %d (%s): %s",
                             j, info->name, Pm_GetErrorText(err));
