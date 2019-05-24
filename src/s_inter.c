@@ -255,7 +255,7 @@ static int sys_domicrosleep(int microsec, int pollem)
 
 void sys_microsleep(int microsec)
 {
-    sys_domicrosleep(microsec, 1);
+    sys_domicrosleep(microsec, 0);
 }
 
 #if !defined(_WIN32) && !defined(__CYGWIN__)
