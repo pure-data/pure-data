@@ -903,7 +903,8 @@ void sys_unqueuegui(void *client)
 
 int sys_pollgui(void)
 {
-    return (sys_domicrosleep(0, 1) || sys_poll_togui());
+    int from = sys_domicrosleep(0, 1), to = sys_poll_togui();
+    return (from || to);
 }
 
 void sys_init_fdpoll(void)
