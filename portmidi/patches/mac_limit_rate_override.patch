@@ -83,7 +83,7 @@ Index: pm_mac/pmmacosxcm.c
 -            timestamp = m->last_time;
 +    if (timestamp < m->last_time)
 +        timestamp = m->last_time;
-+#ifdef LIMIT_RATE
++#if LIMIT_RATE
 +    if (timestamp < m->min_next_time)
 +        timestamp = m->min_next_time;
  	m->last_time = timestamp + messageLength * m->host_ticks_per_byte;
@@ -101,7 +101,7 @@ Index: pm_mac/pmmacosxcm.c
 +    if (m->sysex_timestamp < m->last_time)
 +        m->sysex_timestamp = m->last_time;
 +
-+#ifdef LIMIT_RATE
++#if LIMIT_RATE
      if (m->sysex_timestamp < m->min_next_time) 
          m->sysex_timestamp = m->min_next_time;
 -
