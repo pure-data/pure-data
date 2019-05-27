@@ -52,7 +52,7 @@ for message routing and could lead to messages being dropped. As this limit
 may affect timing and cause issues when sending *large* amounts of MIDI data,
 it is disabled when building the Portmidi sources included with Pd.
 
-If you want to re-enabled the rate limit, set the LIMIT_RATE define before
+If you want to re-enable the rate limit, set the LIMIT_RATE define before
 building:
 
     ./configure CFLAGS="-DLIMIT_RATE=1"
