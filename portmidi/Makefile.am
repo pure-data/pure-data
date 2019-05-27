@@ -26,8 +26,9 @@ libportmidi_a_SOURCES += \
     portmidi/pm_linux/pmlinuxalsa.c
 endif
 
+# disable portmidi rate limiting on macos
 if MACOSX
-AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_mac
+AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_mac -DLIMIT_RATE=0
 libportmidi_a_SOURCES += \
     portmidi/porttime/ptmacosx_mach.c \
     portmidi/pm_mac/pmmac.c \

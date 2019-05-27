@@ -575,13 +575,13 @@ midi_write_short(PmInternal *midi, PmEvent *event)
     messageLength = midi_length(what);
         
     /* make sure we go foreward in time */
-    if (timestamp < m->min_next_time) timestamp = m->min_next_time;
-
-    #ifdef LIMIT_RATE
-        if (timestamp < m->last_time)
-            timestamp = m->last_time;
-	m->last_time = timestamp + messageLength * m->host_ticks_per_byte;
-    #endif
+    if (timestamp < m->last_time)
+        timestamp = m->last_time;
+#if LIMIT_RATE
+    if (timestamp < m->min_next_time)
+        timestamp = m->min_next_time;
+    m->last_time = timestamp + messageLength * m->host_ticks_per_byte;
+#endif
 
     /* Add this message to the packet list */
     return send_packet(midi, message, messageLength, timestamp);
@@ -621,15 +621,14 @@ midi_end_sysex(PmInternal *midi, PmTimestamp when)
     assert(m);
     
     /* make sure we go foreward in time */
-    if (m->sysex_timestamp < m->min_next_time) 
-        m->sysex_timestamp = m->min_next_time;
+    if (m->sysex_timestamp < m->last_time)
+        m->sysex_timestamp = m->last_time;
 
-    #ifdef LIMIT_RATE
-        if (m->sysex_timestamp < m->last_time) 
-            m->sysex_timestamp = m->last_time;
-        m->last_time = m->sysex_timestamp + m->sysex_byte_count *
+#if LIMIT_RATE
+
+    m->last_time = m->sysex_timestamp + m->sysex_byte_count *
                                             m->host_ticks_per_byte;
-    #endif
+#endif
     
     /* now send what's in the buffer */
     err = send_packet(midi, m->sysex_buffer, m->sysex_byte_count,
