@@ -240,9 +240,9 @@ To build the Pd macOS application, simply run:
 
     make app
 
-This builds Pd-#.#.#.app in the Pd source directory which can be then be
-double-clicked and/or copied to /Applications. For more info &
-options regarding the Pd .app bundle, see mac/README.txt
+This builds Pd-#.##.#.app in the Pd source directory which can be then be
+double-clicked and/or copied to /Applications. For more info & options regarding
+the Pd .app bundle, see mac/README.txt
 
 If you want to have both the Pd application *and* use Pd from the commandline,
 add command aliases to the binaries inside the .app to your ~/.bash_profile:
@@ -257,9 +257,9 @@ Next, reload the profile by either opening a new Terminal window or running:
 
     source ~/.bash_profile
 
-If you install Pd to your system with "make install", the Tk 8.5.9
-currently included with the system is buggy and should *not* be used. It is
-recommended to install a newer version, either via Homebrew or from the
+If you install Pd to your system with "make install", the Tk 8.5.9 currently
+included with the system (as of macOS 10.14) is buggy and should *not* be used.
+It is recommended to install a newer version, either via Homebrew or from the
 ActiveState Tcl/Tk downloads.
 
 To see which version the Pd GUI is using: set the log level to 3 & look for the
