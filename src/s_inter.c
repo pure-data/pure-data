@@ -9,6 +9,7 @@ that didn't really belong anywhere. */
 #include "s_stuff.h"
 #include "m_imp.h"
 #include "g_canvas.h"   /* for GUI queueing stuff */
+#include <errno.h>
 #ifndef _WIN32
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -28,18 +29,18 @@ that didn't really belong anywhere. */
 #endif
 #ifdef _WIN32
 #include <io.h>
-#include <fcntl.h>
 #include <process.h>
-#include <winsock.h>
+#include <winsock2.h>
 #include <windows.h>
 typedef int socklen_t;
+#ifndef EADDRINUSE
 #define EADDRINUSE WSAEADDRINUSE
+#endif
 #endif
 
 #include <stdarg.h>
 #include <signal.h>
 #include <fcntl.h>
-#include <errno.h>
 #include <string.h>
 #include <stdio.h>
 
