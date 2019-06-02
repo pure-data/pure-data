@@ -171,7 +171,7 @@ EXTERN_STRUCT _socketreceiver;
 
 typedef void (*t_socketnotifier)(void *x, int n);
 typedef void (*t_socketreceivefn)(void *x, t_binbuf *b);
-    /* from sockaddr, optional */
+    /* from addr sockaddr_storage struct, optional */
 typedef void (*t_socketfromaddrfn)(void *x, const void *fromaddr);
 
 EXTERN t_socketreceiver *socketreceiver_new(void *owner,

@@ -102,7 +102,7 @@ struct _socketreceiver
     int sr_intail;
     void *sr_owner;
     int sr_udp;
-    struct sockaddr *sr_fromaddr; /* optional, UDP only */
+    struct sockaddr_storage *sr_fromaddr; /* optional, UDP only */
     t_socketnotifier sr_notifier;
     t_socketreceivefn sr_socketreceivefn;
     t_socketfromaddrfn sr_fromaddrfn; /* optional, UDP only */
@@ -524,7 +524,7 @@ static int socketreceiver_doread(t_socketreceiver *x)
 static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
-    socklen_t fromaddrlen = sizeof(struct sockaddr);
+    socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     int ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
         (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
     if (ret < 0)
@@ -623,9 +623,10 @@ void socketreceiver_read(t_socketreceiver *x, int fd)
                 {
                     if (x->sr_fromaddrfn)
                     {
-                        struct sockaddr *fromaddr = x->sr_fromaddr;
-                        socklen_t fromaddrlen = sizeof(struct sockaddr);
-                        if(!getpeername(fd, fromaddr, &fromaddrlen))
+                        socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
+                        if(!getpeername(fd,
+                                        (struct sockaddr *)x->sr_fromaddr,
+                                        &fromaddrlen))
                             (*x->sr_fromaddrfn)(x->sr_owner,
                                 (const void *)x->sr_fromaddr);
                     }
@@ -649,7 +650,7 @@ void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
     if (fromaddrfn)
     {
         if (!x->sr_fromaddr)
-            x->sr_fromaddr = malloc(sizeof(struct sockaddr));
+            x->sr_fromaddr = malloc(sizeof(struct sockaddr_storage));
     }
     else if (x->sr_fromaddr)
     {

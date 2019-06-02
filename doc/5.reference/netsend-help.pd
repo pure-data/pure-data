@@ -52,7 +52,7 @@ otherwise., f 62;
 #X text 36 475 Second outlet outputs messages sent back from netreceive
 object. In TCP mode this works for any established connection. In UDP
 you have to send at least one message forward through the connection
-for backward messages to find their way back., f 122;
+for backward messages to find their way back., f 121;
 #X msg 637 259 connect localhost 3003 3010;
 #X text 867 245 an additional port argument;
 #X text 867 277 messages sent back from receiver;
@@ -72,10 +72,10 @@ with a matching port number., f 132;
 #X text 147 12 netsend -- send Pd messages over a network;
 #X msg 447 258 timeout 3;
 #X text 526 251 TCP connect timeout, f 11;
-#X text 35 554 As of 0.50+ \, netsend -u (UDP) is fully "connectionless"
-and no longer closes if no one receives a UDP message. netsend (TCP)
-has a settable connect timeout which defaults to 10 seconds., f 124
-;
+#X text 35 554 As of 0.50+ \, Pd supports IPv6 addresses \, netsend
+-u (UDP) is fully "connectionless" and no longer closes if no one receives
+a UDP message \, and netsend (TCP) has a settable connect timeout which
+defaults to 10 seconds., f 115;
 #X connect 0 0 8 0;
 #X connect 0 1 38 0;
 #X connect 1 0 0 0;

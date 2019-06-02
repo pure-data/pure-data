@@ -33,15 +33,34 @@
 # include <stdlib.h> /* BSDs for example */
 #endif
 
+/* print addrinfo lists for debugging */
+//#define POST_ADDRINFO
+
+/* ----------------------------- helpers ------------------------- */
+
 /* Windows XP winsock doesn't provide inet_ntop */
 #ifdef _WIN32
-const char* INET_NTOP(int af, const void* src, char* dst, int cnt) {
-    struct sockaddr_in srcaddr;
-    memset(&srcaddr, 0, sizeof(struct sockaddr_in));
-    memcpy(&(srcaddr.sin_addr), src, sizeof(srcaddr.sin_addr));
-    srcaddr.sin_family = af;
-    if (WSAAddressToString((struct sockaddr*) &srcaddr,
-        sizeof(struct sockaddr_in), 0, dst, (LPDWORD) &cnt) != 0)
+const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
+    struct sockaddr_storage addr;
+    sockklen_t addrlen;
+    addr.ss_family = af;
+    memset(&addr, 0, sizeof(struct sockaddr_storage));
+    if (af == AF_INET6)
+    {
+        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&addr;
+        memcpy(&(sa6->sin6_addr.s6_addr), src, sizeof(sa6->sin6_addr.s6_addr));
+        addrlen = sizeof(struct sockaddr_in6);
+    }
+    else (af == AF_INET)
+    {
+        struct sockaddr_in *sa4 = (struct sockaddr_in *)&addr;
+        memcpy(&(sa4->sin_addr.s_addr), src, sizeof(sa4->sin_addr.s_addr));
+        addrlen = sizeof(struct sockaddr_in);
+    }
+    else
+        return NULL;
+    if (WSAAddressToString((struct sockaddr *)&addr, addrlen, 0, dst,
+        (LPDWORD)&size) != 0)
         return NULL;
     return dst;
 }
@@ -50,6 +69,140 @@ const char* INET_NTOP(int af, const void* src, char* dst, int cnt) {
 #endif
 
 void socketreceiver_free(t_socketreceiver *x);
+
+// getaddrinfo() convenience wrapper
+// addrinfo linked list must be freed with freeaddrinfo()
+// returns errno which can be printed with gai_strerror()
+static int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
+                             int port, int protocol) {
+    struct addrinfo hints;
+    char portstr[32];
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC; // IPv4 or IPv6
+    hints.ai_socktype = protocol;
+    hints.ai_protocol = (protocol == SOCK_STREAM ? IPPROTO_TCP : IPPROTO_UDP);
+    hints.ai_flags = AI_DEFAULT |
+                     AI_PASSIVE;  // listen to any addr if hostname is NULL
+    portstr[0] = '\0';
+    snprintf(portstr, 32, "%d", port);
+    return getaddrinfo(hostname, portstr, &hints, ailist);
+}
+
+#ifdef POST_ADDRINFO
+// post addrinfo linked list for debugging
+static void addrinfo_post_list(struct addrinfo **ailist)
+{
+    const struct addrinfo *ai;
+    char addrstr[INET6_ADDRSTRLEN];
+    for(ai = (*ailist); ai != NULL; ai = ai->ai_next)
+    {
+        void *addr;
+        char *ipver;
+        if (ai->ai_family == AF_INET6)
+        {
+            struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)ai->ai_addr;
+            addr = &(sa6->sin6_addr);
+            ipver = "IPv6";
+        }
+        else if (ai->ai_family == AF_INET)
+        {
+            struct sockaddr_in *sa4 = (struct sockaddr_in *)ai->ai_addr;
+            addr = &(sa4->sin_addr);
+            ipver = "IPv4";
+        }
+        else continue;
+        INET_NTOP(ai->ai_family, addr, addrstr, INET6_ADDRSTRLEN);
+        post("%s %s", ipver, addrstr);
+    }
+}
+#endif
+
+static int sockaddr_is_multicast(const struct sockaddr *sa)
+{
+    if (sa->sa_family == AF_INET6)
+    {
+        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
+        return (sa6->sin6_addr.s6_addr[0] == 0xFF);
+    }
+    else if(sa->sa_family == AF_INET)
+    {
+        struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
+        return ((ntohl(sa4->sin_addr.s_addr) & 0xF0000000) == 0xE0000000);
+    }
+    return 0;
+}
+
+static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
+{
+    const void *addr;
+    unsigned short port;
+    char addrstr[INET6_ADDRSTRLEN];
+    addrstr[0] = '\0';
+    if (sa->sa_family == AF_INET6)
+    {
+        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
+        addr = (const void *)&sa6->sin6_addr.s6_addr;
+        port = ntohs(sa6->sin6_port);
+    }
+    else if (sa->sa_family == AF_INET)
+    {
+        struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
+        addr = (const void *)&sa4->sin_addr.s_addr;
+        port = ntohs(sa4->sin_port);
+    }
+    else return;
+    if (INET_NTOP(sa->sa_family, addr, addrstr, INET6_ADDRSTRLEN))
+    {
+        t_atom ap[2];
+        SETSYMBOL(&ap[0], gensym(addrstr));
+        SETFLOAT(&ap[1], (float)port);
+        outlet_list(o, NULL, 2, ap);
+    }
+}
+
+static void socket_set_nonblocking(int sockfd, int nonblocking)
+{
+#ifdef _WIN32
+    u_long modearg = nonblocking;
+    if (ioctlsocket(sockfd, FIONBIO, &modearg) != NO_ERROR)
+        post("ioctlsocket (FIONBIO %d) failed", nonblocking);
+#else
+    int sockflags = fcntl(sockfd, F_GETFL, 0);
+    if (nonblocking)
+        sockflags |= O_NONBLOCK;
+    else
+        sockflags &= ~O_NONBLOCK;
+    if (fcntl(sockfd, F_SETFL, sockflags) < 0)
+        post("fcntl (O_NONBLOCK %d) failed", nonblocking);
+#endif
+}
+
+/* join a multicast group addr, returns < 0 on error */
+static int socket_join_multicast_group(int sockfd, struct sockaddr *sa)
+{
+    if (sa->sa_family == AF_INET6)
+    {
+        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&sa;
+        struct ipv6_mreq mreq6;
+        memcpy(&mreq6.ipv6mr_multiaddr, &sa6->sin6_addr,
+            sizeof(struct in6_addr));
+        mreq6.ipv6mr_interface = 0;
+        return setsockopt(sockfd, IPPROTO_IPV6, IPV6_JOIN_GROUP,
+            (char *)&mreq6, sizeof(mreq6));
+    }
+    else if (sa->sa_family == AF_INET)
+    {
+        struct sockaddr_in *sa4 = (struct sockaddr_in *)&sa;
+        struct ip_mreq mreq;
+        mreq.imr_multiaddr.s_addr = sa4->sin_addr.s_addr;
+        mreq.imr_interface.s_addr = INADDR_ANY;
+        return setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+            (char *)&mreq, sizeof(mreq));
+    }
+    return -1;
+}
+
+/* ----------------------------- net ------------------------- */
 
 static t_class *netsend_class;
 
@@ -63,7 +216,7 @@ typedef struct _netsend
     int x_protocol;
     int x_bin;
     t_socketreceiver *x_receiver;
-    struct sockaddr_in x_server;
+    struct sockaddr_storage x_server;
     t_float x_timeout; /* TCP connect timeout in seconds */
 } t_netsend;
 
@@ -81,7 +234,6 @@ typedef struct _netreceive
 } t_netreceive;
 
 static void netreceive_notify(t_netreceive *x, int fd);
-static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa);
 
 /* ----------------------------- netsend ------------------------- */
 
@@ -121,7 +273,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     x->x_connectout = NULL;
     x->x_fromout = NULL;
     x->x_timeout = 10;
-    memset(&x->x_server, 0, sizeof(struct sockaddr_in));
+    memset(&x->x_server, 0, sizeof(struct sockaddr_storage));
     return (x);
 }
 
@@ -129,8 +281,8 @@ static void netsend_readbin(t_netsend *x, int fd)
 {
     unsigned char inbuf[MAXPDSTRING];
     int ret = 0, i;
-    struct sockaddr_in fromaddr = {0};
-    socklen_t fromaddrlen = sizeof(struct sockaddr_in);
+    struct sockaddr_storage fromaddr = {0};
+    socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     if (!x->x_msgout)
     {
         bug("netsend_readbin");
@@ -207,10 +359,9 @@ static void netsend_read(void *z, t_binbuf *b)
 
 static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
-    t_symbol *hostname;
-    int fportno, sportno, sockfd, portno, intarg, multicast = 0;
-    struct sockaddr_in srcaddr = {0};
-    struct hostent *hp;
+    int portno, sportno, sockfd, intarg, multicast = 0, status;
+    struct addrinfo *ailist = NULL, *ai;
+    const char *hostname = NULL;
 
     /* check argument types */
     if ((argc < 2) ||
@@ -221,149 +372,154 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         error("netsend: bad connect arguments");
         return;
     }
-    hostname = argv[0].a_w.w_symbol;
-    fportno = (int)argv[1].a_w.w_float;
+    hostname = argv[0].a_w.w_symbol->s_name;
+    portno = (int)argv[1].a_w.w_float;
     sportno = (argc > 2 ? (int)argv[2].a_w.w_float : 0);
-    portno = fportno;
     if (x->x_sockfd >= 0)
     {
         error("netsend: already connected");
         return;
     }
 
-    /* create a socket */
-    sockfd = socket(AF_INET, x->x_protocol, 0);
-#if 0
-    fprintf(stderr, "send socket %d\n", sockfd);
-#endif
-    if (sockfd < 0)
+    /* get addrinfo list using hostname & port */
+    status = addrinfo_get_list(&ailist, hostname, portno, x->x_protocol);
+    if (status != 0)
     {
-        sys_sockerror("socket");
+        pd_error(x, "netsend: bad host or port? %s (%d)",
+            gai_strerror(status), status);
         return;
     }
+#ifdef POST_ADDRINFO
+    addrinfo_post_list(&ailist);
+#endif
 
-    /* connect socket using hostname provided in command line */
-    x->x_server.sin_family = AF_INET;
-    hp = gethostbyname(hostname->s_name);
-    if (hp == 0)
-    {
-        post("netsend: bad host?");
-        sys_closesocket(sockfd);
-        return;
-    }
-    memcpy((char *)&x->x_server.sin_addr, (char *)hp->h_addr, hp->h_length);
+    /* try each addr until we find one that works */
+    for(ai = ailist; ai != NULL; ai = ai->ai_next) {
 
-    /* assign client port number */
-    x->x_server.sin_port = htons((u_short)portno);
+        /* create a socket */
+        sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+#if 0
+        fprintf(stderr, "send socket %d\n", sockfd);
+#endif
+        if (sockfd < 0)
+            continue;
 
 #if 0
-    intarg = 0;
-    if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
-                 &intarg, sizeof(intarg)) < 0)
-    post("setsockopt (SO_RCVBUF) failed");
+        intarg = 0;
+        if (setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF,
+                     &intarg, sizeof(intarg)) < 0)
+        post("setsockopt (SO_RCVBUF) failed");
 #endif
 
-    /* for stream (TCP) sockets, specify "nodelay" */
-    if (x->x_protocol == SOCK_STREAM)
+        /* for stream (TCP) sockets, specify "nodelay" */
+        if (x->x_protocol == SOCK_STREAM)
+        {
+            intarg = 1;
+            if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,
+                           (char *)&intarg, sizeof(intarg)) < 0)
+                post("setsockopt (TCP_NODELAY) failed");
+        }
+        else { /* datagram (UDP) broadcasting */
+            intarg = 1;
+            if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
+                      (const void *)&intarg, sizeof(intarg)) < 0)
+                post("setsockopt (SO_BROADCAST) failed");
+
+            /* multicast? */
+            multicast = sockaddr_is_multicast(ai->ai_addr);
+        }
+
+        /* bind optional src listening port */
+        if (sportno != 0) {
+            int bound = 0;
+            struct addrinfo *sailist = NULL, *sai;
+            post("connecting to dest port %d, src port %d", portno, sportno);
+            status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
+            if (status != 0)
+            {
+                pd_error(x, "netsend: could not set src port: %s (%d)",
+                    gai_strerror(status), status);
+                return;
+            }
+            for(sai = sailist; sai != NULL; sai = sai->ai_next) {
+                if (bind(sockfd, sai->ai_addr, sai->ai_addrlen) < 0)
+                    continue;
+                bound = 1;
+                break;
+            }
+            freeaddrinfo(sailist);
+            if (!bound)
+            {
+                sys_sockerror("setting source port");
+                sys_closesocket(sockfd);
+                return;
+            }
+        }
+        else if(hostname && multicast)
+            post("connecting to port %d, multicast %s", portno, hostname);
+        else
+            post("connecting to port %d", portno);
+
+        if (x->x_protocol == SOCK_STREAM)
+        {
+            int status;
+            struct timeval timeout;
+
+            /* set non-blocking */
+            socket_set_nonblocking(sockfd, 1);
+
+            /* connect */
+            status = connect(sockfd, ai->ai_addr, ai->ai_addrlen);
+            if (status < 0 && sys_sockerrno() != EINPROGRESS)
+            {
+                sys_sockerror("connecting stream socket");
+                sys_closesocket(sockfd);
+                return;
+            }
+
+            /* block with select using timeout */
+            fd_set writefds;
+            FD_ZERO(&writefds);
+            FD_SET(sockfd, &writefds); /* socket is connected when writable */
+            timeout.tv_sec = (int)x->x_timeout;
+            timeout.tv_usec = (x->x_timeout - timeout.tv_sec) * 1000000;
+            status = select(sockfd+1, NULL, &writefds, NULL, &timeout);
+            if(status < 0 || !FD_ISSET(sockfd, &writefds))
+            {
+                error("connection timed out");
+                sys_closesocket(sockfd);
+                return;
+            }
+
+            /* set blocking again */
+            socket_set_nonblocking(sockfd, 0);
+        }
+
+        /* this addr worked */
+        memcpy(&x->x_server, ai->ai_addr, ai->ai_addrlen);
+        break;
+    }
+    freeaddrinfo(ailist);
+
+    /* confirm that socket & bind worked */
+    if (sockfd == -1)
     {
-        intarg = 1;
-        if (setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY,
-                       (char *)&intarg, sizeof(intarg)) < 0)
-            post("setsockopt (TCP_NODELAY) failed");
-    }
-    else { /* datagram (UDP) broadcasting */
-        intarg = 1;
-        if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST,
-                  (const void *)&intarg, sizeof(intarg)) < 0)
-            post("setsockopt (SO_BROADCAST) failed");
-
-        /* multicast? */
-        if (0xE0000000 == (ntohl(x->x_server.sin_addr.s_addr) & 0xF0000000))
-            multicast = 1;
-    }
-
-    /* bind optional src listening port */
-    if (sportno != 0) {
-        post("connecting to dest port %d, src port %d", portno, sportno);
-        memset(&srcaddr, 0, sizeof(srcaddr));
-        srcaddr.sin_family = AF_INET;
-        srcaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-        srcaddr.sin_port = htons((u_short)sportno);
-
-        if (bind(sockfd, (struct sockaddr *) &srcaddr, sizeof (srcaddr)) < 0)
-        {
-            sys_sockerror("setting source port");
-            sys_closesocket(sockfd);
-            return;
-        }
-    }
-    else if(hp && multicast)
-        post("connecting to port %d, multicast %s", portno, hostname->s_name);
-    else
-        post("connecting to port %d", portno);
-
-    if (x->x_protocol == SOCK_STREAM)
-    {
-        int status;
-        struct timeval timeout;
-
-        /* set non-blocking */
-#ifdef _WIN32
-        u_long modearg = 1;
-        if (ioctlsocket(sockfd, FIONBIO, &modearg) != NO_ERROR)
-            post("ioctlsocket (FIONBIO 1) failed");
-#else
-        int sockflags = fcntl(sockfd, F_GETFL, 0);
-        if (fcntl(sockfd, F_SETFL, sockflags | O_NONBLOCK) < 0)
-            post("fcntl (O_NONBLOCK) failed");
-#endif
-
-        /* connect */
-        status = connect(sockfd, (struct sockaddr *)&x->x_server,
-            sizeof(x->x_server));
-        if (status < 0 && sys_sockerrno() != EINPROGRESS)
-        {
-            sys_sockerror("connecting stream socket");
-            sys_closesocket(sockfd);
-            return;
-        }
-
-        /* block with select using timeout */
-        fd_set writefds;
-        FD_ZERO(&writefds);
-        FD_SET(sockfd, &writefds); /* socket is connected when writable */
-        timeout.tv_sec = (int)x->x_timeout;
-        timeout.tv_usec = (x->x_timeout - timeout.tv_sec) * 1000000;
-        status = select(sockfd+1, NULL, &writefds, NULL, &timeout);
-        if(status < 0 || !FD_ISSET(sockfd, &writefds))
-        {
-            error("connection timed out");
-            sys_closesocket(sockfd);
-            return;
-        }
-
-        /* set blocking again */
-#ifdef _WIN32
-        modearg = 0;
-        if (ioctlsocket(sockfd, FIONBIO, &modearg) != NO_ERROR)
-            post("ioctlsocket (FIONBIO 0) failed");
-#else
-        if (fcntl(sockfd, F_SETFL, sockflags) < 0)
-            post("fcntl (O_BLOCK) failed");
-#endif
+        int err = sys_sockerrno();
+        pd_error(x, "netsend: connect failed: %s (%d)", strerror(errno), errno);
+        return;
     }
 
     x->x_sockfd = sockfd;
     if (x->x_msgout) /* add polling function for return messages */
     {
         if (x->x_bin)
-            sys_addpollfn(sockfd, (t_fdpollfn)netsend_readbin, x);
+            sys_addpollfn(x->x_sockfd, (t_fdpollfn)netsend_readbin, x);
         else
         {
             t_socketreceiver *y =
               socketreceiver_new((void *)x, 0, netsend_read,
                                  x->x_protocol == SOCK_DGRAM);
-            sys_addpollfn(sockfd, (t_fdpollfn)socketreceiver_read, y);
+            sys_addpollfn(x->x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receiver = y;
         }
     }
@@ -381,7 +537,7 @@ static void netsend_disconnect(t_netsend *x)
             socketreceiver_free(x->x_receiver);
         x->x_receiver = NULL;
         memset(&x->x_receiver, 0, sizeof(x->x_receiver));
-        memset(&x->x_server, 0, sizeof(struct sockaddr_in));
+        memset(&x->x_server, 0, sizeof(struct sockaddr_storage));
         outlet_float(x->x_obj.ob_outlet, 0);
     }
 }
@@ -417,8 +573,12 @@ static int netsend_dosend(t_netsend *x, int sockfd,
 
         int res = 0;
         if (x->x_protocol == SOCK_DGRAM)
+        {
+            socklen_t addrlen = (x->x_server.ss_family == AF_INET6 ?
+                sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in));
             res = (int)sendto(sockfd, bp, length-sent, 0,
-                (struct sockaddr *)&x->x_server, sizeof(struct sockaddr_in));
+                (struct sockaddr *)&x->x_server, addrlen);
+        }
         else
             res = (int)send(sockfd, bp, length-sent, 0);
 
@@ -593,92 +753,104 @@ static void netreceive_closeall(t_netreceive *x)
 
 static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
 {
-    int portno = fportno, intarg, multicast = 0;
-    struct sockaddr_in server = {0};
-    struct hostent *hp = NULL;
+    int portno = fportno, status, intarg;
+    struct addrinfo *ailist = NULL, *ai;
+    struct sockaddr_storage server = {0};
+    const char *hostname = NULL;
+
     netreceive_closeall(x);
     if (portno <= 0)
         return;
-    x->x_ns.x_sockfd = socket(AF_INET, x->x_ns.x_protocol, 0);
-    if (x->x_ns.x_sockfd < 0)
+    if (x->x_hostname)
+        hostname = x->x_hostname->s_name;
+    status = addrinfo_get_list(&ailist, hostname, portno, x->x_ns.x_protocol);
+    if (status != 0)
     {
-        sys_sockerror("socket");
+        pd_error(x, "netreceive: bad host or port? %s (%d)",
+            gai_strerror(status), status);
         return;
     }
-#if 0
-    fprintf(stderr, "receive socket %d\n", x->x_ sockfd);
+#ifdef POST_ADDRINFO
+    addrinfo_post_list(&ailist);
 #endif
 
-#if 1
-        /* ask OS to allow another Pd to repoen this port after we close it. */
-    intarg = 1;
-    if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_REUSEADDR,
-        (char *)&intarg, sizeof(intarg)) < 0)
-            post("netreceive: setsockopt (SO_REUSEADDR) failed");
-#endif
-#if 0
-    intarg = 0;
-    if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_RCVBUF,
-        &intarg, sizeof(intarg)) < 0)
-            post("setsockopt (SO_RCVBUF) failed");
-#endif
-    if (x->x_ns.x_protocol == SOCK_STREAM)
-    {
-        /* Stream (TCP) sockets are set NODELAY */
+    /* try each addr until we find one that works */
+    for(ai = ailist; ai != NULL; ai = ai->ai_next) {
+        x->x_ns.x_sockfd =
+            socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+        if (x->x_ns.x_sockfd < 0)
+            continue;
+    #if 0
+        fprintf(stderr, "receive socket %d\n", x->x-ns.x_sockfd);
+    #endif
+
+    #if 1
+        /* ask OS to allow another Pd to repoen this port after we close it */
         intarg = 1;
-        if (setsockopt(x->x_ns.x_sockfd, IPPROTO_TCP, TCP_NODELAY,
+        if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_REUSEADDR,
             (char *)&intarg, sizeof(intarg)) < 0)
-                post("netreceive: setsockopt (TCP_NODELAY) failed");
-    }
-    else if (x->x_ns.x_protocol == SOCK_DGRAM)
-    {
-        /* enable UDP broadcasting */
-        intarg = 1;
-        if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_BROADCAST,
-            (const void *)&intarg, sizeof(intarg)) < 0)
-                post("netreceive: failed to set SO_BROADCAST");
-    }
-
-        /* assign server port number etc */
-    server.sin_family = AF_INET;
-    server.sin_port = htons((u_short)portno);
-
-        /* assign optional UDP incoming or multicast hostname */
-    if (x->x_hostname && x->x_ns.x_protocol == SOCK_DGRAM)
-    {
-        hp = gethostbyname(x->x_hostname->s_name);
-        if (hp == 0)
+                post("netreceive: setsockopt (SO_REUSEADDR) failed");
+    #endif
+    #if 0
+        intarg = 0;
+        if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_RCVBUF,
+            &intarg, sizeof(intarg)) < 0)
+                post("setsockopt (SO_RCVBUF) failed");
+    #endif
+        if (ai->ai_protocol == SOCK_STREAM)
         {
-            pd_error(x, "netreceive: bad host?\n");
-            return;
+            /* stream (TCP) sockets are set NODELAY */
+            intarg = 1;
+            if (setsockopt(x->x_ns.x_sockfd, IPPROTO_TCP, TCP_NODELAY,
+                (char *)&intarg, sizeof(intarg)) < 0)
+                    post("netreceive: setsockopt (TCP_NODELAY) failed");
         }
-        memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
-        if ((0xE0000000 == (ntohl(server.sin_addr.s_addr) & 0xF0000000)))
-            multicast = 1;
-    }
-    else
-        server.sin_addr.s_addr = INADDR_ANY;
+        else if (ai->ai_protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
+        {
+            /* enable IPv4 UDP broadcasting */
+            intarg = 1;
+            if (setsockopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_BROADCAST,
+                (const void *)&intarg, sizeof(intarg)) < 0)
+                    post("netreceive: setsockopt (SO_BROADCAST) failed");
+        }
 
         /* name the socket */
-    if (bind(x->x_ns.x_sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
+        if (bind(x->x_ns.x_sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+        {
+            sys_closesocket(x->x_ns.x_sockfd);
+            x->x_ns.x_sockfd = -1;
+            continue;
+        }
+
+        /* this addr worked */
+        memcpy(&server, ai->ai_addr, ai->ai_addrlen);
+        break;
+    }
+    freeaddrinfo(ailist);
+
+    /* confirm that socket/bind worked */
+    if (x->x_ns.x_sockfd == -1)
     {
-        sys_sockerror("bind");
-        sys_closesocket(x->x_ns.x_sockfd);
-        x->x_ns.x_sockfd = -1;
+        int err = sys_sockerrno();
+        pd_error(x, "netreceive: listen failed: %s (%d)",
+            strerror(errno), errno);
         return;
     }
 
     if (x->x_ns.x_protocol == SOCK_DGRAM) /* datagram protocol */
     {
-            /* join multicast group */
-        if (multicast)
+        /* join multicast group */
+        if (sockaddr_is_multicast((struct sockaddr *)&server))
         {
-            struct ip_mreq mreq;
-            mreq.imr_multiaddr.s_addr = server.sin_addr.s_addr;
-            mreq.imr_interface.s_addr = INADDR_ANY;
-            if (setsockopt(x->x_ns.x_sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-                (char *)&mreq, sizeof(mreq)) < 0)
-                post("netreceive: setsockopt (IP_ADD_MEMBERSHIP) failed");
+            if (socket_join_multicast_group(x->x_ns.x_sockfd,
+                (struct sockaddr *)&server) < 0)
+            {
+                int err = sys_sockerrno();
+                pd_error(x, "netreceive: joining multicast group %s failed: %s (%d)",
+                    hostname, strerror(errno), errno);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            }
+            else
+                post("netreceive: joined multicast group %s", hostname);
         }
 
         if (x->x_ns.x_bin)
@@ -818,21 +990,6 @@ static void netreceive_setup(void)
         gensym("listen"), A_FLOAT, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
-}
-
-static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
-{
-    struct sockaddr_in *addr = (struct sockaddr_in *)sa;
-    char addrstr[INET6_ADDRSTRLEN];
-    addrstr[0] = '\0';
-    if (INET_NTOP(AF_INET, &addr->sin_addr.s_addr, addrstr, INET6_ADDRSTRLEN))
-    {
-        t_atom ap[2];
-        unsigned short port = ntohs(addr->sin_port);
-        SETSYMBOL(&ap[0], gensym(addrstr));
-        SETFLOAT(&ap[1], (float)port);
-        outlet_list(o, NULL, 2, ap);
-    }
 }
 
 void x_net_setup(void)
