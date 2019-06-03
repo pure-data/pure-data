@@ -113,6 +113,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
     bind all <$::modifier-Shift-Key-w> {::pd_bindings::window_close %W 1}
     bind all <$::modifier-Shift-Key-z> {menu_redo}
+    bind all <KeyPress-Escape>         {menu_send %W deselectall}
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
