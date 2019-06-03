@@ -4376,21 +4376,23 @@ static int canvas_try_bypassobj1(t_canvas* x,
         canvas_connect_with_undo(x, A, out0, C, in2);
     return 1;
 }
-static int canvas_try_insert(t_canvas *x,
-    t_object* obj00, int in00, int out00,
-    t_object* obj11, int in11, int out11,
-    t_object* obj22, int in22, int out22)
+static int canvas_try_insert(t_canvas *x
+    , t_object* obj00, int in00, int out00 /* source */
+    , t_object* obj11, int in11, int out11 /* sink   */
+    , t_object* obj22, int in22, int out22 /* insert */
+    )
 {
+    int out21 = 0, in02 = 0; /* iolets of the insert-objects */
     int A, B, C;
+
         /* check connections (obj00->obj11, but not obj22) */
     if(out00<0 || out22>=0 || out11>=0 || in00>=0 || in22>=0 || in11<0)
         return 0;
 
         /* check whether the connection types match */
-    A = obj_issignaloutlet(obj00, out00);
-    B = obj_issignalinlet(obj22, in11);
-    C = obj_issignaloutlet(obj22, out00);
-    if(!((A && B && C) || !(A || B || C)))
+    if((obj_issignaloutlet(obj00, out00) && !obj_issignalinlet(obj22, in02)))
+        return 0;
+    if((obj_issignaloutlet(obj22, out21) && !obj_issignalinlet(obj11, in11)))
         return 0;
 
         /* then connect them */
@@ -4399,10 +4401,10 @@ static int canvas_try_insert(t_canvas *x,
     C = glist_getindex(x, &obj22->te_g);
 
     canvas_disconnect_with_undo(x, A, out00, B, in11);
-    if (!canvas_isconnected(x, obj00, out00, obj22, in11))
-        canvas_connect_with_undo(x, A, out00, C, in11);
-    if (!canvas_isconnected(x, obj22, out00, obj11, in11))
-        canvas_connect_with_undo(x, C, out00, B, in11);
+    if (!canvas_isconnected     (x, obj00, out00, obj22, in02))
+        canvas_connect_with_undo(x, A,     out00, C,     in02);
+    if (!canvas_isconnected     (x, obj22, out21, obj11, in11))
+        canvas_connect_with_undo(x, C,     out21, B,     in11);
     return 1;
 }
     /* If we have two selected objects on the canvas, try to connect
