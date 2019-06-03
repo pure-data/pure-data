@@ -42,7 +42,7 @@
 #ifdef _WIN32
 const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     struct sockaddr_storage addr;
-    sockklen_t addrlen;
+    socklen_t addrlen;
     addr.ss_family = af;
     memset(&addr, 0, sizeof(struct sockaddr_storage));
     if (af == AF_INET6)
@@ -51,7 +51,7 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
         memcpy(&(sa6->sin6_addr.s6_addr), src, sizeof(sa6->sin6_addr.s6_addr));
         addrlen = sizeof(struct sockaddr_in6);
     }
-    else (af == AF_INET)
+    else if (af == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *)&addr;
         memcpy(&(sa4->sin_addr.s_addr), src, sizeof(sa4->sin_addr.s_addr));
@@ -81,10 +81,11 @@ static int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
     hints.ai_family = AF_UNSPEC; // IPv4 or IPv6
     hints.ai_socktype = protocol;
     hints.ai_protocol = (protocol == SOCK_STREAM ? IPPROTO_TCP : IPPROTO_UDP);
-    hints.ai_flags = AI_DEFAULT |
-                     AI_PASSIVE;  // listen to any addr if hostname is NULL
+    hints.ai_flags = AI_V4MAPPED |   // fallback to IPv4-mapped IPv6 addrs
+                     AI_ADDRCONFIG | // addrs families conform to system config
+                     AI_PASSIVE;     // listen to any addr if hostname is NULL
     portstr[0] = '\0';
-    snprintf(portstr, 32, "%d", port);
+    sprintf(portstr, "%d", port);
     return getaddrinfo(hostname, portstr, &hints, ailist);
 }
 
