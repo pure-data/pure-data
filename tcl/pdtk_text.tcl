@@ -10,6 +10,7 @@ package provide pdtk_text 0.1
 # had the effect of escaping the closing brace.  We trim off the last
 # character in the string to compensate via [string range].
 proc pdtk_text_new {tkcanvas tags x y text font_size color} {
+    set text [subst -nocommands -novariables $text]
     $tkcanvas create text $x $y -tags $tags \
         -text [string range $text 0 end-1] \
             -fill $color -anchor nw -font [get_font_for_size $font_size]
@@ -27,6 +28,7 @@ proc pdtk_text_new {tkcanvas tags x y text font_size color} {
 
 # change the text in an existing text box
 proc pdtk_text_set {tkcanvas tag text} {
+    set text [subst -nocommands -novariables $text]
     $tkcanvas itemconfig $tag -text [string range $text 0 end-1]
 }
 

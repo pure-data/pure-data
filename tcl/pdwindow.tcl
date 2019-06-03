@@ -60,6 +60,7 @@ proc ::pdwindow::buffer_message {object_id level message} {
 }
 
 proc ::pdwindow::insert_log_line {object_id level message} {
+    set message [subst -nocommands -novariables $message]
     if {$object_id eq ""} {
         .pdwindow.text.internal insert end $message log$level
     } else {
