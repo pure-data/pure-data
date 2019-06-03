@@ -4125,6 +4125,12 @@ static void canvas_selectall(t_canvas *x)
          }
 }
 
+static void canvas_deselectall(t_canvas *x)
+{
+    if(x)glist_noselect(x);
+}
+
+
 static void canvas_reselect(t_canvas *x)
 {
     t_gobj *g, *gwas;
@@ -4699,6 +4705,8 @@ void g_editor_setup(void)
         gensym("duplicate"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_selectall,
         gensym("selectall"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_deselectall,
+        gensym("deselectall"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_reselect,
         gensym("reselect"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_undo_undo,
