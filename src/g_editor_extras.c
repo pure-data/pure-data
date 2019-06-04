@@ -14,6 +14,12 @@ void *canvas_undo_set_pastebinbuf(t_canvas *x, t_binbuf *b,
     int numpasted, int duplicate, int d_offset);
 
 /* ------------ utilities ---------- */
+typedef struct _triggerize_return {
+        /* data to return from triggerize */
+    t_gobj*tr_editgobj; /* if set, immediately switch this object to being edited */
+} t_triggerize_return;
+
+
 static t_gobj*o2g(t_object*obj)
 {
     return &(obj->te_g);
@@ -326,7 +332,7 @@ static int triggerize_fanouts(t_glist*cnv)
     return count;
 }
 
-static int triggerize_line(t_glist*x)
+static int triggerize_line(t_glist*x, t_triggerize_return*tr)
 {
         /* triggerize a single selected line, by inserting a [t a] object
          * (or it's signal equivalent) */
@@ -408,6 +414,9 @@ static int triggerize_line(t_glist*x)
     glist_select(x, o2g(stub));
 
     canvas_undo_add(x, UNDO_SEQUENCE_END, "{insert object}", 0);
+        /* remember the inserted object, so we can select/edit it later */
+    if(tr)
+        tr->tr_editgobj = o2g(stub);
     if(sigline)
         canvas_resume_dsp(dspstate);
     return 1;
@@ -577,7 +586,7 @@ static int triggerize_triggers(t_glist*cnv)
     return 0;
 }
 
-static int canvas_do_triggerize(t_glist*cnv)
+static int canvas_do_triggerize(t_glist*cnv, t_triggerize_return*tr)
 {
         /*
          * selected msg-connection: insert [t a] (->triggerize_line)
@@ -588,21 +597,27 @@ static int canvas_do_triggerize(t_glist*cnv)
          * selected [trigger]: else, add left-most "a" outlet (->triggerize_triggers)
          */
 
-    return(triggerize_line(cnv)
+    return(triggerize_line(cnv, tr)
         || triggerize_fanouts(cnv)
         || triggerize_triggers(cnv));
 }
 void canvas_triggerize(t_glist*cnv)
 {
+    int count = 0;
+    t_triggerize_return*tr;
     if(!cnv || !cnv->gl_editor)
         return;
     if(!cnv->gl_editor->e_selection && !cnv->gl_editor->e_selectedline)
         return;
-    int count = 0;
-    if(count = canvas_do_triggerize(cnv)) {
+    tr = getbytes(sizeof(*tr));
+    if(count = canvas_do_triggerize(cnv, tr)) {
         canvas_dirty(cnv, 1);
             /* fix display of connections, objects,... */
         canvas_redraw(cnv);
         glist_redraw(cnv);
+            /* if we inserted an object, allow the user to change it now */
+        if(tr->tr_editgobj)
+            gobj_activate(tr->tr_editgobj, cnv, 1);
     }
+    freebytes(tr, sizeof(*tr));
 }
