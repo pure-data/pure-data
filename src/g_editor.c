@@ -4556,18 +4556,23 @@ static void canvas_connect_selection(t_canvas *x)
             objsink = objsrc;
             objsrc = obj;
         }
-
+        if (!objsrc || !objsink)
+            return;
         if (obj_noutlets(objsrc))
         {
-            int out = 0, in=0;
+            int noutlets = obj_noutlets(objsrc);
+            int ninlets = obj_ninlets(objsink);
+            int fanout = (noutlets == 1) && obj_issignaloutlet(objsrc, 0);
+            int out = 0, in = 0;
             while(!tryconnect(x, objsrc, out, objsink, in))
             {
-                if (!objsrc  || obj_noutlets(objsrc ) <= out)
+                if (noutlets <= out)
                     return;
-                if (!objsink || obj_ninlets (objsink) <= in )
+                if (ninlets <= in )
                     return;
                 in++;
-                out++;
+                if(!fanout)
+                    out++;
             }
         }
         return;
