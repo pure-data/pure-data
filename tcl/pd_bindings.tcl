@@ -114,9 +114,10 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-w> {::pd_bindings::window_close %W 1}
     bind all <$::modifier-Shift-Key-z> {menu_redo}
     bind all <KeyPress-Escape>         {menu_send %W deselectall}
-    bind all <KeyPress-Tab>            {menu_send_float %W cycleselect  1}
-    bind all <Shift-Tab>               {menu_send_float %W cycleselect -1}
-    bind all <KeyPress-ISO_Left_Tab>   {menu_send_float %W cycleselect -1}
+    bind all <KeyPress-Tab>            {menu_send_float %W cycleselect  1; ::pd_bindings::sendkey %W 1 %K %A 0}
+    bind all <Shift-Tab>               {menu_send_float %W cycleselect -1; ::pd_bindings::sendkey %W 1 %K %A 1}
+    # on X11, <Shift-Tab> is different key by the name 'ISO_Left_Tab'...
+    bind all <KeyPress-ISO_Left_Tab>   {menu_send_float %W cycleselect -1; ::pd_bindings::sendkey %W 1 %K %A 1}
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
