@@ -364,7 +364,22 @@ static int triggerize_line(t_glist*x, t_triggerize_return*tr)
         t_object*obj2=g2o(dst);
         if(obj1 && obj2)
         {
-            posx=(obj1->te_xpix+obj2->te_xpix)>>1;
+            float posSource, posSink;
+            int nio;
+            int _x; /* dummy variable */
+            int posLeft, posRight;
+
+                /* get real x-position of the outlet */
+            gobj_getrect(src, x, &posLeft, &_x, &posRight, &_x);
+            nio = obj_noutlets(obj1);
+            posSource = posLeft + (posRight - posLeft - IOWIDTH * x->gl_zoom) * src_out / ((nio==1)?1.:(nio-1.));
+
+                /* get real x-position of the inlet */
+            gobj_getrect(dst, x, &posLeft, &_x, &posRight, &_x);
+            nio = obj_ninlets(obj2);
+            posSink = posLeft + (posRight - posLeft - IOWIDTH * x->gl_zoom) * dst_in / ((nio==1)?1.:(nio-1.));
+
+            posx=(posSource + posSink)*0.5;
             posy=(obj1->te_ypix+obj2->te_ypix)>>1;
         }
     }
