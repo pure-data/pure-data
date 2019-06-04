@@ -4097,6 +4097,9 @@ static void canvas_duplicate(t_canvas *x)
     if (x->gl_editor->e_onmotion == MA_NONE && x->gl_editor->e_selection)
     {
         t_selection *y;
+        t_binbuf*b = 0;
+        if(EDITOR->copy_binbuf)
+            b = binbuf_duplicate(EDITOR->copy_binbuf);
         canvas_copy(x);
         canvas_undo_add(x, UNDO_PASTE, "duplicate",
             (void *)canvas_undo_set_paste(x, 0, 1, PASTE_OFFSET));
@@ -4104,6 +4107,12 @@ static void canvas_duplicate(t_canvas *x)
         for (y = x->gl_editor->e_selection; y; y = y->sel_next)
             gobj_displace(y->sel_what, x,
                 PASTE_OFFSET, PASTE_OFFSET);
+        if(b)
+        {
+            if(EDITOR->copy_binbuf)
+                binbuf_free(EDITOR->copy_binbuf);
+            EDITOR->copy_binbuf = b;
+        }
         canvas_dirty(x, 1);
     }
 }
