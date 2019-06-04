@@ -4129,6 +4129,66 @@ static void canvas_deselectall(t_canvas *x)
 {
     if(x)glist_noselect(x);
 }
+static void canvas_cycleselect(t_canvas*x, t_float foffset)
+{
+        /* select (currentselection+offset)%objectcount */
+    int offset = (int)foffset;
+    if (!x->gl_editor)
+        return;
+    if (x->gl_editor->e_selection)
+    {
+        int newindex;
+        int objectcount = glist_getindex(x, 0);
+            /* only cycle selection if the current selection contains exactly 1 item */
+        t_gobj* y = x->gl_editor->e_selection->sel_next ? 0 : x->gl_editor->e_selection->sel_what;
+        if(!y)return;
+        newindex = (glist_getindex(x, y) + offset) % objectcount;
+        if (newindex < 0) newindex += objectcount;
+        glist_deselect(x, y);
+        glist_select(x, glist_nth(x, newindex));
+    }
+    else if (x->gl_editor->e_selectedline)
+    {
+            /* if (only) a line is selected, proceed to next line */
+        int connectioncount = 0;
+        int foundit = 0;
+        t_linetraverser t;
+        t_outconnect *oc;
+
+        linetraverser_start(&t, x);
+        while (offset && (oc = linetraverser_next(&t)))
+        {
+            connectioncount++;
+            if(!foundit) {
+                int srcno = glist_getindex(x, &t.tr_ob->ob_g);
+                int sinkno = glist_getindex(x, &t.tr_ob2->ob_g);
+                if((srcno      == x->gl_editor->e_selectline_index1) &&
+                    (t.tr_outno == x->gl_editor->e_selectline_outno) &&
+                    (sinkno     == x->gl_editor->e_selectline_index2) &&
+                    (t.tr_inno  == x->gl_editor->e_selectline_inno)) {
+                    foundit = connectioncount;
+                }
+            } else
+                offset--;
+        }
+
+            /* if the offset is non-0, wrap it... */
+        if(offset) {
+            offset = (((offset - 1) % connectioncount) + connectioncount) % connectioncount;
+            /* ... and start from the beginning */
+            linetraverser_start(&t, x);
+            while ((oc = linetraverser_next(&t)))
+            {
+                if(!offset)break;
+                offset--;
+            }
+        }
+        if(oc)
+            glist_selectline(x, oc,
+                glist_getindex(x, &t.tr_ob->ob_g), t.tr_outno,
+                glist_getindex(x, &t.tr_ob2->ob_g), t.tr_inno);
+    }
+}
 
 
 static void canvas_reselect(t_canvas *x)
@@ -4711,6 +4771,8 @@ void g_editor_setup(void)
         gensym("deselectall"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_reselect,
         gensym("reselect"), A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_cycleselect,
+        gensym("cycleselect"), A_FLOAT, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_undo_undo,
         gensym("undo"), A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_undo_redo,
