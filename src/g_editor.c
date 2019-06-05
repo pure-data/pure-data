@@ -4154,8 +4154,63 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
     int offset = (int)foffset;
     if (!x->gl_editor)
         return;
+
+    if (x->gl_editor->e_onmotion == MA_CONNECT)
+    {
+            /* during connection, cycle through inlets/outlets */
+        int xwas = x->gl_editor->e_xwas,
+            ywas = x->gl_editor->e_ywas;
+        int xpos = EDITOR->canvas_last_glist_x,
+            ypos = EDITOR->canvas_last_glist_y;
+        t_object *src, *snk;
+        t_gobj*gobj;
+        int srcX1=0, srcY1=0, srcX2=0, srcY2=0;
+        int snkX1=0, snkY1=0, snkX2=0, snkY2=0;
+        if(EDITOR->canvas_last_glist != x)
+                /* we don't know the current mouse coordinates in this canvas, so return... */
+            return;
+        gobj = canvas_findhitbox(x, xwas, ywas, &srcX1, &srcY1, &srcX2, &srcY2);
+        src = gobj?pd_checkobject(&gobj->g_pd):0;
+        gobj = canvas_findhitbox(x, xpos, ypos, &snkX1, &snkY1, &snkX2, &snkY2);
+        snk = gobj?pd_checkobject(&gobj->g_pd):0;
+
+        if(!src) /* this should never happen */
+            return;
+
+            /* are we hovering over an object?
+             * - if so, cycle through inlets
+             * - else, cycle through outlets
+             */
+        if(snk && snk != src) {
+                /* cycle inlets */
+            int width = snkX2 - snkX1, hotspot, closest;
+            int nios = obj_ninlets(snk);
+            if (nios <= 1) /* no use cycling */
+                return;
+            closest = ((xpos-snkX1) * (nios-1) + width/2)/width;
+            closest = ((closest + offset) % nios + nios) % nios;
+            hotspot = snkX1 + (width - IOWIDTH) * closest / (nios-1.0) + IOWIDTH*0.5;
+            xpos = hotspot;
+                /* moving the mouse doesn't seem to work on macOS... */
+            sys_vgui("event generate .x%lx.c <Motion> -warp 1 -x %d -y %d\n",
+                glist_getcanvas(x), xpos, ypos);
+        } else {
+                /* cycle outlets */
+            int width = srcX2 - srcX1, hotspot, closest;
+            int nios = obj_noutlets(src);
+            if (nios <= 1) /* no use cycling */
+                return;
+            closest = ((xwas-srcX1) * (nios-1) + width/2)/width;
+            closest = ((closest + offset) % nios + nios) % nios;
+            hotspot = srcX1 + (width - IOWIDTH) * closest / (nios-1.0) + IOWIDTH*0.5;
+            x->gl_editor->e_xwas = hotspot;
+            canvas_doconnect(x, xpos, ypos, 0, 0);
+        }
+        return;
+    }
     if (x->gl_editor->e_selection)
     {
+            /* cycle the selection to the next object */
         int newindex;
         int objectcount = glist_getindex(x, 0);
             /* only cycle selection if the current selection contains exactly 1 item */
@@ -4165,10 +4220,11 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
         if (newindex < 0) newindex += objectcount;
         glist_deselect(x, y);
         glist_select(x, glist_nth(x, newindex));
+        return;
     }
-    else if (x->gl_editor->e_selectedline)
+    if (x->gl_editor->e_selectedline)
     {
-            /* if (only) a line is selected, proceed to next line */
+            /* if (only) a line is selected, cycle to next line */
         int connectioncount = 0;
         int foundit = 0;
         t_linetraverser t;
@@ -4206,6 +4262,7 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
             glist_selectline(x, oc,
                 glist_getindex(x, &t.tr_ob->ob_g), t.tr_outno,
                 glist_getindex(x, &t.tr_ob2->ob_g), t.tr_inno);
+        return;
     }
 }
 
