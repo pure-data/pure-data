@@ -1212,6 +1212,8 @@ typedef struct _text_search
     t_text_client x_tc;
     t_outlet *x_out1;       /* line indices */
     int x_nkeys;
+    int x_onset;        /* first line to include in search */
+    int x_range;        /* max number of lines to search */
     t_key *x_keyvec;
 } t_text_search;
 
@@ -1227,6 +1229,8 @@ static void *text_search_new(t_symbol *s, int argc, t_atom *argv)
     if (nkey == 0)
         nkey = 1;
     x->x_nkeys = nkey;
+    x->x_onset = 0;
+    x->x_range = 0x7fffffff;
     x->x_keyvec = (t_key *)getbytes(nkey * sizeof(*x->x_keyvec));
     if (!argc)
         x->x_keyvec[0].k_field = 0, x->x_keyvec[0].k_binop = KB_EQ;
@@ -1288,8 +1292,14 @@ static void text_search_list(t_text_search *x,
     {
         if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA || i == n-1)
         {
-            int thisn = i - thisstart, j, field = x->x_keyvec[0].k_field,
-                binop = x->x_keyvec[0].k_binop;
+            int thisn, j, field, binop;
+            if (lineno < x->x_onset)
+                goto nomatch;
+            if (lineno >= x->x_onset + x->x_range)
+                break;
+            thisn = i - thisstart;
+            field = x->x_keyvec[0].k_field;
+            binop = x->x_keyvec[0].k_binop;
                 /* do we match? */
             for (j = 0; j < argc; )
             {
@@ -1434,6 +1444,13 @@ static void text_search_list(t_text_search *x,
         }
     }
     outlet_float(x->x_out1, bestline);
+}
+
+static void text_search_range(t_text_search *x, t_floatarg onset,
+    t_floatarg range)
+{
+    x->x_onset = (onset >= 0x7fffffff ? 0x7ffffff : (onset < 0 ? 0 : onset));
+    x->x_range = (range >= 0x7fffffff ? 0x7ffffff : (range < 0 ? 0 : range));
 }
 
 /* ---------------- text_sequence object - sequencer ----------- */
@@ -2228,6 +2245,8 @@ void x_qlist_setup(void )
         (t_newmethod)text_search_new, (t_method)text_client_free,
             sizeof(t_text_search), 0, A_GIMME, 0);
     class_addlist(text_search_class, text_search_list);
+    class_addmethod(text_search_class, (t_method)text_search_range,
+        gensym("range"), A_FLOAT, A_FLOAT, 0);
     class_sethelpsymbol(text_search_class, gensym("text-object"));
 
     text_sequence_class = class_new(gensym("text sequence"),
