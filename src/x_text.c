@@ -9,6 +9,8 @@ moment it also defines "text" but it may later be better to split this off. */
 #include "g_canvas.h"    /* just for glist_getfont, bother */
 #include <string.h>
 #include <stdio.h>
+#define __USE_GNU     /* needed so stdlib will define qsort_r */
+#include <stdlib.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -23,6 +25,10 @@ static t_class *text_define_class;
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #else
 # include <stdlib.h> /* BSDs for example */
+#endif
+
+#ifdef _WIN32
+#define qsort_r qsort_s   /* of course Microsoft decides to be different */
 #endif
 
 #ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
@@ -205,7 +211,7 @@ static void textbuf_free(t_textbuf *x)
         pd_unbind(x2, gensym("#A"));
 }
 
-    /* random helper function */
+    /* random helper function to find the nth line in a text buffer */
 static int text_nthline(int n, t_atom *vec, int line, int *startp, int *endp)
 {
     int i, cnt = 0;
@@ -351,6 +357,7 @@ void text_define_bang(t_text_define *x)
     /* set from a list */
 void text_define_set(t_text_define *x, t_symbol *s, int argc, t_atom *argv)
 {
+    binbuf_clear(x->x_binbuf);
     binbuf_restore(x->x_binbuf, argc, argv);
     textbuf_senditup(&x->x_textbuf);
 }
@@ -382,6 +389,111 @@ static void text_define_send(t_text_define *x, t_symbol *s)
         gpointer_setglist(&x->x_gp, x->x_canvas, x->x_scalar);
         pd_pointer(s->s_thing, &x->x_gp);
     }
+}
+
+static int text_sortcompare(const void *z1, const void *z2 , void *zcontext)
+{
+    const t_atom *a1 = *(t_atom **)z1, *a2 = *(t_atom **)z2;
+    for (; ; a1++, a2++)
+    {
+        if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
+        {
+            if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+                return (0);
+            else return (-1);
+        }
+        else if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
+            return (1);
+        else if (a1->a_type == A_FLOAT)
+        {
+            if (a2->a_type == A_FLOAT)
+            {
+                if (a1->a_w.w_float < a2->a_w.w_float)
+                    return (-1);
+                else if (a1->a_w.w_float > a2->a_w.w_float)
+                    return (1);
+            }
+            else return (-1);
+        }
+        else if (a1->a_type == A_SYMBOL)
+        {
+            if (a2->a_type == A_SYMBOL)
+            {
+                int z = strcmp(a1->a_w.w_symbol->s_name,
+                    a2->a_w.w_symbol->s_name);
+                if (z)
+                    return (z);
+            }
+            else return (1);
+        }
+    }
+    return (0);
+}
+
+
+    /* sort the contents */
+static void text_define_sort(t_text_define *x, t_symbol *s,
+    int argc, t_atom *argv)
+{
+    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+        thisline, startline;
+    t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *atomp;
+    t_binbuf *newb;
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
+    {
+        if (!strcmp(argv->a_w.w_symbol->s_name, "-u"))
+            unique = 1;
+        else
+        {
+            pd_error(x, "text define sort: unknown flag ...");
+            postatom(argc, argv); endpost();
+        }
+        argc--; argv++;
+    }
+    if (argc)
+    {
+        post("warning: text define sort ignoring extra argument: ");
+        postatom(argc, argv); endpost();
+    }
+    if (!natom)
+        return;
+            /* last thing in buffer should be a terminator */
+    if (vec[natom-1].a_type != A_SEMI &&
+        vec[natom-1].a_type != A_COMMA)
+            binbuf_addsemi(x->x_binbuf),
+                vec = binbuf_getvec(x->x_binbuf),
+                    natom = binbuf_getnatom(x->x_binbuf),
+                        nlines++;
+    for (i = nlines = 0; i < natom; i++)
+        if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
+            nlines++;
+    sortbuf = (t_atom **)getbytes(nlines * sizeof(*sortbuf));
+    for (i = thisline = 0, startline = 1; i < natom; i++)
+    {
+        if (startline)
+        {
+            if (thisline >= nlines)
+                bug("text_define_sort");
+            sortbuf[thisline++] = vec+i;
+        }
+        startline =  (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
+    }
+    /* qsort_r(sortbuf, nlines, sizeof(*sortbuf), 0); */
+    qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, 0);
+    newb = binbuf_new();
+    for (thisline = 0; thisline < nlines; thisline++)
+    {
+        for (i = 0, atomp = sortbuf[thisline];
+            atomp->a_type != A_SEMI && atomp->a_type != A_COMMA; i++, atomp++)
+                ;
+        binbuf_add(newb, i+1, sortbuf[thisline]);
+    }
+    binbuf_free(x->x_binbuf);
+    x->x_binbuf = newb;
+    freebytes(sortbuf, nlines * sizeof(*sortbuf));
+    textbuf_senditup(&x->x_textbuf);
+
 }
 
     /* notification from GUI that we've been updated */
@@ -1995,6 +2107,8 @@ void x_qlist_setup(void )
         gensym("read"), A_GIMME, 0);
     class_addmethod(text_define_class, (t_method)text_define_send,
         gensym("send"), A_SYMBOL, 0);
+    class_addmethod(text_define_class, (t_method)text_define_sort,
+        gensym("sort"), A_GIMME, 0);
     class_setsavefn(text_define_class, text_define_save);
     class_addbang(text_define_class, text_define_bang);
     class_sethelpsymbol(text_define_class, gensym("text-object"));
