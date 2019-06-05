@@ -233,64 +233,65 @@ static void glist_checkanddeselectall(t_glist *gl, t_gobj *g)
 void glist_deselect(t_glist *x, t_gobj *y)
 {
     int fixdsp = 0;
-    if (x->gl_editor)
-    {
-        t_selection *sel, *sel2;
-        t_rtext *z = 0;
-        if (!glist_isselected(x, y)) bug("glist_deselect");
-        if (x->gl_editor->e_textedfor)
-        {
-            t_rtext *fuddy = glist_findrtext(x, (t_text *)y);
-            if (x->gl_editor->e_textedfor == fuddy)
-            {
-                if (x->gl_editor->e_textdirty)
-                {
-                    z = fuddy;
-                    canvas_undo_add(x, UNDO_SEQUENCE_START, "typing", 0);
-                    canvas_undo_add(x, UNDO_ARRANGE, "arrange",
-                        canvas_undo_set_arrange(x, y, 1));
-                    canvas_stowconnections(glist_getcanvas(x));
-                    glist_checkanddeselectall(x, y);
-                }
-                gobj_activate(y, x, 0);
-            }
-            if (zgetfn(&y->g_pd, gensym("dsp")))
-                fixdsp = canvas_suspend_dsp();
-        }
-        if ((sel = x->gl_editor->e_selection)->sel_what == y)
-        {
-            x->gl_editor->e_selection = x->gl_editor->e_selection->sel_next;
-            gobj_select(sel->sel_what, x, 0);
-            freebytes(sel, sizeof(*sel));
-        }
-        else
-        {
-            for (sel = x->gl_editor->e_selection; (sel2 = sel->sel_next);
-                sel = sel2)
-            {
-                if (sel2->sel_what == y)
-                {
-                    sel->sel_next = sel2->sel_next;
-                    gobj_select(sel2->sel_what, x, 0);
-                    freebytes(sel2, sizeof(*sel2));
-                    break;
-                }
-            }
-        }
-        if (z)
-        {
-            char *buf;
-            int bufsize;
+    t_selection *sel, *sel2;
+    t_rtext *z = 0;
 
-            rtext_gettext(z, &buf, &bufsize);
-            text_setto((t_text *)y, x, buf, bufsize);
-            canvas_fixlinesfor(x, (t_text *)y);
-            x->gl_editor->e_textedfor = 0;
-            canvas_undo_add(x, UNDO_SEQUENCE_END, "typing", 0);
+    if (!x->gl_editor)
+        return;
+
+    if (!glist_isselected(x, y)) bug("glist_deselect");
+    if (x->gl_editor->e_textedfor)
+    {
+        t_rtext *fuddy = glist_findrtext(x, (t_text *)y);
+        if (x->gl_editor->e_textedfor == fuddy)
+        {
+            if (x->gl_editor->e_textdirty)
+            {
+                z = fuddy;
+                canvas_undo_add(x, UNDO_SEQUENCE_START, "typing", 0);
+                canvas_undo_add(x, UNDO_ARRANGE, "arrange",
+                    canvas_undo_set_arrange(x, y, 1));
+                canvas_stowconnections(glist_getcanvas(x));
+                glist_checkanddeselectall(x, y);
+            }
+            gobj_activate(y, x, 0);
         }
-        if (fixdsp)
-            canvas_resume_dsp(1);
+        if (zgetfn(&y->g_pd, gensym("dsp")))
+            fixdsp = canvas_suspend_dsp();
     }
+    if ((sel = x->gl_editor->e_selection)->sel_what == y)
+    {
+        x->gl_editor->e_selection = x->gl_editor->e_selection->sel_next;
+        gobj_select(sel->sel_what, x, 0);
+        freebytes(sel, sizeof(*sel));
+    }
+    else
+    {
+        for (sel = x->gl_editor->e_selection; (sel2 = sel->sel_next);
+             sel = sel2)
+        {
+            if (sel2->sel_what == y)
+            {
+                sel->sel_next = sel2->sel_next;
+                gobj_select(sel2->sel_what, x, 0);
+                freebytes(sel2, sizeof(*sel2));
+                break;
+            }
+        }
+    }
+    if (z)
+    {
+        char *buf;
+        int bufsize;
+
+        rtext_gettext(z, &buf, &bufsize);
+        text_setto((t_text *)y, x, buf, bufsize);
+        canvas_fixlinesfor(x, (t_text *)y);
+        x->gl_editor->e_textedfor = 0;
+        canvas_undo_add(x, UNDO_SEQUENCE_END, "typing", 0);
+    }
+    if (fixdsp)
+        canvas_resume_dsp(1);
 }
 
 void glist_noselect(t_glist *x)
@@ -1890,7 +1891,7 @@ static t_gobj *canvas_findhitbox(t_canvas *x, int xpos, int ypos,
 static void canvas_rightclick(t_canvas *x, int xpos, int ypos, t_gobj *y)
 {
     int canprop, canopen;
-    canprop = (!y || (y && class_getpropertiesfn(pd_class(&y->g_pd))));
+    canprop = (!y || class_getpropertiesfn(pd_class(&y->g_pd)));
     canopen = (y && zgetfn(&y->g_pd, gensym("menu-open")));
     sys_vgui("pdtk_canvas_popup .x%lx %d %d %d %d\n",
         x, xpos, ypos, canprop, canopen);
@@ -1972,7 +1973,6 @@ void canvas_vis(t_canvas *x, t_floatarg f)
         else
         {
             char cbuf[MAXPDSTRING];
-            int cbuflen;
             t_canvas *c = x;
             t_undo *undo = canvas_undo_get(x);
             t_undo_action *udo = undo ? undo->u_last : 0;
@@ -1985,6 +1985,7 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             snprintf(cbuf, MAXPDSTRING - 2, "pdtk_canvas_setparents .x%lx",
                 (unsigned long)c);
             while (c->gl_owner) {
+                int cbuflen;
                 c = c->gl_owner;
                 cbuflen = (int)strlen(cbuf);
                 snprintf(cbuf + cbuflen,
@@ -2362,7 +2363,7 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         /* if not a runmode left click, fall here. */
     if ((y = canvas_findhitbox(x, xpos, ypos, &x1, &y1, &x2, &y2)))
     {
-        t_object *ob = pd_checkobject(&y->g_pd);
+        t_object *ob;
             /* check you're in the rectangle */
         ob = pd_checkobject(&y->g_pd);
         if (rightclick)
