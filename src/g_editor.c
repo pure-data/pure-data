@@ -3256,18 +3256,20 @@ void canvas_print(t_canvas *x, t_symbol *s)
     else sys_vgui(".x%lx.c postscript -file x.ps\n", x);
 }
 
-    /* find a dirty sub-glist, if any, of this one (including itself) */
+    /* find the innermost dirty sub-glist, if any, of this one (including itself) */
 static t_glist *glist_finddirty(t_glist *x)
 {
     t_gobj *g;
     t_glist *g2;
-    if (x->gl_env && x->gl_dirty)
-        return (x);
     for (g = x->gl_list; g; g = g->g_next)
         if (pd_class(&g->g_pd) == canvas_class &&
             (g2 = glist_finddirty((t_glist *)g)))
                 return (g2);
-    return (0);
+
+    if (x->gl_env && x->gl_dirty)
+        return (x);
+    else
+        return (0);
 }
 
     /* quit, after calling glist_finddirty() on all toplevels and verifying
@@ -3332,7 +3334,7 @@ void canvas_menuclose(t_canvas *x, t_floatarg fforce)
         {
             vmess(&g->gl_pd, gensym("menu-open"), "");
             sys_vgui("pdtk_canvas_menuclose .x%lx {.x%lx menuclose 2;\n}\n",
-                     canvas_getrootfor(x), g);
+                     canvas_getrootfor(g), g);
             return;
         }
         else pd_free(&x->gl_pd);
