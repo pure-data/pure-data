@@ -18,7 +18,6 @@ configure
 config.log
 config.status
 libtool
-m4/generated
 m4/config
 makefile.dependencies
 dist
