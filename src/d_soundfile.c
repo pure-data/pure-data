@@ -1905,18 +1905,17 @@ static void soundfiler_free(t_soundfiler *x)
 
     if(!data) return; /* not threaded: nothing to free */
     
-    if (data->x_childthread) {
-        data->x_requestcode = SF_REQUEST_QUIT;
+    data->x_requestcode = SF_REQUEST_QUIT;
+    sf_cond_signal(&data->x_requestcondition);
+    while (data->x_requestcode != SF_REQUEST_NOTHING)
+    {
         sf_cond_signal(&data->x_requestcondition);
-        while (data->x_requestcode != SF_REQUEST_NOTHING)
-        {
-            sf_cond_signal(&data->x_requestcondition);
-            sf_cond_wait(&data->x_answercondition, &data->x_mutex);
-        }
-        pthread_mutex_unlock(&data->x_mutex);
-        if (pthread_join(data->x_childthread, &threadrtn))
-            error("readsf_free: join failed");
+        sf_cond_wait(&data->x_answercondition, &data->x_mutex);
     }
+    pthread_mutex_unlock(&data->x_mutex);
+    if (pthread_join(data->x_childthread, &threadrtn))
+        error("readsf_free: join failed");
+        
     pthread_cond_destroy(&data->x_requestcondition);
     pthread_cond_destroy(&data->x_answercondition);
     pthread_mutex_destroy(&data->x_mutex);
