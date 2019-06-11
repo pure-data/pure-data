@@ -147,19 +147,6 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
              canvas, mid, ypos + PEAKHEIGHT * IEMGUI_ZOOM(x),
              mid, ypos + PEAKHEIGHT * IEMGUI_ZOOM(x),
              (x->x_led_size+1)*IEMGUI_ZOOM(x), x->x_gui.x_bcol, x);
-    if(!x->x_gui.x_fsf.x_snd_able)
-    {
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
-             canvas,
-             xpos - hmargin, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
-             x, 0);
-        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]x\n",
-             canvas,
-             xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
-             xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
-             x, 1);
-    }
     if(!x->x_gui.x_fsf.x_rcv_able)
     {
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxIN%d inlet]\n",
@@ -172,6 +159,16 @@ static void vu_draw_new(t_vu *x, t_glist *glist)
              xpos + x->x_gui.x_w + hmargin - iow, ypos - vmargin,
              xpos + x->x_gui.x_w + hmargin, ypos - vmargin - IEMGUI_ZOOM(x) + ioh,
              x, 1);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]\n",
+                 canvas,
+                 xpos - hmargin, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
+                 xpos - hmargin + iow, ypos + x->x_gui.x_h + vmargin,
+                 x, 0);
+        sys_vgui(".x%lx.c create rectangle %d %d %d %d -fill black -tags [list %lxOUT%d outlet]x\n",
+                 canvas,
+                 xpos + x->x_gui.x_w + hmargin - iow, ypos + x->x_gui.x_h + vmargin + IEMGUI_ZOOM(x) - ioh,
+                 xpos + x->x_gui.x_w + hmargin, ypos + x->x_gui.x_h + vmargin,
+                 x, 1);
     }
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w \
              -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
