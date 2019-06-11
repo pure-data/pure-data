@@ -1905,6 +1905,7 @@ static void soundfiler_free(t_soundfiler *x)
 
     if(!data) return; /* not threaded: nothing to free */
     
+    pthread_mutex_lock(&data->x_mutex);
     data->x_requestcode = SF_REQUEST_QUIT;
     sf_cond_signal(&data->x_requestcondition);
     while (data->x_requestcode != SF_REQUEST_NOTHING)
