@@ -26,6 +26,7 @@ objects use Posix-like threads.  */
 #include <limits.h>
 
 #include "m_pd.h"
+#include "g_canvas.h"
 
 #define MAXSFCHANS 64
 
@@ -1209,23 +1210,282 @@ static void soundfile_xferout_words(int nchannels, t_word **vecs,
 #define DEFMAXSIZE 0x7fffffff      /* default maximum size in sample frames */
 #define SAMPBUFSIZE 1024
 
+#define SF_REQUEST_NOTHING 0
+#define SF_REQUEST_READ 1
+#define SF_REQUEST_WRITE 2
+#define SF_REQUEST_QUIT 3
+#define SF_REQUEST_BUSY 4
+
+#define SF_STATE_IDLE 0
+#define SF_STATE_READ 1
+#define SF_STATE_WRITE 2
+
+#define SOUNDFILER_GRAIN 10
+
+#define sf_cond_wait pthread_cond_wait
+#define sf_cond_signal pthread_cond_signal
 
 static t_class *soundfiler_class;
+
+typedef struct _garbage
+{
+    t_word *g_vec;
+    int g_n;
+} t_garbage;
+
+typedef struct _threaded_data
+{
+    int x_state;                        /* reading or idle */
+    int x_requestcode;                  /* pending request from parent to child thread */
+    t_symbol *x_arrays[MAXSFCHANS];     /* arrays names */
+    int x_narrays;                      /* number of arrays */
+    t_word *x_vecs[MAXSFCHANS];         /* allocated and filled from file by child thread */
+    long x_vecsize;                     /* size of the vectors */
+    t_garbage x_garbages[MAXSFCHANS];   /* original arrays vectors, passed to child thread 
+                                            for being freed */
+    int x_ngarbages;                    /* number of vectors to free */
+    int x_fd;                           /* opened by Pd thread, closed by child thread */
+    long x_maxsize;
+    long x_skipframes;
+    int x_resize;
+    t_soundfile_info x_info;
+    pthread_mutex_t x_mutex;
+    pthread_cond_t x_requestcondition;
+    pthread_cond_t x_answercondition;
+    pthread_t x_childthread;
+    t_clock *x_clock;
+} t_threaded_data;
 
 typedef struct _soundfiler
 {
     t_object x_obj;
     t_outlet *x_out2;
     t_canvas *x_canvas;
+    t_threaded_data *x_data;
 } t_soundfiler;
 
-static t_soundfiler *soundfiler_new(void)
+static void *soundfiler_child_main(void *zz);
+static void soundfiler_tick(t_soundfiler *x);
+
+static t_soundfiler *soundfiler_new(t_symbol *arg)
 {
     t_soundfiler *x = (t_soundfiler *)pd_new(soundfiler_class);
     x->x_canvas = canvas_getcurrent();
     outlet_new(&x->x_obj, &s_float);
     x->x_out2 = outlet_new(&x->x_obj, &s_float);
+    if (arg == gensym("-threaded"))
+    {
+        t_threaded_data *data = x->x_data = getbytes(sizeof(t_threaded_data));
+        if(!data) error("memory allocation");
+        pthread_mutex_init(&data->x_mutex, 0);
+        pthread_cond_init(&data->x_requestcondition, 0);
+        pthread_cond_init(&data->x_answercondition, 0);
+        data->x_narrays = 0;
+        data->x_vecsize = 0;
+        data->x_state = SF_STATE_IDLE;
+        data->x_clock = clock_new(x, (t_method)soundfiler_tick);
+        data->x_fd = -1;
+        data->x_ngarbages = 0;
+        data->x_requestcode = SF_REQUEST_NOTHING;
+        pthread_create(&data->x_childthread, 0, soundfiler_child_main, data);
+    }
+    else x->x_data = NULL;
     return (x);
+}
+
+static void soundfiler_child_cleangarbage(t_threaded_data *x)
+{
+    int i;
+    pthread_mutex_unlock(&x->x_mutex);
+    for (i = 0; i < x->x_ngarbages ; i++) {
+        if (x->x_garbages[i].g_vec && x->x_garbages[i].g_n) 
+            freebytes(x->x_garbages[i].g_vec, x->x_garbages[i].g_n * sizeof(t_word));
+        x->x_garbages[i].g_vec = 0;
+    }
+    x->x_ngarbages = 0;
+    pthread_mutex_lock(&x->x_mutex);
+}
+
+static void *soundfiler_child_main(void *zz)
+{
+    t_threaded_data *x = zz;
+    pthread_mutex_lock(&x->x_mutex);
+    while (1)
+    {
+        if (x->x_requestcode == SF_REQUEST_NOTHING)
+        {
+            soundfiler_child_cleangarbage(x);
+            sf_cond_signal(&x->x_answercondition);
+            sf_cond_wait(&x->x_requestcondition, &x->x_mutex);
+        }
+        else if (x->x_requestcode == SF_REQUEST_READ)
+        {
+            long poswas, eofis, framesinfile;
+            int bufframes;
+            long nitems, itemsread = 0;
+            FILE *fp;
+            char sampbuf[SAMPBUFSIZE];
+            int i;
+
+            x->x_requestcode = SF_REQUEST_BUSY;
+            soundfiler_child_cleangarbage(x);
+
+            pthread_mutex_unlock(&x->x_mutex);
+            
+            poswas = (long)lseek(x->x_fd, 0, SEEK_CUR);
+            eofis = (long)lseek(x->x_fd, 0, SEEK_END);
+            if (poswas < 0 || eofis < 0 || eofis < poswas)
+            {
+                goto lost; /* lseek failed */
+            }
+            lseek(x->x_fd, poswas, SEEK_SET);
+            framesinfile = (eofis - poswas) / 
+                    (x->x_info.channels * x->x_info.bytespersample);
+            if (framesinfile > x->x_maxsize)
+            {
+                framesinfile = x->x_maxsize;
+            }
+            if (framesinfile > x->x_info.bytelimit / 
+                    (x->x_info.channels * x->x_info.bytespersample))
+                framesinfile = x->x_info.bytelimit / 
+                    (x->x_info.channels * x->x_info.bytespersample);
+            
+            if(x->x_resize) x->x_vecsize = framesinfile;
+
+            for (i = 0; i < x->x_narrays; i++)
+            {
+                x->x_vecs[i] = getbytes(x->x_vecsize * sizeof(t_word));
+                if (!x->x_vecs[i]) goto lost;
+            }
+
+            fp = fdopen(x->x_fd, "rb");
+            bufframes = SAMPBUFSIZE / (x->x_info.channels * x->x_info.bytespersample);
+
+            for (itemsread = 0; itemsread < x->x_vecsize; )
+            {
+                long thisread = x->x_vecsize - itemsread;
+                thisread = (thisread > bufframes ? bufframes : thisread);
+                nitems = fread(sampbuf, x->x_info.channels * x->x_info.bytespersample, 
+                    thisread, fp);
+                if (nitems <= 0) break;
+                soundfile_xferin_words(x->x_info.channels, x->x_narrays, x->x_vecs, 
+                    itemsread, (unsigned char *)sampbuf, nitems, x->x_info.bytespersample, 
+                    x->x_info.bigendian);
+                itemsread += nitems;
+            }
+                /* zero out remaining elements of vectors */
+            for (i = 0; i < x->x_narrays; i++)
+            {
+                int j;
+                for (j = itemsread; j < x->x_vecsize; j++)
+                    x->x_vecs[i][j].w_float = 0;
+            }
+            fclose(fp);
+
+        lost:
+
+            if (x->x_fd >= 0)
+            {
+                close (x->x_fd);
+                x->x_fd = -1;
+            }
+            pthread_mutex_lock(&x->x_mutex);
+            x->x_requestcode = SF_REQUEST_NOTHING;
+            sf_cond_signal(&x->x_answercondition);
+        }
+        else if (x->x_requestcode == SF_REQUEST_QUIT)
+        {
+            if (x->x_fd >= 0)
+            {
+                pthread_mutex_unlock(&x->x_mutex);
+                close (x->x_fd);
+                pthread_mutex_lock(&x->x_mutex);
+                x->x_fd = -1;
+            }
+            soundfiler_child_cleangarbage(x);
+            x->x_requestcode = SF_REQUEST_NOTHING;
+            sf_cond_signal(&x->x_answercondition);
+            break;
+        }
+    }
+    pthread_mutex_unlock(&x->x_mutex);
+    return (0);
+}
+
+static void soundfiler_tick(t_soundfiler *x)
+{
+    int i;
+    t_threaded_data *data = x->x_data;
+    
+    if (data->x_state == SF_STATE_IDLE) return; /* no pending operation */
+
+    if (data->x_state != SF_STATE_READ) return; /* only read for now */
+
+    pthread_mutex_lock(&data->x_mutex);
+    if (data->x_requestcode != SF_REQUEST_NOTHING) /* thread is still reading */
+    {
+        sf_cond_signal(&data->x_requestcondition);
+        pthread_mutex_unlock(&data->x_mutex);
+        clock_delay(data->x_clock, SOUNDFILER_GRAIN); /* retry later */
+        return;
+    }
+
+    pthread_mutex_unlock(&data->x_mutex);
+        /* should never happen: */
+    if (data->x_ngarbages) pd_error(x, "soundfiler: remaining garbage, resulting memory leak!"); 
+    data->x_ngarbages = 0;
+
+    for (i = 0; i < data->x_narrays; i++)
+    {
+        int vecsize;
+        t_word *vec;
+        t_garray *garray;
+        t_array *array;
+        char *oldvec;
+        int oldvecsize; 
+
+        if (!(garray = (t_garray *)pd_findbyclass(data->x_arrays[i], garray_class)))
+        {
+            pd_error(x, "%s: no such table", data->x_arrays[i]->s_name);
+            if (data->x_vecs[i]) {
+                freebytes(data->x_vecs[i], data->x_vecsize);
+                data->x_vecs[i] = 0;
+            }
+            continue;
+        }
+        else if (!garray_getfloatwords(garray, &vecsize, &vec))
+            error("%s: bad template", data->x_arrays[i]->s_name);
+
+        if (!data->x_vecs[i]) continue;
+
+        if (!(array = garray_getarray(garray))) 
+            error("%s: bad template", data->x_arrays[i]->s_name);
+
+        oldvec = array->a_vec;
+        oldvecsize = array->a_n;
+        array->a_vec = (char *)data->x_vecs[i];
+        array->a_n = data->x_vecsize;
+        garray_resize_long(garray, data->x_vecsize); /* fake resize, to resync GUI and DSP */
+            /* for sanity's sake let's clear the save-in-patch flag here */
+        garray_setsaveit(garray, 0);
+
+        if (oldvec && oldvecsize) /* collect garbage */
+        {
+            data->x_garbages[data->x_ngarbages].g_vec = (t_word *)oldvec;
+            data->x_garbages[data->x_ngarbages].g_n = oldvecsize;
+            data->x_ngarbages++;
+        }
+        data->x_vecs[i] = 0;
+    }
+
+    data->x_state = SF_STATE_IDLE;
+    data->x_narrays = 0;
+    pthread_mutex_lock(&data->x_mutex);
+    sf_cond_signal(&data->x_requestcondition); /* signal thread, to free the garbage */
+    pthread_mutex_unlock(&data->x_mutex);
+
+    outlet_soundfile_info(x->x_out2, &data->x_info);
+    outlet_float(x->x_obj.ob_outlet, (t_float)data->x_vecsize);
 }
 
     /* soundfiler_read ...
@@ -1318,6 +1578,71 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
             goto usage;
     filename = argv[0].a_w.w_symbol->s_name;
     argc--; argv++;
+
+    if (x->x_data) /* soundfiler is threaded */
+    {
+        t_threaded_data *data = x->x_data;
+        if (data->x_state != SF_STATE_IDLE) {
+            pd_error(x, "soundfiler: read requested while previous operation in progress");
+            return;
+        }
+        
+        /* security clean: */
+        if (data->x_narrays)
+        {
+            for (i = 0; i < data->x_narrays; i++)
+            {
+                if (data->x_vecs[i]) freebytes(data->x_vecs[i], data->x_vecsize);
+                data->x_vecs[i] = NULL;
+            }
+            data->x_narrays = 0;
+        }
+        
+        data->x_vecsize = 0;
+        for (i = 0; i < argc; i++)
+        {
+            t_garray *garray;
+            int vecsize;
+            t_word *vec;
+            
+            if (argv[i].a_type != A_SYMBOL) {
+                goto usage;
+            }
+            data->x_arrays[i] = atom_getsymbol(&argv[i]);
+            data->x_vecs[i] = NULL;
+            if (!(garray = (t_garray *)pd_findbyclass(data->x_arrays[i], garray_class)))
+            {
+                pd_error(x, "%s: no such table", data->x_arrays[i]->s_name);
+                goto done;
+            }
+            else if (!garray_getfloatwords(garray, &vecsize, &vec))
+                error("%s: bad template for soundfiler",
+                    data->x_arrays[i]->s_name);
+                /* finalsize is the size of the largest table; 
+                   will be overloaded if "-resize" */
+            if (vecsize > data->x_vecsize) data->x_vecsize = vecsize;
+        }
+        data->x_narrays = argc;
+        data->x_resize = resize;
+        data->x_maxsize = maxsize;
+        data->x_skipframes = skipframes;
+        memcpy(&data->x_info, &info, sizeof(info));
+        fd = open_soundfile_via_canvas(x->x_canvas, filename, &data->x_info, data->x_skipframes);
+        if (fd < 0)
+        {
+            pd_error(x, "soundfiler_read: %s: %s", filename, (errno == EIO ?
+                "unknown or bad header format" : strerror(errno)));
+            goto done;
+        }
+        pthread_mutex_lock(&data->x_mutex);
+        data->x_fd = fd;
+        data->x_state = SF_STATE_READ;
+        data->x_requestcode = SF_REQUEST_READ;
+        sf_cond_signal(&data->x_requestcondition);
+        pthread_mutex_unlock(&data->x_mutex);
+        clock_delay(data->x_clock, SOUNDFILER_GRAIN);
+        return;
+    }
 
     for (i = 0; i < argc; i++)
     {
@@ -1572,10 +1897,45 @@ static void soundfiler_write(t_soundfiler *x, t_symbol *s,
     outlet_float(x->x_obj.ob_outlet, (t_float)bozo);
 }
 
+static void soundfiler_free(t_soundfiler *x)
+{
+    void *threadrtn;
+    int i;
+    t_threaded_data *data = x->x_data;
+
+    if(!data) return; /* not threaded: nothing to free */
+    
+    if (data->x_childthread) {
+        data->x_requestcode = SF_REQUEST_QUIT;
+        sf_cond_signal(&data->x_requestcondition);
+        while (data->x_requestcode != SF_REQUEST_NOTHING)
+        {
+            sf_cond_signal(&data->x_requestcondition);
+            sf_cond_wait(&data->x_answercondition, &data->x_mutex);
+        }
+        pthread_mutex_unlock(&data->x_mutex);
+        if (pthread_join(data->x_childthread, &threadrtn))
+            error("readsf_free: join failed");
+    }
+    pthread_cond_destroy(&data->x_requestcondition);
+    pthread_cond_destroy(&data->x_answercondition);
+    pthread_mutex_destroy(&data->x_mutex);
+    if (data->x_narrays)
+    {
+        for (i = 0; i < data->x_narrays; i++)
+        {
+            if (data->x_vecs[i]) freebytes(data->x_vecs[i], data->x_vecsize);
+            data->x_vecs[i] = NULL;
+        }
+        data->x_narrays = 0;
+    }
+    clock_free(data->x_clock);
+}
+
 static void soundfiler_setup(void)
 {
     soundfiler_class = class_new(gensym("soundfiler"), (t_newmethod)soundfiler_new,
-        0, sizeof(t_soundfiler), 0, 0);
+        (t_method)soundfiler_free, sizeof(t_soundfiler), 0, A_DEFSYM, 0);
     class_addmethod(soundfiler_class, (t_method)soundfiler_read, gensym("read"),
         A_GIMME, 0);
     class_addmethod(soundfiler_class, (t_method)soundfiler_write,
