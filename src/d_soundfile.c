@@ -1626,7 +1626,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         data->x_resize = resize;
         data->x_maxsize = maxsize;
         data->x_skipframes = skipframes;
-        memcpy(&data->x_info, &info, sizeof(info));
+        memcpy(&data->x_info, &info, sizeof(t_soundfile_info));
         fd = open_soundfile_via_canvas(x->x_canvas, filename, &data->x_info, data->x_skipframes);
         if (fd < 0)
         {
@@ -1930,6 +1930,7 @@ static void soundfiler_free(t_soundfiler *x)
         data->x_narrays = 0;
     }
     clock_free(data->x_clock);
+    freebytes(data, sizeof(t_threaded_data));
 }
 
 static void soundfiler_setup(void)
