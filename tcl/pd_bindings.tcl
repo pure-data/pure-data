@@ -160,7 +160,7 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     bind $mytoplevel <$::modifier-Key-w> "dialog_${dialogname}::cancel $mytoplevel"
     # these aren't supported in the dialog, so alert the user, then break so
     # that no other key bindings are run
-    if {$mytoplevel ne".find"} {
+    if {$mytoplevel ne ".find"} {
         bind $mytoplevel <$::modifier-Key-s>       {bell; break}
         bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
         bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
@@ -249,7 +249,7 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
 
     # "right clicks" are defined differently on each platform
-    switch -- $::windowingsystem { 
+    switch -- $::windowingsystem {
         "aqua" {
             bind $tkcanvas <ButtonPress-2>    "pdtk_canvas_rightclick %W %x %y %b"
             # on Mac OS X, make a rightclick with Ctrl-click for 1 button mice
@@ -281,7 +281,7 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
     ::pd_menucommands::set_filenewdir $mytoplevel
     ::dialog_font::update_font_dialog $mytoplevel
     if {$mytoplevel eq ".pdwindow"} {
-        ::pd_menus::configure_for_pdwindow 
+        ::pd_menus::configure_for_pdwindow
     } else {
         ::pd_menus::configure_for_canvas $mytoplevel
     }
@@ -329,7 +329,7 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     #    left top right bottom
     pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
 }
-    
+
 proc ::pd_bindings::patch_destroy {window} {
     set mytoplevel [winfo toplevel $window]
     unset ::editmode($mytoplevel)
