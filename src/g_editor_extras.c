@@ -524,6 +524,8 @@ static int expand_trigger(t_glist*cnv, t_object*obj)
     binbuf_add(b, 1, argv);
     binbuf_addv(b, "s", gensym("a"));
     binbuf_add(b, argc-1, argv+1);
+    canvas_undo_add(cnv, UNDO_PASTE, "paste",
+        canvas_undo_set_pastebinbuf(cnv, b, 0, 0, 0));
     stub=triggerize_createobj(cnv, b);
     stub_i = canvas_getindex(cnv, o2g(stub));
     for(nout=0; nout<obj_nout; nout++)
