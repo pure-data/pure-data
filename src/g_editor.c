@@ -759,7 +759,8 @@ int canvas_undo_cut(t_canvas *x, void *z, int action)
                 }
             }
                 /* LATER disable redrawing here */
-            canvas_redraw(x);
+            if (x->gl_havewindow)
+                canvas_redraw(x);
             if (x->gl_owner && glist_isvisible(x->gl_owner))
             {
                 gobj_vis((t_gobj *)x, x->gl_owner, 0);
@@ -1084,7 +1085,7 @@ int canvas_undo_apply(t_canvas *x, void *z, int action)
             /* connections should stay the same */
         canvas_applybinbuf(x, buf->u_reconnectbuf);
             /* now we need to reposition the object to its original place */
-        if (canvas_apply_restore_original_position(x, buf->u_index))
+        if (canvas_apply_restore_original_position(x, buf->u_index) && x->gl_havewindow)
             canvas_redraw(x);
     }
     else if (action == UNDO_FREE)
@@ -1262,9 +1263,6 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
                 y->g_next = next;
                 x->gl_list = y;
             }
-
-                /* and finally redraw canvas */
-            canvas_redraw(x);
         }
         else {
                 /* if it is the first object */
@@ -1282,10 +1280,10 @@ int canvas_undo_arrange(t_canvas *x, void *z, int action)
                 /* now readjust pointers */
             prev->g_next = y;
             y->g_next = next;
-
-                /* and finally redraw canvas */
-            canvas_redraw(x);
         }
+            /* and finally redraw canvas */
+        if (x->gl_havewindow)
+            canvas_redraw(x);
         break;
     case UNDO_REDO:
     {
@@ -1449,7 +1447,8 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             glist_noselect(x);
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
-            canvas_redraw(x->gl_owner);
+            if (x->gl_havewindow)
+                canvas_redraw(x->gl_owner);
         }
     }
 
@@ -1632,7 +1631,7 @@ int canvas_undo_recreate(t_canvas *x, void *z, int action)
 
             /* reposition object to its original place */
         if (action == UNDO_UNDO)
-            if (canvas_apply_restore_original_position(x, buf->u_index))
+            if (canvas_apply_restore_original_position(x, buf->u_index) && x->gl_havewindow)
                 canvas_redraw(x);
 
             /* send a loadbang */
@@ -4587,7 +4586,7 @@ void canvas_editmode(t_canvas *x, t_floatarg state)
             sys_vgui(".x%lx.c delete commentbar\n", glist_getcanvas(x));
         }
     }
-    if (glist_isvisible(x))
+    if (glist_isvisible(x) && x->gl_havewindow)
     {
         sys_vgui("pdtk_canvas_editmode .x%lx %d\n",
             glist_getcanvas(x), x->gl_edit);
