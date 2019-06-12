@@ -1466,8 +1466,8 @@ static void soundfiler_tick(t_soundfiler *x)
         array->a_vec = (char *)data->x_vecs[i];
         array->a_n = data->x_vecsize;
         garray_resize_long(garray, data->x_vecsize); /* fake resize, to resync GUI and DSP */
-            /* for sanity's sake let's clear the save-in-patch flag here */
-        garray_setsaveit(garray, 0);
+            /* if resized, for sanity's sake let's clear the save-in-patch flag here */
+        if(data->x_resize) garray_setsaveit(garray, 0);
 
         if (oldvec && oldvecsize) /* collect garbage */
         {
