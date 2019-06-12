@@ -114,13 +114,6 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-w> {::pd_bindings::window_close %W 1}
     bind all <$::modifier-Shift-Key-z> {menu_redo}
     bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1}
-    bind all <KeyPress-Tab>            {menu_send_float %W cycleselect  1; ::pd_bindings::sendkey %W 1 %K %A 0}
-    bind all <Shift-Tab>               {menu_send_float %W cycleselect -1; ::pd_bindings::sendkey %W 1 %K %A 1}
-    # on X11, <Shift-Tab> is a different key by the name 'ISO_Left_Tab'...
-    # other systems (at least aqua) do not like this name, so we 'catch' any errors
-    catch {bind all <KeyPress-ISO_Left_Tab> {
-        menu_send_float %W cycleselect -1; ::pd_bindings::sendkey %W 1 %K %A 1
-    } } stderr
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
@@ -263,6 +256,13 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
         }
     }
 
+    # <Tab> key to cycle through selection
+    bind $tkcanvas <KeyPress-Tab>        "::pd_bindings::canvas_cycle %W  1 %K %A 0"
+    bind $tkcanvas <Shift-Tab>           "::pd_bindings::canvas_cycle %W -1 %K %A 1"
+    # on X11, <Shift-Tab> is a different key by the name 'ISO_Left_Tab'...
+    # other systems (at least aqua) do not like this name, so we 'catch' any errors
+    catch {bind $tkcanvas <KeyPress-ISO_Left_Tab> "::pd_bindings::canvas_cycle %W -1 %K %A 1" } stderr
+
     # window protocol bindings
     wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"$mytoplevel menuclose 0\""
     bind $tkcanvas <Destroy> "::pd_bindings::patch_destroy %W"
@@ -350,6 +350,12 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
     set ::focused_window $mytoplevel
     ::pd_menus::configure_for_dialog $mytoplevel
     if {$mytoplevel eq ".find"} {::dialog_find::focus_find}
+}
+
+# (Shift-)Tab for cycling through selection
+proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift} {
+    menu_send_float $mytoplevel cycleselect $cycledir
+    ::pd_bindings::sendkey $mytoplevel 1 $key $iso $shift
 }
 
 #------------------------------------------------------------------------------#
