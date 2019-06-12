@@ -594,6 +594,11 @@ void canvas_reflecttitle(t_canvas *x)
 {
     char namebuf[MAXPDSTRING];
     t_canvasenvironment *env = canvas_getenv(x);
+    if (!x->gl_havewindow)
+    {
+        bug("canvas_reflecttitle");
+        return;
+    }
     if (env->ce_argc)
     {
         int i;
@@ -682,6 +687,11 @@ void canvas_map(t_canvas *x, t_floatarg f)
     {
         if (glist_isvisible(x))
         {
+            if (!x->gl_havewindow)
+            {
+                bug("canvas_map");
+                return;
+            }
                 /* just clear out the whole canvas */
             sys_vgui(".x%lx.c delete all\n", x);
             x->gl_mapped = 0;
