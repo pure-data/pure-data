@@ -1045,8 +1045,8 @@ static void poly_float(t_poly *x, t_float f)
 
         /* turn off oldest matching voice if
          * a) we got a note-off message
-         * b) note stealing is on */
-    if (x->x_vel <= 0 || x->x_notesteal)
+         * b) sustain is on and note stealing is enabled */
+    if (x->x_vel <= 0 || (x->x_sustain && x->x_notesteal))
     {
         for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
             i < x->x_n; v++, i++)
