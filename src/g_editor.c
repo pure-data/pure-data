@@ -1982,8 +1982,8 @@ void canvas_vis(t_canvas *x, t_floatarg f)
             }
             strcat(cbuf, "\n");
             sys_gui(cbuf);
-            canvas_reflecttitle(x);
             x->gl_havewindow = 1;
+            canvas_reflecttitle(x);
             canvas_updatewindowlist();
             sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, udo?(udo->name):"no", (udo && udo->next)?(udo->next->name):"no");
         }
