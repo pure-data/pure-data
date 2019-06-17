@@ -1447,7 +1447,7 @@ int canvas_undo_canvas_apply(t_canvas *x, void *z, int action)
             glist_noselect(x);
             gobj_vis(&x->gl_gobj, x->gl_owner, 0);
             gobj_vis(&x->gl_gobj, x->gl_owner, 1);
-            if (x->gl_havewindow)
+            if (x->gl_owner->gl_havewindow)
                 canvas_redraw(x->gl_owner);
         }
     }
