@@ -982,7 +982,8 @@ static t_class *poly_class;
 typedef struct voice
 {
     t_float v_pitch;
-    int v_used;
+    char v_used;
+    char v_sustain;
     unsigned long v_serial;
 } t_voice;
 
@@ -995,26 +996,43 @@ typedef struct poly
     t_outlet *x_pitchout;
     t_outlet *x_velout;
     unsigned long x_serial;
-    int x_steal;
+    char x_voicesteal;
+    char x_notesteal;
+    char x_sustain;
 } t_poly;
 
-static void *poly_new(t_float fnvoice, t_float fsteal)
+static void poly_resize(t_poly *x, t_float fnvoice)
 {
-    int i, n = fnvoice;
-    t_poly *x = (t_poly *)pd_new(poly_class);
     t_voice *v;
+    int i, n = fnvoice;
     if (n < 1) n = 1;
-    x->x_n = n;
+    if (n == x->x_n) return;
+
+    if (x->x_vec) freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
     x->x_vec = (t_voice *)getbytes(n * sizeof(*x->x_vec));
+    x->x_n = n;
+
     for (v = x->x_vec, i = n; i--; v++)
-        v->v_pitch = v->v_used = v->v_serial = 0;
+        v->v_pitch = v->v_sustain = v->v_used = v->v_serial = 0;
+}
+
+static void *poly_new(t_float nvoice, t_float voicesteal, t_float notesteal)
+{
+    t_poly *x = (t_poly *)pd_new(poly_class);
+    x->x_n = 0;
+    x->x_vec = 0;
     x->x_vel = 0;
-    x->x_steal = (fsteal != 0);
+    x->x_sustain = 0;
+    x->x_voicesteal = (voicesteal != 0);
+    x->x_notesteal = (notesteal != 0);
     floatinlet_new(&x->x_obj, &x->x_vel);
     outlet_new(&x->x_obj, &s_float);
     x->x_pitchout = outlet_new(&x->x_obj, &s_float);
     x->x_velout = outlet_new(&x->x_obj, &s_float);
     x->x_serial = 0;
+
+    poly_resize(x, nvoice);
+
     return (x);
 }
 
@@ -1024,6 +1042,34 @@ static void poly_float(t_poly *x, t_float f)
     t_voice *v;
     t_voice *firston, *firstoff;
     unsigned int serialon, serialoff, onindex = 0, offindex = 0;
+
+        /* turn off oldest matching voice if
+         * a) we got a note-off message
+         * b) note stealing is on */
+    if (x->x_vel <= 0 || x->x_notesteal)
+    {
+        for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
+            i < x->x_n; v++, i++)
+                if (v->v_used && v->v_pitch == f && v->v_serial < serialon)
+                    firston = v, serialon = v->v_serial, onindex = i;
+        if (firston)
+        {
+                /* note-off only: mark note as sustained */
+            if (x->x_vel <= 0 && x->x_sustain)
+            {
+                firston->v_sustain = 1;
+            }
+            else
+            {
+                firston->v_used = 0;
+                firston->v_serial = x->x_serial++;
+                outlet_float(x->x_velout, 0);
+                outlet_float(x->x_pitchout, firston->v_pitch);
+                outlet_float(x->x_obj.ob_outlet, onindex+1);
+            }
+        }
+    }
+
     if (x->x_vel > 0)
     {
             /* note on.  Look for a vacant voice */
@@ -1031,20 +1077,22 @@ static void poly_float(t_poly *x, t_float f)
             serialon = serialoff = 0xffffffff; i < x->x_n; v++, i++)
         {
             if (v->v_used && v->v_serial < serialon)
-                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
+                firston = v, serialon = v->v_serial, onindex = i;
             else if (!v->v_used && v->v_serial < serialoff)
-                    firstoff = v, serialoff = (unsigned int)v->v_serial, offindex = i;
+                firstoff = v, serialoff = v->v_serial, offindex = i;
         }
+
         if (firstoff)
         {
             outlet_float(x->x_velout, x->x_vel);
             outlet_float(x->x_pitchout, firstoff->v_pitch = f);
             outlet_float(x->x_obj.ob_outlet, offindex+1);
             firstoff->v_used = 1;
+            firstoff->v_sustain = 0;
             firstoff->v_serial = x->x_serial++;
         }
             /* if none, steal one */
-        else if (firston && x->x_steal)
+        else if (firston && x->x_voicesteal)
         {
             outlet_float(x->x_velout, 0);
             outlet_float(x->x_pitchout, firston->v_pitch);
@@ -1052,37 +1100,56 @@ static void poly_float(t_poly *x, t_float f)
             outlet_float(x->x_velout, x->x_vel);
             outlet_float(x->x_pitchout, firston->v_pitch = f);
             outlet_float(x->x_obj.ob_outlet, onindex+1);
+            firston->v_sustain = 0;
             firston->v_serial = x->x_serial++;
         }
     }
-    else    /* note off. Turn off oldest match */
+}
+
+static void poly_voicestealing(t_poly *x, t_float f)
+{
+    x->x_voicesteal = (f != 0);
+}
+
+static void poly_notestealing(t_poly *x, t_float f)
+{
+    x->x_notesteal = (f != 0);
+}
+
+static void poly_sustain(t_poly *x, t_float f)
+{
+    int i;
+    t_voice *v;
+
+    if (!f) /* sustain released */
     {
-        for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
-            i < x->x_n; v++, i++)
-                if (v->v_used && v->v_pitch == f && v->v_serial < serialon)
-                    firston = v, serialon = (unsigned int)v->v_serial, onindex = i;
-        if (firston)
-        {
-            firston->v_used = 0;
-            firston->v_serial = x->x_serial++;
-            outlet_float(x->x_velout, 0);
-            outlet_float(x->x_pitchout, firston->v_pitch);
-            outlet_float(x->x_obj.ob_outlet, onindex+1);
-        }
+        for (v = x->x_vec, i = 0; i < x->x_n; v++, i++)
+            if (v->v_sustain)
+            {
+                outlet_float(x->x_velout, 0);
+                outlet_float(x->x_pitchout, v->v_pitch);
+                outlet_float(x->x_obj.ob_outlet, i+1);
+                v->v_used = 0;
+                v->v_sustain = 0;
+                v->v_serial = x->x_serial++;
+            }
     }
+    x->x_sustain = (f != 0);
 }
 
 static void poly_stop(t_poly *x)
 {
     int i;
     t_voice *v;
+
     for (i = 0, v = x->x_vec; i < x->x_n; i++, v++)
         if (v->v_used)
     {
-        outlet_float(x->x_velout, 0L);
+        outlet_float(x->x_velout, 0);
         outlet_float(x->x_pitchout, v->v_pitch);
         outlet_float(x->x_obj.ob_outlet, i+1);
         v->v_used = 0;
+        v->v_sustain = 0;
         v->v_serial = x->x_serial++;
     }
 }
@@ -1091,7 +1158,8 @@ static void poly_clear(t_poly *x)
 {
     int i;
     t_voice *v;
-    for (v = x->x_vec, i = x->x_n; i--; v++) v->v_used = v->v_serial = 0;
+    for (v = x->x_vec, i = x->x_n; i--; v++)
+        v->v_used = v->v_serial = v->v_sustain = 0;
 }
 
 static void poly_free(t_poly *x)
@@ -1099,14 +1167,18 @@ static void poly_free(t_poly *x)
     freebytes(x->x_vec, x->x_n * sizeof (*x->x_vec));
 }
 
-static void poly_setup(void)
+void poly_setup(void)
 {
     poly_class = class_new(gensym("poly"),
         (t_newmethod)poly_new, (t_method)poly_free,
-        sizeof(t_poly), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+        sizeof(t_poly), 0, A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
     class_addfloat(poly_class, poly_float);
     class_addmethod(poly_class, (t_method)poly_stop, gensym("stop"), 0);
     class_addmethod(poly_class, (t_method)poly_clear, gensym("clear"), 0);
+    class_addmethod(poly_class, (t_method)poly_sustain, gensym("sustain"), A_FLOAT, 0);
+    class_addmethod(poly_class, (t_method)poly_resize, gensym("resize"), A_FLOAT, 0);
+    class_addmethod(poly_class, (t_method)poly_voicestealing, gensym("voicestealing"), A_FLOAT, 0);
+    class_addmethod(poly_class, (t_method)poly_notestealing, gensym("notestealing"), A_FLOAT, 0);
 }
 
 /* -------------------------- bag -------------------------- */
