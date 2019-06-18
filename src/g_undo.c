@@ -295,7 +295,11 @@ void canvas_undo_rebranch(t_canvas *x)
             freebytes(a1, sizeof(*a1));
             a1 = a2;
         }
+        udo->u_last->next = 0;
     }
+    if (glist_isvisible(x) && glist_istoplevel(x))
+        sys_vgui("pdtk_undomenu .x%lx %s no\n", x, udo->u_last->name);
+
     canvas_resume_dsp(dspwas);
 }
 
