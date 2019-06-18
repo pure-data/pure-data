@@ -1771,6 +1771,7 @@ static void glist_doreload(t_glist *gl, t_symbol *name, t_symbol *dir,
     {
         canvas_cut(gl);
         canvas_undo_undo(gl);
+        canvas_undo_rebranch(gl);
         glist_noselect(gl);
     }
 
