@@ -700,12 +700,34 @@ static int garray_click(t_gobj *z, t_glist *glist,
 
 #define ARRAYWRITECHUNKSIZE 1000
 
+    /* called by array_define_save() */
 void garray_savesizeto(t_garray *x, t_binbuf *b)
 {
     if (x->x_saveit)
     {
         t_array *array = garray_getarray(x);
-        binbuf_addv(b, "ssi", gensym("#A"), gensym("resize"), array->a_n);
+        t_atom *vec = binbuf_getvec(b), *size;
+        int n = binbuf_getnatom(b), newsize = array->a_n;
+            /* look for "size" argument before semicolon */
+        if (n < 2 || vec[n-1].a_type != A_SEMI)
+        {
+            bug("garray_savesizeto");
+            return;
+        }
+        size = &vec[n-2];
+        if (size->a_type == A_FLOAT)
+        {
+            if ((int)size->a_w.w_float != newsize)
+            {
+                /* simply replace size in binbuf */
+                size->a_w.w_float = newsize;
+                post("array define: saving %s with new size %d",
+                     x->x_realname->s_name, newsize);
+            }
+            return; /* done */
+        }
+            /* no initial size given: add "resize" message */
+        binbuf_addv(b, "ssi", gensym("#A"), gensym("resize"), newsize);
         binbuf_addsemi(b);
     }
 }
