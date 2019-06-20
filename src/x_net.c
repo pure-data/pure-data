@@ -39,6 +39,8 @@
 /* print addrinfo lists for debugging */
 //#define POST_ADDRINFO
 
+#define INBUFSIZE 4096
+
 /* ----------------------------- helpers ------------------------- */
 
 /* Windows XP winsock doesn't provide inet_ntop */
@@ -283,7 +285,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 
 static void netsend_readbin(t_netsend *x, int fd)
 {
-    unsigned char inbuf[MAXPDSTRING];
+    unsigned char inbuf[INBUFSIZE];
     int ret = 0, i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
@@ -293,10 +295,10 @@ static void netsend_readbin(t_netsend *x, int fd)
         return;
     }
     if (x->x_protocol == SOCK_DGRAM)
-        ret = (int)recvfrom(fd, inbuf, MAXPDSTRING, 0,
+        ret = (int)recvfrom(fd, inbuf, INBUFSIZE, 0,
             (struct sockaddr *)&fromaddr, &fromaddrlen);
     else
-        ret = (int)recv(fd, inbuf, MAXPDSTRING, 0);
+        ret = (int)recv(fd, inbuf, INBUFSIZE, 0);
     if (ret <= 0)
     {
         if (ret < 0)
