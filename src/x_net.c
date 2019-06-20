@@ -305,7 +305,13 @@ static void netsend_readbin(t_netsend *x, int fd)
         if (ret <= 0)
         {
             if (ret < 0)
+            {
+                /* only close the socket if there really was an error.
+                (sys_sockerrno() ignores some error codes) */
+                if (!sys_sockerrno())
+                    return;
                 sys_sockerror("recv (bin)");
+            }
             sys_rmpollfn(fd);
             sys_closesocket(fd);
             if (x->x_obj.ob_pd == netreceive_class)
