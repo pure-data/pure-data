@@ -20,6 +20,7 @@
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <sys/select.h>
@@ -286,7 +287,7 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
 static void netsend_readbin(t_netsend *x, int fd)
 {
     unsigned char inbuf[INBUFSIZE];
-    int ret = 0, i;
+    int ret = 0, readbytes = 0, i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     if (!x->x_msgout)
@@ -294,37 +295,63 @@ static void netsend_readbin(t_netsend *x, int fd)
         bug("netsend_readbin");
         return;
     }
-    if (x->x_protocol == SOCK_DGRAM)
-        ret = (int)recvfrom(fd, inbuf, INBUFSIZE, 0,
-            (struct sockaddr *)&fromaddr, &fromaddrlen);
-    else
-        ret = (int)recv(fd, inbuf, INBUFSIZE, 0);
-    if (ret <= 0)
+    while (1)
     {
-        if (ret < 0)
-            sys_sockerror("recv (bin)");
-        sys_rmpollfn(fd);
-        sys_closesocket(fd);
-        if (x->x_obj.ob_pd == netreceive_class)
-            netreceive_notify((t_netreceive *)x, fd);
-        return;
-    }
-    if (x->x_protocol == SOCK_DGRAM)
-    {
-        if (x->x_fromout)
-            outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
-        t_atom *ap = (t_atom *)alloca(ret * sizeof(t_atom));
-        for (i = 0; i < ret; i++)
-            SETFLOAT(ap+i, inbuf[i]);
-        outlet_list(x->x_msgout, 0, ret, ap);
-    }
-    else
-    {
-        if (x->x_fromout &&
-            !getpeername(fd, (struct sockaddr *)&fromaddr, &fromaddrlen))
+        if (x->x_protocol == SOCK_DGRAM)
+            ret = (int)recvfrom(fd, inbuf, INBUFSIZE, 0,
+                (struct sockaddr *)&fromaddr, &fromaddrlen);
+        else
+            ret = (int)recv(fd, inbuf, INBUFSIZE, 0);
+        if (ret <= 0)
+        {
+            if (ret < 0)
+                sys_sockerror("recv (bin)");
+            sys_rmpollfn(fd);
+            sys_closesocket(fd);
+            if (x->x_obj.ob_pd == netreceive_class)
+                netreceive_notify((t_netreceive *)x, fd);
+            return;
+        }
+        if (x->x_protocol == SOCK_DGRAM)
+        {
+            t_atom *ap;
+        #ifdef _WIN32
+            unsigned long n;
+        #else
+            int n;
+        #endif
+            if (x->x_fromout)
                 outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
-        for (i = 0; i < ret; i++)
-            outlet_float(x->x_msgout, inbuf[i]);
+            ap = (t_atom *)alloca(ret * sizeof(t_atom));
+            for (i = 0; i < ret; i++)
+                SETFLOAT(ap+i, inbuf[i]);
+            outlet_list(x->x_msgout, 0, ret, ap);
+            readbytes += ret;
+                /* throttle */
+            if (readbytes >= INBUFSIZE)
+                return;
+                /* check for pending UDP packets */
+        #ifdef _WIN32
+            if (ioctlsocket(fd, FIONREAD, &n) < 0)
+        #else
+            if (ioctl(fd, FIONREAD, &n) < 0)
+        #endif
+            {
+                error("ioctl failed");
+                return;
+            }
+            if (n <= 0) /* no pending packets */
+                return;
+        }
+        else
+        {
+            if (x->x_fromout &&
+                !getpeername(fd, (struct sockaddr *)&fromaddr, &fromaddrlen))
+                    outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
+            for (i = 0; i < ret; i++)
+                outlet_float(x->x_msgout, inbuf[i]);
+            return;
+        }
     }
 }
 
