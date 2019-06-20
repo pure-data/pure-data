@@ -709,12 +709,12 @@ static void netreceive_notify(t_netreceive *x, int fd)
             x->x_connections = (int *)t_resizebytes(x->x_connections,
                 x->x_nconnections * sizeof(int),
                     (x->x_nconnections-1) * sizeof(int));
-            memmove(x->x_receivers+i, x->x_receivers+(i+1),
-                sizeof(t_socketreceiver*) * (x->x_nconnections - (i+1)));
 
             if (x->x_receivers[i])
                 socketreceiver_free(x->x_receivers[i]);
-            x->x_receivers[i] = NULL;
+            memmove(x->x_receivers+i, x->x_receivers+(i+1),
+                sizeof(t_socketreceiver*) * (x->x_nconnections - (i+1)));
+
             x->x_receivers = (t_socketreceiver **)t_resizebytes(x->x_receivers,
                 x->x_nconnections * sizeof(t_socketreceiver*),
                     (x->x_nconnections-1) * sizeof(t_socketreceiver*));
