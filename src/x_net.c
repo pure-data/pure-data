@@ -579,7 +579,6 @@ static void netsend_disconnect(t_netsend *x)
         if (x->x_receiver)
             socketreceiver_free(x->x_receiver);
         x->x_receiver = NULL;
-        memset(&x->x_receiver, 0, sizeof(x->x_receiver));
         memset(&x->x_server, 0, sizeof(struct sockaddr_storage));
         outlet_float(x->x_obj.ob_outlet, 0);
     }
