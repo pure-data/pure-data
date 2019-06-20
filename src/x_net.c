@@ -666,7 +666,7 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 static void netsend_timeout(t_netsend *x, t_float timeout)
 {
     if (timeout >= 0)
-        x->x_timeout = timeout;
+        x->x_timeout = timeout * 0.001;
 }
 
 static void netsend_free(t_netsend *x)
