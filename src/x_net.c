@@ -503,7 +503,11 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 
             /* connect */
             status = connect(sockfd, ai->ai_addr, ai->ai_addrlen);
+        #ifdef _WIN32
+            if (status < 0 && sys_sockerrno() != WSAEWOULDBLOCK)
+        #else
             if (status < 0 && sys_sockerrno() != EINPROGRESS)
+        #endif
             {
                 sys_sockerror("connecting stream socket");
                 sys_closesocket(sockfd);
