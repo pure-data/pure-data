@@ -423,7 +423,18 @@ int sys_sockerrno()
 void sys_sockerror(char *s)
 {
     int err = sys_sockerrno();
+#ifdef _WIN32
+    char buf[MAXPDSTRING];
+    buf[0] = 0;
+    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 0, err,
+                   MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf, sizeof(buf), NULL);
+    if (*buf)
+        error("%s: %s (%d)", s, buf, err);
+    else
+        error("%s: unknown error (%d)", s, err);
+#else
     error("%s: %s (%d)", s, strerror(err), err);
+#endif
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
