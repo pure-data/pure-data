@@ -284,6 +284,8 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+static void netsend_disconnect(t_netsend *x);
+
 static void netsend_readbin(t_netsend *x, int fd)
 {
     unsigned char inbuf[INBUFSIZE];
@@ -312,10 +314,14 @@ static void netsend_readbin(t_netsend *x, int fd)
                     return;
                 sys_sockerror("recv (bin)");
             }
-            sys_rmpollfn(fd);
-            sys_closesocket(fd);
             if (x->x_obj.ob_pd == netreceive_class)
+            {
+                sys_rmpollfn(fd);
+                sys_closesocket(fd);
                 netreceive_notify((t_netreceive *)x, fd);
+            }
+            else /* properly shutdown netsend */
+                netsend_disconnect(x);
             return;
         }
         if (x->x_protocol == SOCK_DGRAM)
@@ -393,6 +399,22 @@ static void netsend_read(void *z, t_binbuf *b)
         }
     nodice:
         msg = emsg + 1;
+    }
+}
+
+static void netsend_notify(void *z, int fd)
+{
+    t_netsend *x = (t_netsend *)z;
+    if (x->x_sockfd >= 0)
+    {
+        /* sys_rmpollfn() and sys_closesocket() are
+           already called in socketreceiver_read */
+        x->x_sockfd = -1;
+        if (x->x_receiver)
+            socketreceiver_free(x->x_receiver);
+        x->x_receiver = NULL;
+        memset(&x->x_server, 0, sizeof(struct sockaddr_storage));
+        outlet_float(x->x_obj.ob_outlet, 0);
     }
 }
 
@@ -560,7 +582,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         else
         {
             t_socketreceiver *y =
-              socketreceiver_new((void *)x, 0, netsend_read,
+              socketreceiver_new((void *)x, netsend_notify, netsend_read,
                                  x->x_protocol == SOCK_DGRAM);
             sys_addpollfn(x->x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receiver = y;

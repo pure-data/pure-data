@@ -554,6 +554,8 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
             if (sys_sockerrno())
             {
                 sys_sockerror("recv (udp)");
+                if (x->sr_notifier)
+                    (*x->sr_notifier)(x->sr_owner, fd);
                 sys_rmpollfn(fd);
                 sys_closesocket(fd);
             }
