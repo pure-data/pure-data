@@ -103,10 +103,10 @@ struct _socketreceiver
     int sr_intail;
     void *sr_owner;
     int sr_udp;
-    struct sockaddr_storage *sr_fromaddr; /* optional, UDP only */
+    struct sockaddr_storage *sr_fromaddr; /* optional */
     t_socketnotifier sr_notifier;
     t_socketreceivefn sr_socketreceivefn;
-    t_socketfromaddrfn sr_fromaddrfn; /* optional, UDP only */
+    t_socketfromaddrfn sr_fromaddrfn; /* optional */
 };
 
 typedef struct _guiqueue

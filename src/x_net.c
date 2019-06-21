@@ -49,8 +49,8 @@
 const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     struct sockaddr_storage addr;
     socklen_t addrlen;
-    addr.ss_family = af;
     memset(&addr, 0, sizeof(struct sockaddr_storage));
+    addr.ss_family = af;
     if (af == AF_INET6)
     {
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&addr;
@@ -65,12 +65,12 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     }
     else
         return NULL;
-    if (WSAAddressToString((struct sockaddr *)&addr, addrlen, 0, dst,
+    if (WSAAddressToStringA((struct sockaddr *)&addr, addrlen, 0, dst,
         (LPDWORD)&size) != 0)
         return NULL;
     return dst;
 }
-#else
+#else /* _WIN32 */
 #define INET_NTOP inet_ntop
 #endif
 
