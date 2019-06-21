@@ -9,14 +9,10 @@ that didn't really belong anywhere. */
 #include "s_stuff.h"
 #include "m_imp.h"
 #include "g_canvas.h"   /* for GUI queueing stuff */
+#include "s_net.h"
 #include <errno.h>
 #ifndef _WIN32
 #include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <netdb.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/mman.h>
@@ -30,12 +26,7 @@ that didn't really belong anywhere. */
 #ifdef _WIN32
 #include <io.h>
 #include <process.h>
-#include <winsock2.h>
 #include <windows.h>
-typedef int socklen_t;
-#ifndef EADDRINUSE
-#define EADDRINUSE WSAEADDRINUSE
-#endif
 #endif
 
 #include <stdarg.h>
@@ -403,26 +394,9 @@ void sys_set_priority(int mode)
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
-int sys_sockerrno()
-{
-#ifdef _WIN32
-    int err = WSAGetLastError();
-    if (err == 10054) return 0;
-    else if (err == 10044)
-    {
-        fprintf(stderr,
-            "Warning: you might not have TCP/IP \"networking\" turned on\n");
-        fprintf(stderr, "which is needed for Pd to talk to its GUI layer.\n");
-    }
-    return err;
-#else
-    return errno;
-#endif
-}
-
 void sys_sockerror(char *s)
 {
-    int err = sys_sockerrno();
+    int err = socket_errno();
     error("%s: %s (%d)", s, strerror(err), err);
 }
 
@@ -531,8 +505,8 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
     if (ret < 0)
     {
             /* only close the socket if there really was an error.
-            (sys_sockerrno() ignores some error codes) */
-        if (sys_sockerrno())
+            (socket_errno() ignores some error codes) */
+        if (socket_errno())
         {
             sys_sockerror("recv (udp)");
             sys_rmpollfn(fd);
@@ -660,16 +634,9 @@ void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
     }
 }
 
-void sys_closesocket(int fd)
+void sys_closesocket(int sockfd)
 {
-#ifdef HAVE_UNISTD_H
-    if(fd<0)
-        return;
-    close(fd);
-#endif
-#ifdef _WIN32
-    closesocket(fd);
-#endif
+    socket_close(sockfd);
 }
 
 /* ---------------------- sending messages to the GUI ------------------ */

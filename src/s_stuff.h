@@ -179,7 +179,6 @@ EXTERN t_socketreceiver *socketreceiver_new(void *owner,
 EXTERN void socketreceiver_read(t_socketreceiver *x, int fd);
 EXTERN void socketreceiver_set_fromaddrfn(t_socketreceiver *x,
     t_socketfromaddrfn fromaddrfn);
-EXTERN int sys_sockerrno();
 EXTERN void sys_sockerror(char *s);
 EXTERN void sys_closesocket(int fd);
 
