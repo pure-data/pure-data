@@ -13,12 +13,6 @@
 #include <ws2def.h>
 #endif /* MSVC + Windows 7 */
 typedef int socklen_t;
-#ifndef EADDRINUSE
-#define EADDRINUSE WSAEADDRINUSE
-#endif
-#ifndef EINPROGRESS
-#define EINPROGRESS WSAEWOULDBLOCK
-#endif
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>

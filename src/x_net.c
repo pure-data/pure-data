@@ -12,26 +12,11 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-#ifdef _WIN32
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#else
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/select.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <fcntl.h>
-#endif
 
 #ifdef _WIN32
 # include <malloc.h> /* MSVC or mingw on windows */
 #elif defined(__linux__) || defined(__APPLE__)
 # include <alloca.h> /* linux, mac, mingw, cygwin */
-#else
-# include <stdlib.h> /* BSDs for example */
 #endif
 
 /* print addrinfo lists for debugging */

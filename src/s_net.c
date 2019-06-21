@@ -7,11 +7,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <sys/time.h>
-#ifndef _WIN32
+#ifdef _WIN32
+#ifndef EADDRINUSE
+#define EADDRINUSE WSAEADDRINUSE
+#endif
+#ifndef EINPROGRESS
+#define EINPROGRESS WSAEWOULDBLOCK
+#endif
+#else
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/time.h>
 #endif
 
 // Windows XP winsock doesn't provide inet_ntop
