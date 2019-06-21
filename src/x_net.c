@@ -14,9 +14,13 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#if defined(_MSC_VER) && _WIN32_WINNT == 0x0601
+#include <ws2def.h>
+#endif /* MSVC + Windows 7 */
 #else
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <sys/select.h>
@@ -36,6 +40,8 @@
 /* print addrinfo lists for debugging */
 //#define POST_ADDRINFO
 
+#define INBUFSIZE 4096
+
 /* ----------------------------- helpers ------------------------- */
 
 /* Windows XP winsock doesn't provide inet_ntop */
@@ -43,8 +49,8 @@
 const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     struct sockaddr_storage addr;
     socklen_t addrlen;
-    addr.ss_family = af;
     memset(&addr, 0, sizeof(struct sockaddr_storage));
+    addr.ss_family = af;
     if (af == AF_INET6)
     {
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&addr;
@@ -59,12 +65,12 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     }
     else
         return NULL;
-    if (WSAAddressToString((struct sockaddr *)&addr, addrlen, 0, dst,
+    if (WSAAddressToStringA((struct sockaddr *)&addr, addrlen, 0, dst,
         (LPDWORD)&size) != 0)
         return NULL;
     return dst;
 }
-#else
+#else /* _WIN32 */
 #define INET_NTOP inet_ntop
 #endif
 
@@ -278,10 +284,12 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
+static void netsend_disconnect(t_netsend *x);
+
 static void netsend_readbin(t_netsend *x, int fd)
 {
-    unsigned char inbuf[MAXPDSTRING];
-    int ret = 0, i;
+    unsigned char inbuf[INBUFSIZE];
+    int ret = 0, readbytes = 0, i;
     struct sockaddr_storage fromaddr = {0};
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
     if (!x->x_msgout)
@@ -289,37 +297,73 @@ static void netsend_readbin(t_netsend *x, int fd)
         bug("netsend_readbin");
         return;
     }
-    if (x->x_protocol == SOCK_DGRAM)
-        ret = (int)recvfrom(fd, inbuf, MAXPDSTRING, 0,
-            (struct sockaddr *)&fromaddr, &fromaddrlen);
-    else
-        ret = (int)recv(fd, inbuf, MAXPDSTRING, 0);
-    if (ret <= 0)
+    while (1)
     {
-        if (ret < 0)
-            sys_sockerror("recv (bin)");
-        sys_rmpollfn(fd);
-        sys_closesocket(fd);
-        if (x->x_obj.ob_pd == netreceive_class)
-            netreceive_notify((t_netreceive *)x, fd);
-        return;
-    }
-    if (x->x_protocol == SOCK_DGRAM)
-    {
-        if (x->x_fromout)
-            outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
-        t_atom *ap = (t_atom *)alloca(ret * sizeof(t_atom));
-        for (i = 0; i < ret; i++)
-            SETFLOAT(ap+i, inbuf[i]);
-        outlet_list(x->x_msgout, 0, ret, ap);
-    }
-    else
-    {
-        if (x->x_fromout &&
-            !getpeername(fd, (struct sockaddr *)&fromaddr, &fromaddrlen))
+        if (x->x_protocol == SOCK_DGRAM)
+            ret = (int)recvfrom(fd, inbuf, INBUFSIZE, 0,
+                (struct sockaddr *)&fromaddr, &fromaddrlen);
+        else
+            ret = (int)recv(fd, inbuf, INBUFSIZE, 0);
+        if (ret <= 0)
+        {
+            if (ret < 0)
+            {
+                /* only close the socket if there really was an error.
+                (sys_sockerrno() ignores some error codes) */
+                if (!sys_sockerrno())
+                    return;
+                sys_sockerror("recv (bin)");
+            }
+            if (x->x_obj.ob_pd == netreceive_class)
+            {
+                sys_rmpollfn(fd);
+                sys_closesocket(fd);
+                netreceive_notify((t_netreceive *)x, fd);
+            }
+            else /* properly shutdown netsend */
+                netsend_disconnect(x);
+            return;
+        }
+        if (x->x_protocol == SOCK_DGRAM)
+        {
+            t_atom *ap;
+        #ifdef _WIN32
+            unsigned long n;
+        #else
+            int n;
+        #endif
+            if (x->x_fromout)
                 outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
-        for (i = 0; i < ret; i++)
-            outlet_float(x->x_msgout, inbuf[i]);
+            ap = (t_atom *)alloca(ret * sizeof(t_atom));
+            for (i = 0; i < ret; i++)
+                SETFLOAT(ap+i, inbuf[i]);
+            outlet_list(x->x_msgout, 0, ret, ap);
+            readbytes += ret;
+                /* throttle */
+            if (readbytes >= INBUFSIZE)
+                return;
+                /* check for pending UDP packets */
+        #ifdef _WIN32
+            if (ioctlsocket(fd, FIONREAD, &n) < 0)
+        #else
+            if (ioctl(fd, FIONREAD, &n) < 0)
+        #endif
+            {
+                error("ioctl failed");
+                return;
+            }
+            if (n <= 0) /* no pending packets */
+                return;
+        }
+        else
+        {
+            if (x->x_fromout &&
+                !getpeername(fd, (struct sockaddr *)&fromaddr, &fromaddrlen))
+                    outlet_sockaddr(x->x_fromout, (const struct sockaddr *)&fromaddr);
+            for (i = 0; i < ret; i++)
+                outlet_float(x->x_msgout, inbuf[i]);
+            return;
+        }
     }
 }
 
@@ -355,6 +399,22 @@ static void netsend_read(void *z, t_binbuf *b)
         }
     nodice:
         msg = emsg + 1;
+    }
+}
+
+static void netsend_notify(void *z, int fd)
+{
+    t_netsend *x = (t_netsend *)z;
+    if (x->x_sockfd >= 0)
+    {
+        /* sys_rmpollfn() and sys_closesocket() are
+           already called in socketreceiver_read */
+        x->x_sockfd = -1;
+        if (x->x_receiver)
+            socketreceiver_free(x->x_receiver);
+        x->x_receiver = NULL;
+        memset(&x->x_server, 0, sizeof(struct sockaddr_storage));
+        outlet_float(x->x_obj.ob_outlet, 0);
     }
 }
 
@@ -471,7 +531,11 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 
             /* connect */
             status = connect(sockfd, ai->ai_addr, ai->ai_addrlen);
+        #ifdef _WIN32
+            if (status < 0 && sys_sockerrno() != WSAEWOULDBLOCK)
+        #else
             if (status < 0 && sys_sockerrno() != EINPROGRESS)
+        #endif
             {
                 sys_sockerror("connecting stream socket");
                 sys_closesocket(sockfd);
@@ -518,7 +582,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         else
         {
             t_socketreceiver *y =
-              socketreceiver_new((void *)x, 0, netsend_read,
+              socketreceiver_new((void *)x, netsend_notify, netsend_read,
                                  x->x_protocol == SOCK_DGRAM);
             sys_addpollfn(x->x_sockfd, (t_fdpollfn)socketreceiver_read, y);
             x->x_receiver = y;
@@ -537,7 +601,6 @@ static void netsend_disconnect(t_netsend *x)
         if (x->x_receiver)
             socketreceiver_free(x->x_receiver);
         x->x_receiver = NULL;
-        memset(&x->x_receiver, 0, sizeof(x->x_receiver));
         memset(&x->x_server, 0, sizeof(struct sockaddr_storage));
         outlet_float(x->x_obj.ob_outlet, 0);
     }
@@ -630,7 +693,7 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 static void netsend_timeout(t_netsend *x, t_float timeout)
 {
     if (timeout >= 0)
-        x->x_timeout = timeout;
+        x->x_timeout = timeout * 0.001;
 }
 
 static void netsend_free(t_netsend *x)
@@ -667,12 +730,12 @@ static void netreceive_notify(t_netreceive *x, int fd)
             x->x_connections = (int *)t_resizebytes(x->x_connections,
                 x->x_nconnections * sizeof(int),
                     (x->x_nconnections-1) * sizeof(int));
-            memmove(x->x_receivers+i, x->x_receivers+(i+1),
-                sizeof(t_socketreceiver*) * (x->x_nconnections - (i+1)));
 
             if (x->x_receivers[i])
                 socketreceiver_free(x->x_receivers[i]);
-            x->x_receivers[i] = NULL;
+            memmove(x->x_receivers+i, x->x_receivers+(i+1),
+                sizeof(t_socketreceiver*) * (x->x_nconnections - (i+1)));
+
             x->x_receivers = (t_socketreceiver **)t_resizebytes(x->x_receivers,
                 x->x_nconnections * sizeof(t_socketreceiver*),
                     (x->x_nconnections-1) * sizeof(t_socketreceiver*));

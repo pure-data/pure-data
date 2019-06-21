@@ -14,6 +14,7 @@ that didn't really belong anywhere. */
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
@@ -103,10 +104,10 @@ struct _socketreceiver
     int sr_intail;
     void *sr_owner;
     int sr_udp;
-    struct sockaddr_storage *sr_fromaddr; /* optional, UDP only */
+    struct sockaddr_storage *sr_fromaddr; /* optional */
     t_socketnotifier sr_notifier;
     t_socketreceivefn sr_socketreceivefn;
-    t_socketfromaddrfn sr_fromaddrfn; /* optional, UDP only */
+    t_socketfromaddrfn sr_fromaddrfn; /* optional */
 };
 
 typedef struct _guiqueue
@@ -423,7 +424,18 @@ int sys_sockerrno()
 void sys_sockerror(char *s)
 {
     int err = sys_sockerrno();
+#ifdef _WIN32
+    char buf[MAXPDSTRING];
+    buf[0] = 0;
+    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 0, err,
+                   MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf, sizeof(buf), NULL);
+    if (*buf)
+        error("%s: %s (%d)", s, buf, err);
+    else
+        error("%s: unknown error (%d)", s, err);
+#else
     error("%s: %s (%d)", s, strerror(err), err);
+#endif
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
@@ -526,45 +538,72 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
 {
     char buf[INBUFSIZE+1];
     socklen_t fromaddrlen = sizeof(struct sockaddr_storage);
-    int ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
-        (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
-    if (ret < 0)
-    {
-            /* only close the socket if there really was an error.
-            (sys_sockerrno() ignores some error codes) */
-        if (sys_sockerrno())
-        {
-            sys_sockerror("recv (udp)");
-            sys_rmpollfn(fd);
-            sys_closesocket(fd);
-        }
-    }
-    else if (ret > 0)
-    {
-        buf[ret] = 0;
-#if 0
-        post("%s", buf);
+    int ret, readbytes = 0;
+#ifdef _WIN32
+    unsigned long n;
+#else
+    int n;
 #endif
-        if (buf[ret-1] != '\n')
+    while (1)
+    {
+        ret = (int)recvfrom(fd, buf, INBUFSIZE, 0,
+            (struct sockaddr *)x->sr_fromaddr, (x->sr_fromaddr ? &fromaddrlen : 0));
+        if (ret < 0)
         {
-#if 0
+                /* only close the socket if there really was an error.
+                (sys_sockerrno() ignores some error codes) */
+            if (sys_sockerrno())
+            {
+                sys_sockerror("recv (udp)");
+                if (x->sr_notifier)
+                    (*x->sr_notifier)(x->sr_owner, fd);
+                sys_rmpollfn(fd);
+                sys_closesocket(fd);
+            }
+            return;
+        }
+        else if (ret > 0)
+        {
             buf[ret] = 0;
-            error("dropped bad buffer %s\n", buf);
-#endif
-        }
-        else
-        {
-            char *semi = strchr(buf, ';');
-            if (semi)
-                *semi = 0;
-            if (x->sr_fromaddrfn)
-                (*x->sr_fromaddrfn)(x->sr_owner, (const void *)x->sr_fromaddr);
-            binbuf_text(pd_this->pd_inter->i_inbinbuf, buf, strlen(buf));
-            outlet_setstacklim();
-            if (x->sr_socketreceivefn)
-                (*x->sr_socketreceivefn)(x->sr_owner,
-                    pd_this->pd_inter->i_inbinbuf);
-            else bug("socketreceiver_getudp");
+    #if 0
+            post("%s", buf);
+    #endif
+            if (buf[ret-1] != '\n')
+            {
+    #if 0
+                error("dropped bad buffer %s\n", buf);
+    #endif
+            }
+            else
+            {
+                char *semi = strchr(buf, ';');
+                if (semi)
+                    *semi = 0;
+                if (x->sr_fromaddrfn)
+                    (*x->sr_fromaddrfn)(x->sr_owner, (const void *)x->sr_fromaddr);
+                binbuf_text(pd_this->pd_inter->i_inbinbuf, buf, strlen(buf));
+                outlet_setstacklim();
+                if (x->sr_socketreceivefn)
+                    (*x->sr_socketreceivefn)(x->sr_owner,
+                        pd_this->pd_inter->i_inbinbuf);
+                else bug("socketreceiver_getudp");
+            }
+            readbytes += ret;
+            /* throttle */
+            if (readbytes >= INBUFSIZE)
+                return;
+            /* check for pending UDP packets */
+        #ifdef _WIN32
+            if (ioctlsocket(fd, FIONREAD, &n) < 0)
+        #else
+            if (ioctl(fd, FIONREAD, &n) < 0)
+        #endif
+            {
+                error("ioctl failed");
+                return;
+            }
+            if (n <= 0) /* no pending packets */
+                return;
         }
     }
 }
