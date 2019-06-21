@@ -14,6 +14,7 @@ that didn't really belong anywhere. */
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <netdb.h>
