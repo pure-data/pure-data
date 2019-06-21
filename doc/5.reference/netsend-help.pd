@@ -70,12 +70,12 @@ request should specify the name or IP address of the other host and
 the port number. There should be a "netreceive" on the remote host
 with a matching port number., f 132;
 #X text 147 12 netsend -- send Pd messages over a network;
-#X msg 447 258 timeout 3;
-#X text 526 251 TCP connect timeout, f 11;
 #X text 35 554 As of 0.50+ \, Pd supports IPv6 addresses \, netsend
 -u (UDP) is fully "connectionless" and no longer closes if no one receives
 a UDP message \, and netsend (TCP) has a settable connect timeout which
 defaults to 10 seconds., f 115;
+#X msg 437 255 timeout 3000;
+#X text 532 250 TCP connect timeout (ms), f 13;
 #X connect 0 0 8 0;
 #X connect 0 1 38 0;
 #X connect 1 0 0 0;
@@ -101,4 +101,4 @@ defaults to 10 seconds., f 115;
 #X connect 34 1 39 0;
 #X connect 35 0 31 0;
 #X connect 44 0 31 0;
-#X connect 54 0 34 0;
+#X connect 55 0 34 0;

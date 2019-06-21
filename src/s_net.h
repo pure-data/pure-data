@@ -9,9 +9,15 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#if defined(_MSC_VER) && _WIN32_WINNT == 0x0601
+#include <ws2def.h>
+#endif /* MSVC + Windows 7 */
 typedef int socklen_t;
 #ifndef EADDRINUSE
 #define EADDRINUSE WSAEADDRINUSE
+#endif
+#ifndef EINPROGRESS
+#define EINPROGRESS WSAEWOULDBLOCK
 #endif
 #else
 #include <arpa/inet.h>
@@ -91,6 +97,10 @@ int socket_connect(int socket, const struct sockaddr *addr,
 
 /// cross-platform socket close()
 void socket_close(int socket);
+
+/// get number of immediately readable bytes for the socket
+/// returns -1 on error or bytes avilable on success
+int socket_bytes_available(int socket);
 
 /// setsockopt() convenience wrapper for socket bool options */
 int socket_set_boolopt(int socket, int level, int option_name, int bool_value);

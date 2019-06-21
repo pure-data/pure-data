@@ -11,6 +11,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
 #endif
 
 // Windows XP winsock doesn't provide inet_ntop
@@ -18,8 +19,8 @@
 const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     struct sockaddr_storage addr;
     socklen_t addrlen;
-    addr.ss_family = af;
     memset(&addr, 0, sizeof(struct sockaddr_storage));
+    addr.ss_family = af;
     if (af == AF_INET6)
     {
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&addr;
@@ -34,12 +35,12 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
     }
     else
         return NULL;
-    if (WSAAddressToString((struct sockaddr *)&addr, addrlen, 0, dst,
+    if (WSAAddressToStringA((struct sockaddr *)&addr, addrlen, 0, dst,
         (LPDWORD)&size) != 0)
         return NULL;
     return dst;
 }
-#else
+#else /* _WIN32 */
 #define INET_NTOP inet_ntop
 #endif
 
@@ -168,6 +169,21 @@ int socket_set_nonblocking(int socket, int nonblocking)
         return -1;
 #endif
     return 0;
+}
+
+int socket_bytes_available(int socket)
+{
+#ifdef _WIN32
+    u_long n = 0;
+    if (ioctlsocket(socket, FIONREAD, &n) != NO_ERROR)
+        return -1;
+    return n;
+#else
+    int n = 0;
+    if (ioctl(socket, FIONREAD, &n) < 0)
+        return -1;
+    return n;
+#endif
 }
 
 int socket_join_multicast_group(int socket, struct sockaddr *sa)
