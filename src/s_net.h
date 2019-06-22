@@ -9,9 +9,6 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#if defined(_MSC_VER) && _WIN32_WINNT == 0x0601
-#include <ws2def.h>
-#endif /* MSVC + Windows 7 */
 typedef int socklen_t;
 #else
 #include <arpa/inet.h>
