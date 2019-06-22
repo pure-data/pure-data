@@ -89,6 +89,7 @@ int sockaddr_is_multicast(const struct sockaddr *sa);
 /* socket */
 
 /// connect a socket to an address with a settable timeout in seconds
+/// returns -1 on error. use socket_errno() to get the actual error code.
 int socket_connect(int socket, const struct sockaddr *addr,
 	               socklen_t addrlen, float timeout);
 
@@ -96,7 +97,7 @@ int socket_connect(int socket, const struct sockaddr *addr,
 void socket_close(int socket);
 
 /// get number of immediately readable bytes for the socket
-/// returns -1 on error or bytes avilable on success
+/// returns -1 on error or bytes available on success
 int socket_bytes_available(int socket);
 
 /// setsockopt() convenience wrapper for socket bool options */
@@ -109,5 +110,5 @@ int socket_set_nonblocking(int socket, int nonblocking);
 int socket_join_multicast_group(int socket, struct sockaddr *sa);
 
 /// cross-platform socket errno() which ignores WSAECONNRESET and catches
-/// WSAECONNRESET on Windows, convert to string with strerror()
+/// WSAESOCKTNOSUPPORT on Windows
 int socket_errno();
