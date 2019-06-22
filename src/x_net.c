@@ -354,7 +354,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     if (sockfd == -1)
     {
         int err = socket_errno();
-        pd_error(x, "netsend: connect failed: %s (%d)", strerror(errno), errno);
+        char buf[MAXPDSTRING];
+        socket_strerror(err, buf, sizeof(buf));
+        pd_error(x, "netsend: connect failed: %s (%d)", buf, err);
         return;
     }
 
@@ -676,8 +678,10 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
     if (x->x_ns.x_sockfd == -1)
     {
         int err = socket_errno();
+        char buf[MAXPDSTRING];
+        socket_strerror(err, buf, sizeof(buf));
         pd_error(x, "netreceive: listen failed: %s (%d)",
-            strerror(errno), errno);
+            buf, err);
         return;
     }
 
