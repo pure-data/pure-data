@@ -145,9 +145,9 @@ pd: ../bin/pd.exe ../bin/pd.com
 	$(MSLN) /DLL /OUT:../bin/pd.dll /EXPORT:sys_main $(LFLAGS) $(OBJC) \
 	    $(PDLIB)
 
-../bin/pdsend.exe: u_pdsend.obj
+../bin/pdsend.exe: u_pdsend.obj s_net.obj
 	$(MSLN) $(LFLAGS) /out:../bin/pdsend.exe /INCREMENTAL:NO \
-		u_pdsend.obj  $(PDLIB)
+		u_pdsend.obj s_net.obj  $(PDLIB)
 
 ../bin/pdreceive.exe: u_pdreceive.obj
 	$(MSLN) $(LFLAGS) /out:../bin/pdreceive.exe /INCREMENTAL:NO \

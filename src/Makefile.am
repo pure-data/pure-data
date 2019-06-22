@@ -31,7 +31,7 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 # pd core & utils
 bin_PROGRAMS = pd pdsend pdreceive
 
-pdsend_SOURCES = u_pdsend.c
+pdsend_SOURCES = u_pdsend.c s_net.c
 pdreceive_SOURCES = u_pdreceive.c
 pd_watchdog_SOURCES = s_watchdog.c
 
