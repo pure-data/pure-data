@@ -272,8 +272,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 #endif
 
     /* try each addr until we find one that works */
-    for (ai = ailist; ai != NULL; ai = ai->ai_next) {
-
+    for (ai = ailist; ai != NULL; ai = ai->ai_next)
+    {
         /* create a socket */
         sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
 #if 0
@@ -300,7 +300,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         }
 
         /* bind optional src listening port */
-        if (sportno != 0) {
+        if (sportno != 0)
+        {
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
             post("connecting to dest port %d, src port %d", portno, sportno);
@@ -312,7 +313,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                 freeaddrinfo(ailist);
                 return;
             }
-            for (sai = sailist; sai != NULL; sai = sai->ai_next) {
+            for (sai = sailist; sai != NULL; sai = sai->ai_next)
+            {
                 if (bind(sockfd, sai->ai_addr, sai->ai_addrlen) < 0)
                     continue;
                 bound = 1;
@@ -336,7 +338,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         {
             status = socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen,
                                     x->x_timeout);
-            if (status < 0) {
+            if (status < 0)
+            {
                 sys_sockerror("connecting stream socket");
                 sys_closesocket(sockfd);
                 freeaddrinfo(ailist);
@@ -578,7 +581,8 @@ static void netreceive_closeall(t_netreceive *x)
     {
         sys_rmpollfn(x->x_connections[i]);
         sys_closesocket(x->x_connections[i]);
-        if (x->x_receivers[i]) {
+        if (x->x_receivers[i])
+        {
             socketreceiver_free(x->x_receivers[i]);
             x->x_receivers[i] = NULL;
         }
@@ -625,7 +629,8 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
 #endif
 
     /* try each addr until we find one that works */
-    for (ai = ailist; ai != NULL; ai = ai->ai_next) {
+    for (ai = ailist; ai != NULL; ai = ai->ai_next)
+    {
         x->x_ns.x_sockfd =
             socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
         if (x->x_ns.x_sockfd < 0)

@@ -1127,14 +1127,16 @@ static int sys_do_startgui(const char *libdir)
                     "Pd was unable to find a port number to bind to\n");
                 sys_closesocket(xsock);
                 return (1);
-            } else if (ntry > maxtry) {
+            } else if (ntry > maxtry)
+            {
                     /* last try: let the system pick a random port for us */
                 portno = 0;
             } else
                 portno++;
             server.sin_port = htons((unsigned short)(portno));
         }
-        if (!portno) {
+        if (!portno)
+        {
                 /* if the system chose a port for us, we need to know which */
             socklen_t serversize=sizeof(server);
             if(!getsockname(xsock, (struct sockaddr *)&server, &serversize))
@@ -1544,7 +1546,8 @@ void s_inter_newpdinstance( void)
 
 void s_inter_free(t_instanceinter *inter)
 {
-    if (inter->i_fdpoll) {
+    if (inter->i_fdpoll)
+    {
         binbuf_free(inter->i_inbinbuf);
         inter->i_inbinbuf = 0;
         t_freebytes(inter->i_fdpoll, inter->i_nfdpoll * sizeof(t_fdpoll));

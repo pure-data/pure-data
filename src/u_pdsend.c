@@ -53,7 +53,8 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
     /* try each addr until we find one that works */
-    for (ai = ailist; ai != NULL; ai = ai->ai_next) {
+    for (ai = ailist; ai != NULL; ai = ai->ai_next)
+    {
         char addrstr[256];
         /* create a socket */
         sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
