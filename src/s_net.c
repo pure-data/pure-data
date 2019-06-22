@@ -7,14 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#ifdef _WIN32
-#ifndef EADDRINUSE
-#define EADDRINUSE WSAEADDRINUSE
-#endif
-#ifndef EINPROGRESS
-#define EINPROGRESS WSAEWOULDBLOCK
-#endif
-#else
+#ifndef _WIN32
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
