@@ -267,3 +267,17 @@ int socket_errno()
     return errno;
 #endif
 }
+
+void socket_strerror(int err, char *buf, int size)
+{
+    if (size <= 0)
+        return;
+#ifdef _WIN32
+    buf[0] = '\0';
+    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                   0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
+                   size, NULL);
+#else
+    snprintf(buf, size, "%s", strerror(err));
+#endif
+}

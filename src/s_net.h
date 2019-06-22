@@ -112,3 +112,6 @@ int socket_join_multicast_group(int socket, struct sockaddr *sa);
 /// cross-platform socket errno() which ignores WSAECONNRESET and catches
 /// WSAESOCKTNOSUPPORT on Windows
 int socket_errno();
+
+/// get an error string from errno
+void socket_strerror(int err, char *buf, int size);

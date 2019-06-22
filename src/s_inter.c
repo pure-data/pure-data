@@ -396,20 +396,10 @@ void sys_set_priority(int mode)
 
 void sys_sockerror(char *s)
 {
-    int err = socket_errno();
-#ifdef _WIN32
     char buf[MAXPDSTRING];
-    buf[0] = '\0';
-    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
-                   sizeof(buf), NULL);
-    if (*buf)
-        error("%s: %s (%d)", s, buf, err);
-    else
-        error("%s: unknown error (%d)", s, err);
-#else
-    error("%s: %s (%d)", s, strerror(err), err);
-#endif
+    int err = socket_errno();
+    socket_strerror(err, buf, sizeof(buf));
+    error("%s: %s (%d)", s, buf, err);
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
