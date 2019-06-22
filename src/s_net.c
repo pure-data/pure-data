@@ -158,7 +158,7 @@ int socket_connect(int socket, const struct sockaddr *addr,
 #else
     if (status < 0 && socket_errno() != EINPROGRESS)
 #endif
-        return status;
+        return -1;
 
     // block with select using timeout
     if (timeout < 0) timeout = 0;
@@ -166,9 +166,13 @@ int socket_connect(int socket, const struct sockaddr *addr,
     FD_SET(socket, &writefds); // socket is connected when writable
     timeoutval.tv_sec = (int)timeout;
     timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
-    status = select(socket+1, NULL, &writefds, NULL, &timeoutval);
-    if (status < 0 || !FD_ISSET(socket, &writefds))
-        return status;
+    if (select(socket+1, NULL, &writefds, NULL, &timeoutval) < 0)
+    {
+        fprintf(stderr, "socket_connect: select failed");
+        return -1;
+    }
+    if (!FD_ISSET(socket, &writefds)) // timed out
+        return -1;
 
     // done, set blocking again
     socket_set_nonblocking(socket, 0);
