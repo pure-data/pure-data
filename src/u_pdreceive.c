@@ -16,26 +16,16 @@ standard output. */
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
-#ifdef _WIN32
-#include <winsock.h>
-#else
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/select.h>
-#define SOCKET_ERROR -1
-#endif
+
+#include <s_net.h>
 
 typedef struct _fdpoll
 {
     int fdp_fd;
-    char *fdp_outbuf;/*output message buffer*/
-    int fdp_outlen;     /*length of output message*/
-    int fdp_discard;/*buffer overflow: output message is incomplete, discard it*/
-    int fdp_gotsemi;/*last char from input was a semicolon*/
+    char *fdp_outbuf; /*output message buffer*/
+    int fdp_outlen;   /*length of output message*/
+    int fdp_discard;  /*buffer overflow: output message is incomplete, discard it*/
+    int fdp_gotsemi;  /*last char from input was a semicolon*/
 } t_fdpoll;
 
 static int nfdpoll;
@@ -45,21 +35,16 @@ static int sockfd;
 static int protocol;
 
 static void sockerror(char *s);
-static void x_closesocket(int fd);
 static void dopoll(void);
+static void sockerror(char *s);
 #define BUFSIZE 4096
 
 int main(int argc, char **argv)
 {
-    int portno;
+    int status, portno, nretry = 10, multicast = 0;
     char *hostname = NULL;
-    struct sockaddr_in server = {0};
-    struct hostent *hp = NULL;
-    int nretry = 10, multicast = 0;
-#ifdef _WIN32
-    short version = MAKEWORD(2, 0);
-    WSADATA nobby;
-#endif
+    struct addrinfo *ailist = NULL, *ai;
+    struct sockaddr_storage server;
     if (argc < 2 || sscanf(argv[1], "%d", &portno) < 1 || portno <= 0)
         goto usage;
     if (argc >= 3)
@@ -79,74 +64,93 @@ int main(int argc, char **argv)
         fprintf(stderr, "ignoring host: %s\n", hostname);
         hostname = NULL;
     }
-#ifdef _WIN32
-    if (WSAStartup(version, &nobby)) sockerror("WSAstartup");
-#endif
-    sockfd = socket(AF_INET, protocol, 0);
-    if (sockfd < 0)
+    if (socket_init())
     {
-        sockerror("socket()");
-        exit(1);
+        sockerror("socket_init()");
+        exit(EXIT_FAILURE);
     }
-    maxfd = sockfd + 1;
-    server.sin_family = AF_INET;
-
-    /* assign optional UDP incoming or multicast hostname */
-    if (hostname && protocol == SOCK_DGRAM)
+    status = addrinfo_get_list(&ailist, hostname, portno, protocol);
+    if (status != 0)
     {
-        hp = gethostbyname(hostname);
-        if (hp == 0)
-        {
-            fprintf(stderr, "bad host?\n");
-            exit(1);
-        }
-        memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
-        if ((0xE0000000 == (ntohl(server.sin_addr.s_addr) & 0xF0000000)))
-            multicast = 1;
+        fprintf(stderr, "bad host or port? %s (%d)\n",
+            gai_strerror(status), status);
+        exit(EXIT_FAILURE);
     }
-    else
-        server.sin_addr.s_addr = INADDR_ANY;
 
-        /* assign client port number */
-    server.sin_port = htons((unsigned short)portno);
-
+    /* try each addr until we find one that works */
+    for (ai = ailist; ai != NULL; ai = ai->ai_next)
+    {
+        sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+        if (sockfd < 0)
+            continue;
+    #if 1
+        /* ask OS to allow another process to repoen this port after we close it */
+        if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
+            fprintf(stderr, "setsockopt (SO_REUSEADDR) failed\n");
+    #endif
         /* name the socket */
-    if (bind(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0)
-    {
-        sockerror("bind");
-        x_closesocket(sockfd);
-        return (0);
+        if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+        {
+            socket_close(sockfd);
+            sockfd = -1;
+            continue;
+        }
+
+        /* this addr worked */
+        memcpy(&server, ai->ai_addr, ai->ai_addrlen);
+        break;
     }
-    if (protocol == SOCK_DGRAM)
+    freeaddrinfo(ailist);
+
+    /* confirm that socket/bind worked */
+    if (sockfd == -1)
+    {
+        int err = socket_errno();
+        char buf[256];
+        socket_strerror(err, buf, sizeof(buf));
+        fprintf(stderr, "listen failed: %s (%d)\n", buf, err);
+        exit(EXIT_FAILURE);
+    }
+
+    maxfd = sockfd + 1;
+
+    if (protocol == SOCK_DGRAM) /* datagram protocol */
     {
         /* join multicast group */
-        if (multicast)
+        if (sockaddr_is_multicast((struct sockaddr *)&server))
         {
-            struct ip_mreq mreq;
-            mreq.imr_multiaddr.s_addr = server.sin_addr.s_addr;
-            mreq.imr_interface.s_addr = INADDR_ANY;
-            if (setsockopt(sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-                (char *)&mreq, sizeof(mreq)) < 0)
-                fprintf(stderr, "setsockopt (IP_ADD_MEMBERSHIP) failed\n");
+            if (socket_join_multicast_group(sockfd,
+                (struct sockaddr *)&server) < 0)
+            {
+                int err = socket_errno();
+                char buf[256];
+                socket_strerror(err, buf, sizeof(buf));
+                fprintf(stderr,
+                    "netreceive: joining multicast group %s failed: %s (%d)\n",
+                    hostname, buf, err);
+            }
+            else
+                fprintf(stderr, "joined multicast group %s\n", hostname);
         }
     }
-    else
+    else /* streaming protocol */
     {
         if (listen(sockfd, 5) < 0)
         {
             sockerror("listen");
-            x_closesocket(sockfd);
-            exit(1);
+            socket_close(sockfd);
+            exit(EXIT_FAILURE);
         }
     }
-        /* now loop forever selecting on sockets */
+
+    /* now loop forever selecting on sockets */
     while (1)
         dopoll();
 
 usage:
     fprintf(stderr, "usage: pdreceive <portnumber> [udphost] [udp|tcp]\n");
     fprintf(stderr, "(default is tcp)\n");
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 static void addport(int fd)
@@ -159,7 +163,7 @@ static void addport(int fd)
     {
         free(fdpoll);
         fprintf(stderr, "out of memory!");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     fdpoll = fdtmp;
     fp = fdpoll + nfdpoll;
@@ -170,7 +174,7 @@ static void addport(int fd)
     if (!(fp->fdp_outbuf = (char*) malloc(BUFSIZE)))
     {
         fprintf(stderr, "out of memory");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     printf("number_connected %d;\n", nfdpoll);
 }
@@ -184,7 +188,7 @@ static void rmport(t_fdpoll *x)
     {
         if (fp == x)
         {
-            x_closesocket(fp->fdp_fd);
+            socket_close(fp->fdp_fd);
             free(fp->fdp_outbuf);
             while (i--)
             {
@@ -219,7 +223,7 @@ static void makeoutput(char *buf, int len)
     if (write(1, buf, len) < len)
     {
         perror("write");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 #endif
 }
@@ -231,8 +235,8 @@ static void udpread(void)
     if (ret < 0)
     {
         sockerror("recv (udp)");
-        x_closesocket(sockfd);
-        exit(1);
+        socket_close(sockfd);
+        exit(EXIT_FAILURE);
     }
     else if (ret > 0)
         makeoutput(buf, ret);
@@ -308,7 +312,7 @@ static void dopoll(void)
     if (select(maxfd+1, &readset, &writeset, &exceptset, 0) < 0)
     {
         perror("select");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     if (protocol == SOCK_STREAM)
     {
@@ -326,27 +330,10 @@ static void dopoll(void)
 }
 
 
-static void sockerror(char *s)
+void sockerror(char *s)
 {
-#ifdef _WIN32
-    int err = WSAGetLastError();
-    if (err == 10054) return;
-    else if (err == 10044)
-    {
-        fprintf(stderr,
-            "Warning: you might not have TCP/IP \"networking\" turned on\n");
-    }
-#else
-    int err = errno;
-#endif
-    fprintf(stderr, "%s: %s (%d)\n", s, strerror(err), err);
-}
-
-static void x_closesocket(int fd)
-{
-#ifdef _WIN32
-    closesocket(fd);
-#else
-    close(fd);
-#endif
+    char buf[256];
+    int err = socket_errno();
+    socket_strerror(err, buf, sizeof(buf));
+    fprintf(stderr, "%s: %s (%d)\n", s, buf, err);
 }

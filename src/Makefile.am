@@ -32,7 +32,7 @@ SUFFIXES = .@EXTENSION@ .@SHARED_LIB@
 bin_PROGRAMS = pd pdsend pdreceive
 
 pdsend_SOURCES = u_pdsend.c s_net.c
-pdreceive_SOURCES = u_pdreceive.c
+pdreceive_SOURCES = u_pdreceive.c s_net.c
 pd_watchdog_SOURCES = s_watchdog.c
 
 # on Windows, pd.exe contains only s_entry.c and links against pd.dll
