@@ -153,7 +153,11 @@ int socket_connect(int socket, const struct sockaddr *addr,
     // set nonblocking and connect
     socket_set_nonblocking(socket, 1);
     status = connect(socket, addr, addrlen);
+#ifdef _WIN32
+    if (status < 0 && socket_errno() != WSAEWOULDBLOCK)
+#else
     if (status < 0 && socket_errno() != EINPROGRESS)
+#endif
         return status;
 
     // block with select using timeout
