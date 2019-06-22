@@ -20,42 +20,13 @@
 #endif
 
 /* print addrinfo lists for debugging */
-//#define POST_ADDRINFO
+//#define PRINT_ADDRINFO
 
 #define INBUFSIZE 4096
 
 /* ----------------------------- helpers ------------------------- */
 
 void socketreceiver_free(t_socketreceiver *x);
-
-#ifdef POST_ADDRINFO
-// post addrinfo linked list for debugging
-static void addrinfo_post_list(struct addrinfo **ailist)
-{
-    const struct addrinfo *ai;
-    char addrstr[INET6_ADDRSTRLEN];
-    for(ai = (*ailist); ai != NULL; ai = ai->ai_next)
-    {
-        void *addr;
-        char *ipver;
-        if (ai->ai_family == AF_INET6)
-        {
-            struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)ai->ai_addr;
-            addr = &(sa6->sin6_addr);
-            ipver = "IPv6";
-        }
-        else if (ai->ai_family == AF_INET)
-        {
-            struct sockaddr_in *sa4 = (struct sockaddr_in *)ai->ai_addr;
-            addr = &(sa4->sin_addr);
-            ipver = "IPv4";
-        }
-        else continue;
-        INET_NTOP(ai->ai_family, addr, addrstr, INET6_ADDRSTRLEN);
-        post("%s %s", ipver, addrstr);
-    }
-}
-#endif
 
 static void outlet_sockaddr(t_outlet *o, const struct sockaddr *sa)
 {
@@ -296,12 +267,12 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             gai_strerror(status), status);
         return;
     }
-#ifdef POST_ADDRINFO
-    addrinfo_post_list(&ailist);
+#ifdef PRINT_ADDRINFO
+    addrinfo_print_list(&ailist);
 #endif
 
     /* try each addr until we find one that works */
-    for(ai = ailist; ai != NULL; ai = ai->ai_next) {
+    for (ai = ailist; ai != NULL; ai = ai->ai_next) {
 
         /* create a socket */
         sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
@@ -356,7 +327,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                 return;
             }
         }
-        else if(hostname && multicast)
+        else if (hostname && multicast)
             post("connecting to port %d, multicast %s", portno, hostname);
         else
             post("connecting to port %d", portno);
@@ -647,12 +618,12 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
             gai_strerror(status), status);
         return;
     }
-#ifdef POST_ADDRINFO
-    addrinfo_post_list(&ailist);
+#ifdef PRINT_ADDRINFO
+    addrinfo_print_list(&ailist);
 #endif
 
     /* try each addr until we find one that works */
-    for(ai = ailist; ai != NULL; ai = ai->ai_next) {
+    for (ai = ailist; ai != NULL; ai = ai->ai_next) {
         x->x_ns.x_sockfd =
             socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
         if (x->x_ns.x_sockfd < 0)

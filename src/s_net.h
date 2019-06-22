@@ -30,7 +30,7 @@ typedef int socklen_t;
 /// returns 0 on success or < 0 on error
 ///
 /// the ailist must be freed after usage using freeaddrinfo(),
-/// status errno can be printed using gai_strerr(),
+/// status errno can be printed using gai_strerr()
 ///
 /// basic usage example:
 ///
@@ -47,7 +47,7 @@ typedef int socklen_t;
 ///     }
 ///
 ///     /* try each addr until we find one that works */
-///     for(ai = ailist; ai != NULL; ai = ai->ai_next)
+///     for (ai = ailist; ai != NULL; ai = ai->ai_next)
 ///     {
 ///         sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
 ///         if (sockfd < 0) continue; /* go to the next addr */
@@ -71,6 +71,9 @@ typedef int socklen_t;
 ///
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                       int port, int protocol);
+
+/// print addrinfo linked list sockaddrs: IP version, hostname, port
+void addrinfo_print_list(struct addrinfo **ailist);
 
 /// read address/hostname string from a sockaddr,
 /// fills addrstr and returns pointer on success or NULL on failure

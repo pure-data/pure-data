@@ -68,6 +68,32 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
     return getaddrinfo(hostname, portstr, &hints, ailist);
 }
 
+void addrinfo_print_list(struct addrinfo **ailist)
+{
+    const struct addrinfo *ai;
+    char addrstr[INET6_ADDRSTRLEN];
+    for (ai = (*ailist); ai != NULL; ai = ai->ai_next)
+    {
+        void *addr;
+        char *ipver;
+        if (ai->ai_family == AF_INET6)
+        {
+            struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)ai->ai_addr;
+            addr = &(sa6->sin6_addr);
+            ipver = "IPv6";
+        }
+        else if (ai->ai_family == AF_INET)
+        {
+            struct sockaddr_in *sa4 = (struct sockaddr_in *)ai->ai_addr;
+            addr = &(sa4->sin_addr);
+            ipver = "IPv4";
+        }
+        else continue;
+        INET_NTOP(ai->ai_family, addr, addrstr, INET6_ADDRSTRLEN);
+        printf("%s %s\n", ipver, addrstr);
+    }
+}
+
 const char* sockaddr_get_addrstr(const struct sockaddr *sa, char *addrstr,
     int addrstrlen)
 {
@@ -109,7 +135,7 @@ int sockaddr_is_multicast(const struct sockaddr *sa)
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
         return (sa6->sin6_addr.s6_addr[0] == 0xFF);
     }
-    else if(sa->sa_family == AF_INET)
+    else if (sa->sa_family == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
         return ((ntohl(sa4->sin_addr.s_addr) & 0xF0000000) == 0xE0000000);
