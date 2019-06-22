@@ -85,6 +85,9 @@ int sockaddr_is_multicast(const struct sockaddr *sa);
 
 /* socket */
 
+/// cross-platform initialization routine, returns -1 on failure
+int socket_init(void);
+
 /// connect a socket to an address with a settable timeout in seconds
 /// returns -1 on error. use socket_errno() to get the actual error code.
 int socket_connect(int socket, const struct sockaddr *addr,
@@ -108,7 +111,7 @@ int socket_join_multicast_group(int socket, struct sockaddr *sa);
 
 /// cross-platform socket errno() which ignores WSAECONNRESET and catches
 /// WSAESOCKTNOSUPPORT on Windows
-int socket_errno();
+int socket_errno(void);
 
 /// get an error string from errno
 void socket_strerror(int err, char *buf, int size);

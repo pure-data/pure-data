@@ -136,6 +136,22 @@ int sockaddr_is_multicast(const struct sockaddr *sa)
     return 0;
 }
 
+int socket_init(void)
+{
+#ifdef _WIN32
+    static int initialized = 0;
+    if (!initialized)
+    {
+        short version = MAKEWORD(2, 0);
+        WSADATA nobby;
+        if (WSAStartup(version, &nobby))
+            return -1;
+        initialized = 1;
+    }
+#endif
+    return 0;
+}
+
 int socket_connect(int socket, const struct sockaddr *addr,
                    socklen_t addrlen, float timeout)
 {
