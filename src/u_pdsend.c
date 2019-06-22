@@ -61,7 +61,7 @@ int main(int argc, char **argv)
         if (sockfd < 0)
             continue;
         /* for stream (TCP) sockets, specify "nodelay" */
-        if (ai->ai_protocol == SOCK_STREAM)
+        if (protocol == SOCK_STREAM)
         {
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 fprintf(stderr, "setsockopt (TCP_NODELAY) failed\n");
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 fprintf(stderr, "setsockopt (SO_BROADCAST) failed\n");
         }
-        if (ai->ai_protocol == SOCK_STREAM)
+        if (protocol == SOCK_STREAM)
         {
             status = socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen,
                                     timeout);

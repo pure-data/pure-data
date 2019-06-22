@@ -270,7 +270,6 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(&ailist);
 #endif
-
     /* try each addr until we find one that works */
     for (ai = ailist; ai != NULL; ai = ai->ai_next)
     {
@@ -607,7 +606,7 @@ static void netreceive_closeall(t_netreceive *x)
 
 static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
 {
-    int portno = fportno, status;
+    int portno = fportno, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server = {0};
     const char *hostname = NULL;
@@ -617,7 +616,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         return;
     if (x->x_hostname)
         hostname = x->x_hostname->s_name;
-    status = addrinfo_get_list(&ailist, hostname, portno, x->x_ns.x_protocol);
+    status = addrinfo_get_list(&ailist, hostname, portno, protocol);
     if (status != 0)
     {
         pd_error(x, "netreceive: bad host or port? %s (%d)",
@@ -627,10 +626,10 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(&ailist);
 #endif
-
     /* try each addr until we find one that works */
     for (ai = ailist; ai != NULL; ai = ai->ai_next)
     {
+        /* create a socket */
         x->x_ns.x_sockfd =
             socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
         if (x->x_ns.x_sockfd < 0)
@@ -650,14 +649,14 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         if (socket_set_boolopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_RCVBUF, 0) < 0)
             post("netreceive: setsockopt (SO_RCVBUF) failed");
     #endif
-        if (ai->ai_protocol == SOCK_STREAM)
+        if (protocol == SOCK_STREAM)
         {
             /* stream (TCP) sockets are set NODELAY */
             if (socket_set_boolopt(x->x_ns.x_sockfd,
                 IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 post("netreceive: setsockopt (TCP_NODELAY) failed");
         }
-        else if (ai->ai_protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
+        else if (protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
         {
             /* enable IPv4 UDP broadcasting */
             if (socket_set_boolopt(x->x_ns.x_sockfd,
@@ -690,7 +689,7 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
         return;
     }
 
-    if (x->x_ns.x_protocol == SOCK_DGRAM) /* datagram protocol */
+    if (protocol == SOCK_DGRAM) /* datagram protocol */
     {
         /* join multicast group */
         if (sockaddr_is_multicast((struct sockaddr *)&server))
