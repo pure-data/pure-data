@@ -41,7 +41,7 @@ static void sockerror(char *s);
 
 int main(int argc, char **argv)
 {
-    int status, portno, nretry = 10, multicast = 0;
+    int status, portno;
     char *hostname = NULL;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;

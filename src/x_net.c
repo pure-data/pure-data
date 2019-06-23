@@ -352,7 +352,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     freeaddrinfo(ailist);
 
     /* confirm that socket & bind worked */
-    if (sockfd == -1)
+    if (sockfd < 0)
     {
         int err = socket_errno();
         char buf[MAXPDSTRING];
