@@ -1117,17 +1117,19 @@ static int sys_do_startgui(const char *libdir)
         {
 #ifdef _WIN32
             int err = WSAGetLastError();
+            if ((ntry++ > maxtry) || (err != WSAEADDRINUSE))
 #else
             int err = errno;
-#endif
             if ((ntry++ > maxtry) || (err != EADDRINUSE))
+#endif
             {
                 perror("bind");
                 fprintf(stderr,
                     "Pd was unable to find a port number to bind to\n");
                 sys_closesocket(xsock);
                 return (1);
-            } else if (ntry > maxtry)
+            }
+            else if (ntry > maxtry)
             {
                     /* last try: let the system pick a random port for us */
                 portno = 0;
