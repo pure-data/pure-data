@@ -308,8 +308,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             {
                 pd_error(x, "netsend: could not set src port: %s (%d)",
                     gai_strerror(status), status);
-                freeaddrinfo(ailist);
-                return;
+                freeaddrinfo(sailist);
+                goto connect_fail;
             }
             for (sai = sailist; sai != NULL; sai = sai->ai_next)
             {
@@ -322,9 +322,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             if (!bound)
             {
                 sys_sockerror("setting source port");
-                sys_closesocket(sockfd);
-                freeaddrinfo(ailist);
-                return;
+                goto connect_fail;
             }
         }
         else if (hostname && multicast)
@@ -376,6 +374,11 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         }
     }
     outlet_float(x->x_obj.ob_outlet, 1);
+    return;
+connect_fail:
+    freeaddrinfo(ailist);
+    if (sockfd > 0)
+        sys_closesocket(sockfd);
 }
 
 static void netsend_disconnect(t_netsend *x)
