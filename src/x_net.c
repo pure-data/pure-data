@@ -69,7 +69,6 @@ typedef struct _netreceive
     int *x_connections;
     int x_old;
     t_socketreceiver **x_receivers;
-    t_symbol *x_hostname; /* allowed or multicast hostname, NULL if not set */
 } t_netreceive;
 
 static void netsend_disconnect(t_netsend *x);
@@ -604,18 +603,35 @@ static void netreceive_closeall(t_netreceive *x)
         outlet_float(x->x_ns.x_connectout, x->x_nconnections);
 }
 
-static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
+static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int portno = fportno, status, protocol = x->x_ns.x_protocol;
+    int portno = 0, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
-    struct sockaddr_storage server = {0};
-    const char *hostname = NULL;
+    struct sockaddr_storage server;
+    const char *hostname = NULL; /* allowed or multicast hostname (UDP only) */
 
     netreceive_closeall(x);
+
+    if (argc && argv->a_type == A_FLOAT)
+        portno = argv->a_w.w_float, argc--, argv++;
+    if (argc && argv->a_type == A_SYMBOL)
+    {
+        if (protocol == SOCK_DGRAM)
+            hostname = argv->a_w.w_symbol->s_name;
+        else
+        {
+            pd_error(x, "netreceive: hostname argument ignored:");
+            postatom(argc, argv); endpost();
+        }
+        argc--, argv++;
+    }
+    if (argc)
+    {
+        pd_error(x, "netreceive: extra arguments ignored:");
+        postatom(argc, argv); endpost();
+    }
     if (portno <= 0)
         return;
-    if (x->x_hostname)
-        hostname = x->x_hostname->s_name;
     status = addrinfo_get_list(&ailist, hostname, portno, protocol);
     if (status != 0)
     {
@@ -754,23 +770,21 @@ static void netreceive_send(t_netreceive *x,
 static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_netreceive *x = (t_netreceive *)pd_new(netreceive_class);
-    int portno = 0;
-    unsigned int from = 0;
+    int from = 0;
     x->x_ns.x_protocol = SOCK_STREAM;
     x->x_old = 0;
     x->x_ns.x_bin = 0;
     x->x_nconnections = 0;
     x->x_connections = (int *)t_getbytes(0);
     x->x_receivers = (t_socketreceiver **)t_getbytes(0);
-    x->x_hostname = NULL;
     x->x_ns.x_sockfd = -1;
     if (argc && argv->a_type == A_FLOAT)
     {
-        portno = atom_getfloatarg(0, argc, argv);
+        /* port argument is later passed to netreceive_listen */
         x->x_ns.x_protocol = (atom_getfloatarg(1, argc, argv) != 0 ?
             SOCK_DGRAM : SOCK_STREAM);
         x->x_old = (!strcmp(atom_getsymbolarg(2, argc, argv)->s_name, "old"));
-        argc = 0;
+        argc = 1; /* don't pass other arguments */
     }
     else
     {
@@ -791,24 +805,6 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
             argc--; argv++;
         }
     }
-    if (argc && argv->a_type == A_FLOAT)
-        portno = argv->a_w.w_float, argc--, argv++;
-    if (argc && argv->a_type == A_SYMBOL)
-    {
-        if (x->x_ns.x_protocol == SOCK_DGRAM)
-            x->x_hostname = atom_getsymbol(argv);
-        else
-        {
-            pd_error(x, "netreceive: hostname argument ignored:");
-            postatom(argc, argv); endpost();
-        }
-        argc--, argv++;
-    }
-    if (argc)
-    {
-        pd_error(x, "netreceive: extra arguments ignored:");
-        postatom(argc, argv); endpost();
-    }
     if (x->x_old)
     {
         /* old style, nonsecure version */
@@ -824,8 +820,7 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     else
         x->x_ns.x_fromout = NULL;
         /* create a socket */
-    if (portno > 0)
-        netreceive_listen(x, portno);
+    netreceive_listen(x, 0, argc, argv); /* pass arguments */
 
     return (x);
 }
@@ -833,7 +828,6 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
 static void netreceive_free(t_netreceive *x)
 {
     netreceive_closeall(x);
-    if (x->x_hostname) free(x->x_hostname);
 }
 
 static void netreceive_setup(void)
@@ -842,7 +836,7 @@ static void netreceive_setup(void)
         (t_newmethod)netreceive_new, (t_method)netreceive_free,
         sizeof(t_netreceive), 0, A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_listen,
-        gensym("listen"), A_FLOAT, 0);
+        gensym("listen"), A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
 }
