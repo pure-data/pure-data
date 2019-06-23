@@ -152,37 +152,62 @@ int socket_init(void)
     return 0;
 }
 
+// kudos to https://stackoverflow.com/a/46062474/6063908
 int socket_connect(int socket, const struct sockaddr *addr,
                    socklen_t addrlen, float timeout)
 {
-    int status;
-    struct timeval timeoutval;
-    fd_set writefds;
-
     // set nonblocking and connect
     socket_set_nonblocking(socket, 1);
-    status = connect(socket, addr, addrlen);
-#ifdef _WIN32
-    if (status < 0 && socket_errno() != WSAEWOULDBLOCK)
-#else
-    if (status < 0 && socket_errno() != EINPROGRESS)
-#endif
-        return -1;
 
-    // block with select using timeout
-    if (timeout < 0) timeout = 0;
-    FD_ZERO(&writefds);
-    FD_SET(socket, &writefds); // socket is connected when writable
-    timeoutval.tv_sec = (int)timeout;
-    timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
-    if (select(socket+1, NULL, &writefds, NULL, &timeoutval) < 0)
+    if (connect(socket, addr, addrlen) < 0)
     {
-        fprintf(stderr, "socket_connect: select failed");
-        return -1;
-    }
-    if (!FD_ISSET(socket, &writefds)) // timed out
-        return -1;
+        int status;
+        struct timeval timeoutval;
+        fd_set writefds, errfds;
+    #ifdef _WIN32
+        if (socket_errno() != WSAEWOULDBLOCK)
+    #else
+        if (socket_errno() != EINPROGRESS)
+    #endif
+            return -1; // break on "real" error
 
+        // block with select using timeout
+        if (timeout < 0) timeout = 0;
+        timeoutval.tv_sec = (int)timeout;
+        timeoutval.tv_usec = (timeout - timeoutval.tv_sec) * 1000000;
+        FD_ZERO(&writefds);
+        FD_SET(socket, &writefds); // socket is connected when writable
+        FD_ZERO(&errfds);
+        FD_SET(socket, &errfds); // catch exceptions
+
+        status = select(socket+1, NULL, &writefds, &errfds, &timeoutval);
+        if (status < 0) // select failed
+        {
+            fprintf(stderr, "socket_connect: select failed");
+            return -1;
+        }
+        else if (status == 0) // connection timed out
+        {
+        #ifdef _WIN32
+            WSASetLastError(WSAETIMEDOUT);
+        #else
+            errno = ETIMEDOUT;
+        #endif
+            return -1;
+        }
+
+        if (FD_ISSET(socket, &errfds)) // connection failed
+        {
+            int err; socklen_t len = sizeof(err);
+            getsockopt(socket, SOL_SOCKET, SO_ERROR, (void *)&err, &len);
+        #ifdef _WIN32
+            WSASetLastError(err);
+        #else
+            errno = err;
+        #endif
+            return -1;
+        }
+    }
     // done, set blocking again
     socket_set_nonblocking(socket, 0);
     return 0;
