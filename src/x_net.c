@@ -332,13 +332,15 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 
         if (x->x_protocol == SOCK_STREAM)
         {
-            status = socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen,
-                                    x->x_timeout);
-            if (status < 0)
+            if (socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen,
+                                    x->x_timeout) < 0)
             {
                 sys_sockerror("connecting stream socket");
                 sys_closesocket(sockfd);
                 freeaddrinfo(ailist);
+                /* output 0 on connection failure so the user
+                   can easily retry in a loop */
+                outlet_float(x->x_obj.ob_outlet, 0);
                 return;
             }
         }
