@@ -261,12 +261,11 @@ int socket_join_multicast_group(int socket, struct sockaddr *sa)
     return -1;
 }
 
-int socket_errno()
+int socket_errno(void)
 {
 #ifdef _WIN32
     int err = WSAGetLastError();
-    if (err == 10054) return 0; // WSAECONNRESET
-    else if (err == 10044)      // WSAESOCKTNOSUPPORT
+    if (err == 10044)      // WSAESOCKTNOSUPPORT
     {
         fprintf(stderr,
             "Warning: you might not have TCP/IP \"networking\" turned on\n");
@@ -274,6 +273,21 @@ int socket_errno()
     return err;
 #else
     return errno;
+#endif
+}
+
+int socket_errno_udp(void)
+{
+#ifdef _WIN32
+    int err = socket_errno();
+    // ignore WSAECONNRESET to prevent UDP sockets
+    // from closing in case of a missing receiver
+    if (err == 10054)
+        return 0;
+    else
+        return err;
+#else
+    return socket_errno();
 #endif
 }
 

@@ -510,8 +510,8 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         if (ret < 0)
         {
                 /* only close the socket if there really was an error.
-                (sys_sockerrno() ignores some error codes) */
-            if (socket_errno())
+                (socket_errno_udp() ignores some error codes) */
+            if (socket_errno_udp())
             {
                 sys_sockerror("recv (udp)");
                 if (x->sr_notifier)
