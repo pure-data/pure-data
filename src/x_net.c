@@ -140,7 +140,7 @@ static void netsend_readbin(t_netsend *x, int fd)
             {
                 /* only close a UDP socket if there really was an error.
                 (socket_errno_udp() ignores some error codes) */
-                if (x->x_protocol == SOCK_DGRAM && socket_errno_udp())
+                if (x->x_protocol == SOCK_DGRAM && !socket_errno_udp())
                     return;
                 sys_sockerror("recv (bin)");
             }
