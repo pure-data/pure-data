@@ -54,7 +54,6 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
     hints.ai_protocol = (protocol == SOCK_STREAM ? IPPROTO_TCP : IPPROTO_UDP);
     hints.ai_flags = AI_ALL |        // both IPv4 and IPv6 addrs
                      AI_V4MAPPED |   // fallback to IPv4-mapped IPv6 addrs
-                     AI_ADDRCONFIG | // addrs families conform to system config
                      AI_PASSIVE;     // listen to any addr if hostname is NULL
     portstr[0] = '\0';
     sprintf(portstr, "%d", port);
