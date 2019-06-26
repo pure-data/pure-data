@@ -69,7 +69,7 @@ int main(int argc, char **argv)
         sockerror("socket_init()");
         exit(EXIT_FAILURE);
     }
-    status = addrinfo_get_list(&ailist, hostname, portno, protocol);
+    status = addrinfo_get_list(&ailist, hostname, portno, protocol, AF_INET);
     if (status != 0)
     {
         fprintf(stderr, "bad host or port? %s (%d)\n",
