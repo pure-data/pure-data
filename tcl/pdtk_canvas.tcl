@@ -285,6 +285,16 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
     tk_popup .popup $xpopup $ypopup 0
 }
 
+if {[tk windowingsystem] eq "aqua" } {
+    # I don't know how to move the mouse on OSX, so skip it
+    proc ::pdtk_canvas::setmouse {tkcanvas x y} { }
+} else {
+    proc ::pdtk_canvas::setmouse {tkcanvas x y} {
+        # set the mouse to the given position
+        # (same coordinate system as reported by pdtk_canvas_motion)
+        event generate $tkcanvas <Motion> -warp 1 -x $x -y $y
+    }
+}
 
 #------------------------------------------------------------------------------#
 # procs for when file loading starts/finishes

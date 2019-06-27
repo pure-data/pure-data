@@ -4190,10 +4190,8 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
             closest = ((xpos-snkX1) * (nios-1) + width/2)/width;
             closest = ((closest + offset) % nios + nios) % nios;
             hotspot = snkX1 + (width - IOWIDTH) * closest / (nios-1.0) + IOWIDTH*0.5;
-            xpos = hotspot;
-                /* moving the mouse doesn't seem to work on macOS... */
-            sys_vgui("event generate .x%lx.c <Motion> -warp 1 -x %d -y %d\n",
-                glist_getcanvas(x), xpos, ypos);
+            sys_vgui("::pdtk_canvas::setmouse .x%lx.c %d %d\n",
+                glist_getcanvas(x), hotspot, ypos);
         } else {
                 /* cycle outlets */
             int width = srcX2 - srcX1, hotspot, closest;
