@@ -38,7 +38,7 @@ typedef int socklen_t;
 ///     struct addrinfo *ailist = NULL, *ai;
 ///     struct sockaddr_storage ss = {0}; /* IPv4 or IPv6 addr */
 ///
-///     /* generate addrino list */
+///     /* generate addrinfo list */
 ///     status = addrinfo_get_list(&ailist, "127.0.0.1", 5000, SOCK_DGRAM);
 ///     if (status != 0)
 ///     {
@@ -72,7 +72,7 @@ typedef int socklen_t;
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                       int port, int protocol);
 
-/// print addrinfo linked list sockaddrs: IP version, hostname, port
+/// print addrinfo linked list sockaddrs: IP version hostname
 void addrinfo_print_list(struct addrinfo **ailist);
 
 /// read address/hostname string from a sockaddr,
