@@ -72,7 +72,7 @@ typedef int socklen_t;
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                       int port, int protocol);
 
-/// print addrinfo linked list sockaddrs: IP version hostname
+/// print addrinfo linked list sockaddrs: IPver hostname port
 void addrinfo_print_list(struct addrinfo **ailist);
 
 /// read address/hostname string from a sockaddr,
@@ -82,6 +82,8 @@ const char* sockaddr_get_addrstr(const struct sockaddr *sa,
 
 /// returns port or 0 on failure
 unsigned int sockaddr_get_port(const struct sockaddr *sa);
+
+void sockaddr_set_port(const struct sockaddr *sa, unsigned int port);
 
 /// returns 1 if the address is a IPv4 or IPv6 multicast address, otherwise 0
 int sockaddr_is_multicast(const struct sockaddr *sa);

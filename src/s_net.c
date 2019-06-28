@@ -74,32 +74,36 @@ void addrinfo_print_list(struct addrinfo **ailist)
     char addrstr[INET6_ADDRSTRLEN];
     for (ai = (*ailist); ai != NULL; ai = ai->ai_next)
     {
-        void *addr;
+        
         char *ipver;
+        void *addr;
+        unsigned int port = 0;
         if (ai->ai_family == AF_INET6)
         {
             struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)ai->ai_addr;
             addr = &(sa6->sin6_addr);
             ipver = "IPv6";
+            port = ntohs(sa6->sin6_port);
         }
         else if (ai->ai_family == AF_INET)
         {
             struct sockaddr_in *sa4 = (struct sockaddr_in *)ai->ai_addr;
             addr = &(sa4->sin_addr);
             ipver = "IPv4";
+            port = ntohs(sa4->sin_port);
         }
         else continue;
         INET_NTOP(ai->ai_family, addr, addrstr, INET6_ADDRSTRLEN);
-        printf("%s %s\n", ipver, addrstr);
+        printf("%s %s %d\n", ipver, addrstr, port);
     }
 }
 
 const char* sockaddr_get_addrstr(const struct sockaddr *sa, char *addrstr,
     int addrstrlen)
 {
-	const void *addr;
-	addrstr[0] = '\0';
-	if (sa->sa_family == AF_INET6)
+    const void *addr;
+    addrstr[0] = '\0';
+    if (sa->sa_family == AF_INET6)
     {
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
         addr = (const void *)&sa6->sin6_addr.s6_addr;
@@ -110,12 +114,12 @@ const char* sockaddr_get_addrstr(const struct sockaddr *sa, char *addrstr,
         addr = (const void *)&sa4->sin_addr.s_addr;
     }
     else return NULL;
-	return INET_NTOP(sa->sa_family, addr, addrstr, addrstrlen);
+    return INET_NTOP(sa->sa_family, addr, addrstr, addrstrlen);
 }
 
 unsigned int sockaddr_get_port(const struct sockaddr *sa)
 {
-	if (sa->sa_family == AF_INET6)
+    if (sa->sa_family == AF_INET6)
     {
         struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
         return ntohs(sa6->sin6_port);
@@ -126,6 +130,19 @@ unsigned int sockaddr_get_port(const struct sockaddr *sa)
         return ntohs(sa4->sin_port);
     }
     else return 0;
+}
+
+void sockaddr_set_port(const struct sockaddr *sa, unsigned int port) {
+    if (sa->sa_family == AF_INET6)
+    {
+        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
+        sa6->sin6_port = htons(port);
+    }
+    else if (sa->sa_family == AF_INET)
+    {
+        struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
+        sa4->sin_port = htons(port);
+    }
 }
 
 int sockaddr_is_multicast(const struct sockaddr *sa)
