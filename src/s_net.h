@@ -69,6 +69,14 @@ typedef int socklen_t;
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                       int port, int protocol);
 
+/// sort an address list by family
+typedef enum
+{
+    ADDR_ORDER_IPv4,  /// IPv4 addresses first
+    ADDR_ORDER_IPv6   /// IPv6 addresses first
+} addrinfo_order;
+void addrinfo_sort_list(struct addrinfo **ailist, addrinfo_order order);
+
 /// print addrinfo linked list sockaddrs: IP version, hostname, port
 void addrinfo_print_list(struct addrinfo **ailist);
 
