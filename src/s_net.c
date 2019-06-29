@@ -45,11 +45,11 @@ const char* INET_NTOP(int af, const void *src, char *dst, socklen_t size) {
 #endif
 
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
-                             int port, int protocol, int family) {
+                             int port, int protocol) {
     struct addrinfo hints;
     char portstr[10]; // largest port is 65535
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = family;
+    hints.ai_family = AF_UNSPEC; // IPv4 or IPv6
     hints.ai_socktype = protocol;
     hints.ai_protocol = (protocol == SOCK_STREAM ? IPPROTO_TCP : IPPROTO_UDP);
     hints.ai_flags = AI_ALL |        // both IPv4 and IPv6 addrs

@@ -54,7 +54,6 @@ typedef struct _netsend
     int x_sockfd;
     int x_protocol;
     int x_bin;
-    int x_ipv6; /* use IPv6 networking */
     t_socketreceiver *x_receiver;
     struct sockaddr_storage x_server;
     t_float x_timeout; /* TCP connect timeout in seconds */
@@ -83,7 +82,6 @@ static void *netsend_new(t_symbol *s, int argc, t_atom *argv)
     outlet_new(&x->x_obj, &s_float);
     x->x_protocol = SOCK_STREAM;
     x->x_bin = 0;
-    x->x_ipv6 = 0; /* IPv6 networking disabled by default */
     if (argc && argv->a_type == A_FLOAT)
     {
         x->x_protocol = (argv->a_w.w_float != 0 ? SOCK_DGRAM : SOCK_STREAM);
@@ -241,8 +239,6 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     int portno, sportno, sockfd, multicast = 0, status;
     struct addrinfo *ailist = NULL, *ai;
     const char *hostname = NULL;
-    /* if x_ipv6 is true, allow both IPv6 and IPv4 addresses */
-    int family = x->x_ipv6 ? AF_UNSPEC : AF_INET;
 
     /* check argument types */
     if ((argc < 2) ||
@@ -263,7 +259,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
 
     /* get addrinfo list using hostname & port */
-    status = addrinfo_get_list(&ailist, hostname, portno, x->x_protocol, family);
+    status = addrinfo_get_list(&ailist, hostname, portno, x->x_protocol);
     if (status != 0)
     {
         pd_error(x, "netsend: bad host or port? %s (%d)",
@@ -314,8 +310,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
             post("connecting to dest port %d, src port %d", portno, sportno);
-            status = addrinfo_get_list(&sailist,
-                                       NULL, sportno, x->x_protocol, family);
+            status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
             if (status != 0)
             {
                 pd_error(x, "netsend: could not set src port: %s (%d)",
@@ -500,11 +495,6 @@ static void netsend_timeout(t_netsend *x, t_float timeout)
         x->x_timeout = timeout * 0.001;
 }
 
-static void netsend_ipv6(t_netsend *x, t_floatarg f)
-{
-    x->x_ipv6 = (f != 0);
-}
-
 static void netsend_free(t_netsend *x)
 {
     netsend_disconnect(x);
@@ -522,9 +512,7 @@ static void netsend_setup(void)
     class_addmethod(netsend_class, (t_method)netsend_send,
         gensym("send"), A_GIMME, 0);
     class_addmethod(netsend_class, (t_method)netsend_timeout,
-        gensym("timeout"), A_FLOAT, 0);
-    class_addmethod(netsend_class, (t_method)netsend_ipv6,
-        gensym("ipv6"), A_FLOAT, 0);
+        gensym("timeout"), A_DEFFLOAT, 0);
 }
 
 /* ----------------------------- netreceive ------------------------- */
@@ -632,8 +620,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     int portno = 0, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
-    const char *hostname = NULL; /* allowed or multicast hostname */
-    int family = x->x_ns.x_ipv6 ? AF_UNSPEC : AF_INET;
+    const char *hostname = NULL; /* allowed or multicast hostname (UDP only) */
 
     netreceive_closeall(x);
 
@@ -657,7 +644,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     }
     if (portno <= 0)
         return;
-    status = addrinfo_get_list(&ailist, hostname, portno, protocol, family);
+    status = addrinfo_get_list(&ailist, hostname, portno, protocol);
     if (status != 0)
     {
         pd_error(x, "netreceive: bad host or port? %s (%d)",
@@ -805,7 +792,6 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     x->x_ns.x_protocol = SOCK_STREAM;
     x->x_old = 0;
     x->x_ns.x_bin = 0;
-    x->x_ns.x_ipv6 = 0; /* IPv6 networking disabled by default */
     x->x_nconnections = 0;
     x->x_connections = (int *)t_getbytes(0);
     x->x_receivers = (t_socketreceiver **)t_getbytes(0);
@@ -857,11 +843,6 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     return (x);
 }
 
-static void netreceive_ipv6(t_netreceive *x, t_floatarg f)
-{
-    x->x_ns.x_ipv6 = (f != 0);
-}
-
 static void netreceive_free(t_netreceive *x)
 {
     netreceive_closeall(x);
@@ -876,8 +857,6 @@ static void netreceive_setup(void)
         gensym("listen"), A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
-    class_addmethod(netreceive_class, (t_method)netreceive_ipv6,
-        gensym("ipv6"), A_FLOAT, 0);
 }
 
 void x_net_setup(void)
