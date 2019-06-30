@@ -78,7 +78,7 @@ typedef enum
 void addrinfo_sort_list(struct addrinfo **ailist, addrinfo_order order);
 
 /// print addrinfo linked list sockaddrs: IP version, hostname, port
-void addrinfo_print_list(struct addrinfo **ailist);
+void addrinfo_print_list(const struct addrinfo *ailist);
 
 /// read address/hostname string from a sockaddr,
 /// fills addrstr and returns pointer on success or NULL on failure

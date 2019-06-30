@@ -268,7 +268,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
     addrinfo_sort_list(&ailist, ADDR_ORDER_IPv4); /* IPv4 first! */
 #ifdef PRINT_ADDRINFO
-    addrinfo_print_list(&ailist);
+    addrinfo_print_list(ailist);
 #endif
     /* try each addr until we find one that works */
     for (ai = ailist; ai != NULL; ai = ai->ai_next)
@@ -669,7 +669,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     }
     addrinfo_sort_list(&ailist, ADDR_ORDER_IPv6); /* IPv6 addresses first! */
 #ifdef PRINT_ADDRINFO
-    addrinfo_print_list(&ailist);
+    addrinfo_print_list(ailist);
 #endif
     /* try each addr until we find one that works */
     for (ai = ailist; ai != NULL; ai = ai->ai_next)

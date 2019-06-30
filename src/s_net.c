@@ -122,11 +122,11 @@ void addrinfo_sort_list(struct addrinfo **ailist, addrinfo_order order)
     *ailist = result;
 }
 
-void addrinfo_print_list(struct addrinfo **ailist)
+void addrinfo_print_list(const struct addrinfo *ailist)
 {
     const struct addrinfo *ai;
     char addrstr[INET6_ADDRSTRLEN];
-    for (ai = (*ailist); ai != NULL; ai = ai->ai_next)
+    for (ai = ailist; ai != NULL; ai = ai->ai_next)
     {
         void *addr;
         char *ipver;
