@@ -60,65 +60,50 @@ int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
     return getaddrinfo(hostname, portstr, &hints, ailist);
 }
 
-static void ailist_append(struct addrinfo **ailist, struct addrinfo *elem)
+int addrinfo_ipv4_first(const struct addrinfo* ai1, const struct addrinfo* ai2)
 {
-    if (*ailist)
-    {
-        struct addrinfo *ap = *ailist;
-        while (ap->ai_next)
-            ap = ap->ai_next;
-        ap->ai_next = elem;
-    }
-    else
-        (*ailist) = elem;
+    return (ai1->ai_family == AF_INET) ?
+        ((ai2->ai_family == AF_INET) ? 0 : -1) : 1;
 }
 
-static struct addrinfo * ailist_join(struct addrinfo *ailist1, struct addrinfo *ailist2)
-{
-    if (!ailist1)
-        return ailist2;
-    else
-    {
-        struct addrinfo *aip = ailist1;
-        while (aip->ai_next)
-            aip = aip->ai_next;
-        aip->ai_next = ailist2;
-        return ailist1;
-    }
+int addrinfo_ipv6_first(const struct addrinfo* ai1, const struct addrinfo* ai2){
+    return (ai1->ai_family == AF_INET6) ?
+        ((ai2->ai_family == AF_INET6) ? 0 : -1) : 1;
 }
 
-void addrinfo_sort_list(struct addrinfo **ailist, addrinfo_order order)
+void addrinfo_sort_list(struct addrinfo **ailist,
+    int (*compare)(const struct addrinfo*, const struct addrinfo*))
 {
-    struct addrinfo *result = NULL, *ipv4 = NULL, *ipv6 = NULL, *other = NULL, *ai;
-    for (ai = (*ailist); ai != NULL;)
+    struct addrinfo *result = NULL, *ai = (*ailist);
+    while (ai)
     {
         struct addrinfo *temp = ai;
         ai = ai->ai_next;
-        temp->ai_next = NULL;
-        switch (temp->ai_family)
+        if (result)
         {
-        case AF_INET:
-            ailist_append(&ipv4, temp);
-            break;
-        case AF_INET6:
-            ailist_append(&ipv6, temp);
-            break;
-        default:
-            ailist_append(&other, temp);
-            break;
+            struct addrinfo *ai2 = result, *last = NULL;
+            while (ai2 && (compare(temp, ai2) >= 0))
+            {
+                last = ai2;
+                ai2 = ai2->ai_next;
+            }
+            if (last)
+            {
+                last->ai_next = temp;
+                temp->ai_next = ai2;
+            }
+            else
+            {
+                result = temp;
+                temp->ai_next = ai2;
+            }
         }
-
+        else
+        {
+            result = temp;
+            temp->ai_next = NULL;
+        }
     }
-    if (order == ADDR_ORDER_IPv4)
-        result = ailist_join(ipv4, ipv6);
-    else if (order == ADDR_ORDER_IPv6)
-        result = ailist_join(ipv6, ipv4);
-    else
-    {
-        fprintf(stderr, "addrinfo_sort_list: unknown ordering");
-        return;
-    }
-    result = ailist_join(result, other);
     *ailist = result;
 }
 

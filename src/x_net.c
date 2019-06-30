@@ -266,7 +266,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             gai_strerror(status), status);
         return;
     }
-    addrinfo_sort_list(&ailist, ADDR_ORDER_IPv4); /* IPv4 first! */
+    addrinfo_sort_list(&ailist, addrinfo_ipv4_first); /* IPv4 first! */
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(ailist);
 #endif
@@ -322,7 +322,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                 freeaddrinfo(sailist);
                 goto connect_fail;
             }
-            addrinfo_sort_list(&sailist, ADDR_ORDER_IPv6); /* IPv6 first! */
+            addrinfo_sort_list(&sailist, addrinfo_ipv6_first); /* IPv6 first! */
             for (sai = sailist; sai != NULL; sai = sai->ai_next)
             {
                 /* if this is an IPv6 address, also listen to IPv4 adapters
@@ -667,7 +667,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             gai_strerror(status), status);
         return;
     }
-    addrinfo_sort_list(&ailist, ADDR_ORDER_IPv6); /* IPv6 addresses first! */
+    addrinfo_sort_list(&ailist, addrinfo_ipv6_first); /* IPv6 addresses first! */
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(ailist);
 #endif
