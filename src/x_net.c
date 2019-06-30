@@ -266,6 +266,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             gai_strerror(status), status);
         return;
     }
+    addrinfo_sort_list(&ailist, ADDR_ORDER_IPv4); /* IPv4 first! */
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(&ailist);
 #endif
@@ -291,7 +292,8 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 post("netsend: setsockopt (TCP_NODELAY) failed");
         }
-        else { /* datagram (UDP) broadcasting */
+        else /* datagram (UDP) broadcasting */
+        {
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 post("netsend: setsockopt (SO_BROADCAST) failed");
             multicast = sockaddr_is_multicast(ai->ai_addr);
@@ -301,7 +303,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         {
             if (socket_set_boolopt(x->x_sockfd,
                 IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
-                post("netreceive: setsockopt (IPV6_V6ONLY) failed");
+            {
+                /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+            }
         }
 
         /* bind optional src listening port */
@@ -318,8 +322,20 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
                 freeaddrinfo(sailist);
                 goto connect_fail;
             }
+            addrinfo_sort_list(&sailist, ADDR_ORDER_IPv6); /* IPv6 first! */
             for (sai = sailist; sai != NULL; sai = sai->ai_next)
             {
+                /* if this is an IPv6 address, also listen to IPv4 adapters
+                   (if not supported, fall back to IPv4) */
+                if (sai->ai_family == AF_INET6)
+                {
+                    if (socket_set_boolopt(x->x_sockfd,
+                        IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
+                    {
+                        /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+                        continue;
+                    }
+                }
                 if (bind(sockfd, sai->ai_addr, sai->ai_addrlen) < 0)
                     continue;
                 bound = 1;
@@ -651,6 +667,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             gai_strerror(status), status);
         return;
     }
+    addrinfo_sort_list(&ailist, ADDR_ORDER_IPv6); /* IPv6 addresses first! */
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(&ailist);
 #endif
@@ -691,12 +708,18 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
                 SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 post("netreceive: setsockopt (SO_BROADCAST) failed");
         }
-        /* if this is an IPv6 address, also listen to IPv4 adapters */
+        /* if this is an IPv6 address, also listen to IPv4 adapters
+           (if not supported, fall back to IPv4) */
         if (ai->ai_family == AF_INET6)
         {
             if (socket_set_boolopt(x->x_ns.x_sockfd,
                 IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
-                post("netreceive: setsockopt (IPV6_V6ONLY) failed");
+            {
+                /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+                sys_closesocket(x->x_ns.x_sockfd);
+                x->x_ns.x_sockfd = -1;
+                continue;
+            }
         }
         /* name the socket */
         if (bind(x->x_ns.x_sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
