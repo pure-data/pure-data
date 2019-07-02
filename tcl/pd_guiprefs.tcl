@@ -324,7 +324,11 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
             file mkdir $fullconfigdir
         }
     }]} {
-        ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created in $confdir.\n"
+        set absconfdir ${::pd_guiprefs::configdir}
+        catch { set absconfdir [file normalize ${::pd_guiprefs::configdir} ] }
+
+        ::pdwindow::error [format [_ "Couldn't create preferences \"%1\$s\" in %2\$s" ] $domain $absconfdir]
+        ::pdwindow::error "\n"
     }
     return $domain
 }
