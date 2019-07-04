@@ -138,7 +138,7 @@ static void *sigrsqrt_new(void)
 static t_int *sigrsqrt_perform(t_int *w)
 {
     t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
-    int n = *(int *)(w+3);
+    int n = (int)w[3];
     while (n--)
     {
         t_sample f = *in++;
@@ -197,7 +197,7 @@ static void *sigsqrt_new(void)
 t_int *sigsqrt_perform(t_int *w)    /* not static; also used in d_fft.c */
 {
     t_sample *in = (t_sample *)w[1], *out = (t_sample *)w[2];
-    int n = *(int *)(w+3);
+    int n = (int)w[3];
     while (n--)
     {
         t_sample f = *in++;
