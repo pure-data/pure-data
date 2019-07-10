@@ -6,6 +6,7 @@
 away before the panel does... */
 
 #include "m_pd.h"
+#include "g_canvas.h"
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_UNISTD_H
@@ -386,6 +387,88 @@ static void key_setup(void)
     class_sethelpsymbol(keyname_class, gensym("key"));
 }
 
+/* ------------------------ pdcontrol --------------------------------- */
+
+static t_class *pdcontrol_class;
+
+typedef struct _pdcontrol
+{
+    t_object x_obj;
+    t_canvas *x_canvas;
+    t_outlet *x_outlet;
+} t_pdcontrol;
+
+static void *pdcontrol_new( void)
+{
+    t_pdcontrol *x = (t_pdcontrol *)pd_new(pdcontrol_class);
+    x->x_canvas = canvas_getcurrent();
+    x->x_outlet = outlet_new(&x->x_obj, 0);
+    return (x);
+}
+
+    /* output containing directory of patch.  optional args:
+    1. a number, zero for this patch, one for the parent, etc.;
+    2. a symbol to concatenate onto the directory; */
+
+static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
+{
+    t_canvas *c = x->x_canvas;
+    int i;
+    for (i = 0; i < (int)f; i++)
+    {
+        while (!c->gl_env)  /* back up to containing canvas or abstraction */
+            c = c->gl_owner;
+        if (c->gl_owner)    /* back up one more into an owner if any */
+            c = c->gl_owner;
+    }
+    if (*s->s_name)
+    {
+        char buf[MAXPDSTRING];
+        snprintf(buf, MAXPDSTRING, "%s/%s",
+            canvas_getdir(x->x_canvas)->s_name, s->s_name);
+        buf[MAXPDSTRING-1] = 0;
+        outlet_symbol(x->x_outlet, gensym(buf));
+    }
+    else outlet_symbol(x->x_outlet, canvas_getdir(x->x_canvas));
+}
+
+static void pdcontrol_gui(t_pdcontrol *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_binbuf *b = binbuf_new();
+    char *buf;
+    int length;
+    binbuf_add(b, argc, argv);
+    binbuf_gettext(b, &buf, &length);
+    buf = t_resizebytes(buf, length, length+2);
+    buf[length] = '\n';
+    buf[length+1] = 0;
+    sys_gui(buf);
+    t_freebytes(buf, length+2);
+    binbuf_free(b);
+}
+
+static void pdcontrol_isvisible(t_pdcontrol *x)
+{
+    outlet_float(x->x_outlet, glist_isvisible(x->x_canvas));
+}
+
+static void pdcontrol_free(t_pdcontrol *x)
+{
+    pd_unbind(&x->x_obj.ob_pd, gensym("#pdcontrol"));
+}
+
+static void pdcontrol_setup(void)
+{
+    pdcontrol_class = class_new(gensym("pdcontrol"),
+        (t_newmethod)pdcontrol_new, 0, sizeof(t_pdcontrol), 0, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_dir,
+        gensym("dir"), A_DEFFLOAT, A_DEFSYMBOL, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_gui,
+        gensym("gui"), A_GIMME, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
+        gensym("isvisible"), 0);
+}
+
 /* -------------------------- setup routine ------------------------------ */
 
 void x_gui_setup(void)
@@ -394,4 +477,5 @@ void x_gui_setup(void)
     openpanel_setup();
     savepanel_setup();
     key_setup();
+    pdcontrol_setup();
 }
