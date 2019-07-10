@@ -1,4 +1,10 @@
 #!/bin/sh
+
+# this file is included for reference only.  It shows how it might be possible
+# to compile Pd in Microsift Visual Studio Version 9.0.  This is useful
+# as a test of the portability of Pd'sd code, although the resulting binaries
+# are never used.
+
 if [ ! -d ../drive_c/users/msp ]
   then echo ../drive_c/users/msp: no such directory; exit 1
   else echo -n
