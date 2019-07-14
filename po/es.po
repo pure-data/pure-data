@@ -835,6 +835,10 @@ msgstr "No se ha podido crear el directorio de documentos de Pd: %s\n"
 msgid "Couldn't create \"externals\" directory in: %s\n"
 msgstr "No se ha podido crear el directorio \"externals\" en: %s\n"
 
+#, fuzzy, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr "No se podían crear preferencias en '%1$s' en %2$s"
+
 msgid "About Pd"
 msgstr "Sobre Pd"
 
