@@ -2,20 +2,26 @@
 
 # this file is included for reference only.  It shows how it might be possible
 # to compile Pd in Microsift Visual Studio Version 9.0.  This is useful
-# as a test of the portability of Pd'sd code, although the resulting binaries
-# are never used.
+# as a test of the portability of Pd's code, although the resulting binaries
+# are never used.  Run this in .../pd directory
 
-if [ ! -d ../drive_c/users/msp ]
-  then echo ../drive_c/users/msp: no such directory; exit 1
+BUILDDIR=$HOME/bis/work/wine/drive_c/users/msp
+PDDIR=`pwd`
+
+if [ ! -d $BUILDDIR ]
+  then echo $BUILDDIR: no such directory; exit 1
   else echo -n
 fi
 
-cd ../drive_c/users/msp/
+git archive --prefix=pd/ HEAD | gzip > /tmp/pd-src.tgz
+
+cd $BUILDDIR
 pwd
 rm -rf pd
-unzip /tmp/pd.zip
+tar xzf $PDDIR/msw/pdprototype.tgz
+tar xzf /tmp/pd-src.tgz
 cd pd/src
-if make \
+if make -f makefile.msvc \
     MSCC="wine 'c:\Program Files\Microsoft Visual Studio 9.0\VC\bin\cl'" \
     MSLN="wine 'c:\Program Files\Microsoft Visual Studio 9.0\VC\bin\link'" \
     COPY=cp DELETE=rm \
@@ -33,4 +39,7 @@ do
         then echo -n ; else exit 1; fi
    cd ..
 done
+
+echo to run: wine $BUILDDIR/pd/bin/pd.exe
+
 exit 0
