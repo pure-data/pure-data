@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>slop-tilde</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h3 id="slop---slew-limiting-low-pass-filter"><a href="#topics-slop">slop~ - slew-limiting low-pass filter</a></h3>
+<p>Tasks such as envelope following, dynamics processing, and soft saturation often rely on low-pass filtering in which the cutoff frequency of the filter (which you can alternatively think of as its reaction speed) varies according to whether the input is rising, stable, or falling. For example, a VU meter design might call for an envelope follower whose output can rise quickly but then drops off more slowly. To make this we could use a low-pass filter to make a moving average of the instantaneous signal level, but the moving average should react faster on rising inputs than on falling ones.</p>
+<p>The simplest type of digital low-pass filter can be understood as a moving average:</p>
+<p><br /><span class="math display"><em>y</em>[<em>n</em>] = <em>y</em>[<em>n</em> − 1] + <em>k</em> ⋅ (<em>x</em>[<em>n</em>] − <em>y</em>[<em>n</em> − 1])</span><br /></p>
+<p>where <span class="math inline">0 ≤ <em>k</em> ≤ 1</span> is an averaging factor, usually much closer to zero than one. When the value of <span class="math inline"><em>k</em></span> is small enough (less than 1/2, say), it is approximately equal to the filter’s rolloff frequency in units of radians per sample. (The theory behind this is explained in <a href="http://msp.ucsd.edu/techniques.htm">Theory and Techniques of Electronic Music</a>, section 8.3, “designing filters”).</p>
+<p>For our purposes we’ll rewrite this equation as:</p>
+<p><br /><span class="math display"><em>y</em>[<em>n</em>] − <em>y</em>[<em>n</em> − 1] = <em>f</em>(<em>x</em>[<em>n</em>] − <em>y</em>[<em>n</em> − 1])</span><br /></p>
+<p>where the function <span class="math inline"><em>f</em></span> is linear:</p>
+<p><br /><span class="math display"><em>f</em>(<em>x</em>) = <em>k</em> ⋅ <em>x</em></span><br /></p>
+<p>In words, this equation says, “increment your output by <span class="math inline"><em>k</em></span> times the distance you have to travel to reach the goal <span class="math inline"><em>x</em>[<em>n</em>]</span>”. (So far, we’ve described the action of the linear lop~ object.) In the slop~ object, this linear function is replaced by a nonlinear one with three segments, one for an interval <span class="math inline">( − <em>n</em>, <em>p</em>)</span> containing zero, and two others joining this one at the input values <span class="math inline"> − <em>n</em></span> and <span class="math inline"><em>p</em></span>. The three segments have slopes equal to <span class="math inline"><em>k</em><sub><em>n</em></sub></span>, <span class="math inline"><em>k</em></span>, and <span class="math inline"><em>k</em><sub><em>p</em></sub></span> for the negative, middle, and positive regions:</p>
+<figure>
+<img src="slop-tilde-1-curves.png" alt="test" /><figcaption>test</figcaption>
+</figure>
+<p><em>Rationale.</em> In general, <span class="math inline"><em>k</em></span> could depend on both the previous output <span class="math inline"><em>y</em>[<em>n</em> − 1]</span> and on the current input <span class="math inline"><em>x</em></span>. This would require that the invoking patch somehow specify a function of two variables, a feat for which Pd is ill suited. In slop~ we make the simplifying assumption that adding an offset to both the filter’s state and its input should result in adding the same offset to the output; that is, the filter should be translation-invariant. (As will be seen below, through a bit of skulduggery we can still make translation-dependent effects such as soft saturation). One could also ask why we don’t allow the function <span class="math inline"><em>f</em></span> to refer to a stored array instead of restricting it to a 5-parameter family of piecewise linear functions. The reason for choosing the approach taken is that it is often desirable to modulate the parameters at audio rates, and that would be difficult if we used an array.</p>
+<h5 id="examples.">Examples.</h5>
+<p><a href="compander-limiter.htm">Using slop~ to make a compressor-expander-limiter</a>.</p>
+</body>
+</html>
