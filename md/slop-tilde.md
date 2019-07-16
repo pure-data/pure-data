@@ -2,7 +2,7 @@
 comment:  This document is in 'markdown' format for use with pandoc
 ---
 
-### [slop~ - slew-limiting low-pass filter](#topics-slop)
+### [Nonlinear filtering using the slop~ slew-limiting low-pass filter](#topics-slop)
 
 Tasks such as envelope following, dynamics processing, and soft saturation
 often rely on low-pass filtering in which the cutoff frequency of the filter
@@ -57,7 +57,15 @@ functions.  The reason for choosing the approach taken is that it is often
 desirable to modulate the parameters at audio rates, and that would be difficult
 if we used an array.
 
-##### Examples.
+#### [using slop~ as a slew limiter](#topics-slop-slew-limiter)
 
-[Using slop~ to make a compressor-expander-limiter](compander-limiter.htm).
+
+#### [using slop~ in a compander-limiter](#topics-slop-compander-limiter)
+
+A subpatch of the [slop~ help file](file:../5.reference/slop~-help.pd) gives an
+example that uses slop~ to make a compander-limiter.  (The link will only work
+if you are reading this document as a local file on your machine and if your
+browser is set up to open .pd files using Pd.  Alternatively you can create a
+slop~ object in a patch and get help for it).  Here is
+
 
