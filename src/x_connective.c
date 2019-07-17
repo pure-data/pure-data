@@ -952,9 +952,13 @@ static t_class *trigger_class;
 #define TR_LIST 4
 #define TR_ANYTHING 5
 
+#define TR_STATIC_FLOAT 6
+
 typedef struct triggerout
 {
     int u_type;         /* outlet type from above */
+    t_symbol *u_sym;     /* static value */
+    t_float u_float;    /* static value */
     t_outlet *u_outlet;
 } t_triggerout;
 
@@ -965,13 +969,16 @@ typedef struct _trigger
     t_triggerout *x_vec;
 } t_trigger;
 
+// forward declaration
+static void trigger_symbol(t_trigger *x, t_symbol *s);
+
 static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_trigger *x = (t_trigger *)pd_new(trigger_class);
     t_atom defarg[2], *ap;
     t_triggerout *u;
     int i;
-    if (!argc)
+    if(!argc)
     {
         argv = defarg;
         argc = 2;
@@ -980,32 +987,36 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_n = argc;
     x->x_vec = (t_triggerout *)getbytes(argc * sizeof(*x->x_vec));
-    for (i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++)
+    for(i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++)
     {
-        t_atomtype thistype = ap->a_type;
-        char c;
-        if (thistype == TR_SYMBOL) c = ap->a_w.w_symbol->s_name[0];
-        else if (thistype == TR_FLOAT) c = 'f';
-        else c = 0;
-        if (c == 'p')
-            u->u_type = TR_POINTER,
+        if (ap->a_type == TR_SYMBOL){
+            char c = ap->a_w.w_symbol->s_name[0];
+            if (c == 'p')
+                u->u_type = TR_POINTER,
                 u->u_outlet = outlet_new(&x->x_obj, &s_pointer);
-        else if (c == 'f')
-            u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
-        else if (c == 'b')
-            u->u_type = TR_BANG, u->u_outlet = outlet_new(&x->x_obj, &s_bang);
-        else if (c == 'l')
-            u->u_type = TR_LIST, u->u_outlet = outlet_new(&x->x_obj, &s_list);
-        else if (c == 's')
-            u->u_type = TR_SYMBOL,
+            else if (c == 'f')
+                u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
+            else if (c == 'b')
+                u->u_type = TR_BANG, u->u_outlet = outlet_new(&x->x_obj, &s_bang);
+            else if (c == 'l')
+                u->u_type = TR_LIST, u->u_outlet = outlet_new(&x->x_obj, &s_list);
+            else if (c == 's')
+                u->u_type = TR_SYMBOL,
                 u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
-        else if (c == 'a')
-            u->u_type = TR_ANYTHING,
-                u->u_outlet = outlet_new(&x->x_obj, &s_symbol);
+            else if (c == 'a')
+                u->u_type = TR_ANYTHING,
+                u->u_outlet = outlet_new(&x->x_obj, &s_anything);
+            else
+            {
+                pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
+                u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
+            }
+        }
         else
-        {
-            pd_error(x, "trigger: %s: bad type", ap->a_w.w_symbol->s_name);
-            u->u_type = TR_FLOAT, u->u_outlet = outlet_new(&x->x_obj, &s_float);
+        { // static float
+            u->u_float = ap->a_w.w_float;
+            u->u_type = TR_STATIC_FLOAT;
+            u->u_outlet = outlet_new(&x->x_obj, &s_float);
         }
     }
     return (x);
@@ -1015,7 +1026,7 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
     int i;
-    for (i = (int)x->x_n, u = x->x_vec + i; u--, i--;)
+    for(i = x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_FLOAT)
             outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
@@ -1023,55 +1034,96 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             outlet_bang(u->u_outlet);
         else if (u->u_type == TR_SYMBOL)
             outlet_symbol(u->u_outlet,
-                (argc ? atom_getsymbol(argv) : &s_symbol));
+                          (argc ? atom_getsymbol(argv) : (s != NULL ? s : &s_symbol)));
+        else if (u->u_type == TR_ANYTHING)
+            outlet_anything(u->u_outlet, s, argc, argv);
         else if (u->u_type == TR_POINTER)
         {
             if (!argc || argv->a_type != TR_POINTER)
                 pd_error(x, "unpack: bad pointer");
             else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
         }
+        else if (u->u_type == TR_STATIC_FLOAT)
+            outlet_float(u->u_outlet, u->u_float);
         else outlet_list(u->u_outlet, &s_list, argc, argv);
     }
 }
 
 static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
+    t_atom *av2 = NULL;
     t_triggerout *u;
-    int i;
-    for (i = (int)x->x_n, u = x->x_vec + i; u--, i--;)
+    int i, j = 0;
+    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_BANG)
             outlet_bang(u->u_outlet);
         else if (u->u_type == TR_ANYTHING)
             outlet_anything(u->u_outlet, s, argc, argv);
-        else pd_error(x, "trigger: can only convert 's' to 'b' or 'a'");
+        else if (u->u_type == TR_STATIC_FLOAT)
+            outlet_float(u->u_outlet, u->u_float);
+        else
+        {
+            // copying trigger_list behavior except that here we keep
+            // the outlet number and therefore avoid redundant printouts
+            if (u->u_type == TR_FLOAT)
+                outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
+            else if (u->u_type == TR_BANG)
+                outlet_bang(u->u_outlet);
+            else if (u->u_type == TR_SYMBOL)
+                outlet_symbol(u->u_outlet,
+                              (s != NULL ? s : (argc ? atom_getsymbol(argv) : &s_symbol)));
+            else if (u->u_type == TR_ANYTHING)
+                outlet_anything(u->u_outlet, s, argc, argv);
+            else if (u->u_type == TR_POINTER)
+                if (!argc || argv->a_type != TR_POINTER)
+                    pd_error(x, "unpack: bad pointer");
+                else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
+                else if (u->u_type == TR_STATIC_FLOAT)
+                    outlet_float(u->u_outlet, u->u_float);
+                else
+                { // Ico: don't have to worry about zero element case (AFAICT)
+                    av2 = (t_atom *)getbytes((argc + 1) * sizeof(t_atom));
+                    SETSYMBOL(av2, s);
+                    if (argc == 0)
+                        outlet_list(u->u_outlet, &s_symbol, argc+1, av2);
+                    else
+                    {
+                        for (j = 0; j < argc; j++)
+                            av2[j + 1] = argv[j];
+                        SETSYMBOL(av2, s);
+                        outlet_list(u->u_outlet, &s_list, argc+1, av2);
+                    }
+                    freebytes(av2, (argc + 1) * sizeof(t_atom));
+                }
+        }
     }
 }
 
 static void trigger_bang(t_trigger *x)
 {
-    trigger_list(x, 0, 0, 0);
+    trigger_list(x, &s_bang, 0, 0);
 }
 
 static void trigger_pointer(t_trigger *x, t_gpointer *gp)
 {
     t_atom at;
     SETPOINTER(&at, gp);
-    trigger_list(x, 0, 1, &at);
+    trigger_list(x, &s_list, 1, &at);
 }
 
 static void trigger_float(t_trigger *x, t_float f)
 {
     t_atom at;
     SETFLOAT(&at, f);
-    trigger_list(x, 0, 1, &at);
+    trigger_list(x, &s_float, 1, &at);
 }
 
 static void trigger_symbol(t_trigger *x, t_symbol *s)
 {
     t_atom at;
     SETSYMBOL(&at, s);
-    trigger_list(x, 0, 1, &at);
+    trigger_list(x, &s_symbol, 1, &at);
 }
 
 static void trigger_free(t_trigger *x)
@@ -1082,7 +1134,7 @@ static void trigger_free(t_trigger *x)
 static void trigger_setup(void)
 {
     trigger_class = class_new(gensym("trigger"), (t_newmethod)trigger_new,
-        (t_method)trigger_free, sizeof(t_trigger), 0, A_GIMME, 0);
+                              (t_method)trigger_free, sizeof(t_trigger), 0, A_GIMME, 0);
     class_addcreator((t_newmethod)trigger_new, gensym("t"), A_GIMME, 0);
     class_addlist(trigger_class, trigger_list);
     class_addbang(trigger_class, trigger_bang);
@@ -1091,6 +1143,7 @@ static void trigger_setup(void)
     class_addsymbol(trigger_class, trigger_symbol);
     class_addanything(trigger_class, trigger_anything);
 }
+
 
 /* -------------------------- spigot ------------------------------ */
 static t_class *spigot_class;
