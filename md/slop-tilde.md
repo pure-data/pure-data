@@ -156,4 +156,21 @@ desired dynamic, and the necessary gain is computed and applied.  Thus:
 
 ![compander using instant-rise envelope follower](slop-compander-patch.png)
 
+Since the envelope follower has an unlimited rise speed, it will report rises in
+the signal amplitude without delay.  Its output is thus always at least equal to
+the absolute value of the input.  A dynamic curve is then used to compute the
+desired gain - this gain (in decibels) is equal to the difference between the
+curve value and the envelope follower output itself.  When this gain is applied the resulting signal level is at most what is shown on the curve (equal to it
+when the signal and the envelope follower agree exactly).
 
+In effect, rising edges of the input signal, when they push outside the currently measured envelope, will be soft-clipped according to the dynamic curve.  When the signal drops in amplitude the envelope follower relaxes at a speed decided by the user, and this is heard as a gradual change in gain.  (Specifically, a decrease in gain if we are compressing and/or limiting.)
+
+Because the dynamic curve acts as a saturation curve when the signal level is rising, in a situation when we are using it as a limiter (so that the curve is flat at the right-hand end), it is often desirable to make the dynamic curve level off smoothly.  In this patch there are three parameters to configure limiting: the limit itself, a boost in DB to apply before limiting, and a "knee" which is the interval, in decibels, over which the dynamic curve bends from the 45-degree angle at low levels to the flat region where we reach the limit.
+
+in addition there is a compander function controlled by two other parameters, "thresh" (a threshold, in decibels, below which companding is to be done) and
+the percentage, normally between 0 and 200, by which the dynamic range should be altered below that threshold.  The "speed" parameter is the speed, in tenths of a Hz., at which the envelope follower output decays.
+
+
+#### [using slop~ for soft saturation](#topics-slop-soft-saturation)
+
+  
