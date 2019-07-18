@@ -1066,7 +1066,7 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             // copying trigger_list behavior except that here we keep
             // the outlet number and therefore avoid redundant printouts
             if (u->u_type == TR_FLOAT)
-                outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
+                outlet_float(u->u_outlet, 0);
             else if (u->u_type == TR_BANG)
                 outlet_bang(u->u_outlet);
             else if (u->u_type == TR_SYMBOL)
@@ -1074,21 +1074,19 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             else if (u->u_type == TR_ANYTHING)
                 outlet_anything(u->u_outlet, s, argc, argv);
             else if (u->u_type == TR_POINTER)
-                if (!argc || argv->a_type != TR_POINTER)
-                    pd_error(x, "trigger: bad pointer");
-                else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
-                else if (u->u_type == TR_STATIC_FLOAT)
-                    outlet_float(u->u_outlet, u->u_float);
-                else
-                {
-                    av2 = (t_atom *)getbytes((argc + 1) * sizeof(t_atom));
-                    SETSYMBOL(av2, s);
-                    for (int j = 0; j < argc; j++)
-                        av2[j + 1] = argv[j];
-                    SETSYMBOL(av2, s);
-                    outlet_list(u->u_outlet, &s_list, argc+1, av2);
-                    freebytes(av2, (argc + 1) * sizeof(t_atom));
-                }
+                pd_error(x, "trigger: bad pointer");
+            else if (u->u_type == TR_STATIC_FLOAT)
+                outlet_float(u->u_outlet, u->u_float);
+            else // list
+            {
+                av2 = (t_atom *)getbytes((argc + 1) * sizeof(t_atom));
+                SETSYMBOL(av2, s);
+                for (int j = 0; j < argc; j++)
+                    av2[j + 1] = argv[j];
+                SETSYMBOL(av2, s);
+                outlet_list(u->u_outlet, &s_list, argc+1, av2);
+                freebytes(av2, (argc + 1) * sizeof(t_atom));
+            }
         }
     }
 }
