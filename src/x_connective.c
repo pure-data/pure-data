@@ -957,7 +957,6 @@ static t_class *trigger_class;
 typedef struct triggerout
 {
     int u_type;         /* outlet type from above */
-    t_symbol *u_sym;     /* static value */
     t_float u_float;    /* static value */
     t_outlet *u_outlet;
 } t_triggerout;
@@ -978,7 +977,7 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
     t_atom defarg[2], *ap;
     t_triggerout *u;
     int i;
-    if(!argc)
+    if (!argc)
     {
         argv = defarg;
         argc = 2;
@@ -1025,8 +1024,7 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
 static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
-    int i;
-    for(i = x->x_n, u = x->x_vec + i; u--, i--;)
+    for(int i = x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_FLOAT)
             outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
@@ -1034,13 +1032,13 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             outlet_bang(u->u_outlet);
         else if (u->u_type == TR_SYMBOL)
             outlet_symbol(u->u_outlet,
-                          (argc ? atom_getsymbol(argv) : (s != NULL ? s : &s_symbol)));
+                          (argc ? atom_getsymbol(argv) : &s_symbol));
         else if (u->u_type == TR_ANYTHING)
             outlet_anything(u->u_outlet, s, argc, argv);
         else if (u->u_type == TR_POINTER)
         {
             if (!argc || argv->a_type != TR_POINTER)
-                pd_error(x, "unpack: bad pointer");
+                pd_error(x, "trigger: bad pointer");
             else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
         }
         else if (u->u_type == TR_STATIC_FLOAT)
@@ -1053,8 +1051,7 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *av2 = NULL;
     t_triggerout *u;
-    int i, j = 0;
-    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
+    for (int i = x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_BANG)
             outlet_bang(u->u_outlet);
@@ -1072,28 +1069,23 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
                 outlet_bang(u->u_outlet);
             else if (u->u_type == TR_SYMBOL)
                 outlet_symbol(u->u_outlet,
-                              (s != NULL ? s : (argc ? atom_getsymbol(argv) : &s_symbol)));
+                              (s ? s : &s_symbol)));
             else if (u->u_type == TR_ANYTHING)
                 outlet_anything(u->u_outlet, s, argc, argv);
             else if (u->u_type == TR_POINTER)
                 if (!argc || argv->a_type != TR_POINTER)
-                    pd_error(x, "unpack: bad pointer");
+                    pd_error(x, "trigger: bad pointer");
                 else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
                 else if (u->u_type == TR_STATIC_FLOAT)
                     outlet_float(u->u_outlet, u->u_float);
                 else
-                { // Ico: don't have to worry about zero element case (AFAICT)
+                {
                     av2 = (t_atom *)getbytes((argc + 1) * sizeof(t_atom));
                     SETSYMBOL(av2, s);
-                    if (argc == 0)
-                        outlet_list(u->u_outlet, &s_symbol, argc+1, av2);
-                    else
-                    {
-                        for (j = 0; j < argc; j++)
-                            av2[j + 1] = argv[j];
-                        SETSYMBOL(av2, s);
-                        outlet_list(u->u_outlet, &s_list, argc+1, av2);
-                    }
+                    for (int j = 0; j < argc; j++)
+                        av2[j + 1] = argv[j];
+                    SETSYMBOL(av2, s);
+                    outlet_list(u->u_outlet, &s_list, argc+1, av2);
                     freebytes(av2, (argc + 1) * sizeof(t_atom));
                 }
         }
