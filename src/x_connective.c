@@ -986,7 +986,7 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
     }
     x->x_n = argc;
     x->x_vec = (t_triggerout *)getbytes(argc * sizeof(*x->x_vec));
-    for(i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++)
+    for (i = 0, ap = argv, u = x->x_vec; i < argc; u++, ap++, i++)
     {
         if (ap->a_type == TR_SYMBOL){
             char c = ap->a_w.w_symbol->s_name[0];
@@ -1024,7 +1024,8 @@ static void *trigger_new(t_symbol *s, int argc, t_atom *argv)
 static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_triggerout *u;
-    for(int i = x->x_n, u = x->x_vec + i; u--, i--;)
+    int i;
+    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_FLOAT)
             outlet_float(u->u_outlet, (argc ? atom_getfloat(argv) : 0));
@@ -1051,7 +1052,8 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *av2 = NULL;
     t_triggerout *u;
-    for (int i = x->x_n, u = x->x_vec + i; u--, i--;)
+    int i;
+    for (i = x->x_n, u = x->x_vec + i; u--, i--;)
     {
         if (u->u_type == TR_BANG)
             outlet_bang(u->u_outlet);
