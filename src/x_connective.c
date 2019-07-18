@@ -1070,7 +1070,7 @@ static void trigger_anything(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             else if (u->u_type == TR_BANG)
                 outlet_bang(u->u_outlet);
             else if (u->u_type == TR_SYMBOL)
-                outlet_symbol(u->u_outlet, (s ? s : &s_symbol);
+                outlet_symbol(u->u_outlet, (s ? s : &s_symbol));
             else if (u->u_type == TR_ANYTHING)
                 outlet_anything(u->u_outlet, s, argc, argv);
             else if (u->u_type == TR_POINTER)
