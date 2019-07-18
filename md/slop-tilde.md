@@ -65,7 +65,7 @@ using Pd's help browser.)
 
 #### [example: slew limiter](#topics-slop-slew-limiter)
 
-The output signal $y[n]$ has a time-varting slope equal to $(y[n]-y[n-1])/\tau$,
+The output signal $y[n]$ has a time-varying slope equal to $(y[n]-y[n-1])/\tau$,
 where $\tau$ denotes the elapsed time between two samples, equal to one over the
 sample rate $R$.  The slope can be rewritten as $R \cdot (y[n]-y[n-1])$.
 Suppose we wish to create an output signal whose slope is limited between two
@@ -92,7 +92,7 @@ A sample input and output are shown here:
 The input is a square pulse of unit height  lasting 0.7 msec, at a sample rate
 of 48000.  The upward maximum slope is set to 9000.  For the first 5 samples of
 the pulse, the upward increment is limited to 9000/48000 units.  At the sixth
-sample of teh pulse the input is within that limit of the previous output, and
+sample of the pulse the input is within that limit of the previous output, and
 so the increment becomes exactly what is needed to make the output reach the
 input in value.
 
@@ -111,7 +111,7 @@ peaked in the recent past.  This can be done using slop~ as shown:
 Here the abs~ object takes the input's absolute value (known in electronics as
 "rectification") and the slop~ object is set to have no linear region at all,
 but a rise region with an infinite (1e9) cutoff (so that it follows a rise in
-teh input instantly), and a decay region with a controllable cutoff frequency
+the input instantly), and a decay region with a controllable cutoff frequency
 that sets the speed of the decay.  Here is the response to the same rectangular
 pulse input as the example above:
 
@@ -160,17 +160,36 @@ Since the envelope follower has an unlimited rise speed, it will report rises in
 the signal amplitude without delay.  Its output is thus always at least equal to
 the absolute value of the input.  A dynamic curve is then used to compute the
 desired gain - this gain (in decibels) is equal to the difference between the
-curve value and the envelope follower output itself.  When this gain is applied the resulting signal level is at most what is shown on the curve (equal to it
-when the signal and the envelope follower agree exactly).
+curve value and the envelope follower output itself.  When this gain is applied
+the resulting signal level is at most what is shown on the curve (equal to it when
+the signal and the envelope follower agree exactly).
 
-In effect, rising edges of the input signal, when they push outside the currently measured envelope, will be soft-clipped according to the dynamic curve.  When the signal drops in amplitude the envelope follower relaxes at a speed decided by the user, and this is heard as a gradual change in gain.  (Specifically, a decrease in gain if we are compressing and/or limiting.)
+In effect, rising edges of the input signal, when they push outside the
+currently measured envelope, will be soft-clipped according to the dynamic
+curve.  When the signal drops in amplitude the envelope follower relaxes at a
+speed decided by the user, and this is heard as a gradual change in gain.
+(Specifically, a decrease in gain if we are compressing and/or limiting.)
 
-Because the dynamic curve acts as a saturation curve when the signal level is rising, in a situation when we are using it as a limiter (so that the curve is flat at the right-hand end), it is often desirable to make the dynamic curve level off smoothly.  In this patch there are three parameters to configure limiting: the limit itself, a boost in DB to apply before limiting, and a "knee" which is the interval, in decibels, over which the dynamic curve bends from the 45-degree angle at low levels to the flat region where we reach the limit.
+Because the dynamic curve acts as a saturation curve when the signal level is
+rising, in a situation when we are using it as a limiter (so that the curve is
+flat at the right-hand end), it is often desirable to make the dynamic curve
+level off smoothly.  In this patch there are three parameters to configure
+limiting: the limit itself, a boost in DB to apply before limiting, and a "knee"
+which is the interval, in decibels, over which the dynamic curve bends from the
+45-degree angle at low levels to the flat region where we reach the limit.
 
-in addition there is a compander function controlled by two other parameters, "thresh" (a threshold, in decibels, below which companding is to be done) and
-the percentage, normally between 0 and 200, by which the dynamic range should be altered below that threshold.  The "speed" parameter is the speed, in tenths of a Hz., at which the envelope follower output decays.
+in addition there is a compander function controlled by two other parameters,
+"thresh" (a threshold, in decibels, below which companding is to be done) and
+the percentage, normally between 0 and 200, by which the dynamic range should be
+altered below that threshold.  The "speed" parameter is the speed, in tenths of
+a Hz., at which the envelope follower output decays.
 
 
-#### [using slop~ for soft saturation](#topics-slop-soft-saturation)
+#### [using slop~ to remove signal jitter](#topics-slop-jitter-remover)
 
-  
+By setting the linear cutoff frequency to zero and the linear region to an
+interval of length $a$ (either by setting $n=0, p=1$ or $n=p=a/2$), and then
+setting $k_n = k_p = \inf$, we get a filter that allows its input to jitter over a
+range of $a$ units before the filter responds to it.  This is sometimes useful for
+quieting down noisy control sources (such as envelope followers or physical
+sensors).  This is analogous to a loose physical linkage.
