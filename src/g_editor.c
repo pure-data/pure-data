@@ -1905,7 +1905,6 @@ static void editor_free(t_editor *x, t_glist *y)
 {
     glist_noselect(y);
     guiconnect_notarget(x->e_guiconnect, 1000);
-    pd_free((t_pd *)x->e_guiconnect);
     binbuf_free(x->e_connectbuf);
     binbuf_free(x->e_deleted);
     if (x->e_clock)
