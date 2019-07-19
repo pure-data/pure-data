@@ -235,7 +235,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
     const int yoffset = 5;
     int obj_nout=obj_noutlets(obj);
     int nout;
-    int posX, posY;
+    int posX = 0, posY;
     t_binbuf*b=binbuf_new();
     int didit=0;
 
