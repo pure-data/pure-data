@@ -4,6 +4,13 @@ package provide pdtk_text 0.1
 # these procs are currently all in the global namespace because all of them
 # are used by 'pd' and therefore need to be in the global namespace.
 
+namespace eval ::pdtk_text:: {
+# proc to sanitize the 'text'
+    proc unescape {text} {
+        return [string trimright [subst -nocommands -novariables $text] { }]
+    }
+}
+
 # create a new text object (ie. obj, msg, comment)
 # the initializing string ends in an extra space.  This is done in case
 # the last character should have been a backslash ('\') which would have
@@ -11,7 +18,7 @@ package provide pdtk_text 0.1
 # character in the string to compensate via [string range].
 proc pdtk_text_new {tkcanvas tags x y text font_size color} {
     $tkcanvas create text $x $y -tags $tags \
-        -text [string range $text 0 end-1] \
+        -text [::pdtk_text::unescape $text] \
             -fill $color -anchor nw -font [get_font_for_size $font_size]
     set mytag [lindex $tags 0]
     $tkcanvas bind $mytag <Home> "$tkcanvas icursor $mytag 0"
@@ -27,7 +34,7 @@ proc pdtk_text_new {tkcanvas tags x y text font_size color} {
 
 # change the text in an existing text box
 proc pdtk_text_set {tkcanvas tag text} {
-    $tkcanvas itemconfig $tag -text [string range $text 0 end-1]
+    $tkcanvas itemconfig $tag -text [::pdtk_text::unescape $text]
 }
 
 # paste into an existing text box by literally "typing" the contents of the

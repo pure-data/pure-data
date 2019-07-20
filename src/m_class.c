@@ -44,7 +44,6 @@ t_pdinstance pd_maininstance;
 
 static t_symbol *dogensym(const char *s, t_symbol *oldsym,
     t_pdinstance *pdinstance);
-
 void x_midi_newpdinstance( void);
 void x_midi_freepdinstance( void);
 void s_inter_newpdinstance( void);

@@ -412,3 +412,13 @@ struct _instancestuff
 };
 
 #define STUFF (pd_this->pd_stuff)
+
+/* escape characters for tcl/tk
+ * escapes special characters ("{}\") in the string 'src', which
+ * has a maximum length of 'srclen' and might be 0-terminated,
+ * and writes them into the 'dstlen' sized output buffer 'dst'
+ * the result is zero-terminated; if the 'dst' buffer cannot hold the
+ * fully escaped 'src' string, the result might be incomplete.
+ * 'srclen' can be 0, in which case the 'src' string must be 0-terminated.
+ */
+EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t srclen);
