@@ -4220,7 +4220,7 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
         int connectioncount = 0;
         int foundit = 0;
         t_linetraverser t;
-        t_outconnect *oc;
+        t_outconnect *oc = 0;
 
         linetraverser_start(&t, x);
         while (offset && (oc = linetraverser_next(&t)))
@@ -4240,8 +4240,10 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
         }
 
             /* if the offset is non-0, wrap it... */
-        if(offset) {
-            offset = (((offset - 1) % connectioncount) + connectioncount) % connectioncount;
+        if (offset)
+        {
+            offset = (((offset - 1) % connectioncount) + connectioncount)
+                % connectioncount;
             /* ... and start from the beginning */
             linetraverser_start(&t, x);
             while ((oc = linetraverser_next(&t)))
@@ -4250,7 +4252,7 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
                 offset--;
             }
         }
-        if(oc)
+        if (oc)
             glist_selectline(x, oc,
                 glist_getindex(x, &t.tr_ob->ob_g), t.tr_outno,
                 glist_getindex(x, &t.tr_ob2->ob_g), t.tr_inno);

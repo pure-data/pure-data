@@ -94,12 +94,12 @@ static void ooura_term( void)
 /* -------- initialization and cleanup -------- */
 static int mayer_refcount = 0;
 
-void mayer_init()
+void mayer_init( void)
 {
     mayer_refcount++;
 }
 
-void mayer_term()
+void mayer_term( void)
 {
     if (--mayer_refcount == 0)  /* clean up */
         ooura_term();
