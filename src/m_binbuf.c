@@ -574,7 +574,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew
         substr=strchr(str, '$');
         if(substr)
         {
-            long n = substr-str;
+            unsigned long n = substr-str;
             if(n>MAXPDSTRING-strlen(buf2)-1) n=MAXPDSTRING-strlen(buf2)-1;
             strncat(buf2, str, n);
             str=substr+1;
