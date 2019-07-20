@@ -594,11 +594,11 @@ static int canvas_do_triggerize(t_glist*cnv)
 }
 void canvas_triggerize(t_glist*cnv)
 {
+    int count = 0;
     if(!cnv || !cnv->gl_editor)
         return;
     if(!cnv->gl_editor->e_selection && !cnv->gl_editor->e_selectedline)
         return;
-    int count = 0;
     if(count = canvas_do_triggerize(cnv)) {
         canvas_dirty(cnv, 1);
             /* fix display of connections, objects,... */
