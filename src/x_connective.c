@@ -1023,7 +1023,7 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
             outlet_bang(u->u_outlet);
         else if (u->u_type == TR_SYMBOL)
             outlet_symbol(u->u_outlet,
-                (argc ? atom_getsymbol(argv) : &s_symbol));
+                (argc ? atom_getsymbol(argv) : s));
         else if (u->u_type == TR_ANYTHING){
             if (argc || argv->a_type == TR_POINTER)
                outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
