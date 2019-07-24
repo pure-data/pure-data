@@ -1024,12 +1024,8 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
         else if (u->u_type == TR_SYMBOL)
             outlet_symbol(u->u_outlet,
                 (argc ? atom_getsymbol(argv) : s));
-        else if (u->u_type == TR_ANYTHING){
-            if (argc || argv->a_type == TR_POINTER)
-               outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
-            else
-                outlet_anything(u->u_outlet, s, argc, argv);
-        }
+        else if (u->u_type == TR_ANYTHING)
+            outlet_anything(u->u_outlet, s, argc, argv);
         else if (u->u_type == TR_POINTER)
             pd_error(x, "trigger: bad pointer");
         else outlet_list(u->u_outlet, &s_list, argc, argv);
@@ -1058,7 +1054,7 @@ static void trigger_pointer(t_trigger *x, t_gpointer *gp)
     {
         if (u->u_type == TR_BANG)
             outlet_bang(u->u_outlet);
-        else if (u->u_type == TR_POINTER)
+        else if (u->u_type == TR_POINTER || u->u_type == TR_ANYTHING)
             outlet_pointer(u->u_outlet, gp);
         else pd_error(x, "trigger: can only convert 'pointer' to 'bang'");
     }
