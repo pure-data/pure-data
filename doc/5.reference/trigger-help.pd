@@ -1,37 +1,80 @@
-#N canvas 58 142 685 355 12;
-#X msg 28 149 2.5;
-#X msg 126 151 bang;
-#X msg 68 150 23 64;
-#X obj 28 242 print x1;
-#X obj 112 242 print x2;
-#X obj 196 240 print x3;
-#X obj 43 26 trigger;
-#X obj 286 241 print x4;
-#X text 114 27 - sequence messages in right-to-left order;
-#X text 417 331 updated for Pd version 0.33;
-#X text 81 290 the above can be abbreviated as:;
-#X msg 172 152 symbol dog;
-#X text 39 59 The trigger object outputs its input from right to left
-\, converting to the types indicated by its creation arguments. There
-is also a "pointer" argument type (see the pointer object.);
-#X obj 381 293 t f b s l a;
-#X msg 466 167 dog my cats;
-#X obj 466 199 trigger bang anything;
-#X obj 374 242 print x5;
-#X obj 466 240 print y1;
-#X obj 552 242 print y2;
-#X obj 28 202 trigger float bang symbol list anything;
-#X text 464 122 "anythings" can only;
-#X text 461 142 be converted to bang:;
-#X connect 0 0 19 0;
-#X connect 1 0 19 0;
-#X connect 2 0 19 0;
-#X connect 11 0 19 0;
-#X connect 14 0 15 0;
-#X connect 15 0 17 0;
-#X connect 15 1 18 0;
-#X connect 19 0 3 0;
-#X connect 19 1 4 0;
-#X connect 19 2 5 0;
-#X connect 19 3 7 0;
-#X connect 19 4 16 0;
+#N canvas 291 85 1067 634 12;
+#X msg 53 150 2.5;
+#X msg 91 150 bang;
+#X text 113 30 - sequence messages in right-to-left order;
+#X text 55 300 the above can be abbreviated as:;
+#X msg 137 150 symbol dog;
+#X msg 276 150 list a b c;
+#X text 799 586 updated for Pd version 0.50.;
+#X msg 363 150 dog my cats;
+#X text 38 62 The trigger object outputs its input from right to left.
+The type of message is indicated by its creation arguments and different
+are allowed (in this case the the object converts between different
+message types \, see below).;
+#X obj 233 458 t b f;
+#X msg 233 489 1;
+#X obj 248 520 /;
+#X floatatom 248 548 5 0 0 0 - - -;
+#X floatatom 233 429 5 0 0 0 - - -;
+#X obj 716 64 trigger pointer;
+#X obj 850 64 t p;
+#X obj 716 99 pointer;
+#X text 528 19 The trigger object can also handle pointers \, abbreviated
+as "p". This is used for data structures (see the pointer object for
+reference).;
+#X text 644 98 see also:;
+#X text 831 63 =;
+#X text 36 347 Trigger is normally used to send a message type in a
+sequence to different locations. Since all message types can be sucessfully
+converted to a bang \, it's quite common to have both a bang and another
+message type as creation arguments., f 64;
+#X msg 221 150 1 2 3;
+#X text 519 204 The creation arguments: bang \, float \, symbol \,
+list and pointer reflect special message types (or 'selectors'). The
+'anything' type is just any type - either these special types or even
+others (such as "dog my cats" \, which has the 'dogs' selector). When
+converting message types \, this is what happens., f 62;
+#X obj 272 243 print s;
+#X obj 339 243 print l;
+#X obj 407 243 print a;
+#X obj 204 242 print f;
+#X obj 137 243 print b;
+#X text 541 294 - bang: any input message can be converted to a bang.
+, f 64;
+#X text 541 314 - float: a list that starts with a float lets it through
+\, other message types convert to "0"., f 64;
+#X text 541 348 - symbol: a list that starts with a symbol lets it
+through. An anything message like "dog my cats" will convert the selector
+to a symbol. A float message or a list that starts with a float become
+"symbol float" \, and bang becomes "symbol bang"., f 64;
+#X text 541 536 - anything: whatever comes in \, comes out \, there's
+no conversion., f 64;
+#X text 541 500 - pointer: no other messages can be converted to a
+pointer \, and a pointer should only be converted to a bang., f 64
+;
+#X text 519 175 About message types and conversions:;
+#X obj 137 202 trigger bang float symbol list anything;
+#X obj 288 300 t f b s l a;
+#X obj 42 29 trigger;
+#X text 541 410 - list: any message that is not a list will get a list
+selector \, in the case "dog my cats" \, the list selector is added.
+Note that a bang comes as a zero element list message \, which gets
+automatically converted to a bang. A one element float list also becomes
+a float and a one element symbol list becomes a symbol message as well.
+, f 64;
+#X connect 0 0 34 0;
+#X connect 1 0 34 0;
+#X connect 4 0 34 0;
+#X connect 5 0 34 0;
+#X connect 7 0 34 0;
+#X connect 9 0 10 0;
+#X connect 9 1 11 1;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 13 0 9 0;
+#X connect 21 0 34 0;
+#X connect 34 0 27 0;
+#X connect 34 1 26 0;
+#X connect 34 2 23 0;
+#X connect 34 3 24 0;
+#X connect 34 4 25 0;
