@@ -1,4 +1,4 @@
-#N canvas 272 96 1063 741 12;
+#N canvas 272 95 1063 741 12;
 #X msg 50 150 2.5;
 #X msg 88 150 bang;
 #X text 110 30 - sequence messages in right-to-left order;
@@ -17,10 +17,6 @@
 #X floatatom 619 212 5 0 0 0 - - -;
 #X floatatom 619 96 5 0 0 0 - - -;
 #X floatatom 930 174 5 0 0 0 - - -;
-#X text 35 62 The trigger object outputs its input from right to left.
-The type of message is indicated by its creation arguments and different
-are allowed (in this case the the object converts between different
-message types \, see below).;
 #X obj 231 608 t b f;
 #X msg 231 639 1;
 #X obj 246 670 /;
@@ -83,30 +79,34 @@ Note that a bang comes as a zero element list message \, which gets
 automatically converted to a bang. A one element float list also becomes
 a float and a one element symbol list becomes a symbol message as well.
 , f 64;
-#X connect 0 0 38 0;
-#X connect 1 0 38 0;
-#X connect 4 0 38 0;
-#X connect 5 0 38 0;
-#X connect 8 0 36 0;
+#X text 35 62 The trigger object outputs its input from right to left.
+The type of message is indicated by its creation arguments and different
+ones are allowed (in this case the the object converts between different
+message types \, see below).;
+#X connect 0 0 37 0;
+#X connect 1 0 37 0;
+#X connect 4 0 37 0;
+#X connect 5 0 37 0;
+#X connect 8 0 35 0;
 #X connect 9 0 13 0;
 #X connect 10 0 13 1;
-#X connect 11 0 38 0;
+#X connect 11 0 37 0;
 #X connect 13 0 14 0;
-#X connect 15 0 37 0;
+#X connect 15 0 36 0;
+#X connect 17 0 18 0;
+#X connect 17 1 19 1;
 #X connect 18 0 19 0;
-#X connect 18 1 20 1;
 #X connect 19 0 20 0;
-#X connect 20 0 21 0;
-#X connect 22 0 18 0;
-#X connect 30 0 38 0;
-#X connect 36 0 7 0;
-#X connect 36 1 6 0;
-#X connect 36 2 12 0;
-#X connect 36 3 16 0;
-#X connect 37 0 9 0;
-#X connect 37 1 10 0;
-#X connect 38 0 35 0;
-#X connect 38 1 34 0;
-#X connect 38 2 31 0;
-#X connect 38 3 32 0;
-#X connect 38 4 33 0;
+#X connect 21 0 17 0;
+#X connect 29 0 37 0;
+#X connect 35 0 7 0;
+#X connect 35 1 6 0;
+#X connect 35 2 12 0;
+#X connect 35 3 16 0;
+#X connect 36 0 9 0;
+#X connect 36 1 10 0;
+#X connect 37 0 34 0;
+#X connect 37 1 33 0;
+#X connect 37 2 30 0;
+#X connect 37 3 31 0;
+#X connect 37 4 32 0;
