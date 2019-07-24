@@ -1063,7 +1063,7 @@ static void trigger_pointer(t_trigger *x, t_gpointer *gp)
 {
     t_atom at;
     SETPOINTER(&at, gp);
-    trigger_list(x, &s_list, 1, &at);
+    trigger_list(x, &s_pointer, 1, &at);
 }
 
 static void trigger_float(t_trigger *x, t_float f)
