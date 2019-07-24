@@ -428,11 +428,11 @@ static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
     {
         char buf[MAXPDSTRING];
         snprintf(buf, MAXPDSTRING, "%s/%s",
-            canvas_getdir(x->x_canvas)->s_name, s->s_name);
+            canvas_getdir(c)->s_name, s->s_name);
         buf[MAXPDSTRING-1] = 0;
         outlet_symbol(x->x_outlet, gensym(buf));
     }
-    else outlet_symbol(x->x_outlet, canvas_getdir(x->x_canvas));
+    else outlet_symbol(x->x_outlet, canvas_getdir(c));
 }
 
 static void pdcontrol_gui(t_pdcontrol *x, t_symbol *s, int argc, t_atom *argv)
