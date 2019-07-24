@@ -11,11 +11,11 @@
 The type of message is indicated by its creation arguments and different
 are allowed (in this case the the object converts between different
 message types \, see below).;
-#X obj 233 458 t b f;
-#X msg 233 489 1;
-#X obj 248 520 /;
-#X floatatom 248 548 5 0 0 0 - - -;
-#X floatatom 233 429 5 0 0 0 - - -;
+#X obj 233 492 t b f;
+#X msg 233 523 1;
+#X obj 248 554 /;
+#X floatatom 248 582 5 0 0 0 - - -;
+#X floatatom 233 463 5 0 0 0 - - -;
 #X obj 716 64 trigger pointer;
 #X obj 850 64 t p;
 #X obj 716 99 pointer;
@@ -24,7 +24,7 @@ as "p". This is used for data structures (see the pointer object for
 reference).;
 #X text 644 98 see also:;
 #X text 831 63 =;
-#X text 36 347 Trigger is normally used to send a message type in a
+#X text 36 381 Trigger is normally used to send a message type in a
 sequence to different locations. Since all message types can be sucessfully
 converted to a bang \, it's quite common to have both a bang and another
 message type as creation arguments., f 64;
@@ -62,6 +62,10 @@ Note that a bang comes as a zero element list message \, which gets
 automatically converted to a bang. A one element float list also becomes
 a float and a one element symbol list becomes a symbol message as well.
 , f 64;
+#X obj 346 345 t;
+#X obj 407 345 t b b;
+#X text 384 344 =;
+#X text 41 345 The default arguments are "bang bang" \, so:;
 #X connect 0 0 34 0;
 #X connect 1 0 34 0;
 #X connect 4 0 34 0;
