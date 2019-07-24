@@ -482,7 +482,7 @@ static void pdcontrol_isvisible(t_pdcontrol *x)
 static void pdcontrol_setup(void)
 {
     pdcontrol_class = class_new(gensym("pdcontrol"),
-        (t_newmethod)pdcontrol_new, 0, sizeof(t_pdcontrol), 0, 0);
+        (t_newmethod)pdcontrol_new, (t_method)pdcontrol_free, sizeof(t_pdcontrol), 0, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_dir,
         gensym("dir"), A_DEFFLOAT, A_DEFSYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_args,
