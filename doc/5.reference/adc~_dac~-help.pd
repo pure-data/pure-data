@@ -1,26 +1,27 @@
-#N canvas 126 89 526 465 12;
-#X obj 8 11 adc~;
-#X obj 57 11 dac~;
-#X obj 63 121 adc~ 5;
-#X text 143 121 (input from channel 5 only);
-#X obj 61 145 dac~ 1 2 5 23;
-#X text 184 145 (output to channels 1 \, 2 \, 5 \, and 23);
-#X text 107 9 - audio I/O;
-#X text 8 46 Adc~ and dac~ provide real-time audio input and output
-for Pd \, respectively \, whether analog or digital. By default they
-are stereo but you can specify channel numbers as in:;
-#X obj 28 300 dac~ 1;
-#X msg 37 273 set 5;
-#X text 98 266 The "set" message to either dac~ or adc~ resets the
+#N canvas 380 96 526 479 12;
+#X obj 23 15 adc~;
+#X obj 72 15 dac~;
+#X obj 66 136 adc~ 5;
+#X text 146 136 (input from channel 5 only);
+#X obj 64 160 dac~ 1 2 5 23;
+#X text 187 160 (output to channels 1 \, 2 \, 5 \, and 23);
+#X text 122 13 - audio I/O;
+#X obj 42 322 dac~ 1;
+#X text 113 290 The "set" message to either dac~ or adc~ resets the
 channel or channels. This requires Pd to restart DSP and so should
 only be done at setup time \, not while audio is being computed.,
 f 51;
-#X text 288 418 updated for Pd version 0.47;
-#X text 35 348 If more than one dac~ outputs to the same channel \,
+#X text 303 442 updated for Pd version 0.47;
+#X text 50 372 If more than one dac~ outputs to the same channel \,
 the signals are added. More than one adc~ may read the same input channel.
 ;
-#X text 15 173 The actual number of channels Pd inputs and outputs
+#X text 30 197 The actual number of channels Pd inputs and outputs
 is set on Pd's command line or in the "audio settings" dialog. You
 can open patches that want to use more channels \, and channel numbers
 out of range will be dropped (dac~) or appear as zero (adc~).;
-#X connect 9 0 8 0;
+#X text 23 50 Adc~ and dac~ provide real-time audio input and output
+for Pd \, respectively \, whether analog or digital. By default they
+are stereo (with channel numbers 1 \, 2) but you can specify different
+channel numbers as in:;
+#X msg 42 295 set 5;
+#X connect 13 0 7 0;
