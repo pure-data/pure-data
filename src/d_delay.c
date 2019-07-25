@@ -8,7 +8,7 @@
 #include <string.h>
 extern int ugen_getsortno(void);
 
-#define DEFDELVS 64             /* LATER get this from canvas at DSP time */
+#define DEFDELVS 64             /* this now gers updated from canvas at DSP time */
 static const int delread_zero = 0;    /* four bytes of zero for delread~, vd~/delread4~*/
 
 /* ----------------------------- delwrite~ ----------------------------- */
@@ -30,6 +30,7 @@ typedef struct _sigdelwrite
     int x_sortno;   /* DSP sort number at which this was last put on chain */
     int x_rsortno;  /* DSP sort # for first delread or write in chain */
     int x_vecsize;  /* vector size for delread~ to use */
+    int x_blocksize;
     t_float x_f;
 } t_sigdelwrite;
 
@@ -41,7 +42,7 @@ static void sigdelwrite_updatesr(t_sigdelwrite *x, t_float sr) /* added by Mathi
     int nsamps = x->x_deltime * sr * (t_float)(0.001f);
     if (nsamps < 1) nsamps = 1;
     nsamps += ((- nsamps) & (SAMPBLK - 1));
-    nsamps += DEFDELVS;
+    nsamps += x->x_blocksize;
     if (x->x_cspace.c_n != nsamps)
     {
         x->x_cspace.c_vec = (t_sample *)resizebytes(x->x_cspace.c_vec,
@@ -89,6 +90,7 @@ static void *sigdelwrite_new(t_symbol *s, t_floatarg msec)
     x->x_sortno = 0;
     x->x_vecsize = 0;
     x->x_f = 0;
+    x->x_blocksize = DEFDELVS;
     return (x);
 }
 
@@ -123,6 +125,7 @@ static t_int *sigdelwrite_perform(t_int *w)
 
 static void sigdelwrite_dsp(t_sigdelwrite *x, t_signal **sp)
 {
+    x->x_blocksize = sp[0]->s_n;
     dsp_add(sigdelwrite_perform, 3, sp[0]->s_vec, &x->x_cspace, sp[0]->s_n);
     x->x_sortno = ugen_getsortno();
     sigdelwrite_checkvecsize(x, sp[0]->s_n);
