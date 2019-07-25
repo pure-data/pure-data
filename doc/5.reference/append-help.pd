@@ -41,6 +41,7 @@ to the "head" of the list., f 66;
 "set" message to set the template and field:;
 #X obj 51 283 trigger float float;
 #X obj 127 512 append;
+#X text 199 439 click on these messages first:;
 #X text 149 247 click this first =>;
 #X text 411 299 click to clear:;
 #X connect 9 0 13 3;
