@@ -1,32 +1,32 @@
-#N canvas 547 23 472 548 12;
-#X obj 8 4 cnv 8 100 60 empty empty vradio 20 20 1 18 -262144 -1109
+#N canvas 547 23 544 619 12;
+#X obj 36 60 cnv 8 100 60 empty empty vradio 20 20 1 18 -262144 -1109
 0;
-#X obj 32 58 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X obj 60 114 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 254 296 s foo11_rcv;
-#X obj 255 322 r foo11_snd;
-#X floatatom 55 379 4 0 0 0 - - -;
-#X obj 66 407 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X obj 282 352 s foo11_rcv;
+#X obj 283 378 r foo11_snd;
+#X floatatom 83 435 4 0 0 0 - - -;
+#X obj 94 463 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X msg 171 80 set \$1;
-#X floatatom 171 59 4 0 9 0 - - -;
-#X floatatom 55 58 4 0 9 0 - - -;
-#X msg 95 56 7 0 -5.44;
-#X msg 99 79 3 3 4.55;
-#X obj 55 432 print;
-#X floatatom 255 345 4 0 0 0 - - -;
-#X msg 254 273 set \$1;
-#X floatatom 254 250 4 0 9 0 - - -;
-#X text 299 79 IEM KUG;
-#X text 278 64 musil;
-#X text 318 64 @;
-#X text 329 64 iem.at;
-#X text 226 47 (c) Thomas Musil 2000 - 2005;
-#X text 282 92 Graz \, Austria;
-#X obj 55 113 vradio 25 1 0 10 foo11_snd foo11_rcv radio_0_9 32 12
+#X msg 199 136 set \$1;
+#X floatatom 199 115 4 0 9 0 - - -;
+#X floatatom 83 114 4 0 9 0 - - -;
+#X msg 123 112 7 0 -5.44;
+#X msg 127 135 3 3 4.55;
+#X obj 83 488 print;
+#X floatatom 283 401 4 0 0 0 - - -;
+#X msg 282 329 set \$1;
+#X floatatom 282 306 4 0 9 0 - - -;
+#X text 327 135 IEM KUG;
+#X text 306 120 musil;
+#X text 346 120 @;
+#X text 357 120 iem.at;
+#X text 254 103 (c) Thomas Musil 2000 - 2005;
+#X text 310 148 Graz \, Austria;
+#X obj 83 169 vradio 25 1 0 10 foo11_snd foo11_rcv radio_0_9 32 12
 0 10 -191407 -262144 -122881 8;
-#X text 90 380 float out;
-#X text 45 497 updated for Pd version 0.46;
+#X text 118 436 float out;
+#X text 73 553 updated for Pd version 0.46;
 #N canvas 794 276 581 360 old-behavior 0;
 #X floatatom 26 36 5 0 0 0 - - -;
 #X floatatom 72 201 5 0 0 0 - - -;
@@ -49,16 +49,16 @@ If you want to get the behavior in an up-to-date patch \, you can use
 #X connect 7 0 9 0;
 #X connect 8 0 9 0;
 #X connect 9 0 1 0;
-#X restore 320 465 pd old-behavior;
-#X text 142 412 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
+#X restore 348 521 pd old-behavior;
+#X text 170 468 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
 numbers outside the object's range. You can get the old behavior back
 this way:, f 38;
-#X obj 255 369 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
+#X obj 283 425 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
 -1 -1;
-#X text 131 13 gui vertical radio:;
-#X text 123 150 right click for properties to modify geometry \, colors
+#X text 159 69 gui vertical radio:;
+#X text 151 206 right click for properties to modify geometry \, colors
 \, etc., f 29;
-#X text 125 193 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
+#X text 153 249 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
 gui-objects, f 31;
 #N canvas 662 154 730 570 edit 0;
 #X obj 45 218 f;
@@ -266,7 +266,8 @@ gui-objects, f 31;
 #X connect 72 0 20 0;
 #X connect 73 0 8 0;
 #X connect 74 0 12 0;
-#X restore 144 285 pd edit;
+#X restore 172 341 pd edit;
+#X obj 173 25 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
 #X connect 1 0 21 0;
 #X connect 3 0 12 0;
 #X connect 4 0 5 0;
