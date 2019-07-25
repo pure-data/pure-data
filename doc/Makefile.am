@@ -432,7 +432,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
      ./5.reference/vcf~-help.pd \
-     ./5.reference/vdial-help.pd \
      ./5.reference/vline~-help.pd \
      ./5.reference/vradio-help.pd \
      ./5.reference/vslider-help.pd \
