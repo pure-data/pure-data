@@ -1,45 +1,45 @@
-#N canvas 334 57 561 424 12;
-#X obj 12 23 cnv 8 100 60 empty empty my_numbox=nbx 20 20 1 18 -262144
+#N canvas 374 102 570 483 12;
+#X obj 12 20 cnv 8 100 60 empty empty my_numbox=nbx 20 20 1 18 -262144
 -1109 0;
-#X floatatom 49 357 9 0 0 0 - - -;
-#X msg 58 143 set \$1;
-#X floatatom 49 95 7 0 0 0 - - -;
-#X text 345 71 (c) musil@iem.kug.ac.at;
-#X text 387 84 IEM KUG;
-#X obj 49 381 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X floatatom 79 329 9 0 0 0 - - -;
+#X msg 89 221 set \$1;
+#X floatatom 79 167 7 0 0 0 - - -;
+#X text 115 403 (c) musil@iem.kug.ac.at;
+#X text 157 416 IEM KUG;
+#X obj 79 363 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 29 99 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X obj 53 171 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X floatatom 58 118 7 0 0 0 - - -;
-#X floatatom 136 382 9 0 0 0 - - -;
-#X floatatom 117 94 7 0 0 0 - - -;
-#X floatatom 203 181 7 0 0 0 - - -;
-#X obj 131 306 ftom;
-#X floatatom 131 328 9 0 0 0 - - -;
-#X floatatom 131 283 9 0 0 0 - - -;
-#X floatatom 247 325 9 0 0 0 - - -;
-#X floatatom 131 180 9 0 0 0 - - -;
-#X obj 131 205 mtof;
-#X msg 117 118 set \$1;
-#X obj 206 37 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
-#X text 331 364 updated for Pd version 0.35;
-#X text 362 96 graz \, austria 2002;
-#X text 34 63 gui-number-box:;
-#X obj 117 143 s foo13_rcv;
-#X obj 203 204 s goo14_rcv;
-#X obj 247 303 r goo14_snd;
-#X obj 136 359 r foo13_snd;
-#X obj 49 229 nbx 4 15 100 300 0 0 foo13_snd foo13_rcv empty 45 7 0
+#X floatatom 89 196 7 0 0 0 - - -;
+#X floatatom 184 338 9 0 0 0 - - -;
+#X floatatom 184 233 7 0 0 0 - - -;
+#X floatatom 410 184 7 0 0 0 - - -;
+#X obj 315 312 ftom;
+#X floatatom 315 337 9 0 0 0 - - -;
+#X floatatom 315 286 9 0 0 0 - - -;
+#X floatatom 413 316 9 0 0 0 - - -;
+#X floatatom 315 183 9 0 100 0 - - -;
+#X obj 315 208 mtof;
+#X msg 184 257 set \$1;
+#X obj 218 28 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
+#X text 320 405 updated for Pd version 0.35;
+#X text 132 429 graz \, austria 2002;
+#X text 34 60 gui-number-box:;
+#X obj 184 282 s foo13_rcv;
+#X obj 410 207 s goo14_rcv;
+#X obj 413 294 r goo14_snd;
+#X obj 184 315 r foo13_snd;
+#X obj 79 301 nbx 4 15 100 300 0 0 foo13_snd foo13_rcv empty 45 7 0
 10 -225280 -1109 -1 100 256;
-#X obj 131 257 nbx 4 17 55 3520 1 0 goo14_snd goo14_rcv log.freq. 10
--13 0 14 -1 -260818 -90881 55 72;
-#X text 219 252 shift-click & drag for fine-tuning (0.01 pixels),
-f 25;
-#X text 312 147 right click for properties to modify geometry \, colors
+#X obj 315 260 nbx 4 17 1 10000 1 0 goo14_snd goo14_rcv log.freq. 10
+-13 0 14 -1 -260818 -90881 1 72;
+#X text 40 104 shift-click & drag for fine-tuning (0.01 pixels), f
+25;
+#X text 269 69 right click for properties to modify geometry \, colors
 \, etc., f 29;
-#X text 314 185 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
+#X text 272 108 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
 gui-objects, f 31;
-#N canvas 619 82 746 581 edit 0;
+#N canvas 675 81 746 581 edit 0;
 #X floatatom 489 192 1 0 1 0 - - -;
 #X text 616 392 no init;
 #X text 619 429 init value on loadbang, f 11;
@@ -105,7 +105,6 @@ gui-objects, f 31;
 #X text 289 55 red;
 #X text 330 54 green;
 #X text 383 54 blue;
-#X msg 63 505 \; goo14_rcv label hdial_0_9;
 #X obj 57 141 pack f f f;
 #N canvas 449 206 564 549 RGB 0;
 #X obj 96 56 inlet;
@@ -221,6 +220,7 @@ gui-objects, f 31;
 #X msg 282 285 \; goo14_rcv size \$1;
 #X text 542 271 bottom-range-bound;
 #X text 599 293 top-range-bound;
+#X msg 63 505 \; goo14_rcv label log.freq.;
 #X connect 0 0 18 0;
 #X connect 10 0 13 0;
 #X connect 11 0 10 1;
@@ -242,34 +242,36 @@ gui-objects, f 31;
 #X connect 38 0 37 1;
 #X connect 39 0 40 1;
 #X connect 40 0 45 0;
-#X connect 49 0 66 0;
+#X connect 49 0 65 0;
 #X connect 50 0 49 1;
-#X connect 51 0 66 1;
-#X connect 52 0 66 2;
-#X connect 54 0 67 0;
-#X connect 55 0 67 0;
-#X connect 56 0 67 0;
-#X connect 57 0 67 1;
-#X connect 58 0 67 2;
-#X connect 59 0 67 3;
-#X connect 66 0 43 0;
-#X connect 67 0 68 0;
-#X connect 67 1 68 1;
-#X connect 67 2 68 2;
-#X connect 68 0 43 0;
-#X connect 69 0 67 0;
-#X connect 72 0 19 0;
-#X connect 73 0 49 0;
-#X connect 74 0 37 0;
-#X connect 75 0 25 0;
-#X connect 76 0 29 0;
-#X connect 77 0 10 0;
-#X connect 78 0 83 0;
-#X connect 79 0 78 1;
-#X connect 80 0 83 1;
-#X connect 83 0 85 0;
-#X connect 84 0 78 0;
-#X restore 242 115 pd edit;
+#X connect 51 0 65 1;
+#X connect 52 0 65 2;
+#X connect 54 0 66 0;
+#X connect 55 0 66 0;
+#X connect 56 0 66 0;
+#X connect 57 0 66 1;
+#X connect 58 0 66 2;
+#X connect 59 0 66 3;
+#X connect 65 0 43 0;
+#X connect 66 0 67 0;
+#X connect 66 1 67 1;
+#X connect 66 2 67 2;
+#X connect 67 0 43 0;
+#X connect 68 0 66 0;
+#X connect 71 0 19 0;
+#X connect 72 0 49 0;
+#X connect 73 0 37 0;
+#X connect 74 0 25 0;
+#X connect 75 0 29 0;
+#X connect 76 0 10 0;
+#X connect 77 0 82 0;
+#X connect 78 0 77 1;
+#X connect 79 0 82 1;
+#X connect 82 0 84 0;
+#X connect 83 0 77 0;
+#X restore 188 171 pd edit;
+#X obj 143 62 nbx 5 14 -1e+37 1e+37 0 0 hhh hhh empty 45 7 0 10 -262144
+-1 -1 0 256;
 #X connect 1 0 6 0;
 #X connect 2 0 27 0;
 #X connect 3 0 27 0;

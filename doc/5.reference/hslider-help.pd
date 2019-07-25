@@ -1,37 +1,37 @@
-#N canvas 406 121 602 487 12;
-#X obj 19 12 cnv 8 100 60 empty empty hslider=hsl 20 20 1 18 -262144
+#N canvas 408 95 562 540 12;
+#X obj 14 11 cnv 8 100 60 empty empty hslider=hsl 20 20 1 18 -262144
 -1109 0;
-#X floatatom 66 201 9 0 0 0 - - -;
-#X msg 75 154 set \$1;
-#X floatatom 66 111 7 0 0 0 - - -;
-#X text 352 75 (c) musil@iem.kug.ac.at;
-#X text 410 90 IEM KUG;
-#X obj 66 223 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X floatatom 68 247 9 0 0 0 - - -;
+#X msg 77 200 set \$1;
+#X floatatom 68 157 7 0 0 0 - - -;
+#X text 345 51 (c) musil@iem.kug.ac.at;
+#X text 403 66 IEM KUG;
+#X obj 68 269 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 46 111 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X obj 48 157 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 69 177 hsl 101 15 25 75 0 1 foo1_snd foo1_rcv empty 8 -8 0 10
--225280 -1109 -1 0 1;
-#X text 34 59 gui-horizontal-slider:;
-#X floatatom 75 132 7 0 0 0 - - -;
-#X floatatom 228 133 6 0 0 0 - - -;
-#X obj 171 379 r goo2_snd;
-#X obj 170 340 s goo2_rcv;
-#X floatatom 137 101 7 0 0 0 - - -;
-#X floatatom 170 292 7 0 0 0 - - -;
-#X obj 65 354 hsl 73 15 8 12000 1 1 goo2_snd goo2_rcv log.freq. 8 -8
-0 10 -42246 -260818 -90133 3780 1;
-#X obj 62 404 ftom;
-#X floatatom 62 429 9 0 0 0 - - -;
-#X floatatom 62 379 9 0 0 0 - - -;
-#X floatatom 171 403 9 0 0 0 - - -;
-#X floatatom 62 292 8 0 127 0 - - -;
-#X obj 62 315 mtof;
-#X obj 137 145 s foo1_rcv;
-#X obj 228 107 r foo1_snd;
-#X msg 137 123 set \$1;
-#X msg 170 316 set \$1;
-#N canvas 619 82 746 581 edit 0;
+#X obj 71 223 hsl 101 15 25 75 0 1 foo1_snd foo1_rcv empty 8 -8 0 10
+-225280 -1109 -1 5100 1;
+#X text 34 57 gui-horizontal-slider:;
+#X floatatom 77 178 7 0 0 0 - - -;
+#X floatatom 67 335 6 0 0 0 - - -;
+#X obj 400 313 r goo2_snd;
+#X obj 399 274 s goo2_rcv;
+#X floatatom 139 147 7 0 0 0 - - -;
+#X floatatom 399 226 7 0 0 0 - - -;
+#X obj 294 288 hsl 73 15 8 12000 1 1 goo2_snd goo2_rcv log.freq. 8
+-8 0 10 -90133 -225271 -44926 3780 1;
+#X obj 291 338 ftom;
+#X floatatom 291 363 9 0 0 0 - - -;
+#X floatatom 291 313 9 0 0 0 - - -;
+#X floatatom 400 337 9 0 0 0 - - -;
+#X floatatom 291 226 8 0 127 0 - - -;
+#X obj 291 249 mtof;
+#X obj 139 191 s foo1_rcv;
+#X obj 67 309 r foo1_snd;
+#X msg 139 169 set \$1;
+#X msg 399 250 set \$1;
+#N canvas 694 128 746 581 edit 0;
 #X floatatom 489 192 1 0 1 0 - - -;
 #X text 613 392 no init;
 #X text 616 429 init value on loadbang, f 11;
@@ -99,7 +99,6 @@
 #X text 289 55 red;
 #X text 330 54 green;
 #X text 383 54 blue;
-#X msg 63 505 \; goo2_rcv label hdial_0_9;
 #X obj 57 141 pack f f f;
 #N canvas 449 206 564 549 RGB 0;
 #X obj 96 56 inlet;
@@ -213,6 +212,7 @@
 #X obj 274 216 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X msg 282 285 \; goo2_rcv size \$1;
+#X msg 63 506 \; goo2_rcv label log.freq.;
 #X connect 0 0 20 0;
 #X connect 10 0 13 0;
 #X connect 11 0 10 1;
@@ -234,36 +234,36 @@
 #X connect 40 0 39 1;
 #X connect 41 0 42 1;
 #X connect 42 0 47 0;
-#X connect 51 0 68 0;
+#X connect 51 0 67 0;
 #X connect 52 0 51 1;
-#X connect 53 0 68 1;
-#X connect 54 0 68 2;
-#X connect 56 0 69 0;
-#X connect 57 0 69 0;
-#X connect 58 0 69 0;
-#X connect 59 0 69 1;
-#X connect 60 0 69 2;
-#X connect 61 0 69 3;
-#X connect 68 0 45 0;
-#X connect 69 0 70 0;
-#X connect 69 1 70 1;
-#X connect 69 2 70 2;
-#X connect 70 0 45 0;
-#X connect 71 0 69 0;
-#X connect 74 0 21 0;
-#X connect 75 0 51 0;
-#X connect 76 0 39 0;
-#X connect 77 0 27 0;
-#X connect 78 0 31 0;
-#X connect 79 0 10 0;
-#X connect 80 0 85 0;
-#X connect 81 0 80 1;
-#X connect 82 0 85 1;
-#X connect 85 0 87 0;
-#X connect 86 0 80 0;
-#X restore 230 184 pd edit;
-#X text 375 103 graz \, austria 2002;
-#X obj 197 21 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
+#X connect 53 0 67 1;
+#X connect 54 0 67 2;
+#X connect 56 0 68 0;
+#X connect 57 0 68 0;
+#X connect 58 0 68 0;
+#X connect 59 0 68 1;
+#X connect 60 0 68 2;
+#X connect 61 0 68 3;
+#X connect 67 0 45 0;
+#X connect 68 0 69 0;
+#X connect 68 1 69 1;
+#X connect 68 2 69 2;
+#X connect 69 0 45 0;
+#X connect 70 0 68 0;
+#X connect 73 0 21 0;
+#X connect 74 0 51 0;
+#X connect 75 0 39 0;
+#X connect 76 0 27 0;
+#X connect 77 0 31 0;
+#X connect 78 0 10 0;
+#X connect 79 0 84 0;
+#X connect 80 0 79 1;
+#X connect 81 0 84 1;
+#X connect 84 0 86 0;
+#X connect 85 0 79 0;
+#X restore 186 296 pd edit;
+#X text 368 79 graz \, austria 2002;
+#X obj 196 22 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
 #N canvas 108 94 494 298 old-behavior 0;
 #X floatatom 65 127 5 0 0 0 - - -;
 #X floatatom 65 173 5 0 0 0 - - -;
@@ -286,17 +286,19 @@ If you want to get the behavior in an up-to-date patch \, you can use
 #X connect 7 0 9 0;
 #X connect 8 0 9 0;
 #X connect 9 0 1 0;
-#X restore 416 381 pd old-behavior;
-#X text 323 298 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
+#X restore 139 455 pd old-behavior;
+#X text 52 413 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
 numbers outside the object's range. You can get the old behavior back
-this way:, f 28;
-#X text 374 430 updated for Pd version 0.46;
-#X text 122 233 shift-click & drag for fine-tuning (0.01 pixels),
-f 25;
-#X text 346 165 right click for properties to modify geometry \, colors
+this way:, f 64;
+#X text 317 487 updated for Pd version 0.46;
+#X text 36 97 shift-click & drag for fine-tuning (0.01 pixels), f
+25;
+#X text 256 122 right click for properties to modify geometry \, colors
 \, etc., f 29;
-#X text 347 204 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
+#X text 257 161 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
 gui-objects, f 31;
+#X obj 200 59 hsl 128 15 0 127 0 0 ddd ddd empty 20 8 0 8 -262144 -1
+-1 3400 1;
 #X connect 1 0 6 0;
 #X connect 2 0 8 0;
 #X connect 3 0 8 0;

@@ -1,8 +1,8 @@
 #N canvas 604 89 618 418 12;
 #X obj 17 11 cnv 8 100 60 empty empty toggle=tgl 20 20 1 18 -262144
 -1109 0;
-#X text 399 58 (c) musil@iem.kug.ac.at;
-#X text 441 71 IEM KUG;
+#X text 377 58 (c) musil@iem.kug.ac.at;
+#X text 419 71 IEM KUG;
 #X obj 163 90 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
 #X obj 263 123 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
@@ -23,10 +23,10 @@
 #X obj 85 305 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 1
 1;
 #X msg 144 161 set -0.23;
-#X obj 184 70 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 1
+#X obj 184 70 tgl 15 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
 #X msg 184 90 set \$1;
-#N canvas 578 118 713 633 edit 0;
+#N canvas 715 123 713 633 edit 0;
 #X obj 60 248 f;
 #X floatatom 78 226 3 63 88 0 - - -;
 #X floatatom 113 248 3 0 37 0 - - -;
@@ -244,24 +244,24 @@
 #X connect 75 0 73 0;
 #X connect 78 0 56 0;
 #X restore 245 191 pd edit;
-#X obj 225 27 tgl 15 0 bbb bbb empty 20 8 0 8 -262144 -1 -1 1 1;
-#X text 416 83 graz \, austria 2002;
-#X obj 253 26 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
+#X obj 123 48 tgl 15 0 bbb bbb empty 20 8 0 8 -262144 -1 -1 0 1;
+#X text 394 83 graz \, austria 2002;
+#X obj 231 26 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
 #X text 371 362 updated for Pd version 0.46;
 #N canvas 324 270 524 322 old-behavior 0;
 #X floatatom 26 40 5 0 0 0 - - -;
-#X floatatom 24 180 5 0 0 0 - - -;
-#X msg 96 192 \; pd compatibility 0.45;
-#X msg 275 193 \; pd compatibility 0.46;
-#X text 113 230 Old "compatible" behavior, f 16;
-#X text 282 230 Mew "correct" behavior;
+#X floatatom 26 180 5 0 0 0 - - -;
+#X msg 111 205 \; pd compatibility 0.45;
+#X msg 290 206 \; pd compatibility 0.46;
+#X text 128 243 Old "compatible" behavior, f 16;
+#X text 297 243 Mew "correct" behavior;
 #X obj 26 69 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 16
 ;
-#X msg 28 17 0;
-#X msg 65 19 50;
-#X floatatom 106 23 5 0 0 0 - - -;
+#X msg 26 12 0;
+#X msg 63 14 50;
+#X floatatom 102 17 5 0 0 0 - - -;
 #X msg 102 41 nonzero \$1;
-#X text 63 74 Pressing the toggle \, if it is in "off" state \, resets
+#X text 80 80 Pressing the toggle \, if it is in "off" state \, resets
 it to its "value" which is normally one. Prior to Pd version 0.46 \,
 the value itself was changed if non-zero numbers were sent to the toggle.
 Now the value may still be changed explicitly with a "nonzero" message

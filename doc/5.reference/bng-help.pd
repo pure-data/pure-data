@@ -1,9 +1,9 @@
-#N canvas 521 76 544 329 12;
+#N canvas 439 103 546 349 12;
 #X obj 14 12 cnv 8 100 60 empty empty bng 20 20 1 18 -262144 -1109
 0;
-#X text 352 62 (c) musil@iem.kug.ac.at;
-#X text 405 77 IEM KUG;
-#X obj 99 272 print;
+#X text 348 74 (c) musil@iem.kug.ac.at;
+#X text 401 89 IEM KUG;
+#X obj 95 284 print;
 #N canvas 598 330 183 217 once 0;
 #X msg 42 74 1;
 #X obj 42 48 t b b;
@@ -17,33 +17,33 @@
 #X connect 2 0 5 0;
 #X connect 3 0 2 0;
 #X connect 4 0 1 0;
-#X restore 99 246 pd once;
-#X obj 71 270 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X restore 95 258 pd once;
+#X obj 67 282 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 41 113 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X obj 37 125 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 71 185 bng 50 950 50 1 foo5_snd foo5_rcv big-bang 55 20 0 12
+#X obj 67 197 bng 50 950 50 1 foo5_snd foo5_rcv big-bang 55 20 0 12
 -204800 -260818 -155649;
-#X msg 71 87 -3.14;
-#X msg 88 134 11 22 33.33;
-#X msg 80 110 open xxx;
-#X msg 96 157 funny;
-#X text 84 23 gui-bang:;
-#X obj 230 118 s foo5_rcv;
-#X obj 230 145 r foo5_snd;
-#X obj 230 98 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
--1;
-#X obj 230 172 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
+#X msg 67 99 -3.14;
+#X msg 84 146 11 22 33.33;
+#X msg 76 122 open xxx;
+#X msg 92 169 funny;
+#X text 32 47 gui-bang:;
+#X obj 222 129 s foo5_rcv;
+#X obj 222 156 r foo5_snd;
+#X obj 222 109 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
 -1 -1;
-#X text 309 292 updated for Pd version 0.35;
-#X text 375 93 graz \, austria 2002;
+#X obj 222 183 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
+-1 -1;
+#X text 325 314 updated for Pd version 0.35;
+#X text 371 105 graz \, austria 2002;
 #X obj 184 25 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
-#X text 208 203 right click for properties to modify geometry \, colors
+#X text 204 215 right click for properties to modify geometry \, colors
 \, etc., f 29;
-#X text 209 242 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
+#X text 205 254 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
 gui-objects, f 31;
-#X text 24 57 any message triggers the bang;
-#N canvas 662 154 730 570 edit 0;
+#X text 24 71 any message triggers the bang;
+#N canvas 599 154 730 570 edit 0;
 #X obj 45 218 f;
 #X floatatom 63 194 3 63 156 0 - - -;
 #X floatatom 98 218 3 -20 37 0 - - -;
@@ -93,7 +93,6 @@ gui-objects, f 31;
 #X text 284 48 red;
 #X text 325 47 green;
 #X text 378 47 blue;
-#X msg 58 498 \; foo5_rcv label hdial_0_9;
 #X obj 52 134 pack f f f;
 #N canvas 449 206 564 549 RGB 0;
 #X obj 96 56 inlet;
@@ -214,6 +213,7 @@ gui-objects, f 31;
 #X text 468 218 flash-time:;
 #X obj 484 241 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
+#X msg 58 498 \; foo5_rcv label big_bang;
 #X connect 0 0 3 0;
 #X connect 1 0 0 1;
 #X connect 2 0 3 1;
@@ -231,33 +231,35 @@ gui-objects, f 31;
 #X connect 21 0 20 1;
 #X connect 22 0 23 1;
 #X connect 23 0 28 0;
-#X connect 33 0 50 0;
+#X connect 33 0 49 0;
 #X connect 34 0 33 1;
-#X connect 35 0 50 1;
-#X connect 36 0 50 2;
-#X connect 38 0 51 0;
-#X connect 39 0 51 0;
-#X connect 40 0 51 0;
-#X connect 41 0 51 1;
-#X connect 42 0 51 2;
-#X connect 43 0 51 3;
-#X connect 50 0 26 0;
-#X connect 51 0 52 0;
-#X connect 51 1 52 1;
-#X connect 51 2 52 2;
-#X connect 52 0 26 0;
-#X connect 53 0 51 0;
-#X connect 56 0 0 0;
-#X connect 57 0 33 0;
-#X connect 58 0 20 0;
-#X connect 59 0 8 0;
-#X connect 60 0 12 0;
-#X connect 68 0 71 0;
-#X connect 69 0 68 1;
-#X connect 70 0 71 1;
-#X connect 71 0 72 0;
-#X connect 77 0 68 0;
-#X restore 360 143 pd edit;
+#X connect 35 0 49 1;
+#X connect 36 0 49 2;
+#X connect 38 0 50 0;
+#X connect 39 0 50 0;
+#X connect 40 0 50 0;
+#X connect 41 0 50 1;
+#X connect 42 0 50 2;
+#X connect 43 0 50 3;
+#X connect 49 0 26 0;
+#X connect 50 0 51 0;
+#X connect 50 1 51 1;
+#X connect 50 2 51 2;
+#X connect 51 0 26 0;
+#X connect 52 0 50 0;
+#X connect 55 0 0 0;
+#X connect 56 0 33 0;
+#X connect 57 0 20 0;
+#X connect 58 0 8 0;
+#X connect 59 0 12 0;
+#X connect 67 0 70 0;
+#X connect 68 0 67 1;
+#X connect 69 0 70 1;
+#X connect 70 0 71 0;
+#X connect 76 0 67 0;
+#X restore 356 155 pd edit;
+#X obj 152 27 bng 15 250 50 0 aaa aaa empty 20 8 0 8 -262144 -1 -1
+;
 #X connect 4 0 3 0;
 #X connect 6 0 7 0;
 #X connect 7 0 5 0;

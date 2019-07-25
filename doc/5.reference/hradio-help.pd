@@ -1,32 +1,32 @@
-#N canvas 272 133 599 510 12;
-#X obj 31 58 cnv 8 100 60 empty empty hradio 20 20 1 18 -262144 -1109
+#N canvas 434 55 603 462 12;
+#X obj 11 10 cnv 8 100 60 empty empty hradio 20 20 1 18 -262144 -1109
 0;
-#X obj 40 114 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X obj 49 113 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 167 261 s foo11_rcv;
-#X obj 168 287 r foo11_snd;
-#X floatatom 103 254 4 0 0 0 - - -;
-#X obj 111 279 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
+#X obj 457 209 s foo11_rcv;
+#X obj 458 245 r foo11_snd;
+#X floatatom 112 228 4 0 0 0 - - -;
+#X obj 119 259 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
 -1 -1;
-#X msg 186 134 set \$1;
-#X floatatom 186 113 4 0 9 0 - - -;
-#X floatatom 63 114 4 0 9 0 - - -;
-#X msg 103 110 7 0 -5.44;
-#X msg 117 132 3 3 4.55;
-#X obj 103 307 print;
-#X floatatom 168 311 4 0 0 0 - - -;
-#X msg 167 238 set \$1;
-#X floatatom 167 216 4 0 9 0 - - -;
-#X text 422 130 IEM KUG;
-#X text 406 114 musil;
-#X text 446 114 @;
-#X text 459 115 iem.at;
-#X text 344 95 (c) Thomas Musil 2000 - 2005;
-#X text 405 145 Graz \, Austria;
-#X obj 103 166 hradio 25 1 0 10 foo11_snd foo11_rcv radio_0_9 32 12
-0 10 -191407 -262144 -118785 9;
-#X text 30 254 float out;
-#X text 319 454 updated for Pd version 0.46;
+#X msg 195 133 set \$1;
+#X floatatom 195 112 4 0 9 0 - - -;
+#X floatatom 72 113 4 0 9 0 - - -;
+#X msg 112 109 7 0 -5.44;
+#X msg 126 131 3 3 4.55;
+#X obj 112 291 print;
+#X floatatom 458 269 4 0 0 0 - - -;
+#X msg 457 186 set \$1;
+#X floatatom 457 164 4 0 9 0 - - -;
+#X text 442 89 IEM KUG;
+#X text 426 73 musil;
+#X text 466 73 @;
+#X text 479 74 iem.at;
+#X text 363 57 (c) Thomas Musil 2000 - 2005;
+#X text 425 104 Graz \, Austria;
+#X obj 112 165 hradio 25 0 0 10 foo11_snd foo11_rcv hradio_0_9 5 35
+0 14 -191407 -262144 -118785 6;
+#X text 39 228 float out;
+#X text 366 412 updated for Pd version 0.46;
 #N canvas 535 176 503 351 old-behavior 0;
 #X obj 68 185 hradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144 -1
 -1 0.5;
@@ -49,18 +49,18 @@ If you want to get the behavior in an up-to-date patch \, you can use
 #X connect 1 0 0 0;
 #X connect 8 0 0 0;
 #X connect 9 0 0 0;
-#X restore 249 410 pd old-behavior;
-#X text 61 369 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
+#X restore 142 384 pd old-behavior;
+#X text 67 344 COMPATIBILITY NOTE: as of Pd 0.46 \, you can pass through
 numbers outside the object's range. You can get the old behavior back
-this way:, f 57;
-#X obj 168 334 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
+this way:, f 63;
+#X obj 458 292 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
 -1 -1;
-#X text 282 220 right click for properties to modify geometry \, colors
+#X text 191 228 right click for properties to modify geometry \, colors
 \, etc., f 29;
-#X text 283 259 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
+#X text 192 267 UP- \, DOWN- \, LEFT- or RIGHT-key for moving selected
 gui-objects, f 31;
-#X text 140 68 gui horizontal radio:;
-#N canvas 662 154 730 570 edit 0;
+#X text 51 65 gui horizontal radio:;
+#N canvas 668 147 730 570 edit 0;
 #X obj 45 218 f;
 #X floatatom 63 194 3 63 156 0 - - -;
 #X floatatom 98 218 3 -20 37 0 - - -;
@@ -87,9 +87,9 @@ gui-objects, f 31;
 #X obj 62 376 pack 0 0;
 #X text 108 330 font;
 #X text 144 353 height;
-#X text 502 289 no init;
-#X text 481 347 init value on loadbang;
-#X floatatom 480 224 5 2 20 0 - - -;
+#X text 526 289 no init;
+#X text 502 350 init value on loadbang;
+#X floatatom 490 214 5 2 20 0 - - -;
 #X msg 236 166 \; foo11_rcv color \$1 \$2 \$3;
 #X msg 45 266 \; foo11_rcv label_pos \$1 \$2;
 #X msg 62 401 \; foo11_rcv label_font \$1 \$2;
@@ -97,17 +97,17 @@ gui-objects, f 31;
 #X msg 302 500 \; foo11_rcv pos \$1 \$2;
 #X msg 288 375 \; foo11_rcv delta \$1 \$2;
 #X msg 272 250 \; foo11_rcv size \$1;
-#X msg 480 167 \; foo11a_rcv receive foo11_rcv;
-#X msg 481 129 \; foo11_rcv receive foo11a_rcv;
-#X msg 481 84 \; foo11_rcv send foo11_snd;
-#X msg 481 46 \; foo11_rcv send foo11a_snd;
-#X msg 481 308 \; foo11_rcv init 0;
-#X msg 483 365 \; foo11_rcv init 1;
-#X msg 488 435 \; foo11_rcv single_change;
-#X msg 488 476 \; foo11_rcv double_change;
-#X text 489 416 changing-behavior;
-#X msg 480 250 \; foo11_rcv number \$1;
-#X text 524 224 number of buttons;
+#X msg 490 157 \; foo11a_rcv receive foo11_rcv;
+#X msg 491 119 \; foo11_rcv receive foo11a_rcv;
+#X msg 491 74 \; foo11_rcv send foo11_snd;
+#X msg 491 36 \; foo11_rcv send foo11a_snd;
+#X msg 505 308 \; foo11_rcv init 0;
+#X msg 504 368 \; foo11_rcv init 1;
+#X msg 506 438 \; foo11_rcv single_change;
+#X msg 506 479 \; foo11_rcv double_change;
+#X text 507 419 changing-behavior;
+#X msg 490 240 \; foo11_rcv number \$1;
+#X text 534 214 number of buttons;
 #X obj 52 96 f;
 #X floatatom 70 47 3 0 29 0 - - -;
 #X floatatom 85 74 3 0 29 0 - - -;
@@ -124,7 +124,6 @@ gui-objects, f 31;
 #X text 284 48 red;
 #X text 325 47 green;
 #X text 378 47 blue;
-#X msg 58 498 \; foo11_rcv label hdial_0_9;
 #X obj 52 134 pack f f f;
 #N canvas 449 206 564 549 RGB 0;
 #X obj 96 56 inlet;
@@ -227,6 +226,7 @@ gui-objects, f 31;
 -1 -1;
 #X obj 287 430 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
+#X msg 58 498 \; foo11_rcv label hradio_0_9;
 #X connect 0 0 3 0;
 #X connect 1 0 0 1;
 #X connect 2 0 3 1;
@@ -245,29 +245,31 @@ gui-objects, f 31;
 #X connect 22 0 23 1;
 #X connect 23 0 31 0;
 #X connect 28 0 45 0;
-#X connect 47 0 64 0;
+#X connect 47 0 63 0;
 #X connect 48 0 47 1;
-#X connect 49 0 64 1;
-#X connect 50 0 64 2;
-#X connect 52 0 65 0;
-#X connect 53 0 65 0;
-#X connect 54 0 65 0;
-#X connect 55 0 65 1;
-#X connect 56 0 65 2;
-#X connect 57 0 65 3;
-#X connect 64 0 29 0;
-#X connect 65 0 66 0;
-#X connect 65 1 66 1;
-#X connect 65 2 66 2;
-#X connect 66 0 29 0;
-#X connect 67 0 65 0;
-#X connect 70 0 0 0;
-#X connect 71 0 47 0;
-#X connect 72 0 20 0;
-#X connect 73 0 8 0;
-#X connect 74 0 12 0;
-#X restore 339 322 pd edit;
-#X obj 226 21 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
+#X connect 49 0 63 1;
+#X connect 50 0 63 2;
+#X connect 52 0 64 0;
+#X connect 53 0 64 0;
+#X connect 54 0 64 0;
+#X connect 55 0 64 1;
+#X connect 56 0 64 2;
+#X connect 57 0 64 3;
+#X connect 63 0 29 0;
+#X connect 64 0 65 0;
+#X connect 64 1 65 1;
+#X connect 64 2 65 2;
+#X connect 65 0 29 0;
+#X connect 66 0 64 0;
+#X connect 69 0 0 0;
+#X connect 70 0 47 0;
+#X connect 71 0 20 0;
+#X connect 72 0 8 0;
+#X connect 73 0 12 0;
+#X restore 293 107 pd edit;
+#X obj 99 22 hradio 15 1 0 8 eee eee empty 0 -8 0 10 -262144 -1 -1
+2;
+#X obj 237 20 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
 #X connect 1 0 21 0;
 #X connect 3 0 12 0;
 #X connect 4 0 5 0;
