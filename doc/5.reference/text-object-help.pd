@@ -12,7 +12,7 @@
 #X obj 280 196 text define;
 #X text 97 147 The text object's first argument sets its function:
 , f 27;
-#N canvas 753 80 708 694 define 0;
+#N canvas 732 80 708 694 define 0;
 #X msg 49 106 clear;
 #X msg 67 132 read text-object-help.txt;
 #X msg 80 161 write text-object-help.txt;
@@ -73,7 +73,7 @@ file formats - like this:), f 48;
 #X connect 28 0 12 0;
 #X restore 392 196 pd define;
 #X obj 280 219 text get;
-#N canvas 638 220 901 602 get 0;
+#N canvas 475 169 901 610 get 0;
 #X floatatom 142 119 5 0 5 0 - - -;
 #X msg 66 88 0;
 #X msg 142 88 2;
@@ -84,17 +84,17 @@ file formats - like this:), f 48;
 #X msg 219 88 4;
 #X text 312 300 "type" is 0 if terminated by a semicolon \, 1 if by
 a comma \, or 2 if the line number was out of range.;
-#X obj 169 543 text define -k text-help-get;
+#X obj 126 545 text define -k text-help-get;
 #A set;
 #X obj 142 234 text get text-help-get, f 13;
-#X floatatom 163 420 5 0 0 0 - - -;
-#X msg 87 389 0;
-#X msg 163 389 2;
-#X msg 123 389 1;
-#X obj 163 491 print;
-#X msg 200 389 3;
-#X msg 240 389 4;
-#X obj 163 464 text get text-help-get 1;
+#X floatatom 120 422 5 0 0 0 - - -;
+#X msg 44 391 0;
+#X msg 120 391 2;
+#X msg 80 391 1;
+#X obj 120 493 print;
+#X msg 157 391 3;
+#X msg 197 391 4;
+#X obj 120 466 text get text-help-get 1;
 #X text 260 221 arguments: name of the text object or "-s struct-name"
 ;
 #X floatatom 531 432 5 0 0 0 - - -;
@@ -104,9 +104,9 @@ a comma \, or 2 if the line number was out of range.;
 #X obj 531 483 print;
 #X msg 567 401 3;
 #X msg 607 401 4;
-#X text 344 459 read field number 1 (zero for first field), f 23;
+#X text 301 461 read field number 1 (zero for first field), f 23;
 #X obj 531 456 text get text-help-get 1 3;
-#X text 184 358 examples showing field selection:;
+#X text 40 358 examples showing field selection:;
 #X text 62 15 "text get" reads the nth line from the named text and
 outputs it \, or optionally reads one or more specific fields (atoms)
 from the line.;
@@ -492,7 +492,7 @@ are used as a waiting point, f 43;
 #X text 239 457 name of the text object or "-s struct-name";
 #X obj 131 695 text define -k text-help-seq;
 #A set 1 2 3 \; 4 5 symbol 7 \; 8 \$1 \$2 \; 9 \$3 \$1-\$2-\$3 \;;
-#X obj 676 270 print wait;
+#X obj 678 270 print wait;
 #X msg 127 281 stop;
 #X text 174 282 stop the sequence;
 #X text 35 13 "text sequence" outputs lines from a text buffer \, either
@@ -602,7 +602,7 @@ simply sequence a list of numbers:, f 71;
 #X restore 392 413 pd sequence;
 #X text 103 291 delete a line or clear;
 #X obj 279 292 text delete;
-#N canvas 731 191 748 405 delete 0;
+#N canvas 692 191 748 405 delete 0;
 #X text 415 117 find another text by name or pointer;
 #X obj 49 150 text delete text-help-delete;
 #X text 264 151 argument: name of the text object or "-s struct-name"
@@ -643,9 +643,9 @@ line 4 \\\;;
 #X msg 85 111 1 2 3;
 #X msg 50 57 12 23 34 45 56 56;
 #X text 183 57 list to insert into the text;
-#X text 320 210 arguments: name of the text object or "-s struct-name"
+#X text 292 210 arguments: name of the text object or "-s struct-name"
 ;
-#X text 321 231 one optional arg to set inlet 1 (line number);
+#X text 293 231 one optional arg to set inlet 1 (line number);
 #X obj 68 210 text insert text-help-insert 3;
 #X text 71 14 "text insert" inserts a line.;
 #X text 210 109 insert before line number 2 (counting from 0);
