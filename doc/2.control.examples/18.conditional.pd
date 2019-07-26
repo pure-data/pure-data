@@ -1,42 +1,42 @@
-#N canvas 538 239 665 516 12;
-#X text 395 489 updated for Pd version 0.26;
-#X obj 87 148 select 1 2;
-#X floatatom 87 120 0 0 0;
-#X obj 87 214 print select-1;
-#X obj 119 194 print select-2;
-#X obj 152 171 print select-3;
-#X floatatom 313 122 0 0 0;
-#X obj 313 155 pack;
-#X obj 313 182 route 1 2;
-#X obj 353 131 t b f;
-#X floatatom 353 107 0 0 0;
-#X obj 371 210 unpack;
-#X floatatom 313 210 0 0 0;
-#X floatatom 342 210 0 0 0;
-#X floatatom 371 233 0 0 0;
-#X floatatom 409 234 0 0 0;
-#X text 30 20 Pd provides at least four objects for doing conditional
+#N canvas 614 110 522 601 12;
+#X text 259 526 updated for Pd version 0.26;
+#X obj 87 163 select 1 2;
+#X floatatom 87 135 0 0 0 0 - - -;
+#X obj 87 240 print select-1;
+#X obj 120 215 print select-2;
+#X obj 154 190 print select-3;
+#X floatatom 267 138 0 0 0 0 - - -;
+#X obj 307 176 pack;
+#X obj 307 203 route 1 2;
+#X obj 307 147 t b f;
+#X floatatom 307 123 0 0 0 0 - - -;
+#X obj 367 231 unpack;
+#X floatatom 307 231 0 0 0 0 - - -;
+#X floatatom 337 231 0 0 0 0 - - -;
+#X floatatom 367 256 0 0 0 0 - - -;
+#X floatatom 406 256 0 0 0 0 - - -;
+#X text 37 20 Pd provides at least four objects for doing conditional
 computations. The "select" object tests its input against its argument(s)
 \, and outputs "bang" when they match. The "route" object works similarly
 but also copies data. In other words \, "route" takes a list \, tests
 its first element \, and conditionally passes on the rest of the list.
 ;
-#X text 56 262 You also get "spigot" which turns a flow of messages
+#X text 44 287 You also get "spigot" which turns a flow of messages
 on and off (like the Gate object in Max \, but with the inputs reversed):
-;
-#X floatatom 125 316 0 0 0;
-#X obj 125 341 spigot;
-#X floatatom 162 316 0 0 0;
-#X floatatom 125 365 0 0 0;
-#X text 192 317 <-- nonzero to open;
-#X text 157 365 if open \, messages coming in at left are sent to output.
-;
-#X text 55 396 And finally \, "moses" sends numbers to the left if
-they're less than the argument \, right otherwise:;
-#X floatatom 125 427 0 0 0;
-#X floatatom 125 476 0 0 0;
-#X obj 125 452 moses 5;
-#X floatatom 169 476 0 0 0;
+, f 54;
+#X floatatom 185 347 0 0 0 0 - - -;
+#X obj 185 374 spigot;
+#X floatatom 224 347 0 0 0 0 - - -;
+#X floatatom 185 401 0 0 0 0 - - -;
+#X text 252 377 if open \, messages coming in at left are sent to output.
+, f 28;
+#X text 56 438 And finally \, "moses" sends numbers to the left if
+they're less than the argument \, right otherwise:, f 49;
+#X floatatom 119 493 0 0 0 0 - - -;
+#X floatatom 119 549 0 0 0 0 - - -;
+#X obj 119 521 moses 5;
+#X floatatom 165 549 0 0 0 0 - - -;
+#X text 254 348 <= nonzero to open;
 #X connect 1 0 3 0;
 #X connect 1 1 4 0;
 #X connect 1 2 5 0;
@@ -54,6 +54,6 @@ they're less than the argument \, right otherwise:;
 #X connect 18 0 19 0;
 #X connect 19 0 21 0;
 #X connect 20 0 19 1;
-#X connect 25 0 27 0;
-#X connect 27 0 26 0;
-#X connect 27 1 28 0;
+#X connect 24 0 26 0;
+#X connect 26 0 25 0;
+#X connect 26 1 27 0;
