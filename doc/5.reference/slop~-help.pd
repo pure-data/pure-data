@@ -1,0 +1,670 @@
+#N canvas 322 102 1020 642 12;
+#X obj 64 91 osc~;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-graph 1000 float 3;
+#A 0 -0.239854 -0.245719 -0.251574 -0.25742 -0.263255 -0.269079 -0.274893
+-0.280696 -0.286488 -0.292268 -0.298037 -0.303793 -0.309538 -0.315271
+-0.320991 -0.326698 -0.332393 -0.338074 -0.343743 -0.349397 -0.355039
+-0.360666 -0.366279 -0.371878 -0.377463 -0.383033 -0.388588 -0.394128
+-0.399653 -0.405162 -0.410656 -0.416135 -0.421597 -0.427043 -0.432473
+-0.437887 -0.443284 -0.448664 -0.454028 -0.459374 -0.464539 -0.469444
+-0.474091 -0.478482 -0.482619 -0.486504 -0.49014 -0.493527 -0.496669
+-0.499566 -0.502222 -0.504637 -0.506815 -0.508757 -0.510465 -0.511941
+-0.513187 -0.514205 -0.514997 -0.515566 -0.515913 -0.51604 -0.515949
+-0.515643 -0.515123 -0.514391 -0.51345 -0.512302 -0.510949 -0.509392
+-0.507635 -0.505678 -0.503525 -0.501178 -0.498637 -0.495907 -0.492988
+-0.489883 -0.486594 -0.483123 -0.479474 -0.475646 -0.471644 -0.467469
+-0.463124 -0.45861 -0.45393 -0.449086 -0.444081 -0.438916 -0.433594
+-0.428118 -0.422489 -0.41671 -0.410784 -0.404712 -0.398497 -0.392141
+-0.385647 -0.379017 -0.372253 -0.365358 -0.358334 -0.351183 -0.343909
+-0.33661 -0.329311 -0.322012 -0.314713 -0.307414 -0.300115 -0.292816
+-0.285517 -0.278218 -0.27092 -0.263621 -0.256322 -0.249023 -0.241724
+-0.234425 -0.227126 -0.219827 -0.212528 -0.205229 -0.19793 -0.190631
+-0.183332 -0.176033 -0.168734 -0.161435 -0.154136 -0.146837 -0.139538
+-0.132239 -0.12494 -0.117641 -0.110342 -0.103043 -0.0957445 -0.0884455
+-0.0811465 -0.0738476 -0.0665486 -0.0592497 -0.0519507 -0.0446517 -0.0373528
+-0.0300538 -0.0227548 -0.0154559 -0.00815693 -0.000857967 0.00644099
+0.01374 0.0210389 0.0283379 0.0356368 0.0429358 0.0502348 0.0575337
+0.0648327 0.0721316 0.0794306 0.0867296 0.0940285 0.101327 0.108626
+0.115925 0.123224 0.130523 0.137822 0.145121 0.15242 0.159719 0.167018
+0.174317 0.181616 0.188915 0.196214 0.203513 0.210812 0.218111 0.22541
+0.232709 0.240008 0.247307 0.254606 0.261905 0.269204 0.276502 0.283801
+0.2911 0.298399 0.305698 0.312997 0.320296 0.327595 0.334894 0.342193
+0.349492 0.356791 0.36409 0.371389 0.378688 0.385987 0.393286 0.400585
+0.407884 0.415182 0.422481 0.42978 0.437079 0.444378 0.451677 0.458976
+0.466275 0.473574 0.480873 0.488172 0.495471 0.50277 0.510069 0.517368
+0.524667 0.531966 0.539265 0.546564 0.553862 0.561161 0.568403 0.575451
+0.582305 0.588966 0.595432 0.601705 0.607784 0.61367 0.619362 0.624862
+0.630168 0.63528 0.6402 0.644928 0.649463 0.653806 0.657957 0.661916
+0.665684 0.669261 0.672647 0.675842 0.678848 0.681663 0.68429 0.686727
+0.688976 0.691037 0.692911 0.694597 0.696097 0.697411 0.69854 0.699484
+0.700244 0.70082 0.701213 0.701425 0.701454 0.701303 0.700972 0.700462
+0.699774 0.698908 0.697865 0.696646 0.695252 0.693685 0.691944 0.690031
+0.687946 0.685692 0.683268 0.680677 0.677918 0.674994 0.671904 0.668651
+0.665236 0.661659 0.657922 0.654027 0.649974 0.645764 0.6414 0.636882
+0.632212 0.627391 0.622421 0.617302 0.612037 0.606692 0.601337 0.595972
+0.590598 0.585214 0.579821 0.574417 0.569004 0.56358 0.558147 0.552703
+0.54725 0.541787 0.536313 0.53083 0.525336 0.519832 0.514318 0.508794
+0.50326 0.497716 0.492162 0.486597 0.481022 0.475438 0.469843 0.464238
+0.458623 0.452999 0.447364 0.441719 0.436065 0.4304 0.424726 0.419042
+0.413348 0.407645 0.401932 0.39621 0.390478 0.384737 0.378986 0.373226
+0.367457 0.361679 0.355891 0.350095 0.34429 0.338476 0.332654 0.326823
+0.320983 0.315136 0.30928 0.303415 0.297543 0.291663 0.285775 0.279879
+0.273976 0.268065 0.262147 0.256222 0.25029 0.244351 0.238405 0.232453
+0.226494 0.220528 0.214557 0.208579 0.202596 0.196607 0.190612 0.184612
+0.178607 0.172597 0.166582 0.160562 0.154537 0.148508 0.142475 0.136438
+0.130397 0.124353 0.118305 0.112253 0.106199 0.100141 0.0940813 0.0880188
+0.0819539 0.0758868 0.0698179 0.0637472 0.057675 0.0516014 0.0455267
+0.0394512 0.0333749 0.0272982 0.0212211 0.015144 0.00906699 0.00299037
+-0.00308567 -0.00916093 -0.0152352 -0.0213082 -0.0273798 -0.0334498
+-0.0395178 -0.0455838 -0.0516474 -0.0577085 -0.0637668 -0.0698221 -0.0758742
+-0.0819228 -0.0879677 -0.0940088 -0.100046 -0.106078 -0.112106 -0.118129
+-0.124148 -0.130161 -0.136168 -0.14217 -0.148165 -0.154155 -0.160138
+-0.166114 -0.172084 -0.178047 -0.184002 -0.18995 -0.19589 -0.201822
+-0.207745 -0.213661 -0.219567 -0.225465 -0.231353 -0.237233 -0.243102
+-0.248962 -0.254812 -0.260652 -0.266481 -0.2723 -0.278108 -0.283904
+-0.28969 -0.295463 -0.301226 -0.306976 -0.312714 -0.318439 -0.324153
+-0.329853 -0.33554 -0.341214 -0.346875 -0.352523 -0.358156 -0.363776
+-0.369381 -0.374972 -0.380548 -0.38611 -0.391657 -0.397189 -0.402705
+-0.408206 -0.413691 -0.419161 -0.424614 -0.430052 -0.435472 -0.440877
+-0.446265 -0.451636 -0.45699 -0.46227 -0.467291 -0.472052 -0.476557
+-0.480807 -0.484804 -0.48855 -0.492048 -0.495298 -0.498304 -0.501067
+-0.503589 -0.505873 -0.507919 -0.509731 -0.51131 -0.512658 -0.513777
+-0.514669 -0.515337 -0.515782 -0.516007 -0.516013 -0.515802 -0.515377
+-0.514739 -0.513891 -0.512835 -0.511573 -0.510106 -0.508438 -0.50657
+-0.504504 -0.502242 -0.499787 -0.497141 -0.494305 -0.491283 -0.488076
+-0.484686 -0.481116 -0.477367 -0.473442 -0.469344 -0.465074 -0.460635
+-0.456028 -0.451257 -0.446323 -0.441229 -0.435977 -0.430569 -0.425008
+-0.419295 -0.413434 -0.407427 -0.401275 -0.394981 -0.388549 -0.381979
+-0.375274 -0.368437 -0.36147 -0.354375 -0.347156 -0.339857 -0.332558
+-0.325259 -0.31796 -0.310661 -0.303362 -0.296063 -0.288764 -0.281465
+-0.274166 -0.266867 -0.259568 -0.25227 -0.244971 -0.237672 -0.230373
+-0.223074 -0.215775 -0.208476 -0.201177 -0.193878 -0.186579 -0.17928
+-0.171981 -0.164682 -0.157383 -0.150084 -0.142785 -0.135486 -0.128187
+-0.120888 -0.113589 -0.10629 -0.0989913 -0.0916924 -0.0843934 -0.0770945
+-0.0697955 -0.0624965 -0.0551976 -0.0478986 -0.0405997 -0.0333007 -0.0260017
+-0.0187028 -0.0114038 -0.00410485 0.00319411 0.0104931 0.017792 0.025091
+0.03239 0.0396889 0.0469879 0.0542868 0.0615858 0.0688848 0.0761837
+0.0834827 0.0907816 0.0980806 0.10538 0.112679 0.119977 0.127276 0.134575
+0.141874 0.149173 0.156472 0.163771 0.17107 0.178369 0.185668 0.192967
+0.200266 0.207565 0.214864 0.222163 0.229462 0.236761 0.24406 0.251359
+0.258658 0.265957 0.273256 0.280555 0.287854 0.295152 0.302451 0.30975
+0.317049 0.324348 0.331647 0.338946 0.346245 0.353544 0.360843 0.368142
+0.375441 0.38274 0.390039 0.397338 0.404637 0.411936 0.419235 0.426533
+0.433832 0.441131 0.44843 0.455729 0.463028 0.470327 0.477626 0.484925
+0.492224 0.499523 0.506822 0.514121 0.52142 0.528719 0.536018 0.543317
+0.550616 0.557915 0.565214 0.572347 0.579287 0.586034 0.592586 0.598945
+0.605111 0.611082 0.61686 0.622445 0.627837 0.633035 0.638041 0.642854
+0.647475 0.651903 0.656139 0.660184 0.664036 0.667698 0.671169 0.674449
+0.677538 0.680438 0.683149 0.68567 0.688003 0.690147 0.692104 0.693873
+0.695456 0.696853 0.698064 0.69909 0.699931 0.700589 0.701063 0.701356
+0.701466 0.701395 0.701144 0.700714 0.700104 0.699317 0.698352 0.697212
+0.695896 0.694405 0.692741 0.690904 0.688896 0.686717 0.684368 0.681851
+0.679167 0.676316 0.673299 0.670119 0.666776 0.66327 0.659605 0.655779
+0.651796 0.647656 0.643361 0.638911 0.634308 0.629554 0.62465 0.619597
+0.614397 0.609056 0.603705 0.598345 0.592975 0.587595 0.582206 0.576807
+0.571398 0.565979 0.56055 0.555111 0.549662 0.544203 0.538734 0.533255
+0.527766 0.522267 0.516757 0.511238 0.505708 0.500169 0.494619 0.489059
+0.483489 0.477908 0.472318 0.466718 0.461108 0.455487 0.449857 0.444217
+0.438567 0.432907 0.427237 0.421557 0.415868 0.410169 0.40446 0.398742
+0.393014 0.387277 0.38153 0.375775 0.37001 0.364235 0.358452 0.35266
+0.346859 0.341049 0.33523 0.329403 0.323568 0.317723 0.311871 0.30601
+0.300142 0.294265 0.288381 0.282488 0.276588 0.270681 0.264766 0.258844
+0.252915 0.246979 0.241036 0.235087 0.229131 0.223168 0.2172 0.211225
+0.205244 0.199257 0.193265 0.187268 0.181265 0.175257 0.169244 0.163226
+0.157203 0.151176 0.145145 0.13911 0.133071 0.127028 0.120981 0.114931
+0.108878 0.102822 0.0967633 0.0907019 0.084638 0.0785719 0.0725038
+0.0664338 0.0603623 0.0542893 0.0482151 0.04214 0.036064 0.0299874
+0.0239105 0.0178334 0.0117564 0.00567956 -0.000396765 -0.0064724 -0.0125471
+-0.0186207 -0.024693 -0.0307636 -0.0368325 -0.0428995 -0.0489641 -0.0550263
+-0.0610859 -0.0671425 -0.073196 -0.0792462 -0.0852928 -0.0913357 -0.0973744
+-0.103409 -0.109439 -0.115464 -0.121485 -0.1275 -0.13351 -0.139514
+-0.145512 -0.151505 -0.157491 -0.16347 -0.169443 -0.175409 -0.181367
+-0.187318 -0.193262 -0.199197 -0.205125 -0.211044 -0.216954 -0.222856
+-0.228748 -0.234632 -0.240506 -0.24637 -0.252224 -0.258069 -0.263903
+-0.269726 -0.275539 -0.28134 -0.287131 -0.29291 -0.298677 -0.304432
+-0.310176 -0.315907 -0.321626 -0.327332 -0.333025 -0.338705 -0.344372
+-0.350025 -0.355665 -0.36129 -0.366902 -0.372499 -0.378082 -0.383651
+-0.389204 -0.394742 -0.400266 -0.405774 -0.411266 -0.416742 -0.422203
+-0.427647 -0.433076 -0.438487 -0.443883 -0.449261 -0.454623 -0.459967
+-0.465103 -0.469979 -0.474597 -0.47896 -0.483069 -0.486926 -0.490534
+-0.493894 -0.497008 -0.499878 -0.502507 -0.504896 -0.507048 -0.508963
+-0.510645 -0.512095 -0.513316 -0.514309 -0.515076 -0.51562 -0.515942
+-0.516045 -0.51593 -0.515599 -0.515056 -0.514301 -0.513337 -0.512166
+-0.51079 -0.509211 -0.507431 -0.505453 -0.503278 -0.500908 -0.498347
+-0.495595 -0.492655 -0.48953 -0.486221 -0.48273 -0.47906 -0.475214
+-0.471192 -0.466998 -0.462634 -0.458101 -0.453403 -0.448541 -0.443518
+-0.438335 -0.432996 -0.427503 -0.421857 -0.416062 -0.410119 -0.404031
+-0.3978 -0.391429 -0.384919 -0.378274 -0.371496 -0.364586 -0.357548
+-0.350384 -0.343095 -0.335797 -0.328498 -0.321199 -0.3139 -0.306601
+-0.299302;
+#X coords 0 1 1000 -1 500 140 1 0 0;
+#X restore 23 479 graph;
+#X floatatom 64 65 5 0 0 0 - - -;
+#X obj 63 428 tabwrite~ \$0-graph;
+#X obj 89 397 metro 500;
+#X obj 89 371 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X floatatom 100 139 5 0 10000 0 - - -;
+#X floatatom 134 165 5 0 10000 0 - - -;
+#X floatatom 206 249 5 0 0 0 - - -;
+#X msg 72 115 set 0;
+#X obj 206 272 / 100;
+#X obj 134 188 / 100;
+#X obj 63 343 slop~ 1000 1e+09 0 1e+09 0;
+#X obj 12 12 slop~;
+#X text 73 13 - slew-limiting low-pass filter;
+#X text 142 139 cutoff frequency in linear region;
+#X floatatom 170 215 5 0 10000 0 - - -;
+#X text 180 165 maximum downward slew of linear region;
+#X text 213 205 asymptotic downward cutoff frequency (for downward
+slews greater than maximum), f 41;
+#X text 255 247 maximum upward slew of linear region;
+#X text 291 294 asymptotic upward cutoff frequency (for upward slews
+greater than maximum), f 41;
+#X floatatom 242 299 5 0 10000 0 - - -;
+#X text 105 65 frequency of test oscillator;
+#X obj 493 9 bng 15 250 50 0 \$0-mainlink empty empty 17 7 0 10 -262144
+-1 -1;
+#N canvas 503 120 524 258 works 0;
+#X text 14 20 this window implements the link button in the main window.
+;
+#X obj 107 62 r \$0-mainlink;
+#X obj 107 177 pdcontrol;
+#X obj 191 178 print;
+#X obj 107 112 pdcontrol;
+#X msg 107 87 dir;
+#X msg 108 137 gui ::pd_menucommands::menu_openfile \$1/../8.topics/slop-tilde.htm
+;
+#X connect 1 0 5 0;
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X connect 6 0 2 0;
+#X connect 6 0 3 0;
+#X restore 718 417 pd works;
+#N canvas 240 55 1114 912 compander-limiter 0;
+#X obj 467 16 bng 15 250 50 0 \$0-compander empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 491 13 <- open details in web browser;
+#N canvas 622 189 450 300 generate-test 0;
+#X obj 84 121 osc~ 440;
+#X obj 204 124 line~;
+#X msg 205 98 1 \, 0 500;
+#X msg 124 86 -0.25;
+#X obj 204 149 *~;
+#X obj 84 146 *~;
+#X obj 84 171 outlet~;
+#X obj 101 41 r \$0-testpulse;
+#X obj 166 220 tabwrite~ \$0-test-in;
+#X connect 0 0 5 0;
+#X connect 1 0 4 0;
+#X connect 1 0 4 1;
+#X connect 2 0 1 0;
+#X connect 3 0 0 1;
+#X connect 4 0 5 1;
+#X connect 5 0 6 0;
+#X connect 5 0 8 0;
+#X connect 7 0 2 0;
+#X connect 7 0 3 0;
+#X connect 7 0 8 0;
+#X restore 61 129 pd generate-test;
+#X obj 60 160 out1~;
+#X obj 345 44 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 345 64 metro 500;
+#X obj 345 89 s \$0-testpulse;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-test-in 20000 float 2;
+#X coords 0 1 20000 -1 500 140 1 0 0;
+#X restore 58 452 graph;
+#X text 475 50 (under construction...);
+#N canvas 323 324 450 300 resize 0;
+#X obj 83 45 inlet;
+#X msg 83 70 resize \$1;
+#X obj 83 95 s \$0-test-in;
+#X obj 88 126 s \$0-slop-out;
+#X obj 83 159 s \$0-compander-out;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 1 0 3 0;
+#X connect 1 0 4 0;
+#X restore 607 771 pd resize;
+#X msg 607 740 20000;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-slop-out 20000 float 2;
+#X coords 0 1 20000 0 500 70 1 0 0;
+#X restore 58 622 graph;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-compander-out 20000 float 2;
+#X coords 0 1 20000 -1 500 140 1 0 0;
+#X restore 58 723 graph;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-dynamic-curve 102 float 3;
+#A 0 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46
+47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69
+70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92
+93 94 95 96 97 98 99 100 100;
+#X coords 0 100 102 0 202 200 1 0 0;
+#X restore 842 37 graph;
+#N canvas 194 66 600 997 parameters 0;
+#X obj 366 32 inlet;
+#X obj 400 376 setctl \$0-speed;
+#X obj 487 83 s \$0-speed;
+#X obj 402 253 setctl \$0-limit;
+#X obj 402 277 setctl \$0-knee;
+#X obj 402 302 setctl \$0-boost;
+#X obj 402 326 setctl \$0-ratio;
+#X obj 366 222 s \$0-limit;
+#X obj 392 198 s \$0-knee;
+#X obj 400 351 setctl \$0-thresh;
+#X obj 415 174 s \$0-boost;
+#X obj 439 147 s \$0-ratio;
+#X obj 366 57 unpack 0 0 0 0 0 0;
+#X obj 462 116 s \$0-thresh;
+#X obj 50 91 r \$0-limit;
+#X obj 61 116 r \$0-knee;
+#X obj 70 143 r \$0-boost;
+#X obj 96 196 r \$0-thresh;
+#X obj 82 167 r \$0-ratio;
+#X obj 50 224 b;
+#X obj 50 249 del 0;
+#X obj 50 274 t b b;
+#X obj 50 324 until;
+#X obj 50 349 f;
+#X obj 87 351 + 1;
+#X msg 99 325 0;
+#X obj 50 374 t f f;
+#X obj 24 870 tabwrite \$0-dynamic-curve;
+#X obj 193 708 moses;
+#X obj 240 706 r \$0-thresh;
+#X obj 407 554 r \$0-ratio;
+#X obj 407 579 f;
+#X obj 407 604 / 100;
+#X obj 18 808 +;
+#X msg 225 734 0;
+#X obj 193 765 expr ($f1-$f2)*$f3;
+#X obj 18 833 max 0;
+#X obj 407 629 - 1;
+#X obj 48 404 +;
+#X obj 218 361 r \$0-boost;
+#X obj 193 452 r \$0-limit;
+#X obj 151 455 f;
+#X obj 151 480 -;
+#X obj 48 429 t f b;
+#X obj 327 428 r \$0-knee;
+#X obj 188 535 +;
+#X obj 144 535 -;
+#X obj 23 569 moses;
+#X obj 71 569 moses;
+#X obj 102 601 b;
+#X obj 195 611 r \$0-limit;
+#X obj 102 626 f;
+#X obj 302 829 expr $f4 - ($f2-$f1)*($f2-$f1)/(4*$f3);
+#X obj 23 594 +;
+#X msg 50 299 102;
+#X obj 327 453 f;
+#X obj 327 478 / 2;
+#X obj 226 46 loadbang;
+#X msg 226 71 100 0 0 100 0 50;
+#X connect 0 0 12 0;
+#X connect 12 0 7 0;
+#X connect 12 1 8 0;
+#X connect 12 2 10 0;
+#X connect 12 3 11 0;
+#X connect 12 4 13 0;
+#X connect 12 5 2 0;
+#X connect 14 0 19 0;
+#X connect 15 0 19 0;
+#X connect 16 0 19 0;
+#X connect 17 0 19 0;
+#X connect 18 0 19 0;
+#X connect 19 0 20 0;
+#X connect 20 0 21 0;
+#X connect 21 0 54 0;
+#X connect 21 1 25 0;
+#X connect 22 0 23 0;
+#X connect 23 0 24 0;
+#X connect 23 0 26 0;
+#X connect 24 0 23 1;
+#X connect 25 0 23 1;
+#X connect 26 0 38 0;
+#X connect 26 1 27 1;
+#X connect 26 1 28 0;
+#X connect 28 0 35 0;
+#X connect 28 1 34 0;
+#X connect 29 0 28 1;
+#X connect 29 0 35 1;
+#X connect 30 0 31 0;
+#X connect 31 0 32 0;
+#X connect 32 0 37 0;
+#X connect 33 0 36 0;
+#X connect 34 0 33 1;
+#X connect 35 0 33 1;
+#X connect 36 0 27 0;
+#X connect 37 0 35 2;
+#X connect 38 0 43 0;
+#X connect 39 0 38 1;
+#X connect 39 0 42 1;
+#X connect 39 0 53 1;
+#X connect 40 0 41 1;
+#X connect 41 0 42 0;
+#X connect 42 0 45 0;
+#X connect 42 0 46 0;
+#X connect 43 0 47 0;
+#X connect 43 1 41 0;
+#X connect 44 0 55 0;
+#X connect 45 0 48 1;
+#X connect 45 0 52 1;
+#X connect 46 0 47 1;
+#X connect 47 0 53 0;
+#X connect 47 1 48 0;
+#X connect 48 0 52 0;
+#X connect 48 1 49 0;
+#X connect 49 0 51 0;
+#X connect 50 0 51 1;
+#X connect 50 0 52 3;
+#X connect 51 0 33 0;
+#X connect 52 0 33 0;
+#X connect 53 0 33 0;
+#X connect 54 0 22 0;
+#X connect 55 0 56 0;
+#X connect 56 0 46 1;
+#X connect 56 0 45 1;
+#X connect 56 0 52 2;
+#X connect 57 0 58 0;
+#X connect 58 0 12 0;
+#X restore 856 437 pd parameters;
+#X floatatom 680 295 3 0 100 0 limit #0-limit-set #0-limit;
+#X floatatom 680 316 3 0 20 0 knee #0-knee-set #0-knee;
+#X floatatom 680 337 3 0 50 0 boost #0-boost-set #0-boost;
+#X floatatom 680 358 3 0 200 0 ratio #0-ratio-set #0-ratio;
+#X floatatom 680 380 3 0 100 0 thresh #0-thresh-set #0-thresh;
+#X floatatom 680 401 3 0 200 0 speed #0-speed-set #0-speed;
+#N canvas 33 150 617 518 run-compander 0;
+#X obj 47 56 inlet~;
+#X obj 82 124 slop~ 0 0 0 0 1e+09;
+#X obj 160 32 r \$0-speed;
+#X obj 160 57 f;
+#X obj 160 82 / 10;
+#X obj 366 145 r \$0-testpulse;
+#X obj 380 203 tabwrite~ \$0-slop-out;
+#X obj 83 98 abs~;
+#X obj 111 252 tabread4~ \$0-dynamic-curve;
+#X obj 80 294 -~;
+#X obj 80 319 +~ 100;
+#X obj 80 344 dbtorms~;
+#X obj 81 222 rmstodb~;
+#X obj 45 384 *~;
+#X obj 45 409 outlet~;
+#X obj 364 416 tabwrite~ \$0-compander-out;
+#X text 227 90 same envelope follower as in the peak meter example
+;
+#X text 145 288 "correct" the level by applying a gain calculated from
+the difference between the measured and desired level, f 27;
+#X connect 0 0 7 0;
+#X connect 0 0 13 0;
+#X connect 1 0 6 0;
+#X connect 1 0 12 0;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 1 3;
+#X connect 5 0 6 0;
+#X connect 5 0 15 0;
+#X connect 7 0 1 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 13 1;
+#X connect 12 0 9 1;
+#X connect 12 0 8 0;
+#X connect 13 0 14 0;
+#X connect 13 0 15 0;
+#X restore 152 156 pd run-compander;
+#X msg 607 712 2000;
+#X msg 606 686 300;
+#X obj 152 200 out1~;
+#X msg 856 331 100 0 0 200 100 100;
+#X msg 856 275 100 0 0 100 0 50;
+#X text 778 275 no change;
+#X text 801 304 limit;
+#X text 796 332 expand;
+#X text 781 362 compress;
+#X text 772 399 noise gate;
+#X msg 856 400 100 0 0 200 60 30;
+#X msg 856 362 100 0 0 50 100 100;
+#X text 29 10 Using slop~ to make a compressor/expander/limiter;
+#X msg 856 304 90 10 0 100 0 50;
+#X connect 2 0 3 0;
+#X connect 2 0 21 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 10 0 9 0;
+#X connect 21 0 24 0;
+#X connect 22 0 9 0;
+#X connect 23 0 9 0;
+#X connect 25 0 14 0;
+#X connect 26 0 14 0;
+#X connect 32 0 14 0;
+#X connect 33 0 14 0;
+#X connect 35 0 14 0;
+#X restore 665 244 pd compander-limiter;
+#X text 553 78 The slop~ object is a low-pass filter whose frequency
+response (i.e. \, reaction speed) can vary according to the filter's
+state. It can be useful for slew limiting \, dynamics processing (companders/limiters/noise
+gates) \, and soft saturation. Examples below are explained in the
+HTML documentation (linked above).;
+#N canvas 550 104 848 759 slew-limiter 0;
+#X floatatom 114 148 5 0 1000 0 - - -;
+#X obj 114 172 t f b;
+#X obj 146 201 samplerate~;
+#X obj 114 201 /;
+#X obj 89 406 metro 500;
+#X obj 89 380 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 114 378 <- start metronome to graph output;
+#X obj 63 437 tabwrite~ \$0-slew-graph;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-slew-graph 1000 float 2;
+#X coords 0 1 1000 -1 500 140 1 0 0;
+#X restore 44 558 graph;
+#X text 42 7 Using slop~ to make a slew limiter;
+#X floatatom 166 236 5 0 1000 0 - - -;
+#X obj 166 260 t f b;
+#X obj 198 288 samplerate~;
+#X obj 166 289 /;
+#X obj 62 327 slop~ 1e+09 0 0 0 0;
+#X obj 62 106 osc~ 100;
+#X text 386 288 See the HTML documentation (link on main page of this
+patch) for details.;
+#X text 385 205 Here the maximum slope of the 100-Hz. sinusoid is 200pi
+\, about 628.3. Setting upward or downward slew limits below that will
+replace the waveform with straight line segments on the way up and/or
+down.;
+#X text 162 147 max downward slope;
+#X text 214 235 max upward slope;
+#X text 387 56 The slew limiter is a filter whose cutoff frequency
+is infinite (so that the output folows teh input exactly) unless the
+input varies from the previous output by more than the highest slope
+we allow (the slew limit) times the sample period (i.e. \, the maximum
+variation allowed over the space of a sample). This limit is therefore
+in units of amplitude per sample. The number boxes specify amplitude
+change per second \, which we divide by the sample rate to convert
+to the units needed by slop~.;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 1 1 2 0;
+#X connect 2 0 3 1;
+#X connect 3 0 14 2;
+#X connect 4 0 7 0;
+#X connect 5 0 4 0;
+#X connect 10 0 11 0;
+#X connect 11 0 13 0;
+#X connect 11 1 12 0;
+#X connect 12 0 13 1;
+#X connect 13 0 14 4;
+#X connect 14 0 7 0;
+#X connect 15 0 14 0;
+#X restore 665 192 pd slew-limiter;
+#X text 518 6 <- open HTML documentation in web browser;
+#X text 725 599 updated for Pd version 0.50.;
+#X text 114 369 <- start metronome to graph output;
+#X text 530 22 (pd/doc/8.topics/slop-tilde.htm);
+#N canvas 204 69 843 697 peak-meter 0;
+#X floatatom 189 252 5 0 50 0 - #0-decay-speed-init -;
+#N canvas 423 189 450 300 generate-test 0;
+#X obj 84 121 osc~ 440;
+#X msg 124 86 -0.25;
+#X obj 204 149 *~;
+#X obj 84 146 *~;
+#X obj 84 171 outlet~;
+#X obj 101 41 r \$0-meter-testpulse;
+#X obj 282 172 setctl \$0-pulse-length;
+#X obj 204 124 vline~;
+#X obj 204 73 f;
+#X obj 268 37 r \$0-pulse-length;
+#X msg 205 98 1 \, 0 \$1;
+#X obj 318 70 loadbang;
+#X obj 300 123 s \$0-pulse-length;
+#X msg 294 227 20;
+#X obj 294 252 s \$0-decay-speed-init;
+#X msg 318 98 30;
+#X connect 0 0 3 0;
+#X connect 1 0 0 1;
+#X connect 2 0 3 1;
+#X connect 3 0 4 0;
+#X connect 5 0 1 0;
+#X connect 5 0 8 0;
+#X connect 7 0 2 0;
+#X connect 7 0 2 1;
+#X connect 8 0 10 0;
+#X connect 9 0 8 1;
+#X connect 10 0 7 0;
+#X connect 11 0 15 0;
+#X connect 11 0 13 0;
+#X connect 13 0 14 0;
+#X connect 15 0 12 0;
+#X restore 63 115 pd generate-test;
+#X text 42 7 Envelope follower for use in peak metering;
+#X text 391 433 See the HTML documentation (link on main page of this
+patch) for more details.;
+#X obj 193 41 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 193 61 metro 500;
+#X obj 193 86 s \$0-meter-testpulse;
+#X obj 189 277 / 10;
+#X text 232 249 decay speed (10ths of a Hz.), f 16;
+#X obj 104 147 out1~;
+#X floatatom 121 54 5 1 100 0 pulse-length #0-pulse-length_set #0-pulse-length
+;
+#X obj 19 354 env~ 1024;
+#X obj 63 484 - 88;
+#X obj 23 457 moses 1;
+#X msg 23 482 -100;
+#X obj 24 520 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
+#X obj 110 280 abs~;
+#X obj 123 383 metro 22;
+#X obj 123 331 loadbang;
+#X msg 123 356 1;
+#X obj 111 406 snapshot~;
+#X obj 111 431 rmstodb;
+#X obj 152 485 - 88;
+#X obj 112 458 moses 1;
+#X msg 112 483 -100;
+#X obj 113 521 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
+#X obj 111 306 slop~ 0 0 0 0 1e+09;
+#X text 218 37 <- turn on test pulse;
+#X text 178 163 <- raise "lvl" to hear;
+#X text 398 273 The output is sampled using a snapshot~ object. Both
+envelope followers are converted to uits useful for the IEM VU meter
+(+12 dB tops \, but zero mapped to -100 so that the bottom "LED" turns
+off when the signal hits 0 (100-normed \, Pd-style) dB.;
+#X text 398 368 When the pulse is very short (1 msec \, for instance)
+the RMS meter acts badly but the slop~-driven one still shows the peak.
+;
+#X text 401 102 A slew limiter can be used as a fast-rising envelope
+follower \, useful for example in peak metering. In this example a
+short burst of sound is metered using both the "env" follower (which
+measures an average over a time window) and a fast-rising envelope
+follower cosisting of an abs~ object (to rectify the signal) followed
+by a slop~ object set to rise quickly (1e9 asymptotic rise speed \,
+0 up-slew needed to engage it) and with controllable decay (asymptotic
+downward speed controlled by a number box). There is no linear region
+at all so the linear cutoff frequency has no effect.;
+#X connect 0 0 7 0;
+#X connect 1 0 9 0;
+#X connect 1 0 11 0;
+#X connect 1 0 16 0;
+#X connect 4 0 5 0;
+#X connect 5 0 6 0;
+#X connect 7 0 26 3;
+#X connect 11 0 13 0;
+#X connect 12 0 15 0;
+#X connect 13 0 14 0;
+#X connect 13 1 12 0;
+#X connect 14 0 15 0;
+#X connect 16 0 26 0;
+#X connect 17 0 20 0;
+#X connect 18 0 19 0;
+#X connect 19 0 17 0;
+#X connect 20 0 21 0;
+#X connect 21 0 23 0;
+#X connect 22 0 25 0;
+#X connect 23 0 24 0;
+#X connect 23 1 22 0;
+#X connect 24 0 25 0;
+#X connect 26 0 20 0;
+#X restore 665 217 pd peak-meter;
+#X text 118 114 set state (previously stored output);
+#N canvas 467 212 848 759 jitter-remover 0;
+#X floatatom 114 148 5 0 100 0 - - -;
+#X obj 89 406 metro 500;
+#X obj 89 380 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X text 114 378 <- start metronome to graph output;
+#N canvas 0 50 450 250 (subpatch) 0;
+#X array \$0-jitter-graph 1000 float 2;
+#X coords 0 1 1000 -1 500 140 1 0 0;
+#X restore 81 530 graph;
+#X obj 64 52 osc~ 100;
+#X obj 63 437 tabwrite~ \$0-jitter-graph;
+#X obj 64 83 clip~ -0.3 0.3;
+#X obj 182 57 osc~ 1000;
+#X obj 182 82 *~ 0.03;
+#X obj 65 118 +~;
+#X obj 62 327 slop~ 0 0 1e+09 0 1e+09;
+#X obj 114 172 / 1000;
+#X text 163 147 jitter range \, 0 to 0.1;
+#X text 42 7 jitter remover;
+#X text 387 56 If you have a noisy sensor \, one approach to smoothing
+it is to set slop~ u pto only react to motion past a certain window.
+The linear frequeny cutoff is set to zero so that the output only changes
+when the input strays by more than the maximum upward or downward slew.
+;
+#X text 386 147 Set the jitter range to zero to see the original signal
+and raise it to see smoothing.;
+#X connect 0 0 12 0;
+#X connect 1 0 6 0;
+#X connect 2 0 1 0;
+#X connect 5 0 7 0;
+#X connect 7 0 10 0;
+#X connect 8 0 9 0;
+#X connect 9 0 10 1;
+#X connect 10 0 11 0;
+#X connect 11 0 6 0;
+#X connect 12 0 11 2;
+#X connect 12 0 11 4;
+#X restore 665 272 pd jitter-remover;
+#X connect 0 0 12 0;
+#X connect 2 0 0 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 12 1;
+#X connect 7 0 11 0;
+#X connect 8 0 10 0;
+#X connect 9 0 12 0;
+#X connect 10 0 12 4;
+#X connect 11 0 12 2;
+#X connect 12 0 3 0;
+#X connect 16 0 12 3;
+#X connect 21 0 12 5;

@@ -255,7 +255,7 @@ typedef struct _text t_object;
 #define ob_g te_g
 
 typedef void (*t_method)(void);
-typedef void *(*t_newmethod)( void);
+typedef void *(*t_newmethod)(void);
 
 /* in ARM 64 a varargs prototype generates a different function call sequence
 from a fixed one, so in that special case we make a more restrictive
@@ -465,11 +465,17 @@ EXTERN const t_parentwidgetbehavior *pd_getparentwidget(t_pd *x);
 
 #define CLASS_TYPEMASK 3
 
-
 EXTERN t_class *class_new(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+
 EXTERN t_class *class_new64(t_symbol *name, t_newmethod newmethod,
     t_method freemethod, size_t size, int flags, t_atomtype arg1, ...);
+
+EXTERN void class_free(t_class *c);
+
+#if PDINSTANCE
+EXTERN t_class *class_getfirst(void);
+#endif
 
 EXTERN void class_addcreator(t_newmethod newmethod, t_symbol *s,
     t_atomtype type1, ...);
@@ -504,6 +510,9 @@ EXTERN void obj_saveformat(const t_object *x, t_binbuf *bb); /* add format to bb
 typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
 EXTERN void class_setpropertiesfn(t_class *c, t_propertiesfn f);
 EXTERN t_propertiesfn class_getpropertiesfn(const t_class *c);
+
+typedef void (*t_classfreefn)(t_class *);
+EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 
 #ifndef PD_CLASS_DEF
 #define class_addbang(x, y) class_addbang((x), (t_method)(y))
@@ -848,7 +857,7 @@ EXTERN t_pdinstance pd_maininstance;
 
 /* m_pd.c */
 #ifdef PDINSTANCE
-EXTERN t_pdinstance *pdinstance_new( void);
+EXTERN t_pdinstance *pdinstance_new(void);
 EXTERN void pd_setinstance(t_pdinstance *x);
 EXTERN void pdinstance_free(t_pdinstance *x);
 #endif /* PDINSTANCE */

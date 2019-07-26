@@ -279,7 +279,7 @@ else
     CFLAGS="$CFLAGS $RELEASE_CFLAGS"
 fi
 
-##### Universal/multi architecture build on OSX #####
+##### Universal/multi architecture build on macOS #####
 PD_CHECK_UNIVERSAL(ARCH, [universal=yes], [universal=no])
 AM_CONDITIONAL(UNIVERSAL, test x$universal = xyes)
 if test x$universal = xyes ; then
@@ -290,7 +290,8 @@ fi
 ##### Gettext #####
 # Gettext is needed to build language localizations.
 AC_ARG_ENABLE([locales],
-    [AS_HELP_STRING([--disable-locales], [do not compile localizations (requires gettext)])],
+    [AS_HELP_STRING([--disable-locales],
+        [do not compile localizations (requires gettext)])],
     [locales=$enableval])
 if test x$locales = xyes ; then
     AC_CHECK_PROG(HAVE_MSGFMT, [msgfmt], yes, no)
@@ -325,7 +326,8 @@ fi
 # on macOS, use the JackOSX.com Jackmp.framework not the jack lib by default
 # this is set in src/Makefile.am based on the JACK & JACK_FRAMEWORK vars
 AC_ARG_ENABLE([jack-framework],
-    [AS_HELP_STRING([--disable-jack-framework], [do not weak link to Jackmp.framework on macOS])],
+    [AS_HELP_STRING([--disable-jack-framework],
+        [do not weak link to Jackmp.framework on macOS])],
     [jack_framework=$enableval])
 test x$MACOSX = xyes || jack_framework=no
 if test x$jack_framework = xyes ; then
@@ -339,7 +341,9 @@ AC_ARG_ENABLE([jack],
 if [ test x$jack_framework != xyes ] && [ test x$jack = xyes ] ; then
     AC_CHECK_LIB([rt], [shm_open], [LIBS="$LIBS -lrt"])
     AC_CHECK_LIB([jack], [jack_set_xrun_callback], [JACK_LIBS="-ljack" ; jack=xrun])
-    AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes], [jack=no])
+    AC_CHECK_LIB([jack], [jack_set_error_function], [JACK_LIBS="-ljack" ; jack=yes],
+        [AC_MSG_WARN([JACK development files not found... skipping (See INSTALL.txt)])
+        jack=no])
 fi
 
 ##### MMIO #####
@@ -355,7 +359,8 @@ AC_ARG_ENABLE([asio],
 test x$WINDOWS = xyes || asio=no
 AS_IF([test x$asio = xyes],
     test -f "${srcdir}"/asio/ASIOSDK/common/asio.h || asio=no
-    AS_IF([test x$asio = xno], AC_MSG_WARN([ASIO SDK not found! See asio/README.txt]))
+    AS_IF([test x$asio = xno],
+        AC_MSG_WARN([ASIO SDK not found... skipping (See asio/README.txt)]))
 )
 
 ##### PortAudio #####
@@ -363,7 +368,8 @@ AC_ARG_ENABLE([portaudio],
     [AS_HELP_STRING([--disable-portaudio], [do not use portaudio])],
     [portaudio=$enableval])
 AC_ARG_WITH([local-portaudio],
-    [AS_HELP_STRING([--without-local-portaudio], [do not use the portaudio included with pd])],
+    [AS_HELP_STRING([--without-local-portaudio],
+        [do not use the portaudio included with Pd])],
     [local_portaudio=$withval])
 if test x$portaudio = xyes ; then
     if test x$local_portaudio = xno ; then
@@ -375,7 +381,7 @@ if test x$portaudio = xyes ; then
         if test -d "$srcdir/portaudio" ; then
             AC_MSG_NOTICE([Using included PortAudio])
         else
-            AC_MSG_WARN([PortAudio not found in pd source directory])
+            AC_MSG_WARN([PortAudio not found in Pd source directory])
             portaudio=no
         fi
     fi
@@ -386,11 +392,12 @@ AC_ARG_ENABLE([portmidi],
     [AS_HELP_STRING([--enable-portmidi], [use portmidi])],
     [portmidi=$enableval])
 AC_ARG_WITH([local-portmidi],
-    [AS_HELP_STRING([--without-local-portmidi], [do not use the portmidi included with pd])],
+    [AS_HELP_STRING([--without-local-portmidi],
+        [do not use the portmidi included with Pd])],
     [local_portmidi=$withval])
 # don't allow portmidi if already using oss
 AS_IF([test x$oss = xyes -a x$portmidi != xno],
-  [AC_MSG_WARN([Cannot enable both OSS-midi and PortMidi..preferring OSS])
+  [AC_MSG_WARN([Cannot enable both OSS-midi and PortMidi... preferring OSS])
   portmidi=no])
 if test x$portmidi = xyes ; then
     if test x$local_portmidi = xno ; then
@@ -402,7 +409,7 @@ if test x$portmidi = xyes ; then
         if test -d "$srcdir/portmidi" ; then
             AC_MSG_NOTICE([Using included PortMidi])
         else
-            AC_MSG_WARN([PortMidi not found in pd source directory])
+            AC_MSG_WARN([PortMidi not found in Pd source directory])
             portmidi=no
         fi
     fi
@@ -415,13 +422,15 @@ AC_ARG_ENABLE([fftw],
 if test x$fftw = xyes; then
     AC_CHECK_LIB([fftw3f], [fftwf_execute],
         [LIBS="$LIBS -lfftw3f"],
-        [AC_MSG_NOTICE([fftw package not found, using built-in FFT]) ; fftw=no])
+        [AC_MSG_WARN([FFTW development files not found... using built-in FFT])
+        fftw=no])
 fi
 AM_CONDITIONAL(FFTW, test x$fftw = xyes)
 
 ##### Wish #####
 AC_ARG_WITH([wish],
-    [AS_HELP_STRING([--with-wish=WISH], [which Tk Wish application to use for the Pd GUI])],
+    [AS_HELP_STRING([--with-wish=WISH],
+        [which Tk Wish application to use for the Pd GUI])],
     [WISH=$withval])
 AS_IF([test "x${WISH}" = "xyes" -o "x${WISH}" = "xno"],
     [AC_MSG_NOTICE([--with-wish requires an application, ignoring '${WISH}'])
@@ -435,8 +444,7 @@ AC_SUBST([WISH])
 # Cygwin has a function OSS /dev/dsp, but not MIDI,
 # and Pd is only set up to handle a single MIDI API
 AS_IF([test x$WINDOW = xyes -a x$oss != xno],
-  [AC_MSG_WARN([OSS not working on W32..disabling])
-  oss=no])
+  [AC_MSG_WARN([OSS not working on W32... disabling]) ; oss=no])
 AM_CONDITIONAL(OSS, test x$oss = xyes)
 AS_IF([test x$oss = xyes], [audio_backends="OSS ${audio_backends}"])
 AS_IF([test x$oss = xyes], [midi_backends="OSS ${midi_backends}"])
@@ -461,9 +469,9 @@ AM_CONDITIONAL(ASIO, test x$asio = xyes)
 AS_IF([test x$asio = xyes], [audio_backends="ASIO ${audio_backends}"])
 
 ##### CoreAudio #####
-# portaudio doesn't work with iPhone, so don't bother with CoreAudio
+# portaudio doesn't work with iOS, so don't bother with CoreAudio
 AS_IF([test x$IPHONEOS = xyes -a x$coreaudio != xno],
-  [AC_MSG_WARN([PortAudio not working on iPhone..disabling CoreAudio])
+  [AC_MSG_WARN([PortAudio not working on iOS... disabling CoreAudio])
   coreaudio=no])
 AM_CONDITIONAL(COREAUDIO, test x$coreaudio = xyes)
 
@@ -568,3 +576,24 @@ AC_MSG_NOTICE([
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
 ])
+
+
+AS_IF([test x$enable_locales = xyes -a x$locales = xno ],
+ AC_MSG_WARN([localization requested but no GNU gettext with msgfmt found... disabled]))
+AS_IF([test x$enable_oss = xyes -a x$oss = xno ],
+ AC_MSG_WARN([OSS requested but no development files found... disabled]))
+AS_IF([test x$enable_alsa = xyes -a x$alsa = xno ],
+ AC_MSG_WARN([ALSA requested but no development files found... disabled (See INSTALL.txt)]))
+AS_IF([test x$enable_jack = xyes -a x$jack = xno ],
+ AC_MSG_WARN([JACK requested but no development files found... disabled (See INSTALL.txt)]))
+AS_IF([test x$enable_jack_framework = xyes -a x$jack_jack != xyes ],
+ AC_MSG_WARN([JACK-Framework requested but no development files found... disabled (See INSTALL.txt)]))
+AS_IF([test x$enable_mmio = xyes -a x$mmio = xno ],
+ AC_MSG_WARN([MMIO requested but not available... disabled (requires Windows)]))
+AS_IF([test x$enable_asio = xyes -a x$asio = xno ],
+ AC_MSG_WARN([ASIO requested but no SDK found... disabled (see asio/README.txt)]))
+
+# TODO portaudio
+
+AS_IF([test x$enable_fftw = xyes -a x$fftw = xno ],
+ AC_MSG_WARN([FFTW requested but no development files found... disabled]))

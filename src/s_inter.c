@@ -145,7 +145,7 @@ void sys_set_searchpath(void);
 void sys_set_temppath(void);
 void sys_set_extrapath(void);
 void sys_set_startup(void);
-void sys_stopgui( void);
+void sys_stopgui(void);
 
 /* ----------- functions for timing, signals, priorities, etc  --------- */
 
@@ -318,7 +318,7 @@ void sys_setalarm(int microsec)
 #endif /* NOT _WIN32 && NOT __CYGWIN__ */
 
     /* on startup, set various signal handlers */
-void sys_setsignalhandlers( void)
+void sys_setsignalhandlers(void)
 {
 #if !defined(_WIN32) && !defined(__CYGWIN__)
     signal(SIGHUP, sys_huphandler);
@@ -683,7 +683,7 @@ static void sys_trytogetmoreguibuf(int newsize)
     }
 }
 
-int sys_havegui( void)
+int sys_havegui(void)
 {
     return (pd_this->pd_inter->i_havegui);
 }
@@ -797,7 +797,7 @@ void glob_ping(t_pd *dummy)
     pd_this->pd_inter->i_waitingforping = 0;
 }
 
-static int sys_flushqueue(void )
+static int sys_flushqueue(void)
 {
     int wherestop = pd_this->pd_inter->i_bytessincelastping + GUI_UPDATESLICE;
     if (wherestop + (GUI_UPDATESLICE >> 1) > GUI_BYTESPERPING)
@@ -931,7 +931,7 @@ void glob_watchdog(t_pd *dummy)
 }
 #endif
 
-static void sys_init_deken( void)
+static void sys_init_deken(void)
 {
     const char*os =
 #if defined __linux__
@@ -1483,7 +1483,7 @@ int sys_startgui(const char *libdir)
  /* more work needed here - for some reason we can't restart the gui after
  shutting it down this way.  I think the second 'init' message never makes
  it because the to-gui buffer isn't re-initialized. */
-void sys_stopgui( void)
+void sys_stopgui(void)
 {
     t_canvas *x;
     for (x = pd_getcanvaslist(); x; x = x->gl_next)
@@ -1500,7 +1500,7 @@ void sys_stopgui( void)
 
 /* ----------- mutexes for thread safety --------------- */
 
-void s_inter_newpdinstance( void)
+void s_inter_newpdinstance(void)
 {
     pd_this->pd_inter = getbytes(sizeof(*pd_this->pd_inter));
 #if PDTHREADS
@@ -1525,7 +1525,7 @@ void s_inter_free(t_instanceinter *inter)
     freebytes(inter, sizeof(*inter));
 }
 
-void s_inter_freepdinstance( void)
+void s_inter_freepdinstance(void)
 {
     s_inter_free(pd_this->pd_inter);
 }
@@ -1548,7 +1548,7 @@ current instance of Pd is currently locked via sys_lock() below; this gains
 read access to the class and instance lists which must be released for the
 write-lock to be available. */
 
-void pd_globallock( void)
+void pd_globallock(void)
 {
 #ifdef PDINSTANCE
     if (!pd_this->pd_islocked)
@@ -1558,7 +1558,7 @@ void pd_globallock( void)
 #endif /* PDINSTANCE */
 }
 
-void pd_globalunlock( void)
+void pd_globalunlock(void)
 {
 #ifdef PDINSTANCE
     pthread_rwlock_unlock(&sys_rwlock);
@@ -1569,7 +1569,7 @@ void pd_globalunlock( void)
 /* routines to lock/unlock a Pd instance for thread safety.  Call pd_setinsance
 first.  The "pd_this"  variable can be written and read thread-safely as it
 is defined as per-thread storage. */
-void sys_lock( void)
+void sys_lock(void)
 {
 #ifdef PDINSTANCE
     pthread_mutex_lock(&pd_this->pd_inter->i_mutex);
@@ -1580,7 +1580,7 @@ void sys_lock( void)
 #endif
 }
 
-void sys_unlock( void)
+void sys_unlock(void)
 {
 #ifdef PDINSTANCE
     pd_this->pd_islocked = 0;
@@ -1591,7 +1591,7 @@ void sys_unlock( void)
 #endif
 }
 
-int sys_trylock( void)
+int sys_trylock(void)
 {
 #ifdef PDINSTANCE
     int ret;
@@ -1613,9 +1613,9 @@ int sys_trylock( void)
 
 #else /* PDTHREADS */
 
-void sys_lock( void) {}
-void sys_unlock( void) {}
-void pd_globallock( void) {}
-void pd_globalunlock( void) {}
+void sys_lock(void) {}
+void sys_unlock(void) {}
+void pd_globallock(void) {}
+void pd_globalunlock(void) {}
 
 #endif /* PDTHREADS */

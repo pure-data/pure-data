@@ -38,7 +38,7 @@ char pd_compiledate[] = __DATE__;
 void pd_init(void);
 int sys_argparse(int argc, char **argv);
 void sys_findprogdir(char *progname);
-void sys_setsignalhandlers( void);
+void sys_setsignalhandlers(void);
 int sys_startgui(const char *guipath);
 void sys_setrealtime(const char *guipath);
 int m_mainloop(void);
@@ -493,7 +493,7 @@ static char *(usagemessage[]) = {
 "-stdpath         -- search standard directory (true by default)\n",
 "-helppath <path> -- add to help file search path\n",
 "-open <file>     -- open file(s) on startup\n",
-"-lib <file>      -- load object library(s)\n",
+"-lib <file>      -- load object library(s) (omit file extensions)\n",
 "-font-size <n>      -- specify default font size in points\n",
 "-font-face <name>   -- specify default font\n",
 "-font-weight <name> -- specify default font weight (normal or bold)\n",
@@ -519,7 +519,7 @@ static char *(usagemessage[]) = {
 #endif
 "-sleep           -- sleep when idle, don't spin (true by default)\n",
 "-nosleep         -- spin, don't sleep (may lower latency on multi-CPUs)\n",
-"-schedlib <file> -- plug in external scheduler\n",
+"-schedlib <file> -- plug in external scheduler (omit file extensions)\n",
 "-extraflags <s>  -- string argument to send schedlib\n",
 "-batch           -- run off-line as a batch process\n",
 "-nobatch         -- run interactively (true by default)\n",

@@ -1329,6 +1329,11 @@ static void sigmund_list(t_sigmund *x, t_symbol *s, int argc, t_atom *argv)
         error("sigmund: negative onset");
         return;
     }
+    if (srate <= 0)
+    {
+        error("sigmund: bad samplerate");
+        return;
+    }
     arraypoints = alloca(sizeof(t_float)*npts);
     if (!(a = (t_garray *)pd_findbyclass(syminput, garray_class)) ||
         !garray_getfloatwords(a, &arraysize, &wordarray) ||

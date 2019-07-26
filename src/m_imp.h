@@ -57,6 +57,7 @@ struct _class
     char c_patchable;                   /* true if we have a t_object header */
     char c_firstin;                 /* if patchable, true if draw first inlet */
     char c_drawcommand;             /* a drawing command for a template */
+    t_classfreefn c_classfreefn;    /* function to call before freeing class */
 };
 
 /* m_pd.c */
@@ -86,8 +87,8 @@ EXTERN int obj_siginletindex(const t_object *x, int m);
 EXTERN int obj_sigoutletindex(const t_object *x, int m);
 
 /* s_inter.c */
-void pd_globallock( void);
-void pd_globalunlock( void);
+void pd_globallock(void);
+void pd_globalunlock(void);
 
 /* misc */
 #define SYMTABHASHSIZE 1024

@@ -4,6 +4,7 @@
 
 /*
 Infinite undo by Ivica Ico Bukvic <ico@vt.edu> Dec. 2011
+Modified for Pd-vanilla by IOhannes m zmölnig <zmoelnig@iem.at> Jun. 2018
 
 This is the home of infinite undo queue. Each root canvas has one of these.
 Only canvas that is root will instantiate the pointer to t_undo_action struct.
@@ -80,7 +81,7 @@ struct _undo
     t_undo_action *u_queue;
     t_undo_action *u_last;
     void *u_cleanstate; /* pointer to non-dirty state */
-    int            u_doing; /* currently undoing */
+    int u_doing; /* currently undoing */
 };
 #define t_undo struct _undo
 

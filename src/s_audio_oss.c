@@ -481,7 +481,7 @@ int oss_open_audio(int nindev,  int *indev,  int nchin,  int *chin,
     return (0);
 }
 
-void oss_close_audio( void)
+void oss_close_audio(void)
 {
      int i;
      for (i=0;i<linux_nindevs;i++)
@@ -542,7 +542,7 @@ void linux_audiostatus(void)
 /* this call resyncs audio output and input which will cause discontinuities
 in audio output and/or input. */
 
-static void oss_doresync( void)
+static void oss_doresync(void)
 {
     int dev, zeroed = 0, wantsize;
     char buf[OSS_MAXSAMPLEWIDTH * DEFDACBLKSIZE * OSS_MAXCHPERDEV];
