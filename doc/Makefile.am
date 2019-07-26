@@ -330,7 +330,6 @@ nobase_dist_libpd_DATA = \
      ./5.reference/gatom-help.pd \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
-     ./5.reference/graph-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
      ./5.reference/hradio-help.pd \
