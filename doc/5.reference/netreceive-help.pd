@@ -1,61 +1,61 @@
-#N canvas 115 149 813 713 12;
-#X obj 100 359 netreceive 3000;
-#X floatatom 217 447 0 0 0 0 - - -;
-#X text 251 448 <--- number of open connections;
-#X text 85 12 Netreceive -- listen for incoming messages from network
-;
-#X text 112 667 see also:;
-#X obj 198 669 netsend;
-#X obj 100 447 print tcp;
-#X obj 99 553 print udp;
-#X text 29 167 There are some possibilities for intercommunication
-with other programs... see the help for "netsend.", f 85;
-#X obj 593 606 netreceive 3003 1;
-#X text 607 582 (UDP port 3003);
-#X text 26 618 An old (pre-0.45) calling convention is provided for
+#N canvas 373 23 722 728 12;
+#X floatatom 173 440 0 0 0 0 - - -;
+#X text 116 662 see also:;
+#X obj 202 664 netsend;
+#X obj 71 440 print tcp;
+#X obj 68 562 print udp;
+#X text 59 174 There are some possibilities for intercommunication
+with other programs... see the help for "netsend.", f 83;
+#X obj 533 617 netreceive 3003 1;
+#X text 547 593 (UDP port 3003);
+#X text 30 613 An old (pre-0.45) calling convention is provided for
 compatibility: port number and following "0" or "1" for TCP or UDP
 respectively:, f 67;
-#X text 564 666 updated for Pd version 0.45;
-#X obj 99 525 netreceive -u 3001;
-#X text 234 355 creation arguments:;
-#X text 302 374 optional -u flag for UDP;
-#X text 302 393 optional -b flag for binary;
-#X text 301 414 optional port number;
-#X obj 505 529 netreceive -u -b 3003;
-#X obj 291 550 netreceive -b 3002;
-#X obj 291 578 print tcp-binary;
-#X obj 504 557 print udp-binary;
-#X msg 100 283 listen 0;
-#X text 210 259 listen message to set or change port;
-#X text 206 284 (0 or negative number to close);
-#X msg 100 257 listen 3000;
-#X text 33 36 The Netreceive object opens a socket for TCP ("stream")
+#X text 473 678 updated for Pd version 0.45;
+#X obj 68 534 netreceive -u 3001;
+#X text 188 371 creation arguments:;
+#X text 328 371 optional -u flag for UDP;
+#X text 328 390 optional -b flag for binary;
+#X text 327 411 optional port number;
+#X obj 343 560 print tcp-binary;
+#X obj 505 540 print udp-binary;
+#X msg 71 296 listen 0;
+#X text 151 272 listen message to set or change port;
+#X text 137 297 (0 or negative number to close);
+#X msg 58 270 listen 3000;
+#X text 59 56 The Netreceive object opens a socket for TCP ("stream")
 or UDP ("datagram") network reception on a specified port. If using
 TCP \, an outlet gives you the number of Netsend objects (or other
-compatible clients) that have opened connections here., f 84;
-#X text 31 205 SECURITY NOTE: don't publish the port number of your
+compatible clients) that have opened connections here., f 83;
+#X text 59 214 SECURITY NOTE: don't publish the port number of your
 netreceive unless you wouldn't mind other people being able to send
-you messages., f 85;
-#X text 31 93 By default the messages are ASCII text messages compatible
+you messages., f 83;
+#X text 59 108 By default the messages are ASCII text messages compatible
 with Pd (i.e. \, numbers and symbols terminated with a semicolon --
 the "FUDI" protocol). The "-b" creation argument specifies binary messages
 instead \, which appear in Pd as lists of numbers from 0 to 255 (You
 could use this for OSC messages \, for example.), f 83;
-#X msg 121 332 send foo \$1;
-#X floatatom 121 309 0 0 0 0 - - -;
-#X msg 290 526 send foo \$1;
-#X floatatom 290 503 0 0 0 0 - - -;
-#X text 232 479 other examples:;
-#X text 158 309 "send" (for TCP connections only) sends back to connected
+#X msg 92 345 send foo \$1;
+#X floatatom 92 322 0 0 0 0 - - -;
+#X msg 343 507 send foo \$1;
+#X floatatom 343 484 0 0 0 0 - - -;
+#X text 219 503 other examples:;
+#X text 129 322 "send" (for TCP connections only) sends back to connected
 netreceive objects, f 76;
-#X connect 0 0 6 0;
-#X connect 0 1 1 0;
-#X connect 13 0 7 0;
-#X connect 18 0 21 0;
-#X connect 19 0 20 0;
-#X connect 22 0 0 0;
-#X connect 25 0 0 0;
-#X connect 29 0 0 0;
-#X connect 30 0 29 0;
-#X connect 31 0 19 0;
-#X connect 32 0 31 0;
+#X text 207 441 <= number of open connections;
+#X obj 49 15 netreceive;
+#X text 129 14 - listen for incoming messages from network;
+#X obj 71 372 netreceive 3000;
+#X obj 343 532 netreceive -b 3002;
+#X obj 505 512 netreceive -u -b 3003;
+#X connect 10 0 4 0;
+#X connect 17 0 33 0;
+#X connect 20 0 33 0;
+#X connect 24 0 33 0;
+#X connect 25 0 24 0;
+#X connect 26 0 34 0;
+#X connect 27 0 26 0;
+#X connect 33 0 3 0;
+#X connect 33 1 0 0;
+#X connect 34 0 15 0;
+#X connect 35 0 16 0;

@@ -1,18 +1,18 @@
 #N canvas 673 23 541 568 12;
-#X floatatom 21 59 5 0 0 0 - - -, f 5;
-#X text 383 15 abbreviation:;
+#X floatatom 21 59 5 0 0 0 - - -;
+#X text 385 15 abbreviation:;
 #X text 69 14 -- nonlocal shared value (named variable);
-#X floatatom 21 134 5 0 0 0 - - -, f 5;
+#X floatatom 21 134 5 0 0 0 - - -;
 #X msg 31 82 bang;
 #X obj 18 14 value;
 #X obj 21 109 value help-value1;
-#X obj 493 14 v;
-#X floatatom 163 59 5 0 0 0 - - -, f 5;
-#X floatatom 163 134 5 0 0 0 - - -, f 5;
+#X obj 488 14 v;
+#X floatatom 163 59 5 0 0 0 - - -;
+#X floatatom 163 134 5 0 0 0 - - -;
 #X msg 173 82 bang;
 #X obj 163 109 value help-value1;
-#X floatatom 313 59 5 0 0 0 - - -, f 5;
-#X floatatom 313 134 5 0 0 0 - - -, f 5;
+#X floatatom 313 59 5 0 0 0 - - -;
+#X floatatom 313 134 5 0 0 0 - - -;
 #X msg 323 82 bang;
 #X obj 313 109 value help-value2;
 #X text 27 173 "Value" stores a numeric value which is shared between
@@ -24,22 +24,22 @@ all values with the same name (which need not be in the same Pd window.)
 #X obj 102 516 expr;
 #X obj 309 266 value z;
 #X obj 388 255 expr z;
-#X floatatom 388 284 5 0 0 0 - - -, f 5;
+#X floatatom 388 284 5 0 0 0 - - -;
 #X obj 388 228 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 309 237 5 0 0 0 - - -, f 5;
+#X floatatom 309 237 5 0 0 0 - - -;
 #X obj 359 341 value y;
 #X obj 278 354 send y;
-#X floatatom 278 326 5 0 0 0 - - -, f 5;
+#X floatatom 278 326 5 0 0 0 - - -;
 #X obj 359 319 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 359 369 5 0 0 0 - - -, f 5;
+#X floatatom 359 369 5 0 0 0 - - -;
 #X msg 437 334 \; y 5;
 #X obj 140 516 send;
 #X obj 179 516 float;
 #X text 28 235 The value may also be stored or recalled in expressions
 via the expr \, expr~ \, and fexpr~ objects., f 34;
-#X floatatom 286 479 5 0 0 0 - - -, f 5;
+#X floatatom 286 479 5 0 0 0 - - -;
 #X obj 286 453 value;
 #X msg 318 418 symbol help-value1;
 #X msg 337 452 symbol help-value2;

@@ -1,18 +1,18 @@
-#N canvas 234 49 502 293 12;
-#X msg 62 126 23 0;
-#X obj 62 201 print x1;
-#X obj 132 201 print x2;
-#X obj 62 165 stripnote;
-#X msg 102 126 34.5 67.8;
-#X obj 109 240 makenote;
+#N canvas 576 114 502 293 12;
+#X msg 65 127 23 0;
+#X obj 65 202 print x1;
+#X obj 139 202 print x2;
+#X obj 65 166 stripnote, f 11;
+#X msg 105 127 34.5 67.8;
+#X obj 124 245 makenote;
 #X text 86 13 - send note-on messages and schedule note-off for later
 ;
-#X text 271 203 updated for Pd version 0.28;
+#X text 254 215 updated for Pd version 0.28;
 #X obj 26 11 stripnote;
-#X text 30 51 Stripnote takes note-off (zero-velocity) messages out
+#X text 33 52 Stripnote takes note-off (zero-velocity) messages out
 of a stream of MIDI-style note message and passes the others through
 unchanged.;
-#X text 43 240 see also:;
+#X text 58 245 see also:;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;
 #X connect 3 1 2 0;

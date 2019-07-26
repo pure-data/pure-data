@@ -1,54 +1,54 @@
-#N canvas 47 29 618 683 12;
-#X floatatom 22 355 0 0 0 0 - - -;
-#X msg 156 130 6;
-#X msg 119 130 234;
-#X floatatom 119 160 0 0 0 0 - - -;
-#X msg 121 324 1;
-#X msg 89 324 54;
-#X obj 22 415 print x1;
-#X obj 100 414 print x2;
-#X msg 58 324 23;
-#X msg 22 325 234;
-#X msg 65 130 6;
-#X obj 28 190 select 6;
-#X msg 28 130 234;
-#X obj 28 220 print x1;
-#X obj 107 221 print x2;
-#X obj 177 414 print x3;
-#X obj 255 415 print x4;
-#X floatatom 28 160 0 0 0 0 - - -;
-#X obj 22 385 select 23 54 1;
-#X text 45 632 abbreviation:;
-#X obj 169 633 sel;
-#X text 20 37 In its simplest form shown below \, Select checks its
+#N canvas 546 47 599 712 12;
+#X floatatom 180 341 0 0 0 0 - - -;
+#X msg 264 129 6;
+#X msg 227 129 234;
+#X floatatom 227 159 0 0 0 0 - - -;
+#X msg 243 310 1;
+#X msg 211 310 54;
+#X obj 180 401 print x1;
+#X obj 258 400 print x2;
+#X msg 180 310 23;
+#X msg 144 311 234;
+#X msg 176 129 6;
+#X obj 139 189 select 6, f 13;
+#X msg 139 129 234;
+#X obj 139 219 print x1;
+#X obj 227 220 print x2;
+#X obj 336 400 print x3;
+#X obj 415 401 print x4;
+#X floatatom 139 159 0 0 0 0 - - -;
+#X obj 180 371 select 23 54 1, f 34;
+#X text 78 633 abbreviation:;
+#X obj 184 634 sel;
+#X text 28 37 In its simplest form shown below \, Select checks its
 input against the constant "6". If they match \, the first outlet gives
 "bang" and otherwise the input is copied to the second outlet. If Select
 is used with a single argument \, a second inlet allows you to change
 the test value.;
-#X text 22 249 You can give several arguments. You get an outlet for
+#X text 26 250 You can give several arguments. You get an outlet for
 each test value and finally an outlet for values which match none of
 them. In this case you don't get inlets to change the test values:
 ;
-#X obj 32 589 print x1;
-#X obj 114 590 print x2;
-#X msg 34 474 symbol cort;
-#X msg 46 499 symbol zack;
-#X msg 178 499 symbol cort;
-#X msg 184 524 symbol zack;
-#X obj 34 562 select cort;
-#X msg 308 485 symbol cort;
-#X msg 415 485 symbol zack;
-#X obj 308 574 print x1;
-#X obj 385 574 print x2;
-#X obj 308 544 select cort zack;
-#X obj 462 574 print x3;
-#X msg 413 510 symbol bill;
-#X text 24 449 Select can also be used to sort symbols:;
-#X text 83 660 see also:;
-#X obj 175 662 route;
+#X obj 77 590 print x1;
+#X obj 153 591 print x2;
+#X msg 57 475 symbol cort;
+#X msg 79 500 symbol zack;
+#X msg 181 500 symbol cort;
+#X msg 187 525 symbol zack;
+#X obj 79 563 select cort;
+#X msg 311 502 symbol cort;
+#X msg 418 502 symbol zack;
+#X obj 311 591 print x1;
+#X obj 387 591 print x2;
+#X obj 311 561 select cort zack, f 22;
+#X obj 462 591 print x3;
+#X msg 416 527 symbol bill;
+#X text 26 440 Select can also be used to sort symbols:;
+#X text 116 664 see also:;
+#X obj 190 663 route;
 #X obj 32 10 select;
 #X text 92 10 - compare numbers or symbols;
-#X text 370 652 updated for Pd version 0.33;
+#X text 348 661 updated for Pd version 0.33;
 #X connect 0 0 18 0;
 #X connect 1 0 3 0;
 #X connect 2 0 3 0;

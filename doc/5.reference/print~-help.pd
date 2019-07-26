@@ -3,9 +3,9 @@
 #X msg 403 92 \; pd dsp 0;
 #X msg 402 49 \; pd dsp 1;
 #X obj 78 227 print~;
-#X msg 77 148 bang;
+#X msg 78 151 bang;
 #X obj 41 122 phasor~ 1000;
-#X text 125 149 bang prints one vector;
+#X text 126 152 bang prints one vector;
 #X obj 402 27 loadbang;
 #X text 136 185 print two or more successive vectors;
 #X obj 35 14 print~;
