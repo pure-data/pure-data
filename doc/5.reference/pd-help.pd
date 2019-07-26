@@ -1,34 +1,22 @@
-#N canvas 241 181 571 514 12;
-#N canvas 0 0 600 400 (subpatch) 0;
-#X restore 34 17 pd;
-#X text 68 18 - subpatch;
-#X obj 171 17 inlet;
-#X text 229 16 - control inlet;
-#X obj 361 16 inlet~;
-#X text 421 16 - audio inlet;
-#X obj 171 45 outlet;
-#X text 229 47 - control outlet;
-#X obj 361 44 outlet~;
-#X text 421 44 - audio outlet;
-#X text 26 81 Type "pd" into an object box to make a subpatch. When
-in run mode you can click on the object to open the subpatch. You can
-name the subpatch with an argument:;
-#N canvas 156 300 518 221 my-subpatch 0;
-#X text 49 96 this is a subpatch for the "pd" help window.;
-#X restore 122 148 pd my-subpatch;
-#X text 30 185 and you can put inlets and outlets by making "inlet"
-objects \, etc \, in the subpatch (open the patch below to see them.)
-;
-#X obj 323 343 print~;
-#X obj 323 263 sig~ 12;
-#X floatatom 81 267 0 0 0 0 - - -;
-#X floatatom 81 319 0 0 0 0 - - -;
-#X text 352 320 (check that audio is on);
-#X text 51 246 messages in and out;
-#X text 293 240 audio in and out;
-#X text 57 453 see also:;
-#X obj 141 453 block~;
-#X obj 335 321 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#N canvas 416 128 581 505 12;
+#X obj 87 21 inlet;
+#X text 145 20 - control inlet;
+#X obj 277 20 inlet~;
+#X text 337 20 - audio inlet;
+#X obj 87 49 outlet;
+#X text 145 51 - control outlet;
+#X obj 277 48 outlet~;
+#X text 337 48 - audio outlet;
+#X obj 325 304 print~;
+#X obj 325 224 sig~ 12;
+#X floatatom 83 228 0 0 0 0 - - -;
+#X floatatom 83 280 0 0 0 0 - - -;
+#X text 354 281 (check that audio is on);
+#X text 53 207 messages in and out;
+#X text 295 201 audio in and out;
+#X text 48 414 see also:;
+#X obj 122 415 block~;
+#X obj 337 282 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 486 122 538 582 up/downsampling 0;
 #X obj 37 395 print~;
@@ -117,7 +105,7 @@ command line or by a message:;
 #X connect 13 0 0 0;
 #X connect 13 1 2 0;
 #X connect 13 2 4 0;
-#X restore 96 382 pd up/downsampling;
+#X restore 98 343 pd up/downsampling;
 #N canvas 103 180 600 392 subpatch-with-inlets-and-outlets 0;
 #X obj 94 83 inlet;
 #X text 46 53 control inlet for receiving messages;
@@ -137,14 +125,21 @@ command line or by a message:;
 #X connect 6 0 7 0;
 #X connect 8 0 7 0;
 #X connect 10 0 9 0;
-#X restore 81 293 pd subpatch-with-inlets-and-outlets;
-#X text 257 400 up/downsampling for inlet~ and outlet~;
-#X text 336 478 updated for Pd version 0.44;
-#X text 231 382 <= here are some ugly details on;
-#X text 252 421 (documents new default upsampling behavior for reblocked
+#X restore 83 254 pd subpatch-with-inlets-and-outlets;
+#X text 259 361 up/downsampling for inlet~ and outlet~;
+#X text 311 439 updated for Pd version 0.44;
+#X text 233 343 <= here are some ugly details on;
+#X text 254 382 (documents new default upsampling behavior for reblocked
 inlet~ and outlet~.), f 42;
-#X connect 14 0 24 1;
-#X connect 15 0 24 0;
-#X connect 22 0 13 0;
-#X connect 24 0 16 0;
-#X connect 24 1 13 0;
+#N canvas 0 0 600 400 (subpatch) 0;
+#X restore 175 415 pd;
+#X text 32 95 Inlets/outlets are used to receive and get informatin
+on a patch window. This can be an abstraction or a subpatch. To create
+a subpatch \, type "pd" into an object box \, then you can put inlets
+and outlets by making "inlet" objects \, etc \, in the subpatch (open
+the patch below to see them.);
+#X connect 9 0 19 1;
+#X connect 10 0 19 0;
+#X connect 17 0 8 0;
+#X connect 19 0 11 0;
+#X connect 19 1 8 0;
