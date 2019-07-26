@@ -1,4 +1,4 @@
-#N canvas 188 87 579 499 12;
+#N canvas 554 66 579 499 12;
 #X msg 51 148 bang;
 #X floatatom 73 394 0 0 0 0 - - -;
 #X floatatom 66 174 0 0 0 0 - - -;
@@ -11,15 +11,14 @@
 #X floatatom 458 348 5 0 0 0 - - -;
 #X obj 458 303 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X text 39 438 see also:;
-#X obj 163 438 value;
-#X obj 216 438 send;
+#X text 49 438 see also:;
+#X obj 167 438 value;
+#X obj 214 438 send;
 #X obj 107 18 int;
-#X text 149 18 - STORE AN INTEGER;
 #X obj 73 364 int 6;
 #X msg 93 258 send int-help;
 #X obj 455 251 r int-help;
-#X obj 109 438 float;
+#X obj 119 438 float;
 #X msg 76 203 9.6;
 #X msg 86 225 -9.6;
 #X text 126 213 <= non-integers get truncated torward zero;
@@ -31,13 +30,14 @@
 creation argument \, which may be reset using its inlet and output
 by sending it the "bang" message. Sending a number sets a new value
 and outputs it. The output is truncated to an integer a la Max.;
-#X connect 0 0 16 0;
-#X connect 2 0 16 0;
-#X connect 3 0 16 1;
-#X connect 10 0 24 0;
-#X connect 16 0 1 0;
-#X connect 17 0 16 0;
-#X connect 18 0 6 0;
-#X connect 20 0 16 0;
-#X connect 21 0 16 0;
-#X connect 24 0 9 0;
+#X text 149 18 - store an integer;
+#X connect 0 0 15 0;
+#X connect 2 0 15 0;
+#X connect 3 0 15 1;
+#X connect 10 0 23 0;
+#X connect 15 0 1 0;
+#X connect 16 0 15 0;
+#X connect 17 0 6 0;
+#X connect 19 0 15 0;
+#X connect 20 0 15 0;
+#X connect 23 0 9 0;

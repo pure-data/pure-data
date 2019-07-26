@@ -1,32 +1,32 @@
-#N canvas 102 88 575 525 12;
-#X obj 51 48 table;
-#X text 108 49 - Array of numbers;
-#X obj 44 312 table help-tab1 25;
-#X text 20 156 "Table" builds a subpatch with a graphical array inside.
+#N canvas 375 38 478 570 12;
+#X obj 50 53 table;
+#X text 97 54 - Array of numbers;
+#X obj 30 328 table help-tab1 25;
+#X text 19 173 "Table" builds a subpatch with a graphical array inside.
 The creation arguments specify the name and an optional size in points.
 ;
-#X msg 77 368 \; help-tab1 read table.txt;
-#X msg 77 412 \; help-tab1 write /tmp/table.txt;
-#X text 77 346 You can also send messages to the array by name:;
-#X text 216 312 <- optional creation args: name \, size;
-#X text 19 214 Note that the data (and other properties) of the array
+#X msg 77 390 \; help-tab1 read table.txt;
+#X msg 76 429 \; help-tab1 write /tmp/table.txt;
+#X text 28 363 You can also send messages to the array by name:;
+#X text 19 231 Note that the data (and other properties) of the array
 aren't saved with the patch. You can resize \, save to and/or read
 from an external file as you would with "array" objects. See "arrays"
 in the 2.control examples under the "pure documentation" help menu
-item.;
+item., f 60;
 #N canvas 1 51 450 300 (subpatch) 0;
-#X restore 51 23 pd;
-#X text 108 24 - subpatch;
-#X text 342 494 updated for Pd version 0.46;
-#X text 17 462 see also:;
-#X obj 108 461 array;
+#X restore 50 28 pd;
+#X text 80 27 - subpatch;
+#X text 243 526 updated for Pd version 0.46;
+#X text 16 482 see also:;
+#X obj 89 482 array;
 #N canvas 1 51 471 242 foo 0;
 #X obj 56 42 inlet;
 #X obj 50 139 outlet;
 #X text 120 36 this is the subpatch. Use "inlet" and "outlet" objects
 to create inlets/outlets on the parent., f 34;
-#X restore 38 113 pd foo;
-#X text 118 115 <- optional argument to name the subpatch;
-#X text 27 75 "Pd" created a subpatch. Click on the object to open
+#X restore 37 130 pd foo;
+#X text 26 82 "Pd" created a subpatch. Click on the object to open
 the subpatch. They may be nested as deeply as you like.;
-#X text 161 462 (newer and better replacement for "table").;
+#X text 142 483 (newer and better replacement for "table").;
+#X text 94 131 <= optional argument to name the subpatch;
+#X text 172 328 <= optional creation args: name \, size;
