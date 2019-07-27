@@ -703,10 +703,6 @@ void g_vradio_setup(void)
         gensym("init"), A_FLOAT, 0);
     class_addmethod(vradio_class, (t_method)vradio_number,
         gensym("number"), A_FLOAT, 0);
-    class_addmethod(vradio_class, (t_method)vradio_single_change,
-        gensym("single_change"), 0);
-    class_addmethod(vradio_class, (t_method)vradio_double_change,
-        gensym("double_change"), 0);
     class_addmethod(vradio_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
     vradio_widgetbehavior.w_getrectfn = vradio_getrect;
