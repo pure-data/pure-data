@@ -769,5 +769,4 @@ void g_hradio_setup(void)
     class_addmethod(hradio_old_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
     class_setwidget(hradio_old_class, &hradio_widgetbehavior);
-    class_sethelpsymbol(hradio_old_class, gensym("hradio"));
 }
