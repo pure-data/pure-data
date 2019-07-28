@@ -1,10 +1,10 @@
-#N canvas 762 27 584 580 12;
+#N canvas 186 45 584 580 12;
 #X obj 336 470 t b;
 #X obj 336 417 f;
 #X obj 336 495 f;
 #X msg 382 494 0;
 #X obj 336 447 moses 1;
-#X obj 416 427 moses 1;
+#X obj 396 417 moses 1;
 #X obj 54 107 dbtorms;
 #X obj 107 195 inlet~;
 #X msg 255 322 \; pd dsp 1;
@@ -16,12 +16,12 @@
 #X floatatom 322 209 3 0 100 0 dB - -;
 #X obj 336 237 bng 15 250 50 0 empty empty mute -32 7 0 12 -262144
 -1 -1;
-#X text 417 371 MUTE logic:;
+#X text 397 361 MUTE logic:;
 #X obj 322 174 r \$0-master-lvl;
 #X obj 382 524 s \$0-master-lvl;
 #X obj 323 279 s \$0-master-out;
 #X obj 54 81 r \$0-master-out;
-#X obj 416 398 r \$0-master-out;
+#X obj 396 388 r \$0-master-out;
 #X text 65 10 Level control abstraction \, used in many of the Pd example
 patches. The "level" and "mute" controls show up on the parent \, calling
 patch.;
