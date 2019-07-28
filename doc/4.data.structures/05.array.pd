@@ -1,106 +1,105 @@
 #N struct template5 float x float y float z float q array bazoo template5-element
 ;
 #N struct template5-element float y;
-#N canvas 17 49 709 456 12;
-#X obj 235 323 pointer;
-#X floatatom 232 183 0 0 0 0 - - -;
-#X msg 235 300 bang;
-#X floatatom 15 200 0 0 0 0 - - -;
-#X floatatom 17 350 0 0 0 0 - - -;
-#X floatatom 235 369 0 0 0 0 - - -;
-#X floatatom 451 276 0 0 0 0 - - -;
-#X obj 451 229 pointer;
-#X obj 318 163 pointer;
-#X msg 449 194 bang;
-#N canvas 29 563 348 217 data5 1;
+#N canvas 247 52 683 549 12;
+#X obj 256 356 pointer;
+#X floatatom 253 216 0 0 0 0 - - -;
+#X msg 256 323 bang;
+#X floatatom 66 233 0 0 0 0 - - -;
+#X floatatom 38 383 0 0 0 0 - - -;
+#X floatatom 256 402 0 0 0 0 - - -;
+#X floatatom 484 300 0 0 0 0 - - -;
+#X obj 484 253 pointer;
+#X obj 411 196 pointer;
+#X msg 484 221 bang;
+#N canvas 1003 69 348 217 data5 1;
 #X scalar template5 50 80 30 9 \; 0 \; 0 \; 0 \; 0 \; 0 \; 3 \; 0 \;
 0 \; 0 \; 7 \; -30 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \;
 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0
 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 0 \; 43 \; 0 \;
 0 \; 0 \; 0 \; \;;
-#X restore 508 314 pd data5;
-#N canvas 384 566 646 260 template5 1;
-#X obj 8 91 filledpolygon 244 q 3 0 0 20 z 40 0;
-#X text 6 44 this declares an array named "bazoo" whose elements are
+#X restore 467 362 pd data5;
+#N canvas 384 566 543 337 template5 0;
+#X obj 64 156 filledpolygon 244 q 3 0 0 20 z 40 0;
+#X text 54 70 this declares an array named "bazoo" whose elements are
 described by "template5-element." Array declarations take three arguments
 while "float" declarations take only two.;
-#X text 6 136 Here we ask to plot the array \, color 700 \, line width
+#X text 62 213 Here we ask to plot the array \, color 700 \, line width
 3 \, starting location (30 \, 10) relative to the scalar \, points
 spaced 4 apart.;
-#X text 7 186 You can also do (x \, y) plots and/or make the line thickness
-variable---see the help window for "plot".;
-#X obj 6 8 struct template5 float x float y float z float q array bazoo
-template5-element;
-#X obj 8 113 plot bazoo 700 3 30 40 4;
-#X restore 508 337 pd template5;
-#N canvas 65 248 568 128 template5-element 0;
-#X text 12 36 This says that array elements will have a single floating-point
+#X text 63 263 You can also do (x \, y) plots and/or make the line
+thickness variable---see the help window for "plot".;
+#X obj 54 26 struct template5 float x float y float z float q array
+bazoo template5-element;
+#X obj 64 185 plot bazoo 700 3 30 40 4;
+#X restore 467 385 pd template5;
+#N canvas 345 325 479 188 template5-element 0;
+#X text 24 59 This says that array elements will have a single floating-point
 number named "y". The variable name "y" is automatically assumed to
 control screen height \; if you don't have at least that variable you
 can't plot the array..;
-#X obj 35 11 struct template5-element float y;
-#X restore 508 360 pd template5-element;
-#N canvas 512 81 589 429 stuff 0;
-#X obj 354 163 pointer;
-#X obj 136 102 t b b b;
-#X msg 136 61 bang;
-#X text 176 60 click here to re-initialize;
-#X obj 134 163 append template5 x y z q;
-#X msg 354 100 \; pd-data5 clear;
-#X msg 354 140 traverse pd-data5 \, bang;
-#X msg 283 280 50;
-#X obj 284 307 setsize template5 bazoo;
-#X obj 134 191 t b b p;
-#X floatatom 68 327 0 0 0 0 - - -;
-#X floatatom 14 332 0 0 0 0 - - -;
-#X obj 14 376 set template5-element y;
-#X obj 68 350 element template5 bazoo;
-#X obj 20 303 unpack;
-#X msg 12 258 3 5 \, 7 9 \, -30 10 \, 43 45;
-#X msg 134 140 50 80 30 9;
-#X connect 0 0 4 4;
-#X connect 1 0 16 0;
-#X connect 1 1 6 0;
-#X connect 1 2 5 0;
-#X connect 2 0 1 0;
-#X connect 4 0 9 0;
-#X connect 6 0 0 0;
-#X connect 7 0 8 0;
-#X connect 9 0 15 0;
-#X connect 9 1 7 0;
-#X connect 9 2 8 1;
-#X connect 9 2 13 1;
-#X connect 10 0 13 0;
-#X connect 11 0 12 0;
-#X connect 13 0 12 1;
-#X connect 14 0 11 0;
-#X connect 14 1 10 0;
-#X connect 15 0 14 0;
-#X connect 16 0 4 0;
-#X restore 508 383 pd stuff;
-#X msg 318 140 traverse pd-data5 \, next;
-#X obj 451 252 getsize template5 bazoo;
-#X obj 232 229 setsize template5 bazoo;
-#X obj 17 373 set template5-element y;
-#X obj 235 346 get template5-element y;
-#X obj 15 223 element template5 bazoo;
-#X text 38 15 Scalars may contain arrays \, and moreover the elements
+#X obj 44 18 struct template5-element float y;
+#X restore 467 408 pd template5-element;
+#N canvas 658 227 528 468 stuff 0;
+#X obj 305 153 pointer;
+#X msg 109 34 bang;
+#X text 149 33 click here to re-initialize;
+#X obj 109 146 append template5 x y z q;
+#X msg 329 73 \; pd-data5 clear;
+#X msg 305 130 traverse pd-data5 \, bang;
+#X msg 195 220 50;
+#X obj 195 248 setsize template5 bazoo;
+#X floatatom 232 349 0 0 0 0 - - -;
+#X floatatom 109 354 0 0 0 0 - - -;
+#X obj 74 406 set template5-element y;
+#X obj 232 372 element template5 bazoo;
+#X msg 109 230 3 5 \, 7 9 \, -30 10 \, 43 45, f 5;
+#X msg 109 109 50 80 30 9;
+#X obj 109 75 trigger bang bang bang;
+#X obj 109 184 trigger bang bang pointer;
+#X obj 109 315 unpack float float;
+#X connect 0 0 3 4;
+#X connect 1 0 14 0;
+#X connect 3 0 15 0;
+#X connect 5 0 0 0;
+#X connect 6 0 7 0;
+#X connect 8 0 11 0;
+#X connect 9 0 10 0;
+#X connect 11 0 10 1;
+#X connect 12 0 16 0;
+#X connect 13 0 3 0;
+#X connect 14 0 13 0;
+#X connect 14 1 5 0;
+#X connect 14 2 4 0;
+#X connect 15 0 12 0;
+#X connect 15 1 6 0;
+#X connect 15 2 7 1;
+#X connect 15 2 11 1;
+#X connect 16 0 9 0;
+#X connect 16 1 8 0;
+#X restore 467 431 pd stuff;
+#X msg 411 173 traverse pd-data5 \, next;
+#X obj 484 276 getsize template5 bazoo;
+#X obj 253 262 setsize template5 bazoo;
+#X obj 38 406 set template5-element y;
+#X obj 256 379 get template5-element y;
+#X obj 66 262 element template5 bazoo;
+#X text 43 53 Scalars may contain arrays \, and moreover the elements
 of an array can be of any scalar type (and can have sub-arrays recursively.)
 The type of the element of an array is fixed in the template. In this
 case \, "template5" contains the definition of the top-level scalar
 and "template5-element" is the template of each array element (see
-the template subpatch.);
-#X text 328 121 click to get pointer;
-#X text 449 173 get size;
-#X text 221 158 set size;
-#X text 16 133 select an individual;
-#X text 16 153 element \, which is a;
-#X text 14 169 scalar with template;
-#X text 104 189 template5;
-#X text 12 413 work as before \, but on;
-#X text 12 433 array elements...;
-#X text 433 424 Updated for Pd version 0.35;
-#X text 17 395 normal "set" and "get";
+the template subpatch.), f 73;
+#X text 421 154 click to get pointer;
+#X text 484 200 get size;
+#X text 242 191 set size;
+#X text 120 239 template5;
+#X text 38 443 work as before \, but on;
+#X text 38 460 array elements...;
+#X text 426 487 Updated for Pd version 0.35;
+#X text 38 428 normal "set" and "get";
+#X text 62 174 select an individual element \, which is a scalar with
+template, f 20;
 #X connect 0 0 18 0;
 #X connect 1 0 16 0;
 #X connect 2 0 0 0;
