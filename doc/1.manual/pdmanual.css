@@ -95,13 +95,13 @@ p{
 }
 
 a:link {
-    text-decoration: underline;
-	color: black;
+    text-decoration: none;
+	color: blue;
 }
 
 a:visited {
     text-decoration: none;
-	color: black;
+	color: blue;
 }
 
 a:hover {
@@ -112,8 +112,8 @@ a:hover {
 }
 
 a:active {
-    text-decoration: underline;
-	color: black;
+    text-decoration: none;
+	color: blue;
 }
 
 IMG {
