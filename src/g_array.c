@@ -131,7 +131,7 @@ canvas 0 0 458 153 10;\n\
 /* create invisible, built-in canvases to supply templates for floats
 and float-arrays. */
 
-void garray_init( void)
+void garray_init(void)
 {
     t_binbuf *b;
     b = binbuf_new();

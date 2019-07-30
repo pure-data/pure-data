@@ -65,7 +65,7 @@ void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv);
 void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
 #ifdef USEAPI_ALSA
-    void alsa_printstate( void);
+    void alsa_printstate(void);
     alsa_printstate();
 #endif
 }

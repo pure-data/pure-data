@@ -2198,5 +2198,5 @@ ex_print(struct ex_ex *eptr)
 }
 
 #ifdef _WIN32
-void ABORT( void) {bug("expr");}
+void ABORT(void) {bug("expr");}
 #endif

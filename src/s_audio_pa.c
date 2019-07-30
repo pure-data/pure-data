@@ -468,7 +468,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     return (0);
 }
 
-void pa_close_audio( void)
+void pa_close_audio(void)
 {
     if (pa_stream)
     {
@@ -673,10 +673,10 @@ int pa_send_dacs(void)
             if (audio_isopen())
                 error("successfully reopened audio device");
             else
+            {
                 error("audio device not responding - closing audio");
-            #ifdef _WIN32
-                error("reconnect and try reselecting the device in the settings");
-            #endif
+                error("reconnect and reselect it in the settings (or toggle DSP)");
+            }
         #endif
         return SENDDACS_NO;
     } else

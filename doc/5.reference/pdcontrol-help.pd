@@ -1,0 +1,51 @@
+#N canvas 398 86 779 629 12;
+#X obj 21 10 pdcontrol;
+#X text 100 10 -- communicate with pd and/or this patch;
+#X text 390 593 updated for Pd version 0.50.;
+#X obj 35 271 pdcontrol;
+#X obj 35 296 print;
+#X msg 43 146 isvisible;
+#X msg 51 358 isvisible;
+#N canvas 898 272 450 300 subpatch 0;
+#X obj 37 37 inlet;
+#X obj 37 62 pdcontrol;
+#X obj 37 87 print;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X restore 51 383 pd subpatch;
+#X text 138 357 open and shut the subpatch to test "isvisible" message
+;
+#X text 131 144 1 if this patch is visible \, 0 if not;
+#X msg 35 116 gui ::pd_menucommands::menu_aboutpd;
+#X msg 51 172 dir;
+#X text 98 172 get directory this patch is in;
+#X text 306 202 optional argument to specify this patch (0) \, owning
+patch (1) \, its own owner (2) \, and so on \, and optionally also
+a filename relative to the patch's directory. (Ownership number is
+silently reduced if owners don't exist \, so here anything greater
+than zero is ignored.), f 42;
+#X msg 57 210 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#X obj 46 511 pdcontrol;
+#X obj 322 481 r bazoo;
+#X obj 322 506 print bazoo;
+#X msg 46 479 gui pdsend [concat bazoo [exec date]];
+#X text 31 37 pdcontrol lets you communicate with the patch to get
+its owning directory \, its visible/invisible state \, or to send a
+command directly to the tcl/tk interpreter used for Pd's gui.;
+#X text 296 118 run a tcl/tk command in the gui;
+#X text 45 422 You can run system commands via the gui. What commands
+you can run depends on your operating system. If you're in linux or
+Mac OS you can get the time and date like this:;
+#X text 494 416 (note: because you can't use open and close braces
+in Pd \, this can be very awkward. It is perhaps best to define tcl/tk
+functions in a "gui plug-in" that can be called eastil from Pd. Also
+\, O/S variations will make it hard to make perfectly portable patches
+using system commands.), f 36;
+#X connect 3 0 4 0;
+#X connect 5 0 3 0;
+#X connect 6 0 7 0;
+#X connect 10 0 3 0;
+#X connect 11 0 3 0;
+#X connect 14 0 3 0;
+#X connect 16 0 17 0;
+#X connect 18 0 15 0;

@@ -720,7 +720,9 @@ msgid "Show README of newly installed libraries (if present)?"
 msgstr "Mostrar README de bibliotecas recém instaladas (se presente)?"
 
 msgid "Should newly installed libraries be added to Pd's search path?"
-msgstr "Bibliotecas recém instaladas devem ser adicionadas aos caminhos de busca do Pd?"
+msgstr ""
+"Bibliotecas recém instaladas devem ser adicionadas aos caminhos de busca do "
+"Pd?"
 
 msgid "Platform settings:"
 msgstr "Configurações de platforma"
@@ -861,6 +863,10 @@ msgstr "Impossível criar diretório de documentos Pd: %s\n"
 #, tcl-format
 msgid "Couldn't create \"externals\" directory in: %s\n"
 msgstr "Impossível criar diretório \"externals\" em: %s\n"
+
+#, fuzzy, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr "Não foi possível criar preferências em '%1$s' em %2$s"
 
 msgid "About Pd"
 msgstr "Sobre o Pd"

@@ -30,18 +30,18 @@ static void *pdint_new(t_floatarg f)
 
 static void pdint_bang(t_pdint *x)
 {
-    outlet_float(x->x_obj.ob_outlet, (t_float)(int)(x->x_f));
+    outlet_float(x->x_obj.ob_outlet, (t_float)(int64_t)(x->x_f));
 }
 
 static void pdint_float(t_pdint *x, t_float f)
 {
-    outlet_float(x->x_obj.ob_outlet, (t_float)(int)(x->x_f = f));
+    outlet_float(x->x_obj.ob_outlet, (t_float)(int64_t)(x->x_f = f));
 }
 
 static void pdint_send(t_pdint *x, t_symbol *s)
 {
     if (s->s_thing)
-        pd_float(s->s_thing, (t_float)(int)x->x_f);
+        pd_float(s->s_thing, (t_float)(int64_t)x->x_f);
     else pd_error(x, "%s: no such object", s->s_name);
 }
 

@@ -14,6 +14,13 @@
 
 void canvas_undo_set_name(const char*name);
 
+
+static void canvas_show_undomenu(t_canvas*x, const char* undo_action, const char* redo_action)
+{
+    if (glist_isvisible(x) && glist_istoplevel(x))
+        sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
+}
+
 static void canvas_undo_docleardirty(t_canvas *x)
 {
     t_undo *udo = canvas_undo_get(x);
@@ -79,8 +86,7 @@ t_undo_action *canvas_undo_init(t_canvas *x)
 
         a->prev = NULL;
         a->name = "no";
-        if (glist_isvisible(x) && glist_istoplevel(x))
-            sys_vgui("pdtk_undomenu .x%lx no no\n", x);
+        canvas_show_undomenu(x, "no", "no");
     }
     else
     {
@@ -112,8 +118,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
         canvas_undo_rebranch(x);
         udo->u_last->next = 0;
         canvas_undo_set_name(udo->u_last->name);
-        if (glist_isvisible(x) && glist_istoplevel(x))
-            sys_vgui("pdtk_undomenu .x%lx %s no\n", x, udo->u_last->name);
+        canvas_show_undomenu(x, udo->u_last->name, "no");
         return 0;
     }
 
@@ -123,9 +128,7 @@ t_undo_action *canvas_undo_add(t_canvas *x, t_undo_type type, const char *name,
     a->data = (void *)data;
     a->name = (char *)name;
     canvas_undo_set_name(name);
-    if (glist_isvisible(x) && glist_istoplevel(x))
-        sys_vgui("pdtk_undomenu .x%lx %s no\n", x, a->name);
-
+    canvas_show_undomenu(x, a->name, "no");
     DEBUG_UNDO(post("%s: done!", __FUNCTION__));
     return(a);
 }
@@ -210,11 +213,7 @@ void canvas_undo_undo(t_canvas *x)
                 /* here we call updating of all unpaired hubs and nodes since
                    their regular call will fail in case their position needed
                    to be updated by undo/redo first to reflect the old one */
-            if (glist_isvisible(x) && glist_istoplevel(x))
-            {
-                if (glist_isvisible(x) && glist_istoplevel(x))
-                    sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
-            }
+            canvas_show_undomenu(x, undo_action, redo_action);
             canvas_dirty(x, canvas_undo_isdirty(x));
         }
     }
@@ -269,11 +268,7 @@ void canvas_undo_redo(t_canvas *x)
         /* here we call updating of all unpaired hubs and nodes since their
            regular call will fail in case their position needed to be updated
            by undo/redo first to reflect the old one */
-        if (glist_isvisible(x) && glist_istoplevel(x))
-        {
-            if (glist_isvisible(x) && glist_istoplevel(x))
-                sys_vgui("pdtk_undomenu .x%lx %s %s\n", x, undo_action, redo_action);
-        }
+        canvas_show_undomenu(x, undo_action, redo_action);
         canvas_dirty(x, canvas_undo_isdirty(x));
     }
     canvas_resume_dsp(dspwas);
@@ -295,7 +290,9 @@ void canvas_undo_rebranch(t_canvas *x)
             freebytes(a1, sizeof(*a1));
             a1 = a2;
         }
+        udo->u_last->next = 0;
     }
+    canvas_show_undomenu(x, udo->u_last->name, "no");
     canvas_resume_dsp(dspwas);
 }
 

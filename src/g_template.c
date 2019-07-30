@@ -2809,12 +2809,12 @@ void g_template_setup(void)
     drawnumber_setup();
 }
 
-void g_template_newpdinstance( void)
+void g_template_newpdinstance(void)
 {
     TEMPLATE = getbytes(sizeof(*TEMPLATE));
 }
 
-void g_template_freepdinstance( void)
+void g_template_freepdinstance(void)
 {
     freebytes(TEMPLATE, sizeof(*TEMPLATE));
 }

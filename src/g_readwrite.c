@@ -797,6 +797,7 @@ static void canvas_savetemplatesto(t_canvas *x, t_binbuf *b, int wholething)
         }
         binbuf_addsemi(b);
     }
+    freebytes(templatevec, ntemplates * sizeof(*templatevec));
 }
 
 void canvas_reload(t_symbol *name, t_symbol *dir, t_glist *except);

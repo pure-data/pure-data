@@ -12,65 +12,103 @@
 #X obj 280 217 text define;
 #X text 81 173 The text object's first argument sets its function:
 , f 30;
-#N canvas 753 80 684 718 define 0;
-#X msg 39 106 clear;
-#X msg 37 132 read text-object-help.txt;
-#X msg 40 161 write text-object-help.txt;
+#N canvas 373 69 684 718 define 0;
+#X msg 38 80 clear;
+#X msg 38 106 read text-object-help.txt;
+#X msg 38 132 write text-object-help.txt;
 #X text 32 20 "text define" maintains a text object and can name it
 so that other objects can find it (and later should have some alternative
 \, anonymous way to be found).;
-#X text 61 425 click to open and edit text:;
-#X text 296 413 creation arguments:;
-#X text 324 431 optional -k flag to keep contents;
-#X text 326 448 optional name;
-#X text 77 268 (optionally you can read or write to/from a file interpreting
-carriage returns as separators \; this should allow reading some text
-file formats - like this:);
-#X text 274 130 read from a file;
-#X text 276 161 write to a file;
-#X text 277 104 clear;
-#X obj 48 193 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+#X text 66 400 click to open and edit text:;
+#X text 296 386 creation arguments:;
+#X text 324 404 optional -k flag to keep contents;
+#X text 326 421 optional name;
+#X text 273 104 read from a file;
+#X text 275 135 write to a file;
+#X text 276 78 clear;
+#X obj 38 265 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X obj 38 513 t b p;
-#X obj 38 562 text get -s text t;
-#X msg 39 537 0;
-#X obj 38 612 print;
-#X obj 38 587 list trim;
-#X obj 38 449 text define -k text-help-1;
-#A set this is a message \; this is another 1 ... \;;
-#X msg 79 336 write -c /tmp/test-cr.txt;
-#X obj 217 479 print notify-outlet;
-#X text 85 612 First outlet is pointer to a "text" scalar containing
+#X obj 38 486 t b p;
+#X obj 38 535 text get -s text t;
+#X msg 39 510 0;
+#X obj 38 585 print;
+#X obj 38 560 list trim;
+#X obj 38 422 text define -k text-help-1;
+#A set this is one message \; this is another 1 ... \;;
+#X msg 38 191 write -c /tmp/test-cr.txt;
+#X obj 217 452 print notify-outlet;
+#X text 85 585 First outlet is pointer to a "text" scalar containing
 the text \, which is output when the object is sent a "bang". For example
-\, here's machinery for printing out first line of text., f 30;
-#X text 69 187 bang to output a pointer to a scalar (struct) containing
+\, here's machinery for printing out first line of text., f 47;
+#X text 59 259 bang to output a pointer to a scalar (struct) containing
 the text - see first outlet below, f 45;
-#X text 215 504 Second outlet notifies you when text changes. As of
+#X text 215 477 Second outlet notifies you when text changes. As of
 Pd 0.48 this only outputs the message "updated" when text changes \,
 but this might be extended to offer more information in the future.
-, f 42;
-#X msg 79 376 click;
-#X msg 127 376 close;
-#X text 175 376 open and close text window;
-#X msg 59 235 send text-help-send;
-#X text 206 235 send pointer to a named receive object;
-#X obj 51 481 r text-help-send;
-#X connect 0 0 18 0;
-#X connect 1 0 18 0;
-#X connect 2 0 18 0;
-#X connect 12 0 18 0;
-#X connect 13 0 15 0;
-#X connect 13 1 14 3;
-#X connect 14 0 17 0;
-#X connect 15 0 14 0;
-#X connect 17 0 16 0;
-#X connect 18 0 13 0;
-#X connect 18 1 20 0;
-#X connect 19 0 18 0;
-#X connect 24 0 18 0;
-#X connect 25 0 18 0;
-#X connect 27 0 18 0;
-#X connect 29 0 13 0;
+, f 49;
+#X msg 57 362 click;
+#X msg 105 362 close;
+#X text 153 362 open and close text window;
+#X msg 38 232 send text-help-send;
+#X text 239 205 send pointer to a named receive object;
+#X obj 51 454 r text-help-send;
+#X text 48 156 (optionally you can read or write to/from a file interpreting
+carriage returns as separators. This should allow reading some text
+file formats - like this:), f 80;
+#X msg 38 325 sort;
+#X text 85 323 sort the contents. details here:;
+#N canvas 1070 128 715 479 sorting-text 0;
+#X obj 44 229 text define text-help-sorting;
+#X msg 77 46 sort;
+#X msg 81 71 sort -r;
+#X msg 83 99 sort -k 1;
+#X msg 45 11 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 2 1 4 \\\; 1 \\\;
+2 \\\; 1 2 3;
+#X msg 86 181 sort -u;
+#X text 41 261 Numbers come before symbols \, which are sorted alphabetically
+(in the sense of "strcmp" - this will probably yield nonsense for non-ASCII
+symbols \, but even in that case it should give some repeatable order).
+Shorter lines come before longer ones that match the entire shorter
+lines. As a special case empty lines come before anything else.;
+#X text 149 100 only compare contents of line starting at field 1 (counting
+from zero). If two lines are identical (even if both are empty) starting
+at the first field compared \, we preserve the original order the lines
+appeared in \, even if earlier fields then appear out of order.;
+#X text 144 176 unique - suppress identical lines if they are sorted
+to consecutive positions (this is not always true when "-k" is also
+present).;
+#X text 152 70 reverse order;
+#X text 39 351 If the last line in the text isn't terminated a semicolon
+is added to it before sorting.;
+#X text 43 390 linee terminated by commas are treated as equal to ones
+terminated by semicolons. There is probably only confusion to be won
+from sorting texts mixing commas and semicolons.;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X restore 328 324 pd sorting-text;
+#X msg 38 297 set this is one message \\\; this is another 1 ... \\\;
+;
+#X connect 0 0 17 0;
+#X connect 1 0 17 0;
+#X connect 2 0 17 0;
+#X connect 11 0 17 0;
+#X connect 12 0 14 0;
+#X connect 12 1 13 3;
+#X connect 13 0 16 0;
+#X connect 14 0 13 0;
+#X connect 16 0 15 0;
+#X connect 17 0 12 0;
+#X connect 17 1 19 0;
+#X connect 18 0 17 0;
+#X connect 23 0 17 0;
+#X connect 24 0 17 0;
+#X connect 26 0 17 0;
+#X connect 28 0 12 0;
+#X connect 30 0 17 0;
+#X connect 33 0 17 0;
 #X restore 392 217 pd define;
 #X obj 280 240 text get;
 #N canvas 885 156 859 566 get 0;
@@ -268,7 +306,7 @@ If the number n is greater than the number of lines in the text the
 new line is added.;
 #X text 241 348 next optional arg to set inlet 2 (field number \, defaults
 to whole line), f 47;
-#X msg 223 165 1e+015;
+#X msg 223 165 1e+15;
 #X text 83 391 If inlet 2 is unset or set to a negative number \, the
 entire line is replaced \, but if it is set to 0 or more to specify
 a starting field \, the line is not resized - instead \, as many items
@@ -347,19 +385,19 @@ contained is discarded.;
 #X text 130 386 convert from list;
 #X text 217 409 search;
 #X obj 279 407 text search;
-#N canvas 626 77 1011 913 search 0;
-#X floatatom 60 313 5 0 0 0 - - -;
-#X text 385 232 find another text by name or pointer, f 18;
-#X text 207 280 arguments: name of the text object or "-s struct-name"
+#N canvas 183 101 1069 800 search 0;
+#X floatatom 60 351 5 0 0 0 - - -;
+#X text 358 279 find another text by name or pointer, f 18;
+#X text 207 318 arguments: name of the text object or "-s struct-name"
 , f 30;
 #X text 46 11 "text search" outputs the line number of the line that
 best matches a search key. By default it seeks a line whose leading
 fields match the incoming list.;
-#X obj 52 873 text define -k text-help-search;
+#X obj 62 464 text define -k text-help-search;
 #A set 1 2 3 dog \; 7 8 9 cat \; 4 5 3 dog \; 7 8 9 alligator \; random
 line that won't match numbers \;;
-#X obj 60 270 text search text-help-search, f 16;
-#X msg 182 244 symbol text-help-search;
+#X obj 60 308 text search text-help-search, f 16;
+#X msg 182 282 symbol text-help-search;
 #X msg 60 77 1;
 #X msg 60 101 2;
 #X msg 60 125 4;
@@ -369,58 +407,66 @@ line that won't match numbers \;;
 #X text 110 76 matches first line (number 0);
 #X text 102 99 doesn't match first field of any line so -1;
 #X text 113 210 fails on second field so no match;
-#X text 211 314 ... then optional search fields. Each is a field number
+#X text 207 358 ... then optional search fields. Each is a field number
 (starting from 0) optionally preceded by ">". ">=" \, "<" \, "<=" \,
-or "near".;
+or "near"., f 44;
 #X text 98 150 if two lines match only the first is output (but see
 below for finding best matches).;
-#X msg 47 446 7 cat;
-#X msg 47 470 7 alligator;
-#X floatatom 47 574 5 0 0 0 - - -;
-#X msg 47 494 7 dog;
-#X obj 47 518 text search text-help-search 0 3, f 16;
-#X floatatom 503 600 5 0 0 0 - - -;
-#X obj 503 541 text search text-help-search 1, f 16;
-#X msg 504 508 8 9;
-#X msg 559 486 8 9 alligator;
-#X msg 504 482 8;
-#X msg 559 513 symbol line;
-#X text 43 392 in this example we ask to match both field 0 and field
+#X msg 663 111 7 cat;
+#X msg 663 135 7 alligator;
+#X floatatom 663 239 5 0 0 0 - - -;
+#X msg 663 159 7 dog;
+#X obj 663 183 text search text-help-search 0 3, f 16;
+#X floatatom 727 487 5 0 0 0 - - -;
+#X obj 727 428 text search text-help-search 1, f 16;
+#X msg 728 395 8 9;
+#X msg 783 373 8 9 alligator;
+#X msg 728 369 8;
+#X msg 783 400 symbol line;
+#X text 659 57 in this example we ask to match both field 0 and field
 3 exactly. In field 3 we're testing symbols for equality., f 39;
-#X text 401 382 If the search pattern (the incoming list) has more
+#X text 625 269 If the search pattern (the incoming list) has more
 fields than we have specified search fields \, extra search patterns
 match succeeding fields starting from the last one give as an argument.
 So for example if there are no arguments we look for matches to any
 number of fields starting from the beginning of the line in the text.
 ;
-#X floatatom 49 834 5 0 0 0 - - -;
-#X obj 49 778 text search text-help-search > 0, f 16;
-#X text 45 613 Match a line for which the search key is greater than
+#X floatatom 75 764 5 0 0 0 - - -;
+#X obj 75 708 text search text-help-search > 0, f 16;
+#X text 71 543 Match a line for which the search key is greater than
 field zero of that line. The line getting closest to the key wins.
 , f 41;
-#X msg 49 671 2;
-#X msg 49 713 4;
-#X text 86 664 lines 1 \, 2 \, and 3 match \, but 2 wins because its
+#X msg 75 601 2;
+#X msg 75 643 4;
+#X text 112 594 lines 1 \, 2 \, and 3 match \, but 2 wins because its
 first field (4) is closest to the search key 2, f 48;
-#X text 88 703 this matches lines 1 and 3 \, and each is equally good
+#X text 114 633 this matches lines 1 and 3 \, and each is equally good
 \, so line 1 wins., f 43;
-#X text 86 744 nobody's first field is greater than 10;
-#X msg 49 745 10;
-#X obj 507 809 text search text-help-search 2 near 0, f 18;
-#X floatatom 507 866 5 0 0 0 - - -;
-#X msg 507 685 3 3;
-#X msg 507 714 3 2.5 1;
-#X msg 507 775 3 3 1;
-#X text 506 628 Hear we ask for field 2 to equal 3 and fields starting
-at 0 to be 'near' the following arguments., f 33;
-#X text 547 684 field 2 is 3 and field 0 nearest 3;
-#X text 575 706 here lines 0 and 2 tie over 2.4 (1 and 4 are equally
+#X text 112 674 nobody's first field is greater than 10;
+#X msg 75 675 10;
+#X obj 632 710 text search text-help-search 2 near 0, f 18;
+#X floatatom 632 767 5 0 0 0 - - -;
+#X msg 632 586 3 3;
+#X msg 632 615 3 2.5 1;
+#X msg 632 676 3 3 1;
+#X text 672 585 field 2 is 3 and field 0 nearest 3;
+#X text 700 607 here lines 0 and 2 tie over 2.4 (1 and 4 are equally
 far from it) so line 0 whose second field is closer to 1 wins., f
 40;
-#X text 560 766 Here line 2 wins because its field 0 is nearer to 3
+#X text 685 667 Here line 2 wins because its field 0 is nearer to 3
 \, notwithstanding that its field 1 is farther from 1;
 #X text 103 125 matches line number 2 (third line);
 #X text 114 188 matches two fields of line number 2;
+#X msg 74 246 range 0 1;
+#X msg 148 245 range 0 1e+10;
+#X msg 243 244 range 2 2;
+#X text 317 236 set range (first line to check \, number of lines to
+check), f 31;
+#X text 636 532 Here we ask for field 2 to equal 3 and fields starting
+at 0 to be 'near' the following arguments:, f 33;
+#X text 62 436 here is the example text we search in:;
+#X text 148 525 EXAMPLE:;
+#X text 739 18 MORE EXAMPLES:;
 #X connect 5 0 0 0;
 #X connect 6 0 5 1;
 #X connect 7 0 5 0;
@@ -446,6 +492,9 @@ far from it) so line 0 whose second field is closer to 1 wins., f
 #X connect 42 0 40 0;
 #X connect 43 0 40 0;
 #X connect 44 0 40 0;
+#X connect 50 0 5 0;
+#X connect 51 0 5 0;
+#X connect 52 0 5 0;
 #X restore 392 407 pd search;
 #X text 75 433 sequencer/message-sender;
 #X obj 279 431 text sequence;
@@ -637,7 +686,7 @@ line 4 \\\;;
 #X obj 54 432 text fromlist text-help-insert;
 #X obj 52 288 text define -k text-help-insert;
 #A set line 0 \; line 1 \; line 2 \; line 3 \; line 4 \;;
-#X msg 165 142 1e+009;
+#X msg 165 142 1e+09;
 #X text 214 144 insert after end;
 #X msg 59 82 list x y z w;
 #X msg 65 108 1 2 3;
