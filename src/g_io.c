@@ -281,7 +281,7 @@ static void vinlet_setup(void)
     class_addanything(vinlet_class, vinlet_anything);
     class_addmethod(vinlet_class, (t_method)vinlet_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(vinlet_class, gensym("pd"));
+    class_sethelpsymbol(vinlet_class, gensym("inlet-outlet"));
 }
 
 /* ------------------------- voutlet -------------------------- */
@@ -587,7 +587,7 @@ static void voutlet_setup(void)
     class_addanything(voutlet_class, voutlet_anything);
     class_addmethod(voutlet_class, (t_method)voutlet_dsp,
         gensym("dsp"), A_CANT, 0);
-    class_sethelpsymbol(voutlet_class, gensym("pd"));
+    class_sethelpsymbol(voutlet_class, gensym("inlet-outlet"));
 }
 
 
