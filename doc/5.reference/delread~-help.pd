@@ -1,4 +1,4 @@
-#N canvas 407 143 612 502 12;
+#N canvas 583 102 612 502 12;
 #X text 317 293 1st argument: name of delay line, f 33;
 #X floatatom 128 262 0 0 0 0 - - -;
 #X text 163 264 float input (delay time in ms);
@@ -27,6 +27,8 @@ delay is actually one DSP period \, not zero., f 69;
 #X obj 135 465 delwrite~;
 #X text 55 464 see also:;
 #X obj 216 465 delread4~;
+#X msg 479 172 \; pd dsp 1;
+#X msg 479 221 \; pd dsp 0;
 #X connect 1 0 13 0;
 #X connect 7 0 16 0;
 #X connect 8 0 9 0;
