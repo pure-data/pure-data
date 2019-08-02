@@ -55,4 +55,4 @@ patch.;
 #X connect 21 0 1 1;
 #X connect 21 0 5 0;
 #X connect 24 0 10 1;
-#X coords 0 0 1 1 55 55 1 300 200;
+#X coords 0 0 1 1 55 55 2 300 200;
