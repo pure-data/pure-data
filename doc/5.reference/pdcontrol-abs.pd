@@ -1,0 +1,9 @@
+#N canvas 674 311 471 296 12;
+#X obj 149 108 inlet;
+#X obj 149 228 outlet;
+#X obj 149 165 pdcontrol;
+#X text 78 28 This is the abstraction for the pdcontrol help patch.
+It serves an example on how it gets the arguments of an abstraction.
+, f 41;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
