@@ -435,6 +435,25 @@ static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
     else outlet_symbol(x->x_outlet, canvas_getdir(c));
 }
 
+static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
+{
+    t_canvas *c = x->x_canvas;
+    int i;
+    for (i = 0; i < (int)f; i++)
+    {
+        while (!c->gl_env)  /* back up to containing canvas or abstraction */
+            c = c->gl_owner;
+        if (c->gl_owner)    /* back up one more into an owner if any */
+            c = c->gl_owner;
+    }
+    int argc;
+    t_atom *argv;
+    canvas_setcurrent(c);
+    canvas_getargs(&argc, &argv);
+    canvas_unsetcurrent(c);
+    outlet_list(x->x_outlet, &s_list, argc, argv);
+}
+
 static void pdcontrol_gui(t_pdcontrol *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_binbuf *b = binbuf_new();
@@ -466,6 +485,8 @@ static void pdcontrol_setup(void)
         (t_newmethod)pdcontrol_new, (t_method)pdcontrol_free, sizeof(t_pdcontrol), 0, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_dir,
         gensym("dir"), A_DEFFLOAT, A_DEFSYMBOL, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_args,
+        gensym("args"), A_DEFFLOAT, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_gui,
         gensym("gui"), A_GIMME, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
