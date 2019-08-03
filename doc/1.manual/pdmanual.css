@@ -120,7 +120,28 @@ IMG {
  
     display: block;
     margin: 0 auto;
+	width: auto;
+    
+
 }
+
+mark {
+background-color: rgb(255, 240, 179);
+}
+
+p.fig {
+text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 /* responsive css for small "devices" */
