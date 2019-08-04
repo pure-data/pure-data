@@ -8,9 +8,6 @@
 #include <string.h>
 extern int ugen_getsortno(void);
 
-#define DEFDELVS 64             /* LATER get this from canvas at DSP time */
-static const int delread_zero = 0;    /* four bytes of zero for delread~, vd~/delread4~*/
-
 /* ----------------------------- delwrite~ ----------------------------- */
 static t_class *sigdelwrite_class;
 
@@ -41,7 +38,7 @@ static void sigdelwrite_updatesr(t_sigdelwrite *x, t_float sr) /* added by Mathi
     int nsamps = x->x_deltime * sr * (t_float)(0.001f);
     if (nsamps < 1) nsamps = 1;
     nsamps += ((- nsamps) & (SAMPBLK - 1));
-    nsamps += DEFDELVS;
+    nsamps += x->x_vecsize;
     if (x->x_cspace.c_n != nsamps)
     {
         x->x_cspace.c_vec = (t_sample *)resizebytes(x->x_cspace.c_vec,
@@ -49,6 +46,9 @@ static void sigdelwrite_updatesr(t_sigdelwrite *x, t_float sr) /* added by Mathi
             (nsamps + XTRASAMPS) * sizeof(t_sample));
         x->x_cspace.c_n = nsamps;
         x->x_cspace.c_phase = XTRASAMPS;
+    #if 0
+        post("delay line resized to %d samples", nsamps);
+    #endif
     }
 }
 
@@ -62,16 +62,22 @@ static void sigdelwrite_clear (t_sigdelwrite *x) /* added by Orm Finnendahl */
     /* routine to check that all delwrites/delreads/vds have same vecsize */
 static void sigdelwrite_checkvecsize(t_sigdelwrite *x, int vecsize)
 {
+        /* the first object in the DSP chain sets the vecsize */
     if (x->x_rsortno != ugen_getsortno())
     {
         x->x_vecsize = vecsize;
         x->x_rsortno = ugen_getsortno();
     }
+#if 1
+    /*  Subsequent objects are only allowed to increase the vector size,
+        so x_vecsize will be set to the largest block size of all objects. */
+    else if (vecsize > x->x_vecsize)
+        x->x_vecsize = vecsize;
+#else
     /*
         LATER this should really check sample rate and blocking, once that is
         supported.  Probably we don't actually care about vecsize.
         For now just suppress this check. */
-#if 0
     else if (vecsize != x->x_vecsize)
         pd_error(x, "delread/delwrite/vd vector size mismatch");
 #endif
@@ -218,8 +224,8 @@ static void sigdelread_dsp(t_sigdelread *x, t_signal **sp)
     x->x_n = sp[0]->s_n;
     if (delwriter)
     {
-        sigdelwrite_updatesr(delwriter, sp[0]->s_sr);
         sigdelwrite_checkvecsize(delwriter, sp[0]->s_n);
+        sigdelwrite_updatesr(delwriter, sp[0]->s_sr);
         x->x_zerodel = (delwriter->x_sortno == ugen_getsortno() ?
             0 : delwriter->x_vecsize);
         sigdelread_float(x, x->x_deltime);
@@ -323,6 +329,7 @@ static void sigvd_dsp(t_sigvd *x, t_signal **sp)
     if (delwriter)
     {
         sigdelwrite_checkvecsize(delwriter, sp[0]->s_n);
+        sigdelwrite_updatesr(delwriter, sp[0]->s_sr);
         x->x_zerodel = (delwriter->x_sortno == ugen_getsortno() ?
             0 : delwriter->x_vecsize);
         dsp_add(sigvd_perform, 5,
