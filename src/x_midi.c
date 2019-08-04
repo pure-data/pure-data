@@ -1036,6 +1036,16 @@ static void *poly_new(t_float nvoice, t_float steal, t_float retrigger)
     return (x);
 }
 
+static void poly_flushvoice(t_poly *x, t_voice *v, int index)
+{
+    outlet_float(x->x_velout, 0);
+    outlet_float(x->x_pitchout, v->v_pitch);
+    outlet_float(x->x_obj.ob_outlet, index);
+    v->v_used = 0;
+    v->v_sustain = 0;
+    v->v_serial = x->x_serial++;
+}
+
 static void poly_float(t_poly *x, t_float f)
 {
     int i;
@@ -1043,9 +1053,9 @@ static void poly_float(t_poly *x, t_float f)
     t_voice *firston, *firstoff;
     unsigned int serialon, serialoff, onindex = 0, offindex = 0;
 
-        /* turn off oldest matching voice if
-         * a) we got a note-off message
-         * b) sustain is on and retriggering is disabled */
+        /* turn off oldest matching voice for
+         * a) note-off message
+         * b) sustain + retriggering disabled */
     if (x->x_vel <= 0 || (x->x_sustain && !x->x_retrigger))
     {
         for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
@@ -1054,19 +1064,11 @@ static void poly_float(t_poly *x, t_float f)
                     firston = v, serialon = v->v_serial, onindex = i;
         if (firston)
         {
-                /* note-off only: mark note as sustained */
+                /* note-off only: mark voice as sustained */
             if (x->x_vel <= 0 && x->x_sustain)
-            {
                 firston->v_sustain = 1;
-            }
             else
-            {
-                firston->v_used = 0;
-                firston->v_serial = x->x_serial++;
-                outlet_float(x->x_velout, 0);
-                outlet_float(x->x_pitchout, firston->v_pitch);
-                outlet_float(x->x_obj.ob_outlet, onindex+1);
-            }
+                poly_flushvoice(x, firston, onindex+1);
         }
     }
 
@@ -1094,14 +1096,15 @@ static void poly_float(t_poly *x, t_float f)
             /* if none, steal one */
         else if (firston && x->x_steal)
         {
-            outlet_float(x->x_velout, 0);
-            outlet_float(x->x_pitchout, firston->v_pitch);
-            outlet_float(x->x_obj.ob_outlet, onindex+1);
+            poly_flushvoice(x, firston, onindex+1);
             outlet_float(x->x_velout, x->x_vel);
             outlet_float(x->x_pitchout, firston->v_pitch = f);
             outlet_float(x->x_obj.ob_outlet, onindex+1);
+            firston->v_used = 1;
+        #if 0 /* see poly_flushvoice */
             firston->v_sustain = 0;
             firston->v_serial = x->x_serial++;
+        #endif
         }
     }
 }
@@ -1125,14 +1128,7 @@ static void poly_sustain(t_poly *x, t_float f)
     {
         for (v = x->x_vec, i = 0; i < x->x_n; v++, i++)
             if (v->v_sustain)
-            {
-                outlet_float(x->x_velout, 0);
-                outlet_float(x->x_pitchout, v->v_pitch);
-                outlet_float(x->x_obj.ob_outlet, i+1);
-                v->v_used = 0;
-                v->v_sustain = 0;
-                v->v_serial = x->x_serial++;
-            }
+                poly_flushvoice(x, v, i+1);
     }
     x->x_sustain = (f != 0);
 }
@@ -1144,14 +1140,7 @@ static void poly_stop(t_poly *x)
 
     for (i = 0, v = x->x_vec; i < x->x_n; i++, v++)
         if (v->v_used)
-    {
-        outlet_float(x->x_velout, 0);
-        outlet_float(x->x_pitchout, v->v_pitch);
-        outlet_float(x->x_obj.ob_outlet, i+1);
-        v->v_used = 0;
-        v->v_sustain = 0;
-        v->v_serial = x->x_serial++;
-    }
+            poly_flushvoice(x, v, i+1);
 }
 
 static void poly_clear(t_poly *x)
