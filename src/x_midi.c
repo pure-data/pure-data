@@ -996,8 +996,8 @@ typedef struct poly
     t_outlet *x_pitchout;
     t_outlet *x_velout;
     unsigned long x_serial;
-    char x_voicesteal;
-    char x_notesteal;
+    char x_steal;
+    char x_retrigger;
     char x_sustain;
 } t_poly;
 
@@ -1016,15 +1016,15 @@ static void poly_resize(t_poly *x, t_float fnvoice)
         v->v_pitch = v->v_sustain = v->v_used = v->v_serial = 0;
 }
 
-static void *poly_new(t_float nvoice, t_float voicesteal, t_float notesteal)
+static void *poly_new(t_float nvoice, t_float steal, t_float retrigger)
 {
     t_poly *x = (t_poly *)pd_new(poly_class);
     x->x_n = 0;
     x->x_vec = 0;
     x->x_vel = 0;
     x->x_sustain = 0;
-    x->x_voicesteal = (voicesteal != 0);
-    x->x_notesteal = (notesteal != 0);
+    x->x_steal = (steal != 0);
+    x->x_retrigger = (int)retrigger; /* for now only 0 and 1 */
     floatinlet_new(&x->x_obj, &x->x_vel);
     outlet_new(&x->x_obj, &s_float);
     x->x_pitchout = outlet_new(&x->x_obj, &s_float);
@@ -1045,8 +1045,8 @@ static void poly_float(t_poly *x, t_float f)
 
         /* turn off oldest matching voice if
          * a) we got a note-off message
-         * b) sustain is on and note stealing is enabled */
-    if (x->x_vel <= 0 || (x->x_sustain && x->x_notesteal))
+         * b) sustain is on and retriggering is disabled */
+    if (x->x_vel <= 0 || (x->x_sustain && !x->x_retrigger))
     {
         for (v = x->x_vec, i = 0, firston = 0, serialon = 0xffffffff;
             i < x->x_n; v++, i++)
@@ -1092,7 +1092,7 @@ static void poly_float(t_poly *x, t_float f)
             firstoff->v_serial = x->x_serial++;
         }
             /* if none, steal one */
-        else if (firston && x->x_voicesteal)
+        else if (firston && x->x_steal)
         {
             outlet_float(x->x_velout, 0);
             outlet_float(x->x_pitchout, firston->v_pitch);
@@ -1106,14 +1106,14 @@ static void poly_float(t_poly *x, t_float f)
     }
 }
 
-static void poly_voicestealing(t_poly *x, t_float f)
+static void poly_steal(t_poly *x, t_float f)
 {
-    x->x_voicesteal = (f != 0);
+    x->x_steal = (f != 0);
 }
 
-static void poly_notestealing(t_poly *x, t_float f)
+static void poly_retrigger(t_poly *x, t_float f)
 {
-    x->x_notesteal = (f != 0);
+    x->x_retrigger = (int)f;
 }
 
 static void poly_sustain(t_poly *x, t_float f)
@@ -1177,8 +1177,8 @@ void poly_setup(void)
     class_addmethod(poly_class, (t_method)poly_clear, gensym("clear"), 0);
     class_addmethod(poly_class, (t_method)poly_sustain, gensym("sustain"), A_FLOAT, 0);
     class_addmethod(poly_class, (t_method)poly_resize, gensym("resize"), A_FLOAT, 0);
-    class_addmethod(poly_class, (t_method)poly_voicestealing, gensym("voicestealing"), A_FLOAT, 0);
-    class_addmethod(poly_class, (t_method)poly_notestealing, gensym("notestealing"), A_FLOAT, 0);
+    class_addmethod(poly_class, (t_method)poly_steal, gensym("steal"), A_FLOAT, 0);
+    class_addmethod(poly_class, (t_method)poly_retrigger, gensym("retrigger"), A_FLOAT, 0);
 }
 
 /* -------------------------- bag -------------------------- */
