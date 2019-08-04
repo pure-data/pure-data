@@ -207,7 +207,7 @@ static int sys_domicrosleep(int microsec, int pollem)
     int i, didsomething = 0;
     t_fdpoll *fp;
     timout.tv_sec = 0;
-    timout.tv_usec = (sys_nosleep ? 0 : microsec);
+    timout.tv_usec = 0;
     if (pollem)
     {
         fd_set readset, writeset, exceptset;
@@ -217,11 +217,6 @@ static int sys_domicrosleep(int microsec, int pollem)
         for (fp = pd_this->pd_inter->i_fdpoll,
             i = pd_this->pd_inter->i_nfdpoll; i--; fp++)
                 FD_SET(fp->fdp_fd, &readset);
-#ifdef _WIN32
-        if (pd_this->pd_inter->i_maxfd == 0)
-                Sleep(microsec/1000);
-        else
-#endif
         if(select(pd_this->pd_inter->i_maxfd+1,
                   &readset, &writeset, &exceptset, &timout) < 0)
           perror("microsleep select");
@@ -239,18 +234,18 @@ static int sys_domicrosleep(int microsec, int pollem)
 #endif
             didsomething = 1;
         }
-        return (didsomething);
+        if (didsomething)
+            return (1);
     }
-    else
+    else if (microsec)
     {
 #ifdef _WIN32
-        if (pd_this->pd_inter->i_maxfd == 0)
-              Sleep(microsec/1000);
-        else
+        Sleep(microsec/1000);
+#else
+        usleep(microsec);
 #endif
-        select(0, 0, 0, 0, &timout);
-        return (0);
     }
+    return (0);
 }
 
 void sys_microsleep(int microsec)
@@ -903,7 +898,16 @@ void sys_unqueuegui(void *client)
 
 int sys_pollgui(void)
 {
-    return (sys_domicrosleep(0, 1) || sys_poll_togui());
+    static double lasttime = 0;
+    double now = 0;
+    int didsomething = sys_domicrosleep(0, 1);
+    if (!didsomething || (now = sys_getrealtime()) > lasttime + 0.5)
+    {
+        didsomething |= sys_poll_togui();
+        if (now)
+            lasttime = now;
+    }
+    return (didsomething);
 }
 
 void sys_init_fdpoll(void)
