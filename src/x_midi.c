@@ -1037,17 +1037,17 @@ static void poly_resize(t_poly *x, t_float fnvoice)
     x->x_n = n;
 }
 
-static void *poly_new(t_float nvoice, t_float steal, t_float retrigger)
+static void *poly_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_voice *v;
-    int i;
+    int i, nvoice = atom_getfloatarg(0, argc, argv);
     t_poly *x = (t_poly *)pd_new(poly_class);
 
-    x->x_n = (int)nvoice < 1 ? 1 : (int)nvoice;
+    x->x_n = nvoice < 1 ? 1 : nvoice;
     x->x_vel = 0;
     x->x_sustain = 0;
-    x->x_steal = (steal != 0);
-    x->x_retrigger = (int)retrigger; /* for now only 0 and 1 */
+    x->x_steal = (atom_getfloatarg(1, argc, argv) != 0);
+    x->x_retrigger = argc > 2 ? atom_getfloat(argv+2) : 1; /* default: true */
     floatinlet_new(&x->x_obj, &x->x_vel);
     outlet_new(&x->x_obj, &s_float);
     x->x_pitchout = outlet_new(&x->x_obj, &s_float);
@@ -1175,7 +1175,7 @@ void poly_setup(void)
 {
     poly_class = class_new(gensym("poly"),
         (t_newmethod)poly_new, (t_method)poly_free,
-        sizeof(t_poly), 0, A_DEFFLOAT, A_DEFFLOAT, A_DEFFLOAT, 0);
+        sizeof(t_poly), 0, A_GIMME, 0);
     class_addfloat(poly_class, poly_float);
     class_addmethod(poly_class, (t_method)poly_stop, gensym("stop"), 0);
     class_addmethod(poly_class, (t_method)poly_clear, gensym("clear"), 0);
