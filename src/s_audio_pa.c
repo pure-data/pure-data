@@ -495,7 +495,7 @@ int pa_send_dacs(void)
     float *conversionbuf;
     int j, k;
     int rtnval =  SENDDACS_YES;
-    int locked = 0, needsleep = 0;
+    int locked = 0;
 #ifdef FAKEBLOCKING
 #ifdef THREADSIGNAL
     struct timespec ts;
@@ -547,7 +547,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-            needsleep = 1;
+            sys_microsleep(sys_sleepgrain);
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
@@ -588,11 +588,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-#ifdef _WIN32
-            Sleep(1);
-#else
-            usleep(1000);
-#endif /* _WIN32 */
+            sys_microsleep(sys_sleepgrain);
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
@@ -676,16 +672,7 @@ int pa_send_dacs(void)
         #endif
         return SENDDACS_NO;
     }
-    else
-    {
-        if (needsleep)
-        {
-            sys_lock();
-            sys_microsleep(sys_sleepgrain);
-            sys_unlock();
-        }
-        return (rtnval);
-    }
+    else return (rtnval);
 }
 
     /* scanning for devices */
