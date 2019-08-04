@@ -237,7 +237,7 @@ static int sys_domicrosleep(int microsec, int pollem)
         if (didsomething)
             return (1);
     }
-    else if (microsec)
+    if (microsec)
     {
 #ifdef _WIN32
         Sleep(microsec/1000);
