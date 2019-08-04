@@ -1001,6 +1001,16 @@ typedef struct poly
     char x_sustain;
 } t_poly;
 
+static void poly_flushvoice(t_poly *x, t_voice *v, int index)
+{
+    outlet_float(x->x_velout, 0);
+    outlet_float(x->x_pitchout, v->v_pitch);
+    outlet_float(x->x_obj.ob_outlet, index);
+    v->v_used = 0;
+    v->v_sustain = 0;
+    v->v_serial = x->x_serial++;
+}
+
 static void poly_resize(t_poly *x, t_float fnvoice)
 {
     t_voice *v;
@@ -1008,19 +1018,32 @@ static void poly_resize(t_poly *x, t_float fnvoice)
     if (n < 1) n = 1;
     if (n == x->x_n) return;
 
-    if (x->x_vec) freebytes(x->x_vec, x->x_n * sizeof(*x->x_vec));
-    x->x_vec = (t_voice *)getbytes(n * sizeof(*x->x_vec));
-    x->x_n = n;
+    if (n < x->x_n)
+    {
+        /* flush excess voices */
+        for (i = n, v = x->x_vec + n; i < x->x_n; i++, v++)
+            if (v->v_used)
+                poly_flushvoice(x, v, i+1);
+    }
 
-    for (v = x->x_vec, i = n; i--; v++)
-        v->v_pitch = v->v_sustain = v->v_used = v->v_serial = 0;
+    x->x_vec = resizebytes(x->x_vec, x->x_n * sizeof(*x->x_vec), n * sizeof(*x->x_vec));
+
+    if (n > x->x_n)
+    {
+        for (i = x->x_n, v = x->x_vec + x->x_n; i < n; i++, v++)
+            v->v_pitch = v->v_sustain = v->v_used = v->v_serial = 0;
+    }
+
+    x->x_n = n;
 }
 
 static void *poly_new(t_float nvoice, t_float steal, t_float retrigger)
 {
+    t_voice *v;
+    int i;
     t_poly *x = (t_poly *)pd_new(poly_class);
-    x->x_n = 0;
-    x->x_vec = 0;
+
+    x->x_n = (int)nvoice < 1 ? 1 : (int)nvoice;
     x->x_vel = 0;
     x->x_sustain = 0;
     x->x_steal = (steal != 0);
@@ -1031,19 +1054,11 @@ static void *poly_new(t_float nvoice, t_float steal, t_float retrigger)
     x->x_velout = outlet_new(&x->x_obj, &s_float);
     x->x_serial = 0;
 
-    poly_resize(x, nvoice);
+    x->x_vec = (t_voice *)getbytes(x->x_n * sizeof(*x->x_vec));
+    for (v = x->x_vec, i = x->x_n; i--; v++)
+        v->v_pitch = v->v_sustain = v->v_used = v->v_serial = 0;
 
     return (x);
-}
-
-static void poly_flushvoice(t_poly *x, t_voice *v, int index)
-{
-    outlet_float(x->x_velout, 0);
-    outlet_float(x->x_pitchout, v->v_pitch);
-    outlet_float(x->x_obj.ob_outlet, index);
-    v->v_used = 0;
-    v->v_sustain = 0;
-    v->v_serial = x->x_serial++;
 }
 
 static void poly_float(t_poly *x, t_float f)
