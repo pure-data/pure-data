@@ -255,7 +255,11 @@ static int sys_domicrosleep(int microsec, int pollem)
 
 void sys_microsleep(int microsec)
 {
-    sys_domicrosleep(microsec, 1);
+#ifdef _WIN32
+    Sleep(microsec/1000);
+#else
+    usleep(microsec);
+#endif /* _WIN32 */
 }
 
 #if !defined(_WIN32) && !defined(__CYGWIN__)
