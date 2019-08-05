@@ -201,9 +201,10 @@ double sys_getrealtime(void)
 
 extern int sys_nosleep;
 
-/* sleep (but cancel teh sleeping if pollem is set and any file descriptors are
+/* sleep (but cancel the sleeping if pollem is set and any file descriptors are
 ready - in that case, dispatch any resulting Pd messages and return.  Called
-without sys_lock() set; that is done here when dispatching. */
+with sys_lock() set.  We will temporarily release the lock if we actually
+sleep. */
 static int sys_domicrosleep(int microsec, int pollem)
 {
     struct timeval timout;
@@ -226,11 +227,9 @@ static int sys_domicrosleep(int microsec, int pollem)
         for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
             if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
-            sys_lock();
             (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
                 (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
                     pd_this->pd_inter->i_fdpoll[i].fdp_fd);
-            sys_unlock();
             didsomething = 1;
         }
         if (didsomething)
@@ -238,18 +237,24 @@ static int sys_domicrosleep(int microsec, int pollem)
     }
     if (microsec)
     {
+        sys_unlock();
 #ifdef _WIN32
         Sleep(microsec/1000);
 #else
         usleep(microsec);
 #endif
+        sys_lock();
     }
     return (0);
 }
 
+    /* sleep (but if any incoming or to-gui sending to do, do that instead.)
+    Call with the PD unstance lock UNSET - we set it here. */
 void sys_microsleep(int microsec)
 {
+    sys_lock();
     sys_domicrosleep(microsec, 1);
+    sys_unlock();
 }
 
 #if !defined(_WIN32) && !defined(__CYGWIN__)
@@ -895,6 +900,8 @@ void sys_unqueuegui(void *client)
     }
 }
 
+    /* poll for any incoming packets, or for GUI updates to send.  call with
+    the PD instance lock set. */
 int sys_pollgui(void)
 {
     static double lasttime = 0;
@@ -902,9 +909,7 @@ int sys_pollgui(void)
     int didsomething = sys_domicrosleep(0, 1);
     if (!didsomething || (now = sys_getrealtime()) > lasttime + 0.5)
     {
-        sys_lock();
         didsomething |= sys_poll_togui();
-        sys_unlock();
         if (now)
             lasttime = now;
     }
@@ -1618,8 +1623,23 @@ int sys_trylock(void)
 
 #else /* PDTHREADS */
 
+#ifdef TEST_LOCKING /* run standalone Pd with this to find deadlocks */
+static int amlocked;
+void sys_lock(void)
+{
+    if (amlocked) bug("duplicate lock");
+    amlocked = 1;
+}
+
+void sys_unlock(void)
+{
+    if (!amlocked) bug("duplicate unlock");
+    amlocked = 0;
+}
+#else
 void sys_lock(void) {}
 void sys_unlock(void) {}
+#endif
 void pd_globallock(void) {}
 void pd_globalunlock(void) {}
 
