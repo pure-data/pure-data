@@ -133,6 +133,7 @@ void addrinfo_print_list(const struct addrinfo *ailist)
         else continue;
         INET_NTOP(ai->ai_family, addr, addrstr, INET6_ADDRSTRLEN);
         printf("%s %s %d\n", ipver, addrstr, port);
+        fflush(stderr);
     }
 }
 
@@ -167,7 +168,8 @@ unsigned int sockaddr_get_port(const struct sockaddr *sa)
         struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
         return ntohs(sa4->sin_port);
     }
-    else return 0;
+    else
+        return 0;
 }
 
 void sockaddr_set_port(const struct sockaddr *sa, unsigned int port) {
@@ -283,6 +285,27 @@ void socket_close(int socket)
     if (socket < 0) return;
     close(socket);
 #endif
+}
+
+unsigned int socket_get_port(int socket)
+{
+    struct sockaddr_storage sa;
+    socklen_t len = sizeof(sa);
+    if (getsockname(socket, (struct sockaddr *)&sa, &len) < 0)
+        return 0;
+
+    if (sa.ss_family == AF_INET6)
+    {
+        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&sa;
+        return ntohs(sa6->sin6_port);
+    }
+    else if (sa.ss_family == AF_INET)
+    {
+        struct sockaddr_in *sa4 = (struct sockaddr_in *)&sa;
+        return ntohs(sa4->sin_port);
+    }
+    else
+        return 0;
 }
 
 int socket_set_boolopt(int socket, int level, int option_name, int bool_value)

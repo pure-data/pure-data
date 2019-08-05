@@ -39,7 +39,7 @@ static void dopoll(void);
 static void sockerror(char *s);
 
 /* print addrinfo lists for debugging */
-#define PRINT_ADDRINFO
+/* #define PRINT_ADDRINFO */
 
 #define BUFSIZE 4096
 
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
         if (sockfd < 0)
             continue;
     #if 1
-        /* ask OS to allow another process to repoen this port after we close it */
+        /* ask OS to allow another process to reopen this port after we close it */
         if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
             fprintf(stderr, "setsockopt (SO_REUSEADDR) failed\n");
     #endif

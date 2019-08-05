@@ -109,6 +109,9 @@ int socket_connect(int socket, const struct sockaddr *addr,
 /// cross-platform socket close()
 void socket_close(int socket);
 
+/// returns port or 0 on failure
+unsigned int socket_get_port(int socket);
+
 /// get number of immediately readable bytes for the socket
 /// returns -1 on error or bytes available on success
 int socket_bytes_available(int socket);
