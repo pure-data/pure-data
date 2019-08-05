@@ -299,13 +299,10 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             multicast = sockaddr_is_multicast(ai->ai_addr);
         }
         /* if this is an IPv6 address, also listen to IPv4 adapters */
-        if (ai->ai_family == AF_INET6)
+        if (ai->ai_family == AF_INET6 &&
+            socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
         {
-            if (socket_set_boolopt(x->x_sockfd,
-                IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
-            {
-                /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
-            }
+            /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
         }
 
         /* bind optional src listening port */
@@ -327,14 +324,11 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             {
                 /* if this is an IPv6 address, also listen to IPv4 adapters
                    (if not supported, fall back to IPv4) */
-                if (sai->ai_family == AF_INET6)
+                if (sai->ai_family == AF_INET6 &&
+                        socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
                 {
-                    if (socket_set_boolopt(x->x_sockfd,
-                        IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
-                    {
-                        /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
-                        continue;
-                    }
+                    /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+                    continue;
                 }
                 if (bind(sockfd, sai->ai_addr, sai->ai_addrlen) < 0)
                     continue;
@@ -374,7 +368,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
     freeaddrinfo(ailist);
 
-    /* confirm that socket & bind worked */
+    /* confirm that socket worked */
     if (sockfd < 0)
     {
         int err = socket_errno();
@@ -633,7 +627,7 @@ static void netreceive_closeall(t_netreceive *x)
 
 static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int portno = 0, status, protocol = x->x_ns.x_protocol;
+    int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
     const char *hostname = NULL; /* allowed or multicast hostname (UDP only) */
@@ -675,57 +669,50 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     for (ai = ailist; ai != NULL; ai = ai->ai_next)
     {
         /* create a socket */
-        x->x_ns.x_sockfd =
-            socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
-        if (x->x_ns.x_sockfd < 0)
+        sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+        if (sockfd < 0)
             continue;
     #if 0
-        fprintf(stderr, "receive socket %d\n", x->x-ns.x_sockfd);
+        fprintf(stderr, "receive socket %d\n", sockfd);
     #endif
 
     #if 1
         /* ask OS to allow another Pd to reopen this port after we close it */
-        if (socket_set_boolopt(x->x_ns.x_sockfd,
-            SOL_SOCKET, SO_REUSEADDR, 1) < 0)
+        if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
             post("netreceive: setsockopt (SO_REUSEADDR) failed");
     #endif
     #if 0
         intarg = 0;
-        if (socket_set_boolopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_RCVBUF, 0) < 0)
+        if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_RCVBUF, 0) < 0)
             post("netreceive: setsockopt (SO_RCVBUF) failed");
     #endif
         if (protocol == SOCK_STREAM)
         {
             /* stream (TCP) sockets are set NODELAY */
-            if (socket_set_boolopt(x->x_ns.x_sockfd,
-                IPPROTO_TCP, TCP_NODELAY, 1) < 0)
+            if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 post("netreceive: setsockopt (TCP_NODELAY) failed");
         }
         else if (protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
         {
             /* enable IPv4 UDP broadcasting */
-            if (socket_set_boolopt(x->x_ns.x_sockfd,
-                SOL_SOCKET, SO_BROADCAST, 1) < 0)
+            if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 post("netreceive: setsockopt (SO_BROADCAST) failed");
         }
         /* if this is an IPv6 address, also listen to IPv4 adapters
            (if not supported, fall back to IPv4) */
-        if (ai->ai_family == AF_INET6)
+        if (ai->ai_family == AF_INET6 &&
+                socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
         {
-            if (socket_set_boolopt(x->x_ns.x_sockfd,
-                IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
-            {
-                /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
-                sys_closesocket(x->x_ns.x_sockfd);
-                x->x_ns.x_sockfd = -1;
-                continue;
-            }
+            /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+            sys_closesocket(sockfd);
+            sockfd = -1;
+            continue;
         }
         /* name the socket */
-        if (bind(x->x_ns.x_sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+        if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
         {
-            sys_closesocket(x->x_ns.x_sockfd);
-            x->x_ns.x_sockfd = -1;
+            sys_closesocket(sockfd);
+            sockfd = -1;
             continue;
         }
 
@@ -736,7 +723,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     freeaddrinfo(ailist);
 
     /* confirm that socket/bind worked */
-    if (x->x_ns.x_sockfd == -1)
+    if (sockfd < 0)
     {
         int err = socket_errno();
         char buf[MAXPDSTRING];
@@ -745,6 +732,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             buf, err);
         return;
     }
+    x->x_ns.x_sockfd = sockfd;
 
     if (protocol == SOCK_DGRAM) /* datagram protocol */
     {
