@@ -90,9 +90,9 @@ static pthread_cond_t pa_sem;
 #if defined (FAKEBLOCKING) && defined(_WIN32)
 #include <windows.h>    /* for Sleep() */
 #endif
-/* max number of unsuccessful polls before trying to reopen the device */
-#ifndef MAX_NUM_POLLS
-#define MAX_NUM_POLLS 2000
+/* max time (in ms) before trying to reopen the device */
+#ifndef POLL_TIMEOUT
+#define POLL_TIMEOUT 2000
 #endif
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
@@ -497,6 +497,7 @@ int pa_send_dacs(void)
     int rtnval =  SENDDACS_YES;
     int locked = 0;
     int didsomething;
+    double timebefore;
 #ifdef FAKEBLOCKING
 #ifdef THREADSIGNAL
     struct timespec ts;
@@ -514,11 +515,10 @@ int pa_send_dacs(void)
     ts.tv_sec = (long long)timeout;
     ts.tv_nsec = (timeout - (double)ts.tv_sec) * 1e9;
 #else
-    int counter = MAX_NUM_POLLS;
 #endif /* THREADSIGNAL */
-#else
-    double timebefore;
 #endif /* FAKEBLOCKING */
+    timebefore = sys_getrealtime();
+
     if ((!STUFF->st_inchannels && !STUFF->st_outchannels) || !pa_stream)
         return (SENDDACS_NO);
     conversionbuf = (float *)alloca((STUFF->st_inchannels > STUFF->st_outchannels?
@@ -541,9 +541,8 @@ int pa_send_dacs(void)
                 break;
             }
 #else
-            if (Pa_IsStreamActive(&pa_stream) < 0)
-                counter--;
-            if (!counter)
+            if (Pa_IsStreamActive(&pa_stream) < 0 &&
+                (sys_getrealtime() - timebefore) > (POLL_TIMEOUT * 0.001))
             {
                 locked = 1;
                 break;
@@ -586,9 +585,8 @@ int pa_send_dacs(void)
                 break;
             }
 #else
-            if (Pa_IsStreamActive(&pa_stream) < 0)
-                counter--;
-            if (!counter)
+            if (Pa_IsStreamActive(&pa_stream) < 0 &&
+                (sys_getrealtime() - timebefore) > (POLL_TIMEOUT * 0.001))
             {
                 locked = 1;
                 break;
@@ -616,7 +614,6 @@ int pa_send_dacs(void)
     }
 
 #else /* FAKEBLOCKING */
-    timebefore = sys_getrealtime();
         /* write output */
     if (STUFF->st_outchannels)
     {
