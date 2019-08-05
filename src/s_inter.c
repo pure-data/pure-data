@@ -201,6 +201,9 @@ double sys_getrealtime(void)
 
 extern int sys_nosleep;
 
+/* sleep (but cancel teh sleeping if pollem is set and any file descriptors are
+ready - in that case, dispatch any resulting Pd messages and return.  Called
+without sys_lock() set; that is done here when dispatching. */
 static int sys_domicrosleep(int microsec, int pollem)
 {
     struct timeval timout;
@@ -223,15 +226,11 @@ static int sys_domicrosleep(int microsec, int pollem)
         for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
             if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
         {
-#ifdef THREAD_LOCKING
             sys_lock();
-#endif
             (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
                 (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
                     pd_this->pd_inter->i_fdpoll[i].fdp_fd);
-#ifdef THREAD_LOCKING
             sys_unlock();
-#endif
             didsomething = 1;
         }
         if (didsomething)
@@ -903,7 +902,9 @@ int sys_pollgui(void)
     int didsomething = sys_domicrosleep(0, 1);
     if (!didsomething || (now = sys_getrealtime()) > lasttime + 0.5)
     {
+        sys_lock();
         didsomething |= sys_poll_togui();
+        sys_unlock();
         if (now)
             lasttime = now;
     }
