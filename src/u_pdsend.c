@@ -14,6 +14,10 @@ from its standard input to Pd via the netsend/netreceive ("FUDI") protocol. */
 #include <s_net.h>
 
 static void sockerror(char *s);
+
+/* print addrinfo lists for debugging */
+/* #define PRINT_ADDRINFO */
+
 #define BUFSIZE 4096
 
 int main(int argc, char **argv)
@@ -27,7 +31,7 @@ int main(int argc, char **argv)
         goto usage;
     if (argc >= 3)
         hostname = argv[2];
-    else hostname = "127.0.0.1";
+    else hostname = "localhost";
     if (argc >= 4)
     {
         if (!strcmp(argv[3], "tcp"))
@@ -37,8 +41,8 @@ int main(int argc, char **argv)
         else goto usage;
     }
     else protocol = SOCK_STREAM;
-    if (argc >= 5)
-        sscanf(argv[4], "%f", &timeout);
+    if (argc >= 5 && sscanf(argv[4], "%f", &timeout) < 1)
+        goto usage;
     if (socket_init())
     {
         sockerror("socket_init()");
@@ -52,6 +56,10 @@ int main(int argc, char **argv)
             gai_strerror(status), status);
         exit(EXIT_FAILURE);
     }
+    addrinfo_sort_list(&ailist, addrinfo_ipv4_first); /* IPv4 first! */
+#ifdef PRINT_ADDRINFO
+    addrinfo_print_list(ailist);
+#endif
     /* try each addr until we find one that works */
     for (ai = ailist; ai != NULL; ai = ai->ai_next)
     {

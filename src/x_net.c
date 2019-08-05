@@ -20,7 +20,7 @@
 #endif
 
 /* print addrinfo lists for debugging */
-//#define PRINT_ADDRINFO
+#define PRINT_ADDRINFO
 
 #define INBUFSIZE 4096
 

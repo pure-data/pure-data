@@ -37,6 +37,10 @@ static int protocol;
 static void sockerror(char *s);
 static void dopoll(void);
 static void sockerror(char *s);
+
+/* print addrinfo lists for debugging */
+#define PRINT_ADDRINFO
+
 #define BUFSIZE 4096
 
 int main(int argc, char **argv)
@@ -76,7 +80,10 @@ int main(int argc, char **argv)
             gai_strerror(status), status);
         exit(EXIT_FAILURE);
     }
-
+    addrinfo_sort_list(&ailist, addrinfo_ipv6_first); /* IPv6 addresses first! */
+#ifdef PRINT_ADDRINFO
+    addrinfo_print_list(ailist);
+#endif
     /* try each addr until we find one that works */
     for (ai = ailist; ai != NULL; ai = ai->ai_next)
     {
@@ -88,6 +95,28 @@ int main(int argc, char **argv)
         if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
             fprintf(stderr, "setsockopt (SO_REUSEADDR) failed\n");
     #endif
+        if (protocol == SOCK_STREAM)
+        {
+            /* stream (TCP) sockets are set NODELAY */
+            if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
+                fprintf(stderr, "netreceive: setsockopt (TCP_NODELAY) failed");
+        }
+        else if (protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
+        {
+            /* enable IPv4 UDP broadcasting */
+            if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
+                fprintf(stderr, "netreceive: setsockopt (SO_BROADCAST) failed");
+        }
+        /* if this is an IPv6 address, also listen to IPv4 adapters
+           (if not supported, fall back to IPv4) */
+        if (ai->ai_family == AF_INET6 &&
+                socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
+        {
+            /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+            socket_close(sockfd);
+            sockfd = -1;
+            continue;
+        }
         /* name the socket */
         if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
         {
@@ -103,7 +132,7 @@ int main(int argc, char **argv)
     freeaddrinfo(ailist);
 
     /* confirm that socket/bind worked */
-    if (sockfd == -1)
+    if (sockfd < 0)
     {
         int err = socket_errno();
         char buf[256];
