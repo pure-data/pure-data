@@ -436,6 +436,7 @@ the audio I/O system is still busy with previous transfers.
 
 void sys_pollmidiqueue(void);
 void sys_initmidiqueue(void);
+int sys_pollsockets(void);
 
  /* sys_idlehook is a hook the user can fill in to grab idle time.  Return
 nonzero if you actually used the time; otherwise we're really really idle and
@@ -520,7 +521,7 @@ static void m_pollingscheduler(void)
 
         sys_addhist(2);
         sys_pollmidiqueue();
-        if (sys_pollgui())
+        if (sys_pollsockets())
         {
             if (!didsomething)
                 sched_didpoll++;
@@ -530,6 +531,8 @@ static void m_pollingscheduler(void)
             /* test for idle; if so, do graphics updates. */
         if (!didsomething)
         {
+            if (timeforward != SENDDACS_SLEPT)
+                sys_pollgui();
             sched_pollformeters();
             sys_reportidle();
             sys_unlock();   /* unlock while we idle */

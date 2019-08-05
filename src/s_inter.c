@@ -201,7 +201,7 @@ double sys_getrealtime(void)
 
 extern int sys_nosleep;
 
-static int sys_pollsockets(void)
+int sys_pollsockets(void)
 {
     struct timeval timout;
     int i, didsomething = 0;
@@ -811,7 +811,7 @@ static int sys_flushqueue(void)
 }
 
     /* flush output buffer and update queue to gui in small time slices */
-static int sys_poll_togui(void) /* returns 1 if did anything */
+int sys_poll_togui(void) /* returns 1 if did anything */
 {
     if (!sys_havegui())
         return (0);
