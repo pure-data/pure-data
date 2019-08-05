@@ -35,7 +35,7 @@ typedef int socklen_t;
 ///     struct addrinfo *ailist = NULL, *ai;
 ///     struct sockaddr_storage ss = {0}; /* IPv4 or IPv6 addr */
 ///
-///     /* generate addrino list */
+///     /* generate addrinfo list */
 ///     status = addrinfo_get_list(&ailist, "127.0.0.1", 5000, SOCK_DGRAM);
 ///     if (status != 0)
 ///     {
@@ -87,8 +87,11 @@ void addrinfo_print_list(const struct addrinfo *ailist);
 const char* sockaddr_get_addrstr(const struct sockaddr *sa,
                                  char *addrstr, int addrstrlen);
 
-/// returns port or 0 on failure
+/// returns sockaddr port or 0 on failure
 unsigned int sockaddr_get_port(const struct sockaddr *sa);
+
+/// sets sockaddr port
+void sockaddr_set_port(const struct sockaddr *sa, unsigned int port);
 
 /// returns 1 if the address is a IPv4 or IPv6 multicast address, otherwise 0
 int sockaddr_is_multicast(const struct sockaddr *sa);
