@@ -552,6 +552,9 @@ int pa_send_dacs(void)
             sys_unlock();
             if (!didsomething)
                 sys_microsleep(1000);
+                /* polling sockets might close the audio device! */
+            else if (!pa_stream)
+                return SENDDACS_NO;
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
@@ -596,6 +599,9 @@ int pa_send_dacs(void)
             sys_unlock();
             if (!didsomething)
                 sys_microsleep(1000);
+                /* polling sockets might close the audio device! */
+            else if (!pa_stream)
+                return SENDDACS_NO;
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
