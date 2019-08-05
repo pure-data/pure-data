@@ -1014,18 +1014,13 @@ static void sys_init_deken( void)
                  8 * sizeof(t_float));
 }
 
-#define FIRSTPORTNUM 5400
-
 static int sys_do_startgui(const char *libdir)
 {
-    char cmdbuf[4*MAXPDSTRING], *guicmd, apibuf[256], apibuf2[256];
+    char apibuf[256], apibuf2[256];
     struct sockaddr_in server = {0};
-    int msgsock;
-    char buf[15];
     int len = sizeof(server);
-    const int maxtry = 20;
-    int ntry = 0, portno = FIRSTPORTNUM;
-    int xsock = -1, dumbo = -1;
+    int portno = -1;
+    int xsock = -1;
 #ifndef _WIN32
     int stdinpipe[2];
     pid_t childpid;
@@ -1101,57 +1096,39 @@ static int sys_do_startgui(const char *libdir)
         intarg = 1;
         if (setsockopt(xsock, IPPROTO_TCP, TCP_NODELAY,
             &intarg, sizeof(intarg)) < 0)
+        {
 #ifndef _WIN32
-                post("setsockopt (TCP_NODELAY) failed")
+                post("setsockopt (TCP_NODELAY) failed");
 #endif
-                    ;
-
+        }
 
         server.sin_family = AF_INET;
         server.sin_addr.s_addr = INADDR_ANY;
-
-        /* assign server port number */
-        server.sin_port =  htons((unsigned short)portno);
-        /* name the socket */
-        while (bind(xsock, (struct sockaddr *)&server, sizeof(server)) < 0)
+        server.sin_port = 0;
+            /* name the socket */
+        if (bind(xsock, (struct sockaddr *)&server, sizeof(server)) < 0)
         {
-#ifdef _WIN32
-            int err = WSAGetLastError();
-            if ((ntry++ > maxtry) || (err != WSAEADDRINUSE))
-#else
-            int err = errno;
-            if ((ntry++ > maxtry) || (err != EADDRINUSE))
-#endif
-            {
-                perror("bind");
-                fprintf(stderr,
-                    "Pd was unable to find a port number to bind to\n");
-                sys_closesocket(xsock);
-                return (1);
-            }
-            else if (ntry > maxtry)
-            {
-                    /* last try: let the system pick a random port for us */
-                portno = 0;
-            } else
-                portno++;
-            server.sin_port = htons((unsigned short)(portno));
+            perror("bind");
+            fprintf(stderr,
+                "bind failed!\n");
+            sys_closesocket(xsock);
+            return (1);
         }
-        if (!portno)
+        else
         {
-                /* if the system chose a port for us, we need to know which */
+                /* the system chose a port for us and we need to know which */
             socklen_t serversize=sizeof(server);
-            if(!getsockname(xsock, (struct sockaddr *)&server, &serversize))
+            if (!getsockname(xsock, (struct sockaddr *)&server, &serversize))
                 portno = ntohs(server.sin_port);
         }
         if (sys_verbose) fprintf(stderr, "port %d\n", portno);
-
 
 #ifndef _WIN32
         if (sys_guicmd)
             guicmd = sys_guicmd;
         else
         {
+            char cmdbuf[4*MAXPDSTRING], *guicmd,
 #ifdef __APPLE__
             int i;
             struct stat statbuf;
