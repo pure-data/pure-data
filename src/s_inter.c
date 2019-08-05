@@ -201,56 +201,32 @@ double sys_getrealtime(void)
 
 extern int sys_nosleep;
 
-static int sys_domicrosleep(int microsec, int pollem)
+static int sys_pollsockets(void)
 {
     struct timeval timout;
     int i, didsomething = 0;
     t_fdpoll *fp;
     timout.tv_sec = 0;
-    timout.tv_usec = (sys_nosleep ? 0 : microsec);
-    if (pollem)
+    timout.tv_usec = 0;
+    fd_set readset, writeset, exceptset;
+    FD_ZERO(&writeset);
+    FD_ZERO(&readset);
+    FD_ZERO(&exceptset);
+    for (fp = pd_this->pd_inter->i_fdpoll,
+        i = pd_this->pd_inter->i_nfdpoll; i--; fp++)
+            FD_SET(fp->fdp_fd, &readset);
+    if(select(pd_this->pd_inter->i_maxfd+1,
+              &readset, &writeset, &exceptset, &timout) < 0)
+      perror("microsleep select");
+    for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
+        if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
     {
-        fd_set readset, writeset, exceptset;
-        FD_ZERO(&writeset);
-        FD_ZERO(&readset);
-        FD_ZERO(&exceptset);
-        for (fp = pd_this->pd_inter->i_fdpoll,
-            i = pd_this->pd_inter->i_nfdpoll; i--; fp++)
-                FD_SET(fp->fdp_fd, &readset);
-#ifdef _WIN32
-        if (pd_this->pd_inter->i_maxfd == 0)
-                Sleep(microsec/1000);
-        else
-#endif
-        if(select(pd_this->pd_inter->i_maxfd+1,
-                  &readset, &writeset, &exceptset, &timout) < 0)
-          perror("microsleep select");
-        for (i = 0; i < pd_this->pd_inter->i_nfdpoll; i++)
-            if (FD_ISSET(pd_this->pd_inter->i_fdpoll[i].fdp_fd, &readset))
-        {
-#ifdef THREAD_LOCKING
-            sys_lock();
-#endif
-            (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
-                (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
-                    pd_this->pd_inter->i_fdpoll[i].fdp_fd);
-#ifdef THREAD_LOCKING
-            sys_unlock();
-#endif
-            didsomething = 1;
-        }
-        return (didsomething);
+        (*pd_this->pd_inter->i_fdpoll[i].fdp_fn)
+            (pd_this->pd_inter->i_fdpoll[i].fdp_ptr,
+                pd_this->pd_inter->i_fdpoll[i].fdp_fd);
+        didsomething = 1;
     }
-    else
-    {
-#ifdef _WIN32
-        if (pd_this->pd_inter->i_maxfd == 0)
-              Sleep(microsec/1000);
-        else
-#endif
-        select(0, 0, 0, 0, &timout);
-        return (0);
-    }
+    return (didsomething);
 }
 
 void sys_microsleep(int microsec)
@@ -907,7 +883,7 @@ void sys_unqueuegui(void *client)
 
 int sys_pollgui(void)
 {
-    return (sys_domicrosleep(0, 1) || sys_poll_togui());
+    return (sys_pollsockets() || sys_poll_togui());
 }
 
 void sys_init_fdpoll(void)
