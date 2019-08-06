@@ -1143,11 +1143,11 @@ static int sys_do_startgui(const char *libdir)
         if (sys_verbose) fprintf(stderr, "port %d\n", portno);
 
 #ifndef _WIN32
+        char cmdbuf[4*MAXPDSTRING], *guicmd;
         if (sys_guicmd)
             guicmd = sys_guicmd;
         else
         {
-            char cmdbuf[4*MAXPDSTRING], *guicmd,
 #ifdef __APPLE__
             int i;
             struct stat statbuf;
