@@ -460,6 +460,8 @@ void garray_arraydialog(t_garray *x, t_symbol *name, t_floatarg fsize,
             garray_fittograph(x, (int)size, style);
         template_setfloat(scalartemplate, gensym("style"),
             x->x_scalar->sc_vec, (t_float)style, 0);
+        template_setfloat(scalartemplate, gensym("linewidth"), x->x_scalar->sc_vec,
+            ((style == PLOTSTYLE_POINTS) ? 2 : 1), 0);
 
         garray_setsaveit(x, (saveit != 0));
         garray_redraw(x);
