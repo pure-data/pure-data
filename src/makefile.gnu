@@ -12,7 +12,7 @@
 # tags: tags file
 # install: install to /usr/local (or elsewhere by setting "prefix" variable)
 #
-# You can get jack support ($ make -f makfile.gnu JACK=TRUE) or compile in
+# You can get jack support ($ make -f makefile.gnu JACK=TRUE) or compile in
 # the portaudio library (PA=TRUE).  By default, both ALSA and OSS (BSD style)
 # audio APIs are compiled in.  You can disable them (e.g., OSS=FALSE).  In
 # Gnu/linux, you can also just install "alsa-oss."

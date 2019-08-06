@@ -547,11 +547,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-#ifdef _WIN32
-            Sleep(1);
-#else
-            usleep(1000);
-#endif /* _WIN32 */
+            sys_microsleep(sys_sleepgrain);
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
@@ -592,11 +588,7 @@ int pa_send_dacs(void)
                 locked = 1;
                 break;
             }
-#ifdef _WIN32
-            Sleep(1);
-#else
-            usleep(1000);
-#endif /* _WIN32 */
+            sys_microsleep(sys_sleepgrain);
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
@@ -679,8 +671,8 @@ int pa_send_dacs(void)
             }
         #endif
         return SENDDACS_NO;
-    } else
-        return (rtnval);
+    }
+    else return (rtnval);
 }
 
     /* scanning for devices */
