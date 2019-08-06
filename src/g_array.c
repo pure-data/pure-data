@@ -1096,9 +1096,6 @@ static void garray_style(t_garray *x, t_floatarg fstyle)
             ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
     #endif
         garray_redraw(x);
-    #if 0
-        canvas_dirty(x->x_glist, 1);
-    #endif
     }
 }
 
@@ -1120,9 +1117,6 @@ static void garray_width(t_garray *x, t_floatarg width)
         template_setfloat(scalartemplate, gensym("linewidth"),
             x->x_scalar->sc_vec, width, 0);
         garray_redraw(x);
-    #if 0
-        canvas_dirty(x->x_glist, 1);
-    #endif
     }
 }
 
@@ -1143,9 +1137,6 @@ static void garray_color(t_garray *x, t_floatarg color)
         template_setfloat(scalartemplate, gensym("color"),
             x->x_scalar->sc_vec, color, 0);
         garray_redraw(x);
-    #if 0
-        canvas_dirty(x->x_glist, 1);
-    #endif
     }
 }
 
