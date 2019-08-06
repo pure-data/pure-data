@@ -133,7 +133,6 @@ void addrinfo_print_list(const struct addrinfo *ailist)
         else continue;
         INET_NTOP(ai->ai_family, addr, addrstr, INET6_ADDRSTRLEN);
         printf("%s %s %d\n", ipver, addrstr, port);
-        fflush(stderr);
     }
 }
 
