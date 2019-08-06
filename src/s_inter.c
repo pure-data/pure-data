@@ -1145,7 +1145,6 @@ static int sys_do_startgui(const char *libdir)
         if (sys_verbose) fprintf(stderr, "port %d\n", portno);
 
 #ifndef _WIN32
-        char cmdbuf[4*MAXPDSTRING], *guicmd;
         if (sys_guicmd)
             guicmd = sys_guicmd;
         else
