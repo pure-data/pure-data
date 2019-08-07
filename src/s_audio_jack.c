@@ -547,7 +547,7 @@ void jack_getdevs(char *indevlist, int *nindevs,
     *nindevs = *noutdevs = ndev;
 }
 
-void jack_listdevs( void)
+void jack_listdevs(void)
 {
     post("device listing not implemented for jack yet\n");
 }

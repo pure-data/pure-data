@@ -208,17 +208,17 @@ static void my_numbox_draw_new(t_my_numbox *x, t_glist *glist)
              xpos, ypos,
              xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
              x, 0);
-    my_numbox_ftoa(x);
-    sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x -tags %lxNUMBER\n",
-             canvas, xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d,
-             x->x_buf, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x),
-             sys_fontweight, (x->x_gui.x_fsf.x_change ? IEM_GUI_COLOR_EDITED : x->x_gui.x_fcol), x);
     sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x -tags [list %lxLABEL label text]\n",
              canvas, xpos + x->x_gui.x_ldx * IEMGUI_ZOOM(x),
              ypos + x->x_gui.x_ldy * IEMGUI_ZOOM(x),
              (strcmp(x->x_gui.x_lab->s_name, "empty") ? x->x_gui.x_lab->s_name : ""),
              x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x), sys_fontweight,
              x->x_gui.x_lcol, x);
+    my_numbox_ftoa(x);
+    sys_vgui(".x%lx.c create text %d %d -text {%s} -anchor w -font {{%s} -%d %s} -fill #%06x -tags %lxNUMBER\n",
+             canvas, xpos + half + 2*IEMGUI_ZOOM(x), ypos + half + d,
+             x->x_buf, x->x_gui.x_font, x->x_gui.x_fontsize * IEMGUI_ZOOM(x),
+             sys_fontweight, (x->x_gui.x_fsf.x_change ? IEM_GUI_COLOR_EDITED : x->x_gui.x_fcol), x);
 }
 
 static void my_numbox_draw_move(t_my_numbox *x, t_glist *glist)
@@ -307,8 +307,8 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
              xpos + iow, ypos + x->x_gui.x_h,
              x, 0);
         /* keep these above outlet */
-        sys_vgui(".x%lx.c raise %lxNUMBER %lxOUT%d\n", canvas, x, x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxNUMBER\n", canvas, x, x);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxOUT%d\n", canvas, x, x, 0);
+        sys_vgui(".x%lx.c raise %lxNUMBER %lxLABEL\n", canvas, x, x);
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_SND_FLAG) && x->x_gui.x_fsf.x_snd_able)
         sys_vgui(".x%lx.c delete %lxOUT%d\n", canvas, x, 0);
@@ -319,8 +319,8 @@ static void my_numbox_draw_io(t_my_numbox* x,t_glist* glist, int old_snd_rcv_fla
              xpos + iow, ypos - IEMGUI_ZOOM(x) + ioh,
              x, 0);
         /* keep these above inlet */
-        sys_vgui(".x%lx.c raise %lxNUMBER %lxIN%d\n", canvas, x, x, 0);
-        sys_vgui(".x%lx.c raise %lxLABEL %lxNUMBER\n", canvas, x, x);
+        sys_vgui(".x%lx.c raise %lxLABEL %lxIN%d\n", canvas, x, x, 0);
+        sys_vgui(".x%lx.c raise %lxNUMBER %lxLABEL\n", canvas, x, x);
     }
     if(!(old_snd_rcv_flags & IEM_GUI_OLD_RCV_FLAG) && x->x_gui.x_fsf.x_rcv_able)
         sys_vgui(".x%lx.c delete %lxIN%d\n", canvas, x, 0);

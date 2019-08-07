@@ -7,7 +7,9 @@ namespace eval ::pd_bindings:: {
     namespace export global_bindings
     namespace export dialog_bindings
     namespace export patch_bindings
+    variable key2iso
 }
+set ::pd_bindings::key2iso ""
 
 # TODO rename pd_bindings to window_bindings after merge is done
 
@@ -113,6 +115,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
     bind all <$::modifier-Shift-Key-w> {::pd_bindings::window_close %W 1}
     bind all <$::modifier-Shift-Key-z> {menu_redo}
+    bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1}
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
@@ -152,7 +155,7 @@ proc ::pd_bindings::dialog_bindings {mytoplevel dialogname} {
     bind $mytoplevel <$::modifier-Key-w> "dialog_${dialogname}::cancel $mytoplevel"
     # these aren't supported in the dialog, so alert the user, then break so
     # that no other key bindings are run
-    if {$mytoplevel ne".find"} {
+    if {$mytoplevel ne ".find"} {
         bind $mytoplevel <$::modifier-Key-s>       {bell; break}
         bind $mytoplevel <$::modifier-Shift-Key-s> {bell; break}
         bind $mytoplevel <$::modifier-Shift-Key-S> {bell; break}
@@ -209,7 +212,22 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <$::modifier-$alt-Shift-ButtonPress-1> \
         "pdtk_canvas_mouse %W %x %y %b 7"
 
-    bind $tkcanvas <ButtonRelease-1>          "pdtk_canvas_mouseup %W %x %y %b"
+    bind $tkcanvas <ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 0"
+    bind $tkcanvas <Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 1"
+    bind $tkcanvas <$::modifier-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 2"
+    bind $tkcanvas <$::modifier-Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 3"
+    bind $tkcanvas <$alt-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 4"
+    bind $tkcanvas <$alt-Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 5"
+    bind $tkcanvas <$::modifier-$alt-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 6"
+    bind $tkcanvas <$::modifier-$alt-Shift-ButtonRelease-1> \
+        "pdtk_canvas_mouseup %W %x %y %b 7"
 
     if {$::windowingsystem eq "x11"} {
         # from http://wiki.tcl.tk/3893
@@ -226,7 +244,7 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     bind $tkcanvas <Shift-MouseWheel> {::pdtk_canvas::scroll %W x %D}
 
     # "right clicks" are defined differently on each platform
-    switch -- $::windowingsystem { 
+    switch -- $::windowingsystem {
         "aqua" {
             bind $tkcanvas <ButtonPress-2>    "pdtk_canvas_rightclick %W %x %y %b"
             # on Mac OS X, make a rightclick with Ctrl-click for 1 button mice
@@ -239,6 +257,13 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
             bind $tkcanvas <ButtonPress-3>    "pdtk_canvas_rightclick %W %x %y %b"
         }
     }
+
+    # <Tab> key to cycle through selection
+    bind $tkcanvas <KeyPress-Tab>        "::pd_bindings::canvas_cycle %W  1 %K %A 0"
+    bind $tkcanvas <Shift-Tab>           "::pd_bindings::canvas_cycle %W -1 %K %A 1"
+    # on X11, <Shift-Tab> is a different key by the name 'ISO_Left_Tab'...
+    # other systems (at least aqua) do not like this name, so we 'catch' any errors
+    catch {bind $tkcanvas <KeyPress-ISO_Left_Tab> "::pd_bindings::canvas_cycle %W -1 %K %A 1" } stderr
 
     # window protocol bindings
     wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"$mytoplevel menuclose 0\""
@@ -258,7 +283,7 @@ proc ::pd_bindings::window_focusin {mytoplevel} {
     ::pd_menucommands::set_filenewdir $mytoplevel
     ::dialog_font::update_font_dialog $mytoplevel
     if {$mytoplevel eq ".pdwindow"} {
-        ::pd_menus::configure_for_pdwindow 
+        ::pd_menus::configure_for_pdwindow
     } else {
         ::pd_menus::configure_for_canvas $mytoplevel
     }
@@ -306,7 +331,7 @@ proc ::pd_bindings::patch_configure {mytoplevel width height x y} {
     #    left top right bottom
     pdsend "$mytoplevel setbounds $x $y [expr $x + $width] [expr $y + $height]"
 }
-    
+
 proc ::pd_bindings::patch_destroy {window} {
     set mytoplevel [winfo toplevel $window]
     unset ::editmode($mytoplevel)
@@ -329,6 +354,12 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
     if {$mytoplevel eq ".find"} {::dialog_find::focus_find}
 }
 
+# (Shift-)Tab for cycling through selection
+proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift} {
+    menu_send_float $mytoplevel cycleselect $cycledir
+    ::pd_bindings::sendkey $mytoplevel 1 $key $iso $shift
+}
+
 #------------------------------------------------------------------------------#
 # key usage
 
@@ -338,16 +369,33 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
 # events out.
 proc ::pd_bindings::sendkey {window state key iso shift} {
     # TODO canvas_key on the C side should be refactored with this proc as well
+    #if { $iso eq "" } { set iso $key }
     switch -- $key {
-        "BackSpace" { set iso ""; set key 8    }
-        "Tab"       { set iso ""; set key 9 }
-        "Return"    { set iso ""; set key 10 }
-        "Escape"    { set iso ""; set key 27 }
-        "Space"     { set iso ""; set key 32 }
+        "BackSpace" { set iso ""; set key   8 }
+        "Tab"       { set iso ""; set key   9 }
+        "Return"    { set iso ""; set key  10 }
+        "Escape"    { set iso ""; set key  27 }
+        "Space"     { set iso ""; set key  32 }
+        "space"     { set iso ""; set key  32 }
         "Delete"    { set iso ""; set key 127 }
         "KP_Delete" { set iso ""; set key 127 }
+        "KP_Enter"  { set iso ""; set key  10 }
+        default     { if [catch {
+            if { "" ne "${iso}" } {
+                if { "" eq "${::pd_bindings::key2iso}" } {
+                    set ::pd_bindings::key2iso [dict create]
+                }
+                # store the key2iso mapping
+                dict set ::pd_bindings::key2iso $key $iso
+            } {
+                # (try to) restore the key2iso mapping
+                set iso [dict get $::pd_bindings::key2iso $key]
+            }
+        } stderr] {
+            #puts "oops: $stderr"
+        } }
     }
-    if {$iso ne ""} {
+    if { [string length $iso] == 1 } {
         scan $iso %c key
     }
     # some pop-up panels also bind to keys like the enter, but then disappear,

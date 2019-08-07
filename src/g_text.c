@@ -439,7 +439,6 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    message_float(x, 0);
     if (glist_isvisible(x->m_glist))
     {
         /* not zooming click width for now as it gets too fat */
@@ -448,6 +447,7 @@ static void message_click(t_message *x,
             glist_getcanvas(x->m_glist), rtext_gettag(y), MESSAGE_CLICK_WIDTH);
         clock_delay(x->m_clock, 120);
     }
+    message_float(x, 0);
 }
 
 static void message_tick(t_message *x)
@@ -1079,7 +1079,7 @@ static void text_displace(t_gobj *z, t_glist *glist,
     if (glist_isvisible(glist))
     {
         t_rtext *y = glist_findrtext(glist, x);
-        rtext_displace(y, dx, dy);
+        rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
         text_drawborder(x, glist, rtext_gettag(y),
             rtext_width(y), rtext_height(y), 0);
         canvas_fixlinesfor(glist, x);

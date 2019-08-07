@@ -862,6 +862,10 @@ msgstr ""
 msgid "Couldn't create \"externals\" directory in: %s\n"
 msgstr ""
 
+#, tcl-format
+msgid "Couldn't create preferences \"%1$s\" in %2$s"
+msgstr ""
+
 #, fuzzy
 msgid "About Pd"
 msgstr "Аб праграме"

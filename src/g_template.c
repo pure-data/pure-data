@@ -2357,8 +2357,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             return (CURSOR_EDITMODE_DISCONNECT);
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
-                    else return (TEMPLATE->array_motion_fatten ?
-                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
+                    else return (CURSOR_RUNMODE_THICKEN); /* thicken or drag */
                 }
             }
         }
@@ -2809,12 +2808,12 @@ void g_template_setup(void)
     drawnumber_setup();
 }
 
-void g_template_newpdinstance( void)
+void g_template_newpdinstance(void)
 {
     TEMPLATE = getbytes(sizeof(*TEMPLATE));
 }
 
-void g_template_freepdinstance( void)
+void g_template_freepdinstance(void)
 {
     freebytes(TEMPLATE, sizeof(*TEMPLATE));
 }
