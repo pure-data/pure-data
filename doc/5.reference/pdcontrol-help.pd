@@ -16,7 +16,6 @@
 #X text 138 381 open and shut the subpatch to test "isvisible" message
 ;
 #X text 131 148 1 if this patch is visible \, 0 if not;
-#X msg 35 120 gui ::pd_menucommands::menu_aboutpd;
 #X msg 51 176 dir;
 #X text 98 176 get directory this patch is in;
 #X text 306 206 optional argument to specify this patch (0) \, owning
@@ -29,7 +28,6 @@ than zero is ignored.), f 42;
 #X obj 322 505 r bazoo;
 #X obj 322 530 print bazoo;
 #X msg 46 503 gui pdsend [concat bazoo [exec date]];
-#X text 296 122 run a tcl/tk command in the gui;
 #X text 45 446 You can run system commands via the gui. What commands
 you can run depends on your operating system. If you're in linux or
 Mac OS you can get the time and date like this:;
@@ -62,11 +60,13 @@ its owning directory \, arguments \, its visible/invisible state \,
 or to send a command directly to the tcl/tk interpreter used for Pd's
 gui.;
 #X text 127 338 get the patch's arguments;
+#X text 237 119 open a URL in a browser;
+#X msg 35 120 browse http://msp.ucsd.edu;
 #X connect 3 0 4 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 10 0 3 0;
-#X connect 11 0 3 0;
-#X connect 14 0 3 0;
-#X connect 16 0 17 0;
-#X connect 18 0 15 0;
+#X connect 13 0 3 0;
+#X connect 15 0 16 0;
+#X connect 17 0 14 0;
+#X connect 24 0 3 0;
