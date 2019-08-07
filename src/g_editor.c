@@ -3156,11 +3156,12 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 
 static void delay_move(t_canvas *x)
 {
-    canvas_displaceselection(x,
-        x->gl_editor->e_xnew - x->gl_editor->e_xwas,
-        x->gl_editor->e_ynew - x->gl_editor->e_ywas);
-    x->gl_editor->e_xwas = x->gl_editor->e_xnew;
-    x->gl_editor->e_ywas = x->gl_editor->e_ynew;
+    int incx = (x->gl_editor->e_xnew - x->gl_editor->e_xwas)/x->gl_zoom,
+        incy = (x->gl_editor->e_ynew - x->gl_editor->e_ywas)/x->gl_zoom;
+    if (incx || incy)
+        canvas_displaceselection(x, incx, incy);
+    x->gl_editor->e_xwas += incx * x->gl_zoom;
+    x->gl_editor->e_ywas += incy * x->gl_zoom;
 }
 
 void canvas_motion(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
@@ -3381,22 +3382,16 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
         t_object *obj;
         for (g = x->gl_list; g; g = g->g_next)
             if ((obj = pd_checkobject(&g->g_pd)))
-            {
-                t_gotfn zoommethod;
-                REZOOM(obj->te_xpix, zoom);
-                REZOOM(obj->te_ypix, zoom);
-                    /* pass zoom message on to all objects, except canvases
-                       that aren't GOP */
-                if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
-                    (!(pd_class(&obj->te_pd) == canvas_class) ||
-                     (((t_glist *)obj)->gl_isgraph)))
+        {
+                /* pass zoom message on to all objects, except canvases
+                   that aren't GOP */
+            t_gotfn zoommethod;
+            if ((zoommethod = zgetfn(&obj->te_pd, gensym("zoom"))) &&
+                (!(pd_class(&obj->te_pd) == canvas_class) ||
+                 (((t_glist *)obj)->gl_isgraph)))
                     (*(t_zoomfn)zoommethod)(&obj->te_pd, zoom);
-            }
+        }
         x->gl_zoom = zoom;
-        REZOOM(x->gl_xmargin, zoom);
-        REZOOM(x->gl_ymargin, zoom);
-        REZOOM(x->gl_pixwidth, zoom);
-        REZOOM(x->gl_pixheight, zoom);
         if (x->gl_havewindow)
             canvas_redraw(x);
     }

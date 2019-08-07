@@ -496,8 +496,8 @@ void iemgui_size(void *x, t_iemgui *iemgui)
 void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av)*zoom;
-    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av)*zoom;
+    iemgui->x_obj.te_xpix += (int)atom_getfloatarg(0, ac, av);
+    iemgui->x_obj.te_ypix += (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
@@ -508,8 +508,8 @@ void iemgui_delta(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 void iemgui_pos(void *x, t_iemgui *iemgui, t_symbol *s, int ac, t_atom *av)
 {
     int zoom = glist_getzoom(iemgui->x_glist);
-    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av)*zoom;
-    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av)*zoom;
+    iemgui->x_obj.te_xpix = (int)atom_getfloatarg(0, ac, av);
+    iemgui->x_obj.te_ypix = (int)atom_getfloatarg(1, ac, av);
     if(glist_isvisible(iemgui->x_glist))
     {
         (*iemgui->x_draw)(x, iemgui->x_glist, IEM_GUI_DRAW_MODE_MOVE);
