@@ -20,7 +20,7 @@
 #endif
 
 /* print addrinfo lists for debugging */
-//#define PRINT_ADDRINFO
+/* #define PRINT_ADDRINFO */
 
 #define INBUFSIZE 4096
 
@@ -69,7 +69,6 @@ typedef struct _netreceive
     int *x_connections;
     int x_old;
     t_socketreceiver **x_receivers;
-    t_symbol *x_hostname; /* allowed or multicast hostname, NULL if not set */
 } t_netreceive;
 
 static void netsend_disconnect(t_netsend *x);
@@ -139,9 +138,9 @@ static void netsend_readbin(t_netsend *x, int fd)
         {
             if (ret < 0)
             {
-                /* only close the socket if there really was an error.
-                (socket_errno() ignores some error codes) */
-                if (!socket_errno())
+                /* only close a UDP socket if there really was an error.
+                (socket_errno_udp() ignores some error codes) */
+                if (x->x_protocol == SOCK_DGRAM && !socket_errno_udp())
                     return;
                 sys_sockerror("recv (bin)");
             }
@@ -267,13 +266,13 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             gai_strerror(status), status);
         return;
     }
+    addrinfo_sort_list(&ailist, addrinfo_ipv4_first); /* IPv4 first! */
 #ifdef PRINT_ADDRINFO
-    addrinfo_print_list(&ailist);
+    addrinfo_print_list(ailist);
 #endif
-
     /* try each addr until we find one that works */
-    for (ai = ailist; ai != NULL; ai = ai->ai_next) {
-
+    for (ai = ailist; ai != NULL; ai = ai->ai_next)
+    {
         /* create a socket */
         sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
 #if 0
@@ -293,14 +292,22 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 post("netsend: setsockopt (TCP_NODELAY) failed");
         }
-        else { /* datagram (UDP) broadcasting */
+        else /* datagram (UDP) broadcasting */
+        {
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 post("netsend: setsockopt (SO_BROADCAST) failed");
             multicast = sockaddr_is_multicast(ai->ai_addr);
         }
+        /* if this is an IPv6 address, also listen to IPv4 adapters */
+        if (ai->ai_family == AF_INET6 &&
+            socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
+        {
+            /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+        }
 
         /* bind optional src listening port */
-        if (sportno != 0) {
+        if (sportno != 0)
+        {
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
             post("connecting to dest port %d, src port %d", portno, sportno);
@@ -309,10 +316,20 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             {
                 pd_error(x, "netsend: could not set src port: %s (%d)",
                     gai_strerror(status), status);
-                freeaddrinfo(ailist);
-                return;
+                freeaddrinfo(sailist);
+                goto connect_fail;
             }
-            for (sai = sailist; sai != NULL; sai = sai->ai_next) {
+            addrinfo_sort_list(&sailist, addrinfo_ipv6_first); /* IPv6 first! */
+            for (sai = sailist; sai != NULL; sai = sai->ai_next)
+            {
+                /* if this is an IPv6 address, also listen to IPv4 adapters
+                   (if not supported, fall back to IPv4) */
+                if (sai->ai_family == AF_INET6 &&
+                        socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
+                {
+                    /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+                    continue;
+                }
                 if (bind(sockfd, sai->ai_addr, sai->ai_addrlen) < 0)
                     continue;
                 bound = 1;
@@ -322,9 +339,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             if (!bound)
             {
                 sys_sockerror("setting source port");
-                sys_closesocket(sockfd);
-                freeaddrinfo(ailist);
-                return;
+                goto connect_fail;
             }
         }
         else if (hostname && multicast)
@@ -334,12 +349,15 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 
         if (x->x_protocol == SOCK_STREAM)
         {
-            status = socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen,
-                                    x->x_timeout);
-            if (status < 0) {
+            if (socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen,
+                                    x->x_timeout) < 0)
+            {
                 sys_sockerror("connecting stream socket");
                 sys_closesocket(sockfd);
                 freeaddrinfo(ailist);
+                /* output 0 on connection failure so the user
+                   can easily retry in a loop */
+                outlet_float(x->x_obj.ob_outlet, 0);
                 return;
             }
         }
@@ -350,11 +368,13 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     }
     freeaddrinfo(ailist);
 
-    /* confirm that socket & bind worked */
-    if (sockfd == -1)
+    /* confirm that socket worked */
+    if (sockfd < 0)
     {
         int err = socket_errno();
-        pd_error(x, "netsend: connect failed: %s (%d)", strerror(errno), errno);
+        char buf[MAXPDSTRING];
+        socket_strerror(err, buf, sizeof(buf));
+        pd_error(x, "netsend: connect failed: %s (%d)", buf, err);
         return;
     }
 
@@ -373,6 +393,11 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         }
     }
     outlet_float(x->x_obj.ob_outlet, 1);
+    return;
+connect_fail:
+    freeaddrinfo(ailist);
+    if (sockfd > 0)
+        sys_closesocket(sockfd);
 }
 
 static void netsend_disconnect(t_netsend *x)
@@ -576,7 +601,8 @@ static void netreceive_closeall(t_netreceive *x)
     {
         sys_rmpollfn(x->x_connections[i]);
         sys_closesocket(x->x_connections[i]);
-        if (x->x_receivers[i]) {
+        if (x->x_receivers[i])
+        {
             socketreceiver_free(x->x_receivers[i]);
             x->x_receivers[i] = NULL;
         }
@@ -599,70 +625,94 @@ static void netreceive_closeall(t_netreceive *x)
         outlet_float(x->x_ns.x_connectout, x->x_nconnections);
 }
 
-static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
+static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int portno = fportno, status;
+    int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
-    struct sockaddr_storage server = {0};
-    const char *hostname = NULL;
+    struct sockaddr_storage server;
+    const char *hostname = NULL; /* allowed or multicast hostname (UDP only) */
 
     netreceive_closeall(x);
+
+    if (argc && argv->a_type == A_FLOAT)
+        portno = argv->a_w.w_float, argc--, argv++;
+    if (argc && argv->a_type == A_SYMBOL)
+    {
+        if (protocol == SOCK_DGRAM)
+            hostname = argv->a_w.w_symbol->s_name;
+        else
+        {
+            pd_error(x, "netreceive: hostname argument ignored:");
+            postatom(argc, argv); endpost();
+        }
+        argc--, argv++;
+    }
+    if (argc)
+    {
+        pd_error(x, "netreceive: extra arguments ignored:");
+        postatom(argc, argv); endpost();
+    }
     if (portno <= 0)
         return;
-    if (x->x_hostname)
-        hostname = x->x_hostname->s_name;
-    status = addrinfo_get_list(&ailist, hostname, portno, x->x_ns.x_protocol);
+    status = addrinfo_get_list(&ailist, hostname, portno, protocol);
     if (status != 0)
     {
         pd_error(x, "netreceive: bad host or port? %s (%d)",
             gai_strerror(status), status);
         return;
     }
+    addrinfo_sort_list(&ailist, addrinfo_ipv6_first); /* IPv6 addresses first! */
 #ifdef PRINT_ADDRINFO
-    addrinfo_print_list(&ailist);
+    addrinfo_print_list(ailist);
 #endif
-
     /* try each addr until we find one that works */
-    for (ai = ailist; ai != NULL; ai = ai->ai_next) {
-        x->x_ns.x_sockfd =
-            socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
-        if (x->x_ns.x_sockfd < 0)
+    for (ai = ailist; ai != NULL; ai = ai->ai_next)
+    {
+        /* create a socket */
+        sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+        if (sockfd < 0)
             continue;
     #if 0
-        fprintf(stderr, "receive socket %d\n", x->x-ns.x_sockfd);
+        fprintf(stderr, "receive socket %d\n", sockfd);
     #endif
 
     #if 1
-        /* ask OS to allow another Pd to repoen this port after we close it */
-        if (socket_set_boolopt(x->x_ns.x_sockfd,
-            SOL_SOCKET, SO_REUSEADDR, 1) < 0)
+        /* ask OS to allow another Pd to reopen this port after we close it */
+        if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
             post("netreceive: setsockopt (SO_REUSEADDR) failed");
     #endif
     #if 0
         intarg = 0;
-        if (socket_set_boolopt(x->x_ns.x_sockfd, SOL_SOCKET, SO_RCVBUF, 0) < 0)
+        if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_RCVBUF, 0) < 0)
             post("netreceive: setsockopt (SO_RCVBUF) failed");
     #endif
-        if (ai->ai_protocol == SOCK_STREAM)
+        if (protocol == SOCK_STREAM)
         {
             /* stream (TCP) sockets are set NODELAY */
-            if (socket_set_boolopt(x->x_ns.x_sockfd,
-                IPPROTO_TCP, TCP_NODELAY, 1) < 0)
+            if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
                 post("netreceive: setsockopt (TCP_NODELAY) failed");
         }
-        else if (ai->ai_protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
+        else if (protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
         {
             /* enable IPv4 UDP broadcasting */
-            if (socket_set_boolopt(x->x_ns.x_sockfd,
-                SOL_SOCKET, SO_BROADCAST, 1) < 0)
+            if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 post("netreceive: setsockopt (SO_BROADCAST) failed");
         }
-
-        /* name the socket */
-        if (bind(x->x_ns.x_sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+        /* if this is an IPv6 address, also listen to IPv4 adapters
+           (if not supported, fall back to IPv4) */
+        if (ai->ai_family == AF_INET6 &&
+                socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
         {
-            sys_closesocket(x->x_ns.x_sockfd);
-            x->x_ns.x_sockfd = -1;
+            /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+            sys_closesocket(sockfd);
+            sockfd = -1;
+            continue;
+        }
+        /* name the socket */
+        if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+        {
+            sys_closesocket(sockfd);
+            sockfd = -1;
             continue;
         }
 
@@ -673,15 +723,18 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
     freeaddrinfo(ailist);
 
     /* confirm that socket/bind worked */
-    if (x->x_ns.x_sockfd == -1)
+    if (sockfd < 0)
     {
         int err = socket_errno();
+        char buf[MAXPDSTRING];
+        socket_strerror(err, buf, sizeof(buf));
         pd_error(x, "netreceive: listen failed: %s (%d)",
-            strerror(errno), errno);
+            buf, err);
         return;
     }
+    x->x_ns.x_sockfd = sockfd;
 
-    if (x->x_ns.x_protocol == SOCK_DGRAM) /* datagram protocol */
+    if (protocol == SOCK_DGRAM) /* datagram protocol */
     {
         /* join multicast group */
         if (sockaddr_is_multicast((struct sockaddr *)&server))
@@ -690,9 +743,11 @@ static void netreceive_listen(t_netreceive *x, t_floatarg fportno)
                 (struct sockaddr *)&server) < 0)
             {
                 int err = socket_errno();
+                char buf[MAXPDSTRING];
+                socket_strerror(err, buf, sizeof(buf));
                 pd_error(x,
                     "netreceive: joining multicast group %s failed: %s (%d)",
-                    hostname, strerror(errno), errno);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                    hostname, buf, err);
             }
             else
                 post("netreceive: joined multicast group %s", hostname);
@@ -744,23 +799,21 @@ static void netreceive_send(t_netreceive *x,
 static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_netreceive *x = (t_netreceive *)pd_new(netreceive_class);
-    int portno = 0;
-    unsigned int from = 0;
+    int from = 0;
     x->x_ns.x_protocol = SOCK_STREAM;
     x->x_old = 0;
     x->x_ns.x_bin = 0;
     x->x_nconnections = 0;
     x->x_connections = (int *)t_getbytes(0);
     x->x_receivers = (t_socketreceiver **)t_getbytes(0);
-    x->x_hostname = NULL;
     x->x_ns.x_sockfd = -1;
     if (argc && argv->a_type == A_FLOAT)
     {
-        portno = atom_getfloatarg(0, argc, argv);
+        /* port argument is later passed to netreceive_listen */
         x->x_ns.x_protocol = (atom_getfloatarg(1, argc, argv) != 0 ?
             SOCK_DGRAM : SOCK_STREAM);
         x->x_old = (!strcmp(atom_getsymbolarg(2, argc, argv)->s_name, "old"));
-        argc = 0;
+        argc = 1; /* don't pass other arguments */
     }
     else
     {
@@ -781,24 +834,6 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
             argc--; argv++;
         }
     }
-    if (argc && argv->a_type == A_FLOAT)
-        portno = argv->a_w.w_float, argc--, argv++;
-    if (argc && argv->a_type == A_SYMBOL)
-    {
-        if (x->x_ns.x_protocol == SOCK_DGRAM)
-            x->x_hostname = atom_getsymbol(argv);
-        else
-        {
-            pd_error(x, "netreceive: hostname argument ignored:");
-            postatom(argc, argv); endpost();
-        }
-        argc--, argv++;
-    }
-    if (argc)
-    {
-        pd_error(x, "netreceive: extra arguments ignored:");
-        postatom(argc, argv); endpost();
-    }
     if (x->x_old)
     {
         /* old style, nonsecure version */
@@ -814,8 +849,7 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
     else
         x->x_ns.x_fromout = NULL;
         /* create a socket */
-    if (portno > 0)
-        netreceive_listen(x, portno);
+    netreceive_listen(x, 0, argc, argv); /* pass arguments */
 
     return (x);
 }
@@ -823,7 +857,6 @@ static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
 static void netreceive_free(t_netreceive *x)
 {
     netreceive_closeall(x);
-    if (x->x_hostname) free(x->x_hostname);
 }
 
 static void netreceive_setup(void)
@@ -832,7 +865,7 @@ static void netreceive_setup(void)
         (t_newmethod)netreceive_new, (t_method)netreceive_free,
         sizeof(t_netreceive), 0, A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_listen,
-        gensym("listen"), A_FLOAT, 0);
+        gensym("listen"), A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
 }

@@ -68,11 +68,7 @@ that didn't really belong anywhere. */
 # endif
 #endif
 
-#if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
-#define LOCALHOST "127.0.0.1"
-#else
 #define LOCALHOST "localhost"
-#endif
 
 #if PDTHREADS
 #include "pthread.h"
@@ -396,20 +392,10 @@ void sys_set_priority(int mode)
 
 void sys_sockerror(char *s)
 {
-    int err = socket_errno();
-#ifdef _WIN32
     char buf[MAXPDSTRING];
-    buf[0] = '\0';
-    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   0, err, MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT), buf,
-                   sizeof(buf), NULL);
-    if (*buf)
-        error("%s: %s (%d)", s, buf, err);
-    else
-        error("%s: unknown error (%d)", s, err);
-#else
-    error("%s: %s (%d)", s, strerror(err), err);
-#endif
+    int err = socket_errno();
+    socket_strerror(err, buf, sizeof(buf));
+    error("%s: %s (%d)", s, buf, err);
 }
 
 void sys_addpollfn(int fd, t_fdpollfn fn, void *ptr)
@@ -520,8 +506,8 @@ static void socketreceiver_getudp(t_socketreceiver *x, int fd)
         if (ret < 0)
         {
                 /* only close the socket if there really was an error.
-                (sys_sockerrno() ignores some error codes) */
-            if (socket_errno())
+                (socket_errno_udp() ignores some error codes) */
+            if (socket_errno_udp())
             {
                 sys_sockerror("recv (udp)");
                 if (x->sr_notifier)
@@ -1024,18 +1010,12 @@ static void sys_init_deken( void)
                  8 * sizeof(t_float));
 }
 
-#define FIRSTPORTNUM 5400
-
 static int sys_do_startgui(const char *libdir)
 {
-    char cmdbuf[4*MAXPDSTRING], *guicmd, apibuf[256], apibuf2[256];
-    struct sockaddr_in server = {0};
-    int msgsock;
-    char buf[15];
-    int len = sizeof(server);
-    const int maxtry = 20;
-    int ntry = 0, portno = FIRSTPORTNUM;
-    int xsock = -1, dumbo = -1;
+    char apibuf[256], apibuf2[256];
+    struct addrinfo *ailist = NULL, *ai;
+    int sockfd = -1;
+    int portno = -1;
 #ifndef _WIN32
     int stdinpipe[2];
     pid_t childpid;
@@ -1045,8 +1025,7 @@ static int sys_do_startgui(const char *libdir)
 
     if (sys_guisetportnumber)  /* GUI exists and sent us a port number */
     {
-        struct sockaddr_in server = {0};
-        struct hostent *hp;
+        int status;
 #ifdef __APPLE__
             /* guisock might be 1 or 2, which will have offensive results
             if somebody writes to stdout or stderr - so we just open a few
@@ -1062,96 +1041,108 @@ static int sys_do_startgui(const char *libdir)
         if (burnfd3 > 2)
             close(burnfd3);
 #endif
-        /* create a socket */
-        pd_this->pd_inter->i_guisock = socket(AF_INET, SOCK_STREAM, 0);
-        if (pd_this->pd_inter->i_guisock < 0)
-            sys_sockerror("socket");
-
-        /* connect socket using hostname provided in command line */
-        server.sin_family = AF_INET;
-
-        hp = gethostbyname(LOCALHOST);
-
-        if (hp == 0)
+        /* get addrinfo list using hostname & port */
+        status = addrinfo_get_list(&ailist,
+            LOCALHOST, sys_guisetportnumber, SOCK_STREAM);
+        if (status != 0)
         {
             fprintf(stderr,
-                "localhost not found (inet protocol not installed?)\n");
+                "localhost not found (inet protocol not installed?)\n%s (%d)",
+                gai_strerror(status), status);
             return (1);
         }
-        memcpy((char *)&server.sin_addr, (char *)hp->h_addr, hp->h_length);
-
-        /* assign client port number */
-        server.sin_port = htons((unsigned short)sys_guisetportnumber);
-
+        /* We don't know in advance whether the GUI uses IPv4 or IPv6,
+           so we try both and pick the one which works. */
+        for (ai = ailist; ai != NULL; ai = ai->ai_next)
+        {
+            /* create a socket */
+            sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+            if (sockfd < 0)
+                continue;
+        #if 1
+            if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
+                fprintf(stderr, "setsockopt (TCP_NODELAY) failed");
+        #endif
             /* try to connect */
-        if (connect(pd_this->pd_inter->i_guisock,
-            (struct sockaddr *) &server, sizeof (server)) < 0)
+            if (socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen, 10.f) < 0)
+            {
+                sys_closesocket(sockfd);
+                sockfd = -1;
+                continue;
+            }
+            /* this addr worked */
+            break;
+        }
+        freeaddrinfo(ailist);
+
+        /* confirm that we could connect */
+        if (sockfd < 0)
         {
             sys_sockerror("connecting stream socket");
             return (1);
         }
+
+        pd_this->pd_inter->i_guisock = sockfd;
     }
     else    /* default behavior: start up the GUI ourselves. */
     {
+        struct sockaddr_storage addr;
+        int status;
 #ifdef _WIN32
         char scriptbuf[MAXPDSTRING+30], wishbuf[MAXPDSTRING+30], portbuf[80];
         int spawnret;
-        char intarg;
 #else
-        int intarg;
+        char cmdbuf[4*MAXPDSTRING], *guicmd;
 #endif
-
-        /* create a socket */
-        xsock = socket(AF_INET, SOCK_STREAM, 0);
-        if (xsock < 0)
+        /* get addrinfo list using hostname (get random port from OS) */
+        status = addrinfo_get_list(&ailist, LOCALHOST, 0, SOCK_STREAM);
+        if (status != 0)
         {
-            sys_sockerror("socket");
+            fprintf(stderr,
+                "localhost not found (inet protocol not installed?)\n%s (%d)",
+                gai_strerror(status), status);
             return (1);
         }
-        intarg = 1;
-        if (setsockopt(xsock, IPPROTO_TCP, TCP_NODELAY,
-            &intarg, sizeof(intarg)) < 0)
-#ifndef _WIN32
-                post("setsockopt (TCP_NODELAY) failed")
-#endif
-                    ;
-
-
-        server.sin_family = AF_INET;
-        server.sin_addr.s_addr = INADDR_ANY;
-
-        /* assign server port number */
-        server.sin_port =  htons((unsigned short)portno);
-        /* name the socket */
-        while (bind(xsock, (struct sockaddr *)&server, sizeof(server)) < 0)
+        /* we prefer the IPv4 addresses because the GUI might not be IPv6 capable. */
+        addrinfo_sort_list(&ailist, addrinfo_ipv4_first);
+        /* try each addr until we find one that works */
+        for (ai = ailist; ai != NULL; ai = ai->ai_next)
         {
-#ifdef _WIN32
-            int err = WSAGetLastError();
-#else
-            int err = errno;
-#endif
-            if ((ntry++ > maxtry) || (err != EADDRINUSE))
+            sockfd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+            if (sockfd < 0)
+                continue;
+        #if 1
+            /* ask OS to allow another process to reopen this port after we close it */
+            if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 1) < 0)
+                fprintf(stderr, "setsockopt (SO_REUSEADDR) failed\n");
+        #endif
+        #if 1
+            /* stream (TCP) sockets are set NODELAY */
+            if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
+                fprintf(stderr, "setsockopt (TCP_NODELAY) failed");
+        #endif
+            /* name the socket */
+            if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
             {
-                perror("bind");
-                fprintf(stderr,
-                    "Pd was unable to find a port number to bind to\n");
-                sys_closesocket(xsock);
-                return (1);
-            } else if (ntry > maxtry) {
-                    /* last try: let the system pick a random port for us */
-                portno = 0;
-            } else
-                portno++;
-            server.sin_port = htons((unsigned short)(portno));
+                socket_close(sockfd);
+                sockfd = -1;
+                continue;
+            }
+            /* this addr worked */
+            memcpy(&addr, ai->ai_addr, ai->ai_addrlen);
+            break;
         }
-        if (!portno) {
-                /* if the system chose a port for us, we need to know which */
-            socklen_t serversize=sizeof(server);
-            if(!getsockname(xsock, (struct sockaddr *)&server, &serversize))
-                portno = ntohs(server.sin_port);
-        }
-        if (sys_verbose) fprintf(stderr, "port %d\n", portno);
+        freeaddrinfo(ailist);
 
+        /* confirm that socket/bind worked */
+        if (sockfd < 0)
+        {
+            sys_sockerror("bind");
+            return (1);
+        }
+        /* get the actual port number */
+        portno = socket_get_port(sockfd);
+        if (sys_verbose) fprintf(stderr, "port %d\n", portno);
 
 #ifndef _WIN32
         if (sys_guicmd)
@@ -1211,7 +1202,7 @@ static int sys_do_startgui(const char *libdir)
                 if(i>=wish_paths_count)
                 {
                     fprintf(stderr, "sys_startgui couldn't find tcl/tk\n");
-                    sys_closesocket(xsock);
+                    sys_closesocket(sockfd);
                     return (1);
                 }
                 sprintf(cmdbuf, "\"%s\" \"%s/%spd-gui.tcl\" %d\n",
@@ -1237,12 +1228,12 @@ static int sys_do_startgui(const char *libdir)
         {
             if (errno) perror("sys_startgui");
             else fprintf(stderr, "sys_startgui failed\n");
-            sys_closesocket(xsock);
+            sys_closesocket(sockfd);
             return (1);
         }
         else if (!childpid)                     /* we're the child */
         {
-            sys_closesocket(xsock);     /* child doesn't listen */
+            sys_closesocket(sockfd);     /* child doesn't listen */
 #if defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
             sys_set_priority(MODE_NRT);  /* child runs non-real-time */
 #endif
@@ -1290,23 +1281,25 @@ static int sys_do_startgui(const char *libdir)
             fprintf(stderr, "%s: couldn't load TCL\n", wishbuf);
             return (1);
         }
-
 #endif /* NOT _WIN32 */
-    }
-
-
-    if (!sys_guisetportnumber)
-    {
         if (sys_verbose)
             fprintf(stderr, "Waiting for connection request... \n");
-        if (listen(xsock, 5) < 0) sys_sockerror("listen");
+        if (listen(sockfd, 5) < 0)
+        {
+            sys_sockerror("listen");
+            sys_closesocket(sockfd);
+            return (1);
+        }
 
-        pd_this->pd_inter->i_guisock = accept(xsock,
-            (struct sockaddr *) &server, (socklen_t *)&len);
+        pd_this->pd_inter->i_guisock = accept(sockfd, 0, 0);
 
-        sys_closesocket(xsock);
+        sys_closesocket(sockfd);
 
-        if (pd_this->pd_inter->i_guisock < 0) sys_sockerror("accept");
+        if (pd_this->pd_inter->i_guisock < 0)
+        {
+            sys_sockerror("accept");
+            return (1);
+        }
         if (sys_verbose)
             fprintf(stderr, "... connected\n");
         pd_this->pd_inter->i_guihead = pd_this->pd_inter->i_guitail = 0;
@@ -1554,7 +1547,8 @@ void s_inter_newpdinstance( void)
 
 void s_inter_free(t_instanceinter *inter)
 {
-    if (inter->i_fdpoll) {
+    if (inter->i_fdpoll)
+    {
         binbuf_free(inter->i_inbinbuf);
         inter->i_inbinbuf = 0;
         t_freebytes(inter->i_fdpoll, inter->i_nfdpoll * sizeof(t_fdpoll));

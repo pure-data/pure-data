@@ -9,9 +9,6 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#if defined(_MSC_VER) && _WIN32_WINNT == 0x0601
-#include <ws2def.h>
-#endif /* MSVC + Windows 7 */
 typedef int socklen_t;
 #else
 #include <arpa/inet.h>
@@ -72,8 +69,18 @@ typedef int socklen_t;
 int addrinfo_get_list(struct addrinfo **ailist, const char *hostname,
                       int port, int protocol);
 
-/// print addrinfo linked list sockaddrs: IPver hostname port
-void addrinfo_print_list(struct addrinfo **ailist);
+/// sort an address list with a compare function
+void addrinfo_sort_list(struct addrinfo **ailist,
+    int (*compare)(const struct addrinfo*, const struct addrinfo*));
+
+/// compare function which puts IPv4 addresses first
+int addrinfo_ipv4_first(const struct addrinfo* ai1, const struct addrinfo* ai2);
+
+/// compare function which puts IPv6 addresses first
+int addrinfo_ipv6_first(const struct addrinfo* ai1, const struct addrinfo* ai2);
+
+/// print addrinfo linked list sockaddrs: IP version, hostname, port
+void addrinfo_print_list(const struct addrinfo *ailist);
 
 /// read address/hostname string from a sockaddr,
 /// fills addrstr and returns pointer on success or NULL on failure
@@ -91,15 +98,22 @@ int sockaddr_is_multicast(const struct sockaddr *sa);
 
 /* socket */
 
+/// cross-platform initialization routine, returns -1 on failure
+int socket_init(void);
+
 /// connect a socket to an address with a settable timeout in seconds
+/// returns -1 on error. use socket_errno() to get the actual error code.
 int socket_connect(int socket, const struct sockaddr *addr,
 	               socklen_t addrlen, float timeout);
 
 /// cross-platform socket close()
 void socket_close(int socket);
 
+/// returns port or 0 on failure
+unsigned int socket_get_port(int socket);
+
 /// get number of immediately readable bytes for the socket
-/// returns -1 on error or bytes avilable on success
+/// returns -1 on error or bytes available on success
 int socket_bytes_available(int socket);
 
 /// setsockopt() convenience wrapper for socket bool options */
@@ -111,6 +125,11 @@ int socket_set_nonblocking(int socket, int nonblocking);
 /// join a multicast group address, returns < 0 on error
 int socket_join_multicast_group(int socket, struct sockaddr *sa);
 
-/// cross-platform socket errno() which ignores WSAECONNRESET and catches
-/// WSAECONNRESET on Windows, convert to string with strerror()
-int socket_errno();
+/// cross-platform socket errno() which catches WSAESOCKTNOSUPPORT on Windows
+int socket_errno(void);
+
+/// like socket_errno() but ignores WSAECONNRESET on Windows
+int socket_errno_udp(void);
+
+/// get an error string from errno
+void socket_strerror(int err, char *buf, int size);
