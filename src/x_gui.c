@@ -454,19 +454,13 @@ static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
     outlet_list(x->x_outlet, &s_list, argc, argv);
 }
 
-static void pdcontrol_gui(t_pdcontrol *x, t_symbol *s, int argc, t_atom *argv)
+static void pdcontrol_browse(t_pdcontrol *x, t_symbol *s)
 {
-    t_binbuf *b = binbuf_new();
-    char *buf;
-    int length;
-    binbuf_add(b, argc, argv);
-    binbuf_gettext(b, &buf, &length);
-    buf = t_resizebytes(buf, length, length+2);
-    buf[length] = '\n';
-    buf[length+1] = 0;
+    char buf[MAXPDSTRING];
+    snprintf(buf, MAXPDSTRING, "::pd_menucommands::menu_openfile %s\n",
+        s->s_name);
+    buf[MAXPDSTRING-1] = 0;
     sys_gui(buf);
-    t_freebytes(buf, length+2);
-    binbuf_free(b);
 }
 
 static void pdcontrol_isvisible(t_pdcontrol *x)
@@ -482,8 +476,8 @@ static void pdcontrol_setup(void)
         gensym("dir"), A_DEFFLOAT, A_DEFSYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_args,
         gensym("args"), A_DEFFLOAT, 0);
-    class_addmethod(pdcontrol_class, (t_method)pdcontrol_gui,
-        gensym("gui"), A_GIMME, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_browse,
+        gensym("browse"), A_SYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
 }
