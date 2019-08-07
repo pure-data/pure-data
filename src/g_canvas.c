@@ -645,14 +645,16 @@ void canvas_dirty(t_canvas *x, t_floatarg f)
 void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
+    {
+        int x1 = x->gl_zoom * x->gl_xmargin,
+            x2 = x1 + x->gl_zoom * x->gl_pixwidth,
+            y1 = x->gl_zoom * x->gl_ymargin,
+            y2 = y1 + x->gl_zoom * x->gl_pixheight;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
             "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
-            glist_getcanvas(x),
-            x->gl_xmargin, x->gl_ymargin,
-            x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin,
-            x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin, glist_getzoom(x));
+            glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
+                x->gl_zoom);
+    }
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 

@@ -1,4 +1,4 @@
-#N canvas 322 102 1020 642 12;
+#N canvas 379 87 1020 642 12;
 #X obj 64 91 osc~;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-graph 1000 float 3;
@@ -166,7 +166,7 @@ greater than maximum), f 41;
 #X text 105 65 frequency of test oscillator;
 #X obj 493 9 bng 15 250 50 0 \$0-mainlink empty empty 17 7 0 10 -262144
 -1 -1;
-#N canvas 503 120 524 258 works 0;
+#N canvas 418 87 524 258 works 0;
 #X text 14 20 this window implements the link button in the main window.
 ;
 #X obj 107 62 r \$0-mainlink;
@@ -174,13 +174,14 @@ greater than maximum), f 41;
 #X obj 191 178 print;
 #X obj 107 112 pdcontrol;
 #X msg 107 87 dir;
-#X msg 108 137 gui ::pd_menucommands::menu_openfile \$1/../8.topics/slop-tilde.htm
+#X msg 241 87 gui ::pd_menucommands::menu_openfile \$1/../8.topics/slop-tilde.htm
 ;
+#X msg 108 137 browse \$1/../8.topics/slop-tilde.htm;
 #X connect 1 0 5 0;
-#X connect 4 0 6 0;
+#X connect 4 0 7 0;
 #X connect 5 0 4 0;
-#X connect 6 0 2 0;
-#X connect 6 0 3 0;
+#X connect 7 0 2 0;
+#X connect 7 0 3 0;
 #X restore 718 417 pd works;
 #N canvas 240 55 1114 912 compander-limiter 0;
 #X obj 467 16 bng 15 250 50 0 \$0-compander empty empty 17 7 0 10 -262144
@@ -619,7 +620,7 @@ at all so the linear cutoff frequency has no effect.;
 #N canvas 467 212 848 759 jitter-remover 0;
 #X floatatom 114 148 5 0 100 0 - - -;
 #X obj 89 406 metro 500;
-#X obj 89 380 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#X obj 89 380 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X text 114 378 <- start metronome to graph output;
 #N canvas 0 50 450 250 (subpatch) 0;
