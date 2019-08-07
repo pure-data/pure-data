@@ -652,7 +652,8 @@ void canvas_drawredrect(t_canvas *x, int doit)
             y2 = y1 + x->gl_zoom * x->gl_pixheight;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
             "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
-            glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1);
+            glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
+                x->gl_zoom);
     }
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
