@@ -123,7 +123,7 @@ int socket_set_boolopt(int socket, int level, int option_name, int bool_value);
 int socket_set_nonblocking(int socket, int nonblocking);
 
 /// join a multicast group address, returns < 0 on error
-int socket_join_multicast_group(int socket, struct sockaddr *sa);
+int socket_join_multicast_group(int socket, const struct sockaddr *sa);
 
 /// cross-platform socket errno() which catches WSAESOCKTNOSUPPORT on Windows
 int socket_errno(void);

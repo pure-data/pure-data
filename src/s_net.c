@@ -346,22 +346,21 @@ int socket_bytes_available(int socket)
 #endif
 }
 
-int socket_join_multicast_group(int socket, struct sockaddr *sa)
+int socket_join_multicast_group(int socket, const struct sockaddr *sa)
 {
     if (sa->sa_family == AF_INET6)
     {
-        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)&sa;
-        struct ipv6_mreq mreq6;
+        struct sockaddr_in6 *sa6 = (struct sockaddr_in6 *)sa;
+        struct ipv6_mreq mreq6 = {0};
         memcpy(&mreq6.ipv6mr_multiaddr, &sa6->sin6_addr,
             sizeof(struct in6_addr));
-        mreq6.ipv6mr_interface = 0;
         return setsockopt(socket, IPPROTO_IPV6, IPV6_JOIN_GROUP,
             (char *)&mreq6, sizeof(mreq6));
     }
     else if (sa->sa_family == AF_INET)
     {
-        struct sockaddr_in *sa4 = (struct sockaddr_in *)&sa;
-        struct ip_mreq mreq;
+        struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
+        struct ip_mreq mreq = {0};
         mreq.imr_multiaddr.s_addr = sa4->sin_addr.s_addr;
         mreq.imr_interface.s_addr = INADDR_ANY;
         return setsockopt(socket, IPPROTO_IP, IP_ADD_MEMBERSHIP,
@@ -374,7 +373,7 @@ int socket_errno(void)
 {
 #ifdef _WIN32
     int err = WSAGetLastError();
-    if (err == 10044)      // WSAESOCKTNOSUPPORT
+    if (err == 10044) // WSAESOCKTNOSUPPORT
     {
         fprintf(stderr,
             "Warning: you might not have TCP/IP \"networking\" turned on\n");
