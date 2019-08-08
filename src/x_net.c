@@ -633,7 +633,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
-    const char *hostname = NULL; /* allowed or multicast hostname (UDP only) */
+    const char *hostname = NULL; /* allowed or UDP multicast hostname */
     char hostbuf[256];
 
     netreceive_closeall(x);
@@ -642,14 +642,8 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
         portno = argv->a_w.w_float, argc--, argv++;
     if (argc && argv->a_type == A_SYMBOL)
     {
-        if (protocol == SOCK_DGRAM)
-            hostname = argv->a_w.w_symbol->s_name;
-        else
-        {
-            pd_error(x, "netreceive: hostname argument ignored:");
-            postatom(argc, argv); endpost();
-        }
-        argc--, argv++;
+        hostname = argv->a_w.w_symbol->s_name;
+        argv++; argc--;
     }
     if (argc)
     {
@@ -712,7 +706,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 post("netreceive: setsockopt (SO_BROADCAST) failed");
         }
-        /* if this is an IPv6 address, also listen to IPv4 adapters
+        /* if this is the IPv6 "any" address, also listen to IPv4 adapters
            (if not supported, fall back to IPv4) */
         if (!hostname && ai->ai_family == AF_INET6 &&
                 socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)

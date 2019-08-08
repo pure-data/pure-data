@@ -53,13 +53,13 @@ compatible clients) that have opened connections here., f 84;
 ;
 #X msg 231 567 send 4 5 6 \$1;
 #X msg 61 297 listen 3000 224.0.0.1;
-#X text 227 297 optional UDP hostname or multicast address (0.50+)
-;
 #X text 156 242 listen message to set or change port (listens on any
 IPv4 and IPv6 adapter), f 75;
 #X text 228 317 NOTE: This will listen on a single adapter. Hostname
 resolution is system dependent \, but IPv4 addresses are prioritized.
 , f 64;
+#X text 227 297 optional allowed hostname or UDP multicast address
+(0.50+);
 #X connect 0 0 5 0;
 #X connect 0 1 1 0;
 #X connect 8 0 6 0;
