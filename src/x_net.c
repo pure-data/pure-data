@@ -807,6 +807,11 @@ static void netreceive_send(t_netreceive *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     int i;
+    if (x->x_ns.x_protocol != SOCK_STREAM)
+    {
+        pd_error(x, "netreceive: 'send' only works for TCP");
+        return;
+    }
     for (i = 0; i < x->x_nconnections; i++)
     {
         if (netsend_dosend(&x->x_ns, x->x_connections[i], s, argc, argv))
