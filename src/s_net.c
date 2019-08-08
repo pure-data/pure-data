@@ -194,7 +194,7 @@ int sockaddr_is_multicast(const struct sockaddr *sa)
     else if (sa->sa_family == AF_INET)
     {
         struct sockaddr_in *sa4 = (struct sockaddr_in *)sa;
-        return (sa4->sin_addr.s_net & 0xE0);
+        return ((ntohl(sa4->sin_addr.s_addr) & 0xF0000000) == 0xE0000000);
     }
     return 0;
 }
