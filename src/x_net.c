@@ -68,6 +68,7 @@ typedef struct _netreceive
     int x_sockfd;
     int *x_connections;
     int x_old;
+    int x_family;
     t_socketreceiver **x_receivers;
 } t_netreceive;
 
@@ -633,8 +634,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
-    const char *hostname = NULL; /* allowed or UDP multicast hostname */
-    char hostbuf[256];
+    const char *hostname = NULL; /* allowed or hostname */
 
     netreceive_closeall(x);
 
@@ -719,18 +719,19 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
         /* name the socket */
         if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
         {
+            sys_sockerror("bind"); /* bind shouldn't fail... */
             sys_closesocket(sockfd);
             sockfd = -1;
             continue;
         }
-
         /* this addr worked */
-        memcpy(&server, ai->ai_addr, ai->ai_addrlen);
         if (hostname)
         {
+            char hostbuf[256];
             sockaddr_get_addrstr(ai->ai_addr, hostbuf, sizeof(hostbuf));
             post("listening on %s:%d", hostbuf, portno);
         }
+        x->x_family = ai->ai_family;
         break;
     }
     freeaddrinfo(ailist);
@@ -749,23 +750,6 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
 
     if (protocol == SOCK_DGRAM) /* datagram protocol */
     {
-        /* join multicast group */
-        if (sockaddr_is_multicast((struct sockaddr *)&server))
-        {
-            if (socket_join_multicast_group(x->x_ns.x_sockfd,
-                (struct sockaddr *)&server) < 0)
-            {
-                int err = socket_errno();
-                char buf[MAXPDSTRING];
-                socket_strerror(err, buf, sizeof(buf));
-                pd_error(x,
-                    "netreceive: joining multicast group %s failed: %s (%d)",
-                    hostname, buf, err);
-            }
-            else
-                post("netreceive: joined multicast group %s", hostname);
-        }
-
         if (x->x_ns.x_bin)
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)netsend_readbin, x);
         else
@@ -814,11 +798,110 @@ static void netreceive_send(t_netreceive *x,
     }
 }
 
+#ifdef _WIN32
+#define SOCK_EINVAL WSAEINVAL
+#define SOCK_EADDRNOTAVAIL WSAEADDRNOTAVAIL
+#else
+#define SOCK_EINVAL EINVAL
+#define SOCK_EADDRNOTAVAIL EADDRNOTAVAIL
+#endif
+
+static struct addrinfo * netreceive_multicast_getaddr(t_netreceive *x, const char *s)
+{
+    struct addrinfo *ailist = NULL;
+    int status = addrinfo_get_list(&ailist, s, 0, SOCK_DGRAM);
+    if (status != 0)
+    {
+        pd_error(x, "netreceive: bad multicast address? %s (%d)",
+            gai_strerror(status), status);
+        return 0;
+    }
+    if (ailist->ai_family == x->x_family)
+    {
+        if (sockaddr_is_multicast(ailist->ai_addr))
+            return ailist;
+        else
+            pd_error(x, "netreceive: %s is not a multicast address", s);
+    }
+    else
+    {
+        pd_error(x, "netreceive: multicast address %s doesn't match IP family.", s);
+        if (x->x_family == AF_INET6)
+            pd_error(x, "Try to listen to an IPv6 adapter, e.g. '::'");
+        else
+            pd_error(x, "Try to listen to an IPv4 adapter, e.g. '0.0.0.0'");
+    }
+    freeaddrinfo(ailist);
+    return 0;
+}
+
+static void netreceive_multicast_join(t_netreceive *x, t_symbol *s)
+{
+    struct addrinfo *ai = NULL;
+    if (x->x_ns.x_protocol != SOCK_DGRAM)
+    {
+        pd_error(x, "'multicast_join' only works for UDP");
+        return;
+    }
+    if ((ai = netreceive_multicast_getaddr(x, s->s_name)))
+    {
+        if (socket_join_multicast_group(x->x_ns.x_sockfd, ai->ai_addr) < 0)
+        {
+            char buf[MAXPDSTRING];
+            int err = socket_errno();
+            if (err == SOCK_EINVAL || err == SOCK_EADDRNOTAVAIL)
+                pd_error(x, "netreceive: failed to join multicast group %s.\n"
+                    "Maybe you've already joined the group? (%d)", s->s_name, err);
+            else
+            {
+                socket_strerror(err, buf, sizeof(buf));
+                pd_error(x, "netreceive: failed to join multicast group %s: %s (%d)",
+                    s->s_name, buf, err);
+            }
+        }
+        else
+            post("joined multicast group %s", s->s_name);
+        freeaddrinfo(ai);
+    }
+}
+
+static void netreceive_multicast_leave(t_netreceive *x, t_symbol *s)
+{
+
+    struct addrinfo *ai = NULL;
+    if (x->x_ns.x_protocol != SOCK_DGRAM)
+    {
+        pd_error(x, "'multicast_leave' only works for UDP");
+        return;
+    }
+    if ((ai = netreceive_multicast_getaddr(x, s->s_name)))
+    {
+        if (socket_leave_multicast_group(x->x_ns.x_sockfd, ai->ai_addr) < 0)
+        {
+            char buf[MAXPDSTRING];
+            int err = socket_errno();
+            if (err == SOCK_EINVAL || err == SOCK_EADDRNOTAVAIL)
+                pd_error(x, "netreceive: failed to leave multicast group %s.\n"
+                    "Maybe you haven't joined the group? (%d)", s->s_name, err);
+            else
+            {
+                socket_strerror(err, buf, sizeof(buf));
+                pd_error(x, "netreceive: failed to join multicast group %s: %s (%d)",
+                    s->s_name, buf, err);
+            }
+        }
+        else
+            post("left multicast group %s", s->s_name);
+        freeaddrinfo(ai);
+    }
+}
+
 static void *netreceive_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_netreceive *x = (t_netreceive *)pd_new(netreceive_class);
     int from = 0;
     x->x_ns.x_protocol = SOCK_STREAM;
+    x->x_family = 0;
     x->x_old = 0;
     x->x_ns.x_bin = 0;
     x->x_nconnections = 0;
@@ -886,6 +969,10 @@ static void netreceive_setup(void)
         gensym("listen"), A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
+    class_addmethod(netreceive_class, (t_method)netreceive_multicast_join,
+        gensym("multicast_join"), A_SYMBOL, 0);
+    class_addmethod(netreceive_class, (t_method)netreceive_multicast_leave,
+        gensym("multicast_leave"), A_SYMBOL, 0);
 }
 
 void x_net_setup(void)
