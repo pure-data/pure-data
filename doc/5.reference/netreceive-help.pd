@@ -1,23 +1,22 @@
-#N canvas 115 66 735 726 12;
-#X obj 61 382 netreceive 3000;
-#X floatatom 163 480 0 0 0 0 - - -;
-#X text 197 481 <--- number of open connections;
-#X text 112 691 see also:;
-#X obj 198 692 netsend;
-#X obj 61 480 print tcp;
-#X obj 60 584 print udp;
+#N canvas 109 43 735 760 12;
+#X obj 61 403 netreceive 3000;
+#X floatatom 163 501 0 0 0 0 - - -;
+#X text 197 502 <--- number of open connections;
+#X text 112 712 see also:;
+#X obj 198 713 netsend;
+#X obj 61 501 print tcp;
+#X obj 60 605 print udp;
 #X text 33 154 There are some possibilities for intercommunication
 with other programs... see the help for "netsend.", f 85;
-#X obj 60 556 netreceive -u 3001;
-#X text 195 368 creation arguments:;
-#X text 263 387 optional -u flag for UDP;
-#X text 263 405 optional -b flag for binary;
-#X text 263 441 optional port number;
-#X obj 231 570 netreceive -b 3002;
-#X obj 231 598 print tcp-binary;
-#X obj 394 575 print udp-binary;
+#X obj 60 577 netreceive -u 3001;
+#X text 195 389 creation arguments:;
+#X text 263 408 optional -u flag for UDP;
+#X text 263 426 optional -b flag for binary;
+#X text 263 462 optional port number;
+#X obj 231 591 netreceive -b 3002;
+#X obj 231 619 print tcp-binary;
+#X obj 394 596 print udp-binary;
 #X msg 61 269 listen 0;
-#X text 171 245 listen message to set or change port;
 #X text 167 270 (0 or negative number to close);
 #X msg 61 243 listen 3000;
 #X text 33 88 By default the messages are ASCII text messages compatible
@@ -25,26 +24,26 @@ with Pd (i.e. \, numbers and symbols terminated with a semicolon --
 the "FUDI" protocol). The "-b" creation argument specifies binary messages
 instead \, which appear in Pd as lists of numbers from 0 to 255 (You
 could use this for OSC messages \, for example.), f 83;
-#X msg 82 355 send foo \$1;
-#X floatatom 82 332 0 0 0 0 - - -;
-#X floatatom 231 523 0 0 0 0 - - -;
-#X text 119 332 "send" (for TCP connections only) sends back to connected
+#X msg 82 376 send foo \$1;
+#X floatatom 82 353 0 0 0 0 - - -;
+#X floatatom 231 544 0 0 0 0 - - -;
+#X text 119 353 "send" (for TCP connections only) sends back to connected
 netreceive objects, f 76;
-#X text 491 696 updated for Pd version 0.50.;
-#X text 35 641 An old (pre-0.45) calling convention is provided for
+#X text 491 717 updated for Pd version 0.50.;
+#X text 35 662 An old (pre-0.45) calling convention is provided for
 compatibility \, port number and following "0" or "1" for TCP or UDP
 respectively:, f 67;
-#X text 40 513 Other examples:;
-#X text 541 629 (UDP port 3004);
-#X obj 531 653 netreceive 3004 1;
-#X obj 394 547 netreceive -u -b -f 3003;
-#X obj 559 576 print from;
-#X text 263 423 optional -f flag for from address & port outlet (0.50+)
+#X text 40 534 Other examples:;
+#X text 541 650 (UDP port 3004);
+#X obj 531 674 netreceive 3004 1;
+#X obj 394 568 netreceive -u -b -f 3003;
+#X obj 559 597 print from;
+#X text 263 444 optional -f flag for from address & port outlet (0.50+)
 ;
 #X text 33 192 SECURITY NOTE: Don't publish the port number of your
 netreceive unless you wouldn't mind other people being able to send
 you messages., f 85;
-#X text 263 460 optional UDP hostname or multicast address (0.50+)
+#X text 263 481 optional UDP hostname or multicast address (0.50+)
 ;
 #X text 33 36 The netreceive object opens a socket for TCP ("stream")
 or UDP ("datagram") network reception on a specified port. If using
@@ -52,20 +51,25 @@ TCP \, an outlet gives you the number of netsend objects (or other
 compatible clients) that have opened connections here., f 84;
 #X text 85 12 netreceive -- listen for incoming messages from network
 ;
-#X msg 231 546 send 4 5 6 \$1;
+#X msg 231 567 send 4 5 6 \$1;
 #X msg 61 297 listen 3000 224.0.0.1;
-#X text 227 297 optional UDP hostname or multicast address (0.50+)
-;
+#X text 156 242 listen message to set or change port (listens on any
+IPv4 and IPv6 adapter), f 75;
+#X text 228 317 NOTE: This will listen on a single adapter. Hostname
+resolution is system dependent \, but IPv4 addresses are prioritized.
+, f 64;
+#X text 227 297 optional allowed hostname or UDP multicast address
+(0.50+);
 #X connect 0 0 5 0;
 #X connect 0 1 1 0;
 #X connect 8 0 6 0;
 #X connect 13 0 14 0;
 #X connect 16 0 0 0;
-#X connect 19 0 0 0;
-#X connect 21 0 0 0;
-#X connect 22 0 21 0;
-#X connect 23 0 37 0;
-#X connect 30 0 15 0;
-#X connect 30 1 31 0;
-#X connect 37 0 13 0;
-#X connect 38 0 0 0;
+#X connect 18 0 0 0;
+#X connect 20 0 0 0;
+#X connect 21 0 20 0;
+#X connect 22 0 36 0;
+#X connect 29 0 15 0;
+#X connect 29 1 30 0;
+#X connect 36 0 13 0;
+#X connect 37 0 0 0;

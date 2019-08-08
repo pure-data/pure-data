@@ -239,6 +239,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     int portno, sportno, sockfd, multicast = 0, status;
     struct addrinfo *ailist = NULL, *ai;
     const char *hostname = NULL;
+    char hostbuf[256];
 
     /* check argument types */
     if ((argc < 2) ||
@@ -305,12 +306,14 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
         }
 
+        sockaddr_get_addrstr(ai->ai_addr, hostbuf, sizeof(hostbuf));
+
         /* bind optional src listening port */
         if (sportno != 0)
         {
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
-            post("connecting to dest port %d, src port %d", portno, sportno);
+            post("connecting to %s:%d, src port %d", hostbuf, portno, sportno);
             status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
             if (status != 0)
             {
@@ -343,9 +346,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             }
         }
         else if (hostname && multicast)
-            post("connecting to port %d, multicast %s", portno, hostname);
+            post("connecting to %s:%d (multicast)", hostbuf, portno);
         else
-            post("connecting to port %d", portno);
+            post("connecting to %s:%d", hostbuf, portno);
 
         if (x->x_protocol == SOCK_STREAM)
         {
@@ -630,7 +633,8 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
-    const char *hostname = NULL; /* allowed or multicast hostname (UDP only) */
+    const char *hostname = NULL; /* allowed or UDP multicast hostname */
+    char hostbuf[256];
 
     netreceive_closeall(x);
 
@@ -638,14 +642,8 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
         portno = argv->a_w.w_float, argc--, argv++;
     if (argc && argv->a_type == A_SYMBOL)
     {
-        if (protocol == SOCK_DGRAM)
-            hostname = argv->a_w.w_symbol->s_name;
-        else
-        {
-            pd_error(x, "netreceive: hostname argument ignored:");
-            postatom(argc, argv); endpost();
-        }
-        argc--, argv++;
+        hostname = argv->a_w.w_symbol->s_name;
+        argv++; argc--;
     }
     if (argc)
     {
@@ -661,7 +659,17 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             gai_strerror(status), status);
         return;
     }
-    addrinfo_sort_list(&ailist, addrinfo_ipv6_first); /* IPv6 addresses first! */
+    if (hostname)
+    {
+        /* If we specify a hostname or IP address we can only listen to a single adapter.
+         * For host names, we prefer IPv4 for now. LATER we might create several sockets */
+        addrinfo_sort_list(&ailist, addrinfo_ipv4_first);
+    }
+    else
+    {
+        /* For the "any" address we want to prefer IPv6, so we can create a dual stack socket */
+        addrinfo_sort_list(&ailist, addrinfo_ipv6_first);
+    }
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(ailist);
 #endif
@@ -698,9 +706,9 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 post("netreceive: setsockopt (SO_BROADCAST) failed");
         }
-        /* if this is an IPv6 address, also listen to IPv4 adapters
+        /* if this is the IPv6 "any" address, also listen to IPv4 adapters
            (if not supported, fall back to IPv4) */
-        if (ai->ai_family == AF_INET6 &&
+        if (!hostname && ai->ai_family == AF_INET6 &&
                 socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
         {
             /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
@@ -718,6 +726,11 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
 
         /* this addr worked */
         memcpy(&server, ai->ai_addr, ai->ai_addrlen);
+        if (hostname)
+        {
+            sockaddr_get_addrstr(ai->ai_addr, hostbuf, sizeof(hostbuf));
+            post("listening on %s:%d", hostbuf, portno);
+        }
         break;
     }
     freeaddrinfo(ailist);
