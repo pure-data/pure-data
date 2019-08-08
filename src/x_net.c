@@ -635,7 +635,6 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
     const char *hostname = NULL; /* allowed or UDP multicast hostname */
-    char hostbuf[256];
 
     netreceive_closeall(x);
 
@@ -727,10 +726,6 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
 
         /* this addr worked */
         memcpy(&server, ai->ai_addr, ai->ai_addrlen);
-        if (hostname)
-        {
-            sockaddr_get_addrstr(ai->ai_addr, hostbuf, sizeof(hostbuf));
-        }
         break;
     }
     freeaddrinfo(ailist);
@@ -797,8 +792,13 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     }
 
     if (hostname)
+    {
+        char hostbuf[256];
+        sockaddr_get_addrstr((const struct sockaddr *)&server,
+            hostbuf, sizeof(hostbuf));
         post("listening on %s %d%s", hostbuf, portno,
             (multicast ? " (multicast)" : ""));
+    }
     else
         post("listening on %d", portno);
 }
