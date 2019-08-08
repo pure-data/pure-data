@@ -16,6 +16,9 @@ standard output. */
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 #include <s_net.h>
 
