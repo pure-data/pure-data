@@ -239,6 +239,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
     int portno, sportno, sockfd, multicast = 0, status;
     struct addrinfo *ailist = NULL, *ai;
     const char *hostname = NULL;
+    char hostbuf[256];
 
     /* check argument types */
     if ((argc < 2) ||
@@ -305,12 +306,14 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
         }
 
+        sockaddr_get_addrstr(ai->ai_addr, hostbuf, sizeof(hostbuf));
+
         /* bind optional src listening port */
         if (sportno != 0)
         {
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
-            post("connecting to dest port %d, src port %d", portno, sportno);
+            post("connecting to %s:%d, src port %d", hostbuf, portno, sportno);
             status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
             if (status != 0)
             {
@@ -343,9 +346,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             }
         }
         else if (hostname && multicast)
-            post("connecting to port %d, multicast %s", portno, hostname);
+            post("connecting to %s:%d (multicast)", hostbuf, portno);
         else
-            post("connecting to port %d", portno);
+            post("connecting to %s:%d", hostbuf, portno);
 
         if (x->x_protocol == SOCK_STREAM)
         {
@@ -631,6 +634,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
     const char *hostname = NULL; /* allowed or multicast hostname (UDP only) */
+    char hostbuf[256];
 
     netreceive_closeall(x);
 
@@ -728,6 +732,11 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
 
         /* this addr worked */
         memcpy(&server, ai->ai_addr, ai->ai_addrlen);
+        if (hostname)
+        {
+            sockaddr_get_addrstr(ai->ai_addr, hostbuf, sizeof(hostbuf));
+            post("listening on %s:%d", hostbuf, portno);
+        }
         break;
     }
     freeaddrinfo(ailist);
