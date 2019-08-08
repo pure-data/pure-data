@@ -661,7 +661,17 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             gai_strerror(status), status);
         return;
     }
-    addrinfo_sort_list(&ailist, addrinfo_ipv6_first); /* IPv6 addresses first! */
+    if (hostname)
+    {
+        /* If we specify a hostname or IP address we can only listen to a single adapter.
+         * For host names, we prefer IPv4 for now. LATER we might create several sockets */
+        addrinfo_sort_list(&ailist, addrinfo_ipv4_first);
+    }
+    else
+    {
+        /* For the "any" address we want to prefer IPv6, so we can create a dual stack socket */
+        addrinfo_sort_list(&ailist, addrinfo_ipv6_first);
+    }
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(ailist);
 #endif
@@ -700,7 +710,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
         }
         /* if this is an IPv6 address, also listen to IPv4 adapters
            (if not supported, fall back to IPv4) */
-        if (ai->ai_family == AF_INET6 &&
+        if (!hostname && ai->ai_family == AF_INET6 &&
                 socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
         {
             /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
