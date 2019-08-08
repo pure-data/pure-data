@@ -313,7 +313,7 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
         {
             int bound = 0;
             struct addrinfo *sailist = NULL, *sai;
-            post("connecting to %s:%d, src port %d", hostbuf, portno, sportno);
+            post("connecting to %s %d, src port %d", hostbuf, portno, sportno);
             status = addrinfo_get_list(&sailist, NULL, sportno, x->x_protocol);
             if (status != 0)
             {
@@ -346,9 +346,9 @@ static void netsend_connect(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
             }
         }
         else if (hostname && multicast)
-            post("connecting to %s:%d (multicast)", hostbuf, portno);
+            post("connecting to %s %d (multicast)", hostbuf, portno);
         else
-            post("connecting to %s:%d", hostbuf, portno);
+            post("connecting to %s %d", hostbuf, portno);
 
         if (x->x_protocol == SOCK_STREAM)
         {
@@ -630,7 +630,8 @@ static void netreceive_closeall(t_netreceive *x)
 
 static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol;
+    int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol,
+        multicast = 0;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
     const char *hostname = NULL; /* allowed or UDP multicast hostname */
@@ -729,7 +730,6 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
         if (hostname)
         {
             sockaddr_get_addrstr(ai->ai_addr, hostbuf, sizeof(hostbuf));
-            post("listening on %s:%d", hostbuf, portno);
         }
         break;
     }
@@ -763,7 +763,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
                     hostname, buf, err);
             }
             else
-                post("netreceive: joined multicast group %s", hostname);
+                multicast = 1;
         }
 
         if (x->x_ns.x_bin)
@@ -795,6 +795,12 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
                 (t_fdpollfn)netreceive_connectpoll,x);
         }
     }
+
+    if (hostname)
+        post("listening on %s %d%s", hostbuf, portno,
+            (multicast ? " (multicast)" : ""));
+    else
+        post("listening on %d", portno);
 }
 
 static void netreceive_send(t_netreceive *x,
