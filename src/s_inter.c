@@ -1051,6 +1051,7 @@ static int sys_do_startgui(const char *libdir)
         if (burnfd3 > 2)
             close(burnfd3);
 #endif
+
         /* get addrinfo list using hostname & port */
         status = addrinfo_get_list(&ailist,
             LOCALHOST, sys_guisetportnumber, SOCK_STREAM);
@@ -1061,6 +1062,10 @@ static int sys_do_startgui(const char *libdir)
                 gai_strerror(status), status);
             return (1);
         }
+
+        /* Sort to IPv4 for now as the Pd gui uses IPv4. */
+        addrinfo_sort_list(&ailist, addrinfo_ipv4_first);
+
         /* We don't know in advance whether the GUI uses IPv4 or IPv6,
            so we try both and pick the one which works. */
         for (ai = ailist; ai != NULL; ai = ai->ai_next)
