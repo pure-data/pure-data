@@ -212,7 +212,7 @@ static int sys_domicrosleep(int microsec, int pollem)
     t_fdpoll *fp;
     timout.tv_sec = 0;
     timout.tv_usec = 0;
-    if (pollem)
+    if (pollem && pd_this->pd_inter->i_nfdpoll)
     {
         fd_set readset, writeset, exceptset;
         FD_ZERO(&writeset);

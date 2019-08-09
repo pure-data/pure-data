@@ -439,6 +439,8 @@ static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
     int i;
+    int argc;
+    t_atom *argv;
     for (i = 0; i < (int)f; i++)
     {
         while (!c->gl_env)  /* back up to containing canvas or abstraction */
@@ -446,8 +448,6 @@ static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
         if (c->gl_owner)    /* back up one more into an owner if any */
             c = c->gl_owner;
     }
-    int argc;
-    t_atom *argv;
     canvas_setcurrent(c);
     canvas_getargs(&argc, &argv);
     canvas_unsetcurrent(c);
