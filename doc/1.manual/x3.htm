@@ -157,7 +157,7 @@ but does not work uniformly across all operating systems..
 
 <H3> <A id=s1.1> 3.2. Installing Pd in Microsoft Windows </A> </H3>
 
-<P> Pd should work under any version of Windows since 95.  You can download as
+<P> Pd should work under any version of Windows since XP.  You can download as
 a self-extracting archive (a ".exe" file). Run this and select a destination
 directory when prompted, such as "\pd" or "Program Files\pd".
 
@@ -167,15 +167,18 @@ include C:\pd\bin and then invoke "pd" in a command prompt window. You can also
 make a shortcut to the executable program (left-click on it and drag to the
 desktop, for example.)
 
-<P> Pd requires "TCP/IP networking" to be turned on.  This doesn't mean you
+<P> Pd requires "TCP/IP networking" to be turned on. This doesn't mean you
 have to be on a real network, but simply that Pd actually consists of two
-programs that make a "network link" (locally) to intercommunicate.
+programs that make a "network link" (locally) to intercommunicate. 
+The first time you run Pd the "Windows Firewall" will ask your permission 
+to allow this intercommunication.
 
 <H4> Audio in Microsoft Windows </H4>
 
 <P>
-Pd offers both the ASIO and MMIO APIs in Windows.  Which of these works better
-will depend on your audio hardware.
+Pd offers both the ASIO and MMIO APIs in Windows.  
+
+<!--- comment out
 
 <P>
 MIDI timing is very poor if you are using simultaneous audio input and output;
@@ -185,22 +188,23 @@ simply terrible.  W98, with either audio input or output suppressed, offers
 fairly good MIDI timing (~5 msec jitter).  The "first edition" used to crash
 occasionally; this might be fixed in the "second edition".
 
+/// end coment out -->
+
 <H4> ASIO </H4>
 
 <P> As of version 0.35 Pd supports ASIO.  Invoke Pd as "pd -asio" and, if
-needed, specify "-sounddev" (etc.) flags to specify which device (see
+needed, specify "-audiodev" (etc.) flags to specify which device (see
 "the Pd command line" below.)  You can also specify a "-blocksize" different
 from the default (256 samples) and "-audiobuf" in milliseconds.  Pd will
 round this down to a power of two buffers, each of "-blocksize" in sample
 frames.
 
-<P> TIP:  Often your machine will allow you to use ASIO with built-in PC
-audio hardware.  Sometimes it is necessary to set a ridiculously high block size
-for this to work (on my machine I have to set it to 4096 -- about 1/10 of a
-second!)
+<P> TIP:  You can use your built-in sound-card with the Universal ASIO Driver For WDM <a href="http://www.asio4all.org/"> http://www.asio4all.org/ </a>
 
+<!--- comment out
 <P> Using MMIO I've been able to get very low latencies (6 msec) using M-audio
 PCI converters (Delta 44).
+/// end coment out -->
 
 <H3> <A id=s1.2> 3.3. Installing Pd in Linux </A> </H3>
 
