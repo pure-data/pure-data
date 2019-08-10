@@ -237,10 +237,12 @@ void sys_setextrapath(const char *p)
 {
     char pathbuf[MAXPDSTRING];
     namelist_free(STUFF->st_staticpath);
+    /* add built-in "extra" path first so its checked first */
+    STUFF->st_staticpath = namelist_append(0, p, 0);
     /* add standard place for users to install stuff first */
 #ifdef __gnu_linux__
     sys_expandpath("~/.local/lib/pd/extra/", pathbuf, MAXPDSTRING);
-    STUFF->st_staticpath = namelist_append(0, pathbuf, 0);
+    STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, pathbuf, 0);
     sys_expandpath("~/pd-externals", pathbuf, MAXPDSTRING);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, pathbuf, 0);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath,
@@ -249,18 +251,16 @@ void sys_setextrapath(const char *p)
 
 #ifdef __APPLE__
     sys_expandpath("~/Library/Pd", pathbuf, MAXPDSTRING);
-    STUFF->st_staticpath = namelist_append(0, pathbuf, 0);
+    STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, pathbuf, 0);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, "/Library/Pd", 0);
 #endif
 
 #ifdef _WIN32
     sys_expandpath("%AppData%/Pd", pathbuf, MAXPDSTRING);
-    STUFF->st_staticpath = namelist_append(0, pathbuf, 0);
+    STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, pathbuf, 0);
     sys_expandpath("%CommonProgramFiles%/Pd", pathbuf, MAXPDSTRING);
     STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, pathbuf, 0);
 #endif
-    /* add built-in "extra" path last so its checked last */
-    STUFF->st_staticpath = namelist_append(STUFF->st_staticpath, p, 0);
 }
 
     /* try to open a file in the directory "dir", named "name""ext",
