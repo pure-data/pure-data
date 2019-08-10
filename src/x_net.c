@@ -630,10 +630,8 @@ static void netreceive_closeall(t_netreceive *x)
 
 static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *argv)
 {
-    int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol,
-        multicast = 0;
+    int portno = 0, sockfd, status, protocol = x->x_ns.x_protocol, multicast = 0;
     struct addrinfo *ailist = NULL, *ai;
-    struct sockaddr_storage server;
     const char *hostname = NULL; /* allowed or UDP multicast hostname */
 
     netreceive_closeall(x);
@@ -716,16 +714,65 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             sockfd = -1;
             continue;
         }
-        /* name the socket */
-        if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+        multicast = sockaddr_is_multicast(ai->ai_addr);
+#ifdef _WIN32
+        if (multicast)
         {
-            sys_closesocket(sockfd);
-            sockfd = -1;
-            continue;
+            /* Windows we can't bind to the multicast address,
+               so we bind to the "any" address instead */
+            struct addrinfo *any;
+            int status = addrinfo_get_list(&any,
+                (ai->ai_family == AF_INET6) ? "::" : "0.0.0.0", portno, protocol);
+            if (status != 0)
+            {
+                pd_error(x, "netreceive: bad host or port? %s (%d)",
+                    gai_strerror(status), status);
+                return;
+            }
+            /* name the socket */
+            status = bind(sockfd, any->ai_addr, any->ai_addrlen);
+            freeaddrinfo(any);
+            if (status < 0)
+            {
+                sys_sockerror("bind"); /* bind shouldn't fail */
+                sys_closesocket(sockfd);
+                sockfd = -1;
+                continue;
+            }
         }
-
+        else
+#endif
+        {
+            /* name the socket */
+            if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+            {
+                sys_sockerror("bind"); /* bind shouldn't fail */
+                sys_closesocket(sockfd);
+                sockfd = -1;
+                continue;
+            }
+        }
+        /* join multicast group */
+        if (multicast && socket_join_multicast_group(sockfd, ai->ai_addr) < 0)
+        {
+            int err = socket_errno();
+            char buf[MAXPDSTRING];
+            socket_strerror(err, buf, sizeof(buf));
+            pd_error(x,
+                "netreceive: joining multicast group %s failed: %s (%d)",
+                hostname, buf, err);
+        }
         /* this addr worked */
-        memcpy(&server, ai->ai_addr, ai->ai_addrlen);
+        if (hostname)
+        {
+            char hostbuf[256];
+            sockaddr_get_addrstr(ai->ai_addr,
+                hostbuf, sizeof(hostbuf));
+            post("listening on %s %d%s", hostbuf, portno,
+                (multicast ? " (multicast)" : ""));
+        }
+        else
+            post("listening on %d", portno);
         break;
     }
     freeaddrinfo(ailist);
@@ -744,23 +791,6 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
 
     if (protocol == SOCK_DGRAM) /* datagram protocol */
     {
-        /* join multicast group */
-        if (sockaddr_is_multicast((struct sockaddr *)&server))
-        {
-            if (socket_join_multicast_group(x->x_ns.x_sockfd,
-                (struct sockaddr *)&server) < 0)
-            {
-                int err = socket_errno();
-                char buf[MAXPDSTRING];
-                socket_strerror(err, buf, sizeof(buf));
-                pd_error(x,
-                    "netreceive: joining multicast group %s failed: %s (%d)",
-                    hostname, buf, err);
-            }
-            else
-                multicast = 1;
-        }
-
         if (x->x_ns.x_bin)
             sys_addpollfn(x->x_ns.x_sockfd, (t_fdpollfn)netsend_readbin, x);
         else
@@ -790,23 +820,17 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
                 (t_fdpollfn)netreceive_connectpoll,x);
         }
     }
-
-    if (hostname)
-    {
-        char hostbuf[256];
-        sockaddr_get_addrstr((const struct sockaddr *)&server,
-            hostbuf, sizeof(hostbuf));
-        post("listening on %s %d%s", hostbuf, portno,
-            (multicast ? " (multicast)" : ""));
-    }
-    else
-        post("listening on %d", portno);
 }
 
 static void netreceive_send(t_netreceive *x,
     t_symbol *s, int argc, t_atom *argv)
 {
     int i;
+    if (x->x_ns.x_protocol != SOCK_STREAM)
+    {
+        pd_error(x, "netreceive: 'send' only works for TCP");
+        return;
+    }
     for (i = 0; i < x->x_nconnections; i++)
     {
         if (netsend_dosend(&x->x_ns, x->x_connections[i], s, argc, argv))
