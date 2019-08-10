@@ -1,7 +1,7 @@
-#N canvas 404 92 779 665 12;
+#N canvas 404 92 712 514 12;
 #X obj 21 14 pdcontrol;
 #X text 100 14 -- communicate with pd and/or this patch;
-#X text 390 617 updated for Pd version 0.50.;
+#X text 446 470 updated for Pd version 0.50.;
 #X obj 35 275 pdcontrol;
 #X obj 35 300 print;
 #X msg 43 150 isvisible;
@@ -19,10 +19,6 @@
 #X msg 51 176 dir;
 #X text 98 176 get directory this patch is in;
 #X msg 57 214 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
-#X obj 33 535 pdcontrol;
-#X obj 309 505 r bazoo;
-#X obj 309 530 print bazoo;
-#X msg 33 503 gui pdsend [concat bazoo [exec date]];
 #N canvas 689 91 529 365 args 0;
 #X obj 127 209 print;
 #X text 185 140 <= get arguments;
@@ -54,19 +50,9 @@ patch (1) \, its own owner (2) \, and so on \, and optionally also
 a filename relative to the patch's directory. (Ownership number is
 silently reduced if owners don't exist \, so here anything greater
 than zero is ignored.), f 42;
-#X text 481 440 (Note: Because you can't use open and close braces
-in Pd \, this can be very awkward. It is perhaps best to define tcl/tk
-functions in a "gui plug-in" that can be called eastil from Pd. Also
-\, O/S variations will make it hard to make perfectly portable patches
-using system commands.), f 36;
-#X text 32 446 You can run system commands via the gui. What commands
-you can run depends on your operating system. If you're on Linux or
-macOS you can get the time and date like this:;
 #X connect 3 0 4 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 10 0 3 0;
 #X connect 12 0 3 0;
-#X connect 14 0 15 0;
-#X connect 16 0 13 0;
-#X connect 21 0 3 0;
+#X connect 17 0 3 0;

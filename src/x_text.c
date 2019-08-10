@@ -397,7 +397,12 @@ typedef struct _keyinfo
     int ki_onset;   /* number of fields to skip over */
 } t_keyinfo;
 
-static int text_sortcompare(const void *z1, const void *z2 , void *zkeyinfo)
+    /* apple products seem to have their own prototypes for qsort_r (?) */
+#ifdef __APPLE__
+static int text_sortcompare(void *zkeyinfo, const void *z1, const void *z2)
+#else
+static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
+#endif
 {
     const t_atom *a1 = *(t_atom **)z1, *a2 = *(t_atom **)z2;
     t_keyinfo *k = (t_keyinfo *)zkeyinfo;
@@ -481,7 +486,7 @@ static int stupid_sortcompare(const void *z1, const void *z2) {
 static void text_define_sort(t_text_define *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+    int nlines, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
         thisline, startline;
     t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
     t_binbuf *newb;
@@ -541,8 +546,12 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
     stupid_zkeyinfo = &k;
     qsort(sortbuf, nlines, sizeof(*sortbuf), stupid_sortcompare);
 #else
+#ifdef __APPLE__
+    qsort_r(sortbuf, nlines, sizeof(*sortbuf), &k, text_sortcompare);
+#else /* __APPLE__ */
     qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
-#endif
+#endif /* __APPLE__ */
+#endif /* MICROSOFT_STUPID_SORT */
     newb = binbuf_new();
     for (thisline = 0; thisline < nlines; thisline++)
     {
