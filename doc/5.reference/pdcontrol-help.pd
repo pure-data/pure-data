@@ -38,10 +38,6 @@ inside another that contains arguments).;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
 #X restore 64 338 pd args;
-#X text 31 41 pdcontrol lets you communicate with the patch to get
-its owning directory \, arguments \, its visible/invisible state \,
-or to send a command directly to the tcl/tk interpreter used for Pd's
-gui.;
 #X text 127 338 get the patch's arguments;
 #X text 237 119 open a URL in a browser;
 #X msg 35 120 browse http://msp.ucsd.edu;
@@ -50,9 +46,12 @@ patch (1) \, its own owner (2) \, and so on \, and optionally also
 a filename relative to the patch's directory. (Ownership number is
 silently reduced if owners don't exist \, so here anything greater
 than zero is ignored.), f 42;
+#X text 31 41 pdcontrol lets you communicate with the patch to get
+its owning directory \, arguments \, its visible/invisible state \,
+or to open a URL in a web browser.;
 #X connect 3 0 4 0;
 #X connect 5 0 3 0;
 #X connect 6 0 7 0;
 #X connect 10 0 3 0;
 #X connect 12 0 3 0;
-#X connect 17 0 3 0;
+#X connect 16 0 3 0;
