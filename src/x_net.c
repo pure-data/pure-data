@@ -725,7 +725,8 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
                 (ai->ai_family == AF_INET6) ? "::" : "0.0.0.0", portno, protocol);
             if (status != 0)
             {
-                pd_error(x, "netreceive: bad host or port? %s (%d)",
+                pd_error(x,
+                    "netreceive: getting \"any\" address for multicast failed %s (%d)",
                     gai_strerror(status), status);
                 return;
             }
