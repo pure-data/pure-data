@@ -20,7 +20,7 @@ standard output. */
 #include <unistd.h>
 #endif
 
-#include <s_net.h>
+#include "s_net.h"
 
 typedef struct _fdpoll
 {

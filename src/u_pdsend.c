@@ -11,7 +11,7 @@ from its standard input to Pd via the netsend/netreceive ("FUDI") protocol. */
 #include <errno.h>
 #include <stdlib.h>
 
-#include <s_net.h>
+#include "s_net.h"
 
 static void sockerror(char *s);
 
