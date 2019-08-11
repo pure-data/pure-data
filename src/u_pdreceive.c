@@ -131,11 +131,12 @@ int main(int argc, char **argv)
             continue;
         }
         multicast = sockaddr_is_multicast(ai->ai_addr);
-#ifdef _WIN32
+#if 1
         if (multicast)
         {
-            /* Windows we can't bind to the multicast address,
-               so we bind to the "any" address instead */
+            /* binding to the multicast address doesn't work on Windows and on Linux
+               it doesn't seem to work for IPv6 multicast addresses, so we bind to
+               the "any" address instead */
             struct addrinfo *any;
             int status = addrinfo_get_list(&any,
                 (ai->ai_family == AF_INET6) ? "::" : "0.0.0.0", portno, protocol);
