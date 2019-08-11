@@ -20,9 +20,9 @@ typedef int socklen_t;
 
 /* socket address */
 
-/// getaddrinfo() convenice wrapper which generates a list of IPv4 and IPv6
+/// getaddrinfo() convenience wrapper which generates a list of IPv4 and IPv6
 /// addresses from a given address/hostname string, port, and protcol
-/// (SOCK_STREAM or SOCK_DGRAM), set hostname to NULL if receiving only
+/// (SOCK_STREAM or SOCK_DGRAM), set hostname to NULL for "any" address
 ///
 /// returns 0 on success or < 0 on error
 ///
