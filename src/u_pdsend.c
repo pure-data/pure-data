@@ -22,7 +22,7 @@ static void sockerror(char *s);
 
 int main(int argc, char **argv)
 {
-    int sockfd, portno, protocol, status;
+    int sockfd, portno, protocol, status, multicast;
     struct sockaddr_storage server;
     struct addrinfo *ailist = NULL, *ai;
     float timeout = 10;
@@ -79,6 +79,7 @@ int main(int argc, char **argv)
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
                 fprintf(stderr, "setsockopt (SO_BROADCAST) failed\n");
         }
+        multicast = sockaddr_is_multicast(ai->ai_addr);
         if (protocol == SOCK_STREAM)
         {
             status = socket_connect(sockfd, ai->ai_addr, ai->ai_addrlen,
@@ -95,7 +96,10 @@ int main(int argc, char **argv)
         /* print address */
         sockaddr_get_addrstr((struct sockaddr *)&server,
                              addrstr, sizeof(addrstr));
-        fprintf(stderr, "connected to %s\n", addrstr);
+        if (multicast)
+            fprintf(stderr, "connected to %s (multicast)\n", addrstr);
+        else
+            fprintf(stderr, "connected to %s\n", addrstr);
         break;
     }
     freeaddrinfo(ailist);
