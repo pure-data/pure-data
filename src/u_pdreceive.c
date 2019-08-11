@@ -146,7 +146,7 @@ int main(int argc, char **argv)
                     "getting \"any\" address for multicast failed %s (%d)",
                     gai_strerror(status), status);
                 socket_close(sockfd);
-                return;
+                return EXIT_FAILURE;
             }
             /* name the socket */
             status = bind(sockfd, any->ai_addr, any->ai_addrlen);
