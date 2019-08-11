@@ -131,7 +131,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     x_time.c x_acoustics.c x_net.c x_text.c x_gui.c x_list.c x_array.c \
     x_scalar.c x_vexp.c x_vexp_if.c x_vexp_fun.c
 
-SRSRC = u_pdsend.c u_pdreceive.c
+SRSRC = u_pdsend.c u_pdreceive.c s_net.c
 
 OBJ = $(SRC:.c=.o) 
 SROBJ = $(SRSRC:.c=.o) 
@@ -185,12 +185,12 @@ $(PMOBJ) : %.o : %.c
 $(VOBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
 
-$(PDSEND): u_pdsend.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o $(LIBS)
+$(PDSEND): u_pdsend.o s_net.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o s_net.o $(LIBS)
 	$(STRIP) $(PDSEND)
 
-$(PDRECEIVE): u_pdreceive.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o $(LIBS)
+$(PDRECEIVE): u_pdreceive.o s_net.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o s_net.o $(LIBS)
 	$(STRIP) $(PDRECEIVE)
 
 $(PDEXEC): s_entry.o pd.res

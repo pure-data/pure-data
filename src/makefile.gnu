@@ -165,13 +165,13 @@ $(BIN_DIR)/pd-watchdog: s_watchdog.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $(BIN_DIR)/pd-watchdog s_watchdog.c
 
-$(BIN_DIR)/pdsend: u_pdsend.c
+$(BIN_DIR)/pdsend: u_pdsend.c s_net.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdsend u_pdsend.c
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdsend u_pdsend.c s_net.c
 
-$(BIN_DIR)/pdreceive: u_pdreceive.c
+$(BIN_DIR)/pdreceive: u_pdreceive.c s_net.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdreceive u_pdreceive.c
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdreceive u_pdreceive.c s_net.c
 
 $(PDEXEC): $(OBJ_DIR) $(OBJ)
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
