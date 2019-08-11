@@ -22,7 +22,7 @@ static void sockerror(char *s);
 
 int main(int argc, char **argv)
 {
-    int sockfd, portno, protocol, status, multicast;
+    int sockfd = -1, portno, protocol, status, multicast;
     struct sockaddr_storage server;
     struct addrinfo *ailist = NULL, *ai;
     float timeout = 10;

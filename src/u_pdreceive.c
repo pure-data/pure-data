@@ -106,20 +106,20 @@ int main(int argc, char **argv)
         {
             /* stream (TCP) sockets are set NODELAY */
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
-                fprintf(stderr, "netreceive: setsockopt (TCP_NODELAY) failed\n");
+                fprintf(stderr, "setsockopt (TCP_NODELAY) failed\n");
         }
         else if (protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
         {
             /* enable IPv4 UDP broadcasting */
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
-                fprintf(stderr, "netreceive: setsockopt (SO_BROADCAST) failed\n");
+                fprintf(stderr, "setsockopt (SO_BROADCAST) failed\n");
         }
         /* if this is an IPv6 address, also listen to IPv4 adapters
            (if not supported, fall back to IPv4) */
         if (ai->ai_family == AF_INET6 &&
                 socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
         {
-            /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+            /* fprintf(stderr, "setsockopt (IPV6_V6ONLY) failed\n"); */
             socket_close(sockfd);
             sockfd = -1;
             continue;
