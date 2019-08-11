@@ -48,7 +48,7 @@ static void sockerror(char *s);
 
 int main(int argc, char **argv)
 {
-    int status, portno;
+    int status, portno, multicast = 0;
     char *hostname = NULL;
     struct addrinfo *ailist = NULL, *ai;
     struct sockaddr_storage server;
@@ -83,7 +83,17 @@ int main(int argc, char **argv)
             gai_strerror(status), status);
         exit(EXIT_FAILURE);
     }
-    addrinfo_sort_list(&ailist, addrinfo_ipv6_first); /* IPv6 addresses first! */
+    if (hostname)
+    {
+        /* If we specify a hostname or IP address we can only listen to a single adapter.
+         * For host names, we prefer IPv4 for now. LATER we might create several sockets */
+        addrinfo_sort_list(&ailist, addrinfo_ipv4_first);
+    }
+    else
+    {
+        /* For the "any" address we want to prefer IPv6, so we can create a dual stack socket */
+        addrinfo_sort_list(&ailist, addrinfo_ipv6_first);
+    }
 #ifdef PRINT_ADDRINFO
     addrinfo_print_list(ailist);
 #endif
@@ -120,14 +130,54 @@ int main(int argc, char **argv)
             sockfd = -1;
             continue;
         }
-        /* name the socket */
-        if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+        multicast = sockaddr_is_multicast(ai->ai_addr);
+#ifdef _WIN32
+        if (multicast)
         {
-            socket_close(sockfd);
-            sockfd = -1;
-            continue;
+            /* Windows we can't bind to the multicast address,
+               so we bind to the "any" address instead */
+            struct addrinfo *any;
+            int status = addrinfo_get_list(&any,
+                (ai->ai_family == AF_INET6) ? "::" : "0.0.0.0", portno, protocol);
+            if (status != 0)
+            {
+                pd_error(x,
+                    "netreceive: getting \"any\" address for multicast failed %s (%d)",
+                    gai_strerror(status), status);
+                sys_closesocket(sockfd);
+                return;
+            }
+            /* name the socket */
+            status = bind(sockfd, any->ai_addr, any->ai_addrlen);
+            freeaddrinfo(any);
+            if (status < 0)
+            {
+                sys_closesocket(sockfd);
+                sockfd = -1;
+                continue;
+            }
         }
-
+        else
+#endif
+        {
+            /* name the socket */
+            if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
+            {
+                socket_close(sockfd);
+                sockfd = -1;
+                continue;
+            }
+        }
+        /* join multicast group */
+        if (multicast && socket_join_multicast_group(sockfd, ai->ai_addr) < 0)
+        {
+            int err = socket_errno();
+            char buf[256];
+            socket_strerror(err, buf, sizeof(buf));
+            fprintf(stderr,
+                "joining multicast group %s failed: %s (%d)",
+                hostname, buf, err);
+        }
         /* this addr worked */
         memcpy(&server, ai->ai_addr, ai->ai_addrlen);
         break;
@@ -146,26 +196,7 @@ int main(int argc, char **argv)
 
     maxfd = sockfd + 1;
 
-    if (protocol == SOCK_DGRAM) /* datagram protocol */
-    {
-        /* join multicast group */
-        if (sockaddr_is_multicast((struct sockaddr *)&server))
-        {
-            if (socket_join_multicast_group(sockfd,
-                (struct sockaddr *)&server) < 0)
-            {
-                int err = socket_errno();
-                char buf[256];
-                socket_strerror(err, buf, sizeof(buf));
-                fprintf(stderr,
-                    "netreceive: joining multicast group %s failed: %s (%d)\n",
-                    hostname, buf, err);
-            }
-            else
-                fprintf(stderr, "joined multicast group %s\n", hostname);
-        }
-    }
-    else /* streaming protocol */
+    if (protocol == SOCK_STREAM) /* streaming protocol */
     {
         if (listen(sockfd, 5) < 0)
         {

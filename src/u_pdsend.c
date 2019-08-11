@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     }
     freeaddrinfo(ailist);
 
-    /* now loop reading stdin and sending  it to socket */
+    /* now loop reading stdin and sending it to socket */
     while (1)
     {
         char buf[BUFSIZE], *bp;
