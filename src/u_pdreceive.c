@@ -53,23 +53,18 @@ int main(int argc, char **argv)
     struct addrinfo *ailist = NULL, *ai;
     if (argc < 2 || sscanf(argv[1], "%d", &portno) < 1 || portno <= 0)
         goto usage;
-    if (argc >= 3)
+    if (argc > 2)
     {
-        int index = (argc > 3 ? 3 : 2);
-        if (!strcmp(argv[index], "tcp"))
+        if (!strcmp(argv[2], "tcp"))
             protocol = SOCK_STREAM;
-        else if (!strcmp(argv[index], "udp"))
+        else if (!strcmp(argv[2], "udp"))
             protocol = SOCK_DGRAM;
         else goto usage;
-        if (index == 3)
-            hostname = argv[2];
     }
-    else protocol = SOCK_STREAM;
-    if (hostname && protocol == SOCK_STREAM)
-    {
-        fprintf(stderr, "ignoring host: %s\n", hostname);
-        hostname = NULL;
-    }
+    else
+        protocol = SOCK_STREAM; /* default */
+    if (argc > 3)
+        hostname = argv[3];
     if (socket_init())
     {
         sockerror("socket_init()");
@@ -220,7 +215,7 @@ int main(int argc, char **argv)
         dopoll();
 
 usage:
-    fprintf(stderr, "usage: pdreceive <portnumber> [udphost] [udp|tcp]\n");
+    fprintf(stderr, "usage: pdreceive <portnumber> [udp|tcp] [host]\n");
     fprintf(stderr, "(default is tcp)\n");
     exit(EXIT_FAILURE);
 }
