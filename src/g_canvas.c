@@ -557,13 +557,13 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
             parent. */
         t_float diff = x->gl_y1 - x->gl_y2;
         t_gobj *y;
-        x->gl_y1 = heightwas * diff;
+        x->gl_y1 = heightwas * diff/x->gl_zoom;
         x->gl_y2 = x->gl_y1 - diff;
             /* and move text objects accordingly; they should stick
             to the bottom, not the top. */
         for (y = x->gl_list; y; y = y->g_next)
             if (pd_checkobject(&y->g_pd))
-                gobj_displace(y, x, 0, heightchange);
+                gobj_displace(y, x, 0, heightchange/x->gl_zoom);
         canvas_redraw(x);
     }
 }
