@@ -141,10 +141,10 @@ int main(int argc, char **argv)
                 (ai->ai_family == AF_INET6) ? "::" : "0.0.0.0", portno, protocol);
             if (status != 0)
             {
-                pd_error(x,
-                    "netreceive: getting \"any\" address for multicast failed %s (%d)",
+                fprintf(stderr,
+                    "getting \"any\" address for multicast failed %s (%d)",
                     gai_strerror(status), status);
-                sys_closesocket(sockfd);
+                socket_close(sockfd);
                 return;
             }
             /* name the socket */
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
             freeaddrinfo(any);
             if (status < 0)
             {
-                sys_closesocket(sockfd);
+                socket_close(sockfd);
                 sockfd = -1;
                 continue;
             }
