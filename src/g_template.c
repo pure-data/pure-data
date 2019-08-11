@@ -2032,7 +2032,8 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                 fielddesc_getcoord(TEMPLATE->array_motion_yfield,
                     TEMPLATE->array_motion_template, thisword, 1) : 0);
             fielddesc_setcoord(TEMPLATE->array_motion_xfield,
-                TEMPLATE->array_motion_template, thisword, xwas + dx, 1);
+                TEMPLATE->array_motion_template, thisword,
+                    xwas + dx * TEMPLATE->array_motion_yperpix, 1);
             if (TEMPLATE->array_motion_yfield)
             {
                 if (TEMPLATE->array_motion_fatten)
@@ -2333,6 +2334,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                                 fielddesc_getcoord(wfield,
                                     TEMPLATE->array_motion_template,
                                     (t_word *)(elem + i * elemsize), 1);
+                            if (TEMPLATE->array_motion_yperpix < 0)
+                                TEMPLATE->array_motion_yperpix *= -1;
                             TEMPLATE->array_motion_yperpix *=
                                 -TEMPLATE->array_motion_fatten;
                         }

@@ -262,10 +262,10 @@ static void scalar_displace(t_gobj *z, t_glist *glist, int dx, int dy)
         goty = 0;
     if (gotx)
         *(t_float *)(((char *)(x->sc_vec)) + xonset) +=
-            dx * (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0));
+            glist->gl_zoom * dx * (glist_pixelstox(glist, 1) - glist_pixelstox(glist, 0));
     if (goty)
         *(t_float *)(((char *)(x->sc_vec)) + yonset) +=
-            dy * (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0));
+            glist->gl_zoom * dy * (glist_pixelstoy(glist, 1) - glist_pixelstoy(glist, 0));
     gpointer_init(&gp);
     gpointer_setglist(&gp, glist, x);
     SETPOINTER(&at[0], &gp);

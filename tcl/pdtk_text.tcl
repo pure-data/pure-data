@@ -7,7 +7,7 @@ package provide pdtk_text 0.1
 namespace eval ::pdtk_text:: {
 # proc to sanitize the 'text'
     proc unescape {text} {
-        return [string trimright [subst -nocommands -novariables $text] { }]
+        return [string range [subst -nocommands -novariables $text] 0 end-1]
     }
 }
 

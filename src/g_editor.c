@@ -3373,7 +3373,7 @@ static void canvas_menufont(t_canvas *x)
 
 typedef void (*t_zoomfn)(void *x, t_floatarg arg1);
 
-#define REZOOM(x, y) ((x) = ((y) == 2 ? (x)*2 : (x)/2))
+/* LATER, if canvas is flipped, re-scroll to preserve bottom left corner */
 static void canvas_zoom(t_canvas *x, t_floatarg zoom)
 {
     if (zoom != x->gl_zoom && (zoom == 1 || zoom == 2))
