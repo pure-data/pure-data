@@ -59,7 +59,7 @@ compatible clients) that have opened connections here., f 84;
 #X text 278 219 IPv6 multicast;
 #X obj 45 291 netreceive -u -f;
 #X obj 192 329 print from-hostname;
-#X text 17 27 As of Pd 0.5 \, netreceive can specify a hostname which
+#X text 17 27 As of Pd 0.50+ \, netreceive can specify a hostname which
 allows for choosing IP version and multicast listening.;
 #X msg 133 253 listen 0;
 #X text 199 155 IPv4 and IPv6 messages;
