@@ -728,6 +728,7 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
                 pd_error(x,
                     "netreceive: getting \"any\" address for multicast failed %s (%d)",
                     gai_strerror(status), status);
+                sys_closesocket(sockfd);
                 return;
             }
             /* name the socket */
@@ -735,7 +736,6 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             freeaddrinfo(any);
             if (status < 0)
             {
-                sys_sockerror("bind"); /* bind shouldn't fail */
                 sys_closesocket(sockfd);
                 sockfd = -1;
                 continue;
@@ -747,7 +747,6 @@ static void netreceive_listen(t_netreceive *x, t_symbol *s, int argc, t_atom *ar
             /* name the socket */
             if (bind(sockfd, ai->ai_addr, ai->ai_addrlen) < 0)
             {
-                sys_sockerror("bind"); /* bind shouldn't fail */
                 sys_closesocket(sockfd);
                 sockfd = -1;
                 continue;
