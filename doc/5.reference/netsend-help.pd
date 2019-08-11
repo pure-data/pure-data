@@ -76,6 +76,33 @@ a UDP message \, and netsend (TCP) has a settable connect timeout which
 defaults to 10 seconds., f 115;
 #X msg 437 255 timeout 3000;
 #X text 532 250 TCP connect timeout (ms), f 13;
+#N canvas 157 82 527 376 IP 0;
+#X obj 53 332 netsend -u;
+#X msg 53 88 connect localhost 3003;
+#X msg 76 122 connect 127.0.0.1 3003;
+#X msg 95 156 connect ::1 3003;
+#X msg 113 192 connect 239.200.200.200 3003;
+#X msg 133 224 connect ff00::114 3003;
+#X msg 149 260 disconnect;
+#X text 225 87 IPv4 message (default);
+#X text 326 191 IPv4 multicast;
+#X text 304 223 IPv6 multicast;
+#X msg 253 296 send \$1;
+#X floatatom 253 261 5 0 0 0 - - -;
+#X text 18 22 As of Pd 0.5 \, netsend supports sending IPv6 and multicast
+messages. It will try to detect the IP version based on the given address
+(or hostname)., f 68;
+#X text 228 155 IPv6 message;
+#X text 246 121 IPv4 message;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
+#X connect 10 0 0 0;
+#X connect 11 0 10 0;
+#X restore 873 559 pd IP version and multicast;
 #X connect 0 0 8 0;
 #X connect 0 1 38 0;
 #X connect 1 0 0 0;
