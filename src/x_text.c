@@ -411,7 +411,7 @@ static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
     if (k->ki_n >= 0)
         end = k->ki_onset + k->ki_n;
     else
-        end = INT_MAX;
+        end = 0x7fffffff;
 
         /* advance first line by key onset and react if we run out early */
     for (i = k->ki_onset; i--; a1++)
@@ -592,10 +592,10 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                     else goto doit;
                 }
                 else if (a1->a_type != a2->a_type ||
-                    a1->a_type == A_FLOAT &&
-                        a1->a_w.w_float != a2->a_w.w_float ||
-                    a1->a_type == A_SYMBOL &&
-                        a1->a_w.w_symbol != a2->a_w.w_symbol)
+                    (a1->a_type == A_FLOAT &&
+                        a1->a_w.w_float != a2->a_w.w_float) ||
+                    (a1->a_type == A_SYMBOL &&
+                        a1->a_w.w_symbol != a2->a_w.w_symbol))
                             goto doit;
             }
         }
