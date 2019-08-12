@@ -395,6 +395,7 @@ typedef struct _keyinfo
 {
     int ki_forward; /* one if forward, -1 if reversed */
     int ki_onset;   /* number of fields to skip over */
+    int ki_n;       /* number of fields to compare */
 } t_keyinfo;
 
     /* apple products seem to have their own prototypes for qsort_r (?) */
@@ -406,24 +407,29 @@ static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
 {
     const t_atom *a1 = *(t_atom **)z1, *a2 = *(t_atom **)z2;
     t_keyinfo *k = (t_keyinfo *)zkeyinfo;
-    int count;
+    int i, end;
+    if (k->ki_n >= 0)
+        end = k->ki_onset + k->ki_n;
+    else
+        end = INT_MAX;
+
         /* advance first line by key onset and react if we run out early */
-    for (count = k->ki_onset; count--; a1++)
+    for (i = k->ki_onset; i--; a1++)
     {
         if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
         {
                 /* if second line runs out early too consider them equal */
-            for (count = k->ki_onset; count--; a2++)
+            for (i = k->ki_onset; i--; a2++)
                 if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
                     goto equal;
             return (-k->ki_forward);
         }
     }
-    for (count = k->ki_onset; count--; a2++)
+    for (i = k->ki_onset; i--; a2++)
         if (a2->a_type == A_SEMI || a2->a_type == A_COMMA)
             return (-k->ki_forward);
         /* compare remaining fields */
-    for (; ; a1++, a2++)
+    for (i = k->ki_onset; i < end; a1++, a2++, i++)
     {
         if (a1->a_type == A_SEMI || a1->a_type == A_COMMA)
         {
@@ -491,6 +497,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
     t_keyinfo k;
     k.ki_forward = 1;
     k.ki_onset = 0;
+    k.ki_n = -1;
     while (argc && argv->a_type == A_SYMBOL &&
         *argv->a_w.w_symbol->s_name == '-')
     {
@@ -498,19 +505,39 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
             unique = 1;
         else if (!strcmp(argv->a_w.w_symbol->s_name, "-r"))
             k.ki_forward = -1;
-        else if (!strcmp(argv->a_w.w_symbol->s_name, "-k")  && argc > 1
-            && argv[1].a_type == A_FLOAT)
-        {
-            if ((k.ki_onset = argv[1].a_w.w_float) < 0)
-                k.ki_onset = 0;
-            argc--; argv++;
-        }
         else
         {
             pd_error(x, "text define sort: unknown flag ...");
             postatom(argc, argv); endpost();
         }
         argc--; argv++;
+    }
+    if (argc)
+    {
+        if (argv->a_type == A_FLOAT)
+        {
+            if ((k.ki_onset = argv->a_w.w_float) < 0)
+                k.ki_onset = 0;
+            argc--; argv++;
+        }
+        else
+        {
+            pd_error(x, "onset argument must be a float");
+            return;
+        }
+    }
+    if (argc)
+    {
+        if (argv->a_type == A_FLOAT)
+        {
+            k.ki_n = argv->a_w.w_float;
+            argc--; argv++;
+        }
+        else
+        {
+            pd_error(x, "count argument must be a float");
+            return;
+        }
     }
     if (argc)
     {

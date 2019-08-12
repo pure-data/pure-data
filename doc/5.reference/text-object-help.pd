@@ -12,7 +12,7 @@
 #X obj 280 217 text define;
 #X text 81 173 The text object's first argument sets its function:
 , f 30;
-#N canvas 373 69 684 718 define 0;
+#N canvas 788 67 684 718 define 0;
 #X msg 38 80 clear;
 #X msg 38 106 read text-object-help.txt;
 #X msg 38 132 write text-object-help.txt;
@@ -57,37 +57,48 @@ carriage returns as separators. This should allow reading some text
 file formats - like this:), f 80;
 #X msg 38 325 sort;
 #X text 85 323 sort the contents. details here:;
-#N canvas 1070 128 715 479 sorting-text 0;
-#X obj 44 229 text define text-help-sorting;
-#X msg 77 46 sort;
-#X msg 81 71 sort -r;
-#X msg 83 99 sort -k 1;
-#X msg 45 11 set zz \\\; yy \\\; 1 2 \\\; 1 2 3 \\\; 2 1 4 \\\; 1 \\\;
-2 \\\; 1 2 3;
-#X msg 86 181 sort -u;
-#X text 41 261 Numbers come before symbols \, which are sorted alphabetically
+#N canvas 751 134 715 571 sorting-text 0;
+#X obj 44 314 text define text-help-sorting;
+#X msg 57 76 sort;
+#X msg 80 231 sort -r;
+#X msg 89 260 sort -u;
+#X text 41 346 Numbers come before symbols \, which are sorted alphabetically
 (in the sense of "strcmp" - this will probably yield nonsense for non-ASCII
 symbols \, but even in that case it should give some repeatable order).
 Shorter lines come before longer ones that match the entire shorter
 lines. As a special case empty lines come before anything else.;
-#X text 149 100 only compare contents of line starting at field 1 (counting
-from zero). If two lines are identical (even if both are empty) starting
-at the first field compared \, we preserve the original order the lines
-appeared in \, even if earlier fields then appear out of order.;
-#X text 144 176 unique - suppress identical lines if they are sorted
-to consecutive positions (this is not always true when "-k" is also
-present).;
-#X text 152 70 reverse order;
-#X text 39 351 If the last line in the text isn't terminated a semicolon
+#X text 152 233 reverse order;
+#X text 41 440 If the last line in the text isn't terminated a semicolon
 is added to it before sorting.;
-#X text 43 390 linee terminated by commas are treated as equal to ones
+#X text 77 206 flags:;
+#X msg 65 105 sort 1;
+#X msg 74 133 sort 0 1;
+#X msg 45 9 set zz \\\; yy \\\; 1 2 3 \\\; 1 2 \\\; 2 1 4 \\\; 1 \\\;
+2 \\\; 1 2 3 \\\; 2 foo \\\; 2 baz \\\; 1 bar, f 84;
+#X text 117 105 start comparing at field 1 (counting from zero).,
+f 49;
+#X msg 82 163 sort 0 2;
+#X text 142 133 only compare field 0;
+#X text 53 36 optional arguments: onset (default is 0) \, number of
+fields (default is -1 -> till the end of line), f 60;
+#X text 152 259 unique - suppress identical lines if they are sorted
+to consecutive positions (this is not always true when the onset is
+larger than 0).;
+#X text 41 477 Lines terminated by commas are treated as equal to ones
 terminated by semicolons. There is probably only confusion to be won
 from sorting texts mixing commas and semicolons.;
+#X text 99 75 compare whole lines;
+#X text 152 164 only compare fields 0 and 1;
+#X text 151 188 If the compared fields are identical (even if both
+are empty) \, we preserve the original order the lines appeared in.
+, f 61;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
-#X connect 4 0 0 0;
-#X connect 5 0 0 0;
+#X connect 8 0 0 0;
+#X connect 9 0 0 0;
+#X connect 10 0 0 0;
+#X connect 12 0 0 0;
 #X restore 328 324 pd sorting-text;
 #X msg 38 297 set this is one message \\\; this is another 1 ... \\\;
 ;
@@ -306,7 +317,7 @@ If the number n is greater than the number of lines in the text the
 new line is added.;
 #X text 241 348 next optional arg to set inlet 2 (field number \, defaults
 to whole line), f 47;
-#X msg 223 165 1e+15;
+#X msg 223 165 1e+015;
 #X text 83 391 If inlet 2 is unset or set to a negative number \, the
 entire line is replaced \, but if it is set to 0 or more to specify
 a starting field \, the line is not resized - instead \, as many items
@@ -458,7 +469,7 @@ far from it) so line 0 whose second field is closer to 1 wins., f
 #X text 103 125 matches line number 2 (third line);
 #X text 114 188 matches two fields of line number 2;
 #X msg 74 246 range 0 1;
-#X msg 148 245 range 0 1e+10;
+#X msg 148 245 range 0 1e+010;
 #X msg 243 244 range 2 2;
 #X text 317 236 set range (first line to check \, number of lines to
 check), f 31;
@@ -686,7 +697,7 @@ line 4 \\\;;
 #X obj 54 432 text fromlist text-help-insert;
 #X obj 52 288 text define -k text-help-insert;
 #A set line 0 \; line 1 \; line 2 \; line 3 \; line 4 \;;
-#X msg 165 142 1e+09;
+#X msg 165 142 1e+009;
 #X text 214 144 insert after end;
 #X msg 59 82 list x y z w;
 #X msg 65 108 1 2 3;
