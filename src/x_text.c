@@ -522,10 +522,11 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
             /* last thing in buffer should be a terminator */
     if (vec[natom-1].a_type != A_SEMI &&
         vec[natom-1].a_type != A_COMMA)
-            binbuf_addsemi(x->x_binbuf),
-                vec = binbuf_getvec(x->x_binbuf),
-                    natom = binbuf_getnatom(x->x_binbuf),
-                        nlines++;
+    {
+        binbuf_addsemi(x->x_binbuf);
+        vec = binbuf_getvec(x->x_binbuf);
+        natom = binbuf_getnatom(x->x_binbuf);
+    }
     for (i = nlines = 0; i < natom; i++)
         if (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA)
             nlines++;
@@ -538,7 +539,7 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
                 bug("text_define_sort");
             sortbuf[thisline++] = vec+i;
         }
-        startline =  (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
+        startline = (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
     }
 #ifdef MICROSOFT_STUPID_SORT
     stupid_zkeyinfo = &k;
