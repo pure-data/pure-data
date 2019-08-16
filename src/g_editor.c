@@ -2952,7 +2952,8 @@ void canvas_mouseup(t_canvas *x,
     /* displace the selection by (dx, dy) pixels */
 static void canvas_displaceselection(t_canvas *x, int dx, int dy)
 {
-    t_selection *y;
+    
+     t_selection *y;
     int resortin = 0, resortout = 0;
     if (!EDITOR->canvas_undo_already_set_move)
     {
@@ -3157,7 +3158,7 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
 static void delay_move(t_canvas *x)
 {
     int incx = (x->gl_editor->e_xnew - x->gl_editor->e_xwas)/x->gl_zoom,
-        incy = (x->gl_editor->e_ynew - x->gl_editor->e_ywas)/x->gl_zoom;
+    incy = (x->gl_editor->e_ynew - x->gl_editor->e_ywas)/x->gl_zoom;
     if (incx || incy)
         canvas_displaceselection(x, incx, incy);
     x->gl_editor->e_xwas += incx * x->gl_zoom;
@@ -3258,8 +3259,11 @@ void canvas_startmotion(t_canvas *x)
     glist_getnextxy(x, &xval, &yval);
     if (xval == 0 && yval == 0) return;
     x->gl_editor->e_onmotion = MA_MOVE;
-    x->gl_editor->e_xwas = xval;
-    x->gl_editor->e_ywas = yval;
+
+/////zoomfix
+	
+    x->gl_editor->e_xwas = xval*x->gl_zoom;
+    x->gl_editor->e_ywas = yval*x->gl_zoom;
 }
 
 /* ----------------------------- window stuff ----------------------- */
@@ -4798,6 +4802,10 @@ void glist_getnextxy(t_glist *gl, int *xpix, int *ypix)
         *xpix = EDITOR->canvas_last_glist_x,
         *ypix = EDITOR->canvas_last_glist_y;
     else *xpix = *ypix = 40;
+
+/////zoomfix
+    *xpix /= gl->gl_zoom;
+    *ypix /= gl->gl_zoom;	
 }
 
 static void glist_setlastxy(t_glist *gl, int xval, int yval)

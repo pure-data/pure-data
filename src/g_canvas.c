@@ -407,6 +407,11 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_edit = !strncmp(x->gl_name->s_name, "Untitled", 8);
     x->gl_font = sys_nearestfontsize(font);
     x->gl_zoom = 1;
+
+/////zoomfix
+    if(owner)
+	x->gl_zoom=owner->gl_zoom;
+
     pd_pushsym(&x->gl_pd);
     return(x);
 }
@@ -415,6 +420,8 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
 static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
+///// zoomfix    
+    x->gl_zoom=x->gl_owner->gl_zoom;
     x->gl_x1 = atom_getfloatarg(0, argc, argv);
     x->gl_y1 = atom_getfloatarg(1, argc, argv);
     x->gl_x2 = atom_getfloatarg(2, argc, argv);
@@ -484,7 +491,10 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_pixheight = py2 - py1;
     x->gl_font =  (canvas_getcurrent() ?
         canvas_getcurrent()->gl_font : sys_defaultfont);
-    x->gl_zoom = 1;
+
+/////zoom fix
+    x->gl_zoom = g->gl_zoom;
+
     x->gl_screenx1 = 0;
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = 450;

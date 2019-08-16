@@ -159,8 +159,11 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
         {
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
             indx = nobj;
-            *xpixp = x1;
-            *ypixp = y2 + 5;
+
+/////zoomfix
+        *xpixp = x1 / x->gl_zoom ;
+        *ypixp = (int)(0.5 + (float)y2 / x->gl_zoom + 5);
+
         }
         glist_noselect(x);
             /* search back for 'selected' and if it isn't on the list,

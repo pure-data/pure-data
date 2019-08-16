@@ -610,7 +610,7 @@ t_float glist_dpixtody(t_glist *x, t_float dypix)
 int text_xpix(t_text *x, t_glist *glist)
 {
     if (glist->gl_havewindow || !glist->gl_isgraph)
-        return (x->te_xpix * glist->gl_zoom);
+	return (x->te_xpix * glist->gl_zoom);
     else if (glist->gl_goprect)
         return (glist_xtopixels(glist, glist->gl_x1) +
             glist->gl_zoom * (x->te_xpix - glist->gl_xmargin));

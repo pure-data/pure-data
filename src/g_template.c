@@ -2033,7 +2033,7 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                     TEMPLATE->array_motion_template, thisword, 1) : 0);
             fielddesc_setcoord(TEMPLATE->array_motion_xfield,
                 TEMPLATE->array_motion_template, thisword,
-                    xwas + dx * TEMPLATE->array_motion_yperpix, 1);
+                    xwas + dx * TEMPLATE->array_motion_xperpix, 1);
             if (TEMPLATE->array_motion_yfield)
             {
                 if (TEMPLATE->array_motion_fatten)
@@ -2619,8 +2619,9 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         drawnumber_getbuf(x, data, template, buf);
         sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
+/////zoomfix
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), 1),
+            sys_hostfontsize(glist_getfont(glist), 1)*glist->gl_zoom,
                 sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
