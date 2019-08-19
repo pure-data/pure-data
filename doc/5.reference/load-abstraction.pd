@@ -1,0 +1,11 @@
+#N canvas 737 330 473 229 12;
+#X obj 102 112 initbang;
+#X obj 283 103 closebang;
+#X obj 283 154 print closebang;
+#X text 44 33 This is the abstraction for the loadbang help patch.
+It shows how the initbang and closebang objects operate.;
+#X msg 283 128 bye-bye;
+#X obj 102 150 print initbang;
+#X connect 0 0 5 0;
+#X connect 1 0 4 0;
+#X connect 4 0 2 0;

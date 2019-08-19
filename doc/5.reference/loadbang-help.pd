@@ -1,16 +1,31 @@
-#N canvas 683 185 533 321 12;
-#X obj 79 213 loadbang;
-#X floatatom 79 262 5 0 0 0 - - -, f 5;
-#X obj 21 18 loadbang;
-#X text 108 18 - send a "bang" message on load;
-#X msg 79 238 123;
-#X text 31 59 The loadbang object outputs a 'bang' message when the
+#N canvas 404 229 859 337 12;
+#X obj 492 180 loadbang;
+#X floatatom 492 229 5 0 0 0 - - -;
+#X obj 53 18 loadbang;
+#X msg 492 205 123;
+#X text 610 271 updated for Pd version 0.50.;
+#X obj 53 44 initbang;
+#X obj 53 70 closebang;
+#X text 133 70 - send a "bang" message on closing;
+#X text 133 18 - send a "bang" message on loading;
+#X text 133 44 - send a "bang" message on initializing;
+#X text 39 112 The loadbang object outputs a 'bang' message when the
 containing patch is opened as a document or included in another patch
-as an abstraction.;
-#X text 29 121 Loadbangs within abstractions send their "bang" messages
-before those of loadbangs in the calling patch. Otherwise \, the order
-in which the "bangs" are sent from two loadbang objects is undefined.
-;
-#X text 284 265 updated for Pd version 0.47;
-#X connect 0 0 4 0;
-#X connect 4 0 1 0;
+as an abstraction. Loadbangs inside abstractions send their "bang"
+messages before those of loadbangs in the calling patch. Otherwise
+\, the order in which the "bangs" are sent from two loadbang objects
+is undefined., f 51;
+#X obj 641 198 load-abstraction;
+#X text 39 227 The initbang object sends a 'bang' message even before
+at initialization time. It can be used in an abstraction to initialize
+it before the calling patch is loaded \, which is needed to initialize
+the abstraction with variable number of inlets/outlets using dynamic
+patching., f 51;
+#X text 451 108 The initbang and closebang objects are used inside
+the abstraction called 'load-abstraction'., f 50;
+#X text 451 26 Conversely \, the closebang object sends a 'bang' message
+when an abstraction is getting deleted. For instance \, you can use
+this to cleanup the patch and do other things you have to do when it
+gets deleted., f 50;
+#X connect 0 0 3 0;
+#X connect 3 0 1 0;

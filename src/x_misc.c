@@ -126,6 +126,66 @@ static void loadbang_setup(void)
         gensym("loadbang"), A_DEFFLOAT, 0);
 }
 
+/* -------------------------- closebang ------------------------------ */
+static t_class *closebang_class;
+
+typedef struct _closebang
+{
+    t_object x_obj;
+} t_closebang;
+
+static void *closebang_new(void)
+{
+    t_closebang *x = (t_closebang *)pd_new(closebang_class);
+    outlet_new(&x->x_obj, &s_bang);
+    return (x);
+}
+
+static void closebang_closebang(t_closebang *x, t_floatarg action)
+{
+    if (action == LB_CLOSE)
+        outlet_bang(x->x_obj.ob_outlet);
+}
+
+static void closebang_setup(void)
+{
+    closebang_class = class_new(gensym("closebang"), (t_newmethod)closebang_new, 0,
+                                sizeof(t_closebang), CLASS_NOINLET, 0);
+    class_addmethod(closebang_class, (t_method)closebang_closebang,
+                    gensym("loadbang"), A_DEFFLOAT, 0);
+    class_sethelpsymbol(closebang_class, gensym("loadbang"));
+}
+
+/* -------------------------- initbang ------------------------------ */
+static t_class *initbang_class;
+
+typedef struct _initbang
+{
+    t_object x_obj;
+} t_initbang;
+
+static void *initbang_new(void)
+{
+    t_initbang *x = (t_initbang *)pd_new(initbang_class);
+    outlet_new(&x->x_obj, &s_bang);
+    return (x);
+}
+
+static void initbang_initbang(t_initbang *x, t_floatarg action)
+{
+    if (action == LB_INIT)
+        outlet_bang(x->x_obj.ob_outlet);
+}
+
+static void initbang_setup(void)
+{
+    initbang_class = class_new(gensym("initbang"), (t_newmethod)initbang_new, 0,
+                               sizeof(t_initbang), CLASS_NOINLET, 0);
+    class_addmethod(initbang_class, (t_method)initbang_initbang,
+                    gensym("loadbang"), A_DEFFLOAT, 0);
+    class_sethelpsymbol(initbang_class, gensym("loadbang"));
+}
+
 /* ------------- namecanvas (delete this later) --------------------- */
 static t_class *namecanvas_class;
 
@@ -857,6 +917,8 @@ static void fudiformat_setup(void) {
 void x_misc_setup(void)
 {
     random_setup();
+    closebang_setup();
+    initbang_setup();
     loadbang_setup();
     namecanvas_setup();
     cputime_setup();
