@@ -13,15 +13,14 @@ then
 fi
 
 pdversion=$1
-pdmsw=$1.msw
 installerversion=$1.windows-installer.exe
 tkversion=8.6.8
 
 
 cd /tmp
-rm -rf pd-$pdmsw
-git clone ~/pd pd-$pdmsw
-cd pd-$pdmsw
+rm -rf pd-$pdversion
+git clone ~/pd pd-$pdversion
+cd pd-$pdversion
 
 #copy in the ASIO SDK and rename it ASIOSDK
 (cd asio; unzip $HOME/work/asio/ASIOSDK2.3.zip;
@@ -47,23 +46,23 @@ cp -a $HOME/bis/work/pd-versions/build-tk-on-win64/msw/tcltk-$tkversion .
 
 # run the app building script itself
 /home/msp/bis/work/pd-versions/build-tk-on-win64/msw/msw-app.sh \
-   --builddir ..  --tk tcltk-$tkversion $pdmsw
+   --builddir ..  --tk tcltk-$tkversion $pdversion
 
 # On my machine at least, the wrong winpthread library gets loaded (the
 # 32 bit one I think) - manually copy the correct one in.  This too is
 # probably no longer necessary.
 
 cp /usr/x86_64-w64-mingw32/sys-root/mingw/bin/libwinpthread-1.dll \
-   pd-$pdmsw/bin/
+   pd-$pdversion/bin/
 
 # make the zip archive
-zip -r /tmp/pd-$pdmsw.zip  pd-$pdmsw
+zip -r /tmp/pd-$pdversion.msw.zip  pd-$pdversion
 
 # make an installer
-~/pd/msw/build-nsi.sh  `pwd`/pd-$pdmsw $pdversion wish86.exe
+~/pd/msw/build-nsi.sh  `pwd`/pd-$pdversion $pdversion wish86.exe
 
 # for convenience echo the finished filename and a command to quickly test
 # it in wine
-echo /tmp/pd-$pdmsw.zip
+echo /tmp/pd-$pdversion.msw.zip
 echo /tmp/pd-$installerversion
-echo wine `pwd`/pd-$pdmsw/bin/wish86.exe `pwd`/pd-$pdmsw/tcl/pd-gui.tcl
+echo wine `pwd`/pd-$pdversion/bin/wish86.exe `pwd`/pd-$pdversion/tcl/pd-gui.tcl

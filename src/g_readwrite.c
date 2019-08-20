@@ -663,14 +663,7 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
     t_gobj *y;
     t_linetraverser t;
     t_outconnect *oc;
-    int zoomwas = x->gl_zoom;
 
-    if (zoomwas > 1)
-    {
-        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
-        if (zoommethod)
-            (*zoommethod)(&x->gl_pd, (t_floatarg)1);
-    }
         /* subpatch */
     if (x->gl_owner && !x->gl_env)
     {
@@ -731,12 +724,6 @@ static void canvas_saveto(t_canvas *x, t_binbuf *b)
                 x->gl_x2, x->gl_y2,
                 (t_float)x->gl_pixwidth, (t_float)x->gl_pixheight,
                 (t_float)x->gl_isgraph);
-    }
-    if (zoomwas > 1)
-    {
-        t_zoomfn zoommethod = (t_zoomfn)zgetfn(&x->gl_pd, gensym("zoom"));
-        if (zoommethod)
-            (*zoommethod)(&x->gl_pd, (t_floatarg)zoomwas);
     }
 }
 
