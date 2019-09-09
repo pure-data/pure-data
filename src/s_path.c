@@ -692,9 +692,10 @@ void sys_set_startup(void)
 {
     int i;
     t_namelist *nl;
+    char obuf[MAXPDSTRING];
 
-    sys_vgui("set ::startup_flags {%s}\n",
-        (sys_flags? sys_flags->s_name : ""));
+    sys_vgui("set ::startup_flags [subst -nocommands {%s}]\n",
+        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
     sys_gui("set ::startup_libraries {}\n");
     for (nl = STUFF->st_externlist, i = 0; nl; nl = nl->nl_next, i++)
         sys_vgui("lappend ::startup_libraries {%s}\n", nl->nl_string);
@@ -704,10 +705,10 @@ void sys_set_startup(void)
 void glob_start_startup_dialog(t_pd *dummy)
 {
     char buf[MAXPDSTRING];
-
+    char obuf[MAXPDSTRING];
     sys_set_startup();
-    snprintf(buf, MAXPDSTRING-1, "pdtk_startup_dialog %%s %d \"%s\"\n", sys_defeatrt,
-        (sys_flags? sys_flags->s_name : ""));
+    snprintf(buf, MAXPDSTRING-1, "pdtk_startup_dialog %%s %d {%s}\n", sys_defeatrt,
+        (sys_flags? pdgui_strnescape(obuf, MAXPDSTRING, sys_flags->s_name, 0) : ""));
     gfxstub_new(&glob_pdobject, (void *)glob_start_startup_dialog, buf);
 }
 
@@ -727,5 +728,3 @@ void glob_startup_dialog(t_pd *dummy, t_symbol *s, int argc, t_atom *argv)
                 namelist_append_files(STUFF->st_externlist, s->s_name);
     }
 }
-
-
