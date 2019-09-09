@@ -530,13 +530,15 @@ gotone:
     glob_evalfile(0, gensym((char*)basename), gensym(dirbuf));
 }
 
-int sys_argparse(int argc, char **argv);
+int sys_argparse(int argc, const char **argv);
 static int string2args(const char * cmd, int * retArgc, const char *** retArgv);
+
 void sys_doflags(void)
 {
-    int i, beginstring = 0, state = 0, len;
-    int rcargc = 0;
-    char *rcargv[MAXPDSTRING];
+    int rcargc=0;
+    const char**rcargv = NULL;
+    int len;
+    int rcode = 0;
     if (!sys_flags)
         sys_flags = &s_;
     len = (int)strlen(sys_flags->s_name);
@@ -545,36 +547,18 @@ void sys_doflags(void)
         error("flags: %s: too long", sys_flags->s_name);
         return;
     }
-    for (i = 0; i < len+1; i++)
-    {
-        int c = sys_flags->s_name[i];
-        if (state == 0)
-        {
-            if (c && !isspace(c))
-            {
-                beginstring = i;
-                state = 1;
-            }
-        }
-        else
-        {
-            if (!c || isspace(c))
-            {
-                char *foo = malloc(i - beginstring + 1);
-                if (!foo)
-                    return;
-                strncpy(foo, sys_flags->s_name + beginstring, i - beginstring);
-                foo[i - beginstring] = 0;
-                rcargv[rcargc] = foo;
-                rcargc++;
-                if (rcargc >= MAXPDSTRING)
-                    break;
-                state = 0;
-            }
-        }
+    rcode = string2args(sys_flags->s_name, &rcargc, &rcargv);
+    if(rcode < 0) {
+        error("error#%d while parsing flags", rcode);
+        return;
     }
+
     if (sys_argparse(rcargc, rcargv))
         error("error parsing startup arguments");
+
+    for(len=0; len<rcargc; len++)
+        free((void*)rcargv[len]);
+    free(rcargv);
 }
 
 /* undo pdtl_encodedialog.  This allows dialogs to send spaces, commas,
