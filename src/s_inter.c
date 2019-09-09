@@ -1000,6 +1000,7 @@ static void sys_init_deken(void)
 static int sys_do_startgui(const char *libdir)
 {
     char cmdbuf[4*MAXPDSTRING], *guicmd, apibuf[256], apibuf2[256];
+    char quotebuf[MAXPDSTRING];
     struct sockaddr_in server = {0};
     int msgsock;
     char buf[15];
@@ -1303,7 +1304,9 @@ static int sys_do_startgui(const char *libdir)
     sys_vgui("pdtk_pd_startup %d %d %d {%s} %s %s {%s} %s\n",
              PD_MAJOR_VERSION, PD_MINOR_VERSION,
              PD_BUGFIX_VERSION, PD_TEST_VERSION,
-             apibuf, apibuf2, sys_font, sys_fontweight);
+             apibuf, apibuf2,
+             pdgui_strnescape(quotebuf, MAXPDSTRING, sys_font, 0),
+             sys_fontweight);
     sys_vgui("set pd_whichapi %d\n", sys_audioapi);
     sys_vgui("set zoom_open %d\n", sys_zoom_open == 2);
 
