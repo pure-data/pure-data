@@ -370,13 +370,6 @@ proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift} {
 proc ::pd_bindings::sendkey {window state key iso shift} {
     # TODO canvas_key on the C side should be refactored with this proc as well
     #if { $iso eq "" } { set iso $key }
-
-    # hack to make "~" characters appear as tildes on Portuguese and
-    # Spanish language keyboards
-    if {$key eq "Multi_key" && $iso eq "~~"} {
-        set key "~"
-        set iso "~"
-    }
     switch -- $key {
         "BackSpace" { set iso ""; set key   8 }
         "Tab"       { set iso ""; set key   9 }
