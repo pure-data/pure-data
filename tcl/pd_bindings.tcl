@@ -115,7 +115,7 @@ proc ::pd_bindings::global_bindings {} {
     bind all <$::modifier-Shift-Key-v> {menu_send %W vslider}
     bind all <$::modifier-Shift-Key-w> {::pd_bindings::window_close %W 1}
     bind all <$::modifier-Shift-Key-z> {menu_redo}
-    bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1}
+    bind all <KeyPress-Escape>         {menu_send %W deselectall; ::pd_bindings::sendkey %W 1 %K %A 1 %k}
 
     # OS-specific bindings
     if {$::windowingsystem eq "aqua"} {
@@ -136,10 +136,10 @@ proc ::pd_bindings::global_bindings {} {
         bind all <$::modifier-less>        {menu_raisepreviouswindow}
     }
 
-    bind all <KeyPress>         {::pd_bindings::sendkey %W 1 %K %A 0}
-    bind all <KeyRelease>       {::pd_bindings::sendkey %W 0 %K %A 0}
-    bind all <Shift-KeyPress>   {::pd_bindings::sendkey %W 1 %K %A 1}
-    bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1}
+    bind all <KeyPress>         {::pd_bindings::sendkey %W 1 %K %A 0 %k}
+    bind all <KeyRelease>       {::pd_bindings::sendkey %W 0 %K %A 0 %k}
+    bind all <Shift-KeyPress>   {::pd_bindings::sendkey %W 1 %K %A 1 %k}
+    bind all <Shift-KeyRelease> {::pd_bindings::sendkey %W 0 %K %A 1 %k}
 }
 
 # bindings for .pdwindow are found in ::pdwindow::pdwindow_bindings in pdwindow.tcl
@@ -259,11 +259,11 @@ proc ::pd_bindings::patch_bindings {mytoplevel} {
     }
 
     # <Tab> key to cycle through selection
-    bind $tkcanvas <KeyPress-Tab>        "::pd_bindings::canvas_cycle %W  1 %K %A 0"
-    bind $tkcanvas <Shift-Tab>           "::pd_bindings::canvas_cycle %W -1 %K %A 1"
+    bind $tkcanvas <KeyPress-Tab>        "::pd_bindings::canvas_cycle %W  1 %K %A 0 %k"
+    bind $tkcanvas <Shift-Tab>           "::pd_bindings::canvas_cycle %W -1 %K %A 1 %k"
     # on X11, <Shift-Tab> is a different key by the name 'ISO_Left_Tab'...
     # other systems (at least aqua) do not like this name, so we 'catch' any errors
-    catch {bind $tkcanvas <KeyPress-ISO_Left_Tab> "::pd_bindings::canvas_cycle %W -1 %K %A 1" } stderr
+    catch {bind $tkcanvas <KeyPress-ISO_Left_Tab> "::pd_bindings::canvas_cycle %W -1 %K %A 1 %k" } stderr
 
     # window protocol bindings
     wm protocol $mytoplevel WM_DELETE_WINDOW "pdsend \"$mytoplevel menuclose 0\""
@@ -355,9 +355,9 @@ proc ::pd_bindings::dialog_focusin {mytoplevel} {
 }
 
 # (Shift-)Tab for cycling through selection
-proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift} {
+proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift {keycode ""}} {
     menu_send_float $mytoplevel cycleselect $cycledir
-    ::pd_bindings::sendkey $mytoplevel 1 $key $iso $shift
+    ::pd_bindings::sendkey $mytoplevel 1 $key $iso $shift $keycode
 }
 
 #------------------------------------------------------------------------------#
@@ -367,45 +367,75 @@ proc ::pd_bindings::canvas_cycle {mytoplevel cycledir key iso shift} {
 # are local to each patch.  Therefore, key messages are not send for the
 # dialog panels, the Pd window, help browser, etc. so we need to filter those
 # events out.
-proc ::pd_bindings::sendkey {window state key iso shift} {
-    # TODO canvas_key on the C side should be refactored with this proc as well
-    #if { $iso eq "" } { set iso $key }
-    switch -- $key {
-        "BackSpace" { set iso ""; set key   8 }
-        "Tab"       { set iso ""; set key   9 }
-        "Return"    { set iso ""; set key  10 }
-        "Escape"    { set iso ""; set key  27 }
-        "Space"     { set iso ""; set key  32 }
-        "space"     { set iso ""; set key  32 }
-        "Delete"    { set iso ""; set key 127 }
-        "KP_Delete" { set iso ""; set key 127 }
-        "KP_Enter"  { set iso ""; set key  10 }
-        default     { if [catch {
-            if { "" ne "${iso}" } {
+proc ::pd_bindings::sendkey {window state key iso shift {keycode ""} } {
+    #::pdwindow::error "::pd_bindings::sendkey .${state}. .${key}. .${iso}. .${shift}. .${keycode}.\n"
+
+    # state: 1=keypress, 0=keyrelease
+    # key (%K): the keysym corresponding to the event, substituted as a textual string
+    # iso (%A): substitutes the UNICODE character corresponding to the event, or the empty string if the event does not correspond to a UNICODE character (e.g. the shift key was pressed)
+    # shift: 1=shift, 0=no-shift
+    # keycode (%k): keyboard code
+
+    if { "$keycode" eq "" } {
+        # old fashioned code fails to add %k-parameter; substitute...
+        set keycode $key
+    }
+    # iso:
+    # - 1-character: use it!
+    # - multi-character: can happen with dead-keys (where an accent turns out to not be an accent after all...; e.g. "^" + "1" -> "^1")
+    #              : turn it into multiple key-events (one per character)!
+    # - 0-character: we need to calculate iso
+    #              : if there's one stored in key2iso, use it (in the case of KeyRelease)
+    #              : do some substitution based on $key
+    #              : else use $key
+
+    if { [string length $iso] == 0 && $state == 0 } {
+        catch {set iso [dict get $::pd_bindings::key2iso $keycode] }
+    }
+
+    switch -- [string length $iso] {
+        0 {
+            switch -- $key {
+                "BackSpace" { set key   8 }
+                "Tab"       { set key   9 }
+                "Return"    { set key  10 }
+                "Escape"    { set key  27 }
+                "Space"     { set key  32 }
+                "space"     { set key  32 }
+                "Delete"    { set key 127 }
+                "KP_Delete" { set key 127 }
+                "KP_Enter"  { set key  10 }
+                default     {             }
+            }
+        }
+        1 {
+            scan $iso %c key
+            if { "$key" eq "13" } { set key 10 }
+            catch {
                 if { "" eq "${::pd_bindings::key2iso}" } {
                     set ::pd_bindings::key2iso [dict create]
                 }
                 # store the key2iso mapping
-                dict set ::pd_bindings::key2iso $key $iso
-            } {
-                # (try to) restore the key2iso mapping
-                set iso [dict get $::pd_bindings::key2iso $key]
+                dict set ::pd_bindings::key2iso $keycode $iso
             }
-        } stderr] {
-            #puts "oops: $stderr"
-        } }
+        }
+        default {
+            # split a multi-char $iso in single chars
+            foreach k [split $iso {}] {
+                ::pd_bindings::sendkey $window $state $key $k $shift $keycode
+            }
+            return
+        }
     }
-    if { [string length $iso] == 1 } {
-        scan $iso %c key
-    }
+
     # some pop-up panels also bind to keys like the enter, but then disappear,
     # so ignore their events.  The inputbox in the Startup dialog does this.
     if {! [winfo exists $window]} {return}
+
     # $window might be a toplevel or canvas, [winfo toplevel] does the right thing
     set mytoplevel [winfo toplevel $window]
-    if {[winfo class $mytoplevel] eq "PatchWindow"} {
-        pdsend "$mytoplevel key $state $key $shift"
-    } else {
-        pdsend "pd key $state $key $shift"
+    if {[winfo class $mytoplevel] ne "PatchWindow"} {
+        set mytoplevel pd
     }
+    pdsend "$mytoplevel key $state $key $shift"
 }
