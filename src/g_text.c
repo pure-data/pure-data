@@ -70,8 +70,8 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         SETSYMBOL(&at, gensym("comment"));
         glist_noselect(gl);
         glist_getnextxy(gl, &xpix, &ypix);
-        x->te_xpix = xpix/gl->gl_zoom - 1;
-        x->te_ypix = ypix/gl->gl_zoom - 1;
+        x->te_xpix = xpix-1;
+        x->te_ypix = ypix-1;
         binbuf_restore(x->te_binbuf, 1, &at);
         glist_add(gl, &x->te_g);
         glist_noselect(gl);
@@ -159,8 +159,11 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
         {
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
             indx = nobj;
-            *xpixp = x1 / x->gl_zoom;
-            *ypixp = y2  / x->gl_zoom + 5.5;    /* 5 pixels down, rounded */
+
+/////zoomfix
+        *xpixp = x1 / x->gl_zoom ;
+        *ypixp = (int)(0.5 + (float)y2 / x->gl_zoom + 5);
+
         }
         glist_noselect(x);
             /* search back for 'selected' and if it isn't on the list,
@@ -179,8 +182,8 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     else
     {
         glist_getnextxy(x, xpixp, ypixp);
-        *xpixp = *xpixp/x->gl_zoom - 3;
-        *ypixp = *ypixp/x->gl_zoom - 3;
+        *xpixp -= 3;
+        *ypixp -= 3;
         glist_noselect(x);
     }
     *connectp = connectme;
@@ -230,14 +233,27 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     t_atom at;
     t_binbuf *b = binbuf_new();
     int xpix, ypix;
+// enable autoconnect
+    int connectme, indx, nobj;
+    canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
 
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
-    glist_noselect(gl);
+ //   glist_noselect(gl);
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
-    glist_getnextxy(gl, &xpix, &ypix);
-    canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
-    canvas_startmotion(glist_getcanvas(gl));
+
+    //glist_getnextxy(gl, &xpix, &ypix);
+
+    canvas_objtext(gl, xpix, ypix, 0, 1, b);
+
+       if (connectme)
+            canvas_connect(gl, indx, 0, nobj, 0);
+        else canvas_startmotion(glist_getcanvas(gl));
+
+
+ //   canvas_startmotion(glist_getcanvas(gl));
+        if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
+ 
     canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(gl)));
 }
