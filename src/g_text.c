@@ -234,6 +234,15 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     // enable autoconnect
     int connectme, indx, nobj;
     canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
+    // align vsl and hsl like others objects
+    if (guiobjname== gensym("hsl"))
+    {
+        xpix+=3;
+    }
+    else if (guiobjname== gensym("vsl"))
+    {
+        ypix+=3;
+    }
 
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
 
@@ -247,7 +256,7 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     }
     else 
     {
-	canvas_startmotion(glist_getcanvas(gl));
+        canvas_startmotion(glist_getcanvas(gl));
     }
     if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
 	canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
