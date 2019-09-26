@@ -237,7 +237,6 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
 
 
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
- //   glist_noselect(gl);
 
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
