@@ -235,27 +235,23 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     int connectme, indx, nobj;
     canvas_howputnew(gl, &connectme, &xpix, &ypix, &indx, &nobj);
 
-
     pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
 
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
+    canvas_objtext(gl,  xpix, ypix, 0, 1, b);
+
     if (connectme)
     {
-	canvas_objtext(gl,  xpix, ypix, 0, 1, b);
         canvas_connect(gl, indx, 0, nobj, 0);
     }
     else 
     {
-	glist_getnextxy(gl, &xpix, &ypix);
-        // glist_getnextxy gives mouse pixel coords, that need to be "dezoomed"
-	canvas_objtext(gl,  xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
 	canvas_startmotion(glist_getcanvas(gl));
     }
     if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
 	canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
            (void *)canvas_undo_set_create(glist_getcanvas(gl)));
-
 }
 
 void canvas_bng(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
