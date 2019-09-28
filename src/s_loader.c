@@ -145,7 +145,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
             i++;
         }
             /* trailing tilde becomes "_tilde" */
-        else if (c == '~' && cnameptr[1] == 0)
+        else if (c == '~' && cnameptr[1] == 0 && cnameptr != classname)
         {
             strcpy(symname+i, "_tilde");
             i += strlen(symname+i);

@@ -79,11 +79,11 @@ void sys_unbashfilename(const char *from, char *to)
 /* test if path is absolute or relative, based on leading /, env vars, ~, etc */
 int sys_isabsolutepath(const char *dir)
 {
-    if (dir[0] == '/' || dir[0] == '~'
+    if (dir[0] == '/' || (dir[0] == '~' && strlen(dir) > 1)
 #ifdef _WIN32
         || dir[0] == '%' || (dir[1] == ':' && dir[2] == '/')
 #endif
-        )
+       )
     {
         return 1;
     }
