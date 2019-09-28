@@ -130,7 +130,8 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
            but we have already tried all paths */
     if(!path)return (0);
 
-    if ((classname = strrchr(objectname, '/')))
+    char *last = objectname + (strlen(objectname)-1);
+    if ((classname = strrchr(objectname, '/')) && classname != last)
         classname++;
     else classname = objectname;
     for (i = 0, cnameptr = classname; i < MAXPDSTRING-7 && *cnameptr;
@@ -157,12 +158,19 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         }
     }
     symname[i] = 0;
+
+    const char *name;
     if (hexmunge)
     {
+        name = gensym(symname)->s_name;
         memmove(symname+6, symname, strlen(symname)+1);
         strncpy(symname, "setup_", 6);
     }
-    else strcat(symname, "_setup");
+    else
+    {
+        name = objectname;
+        strcat(symname, "_setup");
+    }
 
 #if 0
     fprintf(stderr, "lib: %s\n", classname);
@@ -170,7 +178,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         /* try looking in the path for (objectname).(sys_dllextent) ... */
     for(dllextent=sys_dllextent; *dllextent; dllextent++)
     {
-        if ((fd = sys_trytoopenone(path, objectname, *dllextent,
+        if ((fd = sys_trytoopenone(path, name, *dllextent,
             dirbuf, &nameptr, MAXPDSTRING, 1)) >= 0)
                 goto gotone;
     }
