@@ -131,7 +131,7 @@ Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
 
   
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "${ARCHI}" "$INSTDIR\bin\pd.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "${ARCHI}" "$INSTDIR"
 
   
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
