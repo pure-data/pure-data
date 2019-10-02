@@ -131,6 +131,10 @@ proc ::pd_bindings::global_bindings {} {
         bind all <KeyRelease-BackSpace>    {::pd_bindings::sendkey %W 0 %K "" 1 %k}
         bind all <KeyPress-Delete>         {::pd_bindings::sendkey %W 1 %K "" 1 %k}
         bind all <KeyRelease-Delete>       {::pd_bindings::sendkey %W 0 %K "" 1 %k}
+        bind all <KeyPress-KP_Enter>       {::pd_bindings::sendkey %W 1 %K "" 1 %k}
+        bind all <KeyRelease-KP_Enter>     {::pd_bindings::sendkey %W 0 %K "" 1 %k}
+        bind all <KeyPress-Clear>          {::pd_bindings::sendkey %W 1 %K "" 1 %k}
+        bind all <KeyRelease-Clear>        {::pd_bindings::sendkey %W 0 %K "" 1 %k}
     } else {
         bind all <$::modifier-Key-q>       {pdsend "pd verifyquit"}
         bind all <$::modifier-Key-m>       {menu_minimize %W}
