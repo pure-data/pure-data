@@ -125,6 +125,12 @@ proc ::pd_bindings::global_bindings {} {
             bind all <$::modifier-Key-m>       {menu_minimize %W}
             bind all <$::modifier-quoteleft>   {menu_raisenextwindow}
         }
+        # BackSpace/Delete report the wrong isos (unicode representations) on OSX,
+        # so we set them to the empty string and let ::pd_bindings::sendkey guess the correct values
+        bind all <KeyPress-BackSpace>      {::pd_bindings::sendkey %W 1 %K "" 1 %k}
+        bind all <KeyRelease-BackSpace>    {::pd_bindings::sendkey %W 0 %K "" 1 %k}
+        bind all <KeyPress-Delete>         {::pd_bindings::sendkey %W 1 %K "" 1 %k}
+        bind all <KeyRelease-Delete>       {::pd_bindings::sendkey %W 0 %K "" 1 %k}
     } else {
         bind all <$::modifier-Key-q>       {pdsend "pd verifyquit"}
         bind all <$::modifier-Key-m>       {menu_minimize %W}
