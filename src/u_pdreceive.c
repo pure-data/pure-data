@@ -51,26 +51,20 @@ int main(int argc, char **argv)
     int status, portno, multicast = 0;
     char *hostname = NULL;
     struct addrinfo *ailist = NULL, *ai;
-    struct sockaddr_storage server;
     if (argc < 2 || sscanf(argv[1], "%d", &portno) < 1 || portno <= 0)
         goto usage;
-    if (argc >= 3)
+    if (argc > 2)
     {
-        int index = (argc > 3 ? 3 : 2);
-        if (!strcmp(argv[index], "tcp"))
+        if (!strcmp(argv[2], "tcp"))
             protocol = SOCK_STREAM;
-        else if (!strcmp(argv[index], "udp"))
+        else if (!strcmp(argv[2], "udp"))
             protocol = SOCK_DGRAM;
         else goto usage;
-        if (index == 3)
-            hostname = argv[2];
     }
-    else protocol = SOCK_STREAM;
-    if (hostname && protocol == SOCK_STREAM)
-    {
-        fprintf(stderr, "ignoring host: %s\n", hostname);
-        hostname = NULL;
-    }
+    else
+        protocol = SOCK_STREAM; /* default */
+    if (argc > 3)
+        hostname = argv[3];
     if (socket_init())
     {
         sockerror("socket_init()");
@@ -112,40 +106,41 @@ int main(int argc, char **argv)
         {
             /* stream (TCP) sockets are set NODELAY */
             if (socket_set_boolopt(sockfd, IPPROTO_TCP, TCP_NODELAY, 1) < 0)
-                fprintf(stderr, "netreceive: setsockopt (TCP_NODELAY) failed");
+                fprintf(stderr, "setsockopt (TCP_NODELAY) failed\n");
         }
         else if (protocol == SOCK_DGRAM && ai->ai_family == AF_INET)
         {
             /* enable IPv4 UDP broadcasting */
             if (socket_set_boolopt(sockfd, SOL_SOCKET, SO_BROADCAST, 1) < 0)
-                fprintf(stderr, "netreceive: setsockopt (SO_BROADCAST) failed");
+                fprintf(stderr, "setsockopt (SO_BROADCAST) failed\n");
         }
         /* if this is an IPv6 address, also listen to IPv4 adapters
            (if not supported, fall back to IPv4) */
         if (ai->ai_family == AF_INET6 &&
                 socket_set_boolopt(sockfd, IPPROTO_IPV6, IPV6_V6ONLY, 0) < 0)
         {
-            /* post("netreceive: setsockopt (IPV6_V6ONLY) failed"); */
+            /* fprintf(stderr, "setsockopt (IPV6_V6ONLY) failed\n"); */
             socket_close(sockfd);
             sockfd = -1;
             continue;
         }
         multicast = sockaddr_is_multicast(ai->ai_addr);
-#ifdef _WIN32
+#if 1
         if (multicast)
         {
-            /* Windows we can't bind to the multicast address,
-               so we bind to the "any" address instead */
+            /* binding to the multicast address doesn't work on Windows and on Linux
+               it doesn't seem to work for IPv6 multicast addresses, so we bind to
+               the "any" address instead */
             struct addrinfo *any;
             int status = addrinfo_get_list(&any,
                 (ai->ai_family == AF_INET6) ? "::" : "0.0.0.0", portno, protocol);
             if (status != 0)
             {
                 fprintf(stderr,
-                    "getting \"any\" address for multicast failed %s (%d)",
+                    "getting \"any\" address for multicast failed %s (%d)\n",
                     gai_strerror(status), status);
                 socket_close(sockfd);
-                return;
+                return EXIT_FAILURE;
             }
             /* name the socket */
             status = bind(sockfd, any->ai_addr, any->ai_addrlen);
@@ -175,11 +170,20 @@ int main(int argc, char **argv)
             char buf[256];
             socket_strerror(err, buf, sizeof(buf));
             fprintf(stderr,
-                "joining multicast group %s failed: %s (%d)",
+                "joining multicast group %s failed: %s (%d)\n",
                 hostname, buf, err);
         }
         /* this addr worked */
-        memcpy(&server, ai->ai_addr, ai->ai_addrlen);
+        if (hostname)
+        {
+            char hostbuf[256];
+            sockaddr_get_addrstr(ai->ai_addr,
+                hostbuf, sizeof(hostbuf));
+            fprintf(stderr, "listening on %s %d%s\n", hostbuf, portno,
+                (multicast ? " (multicast)" : ""));
+        }
+        else
+            fprintf(stderr, "listening on %d\n", portno);
         break;
     }
     freeaddrinfo(ailist);
@@ -211,7 +215,7 @@ int main(int argc, char **argv)
         dopoll();
 
 usage:
-    fprintf(stderr, "usage: pdreceive <portnumber> [udphost] [udp|tcp]\n");
+    fprintf(stderr, "usage: pdreceive <portnumber> [udp|tcp] [host]\n");
     fprintf(stderr, "(default is tcp)\n");
     exit(EXIT_FAILURE);
 }
