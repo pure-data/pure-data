@@ -418,8 +418,7 @@ static void netsend_disconnect(t_netsend *x)
     }
 }
 
-static int netsend_dosend(t_netsend *x, int sockfd,
-    t_symbol *s, int argc, t_atom *argv)
+static int netsend_dosend(t_netsend *x, int sockfd, int argc, t_atom *argv)
 {
     char *buf, *bp;
     int length, sent, fail = 0;
@@ -497,7 +496,7 @@ static void netsend_send(t_netsend *x, t_symbol *s, int argc, t_atom *argv)
 {
     if (x->x_sockfd >= 0)
     {
-        if (netsend_dosend(x, x->x_sockfd, s, argc, argv))
+        if (netsend_dosend(x, x->x_sockfd, argc, argv))
             netsend_disconnect(x);
     }
 }
@@ -524,6 +523,7 @@ static void netsend_setup(void)
         gensym("disconnect"), 0);
     class_addmethod(netsend_class, (t_method)netsend_send,
         gensym("send"), A_GIMME, 0);
+    class_addlist(netsend_class, (t_method)netsend_send);
     class_addmethod(netsend_class, (t_method)netsend_timeout,
         gensym("timeout"), A_DEFFLOAT, 0);
 }
@@ -834,7 +834,7 @@ static void netreceive_send(t_netreceive *x,
     }
     for (i = 0; i < x->x_nconnections; i++)
     {
-        if (netsend_dosend(&x->x_ns, x->x_connections[i], s, argc, argv))
+        if (netsend_dosend(&x->x_ns, x->x_connections[i], argc, argv))
             pd_error(x, "netreceive: send message failed");
                 /* should we now close the connection? */
     }
@@ -912,6 +912,7 @@ static void netreceive_setup(void)
         gensym("listen"), A_GIMME, 0);
     class_addmethod(netreceive_class, (t_method)netreceive_send,
         gensym("send"), A_GIMME, 0);
+    class_addlist(netreceive_class, (t_method)netreceive_send);
 }
 
 void x_net_setup(void)

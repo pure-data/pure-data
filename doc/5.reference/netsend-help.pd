@@ -4,36 +4,33 @@
 #X msg 47 351 send foo \$1;
 #X floatatom 47 325 0 0 0 0 - - -;
 #X msg 38 298 disconnect;
-#X msg 249 351 send foo \$1;
-#X msg 232 298 disconnect;
-#X msg 232 218 connect localhost 3001;
+#X msg 233 351 send foo \$1;
+#X msg 216 298 disconnect;
+#X msg 216 218 connect localhost 3001;
 #X floatatom 38 407 0 0 0 0 - - -;
-#X floatatom 232 407 0 0 0 0 - - -;
+#X floatatom 216 407 0 0 0 0 - - -;
 #X text 713 298 Close the connection;
 #X obj 175 599 netreceive;
 #X text 84 599 see also:;
 #X obj 557 522 netsend 1;
 #X text 642 521 (UDP);
-#X obj 232 376 netsend -u;
+#X obj 216 376 netsend -u;
 #X text 772 377 creation arguments:;
 #X text 840 399 optional -u flag for UDP;
 #X text 840 418 optional -b flag for binary;
-#X floatatom 249 325 0 0 0 0 - - -;
-#X text 670 324 Send messages to "foo" on remote machine;
-#X msg 424 298 disconnect;
-#X floatatom 424 407 0 0 0 0 - - -;
-#X floatatom 441 325 0 0 0 0 - - -;
-#X msg 441 351 send 1 2 3 \$1;
-#X msg 424 218 connect localhost 3002;
+#X floatatom 233 325 0 0 0 0 - - -;
+#X msg 412 298 disconnect;
+#X floatatom 412 407 0 0 0 0 - - -;
+#X floatatom 429 325 0 0 0 0 - - -;
+#X msg 412 218 connect localhost 3002;
 #X msg 617 298 disconnect;
 #X floatatom 617 407 0 0 0 0 - - -;
 #X floatatom 634 325 0 0 0 0 - - -;
 #X text 657 195 UDP \, binary;
-#X msg 634 351 send 1 2 3 \$1;
 #X obj 617 376 netsend -u -b;
-#X text 464 195 TCP \, binary;
+#X text 452 195 TCP \, binary;
 #X text 808 207 Connect to "localhost" port number, f 22;
-#X obj 424 376 netsend -b;
+#X obj 412 376 netsend -b;
 #X msg 617 218 connect localhost 3003;
 #X text 33 160 The Pd distribution includes "pdsend" and "pdreceive"
 standalone programs that work with netsend/netreceive in ASCII mode.
@@ -44,10 +41,10 @@ the "FUDI" protocol). The "-b" creation argument specifies binary messages
 instead \, which appear in Pd as lists of numbers from 0 to 255 (You
 could use this to send OSC messages \, for example.), f 132;
 #X obj 84 407 print backward;
-#X obj 491 407 print backward;
+#X obj 479 407 print backward;
 #X text 36 450 First outlet is nonzero if connection is open \, zero
 otherwise., f 62;
-#X obj 299 407 print backward;
+#X obj 283 407 print backward;
 #X obj 705 407 print backward;
 #X text 36 475 Second outlet outputs messages sent back from netreceive
 object. In TCP mode this works for any established connection. In UDP
@@ -58,7 +55,7 @@ for backward messages to find their way back., f 121;
 #X text 867 277 messages sent back from receiver;
 #X text 867 261 specifies port number for;
 #X text 80 195 TCP \, ASCII;
-#X text 282 195 UDP \, ASCII;
+#X text 266 195 UDP \, ASCII;
 #X text 35 514 An old (pre-0.45) calling convention is provided for
 compatibility \, a single float argument "0" or "1" for TCP or UDP
 respectively:, f 68;
@@ -74,8 +71,8 @@ with a matching port number., f 132;
 -u (UDP) is fully "connectionless" and no longer closes if no one receives
 a UDP message \, and netsend (TCP) has a settable connect timeout which
 defaults to 10 seconds., f 115;
-#X msg 437 255 timeout 3000;
-#X text 532 250 TCP connect timeout (ms), f 13;
+#X msg 425 247 timeout 3000;
+#X text 520 242 TCP connect timeout (ms), f 13;
 #N canvas 157 82 527 376 IP 0;
 #X obj 53 332 netsend -u;
 #X msg 149 260 disconnect;
@@ -103,8 +100,12 @@ messages. It will try to detect the IP version based on the given address
 #X connect 10 0 0 0;
 #X connect 11 0 0 0;
 #X restore 873 559 pd IP version and multicast;
+#X text 447 273 don't set it too low!;
+#X msg 634 351 1 2 3 \$1;
+#X msg 429 351 send 1 2 3 \$1;
+#X text 707 351 lists work like "send" (Pd 0.50+);
 #X connect 0 0 8 0;
-#X connect 0 1 38 0;
+#X connect 0 1 35 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
@@ -113,19 +114,19 @@ messages. It will try to detect the IP version based on the given address
 #X connect 6 0 15 0;
 #X connect 7 0 15 0;
 #X connect 15 0 9 0;
-#X connect 15 1 41 0;
+#X connect 15 1 38 0;
 #X connect 19 0 5 0;
-#X connect 21 0 34 0;
-#X connect 23 0 24 0;
-#X connect 24 0 34 0;
-#X connect 25 0 34 0;
-#X connect 26 0 31 0;
-#X connect 28 0 30 0;
-#X connect 30 0 31 0;
-#X connect 31 0 27 0;
-#X connect 31 1 42 0;
-#X connect 34 0 22 0;
-#X connect 34 1 39 0;
-#X connect 35 0 31 0;
-#X connect 44 0 31 0;
-#X connect 55 0 34 0;
+#X connect 20 0 31 0;
+#X connect 22 0 57 0;
+#X connect 23 0 31 0;
+#X connect 24 0 28 0;
+#X connect 26 0 56 0;
+#X connect 28 0 25 0;
+#X connect 28 1 39 0;
+#X connect 31 0 21 0;
+#X connect 31 1 36 0;
+#X connect 32 0 28 0;
+#X connect 41 0 28 0;
+#X connect 52 0 31 0;
+#X connect 56 0 28 0;
+#X connect 57 0 31 0;
