@@ -27,7 +27,7 @@ below the message will contain 'float' and 'string' data.;
 #X obj 335 330 list trim;
 #X obj 180 327 print reassembled;
 #X text 25 736 see also:;
-#X text 381 733 updated for Pd version 0.46;
+#X text 381 733 updated for Pd version 0.50.;
 #X obj 267 736 list;
 #X obj 113 736 oscparse;
 #X obj 197 736 netsend;
@@ -56,7 +56,7 @@ made for the rest.;
 #X text 306 666 Note: there's no way using oscparse to distinguish
 between floats and integers \, nor to see blobs unambiguously., f
 40;
-#X text 463 304 ("send" not needed in Pd 0.50+);
+#X text 463 304 ("send" is optional for lists in Pd 0.50+);
 #X connect 1 0 14 0;
 #X connect 2 0 3 0;
 #X connect 3 0 7 0;
