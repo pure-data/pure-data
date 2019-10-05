@@ -80,9 +80,6 @@ defaults to 10 seconds., f 115;
 #X text 304 223 IPv6 multicast;
 #X msg 253 296 send \$1;
 #X floatatom 253 261 5 0 0 0 - - -;
-#X text 18 22 As of Pd 0.50+ \, netsend supports sending IPv6 and multicast
-messages. It will try to detect the IP version based on the given address
-(or hostname)., f 68;
 #X msg 133 224 connect ff00::114 3005;
 #X msg 113 192 connect 239.200.200.200 3005;
 #X msg 95 156 connect ::1 3005;
@@ -91,14 +88,25 @@ messages. It will try to detect the IP version based on the given address
 #X text 225 87 IPv4 messages (default);
 #X text 246 121 IPv4 messages;
 #X text 228 155 IPv6 messages;
+#X text 20 16 As of Pd 0.50+ \, netsend supports sending IPv6 and multicast
+messages. Also \, it will try to detect the IP version based on the
+given address or hostname. Hostname resolution favors IPv4 results
+for backwards compatibility., f 70;
+#X obj 343 334 netsend;
+#X msg 356 304 send \$1;
+#X floatatom 356 280 5 0 0 0 - - -;
+#X msg 343 253 connect ::1 3005;
 #X connect 1 0 0 0;
 #X connect 4 0 0 0;
 #X connect 5 0 4 0;
+#X connect 6 0 0 0;
 #X connect 7 0 0 0;
 #X connect 8 0 0 0;
 #X connect 9 0 0 0;
 #X connect 10 0 0 0;
-#X connect 11 0 0 0;
+#X connect 16 0 15 0;
+#X connect 17 0 16 0;
+#X connect 18 0 15 0;
 #X restore 873 559 pd IP version and multicast;
 #X text 447 273 don't set it too low!;
 #X msg 634 351 1 2 3 \$1;
