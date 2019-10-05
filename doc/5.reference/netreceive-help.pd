@@ -52,35 +52,53 @@ compatible clients) that have opened connections here., f 84;
 #X text 85 12 netreceive -- listen for incoming messages from network
 ;
 #X text 36 658 As of 0.50+ \, Pd supports IPv6 addresses.;
-#N canvas 661 94 476 376 UDP 0;
-#X obj 45 329 print udp-hostname;
-#X text 293 187 IPv4 multicast;
-#X text 278 219 IPv6 multicast;
-#X obj 45 291 netreceive -u -f;
-#X obj 192 329 print from-hostname;
-#X text 17 27 As of Pd 0.50+ \, netreceive can specify a hostname which
-allows for choosing IP version and multicast listening.;
-#X msg 133 253 listen 0;
-#X text 199 155 IPv4 and IPv6 messages;
-#X msg 105 218 listen 3005 ff00::114;
-#X msg 85 187 listen 3005 239.200.200.200;
-#X msg 78 154 listen 3005 ::1;
-#X msg 69 119 listen 3005 127.0.0.1;
-#X msg 45 86 listen 3005 localhost;
-#X text 212 85 IPv4 messages (default);
-#X text 238 119 IPv4 messages;
-#X connect 3 0 0 0;
-#X connect 3 1 4 0;
-#X connect 6 0 3 0;
-#X connect 8 0 3 0;
-#X connect 9 0 3 0;
-#X connect 10 0 3 0;
-#X connect 11 0 3 0;
-#X connect 12 0 3 0;
-#X restore 403 493 pd UDP IP version and multicast;
 #X obj 531 633 netreceive 3004 1;
 #X msg 219 524 4 5 6 \$1;
 #X text 289 524 lists work like "send" (Pd 0.50+);
+#N canvas 694 147 526 506 IP 0;
+#X obj 23 421 print udp-hostname;
+#X text 284 279 IPv4 multicast;
+#X text 269 311 IPv6 multicast;
+#X obj 23 383 netreceive -u -f;
+#X obj 170 421 print from-hostname;
+#X msg 124 345 listen 0;
+#X msg 96 310 listen 3005 ff00::114;
+#X msg 76 279 listen 3005 239.200.200.200;
+#X msg 46 214 listen 3005 ::1;
+#X msg 37 179 listen 3005 127.0.0.1;
+#X msg 57 247 listen 3005 localhost;
+#X text 202 179 IPv4 messages;
+#X text 21 13 As of Pd 0.50+ \, netreceive accepts a hostname which
+can be a UDP multicast address or a network interface. Note that you
+can't specify a remote host - that is the job of a firewall., f 61
+;
+#X obj 325 395 netreceive 3005 ::1;
+#X obj 325 422 print tcp-hostname;
+#X text 324 358 listen for IPv6 TCP messages on localhost, f 22;
+#X msg 23 146 listen 3005;
+#X text 119 145 any IPv4 and IPv6 messages (default);
+#X text 167 215 IPv6 messages *);
+#X text 219 239 IPv4 and/or IPv6 messages (system dependent!), f 26
+;
+#X text 23 451 *) On some systems you can also receive IPv4 messages.
+This certainly doesn't work on Windows!, f 54;
+#X text 21 115 For backwards comptability \, hostname resolution favors
+IPv4 results., f 69;
+#X text 20 63 By default \, netreceive listens on all IPv4 and IPv6
+interfaces \, but you can restrict it to a specific interface \, e.g.
+"127.0.0.1" to only receive IPv4 messages from the same computer.,
+f 66;
+#X connect 3 0 0 0;
+#X connect 3 1 4 0;
+#X connect 5 0 3 0;
+#X connect 6 0 3 0;
+#X connect 7 0 3 0;
+#X connect 8 0 3 0;
+#X connect 9 0 3 0;
+#X connect 10 0 3 0;
+#X connect 13 0 14 0;
+#X connect 16 0 3 0;
+#X restore 403 493 pd IP version and multicast;
 #X connect 0 0 5 0;
 #X connect 0 1 1 0;
 #X connect 8 0 6 0;
@@ -89,7 +107,7 @@ allows for choosing IP version and multicast listening.;
 #X connect 19 0 0 0;
 #X connect 21 0 0 0;
 #X connect 22 0 21 0;
-#X connect 23 0 39 0;
+#X connect 23 0 38 0;
 #X connect 29 0 15 0;
 #X connect 29 1 30 0;
-#X connect 39 0 13 0;
+#X connect 38 0 13 0;
