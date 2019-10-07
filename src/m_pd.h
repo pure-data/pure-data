@@ -532,6 +532,15 @@ EXTERN void class_setfreefn(t_class *c, t_classfreefn fn);
 #endif
 
 /* ------------   printing --------------------------------- */
+
+typedef enum {
+    PD_CRITICAL = -3,
+    PD_ERROR,
+    PD_NORMAL,
+    PD_DEBUG,
+    PD_VERBOSE
+} t_loglevel;
+
 EXTERN void post(const char *fmt, ...);
 EXTERN void startpost(const char *fmt, ...);
 EXTERN void poststring(const char *s);
