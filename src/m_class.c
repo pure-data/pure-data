@@ -126,9 +126,9 @@ static void class_addmethodtolist(t_class *c, t_methodentry **methodlist,
         nbuf[79] = 0;
         (*methodlist)[i].me_name = dogensym(nbuf, 0, pdinstance);
         if (c == pd_objectmaker)
-            verbose(1, "warning: class '%s' overwritten; old one renamed '%s'",
+            verbose(PD_VERBOSE, "warning: class '%s' overwritten; old one renamed '%s'",
                 sel->s_name, nbuf);
-        else verbose(1, "warning: old method '%s' for class '%s' renamed '%s'",
+        else verbose(PD_VERBOSE, "warning: old method '%s' for class '%s' renamed '%s'",
             sel->s_name, c->c_name->s_name, nbuf);
     }
     (*methodlist) = t_resizebytes((*methodlist),

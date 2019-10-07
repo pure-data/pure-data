@@ -117,8 +117,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     snd_pcm_hw_params_alloca(&hw_params);
     snd_pcm_sw_params_alloca(&sw_params);
 
-    if (sys_verbose)
-        post((out ? "configuring sound output..." :
+    verbose(PD_VERBOSE, (out ? "configuring sound output..." :
             "configuring sound input..."));
 
         /* set hardware parameters... */
@@ -159,8 +158,7 @@ static int alsaio_setup(t_alsa_dev *dev, int out, int *channels, int *rate,
     }
     else dev->a_sampwidth = 4;
 
-    if (sys_verbose)
-        post("Sample width set to %d bytes", dev->a_sampwidth);
+    verbose(PD_VERBOSE, "Sample width set to %d bytes", dev->a_sampwidth);
 
         /* set the subformat */
     err = snd_pcm_hw_params_set_subformat(dev->a_handle,
@@ -286,8 +284,8 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
     alsa_nindev = alsa_noutdev = 0;
     alsa_jittermax = ALSA_DEFJITTERMAX;
 
-    if (sys_verbose)
-        post("audio buffer set to %d", (int)(0.001 * sys_schedadvance));
+    verbose(PD_VERBOSE, "audio buffer set to %d",
+        (int)(0.001 * sys_schedadvance));
 
     for (iodev = 0; iodev < naudioindev; iodev++)
     {
@@ -299,8 +297,7 @@ int alsa_open_audio(int naudioindev, int *audioindev, int nchindev,
             continue;
         alsa_indev[alsa_nindev].a_devno = audioindev[iodev];
         snd_pcm_nonblock(alsa_indev[alsa_nindev].a_handle, 1);
-        if (sys_verbose)
-            post("opened input device name %s", devname);
+        verbose(PD_VERBOSE, "opened input device name %s", devname);
         alsa_nindev++;
     }
     for (iodev = 0; iodev < naudiooutdev; iodev++)
@@ -789,9 +786,8 @@ static void alsa_checkiosync(void)
             }
             else if (result != SND_PCM_STATE_RUNNING)
             {
-                if (sys_verbose)
-                    post("restarting output device from state %d",
-                        snd_pcm_state(alsa_outdev[iodev].a_handle));
+                verbose(PD_VERBOSE, "restarting output device from state %d",
+                    snd_pcm_state(alsa_outdev[iodev].a_handle));
                 if ((err = snd_pcm_start(alsa_outdev[iodev].a_handle)) < 0)
                     check_error(err, 0, "restart failed");
             }
@@ -829,9 +825,8 @@ static void alsa_checkiosync(void)
             }
             else if (result != SND_PCM_STATE_RUNNING)
             {
-                if (sys_verbose)
-                    post("restarting input device from state %d",
-                        snd_pcm_state(alsa_indev[iodev].a_handle));
+                verbose(PD_VERBOSE, "restarting input device from state %d",
+                    snd_pcm_state(alsa_indev[iodev].a_handle));
                 if ((err = snd_pcm_start(alsa_indev[iodev].a_handle)) < 0)
                     check_error(err, 1, "restart failed");
             }

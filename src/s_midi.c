@@ -661,14 +661,12 @@ void sys_set_midi_api(int which)
     case(API_DEFAULTMIDI): break;
 #endif
     default:
-        if (sys_verbose)
-            post("ignoring unknown MIDI API %d", which);
+        verbose(PD_VERBOSE, "ignoring unknown MIDI API %d", which);
         return;
     }
 
     sys_midiapi = which;
-    if (sys_verbose)
-        post("sys_midiapi %d", sys_midiapi);
+    verbose(PD_VERBOSE, "sys_midiapi %d", sys_midiapi);
 }
 
 void glob_midi_properties(t_pd *dummy, t_floatarg flongform);

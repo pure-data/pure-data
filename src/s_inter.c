@@ -365,11 +365,11 @@ void sys_set_priority(int mode)
         else post("priority %d scheduling failed; running at normal priority",
                 p3);
     }
-    else if (sys_verbose)
+    else
     {
         if (mode == MODE_RT)
-            post("priority %d scheduling enabled.\n", p3);
-        else post("running at normal (non-real-time) priority.\n");
+            verbose(PD_VERBOSE, "priority %d scheduling enabled.\n", p3);
+        else verbose(PD_VERBOSE, "running at normal (non-real-time) priority.\n");
     }
 #endif
 
@@ -1454,8 +1454,7 @@ void sys_setrealtime(const char *libdir)
                 this is done later when the socket is open. */
         }
     }
-    else if (sys_verbose)
-        post("not setting real-time priority");
+    else verbose(PD_VERBOSE, "not setting real-time priority");
 #endif /* __linux__ */
 
 #ifdef _WIN32
