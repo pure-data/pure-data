@@ -122,7 +122,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     const char *classname, *cnameptr;
     void *dlobj;
     t_xxx makeout = NULL;
-    int i, hexmunge = 0, fd;
+    int i, hexmunge = 0, tilde = 0, fd;
 #ifdef _WIN32
     HINSTANCE ntdll;
 #endif
@@ -149,6 +149,7 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
         {
             strcpy(symname+i, "_tilde");
             i += strlen(symname+i);
+            tilde = 1;
         }
         else /* anything you can't put in a C symbol is sprintf'ed in hex */
         {
@@ -162,7 +163,15 @@ static int sys_do_load_lib(t_canvas *canvas, const char *objectname,
     const char *name;
     if (hexmunge)
     {
-        name = gensym(symname)->s_name;
+        if (tilde)
+        {
+            i -= 6;
+            filename[i] = '~';
+        }
+        strncpy(filename, symname, i);
+        filename[i+tilde] = 0;
+
+        name = filename;
         memmove(symname+6, symname, strlen(symname)+1);
         strncpy(symname, "setup_", 6);
     }
