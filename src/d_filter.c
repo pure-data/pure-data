@@ -119,7 +119,7 @@ static void sighip_dsp(t_sighip *x, t_signal **sp)
     sighip_ft1(x,  x->x_hz);
     dsp_add((pd_compatibilitylevel > 43 ?
         sighip_perform : sighip_perform_old),
-            4, sp[0]->s_vec, sp[1]->s_vec, x->x_ctl, sp[0]->s_n);
+            4, sp[0]->s_vec, sp[1]->s_vec, x->x_ctl, (t_int)sp[0]->s_n);
 }
 
 static void sighip_clear(t_sighip *x, t_floatarg q)
@@ -214,7 +214,7 @@ static void siglop_dsp(t_siglop *x, t_signal **sp)
     siglop_ft1(x,  x->x_hz);
     dsp_add(siglop_perform, 4,
         sp[0]->s_vec, sp[1]->s_vec,
-            x->x_ctl, sp[0]->s_n);
+            x->x_ctl, (t_int)sp[0]->s_n);
 
 }
 
@@ -349,7 +349,7 @@ static void sigbp_dsp(t_sigbp *x, t_signal **sp)
     sigbp_docoef(x, x->x_freq, x->x_q);
     dsp_add(sigbp_perform, 4,
         sp[0]->s_vec, sp[1]->s_vec,
-            x->x_ctl, sp[0]->s_n);
+            x->x_ctl, (t_int)sp[0]->s_n);
 
 }
 
@@ -476,7 +476,7 @@ static void sigbiquad_dsp(t_sigbiquad *x, t_signal **sp)
 {
     dsp_add(sigbiquad_perform, 4,
         sp[0]->s_vec, sp[1]->s_vec,
-            x->x_ctl, sp[0]->s_n);
+            x->x_ctl, (t_int)sp[0]->s_n);
 
 }
 
@@ -543,7 +543,7 @@ static void sigsamphold_dsp(t_sigsamphold *x, t_signal **sp)
 {
     dsp_add(sigsamphold_perform, 5,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec,
-            x, sp[0]->s_n);
+            x, (t_int)sp[0]->s_n);
 }
 
 static void sigsamphold_reset(t_sigsamphold *x, t_symbol *s, int argc,
@@ -618,7 +618,7 @@ static void sigrpole_dsp(t_sigrpole *x, t_signal **sp)
 {
     dsp_add(sigrpole_perform, 5,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec,
-            x, sp[0]->s_n);
+            x, (t_int)sp[0]->s_n);
 }
 
 static void sigrpole_clear(t_sigrpole *x)
@@ -690,7 +690,7 @@ static void sigrzero_dsp(t_sigrzero *x, t_signal **sp)
 {
     dsp_add(sigrzero_perform, 5,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec,
-            x, sp[0]->s_n);
+            x, (t_int)sp[0]->s_n);
 }
 
 static void sigrzero_clear(t_sigrzero *x)
@@ -762,7 +762,7 @@ static void sigrzero_rev_dsp(t_sigrzero_rev *x, t_signal **sp)
 {
     dsp_add(sigrzero_rev_perform, 5,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec,
-            x, sp[0]->s_n);
+            x, (t_int)sp[0]->s_n);
 }
 
 static void sigrzero_rev_clear(t_sigrzero_rev *x)
@@ -854,7 +854,7 @@ static void sigcpole_dsp(t_sigcpole *x, t_signal **sp)
 {
     dsp_add(sigcpole_perform, 8,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-        sp[4]->s_vec, sp[5]->s_vec, x, sp[0]->s_n);
+        sp[4]->s_vec, sp[5]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
 static void sigcpole_clear(t_sigcpole *x)
@@ -944,7 +944,7 @@ static void sigczero_dsp(t_sigczero *x, t_signal **sp)
 {
     dsp_add(sigczero_perform, 8,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-        sp[4]->s_vec, sp[5]->s_vec, x, sp[0]->s_n);
+        sp[4]->s_vec, sp[5]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
 static void sigczero_clear(t_sigczero *x)
@@ -1036,7 +1036,7 @@ static void sigczero_rev_dsp(t_sigczero_rev *x, t_signal **sp)
 {
     dsp_add(sigczero_rev_perform, 8,
         sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec,
-        sp[4]->s_vec, sp[5]->s_vec, x, sp[0]->s_n);
+        sp[4]->s_vec, sp[5]->s_vec, x, (t_int)sp[0]->s_n);
 }
 
 static void sigczero_rev_clear(t_sigczero_rev *x)
@@ -1156,7 +1156,7 @@ static void slop_tilde_dsp(t_slop_tilde *x, t_signal **sp)
     x->x_coef = (2 * 3.14159) / sp[0]->s_sr;
     dsp_add(slop_tilde_perform, 9,
         x, sp[0]->s_vec, sp[1]->s_vec, sp[2]->s_vec, sp[3]->s_vec, sp[4]->s_vec,
-            sp[5]->s_vec, sp[6]->s_vec, sp[0]->s_n);
+            sp[5]->s_vec, sp[6]->s_vec, (t_int)sp[0]->s_n);
 
 }
 
