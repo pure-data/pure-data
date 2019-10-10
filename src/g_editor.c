@@ -3393,7 +3393,17 @@ static void canvas_zoom(t_canvas *x, t_floatarg zoom)
         }
         x->gl_zoom = zoom;
         if (x->gl_havewindow)
+        {
+            if (!glist_isgraph(x) && (x->gl_y2 < x->gl_y1))
+            {
+                /* if it's flipped so that y grows upward,
+                fix so that zero is bottom edge as in canvas_dosetbounds() */
+                t_float diff = x->gl_y1 - x->gl_y2;
+                x->gl_y1 = (x->gl_screeny2 - x->gl_screeny1) * diff/x->gl_zoom;
+                x->gl_y2 = x->gl_y1 - diff;
+            }
             canvas_redraw(x);
+        }
     }
 }
 
