@@ -486,7 +486,7 @@ static int stupid_sortcompare(const void *z1, const void *z2) {
 static void text_define_sort(t_text_define *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    int nlines, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
         thisline, startline;
     t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
     t_binbuf *newb;
