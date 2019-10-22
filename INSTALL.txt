@@ -297,28 +297,27 @@ if you are using 32 bit Windows) from:
 Then install to the default location (C:\msys32 or C:\msys64) and follow the
 setup/update info on the Msys2 webpage.
 
-Msys2 provides both 32 and 64 MinGW and command shells. Currently, the Pd
-release is 32 bit for Windows, so it is recommended to set up and use the MinGW
-32 bit shell. If you want to build a 64 bit Pd, similarly use the MinGW 64 bit
-shell however this is currently considered *experimental*. Due to how MinGW is
-designed, you cannot build a 64 bit Pd with a 32 bit MinGW and vice versa. This
-also means the Pd configure --enable-universal build option has no effect in
-MinGW.
+Msys2 provides both 32 and 64 MinGW and command shells. As of Pd 0.50, the Pd
+release is 64 bit for Windows, so it is recommended to set up and use the MinGW
+64 bit shell. If you want to build a 32 bit Pd, similarly use the MinGW 32 bit
+shell. Due to how MinGW is designed, you cannot build a 64 bit Pd with a 32 bit
+MinGW and vice versa. This also means the Pd configure --enable-universal build
+option has no effect in MinGW.
 
 Note: Msys2 development seems to change frequently, so some of the package names
       below may have changed after this document was written.
 
 Open an Msys2 shell and install the compiler chain, autotools, & gettext via:
 
-    # 32 bit
-    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
-              make pkgconfig autoconf automake libtool \
-              mingw-w64-i686-gettext
-
     # 64 bit
     pacman -S mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang \
               make pkgconfig autoconf automake libtool \
               mingw-w64-x86_64-gettext
+
+    # 32 bit
+    pacman -S mingw-w64-i686-toolchain mingw-w64-i686-clang \
+              make pkgconfig autoconf automake libtool \
+              mingw-w64-i686-gettext
 
 Install git if you want to clone the Pd sources from Github, etc:
 
@@ -326,11 +325,11 @@ Install git if you want to clone the Pd sources from Github, etc:
 
 and/or the nsis installer tool if you want to build the Pd Windows installer:
 
-    # 32 bit
-    pacman -S mingw-w64-i686-nsis
-
     # 64 bit
     pacman -S mingw-w64-x86_64-nsis
+
+    # 32 bit
+    pacman -S mingw-w64-i686-nsis
 
 Note: You can also search for packages in Msys2 with:
 
@@ -401,7 +400,7 @@ Similarily, to build a 64 bit Pd without ASIO support:
 
     ./configure --disable-asio --host=x86_64-w64-mingw32 CPPFLAGS=-DPD_LONGINTTYPE=__int64
 
-(Currently you need to override the PD_LONGINTTYPE for Windows 64bit builds).
+(Currently you need to override the PD_LONGINTTYPE for Windows 64 bit builds).
 
 If all went well, you should now be ready to build Pd, as explained in the
 instructions above in the "Windows" section:
