@@ -286,9 +286,9 @@ of the array are dropped.;
 #X obj 90 356 array random;
 #N canvas 102 243 816 629 quantile+random 0;
 #X floatatom 75 177 5 0 100 0 - - -;
-#X obj 39 251 array quantile array-help-3, f 14;
+#X obj 39 251 array quantile array-help-5, f 14;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array array-help-3 100 float 3;
+#X array array-help-5 100 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0.00715053 0.00715053 0.0285789 0.0500072
 0.0714356 0.100007 0.128578 0.164292 0.207148 0.478574 0.628573 0.678572
 0.721429 0.717857 0.714286 0.707143 0.7 0.692857 0.685715 0.678572
@@ -301,12 +301,12 @@ of the array are dropped.;
 #X coords 0 1 99 0 200 140 1 0 0;
 #X restore 37 375 graph;
 #X floatatom 111 198 5 -1 100 0 - - -;
-#X msg 43 524 \; array-help-3 const 0;
+#X msg 43 524 \; array-help-5 const 0;
 #X floatatom 39 131 5 -1 100 0 - - -;
 #X obj 39 152 / 100;
 #X floatatom 39 295 5 0 100 0 - - -;
 #X floatatom 368 599 5 0 100 0 - - -;
-#X obj 370 555 array random array-help-3, f 13;
+#X obj 370 555 array random array-help-5, f 13;
 #X obj 370 435 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #X floatatom 383 484 5 0 0 0 - - -;
@@ -357,7 +357,7 @@ the range 0-1 output the x values at the two extremes of the array
 #X obj 90 379 array max;
 #N canvas 727 168 744 595 min+max 0;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array array-help-4 100 float 3;
+#X array array-help-6 100 float 3;
 #A 0 0.335714 0.37857 0.421427 0.442855 0.478569 0.521426 0.535711
 0.55714 0.585711 0.599997 0.614282 0.63571 0.649996 0.664282 0.671424
 0.699995 0.699995 0.714281 0.721424 0.707138 0.699995 0.692853 0.68571
@@ -387,7 +387,7 @@ default -1, f 61;
 #X text 153 180 number of points;
 #X msg 158 204 symbol array-help-2;
 #X text 322 205 set name or pointer;
-#X obj 57 230 array max array-help-4, f 13;
+#X obj 57 230 array max array-help-6, f 13;
 #X floatatom 123 275 5 0 100 0 - - -;
 #X text 79 133 bang to find maximum;
 #X text 130 5 "array max" and "array min" find the maximum and minimum
@@ -404,7 +404,7 @@ the "onset" and "number of points".;
 #X floatatom 120 497 5 0 100 0 - - -;
 #X text 76 355 bang to find minimum;
 #X text 153 402 number of points;
-#X obj 54 452 array min array-help-4, f 13;
+#X obj 54 452 array min array-help-6, f 13;
 #X text 54 298 value;
 #X text 118 299 index;
 #X connect 2 0 12 0;
