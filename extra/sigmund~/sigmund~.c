@@ -1051,7 +1051,7 @@ static void sigmund_dsp(t_sigmund *x, t_signal **sp)
             post("sigmund: adjusting hop size to %d",
                 (x->x_hop = sp[0]->s_n * (x->x_hop / sp[0]->s_n)));
         x->x_sr = sp[0]->s_sr;
-        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+        dsp_add(sigmund_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
     }
 }
 

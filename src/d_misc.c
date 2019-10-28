@@ -41,7 +41,7 @@ static t_int *print_perform(t_int *w)
 
 static void print_dsp(t_print *x, t_signal **sp)
 {
-    dsp_add(print_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
+    dsp_add(print_perform, 3, x, sp[0]->s_vec, (t_int)sp[0]->s_n);
 }
 
 static void print_float(t_print *x, t_float f)
