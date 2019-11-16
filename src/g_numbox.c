@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "m_pd.h"
+#include "m_imp.h"
 #include "g_canvas.h"
 
 #include "g_all_guis.h"
@@ -588,7 +589,7 @@ static int my_numbox_newclick(t_gobj *z, struct _glist *glist,
 
 static void my_numbox_set(t_my_numbox *x, t_floatarg f)
 {
-    if(x->x_val != f)
+    if(!float_strict_equal(x->x_val, f))
     {
         x->x_val = f;
         my_numbox_clip(x);
