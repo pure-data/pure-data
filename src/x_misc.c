@@ -852,7 +852,18 @@ static void fudiformat_setup(void) {
   class_addanything(fudiformat_class, fudiformat_any);
 }
 
-
+/* This compares two floating point values for "strict equality," in the usual
+sense, that is sameness-of-value rather than mathematical-equality. That is,
+unlike `==` which obeys (by and large) IEEE754 rules for equality and hence
+sometimes leads to surprising results (such as the nonreflexivity of NaN, and
+negative and positive zeros being considered equal to each other), this function
+operates on the bitwise representation of its arguments. */
+int float_strict_equal(t_float f1, t_float f2) {
+    /* Unfortunately, the most reliable way to perform the requisite comparison
+    in C is to use `memcmp()`. Fortunately, many compilers understand this
+    particular idiom, so it's typically reasonably performant (just ugly). */
+    return memcmp(&f1, &f2, sizeof (t_float)) == 0;
+}
 
 void x_misc_setup(void)
 {
