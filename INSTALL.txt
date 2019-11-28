@@ -28,7 +28,8 @@ Optional features:
 
 ## Autotools Build (recommended)
 
-Building Pd using the GNU autotools involves the following steps:
+Building Pd using the GNU autotools involves the following steps for all
+platforms:
 
 1. configure: detect & set library and platform options
 2. make: compile Pd, associated tools, and resource files (ie. translations)
@@ -40,6 +41,9 @@ Overview:
     ./autogen.sh
     ./configure
     make
+
+Note: Additional platform-specific options and build targets are listed in
+following subsections.
 
 Start by opening a commandline shell and navigating to the Pd source directory:
 
@@ -168,6 +172,9 @@ In case you are using jackd1 instead of jackd2, use:
 Most distributions come with Tcl/Tk installed, so you should be able to run Pd
 after it is built.
 
+Once your build system is set up, you can follow the general autotools build
+steps to build Pd.
+
 ### macOS
 
 macOS is built on top of a BSD system and the bash commandline can be accessed
@@ -230,8 +237,8 @@ Macports, however the runtime framework support must be disabled:
     brew install jack
     ./configure --disable-jack-framework
 
-You should now be ready to build Pd. Once built, there are two options for
-installation:
+You should now be ready to build Pd by following the general autotools build
+steps. Once built, there are two options for installation:
 
 * build a standalone macOS application (recommended)
 * install to your system as a commandline program
@@ -335,7 +342,8 @@ Note: You can also search for packages in Msys2 with:
 
     pacman -S -s <searchterm>
 
-Once the packages are installed, you should now be ready to build Pd.
+Once the packages are installed, you should now be ready to build Pd by
+following the general autotools build steps.
 
 The following audio APIS are available on Windows and can be enabled/disabled
 via their configure flags:
@@ -352,7 +360,7 @@ Note: Because of license restrictions, Pd cannot distribute the ASIO SDK source
 files. If you want to build Pd with ASIO support, see asio/README.txt for
 further instructions.
 
-You should now be ready to build Pd. Once built, you can either:
+Once built Pd is built, you can either:
 
 * build a Pd application directory for Windows (recommended)
 * build a Windows installer
