@@ -194,7 +194,7 @@ endif
 
 # need Carbon framework for PA on Mac
 if MACOSX
-LIBS += -framework Carbon
+LIBS += -framework Carbon -framework CoreFoundation
 endif
 
 endif

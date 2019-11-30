@@ -32,6 +32,9 @@
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
 #define snprintf _snprintf
 #endif
+#ifdef __APPLE__ /* needed for plist handling */
+#include <CoreFoundation/CoreFoundation.h>
+#endif
 
 void sys_doflags(void);
 
@@ -129,9 +132,325 @@ static void sys_donesavepreferences_file(void)
     }
 }
 
+#if defined(__APPLE__)
+/*****  macos: read and write to ~/Library/Preferences plist file ******/
 
+static PERTHREAD CFMutableDictionaryRef sys_prefdict = NULL;
+
+static CFStringRef cfstring(const char *s)
+{
+    return CFStringCreateWithCStringNoCopy(kCFAllocatorDefault, s,
+        kCFStringEncodingUTF8, kCFAllocatorNull);
+}
+
+// get preferences file path into dst, returns 1 if embedded and 0 if user prefs
+static int preferences_getpath(char *dst, size_t size)
+{
+    char embedded_prefs[MAXPDSTRING];
+    char user_prefs[MAXPDSTRING];
+    char *homedir = getenv("HOME");
+    struct stat statbuf;
+    snprintf(embedded_prefs, MAXPDSTRING, "%s/../org.puredata.pd",
+        sys_libdir->s_name);
+    snprintf(user_prefs, MAXPDSTRING,
+        "%s/Library/Preferences/org.puredata.pd.plist", homedir);
+    if (stat(user_prefs, &statbuf) == 0)
+    {
+        strncpy(dst, user_prefs, size);
+        return 0;
+    }
+    else
+    {
+        strncpy(dst, embedded_prefs, size);
+        return 1;
+    }
+}
+
+static void sys_initloadpreferences(void)
+{
+    char path[MAXPDSTRING];
+    CFStringRef string = NULL;
+    CFURLRef fileURL = NULL;
+    CFReadStreamRef stream = NULL;
+    CFErrorRef err = NULL;
+    CFPropertyListRef plist = NULL;
+
+    if (sys_prefbuf || sys_prefdict)
+    {
+        bug("sys_initloadpreferences");
+        return;
+    }
+
+    preferences_getpath(path, MAXPDSTRING);
+
+    // open read stream
+    string = cfstring(path);
+    fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, string,
+        kCFURLPOSIXPathStyle, false); // false -> not a directory
+    stream = CFReadStreamCreateWithFile(kCFAllocatorDefault, fileURL);
+    if (!stream || !CFReadStreamOpen(stream)) goto cleanup;
+
+    // read plist
+    plist = CFPropertyListCreateWithStream(kCFAllocatorDefault, stream, 0,
+        kCFPropertyListImmutable, NULL, &err);
+    if (!plist) {
+        CFStringRef errString = CFErrorCopyDescription(err);
+        error("couldn't read preferences plist: %s",
+            CFStringGetCStringPtr(errString, kCFStringEncodingUTF8));
+        CFRelease(errString);
+        goto cleanup;
+    }
+    CFRetain(plist);
+    sys_prefdict = (CFMutableDictionaryRef)plist;
+
+cleanup:
+    if (stream) {
+        if (CFReadStreamGetStatus(stream) == kCFStreamStatusOpen) {
+            CFReadStreamClose(stream);
+        }
+        CFRelease(stream);
+    }
+    if (fileURL) {CFRelease(fileURL);}
+    if (string) {CFRelease(string);}
+    if (err) {CFRelease(err);}
+}
+
+static void sys_doneloadpreferences(void)
+{
+    if (sys_prefbuf)
+        sys_doneloadpreferences_file();
+    if (sys_prefdict)
+    {
+        CFRelease(sys_prefdict);
+        sys_prefdict = NULL;
+    }
+}
+
+static void sys_initsavepreferences(void)
+{
+    if (sys_prefsavefp)
+    {
+        bug("sys_initsavepreferences");
+        return;
+    }
+    sys_prefdict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
+        &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+}
+
+static void sys_donesavepreferences(void)
+{
+    char path[MAXPDSTRING];
+    CFStringRef string = NULL;
+    CFURLRef fileURL = NULL;
+    CFWriteStreamRef stream = NULL;
+    CFErrorRef err = NULL;
+    CFDataRef data = NULL;
+
+    if (sys_prefsavefp)
+        sys_donesavepreferences_file();
+    if (!sys_prefdict) return;
+
+    // convert dict to plist data
+    data = CFPropertyListCreateData(kCFAllocatorDefault,
+                                    (CFPropertyListRef)sys_prefdict,
+                                    kCFPropertyListBinaryFormat_v1_0, 0, &err);
+    if (!data)
+    {
+        CFStringRef errString = CFErrorCopyDescription(err);
+        error("couldn't write preferences plist: %s",
+            CFStringGetCStringPtr(errString, kCFStringEncodingUTF8));
+        CFRelease(errString);
+        goto cleanup;
+    }
+
+    // open write stream
+    preferences_getpath(path, MAXPDSTRING);
+    string = cfstring(path);
+    fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, string,
+        kCFURLPOSIXPathStyle, false); // false -> not a directory
+    stream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, fileURL);
+    if (!stream || !CFWriteStreamOpen(stream)) goto cleanup;
+
+    // write plist
+    if (CFWriteStreamWrite(stream, CFDataGetBytePtr(data),
+                                   CFDataGetLength(data)) < 0) {
+        error("couldn't write preferences plist");
+        goto cleanup;
+    }
+
+cleanup:
+    if (sys_prefdict)
+    {
+        CFRelease(sys_prefdict);
+        sys_prefdict = NULL;
+    }
+    if (data) {CFRelease(data);}
+    if (stream) {
+        if(CFWriteStreamGetStatus(stream) == kCFStreamStatusOpen) {
+            CFWriteStreamClose(stream);
+        }
+        CFRelease(stream);
+    }
+    if (fileURL) {CFRelease(fileURL);}
+    if (string) {CFRelease(string);}
+    if (err) {CFRelease(err);}
+}
+
+static int sys_getpreference(const char *key, char *value, int size)
+{
+    if (sys_prefbuf)
+        return (sys_getpreference_file(key, value, size));
+    if (sys_prefdict) {
+        /* read from loaded plist dict */
+        CFStringRef k = cfstring(key);
+        void *v = NULL;
+        int ret = 0;
+        if (CFDictionaryGetValueIfPresent(sys_prefdict, k,
+                                          (const void **)&v)) {
+            const char *s = CFStringGetCStringPtr((CFStringRef)v,
+                                                  kCFStringEncodingUTF8);
+            if (s)
+            {
+                ret = (strncpy(value, s, size) != NULL);
+#if 0
+                if (ret) fprintf(stderr, "%s = %s\n", key, value);
+#endif
+            }
+            if (v) CFRelease(v);
+        }
+        CFRelease(k);
+        return (ret);
+    }
+    else {
+        /* fallback to defaults command */
+        char cmdbuf[256];
+        int nread = 0, nleft = size;
+        char path[MAXPDSTRING];
+        int embedded = preferences_getpath(path, MAXPDSTRING);
+        if (embedded)
+            snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
+                path, key);
+        else
+            snprintf(cmdbuf, 256, "defaults read org.puredata.pd %s 2> /dev/null\n",
+                key);
+        FILE *fp = popen(cmdbuf, "r");
+        while (nread < size)
+        {
+            int newread = fread(value+nread, 1, size-nread, fp);
+            if (newread <= 0)
+                break;
+            nread += newread;
+        }
+        pclose(fp);
+        if (nread < 1)
+            return (0);
+        if (nread >= size)
+            nread = size-1;
+        value[nread] = 0;
+        if (value[nread-1] == '\n')     /* remove newline character at end */
+            value[nread-1] = 0;
+        return(1);
+    }
+}
+
+static void sys_putpreference(const char *key, const char *value)
+{
+    if (sys_prefsavefp)
+    {
+        sys_putpreference_file(key, value);
+        return;
+    }
+    if (sys_prefdict) {
+        /* write to plist dict */
+        CFStringRef k = cfstring(key);
+        CFStringRef v = cfstring(value);
+        CFDictionarySetValue((CFMutableDictionaryRef)sys_prefdict, k, v);
+        CFRelease(k);
+        CFRelease(v);
+    }
+    else {
+        /* fallback to defaults command */
+        char cmdbuf[MAXPDSTRING];
+        snprintf(cmdbuf, MAXPDSTRING,
+            "defaults write org.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
+        system(cmdbuf);
+    }
+}
+
+#elif defined(_WIN32)
+/*****  windows: read and write to registry ******/
+
+static void sys_initloadpreferences(void)
+{
+    if (sys_prefbuf)
+        bug("sys_initloadpreferences");
+}
+
+static void sys_doneloadpreferences(void)
+{
+    if (sys_prefbuf)
+        sys_doneloadpreferences_file();
+}
+
+static void sys_initsavepreferences(void)
+{
+    if (sys_prefsavefp)
+        bug("sys_initsavepreferences");
+}
+
+static void sys_donesavepreferences(void)
+{
+    if (sys_prefsavefp)
+        sys_donesavepreferences_file();
+}
+
+static int sys_getpreference(const char *key, char *value, int size)
+{
+    if (sys_prefbuf)
+        return (sys_getpreference_file(key, value, size));
+    else
+    {
+        HKEY hkey;
+        DWORD bigsize = size;
+        LONG err = RegOpenKeyEx(HKEY_CURRENT_USER,
+            "Software\\Pure-Data", 0,  KEY_QUERY_VALUE, &hkey);
+        if (err != ERROR_SUCCESS)
+            return (0);
+        err = RegQueryValueEx(hkey, key, 0, 0, value, &bigsize);
+        if (err != ERROR_SUCCESS)
+        {
+            RegCloseKey(hkey);
+            return (0);
+        }
+        RegCloseKey(hkey);
+        return (1);
+    }
+}
+
+static void sys_putpreference(const char *key, const char *value)
+{
+    if (sys_prefsavefp)
+        sys_putpreference_file(key, value);
+    else
+    {
+        HKEY hkey;
+        LONG err = RegCreateKeyEx(HKEY_CURRENT_USER,
+            "Software\\Pure-Data", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE,
+            NULL, &hkey, NULL);
+        if (err != ERROR_SUCCESS)
+        {
+            error("unable to create registry entry: %s\n", key);
+            return;
+        }
+        err = RegSetValueEx(hkey, key, 0, REG_EXPAND_SZ, value, strlen(value)+1);
+        if (err != ERROR_SUCCESS)
+            error("unable to set registry entry: %s\n", key);
+        RegCloseKey(hkey);
+    }
+}
+
+#else
 /*****  linux/android/BSD etc: read and write to ~/.pdsettings file ******/
-#if !defined(_WIN32) && !defined(__APPLE__)
 
 static void sys_initloadpreferences(void)
 {
@@ -188,120 +507,7 @@ static void sys_donesavepreferences(void)
     sys_donesavepreferences_file();
 }
 
-#else  /* !defined(_WIN32) && !defined(__APPLE__) */
-
-static void sys_initloadpreferences(void)
-{
-    if (sys_prefbuf)
-        bug("sys_initloadpreferences");
-}
-static void sys_doneloadpreferences(void)
-{
-    if (sys_prefbuf)
-        sys_doneloadpreferences_file();
-}
-static void sys_initsavepreferences(void)
-{
-    if (sys_prefsavefp)
-        bug("sys_initsavepreferences");
-}
-static void sys_donesavepreferences(void)
-{
-    if (sys_prefsavefp)
-        sys_donesavepreferences_file();
-}
-
-static int sys_getpreference(const char *key, char *value, int size)
-{
-    if (sys_prefbuf)
-        return (sys_getpreference_file(key, value, size));
-    else
-    {
-#ifdef _WIN32
-        HKEY hkey;
-        DWORD bigsize = size;
-        LONG err = RegOpenKeyEx(HKEY_CURRENT_USER,
-            "Software\\Pure-Data", 0,  KEY_QUERY_VALUE, &hkey);
-        if (err != ERROR_SUCCESS)
-            return (0);
-        err = RegQueryValueEx(hkey, key, 0, 0, value, &bigsize);
-        if (err != ERROR_SUCCESS)
-        {
-            RegCloseKey(hkey);
-            return (0);
-        }
-        RegCloseKey(hkey);
-        return (1);
-#endif /* _WIN32 */
-#ifdef __APPLE__
-        char cmdbuf[256];
-        int nread = 0, nleft = size;
-        char embedded_prefs[MAXPDSTRING];
-        char user_prefs[MAXPDSTRING];
-        char *homedir = getenv("HOME");
-        struct stat statbuf;
-       /* the 'defaults' command expects the filename without .plist at the
-            end */
-        snprintf(embedded_prefs, MAXPDSTRING, "%s/../org.puredata.pd",
-            sys_libdir->s_name);
-        snprintf(user_prefs, MAXPDSTRING,
-            "%s/Library/Preferences/org.puredata.pd.plist", homedir);
-        if (stat(user_prefs, &statbuf) == 0)
-            snprintf(cmdbuf, 256, "defaults read org.puredata.pd %s 2> /dev/null\n",
-                key);
-        else snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
-                embedded_prefs, key);
-        FILE *fp = popen(cmdbuf, "r");
-        while (nread < size)
-        {
-            int newread = fread(value+nread, 1, size-nread, fp);
-            if (newread <= 0)
-                break;
-            nread += newread;
-        }
-        pclose(fp);
-        if (nread < 1)
-            return (0);
-        if (nread >= size)
-            nread = size-1;
-        value[nread] = 0;
-        if (value[nread-1] == '\n')     /* remove newline character at end */
-            value[nread-1] = 0;
-        return(1);
-#endif /* __APPLE__ */
-    }
-}
-
-static void sys_putpreference(const char *key, const char *value)
-{
-    if (sys_prefsavefp)
-        sys_putpreference_file(key, value);
-    else
-    {
-#ifdef _WIN32
-        HKEY hkey;
-        LONG err = RegCreateKeyEx(HKEY_CURRENT_USER,
-            "Software\\Pure-Data", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE,
-            NULL, &hkey, NULL);
-        if (err != ERROR_SUCCESS)
-        {
-            error("unable to create registry entry: %s\n", key);
-            return;
-        }
-        err = RegSetValueEx(hkey, key, 0, REG_EXPAND_SZ, value, strlen(value)+1);
-        if (err != ERROR_SUCCESS)
-            error("unable to set registry entry: %s\n", key);
-        RegCloseKey(hkey);
-#endif /* _WIN32 */
-#ifdef __APPLE__
-        char cmdbuf[MAXPDSTRING];
-        snprintf(cmdbuf, MAXPDSTRING,
-            "defaults write org.puredata.pd %s \"%s\" 2> /dev/null\n", key, value);
-        system(cmdbuf);
-#endif /* __APPLE__ */
-    }
-}
-#endif  /* !defined(_WIN32) && !defined(__APPLE__) */
+#endif
 
 void sys_loadpreferences(const char *filename, int startingup)
 {

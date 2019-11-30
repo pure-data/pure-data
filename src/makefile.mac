@@ -41,7 +41,8 @@ WARN_CFLAGS = -Wall -W -Wstrict-prototypes -Wno-unused -Wno-unused-parameter \
 MORECFLAGS = -Wno-error -ffast-math -O3
 
 LDFLAGS = -Wl -framework CoreAudio -framework AudioUnit \
-    -framework AudioToolbox -framework Carbon -framework CoreMIDI $(ARCH) \
+    -framework AudioToolbox -framework Carbon -framework CoreMIDI \
+    -framework CoreFoundation $(ARCH) \
 
 LIB = -ldl -lm -lpthread
 
