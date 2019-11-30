@@ -137,14 +137,8 @@ static void sys_donesavepreferences_file(void)
 
 static PERTHREAD CFMutableDictionaryRef sys_prefdict = NULL;
 
-static CFStringRef cfstring(const char *s)
-{
-    return CFStringCreateWithCStringNoCopy(kCFAllocatorDefault, s,
-        kCFStringEncodingUTF8, kCFAllocatorNull);
-}
-
-// get preferences file path into dst, returns 1 if embedded and 0 if user prefs
-static int preferences_getpath(char *dst, size_t size)
+// get preferences file load path into dst, returns 1 if embedded
+static int preferences_getloadpath(char *dst, size_t size)
 {
     char embedded_prefs[MAXPDSTRING];
     char user_prefs[MAXPDSTRING];
@@ -166,10 +160,19 @@ static int preferences_getpath(char *dst, size_t size)
     }
 }
 
+// get preferences file save path
+static void preferences_getsavepath(char *dst, size_t size)
+{
+    char user_prefs[MAXPDSTRING];
+    snprintf(user_prefs, MAXPDSTRING,
+        "%s/Library/Preferences/org.puredata.pd.plist", getenv("HOME"));
+    strncpy(dst, user_prefs, size);
+}
+
 static void sys_initloadpreferences(void)
 {
-    char path[MAXPDSTRING];
-    CFStringRef string = NULL;
+    char user_prefs[MAXPDSTRING];
+    CFStringRef path = NULL;
     CFURLRef fileURL = NULL;
     CFReadStreamRef stream = NULL;
     CFErrorRef err = NULL;
@@ -181,11 +184,11 @@ static void sys_initloadpreferences(void)
         return;
     }
 
-    preferences_getpath(path, MAXPDSTRING);
-
     // open read stream
-    string = cfstring(path);
-    fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, string,
+    preferences_getloadpath(user_prefs, MAXPDSTRING);
+    path = CFStringCreateWithCStringNoCopy(kCFAllocatorDefault, user_prefs,
+        kCFStringEncodingUTF8, kCFAllocatorNull);
+    fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, path,
         kCFURLPOSIXPathStyle, false); // false -> not a directory
     stream = CFReadStreamCreateWithFile(kCFAllocatorDefault, fileURL);
     if (!stream || !CFReadStreamOpen(stream)) goto cleanup;
@@ -211,7 +214,7 @@ cleanup:
         CFRelease(stream);
     }
     if (fileURL) {CFRelease(fileURL);}
-    if (string) {CFRelease(string);}
+    if (path) {CFRelease(path);}
     if (err) {CFRelease(err);}
 }
 
@@ -239,8 +242,8 @@ static void sys_initsavepreferences(void)
 
 static void sys_donesavepreferences(void)
 {
-    char path[MAXPDSTRING];
-    CFStringRef string = NULL;
+    char user_prefs[MAXPDSTRING];
+    CFStringRef path = NULL;
     CFURLRef fileURL = NULL;
     CFWriteStreamRef stream = NULL;
     CFErrorRef err = NULL;
@@ -264,9 +267,10 @@ static void sys_donesavepreferences(void)
     }
 
     // open write stream
-    preferences_getpath(path, MAXPDSTRING);
-    string = cfstring(path);
-    fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, string,
+    preferences_getsavepath(user_prefs, MAXPDSTRING);
+    path = CFStringCreateWithCStringNoCopy(kCFAllocatorDefault, user_prefs,
+        kCFStringEncodingUTF8, kCFAllocatorNull);
+    fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, path,
         kCFURLPOSIXPathStyle, false); // false -> not a directory
     stream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, fileURL);
     if (!stream || !CFWriteStreamOpen(stream)) goto cleanup;
@@ -292,7 +296,7 @@ cleanup:
         CFRelease(stream);
     }
     if (fileURL) {CFRelease(fileURL);}
-    if (string) {CFRelease(string);}
+    if (path) {CFRelease(path);}
     if (err) {CFRelease(err);}
 }
 
@@ -302,7 +306,8 @@ static int sys_getpreference(const char *key, char *value, int size)
         return (sys_getpreference_file(key, value, size));
     if (sys_prefdict) {
         /* read from loaded plist dict */
-        CFStringRef k = cfstring(key);
+        CFStringRef k = CFStringCreateWithCStringNoCopy(kCFAllocatorDefault,
+            key, kCFStringEncodingUTF8, kCFAllocatorNull);
         void *v = NULL;
         int ret = 0;
         if (CFDictionaryGetValueIfPresent(sys_prefdict, k,
@@ -313,7 +318,7 @@ static int sys_getpreference(const char *key, char *value, int size)
             {
                 ret = (strncpy(value, s, size) != NULL);
 #if 0
-                if (ret) fprintf(stderr, "%s = %s\n", key, value);
+                if (ret) fprintf(stderr, "plist read %s = %s\n", key, value);
 #endif
             }
             if (v) CFRelease(v);
@@ -326,7 +331,7 @@ static int sys_getpreference(const char *key, char *value, int size)
         char cmdbuf[256];
         int nread = 0, nleft = size;
         char path[MAXPDSTRING];
-        int embedded = preferences_getpath(path, MAXPDSTRING);
+        int embedded = preferences_getloadpath(path, MAXPDSTRING);
         if (embedded)
             snprintf(cmdbuf, 256, "defaults read %s %s 2> /dev/null\n",
                 path, key);
@@ -361,12 +366,16 @@ static void sys_putpreference(const char *key, const char *value)
         return;
     }
     if (sys_prefdict) {
-        /* write to plist dict */
-        CFStringRef k = cfstring(key);
-        CFStringRef v = cfstring(value);
+        CFStringRef k = CFStringCreateWithCString(kCFAllocatorDefault, key,
+                                                  kCFStringEncodingUTF8);
+        CFStringRef v = CFStringCreateWithCString(kCFAllocatorDefault, value,
+                                                  kCFStringEncodingUTF8);
         CFDictionarySetValue((CFMutableDictionaryRef)sys_prefdict, k, v);
         CFRelease(k);
         CFRelease(v);
+#if 0
+        fprintf(stderr, "plist write %s = %s\n", key, value);
+#endif
     }
     else {
         /* fallback to defaults command */
