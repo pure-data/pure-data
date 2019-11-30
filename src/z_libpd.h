@@ -112,13 +112,17 @@ EXTERN void libpd_set_midibytehook(const t_libpd_midibytehook hook);
 
 /// open the current patches within a Pd vanilla GUI
 /// requires the path to Pd's main folder that contains bin/, tcl/, etc
+/// for a macOS .app bundle: /path/to/Pd-#.#-#.app/Contents/Resources
 /// returns 0 on success
 EXTERN int libpd_start_gui(char *path);
 
 /// stop the Pd vanilla GUI
 EXTERN void libpd_stop_gui(void);
 
-/// update and handle any GUI messages
+/// manually update and handle any GUI messages
+/// this is called automatically when using a libpd_process* function,
+/// also facilitates network message processing, etc so it can be useful to
+/// call repeatedly when idle for more throughput
 EXTERN void libpd_poll_gui(void);
 
 /// \section Multiple Instances

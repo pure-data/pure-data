@@ -41,15 +41,15 @@ int sys_pollgui(void);
 
 // (optional) built in pd externals setup functions
 #ifdef LIBPD_EXTRA
-  void bob_tilde_setup();
-  void bonk_tilde_setup();
-  void choice_setup();
-  void fiddle_tilde_setup();
-  void loop_tilde_setup();
-  void lrshift_tilde_setup();
-  void pique_setup();
-  void sigmund_tilde_setup();
-  void stdout_setup();
+  void bob_tilde_setup(void);
+  void bonk_tilde_setup(void);
+  void choice_setup(void);
+  void fiddle_tilde_setup(void);
+  void loop_tilde_setup(void);
+  void lrshift_tilde_setup(void);
+  void pique_setup(void);
+  void sigmund_tilde_setup(void);
+  void stdout_setup(void);
 #endif
 
 static PERTHREAD t_atom *argv = NULL;
@@ -166,7 +166,7 @@ int libpd_process_raw(const float *inBuffer, float *outBuffer) {
   t_sample *p;
   size_t i;
   sys_lock();
-  sys_microsleep(0);
+  sys_pollgui();
   for (p = STUFF->st_soundin, i = 0; i < n_in; i++) {
     *p++ = *inBuffer++;
   }
@@ -186,7 +186,7 @@ static const t_sample sample_to_short = SHRT_MAX,
   int i, j, k; \
   t_sample *p0, *p1; \
   sys_lock(); \
-  sys_microsleep(0); \
+  sys_pollgui(); \
   for (i = 0; i < ticks; i++) { \
     for (j = 0, p0 = STUFF->st_soundin; j < DEFDACBLKSIZE; j++, p0++) { \
       for (k = 0, p1 = p0; k < STUFF->st_inchannels; k++, p1 += DEFDACBLKSIZE) \
