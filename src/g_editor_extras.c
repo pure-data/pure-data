@@ -14,6 +14,12 @@ void *canvas_undo_set_pastebinbuf(t_canvas *x, t_binbuf *b,
     int numpasted, int duplicate, int d_offset);
 
 /* ------------ utilities ---------- */
+typedef struct _triggerize_return {
+        /* data to return from triggerize */
+    t_gobj*tr_editgobj; /* if set, immediately switch this object to being edited */
+} t_triggerize_return;
+
+
 static t_gobj*o2g(t_object*obj)
 {
     return &(obj->te_g);
@@ -235,8 +241,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
     const int yoffset = 5;
     int obj_nout=obj_noutlets(obj);
     int nout;
-    int posX, posY;
-    t_binbuf*b=binbuf_new();
+    int posX = 0, posY;
     int didit=0;
 
     int _x; /* dummy variable */
@@ -273,6 +278,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
 
                 /* need to get the coordinates of the fanning outlet */
             t_linetraverser t;
+            t_binbuf*b=binbuf_new();
             linetraverser_start(&t, x);
             while((conn = linetraverser_next(&t)))
             {
@@ -295,6 +301,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
             canvas_undo_add(x, UNDO_PASTE, "paste",
                 canvas_undo_set_pastebinbuf(x, b, 0, 0, 0));
             stub=triggerize_createobj(x, b);
+            binbuf_free(b);
             stub_i = canvas_getindex(x, o2g(stub));
             conn=obj_starttraverseoutlet(obj, &out, nout);
             triggerize_defanout(x, count-1, conn, obj, stub, nout);
@@ -302,10 +309,9 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
             canvas_undo_add(x, UNDO_CONNECT, "connect",
                 canvas_undo_set_connect(x, obj_i, nout, stub_i, 0));
             glist_select(x, o2g(stub));
+            didit++;
         }
-        didit++;
     }
-    binbuf_free(b);
     return didit;
 }
 static int triggerize_fanouts(t_glist*cnv)
@@ -314,26 +320,30 @@ static int triggerize_fanouts(t_glist*cnv)
     t_gobj*gobj = NULL;
     int count=0;
     canvas_undo_add(cnv, UNDO_SEQUENCE_START, "triggerize", 0);
-    for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next)
+    for(gobj=cnv->gl_list; gobj; )
     {
+        t_gobj*next=gobj->g_next;
         t_object*obj=g2o(gobj);
         if(obj && glist_isselected(cnv, gobj) && triggerize_fanout(cnv, obj))
             count++;
+        gobj = next;
     }
     canvas_undo_add(cnv, UNDO_SEQUENCE_END, "triggerize", 0);
     return count;
 }
 
-static int triggerize_line(t_glist*x)
+static int triggerize_line(t_glist*x, t_triggerize_return*tr)
 {
         /* triggerize a single selected line, by inserting a [t a] object
-         * (or it's signal equivalen) */
+         * (or it's signal equivalent) */
     t_editor*ed=x->gl_editor;
     int src_obj, src_out, dst_obj, dst_in, new_obj;
     t_gobj *src = 0, *dst = 0;
     t_binbuf*b=0;
     int posx=100, posy=100;
     t_object*stub=0;
+    int sigline = 0;
+    int dspstate = 0;
 
     if(!ed->e_selectedline)
         return 0;
@@ -354,14 +364,33 @@ static int triggerize_line(t_glist*x)
         t_object*obj2=g2o(dst);
         if(obj1 && obj2)
         {
-            posx=(obj1->te_xpix+obj2->te_xpix)>>1;
+            float posSource, posSink;
+            int nio;
+            int _x; /* dummy variable */
+            int posLeft, posRight;
+
+                /* get real x-position of the outlet */
+            gobj_getrect(src, x, &posLeft, &_x, &posRight, &_x);
+            nio = obj_noutlets(obj1);
+            posSource = posLeft + (posRight - posLeft - IOWIDTH * x->gl_zoom) * src_out / ((nio==1)?1.:(nio-1.));
+
+                /* get real x-position of the inlet */
+            gobj_getrect(dst, x, &posLeft, &_x, &posRight, &_x);
+            nio = obj_ninlets(obj2);
+            posSink = posLeft + (posRight - posLeft - IOWIDTH * x->gl_zoom) * dst_in / ((nio==1)?1.:(nio-1.));
+
+            posx=(posSource + posSink)*0.5;
             posy=(obj1->te_ypix+obj2->te_ypix)>>1;
         }
     }
 
+    sigline = obj_issignaloutlet(g2o(src), src_out);
+    if(sigline)
+        dspstate = canvas_suspend_dsp();
+
     canvas_undo_add(x, UNDO_SEQUENCE_START, "{insert object}", 0);
     b=binbuf_new();
-    if(obj_issignaloutlet(g2o(src), src_out))
+    if(sigline)
     {
         binbuf_addv(b, "ssiiiisi;", gensym("#N"),
             gensym("canvas"), 200, 100, 190, 200, gensym("nop~"), 0);
@@ -400,6 +429,11 @@ static int triggerize_line(t_glist*x)
     glist_select(x, o2g(stub));
 
     canvas_undo_add(x, UNDO_SEQUENCE_END, "{insert object}", 0);
+        /* remember the inserted object, so we can select/edit it later */
+    if(tr)
+        tr->tr_editgobj = o2g(stub);
+    if(sigline)
+        canvas_resume_dsp(dspstate);
     return 1;
 bad:
     return 0;
@@ -490,6 +524,8 @@ static int expand_trigger(t_glist*cnv, t_object*obj)
     binbuf_add(b, 1, argv);
     binbuf_addv(b, "s", gensym("a"));
     binbuf_add(b, argc-1, argv+1);
+    canvas_undo_add(cnv, UNDO_PASTE, "paste",
+        canvas_undo_set_pastebinbuf(cnv, b, 0, 0, 0));
     stub=triggerize_createobj(cnv, b);
     stub_i = canvas_getindex(cnv, o2g(stub));
     for(nout=0; nout<obj_nout; nout++)
@@ -524,8 +560,9 @@ static int with_triggers(t_glist*cnv, t_fun_withobject fun)
     const t_symbol*s_trigger=gensym("trigger");
     int count=0;
     t_gobj*gobj = NULL;
-    for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next)
+    for(gobj=cnv->gl_list; gobj;)
     {
+        t_gobj*next=gobj->g_next;
         t_object*obj=g2o(gobj);
         if(obj && glist_isselected(cnv, gobj))
         {
@@ -533,6 +570,7 @@ static int with_triggers(t_glist*cnv, t_fun_withobject fun)
             if((s_trigger == c_name) && fun(cnv, obj))
                 count++;
         }
+        gobj=next;
     }
     return count;
 }
@@ -565,7 +603,7 @@ static int triggerize_triggers(t_glist*cnv)
     return 0;
 }
 
-static void canvas_do_triggerize(t_glist*cnv)
+static int canvas_do_triggerize(t_glist*cnv, t_triggerize_return*tr)
 {
         /*
          * selected msg-connection: insert [t a] (->triggerize_line)
@@ -576,23 +614,27 @@ static void canvas_do_triggerize(t_glist*cnv)
          * selected [trigger]: else, add left-most "a" outlet (->triggerize_triggers)
          */
 
-    if(triggerize_line(cnv)
-       || triggerize_fanouts(cnv)
-       || triggerize_triggers(cnv))
-    canvas_dirty(cnv, 1);
+    return(triggerize_line(cnv, tr)
+        || triggerize_fanouts(cnv)
+        || triggerize_triggers(cnv));
 }
 void canvas_triggerize(t_glist*cnv)
 {
-    int dspstate;
-    if(NULL == cnv)return;
-
-        /* suspend system */
-    dspstate = canvas_suspend_dsp();
-
-    canvas_do_triggerize(cnv);
-
-        /* restore state */
-    canvas_redraw(cnv);
-    glist_redraw(cnv);
-    canvas_resume_dsp(dspstate);
+    int count = 0;
+    t_triggerize_return*tr;
+    if(!cnv || !cnv->gl_editor)
+        return;
+    if(!cnv->gl_editor->e_selection && !cnv->gl_editor->e_selectedline)
+        return;
+    tr = getbytes(sizeof(*tr));
+    if(count = canvas_do_triggerize(cnv, tr)) {
+        canvas_dirty(cnv, 1);
+            /* fix display of connections, objects,... */
+        canvas_redraw(cnv);
+        glist_redraw(cnv);
+            /* if we inserted an object, allow the user to change it now */
+        if(tr->tr_editgobj)
+            gobj_activate(tr->tr_editgobj, cnv, 1);
+    }
+    freebytes(tr, sizeof(*tr));
 }

@@ -39,7 +39,7 @@ extern t_symbol *sys_flags;
 extern int sys_debuglevel;
 extern int sys_verbose;
 extern int sys_noloadbang;
-EXTERN int sys_havegui( void);
+EXTERN int sys_havegui(void);
 extern char *sys_guicmd;
 
 EXTERN int sys_nearestfontsize(int fontsize);
@@ -73,11 +73,11 @@ EXTERN void sys_set_audio_settings_reopen(int naudioindev, int *audioindev,
     int nchindev, int *chindev,
     int naudiooutdev, int *audiooutdev, int nchoutdev, int *choutdev,
     int srate, int advance, int callback, int blocksize);
-EXTERN void sys_reopen_audio( void);
+EXTERN void sys_reopen_audio(void);
 EXTERN void sys_close_audio(void);
     /* return true if the interface prefers always being open (ala jack) : */
-EXTERN int audio_shouldkeepopen( void);
-EXTERN int audio_isopen( void);     /* true if audio interface is open */
+EXTERN int audio_shouldkeepopen(void);
+EXTERN int audio_isopen(void);     /* true if audio interface is open */
 EXTERN int sys_audiodevnametonumber(int output, const char *name);
 EXTERN void sys_audiodevnumbertoname(int output, int devno, char *name,
     int namesize);
@@ -117,8 +117,8 @@ EXTERN int sys_mididevnametonumber(int output, const char *name);
 EXTERN void sys_mididevnumbertoname(int output, int devno, char *name,
     int namesize);
 
-EXTERN void sys_reopen_midi( void);
-EXTERN void sys_close_midi( void);
+EXTERN void sys_reopen_midi(void);
+EXTERN void sys_close_midi(void);
 EXTERN void sys_putmidimess(int portno, int a, int b, int c);
 EXTERN void sys_putmidibyte(int portno, int a);
 EXTERN void sys_poll_midi(void);
@@ -135,7 +135,7 @@ void sys_do_open_midi(int nmidiindev, int *midiindev,
 EXTERN void sys_alsa_putmidimess(int portno, int a, int b, int c);
 EXTERN void sys_alsa_putmidibyte(int portno, int a);
 EXTERN void sys_alsa_poll_midi(void);
-EXTERN void sys_alsa_close_midi( void);
+EXTERN void sys_alsa_close_midi(void);
 
 
     /* implemented in the system dependent MIDI code (s_midi_pm.c, etc. ) */
@@ -296,7 +296,7 @@ void jack_autoconnect(int);
 int mmio_open_audio(int naudioindev, int *audioindev,
     int nchindev, int *chindev, int naudiooutdev, int *audiooutdev,
     int nchoutdev, int *choutdev, int rate, int blocksize);
-void mmio_close_audio( void);
+void mmio_close_audio(void);
 void mmio_reportidle(void);
 int mmio_send_dacs(void);
 void mmio_getdevs(char *indevlist, int *nindevs,
@@ -324,11 +324,11 @@ void esd_getdevs(char *indevlist, int *nindevs,
         int maxndev, int devdescsize);
 
 int dummy_open_audio(int nin, int nout, int sr);
-int dummy_close_audio( void);
-int dummy_send_dacs( void);
+int dummy_close_audio(void);
+int dummy_send_dacs(void);
 void dummy_getdevs(char *indevlist, int *nindevs, char *outdevlist,
     int *noutdevs, int *canmulti, int maxndev, int devdescsize);
-void dummy_listdevs( void);
+void dummy_listdevs(void);
 
 void sys_listmididevs(void);
 EXTERN void sys_set_midi_api(int whichapi);
@@ -337,7 +337,7 @@ EXTERN int sys_audioapi;
 EXTERN void sys_set_audio_state(int onoff);
 
 /* API dependent audio flags and settings */
-void oss_set32bit( void);
+void oss_set32bit(void);
 void linux_alsa_devname(char *devname);
 
 EXTERN void sys_get_audio_params(
@@ -359,21 +359,21 @@ extern int sys_printtostderr;
 
 EXTERN int sys_externalschedlib;
 
-EXTERN t_sample* get_sys_soundout(void ) ;
-EXTERN t_sample* get_sys_soundin(void ) ;
-EXTERN int* get_sys_main_advance(void ) ;
-EXTERN double* get_sys_time_per_dsp_tick(void ) ;
-EXTERN int* get_sys_schedblocksize(void ) ;
-EXTERN double* get_sys_time(void ) ;
-EXTERN t_float* get_sys_dacsr(void ) ;
-EXTERN int* get_sys_sleepgrain(void ) ;
-EXTERN int* get_sys_schedadvance(void ) ;
+EXTERN t_sample* get_sys_soundout(void);
+EXTERN t_sample* get_sys_soundin(void);
+EXTERN int* get_sys_main_advance(void);
+EXTERN double* get_sys_time_per_dsp_tick(void);
+EXTERN int* get_sys_schedblocksize(void);
+EXTERN double* get_sys_time(void);
+EXTERN t_float* get_sys_dacsr(void);
+EXTERN int* get_sys_sleepgrain(void);
+EXTERN int* get_sys_schedadvance(void);
 
-EXTERN void sys_clearhist(void );
-EXTERN void sys_initmidiqueue(void );
+EXTERN void sys_clearhist(void);
+EXTERN void sys_initmidiqueue(void);
 EXTERN int sys_addhist(int phase);
-EXTERN void sched_tick( void);
-EXTERN void sys_pollmidiqueue(void );
+EXTERN void sched_tick(void);
+EXTERN void sys_pollmidiqueue(void);
 EXTERN void sys_setchsr(int chin, int chout, int sr);
 
 EXTERN void inmidi_realtimein(int portno, int cmd);
@@ -412,3 +412,13 @@ struct _instancestuff
 };
 
 #define STUFF (pd_this->pd_stuff)
+
+/* escape characters for tcl/tk
+ * escapes special characters ("{}\") in the string 'src', which
+ * has a maximum length of 'srclen' and might be 0-terminated,
+ * and writes them into the 'dstlen' sized output buffer 'dst'
+ * the result is zero-terminated; if the 'dst' buffer cannot hold the
+ * fully escaped 'src' string, the result might be incomplete.
+ * 'srclen' can be 0, in which case the 'src' string must be 0-terminated.
+ */
+EXTERN char*pdgui_strnescape(char* dst, size_t dstlen, const char*src, size_t srclen);

@@ -90,9 +90,9 @@ static pthread_cond_t pa_sem;
 #if defined (FAKEBLOCKING) && defined(_WIN32)
 #include <windows.h>    /* for Sleep() */
 #endif
-/* max number of unsuccessful polls before trying to reopen the device */
-#ifndef MAX_NUM_POLLS
-#define MAX_NUM_POLLS 2000
+/* max time (in ms) before trying to reopen the device */
+#ifndef POLL_TIMEOUT
+#define POLL_TIMEOUT 2000
 #endif
 #endif /* THREADSIGNAL */
 #endif  /* FAKEBLOCKING */
@@ -468,7 +468,7 @@ int pa_open_audio(int inchans, int outchans, int rate, t_sample *soundin,
     return (0);
 }
 
-void pa_close_audio( void)
+void pa_close_audio(void)
 {
     if (pa_stream)
     {
@@ -496,6 +496,7 @@ int pa_send_dacs(void)
     int j, k;
     int rtnval =  SENDDACS_YES;
     int locked = 0;
+    double timebefore;
 #ifdef FAKEBLOCKING
 #ifdef THREADSIGNAL
     struct timespec ts;
@@ -513,11 +514,10 @@ int pa_send_dacs(void)
     ts.tv_sec = (long long)timeout;
     ts.tv_nsec = (timeout - (double)ts.tv_sec) * 1e9;
 #else
-    int counter = MAX_NUM_POLLS;
 #endif /* THREADSIGNAL */
-#else
-    double timebefore;
 #endif /* FAKEBLOCKING */
+    timebefore = sys_getrealtime();
+
     if ((!STUFF->st_inchannels && !STUFF->st_outchannels) || !pa_stream)
         return (SENDDACS_NO);
     conversionbuf = (float *)alloca((STUFF->st_inchannels > STUFF->st_outchannels?
@@ -540,18 +540,15 @@ int pa_send_dacs(void)
                 break;
             }
 #else
-            if (Pa_IsStreamActive(&pa_stream) < 0)
-                counter--;
-            if (!counter)
+            if (Pa_IsStreamActive(&pa_stream) < 0 &&
+                (sys_getrealtime() - timebefore) > (POLL_TIMEOUT * 0.001))
             {
                 locked = 1;
                 break;
             }
-#ifdef _WIN32
-            Sleep(1);
-#else
-            usleep(1000);
-#endif /* _WIN32 */
+            sys_microsleep(sys_sleepgrain);
+            if (!pa_stream)     /* sys_microsleep() may have closed device */
+                return SENDDACS_NO;
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
@@ -585,18 +582,15 @@ int pa_send_dacs(void)
                 break;
             }
 #else
-            if (Pa_IsStreamActive(&pa_stream) < 0)
-                counter--;
-            if (!counter)
+            if (Pa_IsStreamActive(&pa_stream) < 0 &&
+                (sys_getrealtime() - timebefore) > (POLL_TIMEOUT * 0.001))
             {
                 locked = 1;
                 break;
             }
-#ifdef _WIN32
-            Sleep(1);
-#else
-            usleep(1000);
-#endif /* _WIN32 */
+            sys_microsleep(sys_sleepgrain);
+            if (!pa_stream)     /* sys_microsleep() may have closed device */
+                return SENDDACS_NO;
 #endif /* THREADSIGNAL */
         }
 #ifdef THREADSIGNAL
@@ -615,7 +609,6 @@ int pa_send_dacs(void)
     }
 
 #else /* FAKEBLOCKING */
-    timebefore = sys_getrealtime();
         /* write output */
     if (STUFF->st_outchannels)
     {
@@ -673,14 +666,14 @@ int pa_send_dacs(void)
             if (audio_isopen())
                 error("successfully reopened audio device");
             else
+            {
                 error("audio device not responding - closing audio");
-            #ifdef _WIN32
-                error("reconnect and try reselecting the device in the settings");
-            #endif
+                error("reconnect and reselect it in the settings (or toggle DSP)");
+            }
         #endif
         return SENDDACS_NO;
-    } else
-        return (rtnval);
+    }
+    else return (rtnval);
 }
 
     /* scanning for devices */

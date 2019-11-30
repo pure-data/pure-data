@@ -219,10 +219,17 @@ static void cos_maketable(void)
         bug("cos~: unexpected machine alignment");
 }
 
+static void cos_cleanup(t_class *c)
+{
+    freebytes(cos_table, sizeof(float) * (COSTABSIZE+1));
+    cos_table = 0;
+}
+
 static void cos_setup(void)
 {
     cos_class = class_new(gensym("cos~"), (t_newmethod)cos_new, 0,
         sizeof(t_cos), 0, A_DEFFLOAT, 0);
+    class_setfreefn(cos_class, cos_cleanup);
     CLASS_MAINSIGNALIN(cos_class, t_cos, x_f);
     class_addmethod(cos_class, (t_method)cos_dsp, gensym("dsp"), A_CANT, 0);
     cos_maketable();

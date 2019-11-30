@@ -70,8 +70,8 @@ void glist_text(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         SETSYMBOL(&at, gensym("comment"));
         glist_noselect(gl);
         glist_getnextxy(gl, &xpix, &ypix);
-        x->te_xpix = xpix-1;
-        x->te_ypix = ypix-1;
+        x->te_xpix = xpix/gl->gl_zoom - 1;
+        x->te_ypix = ypix/gl->gl_zoom - 1;
         binbuf_restore(x->te_binbuf, 1, &at);
         glist_add(gl, &x->te_g);
         glist_noselect(gl);
@@ -159,8 +159,8 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
         {
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
             indx = nobj;
-            *xpixp = x1;
-            *ypixp = y2 + 5;
+            *xpixp = x1 / x->gl_zoom;
+            *ypixp = y2  / x->gl_zoom + 5.5;    /* 5 pixels down, rounded */
         }
         glist_noselect(x);
             /* search back for 'selected' and if it isn't on the list,
@@ -179,8 +179,8 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
     else
     {
         glist_getnextxy(x, xpixp, ypixp);
-        *xpixp -= 3;
-        *ypixp -= 3;
+        *xpixp = *xpixp/x->gl_zoom - 3;
+        *ypixp = *ypixp/x->gl_zoom - 3;
         glist_noselect(x);
     }
     *connectp = connectme;
@@ -236,7 +236,7 @@ void canvas_iemguis(t_glist *gl, t_symbol *guiobjname)
     SETSYMBOL(&at, guiobjname);
     binbuf_restore(b, 1, &at);
     glist_getnextxy(gl, &xpix, &ypix);
-    canvas_objtext(gl, xpix, ypix, 0, 1, b);
+    canvas_objtext(gl, xpix/gl->gl_zoom, ypix/gl->gl_zoom, 0, 1, b);
     canvas_startmotion(glist_getcanvas(gl));
     canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
         (void *)canvas_undo_set_create(glist_getcanvas(gl)));
@@ -439,7 +439,6 @@ static void message_click(t_message *x,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift,
         t_floatarg ctrl, t_floatarg alt)
 {
-    message_float(x, 0);
     if (glist_isvisible(x->m_glist))
     {
         /* not zooming click width for now as it gets too fat */
@@ -448,6 +447,7 @@ static void message_click(t_message *x,
             glist_getcanvas(x->m_glist), rtext_gettag(y), MESSAGE_CLICK_WIDTH);
         clock_delay(x->m_clock, 120);
     }
+    message_float(x, 0);
 }
 
 static void message_tick(t_message *x)
@@ -1079,7 +1079,7 @@ static void text_displace(t_gobj *z, t_glist *glist,
     if (glist_isvisible(glist))
     {
         t_rtext *y = glist_findrtext(glist, x);
-        rtext_displace(y, dx, dy);
+        rtext_displace(y, glist->gl_zoom * dx, glist->gl_zoom * dy);
         text_drawborder(x, glist, rtext_gettag(y),
             rtext_width(y), rtext_height(y), 0);
         canvas_fixlinesfor(glist, x);

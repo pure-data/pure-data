@@ -2032,7 +2032,8 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                 fielddesc_getcoord(TEMPLATE->array_motion_yfield,
                     TEMPLATE->array_motion_template, thisword, 1) : 0);
             fielddesc_setcoord(TEMPLATE->array_motion_xfield,
-                TEMPLATE->array_motion_template, thisword, xwas + dx, 1);
+                TEMPLATE->array_motion_template, thisword,
+                    xwas + dx * TEMPLATE->array_motion_xperpix, 1);
             if (TEMPLATE->array_motion_yfield)
             {
                 if (TEMPLATE->array_motion_fatten)
@@ -2333,6 +2334,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                                 fielddesc_getcoord(wfield,
                                     TEMPLATE->array_motion_template,
                                     (t_word *)(elem + i * elemsize), 1);
+                            if (TEMPLATE->array_motion_yperpix < 0)
+                                TEMPLATE->array_motion_yperpix *= -1;
                             TEMPLATE->array_motion_yperpix *=
                                 -TEMPLATE->array_motion_fatten;
                         }
@@ -2357,8 +2360,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             return (CURSOR_EDITMODE_DISCONNECT);
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
-                    else return (TEMPLATE->array_motion_fatten ?
-                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
+                    else return (CURSOR_RUNMODE_THICKEN); /* thicken or drag */
                 }
             }
         }
@@ -2618,7 +2620,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), 1),
+            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
                 sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
@@ -2809,12 +2811,12 @@ void g_template_setup(void)
     drawnumber_setup();
 }
 
-void g_template_newpdinstance( void)
+void g_template_newpdinstance(void)
 {
     TEMPLATE = getbytes(sizeof(*TEMPLATE));
 }
 
-void g_template_freepdinstance( void)
+void g_template_freepdinstance(void)
 {
     freebytes(TEMPLATE, sizeof(*TEMPLATE));
 }
