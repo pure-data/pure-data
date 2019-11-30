@@ -292,6 +292,7 @@ static int defaultfontshit[] = {
 #define NDEFAULTFONT (sizeof(defaultfontshit)/sizeof(*defaultfontshit))
 
 static t_clock *sys_fakefromguiclk;
+int socket_init(void);
 static void sys_fakefromgui(void)
 {
         /* fake the GUI's message giving cwd and font sizes in case
@@ -330,12 +331,6 @@ int sys_main(int argc, char **argv)
     /* use Win32 "binary" mode by default since we don't want the
      * translation that Win32 does by default */
 #ifdef _WIN32
-    {
-        short version = MAKEWORD(2, 0);
-        WSADATA nobby;
-        if (WSAStartup(version, &nobby))
-            sys_sockerror("WSAstartup");
-    }
 # ifdef _MSC_VER /* MS Visual Studio */
     _set_fmode( _O_BINARY );
 # else  /* MinGW */
@@ -355,6 +350,8 @@ int sys_main(int argc, char **argv)
         setuid(getuid());
     }
 #endif  /* _WIN32 */
+    if (socket_init())
+        sys_sockerror("socket_init()");
     pd_init();                                  /* start the message system */
     sys_findprogdir(argv[0]);                   /* set sys_progname, guipath */
     for (i = noprefs = 0; i < argc; i++)    /* prescan ... */
