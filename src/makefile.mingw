@@ -53,7 +53,7 @@ INCLUDE = -I$(pd_src)/src
 GINCLUDE = -I/usr/local/include $(INCLUDE)
 
 LDFLAGS = 
-LIBS = -lm -lwsock32 -lwinmm -lole32 -lpthread \
+LIBS = -lm -lws2_32 -lwinmm -lole32 -lpthread \
     -static-libgcc -static-libstdc++
 
 OPT_CFLAGS = 
@@ -123,7 +123,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
     s_main.c s_inter.c s_file.c s_print.c \
-    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_utf8.c \
+    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_net.c s_utf8.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_fft_fftsg.c d_array.c d_global.c \
     d_delay.c d_resample.c d_soundfile.c \
@@ -131,7 +131,7 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     x_time.c x_acoustics.c x_net.c x_text.c x_gui.c x_list.c x_array.c \
     x_scalar.c x_vexp.c x_vexp_if.c x_vexp_fun.c
 
-SRSRC = u_pdsend.c u_pdreceive.c
+SRSRC = u_pdsend.c u_pdreceive.c s_net.c
 
 OBJ = $(SRC:.c=.o) 
 SROBJ = $(SRSRC:.c=.o) 
@@ -185,12 +185,12 @@ $(PMOBJ) : %.o : %.c
 $(VOBJ) : %.o : %.c
 	$(CC) $(CFLAGS) $(GFLAGS) $(INCLUDE) -c -o $*.o $*.c 
 
-$(PDSEND): u_pdsend.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o $(LIBS)
+$(PDSEND): u_pdsend.o s_net.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDSEND) u_pdsend.o s_net.o $(LIBS)
 	$(STRIP) $(PDSEND)
 
-$(PDRECEIVE): u_pdreceive.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o $(LIBS)
+$(PDRECEIVE): u_pdreceive.o s_net.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PDRECEIVE) u_pdreceive.o s_net.o $(LIBS)
 	$(STRIP) $(PDRECEIVE)
 
 $(PDEXEC): s_entry.o pd.res
