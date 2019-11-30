@@ -64,7 +64,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
                 if (devno == midiinvec[i])
                 {
                     err = Pm_OpenInput(&mac_midiindevlist[mac_nmidiindev],
-                        j, NULL, 100, NULL, NULL);
+                        j, NULL, 1024, NULL, NULL);
                     if (err)
                         post("could not open midi input %d (%s): %s",
                             j, info->name, Pm_GetErrorText(err));
@@ -113,7 +113,7 @@ void sys_do_open_midi(int nmidiin, int *midiinvec,
     }
 }
 
-void sys_close_midi( void)
+void sys_close_midi(void)
 {
     int i;
     for (i = 0; i < mac_nmidiindev; i++)
@@ -273,11 +273,10 @@ void sys_poll_midi(void)
     PmEvent buffer;
     for (i = 0; i < mac_nmidiindev; i++)
     {
-        if(Pm_Poll(mac_midiindevlist[i]))
+        while((nmess = Pm_Read(mac_midiindevlist[i], &buffer, 1)))
         {
             if (!throttle--)
                 goto overload;
-            nmess = Pm_Read(mac_midiindevlist[i], &buffer, 1);
             if (nmess > 0)
             {
                 int status = Pm_MessageStatus(buffer.message);
@@ -326,8 +325,12 @@ void sys_poll_midi(void)
                         break;
                 }
             }
-            else if (nmess != pmBufferOverflow)
-                break;
+            else
+            {
+                error("%s", Pm_GetErrorText(nmess));
+                if (nmess != pmBufferOverflow)
+                    break;
+            }
         }
     }
     overload: ;

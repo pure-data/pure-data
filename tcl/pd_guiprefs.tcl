@@ -144,6 +144,9 @@ proc ::pd_guiprefs::init {} {
             # asked for by holding the Option/Alt button when quitting via the File
             # menu or with the Cmd+Q key binding.
             exec defaults write $::pd_guiprefs::domain NSQuitAlwaysKeepsWindows -bool false
+
+            # Disable Character Accent Selector popup so key repeat works for all keys.
+            exec defaults write $::pd_guiprefs::domain ApplePressAndHoldEnabled -bool false
         }
         "registry" {
             # windows uses registry
@@ -321,7 +324,11 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
             file mkdir $fullconfigdir
         }
     }]} {
-        ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created in $confdir.\n"
+        set absconfdir ${::pd_guiprefs::configdir}
+        catch { set absconfdir [file normalize ${::pd_guiprefs::configdir} ] }
+
+        ::pdwindow::error [format [_ "Couldn't create preferences \"%1\$s\" in %2\$s" ] $domain $absconfdir]
+        ::pdwindow::error "\n"
     }
     return $domain
 }

@@ -75,6 +75,8 @@ struct _instancetemplate
 
 /* ---------------- forward definitions ---------------- */
 
+static void template_addtolist(t_template *x);
+static void template_takeofflist(t_template *x);
 static void template_conformarray(t_template *tfrom, t_template *tto,
     int *conformaction, t_array *a);
 static void template_conformglist(t_template *tfrom, t_template *tto,
@@ -100,11 +102,33 @@ static int dataslot_matches(t_dataslot *ds1, t_dataslot *ds2,
 
 /* -- templates, the active ingredient in gtemplates defined below. ------- */
 
+    /* add a template to the list */
+static void template_addtolist(t_template *x)
+{
+    x->t_next = pd_this->pd_templatelist;
+    pd_this->pd_templatelist = x;
+}
+
+static void template_takeofflist(t_template *x)
+{
+        /* take it off the template list */
+    if (x == pd_this->pd_templatelist) pd_this->pd_templatelist = x->t_next;
+    else
+    {
+        t_template *z;
+        for (z = pd_this->pd_templatelist; z->t_next != x; z = z->t_next)
+            if (!z->t_next) return;
+        z->t_next = x->t_next;
+    }
+}
+
 t_template *template_new(t_symbol *templatesym, int argc, t_atom *argv)
 {
     t_template *x = (t_template *)pd_new(template_class);
     x->t_n = 0;
     x->t_vec = (t_dataslot *)t_getbytes(0);
+    x->t_next = 0;
+    template_addtolist(x);
     while (argc > 0)
     {
         int newtype, oldn, newn;
@@ -570,6 +594,7 @@ void template_free(t_template *x)
     if (*x->t_sym->s_name)
         pd_unbind(&x->t_pdobj, x->t_sym);
     t_freebytes(x->t_vec, x->t_n * sizeof(*x->t_vec));
+    template_takeofflist(x);
 }
 
 static void template_setup(void)
@@ -823,9 +848,10 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
     }
 }
 
-#define CLOSED 1
-#define BEZ 2
-#define NOMOUSE 4
+#define CLOSED 1      /* polygon */
+#define BEZ 2         /* bezier shape */
+#define NOMOUSERUN 4  /* disable mouse interaction when in run mode  */
+#define NOMOUSEEDIT 8 /* same in edit mode */
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -991,7 +1017,7 @@ t_class *curve_class;
 typedef struct _curve
 {
     t_object x_obj;
-    int x_flags;            /* CLOSED and/or BEZ and/or NOMOUSE */
+    int x_flags;    /* CLOSED, BEZ, NOMOUSERUN, NOMOUSEEDIT */
     t_fielddesc x_fillcolor;
     t_fielddesc x_outlinecolor;
     t_fielddesc x_width;
@@ -1004,7 +1030,7 @@ typedef struct _curve
 static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_curve *x = (t_curve *)pd_new(curve_class);
-    char *classname = classsym->s_name;
+    const char *classname = classsym->s_name;
     int flags = 0;
     int nxy, i;
     t_fielddesc *fd;
@@ -1017,20 +1043,40 @@ static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
     else classname += 4;
     if (classname[0] == 'c') flags |= BEZ;
     fielddesc_setfloat_const(&x->x_vis, 1);
-    while (1)
+    while (argc && argv->a_type == A_SYMBOL &&
+        *argv->a_w.w_symbol->s_name == '-')
     {
-        t_symbol *firstarg = atom_getsymbolarg(0, argc, argv);
-        if (!strcmp(firstarg->s_name, "-v") && argc > 1)
+        const char *flag = argv->a_w.w_symbol->s_name;
+        if (!strcmp(flag, "-n"))
+        {
+            fielddesc_setfloat_const(&x->x_vis, 0);
+        }
+        else if (!strcmp(flag, "-v") && argc > 1)
         {
             fielddesc_setfloatarg(&x->x_vis, 1, argv+1);
-            argc -= 2; argv += 2;
-        }
-        else if (!strcmp(firstarg->s_name, "-x"))
-        {
-            flags |= NOMOUSE;
             argc -= 1; argv += 1;
         }
-        else break;
+        else if (!strcmp(flag, "-x"))
+        {
+            /* disable all mouse interaction */
+            flags |= (NOMOUSERUN | NOMOUSEEDIT);
+        }
+        else if (!strcmp(flag, "-xr"))
+        {
+            /* disable mouse actions in run mode */
+            flags |= NOMOUSERUN;
+        }
+        else if (!strcmp(flag, "-xe"))
+        {
+            /* disable mouse actions in edit mode */
+            flags |= NOMOUSEEDIT;
+        }
+        else
+        {
+            pd_error(x, "%s: unknown flag '%s'...", classsym->s_name,
+                flag);
+        }
+        argc--; argv++;
     }
     x->x_flags = flags;
     if ((flags & CLOSED) && argc)
@@ -1079,7 +1125,8 @@ static void curve_getrect(t_gobj *z, t_glist *glist,
     t_fielddesc *f = x->x_vec;
     int x1 = 0x7fffffff, x2 = -0x7fffffff, y1 = 0x7fffffff, y2 = -0x7fffffff;
     if (!fielddesc_getfloat(&x->x_vis, template, data, 0) ||
-        (x->x_flags & NOMOUSE))
+        (glist->gl_edit && x->x_flags & NOMOUSEEDIT) ||
+        (!glist->gl_edit && x->x_flags & NOMOUSERUN))
     {
         *xp1 = *yp1 = 0x7fffffff;
         *xp2 = *yp2 = -0x7fffffff;
@@ -1271,8 +1318,9 @@ static int curve_click(t_gobj *z, t_glist *glist,
     int bestn = -1;
     int besterror = 0x7fffffff;
     t_fielddesc *f;
-    if (!fielddesc_getfloat(&x->x_vis, template, data, 0))
-        return (0);
+    if ((x->x_flags & NOMOUSERUN) ||
+        !fielddesc_getfloat(&x->x_vis, template, data, 0))
+            return (0);
     for (i = 0, f = x->x_vec; i < n; i++, f += 2)
     {
         int xval = fielddesc_getcoord(f, template, data, 0),
@@ -1984,7 +2032,8 @@ static void array_motion(void *z, t_floatarg dx, t_floatarg dy)
                 fielddesc_getcoord(TEMPLATE->array_motion_yfield,
                     TEMPLATE->array_motion_template, thisword, 1) : 0);
             fielddesc_setcoord(TEMPLATE->array_motion_xfield,
-                TEMPLATE->array_motion_template, thisword, xwas + dx, 1);
+                TEMPLATE->array_motion_template, thisword,
+                    xwas + dx * TEMPLATE->array_motion_xperpix, 1);
             if (TEMPLATE->array_motion_yfield)
             {
                 if (TEMPLATE->array_motion_fatten)
@@ -2285,6 +2334,8 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                                 fielddesc_getcoord(wfield,
                                     TEMPLATE->array_motion_template,
                                     (t_word *)(elem + i * elemsize), 1);
+                            if (TEMPLATE->array_motion_yperpix < 0)
+                                TEMPLATE->array_motion_yperpix *= -1;
                             TEMPLATE->array_motion_yperpix *=
                                 -TEMPLATE->array_motion_fatten;
                         }
@@ -2309,8 +2360,7 @@ static int array_doclick(t_array *array, t_glist *glist, t_scalar *sc,
                             return (CURSOR_EDITMODE_DISCONNECT);
                         else return (CURSOR_RUNMODE_ADDPOINT);
                     }
-                    else return (TEMPLATE->array_motion_fatten ?
-                        CURSOR_RUNMODE_THICKEN : CURSOR_RUNMODE_CLICKME);
+                    else return (CURSOR_RUNMODE_THICKEN); /* thicken or drag */
                 }
             }
         }
@@ -2387,7 +2437,7 @@ typedef struct _drawnumber
 static void *drawnumber_new(t_symbol *classsym, int argc, t_atom *argv)
 {
     t_drawnumber *x = (t_drawnumber *)pd_new(drawnumber_class);
-    char *classname = classsym->s_name;
+    const char *classname = classsym->s_name;
 
     fielddesc_setfloat_const(&x->x_vis, 1);
     x->x_canvas = canvas_getcurrent();
@@ -2570,7 +2620,7 @@ static void drawnumber_vis(t_gobj *z, t_glist *glist,
         sys_vgui(".x%lx.c create text %d %d -anchor nw -fill %s -text {%s}",
                 glist_getcanvas(glist), xloc, yloc, colorstring, buf);
         sys_vgui(" -font {{%s} -%d %s}", sys_font,
-            sys_hostfontsize(glist_getfont(glist), 1),
+            sys_hostfontsize(glist_getfont(glist), glist_getzoom(glist)),
                 sys_fontweight);
         sys_vgui(" -tags [list drawnumber%lx label]\n", data);
     }
@@ -2761,12 +2811,12 @@ void g_template_setup(void)
     drawnumber_setup();
 }
 
-void g_template_newpdinstance( void)
+void g_template_newpdinstance(void)
 {
     TEMPLATE = getbytes(sizeof(*TEMPLATE));
 }
 
-void g_template_freepdinstance( void)
+void g_template_freepdinstance(void)
 {
     freebytes(TEMPLATE, sizeof(*TEMPLATE));
 }

@@ -49,7 +49,7 @@ struct _instanceugen
 
 #define THIS (pd_this->pd_ugen)
 
-void d_ugen_newpdinstance( void)
+void d_ugen_newpdinstance(void)
 {
     THIS = getbytes(sizeof(*THIS));
     THIS->u_dspchain = 0;
@@ -57,7 +57,7 @@ void d_ugen_newpdinstance( void)
     THIS->u_signals = 0;
 }
 
-void d_ugen_freepdinstance( void)
+void d_ugen_freepdinstance(void)
 {
     freebytes(THIS, sizeof(*THIS));
 }
@@ -387,9 +387,9 @@ int ilog2(int n)
 
 
     /* call this when DSP is stopped to free all the signals */
-void signal_cleanup(void)
+static void signal_cleanup(void)
 {
-    t_signal **svec, *sig, *sig2;
+    t_signal *sig;
     int i;
     while ((sig = THIS->u_signals))
     {
@@ -454,11 +454,10 @@ void signal_makereusable(t_signal *sig)
     signal whose buffer and size will be obtained later via
     signal_setborrowed(). */
 
-t_signal *signal_new(int n, t_float sr)
+static t_signal *signal_new(int n, t_float sr)
 {
-    int logn, n2, vecsize = 0;
+    int logn, vecsize = 0;
     t_signal *ret, **whichlist;
-    t_sample *fp;
     logn = ilog2(n);
     if (n)
     {
@@ -518,7 +517,7 @@ void signal_setborrowed(t_signal *sig, t_signal *sig2)
     if (THIS->u_loud) post("set borrowed %lx: %lx", sig, sig->s_vec);
 }
 
-int signal_compatible(t_signal *s1, t_signal *s2)
+static int signal_compatible(t_signal *s1, t_signal *s2)
 {
     return (s1->s_n == s2->s_n && s1->s_sr == s2->s_sr);
 }
@@ -586,8 +585,6 @@ t_signal *signal_newfromcontext(int borrowed)
 
 void ugen_stop(void)
 {
-    t_signal *s;
-    int i;
     if (THIS->u_dspchain)
     {
         freebytes(THIS->u_dspchain,
@@ -613,8 +610,8 @@ int ugen_getsortno(void)
     return (THIS->u_sortno);
 }
 
-#if 1
-void glob_foo(void *dummy, t_symbol *s, int argc, t_atom *argv)
+#if 0
+void glob_ugen_printstate(void *dummy, t_symbol *s, int argc, t_atom *argv)
 {
     int i, count;
     t_signal *sig;
@@ -644,7 +641,6 @@ t_dspcontext *ugen_start_graph(int toplevel, t_signal **sp,
     int ninlets, int noutlets)
 {
     t_dspcontext *dc = (t_dspcontext *)getbytes(sizeof(*dc));
-    int parent_vecsize, vecsize;
 
     if (THIS->u_loud) post("ugen_start_graph...");
 
@@ -749,7 +745,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
 {
     t_sigoutlet *uout;
     t_siginlet *uin;
-    t_sigoutconnect *oc, *oc2;
+    t_sigoutconnect *oc;
     t_class *class = pd_class(&u->u_obj->ob_pd);
     int i, n;
         /* suppress creating new signals for the outputs of signal
@@ -902,7 +898,7 @@ static void ugen_doit(t_dspcontext *dc, t_ugenbox *u)
 
 void ugen_done_graph(t_dspcontext *dc)
 {
-    t_ugenbox *u, *u2;
+    t_ugenbox *u;
     t_sigoutlet *uout;
     t_siginlet *uin;
     t_sigoutconnect *oc, *oc2;
@@ -1046,7 +1042,7 @@ void ugen_done_graph(t_dspcontext *dc)
     for (u = dc->dc_ugenlist; u; u = u->u_next)
     {
         t_pd *zz = &u->u_obj->ob_pd;
-        t_signal **insigs = dc->dc_iosigs, **outsigs = dc->dc_iosigs;
+        t_signal **outsigs = dc->dc_iosigs;
         if (outsigs) outsigs += dc->dc_ninlets;
 
         if (pd_class(zz) == vinlet_class)
@@ -1181,7 +1177,7 @@ void ugen_done_graph(t_dspcontext *dc)
 
 }
 
-t_signal *ugen_getiosig(int index, int inout)
+static t_signal *ugen_getiosig(int index, int inout)
 {
     if (!THIS->u_context) bug("ugen_getiosig");
     if (THIS->u_context->dc_toplevel) return (0);

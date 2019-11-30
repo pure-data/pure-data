@@ -1,26 +1,34 @@
 # Pure Data Windows resources
 
 This directory contains support files for building a Pure Data Windows
-application directory and supplementary build scripts for compiling Pd on
-Windows & Linux systems, as it is built for the 'vanilla' releases on
-msp.ucsd.edu.
+application, as it is built for the 'vanilla' releases on msp.ucsd.edu.
 
 ## Notes about compiling on Microsoft Windows
 
-The release procedure for making vanilla releases is a mess for several
-reasons. Because of licensing restrictions, the ASIO support files are not
-included in the Pd source tree. For this and other reasons, Pd is compiled
-in another directory in a filesystem maintained by Wine (the Linux Windows
-emulator). Compilation is done both using Microsoft's compiler and
-separately using MinGW. The release contains binaries built with MinGW but
-a .lib file created by the Microsoft compile chain.
+As of Pd version 0.50, all releases are compiled using Dan Wilcox's scripts,
+msw-app.sh, and optionally tcltk-dir.sh (which builds a version of TCL/TK in
+case you don't already have one).
 
-The main script is "send-msw.sh" in this directory; this calls two other
-scripts in the non-distributed directory ~/bis/work/wine/script/, copies
-of which are included here (build-msw.sh and mingw-compile.sh).
+The Pd sources aren't completely self-contained: Because of licensing
+restrictions, the ASIO support files are not included in the Pd source tree.
+The msw-app.sh script presumes you've downloaded the ASIO SDK andcan point
+msw-app.sh to it.
 
-There are also random support files here, some of which are probably no longer
-used.
+It's also possible to compile Pd using Visual C.  This is not managed
+automatically but you can look in "how-to-use-msvc.sh" to see how it can be
+done.  This compiler gives different warnings which are sometimes useful, and
+refuses to compile code that has variable declarations in the middle of a
+block.  It's a good idea to test pull requests against MSVC if you can.  The
+file "pdprototype.zip" contains all the garbage that Pd needs in addition to its
+own files, including tcl/tk.  MSVC compilation works in 32 bits only.
+
+The scripts build-msw-32.sh and build-msw-64.sh are the ones used by Miller to
+make Pd releases.  These files work on linux only and will not work out of
+the box unless your file tree resembles miller's in some ways (pd source is in
+~/pd for instance) but you can presumably make your own version if you need to.
+
+But to first get things working, it's best to use msw-app.sh and tcltk-dir.sh
+directly.
 
 ## Pd Application Directory
 
@@ -81,7 +89,7 @@ version or directory via commandline options, for example:
 
     # create pd-0.48-1 directory, download and build Tcl/Tk 8.5.19
     msw/msw-app.sh --tk 8.5.19 0.48-1
-    
+
     # create pd-0.48-1 directory, use Tcl/Tk 8.5.19 built with tcltk-dir.sh
     msw/msw-app.sh --tk tcltk-8.5.19 0.48-1
 
@@ -98,7 +106,7 @@ release distributions or from a git clone:
     msw/tcltk-dir.sh 8.5.19
 
     # build tcltk-master-git with the latest master branch from git
-    msw/tcltk-dir.sh --git master-git 
+    msw/tcltk-dir.sh --git master-git
 
 Once your custom Tcl/Tk is built, you can use it as the Tk directory source for
 msw-app.sh with the -t/--tk option:
@@ -112,7 +120,7 @@ tcltk directories you need with tcltk-dir.sh can save you some time as they
 can be reused when (re)making the Pd app directory.
 
 Usually, it's best to use stable releases of Tcl/Tk. However, there are times
-when building from the current development version is useful. For instance, 
+when building from the current development version is useful. For instance,
 if there is a bug in the Tcl/Tk sources, you can then see if there is a fix for
 this in the Tcl/Tk development version on GitHub. If so, then you can test by
 using the tcltk-dir.sh --git commandline option.
@@ -123,3 +131,14 @@ the --64bit option:
 
     # force 64 bit Tcl/Tk 8.6.8 build
     tcltk-dir.sh --64bit 8.6.8
+
+## pdfontloader
+
+Tk cannot load local font files by default on Windows. Pd accomplishes this
+through a tiny, custom Tcl extension, pdfontloader.dll. On initialization, the
+Pd GUI tries to load pdfontloader and, if successful, tries to load the included
+Pd font.
+
+Currently, pdfontloader.dll is pre-built and included within the pdprototype.tgz
+tarball. To build pdfontloader, see https://github.com/pure-data/pdfontloader
+source.

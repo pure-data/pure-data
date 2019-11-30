@@ -30,18 +30,18 @@ static void *pdint_new(t_floatarg f)
 
 static void pdint_bang(t_pdint *x)
 {
-    outlet_float(x->x_obj.ob_outlet, (t_float)(int)(x->x_f));
+    outlet_float(x->x_obj.ob_outlet, (t_float)(int64_t)(x->x_f));
 }
 
 static void pdint_float(t_pdint *x, t_float f)
 {
-    outlet_float(x->x_obj.ob_outlet, (t_float)(int)(x->x_f = f));
+    outlet_float(x->x_obj.ob_outlet, (t_float)(int64_t)(x->x_f = f));
 }
 
 static void pdint_send(t_pdint *x, t_symbol *s)
 {
     if (s->s_thing)
-        pd_float(s->s_thing, (t_float)(int)x->x_f);
+        pd_float(s->s_thing, (t_float)(int64_t)x->x_f);
     else pd_error(x, "%s: no such object", s->s_name);
 }
 
@@ -95,7 +95,7 @@ static void pdfloat_float(t_pdfloat *x, t_float f)
 }
 
 #ifdef _MSC_VER
-#define strtof _atoldbl
+#define strtof(a,b) _atoldbl(a,*b)
 #endif
 
 static void pdfloat_symbol(t_pdfloat *x, t_symbol *s)
@@ -1257,7 +1257,7 @@ typedef struct _makefilename
 } t_makefilename;
 
 static const char* _formatscan(const char*str, t_printtype*typ) {
-    int num=0, infmt=0;
+    int infmt=0;
     for (; *str; str++) {
         if (!infmt && *str=='%') {
             infmt=1;
@@ -1294,9 +1294,7 @@ static const char* _formatscan(const char*str, t_printtype*typ) {
 
 static void makefilename_scanformat(t_makefilename *x)
 {
-    int num=0, infmt=0;
     const char *str;
-    char *chr;
     t_printtype typ;
     if (!x->x_format) return;
     str = x->x_format->s_name;

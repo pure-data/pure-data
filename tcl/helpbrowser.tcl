@@ -461,6 +461,12 @@ proc ::helpbrowser::build_references {} {
         lappend searchpaths $dir
     }
 
+    # sys_temppath (aka -path on commandline)
+    foreach pathdir $::sys_temppath {
+        set dir [string trimright [file normalize $pathdir]]
+        lappend searchpaths $dir
+    }
+
     # remove any *exact* duplicates between user search paths and system paths
     set searchpaths [lsort -unique $searchpaths]
 

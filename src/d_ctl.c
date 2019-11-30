@@ -262,7 +262,6 @@ static t_int *vline_tilde_perform(t_int *w)
     double f = x->x_value;
     double inc = x->x_inc;
     double msecpersamp = x->x_msecpersamp;
-    double samppermsec = x->x_samppermsec;
     double timenow, logicaltimenow = clock_gettimesince(x->x_referencetime);
     t_vseg *s = x->x_list;
     if (logicaltimenow != x->x_lastlogicaltime)
@@ -691,7 +690,7 @@ static void env_tilde_ff(t_sigenv *x)           /* cleanup on free */
 }
 
 
-void env_tilde_setup(void )
+void env_tilde_setup(void)
 {
     env_tilde_class = class_new(gensym("env~"), (t_newmethod)env_tilde_new,
         (t_method)env_tilde_ff, sizeof(t_sigenv), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
@@ -820,7 +819,7 @@ static void threshold_tilde_ff(t_threshold_tilde *x)
     clock_free(x->x_clock);
 }
 
-static void threshold_tilde_setup( void)
+static void threshold_tilde_setup(void)
 {
     threshold_tilde_class = class_new(gensym("threshold~"),
         (t_newmethod)threshold_tilde_new, (t_method)threshold_tilde_ff,

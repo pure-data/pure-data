@@ -16,8 +16,7 @@ noinst_LIBRARIES = libportmidi.a
 
 libportmidi_a_SOURCES = \
     portmidi/pm_common/pmutil.c \
-    portmidi/pm_common/portmidi.c \
-    portmidi/porttime/porttime.c
+    portmidi/pm_common/portmidi.c
 
 if LINUX
 AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_linux
@@ -27,10 +26,11 @@ libportmidi_a_SOURCES += \
     portmidi/pm_linux/pmlinuxalsa.c
 endif
 
+# disable portmidi rate limiting on macos
 if MACOSX
-AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_mac
+AM_CPPFLAGS += -I$(top_srcdir)/portmidi/portmidi/pm_mac -DLIMIT_RATE=0
 libportmidi_a_SOURCES += \
-    portmidi/porttime/ptmacosx_cf.c \
+    portmidi/porttime/ptmacosx_mach.c \
     portmidi/pm_mac/pmmac.c \
     portmidi/pm_mac/pmmacosxcm.c \
     portmidi/pm_mac/finddefault.c \
@@ -45,7 +45,11 @@ libportmidi_a_SOURCES += \
     portmidi/pm_win/pmwinmm.c
 endif
 
+# empty var for headers list footer
+empty=
+
 # include the headers in the dist so you can build
+# find portmidi -type file -name *.h | sort | awk '{print "   ", $1, "\\"}'; echo '     $(empty)'
 nobase_noinst_HEADERS = \
     portmidi/pm_common/pminternal.h \
     portmidi/pm_common/pmutil.h \
@@ -56,4 +60,5 @@ nobase_noinst_HEADERS = \
     portmidi/pm_mac/pmmacosxcm.h \
     portmidi/pm_mac/readbinaryplist.h \
     portmidi/pm_win/pmwinmm.h \
-    portmidi/porttime/porttime.h
+    portmidi/porttime/porttime.h \
+     $(empty)

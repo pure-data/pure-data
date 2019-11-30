@@ -12,7 +12,7 @@
 # tags: tags file
 # install: install to /usr/local (or elsewhere by setting "prefix" variable)
 #
-# You can get jack support ($ make -f makfile.gnu JACK=TRUE) or compile in
+# You can get jack support ($ make -f makefile.gnu JACK=TRUE) or compile in
 # the portaudio library (PA=TRUE).  By default, both ALSA and OSS (BSD style)
 # audio APIs are compiled in.  You can disable them (e.g., OSS=FALSE).  In
 # Gnu/linux, you can also just install "alsa-oss."
@@ -57,7 +57,8 @@ CPPFLAGS = -DPD -DHAVE_LIBDL -DHAVE_UNISTD_H -DHAVE_ALLOCA_H \
     -DPDGUIDIR=\"tcl/\" \
     -D_LARGEFILE64_SOURCE -DINSTALL_PREFIX=\"$(prefix)\" \
     -Wall -W -Wstrict-prototypes  -Wno-address\
-    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch
+    -Wno-unused -Wno-unused-parameter -Wno-parentheses -Wno-switch \
+    -Wno-cast-function-type -Wno-stringop-truncation -Wno-format-truncation
 
 # code generation flags (e.g., optimization).  
 CODECFLAGS = -g -O3 -ffast-math -funroll-loops -fomit-frame-pointer
@@ -111,11 +112,13 @@ CFLAGS = $(CPPFLAGS) $(CODECFLAGS) $(MORECFLAGS)
 SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     g_scalar.c g_traversal.c g_guiconnect.c g_readwrite.c g_editor.c g_clone.c \
     g_all_guis.c g_bang.c g_hdial.c g_hslider.c g_mycanvas.c g_numbox.c \
-    g_toggle.c g_vdial.c g_vslider.c g_vumeter.c \
+    g_toggle.c g_undo.c g_vdial.c g_vslider.c g_vumeter.c \
+    g_editor_extras.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
     s_main.c s_inter.c s_file.c s_print.c \
-    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_utf8.c s_audio_paring.c \
+    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_net.c s_utf8.c \
+    s_audio_paring.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_fft_fftsg.c d_array.c d_global.c \
     d_delay.c d_resample.c d_soundfile.c \
@@ -162,13 +165,13 @@ $(BIN_DIR)/pd-watchdog: s_watchdog.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $(BIN_DIR)/pd-watchdog s_watchdog.c
 
-$(BIN_DIR)/pdsend: u_pdsend.c
+$(BIN_DIR)/pdsend: u_pdsend.c s_net.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdsend u_pdsend.c
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdsend u_pdsend.c s_net.c
 
-$(BIN_DIR)/pdreceive: u_pdreceive.c
+$(BIN_DIR)/pdreceive: u_pdreceive.c s_net.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdreceive u_pdreceive.c
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdreceive u_pdreceive.c s_net.c
 
 $(PDEXEC): $(OBJ_DIR) $(OBJ)
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)

@@ -38,11 +38,11 @@ void *getzbytes(size_t nbytes)  /* obsolete name */
     return (getbytes(nbytes));
 }
 
-void *copybytes(void *src, size_t nbytes)
+void *copybytes(const void *src, size_t nbytes)
 {
     void *ret;
     ret = getbytes(nbytes);
-    if (nbytes)
+    if (nbytes && ret)
         memcpy(ret, src, nbytes);
     return (ret);
 }
