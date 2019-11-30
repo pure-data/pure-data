@@ -852,6 +852,7 @@ static void fielddesc_setfloat_var(t_fielddesc *fd, t_symbol *s)
 #define BEZ 2         /* bezier shape */
 #define NOMOUSERUN 4  /* disable mouse interaction when in run mode  */
 #define NOMOUSEEDIT 8 /* same in edit mode */
+#define NOVERTICES 16 /* disable only vertex grabbing in run mode */
 #define A_ARRAY 55      /* LATER decide whether to enshrine this in m_pd.h */
 
 static void fielddesc_setfloatarg(t_fielddesc *fd, int argc, t_atom *argv)
@@ -1070,6 +1071,11 @@ static void *curve_new(t_symbol *classsym, int argc, t_atom *argv)
         {
             /* disable mouse actions in edit mode */
             flags |= NOMOUSEEDIT;
+        }
+        else if (!strcmp(flag, "-xv"))
+        {
+            /* disable changing vertices in run mode */
+            flags |= NOVERTICES;
         }
         else
         {
@@ -1318,7 +1324,7 @@ static int curve_click(t_gobj *z, t_glist *glist,
     int bestn = -1;
     int besterror = 0x7fffffff;
     t_fielddesc *f;
-    if ((x->x_flags & NOMOUSERUN) ||
+    if ((x->x_flags & NOMOUSERUN) || (x->x_flags & NOVERTICES) ||
         !fielddesc_getfloat(&x->x_vis, template, data, 0))
             return (0);
     for (i = 0, f = x->x_vec; i < n; i++, f += 2)

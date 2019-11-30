@@ -43,8 +43,8 @@ if LIBPD
 lib_LTLIBRARIES = libpd.la
 endif
 
-pdsend_SOURCES = u_pdsend.c
-pdreceive_SOURCES = u_pdreceive.c
+pdsend_SOURCES = u_pdsend.c s_net.c
+pdreceive_SOURCES = u_pdreceive.c s_net.c
 pd_watchdog_SOURCES = s_watchdog.c
 libpd_la_SOURCES = \
     z_libpd.c \
@@ -124,6 +124,7 @@ pd_SOURCES_core = \
     s_inter.c \
     s_loader.c \
     s_main.c \
+    s_net.c \
     s_path.c \
     s_print.c \
     s_utf8.c \
@@ -154,7 +155,9 @@ pd_SOURCES_standalone = \
 libpdbindir = $(pkglibdir)/bin
 
 # these install to ${includedir}/pd
-pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h x_vexp.h
+pkginclude_HEADERS = m_pd.h m_imp.h g_canvas.h g_undo.h g_all_guis.h s_stuff.h \
+    s_net.h x_vexp.h
+
 # compatibility: m_pd.h also goes into ${includedir}/
 include_HEADERS = m_pd.h
 noinst_HEADERS = s_audio_alsa.h s_audio_paring.h s_utf8.h
@@ -238,7 +241,7 @@ endif
 
 # need Carbon framework for PA on Mac
 if MACOSX
-LIBS += -framework Carbon
+LIBS += -framework Carbon -framework CoreFoundation
 endif
 
 endif
@@ -353,8 +356,8 @@ endif
 ##### Windows #####
 if WINDOWS
 
-# win32 sockets, multimedia, and all that
-LIBS += -lwsock32 -lwinmm -lole32 -static-libgcc -static-libstdc++
+# win32 sockets 2, multimedia, and all that
+LIBS += -lws2_32 -lwinmm -lole32 -static-libgcc -static-libstdc++
 
 bin_SCRIPTS += pd.dll pd.lib pd.def pd.com
 CLEANFILES += pd.dll pd.lib pd.def pd.com
@@ -419,7 +422,9 @@ if MINGW
 # To use SetDllDirectory() in s_loader.c, we need a minimum of Windows
 # XP SP1. WINVER isnt' fine-grained enough for that, so we use the
 # next minor version of Windows, 5.2.  That gives us -DWINVER=0x0502
-pd_CFLAGS += -DWINVER=0x0502 -D_WIN32_WINNT=0x0502
+# On the other hand, Msys2 wants a minimum of 0x0600  (Windows Vista)
+# for some necessary defines in <ws2tcpip.h> (for IP6 support).
+pd_CFLAGS += -DWINVER=0x0600 -D_WIN32_WINNT=0x0600
 endif
 
 #########################################
