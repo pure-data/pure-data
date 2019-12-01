@@ -1080,7 +1080,7 @@ void pd_typedmess(t_pd *x, t_symbol *s, int argc, t_atom *argv)
     (*c->c_anymethod)(x, s, argc, argv);
     return;
 badarg:
-    pd_error(x, "Bad arguments for message '%s' to object '%s'",
+    pd_error(x, "bad arguments for message '%s' to object '%s'",
         s->s_name, c->c_name->s_name);
 }
 
