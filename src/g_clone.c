@@ -72,7 +72,6 @@ int clone_match(t_pd *z, t_symbol *name, t_symbol *dir)
 }
 
 void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv);
-void obj_copyinlet_counts(t_object *x, int n, t_inlet * source);
 
 static void clone_in_list(t_in *x, t_symbol *s, int argc, t_atom *argv)
 {
@@ -312,10 +311,6 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             for (i = 0; i < nout; i++)
                 dsp_add_zero(sp[nin+i]->s_vec, sp[nin+i]->s_n);
             return;
-        }
-
-        for (i = 0; i < x->x_nin; i++) {
-          obj_copyinlet_counts(&x->x_vec[j].c_gl->gl_obj, i, x->x_invec[i].i_inlet);
         }
     }
     tempsigs = (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));

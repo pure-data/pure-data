@@ -28,9 +28,6 @@ typedef struct _vinlet
     t_canvas *x_canvas;
     t_inlet *x_inlet;
     t_outlet * x_anyoutlet;
-    t_outlet *x_status; /* status outlet */
-    int x_status_last;
-    t_clock *x_clock;
     int x_bufsize;
     t_float *x_buf;         /* signal buffer; zero if not a signal */
     t_float *x_endbuf;
@@ -52,9 +49,6 @@ static void *vinlet_new(t_symbol *s)
     x->x_bufsize = 0;
     x->x_buf = 0;
     x->x_anyoutlet = outlet_new(&x->x_obj, 0);
-    x->x_clock = 0;
-    x->x_status = 0;
-    x->x_status_last = -1;
     return (x);
 }
 
@@ -94,8 +88,6 @@ static void vinlet_free(t_vinlet *x)
     if (x->x_buf)
         t_freebytes(x->x_buf, x->x_bufsize * sizeof(*x->x_buf));
     resample_free(&x->x_updown);
-    if (x->x_clock)
-        clock_free(x->x_clock);
 }
 
 t_inlet *vinlet_getit(t_pd *x)
@@ -108,21 +100,6 @@ t_inlet *vinlet_getit(t_pd *x)
 int vinlet_issignal(t_vinlet *x)
 {
     return (x->x_buf != 0);
-}
-
-int inlet_nconnections_signal(t_inlet *x);
-
-void vinlet_status(t_vinlet *x)
-{
-    int count = inlet_nconnections_signal(x->x_inlet);
-    if (count == x->x_status_last)
-      return;
-
-    x->x_status_last = count;
-    t_atom a;
-    SETFLOAT(&a, count);
-    /* prefix in case we add more info later */
-    outlet_anything(x->x_status, gensym("signals"), 1, &a);
 }
 
 t_int *vinlet_perform(t_int *w)
@@ -153,7 +130,6 @@ static void vinlet_dsp(t_vinlet *x, t_signal **sp)
         dsp_add(vinlet_perform, 3, x, outsig->s_vec, outsig->s_vecsize);
         x->x_read = x->x_buf;
     }
-    clock_delay(x->x_clock, 0);
 }
 
     /* prolog code: loads buffer from parent patch */
@@ -309,8 +285,6 @@ static void *vinlet_newsig(t_symbol *s, int argc, t_atom *argv)
 
     outlet_new(&x->x_obj, &s_signal);
     x->x_anyoutlet = outlet_new(&x->x_obj, &s_anything);
-    x->x_status = outlet_new(&x->x_obj, 0); /* connectivity status */
-    x->x_clock = clock_new(x, (t_method)vinlet_status);
 
     return (x);
 }

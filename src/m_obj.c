@@ -26,8 +26,6 @@ struct _inlet
     t_pd *i_dest;
     t_symbol *i_symfrom;
     union inletunion i_un;
-    int i_nconnections;
-    int i_nconnections_signal;
     unsigned char i_generic;
 };
 
@@ -63,8 +61,6 @@ t_inlet *inlet_new(t_object *owner, t_pd *dest, t_symbol *s1, t_symbol *s2)
     }
     else owner->ob_inlet = x;
     x->i_generic = 0;
-    x->i_nconnections = 0;
-    x->i_nconnections_signal = 0;
     return (x);
 }
 
@@ -81,16 +77,6 @@ t_inlet *vsignalinlet_new(t_object *owner, t_pd *dest)
     x->i_un.iu_floatsignalvalue = 0;
     x->i_generic = 1;
     return (x);
-}
-
-int inlet_nconnections(t_inlet *x)
-{
-    return x->i_nconnections;
-}
-
-int inlet_nconnections_signal(t_inlet *x)
-{
-    return x->i_nconnections_signal;
 }
 
 static void inlet_wrong(t_inlet *x, t_symbol *s)
@@ -496,7 +482,6 @@ t_outconnect *obj_connect(t_object *source, int outno,
     }
     for (i = sink->ob_inlet; i && inno; i = i->i_next, inno--) ;
     if (!i) return (0);
-    i->i_nconnections++;
     to = &i->i_pd;
 doit:
     oc = (t_outconnect *)t_getbytes(sizeof(*oc));
@@ -510,11 +495,8 @@ doit:
         oc2->oc_next = oc;
     }
     else o->o_connections = oc;
-    if (o->o_sym == &s_signal) {
-      if (i)
-        i->i_nconnections_signal++;
-      canvas_update_dsp();
-    }
+    if (o->o_sym == &s_signal) canvas_update_dsp();
+
     return (oc);
 }
 
@@ -538,9 +520,6 @@ void obj_disconnect(t_object *source, int outno, t_object *sink, int inno)
     }
     for (i = sink->ob_inlet; i && inno; i = i->i_next, inno--) ;
     if (!i) return;
-    i->i_nconnections--;
-    if (i->i_nconnections < 0)
-        bug("obj_disconnect");
     to = &i->i_pd;
 doit:
     if (!(oc = o->o_connections)) return;
@@ -561,14 +540,7 @@ doit:
         oc = oc2;
     }
 done:
-    if (o->o_sym == &s_signal) {
-      if (i) {
-        i->i_nconnections_signal--;
-        if (i->i_nconnections_signal < 0)
-          bug("obj_disconnect");
-      }
-      canvas_update_dsp();
-    }
+    if (o->o_sym == &s_signal) canvas_update_dsp();
 }
 
 /* ------ traversal routines for code that can't see our structures ------ */
@@ -804,13 +776,3 @@ void obj_sendinlet(t_object *x, int n, t_symbol *s, int argc, t_atom *argv)
     else bug("obj_sendinlet");
 }
 
-void obj_copyinlet_counts(t_object *x, int n, t_inlet * source) {
-    t_inlet *i;
-    for (i = x->ob_inlet; i && n; i = i->i_next, n--)
-        ;
-    if (i) {
-        i->i_nconnections = source->i_nconnections;
-        i->i_nconnections_signal = source->i_nconnections_signal;
-    }
-    else bug("obj_sendinlet");
-}
