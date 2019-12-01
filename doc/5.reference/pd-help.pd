@@ -1,4 +1,4 @@
-#N canvas 789 82 583 622 12;
+#N canvas 2 74 1916 1004 12;
 #N canvas 0 0 600 400 (subpatch) 0;
 #X restore 23 13 pd;
 #X text 57 14 - subpatch;
@@ -144,45 +144,38 @@ in the subpatch (open the patch below to see them.);
 inlet and two additional outlets. The inlet~ and outlet~ objects can
 also deal with up/downsampling - see subpatches below for examples.
 , f 64;
-#N canvas 273 115 958 414 inlet~ 0;
+#N canvas 2 74 1916 1004 inlet~ 1;
 #X obj 600 98 sig~ 42;
 #X msg 621 129 foo bar;
-#X floatatom 643 163 5 0 0 0 - - -, f 5;
+#X floatatom 643 163 5 0 0 0 - - -;
 #X text 692 161 <= a float is also promoted to signal and becomes the
 default signal value, f 27;
-#N canvas 666 411 326 265 extra-outlets 0;
+#N canvas 2 54 1916 1024 extra-outlets 0;
 #X obj 83 63 inlet~;
-#X obj 122 99 outlet;
-#X obj 102 142 outlet;
+#X obj 122 143 outlet;
 #X obj 83 190 outlet~;
-#X text 177 100 <= connectivity;
-#X text 155 142 <= messages;
+#X text 175 143 <= messages;
 #X text 143 190 <= signal;
-#X connect 0 0 3 0;
-#X connect 0 1 2 0;
-#X connect 0 2 1 0;
+#X connect 0 0 2 0;
+#X connect 0 1 1 0;
 #X restore 600 238 pd extra-outlets;
-#X text 493 29 The inlet~ object can also receive messages and they
-are routed to its 2nd outlet. The 3rd outlets sends a count of connections
-, f 52;
 #X text 518 136 connect =>;
 #X text 724 238 <= click and open;
-#X obj 709 272 print connectivity;
-#X obj 654 308 print messages;
+#X obj 709 308 print messages;
 #X obj 600 340 snapshot~;
-#X floatatom 600 376 5 0 0 0 - - -, f 5;
+#X floatatom 600 376 5 0 0 0 - - -;
 #X obj 505 246 loadbang;
 #X obj 505 274 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 505 298 metro 100;
 #X obj 202 267 inlet~ 3;
 #X obj 202 326 snapshot~;
-#X floatatom 202 362 5 0 0 0 - - -, f 5;
+#X floatatom 202 362 5 0 0 0 - - -;
 #X obj 107 232 loadbang;
 #X obj 107 260 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
 #X obj 107 284 metro 100;
-#X floatatom 202 226 5 0 0 0 - - -, f 5;
+#X floatatom 202 226 5 0 0 0 - - -;
 #X text 27 39 A float argument sets the initial audio output. This
 is needed to make abstractions behave like externals \, where you can
 give it an argument to load a default value.;
@@ -192,22 +185,22 @@ and load values accordingly. For instance \, an optional first argument
 can be a symbol \, then you need to get the value from the 2nd argument
 into the inlet.;
 #X text 243 227 <= sets default value;
-#X connect 0 0 4 0;
+#X text 493 29 The inlet~ object can also receive messages and they
+are routed to its 2nd outlet., f 52;
 #X connect 1 0 4 0;
 #X connect 2 0 4 0;
-#X connect 4 0 10 0;
-#X connect 4 1 9 0;
-#X connect 4 2 8 0;
+#X connect 4 0 8 0;
+#X connect 4 1 7 0;
+#X connect 8 0 9 0;
 #X connect 10 0 11 0;
-#X connect 12 0 13 0;
+#X connect 11 0 12 0;
+#X connect 12 0 8 0;
 #X connect 13 0 14 0;
-#X connect 14 0 10 0;
-#X connect 15 0 16 0;
+#X connect 14 0 15 0;
 #X connect 16 0 17 0;
-#X connect 18 0 19 0;
-#X connect 19 0 20 0;
-#X connect 20 0 16 0;
-#X connect 21 0 15 0;
+#X connect 17 0 18 0;
+#X connect 18 0 14 0;
+#X connect 19 0 13 0;
 #X restore 157 472 pd inlet~;
 #X text 233 502 <= details on up/downsampling;
 #X text 231 473 <= details on inlet~'s extra features;
