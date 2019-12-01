@@ -17,7 +17,6 @@
 #include <stdarg.h>
 
 extern t_class *vinlet_class, *voutlet_class, *canvas_class, *text_class;
-t_float *obj_findsignalscalar(t_object *x, int m);
 
 EXTERN_STRUCT _vinlet;
 EXTERN_STRUCT _voutlet;
