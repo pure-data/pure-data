@@ -117,7 +117,8 @@ SRC = g_canvas.c g_graph.c g_text.c g_rtext.c g_array.c g_template.c g_io.c \
     m_pd.c m_class.c m_obj.c m_atom.c m_memory.c m_binbuf.c \
     m_conf.c m_glob.c m_sched.c \
     s_main.c s_inter.c s_file.c s_print.c \
-    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_utf8.c s_audio_paring.c \
+    s_loader.c s_path.c s_entry.c s_audio.c s_midi.c s_net.c s_utf8.c \
+    s_audio_paring.c \
     d_ugen.c d_ctl.c d_arithmetic.c d_osc.c d_filter.c d_dac.c d_misc.c \
     d_math.c d_fft.c d_fft_fftsg.c d_array.c d_global.c \
     d_delay.c d_resample.c d_soundfile.c \
@@ -164,13 +165,13 @@ $(BIN_DIR)/pd-watchdog: s_watchdog.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $(BIN_DIR)/pd-watchdog s_watchdog.c
 
-$(BIN_DIR)/pdsend: u_pdsend.c
+$(BIN_DIR)/pdsend: u_pdsend.c s_net.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdsend u_pdsend.c
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdsend u_pdsend.c s_net.c
 
-$(BIN_DIR)/pdreceive: u_pdreceive.c
+$(BIN_DIR)/pdreceive: u_pdreceive.c s_net.c
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdreceive u_pdreceive.c
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/pdreceive u_pdreceive.c s_net.c
 
 $(PDEXEC): $(OBJ_DIR) $(OBJ)
 	test -d $(BIN_DIR) || mkdir -p $(BIN_DIR)
