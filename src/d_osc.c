@@ -136,11 +136,11 @@ typedef struct _cos
     float x_f;
 } t_cos;
 
-static void *cos_new(void)
+static void *cos_new(t_floatarg f)
 {
     t_cos *x = (t_cos *)pd_new(cos_class);
     outlet_new(&x->x_obj, gensym("signal"));
-    x->x_f = 0;
+    x->x_f = f;
     return (x);
 }
 
