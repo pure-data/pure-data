@@ -140,6 +140,12 @@ static void clone_in_vis(t_in *x, t_floatarg fn, t_floatarg vis)
     canvas_vis(x->i_owner->x_vec[n].c_gl, (vis != 0));
 }
 
+static void clone_in_fwd(t_in *x, t_symbol *s, int argc, t_atom *argv)
+{
+    if (argc > 0 && argv->a_type == A_SYMBOL)
+        typedmess(&x->i_pd, argv->a_w.w_symbol, argc-1, argv+1);
+}
+
 static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_atom *outv;
@@ -399,7 +405,8 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
             obj_issignalinlet(&x->x_vec[0].c_gl->gl_obj, i);
         x->x_invec[i].i_n = i;
         if (x->x_invec[i].i_signal)
-            signalinlet_new(&x->x_obj, 0);
+            inlet_new(&x->x_obj, &x->x_invec[i].i_pd,
+                &s_signal, &s_signal);
         else inlet_new(&x->x_obj, &x->x_invec[i].i_pd, 0, 0);
     }
     x->x_nout = obj_noutlets(&x->x_vec[0].c_gl->gl_obj);
@@ -452,6 +459,8 @@ void clone_setup(void)
         A_GIMME, 0);
     class_addmethod(clone_in_class, (t_method)clone_in_vis, gensym("vis"),
         A_FLOAT, A_FLOAT, 0);
+    class_addmethod(clone_in_class, (t_method)clone_in_fwd, gensym("fwd"),
+        A_GIMME, 0);
     class_addlist(clone_in_class, (t_method)clone_in_list);
 
     clone_out_class = class_new(gensym("clone-outlet"), 0, 0,
