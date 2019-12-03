@@ -316,8 +316,8 @@ static void clone_dsp(t_clone *x, t_signal **sp)
     for (i = 0; i < nin; i++)
     {
             /* we already have one reference "counted" for our presumed
-            use of this input signal but we must add the others. */
-        sp[i]->s_refcount += x->x_n-1;
+            use of this input signal but add one for each copy. */
+        sp[i]->s_refcount += x->x_n;
         tempsigs[2 * nout + i] = sp[i];
     }
         /* for first copy, write output to first nout temp sigs */
@@ -344,6 +344,10 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         dsp_add_copy(tempsigs[i]->s_vec, sp[nin+i]->s_vec, tempsigs[i]->s_n);
         signal_makereusable(tempsigs[i]);
     }
+        /* decrement input signal ref counts once more and free if zero */
+    for (i = 0; i < nin; i++)
+        if (--sp[i]->s_refcount)
+            signal_makereusable(sp[i]);
 }
 
 static void *clone_new(t_symbol *s, int argc, t_atom *argv)
