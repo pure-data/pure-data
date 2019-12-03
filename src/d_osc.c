@@ -8,6 +8,7 @@
 #include "m_pd.h"
 #include "math.h"
 
+#define BIGFLOAT 1.0e+19
 #define UNITBIT32 1572864.  /* 3*2^19; bit 32 has place value 1 */
 
 
@@ -373,9 +374,11 @@ static void *sigvcf_new(t_floatarg q)
     return (x);
 }
 
-static void sigvcf_ft1(t_sigvcf *x, t_floatarg f)
+static void sigvcf_ft1(t_sigvcf *x, t_float f)
 {
-    x->x_ctl->c_q = (f > 0 ? f : 0.f);
+    if(f < 0.) f = 0.;
+    if(f > BIGFLOAT) f = BIGFLOAT;
+    x->x_ctl->c_q = f;
 }
 
 static t_int *sigvcf_perform(t_int *w)
