@@ -161,11 +161,19 @@ static void clone_out_anything(t_out *x, t_symbol *s, int argc, t_atom *argv)
     ATOMS_FREEA(outv, outc);
 }
 
+static PERTHREAD int clone_voicetovis = -1;
+
 static void clone_free(t_clone *x)
 {
     if (x->x_vec)
     {
-        int i;
+        int i, voicetovis = -1;
+        if (THISGUI->i_reloadingabstraction)
+        {
+            for (i = 0; i < x->x_n; i++)
+                if (x->x_vec[i].c_gl == THISGUI->i_reloadingabstraction)
+                    voicetovis = i;
+        }
         for (i = 0; i < x->x_n; i++)
         {
             canvas_closebang(x->x_vec[i].c_gl);
@@ -177,6 +185,7 @@ static void clone_free(t_clone *x)
         t_freebytes(x->x_argv, x->x_argc * sizeof(*x->x_argv));
         t_freebytes(x->x_invec, x->x_nin * sizeof(*x->x_invec));
         t_freebytes(x->x_outvec, x->x_n * sizeof(*x->x_outvec));
+        clone_voicetovis = voicetovis;
     }
 }
 
@@ -354,12 +363,13 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
 {
     t_clone *x = (t_clone *)pd_new(clone_class);
     t_canvas *c;
-    int wantn, dspstate, i;
+    int wantn, dspstate, i, voicetovis = clone_voicetovis;
     t_out *outvec;
     x->x_invec = 0;
     x->x_outvec = 0;
     x->x_startvoice = 0;
     x->x_suppressvoice = 0;
+    clone_voicetovis = -1;
     if (argc == 0)
     {
         x->x_vec = 0;
@@ -431,6 +441,8 @@ static void *clone_new(t_symbol *s, int argc, t_atom *argv)
     clone_setn(x, (t_floatarg)(wantn));
     x->x_phase = wantn-1;
     canvas_resume_dsp(dspstate);
+    if (voicetovis >= 0 && voicetovis < x->x_n)
+        canvas_vis(x->x_vec[voicetovis].c_gl, 1);
     return (x);
 usage:
     error("usage: clone [-s starting-number] <number> <name> [arguments]");
