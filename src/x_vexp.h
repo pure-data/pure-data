@@ -15,6 +15,7 @@
 #else /* MSP */
 #include "ext.h"
 #include "z_dsp.h"
+typedef float t_float;      // t_float is from m_pd.h
 #endif
 
 #define fts_malloc malloc
