@@ -1620,7 +1620,8 @@ static void plot_getrect(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, xsum, yval, vis, scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, yval, vis, scalarvis;
+    double xsum;
     t_array *array;
     int x1 = 0x7fffffff, y1 = 0x7fffffff, x2 = -0x7fffffff, y2 = -0x7fffffff;
     int i;
@@ -1735,8 +1736,8 @@ static void plot_vis(t_gobj *z, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     t_symbol *elemtemplatesym;
-    t_float linewidth, xloc, xinc, yloc, style, usexloc, xsum, yval, vis,
-        scalarvis;
+    t_float linewidth, xloc, xinc, yloc, style, usexloc, yval, vis, scalarvis;
+    double xsum;
     t_array *array;
     int nelem;
     char *elem;
@@ -2113,7 +2114,7 @@ static int array_doclick_element(t_array *array, t_glist *glist,
     t_canvas *elemtemplatecanvas;
     t_template *elemtemplate;
     int elemsize, yonset, wonset, xonset, i, incr, hit;
-    t_float xsum;
+    double xsum;
 
     if (elemtemplatesym == &s_float)
         return (0);
