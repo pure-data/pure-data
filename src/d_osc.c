@@ -385,10 +385,10 @@ static void sigvcf_ft1(t_sigvcf *x, t_float f)
 
 static t_int *sigvcf_perform(t_int *w)
 {
-    float *in1 = (float *)(w[1]);
-    float *in2 = (float *)(w[2]);
-    float *out1 = (float *)(w[3]);
-    float *out2 = (float *)(w[4]);
+    t_sample *in1 = (t_sample *)(w[1]);
+    t_sample *in2 = (t_sample *)(w[2]);
+    t_sample *out1 = (t_sample *)(w[3]);
+    t_sample *out2 = (t_sample *)(w[4]);
     t_vcfctl *c = (t_vcfctl *)(w[5]);
     int n = (int)w[6];
     int i;
