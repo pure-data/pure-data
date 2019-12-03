@@ -156,7 +156,7 @@ static int pa_lowlevel_callback(const void *inputBuffer,
             for (i = 0, fp2 = fbuf; i < pa_inchans; i++, fp2++)
                     for (j = 0, fp3 = fp2; j < DEFDACBLKSIZE;
                         j++, fp3 += pa_inchans)
-                            *soundiop++ = (float)*fp3;
+                            *soundiop++ = (t_sample)*fp3;
         }
         else memset((void *)pa_soundin, 0,
             DEFDACBLKSIZE * pa_inchans * sizeof(t_sample));
