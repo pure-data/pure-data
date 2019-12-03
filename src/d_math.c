@@ -8,7 +8,7 @@
 
 #include "m_pd.h"
 #include <math.h>
-#define LOGTEN 2.302585092994
+#define LOGTEN 2.302585092994046
 
 /* ------------------------- clip~ -------------------------- */
 static t_class *clip_class;
