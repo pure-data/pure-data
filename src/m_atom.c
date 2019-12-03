@@ -87,7 +87,7 @@ void atom_string(const t_atom *a, char *buf, unsigned int bufsize)
         unsigned int len;
         int quote;
         for (sp = a->a_w.w_symbol->s_name, len = 0, quote = 0; *sp; sp++, len++)
-            if (*sp == ';' || *sp == ',' || *sp == '\\' ||
+            if (*sp == ';' || *sp == ',' || *sp == '\\' || *sp == ' ' ||
                 (a->a_type == A_SYMBOL && *sp == '$' &&
                     sp[1] >= '0' && sp[1] <= '9'))
                         quote = 1;
@@ -97,7 +97,7 @@ void atom_string(const t_atom *a, char *buf, unsigned int bufsize)
             sp = a->a_w.w_symbol->s_name;
             while (bp < ep && *sp)
             {
-                if (*sp == ';' || *sp == ',' || *sp == '\\' ||
+                if (*sp == ';' || *sp == ',' || *sp == '\\' || *sp == ' ' ||
                     (a->a_type == A_SYMBOL && *sp == '$' &&
                         sp[1] >= '0' && sp[1] <= '9'))
                             *bp++ = '\\';
