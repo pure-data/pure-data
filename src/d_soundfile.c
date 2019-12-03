@@ -560,7 +560,7 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
                 {
                     alias.ui  = ((sp2[0] << 24) | (sp2[1] << 16)
                             | (sp2[2] << 8) | sp2[3]);
-                    *fp = (t_float)alias.f;
+                    *fp = (t_sample)alias.f;
                 }
             }
             else
@@ -570,7 +570,7 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
                 {
                     alias.ui = ((sp2[3] << 24) | (sp2[2] << 16)
                             | (sp2[1] << 8) | sp2[0]);
-                    *fp = (t_float)alias.f;
+                    *fp = (t_sample)alias.f;
                 }
             }
         }
