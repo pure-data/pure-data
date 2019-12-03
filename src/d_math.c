@@ -233,6 +233,7 @@ void sigsqrt_setup(void)
 }
 
 /* ------------------------------ wrap~ -------------------------- */
+#define GOODINT(i) (!(i & 0xC0000000))          // used for integer overflow protection
 
 typedef struct wrap
 {
@@ -272,9 +273,19 @@ static t_int *sigwrap_old_perform(t_int *w)
     while (n--)
     {
         t_sample f = *in++;
-        int k = f;
-        if (f > 0) *out++ = f-k;
-        else *out++ = f - (k-1);
+
+        if (f >= 0.)
+        {
+            int i = (int)f;
+            f = (GOODINT(i)? f - i : 0.);
+        }
+        else if(f < 0.)
+        {
+            int i = (int)f;
+            f = (GOODINT(i)? f - i + 1. : 0.);
+        }
+
+        *out++ = f;
     }
     return (w + 4);
 }
