@@ -59,7 +59,7 @@ typedef struct _phasor
     t_object x_obj;
     double x_phase;
     float x_conv;
-    float x_f;      /* scalar frequency */
+    t_float x_f;						// scalar frequency
 } t_phasor;
 
 static void *phasor_new(t_floatarg f)
@@ -133,7 +133,7 @@ static t_class *cos_class;
 typedef struct _cos
 {
     t_object x_obj;
-    float x_f;
+    t_float x_f;			// scalar frequency
 } t_cos;
 
 static void *cos_new(t_floatarg f)
@@ -244,7 +244,7 @@ typedef struct _osc
     t_object x_obj;
     double x_phase;
     float x_conv;
-    float x_f;      /* frequency if scalar */
+    t_float x_f;						// scalar frequency
 } t_osc;
 
 static void *osc_new(t_floatarg f)
@@ -352,7 +352,7 @@ typedef struct sigvcf
     t_object x_obj;
     t_vcfctl x_cspace;
     t_vcfctl *x_ctl;
-    float x_f;
+    t_float x_f;
 } t_sigvcf;
 
 t_class *sigvcf_class;
