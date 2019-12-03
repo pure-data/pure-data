@@ -613,7 +613,7 @@ t_int *pow_tilde_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        float f1 = *in1++, f2 = *in2++;
+        t_sample f1 = *in1++, f2 = *in2++;
         *out++ = (f1 == 0 && f2 < 0) ||
             (f1 < 0 && (f2 - (int)f2) != 0) ?
                 0 : pow(f1, f2);
@@ -704,7 +704,7 @@ t_int *log_tilde_perform(t_int *w)
     int n = (int)(w[4]);
     while (n--)
     {
-        float f = *in1++, g = *in2++;
+        t_sample f = *in1++, g = *in2++;
         if (f <= 0)
             *out = -1000;   /* rather than blow up, output a number << 0 */
         else if (g <= 0)
@@ -753,7 +753,7 @@ t_int *abs_tilde_perform(t_int *w)
     int n = (int)(w[3]);
     while (n--)
     {
-        float f = *in1++;
+        t_sample f = *in1++;
         *out++ = (f >= 0 ? f : -f);
     }
     return (w+4);

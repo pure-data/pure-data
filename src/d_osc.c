@@ -489,8 +489,8 @@ static t_int *noise_perform(t_int *w)
     int val = *vp;
     while (n--)
     {
-        *out++ = ((float)((val & 0x7fffffff) - 0x40000000)) *
-            (float)(1.0 / 0x40000000);
+        *out++ = ((t_sample)((val & 0x7fffffff) - 0x40000000)) *
+            (t_sample)(1.0 / 0x40000000);
         val = val * 435898247 + 382842987;
     }
     *vp = val;
