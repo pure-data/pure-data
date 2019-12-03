@@ -858,8 +858,8 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
 }
 
     /* read a binbuf from a file, via the search patch of a canvas */
-int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
-    int crflag)
+int binbuf_read_via_canvas(t_binbuf *b, const char *filename,
+    const t_canvas *canvas, int crflag)
 {
     int filedesc;
     char buf[MAXPDSTRING], *bufptr;
