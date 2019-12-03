@@ -77,13 +77,13 @@ static void *phasor_new(t_floatarg f)
 static t_int *phasor_perform(t_int *w)
 {
     t_phasor *x = (t_phasor *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_float *)(w[2]);
+    t_sample *out = (t_float *)(w[3]);
     int n = (int)(w[4]);
     double dphase = x->x_phase + (double)UNITBIT32;
     union tabfudge tf;
     int normhipart;
-    float conv = x->x_conv;
+    t_float conv = x->x_conv;
 
     tf.tf_d = UNITBIT32;
     normhipart = tf.tf_i[HIOFFSET];
@@ -147,10 +147,11 @@ static void *cos_new(t_floatarg f)
 
 static t_int *cos_perform(t_int *w)
 {
-    t_float *in = (t_float *)(w[1]);
-    t_float *out = (t_float *)(w[2]);
+    t_sample *in = (t_sample *)(w[1]);
+    t_sample *out = (t_sample *)(w[2]);
     int n = (int)(w[3]);
-    float *tab = cos_table, *addr, f1, f2, frac;
+    float *tab = cos_table, *addr;
+    t_float f1, f2, frac;
     double dphase;
     int normhipart;
     union tabfudge tf;
@@ -262,10 +263,11 @@ static void *osc_new(t_floatarg f)
 static t_int *osc_perform(t_int *w)
 {
     t_osc *x = (t_osc *)(w[1]);
-    t_float *in = (t_float *)(w[2]);
-    t_float *out = (t_float *)(w[3]);
+    t_sample *in = (t_sample *)(w[2]);
+    t_sample *out = (t_sample *)(w[3]);
     int n = (int)(w[4]);
-    float *tab = cos_table, *addr, f1, f2, frac;
+    float *tab = cos_table, *addr;
+    t_float f1, f2, frac;
     double dphase = x->x_phase + UNITBIT32;
     int normhipart;
     union tabfudge tf;
