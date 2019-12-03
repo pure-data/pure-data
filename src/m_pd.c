@@ -85,40 +85,40 @@ in m_obj.c to avoid stack overflows. */
 
 static PERTHREAD t_bindelem **bindstack = 0;
 static PERTHREAD int bs_size = 0;
-static PERTHREAD int bs_head = 0;
+static PERTHREAD int bs_count = 0;
 
 int stackcount_increase(void);
 void stackcount_release(void);
 
 /* push the next element on the stack */
-static int bs_push(t_bindelem *e)
+static void bs_push(t_bindelem *e)
 {
+    int head = bs_count++;
     if (!bindstack)
     {
         bindstack = getbytes(sizeof(t_bindelem *) * DEFBINDSTACKSIZE);
         bs_size = DEFBINDSTACKSIZE;
     }
-    bs_head++;
-    if (bs_head >= bs_size)
+    if (bs_count > bs_size)
     {
         int old = bs_size;
         bs_size *= 2; /* grow by factor of 2 */
         bindstack = resizebytes(bindstack, sizeof(t_bindelem *) * old,
                                 sizeof(t_bindelem *) * bs_size);
     }
-    bindstack[bs_head] = e->e_next;
-    return 1;
+    bindstack[head] = e->e_next;
 }
 
 /* get the next valid element from the stack */
 static t_bindelem * bs_pop()
 {
-    t_bindelem *next = bindstack[bs_head--];
-    if (bs_head >= 0)
-        return next;
+    int head = --bs_count;
+    if (head >= 0)
+        return bindstack[head];
     else
     {
         bug("bs_pop");
+        bs_count = 0;
         return 0;
     }
 }
@@ -127,7 +127,8 @@ static t_bindelem * bs_pop()
 static void bs_update(t_bindelem *e)
 {
     int i;
-    for (i = bs_head; i > 0; i--)
+    for (i = 0; i < bs_count; i++)
+        /* the bind element might occur more than once! */
         if (bindstack[i] == e)
             bindstack[i] = e->e_next;
 }
