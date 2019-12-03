@@ -58,7 +58,7 @@ typedef struct _phasor
 {
     t_object x_obj;
     double x_phase;
-    float x_conv;
+    t_float x_conv;
     t_float x_f;						// scalar frequency
 } t_phasor;
 
@@ -243,7 +243,7 @@ typedef struct _osc
 {
     t_object x_obj;
     double x_phase;
-    float x_conv;
+    t_float x_conv;
     t_float x_f;						// scalar frequency
 } t_osc;
 
@@ -341,10 +341,10 @@ static void osc_setup(void)
 
 typedef struct vcfctl
 {
-    float c_re;
-    float c_im;
-    float c_q;
-    float c_isr;
+    t_float c_re;
+    t_float c_im;
+    t_float c_q;
+    t_float c_isr;
 } t_vcfctl;
 
 typedef struct sigvcf
