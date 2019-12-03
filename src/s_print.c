@@ -18,25 +18,34 @@ t_printhook sys_printhook;
 int sys_printtostderr;
 
 /* escape characters for tcl/tk */
-static char* strnescape(char *dest, const char *src, size_t len)
+char* pdgui_strnescape(char *dst, size_t dstlen, const char *src, size_t srclen)
 {
-    int ptin = 0;
-    unsigned ptout = 0;
-    for(; ptout < len; ptin++, ptout++)
+    unsigned ptin = 0, ptout = 0;
+    if(!dst || !src)return 0;
+    while(1)
     {
         int c = src[ptin];
-        if (c == '\\' || c == '{' || c == '}')
-            dest[ptout++] = '\\';
-        dest[ptout] = src[ptin];
+        if (c == '\\' || c == '{' || c == '}') {
+            dst[ptout++] = '\\';
+            if (dstlen && ptout >= dstlen){
+                dst[ptout-1] = 0;
+                break;
+            }
+        }
+        dst[ptout] = c;
+        ptin++;
+        ptout++;
         if (c==0) break;
+        if (srclen && ptin  >= srclen) break;
+        if (dstlen && ptout >= dstlen) break;
     }
 
-    if(ptout < len)
-        dest[ptout]=0;
+    if(!dstlen || ptout < dstlen)
+        dst[ptout]=0;
     else
-        dest[len-1]=0;
+        dst[dstlen-1]=0;
 
-    return dest;
+    return dst;
 }
 
 static char* strnpointerid(char *dest, const void *pointer, size_t len)
@@ -60,7 +69,7 @@ static void dopost(const char *s)
     else
     {
         char upbuf[MAXPDSTRING];
-        sys_vgui("::pdwindow::post {%s}\n", strnescape(upbuf, s, MAXPDSTRING));
+        sys_vgui("::pdwindow::post {%s}\n", pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
     }
 }
 
@@ -82,7 +91,7 @@ static void doerror(const void *object, const char *s)
         char obuf[MAXPDSTRING];
         sys_vgui("::pdwindow::logpost {%s} 1 {%s}\n",
                  strnpointerid(obuf, object, MAXPDSTRING),
-                 strnescape(upbuf, s, MAXPDSTRING));
+                 pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
     }
 }
 
@@ -106,7 +115,7 @@ static void dologpost(const void *object, const int level, const char *s)
         char obuf[MAXPDSTRING];
         sys_vgui("::pdwindow::logpost {%s} %d {%s}\n",
                  strnpointerid(obuf, object, MAXPDSTRING),
-                 level, strnescape(upbuf, s, MAXPDSTRING));
+                 level, pdgui_strnescape(upbuf, MAXPDSTRING, s, 0));
     }
 }
 

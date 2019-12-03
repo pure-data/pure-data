@@ -203,7 +203,7 @@ proc ::pd_guiprefs::init {} {
             }
         }
         default {
-            ::pdwindow::error "Unknown gui preferences backend '$backend'.\n"
+            ::pdwindow::error "unknown gui preferences backend '$backend'.\n"
         }
 
     }
@@ -324,7 +324,11 @@ proc ::pd_guiprefs::prepare_domain {{domain {}}} {
             file mkdir $fullconfigdir
         }
     }]} {
-        ::pdwindow::error "$::pd_guiprefs::domain was *NOT* created in $confdir.\n"
+        set absconfdir ${::pd_guiprefs::configdir}
+        catch { set absconfdir [file normalize ${::pd_guiprefs::configdir} ] }
+
+        ::pdwindow::error [format [_ "Couldn't create preferences \"%1\$s\" in %2\$s" ] $domain $absconfdir]
+        ::pdwindow::error "\n"
     }
     return $domain
 }

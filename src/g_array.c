@@ -131,7 +131,7 @@ canvas 0 0 458 153 10;\n\
 /* create invisible, built-in canvases to supply templates for floats
 and float-arrays. */
 
-void garray_init( void)
+void garray_init(void)
 {
     t_binbuf *b;
     b = binbuf_new();
@@ -852,9 +852,9 @@ int garray_getfloatarray(t_garray *x, int *size, t_float **vec)
             patchname = x->x_glist->gl_owner->gl_name;
         else
             patchname = x->x_glist->gl_name;
-        error("An operation on the array '%s' in the patch '%s'",
+        error("an operation on the array '%s' in the patch '%s'",
               x->x_name->s_name, patchname->s_name);
-        error("failed since it uses garray_getfloatarray while running 64-bit!");
+        error("failed since it uses garray_getfloatarray while running 64-bit");
     }
     return (garray_getfloatwords(x, size, (t_word **)vec));
 }
