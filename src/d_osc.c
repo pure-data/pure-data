@@ -108,7 +108,7 @@ static void phasor_dsp(t_phasor *x, t_signal **sp)
 
 static void phasor_ft1(t_phasor *x, t_float f)
 {
-    x->x_phase = f;
+    x->x_phase = (double)f;
 }
 
 static void phasor_setup(void)
