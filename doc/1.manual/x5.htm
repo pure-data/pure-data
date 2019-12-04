@@ -2,6 +2,9 @@
 
 <HTML>
   <HEAD>
+  <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	 <TITLE>Pd Documentation 5</TITLE>
     <meta http-equiv="Content-Type" content="text/html">
 	 <link rel="stylesheet" type="text/css" href="pdmanual.css" media="screen">
@@ -19,6 +22,41 @@
 <P>This section tracks changes in Pd's current implementation.</P>
 
 <H3> <A id="s2"> 5.1. release notes </A> </H3>
+
+<P> ------------------ 0.50-2 ------------------------------
+
+<P> fix backspace problem on MacOS
+
+<P> ------------------ 0.50-1 ------------------------------
+
+<P> improved handling of tilde chartacters for Portugues and Spanish keyboard
+maps
+
+<P> handling spaces in path to HTML file open message to pdcontrol object
+
+<P> ------------------ 0.50-0 ------------------------------
+
+<P> new pdcontrol object allows getting patch's owning directory and calling
+arguments, and opening files in web browser under patch control (useful in help
+files).
+
+<P> new nonlinear low-pass filter, slop~, for use in designing envelope
+followers and dynamics processors.
+
+<P> attempted to fix limitations on incoming MIDI and network packets.
+Things seem to be improved but the improvements aren't exhaustively tested yet.
+
+<P> improved HTML style in documentation and more info on writing externs.
+
+<P> updates to Iohannes's smart patching features
+
+<P> sort method for text object.  Also text searching can deal with restricted
+range of lines (so that, for instance, you can iteratively get all the matches,
+not just the first one).
+
+<P> internal changes to improve scheduler behavior and memory management.
+
+<P> "zoom" feature updates to handle data structs better.
 
 <P> ------------------ 0.49-0 ------------------------------
 

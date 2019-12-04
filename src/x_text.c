@@ -397,7 +397,12 @@ typedef struct _keyinfo
     int ki_onset;   /* number of fields to skip over */
 } t_keyinfo;
 
-static int text_sortcompare(const void *z1, const void *z2 , void *zkeyinfo)
+    /* apple products seem to have their own prototypes for qsort_r (?) */
+#ifdef __APPLE__
+static int text_sortcompare(void *zkeyinfo, const void *z1, const void *z2)
+#else
+static int text_sortcompare(const void *z1, const void *z2, void *zkeyinfo)
+#endif
 {
     const t_atom *a1 = *(t_atom **)z1, *a2 = *(t_atom **)z2;
     t_keyinfo *k = (t_keyinfo *)zkeyinfo;
@@ -465,12 +470,23 @@ equal:
     else return (1);
 }
 
+/* I can't seem to get to qsort_s on W2K - clicking on Pd complains it isn't
+found in msvcrt (which indeed it isn't in).  Rather than waste more time
+on this, just call qsort if we're Microsoft and single-instance.  I hope nobody
+will try to compile multi-instance Pd for 32-bit windows, but if they
+do, they might run into my qsort_s problem again. */
+#if defined(_WIN32) && !defined(PDINSTANCE)
+#define MICROSOFT_STUPID_SORT
+static void *stupid_zkeyinfo;
+static int stupid_sortcompare(const void *z1, const void *z2) {
+    return (text_sortcompare(z1, z2, stupid_zkeyinfo)); }
+#endif
 
     /* sort the contents */
 static void text_define_sort(t_text_define *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    int nlines = 0, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
+    int nlines, unique = 0,  natom = binbuf_getnatom(x->x_binbuf), i,
         thisline, startline;
     t_atom *vec = binbuf_getvec(x->x_binbuf), **sortbuf, *a1, *a2;
     t_binbuf *newb;
@@ -526,8 +542,16 @@ static void text_define_sort(t_text_define *x, t_symbol *s,
         }
         startline =  (vec[i].a_type == A_SEMI || vec[i].a_type == A_COMMA);
     }
-    /* qsort_r(sortbuf, nlines, sizeof(*sortbuf), 0); */
+#ifdef MICROSOFT_STUPID_SORT
+    stupid_zkeyinfo = &k;
+    qsort(sortbuf, nlines, sizeof(*sortbuf), stupid_sortcompare);
+#else
+#ifdef __APPLE__
+    qsort_r(sortbuf, nlines, sizeof(*sortbuf), &k, text_sortcompare);
+#else /* __APPLE__ */
     qsort_r(sortbuf, nlines, sizeof(*sortbuf), text_sortcompare, &k);
+#endif /* __APPLE__ */
+#endif /* MICROSOFT_STUPID_SORT */
     newb = binbuf_new();
     for (thisline = 0; thisline < nlines; thisline++)
     {

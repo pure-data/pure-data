@@ -428,36 +428,44 @@ static void pdcontrol_dir(t_pdcontrol *x, t_symbol *s, t_floatarg f)
     {
         char buf[MAXPDSTRING];
         snprintf(buf, MAXPDSTRING, "%s/%s",
-            canvas_getdir(x->x_canvas)->s_name, s->s_name);
+            canvas_getdir(c)->s_name, s->s_name);
         buf[MAXPDSTRING-1] = 0;
         outlet_symbol(x->x_outlet, gensym(buf));
     }
-    else outlet_symbol(x->x_outlet, canvas_getdir(x->x_canvas));
+    else outlet_symbol(x->x_outlet, canvas_getdir(c));
 }
 
-static void pdcontrol_gui(t_pdcontrol *x, t_symbol *s, int argc, t_atom *argv)
+static void pdcontrol_args(t_pdcontrol *x, t_floatarg f)
 {
-    t_binbuf *b = binbuf_new();
-    char *buf;
-    int length;
-    binbuf_add(b, argc, argv);
-    binbuf_gettext(b, &buf, &length);
-    buf = t_resizebytes(buf, length, length+2);
-    buf[length] = '\n';
-    buf[length+1] = 0;
+    t_canvas *c = x->x_canvas;
+    int i;
+    int argc;
+    t_atom *argv;
+    for (i = 0; i < (int)f; i++)
+    {
+        while (!c->gl_env)  /* back up to containing canvas or abstraction */
+            c = c->gl_owner;
+        if (c->gl_owner)    /* back up one more into an owner if any */
+            c = c->gl_owner;
+    }
+    canvas_setcurrent(c);
+    canvas_getargs(&argc, &argv);
+    canvas_unsetcurrent(c);
+    outlet_list(x->x_outlet, &s_list, argc, argv);
+}
+
+static void pdcontrol_browse(t_pdcontrol *x, t_symbol *s)
+{
+    char buf[MAXPDSTRING];
+    snprintf(buf, MAXPDSTRING, "::pd_menucommands::menu_openfile {%s}\n",
+        s->s_name);
+    buf[MAXPDSTRING-1] = 0;
     sys_gui(buf);
-    t_freebytes(buf, length+2);
-    binbuf_free(b);
 }
 
 static void pdcontrol_isvisible(t_pdcontrol *x)
 {
     outlet_float(x->x_outlet, glist_isvisible(x->x_canvas));
-}
-
-static void pdcontrol_free(t_pdcontrol *x)
-{
-    pd_unbind(&x->x_obj.ob_pd, gensym("#pdcontrol"));
 }
 
 static void pdcontrol_setup(void)
@@ -466,8 +474,10 @@ static void pdcontrol_setup(void)
         (t_newmethod)pdcontrol_new, 0, sizeof(t_pdcontrol), 0, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_dir,
         gensym("dir"), A_DEFFLOAT, A_DEFSYMBOL, 0);
-    class_addmethod(pdcontrol_class, (t_method)pdcontrol_gui,
-        gensym("gui"), A_GIMME, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_args,
+        gensym("args"), A_DEFFLOAT, 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_browse,
+        gensym("browse"), A_SYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), 0);
 }

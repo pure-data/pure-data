@@ -406,7 +406,7 @@ t_canvas *canvas_new(void *dummy, t_symbol *sel, int argc, t_atom *argv)
     x->gl_willvis = vis;
     x->gl_edit = !strncmp(x->gl_name->s_name, "Untitled", 8);
     x->gl_font = sys_nearestfontsize(font);
-    x->gl_zoom = 1;
+    x->gl_zoom = (owner ? owner->gl_zoom : 1);
     pd_pushsym(&x->gl_pd);
     return(x);
 }
@@ -415,6 +415,9 @@ void canvas_setgraph(t_glist *x, int flag, int nogoprect);
 
 static void canvas_coords(t_glist *x, t_symbol *s, int argc, t_atom *argv)
 {
+          /* FIXME: this is a stopgap - we should always be using
+            glist_getzoom() and never gl_zoom in rest of code. */
+    x->gl_zoom = glist_getzoom(x);
     x->gl_x1 = atom_getfloatarg(0, argc, argv);
     x->gl_y1 = atom_getfloatarg(1, argc, argv);
     x->gl_x2 = atom_getfloatarg(2, argc, argv);
@@ -484,7 +487,7 @@ t_glist *glist_addglist(t_glist *g, t_symbol *sym,
     x->gl_pixheight = py2 - py1;
     x->gl_font =  (canvas_getcurrent() ?
         canvas_getcurrent()->gl_font : sys_defaultfont);
-    x->gl_zoom = 1;
+    x->gl_zoom = g->gl_zoom;
     x->gl_screenx1 = 0;
     x->gl_screeny1 = GLIST_DEFCANVASYLOC;
     x->gl_screenx2 = 450;
@@ -557,13 +560,13 @@ static void canvas_dosetbounds(t_canvas *x, int x1, int y1, int x2, int y2)
             parent. */
         t_float diff = x->gl_y1 - x->gl_y2;
         t_gobj *y;
-        x->gl_y1 = heightwas * diff;
+        x->gl_y1 = heightwas * diff/x->gl_zoom;
         x->gl_y2 = x->gl_y1 - diff;
             /* and move text objects accordingly; they should stick
             to the bottom, not the top. */
         for (y = x->gl_list; y; y = y->g_next)
             if (pd_checkobject(&y->g_pd))
-                gobj_displace(y, x, 0, heightchange);
+                gobj_displace(y, x, 0, heightchange/x->gl_zoom);
         canvas_redraw(x);
     }
 }
@@ -645,14 +648,16 @@ void canvas_dirty(t_canvas *x, t_floatarg f)
 void canvas_drawredrect(t_canvas *x, int doit)
 {
     if (doit)
+    {
+        int x1 = x->gl_zoom * x->gl_xmargin,
+            x2 = x1 + x->gl_zoom * x->gl_pixwidth,
+            y1 = x->gl_zoom * x->gl_ymargin,
+            y2 = y1 + x->gl_zoom * x->gl_pixheight;
         sys_vgui(".x%lx.c create line %d %d %d %d %d %d %d %d %d %d "
             "-fill #ff8080 -width %d -capstyle projecting -tags GOP\n",
-            glist_getcanvas(x),
-            x->gl_xmargin, x->gl_ymargin,
-            x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin,
-            x->gl_xmargin + x->gl_pixwidth, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin + x->gl_pixheight,
-            x->gl_xmargin, x->gl_ymargin, glist_getzoom(x));
+            glist_getcanvas(x), x1, y1, x1, y2, x2, y2, x2, y1, x1, y1,
+                x->gl_zoom);
+    }
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 
