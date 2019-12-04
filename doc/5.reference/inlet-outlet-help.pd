@@ -1,22 +1,22 @@
-#N canvas 416 128 581 505 12;
-#X obj 87 21 inlet;
-#X text 145 20 - control inlet;
-#X obj 277 20 inlet~;
-#X text 337 20 - audio inlet;
-#X obj 87 49 outlet;
-#X text 145 51 - control outlet;
-#X obj 277 48 outlet~;
-#X text 337 48 - audio outlet;
-#X obj 325 304 print~;
-#X obj 325 224 sig~ 12;
-#X floatatom 83 228 0 0 0 0 - - -;
-#X floatatom 83 280 0 0 0 0 - - -;
-#X text 354 281 (check that audio is on);
-#X text 53 207 messages in and out;
-#X text 295 201 audio in and out;
-#X text 48 414 see also:;
-#X obj 122 415 block~;
-#X obj 337 282 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#N canvas 669 111 580 600 12;
+#X obj 125 23 inlet;
+#X text 183 22 - control inlet;
+#X obj 315 22 inlet~;
+#X text 375 22 - audio inlet;
+#X obj 125 51 outlet;
+#X text 183 53 - control outlet;
+#X obj 315 50 outlet~;
+#X text 375 50 - audio outlet;
+#X obj 322 309 print~;
+#X obj 322 229 sig~ 12;
+#X floatatom 80 233 0 0 0 0 - - -;
+#X floatatom 80 285 0 0 0 0 - - -;
+#X text 351 286 (check that audio is on);
+#X text 50 212 messages in and out;
+#X text 292 206 audio in and out;
+#X text 45 523 see also:;
+#X obj 119 524 block~;
+#X obj 334 287 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 486 122 538 582 up/downsampling 0;
 #X obj 37 395 print~;
@@ -105,41 +105,85 @@ command line or by a message:;
 #X connect 13 0 0 0;
 #X connect 13 1 2 0;
 #X connect 13 2 4 0;
-#X restore 98 343 pd up/downsampling;
-#N canvas 103 180 600 392 subpatch-with-inlets-and-outlets 0;
-#X obj 94 83 inlet;
-#X text 46 53 control inlet for receiving messages;
-#X floatatom 94 111 0 0 0 0 - - -;
-#X floatatom 97 212 0 0 0 0 - - -;
-#X obj 97 244 outlet;
-#X text 61 182 control outlet for sending message;
-#X obj 429 78 inlet~;
-#X obj 429 129 print~;
-#X msg 444 103 bang;
-#X obj 428 271 outlet~;
-#X obj 428 245 sig~ 34;
-#X text 422 32 same for;
-#X text 423 51 signals.;
+#X restore 95 348 pd up/downsampling;
+#N canvas 309 180 813 339 subpatch-with-inlets-and-outlets 0;
+#X obj 97 94 inlet;
+#X text 49 64 control inlet for receiving messages;
+#X floatatom 97 122 0 0 0 0 - - -;
+#X floatatom 100 223 0 0 0 0 - - -;
+#X obj 100 255 outlet;
+#X text 64 193 control outlet for sending message;
+#X obj 466 217 inlet~;
+#X obj 466 268 print~;
+#X msg 481 242 bang;
+#X obj 635 276 outlet~;
+#X obj 635 230 sig~ 34;
+#X floatatom 466 191 5 0 0 0 - - -;
+#X text 365 52 Same for signals. Inlet~ objects take float messages
+to set the value if there's no signal connected (the same as with signal
+inlets to other Pd objects) and you can also set this value by a "float"
+message to the inlet~ object. (You'll have to disconnect the signal
+connection on the parent to see this happen.) You can use a "loadbang"
+object to pass arguments to initialize signal inlets in abstractions.
+;
 #X connect 0 0 2 0;
 #X connect 3 0 4 0;
 #X connect 6 0 7 0;
 #X connect 8 0 7 0;
 #X connect 10 0 9 0;
-#X restore 83 254 pd subpatch-with-inlets-and-outlets;
-#X text 259 361 up/downsampling for inlet~ and outlet~;
-#X text 311 439 updated for Pd version 0.44;
-#X text 233 343 <= here are some ugly details on;
-#X text 254 382 (documents new default upsampling behavior for reblocked
-inlet~ and outlet~.), f 42;
+#X connect 11 0 6 0;
+#X restore 80 259 pd subpatch-with-inlets-and-outlets;
 #N canvas 0 0 600 400 (subpatch) 0;
-#X restore 175 415 pd;
-#X text 32 95 Inlets/outlets are used to receive and get informatin
+#X restore 172 524 pd;
+#X text 70 97 Inlets/outlets are used to receive and get informatin
 on a patch window. This can be an abstraction or a subpatch. To create
 a subpatch \, type "pd" into an object box \, then you can put inlets
 and outlets by making "inlet" objects \, etc \, in the subpatch (open
 the patch below to see them.);
+#X text 230 348 <= details on up/downsampling;
+#X text 251 364 for inlet~ and outlet~, f 26;
+#X text 334 513 updated for Pd version 0.51;
+#X text 306 535 (new: messages to inlet~ objects);
+#N canvas 582 179 543 415 inlet~-forwarding 0;
+#X obj 173 182 inlet~ fwd;
+#X obj 106 145 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X floatatom 131 145 5 0 0 0 - - -;
+#X msg 174 145 1 2 3;
+#X msg 221 145 poodle 50;
+#X obj 174 283 print~;
+#X text 206 254 (check that audio is on);
+#X obj 186 256 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 58 16 you can pass "fwd" as an argument to inlet~ to ask for
+a second outlet that forwards messages. Float messages aren't forwarded
+though - instead \, they set the signal output value in case the parent
+inlet isn't connected. Messages to the inlet~ object are treated the
+same as messages to the inlet on the parent.;
+#X text 64 339 (note: inlet~ objects inside patches that are copied
+using clone~ are always connected to incoming signals \, so a float
+message to such an inlet~ has no effect.);
+#X obj 240 214 print fwd;
+#X connect 0 0 5 0;
+#X connect 0 1 10 0;
+#X connect 1 0 0 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 7 0 5 0;
+#X restore 106 451 pd inlet~-forwarding;
+#X obj 38 416 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X floatatom 63 416 5 0 0 0 - - -;
+#X msg 106 416 1 2 3;
+#X msg 153 416 poodle 50;
+#X text 255 450 <= catching messages to inlet~ objects;
 #X connect 9 0 19 1;
 #X connect 10 0 19 0;
 #X connect 17 0 8 0;
 #X connect 19 0 11 0;
 #X connect 19 1 8 0;
+#X connect 27 0 26 0;
+#X connect 28 0 26 0;
+#X connect 29 0 26 0;
+#X connect 30 0 26 0;
