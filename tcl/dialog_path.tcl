@@ -64,6 +64,7 @@ proc ::dialog_path::create_dialog {mytoplevel} {
 
     # add docsdir path widgets if pd_docsdir is loaded
     if {[namespace exists ::pd_docsdir]} {
+        set docspath $::pd_docsdir::docspath
         labelframe $mytoplevel.docspath -text [_ "Pd Documents Directory"] \
             -borderwidth 1 -padx 5 -pady 5
         pack $mytoplevel.docspath -side top -anchor s -fill x -padx {2m 4m} -pady 2m
