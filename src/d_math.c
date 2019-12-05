@@ -8,6 +8,7 @@
 
 #include "m_pd.h"
 #include <math.h>
+#include <limits.h>
 #define LOGTEN 2.302585092994046
 
 /* ------------------------- clip~ -------------------------- */
@@ -256,8 +257,10 @@ static t_int *sigwrap_perform(t_int *w)
     int n = (int)w[3];
     while (n--)
     {
+        int k;
         t_sample f = *in++;
-        int k = f;
+        f = (f>INT_MAX || f<INT_MIN)?0.:f;
+        k = (int)f;
         if (k <= f) *out++ = f-k;
         else *out++ = f - (k-1);
     }
