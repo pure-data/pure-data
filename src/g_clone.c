@@ -298,7 +298,7 @@ void signal_makereusable(t_signal *sig);
 static void clone_dsp(t_clone *x, t_signal **sp)
 {
     int i, j, nin, nout;
-    t_signal **tempsigs;
+    t_signal **tempsigs, **tempio;
     if (!x->x_n)
         return;
     for (i = nin = 0; i < x->x_nin; i++)
@@ -320,31 +320,33 @@ static void clone_dsp(t_clone *x, t_signal **sp)
             return;
         }
     }
-    tempsigs = (t_signal **)alloca((nin + 3 * nout) * sizeof(*tempsigs));
+    tempsigs = (t_signal **)alloca((nin + 2 * nout) * sizeof(*tempsigs));
+    tempio = tempsigs + nout;
         /* load input signals into signal vector to send subpatches */
     for (i = 0; i < nin; i++)
     {
             /* we already have one reference "counted" for our presumed
-            use of this input signal but add one for each copy. */
-        sp[i]->s_refcount += x->x_n;
-        tempsigs[2 * nout + i] = sp[i];
+            use of this input signal but add one for each additional copy. */
+        sp[i]->s_refcount += x->x_n-1;
+        tempio[i] = sp[i];
     }
         /* for first copy, write output to first nout temp sigs */
     for (i = 0; i < nout; i++)
-        tempsigs[i] = tempsigs[2 * nout + nin + i] = signal_newfromcontext(1);
-    canvas_dodsp(x->x_vec[0].c_gl, 0, tempsigs + 2*nout);
-        /* for remaining copies, write to second nout temp sigs */
-    for (j = 1; j < x->x_n; j++)
+        tempsigs[i] = signal_newfromcontext(0);
+
+    for (j = 0; j < x->x_n; j++)
     {
         for (i = 0; i < nout; i++)
-            tempsigs[nout+i] = tempsigs[2 * nout + nin + i] =
-                signal_newfromcontext(1);
-        canvas_dodsp(x->x_vec[j].c_gl, 0, tempsigs + 2*nout);
+            tempio[nin + i] = signal_newfromcontext(1);
+        canvas_dodsp(x->x_vec[j].c_gl, 0, tempio);
         for (i = 0; i < nout; i++)
         {
-            dsp_add_plus(tempsigs[nout + i]->s_vec, tempsigs[i]->s_vec,
-                tempsigs[i]->s_vec, tempsigs[i]->s_n);
-            signal_makereusable(tempsigs[nout + i]);
+            if (j == 0)
+                dsp_add_copy(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
+                    tempsigs[i]->s_n);
+            else dsp_add_plus(tempio[nin + i]->s_vec, tempsigs[i]->s_vec,
+                    tempsigs[i]->s_vec, tempsigs[i]->s_n);
+            signal_makereusable(tempio[nin + i]);
         }
     }
         /* copy to output signsls */
@@ -353,10 +355,6 @@ static void clone_dsp(t_clone *x, t_signal **sp)
         dsp_add_copy(tempsigs[i]->s_vec, sp[nin+i]->s_vec, tempsigs[i]->s_n);
         signal_makereusable(tempsigs[i]);
     }
-        /* decrement input signal ref counts once more and free if zero */
-    for (i = 0; i < nin; i++)
-        if (--sp[i]->s_refcount)
-            signal_makereusable(sp[i]);
 }
 
 static void *clone_new(t_symbol *s, int argc, t_atom *argv)
