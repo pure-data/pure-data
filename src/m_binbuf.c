@@ -65,10 +65,9 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
     const char *textp = text, *etext = text+size;
     t_atom *ap;
     int nalloc = 16, natom = 0;
-    t_freebytes(x->b_vec, x->b_n * sizeof(*x->b_vec));
-    x->b_vec = t_getbytes(nalloc * sizeof(*x->b_vec));
+    binbuf_clear(x);
+    if (!binbuf_resize(x, nalloc)) return;
     ap = x->b_vec;
-    x->b_n = 0;
     while (1)
     {
         int type;
@@ -188,17 +187,14 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
         natom++;
         if (natom == nalloc)
         {
-            x->b_vec = t_resizebytes(x->b_vec, nalloc * sizeof(*x->b_vec),
-                nalloc * (2*sizeof(*x->b_vec)));
+            if (!binbuf_resize(x, nalloc*2)) break;
             nalloc = nalloc * 2;
             ap = x->b_vec + natom;
         }
         if (textp == etext) break;
     }
     /* reallocate the vector to exactly the right size */
-    x->b_vec = t_resizebytes(x->b_vec, nalloc * sizeof(*x->b_vec),
-        natom * sizeof(*x->b_vec));
-    x->b_n = natom;
+    binbuf_resize(x, natom);
 }
 
     /* convert a binbuf to text; no null termination. */
@@ -241,12 +237,11 @@ writing to file doesn't buffer everything together. */
 
 void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
 {
-    int newsize = x->b_n + argc, i;
+    int previoussize = x->b_n;
+    int newsize = previoussize + argc, i;
     t_atom *ap;
-    if ((ap = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec),
-        newsize * sizeof(*x->b_vec))))
-            x->b_vec = ap;
-    else
+
+    if (!binbuf_resize(x, newsize))
     {
         error("binbuf_addmessage: out of space");
         return;
@@ -256,9 +251,8 @@ void binbuf_add(t_binbuf *x, int argc, const t_atom *argv)
     postatom(argc, argv);
     endpost();
 #endif
-    for (ap = x->b_vec + x->b_n, i = argc; i--; ap++)
+    for (ap = x->b_vec + previoussize, i = argc; i--; ap++)
         *ap = *(argv++);
-    x->b_n = newsize;
 }
 
 #define MAXADDMESSV 100
@@ -357,18 +351,17 @@ from binbuf_addbinbuf.  The symbol ";" goes to a semicolon, etc. */
 
 void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
 {
-    int newsize = x->b_n + argc, i;
+    int previoussize = x->b_n;
+    int newsize = previoussize + argc, i;
     t_atom *ap;
-    if ((ap = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec),
-        newsize * sizeof(*x->b_vec))))
-            x->b_vec = ap;
-    else
+
+    if (!binbuf_resize(x, newsize))
     {
-        error("binbuf_addmessage: out of space");
+        error("binbuf_restore: out of space");
         return;
     }
 
-    for (ap = x->b_vec + x->b_n, i = argc; i--; ap++)
+    for (ap = x->b_vec + previoussize, i = argc; i--; ap++)
     {
         if (argv->a_type == A_SYMBOL)
         {
@@ -434,7 +427,6 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
         }
         else *ap = *(argv++);
     }
-    x->b_n = newsize;
 }
 
 void binbuf_print(const t_binbuf *x)
@@ -475,7 +467,7 @@ int binbuf_resize(t_binbuf *x, int newsize)
     return (new != 0);
 }
 
-int canvas_getdollarzero( void);
+int canvas_getdollarzero(void);
 
 /* JMZ:
  * s points to the first character after the $
@@ -574,7 +566,7 @@ t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av, int tonew
         substr=strchr(str, '$');
         if(substr)
         {
-            int n = substr-str;
+            unsigned long n = substr-str;
             if(n>MAXPDSTRING-strlen(buf2)-1) n=MAXPDSTRING-strlen(buf2)-1;
             strncat(buf2, str, n);
             str=substr+1;
@@ -866,8 +858,8 @@ int binbuf_read(t_binbuf *b, const char *filename, const char *dirname, int crfl
 }
 
     /* read a binbuf from a file, via the search patch of a canvas */
-int binbuf_read_via_canvas(t_binbuf *b, const char *filename, const t_canvas *canvas,
-    int crflag)
+int binbuf_read_via_canvas(t_binbuf *b, const char *filename,
+    const t_canvas *canvas, int crflag)
 {
     int filedesc;
     char buf[MAXPDSTRING], *bufptr;

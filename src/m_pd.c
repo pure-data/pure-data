@@ -256,7 +256,7 @@ void pd_popsym(t_pd *x)
     }
 }
 
-void pd_doloadbang( void)
+void pd_doloadbang(void)
 {
     if (lastpopped)
         pd_vmess(lastpopped, gensym("loadbang"), "f", LB_LOAD);
@@ -302,11 +302,14 @@ void ooura_term(void);
 
 void pd_init(void)
 {
+#ifndef PDINSTANCE
     static int initted = 0;
     if (initted)
         return;
     initted = 1;
-#ifdef PDINSTANCE
+#else
+    if (pd_instances)
+        return;
     pd_instances = (t_pdinstance **)getbytes(sizeof(*pd_instances));
     pd_instances[0] = &pd_maininstance;
     pd_ninstances = 1;
@@ -326,7 +329,6 @@ EXTERN void pd_init_systems(void) {
 
 EXTERN void pd_term_systems(void) {
     sys_lock();
-    /* ooura_term();  oops - this doesn't seem to have got merged from PR  */
     sys_unlock();
 }
 

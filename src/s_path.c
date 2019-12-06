@@ -528,7 +528,7 @@ gotone:
 }
 
 int sys_argparse(int argc, char **argv);
-void sys_doflags( void)
+void sys_doflags(void)
 {
     int i, beginstring = 0, state = 0, len;
     int rcargc = 0;
@@ -608,7 +608,7 @@ t_symbol *sys_decodedialog(t_symbol *s)
 }
 
     /* send the user-specified search path to pd-gui */
-void sys_set_searchpath( void)
+void sys_set_searchpath(void)
 {
     int i;
     t_namelist *nl;
@@ -632,7 +632,7 @@ void sys_set_temppath(void)
 }
 
     /* send the hard-coded search path to pd-gui */
-void sys_set_extrapath( void)
+void sys_set_extrapath(void)
 {
     int i;
     t_namelist *nl;
@@ -685,7 +685,7 @@ void glob_addtopath(t_pd *dummy, t_symbol *path, t_float saveit)
 }
 
     /* set the global list vars for startup libraries and flags */
-void sys_set_startup( void)
+void sys_set_startup(void)
 {
     int i;
     t_namelist *nl;
