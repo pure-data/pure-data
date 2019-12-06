@@ -506,8 +506,8 @@ to the units needed by slop~.;
 #X text 70 513 updated for Pd version 0.50.;
 #X text 115 382 <- start metronome to graph output;
 #X text 573 38 (pd/doc/8.topics/slop-tilde.htm);
-#N canvas 430 45 843 697 peak-meter 0;
-#X floatatom 249 247 5 0 50 0 - #0-decay-speed-init -;
+#N canvas 430 45 855 693 peak-meter 0;
+#X floatatom 215 247 5 0 50 0 - #0-decay-speed-init -;
 #N canvas 423 189 450 300 generate-test 0;
 #X obj 84 121 osc~ 440;
 #X msg 124 86 -0.25;
@@ -540,43 +540,43 @@ to the units needed by slop~.;
 #X connect 11 0 13 0;
 #X connect 13 0 14 0;
 #X connect 15 0 12 0;
-#X restore 63 115 pd generate-test;
-#X text 42 7 Envelope follower for use in peak metering;
-#X text 394 523 See the HTML documentation (link on main page of this
-patch) for more details., f 59;
-#X obj 245 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X restore 137 105 pd generate-test;
+#X text 46 7 Envelope follower for use in peak metering;
+#X text 411 523 See the HTML documentation (link on main page of this
+patch) for more details., f 58;
+#X obj 319 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 245 78 metro 500;
-#X obj 245 103 s \$0-meter-testpulse;
-#X obj 249 272 / 10;
-#X text 237 208 decay speed (10ths of a Hz.), f 16;
-#X obj 139 152 out1~;
-#X floatatom 128 62 5 1 100 0 pulse-length #0-pulse-length_set #0-pulse-length
+#X obj 319 78 metro 500;
+#X obj 319 103 s \$0-meter-testpulse;
+#X obj 215 272 / 10;
+#X text 261 244 decay speed (10ths of a Hz.), f 16;
+#X obj 153 140 out1~;
+#X floatatom 132 62 5 1 100 0 pulse-length #0-pulse-length_set #0-pulse-length
 ;
-#X obj 69 354 env~ 1024;
-#X obj 115 492 - 88;
-#X obj 69 462 moses 1;
-#X msg 69 492 -100;
-#X obj 70 530 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
-#X obj 171 274 abs~;
-#X obj 183 383 metro 22;
-#X obj 183 331 loadbang;
-#X msg 183 356 1;
-#X obj 171 406 snapshot~;
-#X obj 171 431 rmstodb;
-#X obj 217 492 - 88;
-#X obj 171 462 moses 1;
-#X msg 171 492 -100;
-#X obj 172 530 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
-#X obj 171 301 slop~ 0 0 0 0 1e+09;
-#X text 396 376 The output is sampled using a snapshot~ object. Both
+#X obj 35 354 env~ 1024;
+#X obj 81 492 - 88;
+#X obj 35 462 moses 1;
+#X msg 35 492 -100;
+#X obj 36 530 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
+#X obj 137 274 abs~;
+#X obj 149 383 metro 22;
+#X obj 149 331 loadbang;
+#X msg 149 356 1;
+#X obj 137 406 snapshot~;
+#X obj 137 431 rmstodb;
+#X obj 183 492 - 88;
+#X obj 137 462 moses 1;
+#X msg 137 492 -100;
+#X obj 138 530 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
+#X obj 137 301 slop~ 0 0 0 0 1e+09;
+#X text 410 376 The output is sampled using a snapshot~ object. Both
 envelope followers are converted to uits useful for the IEM VU meter
 (+12 dB tops \, but zero mapped to -100 so that the bottom "LED" turns
 off when the signal hits 0 (100-normed \, Pd-style) dB., f 58;
-#X text 397 461 When the pulse is very short (1 msec \, for instance)
+#X text 411 461 When the pulse is very short (1 msec \, for instance)
 the RMS meter acts badly but the slop~-driven one still shows the peak.
 , f 58;
-#X text 397 210 A slew limiter can be used as a fast-rising envelope
+#X text 411 210 A slew limiter can be used as a fast-rising envelope
 follower \, useful for example in peak metering. In this example a
 short burst of sound is metered using both the "env" follower (which
 measures an average over a time window) and a fast-rising envelope
@@ -585,8 +585,8 @@ by a slop~ object set to rise quickly (1e9 asymptotic rise speed \,
 0 up-slew needed to engage it) and with controllable decay (asymptotic
 downward speed controlled by a number box). There is no linear region
 at all so the linear cutoff frequency has no effect., f 58;
-#X text 269 54 <= turn on test pulse;
-#X text 203 160 <= raise "lvl" to hear;
+#X text 343 54 <= turn on test pulse;
+#X text 227 157 <= raise "lvl" to hear;
 #X connect 0 0 7 0;
 #X connect 1 0 9 0;
 #X connect 1 0 11 0;
