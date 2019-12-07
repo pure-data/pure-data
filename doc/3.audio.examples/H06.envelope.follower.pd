@@ -1,86 +1,85 @@
-#N canvas 824 83 585 621 12;
-#X floatatom 354 464 4 0 0 0 - - -, f 4;
-#X floatatom 150 316 3 0 999 0 - #0-osc2 -, f 3;
-#X obj 150 336 osc~;
-#X text 161 3 ENVELOPE FOLLOWER;
-#X text 21 24 An envelope follower measures the mean square power of
+#N canvas 400 23 524 751 12;
+#X floatatom 101 577 4 0 0 0 - - -;
+#X floatatom 335 330 3 0 999 0 - #0-osc2 -;
+#X obj 335 354 osc~;
+#X text 46 17 ENVELOPE FOLLOWER;
+#X text 39 54 An envelope follower measures the mean square power of
 an signal as it changes over time. (You can convert mean square power
 to RMS amplitude or to decibels if you wish.) The term "mean square"
 means simply that the signal should be squared \, and then averaged.
 The averaging is done using a low-pass filter such as lop~.;
-#X obj 62 466 lop~;
-#X floatatom 93 444 3 0 100 0 - #0-lop -, f 3;
-#X obj 61 356 +~;
-#X text 187 317 <-- frequency of second oscillator;
-#X obj 62 330 osc~ 500;
-#X obj 62 413 *~;
-#X obj 62 522 snapshot~;
-#X floatatom 62 573 5 0 999 0 - - -, f 5;
-#X obj 62 545 sqrt;
-#X text 335 361 built-in envelope;
-#X obj 354 491 dbtorms;
-#X floatatom 354 518 5 0 999 0 - - -, f 5;
+#X obj 261 511 lop~;
+#X floatatom 286 482 3 0 100 0 - #0-lop -;
+#X obj 260 386 +~;
+#X obj 260 355 osc~ 500;
+#X obj 261 448 *~;
+#X obj 261 574 snapshot~;
+#X floatatom 261 631 5 0 999 0 - - -;
+#X obj 261 604 sqrt;
+#X obj 101 604 dbtorms;
+#X floatatom 101 631 5 0 999 0 - - -;
 #N canvas 536 459 382 265 startup 0;
-#X obj 22 24 loadbang;
-#X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 44 28 loadbang;
+#X obj 44 52 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 22 67 f \$0;
-#X text 35 195 This subpatch loads initial;
-#X text 31 219 values in number boxes.;
-#X msg 22 91 \; \$1-osc2 400 \; \$1-lop 10 \; \$1-metro 1 \; pd dsp
+#X obj 44 71 f \$0;
+#X text 57 199 This subpatch loads initial;
+#X text 60 217 values in number boxes.;
+#X msg 44 95 \; \$1-osc2 400 \; \$1-lop 10 \; \$1-metro 1 \; pd dsp
 1;
-#X obj 223 132 metro 250;
-#X obj 223 107 r \$0-metro;
-#X obj 223 156 s \$0-tick;
+#X obj 245 136 metro 250;
+#X obj 245 111 r \$0-metro;
+#X obj 245 160 s \$0-tick;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
 #X connect 6 0 8 0;
 #X connect 7 0 6 0;
-#X restore 217 598 pd startup;
-#X text 115 414 square the signal;
-#X text 124 440 <-- responsiveness;
-#X text 159 501 take snapshot;
-#X text 108 548 convert to RMS;
-#X text 327 599 updated for Pd version 0.39;
-#X text 334 381 follower for comparison;
-#X text 107 466 low-pass filter;
-#X text 114 573 output;
-#X obj 70 497 r \$0-tick;
-#X text 159 517 every 1/4 second;
-#X obj 389 439 r \$0-tick;
-#X obj 354 439 f;
-#X obj 376 414 env~;
-#X text 20 242 The env~ object at right \, which is a built-in envelope
+#X restore 103 381 pd startup;
+#X text 314 449 square the signal;
+#X text 349 543 take snapshot;
+#X text 307 603 convert to RMS;
+#X text 293 684 updated for Pd version 0.39;
+#X text 306 511 low-pass filter;
+#X text 313 630 output;
+#X obj 272 546 r \$0-tick;
+#X text 349 559 every 1/4 second;
+#X obj 101 431 r \$0-tick;
+#X obj 101 552 f;
+#X obj 119 510 env~;
+#X text 40 246 The env~ object at right \, which is a built-in envelope
 follower using a higher-quality low-pass filter than lop~ \, is shown
 for comparison. Its output is artificially slowed down to match the
 homemade one at left.;
-#X obj 150 359 *~;
-#X obj 185 360 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#X obj 335 408 *~;
+#X obj 353 383 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X text 204 358 <-- on/off;
-#X text 19 131 Here we're adding two oscillators so the result should
+#X text 39 148 Here we're adding two oscillators so the result should
 be an RMS of one if the second oscillator is on \, 0.707 otherwise.
 Note two effects: first \, the more responsive the envelope follower
 \, the less accurate the result (but the faster it responds). Second
 \, if the two oscillators are tuned close to each other their beating
 affects the numbers coming out.;
-#X connect 0 0 15 0;
+#X text 372 381 <= on/off;
+#X text 142 532 built-in envelope follower for comparison, f 12;
+#X text 317 478 <= responsiveness;
+#X text 96 328 frequency of second oscillator =>;
+#X connect 0 0 13 0;
 #X connect 1 0 2 0;
-#X connect 2 0 32 0;
-#X connect 5 0 11 0;
+#X connect 2 0 28 0;
+#X connect 5 0 10 0;
 #X connect 6 0 5 1;
-#X connect 7 0 10 0;
-#X connect 7 0 10 1;
-#X connect 7 0 30 0;
-#X connect 9 0 7 0;
-#X connect 10 0 5 0;
-#X connect 11 0 13 0;
-#X connect 13 0 12 0;
-#X connect 15 0 16 0;
-#X connect 26 0 11 0;
-#X connect 28 0 29 0;
-#X connect 29 0 0 0;
-#X connect 30 0 29 1;
-#X connect 32 0 7 1;
-#X connect 33 0 32 1;
+#X connect 7 0 9 0;
+#X connect 7 0 9 1;
+#X connect 7 0 26 0;
+#X connect 8 0 7 0;
+#X connect 9 0 5 0;
+#X connect 10 0 12 0;
+#X connect 12 0 11 0;
+#X connect 13 0 14 0;
+#X connect 22 0 10 0;
+#X connect 24 0 25 0;
+#X connect 25 0 0 0;
+#X connect 26 0 25 1;
+#X connect 28 0 7 1;
+#X connect 29 0 28 1;

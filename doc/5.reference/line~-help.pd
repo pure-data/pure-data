@@ -1,31 +1,31 @@
-#N canvas 121 54 813 391 12;
-#X obj 33 324 snapshot~;
-#X obj 21 8 line~;
-#X obj 33 249 line~;
-#X floatatom 33 347 0 0 0 0 - - -;
-#X obj 43 297 metro 100;
-#X obj 43 272 r start;
-#X msg 550 21 \; pd dsp 1 \; start bang;
-#X msg 34 129 1 1000;
-#X text 89 128 a pair of numbers starts a ramp;
-#X msg 60 199 2;
-#X text 91 173 a single number jumps to value;
-#X msg 61 223 stop;
-#X text 104 222 "stop" message freezes line~ at its current value;
-#X msg 60 176 0;
-#X msg 43 151 0 5000;
-#X text 10 38 The line~ object generates linear ramps whose levels
+#N canvas 470 77 521 478 12;
+#X obj 52 342 snapshot~;
+#X obj 36 14 line~;
+#X obj 52 267 line~;
+#X floatatom 52 369 0 0 0 0 - - -;
+#X obj 62 315 metro 100;
+#X obj 62 290 r start;
+#X msg 191 311 \; pd dsp 1 \; start bang;
+#X msg 53 147 1 1000;
+#X text 108 146 a pair of numbers starts a ramp;
+#X msg 79 217 2;
+#X text 109 193 a single number jumps to value;
+#X msg 80 241 stop;
+#X text 119 243 "stop" message freezes line~ at its current value;
+#X msg 79 194 0;
+#X msg 62 169 0 5000;
+#X text 33 49 The line~ object generates linear ramps whose levels
 and timing are determined by messages you send it. The messages may
 be a single target value (causing the output to jump to the target)
 or a target and a time in milliseconds (to start a new ramp.);
-#X text 644 36 Click to start;
-#X text 639 100 Click to stop;
-#X text 185 323 see also:;
-#X obj 271 325 line;
-#X msg 550 81 \; pd dsp 0 \; start 0;
-#X text 75 7 - audio ramp generator;
-#X text 576 348 updated for version 0.33;
-#X obj 317 325 vline~;
+#X text 185 290 Click to start;
+#X text 306 291 Click to stop;
+#X text 40 413 see also:;
+#X obj 126 415 line;
+#X msg 314 310 \; pd dsp 0 \; start 0;
+#X text 90 13 - audio ramp generator;
+#X text 314 418 updated for version 0.33;
+#X obj 172 415 vline~;
 #X connect 0 0 3 0;
 #X connect 2 0 0 0;
 #X connect 4 0 0 0;

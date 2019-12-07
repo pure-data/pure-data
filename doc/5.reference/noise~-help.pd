@@ -1,17 +1,19 @@
-#N canvas 174 90 456 305 12;
-#X floatatom 79 194 4 0 0 0 - - -, f 4;
-#X obj 79 127 noise~;
-#X obj 169 165 print~;
-#X msg 169 139 bang;
-#X obj 79 166 env~ 4096;
-#X text 69 220 RMS in dB;
-#X obj 20 11 noise~;
-#X text 84 11 - uniformly distributed white noise;
-#X msg 79 78 seed 123;
-#X text 229 161 the output range is -1 to 1, f 16;
-#X text 165 71 seed message to re-seed (so you can get exactly repeatable
+#N canvas 601 137 496 340 12;
+#X floatatom 63 274 8 0 0 0 - - -;
+#X obj 63 167 noise~;
+#X obj 125 206 print~;
+#X msg 125 170 bang;
+#X obj 63 246 env~ 4096;
+#X text 126 274 RMS in dB;
+#X obj 46 15 noise~;
+#X text 110 15 - uniformly distributed white noise;
+#X msg 63 118 seed 123;
+#X text 183 202 the output range is -1 to 1, f 16;
+#X text 139 112 seed message to re-seed (so you can get exactly repeatable
 samples), f 35;
-#X text 221 265 updated for Pd version 0.48-2;
+#X text 247 273 updated for Pd version 0.48-2;
+#X msg 74 59 \; pd dsp 1;
+#X msg 158 59 \; pd dsp 0;
 #X connect 1 0 2 0;
 #X connect 1 0 4 0;
 #X connect 3 0 2 0;

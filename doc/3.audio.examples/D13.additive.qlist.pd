@@ -1,34 +1,34 @@
-#N canvas 233 179 667 449 12;
-#X obj 16 182 osc-voice amp1 pit1;
-#X obj 16 206 osc-voice amp2 pit2;
-#X obj 16 230 osc-voice amp3 pit3;
-#X obj 16 254 osc-voice amp4 pit4;
-#X obj 16 278 osc-voice amp5 pit5;
-#X obj 16 302 osc-voice amp6 pit6;
-#X obj 16 326 osc-voice amp7 pit7;
-#X obj 16 350 osc-voice amp8 pit8;
-#X obj 464 343 qlist;
-#X msg 394 185 stop;
-#X msg 524 300 read qlist.txt;
-#X obj 524 255 loadbang;
-#X text 258 164 start;
-#X text 395 161 stop;
-#X text 534 279 reread file;
-#X msg 467 199 rewind;
-#X msg 535 199 next;
-#X msg 251 212 tempo 100 \, bang;
-#X msg 250 188 tempo 1 \, bang;
+#N canvas 518 77 704 521 12;
+#X obj 63 185 osc-voice amp1 pit1;
+#X obj 63 209 osc-voice amp2 pit2;
+#X obj 63 233 osc-voice amp3 pit3;
+#X obj 63 257 osc-voice amp4 pit4;
+#X obj 63 281 osc-voice amp5 pit5;
+#X obj 63 305 osc-voice amp6 pit6;
+#X obj 63 329 osc-voice amp7 pit7;
+#X obj 63 353 osc-voice amp8 pit8;
+#X obj 407 379 qlist;
+#X msg 407 237 stop;
+#X msg 521 327 read qlist.txt;
+#X obj 521 282 loadbang;
+#X text 264 165 start;
+#X text 408 213 stop;
+#X text 531 306 reread file;
+#X msg 466 237 rewind;
+#X msg 534 237 next;
+#X msg 362 189 tempo 100 \, bang;
+#X msg 256 189 tempo 1 \, bang;
 #X text 82 11 USING QLIST TO SEQUENCE AN OSCILLATOR BANK;
-#X text 479 178 single step;
-#X obj 532 392 r #;
-#X text 28 49 Here is an eight voice additive synthesis patch controlled
+#X text 478 216 single step;
+#X obj 512 427 r #;
+#X text 62 53 Here is an eight voice additive synthesis patch controlled
 by a qlist. Open a text editor on the file \, "qlist.txt" \, to see
 how the oscillators' amplitudes and frequencies are specified. The
 abstraction \, "osc-voice" \, shows an effective way to make patches
 react to qlists but also to mousing.;
-#X text 234 391 this is where qlist comments go:;
-#X obj 16 380 output~;
-#X text 394 423 updated for Pd version 0.39;
+#X text 281 428 this is where qlist comments go:;
+#X obj 63 383 output~;
+#X text 414 475 updated for Pd version 0.39;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;

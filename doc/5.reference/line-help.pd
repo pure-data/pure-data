@@ -1,33 +1,33 @@
-#N canvas 430 148 700 651 12;
-#X floatatom 22 428 8 0 0 0 - - -, f 8;
-#X msg 32 231 0 1000;
-#X msg 47 253 39;
-#X obj 66 15 line;
-#X text 106 14 - ramp generator;
-#X msg 23 208 1 1000;
-#X text 94 220 send a pair to ramp to a new value;
-#X text 97 255 send a single number to jump;
-#X text 39 601 see also:;
-#X obj 139 601 line~;
-#X msg 58 278 stop;
-#X text 103 280 "stop" message to stop output;
-#X obj 22 402 line 0 100;
-#X text 120 408 creation arguments:;
-#X text 279 400 1 initial value;
-#X msg 67 308 set 5;
-#X text 120 308 "set" to change value (and stop) without output;
-#X obj 185 601 vline~;
-#X floatatom 89 365 0 0 0 0 - - -;
-#X floatatom 85 338 0 0 0 0 - - -;
-#X text 278 416 2 time grain in milliseconds (20 by default);
-#X msg 235 547 \; pd compatibility 0.47;
-#X text 54 470 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
+#N canvas 479 44 652 654 12;
+#X floatatom 31 430 8 0 0 0 - - -;
+#X msg 41 233 0 1000;
+#X msg 56 255 39;
+#X obj 75 17 line;
+#X text 115 16 - ramp generator;
+#X msg 32 210 1 1000;
+#X text 103 222 send a pair to ramp to a new value;
+#X text 106 257 send a single number to jump;
+#X text 48 603 see also:;
+#X obj 129 603 line~;
+#X msg 67 280 stop;
+#X text 112 282 "stop" message to stop output;
+#X obj 31 404 line 0 100;
+#X text 135 409 creation arguments:;
+#X text 275 402 1 initial value;
+#X msg 76 310 set 5;
+#X text 129 310 "set" to change value (and stop) without output;
+#X obj 175 603 vline~;
+#X floatatom 98 367 0 0 0 0 - - -;
+#X floatatom 94 340 0 0 0 0 - - -;
+#X text 274 418 2 time grain in milliseconds (20 by default);
+#X msg 233 542 \; pd compatibility 0.47;
+#X text 53 472 COMPATIBILITY NOTE: in Pd versions before 0.48 \, a
 stop message followed by a new ramp message would incorrectly ramp
 from the previous start. It now ramps from wherever in the previous
 segment the object was stopped at. To get the old behavior \, set "compatibility"
 to 0.47 or below in Pd's command line or by a message:, f 74;
-#X text 442 599 updated for Pd version 0.48;
-#X text 22 36 The line object takes (target \, time) pairs and ramps
+#X text 408 601 updated for Pd version 0.48;
+#X text 40 50 The line object takes (target \, time) pairs and ramps
 (slews) to the specified target over the time given \, updating its
 output at a "grain rate" given by the creation argument. If you don't
 specify a time \, line jumps immediately to the target. Note that the
@@ -37,9 +37,9 @@ regardless of whatever time value was specified in some previous message.
 If the line object receives a message specifying some new target before
 reaching the previous one \, it takes off from its current value.,
 f 70;
-#X text 117 338 middle inlet sets next ramp time (cleared when ramp
+#X text 126 340 middle inlet sets next ramp time (cleared when ramp
 starts!);
-#X text 125 366 right inlet sets grain (not cleared \, acts as normal
+#X text 134 368 right inlet sets grain (not cleared \, acts as normal
 inlet);
 #X connect 1 0 12 0;
 #X connect 2 0 12 0;
