@@ -1678,7 +1678,19 @@ static void value_symbol2(t_value *x, t_symbol *s)
 static void value_send(t_value *x, t_symbol *s)
 {
     if (s->s_thing)
-        pd_float(s->s_thing, *x->x_floatstar);
+    {
+        switch(x->x_atomstar->a_type)
+        {
+            case A_FLOAT:
+                pd_float(s->s_thing, x->x_atomstar->a_w.w_float);
+                break;
+            case A_SYMBOL:
+                pd_symbol(s->s_thing, x->x_atomstar->a_w.w_symbol);
+                break;
+            default:
+                break;
+        }
+    }
     else pd_error(x, "%s: no such object", s->s_name);
 }
 
