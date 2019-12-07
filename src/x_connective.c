@@ -1545,7 +1545,7 @@ t_atom *value_getatom(t_symbol *s)
     if (!c)
     {
         c = (t_vcommon *)pd_new(vcommon_class);
-        c->c_atom.a_w.w_float = 0;
+        SETFLOAT(&c->c_atom, 0);
         c->c_refcount = 0;
         pd_bind(&c->c_pd, s);
     }
@@ -1571,13 +1571,15 @@ void value_release(t_symbol *s)
 
 /*
  * value_getfloat -- obtain the float value of a "value" object
- *                  return 0 on success, 1 otherwise
+ *                  return 0 on success, 1 if non-existent, or 2 if wrong type
  */
 int value_getfloat(t_symbol *s, t_float *f)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
-    if (!c || c->c_atom.a_type != A_FLOAT)
+    if (!c)
         return (1);
+    if (c->c_atom.a_type != A_FLOAT)
+        return (2);
     *f = c->c_atom.a_w.w_float;
     return (0);
 }
@@ -1589,22 +1591,24 @@ int value_getfloat(t_symbol *s, t_float *f)
 int value_setfloat(t_symbol *s, t_float f)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
-    if (!c || c->c_atom.a_type != A_FLOAT)
+    if (!c)
         return (1);
-    c->c_atom.a_w.w_float = f;
+    SETFLOAT(&c->c_atom, f);
     return (0);
 }
 
 /*
- * value_getsymbol-- obtain the symbol value of a "value" object
- *                  return 0 on success, 1 otherwise
+ * value_getsymbol -- obtain the symbol value of a "value" object
+ *                  return 0 on success, 1 if non-existent, or 2 if wrong type
  */
-int value_getsymbol(t_symbol *s, t_symbol *s2)
+int value_getsymbol(t_symbol *s, t_symbol **s2)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
-    if (!c || c->c_atom.a_type != A_SYMBOL)
+    if (!c)
         return (1);
-    s2 = c->c_atom.a_w.w_symbol;
+    if (c->c_atom.a_type != A_SYMBOL)
+        return (2);
+    *s2 = c->c_atom.a_w.w_symbol;
     return (0);
 }
 
@@ -1612,12 +1616,12 @@ int value_getsymbol(t_symbol *s, t_symbol *s2)
  * value_setsymbol -- set the symbol value of a "value" object
  *                  return 0 on success, 1 otherwise
  */
-int value_setsymbol(t_symbol *s, t_symbol *s2)
+int value_setsymbol(t_symbol *s, t_symbol **s2)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
-    if (!c || c->c_atom.a_type != A_SYMBOL)
+    if (!c)
         return (1);
-    c->c_atom.a_w.w_symbol = s2;
+    SETSYMBOL(&c->c_atom, *s2);
     return (0);
 }
 
@@ -1653,6 +1657,7 @@ static void value_bang(t_value *x)
             outlet_float(x->x_obj.ob_outlet, x->x_atomstar->a_w.w_float);
             break;
         default:
+            bug("value: unsupported type");
             break;
     }
 }
