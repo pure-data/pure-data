@@ -1,50 +1,53 @@
-#N canvas 87 80 595 558 12;
-#X floatatom 30 200 0 0 0 0 - - -;
-#X obj 30 302 print;
-#X obj 30 275 makefilename dog%d.aif;
-#X msg 28 350 symbol meat;
-#X msg 41 374 symbol hair;
-#X obj 28 429 print;
-#X obj 28 402 makefilename dog%s.aif;
-#X obj 33 18 makefilename;
-#X text 141 18 - format a "name" with a variable field;
-#X msg 45 226 set cat%d.wav;
-#X msg 45 250 set %d-zebra;
-#X text 64 200 <- numbers replace "%d" in string;
-#X text 164 227 <- "set" message replaces format;
-#X text 220 277 <- creation argument is format;
-#X text 26 176 SUBSTITUTING A NUMBER;
-#X text 25 328 SUBSTITUTING A SYMBOL;
-#N canvas 105 144 550 361 all_possible_patterns 0;
-#X text 33 86 %c;
-#X text 110 86 character;
-#X text 33 106 %d or %i;
-#X text 110 106 signed decimal integer;
-#X text 33 126 %e;
-#X text 110 126 scientific notation using "e" character;
-#X text 33 146 %E;
-#X text 110 146 scientific notation using "e" character;
-#X text 33 166 %f;
-#X text 33 186 %o;
-#X text 110 186 signed octal;
-#X text 33 206 %s;
-#X text 110 206 symbol;
-#X text 33 226 %u;
-#X text 110 226 unsigned integer;
-#X text 33 246 %x;
-#X text 110 246 unsigned hexadecimal in lowercase;
-#X text 33 266 %X;
-#X text 110 266 unsigned hexadecimal in CAPS;
-#X text 33 286 %p;
-#X text 110 286 unsigned hexadecimal in lowercase preceded by "0x"
+#N canvas 600 76 515 564 12;
+#X floatatom 47 199 0 0 0 0 - - -;
+#X obj 47 305 print;
+#X obj 47 278 makefilename dog%d.aif;
+#X msg 46 366 symbol meat;
+#X msg 59 390 symbol hair;
+#X obj 46 445 print;
+#X obj 46 418 makefilename dog%s.aif;
+#X obj 37 19 makefilename;
+#X text 135 19 - format a "name" with a variable field;
+#X msg 62 226 set cat%d.wav;
+#X msg 70 249 set %d-zebra;
+#X text 43 171 SUBSTITUTING A NUMBER;
+#X text 43 344 SUBSTITUTING A SYMBOL;
+#N canvas 506 164 602 393 all_possible_patterns 0;
+#X text 47 94 %c;
+#X text 124 94 character;
+#X text 47 114 %d or %i;
+#X text 124 114 signed decimal integer;
+#X text 47 134 %e;
+#X text 124 134 scientific notation using "e" character;
+#X text 47 154 %E;
+#X text 47 174 %f;
+#X text 47 234 %o;
+#X text 47 254 %s;
+#X text 124 254 symbol;
+#X text 47 274 %u;
+#X text 124 274 unsigned integer;
+#X text 47 294 %x;
+#X text 124 294 unsigned hexadecimal in lowercase;
+#X text 47 314 %X;
+#X text 124 314 unsigned hexadecimal in CAPS;
+#X text 47 334 %p;
+#X text 124 334 unsigned hexadecimal in lowercase preceded by "0x"
 ;
-#X text 20 37 This is a listing of all possible printf patterns used
+#X text 34 45 This is a listing of all possible printf patterns used
 in Pd's [makefilename]:;
-#X text 110 166 decimal floating point (currently broken);
-#X text 7 1 [makefilename] All Possible Patterns;
-#X restore 29 492 pd all_possible_patterns;
-#X text 25 526 updated for Pd version 0.48;
-#X text 26 47 The Makefilename object generates symbols according to
+#X text 21 9 [makefilename] All Possible Patterns;
+#X text 124 174 decimal floating point;
+#X text 124 234 unsigned octal;
+#X text 124 154 scientific notation using "E" character;
+#X text 47 194 %g;
+#X text 124 194 only uses scientific notation (with 'e') if shorter
+than float, f 62;
+#X text 47 214 %G;
+#X text 124 214 only uses scientific notation (with 'E') if shorter
+than float, f 62;
+#X restore 47 508 pd all_possible_patterns;
+#X text 285 501 updated for Pd version 0.48;
+#X text 30 48 The Makefilename object generates symbols according to
 a format string \, for use as a series of filenames \, table names
 \, or whatnot. You can plug in a variable number or symbol by using
 "%s" \, "%c" \, "%d" \, or "%X" in the string (see subpatch below).
@@ -52,25 +55,25 @@ If you put "%s" in the string be sure to send it a symbol and vice
 versa... there's no checking. Each [makefilename] object can have only
 one variable.;
 #N canvas 542 23 574 393 multiple_substitutions 0;
-#X obj 48 192 print;
-#X obj 47 90 makefilename dog%%d.%s;
-#X msg 47 114 set \$1;
-#X obj 47 168 makefilename not-set-yet;
-#X floatatom 56 139 0 0 0 0 - - -;
-#X msg 47 38 symbol aif;
-#X msg 60 62 symbol wav;
-#X text 43 14 GANG THEM TO DO DOUBLE (OR N-TUPLE) SUBSTITUTION;
-#X text 257 58 "%s" is replaced by the symbol;
-#X text 258 41 here \, "%%" becomes "%" and;
-#X text 113 117 ... so this becomes "set dog%d.aif" \, for example.
+#X obj 66 210 print;
+#X obj 65 108 makefilename dog%%d.%s;
+#X msg 65 132 set \$1;
+#X obj 65 186 makefilename not-set-yet;
+#X floatatom 74 157 0 0 0 0 - - -;
+#X msg 65 56 symbol aif;
+#X msg 78 80 symbol wav;
+#X text 50 24 GANG THEM TO DO DOUBLE (OR N-TUPLE) SUBSTITUTION;
+#X text 275 76 "%s" is replaced by the symbol;
+#X text 276 59 here \, "%%" becomes "%" and;
+#X text 131 135 ... so this becomes "set dog%d.aif" \, for example.
 ;
-#X text 107 139 ... and then the number fills in "%d".;
-#X msg 50 246 symbol aif;
-#X msg 63 270 symbol wav;
-#X text 180 264 "%s" is replaced by the symbol;
-#X obj 50 298 makefilename dog%%%%d.%s;
-#X obj 50 328 print;
-#X text 257 298 here \, "%%%%" becomes "%%";
+#X text 125 157 ... and then the number fills in "%d".;
+#X msg 84 259 symbol aif;
+#X msg 97 283 symbol wav;
+#X text 201 275 "%s" is replaced by the symbol;
+#X obj 84 311 makefilename dog%%%%d.%s;
+#X obj 84 341 print;
+#X text 281 311 here \, "%%%%" becomes "%%";
 #X connect 1 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 0 0;
@@ -80,7 +83,15 @@ one variable.;
 #X connect 12 0 15 0;
 #X connect 13 0 15 0;
 #X connect 15 0 16 0;
-#X restore 29 463 pd multiple_substitutions;
+#X restore 47 479 pd multiple_substitutions;
+#X floatatom 281 348 0 0 0 0 - - -;
+#X obj 281 453 print;
+#X obj 281 426 makefilename dog%d.aif;
+#X msg 300 401 set %d-zebra;
+#X msg 296 374 set cat%E.wav;
+#X text 81 199 <= numbers replace "%d" in string;
+#X text 181 227 <= "set" message replaces format;
+#X text 218 277 <= creation argument is format;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X connect 3 0 6 0;
@@ -88,3 +99,7 @@ one variable.;
 #X connect 6 0 5 0;
 #X connect 9 0 2 0;
 #X connect 10 0 2 0;
+#X connect 17 0 19 0;
+#X connect 19 0 18 0;
+#X connect 20 0 19 0;
+#X connect 21 0 19 0;

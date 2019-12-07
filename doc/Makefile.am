@@ -73,6 +73,13 @@ nobase_dist_libpd_DATA = \
      ./1.manual/fig3.7.jpg \
      ./1.manual/fig3.8.jpg \
      ./1.manual/fig3.9.jpg \
+     ./1.manual/fig4.1.png \
+     ./1.manual/fig4.2.png \
+     ./1.manual/fig4.3.png \
+     ./1.manual/fig4.4.png \
+     ./1.manual/fig4.5.png \
+     ./1.manual/fig4.6.png \
+     ./1.manual/fig4.7.png \
      ./1.manual/fig7.1.jpg \
      ./1.manual/fig7.2.jpg \
      ./1.manual/fig7.3.jpg \
@@ -330,8 +337,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/gatom-help.pd \
      ./5.reference/get-help.pd \
      ./5.reference/getsize-help.pd \
-     ./5.reference/graph-help.pd \
-     ./5.reference/hdial-help.pd \
+     ./5.reference/hdl-help.pd \
      ./5.reference/help-intro.pd \
      ./5.reference/hip~-help.pd \
      ./5.reference/hradio-help.pd \
@@ -366,6 +372,8 @@ nobase_dist_libpd_DATA = \
      ./5.reference/out1~.pd \
      ./5.reference/pack-help.pd \
      ./5.reference/pd-help.pd \
+     ./5.reference/pdcontrol-abs.pd \
+     ./5.reference/pdcontrol-help.pd \
      ./5.reference/phasor~-help.pd \
      ./5.reference/pipe-help.pd \
      ./5.reference/plot-help.pd \
@@ -395,10 +403,12 @@ nobase_dist_libpd_DATA = \
      ./5.reference/send-help.pd \
      ./5.reference/send~-help.pd \
      ./5.reference/set-help.pd \
+     ./5.reference/setctl.pd \
      ./5.reference/setsize-help.pd \
      ./5.reference/setsize.txt \
      ./5.reference/sigbinops-help.pd \
      ./5.reference/sig~-help.pd \
+     ./5.reference/slop~-help.pd \
      ./5.reference/snapshot~-help.pd \
      ./5.reference/soundfiler-help.pd \
      ./5.reference/spigot-help.pd \
@@ -433,7 +443,7 @@ nobase_dist_libpd_DATA = \
      ./5.reference/until-help.pd \
      ./5.reference/value-help.pd \
      ./5.reference/vcf~-help.pd \
-     ./5.reference/vdial-help.pd \
+     ./5.reference/vdl-help.pd \
      ./5.reference/vline~-help.pd \
      ./5.reference/vradio-help.pd \
      ./5.reference/vslider-help.pd \
@@ -480,6 +490,14 @@ nobase_dist_libpd_DATA = \
      ./7.stuff/tools/sizingtest.pd \
      ./7.stuff/tools/testtone.pd \
      ./7.stuff/tools/testtone16.pd \
+     ./8.topics/compander-limiter.htm \
+     ./8.topics/slop-compander-patch.png \
+     ./8.topics/slop-peak-meter-graph.png \
+     ./8.topics/slop-peak-meter-patch.png \
+     ./8.topics/slop-slew-limit.png \
+     ./8.topics/slop-slew-limiting-patch.png \
+     ./8.topics/slop-tilde-1-curves.png \
+     ./8.topics/slop-tilde.htm \
      ./Makefile.am \
      ./sound/bell.aiff \
      ./sound/voice.wav \

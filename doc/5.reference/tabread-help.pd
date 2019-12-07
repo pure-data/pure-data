@@ -1,37 +1,37 @@
-#N canvas 58 46 776 588 12;
-#X text 89 178 index;
-#X obj 36 9 tabread;
-#X obj 52 251 tabread array99;
-#X floatatom 52 179 0 0 0 0 - - -;
-#X floatatom 52 285 0 0 0 0 - - -;
+#N canvas 397 60 785 541 12;
+#X text 97 166 index;
+#X obj 54 14 tabread;
+#X obj 60 239 tabread array99;
+#X floatatom 60 167 0 0 0 0 - - -;
+#X floatatom 60 273 0 0 0 0 - - -;
 #N canvas 0 22 450 300 (subpatch) 0;
 #X array array99 10 float 3;
 #A 0 9 0 8 1 7 2 6 3 5 4;
 #X coords 0 10 10 0 250 200 1 0 0;
-#X restore 447 195 graph;
-#X text 90 286 output = array99[index];
-#X text 196 243 creation argument;
-#X text 198 259 gives array name;
-#X msg 62 211 set array99;
-#X text 174 211 change array name;
-#X text 109 9 - read numbers from a table;
-#X msg 23 354 \; array99 xlabel -0.5 0 1 2 3 4 5 6 7 8 9 10 \; array99
+#X restore 455 183 graph;
+#X text 98 274 output = array99[index];
+#X text 204 231 creation argument;
+#X text 206 247 gives array name;
+#X msg 70 199 set array99;
+#X text 182 199 change array name;
+#X text 127 14 - read numbers from a table;
+#X msg 31 342 \; array99 xlabel -0.5 0 1 2 3 4 5 6 7 8 9 10 \; array99
 ylabel -1 0 1 2 3 4 5 6 7 8 9 10;
-#X text 491 534 updated for Pd version 0.43;
-#X obj 23 327 loadbang;
-#X text 28 433 see also the "array" tutorial in section 2 of the Pd
+#X text 548 474 updated for Pd version 0.43;
+#X obj 31 315 loadbang;
+#X text 36 421 see also the "array" tutorial in section 2 of the Pd
 documentation \, and these objects:;
-#X obj 28 487 tabwrite~;
-#X obj 262 487 tabwrite;
-#X obj 337 487 tabsend~;
-#X obj 413 487 tabreceive~;
-#X obj 109 487 tabplay~;
-#X obj 187 487 tabread4;
-#X text 59 45 The tabread object reads values from an array ("table")
+#X obj 36 475 tabwrite~;
+#X obj 270 475 tabwrite;
+#X obj 345 475 tabsend~;
+#X obj 421 475 tabreceive~;
+#X obj 117 475 tabplay~;
+#X obj 195 475 tabread4;
+#X text 82 57 The tabread object reads values from an array ("table")
 according to an index. The index is rounded down to the next lower
 integer. Values in the table correspond to indices starting at 0 Indices
 outside of the range are replaced by the nearest index in range (from
-0 to 9 in this example).;
+0 to 9 in this example)., f 69;
 #X connect 2 0 4 0;
 #X connect 3 0 2 0;
 #X connect 9 0 2 0;

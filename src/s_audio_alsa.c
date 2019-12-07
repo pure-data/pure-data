@@ -36,7 +36,7 @@
 #define ALSAAPI9
 #endif
 
-static void alsa_checkiosync( void);
+static void alsa_checkiosync(void);
 static void alsa_numbertoname(int iodev, char *devname, int nchar);
 static int alsa_jittermax;
 #define ALSA_DEFJITTERMAX 5
@@ -692,7 +692,7 @@ int alsa_send_dacs(void)
     return (SENDDACS_YES);
 }
 
-void alsa_printstate( void)
+void alsa_printstate(void)
 {
     int i, result, iodev = 0;
     snd_pcm_sframes_t indelay = 0, inavail = 0, outdelay = 0, outavail = 0;
@@ -757,7 +757,7 @@ void alsa_getzeros(int iodev, int n)
 }
 
     /* call this only if both input and output are open */
-static void alsa_checkiosync( void)
+static void alsa_checkiosync(void)
 {
     int i, result, giveup = 50, alreadylogged = 0, iodev = 0, err;
     snd_pcm_sframes_t minphase, maxphase, thisphase, outdelay;

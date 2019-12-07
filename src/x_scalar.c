@@ -185,7 +185,7 @@ void canvas_add_for_class(t_class *c);
 
 /* ---------------- global setup function -------------------- */
 
-void x_scalar_setup(void )
+void x_scalar_setup(void)
 {
     scalar_define_class = class_new(gensym("scalar define"), 0,
         (t_method)canvas_free, sizeof(t_canvas), 0, 0);
@@ -199,5 +199,4 @@ void x_scalar_setup(void )
     class_setsavefn(scalar_define_class, scalar_define_save);
 
     class_addcreator((t_newmethod)scalarobj_new, gensym("scalar"), A_GIMME, 0);
-
 }

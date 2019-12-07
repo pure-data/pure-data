@@ -61,7 +61,16 @@ static void print_float(t_print *x, t_float f)
 
 static void print_list(t_print *x, t_symbol *s, int argc, t_atom *argv)
 {
-    if (argc && argv->a_type != A_SYMBOL) startpost("%s:", x->x_sym->s_name);
+    if (argc && argv->a_type == A_FLOAT)
+    {
+        if(*x->x_sym->s_name)
+            startpost("%s:", x->x_sym->s_name);
+        else {
+                /* print first (numeric) atom, to avoid a trailing space */
+            startpost("%g", atom_getfloat(argv));
+            argc--; argv++;
+        }
+    }
     else startpost("%s%s%s", x->x_sym->s_name,
         (*x->x_sym->s_name ? ": " : ""),
         (argc > 1 ? s_list.s_name : (argc == 1 ? s_symbol.s_name :

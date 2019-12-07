@@ -17,7 +17,8 @@ release checklist
             scp tarballs back to linux
         ... compile on windows:
             cd msw
-            ./send-msw.sh <version>
+            ./sbuild-msw-64.sh <version>
+            ./sbuild-msw-32.sh <version>
     git tag (to see existing tags)
     git tag 0.43-3test1 (e.g.)
     git push origin

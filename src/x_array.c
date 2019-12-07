@@ -865,7 +865,7 @@ void canvas_add_for_class(t_class *c);
 
 /* ---------------- global setup function -------------------- */
 
-void x_array_setup(void )
+void x_array_setup(void)
 {
     array_define_class = class_new(gensym("array define"), 0,
         (t_method)canvas_free, sizeof(t_canvas), 0, 0);

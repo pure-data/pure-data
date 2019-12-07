@@ -45,7 +45,7 @@ proc ::pd_connect::create_socket {} {
 
 proc ::pd_connect::from_pd {channel clientaddr clientport} {
     variable pd_socket $channel
-    ::pdwindow::debug "Connection from 'pd' to 'pd-gui' on $clientaddr:$clientport\n"
+    ::pdwindow::debug "connection from 'pd' to 'pd-gui' on $clientaddr:$clientport\n"
     ::pd_connect::configure_socket $pd_socket
 }
 
@@ -58,7 +58,7 @@ proc ::pd_connect::pdsend {message} {
     append message \;
     if {[catch {puts $pd_socket $message} errorname]} {
         puts stderr "pdsend errorname: >>$errorname<<"
-        error "Not connected to 'pd' process"
+        error "not connected to 'pd' process"
     }
 }
 

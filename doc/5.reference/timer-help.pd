@@ -1,36 +1,36 @@
-#N canvas 717 151 596 509 12;
-#X msg 67 205 bang;
-#X msg 30 115 bang;
-#X obj 30 235 timer;
-#X obj 84 13 timer;
-#X text 129 14 - measure logical time;
-#X floatatom 30 261 0 0 0 0 - - -;
-#X text 12 48 The timer object measures elapsed logical time. Logical
+#N canvas 717 151 610 532 12;
+#X msg 89 217 bang;
+#X msg 57 117 bang;
+#X obj 57 247 timer;
+#X obj 89 13 timer;
+#X text 134 14 - measure logical time;
+#X floatatom 57 273 0 0 0 0 - - -;
+#X text 38 49 The timer object measures elapsed logical time. Logical
 time moves forward as if all computation were instantaneous and as
 if all "delay" and "metro" objects were exact.;
-#X text 27 287 Output is in the specified time units \, milliseconds
+#X text 130 275 Output is in the specified time units \, milliseconds
 by default., f 63;
-#X text 105 206 Bang in inlet: output elapsed time;
-#X text 73 113 bang: reset elapsed time to zero, f 33;
-#X text 46 453 see also:;
-#X obj 406 309 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X text 127 218 Bang in inlet: output elapsed time;
+#X text 100 115 bang: reset elapsed time to zero, f 33;
+#X text 108 469 see also:;
+#X obj 360 316 tgl 17 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 407 380 bng 25 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 360 398 bng 17 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 266 396 delay;
-#X text 96 389 for details on tempo setting \, see:, f 20;
-#X obj 443 385 sel 1;
-#X floatatom 443 440 5 0 0 0 - - -, f 5;
-#X obj 406 329 t f f;
-#X obj 134 453 metro;
-#X obj 407 355 metro 1 90 permin;
-#X obj 443 415 timer 90 permin;
-#X text 97 309 for example \, this metronome outputs at intervals of
+#X obj 227 408 delay;
+#X text 69 401 for details on tempo setting \, see:, f 20;
+#X obj 399 394 sel 1;
+#X floatatom 399 449 5 0 0 0 - - -;
+#X obj 360 338 t f f;
+#X obj 196 469 metro;
+#X obj 360 364 metro 1 90 permin;
+#X obj 399 424 timer 90 permin;
+#X text 67 325 for example \, this metronome outputs at intervals of
 one beat at 90 beats per minute \, as measured by a timer also set
 to that tempo:, f 37;
-#X msg 30 155 tempo 2 sec;
-#X text 362 469 updated for Pd version 0.47;
-#X text 143 139 set tempo in units of milliseconds (msec for short)
+#X msg 76 167 tempo 2 sec;
+#X text 351 486 updated for Pd version 0.47;
+#X text 170 151 set tempo in units of milliseconds (msec for short)
 \, seconds (sec) \, minutes (min) or samples (samp). Also persec (units
 per second) \, etc - see below., f 52;
 #X connect 0 0 2 1;
