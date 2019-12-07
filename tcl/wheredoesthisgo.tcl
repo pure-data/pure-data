@@ -35,15 +35,15 @@ proc pdtk_openpanel {target localdir {mode 0}} {
         }
         set localdir $::fileopendir
     }
-    # 0: file, 1: directory, 2: multiple files
+    # 0: file, 1: multiple files, 2: directory
     switch $mode {
         0 { set result [tk_getOpenFile -initialdir $localdir] }
-        1 { set result [tk_chooseDirectory -initialdir $localdir] }
-        2 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir] }
+        1 { set result [tk_getOpenFile -multiple 1 -initialdir $localdir] }
+        2 { set result [tk_chooseDirectory -initialdir $localdir] }
         default { ::pdwindow::error "bad value for 'mode' argument" }
     }
     if {$result ne ""} {
-        if { $mode == 2 } {
+        if { $mode == 1 } {
             # 'result' is a list
             set ::fileopendir [file dirname [lindex $result 0]]
             set args {}
