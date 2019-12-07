@@ -260,12 +260,13 @@ static void sigmund_remask(int maxbin, int bestindex, t_float powmask,
 #define PEAKTHRESHFACTOR 0.6
 
 static void sigmund_getrawpeaks(int npts, t_float *insamps,
-    int npeak, t_peak *peakv, int *nfound, t_float *power, t_float srate, int loud,
-    t_float hifreq)
+    int npeak, t_peak *peakv, int *nfound, t_float *power, t_float srate,
+    int loud, t_float hifreq)
 {
     t_float oneovern = 1.0/ (t_float)npts;
     t_float fperbin = 0.5 * srate * oneovern, totalpower = 0;
-    int npts2 = 2*npts, i, bin, bufsize = sizeof (t_float ) * (2*NEGBINS + 6*npts);
+    int npts2 = 2*npts, i, bin, bufsize = sizeof (t_float ) *
+        (2*NEGBINS + 6*npts);
     int peakcount = 0;
     t_float *fp1, *fp2;
     t_float *rawreal, *rawimag, *maskbuf, *powbuf;
@@ -302,7 +303,8 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
 #if 1
     for (i = 0, fp1 = rawreal, fp2 = rawimag; i < maxbin; i++, fp1++, fp2++)
     {
-        t_float x1 = fp1[1] - fp1[-1], x2 = fp2[1] - fp2[-1], p = powbuf[i] = x1*x1+x2*x2; 
+        t_float x1 = fp1[1] - fp1[-1], x2 = fp2[1] - fp2[-1],
+            p = powbuf[i] = x1*x1+x2*x2;
         if (i >= 2)
            totalpower += p;
     }
@@ -322,7 +324,8 @@ static void sigmund_getrawpeaks(int npts, t_float *insamps,
             pow1 = powbuf[bin];
             if (pow1 > maxpower && pow1 > maskbuf[bin])
             {
-                t_float thresh = PEAKTHRESHFACTOR * (powbuf[bin-2]+powbuf[bin+2]);
+                t_float thresh = PEAKTHRESHFACTOR *
+                    (powbuf[bin-2]+powbuf[bin+2]);
                 if (pow1 > thresh)
                     maxpower = pow1, bestindex = bin;
             }
@@ -1407,7 +1410,8 @@ void sigmund_tilde_setup(void)
     sigmund_class = class_new(gensym("sigmund~"), (t_newmethod)sigmund_new,
         (t_method)sigmund_free, sizeof(t_sigmund), 0, A_GIMME, 0);
     class_addlist(sigmund_class, sigmund_list);
-    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"), A_CANT, 0);
+    class_addmethod(sigmund_class, (t_method)sigmund_dsp, gensym("dsp"),
+        A_CANT, 0);
     CLASS_MAINSIGNALIN(sigmund_class, t_sigmund, x_f);
     class_addmethod(sigmund_class, (t_method)sigmund_param1,
         gensym("param1"), A_FLOAT, 0);
@@ -1432,7 +1436,7 @@ void sigmund_tilde_setup(void)
     class_addmethod(sigmund_class, (t_method)sigmund_minpower,
         gensym("minpower"), A_FLOAT, 0);
     class_addmethod(sigmund_class, (t_method)sigmund_print,
-        gensym("print"), A_NULL);
+        gensym("print"), 0);
     class_addmethod(sigmund_class, (t_method)sigmund_printnext,
         gensym("printnext"), A_FLOAT, 0);
     post("sigmund~ version 0.07");
