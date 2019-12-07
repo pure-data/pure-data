@@ -1,16 +1,16 @@
 #N struct template3 float x float y float w float h float q;
-#N canvas 387 65 585 485 12;
-#X floatatom 60 371 0 0 0 0 - - -;
-#X floatatom 60 323 0 0 0 0 - - -;
-#X floatatom 60 275 0 0 0 0 - - -;
-#X floatatom 60 227 0 0 0 0 - - -;
-#X floatatom 324 322 0 0 0 0 - - -;
-#X floatatom 283 322 0 0 0 0 - - -;
-#X floatatom 240 322 0 0 0 0 - - -;
-#X obj 197 274 pointer;
-#X msg 205 249 next;
-#X floatatom 197 322 0 0 0 0 - - -;
-#N canvas 2 70 381 425 data3 1;
+#N canvas 376 88 576 543 12;
+#X floatatom 105 399 0 0 0 0 - - -;
+#X floatatom 105 351 0 0 0 0 - - -;
+#X floatatom 105 303 0 0 0 0 - - -;
+#X floatatom 105 255 0 0 0 0 - - -;
+#X floatatom 398 342 0 0 0 0 - - -;
+#X floatatom 359 342 0 0 0 0 - - -;
+#X floatatom 319 342 0 0 0 0 - - -;
+#X obj 272 282 pointer;
+#X msg 280 256 next;
+#X floatatom 280 342 0 0 0 0 - - -;
+#N canvas 1008 77 381 425 data3 1;
 #X scalar template3 18 85 43 18 741 \;;
 #X scalar template3 111 169 75 25 72 \;;
 #X scalar template3 111 92 4 15 163 \;;
@@ -22,104 +22,104 @@
 #X scalar template3 264 243 1 33 178 \;;
 #X scalar template3 26 88 56 60 132 \;;
 #X scalar template3 2 262 66 2 808 \;;
-#X scalar template3 270 106 74 51 23 \;;
+#X scalar template3 270 106 74 51 881 \;;
 #X scalar template3 214 286 8 43 180 \;;
 #X scalar template3 57 205 51 58 939 \;;
 #X scalar template3 216 162 36 43 505 \;;
 #X scalar template3 166 146 68 9 614 \;;
 #X scalar template3 144 251 56 28 886 \;;
-#X scalar template3 228 62 62 1 786 \;;
+#X scalar template3 228 62 62 1 758 \;;
 #X scalar template3 168 229 28 23 654 \;;
 #X scalar template3 223 308 73 50 727 \;;
-#X restore 269 425 pd data3;
-#N canvas 97 433 512 247 template3 0;
-#X obj 25 68 filledpolygon q 0 1 0 0 w 0 w h 0 h;
-#X text 22 39 five numeric ("float") fields;
-#X text 25 88 drawing a rectangle \, interior color q \, border black
+#X restore 301 451 pd data3;
+#N canvas 403 522 512 300 template3 0;
+#X obj 48 98 filledpolygon q 0 1 0 0 w 0 w h 0 h;
+#X text 44 53 five numeric ("float") fields;
+#X text 48 118 drawing a rectangle \, interior color q \, border black
 and one unit thick \, through the points (0 \, 0) \, (w \, 0) \, (w
 \, h) \, and (0 \, h). Note that the three points containing variables
 become hot spots for mouse dragging.;
-#X obj 24 19 struct template3 float x float y float w float h float
+#X obj 46 33 struct template3 float x float y float w float h float
 q;
-#X text 26 184 Draw the value of q as an Arabic numeral \, at (0 \,
-0) \, in black.;
-#X obj 26 163 drawnumber q 0 -15 0;
-#X restore 269 446 pd template3;
-#N canvas 395 94 628 377 stuff 0;
-#X obj 352 180 pointer;
-#X obj 352 204 t b b p;
-#X obj 222 333 append template3 x y w h q;
-#X obj 288 9 loadbang;
-#X obj 288 62 t b b b;
-#X msg 331 138 traverse pd-data3;
-#X msg 477 136 \; pd-data3 clear;
-#X msg 240 110 0;
-#X obj 187 136 f;
-#X obj 220 136 + 1;
-#X obj 189 112 until;
-#X obj 201 159 sel 20;
-#X obj 251 159 t b;
-#X msg 290 32 bang;
-#X obj 25 237 random 300;
-#X obj 100 237 random 300;
-#X obj 323 236 random 1000;
-#X obj 177 237 random 80;
-#X obj 252 237 random 80;
-#X obj 354 11 inlet;
-#X obj 101 263 + 30;
-#X connect 0 0 1 0;
-#X connect 1 0 14 0;
-#X connect 1 1 15 0;
-#X connect 1 1 16 0;
-#X connect 1 1 17 0;
-#X connect 1 1 18 0;
-#X connect 1 2 2 5;
-#X connect 3 0 13 0;
-#X connect 4 0 10 0;
-#X connect 4 1 5 0;
-#X connect 4 1 7 0;
-#X connect 4 2 6 0;
-#X connect 5 0 0 0;
-#X connect 7 0 8 1;
-#X connect 8 0 11 0;
-#X connect 8 0 9 0;
-#X connect 9 0 8 1;
-#X connect 10 0 8 0;
-#X connect 11 0 10 1;
-#X connect 11 1 12 0;
-#X connect 12 0 0 0;
-#X connect 13 0 4 0;
-#X connect 14 0 2 0;
-#X connect 15 0 20 0;
-#X connect 16 0 2 4;
-#X connect 17 0 2 2;
-#X connect 18 0 2 3;
-#X connect 19 0 13 0;
-#X connect 20 0 2 1;
-#X restore 269 404 pd stuff;
-#X msg 269 379 remake;
-#X obj 197 298 get template3 x y w h q;
-#X floatatom 356 322 0 0 0 0 - - -;
-#X obj 60 251 set template3 x;
-#X obj 60 299 set template3 y;
-#X obj 60 347 set template3 w;
-#X obj 60 394 set template3 h;
-#X floatatom 60 418 0 0 0 0 - - -;
-#X obj 60 441 set template3 q;
-#X msg 197 226 traverse pd-data3;
-#X text 46 5 The "set" object allows you to change numeric values.
+#X text 49 228 Draw the value of q as an Arabic numeral \, at (0 \,
+0) \, in black., f 41;
+#X obj 49 207 drawnumber q 0 -15 0;
+#X restore 301 476 pd template3;
+#N canvas 395 94 513 527 stuff 0;
+#X obj 182 285 pointer;
+#X obj 175 456 append template3 x y w h q;
+#X obj 168 48 loadbang;
+#X obj 159 106 t b b b;
+#X msg 182 237 traverse pd-data3;
+#X msg 205 140 \; pd-data3 clear;
+#X msg 138 154 0;
+#X obj 85 180 f;
+#X obj 124 181 + 1;
+#X obj 87 156 until;
+#X obj 105 210 sel 20;
+#X obj 144 236 t b;
+#X msg 159 78 bang;
+#X obj 77 382 random 300;
+#X obj 158 382 random 300;
+#X obj 382 382 random 1000;
+#X obj 239 382 random 80;
+#X obj 311 382 random 80;
+#X obj 159 22 inlet;
+#X obj 158 408 + 30;
+#X obj 182 314 trigger bang bang pointer;
+#X connect 0 0 20 0;
+#X connect 2 0 12 0;
+#X connect 3 0 9 0;
+#X connect 3 1 4 0;
+#X connect 3 1 6 0;
+#X connect 3 2 5 0;
+#X connect 4 0 0 0;
+#X connect 6 0 7 1;
+#X connect 7 0 10 0;
+#X connect 7 0 8 0;
+#X connect 8 0 7 1;
+#X connect 9 0 7 0;
+#X connect 10 0 9 1;
+#X connect 10 1 11 0;
+#X connect 11 0 0 0;
+#X connect 12 0 3 0;
+#X connect 13 0 1 0;
+#X connect 14 0 19 0;
+#X connect 15 0 1 4;
+#X connect 16 0 1 2;
+#X connect 17 0 1 3;
+#X connect 18 0 12 0;
+#X connect 19 0 1 1;
+#X connect 20 0 13 0;
+#X connect 20 1 14 0;
+#X connect 20 1 15 0;
+#X connect 20 1 16 0;
+#X connect 20 1 17 0;
+#X connect 20 2 1 5;
+#X restore 301 427 pd stuff;
+#X msg 301 402 remake;
+#X obj 280 318 get template3 x y w h q;
+#X floatatom 437 342 0 0 0 0 - - -;
+#X obj 105 279 set template3 x;
+#X obj 105 327 set template3 y;
+#X obj 105 375 set template3 w;
+#X obj 105 422 set template3 h;
+#X floatatom 105 446 0 0 0 0 - - -;
+#X obj 105 469 set template3 q;
+#X msg 272 232 traverse pd-data3;
+#X text 52 27 The "set" object allows you to change numeric values.
 In this example \, the template specifies five fields describing the
 (x \, y) location \, width \, height \, and color. A new feature is
 that the color is also getting printed out under the rectangles. This
-is done using the "drawnumber" object in the template.;
-#X text 323 378 <- click to randomize;
-#X text 45 99 Getting parameter values is as in the previous patch
-\; however \, as you traverse the list with "next" messages the new
-pointers are also sent to the five "set" objects. These have as arguments
-the template name and the name of the field they will set. You can
-drag on the five number boxes (after selecting an object with "traverse"
+is done using the "drawnumber" object in the template., f 65;
+#X text 355 401 <= click to randomize;
+#X text 52 106 Getting parameter values is as in the previous patch.
+However \, as you traverse the list with "next" messages the new pointers
+are also sent to the five "set" objects. These have as arguments the
+template name and the name of the field they will set. You can drag
+on the five number boxes (after selecting an object with "traverse"
 and "next" messages) to change its location \, shape \, and color.
-;
+, f 65;
 #X connect 0 0 19 0;
 #X connect 1 0 18 0;
 #X connect 2 0 17 0;

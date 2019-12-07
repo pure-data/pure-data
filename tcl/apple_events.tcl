@@ -29,12 +29,12 @@ proc ::tk::mac::OpenDocument {args} {
 
 # kEventAppHidden
 proc ::tk::mac::OnHide {args} {
-    ::pdwindow::verbose 1 "::tk::mac::OnHide $args +++++++++++++++++++++\n"
+    #::pdwindow::verbose 1 "::tk::mac::OnHide $args +++++++++++++++++++++\n"
 }
 
 # kEventAppShown
 proc ::tk::mac::OnShow {args} {
-    ::pdwindow::verbose 1 "::tk::mac::OnShow $args +++++++++++++++++++++\n"
+    #::pdwindow::verbose 1 "::tk::mac::OnShow $args +++++++++++++++++++++\n"
 }
 
 # open About Pd... in Tk/Cocoa
@@ -44,7 +44,7 @@ proc tkAboutDialog {} {
 
 # kAEShowPreferences
 proc ::tk::mac::ShowPreferences {args} {
-    ::pdwindow::verbose 1 "::tk::mac::ShowPreferences $args ++++++++++++\n"
+    #::pdwindow::verbose 1 "::tk::mac::ShowPreferences $args ++++++++++++\n"
     pdsend "pd audio-properties"
 }
 
@@ -56,7 +56,7 @@ proc ::tk::mac::Quit {args} {
 # on Tk/Cocoa, respond to the "Pd Help" option in the Help menu which
 # is provided by default and cannot disabled or removed 
 proc ::tk::mac::ShowHelp {args} {
-    ::pdwindow::verbose 1 "::tk::mac::ShowHelp $args ++++++++++++\n"
+    #::pdwindow::verbose 1 "::tk::mac::ShowHelp $args ++++++++++++\n"
     ::pd_menucommands::menu_manual
 }
 
@@ -66,11 +66,11 @@ proc ::tk::mac::PrintDocument {args} {
 }
 
 proc ::tk::mac::OpenApplication {args} {
-    ::pdwindow::verbose 1 "::tk::mac::OpenApplication $args ++++++++++++\n"
+    #::pdwindow::verbose 1 "::tk::mac::OpenApplication $args ++++++++++++\n"
 }
 
 proc ::tk::mac::ReopenApplication {args} {
-    ::pdwindow::verbose 1 "::tk::mac::ReopenApplication $args ++++++++++\n"
+    #::pdwindow::verbose 1 "::tk::mac::ReopenApplication $args ++++++++++\n"
     # raise pdwindow if it's hidden and there are no other windows visible
     if {[winfo exists .pdwindow] && ![winfo viewable .pdwindow] && [llength [wm stackorder .]] == 0} {
         ::pd_menucommands::menu_raise_pdwindow

@@ -1,9 +1,9 @@
-#N canvas 179 129 647 256 12;
-#X text 406 191 updated for Pd version 0.47;
-#X obj 42 19 vsnapshot~;
-#X text 148 19 - mal-designed snapshot~ extension - best not to use
+#N canvas 179 129 576 258 12;
+#X text 306 197 updated for Pd version 0.47;
+#X obj 53 23 vsnapshot~;
+#X text 132 24 - mal-designed snapshot~ extension - best not to use
 this;
-#X text 27 66 This is an attempt at making a version of snapshot~ that
+#X text 60 68 This is an attempt at making a version of snapshot~ that
 trades off delay for time jitter control. Unfortunately it isn't fully
 correct and will be replaced by a more correct one in the future. Since
 this change will probably be incompatible with this object \, it is

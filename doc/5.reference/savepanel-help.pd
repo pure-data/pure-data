@@ -1,19 +1,19 @@
-#N canvas 656 117 567 333 12;
+#N canvas 402 134 545 333 12;
 #X msg 102 112 bang;
 #X obj 102 225 print;
-#X text 28 282 see also:;
-#X text 16 35 When savepanel gets a "bang" a "Save As" file browser
+#X text 67 274 see also:;
+#X text 31 45 When savepanel gets a "bang" a "Save As" file browser
 appears on the screen \, If you choose a filename \, it appears on
 the outlet.;
 #X obj 102 200 savepanel;
-#X obj 115 281 openpanel;
+#X obj 141 273 openpanel;
 #X obj 19 7 savepanel;
 #X text 104 6 - query you for the name of a file to create;
 #X text 151 111 Starts panel in current directory;
 #X text 227 140 Starts in specified directory;
 #X msg 119 140 symbol /tmp;
 #X msg 128 170 symbol ../;
-#X text 295 289 updated for Pd version 0.48;
+#X text 281 253 updated for Pd version 0.48;
 #X connect 0 0 4 0;
 #X connect 4 0 1 0;
 #X connect 10 0 4 0;

@@ -203,7 +203,7 @@ proc ::pd_guiprefs::init {} {
             }
         }
         default {
-            ::pdwindow::error "Unknown gui preferences backend '$backend'.\n"
+            ::pdwindow::error "unknown gui preferences backend '$backend'.\n"
         }
 
     }

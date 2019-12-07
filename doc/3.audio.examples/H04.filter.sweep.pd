@@ -1,50 +1,41 @@
-#N canvas 360 22 557 528 12;
-#X floatatom 44 146 5 0 150 0 - #0-pitch -;
-#X text 126 9 SWEEPING FILTERS;
-#X obj 44 193 phasor~;
-#X obj 59 351 +~;
-#X floatatom 81 326 5 0 100 0 - #0-offset -;
-#X floatatom 60 222 5 0 0 0 - #0-speed -;
-#X floatatom 82 273 5 0 100 0 - #0-depth -;
-#X floatatom 75 404 5 0 1000 0 - #0-q -;
-#X obj 44 426 vcf~;
-#X obj 59 375 tabread4~ mtof;
-#X text 127 403 <-- Q (selectivity);
-#X text 115 182 sawtooth;
-#X text 116 198 oscillator;
-#X text 112 221 <-- sweep speed;
-#X text 137 245 LFO for sweep;
-#X text 134 274 <-- sweep depth;
-#X text 131 326 <-- base center frequency;
-#X text 103 350 add base to sweep;
-#X text 192 375 convert to Hz.;
-#X text 97 144 <-- pitch;
-#X obj 43 457 output~;
-#X obj 44 169 mtof;
-#X obj 60 244 phasor~;
-#X obj 60 298 *~;
-#X text 294 496 updated for Pd version 0.39;
-#N canvas 706 247 450 300 startup 0;
-#X obj 85 16 loadbang;
-#X obj 85 40 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#N canvas 553 23 507 587 12;
+#X floatatom 113 163 5 0 150 0 - #0-pitch -;
+#X text 114 17 SWEEPING FILTERS;
+#X obj 113 210 phasor~;
+#X obj 125 368 +~;
+#X floatatom 143 343 5 0 100 0 - #0-offset -;
+#X floatatom 126 239 5 0 0 0 - #0-speed -;
+#X floatatom 144 290 5 0 100 0 - #0-depth -;
+#X floatatom 138 423 5 0 1000 0 - #0-q -;
+#X obj 113 448 vcf~;
+#X obj 125 397 tabread4~ mtof;
+#X text 184 199 sawtooth;
+#X text 185 215 oscillator;
+#X text 203 262 LFO for sweep;
+#X text 161 367 add base to sweep;
+#X text 237 397 convert to Hz.;
+#X obj 113 489 output~;
+#X obj 113 186 mtof;
+#X obj 126 261 phasor~;
+#X obj 126 315 *~;
+#X text 297 545 updated for Pd version 0.39;
+#N canvas 706 247 304 285 startup 0;
+#X obj 85 33 loadbang;
+#X obj 85 57 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 85 59 f \$0;
-#X text 9 257 boxes.;
-#X text 18 209 This subpatch loads initial values in number;
-#X msg 85 83 \; \$1-pitch 48 \; \$1-speed -2 \; \$1-depth 27 \; \$1-offset
+#X obj 85 76 f \$0;
+#X msg 85 100 \; \$1-pitch 48 \; \$1-speed -2 \; \$1-depth 27 \; \$1-offset
 56 \; \$1-q 2;
+#X text 66 209 This subpatch loads initial values in number boxes.
+, f 27;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X connect 2 0 5 0;
-#X restore 168 491 pd startup;
-#X text 14 109 Note the different effects of negative and positive
+#X connect 2 0 3 0;
+#X restore 293 506 pd startup;
+#X text 35 118 Note the different effects of negative and positive
 sweep speeds.;
-#X text 13 32 If you want actively changing center frequencies \, use
-"vcf~" instead of "bp~". The vcf~ module takes an audio signal to set
-center frequency. (Q is still set by messages though.) Vcf is computationally
-somewhat more expensive than bp~.;
-#N canvas 0 22 612 404 conversion-tables 0;
-#N canvas 0 22 450 300 graph2 0;
+#N canvas 783 322 378 247 conversion-tables 0;
+#N canvas 0 22 450 300 (subpatch) 0;
 #X array mtof 130 float 1;
 #A 0 8.1758 8.66196 9.17702 9.72272 10.3009 10.9134 11.5623 12.2499
 12.9783 13.75 14.5676 15.4339 16.3516 17.3239 18.354 19.4454 20.6017
@@ -62,21 +53,30 @@ somewhat more expensive than bp~.;
 7040 7458.62 7902.13 8372.02 8869.84 9397.27 9956.06 10548.1 11175.3
 11839.8 12543.9 13289.8 14080;
 #X coords 0 12000 130 0 200 100 1;
-#X restore 309 225 graph;
-#X text 319 333 ------ 130 samples ------;
-#X text 518 318 0;
-#X text 520 218 12000;
-#X restore 168 463 pd conversion-tables;
-#X connect 0 0 21 0;
+#X restore 73 60 graph;
+#X text 83 168 ------ 130 samples ------;
+#X text 282 153 0;
+#X text 284 53 12000;
+#X restore 293 478 pd conversion-tables;
+#X text 159 163 <= pitch;
+#X text 168 238 <= sweep speed;
+#X text 186 291 <= sweep depth;
+#X text 186 343 <= base center frequency;
+#X text 190 422 <= Q (selectivity);
+#X text 34 46 If you want actively changing center frequencies \, use
+"vcf~" instead of "bp~". The vcf~ module takes an audio signal to set
+center frequency. (Q is still set by messages though.) Vcf~ is computationally
+somewhat more expensive than bp~.;
+#X connect 0 0 16 0;
 #X connect 2 0 8 0;
 #X connect 3 0 9 0;
 #X connect 4 0 3 1;
-#X connect 5 0 22 0;
-#X connect 6 0 23 1;
+#X connect 5 0 17 0;
+#X connect 6 0 18 1;
 #X connect 7 0 8 2;
-#X connect 8 0 20 0;
-#X connect 8 0 20 1;
+#X connect 8 0 15 0;
+#X connect 8 0 15 1;
 #X connect 9 0 8 1;
-#X connect 21 0 2 0;
-#X connect 22 0 23 0;
-#X connect 23 0 3 0;
+#X connect 16 0 2 0;
+#X connect 17 0 18 0;
+#X connect 18 0 3 0;

@@ -125,7 +125,7 @@ static void pa_init(void)        /* Initialize PortAudio  */
 
         if ( err != paNoError )
         {
-            post("Error opening audio: %s", err, Pa_GetErrorText(err));
+            post("error opening audio: %s", err, Pa_GetErrorText(err));
             return;
         }
         initialized = 1;
