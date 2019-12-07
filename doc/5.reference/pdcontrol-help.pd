@@ -1,10 +1,10 @@
-#N canvas 488 60 650 565 12;
-#X obj 39 27 pdcontrol;
-#X text 118 27 -- communicate with pd and/or this patch;
-#X obj 53 298 pdcontrol;
-#X obj 53 325 print;
-#X msg 61 173 isvisible;
-#X msg 59 425 isvisible;
+#N canvas 574 48 682 640 12;
+#X obj 38 30 pdcontrol;
+#X text 117 30 -- communicate with pd and/or this patch;
+#X obj 52 381 pdcontrol;
+#X obj 52 408 print;
+#X msg 91 263 isvisible;
+#X msg 58 452 isvisible;
 #N canvas 564 534 495 194 subpatch 0;
 #X obj 44 15 inlet;
 #X obj 44 97 pdcontrol;
@@ -18,12 +18,70 @@ to test it., f 30;
 #X connect 1 0 2 0;
 #X connect 3 0 4 0;
 #X connect 4 0 2 0;
-#X restore 59 460 pd subpatch;
-#X text 142 171 1 if this patch is visible \, 0 if not;
-#X msg 69 199 dir;
-#X text 112 199 get directory this patch is in;
-#X msg 75 237 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
-#N canvas 689 91 529 365 args 0;
+#X restore 58 487 pd subpatch;
+#X msg 68 178 dir;
+#X text 108 178 get directory this patch is in;
+#X msg 84 206 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#X text 254 145 open a URL in a browser;
+#X msg 52 146 browse http://msp.ucsd.edu;
+#X text 330 202 Optional argument to specify this patch (0) \, owning
+patch (1) \, its own owner (2) \, and so on \, and optionally also
+a filename relative to the patch's directory. (Ownership number is
+silently reduced if owners don't exist \, so here anything greater
+than zero is ignored.), f 40;
+#X text 48 67 pdcontrol lets you communicate with the patch to get
+its owning directory \, arguments \, its visible/invisible state \,
+or to open a URL in a web browser.;
+#X text 401 568 updated for Pd version 0.51.;
+#X text 148 451 open and shut the subpatch to test "isvisible" message.
+An optional argument specifies the level: this window (0) \, owning
+window (1) and so on., f 55;
+#X text 168 257 1 if this window is visible \, 0 if not, f 19;
+#X msg 100 308 editmode;
+#X text 169 294 1 if this window is in edit mode \, 0 if not, f 19
+;
+#X msg 104 346 args;
+#X text 143 347 get patch's arguments (or a bang if they don't exist)
+;
+#N canvas 805 100 587 337 editmode-example 0;
+#X obj 168 173 pdcontrol;
+#X msg 168 144 editmode;
+#X obj 102 135 key;
+#X obj 102 193 spigot;
+#X obj 102 162 t f b;
+#X obj 168 200 == 0;
+#X floatatom 102 227 5 0 0 0 - - -;
+#X obj 408 166 pdcontrol;
+#X obj 342 128 key;
+#X obj 342 186 spigot;
+#X obj 342 155 t f b;
+#X obj 408 193 == 0;
+#X floatatom 342 220 5 0 0 0 - - -;
+#X msg 408 137 editmode 1;
+#X text 92 38 Here we use the editmode message to filter the output
+of [key] so they only go through if the patch window is in run mode.
+And optional argument specifies the level: this window (0) \, owning
+window (1) and so on.;
+#X text 327 254 change the edit status of the parent window to test
+this., f 29;
+#X text 75 257 change the edit status of this window to test this.
+, f 29;
+#X connect 0 0 5 0;
+#X connect 1 0 0 0;
+#X connect 2 0 4 0;
+#X connect 3 0 6 0;
+#X connect 4 0 3 0;
+#X connect 4 1 1 0;
+#X connect 5 0 3 1;
+#X connect 7 0 11 0;
+#X connect 8 0 10 0;
+#X connect 9 0 12 0;
+#X connect 10 0 9 0;
+#X connect 10 1 13 0;
+#X connect 11 0 9 1;
+#X connect 13 0 7 0;
+#X restore 58 534 pd editmode-example;
+#N canvas 689 91 529 365 args-example 0;
 #X obj 127 209 print;
 #X text 185 140 <= get arguments;
 #X obj 127 174 pdcontrol-abs foo 100 \$0-x \\\$0 \$1 \$2-x;
@@ -41,25 +99,12 @@ symbol \, but it actually gets expanded if this abstraction is called
 inside another that contains arguments).;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
-#X restore 55 372 pd args;
-#X text 118 372 get the patch's arguments;
-#X text 255 142 open a URL in a browser;
-#X msg 53 143 browse http://msp.ucsd.edu;
-#X text 324 229 Optional argument to specify this patch (0) \, owning
-patch (1) \, its own owner (2) \, and so on \, and optionally also
-a filename relative to the patch's directory. (Ownership number is
-silently reduced if owners don't exist \, so here anything greater
-than zero is ignored.), f 42;
-#X text 49 64 pdcontrol lets you communicate with the patch to get
-its owning directory \, arguments \, its visible/invisible state \,
-or to open a URL in a web browser.;
-#X text 415 525 updated for Pd version 0.51.;
-#X text 149 424 open and shut the subpatch to test "isvisible" message.
-An optional argument specifies the level: this window (0) \, owning
-window (1) and so on., f 55;
+#X restore 59 573 pd args-example;
 #X connect 2 0 3 0;
 #X connect 4 0 2 0;
 #X connect 5 0 6 0;
-#X connect 8 0 2 0;
-#X connect 10 0 2 0;
-#X connect 14 0 2 0;
+#X connect 7 0 2 0;
+#X connect 9 0 2 0;
+#X connect 11 0 2 0;
+#X connect 17 0 2 0;
+#X connect 19 0 2 0;
