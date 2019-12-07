@@ -474,6 +474,18 @@ static void pdcontrol_browse(t_pdcontrol *x, t_symbol *s)
     sys_gui(buf);
 }
 
+static void pdcontrol_editmode(t_pdcontrol *x, t_floatarg f)
+{
+    t_canvas *c = x->x_canvas;
+    int i;
+    for (i = 0; i < (int)f; i++)
+    {
+        if (c->gl_owner)    /* back up one more into an owner if any */
+            c = c->gl_owner;
+    }
+    outlet_float(x->x_outlet, c->gl_edit);
+}
+
 static void pdcontrol_isvisible(t_pdcontrol *x, t_floatarg f)
 {
     t_canvas *c = x->x_canvas;
@@ -498,6 +510,8 @@ static void pdcontrol_setup(void)
         gensym("browse"), A_SYMBOL, 0);
     class_addmethod(pdcontrol_class, (t_method)pdcontrol_isvisible,
         gensym("isvisible"), A_DEFFLOAT , 0);
+    class_addmethod(pdcontrol_class, (t_method)pdcontrol_editmode,
+        gensym("editmode"), A_DEFFLOAT , 0);
 }
 
 /* -------------------------- setup routine ------------------------------ */
