@@ -1534,7 +1534,10 @@ typedef struct _value
 t_float *value_get(t_symbol *s)
 {
     t_atom *a = value_getatom(s);
-    return &a->a_w.w_float;
+    if (a->a_type == A_FLOAT)
+        return &a->a_w.w_float;
+    static t_float f = 0; // safety fallback
+    return &f;
 }
 
     /* get a pointer to a named variable's underlying atom.  The variable
