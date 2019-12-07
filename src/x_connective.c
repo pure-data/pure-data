@@ -1660,7 +1660,7 @@ static void value_bang(t_value *x)
             outlet_float(x->x_obj.ob_outlet, x->x_atomstar->a_w.w_float);
             break;
         default:
-            bug("value: unsupported type");
+            bug("value_bang");
             break;
     }
 }
