@@ -1,49 +1,25 @@
-#N canvas 149 144 877 446 12;
-#X obj 24 361 filter-graph2 tab1 tab2;
+#N canvas 296 142 819 418 12;
+#X obj 103 291 filter-graph2 tab1 tab2;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array tab1 100 float 1;
-#A 0 0.999994 1.00149 1.00323 0.999135 0.999938 0.999956 1.00002 1.00017
-0.999993 0.999019 1 0.999995 1 0.999917 0.999645 0.999509 0.999999
-1 0.999999 0.999961 0.999876 0.999605 0.999848 0.999166 0.999998 0.999994
-0.999999 0.999886 0.999999 0.999356 0.999992 0.999999 0.999999 0.999771
-1 0.999414 1 1 0.999992 0.999913 1.00007 0.999518 0.999182 0.999974
-1.00003 0.999919 0.999945 0.999048 1.00053 1.00511 0.999997 1.00363
-1.00056 1.00036 0.999954 0.99829 1.00003 0.999974 1 0.999864 0.999573
-0.999411 1.0002 1 0.999989 0.999914 0.999999 0.999511 0.999999 0.999067
-0.999992 0.999998 0.999999 0.999665 1 0.999691 0.999998 1 0.999922
-0.999781 0.999883 0.999322 0.999521 1 0.999973 0.999855 1 0.999414
-0.999998 0.999995 1 0.999988 0.999993 0.999279 1.00002 1.00072 0.999938
-0.999826 1.00006 1.00985;
-#X coords 0 2 99 0 200 140 1;
-#X restore 633 22 graph;
+#X array tab1 100 float 0;
+#X coords 0 2 99 0 200 140 1 0 0;
+#X restore 552 27 graph;
 #N canvas 0 50 450 300 (subpatch) 0;
-#X array tab2 100 float 3;
-#A 0 -8.59499e-06 6.22141 6.1559 6.09491 6.03151 5.96891 5.90605 5.84319
-5.78033 5.71752 5.65469 5.59185 5.52902 5.46618 5.40335 5.34052 5.27769
-5.21486 5.15203 5.08919 5.02637 4.96353 4.9007 4.83787 4.77503 4.7122
-4.64937 4.58654 4.52371 4.46088 4.39804 4.33521 4.27238 4.20955 4.14672
-4.08388 4.02105 3.95822 3.89539 3.83255 3.76972 3.7069 3.64407 3.58122
-3.51843 3.45549 3.39289 3.3295 3.26573 3.19331 3.14159 3.08969 3.01727
-2.9535 2.89011 2.82751 2.76457 2.70178 2.63893 2.5761 2.51327 2.45045
-2.38761 2.32478 2.26195 2.19912 2.13628 2.07345 2.01062 1.94779 1.88496
-1.82212 1.75929 1.69646 1.63363 1.5708 1.50796 1.44513 1.3823 1.31947
-1.25663 1.1938 1.13097 1.06814 1.00531 0.942477 0.879646 0.816814 0.753985
-0.691149 0.628309 0.565482 0.50267 0.439804 0.376949 0.314087 0.251487
-0.18809 0.127096 0.068529;
-#X coords 0 6.283 99 0 200 140 1;
-#X restore 638 223 graph;
-#X text 620 79 1;
-#X text 632 365 0;
-#X text 614 288 pi;
-#X text 607 218 2pi;
-#X obj 24 226 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X array tab2 100 float 2;
+#X coords 0 6.283 99 0 200 140 1 0 0;
+#X restore 557 228 graph;
+#X text 539 84 1;
+#X text 551 370 0;
+#X text 533 293 pi;
+#X text 526 223 2pi;
+#X obj 76 169 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X floatatom 32 272 5 0 0 0 - - -, f 5;
-#X text 620 15 2;
-#X text 609 405 updated for Pd version 0.39;
-#X text 690 168 frequency;
-#X text 630 164 0;
-#X text 813 167 44100;
+#X floatatom 76 224 5 0 0 0 - - -;
+#X text 539 20 2;
+#X text 65 367 updated for Pd version 0.39;
+#X text 609 173 frequency;
+#X text 549 169 0;
+#X text 732 172 44100;
 #N canvas 876 177 375 255 startup 0;
 #X obj 22 24 loadbang;
 #X obj 22 48 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
@@ -55,31 +31,29 @@
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 2 0 5 0;
-#X restore 397 393 pd startup;
-#X text 574 150 gain=0;
-#X text 573 350 phase=0;
-#X obj 24 249 filter-graph1 100 44100;
-#X text 43 225 <-- compute;
-#X text 33 289 index;
-#X text 103 17 ALL-PASS FILTERS;
-#X floatatom 345 287 3 -99 99 0 - #0-pole -, f 3;
-#X obj 238 329 rpole~;
-#X obj 345 310 / 100;
-#X obj 238 304 rzero_rev~;
-#X text 340 263 pole (%);
-#X text 13 43 The all-pass filter has a phase response that depends
+#X restore 334 158 pd startup;
+#X text 493 155 gain=0;
+#X text 492 355 phase=0;
+#X obj 76 192 filter-graph1 100 44100;
+#X text 48 17 ALL-PASS FILTERS;
+#X floatatom 356 243 3 -99 99 0 - #0-pole -;
+#X obj 261 263 rpole~;
+#X obj 356 266 / 100;
+#X obj 261 238 rzero_rev~;
+#X text 351 219 pole (%);
+#X text 35 49 The all-pass filter has a phase response that depends
 on its coefficient \, and a flat frequency response. The coefficient
 (p) gives the location of the pole. There is a zero at 1/p \, unless
 p=0. If p=0 the filter is effectively a one-sample delay. Negative
 values of $p$ are allowed \, as long as p is between -1 and 1;
 #X connect 7 0 17 0;
-#X connect 17 0 0 0;
+#X connect 8 0 0 0;
 #X connect 17 0 8 0;
 #X connect 17 1 0 1;
-#X connect 17 1 24 0;
+#X connect 17 1 22 0;
 #X connect 17 2 0 2;
-#X connect 21 0 23 0;
-#X connect 22 0 0 3;
-#X connect 23 0 24 1;
-#X connect 23 0 22 1;
-#X connect 24 0 22 0;
+#X connect 19 0 21 0;
+#X connect 20 0 0 3;
+#X connect 21 0 22 1;
+#X connect 21 0 20 1;
+#X connect 22 0 20 0;

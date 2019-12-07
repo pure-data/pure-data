@@ -1675,6 +1675,13 @@ static void value_symbol2(t_value *x, t_symbol *s)
     x->x_atomstar = value_getatom(s);
 }
 
+static void value_send(t_value *x, t_symbol *s)
+{
+    if (s->s_thing)
+        pd_float(s->s_thing, *x->x_floatstar);
+    else pd_error(x, "%s: no such object", s->s_name);
+}
+
 static void value_free(t_value *x)
 {
     value_release(x->x_sym);
@@ -1691,6 +1698,7 @@ static void value_setup(void)
     class_addsymbol(value_class, value_symbol);
     class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
         A_DEFSYM, 0);
+    class_addmethod(value_class, (t_method)value_send, gensym("send"), A_SYMBOL, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
     class_addfloat(vcommon_class, vcommon_float);

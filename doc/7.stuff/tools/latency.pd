@@ -1,7 +1,7 @@
-#N canvas 78 319 718 504 12;
-#X floatatom 239 98 4 0 0 0 - - adc-gain;
-#X text 317 17 latency measurement;
-#N canvas 31 48 928 842 guts 0;
+#N canvas 292 145 707 484 12;
+#X floatatom 211 98 4 0 0 0 - - adc-gain;
+#X text 289 17 latency measurement;
+#N canvas 340 47 928 842 guts 0;
 #X obj 292 35 adc~ 1 2 3 4 5 6 7 8;
 #X obj 318 102 == 1;
 #X obj 293 126 *~ 0;
@@ -238,24 +238,24 @@
 #X connect 93 0 88 0;
 #X connect 94 0 93 0;
 #X connect 95 0 76 0;
-#X restore 595 387 pd guts;
-#X floatatom 242 50 4 1 8 0 inchannel inchannel-set inchannel;
-#X floatatom 626 267 6 0 0 0 - latency -;
-#X text 108 96 adjust gain here:;
-#X text 432 267 latency in milliseconds;
-#X text 571 245 THE ANSWER IS:;
-#X floatatom 528 143 4 0 0 0 - adc-db -;
-#X floatatom 527 92 4 0 0 0 - dac-db -;
-#X text 567 142 RMS amplitude in;
-#X text 564 93 RMS amplitude out;
-#X text 106 142 so that RMS amplitude in is between 60 and 70;
-#X text 108 121 (typically between -20 and 20);
-#X text 497 466 updated for Pd version 0.43;
-#X obj 228 259 bng 25 250 50 0 empty discontinuity empty 17 7 0 10
+#X restore 571 350 pd guts;
+#X floatatom 214 50 4 1 8 0 inchannel inchannel-set inchannel;
+#X floatatom 563 229 6 0 0 0 - latency -;
+#X text 80 96 adjust gain here:;
+#X text 392 231 latency in milliseconds;
+#X text 508 207 THE ANSWER IS:;
+#X floatatom 464 144 4 0 0 0 - adc-db -;
+#X floatatom 463 93 4 0 0 0 - dac-db -;
+#X text 503 143 RMS amplitude in;
+#X text 500 94 RMS amplitude out;
+#X text 78 142 so that RMS amplitude in is between 60 and 70;
+#X text 80 121 (typically between -20 and 20);
+#X text 444 421 updated for Pd version 0.43;
+#X obj 272 216 bng 25 250 50 0 empty discontinuity empty 17 7 0 10
 -262144 -1 -1;
-#X text 40 235 discontinuity: this flashes if there are audio errors
-;
-#X text 67 343 To use this patch \, connect your audio output back
+#X text 75 212 discontinuity: this flashes if there are audio errors
+, f 27;
+#X text 60 275 To use this patch \, connect your audio output back
 to the audio input (any input and output channel from 1 to 8 \, but
 the input channel should agree with the "inchannel" control at top).
 Then adjust gain so that "RMS amplitude in" is about 65 (anywhere from

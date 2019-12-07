@@ -1,34 +1,34 @@
-#N canvas 394 118 644 497 12;
-#X obj 85 238 env~;
-#X floatatom 85 261 0 0 0 0 - - -;
-#X floatatom 129 184 0 0 0 0 - - -;
-#X obj 85 211 hip~ 5;
-#X obj 18 238 env~;
-#X floatatom 18 260 0 0 0 0 - - -;
-#X text 130 240 env~ gives the amplitude of the signal envelop in dB.
+#N canvas 468 121 567 528 12;
+#X obj 126 267 env~;
+#X floatatom 126 293 0 0 0 0 - - -;
+#X floatatom 165 215 0 0 0 0 - - -;
+#X obj 126 240 hip~ 5;
+#X obj 59 267 env~;
+#X floatatom 59 292 0 0 0 0 - - -;
+#X text 171 269 env~ gives the amplitude of the signal envelop in dB.
 ;
-#X floatatom 18 112 0 0 0 0 - - -;
-#X obj 18 135 osc~ 100;
-#X text 69 112 <-- scroll to change input frequency;
-#X msg 85 159 clear;
-#X text 137 158 <-- reinitialize internal state;
-#X obj 83 6 hip~;
-#X text 128 5 - one-pole high pass filter;
-#X text 409 464 updated for Pd version 0.44;
-#X msg 127 439 \; pd compatibility 0.43;
-#X text 11 31 hip~ is a one-pole high pass filter with a specified
+#X floatatom 59 141 0 0 0 0 - - -;
+#X obj 59 164 osc~ 100;
+#X msg 126 188 clear;
+#X obj 74 13 hip~;
+#X text 119 12 - one-pole high pass filter;
+#X text 42 478 updated for Pd version 0.44;
+#X msg 285 428 \; pd compatibility 0.43;
+#X text 47 50 hip~ is a one-pole high pass filter with a specified
 cutoff frequency.;
-#X text 150 213 Creation argument initializes cutoff frequency.;
-#X text 181 183 <-- set cutoff frequency;
-#X text 13 68 Left (audio) inlet is the incoming audio signal.;
-#X text 12 87 Right (control) inlet sets cutoff frequency.;
-#X text 21 293 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
+#X text 191 242 Creation argument initializes cutoff frequency.;
+#X text 217 214 <-- set cutoff frequency;
+#X text 49 87 Left (audio) inlet is the incoming audio signal.;
+#X text 48 106 Right (control) inlet sets cutoff frequency.;
+#X text 28 330 COMPATIBILITY NOTE: in Pd versions before 0.44 \, the
 high-frequency output gain was incorrectly greater than one (usually
 only slightly so \, but noticeably if the cutoff frequency was more
 than 1/4 the Nyquist frequency). This problem was fixed INCORRECTLY
 in pd 0.44-0 though 0.44-2 \, and is now hopefully fixed since Pd 0.44-3.
 To get the old (0.43 and earlier) behavior \, set "compatibility" to
-0.43 in Pd's command line or by a message:;
+0.43 in Pd's command line or by a message:, f 67;
+#X text 175 188 <= reinitialize internal state;
+#X text 107 140 <= scroll to change input frequency;
 #X connect 0 0 1 0;
 #X connect 2 0 3 1;
 #X connect 3 0 0 0;
@@ -36,4 +36,4 @@ To get the old (0.43 and earlier) behavior \, set "compatibility" to
 #X connect 7 0 8 0;
 #X connect 8 0 4 0;
 #X connect 8 0 3 0;
-#X connect 10 0 3 0;
+#X connect 9 0 3 0;

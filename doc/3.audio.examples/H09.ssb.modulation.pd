@@ -1,36 +1,35 @@
-#N canvas 7 6 605 578 12;
-#X obj 188 393 cos~;
-#X obj 231 371 +~ -0.25;
-#X obj 231 394 cos~;
-#X obj 23 438 *~;
-#X obj 89 438 *~;
-#X obj 22 462 -~;
-#X floatatom 188 322 5 0 0 0 - - -;
-#X text 30 242 sample loop for;
-#X text 30 260 test signal;
-#X text 35 321 pair of allpass;
-#X text 34 338 filters to make;
-#X text 34 356 90 degree phase;
-#X text 32 373 shifted versions;
-#X text 238 323 <-- shift frequency;
-#X text 310 356 cosine and sine waves;
-#X text 55 7 SINGLE SIDEBAND MODULATION;
-#X text 300 7 (AKA FREQUENCY SHIFTING);
-#N canvas 555 154 448 326 bell-loop 0;
-#X obj 23 142 /;
-#X obj 23 214 +~ 1;
+#N canvas 504 51 545 610 12;
+#X obj 247 401 cos~;
+#X obj 290 383 +~ -0.25;
+#X obj 290 406 cos~;
+#X obj 172 457 *~;
+#X obj 225 457 *~;
+#X obj 172 483 -~;
+#X floatatom 247 330 5 0 0 0 - - -;
+#X text 57 285 sample loop for;
+#X text 85 299 test signal;
+#X text 54 367 pair of allpass;
+#X text 54 383 filters to make;
+#X text 54 399 90 degree phase;
+#X text 47 414 shifted versions;
+#X text 359 366 cosine and sine waves;
+#X text 40 17 SINGLE SIDEBAND MODULATION;
+#X text 247 17 (AKA FREQUENCY SHIFTING);
+#N canvas 555 154 457 369 bell-loop 0;
+#X obj 51 150 /;
+#X obj 51 262 +~ 1;
 #X msg 23 117 44100;
-#X obj 23 91 t b f;
-#X obj 24 264 outlet~;
-#N canvas 0 0 450 300 graph1 0;
-#X array \$0-array 155948 float 0;
-#X coords 0 1 155947 -1 200 150 1;
-#X restore 234 88 graph;
+#X obj 23 91 t b f, f 7;
+#X obj 51 312 outlet~;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array \$0-array 155944 float 0;
+#X coords 0 1 155943 -1 200 150 1;
+#X restore 216 87 graph;
 #X obj 23 67 r \$0-totsamps;
-#X obj 65 190 r \$0-totsamps;
-#X obj 23 190 *~;
-#X obj 23 166 phasor~;
-#X obj 23 238 tabread4~ \$0-array;
+#X obj 69 207 r \$0-totsamps;
+#X obj 51 238 *~;
+#X obj 51 176 phasor~;
+#X obj 51 286 tabread4~ \$0-array;
 #X connect 0 0 9 0;
 #X connect 1 0 10 0;
 #X connect 2 0 0 0;
@@ -41,21 +40,21 @@
 #X connect 8 0 1 0;
 #X connect 9 0 8 0;
 #X connect 10 0 4 0;
-#X restore 24 279 pd bell-loop;
-#N canvas 711 110 483 471 startup 0;
-#X obj 53 335 r readfile;
-#X obj 53 388 soundfiler;
-#X obj 59 23 loadbang;
-#X obj 59 49 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X restore 172 292 pd bell-loop;
+#N canvas 711 110 350 449 startup 0;
+#X obj 60 327 r readfile;
+#X obj 60 380 soundfiler;
+#X obj 55 25 loadbang;
+#X obj 55 51 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 59 70 f \$0;
-#X obj 60 271 /;
-#X msg 60 248 44100;
-#X obj 60 223 t b f;
-#X obj 60 199 r \$0-totsamps;
-#X obj 60 294 s \$0-loopf;
-#X msg 53 361 read -resize ../sound/bell.aiff \$1;
-#X msg 59 102 \; readfile symbol \$1-array \; \$1-totsamps 143718;
+#X obj 55 72 f \$0;
+#X obj 95 238 /;
+#X msg 67 212 44100;
+#X obj 67 187 t b f, f 7;
+#X obj 67 163 r \$0-totsamps;
+#X obj 95 261 s \$0-loopf;
+#X msg 60 353 read -resize ../sound/bell.aiff \$1;
+#X msg 55 104 \; readfile symbol \$1-array \; \$1-totsamps 143718;
 #X connect 0 0 10 0;
 #X connect 2 0 3 0;
 #X connect 3 0 4 0;
@@ -66,38 +65,39 @@
 #X connect 7 1 5 1;
 #X connect 8 0 7 0;
 #X connect 10 0 1 0;
-#X restore 157 530 pd startup;
-#X obj 21 495 output~;
-#X text 352 547 updated for Pd version 0.39;
-#X obj 188 347 phasor~;
-#X text 123 438 <-- complex multiplier;
-#X text 122 455 (calculates real part);
-#X text 309 371 to form the real and;
-#X text 309 387 imaginary part of a;
-#X text 309 404 complex sinusoid;
-#X text 43 37 The signal sideband modulator gives you only one sideband
+#X restore 327 524 pd startup;
+#X obj 144 524 output~;
+#X text 310 573 updated for Pd version 0.39;
+#X obj 247 355 phasor~;
+#X text 271 475 (calculates real part);
+#X text 358 381 to form the real and;
+#X text 358 397 imaginary part of a;
+#X text 358 414 complex sinusoid;
+#X text 49 52 The signal sideband modulator gives you only one sideband
 for each frequency in the input signal (whereas ring modulation gave
 both a positive and negative sideband). You can set the shift frequency
 positive to shift all frequencies upward \, or negative to shift them
-downwards.;
-#X text 42 117 The technique is to filter the input into two versions
+downwards., f 60;
+#X text 48 132 The technique is to filter the input into two versions
 \, 90 degrees out of phase \, which can be interpreted as the real
 and imaginary part of a complex signal with positive frequencies only.
 You can then form the (complex) product of this with a (complex) sinusoid
 to modulate upward or downward in frequency.;
-#X obj 23 400 hilbert~;
-#X text 42 213 The "Hilbert~" object is an abstraction in pd/extra.
+#X obj 172 392 hilbert~;
+#X text 272 457 <= complex multiplier;
+#X text 291 330 <= shift frequency;
+#X text 49 228 The "hilbert~" object is an abstraction in pd/extra.
 ;
 #X connect 0 0 3 1;
 #X connect 1 0 2 0;
 #X connect 2 0 4 1;
 #X connect 3 0 5 0;
 #X connect 4 0 5 1;
-#X connect 5 0 19 0;
-#X connect 5 0 19 1;
-#X connect 6 0 21 0;
-#X connect 17 0 29 0;
-#X connect 21 0 1 0;
-#X connect 21 0 0 0;
-#X connect 29 0 3 0;
-#X connect 29 1 4 0;
+#X connect 5 0 18 0;
+#X connect 5 0 18 1;
+#X connect 6 0 20 0;
+#X connect 16 0 27 0;
+#X connect 20 0 1 0;
+#X connect 20 0 0 0;
+#X connect 27 0 3 0;
+#X connect 27 1 4 0;
