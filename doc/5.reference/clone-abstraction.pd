@@ -1,24 +1,24 @@
-#N canvas 737 330 470 387 10;
-#X obj 112 74 inlet;
-#X obj 112 171 osc~;
-#X obj 112 224 outlet~;
-#X obj 112 193 *~;
-#X obj 257 195 *~;
-#X obj 257 223 *~;
-#X obj 257 167 line~;
-#X obj 256 122 del 10;
-#X obj 112 96 t f b;
-#X obj 112 118 mtof;
-#X obj 256 144 pack 0 4000;
-#X obj 175 124 pack 1 10;
-#X obj 333 303 float \$1;
-#X obj 333 281 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#N canvas 737 330 470 387 12;
+#X obj 116 66 inlet;
+#X obj 116 168 osc~;
+#X obj 116 251 outlet~;
+#X obj 116 190 *~;
+#X obj 250 194 *~;
+#X obj 250 222 *~;
+#X obj 250 166 line~;
+#X obj 250 117 del 10;
+#X obj 116 93 t f b, f 8;
+#X obj 116 125 mtof;
+#X obj 250 141 pack 0 4000;
+#X obj 169 128 pack 1 10;
+#X obj 286 303 float \$1;
+#X obj 286 281 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X obj 333 325 print;
-#X text 129 306 You can access the instance number within the patch:
+#X obj 286 325 print;
+#X text 82 306 You can access the instance number within the patch:
 , f 27;
-#X text 32 26 This is the abstraction for the clone help patch. It
-plays tones at pitches sent to its inlet.;
+#X text 35 15 This is the abstraction for the clone help patch. It
+plays tones at pitches sent to its inlet., f 49;
 #X connect 0 0 8 0;
 #X connect 1 0 3 0;
 #X connect 3 0 2 0;

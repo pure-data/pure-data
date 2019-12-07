@@ -1,70 +1,68 @@
-#N canvas 106 314 558 455 10;
-#X obj 1 1 cnv 8 100 60 empty empty vdial=vdl 20 20 1 18 -262144 -1109
+#N canvas 572 61 432 690 10;
+#X obj 28 10 cnv 8 100 60 empty empty vdl 20 20 1 18 -262144 -1109
 0;
-#X text 13 390 (c) musil@iem.kug.ac.at;
-#X text 55 403 IEM KUG;
-#X text 132 122 click properties to;
-#X text 120 133 modify geometry \, colors \, etc.;
-#X obj 159 261 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
+#X text 34 612 (c) musil@iem.kug.ac.at;
+#X text 76 625 IEM KUG;
+#X text 148 338 click properties to;
+#X text 136 349 modify geometry \, colors \, etc.;
+#X obj 175 477 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144
 -1 -1;
-#X obj 21 54 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X obj 96 264 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X msg 41 319 \$1;
-#X floatatom 41 341 4 0 0;
-#X obj 41 363 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
+#X msg 57 535 \$1;
+#X floatatom 57 557 4 0 0 0 - - -;
+#X obj 57 579 bng 15 250 50 0 empty empty empty 8 -8 0 10 -262144 -1
 -1;
-#X obj 86 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 102 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 86 317 route 0 1 2 3 4 5 6 7 8 9;
-#X msg 194 92 set \$1;
-#X floatatom 194 71 4 0 9;
-#X floatatom 44 54 4 0 9;
-#X msg 91 41 7 0 -5.44;
-#X msg 95 63 3 3 4.55;
-#X obj 103 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 102 533 route 0 1 2 3 4 5 6 7 8 9, f 29;
+#X msg 40 266 set \$1;
+#X floatatom 40 245 4 0 9 0 - - -;
+#X floatatom 119 264 4 0 9 0 - - -;
+#X msg 166 251 7 0 -5.44;
+#X msg 170 273 3 3 4.55;
+#X obj 119 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 120 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 1
+#X obj 136 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 137 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 153 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 154 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 170 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 171 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 187 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 188 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 204 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 205 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 221 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 222 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 238 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 239 338 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
+#X obj 255 554 tgl 12 0 empty empty empty 8 -8 0 10 -262144 -1 -1 0
 1;
-#X obj 79 355 print;
-#X floatatom 183 287 4 0 0;
-#X msg 183 261 \$1;
-#X msg 158 192 set \$1;
-#X floatatom 158 171 4 0 9;
-#X text 125 355 UP- \, DOWN- \, LEFT- or RIGHT-key;
-#X text 124 366 for moving selected gui-objects;
+#X obj 95 571 print;
+#X floatatom 199 503 4 0 0 0 - - -;
+#X msg 199 477 \$1;
+#X msg 174 408 set \$1;
+#X floatatom 174 387 4 0 9 0 - - -;
 #N canvas 230 247 699 530 edit 0;
 #X obj 42 198 f;
 #X msg 20 177 bang;
-#X floatatom 58 176 3 63 156;
-#X floatatom 93 198 3 -20 37;
+#X floatatom 58 176 3 63 156 0 - - -;
+#X floatatom 93 198 3 -20 37 0 - - -;
 #X obj 42 221 pack 0 0;
 #X text 120 198 y-label;
 #X text 86 176 x-label;
-#X floatatom 270 187 3 8 50;
+#X floatatom 270 187 3 8 50 0 - - -;
 #X text 297 187 size;
 #X obj 286 293 f;
 #X msg 264 272 bang;
-#X floatatom 302 271 3 -10 10;
-#X floatatom 337 293 3 -10 10;
+#X floatatom 302 271 3 -10 10 0 - - -;
+#X floatatom 337 293 3 -10 10 0 - - -;
 #X obj 286 316 pack 0 0;
 #X obj 300 412 f;
 #X msg 278 391 bang;
-#X floatatom 316 390 3 20 60;
-#X floatatom 351 412 3 100 200;
+#X floatatom 316 390 3 20 60 0 - - -;
+#X floatatom 351 412 3 100 200 0 - - -;
 #X obj 300 435 pack 0 0;
 #X text 330 271 x-delta;
 #X text 364 293 y-delta;
@@ -72,22 +70,22 @@
 #X text 378 412 y-position;
 #X obj 62 313 f;
 #X msg 40 292 bang;
-#X floatatom 78 291 3 0 2;
-#X floatatom 113 313 3 4 36;
+#X floatatom 78 291 3 0 2 0 - - -;
+#X floatatom 113 313 3 4 36 0 - - -;
 #X obj 62 336 pack 0 0;
 #X text 106 291 font;
 #X text 142 313 height;
 #X text 504 293 no init;
 #X text 475 348 init value on loadbang;
-#X floatatom 482 228 5 2 20;
+#X floatatom 482 228 5 2 20 0 - - -;
 #X text 491 417 changing-behavior;
 #X text 526 228 number of buttons;
 #X obj 47 104 pack 0 0 0;
 #X obj 47 76 f;
 #X msg 24 28 bang;
-#X floatatom 63 26 3 0 29;
-#X floatatom 79 46 3 0 29;
-#X floatatom 112 62 3 0 29;
+#X floatatom 63 26 3 0 29 0 - - -;
+#X floatatom 79 46 3 0 29 0 - - -;
+#X floatatom 112 62 3 0 29 0 - - -;
 #X text 91 26 background;
 #X text 106 46 front-color;
 #X text 140 63 label-color;
@@ -180,9 +178,9 @@
 #X connect 36 2 29 0;
 #X connect 36 3 35 0;
 #X restore 285 86 pd RGB_____________;
-#X floatatom 327 55 3 0 255;
-#X floatatom 370 55 3 0 255;
-#X floatatom 413 56 3 0 255;
+#X floatatom 327 55 3 0 255 0 - - -;
+#X floatatom 370 55 3 0 255 0 - - -;
+#X floatatom 413 56 3 0 255 0 - - -;
 #X text 34 0 preset-colors;
 #X text 296 -3 RGB-colors;
 #X text 327 37 red;
@@ -243,18 +241,24 @@
 #X connect 49 0 48 1;
 #X connect 50 0 48 2;
 #X connect 51 0 48 3;
-#X restore 267 222 pd edit;
-#X obj 221 11 x_all_guis aaa bbb ccc ddd eee fff ggg hhh iii;
-#X text 30 415 graz \, austria 2002;
-#X text 223 401 updated for Pd version 0.35;
-#X text 144 11 gui-vdial:;
-#X obj 79 110 vdl 25 1 0 8 foo12_snd foo12_rcv vdial_0_9 20 -8 192
+#X restore 283 438 pd edit;
+#X text 51 637 graz \, austria 2002;
+#X text 214 636 updated for Pd version 0.35;
+#X obj 95 326 vdl 25 1 0 8 foo12_snd foo12_rcv vdial_0_9 20 -8 192
 10 -99865 -262144 -260818 0;
-#X obj 352 36 vdl 15 1 0 8 iii iii empty 20 8 192 8 -262144 -1 -1 0
-;
-#X obj 158 213 s foo12_rcv;
-#X obj 159 239 r foo12_snd;
-#X connect 6 0 38 0;
+#X obj 174 429 s foo12_rcv;
+#X obj 175 455 r foo12_snd;
+#X obj 330 20 vdl;
+#X text 81 21 old and deprecated gui vertical radio:;
+#X text 112 112 WARNING: This object is still in Pd for backwarss compatibilty
+but has been deprecated in Pd 0.36. Just use the new [vradio] instead:
+, f 34;
+#X text 122 185 the new [vradio] object:;
+#X obj 277 180 vradio 15 1 0 8 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X text 66 58 Note that 'vdl' has a different behaviour than 'vradio'
+\, see details below:, f 30;
+#X connect 6 0 34 0;
 #X connect 7 0 8 0;
 #X connect 8 0 9 0;
 #X connect 11 0 10 0;
@@ -267,16 +271,16 @@
 #X connect 11 7 23 0;
 #X connect 11 8 24 0;
 #X connect 11 9 25 0;
-#X connect 12 0 38 0;
+#X connect 12 0 34 0;
 #X connect 13 0 12 0;
-#X connect 14 0 38 0;
-#X connect 15 0 38 0;
-#X connect 16 0 38 0;
+#X connect 14 0 34 0;
+#X connect 15 0 34 0;
+#X connect 16 0 34 0;
 #X connect 28 0 27 0;
-#X connect 29 0 40 0;
+#X connect 29 0 35 0;
 #X connect 30 0 29 0;
-#X connect 38 0 11 0;
-#X connect 38 0 26 0;
-#X connect 38 0 7 0;
-#X connect 41 0 5 0;
-#X connect 41 0 28 0;
+#X connect 34 0 11 0;
+#X connect 34 0 26 0;
+#X connect 34 0 7 0;
+#X connect 36 0 5 0;
+#X connect 36 0 28 0;

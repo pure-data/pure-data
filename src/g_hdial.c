@@ -705,10 +705,6 @@ void g_hradio_setup(void)
         gensym("init"), A_FLOAT, 0);
     class_addmethod(hradio_class, (t_method)hradio_number,
         gensym("number"), A_FLOAT, 0);
-    class_addmethod(hradio_class, (t_method)hradio_single_change,
-        gensym("single_change"), 0);
-    class_addmethod(hradio_class, (t_method)hradio_double_change,
-        gensym("double_change"), 0);
     class_addmethod(hradio_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
     hradio_widgetbehavior.w_getrectfn = hradio_getrect;
@@ -769,5 +765,4 @@ void g_hradio_setup(void)
     class_addmethod(hradio_old_class, (t_method)iemgui_zoom,
         gensym("zoom"), A_CANT, 0);
     class_setwidget(hradio_old_class, &hradio_widgetbehavior);
-    class_sethelpsymbol(hradio_old_class, gensym("hradio"));
 }

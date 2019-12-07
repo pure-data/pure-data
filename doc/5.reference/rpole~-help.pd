@@ -1,55 +1,49 @@
-#N canvas 56 7 669 542 12;
-#X floatatom 118 172 0 0 0 0 - - -;
-#X obj 54 85 osc~ 100;
-#X msg 69 117 clear;
-#X obj 96 512 lop~;
-#X text 10 512 see also:;
-#X obj 52 7 rpole~;
-#X text 114 7 real one-pole (recursive) filter \, raw;
-#X text 8 35 Rpole~ filters an audio signal (left inlet) via a one-pole
+#N canvas 591 44 596 578 12;
+#X floatatom 147 186 0 0 0 0 - - -;
+#X obj 80 99 osc~ 100;
+#X msg 96 131 clear;
+#X obj 124 531 lop~;
+#X text 38 531 see also:;
+#X obj 60 10 rpole~;
+#X text 122 10 real one-pole (recursive) filter \, raw;
+#X text 26 42 Rpole~ filters an audio signal (left inlet) via a one-pole
 real filter \, whose coefficient is controlled by a creation argument
 or by an audio signal (right inlet).;
-#X obj 95 441 rzero~;
-#X obj 35 463 cpole~;
-#X obj 35 441 rpole~;
-#X obj 154 441 rzero_rev~;
-#X obj 95 463 czero~;
-#X obj 154 463 czero_rev~;
-#X text 253 441 real;
-#X text 252 464 complex;
-#X text 32 425 1-pole;
-#X text 92 425 1-zero;
-#X text 142 425 1-zero \, reversed;
-#X text 57 410 summary of raw filters:;
-#X msg 71 143 set 1;
-#X text 119 142 <-- set internal state;
-#X text 132 86 <-- signal to filter;
-#X text 150 173 <-- filter coefficient (may be a signal);
-#X text 150 195 <-- creation argument initializes filter coefficient
-;
-#X text 10 310 The transfer function is H(Z) = 1/(1 - aZ^-1).;
-#X text 121 117 <-- clear internal state to zero;
-#X text 11 272 where y[n] is the output \, x[n] the input \, and a[n]
+#X obj 128 464 rzero~;
+#X obj 68 490 cpole~;
+#X obj 68 464 rpole~;
+#X obj 187 464 rzero_rev~;
+#X obj 128 490 czero~;
+#X obj 187 490 czero_rev~;
+#X text 276 464 real;
+#X text 275 491 complex;
+#X text 65 444 1-pole;
+#X text 125 444 1-zero;
+#X text 175 444 1-zero \, reversed;
+#X text 90 424 summary of raw filters:;
+#X msg 104 157 set 1;
+#X text 43 329 The transfer function is H(Z) = 1/(1 - aZ^-1).;
+#X text 44 291 where y[n] is the output \, x[n] the input \, and a[n]
 the filter coefficient. The filter is unstable if/when |a[n]|>1.;
-#X obj 53 195 rpole~ 0.9;
-#X text 14 230 The action of rpole~ is:;
-#N canvas 393 91 326 287 test 0;
+#X obj 80 213 rpole~ 0.9;
+#X text 41 244 The action of rpole~ is:;
+#N canvas 393 91 322 311 test 0;
 #X obj 76 78 osc~;
 #X floatatom 76 55 5 0 0 0 - - -;
-#X obj 77 219 env~ 16384;
-#X floatatom 77 243 5 0 0 0 - - -;
+#X obj 76 222 env~ 16384;
+#X floatatom 76 246 5 0 0 0 - - -;
 #X obj 76 168 rpole~;
 #X obj 104 107 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
 #X obj 76 105 *~;
 #X msg 97 137 set 1;
-#X floatatom 172 157 4 -100 100 0 - - -;
-#X obj 172 182 / 100;
-#X obj 214 256 dac~;
-#X obj 228 177 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
+#X floatatom 151 118 4 -100 100 0 - - -;
+#X obj 151 143 / 100;
+#X obj 188 255 dac~;
+#X obj 206 172 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X obj 214 220 *~;
-#X obj 230 197 / 10;
+#X obj 188 219 *~;
+#X obj 206 194 / 10;
 #X text 80 18 Stuff to test it:;
 #X connect 0 0 6 0;
 #X connect 1 0 0 0;
@@ -65,15 +59,21 @@ the filter coefficient. The filter is unstable if/when |a[n]|>1.;
 #X connect 12 0 10 0;
 #X connect 12 0 10 1;
 #X connect 13 0 12 1;
-#X restore 457 427 pd test;
-#X text 136 512 etc.: user-friendly filters;
-#X text 8 331 (Pd also provides a suite of user-friendly filters. This
-and other raw filters are provided for situations which the user-friendly
+#X restore 405 454 pd test;
+#X text 164 531 etc.: user-friendly filters;
+#X text 41 350 (Pd also provides a suite of user-friendly filters.
+This and other raw filters are provided for situations which the user-friendly
 ones can't handle. See Chapter 8 of http://msp.ucsd.edu/techniques.htm
-for an introduction to the necessary theory.);
-#X text 73 252 y[n] = x[n] + a[n] * y[n-1];
-#X text 413 511 updated for Pd version 0.42;
-#X connect 0 0 28 1;
-#X connect 1 0 28 0;
-#X connect 2 0 28 0;
-#X connect 20 0 28 0;
+for an introduction to the necessary theory.), f 68;
+#X text 100 266 y[n] = x[n] + a[n] * y[n-1];
+#X text 394 516 updated for Pd version 0.42;
+#X text 152 100 <= signal to filter;
+#X text 148 131 <= clear internal state to zero;
+#X text 152 156 <= set internal state;
+#X text 179 187 <= filter coefficient (may be a signal);
+#X text 168 213 <= creation argument initializes filter coefficient
+;
+#X connect 0 0 23 1;
+#X connect 1 0 23 0;
+#X connect 2 0 23 0;
+#X connect 20 0 23 0;

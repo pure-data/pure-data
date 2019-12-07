@@ -1,18 +1,18 @@
-#N canvas 171 73 718 283 12;
-#X obj 34 60 inlet;
-#X obj 34 88 float \$1;
-#X obj 34 116 send \$2;
-#X text 26 225 For obvious reasons you might not want to call a patch
-as an abstraction from itself.;
-#X text 151 183 In this case \$1 is a number you can specify and \$2
+#N canvas 325 92 664 335 12;
+#X obj 62 82 inlet;
+#X obj 62 110 float \$1;
+#X obj 62 138 send \$2;
+#X text 180 223 For obvious reasons you might not want to call a patch
+as an abstraction from itself., f 43;
+#X text 177 182 In this case \$1 is a number you can specify and \$2
 is a "send" destination.;
-#X text 461 260 updated for Pd version 0.26;
-#X text 154 103 When you call an abstraction by typing \, say \, "sendnumber
+#X text 411 287 updated for Pd version 0.26;
+#X text 180 102 When you call an abstraction by typing \, say \, "sendnumber
 1 x" in an object box. the subpatch can access the values of the creation
-arguments (1 and x) as "$1" and "$2" inside object boxes. Typing \$1
-inside a message box has a different meaning (see the message box help
-window.);
-#X text 155 31 This window is used by 11.subpatch.pd to demonstrate
+arguments (1 and x) as "\$1" and "\$2" inside object boxes. Typing
+\$1 inside a message box has a different meaning (see the message box
+help window.);
+#X text 181 30 This window is used by 11.subpatch.pd to demonstrate
 the abstraction mechanism in Pd. If you've opened this window directly
 \, you might also want to open the other one to see how it's used.
 ;

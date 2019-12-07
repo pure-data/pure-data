@@ -1,4 +1,4 @@
-#N canvas 443 108 448 247 10;
+#N canvas 443 108 448 247 12;
 #N canvas 443 178 534 409 channel 0;
 #X obj 23 22 midiin;
 #X obj 23 59 moses 128;
@@ -131,24 +131,24 @@ not used by the midi spec;
 #X connect 4 0 7 1;
 #X connect 7 0 1 0;
 #X restore 28 184 pd bytes;
-#N canvas 503 191 559 457 send 0;
-#X obj 38 29 inlet;
-#X obj 38 407 outlet;
-#X obj 204 344 polytouchout;
-#X obj 116 189 t a a;
-#X obj 148 370 noteout;
-#X obj 261 317 ctlout;
-#X obj 318 295 pgmout;
-#X obj 374 270 touchout;
-#X obj 431 245 bendout;
-#X obj 38 55 t b b;
-#X text 141 57 pd pitchbend range is -8192 to 8192;
-#X text 141 75 so -8119 will show up as two bytes: 73 0 or 0x49 0x00
+#N canvas 503 191 587 420 send 0;
+#X obj 69 46 inlet;
+#X obj 69 354 outlet;
+#X obj 196 306 polytouchout;
+#X obj 101 211 t a a;
+#X obj 133 272 noteout;
+#X obj 260 272 ctlout;
+#X obj 324 272 pgmout;
+#X obj 387 272 touchout;
+#X obj 451 272 bendout;
+#X obj 69 91 t b b;
+#X text 126 79 pd pitchbend range is -8192 to 8192;
+#X text 126 97 so -8119 will show up as two bytes: 73 0 or 0x49 0x00
 ;
-#X obj 116 406 print -n;
-#X obj 148 213 route noteon: polytouch: control: program: touch: bend:
+#X obj 101 308 print -n;
+#X obj 133 235 route noteon: polytouch: control: program: touch: bend:
 ;
-#X msg 116 118 noteout: 64 65 1 \, noteout: 66 0 1 \, polytouchout:
+#X msg 101 140 noteout: 64 65 1 \, noteout: 66 0 1 \, polytouchout:
 67 68 1 \, ctlout: 69 70 1 \, pgmout: 71 1 \, touchout: 72 1 \, bendout:
 -8119 1 \, noteout: 64 0 1;
 #X connect 0 0 9 0;
@@ -164,7 +164,7 @@ not used by the midi spec;
 #X connect 13 5 8 0;
 #X connect 14 0 3 0;
 #X restore 234 91 pd send channel messages;
-#N canvas 340 166 469 339 send 0;
+#N canvas 340 166 536 354 send 0;
 #X obj 40 30 inlet;
 #X obj 40 298 outlet;
 #X obj 40 56 t b b;
@@ -173,9 +173,9 @@ not used by the midi spec;
 #X obj 72 83 delay 20;
 #X msg 72 116 sysex 240 1 2 3 4 5 247 \, timecode 241 10 \, songpos
 242 20 30 \, song 243 40 \, tunerequest 246;
-#X obj 133 227 midiout;
-#X obj 99 196 list split 1;
-#X text 120 175 send;
+#X obj 144 227 midiout;
+#X obj 104 196 list split 1;
+#X text 125 175 send;
 #X obj 72 262 print midiout;
 #X obj 72 166 t a a;
 #X connect 0 0 2 0;
@@ -187,15 +187,15 @@ not used by the midi spec;
 #X connect 11 0 10 0;
 #X connect 11 1 8 0;
 #X restore 234 122 pd send system messages;
-#N canvas 725 341 422 294 send 0;
+#N canvas 725 341 513 324 send 0;
 #X obj 41 31 inlet;
-#X obj 108 218 midiout;
+#X obj 113 218 midiout;
 #X obj 41 82 delay 40;
 #X msg 41 117 clock 248 \, start 250 \, continue 251 \, stop 252 \,
 activesense 254 \, systemreset 255;
 #X obj 41 250 print midiout;
 #X obj 41 158 t a a;
-#X obj 68 189 list split 1;
+#X obj 73 189 list split 1;
 #X connect 0 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 5 0;

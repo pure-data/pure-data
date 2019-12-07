@@ -1,46 +1,49 @@
-#N canvas 113 157 888 480 12;
-#X msg 561 8 \; pd dsp 1;
-#X msg 39 240 1;
-#X msg 39 261 0;
-#X obj 516 359 print didit;
-#X obj 139 361 env~ 16384;
-#X floatatom 139 380 0 0 0 0 - - -;
-#X msg 40 283 print;
-#X obj 20 393 dac~;
-#X obj 233 360 env~ 16384;
-#X floatatom 233 379 0 0 0 0 - - -;
-#X obj 30 308 readsf~ 4 1e+06;
-#X obj 327 359 env~ 16384;
-#X floatatom 327 378 0 0 0 0 - - -;
-#X obj 421 359 env~ 16384;
-#X floatatom 421 379 0 0 0 0 - - -;
-#X msg 26 210 open ../sound/bell.aiff 0 200 4 2 b;
-#X obj 80 362 *~ 0.1;
-#X obj 21 363 *~ 0.1;
-#X text 40 7 READSF~ - read a soundfile;
-#X msg 26 189 open ../sound/bell.aiff;
-#X text 185 296 optional arguments: number of channels \; buffer size
-per channel in bytes.;
-#X text 548 341 when the soundfile is done.;
-#X text 547 327 last outlet gives a "bang";
-#X text 359 186 Open takes a filename \, an onset in sample frames
+#N canvas 408 23 785 533 12;
+#X msg 246 277 \; pd dsp 1;
+#X msg 60 253 1;
+#X msg 67 277 0;
+#X obj 514 390 print didit;
+#X obj 177 390 env~ 16384;
+#X floatatom 177 415 0 0 0 0 - - -;
+#X msg 73 302 print;
+#X obj 60 420 dac~;
+#X obj 264 390 env~ 16384;
+#X floatatom 264 414 0 0 0 0 - - -;
+#X obj 60 335 readsf~ 4 1e+06, f 63;
+#X obj 348 390 env~ 16384;
+#X floatatom 348 413 0 0 0 0 - - -;
+#X obj 431 390 env~ 16384;
+#X floatatom 431 414 0 0 0 0 - - -;
+#X msg 49 226 open ../sound/bell.aiff 0 200 4 2 b;
+#X obj 119 390 *~ 0.1;
+#X obj 60 390 *~ 0.1;
+#X msg 37 203 open ../sound/bell.aiff;
+#X text 512 422 when the soundfile is done.;
+#X text 511 408 last outlet gives a "bang";
+#X text 318 195 Open takes a filename \, an onset in sample frames
 \, and \, as an override \, you may also supply a header size to skip
-\, a number of channels \, bytes per channel \, and endianness.;
-#X text 36 24 The readsf~ object reads a soundfile into its signal
+\, a number of channels \, bytes per channel \, and endianness., f
+44;
+#X text 46 53 The readsf~ object reads a soundfile into its signal
 outputs. You must open the soundfile in advance (a couple of seconds
 before you'll need it) using the "open" message. The object immediately
 starts reading from the file \, but output will only appear after you
-send a "1" to start playback. A "0" stops it.;
-#X text 33 121 The wave \, aiff \, and nextstep formats are parsed
+send a "1" to start playback. A "0" stops it., f 75;
+#X text 46 130 The wave \, aiff \, and nextstep formats are parsed
 automatically \, although only 2- 3- and 4- byte samples are accepted
 (4 bytes implies floating point and is not available in aiff format.)
+, f 75;
+#X text 502 470 Updated for version 0.37;
+#X obj 153 468 soundfiler;
+#X text 74 468 see also:;
+#X obj 234 468 readsf~;
+#X text 91 252 1 starts playback;
+#X text 99 278 0 stops it;
+#X obj 49 16 readsf~;
+#X text 105 17 - read a soundfile;
+#X text 524 312 optional arguments:, f 19;
+#X text 524 333 number of channels \; buffer size per channel in bytes.
 ;
-#X text 647 450 Updated for version 0.37;
-#X obj 116 452 soundfiler;
-#X text 24 452 see also:;
-#X obj 216 452 readsf~;
-#X text 94 238 1 starts playback;
-#X text 97 261 0 stops it;
 #X connect 1 0 10 0;
 #X connect 2 0 10 0;
 #X connect 4 0 5 0;
@@ -60,4 +63,4 @@ automatically \, although only 2- 3- and 4- byte samples are accepted
 #X connect 15 0 10 0;
 #X connect 16 0 7 1;
 #X connect 17 0 7 0;
-#X connect 19 0 10 0;
+#X connect 18 0 10 0;

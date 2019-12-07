@@ -1,65 +1,56 @@
-#N canvas 4 -26 874 736 12;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 462 26 825 773 12;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-waveform 882 float 0;
 #X coords 0 1.02 881 -1.02 200 130 1;
-#X restore 639 379 graph;
-#X floatatom 47 25 0 0 20 0 - - -;
-#N canvas 0 0 450 300 graph1 0;
+#X restore 552 357 graph;
+#X floatatom 65 58 0 0 0 0 - - -;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-env 22050 float 0;
 #X coords 0 1.02 22049 -1.02 200 130 1;
-#X restore 638 189 graph;
-#X obj 47 52 phasor~;
-#X text 126 2 ENVELOPE GENERATORS FROM LINE SEGMENTS;
-#X obj 19 514 output~;
-#X text 610 698 updated for Pd version 0.39;
-#X obj 46 98 *~;
-#X obj 11 165 -~;
-#X obj 10 214 *~;
-#X floatatom 68 75 3 0 100 0 - - -;
-#X obj 16 244 min~;
-#X floatatom 68 123 3 0 100 0 - - -;
-#X obj 68 146 / 100;
-#X floatatom 68 172 3 0 100 0 - - -;
-#X obj 60 386 *~ 2;
-#X obj 60 409 min~;
-#X obj 110 386 -~ 1;
-#X obj 60 358 phasor~ 200;
-#X obj 18 477 *~;
-#X obj 27 326 tabwrite~ \$0-env;
-#X obj 38 306 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X restore 552 136 graph;
+#X obj 65 89 phasor~;
+#X text 49 16 ENVELOPE GENERATORS FROM LINE SEGMENTS;
+#X obj 51 597 output~;
+#X text 49 684 updated for Pd version 0.39;
+#X obj 96 128 *~;
+#X obj 65 207 -~;
+#X obj 65 244 *~;
+#X floatatom 135 90 3 0 100 0 - - -;
+#X obj 71 282 min~;
+#X floatatom 130 146 3 0 100 0 - - -;
+#X obj 130 169 / 100;
+#X floatatom 123 202 3 0 100 0 - - -;
+#X obj 114 446 *~ 2;
+#X obj 114 474 min~;
+#X obj 165 446 -~ 1;
+#X obj 114 418 phasor~ 200;
+#X obj 72 542 *~;
+#X obj 113 389 tabwrite~ \$0-env;
+#X obj 113 361 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 68 195 * -1;
-#X obj 69 457 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 123 225 * -1;
+#X obj 128 527 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
-#X obj 61 478 tabwrite~ \$0-waveform;
-#X obj 111 409 *~ -3;
-#X obj 60 432 -~ 0.5;
-#X text 639 514 ----- 0.02 second ----;
-#X text 86 24 <-- frequency (Hz.);
-#X text 636 322 ----- 0.5 second ------;
-#X text 107 72 <-- slope of rise segment. Just multiply this by the
-phase to make the segment.;
-#X text 129 140 Subtract this to make the phasor cross zero at the
-desired point of the cycle.;
-#X text 107 173 <-- slope of decay segment.;
-#X text 112 190 multiply the phasor (with the zero crossing shifted
+#X obj 114 550 tabwrite~ \$0-waveform;
+#X obj 165 474 *~ -3;
+#X obj 114 500 -~ 0.5;
+#X text 572 499 ----- 0.02 second ----;
+#X text 567 272 ----- 0.5 second ------;
+#X text 183 161 Subtract this to make the phasor cross zero at the
+desired point of the cycle., f 39;
+#X text 165 219 multiply the phasor (with the zero crossing shifted
 as above) by the desired slope \, negating it so the segment points
-downward.;
-#X text 63 244 minimum of rise and decay segments (makes a triangle
-wave);
-#X obj 17 267 clip~ 0 1;
-#X text 109 266 clip the triangle wave to between 0 and 1 \, to make
-the sustain and silent regions.;
-#X text 108 121 <-- Duty cycle (end of decay segment as % of cycle.)
-;
-#X text 60 304 <-- click to graph envelope shape;
-#X text 91 456 <-- click to graph audio waveform;
-#X text 172 364 this makes a quick-and-dirty triangle wave;
-#X text 172 382 as described in the previous patch. It's;
-#X text 172 419 to listen to.;
-#X text 97 511 You can make a phasor-generated envelope generator using
-"min" and "clip" to combine line segments. Here a rise segment starts
-at phase 0 \, and a decay segment passes through zero at a controllable
+downward., f 43;
+#X text 109 275 minimum of rise and decay segments (makes a triangle
+wave), f 32;
+#X obj 71 324 clip~ 0 1;
+#X text 147 318 clip the triangle wave to between 0 and 1 \, to make
+the sustain and silent regions., f 42;
+#X text 213 437 this makes a quick-and-dirty triangle wave;
+#X text 213 453 as described in the previous patch. It's, f 42;
+#X text 283 590 You can make a phasor-generated envelope generator
+using "min" and "clip" to combine line segments. Here a rise segment
+starts at phase 0 \, and a decay segment passes through zero at a controllable
 point (the "duty cycle" \, as a percentage of a cycle.) Each has a
 controllable slope (in units per cycle). The resulting triangle wave
 (the minimum of the rise and decay segments) is limited to 1 \, thus
@@ -67,8 +58,17 @@ making a flat "sustain" segment (unless the rise and decay segments
 meet at a value less than one \, in which case there is none). Limiting
 below by 0 prevents us from following the decay segment into negative
 values. Reasonable values to start with are 6 Hz. frequency \, rise
-and decay slope 10 \, duty cycle 75%.;
-#X text 173 401 used here so we'll have something;
+and decay slope 10 \, duty cycle 75%., f 73;
+#X text 149 525 <= click to graph audio waveform;
+#X text 133 359 <= click to graph envelope shape;
+#X text 102 58 <= frequency (Hz.);
+#X text 164 90 <= slope of rise segment. Just multiply this by the
+phase to make the segment., f 39;
+#X text 161 144 <= Duty cycle (end of decay segment as % of cycle.)
+;
+#X text 152 201 <= slope of decay segment.;
+#X text 213 469 used here so we'll have something to listen to., f
+42;
 #X connect 1 0 3 0;
 #X connect 3 0 7 0;
 #X connect 3 0 8 0;
@@ -76,7 +76,7 @@ and decay slope 10 \, duty cycle 75%.;
 #X connect 8 0 9 0;
 #X connect 9 0 11 0;
 #X connect 10 0 7 1;
-#X connect 11 0 35 0;
+#X connect 11 0 32 0;
 #X connect 12 0 13 0;
 #X connect 13 0 8 1;
 #X connect 14 0 22 0;
@@ -93,5 +93,5 @@ and decay slope 10 \, duty cycle 75%.;
 #X connect 25 0 16 1;
 #X connect 26 0 24 0;
 #X connect 26 0 19 1;
-#X connect 35 0 19 0;
-#X connect 35 0 20 0;
+#X connect 32 0 19 0;
+#X connect 32 0 20 0;
