@@ -31,8 +31,6 @@
 #X text 47 314 %X;
 #X text 124 314 unsigned hexadecimal in CAPS;
 #X text 47 334 %p;
-#X text 124 334 unsigned hexadecimal in lowercase preceded by "0x"
-;
 #X text 34 45 This is a listing of all possible printf patterns used
 in Pd's [makefilename]:;
 #X text 21 9 [makefilename] All Possible Patterns;
@@ -45,6 +43,7 @@ than float, f 62;
 #X text 47 214 %G;
 #X text 124 214 only uses scientific notation (with 'E') if shorter
 than float, f 62;
+#X text 124 334 pointer representation (platform dependent);
 #X restore 47 508 pd all_possible_patterns;
 #X text 285 501 updated for Pd version 0.48;
 #X text 30 48 The Makefilename object generates symbols according to
