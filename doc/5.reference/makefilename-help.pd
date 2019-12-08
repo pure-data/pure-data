@@ -12,39 +12,6 @@
 #X msg 70 249 set %d-zebra;
 #X text 43 171 SUBSTITUTING A NUMBER;
 #X text 43 344 SUBSTITUTING A SYMBOL;
-#N canvas 506 164 602 393 all_possible_patterns 0;
-#X text 47 94 %c;
-#X text 124 94 character;
-#X text 47 114 %d or %i;
-#X text 124 114 signed decimal integer;
-#X text 47 134 %e;
-#X text 124 134 scientific notation using "e" character;
-#X text 47 154 %E;
-#X text 47 174 %f;
-#X text 47 234 %o;
-#X text 47 254 %s;
-#X text 124 254 symbol;
-#X text 47 274 %u;
-#X text 124 274 unsigned integer;
-#X text 47 294 %x;
-#X text 124 294 unsigned hexadecimal in lowercase;
-#X text 47 314 %X;
-#X text 124 314 unsigned hexadecimal in CAPS;
-#X text 47 334 %p;
-#X text 34 45 This is a listing of all possible printf patterns used
-in Pd's [makefilename]:;
-#X text 21 9 [makefilename] All Possible Patterns;
-#X text 124 174 decimal floating point;
-#X text 124 234 unsigned octal;
-#X text 124 154 scientific notation using "E" character;
-#X text 47 194 %g;
-#X text 124 194 only uses scientific notation (with 'e') if shorter
-than float, f 62;
-#X text 47 214 %G;
-#X text 124 214 only uses scientific notation (with 'E') if shorter
-than float, f 62;
-#X text 124 334 pointer representation (platform dependent);
-#X restore 47 508 pd all_possible_patterns;
 #X text 285 501 updated for Pd version 0.48;
 #X text 30 48 The Makefilename object generates symbols according to
 a format string \, for use as a series of filenames \, table names
@@ -91,6 +58,39 @@ one variable.;
 #X text 81 199 <= numbers replace "%d" in string;
 #X text 181 227 <= "set" message replaces format;
 #X text 218 277 <= creation argument is format;
+#N canvas 506 164 602 393 possible_patterns 0;
+#X text 47 94 %c;
+#X text 124 94 character;
+#X text 47 114 %d or %i;
+#X text 124 114 signed decimal integer;
+#X text 47 134 %e;
+#X text 124 134 scientific notation using "e" character;
+#X text 47 154 %E;
+#X text 47 174 %f;
+#X text 47 234 %o;
+#X text 47 254 %s;
+#X text 124 254 symbol;
+#X text 47 274 %u;
+#X text 124 274 unsigned integer;
+#X text 47 294 %x;
+#X text 124 294 unsigned hexadecimal in lowercase;
+#X text 47 314 %X;
+#X text 124 314 unsigned hexadecimal in CAPS;
+#X text 47 334 %p;
+#X text 34 45 This is a listing of all possible printf patterns used
+in Pd's [makefilename]:;
+#X text 124 174 decimal floating point;
+#X text 124 234 unsigned octal;
+#X text 124 154 scientific notation using "E" character;
+#X text 47 194 %g;
+#X text 124 194 only uses scientific notation (with 'e') if shorter
+than float, f 62;
+#X text 47 214 %G;
+#X text 124 214 only uses scientific notation (with 'E') if shorter
+than float, f 62;
+#X text 124 334 pointer representation (platform dependent);
+#X text 21 9 [makefilename] Possible Patterns;
+#X restore 47 508 pd possible_patterns;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X connect 3 0 6 0;
@@ -98,7 +98,7 @@ one variable.;
 #X connect 6 0 5 0;
 #X connect 9 0 2 0;
 #X connect 10 0 2 0;
-#X connect 17 0 19 0;
+#X connect 16 0 18 0;
+#X connect 18 0 17 0;
 #X connect 19 0 18 0;
-#X connect 20 0 19 0;
-#X connect 21 0 19 0;
+#X connect 20 0 18 0;
