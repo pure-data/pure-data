@@ -66,7 +66,7 @@ the same Pd window.);
 #X symbolatom 334 275 10 0 0 0 - - -;
 #X obj 334 226 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X text 86 249 try it with symvols =>, f 11;
+#X text 86 249 try it with symbols =>, f 11;
 #X obj 435 574 print x;
 #X obj 296 573 v send-this;
 #X symbolatom 296 497 10 0 0 0 - - -;
