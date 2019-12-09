@@ -525,6 +525,17 @@ AS_IF([test ! "x${WISH}" = "x"],[
     ])
 ])
 
+##### libpd #####
+AS_IF([test "x${enable_libpd}" = "xyes"],[
+        libpd="yes"
+        libpd_=""
+        AS_IF([test "x${enable_libpd_utils}" = "xyes"],[ libpd_="${libpd_}+utils"])
+        AS_IF([test "x${enable_libpd_setlocal}" = "xno"],[ libpd_="${libpd_}-setlocale"])
+        AS_IF([test "x${libpd_}" != "x"],[ libpd="${libpd}(${libpd_})"])
+],[
+        libpd="no"
+])
+
 #########################################
 ##### Output files #####
 
@@ -585,6 +596,7 @@ AC_MSG_NOTICE([
     wish(tcl/tk):         $wish
     audio APIs:           $audio_backends
     midi APIs:            $midi_backends
+    libpd:                $libpd
 ])
 
 
