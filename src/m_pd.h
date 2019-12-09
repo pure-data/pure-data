@@ -57,6 +57,16 @@ extern int pd_compatibilitylevel;   /* e.g., 43 for pd 0.43 compatibility */
 #define ATTRIBUTE_FORMAT_PRINTF(a, b)
 #endif
 
+/* deprecation warning */
+#ifdef __GNUC__
+#define PDDEPRECATED __attribute__ ((deprecated))
+#elif defined(_MSC_VER) && _MSC_VER >= 1300
+#define PDDEPRECATED __declspec(deprecated)
+#else
+#define PDDEPRECATED
+#pragma message("PDDEPRECATED not defined for this compiler")
+#endif
+
 #if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
@@ -374,7 +384,7 @@ EXTERN void clock_delay(t_clock *x, double delaytime);
 EXTERN void clock_unset(t_clock *x);
 EXTERN void clock_setunit(t_clock *x, double timeunit, int sampflag);
 EXTERN double clock_getlogicaltime(void);
-EXTERN double clock_getsystime(void); /* OBSOLETE; use clock_getlogicaltime() */
+PDDEPRECATED EXTERN double clock_getsystime(void); /* use clock_getlogicaltime() */
 EXTERN double clock_gettimesince(double prevsystime);
 EXTERN double clock_gettimesincewithunits(double prevsystime,
     double units, int sampflag);
@@ -681,7 +691,7 @@ EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
+PDDEPRECATED EXTERN void garray_resize(t_garray *x, t_floatarg f); /* use garray_resize_long() */
 EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
@@ -689,7 +699,7 @@ EXTERN t_glist *garray_getglist(t_garray *x);
 EXTERN t_array *garray_getarray(t_garray *x);
 EXTERN t_class *scalar_class;
 
-EXTERN t_float *value_get(t_symbol *s);
+PDDEPRECATED EXTERN t_float *value_get(t_symbol *s); /* use value_getfloat() */
 EXTERN void value_release(t_symbol *s);
 EXTERN int value_getfloat(t_symbol *s, t_float *f);
 EXTERN int value_setfloat(t_symbol *s, t_float f);
