@@ -15,6 +15,30 @@
 # include <alloca.h> /* linux, mac, mingw, cygwin */
 #endif
 
+#ifdef _WIN32
+# include <malloc.h> /* MSVC or mingw on windows */
+#elif defined(__linux__) || defined(__APPLE__)
+# include <alloca.h> /* linux, mac, mingw, cygwin */
+#else
+# include <stdlib.h> /* BSDs for example */
+#endif
+
+#ifndef HAVE_ALLOCA     /* can work without alloca() but we never need it */
+#define HAVE_ALLOCA 1
+#endif
+
+#define LIST_NGETBYTE 100 /* bigger that this we use alloc, not alloca */
+
+#if HAVE_ALLOCA
+#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)((n) < LIST_NGETBYTE ?  \
+        alloca((n) * sizeof(t_atom)) : getbytes((n) * sizeof(t_atom))))
+#define ATOMS_FREEA(x, n) ( \
+    ((n) < LIST_NGETBYTE || (freebytes((x), (n) * sizeof(t_atom)), 0)))
+#else
+#define ATOMS_ALLOCA(x, n) ((x) = (t_atom *)getbytes((n) * sizeof(t_atom)))
+#define ATOMS_FREEA(x, n) (freebytes((x), (n) * sizeof(t_atom)))
+#endif
+
 /* -------------------------- int ------------------------------ */
 static t_class *pdint_class;
 
@@ -1528,33 +1552,98 @@ typedef struct vcommon
 {
     t_pd c_pd;
     int c_refcount;
-    t_float c_f;
+    t_atom *c_vec;
+    int c_n;
+    int c_npointers;
+    t_atom c_atom; /* optimization for single atom value */
 } t_vcommon;
 
 typedef struct _value
 {
     t_object x_obj;
     t_symbol *x_sym;
-    t_float *x_floatstar;
+    t_vcommon *x_value;
 } t_value;
 
-    /* get a pointer to a named floating-point variable.  The variable
-    belongs to a "vcommon" object, which is created if necessary. */
-t_float *value_get(t_symbol *s)
+
+static void vcommon_set(t_vcommon *x, t_symbol *s, int argc, const t_atom *argv)
+{
+    if (argc)
+    {
+        int i;
+        if (x->c_npointers > 0)
+        {
+            for (i = 0; i < x->c_n; i++)
+                if (x->c_vec[i].a_type == A_POINTER)
+                {
+                    gpointer_unset(x->c_vec[i].a_w.w_gpointer);
+                    freebytes(x->c_vec[i].a_w.w_gpointer, sizeof(t_gpointer));
+                }
+             x->c_npointers = 0;
+        }
+
+        if (x->c_n > 1)
+            freebytes(x->c_vec, sizeof(t_atom) * x->c_n);
+        x->c_n = argc;
+        if (argc > 1)
+            x->c_vec = getbytes(sizeof(t_atom) * argc);
+        else
+            x->c_vec = &x->c_atom;
+
+        for (i = 0; i < argc; i++)
+        {
+            x->c_vec[i] = argv[i];
+            if (argv[i].a_type == A_POINTER)
+            {
+                    /* store the gpointer on the heap. LATER we might keep
+                    all gpointers in a contiguous array in the t_vcommon struct */
+                t_gpointer *gp = getbytes(sizeof(t_gpointer));
+                gpointer_copy(argv[i].a_w.w_gpointer, gp);
+                x->c_vec[i].a_w.w_gpointer = gp;
+                x->c_npointers++;
+            }
+        }
+    }
+    else
+        bug("vcommon_set");
+}
+
+static t_vcommon *value_aquire(t_symbol *s)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
     {
         c = (t_vcommon *)pd_new(vcommon_class);
-        c->c_f = 0;
-        c->c_refcount = 0;
+        SETFLOAT(&c->c_atom, 0);
+        c->c_vec = &c->c_atom;
+        c->c_n = 1;
+        c->c_npointers = 0;
         pd_bind(&c->c_pd, s);
     }
     c->c_refcount++;
-    return (&c->c_f);
+    return c;
 }
 
-    /* release a variable.  This only frees the "vcommon" resource when the
+    /* get a pointer to a named float variable.
+    Because the underlying atoms can change,
+    this method might return garbage and shouldn't be used anymore */
+t_float *value_get(t_symbol *s)
+{
+    t_vcommon *c = value_aquire(s);
+    if (c->c_atom.a_type == A_FLOAT)
+        return &c->c_atom.a_w.w_float;
+    static t_float f = 0; // safety fallback
+    return &f;
+}
+
+    /* retain a variable. The variable belongs to a "vcommon" object,
+    which is created if necessary. */
+void value_retain(t_symbol *s)
+{
+     value_aquire(s);
+}
+
+    /* release a variable. This only frees the "vcommon" resource when the
     last interested party releases it. */
 void value_release(t_symbol *s)
 {
@@ -1563,6 +1652,18 @@ void value_release(t_symbol *s)
     {
         if (!--c->c_refcount)
         {
+            if (c->c_npointers > 0)
+            {
+                int i;
+                for (i = 0; i < c->c_n; i++)
+                    if (c->c_vec[i].a_type == A_POINTER)
+                    {
+                        gpointer_unset(c->c_vec[i].a_w.w_gpointer);
+                        freebytes(c->c_vec[i].a_w.w_gpointer, sizeof(t_gpointer));
+                    }
+            }
+            if (c->c_n > 1)
+                freebytes(c->c_vec, sizeof(t_atom) * c->c_n);
             pd_unbind(&c->c_pd, s);
             pd_free(&c->c_pd);
         }
@@ -1579,7 +1680,9 @@ int value_getfloat(t_symbol *s, t_float *f)
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
     if (!c)
         return (1);
-    *f = c->c_f;
+    if (c->c_vec->a_type != A_FLOAT)
+        return (2);
+    *f = c->c_vec->a_w.w_float;
     return (0);
 }
 
@@ -1590,15 +1693,44 @@ int value_getfloat(t_symbol *s, t_float *f)
 int value_setfloat(t_symbol *s, t_float f)
 {
     t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
-    if (!c)
+    if (!c || c->c_atom.a_type != A_FLOAT)
         return (1);
-    c->c_f = f;
+        /* we just override the first atom */
+    if (c->c_npointers > 0 && c->c_vec->a_type == A_POINTER)
+    {
+        gpointer_unset(c->c_vec->a_w.w_gpointer);
+        freebytes(c->c_vec->a_w.w_gpointer, sizeof(t_gpointer));
+        c->c_npointers--;
+    }
+    SETFLOAT(c->c_vec, f);
     return (0);
 }
 
-static void vcommon_float(t_vcommon *x, t_float f)
+/*
+ * value_getatoms -- obtain the atoms of a "value" object
+ *                  return 0 on success, 1 otherwise
+ */
+int value_getatoms(t_symbol *s, int *size, const t_atom **vec)
 {
-    x->c_f = f;
+    t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
+    if (!c)
+        return (1);
+    *size = c->c_n;
+    *vec = c->c_vec;
+    return (0);
+}
+
+/*
+ * value_setatoms -- set the atoms of a "value" object
+ *                  return 0 on success, 1 otherwise
+ */
+int value_setatoms(t_symbol *s, int size, const t_atom *vec)
+{
+    t_vcommon *c = (t_vcommon *)pd_findbyclass(s, vcommon_class);
+    if (!c)
+        return (1);
+    vcommon_set(c, 0, size, vec);
+    return (0);
 }
 
 static void *value_new(t_symbol *s)
@@ -1607,37 +1739,159 @@ static void *value_new(t_symbol *s)
     if (!*s->s_name)
         inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("symbol2"));
     x->x_sym = s;
-    x->x_floatstar = value_get(s);
-    outlet_new(&x->x_obj, &s_float);
+    x->x_value = value_aquire(s);
+    outlet_new(&x->x_obj, &s_symbol);
     return (x);
 }
 
 static void value_bang(t_value *x)
 {
-    outlet_float(x->x_obj.ob_outlet, *x->x_floatstar);
+    t_vcommon *c = x->x_value;
+    if (c->c_n > 1)
+    {
+        int i = 0;
+        t_atom *vec;
+        ATOMS_ALLOCA(vec, c->c_n);
+
+        if (c->c_npointers > 0)
+        {
+            t_gpointer *pointers = getbytes(sizeof(t_gpointer) * c->c_npointers),
+                    *ptr = pointers;
+            for (i = 0; i < c->c_n; i++)
+            {
+                vec[i] = c->c_vec[i];
+                if (vec[i].a_type == A_POINTER)
+                {
+                    gpointer_copy(vec[i].a_w.w_gpointer, ptr);
+                    vec[i].a_w.w_gpointer = ptr++;
+                }
+            }
+            outlet_list(x->x_obj.ob_outlet, &s_list, c->c_n, vec);
+            for (i = 0; i < c->c_npointers; i++)
+                gpointer_unset(&pointers[i]);
+            freebytes(pointers, sizeof(t_gpointer) * c->c_npointers);
+        }
+        else
+        {
+            for (i = 0; i < c->c_n; i++)
+                vec[i] = c->c_vec[i];
+            outlet_list(x->x_obj.ob_outlet, &s_list, c->c_n, vec);
+        }
+
+        ATOMS_FREEA(vec, c->c_n);
+    }
+    else
+    {
+        t_atom a = c->c_atom;
+        switch (a.a_type)
+        {
+            case A_FLOAT:
+                outlet_float(x->x_obj.ob_outlet, a.a_w.w_float);
+                break;
+            case A_SYMBOL:
+                outlet_symbol(x->x_obj.ob_outlet, a.a_w.w_symbol);
+                break;
+            case A_POINTER:
+            {
+                t_gpointer gp;
+                gpointer_copy(a.a_w.w_gpointer, &gp);
+                outlet_pointer(x->x_obj.ob_outlet, &gp);
+                gpointer_unset(&gp);
+                break;
+            }
+            default:
+                bug("value_bang");
+                break;
+        }
+    }
 }
 
-static void value_float(t_value *x, t_float f)
+static void value_list(t_value *x, t_symbol *s, int argc, t_atom *argv)
 {
-    *x->x_floatstar = f;
+    if (argc > 0)
+        vcommon_set(x->x_value, s, argc, argv);
+    else
+        value_bang(x);
 }
 
 /* set method */
 static void value_symbol2(t_value *x, t_symbol *s)
 {
-    value_release(x->x_sym);
-    x->x_sym = s;
-    x->x_floatstar = value_get(s);
+    if (x->x_sym != s)
+    {
+        value_release(x->x_sym);
+        x->x_sym = s;
+        x->x_value = value_aquire(s);
+    }
 }
 
 static void value_send(t_value *x, t_symbol *s)
 {
     if (s->s_thing)
-        pd_float(s->s_thing, *x->x_floatstar);
+    {
+        t_vcommon *c = x->x_value;
+        if (c->c_n > 1)
+        {
+            int i = 0;
+            t_atom *vec;
+            ATOMS_ALLOCA(vec, c->c_n);
+
+            if (c->c_npointers > 0)
+            {
+                t_gpointer *pointers = getbytes(sizeof(t_gpointer) * c->c_npointers),
+                        *ptr = pointers;
+                for (i = 0; i < c->c_n; i++)
+                {
+                    vec[i] = c->c_vec[i];
+                    if (vec[i].a_type == A_POINTER)
+                    {
+                        gpointer_copy(vec[i].a_w.w_gpointer, ptr);
+                        vec[i].a_w.w_gpointer = ptr++;
+                    }
+                }
+                pd_list(s->s_thing, &s_list, c->c_n, vec);
+                for (i = 0; i < c->c_npointers; i++)
+                    gpointer_unset(&pointers[i]);
+                freebytes(pointers, sizeof(t_gpointer) * c->c_npointers);
+            }
+            else
+            {
+                for (i = 0; i < c->c_n; i++)
+                    vec[i] = c->c_vec[i];
+                pd_list(s->s_thing, &s_list, c->c_n, vec);
+            }
+
+            ATOMS_FREEA(vec, c->c_n);
+        }
+        else
+        {
+            t_atom a = c->c_atom;
+            switch (a.a_type)
+            {
+                case A_FLOAT:
+                    pd_float(s->s_thing, a.a_w.w_float);
+                    break;
+                case A_SYMBOL:
+                    pd_symbol(s->s_thing, a.a_w.w_symbol);
+                    break;
+                case A_POINTER:
+                {
+                    t_gpointer gp;
+                    gpointer_copy(a.a_w.w_gpointer, &gp);
+                    pd_pointer(s->s_thing, a.a_w.w_gpointer);
+                    gpointer_unset(&gp);
+                    break;
+                }
+                default:
+                    bug("value_send");
+                    break;
+            }
+        }
+    }
     else pd_error(x, "%s: no such object", s->s_name);
 }
 
-static void value_ff(t_value *x)
+static void value_free(t_value *x)
 {
     value_release(x->x_sym);
 }
@@ -1645,17 +1899,17 @@ static void value_ff(t_value *x)
 static void value_setup(void)
 {
     value_class = class_new(gensym("value"), (t_newmethod)value_new,
-        (t_method)value_ff,
+        (t_method)value_free,
         sizeof(t_value), 0, A_DEFSYM, 0);
     class_addcreator((t_newmethod)value_new, gensym("v"), A_DEFSYM, 0);
     class_addbang(value_class, value_bang);
-    class_addfloat(value_class, value_float);
+    class_addlist(value_class, value_list);
     class_addmethod(value_class, (t_method)value_symbol2, gensym("symbol2"),
         A_DEFSYM, 0);
     class_addmethod(value_class, (t_method)value_send, gensym("send"), A_SYMBOL, 0);
     vcommon_class = class_new(gensym("value"), 0, 0,
         sizeof(t_vcommon), CLASS_PD, 0);
-    class_addfloat(vcommon_class, vcommon_float);
+    class_addlist(vcommon_class, vcommon_set);
 }
 
 /* -------------- overall setup routine for this file ----------------- */
