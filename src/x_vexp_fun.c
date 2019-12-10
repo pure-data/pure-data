@@ -916,7 +916,7 @@ ex_dofact(int i)
 {
         int ret = 0;
 
-        if (i)
+        if (i > 0)
                 ret = 1;
         else
                 return (1);
