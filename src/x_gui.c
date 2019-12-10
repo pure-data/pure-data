@@ -192,7 +192,7 @@ typedef struct _openpanel
 {
     t_object x_obj;
     t_symbol *x_s;
-    int x_mode; /* 0: file, 1: folder, 2: multiple files */
+    int x_mode; /* 0: file, 1: multiple files, 2: folder */
 } t_openpanel;
 
 static void *openpanel_new(t_floatarg mode)
@@ -222,7 +222,7 @@ static void openpanel_bang(t_openpanel *x)
 
 static void openpanel_callback(t_openpanel *x, t_symbol *s, int argc, t_atom *argv)
 {
-    if (x->x_mode != 2) /* single file or folder */
+    if (x->x_mode != 1) /* single file or folder */
     {
         if (argc == 1 && argv->a_type == A_SYMBOL)
             outlet_symbol(x->x_obj.ob_outlet, argv->a_w.w_symbol);

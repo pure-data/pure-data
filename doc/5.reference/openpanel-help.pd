@@ -6,20 +6,18 @@
 #X obj 134 520 savepanel;
 #X msg 128 170 symbol /tmp;
 #X msg 140 199 symbol C:/;
-#X obj 235 456 print;
-#X obj 235 429 openpanel 1;
-#X obj 357 456 print;
-#X obj 357 429 openpanel 2;
-#X msg 235 401 bang;
-#X msg 357 401 bang;
-#X text 233 380 directory;
-#X text 356 380 multiple files;
-#X obj 110 456 print;
-#X msg 110 401 bang;
-#X obj 110 429 openpanel 0;
+#X obj 236 460 print;
+#X obj 236 433 openpanel 1;
+#X obj 378 460 print;
+#X obj 378 433 openpanel 2;
+#X msg 236 405 bang;
+#X msg 378 405 bang;
+#X obj 111 460 print;
+#X msg 111 405 bang;
+#X obj 111 433 openpanel 0;
 #X obj 74 25 openpanel;
 #X text 303 528 updated for Pd version 0.51.;
-#X text 141 25 - query for files or directories;
+#X text 146 25 - query for files or directories;
 #X text 47 69 When openpanel gets a "bang" \, a file browser appears
 on the screen. By default \, if you select a file \, its name appears
 on the outlet.;
@@ -37,10 +35,12 @@ can make openpanel open the current directory for querying for files.
 #X connect 1 0 0 0;
 #X connect 2 0 4 0;
 #X restore 273 250 pd current-directory;
-#X text 88 378 file (default);
+#X text 89 381 file (default);
 #X text 223 173 Start in a specified directory given as a symbol,
 f 31;
 #X text 157 141 Starts in default directory;
+#X text 232 381 multiple files;
+#X text 368 381 directory;
 #X connect 0 0 2 0;
 #X connect 1 0 0 0;
 #X connect 5 0 0 0;
@@ -49,5 +49,5 @@ f 31;
 #X connect 10 0 9 0;
 #X connect 11 0 8 0;
 #X connect 12 0 10 0;
-#X connect 16 0 17 0;
-#X connect 17 0 15 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 0;
