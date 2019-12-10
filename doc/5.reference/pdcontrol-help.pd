@@ -1,24 +1,28 @@
-#N canvas 449 68 647 499 12;
-#X obj 27 15 pdcontrol;
-#X text 106 15 -- communicate with pd and/or this patch;
-#X text 403 457 updated for Pd version 0.50.;
-#X obj 41 286 pdcontrol;
-#X obj 41 313 print;
-#X msg 49 161 isvisible;
-#X msg 47 413 isvisible;
-#N canvas 564 534 287 200 subpatch 0;
-#X obj 39 39 inlet;
-#X obj 39 91 pdcontrol;
-#X obj 39 128 print;
+#N canvas 488 60 650 565 12;
+#X obj 39 27 pdcontrol;
+#X text 118 27 -- communicate with pd and/or this patch;
+#X obj 53 298 pdcontrol;
+#X obj 53 325 print;
+#X msg 61 173 isvisible;
+#X msg 59 425 isvisible;
+#N canvas 564 534 495 194 subpatch 0;
+#X obj 44 15 inlet;
+#X obj 44 97 pdcontrol;
+#X obj 153 148 print;
+#X msg 153 56 isvisible 1;
+#X obj 153 97 pdcontrol;
+#X text 252 42 You can also check it parent window is visible or not
+(this is particularly useful inside abstractions). Hide the above window
+to test it., f 30;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
-#X restore 47 438 pd subpatch;
-#X text 134 412 open and shut the subpatch to test "isvisible" message
-;
-#X text 130 159 1 if this patch is visible \, 0 if not;
-#X msg 57 187 dir;
-#X text 100 187 get directory this patch is in;
-#X msg 63 225 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
+#X connect 3 0 4 0;
+#X connect 4 0 2 0;
+#X restore 59 460 pd subpatch;
+#X text 142 171 1 if this patch is visible \, 0 if not;
+#X msg 69 199 dir;
+#X text 112 199 get directory this patch is in;
+#X msg 75 237 dir 0 ../3.audio-examples/A00.intro.pd, f 32;
 #N canvas 689 91 529 365 args 0;
 #X obj 127 209 print;
 #X text 185 140 <= get arguments;
@@ -37,21 +41,25 @@ symbol \, but it actually gets expanded if this abstraction is called
 inside another that contains arguments).;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
-#X restore 43 360 pd args;
-#X text 106 360 get the patch's arguments;
-#X text 243 130 open a URL in a browser;
-#X msg 41 131 browse http://msp.ucsd.edu;
-#X text 312 217 Optional argument to specify this patch (0) \, owning
+#X restore 55 372 pd args;
+#X text 118 372 get the patch's arguments;
+#X text 255 142 open a URL in a browser;
+#X msg 53 143 browse http://msp.ucsd.edu;
+#X text 324 229 Optional argument to specify this patch (0) \, owning
 patch (1) \, its own owner (2) \, and so on \, and optionally also
 a filename relative to the patch's directory. (Ownership number is
 silently reduced if owners don't exist \, so here anything greater
 than zero is ignored.), f 42;
-#X text 37 52 pdcontrol lets you communicate with the patch to get
+#X text 49 64 pdcontrol lets you communicate with the patch to get
 its owning directory \, arguments \, its visible/invisible state \,
 or to open a URL in a web browser.;
-#X connect 3 0 4 0;
-#X connect 5 0 3 0;
-#X connect 6 0 7 0;
-#X connect 10 0 3 0;
-#X connect 12 0 3 0;
-#X connect 16 0 3 0;
+#X text 415 525 updated for Pd version 0.51.;
+#X text 149 424 open and shut the subpatch to test "isvisible" message.
+An optional argument specifies the level: this window (0) \, owning
+window (1) and so on., f 55;
+#X connect 2 0 3 0;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X connect 8 0 2 0;
+#X connect 10 0 2 0;
+#X connect 14 0 2 0;
