@@ -126,7 +126,7 @@ static void loadbang_setup(void)
         gensym("loadbang"), A_DEFFLOAT, 0);
 }
 
-/* ------------- namecanvas (delete this later) --------------------- */
+/* ------------- namecanvas --------------------- */
 static t_class *namecanvas_class;
 
 typedef struct _namecanvas
