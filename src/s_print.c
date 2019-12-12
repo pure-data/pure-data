@@ -14,6 +14,7 @@
 #define snprintf _snprintf
 #endif
 
+t_printhook sys_printhook = NULL;
 int sys_printtostderr;
 
 /* escape characters for tcl/tk */
