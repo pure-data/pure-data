@@ -98,11 +98,11 @@ typedef unsigned __int64  uint64_t;
 #if PD_FLOATSIZE == 32
 # define PD_FLOATTYPE float
 /* an unsigned int of the same size as FLOATTYPE: */
-# define PD_FLOATUINTTYPE unsigned int
+# define PD_FLOATUINTTYPE uint32_t
 
 #elif PD_FLOATSIZE == 64
 # define PD_FLOATTYPE double
-# define PD_FLOATUINTTYPE unsigned long
+# define PD_FLOATUINTTYPE uint64_t
 #else
 # error invalid FLOATSIZE: must be 32 or 64
 #endif
