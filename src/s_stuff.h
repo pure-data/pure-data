@@ -353,10 +353,10 @@ void sys_save_audio_params(
     int naudiooutdev, int *audiooutdev, int *choutdev,
     int rate, int advance, int callback, int blocksize);
 
-/* s_file.c */
+/* s_print.c */
 
 typedef void (*t_printhook)(const char *s);
-extern t_printhook sys_printhook;  /* set this to override printing */
+#define sys_printhook (STUFF->st_printhook); /* use STUFF->st_printhook instead */
 extern int sys_printtostderr;
 
 /* jsarlo { */
@@ -413,6 +413,7 @@ struct _instancestuff
     t_sample *st_soundout;
     t_sample *st_soundin;
     double st_time_per_dsp_tick;    /* obsolete - included for GEM?? */
+    t_printhook st_printhook;   /* set this to override printing */
 };
 
 #define STUFF (pd_this->pd_stuff)

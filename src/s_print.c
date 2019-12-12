@@ -14,7 +14,6 @@
 #define snprintf _snprintf
 #endif
 
-t_printhook sys_printhook;
 int sys_printtostderr;
 
 /* escape characters for tcl/tk */
@@ -58,8 +57,8 @@ static char* strnpointerid(char *dest, const void *pointer, size_t len)
 
 static void dopost(const char *s)
 {
-    if (sys_printhook)
-        (*sys_printhook)(s);
+    if (STUFF->st_printhook)
+        (*STUFF->st_printhook)(s);
     else if (sys_printtostderr || !sys_havegui())
 #ifdef _WIN32
         fwprintf(stderr, L"%S", s);
@@ -79,10 +78,10 @@ static void doerror(const void *object, const char *s)
     upbuf[MAXPDSTRING-1]=0;
 
     // what about sys_printhook_error ?
-    if (sys_printhook)
+    if (STUFF->st_printhook)
     {
         snprintf(upbuf, MAXPDSTRING-1, "error: %s", s);
-        (*sys_printhook)(upbuf);
+        (*STUFF->st_printhook)(upbuf);
     }
     else if (sys_printtostderr)
         fprintf(stderr, "error: %s", s);
@@ -101,10 +100,10 @@ static void dologpost(const void *object, const int level, const char *s)
     upbuf[MAXPDSTRING-1]=0;
 
     // what about sys_printhook_verbose ?
-    if (sys_printhook)
+    if (STUFF->st_printhook)
     {
         snprintf(upbuf, MAXPDSTRING-1, "verbose(%d): %s", level, s);
-        (*sys_printhook)(upbuf);
+        (*STUFF->st_printhook)(upbuf);
     }
     else if (sys_printtostderr)
     {
@@ -189,8 +188,8 @@ void postfloat(t_float f)
 
 void endpost(void)
 {
-    if (sys_printhook)
-        (*sys_printhook)("\n");
+    if (STUFF->st_printhook)
+        (*STUFF->st_printhook)("\n");
     else if (sys_printtostderr)
         fprintf(stderr, "\n");
     else post("");
