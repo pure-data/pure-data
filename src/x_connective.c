@@ -581,7 +581,7 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
                 }
             }
         }
-        else if (argv[0].a_type == A_FLOAT)     /* one float arg */
+        else if (argv[0].a_type == A_FLOAT)    /* one float arg */
         {
             for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             {
@@ -592,7 +592,18 @@ static void route_list(t_route *x, t_symbol *sel, int argc, t_atom *argv)
                 }
             }
         }
-        else
+        else if (argv[0].a_type == A_POINTER)    /* one pointer arg */
+        {
+            for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
+            {
+                if (e->e_w.w_symbol == &s_pointer)
+                {
+                    outlet_pointer(e->e_outlet, argv[0].a_w.w_gpointer);
+                    return;
+                }
+            }
+        }
+        else                                     /* one symbol arg */
         {
             for (nelement = x->x_nelement, e = x->x_vec; nelement--; e++)
             {
