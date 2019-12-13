@@ -7,6 +7,7 @@ EXTRA_DIST = \
     osx-app.sh \
     tcltk-wish.sh \
     stuff/Info.plist \
+    stuff/pd.entitlements \
     stuff/pd-file.icns \
     stuff/pd.icns \
     stuff/wish-shell.tgz
