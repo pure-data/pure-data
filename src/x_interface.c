@@ -51,7 +51,7 @@ static void print_bang(t_print *x)
 
 static void print_pointer(t_print *x, t_gpointer *gp)
 {
-    post("%s%s(gpointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
+    post("%s%s(pointer)", x->x_sym->s_name, (*x->x_sym->s_name ? ": " : ""));
 }
 
 static void print_float(t_print *x, t_float f)
