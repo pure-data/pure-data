@@ -1,23 +1,15 @@
 #N canvas 674 23 570 659 12;
 #X floatatom 25 61 5 0 0 0 - - -;
 #X text 387 17 abbreviation:;
-#X floatatom 25 136 5 0 0 0 - - -;
 #X msg 35 84 bang;
 #X obj 22 16 value;
-#X obj 25 111 value help-value1;
+#X obj 25 110 value help-value1;
 #X obj 497 16 v;
-#X floatatom 167 61 5 0 0 0 - - -;
-#X floatatom 167 136 5 0 0 0 - - -;
 #X msg 177 84 bang;
 #X obj 167 111 value help-value1;
 #X floatatom 317 61 5 0 0 0 - - -;
-#X floatatom 317 137 5 0 0 0 - - -;
 #X msg 327 84 bang;
 #X obj 317 112 value help-value2;
-#X text 31 175 "Value" stores a numeric value which is shared between
-all values with the same name (which need not be in the same Pd window.)
-;
-#X text 371 60 numbers set the value;
 #X text 375 83 bang retrieves it;
 #X text 30 587 see also:;
 #X obj 106 587 expr;
@@ -32,7 +24,6 @@ all values with the same name (which need not be in the same Pd window.)
 #X floatatom 282 324 5 0 0 0 - - -;
 #X obj 363 317 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X floatatom 363 367 5 0 0 0 - - -;
 #X msg 441 332 \; y 5;
 #X obj 144 587 send;
 #X obj 183 587 float;
@@ -42,9 +33,6 @@ via the expr \, expr~ \, and fexpr~ objects., f 34;
 #X obj 276 529 value;
 #X msg 308 494 symbol help-value1;
 #X msg 327 528 symbol help-value2;
-#X text 32 315 The value object can also receive float values sent
-via a [send] object or a message if it has a variable with the same
-name., f 31;
 #X text 33 482 if invoked without a creation argument \, the value
 object adds a right inlet for setting the variable name with a "symbol"
 message:, f 30;
@@ -63,30 +51,44 @@ message:, f 30;
 #X floatatom 276 403 5 0 0 0 - - -;
 #X text 300 598 updated for Pd version 0.51.;
 #X text 73 16 - nonlocal shared value (named variable);
-#X text 31 409 You can also send the stored value to a named object
+#X text 32 315 The value object can also receive lists sent via a [send]
+object or a message if it has a variable with the same name., f 31
+;
+#X text 31 408 You can also send the stored list to a named object
 such as a receive or another value:, f 30;
-#X connect 0 0 5 0;
-#X connect 3 0 5 0;
-#X connect 5 0 2 0;
-#X connect 7 0 10 0;
+#X msg 167 59 symbol foo;
+#X msg 220 83 1 2 3;
+#X text 31 175 "Value" stores a list which is shared between all value
+objects with the same name (which need not be in the same Pd window.)
+, f 58;
+#X text 374 60 set the value;
+#X obj 25 134 print;
+#X obj 167 135 print;
+#X obj 317 136 print;
+#X floatatom 363 363 5 0 0 0 - - -;
+#X connect 0 0 4 0;
+#X connect 2 0 4 0;
+#X connect 4 0 51 0;
+#X connect 6 0 7 0;
+#X connect 7 0 52 0;
+#X connect 8 0 10 0;
 #X connect 9 0 10 0;
-#X connect 10 0 8 0;
-#X connect 11 0 14 0;
-#X connect 13 0 14 0;
-#X connect 14 0 12 0;
-#X connect 21 0 22 0;
-#X connect 23 0 21 0;
-#X connect 24 0 20 0;
-#X connect 25 0 29 0;
-#X connect 27 0 26 0;
-#X connect 28 0 25 0;
+#X connect 10 0 53 0;
+#X connect 15 0 16 0;
+#X connect 17 0 15 0;
+#X connect 18 0 14 0;
+#X connect 19 0 54 0;
+#X connect 21 0 20 0;
+#X connect 22 0 19 0;
+#X connect 28 0 27 0;
+#X connect 29 0 28 1;
+#X connect 30 0 28 1;
+#X connect 32 0 28 0;
 #X connect 35 0 34 0;
-#X connect 36 0 35 1;
-#X connect 37 0 35 1;
-#X connect 40 0 35 0;
-#X connect 43 0 42 0;
-#X connect 44 0 42 0;
-#X connect 46 0 45 0;
-#X connect 47 0 48 0;
-#X connect 49 0 47 0;
-#X connect 50 0 42 0;
+#X connect 36 0 34 0;
+#X connect 38 0 37 0;
+#X connect 39 0 40 0;
+#X connect 41 0 39 0;
+#X connect 42 0 34 0;
+#X connect 47 0 7 0;
+#X connect 48 0 7 0;
