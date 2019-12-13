@@ -1038,7 +1038,7 @@ static void trigger_list(t_trigger *x, t_symbol *s, int argc, t_atom *argv)
         else if (u->u_type == TR_POINTER)
         {
             if (!argc || argv->a_type != TR_POINTER)
-                pd_error(x, "unpack: bad pointer");
+                pd_error(x, "trigger: bad pointer");
             else outlet_pointer(u->u_outlet, argv->a_w.w_gpointer);
         }
         else outlet_list(u->u_outlet, &s_list, argc, argv);
