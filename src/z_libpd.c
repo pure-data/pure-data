@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010 Peter Brinkmann (peter.brinkmann@gmail.com)
+ * Copyright (c) 2012-2019 libpd team
  *
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
@@ -39,7 +40,7 @@ int sys_startgui(const char *libdir);
 void sys_stopgui(void);
 int sys_pollgui(void);
 
-// (optional) built in pd externals setup functions
+// (optional) setup functions for built-in "extra" externals
 #ifdef LIBPD_EXTRA
   void bob_tilde_setup(void);
   void bonk_tilde_setup(void);
@@ -52,10 +53,10 @@ int sys_pollgui(void);
   void stdout_setup(void);
 #endif
 
-static PERTHREAD t_atom *argv = NULL;
-static PERTHREAD t_atom *curr = NULL;
-static PERTHREAD int argm = 0;
-static PERTHREAD int argc = 0;
+static PERTHREAD t_atom *s_argv = NULL;
+static PERTHREAD t_atom *s_curr = NULL;
+static PERTHREAD int s_argm = 0;
+static PERTHREAD int s_argc = 0;
 
 static void *get_object(const char *s) {
   t_pd *x = gensym(s)->s_thing;
@@ -64,12 +65,11 @@ static void *get_object(const char *s) {
 
 // this is called instead of sys_main() to start things
 int libpd_init(void) {
-  static int initialized = 0;
-  if (initialized) return -1; // only allow init once (for now)
-  initialized = 1;
+  static int s_initialized = 0;
+  if (s_initialized) return -1; // only allow init once (for now)
+  s_initialized = 1;
   signal(SIGFPE, SIG_IGN);
   libpd_start_message(32); // allocate array for message assembly
-  // are all these settings necessary?
   sys_externalschedlib = 0;
   sys_printtostderr = 0;
   sys_usestdpath = 0; // don't use pd_extrapath, only sys_searchpath
@@ -90,6 +90,8 @@ int libpd_init(void) {
   sys_set_audio_api(API_DUMMY);
   STUFF->st_searchpath = NULL;
   sys_libdir = gensym("");
+  post("pd %d.%d.%d%s", PD_MAJOR_VERSION, PD_MINOR_VERSION,
+    PD_BUGFIX_VERSION, PD_TEST_VERSION);
 #ifdef LIBPD_EXTRA
   bob_tilde_setup();
   bonk_tilde_setup();
@@ -114,43 +116,47 @@ void libpd_clear_search_path(void) {
   sys_unlock();
 }
 
-void libpd_add_to_search_path(const char *s) {
+void libpd_add_to_search_path(const char *path) {
   sys_lock();
-  STUFF->st_searchpath = namelist_append(STUFF->st_searchpath, s, 0);
+  STUFF->st_searchpath = namelist_append(STUFF->st_searchpath, path, 0);
   sys_unlock();
 }
 
-void *libpd_openfile(const char *basename, const char *dirname) {
-  void * retval;
+void *libpd_openfile(const char *name, const char *dir) {
+  void *retval;
   sys_lock();
   pd_globallock();
-  retval = (void *)glob_evalfile(NULL, gensym(basename), gensym(dirname));
+  retval = (void *)glob_evalfile(NULL, gensym(name), gensym(dir));
   pd_globalunlock();
   sys_unlock();
   return retval;
 }
 
-void libpd_closefile(void *x) {
+void libpd_closefile(void *p) {
   sys_lock();
-  pd_free((t_pd *)x);
+  pd_free((t_pd *)p);
   sys_unlock();
 }
 
-int libpd_getdollarzero(void *x) {
+int libpd_getdollarzero(void *p) {
   sys_lock();
-  pd_pushsym((t_pd *)x);
+  pd_pushsym((t_pd *)p);
   int dzero = canvas_getdollarzero();
-  pd_popsym((t_pd *)x);
+  pd_popsym((t_pd *)p);
   sys_unlock();
   return dzero;
 }
 
-int libpd_init_audio(int inChans, int outChans, int sampleRate) {
+int libpd_blocksize(void) {
+  return DEFDACBLKSIZE;
+}
+
+int libpd_init_audio(int inChannels, int outChannels, int sampleRate) {
   int indev[MAXAUDIOINDEV], inch[MAXAUDIOINDEV],
        outdev[MAXAUDIOOUTDEV], outch[MAXAUDIOOUTDEV];
   indev[0] = outdev[0] = DEFAULTAUDIODEV;
-  inch[0] = inChans;
-  outch[0] = outChans;
+  inch[0] = inChannels;
+  outch[0] = outChannels;
   sys_lock();
   sys_set_audio_settings(1, indev, 1, inch,
          1, outdev, 1, outch, sampleRate, -1, 1, DEFDACBLKSIZE);
@@ -160,27 +166,8 @@ int libpd_init_audio(int inChans, int outChans, int sampleRate) {
   return 0;
 }
 
-int libpd_process_raw(const float *inBuffer, float *outBuffer) {
-  size_t n_in = STUFF->st_inchannels * DEFDACBLKSIZE;
-  size_t n_out = STUFF->st_outchannels * DEFDACBLKSIZE;
-  t_sample *p;
-  size_t i;
-  sys_lock();
-  sys_pollgui();
-  for (p = STUFF->st_soundin, i = 0; i < n_in; i++) {
-    *p++ = *inBuffer++;
-  }
-  memset(STUFF->st_soundout, 0, n_out * sizeof(t_sample));
-  SCHED_TICK(pd_this->pd_systime + STUFF->st_time_per_dsp_tick);
-  for (p = STUFF->st_soundout, i = 0; i < n_out; i++) {
-    *outBuffer++ = *p++;
-  }
-  sys_unlock();
-  return 0;
-}
-
 static const t_sample sample_to_short = SHRT_MAX,
-                   short_to_sample = 1.0 / (t_sample) SHRT_MAX;
+                      short_to_sample = 1.0 / (t_sample) SHRT_MAX;
 
 #define PROCESS(_x, _y) \
   int i, j, k; \
@@ -219,6 +206,36 @@ int libpd_process_double(const int ticks, const double *inBuffer, double *outBuf
   PROCESS(,)
 }
 
+#define PROCESS_RAW(_x, _y) \
+  size_t n_in = STUFF->st_inchannels * DEFDACBLKSIZE; \
+  size_t n_out = STUFF->st_outchannels * DEFDACBLKSIZE; \
+  t_sample *p; \
+  size_t i; \
+  sys_lock(); \
+  sys_microsleep(0); \
+  for (p = STUFF->st_soundin, i = 0; i < n_in; i++) { \
+    *p++ = *inBuffer++ _x; \
+  } \
+  memset(STUFF->st_soundout, 0, n_out * sizeof(t_sample)); \
+  SCHED_TICK(pd_this->pd_systime + STUFF->st_time_per_dsp_tick); \
+  for (p = STUFF->st_soundout, i = 0; i < n_out; i++) { \
+    *outBuffer++ = *p++ _y; \
+  } \
+  sys_unlock(); \
+  return 0;
+
+int libpd_process_raw(const float *inBuffer, float *outBuffer) {
+  PROCESS_RAW(,)
+}
+
+int libpd_process_raw_short(const short *inBuffer, short *outBuffer) {
+  PROCESS_RAW(* short_to_sample, * sample_to_short)
+}
+
+int libpd_process_raw_double(const double *inBuffer, double *outBuffer) {
+  PROCESS_RAW(,)
+}
+
 #define GETARRAY \
   t_garray *garray = (t_garray *) pd_findbyclass(gensym(name), garray_class); \
   if (!garray) {sys_unlock(); return -1;} \
@@ -230,6 +247,14 @@ int libpd_arraysize(const char *name) {
   retval = garray_npoints(garray);
   sys_unlock();
   return retval;
+}
+
+int libpd_resize_array(const char *name, long size) {
+  sys_lock();
+  GETARRAY
+  garray_resize_long(garray, size);
+  sys_unlock();
+  return 0;
 }
 
 #define MEMCPY(_x, _y) \
@@ -253,83 +278,125 @@ int libpd_write_array(const char *name, int offset, const float *src, int n) {
   return 0;
 }
 
-void libpd_set_float(t_atom *v, float x) {
-  SETFLOAT(v, x);
-}
-
-void libpd_set_symbol(t_atom *v, const char *sym) {
-  SETSYMBOL(v, gensym(sym));
-}
-
-int libpd_list(const char *recv, int n, t_atom *v) {
-  t_pd *dest;
+int libpd_bang(const char *recv) {
+  void *obj;
   sys_lock();
-  dest = get_object(recv);
-  if (dest == NULL)
+  obj = get_object(recv);
+  if (obj == NULL)
   {
     sys_unlock();
     return -1;
   }
-  pd_list(dest, &s_list, n, v);
+  pd_bang(obj);
   sys_unlock();
   return 0;
 }
 
-int libpd_message(const char *recv, const char *msg, int n, t_atom *v) {
-  t_pd *dest;
+int libpd_float(const char *recv, float x) {
+  void *obj;
   sys_lock();
-  dest = get_object(recv);
-  if (dest == NULL)
+  obj = get_object(recv);
+  if (obj == NULL)
   {
     sys_unlock();
     return -1;
   }
-  pd_typedmess(dest, gensym(msg), n, v);
+  pd_float(obj, x);
   sys_unlock();
   return 0;
 }
 
-int libpd_start_message(int max_length) {
-  if (max_length > argm) {
-    t_atom *v = realloc(argv, max_length * sizeof(t_atom));
+int libpd_symbol(const char *recv, const char *symbol) {
+  void *obj;
+  sys_lock();
+  obj = get_object(recv);
+  if (obj == NULL)
+  {
+    sys_unlock();
+    return -1;
+  }
+  pd_symbol(obj, gensym(symbol));
+  sys_unlock();
+  return 0;
+}
+
+int libpd_start_message(int maxlen) {
+  if (maxlen > s_argm) {
+    t_atom *v = realloc(s_argv, maxlen * sizeof(t_atom));
     if (v) {
-      argv = v;
-      argm = max_length;
+      s_argv = v;
+      s_argm = maxlen;
     } else {
       return -1;
     }
   }
-  argc = 0;
-  curr = argv;
+  s_argc = 0;
+  s_curr = s_argv;
   return 0;
 }
 
-#define ADD_ARG(f) f(curr, x); curr++; argc++;
+#define ADD_ARG(f) f(s_curr, x); s_curr++; s_argc++;
 
 void libpd_add_float(float x) {
   ADD_ARG(SETFLOAT);
 }
 
-void libpd_add_symbol(const char *s) {
+void libpd_add_symbol(const char *symbol) {
   t_symbol *x;
   sys_lock();
-  x = gensym(s);
+  x = gensym(symbol);
   sys_unlock();
   ADD_ARG(SETSYMBOL);
 }
 
 int libpd_finish_list(const char *recv) {
-  return libpd_list(recv, argc, argv);
+  return libpd_list(recv, s_argc, s_argv);
 }
 
 int libpd_finish_message(const char *recv, const char *msg) {
-  return libpd_message(recv, msg, argc, argv);
+  return libpd_message(recv, msg, s_argc, s_argv);
 }
 
-void *libpd_bind(const char *sym) {
+void libpd_set_float(t_atom *a, float x) {
+  SETFLOAT(a, x);
+}
+
+void libpd_set_symbol(t_atom *a, const char *symbol) {
+  SETSYMBOL(a, gensym(symbol));
+}
+
+int libpd_list(const char *recv, int argc, t_atom *argv) {
+  t_pd *obj;
+  sys_lock();
+  obj = get_object(recv);
+  if (obj == NULL)
+  {
+    sys_unlock();
+    return -1;
+  }
+  pd_list(obj, &s_list, argc, argv);
+  sys_unlock();
+  return 0;
+}
+
+int libpd_message(const char *recv, const char *msg, int argc, t_atom *argv) {
+  t_pd *obj;
+  sys_lock();
+  obj = get_object(recv);
+  if (obj == NULL)
+  {
+    sys_unlock();
+    return -1;
+  }
+  pd_typedmess(obj, gensym(msg), argc, argv);
+  sys_unlock();
+  return 0;
+}
+
+void *libpd_bind(const char *recv) {
   t_symbol *x;
   sys_lock();
-  x = gensym(sym);
+  x = gensym(recv);
   sys_unlock();
   return libpdreceive_new(x);
 }
@@ -340,24 +407,12 @@ void libpd_unbind(void *p) {
   sys_unlock();
 }
 
-int libpd_is_float(t_atom *a) {
-  return (a)->a_type == A_FLOAT;
-}
-
-int libpd_is_symbol(t_atom *a) {
-  return (a)->a_type == A_SYMBOL;
-}
-
-float libpd_get_float(t_atom *a) {
-  return (a)->a_w.w_float;
-}
-
-const char *libpd_get_symbol(t_atom *a) {
-  return (a)->a_w.w_symbol->s_name;
-}
-
-t_atom *libpd_next_atom(t_atom *a) {
-  return a + 1;
+int libpd_exists(const char *recv) {
+  int retval;
+  sys_lock();
+  retval = (get_object(recv) != NULL);
+  sys_unlock();
+  return retval;
 }
 
 void libpd_set_printhook(const t_libpd_printhook hook) {
@@ -384,58 +439,24 @@ void libpd_set_messagehook(const t_libpd_messagehook hook) {
   libpd_messagehook = hook;
 }
 
-int libpd_symbol(const char *recv, const char *sym) {
-  void *obj;
-  sys_lock();
-  obj = get_object(recv);
-  if (obj == NULL)
-  {
-    sys_unlock();
-    return -1;
-  }
-  pd_symbol(obj, gensym(sym));
-  sys_unlock();
-  return 0;
+int libpd_is_float(t_atom *a) {
+  return (a)->a_type == A_FLOAT;
 }
 
-int libpd_float(const char *recv, float x) {
-  void *obj;
-  sys_lock();
-  obj = get_object(recv);
-  if (obj == NULL)
-  {
-    sys_unlock();
-    return -1;
-  }
-  pd_float(obj, x);
-  sys_unlock();
-  return 0;
+int libpd_is_symbol(t_atom *a) {
+  return (a)->a_type == A_SYMBOL;
 }
 
-int libpd_bang(const char *recv) {
-  void *obj;
-  sys_lock();
-  obj = get_object(recv);
-  if (obj == NULL)
-  {
-    sys_unlock();
-    return -1;
-  }
-  pd_bang(obj);
-  sys_unlock();
-  return 0;
+float libpd_get_float(t_atom *a) {
+  return (a)->a_w.w_float;
 }
 
-int libpd_blocksize(void) {
-  return DEFDACBLKSIZE;
+const char *libpd_get_symbol(t_atom *a) {
+  return (a)->a_w.w_symbol->s_name;
 }
 
-int libpd_exists(const char *sym) {
-  int retval;
-  sys_lock();
-  retval = (get_object(sym) != NULL);
-  sys_unlock();
-  return retval;
+t_atom *libpd_next_atom(t_atom *a) {
+  return a + 1;
 }
 
 #define CHECK_CHANNEL if (channel < 0) return -1;
@@ -474,14 +495,13 @@ int libpd_programchange(int channel, int value) {
   return 0;
 }
 
+// note: for consistency with Pd, we center the output of [pitchin] at 8192
 int libpd_pitchbend(int channel, int value) {
   CHECK_CHANNEL
   if (value < -8192 || value > 8191) return -1;
   sys_lock();
   inmidi_pitchbend(PORT, CHANNEL, value + 8192);
   sys_unlock();
-  // Note: For consistency with Pd, we center the output of [pitchin]
-  // at 8192.
   return 0;
 }
 
@@ -587,15 +607,15 @@ t_pdinstance *libpd_new_instance(void) {
 #endif
 }
 
-void libpd_set_instance(t_pdinstance *x) {
+void libpd_set_instance(t_pdinstance *p) {
 #ifdef PDINSTANCE
-  pd_setinstance(x);
+  pd_setinstance(p);
 #endif
 }
 
-void libpd_free_instance(t_pdinstance *x) {
+void libpd_free_instance(t_pdinstance *p) {
 #ifdef PDINSTANCE
-  pdinstance_free(x);
+  pdinstance_free(p);
 #endif
 }
 

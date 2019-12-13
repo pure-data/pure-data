@@ -297,10 +297,14 @@ void libpd_set_queued_midibytehook(const t_libpd_midibytehook hook) {
 }
 
 int libpd_queued_init() {
-  pd_receive_buffer = rb_create(BUFFER_SIZE);
-  if (!pd_receive_buffer) return -1;
-  midi_receive_buffer = rb_create(BUFFER_SIZE);
-  if (!midi_receive_buffer) return -1;
+  if (!pd_receive_buffer) {
+    pd_receive_buffer = rb_create(BUFFER_SIZE);
+    if (!pd_receive_buffer) return -2;
+  }
+  if (!midi_receive_buffer) {
+    midi_receive_buffer = rb_create(BUFFER_SIZE);
+    if (!midi_receive_buffer) return -2;
+  }
 
   libpd_set_printhook(internal_printhook);
   libpd_set_banghook(internal_banghook);
@@ -317,13 +321,18 @@ int libpd_queued_init() {
   libpd_set_polyaftertouchhook(internal_polyaftertouchhook);
   libpd_set_midibytehook(internal_midibytehook);
 
-  libpd_init();
-  return 0;
+  return libpd_init();
 }
 
 void libpd_queued_release() {
-  rb_free(pd_receive_buffer);
-  rb_free(midi_receive_buffer);
+  if (pd_receive_buffer) {
+    rb_free(pd_receive_buffer);
+    pd_receive_buffer = NULL;
+  }
+  if (midi_receive_buffer) {
+    rb_free(midi_receive_buffer);
+    midi_receive_buffer = NULL;
+  }
 }
 
 void libpd_queued_receive_pd_messages() {

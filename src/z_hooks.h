@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2013 Dan Wilcox (danomatika@gmail.com)
+ * Copyright (c) 2013-2019 libpd team
  *
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
@@ -13,8 +14,7 @@
 
 #include "z_libpd.h"
 
-// the internal hooks
-// in a separate file so they can be used throughout the libpd_wrapper sources,
+// internal hooks
 // do *not* include this file in a user-facing header
 
 // no libpd_printhook as libpd_set_printhook() sets internal sys_printhook

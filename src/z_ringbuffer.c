@@ -59,9 +59,9 @@ void rb_free(ring_buffer *buffer) {
 
 int rb_available_to_write(ring_buffer *buffer) {
   if (buffer) {
-    // Note: The largest possible result is buffer->size - 1 because
+    // note: the largest possible result is buffer->size - 1 because
     // we adopt the convention that read_idx == write_idx means that the
-    // buffer is empty.
+    // buffer is empty
     int read_idx = SYNC_FETCH(&(buffer->read_idx));
     int write_idx = SYNC_FETCH(&(buffer->write_idx));
     return (buffer->size + read_idx - write_idx - 1) % buffer->size;
@@ -82,7 +82,7 @@ int rb_available_to_read(ring_buffer *buffer) {
 
 int rb_write_to_buffer(ring_buffer *buffer, int n, ...) {
   if (!buffer) return -1;
-  int write_idx = buffer->write_idx;  // No need for sync in writer thread.
+  int write_idx = buffer->write_idx;  // no need for sync in writer thread
   int available = rb_available_to_write(buffer);
   va_list args;
   va_start(args, n);
@@ -103,17 +103,17 @@ int rb_write_to_buffer(ring_buffer *buffer, int n, ...) {
   }
   va_end(args);
   SYNC_COMPARE_AND_SWAP(&(buffer->write_idx), buffer->write_idx,
-      write_idx);  // Includes memory barrier.
+      write_idx);  // includes memory barrier
   return 0;
 }
 
 int rb_read_from_buffer(ring_buffer *buffer, char *dest, int len) {
   if (len == 0) return 0;
   if (!buffer || len < 0 || len > rb_available_to_read(buffer)) return -1;
-  // Note that rb_available_to_read also serves as a memory barrier, and so any
+  // note that rb_available_to_read also serves as a memory barrier, and so any
   // writes to buffer->buf_ptr that precede the update of buffer->write_idx are
-  // visible to us now.
-  int read_idx = buffer->read_idx;  // No need for sync in reader thread.
+  // visible to us now
+  int read_idx = buffer->read_idx;  // no need for sync in reader thread
   if (read_idx + len <= buffer->size) {
     memcpy(dest, buffer->buf_ptr + read_idx, len);
   } else {
@@ -122,6 +122,6 @@ int rb_read_from_buffer(ring_buffer *buffer, char *dest, int len) {
     memcpy(dest + d, buffer->buf_ptr, len - d);
   }
   SYNC_COMPARE_AND_SWAP(&(buffer->read_idx), buffer->read_idx,
-       (read_idx + len) % buffer->size);  // Includes memory barrier.
+       (read_idx + len) % buffer->size);  // includes memory barrier
   return 0;
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2010 Peter Brinkmann (peter.brinkmann@gmail.com)
+ * Copyright (c) 2012-2019 libpd team
  *
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
@@ -9,7 +10,6 @@
  */
 
 #include <stdio.h>
-#include "m_pd.h"
 #include "x_libpdreceive.h"
 #include "z_libpd.h"
 #include "z_hooks.h"
@@ -59,7 +59,7 @@ static void *libpdreceive_donew(t_symbol *s) {
   return x;
 }
 
-// This is exposed in the libpd API so must set the lock.
+// this is exposed in the libpd API so must set the lock
 void *libpdreceive_new(t_symbol *s) {
   t_libpdrec *x;
   sys_lock();

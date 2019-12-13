@@ -51,11 +51,11 @@ void outmidi_byte(int port, int value) {
     libpd_midibytehook(CLAMP12BIT(port), CLAMP8BIT(value));
 }
 
-/* tell Pd gui that our list of MIDI APIs is empty */
+/* tell Pd GUI that our list of MIDI APIs is empty */
 #include <string.h>
 void sys_get_midi_apis(char *buf) {strcpy(buf, "{}");}
 
-// The rest is not relevant to libpd.
+// the rest is not relevant to libpd
 void sys_listmididevs(void) {}
 void sys_get_midi_params(int *pnmidiindev, int *pmidiindev,
     int *pnmidioutdev, int *pmidioutdev) {*pnmidiindev = *pnmidioutdev = 0;}
