@@ -1673,7 +1673,7 @@ void value_release(t_symbol *s)
 
 /*
  * value_getfloat -- obtain the float value of a "value" object
- *                  return 0 on success, 1 otherwise
+ *                  return 0 on success, 1 if non-existent and 2 if wrong type
  */
 int value_getfloat(t_symbol *s, t_float *f)
 {
