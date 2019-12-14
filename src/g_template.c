@@ -515,7 +515,10 @@ t_canvas *template_findcanvas(t_template *template)
 {
     t_gtemplate *gt;
     if (!template)
+    {
         bug("template_findcanvas");
+        return (0);
+    }
     if (!(gt = template->t_list))
         return (0);
     return (gt->x_owner);
