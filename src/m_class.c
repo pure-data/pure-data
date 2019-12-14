@@ -238,7 +238,7 @@ EXTERN void pdinstance_free(t_pdinstance *x)
                s != &x->pd_s_y &&
                s != &x->pd_s_)
             {
-                freebytes(s->s_name, strlen(s->s_name)+1);
+                freebytes((void *)s->s_name, strlen(s->s_name)+1);
                 freebytes(s, sizeof(*s));
             }
         }
