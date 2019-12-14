@@ -125,7 +125,7 @@ struct _instanceinter
     LARGE_INTEGER i_inittime;
     double i_freq;
 #endif
-#if PDTHREADS
+#if PDTHREADS && PDINSTANCE
     pthread_mutex_t i_mutex;
 #endif
 };
@@ -1551,7 +1551,14 @@ void s_inter_newpdinstance(void)
 {
     pd_this->pd_inter = getbytes(sizeof(*pd_this->pd_inter));
 #if PDTHREADS
-    pthread_mutex_init(&pd_this->pd_inter->i_mutex, NULL);
+#if PDINSTANCE
+    {
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&pd_this->pd_inter->i_mutex, &attr);
+    }
+#endif
     pd_this->pd_islocked = 0;
 #endif
 #ifdef _WIN32
@@ -1582,7 +1589,7 @@ void s_inter_freepdinstance(void)
 #ifdef PDINSTANCE
 static pthread_rwlock_t sys_rwlock = PTHREAD_RWLOCK_INITIALIZER;
 #else /* PDINSTANCE */
-static pthread_mutex_t sys_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t sys_mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
 #endif /* PDINSTANCE */
 #endif /* PDTHREADS */
 
