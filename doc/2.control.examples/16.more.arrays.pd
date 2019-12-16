@@ -1,4 +1,4 @@
-#N canvas 288 82 910 558 12;
+#N canvas 288 82 910 618 12;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array99 5 float 1;
 #A 0 0.32 0.499999 -0.406667 -0.753333 0.00666714;
@@ -37,9 +37,14 @@ for "canvas".) Arrays' sizes need not match the bounds of the containing
 graph. But if you resize an array \, and if it is the only array contained
 in a graph \, then the graph automaticallly resets its bounds to match.
 , f 51;
-#X text 654 493 last updated for release 0.48;
 #X text 508 27 You can also change x and y range and size in the "properties"
 dialog. Note that information about size and ranges is saved \, but
 ticks and labels are lost between Pd sessions. The contents of the
 array may be saved as part of the patch or discarded., f 46;
 #X text 510 118 This is set in the "properties" dialog.;
+#X text 60 528 enable/disable mouse editing:;
+#X obj 37 528 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 37 550 \; array98 edit \$1 \; array99 edit \$1;
+#X text 654 493 last updated for release 0.51;
+#X connect 21 0 22 0;
