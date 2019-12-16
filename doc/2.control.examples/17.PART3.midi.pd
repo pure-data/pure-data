@@ -1,27 +1,28 @@
-#N canvas 47 52 517 445 12;
-#X floatatom 108 90 0 0 0;
-#X floatatom 72 90 0 0 0;
-#X obj 36 62 notein;
-#X floatatom 36 90 0 0 0;
-#X floatatom 228 90 0 0 0;
-#X floatatom 192 90 0 0 0;
-#X floatatom 156 90 0 0 0;
-#X obj 156 64 ctlin;
-#X floatatom 329 90 0 0 0;
-#X floatatom 283 90 0 0 0;
-#X obj 283 63 bendin;
-#X floatatom 329 128 0 0 0;
-#X floatatom 285 128 0 0 0;
-#X obj 285 157 bendout;
-#X text 23 18 Pd offers input and output objects for MIDI:;
-#X text 358 154 ... ad nauseam.;
-#X text 254 417 updated for Pd version 0.34;
-#X obj 39 321 midiout;
-#X obj 244 368 sysexin;
-#X msg 39 291 240 \, 45 \, 93 \, 3 \, 65 \, 1 \, 2 \, 3 \, 4 \, 247
+#N canvas 591 65 452 454 12;
+#X floatatom 225 125 0 0 0 0 - - -;
+#X floatatom 189 125 0 0 0 0 - - -;
+#X obj 170 97 notein;
+#X floatatom 153 125 0 0 0 0 - - -;
+#X floatatom 342 125 0 0 0 0 - - -;
+#X floatatom 306 125 0 0 0 0 - - -;
+#X floatatom 270 125 0 0 0 0 - - -;
+#X obj 290 97 ctlin;
+#X floatatom 96 125 0 0 0 0 - - -;
+#X floatatom 57 125 0 0 0 0 - - -;
+#X obj 57 97 bendin;
+#X floatatom 105 163 0 0 0 0 - - -;
+#X floatatom 59 163 0 0 0 0 - - -;
+#X obj 59 192 bendout;
+#X text 201 182 ... ad nauseam.;
+#X text 205 414 updated for Pd version 0.34;
+#X obj 68 308 midiout;
+#X obj 273 355 sysexin;
+#X msg 68 278 240 \, 45 \, 93 \, 3 \, 65 \, 1 \, 2 \, 3 \, 4 \, 247
 ;
-#X text 32 252 You can format your own SYSEX messages as shown:;
-#X text 28 366 and receive SYSEX via:;
+#X text 61 239 You can format your own SYSEX messages as shown:;
+#X text 109 354 and receive SYSEX via:;
+#X text 39 20 Pd offers input and output objects for MIDI. Get a full
+list of objects in the help file of any object below., f 50;
 #X connect 2 0 3 0;
 #X connect 2 1 1 0;
 #X connect 2 2 0 0;
@@ -32,4 +33,4 @@
 #X connect 10 1 8 0;
 #X connect 11 0 13 1;
 #X connect 12 0 13 0;
-#X connect 19 0 17 0;
+#X connect 18 0 16 0;

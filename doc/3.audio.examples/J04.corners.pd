@@ -1,69 +1,69 @@
-#N canvas 612 -7 619 714 12;
-#X obj 117 132 wrap~;
-#X obj 117 154 -~ 0.5;
-#N canvas 0 0 450 300 graph1 0;
+#N canvas 612 23 684 794 12;
+#X obj 136 177 wrap~;
+#X obj 136 204 -~ 0.5;
+#N canvas 0 0 450 300 (subpatch) 0;
 #X array \$0-sum 882 float 0;
 #X coords 0 0.25 881 -0.25 200 130 1;
-#X restore 411 70 graph;
-#X text 410 208 ---- 0.02 seconds ----;
-#X text 354 676 updated for Pd version 0.39;
-#X obj 33 427 output~;
-#X obj 127 461 tabwrite~ \$0-sum;
-#X obj 117 110 -~;
-#X obj 139 69 / 100;
-#X floatatom 139 48 4 -100 100 0 - - -;
-#X obj 138 312 / 100;
-#X floatatom 138 291 4 -100 100 0 - - -;
-#X obj 116 334 *~;
-#X obj 203 133 wrap~;
-#X obj 203 155 -~ 0.5;
-#X obj 203 111 -~;
-#X obj 225 70 / 100;
-#X floatatom 225 49 4 -100 100 0 - - -;
-#X obj 225 313 / 100;
-#X floatatom 225 292 4 -100 100 0 - - -;
-#X obj 203 335 *~;
-#X obj 290 134 wrap~;
-#X obj 290 156 -~ 0.5;
-#X obj 290 112 -~;
-#X obj 311 71 / 100;
-#X floatatom 311 50 4 -100 100 0 - - -;
-#X obj 313 314 / 100;
-#X floatatom 313 293 4 -100 100 0 - - -;
-#X obj 291 336 *~;
-#X text 129 26 -- PHASES (percent) --;
-#X text 140 267 AMPLITUDES (percent);
-#X obj 91 360 +~;
-#X obj 92 386 +~;
-#X obj 138 413 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 1
+#X restore 447 121 graph;
+#X text 446 259 ---- 0.02 seconds ----;
+#X text 438 752 updated for Pd version 0.39;
+#X obj 235 485 output~;
+#X obj 334 490 tabwrite~ \$0-sum;
+#X obj 136 151 -~;
+#X obj 154 107 / 100;
+#X floatatom 154 86 4 -100 100 0 - - -;
+#X obj 154 338 / 100;
+#X floatatom 154 311 4 -100 100 0 - - -;
+#X obj 136 367 *~;
+#X obj 223 177 wrap~;
+#X obj 223 204 -~ 0.5;
+#X obj 223 152 -~;
+#X obj 241 108 / 100;
+#X floatatom 241 87 4 -100 100 0 - - -;
+#X obj 241 338 / 100;
+#X floatatom 241 311 4 -100 100 0 - - -;
+#X obj 223 367 *~;
+#X obj 311 177 wrap~;
+#X obj 311 204 -~ 0.5;
+#X obj 311 153 -~;
+#X obj 329 109 / 100;
+#X floatatom 329 88 4 -100 100 0 - - -;
+#X obj 329 338 / 100;
+#X floatatom 329 311 4 -100 100 0 - - -;
+#X obj 311 367 *~;
+#X text 149 64 -- PHASES (percent) --;
+#X text 364 310 AMPLITUDES (percent);
+#X obj 136 396 +~;
+#X obj 293 444 +~;
+#X obj 334 436 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
-#X obj 138 435 metro 193;
-#X obj 20 80 phasor~;
-#X floatatom 20 59 5 0 0 0 - - -;
-#X text 12 36 frequency;
-#X obj 116 184 *~;
-#X obj 203 184 *~;
-#X obj 290 184 *~;
-#X obj 116 209 *~ 0.5;
-#X obj 116 234 -~ 0.0833;
-#X obj 203 209 *~ 0.5;
-#X obj 290 209 *~ 0.5;
-#X obj 204 234 -~ 0.0833;
-#X obj 291 234 -~ 0.0833;
-#X text 30 3 Making waveforms with corners using parabolic waves;
-#X text 14 499 Here we combine three parabolic waves (in the same way
+#X obj 334 458 metro 193;
+#X obj 81 109 phasor~;
+#X floatatom 81 88 5 0 0 0 - - -;
+#X text 61 65 frequency;
+#X obj 136 229 *~;
+#X obj 223 229 *~;
+#X obj 311 229 *~;
+#X obj 136 254 *~ 0.5;
+#X obj 136 279 -~ 0.0833;
+#X obj 223 254 *~ 0.5;
+#X obj 311 254 *~ 0.5;
+#X obj 223 279 -~ 0.0833;
+#X obj 311 279 -~ 0.0833;
+#X text 96 558 Here we combine three parabolic waves (in the same way
 as \, two patches ago \, we combined sawtooth waves). The parabolic
 wave is obtained from the sawtooth wave (assuming it runs from -0.5
 to 0.5) by the formula: y=x*x/2 - 1/12. This is normalized so that
 the corner has a slope change of minus one unit per cycle \, and adjusted
-to remove any DC component.;
-#X text 12 593 In general \, the segments of the result will be curved
+to remove any DC component., f 65;
+#X text 96 653 In general \, the segments of the result will be curved
 \, but if the three magnitudes sum algebraically to zero \, the segments
-will be linear.;
-#X text 371 67 0.25;
-#X text 362 184 -0.25;
-#X text 14 644 Note the reduced scale of the graph (from -0.25 to 0.25)
-compared to the previous examples.;
+will be linear., f 65;
+#X text 407 118 0.25;
+#X text 398 235 -0.25;
+#X text 96 703 Note the reduced scale of the graph (from -0.25 to 0.25)
+compared to the previous examples., f 65;
+#X text 50 22 MAKING WAVEFORMS WITH CORNERS USING PARABOLIC WAVES;
 #X connect 0 0 1 0;
 #X connect 1 0 38 0;
 #X connect 1 0 38 1;

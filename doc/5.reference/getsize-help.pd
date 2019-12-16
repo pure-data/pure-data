@@ -1,46 +1,46 @@
 #N struct help-getsize-template float x float y array array1 help-getsize-array1-template
 ;
 #N struct help-getsize-array1-template float y;
-#N canvas 465 131 639 497 12;
-#X text 27 408 see also:;
-#N canvas 393 50 495 265 help-getsize-template 0;
-#X obj 27 76 plot array1 500 1 10 15 20;
-#X obj 27 174 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
-#X obj 24 16 struct help-getsize-template float x float y array array1
+#N canvas 506 114 615 481 12;
+#X text 40 381 see also:;
+#N canvas 393 50 468 206 help-getsize-template 0;
+#X obj 30 78 plot array1 500 1 10 15 20;
+#X obj 60 137 filledpolygon 509 509 0 -10 -10 10 -10 10 10 -10 10;
+#X obj 28 21 struct help-getsize-template float x float y array array1
 help-getsize-array1-template;
-#X restore 337 400 pd help-getsize-template;
-#N canvas 2 52 305 197 help-getsize-data 1;
+#X restore 349 372 pd help-getsize-template;
+#N canvas 142 211 305 197 help-getsize-data 1;
 #X scalar help-getsize-template 43 37 \; 0 \; 10 \; 0 \; 10 \; 20 \;
 10 \; 20 \; 70 \; 10 \; \;;
-#X restore 336 379 pd help-getsize-data;
-#N canvas 196 292 369 138 help-getsize-array1-template 0;
+#X restore 349 350 pd help-getsize-data;
+#N canvas 672 342 369 138 help-getsize-array1-template 0;
 #X obj 30 71 filledpolygon 0 0 0 -5 0 0 5 5 0 0 -5;
 #X obj 32 27 struct help-getsize-array1-template float y;
-#X restore 336 423 pd help-getsize-array1-template;
-#X obj 101 428 pointer;
-#X obj 235 427 setsize;
-#X obj 24 255 pointer;
-#X msg 24 231 traverse pd-help-getsize-data \, next;
-#X floatatom 24 373 5 0 0 0 - - -, f 5;
-#X text 329 337 arguments: template \, field name;
-#X text 75 371 here we just get the value of y.;
-#X obj 24 344 getsize help-getsize-template array1;
-#X text 33 323 inlet for pointer;
-#X obj 35 21 getsize;
-#X text 98 22 -- get number of elements of an array;
-#X text 24 44 When sent a pointer \, "element" looks up a field \,
+#X restore 349 394 pd help-getsize-array1-template;
+#X obj 105 407 pointer;
+#X obj 237 407 setsize;
+#X obj 37 228 pointer;
+#X msg 37 204 traverse pd-help-getsize-data \, next;
+#X floatatom 37 346 5 0 0 0 - - -;
+#X text 302 316 arguments: template \, field name;
+#X text 88 347 here we just get the value of y.;
+#X obj 37 317 getsize help-getsize-template array1;
+#X text 46 296 inlet for pointer;
+#X obj 40 19 getsize;
+#X text 103 20 -- get number of elements of an array;
+#X text 34 51 When sent a pointer \, "element" looks up a field \,
 which should be an array \, and outputs the number of elements of the
 array. The template and field name are specified as creation arguments.
 ;
-#X text 26 114 The smallest possible size is one.;
-#X obj 168 428 element;
-#X obj 24 428 struct;
-#X text 80 274 set template and field name;
-#X text 396 463 updated for Pd version 0.47;
-#X text 24 147 If you don't know the template name you may specify
+#X text 34 119 The smallest possible size is one.;
+#X obj 170 407 element;
+#X obj 48 407 struct;
+#X text 104 247 set template and field name;
+#X text 387 437 updated for Pd version 0.47;
+#X text 34 145 If you don't know the template name you may specify
 "-" \, in which case the object will figure out the template name itself
 \, at some possible cost in efficiency and clarity.;
-#X msg 34 293 set help-getsize-template array1;
+#X msg 47 266 set help-getsize-template array1;
 #X connect 6 0 11 0;
 #X connect 7 0 6 0;
 #X connect 11 0 8 0;

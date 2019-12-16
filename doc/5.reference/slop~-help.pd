@@ -1,7 +1,7 @@
-#N canvas 379 87 1020 642 12;
-#X obj 64 91 osc~;
+#N canvas 379 87 1023 572 12;
+#X obj 37 96 osc~;
 #N canvas 0 50 450 250 (subpatch) 0;
-#X array \$0-graph 1000 float 3;
+#X array \$0-graph 1000 float 1;
 #A 0 -0.239854 -0.245719 -0.251574 -0.25742 -0.263255 -0.269079 -0.274893
 -0.280696 -0.286488 -0.292268 -0.298037 -0.303793 -0.309538 -0.315271
 -0.320991 -0.326698 -0.332393 -0.338074 -0.343743 -0.349397 -0.355039
@@ -138,55 +138,50 @@
 -0.3978 -0.391429 -0.384919 -0.378274 -0.371496 -0.364586 -0.357548
 -0.350384 -0.343095 -0.335797 -0.328498 -0.321199 -0.3139 -0.306601
 -0.299302;
-#X coords 0 1 1000 -1 500 140 1 0 0;
-#X restore 23 479 graph;
-#X floatatom 64 65 5 0 0 0 - - -;
-#X obj 63 428 tabwrite~ \$0-graph;
-#X obj 89 397 metro 500;
-#X obj 89 371 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X coords 0 1 999 -1 500 140 1 0 0;
+#X restore 450 410 graph;
+#X floatatom 37 70 5 0 0 0 - - -;
+#X obj 64 441 tabwrite~ \$0-graph;
+#X obj 90 410 metro 500;
+#X obj 90 384 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X floatatom 100 139 5 0 10000 0 - - -;
-#X floatatom 134 165 5 0 10000 0 - - -;
-#X floatatom 206 249 5 0 0 0 - - -;
-#X msg 72 115 set 0;
-#X obj 206 272 / 100;
-#X obj 134 188 / 100;
-#X obj 63 343 slop~ 1000 1e+09 0 1e+09 0;
-#X obj 12 12 slop~;
-#X text 73 13 - slew-limiting low-pass filter;
-#X text 142 139 cutoff frequency in linear region;
-#X floatatom 170 215 5 0 10000 0 - - -;
-#X text 180 165 maximum downward slew of linear region;
-#X text 213 205 asymptotic downward cutoff frequency (for downward
+#X floatatom 99 152 5 0 10000 0 - - -;
+#X floatatom 135 179 5 0 10000 0 - - -;
+#X floatatom 207 262 5 0 0 0 - - -;
+#X msg 66 126 set 0;
+#X obj 207 285 / 100;
+#X obj 135 202 / 100;
+#X obj 64 356 slop~ 1000 1e+09 0 1e+09 0;
+#X obj 13 25 slop~, f 7;
+#X text 74 26 - slew-limiting low-pass filter;
+#X text 141 152 cutoff frequency in linear region;
+#X floatatom 171 229 5 0 10000 0 - - -;
+#X text 181 179 maximum downward slew of linear region;
+#X text 214 219 asymptotic downward cutoff frequency (for downward
 slews greater than maximum), f 41;
-#X text 255 247 maximum upward slew of linear region;
-#X text 291 294 asymptotic upward cutoff frequency (for upward slews
+#X text 256 260 maximum upward slew of linear region;
+#X text 288 309 asymptotic upward cutoff frequency (for upward slews
 greater than maximum), f 41;
-#X floatatom 242 299 5 0 10000 0 - - -;
-#X text 105 65 frequency of test oscillator;
-#X obj 493 9 bng 15 250 50 0 \$0-mainlink empty empty 17 7 0 10 -262144
+#X floatatom 243 316 5 0 10000 0 - - -;
+#X text 78 70 frequency of test oscillator;
+#X obj 486 24 bng 15 250 50 0 \$0-mainlink empty empty 17 7 0 10 -262144
 -1 -1;
 #N canvas 418 87 524 258 works 0;
-#X text 14 20 this window implements the link button in the main window.
+#X text 47 19 this window implements the link button in the main window.
 ;
-#X obj 107 62 r \$0-mainlink;
-#X obj 107 177 pdcontrol;
-#X obj 191 178 print;
+#X obj 107 172 pdcontrol;
 #X obj 107 112 pdcontrol;
 #X msg 107 87 dir;
-#X msg 241 87 gui ::pd_menucommands::menu_openfile \$1/../8.topics/slop-tilde.htm
-;
-#X msg 108 137 browse \$1/../8.topics/slop-tilde.htm;
-#X connect 1 0 5 0;
-#X connect 4 0 7 0;
-#X connect 5 0 4 0;
-#X connect 7 0 2 0;
-#X connect 7 0 3 0;
-#X restore 718 417 pd works;
-#N canvas 240 55 1114 912 compander-limiter 0;
-#X obj 467 16 bng 15 250 50 0 \$0-compander empty empty 17 7 0 10 -262144
+#X msg 107 141 browse \$1/../8.topics/slop-tilde.htm;
+#X obj 107 62 r \$0-mainlink;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 4 0 1 0;
+#X connect 5 0 3 0;
+#X restore 707 349 pd works;
+#N canvas 285 25 1060 763 compander-limiter 0;
+#X obj 468 58 bng 15 250 50 0 \$0-compander empty empty 17 7 0 10 -262144
 -1 -1;
-#X text 491 13 <- open details in web browser;
 #N canvas 622 189 450 300 generate-test 0;
 #X obj 84 121 osc~ 440;
 #X obj 204 124 line~;
@@ -208,37 +203,37 @@ greater than maximum), f 41;
 #X connect 7 0 2 0;
 #X connect 7 0 3 0;
 #X connect 7 0 8 0;
-#X restore 61 129 pd generate-test;
-#X obj 60 160 out1~;
-#X obj 345 44 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X restore 82 98 pd generate-test;
+#X obj 82 171 out1~;
+#X obj 347 119 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 345 64 metro 500;
-#X obj 345 89 s \$0-testpulse;
+#X obj 347 139 metro 500;
+#X obj 347 164 s \$0-testpulse;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-test-in 20000 float 2;
 #X coords 0 1 20000 -1 500 140 1 0 0;
-#X restore 58 452 graph;
-#X text 475 50 (under construction...);
-#N canvas 323 324 450 300 resize 0;
-#X obj 83 45 inlet;
-#X msg 83 70 resize \$1;
-#X obj 83 95 s \$0-test-in;
-#X obj 88 126 s \$0-slop-out;
-#X obj 83 159 s \$0-compander-out;
+#X restore 48 304 graph;
+#X text 484 86 (under construction...);
+#N canvas 323 324 347 253 resize 0;
+#X obj 83 52 inlet;
+#X msg 83 79 resize \$1;
+#X obj 96 109 s \$0-test-in;
+#X obj 89 141 s \$0-slop-out;
+#X obj 83 168 s \$0-compander-out;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 0 3 0;
 #X connect 1 0 4 0;
-#X restore 607 771 pd resize;
-#X msg 607 740 20000;
+#X restore 657 594 pd resize;
+#X msg 673 563 20000;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-slop-out 20000 float 2;
 #X coords 0 1 20000 0 500 70 1 0 0;
-#X restore 58 622 graph;
+#X restore 48 474 graph;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-compander-out 20000 float 2;
 #X coords 0 1 20000 -1 500 140 1 0 0;
-#X restore 58 723 graph;
+#X restore 48 575 graph;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-dynamic-curve 102 float 3;
 #A 0 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
@@ -247,7 +242,7 @@ greater than maximum), f 41;
 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92
 93 94 95 96 97 98 99 100 100;
 #X coords 0 100 102 0 202 200 1 0 0;
-#X restore 842 37 graph;
+#X restore 752 62 graph;
 #N canvas 194 66 600 997 parameters 0;
 #X obj 366 32 inlet;
 #X obj 400 376 setctl \$0-speed;
@@ -375,13 +370,13 @@ greater than maximum), f 41;
 #X connect 56 0 52 2;
 #X connect 57 0 58 0;
 #X connect 58 0 12 0;
-#X restore 856 437 pd parameters;
-#X floatatom 680 295 3 0 100 0 limit #0-limit-set #0-limit;
-#X floatatom 680 316 3 0 20 0 knee #0-knee-set #0-knee;
-#X floatatom 680 337 3 0 50 0 boost #0-boost-set #0-boost;
-#X floatatom 680 358 3 0 200 0 ratio #0-ratio-set #0-ratio;
-#X floatatom 680 380 3 0 100 0 thresh #0-thresh-set #0-thresh;
-#X floatatom 680 401 3 0 200 0 speed #0-speed-set #0-speed;
+#X restore 768 472 pd parameters;
+#X floatatom 661 315 3 0 100 0 limit #0-limit-set #0-limit;
+#X floatatom 661 336 3 0 20 0 knee #0-knee-set #0-knee;
+#X floatatom 661 357 3 0 50 0 boost #0-boost-set #0-boost;
+#X floatatom 661 378 3 0 200 0 ratio #0-ratio-set #0-ratio;
+#X floatatom 661 400 3 0 100 0 thresh #0-thresh-set #0-thresh;
+#X floatatom 661 421 3 0 200 0 speed #0-speed-set #0-speed;
 #N canvas 33 150 617 518 run-compander 0;
 #X obj 47 56 inlet~;
 #X obj 82 124 slop~ 0 0 0 0 1e+09;
@@ -421,41 +416,42 @@ the difference between the measured and desired level, f 27;
 #X connect 12 0 8 0;
 #X connect 13 0 14 0;
 #X connect 13 0 15 0;
-#X restore 152 156 pd run-compander;
-#X msg 607 712 2000;
-#X msg 606 686 300;
-#X obj 152 200 out1~;
-#X msg 856 331 100 0 0 200 100 100;
-#X msg 856 275 100 0 0 100 0 50;
-#X text 778 275 no change;
-#X text 801 304 limit;
-#X text 796 332 expand;
-#X text 781 362 compress;
-#X text 772 399 noise gate;
-#X msg 856 400 100 0 0 200 60 30;
-#X msg 856 362 100 0 0 50 100 100;
-#X text 29 10 Using slop~ to make a compressor/expander/limiter;
-#X msg 856 304 90 10 0 100 0 50;
-#X connect 2 0 3 0;
-#X connect 2 0 21 0;
+#X restore 173 135 pd run-compander;
+#X msg 665 535 2000;
+#X msg 656 509 300;
+#X obj 173 171 out1~;
+#X msg 779 366 100 0 0 200 100 100;
+#X msg 759 310 100 0 0 100 0 50;
+#X text 880 309 no change;
+#X text 892 340 limit;
+#X text 921 364 expand;
+#X text 921 397 compress;
+#X text 925 433 noise gate;
+#X msg 799 434 100 0 0 200 60 30;
+#X msg 789 397 100 0 0 50 100 100;
+#X text 51 32 Using slop~ to make a compressor/expander/limiter;
+#X msg 769 339 90 10 0 100 0 50;
+#X text 492 55 <= open details in web browser;
+#X connect 1 0 2 0;
+#X connect 1 0 20 0;
+#X connect 3 0 4 0;
 #X connect 4 0 5 0;
-#X connect 5 0 6 0;
-#X connect 10 0 9 0;
-#X connect 21 0 24 0;
-#X connect 22 0 9 0;
-#X connect 23 0 9 0;
-#X connect 25 0 14 0;
-#X connect 26 0 14 0;
-#X connect 32 0 14 0;
-#X connect 33 0 14 0;
-#X connect 35 0 14 0;
-#X restore 665 244 pd compander-limiter;
-#X text 553 78 The slop~ object is a low-pass filter whose frequency
+#X connect 9 0 8 0;
+#X connect 20 0 23 0;
+#X connect 21 0 8 0;
+#X connect 22 0 8 0;
+#X connect 24 0 13 0;
+#X connect 25 0 13 0;
+#X connect 31 0 13 0;
+#X connect 32 0 13 0;
+#X connect 34 0 13 0;
+#X restore 706 281 pd compander-limiter;
+#X text 554 111 The slop~ object is a low-pass filter whose frequency
 response (i.e. \, reaction speed) can vary according to the filter's
 state. It can be useful for slew limiting \, dynamics processing (companders/limiters/noise
 gates) \, and soft saturation. Examples below are explained in the
 HTML documentation (linked above).;
-#N canvas 550 104 848 759 slew-limiter 0;
+#N canvas 550 104 853 655 slew-limiter 0;
 #X floatatom 114 148 5 0 1000 0 - - -;
 #X obj 114 172 t f b;
 #X obj 146 201 samplerate~;
@@ -463,28 +459,27 @@ HTML documentation (linked above).;
 #X obj 89 406 metro 500;
 #X obj 89 380 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X text 114 378 <- start metronome to graph output;
 #X obj 63 437 tabwrite~ \$0-slew-graph;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-slew-graph 1000 float 2;
 #X coords 0 1 1000 -1 500 140 1 0 0;
-#X restore 44 558 graph;
-#X text 42 7 Using slop~ to make a slew limiter;
+#X restore 286 458 graph;
+#X text 47 23 Using slop~ to make a slew limiter;
 #X floatatom 166 236 5 0 1000 0 - - -;
 #X obj 166 260 t f b;
 #X obj 198 288 samplerate~;
 #X obj 166 289 /;
 #X obj 62 327 slop~ 1e+09 0 0 0 0;
 #X obj 62 106 osc~ 100;
-#X text 386 288 See the HTML documentation (link on main page of this
+#X text 373 294 See the HTML documentation (link on main page of this
 patch) for details.;
-#X text 385 205 Here the maximum slope of the 100-Hz. sinusoid is 200pi
+#X text 372 211 Here the maximum slope of the 100-Hz. sinusoid is 200pi
 \, about 628.3. Setting upward or downward slew limits below that will
 replace the waveform with straight line segments on the way up and/or
 down.;
 #X text 162 147 max downward slope;
 #X text 214 235 max upward slope;
-#X text 387 56 The slew limiter is a filter whose cutoff frequency
+#X text 374 62 The slew limiter is a filter whose cutoff frequency
 is infinite (so that the output folows teh input exactly) unless the
 input varies from the previous output by more than the highest slope
 we allow (the slew limit) times the sample period (i.e. \, the maximum
@@ -492,27 +487,27 @@ variation allowed over the space of a sample). This limit is therefore
 in units of amplitude per sample. The number boxes specify amplitude
 change per second \, which we divide by the sample rate to convert
 to the units needed by slop~.;
+#X text 114 378 <= start metronome to graph output;
 #X connect 0 0 1 0;
 #X connect 1 0 3 0;
 #X connect 1 1 2 0;
 #X connect 2 0 3 1;
-#X connect 3 0 14 2;
-#X connect 4 0 7 0;
+#X connect 3 0 13 2;
+#X connect 4 0 6 0;
 #X connect 5 0 4 0;
-#X connect 10 0 11 0;
-#X connect 11 0 13 0;
-#X connect 11 1 12 0;
-#X connect 12 0 13 1;
-#X connect 13 0 14 4;
-#X connect 14 0 7 0;
-#X connect 15 0 14 0;
-#X restore 665 192 pd slew-limiter;
-#X text 518 6 <- open HTML documentation in web browser;
-#X text 725 599 updated for Pd version 0.50.;
-#X text 114 369 <- start metronome to graph output;
-#X text 530 22 (pd/doc/8.topics/slop-tilde.htm);
-#N canvas 204 69 843 697 peak-meter 0;
-#X floatatom 189 252 5 0 50 0 - #0-decay-speed-init -;
+#X connect 9 0 10 0;
+#X connect 10 0 12 0;
+#X connect 10 1 11 0;
+#X connect 11 0 12 1;
+#X connect 12 0 13 4;
+#X connect 13 0 6 0;
+#X connect 14 0 13 0;
+#X restore 706 229 pd slew-limiter;
+#X text 70 513 updated for Pd version 0.50.;
+#X text 115 382 <- start metronome to graph output;
+#X text 573 38 (pd/doc/8.topics/slop-tilde.htm);
+#N canvas 430 45 855 693 peak-meter 0;
+#X floatatom 215 247 5 0 50 0 - #0-decay-speed-init -;
 #N canvas 423 189 450 300 generate-test 0;
 #X obj 84 121 osc~ 440;
 #X msg 124 86 -0.25;
@@ -545,45 +540,43 @@ to the units needed by slop~.;
 #X connect 11 0 13 0;
 #X connect 13 0 14 0;
 #X connect 15 0 12 0;
-#X restore 63 115 pd generate-test;
-#X text 42 7 Envelope follower for use in peak metering;
-#X text 391 433 See the HTML documentation (link on main page of this
-patch) for more details.;
-#X obj 193 41 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X restore 137 105 pd generate-test;
+#X text 46 7 Envelope follower for use in peak metering;
+#X text 411 523 See the HTML documentation (link on main page of this
+patch) for more details., f 58;
+#X obj 319 58 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 193 61 metro 500;
-#X obj 193 86 s \$0-meter-testpulse;
-#X obj 189 277 / 10;
-#X text 232 249 decay speed (10ths of a Hz.), f 16;
-#X obj 104 147 out1~;
-#X floatatom 121 54 5 1 100 0 pulse-length #0-pulse-length_set #0-pulse-length
+#X obj 319 78 metro 500;
+#X obj 319 103 s \$0-meter-testpulse;
+#X obj 215 272 / 10;
+#X text 261 244 decay speed (10ths of a Hz.), f 16;
+#X obj 153 140 out1~;
+#X floatatom 132 62 5 1 100 0 pulse-length #0-pulse-length_set #0-pulse-length
 ;
-#X obj 19 354 env~ 1024;
-#X obj 63 484 - 88;
-#X obj 23 457 moses 1;
-#X msg 23 482 -100;
-#X obj 24 520 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
-#X obj 110 280 abs~;
-#X obj 123 383 metro 22;
-#X obj 123 331 loadbang;
-#X msg 123 356 1;
-#X obj 111 406 snapshot~;
-#X obj 111 431 rmstodb;
-#X obj 152 485 - 88;
-#X obj 112 458 moses 1;
-#X msg 112 483 -100;
-#X obj 113 521 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
-#X obj 111 306 slop~ 0 0 0 0 1e+09;
-#X text 218 37 <- turn on test pulse;
-#X text 178 163 <- raise "lvl" to hear;
-#X text 398 273 The output is sampled using a snapshot~ object. Both
+#X obj 35 354 env~ 1024;
+#X obj 81 492 - 88;
+#X obj 35 462 moses 1;
+#X msg 35 492 -100;
+#X obj 36 530 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
+#X obj 137 274 abs~;
+#X obj 149 383 metro 22;
+#X obj 149 331 loadbang;
+#X msg 149 356 1;
+#X obj 137 406 snapshot~;
+#X obj 137 431 rmstodb;
+#X obj 183 492 - 88;
+#X obj 137 462 moses 1;
+#X msg 137 492 -100;
+#X obj 138 530 vu 15 120 empty empty -1 -8 0 10 -66577 -1 0 0;
+#X obj 137 301 slop~ 0 0 0 0 1e+09;
+#X text 410 376 The output is sampled using a snapshot~ object. Both
 envelope followers are converted to uits useful for the IEM VU meter
 (+12 dB tops \, but zero mapped to -100 so that the bottom "LED" turns
-off when the signal hits 0 (100-normed \, Pd-style) dB.;
-#X text 398 368 When the pulse is very short (1 msec \, for instance)
+off when the signal hits 0 (100-normed \, Pd-style) dB., f 58;
+#X text 411 461 When the pulse is very short (1 msec \, for instance)
 the RMS meter acts badly but the slop~-driven one still shows the peak.
-;
-#X text 401 102 A slew limiter can be used as a fast-rising envelope
+, f 58;
+#X text 411 210 A slew limiter can be used as a fast-rising envelope
 follower \, useful for example in peak metering. In this example a
 short burst of sound is metered using both the "env" follower (which
 measures an average over a time window) and a fast-rising envelope
@@ -591,7 +584,9 @@ follower cosisting of an abs~ object (to rectify the signal) followed
 by a slop~ object set to rise quickly (1e9 asymptotic rise speed \,
 0 up-slew needed to engage it) and with controllable decay (asymptotic
 downward speed controlled by a number box). There is no linear region
-at all so the linear cutoff frequency has no effect.;
+at all so the linear cutoff frequency has no effect., f 58;
+#X text 343 54 <= turn on test pulse;
+#X text 227 157 <= raise "lvl" to hear;
 #X connect 0 0 7 0;
 #X connect 1 0 9 0;
 #X connect 1 0 11 0;
@@ -615,47 +610,48 @@ at all so the linear cutoff frequency has no effect.;
 #X connect 23 1 22 0;
 #X connect 24 0 25 0;
 #X connect 26 0 20 0;
-#X restore 665 217 pd peak-meter;
-#X text 118 114 set state (previously stored output);
-#N canvas 467 212 848 759 jitter-remover 0;
-#X floatatom 114 148 5 0 100 0 - - -;
-#X obj 89 406 metro 500;
-#X obj 89 380 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X restore 706 254 pd peak-meter;
+#X text 112 125 set state (previously stored output);
+#N canvas 467 45 865 595 jitter-remover 0;
+#X floatatom 126 194 5 0 100 0 - - -;
+#X obj 89 334 metro 500;
+#X obj 89 308 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X text 114 378 <- start metronome to graph output;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-jitter-graph 1000 float 2;
 #X coords 0 1 1000 -1 500 140 1 0 0;
-#X restore 81 530 graph;
-#X obj 64 52 osc~ 100;
-#X obj 63 437 tabwrite~ \$0-jitter-graph;
-#X obj 64 83 clip~ -0.3 0.3;
-#X obj 182 57 osc~ 1000;
-#X obj 182 82 *~ 0.03;
-#X obj 65 118 +~;
-#X obj 62 327 slop~ 0 0 1e+09 0 1e+09;
-#X obj 114 172 / 1000;
-#X text 163 147 jitter range \, 0 to 0.1;
-#X text 42 7 jitter remover;
-#X text 387 56 If you have a noisy sensor \, one approach to smoothing
+#X restore 295 399 graph;
+#X obj 63 70 osc~ 100;
+#X obj 63 365 tabwrite~ \$0-jitter-graph;
+#X obj 63 101 clip~ -0.3 0.3;
+#X obj 180 85 osc~ 1000;
+#X obj 180 110 *~ 0.03;
+#X obj 63 146 +~;
+#X obj 63 255 slop~ 0 0 1e+09 0 1e+09;
+#X obj 126 218 / 1000;
+#X text 175 193 jitter range \, 0 to 0.1;
+#X text 61 27 jitter remover;
+#X text 373 87 If you have a noisy sensor \, one approach to smoothing
 it is to set slop~ u pto only react to motion past a certain window.
 The linear frequeny cutoff is set to zero so that the output only changes
 when the input strays by more than the maximum upward or downward slew.
 ;
-#X text 386 147 Set the jitter range to zero to see the original signal
+#X text 372 178 Set the jitter range to zero to see the original signal
 and raise it to see smoothing.;
-#X connect 0 0 12 0;
-#X connect 1 0 6 0;
+#X text 114 306 <= start metronome to graph output;
+#X connect 0 0 11 0;
+#X connect 1 0 5 0;
 #X connect 2 0 1 0;
-#X connect 5 0 7 0;
-#X connect 7 0 10 0;
-#X connect 8 0 9 0;
-#X connect 9 0 10 1;
-#X connect 10 0 11 0;
-#X connect 11 0 6 0;
-#X connect 12 0 11 2;
-#X connect 12 0 11 4;
-#X restore 665 272 pd jitter-remover;
+#X connect 4 0 6 0;
+#X connect 6 0 9 0;
+#X connect 7 0 8 0;
+#X connect 8 0 9 1;
+#X connect 9 0 10 0;
+#X connect 10 0 5 0;
+#X connect 11 0 10 2;
+#X connect 11 0 10 4;
+#X restore 706 309 pd jitter-remover;
+#X text 511 21 <= open HTML documentation in web browser;
 #X connect 0 0 12 0;
 #X connect 2 0 0 0;
 #X connect 4 0 3 0;
