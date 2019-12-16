@@ -125,7 +125,7 @@ struct _instanceinter
     LARGE_INTEGER i_inittime;
     double i_freq;
 #endif
-#if PDTHREADS && PDINSTANCE
+#if PDTHREADS
     pthread_mutex_t i_mutex;
 #endif
 };
@@ -1551,14 +1551,12 @@ void s_inter_newpdinstance(void)
 {
     pd_this->pd_inter = getbytes(sizeof(*pd_this->pd_inter));
 #if PDTHREADS
-#if PDINSTANCE
     {
         pthread_mutexattr_t attr;
         pthread_mutexattr_init(&attr);
         pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
         pthread_mutex_init(&pd_this->pd_inter->i_mutex, &attr);
     }
-#endif
     pd_this->pd_islocked = 0;
 #endif
 #ifdef _WIN32
@@ -1585,13 +1583,9 @@ void s_inter_freepdinstance(void)
     s_inter_free(pd_this->pd_inter);
 }
 
-#if PDTHREADS
-#ifdef PDINSTANCE
+#if PDTHREADS && defined(PDINSTANCE)
 static pthread_rwlock_t sys_rwlock = PTHREAD_RWLOCK_INITIALIZER;
-#else /* PDINSTANCE */
-static pthread_mutex_t sys_mutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER;
-#endif /* PDINSTANCE */
-#endif /* PDTHREADS */
+#endif
 
 #if PDTHREADS
 
@@ -1626,12 +1620,10 @@ first.  The "pd_this"  variable can be written and read thread-safely as it
 is defined as per-thread storage. */
 void sys_lock(void)
 {
-#ifdef PDINSTANCE
     pthread_mutex_lock(&pd_this->pd_inter->i_mutex);
+#ifdef PDINSTANCE
     pthread_rwlock_rdlock(&sys_rwlock);
     pd_this->pd_islocked = 1;
-#else
-    pthread_mutex_lock(&sys_mutex);
 #endif
 }
 
@@ -1640,10 +1632,8 @@ void sys_unlock(void)
 #ifdef PDINSTANCE
     pd_this->pd_islocked = 0;
     pthread_rwlock_unlock(&sys_rwlock);
-    pthread_mutex_unlock(&pd_this->pd_inter->i_mutex);
-#else
-    pthread_mutex_unlock(&sys_mutex);
 #endif
+    pthread_mutex_unlock(&pd_this->pd_inter->i_mutex);
 }
 
 int sys_trylock(void)
@@ -1662,7 +1652,7 @@ int sys_trylock(void)
     }
     else return (ret);
 #else
-    return pthread_mutex_trylock(&sys_mutex);
+    return pthread_mutex_trylock(&pd_this->pd_inter->i_mutex);
 #endif
 }
 
