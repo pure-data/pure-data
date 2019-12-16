@@ -121,8 +121,8 @@ static t_pd *garray_arraytemplatecanvas;  /* written at setup w/ global lock */
 static const char garray_arraytemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
 #X obj 43 31 struct float-array array z float float style\n\
-float linewidth float color;\n\
-#X obj 43 70 plot z color linewidth 0 0 1 style;\n\
+float linewidth float color float v;\n\
+#X obj 43 70 plot -v v z color linewidth 0 0 1 style;\n\
 ";
 static const char garray_floattemplatefile[] = "\
 canvas 0 0 458 153 10;\n\
@@ -325,7 +325,7 @@ t_garray *graph_array(t_glist *gl, t_symbol *s, t_symbol *templateargsym,
         style, 1);
     template_setfloat(template, gensym("linewidth"), x->x_scalar->sc_vec,
         ((style == PLOTSTYLE_POINTS) ? 2 : 1), 1);
-
+    template_setfloat(template, gensym("v"), x->x_scalar->sc_vec, 1, 1);
            /* bashily unbind #A -- this would create garbage if #A were
            multiply bound but we believe in this context it's at most
            bound to whichever textobj or array was created most recently */
@@ -1191,6 +1191,26 @@ static void garray_edit(t_garray *x, t_floatarg f)
     x->x_edit = (int)f;
 }
 
+static void garray_vis_msg(t_garray *x, t_floatarg f)
+{
+    int viswas, vis = f != 0;
+    t_template *scalartemplate;
+    if (!(scalartemplate = template_findbyname(x->x_scalar->sc_template)))
+    {
+        error("array: no template of type %s",
+            x->x_scalar->sc_template->s_name);
+        return;
+    }
+    viswas = template_getfloat(
+        scalartemplate, gensym("v"), x->x_scalar->sc_vec, 1);
+    if (vis != viswas)
+    {
+        template_setfloat(scalartemplate, gensym("v"),
+            x->x_scalar->sc_vec, vis, 0);
+        garray_redraw(x);
+    }
+}
+
 static void garray_print(t_garray *x)
 {
     t_array *array = garray_getarray(x);
@@ -1227,6 +1247,8 @@ void g_array_setup(void)
     class_addmethod(garray_class, (t_method)garray_zoom, gensym("zoom"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_edit, gensym("edit"),
+        A_FLOAT, 0);
+    class_addmethod(garray_class, (t_method)garray_vis_msg, gensym("vis"),
         A_FLOAT, 0);
     class_addmethod(garray_class, (t_method)garray_print, gensym("print"),
         A_NULL);

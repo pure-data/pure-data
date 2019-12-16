@@ -1,4 +1,4 @@
-#N canvas 288 82 910 618 12;
+#N canvas 288 82 910 642 12;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array array99 5 float 1;
 #A 0 0.32 0.499999 -0.406667 -0.753333 0.00666714;
@@ -42,9 +42,18 @@ dialog. Note that information about size and ranges is saved \, but
 ticks and labels are lost between Pd sessions. The contents of the
 array may be saved as part of the patch or discarded., f 46;
 #X text 510 118 This is set in the "properties" dialog.;
-#X text 60 528 enable/disable mouse editing:;
-#X obj 37 528 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X text 283 529 enable/disable mouse editing:, f 30;
+#X obj 285 551 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X msg 37 550 \; array98 edit \$1 \; array99 edit \$1;
+#X msg 285 575 \; array98 edit \$1 \; array99 edit \$1;
 #X text 654 493 last updated for release 0.51;
+#X text 37 526 show/hide arrays:;
+#X obj 162 550 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 162 570 \; array99 vis \$1;
+#X obj 40 550 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 40 570 \; array98 vis \$1;
 #X connect 21 0 22 0;
+#X connect 25 0 26 0;
+#X connect 27 0 28 0;
