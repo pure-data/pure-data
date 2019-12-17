@@ -48,7 +48,7 @@ Except as otherwise noted, all files in the Pd distribution are
 
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see LICENSE.txt included in the Pd distribution.
-(Note that Tcl/Tk, expr, and some other files are copyrighted separately).
+(Note that Tcl/Tk and some other files are copyrighted separately).
 
 ## Acknowledgements
 
