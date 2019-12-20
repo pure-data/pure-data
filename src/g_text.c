@@ -879,7 +879,7 @@ static void gatom_displace(t_gobj *z, t_glist *glist,
     t_gatom *x = (t_gatom*)z;
     text_displace(z, glist, dx, dy);
     sys_vgui(".x%lx.c move %lx.l %d %d\n", glist_getcanvas(glist),
-        x, dx, dy);
+        x, dx * glist->gl_zoom, dy * glist->gl_zoom);
 }
 
 static void gatom_vis(t_gobj *z, t_glist *glist, int vis)
