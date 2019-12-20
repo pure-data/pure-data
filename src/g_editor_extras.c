@@ -246,7 +246,8 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
 
     int _x; /* dummy variable */
     gobj_getrect(o2g(obj), x, &_x, &_x, &_x, &posY);
-    posY += yoffset * x->gl_zoom;
+    posY /= x->gl_zoom;
+    posY += yoffset;
 
         /* if the object is a [trigger], we just insert new outlets */
     if(s_trigger == obj->te_g.g_pd->c_name)
@@ -284,7 +285,7 @@ static int triggerize_fanout(t_glist*x, t_object*obj)
             {
                 if((obj == t.tr_ob) && nout == t.tr_outno)
                 {
-                    posX = t.tr_lx1 - (IOMIDDLE - xoffset) * t.tr_x->gl_zoom;
+                    posX = (t.tr_lx1 / t.tr_x->gl_zoom) - (IOMIDDLE - xoffset);
                     break;
                 }
             }
@@ -371,16 +372,20 @@ static int triggerize_line(t_glist*x, t_triggerize_return*tr)
 
                 /* get real x-position of the outlet */
             gobj_getrect(src, x, &posLeft, &_x, &posRight, &_x);
+            posLeft /= x->gl_zoom;
+            posRight /= x->gl_zoom;
             nio = obj_noutlets(obj1);
-            posSource = posLeft + (posRight - posLeft - IOWIDTH * x->gl_zoom) * src_out / ((nio==1)?1.:(nio-1.));
+            posSource = posLeft + (posRight - posLeft - IOWIDTH) * src_out / ((nio==1)?1.:(nio-1.));
 
                 /* get real x-position of the inlet */
             gobj_getrect(dst, x, &posLeft, &_x, &posRight, &_x);
+            posLeft /= x->gl_zoom;
+            posRight /= x->gl_zoom;
             nio = obj_ninlets(obj2);
-            posSink = posLeft + (posRight - posLeft - IOWIDTH * x->gl_zoom) * dst_in / ((nio==1)?1.:(nio-1.));
+            posSink = posLeft + (posRight - posLeft - IOWIDTH) * dst_in / ((nio==1)?1.:(nio-1.));
 
-            posx=(posSource + posSink)*0.5;
-            posy=(obj1->te_ypix+obj2->te_ypix)>>1;
+            posx = (posSource + posSink) * 0.5;
+            posy = (obj1->te_ypix + obj2->te_ypix) >> 1;
         }
     }
 
