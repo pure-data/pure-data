@@ -1087,12 +1087,12 @@ badarg:
     /* convenience routine giving a stdarg interface to typedmess().  Only
     ten args supported; it seems unlikely anyone will need more since
     longer messages are likely to be programmatically generated anyway. */
-void pd_vmess(t_pd *x, t_symbol *sel, char *fmt, ...)
+void pd_vmess(t_pd *x, t_symbol *sel, const char *fmt, ...)
 {
     va_list ap;
     t_atom arg[10], *at = arg;
     int nargs = 0;
-    char *fp = fmt;
+    const char *fp = fmt;
 
     va_start(ap, fmt);
     while (1)

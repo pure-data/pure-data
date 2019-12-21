@@ -389,7 +389,7 @@ void sys_set_priority(int mode)
 
 /* ------------------ receiving incoming messages over sockets ------------- */
 
-void sys_sockerror(char *s)
+void sys_sockerror(const char *s)
 {
     char buf[MAXPDSTRING];
     int err = socket_errno();
@@ -712,7 +712,7 @@ int sys_havegui(void)
     return (pd_this->pd_inter->i_havegui);
 }
 
-void sys_vgui(char *fmt, ...)
+void sys_vgui(const char *fmt, ...)
 {
     int msglen, bytesleft, headwas, nwrote;
     va_list ap;
@@ -770,7 +770,7 @@ void sys_vgui(char *fmt, ...)
     pd_this->pd_inter->i_bytessincelastping += msglen;
 }
 
-void sys_gui(char *s)
+void sys_gui(const char *s)
 {
     sys_vgui("%s", s);
 }
