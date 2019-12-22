@@ -1,30 +1,29 @@
-#N canvas 107 43 678 678 12;
-#X obj 48 10 block~;
-#X text 112 11 (and switch~) - block size and on/off control for DSP
+#N canvas 411 23 535 672 12;
+#X obj 36 21 block~;
+#X text 100 22 (and switch~) - block size and on/off control for DSP
 ;
-#X text 44 40 The block~ and switch~ objects set the block size \,
+#X text 46 57 The block~ and switch~ objects set the block size \,
 overlap \, and up/down-sampling ratio for the window. (The overlap
-and resampling ratio are relative to the super-patch.);
-#X text 45 230 You may have at most one block~/switch~ object in any
-window.;
-#X text 45 176 A switch~ with no arguments does not reblock audio computation
+and resampling ratio are relative to the super-patch.), f 61;
+#X text 46 243 You may have at most one block~/switch~ object in any
+window., f 61;
+#X text 46 188 A switch~ with no arguments does not reblock audio computation
 -- in other words \, block size and sample rate are as in the parent
-patch.;
-#X text 46 531 see also:;
-#X obj 134 531 fft~;
-#X text 44 567 ... and the control.blocksize and oversampling audio
-example patches.;
-#X text 194 459 <--- example usage in subpatch;
-#X text 43 92 Switch~ \, in addition \, allows you to switch DSP on
+patch., f 61;
+#X text 81 571 see also:;
+#X obj 153 571 fft~;
+#X text 198 572 ... and the control.blocksize and oversampling audio
+example patches., f 35;
+#X text 46 109 Switch~ \, in addition \, allows you to switch DSP on
 and off for the window. All subwindows are also switched. (If a subwindow
 of a switched window is also switched \, both switches must be on for
 the subwindow's audio DSP to run. Pd's global DSP must also be on.)
-;
+, f 61;
 #N canvas 372 22 695 381 block-example 0;
 #X obj 258 238 bang~;
 #X obj 258 264 t b b;
 #X obj 258 290 timer;
-#X floatatom 258 319 5 0 0 0 - - -, f 5;
+#X floatatom 258 319 5 0 0 0 - - -;
 #X obj 54 30 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0 1
 ;
 #X msg 78 53 set 4096 1 1;
@@ -58,21 +57,18 @@ the subwindow's audio DSP to run. Pd's global DSP must also be on.)
 #X connect 7 0 10 0;
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
-#X restore 41 457 pd block-example;
-#X text 44 269 Pd's default block size is 64 samples. The inlet~ and
+#X restore 43 440 pd block-example;
+#X text 46 268 Pd's default block size is 64 samples. The inlet~ and
 outlet~ objects reblock signals to adjust for differences between parent
 and subpatch \, but only power-of-two adjustments are possible. So
 for "normal" audio computations \, all blocks should also be power-of-two
 in size. HOWEVER \, if you have no inlet~ or outlet~ you may specify
 any other block size. This is intended for later use in video processing.
-;
-#X text 45 395 Switch~ takes a "bang" message that causes one block
+, f 61;
+#X text 47 378 Switch~ takes a "bang" message that causes one block
 of DSP to be computed. This might be useful for pre-computing waveforms
-or window functions \, or also for video processing.;
-#X text 214 484 <-- BUG!! block~/switch~ and dac~/adc~ are incompatible
-;
-#X text 395 628 updated for Pd version 0.43;
-#X text 214 505 <-- weird 'bang' feature lets you single-step DSP;
+or window functions \, or also for video processing., f 61;
+#X text 69 626 updated for Pd version 0.43;
 #N canvas 112 205 599 297 block-interactions 0;
 #X text 32 61 Dac~ and adc~ don't work correctly if reblocked \, nor
 if a parent window is reblocked \, even if the window containing the
@@ -87,8 +83,8 @@ than they are \, there might be weirdness.;
 may be switched with impunity \, but not catch~.;
 #X text 32 11 INTERACTIONS BETWEEN BLOCK~/SWITCH~ AND OTHER OBJECTS
 IN PD;
-#X restore 40 482 pd block-interactions;
-#N canvas 0 22 581 315 block-interactions 0;
+#X restore 42 475 pd block-interactions;
+#N canvas 551 180 581 315 block-interactions 0;
 #X text 32 11 You can use the switch~ object to single-step dsp in
 a subpatch. This might be useful for block operations that don't want
 to be synced to the sample clock: loading a window function in a table
@@ -107,4 +103,9 @@ to be synced to the sample clock: loading a window function in a table
 #X connect 1 0 2 0;
 #X connect 3 0 2 0;
 #X connect 3 0 5 0;
-#X restore 40 505 pd block-interactions;
+#X restore 42 518 pd block-interactions;
+#X text 164 440 <= example usage in subpatch;
+#X text 199 518 <= weird 'bang' feature lets you single-step DSP,
+f 39;
+#X text 198 477 <= BUG! block~/switch~ and dac~/adc~ are incompatible
+, f 39;

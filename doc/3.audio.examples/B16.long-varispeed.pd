@@ -1,108 +1,107 @@
-#N canvas 332 70 817 861 12;
-#X obj 399 526 metro 100;
-#X obj 212 472 phasor~;
-#X obj 399 556 snapshot~;
-#X text 561 824 updated for Pd version 0.42;
-#X obj 23 557 output~;
-#X obj 23 461 phasor~;
-#X floatatom 23 329 5 -100 1000 0 - - -;
-#X obj 23 518 tabread4~ \$0-tab;
-#X msg 290 329 0.5;
-#X msg 326 329 0.01;
-#X obj 398 455 loadbang;
-#X msg 399 478 1;
-#X obj 344 635 +;
-#X obj 144 680 tabread4~ \$0-tab;
-#X obj 375 634 f;
-#X obj 312 612 t f f;
-#X obj 145 712 output~;
-#X floatatom 455 667 8 0 0 0 - - -;
-#X obj 344 670 t f b;
-#X obj 377 699 f;
-#X obj 344 699 -;
-#X floatatom 457 612 8 0 0 0 - - -;
-#X obj 326 726 -;
-#X obj 399 507 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+#N canvas 476 27 927 940 12;
+#X obj 505 561 metro 100;
+#X obj 238 488 phasor~;
+#X obj 505 591 snapshot~;
+#X text 665 883 updated for Pd version 0.42;
+#X obj 18 576 output~;
+#X obj 38 477 phasor~;
+#X floatatom 38 345 5 -100 1000 0 - - -;
+#X obj 37 534 tabread4~ \$0-tab;
+#X msg 368 345 0.5;
+#X msg 404 345 0.01;
+#X obj 505 474 loadbang;
+#X msg 505 500 1;
+#X obj 418 681 +;
+#X obj 238 746 tabread4~ \$0-tab;
+#X obj 476 681 f;
+#X obj 386 658 t f f;
+#X obj 219 786 output~;
+#X floatatom 487 715 8 0 0 0 - - -;
+#X obj 418 716 t f b;
+#X obj 450 745 f;
+#X obj 418 745 -;
+#X floatatom 568 650 8 0 0 0 - - -;
+#X obj 400 772 -;
+#X obj 505 536 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
 1;
-#X obj 212 498 -~ 0.5;
-#X obj 290 811 + 0.5;
-#X obj 22 490 *~ 1e+06;
-#X floatatom 326 753 8 0 0 0 - - -;
-#X obj 530 519 samplerate~;
-#X obj 484 546 /;
-#X obj 484 519 t f b;
-#X obj 451 589 +;
-#X obj 295 787 / 10000;
-#X obj 212 523 *~ 10000;
-#X obj 484 570 * 10000;
-#X obj 532 155 samplerate~;
-#X obj 532 179 / 2;
-#X obj 521 93 loadbang;
-#X obj 521 230 tabwrite~ \$0-tab;
-#X obj 532 203 osc~;
-#X obj 521 134 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+#X obj 238 514 -~ 0.5;
+#X obj 400 861 + 0.5;
+#X obj 37 506 *~ 1e+06;
+#X floatatom 400 802 8 0 0 0 - - -;
+#X obj 618 570 samplerate~;
+#X obj 586 569 /;
+#X obj 586 544 t f b;
+#X obj 568 624 +;
+#X obj 400 833 / 10000;
+#X obj 238 539 *~ 10000;
+#X obj 586 595 * 10000;
+#X obj 626 173 samplerate~;
+#X obj 626 197 / 2;
+#X obj 615 111 loadbang;
+#X obj 615 248 tabwrite~ \$0-tab;
+#X obj 626 221 osc~;
+#X obj 615 152 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
 -1 -1;
-#X msg 545 116 \; pd dsp 1;
-#X obj 520 258 table \$0-tab 1e+06;
-#X text 488 61 and will take about 20 seconds to fill.;
-#X text 488 45 *** The table is now 1 million points \,;
-#X obj 23 433 / 1e+06;
-#X text 61 328 playback speed \, samples/sec;
-#X text 89 460 naive way: just;
-#X text 89 475 run a phasor;
-#X text 88 491 into tabread4~;
-#X text 454 680 new onset is phase plus old onset;
-#X obj 341 357 * 1e+06;
-#X text 458 626 extrapolated phase of next sample;
-#X text 409 700 new onset minus old onset;
-#X text 389 726 back up phasor output by amount the onset advanced
+#X msg 639 134 \; pd dsp 1;
+#X obj 614 286 table \$0-tab 1e+06;
+#X text 532 70 and will take about 20 seconds to fill.;
+#X text 532 54 *** The table is now 1 million points \,;
+#X obj 38 449 / 1e+06;
+#X text 86 344 playback speed \, samples/sec;
+#X text 104 476 naive way: just;
+#X text 104 491 run a phasor;
+#X text 103 507 into tabread4~;
+#X text 549 714 new onset is phase plus old onset;
+#X obj 404 373 * 1e+06;
+#X text 631 652 extrapolated phase of next sample;
+#X text 482 746 new onset minus old onset;
+#X text 470 780 back up phasor output by amount the onset advanced
 ;
-#X text 387 739 (approximately zero but not exactly because of;
-#X text 389 753 truncation error!);
-#X obj 341 383 t b f;
-#X text 400 357 convert to samples;
-#X text 385 384 set both last-onset and previous-onset;
-#X text 385 407 ... and also reset phasor.;
-#X text 354 791 convert phase back to range 0-1;
-#X text 215 548 convert phase to;
-#X text 215 562 range +/-5000;
-#X obj 212 435 / 10000;
-#X text 40 410 cycles/sec;
-#X text 30 400 convert to;
-#X text 216 412 cycles/sec;
-#X text 206 402 convert to;
-#X text 469 472 in order to change onset to reflect it;
-#X text 469 456 Each 100 msec \, poll phase of phasor~;
-#X text 24 29 Here is how to use the tabread~ "onset" input to allow
+#X text 468 793 (approximately zero but not exactly because of;
+#X text 470 807 truncation error!);
+#X obj 404 399 t b f;
+#X text 463 373 convert to samples;
+#X text 448 400 set both last-onset and previous-onset;
+#X text 448 423 ... and also reset phasor.;
+#X text 461 834 convert phase back to range 0-1;
+#X obj 238 451 / 10000;
+#X text 45 425 cycles/sec;
+#X text 45 413 convert to;
+#X text 296 451 cycles/sec;
+#X text 240 427 convert to;
+#X text 572 489 in order to change onset to reflect it;
+#X text 572 473 Each 100 msec \, poll phase of phasor~;
+#X text 44 55 Here is how to use the tabread~ "onset" input to allow
 clean varispeed playback from a long table. At left \, a phasor~ is
 naively rescaled to the size of the table. At right \, the phasor~
 gets only a 10000-point range about a moving "onset". Ten times per
 second \, we poll the phasor~ phase \, sum its value into the onset
-\, and back up the phase of the phasor~ correspondingly.;
-#X text 22 143 The tricky bits are \, first \, that we need to poll
+\, and back up the phase of the phasor~ correspondingly., f 64;
+#X text 44 149 The tricky bits are \, first \, that we need to poll
 the phasor~ phase one sample into the future (so we add the per-sample
 increment into the snapshot~ result). Second \, we can't just reset
 the phasor~ to a fixed point - instead \, we measure how much the onset
 has actually increased (which has truncation error from summing in
 the phase snapshot) \, and subtract that increase from the phase \,
 giving a value that differs from zero by the truncation error but reflects
-the true phase we should reset to for continuity.;
-#X text 24 287 The metronome rate is arbitrary but should be fast enough
-that the phasor~ never has time to wrap.;
-#X text 518 539 extrapolate snapshot of phase by one;
-#X text 517 552 sample to sync with next block;
-#X text 41 617 BAD;
-#X text 160 770 GOOD;
-#X text 195 9 VARIABLE SPEED PLAYBACK FROM LONG TABLES;
-#X msg 340 408 0;
-#X text 369 328 <- reset phase. 0.5 causes trouble for the "bad" way.
+the true phase we should reset to for continuity., f 64;
+#X text 44 280 The metronome rate is arbitrary but should be fast enough
+that the phasor~ never has time to wrap., f 64;
+#X text 36 636 BAD;
+#X text 234 844 GOOD;
+#X text 81 22 VARIABLE SPEED PLAYBACK FROM LONG TABLES;
+#X msg 386 431 0;
+#X text 447 344 <= reset phase. 0.5 causes trouble for the "bad" way.
 ;
+#X text 124 574 convert phase to range +/- 5000, f 16;
+#X text 634 535 extrapolate snapshot of phase by one sample to sync
+with next block, f 34;
 #X connect 0 0 2 0;
 #X connect 1 0 24 0;
 #X connect 2 0 31 0;
 #X connect 5 0 26 0;
 #X connect 6 0 45 0;
-#X connect 6 0 64 0;
+#X connect 6 0 62 0;
 #X connect 7 0 4 0;
 #X connect 7 0 4 1;
 #X connect 8 0 5 1;
@@ -126,11 +125,11 @@ that the phasor~ never has time to wrap.;
 #X connect 19 0 20 1;
 #X connect 20 0 22 1;
 #X connect 22 0 27 0;
-#X connect 22 0 32 0;
 #X connect 23 0 0 0;
 #X connect 24 0 33 0;
 #X connect 25 0 1 1;
 #X connect 26 0 7 0;
+#X connect 27 0 32 0;
 #X connect 28 0 29 1;
 #X connect 29 0 34 0;
 #X connect 30 0 29 0;
@@ -150,9 +149,9 @@ that the phasor~ never has time to wrap.;
 #X connect 40 0 38 0;
 #X connect 45 0 5 0;
 #X connect 51 0 57 0;
-#X connect 57 0 79 0;
+#X connect 57 0 75 0;
 #X connect 57 1 19 1;
 #X connect 57 1 12 1;
-#X connect 64 0 1 0;
-#X connect 64 0 30 0;
-#X connect 79 0 15 0;
+#X connect 62 0 1 0;
+#X connect 62 0 30 0;
+#X connect 75 0 15 0;

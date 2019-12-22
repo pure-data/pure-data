@@ -1,42 +1,42 @@
-#N canvas 1 51 666 539 12;
-#X obj 265 266 sig~;
-#X text 22 259 test signal;
-#X text 108 407 amp in (db);
-#X text 100 210 test frequency;
-#X text 254 210 center frequency;
-#X text 382 250 q;
-#X floatatom 130 234 5 0 0 0 - - -, f 5;
-#X floatatom 265 237 5 0 0 0 - - -, f 5;
-#X obj 130 259 osc~;
-#X floatatom 361 269 5 0 0 0 - - -, f 5;
-#X obj 130 357 env~ 8192;
-#X obj 227 377 env~ 8192;
-#X floatatom 129 384 5 0 0 0 - - -, f 5;
-#X floatatom 227 406 5 0 0 0 - - -, f 5;
-#X obj 80 13 vcf~;
-#X text 135 13 -- voltage-controlled bandpass filter;
-#X text 34 461 see also:;
-#X obj 123 460 bp~;
-#X obj 228 330 vcf~ 1;
-#X text 298 322 optional argument to initialize q;
-#X obj 351 380 env~ 8192;
-#X floatatom 351 407 5 0 0 0 - - -, f 5;
-#X text 11 43 vcf~ is a resonant band-pass and low-pass filter that
+#N canvas 628 79 614 539 12;
+#X obj 278 276 sig~;
+#X text 55 275 test signal;
+#X text 125 415 amp in (db);
+#X text 124 218 test frequency;
+#X text 254 218 center frequency;
+#X text 369 275 q;
+#X floatatom 147 242 5 0 0 0 - - -;
+#X floatatom 278 245 5 0 0 0 - - -;
+#X obj 147 276 osc~;
+#X floatatom 325 276 5 0 0 0 - - -;
+#X obj 147 365 env~ 8192;
+#X obj 245 385 env~ 8192;
+#X floatatom 146 392 5 0 0 0 - - -;
+#X floatatom 245 414 5 0 0 0 - - -;
+#X obj 97 21 vcf~;
+#X text 152 21 -- voltage-controlled bandpass filter;
+#X text 76 484 see also:;
+#X obj 154 483 bp~;
+#X obj 245 338 vcf~ 1, f 10;
+#X text 327 338 optional argument to initialize q;
+#X obj 340 388 env~ 8192;
+#X floatatom 340 415 5 0 0 0 - - -;
+#X text 42 54 vcf~ is a resonant band-pass and low-pass filter that
 takes an audio signal to set center frequency \, which may thus change
 continuously in time. The "Q" or filter sharpness is still only set
 by messages. More expensive but more powerful than the bp~ bandpass
-filter.;
-#X msg 544 67 \; pd dsp 0;
-#X msg 544 28 \; pd dsp 1;
-#X text 419 509 updated for Pd version 0.46;
-#X text 9 129 vcf~ is implemented as a one-pole complex filter with
+filter., f 63;
+#X msg 437 255 \; pd dsp 0;
+#X msg 437 216 \; pd dsp 1;
+#X text 349 504 updated for Pd version 0.46;
+#X text 42 138 vcf~ is implemented as a one-pole complex filter with
 outlets for the real and imaginary value. These may be used as bandpass
 and lowpass filter outputs \, or combined to allow other possibilities.
-;
-#X text 224 445 (bandpass);
-#X text 356 450 (lowpass);
-#X text 224 428 real output;
-#X text 345 431 imaginary output;
+, f 63;
+#X text 242 453 (bandpass);
+#X text 349 458 (lowpass);
+#X text 242 436 real output;
+#X text 338 439 imaginary output;
 #X connect 0 0 18 1;
 #X connect 6 0 8 0;
 #X connect 7 0 0 0;

@@ -317,11 +317,7 @@ static void sigthrow_set(t_sigthrow *x, t_symbol *s)
             x->x_whereto = 0;
         }
     }
-    else
-    {
-        pd_error(x, "throw~ %s: no matching catch", x->x_sym->s_name);
-        x->x_whereto = 0;
-    }
+    else x->x_whereto = 0;  /* no match: now no longer considered an error */
 }
 
 static void sigthrow_dsp(t_sigthrow *x, t_signal **sp)

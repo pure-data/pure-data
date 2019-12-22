@@ -12,6 +12,7 @@ linked in.  The configure script can be used to select which one.
 */
 
 /* ------------------ initialization and cleanup -------------------------- */
+
 void mayer_init( void);
 void mayer_term( void);
 
@@ -134,6 +135,7 @@ static void sigfft_setup(void)
 {
     sigfft_class = class_new(gensym("fft~"), sigfft_new, 0,
         sizeof(t_sigfft), 0, 0);
+    class_setfreefn(sigfft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigfft_class, t_sigfft, x_f);
     class_addmethod(sigfft_class, (t_method)sigfft_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -141,6 +143,7 @@ static void sigfft_setup(void)
 
     sigifft_class = class_new(gensym("ifft~"), sigifft_new, 0,
         sizeof(t_sigfft), 0, 0);
+    class_setfreefn(sigifft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigifft_class, t_sigfft, x_f);
     class_addmethod(sigifft_class, (t_method)sigifft_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -200,6 +203,7 @@ static void sigrfft_setup(void)
 {
     sigrfft_class = class_new(gensym("rfft~"), sigrfft_new, 0,
         sizeof(t_sigrfft), 0, 0);
+    class_setfreefn(sigrfft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigrfft_class, t_sigrfft, x_f);
     class_addmethod(sigrfft_class, (t_method)sigrfft_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -262,6 +266,7 @@ static void sigrifft_setup(void)
 {
     sigrifft_class = class_new(gensym("rifft~"), sigrifft_new, 0,
         sizeof(t_sigrifft), 0, 0);
+    class_setfreefn(sigrifft_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigrifft_class, t_sigrifft, x_f);
     class_addmethod(sigrifft_class, (t_method)sigrifft_dsp,
         gensym("dsp"), A_CANT, 0);
@@ -352,6 +357,7 @@ static void sigframp_setup(void)
 {
     sigframp_class = class_new(gensym("framp~"), sigframp_new, 0,
         sizeof(t_sigframp), 0, 0);
+    class_setfreefn(sigframp_class, fftclass_cleanup);
     CLASS_MAINSIGNALIN(sigframp_class, t_sigframp, x_f);
     class_addmethod(sigframp_class, (t_method)sigframp_dsp,
         gensym("dsp"), A_CANT, 0);

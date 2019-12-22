@@ -1,37 +1,37 @@
-#N canvas 14 8 809 354 12;
-#X floatatom 19 86 0 0 0;
-#X msg 29 115 bang;
-#X floatatom 49 138 0 0 0;
-#X floatatom 188 138 0 0 0;
-#X obj 19 254 print;
-#X msg 86 138 symbol cat;
-#X obj 82 9 pack;
-#X text 28 319 See also;
-#X obj 106 321 unpack;
-#X text 14 34 The pack object takes a series of inputs and outputs
+#N canvas 432 225 700 400 12;
+#X floatatom 23 99 0 0 0 0 - - -;
+#X msg 44 128 bang;
+#X floatatom 75 161 0 0 0 0 - - -;
+#X floatatom 194 161 0 0 0 0 - - -;
+#X obj 44 277 print;
+#X msg 107 161 symbol cat;
+#X obj 54 11 pack;
+#X obj 126 337 unpack;
+#X text 45 51 The pack object takes a series of inputs and outputs
 a concatenated list. The number of creation arguments determines the
-number of inlets.;
-#X text 60 85 <-- number in first inlet generates output;
-#X text 70 114 <-- bang generates output without resetting first value
-;
-#X text 226 135 <-- numbers and symbols in the corresponding inlets
-change the values without causing output (see "trigger" for a way to
-change this behavior.);
-#X text 250 187 <-- as with any Pd object \, you can send a list whose
-atoms are automatically distributed to the corresponding inlets.;
-#X msg 175 190 1 2 dog;
-#X obj 167 321 trigger;
-#X obj 19 227 pack 100 0 s 0;
-#X text 121 9 - combine several atoms into one message;
-#X text 155 226 <-- creation arguments specify the number of inlets
+number of inlets., f 71;
+#X msg 188 213 1 2 dog;
+#X obj 187 337 trigger;
+#X obj 44 250 pack 100 0 s 0;
+#X text 93 11 - combine several atoms into one message;
+#X text 446 341 updated for Pd version 0.34;
+#X text 47 335 See also:;
+#X text 159 249 <= creation arguments specify the number of inlets
 and their types: a number make a numeric outlet (and initializes the
 value). A symbol argument can start with "s" \, "f" \, or "p" to specify
 a "symbol" \, "float" (number) \, or pointer outlet.;
-#X text 538 331 updated for Pd version 0.34;
-#X connect 0 0 16 0;
-#X connect 1 0 16 0;
-#X connect 2 0 16 1;
-#X connect 3 0 16 3;
-#X connect 5 0 16 2;
-#X connect 14 0 16 0;
-#X connect 16 0 4 0;
+#X text 255 210 <= as with any Pd object \, you can send a list whose
+atoms are automatically distributed to the corresponding inlets.;
+#X text 232 158 <= numbers and symbols in the corresponding inlets
+change the values without causing output (see "trigger" for a way to
+change this behavior.);
+#X text 85 127 <= bang generates output without resetting first value
+;
+#X text 57 98 <= number in first inlet generates output;
+#X connect 0 0 11 0;
+#X connect 1 0 11 0;
+#X connect 2 0 11 1;
+#X connect 3 0 11 3;
+#X connect 5 0 11 2;
+#X connect 9 0 11 0;
+#X connect 11 0 4 0;

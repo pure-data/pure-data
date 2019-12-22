@@ -193,7 +193,9 @@ fi
 # extract included Wish app
 if [ $included_wish == true ] ; then
     tar xzf stuff/wish-shell.tgz
-    mv "Wish Shell.app" Wish.app
+    if [ -e "Wish Shell.app" ] ; then
+        mv "Wish Shell.app" Wish.app
+    fi
     WISH=Wish.app
 
 # build Wish or use the system Wish

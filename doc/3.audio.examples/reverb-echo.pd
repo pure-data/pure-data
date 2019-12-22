@@ -1,15 +1,15 @@
-#N canvas 118 224 600 492 12;
-#X obj 66 95 inlet~;
-#X obj 130 96 inlet~;
-#X obj 68 216 outlet~;
-#X obj 141 215 outlet~;
-#X obj 67 143 +~;
-#X obj 140 141 -~;
-#X obj 141 165 delwrite~ \$1 \$2;
-#X obj 140 191 delread~ \$1 \$2;
-#X text 48 14 This appears as an abstraction in patch G08.reverb.pd
+#N canvas 556 43 508 402 12;
+#X obj 138 73 inlet~;
+#X obj 229 74 inlet~;
+#X obj 138 202 outlet~;
+#X obj 212 202 outlet~;
+#X obj 138 121 +~;
+#X obj 211 119 -~;
+#X obj 211 143 delwrite~ \$1 \$2;
+#X obj 212 172 delread~ \$1 \$2;
+#X text 45 20 This appears as an abstraction in patch G08.reverb.pd
 ;
-#X text 27 267 This network makes two copies of the (stereo) input
+#X text 34 256 This network makes two copies of the (stereo) input
 \, one in phase \, the other out of phase and delayed. The total frequency
 response is flat. The total signal power out is exactly twice that
 of the input \, no matter what frequencies the input contains. This

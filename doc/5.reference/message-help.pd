@@ -1,54 +1,53 @@
-#N canvas 70 162 648 546 12;
-#X msg 67 10 message boxes;
-#X text 34 33 Message boxes hold one or more message. Anytime the message
+#N canvas 551 141 527 649 12;
+#X msg 56 14 message boxes;
+#X text 38 42 Message boxes hold one or more message. Anytime the message
 box receives any message at all \, the messages in the box are all
 sent to their destinations.;
-#X obj 120 295 print;
-#X msg 120 235 60 64;
-#X msg 120 265 pitch \$1 \, velocity \$2;
-#X msg 49 378 123 \; my-receiver-name 858 \; another-receiver -45;
-#X text 34 81 Clicking on a message also sends it \, so you can use
+#X obj 128 318 print;
+#X msg 128 258 60 64;
+#X msg 128 288 pitch \$1 \, velocity \$2;
+#X msg 73 417 123 \; my-receiver-name 858 \; another-receiver -45;
+#X text 38 90 Clicking on a message also sends it \, so you can use
 message boxes for push buttons. For instance \, click here while watching
 the printout window:;
-#X msg 122 139 walk the dog;
-#X obj 122 168 print;
-#X text 239 139 <--- message;
-#X text 223 165 <--- object (different border);
-#X text 14 197 You can separate multiple messages by commas. Also \,
-you can use "\$1" \, "\$2" \, etc. to make variable messages:;
-#X text 14 323 Finally \, if you separate messages by a semicolon instead
+#X msg 126 149 walk the dog;
+#X obj 126 178 print;
+#X text 34 213 You can separate multiple messages by commas. Also \,
+you can use "\$1" \, "\$2" \, etc. to make variable messages:, f 56
+;
+#X text 45 348 Finally \, if you separate messages by a semicolon instead
 of a comma \, the following message(s) are re-routed to named objects
 such as "receives":;
-#X obj 49 433 print;
-#X obj 253 378 receive my-receiver-name;
-#X floatatom 253 402 0 0 0 0 - - -;
-#X floatatom 252 449 0 0 0 0 - - -;
-#X obj 252 425 receive another-receiver;
-#X text 396 519 updated for Pd version 0.39;
-#X text 19 471 You can send messages to message boxes to change their
-content - open the subpatch below for details:;
-#N canvas 0 0 718 466 changing-messages 0;
-#X msg 55 380 dog bird monkey \; bird;
-#X msg 58 69 set dog;
-#X msg 75 143 add monkey;
-#X msg 77 188 add2 bird;
-#X msg 72 117 set;
-#X text 92 29 Messages to change contents of messages boxes:;
-#X msg 66 92 set 1 2 3 skidoo;
-#X text 236 120 "set" with no arguments clears it;
-#X text 240 75 "set" to set contents (numbers and/or symbols);
-#X text 180 146 "add" to add numbers and/or symbols \, plus a terminating
-semicolon;
-#X text 168 190 "add2" to add contents without the terminating semicolon
+#X obj 73 472 print;
+#X obj 277 417 receive my-receiver-name;
+#X floatatom 277 441 0 0 0 0 - - -;
+#X floatatom 276 488 0 0 0 0 - - -;
+#X obj 276 464 receive another-receiver;
+#X text 296 597 updated for Pd version 0.39;
+#X text 53 527 You can send messages to message boxes to change their
+content - open the subpatch below for details:, f 41;
+#N canvas 614 207 611 440 changing-messages 0;
+#X msg 49 373 dog bird monkey \; bird;
+#X msg 49 60 set dog;
+#X msg 84 146 add monkey;
+#X msg 96 181 add2 bird;
+#X msg 74 114 set;
+#X text 58 19 Messages to change contents of messages boxes:;
+#X msg 60 85 set 1 2 3 skidoo;
+#X text 102 115 "set" with no arguments clears it;
+#X text 185 68 "set" to set contents (numbers and/or symbols);
+#X text 167 140 "add" to add numbers and/or symbols \, plus a terminating
+semicolon, f 36;
+#X text 175 183 "add2" to add contents without the terminating semicolon
 ;
-#X msg 83 222 addcomma;
-#X msg 82 248 addsemi;
-#X msg 78 305 adddollsym 4-foo;
-#X msg 84 275 adddollar 3;
-#X text 174 225 add a comma;
-#X text 173 244 add a semicolon;
-#X text 199 275 add a dollar-sign argument;
-#X text 235 305 add a dollar-sign-plus-symbol argument;
+#X msg 112 211 addcomma;
+#X msg 122 238 addsemi;
+#X msg 146 293 adddollsym 4-foo;
+#X msg 134 265 adddollar 3;
+#X text 180 211 add a comma;
+#X text 183 237 add a semicolon;
+#X text 226 265 add a dollar-sign argument;
+#X text 270 292 add a dollar-sign-plus-symbol argument;
 #X connect 1 0 0 0;
 #X connect 2 0 0 0;
 #X connect 3 0 0 0;
@@ -58,10 +57,12 @@ semicolon;
 #X connect 12 0 0 0;
 #X connect 13 0 0 0;
 #X connect 14 0 0 0;
-#X restore 153 512 pd changing-messages;
+#X restore 67 584 pd changing-messages;
+#X text 177 178 <= object (different border);
+#X text 222 148 <= message;
 #X connect 3 0 4 0;
 #X connect 4 0 2 0;
-#X connect 5 0 13 0;
+#X connect 5 0 11 0;
 #X connect 7 0 8 0;
-#X connect 14 0 15 0;
-#X connect 17 0 16 0;
+#X connect 12 0 13 0;
+#X connect 15 0 14 0;

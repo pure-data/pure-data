@@ -1,13 +1,14 @@
-#N canvas 118 56 581 250 12;
-#X obj 49 182 print;
-#X text 107 183 Output is in the printout window.;
-#X obj 66 15 bang;
-#X text 112 14 - SEND "BANG" MESSAGE;
-#X msg 61 105 walk the cat;
-#X msg 49 79 45;
-#X obj 49 152 bang;
-#X text 336 233 updated for Pd version 0.27;
-#X text 23 42 Outputs a "bang" message whatever it receives.;
-#X connect 4 0 6 0;
-#X connect 5 0 6 0;
-#X connect 6 0 0 0;
+#N canvas 710 189 442 279 12;
+#X obj 62 184 print;
+#X text 119 185 Output is in the printout window.;
+#X obj 74 24 bang;
+#X msg 74 113 walk the cat;
+#X msg 62 81 45;
+#X obj 62 154 bang;
+#X text 179 238 updated for Pd version 0.27;
+#X text 192 94 Outputs a "bang" message for whatever message it receives.
+, f 25;
+#X text 120 23 - send "bang" message;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 0 0;

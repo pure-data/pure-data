@@ -1,59 +1,59 @@
-#N canvas 12 43 1181 529 12;
-#X msg 582 27 rewind;
-#X obj 582 421 print done;
-#X text 745 185 read a file;
-#X text 801 214 write one;
-#X text 97 472 see also:;
-#X obj 521 370 textfile;
-#X msg 584 188 read textfile.txt;
-#X obj 176 473 qlist;
-#X obj 145 20 textfile;
-#X text 236 20 read and write text files;
-#X text 34 92 The textfile object reads and writes text files to and
+#N canvas 217 94 1015 528 12;
+#X msg 435 30 rewind;
+#X obj 507 414 print done;
+#X text 635 190 read a file;
+#X text 687 218 write one;
+#X text 174 429 see also:;
+#X obj 454 383 textfile;
+#X msg 506 191 read textfile.txt;
+#X obj 253 430 qlist;
+#X obj 65 34 textfile;
+#X text 59 95 The textfile object reads and writes text files to and
 from memory. You can read a file and output sequential lines as lists
 \, or collect lines and write them out. You can use this object to
-generate "models" for Gem \, for instance.;
-#X text 665 28 go to beginning;
-#X msg 582 54 bang;
-#X text 665 53 output one line as a list;
-#X msg 584 216 write /tmp/textfile.txt;
-#X msg 584 243 write /tmp/textfile2.txt cr;
-#X text 593 264 write a file \, terminating lines only with carriage
+generate "models" for Gem \, for instance., f 38;
+#X text 488 29 go to beginning;
+#X msg 447 57 bang;
+#X text 482 56 output one line as a list;
+#X msg 517 219 write /tmp/textfile.txt;
+#X msg 527 246 write /tmp/textfile2.txt cr;
+#X text 536 267 write a file \, terminating lines only with carriage
 return (omitting semicolons.) You can read files this way too \, in
 which case carriage returns are mapped to semicolons.;
-#X obj 521 446 print list;
-#X msg 583 317 read textfile.txt cr;
-#X msg 582 82 clear;
-#X text 737 83 empty the object;
-#X text 737 111 add a message;
-#X text 521 472 this outlet gets the lines in sequence.;
-#X text 35 246 You can also use this object simply for storing heterogeneous
-sequences of lists.;
-#X text 610 383 This outlet gets a bang when you hit the end of the
-sequence.;
-#X msg 582 162 set 2 4 6 8;
-#X text 740 163 clear and then add one message;
-#X msg 582 109 add cis boom bah;
-#X msg 582 136 add2 bang;
-#X text 734 136 add an unterminated message;
-#X text 31 160 To record textual messages and save them to a file \,
+#X obj 454 459 print list;
+#X msg 509 321 read textfile.txt cr;
+#X msg 455 83 clear;
+#X text 499 82 empty the object;
+#X text 586 112 add a message;
+#X text 535 452 this outlet gets the lines in sequence., f 20;
+#X text 56 335 You can also use this object simply for storing heterogeneous
+sequences of lists., f 37;
+#X text 590 406 This outlet gets a bang when you hit the end of the
+sequence., f 33;
+#X msg 495 165 set 2 4 6 8;
+#X text 580 165 clear and then add one message;
+#X msg 466 112 add cis boom bah;
+#X msg 485 139 add2 bang;
+#X text 563 139 add an unterminated message;
+#X text 59 210 To record textual messages and save them to a file \,
 first send "clear" to empty the qlist and "add" to add messages (terminated
 with semicolons.) The message \, "add2" adds a list of atoms without
 finishing with a semicolon in case you want to make variable-length
-messages.;
-#X msg 582 344 print;
-#X text 636 347 debugging printout;
-#X text 901 500 updated for Pd version 0.33;
+messages., f 38;
+#X msg 515 347 print;
+#X text 557 347 debugging printout;
+#X text 770 458 updated for Pd version 0.33;
+#X text 146 34 -- read and write text files;
 #X connect 0 0 5 0;
-#X connect 5 0 17 0;
+#X connect 5 0 16 0;
 #X connect 5 1 1 0;
 #X connect 6 0 5 0;
-#X connect 12 0 5 0;
+#X connect 11 0 5 0;
+#X connect 13 0 5 0;
 #X connect 14 0 5 0;
-#X connect 15 0 5 0;
+#X connect 17 0 5 0;
 #X connect 18 0 5 0;
-#X connect 19 0 5 0;
-#X connect 25 0 5 0;
+#X connect 24 0 5 0;
+#X connect 26 0 5 0;
 #X connect 27 0 5 0;
-#X connect 28 0 5 0;
-#X connect 31 0 5 0;
+#X connect 30 0 5 0;

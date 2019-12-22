@@ -210,9 +210,9 @@ proc pdtk_canvas_mouse {tkcanvas x y b f} {
     pdsend "$mytoplevel mouse [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
 }
 
-proc pdtk_canvas_mouseup {tkcanvas x y b} {
+proc pdtk_canvas_mouseup {tkcanvas x y b {f 0}} {
     set mytoplevel [winfo toplevel $tkcanvas]
-    pdsend "$mytoplevel mouseup [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b"
+    pdsend "$mytoplevel mouseup [$tkcanvas canvasx $x] [$tkcanvas canvasy $y] $b $f"
 }
 
 proc pdtk_canvas_rightclick {tkcanvas x y b} {
@@ -223,7 +223,7 @@ proc pdtk_canvas_rightclick {tkcanvas x y b} {
 # on X11, button 2 pastes from X11 clipboard, so simulate normal paste actions
 proc pdtk_canvas_clickpaste {tkcanvas x y b} {
     pdtk_canvas_mouse $tkcanvas $x $y $b 0
-    pdtk_canvas_mouseup $tkcanvas $x $y $b
+    pdtk_canvas_mouseup $tkcanvas $x $y $b 0
     if { [catch {set pdtk_pastebuffer [selection get]}] } {
         # no selection... do nothing
     } else {
@@ -285,6 +285,16 @@ proc ::pdtk_canvas::pdtk_canvas_popup {mytoplevel xcanvas ycanvas hasproperties 
     tk_popup .popup $xpopup $ypopup 0
 }
 
+if {[tk windowingsystem] eq "aqua" } {
+    # I don't know how to move the mouse on OSX, so skip it
+    proc ::pdtk_canvas::setmouse {tkcanvas x y} { }
+} else {
+    proc ::pdtk_canvas::setmouse {tkcanvas x y} {
+        # set the mouse to the given position
+        # (same coordinate system as reported by pdtk_canvas_motion)
+        event generate $tkcanvas <Motion> -warp 1 -x $x -y $y
+    }
+}
 
 #------------------------------------------------------------------------------#
 # procs for when file loading starts/finishes
