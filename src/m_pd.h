@@ -473,7 +473,7 @@ EXTERN t_class *class_new64(t_symbol *name, t_newmethod newmethod,
 
 EXTERN void class_free(t_class *c);
 
-#if PDINSTANCE
+#ifdef PDINSTANCE
 EXTERN t_class *class_getfirst(void);
 #endif
 
