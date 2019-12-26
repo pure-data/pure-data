@@ -897,6 +897,10 @@ EXTERN t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
 EXTERN t_canvas *pd_getcanvaslist(void);
 EXTERN int pd_getdspstate(void);
 
+/* x_text.c */
+EXTERN t_binbuf *text_getbufbyname(t_symbol *s); /* get binbuf from text obj */
+EXTERN void text_notifybyname(t_symbol *s);      /* notify it was modified */
+
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }
 #endif

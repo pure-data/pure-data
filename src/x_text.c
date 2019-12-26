@@ -2350,3 +2350,20 @@ void x_qlist_setup(void)
     class_addbang(textfile_class, textfile_bang);
 }
 
+/* public interface to get text buffers by name */
+
+t_binbuf *text_getbufbyname(t_symbol *s)
+{
+    t_text_define *y = (t_text_define *)pd_findbyclass(s, text_define_class);
+    if (y)
+        return (y->x_textbuf.b_binbuf);
+    else return (0);
+}
+
+    /* notify text object that binbuf was modified */
+void text_notifybyname(t_symbol *s)
+{
+    t_text_define *y = (t_text_define *)pd_findbyclass(s, text_define_class);
+    if (y)
+        text_define_notify(y);
+}
