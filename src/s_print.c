@@ -302,24 +302,8 @@ void bug(const char *fmt, ...)
     error("consistency check failed: %s", buf);
 }
 
-    /* this isn't worked out yet. */
-static const char *errobject;
-static const char *errstring;
-
-void sys_logerror(const char *object, const char *s)
-{
-    errobject = object;
-    errstring = s;
-}
-
-void sys_unixerror(const char *object)
-{
-    errobject = object;
-    errstring = strerror(errno);
-}
-
-void sys_ouch(void)
-{
-    if (*errobject) error("%s: %s", errobject, errstring);
-    else error("%s", errstring);
-}
+    /* don't use these.  They're included for binary compatibility with
+    old externs but never worked and now do nothing. */
+void sys_logerror(const char *object, const char *s) {}
+void sys_unixerror(const char *object) {}
+void sys_ouch(void) {}
