@@ -13,7 +13,7 @@
 #include <string.h>
 #include <limits.h>
 
-// should be large enough for all file headers
+// should be large enough for all file type min sizes
 #define SFHDRBUFSIZE 128
 
 // default max sample frames

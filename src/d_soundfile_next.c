@@ -1,4 +1,9 @@
-// http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/AU/AU.html
+/* Copyright (c) 1997-1999 Miller Puckette. Updated 2019 Dan Wilcox.
+* For information on usage and redistribution, and for a DISCLAIMER OF ALL
+* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+
+/* http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/AU/AU.html */
+
 #include "d_soundfile.h"
 
 #ifdef _LARGEFILE64_SOURCE

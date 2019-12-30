@@ -1,4 +1,9 @@
-// http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/AIFF.html
+/* Copyright (c) 1997-1999 Miller Puckette. Updated 2019 Dan Wilcox.
+* For information on usage and redistribution, and for a DISCLAIMER OF ALL
+* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+
+/* ref: http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/AIFF.html */
+
 #include "d_soundfile.h"
 
 #include <math.h>
@@ -10,11 +15,12 @@
 /* the AIFF header;  All AIFF files are big endian.  We assume the "COMM"
 chunk comes first which is usually the case but perhaps not always. */
 
-/* TODO: add support for 32 bit float in d_soundfile.c */
-
-/* TODO: add related AIFC support for uncompressed PCM compression types in the
+/*
+TODO: add support for 32 bit float in d_soundfile.c
+TODO: add related AIFC support for uncompressed PCM compression types in the
 COMM chunk: "NONE" (big endian int PCM), "sowt" (little endian int PCM),
-"fl32" (big endian 32 bit float) */
+"fl32" (big endian 32 bit float)
+*/
 
 typedef struct _datachunk
 {

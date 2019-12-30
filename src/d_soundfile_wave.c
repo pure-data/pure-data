@@ -1,4 +1,9 @@
-// http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+/* Copyright (c) 1997-1999 Miller Puckette. Updated 2019 Dan Wilcox.
+* For information on usage and redistribution, and for a DISCLAIMER OF ALL
+* WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
+
+/* ref: http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html */
+
 #include "d_soundfile.h"
 
 #ifdef _LARGEFILE64_SOURCE
@@ -7,6 +12,8 @@
 
 /* the WAVE header structure;  All Wave files are little endian.  We assume
 the "fmt" chunk comes first which is usually the case but perhaps not always. */
+
+/* TODO: handle extensible format PCM data */
 
 typedef struct _wave
 {
@@ -44,7 +51,6 @@ typedef struct _wavechunk           /* ... and the last two items */
 #define WAV_FORMAT_PCM   0x0001 /* 16 or 24 bit int */
 #define WAV_FORMAT_FLOAT 0x0003 /* 32 bit float */
 #define WAV_FORMAT_EXT   0xfffe /* extensible, format in fmt chunk subformat */
-// TODO: handle extensible format PCM data
 
 int soundfile_wave_headersize()
 {

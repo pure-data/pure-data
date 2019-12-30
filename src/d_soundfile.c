@@ -1,4 +1,4 @@
-/* Copyright (c) 1997-1999 Miller Puckette.
+/* Copyright (c) 1997-1999 Miller Puckette. Updated 2019 Dan Wilcox.
 * For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.  */
 
@@ -20,7 +20,6 @@ objects use Posix-like threads.  */
 #include <pthread.h>
 #include <errno.h>
 #include <math.h>
-#include <limits.h>
 
 /* Supported sample formats: linear PCM, 16 or 24 bit int, 32 bit float */
 
