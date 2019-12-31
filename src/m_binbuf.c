@@ -926,11 +926,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
     }
 
     if (!(f = sys_fopen(fbuf, "w")))
-    {
-        fprintf(stderr, "open: ");
-        sys_unixerror(fbuf);
         goto fail;
-    }
     for (ap = z->b_vec, indx = z->b_n; indx--; ap++)
     {
         int length;
@@ -942,10 +938,7 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         if (ep - bp < length)
         {
             if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
-            {
-                sys_unixerror(fbuf);
                 goto fail;
-            }
             bp = sbuf;
         }
         if ((ap->a_type == A_SEMI || ap->a_type == A_COMMA) &&
@@ -969,16 +962,10 @@ int binbuf_write(const t_binbuf *x, const char *filename, const char *dir, int c
         }
     }
     if (fwrite(sbuf, bp-sbuf, 1, f) < 1)
-    {
-        sys_unixerror(fbuf);
         goto fail;
-    }
 
     if (fflush(f) != 0)
-    {
-        sys_unixerror(fbuf);
         goto fail;
-    }
 
     if (y)
         binbuf_free(y);

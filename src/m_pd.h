@@ -540,10 +540,6 @@ EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
 EXTERN void pd_error(const void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
 EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
     ATTRIBUTE_FORMAT_PRINTF(3, 4);
-EXTERN void sys_logerror(const char *object, const char *s);
-EXTERN void sys_unixerror(const char *object);
-EXTERN void sys_ouch(void);
-
 
 /* ------------  system interface routines ------------------- */
 EXTERN int sys_isabsolutepath(const char *dir);
@@ -900,6 +896,10 @@ EXTERN t_symbol s_pointer, s_float, s_symbol, s_bang, s_list, s_anything,
 
 EXTERN t_canvas *pd_getcanvaslist(void);
 EXTERN int pd_getdspstate(void);
+
+/* x_text.c */
+EXTERN t_binbuf *text_getbufbyname(t_symbol *s); /* get binbuf from text obj */
+EXTERN void text_notifybyname(t_symbol *s);      /* notify it was modified */
 
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }

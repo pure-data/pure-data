@@ -16,6 +16,7 @@ file format as in the dialog window for data.
 #include "m_pd.h"
 #include "g_canvas.h"
 #include <string.h>
+#include <errno.h>
 
 /* object to assist in saving state by abstractions */
 static t_class *savestate_class;
@@ -797,7 +798,10 @@ static void canvas_savetofile(t_canvas *x, t_symbol *filename, t_symbol *dir,
     t_binbuf *b = binbuf_new();
     canvas_savetemplatesto(x, b, 1);
     canvas_saveto(x, b);
-    if (binbuf_write(b, filename->s_name, dir->s_name, 0)) sys_ouch();
+    errno = 0;
+    if (binbuf_write(b, filename->s_name, dir->s_name, 0))
+        post("%s/%s: %s", dir->s_name, filename->s_name,
+            (errno ? strerror(errno) : "write failed"));
     else
     {
             /* if not an abstraction, reset title bar and directory */
