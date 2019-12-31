@@ -428,7 +428,7 @@ typedef struct _soundfiler_writeargs
     int wa_bytespersample;            /* number of bytes per sample */
     int wa_bigendian;                 /* is sample data bigendian? */
     long wa_nframes;                  /* number of sample frames to write */
-    long wa_onsetframes;              /* number of bytes to sample data */
+    long wa_onsetframes;              /* sample frame onset when writing */
     int wa_normalize;                 /* normalize samples? */
 } t_soundfiler_writeargs;
 
@@ -2325,15 +2325,15 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     }
     if (soundfiler_writeargs_parse(x, &argc, &argv, &wa))
     {
-        pd_error(x,
-            "writesf~: usage: open [-bytes [234]] [-wave,-nextstep,-aiff] ...");
-        post("... [-big,-little] [-rate ####] filename");
+        pd_error(x, "usage: open [flags] filename...");
+        post("flags: -bytes <n> -wave -nextstep -aiff ...");
+        post("-big -little -rate <n>");
         return;
     }
     if (wa.wa_normalize || wa.wa_onsetframes || (wa.wa_nframes != SFMAXFRAMES))
-        pd_error(x, "normalize/onset/nframes argument to writesf~: ignored");
+        pd_error(x, "normalize/onset/nframes argument to writesf~ ignored");
     if (argc)
-        pd_error(x, "extra argument(s) to writesf~: ignored");
+        pd_error(x, "extra argument(s) to writesf~ ignored");
     pthread_mutex_lock(&x->x_mutex);
     while (x->x_requestcode != REQUEST_NOTHING)
     {
