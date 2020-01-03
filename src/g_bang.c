@@ -332,7 +332,7 @@ static void bng_bang2(t_bng *x) /*wird immer gesendet, wenn moeglich*/
     }
 }
 
-static void bng_dialog(t_bng *x, t_symbol *s, int argc, t_atom *argv)
+static void bng_dialog_noundo(t_bng *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int a = (int)atom_getfloatarg(0, argc, argv);
@@ -347,6 +347,38 @@ static void bng_dialog(t_bng *x, t_symbol *s, int argc, t_atom *argv)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+}
+
+static void bng_dialog(t_bng *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom undo[18];
+    t_symbol *srl[3];
+    iemgui_properties(&x->x_gui, srl);
+
+    SETFLOAT (undo+ 0, x->x_gui.x_w/IEMGUI_ZOOM(x));
+    SETFLOAT (undo+ 1, 0); // ignored
+    SETFLOAT (undo+ 2, x->x_flashtime_break);
+    SETFLOAT (undo+ 3, x->x_flashtime_hold);
+    SETFLOAT (undo+ 4, -1); // ignored
+    SETFLOAT (undo+ 5, x->x_gui.x_isa.x_loadinit);
+    SETFLOAT (undo+ 6, 1); // ignored
+    SETSYMBOL(undo+ 7, srl[0]); // srl
+    SETSYMBOL(undo+ 8, srl[1]); // srl
+    SETSYMBOL(undo+ 9, srl[2]); // srl
+    SETFLOAT (undo+10, x->x_gui.x_ldx); // ldx
+    SETFLOAT (undo+11, x->x_gui.x_ldy); // ldy
+    SETFLOAT (undo+12, x->x_gui.x_fsf.x_font_style); // f
+    SETFLOAT (undo+13, x->x_gui.x_fontsize); // fs
+#define SETCOLOR(a, col) do {char color[10]; snprintf(color, 9, "#%06x", 0xffffff & col); color[9] = 0; SETSYMBOL(a, gensym(color));} while(0)
+    SETCOLOR(undo+14, x->x_gui.x_bcol); // bcol
+    SETCOLOR(undo+15, x->x_gui.x_fcol); // fcol
+    SETCOLOR(undo+16, x->x_gui.x_lcol); // lcol
+    SETFLOAT(undo+17, -1); // ignored
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("_dialog"),
+                            18, undo,
+                            argc, argv);
+    bng_dialog_noundo(x, s, argc, argv);
 }
 
 static void bng_click(t_bng *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
@@ -537,6 +569,8 @@ void g_bang_setup(void)
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(bng_class, (t_method)bng_dialog,
         gensym("dialog"), A_GIMME, 0);
+    class_addmethod(bng_class, (t_method)bng_dialog_noundo,
+        gensym("_dialog"), A_GIMME, 0);
     class_addmethod(bng_class, (t_method)bng_loadbang,
         gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(bng_class, (t_method)bng_size,
