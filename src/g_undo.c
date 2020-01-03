@@ -15,8 +15,18 @@
 void canvas_undo_set_name(const char*name);
 
 /* --------- 12. internal object state --------------- */
+int glist_getindex(t_glist *x, t_gobj *y);
+static t_gobj *glist_nth(t_glist *x, int n)
+{
+    t_gobj *y;
+    int indx;
+    for (y = x->gl_list, indx = 0; y; y = y->g_next, indx++)
+        if (indx == n)
+            return (y);
+    return (0);
+}
 typedef struct _undo_object_state {
-    t_pd*u_obj;
+    int u_obj;
     t_symbol*u_symbol;
     t_binbuf*u_undo;
     t_binbuf*u_redo;
@@ -26,8 +36,10 @@ void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
                                     int undo_argc, t_atom*undo_argv,
                                     int redo_argc, t_atom*redo_argv)
 {
-    t_undo_object_state *buf = (t_undo_object_state*)getbytes(sizeof(t_undo_object_state));
-    buf->u_obj = x;
+    t_undo_object_state *buf;
+    int pos = glist_getindex(canvas, (t_gobj*)x);
+    buf = (t_undo_object_state*)getbytes(sizeof(t_undo_object_state));
+    buf->u_obj = pos;
     buf->u_symbol = s;
     buf->u_undo = binbuf_new();
     buf->u_redo = binbuf_new();
@@ -36,9 +48,10 @@ void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
     canvas_undo_add(canvas, UNDO_OBJECT_STATE, "state", buf);
 }
 
-int canvas_undo_objectstate(t_canvas *x, void *z, int action) {
+int canvas_undo_objectstate(t_canvas *cnv, void *z, int action) {
     t_undo_object_state *buf = z;
     t_binbuf*bbuf = buf->u_undo;
+    t_pd*x = (t_pd*)glist_nth(cnv, buf->u_obj);
     switch(action) {
     case UNDO_FREE:
         binbuf_free(buf->u_undo);
@@ -48,7 +61,8 @@ int canvas_undo_objectstate(t_canvas *x, void *z, int action) {
     case UNDO_REDO:
         bbuf = buf->u_redo;
     case UNDO_UNDO:
-        pd_typedmess(buf->u_obj, buf->u_symbol, binbuf_getnatom(bbuf), binbuf_getvec(bbuf));
+        if(x)
+            pd_typedmess(x, buf->u_symbol, binbuf_getnatom(bbuf), binbuf_getvec(bbuf));
         break;
     }
     return 1;
