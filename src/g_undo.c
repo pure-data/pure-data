@@ -14,6 +14,48 @@
 
 void canvas_undo_set_name(const char*name);
 
+/* --------- 12. internal object state --------------- */
+typedef struct _undo_object_state {
+    t_pd*u_obj;
+    t_symbol*u_symbol;
+    t_binbuf*u_undo;
+    t_binbuf*u_redo;
+} t_undo_object_state;
+
+void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
+                                    int undo_argc, t_atom*undo_argv,
+                                    int redo_argc, t_atom*redo_argv)
+{
+    t_undo_object_state *buf = (t_undo_object_state*)getbytes(sizeof(t_undo_object_state));
+    buf->u_obj = x;
+    buf->u_symbol = s;
+    buf->u_undo = binbuf_new();
+    buf->u_redo = binbuf_new();
+    binbuf_add(buf->u_undo, undo_argc, undo_argv);
+    binbuf_add(buf->u_redo, redo_argc, redo_argv);
+    canvas_undo_add(canvas, UNDO_OBJECT_STATE, "state", buf);
+}
+
+int canvas_undo_objectstate(t_canvas *x, void *z, int action) {
+    t_undo_object_state *buf = z;
+    t_binbuf*bbuf = buf->u_undo;
+    switch(action) {
+    case UNDO_FREE:
+        binbuf_free(buf->u_undo);
+        binbuf_free(buf->u_redo);
+        t_freebytes(buf, sizeof(*buf));
+        break;
+    case UNDO_REDO:
+        bbuf = buf->u_redo;
+    case UNDO_UNDO:
+        pd_typedmess(buf->u_obj, buf->u_symbol, binbuf_getnatom(bbuf), binbuf_getvec(bbuf));
+        break;
+    }
+    return 1;
+}
+
+
+/* --------------- */
 
 static void canvas_show_undomenu(t_canvas*x, const char* undo_action, const char* redo_action)
 {
@@ -150,6 +192,7 @@ static int canvas_undo_doit(t_canvas *x, t_undo_action *udo, int action, const c
     case UNDO_CREATE:       return canvas_undo_create(x, udo->data, action);       //create
     case UNDO_RECREATE:     return canvas_undo_recreate(x, udo->data, action);     //recreate
     case UNDO_FONT:         return canvas_undo_font(x, udo->data, action);         //font
+    case UNDO_OBJECT_STATE: return canvas_undo_objectstate(x, udo->data, action);  //font
             /* undo sequences are handled in canvas_undo_undo resp canvas_undo_redo */
     case UNDO_SEQUENCE_START: return 1;                                            //start undo sequence
     case UNDO_SEQUENCE_END: return 1;                                              //end undo sequence

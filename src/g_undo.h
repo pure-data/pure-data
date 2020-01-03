@@ -58,6 +58,7 @@ typedef enum
     UNDO_FONT,         /* 11: OK */
     UNDO_SEQUENCE_START, /* 12 start an atomic sequence of undo actions*/
     UNDO_SEQUENCE_END,   /* 13 end an atomic sequence of undo actions */
+    UNDO_OBJECT_STATE,  /* 14: internal object state: t_atom-list to send to the object */
 
     UNDO_LAST
 } t_undo_type;

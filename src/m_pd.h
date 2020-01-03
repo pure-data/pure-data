@@ -901,6 +901,16 @@ EXTERN int pd_getdspstate(void);
 EXTERN t_binbuf *text_getbufbyname(t_symbol *s); /* get binbuf from text obj */
 EXTERN void text_notifybyname(t_symbol *s);      /* notify it was modified */
 
+/* g_undo.c */
+/* store two message-sets to be sent to the object's <s> method for 'undo'ing
+ * resp. 'redo'ing the current state of an object.
+ * this creates an internal copy of the atom-lists (so they ought to be freed
+ * after calling this function)
+ */
+EXTERN void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
+                                    int undo_argc, t_atom*undo_argv,
+                                    int redo_argc, t_atom*redo_argv);
+
 #if defined(_LANGUAGE_C_PLUS_PLUS) || defined(__cplusplus)
 }
 #endif
