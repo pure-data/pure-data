@@ -21,6 +21,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef _MSC_VER
+# define snprintf _snprintf
+#endif
+
 /* --------------- bng     gui-bang ------------------------- */
 
 t_widgetbehavior bng_widgetbehavior;
