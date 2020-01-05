@@ -294,7 +294,7 @@ static void toggle_bang(t_toggle *x)
         pd_float(x->x_gui.x_snd->s_thing, x->x_on);
 }
 
-static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
+static void toggle_dialog_(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int a = (int)atom_getfloatarg(0, argc, argv);
@@ -313,6 +313,17 @@ static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+}
+static void toggle_dialog(t_toggle *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT (undo+2, x->x_nonzero);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("_dialog"),
+                            18, undo,
+                            argc, argv);
+    toggle_dialog_(x, s, argc, argv);
 }
 
 static void toggle_click(t_toggle *x, t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
@@ -489,6 +500,8 @@ void g_toggle_setup(void)
     class_addmethod(toggle_class, (t_method)toggle_click, gensym("click"),
                     A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(toggle_class, (t_method)toggle_dialog, gensym("dialog"),
+                    A_GIMME, 0);
+    class_addmethod(toggle_class, (t_method)toggle_dialog_, gensym("_dialog"),
                     A_GIMME, 0);
     class_addmethod(toggle_class, (t_method)toggle_loadbang,
         gensym("loadbang"), A_DEFFLOAT, 0);

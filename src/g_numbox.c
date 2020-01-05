@@ -496,7 +496,7 @@ static void my_numbox_bang(t_my_numbox *x)
         pd_float(x->x_gui.x_snd->s_thing, x->x_val);
 }
 
-static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
+static void my_numbox_dialog_(t_my_numbox *x, t_symbol *s, int argc,
     t_atom *argv)
 {
     t_symbol *srl[3];
@@ -529,6 +529,21 @@ static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc,
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+}
+static void my_numbox_dialog(t_my_numbox *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+0, x->x_numwidth);
+    SETFLOAT(undo+2, x->x_min);
+    SETFLOAT(undo+3, x->x_max);
+    SETFLOAT(undo+4, x->x_lin0_log1);
+    SETFLOAT(undo+6, x->x_log_height);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("_dialog"),
+                            18, undo,
+                            argc, argv);
+    my_numbox_dialog_(x, s, argc, argv);
 }
 
 static void my_numbox_motion(t_my_numbox *x, t_floatarg dx, t_floatarg dy)
@@ -877,6 +892,8 @@ void g_numbox_setup(void)
         gensym("motion"), A_FLOAT, A_FLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_dialog,
         gensym("dialog"), A_GIMME, 0);
+    class_addmethod(my_numbox_class, (t_method)my_numbox_dialog_,
+        gensym("_dialog"), A_GIMME, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_loadbang,
         gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(my_numbox_class, (t_method)my_numbox_set,

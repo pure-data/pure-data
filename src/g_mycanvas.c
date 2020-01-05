@@ -187,7 +187,7 @@ static void my_canvas_get_pos(t_my_canvas *x)
     }
 }
 
-static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv)
+static void my_canvas_dialog_(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int a = atom_getfloatarg(0, argc, argv);
@@ -208,6 +208,18 @@ static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv
     x->x_vis_h = h;
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_CONFIG);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
+}
+static void my_canvas_dialog(t_my_canvas *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT (undo+2, x->x_vis_w);
+    SETFLOAT (undo+3, x->x_vis_h);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("_dialog"),
+                            18, undo,
+                            argc, argv);
+    my_canvas_dialog_(x, s, argc, argv);
 }
 
 static void my_canvas_size(t_my_canvas *x, t_symbol *s, int ac, t_atom *av)
@@ -367,6 +379,8 @@ void g_mycanvas_setup(void)
     class_addcreator((t_newmethod)my_canvas_new, gensym("my_canvas"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_dialog,
         gensym("dialog"), A_GIMME, 0);
+    class_addmethod(my_canvas_class, (t_method)my_canvas_dialog_,
+        gensym("_dialog"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_size,
         gensym("size"), A_GIMME, 0);
     class_addmethod(my_canvas_class, (t_method)my_canvas_delta,

@@ -341,7 +341,7 @@ static void vslider_bang(t_vslider *x)
         pd_float(x->x_gui.x_snd->s_thing, out);
 }
 
-static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
+static void vslider_dialog_(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int w = (int)atom_getfloatarg(0, argc, argv);
@@ -366,6 +366,20 @@ static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
+}
+static void vslider_dialog(t_vslider *x, t_symbol *s, int argc, t_atom *argv)
+{
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+2, x->x_min);
+    SETFLOAT(undo+3, x->x_max);
+    SETFLOAT(undo+4, x->x_lin0_log1);
+    SETFLOAT(undo+17, x->x_steady);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("_dialog"),
+                            18, undo,
+                            argc, argv);
+    vslider_dialog_(x, s, argc, argv);
 }
 
 static void vslider_motion(t_vslider *x, t_floatarg dx, t_floatarg dy)
@@ -642,6 +656,8 @@ void g_vslider_setup(void)
         gensym("motion"), A_FLOAT, A_FLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_dialog,
         gensym("dialog"), A_GIMME, 0);
+    class_addmethod(vslider_class, (t_method)vslider_dialog_,
+        gensym("_dialog"), A_GIMME, 0);
     class_addmethod(vslider_class, (t_method)vslider_loadbang,
         gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(vslider_class, (t_method)vslider_set,
