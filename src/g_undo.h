@@ -38,6 +38,10 @@ Types of undo data:
 8  - canvas apply
 9  - create
 10 - recreate
+11 - change font
+12 - meta: start undo sequence (undo sequences are undone/redone atomically)
+13 - meta: end undo sequence
+14 - internal object state
 */
 
 #include "m_pd.h"
@@ -136,13 +140,13 @@ EXTERN void *canvas_undo_set_apply(t_canvas *x,
     int n);
 EXTERN int canvas_undo_apply(t_canvas *x, void *z, int action);
 
-/* --------- 7. arrange (currently unused) ---------- */
+/* --------- 7. arrange ---------- */
 
 EXTERN void *canvas_undo_set_arrange(t_canvas *x,
     t_gobj *obj, int newindex);
 EXTERN int canvas_undo_arrange(t_canvas *x, void *z, int action);
 
-/* --------- 8. canvas apply (currently unused) ----- */
+/* --------- 8. canvas apply ----- */
 
 EXTERN void *canvas_undo_set_canvas(t_canvas *x);
 EXTERN int canvas_undo_canvas_apply(t_canvas *x, void *z, int action);
@@ -158,7 +162,7 @@ EXTERN void *canvas_undo_set_recreate(t_canvas *x,
     t_gobj *y, int old_pos);
 EXTERN int canvas_undo_recreate(t_canvas *x, void *z, int action);
 
-/* --------- 11. font (currently unused) ------------ */
+/* --------- 11. font ------------ */
 
 EXTERN void *canvas_undo_set_font(t_canvas *x,
     int font, t_float realresize, int whichresize);
