@@ -541,13 +541,19 @@ static void vu_properties(t_gobj *z, t_glist *owner)
     gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
 }
 
-static void vu_dialog_(t_vu *x, t_symbol *s, int argc, t_atom *argv)
+static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int w = (int)atom_getfloatarg(0, argc, argv);
     int h = (int)atom_getfloatarg(1, argc, argv);
     int scale = (int)atom_getfloatarg(4, argc, argv);
     int sr_flags;
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+4, x->x_scale);
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
 
     srl[0] = gensym("empty");
     sr_flags = iemgui_dialog(&x->x_gui, srl, argc, argv);
@@ -562,17 +568,6 @@ static void vu_dialog_(t_vu *x, t_symbol *s, int argc, t_atom *argv)
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_IO + sr_flags);
     (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
     canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
-}
-static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
-{
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
-    SETFLOAT(undo+4, x->x_scale);
-
-    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("_dialog"),
-                            18, undo,
-                            argc, argv);
-    vu_dialog_(x, s, argc, argv);
 }
 
 static void vu_size(t_vu *x, t_symbol *s, int ac, t_atom *av)
@@ -750,8 +745,6 @@ void g_vumeter_setup(void)
         gensym("ft1"), A_FLOAT, 0);
     class_addmethod(vu_class, (t_method)vu_dialog,
         gensym("dialog"), A_GIMME, 0);
-    class_addmethod(vu_class, (t_method)vu_dialog_,
-        gensym("_dialog"), A_GIMME, 0);
     class_addmethod(vu_class, (t_method)vu_size,
         gensym("size"), A_GIMME, 0);
     class_addmethod(vu_class, (t_method)vu_scale,

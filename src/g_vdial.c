@@ -304,13 +304,21 @@ static void vradio_properties(t_gobj *z, t_glist *owner)
     gfxstub_new(&x->x_gui.x_obj.ob_pd, x, buf);
 }
 
-static void vradio_dialog_(t_vradio *x, t_symbol *s, int argc, t_atom *argv)
+static void vradio_dialog(t_vradio *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *srl[3];
     int a = (int)atom_getfloatarg(0, argc, argv);
     int chg = (int)atom_getfloatarg(4, argc, argv);
     int num = (int)atom_getfloatarg(6, argc, argv);
     int sr_flags;
+    t_atom undo[18];
+    iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+4, x->x_change);
+    SETFLOAT(undo+6, x->x_number);
+
+    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
+                            18, undo,
+                            argc, argv);
 
     if(chg != 0) chg = 1;
     x->x_change = chg;
@@ -335,18 +343,6 @@ static void vradio_dialog_(t_vradio *x, t_symbol *s, int argc, t_atom *argv)
         (*x->x_gui.x_draw)(x, x->x_gui.x_glist, IEM_GUI_DRAW_MODE_MOVE);
         canvas_fixlinesfor(x->x_gui.x_glist, (t_text*)x);
     }
-}
-static void vradio_dialog(t_vradio *x, t_symbol *s, int argc, t_atom *argv)
-{
-    t_atom undo[18];
-    iemgui_setdialogatoms(&x->x_gui, 18, undo);
-    SETFLOAT(undo+4, x->x_change);
-    SETFLOAT(undo+6, x->x_number);
-
-    pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("_dialog"),
-                            18, undo,
-                            argc, argv);
-    vradio_dialog_(x, s, argc, argv);
 }
 
 static void vradio_set(t_vradio *x, t_floatarg f)
@@ -689,8 +685,6 @@ void g_vradio_setup(void)
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(vradio_class, (t_method)vradio_dialog,
         gensym("dialog"), A_GIMME, 0);
-    class_addmethod(vradio_class, (t_method)vradio_dialog_,
-        gensym("_dialog"), A_GIMME, 0);
     class_addmethod(vradio_class, (t_method)vradio_loadbang,
         gensym("loadbang"), A_DEFFLOAT, 0);
     class_addmethod(vradio_class, (t_method)vradio_set,
@@ -740,8 +734,6 @@ void g_vradio_setup(void)
         gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(vradio_old_class, (t_method)vradio_dialog,
         gensym("dialog"), A_GIMME, 0);
-    class_addmethod(vradio_old_class, (t_method)vradio_dialog_,
-        gensym("_dialog"), A_GIMME, 0);
     class_addmethod(vradio_old_class, (t_method)vradio_loadbang,
         gensym("loadbang"), 0);
     class_addmethod(vradio_old_class, (t_method)vradio_set,
