@@ -1682,29 +1682,15 @@ int canvas_undo_font(t_canvas *x, void *z, int action)
     {
         t_canvas *x2 = canvas_getrootfor(x);
         int tmp_font = x2->gl_font;
-#if 0
-            /* skipping open font editor for now */
-        t_int properties = gfxstub_haveproperties((void *)x2);
-        if (properties)
-        {
-            char tagbuf[MAXPDSTRING];
-            sprintf(tagbuf, ".gfxstub%lx", (long unsigned int)properties);
-            gui_vmess("gui_font_dialog_change_size", "si",
-                tagbuf,
-                u_f->font);
-        }
-        else
-#else
-        if(1)
-#endif
-        {
-            int whichresize = u_f->which;
-            t_float realresize = 100./u_f->resize;
-            t_float realresx = 1, realresy = 1;
-            if (whichresize != 3) realresx = realresize;
-            if (whichresize != 2) realresy = realresize;
-            canvas_dofont(x2, u_f->font, realresx, realresy);
-        }
+
+        int whichresize = u_f->which;
+        t_float realresize = 1./u_f->resize;
+        t_float realresx = 1, realresy = 1;
+        if (whichresize != 3) realresx = realresize;
+        if (whichresize != 2) realresy = realresize;
+        canvas_dofont(x2, u_f->font, realresx, realresy);
+
+        u_f->resize = realresize;
         u_f->font = tmp_font;
     }
     else if (action == UNDO_FREE)
