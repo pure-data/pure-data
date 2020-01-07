@@ -32,6 +32,27 @@ typedef struct _undo_object_state {
     t_binbuf*u_redo;
 } t_undo_object_state;
 
+static int lists_are_equal(int c0, const t_atom*v0, int c1, const t_atom*v1)
+{
+    int i;
+    if(c0 != c1)
+        return 0;
+    for(i=0; i<c0; i++) {
+        if(v0->a_type != v1->a_type)
+            return 0;
+        switch(v0->a_type) {
+        case (A_FLOAT):
+            if (v0->a_w.w_float != v1->a_w.w_float) return 0;
+            break;
+        case (A_SYMBOL):
+            if (v0->a_w.w_symbol != v1->a_w.w_symbol) return 0;
+            break;
+        default:
+            return 0;
+        }
+    }
+    return 1;
+}
 void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
                                     int undo_argc, t_atom*undo_argv,
                                     int redo_argc, t_atom*redo_argv)
@@ -41,6 +62,8 @@ void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
     t_undo *udo = canvas_undo_get(canvas);
     if (udo && udo->u_doing)
         return;
+    if(lists_are_equal(undo_argc, undo_argv, redo_argc, redo_argv))
+        return;
 
     buf = (t_undo_object_state*)getbytes(sizeof(t_undo_object_state));
     buf->u_obj = pos;
@@ -49,6 +72,10 @@ void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
     buf->u_redo = binbuf_new();
     binbuf_add(buf->u_undo, undo_argc, undo_argv);
     binbuf_add(buf->u_redo, redo_argc, redo_argv);
+#if 0
+    startpost("UNDO:"); binbuf_print(buf->u_undo);
+    startpost("REDO:"); binbuf_print(buf->u_redo);
+#endif
     canvas_undo_add(canvas, UNDO_OBJECT_STATE, "state", buf);
 }
 
