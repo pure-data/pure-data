@@ -38,6 +38,10 @@ void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
 {
     t_undo_object_state *buf;
     int pos = glist_getindex(canvas, (t_gobj*)x);
+    t_undo *udo = canvas_undo_get(canvas);
+    if (udo && udo->u_doing)
+        return;
+
     buf = (t_undo_object_state*)getbytes(sizeof(t_undo_object_state));
     buf->u_obj = pos;
     buf->u_symbol = s;
