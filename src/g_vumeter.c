@@ -534,7 +534,7 @@ static void vu_properties(t_gobj *z, t_glist *owner)
             x->x_gui.x_h/IEMGUI_ZOOM(x), IEM_VU_STEPS*IEM_VU_MINSIZE,
             0,/*no_schedule*/
             x->x_scale, -1, -1, -1,/*no linlog, no init, no multi*/
-            "nosndno", srl[1]->s_name,/*no send*/
+            srl[0]->s_name, srl[1]->s_name,/*no send*/
             srl[2]->s_name, x->x_gui.x_ldx, x->x_gui.x_ldy,
             x->x_gui.x_fsf.x_font_style, x->x_gui.x_fontsize,
             0xffffff & x->x_gui.x_bcol, 0xffffff & x->x_gui.x_lcol);
@@ -681,6 +681,7 @@ static void *vu_new(t_symbol *s, int argc, t_atom *argv)
         w = (int)atom_getfloatarg(0, argc, argv);
         h = (int)atom_getfloatarg(1, argc, argv);
         iemgui_new_getnames(&x->x_gui, 1, argv);
+        x->x_gui.x_snd_unexpanded = x->x_gui.x_snd = gensym("nosndno"); /*no send*/
         ldx = (int)atom_getfloatarg(4, argc, argv);
         ldy = (int)atom_getfloatarg(5, argc, argv);
         iem_inttofstyle(&x->x_gui.x_fsf, atom_getfloatarg(6, argc, argv));
