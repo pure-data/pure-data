@@ -32,25 +32,29 @@ typedef struct _undo_object_state {
     t_binbuf*u_redo;
 } t_undo_object_state;
 
+static int atom_equal(const t_atom*v0, const t_atom*v1)
+{
+    if(v0->a_type != v1->a_type)
+        return 0;
+    switch(v0->a_type) {
+    case (A_FLOAT):
+        return (v0->a_w.w_float == v1->a_w.w_float);
+    case (A_SYMBOL):
+        return (v0->a_w.w_symbol == v1->a_w.w_symbol);
+    default:
+        break;
+    }
+    return 0;
+
+}
 static int lists_are_equal(int c0, const t_atom*v0, int c1, const t_atom*v1)
 {
     int i;
     if(c0 != c1)
         return 0;
-    for(i=0; i<c0; i++) {
-        if(v0->a_type != v1->a_type)
+    for(i=0; i<c0; i++)
+        if(!atom_equal(v0++, v1++))
             return 0;
-        switch(v0->a_type) {
-        case (A_FLOAT):
-            if (v0->a_w.w_float != v1->a_w.w_float) return 0;
-            break;
-        case (A_SYMBOL):
-            if (v0->a_w.w_symbol != v1->a_w.w_symbol) return 0;
-            break;
-        default:
-            return 0;
-        }
-    }
     return 1;
 }
 void pd_undo_set_objectstate(t_canvas*canvas, t_pd*x, t_symbol*s,
