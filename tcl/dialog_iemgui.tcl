@@ -392,9 +392,9 @@ proc ::dialog_iemgui::apply {mytoplevel} {
             [eval concat $$var_iemgui_gn_dy] \
             [eval concat $$var_iemgui_gn_f] \
             [eval concat $$var_iemgui_gn_fs] \
-            [eval concat $$var_iemgui_bcol] \
-            [eval concat $$var_iemgui_fcol] \
-            [eval concat $$var_iemgui_lcol] \
+            [string tolower [eval concat $$var_iemgui_bcol]] \
+            [string tolower [eval concat $$var_iemgui_fcol]] \
+            [string tolower [eval concat $$var_iemgui_lcol]] \
             [eval concat $$var_iemgui_steady]]
 }
 
