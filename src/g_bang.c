@@ -346,6 +346,7 @@ static void bng_dialog(t_bng *x, t_symbol *s, int argc, t_atom *argv)
 
     t_atom undo[18];
     iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT (undo+1, 0);
     SETFLOAT (undo+2, x->x_flashtime_break);
     SETFLOAT (undo+3, x->x_flashtime_hold);
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),

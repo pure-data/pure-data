@@ -550,7 +550,11 @@ static void vu_dialog(t_vu *x, t_symbol *s, int argc, t_atom *argv)
     int sr_flags;
     t_atom undo[18];
     iemgui_setdialogatoms(&x->x_gui, 18, undo);
+    SETFLOAT(undo+2, 0.01);
+    SETFLOAT(undo+3, 1);
     SETFLOAT(undo+4, x->x_scale);
+    SETFLOAT(undo+5, -1);
+    SETSYMBOL(undo+15, gensym("none"));
     pd_undo_set_objectstate(x->x_gui.x_glist, (t_pd*)x, gensym("dialog"),
                             18, undo,
                             argc, argv);
