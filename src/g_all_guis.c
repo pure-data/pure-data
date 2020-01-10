@@ -715,6 +715,7 @@ int iemgui_setdialogatoms(t_iemgui *iemgui, int argc, t_atom*argv)
     if(argc> 0) SETFLOAT (argv+ 0, iemgui->x_w/zoom);
     if(argc> 1) SETFLOAT (argv+ 1, iemgui->x_h/zoom);
     if(argc> 5) SETFLOAT (argv+ 5, iemgui->x_isa.x_loadinit);
+    if(argc> 6) SETFLOAT (argv+ 6, 1); /* num */
     if(argc> 7) SETSYMBOL(argv+ 7, srl[0]);
     if(argc> 8) SETSYMBOL(argv+ 8, srl[1]);
     if(argc> 9) SETSYMBOL(argv+ 9, srl[2]);
