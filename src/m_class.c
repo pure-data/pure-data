@@ -455,7 +455,7 @@ t_class *class_new(t_symbol *s, t_newmethod newmethod, t_method freemethod,
             /* add a "new" method by the name specified by the object */
         class_addmethod(pd_objectmaker, (t_method)newmethod, s,
             vec[0], vec[1], vec[2], vec[3], vec[4], vec[5]);
-        if (class_loadsym)
+        if (class_loadsym && !zgetfn(&pd_objectmaker, class_loadsym))
         {
                 /* if we're loading an extern it might have been invoked by a
                 longer file name; in this case, make this an admissible name
