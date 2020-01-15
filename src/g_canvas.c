@@ -16,6 +16,8 @@ to be different but are now unified except for some fossilized names.) */
 #include "g_all_guis.h"
 #include "g_undo.h"
 
+#include "g_kbdnav.h"
+
 #ifdef _MSC_VER
 #include <io.h>
 #define snprintf _snprintf
@@ -661,6 +663,10 @@ void canvas_drawredrect(t_canvas *x, int doit)
     else sys_vgui(".x%lx.c delete GOP\n",  glist_getcanvas(x));
 }
 
+#ifdef HAVE_KEYBOARDNAV
+t_kbdnav* canvas_get_kbdnav(t_canvas *x);
+#endif
+
     /* the window becomes "mapped" (visible and not miniaturized) or
     "unmapped" (either miniaturized or just plain gone.)  This should be
     called from the GUI after the fact to "notify" us that we're mapped. */
@@ -687,6 +693,11 @@ void canvas_map(t_canvas *x, t_floatarg f)
             if (x->gl_isgraph && x->gl_goprect)
                 canvas_drawredrect(x, 1);
             sys_vgui("pdtk_canvas_getscroll .x%lx.c\n", x);
+#ifdef HAVE_KEYBOARDNAV
+            t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+            if ( kbdnav && kbdnav->kn_indexvis )
+                kbdnav_display_object_indexes(x);
+#endif
         }
     }
     else
@@ -815,6 +826,10 @@ void canvas_free(t_canvas *x)
 
 static void canvas_drawlines(t_canvas *x)
 {
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_canvas_drawlines(x);
+    return;
+#endif
     t_linetraverser t;
     t_outconnect *oc;
     {
@@ -833,7 +848,7 @@ void canvas_fixlinesfor(t_canvas *x, t_text *text)
 {
     t_linetraverser t;
     t_outconnect *oc;
-    
+
     linetraverser_start(&t, x);
     while ((oc = linetraverser_next(&t)))
     {
