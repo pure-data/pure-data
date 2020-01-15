@@ -19,6 +19,8 @@
 #include "s_utf8.h"
 #include "g_undo.h"
 
+#include "g_kbdnav.h"
+
 /* borrowed from RMARGIN and BMARGIN in g_rtext.c */
 #define ATOM_RMARGIN 2
 #define ATOM_BMARGIN 4 /* 1 pixel smaller than object TMARGIN+BMARGIN */
@@ -142,6 +144,10 @@ static void canvas_objtext(t_glist *gl, int xpix, int ypix, int width,
     canvas_unsetcurrent((t_canvas *)gl);
 }
 
+#ifdef HAVE_KEYBOARDNAV
+t_kbdnav* canvas_get_kbdnav(t_canvas *x);
+#endif
+
 extern int sys_noautopatch;
     /* utility routine to figure out where to put a new text box from menu
     and whether to connect to it automatically */
@@ -157,10 +163,45 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
         for (g = x->gl_list, nobj = 0; g; g = g->g_next, nobj++)
             if (g == selected)
         {
+#ifdef HAVE_KEYBOARDNAV
+            indx = nobj;
+            t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+            if ( kbdnav->kn_state != KN_INACTIVE )
+            {
+                int iox, ioy, iow, ioh;
+                t_object *obj = pd_checkobject(&g->g_pd);
+                if ( !obj ) bug("canvas_howputnew keyboard navigation connection bug");
+                switch ( kbdnav->kn_iotype )
+                {
+                    case IO_OUTLET:
+                        kbdnav_io_pos(x, obj, kbdnav->kn_ioindex, kbdnav->kn_iotype, &iox, &ioy, &iow, &ioh);
+                        *xpixp = iox;
+                        *ypixp = ioy+ioh+5;
+                        break;
+                    case IO_INLET:
+                        text_getrect(g, x, &x1, &y1, &x2, &y2);
+                        int objheight = y2-y1;
+                        kbdnav_io_pos(x, obj, kbdnav->kn_ioindex, kbdnav->kn_iotype, &iox, &ioy, &iow, &ioh);
+                        *xpixp = iox;
+                        *ypixp = ioy-5-objheight;
+                        break;
+                    default:
+                        bug("invalid io type on canvas_howputnew(): %d", kbdnav->kn_iotype);
+                }
+            }
+            else
+            {
+                gobj_getrect(g, x, &x1, &y1, &x2, &y2);
+                indx = nobj;
+                *xpixp = x1 / x->gl_zoom;
+                *ypixp = y2  / x->gl_zoom + 5.5;    /* 5 pixels down, rounded */
+            }
+#else
             gobj_getrect(g, x, &x1, &y1, &x2, &y2);
             indx = nobj;
             *xpixp = x1 / x->gl_zoom;
             *ypixp = y2  / x->gl_zoom + 5.5;    /* 5 pixels down, rounded */
+#endif
         }
         glist_noselect(x);
             /* search back for 'selected' and if it isn't on the list,
@@ -214,7 +255,33 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         pd_vmess(&gl->gl_pd, gensym("editmode"), "i", 1);
         canvas_objtext(gl, xpix, ypix, 0, 1, b);
         if (connectme)
+        {
+#ifdef HAVE_KEYBOARDNAV
+            t_kbdnav *kbdnav = canvas_get_kbdnav(gl);
+            if ( kbdnav->kn_state != KN_INACTIVE )
+            {
+                switch( kbdnav->kn_iotype )
+                {
+                    case IO_INLET:
+                        canvas_connect(gl, nobj, 0, indx, kbdnav->kn_ioindex);
+                        break;
+                    case IO_OUTLET:
+                        canvas_connect(gl, indx, kbdnav->kn_ioindex, nobj, 0);
+                        break;
+                    default:
+                        bug("invalid iotype on function canvas_obj()");
+                }
+                kbdnav_deactivate(gl);
+                canvas_redraw(gl);
+            }
+            else
+            {
+                canvas_connect(gl, indx, 0, nobj, 0);
+            }
+#else
             canvas_connect(gl, indx, 0, nobj, 0);
+#endif
+        }
         else canvas_startmotion(glist_getcanvas(gl));
         if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
             canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
@@ -498,7 +565,33 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         glist_select(gl, &x->m_text.te_g);
         gobj_activate(&x->m_text.te_g, gl, 1);
         if (connectme)
+        {
+#ifdef HAVE_KEYBOARDNAV
+            t_kbdnav *kbdnav = canvas_get_kbdnav(gl);
+            if ( kbdnav->kn_state != KN_INACTIVE)
+            {
+                switch( kbdnav->kn_iotype )
+                {
+                    case IO_INLET:
+                       canvas_connect(gl, nobj, 0, indx, kbdnav->kn_ioindex);
+                        break;
+                    case IO_OUTLET:
+                        canvas_connect(gl, indx, kbdnav->kn_ioindex, nobj, 0);
+                        break;
+                    default:
+                        bug("invalid iotype on function canvas_msg()");
+                }
+                kbdnav_deactivate(gl);
+                canvas_redraw(gl);
+            }
+            else
+            {
+                canvas_connect(gl, indx, 0, nobj, 0);
+            }
+#else
             canvas_connect(gl, indx, 0, nobj, 0);
+#endif
+        }
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
@@ -978,7 +1071,33 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         glist_noselect(gl);
         glist_select(gl, &x->a_text.te_g);
         if (connectme)
+        {
+#ifdef HAVE_KEYBOARDNAV
+            t_kbdnav *kbdnav = canvas_get_kbdnav(gl);
+            if ( kbdnav->kn_state != KN_INACTIVE )
+            {
+                switch( kbdnav->kn_iotype )
+                {
+                    case IO_INLET:
+                        canvas_connect(gl, nobj, 0, indx, kbdnav->kn_ioindex);
+                        break;
+                    case IO_OUTLET:
+                        canvas_connect(gl, indx, kbdnav->kn_ioindex, nobj, 0);
+                        break;
+                    default:
+                        bug("invalid iotype on function canvas_atom()");
+                }
+                kbdnav_deactivate(gl);
+                canvas_redraw(gl);
+            }
+            else
+            {
+                canvas_connect(gl, indx, 0, nobj, 0);
+            }
+#else
             canvas_connect(gl, indx, 0, nobj, 0);
+#endif
+        }
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
             (void *)canvas_undo_set_create(glist_getcanvas(gl)));
@@ -1269,6 +1388,10 @@ static const t_widgetbehavior gatom_widgetbehavior =
 void glist_drawiofor(t_glist *glist, t_object *ob, int firsttime,
     char *tag, int x1, int y1, int x2, int y2)
 {
+#ifdef HAVE_KEYBOARDNAV
+    kbdnav_glist_drawiofor(glist, ob, firsttime, tag, x1, y1, x2, y2);
+    return;
+#endif
     int n = obj_noutlets(ob), nplus = (n == 1 ? 1 : n-1), i;
     int width = x2 - x1;
     int iow = IOWIDTH * glist->gl_zoom;
@@ -1532,3 +1655,46 @@ void g_text_setup(void)
     class_setwidget(gatom_class, &gatom_widgetbehavior);
     class_setpropertiesfn(gatom_class, gatom_properties);
 }
+
+#ifdef HAVE_KEYBOARDNAV
+
+/* code stolen from glist_drawiofor()
+ * this code is here because it uses some static functions
+ * like text_getrect */
+void kbdnav_io_pos(t_glist *glist, t_object *ob, int index, int iotype, int *iox, int *ioy,
+                     int *iowidth, int *ioheight)
+{
+    int x1, y1, x2, y2;
+    text_getrect(&ob->te_g, glist, &x1, &y1, &x2, &y2);
+    // post("x1 = %d\ny1 = %d\nx2 = %d\ny2 = %d",x1, y1, x2, y2);
+
+    int n = obj_noutlets(ob);
+    int nplus = (n == 1 ? 1 : n-1);
+    int width = x2 - x1;
+    int iow = IOWIDTH * glist->gl_zoom;
+    int ih = IHEIGHT * glist->gl_zoom, oh = OHEIGHT * glist->gl_zoom;
+    /* draw over border, so assume border width = 1 pixel * glist->gl_zoom */
+    *iowidth = iow;
+    *ioheight = iotype == IO_OUTLET ? oh : ih;
+
+    int onset;
+    switch( iotype )
+    {
+        case IO_OUTLET:
+            /* if we are searching for an outlet */
+            onset = x1 + (width - iow) * index / nplus;
+            *iox = onset;
+            *ioy = y2 - oh + glist->gl_zoom;
+            break;
+        case IO_INLET:
+            n = obj_ninlets(ob);
+            nplus = (n == 1 ? 1 : n-1);
+            onset = x1 + (width - iow) * index / nplus;
+            *iox = onset;
+            *ioy = y1;
+            break;
+        default:
+            bug("invalid iotype on function kbdnav_io_pos(): %d", iotype);
+    }
+}
+#endif
