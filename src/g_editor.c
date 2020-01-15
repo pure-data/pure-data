@@ -11,8 +11,27 @@
 #include "g_undo.h"
 #include "s_utf8.h" /*-- moo --*/
 #include <string.h>
+#include <math.h>
+#include <stdlib.h>
+#include "g_kbdnav.h"
 #ifdef _MSC_VER  /* This is only for Microsoft's compiler, not cygwin, e.g. */
 #define snprintf _snprintf
+#endif
+
+typedef struct _editor_private {
+#ifdef HAVE_KEYBOARDNAV
+    struct _kbdnav kbdnav; /*keyboard navigation*/
+#endif
+} t_editor_private;
+
+#ifdef HAVE_KEYBOARDNAV
+t_kbdnav* canvas_get_kbdnav(t_canvas *x)
+{
+    t_editor_private *private = x && x->gl_editor ? (x->gl_editor->e_privatedata) : 0;
+    if(private)
+        return &(private->kbdnav);
+    return 0;
+}
 #endif
 
 struct _instanceeditor
@@ -51,7 +70,7 @@ static void glist_donewloadbangs(t_glist *x);
 static t_binbuf *canvas_docopy(t_canvas *x);
 static void canvas_dopaste(t_canvas *x, t_binbuf *b);
 static void canvas_paste(t_canvas *x);
-static void canvas_clearline(t_canvas *x);
+void canvas_clearline(t_canvas *x);
 static t_glist *glist_finddirty(t_glist *x);
 static void canvas_zoom(t_canvas *x, t_floatarg zoom);
 static void canvas_displaceselection(t_canvas *x, int dx, int dy);
@@ -327,6 +346,9 @@ void glist_selectall(t_glist *x)
             }
             sel->sel_next = 0;
         }
+#ifdef HAVE_KEYBOARDNAV
+        kbdnav_deactivate(x);
+#endif
     }
 }
 
@@ -356,7 +378,7 @@ int glist_selectionindex(t_glist *x, t_gobj *y, int selected)
     return (indx);
 }
 
-static t_gobj *glist_nth(t_glist *x, int n)
+t_gobj *glist_nth(t_glist *x, int n)
 {
     t_gobj *y;
     int indx;
@@ -518,7 +540,7 @@ int canvas_undo_connect(t_canvas *x, void *z, int action)
     return 1;
 }
 
-static void canvas_connect_with_undo(t_canvas *x,
+void canvas_connect_with_undo(t_canvas *x,
     t_float index1, t_float outno, t_float index2, t_float inno)
 {
     canvas_connect(x, index1, outno, index2, inno);
@@ -577,7 +599,7 @@ int canvas_undo_disconnect(t_canvas *x, void *z, int action)
     return 1;
 }
 
-static void canvas_disconnect_with_undo(t_canvas *x,
+void canvas_disconnect_with_undo(t_canvas *x,
     t_float index1, t_float outno, t_float index2, t_float inno)
 {
     canvas_disconnect(x, index1, outno, index2, inno);
@@ -1899,6 +1921,20 @@ static void canvas_rightclick(t_canvas *x, int xpos, int ypos, t_gobj *y)
 
 /* ----  editors -- perhaps this and "vis" should go to g_editor.c ------- */
 
+#ifdef HAVE_KEYBOARDNAV
+static void initialize_kbdnav(t_kbdnav *x){
+    x->kn_ioindex = 0;
+    x->kn_state = KN_INACTIVE;
+    x->kn_moddown = 0;
+    x->kn_connindex = 0;
+    x->kn_outconnect = NULL;
+    x->kn_highlight = "blue";
+    x->kn_linetraverser = (t_linetraverser *)getbytes(sizeof(*x->kn_linetraverser));
+    x->kn_magtrav = NULL;
+    x->kn_chosennumber = -1;
+}
+#endif
+
 static t_editor *editor_new(t_glist *owner)
 {
     char buf[40];
@@ -1909,6 +1945,12 @@ static t_editor *editor_new(t_glist *owner)
     sprintf(buf, ".x%lx", (t_int)owner);
     x->e_guiconnect = guiconnect_new(&owner->gl_pd, gensym(buf));
     x->e_clock = 0;
+    t_editor_private *private = 0;
+    private = getbytes(sizeof(*private));
+    x->e_privatedata = private;
+#ifdef HAVE_KEYBOARDNAV
+    initialize_kbdnav(&private->kbdnav);
+#endif
     return (x);
 }
 
@@ -1920,6 +1962,12 @@ static void editor_free(t_editor *x, t_glist *y)
     binbuf_free(x->e_deleted);
     if (x->e_clock)
         clock_free(x->e_clock);
+    t_editor_private *private = x->e_privatedata;
+    freebytes(private, sizeof(*private));
+#ifdef HAVE_KEYBOARDNAV
+        t_kbdnav *kbdnav = &(private->kbdnav);
+        freebytes((void *)kbdnav->kn_linetraverser, sizeof(*kbdnav->kn_linetraverser));
+#endif
     freebytes((void *)x, sizeof(*x));
 }
 
@@ -2377,6 +2425,9 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     if (glist_isselected(x, y))
                         glist_deselect(x, y);
                     else glist_select(x, y);
+#ifdef HAVE_KEYBOARDNAV
+                    kbdnav_deactivate(x);
+#endif
                 }
             }
         }
@@ -2459,6 +2510,9 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     {
                         glist_noselect(x);
                         glist_select(x, y);
+#ifdef HAVE_KEYBOARDNAV
+                        kbdnav_deactivate(x);
+#endif
                     }
                     x->gl_editor->e_onmotion = MA_MOVE;
                 }
@@ -2511,6 +2565,9 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         glist_selectline(glist2, oc,
                             outindex, t.tr_outno,
                             inindex, t.tr_inno);
+#ifdef HAVE_KEYBOARDNAV
+                        kbdnav_deactivate(x);
+#endif
                     }
                     canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
                     return;
@@ -2524,7 +2581,12 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     && (soutno == t.tr_outno) && (sinno == t.tr_inno))
                 {
                     if(doit)
+                    {
                         glist_deselectline(x);
+#ifdef HAVE_KEYBOARDNAV
+                        kbdnav_deactivate(x);
+#endif
+                    }
                     canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
                     return;
                 }
@@ -2562,6 +2624,9 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                     glist_selectline(glist2, oc,
                         outindex, t.tr_outno,
                         inindex, t.tr_inno);
+#ifdef HAVE_KEYBOARDNAV
+                    kbdnav_deactivate(x);
+#endif
                 }
                 canvas_setcursor(x, CURSOR_EDITMODE_DISCONNECT);
                 return;
@@ -2571,7 +2636,13 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     canvas_setcursor(x, CURSOR_EDITMODE_NOTHING);
     if (doit)
     {
-        if (!shiftmod) glist_noselect(x);
+        if (!shiftmod)
+        {
+            glist_noselect(x);
+#ifdef HAVE_KEYBOARDNAV
+            kbdnav_deactivate(x);
+#endif
+        }
         sys_vgui(".x%lx.c create rectangle %d %d %d %d -tags x\n",
             x, xpos, ypos, xpos, ypos);
         x->gl_editor->e_xwas = xpos;
@@ -2579,6 +2650,69 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
         x->gl_editor->e_onmotion = MA_REGION;
     }
 }
+
+#ifdef HAVE_KEYBOARDNAV
+void canvas_goto(t_canvas *x, t_floatarg indexarg)
+{
+    int index = indexarg;
+    if ( index < 0)
+    {
+        post("go to error (negative index): %d", index);
+        return;
+    }
+    t_gobj *gobj = x->gl_list;
+    if ( !gobj )
+    {
+        error("canvas_goto() error: patch is empty.");
+        return;
+    }
+    glist_noselect(x);
+    int count = 0;
+    while ( gobj->g_next )
+    {
+        if ( count == index )
+            break;
+        gobj = gobj->g_next;
+        ++count;
+    }
+    if ( count < index )
+    {
+        post("go to error (no such element): %d. Patch only has %d elements", index,count);
+        return;
+    }
+    canvas_redraw(x);
+    if( !glist_isselected(x, gobj) )
+    {
+        t_editor *editor = x->gl_editor;
+        if(editor)
+        {
+            t_editor_private *private = editor->e_privatedata;
+            t_kbdnav *kbdnav = &private->kbdnav;
+            kbdnav->kn_indexvis = 0;
+            canvas_redraw(x);
+        }
+        glist_select(x, gobj);
+
+    }
+    else
+    {
+        post("canvas_goto: object was already selected. index: %d", index);
+    }
+}
+
+void canvas_objindexes(t_canvas *x, t_floatarg indexarg)
+{
+    int i = indexarg;
+    t_editor *editor = x->gl_editor;
+    if(!editor)
+        return;
+    t_editor_private *private = editor->e_privatedata;
+    t_kbdnav *kbdnav = &private->kbdnav;
+    kbdnav->kn_indexvis = i != 0;
+    if( kbdnav->kn_indexvis )
+        kbdnav_display_object_indexes(x);
+}
+#endif
 
 void canvas_mouse(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg which, t_floatarg mod)
@@ -2965,6 +3099,25 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
         gobj_displace(y->sel_what, x, dx, dy);
         if (cl == vinlet_class) resortin = 1;
         else if (cl == voutlet_class) resortout = 1;
+#ifdef HAVE_KEYBOARDNAV
+        t_editor_private *private = x->gl_editor->e_privatedata;
+        t_kbdnav *kbdnav = &private->kbdnav;
+        if(kbdnav->kn_indexvis)
+        {
+            t_gobj *gobj = y->sel_what;
+            t_object *obj = pd_checkobject(&gobj->g_pd);
+            int objindex = canvas_getindex(x,gobj);
+            sys_vgui(".x%lx.c coords objindex%d %d %d\n",
+                x,
+                objindex,
+                obj->te_xpix-10, obj->te_ypix+5);
+            sys_vgui(".x%lx.c coords objindex_bkg%d [.x%lx.c bbox objindex%d]\n",
+                x,
+                objindex,
+                x,
+                objindex);
+        }
+#endif
     }
     if (resortin) canvas_resortinlets(x);
     if (resortout) canvas_resortoutlets(x);
@@ -3080,6 +3233,9 @@ void canvas_key(t_canvas *x, t_symbol *s, int ac, t_atom *av)
     }
     if (!x || !x->gl_editor)  /* if that 'invis'ed the window,  stop. */
         return;
+#ifdef HAVE_KEYBOARDNAV
+    if( !kbdnav_key(x, s, ac, av, keynum, down, shift, gotkeysym) ) return;
+#endif
     if (x && down)
     {
             /* cancel any dragging action */
@@ -3655,7 +3811,7 @@ static void canvas_copy(t_canvas *x)
     }
 }
 
-static void canvas_clearline(t_canvas *x)
+void canvas_clearline(t_canvas *x)
 {
     if (x->gl_editor->e_selectedline)
     {
@@ -4266,7 +4422,7 @@ static void canvas_cycleselect(t_canvas*x, t_float foffset)
 }
 
 
-static void canvas_reselect(t_canvas *x)
+void canvas_reselect(t_canvas *x)
 {
     t_gobj *g, *gwas;
         /* if someone is text editing, and if only one object is
@@ -4831,6 +4987,12 @@ void g_editor_setup(void)
         A_GIMME, A_NULL);
     class_addmethod(canvas_class, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+#ifdef HAVE_KEYBOARDNAV
+    class_addmethod(canvas_class, (t_method)canvas_goto, gensym("goto"),
+        A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_objindexes, gensym("objindexes"),
+        A_FLOAT, A_NULL);
+#endif
 
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(canvas_class, (t_method)canvas_menuclose,
@@ -4894,6 +5056,11 @@ void g_editor_setup(void)
 
     class_addmethod(canvas_class, (t_method)canvas_disconnect,
         gensym("disconnect"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+#ifdef HAVE_KEYBOARDNAV
+/* --------------- to be used with the console ----------------------- */
+    class_addmethod(canvas_class, (t_method)canvas_connect_with_undo,
+        gensym("connect_with_undo"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_NULL);
+#endif
 
 /* -------------- copy buffer ------------------ */
     EDITOR->copy_binbuf = binbuf_new();
@@ -4909,6 +5076,12 @@ void canvas_editor_for_class(t_class *c)
         A_GIMME, A_NULL);
     class_addmethod(c, (t_method)canvas_motion, gensym("motion"),
         A_FLOAT, A_FLOAT, A_FLOAT, A_DEFFLOAT, A_NULL);
+#ifdef HAVE_KEYBOARDNAV
+    class_addmethod(c, (t_method)canvas_goto, gensym("goto"),
+        A_FLOAT, A_NULL);
+    class_addmethod(canvas_class, (t_method)canvas_objindexes, gensym("objindexes"),
+        A_FLOAT, A_NULL);
+#endif
 
 /* ------------------------ menu actions ---------------------------- */
     class_addmethod(c, (t_method)canvas_menuclose,
