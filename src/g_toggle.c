@@ -22,7 +22,7 @@
 #include <unistd.h>
 #endif
 
-#include <g_kbdnav.h>
+#include "g_kbdnav.h"
 
 /* --------------- tgl     gui-toggle ------------------------- */
 

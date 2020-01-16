@@ -23,7 +23,7 @@
 #define MINDIGITS 1
 #define MINFONT   4
 
-#include <g_kbdnav.h>
+#include "g_kbdnav.h"
 
 /*------------------ global functions -------------------------*/
 

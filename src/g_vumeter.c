@@ -26,7 +26,7 @@
 #define VMARGIN 2
 #define PEAKHEIGHT 10
 
-#include <g_kbdnav.h>
+#include "g_kbdnav.h"
 
 /* ----- vu  gui-peak- & rms- vu-meter-display ---------- */
 

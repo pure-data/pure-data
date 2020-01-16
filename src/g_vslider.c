@@ -21,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-#include <g_kbdnav.h>
+#include "g_kbdnav.h"
 
 #define TMARGIN 2
 #define BMARGIN 3

@@ -17,7 +17,7 @@ put out a "float" as in sliders, toggles, etc. */
 #include "g_all_guis.h"
 #include <math.h>
 
-#include <g_kbdnav.h>
+#include "g_kbdnav.h"
 
 /* ------------- vdl     gui-vertical radio button ---------------------- */
 

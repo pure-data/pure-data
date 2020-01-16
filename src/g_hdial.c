@@ -24,7 +24,7 @@ put out a "float" as in sliders, toggles, etc. */
 #include <unistd.h>
 #endif
 
-#include <g_kbdnav.h>
+#include "g_kbdnav.h"
 
 /* ------------- hdl     gui-horizontal dial ---------------------- */
 
