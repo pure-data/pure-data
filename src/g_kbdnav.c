@@ -192,13 +192,15 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
     t_kbdnav *kbdnav = canvas_get_kbdnav(x);
     if( !kbdnav ) return 1;
 
-    /* set our modifier variable state */
-    /* for some weird reason when you press RCtrl the key Up
-       comes as Right but the keydown come as Left. Seems
-       like a TCL bug */
-
-    //to do: change for strncmp
-    if( ( !strcmp(gotkeysym->s_name, "Control_L") || !strcmp(gotkeysym->s_name, "Control_R")) ){
+    /* set our modifier state */
+#if defined(__APPLE__)
+    if( ( !strcmp(gotkeysym->s_name, "Meta_L"))
+#else
+    /* TCL reports Right Control keyup events as Control_L */
+    /* https://wiki.tcl-lang.org/page/Modifier+Keys*/
+    if( ( !strcmp(gotkeysym->s_name, "Control_L") || !strcmp(gotkeysym->s_name, "Control_R")) )
+#endif
+    {
         kbdnav->kn_moddown = down ? 1 : 0 ;
     }
 
