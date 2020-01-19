@@ -35,8 +35,6 @@ typedef struct _kbdnav
 #define IO_INLET 0
 #define IO_OUTLET 1
 
-/* FORWARD DECLARATIONS */
-
 /* stuff from g_editor.c */
 
 EXTERN void canvas_connect_with_undo(t_canvas *x, t_float index1, t_float outno,
@@ -75,7 +73,7 @@ EXTERN void kbdnav_traverse_outconnections_prev(t_canvas *x);
 EXTERN void kbdnav_traverse_inlet_sources_start(t_canvas *x);
 EXTERN void kbdnav_traverse_inlet_sources_next(t_canvas *x);
 EXTERN void kbdnav_traverse_inlet_sources_prev(t_canvas *x);
-EXTERN void kbdnav_display_object_indexes(t_canvas *x);
+EXTERN void kbdnav_displayindices(t_canvas *x);
 EXTERN void kbdnav_debug(t_canvas *x);
 EXTERN void kbdnav_magnetic_connect(t_canvas *x);
 EXTERN void kbdnav_magnetic_disconnect(t_canvas *x);

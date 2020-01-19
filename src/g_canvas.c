@@ -696,7 +696,7 @@ void canvas_map(t_canvas *x, t_floatarg f)
 #ifdef HAVE_KEYBOARDNAV
             t_kbdnav *kbdnav = canvas_get_kbdnav(x);
             if ( kbdnav && kbdnav->kn_indexvis )
-                kbdnav_display_object_indexes(x);
+                kbdnav_displayindices(x);
 #endif
         }
     }

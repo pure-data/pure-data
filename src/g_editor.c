@@ -2700,7 +2700,7 @@ void canvas_goto(t_canvas *x, t_floatarg indexarg)
     }
 }
 
-void canvas_objindexes(t_canvas *x, t_floatarg indexarg)
+void canvas_displayindices(t_canvas *x, t_floatarg indexarg)
 {
     int i = indexarg;
     t_editor *editor = x->gl_editor;
@@ -2710,7 +2710,7 @@ void canvas_objindexes(t_canvas *x, t_floatarg indexarg)
     t_kbdnav *kbdnav = &private->kbdnav;
     kbdnav->kn_indexvis = i != 0;
     if( kbdnav->kn_indexvis )
-        kbdnav_display_object_indexes(x);
+        kbdnav_displayindices(x);
 }
 #endif
 
@@ -4990,7 +4990,7 @@ void g_editor_setup(void)
 #ifdef HAVE_KEYBOARDNAV
     class_addmethod(canvas_class, (t_method)canvas_goto, gensym("goto"),
         A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_objindexes, gensym("objindexes"),
+    class_addmethod(canvas_class, (t_method)canvas_displayindices, gensym("displayindices"),
         A_FLOAT, A_NULL);
 #endif
 
@@ -5079,7 +5079,7 @@ void canvas_editor_for_class(t_class *c)
 #ifdef HAVE_KEYBOARDNAV
     class_addmethod(c, (t_method)canvas_goto, gensym("goto"),
         A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_objindexes, gensym("objindexes"),
+    class_addmethod(canvas_class, (t_method)canvas_displayindices, gensym("displayindices"),
         A_FLOAT, A_NULL);
 #endif
 

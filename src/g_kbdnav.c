@@ -917,7 +917,7 @@ void kbdnav_traverse_inlet_sources_prev(t_canvas *x)
     }
 }
 
-void kbdnav_display_object_indexes(t_canvas *x)
+void kbdnav_displayindices(t_canvas *x)
 {
     t_gobj *gobj = x->gl_list;
     if ( !gobj ){
