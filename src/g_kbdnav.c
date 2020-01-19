@@ -194,7 +194,7 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
 
     /* set our modifier state */
 #if defined(__APPLE__)
-    if( ( !strcmp(gotkeysym->s_name, "Meta_L"))
+    if( !strcmp(gotkeysym->s_name, "Meta_L") )
 #else
     /* TCL reports Right Control keyup events as Control_L */
     /* https://wiki.tcl-lang.org/page/Modifier+Keys*/
@@ -382,10 +382,10 @@ int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum, int dow
             kbdnav_digitconnect_choose(x, 0);
             return 0;
         }
-     }
+    }
 
-     if (down & !strcmp(gotkeysym->s_name, "F3"))
-     {
+    if (down & !strcmp(gotkeysym->s_name, "F3"))
+    {
         kbdnav_debug(x);
         return 0;
     }
