@@ -4990,7 +4990,7 @@ void g_editor_setup(void)
 #ifdef HAVE_KEYBOARDNAV
     class_addmethod(canvas_class, (t_method)canvas_goto, gensym("goto"),
         A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_displayindices, gensym("displayindices"),
+    class_addmethod(canvas_class, (t_method)canvas_toggle_indices_visibility, gensym("toggleindices"),
         A_FLOAT, A_NULL);
 #endif
 
@@ -5079,7 +5079,7 @@ void canvas_editor_for_class(t_class *c)
 #ifdef HAVE_KEYBOARDNAV
     class_addmethod(c, (t_method)canvas_goto, gensym("goto"),
         A_FLOAT, A_NULL);
-    class_addmethod(canvas_class, (t_method)canvas_displayindices, gensym("displayindices"),
+    class_addmethod(canvas_class, (t_method)canvas_toggle_indices_visibility, gensym("toggleindices"),
         A_FLOAT, A_NULL);
 #endif
 

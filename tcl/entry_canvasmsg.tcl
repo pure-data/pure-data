@@ -79,7 +79,7 @@ proc ::entry_canvasmsg::open_canvas_msg_dialog_with_text {mytoplevel text} {
     set ::canvasmsg_entry_text($mytoplevel) "$text"
     $mytoplevel.c.canvas_message icursor end
     if {$text eq "goto "} {
-        pdsend "$mytoplevel objindexes 1"
+        pdsend "$mytoplevel toggleindices 1"
     }
 }
 

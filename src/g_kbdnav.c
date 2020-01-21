@@ -2030,4 +2030,13 @@ void kbdnav_my_numbox_move(t_my_numbox *x, t_glist *glist, int xpos, int ypos, i
                  xpos + iow + KBDNAV_SEL_PAD_X,
                  ypos - IEMGUI_ZOOM(x) + ioh + KBDNAV_SEL_PAD_Y);
     }
+void canvas_toggle_indices_visibility(t_canvas *x, t_floatarg indexarg)
+{
+    int i = indexarg;
+    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if(!kbdnav) return;
+    kbdnav->kn_indexvis = i != 0;
+    if( kbdnav->kn_indexvis )
+        kbdnav_displayindices(x);
+}
 }
