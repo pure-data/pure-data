@@ -496,7 +496,7 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
     *buf=0;
     while (c && (c>='0') && (c<='9'))
     {
-        c = *cs++;
+        c = *++cs;
         arglen++;
     }
 
@@ -521,7 +521,7 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
         }
         else atom_string(dollarvalue, buf, MAXPDSTRING/2-1);
     }
-    return (arglen-1);
+    return arglen;
 }
 
 /* expand any '$' variables in the symbol s.  "tonow" is set if this is in the
