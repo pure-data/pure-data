@@ -2124,7 +2124,7 @@ static t_int *readsf_perform(t_int *w)
             int xfersize;
             if (x->x_fileerror)
             {
-                pd_error(x, "dsp: %s: %s", x->x_filename,
+                pd_error(x, "readsf~: %s: %s", x->x_filename,
                     (x->x_fileerror == EIO ?
                         "unknown or bad header format" :
                             strerror(x->x_fileerror)));
@@ -2181,7 +2181,7 @@ static void readsf_start(t_readsf *x)
     to the "running" state. */
     if (x->x_state == STATE_STARTUP)
         x->x_state = STATE_STREAM;
-    else pd_error(x, "readsf: start requested with no prior 'open'");
+    else pd_error(x, "readsf~: start requested with no prior 'open'");
 }
 
 static void readsf_stop(t_readsf *x)
@@ -2227,7 +2227,7 @@ static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
     else if (*endian->s_name == 'l')
          x->x_bigendian = 0;
     else if (*endian->s_name)
-        pd_error(x, "endianness neither 'b' nor 'l'");
+        pd_error(x, "readsf~: endianness neither 'b' nor 'l'");
     else x->x_bigendian = garray_ambigendian();
     x->x_onsetframes = (onsetframes > 0 ? onsetframes : 0);
     x->x_skipheaderbytes = (headerbytes > 0 ? headerbytes :
@@ -2637,7 +2637,7 @@ static void writesf_start(t_writesf *x)
     if (x->x_state == STATE_STARTUP)
         x->x_state = STATE_STREAM;
     else
-        pd_error(x, "writesf: start requested with no prior 'open'");
+        pd_error(x, "writesf~: start requested with no prior 'open'");
 }
 
 static void writesf_stop(t_writesf *x)
@@ -2789,4 +2789,3 @@ void d_soundfile_setup(void)
     readsf_setup();
     writesf_setup();
 }
-
