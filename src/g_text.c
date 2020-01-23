@@ -164,44 +164,14 @@ static void canvas_howputnew(t_canvas *x, int *connectp, int *xpixp, int *ypixp,
             if (g == selected)
         {
 #ifdef HAVE_KEYBOARDNAV
+            gobj_getrect(g, x, &x1, &y1, &x2, &y2);
             indx = nobj;
-            t_kbdnav *kbdnav = canvas_get_kbdnav(x);
-            if ( kbdnav->kn_state != KN_INACTIVE )
+            if ( !kbdnav_howputnew(x, g, nobj, xpixp, ypixp, x1, y1, x2, y2) )
+#endif
             {
-                int iox, ioy, iow, ioh;
-                t_object *obj = pd_checkobject(&g->g_pd);
-                if ( !obj ) bug("canvas_howputnew keyboard navigation connection bug");
-                switch ( kbdnav->kn_iotype )
-                {
-                    case IO_OUTLET:
-                        kbdnav_io_pos(x, obj, kbdnav->kn_ioindex, kbdnav->kn_iotype, &iox, &ioy, &iow, &ioh);
-                        *xpixp = iox;
-                        *ypixp = ioy+ioh+5;
-                        break;
-                    case IO_INLET:
-                        text_getrect(g, x, &x1, &y1, &x2, &y2);
-                        int objheight = y2-y1;
-                        kbdnav_io_pos(x, obj, kbdnav->kn_ioindex, kbdnav->kn_iotype, &iox, &ioy, &iow, &ioh);
-                        *xpixp = iox;
-                        *ypixp = ioy-5-objheight;
-                        break;
-                    default:
-                        bug("invalid io type on canvas_howputnew(): %d", kbdnav->kn_iotype);
-                }
-            }
-            else
-            {
-                gobj_getrect(g, x, &x1, &y1, &x2, &y2);
-                indx = nobj;
                 *xpixp = x1 / x->gl_zoom;
                 *ypixp = y2  / x->gl_zoom + 5.5;    /* 5 pixels down, rounded */
             }
-#else
-            gobj_getrect(g, x, &x1, &y1, &x2, &y2);
-            indx = nobj;
-            *xpixp = x1 / x->gl_zoom;
-            *ypixp = y2  / x->gl_zoom + 5.5;    /* 5 pixels down, rounded */
-#endif
         }
         glist_noselect(x);
             /* search back for 'selected' and if it isn't on the list,
@@ -257,30 +227,11 @@ void canvas_obj(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         if (connectme)
         {
 #ifdef HAVE_KEYBOARDNAV
-            t_kbdnav *kbdnav = canvas_get_kbdnav(gl);
-            if ( kbdnav->kn_state != KN_INACTIVE )
-            {
-                switch( kbdnav->kn_iotype )
-                {
-                    case IO_INLET:
-                        canvas_connect(gl, nobj, 0, indx, kbdnav->kn_ioindex);
-                        break;
-                    case IO_OUTLET:
-                        canvas_connect(gl, indx, kbdnav->kn_ioindex, nobj, 0);
-                        break;
-                    default:
-                        bug("invalid iotype on function canvas_obj()");
-                }
-                kbdnav_deactivate(gl);
-                canvas_redraw(gl);
-            }
-            else
+            if ( !kbdnav_connect_new(gl, nobj, indx) )
+#endif
             {
                 canvas_connect(gl, indx, 0, nobj, 0);
             }
-#else
-            canvas_connect(gl, indx, 0, nobj, 0);
-#endif
         }
         else canvas_startmotion(glist_getcanvas(gl));
         if (!canvas_undo_get(glist_getcanvas(gl))->u_doing)
@@ -567,30 +518,11 @@ void canvas_msg(t_glist *gl, t_symbol *s, int argc, t_atom *argv)
         if (connectme)
         {
 #ifdef HAVE_KEYBOARDNAV
-            t_kbdnav *kbdnav = canvas_get_kbdnav(gl);
-            if ( kbdnav->kn_state != KN_INACTIVE)
-            {
-                switch( kbdnav->kn_iotype )
-                {
-                    case IO_INLET:
-                       canvas_connect(gl, nobj, 0, indx, kbdnav->kn_ioindex);
-                        break;
-                    case IO_OUTLET:
-                        canvas_connect(gl, indx, kbdnav->kn_ioindex, nobj, 0);
-                        break;
-                    default:
-                        bug("invalid iotype on function canvas_msg()");
-                }
-                kbdnav_deactivate(gl);
-                canvas_redraw(gl);
-            }
-            else
+            if ( !kbdnav_connect_new(gl, nobj, indx) )
+#endif
             {
                 canvas_connect(gl, indx, 0, nobj, 0);
             }
-#else
-            canvas_connect(gl, indx, 0, nobj, 0);
-#endif
         }
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",
@@ -1073,30 +1005,11 @@ void canvas_atom(t_glist *gl, t_atomtype type,
         if (connectme)
         {
 #ifdef HAVE_KEYBOARDNAV
-            t_kbdnav *kbdnav = canvas_get_kbdnav(gl);
-            if ( kbdnav->kn_state != KN_INACTIVE )
-            {
-                switch( kbdnav->kn_iotype )
-                {
-                    case IO_INLET:
-                        canvas_connect(gl, nobj, 0, indx, kbdnav->kn_ioindex);
-                        break;
-                    case IO_OUTLET:
-                        canvas_connect(gl, indx, kbdnav->kn_ioindex, nobj, 0);
-                        break;
-                    default:
-                        bug("invalid iotype on function canvas_atom()");
-                }
-                kbdnav_deactivate(gl);
-                canvas_redraw(gl);
-            }
-            else
+            if ( !kbdnav_connect_new(gl, nobj, indx) )
+#endif
             {
                 canvas_connect(gl, indx, 0, nobj, 0);
             }
-#else
-            canvas_connect(gl, indx, 0, nobj, 0);
-#endif
         }
         else canvas_startmotion(glist_getcanvas(gl));
         canvas_undo_add(glist_getcanvas(gl), UNDO_CREATE, "create",

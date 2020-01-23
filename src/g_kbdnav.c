@@ -146,7 +146,18 @@ void kbdnav_debug(t_canvas *x)
     post("-----");
 }
 
-
+void initialize_kbdnav(t_kbdnav *x)
+{
+    x->kn_ioindex = 0;
+    x->kn_state = KN_INACTIVE;
+    x->kn_moddown = 0;
+    x->kn_connindex = 0;
+    x->kn_outconnect = NULL;
+    x->kn_highlight = "blue";
+    x->kn_linetraverser = (t_linetraverser *)getbytes(sizeof(*x->kn_linetraverser));
+    x->kn_magtrav = NULL;
+    x->kn_chosennumber = -1;
+}
 
 
 /* callled when the user enters keyboard navigation
@@ -2030,6 +2041,54 @@ void kbdnav_my_numbox_move(t_my_numbox *x, t_glist *glist, int xpos, int ypos, i
                  xpos + iow + KBDNAV_SEL_PAD_X,
                  ypos - IEMGUI_ZOOM(x) + ioh + KBDNAV_SEL_PAD_Y);
     }
+}
+
+void canvas_goto(t_canvas *x, t_floatarg indexarg)
+{
+    int index = indexarg;
+    if ( index < 0)
+    {
+        post("go to error (negative index): %d", index);
+        return;
+    }
+    t_gobj *gobj = x->gl_list;
+    if ( !gobj )
+    {
+        error("canvas_goto() error: patch is empty.");
+        return;
+    }
+    glist_noselect(x);
+    int count = 0;
+    while ( gobj->g_next )
+    {
+        if ( count == index )
+            break;
+        gobj = gobj->g_next;
+        ++count;
+    }
+    if ( count < index )
+    {
+        post("go to error (no such element): %d. Patch only has %d elements", index,count);
+        return;
+    }
+    canvas_redraw(x);
+    if( !glist_isselected(x, gobj) )
+    {
+        t_editor *editor = x->gl_editor;
+        if(editor)
+        {
+            t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+            kbdnav->kn_indexvis = 0;
+        }
+        glist_select(x, gobj);
+        canvas_redraw(x);
+    }
+    else
+    {
+        post("canvas_goto: object was already selected. index: %d", index);
+    }
+}
+
 void canvas_toggle_indices_visibility(t_canvas *x, t_floatarg indexarg)
 {
     int i = indexarg;
@@ -2039,4 +2098,86 @@ void canvas_toggle_indices_visibility(t_canvas *x, t_floatarg indexarg)
     if( kbdnav->kn_indexvis )
         kbdnav_displayindices(x);
 }
+
+void kbdnav_displaceselection(t_canvas *x, int dx, int dy, t_selection *sel)
+{
+    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    if( kbdnav && kbdnav->kn_indexvis)
+    {
+        t_gobj *gobj = sel->sel_what;
+        t_object *obj = pd_checkobject(&gobj->g_pd);
+        int objindex = canvas_getindex(x,gobj);
+        sys_vgui(".x%lx.c coords objindex%d %d %d\n",
+            x,
+            objindex,
+            obj->te_xpix-10, obj->te_ypix+5);
+        sys_vgui(".x%lx.c coords objindex_bkg%d [.x%lx.c bbox objindex%d]\n",
+            x,
+            objindex,
+            x,
+            objindex);
+    }
+}
+
+/* just like canvas_howputnew() but takes in consideration
+ *  the current in/outlet the user has selected (if any)
+ *
+ * x1, y1, x2, y2 should be obtained with:
+ * gobj_getrect(g, x, &x1, &y1, &x2, &y2);
+ *
+ *  returns 1 if the user is  keyboard navigating
+ *  returns 0 otherwise */
+int kbdnav_howputnew(t_canvas *x, t_gobj *g, int nobj, int *xpixp, int *ypixp,
+    int x1, int y1, int x2, int y2)
+{
+    int indx = nobj;
+    t_object *obj = pd_checkobject(&g->g_pd);
+    t_kbdnav *kbdnav = canvas_get_kbdnav(x);
+    int objheight = y2-y1;
+    int iox, ioy, iow, ioh;
+
+    if ( !kbdnav || kbdnav->kn_state == KN_INACTIVE )
+        return 0;
+    if ( !obj ) bug("canvas_howputnew keyboard navigation bug: !obj");
+    switch ( kbdnav->kn_iotype )
+    {
+        case IO_OUTLET:
+            kbdnav_io_pos(x, obj, kbdnav->kn_ioindex, kbdnav->kn_iotype, &iox, &ioy, &iow, &ioh);
+            *xpixp = iox;
+            *ypixp = ioy+ioh+5;
+            break;
+        case IO_INLET:
+            kbdnav_io_pos(x, obj, kbdnav->kn_ioindex, kbdnav->kn_iotype, &iox, &ioy, &iow, &ioh);
+            *xpixp = iox;
+            *ypixp = ioy-5-objheight;
+            break;
+        default:
+            bug("invalid io type on canvas_howputnew(): %d", kbdnav->kn_iotype);
+    }
+    return 1;
+}
+
+/* called when a new obj is created to determine its position
+ * depending on the user selection of an in/outlet.
+ *
+ * returns 1 if the user was kbd navigating or 0 otherwise */
+int kbdnav_connect_new(t_glist *gl, int nobj, int indx)
+{
+    t_kbdnav *kbdnav = canvas_get_kbdnav(gl);
+    if ( !kbdnav || kbdnav->kn_state == KN_INACTIVE )
+        return 0;
+    switch( kbdnav->kn_iotype )
+    {
+        case IO_INLET:
+            canvas_connect(gl, nobj, 0, indx, kbdnav->kn_ioindex);
+            break;
+        case IO_OUTLET:
+            canvas_connect(gl, indx, kbdnav->kn_ioindex, nobj, 0);
+            break;
+        default:
+            bug("invalid iotype on function kbdnav_connect_new()");
+    }
+    kbdnav_deactivate(gl);
+    canvas_redraw(gl);
+    return 1;
 }

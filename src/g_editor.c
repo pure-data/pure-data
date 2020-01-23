@@ -1921,20 +1921,6 @@ static void canvas_rightclick(t_canvas *x, int xpos, int ypos, t_gobj *y)
 
 /* ----  editors -- perhaps this and "vis" should go to g_editor.c ------- */
 
-#ifdef HAVE_KEYBOARDNAV
-static void initialize_kbdnav(t_kbdnav *x){
-    x->kn_ioindex = 0;
-    x->kn_state = KN_INACTIVE;
-    x->kn_moddown = 0;
-    x->kn_connindex = 0;
-    x->kn_outconnect = NULL;
-    x->kn_highlight = "blue";
-    x->kn_linetraverser = (t_linetraverser *)getbytes(sizeof(*x->kn_linetraverser));
-    x->kn_magtrav = NULL;
-    x->kn_chosennumber = -1;
-}
-#endif
-
 static t_editor *editor_new(t_glist *owner)
 {
     char buf[40];
@@ -2651,69 +2637,6 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
     }
 }
 
-#ifdef HAVE_KEYBOARDNAV
-void canvas_goto(t_canvas *x, t_floatarg indexarg)
-{
-    int index = indexarg;
-    if ( index < 0)
-    {
-        post("go to error (negative index): %d", index);
-        return;
-    }
-    t_gobj *gobj = x->gl_list;
-    if ( !gobj )
-    {
-        error("canvas_goto() error: patch is empty.");
-        return;
-    }
-    glist_noselect(x);
-    int count = 0;
-    while ( gobj->g_next )
-    {
-        if ( count == index )
-            break;
-        gobj = gobj->g_next;
-        ++count;
-    }
-    if ( count < index )
-    {
-        post("go to error (no such element): %d. Patch only has %d elements", index,count);
-        return;
-    }
-    canvas_redraw(x);
-    if( !glist_isselected(x, gobj) )
-    {
-        t_editor *editor = x->gl_editor;
-        if(editor)
-        {
-            t_editor_private *private = editor->e_privatedata;
-            t_kbdnav *kbdnav = &private->kbdnav;
-            kbdnav->kn_indexvis = 0;
-            canvas_redraw(x);
-        }
-        glist_select(x, gobj);
-
-    }
-    else
-    {
-        post("canvas_goto: object was already selected. index: %d", index);
-    }
-}
-
-void canvas_displayindices(t_canvas *x, t_floatarg indexarg)
-{
-    int i = indexarg;
-    t_editor *editor = x->gl_editor;
-    if(!editor)
-        return;
-    t_editor_private *private = editor->e_privatedata;
-    t_kbdnav *kbdnav = &private->kbdnav;
-    kbdnav->kn_indexvis = i != 0;
-    if( kbdnav->kn_indexvis )
-        kbdnav_displayindices(x);
-}
-#endif
-
 void canvas_mouse(t_canvas *x, t_floatarg xpos, t_floatarg ypos,
     t_floatarg which, t_floatarg mod)
 {
@@ -3100,23 +3023,7 @@ static void canvas_displaceselection(t_canvas *x, int dx, int dy)
         if (cl == vinlet_class) resortin = 1;
         else if (cl == voutlet_class) resortout = 1;
 #ifdef HAVE_KEYBOARDNAV
-        t_editor_private *private = x->gl_editor->e_privatedata;
-        t_kbdnav *kbdnav = &private->kbdnav;
-        if(kbdnav->kn_indexvis)
-        {
-            t_gobj *gobj = y->sel_what;
-            t_object *obj = pd_checkobject(&gobj->g_pd);
-            int objindex = canvas_getindex(x,gobj);
-            sys_vgui(".x%lx.c coords objindex%d %d %d\n",
-                x,
-                objindex,
-                obj->te_xpix-10, obj->te_ypix+5);
-            sys_vgui(".x%lx.c coords objindex_bkg%d [.x%lx.c bbox objindex%d]\n",
-                x,
-                objindex,
-                x,
-                objindex);
-        }
+        kbdnav_displaceselection(x, dx, dy, y);
 #endif
     }
     if (resortin) canvas_resortinlets(x);

@@ -53,6 +53,7 @@ EXTERN void glist_selectline(t_glist *x, t_outconnect *oc, int index1, int outno
 
 /* ------- functions on glists related to keyboard navigation  ------- */
 
+EXTERN void initialize_kbdnav(t_kbdnav *x);
 EXTERN t_object *kbdnav_get_selected_obj(t_canvas *x);
 EXTERN int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum,
                             int down, int shift, t_symbol *gotkeysym);
@@ -85,6 +86,11 @@ EXTERN void kbdnav_magnetic_connect_draw_numbers(t_canvas *x);
 EXTERN void kbdnav_digitconnect_choose(t_canvas *x, int exit_after_connecting);
 EXTERN void kbdnav_delete_connection(t_canvas *x);
 EXTERN void kbdnav_digit_connect_display_numbers(t_canvas *x);
+EXTERN void canvas_goto(t_canvas *x, t_floatarg indexarg);
+EXTERN void kbdnav_displaceselection(t_canvas *x, int dx, int dy, t_selection *sel);
+EXTERN int kbdnav_howputnew(t_canvas *x, t_gobj *g, int nobj, int *xpixp, int *ypixp,
+    int x1, int y1, int x2, int y2);
+EXTERN int kbdnav_connect_new(t_glist *gl, int nobj, int indx);
 
 /* g_kbdnav.c */
 EXTERN void kbdnav_glist_drawiofor(t_glist *glist, t_object *ob, int firsttime, char *tag,
