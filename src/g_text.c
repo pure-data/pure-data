@@ -845,31 +845,30 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
     /* ---------------- gatom-specific widget functions --------------- */
 static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
 {
-    int x1, y1, x2, y2, width, height;
+    int x1, y1, x2, y2;
+    float zoom = glist_getzoom(glist);
     text_getrect(&x->a_text.te_g, glist, &x1, &y1, &x2, &y2);
-    width = x2 - x1;
-    height = y2 - y1;
     if (x->a_wherelabel == ATOM_LABELLEFT)
     {
-        *xp = x1 - 3 -
+        *xp = x1 - 3 * zoom - (
             (int)strlen(canvas_realizedollar(x->a_glist, x->a_label)->s_name) *
-            glist_fontwidth(glist);
-        *yp = y1 + 2;
+            glist_fontwidth(glist));
+        *yp = y1 + 2 * zoom;
     }
     else if (x->a_wherelabel == ATOM_LABELRIGHT)
     {
-        *xp = x2 + 2;
-        *yp = y1 + 2;
+        *xp = x2 + 2 * zoom;
+        *yp = y1 + 2 * zoom;
     }
     else if (x->a_wherelabel == ATOM_LABELUP)
     {
-        *xp = x1 - 1;
-        *yp = y1 - 1 - glist_fontheight(glist);
+        *xp = x1 - 1 * zoom;
+        *yp = y1 - 1 * zoom - glist_fontheight(glist);
     }
     else
     {
-        *xp = x1 - 1;
-        *yp = y2 + 3;
+        *xp = x1 - 1 * zoom;
+        *yp = y2 + 3 * zoom;
     }
 }
 
