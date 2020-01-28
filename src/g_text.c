@@ -846,7 +846,7 @@ static void gatom_param(t_gatom *x, t_symbol *sel, int argc, t_atom *argv)
 static void gatom_getwherelabel(t_gatom *x, t_glist *glist, int *xp, int *yp)
 {
     int x1, y1, x2, y2;
-    float zoom = glist_getzoom(glist);
+    int zoom = glist_getzoom(glist);
     text_getrect(&x->a_text.te_g, glist, &x1, &y1, &x2, &y2);
     if (x->a_wherelabel == ATOM_LABELLEFT)
     {
