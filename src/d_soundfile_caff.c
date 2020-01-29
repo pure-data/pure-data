@@ -226,6 +226,7 @@ int soundfile_caff_readheader(int fd, t_soundfile_info *info)
     info->i_headersize = headersize;
     info->i_bytelimit = bytelimit;
     info->i_bigendian = bigendian;
+    info->i_bytesperframe = nchannels * bytespersample;
 
     return 1;
 }
@@ -233,9 +234,8 @@ int soundfile_caff_readheader(int fd, t_soundfile_info *info)
 int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
     long nframes)
 {
-    int byteswritten = 0, headersize = CAFFHDRSIZE, swap = !sys_isbigendian(),
-        bytesperframe = soundfile_info_bytesperframe(info);
-    int64_t datasize = nframes * bytesperframe;
+    int byteswritten = 0, headersize = CAFFHDRSIZE, swap = !sys_isbigendian();
+    int64_t datasize = nframes * info->i_bytesperframe;
     uint8_t buf[SFHDRBUFSIZE] = {0};
 
     t_caff head = { "caff", 1, 0 };
@@ -244,7 +244,7 @@ int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
         (double)info->i_samplerate,          /* sample rate */
         "lpcm",                              /* format id */
         0,                                   /* format flags */
-        (uint32_t)bytesperframe,             /* bytes per packet */
+        (uint32_t)info->i_bytesperframe,     /* bytes per packet */
         1,                                   /* frames per packet */
         (uint32_t)info->i_nchannels,         /* channels */
         (uint32_t)info->i_bytespersample * 8 /* bits per channel */
@@ -290,8 +290,7 @@ int soundfile_caff_updateheader(int fd, const t_soundfile_info *info,
     long nframes)
 {
     int swap = !sys_isbigendian();
-    int64_t datasize = (nframes * soundfile_info_bytesperframe(info)) +
-                       CAFFDATASIZEMIN;
+    int64_t datasize = (nframes *info->i_bytesperframe) + CAFFDATASIZEMIN;
     off_t seekto = CAFFHDRSIZE + CAFFCHUNKSIZE + CAFFDESCSIZE + 4; /* cc_type */
 
         /* audio data chunk data size */
