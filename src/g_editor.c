@@ -20,7 +20,7 @@
 
 typedef struct _editor_private {
 #ifdef HAVE_KEYBOARDNAV
-    struct _kbdnav kbdnav; /*keyboard navigation*/
+    struct _kbdnav *kbdnav; /*keyboard navigation*/
 #endif
 } t_editor_private;
 
@@ -29,7 +29,7 @@ t_kbdnav* canvas_get_kbdnav(t_canvas *x)
 {
     t_editor_private *private = x && x->gl_editor ? (x->gl_editor->e_privatedata) : 0;
     if(private)
-        return &(private->kbdnav);
+        return private->kbdnav;
     return 0;
 }
 #endif
@@ -1935,7 +1935,7 @@ static t_editor *editor_new(t_glist *owner)
     private = getbytes(sizeof(*private));
     x->e_privatedata = private;
 #ifdef HAVE_KEYBOARDNAV
-    initialize_kbdnav(&private->kbdnav);
+    private->kbdnav = kbdnav_new();
 #endif
     return (x);
 }
@@ -1949,11 +1949,10 @@ static void editor_free(t_editor *x, t_glist *y)
     if (x->e_clock)
         clock_free(x->e_clock);
     t_editor_private *private = x->e_privatedata;
-    freebytes(private, sizeof(*private));
 #ifdef HAVE_KEYBOARDNAV
-        t_kbdnav *kbdnav = &(private->kbdnav);
-        freebytes((void *)kbdnav->kn_linetraverser, sizeof(*kbdnav->kn_linetraverser));
+        kbdnav_free(private->kbdnav);
 #endif
+    freebytes(private, sizeof(*private));
     freebytes((void *)x, sizeof(*x));
 }
 

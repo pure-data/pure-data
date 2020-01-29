@@ -146,8 +146,9 @@ void kbdnav_debug(t_canvas *x)
     post("-----");
 }
 
-void initialize_kbdnav(t_kbdnav *x)
+t_kbdnav* kbdnav_new()
 {
+    t_kbdnav *x = getbytes(sizeof(*x));
     x->kn_ioindex = 0;
     x->kn_state = KN_INACTIVE;
     x->kn_moddown = 0;
@@ -157,6 +158,13 @@ void initialize_kbdnav(t_kbdnav *x)
     x->kn_linetraverser = (t_linetraverser *)getbytes(sizeof(*x->kn_linetraverser));
     x->kn_magtrav = NULL;
     x->kn_chosennumber = -1;
+    return x;
+}
+
+void kbdnav_free(t_kbdnav *x)
+{
+    freebytes((void *)x->kn_linetraverser, sizeof(*x->kn_linetraverser));
+    freebytes((void *)x, sizeof(*x));
 }
 
 

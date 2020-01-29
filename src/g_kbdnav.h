@@ -53,7 +53,8 @@ EXTERN void glist_selectline(t_glist *x, t_outconnect *oc, int index1, int outno
 
 /* ------- functions on glists related to keyboard navigation  ------- */
 
-EXTERN void initialize_kbdnav(t_kbdnav *x);
+EXTERN t_kbdnav* kbdnav_new();
+EXTERN void kbdnav_free(t_kbdnav *x);
 EXTERN t_object *kbdnav_get_selected_obj(t_canvas *x);
 EXTERN int kbdnav_key(t_canvas *x, t_symbol *s, int ac, t_atom *av, int keynum,
                             int down, int shift, t_symbol *gotkeysym);
