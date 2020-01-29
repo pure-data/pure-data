@@ -29,13 +29,10 @@ objects use Posix-like threads.  */
 
 #ifdef _LARGEFILE64_SOURCE
 #define open open64
-#define lseek lseek64
-#define off_t __off64_t
 #endif
 
 /* Microsoft Visual Studio does not define these... arg */
 #ifdef _MSC_VER
-#define off_t long
 #define O_CREAT   _O_CREAT
 #define O_TRUNC   _O_TRUNC
 #define O_WRONLY  _O_WRONLY

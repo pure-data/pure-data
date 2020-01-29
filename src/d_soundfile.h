@@ -13,6 +13,13 @@
 #include <string.h>
 #include <limits.h>
 
+#ifdef _LARGEFILE64_SOURCE
+#define lseek lseek64
+#define off_t __off64_t
+#elif defined(_MSC_VER)
+#define off_t long
+#endif
+
 // should be large enough for all file type min sizes
 #define SFHDRBUFSIZE 128
 
