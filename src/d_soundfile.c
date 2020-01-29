@@ -54,7 +54,7 @@ typedef enum _soundfile_filetype
     FILETYPE_UNKNOWN = -1,
     FILETYPE_WAVE    =  0,
     FILETYPE_AIFF    =  1,
-    FILETYPE_NEXT    =  2
+    FILETYPE_NEXT    =  2,
     FILETYPE_CAFF    =  3
 } t_soundfile_filetype;
 
