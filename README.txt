@@ -58,4 +58,4 @@ Lindsay, Karl MacMillan, Thomas Musil, Toshinori Ohkouchi, Winfried Ritsch,
 Vibeke Sorensen, Rand Steiger, Hans-Christoph Steiner, Shahrokh Yadegari, Dan
 Wilcox, David Zicarelli, IOhannes m zmoelnig, and probably many others for
 contributions of code, documentation, ideas, and expertise. This work has
-received support from Intel, Keith Mcmillen Instruments, and UCSD.
+received support from Intel, Keith McMillen Instruments, ZKM, and UCSD.
