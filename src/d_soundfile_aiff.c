@@ -173,7 +173,8 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
     info->i_bytespersample = bytespersample;
     info->i_headersize = headersize;
     info->i_bytelimit = bytelimit;
-    info->i_bigendian = 1; /* default */
+    info->i_bigendian = bigendian;
+    info->i_bytesperframe = nchannels * bytespersample;
 
     return 1;
 }
@@ -185,7 +186,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     t_aiff *aiffhdr = (t_aiff *)headerbuf;
     int byteswritten = 0, headersize = AIFFPLUS;
     int swap = soundfile_info_swap(info);
-    long longtmp, datasize = nframes * soundfile_info_bytesperframe(info);
+    long longtmp, datasize = nframes * info->i_bytesperframe;
 
     strncpy(aiffhdr->a_fileid, "FORM", 4);
     aiffhdr->a_chunksize =
@@ -215,7 +216,7 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     long nframes)
 {
     int swap = soundfile_info_swap(info);
-    long longtmp, datasize = nframes * soundfile_info_bytesperframe(info);
+    long longtmp, datasize = nframes * info->i_bytesperframe;
 
     // num frames
     if (lseek(fd,

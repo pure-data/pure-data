@@ -83,6 +83,7 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info)
     info->i_headersize = headersize;
     info->i_bytelimit = SFMAXBYTES;
     info->i_bigendian = bigendian;
+    info->i_bytesperframe = info->i_nchannels * bytespersample;
 
     return 1;
 }
@@ -94,7 +95,7 @@ int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
     t_nextstep *nexthdr = (t_nextstep *)headerbuf;
     int byteswritten = 0, headersize = sizeof(t_nextstep);
     int swap = soundfile_info_swap(info);
-    long datasize = nframes * soundfile_info_bytesperframe(info);
+    long datasize = nframes * info->i_bytesperframe;
 
     strncpy(nexthdr->ns_fileid, (info->i_bigendian ? ".snd" : "dns."), 4);
     nexthdr->ns_onset = swap4(headersize, swap);
@@ -128,8 +129,8 @@ int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
     long nframes)
 {
     uint32_t nextsize = 0xffffffff; /* unknown size */
-    if (nframes * soundfile_info_bytesperframe(info) < nextsize)
-        nextsize = nframes * soundfile_info_bytesperframe(info);
+    if (nframes * info->i_bytesperframe < nextsize)
+        nextsize = nframes * info->i_bytesperframe;
     
     if (lseek(fd, 8, SEEK_SET) == 0)
         return 0;
