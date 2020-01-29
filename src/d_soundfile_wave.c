@@ -6,14 +6,11 @@
 
 #include "d_soundfile.h"
 
-#ifdef _LARGEFILE64_SOURCE
-# define lseek lseek64
-#endif
-
 /* the WAVE header structure;  All Wave files are little endian.  We assume
 the "fmt" chunk comes first which is usually the case but perhaps not always. */
 
 /* TODO: handle extensible format PCM data */
+/* TODO: add support for BWF and/or RF64 (file id "RF64" and "DS64" chunk) */
 
 typedef struct _wave
 {
