@@ -6,14 +6,11 @@
 
 #include "d_soundfile.h"
 
-#ifdef _LARGEFILE64_SOURCE
-# define lseek lseek64
-#endif
-
 /* the WAVE header structure;  All Wave files are little endian.  We assume
 the "fmt" chunk comes first which is usually the case but perhaps not always. */
 
 /* TODO: handle extensible format PCM data */
+/* TODO: add support for BWF and/or RF64 (file id "RF64" and "DS64" chunk) */
 
 typedef struct _wave
 {
@@ -148,6 +145,7 @@ int soundfile_wave_readheader(int fd, t_soundfile_info *info)
     info->i_headersize = headersize;
     info->i_bytelimit = bytelimit;
     info->i_bigendian = bigendian;
+    info->i_bytesperframe = nchannels * bytespersample;
 
     return 1;
 }
@@ -159,8 +157,7 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
     t_wave *wavehdr = (t_wave *)headerbuf;
     int byteswritten = 0, headersize = sizeof(t_wave);
     int swap = soundfile_info_swap(info);
-    long bytesperframe = soundfile_info_bytesperframe(info);
-    long datasize = nframes * bytesperframe;
+    long datasize = nframes * info->i_bytesperframe;
     
     strncpy(wavehdr->w_fileid, "RIFF", 4);
     wavehdr->w_chunksize = swap4((uint32_t)(datasize + headersize - 8), swap);
@@ -173,8 +170,9 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
     }
     wavehdr->w_nchannels = swap2(info->i_nchannels, swap);
     wavehdr->w_samplerate = swap4(info->i_samplerate, swap);
-    wavehdr->w_navgbytespersec = swap4(info->i_samplerate*bytesperframe, swap);
-    wavehdr->w_nblockalign = swap2(bytesperframe, swap);
+    wavehdr->w_navgbytespersec =
+        swap4(info->i_samplerate * info->i_bytesperframe, swap);
+    wavehdr->w_nblockalign = swap2(info->i_bytesperframe, swap);
     wavehdr->w_nbitspersample = swap2(8 * info->i_bytespersample, swap);
     strncpy(wavehdr->w_datachunkid, "data", 4);
     wavehdr->w_datachunksize = swap4((uint32_t)datasize, swap);
@@ -187,7 +185,7 @@ int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
     long nframes)
 {
     int swap = soundfile_info_swap(info);
-    long longtmp, datasize = nframes * soundfile_info_bytesperframe(info);
+    long longtmp, datasize = nframes * info->i_bytesperframe;
 
     // total chunk size
     if (lseek(fd,

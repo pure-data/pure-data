@@ -8,10 +8,6 @@
 
 #include <math.h>
 
-#ifdef _LARGEFILE64_SOURCE
-# define lseek lseek64
-#endif
-
 /* the AIFF header;  All AIFF files are big endian.  We assume the "COMM"
 chunk comes first which is usually the case but perhaps not always. */
 
@@ -50,7 +46,7 @@ typedef struct _aiff
     uint16_t a_nchannels;           /* number of channels         */
     uint16_t a_nframeshi;           /* # of sample frames (hi)    */
     uint16_t a_nframeslo;           /* # of sample frames (lo)    */
-    uint16_t a_bitspersamp;         /* bits per sample            */
+    uint16_t a_bitspersample;       /* bits per sample            */
     unsigned char a_samplerate[10]; /* sample rate, 80-bit float! */
 } t_aiff;
 
@@ -124,7 +120,7 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
         /* First we guess a number of channels, etc., in case there's
         no COMM block to follow. */
 
-        /* copy the first chunk header to beginnning of buffer. */
+        /* copy the first chunk header to beginning of buffer. */
     memcpy(buf.b_c, buf.b_c + headersize, sizeof(t_datachunk));
         /* read chunks in loop until we get to the data chunk */
     while (strncmp(datachunk->dc_id, "SSND", 4))
@@ -177,7 +173,8 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
     info->i_bytespersample = bytespersample;
     info->i_headersize = headersize;
     info->i_bytelimit = bytelimit;
-    info->i_bigendian = 1; /* default */
+    info->i_bigendian = bigendian;
+    info->i_bytesperframe = nchannels * bytespersample;
 
     return 1;
 }
@@ -189,7 +186,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     t_aiff *aiffhdr = (t_aiff *)headerbuf;
     int byteswritten = 0, headersize = AIFFPLUS;
     int swap = soundfile_info_swap(info);
-    long longtmp, datasize = nframes * soundfile_info_bytesperframe(info);
+    long longtmp, datasize = nframes * info->i_bytesperframe;
 
     strncpy(aiffhdr->a_fileid, "FORM", 4);
     aiffhdr->a_chunksize =
@@ -202,7 +199,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     longtmp = swap4((uint32_t)nframes, swap);
     memcpy(&aiffhdr->a_nframeshi, &longtmp, 4);
     
-    aiffhdr->a_bitspersamp = swap2(8 * info->i_bytespersample, swap);
+    aiffhdr->a_bitspersample = swap2(8 * info->i_bytespersample, swap);
     
     makeaiffsamprate(info->i_samplerate, aiffhdr->a_samplerate);
     strncpy(((char *)(&aiffhdr->a_samplerate)) + 10, "SSND", 4);
@@ -219,7 +216,7 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     long nframes)
 {
     int swap = soundfile_info_swap(info);
-    long longtmp, datasize = nframes * soundfile_info_bytesperframe(info);
+    long longtmp, datasize = nframes * info->i_bytesperframe;
 
     // num frames
     if (lseek(fd,

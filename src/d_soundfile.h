@@ -13,10 +13,13 @@
 #include <string.h>
 #include <limits.h>
 
+/* GLIBC */
 #ifdef _LARGEFILE64_SOURCE
 #define lseek lseek64
 #define off_t __off64_t
-#elif defined(_MSC_VER)
+#endif
+
+#ifdef _MSC_VER
 #define off_t long
 #endif
 
@@ -40,6 +43,7 @@ typedef struct _soundfile_info
     int i_headersize;      ///< header size in bytes
     int i_bigendian;       ///< 1: big : 1, 0: little
     long long i_bytelimit; ///< max number of data bytes to read/write
+    int i_bytesperframe;   ///< number of bytes per sample frame
 } t_soundfile_info;
 
 /// clear soundfile info struct to defaults
@@ -50,9 +54,6 @@ void soundfile_info_copy(t_soundfile_info *dst, const t_soundfile_info *src);
 
 /// print info struct
 void soundfile_info_print(const t_soundfile_info *info);
-
-/// compute number of bytes per frame from src info struct
-int soundfile_info_bytesperframe(const t_soundfile_info *src);
 
 /// returns 1 if bytes need to be swapped due to endianess, otherwise 0
 int soundfile_info_swap(const t_soundfile_info *src);
