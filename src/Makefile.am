@@ -54,6 +54,7 @@ pd_SOURCES_core = \
     d_resample.c \
     d_soundfile.c \
     d_soundfile_aiff.c \
+    d_soundfile_caff.c \
     d_soundfile_next.c \
     d_soundfile_wave.c \
     d_ugen.c \

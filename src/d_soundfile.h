@@ -27,12 +27,12 @@
 /// soundfile format info
 typedef struct _soundfile_info
 {
-    int i_samplerate;     ///< read: file sr, write: pd sr
-    int i_nchannels;      ///< number of channels
-    int i_bytespersample; ///< 2: 16 bit, 3: 24 bit, 4: 32 bit
-    int i_headersize;     ///< header size in bytes
-    int i_bigendian;      ///< 1: big : 1, 0: little
-    long i_bytelimit;     ///< max number of data bytes to read/write
+    int i_samplerate;      ///< read: file sr, write: pd sr
+    int i_nchannels;       ///< number of channels
+    int i_bytespersample;  ///< 2: 16 bit, 3: 24 bit, 4: 32 bit
+    int i_headersize;      ///< header size in bytes
+    int i_bigendian;       ///< 1: big : 1, 0: little
+    long long i_bytelimit; ///< max number of data bytes to read/write
 } t_soundfile_info;
 
 /// clear soundfile info struct to defaults
@@ -56,14 +56,26 @@ int soundfile_info_swap(const t_soundfile_info *src);
 /// FIXME: should this be renamed or moved?
 int sys_isbigendian(void);
 
+/// swap 8 bytes and return if doit = 1, otherwise return n
+uint64_t swap8(uint64_t n, int doit);
+
+/// swap a 64 bit signed int and return if do it = 1, otherwise return n
+int64_t swap8s(int64_t n, int doit);
+
 /// swap 4 bytes and return if doit = 1, otherwise return n
 uint32_t swap4(uint32_t n, int doit);
 
 /// swap 2 bytes and return if doit = 1, otherwise return n
 uint16_t swap2(uint32_t n, int doit);
 
-/// swap a 4 byte string in place if do it = 1, otherewise do nothing
+/// swap a 4 byte string in place if do it = 1, otherwise do nothing
 void swapstring(char *foo, int doit);
+
+/// swap an 8 byte string in place if do it = 1, otherwise do nothing
+void swapstring8(char *foo, int doit);
+
+/// swap an 8 byte double and return if doit = 1, otherwise return n
+double swapdouble(double n, int doit);
 
 /* WAVE */
 
@@ -74,6 +86,7 @@ int soundfile_wave_headersize();
 int soundfile_wave_isheader(const char *buf, long size);
 
 /// read WAVE header from a file into info, assumes fd is at the beginning
+/// result should place fd at beginning of audio data
 /// returns 1 on success or 0 on error
 int soundfile_wave_readheader(int fd, t_soundfile_info *info);
 
@@ -100,6 +113,7 @@ int soundfile_aiff_headersize();
 int soundfile_aiff_isheader(const char *buf, long size);
 
 /// read AIFF header from a file into info, assumes fd is at the beginning
+/// result should place fd at beginning of audio data
 /// returns 1 on success or 0 on error
 int soundfile_aiff_readheader(int fd, t_soundfile_info *info);
 
@@ -117,6 +131,32 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
 /// .AIFF) otherwise 0
 int soundfile_aiff_hasextension(const char *filename, long size);
 
+/* CAFF */
+
+/// returns min CAFF header size in bytes
+int soundfile_caff_headersize();
+
+/// returns 1 if buffer is the beginning of an CAFF header
+int soundfile_caff_isheader(const char *buf, long size);
+
+/// read CAFF header from a file into info, assumes fd is at the beginning
+/// result should place fd at beginning of audio data
+/// returns 1 on success or 0 on error
+int soundfile_caff_readheader(int fd, t_soundfile_info *info);
+
+/// write header to beginning of an open file from an info struct
+/// returns header bytes written or -1 on error
+int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
+    long nframes);
+
+/// update file header data size, assumes fd is at the beginning
+/// returns 1 on success or 0 on error
+int soundfile_caff_updateheader(int fd, const t_soundfile_info *info,
+    long nframes);
+
+/// returns 1 if the filename has an CAFF extension (.caf, .CAF) otherwise 0
+int soundfile_caff_hasextension(const char *filename, long size);
+
 /* NEXT */
 
 /// returns min NEXT header size in bytes
@@ -126,6 +166,7 @@ int soundfile_next_headersize();
 int soundfile_next_isheader(const char *buf, long size);
 
 /// read NEXT header from a file into info, assumes fd is at the beginning
+/// result should place fd at beginning of audio data
 /// returns 1 on success or 0 on error
 int soundfile_next_readheader(int fd, t_soundfile_info *info);
 
