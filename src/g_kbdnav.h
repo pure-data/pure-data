@@ -45,12 +45,6 @@ EXTERN void canvas_reselect(t_canvas *x);
 EXTERN void canvas_clearline(t_canvas *x);
 
 
-/* g_editor.c */
-EXTERN t_gobj *glist_nth(t_glist *x, int n);
-EXTERN int glist_getindex(t_glist *x, t_gobj *y);
-EXTERN void glist_selectline(t_glist *x, t_outconnect *oc, int index1, int outno,
-    int index2, int inno);
-
 /* ------- functions on glists related to keyboard navigation  ------- */
 
 EXTERN t_kbdnav* kbdnav_new();
