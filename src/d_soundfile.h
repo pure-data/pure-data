@@ -41,7 +41,7 @@ typedef struct _soundfile_info
     int i_nchannels;      ///< number of channels
     int i_bytespersample; ///< 2: 16 bit, 3: 24 bit, 4: 32 bit
     int i_headersize;     ///< header size in bytes
-    int i_bigendian;      ///< 1: big : 1, 0: little
+    int i_bigendian;      ///< sample endianness 1 : big or 0 : little
     long i_bytelimit;     ///< max number of data bytes to read/write
     int i_bytesperframe;  ///< number of bytes per sample frame
 } t_soundfile_info;
@@ -58,6 +58,16 @@ void soundfile_info_print(const t_soundfile_info *info);
 /// returns 1 if bytes need to be swapped due to endianess, otherwise 0
 int soundfile_info_swap(const t_soundfile_info *src);
 
+/* read write */
+
+/// seek to offset in file fd and read size bytes into dst,
+/// returns bytes written on success or -1 on failure
+size_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size);
+
+/// seek to offset in file fd and write size bytes from dst,
+/// returns number of bytes written on success or -1 if seek or write failed
+size_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size);
+
 /* byte swappers */
 
 /// returns 1 is system is bigendian
@@ -66,6 +76,9 @@ int sys_isbigendian(void);
 
 /// swap 4 bytes and return if doit = 1, otherwise return n
 uint32_t swap4(uint32_t n, int doit);
+
+/// swap a 32 bit signed int and return if do it = 1, otherwise return n
+int32_t swap4s(int32_t n, int doit);
 
 /// swap 2 bytes and return if doit = 1, otherwise return n
 uint16_t swap2(uint32_t n, int doit);
@@ -121,8 +134,8 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
 int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     long nframes);
 
-/// returns 1 if the filename has an AIFF extension (.aif, .aiff, .AIF, or
-/// .AIFF) otherwise 0
+/// returns 1 if the filename has an AIFF extension (.aif, .aiff, .aifc,
+/// .AIF, .AIFF, or .AIFC) otherwise 0
 int soundfile_aiff_hasextension(const char *filename, long size);
 
 /* NEXT */

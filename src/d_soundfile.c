@@ -117,6 +117,22 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
     outlet_list(out, &s_list, 5, (t_atom *)info_list);
 }
 
+/* read write */
+
+size_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size) {
+    off_t seekout = lseek(fd, offset, SEEK_SET);
+    if (seekout != offset)
+        return -1;
+    return read(fd, dst, size);
+}
+
+size_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size) {
+    off_t seekout = lseek(fd, offset, SEEK_SET);
+    if (seekout != offset)
+        return -1;
+    return write(fd, src, size);
+}
+
 /* byte swappers */
 
 int sys_isbigendian(void)
@@ -132,6 +148,16 @@ uint32_t swap4(uint32_t n, int doit)
         return (((n & 0xff) << 24) | ((n & 0xff00) << 8) |
             ((n & 0xff0000) >> 8) | ((n & 0xff000000) >> 24));
     else return (n);
+}
+
+int32_t swap4s(int32_t n, int doit)
+{
+    if (doit)
+    {
+        n = ((n << 8) & 0xff00ff00) | ((n >> 8) & 0xff00ff);
+        return (n << 16) | ((n >> 16) & 0xffff);
+    }
+    return (n);
 }
 
 uint16_t swap2(uint32_t n, int doit)
@@ -184,7 +210,8 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *info, long skipframes)
         else goto badheader;
 
         /* rewind and read header */
-        lseek(fd, 0, SEEK_SET);
+        if (lseek(fd, 0, SEEK_SET) < 0)
+            return (-1);
         soundfile_info_clear(&i);
         switch (filetype)
         {
@@ -525,15 +552,7 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
         else
             filetype = FILETYPE_WAVE; /* default */
     }
-        /* TODO: handle AIFF floating point samples */
-    if (bytespersample == 4)
-    {
-        if (filetype == FILETYPE_AIFF)
-        {
-            pd_error(obj, "AIFF 32 bit float not supported");
-            goto usage;
-        }
-    }
+
         /* for WAVE force little endian; for nextstep use machine native */
     if (filetype == FILETYPE_WAVE)
     {
@@ -545,7 +564,7 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
     {
         bigendian = 1;
         if (endianness == 0)
-            pd_error(obj, "AIFF file forced to big endian");
+            bigendian = 0;
     }
     else if (endianness == -1)
     {
@@ -1431,7 +1450,6 @@ static void *readsf_child_main(void *zz)
             long onsetframes = x->x_onsetframes;
             const char *filename = x->x_filename;
             const char *dirname = canvas_getdir(x->x_canvas)->s_name;
-
             soundfile_info_clear(&info);
             soundfile_info_copy(&info, &x->x_info);
 #ifdef DEBUG_SOUNDFILE
@@ -2144,7 +2162,6 @@ static void *writesf_child_main(void *zz)
 
                 fd = x->x_fd;
                 soundfile_info_copy(&info, &x->x_info);
-
 
                 pthread_mutex_unlock(&x->x_mutex);
 
