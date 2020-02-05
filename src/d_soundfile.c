@@ -972,7 +972,7 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     t_soundfile_info info;
     int fd = -1, resize = 0, ascii = 0, i;
     size_t skipframes = 0, finalsize = 0, maxsize = SFMAXFRAMES,
-           framesread = 0, anframes, bufframes, j;
+           framesread = 0, nframes, bufframes, j;
     char endianness;
     const char *filename;
     t_garray *garrays[MAXSFCHANS];
