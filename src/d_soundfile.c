@@ -94,7 +94,7 @@ void soundfile_info_copy(t_soundfile_info *dst, const t_soundfile_info *src)
 
 void soundfile_info_print(const t_soundfile_info *info)
 {
-    printf("%d %d %d %d %s %ld %d\n", info->i_samplerate, info->i_nchannels,
+    printf("%d %d %d %ld %s %ld %d\n", info->i_samplerate, info->i_nchannels,
         info->i_bytespersample, info->i_headersize,
         (info->i_bigendian ? "b" : "l"), info->i_bytelimit,
         info->i_bytesperframe);
@@ -119,14 +119,14 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
 
 /* read write */
 
-size_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size) {
+ssize_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size) {
     off_t seekout = lseek(fd, offset, SEEK_SET);
     if (seekout != offset)
         return -1;
     return read(fd, dst, size);
 }
 
-size_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size) {
+ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size) {
     off_t seekout = lseek(fd, offset, SEEK_SET);
     if (seekout != offset)
         return -1;
@@ -147,7 +147,7 @@ uint32_t swap4(uint32_t n, int doit)
     if (doit)
         return (((n & 0xff) << 24) | ((n & 0xff00) << 8) |
             ((n & 0xff0000) >> 8) | ((n & 0xff000000) >> 24));
-    else return (n);
+    else return n;
 }
 
 int32_t swap4s(int32_t n, int doit)
@@ -157,14 +157,14 @@ int32_t swap4s(int32_t n, int doit)
         n = ((n << 8) & 0xff00ff00) | ((n >> 8) & 0xff00ff);
         return (n << 16) | ((n >> 16) & 0xffff);
     }
-    return (n);
+    return n;
 }
 
 uint16_t swap2(uint32_t n, int doit)
 {
     if (doit)
         return (((n & 0xff) << 8) | ((n & 0xff00) >> 8));
-    else return (n);
+    else return n;
 }
 
 void swapstring(char *foo, int doit)
@@ -185,22 +185,20 @@ void swapstring(char *foo, int doit)
     the number of channels, endinanness, and bytes per sample; the header is
     ignored.  Otherwise, the routine tries to read the header and fill in the
     properties. */
-int open_soundfile_via_fd(int fd, t_soundfile_info *info, long skipframes)
+int open_soundfile_via_fd(int fd, t_soundfile_info *info, size_t skipframes)
 {
     t_soundfile_info i;
-    long sysrtn;
-    int swap;
-    off_t offset;
+    off_t offset, seekout;
     errno = 0;
     if (info->i_headersize >= 0) /* header detection overridden */
         soundfile_info_copy(&i, info);
     else
     {
         char buf[SFHDRBUFSIZE];
-        long bytesread = read(fd, buf, soundfile_min_headersize());
+        ssize_t bytesread = read(fd, buf, soundfile_min_headersize());
         t_soundfile_filetype filetype = FILETYPE_UNKNOWN;
 
-        /* check header for filetype */
+            /* check header for filetype */
         if (soundfile_wave_isheader(buf, bytesread))
             filetype = FILETYPE_WAVE;
         else if (soundfile_aiff_isheader(buf, bytesread))
@@ -209,9 +207,9 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *info, long skipframes)
             filetype = FILETYPE_NEXT;
         else goto badheader;
 
-        /* rewind and read header */
+            /* rewind and read header */
         if (lseek(fd, 0, SEEK_SET) < 0)
-            return (-1);
+            return -1;
         soundfile_info_clear(&i);
         switch (filetype)
         {
@@ -230,63 +228,63 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *info, long skipframes)
 
         /* seek past header and any sample frames to skip */
     offset = i.i_headersize + (i.i_bytesperframe * skipframes);
-    sysrtn = (long)lseek(fd, offset, 0);
-    if (sysrtn != offset)
-        return (-1);
+    seekout = lseek(fd, offset, 0);
+    if (seekout != offset)
+        return -1;
     i.i_bytelimit -= i.i_bytesperframe * skipframes;
     if (i.i_bytelimit < 0)
         i.i_bytelimit = 0;
 
         /* copy sample format back to caller */
     soundfile_info_copy(info, &i);
-    return (fd);
+    return fd;
 
 badheader:
         /* the header wasn't recognized.  We're threadable here so let's not
         print out the error... */
     errno = EIO;
-    return (-1);
+    return -1;
 }
 
     /* open a soundfile, using open_via_path().  This is used by readsf~ in
     a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
     version of open_soundfile_via_canvas() */
 int open_soundfile(const char *dirname, const char *filename,
-    t_soundfile_info *info, long skipframes)
+    t_soundfile_info *info, size_t skipframes)
 {
     char buf[SFHDRBUFSIZE], *bufptr;
     int fd, sf_fd;
     fd = open_via_path(dirname, filename, "", buf, &bufptr, SFHDRBUFSIZE, 1);
     if (fd < 0)
-        return (-1);
+        return -1;
     sf_fd = open_soundfile_via_fd(fd, info, skipframes);
     if (sf_fd < 0)
         sys_close(fd);
-    return (sf_fd);
+    return sf_fd;
 }
 
     /* open a soundfile, using open_via_canvas().  This is used by readsf~ in
     a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
     version of open_soundfile_via_canvas() */
 int open_soundfile_via_canvas(t_canvas *canvas, const char *filename,
-    t_soundfile_info *info, long skipframes)
+    t_soundfile_info *info, size_t skipframes)
 {
     char buf[SFHDRBUFSIZE], *bufptr;
     int fd, sf_fd;
     fd = canvas_open(canvas, filename, "", buf, &bufptr, SFHDRBUFSIZE, 1);
     if (fd < 0)
-        return (-1);
+        return -1;
     sf_fd = open_soundfile_via_fd(fd, info, skipframes);
     if (sf_fd < 0)
         sys_close(fd);
-    return (sf_fd);
+    return sf_fd;
 }
 
 static void soundfile_xferin_sample(const t_soundfile_info *info, int nvecs,
-    t_sample **vecs, long framesread, unsigned char *buf, int nframes)
+    t_sample **vecs, size_t framesread, unsigned char *buf, size_t nframes)
 {
-    int i, j;
-    int nchannels = (info->i_nchannels < nvecs ? info->i_nchannels : nvecs);
+    int nchannels = (info->i_nchannels < nvecs ? info->i_nchannels : nvecs), i;
+    size_t j;
     unsigned char *sp, *sp2;
     t_sample *fp;
     for (i = 0, sp = buf; i < nchannels; i++, sp += info->i_bytespersample)
@@ -343,21 +341,21 @@ static void soundfile_xferin_sample(const t_soundfile_info *info, int nvecs,
     }
         /* zero out other outputs */
     for (i = info->i_nchannels; i < nvecs; i++)
-        for (j = nframes, fp = vecs[i]; j--; )
+        for (j = nframes, fp = vecs[i]; j--;)
             *fp++ = 0;
 
 }
 
 static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
-    t_word **vecs, long framesread, unsigned char *buf, long nframes)
+    t_word **vecs, size_t framesread, unsigned char *buf, size_t nframes)
 {
-    long j;
     unsigned char *sp, *sp2;
     t_word *wp;
-    int i, nchannels = (info->i_nchannels < nvecs ? info->i_nchannels : nvecs);
+    int nchannels = (info->i_nchannels < nvecs ? info->i_nchannels : nvecs), i;
+    size_t j;
     union
     {
-        long long32;
+        uint32_t long32;
         float float32;
     } word32;
     for (i = 0, sp = buf; i < nchannels; i++, sp += info->i_bytespersample)
@@ -420,7 +418,7 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
     }
         /* zero out other outputs */
     for (i = info->i_nchannels; i < nvecs; i++)
-        for (j = nframes, wp = vecs[i]; j--; )
+        for (j = nframes, wp = vecs[i]; j--;)
             (wp++)->w_float = 0;
 
 }
@@ -448,8 +446,8 @@ typedef struct _soundfiler_writeargs
     int wa_samplerate;                /* sample rate */
     int wa_bytespersample;            /* number of bytes per sample */
     int wa_bigendian;                 /* is sample data bigendian? */
-    long wa_nframes;                  /* number of sample frames to write */
-    long wa_onsetframes;              /* sample frame onset when writing */
+    size_t wa_nframes;                /* number of sample frames to write */
+    size_t wa_onsetframes;            /* sample frame onset when writing */
     int wa_normalize;                 /* normalize samples? */
 } t_soundfiler_writeargs;
 
@@ -466,7 +464,7 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
     int argc = *p_argc;
     t_atom *argv = *p_argv;
     int samplerate = -1, bytespersample = 2, bigendian = 0, endianness = -1;
-    long nframes = SFMAXFRAMES, onsetframes = 0;
+    size_t nframes = SFMAXFRAMES, onsetframes = 0;
     int normalize = 0;
     t_symbol *filesym;
     t_soundfile_filetype filetype = FILETYPE_UNKNOWN;
@@ -585,17 +583,18 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
     wa->wa_nframes = nframes;
     wa->wa_onsetframes = onsetframes;
     wa->wa_normalize = normalize;
-    return (0);
+    return 0;
 usage:
-    return (-1);
+    return -1;
 }
 
 /* return fd and sets info->i_headersize on success or -1 on failure */
 static int create_soundfile(t_canvas *canvas, const char *filename,
-    int filetype, long nframes, t_soundfile_info *info)
+    int filetype, size_t nframes, t_soundfile_info *info)
 {
     char filenamebuf[MAXPDSTRING], buf2[MAXPDSTRING];
-    int fd, headersize = -1;
+    ssize_t headersize = -1;
+    int fd;
 
         /* create file */
     strncpy(filenamebuf, filename, MAXPDSTRING);
@@ -618,7 +617,7 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     filenamebuf[MAXPDSTRING-10] = 0;
     canvas_makefilename(canvas, filenamebuf, buf2, MAXPDSTRING);
     if ((fd = sys_open(buf2, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0)
-        return (-1);
+        return -1;
 
         /* write header */
     switch (filetype)
@@ -636,14 +635,14 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
     if (headersize < 0)
     {
         close(fd);
-        return (-1);
+        return -1;
     }
     info->i_headersize = headersize;
-    return (fd);
+    return fd;
 }
 
 static void soundfile_finishwrite(void *obj, const char *filename, int fd,
-    int filetype, long nframes, long frameswritten,
+    int filetype, size_t nframes, size_t frameswritten,
     const t_soundfile_info *info)
 {
     if (frameswritten >= nframes) return;
@@ -667,10 +666,11 @@ static void soundfile_finishwrite(void *obj, const char *filename, int fd,
 }
 
 static void soundfile_xferout_sample(const t_soundfile_info *info,
-    t_sample **vecs, unsigned char *buf, int nframes, long onsetframes,
+    t_sample **vecs, unsigned char *buf, size_t nframes, size_t onsetframes,
     t_sample normalfactor)
 {
-    int i, j;
+    int i;
+    size_t j;
     unsigned char *sp, *sp2;
     t_sample *fp;
     for (i = 0, sp = buf; i < info->i_nchannels; i++,
@@ -775,9 +775,11 @@ static void soundfile_xferout_sample(const t_soundfile_info *info,
 }
 
 static void soundfile_xferout_words(const t_soundfile_info *info, t_word **vecs,
-    unsigned char *buf, long nframes, long onsetframes, t_sample normalfactor)
+    unsigned char *buf, size_t nframes, size_t onsetframes,
+    t_sample normalfactor)
 {
-    int i, j;
+    int i;
+    size_t j;
     unsigned char *sp, *sp2;
     t_word *wp;
     for (i = 0, sp = buf; i < info->i_nchannels;
@@ -882,6 +884,7 @@ static void soundfile_xferout_words(const t_soundfile_info *info, t_word **vecs,
 }
 
 /* ------- soundfiler - reads and writes soundfiles to/from "garrays" ---- */
+
 #define SAMPBUFSIZE 1024
 
 static t_class *soundfiler_class;
@@ -899,7 +902,7 @@ static t_soundfiler *soundfiler_new(void)
     x->x_canvas = canvas_getcurrent();
     outlet_new(&x->x_obj, &s_float);
     x->x_out2 = outlet_new(&x->x_obj, &s_float);
-    return (x);
+    return x;
 }
 
 static void soundfiler_readascii(t_soundfiler *x, const char *filename,
@@ -912,7 +915,7 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
         return;
     n = binbuf_getnatom(b);
     atoms = binbuf_getvec(b);
-    nframes = n/narray;
+    nframes = n / narray;
 #ifdef DEBUG_SOUNDFILE
     post("read 1 %d", n);
 #endif
@@ -967,9 +970,9 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
     t_soundfile_info info;
-    int resize = 0, i, bufframes, ascii = 0, fd = -1;
-    long skipframes = 0, finalsize = 0,
-        maxsize = SFMAXFRAMES, framesread = 0, j, nframes;
+    int fd = -1, resize = 0, ascii = 0, i;
+    size_t skipframes = 0, finalsize = 0, maxsize = SFMAXFRAMES,
+           framesread = 0, anframes, bufframes, j;
     char endianness;
     const char *filename;
     t_garray *garrays[MAXSFCHANS];
@@ -1087,10 +1090,9 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     if (resize)
     {
             /* figure out what to resize to */
-        long poswas, eofis, framesinfile;
-
-        poswas = (long)lseek(fd, 0, SEEK_CUR);
-        eofis = (long)lseek(fd, 0, SEEK_END);
+        off_t poswas, eofis, framesinfile;
+        poswas = lseek(fd, 0, SEEK_CUR);
+        eofis = lseek(fd, 0, SEEK_END);
         if (poswas < 0 || eofis < 0 || eofis < poswas)
         {
             pd_error(x, "soundfiler_read: lseek failed");
@@ -1109,7 +1111,6 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
         for (i = 0; i < argc; i++)
         {
             int vecsize;
-
             garray_resize_long(garrays[i], finalsize);
                 /* for sanity's sake let's clear the save-in-patch flag here */
             garray_setsaveit(garrays[i], 0);
@@ -1130,10 +1131,10 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
 
     for (framesread = 0; framesread < finalsize; )
     {
-        long thisread = finalsize - framesread;
+        size_t thisread = finalsize - framesread;
         thisread = (thisread > bufframes ? bufframes : thisread);
         nframes = fread(sampbuf, info.i_bytesperframe, thisread, fp);
-        if (nframes <= 0) break;
+        if (nframes == 0) break;
         soundfile_xferin_words(&info, argc, vecs, framesread,
             (unsigned char *)sampbuf, nframes);
         framesread += nframes;
@@ -1179,8 +1180,8 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
     int argc, t_atom *argv, t_soundfile_info *info)
 {
     t_soundfiler_writeargs wa = {NULL, FILETYPE_UNKNOWN, 0};
-    int fd = -1, bufframes, i;
-    long frameswritten = 0, j;
+    int fd = -1, i;
+    size_t bufframes, frameswritten = 0, j;
     t_garray *garrays[MAXSFCHANS];
     t_word *vectors[MAXSFCHANS];
     char sampbuf[SAMPBUFSIZE];
@@ -1253,9 +1254,10 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
 
     bufframes = SAMPBUFSIZE / info->i_bytesperframe;
 
-    for (frameswritten = 0; frameswritten < wa.wa_nframes; )
+    for (frameswritten = 0; frameswritten < wa.wa_nframes;)
     {
-        long thiswrite = wa.wa_nframes - frameswritten, byteswritten, datasize;
+        size_t thiswrite = wa.wa_nframes - frameswritten,
+               byteswritten, datasize;
         thiswrite = (thiswrite > bufframes ? bufframes : thiswrite);
         datasize = info->i_bytesperframe * thiswrite;
         soundfile_xferout_words(info, vectors, (unsigned char *)sampbuf,
@@ -1277,7 +1279,7 @@ long soundfiler_dowrite(void *obj, t_canvas *canvas,
             wa.wa_nframes, frameswritten, info);
         close(fd);
     }
-    return (frameswritten);
+    return frameswritten;
 usage:
     pd_error(obj, "usage: write [flags] filename tablename...");
     post("flags: -skip <n> -nframes <n> -bytes <n> -wave -aiff -nextstep ...");
@@ -1286,7 +1288,7 @@ usage:
 fail:
     if (fd >= 0)
         close(fd);
-    return (0);
+    return 0;
 }
 
 static void soundfiler_write(t_soundfiler *x, t_symbol *s,
@@ -1367,16 +1369,16 @@ typedef struct _readsf
     const char *x_filename;   /* file to open (string permanently allocated) */
     int x_fileerror;          /* slot for "errno" return */
     t_soundfile_info x_info;  /* soundfile format info */
-    long x_onsetframes;       /* number of sample frames to skip */
+    size_t x_onsetframes;     /* number of sample frames to skip */
     int x_fd;                 /* filedesc */
     int x_fifosize;           /* buffer size appropriately rounded down */
     int x_fifohead;           /* index of next byte to get from file */
     int x_fifotail;           /* index of next byte the ugen will read */
     int x_eof;                /* true if fifohead has stopped changing */
-    int x_sigcountdown;       /* counter for signalling child for more data */
+    int x_sigcountdown;       /* counter for signaling child for more data */
     int x_sigperiod;          /* number of ticks per signal */
     int x_filetype;           /* writesf~ only; type of file to create */
-    int x_frameswritten;      /* writesf~ only; frames written */
+    size_t x_frameswritten;   /* writesf~ only; frames written */
     t_float x_f;              /* writesf~ only; scalar for signal inlet */
     pthread_mutex_t x_mutex;
     pthread_cond_t x_requestcondition;
@@ -1442,12 +1444,13 @@ static void *readsf_child_main(void *zz)
         else if (x->x_requestcode == REQUEST_OPEN)
         {
             char boo[80];
-            long sysrtn, wantbytes;
+            ssize_t bytesread;
+            size_t wantbytes;
 
                 /* copy file stuff out of the data structure so we can
                 relinquish the mutex while we're in open_soundfile(). */
             t_soundfile_info info;
-            long onsetframes = x->x_onsetframes;
+            size_t onsetframes = x->x_onsetframes;
             const char *filename = x->x_filename;
             const char *dirname = canvas_getdir(x->x_canvas)->s_name;
             soundfile_info_clear(&info);
@@ -1594,11 +1597,11 @@ static void *readsf_child_main(void *zz)
                 buf = x->x_buf;
                 fifohead = x->x_fifohead;
                 pthread_mutex_unlock(&x->x_mutex);
-                sysrtn = read(fd, buf + fifohead, wantbytes);
+                bytesread = read(fd, buf + fifohead, wantbytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY)
                     break;
-                if (sysrtn < 0)
+                if (bytesread < 0)
                 {
 #ifdef DEBUG_SOUNDFILE
                     pute("fileerror\n");
@@ -1606,15 +1609,15 @@ static void *readsf_child_main(void *zz)
                     x->x_fileerror = errno;
                     break;
                 }
-                else if (sysrtn == 0)
+                else if (bytesread == 0)
                 {
                     x->x_eof = 1;
                     break;
                 }
                 else
                 {
-                    x->x_fifohead += sysrtn;
-                    x->x_info.i_bytelimit -= sysrtn;
+                    x->x_fifohead += bytesread;
+                    x->x_info.i_bytelimit -= bytesread;
                     if (x->x_fifohead == fifosize)
                         x->x_fifohead = 0;
                     if (x->x_info.i_bytelimit <= 0)
@@ -1687,7 +1690,7 @@ static void *readsf_child_main(void *zz)
     pute("thread exit\n");
 #endif
     pthread_mutex_unlock(&x->x_mutex);
-    return (0);
+    return 0;
 }
 
 /******** the object proper runs in the calling (parent) thread ****/
@@ -1710,7 +1713,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     else if (bufsize > MAXBUFSIZE)
         bufsize = MAXBUFSIZE;
     buf = getbytes(bufsize);
-    if (!buf) return (0);
+    if (!buf) return 0;
 
     x = (t_readsf *)pd_new(readsf_class);
 
@@ -1734,7 +1737,7 @@ static void *readsf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
     pthread_create(&x->x_childthread, 0, readsf_child_main, x);
-    return (x);
+    return x;
 }
 
 static void readsf_tick(t_readsf *x)
@@ -1746,7 +1749,8 @@ static t_int *readsf_perform(t_int *w)
 {
     t_readsf *x = (t_readsf *)(w[1]);
     t_soundfile_info info = {0};
-    int vecsize = x->x_vecsize, noutlets = x->x_noutlets, i, j;
+    int vecsize = x->x_vecsize, noutlets = x->x_noutlets, i;
+    size_t j;
     t_sample *fp;
     soundfile_info_copy(&info, &x->x_info);
     if (x->x_state == STATE_STREAM)
@@ -1796,12 +1800,12 @@ static t_int *readsf_perform(t_int *w)
             }
                 /* then zero out the (rest of the) output */
             for (i = 0; i < noutlets; i++)
-                for (j = vecsize, fp = x->x_outvec[i] + xfersize; j--; )
+                for (j = vecsize, fp = x->x_outvec[i] + xfersize; j--;)
                     *fp++ = 0;
 
             sfread_cond_signal(&x->x_requestcondition);
             pthread_mutex_unlock(&x->x_mutex);
-            return (w+2);
+            return w + 2;
         }
 
         soundfile_xferin_sample(&info, noutlets, x->x_outvec, 0,
@@ -1820,10 +1824,10 @@ static t_int *readsf_perform(t_int *w)
     else
     {
         for (i = 0; i < noutlets; i++)
-            for (j = vecsize, fp = x->x_outvec[i]; j--; )
+            for (j = vecsize, fp = x->x_outvec[i]; j--;)
                 *fp++ = 0;
     }
-    return (w+2);
+    return w + 2;
 }
 
     /* start making output.  If we're in the "startup" state change
@@ -1988,8 +1992,9 @@ static void *writesf_child_main(void *zz)
         else if (x->x_requestcode == REQUEST_OPEN)
         {
             char boo[80];
-            int fd, writebytes;
-            long sysrtn;
+            int fd;
+            ssize_t byteswritten;
+            size_t writebytes;
 
                 /* copy file stuff out of the data structure so we can
                 relinquish the mutex while we're in open_soundfile(). */
@@ -2017,7 +2022,7 @@ static void *writesf_child_main(void *zz)
                 const char *filename = x->x_filename;
                 int fd = x->x_fd;
                 int filetype = x->x_filetype;
-                int frameswritten = x->x_frameswritten;
+                size_t frameswritten = x->x_frameswritten;
 
                 soundfile_info_copy(&info, &x->x_info);
 
@@ -2119,12 +2124,12 @@ static void *writesf_child_main(void *zz)
                 fifotail = x->x_fifotail;
                 fd = x->x_fd;
                 pthread_mutex_unlock(&x->x_mutex);
-                sysrtn = write(fd, buf + fifotail, writebytes);
+                byteswritten = write(fd, buf + fifotail, writebytes);
                 pthread_mutex_lock(&x->x_mutex);
                 if (x->x_requestcode != REQUEST_BUSY &&
                     x->x_requestcode != REQUEST_CLOSE)
                         break;
-                if (sysrtn < writebytes)
+                if (byteswritten < writebytes)
                 {
 #ifdef DEBUG_SOUNDFILE
                     pute("fileerror\n");
@@ -2134,11 +2139,11 @@ static void *writesf_child_main(void *zz)
                 }
                 else
                 {
-                    x->x_fifotail += sysrtn;
+                    x->x_fifotail += byteswritten;
                     if (x->x_fifotail == fifosize)
                         x->x_fifotail = 0;
                 }
-                x->x_frameswritten += sysrtn / x->x_info.i_bytesperframe;
+                x->x_frameswritten += byteswritten / x->x_info.i_bytesperframe;
 #ifdef DEBUG_SOUNDFILE
                 sprintf(boo, "after: head %d, tail %d written %d\n",
                     x->x_fifohead, x->x_fifotail, x->x_frameswritten);
@@ -2158,7 +2163,7 @@ static void *writesf_child_main(void *zz)
                 const char *filename = x->x_filename;
                 int fd = x->x_fd;
                 int filetype = x->x_filetype;
-                int frameswritten = x->x_frameswritten;
+                size_t frameswritten = x->x_frameswritten;
 
                 fd = x->x_fd;
                 soundfile_info_copy(&info, &x->x_info);
@@ -2188,7 +2193,7 @@ static void *writesf_child_main(void *zz)
     pute("thread exit\n");
 #endif
     pthread_mutex_unlock(&x->x_mutex);
-    return (0);
+    return 0;
 }
 
 /******** the object proper runs in the calling (parent) thread ****/
@@ -2211,7 +2216,7 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     else if (bufsize > MAXBUFSIZE)
         bufsize = MAXBUFSIZE;
     buf = getbytes(bufsize);
-    if (!buf) return (0);
+    if (!buf) return 0;
 
     x = (t_writesf *)pd_new(writesf_class);
 
@@ -2236,7 +2241,7 @@ static void *writesf_new(t_floatarg fnchannels, t_floatarg fbufsize)
     x->x_bufsize = bufsize;
     x->x_fifosize = x->x_fifohead = x->x_fifotail = x->x_requestcode = 0;
     pthread_create(&x->x_childthread, 0, writesf_child_main, x);
-    return (x);
+    return x;
 }
 
 static t_int *writesf_perform(t_int *w)
@@ -2247,7 +2252,8 @@ static t_int *writesf_perform(t_int *w)
     soundfile_info_copy(&info, &x->x_info);
     if (x->x_state == STATE_STREAM)
     {
-        int wantbytes, roominfifo;
+        int roominfifo;
+        size_t wantbytes;
         pthread_mutex_lock(&x->x_mutex);
         wantbytes = vecsize * info.i_bytesperframe;
         roominfifo = x->x_fifotail - x->x_fifohead;
@@ -2256,7 +2262,7 @@ static t_int *writesf_perform(t_int *w)
         while (roominfifo < wantbytes + 1)
         {
             fprintf(stderr, "writesf waiting for disk write..\n");
-            fprintf(stderr, "(head %d, tail %d, room %d, want %d)\n",
+            fprintf(stderr, "(head %d, tail %d, room %d, want %ld)\n",
                 x->x_fifohead, x->x_fifotail, roominfifo, wantbytes);
             sfread_cond_signal(&x->x_requestcondition);
             sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
@@ -2282,7 +2288,7 @@ static t_int *writesf_perform(t_int *w)
         }
         pthread_mutex_unlock(&x->x_mutex);
     }
-    return (w+2);
+    return w + 2;
 }
 
     /* start making output.  If we're in the "startup" state change

@@ -105,7 +105,7 @@ typedef struct _verchunk
 /* helpers */
 
 /// read sample rate from an 80-bit AIFF-compatible number
-static double readaiffsamprate(char * src, int swap)
+static double readaiffsamprate(char *src, int swap)
 {
    unsigned long mantissa, last = 0;
    unsigned char exp;
@@ -140,12 +140,14 @@ static void makeaiffsamprate(double sr, unsigned char *dst)
 }
 
 /// post chunk info for debugging
-static void aiff_postchunk(const t_chunk *chunk, int swap) {
+static void aiff_postchunk(const t_chunk *chunk, int swap)
+{
     post("%.4s %d", chunk->c_id, swap4s(chunk->c_size, swap));
 }
 
 /// post head info for debugging
-static void aiff_posthead(const t_head *head, int swap) {
+static void aiff_posthead(const t_head *head, int swap)
+{
     aiff_postchunk((const t_chunk *)head, swap);
     post("  %.4s", head->h_formtype);
 }
@@ -192,7 +194,7 @@ int soundfile_aiff_headersize()
     return AIFFHDRSIZE + AIFFCOMMSIZE + AIFFDATASIZE;
 }
 
-int soundfile_aiff_isheader(const char *buf, long size)
+int soundfile_aiff_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     return !strncmp(buf, "FORM", 4);
@@ -280,16 +282,20 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
             samplerate = readaiffsamprate((char *)(comm), swap);
             if (isaiffc)
             {
-                if (!strncmp(comm->cc_comptype, "NONE", 4)) {
+                if (!strncmp(comm->cc_comptype, "NONE", 4))
+                {
                     /* big endian */
                 }
-                else if (!strncmp(comm->cc_comptype, "sowt", 4)) {
+                else if (!strncmp(comm->cc_comptype, "sowt", 4))
+                {
                     /* little endian */
                     bigendian = 0;
                 }
                 else if (!strncmp(comm->cc_comptype, "fl32", 4) ||
-                         !strncmp(comm->cc_comptype, "FL32", 4)) {
-                    if (bytespersample != 4) {
+                         !strncmp(comm->cc_comptype, "FL32", 4))
+                {
+                    if (bytespersample != 4)
+                    {
                         error("AIFF wrong byte size for format %.4s",
                               comm->cc_comptype);
                         return 0;
@@ -303,7 +309,8 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
                     return 0;
                 }
             }
-            if (bytespersample == 4 && !isfloat) {
+            if (bytespersample == 4 && !isfloat)
+            {
                 error("AIFF 32 bit int not supported");
                 return 0;
             }
@@ -327,7 +334,8 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
             error("AIFF compressed format not support");
             return 0;
         }
-        else {
+        else
+        {
                 /* everything else */
             if (sys_verbose)
                 aiff_postchunk(chunk, swap);
@@ -353,15 +361,15 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
 }
 
 int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
-    long nframes)
+    size_t nframes)
 {
     int isaiffc = aiff_isaiffc(info), swap = !sys_isbigendian();
-    size_t byteswritten = 0, commsize = AIFFCOMMSIZE,
-           datasize = nframes * info->i_bytesperframe;
+    size_t commsize = AIFFCOMMSIZE, datasize = nframes * info->i_bytesperframe;
     off_t headersize = 0;
+    ssize_t byteswritten = 0;
     uint32_t uinttmp;
     char buf[SFHDRBUFSIZE];
-    t_head head = { "FORM", 0, "AIFF" };
+    t_head head = {"FORM", 0, "AIFF"};
     t_commchunk comm = {
         "COMM", swap4s(18, swap),
         swap2(info->i_nchannels, swap),          /* channels */
@@ -371,7 +379,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
         0,                                       /* sample rate */
         0, 0                                     /* comp info */
     };
-    t_datachunk data = { "SSND", swap4s(8, swap), 0, 0 };
+    t_datachunk data = {"SSND", swap4s(8, swap), 0, 0};
 
         /* file header */
     if (isaiffc)
@@ -399,12 +407,14 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     if (isaiffc)
     {
             /* AIFF-C compression info */
-        if (info->i_bytespersample == 4) {
+        if (info->i_bytespersample == 4)
+        {
             strncpy(comm.cc_comptype, "fl32", 4);
             strncpy(comm.cc_compname, AIFF_FL32_STR, AIFF_FL32_LEN);
             commsize += 4 + AIFF_FL32_LEN;
         }
-        else {
+        else
+        {
             strncpy(comm.cc_comptype, (info->i_bigendian ? "NONE" : "sowt"), 4);
             strncpy(comm.cc_compname, AIFF_NONE_STR, AIFF_NONE_LEN);
             commsize += 4 + AIFF_NONE_LEN;
@@ -438,7 +448,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
 // * AIFF  : header comm data
 // * AIFF-C: header ver comm data, comm chunk size variable due to string
 int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
-    long nframes)
+    size_t nframes)
 {
     int swap = !sys_isbigendian();
     size_t datasize = nframes * info->i_bytesperframe,
@@ -449,10 +459,12 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     if (aiff_isaiffc(info))
     {
             /* AIFF-C compression info */
-        if (info->i_bytespersample == 4) {
+        if (info->i_bytespersample == 4)
+        {
             commsize += 4 + AIFF_FL32_LEN;
         }
-        else {
+        else
+        {
             commsize += 4 + AIFF_NONE_LEN;
         }
         headersize += AIFFVERSIZE;
@@ -487,7 +499,7 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     return 1;
 }
 
-int soundfile_aiff_hasextension(const char *filename, long size)
+int soundfile_aiff_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 5 &&

@@ -20,17 +20,17 @@
 #endif
 
 #ifdef _MSC_VER
-#define off_t long
+#define off_t ssize_t
 #endif
 
 // should be large enough for all file type min sizes
 #define SFHDRBUFSIZE 128
 
 // default max sample frames
-#define SFMAXFRAMES LONG_MAX
+#define SFMAXFRAMES SIZE_MAX
 
 // default max sample bytes
-#define SFMAXBYTES LONG_MAX
+#define SFMAXBYTES SIZE_MAX
 
 /* soundfile format info */
 
@@ -40,9 +40,9 @@ typedef struct _soundfile_info
     int i_samplerate;     ///< read: file sr, write: pd sr
     int i_nchannels;      ///< number of channels
     int i_bytespersample; ///< 2: 16 bit, 3: 24 bit, 4: 32 bit
-    int i_headersize;     ///< header size in bytes
+    ssize_t i_headersize; ///< header size in bytes
     int i_bigendian;      ///< sample endianness 1 : big or 0 : little
-    long i_bytelimit;     ///< max number of data bytes to read/write
+    ssize_t i_bytelimit;  ///< max number of data bytes to read/write
     int i_bytesperframe;  ///< number of bytes per sample frame
 } t_soundfile_info;
 
@@ -62,11 +62,11 @@ int soundfile_info_swap(const t_soundfile_info *src);
 
 /// seek to offset in file fd and read size bytes into dst,
 /// returns bytes written on success or -1 on failure
-size_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size);
+ssize_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size);
 
 /// seek to offset in file fd and write size bytes from dst,
 /// returns number of bytes written on success or -1 if seek or write failed
-size_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size);
+ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size);
 
 /* byte swappers */
 
@@ -92,7 +92,7 @@ void swapstring(char *foo, int doit);
 int soundfile_wave_headersize();
 
 /// returns 1 if buffer is the beginning of a WAVE header
-int soundfile_wave_isheader(const char *buf, long size);
+int soundfile_wave_isheader(const char *buf, size_t size);
 
 /// read WAVE header from a file into info, assumes fd is at the beginning
 /// returns 1 on success or 0 on error
@@ -101,16 +101,16 @@ int soundfile_wave_readheader(int fd, t_soundfile_info *info);
 /// write header to beginning of an open file from an info struct
 /// returns header bytes written or -1 on error
 int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
 /// update file header data size, assumes fd is at the beginning
 /// returns 1 on success or 0 on error
 int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
 /// returns 1 if the filename has a WAVE extension (.wav, .wave, .WAV, or .WAVE)
 /// otherwise 0
-int soundfile_wave_hasextension(const char *filename, long size);
+int soundfile_wave_hasextension(const char *filename, size_t size);
 
 /* AIFF */
 
@@ -118,7 +118,7 @@ int soundfile_wave_hasextension(const char *filename, long size);
 int soundfile_aiff_headersize();
 
 /// returns 1 if buffer is the beginning of an AIFF header
-int soundfile_aiff_isheader(const char *buf, long size);
+int soundfile_aiff_isheader(const char *buf, size_t size);
 
 /// read AIFF header from a file into info, assumes fd is at the beginning
 /// returns 1 on success or 0 on error
@@ -127,16 +127,16 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info);
 /// write header to beginning of an open file from an info struct
 /// returns header bytes written or -1 on error
 int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
 /// update file header data size, assumes fd is at the beginning
 /// returns 1 on success or 0 on error
 int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
 /// returns 1 if the filename has an AIFF extension (.aif, .aiff, .aifc,
 /// .AIF, .AIFF, or .AIFC) otherwise 0
-int soundfile_aiff_hasextension(const char *filename, long size);
+int soundfile_aiff_hasextension(const char *filename, size_t size);
 
 /* NEXT */
 
@@ -144,7 +144,7 @@ int soundfile_aiff_hasextension(const char *filename, long size);
 int soundfile_next_headersize();
 
 /// returns 1 if buffer is the beginning of a NEXT header
-int soundfile_next_isheader(const char *buf, long size);
+int soundfile_next_isheader(const char *buf, size_t size);
 
 /// read NEXT header from a file into info, assumes fd is at the beginning
 /// returns 1 on success or 0 on error
@@ -153,13 +153,13 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info);
 /// write header to beginning of an open file from an info struct
 /// returns header bytes written or -1 on error
 int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
 /// update file header data size, assumes fd is at the beginning
 /// returns 1 on success or 0 on error
 int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
 /// returns 1 if the filename has a NEXT extension (.au, .snd, .AU, or .SND)
 /// otherwise 0
-int soundfile_next_hasextension(const char *filename, long size);
+int soundfile_next_hasextension(const char *filename, size_t size);

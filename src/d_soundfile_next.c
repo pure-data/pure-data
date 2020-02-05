@@ -32,7 +32,7 @@ int soundfile_next_headersize()
     return sizeof(t_nextstep);
 }
 
-int soundfile_next_isheader(const char *buf, long size)
+int soundfile_next_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     if (!strncmp(buf, ".snd", 4) || !strncmp(buf, "dns.", 4))
@@ -89,7 +89,7 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info)
 }
 
 int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
-    long nframes)
+    size_t nframes)
 {
     char headerbuf[SFHDRBUFSIZE];
     t_nextstep *nexthdr = (t_nextstep *)headerbuf;
@@ -126,7 +126,7 @@ int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
 /* the data size is limited to 4 bytes, so if the size is too large,
 do it the lazy way: just set the size field to "unknown size" */
 int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
-    long nframes)
+    size_t nframes)
 {
     uint32_t nextsize = 0xffffffff; /* unknown size */
     if (nframes * info->i_bytesperframe < nextsize)
@@ -139,7 +139,7 @@ int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
     return 1;
 }
 
-int soundfile_next_hasextension(const char *filename, long size)
+int soundfile_next_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 4 &&

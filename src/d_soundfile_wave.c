@@ -54,7 +54,7 @@ int soundfile_wave_headersize()
     return sizeof(t_wave);
 }
 
-int soundfile_wave_isheader(const char *buf, long size)
+int soundfile_wave_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     return !strncmp(buf, "RIFF", 4);
@@ -151,7 +151,7 @@ int soundfile_wave_readheader(int fd, t_soundfile_info *info)
 }
 
 int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
-    long nframes)
+    size_t nframes)
 {
     char headerbuf[SFHDRBUFSIZE];
     t_wave *wavehdr = (t_wave *)headerbuf;
@@ -182,7 +182,7 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
 }
 
 int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
-    long nframes)
+    size_t nframes)
 {
     int swap = soundfile_info_swap(info);
     long longtmp, datasize = nframes * info->i_bytesperframe;
@@ -207,7 +207,7 @@ int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
 }
 
 // TODO: length-safe version?
-int soundfile_wave_hasextension(const char *filename, long size)
+int soundfile_wave_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 5 &&
