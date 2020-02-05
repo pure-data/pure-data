@@ -2426,6 +2426,8 @@ static void canvas_doclick(t_canvas *x, int xpos, int ypos, int which,
                         x->gl_editor->e_onmotion = MA_CONNECT;
                         x->gl_editor->e_xwas = xpos;
                         x->gl_editor->e_ywas = ypos;
+
+                        sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 0\n", x);
                         sys_vgui(
                             ".x%lx.c create line %d %d %d %d -width %d -tags x\n",
                             x, xpos, ypos, xpos, ypos,
@@ -2665,7 +2667,10 @@ static void canvas_doconnect(t_canvas *x, int xpos, int ypos, int mod, int doit)
 #if 0
     post("canvas_doconnect(%p, %d, %d, %d, %d)", x, xpos, ypos, mod, doit);
 #endif
-    if (doit) sys_vgui(".x%lx.c delete x\n", x);
+    if (doit) {
+        sys_vgui("::pdtk_canvas::cords_to_foreground .x%lx.c 1\n", x);
+        sys_vgui(".x%lx.c delete x\n", x);
+    }
     else sys_vgui(".x%lx.c coords x %d %d %d %d\n",
                   x, x->gl_editor->e_xwas,
                   x->gl_editor->e_ywas, xpos, ypos);
