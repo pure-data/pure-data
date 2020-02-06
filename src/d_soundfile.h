@@ -40,9 +40,9 @@ typedef struct _soundfile_info
     int i_samplerate;     ///< read: file sr, write: pd sr
     int i_nchannels;      ///< number of channels
     int i_bytespersample; ///< 2: 16 bit, 3: 24 bit, 4: 32 bit
-    ssize_t i_headersize; ///< header size in bytes
+    ssize_t i_headersize; ///< header size in bytes, -1 indicates unknown size
     int i_bigendian;      ///< sample endianness 1 : big or 0 : little
-    ssize_t i_bytelimit;  ///< max number of data bytes to read/write
+    size_t i_bytelimit;   ///< max number of data bytes to read/write
     int i_bytesperframe;  ///< number of bytes per sample frame
 } t_soundfile_info;
 
