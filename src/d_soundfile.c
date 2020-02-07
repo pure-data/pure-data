@@ -9,7 +9,7 @@ These operations are not to be done in "real time" as they may have to wait
 for disk accesses (even the write routine.)  Finally, the realtime objects
 readsf~ and writesf~ are defined which confine disk operations to a separate
 thread so that they can be used in real time.  The readsf~ and writesf~
-objects use Posix-like threads.  */
+objects use Posix-like threads. */
 
 #include "d_soundfile.h"
 #ifdef _WIN32
@@ -46,7 +46,7 @@ typedef union _samplelong {
   long     l;
 } t_sampleuint;
 
-/* supported file types */
+    /* supported file types */
 typedef enum _soundfile_filetype
 {
     FILETYPE_UNKNOWN = -1,
@@ -55,9 +55,11 @@ typedef enum _soundfile_filetype
     FILETYPE_NEXT    =  2
 } t_soundfile_filetype;
 
-// /***************** soundfile helpers ************************/
+/* ----- soundfile helpers ----- */
 
-/* returns min buffer size between the various soundfile types */
+    /** returns min buffer size between the various soundfile types
+        TODO: this could probably be a define, but is designed to be
+              dynamic for future changes */
 static int soundfile_min_headersize()
 {
     int size = soundfile_wave_headersize();
@@ -68,7 +70,7 @@ static int soundfile_min_headersize()
     return size;
 }
 
-/* soundfile info */
+/* ----- soundfile info ----- */
 
 void soundfile_info_clear(t_soundfile_info *info)
 {
@@ -117,7 +119,7 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
     outlet_list(out, &s_list, 5, (t_atom *)info_list);
 }
 
-/* read write */
+/* ----- read write ----- */
 
 ssize_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size) {
     off_t seekout = lseek(fd, offset, SEEK_SET);
@@ -133,7 +135,7 @@ ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size)
     return write(fd, src, size);
 }
 
-/* byte swappers */
+/* ----- byte swappers ----- */
 
 int sys_isbigendian(void)
 {
@@ -176,15 +178,15 @@ void swapstring(char *foo, int doit)
     }
 }
 
-/******************** soundfile access routines **********************/
+/* ----------------------- soundfile access routines ----------------------- */
 
-    /* This routine opens a file, looks for either a supported file format
-    header, seeks to end of it, and fills in the soundfile header info values.
-    Only 2- and 3-byte fixed-point samples and 4-byte floating point samples
-    are supported.  If info->i_headersize is nonzero, the caller should supply
-    the number of channels, endinanness, and bytes per sample; the header is
-    ignored.  Otherwise, the routine tries to read the header and fill in the
-    properties. */
+    /** This routine opens a file, looks for either a supported file format
+        header, seeks to end of it, and fills in the soundfile header info
+        values. Only 2- and 3-byte fixed-point samples and 4-byte floating point
+        samples are supported.  If info->i_headersize is nonzero, the caller
+        should supply the number of channels, endinanness, and bytes per sample;
+        the header is ignored.  Otherwise, the routine tries to read the header
+        and fill in the properties. */
 int open_soundfile_via_fd(int fd, t_soundfile_info *info, size_t skipframes)
 {
     t_soundfile_info i;
@@ -246,9 +248,9 @@ badheader:
     return -1;
 }
 
-    /* open a soundfile, using open_via_path().  This is used by readsf~ in
-    a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
-    version of open_soundfile_via_canvas() */
+    /** open a soundfile, using open_via_path().  This is used by readsf~ in
+        a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
+        version of open_soundfile_via_canvas() */
 int open_soundfile(const char *dirname, const char *filename,
     t_soundfile_info *info, size_t skipframes)
 {
@@ -263,9 +265,9 @@ int open_soundfile(const char *dirname, const char *filename,
     return sf_fd;
 }
 
-    /* open a soundfile, using open_via_canvas().  This is used by readsf~ in
-    a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
-    version of open_soundfile_via_canvas() */
+    /** open a soundfile, using open_via_canvas().  This is used by readsf~ in
+        a not-perfectly-threadsafe way.  LATER replace with a thread-hardened
+        version of open_soundfile_via_canvas() */
 int open_soundfile_via_canvas(t_canvas *canvas, const char *filename,
     t_soundfile_info *info, size_t skipframes)
 {
@@ -425,18 +427,18 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
 
     /* soundfiler_write ...
 
-    usage: write [flags] filename table ...
-    flags:
-        -nframes <frames>
-        -skip <frames>
-        -bytes <bytes per sample>
-        -r / -rate <samplerate>
-        -normalize
-        -wave
-        -aiff
-        -nextstep
-        -big
-        -little
+       usage: write [flags] filename table ...
+       flags:
+         -nframes <frames>
+         -skip <frames>
+         -bytes <bytes per sample>
+         -r / -rate <samplerate>
+         -normalize
+         -wave
+         -aiff
+         -nextstep
+         -big
+         -little
     */
 
 typedef struct _soundfiler_writeargs
@@ -451,13 +453,12 @@ typedef struct _soundfiler_writeargs
     int wa_normalize;                 /* normalize samples? */
 } t_soundfiler_writeargs;
 
-    /* the routine which actually does the work should LATER also be called
-    from garray_write16. */
+/* the routine which actually does the work should LATER also be called
+from garray_write16. */
 
-
-    /* Parse arguments for writing.  The "obj" argument is only for flagging
-    errors.  For streaming to a file the "normalize", "onset" and "nframes"
-    arguments shouldn't be set but the calling routine flags this. */
+    /** Parse arguments for writing.  The "obj" argument is only for flagging
+        errors.  For streaming to a file the "normalize", "onset" and "nframes"
+        arguments shouldn't be set but the calling routine flags this. */
 static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
     t_soundfiler_writeargs *wa)
 {
@@ -588,7 +589,7 @@ usage:
     return -1;
 }
 
-/* return fd and sets info->i_headersize on success or -1 on failure */
+    /** return fd and sets info->i_headersize on success or -1 on failure */
 static int create_soundfile(t_canvas *canvas, const char *filename,
     int filetype, size_t nframes, t_soundfile_info *info)
 {
@@ -649,16 +650,16 @@ static void soundfile_finishwrite(void *obj, const char *filename, int fd,
     if (nframes < SFMAXFRAMES)
         pd_error(obj, "soundfiler_write: %ld out of %ld frames written",
             frameswritten, nframes);
-    switch(filetype)
+    switch (filetype)
     {
         case FILETYPE_WAVE:
-            if(soundfile_wave_updateheader(fd, info, frameswritten)) return;
+            if (soundfile_wave_updateheader(fd, info, frameswritten)) return;
             break;
         case FILETYPE_AIFF:
-            if(soundfile_aiff_updateheader(fd, info, frameswritten)) return;
+            if (soundfile_aiff_updateheader(fd, info, frameswritten)) return;
             break;
         case FILETYPE_NEXT:
-            if(soundfile_next_updateheader(fd, info, frameswritten)) return;
+            if (soundfile_next_updateheader(fd, info, frameswritten)) return;
             break;
         default: return;
     }
@@ -883,7 +884,7 @@ static void soundfile_xferout_words(const t_soundfile_info *info, t_word **vecs,
     }
 }
 
-/* ------- soundfiler - reads and writes soundfiles to/from "garrays" ---- */
+/* ----- soundfiler - reads and writes soundfiles to/from "garrays" ----- */
 
 #define SAMPBUFSIZE 1024
 
@@ -958,14 +959,15 @@ static void soundfiler_readascii(t_soundfiler *x, const char *filename,
 
     /* soundfiler_read ...
 
-    usage: read [flags] filename table ...
-    flags:
-        -skip <frames> ... frames to skip in file
-        -onset <frames> ... onset in table to read into (NOT DONE YET)
-        -raw <headersize channels bytes endian>
-        -resize
-        -maxsize <max-size>
+       usage: read [flags] filename table ...
+       flags:
+           -skip <frames> ... frames to skip in file
+           -onset <frames> ... onset in table to read into (NOT DONE YET)
+           -raw <headersize channels bytes endian>
+           -resize
+           -maxsize <max-size>
     */
+
 static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
@@ -1174,8 +1176,8 @@ done:
     outlet_float(x->x_obj.ob_outlet, (t_float)framesread);
 }
 
-    /* this is broken out from soundfiler_write below so garray_write can
-    call it too... not done yet though. */
+    /** this is broken out from soundfiler_write below so garray_write can
+        call it too... not done yet though. */
 long soundfiler_dowrite(void *obj, t_canvas *canvas,
     int argc, t_atom *argv, t_soundfile_info *info)
 {
@@ -1315,17 +1317,17 @@ static void soundfiler_setup(void)
         gensym("write"), A_GIMME, 0);
 }
 
-/************************* readsf object ******************************/
+/* ------------------------- readsf object ------------------------- */
 
 /* READSF uses the Posix threads package; for the moment we're Linux
 only although this should be portable to the other platforms.
 
-Each instance of readsf~ owns a "child" thread for doing the unix (MSW?) file
-reading.  The parent thread signals the child each time:
+Each instance of readsf~ owns a "child" thread for doing the Posix file reading.
+The parent thread signals the child each time:
     (1) a file wants opening or closing;
     (2) we've eaten another 1/16 of the shared buffer (so that the
         child thread should check if it's time to read some more.)
-The child signals the parent whenever a read has completed.  Signalling
+The child signals the parent whenever a read has completed.  Signaling
 is done by setting "conditions" and putting data in mutex-controlled common
 areas.
 */
@@ -1356,37 +1358,37 @@ typedef struct _readsf
     t_object x_obj;
     t_canvas *x_canvas;
     t_clock *x_clock;
-    char *x_buf;                      /* soundfile buffer */
-    int x_bufsize;                    /* buffer size in bytes */
-    int x_noutlets;                   /* number of audio outlets */
-    t_sample *(x_outvec[MAXSFCHANS]); /* audio vectors */
-    int x_vecsize;                    /* vector size for transfers */
-    t_outlet *x_bangout;              /* bang-on-done outlet */
-    int x_state;                      /* opened, running, or idle */
-    t_float x_insamplerate;           /* sample rate of input signal if known */
+    char *x_buf;                      /**< soundfile buffer */
+    int x_bufsize;                    /**< buffer size in bytes */
+    int x_noutlets;                   /**< number of audio outlets */
+    t_sample *(x_outvec[MAXSFCHANS]); /**< audio vectors */
+    int x_vecsize;                    /**< vector size for transfers */
+    t_outlet *x_bangout;              /**< bang-on-done outlet */
+    int x_state;                      /**< opened, running, or idle */
+    t_float x_insamplerate;           /**< input signal sample rate, if known */
         /* parameters to communicate with subthread */
-    int x_requestcode;        /* pending request from parent to I/O thread */
-    const char *x_filename;   /* file to open (string permanently allocated) */
-    int x_fileerror;          /* slot for "errno" return */
-    t_soundfile_info x_info;  /* soundfile format info */
-    size_t x_onsetframes;     /* number of sample frames to skip */
-    int x_fd;                 /* filedesc */
-    int x_fifosize;           /* buffer size appropriately rounded down */
-    int x_fifohead;           /* index of next byte to get from file */
-    int x_fifotail;           /* index of next byte the ugen will read */
-    int x_eof;                /* true if fifohead has stopped changing */
-    int x_sigcountdown;       /* counter for signaling child for more data */
-    int x_sigperiod;          /* number of ticks per signal */
-    int x_filetype;           /* writesf~ only; type of file to create */
-    size_t x_frameswritten;   /* writesf~ only; frames written */
-    t_float x_f;              /* writesf~ only; scalar for signal inlet */
+    int x_requestcode;        /**< pending request from parent to I/O thread */
+    const char *x_filename;   /**< file to open (string permanently alloced) */
+    int x_fileerror;          /**< slot for "errno" return */
+    t_soundfile_info x_info;  /**< soundfile format info */
+    size_t x_onsetframes;     /**< number of sample frames to skip */
+    int x_fd;                 /**< filedesc */
+    int x_fifosize;           /**< buffer size appropriately rounded down */
+    int x_fifohead;           /**< index of next byte to get from file */
+    int x_fifotail;           /**< index of next byte the ugen will read */
+    int x_eof;                /**< true if fifohead has stopped changing */
+    int x_sigcountdown;       /**< counter for signaling child for more data */
+    int x_sigperiod;          /**< number of ticks per signal */
+    int x_filetype;           /**< writesf~ only; type of file to create */
+    size_t x_frameswritten;   /**< writesf~ only; frames written */
+    t_float x_f;              /**< writesf~ only; scalar for signal inlet */
     pthread_mutex_t x_mutex;
     pthread_cond_t x_requestcondition;
     pthread_cond_t x_answercondition;
     pthread_t x_childthread;
 } t_readsf;
 
-/************** the child thread which performs file I/O ***********/
+/* ----- the child thread which performs file I/O ----- */
 
 #if 0
 static void pute(const char *s)   /* debug routine */
@@ -1511,7 +1513,7 @@ static void *readsf_child_main(void *zz)
                     soundfile is being played...  */
             x->x_fifosize = x->x_bufsize - (x->x_bufsize %
                 (x->x_info.i_bytesperframe * MAXVECSIZE));
-                    /* arrange for the "request" condition to be signalled 16
+                    /* arrange for the "request" condition to be signaled 16
                     times per buffer */
 #ifdef DEBUG_SOUNDFILE
             sprintf(boo, "fifosize %d\n",
@@ -1558,7 +1560,7 @@ static void *readsf_child_main(void *zz)
 #endif
                         sfread_cond_signal(&x->x_answercondition);
 #ifdef DEBUG_SOUNDFILE
-                        pute("signalled\n");
+                        pute("signaled\n");
 #endif
                         sfread_cond_wait(&x->x_requestcondition,
                             &x->x_mutex);
@@ -1693,7 +1695,7 @@ static void *readsf_child_main(void *zz)
     return 0;
 }
 
-/******** the object proper runs in the calling (parent) thread ****/
+/* ----- the object proper runs in the calling (parent) thread ----- */
 
 static void readsf_tick(t_readsf *x);
 
@@ -1830,8 +1832,8 @@ static t_int *readsf_perform(t_int *w)
     return w + 2;
 }
 
-    /* start making output.  If we're in the "startup" state change
-    to the "running" state. */
+    /** start making output.  If we're in the "startup" state change
+        to the "running" state. */
 static void readsf_start(t_readsf *x)
 {
     if (x->x_state == STATE_STARTUP)
@@ -1839,7 +1841,7 @@ static void readsf_start(t_readsf *x)
     else pd_error(x, "readsf: start requested with no prior 'open'");
 }
 
-    /* LATER rethink whether you need the mutex just to set a variable? */
+    /** LATER rethink whether you need the mutex just to set a variable? */
 static void readsf_stop(t_readsf *x)
 {
     pthread_mutex_lock(&x->x_mutex);
@@ -1856,11 +1858,10 @@ static void readsf_float(t_readsf *x, t_floatarg f)
     else readsf_stop(x);
 }
 
-    /* open method.  Called as:
-    open filename [skipframes headersize channels bytespersamp endianness]
-        (if headersize is zero, header is taken to be automatically
-        detected; thus, use the special "-1" to mean a truly headerless file.)
-    */
+    /** open method.  Called as:
+        open filename [skipframes headersize channels bytespersamp endianness]
+        (if headersize is zero, header is taken to be automatically detected;
+        thus, use the special "-1" to mean a truly headerless file.) */
 static void readsf_open(t_readsf *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_symbol *filesym = atom_getsymbolarg(0, argc, argv);
@@ -1920,7 +1921,7 @@ static void readsf_print(t_readsf *x)
     post("eof %d", x->x_eof);
 }
 
-    /* request QUIT and wait for acknowledge */
+    /** request QUIT and wait for acknowledge */
 static void readsf_free(t_readsf *x)
 {
     void *threadrtn;
@@ -1958,13 +1959,13 @@ static void readsf_setup(void)
     class_addmethod(readsf_class, (t_method)readsf_print, gensym("print"), 0);
 }
 
-/******************************* writesf ***************************/
+/* ------------------------- writesf ------------------------- */
 
 static t_class *writesf_class;
 
 #define t_writesf t_readsf    /* just re-use the structure */
 
-/************** the child thread which performs file I/O ***********/
+/* ----- the child thread which performs file I/O ----- */
 
 static void *writesf_child_main(void *zz)
 {
@@ -2068,7 +2069,7 @@ static void *writesf_child_main(void *zz)
                 x->x_requestcode = REQUEST_NOTHING;
                 continue;
             }
-            /* check if another request has been made; if so, field it */
+                /* check if another request has been made; if so, field it */
             if (x->x_requestcode != REQUEST_BUSY)
                 continue;
 #ifdef DEBUG_SOUNDFILE
@@ -2109,7 +2110,7 @@ static void *writesf_child_main(void *zz)
 #endif
                     sfread_cond_signal(&x->x_answercondition);
 #ifdef DEBUG_SOUNDFILE
-                    pute("signalled\n");
+                    pute("signaled\n");
 #endif
                     sfread_cond_wait(&x->x_requestcondition,
                         &x->x_mutex);
@@ -2196,7 +2197,7 @@ static void *writesf_child_main(void *zz)
     return 0;
 }
 
-/******** the object proper runs in the calling (parent) thread ****/
+/* ----- the object proper runs in the calling (parent) thread ----- */
 
 static void writesf_tick(t_writesf *x);
 
@@ -2291,8 +2292,8 @@ static t_int *writesf_perform(t_int *w)
     return w + 2;
 }
 
-    /* start making output.  If we're in the "startup" state change
-    to the "running" state. */
+    /** start making output.  If we're in the "startup" state change
+        to the "running" state. */
 static void writesf_start(t_writesf *x)
 {
     if (x->x_state == STATE_STARTUP)
@@ -2301,7 +2302,7 @@ static void writesf_start(t_writesf *x)
         pd_error(x, "writesf: start requested with no prior 'open'");
 }
 
-    /* LATER rethink whether you need the mutex just to set a variable? */
+    /** LATER rethink whether you need the mutex just to set a variable? */
 static void writesf_stop(t_writesf *x)
 {
     pthread_mutex_lock(&x->x_mutex);
@@ -2314,9 +2315,8 @@ static void writesf_stop(t_writesf *x)
     pthread_mutex_unlock(&x->x_mutex);
 }
 
-    /* open method.  Called as: open [args] filename with args as in
-        soundfiler_writeargs_parse().
-    */
+    /** open method.  Called as: open [args] filename with args as in
+        soundfiler_writeargs_parse(). */
 static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
 {
     t_soundfiler_writeargs wa = {NULL, FILETYPE_UNKNOWN, 0};
@@ -2365,7 +2365,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
         tick.  */
     x->x_fifosize = x->x_bufsize - (x->x_bufsize %
         (x->x_info.i_bytesperframe * MAXVECSIZE));
-        /* arrange for the "request" condition to be signalled 16
+        /* arrange for the "request" condition to be signaled 16
             times per buffer */
     x->x_sigcountdown = x->x_sigperiod = (x->x_fifosize /
             (16 * (x->x_info.i_bytesperframe * x->x_vecsize)));
@@ -2397,7 +2397,7 @@ static void writesf_print(t_writesf *x)
     post("eof %d", x->x_eof);
 }
 
-    /* request QUIT and wait for acknowledge */
+    /** request QUIT and wait for acknowledge */
 static void writesf_free(t_writesf *x)
 {
     void *threadrtn;
@@ -2410,7 +2410,7 @@ static void writesf_free(t_writesf *x)
     while (x->x_requestcode != REQUEST_NOTHING)
     {
 #ifdef DEBUG_SOUNDFILE
-        post("signalling...");
+        post("signaling...");
 #endif
         sfread_cond_signal(&x->x_requestcondition);
         sfread_cond_wait(&x->x_answercondition, &x->x_mutex);
@@ -2443,7 +2443,7 @@ static void writesf_setup(void)
     CLASS_MAINSIGNALIN(writesf_class, t_writesf, x_f);
 }
 
-/* ------------------------ global setup routine ------------------------- */
+/* ------------------------- global setup routine ------------------------ */
 
 void d_soundfile_setup(void)
 {

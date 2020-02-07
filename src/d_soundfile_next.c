@@ -34,7 +34,7 @@
 
 /* TODO: support 32 bit int format? */
 
-/* explicit byte sizes as sizeof(struct) may return alignment padded values */
+    /* explicit byte sizes, sizeof(struct) may return alignment padded values */
 #define NEXTHDRSIZE 28 /**< min valid header size + info string */
 
 #define NEXT_FORMAT_LINEAR_16 3 /**< 16 bit int */
@@ -54,9 +54,9 @@ typedef struct _nextstep
     char ns_info[4];        /**< info string, minimum 4 bytes up to onset */
 } t_nextstep;
 
-/* helpers */
+/* ----- helpers ----- */
 
-/** returns 1 if file is big endian, 0 if little endian, or -1 for bad header */
+    /** returns 1 if big endian, 0 if little endian, or -1 for bad header */
 static int next_isbigendian(const t_nextstep *next)
 {
     if (!strncmp(next->ns_id, ".snd", 4))
@@ -66,8 +66,8 @@ static int next_isbigendian(const t_nextstep *next)
     return -1;
 }
 
-/** returns the number of bytes per sample for a given format code or 0 if the
-    format is not supported */
+    /** returns the number of bytes per sample for a given format code
+        or 0 if the format is not supported */
 static int next_bytespersample(int format)
 {
     switch (format)
@@ -79,7 +79,7 @@ static int next_bytespersample(int format)
     }
 }
 
-/** post head info for debugging */
+    /** post head info for debugging */
 static void next_posthead(const t_nextstep *next, int swap)
 {
     uint32_t onset = swap4(next->ns_onset, swap),
@@ -115,7 +115,7 @@ static void next_posthead(const t_nextstep *next, int swap)
         next->ns_info, (onset > NEXTHDRSIZE ? "..." : ""));
 }
 
-/* NEXT */
+/* ------------------------- NEXT ------------------------- */
 
 int soundfile_next_headersize()
 {
@@ -189,12 +189,12 @@ int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
     off_t headersize = NEXTHDRSIZE;
     ssize_t byteswritten = 0;
     t_nextstep next = {
-        ".snd",                                    /* id */
-        swap4((uint32_t)headersize, swap),         /* data onset */
+        ".snd",                                    /* id          */
+        swap4((uint32_t)headersize, swap),         /* data onset  */
         swap4((uint32_t)datasize, swap),           /* data length */
-        0,                                         /* format */
+        0,                                         /* format      */
         swap4((uint32_t)info->i_samplerate, swap), /* sample rate */
-        swap4((uint32_t)info->i_nchannels, swap),  /* channels */
+        swap4((uint32_t)info->i_nchannels, swap),  /* channels    */
         "Pd "                                      /* info string */
     };
 
@@ -222,8 +222,8 @@ int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
     return (byteswritten < headersize ? -1 : byteswritten);
 }
 
-/** the data length is limited to 4 bytes, so if the size is too large,
-    do it the lazy way: just set the size field to "unknown size" */
+    /** the data length is limited to 4 bytes, so if the size is too large,
+        do it the lazy way: just set the size field to "unknown size" */
 int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
