@@ -5,7 +5,7 @@
 /* refs: http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/AU/AU.html
          https://pubs.opengroup.org/external/auformat.html
          http://sox.sourceforge.net/AudioFormats-11.html#ss11.2
-         http://soundfile.sapp.org/doc/NextFormat/ */
+         http://soundfile.sapp.org/doc/NextFormat */
 
 #include "d_soundfile.h"
 #include "s_stuff.h" /* for sys_verbose */
@@ -162,7 +162,12 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info)
 
     bytelimit = swap4(next->ns_length, swap);
     if (bytelimit == NEXT_UNKNOWN_SIZE)
-        bytelimit = NEXTMAXBYTES;
+    {
+            /* interpret data size from file size */
+        bytelimit = lseek(fd, 0, SEEK_END) - headersize;
+        if (bytelimit > NEXTMAXBYTES)
+            bytelimit = NEXTMAXBYTES;
+    }
 
     format = swap4(next->ns_format, swap);
     bytespersample = next_bytespersample(format);
