@@ -376,7 +376,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     off_t headersize = 0;
     ssize_t byteswritten = 0;
     uint32_t uinttmp;
-    char buf[SFHDRBUFSIZE];
+    char buf[SFHDRBUFSIZE] = {0};
     t_head head = {"FORM", 0, "AIFF"};
     t_commchunk comm = {
         "COMM", swap4s(18, swap),
@@ -399,8 +399,8 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     if (isaiffc)
     {
         t_verchunk ver = {
-            "FVER", (int32_t)swap4s(4, swap),
-            (uint32_t)swap4(AIFFCVER1, swap) /* version timestamp */
+            "FVER", swap4s(4, swap),
+            swap4(AIFFCVER1, swap) /* version timestamp */
         };
         memcpy(buf + headersize, &ver, AIFFVERSIZE);
         headersize += AIFFVERSIZE;
