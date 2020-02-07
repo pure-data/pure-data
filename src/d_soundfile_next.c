@@ -39,6 +39,8 @@
     /* explicit byte sizes, sizeof(struct) may return alignment padded values */
 #define NEXTHEADSIZE 28 /**< min valid header size + info string */
 
+#define NEXTMAXBYTES 0xffffffff /**< max unsigned 32 bit size */
+
 #define NEXT_FORMAT_LINEAR_16 3 /**< 16 bit int */
 #define NEXT_FORMAT_LINEAR_24 4 /**< 24 bit int */
 #define NEXT_FORMAT_FLOAT     6 /**< 32 bit float */
@@ -158,7 +160,7 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info)
 
     bytelimit = swap4(next->ns_length, swap);
     if (bytelimit == NEXT_UNKNOWN_SIZE)
-        bytelimit = SFMAXBYTES;
+        bytelimit = NEXTMAXBYTES;
 
     format = swap4(next->ns_format, swap);
     bytespersample = next_bytespersample(format);

@@ -49,9 +49,11 @@
 #define WAVEFORMATSIZE 24 /**< chunk header and data */
 #define WAVEFACTSIZE   12 /**< chunk header and data */
 
-#define WAVE_FORMAT_PCM   0x0001 /* 16 or 24 bit int */
-#define WAVE_FORMAT_FLOAT 0x0003 /* 32 bit float */
-#define WAVE_FORMAT_EXT   0xfffe /* extensible, see format chunk subformat */
+#define WAVEMAXBYTES SFMAXBYTES// 0xffffffff /**< max unsigned 32 bit size */
+
+#define WAVE_FORMAT_PCM   0x0001 /**< 16 or 24 bit int */
+#define WAVE_FORMAT_FLOAT 0x0003 /**< 32 bit float */
+#define WAVE_FORMAT_EXT   0xfffe /**< extensible, see format chunk subformat */
 
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
@@ -146,7 +148,7 @@ int soundfile_wave_readheader(int fd, t_soundfile_info *info)
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
         swap = (bigendian != sys_isbigendian()), formatfound = 1;
     off_t headersize = WAVEHEADSIZE + WAVECHUNKSIZE;
-    size_t bytelimit = SFMAXBYTES;
+    size_t bytelimit = WAVEMAXBYTES;
     union
     {
         char b_c[SFHDRBUFSIZE];
@@ -260,7 +262,7 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
         swap2((uint16_t)info->i_bytesperframe, swap),      /* block align     */
         swap2((uint16_t)info->i_bytespersample * 8, swap), /* bits per sample */
     };
-    t_chunk data = {"data", swap4((uint32_t)(datasize + 8), swap)};
+    t_chunk data = {"data", swap4((uint32_t)(datasize), swap)};
 
         /* file header */
     memcpy(buf + headersize, &head, WAVEHEADSIZE);
@@ -276,6 +278,13 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
         /* data chunk */
     memcpy(buf + headersize, &data, WAVECHUNKSIZE);
     headersize += WAVECHUNKSIZE;
+
+    if (sys_verbose)
+    {
+        wave_posthead(&head, swap);
+        wave_postformat(&format, swap);
+        wave_postchunk(&data, swap);
+    }
 
     byteswritten = soundfile_writebytes(fd, 0, buf, headersize);
     return (byteswritten < headersize ? -1 : byteswritten);
@@ -300,6 +309,13 @@ int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
     uinttmp = swap4((uint32_t)(headersize + datasize - 8), swap);
     if (soundfile_writebytes(fd, 4, (char *)&uinttmp, 4) < 4)
         return 0;
+
+    if (sys_verbose)
+    {
+        post("RIFF %d", headersize + datasize - 8);
+        post("  WAVE");
+        post("data %d", datasize);
+    }
 
     return 1;
 }

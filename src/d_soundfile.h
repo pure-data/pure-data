@@ -26,15 +26,14 @@
     /** should be large enough for all file type min sizes */
 #define SFHDRBUFSIZE 128
 
-    /** default max sample frames */
-#define SFMAXFRAMES SIZE_MAX
-
-    /** default max sample bytes */
-#define SFMAXBYTES SIZE_MAX
+#define SFMAXFRAMES SIZE_MAX /**< default max sample frames */
+#define SFMAXBYTES  SIZE_MAX /**< default max sample bytes */
 
 /* ----- soundfile format info ----- */
 
-    /** soundfile format info */
+    /** soundfile format info
+        note: headersize and bytelimit are signed as they are used for < 0
+              comparisons, hopefully ssize_t is large enough */
 typedef struct _soundfile_info
 {
     int i_samplerate;     /**< read: file sr, write: pd sr               */
@@ -42,7 +41,7 @@ typedef struct _soundfile_info
     int i_bytespersample; /**< 2: 16 bit, 3: 24 bit, 4: 32 bit           */
     ssize_t i_headersize; /**< header size in bytes, -1 for unknown size */
     int i_bigendian;      /**< sample endianness 1 : big or 0 : little   */
-    size_t i_bytelimit;   /**< max number of data bytes to read/write    */
+    ssize_t i_bytelimit;  /**< max number of data bytes to read/write    */
     int i_bytesperframe;  /**< number of bytes per sample frame          */
 } t_soundfile_info;
 

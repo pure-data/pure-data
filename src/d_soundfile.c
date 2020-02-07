@@ -85,13 +85,7 @@ void soundfile_info_clear(t_soundfile_info *info)
 
 void soundfile_info_copy(t_soundfile_info *dst, const t_soundfile_info *src)
 {
-    dst->i_samplerate = src->i_samplerate;
-    dst->i_nchannels = src->i_nchannels;
-    dst->i_bytespersample = src->i_bytespersample;
-    dst->i_headersize = src->i_headersize;
-    dst->i_bigendian = src->i_bigendian;
-    dst->i_bytelimit = src->i_bytelimit;
-    dst->i_bytesperframe = src->i_bytesperframe;
+    memcpy(dst, src, sizeof(t_soundfile_info));
 }
 
 void soundfile_info_print(const t_soundfile_info *info)

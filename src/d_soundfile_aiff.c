@@ -49,7 +49,8 @@
 #define AIFFCOMMSIZE  26 /**< chunk header and data */
 #define AIFFDATASIZE  16 /**< chunk header, offset, and block size data */
 
-#define AIFFCVER1 0xA2805140 /**< 2726318400 decimal */
+#define AIFFCVER1 0xA2805140    /**< 2726318400 decimal */
+#define AIFFMAXBYTES 0x7fffffff /**< max signed 32 bit size */
 
     /* pascal string defines */
 #define AIFF_NONE_STR "\x0E""not compressed"
@@ -209,7 +210,7 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
         swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
     off_t headersize = AIFFHEADSIZE + AIFFCHUNKSIZE;
-    size_t bytelimit = SFMAXBYTES;
+    size_t bytelimit = AIFFMAXBYTES;
     union
     {
         char b_c[SFHDRBUFSIZE];
