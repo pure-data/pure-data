@@ -10,17 +10,19 @@
 #include "d_soundfile.h"
 #include "s_stuff.h" /* for sys_verbose */
 
-/* NeXTStep/Sun sound header structure
+/* NeXTStep/Sun sound header
 
-    * header and sound data can be big or little endian, depending on id:
-      - ".snd" big endian
-      - "dns." little endian
-    * sound data length can be set to an "unknown size", in which case the
-      actual length is file size - sound data offset
-    * info string after 24 byte header is optional
-      - null terminated
-      - string len is sound data len - 24, min len is 4
-    * can be headerless, in which case is 8 bit u-law at 8000 Hz
+  * simple header followed by sound data
+  * header and sound data can be big or little endian, depending on id:
+    - ".snd" big endian
+    - "dns." little endian
+  * sound data length can be set to an "unknown size", in which case the
+    actual length is file size - sound data offset
+  * info string after 24 byte header is optional
+    - null terminated
+    - string len is sound data len - 24, min len is 4
+  * can be headerless, in which case is 8 bit u-law at 8000 Hz
+  * limited to ~4 GB files as sizes are unsigned 32 bit ints
 
   this implementation:
 
@@ -35,7 +37,7 @@
 /* TODO: support 32 bit int format? */
 
     /* explicit byte sizes, sizeof(struct) may return alignment padded values */
-#define NEXTHDRSIZE 28 /**< min valid header size + info string */
+#define NEXTHEADSIZE 28 /**< min valid header size + info string */
 
 #define NEXT_FORMAT_LINEAR_16 3 /**< 16 bit int */
 #define NEXT_FORMAT_LINEAR_24 4 /**< 24 bit int */
@@ -112,14 +114,14 @@ static void next_posthead(const t_nextstep *next, int swap)
     post("  sample rate %d", swap4(next->ns_samplerate, swap));
     post("  channels %d", channels);
     post("  info \"%.4s%s\"",
-        next->ns_info, (onset > NEXTHDRSIZE ? "..." : ""));
+        next->ns_info, (onset > NEXTHEADSIZE ? "..." : ""));
 }
 
 /* ------------------------- NEXT ------------------------- */
 
 int soundfile_next_headersize()
 {
-    return NEXTHDRSIZE - 4; /* without info string */
+    return NEXTHEADSIZE - 4; /* without info string */
 }
 
 int soundfile_next_isheader(const char *buf, size_t size)
@@ -133,7 +135,7 @@ int soundfile_next_isheader(const char *buf, size_t size)
 int soundfile_next_readheader(int fd, t_soundfile_info *info)
 {
     int format, bytespersample, bigendian = 1, swap = 0;
-    off_t headersize = NEXTHDRSIZE;
+    off_t headersize = NEXTHEADSIZE;
     size_t bytelimit;
     union
     {
@@ -151,7 +153,7 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info)
     swap = (bigendian != sys_isbigendian());
 
     headersize = swap4(next->ns_onset, swap);
-    if (headersize < NEXTHDRSIZE - 4) /* min valid header size */
+    if (headersize < NEXTHEADSIZE - 4) /* min valid header size */
         return 0;
 
     bytelimit = swap4(next->ns_length, swap);
@@ -186,7 +188,7 @@ int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
 {
     int swap = soundfile_info_swap(info);
     size_t datasize = nframes * info->i_bytesperframe;
-    off_t headersize = NEXTHDRSIZE;
+    off_t headersize = NEXTHEADSIZE;
     ssize_t byteswritten = 0;
     t_nextstep next = {
         ".snd",                                    /* id          */

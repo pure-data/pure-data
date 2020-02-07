@@ -10,6 +10,7 @@
 
 /* AIFF header (Audio Interchange File Format) and AIFF-C (AIFF Compressed)
 
+  * RIFF variant with sections split into data "chunks"
   * chunk data is big endian
   * sound data is big endian, unless AIFF-C "sowt" compression type
   * the sound data chunk can be omitted if common chunk sample frames is 0
@@ -23,6 +24,7 @@
     - fl32 "32-bit floating point"
     - FL32 "Float 32"
     - the rest are not relevant to Pd...
+  * limited to ~2 GB files as sizes are signed 32 bit ints
 
   this implementation:
 
@@ -33,6 +35,7 @@
   * assumes common chunk is always before sound data chunk
   * ignores any chunks after finding the sound data chunk
   * assumes there is always a sound data chunk
+  * does not block align sound data
   * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
 
 */
@@ -41,7 +44,7 @@
 
     /* explicit byte sizes, sizeof(struct) may return alignment-padded values */
 #define AIFFCHUNKSIZE  8 /**< chunk header only */
-#define AIFFHDRSIZE   12 /**< chunk header and data */
+#define AIFFHEADSIZE  12 /**< chunk header and file format only */
 #define AIFFVERSIZE   12 /**< chunk header and data */
 #define AIFFCOMMSIZE  26 /**< chunk header and data */
 #define AIFFDATASIZE  16 /**< chunk header, offset, and block size data */
@@ -58,19 +61,19 @@
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
 {
-    char c_id[4];
-    int32_t c_size;
+    char c_id[4];                    /**< chunk id                   */
+    int32_t c_size;                  /**< chunk data length          */
 } t_chunk;
 
     /** file header, 12 bytes */
 typedef struct _head
 {
-    char h_id[4];
-    int32_t h_size;
-    char h_formtype[4];
+    char h_id[4];                    /**< chunk id "FORM"            */
+    int32_t h_size;                  /**< chunk data length          */
+    char h_formtype[4];              /**< format: "AIFF" or "AIFC"   */
 } t_head;
 
-    /** commmon chunk, 26 (AIFF) or 30+ (AIFC)
+    /** commmon chunk, 26 (AIFF) or 30+ (AIFC) bytes
         note: sample frames is split to avoid struct alignment padding */
 typedef struct _commchunk
 {
@@ -81,6 +84,7 @@ typedef struct _commchunk
     uint16_t cc_nframeslo;           /**< # of sample frames (lo)    */
     uint16_t cc_bitspersample;       /**< bits per sample            */
     unsigned char cc_samplerate[10]; /**< sample rate, 80-bit float! */
+    /* AIFF-C */
     char cc_comptype[4];             /**< AIFF-C compression type    */
     char cc_compname[AIFF_FL32_LEN]; /**< AIFF-C compression name, pascal str */
 } t_commchunk;
@@ -191,7 +195,7 @@ static int aiff_isaiffc(const t_soundfile_info *info)
 
 int soundfile_aiff_headersize()
 {
-    return AIFFHDRSIZE + AIFFCOMMSIZE + AIFFDATASIZE;
+    return AIFFHEADSIZE + AIFFCOMMSIZE + AIFFDATASIZE;
 }
 
 int soundfile_aiff_isheader(const char *buf, size_t size)
@@ -204,7 +208,7 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
         swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
-    off_t headersize = AIFFHDRSIZE + AIFFCHUNKSIZE;
+    off_t headersize = AIFFHEADSIZE + AIFFCHUNKSIZE;
     size_t bytelimit = SFMAXBYTES;
     union
     {
@@ -230,8 +234,8 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
         aiff_posthead(&buf.b_head, swap);
 
         /* copy the first chunk header to beginning of buffer */
-    memcpy(buf.b_c, buf.b_c + AIFFHDRSIZE, AIFFCHUNKSIZE);
-    headersize = AIFFHDRSIZE;
+    memcpy(buf.b_c, buf.b_c + AIFFHEADSIZE, AIFFCHUNKSIZE);
+    headersize = AIFFHEADSIZE;
 
         /* read chunks in loop until we find the sound data chunk */
     while (1)
@@ -260,7 +264,7 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
         }
         else if (!strncmp(chunk->c_id, "COMM", 4))
         {
-                /* comm chunk */
+                /* common chunk */
             int bitspersample, isfloat = 0;
             t_commchunk *comm = &buf.b_commchunk;
             if (soundfile_readbytes(fd, headersize + 8,
@@ -346,7 +350,10 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
         headersize = seekto;
     }
     if (!commfound)
+    {
+        error("AIFF common chunk not found");
         return 0;
+    }
 
         /* copy sample format back to caller */
     info->i_samplerate = samplerate;
@@ -384,8 +391,8 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
         /* file header */
     if (isaiffc)
         strncpy(head.h_formtype, "AIFC", 4);
-    memcpy(buf + headersize, &head, AIFFHDRSIZE);
-    headersize += AIFFHDRSIZE;
+    memcpy(buf + headersize, &head, AIFFHEADSIZE);
+    headersize += AIFFHEADSIZE;
 
         /* format ver chunk */
     if (isaiffc)
@@ -445,14 +452,14 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
 }
 
     /** assumes chunk order:
-        * AIFF  : header comm data
-        * AIFF-C: header ver comm data, comm chunk size variable due to str */
+        * AIFF  : head comm data
+        * AIFF-C: head ver comm data, comm chunk size variable due to str */
 int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int swap = !sys_isbigendian();
     size_t datasize = nframes * info->i_bytesperframe,
-           headersize = AIFFHDRSIZE, commsize = AIFFCOMMSIZE;
+           headersize = AIFFHEADSIZE, commsize = AIFFCOMMSIZE;
     uint32_t uinttmp;
     int32_t inttmp;
 
