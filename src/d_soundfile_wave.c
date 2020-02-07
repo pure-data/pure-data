@@ -56,10 +56,10 @@
 #define WAVE_FORMAT_FLOAT 0x0003 /**< 32 bit float */
 #define WAVE_FORMAT_EXT   0xfffe /**< extended, see format chunk subformat */
 
-/** extended format length and data length */
+/** extended format header and data length */
 #define WAVE_EXT_SIZE 24
 
-/** 14 byte ext subformat GUID */
+/** 14 byte extended subformat GUID */
 #define WAVE_EXT_GUID "\x00\x00\x00\x00\x10\x00\x80\x00\x00\xAA\x00\x38\x9B\x71"
 
     /** basic chunk header, 8 bytes */
@@ -77,7 +77,7 @@ typedef struct _head
     char h_formtype[4];             /**< format: "WAVE"                 */
 } t_head;
 
-    /** format chunk, 24 (basic) or 40 (extended) */
+    /** format chunk, 24 (basic) or 48 (extended) */
 typedef struct _formatchunk
 {
     char fc_id[4];                   /**< chunk id "fmt "               */
@@ -88,7 +88,7 @@ typedef struct _formatchunk
     uint32_t fc_bytespersecond;      /**< average bytes per second      */
     uint16_t fc_blockalign;          /**< number of bytes per frame     */
     uint16_t fc_bitspersample;       /**< number of bits in a sample    */
-    /* extended format,  */
+    /* extended format */
     uint16_t fc_extsize;             /**< extended format info length   */
     uint16_t fc_validbitspersample;  /**< number of valid bits          */
     uint32_t fc_channelmask;         /**< speaker pos channel mask      */
@@ -289,7 +289,8 @@ int soundfile_wave_readheader(int fd, t_soundfile_info *info)
             return 0;
         headersize = seekto;
     }
-    if (!formatfound) {
+    if (!formatfound)
+    {
         error("WAVE format chunk not found");
         return 0;
     }
