@@ -1172,7 +1172,7 @@ done:
 
     /** this is broken out from soundfiler_write below so garray_write can
         call it too... not done yet though. */
-long soundfiler_dowrite(void *obj, t_canvas *canvas,
+size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     int argc, t_atom *argv, t_soundfile_info *info)
 {
     t_soundfiler_writeargs wa = {NULL, FILETYPE_UNKNOWN, 0};
@@ -1290,7 +1290,7 @@ fail:
 static void soundfiler_write(t_soundfiler *x, t_symbol *s,
     int argc, t_atom *argv)
 {
-    long frameswritten;
+    size_t frameswritten;
     t_soundfile_info info;
     soundfile_info_clear(&info);
     frameswritten = soundfiler_dowrite(x, x->x_canvas, argc, argv, &info);

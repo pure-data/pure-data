@@ -468,13 +468,9 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     {
             /* AIFF-C compression info */
         if (info->i_bytespersample == 4)
-        {
             commsize += 4 + AIFF_FL32_LEN;
-        }
         else
-        {
             commsize += 4 + AIFF_NONE_LEN;
-        }
         headersize += AIFFVERSIZE;
     }
 

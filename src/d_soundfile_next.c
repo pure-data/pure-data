@@ -50,12 +50,12 @@
 typedef struct _nextstep
 {
     char ns_id[4];          /**< magic number; ".snd" (big endian) or "dns." */
-    uint32_t ns_onset;      /**< offset to sound data in bytes */
-    uint32_t ns_length;     /**< length of sound data in bytes */
-    uint32_t ns_format;     /**< sound data format code; see below */
-    uint32_t ns_samplerate; /**< sample rate */
-    uint32_t ns_nchannels;  /**< number of channels */
-    char ns_info[4];        /**< info string, minimum 4 bytes up to onset */
+    uint32_t ns_onset;      /**< offset to sound data in bytes               */
+    uint32_t ns_length;     /**< length of sound data in bytes               */
+    uint32_t ns_format;     /**< sound data format code; see below           */
+    uint32_t ns_samplerate; /**< sample rate                                 */
+    uint32_t ns_nchannels;  /**< number of channels                          */
+    char ns_info[4];        /**< info string, minimum 4 bytes up to onset    */
 } t_nextstep;
 
 /* ----- helpers ----- */
@@ -96,8 +96,10 @@ static void next_posthead(const t_nextstep *next, int swap)
     post("NEXT %.4s (%s)", next->ns_id,
         (next_isbigendian(next) ? "big" : "little"));
     post("  data onset %d", onset);
-    post("  data length %d (frames %ld)", datasize,
-        (datasize == NEXT_UNKNOWN_SIZE ? -1 : frames));
+    if (datasize == NEXT_UNKNOWN_SIZE)
+        post("  data length -1 (frames unknown)");
+    else
+        post("  data length %d (frames %ld)", datasize, frames);
     switch (format)
     {
         case NEXT_FORMAT_LINEAR_16:
@@ -234,7 +236,7 @@ int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
     int swap = soundfile_info_swap(info);
     size_t datasize = nframes * info->i_bytesperframe;
 
-    if (datasize > UINT_MAX)
+    if (datasize > NEXTMAXBYTES)
         datasize = NEXT_UNKNOWN_SIZE;
     datasize = swap4(datasize, swap);
     if (soundfile_writebytes(fd, 8, (char *)&datasize, 4) < 4)
@@ -245,7 +247,10 @@ int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
         datasize = swap4(datasize, swap);
         post("NEXT %.4s (%s)", (info->i_bigendian ? ".snd" : "dns."),
             (info->i_bigendian ? "big" : "little"));
-        post("  data length %d (frames %ld)", datasize, nframes);
+        if (datasize == NEXT_UNKNOWN_SIZE)
+            post("  data length -1 (frames unknown)");
+        else
+            post("  data length %d (frames %ld)", datasize, nframes);
     }
 
     return 1;
