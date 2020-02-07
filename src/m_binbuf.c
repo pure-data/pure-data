@@ -57,6 +57,14 @@ void binbuf_clear(t_binbuf *x)
     x->b_vec = t_resizebytes(x->b_vec, x->b_n * sizeof(*x->b_vec), 0);
     x->b_n = 0;
 }
+    /* returns the start of a valid dollar or dollsym */
+static char *binbuf_dollarchar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (s[1] >= '0' && s[1] <= '9')
+            break;
+    return ((char *)s);
+}
 
     /* convert text to a binbuf */
 void binbuf_text(t_binbuf *x, const char *text, size_t size)
@@ -396,8 +404,8 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                     usestr = buf;
                 }
                 else usestr = str;
-                if (dollar || (usestr== str && (str2 = strchr(usestr, '$')) &&
-                    str2[1] >= '0' && str2[1] <= '9'))
+                if (dollar || usestr == str &&
+                    (str2 = binbuf_dollarchar(usestr)))
                 {
                     int dollsym = 0;
                     if (*usestr != '$')
