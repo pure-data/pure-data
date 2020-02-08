@@ -66,7 +66,8 @@ ssize_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size);
     /** seek to offset in file fd and write size bytes from dst,
         returns number of bytes written on success or -1 if seek or write
         failed */
-ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size);
+ssize_t soundfile_writebytes(int fd, off_t offset, const char *src,
+    size_t size);
 
 /* ----- byte swappers ----- */
 
