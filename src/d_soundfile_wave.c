@@ -267,7 +267,8 @@ int soundfile_wave_readheader(int fd, t_soundfile_info *info)
         else if (!strncmp(chunk->c_id, "fact", 4))
         {
                 /* extended format fact chunk */
-            wave_postfact(&buf.b_factchunk, swap);
+            if (sys_verbose)
+                wave_postfact(&buf.b_factchunk, swap);
         }
         else if(!strncmp(chunk->c_id, "data", 4))
         {
