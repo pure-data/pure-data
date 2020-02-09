@@ -644,6 +644,55 @@ done:
     return (gensym(buf2));
 }
 
+    /* limit a slice's start and stop positions */
+static void binbuf_slicelim(int *i, int rv, int ac)
+{
+    if (*i < 0)
+    {
+        *i += ac+1;
+        if (*i < 0)
+            *i = rv ? 0 : 1;
+    }
+    else if (*i > ac)
+        *i = rv ? ac : ac+1;
+}
+
+    /* set up the properties of a slice */
+static int binbuf_slice(int *i, int *j, int *stp,
+    int *rv, int *siz, int ac, char *midl)
+{
+    char *slice, *step;
+    *i = atoi(midl);
+    if (slice = strchr(midl, ':'))
+    {
+        *j = atoi(slice+1);
+        if (step = strchr(slice+1, ':'))
+            *stp = atoi(step+1);
+        if (!*stp)
+            *stp = 1;
+        *rv = (*stp < 0);
+
+        if (!*i)
+            *i = *rv ? ac : 1;
+        else binbuf_slicelim(i, *rv, ac);
+
+        if (!*j)
+            *j = *rv ? 0 : ac+1;
+        else binbuf_slicelim(j, *rv, ac);
+
+        if (*rv)
+        {
+            if (*j < *i)
+                *siz = (*i-*j-1) / -*stp + 1;
+        }
+        else if (*i < *j)
+            *siz = (*j-*i-1) / *stp + 1;
+
+        return 1;
+    }
+    else return 0;
+}
+
 static void binbuf_dollar(int i, t_atom *msp,
     int argc, const t_atom *argv, t_pd *target)
 {
