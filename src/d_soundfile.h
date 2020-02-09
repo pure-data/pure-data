@@ -20,6 +20,8 @@
 #endif
 
 #ifdef _MSC_VER
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #define off_t ssize_t
 #endif
 
