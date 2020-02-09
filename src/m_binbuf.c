@@ -516,6 +516,19 @@ int binbuf_resize(t_binbuf *x, int newsize)
 
 int canvas_getdollarzero(void);
 
+static void binbuf_stratom(const t_atom *at, char *buf, unsigned int bufsize)
+{
+    if (at->a_type == A_SYMBOL)
+    {
+        unsigned int len = strlen(at->a_w.w_symbol->s_name);
+        if (len >= bufsize)
+            len = bufsize-1;
+        strncpy(buf, at->a_w.w_symbol->s_name, len);
+        buf[len] = 0;
+    }
+    else atom_string(at, buf, bufsize);
+}
+
 /* JMZ:
  * s points to the first character after the $
  * (e.g. if the org.symbol is "$1-bla", then s will point to "1-bla")
@@ -573,12 +586,7 @@ static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
         if (argno < 0)
             argno += ac+1;
         const t_atom *dollarvalue = (argno ? &av[argno-1] : dollar0);
-        if (dollarvalue->a_type == A_SYMBOL)
-        {
-            strncpy(buf, dollarvalue->a_w.w_symbol->s_name, MAXPDSTRING/2-1);
-            buf[MAXPDSTRING/2-2] = 0;
-        }
-        else atom_string(dollarvalue, buf, MAXPDSTRING/2-1);
+        binbuf_stratom(dollarvalue, buf, MAXPDSTRING/2-1);
     }
     return arglen;
 }
