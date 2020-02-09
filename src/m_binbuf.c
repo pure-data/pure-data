@@ -995,7 +995,7 @@ static t_binbuf *binbuf_convert(const t_binbuf *oldb, int maxtopd)
     t_atom *vec = oldb->b_vec;
     t_int n = oldb->b_n, nextindex, stackdepth = 0, stack[MAXSTACK] = {0},
         nobj = 0, gotfontsize = 0;
-	int i;
+    int i;
     t_atom outmess[MAXSTACK], *nextmess;
     t_float fontsize = 10;
     if (!maxtopd)
