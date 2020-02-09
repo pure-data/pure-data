@@ -607,6 +607,27 @@ done:
     return (gensym(buf2));
 }
 
+static void binbuf_dollar(int i, t_atom *msp,
+    int argc, const t_atom *argv, t_pd *target)
+{
+    if (i < 0)
+        i += argc+1;
+    if (i > 0 && i <= argc)
+        *msp = argv[i-1];
+    else if (i == 0)
+        SETFLOAT(msp, canvas_getdollarzero());
+    else
+    {
+        if (target == &pd_objectmaker)
+            SETFLOAT(msp, 0);
+        else
+        {
+            error("$%d: argument number out of range", i);
+            SETFLOAT(msp, 0);
+        }
+    }
+}
+
 #define SMALLMSG 5
 #define HUGEMSG 1000
 
@@ -766,26 +787,8 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 *msp = *at;
                 break;
             case A_DOLLAR:
-            {
-                int i = at->a_w.w_index;
-                if (i < 0)
-                    i += argc+1;
-                if (i > 0 && i <= argc)
-                    *msp = argv[i-1];
-                else if (i == 0)
-                    SETFLOAT(msp, canvas_getdollarzero());
-                else
-                {
-                    if (target == &pd_objectmaker)
-                        SETFLOAT(msp, 0);
-                    else
-                    {
-                        error("$%d: argument number out of range", i);
-                        SETFLOAT(msp, 0);
-                    }
-                }
+                binbuf_dollar(at->a_w.w_index, msp, argc, argv, target);
                 break;
-            }
             case A_DOLLSYM:
                 s9 = binbuf_realizedollsym(at->a_w.w_symbol, argc, argv,
                     target == &pd_objectmaker);
