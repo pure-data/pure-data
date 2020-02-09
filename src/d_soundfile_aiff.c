@@ -29,6 +29,7 @@
   this implementation:
 
   * supports AIFF and AIFF-C
+  * writes AIFF-C header for 32 bit float, unless pd compatibility < 0.51
   * implements chunks: common, sound data, format ver (AIFF-C)
   * ignores chunks: marker, instrument, comment, name, author, copyright,
                     annotation, audio recording, MIDI data, application, ID3
@@ -389,6 +390,10 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     };
     t_datachunk data = {"SSND", swap4s(8, swap), 0, 0};
 
+        /* older versions can't read AIFF-C */
+    if (isaiffc && pd_compatibilitylevel < 51)
+        isaiffc = 0;
+
         /* file header */
     if (isaiffc)
         strncpy(head.h_formtype, "AIFC", 4);
@@ -458,13 +463,17 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
 int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
-    int swap = !sys_isbigendian();
+    int isaiffc = aiff_isaiffc(info), swap = !sys_isbigendian();
     size_t datasize = nframes * info->i_bytesperframe,
            headersize = AIFFHEADSIZE, commsize = AIFFCOMMSIZE;
     uint32_t uinttmp;
     int32_t inttmp;
 
-    if (aiff_isaiffc(info))
+        /* older versions can't read AIFF-C */
+    if (isaiffc && pd_compatibilitylevel < 51)
+        isaiffc = 0;
+
+    if (isaiffc)
     {
             /* AIFF-C compression info */
         if (info->i_bytespersample == 4)

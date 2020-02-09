@@ -34,9 +34,9 @@ objects use Posix-like threads. */
 
 /* Microsoft Visual Studio does not define these... arg */
 #ifdef _MSC_VER
-#define O_CREAT   _O_CREAT
-#define O_TRUNC   _O_TRUNC
-#define O_WRONLY  _O_WRONLY
+#define O_CREAT  _O_CREAT
+#define O_TRUNC  _O_TRUNC
+#define O_WRONLY _O_WRONLY
 #endif
 
 #define SCALE (1. / (1024. * 1024. * 1024. * 2.))
@@ -555,7 +555,19 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
     else if (filetype == FILETYPE_AIFF)
     {
         bigendian = 1;
-        if (endianness == 0)
+        if (pd_compatibilitylevel < 51)
+        {
+                /* older versions can't read AIFF-C needed for little endian */
+            if (endianness == 1)
+                pd_error(obj, "AIFF file forced to big endian");
+                 /* older versions can't read float */
+            if (bytespersample == 4)
+            {
+                pd_error(obj, "AIFF writing 32 bit float not available");
+                goto usage;
+            }
+        }
+        else if (endianness == 0)
             bigendian = 0;
     }
     else if (endianness == -1)

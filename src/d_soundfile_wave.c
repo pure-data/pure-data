@@ -30,6 +30,7 @@
   this implementation:
 
   * supports basic and extended format chunks (WAVE Rev. 3)
+  * writes extended format for 32 bit float, unless pd compatibility > 0.51
   * implements chunks: format, fact, sound data
   * ignores chunks: info, cset, cue, playlist, associated data, instrument,
                     sample, display, junk, pad, time code, digitization time,
@@ -37,12 +38,10 @@
   * assumes there is only 1 sound data chunk
   * does not support 64-bit variants or BWF file-splitting
   * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
-  * writes extended format header for 32 bit float
 
 */
 
 /* TODO: allow explicit extended format via some option? */
-/* TODO: disable writing extended format info if compatibility mode set? */
 
     /* explicit byte sizes, sizeof(struct) may return alignment-padded values */
 #define WAVECHUNKSIZE   8 /**< chunk header only */
@@ -331,6 +330,10 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
     };
     t_chunk data = {"data", swap4((uint32_t)datasize, swap)};
 
+        /* older versions can't read extended format */
+    if (isextended && pd_compatibilitylevel < 51)
+        isextended = 0;
+
         /* file header */
     memcpy(buf + headersize, &head, WAVEHEADSIZE);
     headersize += WAVEHEADSIZE;
@@ -398,6 +401,10 @@ int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
            headersize = WAVEHEADSIZE + WAVEFORMATSIZE;
     int padbyte = (datasize & 1);
     uint32_t uinttmp;
+
+            /* older versions can't read extended format */
+    if (isextended && pd_compatibilitylevel < 51)
+        isextended = 0;
 
     if (isextended)
     {
