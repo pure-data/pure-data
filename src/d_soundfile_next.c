@@ -70,36 +70,19 @@ static int next_isbigendian(const t_nextstep *next)
     return -1;
 }
 
-    /** returns the number of bytes per sample for a given format code
-        or 0 if the format is not supported */
-static int next_bytespersample(int format)
-{
-    switch (format)
-    {
-        case NEXT_FORMAT_LINEAR_16: return 2;
-        case NEXT_FORMAT_LINEAR_24: return 3;
-        case NEXT_FORMAT_FLOAT:     return 4;
-        default: return 0;
-    }
-}
-
     /** post head info for debugging */
 static void next_posthead(const t_nextstep *next, int swap)
 {
     uint32_t onset = swap4(next->ns_onset, swap),
              format = swap4(next->ns_format, swap),
-             datasize = swap4(next->ns_length, swap),
-             channels = swap4(next->ns_nchannels, swap),
-             frames = (channels < 1 ? 0 : datasize / channels);
-    int bytespersample = next_bytespersample(format);
-    frames = (bytespersample < 1 ? 0 : frames / bytespersample);
+             datasize = swap4(next->ns_length, swap);
     post("NEXT %.4s (%s)", next->ns_id,
         (next_isbigendian(next) ? "big" : "little"));
     post("  data onset %d", onset);
     if (datasize == NEXT_UNKNOWN_SIZE)
-        post("  data length -1 (frames unknown)");
+        post("  data length -1");
     else
-        post("  data length %d (frames %ld)", datasize, frames);
+        post("  data length %d", datasize);
     switch (format)
     {
         case NEXT_FORMAT_LINEAR_16:
@@ -116,7 +99,7 @@ static void next_posthead(const t_nextstep *next, int swap)
             break;
     }
     post("  sample rate %d", swap4(next->ns_samplerate, swap));
-    post("  channels %d", channels);
+    post("  channels %d", swap4(next->ns_nchannels, swap));
     post("  info \"%.4s%s\"",
         next->ns_info, (onset > NEXTHEADSIZE ? "..." : ""));
 }
@@ -170,11 +153,14 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info)
     }
 
     format = swap4(next->ns_format, swap);
-    bytespersample = next_bytespersample(format);
-    if (!bytespersample)
+    switch (format)
     {
-        error("NEXT unsupported format %d", format);
-        return 0;
+        case NEXT_FORMAT_LINEAR_16: bytespersample = 2; break;
+        case NEXT_FORMAT_LINEAR_24: bytespersample = 3; break;
+        case NEXT_FORMAT_FLOAT:     bytespersample = 4; break;
+        default:
+            error("NEXT unsupported format %d", format);
+            return 0;
     }
 
     if (sys_verbose)
@@ -253,9 +239,9 @@ int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
         post("NEXT %.4s (%s)", (info->i_bigendian ? ".snd" : "dns."),
             (info->i_bigendian ? "big" : "little"));
         if (datasize == NEXT_UNKNOWN_SIZE)
-            post("  data length -1 (frames unknown)");
+            post("  data length -1");
         else
-            post("  data length %d (frames %ld)", datasize, nframes);
+            post("  data length %d", datasize);
     }
 
     return 1;
