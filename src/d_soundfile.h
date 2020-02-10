@@ -13,17 +13,26 @@
 #include <string.h>
 #include <limits.h>
 
-/* GLIBC */
+/* GLIBC large file support */
 #ifdef _LARGEFILE64_SOURCE
 #define lseek lseek64
 #define off_t __off64_t
 #endif
 
+/* MSVC doesn't define or uses different naming for these Posix types */
 #ifdef _MSC_VER
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
 #define off_t ssize_t
+/* choose appropriate size if SSIZE_MAX is not defined */
+#ifndef SSIZE_MAX
+#ifdef _WIN64
+#define SSIZE_MAX _I64_MAX
+#else /* _WIN32 */
+#define SSIZE_MAX INT_MAX
 #endif
+#endif /* SSIZE_MAX */
+#endif /* _MSC_VER */
 
     /** should be large enough for all file type min sizes */
 #define SFHDRBUFSIZE 128

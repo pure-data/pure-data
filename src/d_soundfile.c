@@ -27,12 +27,12 @@ objects use Posix-like threads. */
 
 #define MAXSFCHANS 64
 
-/* GLIBC */
+/* GLIBC large file support */
 #ifdef _LARGEFILE64_SOURCE
 #define open open64
 #endif
 
-/* Microsoft Visual Studio does not define these... arg */
+/* MSVC uses different naming for these */
 #ifdef _MSC_VER
 #define O_CREAT  _O_CREAT
 #define O_TRUNC  _O_TRUNC
