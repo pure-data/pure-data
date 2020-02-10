@@ -164,29 +164,30 @@ int soundfile_aiff_hasextension(const char *filename, size_t size);
 
 /* ------------------------- CAFF ------------------------- */
 
-/// returns min CAFF header size in bytes
+    /** returns min CAFF header size in bytes */
 int soundfile_caff_headersize();
 
-/// returns 1 if buffer is the beginning of an CAFF header
-int soundfile_caff_isheader(const char *buf, long size);
+    /** returns 1 if buffer is the beginning of an CAFF header */
+int soundfile_caff_isheader(const char *buf, size_t size);
 
-/// read CAFF header from a file into info, assumes fd is at the beginning
-/// result should place fd at beginning of audio data
-/// returns 1 on success or 0 on error
+    /** read CAFF header from a file into info, assumes fd is at the beginning
+        result should place fd at beginning of audio data
+        returns 1 on success or 0 on error */
 int soundfile_caff_readheader(int fd, t_soundfile_info *info);
 
-/// write header to beginning of an open file from an info struct
-/// returns header bytes written or -1 on error
+    /** write header to beginning of an open file from an info struct
+        returns header bytes written or -1 on error */
 int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
-/// update file header data size, assumes fd is at the beginning
-/// returns 1 on success or 0 on error
+    /** update file header data size, assumes fd is at the beginning
+        returns 1 on success or 0 on error */
 int soundfile_caff_updateheader(int fd, const t_soundfile_info *info,
-    long nframes);
+    size_t nframes);
 
-/// returns 1 if the filename has an CAFF extension (.caf, .CAF) otherwise 0
-int soundfile_caff_hasextension(const char *filename, long size);
+    /** returns 1 if the filename has a CAFF extension
+        (.caf, .CAF) otherwise 0 */
+int soundfile_caff_hasextension(const char *filename, size_t size);
 
 /* ------------------------- NEXT ------------------------- */
 
