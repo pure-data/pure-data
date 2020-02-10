@@ -113,16 +113,14 @@ static void outlet_soundfile_info(t_outlet *out, t_soundfile_info *info)
 
 ssize_t soundfile_readbytes(int fd, off_t offset, char *dst, size_t size)
 {
-    off_t seekout = lseek(fd, offset, SEEK_SET);
-    if (seekout != offset)
+    if (lseek(fd, offset, SEEK_SET) != offset)
         return -1;
     return read(fd, dst, size);
 }
 
 ssize_t soundfile_writebytes(int fd, off_t offset, const char *src, size_t size)
 {
-    off_t seekout = lseek(fd, offset, SEEK_SET);
-    if (seekout != offset)
+    if (lseek(fd, offset, SEEK_SET) != offset)
         return -1;
     return write(fd, src, size);
 }
@@ -182,7 +180,7 @@ void swapstring(char *foo, int doit)
 int open_soundfile_via_fd(int fd, t_soundfile_info *info, size_t skipframes)
 {
     t_soundfile_info i;
-    off_t offset, seekout;
+    off_t offset;
     errno = 0;
     if (info->i_headersize >= 0) /* header detection overridden */
         soundfile_info_copy(&i, info);
@@ -222,8 +220,7 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *info, size_t skipframes)
 
         /* seek past header and any sample frames to skip */
     offset = i.i_headersize + (i.i_bytesperframe * skipframes);
-    seekout = lseek(fd, offset, 0);
-    if (seekout != offset)
+    if (lseek(fd, offset, 0) != offset)
         return -1;
     i.i_bytelimit -= i.i_bytesperframe * skipframes;
     if (i.i_bytelimit < 0)
@@ -1095,9 +1092,9 @@ static void soundfiler_read(t_soundfiler *x, t_symbol *s,
     if (resize)
     {
             /* figure out what to resize to */
-        off_t poswas, eofis, framesinfile;
-        poswas = lseek(fd, 0, SEEK_CUR);
-        eofis = lseek(fd, 0, SEEK_END);
+        size_t framesinfile;
+        off_t poswas = lseek(fd, 0, SEEK_CUR);
+        off_t eofis = lseek(fd, 0, SEEK_END);
         if (poswas < 0 || eofis < 0 || eofis < poswas)
         {
             pd_error(x, "soundfiler_read: lseek failed");

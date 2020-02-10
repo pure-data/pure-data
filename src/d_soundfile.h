@@ -28,8 +28,8 @@ typedef SSIZE_T ssize_t;
     /** should be large enough for all file type min sizes */
 #define SFHDRBUFSIZE 128
 
-#define SFMAXFRAMES SIZE_MAX /**< default max sample frames */
-#define SFMAXBYTES  SIZE_MAX /**< default max sample bytes */
+#define SFMAXFRAMES SIZE_MAX  /**< default max sample frames, unsigned */
+#define SFMAXBYTES  SSIZE_MAX /**< default max sample bytes, signed */
 
 /* ----- soundfile format info ----- */
 
