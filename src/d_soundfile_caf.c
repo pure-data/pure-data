@@ -243,10 +243,10 @@ int soundfile_caf_readheader(int fd, t_soundfile_info *info)
     while (1)
     {
         int64_t chunksize = caf_getchunksize(chunk, swap);
-        off_t seekto = headersize + chunksize, seekout;
+        off_t seekto = headersize + CAFCHUNKSIZE + chunksize, seekout;
         if (seekto & 1) /* pad up to even number of bytes */
             seekto++;
-         post("chunk %.4s seek %d", chunk->c_id, seekto); 
+        /* post("chunk %.4s seek %d", chunk->c_id, seekto); */
         if (!strncmp(chunk->c_id, "data", 4))
         {
                 /* sound data chunk */
