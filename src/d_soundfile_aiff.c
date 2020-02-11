@@ -29,7 +29,7 @@
   this implementation:
 
   * supports AIFF and AIFF-C
-  * writes AIFF-C header for 32 bit float, unless pd compatibility < 0.51
+  * implicitly writes AIFF-C header for 32 bit float (see below)
   * implements chunks: common, data, version (AIFF-C)
   * ignores chunks: marker, instrument, comment, name, author, copyright,
                     annotation, audio recording, MIDI data, application, ID3
@@ -39,9 +39,10 @@
   * does not block align sound data
   * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
 
-*/
+  Pd versions < 0.51 did *not* read or write AIFF files with a 32 bit float
+  sample format.
 
-/* TODO: allow explicit AIFF-C format via some option? */
+*/
 
     /* explicit byte sizes, sizeof(struct) may return alignment-padded values */
 #define AIFFCHUNKSIZE  8 /**< chunk header only */
@@ -408,10 +409,6 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     };
     t_datachunk data = {"SSND", swap4s(8, swap), 0, 0};
 
-        /* older versions can't read AIFF-C */
-    if (isaiffc && pd_compatibilitylevel < 51)
-        isaiffc = 0;
-
         /* file header */
     if (isaiffc)
         strncpy(head.h_formtype, "AIFC", 4);
@@ -485,10 +482,6 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
            headersize = AIFFHEADSIZE, commsize = AIFFCOMMSIZE;
     uint32_t uinttmp;
     int32_t inttmp;
-
-        /* older versions can't read AIFF-C */
-    if (isaiffc && pd_compatibilitylevel < 51)
-        isaiffc = 0;
 
     if (isaiffc)
     {

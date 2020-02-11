@@ -32,9 +32,10 @@
     * tries to set sound data length, otherwise falls back to "unknown size"
     * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
 
-*/
+    Pd versions < 0.51 did *not* write the actual data chunk size when updating
+    the header, but set "unknown size" instead.
 
-/* TODO: support 32 bit int format? */
+*/
 
     /* explicit byte sizes, sizeof(struct) may return alignment padded values */
 #define NEXTHEADSIZE 28 /**< min valid header size + info string */

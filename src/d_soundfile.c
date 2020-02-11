@@ -606,20 +606,8 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
     else if (filetype == FILETYPE_AIFF) /* default to big endian */
     {
         bigendian = 1;
-        if (pd_compatibilitylevel < 51)
-        {
-                /* older versions can't read AIFF-C needed for little endian */
-            if (endianness == 1)
-                pd_error(obj, "AIFF file forced to big endian");
-                 /* older versions can't read float */
-            if (bytespersample == 4)
-            {
-                pd_error(obj, "AIFF writing 32 bit float not available");
-                goto usage;
-            }
-        }
-        else if (endianness == 0)
-            bigendian = 0;
+        if (endianness == 0)
+            bigendian = 0; /* manual override */
     }
     else if (filetype == FILETYPE_CAF) /* default to big endian */
     {

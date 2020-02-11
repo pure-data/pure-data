@@ -30,6 +30,8 @@
   * ignores any chunks after finding the data chunk
   * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
 
+  Pd versions < 0.51 did *not* read or write CAF files.
+
 */
 
     /* explicit byte sizes, sizeof(struct) can return alignment padded values */

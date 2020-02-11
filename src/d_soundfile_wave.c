@@ -30,7 +30,7 @@
   this implementation:
 
   * supports basic and extended format chunks (WAVE Rev. 3)
-  * writes extended format for 32 bit float, unless pd compatibility > 0.51
+  * implicitly writes extended format for 32 bit float (see below)
   * implements chunks: format, fact, sound data
   * ignores chunks: info, cset, cue, playlist, associated data, instrument,
                     sample, display, junk, pad, time code, digitization time,
@@ -39,9 +39,13 @@
   * does not support 64-bit variants or BWF file-splitting
   * sample format: 16 and 24 bit lpcm, 32 bit float, no 32 bit lpcm
 
-*/
+  Pd versions < 0.51 did *not* read or write extended format explicitly, but
+  ignored the format chunk format tag and interpreted the sample type based on
+  the bits per sample: 2 : int 16, 3 : int 24, 4 : float 32. This means files
+  created by newer Pd versions are currently more or less compatible with older
+  Pd versions. This may change if 32 bit int support is introduced.
 
-/* TODO: allow explicit extended format via some option? */
+*/
 
     /* explicit byte sizes, sizeof(struct) may return alignment-padded values */
 #define WAVECHUNKSIZE   8 /**< chunk header only */
@@ -330,10 +334,6 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
     };
     t_chunk data = {"data", swap4((uint32_t)datasize, swap)};
 
-        /* older versions can't read extended format */
-    if (isextended && pd_compatibilitylevel < 51)
-        isextended = 0;
-
         /* file header */
     memcpy(buf + headersize, &head, WAVEHEADSIZE);
     headersize += WAVEHEADSIZE;
@@ -346,7 +346,7 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
         format.fc_extsize = swap2(WAVE_EXT_SIZE - 2, swap);
         format.fc_validbitspersample = format.fc_bitspersample;
         format.fc_channelmask = 0; /* no specific speaker positions */
-        memcpy(&format.fc_subformat, &format.fc_fmttag, 2); /* move tag */
+        memcpy(format.fc_subformat, &format.fc_fmttag, 2); /* move tag */
         memcpy(format.fc_subformat + 2, WAVE_EXT_GUID, 14);
         format.fc_fmttag = swap2(WAVE_FORMAT_EXT, swap);
         formatsize += WAVE_EXT_SIZE;
@@ -401,10 +401,6 @@ int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
            headersize = WAVEHEADSIZE + WAVEFORMATSIZE;
     int padbyte = (datasize & 1);
     uint32_t uinttmp;
-
-            /* older versions can't read extended format */
-    if (isextended && pd_compatibilitylevel < 51)
-        isextended = 0;
 
     if (isextended)
     {
