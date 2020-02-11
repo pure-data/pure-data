@@ -368,7 +368,7 @@ static void soundfile_xferin_sample(const t_soundfile_info *info, int nvecs,
                 {
                     alias.ui = ((sp2[0] << 24) | (sp2[1] << 16) |
                                 (sp2[2] << 8)  |  sp2[3]);
-                    *fp = (t_float)alias.f;
+                    *fp = (t_sample)alias.f;
                 }
             }
             else
@@ -378,7 +378,7 @@ static void soundfile_xferin_sample(const t_soundfile_info *info, int nvecs,
                 {
                     alias.ui = ((sp2[3] << 24) | (sp2[2] << 16) |
                                 (sp2[1] << 8)  |  sp2[0]);
-                    *fp = (t_float)alias.f;
+                    *fp = (t_sample)alias.f;
                 }
             }
         }
@@ -440,7 +440,7 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
                 {
                     alias.ui = ((sp2[0] << 24) | (sp2[1] << 16) |
                                 (sp2[2] << 8)  |  sp2[3]);
-                    wp->w_float = (t_float)alias.f;
+                    wp->w_float = (t_sample)alias.f;
                 }
             }
             else
@@ -450,7 +450,7 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
                 {
                     alias.ui = ((sp2[3] << 24) | (sp2[2] << 16) |
                                 (sp2[1] << 8)  |  sp2[0]);
-                    wp->w_float = (t_float)alias.f;
+                    wp->w_float = (t_sample)alias.f;
                 }
             }
         }
