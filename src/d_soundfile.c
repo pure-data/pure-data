@@ -324,7 +324,6 @@ static void soundfile_xferin_sample(const t_soundfile_info *info, int nvecs,
     size_t j;
     unsigned char *sp, *sp2;
     t_sample *fp;
-    t_floatuint alias;
     for (i = 0, sp = buf; i < nchannels; i++, sp += info->i_bytespersample)
     {
         if (info->i_bytespersample == 2)
@@ -361,6 +360,7 @@ static void soundfile_xferin_sample(const t_soundfile_info *info, int nvecs,
         }
         else if (info->i_bytespersample == 4)
         {
+            t_floatuint alias;
             if (info->i_bigendian)
             {
                 for (j = 0, sp2 = sp, fp = vecs[i] + framesread;
@@ -394,7 +394,6 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
 {
     unsigned char *sp, *sp2;
     t_word *wp;
-    t_floatuint alias;
     int nchannels = (info->i_nchannels < nvecs ? info->i_nchannels : nvecs), i;
     size_t j;
     for (i = 0, sp = buf; i < nchannels; i++, sp += info->i_bytespersample)
@@ -433,6 +432,7 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
         }
         else if (info->i_bytespersample == 4)
         {
+            t_floatuint alias;
             if (info->i_bigendian)
             {
                 for (j = 0, sp2 = sp, wp = vecs[i] + framesread;
@@ -807,12 +807,12 @@ static void soundfile_xferout_sample(const t_soundfile_info *info,
         }
         else if (info->i_bytespersample == 4)
         {
+            t_floatuint f2;
             if (info->i_bigendian)
             {
                 for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
                     j < nframes; j++, sp2 += info->i_bytesperframe, fp++)
                 {
-                    t_floatuint f2;
                     f2.f = *fp * normalfactor;
                     sp2[0] = (f2.ui >> 24); sp2[1] = (f2.ui >> 16);
                     sp2[2] = (f2.ui >> 8);  sp2[3] = f2.ui;
@@ -823,7 +823,6 @@ static void soundfile_xferout_sample(const t_soundfile_info *info,
                 for (j = 0, sp2 = sp, fp = vecs[i] + onsetframes;
                     j < nframes; j++, sp2 += info->i_bytesperframe, fp++)
                 {
-                    t_floatuint f2;
                     f2.f = *fp * normalfactor;
                     sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
                     sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
@@ -916,12 +915,12 @@ static void soundfile_xferout_words(const t_soundfile_info *info, t_word **vecs,
         }
         else if (info->i_bytespersample == 4)
         {
+            t_floatuint f2;
             if (info->i_bigendian)
             {
                 for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
                     j < nframes; j++, sp2 += info->i_bytesperframe, wp++)
                 {
-                    t_floatuint f2;
                     f2.f = wp->w_float * normalfactor;
                     sp2[0] = (f2.ui >> 24); sp2[1] = (f2.ui >> 16);
                     sp2[2] = (f2.ui >> 8);  sp2[3] = f2.ui;
@@ -932,7 +931,6 @@ static void soundfile_xferout_words(const t_soundfile_info *info, t_word **vecs,
                 for (j = 0, sp2 = sp, wp = vecs[i] + onsetframes;
                     j < nframes; j++, sp2 += info->i_bytesperframe, wp++)
                 {
-                    t_floatuint f2;
                     f2.f = wp->w_float * normalfactor;
                     sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
                     sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
