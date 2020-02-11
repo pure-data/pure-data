@@ -30,7 +30,7 @@
 
   * supports AIFF and AIFF-C
   * writes AIFF-C header for 32 bit float, unless pd compatibility < 0.51
-  * implements chunks: common, sound data, format ver (AIFF-C)
+  * implements chunks: common, data, version (AIFF-C)
   * ignores chunks: marker, instrument, comment, name, author, copyright,
                     annotation, audio recording, MIDI data, application, ID3
   * assumes common chunk is always before sound data chunk
@@ -50,7 +50,7 @@
 #define AIFFCOMMSIZE  26 /**< chunk header and data */
 #define AIFFDATASIZE  16 /**< chunk header, offset, and block size data */
 
-#define AIFFCVER1 0xA2805140    /**< 2726318400 decimal */
+#define AIFFCVER1    0xA2805140 /**< 2726318400 decimal */
 #define AIFFMAXBYTES 0x7fffffff /**< max signed 32 bit size */
 
     /* pascal string defines */
@@ -63,76 +63,90 @@
     /** basic chunk header, 8 bytes */
 typedef struct _chunk
 {
-    char c_id[4];                    /**< chunk id                   */
-    int32_t c_size;                  /**< chunk data length          */
+    char c_id[4];                    /**< chunk id                     */
+    int32_t c_size;                  /**< chunk data length            */
 } t_chunk;
 
     /** file header, 12 bytes */
 typedef struct _head
 {
-    char h_id[4];                    /**< chunk id "FORM"            */
-    int32_t h_size;                  /**< chunk data length          */
-    char h_formtype[4];              /**< format: "AIFF" or "AIFC"   */
+    char h_id[4];                    /**< chunk id "FORM"              */
+    int32_t h_size;                  /**< chunk data length            */
+    char h_formtype[4];              /**< format: "AIFF" or "AIFC"     */
 } t_head;
 
     /** commmon chunk, 26 (AIFF) or 30+ (AIFC) bytes
         note: sample frames is split to avoid struct alignment padding */
 typedef struct _commchunk
 {
-    char cc_id[4];                   /**< chunk id "COMM"            */
-    int32_t cc_size;                 /**< chunk data length          */
-    uint16_t cc_nchannels;           /**< number of channels         */
-    uint16_t cc_nframeshi;           /**< # of sample frames (hi)    */
-    uint16_t cc_nframeslo;           /**< # of sample frames (lo)    */
-    uint16_t cc_bitspersample;       /**< bits per sample            */
-    unsigned char cc_samplerate[10]; /**< sample rate, 80-bit float! */
+    char cc_id[4];                   /**< chunk id "COMM"              */
+    int32_t cc_size;                 /**< chunk data length            */
+    uint16_t cc_nchannels;           /**< number of channels           */
+    uint8_t cc_nframes[4];           /**< # of sample frames, uint32_t */
+    uint16_t cc_bitspersample;       /**< bits per sample              */
+    uint8_t cc_samplerate[10];       /**< sample rate, 80-bit float!   */
     /* AIFF-C */
-    char cc_comptype[4];             /**< AIFF-C compression type    */
-    char cc_compname[AIFF_FL32_LEN]; /**< AIFF-C compression name, pascal str */
+    char cc_comptype[4];             /**< compression type             */
+    char cc_compname[AIFF_FL32_LEN]; /**< compression name, pascal str */
 } t_commchunk;
 
     /** sound data chunk, min 16 bytes before data */
 typedef struct _datachunk
 {
-    char dc_id[4];                  /**< chunk id "SSND"             */
-    int32_t dc_size;                /**< chunk data length           */
-    uint32_t dc_offset;             /**< additional offset in bytes  */
-    uint32_t dc_block;              /**< block size                  */
+    char dc_id[4];                  /**< chunk id "SSND"               */
+    int32_t dc_size;                /**< chunk data length             */
+    uint32_t dc_offset;             /**< additional offset in bytes    */
+    uint32_t dc_block;              /**< block size                    */
 } t_datachunk;
 
     /** AIFF-C format version chunk, 12 bytes */
 typedef struct _verchunk
 {
-    char vc_id[4];                  /**< format chunk id "FVER"      */
-    int32_t vc_size;                /**< chunk data length, 4 bytes  */
-    uint32_t vc_timestamp;          /**< AIFF-C version timestamp    */
+    char vc_id[4];                  /**< chunk id "FVER"               */
+    int32_t vc_size;                /**< chunk data length, 4 bytes    */
+    uint32_t vc_timestamp;          /**< AIFF-C version timestamp      */
 } t_verchunk;
 
 /* ----- helpers ----- */
 
-    /** read sample rate from an 80-bit AIFF-compatible number */
-static double readaiffsamprate(char *src, int swap)
+static uint64_t aiff_getframes(const t_commchunk *comm, int swap)
 {
-   unsigned long mantissa, last = 0;
-   unsigned char exp;
-
-   swapstring(src + 2, swap);
-
-   mantissa = (unsigned long) *((unsigned long *)(src + 2));
-   exp = 30 - *(src + 1);
-   while (exp--)
-   {
-        last = mantissa;
-        mantissa >>= 1;
-   }
-   if (last & 0x00000001) mantissa++;
-   return mantissa;
+    uint32_t nframes = 0;
+    memcpy(&nframes, comm->cc_nframes, 4);
+    return swap4(nframes, swap);
 }
 
-    /** write a sample rate as an 80-bit AIFF-compatible number,
-        assumes dst is a minimum of 10 bytes in length */
-static void makeaiffsamprate(double sr, unsigned char *dst)
+static void aiff_setframes(t_commchunk *comm, uint32_t nframes, int swap)
 {
+    nframes = swap4(nframes, swap);
+    memcpy(comm->cc_nframes, &nframes, 4);
+}
+
+    /** read sample rate from comm chunk 80-bit AIFF-compatible number */
+static double aiff_getsamplerate(const t_commchunk *comm, int swap)
+{
+    char *src = (char *)comm->cc_samplerate;
+    unsigned long mantissa, last = 0;
+    unsigned char exp;
+
+    swapstring4(src + 2, swap);
+
+    mantissa = (unsigned long) *((unsigned long *)(src + 2));
+    exp = 30 - *(src + 1);
+    while (exp--)
+    {
+        last = mantissa;
+        mantissa >>= 1;
+    }
+    if (last & 0x00000001) mantissa++;
+    return mantissa;
+}
+
+    /** write a sample rate to comm chunk 80-bit AIFF-compatible number,
+        assumes dst is a minimum of 10 bytes in length */
+static void aiff_setsamplerate(t_commchunk *comm, double sr)
+{
+    unsigned char *dst = (unsigned char *)comm->cc_samplerate;
     int exponent;
     double mantissa = frexp(sr, &exponent);
     unsigned long fixmantissa = ldexp(mantissa, 32);
@@ -163,10 +177,9 @@ static void aiff_postcomm(const t_commchunk *comm, int isaiffc, int swap)
 {
     aiff_postchunk((const t_chunk *)comm, swap);
     post("  channels %u", swap2(comm->cc_nchannels, swap));
-    post("  frames %u", swap4(*((uint32_t *)&comm->cc_nframeshi), swap));
+    post("  frames %u", aiff_getframes(comm, swap));
     post("  bits per sample %u", swap2(comm->cc_bitspersample, swap));
-    post("  sample rate %g",
-        readaiffsamprate((char *)&comm->cc_samplerate, swap));
+    post("  sample rate %g", aiff_getsamplerate(comm, swap));
     if (isaiffc)
     {
             /* handle pascal string */
@@ -221,19 +234,20 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
         t_verchunk b_verchunk;
         t_datachunk b_datachunk;
     } buf = {0};
+    t_head *head = &buf.b_head;
     t_chunk *chunk = &buf.b_chunk;
 
         /* file header */
     if (soundfile_readbytes(fd, 0, buf.b_c, headersize) < headersize)
         return 0;
-    if (strncmp(buf.b_c + 8, "AIFF", 4))
+    if (strncmp(head->h_formtype, "AIFF", 4))
     {
-        if (strncmp(buf.b_c + 8, "AIFC", 4))
+        if (strncmp(head->h_formtype, "AIFC", 4))
             return 0;
         isaiffc = 1;
     }
     if (sys_verbose)
-        aiff_posthead(&buf.b_head, swap);
+        aiff_posthead(head, swap);
 
         /* copy the first chunk header to beginning of buffer */
     memcpy(buf.b_c, buf.b_c + AIFFHEADSIZE, AIFFCHUNKSIZE);
@@ -243,7 +257,7 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
     while (1)
     {
         int32_t chunksize = swap4s(chunk->c_size, swap);
-        off_t seekto = headersize + 8 + chunksize, seekout;
+        off_t seekto = headersize + AIFFCHUNKSIZE + chunksize, seekout;
         if (seekto & 1) /* pad up to even number of bytes */
             seekto++;
         /* post("chunk %.4s seek %d", chunk->c_id, seekto); */
@@ -255,7 +269,8 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
                 error("AIFF found FVER chunk, but not AIFF-C");
                 return 0;
             }
-            if (soundfile_readbytes(fd, headersize + 8, buf.b_c + 8,
+            if (soundfile_readbytes(fd, headersize + AIFFCHUNKSIZE,
+                                    buf.b_c + AIFFCHUNKSIZE,
                                     chunksize) < chunksize)
                 return 0;
             if (swap4(buf.b_verchunk.vc_timestamp, swap) != AIFFCVER1)
@@ -269,14 +284,15 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
                 /* common chunk */
             int bitspersample, isfloat = 0;
             t_commchunk *comm = &buf.b_commchunk;
-            if (soundfile_readbytes(fd, headersize + 8,
-                                    buf.b_c + 8, chunksize) < chunksize)
+            if (soundfile_readbytes(fd, headersize + AIFFCHUNKSIZE,
+                                    buf.b_c + AIFFCHUNKSIZE,
+                                    chunksize) < chunksize)
                 return 0;
             if (sys_verbose)
                 aiff_postcomm(comm, isaiffc, swap);
             nchannels = swap2(comm->cc_nchannels, swap);
             bitspersample = swap2(comm->cc_bitspersample, swap);
-            switch(bitspersample)
+            switch (bitspersample)
             {
                 case 16: bytespersample = 2; break;
                 case 24: bytespersample = 3; break;
@@ -285,7 +301,7 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
                     error("AIFF %d bit samples not supported", bitspersample);
                     return 0;
             }
-            samplerate = readaiffsamprate((char *)(comm), swap);
+            samplerate = aiff_getsamplerate(comm, swap);
             if (isaiffc)
             {
                 if (!strncmp(comm->cc_comptype, "NONE", 4))
@@ -325,12 +341,16 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
         else if (!strncmp(chunk->c_id, "SSND", 4))
         {
                 /* uncompressed sound data chunk */
-            t_datachunk *data = &buf.b_datachunk;
-            if (soundfile_readbytes(fd, headersize + 8, buf.b_c + 8, 8) < 8)
-                return 0;
             if (sys_verbose)
-                aiff_postdata(data, swap);
-            bytelimit = swap4s(data->dc_size, swap) - 8;
+            {
+                t_datachunk *data = &buf.b_datachunk;
+                if (soundfile_readbytes(fd, headersize + AIFFCHUNKSIZE,
+                                        buf.b_c + AIFFCHUNKSIZE, 8) < 8)
+                    return 0;
+                if (sys_verbose)
+                    aiff_postdata(data, swap);
+            }
+            bytelimit = chunksize - 8; /* subtract offset and block */
             headersize += AIFFDATASIZE;
             break;
         }
@@ -376,14 +396,12 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     size_t commsize = AIFFCOMMSIZE, datasize = nframes * info->i_bytesperframe;
     off_t headersize = 0;
     ssize_t byteswritten = 0;
-    uint32_t uinttmp;
     char buf[SFHDRBUFSIZE] = {0};
     t_head head = {"FORM", 0, "AIFF"};
     t_commchunk comm = {
         "COMM", swap4s(18, swap),
         swap2(info->i_nchannels, swap),          /* channels         */
-        0,                                       /* sample frames hi */
-        0,                                       /* sample frames lo */
+        0,                                       /* sample frames    */
         swap2(info->i_bytespersample / 8, swap), /* bits per sample  */
         0,                                       /* sample rate      */
         0, 0                                     /* comp info        */
@@ -413,10 +431,9 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
 
         /* comm chunk */
     comm.cc_nchannels = swap2(info->i_nchannels, swap);
-    uinttmp = swap4((uint32_t)nframes, swap);
-    memcpy(&comm.cc_nframeshi, &uinttmp, 4);
+    aiff_setframes(&comm, nframes, swap);
     comm.cc_bitspersample = swap2(8 * info->i_bytespersample, swap);
-    makeaiffsamprate(info->i_samplerate, comm.cc_samplerate);
+    aiff_setsamplerate(&comm, info->i_samplerate);
     if (isaiffc)
     {
             /* AIFF-C compression info */
@@ -459,7 +476,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
 
     /** assumes chunk order:
         * AIFF  : head comm data
-        * AIFF-C: head ver comm data, comm chunk size variable due to str */
+        * AIFF-C: head version comm data, comm chunk size variable due to str */
 int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
@@ -489,7 +506,7 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
         return 0;
     headersize += commsize;
 
-        /* sound data chunk size */
+        /* data chunk size */
     inttmp = swap4s((int32_t)datasize + 8, swap);
     if (soundfile_writebytes(fd, headersize + 4, (char *)&inttmp, 4) < 4)
         return 0;

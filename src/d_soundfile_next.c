@@ -196,7 +196,7 @@ int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
     };
 
     if (!info->i_bigendian)
-        swapstring(next.ns_id, 1);
+        swapstring4(next.ns_id, 1);
     switch (info->i_bytespersample)
     {
         case 2:
