@@ -182,14 +182,14 @@ int32_t swap4s(int32_t n, int doit)
     return n;
 }
 
-uint16_t swap2(uint32_t n, int doit)
+uint16_t swap2(uint16_t n, int doit)
 {
     if (doit)
         return (((n & 0x00ff) << 8) | ((n & 0xff00) >> 8));
     return n;
 }
 
-void swapstring(char *foo, int doit)
+void swapstring4(char *foo, int doit)
 {
     if (doit)
     {
@@ -207,13 +207,6 @@ void swapstring8(char *foo, int doit)
         foo[0] = h; foo[1] = g; foo[2] = f; foo[3] = e;
         foo[4] = d; foo[5] = c; foo[6] = b; foo[7] = a;
     }
-}
-
-double swapdouble(double n, int doit) {
-    if (doit) {
-        swapstring8((char *)&n, 1);
-    }
-    return n;
 }
 
 /* ----------------------- soundfile access routines ----------------------- */

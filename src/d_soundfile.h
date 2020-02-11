@@ -99,16 +99,13 @@ uint32_t swap4(uint32_t n, int doit);
 int32_t swap4s(int32_t n, int doit);
 
     /** swap 2 bytes and return if doit = 1, otherwise return n */
-uint16_t swap2(uint32_t n, int doit);
+uint16_t swap2(uint16_t n, int doit);
 
     /** swap a 4 byte string in place if do it = 1, otherewise do nothing */
-void swapstring(char *foo, int doit);
+void swapstring4(char *foo, int doit);
 
     /** swap an 8 byte string in place if do it = 1, otherwise do nothing */
 void swapstring8(char *foo, int doit);
-
-    /** swap an 8 byte double and return if doit = 1, otherwise return n */
-double swapdouble(double n, int doit);
 
 /* ------------------------- WAVE ------------------------- */
 
