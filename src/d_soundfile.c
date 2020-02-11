@@ -45,10 +45,10 @@ objects use Posix-like threads.  */
 
 /***************** soundfile header structures ************************/
 
-typedef union
-{
-    float f;
-    uint32_t ui;
+    /* float sample conversion wrapper */
+typedef union _floatuint {
+  float f;
+  uint32_t ui;
 } t_floatuint;
 
 #define FORMAT_WAVE 0
@@ -514,7 +514,6 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
     int i, j;
     unsigned char *sp, *sp2;
     t_sample *fp;
-    t_floatuint alias;
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
     int bytesperframe = bytespersamp * sfchannels;
     for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
@@ -540,26 +539,27 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
             {
                 for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
-                        *fp = SCALE * ((sp2[0] << 24) | (sp2[1] << 16)
-                            | (sp2[2] << 8));
+                        *fp = SCALE * ((sp2[0] << 24) | (sp2[1] << 16) |
+                                       (sp2[2] << 8));
             }
             else
             {
                 for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
-                        *fp = SCALE * ((sp2[2] << 24) | (sp2[1] << 16)
-                            | (sp2[0] << 8));
+                        *fp = SCALE * ((sp2[2] << 24) | (sp2[1] << 16) |
+                                       (sp2[0] << 8));
             }
         }
         else if (bytespersamp == 4)
         {
+            t_floatuint alias;
             if (bigendian)
             {
-                for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
+                for (j = 0, sp2 = sp, fp = vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
                 {
-                    alias.ui  = ((sp2[0] << 24) | (sp2[1] << 16)
-                            | (sp2[2] << 8) | sp2[3]);
+                    alias.ui = ((sp2[0] << 24) | (sp2[1] << 16) |
+                                (sp2[2] << 8)  |  sp2[3]);
                     *fp = (t_sample)alias.f;
                 }
             }
@@ -568,8 +568,8 @@ static void soundfile_xferin_sample(int sfchannels, int nvecs, t_sample **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
                 {
-                    alias.ui = ((sp2[3] << 24) | (sp2[2] << 16)
-                            | (sp2[1] << 8) | sp2[0]);
+                    alias.ui = ((sp2[3] << 24) | (sp2[2] << 16) |
+                                (sp2[1] << 8)  |  sp2[0]);
                     *fp = (t_sample)alias.f;
                 }
             }
@@ -590,14 +590,8 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
     long j;
     unsigned char *sp, *sp2;
     t_word *wp;
-    t_floatuint alias;
     int nchannels = (sfchannels < nvecs ? sfchannels : nvecs);
     int bytesperframe = bytespersamp * sfchannels;
-    union
-    {
-        long long32;
-        float float32;
-    } word32;
     for (i = 0, sp = buf; i < nchannels; i++, sp += bytespersamp)
     {
         if (bytespersamp == 2)
@@ -634,14 +628,15 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
         }
         else if (bytespersamp == 4)
         {
+            t_floatuint alias;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, wp = vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    word32.long32 = (sp2[0] << 24) |
-                            (sp2[1] << 16) | (sp2[2] << 8) | sp2[3];
-                    wp->w_float = word32.float32;
+                    alias.ui = ((sp2[0] << 24) | (sp2[1] << 16) |
+                                (sp2[2] << 8)  |  sp2[3]);
+                    wp->w_float = (t_float)alias.f;
                 }
             }
             else
@@ -649,8 +644,8 @@ static void soundfile_xferin_words(int sfchannels, int nvecs, t_word **vecs,
                 for (j = 0, sp2 = sp, wp = vecs[i] + itemsread;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    alias.ui = ((sp2[3] << 24) | (sp2[2] << 16)
-                            | (sp2[1] << 8) | sp2[0]);
+                    alias.ui = ((sp2[3] << 24) | (sp2[2] << 16) |
+                                (sp2[1] << 8)  |  sp2[0]);
                     wp->w_float = (t_float)alias.f;
                 }
             }
@@ -1080,15 +1075,15 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
         }
         else if (bytespersamp == 4)
         {
+            t_floatuint f2;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
                 {
-                    t_floatuint f2;
                     f2.f = *fp * normalfactor;
                     sp2[0] = (f2.ui >> 24); sp2[1] = (f2.ui >> 16);
-                    sp2[2] = (f2.ui >> 8); sp2[3] = f2.ui;
+                    sp2[2] = (f2.ui >> 8);  sp2[3] = f2.ui;
                 }
             }
             else
@@ -1096,10 +1091,9 @@ static void soundfile_xferout_sample(int nchannels, t_sample **vecs,
                 for (j = 0, sp2 = sp, fp=vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, fp++)
                 {
-                    t_floatuint f2;
                     f2.f = *fp * normalfactor;
                     sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
-                    sp2[1] = (f2.ui >> 8); sp2[0] = f2.ui;
+                    sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
                 }
             }
         }
@@ -1188,15 +1182,15 @@ static void soundfile_xferout_words(int nchannels, t_word **vecs,
         }
         else if (bytespersamp == 4)
         {
+            t_floatuint f2;
             if (bigendian)
             {
                 for (j = 0, sp2 = sp, wp = vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    t_floatuint f2;
                     f2.f = wp->w_float * normalfactor;
                     sp2[0] = (f2.ui >> 24); sp2[1] = (f2.ui >> 16);
-                    sp2[2] = (f2.ui >> 8); sp2[3] = f2.ui;
+                    sp2[2] = (f2.ui >> 8);  sp2[3] = f2.ui;
                 }
             }
             else
@@ -1204,10 +1198,9 @@ static void soundfile_xferout_words(int nchannels, t_word **vecs,
                 for (j = 0, sp2 = sp, wp = vecs[i] + onset;
                     j < nitems; j++, sp2 += bytesperframe, wp++)
                 {
-                    t_floatuint f2;
                     f2.f = wp->w_float * normalfactor;
                     sp2[3] = (f2.ui >> 24); sp2[2] = (f2.ui >> 16);
-                    sp2[1] = (f2.ui >> 8); sp2[0] = f2.ui;
+                    sp2[1] = (f2.ui >> 8);  sp2[0] = f2.ui;
                 }
             }
         }
