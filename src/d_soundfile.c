@@ -54,7 +54,7 @@ typedef enum _soundfile_filetype
     FILETYPE_WAVE    =  0,
     FILETYPE_AIFF    =  1,
     FILETYPE_NEXT    =  2,
-    FILETYPE_CAFF    =  3
+    FILETYPE_CAF     =  3
 } t_soundfile_filetype;
 
 /* ----- soundfile helpers ----- */
@@ -67,8 +67,8 @@ static int soundfile_min_headersize()
     int size = soundfile_wave_headersize();
     if (size < soundfile_aiff_headersize())
         size = soundfile_aiff_headersize();
-    if (size < soundfile_caff_headersize())
-        size = soundfile_caff_headersize();
+    if (size < soundfile_caf_headersize())
+        size = soundfile_caf_headersize();
     if (size < soundfile_next_headersize())
         size = soundfile_next_headersize();
     return size;
@@ -236,8 +236,8 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *info, size_t skipframes)
             filetype = FILETYPE_WAVE;
         else if (soundfile_aiff_isheader(buf, bytesread))
             filetype = FILETYPE_AIFF;
-        else if (soundfile_caff_isheader(buf, bytesread))
-            filetype = FILETYPE_CAFF;
+        else if (soundfile_caf_isheader(buf, bytesread))
+            filetype = FILETYPE_CAF;
         else if (soundfile_next_isheader(buf, bytesread))
             filetype = FILETYPE_NEXT;
         else goto badheader;
@@ -254,8 +254,8 @@ int open_soundfile_via_fd(int fd, t_soundfile_info *info, size_t skipframes)
             case FILETYPE_AIFF:
                 if (!soundfile_aiff_readheader(fd, &i)) goto badheader;
                 break;
-            case FILETYPE_CAFF:
-                if (!soundfile_caff_readheader(fd, &i)) goto badheader;
+            case FILETYPE_CAF:
+                if (!soundfile_caf_readheader(fd, &i)) goto badheader;
                 break;
             case FILETYPE_NEXT:
                 if (!soundfile_next_readheader(fd, &i)) goto badheader;
@@ -472,7 +472,7 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
          -normalize
          -wave
          -aiff
-         -caff
+         -caf
          -nextstep
          -big
          -little
@@ -553,9 +553,9 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
             filetype = FILETYPE_AIFF;
             argc -= 1; argv += 1;
         }
-        else if (!strcmp(flag, "caff"))
+        else if (!strcmp(flag, "caf"))
         {
-            filetype = FILETYPE_CAFF;
+            filetype = FILETYPE_CAF;
             argc -= 1; argv += 1;
         }
         else if (!strcmp(flag, "big"))
@@ -588,8 +588,8 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
             filetype = FILETYPE_WAVE;
         else if(soundfile_aiff_hasextension(filesym->s_name, MAXPDSTRING))
             filetype = FILETYPE_AIFF;
-        else if(soundfile_caff_hasextension(filesym->s_name, MAXPDSTRING))
-            filetype = FILETYPE_CAFF;
+        else if(soundfile_caf_hasextension(filesym->s_name, MAXPDSTRING))
+            filetype = FILETYPE_CAF;
         else if(soundfile_next_hasextension(filesym->s_name, MAXPDSTRING))
             filetype = FILETYPE_NEXT;
         else
@@ -621,7 +621,7 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
         else if (endianness == 0)
             bigendian = 0;
     }
-    else if (filetype == FILETYPE_CAFF) /* default to big endian */
+    else if (filetype == FILETYPE_CAF) /* default to big endian */
     {
         if (endianness == -1)
             bigendian = 1;
@@ -670,8 +670,8 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
             if (!soundfile_aiff_hasextension(filenamebuf, MAXPDSTRING))
                 strcat(filenamebuf, ".aif");
             break;
-        case FILETYPE_CAFF:
-            if (!soundfile_caff_hasextension(filenamebuf, MAXPDSTRING))
+        case FILETYPE_CAF:
+            if (!soundfile_caf_hasextension(filenamebuf, MAXPDSTRING))
                 strcat(filenamebuf, ".caf");
             break;
         case FILETYPE_NEXT:
@@ -692,8 +692,8 @@ static int create_soundfile(t_canvas *canvas, const char *filename,
             headersize = soundfile_wave_writeheader(fd, info, nframes); break;
         case FILETYPE_AIFF:
             headersize = soundfile_aiff_writeheader(fd, info, nframes); break;
-        case FILETYPE_CAFF:
-            headersize = soundfile_caff_writeheader(fd, info, nframes); break;
+        case FILETYPE_CAF:
+            headersize = soundfile_caf_writeheader(fd, info, nframes); break;
         case FILETYPE_NEXT:
             headersize = soundfile_next_writeheader(fd, info, nframes); break;
         default: break;
@@ -725,8 +725,8 @@ static void soundfile_finishwrite(void *obj, const char *filename, int fd,
         case FILETYPE_AIFF:
             if (soundfile_aiff_updateheader(fd, info, frameswritten)) return;
             break;
-        case FILETYPE_CAFF:
-            if(soundfile_caff_updateheader(fd, info, frameswritten)) return;
+        case FILETYPE_CAF:
+            if(soundfile_caf_updateheader(fd, info, frameswritten)) return;
             break;
         case FILETYPE_NEXT:
             if (soundfile_next_updateheader(fd, info, frameswritten)) return;
@@ -1352,7 +1352,8 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
     return frameswritten;
 usage:
     pd_error(obj, "usage: write [flags] filename tablename...");
-    post("flags: -skip <n> -nframes <n> -bytes <n> -wave -aiff -caff -nextstep ...");
+    post("flags: -skip <n> -nframes <n> -bytes <n> "
+         "-wave -aiff -caf -nextstep ...");
     post("-big -little -normalize");
     post("(defaults to a 16-bit wave file)");
 fail:
@@ -1629,7 +1630,7 @@ static void *readsf_child_main(void *zz)
                     else
                     {
 #ifdef DEBUG_SOUNDFILE
-                        pute("wait 7a ...\n");
+                        pute("wait 7a...\n");
 #endif
                         sfread_cond_signal(&x->x_answercondition);
 #ifdef DEBUG_SOUNDFILE
@@ -2176,7 +2177,7 @@ static void *writesf_child_main(void *zz)
                 else
                 {
 #ifdef DEBUG_SOUNDFILE
-                    pute("wait 7a ...\n");
+                    pute("wait 7a...\n");
 #endif
                     sfread_cond_signal(&x->x_answercondition);
 #ifdef DEBUG_SOUNDFILE
@@ -2397,7 +2398,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     if (soundfiler_writeargs_parse(x, &argc, &argv, &wa))
     {
         pd_error(x, "usage: open [flags] filename...");
-        post("flags: -bytes <n> -wave -aiff -caff -nextstep ...");
+        post("flags: -bytes <n> -wave -aiff -caf -nextstep ...");
         post("-big -little -rate <n>");
         return;
     }

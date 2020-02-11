@@ -9,7 +9,7 @@
 #include <math.h>
 #include <inttypes.h>
 
-/* CAFF header (Core Audio File Format)
+/* CAF header (Core Audio Format)
 
   * RIFF variant with sections split into data "chunks"
   * chunk data is big-endian
@@ -22,7 +22,7 @@
 
   this implementation:
 
-  * supports CAFF version 1 only
+  * supports CAF version 1 only
   * implements chunks: description, data
   * ignores chunks: packet table, magic cookie, strings, marker, region,
                     instrument, MIDI, overview, peak, edit comments,
@@ -33,12 +33,12 @@
 */
 
     /* explicit byte sizes, sizeof(struct) can return alignment padded values */
-#define CAFFHEADSIZE     8 /**< chunk header only */
-#define CAFFCHUNKSIZE   12 /**< chunk header and format */
-#define CAFFDESCSIZE    44 /**< chunk header and data */
-#define CAFFDATASIZE    16 /**< chunk header and edit count data */
+#define CAFHEADSIZE     8 /**< chunk header only */
+#define CAFCHUNKSIZE   12 /**< chunk header and format */
+#define CAFDESCSIZE    44 /**< chunk header and data */
+#define CAFDATASIZE    16 /**< chunk header and edit count data */
 
-#define CAFFMAXBYTES SFMAXBYTES /** max signed 64 bit size */
+#define CAFMAXBYTES SFMAXBYTES /** max signed 64 bit size */
 
     /** Apple-style description format flags */
 enum {
@@ -84,20 +84,20 @@ typedef struct _datachunk {
 
 /* ----- helpers ----- */
 
-static int64_t caff_getchunksize(const t_chunk *chunk, int swap)
+static int64_t caf_getchunksize(const t_chunk *chunk, int swap)
 {
     int64_t size = 0;
     memcpy(&size, chunk->c_size, 8);
     return swap8s(size, swap);
 }
 
-static void caff_setchunksize(t_chunk *chunk, int64_t size, int swap)
+static void caf_setchunksize(t_chunk *chunk, int64_t size, int swap)
 {
     size = swap8s(size, swap);
     memcpy(chunk->c_size, &size, 8);
 }
 
-static double caff_getsamplerate(const t_descchunk *desc, int swap)
+static double caf_getsamplerate(const t_descchunk *desc, int swap)
 {
     double sr = 0;
     memcpy(&sr, desc->ds_samplerate, 8);
@@ -105,14 +105,14 @@ static double caff_getsamplerate(const t_descchunk *desc, int swap)
     return sr;
 }
 
-static void caff_setsamplerate(t_descchunk *desc, double sr, int swap)
+static void caf_setsamplerate(t_descchunk *desc, double sr, int swap)
 {
     memcpy(desc->ds_samplerate, &sr, 8);
     swapstring8((char *)desc->ds_samplerate, swap);
 }
 
     /** post head info for debugging */
-static void caff_posthead(const t_head *head, int swap)
+static void caf_posthead(const t_head *head, int swap)
 {
     post("%.4s", head->h_id);
     post("  version %d", swap2(head->h_version, swap));
@@ -120,17 +120,17 @@ static void caff_posthead(const t_head *head, int swap)
 }
 
     /** post chunk info for debugging */
-static void caff_postchunk(const t_chunk *chunk, int swap)
+static void caf_postchunk(const t_chunk *chunk, int swap)
 {
-    post("%.4s %" PRId64, chunk->c_id, caff_getchunksize(chunk, swap));
+    post("%.4s %" PRId64, chunk->c_id, caf_getchunksize(chunk, swap));
 }
 
     /** post desc info for debugging */
-static void caff_postdesc(const t_descchunk *desc, int swap)
+static void caf_postdesc(const t_descchunk *desc, int swap)
 {
     uint32_t fmtflags = swap4(desc->ds_fmtflags, swap);
-    caff_postchunk((t_chunk *)desc, swap);
-    post("  sample rate %g", caff_getsamplerate(desc, swap));
+    caf_postchunk((t_chunk *)desc, swap);
+    post("  sample rate %g", caf_getsamplerate(desc, swap));
     post("  fmt id %.4s", desc->ds_fmtid);
     post("  fmt flags %d (%s %s)", fmtflags,
         (fmtflags & kCAFLinearPCMFormatFlagIsLittleEndian ? "little" : "big"),
@@ -142,32 +142,32 @@ static void caff_postdesc(const t_descchunk *desc, int swap)
 }
 
     /** post data header info for debugging, currently edit count only */
-static void caff_postdata(const t_datachunk *data, int swap)
+static void caf_postdata(const t_datachunk *data, int swap)
 {
-    caff_postchunk((t_chunk *)data, swap);
+    caf_postchunk((t_chunk *)data, swap);
     post("  edit count %d", swap4(data->dc_editcount, swap));
 }
 
-/* ------------------------- CAFF ------------------------- */
+/* ------------------------- CAF -------------------------- */
 
-int soundfile_caff_headersize()
+int soundfile_caf_headersize()
 {
-    return CAFFHEADSIZE + CAFFDESCSIZE + CAFFDATASIZE;
+    return CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE;
 }
 
-int soundfile_caff_isheader(const char *buf, size_t size)
+int soundfile_caf_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     return !strncmp(buf, "caff", 4);
 }
 
-int soundfile_caff_readheader(int fd, t_soundfile_info *info)
+int soundfile_caf_readheader(int fd, t_soundfile_info *info)
 {
     int nchannels = 1, bytespersample = 2, bigendian = 1,
         fmtflags, bitspersample, swap = !sys_isbigendian();
     double samplerate = 44100;
-    off_t headersize = CAFFHEADSIZE + CAFFDESCSIZE;
-    ssize_t bytelimit = CAFFMAXBYTES;
+    off_t headersize = CAFHEADSIZE + CAFDESCSIZE;
+    ssize_t bytelimit = CAFMAXBYTES;
     union
     {
         char b_c[SFHDRBUFSIZE];
@@ -187,30 +187,30 @@ int soundfile_caff_readheader(int fd, t_soundfile_info *info)
         return 0;
     if (swap2(head->h_version, swap) != 1)
     {
-        error("CAFF version %d unsupported", swap2(head->h_version, swap));
+        error("CAF version %d unsupported", swap2(head->h_version, swap));
         return 0;
     }
     if (swap2(head->h_flags, swap) != 0)
     {
             /* current spec says these should be empty */
-        error("CAFF version 1 format flags invalid");
+        error("CAF version 1 format flags invalid");
         return 0;
     }
     if (sys_verbose)
-        caff_posthead(head, swap);
+        caf_posthead(head, swap);
 
         /* copy the first chunk header to beginning of buffer */
-    memcpy(buf.b_c, buf.b_c + CAFFHEADSIZE, CAFFDESCSIZE);
-    headersize = CAFFHEADSIZE;
+    memcpy(buf.b_c, buf.b_c + CAFHEADSIZE, CAFDESCSIZE);
+    headersize = CAFHEADSIZE;
 
         /* first chunk must be description */
     if (strncmp(desc->ds_id, "desc", 4))
         return 0;
     if (sys_verbose)
-        caff_postdesc(desc, swap);
+        caf_postdesc(desc, swap);
     if (strncmp(desc->ds_fmtid, "lpcm", 4))
     {
-        error("CAFF format \"%.4s\" not supported", desc->ds_fmtid);
+        error("CAF format \"%.4s\" not supported", desc->ds_fmtid);
         return 0;
     }
     nchannels = swap4(desc->ds_nchannels, swap);
@@ -222,27 +222,27 @@ int soundfile_caff_readheader(int fd, t_soundfile_info *info)
         case 24: bytespersample = 3; break;
         case 32: bytespersample = 4; break;
         default:
-            error("CAFF %d bit samples not supported ", bitspersample);
+            error("CAF %d bit samples not supported ", bitspersample);
             return 0;
     }
     if (bytespersample == 4 && !(fmtflags & kCAFLinearPCMFormatFlagIsFloat))
     {
-        error("CAFF 32 bit int not supported");
+        error("CAF 32 bit int not supported");
         return 0;
     }
     bigendian = !(fmtflags & kCAFLinearPCMFormatFlagIsLittleEndian);
-    samplerate = caff_getsamplerate(desc, swap);
-    headersize += CAFFDESCSIZE;
+    samplerate = caf_getsamplerate(desc, swap);
+    headersize += CAFDESCSIZE;
 
         /* prepare second chunk */
     if (soundfile_readbytes(fd, headersize, buf.b_c,
-                            CAFFCHUNKSIZE) < CAFFCHUNKSIZE)
+                            CAFCHUNKSIZE) < CAFCHUNKSIZE)
         return 0;
 
         /* read chunks in loop until we find the sound data chunk */
     while (1)
     {
-        int64_t chunksize = caff_getchunksize(chunk, swap);
+        int64_t chunksize = caf_getchunksize(chunk, swap);
         off_t seekto = headersize + chunksize, seekout;
         if (seekto & 1) /* pad up to even number of bytes */
             seekto++;
@@ -253,24 +253,24 @@ int soundfile_caff_readheader(int fd, t_soundfile_info *info)
             if (sys_verbose)
             {
                 t_datachunk *data = &buf.b_datachunk;
-                if (soundfile_readbytes(fd, headersize + CAFFCHUNKSIZE,
-                                        buf.b_c + CAFFCHUNKSIZE, 4) < 4)
+                if (soundfile_readbytes(fd, headersize + CAFCHUNKSIZE,
+                                        buf.b_c + CAFCHUNKSIZE, 4) < 4)
                     return 0;
-                caff_postdata(data, swap);
+                caf_postdata(data, swap);
             }
             bytelimit = chunksize - 4; /* subtract edit count */
-            headersize += CAFFDATASIZE;
+            headersize += CAFDATASIZE;
             break;
         }
         else
         {
                 /* everything else */
             if (sys_verbose)
-                caff_postchunk(chunk, swap);
+                caf_postchunk(chunk, swap);
         }
         headersize = seekto;
         if (soundfile_readbytes(fd, seekto, buf.b_c,
-                                CAFFCHUNKSIZE) < CAFFCHUNKSIZE)
+                                CAFCHUNKSIZE) < CAFCHUNKSIZE)
             return 0;
     }
 
@@ -286,7 +286,7 @@ int soundfile_caff_readheader(int fd, t_soundfile_info *info)
     return 1;
 }
 
-int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
+int soundfile_caf_writeheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int swap = !sys_isbigendian();
@@ -300,12 +300,12 @@ int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
     t_datachunk data = {"data", 0, 0};
 
         /* file header */
-    memcpy(buf + headersize, &head, CAFFHEADSIZE);
-    headersize += CAFFHEADSIZE;
+    memcpy(buf + headersize, &head, CAFHEADSIZE);
+    headersize += CAFHEADSIZE;
 
         /* description chunk */
-    caff_setchunksize((t_chunk *)&desc, CAFFDESCSIZE, swap);
-    caff_setsamplerate(&desc, info->i_samplerate, swap);
+    caf_setchunksize((t_chunk *)&desc, CAFDESCSIZE, swap);
+    caf_setsamplerate(&desc, info->i_samplerate, swap);
     strncpy(desc.ds_fmtid, "lpcm", 4);
     if (info->i_bytespersample == 4)
         uinttmp |= kCAFLinearPCMFormatFlagIsFloat;
@@ -316,19 +316,19 @@ int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
     desc.ds_framesperpacket = swap4(1, swap);
     desc.ds_nchannels = swap4(info->i_nchannels, swap);
     desc.ds_bitsperchannel = swap4(info->i_bytespersample * 8, swap);
-    memcpy(buf + headersize, &desc, CAFFDESCSIZE);
-    headersize += CAFFDESCSIZE;
+    memcpy(buf + headersize, &desc, CAFDESCSIZE);
+    headersize += CAFDESCSIZE;
 
         /* data chunk */
-    caff_setchunksize((t_chunk *)&data, datasize + 4, swap);
-    memcpy(buf + headersize, &data, CAFFDATASIZE);
-    headersize += CAFFDATASIZE;
+    caf_setchunksize((t_chunk *)&data, datasize + 4, swap);
+    memcpy(buf + headersize, &data, CAFDATASIZE);
+    headersize += CAFDATASIZE;
 
     if (sys_verbose)
     {
-        caff_posthead(&head, swap);
-        caff_postdesc(&desc, swap);
-        caff_postdata(&data, swap);
+        caf_posthead(&head, swap);
+        caf_postdesc(&desc, swap);
+        caf_postdata(&data, swap);
     }
 
     byteswritten = soundfile_writebytes(fd, 0, buf, headersize);
@@ -336,14 +336,14 @@ int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
 }
 
     /** assumes chunk order: head desc data */
-int soundfile_caff_updateheader(int fd, const t_soundfile_info *info,
+int soundfile_caf_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int swap = !sys_isbigendian();
     int64_t datasize = swap8s((nframes * info->i_bytesperframe) + 4, swap);
 
         /* data chunk size */
-    if (soundfile_writebytes(fd, CAFFHEADSIZE + CAFFDESCSIZE + 4, /* dc_id */
+    if (soundfile_writebytes(fd, CAFHEADSIZE + CAFDESCSIZE + 4, /* dc_id */
                              (char *)&datasize, 8) < 8)
         return 0;
 
@@ -356,7 +356,7 @@ int soundfile_caff_updateheader(int fd, const t_soundfile_info *info,
     return 1;
 }
 
-int soundfile_caff_hasextension(const char *filename, size_t size)
+int soundfile_caf_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 5 &&

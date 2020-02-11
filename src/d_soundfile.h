@@ -159,32 +159,32 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
             (.aif, .aiff, .aifc, .AIF, .AIFF, or .AIFC) otherwise 0 */
 int soundfile_aiff_hasextension(const char *filename, size_t size);
 
-/* ------------------------- CAFF ------------------------- */
+/* ------------------------- CAF -------------------------- */
 
-    /** returns min CAFF header size in bytes */
-int soundfile_caff_headersize();
+    /** returns min CAF header size in bytes */
+int soundfile_caf_headersize();
 
-    /** returns 1 if buffer is the beginning of an CAFF header */
-int soundfile_caff_isheader(const char *buf, size_t size);
+    /** returns 1 if buffer is the beginning of an CAF header */
+int soundfile_caf_isheader(const char *buf, size_t size);
 
-    /** read CAFF header from a file into info, assumes fd is at the beginning
+    /** read CAF header from a file into info, assumes fd is at the beginning
         result should place fd at beginning of audio data
         returns 1 on success or 0 on error */
-int soundfile_caff_readheader(int fd, t_soundfile_info *info);
+int soundfile_caf_readheader(int fd, t_soundfile_info *info);
 
     /** write header to beginning of an open file from an info struct
         returns header bytes written or -1 on error */
-int soundfile_caff_writeheader(int fd, const t_soundfile_info *info,
+int soundfile_caf_writeheader(int fd, const t_soundfile_info *info,
     size_t nframes);
 
     /** update file header data size, assumes fd is at the beginning
         returns 1 on success or 0 on error */
-int soundfile_caff_updateheader(int fd, const t_soundfile_info *info,
+int soundfile_caf_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes);
 
-    /** returns 1 if the filename has a CAFF extension
+    /** returns 1 if the filename has a CAF extension
         (.caf, .CAF) otherwise 0 */
-int soundfile_caff_hasextension(const char *filename, size_t size);
+int soundfile_caf_hasextension(const char *filename, size_t size);
 
 /* ------------------------- NEXT ------------------------- */
 
