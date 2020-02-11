@@ -188,7 +188,7 @@ int soundfile_caf_hasextension(const char *filename, size_t size);
 
 /* ------------------------- NEXT ------------------------- */
 
-/// returns min NEXT header size in bytes
+    /** returns min NEXT header size in bytes */
 int soundfile_next_headersize();
 
     /** returns 1 if buffer is the beginning of a NEXT header */
