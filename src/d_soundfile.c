@@ -473,7 +473,7 @@ static void soundfile_xferin_words(const t_soundfile_info *info, int nvecs,
          -wave
          -aiff
          -caf
-         -nextstep
+         -next / -nextstep
          -big
          -little
     */
@@ -543,7 +543,7 @@ static int soundfiler_writeargs_parse(void *obj, int *p_argc, t_atom **p_argv,
             filetype = FILETYPE_WAVE;
             argc -= 1; argv += 1;
         }
-        else if (!strcmp(flag, "nextstep"))
+        else if (!strcmp(flag, "next") || !strcmp(flag, "nextstep"))
         {
             filetype = FILETYPE_NEXT;
             argc -= 1; argv += 1;
@@ -1341,7 +1341,7 @@ size_t soundfiler_dowrite(void *obj, t_canvas *canvas,
 usage:
     pd_error(obj, "usage: write [flags] filename tablename...");
     post("flags: -skip <n> -nframes <n> -bytes <n> "
-         "-wave -aiff -caf -nextstep ...");
+         "-wave -aiff -caf -next ...");
     post("-big -little -normalize");
     post("(defaults to a 16-bit wave file)");
 fail:
@@ -2386,7 +2386,7 @@ static void writesf_open(t_writesf *x, t_symbol *s, int argc, t_atom *argv)
     if (soundfiler_writeargs_parse(x, &argc, &argv, &wa))
     {
         pd_error(x, "usage: open [flags] filename...");
-        post("flags: -bytes <n> -wave -aiff -caf -nextstep ...");
+        post("flags: -bytes <n> -wave -aiff -caf -next ...");
         post("-big -little -rate <n>");
         return;
     }
