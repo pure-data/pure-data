@@ -209,18 +209,13 @@ static int aiff_isaiffc(const t_soundfile_info *info)
 
 /* ------------------------- AIFF ------------------------- */
 
-int soundfile_aiff_headersize()
-{
-    return AIFFHEADSIZE + AIFFCOMMSIZE + AIFFDATASIZE;
-}
-
-int soundfile_aiff_isheader(const char *buf, size_t size)
+static int aiff_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     return !strncmp(buf, "FORM", 4);
 }
 
-int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
+static int aiff_readheader(int fd, t_soundfile_info *info)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 1,
         swap = !sys_isbigendian(), isaiffc = 0, commfound = 0;
@@ -390,7 +385,7 @@ int soundfile_aiff_readheader(int fd, t_soundfile_info *info)
     return 1;
 }
 
-int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
+static int aiff_writeheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int isaiffc = aiff_isaiffc(info), swap = !sys_isbigendian();
@@ -474,7 +469,7 @@ int soundfile_aiff_writeheader(int fd, const t_soundfile_info *info,
     /** assumes chunk order:
         * AIFF  : head comm data
         * AIFF-C: head version comm data, comm chunk size variable due to str */
-int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
+static int aiff_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int isaiffc = aiff_isaiffc(info), swap = !sys_isbigendian();
@@ -522,7 +517,7 @@ int soundfile_aiff_updateheader(int fd, const t_soundfile_info *info,
     return 1;
 }
 
-int soundfile_aiff_hasextension(const char *filename, size_t size)
+static int aiff_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 5 &&
@@ -536,4 +531,38 @@ int soundfile_aiff_hasextension(const char *filename, size_t size)
          !strncmp(filename + (len - 5), ".AIFC", 5)))
         return 1;
     return 0;
+}
+
+static int aiff_addextension(char *filename, size_t size)
+{
+    int len = strnlen(filename, size);
+    if (len + 4 > size)
+        return 0;
+    strncat(filename, ".aif", 4);
+    return 1;
+}
+
+    /* default to big endian unless overridden */
+static int aiff_endianness(int endianness)
+{
+    if (endianness == 0)
+        return 0;
+    return 1;
+}
+
+void soundfile_aiff_setup()
+{
+    t_soundfile_filetype aiff = {
+        gensym("aiff"),
+        AIFFHEADSIZE + AIFFCOMMSIZE + AIFFDATASIZE,
+        aiff_isheader,
+        aiff_readheader,
+        aiff_writeheader,
+        aiff_updateheader,
+        aiff_hasextension,
+        aiff_addextension,
+        aiff_endianness,
+        NULL
+    };
+    soundfile_addfiletype(&aiff);
 }

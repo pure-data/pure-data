@@ -33,7 +33,7 @@
   * implicitly writes extended format for 32 bit float (see below)
   * implements chunks: format, fact, sound data
   * ignores chunks: info, cset, cue, playlist, associated data, instrument,
-                    sample, display, junk, pad, time code, digitization time,
+                    sample, display, junk, pad, time code, digitization time
   * assumes format chunk is always before sound data chunk
   * assumes there is only 1 sound data chunk
   * does not support 64-bit variants or BWF file-splitting
@@ -183,18 +183,13 @@ static int wave_isextended(const t_soundfile_info *info)
 
 /* ------------------------- WAVE ------------------------- */
 
-int soundfile_wave_headersize()
-{
-    return WAVEHEADSIZE + WAVEFORMATSIZE + WAVECHUNKSIZE;
-}
-
-int soundfile_wave_isheader(const char *buf, size_t size)
+static int wave_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     return !strncmp(buf, "RIFF", 4);
 }
 
-int soundfile_wave_readheader(int fd, t_soundfile_info *info)
+static int wave_readheader(int fd, t_soundfile_info *info)
 {
     int nchannels = 1, bytespersample = 2, samplerate = 44100, bigendian = 0,
         swap = (bigendian != sys_isbigendian()), formatfound = 1;
@@ -311,7 +306,7 @@ int soundfile_wave_readheader(int fd, t_soundfile_info *info)
     return 1;
 }
 
-int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
+static int wave_writeheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int isextended = wave_isextended(info), swap = soundfile_info_swap(info);
@@ -393,7 +388,7 @@ int soundfile_wave_writeheader(int fd, const t_soundfile_info *info,
     /** assumes chunk order:
         * basic:    head format data
         * extended: head format+ext fact data */
-int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
+static int wave_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int isextended = wave_isextended(info), swap = soundfile_info_swap(info);
@@ -444,7 +439,7 @@ int soundfile_wave_updateheader(int fd, const t_soundfile_info *info,
     return 1;
 }
 
-int soundfile_wave_hasextension(const char *filename, size_t size)
+static int wave_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 5 &&
@@ -456,4 +451,38 @@ int soundfile_wave_hasextension(const char *filename, size_t size)
          !strncmp(filename + (len - 5), ".WAVE", 5)))
         return 1;
     return 0;
+}
+
+static int wave_addextension(char *filename, size_t size)
+{
+    int len = strnlen(filename, size);
+    if (len + 4 > size)
+        return 0;
+    strncat(filename, ".wav", 4);
+    return 1;
+}
+
+    /* force little endian */
+static int wave_endianness(int endianness)
+{
+    if (endianness == 1)
+        error("WAVE file forced to little endian");
+    return 0;
+}
+
+void soundfile_wave_setup()
+{
+    t_soundfile_filetype wave = {
+        gensym("wave"),
+        WAVEHEADSIZE + WAVEFORMATSIZE + WAVECHUNKSIZE,
+        wave_isheader,
+        wave_readheader,
+        wave_writeheader,
+        wave_updateheader,
+        wave_hasextension,
+        wave_addextension,
+        wave_endianness,
+        NULL
+    };
+    soundfile_addfiletype(&wave);
 }

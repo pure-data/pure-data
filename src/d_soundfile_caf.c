@@ -152,18 +152,13 @@ static void caf_postdata(const t_datachunk *data, int swap)
 
 /* ------------------------- CAF -------------------------- */
 
-int soundfile_caf_headersize()
-{
-    return CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE;
-}
-
-int soundfile_caf_isheader(const char *buf, size_t size)
+static int caf_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     return !strncmp(buf, "caff", 4);
 }
 
-int soundfile_caf_readheader(int fd, t_soundfile_info *info)
+static int caf_readheader(int fd, t_soundfile_info *info)
 {
     int nchannels = 1, bytespersample = 2, bigendian = 1,
         fmtflags, bitspersample, swap = !sys_isbigendian();
@@ -288,7 +283,7 @@ int soundfile_caf_readheader(int fd, t_soundfile_info *info)
     return 1;
 }
 
-int soundfile_caf_writeheader(int fd, const t_soundfile_info *info,
+static int caf_writeheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int swap = !sys_isbigendian();
@@ -338,7 +333,7 @@ int soundfile_caf_writeheader(int fd, const t_soundfile_info *info,
 }
 
     /** assumes chunk order: head desc data */
-int soundfile_caf_updateheader(int fd, const t_soundfile_info *info,
+static int caf_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int swap = !sys_isbigendian();
@@ -358,7 +353,7 @@ int soundfile_caf_updateheader(int fd, const t_soundfile_info *info,
     return 1;
 }
 
-int soundfile_caf_hasextension(const char *filename, size_t size)
+static int caf_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 5 &&
@@ -366,4 +361,38 @@ int soundfile_caf_hasextension(const char *filename, size_t size)
          !strncmp(filename + (len - 4), ".CAF", 4)))
         return 1;
     return 0;
+}
+
+static int caf_addextension(char *filename, size_t size)
+{
+    int len = strnlen(filename, size);
+    if (len + 4 > size)
+        return 0;
+    strncat(filename, ".caf", 4);
+    return 1;
+}
+
+    /* default to big endian if not specified */
+static int caf_endianness(int endianness)
+{
+    if (endianness == -1)
+        return 1;
+    return endianness;
+}
+
+void soundfile_caf_setup()
+{
+    t_soundfile_filetype caf = {
+        gensym("caf"),
+        CAFHEADSIZE + CAFDESCSIZE + CAFDATASIZE,
+        caf_isheader,
+        caf_readheader,
+        caf_writeheader,
+        caf_updateheader,
+        caf_hasextension,
+        caf_addextension,
+        caf_endianness,
+        NULL
+    };
+    soundfile_addfiletype(&caf);
 }

@@ -107,12 +107,7 @@ static void next_posthead(const t_nextstep *next, int swap)
 
 /* ------------------------- NEXT ------------------------- */
 
-int soundfile_next_headersize()
-{
-    return NEXTHEADSIZE - 4; /* without info string */
-}
-
-int soundfile_next_isheader(const char *buf, size_t size)
+static int next_isheader(const char *buf, size_t size)
 {
     if (size < 4) return 0;
     if (!strncmp(buf, ".snd", 4) || !strncmp(buf, "dns.", 4))
@@ -120,7 +115,7 @@ int soundfile_next_isheader(const char *buf, size_t size)
     return 0;
 }
 
-int soundfile_next_readheader(int fd, t_soundfile_info *info)
+static int next_readheader(int fd, t_soundfile_info *info)
 {
     int format, bytespersample, bigendian = 1, swap = 0;
     off_t headersize = NEXTHEADSIZE;
@@ -179,7 +174,7 @@ int soundfile_next_readheader(int fd, t_soundfile_info *info)
     return 1;
 }
 
-int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
+static int next_writeheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int swap = soundfile_info_swap(info);
@@ -222,7 +217,7 @@ int soundfile_next_writeheader(int fd, const t_soundfile_info *info,
 
     /** the data length is limited to 4 bytes, so if the size is too large,
         do it the lazy way: just set the size field to "unknown size" */
-int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
+static int next_updateheader(int fd, const t_soundfile_info *info,
     size_t nframes)
 {
     int swap = soundfile_info_swap(info);
@@ -248,7 +243,7 @@ int soundfile_next_updateheader(int fd, const t_soundfile_info *info,
     return 1;
 }
 
-int soundfile_next_hasextension(const char *filename, size_t size)
+static int next_hasextension(const char *filename, size_t size)
 {
     int len = strnlen(filename, size);
     if (len >= 4 &&
@@ -260,4 +255,38 @@ int soundfile_next_hasextension(const char *filename, size_t size)
          !strncmp(filename + (len - 4), ".SND", 4)))
         return 1;
     return 0;
+}
+
+static int next_addextension(char *filename, size_t size)
+{
+    int len = strnlen(filename, size);
+    if (len + 4 > size)
+        return 0;
+    strncat(filename, ".snd", 4);
+    return 1;
+}
+
+    /* machine native if not specified */
+static int next_endianness(int endianness)
+{
+    if (endianness == -1)
+        return sys_isbigendian();
+    return endianness;
+}
+
+void soundfile_next_setup()
+{
+    t_soundfile_filetype next = {
+        gensym("next"),
+        NEXTHEADSIZE - 4, /* without info string */
+        next_isheader,
+        next_readheader,
+        next_writeheader,
+        next_updateheader,
+        next_hasextension,
+        next_addextension,
+        next_endianness,
+        NULL
+    };
+    soundfile_addfiletype(&next);
 }
