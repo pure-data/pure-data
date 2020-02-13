@@ -126,11 +126,11 @@ static void aiff_setframes(t_commchunk *comm, uint32_t nframes, int swap)
     /** read sample rate from comm chunk 80-bit AIFF-compatible number */
 static double aiff_getsamplerate(const t_commchunk *comm, int swap)
 {
-    char *src = (char *)comm->cc_samplerate;
+    unsigned char temp[10], *src = temp, exp;
     unsigned long mantissa, last = 0;
-    unsigned char exp;
 
-    swapstring4(src + 2, swap);
+    memcpy(temp, (char *)comm->cc_samplerate, 10);
+    swapstring4((char *)src + 2, swap);
 
     mantissa = (unsigned long) *((unsigned long *)(src + 2));
     exp = 30 - *(src + 1);
@@ -143,8 +143,7 @@ static double aiff_getsamplerate(const t_commchunk *comm, int swap)
     return mantissa;
 }
 
-    /** write a sample rate to comm chunk 80-bit AIFF-compatible number,
-        assumes dst is a minimum of 10 bytes in length */
+    /** write a sample rate to comm chunk 80-bit AIFF-compatible number */
 static void aiff_setsamplerate(t_commchunk *comm, double sr)
 {
     unsigned char *dst = (unsigned char *)comm->cc_samplerate;
