@@ -42,6 +42,8 @@
 
 #define CAFMAXBYTES SFMAXBYTES /** max signed 64 bit size */
 
+#define CAF_UNKNOWN_SIZE 0xffffffffffffffff /** aka -1 */
+
     /** Apple-style description format flags */
 enum {
     kCAFLinearPCMFormatFlagIsFloat        = (1L << 0),
@@ -255,8 +257,16 @@ static int caf_readheader(int fd, t_soundfile_info *info)
                     return 0;
                 caf_postdata(data, swap);
             }
-            bytelimit = chunksize - 4; /* subtract edit count */
             headersize += CAFDATASIZE;
+            if (chunksize == CAF_UNKNOWN_SIZE)
+            {
+                    /* interpret data size from file size */
+                bytelimit = lseek(fd, 0, SEEK_END) - headersize;
+                if (bytelimit > CAFMAXBYTES || bytelimit < 0)
+                    bytelimit = CAFMAXBYTES;
+            }
+            else
+                bytelimit = chunksize - 4; /* subtract edit count */
             break;
         }
         else

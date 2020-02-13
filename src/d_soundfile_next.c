@@ -144,7 +144,7 @@ static int next_readheader(int fd, t_soundfile_info *info)
     {
             /* interpret data size from file size */
         bytelimit = lseek(fd, 0, SEEK_END) - headersize;
-        if (bytelimit > NEXTMAXBYTES)
+        if (bytelimit > NEXTMAXBYTES || bytelimit < 0)
             bytelimit = NEXTMAXBYTES;
     }
 
