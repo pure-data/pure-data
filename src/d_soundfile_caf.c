@@ -306,7 +306,7 @@ int soundfile_caf_writeheader(int fd, const t_soundfile_info *info,
     headersize += CAFHEADSIZE;
 
         /* description chunk */
-    caf_setchunksize((t_chunk *)&desc, CAFDESCSIZE, swap);
+    caf_setchunksize((t_chunk *)&desc, CAFDESCSIZE - CAFCHUNKSIZE, swap);
     caf_setsamplerate(&desc, info->i_samplerate, swap);
     strncpy(desc.ds_fmtid, "lpcm", 4);
     if (info->i_bytespersample == 4)
@@ -322,7 +322,7 @@ int soundfile_caf_writeheader(int fd, const t_soundfile_info *info,
     headersize += CAFDESCSIZE;
 
         /* data chunk */
-    caf_setchunksize((t_chunk *)&data, datasize + 4, swap);
+    caf_setchunksize((t_chunk *)&data, datasize + 4, swap); /* + edit count */
     memcpy(buf + headersize, &data, CAFDATASIZE);
     headersize += CAFDATASIZE;
 
@@ -345,8 +345,8 @@ int soundfile_caf_updateheader(int fd, const t_soundfile_info *info,
     int64_t datasize = swap8s((nframes * info->i_bytesperframe) + 4, swap);
 
         /* data chunk size */
-    if (soundfile_writebytes(fd, CAFHEADSIZE + CAFDESCSIZE + 4, /* dc_id */
-                             (char *)&datasize, 8) < 8)
+    if (soundfile_writebytes(fd, CAFHEADSIZE + CAFDESCSIZE + 4,
+                             (char *)&datasize, 8) < 8) /* + edit count */
         return 0;
 
     if (sys_verbose)
