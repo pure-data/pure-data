@@ -79,10 +79,14 @@ static int strissquare(const char *s)
     {
         if (*s == ']')
             return check;
-        if (*s == ':' && check <= 2)
+        if (*s == ':' && check <= 4)
             check++;
         else if (!strisint(s))
-            return 0;
+        {
+            if (check != 4)
+                return 0;
+            else check++;
+        }
     }
 }
     /* string checker for both dollar and dollsym atoms */
@@ -679,15 +683,19 @@ static void binbuf_slicelim(int *i, int rv, int ac)
 
     /* set up the properties of a slice */
 static int binbuf_slice(int *i, int *j, int *stp,
-    int *rv, int *siz, int ac, char *midl)
+    int *rv, int *siz, char *sep, int ac, char *midl)
 {
-    char *slice, *step;
+    char *slice, *step, *separator;
     *i = atoi(midl);
     if (slice = strchr(midl, ':'))
     {
         *j = atoi(slice+1);
         if (step = strchr(slice+1, ':'))
+        {
             *stp = atoi(step+1);
+            if (separator = strchr(step+1, ':'))
+                *sep = (separator[1] == ']') ? '\0' : separator[1];
+        }
         if (!*stp)
             *stp = 1;
         *rv = (*stp < 0);
@@ -781,12 +789,35 @@ static void binbuf_dollsym(t_symbol *sym, t_atom **msp, int *ac, int *nargs,
         char *end = strchr(midl, ']') + 1;
         int bare = (dlr == s && strlen(dlr) == end-dlr);
 
+        char sep = ' ';
         int i=0, j=0, stp=0, rv=0, siz=0;
-        if (binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl))
+        if (binbuf_slice(&i, &j, &stp, &rv, &siz, &sep, argc, midl))
         {
             int rem = MAXPDSTRING/2;
             if (siz < 1)
                 SETFLOAT(*msp, 0);
+            else if (sep != ' ' && siz > 1)
+            {
+                char buf[MAXPDSTRING/2], *b = buf;
+                int len, next = 0;
+                if (rv)
+                    for (; i > j; i+=stp, rem-=len, b+=len, next=1)
+                {
+                    if (next && sep && rem > 1)
+                        *b++ = sep, rem--, *b = 0;
+                    binbuf_expandslice(&argv[i-1], b, rem, s, dlr, end);
+                    len = strlen(b);
+                }
+                else
+                    for (; i < j; i+=stp, rem-=len, b+=len, next=1)
+                {
+                    if (next && sep && rem > 1)
+                        *b++ = sep, rem--, *b = 0;
+                    binbuf_expandslice(&argv[i-1], b, rem, s, dlr, end);
+                    len = strlen(b);
+                }
+                SETSYMBOL(*msp, gensym(buf));
+            }
             else
             {
                 if (bare)
@@ -880,9 +911,12 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             if (!dlr)
                 continue;
 
+            char sep = ' ';
             char *midl = dlr+2;
             int i=0, j=0, stp=0, rv=0, siz=0;
-            binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl);
+            binbuf_slice(&i, &j, &stp, &rv, &siz, &sep, argc, midl);
+            if (sep != ' ')
+                continue;
 
             d += (siz-1);
             if (d > ad)
