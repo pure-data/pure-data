@@ -366,7 +366,7 @@ EXTERN void binbuf_evalfile(t_symbol *name, t_symbol *dir);
 EXTERN t_symbol *binbuf_realizedollsym(t_symbol *s, int ac, const t_atom *av,
     int tonew);
 
-EXTERN int strisdollar(const char *s); /* dollar atom string checker */
+EXTERN int strisdollar(const char *s); /* dollar/dollsym atom string checker */
 
 /* ------------------  clocks --------------- */
 

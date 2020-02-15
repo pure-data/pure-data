@@ -63,9 +63,29 @@ static int strisdigit(const char *s)
     return (*s >= '0' && *s <= '9');
 }
 
-int strisdollar(const char *s)
+    /* dollar atom string checker */
+static int strisint(const char *s)
 {
     return (strisdigit(s) || *s == '-' && !strisdigit(s-1) && strisdigit(s+1));
+}
+
+    /* square-bracketed dollsym atom string checker */
+static int strissquare(const char *s)
+{
+    if (*s != '[')
+        return 0;
+    for (s++ ;; ++s)
+    {
+        if (*s == ']')
+            return 1;
+        if (!strisint(s))
+            return 0;
+    }
+}
+    /* string checker for both dollar and dollsym atoms */
+int strisdollar(const char *s)
+{
+    return (strisint(s) || strissquare(s));
 }
 
     /* returns the start of a valid dollar or dollsym */
@@ -73,6 +93,15 @@ static char *binbuf_dollarchar(const char *s)
 {
     for (; (s = strchr(s, '$')); ++s)
         if (strisdollar(s+1))
+            break;
+    return ((char *)s);
+}
+
+    /* returns the start of a valid square-bracketed dollsym */
+static char *binbuf_squarechar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (strissquare(s+1))
             break;
     return ((char *)s);
 }
@@ -193,7 +222,7 @@ void binbuf_text(t_binbuf *x, const char *text, size_t size)
                 if (buf[0] != '$')
                     dollar = 0;
                 for (bufp = buf+1; *bufp; bufp++)
-                    if (!strisdollar(bufp))
+                    if (!strisint(bufp))
                         dollar = 0;
                 if (dollar)
                     SETDOLLAR(ap, atoi(buf+1));
@@ -421,7 +450,7 @@ void binbuf_restore(t_binbuf *x, int argc, const t_atom *argv)
                     if (*usestr != '$')
                         dollsym = 1;
                     else for (str2 = usestr + 1; *str2; str2++)
-                        if (!strisdollar(str2))
+                        if (!strisint(str2))
                     {
                         dollsym = 1;
                         break;
@@ -506,21 +535,29 @@ int canvas_getdollarzero(void);
 static int binbuf_expanddollsym(const char *s, char *buf, t_atom *dollar0,
     int ac, const t_atom *av, int tonew)
 {
-    int argno = (int)atol(s);
-    int arglen = 0;
     const char *cs = s;
     char c = *cs;
+    int arglen = 0, brak = 0;
+
+    if (c == '[')
+        brak = 1, c = *++cs, arglen++;
+    int argno = (int)atol(cs);
 
     *buf=0;
-    while (c && (c>='0' && c<='9' || c=='-'))
+    while (c && (c>='0' && c<='9' || c=='-' || c==']' && brak))
     {
         if (c == '-' && (strisdigit(cs-1) || !strisdigit(cs+1)))
             break;
+        if (c == ']')
+        {
+            c = *++cs, arglen++;
+            break;
+        }
         c = *++cs;
         arglen++;
     }
 
-    if (cs==s)      /* invalid $-expansion (like "$bla") */
+    if (cs==s || brak && cs[-1] != ']') /* invalid $-expansion (like "$bla") */
     {
         sprintf(buf, "$");
         return 0;
@@ -790,15 +827,31 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 binbuf_dollar(at->a_w.w_index, msp, argc, argv, target);
                 break;
             case A_DOLLSYM:
-                s9 = binbuf_realizedollsym(at->a_w.w_symbol, argc, argv,
+            {
+                t_symbol *sym = at->a_w.w_symbol;
+                char *dlr = binbuf_squarechar(sym->s_name);
+                if (dlr)
+                {
+                    char *midl = dlr+2;
+                    char *end = strchr(midl, ']') + 1;
+                    int bare = (dlr == sym->s_name && strlen(dlr) == end-dlr);
+                    if (bare)
+                    {
+                        int i = atoi(midl);
+                        binbuf_dollar(i, msp, argc, argv, target);
+                        break;
+                    }
+                }
+                s9 = binbuf_realizedollsym(sym, argc, argv,
                     target == &pd_objectmaker);
                 if (!s9)
                 {
-                    error("%s: argument number out of range", at->a_w.w_symbol->s_name);
-                    SETSYMBOL(msp, at->a_w.w_symbol);
+                    error("%s: argument number out of range", sym->s_name);
+                    SETSYMBOL(msp, sym);
                 }
                 else SETSYMBOL(msp, s9);
                 break;
+            }
             default:
                 bug("bad item in binbuf");
                 goto broken;
