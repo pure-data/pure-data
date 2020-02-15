@@ -74,11 +74,14 @@ static int strissquare(const char *s)
 {
     if (*s != '[')
         return 0;
+    int check = 1;
     for (s++ ;; ++s)
     {
         if (*s == ']')
-            return 1;
-        if (!strisint(s) && *s != ':')
+            return check;
+        if (*s == ':' && check <= 2)
+            check++;
+        else if (!strisint(s))
             return 0;
     }
 }
@@ -102,6 +105,15 @@ static char *binbuf_squarechar(const char *s)
 {
     for (; (s = strchr(s, '$')); ++s)
         if (strissquare(s+1))
+            break;
+    return ((char *)s);
+}
+
+    /* returns the start of a valid dollar slice */
+static char *binbuf_slicechar(const char *s)
+{
+    for (; (s = strchr(s, '$')); ++s)
+        if (strissquare(s+1) > 1)
             break;
     return ((char *)s);
 }
@@ -808,18 +820,17 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
             d = 0;
         else if (at[c].a_type==A_DOLLSYM)
         {
-            char *dlr = binbuf_squarechar(at[c].a_w.w_symbol->s_name);
+            char *dlr = binbuf_slicechar(at[c].a_w.w_symbol->s_name);
             if (!dlr)
                 continue;
 
             char *midl = dlr+2;
             int i=0, j=0, stp=0, rv=0, siz=0;
-            if (binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl))
-            {
-                d += (siz-1);
-                if (d > ad)
-                    ad = d;
-            }
+            binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl);
+
+            d += (siz-1);
+            if (d > ad)
+                ad = d;
         }
     }
 
