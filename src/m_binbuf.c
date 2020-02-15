@@ -714,6 +714,51 @@ static void binbuf_dollar(int i, t_atom *msp,
     }
 }
 
+static void binbuf_dollsym(t_symbol *sym, t_atom **msp, int *ac, int *nargs,
+    int argc, const t_atom *argv, t_pd *target)
+{
+    t_symbol *s9;
+    char *dlr = binbuf_squarechar(sym->s_name);
+    if (dlr)
+    {
+        char *midl = dlr+2;
+        char *end = strchr(midl, ']') + 1;
+        int bare = (dlr == sym->s_name && strlen(dlr) == end-dlr);
+
+        int i=0, j=0, stp=0, rv=0, siz=0;
+        if (binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl))
+        {
+            if (siz < 1)
+                SETFLOAT(*msp, 0);
+            else
+            {
+                if (rv)
+                    for (; i > j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                        **msp = argv[i-1];
+                else
+                    for (; i < j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                        **msp = argv[i-1];
+                (*ac)++;
+                (*msp)--;
+                (*nargs)--;
+            }
+            return;
+        }
+        else if (bare)
+        {
+            binbuf_dollar(i, *msp, argc, argv, target);
+            return;
+        }
+    }
+    s9 = binbuf_realizedollsym(sym, argc, argv, target == &pd_objectmaker);
+    if (!s9)
+    {
+        error("%s: argument number out of range", sym->s_name);
+        SETSYMBOL(*msp, sym);
+    }
+    else SETSYMBOL(*msp, s9);
+}
+
 #define SMALLMSG 5
 #define HUGEMSG 1000
 
@@ -870,7 +915,6 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
         nexttarget = target;
         while (1)
         {
-            t_symbol *s9;
             if (!ac) goto gotmess;
             switch (at->a_type)
             {
@@ -902,50 +946,9 @@ void binbuf_eval(const t_binbuf *x, t_pd *target, int argc, const t_atom *argv)
                 binbuf_dollar(at->a_w.w_index, msp, argc, argv, target);
                 break;
             case A_DOLLSYM:
-            {
-                t_symbol *sym = at->a_w.w_symbol;
-                char *dlr = binbuf_squarechar(sym->s_name);
-                if (dlr)
-                {
-                    char *midl = dlr+2;
-                    char *end = strchr(midl, ']') + 1;
-                    int bare = (dlr == sym->s_name && strlen(dlr) == end-dlr);
-
-                    int i=0, j=0, stp=0, rv=0, siz=0;
-                    if (binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl))
-                    {
-                        if (siz < 1)
-                            SETFLOAT(msp, 0);
-                        else
-                        {
-                            if (rv)
-                                for (; i > j; i+=stp, ac--, msp++, nargs++)
-                                    *msp = argv[i-1];
-                            else
-                                for (; i < j; i+=stp, ac--, msp++, nargs++)
-                                    *msp = argv[i-1];
-                            ac++;
-                            msp--;
-                            nargs--;
-                        }
-                        break;
-                    }
-                    else if (bare)
-                    {
-                        binbuf_dollar(i, msp, argc, argv, target);
-                        break;
-                    }
-                }
-                s9 = binbuf_realizedollsym(sym, argc, argv,
-                    target == &pd_objectmaker);
-                if (!s9)
-                {
-                    error("%s: argument number out of range", sym->s_name);
-                    SETSYMBOL(msp, sym);
-                }
-                else SETSYMBOL(msp, s9);
+                binbuf_dollsym(at->a_w.w_symbol, &msp, &ac, &nargs,
+                    argc, argv, target);
                 break;
-            }
             default:
                 bug("bad item in binbuf");
                 goto broken;
