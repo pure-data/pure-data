@@ -734,30 +734,86 @@ static void binbuf_dollar(int i, t_atom *msp,
     }
 }
 
+    /* apply any prefixes/suffixes to an item in a slice */
+static void binbuf_expandslice(const t_atom *at, char *buf, int size,
+    const char *bgn, const char *dlr, const char *end)
+{
+    int len = dlr - bgn;
+    if (len >= size)
+        len = size-1;
+    strncpy(buf, bgn, len);
+    size -= len;
+    buf += len;
+
+    binbuf_stratom(at, buf, size);
+    len = strlen(buf);
+    size -= len;
+    buf += len;
+
+    len = strlen(end);
+    if (len >= size)
+        len = size-1;
+    strncpy(buf, end, len);
+    buf[len] = 0;
+}
+
 static void binbuf_dollsym(t_symbol *sym, t_atom **msp, int *ac, int *nargs,
     int argc, const t_atom *argv, t_pd *target)
 {
     t_symbol *s9;
-    char *dlr = binbuf_squarechar(sym->s_name);
-    if (dlr)
+    const char *s = sym->s_name, *sp;
+    char *dlr;
+    int dlrs = 0;
+
+    for (sp = s; (sp = strchr(sp, '$')) && dlrs<=1; ++sp)
+        if (strisdollar(sp+1))
+            dlrs++;
+    if (dlrs > 1) // expand the non-slices first
+    {
+        s9 = binbuf_realizedollsym(sym, argc, argv, target == &pd_objectmaker);
+        if (s9)
+            s = s9->s_name;
+    }
+
+    if (dlr = binbuf_squarechar(s))
     {
         char *midl = dlr+2;
         char *end = strchr(midl, ']') + 1;
-        int bare = (dlr == sym->s_name && strlen(dlr) == end-dlr);
+        int bare = (dlr == s && strlen(dlr) == end-dlr);
 
         int i=0, j=0, stp=0, rv=0, siz=0;
         if (binbuf_slice(&i, &j, &stp, &rv, &siz, argc, midl))
         {
+            int rem = MAXPDSTRING/2;
             if (siz < 1)
                 SETFLOAT(*msp, 0);
             else
             {
-                if (rv)
-                    for (; i > j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
-                        **msp = argv[i-1];
+                if (bare)
+                {
+                    if (rv)
+                        for (; i > j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                            **msp = argv[i-1];
+                    else
+                        for (; i < j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                            **msp = argv[i-1];
+                }
                 else
-                    for (; i < j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
-                        **msp = argv[i-1];
+                {
+                    char buf[MAXPDSTRING/2];
+                    if (rv)
+                        for (; i > j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                    {
+                        binbuf_expandslice(&argv[i-1], buf, rem, s, dlr, end);
+                        SETSYMBOL(*msp, gensym(buf));
+                    }
+                    else
+                        for (; i < j; i+=stp, (*ac)--, (*msp)++, (*nargs)++)
+                    {
+                        binbuf_expandslice(&argv[i-1], buf, rem, s, dlr, end);
+                        SETSYMBOL(*msp, gensym(buf));
+                    }
+                }
                 (*ac)++;
                 (*msp)--;
                 (*nargs)--;
